@@ -1,307 +1,307 @@
 <strings>
     <string>
         <id>0</id>
-        <value>ילש תוינכותה</value>
+        <value>התוכניות שלי</value>
     </string>
     <string>
         <id>1</id>
-        <value>ילש תונומתה</value>
+        <value>התמונות שלי</value>
     </string>
     <string>
         <id>2</id>
-        <value>ילש הקיזומה</value>
+        <value>המוזיקה שלי</value>
     </string>
     <string>
         <id>3</id>
-        <value>ילש םיטרסה</value>
+        <value>הסרטים שלי</value>
     </string>
     <string>
         <id>4</id>
-        <value>תוינכות ךירדמ</value>
+        <value>מדריך תוכניות</value>
     </string>
     <string>
         <id>5</id>
-        <value>תורדגה</value>
+        <value>הגדרות</value>
     </string>
     <string>
         <id>6</id>
-        <value>XBOX Media Center</value>
+		<value>XBOX Media Center 1.0.0</value>
     </string>
     <string>
         <id>7</id>
-        <value>ילש םיצבקה</value>
+        <value>הקבצים שלי</value>
     </string>
     <string>
-      <id>8</id>
-      <value>ילש ריואה גזמ</value>
+        <id>8</id>
+        <value>מזג האויר שלי</value>
     </string>
     <string>
         <id>11</id>
-        <value>ינש</value>
+        <value>שני</value>
     </string>
     <string>
         <id>12</id>
-        <value>ישילש</value>
+        <value>שלישי</value>
     </string>
     <string>
         <id>13</id>
-        <value>יעיבר</value>
+        <value>רביעי</value>
     </string>
     <string>
         <id>14</id>
-        <value>ישימח</value>
+        <value>חמישי</value>
     </string>
     <string>
         <id>15</id>
-        <value>ישיש</value>
+        <value>שישי</value>
     </string>
     <string>
         <id>16</id>
-        <value>תבש</value>
+        <value>שבת</value>
     </string>
     <string>
         <id>17</id>
-        <value>ןושאר</value>
+        <value>ראשון</value>
     </string>
     <string>
         <id>21</id>
-        <value>ראוני</value>
+        <value>ינואר</value>
     </string>
     <string>
         <id>22</id>
-        <value>ראורבפ</value>
+        <value>פברואר</value>
     </string>
     <string>
         <id>23</id>
-        <value>ץרמ</value>
+        <value>מרץ</value>
     </string>
     <string>
         <id>24</id>
-        <value>לירפא</value>
+        <value>אפריל</value>
     </string>
     <string>
         <id>25</id>
-        <value>יאמ</value>
+        <value>מאי</value>
     </string>
     <string>
         <id>26</id>
-        <value>ינוי</value>
+        <value>יוני</value>
     </string>
     <string>
         <id>27</id>
-        <value>ילוי</value>
+        <value>יולי</value>
     </string>
     <string>
         <id>28</id>
-        <value>טסוגוא</value>
+        <value>אוגוסט</value>
     </string>
     <string>
         <id>29</id>
-        <value>רבמטפס</value>
+        <value>ספטמבר</value>
     </string>
     <string>
         <id>30</id>
-        <value>רבוטקוא</value>
+        <value>אוקטובר</value>
     </string>
     <string>
         <id>31</id>
-        <value>רבמבונ</value>
+        <value>נובמבר</value>
     </string>
     <string>
         <id>32</id>
-        <value>רבמצד</value>
+        <value>דצמבר</value>
     </string>
     <string>
         <id>100</id>
-        <value>תוימלצ :הגוצת</value>
+        <value>תצוגה: צלמיות</value>
     </string>
     <string>
         <id>101</id>
-        <value>המישר :הגוצת</value>
+        <value>תצוגה: רשימה</value>
     </string>
     <string>
         <id>102</id>
-        <value>קורס</value>
+        <value>סרוק</value>
     </string>
     <string>
         <id>103</id>
-        <value>םש : יפל ןיימ</value>
+        <value>מיין לפי : שם</value>
     </string>
     <string>
         <id>104</id>
-        <value>ךיראת : יפל ןיימ</value>
+        <value>מיין לפי : תאריך</value>
     </string>
     <string>
         <id>105</id>
-        <value>לדוג : יפל מיין</value>
+        <value>מיין לפי : גודל</value>
     </string>
     <string>
         <id>106</id>
-        <value>אל</value>
+        <value>לא</value>
     </string>
     <string>
         <id>107</id>
-        <value>ןכ</value>
+        <value>כן</value>
     </string>
     <string>
         <id>108</id>
-        <value>תגצמ</value>
+        <value>מצגת</value>
     </string>
     <string>
         <id>109</id>
-        <value>תוימלצ רוצ</value>
+        <value>צור צלמיות</value>
     </string>
     <string>
         <id>110</id>
-        <value>המידקמ הגוצת רוצ</value>
+        <value>צור תצוגה מקדימה</value>
     </string>
     <string>
         <id>111</id>
-        <value>ךרד ירוציק</value>
+        <value>קיצורי דרך</value>
     </string>
     <string>
         <id>112</id>
-        <value>קספומ</value>
+        <value>מופסק</value>
     </string>
     <string>
         <id>113</id>
-        <value>רוקמ : ילש םיצבקה</value>
+        <value>הקבצים שלי : מקור</value>
     </string>
     <string>
         <id>114</id>
-        <value>דעי : ילש םיצבקה</value>
+        <value>הקבצים שלי : יעד</value>
     </string>
     <string>
         <id>115</id>
-        <value>קתעה</value>
+        <value>העתק</value>
     </string>
     <string>
         <id>116</id>
-        <value>רבעה</value>
+        <value>העבר</value>
     </string>
     <string>
         <id>117</id>
-        <value>קחמ</value>
+        <value>מחק</value>
     </string>
     <string>
         <id>118</id>
-        <value>םש הנש</value>
+        <value>שנה שם</value>
     </string>
     <string>
         <id>119</id>
-        <value>השדח היקית</value>
+        <value>תיקיה חדשה</value>
     </string>
     <string>
         <id>120</id>
-        <value>ץבוק תקתעה רשא</value>
+        <value>אשר העתקת קובץ</value>
     </string>
     <string>
         <id>121</id>
-        <value>ץבוק תרבעה רשא</value>
+        <value>אשר העברת קובץ</value>
     </string>
     <string>
         <id>122</id>
-        <value>ץבוק תקיחמ רשא</value>
+        <value>אשר מחיקת קובץ</value>
     </string>
     <string>
         <id>123</id>
-        <value>?ולא םיצבק קיתעהל</value>
+        <value>?להעתיק קבצים אלו</value>
     </string>
     <string>
         <id>124</id>
-        <value>?ולא םיצבק ריבעהל</value>
+        <value>?להעביר קבצים אלו</value>
     </string>
     <string>
         <id>125</id>
-        <value>?ולא םיצבק קוחמל</value>
+        <value>?למחוק קבצים אלו</value>
     </string>
     <string>
         <id>126</id>
-        <value>בצמ</value>
+        <value>מצב</value>
     </string>
     <string>
         <id>127</id>
-        <value>םיטקייבוא</value>
+        <value>אובייקטים</value>
     </string>
     <string>
         <id>128</id>
-        <value>יללכ</value>
+        <value>כללי</value>
     </string>
     <string>
         <id>129</id>
-        <value>תגצמ</value>
+        <value>מצגת</value>
     </string>
     <string>
         <id>130</id>
-        <value>תכרעמ עדימ</value>
+        <value>מידע מערכת</value>
     </string>
     <string>
         <id>131</id>
-        <value>ךסמ</value>
+        <value>מסך</value>
     </string>
     <string>
         <id>132</id>
-        <value>םימובלא</value>
+        <value>אלבומים</value>
     </string>
     <string>
         <id>133</id>
-        <value>םינמא</value>
+        <value>אמנים</value>
     </string>
     <string>
         <id>134</id>
-        <value>םיריש</value>
+        <value>שירים</value>
     </string>
     <string>
         <id>135</id>
-        <value>תונונגס</value>
+        <value>סגנונות</value>
     </string>
     <string>
         <id>136</id>
-        <value>העמשה תמישר</value>
+        <value>רשימת השמעה</value>
     </string>
     <string>
         <id>137</id>
-        <value>שפח</value>
+        <value>חפש</value>
     </string>
     <string>
         <id>138</id>
-        <value>תכרעמ עדימ</value>
+        <value>מידע מערכת</value>
     </string>
     <string>
         <id>139</id>
-        <value>:תורוטרפמט</value>
+        <value>:טמפרטורות</value>
     </string>
     <string>
         <id>140</id>
-        <value>:דבעמ</value>
+        <value>:מעבד</value>
     </string>
     <string>
         <id>141</id>
-        <value>:יפרג רבעמ</value>
+        <value>מעבד גרפי:</value>
     </string>
     <string>
         <id>142</id>
-        <value>:ןמז</value>
+        <value>:זמן</value>
     </string>
     <string>
         <id>143</id>
-        <value>:יחכונ</value>
+        <value>:נוכחי</value>
     </string>
     <string>
         <id>144</id>
-        <value>:הסריג</value>
+        <value>:גירסה</value>
     </string>
     <string>
         <id>145</id>
-        <value>:תשר</value>
+        <value>:רשת</value>
     </string>
     <string>
         <id>146</id>
-        <value>:גוס</value>
+        <value>:סוג</value>
     </string>
     <string>
         <id>147</id>
-        <value>יטאטס</value>
+        <value>סטאטי</value>
     </string>
     <string>
         <id>148</id>
@@ -317,7 +317,7 @@
     </string>
     <string>
         <id>151</id>
-        <value>:רושיק</value>
+        <value>:קישור</value>
     </string>
     <string>
         <id>152</id>
@@ -329,131 +329,131 @@
     </string>
     <string>
         <id>154</id>
-        <value>ןוסחא</value>
+        <value>אחסון</value>
     </string>
     <string>
         <id>155</id>
-        <value>ןנוכ</value>
+        <value>כונן</value>
     </string>
     <string>
         <id>156</id>
-        <value>יונפ</value>
+        <value>פנוי</value>
     </string>
     <string>
         <id>157</id>
-        <value>ואדיו</value>
+        <value>וידאו</value>
     </string>
     <string>
         <id>158</id>
-        <value>יונפ ןורכיז</value>
+        <value>זיכרון פנוי</value>
     </string>
     <string>
         <id>159</id>
-        <value>רויק ןיא</value>
+        <value>אין קיור</value>
     </string>
     <string>
         <id>160</id>
-        <value>יונפ</value>
+        <value>פנוי</value>
     </string>
     <string>
         <id>161</id>
-        <value>ןימז אל</value>
+        <value>לא זמין</value>
     </string>
     <string>
         <id>162</id>
-        <value>חותפ שגמ</value>
+        <value>מגש פתוח</value>
     </string>
     <string>
         <id>163</id>
-        <value>ארוק</value>
+        <value>קורא</value>
     </string>
     <string>
         <id>164</id>
-        <value>קסיד ןיא</value>
+        <value>אין דיסק</value>
     </string>
     <string>
         <id>165</id>
-        <value>אצמנ קסיד</value>
+        <value>דיסק נמצא</value>
     </string>
     <string>
         <id>166</id>
-        <value>ןיקס</value>
+        <value>סקין</value>
     </string>
     <string>
         <id>167</id>
-        <value>FTP תרש</value>
+        <value>FTP שרת</value>
     </string>
     <string>
         <id>168</id>
-        <value>םינמז תרש</value>
+        <value>שרת זמנים</value>
     </string>
     <string>
         <id>169</id>
-        <value>היצולוזר</value>
+        <value>רזולוציה</value>
     </string>
     <string>
         <id>170</id>
-        <value>:םובלא</value>
+        <value>:אלבום</value>
     </string>
     <string>
         <id>171</id>
-        <value>:ןמא</value>
+        <value>:אמן</value>
     </string>
     <string>
         <id>172</id>
-        <value>:הצפה ךיראת</value>
+        <value>:תאריך הפצה</value>
     </string>
     <string>
         <id>173</id>
-        <value>:גוריד</value>
+        <value>:דירוג</value>
     </string>
     <string>
         <id>174</id>
-        <value>:ןונגס</value>
+        <value>:סגנון</value>
     </string>
     <string>
         <id>175</id>
-        <value>:םינוט</value>
+        <value>:טונים</value>
     </string>
     <string>
         <id>176</id>
-        <value>:תונונגס</value>
+        <value>:סגנונות</value>
     </string>
     <string>
         <id>177</id>
-        <value>:תרוקיב</value>
+        <value>:ביקורת</value>
     </string>
     <string>
         <id>178</id>
-        <value>:תועוצר</value>
+        <value>:רצועות</value>
     </string>
     <string>
         <id>179</id>
-        <value>ריש</value>
+        <value>שיר</value>
     </string>
     <string>
         <id>180</id>
-        <value>ךרוא</value>
+        <value>אורך</value>
     </string>
     <string>
         <id>181</id>
-        <value>םובלא רחב</value>
+        <value>בחר אלבום</value>
     </string>
     <string>
         <id>182</id>
-        <value>תועוצר</value>
+        <value>רצועות</value>
     </string>
     <string>
         <id>183</id>
-        <value>תרוקיב</value>
+        <value>ביקורת</value>
     </string>
     <string>
         <id>184</id>
-        <value>ןנער</value>
+        <value>רענן</value>
     </string>
     <string>
         <id>185</id>
-        <value>םובלא שפחמ</value>
+        <value>מחפש אלבום</value>
     </string>
     <string>
         <id>186</id>
@@ -461,171 +461,171 @@
     </string>
     <string>
         <id>187</id>
-        <value>!םימובלא ואצמנ אל</value>
+        <value>!לא נמצאו אלבומים</value>
     </string>
     <string>
         <id>188</id>
-        <value>לכה רחב</value>
+        <value>בחר הכל</value>
     </string>
     <string>
         <id>189</id>
-        <value>תכרעמ עדימ קרוס</value>
+        <value>סורק מידע מערכת</value>
     </string>
     <string>
         <id>190</id>
-        <value>רומש</value>
+        <value>שמור</value>
     </string>
     <string>
         <id>191</id>
-        <value>בברע</value>
+        <value>ערבב</value>
     </string>
     <string>
         <id>192</id>
-        <value>הקנ</value>
+        <value>נקה</value>
     </string>
     <string>
         <id>193</id>
-        <value>קורס</value>
+        <value>סרוק</value>
     </string>
     <string>
         <id>194</id>
-        <value>...שפחמ</value>
+        <value>...מחפש</value>
     </string>
     <string>
         <id>195</id>
-        <value>IMDB! תומושר ואצמנ אל</value>
+        <value>IMDB! לא נמצאו רשומות</value>
     </string>
     <string>
         <id>196</id>
-        <value>:טרס רחב</value>
+        <value>:בחר סרט</value>
     </string>
     <string>
         <id>197</id>
-        <value>IMDB עדימ שפחמ</value>
+        <value>IMDB מחפש מידע</value>
     </string>
     <string>
         <id>198</id>
-        <value>טרסה תודוא עדימ ןעוט</value>
+        <value>טוען מידע אודות הסרט</value>
     </string>
     <string>
         <id>199</id>
-        <value>:יאמב</value>
+        <value>:במאי</value>
     </string>
     <string>
         <id>200</id>
-        <value>:בתוכ</value>
+        <value>:כותב</value>
     </string>
     <string>
         <id>201</id>
-        <value>:הנש</value>
+        <value>:שנה</value>
     </string>
     <string>
         <id>202</id>
-        <value>:הרוש</value>
+        <value>:שורה</value>
     </string>
     <string>
         <id>203</id>
-        <value>:הלילע ריצקת</value>
+        <value>:תקציר עלילה</value>
     </string>
     <string>
         <id>204</id>
-        <value>:גניטייר</value>
+        <value>:רייטינג</value>
     </string>
     <string>
         <id>205</id>
-        <value>:תועבצה</value>
+        <value>:הצבעות</value>
     </string>
     <string>
         <id>206</id>
-        <value>קוהיל</value>
+        <value>ליהוק</value>
     </string>
     <string>
         <id>207</id>
-        <value>הלילע</value>
+        <value>עלילה</value>
     </string>
     <string>
         <id>208</id>
-        <value>ןגנ</value>
+        <value>נגן</value>
     </string>
     <string>
         <id>209</id>
-        <value>אבה</value>
+        <value>הבא</value>
     </string>
     <string>
         <id>210</id>
-        <value>םדוקה</value>
+        <value>הקודם</value>
     </string>
     <string>
         <id>211</id>
-        <value>תויצקילפא שפחמ</value>
+        <value>מחפש אפליקציות</value>
     </string>
     <string>
         <id>212</id>
-        <value>ואצמנ תויצקילפא</value>
+        <value>אפליקציות נמצאו</value>
     </string>
     <string>
         <id>213</id>
-        <value>שמתשמ קשממ ןונווכ</value>
+        <value>כוונון ממשק משתמש</value>
     </string>
     <string>
         <id>214</id>
-        <value>ךסמ ןונווכ</value>
+        <value>כוונון מסך</value>
     </string>
     <string>
         <id>215</id>
-        <value>ךכר</value>
+        <value>רכך</value>
     </string>
     <string>
         <id>216</id>
-        <value>םוז תומכ</value>
+        <value>כמות זום</value>
     </string>
     <string>
         <id>217</id>
-        <value>םילסקיפ סחי</value>
+        <value>יחס פיקסלים</value>
     </string>
     <string>
         <id>218</id>
-        <value>DVD ןנוכ</value>
+        <value>DVD כונן</value>
     </string>
     <string>
         <id>219</id>
-        <value>השקבב קסיד סנכה</value>
+        <value>הכנס דיסק בבקשה</value>
     </string>
     <string>
         <id>220</id>
-        <value>תשר תייקת</value>
+        <value>תקיית רשת</value>
     </string>
     <string>
         <id>221</id>
-        <value>תרבוחמ הניא תשרה</value>
+        <value>הרשת אינה מחוברת</value>
     </string>
     <string>
         <id>222</id>
-        <value>לטב</value>
+        <value>בטל</value>
     </string>
     <string>
         <id>223</id>
-        <value>בחר ךסמל תיטמוטוא ףלחה</value>
+        <value>החלף אוטומטית למסך רחב</value>
     </string>
     <string>
         <id>224</id>
-        <value>תוריהמ</value>
+        <value>מהירות</value>
     </string>
     <string>
         <id>225</id>
-        <value>רבעמ ינמז</value>
+        <value>זמני מעבר</value>
     </string>
     <string>
         <id>226</id>
-        <value>PAL60 רשפא</value>
+        <value>PAL60 אפשר</value>
     </string>
     <string>
         <id>227</id>
-        <value>CDDB רשפא</value>
+        <value>CDDB אפשר</value>
     </string>
     <string>
         <id>228</id>
-        <value>הניעטה תעב העמשה תמישר בברע</value>
+        <value>ערבב רשימת השמעה בעת הטעינה</value>
     </string>
     <string>
         <id>229</id>
@@ -633,19 +633,19 @@
     </string>
     <string>
         <id>230</id>
-        <value>םירטליפ</value>
+        <value>פילטרים</value>
     </string>
     <string>
         <id>231</id>
-        <value>אלל</value>
+        <value>ללא</value>
     </string>
     <string>
         <id>232</id>
-        <value>הדוקנ</value>
+        <value>נקודה</value>
     </string>
     <string>
         <id>233</id>
-        <value>יווק</value>
+        <value>קווי</value>
     </string>
     <string>
         <id>234</id>
@@ -661,71 +661,71 @@
     </string>
     <string>
         <id>237</id>
-        <value>םוצמצ</value>
+        <value>צמצום</value>
     </string>
     <string>
         <id>238</id>
-        <value>הלדגה</value>
+        <value>הגדלה</value>
     </string>
     <string>
         <id>240</id>
-        <value>DVD יטרס תיטאמוטוא ןגנ</value>
+        <value>נגן אוטומאטית סרטי DVD</value>
     </string>
     <string>
         <id>241</id>
-        <value>DCVS/DCVיטרס תיטאמוטוא ןגנ</value>
+        <value>נגן אוטומטית סרטי VCD/SVCD</value>
     </string>
     <string>
         <id>242</id>
-        <value>תיטאמוטוא הקיזומ ןגנ</value>
+        <value>נגן מוזיקה אוטומאטית</value>
     </string>
     <string>
         <id>243</id>
-        <value>תיטאמוטוא םיקחשמ ץרה</value>
+        <value>הרץ משחקים אוטומאטית</value>
     </string>
     <string>
         <id>244</id>
-        <value>תיטאמוטוא םיטרס ןגנ</value>
+        <value>נגן סרטים אוטומאטית</value>
     </string>
     <string>
         <id>245</id>
-        <value>תיטאמוטוא הקיזומ ןגנ</value>
+        <value>נגן מוזיקה אוטומאטית</value>
     </string>
     <string>
         <id>246</id>
-        <value>תיטאמוטוא תונומת ץרה</value>
+        <value>הרץ תמונות אוטומאטית</value>
     </string>
     <string>
         <id>247</id>
-        <value>םיטפירקס</value>
+        <value>סקריפטים</value>
     </string>
     <string>
         <id>248</id>
-        <value>הפש</value>
+        <value>שפה</value>
     </string>
     <string>
         <id>249</id>
-        <value>הקיזומ</value>
+        <value>מוזיקה</value>
     </string>
     <string>
         <id>250</id>
-        <value>תוגוצת</value>
+        <value>תצוגות</value>
     </string>
     <string>
         <id>251</id>
-        <value>דעי תירפס רחב</value>
+        <value>בחר ספרית יעד</value>
     </string>
     <string>
         <id>252</id>
-        <value>- םילוקמרה לכל ואירטס טלפ</value>
+        <value>- פלט סטריאו לכל הרמקולים</value>
     </string>
     <string>
         <id>253</id>
-        <value>םיצורע רפסמ</value>
+        <value>מספר ערוצים</value>
     </string>
     <string>
         <id>254</id>
-        <value>- ךמות רביסר DTS</value>
+        <value>- רסיבר תומך DTS</value>
     </string>
     <string>
         <id>255</id>
@@ -733,19 +733,19 @@
     </string>
     <string>
         <id>256</id>
-        <value>CDDB עדימ תשרב שפחמ</value>
+        <value>CDDB מחפש ברשת מידע</value>
     </string>
     <string>
         <id>257</id>
-        <value>האיגש</value>
+        <value>שגיאה</value>
     </string>
     <string>
         <id>258</id>
-        <value>ID3 תויגת רשפא</value>
+        <value>ID3 אפשר תגיות</value>
     </string>
     <string>
         <id>259</id>
-        <value>חתופ</value>
+        <value>פותח</value>
     </string>
     <string>
         <id>260</id>
@@ -753,179 +753,179 @@
     </string>
     <string>
         <id>261</id>
-        <value>....הלחתהל ןיתממ</value>
+        <value>....ממתין להתחלה</value>
     </string>
     <string>
         <id>262</id>
-        <value>םיטפירקס טלפ</value>
+        <value>פלט סקריפטים</value>
     </string>
     <string>
         <id>263</id>
-        <value>HTTP תרש</value>
+        <value>HTTP שרת</value>
     </string>
     <string>
         <id>264</id>
-        <value>טלקה</value>
+        <value>הקלט</value>
     </string>
     <string>
         <id>265</id>
-        <value>הטלקה רוצע</value>
+        <value>עצור הקלטה</value>
     </string>
     <string>
         <id>266</id>
-        <value>העוצר : יפל ןיימ</value>
+        <value>מיין לפי : רצועה</value>
     </string>
     <string>
         <id>267</id>
-        <value>ןמז : יפל ןיימ</value>
+        <value>מיין לפי : זמן</value>
     </string>
     <string>
         <id>268</id>
-        <value>תרתוכ : יפל ןיימ</value>
+        <value>מיין לפי : כותרת</value>
     </string>
     <string>
         <id>269</id>
-        <value>ןמא : יפל ןיימ</value>
+        <value>מיין לפי : אמן</value>
     </string>
     <string>
         <id>270</id>
-        <value>םובלא : יפל ןיימ</value>
+        <value>מיין לפי : אלבום</value>
     </string>
     <string>
         <id>271</id>
-        <value>םינושאר 100</value>
+        <value>100 ראשונים</value>
     </string>
     <string>
         <id>272</id>
-        <value>הלעמל לאמשמ רתי תקירס יוציפ</value>
+        <value>פיצוי סריקת יתר משמאל למעלה</value>
     </string>
     <string>
         <id>273</id>
-        <value>הטמל ןימימ רתי תקירס יוציפ</value>
+        <value>פיצוי סריקת יתר מימין למטה</value>
     </string>
     <string>
         <id>274</id>
-        <value>תויבותכ םוקימ</value>
+        <value>מיקום כתוביות</value>
     </string>
     <string>
         <id>275</id>
-        <value>םילסקיפה סחי ןוויכ</value>
+        <value>כיוון יחס הפיקסלים</value>
     </string>
     <string>
         <id>276</id>
-        <value>רתיה תקירס תמר יונישל ץחה תא זזה</value>
+        <value>הזז את החץ לשינוי רמת סריקת היתר</value>
     </string>
     <string>
         <id>277</id>
-        <value>תויבותכה םוקמ יונישל עיבצמה תא זזה</value>
+        <value>הזז את המצביע לשינוי מקום הכתוביות</value>
     </string>
     <string>
         <id>278</id>
-        <value>םלשומ עובירל ךופהיש ךכ ןבלמה תא ןווכ</value>
+        <value>כוון את המלבן כך שיהפוך לריבוע מושלם</value>
     </string>
     <string>
         <id>279</id>
-        <value>הלשכנ תורדגה תניעט</value>
+        <value>טעינת הגדרות נכשלה</value>
     </string>
     <string>
         <id>280</id>
-        <value>לדחמ תורירבב שמתשמ</value>
+        <value>משתמש בברירות מחדל</value>
     </string>
     <string>
         <id>281</id>
-        <value>XML יצבק קודב אנא</value>
+        <value>XML אנא בדוק קבצי</value>
     </string>
     <string>
         <id>282</id>
-        <value>תומאתה %i ואצמנ</value>
+        <value>התאמות %i נמצאו</value>
     </string>
     <string>
         <id>283</id>
-        <value>שופיח תואצות</value>
+        <value>תוצאות חיפוש</value>
     </string>
     <string>
         <id>284</id>
-        <value>שופיחל תומאתה ואצמנ אל</value>
+        <value>לא נמצאו התאמות לחיפוש</value>
     </string>
     <string>
         <id>285</id>
-        <value>בלושמ אל רטליפ</value>
+        <value>פילטר לא משולב</value>
     </string>
     <string>
         <id>286</id>
-        <value>דוביע רחאל רטליפ</value>
+        <value>פילטר לאחר עיבוד</value>
     </string>
     <string>
         <id>287</id>
-        <value>תויבותכ</value>
+        <value>כתוביות</value>
     </string>
     <string>
         <id>288</id>
-        <value>טנופ</value>
+        <value>פונט</value>
     </string>
     <string>
         <id>289</id>
-        <value>לדוג</value>
+        <value>גודל</value>
     </string>
     <string>
         <id>290</id>
-        <value>)Bd( םוילוו תרבגה</value>
+        <value>)Bd( הגברת ווליום</value>
     </string>
     <string>
         <id>291</id>
-        <value>ואדיו</value>
+        <value>וידאו</value>
     </string>
     <string>
         <id>292</id>
-        <value>וידוא</value>
+        <value>אודיו</value>
     </string>
     <string>
         <id>293</id>
-        <value>תויבותכ</value>
+        <value>כתוביות</value>
     </string>
     <string>
         <id>294</id>
-        <value>הינמיס רוצ</value>
+        <value>צור סימניה</value>
     </string>
     <string>
         <id>295</id>
-        <value>תוינמיס ןיב טוונ</value>
+        <value>נווט בין סימניות</value>
     </string>
     <string>
         <id>296</id>
-        <value>תוינמיס הקנ</value>
+        <value>נקה סימניות</value>
     </string>
     <string>
         <id>297</id>
-        <value>ותמונה לוק תייהשה</value>
+        <value>השהיית קול הנומתו</value>
     </string>
     <string>
         <id>298</id>
-        <value>טוונ</value>
+        <value>נווט</value>
     </string>
     <string>
         <id>300</id>
-        <value>1. הפש</value>
+        <value>1. שפה</value>
     </string>
     <string>
         <id>301</id>
-        <value>2. םוילוו</value>
+        <value>2. ווליום</value>
     </string>
     <string>
         <id>302</id>
-        <value>3. םרוז רודיש</value>
+        <value>3. שידור זורם</value>
     </string>
     <string>
         <id>303</id>
-        <value>הייהשה</value>
+        <value>השהייה</value>
     </string>
     <string>
         <id>304</id>
-        <value>הפש</value>
+        <value>שפה</value>
     </string>
     <string>
         <id>305</id>
-        <value>ןימז</value>
+        <value>זמין</value>
     </string>
     <string>
         <id>306</id>
@@ -933,19 +933,19 @@
     </string>
     <string>
         <id>307</id>
-        <value>- דוביע יטאמוטוא</value>
+        <value>- אוטומאטי עיבוד</value>
     </string>
     <string>
         <id>308</id>
-        <value>- הבוגל המיסח תרסה רטליפ</value>
+        <value>- פילטר הסרת חסימה לגובה</value>
     </string>
     <string>
         <id>309</id>
-        <value>- בחורל המיסח תרסה רטליפ</value>
+        <value>- פילטר הסרת חסימה לרוחב</value>
     </string>
     <string>
         <id>310</id>
-        <value>- םייטאמוטוא תוידוגינ/תוריהב</value>
+        <value>- בהירות/ניגודיות אוטומאטיים</value>
     </string>
     <string>
         <id>311</id>
@@ -957,223 +957,223 @@
     </string>
     <string>
         <id>313</id>
-        <value>סייבהטד הקנ</value>
+        <value>נקה דטהבייס</value>
     </string>
     <string>
         <id>314</id>
-        <value>...ןנוכתמ</value>
+        <value>...מתכונן</value>
     </string>
     <string>
         <id>315</id>
-        <value>סייבהטד תאיגש</value>
+        <value>שגיאת דטהבייס</value>
     </string>
     <string>
         <id>316</id>
-        <value>...םיריש שפחמ</value>
+        <value>...מחפש שירים</value>
     </string>
     <string>
         <id>317</id>
-        <value>החלצהב םלשוה יוקינ</value>
+        <value>ניקוי הושלם בהצלחה</value>
     </string>
     <string>
         <id>318</id>
-        <value>...םיריש הקנמ</value>
+        <value>...מנקה שירים</value>
     </string>
     <string>
         <id>319</id>
-        <value>םיריש יוקנב האיגש</value>
+        <value>שגיאה בנקוי שירים</value>
     </string>
     <string>
         <id>320</id>
-        <value>...םינמא יוקינ</value>
+        <value>...ניקוי אמנים</value>
     </string>
     <string>
         <id>321</id>
-        <value>םינמא יוקנב האיגש</value>
+        <value>שגיאה בנקוי אמנים</value>
     </string>
     <string>
         <id>322</id>
-        <value>...תונונגס יוקינ</value>
+        <value>...ניקוי סגנונות</value>
     </string>
     <string>
         <id>323</id>
-        <value>תונונגס יוקנב האיגש</value>
+        <value>שגיאה בנקוי סגנונות</value>
     </string>
     <string>
         <id>324</id>
-        <value>...תיביתנ יוקינ</value>
+        <value>...ניקוי נתיבית</value>
     </string>
     <string>
         <id>325</id>
-        <value>םיביתנ יוקנב האיגש</value>
+        <value>שגיאה בנקוי נתיבים</value>
     </string>
     <string>
         <id>326</id>
-        <value>...םימובלא יוקינ</value>
+        <value>...ניקוי אלבומים</value>
     </string>
     <string>
         <id>327</id>
-        <value>םימובלא יוקנב האיגש</value>
+        <value>שגיאה בנקוי אלבומים</value>
     </string>
     <string>
         <id>328</id>
-        <value>...םייוניש בתוכ</value>
+        <value>...כותב שינויים</value>
     </string>
     <string>
         <id>329</id>
-        <value>םייוניש תביתכב האיגש</value>
+        <value>שגיאה בכתיבת שינויים</value>
     </string>
     <string>
         <id>330</id>
-        <value>...ןמז תחקל היושע וז הלועפ</value>
+        <value>...פעולה זו עשויה לקחת זמן</value>
     </string>
     <string>
         <id>331</id>
-        <value>...םינותנ סחוד</value>
+        <value>...דוחס נתונים</value>
     </string>
     <string>
         <id>332</id>
-        <value>םינותנ תסיחדב האיגש</value>
+        <value>שגיאה בדחיסת נתונים</value>
     </string>
     <string>
         <id>333</id>
-        <value>?סייבהטדה תא תוקנל ךנוצרב םאה</value>
+        <value>?האם ברצונך לנקות את הדטהבייס</value>
     </string>
     <string>
         <id>334</id>
-        <value>סייבהטדה תא קהנ</value>
+        <value>נהק את הדטהבייס</value>
     </string>
     <string>
         <id>335</id>
-        <value>לחתה</value>
+        <value>התחל</value>
     </string>
     <string>
         <id>336</id>
-        <value>םימיירפ בצק רדס</value>
+        <value>סדר קצב פריימים</value>
     </string>
     <string>
         <id>337</id>
-        <value>וידוא טלפ</value>
+        <value>פלט אודיו</value>
     </string>
     <string>
         <id>338</id>
-        <value>יגולנא</value>
+        <value>אנלוגי</value>
     </string>
     <string>
         <id>339</id>
-        <value>ילאטיגיד</value>
+        <value>דיגיטאלי</value>
     </string>
     <string>
         <id>340</id>
-        <value>םינוש םינמא</value>
+        <value>אמנים שונים</value>
     </string>
     <string>
         <id>341</id>
-        <value>DVD ןגנ</value>
+        <value>DVD נגן</value>
     </string>
     <string>
         <id>342</id>
-        <value>םיטרס</value>
+        <value>סרטים</value>
     </string>
     <string>
         <id>343</id>
-        <value>םימיירפ בצק רדס</value>
+        <value>סדר קצב פריימים</value>
     </string>
     <string>
         <id>344</id>
-        <value>םינקחש</value>
+        <value>שחקנים</value>
     </string>
     <string>
         <id>345</id>
-        <value>הנש</value>
+        <value>שנה</value>
     </string>
     <string>
         <id>346</id>
-        <value>ץבק</value>
+        <value>קבץ</value>
     </string>
     <string>
         <id>347</id>
-        <value>שורפ</value>
+        <value>פרוש</value>
     </string>
     <string>
         <id>348</id>
-        <value>תוירפס הנבמ חטש</value>
+        <value>שטח מבנה ספריות</value>
     </string>
     <string>
         <id>349</id>
-        <value>Default.xbe קר הארה</value>
+        <value>Default.xbe הראה רק</value>
     </string>
     <string>
         <id>350</id>
-        <value>תיונכות</value>
+        <value>תוכנוית</value>
     </string>
     <string>
         <id>351</id>
-        <value>הבכ</value>
+        <value>כבה</value>
     </string>
     <string>
         <id>352</id>
-        <value>םעמע</value>
+        <value>עמעם</value>
     </string>
     <string>
         <id>353</id>
-        <value>רוחש ךסמ</value>
+        <value>מסך שחור</value>
     </string>
     <string>
         <id>354</id>
-        <value>סקירטאמ</value>
+        <value>מאטריקס</value>
     </string>
     <string>
         <id>355</id>
-        <value>ךסמ רמושל הנתמה</value>
+        <value>המתנה לשומר מסך</value>
     </string>
     <string>
         <id>356</id>
-        <value>ךסמ רמוש בצמ</value>
+        <value>מצב שומר מסך</value>
     </string>
     <string>
         <id>357</id>
-        <value>יוביכ ינפל הנתמהל ןמז</value>
+        <value>זמן להמתנה לפני כיבוי</value>
     </string>
     <string>
         <id>358</id>
-        <value>םימובלאה לכ</value>
+        <value>כל האלבומים</value>
     </string>
     <string>
         <id>359</id>
-        <value>םינורחא םימובלא</value>
+        <value>אלבומים אחרונים</value>
     </string>
     <string>
         <id>360</id>
-        <value>ךסמ רמוש</value>
+        <value>שומר מסך</value>
     </string>
     <string>
         <id>361</id>
-        <value>R. SlideShow</value>
+        <value>מצגת רקורס.</value>
     </string>
     <string>
         <id>362</id>
-        <value>ךסמ םועמע יזוחא (%)</value>
+        <value>אחוזי עמעום מסך (%)</value>
     </string>
     <string>
         <id>363</id>
-        <value>ץבוק : יפל רדס</value>
+        <value>סדר לפי : קובץ</value>
     </string>
     <string>
         <id>364</id>
-        <value>- ךמות רביסר AC3</value>
+        <value>- רסיבר תומך AC3</value>
     </string>
     <string>
         <id>365</id>
-        <value>םש : יפל רדס</value>
+        <value>סדר לפי : שם</value>
     </string>
     <string>
         <id>366</id>
-        <value>הנש : יפל רדס</value>
+        <value>סדר לפי : שנה</value>
     </string>
     <string>
         <id>367</id>
-        <value>גניטייר : יפל רדס</value>
+        <value>סדר לפי : רייטינג</value>
     </string>
     <string>
         <id>368</id>
@@ -1181,125 +1181,155 @@
     </string>
     <string>
         <id>369</id>
-        <value>תרתוכ</value>
+        <value>כותרת</value>
     </string>
     <string>
         <id>370</id>
-        <value>םימער</value>
+        <value>רעמים</value>
     </string>
     <string>
         <id>371</id>
-        <value>תיקלח</value>
+        <value>חלקית</value>
     </string>
     <string>
         <id>372</id>
-        <value>רקיעב</value>
+        <value>בעיקר</value>
     </string>
     <string>
         <id>373</id>
-        <value>ריהב</value>
+        <value>בהיר</value>
     </string>
     <string>
         <id>374</id>
-        <value>ןנועמ</value>
+        <value>מעונן</value>
     </string>
     <string>
         <id>375</id>
-        <value>גלש</value>
+        <value>שלג</value>
     </string>
     <string>
         <id>376</id>
-        <value>םשג</value>
+        <value>גשם</value>
     </string>
     <string>
         <id>377</id>
-        <value>לק</value>
+        <value>קל</value>
     </string>
     <string>
         <id>378</id>
-        <value>AM</value>
+        <value>בוקר</value>
     </string>
     <string>
         <id>379</id>
-        <value>PM</value>
+        <value>ערב</value>
     </string>
     <string>
         <id>380</id>
-        <value>םירטממ</value>
+        <value>ממטרים</value>
     </string>
     <string>
         <id>381</id>
-        <value>םיטעמ</value>
+        <value>מעטים</value>
     </string>
     <string>
         <id>382</id>
-        <value>ןיגוריסל</value>
+        <value>לסירוגין</value>
     </string>
     <string>
         <id>383</id>
-        <value>חור</value>
+        <value>רוח</value>
     </string>
     <string>
         <id>384</id>
-        <value>הקזח</value>
+        <value>חזקה</value>
     </string>
     <string>
         <id>385</id>
-        <value>הלילק</value>
+        <value>קלילה</value>
     </string>
-    <string><id>386</id><value>ריהב</value></string>
-    <string><id>387</id><value>םיננע</value></string>
-    <string><id>388</id><value>N/A</value></string>
-    <string><id>389</id><value>N/A</value></string>
-    <string><id>390</id><value>N/A</value></string>
-    <string><id>391</id><value>N/A</value></string>
-    <string><id>392</id><value>N/A</value></string>
-    <string><id>393</id><value>N/A</value></string>
-    <string><id>394</id><value>N/A</value></string>
-    <string><id>395</id><value>N/A</value></string>
+    <string>
+        <id>386</id>
+        <value>בהיר</value>
+    </string>
+    <string>
+        <id>387</id>
+        <value>עננים</value>
+    </string>
+    <string>
+        <id>388</id>
+        <value>N/A</value>
+    </string>
+    <string>
+        <id>389</id>
+        <value>N/A</value>
+    </string>
+    <string>
+        <id>390</id>
+        <value>N/A</value>
+    </string>
+    <string>
+        <id>391</id>
+        <value>N/A</value>
+    </string>
+    <string>
+        <id>392</id>
+        <value>N/A</value>
+    </string>
+    <string>
+        <id>393</id>
+        <value>N/A</value>
+    </string>
+    <string>
+        <id>394</id>
+        <value>N/A</value>
+    </string>
+    <string>
+        <id>395</id>
+        <value>N/A</value>
+    </string>
     <string>
         <id>396</id>
-        <value>םוקימ רחב</value>
+        <value>בחר מיקום</value>
     </string>
     <string>
         <id>397</id>
-        <value>ןונער ינמז</value>
+        <value>זמני רענון</value>
     </string>
     <string>
         <id>398</id>
-        <value>הרוטרפמט תודיחי</value>
+        <value>יחידות טמפרטורה</value>
     </string>
     <string>
         <id>399</id>
-        <value>תוריהמ תודיחי</value>
+        <value>יחידות מהירות</value>
     </string>
     <string>
         <id>400</id>
-        <value>ריווא גזמ</value>
+        <value>מזג אוויר</value>
     </string>
     <string>
         <id>401</id>
-        <value>הרוטרפמט</value>
+        <value>טמפרטורה</value>
     </string>
     <string>
         <id>402</id>
-        <value>וליאכ שיגרמ</value>
+        <value>מרגיש כאילו</value>
     </string>
     <string>
         <id>403</id>
-        <value>UV תמר</value>
+        <value>UV רמת</value>
     </string>
     <string>
         <id>404</id>
-        <value>חור</value>
+        <value>רוח</value>
     </string>
     <string>
         <id>405</id>
-        <value>יודיא תדוקנ</value>
+        <value>נקודת אידוי</value>
     </string>
     <string>
         <id>406</id>
-        <value>תוחל</value>
+        <value>לחות</value>
     </string>
     <string>
         <id>407</id>
@@ -1311,127 +1341,127 @@
     </string>
     <string>
         <id>410</id>
-        <value>Weather.com ל שגינ</value>
+        <value>Weather.com ניגש ל</value>
     </string>
     <string>
         <id>411</id>
-        <value>:רובע ריוא גזמ ןעוט</value>
+        <value>:טוען מזג אויר עבור</value>
     </string>
     <string>
         <id>412</id>
-        <value>ריוא גזמ תניעטב האיגש</value>
+        <value>שגיאה בטעינת מזג אויר</value>
     </string>
     <string>
         <id>413</id>
-        <value>ינדי</value>
+        <value>ידני</value>
     </string>
     <string>
         <id>414</id>
-        <value>הז םובלא רובע תורוקיב ןיא</value>
+        <value>אין ביקורות עבור אלבום זה</value>
     </string>
     <string>
         <id>415</id>
-        <value>...תוימלצ דירומ</value>
+        <value>...מוריד צלמיות</value>
     </string>
     <string>
         <id>416</id>
-        <value>ןימז אל</value>
+        <value>לא זמין</value>
     </string>
     <string>
         <id>417</id>
-        <value>תולודג תוימלצ : הגוצת</value>
+        <value>תצוגה : צלמיות גדולות</value>
     </string>
     <string>
         <id>418</id>
-        <value>תונונגס/ילש םיטרסה</value>
+        <value>הסרטים שלי/סגנונות</value>
     </string>
     <string>
         <id>419</id>
-        <value>םינקחש/ילש םיטרסה</value>
+        <value>הסרטים שלי/שחקנים</value>
     </string>
     <string>
         <id>420</id>
-        <value>םינש/ילש םיטרסה</value>
+        <value>הסרטים שלי/שנים</value>
     </string>
     <string>
         <id>421</id>
-        <value>תורתוכ/ילש םיטרסה</value>
+        <value>הסרטים שלי/כותרות</value>
     </string>
     <string>
         <id>422</id>
-        <value>םובלא עדימ קחמ</value>
+        <value>מחק מידע אלבום</value>
     </string>
     <string>
         <id>423</id>
-        <value>עדימ CDDB קחמ</value>
+        <value>מידע CDDB מחק</value>
     </string>
     <string>
         <id>424</id>
-        <value>רחב</value>
+        <value>בחר</value>
     </string>
     <string>
         <id>425</id>
-        <value>.םובלא עדימ אצמנ אל</value>
+        <value>.לא נמצא מידע אלבום</value>
     </string>
     <string>
         <id>426</id>
-        <value>.םובלא עדימ אצמנ אל</value>
+        <value>.לא נמצא מידע אלבום</value>
     </string>
     <string>
         <id>427</id>
-        <value>:קסיד</value>
+        <value>:דיסק</value>
     </string>
     <string>
         <id>428</id>
-        <value>ןוכנ קסיד סנכה</value>
+        <value>הכנס דיסק נכון</value>
     </string>
     <string>
         <id>429</id>
-        <value>אבה קסידה תא סנכה אנא</value>
+        <value>אנא הכנס את הדיסק הבא</value>
     </string>
     <string>
         <id>430</id>
-        <value>DVD# : יפל ןיימ</value>
+        <value>DVD# : מיין לפי</value>
     </string>
     <string>
         <id>431</id>
-        <value>ןומטמ אלל</value>
+        <value>ללא מטמון</value>
     </string>
     <string>
         <id>432</id>
-        <value>סייבהטדהמ טרס קחמ</value>
+        <value>מחק סרט מהדטהבייס</value>
     </string>
     <string>
         <id>433</id>
-        <value>קוחמל ךנוצרבש חוטב התא םאה</value>
+        <value>האם אתה בטוח שברצונך למחוק</value>
     </string>
     <string>
         <id>434</id>
-        <value>?טרסה תא</value>
+        <value>?את הסרט</value>
     </string>
     <string>
         <id>435</id>
-        <value>העוצר</value>
+        <value>רצועה</value>
     </string>
     <string>
         <id>436</id>
-        <value>:הנש</value>
+        <value>:שנה</value>
     </string>
     <string>
         <id>437</id>
-        <value>:ךרוא</value>
+        <value>:אורך</value>
     </string>
     <string>
         <id>438</id>
-        <value>ץבוק חתופ</value>
+        <value>פותח קובץ</value>
     </string>
     <string>
         <id>439</id>
-        <value>ןומטמ</value>
+        <value>מטמון</value>
     </string>
     <string>
         <id>440</id>
-        <value>חישק ןנוכ</value>
+        <value>כונן קשיח</value>
     </string>
     <string>
         <id>441</id>
@@ -1443,15 +1473,15 @@
     </string>
     <string>
         <id>443</id>
-        <value>טנרטניא</value>
+        <value>אינטרנט</value>
     </string>
     <string>
         <id>444</id>
-        <value>ואדיו</value>
+        <value>וידאו</value>
     </string>
     <string>
         <id>445</id>
-        <value>וידוא</value>
+        <value>אודיו</value>
     </string>
     <string>
         <id>446</id>
@@ -1459,7 +1489,7 @@
     </string>
     <string>
         <id>447</id>
-        <value>תיטאמוטוא ןגנ</value>
+        <value>נגן אוטומאטית</value>
     </string>
     <string>
         <id>448</id>
@@ -1467,43 +1497,43 @@
     </string>
     <string>
         <id>449</id>
-        <value>ליעפ</value>
+        <value>פעיל</value>
     </string>
     <string>
         <id>450</id>
-        <value>תודומע</value>
+        <value>עמודות</value>
     </string>
     <string>
-    	<id>4501</id>
-    	<value>LCD גוס</value>
+        <id>4501</id>
+        <value>LCD סוג</value>
     </string>
     <string>
         <id>451</id>
-        <value>1: תבותכ תרוש</value>
+        <value>1: שורת כתובת</value>
     </string>
     <string>
         <id>452</id>
-        <value>2: תבותכ תרוש</value>
+        <value>2: שורת כתובת</value>
     </string>
     <string>
         <id>453</id>
-        <value>3: תבותכ תרוש</value>
+        <value>3: שורת כתובת</value>
     </string>
     <string>
         <id>454</id>
-        <value>4: תבותכ תרוש</value>
+        <value>4: שורת כתובת</value>
     </string>
     <string>
         <id>455</id>
-        <value>:תורוש</value>
+        <value>:שורות</value>
     </string>
     <string>
         <id>456</id>
-        <value>:בצמ</value>
+        <value>:מצב</value>
     </string>
     <string>
         <id>457</id>
-        <value>הגוצת ףלחה</value>
+        <value>החלף תצוגה</value>
     </string>
     <string>
         <id>458</id>
@@ -1511,143 +1541,143 @@
     </string>
     <string>
         <id>459</id>
-        <value>תויבותכ</value>
+        <value>כתוביות</value>
     </string>
     <string>
         <id>460</id>
-        <value>םרוז וידוא</value>
+        <value>אודיו זורם</value>
     </string>
     <string>
         <id>461</id>
-        <value>]ליעפ[</value>
+        <value>]פעיל[</value>
     </string>
     <string>
         <id>462</id>
-        <value>תיבותכ</value>
+        <value>כתובית</value>
     </string>
     <string>
         <id>463</id>
-        <value>תירוחא הרואת</value>
+        <value>תאורה אחורית</value>
     </string>
     <string>
         <id>464</id>
-        <value>תוריהב</value>
+        <value>בהירות</value>
     </string>
     <string>
         <id>465</id>
-        <value>תוידוגינ</value>
+        <value>ניגודיות</value>
     </string>
     <string>
         <id>466</id>
-        <value>המאג</value>
+        <value>גאמה</value>
     </string>
     <string>
         <id>467</id>
-        <value>גוס</value>
+        <value>סוג</value>
     </string>
     <string>
         <id>468</id>
-        <value>טירפתה םוקימ תא תונשל ידכ ןמסה תא זזה</value>
+        <value>הזז את הסמן כדי לשנות את מיקום התפריט</value>
     </string>
     <string>
         <id>469</id>
-        <value>טירפת םוקימ</value>
+        <value>מיקום תפריט</value>
     </string>
     <string>
         <id>470</id>
         <value>תודות</value>
     </string>
-   <string>
-      <id>471</id>
-      <value>פי'צדומ</value>
+    <string>
+        <id>471</id>
+        <value>מודצ&apos;יפ</value>
     </string>
     <string>
-      <id>472</id>
-      <value>טירפת תמלעהל ןמז</value>
+        <id>472</id>
+        <value>זמן להעלמת תפריט</value>
     </string>
     <string>
-      <id>473</id>
-      <value>ההובג תוכיאב שדחמ המיגד</value>
+        <id>473</id>
+        <value>דגימה מחדש באיכות גבוהה</value>
     </string>
     <string>
-      <id>474</id>
-      <value>יובכ</value>
+        <id>474</id>
+        <value>כבוי</value>
     </string>
     <string>
-      <id>475</id>
-      <value>דבלב הקיזומ</value>
+        <id>475</id>
+        <value>מוזיקה בלבד</value>
     </string>
     <string>
-      <id>476</id>
-      <value>ואדיוו הקיזומ</value>
+        <id>476</id>
+        <value>מוזיקה ווידאו</value>
     </string>
     <string>
-    <id>477</id>
-      <value>העמשה תמישר ןועטל לוכי אל</value>
+        <id>477</id>
+        <value>לא יכול לטעון רשימת השמעה</value>
     </string>
     <string>
-      <id>478</id>
-      <value>טירפת</value>
+        <id>478</id>
+        <value>תפריט</value>
     </string>
     <string>
-      <id>479</id>
-      <value>הפשו ןיקס</value>
+        <id>479</id>
+        <value>סקין ושפה</value>
     </string>
     <string>
-      <id>480</id>
-      <value>שמתשמ קשממ</value>
+        <id>480</id>
+        <value>ממשק משתמש</value>
     </string>
     <string>
-      <id>481</id>
-      <value>וידוא תויורשפא</value>
+        <id>481</id>
+        <value>אפשרויות אודיו</value>
     </string>
     <string>
-      <id>482</id>
-      <value>תודוא XBMC</value>
+        <id>482</id>
+        <value>אודות XBMC</value>
     </string>
     <string>
-      <id>483</id>
-      <value>םובלא</value>
+        <id>483</id>
+        <value>אלבום</value>
     </string>
     <string>
-      <id>484</id>
-      <value>ןמא</value>
+        <id>484</id>
+        <value>אמן</value>
     </string>
     <string>
-      <id>485</id>
-      <value>םובלא קחמ</value>
+        <id>485</id>
+        <value>מחק אלבום</value>
     </string>
     <string>
-      <id>486</id>
-      <value>רוזח</value>
+        <id>486</id>
+        <value>חזור</value>
     </string>
     <string>
-      <id>487</id>
-      <value>תחא םעפ רוזח</value>
+        <id>487</id>
+        <value>חזור פעם אחת</value>
     </string>
     <string>
-      <id>488</id>
-      <value>הירפסל העמשה תמישר רוזח</value>
+        <id>488</id>
+        <value>חזור רשימת השמעה לספריה</value>
     </string>
     <string>
-      <id>489</id>
-      <value>םירישב העמשה תמישרב שמתשה</value>
+        <id>489</id>
+        <value>השתמש ברשימת השמעה בשירים</value>
     </string>
     <string>
-      <id>490</id>
-      <value>םירישב תוימלצו המישר לש תיטאמוטוא הפלחה</value>
+        <id>490</id>
+        <value>החלפה אוטומאטית של רשימה וצלמיות בשירים</value>
     </string>
     <string>
-      <id>491</id>
-      <value>- תולודג תוימלצב שמתשה</value>
+        <id>491</id>
+        <value>- השתמש בצלמיות גדולות</value>
     </string>
     <string>
-      <id>492</id>
-      <value>תויבותכ לדגה</value>
+        <id>492</id>
+        <value>הגדל כתוביות</value>
     </string>
     <string>
         <id>493</id>
-        <value>תומדקתמ תויורשפא</value>
+        <value>אפשרויות מתקדמות</value>
     </string>
     <string>
         <id>494</id>
@@ -1655,250 +1685,564 @@
     </string>
     <string>
         <id>495</id>
-        <value>הגוצת תיצולוצרל ואדיו שדחמ םוגד</value>
+        <value>דגום מחדש וידאו לרצולוצית תצוגה</value>
     </string>
     <string>
         <id>496</id>
-        <value>היצרבילק</value>
+        <value>קליברציה</value>
     </string>
     <string>
         <id>497</id>
-        <value>הידמ תופסות רתסה</value>
+        <value>הסתר תוספות מדיה</value>
     </string>
     <string>
         <id>498</id>
-        <value>גוס : יפל ןיימ</value>
+        <value>מיין לפי : סוג</value>
     </string>
     <string>
         <id>499</id>
-        <value>ל וביח ןיא www.allmusic.com</value>
+        <value>אין חיבו ל www.allmusic.com</value>
     </string>
     <string>
         <id>500</id>
-        <value>הלשכנ םובלא יטרפ תדרוה</value>
+        <value>הורדת פרטי אלבום נכשלה</value>
     </string>
     <string>
         <id>501</id>
-        <value>םובלא תומש שפחמ</value>
+        <value>מחפש שמות אלבום</value>
     </string>
     <string>
         <id>502</id>
-        <value>חתפ</value>
+        <value>פתח</value>
     </string>
     <string>
         <id>503</id>
-        <value>קוסע</value>
+        <value>עסוק</value>
     </string>
     <string>
         <id>504</id>
-        <value>קיר</value>
+        <value>ריק</value>
     </string>
     <string>
         <id>505</id>
-        <value>םיצבקהמ הידמ יטרפ ןעוט</value>
+        <value>טוען פרטי מדיה מהקבצים</value>
     </string>
     <string>
-	<id>506</id>
-	<value>רואיתל תוירפס תומשב שמתשה</value>
-    </string>
-    <string> 	 
-         <id>507</id> 	 
-         <value>שומיש  :  יפל ןיימ</value> 	 
+        <id>506</id>
+        <value>השתמש בשמות ספריות לתיאור</value>
     </string>
     <string>
-    	<id>508</id>
-    	<value>הקירסו םירוציקב שמתשת לא</value>
+        <id>507</id>
+        <value>מיין לפי : שימוש</value>
     </string>
-
-    <string>	
-	<id>600</id>
-	<value>קסיד קתעה</value>
-    </string>
-	<string>
-		<id>601</id>
-		<value>ינוניב</value>
-	</string>
-	<string>
-		<id>602</id>
-		<value>ליגר</value>
-	</string>
-	<string>
-		<id>603</id>
-		<value>ינוציק</value>
-	</string>
-	<string>
-		<id>604</id>
-		<value>עובק םיטיב בצק</value>
-	</string>
-	<string>
-		<id>605</id>
-		<value>...קיתעמ</value>
-	</string>
-	<string>
-		<id>606</id>
-		<value>העוצר רפסמ:</value>
-	</string>
-	<string>
-		<id>607</id>
-		<value>לא:</value>
-	</string>
-	<string>
-		<id>608</id>
-		<value>העוצר וא קסיד קיתעהל לוכי אל</value>
-	</string>
-	<string>
-		<id>609</id>
-		<value>CDDARipPath is not set in XboxMediaCenter.xml</value>
-	</string>
-	<string>
-		<id>620</id>
-		<value>קסיד תקתעה</value>
-	</string>
-	<string>
-		<id>621</id>
-		<value>דדוקמ</value>
-	</string>
-	<string>
-		<id>622</id>
-		<value>תוכיא</value>
-	</string>
-	<string>
-		<id>623</id>
-		<value>םיטיב בצק</value>
-	</string>
-	<string>
-		<id>624</id>
-		<value>העוצר רפסמ לולכ</value>
-	</string>
-	<string>
-		<id>625</id>
-		<value>לש םירישה לכ</value>
-	</string>
-	
-		<string>
-			<id>629</id>
-			<value>הגוצת בצמ</value>
-		</string>
-		<string>
-			<id>630</id>
-			<value>ליגר</value>
-		</string>
-		<string>
-			<id>631</id>
-			<value>םוז</value>
-		</string>
-		<string>
-			<id>632</id>
-			<value>חתמ 4:3</value>
-		</string>
-		<string>
-			<id>633</id>
-			<value>חתמ 14:9</value>
-		</string>
-		<string>
-			<id>634</id>
-			<value>חתמ 16:9</value>
-		</string>
-		<string>
-			<id>635</id>
-			<value>ירוקמ לדוג</value>
-		</string>
-		<string>
-			<id>636</id>
-			<value>ידוחי</value>
-		</string>
-		<string>
-			<id>700</id>
-			<value>סייבהטד הקנמ</value>
-		</string>
-		<string>
-			<id>701</id>
-			<value>סייבהטדהמ םינשי םיריש קחומ</value>
-		</string>
-		<string>
-			<id>702</id>
-			<value>רבעב הקרסנ הירפסה.</value>
-		</string>
-		<string>
-			<id>703</id>
-			<value>שדחמ הקירסל ןכ ץחל.</value>
-		</string>
-		<string>
-			<id>704</id>
-			<value>דבלב םישדח תפסוהל אל לחץ.</value>
-		</string>
-		
-
     <string>
-	<id>998</id>
-	<value>XLink KAI</value>
+        <id>508</id>
+        <value>אל תשתמש בקיצורים וסריקה</value>
+    </string>
+    <string>
+        <id>600</id>
+        <value>העתק דיסק</value>
+    </string>
+    <string>
+        <id>601</id>
+        <value>בינוני</value>
+    </string>
+    <string>
+        <id>602</id>
+        <value>רגיל</value>
+    </string>
+    <string>
+        <id>603</id>
+        <value>קיצוני</value>
+    </string>
+    <string>
+        <id>604</id>
+        <value>קצב ביטים קבוע</value>
+    </string>
+    <string>
+        <id>605</id>
+        <value>...מעתיק</value>
+    </string>
+    <string>
+        <id>606</id>
+        <value>מספר רצועה:</value>
+    </string>
+    <string>
+        <id>607</id>
+        <value>אל:</value>
+    </string>
+    <string>
+        <id>608</id>
+        <value>לא יכול להעתיק דיסק או רצועה</value>
+    </string>
+    <string>
+        <id>609</id>
+        <value>CDDARipPath is not set in XboxMediaCenter.xml</value>
+    </string>
+    <string>
+        <id>620</id>
+        <value>העתקת דיסק</value>
+    </string>
+    <string>
+        <id>621</id>
+        <value>מקודד</value>
+    </string>
+    <string>
+        <id>622</id>
+        <value>איכות</value>
+    </string>
+    <string>
+        <id>623</id>
+        <value>קצב ביטים</value>
+    </string>
+    <string>
+        <id>624</id>
+        <value>כלול מספר רצועה</value>
+    </string>
+    <string>
+        <id>625</id>
+        <value>כל השירים של</value>
+    </string>
+    <string>
+        <id>629</id>
+        <value>מצב תצוגה</value>
+    </string>
+    <string>
+        <id>630</id>
+        <value>רגיל</value>
+    </string>
+    <string>
+        <id>631</id>
+        <value>זום</value>
+    </string>
+    <string>
+        <id>632</id>
+        <value>4:3 מתח</value>
+    </string>
+    <string>
+        <id>633</id>
+        <value>14:9 מתח</value>
+    </string>
+    <string>
+        <id>634</id>
+        <value>16:9 מתח</value>
+    </string>
+    <string>
+        <id>635</id>
+        <value>גודל מקורי</value>
+    </string>
+    <string>
+        <id>636</id>
+        <value>יחודי</value>
+    </string>
+    <string>
+        <id>700</id>
+        <value>מנקה דטהבייס</value>
+    </string>
+    <string>
+        <id>701</id>
+        <value>מוחק שירים ישנים מהדטהבייס</value>
+    </string>
+    <string>
+        <id>702</id>
+        <value>הספריה נסרקה בעבר.</value>
+    </string>
+    <string>
+        <id>703</id>
+        <value>לחץ כן לסריקה מחדש.</value>
+    </string>
+    <string>
+        <id>704</id>
+		<value>לחץ לא להוסיף שירים חדשים.</value>
+	</string>
+	<string>
+		<id>705</id>
+		<value>רשת</value>
+	</string>
+	<string>
+		<id>706</id>
+		<value>שרת HTTP פרוקסי</value>
+	</string>
+	<string>
+		<id>707</id>
+		<value>פורט HTTP פרוקסי</value>
+	</string>
+	<string>
+		<id>708</id>
+		<value>הפעל HTTP Proxy</value>
+	</string>
+	<string>
+		<id>709</id>
+		<value>משתמש XLink Kai</value>
+	</string>
+	<string>
+		<id>710</id>
+		<value>סיסמא XLink Kai</value>
+	</string>
+	<string>
+		<id>711</id>
+		<value>Internet Protocol (IP)</value>
+	</string>
+	<string>
+		<id>712</id>
+		<value>מספר פורט שגוי. ערך חייב להיות בין 1 ל 65535.</value>
+	</string>
+	<string>
+		<id>713</id>
+		<value>HTTP פרוקסי</value>
+	</string>	
+	<string>
+		<id>714</id>
+		<value>XLink Kai</value>
+	</string>	
+	<string>
+		<id>715</id>
+		<value>השמת כתובת</value>
+	</string>	
+	<string>
+		<id>716</id>
+		<value>אוטומטית )DHCP(</value>
+	</string>	
+	<string>
+		<id>717</id>
+		<value>ידנית )סטטית(</value>
+	</string>	
+	<string>
+		<id>718</id>
+		<value>ברירת מחדל )Dashboard(</value>
+	</string>	
+	<string>
+		<id>719</id>
+		<value>כתובת IP</value>
+	</string>	
+	<string>
+		<id>720</id>
+		<value>Netmask</value>
+	</string>	
+	<string>
+		<id>721</id>
+		<value>Default Gateway</value>
+	</string>	
+	<string>
+		<id>722</id>
+		<value>שרת DNS</value>
+	</string>
+	<string>
+		<id>723</id>
+		<value>שמור ואתחל</value>
+	</string>
+	<string>
+		<id>724</id>
+		<value>כתובת שגוייה. הכתובת חייבת להיות במבנה AAA.BBB.CCC.DDD</value>
+	</string>
+	<string>
+		<id>725</id>
+		<value>עם מספרים בין 0 ל- 255.</value>
+	</string>
+	<string>
+		<id>726</id>
+		<value>שינויים לא נשמרו. להמשיך בלי לשמור?</value>
+	</string>
+	<string>
+		<id>727</id>
+		<value>שרת Web</value>
+	</string>	
+	<string>
+		<id>728</id>
+		<value>שרת FTP</value>
+	</string>	
+	<string>
+		<id>729</id>
+		<value>שעון אינטרנט</value>
+	</string>	
+	<string>
+		<id>730</id>
+		<value>פורט שרת Web</value>
+	</string>	
+	<string>
+		<id>731</id>
+		<value>כתובת שרת זמן</value>
+	</string>
+	<string>
+		<id>732</id>
+		<value>שמור והפעל</value>
+	</string>
+	<string>
+		<id>733</id>
+		<value>סיסמא לשרת Web</value>
+	</string>
+	<string>
+		<id>734</id>
+		<value>ללא סיסמא</value>
+    </string>
+    <string>
+		<id>735</id>
+		<value>סימנים:</value>
+	</string>	
+	<string>
+        <id>998</id>
+		<value>XLink Kai</value>
     </string>
     <string>
         <id>999</id>
-        <value>תשרב םיקחשמ</value>
-    </string> 
- 
-    <string><id>10000</id><value>תיבה ףד</value></string>
-    <string><id>10001</id><value>ילש תוינכתה</value></string>
-    <string><id>10002</id><value>ילש תונומתה</value></string>
-    <string><id>10003</id><value>ילש םיצבקה</value></string>
-    <string><id>10004</id><value>תורדגה</value></string>
-    <string><id>10005</id><value>ילש הקיזומה</value></string>
-    <string><id>10006</id><value>ילש ואדיוה</value></string>
-    <string><id>10007</id><value>תכרעמ עדימ</value></string>
-    <string><id>10009</id><value>Settings->Screen</value></string>
-    <string><id>10010</id><value>Settings->Screen->UI Calibration</value></string>
-    <string><id>10011</id><value>Settings->Screen->Screen Calibration</value></string>
-    <string><id>10012</id><value>Settings->SlideShow</value></string>
-    <string><id>10013</id><value>Settings->Screen->Filters</value></string>
-    <string><id>10014</id><value>Settings->Music</value></string>
-    <string><id>10015</id><value>Settings->Screen->Subtitles</value></string>
-    <string><id>10016</id><value>Settings->Screen->Screensaver</value></string>
-    <string><id>10017</id><value>Settings->Weather</value></string>
-    <string><id>10020</id><value>Settings->Scripts</value></string>
-    <string><id>10021</id><value>My Videos/genre</value></string>
-    <string><id>10022</id><value>My Videos/actor</value></string>
-    <string><id>10023</id><value>My Videos/year</value></string>
-    <string><id>10024</id><value>Settings->Programs</value></string>
-    <string><id>10025</id><value>My Videos/title</value></string>
-    <string><id>10026</id><value>Settings->General->Cache</value></string>
-    <string><id>10027</id><value>Settings->General->Autorun</value></string>
-    <string><id>10028</id><value>My Videos/playlist</value></string>
-    <string><id>10029</id><value>Settings->General->LCD</value></string>
-    <string><id>10100</id><value>Yes/no dialog</value></string>
-    <string><id>10101</id><value>Progress dialog</value></string>
-    <string><id>10500</id><value>My Music/playlist</value></string>
-    <string><id>10501</id><value>My Music/files</value></string>
-    <string><id>10502</id><value>My Music/albums</value></string>
-    <string><id>10503</id><value>My Music/artists</value></string>
-    <string><id>10504</id><value>My Music/genres</value></string>
-    <string><id>10505</id><value>My Music/top100</value></string>
-    <string><id>11000</id><value>תדלקמ</value></string>
-    <string><id>12000</id><value>Select dialog</value></string>
-    <string><id>12001</id><value>My Music/info</value></string>
-    <string><id>12002</id><value>Dialog OK</value></string>
-    <string><id>12003</id><value>My Videos/Info</value></string>
-    <string><id>12004</id><value>My Scripts/Info</value></string>
-    <string><id>12005</id><value>אלמ ךסמב ואדיו</value></string>
-    <string><id>12006</id><value>וידוא תגוצת</value></string>
-    <string><id>12007</id><value>My Picture/slideshow</value></string>
-    <string><id>12008</id><value>Filestacking dialog</value></string>
-    <string><id>12600</id><value>ילש ריואה גזמ</value></string>
-    <string><id>12900</id><value>ךסמ רמוש</value></string>
-    <string><id>12901</id><value>אלמ ךסמב טירפת</value></string>
-  <string><id>13000</id><value>תכרעמ</value></string>
-  <string><id>13001</id><value>ידיימ קסידרה בוביס</value></string>
-  <string><id>13002</id><value>דבלב ואדיו</value></string>
-  <string><id>13003</id><value>- הייהשה</value></string>
-  <string><id>13004</id><value>- ילאמינימ ץבוק ךרוא</value></string>
-  <string><id>13100</id><value>םיבוהבה רטליפ</value></string>
-  <string><id>13200</id><value>םיליפורפ</value></string>
-  <string><id>13201</id><value>ליפורפ קוחמל '%s'?</value></string>
-  <string><id>13202</id><value>יכחונ ליפורפ רומש...</value></string>
-  <string><id>13203</id><value>ליפורפה '%s' החלצהב ןעטנ</value></string>
-  <string><id>13300</id><value>ררואמ תוריהמ:</value></string>
-  <string><id>13301</id><value>תיטאמוטא הרוטרפמט תרקב</value></string>
-  <string><id>13302</id><value>ררואמ תוריהמ תרקב</value></string>
-  <string><id>13303</id><value>בתכ:</value></string>
-  <string><id>13304</id><value>םיוות ךופה:</value></string>
+        <value>משחקים ברשת</value>
+    </string>
+    <string>
+        <id>10000</id>
+        <value>דף הבית</value>
+    </string>
+    <string>
+        <id>10001</id>
+        <value>התכניות שלי</value>
+    </string>
+    <string>
+        <id>10002</id>
+        <value>התמונות שלי</value>
+    </string>
+    <string>
+        <id>10003</id>
+        <value>הקבצים שלי</value>
+    </string>
+    <string>
+        <id>10004</id>
+        <value>הגדרות</value>
+    </string>
+    <string>
+        <id>10005</id>
+        <value>המוזיקה שלי</value>
+    </string>
+    <string>
+        <id>10006</id>
+        <value>הוידאו שלי</value>
+    </string>
+    <string>
+        <id>10007</id>
+        <value>מידע מערכת</value>
+	</string>
+	<string>
+		<id>10008</id>
+		<value>הגדרות -&gt; כליי</value>
+    </string>
+    <string>
+        <id>10009</id>
+        <value>הגדרות -&gt; מסך</value>
+    </string>
+    <string>
+        <id>10010</id>
+        <value>הגדרות -&gt; מסך -&gt; כיוונון</value>
+    </string>
+    <string>
+        <id>10011</id>
+        <value>הגדרות -&gt; מסך -&gt; כיוונון</value>
+    </string>
+    <string>
+        <id>10012</id>
+        <value>הגדרות -&gt; מצגת</value>
+    </string>
+    <string>
+        <id>10013</id>
+        <value>הגדרות -&gt; מסך -&gt; פילטרים</value>
+    </string>
+    <string>
+        <id>10014</id>
+        <value>הגדרות -&gt; מוזיקה</value>
+    </string>
+    <string>
+        <id>10015</id>
+        <value>הגדרות -&gt; מסך -&gt; כתוביות</value>
+    </string>
+    <string>
+        <id>10016</id>
+        <value>הגדרות -&gt; מסך -&gt; שומר מסך</value>
+    </string>
+    <string>
+        <id>10017</id>
+        <value>הגדרות -&gt; מזג אוויר</value>
+    </string>
+    <string>
+        <id>10020</id>
+        <value>הגדרות -&gt; סקריפטים</value>
+    </string>
+    <string>
+        <id>10021</id>
+        <value>My Videos/genre</value>
+    </string>
+    <string>
+        <id>10022</id>
+        <value>My Videos/actor</value>
+    </string>
+    <string>
+        <id>10023</id>
+        <value>My Videos/year</value>
+    </string>
+    <string>
+        <id>10024</id>
+        <value>Settings-&gt;Programs</value>
+    </string>
+    <string>
+        <id>10025</id>
+        <value>My Videos/title</value>
+    </string>
+    <string>
+        <id>10026</id>
+        <value>Settings-&gt;General-&gt;Cache</value>
+    </string>
+    <string>
+        <id>10027</id>
+        <value>Settings-&gt;General-&gt;Autorun</value>
+    </string>
+    <string>
+        <id>10028</id>
+        <value>My Videos/playlist</value>
+    </string>
+    <string>
+        <id>10029</id>
+        <value>Settings-&gt;General-&gt;LCD</value>
+    </string>
+    <string>
+        <id>10100</id>
+        <value>Yes/no dialog</value>
+    </string>
+    <string>
+        <id>10101</id>
+        <value>Progress dialog</value>
+    </string>
+    <string>
+        <id>10500</id>
+        <value>My Music/playlist</value>
+    </string>
+    <string>
+        <id>10501</id>
+        <value>My Music/files</value>
+    </string>
+    <string>
+        <id>10502</id>
+        <value>My Music/albums</value>
+    </string>
+    <string>
+        <id>10503</id>
+        <value>My Music/artists</value>
+    </string>
+    <string>
+        <id>10504</id>
+        <value>My Music/genres</value>
+    </string>
+    <string>
+        <id>10505</id>
+        <value>My Music/top100</value>
+    </string>
+    <string>
+        <id>11000</id>
+        <value>מקלדת</value>
+    </string>
+    <string>
+        <id>12000</id>
+        <value>בחר דיאלוג</value>
+    </string>
+    <string>
+        <id>12001</id>
+        <value>My Music/info</value>
+    </string>
+    <string>
+        <id>12002</id>
+        <value>דיאלוג אישור</value>
+    </string>
+    <string>
+        <id>12003</id>
+        <value>My Videos/Info</value>
+    </string>
+    <string>
+        <id>12004</id>
+        <value>My Scripts/Info</value>
+    </string>
+    <string>
+        <id>12005</id>
+        <value>וידאו במסך מלא</value>
+    </string>
+    <string>
+        <id>12006</id>
+        <value>תצוגת אודיו</value>
+    </string>
+    <string>
+        <id>12007</id>
+        <value>My Picture/slideshow</value>
+    </string>
+    <string>
+        <id>12008</id>
+        <value>Filestacking dialog</value>
+    </string>
+    <string>
+        <id>12600</id>
+        <value>מזג האויר שלי</value>
+    </string>
+    <string>
+        <id>12900</id>
+        <value>שומר מסך</value>
+    </string>
+    <string>
+        <id>12901</id>
+        <value>תפריט במסך מלא</value>
+    </string>
+    <string>
+        <id>13000</id>
+        <value>מערכת</value>
+    </string>
+    <string>
+        <id>13001</id>
+        <value>סיבוב הרדיסק מיידי</value>
+    </string>
+    <string>
+        <id>13002</id>
+        <value>וידאו בלבד</value>
+    </string>
+    <string>
+        <id>13003</id>
+        <value>- השהייה</value>
+    </string>
+    <string>
+        <id>13004</id>
+        <value>- אורך קובץ מינימאלי</value>
+    </string>
+    <string>
+        <id>13100</id>
+        <value>פילטר הבהובים</value>
+    </string>
+    <string>
+        <id>13200</id>
+        <value>פרופילים</value>
+    </string>
+    <string>
+        <id>13201</id>
+        <value>למחוק פרופיל &apos;%s&apos;?</value>
+    </string>
+    <string>
+        <id>13202</id>
+        <value>שמור פרופיל נוחכי...</value>
+    </string>
+    <string>
+        <id>13203</id>
+        <value>הפרופיל &apos;%s&apos; נטען בהצלחה</value>
+    </string>
+    <string>
+        <id>13300</id>
+        <value>מהירות מאורר:</value>
+    </string>
+    <string>
+        <id>13301</id>
+        <value>בקרת טמפרטורה אטומאטית</value>
+    </string>
+    <string>
+        <id>13302</id>
+        <value>בקרת מהירות מאורר</value>
+    </string>
+    <string>
+        <id>13303</id>
+        <value>כתב:</value>
+    </string>
+    <string>
+        <id>13304</id>
+        <value>אפשר הפיכת תווים</value>
+    </string>
+    <string><id>13305</id><value>הפעל קבלת RSS</value></string>
+
 </strings>

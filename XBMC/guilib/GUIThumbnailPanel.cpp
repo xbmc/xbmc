@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "guithumbnailpanel.h"
 #include "guifontmanager.h"
+#include "../xbmc/utils/CharsetConverter.h"
 
 #define CONTROL_LIST		0
 #define CONTROL_UPDOWN	1
@@ -71,9 +72,10 @@ CGUIThumbnailPanel::~CGUIThumbnailPanel(void)
 void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListItem* pItem)
 {
 
-  WCHAR wszText[1024];
+  CStdStringW strItemLabelUnicode;
+  
   float fTextPosY =(float)iPosY+ (float)m_iTextureHeight;
-	swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
+  g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel().c_str(), strItemLabelUnicode);
 
   DWORD dwColor=m_dwTextColor;
   int iCenteredPosX = iPosX + (m_iItemWidth-m_iTextureWidth)/2;
@@ -83,14 +85,14 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
     m_imgFolderFocus.SetPosition(iCenteredPosX, iPosY);
 		if (m_bShowTexture) m_imgFolderFocus.Render();
     
-    RenderText((float)iPosX,(float)fTextPosY,dwColor,wszText,true);
+		RenderText((float)iPosX,(float)fTextPosY,dwColor,(WCHAR*) strItemLabelUnicode.c_str(),true);
   }
   else
   {
  	m_imgFolder.SetPosition(iCenteredPosX, iPosY);
     if (m_bShowTexture) m_imgFolder.Render();
     
-    RenderText((float)iPosX,(float)fTextPosY,dwColor,wszText,false);
+	RenderText((float)iPosX,(float)fTextPosY,dwColor,(WCHAR*) strItemLabelUnicode.c_str(),false);
   
   }
 	if (pItem->HasThumbnail() )

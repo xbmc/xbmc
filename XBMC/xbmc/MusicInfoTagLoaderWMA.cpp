@@ -7,6 +7,7 @@
 #include "autoptrhandle.h"
 #include "util.h"
 #include "picture.h"
+#include "utils/CharsetConverter.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -110,9 +111,9 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 			iOffset+=10;
 
 			CStdString ansiString;
-			CUtil::Unicode2Ansi((LPWSTR)(pData.get()+iOffset), ansiString);
+			g_charsetConverter.ucs2CharsetToStringCharset((LPWSTR)(pData.get()+iOffset), ansiString);
 			tag.SetTitle(ansiString);	// titel
-			CUtil::Unicode2Ansi((LPWSTR)(pData.get()+iOffset+nTitleSize), ansiString);
+			g_charsetConverter.ucs2CharsetToStringCharset((LPWSTR)(pData.get()+iOffset+nTitleSize), ansiString);
 			tag.SetArtist(ansiString);
 
 			//General(ZT("Copyright"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize));
@@ -212,7 +213,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 				if (iFrameType==WMT_TYPE_STRING)
 				{
 					pwszValue=(LPWSTR)(pData.get()+iOffset);
-					CUtil::Unicode2Ansi(pwszValue, ansiStringValue);
+					g_charsetConverter.ucs2CharsetToStringCharset(pwszValue, ansiStringValue);
 				}
 				else if (iFrameType==WMT_TYPE_BINARY)
 					pValue=(BYTE*)(pData.get()+iOffset);	//	Raw data

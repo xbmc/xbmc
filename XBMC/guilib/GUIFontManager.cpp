@@ -35,21 +35,30 @@ CGUIFont* GUIFontManager::LoadXPR(const CStdString& strFontName, const CStdStrin
 		strPath=strFilename;
 
 	CGUIFontXPR* pNewFont = new CGUIFontXPR(strFontName);
-	if (pNewFont->Load(strPath))
+	// First try to load it from the skin directory
+	boolean bFontLoaded = pNewFont->Load(strPath);
+	if (!bFontLoaded)
 	{
-		// font is loaded
-		m_vecFonts.push_back(pNewFont);
-		return pNewFont;
+		// Now try to load it from media\fonts
+		if (strFilename[1] != ':')
+		{
+			strPath="Q:\\media\\Fonts\\";
+			strPath+=strFilename;
+		}
+
+		bFontLoaded = pNewFont->Load(strPath);
 	}
-	else
+
+	if (!bFontLoaded)
 	{
 		delete pNewFont;
+
+		// font could not b loaded
+		CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(),strPath.c_str());
 	}
 
-	// font could not b loaded
-	CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(),strPath.c_str());
-
-	return NULL;
+	m_vecFonts.push_back(pNewFont);
+	return pNewFont;
 }
 
 CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, const int iSize, const int iStyle)
@@ -68,24 +77,34 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
 	}
 	else
 		strPath=strFilename;
-
 	
 	CGUIFontTTF* pNewFont = new CGUIFontTTF(strFontName);
-	if (pNewFont->Load(strPath, iSize, iStyle))
+	boolean bFontLoaded = pNewFont->Load(strPath, iSize, iStyle);
+	if (!bFontLoaded)
 	{
-		// font is loaded
-		m_vecFonts.push_back(pNewFont);
-		return pNewFont;
+		// Now try to load it from media\fonts
+		if (strFilename[1] != ':')
+		{
+			strPath="Q:\\media\\Fonts\\";
+			strPath+=strFilename;
+		}
+
+		bFontLoaded = pNewFont->Load(strPath, iSize, iStyle);
 	}
-	else
+
+	if (!bFontLoaded)
 	{
 		delete pNewFont;
+
+		// font could not b loaded
+		CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(),strPath.c_str());
+
+		return NULL;
 	}
 
-	// font could not b loaded
-	CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(),strPath.c_str());
-
-	return NULL;
+	// font is loaded
+	m_vecFonts.push_back(pNewFont);
+	return pNewFont;
 }
 
 void GUIFontManager::Unload(const CStdString& strFontName)

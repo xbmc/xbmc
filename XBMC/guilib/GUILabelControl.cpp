@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "guilabelcontrol.h"
 #include "guifontmanager.h"
-
+#include "../xbmc/utils/CharsetConverter.h"
 
 CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont,const wstring& strLabel, DWORD dwTextColor, DWORD dwDisabledColor, DWORD dwTextAlign, bool bHasPath)
 :CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
@@ -43,23 +43,24 @@ void CGUILabelControl::Render()
 
 	if (m_pFont)
 	{
+		CStdStringW strLabelUnicode;
+		g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
+
 		if (IsDisabled())
 		{
 			m_pFont->DrawText((float)m_iPosX, (float)m_iPosY,m_dwDisabledColor,m_strLabel.c_str(),m_dwTextAlign,(float)m_dwWidth);
 		}
 		else
 		{
-			CStdStringW label = m_strLabel;
-
 			if (m_bShowCursor)
 			{	// show the cursor...
 				if ((++m_dwCounter % 50) > 25)
 				{
-					label.Insert(m_iCursorPos,L"|");
+					strLabelUnicode.Insert(m_iCursorPos,L"|");
 				}
 			}
 	
-			m_pFont->DrawText((float)m_iPosX, (float)m_iPosY,m_dwTextColor,label.c_str(),m_dwTextAlign, (float)m_dwWidth);
+			m_pFont->DrawText((float)m_iPosX, (float)m_iPosY,m_dwTextColor,strLabelUnicode.c_str(),m_dwTextAlign, (float)m_dwWidth);
 		}
 	}
 }
@@ -105,13 +106,14 @@ void CGUILabelControl::ShortenPath()
 	if ( m_strLabel.size() <= 0 )
 		return;
 
-  WCHAR wszText[1024];
+	CStdStringW strLabelUnicode;
+	g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
+
 	float fTextHeight,fTextWidth;
 	char cDelim = '\0';
 	int nGreaterDelim, nPos;
 
-	swprintf(wszText,L"%s", m_strLabel.c_str() );
-	m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
+	m_pFont->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth,&fTextHeight);
 
 	if ( fTextWidth <= (m_dwWidth) )
 		return;
@@ -145,7 +147,6 @@ void CGUILabelControl::ShortenPath()
 			m_strLabel.replace( nPos+1, nGreaterDelim - nPos - 1, L"..." );
 		}
 
-		swprintf(wszText,L"%s", m_strLabel.c_str() );
-		m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight );
+		m_pFont->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth,&fTextHeight );
 	}
 }

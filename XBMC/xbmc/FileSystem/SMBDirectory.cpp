@@ -21,6 +21,7 @@
 #include "../GUIWindowManager.h"
 #include "../GUIDialogOk.h"
 #include "directorycache.h"
+#include "../utils/CharsetConverter.h"
 
 CSMBDirectory::CSMBDirectory(void)
 {
@@ -35,10 +36,6 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	// We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
 	VECFILEITEMS vecCacheItems;
     g_directoryCache.ClearDirectory(strPath);
-
-    // note, samba uses UTF8 strings internal,
-	// that's why we have to convert strings and wstrings to UTF8.
-	size_t strLen;
 
 	//Separate roots for the authentication and the containing items to allow browsing to work correctly
 	CStdString strRoot = strPath, strAuth = strPath;
@@ -94,7 +91,6 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	else
 	{
 		struct smbc_dirent* dirEnt;
-		wchar_t wStrFile[1024]; // buffer for converting strings
 		CStdString strFile;
 
 		smb.Lock();
@@ -110,11 +106,8 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 				bool bIsDir = true;
 				__int64 lTimeDate = 0;
 
-				// convert from UTF8 to wide string
-				strLen = convert_string(CH_UTF8, CH_UCS2, dirEnt->name, dirEnt->namelen, wStrFile, 1024, false);
-				wStrFile[strLen] = 0;
-
-				CUtil::Unicode2Ansi(wStrFile, strFile);
+				// Convert UTF8 to the user defined charset
+				g_charsetConverter.utf8ToStringCharset(dirEnt->name, strFile);
 
 				// doing stat on one of these types of shares leaves an open session
 				// so just skip them and only stat real dirs / files.
