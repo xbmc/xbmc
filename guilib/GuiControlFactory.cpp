@@ -209,7 +209,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	float		fInterval = 0.1f;
 	bool		bReverse=false;
 	bool        bShadow;
-	CStdString	strTextureBg, strLeft,strRight,strMid,strMidFocus;
+	CStdString	strTextureBg, strLeft,strRight,strMid,strMidFocus, strOverlay;
 	CStdString	strLeftFocus, strRightFocus;
 	CStdString	strTexture;
 	DWORD 		dwColorKey=0xffffffff;
@@ -425,6 +425,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			strLeft				= ((CGUIProgressControl*)pReference)->GetBackTextureLeftName();
 			strMid				= ((CGUIProgressControl*)pReference)->GetBackTextureMidName();
 			strRight			= ((CGUIProgressControl*)pReference)->GetBackTextureRightName();
+			strOverlay		= ((CGUIProgressControl*)pReference)->GetBackTextureOverlayName();
 		}
 		else if (strType=="image")
 		{
@@ -693,6 +694,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetPath(pControlNode,"lefttexture",strLeft);
 	GetPath(pControlNode,"midtexture",strMid);
 	GetPath(pControlNode,"righttexture",strRight);
+	GetPath(pControlNode,"overlaytexture",strOverlay);
 	GetPath(pControlNode,"texture",strTexture);
 	GetHex(pControlNode,"colorkey",dwColorKey);
 
@@ -953,7 +955,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	{
 		CGUIProgressControl* pControl= new CGUIProgressControl(
 					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,
-					strTextureBg,strLeft,strMid,strRight);
+					strTextureBg,strLeft,strMid,strRight, strOverlay);
 
 		pControl->SetVisible(bVisible);
 		return pControl;
