@@ -27,6 +27,7 @@ CGUIFadeLabelControl::~CGUIFadeLabelControl(void)
 
 void CGUIFadeLabelControl::Render()
 {
+	if (!IsVisible())	return;
 	if (!m_pFont) return;
 	if (m_vecLabels.size()==0) return;
 	if (m_iCurrentLabel >= (int)m_vecLabels.size() ) m_iCurrentLabel=0;
