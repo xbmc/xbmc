@@ -191,8 +191,11 @@ void CGUIImage::Render()
 	g_graphicsContext.Get3DDevice()->SetStreamSource( 0, m_pVB, sizeof(VERTEX) );
 	g_graphicsContext.Get3DDevice()->DrawPrimitive( D3DPT_QUADLIST, 0, 1 );
 
-	// unset the texture or the texture caching crashes because the runtime still has a reference
+	// unset the texture and palette or the texture caching crashes because the runtime still has a reference
 	g_graphicsContext.Get3DDevice()->SetTexture( 0, NULL);
+#ifdef ALLOW_TEXTURE_COMPRESSION
+	g_graphicsContext.Get3DDevice()->SetPalette( 0, NULL);
+#endif
 }
 
 void CGUIImage::OnAction(const CAction &action) 
