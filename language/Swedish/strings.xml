@@ -1534,7 +1534,7 @@
   </string> 
   <string>
     <id>468</id>
-    <value>Move the bar to change the osd position</value>
+    <value>Ställ in OSD Position</value>
   </string>
   <string>
     <id>469</id>
@@ -1544,7 +1544,34 @@
      <id>470</id>
      <value>Credits</value>
    </string>
-
+   <string>
+     <id>471</id>
+     <value>Modchip</value>
+   </string>
+  <string>
+    <id>472</id>
+    <value>OSD Timeout</value>
+  </string>
+   <string>
+     <id>473</id>
+     <value>Hög kvalitativ Resampling</value>
+   </string>
+   <string>
+     <id>474</id>
+     <value>Av</value>
+   </string>
+   <string>
+     <id>475</id>
+     <value>Bara Musik</value>
+   </string>
+   <string>
+     <id>476</id>
+     <value>Musik & Video</value>
+   </string>
+   <string>
+     <id>477</id>
+    <value>Kunde inte ladda playlist</value>
+   </string>
  <string><id>10000</id><value>Start</value></string>
  <string><id>10001</id><value>Mina Program</value></string>
  <string><id>10002</id><value>Mina Bilder</value></string>
