@@ -508,6 +508,28 @@ static unsigned int Directx_ManageDisplay()
 //***********************************************************************************************************
 //***********************************************************************************************************
 //***********************************************************************************************************
+static void vo_draw_alpha_rgb32_shadow(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride)
+{
+    register int y;
+    for(y=0;y<h;y++)
+    {
+        register int x;
+
+        for(x=0;x<w;x++)
+        {
+            if(srca[x])
+            {
+              dstbase[4*x+0]=((dstbase[4*x+0]*srca[x])>>8)+src[x];
+              dstbase[4*x+1]=((dstbase[4*x+1]*srca[x])>>8)+src[x];
+              dstbase[4*x+2]=((dstbase[4*x+2]*srca[x])>>8)+src[x];
+              dstbase[4*x+3]=0xff;
+            }
+        }
+        src+=srcstride;
+        srca+=srcstride;
+        dstbase+=dststride;
+    }
+}
 
 static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned char *srca, int stride)
 {
@@ -519,7 +541,8 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
     if (h > SUBTITLE_TEXTURE_HEIGHT) h = SUBTITLE_TEXTURE_HEIGHT;
     int xpos = (SUBTITLE_TEXTURE_WIDTH-w)/2;
 //    OutputDebugString("Rendering Subs\n");
-    vo_draw_alpha_rgb32(w,h,src,srca,stride,((unsigned char *) subtitleimage) + subtitlestride*(SUBTITLE_TEXTURE_HEIGHT-h) + 4*xpos,subtitlestride);
+    vo_draw_alpha_rgb32_shadow(w,h,src,srca,stride,((unsigned char *) subtitleimage) + subtitlestride*(SUBTITLE_TEXTURE_HEIGHT-h) + 4*xpos,subtitlestride);
+//    vo_draw_alpha_rgb32(w,h,src,srca,stride,((unsigned char *) subtitleimage) + subtitlestride*(SUBTITLE_TEXTURE_HEIGHT-h) + 4*xpos,subtitlestride);
     iClearSubtitleRegion[m_iBackBuffer] = h;
     m_bRenderGUI=true;
     return;
