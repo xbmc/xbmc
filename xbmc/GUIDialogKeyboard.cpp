@@ -79,6 +79,14 @@ void CGUIDialogKeyboard::OnAction(const CAction &action)
 		m_bDirty = false;
 		Close();
 	}
+	else if (action.wID == ACTION_PARENT_DIR)
+	{
+		Backspace();
+	}
+	else if (action.wID >= REMOTE_0 && action.wID <= REMOTE_9)
+	{
+		OnRemoteNumberClick(action.wID);
+	}
 	else
 	{
 		CGUIWindow::OnAction(action);
@@ -142,6 +150,7 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
 					}
 					break;
 				default:
+					m_lastRemoteKeyClicked = 0;
 					OnClickButton(iControl);
 					break;
 			}
@@ -213,6 +222,32 @@ void CGUIDialogKeyboard::OnClickButton(int iButtonControl)
 	{
 		Backspace();
 	}
+}
+
+void CGUIDialogKeyboard::OnRemoteNumberClick(int key)
+{
+	DWORD now = timeGetTime();
+
+	if (key != m_lastRemoteKeyClicked || (key == m_lastRemoteKeyClicked && m_lastRemoteClickTime + 1000 < now))
+	{
+		m_lastRemoteKeyClicked = key;
+		m_indexInSeries = 0;
+	}
+	else
+	{
+		m_indexInSeries++;
+		Backspace();
+	}
+
+	int arrayIndex = key - REMOTE_0;
+	m_indexInSeries = m_indexInSeries % strlen(s_charsSeries[arrayIndex]);
+	m_lastRemoteClickTime = now;
+
+	// Select the character that will be pressed
+	const char* characterPressed = s_charsSeries[arrayIndex];
+	characterPressed += m_indexInSeries;
+
+	OnClickButton((int) *characterPressed);
 }
 
 WCHAR CGUIDialogKeyboard::GetCharacter(int iButton)
@@ -307,3 +342,5 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, bool allowEmpt
 		return false;
 	}
 }
+
+const char* CGUIDialogKeyboard::s_charsSeries[10] = { " 0", ".1", "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };
