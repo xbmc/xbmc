@@ -686,20 +686,22 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 				// set path, needed to store album in database
 				album.SetAlbumPath(strPath);
 
-				CAlbum albuminfo;
-				albuminfo.strAlbum  = album.GetTitle();
-				albuminfo.strArtist = album.GetArtist();
-				albuminfo.strGenre  = album.GetGenre();
-				albuminfo.strTones  = album.GetTones();
-				albuminfo.strStyles = album.GetStyles();
-				albuminfo.strReview = album.GetReview();
-				albuminfo.strImage  = album.GetImageURL();
-				albuminfo.iRating   = album.GetRating();
-				albuminfo.iYear 		= atol( album.GetDateOfRelease().c_str() );
-				albuminfo.strPath   = album.GetAlbumPath();
-				// save to database
-				m_database.AddAlbumInfo(albuminfo);
-
+				if (!CUtil::IsCDDA(strPath))
+				{
+					CAlbum albuminfo;
+					albuminfo.strAlbum  = album.GetTitle();
+					albuminfo.strArtist = album.GetArtist();
+					albuminfo.strGenre  = album.GetGenre();
+					albuminfo.strTones  = album.GetTones();
+					albuminfo.strStyles = album.GetStyles();
+					albuminfo.strReview = album.GetReview();
+					albuminfo.strImage  = album.GetImageURL();
+					albuminfo.iRating   = album.GetRating();
+					albuminfo.iYear 		= atol( album.GetDateOfRelease().c_str() );
+					albuminfo.strPath   = album.GetAlbumPath();
+					// save to database
+					m_database.AddAlbumInfo(albuminfo);
+				}
 				if (m_dlgProgress) 
 					m_dlgProgress->Close();
 
