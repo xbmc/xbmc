@@ -5,7 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 15-03-2004 fixed: my music nav window showing false items due to allmusic.com lookups
+  - 16-03-2005 fixed: GUIWindowManager now correctly dispatches messages to modeless windows
+  - 16-03-2005 added: mute support for the media center extender remote
+  - 15-03-2005 fixed: my music nav window showing false items due to allmusic.com lookups
   - 15-03-2005 changed: removed musicdatabase from precompiled headers, removed more unnecessary includes
   - 15-03-2005 fixed: all windows, last control was not focused
   - 15-03-2005 fixed: memory leak in rgbrenderer.

@@ -43,13 +43,13 @@
 #define KEY_BUTTON_RIGHT_ANALOG_TRIGGER     279
 
 // 0xF000 -> 0xF1FF is reserved for the keyboard
-#define KEY_VKEY           0xF000
+#define KEY_VKEY            0xF000
 #define KEY_ASCII           0xF100
 
-#define KEY_INVALID                   0xffff
+#define KEY_INVALID         0xFFFF
 
 // actions that we have defined...
-#define ACTION_NONE        0
+#define ACTION_NONE                    0
 #define ACTION_MOVE_LEFT               1
 #define ACTION_MOVE_RIGHT              2
 #define ACTION_MOVE_UP                 3
@@ -59,7 +59,7 @@
 #define ACTION_SELECT_ITEM             7
 #define ACTION_HIGHLIGHT_ITEM          8
 #define ACTION_PARENT_DIR              9
-#define ACTION_PREVIOUS_MENU            10
+#define ACTION_PREVIOUS_MENU          10
 #define ACTION_SHOW_INFO              11
 
 #define ACTION_PAUSE                  12
@@ -70,7 +70,7 @@
 #define ACTION_REWIND                 17
 
 #define ACTION_SHOW_GUI               18 // toggle between GUI and movie or GUI and visualisation.
-#define ACTION_ASPECT_RATIO     19 // toggle quick-access zoom modes. Can b used in videoFullScreen.zml window id=2005
+#define ACTION_ASPECT_RATIO           19 // toggle quick-access zoom modes. Can b used in videoFullScreen.zml window id=2005
 #define ACTION_STEP_FORWARD           20 // seek +1% in the movie. Can b used in videoFullScreen.xml window id=2005
 #define ACTION_STEP_BACK              21 // seek -1% in the movie. Can b used in videoFullScreen.xml window id=2005
 #define ACTION_BIG_STEP_FORWARD       22 // seek +10% in the movie. Can b used in videoFullScreen.xml window id=2005
@@ -141,47 +141,49 @@
 #define ACTION_COPY_ITEM            81  // copy current selected item. Can be used in myfiles.xml window id=3
 #define ACTION_MOVE_ITEM            82  // move current selected item. Can be used in myfiles.xml window id=3
 #define ACTION_SHOW_MPLAYER_OSD     83  // toggles mplayers OSD. Can be used in videofullscreen.xml window id=2005
-#define ACTION_OSD_HIDESUBMENU  84  // removes an OSD sub menu. Can be used in videoOSD.xml window id=2901
-#define ACTION_TAKE_SCREENSHOT  85  // take a screenshot
-#define ACTION_POWERDOWN   86  // restart
-#define ACTION_RENAME_ITEM   87  // rename item
+#define ACTION_OSD_HIDESUBMENU      84  // removes an OSD sub menu. Can be used in videoOSD.xml window id=2901
+#define ACTION_TAKE_SCREENSHOT      85  // take a screenshot
+#define ACTION_POWERDOWN            86  // restart
+#define ACTION_RENAME_ITEM          87  // rename item
 
-#define ACTION_VOLUME_UP   88
-#define ACTION_VOLUME_DOWN   89
+#define ACTION_VOLUME_UP            88
+#define ACTION_VOLUME_DOWN          89
+#define ACTION_MUTE                 91
 
-#define ACTION_MOUSE    90
+#define ACTION_MOUSE                90
 
-#define ACTION_MOUSE_CLICK     100
-#define ACTION_MOUSE_LEFT_CLICK    100
-#define ACTION_MOUSE_RIGHT_CLICK   101
-#define ACTION_MOUSE_MIDDLE_CLICK   102
+#define ACTION_MOUSE_CLICK            100
+#define ACTION_MOUSE_LEFT_CLICK       100
+#define ACTION_MOUSE_RIGHT_CLICK      101
+#define ACTION_MOUSE_MIDDLE_CLICK     102
 #define ACTION_MOUSE_XBUTTON1_CLICK   103
 #define ACTION_MOUSE_XBUTTON2_CLICK   104
 
-#define ACTION_MOUSE_DOUBLE_CLICK   105
-#define ACTION_MOUSE_LEFT_DOUBLE_CLICK  105
-#define ACTION_MOUSE_RIGHT_DOUBLE_CLICK  106
-#define ACTION_MOUSE_MIDDLE_DOUBLE_CLICK 107
-#define ACTION_MOUSE_XBUTTON1_DOUBLE_CLICK 108
-#define ACTION_MOUSE_XBUTTON2_DOUBLE_CLICK 109
+#define ACTION_MOUSE_DOUBLE_CLICK           105
+#define ACTION_MOUSE_LEFT_DOUBLE_CLICK      105
+#define ACTION_MOUSE_RIGHT_DOUBLE_CLICK     106
+#define ACTION_MOUSE_MIDDLE_DOUBLE_CLICK    107
+#define ACTION_MOUSE_XBUTTON1_DOUBLE_CLICK  108
+#define ACTION_MOUSE_XBUTTON2_DOUBLE_CLICK  109
 
-#define ACTION_BACKSPACE     110
-#define ACTION_SCROLL_UP     111
-#define ACTION_SCROLL_DOWN    112
-#define ACTION_ANALOG_FORWARD   113
-#define ACTION_ANALOG_REWIND   114
+#define ACTION_BACKSPACE          110
+#define ACTION_SCROLL_UP          111
+#define ACTION_SCROLL_DOWN        112
+#define ACTION_ANALOG_FORWARD     113
+#define ACTION_ANALOG_REWIND      114
 
-#define ACTION_MOVE_ITEM_UP    115  // move item up in playlist
-#define ACTION_MOVE_ITEM_DOWN   116  // move item down in playlist
-#define ACTION_CONTEXT_MENU    117  // pops up the context menu
+#define ACTION_MOVE_ITEM_UP       115  // move item up in playlist
+#define ACTION_MOVE_ITEM_DOWN     116  // move item down in playlist
+#define ACTION_CONTEXT_MENU       117	 // pops up the context menu
+
 
 // stuff for virtual keyboard shortcuts
-#define ACTION_SHIFT       118
-#define ACTION_SYMBOLS      119
-#define ACTION_CURSOR_LEFT    120
-#define ACTION_CURSOR_RIGHT    121
+#define ACTION_SHIFT              118
+#define ACTION_SYMBOLS            119
+#define ACTION_CURSOR_LEFT        120
+#define ACTION_CURSOR_RIGHT       121
 
-#define ACTION_BUILT_IN_FUNCTION 122
+#define ACTION_BUILT_IN_FUNCTION  122
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                 9999
@@ -189,25 +191,25 @@
 #define WINDOW_PROGRAMS               10001
 #define WINDOW_PICTURES               10002
 #define WINDOW_FILES                  10003
-#define WINDOW_SETTINGS_MENU     10004
+#define WINDOW_SETTINGS_MENU          10004
 #define WINDOW_MUSIC                  10005
 #define WINDOW_VIDEOS                 10006
 #define WINDOW_SYSTEM_INFORMATION     10007
 #define WINDOW_UI_CALIBRATION         10010
 #define WINDOW_MOVIE_CALIBRATION      10011
 
-#define WINDOW_SETTINGS_MYPICTURES   10012
-#define WINDOW_SETTINGS_MYPROGRAMS   10013
+#define WINDOW_SETTINGS_MYPICTURES    10012
+#define WINDOW_SETTINGS_MYPROGRAMS    10013
 #define WINDOW_SETTINGS_MYWEATHER     10014
-#define WINDOW_SETTINGS_MYMUSIC    10015
-#define WINDOW_SETTINGS_SYSTEM    10016
-#define WINDOW_SETTINGS_MYVIDEOS   10017
-#define WINDOW_SETTINGS_NETWORK    10018
-#define WINDOW_SETTINGS_APPEARANCE  10019
+#define WINDOW_SETTINGS_MYMUSIC       10015
+#define WINDOW_SETTINGS_SYSTEM        10016
+#define WINDOW_SETTINGS_MYVIDEOS      10017
+#define WINDOW_SETTINGS_NETWORK       10018
+#define WINDOW_SETTINGS_APPEARANCE    10019
 
 #define WINDOW_SETTINGS_FILTER        10024
 #define WINDOW_SETTINGS_SCREENSAVER   10026
-#define WINDOW_SETTINGS_OSD      10027
+#define WINDOW_SETTINGS_OSD           10027
 #define WINDOW_SETTINGS_SUBTITLES     10008
 
 #define WINDOW_SCRIPTS                10020
@@ -219,24 +221,24 @@
 
 #define WINDOW_DIALOG_YES_NO          10100
 #define WINDOW_DIALOG_PROGRESS        10101
-#define WINDOW_DIALOG_INVITE     10102
-#define WINDOW_DIALOG_KEYBOARD       10103
+#define WINDOW_DIALOG_INVITE          10102
+#define WINDOW_DIALOG_KEYBOARD        10103
 #define WINDOW_DIALOG_VOLUME_BAR      10104
-#define WINDOW_DIALOG_SUB_MENU    10105
-#define WINDOW_DIALOG_CONTEXT_MENU   10106
-#define WINDOW_DIALOG_KAI_TOAST    10107
-#define WINDOW_DIALOG_HOST     10108
-#define WINDOW_DIALOG_NUMERIC  10109
-#define WINDOW_DIALOG_GAMEPAD  10110
-#define WINDOW_DIALOG_BUTTON_MENU    10111
-#define WINDOW_DIALOG_MUSIC_SCAN   10112
+#define WINDOW_DIALOG_SUB_MENU        10105
+#define WINDOW_DIALOG_CONTEXT_MENU    10106
+#define WINDOW_DIALOG_KAI_TOAST       10107
+#define WINDOW_DIALOG_HOST            10108
+#define WINDOW_DIALOG_NUMERIC         10109
+#define WINDOW_DIALOG_GAMEPAD         10110
+#define WINDOW_DIALOG_BUTTON_MENU     10111
+#define WINDOW_DIALOG_MUSIC_SCAN      10112
 #define WINDOW_MUSIC_PLAYLIST         10500
 #define WINDOW_MUSIC_FILES            10501
 #define WINDOW_MUSIC_ALBUM            10502
 #define WINDOW_MUSIC_ARTIST           10503
 #define WINDOW_MUSIC_GENRE            10504
 #define WINDOW_MUSIC_TOP100           10505
-#define WINDOW_MUSIC_NAV     10506
+#define WINDOW_MUSIC_NAV              10506
 
 #define WINDOW_VIRTUAL_KEYBOARD       11000
 #define WINDOW_DIALOG_SELECT          12000
@@ -255,17 +257,17 @@
 
 // WINDOW_ID's from 13000 to 13099 reserved for Python
 
-#define WINDOW_PYTHON_START 13000
-#define WINDOW_PYTHON_END 13099
+#define WINDOW_PYTHON_START     13000
+#define WINDOW_PYTHON_END       13099
 
-#define ICON_TYPE_NONE   101
-#define ICON_TYPE_PROGRAMS 102
-#define ICON_TYPE_MUSIC   103
-#define ICON_TYPE_PICTURES 104
-#define ICON_TYPE_VIDEOS  105
-#define ICON_TYPE_FILES   106
-#define ICON_TYPE_WEATHER  107
-#define ICON_TYPE_SETTINGS 109
+#define ICON_TYPE_NONE          101
+#define ICON_TYPE_PROGRAMS      102
+#define ICON_TYPE_MUSIC         103
+#define ICON_TYPE_PICTURES      104
+#define ICON_TYPE_VIDEOS        105
+#define ICON_TYPE_FILES         106
+#define ICON_TYPE_WEATHER       107
+#define ICON_TYPE_SETTINGS      109
 
 /*!
   \ingroup actionkeys

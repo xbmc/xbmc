@@ -46,6 +46,8 @@ public:
   void AddMsgTarget( IMsgTargetCallback* pMsgTarget );
   int GetActiveWindow() const;
   bool IsRouted() const;
+  bool IsModelessAvailable() const;
+
 private:
   vector <CGUIWindow*> m_vecWindows;
   vector <CGUIWindow*> m_vecModelessWindows;
@@ -57,6 +59,7 @@ private:
   vector <CGUIMessage*> m_vecThreadMessages;
   CRITICAL_SECTION m_critSection;
   vector <IMsgTargetCallback*> m_vecMsgTargets;
+
 };
 
 /*!

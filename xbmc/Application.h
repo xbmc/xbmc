@@ -20,6 +20,7 @@
 #include "GUIDialogButtonMenu.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMusicScan.h"
+#include "GUIDialogMuteBug.h"
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
 #include "GUIWindowFileManager.h"
@@ -29,6 +30,7 @@
 #include "GUIWindowVideoYear.h"
 #include "GUIWindowVideoTitle.h"
 #include "GUIWindowSettings.h"
+
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowSettingsUICalibration.h"
 #include "GUIWindowSettingsScreenCalibration.h"
@@ -139,24 +141,25 @@ public:
     double                  GetTime() const;
     void                    SeekTime( double dTime=0.0 );
 
-	CGUIWindowHome								m_guiHome;
+	CGUIWindowHome								  m_guiHome;
 	CGUIWindowPrograms							m_guiPrograms;
-	CGUIWindowSettingsProfile				    m_guiSettingsProfile;
+	CGUIWindowSettingsProfile			  m_guiSettingsProfile;
 	CGUIWindowPictures							m_guiPictures;
-	CGUIDialogInvite							m_guiDialogInvite;
-	CGUIDialogHost								m_guiDialogHost;
+	CGUIDialogInvite							  m_guiDialogInvite;
+	CGUIDialogHost								  m_guiDialogHost;
 	CGUIDialogKeyboard							m_guiDialogKeyboard;
-	CGUIDialogYesNo								m_guiDialogYesNo;
+	CGUIDialogYesNo								  m_guiDialogYesNo;
 	CGUIDialogProgress							m_guiDialogProgress;
-	CGUIDialogOK								m_guiDialogOK;
+	CGUIDialogOK								    m_guiDialogOK;
 	CGUIDialogVolumeBar							m_guiDialogVolumeBar;
 	CGUIDialogKaiToast							m_guiDialogKaiToast;
-	CGUIDialogNumeric							m_guiDialogNumeric;
-	CGUIDialogGamepad							m_guiDialogGamepad;
-	CGUIDialogSubMenu							m_guiDialogSubMenu;
+	CGUIDialogNumeric							  m_guiDialogNumeric;
+	CGUIDialogGamepad							  m_guiDialogGamepad;
+	CGUIDialogSubMenu							  m_guiDialogSubMenu;
 	CGUIDialogButtonMenu						m_guiDialogButtonMenu;
 	CGUIDialogContextMenu						m_guiDialogContextMenu;
 	CGUIDialogMusicScan							m_guiDialogMusicScan;
+  CGUIDialogMuteBug               m_guiDialogMuteBug;
 	CGUIWindowFileManager						m_guiFileManager;
 	CGUIWindowVideoFiles						m_guiMyVideo;
 	CGUIWindowSettings							m_guiSettings;
@@ -192,6 +195,7 @@ public:
 	CGUIWindowBuddies						    m_guiMyBuddies;	//BUDDIES
 	CGUIWindowOSD								m_guiWindowOSD;
 	CGUIWindowPointer							m_guiPointer;
+
 
 	CSNTPClient									m_sntpClient;
 	CDetectDVDMedia								m_DetectDVDType;

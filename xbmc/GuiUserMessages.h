@@ -50,3 +50,8 @@
 #define GUI_MSG_DIRECTORY_SCANNED				GUI_MSG_USER + 12
 
 #define GUI_MSG_SCAN_FINISHED						GUI_MSG_USER + 13
+
+//  Mute activated by the user
+#define GUI_MSG_MUTE_ON						      GUI_MSG_USER + 14
+#define GUI_MSG_MUTE_OFF                GUI_MSG_USER + 15
+
