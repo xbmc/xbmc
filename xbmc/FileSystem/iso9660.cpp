@@ -620,7 +620,7 @@ HANDLE iso9660::OpenFile(const char *filename)
 	int loop = (int)FindFirstFile( work, &fileinfo );
 	while( loop > 0)	 
 	{ 
-		if( !strcmp(fileinfo.cFileName, pointer ) )
+		if( !stricmp(fileinfo.cFileName, pointer ) )
 			loop = -1;
 		else
 			loop = FindNextFile( NULL, &fileinfo );
