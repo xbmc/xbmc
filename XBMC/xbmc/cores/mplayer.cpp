@@ -458,7 +458,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	  // check if AC3 passthrough is enabled in MS dashboard
     // ifso we need 2 check if this movie has AC3 5.1 sound and if thats true
     // we reopen the movie with the ac3 5.1 passthrough audio filter
-    if (bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru )
+    if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru )
 	  {
 		  // and the movie has an AC3 audio stream
 		  if ( strstr(strAudioCodec,"AC3-liba52") && (lSampleRate==48000) )
@@ -481,7 +481,8 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	    }	
 
       // if xbox only got stereo output, then limit number of channels to 2
-      if (!bSupportsSPDIFOut)
+      // same if xbox got digital output, but we're listening to the analog output
+      if (!bSupportsSPDIFOut || !g_stSettings.m_bUseDigitalOutput)
       {
         if (iChannels > 2) 
         {
