@@ -878,8 +878,8 @@ void CGUIListControl::OnMouseWheel()
 
 bool CGUIListControl::CanFocus() const
 {
-  if (m_vecItems.size()<=0)
-    return false;
+  //if (m_vecItems.size()<=0)
+  //  return false;
 
   return CGUIControl::CanFocus();
 }

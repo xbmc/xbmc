@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 17-03-2005 removed: list, listex and thumbcontrol can not be focused anymore if they have no items -> Problems in Video OSD with empty lists
   - 17-03-2005 added: a few new api's to HttpApi
   - 17-03-2005 fixed: cdda ripper doesn't use cddb info for ripping
   - 16-03-2005 fixed: crash when switching skin if kai is connected

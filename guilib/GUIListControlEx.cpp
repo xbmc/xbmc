@@ -577,11 +577,11 @@ void CGUIListControlEx::OnMouseClick(DWORD dwButton)
 
 bool CGUIListControlEx::CanFocus() const
 {
-  if (!m_pList)
-    return false;
+  //if (!m_pList)
+  //  return false;
 
-  if (m_pList->Size()<=0)
-    return false;
+  //if (m_pList->Size()<=0)
+  //  return false;
 
   return CGUIControl::CanFocus();
 }
