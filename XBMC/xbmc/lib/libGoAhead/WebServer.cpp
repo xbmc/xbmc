@@ -231,6 +231,9 @@ int CWebServer::initWebs()
 		formDefineUserMgmt();
 	#endif
 
+	// asp commands for xbmc
+	websAspDefine(T("xbmcCommand"), XbmcWebsAspCommand);
+
 	// asp command for xbmc Configuration
 	websAspDefine(T("xbmcCfgBookmarkSize"), XbmcWebsAspConfigBookmarkSize);
 	websAspDefine(T("xbmcCfgGetBookmark"), XbmcWebsAspConfigGetBookmark);
