@@ -32,9 +32,6 @@
 #define VOLUME_MIN		-6000
 #define VOLUME_MAX		DSBVOLUME_MAX
 
-static DWORD dwDonePkts=0; // usefull for debugging
-static DWORD dwSendPkts=0; // usefull for debugging
-
 
 #define CALC_DELAY_START	 0
 #define CALC_DELAY_STARTED 1
@@ -51,14 +48,6 @@ void CALLBACK CASyncDirectSound::StaticStreamCallback(LPVOID pStreamContext, LPV
 //***********************************************************************************************
 void CASyncDirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 {
-	dwDonePkts++;
-	/*if (CALC_DELAY_STARTED==m_iCalcDelay && ((LPVOID)0x1234)== pPacketContext )
-	{
-		LARGE_INTEGER curTime;
-		QueryPerformanceCounter( &curTime);
-		m_delay = curTime.QuadPart-m_startTime ; 
-		m_iCalcDelay = CALC_DELAY_DONE;
-	}*/
 }
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -66,7 +55,6 @@ void CASyncDirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 //***********************************************************************************************
 CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample)
 {
-	OutputDebugString("CASyncDirectSound() ctor\n");
 	m_pCallback=pCallback;
 	if(!g_stSettings.m_bAudioOnAllSpeakers ) 
 	{
@@ -85,7 +73,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	LARGE_INTEGER qwTicksPerSec;
   QueryPerformanceFrequency( &qwTicksPerSec );   // ticks/sec
 	m_dwTicksPerSec=qwTicksPerSec.QuadPart;
-	//mp_msg(0,0,"init directsound chns:%i rate:%i, bits:%i",iChannels,uiSamplesPerSec,uiBitsPerSample);
+	
 	m_dwPacketSize		 = 1152 * (uiBitsPerSample/8) * iChannels;
 	m_bPause           = false;
 	m_iAudioSkip	   = 1;
@@ -101,8 +89,6 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	m_iCalcDelay       = CALC_DELAY_START;
 	m_fCurDelay        = (FLOAT)0.001;
 	m_delay            = 1;
-	dwDonePkts=0;
-	dwSendPkts=0;
 	ZeroMemory(&m_wfx,sizeof(m_wfx)); 
 	m_wfx.cbSize=sizeof(m_wfx);
 	XAudioCreatePcmFormat(  iChannels,
@@ -445,7 +431,6 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 				//mp_msg(0,0,"IDirectSoundStream::Process() failed");
 				return iBytesCopied;
 			}
-			dwSendPkts++;
 			////mp_msg(0,0,"audio decoder process done");
 			iBytesCopied+=iSize;
 			len -=iSize;
