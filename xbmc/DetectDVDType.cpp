@@ -4,7 +4,7 @@
 #include "Settings.h"
 #include "playlistplayer.h"
 
-using namespace XISO9660;
+using namespace MEDIA_DETECT;
 
 CCriticalSection CDetectDVDMedia::m_muReadingMedia;
 CEvent					 CDetectDVDMedia::m_evAutorun;

@@ -59,6 +59,7 @@
 #include <memory>
 
 using namespace std;
+using namespace MEDIA_DETECT;
 
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback
 {

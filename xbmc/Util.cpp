@@ -13,9 +13,11 @@
 #include "filesystem/file.h"
 #include "DetectDVDType.h"
 #include "autoptrhandle.h"
-using namespace AUTOPTR;
 
+using namespace AUTOPTR;
+using namespace MEDIA_DETECT;
 using namespace XFILE;
+
 char g_szTitleIP[32];
 
 CUtil::CUtil(void)

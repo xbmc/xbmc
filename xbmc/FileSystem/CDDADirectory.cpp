@@ -41,7 +41,7 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 		CCdInfo* pCdInfo = CDetectDVDMedia::GetCdInfo();
 		if ( nTracks > 0)
 		{
-			if (g_stSettings.m_bUseCDDB)
+			if (CDetectDVDMedia::GetCdInfo()->HasCDDBInfo() && g_stSettings.m_bUseCDDB)
 			{
 				bool bCloseProgress(false);
 				if ( !cddb.isCDCached( pCdInfo ) ) 
@@ -84,10 +84,13 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 							{
 								b_cddb_names_ok=true;
 							}
+							else
+								CDetectDVDMedia::GetCdInfo()->SetNoCDDBInfo();
 						}
 					}
 					else 
 					{
+						CDetectDVDMedia::GetCdInfo()->SetNoCDDBInfo();
 						//show error message 1.5 seconds
 						pDialogOK->SetHeading(255);
 						pDialogOK->SetLine(0,257);//ERROR
