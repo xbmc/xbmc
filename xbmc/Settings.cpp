@@ -1077,6 +1077,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetInteger(pElement, "titlesortmethod", g_stSettings.m_iMyVideoTitleSortMethod, 0, 0, 3);
     GetBoolean(pElement, "titlesortascending", g_stSettings.m_bMyVideoTitleSortAscending);
 
+    GetFloat(pElement, "subsdelayrange", g_stSettings.m_fSubsDelayRange, 10, 10, 600);
+    GetFloat(pElement, "audiodelayrange", g_stSettings.m_fAudioDelayRange, 10, 10, 600);
     GetInteger(pElement, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds, 7, 1, INT_MAX);
     GetInteger(pElement, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries, 3, 1, 10);
     GetInteger(pElement, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay, 300, 100, 5000); //MS
@@ -1339,6 +1341,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   SetInteger(pNode, "titlesortmethod", g_stSettings.m_iMyVideoTitleSortMethod);
   SetBoolean(pNode, "titlesortascending", g_stSettings.m_bMyVideoTitleSortAscending);
 
+  SetFloat(pNode, "subsdelayrange", g_stSettings.m_fSubsDelayRange);
+  SetFloat(pNode, "audiodelayrange", g_stSettings.m_fAudioDelayRange);
   SetInteger(pNode, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds);
   SetInteger(pNode, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries);
   SetInteger(pNode, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay);

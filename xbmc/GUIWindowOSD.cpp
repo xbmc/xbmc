@@ -411,7 +411,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
         if (m_bSubMenuOn)
         {
           // set the controls values
-          SetSliderValue( -10.0f, 10.0f, g_application.m_pPlayer->GetSubTitleDelay(), OSD_SUBTITLE_DELAY);
+          SetSliderValue( -g_stSettings.m_fSubsDelayRange, g_stSettings.m_fSubsDelayRange, g_application.m_pPlayer->GetSubTitleDelay(), OSD_SUBTITLE_DELAY);
           SetCheckmarkValue(g_application.m_pPlayer->GetSubtitleVisible(), OSD_SUBTITLE_ONOFF);
 
           // show the controls on this sub menu
@@ -484,7 +484,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
         if (m_bSubMenuOn)      // is sub menu on?
         {
           // set the controls values
-          SetSliderValue( -10.0f, 10.0f, g_application.m_pPlayer->GetAVDelay(), OSD_AVDELAY);
+          SetSliderValue( -g_stSettings.m_fAudioDelayRange, g_stSettings.m_fAudioDelayRange, g_application.m_pPlayer->GetAVDelay(), OSD_AVDELAY);
 
           // show the controls on this sub menu
           SET_CONTROL_VISIBLE(OSD_AVDELAY);
@@ -807,11 +807,11 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
           if (pList->GetNumItems() == 3)
           { // we're in the case we want - call the code to switch channels etc.
             // update the screen setting...
-            g_stSettings.m_currentVideoSettings.m_AudioStream = pList->GetSelectedItem();
+            g_stSettings.m_currentVideoSettings.m_AudioStream = -1 - pList->GetSelectedItem();
             PopulateAudioStreams();
             // call monkeyh1's code here...
             bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL) && g_guiSettings.GetBool("Audio.OutputToAllSpeakers");
-            xbox_audio_switch_channel(g_stSettings.m_currentVideoSettings.m_AudioStream, bAudioOnAllSpeakers);
+            xbox_audio_switch_channel(pList->GetSelectedItem(), bAudioOnAllSpeakers);
             break;
           }
         }
@@ -1039,14 +1039,14 @@ void CGUIWindowOSD::PopulateAudioStreams()
     bool bAC3 = strstr(strAudioCodec.c_str(), "AC3") != 0;
     if (iNumChannels == 2 && !(bDTS || bAC3))
     { // ok, enable these options
-      if (g_stSettings.m_currentVideoSettings.m_AudioStream == -1)
+/*      if (g_stSettings.m_currentVideoSettings.m_AudioStream == -1)
       { // default to stereo stream
         g_stSettings.m_currentVideoSettings.m_AudioStream = 0;
-      }
+      }*/
       for (int i = 0; i < 3; i++)
       {
         CStdString strLabel = g_localizeStrings.Get(13320 + i);
-        if (i == g_stSettings.m_currentVideoSettings.m_AudioStream)
+        if (i == -g_stSettings.m_currentVideoSettings.m_AudioStream - 1)
           strLabel += " " + strActiveLabel;
 
         CGUIListItem* pItem = new CGUIListItem();
@@ -1056,7 +1056,7 @@ void CGUIWindowOSD::PopulateAudioStreams()
         m_vecAudioStreamItems.push_back(pItem);
       }
       // set the current active audio stream as the selected item in the list control
-      CGUIMessage msgSet(GUI_MSG_ITEM_SELECT, GetID(), OSD_AUDIOSTREAM_LIST, g_stSettings.m_currentVideoSettings.m_AudioStream, 0, NULL);
+      CGUIMessage msgSet(GUI_MSG_ITEM_SELECT, GetID(), OSD_AUDIOSTREAM_LIST, -1 - g_stSettings.m_currentVideoSettings.m_AudioStream, 0, NULL);
       OnMessage(msgSet);
       g_graphicsContext.Unlock();
       return ;
