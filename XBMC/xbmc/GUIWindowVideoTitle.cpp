@@ -666,8 +666,8 @@ void CGUIWindowVideoTitle::OnClick(int iItem)
     }
 
     g_playlistPlayer.Reset();
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-    CPlayList& playlist=g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+    CPlayList& playlist=g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
     playlist.Clear();
     for (int i=iSelectedFile-1; i < (int)movies.size(); ++i)
     {

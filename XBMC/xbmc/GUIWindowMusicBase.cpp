@@ -124,7 +124,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 		case GUI_MSG_PLAYBACK_STOPPED:
 		{
 			if ((m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_strDirectory) > -1)
-					|| (GetID()==WINDOW_MUSIC_PLAYLIST && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC))
+					|| (GetID()==WINDOW_MUSIC_PLAYLIST) )
 			{
 				for (int i=0; i < (int)m_vecItems.size(); ++i)
 				{
@@ -802,6 +802,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
 	CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem+1);
 	if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() && !g_application.IsPlayingAudio() )
 	{
+		g_playlistPlayer.Reset();
 		g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
 		g_playlistPlayer.Play(0);
 	}

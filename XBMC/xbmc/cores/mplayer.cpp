@@ -409,6 +409,7 @@ void update_cache_dialog(const char* tmp)
 }
 bool CMPlayer::openfile(const CStdString& strFile)
 {
+	int iRet=-1;
   int iCacheSize=1024;
   closefile();
   bool bFileOnHD(false);
@@ -503,7 +504,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
     //CLog::Log("  open 1st time");
 	  mplayer_init(argc,argv);
     mplayer_setcache_size(iCacheSize);
-	  int iRet=mplayer_open_file(strFile.c_str());
+	  iRet=mplayer_open_file(strFile.c_str());
 	  if (iRet < 0)
 	  {
 		  CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
@@ -705,7 +706,12 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
   if (m_dlgCache) delete m_dlgCache;
   m_dlgCache=NULL;
-	return true;
+
+	//	mplayer return values: 
+	//	-1	internal error
+	//	0		try next file (eg. file doesn't exitst)
+	//	1		successfully started playing
+	return (iRet>0);
 }
 
 bool CMPlayer::closefile()
