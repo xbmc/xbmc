@@ -2050,7 +2050,19 @@
  <string>
  <id>743</id>
  <value>Gul</value>
+ </string>
+ <string>
+ <id>744</id>
+ <value>Filer</value>
  </string> 
+ <string>
+ <id>745</id>
+ <value>Ingen scannad information för denna vy</value>
+ </string> 
+ <string>
+ <id>746</id>
+ <value>Ändra till Fil vy</value>
+  </string> 
 
  <string>
  <id>998</id>
