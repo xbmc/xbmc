@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "guitextbox.h"
 #include "guifontmanager.h"
+#include "../xbmc/utils/CharsetConverter.h"
 
 #define CONTROL_LIST		0
 #define CONTROL_UPDOWN	1
@@ -44,20 +45,21 @@ void CGUITextBox::Render()
 			CStdString strLabel1=item.GetLabel();
 			CStdString strLabel2=item.GetLabel2();
 
-			WCHAR wszText1[1024];
-			swprintf(wszText1,L"%S", strLabel1.c_str() );
+			CStdStringW strText1Unicode;
+			g_charsetConverter.stringCharsetToFontCharset(strLabel1, strText1Unicode);
+
 			DWORD dMaxWidth=m_dwWidth+16;
 			if (strLabel2.size())
 			{
-				WCHAR wszText2[1024];
+				CStdStringW strText2Unicode;
+				g_charsetConverter.stringCharsetToFontCharset(strLabel2, strText2Unicode);
 				float fTextWidth,fTextHeight;
-				swprintf(wszText2,L"%S", strLabel2.c_str() );
-				m_pFont->GetTextExtent( wszText2, &fTextWidth,&fTextHeight);
+				m_pFont->GetTextExtent( strText2Unicode.c_str(), &fTextWidth,&fTextHeight);
 				dMaxWidth -= (DWORD)(fTextWidth);
 
-				m_pFont->DrawTextWidth((float)iPosX+dMaxWidth, (float)iPosY+2, m_dwTextColor,wszText2,(float)fTextWidth);
+				m_pFont->DrawTextWidth((float)iPosX+dMaxWidth, (float)iPosY+2, m_dwTextColor,strText2Unicode.c_str(),(float)fTextWidth);
 			}
-			m_pFont->DrawTextWidth((float)iPosX, (float)iPosY+2, m_dwTextColor,wszText1,(float)dMaxWidth);
+			m_pFont->DrawTextWidth((float)iPosX, (float)iPosY+2,  m_dwTextColor,strText1Unicode.c_str(),(float)dMaxWidth);
       iPosY += (DWORD)m_iItemHeight;
     }
   }

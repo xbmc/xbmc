@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "guiCheckMarkControl.h"
 #include "guifontmanager.h"
-
+#include "../xbmc/utils/CharsetConverter.h"
 
 CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark,const CStdString& strTextureCheckMarkNF,DWORD dwCheckWidth, DWORD dwCheckHeight,DWORD dwAlign)
 :CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
 ,m_imgCheckMark(dwParentID, dwControlId, iPosX, iPosY,dwCheckWidth, dwCheckHeight, strTextureCheckMark)
 ,m_imgCheckMarkNoFocus(dwParentID, dwControlId, iPosX, iPosY,dwCheckWidth, dwCheckHeight, strTextureCheckMarkNF)
 {
-	m_strLabel=L""; 
+	m_strLabel=L"";
 	m_dwTextColor	= 0xFFFFFFFF; 
 	m_dwDisabledColor	= 0xFF606060; 
 	m_pFont=NULL;
@@ -26,13 +26,23 @@ void CGUICheckMarkControl::Render()
 {
   if (!IsVisible()) return;
 	int iTextPosX=m_iPosX;
+	int iTextPosY=m_iPosY;
 	int iCheckMarkPosX=m_iPosX;
   if (m_pFont) 
   {
+	  CStdStringW strLabelUnicode;
+	  g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
+
 	  float fTextHeight,fTextWidth;
-	  m_pFont->GetTextExtent( m_strLabel.c_str(), &fTextWidth, &fTextHeight);
+	  m_pFont->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight);
 	  m_dwWidth = (DWORD)fTextWidth+5+m_imgCheckMark.GetWidth();
 	  m_dwHeight = m_imgCheckMark.GetHeight();
+
+	  if (fTextHeight < m_imgCheckMark.GetHeight())
+	  {
+		  iTextPosY += (m_imgCheckMark.GetHeight() - (int)fTextHeight) / 2;
+	  }
+
 	  if (m_dwAlign==XBFONT_LEFT)
 	  {
 		  iCheckMarkPosX += ( (DWORD)(fTextWidth)+5);
@@ -44,23 +54,23 @@ void CGUICheckMarkControl::Render()
 
     if (IsDisabled() )
     {
-      m_pFont->DrawText((float)iTextPosX, (float)m_iPosY, m_dwDisabledColor, m_strLabel.c_str());
+      m_pFont->DrawText((float)iTextPosX, (float)iTextPosY, m_dwDisabledColor, strLabelUnicode.c_str());
     }
     else
     {
       if (HasFocus())
       {
         if (m_bShadow)
-          m_pFont->DrawShadowText((float)iTextPosX, (float)m_iPosY, m_dwTextColor, m_strLabel.c_str());
+          m_pFont->DrawShadowText((float)iTextPosX, (float)iTextPosY, m_dwTextColor, strLabelUnicode.c_str());
         else
-          m_pFont->DrawText((float)iTextPosX, (float)m_iPosY, m_dwTextColor, m_strLabel.c_str());
+          m_pFont->DrawText((float)iTextPosX, (float)iTextPosY, m_dwTextColor, strLabelUnicode.c_str());
       }
       else
       {
         if (m_bShadow)
-          m_pFont->DrawShadowText((float)iTextPosX, (float)m_iPosY, m_dwDisabledColor, m_strLabel.c_str());
+          m_pFont->DrawShadowText((float)iTextPosX, (float)iTextPosY, m_dwDisabledColor, strLabelUnicode.c_str());
         else
-          m_pFont->DrawText((float)iTextPosX, (float)m_iPosY, m_dwDisabledColor, m_strLabel.c_str());
+          m_pFont->DrawText((float)iTextPosX, (float)iTextPosY, m_dwDisabledColor, strLabelUnicode.c_str());
       }
     }
   }
@@ -93,7 +103,7 @@ bool CGUICheckMarkControl::OnMessage(CGUIMessage& message)
   {
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
-			m_strLabel=message.GetLabel();
+	  m_strLabel=message.GetLabel();
       return true;
     }
   }

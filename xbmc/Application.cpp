@@ -28,6 +28,7 @@
 #include "utils/MemUnit.h"
 #include "FileSystem/DAAPDirectory.h"
 #include "utils/FanController.h"
+#include "utils/CharsetConverter.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -56,6 +57,8 @@
 	#pragma comment (lib,"xbmc/lib/libsidplay/resid_builderd.lib")	// SECTIONNAME=SID_RW,SID_RX
 	#pragma comment (lib,"xbmc/lib/libmp4/libmp4v2d.lib")	// SECTIONNAME=LIBMP4
 	#pragma comment (lib,"xbmc/lib/libxdaap/libxdaapd.lib")	// SECTIONNAME=LIBXDAAP
+	#pragma comment (lib,"xbmc/lib/libiconv/libiconvd.lib")
+	#pragma comment (lib,"xbmc/lib/libfribidi/libfribidid.lib")
 #else
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
 	#pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
@@ -76,6 +79,8 @@
 	#pragma comment (lib,"xbmc/lib/libsidplay/resid_builder.lib") // SECTIONNAME=SID_RW,SID_RX
 	#pragma comment (lib,"xbmc/lib/libmp4/libmp4v2.lib")	// SECTIONNAME=LIBMP4
 	#pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib")	// SECTIONNAME=LIBXDAAP
+	#pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
+	#pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
 #endif
 
 CStdString g_LoadErrorStr;
@@ -964,6 +969,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	g_TextureManager.Cleanup();
 
 	g_fontManager.Clear();
+
+	g_charsetConverter.reset();
 
 	// Load in the skin.xml file if it exists
 	g_SkinInfo.Load(strSkinPath);

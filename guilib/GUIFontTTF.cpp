@@ -53,7 +53,7 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
 	m_pTrueTypeFont->SetTextHeight( iHeight );
 	m_pTrueTypeFont->SetTextStyle( iStyle );
 	// Anti-Alias the font -- 0 for no anti-alias, 2 for some, 4 for MAX!
-	m_pTrueTypeFont->SetTextAntialiasLevel( 2 );
+	m_pTrueTypeFont->SetTextAntialiasLevel( 0 );
 	m_pTrueTypeFont->SetTextAlignment(XFONT_CENTER);
 
 	return true;

@@ -311,6 +311,7 @@ public:
 		bool      m_bPostProcessing;
 		bool      m_bDeInterlace;
 		char      m_szSubtitleFont[40];
+		char	  m_szStringCharset[40];
 		int       m_iSubtitleHeight;
 		int       m_iEnlargeSubtitlePercent;
 		float     m_fVolumeAmplification;
@@ -408,7 +409,7 @@ public:
 		int       m_iRipBitRate;
 		char      m_strRipPath[MAX_PATH + 1];
 
-		char      m_szFlipBiDiCharset[128];
+		bool      m_bFlipBiDiCharset;
 		int		  m_nVolumeLevel;				// measured in 100th's of a dB.  0dB is max, -60.00dB is min
 
 		bool			m_bEnableRSS; // disable RSS feeds?
