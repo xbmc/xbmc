@@ -90,7 +90,7 @@ protected:
 					void							ClearFileItems();
 	virtual void							Update(const CStdString &strDirectory);
 					void							UpdateListControl();
-					void							AddItemToPlayList(const CFileItem* pItem) ;
+	virtual void							AddItemToPlayList(const CFileItem* pItem);
 					int								GetSelectedItem();
           void							SetSelectedItem(int index);
 					void							OnSearch();
