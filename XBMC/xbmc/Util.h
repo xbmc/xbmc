@@ -51,14 +51,16 @@ public:
 	static void LoadDateTime(SYSTEMTIME& dateTime, FILE *fd);
 	static void SaveDateTime(SYSTEMTIME& dateTime, FILE *fd);
 	static void GetSongInfo(const CStdString& strFileName, CStdString& strSongCacheName);
-	static void GetAlbumThumb(const CStdString& strFileName, CStdString& strAlbumThumb);
+	static void GetAlbumThumb(const CStdString& strFileName, CStdString& strAlbumThumb, bool bTempDir=false);
 	static void GetAlbumInfo(const CStdString& strFileName, CStdString& strAlbumThumb);
 	static void GetAlbumDatabase(const CStdString& strFileName, CStdString& strAlbumThumb);
 	static bool GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon);
 	static bool GetXBEDescription(const CStdString& strFileName, CStdString& strDescription);
 	static DWORD GetXbeID( const CStdString& strFilePath);
 	static void FillInDefaultIcons(VECFILEITEMS &items);
+	static void FillInDefaultIcon(CFileItem* pItem);
 	static void SetThumbs(VECFILEITEMS &items);
+	static void SetThumb(CFileItem* pItem);
 	static void GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS);
 	static void GetGenreDatabase(const CStdString& strFileName, CStdString& strGenreDBS);
 	static bool IsPlayList(const CStdString& strFile) ;
@@ -85,4 +87,5 @@ public:
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
   static bool IsNFO(const CStdString& strFile);
   static void GetPath(const CStdString& strFileName, CStdString& strPath);
+	static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
 };

@@ -70,7 +70,7 @@ UINT COggTag::ReadLength(void)
 	nLenght += (UINT) buffer[2]*10000;
 	nLenght += (UINT) buffer[3]*1000000;
 
-	if ( nLenght > 0 && nLenght <= (UINT)(2^32-1) )
+	if ( nLenght > 0 && nLenght <= UINT_MAX )
 		return nLenght;
 
 	return 0;

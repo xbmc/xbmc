@@ -192,7 +192,7 @@ void CGUIWindowMusicInfo::Refresh()
 
 	CStdString strThumb;
 	CStdString strImage=m_pAlbum->GetImageURL();
-	CUtil::GetAlbumThumb(m_pAlbum->GetTitle(),strThumb);
+	CUtil::GetAlbumThumb(m_pAlbum->GetTitle()+m_pAlbum->GetAlbumPath(),strThumb);
 	if (!CUtil::FileExists(strThumb) )
 	{
 		CHTTP http;

@@ -1134,4 +1134,12 @@
     <id>357</id>
     <value>Shutdown Idle Timeout</value>
   </string>
+  <string>
+    <id>358</id>
+    <value>All albums</value>
+  </string>
+  <string>
+    <id>359</id>
+    <value>Recent albums</value>
+  </string>
 </strings>

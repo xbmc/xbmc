@@ -19,7 +19,6 @@ bool CMusicInfoTagLoaderOgg::Load(const CStdString& strFileName, CMusicInfoTag& 
 	// and put it in tag
 	bool bResult= false;
 	tag.SetURL(strFileName);
-	tag.SetLoaded(true);
 	CFile file;
 	if ( file.Open( strFileName.c_str() ) )  {
 		COggTag myTag;
@@ -43,6 +42,7 @@ bool CMusicInfoTagLoaderOgg::Load(const CStdString& strFileName, CMusicInfoTag& 
 		{
 			bResult = true;
 			tag.SetTitle(strTitle);
+			tag.SetLoaded(true);
 		}
 		if (!strArtist.IsEmpty())
 		{

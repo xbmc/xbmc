@@ -17,7 +17,8 @@ protected:
   virtual void				OnClick(int iItem);
 	virtual void				DoSort(VECFILEITEMS& items);
 
-					bool				OnScan(VECFILEITEMS& items);
+					void				OnScan();
+					bool				DoScan(VECFILEITEMS& items);
 					void				LoadPlayList(const CStdString& strPlayList);
 
 	CStdString					m_strPrevDir;
