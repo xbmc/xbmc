@@ -22,6 +22,7 @@
 #include "picture.h"
 #include "filesystem/hddirectory.h"
 #include "filesystem/DirectoryCache.h"
+#include "Credits.h"
 #include "utils/CharsetConverter.h"
 
 bool CUtil::m_bNetworkUp = false;
@@ -3379,6 +3380,10 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
 	else if (execute == "Dashboard")
 	{
 		RunXBE(g_stSettings.szDashboard);
+	}
+	else if (execute == "Credits")
+	{
+		RunCredits();
 	}
 	else if (execute == "Restart")
 	{
