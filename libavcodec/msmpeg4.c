@@ -1098,6 +1098,18 @@ static void init_h263_dc_for_msmpeg4(void)
         }
 }
 
+void ff_msmpeg4_decode_uninit()
+{
+    int i,q;
+    for(i=0;i<NB_RL_TABLES;i++) {
+    	for(q=0;q<32;q++)
+    	   if(rl_table[i].rl_vlc[q]) {
+    	   	av_free(rl_table[i].rl_vlc[q]);
+    	   	rl_table[i].rl_vlc[q] = NULL;
+    	   }	
+    }
+}
+        
 /* init all vlc decoding tables */
 int ff_msmpeg4_decode_init(MpegEncContext *s)
 {

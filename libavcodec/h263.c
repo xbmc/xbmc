@@ -2776,6 +2776,39 @@ void init_vlc_rl(RLTable *rl)
     }
 }
 
+/* uninit vlcs */
+void h263_decode_uninit_vlc()
+{
+    int q;     
+    for(q=0; q<32; q++){
+    	
+    	if(rl_inter.rl_vlc[q]) {
+	av_free(rl_inter.rl_vlc[q]);
+	rl_inter.rl_vlc[q]= NULL;
+	}
+
+    	if(rl_intra.rl_vlc[q]) {
+	av_free(rl_intra.rl_vlc[q]);
+	rl_intra.rl_vlc[q]= NULL;
+	}
+
+    	if(rvlc_rl_inter.rl_vlc[q]) {
+	av_free(rvlc_rl_inter.rl_vlc[q]);
+	rvlc_rl_inter.rl_vlc[q]= NULL;
+	}
+
+    	if(rvlc_rl_intra.rl_vlc[q]) {
+	av_free(rvlc_rl_intra.rl_vlc[q]);
+	rvlc_rl_intra.rl_vlc[q]= NULL;
+	}
+
+    	if(rl_intra_aic.rl_vlc[q]) {
+	av_free(rl_intra_aic.rl_vlc[q]);
+	rl_intra_aic.rl_vlc[q]= NULL;
+	}
+    }
+}
+
 /* init vlcs */
 
 /* XXX: find a better solution to handle static init */
