@@ -122,6 +122,20 @@ char* CUtil::GetFileName(const CStdString& strFileNameAndPath)
 
 }
 
+CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath)
+{
+	// use above to get the filename
+	CStdString strFilename = GetFileName(strFileNameAndPath);
+	// now remove the extension if needed
+	if (g_stSettings.m_bHideExtensions)
+	{
+		int iPos = strFilename.ReverseFind(".");
+		if (iPos>0)
+			return strFilename.Left(iPos);
+	}
+	return strFilename;
+}
+
 void CUtil::RemoveExtension(CFileItem *pItem)
 {
 	if (pItem->m_bIsFolder)
