@@ -758,7 +758,7 @@ void CGUIWindowSlideShow::DoRotate()
 	}
 	CPicture picture;
 	g_graphicsContext.Get3DDevice()->EnableOverlay(false);
-	m_pTextureBackGround=picture.Load(m_strBackgroundSlide, m_iRotate,MAX_PICTURE_WIDTH,MAX_PICTURE_HEIGHT, false);
+	m_pTextureBackGround=picture.Load(m_strBackgroundSlide, m_iRotate,MAX_PICTURE_WIDTH,MAX_PICTURE_HEIGHT, true);
 //	m_pTextureBackGround->GetSurfaceLevel(0, &m_pSurfaceBackGround);
 	g_graphicsContext.Get3DDevice()->EnableOverlay(true);
 	m_dwWidthBackGround=picture.GetWidth();
