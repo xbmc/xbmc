@@ -209,9 +209,40 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);
 			m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
 
-			if (m_Directory.m_strPath=="?")
+			// check for a passed destination path
+			CStdString strDestination = message.GetStringParam();
+			if (!strDestination.IsEmpty())
 			{
-				m_Directory.m_strPath=g_stSettings.m_szDefaultPictures;
+				message.SetStringParam("");
+				CLog::Log(LOGINFO,"Attempting to quickpath to: %s",strDestination.c_str());
+			}
+			// otherwise, is this the first time accessing this window?
+			else if (m_Directory.m_strPath=="?")
+			{
+				strDestination = g_stSettings.m_szDefaultPictures;
+				CLog::Log(LOGINFO,"Attempting to default to: %s",strDestination.c_str());
+			}
+			// try to open the destination path
+			if (!strDestination.IsEmpty())
+			{
+				// default parameters if the jump fails
+				m_Directory.m_strPath="";
+
+				bool bIsBookmarkName = false;
+				int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyPictureShares, bIsBookmarkName);
+				if (iIndex>-1)
+				{
+					// set current directory to matching share
+					if (bIsBookmarkName)
+                        m_Directory.m_strPath=g_settings.m_vecMyPictureShares[iIndex].strPath;
+					else
+						m_Directory.m_strPath=strDestination;
+					CLog::Log(LOGINFO,"  Success! Opened destination path: %s",strDestination.c_str());
+					}
+				else
+				{
+					CLog::Log(LOGERROR,"  Failed! Destination parameter (%s) does not match a valid share!",strDestination.c_str());
+				}
 				SetHistoryForPath(m_Directory.m_strPath);
 			}
 
@@ -229,10 +260,10 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			UpdateThumbPanel();
 
 			if (m_iItemSelected >=0)
-      {
-			  CONTROL_SELECT_ITEM(CONTROL_LIST,m_iItemSelected)
-			  CONTROL_SELECT_ITEM(CONTROL_THUMBS,m_iItemSelected)
-      }
+			{
+				CONTROL_SELECT_ITEM(CONTROL_LIST,m_iItemSelected);
+				CONTROL_SELECT_ITEM(CONTROL_THUMBS,m_iItemSelected);
+			}
 
 			return true;
 		}
