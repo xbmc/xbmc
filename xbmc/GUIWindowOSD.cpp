@@ -224,7 +224,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 			OutputDebugString("OSD:DEINIT\n");
       //hide the OSD
       HIDE_CONTROL(GetID(), GetID());
-			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
+			//if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
 			g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
 			// don't save the settings here, it's bad for the hd-spindown feature (causes spinup)
       // settings are saved in FreeResources in GUIWindowFullScreen
@@ -237,7 +237,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 		{
 
 			OutputDebugString("OSD:INIT\n");
-			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(false);
+			//if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(false);
 			// position correctly
 			int iResolution = g_graphicsContext.GetVideoResolution();
 			SetPosition(0, g_settings.m_ResInfo[iResolution].iOSDYOffset);
