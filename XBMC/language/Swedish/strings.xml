@@ -1741,6 +1741,31 @@
  </string>
 
  <string>
+ <id>620</id>
+ <value>CD Rippning</value>
+ </string>
+
+ <string>
+ <id>621</id>
+ <value>Val av encodare</value>
+ </string>
+
+ <string>
+ <id>622</id>
+ <value>Kvalitet</value>
+ </string>
+
+ <string>
+ <id>623</id>
+ <value>BitRate</value>
+ </string>
+
+ <string>
+ <id>624</id>
+ <value>Inkludera spår nummer</value>
+ </string>
+
+ <string>
  <id>998</id>
  <value>XLink KAI</value>
  </string>
@@ -1751,54 +1776,274 @@
  </string> 
 
 
- <string><id>10000</id><value>Start</value></string>
- <string><id>10001</id><value>Mina Program</value></string>
- <string><id>10002</id><value>Mina Bilder</value></string>
- <string><id>10003</id><value>Mina Filer</value></string>
- <string><id>10004</id><value>Inställnigar</value></string>
- <string><id>10005</id><value>Min Musik</value></string>
- <string><id>10006</id><value>Mina Filmer</value></string>
- <string><id>10007</id><value>System information</value></string>
- <string><id>10008</id><value>Inställningar->General</value></string>
- <string><id>10009</id><value>Inställningar->Bildskärm</value></string>
- <string><id>10010</id><value>Inställningar->Bildskärm->UI Kalibration</value></string>
- <string><id>10011</id><value>Inställningar->Bildskärm->Bild Kalibration</value></string>
- <string><id>10012</id><value>Inställningar->Bildspel</value></string>
- <string><id>10013</id><value>Inställningar->Bildskärm->Filter</value></string>
- <string><id>10014</id><value>Inställningar->Musik</value></string>
- <string><id>10015</id><value>instllningar->Bildskärm->Undertexter</value></string>
- <string><id>10016</id><value>Inställningar->Bildskärm->Skärmsläckare</value></string>
- <string><id>10017</id><value>Inställningar->Väder</value></string>
- <string><id>10020</id><value>Inställningar->Skript</value></string>
- <string><id>10021</id><value>Mina Filmer/genre</value></string>
- <string><id>10022</id><value>Mina Filmer/skådespelare</value></string>
- <string><id>10023</id><value>Mina Filmer/År</value></string>
- <string><id>10024</id><value>Inställningar->Program</value></string>
- <string><id>10025</id><value>Mina Filmer/Titel</value></string>
- <string><id>10026</id><value>Inställningar->General->Cache</value></string>
- <string><id>10027</id><value>Inställningar->General->Autorun</value></string>
- <string><id>10028</id><value>Mina Filmer/playlist</value></string>
- <string><id>10029</id><value>Inställningar->General->LCD</value></string>
- <string><id>10100</id><value>Ja/Nej-dialog</value></string>
- <string><id>10101</id><value>Progress dialog</value></string>
- <string><id>10500</id><value>Min Musik/spellista</value></string>
- <string><id>10501</id><value>Min Musik/filer</value></string>
- <string><id>10502</id><value>Min Musik/album</value></string>
- <string><id>10503</id><value>Min Musik/artister</value></string>
- <string><id>10504</id><value>Min Musik/genres</value></string>
- <string><id>10505</id><value>Min Muisk/top100</value></string>
- <string><id>11000</id><value>Tangentbord</value></string>
- <string><id>12000</id><value>Välj dialog</value></string>
- <string><id>12001</id><value>Min Muisk/info</value></string>
- <string><id>12002</id><value>Dialog OK</value></string>
- <string><id>12003</id><value>Mina Filmer/Info</value></string>
- <string><id>12004</id><value>Mina Scrip/Info</value></string>
- <string><id>12005</id><value>Helskärmsvideo</value></string>
- <string><id>12006</id><value>Ljud visisalisation</value></string>
- <string><id>12007</id><value>Mina Bilder/Bildspel</value></string>
- <string><id>12008</id><value>Filestacking-dialog</value></string>
- <string><id>12600</id><value>Mitt väder</value></string>
- <string><id>12900</id><value>Skärmsläckare</value></string>
- <string><id>12901</id><value>Helskärms OSD</value></string>
+ <string>
+ <id>10000</id>
+<value>Start</value>
+</string>
+
+ <string>
+<id>10001</id>
+<value>Mina Program</value>
+</string>
+
+ <string>
+<id>10002</id>
+<value>Mina Bilder</value>
+</string>
+
+ <string>
+<id>10003</id>
+<value>Mina Filer</value>
+</string>
+
+ <string>
+<id>10004</id>
+<value>Inställnigar</value>
+</string>
+
+ <string>
+<id>10005</id>
+<value>Min Musik</value>
+</string>
+
+ <string>
+<id>10006</id>
+<value>Mina Filmer</value>
+</string>
+
+ <string>
+<id>10007</id>
+<value>System information</value>
+</string>
+
+ <string>
+<id>10008</id>
+<value>Inställningar->General</value>
+</string>
+
+ <string>
+<id>10009</id>
+<value>Inställningar->Bildskärm</value>
+</string>
+
+ <string>
+<id>10010</id>
+<value>Inställningar->Bildskärm->UI Kalibration</value>
+</string>
+
+ <string>
+<id>10011</id>
+<value>Inställningar->Bildskärm->Bild Kalibration</value>
+</string>
+
+ <string>
+<id>10012</id>
+<value>Inställningar->Bildspel</value>
+</string>
+
+ <string>
+<id>10013</id>
+<value>Inställningar->Bildskärm->Filter</value>
+</string>
+
+ <string>
+<id>10014</id>
+<value>Inställningar->Musik</value>
+</string>
+
+ <string>
+<id>10015</id>
+<value>instllningar->Bildskärm->Undertexter</value>
+</string>
+
+ <string>
+<id>10016</id>
+<value>Inställningar->Bildskärm->Skärmsläckare</value>
+</string>
+
+ <string>
+<id>10017</id>
+<value>Inställningar->Väder</value>
+</string>
+
+ <string>
+<id>10020</id>
+<value>Inställningar->Skript</value>
+</string>
+
+ <string>
+<id>10021</id>
+<value>Mina Filmer/genre</value>
+</string>
+
+ <string>
+<id>10022</id>
+<value>Mina Filmer/skådespelare</value>
+</string>
+
+ <string>
+<id>10023</id>
+<value>Mina Filmer/År</value>
+</string>
+
+ <string>
+<id>10024</id>
+<value>Inställningar->Program</value>
+</string>
+
+ <string>
+<id>10025</id>
+<value>Mina Filmer/Titel</value>
+</string>
+
+ <string>
+<id>10026</id>
+<value>Inställningar->General->Cache</value>
+</string>
+
+ <string>
+<id>10027</id>
+<value>Inställningar->General->Autorun</value>
+</string>
+
+ <string>
+<id>10028</id>
+<value>Mina Filmer/playlist</value>
+</string>
+
+ <string>
+<id>10029</id>
+<value>Inställningar->General->LCD</value>
+</string>
+
+ <string>
+<id>10100</id>
+<value>Ja/Nej-dialog</value>
+</string>
+
+ <string>
+<id>10101</id>
+<value>Progress dialog</value>
+</string>
+
+ <string>
+<id>10500</id>
+<value>Min Musik/spellista</value>
+</string>
+
+ <string>
+<id>10501</id>
+<value>Min Musik/filer</value>
+</string>
+
+ <string>
+<id>10502</id>
+<value>Min Musik/album</value>
+</string>
+
+ <string>
+<id>10503</id>
+<value>Min Musik/artister</value>
+</string>
+
+ <string>
+<id>10504</id>
+<value>Min Musik/genres</value>
+</string>
+
+ <string>
+<id>10505</id>
+<value>Min Muisk/top100</value>
+</string>
+
+ <string>
+<id>11000</id>
+<value>Tangentbord</value>
+</string>
+
+ <string>
+<id>12000</id>
+<value>Välj dialog</value>
+</string>
+
+ <string>
+<id>12001</id>
+<value>Min Muisk/info</value>
+</string>
+
+ <string>
+<id>12002</id>
+<value>Dialog OK</value>
+</string>
+
+ <string>
+<id>12003</id>
+<value>Mina Filmer/Info</value>
+</string>
+
+ <string>
+<id>12004</id>
+<value>Mina Scrip/Info</value>
+</string>
+
+ <string>
+<id>12005</id>
+<value>Helskärmsvideo</value>
+</string>
+
+ <string>
+<id>12006</id>
+<value>Ljud visisalisation</value>
+</string>
+
+ <string>
+<id>12007</id>
+<value>Mina Bilder/Bildspel</value>
+</string>
+
+ <string>
+<id>12008</id>
+<value>Filestacking-dialog</value>
+</string>
+
+ <string>
+<id>12600</id>
+<value>Mitt väder</value>
+</string>
+
+ <string>
+<id>12900</id>
+<value>Skärmsläckare</value>
+</string>
+
+ <string>
+<id>12901</id>
+<value>Helskärms OSD</value>
+</string>
+
+ <string>
+ <id>13000</id>
+ <value>System</value>
+ </string>
+
+ <string>
+ <id>13001</id>
+ <value>Omedelbar HD nerspin:</value>
+ </string>
+
+ <string>
+ <id>13002</id>
+ <value>Bara Video</value>
+ </string>
+
+ <string>
+ <id>13003</id>
+ <value>- Fördröjning:</value>
+ </string>
+
+ <string>
+ <id>13004</id>
+ <value>- Minimum speltid:</value>
+ </string>
 
 </strings>
