@@ -22,7 +22,7 @@ using namespace MEDIA_DETECT;
 signature_t CCdIoSupport::sigs[] =
   {
 /*buffer[x] off look for     description */
-    {0,     1, "CD001\0",    "ISO 9660\0"}, 
+    {0,     1, "CD001\0",    "ISO 9660\0"},
     {0,     1, "CD-I",       "CD-I"}, 
     {0,     8, "CDTV",       "CDTV"}, 
     {0,     8, "CD-RTOS",    "CD-RTOS"}, 
@@ -46,28 +46,22 @@ static void
 xbox_cdio_log_handler (cdio_log_level_t level, const char message[])
 {
 #ifdef DEBUG_CDIO
-	char buf[1024];
   switch (level)
 	{
     case CDIO_LOG_ERROR:
-      sprintf (buf, "**ERROR: %s\n", message);
-      OutputDebugString( buf );
+			CLog::DebugLog("**ERROR: %s", message);
       break;
     case CDIO_LOG_DEBUG:
-      sprintf (buf, "--DEBUG: %s\n", message);
-      OutputDebugString( buf );
+			CLog::DebugLog("--DEBUG: %s", message);
       break;
     case CDIO_LOG_WARN:
-      sprintf (buf, "++ WARN: %s\n", message);
-      OutputDebugString( buf );
-      break;
+ 			CLog::DebugLog("++ WARN: %s", message);
+     break;
     case CDIO_LOG_INFO:
-      sprintf (buf, "   INFO: %s\n", message);
-      OutputDebugString( buf );
+ 			CLog::DebugLog("   INFO: %s", message);
      break;
     case CDIO_LOG_ASSERT:
-      sprintf (buf, "!ASSERT: %s\n", message);
-      OutputDebugString( buf );
+ 			CLog::DebugLog("!ASSERT: %s", message);
       break;
     default:
       //cdio_assert_not_reached ();
@@ -298,20 +292,21 @@ int CCdIoSupport::ReadBlock(int superblock, uint32_t offset, uint8_t bufnum, tra
   unsigned int track_sec_count = cdio_get_track_sec_count(cdio, track_num);
   memset(buffer[bufnum], 0, CDIO_CD_FRAMESIZE);
 
-  if ( track_sec_count < (UINT)superblock) 
-	{
+  if ( track_sec_count < (UINT)superblock) {
+    cdio_debug("reading block %u skipped track %d has only %u sectors\n", 
+	       superblock, track_num, track_sec_count);
     return -1;
   }
   
-  if (cdio_get_track_green(cdio,  track_num)) 
-	{
-    if (0 > cdio_read_mode2_sector(cdio, buffer[bufnum], 
+  cdio_debug("about to read sector %lu\n", 
+	     (long unsigned int) offset+superblock);
+
+  if (cdio_get_track_green(cdio,  track_num)) {
+    if (0 < cdio_read_mode2_sector(cdio, buffer[bufnum], 
 				   offset+superblock, false))
       return -1;
-  } 
-	else 
-	{
-    if (0 > cdio_read_yellow_sector(cdio, buffer[bufnum], 
+  } else {
+    if (0 < cdio_read_mode1_sector(cdio, buffer[bufnum], 
 				    offset+superblock, false))
       return -1;
   }
@@ -511,6 +506,23 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
 
   return ret;
 }
+
+void CCdIoSupport::GetCdTextInfo(trackinfo *pti, int trackNum)
+{
+	// Get the CD-Text , if any
+	cdtext_t *pcdtext = (cdtext_t *)cdio_get_cdtext (cdio, trackNum);
+
+	cdtext_init(&pti->cdtext);
+
+	if (pcdtext==NULL)
+		return;
+
+	for (int i=0; i < MAX_CDTEXT_FIELDS; i++) {
+		if (pcdtext->field[i]) 
+			pti->cdtext.field[i]=strdup(pcdtext->field[i]);
+	}
+}
+
 CCdInfo* CCdIoSupport::GetCdInfo()
 {
 	char* source_name = "\\\\.\\D:";
@@ -542,13 +554,17 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 			ti.isofs_size = 0;
 			ti.nJolietLevel = 0;
 			ti.nFrames = 0;
+			cdtext_init(&ti.cdtext);
 			info->SetTrackInformation( i, ti );
 			sprintf( buf, "cdio_track_msf for track %i failed, I give up.\n", i);
 			OutputDebugString( buf );
+			delete info;
 			return NULL;
 		}
 
-		trackinfo ti;
+		trackinfo ti_0, ti;
+		cdtext_init(&ti_0.cdtext);
+		cdtext_init(&ti.cdtext);
 		if (TRACK_FORMAT_AUDIO == cdio_get_track_format(cdio, i)) 
 		{
 			m_nNumAudio++;
@@ -563,6 +579,16 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 			ti.nSecs = temp2 / 75;    // calculate the number of seconds
 			if (-1 == m_nFirstAudio)
 				m_nFirstAudio = i;
+
+			// Make sure that we have the Disc related info available
+			if (i==1)
+			{
+				GetCdTextInfo(&ti_0, 0);
+				info->SetDiscCDTextInformation( ti_0.cdtext );
+			}
+
+			// Get this tracks info
+			GetCdTextInfo(&ti, i);
 		} 
 		else 
 		{
@@ -638,6 +664,7 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 					ti.isofs_size = 0;
 					ti.nJolietLevel = 0;
 					ti.nFrames = cdio_get_track_lba(cdio, i);
+					cdtext_init(&ti.cdtext);
 					info->SetTrackInformation( i + 1, ti );
 				case TRACK_FORMAT_ERROR:
 					break;
@@ -660,6 +687,7 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 			
 			m_nFs = GuessFilesystem(m_nStartTrack, i);
 			trackinfo ti;
+			cdtext_init(&ti.cdtext);
 			ti.nfsInfo = m_nFs;
 			//	valid UDF version for xbox 
 			if ((m_nFs & FS_MASK)==FS_UDF)
