@@ -37,9 +37,7 @@ bool CGUIWindowScreensaver::IsPlaying() const
 
 void CGUIWindowScreensaver::Render()
 {
-	//g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 	RenderFrame();
-	//CGUIWindow::Render();
 }
 
 void CGUIWindowScreensaver::OnAction(const CAction &action)
@@ -70,7 +68,7 @@ void CGUIWindowScreensaver::InitMatrix()
 		}
 		// Pos will be (0-120)/4
 		// Speed will depend on how many "pos" it will skip on the way through
-		m_iMatrixPos[iX] = 0-((rand()+iX)%240);
+		m_iMatrixPos[iX] = 0-((rand()+iX)%(g_graphicsContext.GetHeight()/2));
 		m_iMatrixSpeed[iX] = 1+((rand()+iX)%4);
 	}
 
@@ -91,18 +89,11 @@ void CGUIWindowScreensaver::RenderFrame()
 	int iPos, iCol, iX, iY, iColMax, iRowMax;
 	DWORD dwGreen;
 	DWORD dwLeadColor;
-	RECT rect;
-
 	CStdStringW wszText;
 	
 	LPDIRECT3DDEVICE8 pDevice = g_graphicsContext.Get3DDevice();
 	bool bFade = false;
 
-	rect.left = 0;
-	rect.top = 0;
-	rect.right = 640;
-	rect.bottom = 480;
-	
 	if ( !m_bInit )	InitMatrix();
 	if ( !m_pFont ) return;			// couldn't even find the standard font ...
 
@@ -128,7 +119,6 @@ void CGUIWindowScreensaver::RenderFrame()
 	dwGreen &= m_dwColor;
 	dwLeadColor = 0xDDDDDDDD;	// Original source used bright white, we'll go a bit darker
 
-
 	// Render the PREVIOUS screen, which displays fading symbols
 	// as new symbol is drawn below it. The essence of the Matrix Effect	
 	
@@ -143,23 +133,23 @@ void CGUIWindowScreensaver::RenderFrame()
 			m_iMatrixPos[iCol] += m_iMatrixSpeed[iCol];
 
 			// Reset only if we are not fading out...
-			if ( (m_iMatrixPos[iCol] > 239) && (!bFade) )
+			if ( (m_iMatrixPos[iCol] > (g_graphicsContext.GetHeight()/2)) && (!bFade) )
 			{
-				m_iMatrixPos[iCol] = 0-(rand()%240);
+				m_iMatrixPos[iCol] = 0-(rand()%(g_graphicsContext.GetHeight()/2));
 			}
 
 			// Get our grid Y coord
 			iPos = m_iMatrixPos[iCol]/8;
 
 			// Draw character only if the pos is visible
-			if ( (iPos >= 0) && (iPos<iRowMax) )	// was 30
+			if ( (iPos >= 0) && (iPos<iRowMax) )
 			{
 				iX = iCol*16;
 				iY = iPos*16;
 				chText[0] = m_mtrxGrid[iCol][iPos];
 				wszText.Format(L"%c", chText[0]);
 				m_pFont->DrawText( (FLOAT)iX, (FLOAT)iY, m_dwColor, wszText );
-				if ( iPos<iRowMax )	// was 29
+				if ( iPos<iRowMax )
 				{
 					iX = iCol*16;
 					iY = (iPos+1)*16;
@@ -171,7 +161,7 @@ void CGUIWindowScreensaver::RenderFrame()
 		}
 	}
 
-	// Grab copy of screen...
+	// Grab a copy of screen...
 	if (m_pTexture) m_pTexture->Release();
 	GetBackBufferTexture( pDevice, &m_pTexture );
 	m_dwFrameCount++;
@@ -245,7 +235,6 @@ HRESULT CGUIWindowScreensaver::GetBackBufferTexture(IDirect3DDevice8* pDevice, L
 					if ( SUCCEEDED(hr = pDevice->CopyRects( pPersistedSurface, &rc, 1, 
 										pPersistedSurfaceTgt, &ptDest )))
 					{
-	//					DEBUG_LINE(_T("CREATED BACK BUFFER"));
 					}
 				}
 				catch( ... )
