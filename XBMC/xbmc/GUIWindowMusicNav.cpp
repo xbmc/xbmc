@@ -1109,6 +1109,7 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
           m_strAlbum.Empty();
         else
           m_strAlbum = pItem->m_musicInfoTag.GetAlbum();
+        m_strAlbumPath = pItem->m_strPath;
       }
       break;
     }
