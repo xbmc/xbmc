@@ -118,12 +118,15 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 		char* pAHREF=strstr(pStartOfMovieList,"<a href=");
 		if (pAHREF)
 		{
-            //<a href="/title/tt0313443/">Out of Time (2003/I)</a>
-    		//old way
+			//<a href="/title/tt0313443/">Out of Time</a>(2003/I)</tr>...
+			//<a href="/title/tt0313443/">Out of Time (2003/I)</a>
+			//old way
 			//<A HREF="/Title?0167261">Lord of the Rings: The Two Towers, The (2002)</A>
 			char* pendAHREF=strstr(pStartOfMovieList,"</a>");
 			if (pendAHREF)
 			{
+				char* pYear=pendAHREF+4;
+				char* pendYear = strstr(pYear, "</td>");
 				*pendAHREF	=0;
 				pAHREF+=strlen("<a href=.");
 				// get url
@@ -144,6 +147,12 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
           }
           else
             strcpy(szTitle, pURL+1);
+					if (pendYear)
+					{
+						*pendYear = 0;
+						strcat(szTitle, pYear);
+						pendAHREF = pendYear;
+					}
 					html.ConvertHTMLToAnsi(szTitle, url.m_strTitle);
 		
 					sprintf(szURL,"http://us.imdb.com/%s", &pAHREF[1]);

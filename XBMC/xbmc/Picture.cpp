@@ -68,7 +68,7 @@ CxImage* CPicture::LoadImage(const CStdString& strFileName, int &iOriginalWidth,
 	  if ( !file.Cache(strFileName.c_str(),strCachedFile.c_str(),NULL,NULL) )
 	  {
       ::DeleteFile(strCachedFile.c_str());
-			CLog::Log(LOGERROR, "PICTURE::load: Unable to cache file %s\n", strFileName.c_str());
+			CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to cache file %s\n", strFileName.c_str());
 		  return NULL;
 	  }
   }
@@ -84,26 +84,36 @@ CxImage* CPicture::LoadImage(const CStdString& strFileName, int &iOriginalWidth,
 	}
 
 	CxImage* pImage = new CxImage(dwImageType);
+	if (!pImage) return NULL;
+	int iWidth = iMaxWidth;
+	int iHeight = iMaxHeight;
   try
   {
-	  if (!pImage->Load(strCachedFile.c_str(),dwImageType) || !pImage->IsValid())
+		CLog::Log(LOGDEBUG, "PICTURE::LoadImage: Attempting to load %s", strCachedFile.c_str());
+	  if (!pImage->Load(strCachedFile.c_str(),dwImageType,iWidth,iHeight) || !pImage->IsValid())
 	  {
-			CLog::Log(LOGERROR, "PICTURE::load: Unable to open image: %s Error:%s\n", strCachedFile.c_str(), pImage->GetLastError());
+			CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to open image: %s Error:%s\n", strCachedFile.c_str(), pImage->GetLastError());
+			delete pImage;
 		  return NULL;
 	  }
   }
   catch(...)
   {
-		CLog::Log(LOGERROR, "PICTURE::load: Unable to open image: %s\n", strCachedFile.c_str());
+		CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to open image: %s\n", strCachedFile.c_str());
     if (CUtil::IsHD(strCachedFile) )
     {
       ::DeleteFile(strCachedFile.c_str());
     }
+		delete pImage;
     return NULL;
   }
+	
+	CLog::Log(LOGDEBUG, "PICTURE::LoadImage: Loaded %s successfully.", strCachedFile.c_str());
 
-	m_dwWidth  = iOriginalWidth  = pImage->GetWidth();
-	m_dwHeight = iOriginalHeight = pImage->GetHeight();
+	iOriginalWidth = iWidth;
+	iOriginalHeight = iHeight;
+	m_dwWidth  = pImage->GetWidth();
+	m_dwHeight = pImage->GetHeight();
 
 	bool bResize=false;
 	float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
@@ -126,7 +136,8 @@ CxImage* CPicture::LoadImage(const CStdString& strFileName, int &iOriginalWidth,
   {
 		if (!pImage->Resample(m_dwWidth,m_dwHeight, QUALITY) || !pImage->IsValid())
 		{
-			CLog::Log(LOGERROR, "PICTURE::Load: Unable to resample picture: %s\n", strCachedFile.c_str());
+			CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to resample picture: %s\n", strCachedFile.c_str());
+			delete pImage;
 			return NULL;
 		}
 	}

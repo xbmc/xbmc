@@ -279,6 +279,7 @@ void CGUIButtonScroller::Render()
 		CGUIImage *pImage = (CGUIImage *)m_gWindowManager.GetWindow(GetParentID())->GetControl(m_vecButtons[GetActiveButton()]->iIcon+40);
 		if (!pImage) pImage = &m_imgFocus;
 		pImage->SetPosition(iPosX, iPosY);
+		pImage->SetVisible(true);
 		pImage->SetWidth(m_imgFocus.GetWidth());
 		pImage->SetHeight(m_imgFocus.GetHeight());
 		pImage->Render();
@@ -522,6 +523,7 @@ void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool b
 		CGUIImage *pImage = (CGUIImage *)m_gWindowManager.GetWindow(GetParentID())->GetControl(m_vecButtons[iOffset]->iIcon+20);
 		if (!pImage) pImage = &m_imgNoFocus;
 		pImage->SetCornerAlpha(0xFF, 0xFF, 0xFF, 0xFF);
+		pImage->SetVisible(true);
 		if (m_bHorizontal)
 		{
 			if (iPosX < fStartAlpha)

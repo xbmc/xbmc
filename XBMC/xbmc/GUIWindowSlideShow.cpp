@@ -22,6 +22,8 @@
 #define PICTURE_VIEW_BOX_COLOR			0xffffff00	// YELLOW
 #define PICTURE_VIEW_BOX_BACKGROUND	0xff000000	// BLACK
 
+#define FPS								25
+
 #define BAR_IMAGE					1
 #define LABEL_ROW1				10
 #define LABEL_ROW2				11
@@ -119,10 +121,10 @@ void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidt
 	// initialize our transistion effect
 	m_transistionStart.type = transEffect;
 	m_transistionStart.start = 0;
-	m_transistionStart.length = g_guiSettings.GetInt("Slideshow.TransistionTime")/20;
+	m_transistionStart.length = 2*g_guiSettings.GetInt("Slideshow.TransistionTime")/(1000/FPS);
 	m_transistionEnd.type = transEffect;
-	m_transistionEnd.start = m_transistionStart.length + g_guiSettings.GetInt("Slideshow.StayTime")*50;
-	m_transistionEnd.length = g_guiSettings.GetInt("Slideshow.TransistionTime")/20;
+	m_transistionEnd.start = m_transistionStart.length + g_guiSettings.GetInt("Slideshow.StayTime")*FPS;
+	m_transistionEnd.length = 2*g_guiSettings.GetInt("Slideshow.TransistionTime")/(1000/FPS);
 	m_transistionTemp.type = TRANSISTION_NONE;
 	m_fTransistionAngle = 0;
 	m_fTransistionZoom = 0;
@@ -130,7 +132,7 @@ void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidt
 	m_fZoomAmount = 1;
 	m_fZoomLeft = 0;
 	m_fZoomTop = 0;
-	m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + g_guiSettings.GetInt("Slideshow.StayTime")*50;
+	m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + g_guiSettings.GetInt("Slideshow.StayTime")*FPS;
 	// initialize our display effect
 	if (dispEffect == EFFECT_RANDOM)
 		m_displayEffect = (DISPLAY_EFFECT)((rand() % (EFFECT_RANDOM-1)) + 1);
@@ -299,6 +301,7 @@ void CSlideShowPic::Process()
 	}
 	if (m_iCounter >= m_transistionEnd.start)
 	{	// do end transistion
+		CLog::DebugLog("Transistioning");
 		m_bDrawNextImage = true;
 		if (m_transistionEnd.type == CROSSFADE)
 		{	// fade out at 1x speed
@@ -315,7 +318,7 @@ void CSlideShowPic::Process()
 		}
 	}
 	if (m_displayEffect != EFFECT_NO_TIMEOUT || m_iCounter < m_transistionStart.length || m_iCounter >= m_transistionEnd.start || (m_iCounter >= m_transistionTemp.start && m_iCounter < m_transistionTemp.start+m_transistionTemp.length))
-		m_iCounter++;
+		m_iCounter ++;
 	if (m_iCounter > m_transistionEnd.start + m_transistionEnd.length)
 		m_bIsFinished = true;
 }
@@ -362,7 +365,7 @@ void CSlideShowPic::Rotate(int iRotate)
 	m_transistionTemp.length = m_transistionStart.length;
 	m_fTransistionAngle = (float)(iRotate-m_fAngle)/(float)m_transistionTemp.length;
 	// reset the timer
-	m_transistionEnd.start = m_iCounter + g_guiSettings.GetInt("Slideshow.StayTime")*50;
+	m_transistionEnd.start = m_iCounter + m_transistionStart.length + g_guiSettings.GetInt("Slideshow.StayTime")*FPS;
 }
 
 void CSlideShowPic::Zoom(int iZoom)
@@ -374,7 +377,7 @@ void CSlideShowPic::Zoom(int iZoom)
 	m_transistionTemp.length = m_transistionStart.length;
 	m_fTransistionZoom = (float)(iZoom-m_fZoomAmount)/(float)m_transistionTemp.length;
 	// reset the timer
-	m_transistionEnd.start = m_iCounter + g_guiSettings.GetInt("Slideshow.StayTime")*50;
+	m_transistionEnd.start = m_iCounter + m_transistionStart.length + g_guiSettings.GetInt("Slideshow.StayTime")*FPS;
 	// turn off the render effects until we're back down to normal zoom
 	m_bNoEffect = true;
 }
@@ -384,7 +387,7 @@ void CSlideShowPic::Move(float fDeltaX, float fDeltaY)
 	m_fZoomLeft += fDeltaX;
 	m_fZoomTop += fDeltaY;
 	// reset the timer
-	m_transistionEnd.start = m_iCounter + g_guiSettings.GetInt("Slideshow.StayTime")*50;
+	m_transistionEnd.start = m_iCounter + m_transistionStart.length + g_guiSettings.GetInt("Slideshow.StayTime")*FPS;
 }
 
 void CSlideShowPic::Render()
@@ -1033,16 +1036,19 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 			{
 				CSectionLoader::Unload("CXIMAGE");
 			}
+			g_graphicsContext.Lock();
       g_graphicsContext.SetOverlay(true);
 			g_graphicsContext.Get3DDevice()->EnableOverlay(FALSE);
 			// reset to gui mode so that we use it's filters
 			g_graphicsContext.SetFullScreenVideo(false);
 			g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
+			g_graphicsContext.Unlock();
 		}
 		break;
 
 		case GUI_MSG_WINDOW_INIT:
 		{
+			CLog::Log(LOGDEBUG, "Starting slideshow::Openwindow");
 			CGUIWindow::OnMessage(message);
       if (g_application.IsPlayingVideo())
         g_application.StopPlaying();
@@ -1052,15 +1058,18 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 			{
 				CSectionLoader::Load("CXIMAGE");
 			}
+			g_graphicsContext.Lock();
       g_graphicsContext.SetOverlay(false);
 			g_graphicsContext.Get3DDevice()->EnableOverlay(TRUE);
 			// set to video mode so that we use it's filters (to make pics sharper)
 			g_graphicsContext.SetFullScreenVideo(true);
 			g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
+			g_graphicsContext.Unlock();
 
 			// shuffle
 			if (g_guiSettings.GetBool("Slideshow.Shuffle") && m_bSlideShow)
 				Shuffle();
+			CLog::Log(LOGDEBUG, "Starting slideshow::Openwindow DONE.");
 			return true;
 		}
 	}
