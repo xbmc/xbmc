@@ -71,6 +71,9 @@ void CGUIFontTTF::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw2
 
 void CGUIFontTTF::DrawTextImpl( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* strText, DWORD cchText, DWORD dwFlags,FLOAT fMaxPixelWidth )
 {
+	m_pTrueTypeFont->SetTextHeight(m_iHeight);
+	m_pTrueTypeFont->SetTextStyle(m_iStyle);
+
 	if (dwFlags & XBFONT_CENTER_Y)
 	{
 	    FLOAT w, h;
@@ -129,6 +132,9 @@ void CGUIFontTTF::DrawTextImpl( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* 
 void CGUIFontTTF::GetTextExtent( const WCHAR* strText, FLOAT* pWidth, 
                            FLOAT* pHeight, BOOL bFirstLineOnly)
 {
+	m_pTrueTypeFont->SetTextHeight(m_iHeight);
+	m_pTrueTypeFont->SetTextStyle(m_iStyle);
+
 	unsigned width, lineHeight;
 	// First let's calculate width
 	WCHAR buf[1024];
