@@ -1518,7 +1518,6 @@
     <id>463</id>
     <value>Backlight</value>
   </string>
- 
   <string>
     <id>464</id>
     <value>Brightness</value>
@@ -1535,6 +1534,14 @@
     <id>467</id>
     <value>Type</value>
   </string> 
+  <string>
+    <id>468</id>
+    <value>Move the bar to change the osd position</value>
+  </string>
+  <string>
+    <id>469</id>
+    <value>OSD Position</value>
+  </string>
 <string><id>10000</id><value>Home</value></string>
 <string><id>10001</id><value>My Programs</value></string>
 <string><id>10002</id><value>My Pictures</value></string>
