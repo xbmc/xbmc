@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 using namespace std;
+using namespace dbiplus;
 
 typedef vector<CStdString> VECMOVIEYEARS;
 typedef vector<CStdString> VECMOVIEACTORS;

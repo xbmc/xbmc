@@ -3,7 +3,7 @@
  *
  * Project:Dataset C++ Dynamic Library
  * Module: Dataset abstraction layer header file
- * Author: Leo Seib      E-Mail: lev@almaty.pointstrike.net
+ * Author: Leo Seib      E-Mail: leoseib@web.de
  * Begin: 5/04/2002
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,27 +26,28 @@
  *
  **********************************************************************/
 
+
 #ifndef _DATASET_H
 #define _DATASET_H
 
+#include "stdafx.h"
 #include <cstdio>
 #include <string>
-#include "stringhelper.h"
 #include <map>
 #include <list>
 #include "qry_dat.h"
-
-extern "C" {
-
+#include <stdarg.h>
 
 
 
+
+namespace dbiplus {
 class Dataset;		// forward declaration of class Dataset
 
 
 #define S_NO_CONNECTION "No active connection";
 
-#define DB_BUFF_MAX           8*4096    // Maximum buffer's capacity
+#define DB_BUFF_MAX           8*1024    // Maximum buffer's capacity
 
 #define DB_CONNECTION_NONE	0
 #define DB_CONNECTION_OK	1
@@ -76,7 +77,7 @@ public:
 /* constructor */
   Database();
 /* destructor */
-  ~Database();
+  virtual ~Database();
   virtual Dataset *CreateDataset() const = 0;
 /* sets a new host name */
   void setHostName(const char *newHost) { host = newHost; }
@@ -110,7 +111,7 @@ public:
 
   virtual int init(void) { return DB_COMMAND_OK; }
   virtual int status(void) { return DB_CONNECTION_NONE; }
-  virtual int setErr(int err_code)=0;
+  virtual int setErr(int err_code, const char *qry)=0;
   virtual const char *getErrorMsg(void) { return error.c_str(); }
 	
   virtual int connect(void) { return DB_COMMAND_OK; }
@@ -132,7 +133,6 @@ public:
 
 };
 
-}
 
 
 
@@ -168,8 +168,6 @@ protected:
   bool haveError;
   int frecno; 			// number of current row bei bewegung
   string sql;
-
-  str_helper pars;
 
   ParamList plist;              // Paramlist for locate
   bool fbof, feof;
@@ -228,12 +226,13 @@ protected:
 
 public:
 
+ virtual int str_compare(const char * s1, const char * s2);
 /* constructor */
   Dataset();
   Dataset(Database *newDb);
 
 /* destructor */
-  ~Dataset();
+  virtual ~Dataset();
 
 /* sets a new value of connection to database */
   void setDatabase(Database *newDb) { db = newDb; }
@@ -396,6 +395,10 @@ public:
   DbErrors();
   DbErrors(const char *msg, ...);
 
+  const char  * getMsg();
+ private:
+ std::string  msg_;
 };
 
+}
 #endif

@@ -41,6 +41,7 @@ namespace MUSIC_INFO
 		IMusicInfoScannerObserver*	m_pObserver;
 		bool												m_bRunning;
 		bool												m_bUpdateAll;
+		bool												m_bCanInterrupt;
 		CStdString									m_strStartDir;
 		CMusicDatabase							m_musicDatabase;
 	};

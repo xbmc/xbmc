@@ -18,6 +18,7 @@ CMusicInfoScanner::CMusicInfoScanner()
 {
 	m_bRunning=false;
 	m_pObserver=NULL;
+	m_bCanInterrupt=false;
 }
 
 CMusicInfoScanner::~CMusicInfoScanner()
@@ -41,9 +42,15 @@ void CMusicInfoScanner::Process()
 		if (m_pObserver)
 			m_pObserver->OnStateChanged(PREPARING);
 
+		m_bCanInterrupt=true;
+
 		// check whether we have scanned here before
 		CStdString strPaths;
-		strPaths = m_musicDatabase.GetSubpathsFromPath(m_strStartDir);
+		if (!m_musicDatabase.GetSubpathsFromPath(m_strStartDir, strPaths))
+		{
+			m_musicDatabase.Close();
+			return;
+		}
 
 		// Preload section for ID3 cover art reading
 		CSectionLoader::Load("CXIMAGE");
@@ -75,6 +82,11 @@ void CMusicInfoScanner::Process()
 			if (m_pObserver)
 				m_pObserver->OnStateChanged(READING_MUSIC_INFO);
 
+			//	Database operations should not be canceled
+			//	using Interupt() while scanning as it could 
+			//	result in unexpected behaviour.
+			m_bCanInterrupt=false;
+
 			bool bCommit = false;
 			if (bOKtoScan)
 				bCommit = DoScan(m_strStartDir);
@@ -91,8 +103,11 @@ void CMusicInfoScanner::Process()
 					m_musicDatabase.Compress();
 				}
 			}
-
+			else
+				m_musicDatabase.RollbackTransaction();
 		}
+		else
+			m_musicDatabase.RollbackTransaction();
 
 		m_musicDatabase.EmptyCache();
 
@@ -138,6 +153,9 @@ bool CMusicInfoScanner::IsScanning()
 
 void  CMusicInfoScanner::Stop()
 {
+	if (m_bCanInterrupt)
+		m_musicDatabase.Interupt();
+
 	StopThread();
 }
 

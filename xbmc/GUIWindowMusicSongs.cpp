@@ -440,7 +440,7 @@ void CGUIWindowMusicSongs::OnScan()
 		// check whether we have scanned here before
 		bool bUpdateAll = false;
 		CStdString strPaths;
-		strPaths = g_musicDatabase.GetSubpathsFromPath(m_strDirectory);
+		g_musicDatabase.GetSubpathsFromPath(m_strDirectory, strPaths);
 		if (strPaths.length() > 2)
 		{	// yes, we have, we should prompt the user to ask if they want
 			// to do a full scan, or just add new items...
@@ -469,7 +469,7 @@ void CGUIWindowMusicSongs::OnScan()
 		// check whether we have scanned here before
 		bool m_bUpdateAll = false;
 		CStdString strPaths;
-		strPaths = g_musicDatabase.GetSubpathsFromPath(m_strDirectory);
+		g_musicDatabase.GetSubpathsFromPath(m_strDirectory, strPaths);
 		if (strPaths.length() > 2)
 		{	// yes, we have, we should prompt the user to ask if they want
 			// to do a full scan, or just add new items...
