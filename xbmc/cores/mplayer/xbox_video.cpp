@@ -90,7 +90,7 @@ typedef struct directx_fourcc_caps
 // 20-2-2004. 
 // Removed the VFCAP_TIMER. (VFCAP_TIMER means that the video output driver handles all timing which we dont)
 // this solves problems playing movies with no audio. With VFCAP_TIMER enabled they played much 2 fast
-#define DIRECT3D8CAPS VFCAP_CSP_SUPPORTED_BY_HW |VFCAP_CSP_SUPPORTED |VFCAP_OSD |VFCAP_HWSCALE_UP|VFCAP_HWSCALE_DOWN
+#define DIRECT3D8CAPS VFCAP_CSP_SUPPORTED_BY_HW |VFCAP_CSP_SUPPORTED |VFCAP_OSD |VFCAP_HWSCALE_UP|VFCAP_HWSCALE_DOWN|VFCAP_ACCEPT_STRIDE
 static directx_fourcc_caps g_ddpf[] =
 {
 	{ "YV12",  IMGFMT_YV12,  DIRECT3D8CAPS},
@@ -644,11 +644,6 @@ static void YV12ToRGB()
 			Sleep(1);
 	}
 
-	LPDIRECT3DSURFACE8 pOldRT, pNewRT;
-	m_RGBTexture[m_iRGBDecodeBuffer]->GetSurfaceLevel(0, &pNewRT);
-	g_graphicsContext.Get3DDevice()->GetRenderTarget(&pOldRT);
-	g_graphicsContext.Get3DDevice()->SetRenderTarget(pNewRT, NULL);
-
 	g_graphicsContext.Get3DDevice()->SetTexture( 0, m_YTexture[m_iYUVDecodeBuffer]);
 	g_graphicsContext.Get3DDevice()->SetTexture( 1, m_UTexture[m_iYUVDecodeBuffer]);
 	g_graphicsContext.Get3DDevice()->SetTexture( 2, m_VTexture[m_iYUVDecodeBuffer]);
@@ -671,6 +666,11 @@ static void YV12ToRGB()
 
 	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_YV12VERTEX );
 	g_graphicsContext.Get3DDevice()->SetPixelShader(m_hPixelShader);
+
+	LPDIRECT3DSURFACE8 pOldRT, pNewRT;
+	m_RGBTexture[m_iRGBDecodeBuffer]->GetSurfaceLevel(0, &pNewRT);
+	g_graphicsContext.Get3DDevice()->GetRenderTarget(&pOldRT);
+	g_graphicsContext.Get3DDevice()->SetRenderTarget(pNewRT, NULL);
 
 	// Render the image
 	float w = float(image_width / 2);
