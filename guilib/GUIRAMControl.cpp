@@ -12,16 +12,18 @@ extern CApplication g_application;
 #define BUTTON_WIDTH_ADJUSTMENT		16
 #define BUTTON_HEIGHT_ADJUSTMENT	5
 #define CONTROL_POSX_ADJUSTMENT		8
+#define BUTTON_Y_SPACING			12
 
 CGUIRAMControl::CGUIRAMControl(DWORD dwParentID, DWORD dwControlId, 
 							   DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight,
 							   const CStdString& strFontName, const CStdString& strFont2Name,
-							   D3DCOLOR dwTitleColor, D3DCOLOR dwNormalColor,
+							   D3DCOLOR dwTitleColor, D3DCOLOR dwNormalColor, D3DCOLOR dwSelectedColor,
 							   DWORD dwTextOffsetX, DWORD dwTextOffsetY)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
 {
 	m_dwTitleColor		= dwTitleColor;
 	m_dwTextColor		= dwNormalColor; 
+	m_dwTextSelectColor = dwSelectedColor;
 	m_pFont				= g_fontManager.GetFont(strFontName);
 	m_pFont2			= g_fontManager.GetFont(strFont2Name);
 
@@ -32,7 +34,7 @@ CGUIRAMControl::CGUIRAMControl(DWORD dwParentID, DWORD dwControlId,
 	m_dwTextOffsetX		= dwTextOffsetX;
 	m_dwTextOffsetY		= dwTextOffsetY; // text offset from button
 
-	m_dwTextSpaceY		= 12;			 // space between buttons
+	m_dwTextSpaceY		= BUTTON_Y_SPACING;	// space between buttons
 
 	m_pMonitor	= NULL;
 
@@ -174,12 +176,14 @@ void CGUIRAMControl::Render()
 			
 			INT iButtonWidth = (INT) (fTextWidth+BUTTON_WIDTH_ADJUSTMENT);
 			INT iButtonHeight= (INT) (fTextHeight+BUTTON_HEIGHT_ADJUSTMENT);
+			bool itemHasFocus = (i==m_iSelection) && HasFocus();
 
 			pButton->SetText(movie.strTitle);
+			pButton->SetTextColor(itemHasFocus?m_dwTextSelectColor:m_dwTextColor);
 			pButton->SetPosition(dwTextX-(DWORD)iButtonWidth,(DWORD)fTextY),
 			pButton->SetWidth(iButtonWidth);
 			pButton->SetHeight(iButtonHeight);
-			pButton->SetFocus( (i==m_iSelection) && HasFocus() );
+			pButton->SetFocus(itemHasFocus);
 			pButton->Render();
 
 			fTextY += m_fFont2Height + (FLOAT) m_dwTextSpaceY;
@@ -301,6 +305,11 @@ void CGUIRAMControl::OnMediaUpdate(	INT nIndex, CStdString& strFilepath,
 	if (!strImagePath.IsEmpty())
 	{
 		movie.pImage = new CGUIImage(0,0,0,0,m_dwThumbnailWidth,m_dwThumbnailHeight,strImagePath);
+		movie.pImage->AllocResources();
+	}
+	else if ((!m_strDefaultThumb.IsEmpty()) && (m_strDefaultThumb[0]!='-'))
+	{
+		movie.pImage = new CGUIImage(0,0,0,0,m_dwThumbnailWidth,m_dwThumbnailHeight,m_strDefaultThumb);
 		movie.pImage->AllocResources();
 	}
 

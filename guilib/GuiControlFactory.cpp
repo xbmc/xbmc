@@ -163,6 +163,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	CStdString	strRSSUrl="";
 	CStdString  strTitle="";
 
+	DWORD dwThumbWidth = 80;
+	DWORD dwThumbHeight = 128;
+	DWORD dwThumbSpaceX = 6;
+	DWORD dwThumbSpaceY	= 25;
+	DWORD dwTextSpaceY = 12;
+	CStdString strDefaultThumb;
+
   int         iThumbXPos=4;
   int         iThumbYPos=10;
   int         iThumbWidth=64;
@@ -211,8 +218,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			strFont2		= ((CGUIRAMControl*)pReference)->GetFont2Name();
 			dwTextColor3	= ((CGUIRAMControl*)pReference)->GetTitleTextColor();
 			dwTextColor		= ((CGUIRAMControl*)pReference)->GetNormalTextColor();
+			dwSelectedColor	= ((CGUIRAMControl*)pReference)->GetSelectedTextColor();
 			dwTextOffsetX	= ((CGUIRAMControl*)pReference)->GetTextOffsetX();
 			dwTextOffsetY	= ((CGUIRAMControl*)pReference)->GetTextOffsetY();
+			dwTextSpaceY	= ((CGUIRAMControl*)pReference)->GetTextSpacing();
+
+			((CGUIRAMControl*)pReference)->GetThumbAttributes(dwThumbWidth,dwThumbHeight,dwThumbSpaceX,dwThumbSpaceY,strDefaultThumb);
+
 		}
 		if (strType=="button")
 		{
@@ -381,19 +393,19 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		}
 		if (strType=="textbox")
 		{
-				strFont				= ((CGUITextBox*)pReference)->GetFontName();
+				strFont			= ((CGUITextBox*)pReference)->GetFontName();
 				dwTextColor		= ((CGUITextBox*)pReference)->GetTextColor();
 				dwSpinWidth		= ((CGUITextBox*)pReference)->GetSpinWidth();
 				dwSpinHeight	= ((CGUITextBox*)pReference)->GetSpinHeight();
-				strUp					= ((CGUITextBox*)pReference)->GetTexutureUpName();
-				strDown				= ((CGUITextBox*)pReference)->GetTexutureDownName();
+				strUp			= ((CGUITextBox*)pReference)->GetTexutureUpName();
+				strDown			= ((CGUITextBox*)pReference)->GetTexutureDownName();
 				strUpFocus		= ((CGUITextBox*)pReference)->GetTexutureUpFocusName();
 				strDownFocus	= ((CGUITextBox*)pReference)->GetTexutureDownFocusName();
 				dwSpinColor		= ((CGUITextBox*)pReference)->GetSpinTextColor();
 				dwSpinPosX		= ((CGUITextBox*)pReference)->GetSpinX();
 				dwSpinPosY		= ((CGUITextBox*)pReference)->GetSpinY();
-				dwSpinWidth			=	((CGUITextBox*)pReference)->GetSpinWidth();
-				dwSpinHeight		=	((CGUITextBox*)pReference)->GetSpinHeight();
+				dwSpinWidth		= ((CGUITextBox*)pReference)->GetSpinWidth();
+				dwSpinHeight 	= ((CGUITextBox*)pReference)->GetSpinHeight();
 		}
 		if (strType=="thumbnailpanel")
 		{
@@ -452,6 +464,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetDWORD(pControlNode, "height", dwHeight);
 	GetDWORD(pControlNode, "textOffsetX", dwTextOffsetX);
 	GetDWORD(pControlNode, "textOffsetY", dwTextOffsetY);
+	GetDWORD(pControlNode, "textSpaceY",  dwTextSpaceY);
+
+	GetDWORD(pControlNode, "gfxThumbWidth",  dwThumbWidth);
+	GetDWORD(pControlNode, "gfxThumbHeight", dwThumbHeight);
+	GetDWORD(pControlNode, "gfxThumbSpaceX", dwThumbSpaceX);
+	GetDWORD(pControlNode, "gfxThumbSpaceY", dwThumbSpaceY);
+	GetString(pControlNode, "gfxThumbDefault", strDefaultThumb);
 
 	if (!GetDWORD(pControlNode, "onup"   , up  )) up    = dwID-1;
 	if (!GetDWORD(pControlNode, "ondown" , down)) down  = dwID+1;
@@ -640,12 +659,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
 	if (strType=="ram")
 	{
-	        g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
+	    g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
       
-		CGUIRAMControl* pControl = new CGUIRAMControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strFont,strFont2,dwTextColor3,dwTextColor,dwTextOffsetX,dwTextOffsetY);
+		CGUIRAMControl* pControl = new CGUIRAMControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strFont,strFont2,dwTextColor3,dwTextColor,dwSelectedColor,dwTextOffsetX,dwTextOffsetY);
+		pControl->SetTextSpacing(dwTextSpaceY);
+		pControl->SetThumbAttributes(dwThumbWidth,dwThumbHeight,dwThumbSpaceX,dwThumbSpaceY,strDefaultThumb);
 		pControl->SetColourDiffuse(dwColorDiffuse);
 		pControl->SetVisible(bVisible);
 	    pControl->SetNavigation(up,down,left,right);
+
 		return pControl;
 	}
   if (strType=="button")
