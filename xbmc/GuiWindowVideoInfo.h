@@ -21,10 +21,7 @@ protected:
 	void										Refresh();
 	void										Update();
 	void										SetLabel(int iControl, const CStdString& strLabel);
-	IDirect3DTexture8* 			m_pTexture;
 	CIMDBMovie*							m_pMovie;
-	int											m_iTextureWidth;
-	int											m_iTextureHeight;
 	bool										m_bViewReview;
   bool                    m_bRefresh;
 };
