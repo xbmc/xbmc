@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 27-03-2005 fixed: threading issue wich caused video to revert back to start when resuming from rewind
   - 17-03-2005 changed: reverted parts of last, syncing after ff/rw is now again done using a small seek. too many problems with it. Some other things tuned.
   - 08-03-2005 changed: reworked FF/RW, no skiping when returning to normal playback anymore. AV sync might be abit of, but should correct itself in a sec or two
   - 05-03-2005 changed: disbled ff/rw in files/streams that can't be seeked as this causes audio/video desync
