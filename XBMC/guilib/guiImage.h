@@ -28,6 +28,7 @@ public:
   virtual void Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight);
   virtual void OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
+	virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
   virtual bool CanFocus() const;

@@ -19,6 +19,7 @@ public:
   virtual void Render();
   virtual void OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
+	virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
 	const	CStdString& GetTexutureRadioFocusName() const { return m_imgRadioFocus.GetFileName(); };

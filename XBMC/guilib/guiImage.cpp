@@ -212,6 +212,12 @@ bool CGUIImage::OnMessage(CGUIMessage& message)
   return CGUIControl::OnMessage(message);
 }
 
+void CGUIImage::PreAllocResources()
+{
+	FreeResources();
+	g_TextureManager.PreLoad(m_strFileName);
+}
+
 void CGUIImage::AllocResources()
 {
   FreeResources();

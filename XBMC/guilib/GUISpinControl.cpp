@@ -248,6 +248,14 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
     return false;
 }
 
+void CGUISpinControl::PreAllocResources()
+{
+	CGUIControl::PreAllocResources();
+	m_imgspinUp.PreAllocResources();
+	m_imgspinUpFocus.PreAllocResources();
+	m_imgspinDown.PreAllocResources();
+	m_imgspinDownFocus.PreAllocResources();
+}
 
 void CGUISpinControl::AllocResources()
 {

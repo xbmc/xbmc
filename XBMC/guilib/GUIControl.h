@@ -29,8 +29,9 @@ public:
   DWORD         GetID(void) const; 
   DWORD         GetParentID(void) const; 
   bool          HasFocus(void) const;
-  virtual void  AllocResources() {};
-  virtual void  FreeResources() {};
+	virtual void  PreAllocResources() {}
+  virtual void  AllocResources() {}
+  virtual void  FreeResources() {}
   virtual bool  CanFocus() const;
 	virtual bool  IsVisible() const;
 	virtual bool  IsDisabled() const;

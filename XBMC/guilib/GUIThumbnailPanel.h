@@ -42,6 +42,7 @@ public:
   virtual void OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
 
+	virtual void PreAllocResources();
   virtual void AllocResources() ;
   virtual void FreeResources() ;
   void         SetScrollySuffix(CStdString wstrSuffix);

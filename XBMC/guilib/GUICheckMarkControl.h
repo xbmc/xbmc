@@ -27,6 +27,7 @@ public:
   virtual void Render();
   virtual void OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
+	virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void SetDisabledColor(D3DCOLOR color);

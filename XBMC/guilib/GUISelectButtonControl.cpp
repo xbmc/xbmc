@@ -205,6 +205,19 @@ void CGUISelectButtonControl::FreeResources()
 	m_bShowSelect=false;
 }
 
+void CGUISelectButtonControl::PreAllocResources()
+{
+	CGUIButtonControl::PreAllocResources();
+
+	m_imgBackground.PreAllocResources();
+
+	m_imgLeft.PreAllocResources();
+	m_imgLeftFocus.PreAllocResources();
+
+	m_imgRight.PreAllocResources();
+	m_imgRightFocus.PreAllocResources();
+}
+
 void CGUISelectButtonControl::AllocResources()
 {
 	CGUIButtonControl::AllocResources();
