@@ -16,7 +16,7 @@ TITLE XBMC Build Prepare Script
 ECHO Wait while preparing the build.
 ECHO ------------------------------
 rem	CONFIG START
-	set NET=C:\Progra~1\Micros~1.NET\Common7\IDE\devenv.exe
+	set NET=C:\Progra~1\Micros~1.NET\Common7\IDE\devenv.com
 	set OPTS=xbmc.sln /build release
 	set CLEAN=xbmc.sln /clean release
 	set XBE=xbepatch.exe
