@@ -22,6 +22,7 @@
 #include "GUIListControl.h"
 #include "FileSystem/DirectoryCache.h"
 #include "cdrip/cddaripper.h"
+#include "AutoSwitch.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNTYPE						6
@@ -1064,9 +1065,47 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 	if (bUpdate)
 	{
 		int iSelectedItem=GetSelectedItem();
-		Update(m_strDirectory);
-		CONTROL_SELECT_ITEM(CONTROL_LIST,iSelectedItem);
-		CONTROL_SELECT_ITEM(CONTROL_THUMBS,iSelectedItem);
+		CFileItem* pItem=m_vecItems[iSelectedItem];
+
+		if (pItem && pItem->m_bIsFolder)
+		{
+			//	refresh only the icon of
+			//	the current folder 
+			pItem->FreeIcons();
+			CUtil::SetMusicThumb(pItem);
+			CUtil::FillInDefaultIcon(pItem);
+		}
+		else
+		{
+			//	Refresh all items 
+			for (int i=0; i<(int)m_vecItems.size(); ++i)
+			{
+				CFileItem* pItem=m_vecItems[i];
+				pItem->FreeIcons();
+			}
+
+			CUtil::SetMusicThumbs(m_vecItems);
+			CUtil::FillInDefaultIcons(m_vecItems);
+		}
+
+		//	HACK: If we are in files view
+		//	autoswitch between list/thumb control
+		if (GetID()==WINDOW_MUSIC_FILES && !m_strDirectory.IsEmpty() && g_guiSettings.GetBool("MusicLists.UseAutoSwitching"))
+		{
+			m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
+
+			int iFocusedControl=GetFocusedControl();
+
+			ShowThumbPanel();
+			UpdateButtons();
+
+			if (iFocusedControl==CONTROL_LIST || iFocusedControl==CONTROL_THUMBS)
+			{
+				int iControl = CONTROL_LIST;
+				if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
+				SET_CONTROL_FOCUS(iControl, 0);
+			}
+		}
 	}
 
 	if (m_dlgProgress)
@@ -1521,6 +1560,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 		iPosY = pList->GetYPosition()+pList->GetHeight()/2;
 	}	
 	// mark the item
+	bool bSelected=m_vecItems[iItem]->IsSelected(); //	item maybe selected (playlistitem)
 	m_vecItems[iItem]->Select(true);
 	// popup the context menu
 	CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
@@ -1578,7 +1618,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 		return;
 		break;
 	}
-	m_vecItems[iItem]->Select(false);
+	m_vecItems[iItem]->Select(bSelected);
 }
 
 void CGUIWindowMusicBase::OnRipCD()
