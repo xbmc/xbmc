@@ -241,20 +241,22 @@ void ModPlayer::Update(bool bPauseDrawing)
 
 void ModPlayer::OnStartup()
 {
+	m_callback.OnPlayBackStarted();
 }
 
 void ModPlayer::OnExit()
 {
 	m_bIsPlaying = false;
+	OutputDebugString("Free module\n");
 	Mod_Player_Free(m_pModule);
+	if (!m_bStopPlaying)
+		m_callback.OnPlayBackEnded();
 }
 
 void ModPlayer::Process()
 {
-	m_callback.OnPlayBackStarted();
 	while (!m_bStopPlaying && Mod_Player_Active())
 		MikMod_Update();
-	m_callback.OnPlayBackEnded();
 }	
 void ModPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
 {

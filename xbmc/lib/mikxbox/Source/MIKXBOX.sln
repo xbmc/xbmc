@@ -6,11 +6,14 @@ EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
+		Debug_Log = Debug_Log
 		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{6D4D98E9-BC39-4B60-84F9-C0B2EBD2C774}.Debug.ActiveCfg = Debug|Xbox
 		{6D4D98E9-BC39-4B60-84F9-C0B2EBD2C774}.Debug.Build.0 = Debug|Xbox
+		{6D4D98E9-BC39-4B60-84F9-C0B2EBD2C774}.Debug_Log.ActiveCfg = Debug_Log|Xbox
+		{6D4D98E9-BC39-4B60-84F9-C0B2EBD2C774}.Debug_Log.Build.0 = Debug_Log|Xbox
 		{6D4D98E9-BC39-4B60-84F9-C0B2EBD2C774}.Release.ActiveCfg = Release|Xbox
 		{6D4D98E9-BC39-4B60-84F9-C0B2EBD2C774}.Release.Build.0 = Release|Xbox
 	EndGlobalSection

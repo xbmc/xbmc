@@ -66,6 +66,7 @@ struct XB_VINFO
 	int ramppan[2];
 	bool bufplay[2];
 
+	int setpos;
 	int size;
 	int handle;
 	int chanvol;
@@ -103,11 +104,8 @@ static XB_SAMPDATA Samples[MAXSAMPLEHANDLES];
 #define VOLTABLESIZE  (1 << VOLTABLEBITS)
 static short VolumeTable[VOLTABLESIZE];
 
-// define this to get loads of debug spew
-//#define XB_LOG
-
 #ifdef XB_LOG
-static void XB_Log(const char* fmt, ...)
+void XB_Log(const char* fmt, ...)
 {
 	char msg[1000] = "ModPlayer: ";
 	va_list args;
@@ -285,7 +283,6 @@ void XB_Update(void)
 {
 	LARGE_INTEGER Time;
 	int q, n = 0;
-	int NumSync;
 	bool doramp;
 
 	EnterCriticalSection(&DSCS);
@@ -358,7 +355,6 @@ void XB_Update(void)
 	// Don't do anything here - the update should be as fast as possible after the sync, ideally within the sample
 	// realistically it takes a few samples to change all the settings
 
-	NumSync = 0;
 	doramp = false;
 	for (int i = 0; i < md_hardchn; ++i)
 	{
@@ -370,15 +366,7 @@ void XB_Update(void)
 				// kick off a new voice
 				VoiceInfo[i].kick = false;			
 				VoiceInfo[i].bufplay[b] = true;
-				if (NumSync == 29)
-				{
-					// oh dear, can only sync-start 29 voices, sync these out then start the next
-					// this is not good as it offsets some of the voices slightly, but it's imperceptible in practice
-					pDS->SynchPlayback();
-					NumSync = 0;
-				}
-				VoiceInfo[i].pdsb[b]->PlayEx(0, DSBPLAY_SYNCHPLAYBACK | (VoiceInfo[i].loop ? DSBPLAY_LOOPING : 0));
-				++NumSync;
+				VoiceInfo[i].pdsb[b]->PlayEx(0, (VoiceInfo[i].loop ? DSBPLAY_LOOPING : 0));
 			}
 			else if (!VoiceInfo[i].bufplay[b])
 			{
@@ -390,6 +378,12 @@ void XB_Update(void)
 				}
 				// this voice has no active buffer so don't bother updating
 				continue;
+			}
+
+			if (VoiceInfo[i].setpos != -1)
+			{
+				VoiceInfo[i].pdsb[b]->SetCurrentPosition(VoiceInfo[i].setpos);
+				VoiceInfo[i].setpos = -1;
 			}
 
 			if (VoiceInfo[i].chanfreq != VoiceInfo[i].buffreq[b])
@@ -462,8 +456,6 @@ void XB_Update(void)
 			}
 		}
 	}
-	if (NumSync)
-		pDS->SynchPlayback();
 
 	// go high priority while ramping
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
@@ -739,6 +731,9 @@ void XB_VoiceSetVolume(UBYTE voice, UWORD vol)
 {
 	if (vol > 255)
 		vol = 255;
+	if (voice <= 1 && VoiceInfo[voice].chanvol != vol)
+		XB_Log("SetVolume: c=%02d, vol=%03d", voice, vol);
+
 	VoiceInfo[voice].chanvol = vol;
 }
 
@@ -760,6 +755,9 @@ void XB_VoiceSetFrequency(UBYTE voice, ULONG freq)
 		XB_Log("WARN: Frequency out of range (%d > %d), clamping", freq, DSBFREQUENCY_MAX);
 		freq = DSBFREQUENCY_MAX;
 	}
+	if (voice <= 1 && VoiceInfo[voice].chanfreq != freq)
+		XB_Log("SetFreq:   c=%02d, frq=%03d", voice, freq);
+
 	VoiceInfo[voice].chanfreq = freq;
 }
 
@@ -771,6 +769,9 @@ ULONG XB_VoiceGetFrequency(UBYTE voice)
 
 void XB_VoiceSetPanning(UBYTE voice, ULONG pan)
 {
+	if (voice <= 1 && VoiceInfo[voice].chanpan != pan)
+		XB_Log("SetPan:    c=%02d, pan=%03d", voice, pan);
+
 	VoiceInfo[voice].chanpan = pan;
 }
 
@@ -787,8 +788,21 @@ void XB_VoicePlay(UBYTE voice,SWORD handle,ULONG start,ULONG size,ULONG reppos,U
 		++ActiveChans;
 	}
 
-	// check to see if the current buffer is playing
+	if (voice <= 1)
+		XB_Log("VoicePlay: c=%02d, s=%02d, play=%05d-%05d, loop=%05d-%05d, flags=%02x", voice, handle, start, size, reppos, repend, flags >> 8);
+
 	int i = VoiceInfo[voice].buf;
+
+	WAVEFORMATEX fmt;
+	XAudioCreatePcmFormat(Samples[handle].chans, 48000, Samples[handle].bits, &fmt);
+
+	if (VoiceInfo[voice].handle == handle && CheckBufStatus(&VoiceInfo[voice], i))
+	{
+		VoiceInfo[voice].setpos = start * fmt.nBlockAlign;
+		return;
+	}
+
+	// check to see if the current buffer is playing
 	if (CheckBufStatus(&VoiceInfo[voice], i))
 	{
 		// it is, fade to silence and use the other one
@@ -796,12 +810,10 @@ void XB_VoicePlay(UBYTE voice,SWORD handle,ULONG start,ULONG size,ULONG reppos,U
 		i = 1 - i;
 	}
 
-	WAVEFORMATEX fmt;
-	XAudioCreatePcmFormat(Samples[handle].chans, 48000, Samples[handle].bits, &fmt);
-
 	HRESULT r;
 	if (VoiceInfo[voice].pdsb[i])
 	{
+		VoiceInfo[voice].pdsb[i]->Stop();
 		// check for sample format change
 		int h = VoiceInfo[voice].handle;
 		if ((h != handle) && (Samples[h].bits != Samples[handle].bits || Samples[h].chans != Samples[handle].chans))
@@ -837,7 +849,7 @@ void XB_VoicePlay(UBYTE voice,SWORD handle,ULONG start,ULONG size,ULONG reppos,U
 		if ((flags & SF_LOOP) && (flags & SF_BIDI))
 			VoiceInfo[voice].pdsb[i]->SetBufferData(Samples[handle].data, (size + (repend - reppos)) * fmt.nBlockAlign);
 		else
-			VoiceInfo[voice].pdsb[i]->SetBufferData(Samples[handle].data, (size + 16) * fmt.nBlockAlign);
+			VoiceInfo[voice].pdsb[i]->SetBufferData(Samples[handle].data, size * fmt.nBlockAlign);
 		VoiceInfo[voice].pdsb[i]->SetCurrentPosition(start * fmt.nBlockAlign);
 		if (flags & SF_LOOP)
 		{
@@ -850,10 +862,15 @@ void XB_VoicePlay(UBYTE voice,SWORD handle,ULONG start,ULONG size,ULONG reppos,U
 		else
 			VoiceInfo[voice].loop = false;
 		VoiceInfo[voice].kick = true;
+		VoiceInfo[voice].setpos = -1;
 		VoiceInfo[voice].bufvol[i] = 0;
 		VoiceInfo[voice].pdsb[i]->SetVolume(DSBVOLUME_MIN);
 	}
-	// if this fails then the module will randomly drop a voice, should probably handle this in some fashion
+	else
+	{
+		// if this fails then the module will randomly drop a voice, should probably handle this in some fashion
+		XB_Log("WARN: Failed to setup buffer (c=%02d)", voice);
+	}
 }
 
 void XB_VoiceStop(UBYTE voice)
