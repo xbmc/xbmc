@@ -48,6 +48,7 @@ void CAutoPtrHandle::reset()
 	Cleanup();
 }
 
+//-------------------------------------------------------------------------------
 CAutoPtrFind ::CAutoPtrFind(HANDLE hHandle)
 :CAutoPtrHandle(hHandle)
 {
@@ -64,4 +65,53 @@ void CAutoPtrFind::Cleanup()
 		FindClose(m_hHandle);
 		m_hHandle=INVALID_HANDLE_VALUE;
 	}
+}
+
+//-------------------------------------------------------------------------------
+CAutoPtrSocket::CAutoPtrSocket(SOCKET hSocket)
+:m_hSocket(hSocket)
+{
+}
+
+CAutoPtrSocket::~CAutoPtrSocket(void)
+{
+	Cleanup();
+}
+
+CAutoPtrSocket::operator SOCKET()
+{
+	return m_hSocket;
+}
+
+void CAutoPtrSocket::attach(SOCKET hSocket)
+{
+	Cleanup();
+	m_hSocket=hSocket;
+}
+
+SOCKET CAutoPtrSocket::release()
+{
+	SOCKET hTmp=m_hSocket;
+	m_hSocket=INVALID_SOCKET;
+	return hTmp;
+}
+
+void CAutoPtrSocket::Cleanup()
+{
+	if ( isValid() )
+	{
+		closesocket(m_hSocket);
+		m_hSocket=INVALID_SOCKET;
+	}
+}
+
+bool CAutoPtrSocket::isValid() const
+{
+	if ( INVALID_SOCKET != m_hSocket)
+		return true;
+	return false;
+}
+void CAutoPtrSocket::reset()
+{
+	Cleanup();
 }

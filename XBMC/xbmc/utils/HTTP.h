@@ -15,6 +15,10 @@
 #endif
 #include <string>
 using namespace std;
+#include "../autoptrhandle.h"
+using namespace AUTOPTR;
+
+
 class CHTTP  
 {
 public:
@@ -36,7 +40,7 @@ protected:
 
 	string m_strProxyServer;
 	int    m_iProxyPort;
-	SOCKET m_socket;
+	CAutoPtrSocket m_socket;
 	
 	string m_strHostName;
 	int    m_iPort;

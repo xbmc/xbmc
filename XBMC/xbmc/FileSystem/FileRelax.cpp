@@ -28,6 +28,7 @@
 //////////////////////////////////////////////////////////////////////
 
 CFileRelax::CFileRelax()
+:m_socket(INVALID_SOCKET)
 {
 	m_filePos=0;
 	m_fileSize=0;
@@ -52,45 +53,42 @@ bool CFileRelax::Open(const char* strUserName, const char* strPassword,const cha
 
 	sockaddr_in service;
 
-	m_socket = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+	m_socket.attach( socket(AF_INET,SOCK_STREAM,IPPROTO_TCP));
 
 	service.sin_family = AF_INET;
 	service.sin_addr.s_addr = inet_addr( strHostName );
 	service.sin_port = htons(iport);
 		
 	// attempt to connection
-	if (connect(m_socket,(sockaddr*) &service,sizeof(struct sockaddr)) == SOCKET_ERROR)
+	if (connect((SOCKET)m_socket,(sockaddr*) &service,sizeof(struct sockaddr)) == SOCKET_ERROR)
 	{
 		//mp_msg(0,MSGL_WARN, "Unable to establish a connection with server.\n" );
-		m_socket=NULL;
+		m_socket.reset();
 		return false;
 	}
 	char optval=1;
-	setsockopt(m_socket,IPPROTO_TCP,TCP_NODELAY,&optval,1);
+	setsockopt((SOCKET)m_socket,IPPROTO_TCP,TCP_NODELAY,&optval,1);
 
 	int ioptval=0;
-	setsockopt(m_socket,SOL_SOCKET,SO_SNDBUF,&optval,sizeof(int)); 
+	setsockopt((SOCKET)m_socket,SOL_SOCKET,SO_SNDBUF,&optval,sizeof(int)); 
 
 	// validate greeting
 	memset(cmd,0,256);
 	if (!Send((unsigned char*)"HELLO XSTREAM 6.0\r\n",19))
 	{
-		closesocket(m_socket);
-		m_socket=NULL;
+		m_socket.reset();
 		return false;
 	}
 	if (!Recv((unsigned char*)cmd,11))
 	{		
-		closesocket(m_socket);
-		m_socket=NULL;
+		m_socket.reset();
 		return false;
 	}
 	cmd[12]=0;
 
 	if (strcmp(cmd,"HELLO XBOX!")!=0)
 	{
-		closesocket(m_socket);
-		m_socket=NULL;
+		m_socket.reset();
 		//mp_msg(0,MSGL_WARN,  "Unable to negotiate protocol with server\n" );
 		return false;
 	}
@@ -103,22 +101,19 @@ bool CFileRelax::Open(const char* strUserName, const char* strPassword,const cha
 		sprintf(cmd,"OPEN,%s",strFileName);
 	if (!Send((unsigned char*)cmd,strlen(cmd) ) )
 	{
-		closesocket(m_socket);
-		m_socket=NULL;
+		m_socket.reset();
 		return false;
 	}
 
 	if (!Recv((unsigned char*)result,32))
 	{
-		closesocket(m_socket);
-		m_socket=NULL;
+		m_socket.reset();
 		return false;
 	}
 	INT64 sending = _atoi64(result);
 	if (sending<=0)
 	{
-		closesocket(m_socket);
-		m_socket=NULL;
+		m_socket.reset();
 		//mp_msg(0,MSGL_WARN, "Server unable to fulfill request.\n" );
 		return false;
 	}
@@ -187,15 +182,14 @@ unsigned int CFileRelax::Read(void *lpBuf, offset_t uiBufSize)
 void CFileRelax::Close()
 {
 	//mp_msg(0,0,"relax close\n");
-	if (m_bOpened && m_socket) 
+	if (m_bOpened && m_socket.isValid()) 
 	{
 		char result[32];
 
 		Send((byte*)"CLSE",4);
 		Recv((byte*)result,32);
-		closesocket(m_socket);	
 	}
-	m_socket=NULL;
+	m_socket.reset();
 	m_bOpened=false;
 	m_filePos=0;
 	m_fileSize=0;
@@ -302,7 +296,7 @@ bool CFileRelax::Send(byte* pBuffer, int iLen)
 	int iOrgLen=iLen;
 	while (iLen>0)
 	{
-		int iErr=send(m_socket,(const char*)&pBuffer[iPos],iLen,0);
+		int iErr=send((SOCKET)m_socket,(const char*)&pBuffer[iPos],iLen,0);
 		if (iErr>0)
 		{
 			iPos+=iLen;
@@ -328,7 +322,7 @@ bool CFileRelax::Recv(byte* pBuffer, int iLen)
 	long bytesRead = 0;
 	while (iLen>0)
 	{
-		long lenRead=recv(m_socket,(char*)&pBuffer[bytesRead],iLen,0);
+		long lenRead=recv((SOCKET)m_socket,(char*)&pBuffer[bytesRead],iLen,0);
 		if (lenRead > 0)
 		{
 			bytesRead+=lenRead;

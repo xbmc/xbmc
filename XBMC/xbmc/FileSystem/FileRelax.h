@@ -10,8 +10,10 @@
 #endif // _MSC_VER > 1000
 
 #include "IFile.h"
+#include "../autoptrhandle.h"
 
 using namespace XFILE;
+using namespace AUTOPTR;
 
 namespace XFILE
 {
@@ -31,7 +33,7 @@ namespace XFILE
 	protected:
 		UINT64								m_fileSize ;
 		UINT64							  m_filePos;
-		SOCKET                m_socket;
+		CAutoPtrSocket        m_socket;
 	private:
 		bool m_bOpened;
 		bool									Send(byte* pBuffer, int iLen);
