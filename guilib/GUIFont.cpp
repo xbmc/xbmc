@@ -2,6 +2,9 @@
 #include "guifont.h"
 #include "../xbmc/utils/log.h"
 
+WCHAR*	CGUIFont::m_pwzBuffer	= NULL;
+INT		CGUIFont::m_nBufferSize	= 0;
+
 CGUIFont::CGUIFont(void)
 {
 }
@@ -84,6 +87,45 @@ void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 
   CXBFont::DrawTextEx( fOriginX, fOriginY, dwColor, wszText, wcslen( wszText ),0, 0.0f);	
 }
+
+void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
+                              const WCHAR* strText, BYTE* pbColours, float fMaxWidth)
+{
+
+	float nh=0.0f;
+	g_graphicsContext.Correct(fOriginX, fOriginY);
+
+	int nStringLength = wcslen(strText);
+	if ((nStringLength+1)>m_nBufferSize)
+	{
+		if (m_pwzBuffer)
+		{
+			delete m_pwzBuffer;
+		}
+		
+		m_nBufferSize = nStringLength + 1;
+		m_pwzBuffer = new WCHAR[m_nBufferSize];
+	}
+
+	wcscpy(m_pwzBuffer,strText);
+  
+	float fTextHeight,fTextWidth;
+	GetTextExtent( m_pwzBuffer, &fTextWidth,&fTextHeight);
+	if (fTextWidth <=fMaxWidth)
+	{
+		CXBFont::DrawColourText( fOriginX, fOriginY, pdw256ColorPalette, m_pwzBuffer, pbColours, nStringLength,0, 0.0f);	
+		return;
+	}
+
+	while (fTextWidth >= fMaxWidth)
+	{
+		m_pwzBuffer[ wcslen(m_pwzBuffer)-1 ] = 0;
+		GetTextExtent( m_pwzBuffer, &fTextWidth,&fTextHeight);
+	}
+
+	CXBFont::DrawColourText( fOriginX, fOriginY, pdw256ColorPalette, m_pwzBuffer, pbColours, wcslen( m_pwzBuffer ),0, 0.0f);	
+}
+
 HRESULT CGUIFont::DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* strText, DWORD dwFlags,FLOAT fMaxPixelWidth)
 {
 	float nw=0.0f,nh=0.0f;
