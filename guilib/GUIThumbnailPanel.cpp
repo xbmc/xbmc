@@ -652,6 +652,7 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
     // scroll
     WCHAR wszOrgText[1024];
     wcscpy(wszOrgText, wszText);
+		wcscat(wszOrgText, L" ");
     wcscat(wszOrgText,m_strSuffix.c_str());
     m_pFont->GetTextExtent( wszOrgText, &fTextWidth,&fTextHeight);
 

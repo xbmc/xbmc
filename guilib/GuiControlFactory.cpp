@@ -75,7 +75,9 @@ bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char* strTa
 {
 	TiXmlNode* pNode=pRootNode->FirstChild(strTag );
 	if (!pNode) return false;
-	strStringValue=pNode->FirstChild()->Value();
+	pNode = pNode->FirstChild();
+	if (pNode != NULL) strStringValue=pNode->Value();
+	else strStringValue = "";
 	return true;
 }
 
@@ -467,6 +469,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwSelectedColor		= ((CGUIThumbnailPanel*)pReference)->GetSelectedColor();
 			iTextureWidth		= ((CGUIThumbnailPanel*)pReference)->GetTextureWidth();
 			iTextureHeight		= ((CGUIThumbnailPanel*)pReference)->GetTextureHeight();
+			strSuffix			= ((CGUIThumbnailPanel*)pReference)->GetSuffix();
 			((CGUIThumbnailPanel*)pReference)->GetThumbDimensions(iThumbXPos, iThumbYPos,iThumbWidth, iThumbHeight);
 			((CGUIThumbnailPanel*)pReference)->GetThumbDimensionsBig(iThumbXPosBig, iThumbYPosBig,iThumbWidthBig, iThumbHeightBig);      
 		}
@@ -955,6 +958,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
 		pControl->SetNavigation(up,down,left,right);
 		pControl->SetColourDiffuse(dwColorDiffuse);
+		pControl->SetScrollySuffix(strSuffix);
 		pControl->SetVisible(bVisible);
 		pControl->SetTextureDimensions(iTextureWidth,iTextureHeight);
 		pControl->SetThumbDimensions(iThumbXPos, iThumbYPos,iThumbWidth, iThumbHeight);
