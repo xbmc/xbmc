@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 27-02-2005 added: IMDb scraping moved into system/HTMLScraper.dll.  You must have this in order for IMDb lookups to function!
+  - 27-02-2005 added: Source for IMDb scraping dll + a windows test application (useful in it's own right). See Tools\HTMLScraper\IMDbLookup.
   - 26-02-2005 cleanup: moved (most) Is..(), SetThumb()... functions from CUtil to CFileItem,
                         different other cleanups
   - 26-02-2005 fixed: stacked video freezes on start of second video
