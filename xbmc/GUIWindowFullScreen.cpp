@@ -23,6 +23,8 @@
 #define MENU_ACTION_SUBTITLEONOFF 4
 #define MENU_ACTION_SUBTITLELANGUAGE 5
 
+#define IMG_PAUSE     16
+
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 :CGUIWindow(0)
 {
@@ -190,7 +192,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 
 		// PAUSE action is handled globally in the Application class
 		case ACTION_PAUSE:
-			g_application.m_pPlayer->Pause();
+			if (g_application.m_pPlayer) g_application.m_pPlayer->Pause();
 		break;
 
     case ACTION_SUBTITLE_DELAY_MIN:
@@ -264,7 +266,17 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		m_fFrameCounter=0;
 	}
 	if (!g_application.m_pPlayer) return;
-	
+
+  bool bRenderGUI(false);
+	if (g_application.m_pPlayer->IsPaused() )
+  {
+    SET_CONTROL_VISIBLE(GetID(),IMG_PAUSE);  
+    bRenderGUI=true;
+  }
+  else
+  {
+    SET_CONTROL_HIDDEN(GetID(),IMG_PAUSE);  
+  }
 	if (m_bShowStatus)
 	{
 		if ( (timeGetTime() - m_dwLastTime) >=5000)
@@ -272,6 +284,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 			m_bShowStatus=false;
 			return;
 		}
+    bRenderGUI=true;
 		CStdString strStatus;
 		if (g_stSettings.m_bZoom) strStatus="Zoom";
 		else if (g_stSettings.m_bStretch) strStatus="Stretch";
@@ -314,13 +327,12 @@ void CGUIWindowFullScreen::RenderFullScreen()
 			msg.SetLabel(""); 
 			OnMessage(msg);
 		}
-		CGUIWindow::Render();
-		return;
 	}
+
 	//------------------------
 	if (m_bShowInfo) 
   {
-	  if (!g_application.m_pPlayer) return;
+    bRenderGUI=true;
 	  // show audio codec info
 	  CStdString strAudio, strVideo, strGeneral;
 	  g_application.m_pPlayer->GetAudioInfo(strAudio);
@@ -345,13 +357,30 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		  msg.SetLabel(strGeneralFPS); 
 		  OnMessage(msg);
 	  }
-	  CGUIWindow::Render();
-    return;
   }
   if (m_bOSDVisible)
   {
 	  CGUIWindow::Render();
     m_osdMenu.Draw();
+    return;
+  }
+  if ( bRenderGUI)
+  {
+    if (m_bShowStatus||m_bShowInfo)
+    {
+      SET_CONTROL_VISIBLE(GetID(),LABEL_ROW1);
+      SET_CONTROL_VISIBLE(GetID(),LABEL_ROW2);
+      SET_CONTROL_VISIBLE(GetID(),LABEL_ROW3);
+      SET_CONTROL_VISIBLE(GetID(),BLUE_BAR);
+    }
+    else
+    {
+      SET_CONTROL_HIDDEN(GetID(),LABEL_ROW1);
+      SET_CONTROL_HIDDEN(GetID(),LABEL_ROW2);
+      SET_CONTROL_HIDDEN(GetID(),LABEL_ROW3);
+      SET_CONTROL_HIDDEN(GetID(),BLUE_BAR);
+    }
+	  CGUIWindow::Render();
   }
 }
 

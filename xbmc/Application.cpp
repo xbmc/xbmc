@@ -315,7 +315,13 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 void CApplication::Render()
 {
-	static iBlinkRecord=0;
+  static iBlinkRecord=0;
+	// process messages which have to be send to the gui
+	// (this can only be done after m_gWindowManager.Render())
+	g_applicationMessenger.ProcessWindowMessages();
+	// process any Python scripts
+	m_pythonParser.Process();
+
 	SpinHD();
 	// process messages, even if a movie is playing
 	g_applicationMessenger.ProcessMessages();
@@ -330,11 +336,27 @@ void CApplication::Render()
 			// set the flicker filter - Changed by JM to improve subtitle flicker (using 1)
 			// HDTV modes may not need this, though.
 			m_pd3dDevice->SetFlickerFilter(g_stSettings.m_bSoften ? 5 : 1);
-			Sleep(50);
-			return;
+			
+      if (m_pPlayer)
+      {
+        if (m_pPlayer->IsPaused()) 
+        {
+	        g_graphicsContext.Lock();
+          m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+          RenderFullScreen();
+          m_gWindowManager.Render();
+	        m_pd3dDevice->BlockUntilVerticalBlank();      
+	        m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+	        g_graphicsContext.Unlock();
+          return;
+        }
+      }
+      Sleep(50);
+      return;
 		}
 	}
-	if (IsPlayingVideo())
+
+  if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
 	{
 		g_graphicsContext.EnablePreviewWindow(true);
 	}
@@ -355,7 +377,7 @@ void CApplication::Render()
 	if (  m_bOverlayEnabled )
 	{
 		// yes, then render the music overlay window
-		if ( IsPlayingVideo() )
+		if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
 		{
 			m_guiWindowVideoOverlay.Render();
 		}
@@ -364,6 +386,8 @@ void CApplication::Render()
 			m_guiMusicOverlay.Render();
 		}
 	}
+
+  
 
 	{
 	  MEMORYSTATUS stat;
@@ -407,11 +431,6 @@ void CApplication::Render()
 	m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 	g_graphicsContext.Unlock();
 
-	// process messages which have to be send to the gui
-	// (this can only be done after m_gWindowManager.Render())
-	g_applicationMessenger.ProcessWindowMessages();
-	// process any Python scripts
-	m_pythonParser.Process();
 }
 
 void CApplication::OnKey(CKey& key)
