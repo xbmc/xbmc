@@ -38,7 +38,7 @@
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
 
-//  #define USE_RELEASE_LIBS
+  #define USE_RELEASE_LIBS
 
 #pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")
 #pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
@@ -2203,14 +2203,26 @@ void CApplication::FrameMove()
     OnKey(key);
   }
   // analog trigger detection
-  if (bLeftTrigger)
+  // with code to make sure it resets on release
+  static bool TriggLeft=false, TriggRight=false;
+  if (bLeftTrigger || TriggLeft)
   {
+    if(bRightTrigger)
+      TriggLeft = true;
+    else
+      TriggLeft = false;
+
     bGotKey = true;
     CKey key(KEY_BUTTON_LEFT_ANALOG_TRIGGER, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
     OnKey(key);
   }
-  if (bRightTrigger)
+  if (bRightTrigger || TriggRight)
   {
+    if(bRightTrigger)
+      TriggRight = true;
+    else
+      TriggRight = false;
+
     bGotKey = true;
     CKey key(KEY_BUTTON_RIGHT_ANALOG_TRIGGER, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
     OnKey(key);
