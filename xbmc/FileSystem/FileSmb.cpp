@@ -62,6 +62,13 @@ void CSMB::Init()
 	}
 }
 
+void CSMB::Purge()
+{
+	Lock();
+	smbc_purge();
+	Unlock();
+}
+
 void CSMB::Lock()
 {
 	::EnterCriticalSection(&m_critSection);
