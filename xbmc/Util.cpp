@@ -1411,10 +1411,18 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
   char * sub_exts[] = {  ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx",".ifo", NULL};
   int iPos=0;
   bool bFoundSubs=false;
+  CStdString strPath,strFName;
+  CUtil::Split(strMovie,strPath,strFName);
+  if (CUtil::HasSlashAtEnd(strPath)) strPath=strPath.Left(strPath.size()-1);
+
+  g_directoryCache.ClearDirectory(strPath);
+  g_directoryCache.ClearDirectory(strPath);
+
 
   //delete cached subs
   WIN32_FIND_DATA wfd;
   CAutoPtrFind hFind ( FindFirstFile("Z:\\*.*",&wfd));
+
   if (hFind.isValid())
   {
     do
@@ -1440,6 +1448,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
   if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return ;
   if (url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") return ;
   if (CUtil::IsPlayList(strMovie)) return;
+  if (!CUtil::IsVideo(strMovie)) return;
+
   if (strlen(g_stSettings.m_szAlternateSubtitleDirectory)!=0) 
   {
     // check alternate subtitle directory
@@ -1449,24 +1459,22 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
       CStdString strSource,strDest;
       strDest.Format("Z:\\subtitle%s", sub_exts[iPos]);
 
-      if (CUtil::IsVideo(strMovie))
+      CStdString strFname;
+      strFname=CUtil::GetFileName(strMovie);
+      strSource.Format("%s\\%s", g_stSettings.m_szAlternateSubtitleDirectory,strFname.c_str());
+      CUtil::ReplaceExtension(strSource,sub_exts[iPos],strSource);
+      CFile file;
+      if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
       {
-        CStdString strFname;
-        strFname=CUtil::GetFileName(strMovie);
-        strSource.Format("%s\\%s", g_stSettings.m_szAlternateSubtitleDirectory,strFname.c_str());
-        CUtil::ReplaceExtension(strSource,sub_exts[iPos],strSource);
-        CFile file;
-        if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
-        {
-          CLog::Log(" cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
-          bFoundSubs=true;
-        }
+        CLog::Log(" cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
+        bFoundSubs=true;
       }
       iPos++;
     }
   }
 
   if (bFoundSubs) return;
+
 
   // check original movie directory
   iPos=0;
@@ -1476,16 +1484,13 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
     strDest.Format("Z:\\subtitle%s", sub_exts[iPos]);
 
     ::DeleteFile(strDest);
-    if (CUtil::IsVideo(strMovie))
+    strSource=strMovie;
+    CUtil::ReplaceExtension(strMovie,sub_exts[iPos],strSource);
+    CFile file;
+    if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
     {
-      strSource=strMovie;
-      CUtil::ReplaceExtension(strMovie,sub_exts[iPos],strSource);
-      CFile file;
-      if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
-      {
-        CLog::Log(" cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
-        bFoundSubs=true;
-      }
+      CLog::Log(" cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
+      bFoundSubs=true;
     }
     iPos++;
   }
