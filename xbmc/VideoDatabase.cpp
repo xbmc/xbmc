@@ -110,20 +110,36 @@ bool CVideoDatabase::CreateTables()
 
   try 
 	{
+    CLog::Log("create bookmark table");
     m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, fPercentage text)\n");
-		m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
+		
+    CLog::Log("create genre table");
+    m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
+    
+    CLog::Log("create genrelinkmovie table");
     m_pDS->exec("CREATE TABLE genrelinkmovie ( idGenre integer, idMovie integer)\n");
+    
+    CLog::Log("create movie table");
     m_pDS->exec("CREATE TABLE movie ( idMovie integer primary key, idPath integer, hasSubtitles integer)\n");
+    
+    CLog::Log("create movieinfo table");
     m_pDS->exec("CREATE TABLE movieinfo ( idMovie integer, idDirector integer, strPlotOutline text, strPlot text, strTagLine text, strVotes text, fRating text,strCast text,strCredits text, iYear integer, strGenre text, strPictureURL text, strTitle text)\n");
+    
+    CLog::Log("create actorlinkmovie table");
     m_pDS->exec("CREATE TABLE actorlinkmovie ( idActor integer, idMovie integer )\n");
+    
+    CLog::Log("create actors table");
     m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text )\n");
 
+    CLog::Log("create path table");
     m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, cdlabel text )\n");
+    
+    CLog::Log("create files table");
     m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, idMovie integer,strFilename text)\n");
   }
   catch (...) 
 	{ 
-    CLog::Log("videodatabase::unable to create tables");
+    CLog::Log("videodatabase::unable to create tables:%i",GetLastError());
 		return false;
 	}
 
