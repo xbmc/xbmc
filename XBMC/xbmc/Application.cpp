@@ -157,6 +157,10 @@ HRESULT CApplication::Initialize()
 	CreateDirectory((strDir+"\\language").c_str(),NULL);
 	CreateDirectory((strDir+"\\visualisations").c_str(),NULL);
 
+  if ( strlen(g_stSettings.m_szAlternateSubtitleDirectory) )
+  {
+    CreateDirectory(g_stSettings.m_szAlternateSubtitleDirectory,NULL);
+  }
 
   // initialize network
   
