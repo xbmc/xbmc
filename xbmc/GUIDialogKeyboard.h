@@ -17,12 +17,11 @@ protected:
 	virtual void OnInitWindow();
 	virtual void OnAction(const CAction &action);
 	virtual bool OnMessage(CGUIMessage& message);
-	void		UpdateButtons();
 private:
 
 	void OnClickButton(int iButtonControl);
-
-private:
+	void		UpdateButtons();
+	WCHAR		GetCharacter(int iButton);
 
 	void Character(WCHAR wch);
 	void Backspace();
