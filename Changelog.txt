@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 26-07-2004 fixed: Some images in PM skin did not work properly.  Submitting them again.
   - 26-07-2004 fixed: Exit and then return to My Programs did not show multiple paths as defined in <path> element
   - 25-07-2004 fixed: webserver doesn't use custom port when started from settings
   - 25-07-2004 fixed: idle timeout shutdown freezes xbmc
