@@ -13,5 +13,6 @@ public:
 
 private:
 	bool						m_bShowInfo;
-
+	bool						m_bShowStatus;
+	DWORD						m_dwLastTime;
 };
