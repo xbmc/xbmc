@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 20-10-2004 added: ssl support to python
+  - 20-10-2004 added: python dll loading, this means python can now make use of extension .pyd 
+                      (make sure you update your python/lib directory)
+  - 20-10-2004 fixed: some fixes and additions to the socket emulation in the dll loader
   - 20-10-2004 fixed: Flashing green bar in video
   - 20-10-2004 added: USB Keyboard support (see keymap.xml for mapping)
   - 20-10-2004 added: New Filemanager
