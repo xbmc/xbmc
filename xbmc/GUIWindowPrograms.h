@@ -13,7 +13,9 @@ public:
   virtual void    Render();
   virtual void    OnAction(const CAction &action);
 protected:
-  
+  void            ShowThumbPanel();  
+  bool            ViewByLargeIcon();
+  bool            ViewByIcon();
 	void						OnScan(VECFILEITEMS& items, int& iTotalAppsFound)  ;
   void            Update(const CStdString& strDirectory);
   void            LoadDirectory(const CStdString& strDirectory);
