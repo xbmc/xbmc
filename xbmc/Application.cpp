@@ -136,10 +136,6 @@ HRESULT CApplication::Initialize()
   {
 		strcpy(g_stSettings.m_szShortcutDirectory,"Q:\\shortcuts");		
   }
-  if (g_stSettings.m_szIMDBDirectory[0]==0)
-  {
-		strcpy(g_stSettings.m_szIMDBDirectory,"Q:\\imdb");		
-  }
   if (g_stSettings.m_szAlbumDirectory[0]==0)
   {
 		strcpy(g_stSettings.m_szAlbumDirectory,"Q:\\albums");		
@@ -150,7 +146,6 @@ HRESULT CApplication::Initialize()
   }
 	CreateDirectory(g_stSettings.szThumbnailsDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);
-	CreateDirectory(g_stSettings.m_szIMDBDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szMusicRecordingDirectory,NULL);
 

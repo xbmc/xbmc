@@ -1130,21 +1130,6 @@ void CUtil::ShortenFileName(CStdString& strFileNameAndPath)
 	}
 }
 
-void CUtil::GetIMDBInfo(const CStdString& strFileName, CStdString& strImbInfo)
-{
-	CStdString strTmp="";
-	for (int i=0; i < (int)strFileName.size(); ++i)
-	{
-		char kar=strFileName[i];
-		if ( isalpha( (byte)kar) ) strTmp +=kar;
-	}
-	strTmp.ToLower();
-	Crc32 crc;
-	crc.Reset();
-  crc.Compute(strTmp.c_str(),strTmp.size());
-	strImbInfo.Format("%s\\%x.imdb",g_stSettings.m_szIMDBDirectory,crc);
-}
-
 void CUtil::ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl )
 {
 	strOutUrl = strProtocol;
