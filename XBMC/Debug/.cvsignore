@@ -8,3 +8,5 @@ default.xbe
 xbmc.exe
 xbmc.ilk
 xbmc.map
+YV12toRGB.xpu
+xbmc.pch

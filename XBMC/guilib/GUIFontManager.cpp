@@ -67,7 +67,7 @@ void GUIFontManager::Clear()
 	m_vecFonts.erase(m_vecFonts.begin(),m_vecFonts.end());
 }
 
-void GUIFontManager::LoadFonts()
+void GUIFontManager::LoadFonts(const CStdString& strFontSet)
 {
 	// Get the file to load fonts from:
 	RESOLUTION res;
@@ -89,24 +89,67 @@ void GUIFontManager::LoadFonts()
     return ;
   }
   const TiXmlNode *pChild = pRootElement->FirstChild();
-  while (pChild)
-  {
-    CStdString strValue=pChild->Value();
-    if (strValue=="font")
-    {
-      const TiXmlNode *pNode = pChild->FirstChild("name");
-      if (pNode)
-      {
-          CStdString strFontName=pNode->FirstChild()->Value();
-          const TiXmlNode *pNode = pChild->FirstChild("filename");
-          if (pNode)
-          {
-            CStdString strFontFileName=pNode->FirstChild()->Value();
-            Load(strFontName,strFontFileName);
-          }
-      }
-    }
-    pChild=pChild->NextSibling();  
-  }
 
+  // If there are no fontset's defined in the XML (old skin format) run in backward compatibility
+  // and ignore the fontset request
+  strValue = pChild->Value();
+  if (strValue == "font")
+  {
+	LoadFonts(pChild);
+  }
+  else if (strValue == "fontset")
+  {
+	  while (pChild)
+	  {
+		strValue = pChild->Value();
+		if (strValue == "fontset")
+		{
+			const char* idAttr = ((TiXmlElement*) pChild)->Attribute("id");
+
+			// Check if this is the fontset that we want
+			if (idAttr != NULL && stricmp(strFontSet.c_str(), idAttr) == 0)
+			{
+				LoadFonts(pChild->FirstChild());
+				break;
+			}
+		}
+
+		pChild = pChild->NextSibling();  
+	  }
+
+	  // If no fontset was loaded
+	  if (pChild == NULL)
+	  {
+		  CLog::Log(LOGWARNING, "file %s doesnt have <fontset> with name '%s', defaulting to first fontset", strPath.c_str(), strFontSet.c_str());
+		  LoadFonts(pRootElement->FirstChild()->FirstChild()); 
+	  }
+  }
+  else
+ {
+	 CLog::Log(LOGERROR, "file %s doesnt have <font> or <fontset> in <fonts>, but rather %s",strPath.c_str(), strValue.c_str());
+    return ;
+  }
+}
+
+void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
+{
+	while (fontNode)
+	{
+		CStdString strValue=fontNode->Value();
+		if (strValue=="font")
+		{
+			const TiXmlNode *pNode = fontNode->FirstChild("name");
+			if (pNode)
+			{
+				CStdString strFontName=pNode->FirstChild()->Value();
+				const TiXmlNode *pNode = fontNode->FirstChild("filename");
+				if (pNode)
+				{
+					CStdString strFontFileName=pNode->FirstChild()->Value();
+					Load(strFontName,strFontFileName);
+				}
+			}
+		}
+		fontNode=fontNode->NextSibling();  
+	}
 }

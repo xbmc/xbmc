@@ -1,0 +1,1904 @@
+<strings>
+    <string>
+        <id>0</id>
+        <value>ילש תוינכותה</value>
+    </string>
+    <string>
+        <id>1</id>
+        <value>ילש תונומתה</value>
+    </string>
+    <string>
+        <id>2</id>
+        <value>ילש הקיזומה</value>
+    </string>
+    <string>
+        <id>3</id>
+        <value>ילש םיטרסה</value>
+    </string>
+    <string>
+        <id>4</id>
+        <value>תוינכות ךירדמ</value>
+    </string>
+    <string>
+        <id>5</id>
+        <value>תורדגה</value>
+    </string>
+    <string>
+        <id>6</id>
+        <value>XBOX Media Center</value>
+    </string>
+    <string>
+        <id>7</id>
+        <value>ילש םיצבקה</value>
+    </string>
+    <string>
+      <id>8</id>
+      <value>ילש ריואה גזמ</value>
+    </string>
+    <string>
+        <id>11</id>
+        <value>ינש</value>
+    </string>
+    <string>
+        <id>12</id>
+        <value>ישילש</value>
+    </string>
+    <string>
+        <id>13</id>
+        <value>יעיבר</value>
+    </string>
+    <string>
+        <id>14</id>
+        <value>ישימח</value>
+    </string>
+    <string>
+        <id>15</id>
+        <value>ישיש</value>
+    </string>
+    <string>
+        <id>16</id>
+        <value>תבש</value>
+    </string>
+    <string>
+        <id>17</id>
+        <value>ןושאר</value>
+    </string>
+    <string>
+        <id>21</id>
+        <value>ראוני</value>
+    </string>
+    <string>
+        <id>22</id>
+        <value>ראורבפ</value>
+    </string>
+    <string>
+        <id>23</id>
+        <value>ץרמ</value>
+    </string>
+    <string>
+        <id>24</id>
+        <value>לירפא</value>
+    </string>
+    <string>
+        <id>25</id>
+        <value>יאמ</value>
+    </string>
+    <string>
+        <id>26</id>
+        <value>ינוי</value>
+    </string>
+    <string>
+        <id>27</id>
+        <value>ילוי</value>
+    </string>
+    <string>
+        <id>28</id>
+        <value>טסוגוא</value>
+    </string>
+    <string>
+        <id>29</id>
+        <value>רבמטפס</value>
+    </string>
+    <string>
+        <id>30</id>
+        <value>רבוטקוא</value>
+    </string>
+    <string>
+        <id>31</id>
+        <value>רבמבונ</value>
+    </string>
+    <string>
+        <id>32</id>
+        <value>רבמצד</value>
+    </string>
+    <string>
+        <id>100</id>
+        <value>תוימלצ :הגוצת</value>
+    </string>
+    <string>
+        <id>101</id>
+        <value>המישר :הגוצת</value>
+    </string>
+    <string>
+        <id>102</id>
+        <value>קורס</value>
+    </string>
+    <string>
+        <id>103</id>
+        <value>םש : יפל ןיימ</value>
+    </string>
+    <string>
+        <id>104</id>
+        <value>ךיראת : יפל ןיימ</value>
+    </string>
+    <string>
+        <id>105</id>
+        <value>לדוג : יפל מיין</value>
+    </string>
+    <string>
+        <id>106</id>
+        <value>אל</value>
+    </string>
+    <string>
+        <id>107</id>
+        <value>ןכ</value>
+    </string>
+    <string>
+        <id>108</id>
+        <value>תגצמ</value>
+    </string>
+    <string>
+        <id>109</id>
+        <value>תוימלצ רוצ</value>
+    </string>
+    <string>
+        <id>110</id>
+        <value>המידקמ הגוצת רוצ</value>
+    </string>
+    <string>
+        <id>111</id>
+        <value>ךרד ירוציק</value>
+    </string>
+    <string>
+        <id>112</id>
+        <value>קספומ</value>
+    </string>
+    <string>
+        <id>113</id>
+        <value>רוקמ : ילש םיצבקה</value>
+    </string>
+    <string>
+        <id>114</id>
+        <value>דעי : ילש םיצבקה</value>
+    </string>
+    <string>
+        <id>115</id>
+        <value>קתעה</value>
+    </string>
+    <string>
+        <id>116</id>
+        <value>רבעה</value>
+    </string>
+    <string>
+        <id>117</id>
+        <value>קחמ</value>
+    </string>
+    <string>
+        <id>118</id>
+        <value>םש הנש</value>
+    </string>
+    <string>
+        <id>119</id>
+        <value>השדח היקית</value>
+    </string>
+    <string>
+        <id>120</id>
+        <value>ץבוק תקתעה רשא</value>
+    </string>
+    <string>
+        <id>121</id>
+        <value>ץבוק תרבעה רשא</value>
+    </string>
+    <string>
+        <id>122</id>
+        <value>ץבוק תקיחמ רשא</value>
+    </string>
+    <string>
+        <id>123</id>
+        <value>?ולא םיצבק קיתעהל</value>
+    </string>
+    <string>
+        <id>124</id>
+        <value>?ולא םיצבק ריבעהל</value>
+    </string>
+    <string>
+        <id>125</id>
+        <value>?ולא םיצבק קוחמל</value>
+    </string>
+    <string>
+        <id>126</id>
+        <value>בצמ</value>
+    </string>
+    <string>
+        <id>127</id>
+        <value>םיטקייבוא</value>
+    </string>
+    <string>
+        <id>128</id>
+        <value>יללכ</value>
+    </string>
+    <string>
+        <id>129</id>
+        <value>תגצמ</value>
+    </string>
+    <string>
+        <id>130</id>
+        <value>תכרעמ עדימ</value>
+    </string>
+    <string>
+        <id>131</id>
+        <value>ךסמ</value>
+    </string>
+    <string>
+        <id>132</id>
+        <value>םימובלא</value>
+    </string>
+    <string>
+        <id>133</id>
+        <value>םינמא</value>
+    </string>
+    <string>
+        <id>134</id>
+        <value>םיריש</value>
+    </string>
+    <string>
+        <id>135</id>
+        <value>תונונגס</value>
+    </string>
+    <string>
+        <id>136</id>
+        <value>העמשה תמישר</value>
+    </string>
+    <string>
+        <id>137</id>
+        <value>שפח</value>
+    </string>
+    <string>
+        <id>138</id>
+        <value>תכרעמ עדימ</value>
+    </string>
+    <string>
+        <id>139</id>
+        <value>:תורוטרפמט</value>
+    </string>
+    <string>
+        <id>140</id>
+        <value>:דבעמ</value>
+    </string>
+    <string>
+        <id>141</id>
+        <value>:יפרג רבעמ</value>
+    </string>
+    <string>
+        <id>142</id>
+        <value>:ןמז</value>
+    </string>
+    <string>
+        <id>143</id>
+        <value>:יחכונ</value>
+    </string>
+    <string>
+        <id>144</id>
+        <value>:הסריג</value>
+    </string>
+    <string>
+        <id>145</id>
+        <value>:תשר</value>
+    </string>
+    <string>
+        <id>146</id>
+        <value>:גוס</value>
+    </string>
+    <string>
+        <id>147</id>
+        <value>יטאטס</value>
+    </string>
+    <string>
+        <id>148</id>
+        <value>DHCP</value>
+    </string>
+    <string>
+        <id>149</id>
+        <value>MAC</value>
+    </string>
+    <string>
+        <id>150</id>
+        <value>IP</value>
+    </string>
+    <string>
+        <id>151</id>
+        <value>:רושיק</value>
+    </string>
+    <string>
+        <id>152</id>
+        <value>Half duplex</value>
+    </string>
+    <string>
+        <id>153</id>
+        <value>Full duplex</value>
+    </string>
+    <string>
+        <id>154</id>
+        <value>ןוסחא</value>
+    </string>
+    <string>
+        <id>155</id>
+        <value>ןנוכ</value>
+    </string>
+    <string>
+        <id>156</id>
+        <value>יונפ</value>
+    </string>
+    <string>
+        <id>157</id>
+        <value>ואדיו</value>
+    </string>
+    <string>
+        <id>158</id>
+        <value>יונפ ןורכיז</value>
+    </string>
+    <string>
+        <id>159</id>
+        <value>רויק ןיא</value>
+    </string>
+    <string>
+        <id>160</id>
+        <value>יונפ</value>
+    </string>
+    <string>
+        <id>161</id>
+        <value>ןימז אל</value>
+    </string>
+    <string>
+        <id>162</id>
+        <value>חותפ שגמ</value>
+    </string>
+    <string>
+        <id>163</id>
+        <value>ארוק</value>
+    </string>
+    <string>
+        <id>164</id>
+        <value>קסיד ןיא</value>
+    </string>
+    <string>
+        <id>165</id>
+        <value>אצמנ קסיד</value>
+    </string>
+    <string>
+        <id>166</id>
+        <value>ןיקס</value>
+    </string>
+    <string>
+        <id>167</id>
+        <value>FTP תרש</value>
+    </string>
+    <string>
+        <id>168</id>
+        <value>םינמז תרש</value>
+    </string>
+    <string>
+        <id>169</id>
+        <value>היצולוזר</value>
+    </string>
+    <string>
+        <id>170</id>
+        <value>:םובלא</value>
+    </string>
+    <string>
+        <id>171</id>
+        <value>:ןמא</value>
+    </string>
+    <string>
+        <id>172</id>
+        <value>:הצפה ךיראת</value>
+    </string>
+    <string>
+        <id>173</id>
+        <value>:גוריד</value>
+    </string>
+    <string>
+        <id>174</id>
+        <value>:ןונגס</value>
+    </string>
+    <string>
+        <id>175</id>
+        <value>:םינוט</value>
+    </string>
+    <string>
+        <id>176</id>
+        <value>:תונונגס</value>
+    </string>
+    <string>
+        <id>177</id>
+        <value>:תרוקיב</value>
+    </string>
+    <string>
+        <id>178</id>
+        <value>:תועוצר</value>
+    </string>
+    <string>
+        <id>179</id>
+        <value>ריש</value>
+    </string>
+    <string>
+        <id>180</id>
+        <value>ךרוא</value>
+    </string>
+    <string>
+        <id>181</id>
+        <value>םובלא רחב</value>
+    </string>
+    <string>
+        <id>182</id>
+        <value>תועוצר</value>
+    </string>
+    <string>
+        <id>183</id>
+        <value>תרוקיב</value>
+    </string>
+    <string>
+        <id>184</id>
+        <value>ןנער</value>
+    </string>
+    <string>
+        <id>185</id>
+        <value>םובלא שפחמ</value>
+    </string>
+    <string>
+        <id>186</id>
+        <value>OK</value>
+    </string>
+    <string>
+        <id>187</id>
+        <value>!םימובלא ואצמנ אל</value>
+    </string>
+    <string>
+        <id>188</id>
+        <value>לכה רחב</value>
+    </string>
+    <string>
+        <id>189</id>
+        <value>תכרעמ עדימ קרוס</value>
+    </string>
+    <string>
+        <id>190</id>
+        <value>רומש</value>
+    </string>
+    <string>
+        <id>191</id>
+        <value>בברע</value>
+    </string>
+    <string>
+        <id>192</id>
+        <value>הקנ</value>
+    </string>
+    <string>
+        <id>193</id>
+        <value>קורס</value>
+    </string>
+    <string>
+        <id>194</id>
+        <value>...שפחמ</value>
+    </string>
+    <string>
+        <id>195</id>
+        <value>IMDB! תומושר ואצמנ אל</value>
+    </string>
+    <string>
+        <id>196</id>
+        <value>:טרס רחב</value>
+    </string>
+    <string>
+        <id>197</id>
+        <value>IMDB עדימ שפחמ</value>
+    </string>
+    <string>
+        <id>198</id>
+        <value>טרסה תודוא עדימ ןעוט</value>
+    </string>
+    <string>
+        <id>199</id>
+        <value>:יאמב</value>
+    </string>
+    <string>
+        <id>200</id>
+        <value>:בתוכ</value>
+    </string>
+    <string>
+        <id>201</id>
+        <value>:הנש</value>
+    </string>
+    <string>
+        <id>202</id>
+        <value>:הרוש</value>
+    </string>
+    <string>
+        <id>203</id>
+        <value>:הלילע ריצקת</value>
+    </string>
+    <string>
+        <id>204</id>
+        <value>:גניטייר</value>
+    </string>
+    <string>
+        <id>205</id>
+        <value>:תועבצה</value>
+    </string>
+    <string>
+        <id>206</id>
+        <value>קוהיל</value>
+    </string>
+    <string>
+        <id>207</id>
+        <value>הלילע</value>
+    </string>
+    <string>
+        <id>208</id>
+        <value>ןגנ</value>
+    </string>
+    <string>
+        <id>209</id>
+        <value>אבה</value>
+    </string>
+    <string>
+        <id>210</id>
+        <value>םדוקה</value>
+    </string>
+    <string>
+        <id>211</id>
+        <value>תויצקילפא שפחמ</value>
+    </string>
+    <string>
+        <id>212</id>
+        <value>ואצמנ תויצקילפא</value>
+    </string>
+    <string>
+        <id>213</id>
+        <value>שמתשמ קשממ ןונווכ</value>
+    </string>
+    <string>
+        <id>214</id>
+        <value>ךסמ ןונווכ</value>
+    </string>
+    <string>
+        <id>215</id>
+        <value>ךכר</value>
+    </string>
+    <string>
+        <id>216</id>
+        <value>םוז תומכ</value>
+    </string>
+    <string>
+        <id>217</id>
+        <value>םילסקיפ סחי</value>
+    </string>
+    <string>
+        <id>218</id>
+        <value>DVD ןנוכ</value>
+    </string>
+    <string>
+        <id>219</id>
+        <value>השקבב קסיד סנכה</value>
+    </string>
+    <string>
+        <id>220</id>
+        <value>תשר תייקת</value>
+    </string>
+    <string>
+        <id>221</id>
+        <value>תרבוחמ הניא תשרה</value>
+    </string>
+    <string>
+        <id>222</id>
+        <value>לטב</value>
+    </string>
+    <string>
+        <id>223</id>
+        <value>בחר ךסמל תיטמוטוא ףלחה</value>
+    </string>
+    <string>
+        <id>224</id>
+        <value>תוריהמ</value>
+    </string>
+    <string>
+        <id>225</id>
+        <value>רבעמ ינמז</value>
+    </string>
+    <string>
+        <id>226</id>
+        <value>PAL60 רשפא</value>
+    </string>
+    <string>
+        <id>227</id>
+        <value>CDDB רשפא</value>
+    </string>
+    <string>
+        <id>228</id>
+        <value>הניעטה תעב העמשה תמישר בברע</value>
+    </string>
+    <string>
+        <id>229</id>
+        <value>HD Spindown time (mins)</value>
+    </string>
+    <string>
+        <id>230</id>
+        <value>םירטליפ</value>
+    </string>
+    <string>
+        <id>231</id>
+        <value>אלל</value>
+    </string>
+    <string>
+        <id>232</id>
+        <value>הדוקנ</value>
+    </string>
+    <string>
+        <id>233</id>
+        <value>יווק</value>
+    </string>
+    <string>
+        <id>234</id>
+        <value>Anisotropic</value>
+    </string>
+    <string>
+        <id>235</id>
+        <value>Quincunx</value>
+    </string>
+    <string>
+        <id>236</id>
+        <value>Gaussian Cubic</value>
+    </string>
+    <string>
+        <id>237</id>
+        <value>םוצמצ</value>
+    </string>
+    <string>
+        <id>238</id>
+        <value>הלדגה</value>
+    </string>
+    <string>
+        <id>240</id>
+        <value>DVD יטרס תיטאמוטוא ןגנ</value>
+    </string>
+    <string>
+        <id>241</id>
+        <value>DCVS/DCVיטרס תיטאמוטוא ןגנ</value>
+    </string>
+    <string>
+        <id>242</id>
+        <value>תיטאמוטוא הקיזומ ןגנ</value>
+    </string>
+    <string>
+        <id>243</id>
+        <value>תיטאמוטוא םיקחשמ ץרה</value>
+    </string>
+    <string>
+        <id>244</id>
+        <value>תיטאמוטוא םיטרס ןגנ</value>
+    </string>
+    <string>
+        <id>245</id>
+        <value>תיטאמוטוא הקיזומ ןגנ</value>
+    </string>
+    <string>
+        <id>246</id>
+        <value>תיטאמוטוא תונומת ץרה</value>
+    </string>
+    <string>
+        <id>247</id>
+        <value>םיטפירקס</value>
+    </string>
+    <string>
+        <id>248</id>
+        <value>הפש</value>
+    </string>
+    <string>
+        <id>249</id>
+        <value>הקיזומ</value>
+    </string>
+    <string>
+        <id>250</id>
+        <value>תוגוצת</value>
+    </string>
+    <string>
+        <id>251</id>
+        <value>דעי תירפס רחב</value>
+    </string>
+    <string>
+        <id>252</id>
+        <value>- םילוקמרה לכל ואירטס טלפ</value>
+    </string>
+    <string>
+        <id>253</id>
+        <value>םיצורע רפסמ</value>
+    </string>
+    <string>
+        <id>254</id>
+        <value>- ךמות רביסר DTS</value>
+    </string>
+    <string>
+        <id>255</id>
+        <value>CDDB</value>
+    </string>
+    <string>
+        <id>256</id>
+        <value>CDDB עדימ תשרב שפחמ</value>
+    </string>
+    <string>
+        <id>257</id>
+        <value>האיגש</value>
+    </string>
+    <string>
+        <id>258</id>
+        <value>ID3 תויגת רשפא</value>
+    </string>
+    <string>
+        <id>259</id>
+        <value>חתופ</value>
+    </string>
+    <string>
+        <id>260</id>
+        <value>Shoutcast</value>
+    </string>
+    <string>
+        <id>261</id>
+        <value>....הלחתהל ןיתממ</value>
+    </string>
+    <string>
+        <id>262</id>
+        <value>םיטפירקס טלפ</value>
+    </string>
+    <string>
+        <id>263</id>
+        <value>HTTP תרש</value>
+    </string>
+    <string>
+        <id>264</id>
+        <value>טלקה</value>
+    </string>
+    <string>
+        <id>265</id>
+        <value>הטלקה רוצע</value>
+    </string>
+    <string>
+        <id>266</id>
+        <value>העוצר : יפל ןיימ</value>
+    </string>
+    <string>
+        <id>267</id>
+        <value>ןמז : יפל ןיימ</value>
+    </string>
+    <string>
+        <id>268</id>
+        <value>תרתוכ : יפל ןיימ</value>
+    </string>
+    <string>
+        <id>269</id>
+        <value>ןמא : יפל ןיימ</value>
+    </string>
+    <string>
+        <id>270</id>
+        <value>םובלא : יפל ןיימ</value>
+    </string>
+    <string>
+        <id>271</id>
+        <value>םינושאר 100</value>
+    </string>
+    <string>
+        <id>272</id>
+        <value>הלעמל לאמשמ רתי תקירס יוציפ</value>
+    </string>
+    <string>
+        <id>273</id>
+        <value>הטמל ןימימ רתי תקירס יוציפ</value>
+    </string>
+    <string>
+        <id>274</id>
+        <value>תויבותכ םוקימ</value>
+    </string>
+    <string>
+        <id>275</id>
+        <value>םילסקיפה סחי ןוויכ</value>
+    </string>
+    <string>
+        <id>276</id>
+        <value>רתיה תקירס תמר יונישל ץחה תא זזה</value>
+    </string>
+    <string>
+        <id>277</id>
+        <value>תויבותכה םוקמ יונישל עיבצמה תא זזה</value>
+    </string>
+    <string>
+        <id>278</id>
+        <value>םלשומ עובירל ךופהיש ךכ ןבלמה תא ןווכ</value>
+    </string>
+    <string>
+        <id>279</id>
+        <value>הלשכנ תורדגה תניעט</value>
+    </string>
+    <string>
+        <id>280</id>
+        <value>לדחמ תורירבב שמתשמ</value>
+    </string>
+    <string>
+        <id>281</id>
+        <value>XML יצבק קודב אנא</value>
+    </string>
+    <string>
+        <id>282</id>
+        <value>תומאתה %i ואצמנ</value>
+    </string>
+    <string>
+        <id>283</id>
+        <value>שופיח תואצות</value>
+    </string>
+    <string>
+        <id>284</id>
+        <value>שופיחל תומאתה ואצמנ אל</value>
+    </string>
+    <string>
+        <id>285</id>
+        <value>בלושמ אל רטליפ</value>
+    </string>
+    <string>
+        <id>286</id>
+        <value>דוביע רחאל רטליפ</value>
+    </string>
+    <string>
+        <id>287</id>
+        <value>תויבותכ</value>
+    </string>
+    <string>
+        <id>288</id>
+        <value>טנופ</value>
+    </string>
+    <string>
+        <id>289</id>
+        <value>לדוג</value>
+    </string>
+    <string>
+        <id>290</id>
+        <value>)Bd( םוילוו תרבגה</value>
+    </string>
+    <string>
+        <id>291</id>
+        <value>ואדיו</value>
+    </string>
+    <string>
+        <id>292</id>
+        <value>וידוא</value>
+    </string>
+    <string>
+        <id>293</id>
+        <value>תויבותכ</value>
+    </string>
+    <string>
+        <id>294</id>
+        <value>הינמיס רוצ</value>
+    </string>
+    <string>
+        <id>295</id>
+        <value>תוינמיס ןיב טוונ</value>
+    </string>
+    <string>
+        <id>296</id>
+        <value>תוינמיס הקנ</value>
+    </string>
+    <string>
+        <id>297</id>
+        <value>ותמונה לוק תייהשה</value>
+    </string>
+    <string>
+        <id>298</id>
+        <value>טוונ</value>
+    </string>
+    <string>
+        <id>300</id>
+        <value>1. הפש</value>
+    </string>
+    <string>
+        <id>301</id>
+        <value>2. םוילוו</value>
+    </string>
+    <string>
+        <id>302</id>
+        <value>3. םרוז רודיש</value>
+    </string>
+    <string>
+        <id>303</id>
+        <value>הייהשה</value>
+    </string>
+    <string>
+        <id>304</id>
+        <value>הפש</value>
+    </string>
+    <string>
+        <id>305</id>
+        <value>ןימז</value>
+    </string>
+    <string>
+        <id>306</id>
+        <value>Non-Interleaved</value>
+    </string>
+    <string>
+        <id>307</id>
+        <value>- דוביע יטאמוטוא</value>
+    </string>
+    <string>
+        <id>308</id>
+        <value>- הבוגל המיסח תרסה רטליפ</value>
+    </string>
+    <string>
+        <id>309</id>
+        <value>- בחורל המיסח תרסה רטליפ</value>
+    </string>
+    <string>
+        <id>310</id>
+        <value>- םייטאמוטוא תוידוגינ/תוריהב</value>
+    </string>
+    <string>
+        <id>311</id>
+        <value>- Dering</value>
+    </string>
+    <string>
+        <id>312</id>
+        <value>(0=auto)</value>
+    </string>
+    <string>
+        <id>313</id>
+        <value>סייבהטד הקנ</value>
+    </string>
+    <string>
+        <id>314</id>
+        <value>...ןנוכתמ</value>
+    </string>
+    <string>
+        <id>315</id>
+        <value>סייבהטד תאיגש</value>
+    </string>
+    <string>
+        <id>316</id>
+        <value>...םיריש שפחמ</value>
+    </string>
+    <string>
+        <id>317</id>
+        <value>החלצהב םלשוה יוקינ</value>
+    </string>
+    <string>
+        <id>318</id>
+        <value>...םיריש הקנמ</value>
+    </string>
+    <string>
+        <id>319</id>
+        <value>םיריש יוקנב האיגש</value>
+    </string>
+    <string>
+        <id>320</id>
+        <value>...םינמא יוקינ</value>
+    </string>
+    <string>
+        <id>321</id>
+        <value>םינמא יוקנב האיגש</value>
+    </string>
+    <string>
+        <id>322</id>
+        <value>...תונונגס יוקינ</value>
+    </string>
+    <string>
+        <id>323</id>
+        <value>תונונגס יוקנב האיגש</value>
+    </string>
+    <string>
+        <id>324</id>
+        <value>...תיביתנ יוקינ</value>
+    </string>
+    <string>
+        <id>325</id>
+        <value>םיביתנ יוקנב האיגש</value>
+    </string>
+    <string>
+        <id>326</id>
+        <value>...םימובלא יוקינ</value>
+    </string>
+    <string>
+        <id>327</id>
+        <value>םימובלא יוקנב האיגש</value>
+    </string>
+    <string>
+        <id>328</id>
+        <value>...םייוניש בתוכ</value>
+    </string>
+    <string>
+        <id>329</id>
+        <value>םייוניש תביתכב האיגש</value>
+    </string>
+    <string>
+        <id>330</id>
+        <value>...ןמז תחקל היושע וז הלועפ</value>
+    </string>
+    <string>
+        <id>331</id>
+        <value>...םינותנ סחוד</value>
+    </string>
+    <string>
+        <id>332</id>
+        <value>םינותנ תסיחדב האיגש</value>
+    </string>
+    <string>
+        <id>333</id>
+        <value>?סייבהטדה תא תוקנל ךנוצרב םאה</value>
+    </string>
+    <string>
+        <id>334</id>
+        <value>סייבהטדה תא קהנ</value>
+    </string>
+    <string>
+        <id>335</id>
+        <value>לחתה</value>
+    </string>
+    <string>
+        <id>336</id>
+        <value>םימיירפ בצק רדס</value>
+    </string>
+    <string>
+        <id>337</id>
+        <value>וידוא טלפ</value>
+    </string>
+    <string>
+        <id>338</id>
+        <value>יגולנא</value>
+    </string>
+    <string>
+        <id>339</id>
+        <value>ילאטיגיד</value>
+    </string>
+    <string>
+        <id>340</id>
+        <value>םינוש םינמא</value>
+    </string>
+    <string>
+        <id>341</id>
+        <value>DVD ןגנ</value>
+    </string>
+    <string>
+        <id>342</id>
+        <value>םיטרס</value>
+    </string>
+    <string>
+        <id>343</id>
+        <value>םימיירפ בצק רדס</value>
+    </string>
+    <string>
+        <id>344</id>
+        <value>םינקחש</value>
+    </string>
+    <string>
+        <id>345</id>
+        <value>הנש</value>
+    </string>
+    <string>
+        <id>346</id>
+        <value>ץבק</value>
+    </string>
+    <string>
+        <id>347</id>
+        <value>שורפ</value>
+    </string>
+    <string>
+        <id>348</id>
+        <value>תוירפס הנבמ חטש</value>
+    </string>
+    <string>
+        <id>349</id>
+        <value>Default.xbe קר הארה</value>
+    </string>
+    <string>
+        <id>350</id>
+        <value>תיונכות</value>
+    </string>
+    <string>
+        <id>351</id>
+        <value>הבכ</value>
+    </string>
+    <string>
+        <id>352</id>
+        <value>םעמע</value>
+    </string>
+    <string>
+        <id>353</id>
+        <value>רוחש ךסמ</value>
+    </string>
+    <string>
+        <id>354</id>
+        <value>סקירטאמ</value>
+    </string>
+    <string>
+        <id>355</id>
+        <value>ךסמ רמושל הנתמה</value>
+    </string>
+    <string>
+        <id>356</id>
+        <value>ךסמ רמוש בצמ</value>
+    </string>
+    <string>
+        <id>357</id>
+        <value>יוביכ ינפל הנתמהל ןמז</value>
+    </string>
+    <string>
+        <id>358</id>
+        <value>םימובלאה לכ</value>
+    </string>
+    <string>
+        <id>359</id>
+        <value>םינורחא םימובלא</value>
+    </string>
+    <string>
+        <id>360</id>
+        <value>ךסמ רמוש</value>
+    </string>
+    <string>
+        <id>361</id>
+        <value>R. SlideShow</value>
+    </string>
+    <string>
+        <id>362</id>
+        <value>ךסמ םועמע יזוחא (%)</value>
+    </string>
+    <string>
+        <id>363</id>
+        <value>ץבוק : יפל רדס</value>
+    </string>
+    <string>
+        <id>364</id>
+        <value>- ךמות רביסר AC3</value>
+    </string>
+    <string>
+        <id>365</id>
+        <value>םש : יפל רדס</value>
+    </string>
+    <string>
+        <id>366</id>
+        <value>הנש : יפל רדס</value>
+    </string>
+    <string>
+        <id>367</id>
+        <value>גניטייר : יפל רדס</value>
+    </string>
+    <string>
+        <id>368</id>
+        <value>IMDB</value>
+    </string>
+    <string>
+        <id>369</id>
+        <value>תרתוכ</value>
+    </string>
+    <string>
+        <id>370</id>
+        <value>םימער</value>
+    </string>
+    <string>
+        <id>371</id>
+        <value>תיקלח</value>
+    </string>
+    <string>
+        <id>372</id>
+        <value>רקיעב</value>
+    </string>
+    <string>
+        <id>373</id>
+        <value>ריהב</value>
+    </string>
+    <string>
+        <id>374</id>
+        <value>ןנועמ</value>
+    </string>
+    <string>
+        <id>375</id>
+        <value>גלש</value>
+    </string>
+    <string>
+        <id>376</id>
+        <value>םשג</value>
+    </string>
+    <string>
+        <id>377</id>
+        <value>לק</value>
+    </string>
+    <string>
+        <id>378</id>
+        <value>AM</value>
+    </string>
+    <string>
+        <id>379</id>
+        <value>PM</value>
+    </string>
+    <string>
+        <id>380</id>
+        <value>םירטממ</value>
+    </string>
+    <string>
+        <id>381</id>
+        <value>םיטעמ</value>
+    </string>
+    <string>
+        <id>382</id>
+        <value>ןיגוריסל</value>
+    </string>
+    <string>
+        <id>383</id>
+        <value>חור</value>
+    </string>
+    <string>
+        <id>384</id>
+        <value>הקזח</value>
+    </string>
+    <string>
+        <id>385</id>
+        <value>הלילק</value>
+    </string>
+    <string><id>386</id><value>ריהב</value></string>
+    <string><id>387</id><value>םיננע</value></string>
+    <string><id>388</id><value>N/A</value></string>
+    <string><id>389</id><value>N/A</value></string>
+    <string><id>390</id><value>N/A</value></string>
+    <string><id>391</id><value>N/A</value></string>
+    <string><id>392</id><value>N/A</value></string>
+    <string><id>393</id><value>N/A</value></string>
+    <string><id>394</id><value>N/A</value></string>
+    <string><id>395</id><value>N/A</value></string>
+    <string>
+        <id>396</id>
+        <value>םוקימ רחב</value>
+    </string>
+    <string>
+        <id>397</id>
+        <value>ןונער ינמז</value>
+    </string>
+    <string>
+        <id>398</id>
+        <value>הרוטרפמט תודיחי</value>
+    </string>
+    <string>
+        <id>399</id>
+        <value>תוריהמ תודיחי</value>
+    </string>
+    <string>
+        <id>400</id>
+        <value>ריווא גזמ</value>
+    </string>
+    <string>
+        <id>401</id>
+        <value>הרוטרפמט</value>
+    </string>
+    <string>
+        <id>402</id>
+        <value>וליאכ שיגרמ</value>
+    </string>
+    <string>
+        <id>403</id>
+        <value>UV תמר</value>
+    </string>
+    <string>
+        <id>404</id>
+        <value>חור</value>
+    </string>
+    <string>
+        <id>405</id>
+        <value>יודיא תדוקנ</value>
+    </string>
+    <string>
+        <id>406</id>
+        <value>תוחל</value>
+    </string>
+    <string>
+        <id>407</id>
+        <value>מ</value>
+    </string>
+    <string>
+        <id>408</id>
+        <value>ב</value>
+    </string>
+    <string>
+        <id>410</id>
+        <value>Weather.com ל שגינ</value>
+    </string>
+    <string>
+        <id>411</id>
+        <value>:רובע ריוא גזמ ןעוט</value>
+    </string>
+    <string>
+        <id>412</id>
+        <value>ריוא גזמ תניעטב האיגש</value>
+    </string>
+    <string>
+        <id>413</id>
+        <value>ינדי</value>
+    </string>
+    <string>
+        <id>414</id>
+        <value>הז םובלא רובע תורוקיב ןיא</value>
+    </string>
+    <string>
+        <id>415</id>
+        <value>...תוימלצ דירומ</value>
+    </string>
+    <string>
+        <id>416</id>
+        <value>ןימז אל</value>
+    </string>
+    <string>
+        <id>417</id>
+        <value>תולודג תוימלצ : הגוצת</value>
+    </string>
+    <string>
+        <id>418</id>
+        <value>תונונגס/ילש םיטרסה</value>
+    </string>
+    <string>
+        <id>419</id>
+        <value>םינקחש/ילש םיטרסה</value>
+    </string>
+    <string>
+        <id>420</id>
+        <value>םינש/ילש םיטרסה</value>
+    </string>
+    <string>
+        <id>421</id>
+        <value>תורתוכ/ילש םיטרסה</value>
+    </string>
+    <string>
+        <id>422</id>
+        <value>םובלא עדימ קחמ</value>
+    </string>
+    <string>
+        <id>423</id>
+        <value>עדימ CDDB קחמ</value>
+    </string>
+    <string>
+        <id>424</id>
+        <value>רחב</value>
+    </string>
+    <string>
+        <id>425</id>
+        <value>.םובלא עדימ אצמנ אל</value>
+    </string>
+    <string>
+        <id>426</id>
+        <value>.םובלא עדימ אצמנ אל</value>
+    </string>
+    <string>
+        <id>427</id>
+        <value>:קסיד</value>
+    </string>
+    <string>
+        <id>428</id>
+        <value>ןוכנ קסיד סנכה</value>
+    </string>
+    <string>
+        <id>429</id>
+        <value>אבה קסידה תא סנכה אנא</value>
+    </string>
+    <string>
+        <id>430</id>
+        <value>DVD# : יפל ןיימ</value>
+    </string>
+    <string>
+        <id>431</id>
+        <value>ןומטמ אלל</value>
+    </string>
+    <string>
+        <id>432</id>
+        <value>סייבהטדהמ טרס קחמ</value>
+    </string>
+    <string>
+        <id>433</id>
+        <value>קוחמל ךנוצרבש חוטב התא םאה</value>
+    </string>
+    <string>
+        <id>434</id>
+        <value>?טרסה תא</value>
+    </string>
+    <string>
+        <id>435</id>
+        <value>העוצר</value>
+    </string>
+    <string>
+        <id>436</id>
+        <value>:הנש</value>
+    </string>
+    <string>
+        <id>437</id>
+        <value>:ךרוא</value>
+    </string>
+    <string>
+        <id>438</id>
+        <value>ץבוק חתופ</value>
+    </string>
+    <string>
+        <id>439</id>
+        <value>ןומטמ</value>
+    </string>
+    <string>
+        <id>440</id>
+        <value>חישק ןנוכ</value>
+    </string>
+    <string>
+        <id>441</id>
+        <value>UDF</value>
+    </string>
+    <string>
+        <id>442</id>
+        <value>LAN</value>
+    </string>
+    <string>
+        <id>443</id>
+        <value>טנרטניא</value>
+    </string>
+    <string>
+        <id>444</id>
+        <value>ואדיו</value>
+    </string>
+    <string>
+        <id>445</id>
+        <value>וידוא</value>
+    </string>
+    <string>
+        <id>446</id>
+        <value>DVD</value>
+    </string>
+    <string>
+        <id>447</id>
+        <value>תיטאמוטוא ןגנ</value>
+    </string>
+    <string>
+        <id>448</id>
+        <value>LCD</value>
+    </string>
+    <string>
+        <id>449</id>
+        <value>ליעפ</value>
+    </string>
+    <string>
+        <id>450</id>
+        <value>תודומע</value>
+    </string>
+    <string>
+    	<id>4501</id>
+    	<value>LCD גוס</value>
+    </string>
+    <string>
+        <id>451</id>
+        <value>1: תבותכ תרוש</value>
+    </string>
+    <string>
+        <id>452</id>
+        <value>2: תבותכ תרוש</value>
+    </string>
+    <string>
+        <id>453</id>
+        <value>3: תבותכ תרוש</value>
+    </string>
+    <string>
+        <id>454</id>
+        <value>4: תבותכ תרוש</value>
+    </string>
+    <string>
+        <id>455</id>
+        <value>:תורוש</value>
+    </string>
+    <string>
+        <id>456</id>
+        <value>:בצמ</value>
+    </string>
+    <string>
+        <id>457</id>
+        <value>הגוצת ףלחה</value>
+    </string>
+    <string>
+        <id>458</id>
+        <value>B/Mark</value>
+    </string>
+    <string>
+        <id>459</id>
+        <value>תויבותכ</value>
+    </string>
+    <string>
+        <id>460</id>
+        <value>םרוז וידוא</value>
+    </string>
+    <string>
+        <id>461</id>
+        <value>]ליעפ[</value>
+    </string>
+    <string>
+        <id>462</id>
+        <value>תיבותכ</value>
+    </string>
+    <string>
+        <id>463</id>
+        <value>תירוחא הרואת</value>
+    </string>
+    <string>
+        <id>464</id>
+        <value>תוריהב</value>
+    </string>
+    <string>
+        <id>465</id>
+        <value>תוידוגינ</value>
+    </string>
+    <string>
+        <id>466</id>
+        <value>המאג</value>
+    </string>
+    <string>
+        <id>467</id>
+        <value>גוס</value>
+    </string>
+    <string>
+        <id>468</id>
+        <value>טירפתה םוקימ תא תונשל ידכ ןמסה תא זזה</value>
+    </string>
+    <string>
+        <id>469</id>
+        <value>טירפת םוקימ</value>
+    </string>
+    <string>
+        <id>470</id>
+        <value>תודות</value>
+    </string>
+   <string>
+      <id>471</id>
+      <value>פי'צדומ</value>
+    </string>
+    <string>
+      <id>472</id>
+      <value>טירפת תמלעהל ןמז</value>
+    </string>
+    <string>
+      <id>473</id>
+      <value>ההובג תוכיאב שדחמ המיגד</value>
+    </string>
+    <string>
+      <id>474</id>
+      <value>יובכ</value>
+    </string>
+    <string>
+      <id>475</id>
+      <value>דבלב הקיזומ</value>
+    </string>
+    <string>
+      <id>476</id>
+      <value>ואדיוו הקיזומ</value>
+    </string>
+    <string>
+    <id>477</id>
+      <value>העמשה תמישר ןועטל לוכי אל</value>
+    </string>
+    <string>
+      <id>478</id>
+      <value>טירפת</value>
+    </string>
+    <string>
+      <id>479</id>
+      <value>הפשו ןיקס</value>
+    </string>
+    <string>
+      <id>480</id>
+      <value>שמתשמ קשממ</value>
+    </string>
+    <string>
+      <id>481</id>
+      <value>וידוא תויורשפא</value>
+    </string>
+    <string>
+      <id>482</id>
+      <value>תודוא XBMC</value>
+    </string>
+    <string>
+      <id>483</id>
+      <value>םובלא</value>
+    </string>
+    <string>
+      <id>484</id>
+      <value>ןמא</value>
+    </string>
+    <string>
+      <id>485</id>
+      <value>םובלא קחמ</value>
+    </string>
+    <string>
+      <id>486</id>
+      <value>רוזח</value>
+    </string>
+    <string>
+      <id>487</id>
+      <value>תחא םעפ רוזח</value>
+    </string>
+    <string>
+      <id>488</id>
+      <value>הירפסל העמשה תמישר רוזח</value>
+    </string>
+    <string>
+      <id>489</id>
+      <value>םירישב העמשה תמישרב שמתשה</value>
+    </string>
+    <string>
+      <id>490</id>
+      <value>םירישב תוימלצו המישר לש תיטאמוטוא הפלחה</value>
+    </string>
+    <string>
+      <id>491</id>
+      <value>- תולודג תוימלצב שמתשה</value>
+    </string>
+    <string>
+      <id>492</id>
+      <value>תויבותכ לדגה</value>
+    </string>
+    <string>
+        <id>493</id>
+        <value>תומדקתמ תויורשפא</value>
+    </string>
+    <string>
+        <id>494</id>
+        <value>Overall Audio Headroom (dB)</value>
+    </string>
+    <string>
+        <id>495</id>
+        <value>הגוצת תיצולוצרל ואדיו שדחמ םוגד</value>
+    </string>
+    <string>
+        <id>496</id>
+        <value>היצרבילק</value>
+    </string>
+    <string>
+        <id>497</id>
+        <value>הידמ תופסות רתסה</value>
+    </string>
+    <string>
+        <id>498</id>
+        <value>גוס : יפל ןיימ</value>
+    </string>
+    <string>
+        <id>499</id>
+        <value>ל וביח ןיא www.allmusic.com</value>
+    </string>
+    <string>
+        <id>500</id>
+        <value>הלשכנ םובלא יטרפ תדרוה</value>
+    </string>
+    <string>
+        <id>501</id>
+        <value>םובלא תומש שפחמ</value>
+    </string>
+    <string>
+        <id>502</id>
+        <value>חתפ</value>
+    </string>
+    <string>
+        <id>503</id>
+        <value>קוסע</value>
+    </string>
+    <string>
+        <id>504</id>
+        <value>קיר</value>
+    </string>
+    <string>
+        <id>505</id>
+        <value>םיצבקהמ הידמ יטרפ ןעוט</value>
+    </string>
+    <string>
+	<id>506</id>
+	<value>רואיתל תוירפס תומשב שמתשה</value>
+    </string>
+    <string> 	 
+         <id>507</id> 	 
+         <value>שומיש  :  יפל ןיימ</value> 	 
+    </string>
+    <string>
+    	<id>508</id>
+    	<value>הקירסו םירוציקב שמתשת לא</value>
+    </string>
+
+    <string>	
+	<id>600</id>
+	<value>קסיד קתעה</value>
+    </string>
+	<string>
+		<id>601</id>
+		<value>ינוניב</value>
+	</string>
+	<string>
+		<id>602</id>
+		<value>ליגר</value>
+	</string>
+	<string>
+		<id>603</id>
+		<value>ינוציק</value>
+	</string>
+	<string>
+		<id>604</id>
+		<value>עובק םיטיב בצק</value>
+	</string>
+	<string>
+		<id>605</id>
+		<value>...קיתעמ</value>
+	</string>
+	<string>
+		<id>606</id>
+		<value>העוצר רפסמ:</value>
+	</string>
+	<string>
+		<id>607</id>
+		<value>לא:</value>
+	</string>
+	<string>
+		<id>608</id>
+		<value>העוצר וא קסיד קיתעהל לוכי אל</value>
+	</string>
+	<string>
+		<id>609</id>
+		<value>CDDARipPath is not set in XboxMediaCenter.xml</value>
+	</string>
+	<string>
+		<id>620</id>
+		<value>קסיד תקתעה</value>
+	</string>
+	<string>
+		<id>621</id>
+		<value>דדוקמ</value>
+	</string>
+	<string>
+		<id>622</id>
+		<value>תוכיא</value>
+	</string>
+	<string>
+		<id>623</id>
+		<value>םיטיב בצק</value>
+	</string>
+	<string>
+		<id>624</id>
+		<value>העוצר רפסמ לולכ</value>
+	</string>
+	<string>
+		<id>625</id>
+		<value>לש םירישה לכ</value>
+	</string>
+	
+		<string>
+			<id>629</id>
+			<value>הגוצת בצמ</value>
+		</string>
+		<string>
+			<id>630</id>
+			<value>ליגר</value>
+		</string>
+		<string>
+			<id>631</id>
+			<value>םוז</value>
+		</string>
+		<string>
+			<id>632</id>
+			<value>חתמ 4:3</value>
+		</string>
+		<string>
+			<id>633</id>
+			<value>חתמ 14:9</value>
+		</string>
+		<string>
+			<id>634</id>
+			<value>חתמ 16:9</value>
+		</string>
+		<string>
+			<id>635</id>
+			<value>ירוקמ לדוג</value>
+		</string>
+		<string>
+			<id>636</id>
+			<value>ידוחי</value>
+		</string>
+		<string>
+			<id>700</id>
+			<value>סייבהטד הקנמ</value>
+		</string>
+		<string>
+			<id>701</id>
+			<value>סייבהטדהמ םינשי םיריש קחומ</value>
+		</string>
+		<string>
+			<id>702</id>
+			<value>רבעב הקרסנ הירפסה.</value>
+		</string>
+		<string>
+			<id>703</id>
+			<value>שדחמ הקירסל ןכ ץחל.</value>
+		</string>
+		<string>
+			<id>704</id>
+			<value>דבלב םישדח תפסוהל אל לחץ.</value>
+		</string>
+		
+
+    <string>
+	<id>998</id>
+	<value>XLink KAI</value>
+    </string>
+    <string>
+        <id>999</id>
+        <value>תשרב םיקחשמ</value>
+    </string> 
+ 
+    <string><id>10000</id><value>תיבה ףד</value></string>
+    <string><id>10001</id><value>ילש תוינכתה</value></string>
+    <string><id>10002</id><value>ילש תונומתה</value></string>
+    <string><id>10003</id><value>ילש םיצבקה</value></string>
+    <string><id>10004</id><value>תורדגה</value></string>
+    <string><id>10005</id><value>ילש הקיזומה</value></string>
+    <string><id>10006</id><value>ילש ואדיוה</value></string>
+    <string><id>10007</id><value>תכרעמ עדימ</value></string>
+    <string><id>10009</id><value>Settings->Screen</value></string>
+    <string><id>10010</id><value>Settings->Screen->UI Calibration</value></string>
+    <string><id>10011</id><value>Settings->Screen->Screen Calibration</value></string>
+    <string><id>10012</id><value>Settings->SlideShow</value></string>
+    <string><id>10013</id><value>Settings->Screen->Filters</value></string>
+    <string><id>10014</id><value>Settings->Music</value></string>
+    <string><id>10015</id><value>Settings->Screen->Subtitles</value></string>
+    <string><id>10016</id><value>Settings->Screen->Screensaver</value></string>
+    <string><id>10017</id><value>Settings->Weather</value></string>
+    <string><id>10020</id><value>Settings->Scripts</value></string>
+    <string><id>10021</id><value>My Videos/genre</value></string>
+    <string><id>10022</id><value>My Videos/actor</value></string>
+    <string><id>10023</id><value>My Videos/year</value></string>
+    <string><id>10024</id><value>Settings->Programs</value></string>
+    <string><id>10025</id><value>My Videos/title</value></string>
+    <string><id>10026</id><value>Settings->General->Cache</value></string>
+    <string><id>10027</id><value>Settings->General->Autorun</value></string>
+    <string><id>10028</id><value>My Videos/playlist</value></string>
+    <string><id>10029</id><value>Settings->General->LCD</value></string>
+    <string><id>10100</id><value>Yes/no dialog</value></string>
+    <string><id>10101</id><value>Progress dialog</value></string>
+    <string><id>10500</id><value>My Music/playlist</value></string>
+    <string><id>10501</id><value>My Music/files</value></string>
+    <string><id>10502</id><value>My Music/albums</value></string>
+    <string><id>10503</id><value>My Music/artists</value></string>
+    <string><id>10504</id><value>My Music/genres</value></string>
+    <string><id>10505</id><value>My Music/top100</value></string>
+    <string><id>11000</id><value>תדלקמ</value></string>
+    <string><id>12000</id><value>Select dialog</value></string>
+    <string><id>12001</id><value>My Music/info</value></string>
+    <string><id>12002</id><value>Dialog OK</value></string>
+    <string><id>12003</id><value>My Videos/Info</value></string>
+    <string><id>12004</id><value>My Scripts/Info</value></string>
+    <string><id>12005</id><value>אלמ ךסמב ואדיו</value></string>
+    <string><id>12006</id><value>וידוא תגוצת</value></string>
+    <string><id>12007</id><value>My Picture/slideshow</value></string>
+    <string><id>12008</id><value>Filestacking dialog</value></string>
+    <string><id>12600</id><value>ילש ריואה גזמ</value></string>
+    <string><id>12900</id><value>ךסמ רמוש</value></string>
+    <string><id>12901</id><value>אלמ ךסמב טירפת</value></string>
+  <string><id>13000</id><value>תכרעמ</value></string>
+  <string><id>13001</id><value>ידיימ קסידרה בוביס</value></string>
+  <string><id>13002</id><value>דבלב ואדיו</value></string>
+  <string><id>13003</id><value>- הייהשה</value></string>
+  <string><id>13004</id><value>- ילאמינימ ץבוק ךרוא</value></string>
+  <string><id>13100</id><value>םיבוהבה רטליפ</value></string>
+  <string><id>13200</id><value>םיליפורפ</value></string>
+  <string><id>13201</id><value>ליפורפ קוחמל '%s'?</value></string>
+  <string><id>13202</id><value>יכחונ ליפורפ רומש...</value></string>
+  <string><id>13203</id><value>ליפורפה '%s' החלצהב ןעטנ</value></string>
+  <string><id>13300</id><value>ררואמ תוריהמ:</value></string>
+  <string><id>13301</id><value>תיטאמוטא הרוטרפמט תרקב</value></string>
+  <string><id>13302</id><value>ררואמ תוריהמ תרקב</value></string>
+  <string><id>13303</id><value>בתכ:</value></string>
+  <string><id>13304</id><value>םיוות ךופה:</value></string>
+</strings>

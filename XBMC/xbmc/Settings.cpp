@@ -190,7 +190,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bUseDigitalOutput=false;
 
 	strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
-	strcpy(g_stSettings.m_szFlipBiDiCharset, ""); 
+	strcpy(g_stSettings.m_szFlipBiDiCharset, "");
 	g_stSettings.m_iEnlargeSubtitlePercent = 0;
 	g_stSettings.m_bPostProcessing=false;
 	g_stSettings.m_bDeInterlace=false;
@@ -211,6 +211,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bDetectAsIso=false;
 	strcpy(g_stSettings.szDefaultLanguage,"english");
 	strcpy(g_stSettings.szDefaultVisualisation,"goom.vis");
+	strcpy(g_stSettings.m_szSkinFontSet, "Default");
 	g_stSettings.m_bAllowPAL60=false;
 	g_stSettings.m_bAutoShufflePlaylist=true;
 	g_stSettings.dwFileVersion =CONFIG_VERSION;
@@ -244,10 +245,10 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_szMyVideoExtensions,".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
 
 	strcpy( g_stSettings.m_szDefaultPrograms, "");
-	strcpy( g_stSettings.m_szDefaultMusic, "");	
-	strcpy( g_stSettings.m_szDefaultPictures, "");	
-	strcpy( g_stSettings.m_szDefaultFiles, "");	
-	strcpy( g_stSettings.m_szDefaultVideos, "");	
+	strcpy( g_stSettings.m_szDefaultMusic, "");
+	strcpy( g_stSettings.m_szDefaultPictures, "");
+	strcpy( g_stSettings.m_szDefaultFiles, "");
+	strcpy( g_stSettings.m_szDefaultVideos, "");
 	strcpy( g_stSettings.m_szCDDBIpAdres,"");
 	strcpy (g_stSettings.m_szMusicRecordingDirectory,"");
 	g_stSettings.m_bUseCDDB=false;
@@ -321,7 +322,7 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_szWeatherArea[0], "UKXX0085");	//default WEATHER 1 to London for no good reason
 	strcpy(g_stSettings.m_szWeatherArea[1], "NLXX0002");	//default WEATHER 2 to Amsterdam for no good reason
 	strcpy(g_stSettings.m_szWeatherArea[2], "CAXX0343");	//default WEATHER 3 to Ottawa for no good reason
-	strcpy(g_stSettings.m_szWeatherFTemp, "C");			//default WEATHER temp units 
+	strcpy(g_stSettings.m_szWeatherFTemp, "C");			//default WEATHER temp units
 	strcpy(g_stSettings.m_szWeatherFSpeed, "K");		//default WEATHER speed units
 	g_stSettings.m_iWeatherRefresh = 30;
 
@@ -341,7 +342,7 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
 	strcpy(g_stSettings.m_strSambaWinsServer, "");
 	g_stSettings.m_bHideExtensions = false;
-  
+
   g_stSettings.m_bAutoTemperature   = false;
   g_stSettings.m_iTargetTemperature = 55;
   g_stSettings.m_bFanSpeedControl   = false;
@@ -396,7 +397,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 	CLog::Log(LOGNOTICE, "loading Q:\\XboxMediaCenter.xml");
 	CStdString strXMLFile = "Q:\\XboxMediaCenter.xml";
 	TiXmlDocument xmlDoc;
-	if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) 
+	if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) )
 	{
 		g_LoadErrorStr.Format("%s, Line %d\n%s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 		return false;
@@ -404,7 +405,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
 	TiXmlElement* pRootElement =xmlDoc.RootElement();
 	CStdString strValue=pRootElement->Value();
-	if ( strValue != "xboxmediacenter") 
+	if ( strValue != "xboxmediacenter")
 	{
 		g_LoadErrorStr.Format("%s Doesn't contain <xboxmediacenter>",strXMLFile.c_str());
 		return false;
@@ -570,11 +571,11 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
 	GetShares(pRootElement,"music",m_vecMyMusicShares,strDefault);
 	if (strDefault.size())
-		strcpy( g_stSettings.m_szDefaultMusic, strDefault.c_str());	
+		strcpy( g_stSettings.m_szDefaultMusic, strDefault.c_str());
 
 	GetShares(pRootElement,"video",m_vecMyVideoShares,strDefault);
 	if (strDefault.size())
-		strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());	
+		strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());
 
 	bXboxMediacenter=true;
 	return true;
@@ -594,7 +595,7 @@ void CSettings::ConvertHomeVar(CStdString& strText)
 
 	pReplace = strstr(szText, "$HOME");
 
-	if (pReplace!=NULL) 
+	if (pReplace!=NULL)
 	{
 		pReplace2 = pReplace + sizeof("$HOME")-1;
 		strcpy(szTemp, pReplace2);
@@ -689,7 +690,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 			pChild=pChild->NextSibling();
 		}
 	}
-	else 
+	else
 	{
 		CLog::Log(LOGERROR, "  <%s> tag is missing or XboxMediaCenter.xml is malformed", strTagName.c_str());
 	}
@@ -716,7 +717,7 @@ void CSettings::GetString(const TiXmlElement* pRootElement, const CStdString& st
 		strcpy(szValue,strDefaultValue.c_str());
 	}
 
-	CLog::Log(LOGDEBUG, "  %s: %s", strTagName.c_str(), szValue); 
+	CLog::Log(LOGDEBUG, "  %s: %s", strTagName.c_str(), szValue);
 }
 
 void CSettings::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax)
@@ -726,7 +727,7 @@ void CSettings::GetInteger(const TiXmlElement* pRootElement, const CStdString& s
 	{
 		iValue = atoi( pChild->FirstChild()->Value() );
 		if ((iValue<iMin) || (iValue>iMax)) iValue=iDefault;
-	} 
+	}
 	else
 		iValue=iDefault;
 
@@ -740,7 +741,7 @@ void CSettings::GetFloat(const TiXmlElement* pRootElement, const CStdString& str
 	{
 		fValue = (float)atof( pChild->FirstChild()->Value() );
 		if ((fValue<fMin) || (fValue>fMax)) fValue=fDefault;
-	} 
+	}
 	else
 		fValue=fDefault;
 
@@ -842,7 +843,7 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
 		GetFloat(pResolution, "pixelratio", m_ResInfo[iRes].fPixelRatio,128.0f/117.0f,0.5f,2.0f);
 		GetInteger(pResolution, "osdyoffset", m_ResInfo[iRes].iOSDYOffset,0,-m_ResInfo[iRes].iHeight,m_ResInfo[iRes].iHeight);
 
-		// get the overscan info		
+		// get the overscan info
 		TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
 		if (pOverscan)
 		{
@@ -852,9 +853,9 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
 			GetInteger(pOverscan, "bottom", m_ResInfo[iRes].Overscan.bottom,m_ResInfo[iRes].iHeight,m_ResInfo[iRes].iHeight/2,m_ResInfo[iRes].iHeight*3/2);
 		}
 		CLog::Log(LOGINFO, "  calibration for %s %ix%i",m_ResInfo[iRes].strMode,m_ResInfo[iRes].iWidth,m_ResInfo[iRes].iHeight);
-		CLog::Log(LOGINFO, "    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i) osdyoffset:%i", 
+		CLog::Log(LOGINFO, "    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i) osdyoffset:%i",
 			m_ResInfo[iRes].iSubtitles, m_ResInfo[iRes].fPixelRatio,
-			m_ResInfo[iRes].Overscan.left,m_ResInfo[iRes].Overscan.top, 
+			m_ResInfo[iRes].Overscan.left,m_ResInfo[iRes].Overscan.top,
 			m_ResInfo[iRes].Overscan.right,m_ResInfo[iRes].Overscan.bottom,
 			m_ResInfo[iRes].iOSDYOffset);
 
@@ -1069,7 +1070,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 	// myvideos settings
 	pElement = pRootElement->FirstChildElement("myvideos");
 	if (pElement)
-	{ 
+	{
 		GetInteger(pElement, "startwindow",g_stSettings.m_iVideoStartWindow,WINDOW_VIDEOS,WINDOW_VIDEO_GENRE,WINDOW_VIDEO_TITLE);
 		GetBoolean(pElement, "stackvideo", g_stSettings.m_bMyVideoVideoStack);
 		GetBoolean(pElement, "stackgenre", g_stSettings.m_bMyVideoGenreStack);
@@ -1144,7 +1145,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetBoolean(pElement, "autohdspindownvideo", g_stSettings.m_bHDRemoteplaySpinDownVideo);
 		GetInteger(pElement, "autohdspindowntime", g_stSettings.m_iHDRemoteplaySpinDownTime,20,5,INT_MAX);
 		GetInteger(pElement, "autohdspindownminduration", g_stSettings.m_iHDRemoteplaySpinDownMinDuration,20,0,INT_MAX);
-    
+
 		GetBoolean(pElement, "autorundvd", g_stSettings.m_bAutorunDVD);
 		GetBoolean(pElement, "autorunvcd", g_stSettings.m_bAutorunVCD);
 		GetBoolean(pElement, "autoruncdda", g_stSettings.m_bAutorunCdda);
@@ -1153,8 +1154,11 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetBoolean(pElement, "autorunvideo", g_stSettings.m_bAutorunVideo);
 		GetBoolean(pElement, "autorunpictures", g_stSettings.m_bAutorunPictures);
 		GetString(pElement, "language", g_stSettings.szDefaultLanguage, g_stSettings.szDefaultLanguage);
+		GetString(pElement, "skinfontset", g_stSettings.m_szSkinFontSet, g_stSettings.m_szSkinFontSet);
+		GetString(pElement, "flipbidicharset", g_stSettings.m_szFlipBiDiCharset, g_stSettings.m_szFlipBiDiCharset);
+
 		GetInteger(pElement, "shutdowntime", g_stSettings.m_iShutdownTime,0,0,INT_MAX);
-    
+
     GetBoolean(pElement, "autotemperature",   g_stSettings.m_bAutoTemperature);
     GetInteger(pElement, "targettemperature", g_stSettings.m_iTargetTemperature, 55, 40, 68);
     GetBoolean(pElement, "fanspeedcontrol",   g_stSettings.m_bFanSpeedControl);
@@ -1531,8 +1535,11 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetBoolean(pNode, "autorunvideo", g_stSettings.m_bAutorunVideo);
 	SetBoolean(pNode, "autorunpictures", g_stSettings.m_bAutorunPictures);
 	SetString(pNode, "language", g_stSettings.szDefaultLanguage);
+	SetString(pNode, "skinfontset", g_stSettings.m_szSkinFontSet);
+	SetString(pNode, "flipbidicharset", g_stSettings.m_szFlipBiDiCharset);
+
 	SetInteger(pNode, "shutdowntime", g_stSettings.m_iShutdownTime);
-  
+
   SetBoolean(pNode, "autotemperature",   g_stSettings.m_bAutoTemperature);
   SetInteger(pNode, "targettemperature", g_stSettings.m_iTargetTemperature);
   SetBoolean(pNode, "fanspeedcontrol",   g_stSettings.m_bFanSpeedControl);
@@ -1625,7 +1632,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 bool CSettings::LoadProfile(int index)
 {
   CProfile& profile = m_vecProfiles.at(index);
-  if (LoadSettings("T:\\" + profile.getFileName(), false)) 
+  if (LoadSettings("T:\\" + profile.getFileName(), false))
   {
     m_iLastLoadedProfileIndex = index;
     Save();
@@ -1694,7 +1701,7 @@ bool CSettings::LoadProfiles(const TiXmlElement* pRootElement, const CStdString&
 		}
     return true;
 	}
-	else 
+	else
 	{
 		CLog::Log(LOGERROR, "  <profiles> tag is missing or %s is malformed", strSettingsFile.c_str());
     return false;
