@@ -76,6 +76,9 @@ UWORD	mikwinGetMixFrequency(void);
 void	mikwinSetMode(UWORD mode);
 UWORD	mikwinGetMode(void);
 
+__int64 mikxboxGetPTS();
+void mikxboxSetCallback(void (*p)(unsigned char*, int));
+
 SWORD mikwinPlaySfx(SAMPLE *pSample,ULONG flags,UWORD pan,UWORD vol,ULONG frequency);
 void mikwinStopSfx(SWORD voice);
 SAMPLE* mikwinGetSfx(SWORD voice);

@@ -51,5 +51,4 @@ protected:
 	bool						m_bPaused;
 	bool						m_bIsPlaying;
 	bool						m_bStopPlaying;
-	__int64					m_iPTS;
 };

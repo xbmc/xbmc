@@ -26,6 +26,8 @@
   Also supports Ultimate Sound Tracker (old M15 format)
 
 ==============================================================================*/
+#include "xbsection_start.h"
+
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
