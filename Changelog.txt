@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 17-03-2005 added: a few new api's to HttpApi
   - 17-03-2005 fixed: cdda ripper doesn't use cddb info for ripping
   - 16-03-2005 fixed: crash when switching skin if kai is connected
   - 16-03-2005 fixed: [ 1072255 ][ 1157300 ] Spindown does not work for wmv9 video
