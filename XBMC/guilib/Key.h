@@ -9,6 +9,7 @@
 #pragma once
 #include "gui3d.h"
 #include "../xbmc/XBIRRemote.h"
+#include "StdString.h"
 
 // Analogue - don't change order
 #define KEY_BUTTON_A                        256
@@ -182,6 +183,8 @@
 #define ACTION_CURSOR_LEFT				120
 #define ACTION_CURSOR_RIGHT				121
 
+#define ACTION_BUILT_IN_FUNCTION	122
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                 9999
 #define WINDOW_HOME                   10000
@@ -271,6 +274,7 @@ struct CAction {
   float fAmount1;
   float fAmount2;
 	DWORD m_dwButtonCode;
+	CStdString strAction;
 };
 
 /*!

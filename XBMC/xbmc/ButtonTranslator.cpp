@@ -4,6 +4,7 @@
 #include "XBIRRemote.h"
 #include "../guilib/Key.h"
 #include "utils/log.h"
+#include "util.h"
 
 CButtonTranslator g_buttonTranslator;
 extern CStdString g_LoadErrorStr;
@@ -47,14 +48,21 @@ bool CButtonTranslator::Load()
 		{
 			TiXmlNode* pNode=pAction->FirstChild("id");
 			WORD wID = 0;				// action identity
+			CStdString strID;
 			if (pNode) 
       {
         if (pNode->FirstChild())
-          wID = (WORD)atol(pNode->FirstChild()->Value());
+				{
+					strID = pNode->FirstChild()->Value();
+					if (CUtil::IsBuiltIn(strID))
+						wID = ACTION_BUILT_IN_FUNCTION;
+					else
+						wID = (WORD)atol(strID);
+				}
       }
 			if (wID>0)
 			{	// valid id, get the buttons associated with this action...
-				MapAction(wID, pAction->FirstChild(), map);
+				MapAction(wID, strID, pAction->FirstChild(), map);
 				pNode = pAction->FirstChild();
 			}
 			pAction = pAction->NextSibling();
@@ -82,14 +90,21 @@ bool CButtonTranslator::Load()
 			{
 				TiXmlNode* pNode=pAction->FirstChild("id");
 				WORD wID = 0;				// action identity
+				CStdString strID;
 				if (pNode) 
         {
-          if (pNode->FirstChild())
-            wID = (WORD)atol(pNode->FirstChild()->Value());
+					if (pNode->FirstChild())
+					{
+						strID = pNode->FirstChild()->Value();
+						if (CUtil::IsBuiltIn(strID))
+							wID = ACTION_BUILT_IN_FUNCTION;
+						else
+							wID = (WORD)atol(strID);
+					}
         }
 				if (wID>0)
 				{	// valid id, get the buttons associated with this action...
-					MapAction(wID, pAction->FirstChild(), map);
+					MapAction(wID, strID, pAction->FirstChild(), map);
 					pNode = pAction->FirstChild();
 				}
 				pAction = pAction->NextSibling();
@@ -106,13 +121,15 @@ bool CButtonTranslator::Load()
 
 void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action)
 {
+	CStdString strAction;
 	// try to get the action from the current window
-	WORD wAction = GetActionCode(wWindow, key);
+	WORD wAction = GetActionCode(wWindow, key, strAction);
 	// if it's invalid, try to get it from the global map
 	if (wAction == 0)
-		wAction = GetActionCode(-1, key);
+		wAction = GetActionCode(-1, key, strAction);
 	// Now fill our action structure
 	action.wID = wAction;
+	action.strAction = strAction;
 	action.fAmount1 = 1;	// digital button (could change this for repeat acceleration)
 	action.fAmount2 = 0;
 	action.m_dwButtonCode = key.GetButtonCode();
@@ -145,7 +162,7 @@ void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action
 	}
 }
 
-WORD CButtonTranslator::GetActionCode(WORD wWindow, const CKey &key)
+WORD CButtonTranslator::GetActionCode(WORD wWindow, const CKey &key, CStdString &strAction)
 {
 	WORD wKey = (WORD)key.GetButtonCode();
 	map<WORD,buttonMap>::iterator it = translatorMap.find(wWindow);
@@ -155,13 +172,14 @@ WORD CButtonTranslator::GetActionCode(WORD wWindow, const CKey &key)
 	WORD wAction = 0;
 	while (it2 != (*it).second.end())
 	{
-		wAction = (*it2).second;
+		wAction = (*it2).second.wID;
+		strAction = (*it2).second.strID;
 		it2 = (*it).second.end();
 	}
 	return wAction;
 }
 
-void CButtonTranslator::MapAction(WORD wAction, TiXmlNode *pNode, buttonMap &map)
+void CButtonTranslator::MapAction(WORD wAction, const CStdString &strAction, TiXmlNode *pNode, buttonMap &map)
 {
 	CStdString strNode, strButton;
 	WORD wButtonCode;
@@ -335,12 +353,15 @@ void CButtonTranslator::MapAction(WORD wAction, TiXmlNode *pNode, buttonMap &map
 		{
 			// check to see if we've already got this (button,action) pair defined
 			buttonMap::iterator it = map.find(wButtonCode);
-			if (it == map.end() || (*it).second != wAction)
+			if (it == map.end() || (*it).second.wID != wAction)
 			{
 				//char szTmp[128];
 				//sprintf(szTmp,"  action:%i button:%i\n", wAction,wButtonCode);
 				//OutputDebugString(szTmp);
-				map.insert(pair<WORD, WORD>(wButtonCode,wAction));
+				CButtonAction button;
+				button.wID = wAction;
+				button.strID = strAction;
+				map.insert(pair<WORD, CButtonAction>(wButtonCode,button));
 			}
 		}
 		pNode = pNode->NextSibling();
