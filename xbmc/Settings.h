@@ -37,6 +37,13 @@ public:
 };
 typedef vector<CFileTypeIcon> VECFILETYPEICONS;
 typedef vector<CFileTypeIcon>::iterator IVECFILETYPEICONS;
+typedef struct _CALIBRATION	{
+	  int left;
+	  int top;
+	  int right;
+	  int bottom;
+	  int subtitles;
+  } CALIBRATION;
 
 class CSettings
 {
@@ -167,7 +174,7 @@ public:
   VECSHARES					m_vecMyMusicShares;
   VECSHARES					m_vecMyVideoShares;
   VECFILETYPEICONS	m_vecIcons;
-	RECT			m_rectMovieCalibration[20];
+	CALIBRATION			m_movieCalibration[20];
 
 protected:
 	bool GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName);
