@@ -24,7 +24,8 @@ CSettings::CSettings(void)
 	g_stSettings.m_iLCDMode=0;
 	g_stSettings.m_iLCDColumns=20;
 	g_stSettings.m_iLCDRows=4;
-	g_stSettings.m_iLCDBackLight=80;
+    g_stSettings.m_iLCDBackLight=80;
+    g_stSettings.m_iLCDContrast=80;
 	g_stSettings.m_iLCDBrightness=100;
 	g_stSettings.m_iLCDType=LCD_MODE_TYPE_LCD;
 	g_stSettings.m_iLCDAdress[0]=0x0;
@@ -934,6 +935,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetInteger(pElement, "lcdrow3",g_stSettings.m_iLCDAdress[2],0x14,0,0x400);
 		GetInteger(pElement, "lcdrow4",g_stSettings.m_iLCDAdress[3],0x54,0,0x400);
 		GetInteger(pElement, "lcdchip",g_stSettings.m_iLCDModChip,0,0,1);
+		GetInteger(pElement, "lcdcontrast",g_stSettings.m_iLCDContrast,100,0,100);
 	}
 
 	// cache settings
@@ -1296,6 +1298,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetInteger(pNode, "lcdrow3",g_stSettings.m_iLCDAdress[2]);
 	SetInteger(pNode, "lcdrow4",g_stSettings.m_iLCDAdress[3]);
 	SetInteger(pNode, "lcdchip",g_stSettings.m_iLCDModChip);
+	SetInteger(pNode, "lcdcontrast",g_stSettings.m_iLCDContrast);
 
 	// myprograms settings
 	TiXmlElement programsNode("myprograms");
