@@ -6,7 +6,6 @@
 #include "GUIProgressControl.h"
 #include "GUISliderControl.h"
 #include "GUIToggleButtonControl.h"
-#include "guilistitem.h"
 #include "guilistcontrol.h"
 #include "GUIImage.h"
 #include "settings.h"
@@ -223,7 +222,10 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_DEINIT:	// fired when OSD is hidden
 		{
 			OutputDebugString("OSD:DEINIT\n");
-      //hide the OSD
+ 			ClearAudioStreamItems();
+			ClearSubTitleItems();
+			ClearBookmarkItems();
+			//hide the OSD
       HIDE_CONTROL(GetID(), GetID());
 			//if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
 			g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
@@ -961,8 +963,7 @@ void CGUIWindowOSD::PopulateBookmarks()
 	dbs.Close();
 
 	// empty the list ready for population
-	CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),OSD_BOOKMARKS_LIST,0,0,NULL);
-	OnMessage(msg);
+	ClearBookmarkItems();
 
 	// cycle through each stored bookmark and add it to our list control
 	for (int i=0; i < (int)(bookmarks.size()); ++i)
@@ -980,12 +981,27 @@ void CGUIWindowOSD::PopulateBookmarks()
 		
 		// add it ...
 		CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),OSD_BOOKMARKS_LIST,0,0,(void*)pItem);
-		OnMessage(msg2);    
+		OnMessage(msg2);
+		m_vecBookmarksItems.push_back(pItem);
 	}
 
 	// set the currently active bookmark as the selected item in the list control
 	CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_BOOKMARKS_LIST,m_iCurrentBookmark,0,NULL);
 	OnMessage(msgSet);
+}
+
+void CGUIWindowOSD::ClearBookmarkItems()
+{
+	CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),OSD_BOOKMARKS_LIST,0,0,NULL);
+	OnMessage(msg);
+
+	for (int i=0; i<(int)m_vecBookmarksItems.size(); ++i)
+	{
+		CGUIListItem* pItem=m_vecBookmarksItems[i];
+		delete pItem;
+	}
+
+	m_vecBookmarksItems.erase(m_vecBookmarksItems.begin(), m_vecBookmarksItems.end());
 }
 
 void CGUIWindowOSD::PopulateAudioStreams()
@@ -998,8 +1014,7 @@ void CGUIWindowOSD::PopulateAudioStreams()
 	if (pControl) pControl->SetPageControlVisible(false);
 
 	// empty the list ready for population
-	CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),OSD_AUDIOSTREAM_LIST,0,0,NULL);
-	OnMessage(msg);
+	ClearAudioStreamItems();
 
 	CStdString strLabel = g_localizeStrings.Get(460).c_str();					// "Audio Stream"
 	CStdString strActiveLabel = (WCHAR*)g_localizeStrings.Get(461).c_str();		// "[active]"
@@ -1030,6 +1045,7 @@ void CGUIWindowOSD::PopulateAudioStreams()
 				pItem->SetLabel(strLabel);
 				CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),OSD_AUDIOSTREAM_LIST,0,0,(void*)pItem);
 				OnMessage(msg);
+				m_vecAudioStreamItems.push_back(pItem);
 			}
 			// set the current active audio stream as the selected item in the list control
 			CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_AUDIOSTREAM_LIST,g_stSettings.m_currentVideoSettings.m_AudioStream,0,NULL);
@@ -1059,11 +1075,26 @@ void CGUIWindowOSD::PopulateAudioStreams()
 		// add it ...
 		CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),OSD_AUDIOSTREAM_LIST,0,0,(void*)pItem);
 		OnMessage(msg2);    
+		m_vecAudioStreamItems.push_back(pItem);
 	}
 
 	// set the current active audio stream as the selected item in the list control
 	CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_AUDIOSTREAM_LIST,g_stSettings.m_currentVideoSettings.m_AudioStream,0,NULL);
 	OnMessage(msgSet);
+}
+
+void CGUIWindowOSD::ClearAudioStreamItems()
+{
+	CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),OSD_AUDIOSTREAM_LIST,0,0,NULL);
+	OnMessage(msg);
+
+	for (int i=0; i<(int)m_vecAudioStreamItems.size(); ++i)
+	{
+		CGUIListItem* pItem=m_vecAudioStreamItems[i];
+		delete pItem;
+	}
+
+	m_vecAudioStreamItems.erase(m_vecAudioStreamItems.begin(), m_vecAudioStreamItems.end());
 }
 
 void CGUIWindowOSD::PopulateSubTitles()
@@ -1080,8 +1111,7 @@ void CGUIWindowOSD::PopulateSubTitles()
 	if (pControl) pControl->SetPageControlVisible(false);
 
 	// empty the list ready for population
-	CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),OSD_SUBTITLE_LIST,0,0,NULL);
-	OnMessage(msg);
+	ClearSubTitleItems();
 
 	CStdString strLabel = g_localizeStrings.Get(462).c_str();					// "Subtitle"
 	CStdString strActiveLabel = (WCHAR*)g_localizeStrings.Get(461).c_str();		// "[active]"
@@ -1109,12 +1139,27 @@ void CGUIWindowOSD::PopulateSubTitles()
 		
 		// add it ...
 		CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),OSD_SUBTITLE_LIST,0,0,(void*)pItem);
-		OnMessage(msg2);    
+		OnMessage(msg2);
+		m_vecSubTitlesItems.push_back(pItem);
 	}
 
 	// set the current active subtitle as the selected item in the list control
 	CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_SUBTITLE_LIST,iCurrent,0,NULL);
 	OnMessage(msgSet);
+}
+
+void CGUIWindowOSD::ClearSubTitleItems()
+{
+	CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),OSD_SUBTITLE_LIST,0,0,NULL);
+	OnMessage(msg);
+
+	for (int i=0; i<(int)m_vecSubTitlesItems.size(); ++i)
+	{
+		CGUIListItem* pItem=m_vecSubTitlesItems[i];
+		delete pItem;
+	}
+
+	m_vecSubTitlesItems.erase(m_vecSubTitlesItems.begin(), m_vecSubTitlesItems.end());
 }
 
 void CGUIWindowOSD::Reset()
