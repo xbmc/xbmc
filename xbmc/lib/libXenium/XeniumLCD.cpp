@@ -168,8 +168,11 @@ void CXeniumLCD::DisplaySetBacklight(unsigned char level)
 //************************************************************************************************************************
 void CXeniumLCD::DisplayInit()
 {
-  m_xenium.HideCursor();
   m_xenium.ShowDisplay();
+  m_xenium.HideCursor();
+  m_xenium.ScrollOff();
+  m_xenium.WrapOff();
+  m_xenium.SetContrast(12);
 }
 
 //************************************************************************************************************************
