@@ -502,6 +502,14 @@ void CGUIWindowSettingsCategory::CreateSettings()
 			pControl->AddLabel(g_localizeStrings.Get(476), LED_PLAYBACK_VIDEO_MUSIC);	// Video & Music
 			pControl->SetValue(pSettingInt->GetData());
 		}
+		else if (strSetting == "Filters.RenderMethod")
+		{
+			CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+			pControl->AddLabel(g_localizeStrings.Get(13355), RENDER_PIXEL_SHADER);
+			pControl->AddLabel(g_localizeStrings.Get(13356), RENDER_OVERLAYS);
+			pControl->SetValue(pSettingInt->GetData());
+		}
 		iPosY+=iGapY;
 	}
 	// fix first and last navigation
