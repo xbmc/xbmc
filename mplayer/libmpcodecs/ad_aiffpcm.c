@@ -86,15 +86,6 @@ static int decode_audio(sh_audio_t *sh, unsigned char *buf, int minlen, int maxl
     n = (minlen + aiff_decode_factor) & (~aiff_decode_factor);
     n = demux_read_data(sh->ds, buf, n);
   
-#ifndef WORDS_BIGENDIAN
-    for (i = 0 ; i < n; i = i + 2)
-    {
-        x = buf[i];
-        buf[i]=buf[i+1];
-        buf[i+1]=x;
-    }
-#endif
-
     return  n;
 }
 
