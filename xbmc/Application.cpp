@@ -2314,6 +2314,11 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 	{
 		strNewPlayer = "cdda";
 	}
+	else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 &&
+	    (CUtil::IsDVD(strFile) || CUtil::IsDVDFile(strFile) || CUtil::IsDVDImage(strFile)))
+	{
+	  strNewPlayer = "dvdplayer";
+	}
 	else if (ModPlayer::IsSupportedFormat(url.GetFileType()))
 	{
 		strNewPlayer = "mod";
