@@ -1090,5 +1090,41 @@ void  CVideoDatabase::GetMovies(VECMOVIES& movies)
   {
     CLog::Log("CVideoDatabase::GetMovies() failed");
   }
+}
 
+void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
+{
+  try
+  {
+    long lPathId;
+    long lMovieId;
+ 	  if (NULL==m_pDB.get()) return ;
+	  if (NULL==m_pDS.get()) return ;
+    if (GetFile(strFilenameAndPath, lPathId, lMovieId) < 0)
+    {
+      return ;
+    }
+
+    ClearBookMarksOfMovie(strFilenameAndPath);
+
+    CStdString strSQL;
+    strSQL.Format("delete from files where idmovie=%i", lMovieId);
+    m_pDS->exec(strSQL.c_str());
+
+    strSQL.Format("delete from genrelinkmovie where idmovie=%i", lMovieId);
+    m_pDS->exec(strSQL.c_str());
+
+    strSQL.Format("delete from actorlinkmovie where idmovie=%i", lMovieId);
+    m_pDS->exec(strSQL.c_str());
+
+    strSQL.Format("delete from movieinfo where idmovie=%i", lMovieId);
+    m_pDS->exec(strSQL.c_str());
+
+    strSQL.Format("delete from movie where idmovie=%i", lMovieId);
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch(...)
+  {
+    CLog::Log("CVideoDatabase::DeleteMovie() failed");
+  }
 }
