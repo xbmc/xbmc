@@ -210,10 +210,9 @@ bool CUtil::FileExists(const CStdString& strFileName)
 {
   if (strFileName.size()==0) return false;
   CFile file;
-  if (!file.Open(strFileName))
+  if (!file.Exists(strFileName))
     return false;
 
-  file.Close();
   return true;
 }
 

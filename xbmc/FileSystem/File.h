@@ -37,11 +37,12 @@ namespace XFILE
 	  unsigned int	Read(void* lpBuf, __int64 uiBufSize);
 		int						Write(const void* lpBuf, __int64 uiBufSize);
 	  bool					Open(const char* strFileName, bool bBinary=true);
+	  bool					Exists(const char* strFileName);
 		bool					Cache(const char* strFileName, const char* szDest, XFILE::IFileCallback* pCallback, void* pContext);
 	  bool					ReadString(char *szLine, int iLineLength);
 	  __int64			  Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
 	  void					Close();
-  	
+	  	
 	  __int64			  GetPosition();
 	  __int64			  GetLength();
   	
