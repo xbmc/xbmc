@@ -161,6 +161,12 @@ struct CreditLine_t
 	{  50,  45,    100,   7400,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"starting with xbmp -- which made me buy and" },
 	{  50,  55,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"mod the xbox the very day it was first announced" },
 
+  // section gamestr17
+	{  50,  22,   9500,   8000,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   36, L"Gamestr17" },
+  {  50,  35,    500,   7500,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Special thanks to everyone on the XBMC/XBMP-Team," },
+	{  50,  45,    100,   7400,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"and users who don't complain" },
+	{  50,  55,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Real men don't make backups, but they cry often" },
+
   // blank line as a pause
 	{   0,   0,  11500,      0,    0,    0, EFF_IN_APPEAR |EFF_OUT_APPEAR ,   20, L"" },
 };
