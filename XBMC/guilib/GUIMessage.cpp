@@ -105,3 +105,13 @@ void CGUIMessage::SetLabel(int iString)
 	const WCHAR* pszString=g_localizeStrings.Get(iString).c_str();
 	m_strLabel=pszString;
 }
+
+void CGUIMessage::SetStringParam(const string& strParam)
+{
+	m_strParam = strParam;
+}
+
+const string& CGUIMessage::GetStringParam() const
+{
+	return m_strParam;
+}
