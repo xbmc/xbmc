@@ -468,7 +468,7 @@ int main(int argc, char* argv[])
 			}
 			else if (!stricmp(argv[i], "low"))
 			{
-				MaxMSE = 8.0;
+				MaxMSE = 20.0;
 			}
 			else if (!stricmp(argv[i], "normal"))
 			{
@@ -476,7 +476,7 @@ int main(int argc, char* argv[])
 			}
 			else if (!stricmp(argv[i], "high"))
 			{
-				MaxMSE = 2.0;
+				MaxMSE = 1.5;
 			}
 			else if (!stricmp(argv[i], "max"))
 			{
