@@ -449,6 +449,7 @@ void CGUIWindowMusicSongs::OnScan()
 
 	// Preload section for ID3 cover art reading
 	CSectionLoader::Load("CXIMAGE");
+	CSectionLoader::Load("LIBMP4");
 
 	CUtil::ThumbCacheClear();
 
@@ -496,6 +497,7 @@ void CGUIWindowMusicSongs::OnScan()
 	g_musicDatabase.EmptyCache();
 
 	CSectionLoader::Unload("CXIMAGE");
+	CSectionLoader::Unload("LIBMP4");
 
 	// disable scan mode
 	m_bScan=false;
@@ -514,8 +516,8 @@ void CGUIWindowMusicSongs::OnScan()
 	dwTick = timeGetTime() - dwTick;
 	CStdString strTmp, strTmp1;
 	CUtil::SecondsToHMSString(dwTick/1000, strTmp1);
-	strTmp.Format("OnScan() took %s\n", strTmp1); 
-	OutputDebugString(strTmp.c_str());
+  strTmp.Format("My Music: Scanning for music tag info took %s\n", strTmp1); 
+  CLog::Log(LOGNOTICE,strTmp.c_str());
 }
 
 bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
