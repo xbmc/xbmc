@@ -12,6 +12,14 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
+
+	g_stSettings.m_bLCDUsed=false;
+  g_stSettings.m_iLCDColumns=20;
+  g_stSettings.m_iLCDAdress[0]=0x0;
+  g_stSettings.m_iLCDAdress[1]=0x40;
+  g_stSettings.m_iLCDAdress[2]=0x14;
+  g_stSettings.m_iLCDAdress[3]=0x54;
+
   g_stSettings.m_iCacheSizeHD[CACHE_AUDIO] = 256;
   g_stSettings.m_iCacheSizeHD[CACHE_VIDEO] = 1024;
   g_stSettings.m_iCacheSizeHD[CACHE_VOB]   = 16384;
@@ -742,8 +750,20 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     CLog::Log("%s doesnt contain <settings>",strSettingsFile.c_str());
 		return false;
 	}
+    
+  TiXmlElement *pElement = pRootElement->FirstChildElement("lcdsettings");
+  if (pElement)
+	{
+		GetBoolean(pElement, "lcdon", g_stSettings.m_bLCDUsed);
+    GetInteger(pElement, "lcdcolums",g_stSettings.m_iLCDColumns,20,1,20);
+    GetInteger(pElement, "lcdrow1",g_stSettings.m_iLCDAdress[0],0,0,0x400);
+    GetInteger(pElement, "lcdrow2",g_stSettings.m_iLCDAdress[1],0x40,0,0x400);
+    GetInteger(pElement, "lcdrow3",g_stSettings.m_iLCDAdress[2],0x14,0,0x400);
+    GetInteger(pElement, "lcdrow4",g_stSettings.m_iLCDAdress[3],0x54,0,0x400);
+  }
+
   // cache settings
-  TiXmlElement *pElement = pRootElement->FirstChildElement("cachesettings");
+  pElement = pRootElement->FirstChildElement("cachesettings");
   if (pElement)
 	{
     GetInteger(pElement, "hdcacheaudio",g_stSettings.m_iCacheSizeHD[CACHE_AUDIO],256,0,16384);
@@ -1012,9 +1032,20 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
 	if (!pRoot) return false;
 	// write our tags one by one - just a big list for now (can be flashed up later)
-	// myprograms settings
+	
+	TiXmlElement LCDNode("lcdsettings");
+	TiXmlNode *pNode = pRoot->InsertEndChild(LCDNode);
+	if (!pNode) return false;
+	SetBoolean(pNode, "lcdon", g_stSettings.m_bLCDUsed);
+  SetInteger(pNode, "lcdcolums",g_stSettings.m_iLCDColumns);
+  SetInteger(pNode, "lcdrow1",g_stSettings.m_iLCDAdress[0]);
+  SetInteger(pNode, "lcdrow2",g_stSettings.m_iLCDAdress[1]);
+  SetInteger(pNode, "lcdrow3",g_stSettings.m_iLCDAdress[2]);
+  SetInteger(pNode, "lcdrow4",g_stSettings.m_iLCDAdress[3]);
+
+  // myprograms settings
 	TiXmlElement programsNode("myprograms");
-	TiXmlNode *pNode = pRoot->InsertEndChild(programsNode);
+	pNode = pRoot->InsertEndChild(programsNode);
 	if (!pNode) return false;
 	SetInteger(pNode, "programsviewicons", g_stSettings.m_iMyProgramsViewAsIcons);
 	SetInteger(pNode, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod);
