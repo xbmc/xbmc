@@ -31,6 +31,31 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, 
 	ControlType = GUICONTROL_IMAGE;
 }
 
+CGUIImage::CGUIImage(const CGUIImage &left)
+:CGUIControl(left)
+{
+  m_colDiffuse	    = left.m_colDiffuse;
+  m_strFileName     = left.m_strFileName;
+  m_dwColorKey      = left.m_dwColorKey;
+  m_bKeepAspectRatio= left.m_bKeepAspectRatio;
+  m_iRenderWidth    = left.m_iRenderWidth;
+  m_iRenderHeight   = left.m_iRenderHeight;
+  // defaults
+	m_iCurrentImage=0;
+  m_iBitmap=0;
+  m_dwItems=1;
+	m_dwFrameCounter=-1;
+  m_iCurrentLoop=0;
+	m_iImageWidth = 0;
+	m_iImageHeight = 0;
+  m_iTextureWidth=0;
+  m_iTextureHeight=0;
+	for (int i=0; i<4; i++)
+		m_dwAlpha[i] = left.m_dwAlpha[i];
+  m_pVB=NULL;
+  m_pPalette = NULL;
+	ControlType = GUICONTROL_IMAGE;
+}
 
 CGUIImage::~CGUIImage(void)
 {
@@ -152,7 +177,9 @@ void CGUIImage::FreeResources()
 {
   if (m_pVB!=NULL)
 	{
+    g_graphicsContext.Lock();
 		m_pVB->Release();
+    g_graphicsContext.Unlock();
 		m_pVB=NULL;
 	}
 
