@@ -613,7 +613,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 		m_vecOptions.push_back("-dvd-device");
 		m_vecOptions.push_back(strDevice);	
 	}
-	
+
 	//Only display forced subs for dvds.
 	//m_vecOptions.push_back("-forcedsubsonly");
 
@@ -687,7 +687,7 @@ void update_cache_dialog(const char* tmp)
 		}
 	}
 }
-bool CMPlayer::openfile(const CStdString& strFile)
+bool CMPlayer::openfile(const CStdString& strFile, int iStartTime)
 {
 	int iRet=-1;
 	m_bCanceling=false;
@@ -877,8 +877,10 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		{
       throw iRet;
 		}
+		// Seek to the correct starting position
+		if (iStartTime) SeekTime(iStartTime);
 
-    if (bFileOnInternet) 
+		if (bFileOnInternet) 
 		{
 			// for streaming we're done.
 		}
@@ -979,6 +981,8 @@ bool CMPlayer::openfile(const CStdString& strFile)
 						{
 							throw iRet;
 						}
+						// Seek to the correct starting position
+						if (iStartTime) SeekTime(iStartTime);
 						// OK, now check what we've got now...
 						long lNewSampleRate;
 						int iNewChannels;
@@ -1119,6 +1123,8 @@ bool CMPlayer::openfile(const CStdString& strFile)
 				{
           throw iRet;
 				}
+				// Seek to the correct starting position
+				if (iStartTime) SeekTime(iStartTime);
 
 			}
 		}

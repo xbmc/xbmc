@@ -209,11 +209,8 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFI
 		CUtil::Split( strFileName, strPath, strFName);
 		m_Pathes.insert(strPath);
 		
-		CFileItem *pItem				 = new CFileItem(item.GetDescription());
-		pItem->m_strPath			   = strFileName;
-		pItem->m_bIsFolder		   = false;
-		pItem->m_bIsShareOrDrive = false;
-
+		CFileItem *pItem = new CFileItem(item);
+/*
 		if (item.GetDuration())
 		{
 			int nDuration=item.GetDuration();
@@ -225,7 +222,7 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFI
 			}
 			else
 				pItem->SetLabel2("");
-		}
+		}*/
 		items.push_back(pItem);
 	}
 }
@@ -553,7 +550,9 @@ void CGUIWindowMusicPlayList::OnRetrieveMusicInfo(VECFILEITEMS& items)
 	for (int i=0; i<(int)m_vecItems.size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[i];
-
+		CMusicInfoTag& tag=pItem->m_musicInfoTag;
+		if (tag.Loaded())
+			continue;	// nothing to do here
 		if (CUtil::IsCDDA(pItem->m_strPath))
 		{
 			VECFILEITEMS  items;

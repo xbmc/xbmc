@@ -14,6 +14,7 @@
 #include "GuiUserMessages.h"
 #include "SectionLoader.h"
 #include "cdrip/cddaripper.h"
+#include "cuedocument.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNSORTBY					3
@@ -267,9 +268,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 							continue;
 						}
 						CPlayList::CPlayListItem playlistItem ;
-						playlistItem.SetFileName(pItem->m_strPath);
-						playlistItem.SetDescription(pItem->GetLabel());
-						playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+						CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
 						g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
 						if (item.GetFileName()==pItem->m_strPath)
 							g_playlistPlayer.SetCurrentSong(i-nFolderCount);
@@ -404,6 +403,9 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, VECFILEI
 	}
 	m_rootDir.GetDirectory(strDirectory,items);
 
+	// check for .CUE files here.
+	FilterItems(items);
+
 	if (strPlayListDir!=strDirectory) 
 	{
 		m_strPrevDir=strDirectory;
@@ -510,6 +512,8 @@ bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
 				VECFILEITEMS subDirItems;
 				CFileItemList itemlist(subDirItems);
 				m_rootDir.GetDirectory(pItem->m_strPath,subDirItems);
+				// filter items in the sub dir (for .cue sheet support)
+				FilterItems(subDirItems);
 
 				if (!DoScan(subDirItems))
 				{
@@ -553,7 +557,7 @@ void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
     {
       // just 1 song? then play it (no need to have a playlist of 1 song)
       CPlayList::CPlayListItem item=(*pPlayList)[0];
-      g_application.PlayFile(item.GetFileName());
+      g_application.PlayFile(CFileItem(item));
       return;
     }
 
@@ -578,9 +582,9 @@ void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
 				strLabel=CUtil::GetTitleFromPath(playListItem.GetFileName());
 
 			CPlayList::CPlayListItem playlistItem;
-			playlistItem.SetFileName(playListItem.GetFileName());
-			playlistItem.SetDescription(strLabel);
+			playlistItem.SetDescription(playListItem.GetDescription());
 			playlistItem.SetDuration(playListItem.GetDuration());
+			playlistItem.SetFileName(playListItem.GetFileName());
 			g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
 		}
 	} 
@@ -823,9 +827,7 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 					if (!CUtil::IsPlayList(pItem->m_strPath))
 					{
 						CPlayList::CPlayListItem playlistItem ;
-						playlistItem.SetFileName(pItem->m_strPath);
-						playlistItem.SetDescription(pItem->GetLabel());
-						playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+						CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
 						g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
 					}
 					else if (i<=iItem)
@@ -843,7 +845,7 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 			}
 			else
 			{
-				g_application.PlayFile(strPath);
+				g_application.PlayFile(*pItem);
 			}
 		}
 	}
@@ -1138,6 +1140,8 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 			if (tag.Loaded() && m_bScan && bNewFile)
 			{
 				CSong song(tag);
+				song.iStartOffset = pItem->m_lStartOffset;
+				song.iEndOffset = pItem->m_lEndOffset;
 				g_musicDatabase.AddSong(song,false);
 			}
 		}//if (!pItem->m_bIsFolder)
@@ -1370,5 +1374,88 @@ void CGUIWindowMusicSongs::SetHistoryForPath(const CStdString& strDirectory)
 			while (CUtil::HasSlashAtEnd(strPath))
 				strPath.Delete(strPath.size()-1);
 		}
+	}
+}
+
+void CGUIWindowMusicSongs::FilterItems(VECFILEITEMS &items)
+{
+	// Handle .CUE sheet files...
+	VECSONGS itemstoadd;
+	CStdStringArray itemstodelete;
+	for (int i=0; i<(int)items.size(); i++)
+	{
+		CFileItem *pItem = items[i];
+		if (!pItem->m_bIsFolder)
+		{	// see if it's a .CUE sheet
+			if (CUtil::IsCUESheet(pItem->m_strPath))
+			{
+				CCueDocument cuesheet;
+				if (cuesheet.Parse(pItem->m_strPath))
+				{
+					VECSONGS newitems;
+					cuesheet.GetSongs(newitems);
+					// queue the cue sheet and the underlying media file for deletion
+					if (CUtil::FileExists(cuesheet.GetMediaPath()))
+					{
+						itemstodelete.push_back(pItem->m_strPath);
+						itemstodelete.push_back(cuesheet.GetMediaPath());
+						// get the additional stuff (year, genre etc.) from the underlying media files tag.
+						CMusicInfoTagLoaderFactory factory;
+						CMusicInfoTag tag;
+						auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(cuesheet.GetMediaPath()));
+						if (NULL != pLoader.get())
+						{						
+							// get id3tag
+							pLoader->Load(cuesheet.GetMediaPath(),tag);
+						}
+						// fill in any missing entries from underlying media file
+						for (int j=0; j<(int)newitems.size(); j++)
+						{
+							CSong song = newitems[j];
+							if (tag.Loaded())
+							{
+								if (song.strAlbum.empty() && !tag.GetAlbum().empty()) song.strAlbum = tag.GetAlbum();
+								if (song.strGenre.empty() && !tag.GetGenre().empty()) song.strGenre = tag.GetGenre();
+								if (song.strArtist.empty() && !tag.GetArtist().empty()) song.strArtist = tag.GetArtist();
+								SYSTEMTIME dateTime;
+								tag.GetReleaseDate(dateTime);
+								if (dateTime.wYear > 1900) song.iYear = dateTime.wYear;
+							}
+							if (!song.iDuration && tag.GetDuration()>0)
+							{	// must be the last song
+								song.iDuration = (tag.GetDuration()*75 - song.iStartOffset+37)/75;
+							}
+							// add this item to the list
+							itemstoadd.push_back(song);
+						}
+					}
+					else
+					{	// remove the .cue sheet from the directory
+						itemstodelete.push_back(pItem->m_strPath);
+					}
+				}
+			}
+		}
+	}
+	// now delete the .CUE files and underlying media files.
+	for (int i=0; i<(int)itemstodelete.size(); i++)
+	{
+		for (int j=0; j<(int)items.size(); j++)
+		{
+			CFileItem *pItem = items[j];
+			if (pItem->m_strPath == itemstodelete[i])
+			{	// delete this item
+				delete pItem;
+				items.erase(items.begin()+j);
+				break;
+			}
+		}
+	}
+	// and add the files from the .CUE sheet
+	for (int i=0; i<(int)itemstoadd.size(); i++)
+	{
+		// now create the file item, and add to the item list.
+		CFileItem *pItem = new CFileItem(itemstoadd[i]);
+		items.push_back(pItem);
 	}
 }

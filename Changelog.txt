@@ -5,6 +5,14 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-08-2004 fixed: small bug in resizing algorithm of videos meant zoom (using START) sometimes
+                      did not zoom correctly (particularly when the movie ratio is 4:3)
+  - 11-08-2004 added: .cue sheet support for gapless playback of media files.  Make sure the
+                      underlying media file is CBR so as to allow accurate seeking of the start
+                      and end of each track.
+  - 11-08-2004 added: initial database support for multiple artists and genres.  Fields separated with "/" are
+                      broken up and added individually.  Also, Ogg and Flac files that have multiple ARTIST and
+                      GENRE fields should pickup all the fields now.  Database format has changed.
   - 11-08-2004 added:  working QuickTime dll's, that means we now have audio for QuickTime trailers using the QDMC/QDM2 audio codec ;)
   - 10-08-2004 fixed: mp4 tagreader could leave open files
   - 09-08-2004 fixed: album info since allmusic.com changed layout again

@@ -202,9 +202,7 @@ void CGUIWindowMusicTop100::OnClick(int iItem)
 		CFileItem* pItem = m_vecItems[i];
 
 		CPlayList::CPlayListItem playlistItem;
-		playlistItem.SetFileName(pItem->m_strPath);
-		playlistItem.SetDescription(pItem->GetLabel());
-		playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+		CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
 		g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
 	}
 
