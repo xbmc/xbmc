@@ -195,6 +195,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
 		{
+      int iLastControl=m_iLastControl;
 			CGUIWindow::OnMessage(message);
 
 			m_database.Open();
@@ -203,12 +204,19 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 			m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
 			m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
 			
-			if (m_iLastControl>-1)
-				SET_CONTROL_FOCUS(m_iLastControl, 0);
-
 			Update(m_Directory.m_strPath);
 
 			UpdateThumbPanel();
+
+			if (iLastControl>-1)
+      {
+				SET_CONTROL_FOCUS(iLastControl, 0);
+      }
+      else
+      {
+        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
+      }
+
 			if (m_iItemSelected >=0)
 			{
 				CONTROL_SELECT_ITEM(CONTROL_LIST,m_iItemSelected)

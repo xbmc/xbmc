@@ -192,6 +192,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
 		{
+      int iLastControl=m_iLastControl;
 			CGUIWindow::OnMessage(message);
 			if (message.GetParam1() != WINDOW_SLIDESHOW)
 			{
@@ -239,9 +240,6 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 				SetHistoryForPath(m_Directory.m_strPath);
 			}
 
-			if (m_iLastControl>-1)
-				SET_CONTROL_FOCUS(m_iLastControl, 0);
-
 			if (m_iViewAsIcons==-1 && m_iViewAsIconsRoot==-1)
 			{
 				m_iViewAsIcons=g_stSettings.m_iMyPicturesViewAsIcons;
@@ -251,6 +249,15 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			Update(m_Directory.m_strPath);
 
 			UpdateThumbPanel();
+
+			if (iLastControl>-1)
+      {
+				SET_CONTROL_FOCUS(iLastControl, 0);
+      }
+      else
+      {
+        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
+      }
 
 			if (m_iItemSelected >=0)
 			{
