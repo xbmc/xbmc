@@ -1069,7 +1069,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
 		if (NULL==m_pDB.get()) return false;
 		if (NULL==m_pDS.get()) return false;
 		CStdString strSQL;
-		strSQL.Format("select DISTINCT album.*,path.*,artist.* from album,path,song,exartistalbum,artist where album.idAlbum=song.idAlbum and album.idPath=path.idPath and song.iTimesPlayed>0 and album.idAlbum=exartistalbum.idAlbum and exartistalbum.iPosition=1 and exartistalbum.idArtist=artist.idArtist order by song.iTimesPlayed limit 20" );
+		strSQL.Format("select * from album,path,artist where album.idPath=path.idPath and album.idArtist=artist.idArtist and album.idAlbum in (select distinct song.idAlbum from song where song.iTimesPlayed>0 order by song.iTimesPlayed desc limit 20)" );
 		if (!m_pDS->query(strSQL.c_str())) return false;
 		int iRowsFound = m_pDS->num_rows();
 		if (iRowsFound== 0) return false;
@@ -1274,7 +1274,7 @@ bool CMusicDatabase::GetTop100(VECSONGS& songs)
 		if (NULL==m_pDB.get()) return false;
 		if (NULL==m_pDS.get()) return false;
 		CStdString strSQL;
-		strSQL.Format("select * from song,album,path,artist,genre where song.iTimesPlayed>0 and song.idPath=path.idPath  song.idAlbum=album.idAlbum and song.idArtist=artist.idArtist and song.idGenre=genre.idGenre order by song.iTimesPlayed desc limit 100"  );
+		strSQL.Format("select * from song,album,path,artist,genre where song.iTimesPlayed>0 and song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idArtist=artist.idArtist and song.idGenre=genre.idGenre order by song.iTimesPlayed desc limit 100"  );
 		if (!m_pDS->query(strSQL.c_str())) return false;
 		int iRowsFound = m_pDS->num_rows();
 		if (iRowsFound== 0) return false;
