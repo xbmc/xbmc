@@ -2471,4 +2471,19 @@
 <id>13313</id>
 <value>Reseta/Starta om</value>
 </string>
+
+<string>
+<id>14000</id>
+<value>Stacking: Av</value>
+</string>
+
+   <string>
+<id>14001</id>
+<value>Stacking: Enkel</value>
+</string>
+
+   <string>
+<id>14002</id>
+<value>Stacking: Luddig</value>
+</string>
 </strings>
