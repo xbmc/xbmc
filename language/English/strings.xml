@@ -1602,6 +1602,10 @@
     <id>484</id>
     <value>Artist</value>
   </string>
+  <string>
+    <id>485</id>
+    <value>Delete album</value>
+  </string>
 
 <string><id>10000</id><value>Home</value></string>
 <string><id>10001</id><value>My Programs</value></string>
