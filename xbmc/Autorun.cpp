@@ -246,7 +246,10 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 void CAutorun::HandleAutorun()
 {
 	if (!m_bEnable)
+	{
+		CDetectDVDMedia::m_evAutorun.Reset();
 		return;
+	}
 
 	if ( ::WaitForSingleObject( CDetectDVDMedia::m_evAutorun.GetHandle(), 10 ) == WAIT_OBJECT_0 ) 
 	{
