@@ -79,6 +79,9 @@
 #include "GUIWindowSettingsNetworkIP.h"
 #include "GUIWindowSettingsNetworkProxy.h"
 #include "GUIWindowSettingsNetworkKai.h"
+#include "GUIWindowSettingsNetworkFTP.h"
+#include "GUIWindowSettingsNetworkWeb.h"
+#include "GUIWindowSettingsNetworkTime.h"
 #include "GUIWindowSettingsCache.h"
 #include "GUIWindowPointer.h"		// Mouse pointer
 #include "LocalizeStrings.h"
@@ -223,6 +226,9 @@ public:
 	CGUIWindowSettingsNetworkIP				m_guiSettingsNetworkIP;
 	CGUIWindowSettingsNetworkProxy			m_guiSettingsNetworkProxy;
 	CGUIWindowSettingsNetworkKai			m_guiSettingsNetworkKai;
+	CGUIWindowSettingsNetworkWeb			m_guiSettingsNetworkWeb;
+	CGUIWindowSettingsNetworkFTP			m_guiSettingsNetworkFTP;
+	CGUIWindowSettingsNetworkTime			m_guiSettingsNetworkTime;
 	CGUIWindowOSD							m_guiWindowOSD;
 	CGUIWindowSettingsCache					m_guiSettingsCache;
 	CGUIWindowSettingsSkinLanguage	m_guiSettingsSkinLanguage;
