@@ -6,6 +6,7 @@
   <string><id>3</id><value>Filmovi</value></string>
   <string><id>4</id><value>TV Vodic</value></string>
   <string><id>5</id><value>Podesavanja</value></string>
+  <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Datoteke</value></string>
   <string><id>8</id><value>Vremenska Prognoza</value></string>
   <string><id>11</id><value>Ponedjeljak</value></string>

@@ -6,6 +6,7 @@
 <string><id>4</id><value>TV Gids</value></string>
 <string><id>5</id><value>Instellingen</value></string>
 <string><id>7</id><value>Bestandsbeheer</value></string>
+<!-- String with id 6 should not be set here, only in the english language file !-->
 <string><id>8</id><value>Weerbericht</value></string>
 <string><id>11</id><value>maandag</value></string>
 <string><id>12</id><value>dinsdag</value></string>

@@ -7,6 +7,7 @@
   <string><id>3</id><value>Eigene Videos</value></string>
   <string><id>4</id><value>TV Programm</value></string>
   <string><id>5</id><value>Einstellungen</value></string>
+  <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Eigene Dateien</value></string>
   <string><id>8</id><value>Wetterbericht</value></string>
   <string><id>11</id><value>Montag</value></string>

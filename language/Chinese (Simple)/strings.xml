@@ -5,6 +5,7 @@
   <string><id>3</id><value>我的视频</value></string>
   <string><id>4</id><value>电视导游</value></string>
   <string><id>5</id><value>系统设置</value></string>
+  <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>我的文件</value></string>
   <string><id>8</id><value>天气预报</value></string>
   <string><id>11</id><value>星期一</value></string>

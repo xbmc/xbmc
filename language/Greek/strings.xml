@@ -6,6 +6,7 @@
   <string><id>3</id><value>Βίντεο</value></string>
   <string><id>4</id><value>TV Οδηγός</value></string>
   <string><id>5</id><value>Ρυθμίσεις</value></string>
+  <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Αρχεία</value></string>
   <string><id>8</id><value>Ο Καιρός</value></string>
   <string><id>11</id><value>Δευτέρα</value></string>
