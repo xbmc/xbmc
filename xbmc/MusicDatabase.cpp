@@ -970,10 +970,10 @@ bool CMusicDatabase::GetArtists(VECARTISTS& artists)
 		if (NULL==m_pDS.get()) return false;
 
 		// Exclude "Various Artists"
-//		CStdString strVariousArtists=g_localizeStrings.Get(340);
-//		long lVariousArtistId=AddArtist(strVariousArtists);
+		CStdString strVariousArtists=g_localizeStrings.Get(340);
+		long lVariousArtistId=AddArtist(strVariousArtists);
 		CStdString strSQL;
-		strSQL.Format("select * from artist");// where idArtist <> %i ", lVariousArtistId );
+		strSQL.Format("select * from artist where idArtist <> %i ", lVariousArtistId );
 		if (!m_pDS->query(strSQL.c_str())) return false;
 		int iRowsFound = m_pDS->num_rows();
 		if (iRowsFound== 0) return false;
