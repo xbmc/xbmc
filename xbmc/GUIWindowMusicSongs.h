@@ -19,6 +19,7 @@ protected:
 	virtual	void				OnSearchItemFound(const CFileItem* pItem);
 					void				AutoSwitchControlThumbList();
 
+					void				SetHistoryForPath(const CStdString& strDirectory);
 	virtual void				GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
 	virtual void				OnRetrieveMusicInfo(VECFILEITEMS& items);
 
