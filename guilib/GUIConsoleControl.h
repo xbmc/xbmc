@@ -45,6 +45,8 @@ public:
 
 	LPCSTR	GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
 
+	void	Write(CStdString& aString, DWORD aColour);
+
 protected:
 
 	void	AddLine(CStdString& aString, DWORD aColour);
