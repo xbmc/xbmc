@@ -189,7 +189,8 @@ bool CTextureBundle::OpenBundle()
 
 	GetFileTime(m_hFile, NULL, NULL, &m_TimeStamp);
 
-	lzo_init();
+	if (lzo_init() != LZO_E_OK)
+		goto LoadError;
 
 	return true;
 

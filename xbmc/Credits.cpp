@@ -11,6 +11,7 @@
 #include "SectionLoader.h"
 #include "credits_res.h"
 #include "utils/Log.h"
+#include "lib/liblzo/LZO1X.H"
 
 // Transition effects for text, must specific exactly one in and one out effect
 enum CRED_EFFECTS
@@ -45,6 +46,10 @@ struct CreditLine_t
 	BYTE Effects;         // Effects flags
 	BYTE Font;            // Font size
 	const wchar_t* Text;  // The text to display
+
+	// Internal stuff - don't need to init
+	LPDIRECT3DTEXTURE8 pTex; // Prerendered font texture
+	float TextWidth, TextHeight;
 };
 
 // Module sync notes
@@ -243,23 +248,14 @@ static BOOL s_bFadeMusic;
 static HANDLE s_hMusicStarted;
 
 // Logo rendering stuff
-struct CUSTOMVERT
-{
-	D3DXVECTOR3 pos;
-	D3DXVECTOR3 normal;
-	float s, t;
-	D3DXVECTOR3 tangent;
-	D3DXVECTOR3 binormal;
-};
-
 static DWORD s_dwVertexDecl[] = 
 {
 	D3DVSD_STREAM( 0 ),
-	D3DVSD_REG( 0, D3DVSDT_FLOAT3 ),    // position
-	D3DVSD_REG( 1, D3DVSDT_FLOAT3 ),    // normal
-	D3DVSD_REG( 2, D3DVSDT_FLOAT2 ),    // tex co-ords
-	D3DVSD_REG( 3, D3DVSDT_FLOAT3 ),    // tangent
-	D3DVSD_REG( 4, D3DVSDT_FLOAT3 ),    // binormal
+	D3DVSD_REG( 0, D3DVSDT_FLOAT3 ),       // position
+	D3DVSD_REG( 1, D3DVSDT_NORMPACKED3 ),  // normal
+	D3DVSD_REG( 2, D3DVSDT_FLOAT2 ),       // tex co-ords
+	D3DVSD_REG( 3, D3DVSDT_NORMPACKED3 ),  // tangent
+	D3DVSD_REG( 4, D3DVSDT_NORMPACKED3 ),  // binormal
 	D3DVSD_END()
 };
 
@@ -267,17 +263,19 @@ static IDirect3DVertexBuffer8*	pVBuffer;									// vertex and index buffers
 static IDirect3DIndexBuffer8*		pIBuffer;
 static DWORD										s_dwVShader, s_dwPShader;	// shaders
 static IDirect3DCubeTexture8*		pSpecEnvMap;							// texture for specular environment map
+static IDirect3DTexture8*				pFrontTex;								// specular environment map front surface base
 static IDirect3DTexture8*				pNormalMap;								// the bump map
 static DWORD										NumFaces, NumVerts;
 static D3DXMATRIX								matWorld, matVP, matWVP;	// world, view-proj, world-view-proj matrices
 static D3DXVECTOR3							vEye;											// camera
-static D3DXVECTOR4							ambient(0.15f, 0.15f, 0.15f, 0);
+static D3DXVECTOR4							ambient(0.1f, 0.1f, 0.1f, 0);
 static D3DXVECTOR4							colour(1.0f, 1.0f, 1.0f, 0);
 static char*										ResourceHeader;
 static void*										ResourceData;
 static int											SkinOffset;
+static map<int, CGUIFont*>			Fonts;
 
-static HRESULT InitLogo(LPDIRECT3DDEVICE8 pD3DDevice)
+static HRESULT InitLogo()
 {
 	DWORD n;
 
@@ -311,8 +309,8 @@ static HRESULT InitLogo(LPDIRECT3DDEVICE8 pD3DDevice)
 	}
 
 	// create shaders (8 bytes of header)
-	pD3DDevice->CreateVertexShader(s_dwVertexDecl, (const DWORD*)(ResourceHeader + credits_VShader_OFFSET + 8), &s_dwVShader, 0);
-	pD3DDevice->CreatePixelShader((const D3DPIXELSHADERDEF*)(ResourceHeader + credits_PShader_OFFSET + 12), &s_dwPShader);
+	D3DDevice::CreateVertexShader(s_dwVertexDecl, (const DWORD*)(ResourceHeader + credits_VShader_OFFSET + 8), &s_dwVShader, 0);
+	D3DDevice::CreatePixelShader((const D3DPIXELSHADERDEF*)(ResourceHeader + credits_PShader_OFFSET + 12), &s_dwPShader);
 
 	// Get info
 	DWORD* MeshInfo = (DWORD*)(ResourceHeader + credits_MeshInfo_OFFSET + 8);
@@ -321,13 +319,35 @@ static HRESULT InitLogo(LPDIRECT3DDEVICE8 pD3DDevice)
 
 	// load resource data
 	Size = XPRHeader.dwTotalSize - XPRHeader.dwHeaderSize;
-	ResourceData = XPhysicalAlloc(Size, MAXULONG_PTR, 128, PAGE_READWRITE | PAGE_WRITECOMBINE);
-	if (!ReadFile(hFile, ResourceData, Size, &n, 0) || n < Size)
+	DWORD* PackedData = (DWORD*)malloc(Size);
+	if (!ReadFile(hFile, PackedData, Size, &n, 0) || n < Size)
 	{
+		free(PackedData);
 		CloseHandle(hFile);
 		return GetLastError() ? GetLastError() : E_FAIL;
 	}
 	CloseHandle(hFile);
+
+	ResourceData = XPhysicalAlloc(*PackedData, MAXULONG_PTR, 128, PAGE_READWRITE);
+
+	if (lzo_init() != LZO_E_OK)
+	{
+		free(PackedData);
+		return E_FAIL;
+	}
+
+	// unpack resource data
+	lzo_uint s = *PackedData;
+	if (lzo1x_decompress((lzo_byte*)(PackedData + 1), Size-4, (lzo_byte*)ResourceData, &s, NULL) != LZO_E_OK || s != *PackedData)
+	{
+		free(PackedData);
+		return E_FAIL;
+	}
+
+	free(PackedData);
+
+	// enable write combine here so the decompress is fast
+	XPhysicalProtect(ResourceData, s, PAGE_READWRITE | PAGE_WRITECOMBINE);
 
 	// Register resources
 	pVBuffer = (LPDIRECT3DVERTEXBUFFER8)(ResourceHeader + credits_XBMCVBuffer_OFFSET);
@@ -344,9 +364,20 @@ static HRESULT InitLogo(LPDIRECT3DDEVICE8 pD3DDevice)
 	pSpecEnvMap = (LPDIRECT3DCUBETEXTURE8)(ResourceHeader + credits_SpecEnvMap_OFFSET);
 	pSpecEnvMap->Register(ResourceData);
 
+	// make copy of front texture
+	D3DSURFACE_DESC desc;
+	pSpecEnvMap->GetLevelDesc(0, &desc);
+	D3DDevice::CreateTexture(desc.Width, desc.Height, 1, 0, desc.Format, 0, &pFrontTex);
+	LPDIRECT3DSURFACE8 pSrcSurf, pDstSurf;
+	pSpecEnvMap->GetCubeMapSurface(D3DCUBEMAP_FACE_NEGATIVE_Z, 0, &pSrcSurf);
+	pFrontTex->GetSurfaceLevel(0, &pDstSurf);
+	D3DXLoadSurfaceFromSurface(pDstSurf, NULL, NULL, pSrcSurf, NULL, NULL, D3DX_FILTER_NONE, 0);
+	pSrcSurf->Release();
+	pDstSurf->Release();
+
 	D3DXMATRIX matView, matProj;
 	// Set view matrix
-	vEye = D3DXVECTOR3(0.0f, 1.0f, -200.0f);
+	vEye = D3DXVECTOR3(0.0f, 40.0f, -200.0f);
 	D3DXVECTOR3 vAt(0.0f, 0.0f, 0.f);
 	D3DXVECTOR3 vRight(1, 0, 0);
 	D3DXVECTOR3 vUp(0.0f, 1.0f, 0.0f);
@@ -368,30 +399,13 @@ static HRESULT InitLogo(LPDIRECT3DDEVICE8 pD3DDevice)
 	D3DXMATRIX mat;
 	D3DXMatrixTranspose(&matWVP, D3DXMatrixMultiply(&mat, &matWorld, &matVP));
 
-	// set render states
-	pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
-	pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-	pD3DDevice->SetRenderState(D3DRS_SPECULARENABLE, FALSE);
-	pD3DDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
-	pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-
-	// normal map (no filter!)
-	pD3DDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_POINT);
-	pD3DDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_POINT);
-	pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP);
-	pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP);
-
-	// env map
-	pD3DDevice->SetTextureStageState(3, D3DTSS_MAGFILTER, D3DTEXF_LINEAR);
-	pD3DDevice->SetTextureStageState(3, D3DTSS_MINFILTER, D3DTEXF_LINEAR);
-	pD3DDevice->SetTextureStageState(3, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP);
-	pD3DDevice->SetTextureStageState(3, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP);
-	pD3DDevice->SetTextureStageState(3, D3DTSS_ADDRESSW, D3DTADDRESS_CLAMP);
+	D3DDevice::SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	D3DDevice::SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 
 	return S_OK;
 }
 
-static void RenderLogo(LPDIRECT3DDEVICE8 pD3DDevice, float fElapsedTime)
+static void RenderLogo(float fElapsedTime)
 {
 	D3DXMATRIX mat;
 
@@ -407,50 +421,88 @@ static void RenderLogo(LPDIRECT3DDEVICE8 pD3DDevice, float fElapsedTime)
 
 		D3DXMatrixTranspose(&matWVP, D3DXMatrixMultiply(&mat, &matWorld, &matVP));
 	}
+
+	DWORD TextureState[2][5];
+	for (int i = 0; i < 2; ++i)
+	{
+		D3DDevice::GetTextureStageState(i ? 3 : 0, D3DTSS_MAGFILTER, &TextureState[i][0]);
+		D3DDevice::GetTextureStageState(i ? 3 : 0, D3DTSS_MINFILTER, &TextureState[i][1]);
+		D3DDevice::GetTextureStageState(i ? 3 : 0, D3DTSS_ADDRESSU, &TextureState[i][2]);
+		D3DDevice::GetTextureStageState(i ? 3 : 0, D3DTSS_ADDRESSV, &TextureState[i][3]);
+		D3DDevice::GetTextureStageState(i ? 3 : 0, D3DTSS_ADDRESSW, &TextureState[i][4]);
+	}
+
+	// normal map (no filter!)
+	D3DDevice::SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_POINT);
+	D3DDevice::SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_POINT);
+	D3DDevice::SetTextureStageState(0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP);
+	D3DDevice::SetTextureStageState(0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP);
+
+	// env map
+	D3DDevice::SetTextureStageState(3, D3DTSS_MAGFILTER, D3DTEXF_GAUSSIANCUBIC);
+	D3DDevice::SetTextureStageState(3, D3DTSS_MINFILTER, D3DTEXF_GAUSSIANCUBIC);
+	D3DDevice::SetTextureStageState(3, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP);
+	D3DDevice::SetTextureStageState(3, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP);
+	D3DDevice::SetTextureStageState(3, D3DTSS_ADDRESSW, D3DTADDRESS_CLAMP);
+
 	// Set vertex shader
-	pD3DDevice->SetVertexShader(s_dwVShader);
+	D3DDevice::SetVertexShader(s_dwVShader);
 
 	// Set WVP matrix as constants 0-3
-	pD3DDevice->SetVertexShaderConstantFast(0, (float*)matWVP, 4);
+	D3DDevice::SetVertexShaderConstantFast(0, (float*)matWVP, 4);
 	// Set world-view matrix as constants 4-7
 	D3DXMatrixTranspose(&mat, &matWorld);
-	pD3DDevice->SetVertexShaderConstantFast(4, (float*)mat, 4);
+	D3DDevice::SetVertexShaderConstantFast(4, (float*)mat, 4);
 	// Set camera position as c8
-	pD3DDevice->SetVertexShaderConstantFast(8, (float*)vEye, 1);
+	D3DDevice::SetVertexShaderConstantFast(8, (float*)vEye, 1);
 
 	// Set pixel shader
-	pD3DDevice->SetPixelShader(s_dwPShader);
+	D3DDevice::SetPixelShader(s_dwPShader);
 
 	// ambient in c0
-	pD3DDevice->SetPixelShaderConstant(0, &ambient, 1);
+	D3DDevice::SetPixelShaderConstant(0, &ambient, 1);
 	// colour in c1
-	pD3DDevice->SetPixelShaderConstant(1, &colour, 1);
+	D3DDevice::SetPixelShaderConstant(1, &colour, 1);
 
-	pD3DDevice->SetStreamSource(0, pVBuffer, sizeof(CUSTOMVERT));
-	pD3DDevice->SetIndices(pIBuffer, 0);
+	D3DDevice::SetStreamSource(0, pVBuffer, 32);
+	D3DDevice::SetIndices(pIBuffer, 0);
 
-	pD3DDevice->SetTexture(0, pNormalMap);
-	pD3DDevice->SetTexture(3, pSpecEnvMap);
+	D3DDevice::SetTexture(0, pNormalMap);
+	D3DDevice::SetTexture(3, pSpecEnvMap);
 
 	// Render geometry
-	pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, NumVerts, 0, NumFaces);
+	D3DDevice::DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, NumVerts, 0, NumFaces);
+
+	D3DDevice::SetTexture(0, NULL);
+	D3DDevice::SetTexture(3, NULL);
+	D3DDevice::SetPixelShader(0);
+	D3DDevice::SetVertexShader(0);
+	D3DDevice::SetStreamSource(0, NULL, 0);
+	D3DDevice::SetIndices(NULL, 0);
+
+	for (int i = 0; i < 2; ++i)
+	{
+		D3DDevice::SetTextureStageState(i ? 3 : 0, D3DTSS_MAGFILTER, TextureState[i][0]);
+		D3DDevice::SetTextureStageState(i ? 3 : 0, D3DTSS_MINFILTER, TextureState[i][1]);
+		D3DDevice::SetTextureStageState(i ? 3 : 0, D3DTSS_ADDRESSU, TextureState[i][2]);
+		D3DDevice::SetTextureStageState(i ? 3 : 0, D3DTSS_ADDRESSV, TextureState[i][3]);
+		D3DDevice::SetTextureStageState(i ? 3 : 0, D3DTSS_ADDRESSW, TextureState[i][4]);
+	}
 }
 
-static void CleanupLogo(LPDIRECT3DDEVICE8 pD3DDevice)
+static void CleanupLogo()
 {
-	pD3DDevice->SetTexture(0, NULL);
-	pD3DDevice->SetTexture(3, NULL);
-	pD3DDevice->SetPixelShader(0);
-	pD3DDevice->SetVertexShader(0);
-	pD3DDevice->SetStreamSource(0, NULL, 0);
-	pD3DDevice->SetIndices(NULL, 0);
+
+	if (pFrontTex)
+		pFrontTex->Release();
+	pFrontTex = 0;
 
 	if (s_dwVShader)
-		pD3DDevice->DeleteVertexShader(s_dwVShader);
+		D3DDevice::DeleteVertexShader(s_dwVShader);
 	s_dwVShader = 0;
 
 	if (s_dwPShader)
-		pD3DDevice->DeletePixelShader(s_dwPShader);
+		D3DDevice::DeletePixelShader(s_dwPShader);
 	s_dwPShader = 0;
 
 	if (pIBuffer && pIBuffer->Data)
@@ -472,6 +524,203 @@ static void CleanupLogo(LPDIRECT3DDEVICE8 pD3DDevice)
 	ResourceData = 0;
 }
 
+static void RenderCredits(const list<CreditLine_t*>& ActiveList, DWORD& Gamma, DWORD Time, float Scale = 1.0f)
+{
+	D3DVIEWPORT8 vp;
+	D3DDevice::GetViewport(&vp);
+
+	float XScale = (float)vp.Width / g_graphicsContext.GetWidth();
+	float YScale = (float)vp.Height / g_graphicsContext.GetHeight();
+
+	// Set scissor region - 12% top / bottom
+	D3DRECT rs = { vp.X, vp.Y + vp.Height * 12 / 100, vp.X + vp.Width, vp.Y + vp.Height * 88 / 100	};
+	D3DDevice::SetScissors(1, FALSE, &rs);
+
+	DWORD m_dwSavedState[7];
+	D3DDevice::GetRenderState(D3DRS_ALPHABLENDENABLE, &m_dwSavedState[0]);
+	D3DDevice::GetRenderState(D3DRS_SRCBLEND,         &m_dwSavedState[1]);
+	D3DDevice::GetRenderState(D3DRS_DESTBLEND,        &m_dwSavedState[2]);
+	D3DDevice::GetRenderState(D3DRS_ZENABLE,					&m_dwSavedState[3]);
+	D3DDevice::GetRenderState(D3DRS_STENCILENABLE,    &m_dwSavedState[4]);
+	D3DDevice::GetTextureStageState(0, D3DTSS_MINFILTER, &m_dwSavedState[5]);
+	D3DDevice::GetTextureStageState(0, D3DTSS_MAGFILTER, &m_dwSavedState[6]);
+
+	// Set the necessary render states
+	D3DDevice::SetVertexShader(D3DFVF_XYZRHW | D3DFVF_TEX1);
+	D3DDevice::SetPixelShader(0);
+	D3DDevice::SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	D3DDevice::SetRenderState(D3DRS_SRCBLEND,         D3DBLEND_SRCALPHA);
+	D3DDevice::SetRenderState(D3DRS_DESTBLEND,        D3DBLEND_INVSRCALPHA);
+	D3DDevice::SetRenderState(D3DRS_ZENABLE,					D3DZB_FALSE);
+	D3DDevice::SetRenderState(D3DRS_STENCILENABLE,    FALSE);
+	D3DDevice::SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR);
+	D3DDevice::SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR);
+
+	// set FFP settings
+	D3DDevice::SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
+	D3DDevice::SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_CURRENT);
+	D3DDevice::SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TEXTURE);
+	D3DDevice::SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE);
+	D3DDevice::SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TFACTOR);
+	D3DDevice::SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TEXTURE);
+	D3DDevice::SetTextureStageState(1, D3DTSS_COLOROP,   D3DTOP_DISABLE);
+	D3DDevice::SetTextureStageState(1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
+
+	// Render active credits
+	for (list<CreditLine_t*>::const_iterator iCredit = ActiveList.begin(); iCredit != ActiveList.end(); ++iCredit)
+	{
+		CreditLine_t* pCredit = *iCredit;
+
+		if (pCredit->Text)
+		{
+			// Render
+			float x;
+			float y;
+			DWORD alpha;
+
+			if (Time < pCredit->Time + pCredit->InDuration)
+			{
+#define INPROPORTION (Time - pCredit->Time) / pCredit->InDuration
+				switch (pCredit->Effects & EFF_IN_MASK)
+				{
+				case EFF_IN_FADE:
+					x = pCredit->x;
+					y = pCredit->y;
+					alpha = 255 * INPROPORTION;
+					break;
+
+				case EFF_IN_FLASH:
+					{
+						x = pCredit->x;
+						y = pCredit->y;
+						alpha = 0;
+						DWORD g = 255 * INPROPORTION;
+						if (Time + 20 >= pCredit->Time + pCredit->InDuration)
+							g = 255; // make sure last frame is 255 
+						if (g > Gamma)
+							Gamma = g;
+					}
+					break;
+
+				case EFF_IN_ASCEND:
+					{
+						x = pCredit->x;
+						float d = (float)(g_graphicsContext.GetHeight() - pCredit->y);
+						y = pCredit->y + d - (d * INPROPORTION);
+						alpha = 255;
+					}
+					break;
+
+				case EFF_IN_DESCEND:
+					{
+						x = pCredit->x;
+						y = (float)pCredit->y * INPROPORTION;
+						alpha = 255;
+					}
+					break;
+
+				case EFF_IN_LEFT:
+					break;
+
+				case EFF_IN_RIGHT:
+					break;
+				}
+			}
+			else if (Time > pCredit->Time + pCredit->InDuration + pCredit->Duration)
+			{
+#define OUTPROPORTION (Time - (pCredit->Time + pCredit->InDuration + pCredit->Duration)) / pCredit->OutDuration
+				switch (pCredit->Effects & EFF_OUT_MASK)
+				{
+				case EFF_OUT_FADE:
+					x = pCredit->x;
+					y = pCredit->y;
+					alpha = 255 - (255 * OUTPROPORTION);
+					break;
+
+				case EFF_OUT_FLASH:
+					{
+						x = pCredit->x;
+						y = pCredit->y;
+						alpha = 0;
+						DWORD g = 255 * OUTPROPORTION;
+						if (Time + 20 >= pCredit->Time + pCredit->InDuration + pCredit->OutDuration + pCredit->Duration)
+							g = 255; // make sure last frame is 255 
+						if (g > Gamma)
+							Gamma = g;
+					}
+					break;
+
+				case EFF_OUT_ASCEND:
+					{
+						x = pCredit->x;
+						y = (float)pCredit->y - ((float)pCredit->y * OUTPROPORTION);
+						alpha = 255;
+					}
+					break;
+
+				case EFF_OUT_DESCEND:
+					{
+						x = pCredit->x;
+						float d = (float)(g_graphicsContext.GetHeight() - pCredit->y);
+						y = pCredit->y + (d * OUTPROPORTION);
+						alpha = 255;
+					}
+					break;
+
+				case EFF_OUT_LEFT:
+					break;
+
+				case EFF_OUT_RIGHT:
+					break;
+				}
+			}
+			else // not transitioning
+			{
+				x = pCredit->x;
+				y = pCredit->y;
+				alpha = 0xff;
+			}
+
+			if (alpha)
+			{
+				x *= XScale;
+				y *= YScale;
+				float w = pCredit->TextWidth / 2;
+				float h = pCredit->TextHeight / 2;
+				w *= Scale;
+				h *= Scale;
+
+				D3DDevice::SetTexture(0, pCredit->pTex);
+				D3DDevice::SetRenderState(D3DRS_TEXTUREFACTOR, alpha << 24);
+
+				D3DDevice::Begin(D3DPT_QUADLIST);
+				D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, 0.0f, 0.0f);
+				D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    x - w, y - h, 0.0f, 0.0f);
+				D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, pCredit->TextWidth, 0.0f);
+				D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    x + w, y - h, 0.0f, 0.0f);
+				D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, pCredit->TextWidth, pCredit->TextHeight);
+				D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    x + w, y + h, 0.0f, 0.0f);
+				D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, 0.0f, pCredit->TextHeight);
+				D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    x - w, y + h, 0.0f, 0.0f);
+				D3DDevice::End();
+
+				D3DDevice::SetTexture(0, 0);
+			}
+		}
+	}
+
+	// Reset scissor region
+	D3DDevice::SetScissors(0, FALSE, NULL);
+
+	D3DDevice::SetRenderState(D3DRS_ALPHABLENDENABLE, m_dwSavedState[0]);
+	D3DDevice::SetRenderState(D3DRS_SRCBLEND,         m_dwSavedState[1]);
+	D3DDevice::SetRenderState(D3DRS_DESTBLEND,        m_dwSavedState[2]);
+	D3DDevice::SetRenderState(D3DRS_ZENABLE,					m_dwSavedState[3]);
+	D3DDevice::SetRenderState(D3DRS_STENCILENABLE,    m_dwSavedState[4]);
+	D3DDevice::SetTextureStageState(0, D3DTSS_MINFILTER, m_dwSavedState[5]);
+	D3DDevice::SetTextureStageState(0, D3DTSS_MAGFILTER, m_dwSavedState[6]);
+}
+
 void RunCredits()
 {
 	using std::map;
@@ -486,11 +735,10 @@ void RunCredits()
 	}
 
 	g_graphicsContext.Lock(); // exclusive access
-	LPDIRECT3DDEVICE8 pD3DDevice = g_graphicsContext.Get3DDevice();
 	
 	// Fade down display
 	D3DGAMMARAMP StartRamp, Ramp;
-	pD3DDevice->GetGammaRamp(&StartRamp);
+	D3DDevice::GetGammaRamp(&StartRamp);
 	for (int i = 49; i; --i)
 	{
 		for (int j = 0; j < 256; ++j)
@@ -499,16 +747,15 @@ void RunCredits()
 			Ramp.green[j] = StartRamp.green[j] * i / 50;
 			Ramp.red[j] = StartRamp.red[j] * i / 50;
 		}
-		pD3DDevice->BlockUntilVerticalBlank();
-		pD3DDevice->SetGammaRamp(D3DSGR_IMMEDIATE, &Ramp);
+		D3DDevice::BlockUntilVerticalBlank();
+		D3DDevice::SetGammaRamp(D3DSGR_IMMEDIATE, &Ramp);
 	}
-	pD3DDevice->Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
-	pD3DDevice->Present(0, 0, 0, 0);
+	D3DDevice::Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
+	D3DDevice::Present(0, 0, 0, 0);
 
 	static bool FixedCredits = false;
 
 	DWORD Time = 0;
-	map<int, CGUIFont*> Fonts;
 	for (int i = 0; i < NUM_CREDITS; ++i)
 	{
 		// map fonts
@@ -593,11 +840,11 @@ void RunCredits()
 	FixedCredits = true;
 
 	bool NoLogo = false;
-	HRESULT hr = InitLogo(pD3DDevice);
+	HRESULT hr = InitLogo();
 	if (FAILED(hr))
 	{
 		CLog::Log("Unable to load credits logo: %x", hr);
-		CleanupLogo(pD3DDevice);
+		CleanupLogo();
 		NoLogo = true;
 	}
 
@@ -607,11 +854,16 @@ void RunCredits()
 	WaitForSingleObject(s_hMusicStarted, INFINITE);
 	CloseHandle(s_hMusicStarted);
 
+	LARGE_INTEGER freq, start, end, start2, end2;
+	__int64 rendertime = 0;
+	QueryPerformanceFrequency(&freq);
+	QueryPerformanceCounter(&start2);
+
 	// Start credits loop
 	for (;;)
 	{
 		// restore gamma
-		pD3DDevice->SetGammaRamp(D3DSGR_IMMEDIATE, &StartRamp);
+		D3DDevice::SetGammaRamp(D3DSGR_IMMEDIATE, &StartRamp);
 
 		DWORD StartTime = timeGetTime();
 		DWORD LastTime = StartTime;
@@ -623,8 +875,11 @@ void RunCredits()
 		int NextCredit = 0;
 
 		// Do render loop
+		int n = 0;
 		while (NextCredit < NUM_CREDITS || !ActiveList.empty())
 		{
+			QueryPerformanceCounter(&start);
+
 			if (WaitForSingleObject(hMusicThread, 0) == WAIT_TIMEOUT)
 				Time = (DWORD)mikxboxGetPTS();
 			else
@@ -641,35 +896,27 @@ void RunCredits()
 			if (NextCredit == NUM_CREDITS && ActiveList.size() == 1)
 				s_bFadeMusic = true;
 
-			pD3DDevice->Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
-
-			// Background
-			if (!NoLogo)
-				RenderLogo(pD3DDevice, (float)(Time - LastTime) / 1000.f);
-
-			LastTime = Time;
-
-			// Set scissor region - 12% top / bottom
-			D3DRECT rs = { 0, g_graphicsContext.GetHeight() * 12 / 100, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight() * 88 / 100	};
-			pD3DDevice->SetScissors(1, FALSE, &rs);
-
 			// Activate new credits
 			while (NextCredit < NUM_CREDITS && Credits[NextCredit].Time <= Time)
 			{
+				CGUIFont* pFont = Fonts.find(Credits[NextCredit].Font)->second;
+				Credits[NextCredit].pTex = pFont->CreateTexture(Credits[NextCredit].Text, 0, 0xffffffff, D3DFMT_LIN_A8R8G8B8);
+				pFont->GetTextExtent(Credits[NextCredit].Text, &Credits[NextCredit].TextWidth, &Credits[NextCredit].TextHeight);
 				ActiveList.push_back(&Credits[NextCredit]);
 				++NextCredit;
 			}
+			// CreateTexture zaps the viewport
+			D3DVIEWPORT8 vpBackBuffer = { 0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), 0.0f, 1.0f };
+			D3DDevice::SetViewport(&vpBackBuffer);
 
-			DWORD Gamma = 0;
-
-			// Render active credits
+			// check for retirement
 			for (list<CreditLine_t*>::iterator iCredit = ActiveList.begin(); iCredit != ActiveList.end(); ++iCredit)
 			{
 				CreditLine_t* pCredit = *iCredit;
 
-				// check for retirement
 				while (Time > pCredit->Time + pCredit->InDuration + pCredit->OutDuration + pCredit->Duration)
 				{
+					(*iCredit)->pTex->Release();
 					iCredit = ActiveList.erase(iCredit);
 					if (iCredit == ActiveList.end())
 						break;
@@ -677,123 +924,64 @@ void RunCredits()
 				}
 				if (iCredit == ActiveList.end())
 					break;
-
-				if (pCredit->Text)
-				{
-					// Render
-					float x;
-					float y;
-					DWORD alpha;
-
-					CGUIFont* pFont = Fonts.find(pCredit->Font)->second;
-
-					if (Time < pCredit->Time + pCredit->InDuration)
-					{
-						#define INPROPORTION (Time - pCredit->Time) / pCredit->InDuration
-						switch (pCredit->Effects & EFF_IN_MASK)
-						{
-						case EFF_IN_FADE:
-							x = pCredit->x;
-							y = pCredit->y;
-							alpha = 255 * INPROPORTION;
-							break;
-
-						case EFF_IN_FLASH:
-							{
-								x = pCredit->x;
-								y = pCredit->y;
-								alpha = 0;
-								DWORD g = 255 * INPROPORTION;
-								if (Time + 20 >= pCredit->Time + pCredit->InDuration)
-									g = 255; // make sure last frame is 255 
-								if (g > Gamma)
-									Gamma = g;
-							}
-							break;
-
-						case EFF_IN_ASCEND:
-							{
-								x = pCredit->x;
-								float d = (float)(g_graphicsContext.GetHeight() - pCredit->y);
-								y = pCredit->y + d - (d * INPROPORTION);
-								alpha = 255;
-							}
-							break;
-
-						case EFF_IN_DESCEND:
-							{
-								x = pCredit->x;
-								y = (float)pCredit->y * INPROPORTION;
-								alpha = 255;
-							}
-							break;
-
-						case EFF_IN_LEFT:
-							break;
-
-						case EFF_IN_RIGHT:
-							break;
-						}
-					}
-					else if (Time > pCredit->Time + pCredit->InDuration + pCredit->Duration)
-					{
-						#define OUTPROPORTION (Time - (pCredit->Time + pCredit->InDuration + pCredit->Duration)) / pCredit->OutDuration
-						switch (pCredit->Effects & EFF_OUT_MASK)
-						{
-						case EFF_OUT_FADE:
-							x = pCredit->x;
-							y = pCredit->y;
-							alpha = 255 - (255 * OUTPROPORTION);
-							break;
-
-						case EFF_OUT_FLASH:
-							{
-								x = pCredit->x;
-								y = pCredit->y;
-								alpha = 0;
-								DWORD g = 255 * OUTPROPORTION;
-								if (Time + 20 >= pCredit->Time + pCredit->InDuration + pCredit->OutDuration + pCredit->Duration)
-									g = 255; // make sure last frame is 255 
-								if (g > Gamma)
-									Gamma = g;
-							}
-							break;
-
-						case EFF_OUT_ASCEND:
-							{
-								x = pCredit->x;
-								y = (float)pCredit->y - ((float)pCredit->y * OUTPROPORTION);
-								alpha = 255;
-							}
-							break;
-
-						case EFF_OUT_DESCEND:
-							{
-								x = pCredit->x;
-								float d = (float)(g_graphicsContext.GetHeight() - pCredit->y);
-								y = pCredit->y + (d * OUTPROPORTION);
-								alpha = 255;
-							}
-							break;
-
-						case EFF_OUT_LEFT:
-							break;
-
-						case EFF_OUT_RIGHT:
-							break;
-						}
-					}
-					else // not transitioning
-					{
-						x = pCredit->x;
-						y = pCredit->y;
-						alpha = 0xff;
-					}
-
-					if (alpha)
-						pFont->DrawText(x, y, 0xffffff | (alpha << 24), pCredit->Text, XBFONT_CENTER_X | XBFONT_CENTER_Y);
-				}
 			}
+
+			DWORD Gamma = 0;
+
+			if (!NoLogo)
+			{
+				// render cubemap
+				LPDIRECT3DSURFACE8 pRenderSurf, pOldRT, pOldZS;
+				pSpecEnvMap->GetCubeMapSurface(D3DCUBEMAP_FACE_NEGATIVE_Z, 0, &pRenderSurf);
+				D3DDevice::GetRenderTarget(&pOldRT);
+				D3DDevice::GetDepthStencilSurface(&pOldZS);
+				D3DDevice::SetRenderTarget(pRenderSurf, NULL);
+
+				D3DSURFACE_DESC desc;
+				pSpecEnvMap->GetLevelDesc(0, &desc);
+
+				D3DDevice::SetTexture(0, pFrontTex);
+				D3DDevice::SetVertexShader(D3DFVF_XYZRHW|D3DFVF_TEX1);
+
+				D3DDevice::SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
+				D3DDevice::SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_CURRENT);
+				D3DDevice::SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TEXTURE);
+				D3DDevice::SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
+				D3DDevice::SetTextureStageState(1, D3DTSS_COLOROP,   D3DTOP_DISABLE);
+				D3DDevice::SetTextureStageState(1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
+
+				D3DDevice::Begin(D3DPT_QUADLIST);
+				D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, 0.0f, 0.0f);
+				D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    0.0f, 0.0f, 0.0f, 0.0f);
+				D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, 1.0f, 0.0f);
+				D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    (float)desc.Width, 0.0f, 0.0f, 0.0f);
+				D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, 1.0f, 1.0f);
+				D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    (float)desc.Width, (float)desc.Height, 0.0f, 0.0f);
+				D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, 0.0f, 1.0f);
+				D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    0.0f, (float)desc.Height, 0.0f, 0.0f);
+				D3DDevice::End();
+
+				D3DDevice::SetTexture(0, 0);
+
+				RenderCredits(ActiveList, Gamma, Time, 0.4f);
+
+				D3DDevice::SetRenderTarget(pOldRT, pOldZS);
+				pOldRT->Release();
+				pOldZS->Release();
+				pRenderSurf->Release();
+			}
+
+			D3DDevice::Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
+
+			// Background
+			if (!NoLogo)
+				RenderLogo((float)(Time - LastTime) / 1000.f);
+
+			LastTime = Time;
+
+			Gamma = 0;
+
+			RenderCredits(ActiveList, Gamma, Time);
 
 			if (Gamma)
 			{
@@ -804,13 +992,10 @@ void RunCredits()
 					Ramp.green[j] = bclamp(StartRamp.green[j] + Gamma);
 					Ramp.red[j] = bclamp(StartRamp.red[j] + Gamma);
 				}
-				pD3DDevice->SetGammaRamp(0, &Ramp);
+				D3DDevice::SetGammaRamp(0, &Ramp);
 			}
 			else
-				pD3DDevice->SetGammaRamp(0, &StartRamp);
-
-			// Reset scissor region
-			pD3DDevice->SetScissors(0, FALSE, NULL);
+				D3DDevice::SetGammaRamp(0, &StartRamp);
 
 			// check for keypress
 			g_application.ReadInput();
@@ -829,14 +1014,15 @@ void RunCredits()
 					strFont.Fmt("creditsfont%d", iFont->first);
 					g_fontManager.Unload(strFont);
 				}
+				Fonts.clear();
 
 				if (!NoLogo)
-					CleanupLogo(pD3DDevice);
+					CleanupLogo();
 
 				// clear screen and exit to gui
-				pD3DDevice->Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
-				pD3DDevice->SetGammaRamp(0, &StartRamp);
-				pD3DDevice->Present(0, 0, 0, 0);
+				D3DDevice::Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
+				D3DDevice::SetGammaRamp(0, &StartRamp);
+				D3DDevice::Present(0, 0, 0, 0);
 				g_graphicsContext.Unlock();
 
 				if (NeedUnpause)
@@ -845,9 +1031,21 @@ void RunCredits()
 				return;
 			}
 
+			QueryPerformanceCounter(&end);
+			rendertime += end.QuadPart - start.QuadPart;
+			if (++n == 50)
+			{
+				QueryPerformanceCounter(&end2);
+//				CLog::DebugLog("Frame rate: %.2ffps", 50.0f * freq.QuadPart / float(end2.QuadPart - start2.QuadPart));
+//				CLog::DebugLog("Render: %.2f%%", 100.f * rendertime / float(end2.QuadPart - start2.QuadPart));
+				rendertime = 0;
+				n = 0;
+				QueryPerformanceCounter(&start2);
+			}
+
 			// present scene
-			pD3DDevice->BlockUntilVerticalBlank();
-			pD3DDevice->Present(0, 0, 0, 0);
+			D3DDevice::BlockUntilVerticalBlank();
+			D3DDevice::Present(0, 0, 0, 0);
 		}
 	}
 }
