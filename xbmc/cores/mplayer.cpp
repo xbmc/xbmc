@@ -1729,12 +1729,20 @@ void CMPlayer::SeekTime(int iTime)
 
 __int64 CMPlayer::GetTime()
 {
-	return mplayer_getCurrentTime();
+  if (m_bIsPlaying) 
+  {
+	  return mplayer_getCurrentTime();
+  }
+  return 0;
 }
 
 int CMPlayer::GetTotalTime()
 {
-	return mplayer_getTime();
+  if (m_bIsPlaying) 
+  {
+  	return mplayer_getTime();
+  }
+  return 0;
 }
 
 void CMPlayer::ToFFRW(int iSpeed)
