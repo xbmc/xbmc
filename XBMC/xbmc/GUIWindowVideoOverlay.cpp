@@ -40,13 +40,16 @@ void CGUIWindowVideoOverlay::Render()
 	if (!g_application.m_pPlayer->HasVideo()) return;
 	
 	__int64 lPTS=g_application.m_pPlayer->GetPTS();
-  //int hh = (lPTS / 36000) % 100;
+  int hh = (lPTS / 36000) % 100;
   int mm = (int)((lPTS / 600) % 60);
   int ss = (int)((lPTS /  10) % 60);
   //int f1 = lPTS % 10;
 	
 	char szTime[32];
-	sprintf(szTime,"%02.2i:%02.2i",mm,ss);
+	if (hh>=1)
+		sprintf(szTime,"%02.2i:%02.2i:%02.2i",hh,mm,ss);
+	else
+		sprintf(szTime,"%02.2i:%02.2i",mm,ss);
 	{
 		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_PLAYTIME); 
 		msg.SetLabel(szTime); 
