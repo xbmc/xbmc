@@ -39,6 +39,6 @@ CubeMap SpecEnvMap
     SourceYN indsdn.tga
     SourceZP indsbk.tga
     SourceZN indsft.tga
-    Format D3DFMT_DXT1
+    Format D3DFMT_X8R8G8B8
     Size 256
 }
