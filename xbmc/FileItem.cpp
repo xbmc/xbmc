@@ -34,6 +34,7 @@ CFileItem::CFileItem(void)
   m_bIsShareOrDrive=false;
 	memset(&m_stTime,0,sizeof(m_stTime));
   m_iDriveType = SHARE_TYPE_UNKNOWN;
+  m_iprogramCount = 0;
 }
 
 
@@ -47,6 +48,7 @@ CFileItem::CFileItem(const CStdString& strLabel)
   m_bIsShareOrDrive=false;
 	memset(&m_stTime,0,sizeof(m_stTime));
   m_iDriveType = SHARE_TYPE_UNKNOWN;
+  m_iprogramCount = 0;
 }
 
 CFileItem::~CFileItem(void)
@@ -75,6 +77,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   
   m_fRating=item.m_fRating;
   m_strDVDLabel=item.m_strDVDLabel;
+  m_iprogramCount=item.m_iprogramCount;
 	return *this;
 }
 
