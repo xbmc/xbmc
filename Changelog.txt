@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-08-2004 changed: Threshold for analog sticks (caused problems with mouse)
   - 09-08-2004 fixed: XBMS autodiscovery bug that prevented you from going up to the root directory
   - 09-08-2004 changed: the order of the items in settings -> general -> LCD
   - 09-08-2004 added: "LCD Type" string to english strings.xml

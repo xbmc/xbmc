@@ -80,6 +80,9 @@
 
 CStdString g_LoadErrorStr;
 
+// the thumbstick threshold
+#define STICK_THRESHOLD 0.05
+
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
 :m_ctrDpad(220,220)
@@ -1600,39 +1603,39 @@ void CApplication::FrameMove()
 	bool bGotKey=false;
 
 	// map all controller & remote actions to their keys
-	if (pGamepad->fX1 || pGamepad->fY1)
+	if (fabs(pGamepad->fX1)>STICK_THRESHOLD || fabs(pGamepad->fY1)>STICK_THRESHOLD)
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_LEFT_THUMB_STICK,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);   
 	}
 
-	if (pGamepad->fX2 || pGamepad->fY2)
+	if ((pGamepad->fX2)>STICK_THRESHOLD || (pGamepad->fY2)>STICK_THRESHOLD)
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);   
 	}
 	// direction specific keys (for defining different actions for each direction)
-	if (pGamepad->fY2 > 0.1 && pGamepad->fX2 < pGamepad->fY2 && -pGamepad->fX2 < pGamepad->fY2)
+	if (pGamepad->fY2 > STICK_THRESHOLD && pGamepad->fX2 < pGamepad->fY2 && -pGamepad->fX2 < pGamepad->fY2)
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_UP,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);   
 	}
-	if (pGamepad->fY2 < -0.1 && pGamepad->fX2 < -pGamepad->fY2 && -pGamepad->fX2 < -pGamepad->fY2)
+	if (pGamepad->fY2 < -STICK_THRESHOLD && pGamepad->fX2 < -pGamepad->fY2 && -pGamepad->fX2 < -pGamepad->fY2)
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_DOWN,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);   
 	}
-	if (pGamepad->fX2 > 0.1 && pGamepad->fY2 < pGamepad->fX2 && -pGamepad->fY2 < pGamepad->fX2)
+	if (pGamepad->fX2 > STICK_THRESHOLD && pGamepad->fY2 < pGamepad->fX2 && -pGamepad->fY2 < pGamepad->fX2)
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);   
 	}
-	if (pGamepad->fX2 < -0.1 && pGamepad->fY2 < -pGamepad->fX2 && -pGamepad->fY2 < -pGamepad->fX2)
+	if (pGamepad->fX2 < -STICK_THRESHOLD && pGamepad->fY2 < -pGamepad->fX2 && -pGamepad->fY2 < -pGamepad->fX2)
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_LEFT,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
