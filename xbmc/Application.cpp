@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include <XFont.h>
 #include "application.h"
 #include "utils/lcd.h"
 #include "xbox\iosupport.h"
@@ -69,6 +70,7 @@
 
 void xbox_audio_do_work();
 
+CStdString g_LoadErrorStr;
 
 extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
@@ -96,6 +98,244 @@ CApplication::~CApplication(void)
 
 }
 
+// text out routine for below
+static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...)
+{
+	wchar_t buf[100];
+	va_list args;
+	va_start(args, fmt);
+	_vsnwprintf(buf, 100, fmt, args);
+	va_end(args);
+	if (!(iLine & 0x8000))
+		CLog::Log("%S", buf);
+	iLine &= 0x7fff;
+
+	D3DRECT rc = { 0, 50 + 25*iLine, 720, 50 + 25*(iLine+1) };
+	D3DDevice::Clear(1, &rc, D3DCLEAR_TARGET, 0, 0, 0);
+	pFont->TextOut(g_application.m_pBackBuffer, buf, -1, 80, 50 + 25*iLine);
+	D3DDevice::Present(0,0,0,0);
+}
+
+// This function does not return!
+void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork)
+{
+	// XBMC couldn't start for some reason...
+	// g_LoadErrorStr should contain the reason
+	CLog::Log("Emergency recovery console starting...");
+
+	if (InitD3D)
+	{
+		bool Pal = XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I;
+		CLog::Log("Init display in default mode: %s", Pal ? "PAL" : "NTSC");
+		// init D3D with defaults (NTSC or PAL standard res)
+		m_d3dpp.BackBufferWidth        = 720;
+		m_d3dpp.BackBufferHeight       = Pal ? 576 : 480;
+		m_d3dpp.BackBufferFormat       = D3DFMT_LIN_X8R8G8B8;
+		m_d3dpp.BackBufferCount        = 1;
+		m_d3dpp.EnableAutoDepthStencil = FALSE;
+		m_d3dpp.SwapEffect             = D3DSWAPEFFECT_COPY;
+		m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+
+		if (!(m_pD3D = Direct3DCreate8(D3D_SDK_VERSION)))
+		{
+			CLog::Log("FATAL ERROR: Unable to create Direct3D!");
+			Sleep(INFINITE); // die
+		}
+
+		// Create the device
+		if (m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
+		{
+			CLog::Log("FATAL ERROR: Unable to create D3D Device!");
+			Sleep(INFINITE); // die
+		}
+
+		m_pd3dDevice->GetBackBuffer(0, 0, &m_pBackBuffer);
+	}
+	m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
+
+	// D3D is up, load default font
+	XFONT* pFont;
+	if (XFONT_OpenDefaultFont(&pFont) != S_OK)
+	{
+		CLog::Log("FATAL ERROR: Unable to open default font!");
+		Sleep(INFINITE); // die
+	}
+
+	// defaults for text
+	pFont->SetBkMode(XFONT_OPAQUE);
+	pFont->SetBkColor(D3DCOLOR_XRGB(0,0,0));
+	pFont->SetTextColor(D3DCOLOR_XRGB(0xff,0x20,0x20));
+
+	int iLine = 0;
+	FEH_TextOut(pFont, iLine++, L"XBMC Fatal Load Error:");
+	FEH_TextOut(pFont, iLine++, L"%S", g_LoadErrorStr.c_str());
+	++iLine;
+
+	if (MapDrives)
+	{
+		CIoSupport helper;
+		// map in default drives
+		helper.Remap("C:,Harddisk0\\Partition2");
+		helper.Remount("D:","Cdrom0");
+		helper.Remap("E:,Harddisk0\\Partition1");
+	}
+
+	// Boot up the network for FTP
+	bool NetworkUp = false;
+	bool TriedDash = false;
+	IN_ADDR ip_addr;
+	ip_addr.S_un.S_addr = 0;
+	if (InitNetwork)
+	{
+		for (;;)
+		{
+			if (!(XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE))
+			{
+				FEH_TextOut(pFont, iLine, L"Network cable unplugged");
+			}
+			else
+			{
+				int err = 1;
+				if (!TriedDash)
+				{
+					TriedDash = true;
+					FEH_TextOut(pFont, iLine, L"Init network using dash settings...");
+					XNetStartupParams xnsp;
+					memset(&xnsp, 0, sizeof(xnsp));
+					xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
+
+					// Bypass security so that we may connect to 'untrusted' hosts
+					xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
+					// create more memory for networking
+					xnsp.cfgPrivatePoolSizeInPages = 64; // == 256kb, default = 12 (48kb)
+					xnsp.cfgEnetReceiveQueueLength = 16; // == 32kb, default = 8 (16kb)
+					xnsp.cfgIpFragMaxSimultaneous = 16; // default = 4
+					xnsp.cfgIpFragMaxPacketDiv256 = 32; // == 8kb, default = 8 (2kb)
+					xnsp.cfgSockMaxSockets = 64; // default = 64
+					xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
+					xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
+					err = XNetStartup(&xnsp);
+				}
+
+				if (err)
+				{
+					FEH_TextOut(pFont, iLine, L"Init network using DHCP...");
+					network_info ni;
+					memset(&ni, 0, sizeof(ni));
+					ni.DHCP = true;
+					int iCount=0;
+					while ((err = CUtil::SetUpNetwork(iCount == 0, ni)) == 1 && iCount < 100)
+					{
+						Sleep(50);
+						++iCount;
+					}
+
+					if (err)
+					{
+						XNetCleanup();
+
+						FEH_TextOut(pFont, iLine, L"Init network using static ip...");
+						memset(&ni, 0, sizeof(ni));
+						strcpy(ni.ip, "192.168.0.42");
+						strcpy(ni.subnet, "255.255.255.0");
+						strcpy(ni.gateway, "192.168.0.1");
+						strcpy(ni.DNS1, "192.168.0.1");
+						iCount=0;
+						while ((err = CUtil::SetUpNetwork(iCount == 0, ni)) == 1 && iCount < 100)
+						{
+							Sleep(50);
+							++iCount;
+						}
+					}
+				}
+
+				if (!err)
+				{
+					XNADDR xna;
+					DWORD dwState;
+					do
+					{
+						dwState = XNetGetTitleXnAddr(&xna);
+						Sleep(50);
+					} while (dwState==XNET_GET_XNADDR_PENDING);
+					ip_addr = xna.ina;
+
+					if (ip_addr.S_un.S_addr)
+					{
+						WSADATA WsaData;
+						err = WSAStartup( MAKEWORD(2,2), &WsaData );
+						if (err)
+							FEH_TextOut(pFont, iLine, L"Winsock init error: %d", err);
+						else
+							NetworkUp = true;
+					}
+				}
+			}
+			if (!NetworkUp)
+			{
+				XNetCleanup();
+				int n = 10;
+				while (n)
+				{
+					FEH_TextOut(pFont, iLine|0x8000, L"Unable to init network, retrying in %d seconds", n--);
+					Sleep(1000);
+				}
+			}
+			else
+				break;
+		}
+		++iLine;
+	}
+	else
+	{
+		NetworkUp = true;
+		XNADDR xna;
+		DWORD dwState;
+		do
+		{
+			dwState = XNetGetTitleXnAddr(&xna);
+			Sleep(50);
+		} while (dwState==XNET_GET_XNADDR_PENDING);
+		ip_addr = xna.ina;
+	}
+	char addr[32];
+	XNetInAddrToString(ip_addr,addr,32);
+	FEH_TextOut(pFont, iLine++, L"IP Address: %S", addr);
+	++iLine;
+
+	if (NetworkUp)
+	{
+		// Start FTP with default settings
+		FEH_TextOut(pFont, iLine++, L"Starting FTP server...");
+
+		m_pFileZilla = new CXBFileZilla(NULL);
+		m_pFileZilla->Start();
+
+		// Default settings
+		m_pFileZilla->mSettings.SetMaxUsers(1);
+		m_pFileZilla->mSettings.SetWelcomeMessage("XBMC emergency recovery console FTP.");
+
+		// default user
+		CXFUser* pUser;
+		m_pFileZilla->AddUser("xbox", pUser);
+		pUser->SetPassword("xbox");
+		pUser->SetShortcutsEnabled(false);
+		pUser->SetUseRelativePaths(false);
+		pUser->SetBypassUserLimit(false);
+		pUser->SetUserLimit(0);
+		pUser->SetIPLimit(0);
+		pUser->AddDirectory("/", XBFILE_READ|XBFILE_WRITE|XBFILE_DELETE|XBFILE_APPEND|XBDIR_DELETE|XBDIR_CREATE|XBDIR_LIST|XBDIR_SUBDIRS|XBDIR_HOME);
+		pUser->AddDirectory("C:\\", XBFILE_READ|XBFILE_WRITE|XBFILE_DELETE|XBFILE_APPEND|XBDIR_DELETE|XBDIR_CREATE|XBDIR_LIST|XBDIR_SUBDIRS);
+		pUser->AddDirectory("D:\\", XBFILE_READ|XBDIR_LIST|XBDIR_SUBDIRS);
+		pUser->AddDirectory("E:\\", XBFILE_READ|XBFILE_WRITE|XBFILE_DELETE|XBFILE_APPEND|XBDIR_DELETE|XBDIR_CREATE|XBDIR_LIST|XBDIR_SUBDIRS);
+		pUser->CommitChanges();
+
+		FEH_TextOut(pFont, iLine++, L"FTP server running on port %d, login: xbox/xbox", m_pFileZilla->mSettings.GetServerPort());
+		++iLine;
+	}
+
+	Sleep(INFINITE); // die
+}
 
 HRESULT CApplication::Create()
 {
@@ -121,7 +361,10 @@ HRESULT CApplication::Create()
 	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
 
 	CLog::Log("load settings...");
+	g_LoadErrorStr = "Unable to load settings";
 	m_bAllSettingsLoaded=g_settings.Load(m_bXboxMediacenterLoaded,m_bSettingsLoaded,m_bCalibrationLoaded);
+	if (!m_bAllSettingsLoaded)
+		FatalErrorHandler(true, true, true);
 
 	CLog::Log("map drives...");
 	CLog::Log("  map drive C:");
@@ -167,13 +410,19 @@ HRESULT CApplication::Create()
 			CLog::Close();
 			CLog::Log("Q is mapped to:%s",szDevicePath);
 		}
+		else
+		{
+			g_LoadErrorStr = "Invalid <home> tag in xml - no skins found";
+			FatalErrorHandler(true, false, true);
+		}
 	}
 
 	CStdString strLanguagePath;
 	strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_stSettings.szDefaultLanguage);
 
 	CLog::Log("load language file:%s",strLanguagePath.c_str());
-	g_localizeStrings.Load(strLanguagePath );
+	if (!g_localizeStrings.Load(strLanguagePath ))
+		FatalErrorHandler(true, false, true);
 
 	CLog::Log("load keymapping");
 	g_buttonTranslator.Load();

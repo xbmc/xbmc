@@ -110,7 +110,10 @@ CXBServer* CXBFileZillaImp::GetServer()
 
 void CXBFileZillaImp::SetConfigurationPath(LPCTSTR Path)
 {
-  mConfigurationPath = Path;
+	if (Path)
+		mConfigurationPath = Path;
+	else
+		mConfigurationPath.clear();
 }
 
 LPCTSTR CXBFileZillaImp::GetConfigurationPath()
@@ -1018,8 +1021,11 @@ XFSTATUS CXFUserImp::AddDirectory(LPCTSTR DirName, DWORD Permissions)
   newDir.dir = DirName;
   SetDirectoryPermissions(newDir, Permissions);
   if (Permissions & XBDIR_HOME)
-    for (unsigned i = 0; i < mUser.permissions.size(); i++)
-      mUser.permissions[i].bIsHome = false;
+	{
+		mUser.homedir = newDir.dir;
+		for (unsigned i = 0; i < mUser.permissions.size(); i++)
+			mUser.permissions[i].bIsHome = false;
+	}
 
   mUser.permissions.push_back(newDir);
 
