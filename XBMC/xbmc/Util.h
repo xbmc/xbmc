@@ -20,7 +20,7 @@ public:
   static void LaunchXbe(char* szPath, char* szXbe, char* szParameters);
   static bool FileExists(const CStdString& strFileName);
   static void GetThumbnail(const CStdString& strFileName, CStdString& strThumb);
-  static void GetFileSize(DWORD dwFileSize, CStdString& strFileSize);
+  static void GetFileSize(__int64 dwFileSize, CStdString& strFileSize);
   static void GetDate(SYSTEMTIME stTime, CStdString& strDateTime);
 	static void GetHomePath(CStdString& strPath);
   static bool InitializeNetwork(const char* szLocalAdres, const char* szLocalSubnet, const char* szLocalGateway);
