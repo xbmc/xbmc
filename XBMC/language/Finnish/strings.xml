@@ -1,6 +1,6 @@
 <!-- Finnish - language resource  -->
-<!-- Finnish Translation 2004-2-28 by Nanite1000 -->
-<!-- Based on CVS revision 2004-2-28 YYYY-MM-DD -->
+<!-- Finnish Translation 2004-3-1 by Nanite1000 -->
+<!-- Based on CVS revision 2004-3-1 YYYY-MM-DD -->
 <!-- For comments PM me in xboxmediacenter forum -->
 <!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta -->
 <!-- Not all weather strings are tranlated, cant get it to look correct/too long -->
@@ -892,23 +892,23 @@
   </string>
   <string>
     <id>294</id>
-    <value>1. Luo kirjanmerkki</value>
+    <value>Luo kirjanmerkki</value>
   </string>
   <string>
     <id>295</id>
-    <value>2. Hae kirjanmerkki</value>
+    <value>Hae kirjanmerkki</value>
   </string>
   <string>
     <id>296</id>
-    <value>3. Poista kirjanmerkki</value>
+    <value>Poista kirjanmerkki</value>
   </string>
   <string>
     <id>297</id>
-    <value>4. Äänen viive</value>
+    <value>Äänen viive</value>
   </string>
   <string>
     <id>298</id>
-    <value>5. Pikakelaus</value>
+    <value>Pikakelaus</value>
   </string>
   <string>
     <id>300</id>
@@ -924,19 +924,19 @@
   </string>
   <string>
     <id>303</id>
-    <value>1. Viive</value>
+    <value>Viive</value>
   </string>
   <string>
     <id>304</id>
-    <value>2. Kieli</value>
+    <value>Kieli</value>
   </string>
   <string>
     <id>305</id>
-    <value>3. On/Off</value>
+    <value>On/Off</value>
   </string>
   <string>
     <id>306</id>
-    <value>6. Non-Interleaved</value>
+    <value>Non-Interleaved</value>
   </string>
   <string>
     <id>307</id>
@@ -1084,7 +1084,7 @@
   </string>
   <string>
     <id>343</id>
-    <value>8. Sovita kuvataajuus</value>
+    <value>Sovita kuvataajuus</value>
   </string>
   <string>
     <id>344</id>
@@ -1392,7 +1392,7 @@
   </string>  
   <string>
     <id>431</id>
-    <value>7. Välimuisti pois</value>
+    <value>Välimuisti pois</value>
   </string> 
   <string>
     <id>432</id>
@@ -1498,6 +1498,26 @@
     <id>457</id>
     <value>Vaihda:</value>
   </string> 
+  <string>
+    <id>458</id>
+    <value>Kmerkki</value>
+  </string>
+  <string>
+    <id>459</id>
+    <value>Tekstit</value>
+  </string>
+  <string>
+    <id>460</id>
+    <value>Ääniraita</value>
+  </string>
+  <string>
+    <id>461</id>
+    <value>[käytössä]</value>
+  </string>
+  <string>
+    <id>462</id>
+    <value>Tekstitys</value>
+  </string>
 <string><id>10000</id><value>Päävalikko</value></string>
 <string><id>10001</id><value>Ohjelmat</value></string>
 <string><id>10002</id><value>Kuvat</value></string>
