@@ -33,6 +33,5 @@ private:
 	bool			m_bSubMenuOn;
 	int				m_iActiveMenu;
 	DWORD			m_iActiveMenuButtonID;
-	int             m_iCurrentBookmark;
-	
+	int       m_iCurrentBookmark;
 };
