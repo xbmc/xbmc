@@ -35,24 +35,12 @@ bool CGUIWindowMusicTop100::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-    case GUI_MSG_WINDOW_DEINIT:
-		{
-			m_nSelectedItem=GetSelectedItem();
-		}
-		break;
-
     case GUI_MSG_WINDOW_INIT:
 		{
-			CGUIWindowMusicBase::OnMessage(message);
-
 			m_iViewAsIconsRoot=g_stSettings.m_iMyMusicTop100ViewAsIcons;
 
-			Update(m_strDirectory);
-			if (m_nSelectedItem>-1)
-			{
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_nSelectedItem);
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_nSelectedItem);
-			}
+			CGUIWindowMusicBase::OnMessage(message);
+
 			return true;
 		}
 		break;

@@ -154,12 +154,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-    case GUI_MSG_WINDOW_DEINIT:
-		{
-			m_nSelectedItem=GetSelectedItem();
-		}
-		break;
-
     case GUI_MSG_WINDOW_INIT:
 		{
 			//	This window is started by the home window.
@@ -170,8 +164,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 				m_gWindowManager.ActivateWindow(g_stSettings.m_iMyMusicStartWindow);
 				return false;
 			}
-
-			CGUIWindowMusicBase::OnMessage(message);
 
 			if (m_strDirectory=="?")
 				m_strDirectory=g_stSettings.m_szDefaultMusic;
@@ -195,13 +187,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 			m_iViewAsIcons=g_stSettings.m_iMyMusicSongsViewAsIcons;
 			m_iViewAsIconsRoot=g_stSettings.m_iMyMusicSongsRootViewAsIcons;
 
-			Update(m_strDirectory);
- 
-			if (m_nSelectedItem>-1)
-			{
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_nSelectedItem);
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_nSelectedItem);
-			}
+			CGUIWindowMusicBase::OnMessage(message);
 
 			return true;
 		}
