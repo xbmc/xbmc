@@ -134,6 +134,11 @@ void CDownloadQueue::Process()
 			catch(...)
 			{
 				CLog::Log(LOGERROR, "exception while updating download observer.");
+				
+				if (bFileRequest)
+				{
+					::DeleteFile(request.content.c_str());
+				}
 			}
 
 			g_graphicsContext.Unlock();
