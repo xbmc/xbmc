@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 26-01-2005 fixed: ID3 tags with UTF16 fields show strange characters
   - 26-01-2005 updated: Polish language file (Thnx to napek)
   - 26-01-2005 updated: German (Austrian) language file (Thnx to CEOMR)
   - 26-01-2005 updated: Norwegian language file (Thnx to vnmartinsen)
