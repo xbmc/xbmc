@@ -18,6 +18,7 @@ public:
 	void								UpdateInfo(const CMusicInfoTag &tag);
 	
 protected:
+  virtual void OnWindowLoaded();
 	long								m_lStartOffset;
   int                 m_iFrames;
   bool                m_bShowInfo;
