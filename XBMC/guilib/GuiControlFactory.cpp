@@ -99,6 +99,26 @@ bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* st
 	return true;
 }
 
+bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment)
+{
+	TiXmlNode* pNode=pRootNode->FirstChild(strTag );
+	if (!pNode)
+	{
+		return false;
+	}
+
+	CStdString strAlign=pNode->FirstChild()->Value();      
+
+	dwAlignment=0;
+	if (strAlign=="center")
+	{
+		dwAlignment=XBFONT_CENTER_Y;
+	}
+
+	return true;
+}
+
+
 CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pControlNode, CGUIControl* pReference, RESOLUTION res)
 {
 	CStdString strType;
@@ -114,6 +134,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	CStdString  strTmp;
 	DWORD     	dwTextColor=0xFFFFFFFF;
 	DWORD		dwAlign=XBFONT_LEFT;
+	DWORD		dwAlignY=XBFONT_CENTER_Y;
 	CStdString  strTextureFocus,strTextureNoFocus,strTextureUpFocus,strTextureDownFocus;
 	CStdString	strTextureAltFocus,strTextureAltNoFocus;
 	DWORD		dwDisabledColor=0xffffffff;;
@@ -316,6 +337,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			strFont				= ((CGUISpinControl*)pReference)->GetFontName();
 			dwTextColor			= ((CGUISpinControl*)pReference)->GetTextColor();
 			dwAlign				= ((CGUISpinControl*)pReference)->GetAlignment();
+			dwAlignY			= ((CGUISpinControl*)pReference)->GetAlignmentY();
 			strUp				= ((CGUISpinControl*)pReference)->GetTexutureUpName();
 			strDown				= ((CGUISpinControl*)pReference)->GetTexutureDownName();
 			strUpFocus			= ((CGUISpinControl*)pReference)->GetTexutureUpFocusName();
@@ -512,6 +534,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
  	GetBoolean(pControlNode,"visible",bVisible);
 	GetString(pControlNode,"font", strFont);
 	GetAlignment(pControlNode,"align", dwAlign);
+	GetAlignmentY(pControlNode,"alignY", dwAlignY);
 	GetInt(pControlNode,"hyperlink",iHyperLink);
 	GetString(pControlNode,"script", strScriptAction);
 	GetHex(pControlNode,"disabledcolor",dwDisabledColor);
@@ -838,6 +861,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		pControl->SetDisabledColor(dwDisabledColor);
 		pControl->SetTextOffsetX(dwTextOffsetX);
 		pControl->SetTextOffsetY(dwTextOffsetY);
+		pControl->SetAlignmentY(dwAlignY);
 		return pControl;
 	}
 	if (strType=="slider")
