@@ -2530,4 +2530,6 @@
 <id>14007</id>
 <value>Nerladdning av playlist fil misslyckades</value>
 </string>
+  <string><id>14008</id><value>Aktivera Kai medelande</value></string>
+  <string><id>14009</id><value>Spel mapp</value></string>
 </strings>
