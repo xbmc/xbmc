@@ -1405,6 +1405,7 @@ void CUtil::FillInDefaultIcons(VECFILEITEMS &items)
 
 void CUtil::FillInDefaultIcon(CFileItem* pItem)
 {
+	CLog::Log(LOGINFO, "FillInDefaultIcon(%s)", pItem->GetLabel().c_str());
   // find the default icon for a file or folder item
   // for files this can be the (depending on the file type)
   //   default picture for photo's
@@ -1419,6 +1420,7 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
   //   for other folders the defaultFolder.png
 
   CStdString strThumb;
+  CStdString strExtension;
   bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
   if (!pItem->m_bIsFolder)
   {
@@ -1427,9 +1429,12 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
       // playlist
       pItem->SetIconImage("defaultPlaylist.png");
 
+		GetExtension(pItem->m_strPath, strExtension);
+		if ( CUtil::cmpnocase(strExtension.c_str(),".strm") !=0) 
+		{
 			//	Save playlists to playlist directroy
-      CStdString strDir;
-      CStdString strFileName;
+			CStdString strDir;
+			CStdString strFileName;
 			strFileName=CUtil::GetFileName(pItem->m_strPath);
 			strDir.Format("%s\\playlists\\%s",g_stSettings.m_szAlbumDirectory,strFileName.c_str());
 			if (strDir!=pItem->m_strPath)
@@ -1455,6 +1460,7 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
 					}
 				}
 			}
+		}
     }
     else if (CUtil::IsPicture(pItem->m_strPath) )
     {
