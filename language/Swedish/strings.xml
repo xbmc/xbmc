@@ -116,11 +116,11 @@
   </string>  
   <string>
     <id>100</id>
-    <value>Visa: ikoner</value>
+    <value>Visa ikoner</value>
   </string>  
   <string>
     <id>101</id>
-    <value>Visa: lista</value>
+    <value>Visa som lista</value>
   </string>  
   <string>
     <id>102</id>
@@ -252,7 +252,7 @@
   </string>  
   <string>
     <id>134</id>
-    <value>Visa spår</value>
+    <value>Låtar</value>
   </string>  
   <string>
     <id>135</id>
@@ -512,23 +512,23 @@
   </string> 
   <string>
     <id>199</id>
-    <value>Regissör:</value>
+    <value>Regissör</value>
   </string> 
   <string>
     <id>200</id>
-    <value>Författare:</value>
+    <value>Författare</value>
   </string> 
   <string>
     <id>201</id>
-    <value>Årtal:</value>
+    <value>Årtal</value>
   </string> 
   <string>
     <id>202</id>
-    <value>Tag line:</value>
+    <value>Tag line</value>
   </string> 
   <string>
     <id>203</id>
-    <value>Handling:</value>
+    <value>Handling</value>
   </string> 
   <string>
     <id>204</id>
@@ -536,7 +536,7 @@
   </string> 
   <string>
     <id>205</id>
-    <value>Röster:</value>
+    <value>Röster</value>
   </string> 
   <string>
     <id>206</id>
@@ -776,23 +776,23 @@
   </string>
   <string>
     <id>266</id>
-    <value>Sortera efter: Track</value>
+    <value>Sortera efter Track</value>
   </string>
   <string>
     <id>267</id>
-    <value>Sortera efter: Tid</value>
+    <value>Sortera efter Time</value>
   </string>
   <string>
     <id>268</id>
-    <value>Sortera efter: Titel</value>
+    <value>Sortera efter Title</value>
   </string>
   <string>
     <id>269</id>
-    <value>Sortera efter: Artist</value>
+    <value>Sortera efter Artist</value>
   </string>
   <string>
     <id>270</id>
-    <value>Sortera efter: Album</value>
+    <value>Sortera efter Album</value>
   </string>
   <string>
     <id>271</id>
@@ -1161,7 +1161,7 @@
   </string>
   <string>
     <id>363</id>
-    <value>Sortera efter: Fil</value>
+    <value>Sortera efter Fil</value>
   </string>   
   <string>
     <id>364</id>
@@ -1169,15 +1169,15 @@
   </string>   
   <string>
     <id>365</id>
-    <value>Sortera efter: Namn</value>
+    <value>Sortera efter namn</value>
   </string>   
   <string>
     <id>366</id>
-    <value>Sortera efter: År</value>
+    <value>Sortera efter år</value>
   </string>   
   <string>
     <id>367</id>
-    <value>Sortera efter: Rating</value>
+    <value>Sortera efter rating</value>
   </string>   
   <string>
     <id>368</id>
@@ -1334,7 +1334,7 @@
   </string> 
   <string>
     <id>417</id>
-    <value>Visa: Stora Ikoner</value>
+    <value>Stora Ikoner</value>
   </string> 
   <string>
     <id>418</id>
@@ -1386,7 +1386,7 @@
   </string>  
   <string>
     <id>430</id>
-    <value>Sortera efter: DVD#</value>
+    <value>Sortera efter DVD#</value>
   </string>  
   <string>
     <id>431</id>
@@ -1487,6 +1487,10 @@
    <string>
      <id>456</id>
      <value>Läge:</value>
+   </string> 
+   <string>
+     <id>457</id>
+     <value>Växla vy</value>
    </string> 
  <string><id>10000</id><value>Start</value></string>
  <string><id>10001</id><value>Mina Program</value></string>
