@@ -520,13 +520,6 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   //Only display forced subs for dvds.
   //m_vecOptions.push_back("-forcedsubsonly");
 
-  //  Rescaler for YUY2 output methods
-  if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS)
-  {
-    m_vecOptions.push_back("-sws");
-    m_vecOptions.push_back("0");
-  }
-
   // Turn sub delay on
   if (g_stSettings.m_currentVideoSettings.m_SubtitleDelay != 0.0f)
   {
