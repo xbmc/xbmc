@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "GUIInfoManager.h"
 #include "Weather.h"
 #include "../Application.h"
