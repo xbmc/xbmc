@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-02-2005 fixed: [ 1119893 ] XLink Kai window freezes after chatting then pressing left
   - 10-02-2005 added: More infolabel stuff to the infomanager, plus updated various places to use the new methods.  See http://www.xboxmediaplayer.de/cgi-bin/forums/ikonboard.pl?act=ST;f=7;t=10459; for more info.
   - 10-02-2005 fixed: [ 1106617 ] Bug-fix for XBMC's XNS client support - thanks to Jørn Jensen.
   - 09-02-2005 fixed: my music, when entering a unscanned directory, whose files have no tags the second time, all files show " - "
