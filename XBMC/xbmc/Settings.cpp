@@ -403,7 +403,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 	// This is for backward compatibility since we deleted "Hebrew" from the PM fontset
 	if (stricmp(g_stSettings.m_szSkinFontSet, "Hebrew") == 0)
 	{
-		strcpy(g_stSettings.m_szSkinFontSet, "TTF");
+		strcpy(g_stSettings.m_szSkinFontSet, "Arial TTF");
 		strcpy(g_stSettings.m_szStringCharset, "CP1255");
 		g_stSettings.m_bFlipBiDiCharset = true;
 	}
@@ -482,7 +482,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 		GetString(pRootElement, "CDDBIpAddress", g_stSettings.m_szCDDBIpAdres,"194.97.4.18");
 	//g_stSettings.m_bUseCDDB=GetBoolean(pRootElement, "CDDBEnabled");
 
-	
+
 
 	GetString(pRootElement, "thumbnails",g_stSettings.szThumbnailsDirectory,"");
 	GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory,"");
@@ -499,7 +499,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
 	GetInteger(pRootElement, "startwindow", g_stSettings.m_iStartupWindow,0,0,INT_MAX);
 	g_stSettings.m_iStartupWindow += WINDOW_HOME;	// windows referenced from WINDOW_HOME
-	
+
 	GetBoolean(pRootElement, "useFDrive", g_stSettings.m_bUseFDrive);
 	GetBoolean(pRootElement, "useGDrive", g_stSettings.m_bUseGDrive);
 	GetBoolean(pRootElement, "usePCDVDROM", g_stSettings.m_bUsePCDVDROM);
@@ -1191,7 +1191,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetBoolean(pElement, "httpproxyenabled", g_stSettings.m_bHTTPProxyEnabled);
 		GetString(pElement, "httpproxyhost", g_stSettings.m_szHTTPProxy, "");
 		GetInteger(pElement, "httpproxyport", g_stSettings.m_iHTTPProxyPort, 8080, 1, 65535);
-	
+
 		GetString(pElement, "kaiusername", g_stSettings.szOnlineUsername, "");
 		GetString(pElement, "kaipassword", g_stSettings.szOnlinePassword, "");
 
