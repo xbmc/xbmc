@@ -1,3 +1,8 @@
+/*!
+	\file GuiControlFactory.h
+	\brief 
+	*/
+
 #ifndef CGUIControlFactory_H
 #define CGUIControlFactory_H
 #pragma once
@@ -6,6 +11,10 @@
 
 #include <string>
 using namespace std;
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUIControlFactory
 {
 public:

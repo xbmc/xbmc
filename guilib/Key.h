@@ -1,3 +1,8 @@
+/*!
+	\file Key.h
+	\brief 
+	*/
+
 #ifndef GUILIB_KEY
 #define GUILIB_KEY
 
@@ -169,12 +174,20 @@
 #define WINDOW_SCREENSAVER				2900
 #define WINDOW_OSD                2901
 
+/*!
+	\ingroup actionkeys
+	\brief 
+	*/
 struct CAction {
 	WORD wID;
 	float fAmount1;
 	float fAmount2;
 };
 
+/*!
+	\ingroup actionkeys
+	\brief 
+	*/
 class CKey
 {
 public:

@@ -1,3 +1,8 @@
+/*!
+	\file gui3d.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GUI3D_H
 #define GUILIB_GUI3D_H
 #pragma once

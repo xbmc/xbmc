@@ -1,3 +1,8 @@
+/*!
+	\file GUIFadeLabelControl.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GUIFADELABELCONTROL_H
 #define GUILIB_GUIFADELABELCONTROL_H
 
@@ -10,6 +15,10 @@
 #include <vector>
 using namespace std;
 
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUIFadeLabelControl :  public CGUIControl
 {
 public:

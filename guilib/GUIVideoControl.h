@@ -1,3 +1,8 @@
+/*!
+	\file GUIVideoControl.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GUIVIDEOCONTROL_H
 #define GUILIB_GUIVIDEOCONTROL_H
 
@@ -9,6 +14,10 @@
 #include "stdstring.h"
 using namespace std;
 
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUIVideoControl :
   public CGUIControl
 {

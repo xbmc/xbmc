@@ -1,3 +1,8 @@
+/*!
+	\file TextureManager.h
+	\brief 
+	*/
+
 #ifndef GUILIB_TEXTUREMANAGER_H
 #define GUILIB_TEXTUREMANAGER_H
 #include "gui3d.h"
@@ -7,6 +12,10 @@
 using namespace std;
 
 #pragma once
+/*!
+	\ingroup textures
+	\brief 
+	*/
 class CTexture
 {
   public:
@@ -31,6 +40,10 @@ class CTexture
     int                 m_iLoops;
 };
 
+/*!
+	\ingroup textures
+	\brief 
+	*/
 class CTextureMap
 {
   public:
@@ -53,6 +66,10 @@ class CTextureMap
     typedef vector<CTexture*>::iterator ivecTextures; 
 };
 
+/*!
+	\ingroup textures
+	\brief 
+	*/
 class CGUITextureManager
 {
 public:
@@ -72,5 +89,10 @@ protected:
   typedef   vector<CTextureMap*>::iterator ivecTextures;
 
 };
+
+/*!
+	\ingroup textures
+	\brief 
+	*/
 extern CGUITextureManager g_TextureManager;
 #endif

@@ -1,3 +1,8 @@
+/*!
+	\file GUIControl.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GUICONTROL_H
 #define GUILIB_GUICONTROL_H
 #pragma once
@@ -8,6 +13,10 @@
 #include "graphiccontext.h"
 
 
+/*!
+	\ingroup controls
+	\brief Base class for controls
+	*/
 class CGUIControl 
 {
 public:
