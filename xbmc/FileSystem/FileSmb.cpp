@@ -102,8 +102,8 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 
 	// convert from string to UTF8
 	char strUtfFileName[1024];
-	strlen = convert_string(CH_DOS, CH_UTF8, szFileName, strlen(szFileNameh), strUtfFileName, 1024);
-	strUtfFileName[strlen] = 0;
+	int strLen = convert_string(CH_DOS, CH_UTF8, szFileName, (size_t)strlen(szFileName), strUtfFileName, 1024);
+	strUtfFileName[strLen] = 0;
 
 	smb.Lock();
 
