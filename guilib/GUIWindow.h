@@ -31,7 +31,8 @@ public:
 	int									GetFocusedControl() const;
 	void								AllocResources();
   void								FreeResources();
-	void								ResetAllControls();  
+	void								ResetAllControls();
+	static void         FlushReferenceCache();
 protected:
 	struct stReferenceControl
 	{
@@ -41,6 +42,8 @@ protected:
 	typedef vector<struct stReferenceControl> VECREFERENCECONTOLS;
 	typedef vector<struct stReferenceControl>::iterator IVECREFERENCECONTOLS;
 	bool LoadReference(const CStdString& strFileName, VECREFERENCECONTOLS& controls);
+	static CStdString CacheFilename;
+	static VECREFERENCECONTOLS ControlsCache;
 
 	vector<CGUIControl*> m_vecControls;
   typedef vector<CGUIControl*>::iterator ivecControls;

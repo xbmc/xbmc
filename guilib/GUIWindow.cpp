@@ -22,6 +22,9 @@
 #include<string>
 using namespace std;
 
+CStdString CGUIWindow::CacheFilename = "";
+CGUIWindow::VECREFERENCECONTOLS CGUIWindow::ControlsCache;
+
 CGUIWindow::CGUIWindow(DWORD dwID)
 {
   m_dwWindowId=dwID;
@@ -33,7 +36,11 @@ CGUIWindow::~CGUIWindow(void)
 {
 }
 
-
+void CGUIWindow::FlushReferenceCache()
+{
+	CacheFilename.clear();
+	ControlsCache.clear();
+}
 
 bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOLS& controls)
 {
@@ -46,9 +53,7 @@ bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOL
 
 	// this takes ages and happens about 20 times per skin load.
 	// caching the data speeds up skin loading by a factor of 2. :)
-	static CStdString LastFilename = "";
-	static VECREFERENCECONTOLS ControlsCache;
-	if (LastFilename == strReferenceFile)
+	if (CacheFilename == strReferenceFile)
 	{
 		for (IVECREFERENCECONTOLS it = ControlsCache.begin(); it != ControlsCache.end(); ++it)
 		{
@@ -154,7 +159,7 @@ bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOL
 		pControl=pControl->NextSibling();
 	}
 
-	LastFilename = strReferenceFile;
+	CacheFilename = strReferenceFile;
 	ControlsCache.clear();
 	for (IVECREFERENCECONTOLS it = controls.begin(); it != controls.end(); ++it)
 	{
