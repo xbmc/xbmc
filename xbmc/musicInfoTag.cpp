@@ -1,10 +1,10 @@
-
 #include "stdafx.h"
 #include "musicInfoTag.h"
 #include "util.h"
 #include "musicdatabase.h"
 
 using namespace MUSIC_INFO;
+
 CMusicInfoTag::CMusicInfoTag(void)
 {
 	m_strURL="";
@@ -22,6 +22,7 @@ CMusicInfoTag::CMusicInfoTag(const CMusicInfoTag& tag)
 {
 	*this = tag;
 }
+
 CMusicInfoTag::~CMusicInfoTag()
 {
 }
@@ -41,6 +42,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
 	memcpy(&m_dwReleaseDate,&tag.m_dwReleaseDate,sizeof(m_dwReleaseDate) );
 	return *this;
 }
+
 int CMusicInfoTag::GetTrackNumber() const
 {
 	return m_iTrack;
@@ -55,6 +57,7 @@ const CStdString& CMusicInfoTag::GetTitle() const
 {
 	return m_strTitle;
 }
+
 const CStdString& CMusicInfoTag::GetURL() const
 {
 	return m_strURL;
@@ -117,10 +120,12 @@ void CMusicInfoTag::SetReleaseDate(SYSTEMTIME& dateTime)
 {
 	memcpy(&m_dwReleaseDate,&dateTime,sizeof(m_dwReleaseDate) );
 }
+
 void CMusicInfoTag::SetTrackNumber(int iTrack) 
 {
 	m_iTrack=iTrack;
 }
+
 void CMusicInfoTag::SetDuration(int iSec) 
 {
 	m_iDuration=iSec;
@@ -130,6 +135,7 @@ void CMusicInfoTag::SetLoaded(bool bOnOff)
 {
 	m_bLoaded=bOnOff;
 }
+
 bool CMusicInfoTag::Loaded() const
 {
 	return m_bLoaded;
@@ -193,4 +199,32 @@ void CMusicInfoTag::SetSong(const CSong& song)
 	m_iTrack=song.iTrack;
 	m_iDuration=song.iDuration;
 	m_bLoaded=true;
+}
+
+void CMusicInfoTag::Serialize(CArchive& ar)
+{
+	if (ar.IsStoring())
+	{
+		ar << m_strURL;
+		ar << m_strTitle;
+		ar << m_strArtist;
+		ar << m_strAlbum;
+		ar << m_strGenre;
+		ar << m_iDuration;
+		ar << m_iTrack;
+		ar << m_bLoaded;
+		ar << m_dwReleaseDate;
+	}
+	else
+	{
+		ar >> m_strURL;
+		ar >> m_strTitle;
+		ar >> m_strArtist;
+		ar >> m_strAlbum;
+		ar >> m_strGenre;
+		ar >> m_iDuration;
+		ar >> m_iTrack;
+		ar >> m_bLoaded;
+		ar >> m_dwReleaseDate;
+	}
 }
