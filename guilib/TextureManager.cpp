@@ -1,6 +1,7 @@
 #include "texturemanager.h"
 #include "graphiccontext.h"
 #include "animatedgif.h"
+#include "../xbmc/util.h"
 #include "../xbmc/utils/log.h"
 #include <xgraphics.h>
 #include "PackedTexture.h"
@@ -316,13 +317,28 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
     }
   }
 #ifdef ALLOW_TEXTURE_COMPRESSION
+  DWORD dwStandard=XGetVideoStandard();
   LPDIRECT3DTEXTURE8 pTexture;
 	LPDIRECT3DPALETTE8 pPal = 0;
-  CStdString strPath=g_graphicsContext.GetMediaDir();
-	strPath+="\\media\\";
-  strPath+=strTextureName;
+  CStdString strPath;
+  
   if (strTextureName.c_str()[1] == ':')
     strPath=strTextureName;
+  else
+  {
+    strPath.Format("%s\\media\\%s",g_graphicsContext.GetMediaDir().c_str(),strTextureName.c_str());
+    if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
+    {
+      CStdString strPath1,strPath2;
+      strPath1.Format("%s\\pal\\media\\%s",g_graphicsContext.GetMediaDir().c_str(),strTextureName.c_str());
+      strPath2=strPath1+".xpr";
+      if (CUtil::FileExists(strPath1)||CUtil::FileExists(strPath2))
+      {
+        strPath=strPath1;
+      }
+    }
+  }
+
 
   //OutputDebugString(strPath.c_str());
   //OutputDebugString("\n");

@@ -3,6 +3,7 @@
 #include "texturemanager.h"
 #include "tinyxml/tinyxml.h"
 #include "../xbmc/utils/log.h"
+#include "../xbmc/util.h"
 #include "GUIControlFactory.h"
 #include "guibuttoncontrol.h"
 #include "guiRadiobuttoncontrol.h"
@@ -53,7 +54,20 @@ bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOL
 	TiXmlDocument xmlDoc;
 	int iPos = strFileName.ReverseFind('\\');
 	CStdString strReferenceFile=strFileName.Left(iPos);
-	strReferenceFile += "\\references.xml";
+  DWORD dwStandard=XGetVideoStandard();
+  if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
+  {
+    CStdString strFName;
+    strFName.Format("%s\\pal\\references.xml",strReferenceFile.c_str());
+    if (CUtil::FileExists(strFName) )
+    {
+      strReferenceFile=strFName;
+    }
+    else
+    	strReferenceFile += "\\references.xml";
+  }
+  else
+    strReferenceFile += "\\references.xml";
 
 	// this takes ages and happens about 20 times per skin load.
 	// caching the data speeds up skin loading by a factor of 2. :)
@@ -243,14 +257,38 @@ bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOL
 	return true;
 }
 
-bool CGUIWindow::Load(const CStdString& strFileName)
+bool CGUIWindow::Load(const CStdString& strFileNameAndPath)
 {
+  CStdString strFileName=strFileNameAndPath;
 	TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile(strFileName.c_str()) )
+  CStdString strPath;
+  CStdString strFName;
+  CUtil::Split(strFileNameAndPath, strPath, strFName);
+  DWORD dwStandard=XGetVideoStandard();
+  if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
   {
-    CLog::Log("unable to load:%s", strFileName.c_str());
-		m_dwWindowId=9999;
-    return false;
+    // try PAL first
+    strFileName.Format("%s\\pal%s", strPath.c_str(), strFName.c_str());
+    if ( !xmlDoc.LoadFile(strFileName.c_str()) )
+    {
+      // fall back on ntsc version
+      strFileName=strFileNameAndPath;
+      if ( !xmlDoc.LoadFile(strFileName.c_str()) )
+      {
+        CLog::Log("unable to load:%s", strFileName.c_str());
+		    m_dwWindowId=9999;
+        return false;
+      }
+    }
+  }
+  else
+  {
+    if ( !xmlDoc.LoadFile(strFileName.c_str()) )
+    {
+      CLog::Log("unable to load:%s", strFileName.c_str());
+		  m_dwWindowId=9999;
+      return false;
+    }
   }
   TiXmlElement* pRootElement =xmlDoc.RootElement();
   CStdString strValue=pRootElement->Value();
@@ -264,7 +302,7 @@ bool CGUIWindow::Load(const CStdString& strFileName)
 	
 	VECREFERENCECONTOLS  referencecontrols;
 	IVECREFERENCECONTOLS it;
-	LoadReference(strFileName, referencecontrols);
+	LoadReference(strFileNameAndPath, referencecontrols);
  
   const TiXmlNode *pChild = pRootElement->FirstChild();
   while (pChild)
