@@ -316,6 +316,7 @@ public:
 		int		m_iOSDTimeout;		// OSD timeout in seconds
 		char      szOnlineUsername[32]; // KAITAG (username)
 		char      szOnlinePassword[32]; // corresponding password
+		bool	m_mplayerDebug;
 	};
 
 	VECSHARES					m_vecMyProgramsBookmarks;
