@@ -1550,6 +1550,10 @@
     <id>471</id>
     <value>Modchip</value>
   </string>
+  <string>
+    <id>472</id>
+    <value>OSD Timeout</value>
+  </string>
 <string><id>10000</id><value>Home</value></string>
 <string><id>10001</id><value>My Programs</value></string>
 <string><id>10002</id><value>My Pictures</value></string>
