@@ -260,7 +260,6 @@ void CGUIControl::SetPosition(int iPosX, int iPosY)
     m_iPosX=iPosX;
     m_iPosY=iPosY;
     Update();
-    m_bInvalidated = true;
   }
 }
 
@@ -278,7 +277,6 @@ void CGUIControl::SetColourDiffuse(D3DCOLOR colour)
 	{
 		m_colDiffuse = colour;
     Update();
-    m_bInvalidated = true;
 	}
 }
 int CGUIControl::GetXPosition() const
@@ -313,7 +311,6 @@ void CGUIControl::SetWidth(int iWidth)
   {
     m_dwWidth=iWidth;
     Update();
-    m_bInvalidated = true;
   }
 }
 
@@ -323,7 +320,6 @@ void CGUIControl::SetHeight(int iHeight)
   {
     m_dwHeight=iHeight;
     Update();
-    m_bInvalidated = true;
   }
 }
 
