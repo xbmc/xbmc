@@ -63,6 +63,8 @@ public:
 
 protected:
 
+	void UpdateTitle(CStdString& strFilepath, INT nIndex);
+
 	CMediaMonitor*		m_pMonitor;
 	Movie				m_current[RECENT_MOVIES];
 	Movie				m_new[RECENT_MOVIES];
