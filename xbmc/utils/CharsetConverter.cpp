@@ -151,7 +151,7 @@ void CCharsetConverter::stringCharsetToFontCharset(const CStdStringA& strSource,
 
 	if (m_iconvStringCharsetToFontCharset == (iconv_t) -1)
 	{
-		m_iconvStringCharsetToFontCharset = iconv_open("UTF-16", g_stSettings.m_szStringCharset);
+		m_iconvStringCharsetToFontCharset = iconv_open("UTF-16LE", g_stSettings.m_szStringCharset);
 	}
 
 	if (m_iconvStringCharsetToFontCharset != (iconv_t) -1)
@@ -160,18 +160,6 @@ void CCharsetConverter::stringCharsetToFontCharset(const CStdStringA& strSource,
 		size_t outBytes = inBytes * 2;
 
 		iconv(m_iconvStringCharsetToFontCharset, &src, &inBytes, &dst, &outBytes);
-
-		// Swap bytes since XBOX doesn't know how to handle the endien marker
-		char* s = (char*) strDest.c_str();
-		while (*s || *(s+1))
-		{
-			char c = *s;
-			*s = *(s+1);
-			*(s+1) = c;
-
-			s++;
-			s++;
-		}
 	}
 }
 
@@ -225,28 +213,31 @@ void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdSt
 	}
 }
 
-void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest)
+void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap)
 {
 	if (m_iconvUcs2CharsetToStringCharset == (iconv_t) -1)
 	{
-		m_iconvUcs2CharsetToStringCharset = iconv_open(g_stSettings.m_szStringCharset, "UCS-2");
+		m_iconvUcs2CharsetToStringCharset = iconv_open(g_stSettings.m_szStringCharset, "UTF-16LE");
 	}
 
 	if (m_iconvUcs2CharsetToStringCharset != (iconv_t) -1)
 	{
 		const char* src = (const char*) strSource.c_str();
 		size_t inBytes = (strSource.length() + 1) * 2;
-		
-		// Swap bytes since XBOX doesn't know how to handle the endien marker
-		char* s = (char*) src;
-		while (*s || *(s+1))
-		{
-			char c = *s;
-			*s = *(s+1);
-			*(s+1) = c;
 
-			s++;
-			s++;
+		if (swap)
+		{
+			char* s = (char*) src;
+
+			while (*s || *(s+1))
+			{
+				char c = *s;
+				*s = *(s+1);
+				*(s+1) = c;
+
+				s++;
+				s++;
+			}
 		}
 
 		char *dst = strDest.SetBuf(inBytes);
