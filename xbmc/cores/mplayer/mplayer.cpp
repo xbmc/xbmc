@@ -37,6 +37,7 @@ BOOL					(__cdecl*	pHasAudio)();
 int						(__cdecl*	pImageOutput)(IMAGE	*	image, unsigned	int	width,int	height,unsigned	int	edged_width, unsigned	char * dst[4], unsigned	int	dst_stride[4],int	csp,int	interlaced);
 void					(__cdecl*	pInitColorConversions)();
 void					(__cdecl*	pSetCacheSize)(int);
+void					(__cdecl*	pSetCacheBackBuffer)(int);
 void					(__cdecl*	pGetAudioInfo)(char* strFourCC,char* strAudioCodec,	long*	bitrate, long* samplerate, int*	channels,	int* bVBR);
 void					(__cdecl*	pGetVideoInfo)(char* strFourCC,char* strVideoCodec,	float* fps,	unsigned int*	iWidth,unsigned	int* iHeight,	long*	tooearly,	long*	toolate);
 void					(__cdecl*	pGetGeneralInfo)(long* lFramesDropped, int*	iQuality,	int* iCacheFilled, float*	fTotalCorrection,	float* fAVDelay);
@@ -196,10 +197,16 @@ extern "C"
 		pGetGeneralInfo(lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, fAVDelay);
 	}
 
-	void    mplayer_setcache_size(int iCacheSize)
+	void mplayer_setcache_size(int iCacheSize)
 	{
 		pSetCacheSize(iCacheSize);
 	}
+
+	void mplayer_setcache_backbuffer(int iCacheBackBuffer)
+	{
+		pSetCacheBackBuffer(iCacheBackBuffer);
+	}
+
 	void init_color_conversions()
 	{
 		pInitColorConversions();
@@ -359,6 +366,7 @@ extern "C"
 		dll.ResolveExport("image_output", (void**)&pImageOutput);
 		dll.ResolveExport("init_color_conversions", (void**)&pInitColorConversions);
 		dll.ResolveExport("mplayer_setcache_size", (void**)&pSetCacheSize);
+		dll.ResolveExport("mplayer_setcache_backbuffer", (void**)&pSetCacheBackBuffer);
 		dll.ResolveExport("mplayer_GetAudioInfo", (void**)&pGetAudioInfo);
 		dll.ResolveExport("mplayer_GetVideoInfo", (void**)&pGetVideoInfo);
 		dll.ResolveExport("mplayer_GetGeneralInfo", (void**)&pGetGeneralInfo);

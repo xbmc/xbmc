@@ -21,6 +21,7 @@ int			mplayer_init(int argc,char*	argv[]);
 BOOL		mplayer_HasVideo();
 BOOL		mplayer_HasAudio();
 void		mplayer_setcache_size(int	iCacheSize);
+void		mplayer_setcache_backbuffer(int buffer_size); // back buffer size in %
 __int64	mplayer_get_pts();
 
 void		mplayer_GetAudioInfo(char* strFourCC,char* strAudioCodec,	long*	bitrate, long* samplerate, int*	channels,	int* bVBR);
