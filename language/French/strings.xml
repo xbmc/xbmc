@@ -2005,7 +2005,30 @@
 		<id>743</id>
 		<value>Jaune</value>
 	</string>
-
+	<string>
+		<id>748</id>
+		<value>Editer le chemin</value>
+	</string>
+		<string>
+		<id>749</id>
+		<value>Ajouter un Partage</value>
+	</string>
+	<string>
+		<id>750</id>
+		<value>Etes vous sure?</value>
+	</string>
+	<string>
+		<id>751</id>
+		<value>Supprimer le Partage</value>
+	</string>
+	<string>
+		<id>752</id>
+		<value>Editer le Chemin du Partage</value>
+	</string>
+	<string>
+		<id>753</id>
+		<value>Editer le Nom du Partage</value>
+	</string>
 	<string>
 		<id>998</id>
 		<value>XLink Kai</value>
@@ -2014,7 +2037,6 @@
 		<id>999</id>
 		<value>Jeux en-ligne</value>
 	</string>
-
 	<string>
 		<id>10000</id>
 		<value>Accueil</value>

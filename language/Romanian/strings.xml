@@ -1854,7 +1854,7 @@
 	</string>
 	<string>
 		<id>705</id>
-		<value>Network</value>
+		<value>Retea</value>
 	</string>
 	<string>
 		<id>706</id>
@@ -2268,8 +2268,19 @@
   <string><id>13300</id><value>Viteza ventilator:</value></string>
   <string><id>13301</id><value>Control temperatura automatic</value></string>
   <string><id>13302</id><value>Control viteza ventilator</value></string>
-  
   <string><id>13303</id><value>Fonturi Skin:</value></string>
   <string><id>13304</id><value>Activare set de caractere flip bidirectional</value></string>
-  <string><id>13304</id><value>Set de caractere flip:</value></string>
+  <string><id>13305</id><value>Activare Feed-uri RSS</value></string>
+  <string><id>13306</id><value>Ascunde articolele din directorul parinte</value></string>
+  <string><id>13307</id><value>Ascunde Numar Track</value></string>
+  <string><id>13308</id><value>Doriti hard reboot</value></string>
+  <string><id>13309</id><value>in loc de reset?</value></string>
+  <string><id>13310</id><value>Efect zoom</value></string>
+  <string><id>13311</id><value>Effect float</value></string>
+  <string><id>13312</id><value>Reducere bara neagra</value></string>
+  <string><id>13313</id><value>Reset/Reboot</value></string>
+  <string><id>13314</id><value>Music OSD Timeout</value></string>
+  <string><id>14000</id><value>Stiva: Deactivat</value></string>
+  <string><id>14001</id><value>Stiva: Simplu</value></string>
+  <string><id>14002</id><value>Stiva: Fuzzy</value></string>
 </strings>
