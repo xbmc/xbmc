@@ -1227,7 +1227,7 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 	}
 	else
 	{
-    sprintf(szThumbNail, "%s%s", strPath.c_str(), defaultTbn.c_str());
+    sprintf(szThumbNail, "%s\\%s", strPath.c_str(), defaultTbn.c_str());
 	}
 	strIcon=szThumbNail;
 	if (CUtil::FileExists(strIcon) && !CUtil::IsDVD(strFilePath))   // always create thumbnail for DVD.
