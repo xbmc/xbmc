@@ -1,27 +1,27 @@
-<!-- Danish language v1.0 for XBMC -->
-<!--   Based on 2003-11-03 build   -->
-<!--    Translation done by KTC    --> 
+<!-- Danish language for XBMC            -->
+<!-- Based on 2003-12-31 english strings -->
+<!-- Translation done by Jan West        --> 
 
 <strings>
   <string>
     <id>0</id>
-    <value>Mine Programmer</value>
+    <value>Programmer</value>
   </string>
   <string>
     <id>1</id>
-    <value>Mine Billeder</value>
+    <value>Billeder</value>
   </string>
   <string>
     <id>2</id>
-    <value>Min Musik</value>
+    <value>Musik</value>
   </string>
   <string>
     <id>3</id>
-    <value>Mine Film</value>
+    <value>Film</value>
   </string>
   <string>
     <id>4</id>
-    <value>TV Guide</value>
+    <value>TV Program</value>
   </string>
   <string>
     <id>5</id>
@@ -29,9 +29,8 @@
   </string>
   <string>
     <id>7</id>
-    <value>Mine Filer</value>
+    <value>Dokumenter</value>
   </string>
-  
   <string>
     <id>11</id>
     <value>Mandag</value>
@@ -60,13 +59,10 @@
     <id>17</id>
     <value>Søndag</value>
   </string>
-  
-    
   <string>
     <id>21</id>
     <value>Januar</value>
   </string>
-  
   <string>
     <id>22</id>
     <value>Februar</value>
@@ -113,15 +109,15 @@
   </string>  
   <string>
     <id>100</id>
-    <value>Vis som ikoner</value>
+    <value>Ikoner</value>
   </string>  
   <string>
     <id>101</id>
-    <value>Vis som liste</value>
+    <value>Liste</value>
   </string>  
   <string>
     <id>102</id>
-    <value>Scan</value>
+    <value>Gennemsøg</value>
   </string>  
   <string>
     <id>103</id>
@@ -145,15 +141,15 @@
   </string>   
   <string>
     <id>108</id>
-    <value>Billedvisning</value>
+    <value>Billedserie</value>
   </string>   
   <string>
     <id>109</id>
-    <value>Lav miniature</value>
+    <value>Lav minibillede</value>
   </string>   
   <string>
     <id>110</id>
-    <value>Lav miniaturer</value>
+    <value>Lav minibilleder</value>
   </string>   
   <string>
     <id>111</id>
@@ -165,11 +161,11 @@
   </string>   
   <string>
     <id>113</id>
-    <value>Mine Filer : Kilde</value>
+    <value>Dokumenter : Kilde</value>
   </string>   
   <string>
     <id>114</id>
-    <value>Mine Filer : Destination</value>
+    <value>Dokumenter : Destination</value>
   </string>   
   <string>
     <id>115</id>
@@ -189,31 +185,31 @@
   </string>   
   <string>
     <id>119</id>
-    <value>My mappe</value>
+    <value>Ny mappe</value>
   </string>   
   <string>
     <id>120</id>
-    <value>Bekræft fil kopiering</value>
+    <value>Bekræft kopiering</value>
   </string>   
   <string>
     <id>121</id>
-    <value>Bekræft fil flytning</value>
+    <value>Bekræft flytning</value>
   </string>   
   <string>
     <id>122</id>
-    <value>Bekræft fil sletning</value>
+    <value>Bekræft sletning</value>
   </string>   
   <string>
     <id>123</id>
-    <value>Er du sikker på du vil kopiere disse filer?</value>
+    <value>Skal disse dokumenter kopieres?</value>
   </string>   
   <string>
     <id>124</id>
-    <value>Er du sikker på du vil flytte disse filer?</value>
+    <value>Skal disse dokumenter flyttes?</value>
   </string>   
   <string>
     <id>125</id>
-    <value>Er du sikker på du vil slette disse filer?</value>
+    <value>Skal disse dokumenter slettes?</value>
   </string>  
   <string>
     <id>126</id>
@@ -221,7 +217,7 @@
   </string>  
   <string>
     <id>127</id>
-    <value>Objekter</value>
+    <value>Elementer</value>
   </string>  
   <string>
     <id>128</id>
@@ -229,11 +225,11 @@
   </string> 
   <string>
     <id>129</id>
-    <value>Billedvisning</value>
+    <value>Billedserie</value>
   </string> 
   <string>
     <id>130</id>
-    <value>System info</value>
+    <value>System oplysninger</value>
   </string>  
   <string>
     <id>131</id>
@@ -241,15 +237,15 @@
   </string>  
   <string>
     <id>132</id>
-    <value>Albummer</value>
+    <value>Album</value>
   </string>  
   <string>
     <id>133</id>
-    <value>Artister</value>
+    <value>Kunstnere</value>
   </string>  
   <string>
     <id>134</id>
-    <value>Vis Sange</value>
+    <value>Vis numre</value>
   </string>  
   <string>
     <id>135</id>
@@ -257,7 +253,7 @@
   </string>  
   <string>
     <id>136</id>
-    <value>Spillelister</value>
+    <value>Hitlister</value>
   </string>  
   <string>
     <id>137</id>
@@ -265,7 +261,7 @@
   </string>  
   <string>
     <id>138</id>
-    <value>SYSTEM INFORMATION</value>
+    <value>SYSTEM OPLYSNINGER</value>
   </string>  
   <string>
     <id>139</id>
@@ -273,11 +269,11 @@
   </string> 
   <string>
     <id>140</id>
-    <value>Processor:</value>
+    <value>CPU:</value>
   </string> 
   <string>
     <id>141</id>
-    <value>Grafikchip:</value>
+    <value>GPU:</value>
   </string> 
   <string>
     <id>142</id>
@@ -289,7 +285,7 @@
   </string> 
   <string>
     <id>144</id>
-    <value>Build:</value>
+    <value>Version:</value>
   </string> 
   <string>
     <id>145</id>
@@ -305,7 +301,7 @@
   </string> 
   <string>
     <id>148</id>
-    <value>DHCP</value>
+    <value>Dynamisk</value>
   </string> 
   <string>
     <id>149</id>
@@ -313,11 +309,11 @@
   </string> 
   <string>
     <id>150</id>
-    <value>IP:</value>
+    <value>IP Adresse:</value>
   </string> 
   <string>
     <id>151</id>
-    <value>Link:</value>
+    <value>Forbindelse:</value>
   </string> 
   <string>
     <id>152</id>
@@ -329,7 +325,7 @@
   </string> 
   <string>
     <id>154</id>
-    <value>Lagring</value>
+    <value>Lager</value>
   </string> 
   <string>
     <id>155</id>
@@ -345,11 +341,11 @@
   </string> 
   <string>
     <id>158</id>
-    <value>Fri Hukommelse</value>
+    <value>Fri hukommelse</value>
   </string> 
   <string>
     <id>159</id>
-    <value>Intet link</value>
+    <value>Ingen forbindelse</value>
   </string> 
   <string>
     <id>160</id>
@@ -361,7 +357,7 @@
   </string> 
   <string>
     <id>162</id>
-    <value>DVD-skuffe Open</value>
+    <value>Skuffe åben</value>
   </string> 
   <string>
     <id>163</id>
@@ -369,15 +365,15 @@
   </string> 
   <string>
     <id>164</id>
-    <value>Ingen Disc</value>
+    <value>Intet medie</value>
   </string> 
   <string>
     <id>165</id>
-    <value>Disc Tilstede</value>
+    <value>Medie tilstede</value>
   </string> 
   <string>
     <id>166</id>
-    <value>Skin:</value>
+    <value>Overflade:</value>
   </string> 
   <string>
     <id>167</id>
@@ -397,7 +393,7 @@
   </string> 
   <string>
     <id>171</id>
-    <value>Artist:</value>
+    <value>Kunstner:</value>
   </string> 
   <string>
     <id>172</id>
@@ -429,7 +425,7 @@
   </string> 
   <string>
     <id>179</id>
-    <value>Sang</value>
+    <value>Nummer</value>
   </string> 
   <string>
     <id>180</id>
@@ -449,11 +445,11 @@
   </string> 
   <string>
     <id>184</id>
-    <value>Opdatér</value>
+    <value>Opdater</value>
   </string> 
   <string>
     <id>185</id>
-    <value>Søger i album</value>
+    <value>Søger album</value>
   </string> 
   <string>
     <id>186</id>
@@ -461,15 +457,15 @@
   </string>  
   <string>
     <id>187</id>
-    <value>Ingen albummer fundet!</value>
+    <value>Intet album fundet!</value>
   </string>  
   <string>
     <id>188</id>
-    <value>Vælg alt</value>
+    <value>Vælg alle</value>
   </string>  
   <string>
     <id>189</id>
-    <value>Scanner medie info</value>
+    <value>Gennemsøger medie info</value>
   </string>  
   <string>
     <id>190</id>
@@ -481,11 +477,11 @@
   </string>  
   <string>
     <id>192</id>
-    <value>Slet</value>
+    <value>Ryd</value>
   </string>  
   <string>
     <id>193</id>
-    <value>Scan</value>
+    <value>Gennemsøg</value>
   </string>  
   <string>
     <id>194</id>
@@ -509,7 +505,7 @@
   </string> 
   <string>
     <id>199</id>
-    <value>Indstruktør</value>
+    <value>Instruktør</value>
   </string> 
   <string>
     <id>200</id>
@@ -525,7 +521,7 @@
   </string> 
   <string>
     <id>203</id>
-    <value>Handling</value>
+    <value>Handlingen kort</value>
   </string> 
   <string>
     <id>204</id>
@@ -541,7 +537,7 @@
   </string> 
   <string>
     <id>207</id>
-    <value>Plot</value>
+    <value>Handling</value>
   </string> 
   <string>
     <id>208</id>
@@ -565,11 +561,11 @@
   </string> 
   <string>
     <id>213</id>
-    <value>Kalibrering af skærmoplysninger</value>
+    <value>Kalibrer skærmareal</value>
   </string> 
   <string>
     <id>214</id>
-    <value>Kalibrering af film</value>
+    <value>Kalibrer filmareal</value>
   </string> 
   <string>
     <id>215</id>
@@ -585,15 +581,15 @@
   </string> 
   <string>
     <id>218</id>
-    <value>DVD Drev</value>
+    <value>Skuffe</value>
   </string> 
   <string>
     <id>219</id>
-    <value>Indsæt venligst disc</value>
+    <value>Indsæt venligst medie</value>
   </string> 
   <string>
     <id>220</id>
-    <value>Netværksdelinger</value>
+    <value>Netværksmappe</value>
   </string> 
   <string>
     <id>221</id>
@@ -605,7 +601,7 @@
   </string> 
   <string>
     <id>223</id>
-    <value>Vælg bedste opløsning for film</value>
+    <value>Vælg bedste opløsning til film</value>
   </string> 
   <string>
     <id>224</id>
@@ -613,23 +609,23 @@
   </string> 
   <string>
     <id>225</id>
-    <value>Tid mellem overgange</value>
+    <value>Overblændingstid</value>
   </string> 
   <string>
     <id>226</id>
-    <value>Aktivér PAL60</value>
+    <value>Aktiver PAL60</value>
   </string> 
   <string>
     <id>227</id>
-    <value>Aktivér CDDB</value>
+    <value>Aktiver CDDB</value>
   </string> 
   <string>
     <id>228</id>
-    <value>Bland spilleliste ved indlæsning</value>
+    <value>Bland hitlister under indlæsning</value>
   </string> 
   <string>
     <id>229</id>
-    <value>HD nedlukningstid (minutter)</value>
+    <value>Sluk for harddisk efter (min.)</value>
   </string> 
   <string>
     <id>230</id>
@@ -717,7 +713,7 @@
   </string>
   <string>
     <id>252</id>
-    <value>Lyd til alle højttalere</value>
+    <value>Brug alle højttalere</value>
   </string>
   <string>
     <id>253</id>
@@ -725,7 +721,7 @@
   </string>
   <string>
     <id>254</id>
-    <value>AC3 Overførsel</value>
+    <value>AC3 gennemgang</value>
   </string>
   <string>
     <id>255</id>
@@ -733,7 +729,7 @@
   </string>
   <string>
     <id>256</id>
-    <value>Forespørger freedb for CDDB info</value>
+    <value>Forespørger freedb efter CDDB info</value>
   </string>
   <string>
     <id>257</id>
@@ -741,7 +737,7 @@
   </string>
   <string>
     <id>258</id>
-    <value>Aktivér ID3 tags</value>
+    <value>Aktiver ID3 info</value>
   </string>
 </strings>
   <string>
@@ -750,17 +746,316 @@
   </string>
   <string>
     <id>260</id>
-    <value>Shoutcast</value>
+    <value>Internet radio</value>
   </string>
   <string>
     <id>261</id>
-    <value>Venter på start....</value>
+    <value>Venter på opstart....</value>
   </string>
   <string>
     <id>262</id>
-    <value>Skript Udgang</value>
+    <value>Skript udgang</value>
   </string>
   <string>
     <id>263</id>
     <value>HTTP server:</value>
   </string> 
+  <string>
+    <id>264</id>
+    <value>Optag</value>
+  </string>
+  <string>
+    <id>265</id>
+    <value>Stop optager</value>
+  </string>
+  <string>
+    <id>266</id>
+    <value>Sorter på nummer</value>
+  </string>
+  <string>
+    <id>267</id>
+    <value>Sorter på tid</value>
+  </string>
+  <string>
+    <id>268</id>
+    <value>Sorter på titel</value>
+  </string>
+  <string>
+    <id>269</id>
+    <value>Sorter på kunstner</value>
+  </string>
+  <string>
+    <id>270</id>
+    <value>Sorter på album</value>
+  </string>
+  <string>
+    <id>271</id>
+    <value>Top 100</value>
+  </string>
+  <string>
+    <id>272</id>
+    <value>Øverst venstre hjørne</value>
+  </string>
+  <string>
+    <id>273</id>
+    <value>Nederst højre hjørne</value>
+  </string>
+  <string>
+    <id>274</id>
+    <value>Placering af undertekster</value>
+  </string>
+
+  <string>
+    <id>275</id>
+    <value>Pixel Ratio Adjustment</value>
+  </string>
+
+  <string>
+    <id>276</id>
+    <value>Flyt pilen for at ændre placering</value>
+  </string>
+  <string>
+    <id>277</id>
+    <value>Flyt bjælken for at ændre placering af underteksterne</value>
+  </string>
+  <string>
+    <id>278</id>
+    <value>Juster firkanten så den bliver perfekt kvadratisk</value>
+  </string>
+  <string>
+    <id>279</id>
+    <value>Kan ikke indlæse indstillinger</value>
+  </string>
+  <string>
+    <id>280</id>
+    <value>falder tilbage til standard indstillinger</value>
+  </string>
+  <string>
+    <id>281</id>
+    <value>Check venligst .xml dokumenterne</value>
+  </string>
+  <string>
+    <id>282</id>
+    <value>%i elementer fundet</value>
+  </string>
+  <string>
+    <id>283</id>
+    <value>Søge resultat</value>
+  </string>
+  <string>
+    <id>284</id>
+    <value>Intet resultat fundet</value>
+  </string>
+
+  <string>
+    <id>285</id>
+    <value>Deinterlace filter</value>
+  </string>
+
+  <string>
+    <id>286</id>
+    <value>Efterbehandlings filter</value>
+  </string>
+  <string>
+    <id>287</id>
+    <value>Undertekster</value>
+  </string>
+  <string>
+    <id>288</id>
+    <value>Skrifttype</value>
+  </string>
+  <string>
+    <id>289</id>
+    <value>Størrelse</value>
+  </string>
+  <string>
+    <id>290</id>
+    <value>Forstærkning (dB)</value>
+  </string>
+  <string>
+    <id>291</id>
+    <value>Billede</value>
+  </string>
+  <string>
+    <id>292</id>
+    <value>Lyd</value>
+  </string>
+  <string>
+    <id>293</id>
+    <value>Undertekster</value>
+  </string>
+  <string>
+    <id>294</id>
+    <value>1. Opret bogmærke</value>
+  </string>
+  <string>
+    <id>295</id>
+    <value>2. Skift bogmærke</value>
+  </string>
+  <string>
+    <id>296</id>
+    <value>3. Slet bogmærke</value>
+  </string>
+  <string>
+    <id>297</id>
+    <value>4. Billed/Lyd forsinkelse</value>
+  </string>
+  <string>
+    <id>298</id>
+    <value>5. Rulle</value>
+  </string>
+  <string>
+    <id>300</id>
+    <value>1. Sprog</value>
+  </string>
+  <string>
+    <id>301</id>
+    <value>2. Styrke</value>
+  </string>
+  <string>
+    <id>302</id>
+    <value>3. Kilde</value>
+  </string>
+  <string>
+    <id>303</id>
+    <value>1. Forsinkelse</value>
+  </string>
+  <string>
+    <id>304</id>
+    <value>2. Sprog</value>
+  </string>
+  <string>
+    <id>305</id>
+    <value>3. Til/Fra</value>
+  </string>
+
+  <string>
+    <id>306</id>
+    <value>6. Non-Interleaved</value>
+  </string>
+
+  <string>
+    <id>307</id>
+    <value>Automatisk</value>
+  </string>
+
+  <string>
+    <id>308</id>
+    <value>vertical deblocking filter</value>
+  </string>
+  <string>
+    <id>309</id>
+    <value>horizontal deblocking filter</value>
+  </string>
+
+  <string>
+    <id>310</id>
+    <value>Automatisk lysstyrke/kontrast</value>
+  </string>
+  <string>
+    <id>311</id>
+    <value>Anti ringning</value>
+  </string>
+  <string>
+    <id>312</id>
+    <value>(0=automatisk)</value>
+  </string>
+  <string>
+    <id>313</id>
+    <value>Reorganiser database</value>
+  </string>
+  <string>
+    <id>314</id>
+    <value>Forbereder...</value>
+  </string>
+  <string>
+    <id>315</id>
+    <value>Database fejl</value>
+  </string>
+  <string>
+    <id>316</id>
+    <value>Søger numre...</value>
+  </string>
+  <string>
+    <id>317</id>
+    <value>Reorganisation gennemført</value>
+  </string>
+  <string>
+    <id>318</id>
+    <value>Markerer slettede numre</value>
+  </string>
+  <string>
+    <id>319</id>
+    <value>Reorganiserings fejl</value>
+  </string>
+  <string>
+    <id>320</id>
+    <value>Søger efter kunstnere...</value>
+  </string>
+  <string>
+    <id>321</id>
+    <value>Reorganiserings fejl</value>
+  </string>
+  <string>
+    <id>322</id>
+    <value>Søger genre...</value>
+  </string>
+  <string>
+    <id>323</id>
+    <value>Reorganiserings fejl</value>
+  </string>
+
+  <string>
+    <id>324</id>
+    <value>Searching pathes...</value>
+  </string>
+  <string>
+    <id>325</id>
+    <value>Error reorganizing pathes</value>
+  </string>
+
+  <string>
+    <id>326</id>
+    <value>Søger efter album...</value>
+  </string>
+  <string>
+    <id>327</id>
+    <value>Reorganiserings fejl</value>
+  </string>
+  <string>
+    <id>328</id>
+    <value>Skriver ændringer...</value>
+  </string>
+  <string>
+    <id>329</id>
+    <value>Fejl under skrivning</value>
+  </string>
+  <string>
+    <id>330</id>
+    <value>Dette kan tage noget tid...</value>
+  </string>
+  <string>
+    <id>331</id>
+    <value>Komprimerer database...</value>
+  </string>
+  <string>
+    <id>332</id>
+    <value>Fejl under komprimering af database</value>
+  </string>
+  <string>
+    <id>333</id>
+    <value>Vil du reorganisere musik databasen?</value>
+  </string>
+  <string>
+    <id>334</id>
+    <value>Reorganiser musik databasen</value>
+  </string>
+  <string>
+    <id>335</id>
+    <value>Start</value>
+  </string>
+  <string>
+    <id>336</id>
+    <value>Juster billedhastighed</value>
+  </string>
+</strings>
