@@ -531,11 +531,12 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 
 	// scale to fit screen
 	float xscale = float(rd.right - rd.left) / image_width;
-	float yscale = float(rd.bottom - rd.top) / image_height;
+	float ar = (float)image_width / image_height;
+	float yscale = xscale * (ar / (g_graphicsContext.IsWidescreen() ? 16.0f/9.0f : 4.0f/3.0f));
 	m_OSDRect.left = rd.left + (float)x0 * xscale;
-	m_OSDRect.top = rd.top + (float)y0 * yscale;
 	m_OSDRect.right = rd.left + (float)(x0 + w) * xscale;
-	m_OSDRect.bottom = rd.top + (float)(y0 + h) * yscale;
+	m_OSDRect.bottom = (float)g_settings.m_ResInfo[m_iResolution].iSubtitles;
+	m_OSDRect.top = m_OSDRect.bottom - h * yscale;
 
 	m_OSDWidth = (float)w;
 	m_OSDHeight = (float)h;
@@ -890,22 +891,24 @@ void xbox_video_render_osd()
 	opaque upto 255 which is transparent */
 	// means do alphakill + inverse alphablend
 
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-	if (m_SubsOnOSD)
-	{
-		// subs use mplayer style alpha
-		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_INVSRCALPHA );
-		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_SRCALPHA );
-	}
-	else
-	{
-		// OSD looks better with src+(1-a)*dst
-		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
-		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-	}
+	//g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+//	if (m_SubsOnOSD)
+//	{
+//		// subs use mplayer style alpha
+//		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_INVSRCALPHA );
+//		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_SRCALPHA );
+//	}
+//	else
+//	{
+//		// OSD looks better with src+(1-a)*dst
+//		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
+//		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+//	}
 
 	// Clip the output to avoid borders flashing from texture filtering getting texels beyond the valid region
-	D3DRECT rs = { m_OSDRect.left+1, m_OSDRect.top+1, m_OSDRect.right-1, m_OSDRect.bottom-1 };
+	D3DRECT rs = { (long)m_OSDRect.left, (long)m_OSDRect.top, (long)m_OSDRect.right, (long)m_OSDRect.bottom };
+	if (rs.y2 > g_settings.m_ResInfo[m_iResolution].iHeight)
+		rs.y2 = g_settings.m_ResInfo[m_iResolution].iHeight;
 	g_graphicsContext.Get3DDevice()->SetScissors(1, FALSE, &rs);
 
 	// Render the image
