@@ -447,7 +447,10 @@ void CGUIListControl::OnDown()
   {
     if (m_iCursorY+1 < m_iItemsPerPage)
     {
-      m_iCursorY++;
+			if (m_iOffset+1+m_iCursorY <  (int)m_vecItems.size())
+			{
+				m_iCursorY++;
+			}
     }
     else 
     {
