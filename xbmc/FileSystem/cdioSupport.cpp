@@ -463,7 +463,6 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 
 	for (i = m_nFirstTrackNum; i <= CDIO_CDROM_LEADOUT_TRACK; i++) {
 		msf_t msf;
-
 		if (!cdio_get_track_msf(cdio, i, &msf)) {
 			char buf[1024];
 			trackinfo ti;
@@ -482,9 +481,13 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 		if (TRACK_FORMAT_AUDIO == cdio_get_track_format(cdio, i)) {
 			m_nNumAudio++;
 			ti.nfsInfo = FS_NO_DATA;
-			cdio_get_track_msf(cdio, i, &msf);
-			ti.nMins = msf.m;
-			ti.nSecs = msf.s;
+			int temp1 = cdio_get_track_lba(cdio, i) - CDIO_PREGAP_SECTORS;
+			int temp2 = cdio_get_track_lba(cdio, i+1) - CDIO_PREGAP_SECTORS;
+			// the length is the address of the second track minus the address of the first track
+			temp2 -= temp1;    // temp2 now has length of track1 in frames
+			ti.nMins = temp2 / (60 * 75);    // calculate the number of minutes
+			temp2 %= 60 * 75;    // calculate the left-over frames
+			ti.nSecs = temp2 / 75;    // calculate the number of seconds
 			if (-1 == m_nFirstAudio)
 				m_nFirstAudio = i;
 		} else {
