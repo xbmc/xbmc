@@ -183,17 +183,129 @@ char* CMusicInfoTagLoaderMP3::GetTitle(const ID3_Tag *tag)
   return sTitle;
 }
 
+char* CMusicInfoTagLoaderMP3::GetUniqueFileID(const ID3_Tag *tag, const CStdString& strUfidOwner)
+{
+  if (NULL == tag)
+    return NULL;
+
+  //  Iterate through all frames, there can be more 
+  //  then one ID3FID_UNIQUEFILEID frame
+  ID3_Tag::ConstIterator* itTag=tag->CreateIterator();
+  const ID3_Frame *frame=NULL;
+  while (frame=itTag->GetNext())
+  {
+    ID3_FrameID frameid=frame->GetID();
+    if (frameid!=ID3FID_UNIQUEFILEID)
+      continue;
+
+    //  Extract the owner of this file id
+    ID3_Field* fld=frame->GetField(ID3FN_OWNER);
+    if (fld != NULL)
+    {
+      CStdString strIdentifier=fld->GetRawText();
+      if (strIdentifier!=strUfidOwner)
+        continue;
+    }
+
+    //  Extract the owner data of this file id
+    fld=frame->GetField(ID3FN_DATA);
+    if (fld != NULL)
+    {
+      size_t nText = fld->Size();
+      char* text = LEAKTESTNEW(char[nText+1]);
+      memset(text, 0, nText+1);
+      memcpy(text, fld->GetRawBinary(), nText);
+      return text;
+    }
+  }
+
+  delete itTag;
+
+  return NULL;
+}
+
+char* CMusicInfoTagLoaderMP3::GetUserText(const ID3_Tag *tag, const CStdString& strDescription)
+{
+  if (NULL == tag)
+    return NULL;
+
+  //  Iterate through all frames, there can be more 
+  //  then one ID3FID_UNIQUEFILEID frame
+  ID3_Tag::ConstIterator* itTag=tag->CreateIterator();
+  const ID3_Frame *frame=NULL;
+  while (frame=itTag->GetNext())
+  {
+    ID3_FrameID frameid=frame->GetID();
+    if (frameid!=ID3FID_USERTEXT)
+      continue;
+
+    //  Extract the owner of this file id
+    ID3_Field* fld=frame->GetField(ID3FN_DESCRIPTION);
+    if (fld != NULL)
+    {
+      CStdString strIdentifier=fld->GetRawText();
+      if (strIdentifier!=strDescription)
+        continue;
+    }
+
+    //  Extract the owner data of this file id
+    fld=frame->GetField(ID3FN_TEXT);
+    if (fld != NULL)
+    {
+      size_t nText = fld->Size();
+      char* text = LEAKTESTNEW(char[nText+1]);
+      memset(text, 0, nText+1);
+      memcpy(text, fld->GetRawText(), nText);
+      return text;
+    }
+  }
+
+  delete itTag;
+
+  return NULL;
+}
+
+char* CMusicInfoTagLoaderMP3::GetMusicBrainzTrackID(const ID3_Tag *tag)
+{
+  return GetUniqueFileID(tag, "http://musicbrainz.org");
+}
+
+char* CMusicInfoTagLoaderMP3::GetMusicBrainzArtistID(const ID3_Tag *tag)
+{
+  return GetUserText(tag, "MusicBrainz Artist Id");
+}
+
+char* CMusicInfoTagLoaderMP3::GetMusicBrainzAlbumID(const ID3_Tag *tag)
+{
+  return GetUserText(tag, "MusicBrainz Album Id");
+}
+
+char* CMusicInfoTagLoaderMP3::GetMusicBrainzAlbumArtistID(const ID3_Tag *tag)
+{
+  return GetUserText(tag, "MusicBrainz Album Artist Id");
+}
+
+char* CMusicInfoTagLoaderMP3::GetMusicBrainzTRMID(const ID3_Tag *tag)
+{
+  return GetUserText(tag, "MusicBrainz TRM Id");
+}
+
 bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 {
   bool bResult = false;
 
   SYSTEMTIME dateTime;
-  auto_aptr<char>pYear (ID3_GetYear( &id3tag ));
-  auto_aptr<char>pTitle (GetTitle( &id3tag ));
-  auto_aptr<char>pArtist(GetArtist( &id3tag));
-  auto_aptr<char>pAlbum (GetAlbum( &id3tag ));
-  auto_aptr<char>pGenre (ID3_GetGenre( &id3tag ));
-  int nTrackNum = ID3_GetTrackNum( &id3tag );
+  auto_aptr<char>pYear    (ID3_GetYear(&id3tag));
+  auto_aptr<char>pTitle   (GetTitle(&id3tag));
+  auto_aptr<char>pArtist  (GetArtist(&id3tag));
+  auto_aptr<char>pAlbum   (GetAlbum(&id3tag));
+  auto_aptr<char>pGenre   (ID3_GetGenre(&id3tag));
+  auto_aptr<char>pMBTID   (GetMusicBrainzTrackID(&id3tag));
+  auto_aptr<char>pMBAID   (GetMusicBrainzArtistID(&id3tag));
+  auto_aptr<char>pMBBID   (GetMusicBrainzAlbumID(&id3tag));
+  auto_aptr<char>pMBABID  (GetMusicBrainzAlbumArtistID(&id3tag));
+  auto_aptr<char>pMBTRMID (GetMusicBrainzTRMID(&id3tag));
+  int nTrackNum = ID3_GetTrackNum(&id3tag);
 
   tag.SetTrackNumber(nTrackNum);
 
@@ -219,6 +331,26 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
   {
     dateTime.wYear = atoi(pYear.get());
     tag.SetReleaseDate(dateTime);
+  }
+  if (NULL != pMBTID.get())
+  {
+    tag.SetMusicBrainzTrackID(pMBTID.get());
+  }
+  if (NULL != pMBAID.get())
+  {
+    tag.SetMusicBrainzArtistID(pMBAID.get());
+  }
+  if (NULL != pMBBID.get())
+  {
+    tag.SetMusicBrainzAlbumID(pMBBID.get());
+  }
+  if (NULL != pMBABID.get())
+  {
+    tag.SetMusicBrainzAlbumArtistID(pMBABID.get());
+  }
+  if (NULL != pMBTRMID.get())
+  {
+    tag.SetMusicBrainzTRMID(pMBTRMID.get());
   }
 
   // extract Cover Art and save as album thumb

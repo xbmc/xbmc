@@ -20,6 +20,11 @@ public:
   int GetTrackNum() { return m_nTrackNum; }
   int GetDuration() { return m_nDuration; }
   CStdString GetGenre() { return m_strGenre; }
+  CStdString GetMusicBrainzTrackID() { return m_strMusicBrainzTrackID; }
+  CStdString GetMusicBrainzArtistID() { return m_strMusicBrainzArtistID; }
+  CStdString GetMusicBrainzAlbumID() { return m_strMusicBrainzAlbumID; }
+  CStdString GetMusicBrainzAlbumArtistID() { return m_strMusicBrainzAlbumArtistID; }
+  CStdString GetMusicBrainzTRMID() { return m_strMusicBrainzTRMID; }
 
 protected:
   void ProcessVorbisComment(const char *pBuffer);
@@ -32,6 +37,11 @@ protected:
   CStdString m_strArtist;
   CStdString m_strYear;
   CStdString m_strAlbum;
+  CStdString m_strMusicBrainzTrackID;
+  CStdString m_strMusicBrainzArtistID;
+  CStdString m_strMusicBrainzAlbumID;
+  CStdString m_strMusicBrainzAlbumArtistID;
+  CStdString m_strMusicBrainzTRMID;
   int m_nTrackNum;
   int m_nBitrate;
   int m_nSamplesPerSec;

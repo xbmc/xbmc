@@ -33,6 +33,11 @@ public:
   CStdString strAlbum;
   CStdString strGenre;
   CStdString strThumb;
+  CStdString strMusicBrainzTrackID;
+  CStdString strMusicBrainzArtistID;
+  CStdString strMusicBrainzAlbumID;
+  CStdString strMusicBrainzAlbumArtistID;
+  CStdString strMusicBrainzTRMID;
   int iTrack;
   int iDuration;
   int iYear;

@@ -8,7 +8,7 @@
 #include "filesystem/FactoryDirectory.h"
 #include "application.h"
 
-#define MUSIC_DATABASE_VERSION 1.1f
+#define MUSIC_DATABASE_VERSION 1.2f
 
 using namespace XFILE;
 using namespace CDDB;
@@ -177,7 +177,7 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create path table");
     m_pDS->exec("CREATE TABLE path ( idPath integer primary key,  strPath text)\n");
     CLog::Log(LOGINFO, "create song table");
-    m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer)\n");
+    m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer)\n");
     CLog::Log(LOGINFO, "create albuminfo table");
     m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, iYear integer, idGenre integer, iNumGenres integer, strTones text, strStyles text, strReview text, strImage text, iRating integer)\n");
     CLog::Log(LOGINFO, "create albuminfosong table");
@@ -286,12 +286,22 @@ void CMusicDatabase::AddSong(const CSong& song1, bool bCheck)
     }
     if (bInsert)
     {
-      strSQL.Format("insert into song (idSong,idAlbum,idPath,idArtist,iNumArtists,idGenre,iNumGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,iTimesPlayed,iStartOffset,iEndOffset,idThumb) values(NULL,%i,%i,%i,%i,%i,%i,'%s',%i,%i,%i,'%ul','%s',%i,%i,%i,%i)",
+      CStdString strSQL1;
+
+      strSQL.Format("insert into song (idSong,idAlbum,idPath,idArtist,iNumArtists,idGenre,iNumGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,strMusicBrainzTrackID,strMusicBrainzArtistID,strMusicBrainzAlbumID,strMusicBrainzAlbumArtistID,strMusicBrainzTRMID,iTimesPlayed,iStartOffset,iEndOffset,idThumb) values (NULL,%i,%i,%i,%i,%i,%i,'%s',%i,%i,%i,'%ul','%s','%s','%s','%s','%s','%s'",
                     lAlbumId, lPathId, lArtistId, iNumArtists, lGenreId, iNumGenres,
                     song.strTitle.c_str(),
                     song.iTrack, song.iDuration, song.iYear,
-                    (DWORD)crc,
-                    strFileName.c_str(), 0, song.iStartOffset, song.iEndOffset, lThumbId);
+                    (DWORD)crc, strFileName.c_str(),
+                    song.strMusicBrainzTrackID.c_str(),
+                    song.strMusicBrainzArtistID.c_str(),
+                    song.strMusicBrainzAlbumID.c_str(),
+                    song.strMusicBrainzAlbumArtistID.c_str(),
+                    song.strMusicBrainzTRMID.c_str());
+
+      strSQL1.Format(",%i,%i,%i,%i)",
+                     0, song.iStartOffset, song.iEndOffset, lThumbId);
+      strSQL+=strSQL1;
 
       m_pDS->exec(strSQL.c_str());
       lSongId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
@@ -824,6 +834,11 @@ CSong CMusicDatabase::GetSongFromDataset()
   song.iTimedPlayed = m_pDS->fv("song.iTimesPlayed").get_asLong();
   song.iStartOffset = m_pDS->fv("song.iStartOffset").get_asLong();
   song.iEndOffset = m_pDS->fv("song.iEndOffset").get_asLong();
+  song.strMusicBrainzTrackID = m_pDS->fv("song.strMusicBrainzTrackID").get_asString();
+  song.strMusicBrainzArtistID = m_pDS->fv("song.strMusicBrainzArtistID").get_asString();
+  song.strMusicBrainzAlbumID = m_pDS->fv("song.strMusicBrainzAlbumID").get_asString();
+  song.strMusicBrainzAlbumArtistID = m_pDS->fv("song.strMusicBrainzAlbumArtistID").get_asString();
+  song.strMusicBrainzTRMID = m_pDS->fv("song.strMusicBrainzTRMID").get_asString();
   song.strThumb = m_pDS->fv("thumb.strThumb").get_asString();
   if (song.strThumb == "NONE")
     song.strThumb.Empty();
@@ -3651,12 +3666,37 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
     }
     if (fVersion < 1.1f)
     {
-      // version 0.5 to 1.0 upgrade - we need to add the thumbs table + run SetMusicThumbs()
-      // on all elements and then produce a new songs table
+      // version 1.0 to 1.1 upgrade - we need to create an index on the thumb table
       CLog::Log(LOGINFO, "Attempting update from version %f to %f", fVersion, MUSIC_DATABASE_VERSION);
       CLog::Log(LOGINFO, "create thumb index");
       m_pDS->exec("CREATE INDEX idxThumb ON thumb(strThumb)");
       CLog::Log(LOGINFO, "create thumb index successfull");
+      fVersion = MUSIC_DATABASE_VERSION;
+      CStdString strVersion;
+      strVersion.Format("UPDATE version SET idVersion=%f\n", fVersion);
+      m_pDS->exec(strVersion.c_str());
+      CLog::Log(LOGINFO, "Update to version %f successfull", MUSIC_DATABASE_VERSION);
+    }
+    if (fVersion < 1.2f)
+    {
+      // version 1.1 to 1.2 upgrade - we need to add the musicbrainz columns to the song table
+      CLog::Log(LOGINFO, "Attempting update from version %f to %f", fVersion, MUSIC_DATABASE_VERSION);
+      CLog::Log(LOGINFO, "Updating song table with musicbrainz columns");
+      BeginTransaction();
+      CLog::Log(LOGINFO, "Creating temporary songs table");
+      m_pDS->exec("CREATE TEMPORARY TABLE tempsong ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer)\n");
+      CLog::Log(LOGINFO, "Copying songs into temporary song table");
+      m_pDS->exec("INSERT INTO tempsong SELECT idSong,idAlbum,idPath,idArtist,iNumArtists,idGenre,iNumGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,iTimesPlayed,iStartOffset,iEndOffset,idThumb FROM song");
+      CLog::Log(LOGINFO, "Destroying old songs table");
+      m_pDS->exec("DROP TABLE song");
+      CLog::Log(LOGINFO, "Creating new songs table");
+      m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer)\n");
+      CLog::Log(LOGINFO, "Copying songs into new songs table");
+      m_pDS->exec("INSERT INTO song(idSong,idAlbum,idPath,idArtist,iNumArtists,idGenre,iNumGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,iTimesPlayed,iStartOffset,iEndOffset,idThumb) SELECT * FROM tempsong");
+      CLog::Log(LOGINFO, "Deleting temporary songs table");
+      m_pDS->exec("DROP TABLE tempsong");
+      CommitTransaction();
+
       fVersion = MUSIC_DATABASE_VERSION;
       CStdString strVersion;
       strVersion.Format("UPDATE version SET idVersion=%f\n", fVersion);
