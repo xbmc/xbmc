@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 06-03-2004 fixed: my music Nav window: play action works again, and artists list now sorts excluding "the"
+  - 06-03-2002 changed: keymap.xml updated to allow skip and ffw/rew when in vis.
+  - 06-03-2005 fixed: my music Nav window: play action works again, and artists list now sorts excluding "the"
   - 06-03-2005 added: New built-in command XBMC.PlayMedia(filename). For instance to map a radiostation to a key in keymap.xml
   - 06-03-2005 fixed: HttpApi crash if webserver not enabled
   - 06-03-2005 added: HttpApi patch as described here http://www.xboxmediaplayer.de/cgi-bin/forums/ikonboard.pl?s=227ea528324363fb8af20c24d5ff3ddd;act=ST;f=5;t=9397
