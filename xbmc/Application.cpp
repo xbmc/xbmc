@@ -2569,14 +2569,21 @@ bool CApplication::OnMessage(CGUIMessage& message)
 					m_pPlayer = 0;
 				}
 			}
+
 			if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
+			{
+				m_gWindowManager.PreviousWindow();
+			}
+
+			if (!IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_NONE && m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
 			{
 				m_gWindowManager.PreviousWindow();
 			}
 		}
 		break;
 
-	case GUI_MSG_PLAYLIST_PLAY_NEXT_PREV:
+	case GUI_MSG_PLAYLISTPLAYER_STARTED:
+	case GUI_MSG_PLAYLISTPLAYER_CHANGED:
 		{
 			if (message.GetParam1()==PLAYLIST_MUSIC || message.GetParam1()==PLAYLIST_MUSIC_TEMP)
 			{
@@ -2597,6 +2604,15 @@ bool CApplication::OnMessage(CGUIMessage& message)
 						}
 					}
 				}
+			}
+		}
+		break;
+	case GUI_MSG_PLAYLISTPLAYER_STOPPED:
+		{
+			if (message.GetParam1()==PLAYLIST_MUSIC || message.GetParam1()==PLAYLIST_MUSIC_TEMP)
+			{
+				if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+					m_gWindowManager.PreviousWindow();
 			}
 		}
 		break;

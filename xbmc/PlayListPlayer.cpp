@@ -42,8 +42,13 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
 	{
 		case GUI_MSG_PLAYBACK_STOPPED:
 		{
-			Reset();
-			m_iCurrentPlayList=PLAYLIST_NONE;
+			if (m_iCurrentPlayList!=PLAYLIST_NONE)
+			{
+				CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
+				m_gWindowManager.SendThreadMessage(msg);
+				Reset();
+				m_iCurrentPlayList=PLAYLIST_NONE;
+			}
 		}
 		break;
 	}
@@ -70,6 +75,8 @@ void CPlayListPlayer::PlayNext(bool bAutoPlay)
 
 		if (!Repeated(m_iCurrentPlayList))
 		{
+			CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
+			m_gWindowManager.SendThreadMessage(msg);
 			Reset();
 			m_iCurrentPlayList=PLAYLIST_NONE;
 			return;
@@ -126,9 +133,18 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay)
 
 	if (!CUtil::IsShoutCast(item.GetFileName()))
 	{
-		CGUIMessage msg( GUI_MSG_PLAYLIST_PLAY_NEXT_PREV, 0, 0, GetCurrentPlaylist(), MAKELONG(m_iCurrentSong, iPreviousSong), (LPVOID)&item );
-		m_gWindowManager.SendThreadMessage( msg );
+		if (iPreviousSong<0)
+		{
+			CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STARTED, 0, 0, m_iCurrentPlayList, m_iCurrentSong, (LPVOID)&item);
+			m_gWindowManager.SendThreadMessage( msg );
+		}
+		else
+		{
+			CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, m_iCurrentPlayList, MAKELONG(m_iCurrentSong, iPreviousSong), (LPVOID)&item);
+			m_gWindowManager.SendThreadMessage(msg);
+		}
 	}
+
 	if(!g_application.PlayFile(CFileItem(item), bAutoPlay))
 	{
 		//	Count entries in current playlist
