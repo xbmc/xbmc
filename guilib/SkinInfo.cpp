@@ -72,14 +72,14 @@ void CSkinInfo::Load(CStdString& strSkinDir)
 				if (pGrandChild)
 				{
 					CStdString strName = pGrandChild->FirstChild()->Value();
-					swprintf(credits[0],L"%S Skin",strName.Left(45).c_str());
+					swprintf(credits[0],L"%S Skin",strName.Left(44).c_str());
 				}
 				pGrandChild = pChild->FirstChild("name");
 				m_iNumCreditLines = 1;
 				while (pGrandChild && m_iNumCreditLines < 6)
 				{
 					CStdString strName = pGrandChild->FirstChild()->Value();
-					swprintf(credits[m_iNumCreditLines],L"%S",strName.Left(50).c_str());
+					swprintf(credits[m_iNumCreditLines],L"%S",strName.Left(49).c_str());
 					m_iNumCreditLines++;
 					pGrandChild=pGrandChild->NextSibling("name");
 				}
