@@ -1132,7 +1132,7 @@ void CUtil::RemoveIllegalChars( CStdString& strText)
 
 void CUtil::CacheSubtitles(const CStdString& strMovie)
 {
-	char * sub_exts[] = {  ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx",NULL};
+	char * sub_exts[] = {  ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx",".ifo", NULL};
 	int iPos=0;
   bool bFoundSubs=false;
 	while (sub_exts[iPos])
