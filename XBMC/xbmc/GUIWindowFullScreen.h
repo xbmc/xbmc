@@ -40,6 +40,5 @@ private:
   bool            m_bLastRender;
 	int							m_strTimeStamp[5];
 	int							m_iTimeCodePosition;
-	int							m_iSpeed;
   int             m_iCurrentBookmark;
 };

@@ -1364,7 +1364,7 @@ const CStdString& CApplication::CurrentFile()
 
 void CApplication::SetPlaySpeed(int iSpeed)
 {
-  if (!IsPlayingAudio() ) return;
+  if (!IsPlayingAudio() && !IsPlayingVideo()) return;
   m_iPlaySpeed=iSpeed;
 
   m_pPlayer->ToFFRW(m_iPlaySpeed);
