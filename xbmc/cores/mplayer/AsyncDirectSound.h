@@ -37,6 +37,8 @@
 
 #include "IDirectSoundRenderer.h"
 #include "IAudioCallback.h"
+#include "../ssrc.h"
+
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
 
@@ -47,8 +49,11 @@ public:
 	virtual void		RegisterAudioCallback(IAudioCallback* pCallback);
 	virtual DWORD		GetChunkLen();
 	virtual FLOAT		GetDelay();
-	CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample);
+	CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample);
 	virtual ~CASyncDirectSound();
+
+	virtual DWORD 	AddPacketsResample(unsigned char* data, DWORD len);
+	virtual bool	IsResampling() { return m_bResampleAudio;}
 
 	virtual DWORD 	AddPackets(unsigned char* data, DWORD len);
 	virtual DWORD		GetSpace();
@@ -74,7 +79,9 @@ private:
 
   LPDIRECTSOUNDSTREAM   m_pStream;
   LPDIRECTSOUND8        m_pDSound;
-	WAVEFORMATEX				  m_wfx;
+
+    WAVEFORMATEX				  m_wfx;
+
 	LONG								  m_nCurrentVolume;
 	DWORD									m_dwPacketSize;
 	bool									m_AudioEOF;
@@ -94,7 +101,12 @@ private:
   LONGLONG							m_dwTicksPerSec;
 	int										m_iAudioSkip;
 	unsigned int					m_uiSamplesPerSec ;
+	unsigned int					m_uiBitsPerSample;
 	bool					xbox_Ac3encoder_active;
+
+  // 48kHz Resampler stuff
+	bool					m_bResampleAudio;		// Are we resampling?
+	Cssrc		m_Resampler;			// The Resampler class that does all the work
 };
 
 #endif // !defined(AFX_ASYNCAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)

@@ -49,6 +49,7 @@ public:
 	virtual FLOAT GetDelay()=0;
 
 	virtual DWORD 	AddPackets(unsigned char* data, DWORD len)=0;
+	virtual bool	IsResampling() {return false;};
 	virtual DWORD		GetSpace()=0;
 	virtual HRESULT Deinitialize()=0;
 	virtual HRESULT Pause()=0;
