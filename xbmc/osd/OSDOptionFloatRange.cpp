@@ -92,7 +92,7 @@ void COSDOptionFloatRange::Draw(int x, int y, bool bFocus,bool bSelected)
 
 bool COSDOptionFloatRange::OnAction(IExecutor& executor, const CAction& action)
 {
-	if (action.wID==ACTION_PAGE_DOWN)
+	if (action.wID==ACTION_OSD_SHOW_VALUE_PLUS)
 	{
     if (m_fValue+m_fInterval <=m_fMax)
     {
@@ -105,7 +105,7 @@ bool COSDOptionFloatRange::OnAction(IExecutor& executor, const CAction& action)
     executor.OnExecute(m_iAction,this);
     return true;
 	}
-	if (action.wID==ACTION_PAGE_UP)
+	if (action.wID==ACTION_OSD_SHOW_VALUE_MIN)
 	{
     if (m_fValue-m_fInterval >=m_fMin)
     {
