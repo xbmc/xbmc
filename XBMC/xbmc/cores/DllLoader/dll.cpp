@@ -15,6 +15,8 @@ static int ResolveName(char *Name, char* Function, void **Fixup);
 //hack to Free pe image, global variable.
 DllLoader * wmaDMOdll;
 DllLoader * wmvDMOdll;
+DllLoader * wmv8DMOdll;
+
 
 #ifdef DUMPING_DATA
 
@@ -444,6 +446,8 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR libname)
 		wmaDMOdll = dllhandle;
 	if (strcmp(libname, "wmv9dmod.dll") == 0 || strcmp(libname, "WMV9DMOD.DLL") == 0 )
 		wmvDMOdll = dllhandle;
+	if (strcmp(libname, "wmvdmod.dll") == 0 || strcmp(libname, "WMVDMOD.DLL") == 0 )
+		wmv8DMOdll = dllhandle;
 
 	void * address = NULL;
 	dllhandle->ResolveExport("DllMain", &address);
