@@ -9,6 +9,7 @@
 #endif
 
 #include "../settings.h"
+#include "log.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -48,15 +49,13 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 	m_strHostName="";
 	if (!BreakURL(strURL, m_strHostName, m_iPort, strFile))
 	{
-//		printf("invalid url\n");
-		OutputDebugString("Invalid url.\n");
+    CLog::Log("invalid URL:%s", strURL.c_str());
 		return false;
 	}	
 
 	if ( !Connect() ) 
 	{
-		//printf("unable to connect\n");
-		OutputDebugString("Unable to connect.\n");
+		CLog::Log("unable to connect to:%s", m_strHostName.c_str());
 		return false;
 	}
 	// send request...
@@ -87,13 +86,8 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 	//printf("send %s", szGet);
 	if ( !Send((unsigned char*)szGet,strlen(szGet) ) )
 	{
-		//printf("send failed\n");
-		
-		char strError[128];
-		sprintf(strError,"send failed error:%i %i\n", GetLastError(), WSAGetLastError());
-    OutputDebugString(strError);
-
-		m_socket.reset();
+    CLog::Log("send failed error:%i %i\n", GetLastError(), WSAGetLastError());
+    m_socket.reset();
 		return false;
 	}
 
@@ -104,11 +98,8 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 		long lenRead=recv((SOCKET)m_socket,(char*)&pszBuffer[lReadTotal],5000-lReadTotal,0);
 		if (lenRead <=0)
 		{
-			//printf("receive failed\n");
-			char strError[128];			
-			sprintf(strError,"recv error:%i %i", GetLastError(), WSAGetLastError());
-      OutputDebugString(strError);
-			m_socket.reset();
+      CLog::Log("recv error:%i %i", GetLastError(), WSAGetLastError());
+      m_socket.reset();
 		}
 		lReadTotal+=lenRead;
 	} while (strstr(pszBuffer,"\r\n\r\n")==NULL);
@@ -161,25 +152,21 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 			}
 
 			
-			char strError[128];
-			sprintf(strError,"redirect error:%i %i\n", GetLastError(), WSAGetLastError());
-			OutputDebugString(strError);
-      delete [] pszBuffer;
+      CLog::Log("redirect error:%i %i\n", GetLastError(), WSAGetLastError());
+			delete [] pszBuffer;
 			return false;
 		}
 
-		OutputDebugString("Website returned an error code: ");
-		OutputDebugString(pszBuffer);
-		OutputDebugString("\n");
+    CLog::Log("Website returned an error code:%s",pszBuffer);
 
 		//printf("website didn't return 200\n");
 		pszBuffer[lReadTotal]=0;
 		//printf("%s",szBuffer);
 		m_socket.reset();
 		
-		pszBuffer[40]=0;
-		char strError[128];
-		sprintf(strError,"error:%i %i size:%i", GetLastError(), WSAGetLastError(),lReadTotal);
+		//pszBuffer[40]=0;
+		//char strError[128];
+		//sprintf(strError,"error:%i %i size:%i", GetLastError(), WSAGetLastError(),lReadTotal);
 		//g_dialog.SetCaption(0,"GET didnt return 200");
 		//g_dialog.SetMessage(0,szBuffer);
 		//g_dialog.SetMessage(1,strError);
@@ -217,11 +204,11 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 		if (!pBody)
 		{
 			//printf("website returned empty document\n");
-			OutputDebugString("Website returned empty document\n");
+      CLog::Log("Website returned empty document\n");
 			m_socket.reset();
 			
-			char strError[128];
-			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+			//char strError[128];
+			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 			//g_dialog.SetCaption(0,"GET returned empty document");
 			//g_dialog.SetMessage(0,m_strHostName.c_str());
 			//g_dialog.SetMessage(1,strError);
@@ -237,8 +224,8 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 			//printf("failed to allocate space\n");
 			m_socket.reset();
 				
-			char strError[128];
-			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+			//char strError[128];
+			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 			//g_dialog.SetCaption(0,"out of memory");
 			//g_dialog.SetMessage(0,m_strHostName.c_str());
 			//g_dialog.SetMessage(1,strError);
@@ -257,13 +244,13 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 			{
 				if (bGotLength)
 				{
-					OutputDebugString("Failed to read body\n");
+					//OutputDebugString("Failed to read body\n");
 					//printf("failed to read body\n");
 					delete [] pBuffer;
 					m_socket.reset();
 					
-					char strError[128];
-					sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+					//char strError[128];
+					//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 					//g_dialog.SetCaption(0,"recv() failed");
 					//g_dialog.SetMessage(0,m_strHostName.c_str());
 					//g_dialog.SetMessage(1,strError);
@@ -297,9 +284,9 @@ bool CHTTP::Connect()
 	service.sin_family = AF_INET;
 
 
-	OutputDebugString("Connect:");
-	OutputDebugString(m_strHostName.c_str());
-	OutputDebugString("\n");
+	//OutputDebugString("Connect:");
+	//OutputDebugString(m_strHostName.c_str());
+	//OutputDebugString("\n");
 
 	if (m_strProxyServer.size())
 	{
@@ -344,8 +331,8 @@ bool CHTTP::Connect()
 	// attempt to connection
 	if (connect((SOCKET)m_socket,(sockaddr*) &service,sizeof(struct sockaddr)) == SOCKET_ERROR)
 	{
-		char strError[128];
-		sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+		//char strError[128];
+		//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 		//g_dialog.SetCaption(0,"Unable to connect");
 		//g_dialog.SetMessage(0,m_strHostName.c_str());
 		//g_dialog.SetMessage(1,strError);
@@ -496,21 +483,16 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 	string strFile="";
 	m_strHostName="";
 	DeleteFile(strFileName.c_str());	
-	OutputDebugString("Download:");
-	OutputDebugString(strURL.c_str());
-	
-	OutputDebugString("\nto:");
-	OutputDebugString(strFileName.c_str());
-	OutputDebugString("\n:");
+  CLog::Log("Download:%s->%s",strURL.c_str(),strFileName.c_str());
 	if (!BreakURL(strURL, m_strHostName, m_iPort, strFile))
 	{
-		OutputDebugString("invalid url\n");
+    CLog::Log("invalid url:%s",strURL.c_str());
 		return false;
 	}	
 
 	if ( !Connect() ) 
 	{
-		OutputDebugString("unable to connect\n");
+    CLog::Log("unable to connect:%s",m_strHostName.c_str());
 		return false;
 	}
 	// send request...
@@ -535,8 +517,8 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 	//printf("send %s", szGet);
 	if ( !Send((unsigned char*)szGet,strlen(szGet) ) )
 	{
-		char strError[128];
-		sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+		//char strError[128];
+		//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 		//g_dialog.SetCaption(0,"Send failed");
 		//g_dialog.SetMessage(0,m_strHostName.c_str());
 		//g_dialog.SetMessage(1,strError);
@@ -553,8 +535,8 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 		long lenRead=recv((SOCKET)m_socket,(char*)&pszBuffer[lReadTotal],5000-lReadTotal,0);
 		if (lenRead <=0)
 		{
-			char strError[128];
-			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+			//char strError[128];
+			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 			//g_dialog.SetCaption(0,"receive failed");
 			//g_dialog.SetMessage(0,m_strHostName.c_str());
 			//g_dialog.SetMessage(1,strError);
@@ -605,8 +587,8 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 		pszBuffer[lReadTotal]=0;
 		//printf("%s",pszBuffer);
 		m_socket.reset();
-		char strError[128];
-		sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+		//char strError[128];
+		//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 		//g_dialog.SetCaption(0,"GET didn't return 200");
 		//g_dialog.SetMessage(0,m_strHostName.c_str());
 		//g_dialog.SetMessage(1,strError);
@@ -642,8 +624,8 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 		char* pBody=strstr(pszBuffer,"\r\n\r\n");
 		if (!pBody)
 		{
-			char strError[128];
-			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+			//char strError[128];
+			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 			//g_dialog.SetCaption(0,"empty document");
 			//g_dialog.SetMessage(0,m_strHostName.c_str());
 			//g_dialog.SetMessage(1,strError);
@@ -658,10 +640,10 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 		unsigned char *pBuffer= new unsigned char[dwLength+2];
 		if (!pBuffer)
 		{
-			OutputDebugString("failed to allocate space\n");
+			//OutputDebugString("failed to allocate space\n");
 			m_socket.reset();
-			char strError[128];
-			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+			//char strError[128];
+			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 			//g_dialog.SetCaption(0,"Out of memory");
 			//g_dialog.SetMessage(0,m_strHostName.c_str());
 			//g_dialog.SetMessage(1,strError);
@@ -680,8 +662,8 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 			{
 				if (bGotLength)
 				{
-					char strError[128];
-					sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+					//char strError[128];
+					//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 					//g_dialog.SetCaption(0,"Recv failed");
 					//g_dialog.SetMessage(0,m_strHostName.c_str());
 					//g_dialog.SetMessage(1,strError);
@@ -703,8 +685,8 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 		FILE* fd = fopen(strFileName.c_str(),"wb");
 		if (fd==NULL)
 		{
-			char strError[128];
-			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+			//char strError[128];
+			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 			//g_dialog.SetCaption(0,"failed to create file");
 			//g_dialog.SetMessage(0,m_strHostName.c_str());
 			//g_dialog.SetMessage(1,strError);
@@ -748,15 +730,13 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 	m_strHostName="";
 	if (!BreakURL(strURL, m_strHostName, m_iPort, strFile))
 	{
-//		printf("invalid url\n");
-		OutputDebugString("Invalid url.\n");
+    CLog::Log("Invalid url:%s",strURL.c_str());
 		return false;
 	}	
 
 	if ( !Connect() ) 
 	{
-		//printf("unable to connect\n");
-		OutputDebugString("Unable to connect.\n");
+    CLog::Log("Unable to connect to:%s",m_strHostName.c_str());
 		return false;
 	}
 	// send request...
@@ -796,8 +776,8 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 	{
 		//printf("send failed\n");
 		
-		char strError[128];
-		sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+		//char strError[128];
+		//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 		//g_dialog.SetCaption(0,"Send failed");
 		//g_dialog.SetMessage(0,m_strHostName.c_str());
 		//g_dialog.SetMessage(1,strError);
@@ -816,8 +796,8 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 		if (lenRead <=0)
 		{
 			//printf("receive failed\n");
-			char strError[128];			
-			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+			//char strError[128];			
+			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 			//g_dialog.SetCaption(0,"Recv failed");
 			//g_dialog.SetMessage(0,m_strHostName.c_str());
 			//g_dialog.SetMessage(1,strError);
@@ -884,9 +864,9 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 		//printf("%s",pszBuffer);
 		m_socket.reset();
 		
-		pszBuffer[40]=0;
-		char strError[128];
-		sprintf(strError,"error:%i %i size:%i", GetLastError(), WSAGetLastError(),lReadTotal);
+		//pszBuffer[40]=0;
+		//char strError[128];
+		//sprintf(strError,"error:%i %i size:%i", GetLastError(), WSAGetLastError(),lReadTotal);
 		//g_dialog.SetCaption(0,"GET didnt return 200");
 		//g_dialog.SetMessage(0,pszBuffer);
 		//g_dialog.SetMessage(1,strError);
@@ -924,11 +904,11 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 		if (!pBody)
 		{
 			//printf("website returned empty document\n");
-			OutputDebugString("Website returned empty document\n");
+      CLog::Log("Website returned empty document\n");
 			m_socket.reset();
 			
-			char strError[128];
-			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+			//char strError[128];
+			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 			//g_dialog.SetCaption(0,"GET returned empty document");
 			//g_dialog.SetMessage(0,m_strHostName.c_str());
 			//g_dialog.SetMessage(1,strError);
@@ -944,8 +924,8 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 			//printf("failed to allocate space\n");
 			m_socket.reset();
 				
-			char strError[128];
-			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+			//char strError[128];
+			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 			//g_dialog.SetCaption(0,"out of memory");
 			//g_dialog.SetMessage(0,m_strHostName.c_str());
 			//g_dialog.SetMessage(1,strError);
@@ -964,14 +944,14 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 			{
 				if (bGotLength)
 				{
-					OutputDebugString("Failed to read body\n");
+					//OutputDebugString("Failed to read body\n");
 					//printf("failed to read body\n");
 					delete [] pBuffer;
 					delete [] pszBuffer;
 					m_socket.reset();
 					
-					char strError[128];
-					sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+					//char strError[128];
+					//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 					//g_dialog.SetCaption(0,"recv() failed");
 					//g_dialog.SetMessage(0,m_strHostName.c_str());
 					//g_dialog.SetMessage(1,strError);
@@ -1004,14 +984,14 @@ bool CHTTP::Open(const string& strURL)
 	m_strHostName="";
 	if (!BreakURL(strURL, m_strHostName, m_iPort, strFile))
 	{
-		OutputDebugString("Invalid url.\n");
+    CLog::Log("Invalid url:%s\n",strURL.c_str());
 		return false;
 	}	
 
 	if ( !Connect() ) 
 	{
 		//printf("unable to connect\n");
-		OutputDebugString("Unable to connect.\n");
+    CLog::Log("Unable to connect to:%s\n",m_strHostName.c_str());
 		return false;
 	}
 	// send request...
@@ -1044,8 +1024,8 @@ bool CHTTP::Open(const string& strURL)
 	{
 		//printf("send failed\n");
 		
-		char strError[128];
-		sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+		//char strError[128];
+		//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 		//g_dialog.SetCaption(0,"Send failed");
 		//g_dialog.SetMessage(0,m_strHostName.c_str());
 		//g_dialog.SetMessage(1,strError);
@@ -1063,8 +1043,8 @@ bool CHTTP::Open(const string& strURL)
 		if (lenRead <=0)
 		{
 			//printf("receive failed\n");
-			char strError[128];			
-			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
+			//char strError[128];			
+			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 			//g_dialog.SetCaption(0,"Recv failed");
 			//g_dialog.SetMessage(0,m_strHostName.c_str());
 			//g_dialog.SetMessage(1,strError);
