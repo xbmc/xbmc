@@ -1206,6 +1206,12 @@ void CUtil::GetAlbumThumb(const CStdString& strAlbumName, const CStdString& strF
 bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 {
   // check if thumbnail already exists
+	if (CUtil::IsDVD(strFilePath) && !CDetectDVDMedia::IsDiscInDrive() )
+	{
+	  strIcon="defaultDVDEmpty.png";
+      return true;
+	}
+
 
 	if (CUtil::IsDVD(strFilePath) || g_guiSettings.GetBool("MyPrograms.CacheProgramThumbs") )		// create CRC for DVD as we can't store default.tbn on DVD
 	{
