@@ -32,5 +32,5 @@ protected:
 	bool			m_bModal;
 
 private:
-	bool            m_bPrevOverlayAllowed;
+	int       m_iPrevOverlayAllowed;
 };
