@@ -186,10 +186,11 @@
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="0"/>
+				DebugInformationFormat="2"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -197,7 +198,7 @@
 				AdditionalDependencies="xapilib.lib d3dx8.lib d3d8.lib xgraphics.lib dsound.lib xboxkrnl.lib xonline.lib "
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
-				GenerateDebugInformation="FALSE"
+				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
 				OptimizeReferences="2"

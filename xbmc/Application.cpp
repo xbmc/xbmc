@@ -61,6 +61,7 @@ HRESULT CApplication::Create()
   helper.Remap("C:,Harddisk0\\Partition2");
   helper.Remap("E:,Harddisk0\\Partition1");
   helper.Remap("F:,Harddisk0\\Partition6");
+  helper.Remount("D:","Cdrom0");
 	
 	{
 		CHAR szDevicePath[1024];
@@ -176,8 +177,6 @@ HRESULT CApplication::Initialize()
 	CreateDirectory((strDir+"\\thumbs").c_str(),NULL); // contains the album thumbs
 	CreateDirectory((strDir+"\\cddb").c_str(),NULL);
 
-	//	Start Thread for DVD Mediatype detection
-	m_DetectDVDType.Create( true );
 
   // initialize network
   
@@ -221,7 +220,10 @@ HRESULT CApplication::Initialize()
 	m_guiWindowVideoOverlay.AllocResources();
 	m_guiWindowFullScreen.AllocResources();
 	CUtil::RemoveTempFiles();
-  return S_OK;
+	//	Start Thread for DVD Mediatype detection
+	m_DetectDVDType.Create( true );
+
+	return S_OK;
 }
 
 void CApplication::LoadSkin(const CStdString& strSkin)
