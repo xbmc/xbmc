@@ -147,7 +147,8 @@ void CMusicDatabase::AddSong(const CSong& song1)
 	RemoveInvalidChars(song.strTitle);
 
 	CStdString strPath, strFileName;
-	Split(song.strFileName, strPath, strFileName);
+	Split(song.strFileName, strPath, strFileName); 
+
 	if (NULL==m_pDB.get()) return ;
 	if (NULL==m_pDS.get()) return ;
 	long lGenreId  = AddGenre(song1.strGenre);
@@ -293,7 +294,7 @@ long CMusicDatabase::AddArtist(const CStdString& strArtist1)
 long CMusicDatabase::AddPath(const CStdString& strPath1)
 {
 	CStdString strPath=strPath1;
-	RemoveInvalidChars(strPath);
+	//if (bRemoveChars) RemoveInvalidChars(strPath);
 
 	if (NULL==m_pDB.get()) return -1;
 	if (NULL==m_pDS.get()) return -1;
