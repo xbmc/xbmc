@@ -132,10 +132,10 @@ void CApplicationMessenger::ProcessWindowMessages()
 
 				case TMSG_WRITE_SCRIPT_OUTPUT:
 				{
-					//send message to window 20 (CGUIWindowScripts)
-					CGUIMessage msg(GUI_MSG_USER, 20, 0,0,0, NULL);
+					//send message to window 2004 (CGUIWindowScriptsInfo)
+					CGUIMessage msg(GUI_MSG_USER, 0, 0);
 					msg.SetLabel(pMsg->strParam);
-					g_graphicsContext.SendMessage(msg);
+					m_gWindowManager.GetWindow(2004)->OnMessage(msg);
 				}
 				break;
 			}

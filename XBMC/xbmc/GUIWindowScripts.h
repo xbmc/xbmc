@@ -22,6 +22,7 @@ protected:
 	void							GoParentFolder();
   void							OnClick(int iItem);
   void							OnSort();
+	void							OnInfo();
   void							UpdateButtons();
   void							Clear();
 	void							Update(const CStdString &strDirectory);
@@ -36,6 +37,5 @@ protected:
 	bool								m_bDVDDiscEjected;
 	bool								m_bViewOutput;
 	int									scriptSize;
-	CStdStringW					m_strWScriptsOutput;
 	VECSHARES shares;
 };

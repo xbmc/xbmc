@@ -81,23 +81,26 @@ void XBPython::Finalize()
 
 void XBPython::FreeResources()
 {
-	PyList::iterator it = vecPyList.begin();
-	while (it != vecPyList.end())
-	{
-		it->pyThread->stop();
-		++it;
-	}
-	Process();
-
 	if(bInitialized)
 	{
+		g_sectionLoader.Load("PYTHON");
+		PyList::iterator it = vecPyList.begin();
+		while (it != vecPyList.end())
+		{
+			it->pyThread->stop();
+			++it;
+		}
+		Process();
+
 		// shut down the interpreter
 		PyEval_AcquireLock();
 		PyThreadState_Swap(mainThreadState);
 		Py_Finalize();
 		// free_arenas();
+
+		g_sectionLoader.Unload("PYTHON");
+		g_sectionLoader.Unload("PY_RW");
 	}
-	g_sectionLoader.Load("PY_RW");
 	DeleteCriticalSection(&m_critSection);
 }
 

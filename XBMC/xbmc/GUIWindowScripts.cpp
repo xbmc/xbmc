@@ -19,9 +19,7 @@
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNSORTBY					3
 #define CONTROL_BTNSORTASC				4
-#define CONTROL_BTNTOGGLEOUTPUT		5
 
-#define CONTROL_TEXTAREA					9
 #define CONTROL_LIST							10
 #define CONTROL_THUMBS						11
 #define CONTROL_LABELFILES        12
@@ -123,11 +121,16 @@ void CGUIWindowScripts::OnAction(const CAction &action)
 		return;
 	}
 
-    if (action.wID == ACTION_PARENT_MENU)
-    {
+  if (action.wID == ACTION_PARENT_MENU)
+  {
 		m_gWindowManager.ActivateWindow(WINDOW_HOME); // back 2 home
 		return;
-    }
+  }
+
+	if (action.wID == ACTION_SHOW_INFO) 
+	{
+		OnInfo();
+	}
 	CGUIWindow::OnAction(action);
 }
 
@@ -201,11 +204,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
         UpdateButtons();
         OnSort();
       }
-      else if (iControl==CONTROL_BTNTOGGLEOUTPUT) // switch to script output area
-      {
-				m_bViewOutput = !m_bViewOutput;
-        UpdateButtons();
-      }
+
       else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
       {
          // get selected item
@@ -220,20 +219,12 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
       }
     }
 		break;
-
-		case GUI_MSG_USER:
-		{
-			m_strWScriptsOutput += message.GetLabel();
-			SET_CONTROL_LABEL(GetID(), CONTROL_TEXTAREA, m_strWScriptsOutput);
-		}
-		break;
 	}
   return CGUIWindow::OnMessage(message);
 }
 
 void CGUIWindowScripts::UpdateButtons()
 {
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_TEXTAREA);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 	bool bViewIcon = false;
@@ -243,11 +234,7 @@ void CGUIWindowScripts::UpdateButtons()
 	else {
 		bViewIcon = g_stSettings.m_bScriptsViewAsIcons;
 	}
-	if (m_bViewOutput)
-	{
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_TEXTAREA);
-	}
-	else if (bViewIcon) 
+	if (bViewIcon) 
   {
     SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
   }
@@ -263,7 +250,6 @@ void CGUIWindowScripts::UpdateButtons()
   }
 	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
 	SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_bScriptsSortMethod+103);
-	SET_CONTROL_LABEL(GetID(), CONTROL_BTNTOGGLEOUTPUT,!m_bViewOutput ? 254 : 255);
 
   if ( g_stSettings.m_bScriptsSortAscending)
   {
@@ -429,10 +415,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 	else
 		bViewAsIcon = g_stSettings.m_bScriptsViewAsIcons;
 
-	if (m_bViewOutput) {
-		SET_CONTROL_FOCUS(GetID(), CONTROL_TEXTAREA);
-	}
-	else if ( bViewAsIcon ) {	
+	if ( bViewAsIcon ) {	
 		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);
 	}
 	else {
@@ -550,6 +533,12 @@ bool CGUIWindowScripts::HaveDiscOrConnection( CStdString& strPath, int iDriveTyp
   return true;
 }
 
+void CGUIWindowScripts::OnInfo()
+{
+	CGUIWindowScriptsInfo* pDlgInfo= (CGUIWindowScriptsInfo*)m_gWindowManager.GetWindow(2004);
+	pDlgInfo->DoModal(GetID());
+}
+
 void CGUIWindowScripts::Render()
 {
 	//	Process GUI_MSG_DVDDRIVE_EJECTED_CD message, if we have shares
@@ -590,6 +579,7 @@ void CGUIWindowScripts::Render()
 	}
 	CGUIWindow::Render();
 }
+
 void CGUIWindowScripts::GoParentFolder()
 {
  	if (!m_vecItems.size()) return;
