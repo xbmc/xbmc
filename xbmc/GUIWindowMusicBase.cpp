@@ -250,6 +250,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
 		case GUI_MSG_WINDOW_INIT:
 		{
+      int iLastControl=m_iLastControl;
 			CGUIWindow::OnMessage(message);
 
 			CSectionLoader::Load("LIBID3");
@@ -262,12 +263,16 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
 			m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
 
-			if (m_iLastControl>-1)
-			{
-				SET_CONTROL_FOCUS(m_iLastControl, 0);
-			}
-
 			Update(m_Directory.m_strPath);
+
+			if (iLastControl>-1)
+      {
+				SET_CONTROL_FOCUS(iLastControl, 0);
+      }
+      else
+      {
+        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
+      }
 
 			if (m_nSelectedItem>-1)
 			{
