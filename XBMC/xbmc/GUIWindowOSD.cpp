@@ -442,19 +442,16 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 				if (m_bSubMenuOn)						// is sub menu on?
 				{
 					// set the controls values
-					float fBrightNess=(float)g_settings.m_iBrightness;
-					float fContrast=(float)g_settings.m_iContrast;
-					float fGamma=(float)g_settings.m_iGamma;
 					SetSliderValue(0.0f, 100.0f, (float) g_application.m_pPlayer->GetPercentage(), OSD_VIDEOPOS);
-					SetSliderValue(0.5f, 2.0f, g_stSettings.m_fCustomZoomAmount, OSD_ZOOM, 0.01f);
-					SetSliderValue(0.5f, 2.0f, g_stSettings.m_fCustomPixelRatio, OSD_PIXELRATIO, 0.01f);
-   					SetSliderValue(0.0f, 100.0f, (float) fBrightNess, OSD_BRIGHTNESS);
-					SetSliderValue(0.0f, 100.0f, (float) fContrast, OSD_CONTRAST);
-					SetSliderValue(0.0f, 100.0f, (float) fGamma, OSD_GAMMA);
+					SetSliderValue(0.5f, 2.0f, g_stSettings.m_currentVideoSettings.m_CustomZoomAmount, OSD_ZOOM, 0.01f);
+					SetSliderValue(0.5f, 2.0f, g_stSettings.m_currentVideoSettings.m_CustomPixelRatio, OSD_PIXELRATIO, 0.01f);
+   				SetSliderValue(0.0f, 100.0f, (float) g_stSettings.m_currentVideoSettings.m_Brightness, OSD_BRIGHTNESS);
+					SetSliderValue(0.0f, 100.0f, (float) g_stSettings.m_currentVideoSettings.m_Contrast, OSD_CONTRAST);
+					SetSliderValue(0.0f, 100.0f, (float) g_stSettings.m_currentVideoSettings.m_Gamma, OSD_GAMMA);
 
-					SetCheckmarkValue(g_stSettings.m_bNonInterleaved, OSD_NONINTERLEAVED);
-					SetCheckmarkValue(g_stSettings.m_bNoCache, OSD_NOCACHE);
-					SetCheckmarkValue(g_guiSettings.GetBool("MyVideos.FrameRateConversions"), OSD_ADJFRAMERATE);
+					SetCheckmarkValue(g_stSettings.m_currentVideoSettings.m_NonInterleaved, OSD_NONINTERLEAVED);
+					SetCheckmarkValue(g_stSettings.m_currentVideoSettings.m_NoCache, OSD_NOCACHE);
+					SetCheckmarkValue(g_stSettings.m_currentVideoSettings.m_AdjustFrameRate, OSD_ADJFRAMERATE);
 
 					// show the controls on this sub menu
 					SET_CONTROL_VISIBLE(OSD_VIDEOPOS);
@@ -762,7 +759,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
 			if (pControl)
 			{
-				g_stSettings.m_fCustomZoomAmount = (float)pControl->GetFloatValue();
+				g_stSettings.m_currentVideoSettings.m_CustomZoomAmount = (float)pControl->GetFloatValue();
 				g_application.m_guiWindowFullScreen.SetViewMode(VIEW_MODE_CUSTOM);
 			}
 		}
@@ -772,7 +769,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
 			if (pControl)
 			{
-				g_stSettings.m_fCustomPixelRatio = (float)pControl->GetFloatValue();
+				g_stSettings.m_currentVideoSettings.m_CustomPixelRatio = (float)pControl->GetFloatValue();
 				g_application.m_guiWindowFullScreen.SetViewMode(VIEW_MODE_CUSTOM);
 			}
 		}
@@ -783,8 +780,8 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			if (pControl)
 			{
 				// Set mplayer's brightness setting position to the percentage requested by the user
-				g_settings.m_iBrightness=pControl->GetIntValue();
-				CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
+				g_stSettings.m_currentVideoSettings.m_Brightness=pControl->GetIntValue();
+				CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, true);
 			}
 		}
 		break;
@@ -794,8 +791,8 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			if (pControl)
 			{
 				// Set mplayer's contrast setting to the percentage requested by the user
-				g_settings.m_iContrast=pControl->GetIntValue();
-				CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
+				g_stSettings.m_currentVideoSettings.m_Contrast=pControl->GetIntValue();
+				CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, true);
 			}
 		}
 		break;
@@ -805,8 +802,8 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			if (pControl)
 			{
 				// Set mplayer's gamma setting to the percentage requested by the user
-				g_settings.m_iGamma=pControl->GetIntValue();
-				CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
+				g_stSettings.m_currentVideoSettings.m_Gamma=pControl->GetIntValue();
+				CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, true);
 			}
 		}
 		break;
@@ -822,11 +819,11 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 					if (pList->GetNumItems() == 3)
 					{	// we're in the case we want - call the code to switch channels etc.
 						// update the screen setting...
-						g_stSettings.m_iAudioStream = pList->GetSelectedItem();
+						g_stSettings.m_currentVideoSettings.m_AudioStream = pList->GetSelectedItem();
 						PopulateAudioStreams();
 						// call monkeyh1's code here...
 						bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("AudioOutput.Mode")==AUDIO_DIGITAL) && g_guiSettings.GetBool("Audio.OutputToAllSpeakers");
-						xbox_audio_switch_channel(g_stSettings.m_iAudioStream, bAudioOnAllSpeakers);
+						xbox_audio_switch_channel(g_stSettings.m_currentVideoSettings.m_AudioStream, bAudioOnAllSpeakers);
 						break;
 					}
 				}
@@ -851,6 +848,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			if (pControl)
 			{
 				// Set the AV Delay
+				g_stSettings.m_currentVideoSettings.m_AudioDelay = pControl->GetFloatValue(); 
 				g_application.m_pPlayer->SetAVDelay(pControl->GetFloatValue());
 			}
 		}
@@ -858,7 +856,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 
 		case OSD_NONINTERLEAVED:
 		{
-			g_stSettings.m_bNonInterleaved=!g_stSettings.m_bNonInterleaved;
+			g_stSettings.m_currentVideoSettings.m_NonInterleaved=!g_stSettings.m_currentVideoSettings.m_NonInterleaved;
 			m_bSubMenuOn = false;										// hide the sub menu
 			OutputDebugString("OSD:RESTART2\n");
 			g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
@@ -868,7 +866,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 
 		case OSD_NOCACHE:
 		{
-			g_stSettings.m_bNoCache=!g_stSettings.m_bNoCache;
+			g_stSettings.m_currentVideoSettings.m_NoCache=!g_stSettings.m_currentVideoSettings.m_NoCache;
 			m_bSubMenuOn = false;										// hide the sub menu
 			OutputDebugString("OSD:RESTART3\n");
 			g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
@@ -878,11 +876,12 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 
 		case OSD_ADJFRAMERATE:
 		{
-			g_guiSettings.ToggleBool("MyVideos.FrameRateConversions");
+			//g_guiSettings.ToggleBool("MyVideos.FrameRateConversions");
+			g_stSettings.m_currentVideoSettings.m_AdjustFrameRate = !g_stSettings.m_currentVideoSettings.m_AdjustFrameRate;
 			m_bSubMenuOn = false;										// hide the sub menu
 			OutputDebugString("OSD:RESTART4\n");
 			g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
-		    g_application.Restart(true);								// restart to make the new setting active
+		  g_application.Restart(true);								// restart to make the new setting active
 		}
 		break;
 
@@ -932,6 +931,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			if (pControl)
 			{
 				// Set the subtitle delay
+				g_stSettings.m_currentVideoSettings.m_SubtitleDelay = pControl->GetFloatValue();
 				g_application.m_pPlayer->SetSubTitleDelay(pControl->GetFloatValue());
 			}
 		}
@@ -1032,14 +1032,14 @@ void CGUIWindowOSD::PopulateAudioStreams()
 		bool bAC3 = strstr(strAudioCodec.c_str(),"AC3")!=0;
 		if (iNumChannels == 2 && !(bDTS || bAC3))
 		{	// ok, enable these options
-			if (g_stSettings.m_iAudioStream == -1)
+			if (g_stSettings.m_currentVideoSettings.m_AudioStream == -1)
 			{	// default to stereo stream
-				g_stSettings.m_iAudioStream = 0;
+				g_stSettings.m_currentVideoSettings.m_AudioStream = 0;
 			}
 			for (int i=0; i<3; i++)
 			{
 				CStdString strLabel = g_localizeStrings.Get(13320+i);
-				if (i == g_stSettings.m_iAudioStream)
+				if (i == g_stSettings.m_currentVideoSettings.m_AudioStream)
 					strLabel += " " + strActiveLabel;
 
 				CGUIListItem* pItem = new CGUIListItem();
@@ -1048,7 +1048,7 @@ void CGUIWindowOSD::PopulateAudioStreams()
 				OnMessage(msg);
 			}
 			// set the current active audio stream as the selected item in the list control
-			CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_AUDIOSTREAM_LIST,g_stSettings.m_iAudioStream,0,NULL);
+			CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_AUDIOSTREAM_LIST,g_stSettings.m_currentVideoSettings.m_AudioStream,0,NULL);
 			OnMessage(msgSet);
 			return;
 		}
@@ -1078,7 +1078,7 @@ void CGUIWindowOSD::PopulateAudioStreams()
 	}
 
 	// set the current active audio stream as the selected item in the list control
-	CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_AUDIOSTREAM_LIST,g_stSettings.m_iAudioStream,0,NULL);
+	CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_AUDIOSTREAM_LIST,g_stSettings.m_currentVideoSettings.m_AudioStream,0,NULL);
 	OnMessage(msgSet);
 }
 

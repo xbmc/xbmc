@@ -9,6 +9,7 @@
 #include "StringUtils.h"
 #include "GraphicContext.h"
 #include "Profile.h"
+#include "settings/VideoSettings.h"
 #include <vector>
 using namespace std;
 
@@ -329,20 +330,15 @@ public:
 		int				m_iMyMusicTop100ViewAsIcons;
 		int				m_iMyMusicStartWindow;
 
-		bool      m_bNonInterleaved;
-		bool      m_bNoCache;
 		int       m_iSmallStepBackSeconds;
 		int       m_iSmallStepBackTries;
 		int       m_iSmallStepBackDelay;
 
-		int				m_iViewMode;			// current view mode
+		CVideoSettings	m_defaultVideoSettings;
+		CVideoSettings	m_currentVideoSettings;
+
 		float			m_fZoomAmount;			// current zoom amount
 		float			m_fPixelRatio;			// current pixel ratio
-		float			m_fCustomZoomAmount;	// custom setting zoom amount
-		float			m_fCustomPixelRatio;	// custom setting pixel ratio
-
-		int       m_iAudioStream;
-		int       m_iSubtitleStream;
 
 		int				m_iMyVideoGenreViewAsIcons;
 		int				m_iMyVideoGenreRootViewAsIcons;
@@ -372,7 +368,7 @@ public:
 
 		int       m_iMyVideoPlaylistViewAsIcons;
 		bool			m_bMyVideoPlaylistRepeat;
-        bool            m_bMyVideoPlaylistShuffle;
+    bool			m_bMyVideoPlaylistShuffle;
 
 		int       m_iVideoStartWindow;
 
@@ -432,12 +428,9 @@ public:
 	VECSHARES					m_vecMyMusicShares;
 	VECSHARES					m_vecMyVideoShares;
 	VECFILETYPEICONS	m_vecIcons;
-  VECPROFILES       m_vecProfiles;
-  int               m_iLastLoadedProfileIndex;
-	RESOLUTION_INFO			m_ResInfo[10];
-	int               m_iBrightness;
-	int               m_iContrast;
-	int               m_iGamma;
+	VECPROFILES       m_vecProfiles;
+	int               m_iLastLoadedProfileIndex;
+	RESOLUTION_INFO		m_ResInfo[10];
 	CButtonScrollerSettings m_buttonSettings;
 protected:
 	void GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue);

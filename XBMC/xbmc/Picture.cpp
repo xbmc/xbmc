@@ -153,6 +153,8 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int &iOriginalW
 	CxImage *pImage = LoadImage(strFileName, iOriginalWidth, iOriginalHeight, iMaxWidth, iMaxHeight);
 	if (!pImage) return NULL;
 
+	m_ExifOrientation = pImage->GetExifOrientation();
+
 	IDirect3DTexture8* pTexture = GetTexture(*pImage);
 	if (bCreateThumb)
 	{
