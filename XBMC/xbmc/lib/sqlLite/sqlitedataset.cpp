@@ -1,9 +1,9 @@
 /**********************************************************************
- * Copyright (c) 2002, Leo Seib, Hannover
+ * Copyright (c) 2004, Leo Seib, Hannover
  *
  * Project:SQLiteDataset C++ Dynamic Library
  * Module: SQLiteDataset class realisation file
- * Author: Leo Seib      E-Mail: lev@almaty.pointstrike.net
+ * Author: Leo Seib      E-Mail: leoseib@web.de 
  * Begin: 5/04/2002
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,25 +28,24 @@
 
 
 #include "stdafx.h"
-#include <stdio.h>
-#include <ctype.h>
-#include <stdarg.h>
-#include <time.h>
-//#include <iostream.h>
-#include <string.h>
+#include <iostream>
+#include <string>
+
 #include "sqlitedataset.h"
+#include "sqlite3.h"
 #include "../../utils/log.h"
+//#include <unistd.h>
 
-#pragma warning (disable:4018)
 
+namespace dbiplus {
 //************* Callback function ***************************
 
-static int callback(void* res_ptr,int ncol, char** reslt,char** cols){
+int callback(void* res_ptr,int ncol, char** reslt,char** cols){
 
-   result_set* r = (result_set*)res_ptr;//dynamic_cast<result_set*>(res_ptr); 
+   result_set* r = (result_set*)res_ptr;
    int sz = r->records.size();
  
-   //if (reslt == NULL ) cout << "EMPTY!!!\n";
+ 
    if (!r->record_header.size()) 
      for (int i=0; i < ncol; i++) {
       r->record_header[i].name = cols[i];
@@ -65,12 +64,10 @@ static int callback(void* res_ptr,int ncol, char** reslt,char** cols){
        else {
 	 v.set_asString(reslt[i]);
        }
-     rec[i] = v;//(long)5;//reslt[i];
+     rec[i] = v;
      }
    r->records[sz] = rec;
    }
-   //cout <<"Fsz:"<<r->record_header.size()<<"\n";
-   // cout << "Recs:"<<r->records.size() <<" val |" <<reslt<<"|"<<cols<<"|"<<"\n\n";
   return 0;  
  }
 
@@ -110,7 +107,7 @@ int SqliteDatabase::status(void) {
   return DB_CONNECTION_OK;
 }
 
-int SqliteDatabase::setErr(int err_code){
+int SqliteDatabase::setErr(int err_code, const char * qry){
   switch (err_code) {
   case SQLITE_OK: error ="Successful result";
     break;
@@ -150,12 +147,15 @@ int SqliteDatabase::setErr(int err_code){
     break;
   case SQLITE_TOOBIG: error = "Too much data for one row of a table";
     break;
-  case SQLITE_CONSTRAINT: error = "Abort due to contraint violation";
+  case SQLITE_CONSTRAINT: error = "Abort due to constraint violation";
     break;
   case SQLITE_MISMATCH:  error = "Data type mismatch";
     break;
   default : error = "Undefined SQLite error";
   }
+  error += "\nQuery: ";
+  error += qry;
+  error += "\n";
   return err_code;
 }
 
@@ -164,29 +164,26 @@ const char *SqliteDatabase::getErrorMsg() {
 }
 
 int SqliteDatabase::connect() {
-	try
-	{
-		disconnect();
-		if (sqlite3_open(db.c_str(),&conn) == SQLITE_OK) 
-		{
-			sqlite3_busy_handler(conn, busy_callback,NULL);
-			char* err=NULL;
-			if (setErr(sqlite3_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,&err)) != SQLITE_OK) 
-			{
-				CLog::Log(LOGERROR, "sqlite:unable to set callback on:%s", error.c_str());
-				throw DbErrors(getErrorMsg());
-			}
-			active = true;
-			return DB_CONNECTION_OK;
-		}
-		CLog::Log(LOGERROR, "unable to open database:%s (%i)", db.c_str(),GetLastError());
-		return DB_CONNECTION_NONE;
-	}
-	catch(...)
-	{
-		CLog::Log(LOGERROR, "unable to open database:%s (%i)", db.c_str(),GetLastError());
-	}
-	return DB_CONNECTION_NONE;
+  try {
+    disconnect();
+    if (sqlite3_open(db.c_str(),&conn/*,NULL*/)==SQLITE_OK) {
+      //cout << "Connected!\n";
+      sqlite3_busy_handler(conn, busy_callback,NULL);
+      char* err=NULL;
+      if (setErr(sqlite3_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,&err),"PRAGMA empty_result_callbacks=ON") != SQLITE_OK) {
+        throw DbErrors(getErrorMsg());
+      }
+      active = true;
+      return DB_CONNECTION_OK;
+    }
+    CLog::Log(LOGERROR, "unable to open database:%s (%i)", db.c_str(),GetLastError());
+    return DB_CONNECTION_NONE;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "unable to open database:%s (%i)", db.c_str(),GetLastError());
+  }
+  return DB_CONNECTION_NONE;
 };
 
 void SqliteDatabase::disconnect(void) {
@@ -200,21 +197,22 @@ int SqliteDatabase::create() {
 };
 
 int SqliteDatabase::drop() {
-  if (active == false) return DB_ERROR;
+  if (active == false) throw DbErrors("Can't drop database: no active connection...");
   disconnect();
-  if (!unlink(db.c_str())) 
-     return DB_ERROR;
+  if (!unlink(db.c_str())) {
+     throw DbErrors("Can't drop database: can't unlink the file %s,\nError: %s",db.c_str(),strerror(errno));
+     }
   return DB_COMMAND_OK;
 };
 
 
 long SqliteDatabase::nextid(const char* sname) {
   if (!active) return DB_UNEXPECTED_RESULT;
-  int id;//,nrow,ncol;
+  int id;/*,nrow,ncol;*/
   result_set res;
   char sqlcmd[512];
   sprintf(sqlcmd,"select nextid from %s where seq_name = '%s'",sequence_table.c_str(), sname);
-  if (last_err = sqlite3_exec(getHandle(),sqlcmd,callback,&res,NULL) != SQLITE_OK) {
+  if (last_err = sqlite3_exec(getHandle(),sqlcmd,&callback,&res,NULL) != SQLITE_OK) {
     return DB_UNEXPECTED_RESULT;
     }
   if (res.records.size() == 0) {
@@ -263,17 +261,26 @@ void SqliteDatabase::rollback_transaction() {
 SqliteDataset::SqliteDataset():Dataset() {
   haveError = false;
   db = NULL;
+  errmsg = NULL;
+  autorefresh = false;
 }
 
 
 SqliteDataset::SqliteDataset(SqliteDatabase *newDb):Dataset(newDb) {
   haveError = false;
   db = newDb;
+  errmsg = NULL;
+  autorefresh = false;
 }
 
  SqliteDataset::~SqliteDataset(){
-   if (errmsg) sqlite3_free_table(&errmsg);
+   if (errmsg) sqlite3_free(errmsg);
  }
+
+
+void SqliteDataset::set_autorefresh(bool val){
+    autorefresh = val;
+}
 
 
 
@@ -296,16 +303,12 @@ void SqliteDataset::make_query(StringList &_sql) {
 
   if (db == NULL) throw DbErrors("No Database Connection");
 
-  //close();
-
 
   for (list<string>::iterator i =_sql.begin(); i!=_sql.end(); i++) {
 	query = *i;
 	char* err=NULL; 
 	Dataset::parse_sql(query);
-	//cout << "Executing: "<<query<<"\n\n";
-	if (db->setErr(sqlite3_exec(this->handle(),query.c_str(),NULL,NULL,&err))!=SQLITE_OK) {
-//	  fprintf(stderr,"Error: %s",err);
+	if (db->setErr(sqlite3_exec(this->handle(),query.c_str(),NULL,NULL,&err),query.c_str())!=SQLITE_OK) {
 	  throw DbErrors(db->getErrorMsg());
 	}
   } // end of for
@@ -315,11 +318,13 @@ void SqliteDataset::make_query(StringList &_sql) {
 
   active = true;
   ds_state = dsSelect;		
-  refresh();
+  if (autorefresh)
+    refresh();
 
  } // end of try
  catch(...) {
   if (db->in_transaction()) db->rollback_transaction();
+  throw;
  }
 
 }
@@ -343,22 +348,22 @@ void SqliteDataset::make_deletion() {
 
 void SqliteDataset::fill_fields() {
   //cout <<"rr "<<result.records.size()<<"|" << frecno <<"\n";
-  if ((db == NULL) || (result.record_header.size() == 0) || (result.records.size() < frecno)) return;
+  if ((db == NULL) || (result.record_header.size() == 0) || (result.records.size() < (unsigned int)frecno)) return;
   if (fields_object->size() == 0) // Filling columns name
-    for (int i = 0; i < result.record_header.size(); i++) {
+    for (unsigned int i = 0; i < result.record_header.size(); i++) {
       (*fields_object)[i].props = result.record_header[i];
       (*edit_object)[i].props = result.record_header[i];
     }
 
   //Filling result
   if (result.records.size() != 0) {
-   for (int i = 0; i < result.records[frecno].size(); i++){
+   for (unsigned int i = 0; i < result.records[frecno].size(); i++){
     (*fields_object)[i].val = result.records[frecno][i];
     (*edit_object)[i].val = result.records[frecno][i];
    }
   }
   else
-   for (int i = 0; i < result.record_header.size(); i++){
+   for (unsigned int i = 0; i < result.record_header.size(); i++){
     (*fields_object)[i].val = "";
     (*edit_object)[i].val = "";
    }    
@@ -373,17 +378,13 @@ int SqliteDataset::exec(const string &sql) {
   int res;
   exec_res.record_header.clear();
   exec_res.records.clear();
-  //if ((strncmp("select",sql.c_str(),6) == 0) || (strncmp("SELECT",sql.c_str(),6) == 0)) 
-  if(res = db->setErr(sqlite3_exec(handle(),sql.c_str(),callback,&exec_res,&errmsg)) == SQLITE_OK)
+  if(res = db->setErr(sqlite3_exec(handle(),sql.c_str(),&callback,&exec_res,&errmsg),sql.c_str()) == SQLITE_OK)
     return res;
   else
     {
-//      fprintf(stderr,"Error: %s",errmsg);
       throw DbErrors(db->getErrorMsg());
     }
-  //    else
-  //return sqlite_exec(handle(),sql.c_str(),NULL,NULL,NULL);
-	}
+}
 
 int SqliteDataset::exec() {
 	return exec(sql);
@@ -395,32 +396,25 @@ const void* SqliteDataset::getExecRes() {
 
 
 bool SqliteDataset::query(const char *query) {
-
-  try{
     if (db == NULL) throw DbErrors("Database is not Defined");
     if(dynamic_cast<SqliteDatabase*>(db)->getHandle() == NULL) throw DbErrors("No Database Connection");
-  if (strncmp("select",query,6) != 0) throw DbErrors("MUST be select SQL!"); 
+    std::string qry = query;
+    int fs = qry.find("select");
+    int fS = qry.find("SELECT");
+    if (!( fs >= 0 || fS >=0))                                 
+         throw DbErrors("MUST be select SQL!"); 
 
   close();
 
-  //cout <<  "Curr size "<<num_rows()<<"\n\n";
-
-  if (  db->setErr(sqlite3_exec(handle(),query,callback,&result,&errmsg)) == SQLITE_OK) {
+  if (  db->setErr(sqlite3_exec(handle(),query,&callback,&result,&errmsg),query) == SQLITE_OK) {
         active = true;
 	ds_state = dsSelect;
-	//cout <<  "Curr size2 "<<num_rows()<<"\n";
 	this->first();
-	//cout <<  "Curr size3 "<<num_rows()<<"\n";
-	//cout <<  "Curr fcount "<<field_count()<<"\n\n";
 	return true;
       }
       else {
-//	fprintf(stderr,"Error: %s",errmsg);
           throw DbErrors(db->getErrorMsg());
-      }
-  
- } // end of try
- catch(...) { return false; }
+      }  
 }
 
 bool SqliteDataset::query(const string &q){
@@ -434,7 +428,6 @@ void SqliteDataset::open(const string &sql) {
 
 void SqliteDataset::open() {
   if (select_sql.size()) {
-    //cout <<select_sql <<"  open\n\n";
     query(select_sql.c_str()); 
   }
   else {
@@ -479,7 +472,6 @@ bool SqliteDataset::bof() {
 void SqliteDataset::first() {
   Dataset::first();
   this->fill_fields();
-  //cout << "In first "<< fields_object->size()<<"\n";
 }
 
 void SqliteDataset::last() {
@@ -498,6 +490,7 @@ void SqliteDataset::next(void) {
       fill_fields();
 }
 
+
 bool SqliteDataset::seek(int pos) {
   if (ds_state == dsSelect) {
     Dataset::seek(pos);
@@ -507,13 +500,14 @@ bool SqliteDataset::seek(int pos) {
   return false;
 }
 
+
+
 long SqliteDataset::nextid(const char *seq_name) {
   if (handle()) return db->nextid(seq_name);
   else return DB_UNEXPECTED_RESULT;
 }
 
-void SqliteDataset::interrupt()
-{
+void SqliteDataset::interrupt() {
   sqlite3_interrupt(handle());
 }
-
+}//namespace
