@@ -635,12 +635,12 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
 			if (pControl)
 			{
-				// no volume control yet so no code here at the moment
-        if (g_application.m_pPlayer)
-        {
-          int iPercentage=pControl->GetPercentage();
-          g_application.m_pPlayer->SetVolume(iPercentage);
-        }
+				// Set mplayers volume setting to the percentage requested
+				if (g_application.m_pPlayer)
+				{
+					int iPercentage=pControl->GetPercentage();
+					g_application.m_pPlayer->SetVolume(iPercentage);
+				}
 			}
 		}
 		break;
@@ -651,7 +651,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			if (pControl)
 			{
 				// Set mplayer's seek position to the percentage requested by the user
-				g_application.m_pPlayer->SeekPercentage(pControl->GetPercentage());
+				g_application.m_pPlayer->SeekPercentage(pControl->GetIntValue());
 			}
 		}
 		break;
@@ -660,9 +660,9 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
 			if (pControl)
 			{
-				// Set mplayer's seek position to the percentage requested by the user
-				g_settings.m_iBrightness=pControl->GetPercentage();
-		CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
+				// Set mplayer's brightness setting position to the percentage requested by the user
+				g_settings.m_iBrightness=pControl->GetIntValue();
+				CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
 			}
 		}
 		break;
@@ -671,8 +671,8 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
 			if (pControl)
 			{
-				// Set mplayer's seek position to the percentage requested by the user
-				g_settings.m_iContrast=pControl->GetPercentage();
+				// Set mplayer's contrast setting to the percentage requested by the user
+				g_settings.m_iContrast=pControl->GetIntValue();
 				CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
 			}
 		}
@@ -682,8 +682,8 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
 			if (pControl)
 			{
-				// Set mplayer's seek position to the percentage requested by the user
-				g_settings.m_iGamma=pControl->GetPercentage();
+				// Set mplayer's gamma setting to the percentage requested by the user
+				g_settings.m_iGamma=pControl->GetIntValue();
 				CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
 			}
 		}
