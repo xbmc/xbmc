@@ -911,15 +911,26 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 		CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
 		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 		CStdString strSkin = pControl->GetCurrentLabel();
-		if (strSkin != "CVS" && strSkin != g_guiSettings.GetString("LookAndFeel.Skin"))
+		CStdString strSkinPath = "Q:\\skin\\" + strSkin;
+		if (g_SkinInfo.Check(strSkinPath))
 		{
-			m_strNewSkin=strSkin;
-			g_application.DelayLoadSkin();
+			pControl->SetSpinTextColor(pControl->GetButtonTextColor());
+			if (strSkin != "CVS" && strSkin != g_guiSettings.GetString("LookAndFeel.Skin"))
+			{
+				m_strNewSkin=strSkin;
+				g_application.DelayLoadSkin();
+			}
+			else
+			{	//	Do not reload the skin we are already using
+				m_strNewSkin.Empty();
+				g_application.CancelDelayLoadSkin();
+			}
 		}
 		else
-		{	//	Do not reload the skin we are already using
+		{
 			m_strNewSkin.Empty();
 			g_application.CancelDelayLoadSkin();
+			pControl->SetSpinTextColor(pControl->GetDisabledColor());
 		}
 	}
 	else if (strSetting == "LookAndFeel.GUICentering")
@@ -1329,10 +1340,10 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
 			if (CUtil::cmpnocase(pItem->GetLabel().c_str(),"CVS")==0) continue;
 			if (CUtil::cmpnocase(pItem->GetLabel().c_str(),"fonts")==0) continue;
 			if (CUtil::cmpnocase(pItem->GetLabel().c_str(),"media")==0) continue;
-			if (g_SkinInfo.Check(pItem->m_strPath))
-			{
+//			if (g_SkinInfo.Check(pItem->m_strPath))
+//			{
 				vecSkins.push_back(pItem->GetLabel());
-			}
+//			}
 		}
 		delete pItem;
 	}

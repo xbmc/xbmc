@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-12-2004 added: Settings option for skin shows all skins, regardless of version.  Old version skins (which are incompatible with XBMC) are shown greyed out, and do not load when selected.
   - 16-12-2004 fixed: Karaoke background alpha
   - 16-12-2004 added: Context menu to My Music
   - 16-12-2004 fixed: Corrupt picture files could cause endless loops in slideshow/picture viewer
