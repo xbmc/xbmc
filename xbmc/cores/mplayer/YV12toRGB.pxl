@@ -10,7 +10,7 @@ def c2, 1,0,1,1
 ; y adjust
 def c3, 0.0625,0.0625,0.0625,0
 ; y co-efficient, halved
-def c4, 0.54255,0.54255,0.54255,0.5
+def c4, 0.58219,0.58219,0.58219,0.5
 
 ; texture read
 tex t0
