@@ -53,7 +53,7 @@ public:
      LPDIRECT3D8           m_pD3D;              // The D3D enumerator object
      LPDIRECT3DDEVICE8     m_pd3dDevice;        // The D3D rendering device
      LPDIRECT3DSURFACE8    m_pBackBuffer;       // The back buffer
-     LPDIRECT3DSURFACE8    m_pDepthBuffer;      // The depth buffer
+     //LPDIRECT3DSURFACE8    m_pDepthBuffer;      // The depth buffer
 
     // Variables for timing
     FLOAT      m_fTime;             // Current absolute time in seconds
