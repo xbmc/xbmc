@@ -1,18 +1,26 @@
 xps.1.1
 ; Set up u and v co-efficients, to be doubled before applying
-def c0, 0,0.172,0.885,0
-def c1, 0.7015,0.357,0,0
+def c0, 0      ,0.18664,0.96032,0
+def c1, 0.76120,0.38738,0      ,0
 ; setup sign multiplier value as constants can't be negative
 def c2, 1,0,1,1 
+; y co-efficient, halved
+def c3, 0.58219,0.58219,0.58219,0.5
+; y adjust
+def c4, 0.0625,0.0625,0.0625,0
 
 ; texture read
 tex t0
 tex t1
 tex t2
 
+; try to keep this to 4 or less ops!
+
 ; r0 = u*ufac, r1 = v*vfac; apply bias to u and v
 xmma_x2 r0,r1,discard, t1_bias,c0, t2_bias,c1
 ; r0 = r0 + r1, with green channel negate
 xmma discard,discard,r0, r0,c2_bx2, r1,c2_bx2
-; r0 = r0*ss + y*ss (alpha set from y, a = 1.0), ss = screensaver dim constant
-xmma discard,discard,r0, r0,c3, t0,c3
+; r1 = 2*(y-yadj)
+sub_x2 r1, t0,c4
+; r0 = r0 + (r1*yfac) (alpha set from y, a = 1.0)
+xmma discard,discard,r0, r0, 1-zero, r1,c3
