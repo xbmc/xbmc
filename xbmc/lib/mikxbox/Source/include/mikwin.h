@@ -85,6 +85,35 @@ SAMPLE* mikxboxGetSfx(SWORD voice);
 
 
 
+BOOL	mikwinInit(UWORD mixfreq, BOOL stereo, BOOL bits16, BOOL interpolation,BYTE reserveMusicChannels,BYTE reservedSfxChannels, BYTE soundDelay);
+void	mikwinExit(void);
+void	mikwinSetSoundDelay(BYTE soundDelay);
+
+void	mikwinSetErrno(int errno);
+int		mikwinGetErrno(void);
+void	mikwinSetMasterVolume(UBYTE vol);
+UBYTE	mikwinGetMasterVolume(void);
+void	mikwinSetMusicVolume(UBYTE vol);
+UBYTE	mikwinGetMusicVolume(void);
+void	mikwinSetSfxVolume(UBYTE vol);
+UBYTE	mikwinGetSfxVolume(void);
+void	mikwinSetMasterReverb(UBYTE rev);
+UBYTE	mikwinGetMasterReverb(void);
+void	mikwinSetPanning(UBYTE pan);
+UBYTE	mikwinGetPanning(void);
+void	mikwinSetMasterDevice(UWORD dev);
+UWORD	mikwinGetMasterDevice(void);
+void	mikwinSetMixFrequency(UWORD freq);
+UWORD	mikwinGetMixFrequency(void);
+void	mikwinSetMode(UWORD mode);
+UWORD	mikwinGetMode(void);
+
+SWORD mikwinPlaySfx(SAMPLE *pSample,ULONG flags,UWORD pan,UWORD vol,ULONG frequency);
+void mikwinStopSfx(SWORD voice);
+SAMPLE* mikwinGetSfx(SWORD voice);
+
+
+
 #ifdef __cplusplus
 }
 #endif

@@ -95,6 +95,48 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 		</Configuration>
+		<Configuration
+			Name="Debug_Log|Xbox"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="include/"
+				PreprocessorDefinitions="WIN32;_XBOX;_DEBUG;DRV_DS,XB_LOG"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				SmallerTypeCheck="FALSE"
+				RuntimeLibrary="1"
+				BufferSecurityCheck="TRUE"
+				EnableEnhancedInstructionSet="1"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Debug/MIKXBOX.pch"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".\Debug/"
+				ProgramDataBaseFileName=".\Debug/"
+				BrowseInformation="1"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="..\mikxboxd.lib"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -113,6 +155,14 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions=""
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_Log|Xbox">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -143,6 +193,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="drivers\drv_nos.c">
@@ -155,6 +213,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -179,6 +245,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="drivers\drv_win.c">
@@ -191,6 +265,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -222,6 +304,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="mmio\mmerror.c">
@@ -240,6 +330,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="mmio\mmio.c">
@@ -252,6 +350,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -280,6 +386,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="loaders\load_amf.c">
@@ -292,6 +406,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -316,6 +438,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="loaders\load_far.c">
@@ -328,6 +458,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -352,6 +490,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="loaders\load_imf.c">
@@ -364,6 +510,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -388,6 +542,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="loaders\load_m15.c">
@@ -400,6 +562,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -424,6 +594,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="loaders\load_mod.c">
@@ -436,6 +614,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -460,6 +646,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="loaders\load_okt.c">
@@ -472,6 +666,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -496,6 +698,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="loaders\load_stm.c">
@@ -508,6 +718,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -532,6 +750,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="loaders\load_ult.c">
@@ -544,6 +770,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -568,6 +802,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="loaders\load_xm.c">
@@ -580,6 +822,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -608,6 +858,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="playercode\mdriver.c">
@@ -620,6 +878,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -644,6 +910,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="playercode\mloader.c">
@@ -656,6 +930,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -680,6 +962,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="playercode\mlutil.c">
@@ -692,6 +982,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -716,6 +1014,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="playercode\munitrk.c">
@@ -728,6 +1034,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -752,6 +1066,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="playercode\npertab.c">
@@ -764,6 +1086,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -788,6 +1118,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="playercode\virtch.c">
@@ -800,6 +1138,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -824,6 +1170,14 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="playercode\virtch_common.c">
@@ -836,6 +1190,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Log|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"

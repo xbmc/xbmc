@@ -49,6 +49,13 @@ extern "C" {
 #pragma warning(disable:4761)
 #endif
 
+#ifdef XB_LOG
+void XB_Log(const char* fmt, ...);
+#else
+#define XB_Log 1 ? (void)0 : (void)
+#endif
+
+
 /*========== More type definitions */
 
 /* SLONGLONG: 64bit, signed */
