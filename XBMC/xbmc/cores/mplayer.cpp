@@ -747,7 +747,10 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 	else if (url.GetProtocol()=="http")   bFileOnInternet=true;
 	else if (url.GetProtocol()=="shout")  bFileOnInternet=true;
 	else if (url.GetProtocol()=="mms")    bFileOnInternet=true;
+	else if (url.GetProtocol()=="ftp")    bFileOnInternet=true;
+	else if (url.GetProtocol()=="udp")    bFileOnInternet=true;
 	else if (url.GetProtocol()=="rtp")    bFileOnInternet=true;
+	else if (url.GetProtocol()=="rtsp")    bFileOnInternet=true;
 	else bFileOnLAN=true;
 
 	bool bIsVideo =CUtil::IsVideo(strFile);
