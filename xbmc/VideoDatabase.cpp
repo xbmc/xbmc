@@ -160,7 +160,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE settings ( idFile integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
 			          "ViewMode integer,ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
 								"SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
-								"AdjustFrameRate integer, AudioDelay float)\n");
+								"AdjustFrameRate integer, AudioDelay float, ResumeTime integer)\n");
 
 		CLog::Log(LOGINFO, "create genre table");
     m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");

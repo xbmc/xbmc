@@ -40,19 +40,21 @@ void CGUIDialogButtonMenu::Render()
 {
 	// get the label control
 	CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(CONTROL_BUTTON_LABEL);
-	if (!pLabel) return;
-	// get the active window, and put it's label into the label control
-	int iControl = GetFocusedControl();
-	const CGUIControl *pControl = GetControl(iControl);
-	if (pControl && pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
-	{
-		CGUIButtonControl *pButton = (CGUIButtonControl *)pControl;
-		CStdStringW strLabel = L"";
-		if (pButton->GetLabel().size() > 0)
-		{
-			strLabel = pButton->GetLabel().c_str();
-		}
-		pLabel->SetLabel(strLabel);
-	}
+	if (pLabel)
+  {
+	  // get the active window, and put it's label into the label control
+	  int iControl = GetFocusedControl();
+	  const CGUIControl *pControl = GetControl(iControl);
+	  if (pControl && pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+	  {
+		  CGUIButtonControl *pButton = (CGUIButtonControl *)pControl;
+		  CStdStringW strLabel = L"";
+		  if (pButton->GetLabel().size() > 0)
+		  {
+			  strLabel = pButton->GetLabel().c_str();
+		  }
+		  pLabel->SetLabel(strLabel);
+	  }
+  }
 	CGUIDialog::Render();
 }

@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-03-2005 fixed: dialogs sometimes didn't popup via ActivateWindow() in <execute> tags.
+  - 11-03-2005 fixed: ButtonMenu wasn't rendered if no label control was present.
   - 11-03-2005 fixed: mplayer wasn't freed after a playlist had ended.
   - 11-03-2005 added: [ 1160414 ] Added new methods to xbmc.Player python class. onPlayBackStopped() (user stop), getTotalTime() (duration of current media), getTime() (position of current media), seekTime( double pos ) (seek to specified position) - thanks to gimblefoot
   - 11-03-2005 added: [ 1160400 ] Added ControlCheckMark in Python - thanks to gimblefoot
