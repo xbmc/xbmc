@@ -52,6 +52,10 @@ public:
 	void					SetReverse(bool bOnOff);
   int           GetMaximum() const;
   int           GetMinimum() const;
+  	DWORD	GetTextOffsetX() const { return m_dwTextOffsetX;};
+	DWORD	GetTextOffsetY() const { return m_dwTextOffsetY;};
+  	void	SetTextOffsetX(DWORD dwTextOffsetX) { m_dwTextOffsetX=dwTextOffsetX;};
+	void	SetTextOffsetY(DWORD dwTextOffsetY) { m_dwTextOffsetY=dwTextOffsetY;};
 	const	CStdString& GetTexutureUpName() const { return m_imgspinUp.GetFileName(); };
 	const	CStdString& GetTexutureDownName() const { return m_imgspinDown.GetFileName(); };
 	const	CStdString& GetTexutureUpFocusName() const { return m_imgspinUpFocus.GetFileName(); };
@@ -94,6 +98,8 @@ protected:
 	CGUIImage m_imgspinDownFocus;
   CStdString    m_strFont;
   CGUIFont* m_pFont;
+  DWORD		m_dwTextOffsetX;
+  DWORD		m_dwTextOffsetY;
   DWORD     m_dwTextColor;
   DWORD     m_dwDisabledColor;
 	DWORD			m_dwAlign;
