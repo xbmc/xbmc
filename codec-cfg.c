@@ -485,11 +485,7 @@ int parse_codec_cfg(char *cfgfile)
 	int tmp, i;
 	
 	// in case we call it a second time
-	if(video_codecs!=NULL)free(video_codecs);
-	video_codecs=NULL;
- 
- 	if(audio_codecs!=NULL)free(audio_codecs);
-	audio_codecs=NULL;
+	codecs_uninit_free();
 	
 	nr_vcodecs = 0;
 	nr_acodecs = 0;
@@ -713,12 +709,7 @@ err_out_parse_error:
 err_out_print_linenum:
 	PRINT_LINENUM;
 err_out:
-	if (audio_codecs)
-		free(audio_codecs);
-	if (video_codecs)
-		free(video_codecs);
-	video_codecs=NULL;
-	audio_codecs=NULL;
+	codecs_uninit_free();
 
 	free(line);
 	line=NULL;
@@ -851,7 +842,50 @@ void list_codecs(int audioflag){
 
 }
 
+static void audio_codecs_uninit_free() {
+	int i;
+	for ( i = 0; i < nr_acodecs; i++)
+	  if ( (audio_codecs[i]).name ) {
+	  	if( (audio_codecs[i]).name )
+	  		free((audio_codecs[i]).name);
+	  	if( (audio_codecs[i]).info )
+	  		free((audio_codecs[i]).info);
+	  	if( (audio_codecs[i]).comment )
+	  		free((audio_codecs[i]).comment);
+	  	if( (audio_codecs[i]).dll )
+	  		free((audio_codecs[i]).dll);
+	  	if( (audio_codecs[i]).drv )
+	  		free((audio_codecs[i]).drv);	  		
+	  }
+	if (audio_codecs)
+		free(audio_codecs);
+	audio_codecs=NULL;		
+}
 
+static void video_codecs_uninit_free() {
+	int i;
+	for ( i = 0; i < nr_vcodecs; i++)
+	  if ( (video_codecs[i]).name ) {
+	  	if( (video_codecs[i]).name )
+	  		free((video_codecs[i]).name);
+	  	if( (video_codecs[i]).info )
+	  		free((video_codecs[i]).info);
+	  	if( (video_codecs[i]).comment )
+	  		free((video_codecs[i]).comment);
+	  	if( (video_codecs[i]).dll )
+	  		free((video_codecs[i]).dll);
+	  	if( (video_codecs[i]).drv )
+	  		free((video_codecs[i]).drv);	  		
+	  }
+	if (video_codecs)
+		free(video_codecs);
+	video_codecs=NULL;		
+}		  
+		  
+void codecs_uninit_free() {
+	audio_codecs_uninit_free();
+	video_codecs_uninit_free();
+}	
 
 #ifdef CODECS2HTML
 /*
