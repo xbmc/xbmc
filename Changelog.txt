@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 27-11-2004 updated: Polish language file (Thnx to napek)
   - 27-11-2004 added: flash Kai chat tab briefly when another player sends message while tab not currently selected.
   - 27-11-2004 fixed: some memory leaks in the database code.
   - 27-11-2004 added: GUIConditionalButton
