@@ -6,6 +6,7 @@
 #include "utils/log.h"
 
 CButtonTranslator g_buttonTranslator;
+extern CStdString g_LoadErrorStr;
 
 CButtonTranslator::CButtonTranslator()
 {
@@ -15,7 +16,7 @@ CButtonTranslator::~CButtonTranslator()
 {
 }
 
-void CButtonTranslator::Load()
+bool CButtonTranslator::Load()
 {	
 	// load our xml file, and fill up our mapping tables
 	TiXmlDocument xmlDoc;
@@ -24,16 +25,16 @@ void CButtonTranslator::Load()
 	// Load the config file
 	if (!xmlDoc.LoadFile("Q:\\keymap.xml"))
 	{
-    CLog::Log("Unable to load Q:\\keymap.xml");
-		return;
+		g_LoadErrorStr.Format("Q:\\keymap.xml, Line %d\n%s", xmlDoc.GetLineNo(), xmlDoc.GetErrorDesc());
+		return false;
 	}
 
 	TiXmlElement* pRoot = xmlDoc.RootElement();
 	CStdString strValue=pRoot->Value();
 	if ( strValue != "keymap") 
   {
-    CLog::Log("keymap.xml doesnt start with <keymap>");
-    return;
+		g_LoadErrorStr.Format("Q:\\keymap.xml Doesn't contain <keymap>");
+    return false;
   }
 	// do the global actions
 	TiXmlElement* pWindow = pRoot->FirstChildElement("global");
@@ -103,6 +104,7 @@ void CButtonTranslator::Load()
 		pWindow = pWindow->NextSiblingElement();
 	}
 	// Done!
+	return true;
 }
 
 void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action)

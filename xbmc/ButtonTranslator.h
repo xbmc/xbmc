@@ -11,7 +11,7 @@ public:
 	CButtonTranslator();
 	virtual ~CButtonTranslator();
 
-	void Load();
+	bool Load();
 	void GetAction(WORD wWindow, const CKey &key, CAction &action);
 
 private:
