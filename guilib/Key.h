@@ -10,27 +10,30 @@
 #include "gui3d.h"
 #include "../xbmc/XBIRRemote.h"
 
+// Analogue - don't change order
 #define KEY_BUTTON_A                  256
 #define KEY_BUTTON_B                  257
 #define KEY_BUTTON_X                  258
 #define KEY_BUTTON_Y                  259
-#define KEY_BUTTON_WHITE              260
-#define KEY_BUTTON_BLACK              261
-#define KEY_BUTTON_BACK               262
-#define KEY_BUTTON_START              263
+#define KEY_BUTTON_BLACK              260
+#define KEY_BUTTON_WHITE              261
+#define KEY_BUTTON_LEFT_TRIGGER       262
+#define KEY_BUTTON_RIGHT_TRIGGER      263
 
-#define KEY_BUTTON_DPAD_DOWN          264
-#define KEY_BUTTON_DPAD_UP            265
-#define KEY_BUTTON_DPAD_LEFT          266
-#define KEY_BUTTON_DPAD_RIGHT         267
+#define KEY_BUTTON_LEFT_THUMB_STICK   264
+#define KEY_BUTTON_RIGHT_THUMB_STICK  265
 
-#define KEY_BUTTON_LEFT_TRIGGER       268
-#define KEY_BUTTON_RIGHT_TRIGGER      269
+// Digital - don't change order
+#define KEY_BUTTON_DPAD_UP            266
+#define KEY_BUTTON_DPAD_DOWN          267
+#define KEY_BUTTON_DPAD_LEFT          268
+#define KEY_BUTTON_DPAD_RIGHT         269
 
-#define KEY_BUTTON_LEFT_THUMB_BUTTON  270
-#define KEY_BUTTON_RIGHT_THUMB_BUTTON 271
-#define KEY_BUTTON_LEFT_THUMB_STICK   272
-#define KEY_BUTTON_RIGHT_THUMB_STICK  273
+#define KEY_BUTTON_START              270
+#define KEY_BUTTON_BACK               271
+
+#define KEY_BUTTON_LEFT_THUMB_BUTTON  272
+#define KEY_BUTTON_RIGHT_THUMB_BUTTON 273
 
 #define KEY_INVALID                   0xffff
 
@@ -128,6 +131,7 @@
 #define ACTION_SHOW_MPLAYER_OSD     83  // toggles mplayers OSD. Can be used in videofullscreen.xml window id=2005
 #define ACTION_OSD_HIDESUBMENU		84  // removes an OSD sub menu. Can be used in videoOSD.xml window id=2901
 #define ACTION_TAKE_SCREENSHOT		85  // take a screenshot
+#define ACTION_POWERDOWN		86  // restart
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                -1
@@ -207,6 +211,7 @@ struct CAction {
   WORD wID;
   float fAmount1;
   float fAmount2;
+	DWORD m_dwButtonCode;
 };
 
 /*!
