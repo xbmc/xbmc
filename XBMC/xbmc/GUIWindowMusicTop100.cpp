@@ -123,6 +123,8 @@ void CGUIWindowMusicTop100::GetDirectory(const CStdString &strDirectory, VECFILE
 
 void CGUIWindowMusicTop100::UpdateButtons()
 {
+	CGUIWindowMusicBase::UpdateButtons();
+
 	CONTROL_DISABLE(GetID(), CONTROL_BTNSORTBY);
 	CONTROL_DISABLE(GetID(), CONTROL_BTNSORTASC);
 
