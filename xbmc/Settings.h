@@ -230,6 +230,7 @@ public:
     bool			m_bMyVideoYearStack;
 
     int       m_iMyProgramsSelectedItem;
+    int       m_iVideoStartWindow;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

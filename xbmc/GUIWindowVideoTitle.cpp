@@ -162,6 +162,8 @@ bool CGUIWindowVideoTitle::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
 		{
+      g_stSettings.m_iVideoStartWindow=GetID();
+      g_settings.Save();
 			CGUIWindow::OnMessage(message);
       m_database.Open();
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -236,6 +238,8 @@ bool CGUIWindowVideoTitle::OnMessage(CGUIMessage& message)
       }
       else if (iControl==CONTROL_MOVIES)
       {
+        g_stSettings.m_iVideoStartWindow=WINDOW_VIDEOS;
+        g_settings.Save();
         m_gWindowManager.ActivateWindow(WINDOW_VIDEOS);
         return true;
       }

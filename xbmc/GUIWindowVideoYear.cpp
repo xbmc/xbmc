@@ -162,6 +162,8 @@ bool CGUIWindowVideoYear::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
 		{
+      g_stSettings.m_iVideoStartWindow=GetID();
+      g_settings.Save();
 			CGUIWindow::OnMessage(message);
       m_database.Open();
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
