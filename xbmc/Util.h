@@ -128,6 +128,8 @@ public:
   static void ClearCache();
 	static void SortFileItemsByName(VECFILEITEMS& items, bool bSortAscending=true);
 	static bool IsNetworkUp() { return m_bNetworkUp; }
+	static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
+	static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
 
 private:
 	static bool m_bNetworkUp;

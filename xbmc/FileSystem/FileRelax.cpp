@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 
 
 //////////////////////////////////////////////////////////////////////
@@ -136,6 +137,17 @@ bool CFileRelax::Exists(const char* strUserName, const char* strPassword,const c
 	return exist;
 }
 
+int CFileRelax::Stat(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport, struct __stat64* buffer)
+{
+	if (Open(strUserName, strPassword, strHostName, strFileName, iport, true))
+	{
+		buffer->st_size = this->m_fileSize;
+		buffer->st_mode = _S_IFREG;
+		Close();
+	}
+	errno = ENOENT;
+	return -1;
+}
 //*********************************************************************************************
 unsigned int CFileRelax::Read(void *lpBuf, __int64 uiBufSize)
 {

@@ -20,6 +20,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 #include "FileHD.h"
+#include <sys/stat.h>
 using namespace XFILE;
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -55,6 +56,12 @@ bool CFileHD::Exists(const char* strUserName, const char* strPassword,const char
 {
 	return GetFileAttributes(strFileName) != -1;
 }
+
+int CFileHD::Stat(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport, struct __stat64* buffer)
+{
+	return _stat64(strFileName, buffer);
+}
+
 
 //*********************************************************************************************
 bool CFileHD::OpenForWrite(const char* strFileName)

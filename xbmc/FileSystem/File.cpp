@@ -196,6 +196,16 @@ bool CFile::Exists(const char* strFileName)
 	return m_pFile->Exists(url.GetUserName().c_str(),url.GetPassWord().c_str(),url.GetHostName().c_str(),url.GetFileName().c_str(), url.GetPort());
 }
 
+int CFile::Stat(const char* strFileName, struct __stat64* buffer)
+{
+	CFileFactory factory;
+	m_pFile=factory.CreateLoader(strFileName);
+	if (!m_pFile) return false;
+	
+	CURL url(strFileName);
+	return m_pFile->Stat(url.GetUserName().c_str(),url.GetPassWord().c_str(),url.GetHostName().c_str(),url.GetFileName().c_str(), url.GetPort(), buffer);
+}
+
 //*********************************************************************************************
 unsigned int CFile::Read(void *lpBuf, __int64 uiBufSize)
 {
