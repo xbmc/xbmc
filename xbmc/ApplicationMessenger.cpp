@@ -72,7 +72,7 @@ void CApplicationMessenger::ProcessMessages()
 			{
 				case TMSG_SHUTDOWN:
 					g_application.Stop();
-					XKUtils::XBOXPowerOff();
+          CIoSupport::Shutdown();
 				break;
 
 				case TMSG_DASHBOARD:
