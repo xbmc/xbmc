@@ -33,6 +33,15 @@ void CGUIFadeLabelControl::Render()
 	if (m_iCurrentLabel >= (int)m_vecLabels.size() ) m_iCurrentLabel=0;
 
 	wstring strLabel=m_vecLabels[m_iCurrentLabel];
+  if ((int)m_vecLabels.size()==1)
+  {
+    DWORD iWidth=(DWORD)m_pFont->GetTextWidth(strLabel.c_str());
+    if (iWidth < m_dwWidth)
+    {
+      m_pFont->DrawText( (float)m_dwPosX,(float)m_dwPosY,m_dwTextColor,(WCHAR*)strLabel.c_str());
+      return;
+    }
+  }
 	if (m_bFadeIn)
 	{
 		DWORD dwAlpha = (0xff/12) * m_iCurrentFrame;
