@@ -2,6 +2,7 @@
 #include "control.h"
 #include "..\..\..\application.h"
 #include "GuiLabelControl.h"
+#include "GuiFadeLabelControl.h"
 
 #define ACTIVE_WINDOW	m_gWindowManager.GetActiveWindow()
 
@@ -242,6 +243,18 @@ namespace PYXBMC
 			pControl->pGUIControl = new CGUILabelControl(pControl->iParentId, pControl->iControlId,
 					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
 					pControlLabel->strFont, pControlLabel->strText, pControlLabel->dwTextColor, 0, false);
+		}
+
+		// Control Fade Label
+		else if (!strcmp(pControl->ob_type->tp_name, ControlFadeLabel_Type.tp_name))
+		{
+			ControlFadeLabel* pControlFadeLabel = (ControlFadeLabel*)pControl;
+			pControl->pGUIControl = new CGUIFadeLabelControl(pControl->iParentId, pControl->iControlId,
+					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
+					pControlFadeLabel->strFont, pControlFadeLabel->dwTextColor, 0);
+
+			CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
+			pControl->pGUIControl->OnMessage(msg);
 		}
 
 		// Control Button
