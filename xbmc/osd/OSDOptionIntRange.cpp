@@ -103,7 +103,7 @@ void COSDOptionIntRange::Draw(int x, int y, bool bFocus,bool bSelected)
 
 bool COSDOptionIntRange::OnAction(IExecutor& executor, const CAction& action)
 {
-	if (action.wID==ACTION_PAGE_DOWN)
+	if (action.wID==ACTION_PAGE_UP)
 	{
     if (m_iValue+m_iInterval <=m_iMax)
     {
@@ -117,7 +117,7 @@ bool COSDOptionIntRange::OnAction(IExecutor& executor, const CAction& action)
     }
     return true;
 	}
-	if (action.wID==ACTION_PAGE_UP)
+	if (action.wID==ACTION_PAGE_DOWN)
 	{
     if (m_iValue-m_iInterval >=m_iMin)
     {

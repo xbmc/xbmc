@@ -69,7 +69,16 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
         else HideOSD();
 		  break;
 
-		  default:
+		case ACTION_SHOW_GUI:
+			// switch back to the menu
+			OutputDebugString("Switching to GUI\n");
+			m_gWindowManager.PreviousWindow();
+			if (g_application.m_pPlayer)
+				g_application.m_pPlayer->Update();
+			OutputDebugString("Now in GUI\n");
+			return;
+		break;
+		default:
         m_osdMenu.OnAction(*this,action);
         SET_CONTROL_FOCUS(GetID(), m_osdMenu.GetSelectedMenu()+BTN_OSD_VIDEO); 
 		  break;
@@ -228,6 +237,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			// Pause so that we make sure that our fullscreen renderer has finished...
 			Sleep(100);
       m_bOSDVisible=false;
+      HideOSD();
 		}
 	}
 	return CGUIWindow::OnMessage(message);

@@ -86,7 +86,7 @@ bool COSDMenu::OnAction(IExecutor& executor,const CAction& action)
 	
 	if (pSubMenu->OnAction(executor,action)) return true;
 
-	if (action.wID==ACTION_MOVE_LEFT)
+	if (action.wID==ACTION_STEP_BACK)
 	{
 		if ( m_iCurrentSubMenu > 0)
 		{
@@ -99,7 +99,7 @@ bool COSDMenu::OnAction(IExecutor& executor,const CAction& action)
 		return true;
 	}
 
-	if (action.wID==ACTION_MOVE_RIGHT)
+	if (action.wID==ACTION_STEP_FORWARD)
 	{
 		if ( m_iCurrentSubMenu+1 < (int)m_vecSubMenus.size() )
 		{
