@@ -1,1 +1,5 @@
-.depend
+*.depend
+*.o
+*.h
+*.c
+*.a
