@@ -5,6 +5,7 @@
 #include "MusicInfoTagLoaderOgg.h"
 #include "MusicInfoTagLoaderWMA.h"
 #include "util.h"
+#include "url.h"
 
 using namespace MUSIC_INFO;
 CMusicInfoTagLoaderFactory::CMusicInfoTagLoaderFactory()
@@ -20,6 +21,12 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
 	CStdString strExtension;
 	CUtil::GetExtension( strFileName, strExtension);
 	strExtension.ToLower();
+  CURL url(strFileName);
+
+  // dont try to locate a folder.jpg for streams &  shoutcast
+  if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return NULL;
+  if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return NULL;
+  if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return NULL;
 	if (strExtension==".mp3")
 	{
 		CMusicInfoTagLoaderMP3 *pTagLoader= new CMusicInfoTagLoaderMP3();
