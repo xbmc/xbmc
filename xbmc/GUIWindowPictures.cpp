@@ -445,7 +445,7 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 		CFileItem* pItem=m_vecItems[iItem];
 		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
 		{
-			strSelectedItem=pItem->m_strPath;
+			GetDirectoryHistoryString(pItem, strSelectedItem);
 			m_history.Set(strSelectedItem,m_strDirectory);
 		}
 	}
@@ -505,7 +505,9 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 	for (int i=0; i < (int)m_vecItems.size(); ++i)
 	{
 		CFileItem* pItem=m_vecItems[i];
-		if (pItem->m_strPath==strSelectedItem)
+		CStdString strHistory;
+		GetDirectoryHistoryString(pItem, strHistory);
+		if (strHistory==strSelectedItem)
 		{
 			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,i);
 			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,i);
@@ -777,4 +779,15 @@ void CGUIWindowPictures::ShowThumbPanel()
     CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected);
     CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iItemSelected);
   }
+}
+
+/// \brief Build a directory history string
+/// \param pItem Item to build the history string from
+/// \param strHistoryString History string build as return value
+void CGUIWindowPictures::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)
+{
+	strHistoryString=pItem->m_strPath;
+
+	if (CUtil::HasSlashAtEnd(strHistoryString))
+		strHistoryString.Delete(strHistoryString.size()-1);
 }
