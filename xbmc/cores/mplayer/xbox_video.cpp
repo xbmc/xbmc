@@ -692,6 +692,7 @@ static void video_flip_page(void)
 			  g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
         g_graphicsContext.Unlock();
       }
+      m_bRenderGUI=false;
 		}
 		else
 		{

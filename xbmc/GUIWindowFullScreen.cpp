@@ -70,7 +70,14 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 			  //g_application.m_pPlayer->ToggleOSD();
         m_bOSDVisible=!m_bOSDVisible;
         if (m_bOSDVisible) ShowOSD();
-        else HideOSD();
+        else 
+        {
+          g_graphicsContext.Lock();
+			    g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+			    g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
+			    g_graphicsContext.Unlock();
+          HideOSD();
+        }
 		  break;
 
 		case ACTION_SHOW_GUI:
