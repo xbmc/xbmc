@@ -41,6 +41,7 @@ static unsigned int 				dstride;                            //surface stride
 static DWORD    						destcolorkey;                       //colorkey for our surface
 int													iSubTitleHeight=0;
 int													iSubTitlePos=0;
+bool												bClearSubtitleRegion=false;
 int												  m_dwVisibleOverlay=0;
 LPDIRECT3DTEXTURE8					m_pOverlay[2]={NULL,NULL};					// Overlay textures
 LPDIRECT3DSURFACE8					m_pSurface[2]={NULL,NULL};				  // Overlay Surfaces
@@ -57,17 +58,6 @@ typedef struct directx_fourcc_caps
 static directx_fourcc_caps g_ddpf[] =
 {
     {"YV12 ",IMGFMT_YV12 ,DIRECT3D8CAPS},
-//    {"I420 ",IMGFMT_I420 ,DIRECT3D8CAPS},//yv12 with swapped uv
- //   {"IYUV ",IMGFMT_IYUV ,DIRECT3D8CAPS},//same as i420
-   // {"YVU9 ",IMGFMT_YVU9 ,DIRECT3D8CAPS},
-  //  {"RGB15",IMGFMT_RGB15,DIRECT3D8CAPS},   //RGB 5:5:5
-   // {"BGR15",IMGFMT_BGR15,DIRECT3D8CAPS},
-   // {"RGB16",IMGFMT_RGB16,DIRECT3D8CAPS},   //RGB 5:6:5
-   // {"BGR16",IMGFMT_BGR16,DIRECT3D8CAPS},
-   // {"RGB24",IMGFMT_RGB24,DIRECT3D8CAPS},
-   // {"BGR24",IMGFMT_BGR24,DIRECT3D8CAPS},
-   // {"RGB32",IMGFMT_RGB32,DIRECT3D8CAPS},
-   // {"BGR32",IMGFMT_BGR32,DIRECT3D8CAPS}
 };
 #define NUM_FORMATS (sizeof(g_ddpf) / sizeof(g_ddpf[0]))
 
@@ -107,53 +97,81 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 			rd.right  = rd.left+iScreenWidth;
 			rd.top    = g_stSettings.m_iMoviesOffsetY1;
 			rd.bottom = rd.top+iScreenHeight;
+
+			// place subtitles @ bottom of the screen
+			iSubTitlePos			  = image_height - iSubTitleHeight;
+			bClearSubtitleRegion= false;
 			return 0;
 		}
 
 		if (g_stSettings.m_bZoom)
 		{
-			// scale up image as much as possible
-			// and keep the aspect ratio
-			float fAR = ( (float)image_width ) / (  (float)image_height );
-			float fNewWidth  = (float)( iScreenWidth);
-			float fNewHeight = fNewWidth/fAR;
-			if ( image_height > image_width)
-			{
-				float fNewHeight=(float)iScreenHeight - (float)iSubTitleHeight;
-				fNewWidth = fNewHeight*fAR;
-			}
+				float fAR = ( (float)image_width ) / (  (float)image_height );
+				float fNewWidth;
+				float fNewHeight;
+				if ( image_width >= image_height)
+				{
+					fNewHeight=(float)iScreenHeight;
+					fNewWidth = fNewHeight*fAR;
+				}
+				else
+				{
+					fNewWidth  = (float)( iScreenWidth);
+					fNewHeight = fNewWidth/fAR;
+				}
+				float fHorzBorder=(fNewWidth  - (float)iScreenWidth)/2.0f;
+				float fVertBorder=(fNewHeight - (float)iScreenHeight)/2.0f;
+				fHorzBorder =  (fHorzBorder/fNewWidth ) * ((float)image_width);
+				fVertBorder =  (fVertBorder/fNewHeight) * ((float)image_height);
+				rs.left		= (int)fHorzBorder;
+				rs.top    = (int)fVertBorder;
+				rs.right	= image_width  - (int)fHorzBorder;
+				rs.bottom = image_height - (int)fVertBorder;
 
-			rs.left		= 0;
-			rs.top    = 0;
-			rs.right	= image_width;
-			rs.bottom = image_height + iSubTitleHeight;
+				rd.left   = g_stSettings.m_iMoviesOffsetX1;
+				rd.right  = rd.left + iScreenWidth;
+				rd.top    = g_stSettings.m_iMoviesOffsetY1;
+				rd.bottom = rd.top + iScreenHeight;
 
-			int iPosY = iScreenHeight - (int)(fNewHeight);
-			int iPosX = iScreenWidth  - (int)(fNewWidth)	;
-			iPosY /= 2;
-			iPosX /= 2;
-			rd.left   = iPosX + g_stSettings.m_iMoviesOffsetX1;
-			rd.right  = rd.left + (int)fNewWidth;
-			rd.top    = iPosY  + g_stSettings.m_iMoviesOffsetY1;
-			rd.bottom = rd.top + (int)fNewHeight + iSubTitleHeight;
-			return 0;
+				iSubTitlePos = rs.bottom - iSubTitleHeight;
+				bClearSubtitleRegion= false;
+				return 0;
 		}
 
-		// normal way
-		// show image centered on screen. Keep aspect ratio
+		// scale up image as much as possible
+		// and keep the aspect ratio
+		float fAR = ( (float)image_width ) / (  (float)image_height );
+		float fNewWidth  = (float)( iScreenWidth);
+		float fNewHeight = fNewWidth/fAR;
+		if ( image_height > image_width)
+		{
+			fNewHeight=(float)iScreenHeight - (float)iSubTitleHeight;
+			fNewWidth = fNewHeight*fAR;
+		}
+
 		rs.left		= 0;
 		rs.top    = 0;
 		rs.right	= image_width;
 		rs.bottom = image_height + iSubTitleHeight;
-		
-		int iPosY = iScreenHeight - (rs.bottom-rs.top);
-		int iPosX = iScreenWidth  - (rs.right-rs.left);
+
+		int iPosY = iScreenHeight - (int)(fNewHeight);
+		int iPosX = iScreenWidth  - (int)(fNewWidth)	;
 		iPosY /= 2;
 		iPosX /= 2;
 		rd.left   = iPosX + g_stSettings.m_iMoviesOffsetX1;
-		rd.right  = rd.left + image_width;
-		rd.top    = iPosY + g_stSettings.m_iMoviesOffsetY1;
-		rd.bottom = rd.top + image_height + iSubTitleHeight;
+		rd.right  = rd.left + (int)fNewWidth;
+		rd.top    = iPosY  + g_stSettings.m_iMoviesOffsetY1;
+		rd.bottom = rd.top + (int)fNewHeight + iSubTitleHeight;
+
+		iSubTitlePos = image_height;
+		bClearSubtitleRegion= true;
+
+		if (iSubTitlePos  + 2*iSubTitleHeight >= g_graphicsContext.GetHeight() -g_stSettings.m_iMoviesOffsetY2)
+		{
+			bClearSubtitleRegion= false;
+			iSubTitlePos = g_graphicsContext.GetHeight() - g_stSettings.m_iMoviesOffsetY2 - iSubTitleHeight*2;
+		}
+
 		return 0;
 	}
 	else
@@ -186,26 +204,13 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 {
 	// if we draw text on the bottom then it must b the subtitles
 	// if we're not in stretch mode try to put the subtitles below the video
-	if (y0 > (int)(image_height/2)  && !g_stSettings.m_bStretch)
+	if ( y0 > (int)(image_height/2)  )
 	{
 		// get new height of subtitles
-		if (h > iSubTitleHeight) iSubTitleHeight  = h;
+		iSubTitleHeight  = h;
 
-		// calculate the position of the subtitle
-		iSubTitlePos    = image_height;
-		if ( (int)image_height+h+10 >= (int) g_graphicsContext.GetHeight() )
-		{
-			iSubTitlePos = g_graphicsContext.GetHeight() - h - 10;
-		}
-		// clear subtitle area (2 rows)
-		for (int y=0; y < h*2; y++)
-		{
-			for (int x=0; x < (int)(dstride); x+=2)
-			{
-				*(image + dstride*(iSubTitlePos + y)+x   )   = 0x15;
-				*(image + dstride*(iSubTitlePos + y)+x+1 ) = 0x80;
-			}
-		}
+		if (iSubTitlePos ==0) return;
+		
 		vo_draw_alpha_yuy2(w,h,src,srca,stride,((unsigned char *) image) + dstride*iSubTitlePos + 2*x0,dstride);
 		return;
 	}
@@ -252,6 +257,7 @@ static unsigned int video_preinit(const char *arg)
 {
 	iSubTitleHeight=0;
 	iSubTitlePos=0;
+	bClearSubtitleRegion=false;
 	m_dwVisibleOverlay=0;
 	m_bFlip=false;
 	fs=1;
@@ -306,6 +312,20 @@ static void video_flip_page(void)
 	{
 		dstride=rectLocked.Pitch;
 		image  =(unsigned char*)rectLocked.pBits;
+	}
+
+	if (bClearSubtitleRegion && iSubTitlePos>0)
+	{
+		// calculate the position of the subtitle
+		// clear subtitle area (2 rows)
+		for (int y=0; y < iSubTitleHeight*2; y++)
+		{
+			for (int x=0; x < (int)(dstride); x+=2)
+			{
+				*(image + dstride*(iSubTitlePos + y)+x   ) = 0x15;
+				*(image + dstride*(iSubTitlePos + y)+x+1 ) = 0x80;
+			}
+		}
 	}
 }
 

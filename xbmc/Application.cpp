@@ -323,7 +323,7 @@ void CApplication::OnKey(CKey& key)
 {
 	if (g_application.IsPlayingVideo() )
 	{
-		if ( key.GetButtonCode() == KEY_BUTTON_X  || key.GetButtonCode() == KEY_REMOTE_DISPLAY)
+		if ( key.GetButtonCode() == KEY_BUTTON_X  || key.GetButtonCode() == KEY_REMOTE_MENU)
 		{
 			// switch between fullscreen & normal video screen
 			g_graphicsContext.SetFullScreenVideo( !g_graphicsContext.IsFullScreenVideo() );
