@@ -666,6 +666,7 @@ unsigned int Directx_ManageDisplay()
 //***********************************************************************************************************
 static void vo_draw_alpha_rgb32_shadow(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride)
 {
+  if (m_bPauseDrawing) return;
 	register int y;
 	for(y=0;y<h;y++)
 	{
@@ -690,6 +691,7 @@ static void vo_draw_alpha_rgb32_shadow(int w,int h, unsigned char* src, unsigned
 //********************************************************************************************************
 static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned char *srca, int stride)
 {
+  if (m_bPauseDrawing) return;
 	// if we draw text on the bottom then it must b the subtitles
 	// if we're not in stretch mode try to put the subtitles below the video
 	if ( y0 > (int)(image_height/10)  )
@@ -722,6 +724,8 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 //********************************************************************************************************
 static void video_draw_osd(void)
 {
+  
+  if (m_bPauseDrawing) return;
 	vo_draw_text(image_width, image_height, draw_alpha);
 }
 
@@ -845,6 +849,9 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 void xbox_video_render_subtitles(bool bUseBackBuffer)
 {
 	int iTexture = bUseBackBuffer ? m_iBackBuffer : 1-m_iBackBuffer;
+  
+  CStdString strTmp;strTmp.Format("subtitle:%i (%i)\n",iTexture,bUseBackBuffer);
+  OutputDebugString(strTmp.c_str());
 	if (!m_pSubtitleTexture[iTexture])
 		return;
 
@@ -1031,10 +1038,17 @@ void xbox_video_getAR(float& fAR)
 void xbox_video_render_update()
 {
   if (m_iRenderBuffer < 0 | m_iRenderBuffer >=NUM_BUFFERS) return;
+  bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
 	if (m_pVideoVB && m_TextureBuffer[m_iRenderBuffer])
 	{
 		g_graphicsContext.Lock();
 		RenderVideo();
+    if ( bFullScreen )
+    {
+		  xbox_video_update_subtitle_position();
+		  xbox_video_render_subtitles(false);
+    }
+
 		g_graphicsContext.Unlock();
 	}
 }
