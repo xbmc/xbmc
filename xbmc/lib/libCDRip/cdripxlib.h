@@ -80,14 +80,9 @@ class CCDRipX
 {
 protected:
 	DWORD					m_dwSeekSpeed;
-	LONG					nNumBytesRead;
-	LONG					nTotalBytes;
-	IDirectSoundStream*     m_pDestXMO;
-	WAVEFORMATEX            m_wfxSourceFormat; 
-	BYTE*										m_pvSourceBuffer[WAVSTRM_PACKET_COUNT]; 
+	LONG					m_nTotalBytes;
 	HRESULT					hr;
 	HRESULT                 m_hrOpenResult; 
-	DWORD                   m_adwStatus[WAVSTRM_PACKET_COUNT];
 	BYTE*					pbtStream;
 	LONG					nBufferSize;
 	BOOL					m_init;
@@ -98,10 +93,8 @@ protected:
 	HRESULT					pGetTrackInfo();
 	unsigned long			CalculateDiscID();
 	int						Ripperinit(int ntrack);
-	int						Playerinit();
 	int						CreateStream();
 	HRESULT					ProcessSound( DWORD dwPacketIndex );
-	BOOL					FindFreePacket( DWORD* pdwPacketIndex );
 	cdtoc					CDCon[TRACK_LIST];
 	
 #ifdef _WITHENC
@@ -117,10 +110,11 @@ public:
 	int						GetNumTocEntries();
 	cdtoc					GetTrackInfo(int ntrack);
 	HRESULT					playTrack(int nTrack);
-	int						Process( DWORD* pTimeplayed = NULL );
+	int						ReadCDDA(BYTE *pBuffer, DWORD *pNumBytes, DWORD *pTimeplayed = NULL);
 	void					Pause(DWORD dwPause);
 	void					Stop();
 	void					Seek(DWORD dwSpeed);
+	DWORD					GetTimePlayed();
 
 #ifdef _WITHENC
 	int						RipToOgg(	int				ntrack,
@@ -134,11 +128,7 @@ public:
 	CCDRipX();
 	~CCDRipX();
 	
-	void		RegisterAudioCallback(ICDAudioCallback* pCallback);
-	void		UnRegisterAudioCallback();
 private:
-	ICDAudioCallback* m_pCallback;
-
 };
 void DPf(const char* pzFormat, ...);
 
