@@ -31,6 +31,7 @@ public:
 	bool 		Post(const string& strURL, const string& strPostData, string& strHTML);
 	void 		SetCookie(const string& strCookie);
 	bool 		Get(string& strURL, string& strHTML);
+	bool		Head(string& strURL);
 	bool 		Download(const string &strURL, const string &strFileName, LPDWORD pdwSize = NULL);
 	bool		GetHeader(CStdString strName, CStdString& strValue) const;
 	
