@@ -67,6 +67,7 @@ public:
 		bool			m_bMyMusicViewAsIcons;
 	  int				m_bMyMusicSortMethod;
 	  bool			m_bMyMusicSortAscending;
+		int				m_iMyMusicViewMethod;
 
   };
   int       m_iSlideShowTransistionFrames;
