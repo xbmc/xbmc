@@ -1007,6 +1007,16 @@ void CApplication::CheckScreenSaver()
 
 void CApplication::CheckShutdown()
 {
+  // dont shutdown if we're playing a file
+  if (m_pPlayer)
+  {
+    if (m_pPlayer->IsPlaying())
+    {
+      m_dwSaverTick=timeGetTime();
+      return;
+    }
+  }
+
 	// Note: if the the screensaver is switched on, the shutdown timeout is
 	// counted from when the screensaver activates.
 	if (!m_bInactive)
