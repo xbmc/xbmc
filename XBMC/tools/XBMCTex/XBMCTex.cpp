@@ -773,27 +773,30 @@ void ConvertAnim(const char* Dir, const char* Filename, double MaxMSE)
 		if (!GetFormatMSE(info, pSrcSurf, D3DFMT_DXT1, CMSE, AMSE))
 			return;
 		TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE);
+		
 		if (CMSE <= 1e-6 && AMSE <= 1e-6)
 		{
 			TRACE1(" %03d: Selected Format: DXT1\n", i);
 			AppendXPRImage(info, pSrcSurf, XB_D3DFMT_DXT1);
-			return;
 		}
-		pSrcSurf->Release();
+		else
+		{	
+			pSrcSurf->Release();
 
-		hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_P8, &pSrcSurf);
-		CheckHR(hr);
+			hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_P8, &pSrcSurf);
+			CheckHR(hr);
 
-		hr = pSrcSurf->LockRect(&slr, NULL, D3DLOCK_READONLY);
-		CheckHR(hr);
+			hr = pSrcSurf->LockRect(&slr, NULL, D3DLOCK_READONLY);
+			CheckHR(hr);
 
-		memcpy((BYTE*)slr.pBits, pGif->Raster, pGif->Height * slr.Pitch);
-		memset((BYTE*)slr.pBits + pGif->Height * slr.Pitch, pGif->Transparent, (Height - pGif->Height) * slr.Pitch);
+			memcpy((BYTE*)slr.pBits, pGif->Raster, pGif->Height * slr.Pitch);
+			memset((BYTE*)slr.pBits + pGif->Height * slr.Pitch, pGif->Transparent, (Height - pGif->Height) * slr.Pitch);
 
-		pSrcSurf->UnlockRect();
+			pSrcSurf->UnlockRect();
 
-		TRACE1(" %03d: Selected Format: P8\n", i);
-		AppendXPRImage(info, pSrcSurf, XB_D3DFMT_P8);
+			TRACE1(" %03d: Selected Format: P8\n", i);
+			AppendXPRImage(info, pSrcSurf, XB_D3DFMT_P8);
+		}
 	}
 
 	delete [] HashBuf;
