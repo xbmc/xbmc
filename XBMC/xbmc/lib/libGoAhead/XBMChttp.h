@@ -4,9 +4,7 @@
 
 /* 
  *	Header file that provides an API over HTTP between the web server and XBMC
- *								v0.81 6 February 2005
  *
- *								written by NAD
  *						heavily based on XBMCweb.h
  */
 
@@ -51,6 +49,13 @@ public:
 	int			xbmcDownloadInternetFile(webs_t wp, char_t *parameter);
 	int			xbmcSetKey(webs_t wp, char_t *parameter);
 	int			xbmcGetMovieDetails(webs_t wp, char_t *parameter);
+	int			xbmcDeleteFile(webs_t wp, char_t *parameter);
+	int			xbmcCopyFile(webs_t wp, char_t *parameter);
+	int			xbmcSetFile(webs_t wp, char_t *parameter);
+	int			xbmcFileExists(webs_t wp, char_t *parameter);
+	int			xbmcShowPicture(webs_t wp, char_t *parameter);
+	int			xbmcGetGUIStatus(webs_t wp);
+  int			xbmcHelp(webs_t wp);
 	CKey		GetKey();
 	void		ResetKey();
 
