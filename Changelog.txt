@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 06-10-2004 fixed: crash when loading a second movie using TTF fonts for subs
   - 05-10-2004 fixed: scrolling text in fadecontrols ignored the width parameter when TTF fonts are used.
   - 05-10-2004 fixed: Virtual keyboard didn't center properly
   - 05-10-2004 fixed: [ 1040425 ] XBE titles don't show correct

@@ -384,11 +384,11 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness,g_settings.m_iContrast,g_settings.m_iGamma,true);
 //			g_graphicsContext.SetFullScreenVideo(false);//turn off to prevent calibration to OSD position
 			CGUIWindow::OnMessage(message);
-//			g_graphicsContext.Lock();
+			g_graphicsContext.Lock();
 //			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 			g_graphicsContext.SetFullScreenVideo( true );
 //			g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-//			g_graphicsContext.Unlock();
+			g_graphicsContext.Unlock();
 			if (g_application.m_pPlayer)
 				g_application.m_pPlayer->Update();
 			HideOSD();
@@ -403,7 +403,10 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 				CSingleLock lock(m_fontLock);
 
 				if (m_subtitleFont)
+				{
 					delete m_subtitleFont;
+					m_subtitleFont = NULL;
+				}
 
 				m_subtitleFont = new CGUIFontTTF("__subtitle__");
 				CStdString fontPath = "Q:\\Media\\Fonts\\";
@@ -416,7 +419,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			}
 			else
 				m_subtitleFont = NULL;
-
 			return true;
 		}
 		case GUI_MSG_WINDOW_DEINIT:
@@ -443,6 +445,11 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			m_iCurrentBookmark=0;
 			HideOSD();
 
+			if (m_subtitleFont)
+			{
+				delete m_subtitleFont;
+				m_subtitleFont = NULL;
+			}
 			return true;
 		}
     case GUI_MSG_SETFOCUS:
