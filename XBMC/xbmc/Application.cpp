@@ -1125,8 +1125,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogProgress.Load("dialogProgress.xml");
 	m_guiDialogVolumeBar.Load("dialogVolumeBar.xml");
 	m_guiDialogKaiToast.Load("dialogKaiToast.xml");
-	m_guiDialogPasswordNumeric.Load("dialogPasswordNumeric.xml");
-	m_guiDialogPasswordGamepad.Load("dialogPasswordGamepad.xml");
+	m_guiDialogPasswordNumeric.Load("dialogNumeric.xml");
+	m_guiDialogPasswordGamepad.Load("dialogGamepad.xml");
 	m_guiDialogSubMenu.Load("dialogSubMenu.xml");
 	m_guiDialogContextMenu.Load("dialogContextMenu.xml");
 	m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
@@ -1270,7 +1270,7 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
 		// Try to load the page.  If the load fails, delete the pointer
 		if (pWindow->Load(pRootElement, resToUse))
 		{
-			m_gWindowManager.Add(pWindow);
+			m_gWindowManager.AddCustomWindow(pWindow);
 		}
 		else
 		{
