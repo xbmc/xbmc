@@ -912,6 +912,12 @@ void xbox_video_render_osd()
 //		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
 //	}
 
+	// Set texture filters
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MAGFILTER,  g_stSettings.m_minFilter );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MINFILTER,  g_stSettings.m_maxFilter );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_MAGFILTER,  g_stSettings.m_minFilter );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_MINFILTER,  g_stSettings.m_maxFilter );
+
 	// Clip the output to avoid borders flashing from texture filtering getting texels beyond the valid region
 	D3DRECT rs = { (long)m_OSDRect.left, (long)m_OSDRect.top, (long)m_OSDRect.right, (long)m_OSDRect.bottom };
 	if (rs.x1 < 0)
