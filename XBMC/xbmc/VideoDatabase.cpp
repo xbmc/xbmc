@@ -6,6 +6,7 @@
 #include ".\videodatabase.h"
 #include "utils/fstrcmp.h"
 #include "utils/log.h"
+#include "util.h"
 
 #define VIDEODATABASE "Q:\\albums\\MyVideos1.db"
 //********************************************************************************************************************************
@@ -318,7 +319,7 @@ long CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath, const CStdSt
 	    CStdString strSQL;
 
       long lPathId = AddPath(strPath,strCDLabel);
-    
+      if (lPathId < 0) return -1;
       strSQL.Format("insert into movie (idMovie, idPath, hasSubtitles) values( NULL, %i, %i)",
 	                                      lPathId,bHassubtitles);
 	    m_pDS->exec(strSQL.c_str());
@@ -329,6 +330,7 @@ long CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath, const CStdSt
     else
     {
       long lPathId = GetPath(strPath);
+      if (lPathId < 0) return -1;
       AddFile(lMovieId,lPathId,strFileName);
     }
     return lMovieId;
@@ -847,6 +849,8 @@ void CVideoDatabase::GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies)
   try
   {
  	  CStdString strPath=strPath1;
+    if (CUtil::HasSlashAtEnd(strPath)) strPath = strPath.Left(strPath.size()-1);
+
 	  RemoveInvalidChars(strPath);
 
     movies.erase(movies.begin(),movies.end());
