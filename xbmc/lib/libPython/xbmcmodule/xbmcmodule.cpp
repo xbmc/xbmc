@@ -4,7 +4,7 @@
 #include "..\..\..\utils/log.h"
 #include "..\python.h"
 #include "player.h"
-#include "playlist.h"
+#include "pyplaylist.h"
 #include "keyboard.h"
 #include "localizestrings.h"
 #include "..\..\..\xbox\iosupport.h"
