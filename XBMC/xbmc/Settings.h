@@ -158,6 +158,7 @@ public:
 		bool		  m_bUseGDrive;
 		bool			m_bAudioOnAllSpeakers;
 		int				m_iChannels;
+		bool			m_bAC3PassThru;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

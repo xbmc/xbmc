@@ -106,12 +106,23 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		OutputDebugString("cmplayer::openfile() load functions\n");
 		mplayer_load_dll(*m_pDLL);
 
-
-
-		char szChannels[12];
-		sprintf(szChannels,"%i", g_stSettings.m_iChannels);
-		char *argv[] = {"xbmc.xbe", "-channels",szChannels,"-autoq", "6", "-vf", "pp", "1.avi",NULL};
-		mplayer_init(8,argv);
+		int argc=8;
+		bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
+		if (g_stSettings.m_iChannels==6 && bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru )
+		{
+			char szChannels[12];
+			argc=10;
+			sprintf(szChannels,"%i", g_stSettings.m_iChannels);
+			char *argv[] = {"xbmc.xbe", "-ac","hwac3","-channels",szChannels,"-autoq", "6", "-vf", "pp", "1.avi",NULL};
+			mplayer_init(argc,argv);
+		}
+		else
+		{
+			char szChannels[12];
+			sprintf(szChannels,"%i", g_stSettings.m_iChannels);
+			char *argv[] = {"xbmc.xbe", "-channels",szChannels,"-autoq", "6", "-vf", "pp", "1.avi",NULL};
+			mplayer_init(argc,argv);
+		}
 		Create();
 	}
 
