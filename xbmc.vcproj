@@ -54,7 +54,7 @@
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="XboxDeploymentTool"
-				RemotePath="xe:\xbmc\xbmcd.xbe"/>
+				RemotePath="xe:\MyXBMC\xbmcd.xbe"/>
 			<Tool
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
@@ -223,7 +223,7 @@
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="XboxDeploymentTool"
-				RemotePath="xe:\xbmc\default.xbe"/>
+				RemotePath="xe:\MyXBMC\default.xbe"/>
 			<Tool
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
@@ -474,6 +474,9 @@
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowMyFiles.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowOSD.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowPictures.cpp">
@@ -809,6 +812,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowMyFiles.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowOSD.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowPictures.h">

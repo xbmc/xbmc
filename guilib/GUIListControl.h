@@ -49,6 +49,7 @@ public:
 	void									SetSpace(int iHeight);
 	void									SetFont2(const CStdString& strFont);
 	void									SetColors2(DWORD dwTextColor, DWORD dwSelectedColor);
+	void						SetPageControlVisible(bool bVisible);
   int                   GetSelectedItem(CStdString& strLabel);
 	DWORD									GetTextColor() const { return m_dwTextColor;};
 	DWORD									GetTextColor2() const { return m_dwTextColor2;};
@@ -97,6 +98,7 @@ protected:
 	int										m_iTextOffsetY2;
 	int										m_iImageWidth;
 	int										m_iImageHeight;
+	bool				m_bUpDownVisible;
   DWORD                 m_dwTextColor,m_dwTextColor2;
   DWORD                 m_dwSelectedColor,m_dwSelectedColor2;
   CGUIFont*             m_pFont;
