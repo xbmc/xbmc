@@ -60,6 +60,7 @@ public:
 
 	virtual void			OnEditTextComplete(CStdString& strLineOfText);
 
+  virtual void      OnWindowLoaded();
 	virtual void			OnInitWindow();
 	virtual bool			OnMessage(CGUIMessage &message);
 	virtual void			OnAction(const CAction &action);

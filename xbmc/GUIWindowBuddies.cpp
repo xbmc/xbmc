@@ -166,6 +166,37 @@ CGUIWindowBuddies::~CGUIWindowBuddies(void)
 {
 }
 
+void CGUIWindowBuddies::OnWindowLoaded()
+{
+	// bind to the control defined in the xml
+	m_pConsole = (CGUIConsoleControl*)GetControl(CONTROL_KAI_CONSOLE);	
+
+	// set edit control observer
+	CGUIEditControl* pEdit = ((CGUIEditControl*)GetControl(CONTROL_KAI_TEXTEDIT));
+	if (pEdit)
+	{
+		// use inline text edit control
+		pEdit->SetObserver(this);
+	}
+
+	// bind this image to the control defined in the xml, later we'll use this
+	// as a template to determine the size and position of avatars
+	m_pOpponentImage = (CGUIImage*)GetControl(CONTROL_IMAGEOPPONENT);	
+
+	for(int nTabButtonId = CONTROL_KAI_TAB_FRIENDS; nTabButtonId<= CONTROL_KAI_TAB_CHAT; nTabButtonId++)
+	{
+		CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(nTabButtonId));
+		if (pButton)
+		{
+			pButton->SetTabButton();
+		}
+	}
+
+  // bind the listcontrol to our friends list
+	CGUIMessage msgb(GUI_MSG_LABEL_BIND,GetID(),CONTROL_LISTEX,0,0,&m_friends);
+	OnMessage(msgb);
+}
+
 void CGUIWindowBuddies::OnInitWindow()
 {
 	SET_CONTROL_LABEL( CONTROL_LABELUSERNAME, g_guiSettings.GetString("XLinkKai.UserName"));
@@ -188,36 +219,9 @@ void CGUIWindowBuddies::OnInitWindow()
 	CArenaItem::SetIcons(12,12, "arenaitem-private.png");
 
 	if (window_state==State::Uninitialized)
-	{
-		// bind to the control defined in the xml
-		m_pConsole = (CGUIConsoleControl*)GetControl(CONTROL_KAI_CONSOLE);	
-
-		// set edit control observer
-		CGUIEditControl* pEdit = ((CGUIEditControl*)GetControl(CONTROL_KAI_TEXTEDIT));
-		if (pEdit)
-		{
-			// use inline text edit control
-			pEdit->SetObserver(this);
-		}
-
-		// bind this image to the control defined in the xml, later we'll use this
-		// as a template to determine the size and position of avatars
-		m_pOpponentImage = (CGUIImage*)GetControl(CONTROL_IMAGEOPPONENT);	
-
-		for(int nTabButtonId = CONTROL_KAI_TAB_FRIENDS; nTabButtonId<= CONTROL_KAI_TAB_CHAT; nTabButtonId++)
-		{
-			CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(nTabButtonId));
-			if (pButton)
-			{
-				pButton->SetTabButton();
-			}
-		}
-
 		ChangeState(State::Buddies);
-
-		CGUIMessage msgb(GUI_MSG_LABEL_BIND,GetID(),CONTROL_LISTEX,0,0,&m_friends);
-		g_graphicsContext.SendMessage(msgb);
-	}
+  else
+    ChangeState(window_state);
 
 	while(!m_pKaiClient->IsEngineConnected())
 	{
