@@ -670,7 +670,7 @@
   <string><id>13349</id><value>Cerca Info Per Tutti i Files</value></string>
   <string><id>13350</id><value>In Riproduzione...</value></string>
   <string><id>13351</id><value>Informazioni Album</value></string>
-  <string><id>13352</id><value>Scansiona Cartella nel Database</value></string>
+  <string><id>13352</id><value>Scans.Cartella in Database</value></string>
   <string><id>13353</id><value>Ferma Scansione</value></string>
   <string><id>14000</id><value>Unisci: Spento</value></string>
   <string><id>14001</id><value>Unisci: Semplice</value></string>
@@ -729,5 +729,5 @@
   <string><id>14054</id><value>Attiva Ricerca in Internet</value></string>
   <string><id>14055</id><value>Usa Scansione in Background</value></string>
   <string><id>14056</id><value>Ferma Scansione</value></string>
-  <string><id>14057</id><value>Non possibile durante scansione informazioni media</value></string>
+  <string><id>14057</id><value>Impossibile durante scansione informazioni media</value></string>
 </strings>
