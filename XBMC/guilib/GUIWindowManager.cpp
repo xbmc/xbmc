@@ -206,6 +206,8 @@ void CGUIWindowManager::Render()
 
 CGUIWindow*  CGUIWindowManager::GetWindow(DWORD dwID)
 {
+	if (dwID == WINDOW_INVALID)
+		return NULL;
   for (int i=0; i < (int)m_vecWindows.size(); i++)
   {
     CGUIWindow* pWindow=m_vecWindows[i];
