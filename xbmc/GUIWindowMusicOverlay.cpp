@@ -309,224 +309,258 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 	}
 }
 
-	void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
+void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
+{
+	//	Tries to set the tag information for strFile to window.
+
+	//	Reset frame counter for window fading
+  m_iFrames=0;
+
+	//	Release previously shown album 
+	//	thumb, if any
+	if (m_pTexture)
 	{
+		m_pTexture->Release();
+		m_pTexture=NULL;
+	}
 
-    m_iFrames=0;
-		CStdString strAlbum=strFile;
-		if (m_pTexture)
+	//	Set image visible that is displayed if no thumb is available
+	CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), CONTROL_LOGO_PIC); 
+	OnMessage(msg);
+
+	//	Reset scrolling text in window
+	CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_INFO); 
+	OnMessage(msg1);
+
+	//	No audio file, we are finished here
+	if (!CUtil::IsAudio(strFile) )
+		return;
+
+	CFileItem item;
+	item.m_strPath=strFile;
+	//	Get a reference to the item's tag
+	CMusicInfoTag& tag=item.m_musicInfoTag;
+
+	CURL url(strFile);
+	//	if the file is a cdda track, ...
+	if (url.GetProtocol()=="cdda" )
+	{
+		VECFILEITEMS  items;
+		CCDDADirectory dir;
+		//	... use the directory of the cd to 
+		//	get its cddb information...
+		if (dir.GetDirectory("D:",items))
 		{
-			m_pTexture->Release();
-			m_pTexture=NULL;
-		}
-		CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), CONTROL_LOGO_PIC); 
-		OnMessage(msg);
-		if ( CUtil::IsAudio(strFile) )
-		{
-			CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_INFO); 
-			OnMessage(msg1);
-
-			CSong song;
-			CMusicDatabase dbs;
-			if (dbs.Open())
+			for (int i=0; i < (int)items.size(); ++i)
 			{
-				bool bContinue(false);
-				CURL url(strFile);
-				if (url.GetProtocol()=="cdda" )
+				CFileItem* pItem=items[i];
+				if (pItem->m_strPath==strFile)
 				{
-					VECFILEITEMS  items;
-					CCDDADirectory dir;
-					if (dir.GetDirectory("D:",items))
-					{
-						for (int i=0; i < (int)items.size(); ++i)
-						{
-							CFileItem* pItem=items[i];
-							if (pItem->m_strPath==strFile)
-							{
-								SYSTEMTIME systime;
-								song.iTrack		=pItem->m_musicInfoTag.GetTrackNumber();
-								song.strAlbum =pItem->m_musicInfoTag.GetAlbum();
-								song.strArtist=pItem->m_musicInfoTag.GetArtist();
-								song.strFileName=strFile;
-								song.strGenre=pItem->m_musicInfoTag.GetGenre();
-								song.strTitle=pItem->m_musicInfoTag.GetTitle();
-								song.iDuration=pItem->m_musicInfoTag.GetDuration();
-								pItem->m_musicInfoTag.GetReleaseDate(systime);
-								song.iYear=systime.wYear;
-								strAlbum=song.strAlbum ;
-								bContinue=true;
-							}
-							delete pItem;
-						}
-					}
+					//	...and find current track to use
+					//	cddb information for display.
+					item=*pItem;
 				}
-				else
-				{
-					bContinue=dbs.GetSongByFileName(strFile, song);
-					if (!bContinue && g_stSettings.m_bUseID3)
-					{
-            // get correct tag parser
-						CMusicInfoTagLoaderFactory factory;
-						auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(strFile));
-						if (NULL != pLoader.get())
-						{
-							CMusicInfoTag tag;
-							// get id3tag
-							if ( pLoader->Load(strFile,tag))
-							{
-								SYSTEMTIME systime;
-								song.iTrack		=tag.GetTrackNumber();
-								song.strAlbum =tag.GetAlbum();
-								song.strArtist=tag.GetArtist();
-								song.strFileName=strFile;
-								song.strGenre=tag.GetGenre();
-								song.strTitle=tag.GetTitle();
-								song.iDuration=tag.GetDuration();
-								tag.GetReleaseDate(systime);
-								song.iYear=systime.wYear;
-								strAlbum=song.strAlbum ;
-								bContinue=true;
-							}
-						}
-					}
-				}
-				if (bContinue)
-				{
-					if (song.strTitle.size())
-					{
-						CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-						msg1.SetLabel(song.strTitle );
-						OnMessage(msg1);
-						
-						if (song.strArtist.size())
-						{
-							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-							msg1.SetLabel( song.strArtist );
-							OnMessage(msg1);
-						}
-						
-						if ( song.strAlbum.size())
-						{
-							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-							msg1.SetLabel( song.strAlbum );
-							OnMessage(msg1);
-							strAlbum=song.strAlbum;
-						}
-						
-						int iTrack=song.iTrack;
-						if (iTrack >=1)
-						{
-							CStdString strText=g_localizeStrings.Get(435);
-							if (strText.GetAt(strText.size()-1) != ' ')
-								strText+=" ";
-							CStdString strTrack;
-							strTrack.Format(strText+"%i", iTrack);
-							
-							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-							msg1.SetLabel( strTrack );
-							OnMessage(msg1);
-						}
-
-						if (song.iYear >=1900)
-						{
-							CStdString strText=g_localizeStrings.Get(436);
-							if (strText.GetAt(strText.size()-1) != ' ')
-								strText+=" ";
-							CStdString strYear;
-							strYear.Format(strText+"%i", song.iYear);
-							
-							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-							msg1.SetLabel( strYear );
-							OnMessage(msg1);
-						}
-						if (song.iDuration > 0)
-						{
-							CStdString strDuration, strTime;
-
-							CStdString strText=g_localizeStrings.Get(437);
-							if (strText.GetAt(strText.size()-1) != ' ')
-								strText+=" ";
-
-							CUtil::SecondsToHMSString(song.iDuration, strTime);
-
-							strDuration=strText+strTime;
-							
-							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-							msg1.SetLabel( strDuration );
-							OnMessage(msg1);
-						}
-					}
-					else 
-					{
-							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-							msg1.SetLabel( CUtil::GetFileName(strFile) );
-							OnMessage(msg1);
-					}
-					dbs.Close();
-				}
-				else 
-				{
-					CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-					msg1.SetLabel( CUtil::GetFileName(strFile) );
-					OnMessage(msg1);
-				}
-			}
-			else
-			{
-					CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-					msg1.SetLabel( CUtil::GetFileName(strFile) );
-					OnMessage(msg1);
-			}
-
-			CStdString strThumb, strPath, strFileName;
-			CUtil::Split(strFile, strPath, strFileName);
-			CUtil::GetAlbumThumb(strAlbum+strPath,strThumb);
-			if (CUtil::ThumbExists(strThumb) )
-			{
-				//	show albums thumb
-				CPicture picture;
-				m_pTexture=picture.Load(strThumb);
-				m_iTextureWidth=picture.GetWidth();
-				m_iTextureHeight=picture.GetHeight();
-				if (m_pTexture)
-				{							
-					CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
-					OnMessage(msg1);
-				}
-			}
-			else
-			{
-				CUtil::GetAlbumThumb(strAlbum+strPath,strThumb,true);
-				if (CUtil::ThumbExists(strThumb) )
-				{
-					//	show temporary albums thumb
-					CPicture picture;
-					m_pTexture=picture.Load(strThumb);
-					m_iTextureWidth=picture.GetWidth();
-					m_iTextureHeight=picture.GetHeight();
-					if (m_pTexture)
-					{							
-						CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
-						OnMessage(msg1);
-					}
-				}
-				else
-				{
-          CStdString strThumb;
-          if ( CUtil::GetFolderThumb(strPath, strThumb) )
-          {
-						//	show albums folder jpeg
-						CPicture picture;
-						m_pTexture=picture.Load(strThumb);
-					  m_iTextureWidth=picture.GetWidth();
-					  m_iTextureHeight=picture.GetHeight();
-					  if (m_pTexture)
-					  {							
-						  CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
-						  OnMessage(msg1);
-					  }
-          }
-				}
+				delete pItem;
 			}
 		}
 	}
+	else
+	{
+		//	we have a audio file.
+		//	Look if we have this file in database...
+		bool bFound=false;
+		CSong song;
+		CMusicDatabase dbs;
+		if (dbs.Open())
+		{
+			bFound=dbs.GetSongByFileName(strFile, song);
+			dbs.Close();
+		}
+		if (!bFound && g_stSettings.m_bUseID3)
+		{
+			//	...no, try to load the tag of the file.
+			CMusicInfoTagLoaderFactory factory;
+			auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(strFile));
+			//	Do we have a tag loader for this file type?
+			if (NULL != pLoader.get())
+			{
+				// yes, load its tag
+				if ( !pLoader->Load(strFile,tag))
+				{
+					//	Failed!
+					tag.SetLoaded(false);
+					//	just to be sure :-)
+				}
+			}
+		}
+		else
+		{
+			//	...yes, this file is found in database
+			//	fill the tag of our fileitem
+			SYSTEMTIME systime;
+			systime.wYear=song.iYear;
+			tag.SetReleaseDate(systime);
+			tag.SetTrackNumber(song.iTrack);
+			tag.SetAlbum(song.strAlbum);
+			tag.SetArtist(song.strArtist);
+			tag.SetGenre(song.strGenre);
+			tag.SetTitle(song.strTitle);
+			tag.SetDuration(song.iDuration);
+			tag.SetLoaded(true);
+		}
+	}
+
+	//	If we have tag information, ...
+	if (tag.Loaded())
+	{
+		//	...display them in window
+
+		//	display only, if we have a title
+		if (tag.GetTitle().size())
+		{
+			//	Display available tag information in fade label control
+
+			CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+			msg1.SetLabel(tag.GetTitle());
+			OnMessage(msg1);
+			
+			if (tag.GetArtist().size())
+			{
+				//	Artist
+				CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+				msg1.SetLabel(tag.GetArtist());
+				OnMessage(msg1);
+			}
+			
+			if (tag.GetAlbum().size())
+			{
+				//	Album
+				CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+				msg1.SetLabel(tag.GetAlbum());
+				OnMessage(msg1);
+			}
+			
+			int iTrack=tag.GetTrackNumber();
+			if (iTrack >=1)
+			{
+				//	Tracknumber
+				CStdString strText=g_localizeStrings.Get(435);	//	"Track"
+				if (strText.GetAt(strText.size()-1) != ' ')
+					strText+=" ";
+				CStdString strTrack;
+				strTrack.Format(strText+"%i", iTrack);
+				
+				CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+				msg1.SetLabel(strTrack);
+				OnMessage(msg1);
+			}
+
+			SYSTEMTIME systemtime;
+			tag.GetReleaseDate(systemtime);
+			int iYear=systemtime.wYear;
+			if (iYear >=1900)
+			{
+				//	Year
+				CStdString strText=g_localizeStrings.Get(436);	//	"Year:"
+				if (strText.GetAt(strText.size()-1) != ' ')
+					strText+=" ";
+				CStdString strYear;
+				strYear.Format(strText+"%i", iYear);
+				
+				CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+				msg1.SetLabel(strYear);
+				OnMessage(msg1);
+			}
+
+			if (tag.GetDuration() > 0)
+			{
+				//	Duration
+				CStdString strDuration, strTime;
+
+				CStdString strText=g_localizeStrings.Get(437);
+				if (strText.GetAt(strText.size()-1) != ' ')
+					strText+=" ";
+
+				CUtil::SecondsToHMSString(tag.GetDuration(), strTime);
+
+				strDuration=strText+strTime;
+				
+				CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+				msg1.SetLabel( strDuration );
+				OnMessage(msg1);
+			}
+		}	//	if (tag.GetTitle().size())
+		else 
+		{
+			//	No title in tag, show filename only
+			CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+			msg1.SetLabel( CUtil::GetFileName(strFile) );
+			OnMessage(msg1);
+		}
+	}	//	if (tag.Loaded())
+	else 
+	{
+		//	If we have a cdda track without cddb information,...
+		if (!tag.Loaded() && url.GetProtocol()=="cdda" )
+		{
+			//	we have the tracknumber...
+			int iTrack=tag.GetTrackNumber();
+			if (iTrack >=1)
+			{
+				CStdString strText=g_localizeStrings.Get(435);	//	"Track"
+				if (strText.GetAt(strText.size()-1) != ' ')
+					strText+=" ";
+				CStdString strTrack;
+				strTrack.Format(strText+"%i", iTrack);
+				
+				CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+				msg1.SetLabel(strTrack);
+				OnMessage(msg1);
+			}
+
+			//	...and its duration for display.
+			if (tag.GetDuration() > 0)
+			{
+				CStdString strDuration, strTime;
+
+				CStdString strText=g_localizeStrings.Get(437);
+				if (strText.GetAt(strText.size()-1) != ' ')
+					strText+=" ";
+
+				CUtil::SecondsToHMSString(tag.GetDuration(), strTime);
+
+				strDuration=strText+strTime;
+				
+				CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+				msg1.SetLabel( strDuration );
+				OnMessage(msg1);
+			}
+		}	//	if (!tag.Loaded() && url.GetProtocol()=="cdda" )
+		else 
+		{
+			//	No tag information available for this file, show filename only
+			CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+			msg1.SetLabel( CUtil::GetFileName(strFile) );
+			OnMessage(msg1);
+		}
+	}
+
+
+	//	Find a thumb for this file.
+	CUtil::SetMusicThumb(&item);
+	if (item.HasThumbnail())
+	{
+		//	Found, so load it.
+		CPicture picture;
+		m_pTexture=picture.Load(item.GetThumbnailImage());
+		m_iTextureWidth=picture.GetWidth();
+		m_iTextureHeight=picture.GetHeight();
+		//	 thumb correctly loaded?
+		if (m_pTexture)
+		{
+			//	Hide image that is displayed, if no thumb is available
+			CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
+			OnMessage(msg1);
+		}
+	}
+}
