@@ -204,17 +204,21 @@ void CSettings::Save() const
 bool CSettings::Load()
 {
 	// load settings file...
+  CLog::Log("loading T:\\settings.xml");
 	if (!LoadSettings("T:\\settings.xml"))
 	{
     CLog::Log("Unable to load T:\\settings.xml");
 	}
 	// load calibration file...
+  CLog::Log("loading T:\\calibration.xml");
 	if (!LoadCalibration("T:\\calibration.xml"))
 	{
 		CLog::Log("Unable to load T:\\calibration.xml");
 	}
 
 	// load xml file...
+
+  CLog::Log("loading Q:\\XboxMediaCenter.xml");
 	CStdString strXMLFile = "Q:\\XboxMediaCenter.xml";
 	TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) 
@@ -227,7 +231,7 @@ bool CSettings::Load()
   CStdString strValue=pRootElement->Value();
 	if ( strValue != "xboxmediacenter") 
   {
-    CLog::Log("%s doesnt contain <xboxmediacenter>",strXMLFile.c_str());
+    CLog::Log("%s doesnt start with <xboxmediacenter>",strXMLFile.c_str());
     return false;
   }
 

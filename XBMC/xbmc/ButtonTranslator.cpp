@@ -1,6 +1,7 @@
 #include "ButtonTranslator.h"
 #include "XBIRRemote.h"
 #include "../guilib/Key.h"
+#include "utils/log.h"
 
 CButtonTranslator g_buttonTranslator;
 
@@ -17,17 +18,21 @@ void CButtonTranslator::Load()
 	// load our xml file, and fill up our mapping tables
 	TiXmlDocument xmlDoc;
 
-	OutputDebugString("Loading keymap.xml\n");
+  CLog::Log("Loading Q:\\keymap.xml");
 	// Load the config file
 	if (!xmlDoc.LoadFile("Q:\\keymap.xml"))
 	{
-		OutputDebugString("Unable to load keymap.xml\n");
+    CLog::Log("Unable to load Q:\\keymap.xml");
 		return;
 	}
 
 	TiXmlElement* pRoot = xmlDoc.RootElement();
 	CStdString strValue=pRoot->Value();
-	if ( strValue != "keymap") return;
+	if ( strValue != "keymap") 
+  {
+    CLog::Log("keymap.xml doesnt start with <keymap>");
+    return;
+  }
 	// do the global actions
 	TiXmlElement* pWindow = pRoot->FirstChildElement("global");
 	if (pWindow)
