@@ -88,14 +88,14 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
       m_dwHeight =g_graphicsContext.GetHeight();
       m_dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
     }
-		if (iMaxWidth > (DWORD)g_graphicsContext.GetWidth() )
+		if (iMaxWidth > (int)g_graphicsContext.GetWidth() )
     {
       bResize=true;
       m_dwWidth  = iMaxWidth;
       m_dwHeight = (DWORD)( ( (float)m_dwWidth) / fAspect);
     }
 
-    if (iMaxHeight > (DWORD)g_graphicsContext.GetHeight() )
+    if (iMaxHeight > (int)g_graphicsContext.GetHeight() )
     {
       bResize=true;
       m_dwHeight =iMaxHeight;

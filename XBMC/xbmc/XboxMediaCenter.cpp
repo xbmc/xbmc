@@ -5,11 +5,7 @@
 //			- xbfilezilla : doesnt support section loading yet
 //
 // test:
-//			- default dirs
 //			- my files copy : shortens filenames to 42 chars.
-//			- my music search
-//			- progress dialog box is nu echt groter
-//			- cdda/cddb
 //
 // bugs: 
 //			- reboot button blinks 1/2 speed???
