@@ -47,3 +47,10 @@ void CVisualisation::Stop()
 	if (!m_pVisz) return;
 	m_pVisz->Stop();
 }
+
+
+void CVisualisation::GetInfo(VIS_INFO *info)
+{
+	if (!m_pVisz) return;
+	m_pVisz->GetInfo(info);
+}

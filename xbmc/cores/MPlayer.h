@@ -11,6 +11,8 @@ class CMPlayer : public IPlayer, public CThread
 public:
 	CMPlayer(IPlayerCallback& callback);
 	virtual ~CMPlayer();
+	virtual void		RegisterAudioCallback(IAudioCallback* pCallback);
+	virtual void		UnRegisterAudioCallback();
 	virtual bool		openfile(const CStdString& strFile);
 	virtual bool		closefile();
 	virtual bool		IsPlaying() const;

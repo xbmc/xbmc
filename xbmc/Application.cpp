@@ -392,6 +392,16 @@ void CApplication::OnKey(CKey& key)
 			return;
 		}
 	}
+#ifdef _DEBUG
+	else //if (IsPlayingAudio() )
+	{
+		if ( key.GetButtonCode() == KEY_BUTTON_X  || key.GetButtonCode() == KEY_REMOTE_MENU)
+		{
+			m_gWindowManager.ActivateWindow(2006);//visz.
+			return;
+		}
+	}
+#endif
 	m_gWindowManager.OnKey(key);   
 }
 

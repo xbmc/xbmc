@@ -6,6 +6,8 @@
 #include "IAudioCallback.h"
 CASyncDirectSound* m_pAudioDecoder=NULL;
 
+static IAudioCallback* m_pAudioCallback=NULL;
+
 ao_info_t audio_info =  {
 		"Windows waveOut audio output",
 		"win32",
@@ -46,8 +48,6 @@ static int audio_control(int cmd,int arg)
 	return CONTROL_OK;
 }
 
-static IAudioCallback* m_pAudioCallback;
-
 void RegisterAudioCallback(IAudioCallback* pCallback)
 {
 	m_pAudioCallback=pCallback;
@@ -57,9 +57,9 @@ void RegisterAudioCallback(IAudioCallback* pCallback)
 
 void UnRegisterAudioCallback()
 {
-	m_pAudioCallback=NULL;
 	if (m_pAudioDecoder) 
 		m_pAudioDecoder->UnRegisterAudioCallback();
+	m_pAudioCallback=NULL;
 }
 
 //******************************************************************************************
@@ -192,3 +192,15 @@ ao_functions_t audio_functions=
 	audio_pause,
 	audio_resume
 };
+
+extern void xbox_audio_registercallback(IAudioCallback* pCallback)
+{
+	if (!m_pAudioDecoder) return;
+	m_pAudioDecoder->RegisterAudioCallback(pCallback);
+}
+extern void xbox_audio_unregistercallback()
+{
+	if (!m_pAudioDecoder) return;
+	m_pAudioDecoder->UnRegisterAudioCallback();
+	m_pAudioCallback=NULL;
+}

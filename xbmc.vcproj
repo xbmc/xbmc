@@ -883,6 +883,12 @@
 			Name="utils"
 			Filter="">
 			<File
+				RelativePath=".\xbmc\utils\CriticalSection.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\CriticalSection.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\utils\DelayController.cpp">
 			</File>
 			<File
@@ -943,6 +949,12 @@
 				RelativePath=".\xbmc\utils\Mutex.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\SingleLock.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\SingleLock.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\utils\Sntp.cpp">
 			</File>
 			<File
@@ -984,6 +996,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\exports4.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\exports5.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\IPlayer.h">
@@ -1046,9 +1061,6 @@
 					RelativePath=".\xbmc\cores\mplayer\audio.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\mplayer\IAudioCallback.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\cores\mplayer\IAudioCallback.h">
 				</File>
 				<File
@@ -1071,6 +1083,12 @@
 		<Filter
 			Name="Visualisations"
 			Filter="">
+			<File
+				RelativePath=".\xbmc\visualizations\fft.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\visualizations\fft.h">
+			</File>
 			<File
 				RelativePath=".\xbmc\visualizations\Visualisation.cpp">
 			</File>
