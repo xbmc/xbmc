@@ -19,21 +19,21 @@
 // Transition effects for text, must specific exactly one in and one out effect
 enum CRED_EFFECTS
 {
-	EFF_IN_APPEAR  = 0x0,     // appear on the screen instantly
-	EFF_IN_FADE    = 0x1,     // fade in over time
-	EFF_IN_FLASH   = 0x2,     // flash the screen white over time and appear (short dur recommended)
-	EFF_IN_ASCEND  = 0x3,     // ascend from the bottom of the screen
-	EFF_IN_DESCEND = 0x4,     // descend from the top of the screen
-	EFF_IN_LEFT    = 0x5,     // slide in from the left
-	EFF_IN_RIGHT   = 0x6,     // slide in from the right
+ EFF_IN_APPEAR  = 0x0,     // appear on the screen instantly
+ EFF_IN_FADE    = 0x1,     // fade in over time
+ EFF_IN_FLASH   = 0x2,     // flash the screen white over time and appear (short dur recommended)
+ EFF_IN_ASCEND  = 0x3,     // ascend from the bottom of the screen
+ EFF_IN_DESCEND = 0x4,     // descend from the top of the screen
+ EFF_IN_LEFT    = 0x5,     // slide in from the left
+ EFF_IN_RIGHT   = 0x6,     // slide in from the right
 
-	EFF_OUT_APPEAR  = 0x00,     // disappear from the screen instantly
-	EFF_OUT_FADE    = 0x10,     // fade out over time
-	EFF_OUT_FLASH   = 0x20,     // flash the screen white over time and disappear (short dur recommended)
-	EFF_OUT_ASCEND  = 0x30,     // ascend to the top of the screen
-	EFF_OUT_DESCEND = 0x40,     // descend to the bottom of the screen
-	EFF_OUT_LEFT    = 0x50,     // slide out to the left
-	EFF_OUT_RIGHT   = 0x60,     // slide out to the right
+ EFF_OUT_APPEAR  = 0x00,     // disappear from the screen instantly
+ EFF_OUT_FADE    = 0x10,     // fade out over time
+ EFF_OUT_FLASH   = 0x20,     // flash the screen white over time and disappear (short dur recommended)
+ EFF_OUT_ASCEND  = 0x30,     // ascend to the top of the screen
+ EFF_OUT_DESCEND = 0x40,     // descend to the bottom of the screen
+ EFF_OUT_LEFT    = 0x50,     // slide out to the left
+ EFF_OUT_RIGHT   = 0x60,     // slide out to the right
 };
 #define EFF_IN_MASK (0xf)
 #define EFF_OUT_MASK (0xf0)
@@ -73,11 +73,9 @@ CreditLine_t Credits[] =
 
   // Lead dev  fadein 2 rows, on 110 rows, fadeout 16 rows
   {  50,  22,  15360,  13200,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Project Founders" },
-  {  50,  29,      0,  13200,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"and" },
-  {  50,  34,      0,  13200,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Lead Developers" },
-  {  50,  47,    720,  12480,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Frodo" },
-  {  50,  57,      0,  12480,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"RUNTiME" },
-  {  50,  67,      0,  12480,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"d7o3g4q" },
+  {  50,  35,    720,  12480,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Frodo" },
+  {  50,  45,      0,  12480,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"RUNTiME" },
+  {  50,  55,      0,  12480,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"d7o3g4q" },
 
   // Devs  flash 0.5 rows, on 63 rows, crossfade 3.5 rows
   {  50,  22,  14640,  13380,   60, 1920, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Developers" },
@@ -102,14 +100,13 @@ CreditLine_t Credits[] =
 
   {  50,  60,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Tech Support Mods" },
   {  50,  70,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"DDay" },
-  {  50,  80,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Poing" },
 
   // Testers crossfade 3.5, on 45, fadeout 16
   {  50,  22,   7620,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Testers" },
   {  50,  35,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Shadow_Mx" },
   {  50,  45,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL" },
   {  50,  55,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"[XC]D-Ice" },
-  {  50,  65,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Chokeman" },
+  {  50,  65,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Chokemaniac" },
   {  50,  75,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Wabid" },
   {  50,  85,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Blackwolf" },
 
@@ -121,7 +118,7 @@ CreditLine_t Credits[] =
   {  50,  65,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"kraqh3d" },
 
   // Stream server  crossfade 3.5, on 60 crossfade 3
-  {  50,  22,   7620,   7200,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Stream Server" },
+  {  50,  22,   7620,   7200,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Stream Servers" },
   {  50,  35,      0,   7200,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"[XC]D-Ice" },
   {  50,  45,      0,   7200,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"PuhPuh" },
   {  50,  55,      0,   7200,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Pope-X" },
@@ -133,6 +130,12 @@ CreditLine_t Credits[] =
   {  50,  55,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-XBMC" },
   {  50,  65,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL (ASP Site Upload)" },
   {  50,  75,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Sourceforge.net" },
+
+  // Online-manual crossfade 3, on 61, crossfade 3
+  {  50,  22,   7680,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Online Manual" },
+  {  50,  35,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"nimbles" },
+  {  50,  45,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Sig Olafsson" },
+  {  50,  55,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"No Good" },  
 
   // Sponsors crossfade 3, on 61, crossfade 3
   {  50,  22,   7680,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Sponsors" },
@@ -159,10 +162,10 @@ CreditLine_t Credits[] =
 
   // Visualizations crossfade 3, on 61, fadeout 16
   {  50,  22,   7680,   7320,  360,  1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Visualizations by" },
-  {  50,  35,      0,   7320,  360,  1920, EFF_IN_RIGHT   |EFF_OUT_LEFT   ,   20, L"nmrs" },
-  {  50,  45,      0,   7320,  360,  1920, EFF_IN_LEFT   |EFF_OUT_RIGHT   ,   20, L"questor/fused" },
-  {  50,  55,      0,   7320,  360,  1920, EFF_IN_RIGHT   |EFF_OUT_LEFT   ,   20, L"Dinomight" },
-  {  50,  65,      0,   7320,  360,  1920, EFF_IN_LEFT   |EFF_OUT_RIGHT   ,   20, L"mynci" },
+  {  50,  35,      0,   7320,  360,  1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"nmrs" },
+  {  50,  45,      0,   7320,  360,  1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"questor/fused" },
+  {  50,  55,      0,   7320,  360,  1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Dinomight" },
+  {  50,  65,      0,   7320,  360,  1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"mynci" },
 
 	// empty block, can be used for more credits if needed
   {   0,   0,   7800,  15360,    0,    0, EFF_IN_APPEAR |EFF_OUT_APPEAR ,   20, NULL },
@@ -202,7 +205,8 @@ CreditLine_t Credits[] =
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Gandalf, Legolas, Gimli, Aragorn, Boromir" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Merry, Pippin and ofcourse Samwise" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and..." },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Team-XBMC wishes Frodo good luck with his future projects!" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Team-XBMC wants to wish Frodo:" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Good Luck with his future projects!" },
 
   // section dday
   {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"DDay" },
@@ -248,11 +252,11 @@ CreditLine_t Credits[] =
   {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Pike" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Microsoft for the XBOX," },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"which we have turned into" },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"the best Mediaplayer!" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"THE BEST Mediaplayer!" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Trance & other uplifting music" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for making my days more enjoyable!" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"And remember - best things in life are free" },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"(Sex) and ofcourse XBMC!" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Sex and ofcourse XBMC!" },
 
   // section forza
   {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Forza" },
@@ -676,7 +680,7 @@ static void RenderCredits(const list<CreditLine_t*>& ActiveList, DWORD& Gamma, D
 			// Render
 			float x;
 			float y;
-			DWORD alpha=0;
+			DWORD alpha;
 
 			if (Time < pCredit->Time + pCredit->InDuration)
 			{
@@ -1252,21 +1256,21 @@ unsigned __stdcall CreditsMusicThread(void* pParam)
 		{
 			Mod_Player_Stop();
 			Mod_Player_Free(pModule);
-			pModule = Mod_Player_Load((char*)pParam, 127, 0);
-//			pModule->loop = 1;
-//			pModule->sngpos = 18;
-			s_bFadeMusic = false;
-			mikxboxSetMusicVolume(MusicVol = 128);
-			Mod_Player_Start(pModule);
-		}
-	} while (!s_bStopPlaying);
+   pModule = Mod_Player_Load((char*)pParam, 127, 0);
+//   pModule->loop = 1;
+//   pModule->sngpos = 18;
+   s_bFadeMusic = false;
+   mikxboxSetMusicVolume(MusicVol = 128);
+   Mod_Player_Start(pModule);
+  }
+ } while (!s_bStopPlaying);
 
-	Mod_Player_Free(pModule);
+ Mod_Player_Free(pModule);
 
-	mikxboxExit();
+ mikxboxExit();
 
-	CSectionLoader::Unload("MOD_RX");
-	CSectionLoader::Unload("MOD_RW");
+ CSectionLoader::Unload("MOD_RX");
+ CSectionLoader::Unload("MOD_RW");
 
-	return 0;
+ return 0;
 }
