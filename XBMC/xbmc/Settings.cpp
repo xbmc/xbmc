@@ -104,6 +104,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bUseCDDB=false;
 
 	g_stSettings.m_iMyMusicStartWindow=501;//view songs
+	g_stSettings.m_iVideoStartWindow=0;
 
 	g_stSettings.m_bMyMusicSongsRootViewAsIcons=true; //thumbs
 	g_stSettings.m_bMyMusicSongsViewAsIcons=false;
@@ -714,6 +715,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	pElement = pRootElement->FirstChildElement("myvideos");
 	if (pElement)
 	{ 
+    GetInteger(pElement, "startwindow",g_stSettings.m_iVideoStartWindow);
+    
     GetBoolean(pElement, "stackvideo", g_stSettings.m_bMyVideoVideoStack);
     GetBoolean(pElement, "stackgenre", g_stSettings.m_bMyVideoGenreStack);
     GetBoolean(pElement, "stackactor", g_stSettings.m_bMyVideoActorStack);
@@ -967,6 +970,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	pNode = pRoot->InsertEndChild(videosNode);
 	if (!pNode) return false;
 
+  SetInteger(pNode, "startwindow",g_stSettings.m_iVideoStartWindow);
   SetBoolean(pNode, "stackvideo", g_stSettings.m_bMyVideoVideoStack);
   SetBoolean(pNode, "stackgenre", g_stSettings.m_bMyVideoGenreStack);
   SetBoolean(pNode, "stackactor", g_stSettings.m_bMyVideoActorStack);
