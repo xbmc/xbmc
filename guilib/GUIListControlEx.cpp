@@ -140,7 +140,7 @@ void CGUIListControlEx::OnAction(const CAction &action)
 				{
 					m_iOffset++;
 				}
-				else if (m_iCursorY<m_iItemsPerPage-1)
+				else if (m_iCursorY<m_iItemsPerPage-1 && m_iOffset + m_iCursorY < (int)list.size()-1)
 				{
 					m_iCursorY++;
 				}
