@@ -5,8 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 13-09-2004 chnaged: renamed a few language folders
-  - 13-09-2004 added: Portuguese (brazil) languge file (Thx to wellingtontu)
+  - 13-09-2004 changed: renamed a few language folders
+  - 13-09-2004 added: Portuguese (brazil) language file (Thx to wellingtontu)
   - 13-09-2004 added: German (Austria) language file (Thx to CEOMR)
   - 13-09-2004 added: [ 1026597 ] Polish language file (Thx to NaPeK)
   - 13-09-2004 fixed: my music songs, last control is always the list/thumb control when autoswitch list/thumb enabled
