@@ -154,7 +154,7 @@ CSettings::CSettings(void)
 	m_ResInfo[PAL60_4x3].Overscan.right = 720;
 	m_ResInfo[PAL60_4x3].Overscan.bottom = 480;
 	m_ResInfo[PAL60_4x3].iSubtitles = (int)(0.9*480);
-	m_ResInfo[PAL60_4x3].iOSDYOffset = -75;	// Y offset for OSD (applied to all Y pos in skin)
+	m_ResInfo[PAL60_4x3].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[PAL60_4x3].iWidth = 720;
 	m_ResInfo[PAL60_4x3].iHeight = 480;
 	m_ResInfo[PAL60_4x3].dwFlags = 0;
@@ -166,7 +166,7 @@ CSettings::CSettings(void)
 	m_ResInfo[PAL60_16x9].Overscan.right = 720;
 	m_ResInfo[PAL60_16x9].Overscan.bottom = 480;
 	m_ResInfo[PAL60_16x9].iSubtitles = (int)(0.965*480);
-	m_ResInfo[PAL60_16x9].iOSDYOffset = -75;	// Y offset for OSD (applied to all Y pos in skin)
+	m_ResInfo[PAL60_16x9].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[PAL60_16x9].iWidth = 720;
 	m_ResInfo[PAL60_16x9].iHeight = 480;
 	m_ResInfo[PAL60_16x9].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
