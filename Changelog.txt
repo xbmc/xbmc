@@ -5,8 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 28-11-2003 fixed: bug in kaiclient preventing voice chat from working.
-  - 27-11-2003 added: Show contact/friend avatar on Kai Toast popup.
+  - 28-11-2004 fixed: possible lockup switching from gui to fullscreen video while video playing
+  - 28-11-2004 fixed: bug in kaiclient preventing voice chat from working.
+  - 27-11-2004 added: Show contact/friend avatar on Kai Toast popup.
   - 27-11-2004 updated: Polish language file (Thnx to napek)
   - 27-11-2004 added: flash Kai chat tab briefly when another player sends message while tab not currently selected.
   - 27-11-2004 fixed: some memory leaks in the database code.
