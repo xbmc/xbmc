@@ -1070,23 +1070,33 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
     if (CUtil::IsPlayList(pItem->m_strPath) )
     {
       // playlist
+      pItem->SetIconImage("defaultPlaylist.png");
+
+			//	Save playlists to playlist directroy
       CStdString strDir;
       CStdString strFileName;
-      pItem->SetIconImage("defaultPlaylist.png");
-      CPlayListFactory factory;
-      auto_ptr<CPlayList> pPlayList (factory.Create(pItem->m_strPath) );
-      if (NULL != pPlayList.get() )
-      {
-        if (pPlayList->Load(pItem->m_strPath))
-        {
-          strFileName=CUtil::GetFileName(pItem->m_strPath);
-          strDir.Format("%s\\playlists\\%s",g_stSettings.m_szAlbumDirectory,strFileName.c_str());
-          if ( strDir != pItem->m_strPath )
-          {
-            pPlayList->Save(strDir) ;
-          }
-        }
-      }
+			strFileName=CUtil::GetFileName(pItem->m_strPath);
+			strDir.Format("%s\\playlists\\%s",g_stSettings.m_szAlbumDirectory,strFileName.c_str());
+			if (strDir!=pItem->m_strPath)
+			{
+				CPlayListFactory factory;
+				auto_ptr<CPlayList> pPlayList (factory.Create(pItem->m_strPath));
+				if (pPlayList.get()!=NULL)
+				{
+					if (pPlayList->Load(pItem->m_strPath) && pPlayList->size()>0)
+					{
+						const CPlayList::CPlayListItem& item=(*pPlayList.get())[0];
+						CURL url(item.GetFileName());
+						if (!(url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") &&
+								!(url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") &&
+								!(url.GetProtocol() =="mms" || url.GetProtocol()=="MMS")  &&
+								!(url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP"))
+						{
+							pPlayList->Save(strDir);
+						}
+					}
+				}
+			}
     }
     else if (CUtil::IsPicture(pItem->m_strPath) )
     {
