@@ -11,22 +11,10 @@
 #include "PlayList.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "Utils/MusicInfoScraper.h"
+#include "GUIViewControl.h"
 
 using namespace DIRECTORY;
 using namespace PLAYLIST;
-
-/*!
- \brief View as list
- */
-#define VIEW_AS_LIST       0 
-/*!
- \brief View as icons
- */
-#define VIEW_AS_ICONS       1 
-/*!
- \brief View as large icons
- */
-#define VIEW_AS_LARGEICONS    2
 
 /*!
  \ingroup windows 
@@ -43,6 +31,8 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void OnAction(const CAction& action);
   virtual void Render();
+  virtual void OnWindowLoaded();
+
 protected:
   /*!
     \brief Overwrite to fill fileitems from a source
@@ -95,9 +85,9 @@ protected:
   bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
   bool GetKeyboard(CStdString& strInput);
   virtual void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
-  virtual void ShowThumbPanel();
   bool ViewByIcon();
   bool ViewByLargeIcon();
+  bool IsViewControl(int control);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
   void SetLabelFromTag(CFileItem *pItem);
 
@@ -137,4 +127,6 @@ protected:
   int m_iLastControl; ///< Backups the last selected control before window is deinitialized
   bool m_bDisplayEmptyDatabaseMessage;  ///< If true we display a message informing the user to switch back to the Files view.
   CStdString m_strParentPath; ///< Parent path to handle going up a dir
+
+  CGUIViewControl m_viewControl;  ///< Handles our various views
 };
