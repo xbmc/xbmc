@@ -43,8 +43,9 @@ void CGUIListExItem::SetIcon(INT aWidth, INT aHeight, const CStdString& aTexture
 void CGUIListExItem::OnPaint(CGUIItem::RenderContext* pContext)
 {
 	// safely get a pointer to the derived (subclassed) context
-	CGUIListExItem::RenderContext* pDC = dynamic_cast<CGUIListExItem::RenderContext*>(pContext);
+	//CGUIListExItem::RenderContext* pDC = dynamic_cast<CGUIListExItem::RenderContext*>(pContext);
 
+	CGUIListExItem::RenderContext* pDC = (CGUIListExItem::RenderContext*)pContext;
 	if (pDC)
 	{
 		DWORD dwPosX = pDC->m_dwPositionX;
