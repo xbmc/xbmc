@@ -11,11 +11,13 @@ CDirectory::CDirectory()
 CDirectory::~CDirectory()
 {}
 
-bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask/*=""*/)
 {
   bool bSucces;
   IDirectory* pDirectory = CFactoryDirectory().Create(strPath);
   if (!pDirectory) return false;
+
+  pDirectory->SetMask(strMask);
 
   bSucces = pDirectory->GetDirectory(strPath, items);
   delete pDirectory;
