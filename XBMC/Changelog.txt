@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 28-10-2004 updated: Oct 24th compiled mplayer.dll
+  - 28-10-2004 updated: added .001 and removed .nfo from XboxMediaCenter.xml default <videoextensions>
+  - 28-10-2004 updated: added .001 to be handled as rar in Util.cpp (used with ccxstream_unrar for streaming video from rar files)
+  - 28-10-2004 updated: XLink-KAI Private / Clan arena (alpha) support.
   - 27-10-2004 updated: German language file
   - 27-10-2004 updated: Italian language file (Thnx to kotix)
   - 27-10-2004 updated: German (Austrian) language file (Thnx to CEOMR)
