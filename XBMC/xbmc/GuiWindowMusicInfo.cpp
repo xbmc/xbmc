@@ -113,12 +113,8 @@ void CGUIWindowMusicInfo::Update()
 	if (m_bViewReview)
 	{
 			CStdString strReview=m_pAlbum->GetReview();
-			WCHAR* wszText = new WCHAR[1000+strReview.size()];
-			swprintf(wszText,L"%S", strReview.c_str());
-			CGUIMessage msg4(GUI_MSG_LABEL_SET,GetID(),CONTROL_TEXTAREA,0,0,(void*)wszText);
+			CGUIMessage msg4(GUI_MSG_LABEL_SET,GetID(),CONTROL_TEXTAREA,0,0,(void*)strReview.c_str());
 			g_graphicsContext.SendMessage(msg4);
-			delete[] wszText;
-
 			
 			const WCHAR* pszText=g_localizeStrings.Get(182).c_str();
 			CGUIMessage msg5(GUI_MSG_LABEL_SET,GetID(),CONTROL_BTN_TRACKS,0,0,(void*)pszText);
@@ -131,21 +127,24 @@ void CGUIWindowMusicInfo::Update()
 		{
 			const CMusicSong& song=m_pAlbum->GetSong(i);
 			CStdString strTmp;
+			strTmp.Format("%i. %-30s\n",
+							song.GetTrack(), 
+							song.GetSongName().c_str());
+			strLine+=strTmp;
+		};
+		CGUIMessage msg4(GUI_MSG_LABEL_SET,GetID(),CONTROL_TEXTAREA,0,0,(void*)strLine.c_str());
+		g_graphicsContext.SendMessage(msg4);
+		for (int i=0; i < m_pAlbum->GetNumberOfSongs();++i)
+		{
+			const CMusicSong& song=m_pAlbum->GetSong(i);
+			CStdString strTmp;
 			int iSec=song.GetDuration();
 			int iMin=iSec/60;
 			iSec = iSec%60;
-			strTmp.Format("%i. %-30s %i:%02.2i\n",
-							song.GetTrack(), 
-							song.GetSongName().c_str(),
-							iMin,iSec);
-			strLine+=strTmp;
+			strTmp.Format("%i:%02.2i",iMin,iSec);
+			CGUIMessage msg3(GUI_MSG_LABEL_ADD,GetID(),CONTROL_TEXTAREA,i,0,(void*)strTmp.c_str());
+			g_graphicsContext.SendMessage(msg3);
 		}
-		WCHAR* wszText = new WCHAR[1000+strLine.size()];
-		swprintf(wszText,L"%S", strLine.c_str());
-		CGUIMessage msg4(GUI_MSG_LABEL_SET,GetID(),CONTROL_TEXTAREA,0,0,(void*)wszText);
-		g_graphicsContext.SendMessage(msg4);
-		delete[] wszText;
-
 		const WCHAR* pszText=g_localizeStrings.Get(183).c_str();
 		CGUIMessage msg5(GUI_MSG_LABEL_SET,GetID(),CONTROL_BTN_TRACKS,0,0,(void*)pszText);
 		g_graphicsContext.SendMessage(msg5);

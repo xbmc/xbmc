@@ -37,10 +37,24 @@ void CGUITextBox::Render()
     if (i+m_iOffset < (int)m_vecItems.size() )
     {
       // render item
-      wstring strLabel=m_vecItems[i+m_iOffset];
-      
+			CGUIListItem& item=m_vecItems[i+m_iOffset];
+			CStdString strLabel1=item.GetLabel();
+			CStdString strLabel2=item.GetLabel2();
+
+			WCHAR wszText1[1024];
+			swprintf(wszText1,L"%S", strLabel1.c_str() );
 			DWORD dMaxWidth=m_dwWidth+16;
-			m_pFont->DrawTextWidth((float)dwPosX, (float)dwPosY+2, m_dwTextColor,strLabel.c_str(),(float)dMaxWidth);
+			if (strLabel2.size())
+			{
+				WCHAR wszText2[1024];
+				float fTextWidth,fTextHeight;
+				swprintf(wszText2,L"%S", strLabel2.c_str() );
+				m_pFont->GetTextExtent( wszText2, &fTextWidth,&fTextHeight);
+				dMaxWidth -= (DWORD)(fTextWidth);
+
+				m_pFont->DrawTextWidth((float)dwPosX+dMaxWidth, (float)dwPosY+2, m_dwTextColor,wszText2,(float)fTextWidth);
+			}
+			m_pFont->DrawTextWidth((float)dwPosX, (float)dwPosY+2, m_dwTextColor,wszText1,(float)dMaxWidth);
       dwPosY += (DWORD)m_iItemHeight;
     }
   }
@@ -109,6 +123,16 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
         m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
       }
     }
+    if (message.GetMessage() == GUI_MSG_LABEL_ADD)
+    {
+			int iItem=message.GetParam1();
+			CStdString strLabel=(const CHAR*)message.GetLPVOID();
+			if (iItem >=0 && iItem < (int)m_vecItems.size())
+			{
+				CGUIListItem& item=m_vecItems[iItem];
+				item.SetLabel2(strLabel);
+			}
+		}
 
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
@@ -116,8 +140,8 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
       m_vecItems.erase(m_vecItems.begin(),m_vecItems.end());
       m_upDown.SetRange(1,1);
       m_upDown.SetValue(1);
-      const WCHAR* wstrLabel=(const WCHAR*)message.GetLPVOID();
-			SetText(wstrLabel);
+      const char* strLabel=(const char*)message.GetLPVOID();
+			SetText(strLabel);
     }
 
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
@@ -187,7 +211,7 @@ void CGUITextBox::OnLeft()
   m_upDown.OnKey(key);
   if (!m_upDown.HasFocus()) 
   {
-    //m_iSelect=CONTROL_LIST;
+    CGUIControl::OnKey(key);
   }
 }
 
@@ -197,7 +221,7 @@ void CGUITextBox::OnUp()
   m_upDown.OnKey(key);
   if (!m_upDown.HasFocus()) 
   {
-    //m_iSelect=CONTROL_LIST;
+    CGUIControl::OnKey(key);
   }
 }
 
@@ -236,7 +260,7 @@ void CGUITextBox::OnPageDown()
     m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
   }
 }
-void CGUITextBox::SetText(const wstring &strText)
+void CGUITextBox::SetText(const string &strText)
 {
 	m_vecItems.erase(m_vecItems.begin(),m_vecItems.end());
 	// start wordwrapping
@@ -247,16 +271,17 @@ void CGUITextBox::SetText(const wstring &strText)
 	int lpos=0;
 	int iLastSpace=-1;
 	int iLastSpaceInLine=-1;
-	WCHAR szLine[1024];
+	char szLine[1024];
   while( pos < (int)strText.size() )
   {
     // Get the current letter in the string
-    WCHAR letter = strText[pos];
+    char letter = strText[pos];
 
     // Handle the newline character
-    if (letter == L'\n' )
+    if (letter == '\n' )
     {
-			m_vecItems.push_back(szLine);
+			CGUIListItem item(szLine);
+			m_vecItems.push_back(item);
 			iLastSpace=-1;
 			iLastSpaceInLine=-1;
 			lpos=0;
@@ -277,7 +302,9 @@ void CGUITextBox::SetText(const wstring &strText)
 			szLine[lpos+1]=0;
 
 			FLOAT fwidth,fheight;
-			m_pFont->GetTextExtent(szLine,&fwidth,&fheight);
+			WCHAR wsTmp[1024];
+			swprintf(wsTmp,L"%S",szLine);
+			m_pFont->GetTextExtent(wsTmp,&fwidth,&fheight);
 			if (fwidth > m_dwWidth)
 			{
 				if (iLastSpace > 0 && iLastSpaceInLine != lpos)
@@ -285,8 +312,8 @@ void CGUITextBox::SetText(const wstring &strText)
 					szLine[iLastSpaceInLine]=0;
 					pos=iLastSpace;
 				}
-				wstring strwLine=szLine;
-				m_vecItems.push_back(strwLine);
+				CGUIListItem item(szLine);
+				m_vecItems.push_back(item);
 				iLastSpaceInLine=-1;
 				iLastSpace=-1;
 				lpos=0;
@@ -300,8 +327,8 @@ void CGUITextBox::SetText(const wstring &strText)
 	}
 	if (lpos > 0)
 	{
-		wstring strwLine=szLine;
-		m_vecItems.push_back(strwLine);
+		CGUIListItem item(szLine);
+		m_vecItems.push_back(item);
 	}
 
 

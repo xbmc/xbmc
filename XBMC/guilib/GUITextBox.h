@@ -34,7 +34,7 @@ public:
   virtual void FreeResources() ;
 
 protected:
-	void				 SetText(const wstring &strText);
+	void				 SetText(const string &strText);
   void         OnRight();
   void         OnLeft();
   void         OnDown();
@@ -48,7 +48,7 @@ protected:
   DWORD                 m_dwTextColor;
   CGUIFont*             m_pFont;
   CGUISpinControl       m_upDown;
-  vector<wstring> m_vecItems;
-  typedef vector<wstring> ::iterator ivecItems;
+  vector<CGUIListItem> m_vecItems;
+  typedef vector<CGUIListItem> ::iterator ivecItems;
 };
 #endif
