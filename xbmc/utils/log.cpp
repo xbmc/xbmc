@@ -2,6 +2,8 @@
 #include "../stdafx.h"
 #include "log.h"
 #include <share.h>
+#include "criticalsection.h"
+#include "singlelock.h"
 
 static CLog g_logger;
 
@@ -17,9 +19,11 @@ CLog::~CLog()
 static char tmp[16384];
 
 FILE* CLog::fd = NULL;
+CCriticalSection critSec;
 
 void CLog::Close()
 {
+	CSingleLock waitLock(critSec);
   if (fd)
   {
     fclose(fd);
@@ -29,6 +33,7 @@ void CLog::Close()
 
 void CLog::Log(const char *format, ... )
 {
+	CSingleLock waitLock(critSec);
 	va_list va;
 
 	if (!fd)
@@ -65,6 +70,7 @@ void CLog::Log(const char *format, ... )
 
 void CLog::DebugLog(const char *format, ... )
 {
+	CSingleLock waitLock(critSec);
 	va_list va;
 
 	va_start(va, format);
