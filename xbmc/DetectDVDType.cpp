@@ -152,14 +152,21 @@ void CDetectDVDMedia::DetectMediaType()
 		OutputDebugString( "Detection of DVD-ROM media failed.\n" );
 		return;
 	}
-
-	//	Detect ISO9660(mode1/mode2) or CDDA filesystem
-	if ( m_pCdInfo->IsIso9660( 1 ) || m_pCdInfo->IsIso9660Interactive( 1 ) )
-		strNewUrl = "iso9660://";
-	else if ( m_pCdInfo->IsAudio( 1 ) )
-		strNewUrl = "cdda://local/";
-	else
+	if (m_pCdInfo->IsUDF(1) || m_pCdInfo->IsUDFX(1) )
+	{
 		strNewUrl = "D:\\";
+	}
+	else
+	{
+
+		//	Detect ISO9660(mode1/mode2) or CDDA filesystem
+		if ( m_pCdInfo->IsIso9660( 1 ) || m_pCdInfo->IsIso9660Interactive( 1 ) )
+			strNewUrl = "iso9660://";
+		else if ( m_pCdInfo->IsAudio( 1 ) )
+			strNewUrl = "cdda://local/";
+		else
+			strNewUrl = "D:\\";
+	}
 
 	char buf[256];
 	sprintf( buf, "Using protocol %s\n", strNewUrl.c_str() );
