@@ -1227,9 +1227,11 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
 			break;
 		case 3:	// slideshow
 			OnSlideShow(m_vecItems[iItem]->m_strPath);
+			return;
 			break;
 		case 4:	// recursive slideshow
 			OnSlideShowRecursive(m_vecItems[iItem]->m_strPath);
+			return;
 			break;
 		case 5:	// go to pictures settings
 			m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
