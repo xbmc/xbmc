@@ -198,6 +198,7 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD
     int iItem=m_iCursorY+m_iOffset;
     WCHAR wszOrgText[1024];
     wcscpy(wszOrgText, wszText);
+		wcscat(wszOrgText, L" ");
     wcscat(wszOrgText, m_strSuffix.c_str());
     m_pFont->GetTextExtent( wszOrgText, &fTextWidth,&fTextHeight);
 

@@ -94,7 +94,7 @@ public:
   int                   GetItemWidthLow(){ return m_iItemWidthLow;};
   int                   GetItemHeightLow() { return m_iItemHeightLow;};
   void                  ShowBigIcons(bool bOnOff);
-  
+  const wstring&				GetSuffix() const { return m_strSuffix;};
   void                  SetThumbDimensionsLow(int iXpos, int iYpos,int iWidth, int iHeight) { m_iThumbXPosLow=iXpos;m_iThumbYPosLow=iYpos;m_iThumbWidthLow=iWidth;m_iThumbHeightLow=iHeight;};
   void                  SetThumbDimensionsBig(int iXpos, int iYpos,int iWidth, int iHeight) { m_iThumbXPosBig=iXpos;m_iThumbYPosBig=iYpos;m_iThumbWidthBig=iWidth;m_iThumbHeightBig=iHeight;};
 
