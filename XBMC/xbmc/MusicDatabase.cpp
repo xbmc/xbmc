@@ -17,7 +17,10 @@ void CMusicDatabase::RemoveInvalidChars(string& strTxt)
 	for (int i=0; i < (int)strTxt.size(); ++i)
 	{
 		byte k=strTxt[i];
-		if ( !isalnum(k) ) k=' ';
+		if (k==0x27) 
+		{
+			strReturn += k;
+		}
 		strReturn += k;
 	}
 	strTxt=strReturn;
@@ -228,7 +231,7 @@ bool CMusicDatabase::GetSongByFileName(const string& strFileName1, CSong& song)
 	if (NULL==m_pDB) return false;
 	if (NULL==m_pDS) return false;
 	char szSQL[1024];
-	sprintf(szSQL,"select * from song,album,genre,artist where song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and artist.idArtist=artist.idArtist and strFileName='%s'",strFileName.c_str() );
+	sprintf(szSQL,"select * from song,album,genre,artist where song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and strFileName='%s'",strFileName.c_str() );
 	if (!m_pDS->query(szSQL)) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
@@ -254,7 +257,7 @@ bool CMusicDatabase::GetSong(const string& strTitle1, CSong& song)
 	if (NULL==m_pDB) return false;
 	if (NULL==m_pDS) return false;
 	char szSQL[1024];
-	sprintf(szSQL,"select * from song,album,genre,artist where song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and artist.idArtist=artist.idArtist and strTitle='%s'",strTitle.c_str() );
+	sprintf(szSQL,"select * from song,album,genre,artist where song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and strTitle='%s'",strTitle.c_str() );
 	if (!m_pDS->query(szSQL)) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
@@ -280,7 +283,7 @@ bool CMusicDatabase::GetSongsByArtist(const string strArtist1, VECSONGS& songs)
 	if (NULL==m_pDB) return false;
 	if (NULL==m_pDS) return false;
 	char szSQL[1024];
-	sprintf(szSQL,"select * from song,album,genre,artist where song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and artist.idArtist=artist.idArtist and artist.strArtist='%s'",strArtist.c_str() );
+	sprintf(szSQL,"select * from song,album,genre,artist where song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and artist.strArtist='%s'",strArtist.c_str() );
 	if (!m_pDS->query(szSQL)) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
@@ -311,7 +314,7 @@ bool CMusicDatabase::GetSongsByAlbum(const string& strAlbum1, VECSONGS& songs)
 	if (NULL==m_pDB) return false;
 	if (NULL==m_pDS) return false;
 	char szSQL[1024];
-	sprintf(szSQL,"select * from song,album,genre,artist where song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and artist.idArtist=artist.idArtist and album.strAlbum='%s'",strAlbum.c_str() );
+	sprintf(szSQL,"select * from song,album,genre,artist where song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and album.strAlbum='%s'",strAlbum.c_str() );
 	if (!m_pDS->query(szSQL)) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
@@ -430,7 +433,7 @@ bool CMusicDatabase::GetSongsByGenre(const string& strGenre, VECSONGS& songs)
 	if (NULL==m_pDB) return false;
 	if (NULL==m_pDS) return false;
 	char szSQL[1024];
-	sprintf(szSQL,"select * from song,album,genre,artist where song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and artist.idArtist=artist.idArtist and genre.strGenre='%s'",strSQLGenre.c_str() );
+	sprintf(szSQL,"select * from song,album,genre,artist where song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and genre.strGenre='%s'",strSQLGenre.c_str() );
 	if (!m_pDS->query(szSQL)) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
