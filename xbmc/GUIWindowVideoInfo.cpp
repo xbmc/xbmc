@@ -113,8 +113,8 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         if (strlen(szNumber))
         {
           int x=0;
-          while (szNumber[x]=='0' && x < strlen(szNumber) ) x++;
-          if (x < strlen(szNumber))
+          while (szNumber[x]=='0' && x < (int)strlen(szNumber) ) x++;
+          if (x < (int)strlen(szNumber))
           {
             sscanf(&szNumber[x],"%i", &iDVD);
             if (iDVD <0 && iDVD >=1000)
