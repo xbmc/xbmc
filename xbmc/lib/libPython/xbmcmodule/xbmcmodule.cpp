@@ -152,10 +152,10 @@ namespace PYXBMC
 		"\n"
 		"return values are:\n"
 		"\n"
-		"  - 16 : xbmc.TRAY_OPEN\n"
-		"  - 1  : xbmc.DRIVE_NOT_READY\n"
-		"  - 64 : xbmc.TRAY_CLOSED_NO_MEDIA\n"
-		"  - 96 : xbmc.TRAY_CLOSED_MEDIA_PRESENT");
+		"  16 : xbmc.TRAY_OPEN\n"
+		"  1  : xbmc.DRIVE_NOT_READY\n"
+		"  64 : xbmc.TRAY_CLOSED_NO_MEDIA\n"
+		"  96 : xbmc.TRAY_CLOSED_MEDIA_PRESENT");
 
 	PyObject* XBMC_GetDVDState(PyObject *self, PyObject *args)
 	{

@@ -1,7 +1,6 @@
-#pragma once
-
 #include "..\python.h"
 #include "..\..\..\playlist.h"
+#pragma once
 
 #define PlayList_Check(op) PyObject_TypeCheck(op, &PlayList_Type)
 #define PlayList_CheckExact(op) ((op)->ob_type == &PlayList_Type)
