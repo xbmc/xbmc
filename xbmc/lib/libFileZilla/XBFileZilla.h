@@ -217,8 +217,8 @@ public:
   void SetLogShowPass(int LogShowPass);
   int  GetLogShowPass();
 
-  void SetCustomPasvEnable(int CustomPasvEnable);
-  int  GetCustomPasvEnable();
+  void SetCustomPasvIpType(int CustomPasvIpType);
+  int  GetCustomPasvIpType();
 
   void    SetCustomPasvIP(LPCTSTR CustomPasvIP);
   LPCTSTR GetCustomPasvIP();
