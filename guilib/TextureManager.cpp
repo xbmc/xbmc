@@ -592,9 +592,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 	LARGE_INTEGER end, freq;
 	QueryPerformanceCounter(&end);
 	QueryPerformanceFrequency(&freq);
-	char temp[200];
-	sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, bPacked ? " (packed)" : bBundled ? " (bundled)" : "");
-	OutputDebugString(temp);
+//	char temp[200];
+//	sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, bPacked ? " (packed)" : bBundled ? " (bundled)" : "");
+//	OutputDebugString(temp);
 
 	//CStdString strLog;
 	//strLog.Format("%s %ix%i\n", strTextureName.c_str(),info.Width,info.Height);
