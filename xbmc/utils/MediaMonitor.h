@@ -18,6 +18,8 @@
 
 #include <vector>
 
+#define RECENT_MOVIES	3
+
 using namespace std;
 
 class IMediaObserver
@@ -48,6 +50,7 @@ public:
 
 private:
 	void Process();
+	void InitializeObserver();
 	void Scan(DIRECTORY::CDirectory& directory, CStdString& aPath);
 	bool GetMovieInfo(CStdString& strFilepath, CIMDBMovie& aMovieRecord);
 	bool GetMovieArt(CStdString& strIMDBNumber, CStdString& strPictureUrl, CStdString& strImagePath);
