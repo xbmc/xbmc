@@ -7,6 +7,7 @@
 #include "osd/OSDOptionIntRange.h"
 #include "osd/OSDOptionBoolean.h"
 #include "cores/mplayer/mplayer.h"
+#include "utils/singlelock.h"
 
 #define BLUE_BAR    0
 #define LABEL_ROW1 10
@@ -81,6 +82,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 			return;
 		break;
 		default:
+        CSingleLock lock(m_section);      
         m_osdMenu.OnAction(*this,action);
         SET_CONTROL_FOCUS(GetID(), m_osdMenu.GetSelectedMenu()+BTN_OSD_VIDEO); 
 		  break;
@@ -360,8 +362,9 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
   if (m_bOSDVisible)
   {
-	  CGUIWindow::Render();
-    m_osdMenu.Draw();
+    CGUIWindow::Render();
+    CSingleLock lock(m_section);      
+	  m_osdMenu.Draw();
     return;
   }
   if ( bRenderGUI)
@@ -386,7 +389,8 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
 void CGUIWindowFullScreen::HideOSD()
 {
-  m_osdMenu.Clear();
+  CSingleLock lock(m_section);      
+	m_osdMenu.Clear();
   SET_CONTROL_HIDDEN(GetID(),BTN_OSD_VIDEO);
   SET_CONTROL_HIDDEN(GetID(),BTN_OSD_AUDIO);
   SET_CONTROL_HIDDEN(GetID(),BTN_OSD_SUBTITLE);
@@ -399,7 +403,8 @@ void CGUIWindowFullScreen::HideOSD()
 
 void CGUIWindowFullScreen::ShowOSD()
 {
-  m_osdMenu.Clear();
+  CSingleLock lock(m_section);      
+	m_osdMenu.Clear();
   COSDSubMenu videoMenu(291,100,100);
   float fValue=g_application.m_pPlayer->GetAVDelay();
   COSDOptionFloatRange optionAVDelay(MENU_ACTION_AVDELAY,297,-10.0f,10.0f,0.01f,fValue);

@@ -37,6 +37,7 @@ void COSDSubMenu::Clear()
 		delete pOption;
     i=m_vecOptions.erase(i);
 	}
+  m_iCurrentOption=0;
 }
 
 
@@ -86,7 +87,11 @@ void COSDSubMenu::Draw()
 
 bool COSDSubMenu::OnAction(IExecutor& executor,const CAction& action)
 {
-	if (m_iCurrentOption >= (int)m_vecOptions.size()) return false; // invalid choice.
+	if (m_iCurrentOption < 0 || m_iCurrentOption >= (int)m_vecOptions.size()) 
+  {
+    m_iCurrentOption=0;
+    return false; // invalid choice.
+  }
 	IOSDOption* pOption=m_vecOptions[m_iCurrentOption];
 
     if (pOption->OnAction(executor,action)) return true;
