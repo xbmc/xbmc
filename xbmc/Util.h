@@ -1,6 +1,7 @@
 #pragma once
 #include "stdstring.h"
 #include "fileitem.h"
+
 #include <map>
 struct network_info
 {
@@ -13,6 +14,7 @@ struct network_info
 };
 
 using namespace std;
+
 class CUtil
 {
 public:
@@ -99,6 +101,7 @@ public:
 	static bool IsPAL_SVCD(int iWidth, int iHeight);
 	static bool IsPAL_DVD(int iWidth, int iHeight);
 	static bool IsShoutCast(const CStdString& strFileName);
+	static bool IsCUESheet(const CStdString &strFileName);
 	static void RemoveIllegalChars( CStdString& strText);
 	static void CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached);
 	static void ClearSubtitles();
@@ -136,6 +139,7 @@ public:
 	static void Stat64ToStat(struct _stat *result, struct __stat64 *stat);
 	static bool CreateDirectoryEx(const CStdString& strPath);
 	static CStdString MakeLegalFATXFileName(const char* strFile, bool bKeepExtension);
+	static void ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPlayListItem &playlistitem);
 
 private:
 	static bool m_bNetworkUp;

@@ -676,6 +676,14 @@ bool CUtil::IsShoutCast(const CStdString& strFileName)
   if (strstr(strFileName.c_str(), "shout:") ) return true;
   return false;
 }
+
+bool CUtil::IsCUESheet(const CStdString& strFileName)
+{
+	CStdString strExtension;
+	GetExtension(strFileName, strExtension);
+	return (strExtension == ".cue");
+}
+
 bool CUtil::IsAudio(const CStdString& strFile) 
 {
   CStdString strExtension;
@@ -1896,7 +1904,9 @@ void CUtil::PlayDVD()
   {
     CIoSupport helper;
     helper.Remount("D:","Cdrom0");
-    g_application.PlayFile("dvd://1");
+	CFileItem item;
+	item.m_strPath = "dvd://1";
+    g_application.PlayFile(item);
   }
 }
 
@@ -2943,4 +2953,14 @@ CStdString CUtil::MakeLegalFATXFileName(const char* strFile, bool bKeepExtension
 	}
 
 	return strNewString;
+}
+
+void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPlayListItem &playlistitem)
+{
+	playlistitem.SetDescription(pItem->GetLabel());
+	playlistitem.SetFileName(pItem->m_strPath);
+	playlistitem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+	playlistitem.SetStartOffset(pItem->m_lStartOffset);
+	playlistitem.SetEndOffset(pItem->m_lEndOffset);
+	playlistitem.SetMusicTag(pItem->m_musicInfoTag);
 }

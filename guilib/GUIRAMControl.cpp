@@ -221,7 +221,9 @@ void CGUIRAMControl::OnAction(const CAction &action)
 
 		case ACTION_SELECT_ITEM:
 		{
-			PlayMovie( m_current[m_iSelection].strFilepath );
+			CFileItem item;
+			item.m_strPath = m_current[m_iSelection].strFilepath;
+			PlayMovie( item );
 			break;
 		}
 
@@ -253,13 +255,13 @@ struct CGUIRAMControl::SSortVideoListByName
   }
 };
 
-void CGUIRAMControl::PlayMovie(CStdString& strFilePath)
+void CGUIRAMControl::PlayMovie(CFileItem& item)
 {
 	// is video stacking enabled?	
 	if (g_stSettings.m_bMyVideoVideoStack)
 	{
 		CStdString strDirectory;
-		CUtil::GetDirectory(strFilePath,strDirectory);
+		CUtil::GetDirectory(item.m_strPath,strDirectory);
 
 		// create a list of associated movie files (some movies span across multiple files!)
 		vector<CStdString> movies;
@@ -277,7 +279,7 @@ void CGUIRAMControl::PlayMovie(CStdString& strFilePath)
 				CFileItem *pItemTmp=items[i];
 				if (!CUtil::IsNFO( pItemTmp->m_strPath) && !CUtil::IsPlayList(pItemTmp->m_strPath) )
 				{
-					double fPercentage=fstrcmp(CUtil::GetFileName(pItemTmp->m_strPath),CUtil::GetFileName(strFilePath),COMPARE_PERCENTAGE_MIN);
+					double fPercentage=fstrcmp(CUtil::GetFileName(pItemTmp->m_strPath),CUtil::GetFileName(item.m_strPath),COMPARE_PERCENTAGE_MIN);
 					if (fPercentage >=COMPARE_PERCENTAGE)
 					{
 						if (CUtil::IsVideo(pItemTmp->m_strPath))
@@ -297,7 +299,7 @@ void CGUIRAMControl::PlayMovie(CStdString& strFilePath)
 			CLog::Log(LOGWARNING, "*WARNING* Wibble! CGUIRAMControl was unable to find matching file!");
 
 			// might as well play the file that we do know about!
-			g_application.PlayFile( strFilePath );
+			g_application.PlayFile( item );
 			return;
 		}
     
@@ -343,7 +345,7 @@ void CGUIRAMControl::PlayMovie(CStdString& strFilePath)
 	}
 
 	// stacking disabled, just play the movie
-	g_application.PlayFile(strFilePath);
+	g_application.PlayFile(item);
 }
 
 

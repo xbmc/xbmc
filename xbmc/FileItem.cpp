@@ -9,6 +9,8 @@ CFileItem::CFileItem(const CSong& song)
 	m_strPath=song.strFileName;
 	m_bIsFolder=false;
 	m_musicInfoTag.SetSong(song);
+	m_lStartOffset = song.iStartOffset;
+	m_lEndOffset = song.iEndOffset;
 }
 
 CFileItem::CFileItem(const CAlbum& album)
@@ -18,6 +20,19 @@ CFileItem::CFileItem(const CAlbum& album)
 	m_bIsFolder=true;
 	m_strLabel2=album.strArtist;
 	m_musicInfoTag.SetAlbum(album);
+	m_lStartOffset = 0;
+	m_lEndOffset = 0;
+}
+
+CFileItem::CFileItem(const CPlayList::CPlayListItem& item)
+{
+	m_strLabel=item.GetDescription();
+	m_strPath=item.GetFileName();
+	m_bIsFolder=false;
+	m_bIsShareOrDrive = false;
+	m_lStartOffset = item.GetStartOffset();
+	m_lEndOffset = item.GetEndOffset();
+	m_musicInfoTag = item.GetMusicTag();
 }
 
 CFileItem::CFileItem(const CFileItem& item)
@@ -34,6 +49,8 @@ CFileItem::CFileItem(void)
   m_bIsShareOrDrive=false;
 	memset(&m_stTime,0,sizeof(m_stTime));
   m_iDriveType = SHARE_TYPE_UNKNOWN;
+  m_lStartOffset = 0;
+  m_lEndOffset = 0;
   m_iprogramCount = 0;
 }
 
@@ -49,6 +66,8 @@ CFileItem::CFileItem(const CStdString& strLabel)
 	memset(&m_stTime,0,sizeof(m_stTime));
   m_iDriveType = SHARE_TYPE_UNKNOWN;
   m_iprogramCount = 0;
+  m_lStartOffset = 0;
+  m_lEndOffset = 0;
 }
 
 CFileItem::~CFileItem(void)
@@ -74,13 +93,37 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
 	memcpy(&m_stTime,&item.m_stTime,sizeof(SYSTEMTIME));
 	m_dwSize=item.m_dwSize;
 	m_musicInfoTag=item.m_musicInfoTag;
-  
+    m_lStartOffset = item.m_lStartOffset;
+	m_lEndOffset = item.m_lEndOffset;
   m_fRating=item.m_fRating;
   m_strDVDLabel=item.m_strDVDLabel;
   m_iprogramCount=item.m_iprogramCount;
 	return *this;
 }
 
+void CFileItem::Clear()
+{
+	m_strLabel2="";
+	m_strLabel="";
+	m_pThumbnailImage=NULL;
+	m_pIconImage=NULL;
+	m_bSelected=false;
+	m_strIcon="";
+	m_strThumbnailImage="";
+	m_musicInfoTag.SetLoaded(false);
+	m_fRating=0.0f;
+	m_strDVDLabel="";
+	m_strPath = "";
+	m_strDVDLabel="";
+	m_fRating=0.0f;
+	m_dwSize=0;
+	m_bIsFolder=false;
+	m_bIsShareOrDrive=false;
+	memset(&m_stTime,0,sizeof(m_stTime));
+	m_iDriveType = SHARE_TYPE_UNKNOWN;
+	m_lStartOffset = 0;
+	m_lEndOffset = 0;
+}
 
 CFileItemList::CFileItemList(VECFILEITEMS& items)
 :m_items(items)

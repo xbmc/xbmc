@@ -129,7 +129,7 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay)
 		CGUIMessage msg( GUI_MSG_PLAYLIST_PLAY_NEXT_PREV, 0, 0, GetCurrentPlaylist(), MAKELONG(m_iCurrentSong, iPreviousSong), (LPVOID)&item );
 		m_gWindowManager.SendThreadMessage( msg );
 	}
-	if(!g_application.PlayFile(item.GetFileName(), bAutoPlay))
+	if(!g_application.PlayFile(CFileItem(item), bAutoPlay))
 	{
 		//	Count entries in current playlist
 		//	that couldn't be played

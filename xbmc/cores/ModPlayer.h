@@ -14,7 +14,7 @@ public:
 	virtual void		RegisterAudioCallback(IAudioCallback* pCallback);
 	virtual void		UnRegisterAudioCallback();
 
-	virtual bool		openfile(const CStdString& strFile);
+	virtual bool		openfile(const CStdString& strFile, int iStartTime);
 	virtual bool		closefile();
 	virtual bool		IsPlaying() const;
 	virtual void		Pause();

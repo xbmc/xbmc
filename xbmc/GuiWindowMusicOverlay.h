@@ -1,6 +1,6 @@
 #pragma once
 #include "guiwindow.h"
-
+#include "FileItem.h"
 #include "stdstring.h"
 #include <vector>
 using namespace std;
@@ -16,13 +16,14 @@ public:
 	virtual void			OnMouse();
   virtual void				Render();
 	void								SetID3Tag(ID3_Tag& tag);
-	void								SetCurrentFile(const CStdString& strFile);
+	void								SetCurrentFile(CFileItem& item);
 	IDirect3DTexture8* 	m_pTexture;
 	int									m_iTextureWidth;
 	int									m_iTextureHeight;
   virtual void				FreeResources();
 
 protected:
+	long			  m_lStartOffset;
   int                 m_iFrames;
   bool                m_bShowInfo;
   int				  m_iFrameIncrement;
