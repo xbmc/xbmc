@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 25-09-2004 fixed: <align>right</align> didn't work for buttons
+  - 25-09-2004 fixed: [ 1031023 ] Problem with little .wav (like 5 seconds lenght)
+                      Caused by tracks being truncated a few secs with HQ resampling on.
   - 25-09-2004 fixed: green videowindow & calibrationscreen after stopping a video
   - 25-09-2004 fixed: flickering subtitles in videowindow & calibrationscreen
   - 25-09-2004 fixed: [ 973403, 1011171 ] flickering 'video playwindow', Windowed video still shaking

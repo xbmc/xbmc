@@ -518,7 +518,15 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     if (m_bDTSPassTru) buf += "hwdts,";
     if (m_bAC3PassTru) buf += "hwac3,";
 		m_vecOptions.push_back(buf.c_str());
+
 	}
+	// TODO: post 1.1 we can uncomment this code block and add a gui option instead of just using "1"
+/*	else
+	{
+		// dynamic range compression for ac3/dts
+		m_vecOptions.push_back("-a52drc");
+		m_vecOptions.push_back("1");
+	}*/
   if ( m_bLimitedHWAC3 )
     m_vecOptions.push_back("-limitedhwac3");
 

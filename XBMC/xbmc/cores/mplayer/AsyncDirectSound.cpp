@@ -603,6 +603,12 @@ DWORD CASyncDirectSound::GetSpace()
 		}
 	}
 	DWORD dwSize= iFreePackets*m_dwPacketSize;
+	if (m_bResampleAudio)
+	{	// calculate the actual amount of data that we can handle
+		float fBytesPerSecOutput = 48000*16*2;
+		dwSize = (DWORD)((float)dwSize*(float)m_Resampler.GetInputBitrate()/fBytesPerSecOutput);
+	}
+
 	return dwSize;
 }
 
@@ -645,14 +651,14 @@ DWORD CASyncDirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
 				}
 				else
 				{	// put more data into the resampler
-					DWORD iSize = m_Resampler.PutData(&pData[iBytesCopied], iLeft);
+					int iSize = m_Resampler.PutData(&pData[iBytesCopied], iLeft);
 					if (iSize == -1)
 					{	// Failed - we don't have enough data
 						return iBytesCopied;
 					}
 					else
 					{	// Success - update the amount that we have processed
-						iBytesCopied+=iSize;
+						iBytesCopied+=(DWORD)iSize;
 						iLeft -=iSize;
 					}
 					// Now loop back around and output data, or read more in

@@ -114,6 +114,11 @@ public:
 	bool Cssrc::InitConverter(int OldFreq, int OldBPS, int Channels, int NewFreq, int NewBPS, int OutputBufferSize);
 
 	//---------------------------------------------------------------------------
+	// returns the input bitrate that we are using (in bits per second)
+	//---------------------------------------------------------------------------
+	int Cssrc::GetInputBitrate();
+
+	//---------------------------------------------------------------------------
 	// Deinitializes everything, cleaning up any buffers that exist
 	//---------------------------------------------------------------------------
 	void Cssrc::DeInitialize();
