@@ -451,9 +451,9 @@ void CGUIThumbnailPanel::Calculate()
   m_upDown.SetRange(1,iPages);
   m_upDown.SetValue(1);
   // reset our position
-  m_iOffset = 0;
-  m_iCursorY = 0;
-  m_iCursorX = 0;
+  //m_iOffset = 0;
+  //m_iCursorY = 0;
+  //m_iCursorX = 0;
 }
 
 void CGUIThumbnailPanel::AllocResources()

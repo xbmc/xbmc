@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 24-11-2004 fixed: last folder not remembered on 'back' (sf bug #1071390)
   - 24-11-2004 updated: Hungarian language file (Thnx to Tracy18)
   - 24-11-2004 updated: Italian language file (Thnx to kotix)
   - 24-11-2004 fixed: my programs, scanning doesn't free its memory
