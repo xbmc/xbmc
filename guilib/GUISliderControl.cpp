@@ -18,6 +18,8 @@ CGUISliderControl::CGUISliderControl(DWORD dwParentID, DWORD dwControlId, DWORD 
     m_fInterval=0.1f;
     m_iValue=0;
     m_fValue=0.0;
+	m_dwControlOffsetX = 60;
+	m_dwControlOffsetY = 0;
 }
 
 CGUISliderControl::~CGUISliderControl(void)
@@ -47,7 +49,7 @@ void CGUISliderControl::Render()
                               2,
                               0xFF020202);
 			}
-			m_guiBackground.SetPosition(m_dwPosX + 60, m_dwPosY);
+			m_guiBackground.SetPosition(m_dwPosX + m_dwControlOffsetX, m_dwPosY + m_dwControlOffsetY);
 
 			fRange=(float)(m_fEnd-m_fStart);
 			fPos  =(float)(m_fValue-m_fStart);
@@ -66,7 +68,7 @@ void CGUISliderControl::Render()
                               2,
                               0xFF020202);
 			}
-			m_guiBackground.SetPosition(m_dwPosX + 60, m_dwPosY);
+			m_guiBackground.SetPosition(m_dwPosX + m_dwControlOffsetX, m_dwPosY + m_dwControlOffsetY);
 
 			fRange= (float)(m_iEnd-m_iStart);
 			fPos  = (float)(m_iValue-m_iStart);
@@ -74,12 +76,10 @@ void CGUISliderControl::Render()
 			break;
 	}
 
-	//int iHeight=25;
 	m_guiBackground.Render();
-	//m_guiBackground.SetHeight(iHeight);
 	m_guiBackground.SetHeight(m_dwHeight);
 
-	float fWidth=(float)(m_guiBackground.GetTextureWidth() - m_guiMid.GetWidth()); //-20.0f;
+	float fWidth=(float)(m_guiBackground.GetTextureWidth() - m_guiMid.GetWidth());
 
 	fPos = (float)m_iPercent;
 	fPos /=100.0f;
@@ -261,8 +261,6 @@ void CGUISliderControl::AllocResources()
 	m_guiBackground.AllocResources();
 	m_guiMid.AllocResources();
 	m_guiMidFocus.AllocResources();
-	//m_guiBackground.SetHeight(25);
-	//m_guiMid.SetHeight(20);
 }
 
 void CGUISliderControl::Update()
