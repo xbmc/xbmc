@@ -196,6 +196,14 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
       url.GetURL(strParent);
       return true;
     }
+    else if (url.GetProtocol() == "xbms" && (url.GetHostName().size() > 0))
+    {
+      // we have an xbms share with only server name
+      // set hostname to "" and return true.
+      url.SetHostName("");
+      url.GetURL(strParent);
+      return true;
+    }
     return false;
   }
 
