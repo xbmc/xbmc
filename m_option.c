@@ -15,7 +15,7 @@
 
 // Don't free for 'production' atm
 #ifndef MP_DEBUG
-#define NO_FREE
+//#define NO_FREE
 #endif
 
 m_option_t* m_option_list_find(m_option_t* list,char* name) {
@@ -700,6 +700,7 @@ static int parse_func_pf(m_option_t* opt,char *name, char *param, void* dst, int
   s = (m_func_save_t*)calloc(1,sizeof(m_func_save_t));
   s->name = strdup(name);
   s->param = param ? strdup(param) : NULL;
+  s->next = NULL;
 
   p = VAL(dst);
   if(p) {
@@ -725,6 +726,7 @@ static void copy_func_pf(m_option_t* opt,void* dst, void* src) {
     d = (m_func_save_t*)malloc(sizeof(m_func_save_t));
     d->name = strdup(s->name);
     d->param = s->param ? strdup(s->param) : NULL;
+    d->next = NULL;
     if(last)
       last->next = d;
     else
@@ -798,7 +800,7 @@ m_option_type_t m_option_type_func_full = {
 #define VAL(x) (*(int*)(x))
 
 static int parse_func(m_option_t* opt,char *name, char *param, void* dst, int src) {
-  if(dst)
+  if(dst && VAL(dst))
     VAL(dst) += 1;
   return 0;
 }
