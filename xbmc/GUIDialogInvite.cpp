@@ -43,7 +43,7 @@ void CGUIDialogInvite::OnInitWindow()
 	{
 		spin_control.Clear();
 
-		CStdString strCurrentVector = "Current Arena";
+		CStdString strCurrentVector = g_localizeStrings.Get(15046); // Custom Arena
 		spin_control.AddLabel( strCurrentVector, 0);
 
 		CGUIList::GUILISTITEMS& list = m_pGames->Lock();
@@ -74,7 +74,7 @@ bool CGUIDialogInvite::OnMessage(CGUIMessage& message)
 			{
 				case CTL_BUTTON_MESSAGE:
 				{
-					CStdString strHeading = "Enter your personal message.";
+					CStdString strHeading = g_localizeStrings.Get(15045); // Enter your personal message.
 					if (!m_bMessage)
 					{
 						CGUISpinControl& spin_control	= *((CGUISpinControl*)GetControl(CTL_SPIN_GAMES));
@@ -87,6 +87,9 @@ bool CGUIDialogInvite::OnMessage(CGUIMessage& message)
 							strVector = ((CArenaItem*)list[nIndex-1])->m_strVector;
 							CArenaItem::GetTier(CArenaItem::Tier::Game,strVector,strGame);
 							m_pGames->Release();
+							// Do not localize this message, it may be send to a recipient
+							// with a users "foreign language", if he uses xbmc it will be translated
+							// to his language
 							m_strMessage.Format("You're invited to play %s.",strGame);
 						}
 						else

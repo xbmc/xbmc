@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 21-01-2005 changed: XLink window and dialogs localizable are localizable now
   - 19-01-2005 added: [ 1099915 ] Enable debug log by pressing X+Y while starting XBMC (Thanks to jarkkom). Enables logdebug, mplayerdebug and showfreemem.
   - 19-01-2005 updated: Finnish language file (Thnx to jutski)
   - 18-01-2005 updated: Catalan language file (Thnx to buc)

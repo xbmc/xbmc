@@ -224,9 +224,9 @@ void CGUIWindowBuddies::OnInitWindow()
 		CONTROL_DISABLE(CONTROL_BTNMODE);	
 
 		CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-		pDialog->SetHeading("XLink Kai");
-		pDialog->SetLine(0,L"The service is not connected, would you like to attempt");
-		pDialog->SetLine(1,L"reconnecting it with Xbox Media Center?");
+		pDialog->SetHeading(15000);
+		pDialog->SetLine(0,15001);
+		pDialog->SetLine(1,15002);
 		pDialog->SetLine(2,L"");
 		pDialog->DoModal(m_gWindowManager.GetActiveWindow());
 
@@ -430,7 +430,7 @@ void CGUIWindowBuddies::OnEditTextComplete(CStdString& strLineOfText)
 void CGUIWindowBuddies::OnClickKeyboardButton(CGUIMessage& aMessage)
 {
 	CStdString strMessage;
-	CStdString strHeading = "Enter your message.";
+	CStdString strHeading = g_localizeStrings.Get(15003); // Enter your message.
 	if (CGUIDialogKeyboard::ShowAndGetInput(strMessage, strHeading, false))
 	{
 		m_pKaiClient->Chat(strMessage);
@@ -458,18 +458,20 @@ void CGUIWindowBuddies::OnClickListItem(CGUIMessage& aMessage)
 			// if that buddy had sent us an invite
 			CStdString strAccepted="Invite accepted!";
 			CStdString strDate;
+			CStdString strFormat=g_localizeStrings.Get(15005); // Date: %s
 			CStdString strFrom;
-			strDate.Format("Date: %s",invite.time);
-			strFrom.Format("From: %s",pBuddy->GetName());
+			CStdString strFormat1=g_localizeStrings.Get(15006); // From: %s
+			strDate.Format(strFormat.c_str(),invite.time);
+			strFrom.Format(strFormat1.c_str(),pBuddy->GetName());
 
 			if (invite.message.Compare(strAccepted)==0)
 			{
 				// if that invite was actually a receipt of acceptance, display it
 				CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-				pDialog->SetHeading("Invitation");
+				pDialog->SetHeading(15007); // Invitation
 				pDialog->SetLine(0,strDate);
 				pDialog->SetLine(1,strFrom);
-				pDialog->SetLine(2,invite.message);
+				pDialog->SetLine(2,g_localizeStrings.Get(15059)); // Invite accepted!
 
 				pDialog->DoModal(GetID());				
 			}
@@ -477,25 +479,36 @@ void CGUIWindowBuddies::OnClickListItem(CGUIMessage& aMessage)
 			{
 				// if this is an invite, display it
 				CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-				pDialog->SetHeading("Invitation");
+				pDialog->SetHeading(15007); // Invitation
 				pDialog->SetLine(0,strDate);
 				pDialog->SetLine(1,strFrom);
 
 				CStdString strMsg = invite.message;
 
+				CStdString strGame;
+				CArenaItem::GetTier(CArenaItem::Tier::Game,invite.vector,strGame);
+
 				if (strMsg.length()==0)
 				{
-					CStdString strGame;
-					CArenaItem::GetTier(CArenaItem::Tier::Game,invite.vector,strGame);
 					if (strGame.length()>0)
 					{
-						strMsg.Format("You've been invited to play %s.",strGame);
+						CStdString strFormat=g_localizeStrings.Get(15004);
+						strMsg.Format(strFormat.c_str(),strGame); // "You've been invited to play %s."
 					}
 					else
 					{
-						strMsg.Format("You've been invited to join %s.",pBuddy->GetName()); 
+						CStdString strFormat=g_localizeStrings.Get(15008);
+						strMsg.Format(strFormat.c_str(),pBuddy->GetName()); // "You've been invited to join %s."
 					}
-				}		
+				}
+
+				CStdString strInviteMsg;
+				strInviteMsg.Format("You're invited to play %s.", strGame);
+				if (strInviteMsg==strMsg)
+				{
+					CStdString strFormat=g_localizeStrings.Get(15061); // You're invited to play %s.
+					strMsg.Format(strFormat.c_str(),strGame);
+				}
 
 				pDialog->SetLine(2,strMsg);
 
@@ -811,7 +824,7 @@ void CGUIWindowBuddies::UpdateFriends()
 	{
 		CStdString strName		= pBuddy->GetName();
 		CStdString strLocation	=  pBuddy->m_strGeoLocation;
-		CStdString strStatus	= "Offline";
+		CStdString strStatus	= g_localizeStrings.Get(15009); // Offline
 
 		if (pBuddy->m_bIsOnline)
 		{
@@ -1011,12 +1024,12 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_HIDDEN(CONTROL_BTNKEYBOARD);
 			SET_CONTROL_HIDDEN(CONTROL_LABELPLAYERCNT);
 
-			SET_CONTROL_LABEL(CONTROL_LABELBUDDYWIN,  "Friends");
-			SET_CONTROL_LABEL(CONTROL_BTNMODE,		"View: Friends");	
-			SET_CONTROL_LABEL(CONTROL_BTNJOIN,		"Join");	
-			SET_CONTROL_LABEL(CONTROL_BTNSPEEX,		"Voice");	
-			SET_CONTROL_LABEL(CONTROL_BTNINVITE,		"Invite");	
-			SET_CONTROL_LABEL(CONTROL_BTNREMOVE,		"Remove");
+			SET_CONTROL_LABEL(CONTROL_LABELBUDDYWIN,  g_localizeStrings.Get(15010)); // Friends
+			SET_CONTROL_LABEL(CONTROL_BTNMODE,		    g_localizeStrings.Get(15011)); // View: Friends
+			SET_CONTROL_LABEL(CONTROL_BTNJOIN,		    g_localizeStrings.Get(15012)); // Join
+			SET_CONTROL_LABEL(CONTROL_BTNSPEEX,		    g_localizeStrings.Get(15013)); // Voice
+			SET_CONTROL_LABEL(CONTROL_BTNINVITE,		  g_localizeStrings.Get(15014)); // Invite
+			SET_CONTROL_LABEL(CONTROL_BTNREMOVE,		  g_localizeStrings.Get(15015)); // Remove
 
 			SelectTab(CONTROL_KAI_TAB_FRIENDS);
 			break;
@@ -1047,11 +1060,11 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_VISIBLE(CONTROL_BTNADD);
 			SET_CONTROL_HIDDEN(CONTROL_LABELPLAYERCNT);
 
-			SET_CONTROL_LABEL( CONTROL_LABELBUDDYWIN,  "Games");
-			SET_CONTROL_LABEL( CONTROL_BTNMODE,		"View: Games");	
-			SET_CONTROL_LABEL( CONTROL_BTNPLAY,		"Enter");
-			SET_CONTROL_LABEL( CONTROL_BTNADD,			"Add");
-			SET_CONTROL_LABEL( CONTROL_BTNHOST,		"Host");	
+			SET_CONTROL_LABEL( CONTROL_LABELBUDDYWIN,  g_localizeStrings.Get(15016)); // Games
+			SET_CONTROL_LABEL( CONTROL_BTNMODE,		     g_localizeStrings.Get(15017)); // View: Games
+			SET_CONTROL_LABEL( CONTROL_BTNPLAY,		     g_localizeStrings.Get(15018)); // Enter
+			SET_CONTROL_LABEL( CONTROL_BTNADD,			   g_localizeStrings.Get(15019)); // Add
+			SET_CONTROL_LABEL( CONTROL_BTNHOST,		     g_localizeStrings.Get(15020)); // Host
 			CONTROL_DISABLE(CONTROL_BTNADD);	
 			CONTROL_DISABLE(CONTROL_BTNHOST);
 
@@ -1084,11 +1097,11 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_VISIBLE(CONTROL_BTNHOST);
 			SET_CONTROL_VISIBLE(CONTROL_LABELPLAYERCNT);
 
-			SET_CONTROL_LABEL(CONTROL_LABELBUDDYWIN,  "Arenas");
-			SET_CONTROL_LABEL(CONTROL_BTNMODE,		"View: Arenas");
-			SET_CONTROL_LABEL(CONTROL_BTNPLAY,		"Play");
-			SET_CONTROL_LABEL(CONTROL_BTNADD,			"Add");
-			SET_CONTROL_LABEL(CONTROL_BTNHOST,		"Host");	
+			SET_CONTROL_LABEL(CONTROL_LABELBUDDYWIN,  g_localizeStrings.Get(15021)); // Arenas
+			SET_CONTROL_LABEL(CONTROL_BTNMODE,		    g_localizeStrings.Get(15022)); // View: Arenas
+			SET_CONTROL_LABEL(CONTROL_BTNPLAY,		    g_localizeStrings.Get(15023)); // Play
+			SET_CONTROL_LABEL(CONTROL_BTNADD,			    g_localizeStrings.Get(15024)); // Add
+			SET_CONTROL_LABEL(CONTROL_BTNHOST,		    g_localizeStrings.Get(15025)); // Host	
 			CONTROL_DISABLE(CONTROL_BTNADD);	
 			CONTROL_ENABLE(CONTROL_BTNHOST);
 
@@ -1128,9 +1141,9 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_HIDDEN(CONTROL_BTNHOST);
 			SET_CONTROL_HIDDEN(CONTROL_LABELPLAYERCNT);
 
-			SET_CONTROL_LABEL( CONTROL_LABELBUDDYWIN,  "Chat");
-			SET_CONTROL_LABEL( CONTROL_BTNMODE,		"View: Chat");	
-			SET_CONTROL_LABEL( CONTROL_BTNKEYBOARD,	"Keyboard");
+			SET_CONTROL_LABEL( CONTROL_LABELBUDDYWIN,  g_localizeStrings.Get(15026)); // Chat
+			SET_CONTROL_LABEL( CONTROL_BTNMODE,		     g_localizeStrings.Get(15027)); // View: Chat
+			SET_CONTROL_LABEL( CONTROL_BTNKEYBOARD,	   g_localizeStrings.Get(15028)); // Keyboard
 
 			SelectTab(CONTROL_KAI_TAB_CHAT);
 			break;
@@ -1142,7 +1155,7 @@ void CGUIWindowBuddies::Enter(CArenaItem& aArena)
 {
 	if (aArena.m_bIsPrivate)
 	{
-		CStdString strHeading = "A password is required to join this arena.";
+		CStdString strHeading = g_localizeStrings.Get(15029); // A password is required to join this arena.
 		if (!CGUIDialogKeyboard::ShowAndGetInput(aArena.m_strPassword, strHeading, false))
 		{
 			return;
@@ -1157,16 +1170,16 @@ void CGUIWindowBuddies::Enter(CArenaItem& aArena)
 /* IBuddyObserver methods */
 void CGUIWindowBuddies::OnEngineDetached()
 {
-	CStdString caption = "XLink Kai";
-	CStdString description = "Service has disconnected";
+	CStdString caption = g_localizeStrings.Get(15000); // XLink Kai
+	CStdString description = g_localizeStrings.Get(15030); // Service has disconnected
 	g_application.SetKaiNotification(caption,description);
 }
 void CGUIWindowBuddies::OnAuthenticationFailed(CStdString& aUsername)
 {
 	CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-	pDialog->SetHeading("XLink Kai Authentication");
-	pDialog->SetLine(0,L"Your username and/or password was rejected by the");
-	pDialog->SetLine(1,L"orbital server. Please check your configuration.");
+	pDialog->SetHeading(15031); // XLink Kai Authentication
+	pDialog->SetLine(0,15032); // Your username and/or password was rejected by the
+	pDialog->SetLine(1,15033); // orbital server. Please check your configuration.
 	pDialog->SetLine(2,L"");
 
 	ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
@@ -1175,13 +1188,13 @@ void CGUIWindowBuddies::OnAuthenticationFailed(CStdString& aUsername)
 
 void CGUIWindowBuddies::OnNetworkError(CStdString& aError)
 {
-	CStdString caption = "XLink Kai";
+	CStdString caption = g_localizeStrings.Get(15000); // XLink Kai
 	g_application.SetKaiNotification(caption,aError);
 }
 
 void CGUIWindowBuddies::OnNetworkReachable(CStdString& aServerName)
 {
-	CStdString strCaption = "XLink Kai";
+	CStdString strCaption = g_localizeStrings.Get(15000); // XLink Kai
 	g_application.SetKaiNotification(strCaption,aServerName);
 }
 
@@ -1238,7 +1251,7 @@ void CGUIWindowBuddies::OnContactOnline(CStdString& aFriend)
 
 	if (m_bContactNotifications)
 	{
-		CStdString note = "has just signed in";
+		CStdString note = g_localizeStrings.Get(15034); // has just signed in
 		g_application.SetKaiNotification(aFriend, note, pBuddy->m_pAvatar);
 	}
 }
@@ -1275,7 +1288,8 @@ void CGUIWindowBuddies::OnContactPing(CStdString& aFriend, CStdString& aVector, 
 
 void CGUIWindowBuddies::OnUpdateHostingStatus(BOOL bIsHosting)
 {
-	SET_CONTROL_LABEL( CONTROL_LABELPLAYERCNT, bIsHosting ? "Host" : "");
+	CStdString strHost=g_localizeStrings.Get(15058); // Host
+	SET_CONTROL_LABEL( CONTROL_LABELPLAYERCNT, bIsHosting ? strHost.c_str() : "");
 }
 
 void CGUIWindowBuddies::OnContactRemove(CStdString& aFriend)
@@ -1308,7 +1322,7 @@ void CGUIWindowBuddies::OnContactSpeexRing(CStdString& aFriend)
 		{
 			pBuddy->m_bRingIndicator = FALSE;
 
-			CStdString note = "has initiated voice chat";
+			CStdString note = g_localizeStrings.Get(15035); // has initiated voice chat
 			g_application.SetKaiNotification(aFriend, note, pBuddy->m_pAvatar);
 		}
 	}
@@ -1342,7 +1356,7 @@ void CGUIWindowBuddies::OnContactInvite(CStdString& aFriend, CStdString& aVector
 
 		pBuddy->m_bInvite = TRUE;
 
-		CStdString note = "has sent you an invitation";
+		CStdString note = g_localizeStrings.Get(15036); // has sent you an invitation
 		g_application.SetKaiNotification(aFriend, note, pBuddy->m_pAvatar);
 	}
 
@@ -1398,9 +1412,9 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
 	if (!m_pKaiClient->IsNetworkReachable())
 	{
 		CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-		pDialog->SetHeading("XLink Kai");
-		pDialog->SetLine(0,L"XBMC is unable to confirm your network is reachable.");
-		pDialog->SetLine(1,L"You may experience difficulties joining or hosting games.");
+		pDialog->SetHeading(15000); // XLink Kai
+		pDialog->SetLine(0,15037); // XBMC is unable to confirm your network is reachable.
+		pDialog->SetLine(1,15038); // You may experience difficulties joining or hosting games.
 		pDialog->SetLine(2,L"");
 		pDialog->DoModal(GetID());
 	}
@@ -1426,9 +1440,9 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
 	CGUIDialogProgress& dialog = *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
 
 	dialog.SetHeading(strGame.c_str());
-	dialog.SetLine(0,"Xbox Media Center unable to locate game automatically.");
-	dialog.SetLine(1,"Insert the game disk into your XBOX or press 'A' to cancel");
-	dialog.SetLine(2,"and launch the game manually." );
+	dialog.SetLine(0,15039); // Xbox Media Center unable to locate game automatically.
+	dialog.SetLine(1,15040); // Insert the game disk into your XBOX or press 'A' to cancel
+	dialog.SetLine(2,15041); // and launch the game manually.
 	dialog.StartModal(GetID());
 
 	while (true)
@@ -1567,7 +1581,7 @@ void CGUIWindowBuddies::OnEnterArena(CStdString& aVector, BOOL bCanHost)
 void CGUIWindowBuddies::OnEnterArenaFailed(CStdString& aVector, CStdString& aReason)
 {
 	CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-	pDialog->SetHeading("Access Denied");
+	pDialog->SetHeading(15042); // Access Denied
 	pDialog->SetLine(0,aReason);
 	pDialog->SetLine(1,L"");
 	pDialog->SetLine(2,L"");
@@ -1764,7 +1778,8 @@ void CGUIWindowBuddies::OnJoinsChat(CStdString& aOpponent)
 	if (m_pConsole)
 	{
 		CStdString strMessage;
-		strMessage.Format("%s joins chat.",aOpponent);
+		CStdString strFormat=g_localizeStrings.Get(15043); // %s joins chat.
+		strMessage.Format(strFormat.c_str(),aOpponent);
 		m_pConsole->Write(strMessage, KAI_CONSOLE_PEN_ACTION);
 	}
 }
@@ -1802,8 +1817,9 @@ void CGUIWindowBuddies::OnLeavesChat(CStdString& aOpponent)
 	if (m_pConsole)
 	{
 		CStdString strMessage;
+		CStdString strFormat=g_localizeStrings.Get(15044); // %s leaves chat.
 		DWORD dwColour = KAI_CONSOLE_PEN_ACTION;
-		strMessage.Format("%s leaves chat.",aOpponent);
+		strMessage.Format(strFormat.c_str(),aOpponent);
 		m_pConsole->Write(strMessage, dwColour);
 	}
 }
