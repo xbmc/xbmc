@@ -1140,6 +1140,54 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
 	char * sub_exts[] = {  ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx",".ifo", NULL};
 	int iPos=0;
   bool bFoundSubs=false;
+  // check alternate subtitle directory
+  if (strlen(g_stSettings.m_szAlternateSubtitleDirectory)==0) return;
+  WIN32_FIND_DATA wfd;
+  CAutoPtrFind hFind ( FindFirstFile("T:\\*.*",&wfd));
+	if (hFind.isValid())
+  {
+	  do
+	  {
+		  if (wfd.cFileName[0]!=0)
+		  {
+			  if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)==0 )
+        {
+          CStdString strFile;
+          strFile.Format("T:\\%s", wfd.cFileName);
+          if (strFile.Find("subtitle") )
+          {
+            ::DeleteFile(strFile.c_str());
+          }
+        }
+      }
+    } while (FindNextFile((HANDLE)hFind, &wfd));
+  }
+
+  iPos=0;
+	while (sub_exts[iPos])
+	{
+		CStdString strSource,strDest;
+		strDest.Format("T:\\subtitle%s", sub_exts[iPos]);
+
+		if (CUtil::IsVideo(strMovie))
+		{
+      CStdString strFname;
+      strFname=CUtil::GetFileName(strMovie);
+			strSource.Format("%s\\%s", g_stSettings.m_szAlternateSubtitleDirectory,strFname.c_str());
+			CUtil::ReplaceExtension(strSource,sub_exts[iPos],strSource);
+			CFile file;
+			if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
+      {
+        bFoundSubs=true;
+      }
+		}
+		iPos++;
+	}
+
+  if (bFoundSubs) return;
+
+  // check original movie directory
+  iPos=0;
 	while (sub_exts[iPos])
 	{
 		CStdString strSource,strDest;
@@ -1158,28 +1206,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
 		}
 		iPos++;
 	}
-  if (bFoundSubs) return;
 
-  // check alternate subtitle directory
-  if (strlen(g_stSettings.m_szAlternateSubtitleDirectory)==0) return;
 
-  iPos=0;
-	while (sub_exts[iPos])
-	{
-		CStdString strSource,strDest;
-		strDest.Format("T:\\subtitle%s", sub_exts[iPos]);
-
-		if (CUtil::IsVideo(strMovie))
-		{
-      CStdString strFname;
-      strFname=CUtil::GetFileName(strMovie);
-			strSource.Format("%s\\%s", g_stSettings.m_szAlternateSubtitleDirectory,strFname.c_str());
-			CUtil::ReplaceExtension(strSource,sub_exts[iPos],strSource);
-			CFile file;
-			file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL);
-		}
-		iPos++;
-	}
 }
 
 void CUtil::SecondsToHMSString(long lSeconds, CStdString& strHMS)
