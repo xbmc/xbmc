@@ -46,69 +46,69 @@ struct CreditLine_t
 //    x,   y,   Time,    Dur,  InD, OutD,                        Effects, Font, Text
 CreditLine_t Credits[] = {
 	// Intro
-	{  50,  30,    200,  10000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"XBOX" },
-	{  50,  45,    400,  10000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"MEDIA" },
-	{  50,  60,    400,  10000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"CENTER" },
+	{  50,  25,    400,  10000,  100,  800, EFF_IN_FLASH  |EFF_OUT_FADE   ,   78, L"XBOX" },
+	{  50,  45,      0,  10000,  100,  800, EFF_IN_FLASH  |EFF_OUT_FADE   ,   78, L"MEDIA" },
+	{  50,  65,      0,  10000,  100,  800, EFF_IN_FLASH  |EFF_OUT_FADE   ,   78, L"CENTER" },
 
 	// Devs
-	{  50,  25,  12000,  16500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Developers" },
-	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Bobbin007" },
-	{  50,  43,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Butcher" },
-	{  50,  51,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Forza" },
-	{  50,  59,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Frodo" },
+	{  50,  22,  11500,  16500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Developers" },
+	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Bobbin007" },
+	{  50,  45,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Butcher" },
+	{  50,  55,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Forza" },
+	{  50,  65,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Frodo" },
 	
-	{  50,  35,   8200,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"JCMarshall" },
-	{  50,  43,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"jwnmulder" },
-	{  50,  51,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"monkeyhappy" },
-	{  50,  59,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Tslayer" },
+	{  50,  35,   8200,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"JCMarshall" },
+	{  50,  45,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"jwnmulder" },
+	{  50,  55,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"monkeyhappy" },
+	{  50,  65,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Tslayer" },
 
 	// Project Management
-	{  50,  25,   9500,   5000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Project Management" },
-	{  50,  35,    500,   4500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Gamester17" },
+	{  50,  22,   9500,   5000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Project Management" },
+	{  50,  35,    500,   4500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Gamester17" },
 
 	// Testers
-	{  50,  25,   6500,  16500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Testers" },
-	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"DDay" },
-	{  50,  43,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"[XC]D-Ice" },
-	{  50,  51,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"MrMario64" },
-	{  50,  59,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Obstler" },
-	{  50,  67,    100,   7100,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Pike" },
+	{  50,  22,   6500,  16500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Testers" },
+	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"DDay" },
+	{  50,  45,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"[XC]D-Ice" },
+	{  50,  55,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"MrMario64" },
+	{  50,  65,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Obstler" },
+	{  50,  75,    100,   7100,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Pike" },
 
-	{  50,  35,   8100,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Poing" },
-	{  50,  43,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"RUNTiME" },
-	{  50,  51,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Shadow_Mx" },
-	{  50,  59,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"xAD" },
+	{  50,  35,   8100,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Poing" },
+	{  50,  45,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"RUNTiME" },
+	{  50,  55,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Shadow_Mx" },
+	{  50,  65,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD" },
 	
 	// Support
-	{  50,  25,   9500,   5000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Tech Support" },
-	{  50,  35,    500,   4500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Hullebulle" },
+	{  50,  22,   9500,   5000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Tech Support" },
+	{  50,  35,    500,   4500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Hullebulle" },
 
 	// Notable patches
-	{  50,  25,   6500,   7000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Patches" },
-	{  50,  35,    500,   6500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Q-Silver" },
-	{  50,  43,    100,   6400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"WiSo" },
+	{  50,  22,   6500,   7000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Patches" },
+	{  50,  35,    500,   6500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Q-Silver" },
+	{  50,  45,    100,   6400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"WiSo" },
 
 	// Stream server
-	{  50,  25,   8500,   8000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Stream Server" },
-	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"[XC]D-Ice" },
-	{  50,  43,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"PuhPuh" },
-	{  50,  51,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Pope-X" },
+	{  50,  22,   8500,   8000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Stream Server" },
+	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"[XC]D-Ice" },
+	{  50,  45,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"PuhPuh" },
+	{  50,  55,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Pope-X" },
 
 	// Website Hosts
-	{  50,  25,   9500,   8000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Wesite Hosting" },
-	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"HulleBulle" },
-	{  50,  43,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"MrX" },
-	{  50,  51,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Team-XBMC" },
-	{  50,  59,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"xAD" },
+	{  50,  22,   9500,   8000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Wesite Hosting" },
+	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"HulleBulle" },
+	{  50,  45,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"MrX" },
+	{  50,  55,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-XBMC" },
+	{  50,  65,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD" },
 	
 	// Special Thanks
-	{  50,  25,   9500,   8000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Special Thanks to" },
-	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"The Joker of Team Avalaunch" },
-	{  50,  43,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Team SmartXX" },
-	{  50,  51,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   14, L"Team Xecuter" },
+	{  50,  22,   9500,   8000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Special Thanks to" },
+	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"The Joker of Team Avalaunch" },
+	{  50,  45,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team SmartXX" },
+	{  50,  55,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Xecuter" },
 
 	// blank line as a pause
-	{   0,   0,  11500,      0,    0,    0, EFF_IN_APPEAR |EFF_OUT_APPEAR ,   14, L"" },
+	{   0,   0,  11500,      0,    0,    0, EFF_IN_APPEAR |EFF_OUT_APPEAR ,   20, L"" },
 };
 
 #define NUM_CREDITS (sizeof(Credits) / sizeof(Credits[0]))
@@ -146,24 +146,31 @@ void RunCredits()
 		if (Fonts.find(Credits[i].Font) == Fonts.end())
 		{
 			CStdString strFont;
-			CGUIFont* pFont = NULL;
-			// Find closest font size
-			for (int j = 0; j < Credits[i].Font; ++j)
+			strFont.Fmt("creditsfont%d", Credits[i].Font);
+			// first try loading it
+			CStdString strFilename;
+			strFilename.Fmt("credits-font%d.xpr", Credits[i].Font);
+			CGUIFont* pFont = g_fontManager.Load(strFont, strFilename);
+			if (!pFont)
 			{
-				strFont.Fmt("font%d", Credits[i].Font + j);
-				pFont = g_fontManager.GetFont(strFont);
-				if (pFont)
-					break;
-				if (j)
+				// Find closest skin font size
+				for (int j = 0; j < Credits[i].Font; ++j)
 				{
-					strFont.Fmt("font%d", Credits[i].Font - j);
+					strFont.Fmt("font%d", Credits[i].Font + j);
 					pFont = g_fontManager.GetFont(strFont);
 					if (pFont)
 						break;
+					if (j)
+					{
+						strFont.Fmt("font%d", Credits[i].Font - j);
+						pFont = g_fontManager.GetFont(strFont);
+						if (pFont)
+							break;
+					}
 				}
+				if (!pFont)
+					pFont = g_fontManager.GetFont("font13"); // should have this!
 			}
-			if (!pFont)
-				pFont = g_fontManager.GetFont("font13"); // should have this!
 			Fonts.insert(std::pair<int, CGUIFont*>(Credits[i].Font, pFont));
 		}
 
@@ -354,7 +361,7 @@ void RunCredits()
 			{
 				for (int j = 0; j < 256; ++j)
 				{
-#define clamp(x) (x) > 255 ? 255 : (BYTE)((x) & 0xff)
+					#define clamp(x) (x) > 255 ? 255 : (BYTE)((x) & 0xff)
 					Ramp.blue[j] = clamp(StartRamp.blue[j] + Gamma);
 					Ramp.green[j] = clamp(StartRamp.green[j] + Gamma);
 					Ramp.red[j] = clamp(StartRamp.red[j] + Gamma);
@@ -366,8 +373,20 @@ void RunCredits()
 
 			// check for keypress
 			g_application.ReadInput();
-			if (g_application.m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_A])
+			if (g_application.m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_B] ||
+				g_application.m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_BACK ||
+				g_application.m_DefaultIR_Remote.wButtons == XINPUT_IR_REMOTE_BACK ||
+				g_application.m_DefaultIR_Remote.wButtons == XINPUT_IR_REMOTE_MENU)
 			{
+				// Unload fonts
+				for (map<int, CGUIFont*>::iterator iFont = Fonts.begin(); iFont != Fonts.end(); ++iFont)
+				{
+					CStdString strFont;
+					strFont.Fmt("font%d", iFont->first);
+					g_fontManager.Unload(strFont);
+				}
+
+				// clear screen and exit to gui
 				pD3DDevice->Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
 				pD3DDevice->SetGammaRamp(0, &StartRamp);
 				pD3DDevice->Present(0, 0, 0, 0);
