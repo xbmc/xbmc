@@ -1,7 +1,6 @@
 #ifndef __XBMC_H
 #define __XBMC_H 1
 
-
 #define MAX_XBMC_NAME 10
 
 #define XBMC_SUBTYPE_STANDARD 1
@@ -28,6 +27,8 @@ int xbmc_cancel;
 inline int xbmc_sid_from_num(int num);
 inline int xbmc_num_from_sid(int sid, int type);
 void xbmc_addsub(int id, char* name, int type, int invalid);
-void xbmc_update_matroskasubs(void *mkvdemuxer);
-
+void xbmc_mkv_updatesubs(void *mkvdemuxer);
+int xbmc_mkv_audiocount(void *mkvdemuxer);
+int xbmc_mkv_fill_audioinfo(void *mkvdemuxer, void* si, int aid);
+int xbmc_mkv_get_aid_from_num(void *mkvdemuxer, int num);
 #endif
