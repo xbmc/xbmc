@@ -40,8 +40,10 @@ CGUIRAMControl::CGUIRAMControl(DWORD dwParentID, DWORD dwControlId,
 	m_pMonitor	= NULL;
 
 	FLOAT fTextW;
-	m_pFont->GetTextExtent(L"X", &fTextW, &m_fFontHeight);
-	m_pFont2->GetTextExtent(L"X", &fTextW, &m_fFont2Height);
+	if (m_pFont)
+		m_pFont->GetTextExtent(L"X", &fTextW, &m_fFontHeight);
+	if (m_pFont2)
+		m_pFont2->GetTextExtent(L"X", &fTextW, &m_fFont2Height);
 
 	for(int i=0;i<RECENT_MOVIES;i++)
 	{
@@ -172,10 +174,12 @@ void CGUIRAMControl::Render()
 
 		if(movie.bValid)
 		{
-			FLOAT fTextWidth,fTextHeight;
+			float fTextWidth=0;
+			float fTextHeight=0;
 			swprintf(wszText, L"%S", movie.strTitle.c_str() );
-			m_pFont2->GetTextExtent(wszText, &fTextWidth, &fTextHeight);
-			
+			if (m_pFont2)
+				m_pFont2->GetTextExtent(wszText, &fTextWidth, &fTextHeight);
+
 			int iButtonWidth = (int) (fTextWidth+BUTTON_WIDTH_ADJUSTMENT);
 			int iButtonHeight= (int) (fTextHeight+BUTTON_HEIGHT_ADJUSTMENT);
 			bool itemHasFocus = (i==m_iSelection) && HasFocus();

@@ -289,7 +289,8 @@ void CGUITextBox::SetText(const wstring &strText)
 
 			FLOAT fwidth,fheight;
 			swprintf(wsTmp,L"%S",szLine);
-			m_pFont->GetTextExtent(wsTmp,&fwidth,&fheight);
+			if (m_pFont)
+				m_pFont->GetTextExtent(wsTmp,&fwidth,&fheight);
 			if (fwidth > m_dwWidth)
 			{
 				if (iLastSpace > 0 && iLastSpaceInLine != lpos)

@@ -98,6 +98,7 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
 
 bool CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD dwTextColor, WCHAR* wszText,bool bScroll )
 {
+	if (!m_pFont) return false;
 	bool bResult = false;
   float fTextHeight, fTextWidth;
   m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);

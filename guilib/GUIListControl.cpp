@@ -110,7 +110,7 @@ void CGUIListControl::Render()
 			CStdString strLabel2=pItem->GetLabel2();
       
 			DWORD dMaxWidth=(m_dwWidth-m_iImageWidth-16);
-      if ( strLabel2.size() > 0 )
+      if ( strLabel2.size() > 0 && m_pFont2)
       {
 				if ( m_iTextOffsetY == m_iTextOffsetY2 ) 
 				{
@@ -124,7 +124,7 @@ void CGUIListControl::Render()
 			swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
 			RenderText((float)iPosX, (float)iPosY+2+m_iTextOffsetY, (FLOAT)dMaxWidth, dwColor, wszText,bSelected);
       
-      if (strLabel2.size()>0)
+      if (strLabel2.size()>0 && m_pFont2)
       {
 				dwColor=m_dwTextColor2;
 				if (pItem->IsSelected())
@@ -151,6 +151,8 @@ void CGUIListControl::Render()
 
 void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD dwTextColor, WCHAR* wszText,bool bScroll )
 {
+	if (!m_pFont)
+		return;
 	static int scroll_pos = 0;
 	static int iScrollX=0;
 	static int iLastItem=-1;
