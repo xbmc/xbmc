@@ -1497,6 +1497,7 @@
 <string><id>10004</id><value>Settings</value></string>
 <string><id>10005</id><value>My Music</value></string>
 <string><id>10006</id><value>My Videos</value></string>
+<string><id>10007</id><value>System information</value></string>
 <string><id>10008</id><value>Settings->General</value></string>
 <string><id>10009</id><value>Settings->Screen</value></string>
 <string><id>10010</id><value>Settings->Screen->UI Calibration</value></string>
@@ -1504,15 +1505,19 @@
 <string><id>10012</id><value>Settings->SlideShow</value></string>
 <string><id>10013</id><value>Settings->Screen->Filters</value></string>
 <string><id>10014</id><value>Settings->Music</value></string>
+<string><id>10015</id><value>Settings->Screen->Subtitles</value></string>
 <string><id>10016</id><value>Settings->Screen->Screensaver</value></string>
-<string><id>10020</id><value>Settings->WINDOW_SCRIPTS</value></string>
+<string><id>10017</id><value>Settings->Weather</value></string>
+<string><id>10020</id><value>Settings->Scripts</value></string>
 <string><id>10021</id><value>My Videos/genre</value></string>
 <string><id>10022</id><value>My Videos/actor</value></string>
 <string><id>10023</id><value>My Videos/year</value></string>
+<string><id>10024</id><value>Settings->Programs</value></string>
 <string><id>10025</id><value>My Videos/title</value></string>
 <string><id>10026</id><value>Settings->General->Cache</value></string>
 <string><id>10027</id><value>Settings->General->Autorun</value></string>
 <string><id>10028</id><value>My Videos/playlist</value></string>
+<string><id>10029</id><value>Settings->General->LCD</value></string>
 <string><id>10100</id><value>Yes/no dialog</value></string>
 <string><id>10101</id><value>Progress dialog</value></string>
 <string><id>10500</id><value>My Music/playlist</value></string>
@@ -1531,6 +1536,7 @@
 <string><id>12006</id><value>Audio visisalisation</value></string>
 <string><id>12007</id><value>My Picture/slideshow</value></string>
 <string><id>12008</id><value>Filestacking dialog</value></string>
+<string><id>12600</id><value>My Weather</value></string>
 <string><id>12900</id><value>Screensaver</value></string>
 <string><id>12901</id><value>Fullscreen OSD</value></string>
 </strings>
