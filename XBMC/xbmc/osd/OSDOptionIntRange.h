@@ -6,8 +6,8 @@ namespace OSD
 		public IOSDOption
 	{
 	public:
-		COSDOptionIntRange(void);
-		COSDOptionIntRange(int iStart, int iEnd, int iInterval, int iValue);
+		COSDOptionIntRange(int iHeading);
+		COSDOptionIntRange(int iHeading,int iStart, int iEnd, int iInterval, int iValue);
 		COSDOptionIntRange(const COSDOptionIntRange& option);
 		const OSD::COSDOptionIntRange& operator = (const COSDOptionIntRange& option);
 

@@ -28,7 +28,8 @@ namespace OSD
 
 	private:
     void Clear();
-		typedef	vector<COSDSubMenu*>::iterator ivecSubMenus;						
+		typedef	vector<COSDSubMenu*>::iterator ivecSubMenus;
+		typedef	vector<COSDSubMenu*>::const_iterator icvecSubMenus;						
 		vector<COSDSubMenu*> m_vecSubMenus;
 
 		int m_iCurrentSubMenu;

@@ -1,20 +1,27 @@
 
 #include ".\OSDOptionFloatRange.h"
+
+#include "localizestrings.h"
+#include "guifont.h"
+#include "guifontmanager.h"
 using namespace OSD;
-COSDOptionFloatRange::COSDOptionFloatRange(void)
+COSDOptionFloatRange::COSDOptionFloatRange(int iHeading)
 {
 	m_fMin=0.0f;
   m_fMax=1.0f;
   m_fValue=0.0f;
   m_fInterval=0.1f;
+  m_iHeading=iHeading;
 }
 
-COSDOptionFloatRange::COSDOptionFloatRange(float fStart, float fEnd, float fInterval, float fValue)
+COSDOptionFloatRange::COSDOptionFloatRange(int iHeading,float fStart, float fEnd, float fInterval, float fValue)
 {
 	m_fMin=fStart;
   m_fMax=fEnd;
   m_fValue=fValue;
   m_fInterval=fInterval;
+  m_iHeading=iHeading;
+
 }
 
 COSDOptionFloatRange::COSDOptionFloatRange(const COSDOptionFloatRange& option)
@@ -30,6 +37,7 @@ const OSD::COSDOptionFloatRange& COSDOptionFloatRange::operator = (const COSDOpt
   m_fMax=option.m_fMax;
   m_fValue=option.m_fValue;
   m_fInterval=option.m_fInterval;
+  m_iHeading=option.m_iHeading;
 	return *this;
 }
 
@@ -45,6 +53,20 @@ IOSDOption* COSDOptionFloatRange::Clone() const
 
 void COSDOptionFloatRange::Draw(int x, int y, bool bFocus)
 {
+  DWORD dwColor=0xff999999;
+  if (bFocus)
+    dwColor=0xffffffff;
+  CGUIFont* pFont13=g_fontManager.GetFont("font13");
+  if (pFont13)
+  {
+    wstring strHeading=g_localizeStrings.Get(m_iHeading);
+    pFont13->DrawShadowText( (float)x,(float)y, dwColor,
+                              strHeading.c_str(), 0,
+                              0, 
+                              5, 
+                              5,
+                              0xFF020202);
+  }
 }
 
 bool COSDOptionFloatRange::OnAction(const CAction& action)

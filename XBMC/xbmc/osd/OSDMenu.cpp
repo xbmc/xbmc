@@ -49,11 +49,12 @@ const COSDMenu& COSDMenu::operator = (const COSDMenu& menu)
 {
 	if (&menu==this) return *this;
   Clear();
-	ivecSubMenus i =m_vecSubMenus.begin();
-	while (i != m_vecSubMenus.end())
+	icvecSubMenus i =menu.m_vecSubMenus.begin();
+	while (i != menu.m_vecSubMenus.end())
 	{
-		COSDSubMenu* pSubMenu=*i;
+		const COSDSubMenu* pSubMenu=*i;
 		m_vecSubMenus.push_back ( pSubMenu->Clone() );
+    ++i;
 	}
 
 	m_iCurrentSubMenu=menu.m_iCurrentSubMenu;
