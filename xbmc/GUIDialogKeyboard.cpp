@@ -125,7 +125,7 @@ void CGUIDialogKeyboard::OnAction(const CAction &action)
 	}
 	else
 	{
-		CGUIWindow::OnAction(action);
+		CGUIDialog::OnAction(action);
 	}
 }
 

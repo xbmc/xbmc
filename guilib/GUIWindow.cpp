@@ -47,6 +47,7 @@ CGUIWindow::CGUIWindow(DWORD dwID)
   m_bRelativeCoords = false;
 	m_bNeedsScaling = false;
   m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
+  m_iOverlayAllowed = -1;   // Use parent or previous window's state
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -400,6 +401,20 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
 				iGroup++;
 			}
 		}
+		else if (strValue=="allowoverlay")
+		{
+      CStdString strValue=pChild->FirstChild()->Value();
+      strValue.MakeLower();
+
+      if (strValue=="yes")
+        m_iOverlayAllowed=1;
+      else if (strValue=="true")
+        m_iOverlayAllowed=1;
+      else if (strValue=="no")
+        m_iOverlayAllowed=0;
+      else if (strValue=="false")
+        m_iOverlayAllowed=0;
+		}
 
     pChild=pChild->NextSibling();
   }
@@ -689,6 +704,11 @@ DWORD CGUIWindow::GetPreviousWindowID(void) const
 
 void CGUIWindow::OnInitWindow()
 {
+	CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwDefaultFocusControlID);
+	g_graphicsContext.SendMessage(msg);
+
+  if (m_iOverlayAllowed>-1) // True, use our own overlay state
+    g_graphicsContext.SetOverlay(m_iOverlayAllowed>0 ? true : false);
 }
 
 bool CGUIWindow::OnMessage(CGUIMessage& message)
@@ -709,14 +729,11 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 		  {
 			  m_dwPreviousWindowId = message.GetParam1();
 		  }
-      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwDefaultFocusControlID);
-      g_graphicsContext.SendMessage(msg);
 		  OnInitWindow();
-      }
       return true;
+    }
     break;
 
-    
     case GUI_MSG_WINDOW_DEINIT:
     {
       CStdString strLine;

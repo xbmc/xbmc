@@ -49,7 +49,7 @@ void CGUIDialogSelect::OnAction(const CAction &action)
 		Close();
 		return;
   }
-	CGUIWindow::OnAction(action);
+	CGUIDialog::OnAction(action);
 }
 
 bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
@@ -59,7 +59,6 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_DEINIT:
     {
 			Reset();
-			g_application.EnableOverlay();			
 		}
 		break;
 
@@ -67,7 +66,6 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
     {
       m_bButtonPressed=false;
 			CGUIDialog::OnMessage(message);
-			g_application.DisableOverlay();
 			m_iSelected=-1;
 			CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_LIST,0,0,NULL);
 			g_graphicsContext.SendMessage(msg);         
@@ -125,7 +123,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
     break;
   }
 
-  return CGUIWindow::OnMessage(message);
+  return CGUIDialog::OnMessage(message);
 }
 
 
