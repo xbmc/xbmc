@@ -99,7 +99,7 @@ HRESULT CXBApplicationEx::Create()
 		if (!g_graphicsContext.IsValidResolution(g_stSettings.m_GUIResolution))
 		{
 			// Oh uh - doesn't look good for starting in their wanted screenmode
-			CLog::Log(LOGERROR, "The screen rsolution requested is not valid, resetting to a valid mode");
+			CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
 			g_stSettings.m_GUIResolution = g_videoConfig.GetSafeMode();
 			g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
 		}
