@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 03-09-2004 fixed: SMB did not handle files with non ASCII names properly (got NT_OBJECT_NOT_FOUND)
   - 03-09-2004 fixed: eliminate crash that occurs when loading wma files which have non ASCII characters in its tags
   - 02-09-2004 fixed: eliminate crash that occurs when loading m3u which have weird characters
   - 02-09-2004 added: grouping of controls
