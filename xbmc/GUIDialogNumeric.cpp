@@ -69,13 +69,12 @@ void CGUIDialogNumeric::OnAction(const CAction &action)
     }
     else
     {
-      wchar_t* strHiddenInput = new wchar_t[wcslen(m_strUserInput)];
-      wcscpy(strHiddenInput, m_strUserInput);
-      for (int i = 0; i < (int)wcslen(m_strUserInput); i++)
-      {
-        strHiddenInput[i] = m_cHideInputChar;
-      }
-      SetLine(2, strHiddenInput);
+			CStdStringW strHiddenInput(m_strUserInput);
+			for (int i = 0; i < (int)strHiddenInput.size(); i++)
+			{
+				strHiddenInput[i] = m_cHideInputChar;
+			}
+			SetLine(2, strHiddenInput);
     }
   }
   else
@@ -130,9 +129,8 @@ bool CGUIDialogNumeric::OnMessage(CGUIMessage& message)
           }
           else
           {
-            wchar_t* strHiddenInput = new wchar_t[wcslen(m_strUserInput)];
-            wcscpy(strHiddenInput, m_strUserInput);
-            for (int i = 0; i < (int)wcslen(m_strUserInput); i++)
+            CStdStringW strHiddenInput(m_strUserInput);
+            for (int i = 0; i < (int)strHiddenInput.size(); i++)
             {
               strHiddenInput[i] = m_cHideInputChar;
             }

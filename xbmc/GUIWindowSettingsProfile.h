@@ -1,6 +1,8 @@
 #pragma once
 #include "guiwindow.h"
 #include "guiwindowmanager.h"
+#include "GUIListControl.h"
+
 class CGUIWindowSettingsProfile :
   public CGUIWindow
 {
@@ -12,6 +14,7 @@ public:
 
 protected:
 	int   m_iLastControl;
+  vector<CGUIListItem*> m_vecListItems;
 
   void  OnPopupMenu(int iItem);
   void  DoRename(int iItem);
@@ -21,4 +24,5 @@ protected:
   int   GetSelectedItem();
   void  LoadList();
   void  SetLastLoaded();
+	void  ClearListItems();
 };

@@ -6,7 +6,6 @@
 #include "../guilib/GUIListItem.h"
 #include "util.h"
 #include "application.h"
-#include "GUIListControl.h"
 
 #define CONTROL_PROFILES 2
 #define CONTROL_LASTLOADED_PROFILE 3
@@ -148,6 +147,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_DEINIT:
 		{
 			m_iLastControl=GetFocusedControl();
+			ClearListItems();
 		}
 		break;
 
@@ -257,19 +257,20 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
 
 void CGUIWindowSettingsProfile::LoadList()
 {
-  CGUIMessage msg1(GUI_MSG_LABEL_RESET,GetID(),CONTROL_PROFILES,0,0,NULL);
-  g_graphicsContext.SendMessage(msg1);         
+	ClearListItems();
 
   for (UCHAR i = 0; i < g_settings.m_vecProfiles.size(); i++) {
     CProfile& profile = g_settings.m_vecProfiles.at(i);
     CGUIListItem* item = new CGUIListItem(profile.getName());
     CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),CONTROL_PROFILES,0,0,(void*)item);
     g_graphicsContext.SendMessage(msg);
+		m_vecListItems.push_back(item);
   }
   {
   CGUIListItem* item = new CGUIListItem(g_localizeStrings.Get(13202));
   CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),CONTROL_PROFILES,0,0,(void*)item);
   g_graphicsContext.SendMessage(msg);
+	m_vecListItems.push_back(item);
   }
 
   SetLastLoaded();
@@ -324,3 +325,16 @@ bool CGUIWindowSettingsProfile::GetKeyboard(CStdString& strInput)
 	return false;
 }
 
+void CGUIWindowSettingsProfile::ClearListItems()
+{
+  CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_PROFILES,0,0,NULL);
+  g_graphicsContext.SendMessage(msg);
+
+	for (int i=0;i<(int)m_vecListItems.size();++i)
+	{
+		CGUIListItem* pListItem=m_vecListItems[i];
+		delete pListItem;
+	}
+
+	m_vecListItems.erase(m_vecListItems.begin(), m_vecListItems.end());
+}
