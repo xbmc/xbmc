@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 19-09-2004 fixed: [ 1006147 ] music playback: SELECT, PAUSE & SELECT -> XBMC crashes
   - 19-09-2004 fixed: [ 1011939 ] OSD Focus Bug
   - 18-09-2004 changed: Support for TTF subtitles for MKV and OGM files in mplayer.dll
   - 16-09-2004 changed: add thin outline to TTF subtitles
