@@ -1373,9 +1373,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
       m_strCurrentFile="";
       if (CUtil::IsVideo(strFile))
       {
-        if (g_stSettings.m_bMyVideoVideoStack)
+        if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
         {
-          // do file stacking
           g_playlistPlayer.PlayNext(true);
         }
         if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
