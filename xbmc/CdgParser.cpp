@@ -280,6 +280,8 @@ CCdgRenderer::CCdgRenderer()
 	m_pReader = NULL;
 	m_pCdg = NULL;
 	m_bRender = false;
+	m_bgAlpha = 0x00000000;
+	m_fgAlpha = 0xFF000000;
 }
 
 
@@ -382,6 +384,10 @@ bool CCdgRenderer::InitGraphics()
 		m_pVertexBuffer->Unlock();
 	}
 
+	// set the colours
+	m_bgAlpha = ((TEX_COLOR) (g_guiSettings.GetInt("Karaoke.BackgroundAlpha") & 0x000000FF))<<24;
+	m_fgAlpha = ((TEX_COLOR) (g_guiSettings.GetInt("Karaoke.ForegroundAlpha") & 0x000000FF))<<24;
+
 	if(!m_pCdgTexture)
 		m_pd3dDevice->CreateTexture(TEXWIDTH,TEXHEIGHT, 0,0,D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &m_pCdgTexture);
 	if(!m_pCdgTexture) return false;
@@ -432,9 +438,9 @@ void CCdgRenderer::UpdateTexture()
 				{
 					TexColor &=  0x00FFFFFF;
 					if(ClutOffset == m_pCdg->GetBackgroundColor())
-						TexColor |= GetBgAlpha();
+						TexColor |= m_fgAlpha;
 					else
-						TexColor |=  GetFgAlpha();
+						TexColor |= m_fgAlpha;
 				}
 				((TEX_COLOR*)pTexel)[s.Get2D()] = TexColor;
 				s.IncV(); 
@@ -442,15 +448,6 @@ void CCdgRenderer::UpdateTexture()
 		s.IncU(); 
 	}
 	m_pCdgTexture->UnlockRect(0);
-}
-TEX_COLOR CCdgRenderer::GetBgAlpha()
-{
-	return	((TEX_COLOR) (g_guiSettings.GetInt("Karaoke.BackgroundAlpha") & 0x000000FF))<<24;
-}
-
-TEX_COLOR CCdgRenderer::GetFgAlpha()
-{
-	return ((TEX_COLOR) (g_guiSettings.GetInt("Karaoke.ForegroundAlpha") & 0x000000FF))<<24;
 }
 
 TEX_COLOR  CCdgRenderer::ConvertColor(CDG_COLOR CdgColor)
@@ -474,6 +471,7 @@ CCdgParser::~CCdgParser()
 	FreeGraphics();
 	Free();
 }
+
 bool	CCdgParser::AllocGraphics()
 {
 	CSingleLock	lock(m_CritSection);
@@ -483,40 +481,47 @@ bool	CCdgParser::AllocGraphics()
 		m_pRenderer->Attach(m_pReader);
 	return true;
 }
+
 void	CCdgParser::FreeGraphics()
 {
 	CSingleLock	lock(m_CritSection);
 	if(m_pRenderer)
 		SAFE_DELETE(m_pRenderer);
 }
+
 bool	CCdgParser::Start(CStdString strSongPath)
 {
 	if(!StartLoader(strSongPath))	return false;
 	if(!StartReader())	return false;
 	return true;
 }
+
 void	CCdgParser::Pause()
 {
 	CSingleLock	lock(m_CritSection);
 	if(m_pReader)
 		m_pReader->Pause();
 }
+
 void	CCdgParser::Stop()
 {
 	StopReader();
 	StopLoader();
 }
+
 void	CCdgParser::Free()
 {
 	FreeReader();
 	FreeLoader();
 }
+
 void	CCdgParser::SetAVDelay(float fDelay)
 {
 	CSingleLock	lock(m_CritSection);
 	if(m_pReader)
 		m_pReader->SetAVDelay(fDelay);
 }
+
 float CCdgParser::GetAVDelay()
 {
 	CSingleLock	lock(m_CritSection);
@@ -524,6 +529,7 @@ float CCdgParser::GetAVDelay()
 		return m_pReader->GetAVDelay();
 	return g_guiSettings.GetFloat("Karaoke.SyncDelay");
 }
+
 void CCdgParser::Render()
 {
 	CSingleLock	lock(m_CritSection);

@@ -113,12 +113,19 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 				if (pLanguageControl) FillInLanguages(pLanguageControl->GetSetting());
 			}
 			unsigned int iControl=message.GetControlId();
-			if (iControl >= CONTROL_START_BUTTONS && iControl < CONTROL_START_BUTTONS + m_vecSections.size())
+			unsigned int iSender=message.GetSenderId();
+			// if both the sender and the control are within out category range, then we have a change of
+			// category.
+			if (iControl >= CONTROL_START_BUTTONS && iControl < CONTROL_START_BUTTONS + m_vecSections.size() &&
+					iSender >= CONTROL_START_BUTTONS && iSender < CONTROL_START_BUTTONS + m_vecSections.size())
 			{
 				// change the setting...
-				m_iSection = iControl-CONTROL_START_BUTTONS;
-				CheckNetworkSettings();
-				CreateSettings();
+				if (iControl-CONTROL_START_BUTTONS != m_iSection)
+				{
+					m_iSection = iControl-CONTROL_START_BUTTONS;
+					CheckNetworkSettings();
+					CreateSettings();
+				}
 			}
 		}
 		break;
@@ -468,6 +475,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
 			pControl->AddLabel(g_localizeStrings.Get(13342), LED_COLOUR_ORANGE);
 			pControl->AddLabel(g_localizeStrings.Get(13343), LED_COLOUR_RED);
 			pControl->AddLabel(g_localizeStrings.Get(13344), LED_COLOUR_CYCLE);
+			pControl->AddLabel(g_localizeStrings.Get(351), LED_COLOUR_OFF);
 			pControl->SetValue(pSettingInt->GetData());
 		}
 		else if (strSetting == "LED.DisableOnPlayback")
@@ -685,7 +693,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 		else if (strSetting == "LED.DisableOnPlayback")
 		{
 			CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-			pControl->SetEnabled(g_guiSettings.GetInt("LED.Colour")!=LED_COLOUR_NO_CHANGE);
+			int iColour = g_guiSettings.GetInt("LED.Colour");
+			pControl->SetEnabled(iColour != LED_COLOUR_NO_CHANGE && iColour != LED_COLOUR_OFF);
 		}
 	}
 }
