@@ -1,4 +1,4 @@
-#include <xtl.h>
+#include "stdafx.h"
 #include "EncoderWav.h"
 #include "..\utils\log.h"
 

@@ -55,6 +55,7 @@
 #include "GUIWindowVideoPlaylist.h" 
 #include "GUIWindowSettingsSlideShow.h"
 #include "GUIWindowSettingsScreensaver.h"
+#include "GUIWindowSettingsCDRipper.h"
 #include "guiwindowsettingsautorun.h"
 #include "guiwindowsettingsfilter.h"
 //#include "guiwindowsettingsmusic.h"
@@ -159,8 +160,9 @@ public:
 	CGUIWindowSettingsUICalibration	m_guiSettingsUICalibration;
 	CGUIWindowSettingsScreenCalibration m_guiSettingsScreenCalibration;
 	CGUIWindowSettingsSlideShow			m_guiSettingsSlideShow;
-	CGUIWindowSettingsScreensaver			m_guiSettingsScreensaver;
-	//CGUIWindowSettingsOSD				m_guiSettingsOSD;
+	CGUIWindowSettingsScreensaver		m_guiSettingsScreensaver;
+	CGUIWindowSettingsCDRipper			m_guiSettingsCDRipper;
+	//CGUIWindowSettingsOSD					m_guiSettingsOSD;
   CGUIWindowSettingsAutoRun       m_guiSettingsAutoRun;
 	CGUIWindowScripts								m_guiScripts;
 	CGUIWindowSettingsFilter				m_guiSettingsFilter;
@@ -179,23 +181,23 @@ public:
 	CGUIWindowMusicArtists					m_guiMyMusicArtists;
 	CGUIWindowMusicGenres						m_guiMyMusicGenres;
 	CGUIWindowMusicTop100						m_guiMyMusicTop100;
-	CGUIWindowScreensaver					m_guiWindowScreensaver;
+	CGUIWindowScreensaver						m_guiWindowScreensaver;
   CGUIWindowSettingsLCD           m_guiSettingsLCD;
   CGUIWindowSettingsSubtitles     m_guiSettingsSubtitles;
   CGUIWindowVideoGenre            m_guiVideoGenre;
   CGUIWindowVideoActors           m_guiVideoActors;
 	CGUIWindowVideoYear             m_guiVideoYear;
 	CGUIWindowVideoTitle            m_guiVideoTitle;
-	CGUIWindowWeather					m_guiMyWeather;	//WEATHER
+	CGUIWindowWeather								m_guiMyWeather;	//WEATHER
 	CGUIWindowBuddies						    m_guiMyBuddies;	//BUDDIES
-	CGUIWindowSettingsWeather			m_guiSettingsWeather; //WEATHER SETTINGS
-	CGUIWindowOSD						m_guiWindowOSD;
-	CGUIWindowSettingsCache				m_guiSettingsCache;
-	CGUIWindowSettingsSkinLanguage		m_guiSettingsSkinLanguage;
-	CGUIWindowSettingsUserInterface		m_guiSettingsUserInterface;
-	CGUIWindowSettingsAudio				m_guiSettingsAudio;
-	CGUIWindowSettingsMyVideo			m_guiSettingsMyVideo;
-	CGUIWindowSettingsMyMusic			m_guiSettingsMyMusic;
+	CGUIWindowSettingsWeather				m_guiSettingsWeather; //WEATHER SETTINGS
+	CGUIWindowOSD										m_guiWindowOSD;
+	CGUIWindowSettingsCache					m_guiSettingsCache;
+	CGUIWindowSettingsSkinLanguage	m_guiSettingsSkinLanguage;
+	CGUIWindowSettingsUserInterface	m_guiSettingsUserInterface;
+	CGUIWindowSettingsAudio					m_guiSettingsAudio;
+	CGUIWindowSettingsMyVideo				m_guiSettingsMyVideo;
+	CGUIWindowSettingsMyMusic				m_guiSettingsMyMusic;
 
   CXBVirtualKeyboard   						m_keyboard;
 	CSNTPClient											m_sntpClient;
