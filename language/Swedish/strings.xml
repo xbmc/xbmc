@@ -1649,18 +1649,22 @@
  <id>497</id>
  <value>Göm filändelse</value>
  </string>
+
  <string>
  <id>498</id>
  <value>Sortera efter: Typ</value>
  </string>
+
+ <string>
  <id>499</id>
  <value>Kunde inte kontakta www.allmusic.com</value>
  </string>
+
  <string>
  <id>500</id>
  <value>Nerladdning av album info misslyckades</value>
  </string>
- <string>
+
 
  <string><id>10000</id><value>Start</value></string>
  <string><id>10001</id><value>Mina Program</value></string>
