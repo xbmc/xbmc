@@ -277,7 +277,9 @@ CSettings::CSettings(void)
 	g_stSettings.m_bStretch=false;
 
 	g_stSettings.m_bAllowVideoSwitching=true;
-	strcpy(g_stSettings.m_szWeatherArea, "UKXX0085");	//default WEATHER to London for no good reason
+	strcpy(g_stSettings.m_szWeatherArea[0], "UKXX0085");	//default WEATHER 1 to London for no good reason
+	strcpy(g_stSettings.m_szWeatherArea[1], "NLXX0002");	//default WEATHER 2 to Amsterdam for no good reason
+	strcpy(g_stSettings.m_szWeatherArea[2], "CAXX0343");	//default WEATHER 3 to Ottawa for no good reason
 	strcpy(g_stSettings.m_szWeatherFTemp, "C");			//default WEATHER temp units 
 	strcpy(g_stSettings.m_szWeatherFSpeed, "K");		//default WEATHER speed units
 	g_stSettings.m_iWeatherRefresh = 30;
@@ -1004,7 +1006,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetInteger(pElement, "weatherrefresh", g_stSettings.m_iWeatherRefresh, 15, 15, 120);	//WEATHER SETTINGS
 		GetString(pElement, "weathertemp", g_stSettings.m_szWeatherFTemp, "C");					//WEATHER SETTINGS
 		GetString(pElement, "weatherspeed", g_stSettings.m_szWeatherFSpeed, "K");				//WEATHER SETTINGS
-		GetString(pElement, "areacode", g_stSettings.m_szWeatherArea, "UKXX0085");				//WEATHER SETTINGS
+		GetString(pElement, "areacode1", g_stSettings.m_szWeatherArea[0], "UKXX0085");			//WEATHER SETTINGS
+		GetString(pElement, "areacode2", g_stSettings.m_szWeatherArea[1], "NLXX0002");			//WEATHER SETTINGS
+		GetString(pElement, "areacode3", g_stSettings.m_szWeatherArea[2], "CAXX0343");			//WEATHER SETTINGS
 		GetInteger(pElement, "osdtimeout", g_stSettings.m_iOSDTimeout,5,0,INT_MAX);
 	}
 	// slideshow settings
@@ -1313,7 +1317,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetInteger(pNode, "weatherrefresh", g_stSettings.m_iWeatherRefresh);	//WEATHER SETTINGS
 	SetString(pNode, "weathertemp", g_stSettings.m_szWeatherFTemp);			//WEATHER SETTINGS
 	SetString(pNode, "weatherspeed", g_stSettings.m_szWeatherFSpeed);		//WEATHER SETTINGS
-	SetString(pNode, "areacode", g_stSettings.m_szWeatherArea);				//WEATHER SETTINGS
+	SetString(pNode, "areacode1", g_stSettings.m_szWeatherArea[0]);			//WEATHER SETTINGS
+	SetString(pNode, "areacode2", g_stSettings.m_szWeatherArea[1]);			//WEATHER SETTINGS
+	SetString(pNode, "areacode3", g_stSettings.m_szWeatherArea[2]);			//WEATHER SETTINGS
 	SetInteger(pNode, "osdtimeout", g_stSettings.m_iOSDTimeout);
 
   // slideshow settings
