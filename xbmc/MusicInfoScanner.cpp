@@ -4,6 +4,7 @@
 #include "musicInfoTagLoaderFactory.h"
 #include "Filesystem/cddadirectory.h"
 #include "Filesystem/hddirectory.h"
+#include "FileSystem/DirectoryCache.h"
 #include "Util.h"
 #include "settings.h"
 #include "utils/Log.h"
@@ -57,6 +58,7 @@ void CMusicInfoScanner::Process()
 		CSectionLoader::Load("LIBMP4");
 
 		CUtil::ThumbCacheClear();
+	  g_directoryCache.InitMusicThumbCache();
 
 		m_musicDatabase.BeginTransaction();
 
@@ -115,6 +117,7 @@ void CMusicInfoScanner::Process()
 		CSectionLoader::Unload("LIBMP4");
 
 		CUtil::ThumbCacheClear();
+    g_directoryCache.ClearMusicThumbCache();
 
 		m_musicDatabase.Close();
 
@@ -195,6 +198,8 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
 		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
 		{
+      // get the item's thumb (this will cache the album thumb)
+      pItem->SetMusicThumb();
 			if (!DoScan(pItem->m_strPath))
 			{
 				m_bStop=true;
@@ -281,6 +286,8 @@ int CMusicInfoScanner::RetrieveMusicInfo(VECFILEITEMS& items, const CStdString& 
 				CSong song(tag);
 				song.iStartOffset = pItem->m_lStartOffset;
 				song.iEndOffset = pItem->m_lEndOffset;
+        pItem->SetMusicThumb();
+        song.strThumb = pItem->GetThumbnailImage();
 				m_musicDatabase.AddSong(song,false);
 				iFilesAdded++;
 			}
