@@ -1667,18 +1667,26 @@
 		<id>492</id>
 		<value>Agrandir les sous-titres</value>
 	</string>
-        <string>
-                <id>493</id>
-                <value>Options avancés (Experts uniquement !)</value>
-        </string>
-        <string>
-                <id>494</id>
-                <value>Amplitude avant distortion (dB)</value>
-        </string>
-        <string>
-                <id>495</id>
-                <value>Ajuster les vidéos à la résolution</value>
-        </string>
+    <string>
+        <id>493</id>
+        <value>Options avancés (Experts uniquement !)</value>
+    </string>
+    <string>
+        <id>494</id>
+        <value>Amplitude avant distortion (dB)</value>
+    </string>
+    <string>
+        <id>495</id>
+        <value>Ajuster les vidéos à la résolution</value>
+    </string>
+    <string>
+        <id>496</id>
+        <value>Calibrage</value>
+    </string>
+    <string>
+        <id>497</id>
+        <value>Masquer les extensions</value>
+    </string>
 	<string>
 		<id>10000</id>
 		<value>Accueil</value>
