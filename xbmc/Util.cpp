@@ -691,9 +691,11 @@ bool CUtil::IsPicture(const CStdString& strFile)
   {
     return true;
   }
+	if (strExtension == ".tbn")
+		return true;
   return false;
-
 }
+
 bool CUtil::IsShoutCast(const CStdString& strFileName)
 {
   if (strstr(strFileName.c_str(), "shout:") ) return true;
