@@ -599,5 +599,5 @@ void CGUIWindowMusicPlayList::ClearFileItems()
   CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
   g_graphicsContext.SendMessage(msg2);
 
-  m_vecItems.Clear();
+  m_vecItems.ClearKeepPointers();
 }
