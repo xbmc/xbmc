@@ -481,6 +481,12 @@ static void uninit_player(unsigned int mask){
     current_module="uninit_input";
     mp_input_uninit();
   }
+  
+  free_osd_list();		//fix 4 x 6548bytes memory leak 
+  codecs_uninit_free(); 	//fix 70Kbytes codecs mem leak
+  m_config_free(mconfig);	//fix 1250 counts of small memory block leaks
+  if(vo_font) free_font_desc(vo_font);	//free font memory  	
+  vo_font = NULL;  
 
   current_module=NULL;
 }
@@ -1149,7 +1155,8 @@ int mplayer_init(int argc, char* argv[])
 
 // check codec.conf
 if(!codecs_file || !parse_codec_cfg(codecs_file)){
-  if(!parse_codec_cfg(get_path("codecs.conf"))){
+  char * codecsconf_file = get_path("codecs.conf");	
+  if(!parse_codec_cfg(codecsconf_file)){
 	if(!parse_codec_cfg(MPLAYER_CONFDIR "/codecs.conf")){
       if(!parse_codec_cfg(NULL)){
 	mp_msg(MSGT_CPLAYER,MSGL_HINT,MSGTR_CopyCodecsConf);
@@ -1158,6 +1165,7 @@ if(!codecs_file || !parse_codec_cfg(codecs_file)){
       mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_BuiltinCodecsConf);
     }
   }
+  free(codecsconf_file);
 }
 
 #if 0
@@ -1328,7 +1336,9 @@ if(!codecs_file || !parse_codec_cfg(codecs_file)){
        if(!vo_font) mp_msg(MSGT_CPLAYER,MSGL_ERR,MSGTR_CantLoadFont,font_name);
   } else {
       // try default:
-       vo_font=read_font_desc(get_path("font/font.desc"),font_factor,verbose>1);
+       char * fontdesc_file=get_path("font/font.desc");
+       vo_font=read_font_desc(fontdesc_file,font_factor,verbose>1);
+       free(fontdesc_file);
        if(!vo_font)
        vo_font=read_font_desc(MPLAYER_DATADIR "/font/font.desc",font_factor,verbose>1);
   }
@@ -1420,6 +1430,7 @@ current_module = NULL;
          use_menu = 0;
        }
      }
+     free(menu_cfg);
    }
  }
 #endif
@@ -2006,7 +2017,9 @@ if(sh_video) {
     char **tmp2 = tmp;
     while (*tmp2)
         add_subtitles (*tmp2++, sh_video->fps, 0);
-    free(tmp);
+    while (*tmp)
+        free(*tmp++);
+    free(psub);
 #ifndef _XBOX
     if (set_of_sub_size == 0)
         add_subtitles (get_path("default.sub"), sh_video->fps, 1);
@@ -4241,7 +4254,11 @@ if(benchmark){
 printf(" unint_player\n");
 #endif
 // time to uninit all, except global stuff:
+#ifdef _XBOX
+uninit_player(INITED_ALL-(INITED_GUI+(fixed_vo?INITED_VO:0)));
+#else
 uninit_player(INITED_ALL-(INITED_GUI+INITED_INPUT+(fixed_vo?INITED_VO:0)));
+#endif
 
 #ifdef USE_SUB
   if ( set_of_sub_size > 0 )
