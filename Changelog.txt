@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-08-2004 added: [ 986344 ] CDG (Karaoke) support patch for MP3
   - 12-08-2004 changed: My Programs database layout changed again.  Changed database name so no need to remove existing database first
   - 12-08-2004 added: My Programs path tag can now contain direct link to XBE (Ex: <path>E:\apps\,C:\retailxboxdash.xbe</path>
   - 12-08-2004 fixed: Default tag in My Programs no longer needs to be the same as the path tag for the bookmark

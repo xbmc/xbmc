@@ -2043,6 +2043,34 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			<File
 				RelativePath=".\xbmc\visualizations\VisualisationFactory.h">
 			</File>
+			<Filter
+				Name="Xaraoke"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\visualizations\Xaraoke\Cdg.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\visualizations\Xaraoke\Cdg.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\visualizations\Xaraoke\CdgReader.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\visualizations\Xaraoke\CdgReader.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\visualizations\Xaraoke\Timer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\visualizations\Xaraoke\Timer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\visualizations\Xaraoke\XaraokeVisualisation.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\visualizations\Xaraoke\XaraokeVisualisation.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="libraries"
