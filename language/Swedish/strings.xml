@@ -2019,7 +2019,37 @@
  <id>735</id>
  <value>Charset</value>
  </string> 
-
+ <id>736</id>
+ <value>Stil</value>
+ </string> 
+ <string>
+ <id>737</id>
+ <value>Färg</value>
+ </string>
+ <string>
+ <id>738</id>
+ <value>Normal</value>
+ </string> 
+ <string>
+ <id>739</id>
+ <value>Fet</value>
+ </string> 
+ <string>
+ <id>740</id>
+ <value>Italics</value>
+ </string> 
+ <string>
+ <id>741</id>
+ <value>Fet Italics</value>
+ </string> 
+ <string>
+ <id>742</id>
+ <value>Vit</value>
+ </string> 
+ <string>
+ <id>743</id>
+ <value>Gul</value>
+ </string> 
 
  <string>
  <id>998</id>
