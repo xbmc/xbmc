@@ -204,7 +204,7 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 		}
 		else
 		{
-			if ( bRoot && CUtil::IsVideo( pItem->m_strPath ) && g_stSettings.m_bAutorunVideo)
+			if ( CUtil::IsVideo( pItem->m_strPath ) && g_stSettings.m_bAutorunVideo)
 			{
 				bPlaying=true;
 				g_application.PlayFile( pItem->m_strPath );
