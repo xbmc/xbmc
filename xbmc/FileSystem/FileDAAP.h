@@ -46,7 +46,11 @@ protected:
 private:
 		unsigned long			m_handle;
 		bool					m_bOpened;
+		bool					m_bStreaming;
+		int						m_iFileID;
+		char					m_strFileFormat[16];
 		void					DestroyDAAP();
+		bool					StartAudioStream();
 	};
 };
 
