@@ -4596,7 +4596,6 @@ goto_next_file:  // don't jump here after ao/vo/getch initialization!
 
 mp_msg(MSGT_CPLAYER,MSGL_INFO,"\n");
 
-#ifndef _XBOX
 
 if(benchmark){
   double tot=video_time_usage+vout_time_usage+audio_time_usage;
@@ -4623,7 +4622,7 @@ if(benchmark){
 	(total_time_usage>0.5)?(total_frame_cnt/total_time_usage):0);
   
 }
-#endif //!_XBOX
+
 
 #ifdef _XBOX
 printf(" unint_player\n");
