@@ -9,6 +9,7 @@
  */
 
 #include <io.h>
+#include <vector>
 #include "WebServer.h"
 #include "XBMCWeb.h"
 
@@ -275,6 +276,7 @@ void CWebServer::OnExit()
 //*************************************************************************************
 void CWebServer::Process()
 {
+
 	// always be checking he windows message q and can kill the process...
 	/*
 	 *	Basic event loop. SocketReady returns true when a socket is ready for
@@ -358,27 +360,49 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 		}
 
 		//no default file found, list directory contents
+		string strPath = wp->path;
+		if(strPath[strPath.length()-1] != '/')
+		{
+			websRedirect(wp, (char*)(strPath + "/").c_str());
+			return 0;
+		}
 		WIN32_FIND_DATA FindFileData;
 		HANDLE hFind;
-		bool addsep = (path[strlen(path)] != '/');
+		vector<string> vecFiles;
 		strcat(dir, "\\*");
 		hFind=FindFirstFile(dir, &FindFileData);
-		websWrite(wp, "%s", "<body><html>\n");
-
+	
 		do
 		{
-			string w = "<a href=";
-			w += path;
-			if(addsep) w += '/';
-			w += FindFileData.cFileName;
-			w += ">";
-			w += FindFileData.cFileName;
-			w += "</a><br>\n";
-			websWrite(wp, "%s", w.c_str());
+			string fn = FindFileData.cFileName;
+			if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) fn+= "/";
+			vecFiles.push_back(fn);
 		}
 		while (FindNextFile(hFind, &FindFileData));
 		FindClose(hFind);
-		websWrite(wp, "%s", "</body></html>\n");
+
+		sort(vecFiles.begin(), vecFiles.end());
+
+		websWrite(wp, "%s", "<title>Directory listing for /</title>\n");
+		websWrite(wp, "%s", "<h2>Directory listing for /</h2>\n");
+		websWrite(wp, "%s", "<hr>\n");
+		websWrite(wp, "%s", "<ul>\n");
+		 
+		vector<string>::iterator it = vecFiles.begin();
+		while (it != vecFiles.end())
+		{
+			string w = "<li><a href='";
+			//wp->lpath
+			//if(path[0]
+			w += *it;
+			w += "'>";
+			w += *it;
+			w += "</a>\n";
+			websWrite(wp, "%s", w.c_str());
+			++it;
+		}
+		
+		websWrite(wp, "%s", "</ul></hr>\n");
 		websDone(wp, 200);
 		return 1;
 	}

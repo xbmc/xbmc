@@ -119,8 +119,6 @@ public:
 	DWORD														m_dwIdleTime;
 protected:
 	bool										m_bOverlayEnabled;
-	vector<int>							m_vecScriptIds;
-	typedef vector<int>::iterator ivecScriptIds;
 	CStdString							m_strCurrentPlayer;
 
 };
