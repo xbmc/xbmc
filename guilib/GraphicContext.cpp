@@ -214,6 +214,7 @@ void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllow
 void CGraphicContext::SetGUIResolution(RESOLUTION &res)
 {
 	SetVideoResolution(res);
+	if (!m_pd3dParams) return;
 	m_iScreenWidth=m_pd3dParams->BackBufferWidth ;
 	m_iScreenHeight=m_pd3dParams->BackBufferHeight;
 	m_bWidescreen=(m_pd3dParams->Flags & D3DPRESENTFLAG_WIDESCREEN)!=0;
@@ -227,6 +228,11 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 			res = PAL_4x3;
 		else
 			res = NTSC_4x3;
+	}
+	if (!m_pd3dParams)
+	{
+		m_Resolution = res;
+		return;
 	}
 	bool NeedReset = false;
 	if (m_bFullScreenVideo)
