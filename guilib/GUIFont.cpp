@@ -10,6 +10,10 @@ CGUIFont::CGUIFont(const CStdString& strFontName)
 	m_strFontName = strFontName;
 }
 
+CGUIFont::~CGUIFont()
+{
+}
+
 CStdString& CGUIFont::GetFontName()
 {
 	return m_strFontName;

@@ -14,6 +14,7 @@
 #include "common/xbfont.h"
 #include "guifont.h"
 #include <xfont.h>
+#include <hash_map>
 
 using namespace std;
 
@@ -49,6 +50,10 @@ protected:
   XFONT*		m_pTrueTypeFont;
   int			m_iHeight;
   int			m_iStyle;
+  CStdString	m_strFilename;
+
+  static		stdext::hash_map<string, XFONT*>	m_usedTTFs;
+  static		stdext::hash_map<string, int>		m_usedTTFRefCount;
 };
 
 #endif
