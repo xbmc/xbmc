@@ -81,16 +81,45 @@ struct SSortVideoTitleByTitle
         
         case 3: // sort dvdLabel
         {
-          int iNotEqual=0;
-					strcpy(szfilename1, rpStart.m_strDVDLabel.c_str());
-					strcpy(szfilename2, rpEnd.m_strDVDLabel.c_str());
-				  iNotEqual=(strcmp(szfilename1,szfilename2));
-			    
-          if (0==iNotEqual)
+          int iLabel1=0,iLabel2=0;
+          char szTmp[20];
+          int  pos=0;
+          strcpy(szTmp,"");
+          for (int x=0; x < (int)rpStart.m_strDVDLabel.size(); x++)
           {
-            strcpy(szfilename1, rpStart.GetLabel().c_str());
-					  strcpy(szfilename2, rpEnd.GetLabel().c_str());
+            char k=rpStart.m_strDVDLabel.GetAt(x);
+            if (k >='0'&& k <= '9') 
+            {
+              if ( (k=='0' && pos > 0) || (k != '0' ) )  
+              {
+                szTmp[pos++] = k;
+                szTmp[pos]=0;
+              }
+            }
           }
+          sscanf(szTmp,"%i", &iLabel1);
+          strcpy(szTmp,"");
+          pos=0;
+          for (int x=0; x < (int)rpEnd.m_strDVDLabel.size(); x++)
+          {
+            char k=rpEnd.m_strDVDLabel.GetAt(x);
+            if (k >='0'&& k <= '9') 
+            {
+              if ( (k=='0' && pos > 0) || (k != '0' ) )  
+              {
+                szTmp[pos++] = k;
+                szTmp[pos]=0;
+              }
+            }
+          }
+          sscanf(szTmp,"%i", &iLabel2);
+
+          if ( iLabel1 < iLabel2) return bGreater;
+					if ( iLabel1 > iLabel2) return !bGreater;
+          
+          strcpy(szfilename1, rpStart.GetLabel().c_str());
+					strcpy(szfilename2, rpEnd.GetLabel().c_str());
+          
         }
         break;
 
