@@ -2,6 +2,13 @@
  * know bugs:
  * - doing smbc_stat on for example an IPC_SHARE leaves an open socket
  *   this happens when listing all shares from a pc ("smb://pc-name")
+ * - samba is not thread safe, so listening to music and browsing at the
+ *	 same time is not possible (sound can stutter)
+ * - when opening a server for the first time with ip adres and the second time
+ *   with server name, access to the server is denied.
+ * - when browsing entire network, user can't go back one step
+ *   share = smb://, user selects a workgroup, user selects a server.
+ *   doing ".." will go back to smb:// (entire network) and not to workgroup list.
  *
  * debugging is off for release builds (see local.h)
  */
@@ -10,6 +17,7 @@
 #include "../settings.h"
 #include "../util.h"
 #include "../sectionLoader.h"
+#include "../url.h"
 
 CSMBDirectory::CSMBDirectory(void)
 {
@@ -37,11 +45,11 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	    SMBC_LINK=9,
 */
 
-	// note, samba uses UTF8 strings internal, that's why we have to convert strings
-	// and wstrings to UTF8.
+	// note, samba uses UTF8 strings internal,
+	// that's why we have to convert strings and wstrings to UTF8.
 	char strUtfPath[1024];
 	size_t strLen;
-	CStdString strRoot = strPath;
+	CStdString strRoot;
 
 	if (!CUtil::HasSlashAtEnd(strPath))
 		strRoot+="/";
@@ -76,14 +84,14 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 				bool bIsDir = true;
 				__int64 lTimeDate = 0;
 
-				
 				// convert from UTF8 to wide string
 				strLen = convert_string(CH_UTF8, CH_UCS2, dirEnt->name, dirEnt->namelen, wStrFile, 1024);
 				wStrFile[strLen] = 0;
 
 				// doing stat on one of these types of shares leaves an open session
 				// so just skip them and only stat real dirs / files.
-				if( dirEnt->smbc_type != SMBC_FILE_SHARE &&
+				if( dirEnt->smbc_type != SMBC_IPC_SHARE &&
+						dirEnt->smbc_type != SMBC_FILE_SHARE &&
 						dirEnt->smbc_type != SMBC_PRINTER_SHARE &&
 						dirEnt->smbc_type != SMBC_COMMS_SHARE &&
 						dirEnt->smbc_type != SMBC_WORKGROUP &&
@@ -115,9 +123,26 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 				if (bIsDir)
 				{
 					CFileItem *pItem = new CFileItem(wStrFile);
-					pItem->m_strPath=strRoot;
-					pItem->m_strPath+=wStrFile;
-					pItem->m_bIsFolder=true;
+					pItem->m_strPath = strRoot;
+
+					// needed for network / workgroup browsing
+					// skip if root has already a valid domain and type is not a server
+					if ((strRoot.find(';') == -1) &&
+							(dirEnt->smbc_type == SMBC_SERVER) &&
+							(strRoot.find('@') == -1))
+					{
+						// lenght > 6, which means a workgroup name is specified and we need to
+						// remove it. Domain without user is not allowed
+						int strLength = strRoot.length();
+						if (strLength > 6)
+						{
+							if(CUtil::HasSlashAtEnd(strRoot))
+								pItem->m_strPath = "smb://";
+						}
+					}
+					pItem->m_strPath += wStrFile;
+					if(!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
+					pItem->m_bIsFolder = true;
 					FileTimeToSystemTime(&localTime, &pItem->m_stTime);  
 					items.push_back(pItem);
 				}
@@ -126,9 +151,9 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 					if (IsAllowed(wStrFile))
 					{
 						CFileItem *pItem = new CFileItem(wStrFile);
-						pItem->m_strPath=strRoot;
-						pItem->m_strPath+=wStrFile;
-						pItem->m_bIsFolder=false;
+						pItem->m_strPath = strRoot;
+						pItem->m_strPath += wStrFile;
+						pItem->m_bIsFolder = false;
 						pItem->m_dwSize = iSize;
 						FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 		        
