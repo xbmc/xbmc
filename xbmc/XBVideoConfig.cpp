@@ -139,3 +139,24 @@ RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS
 	  return NTSC_4x3;
   }
 }
+
+void XBVideoConfig::PrintInfo() const
+{
+	DWORD dwAVPack = XGetAVPack();
+	CStdString strAVPack;
+	if (dwAVPack == XC_AV_PACK_SCART) strAVPack = "Scart";
+	else if (dwAVPack == XC_AV_PACK_HDTV) strAVPack = "HDTV";
+	else if (dwAVPack == XC_AV_PACK_RFU) strAVPack = "RF Unit";
+	else if (dwAVPack == XC_AV_PACK_SVIDEO) strAVPack = "S-Video";
+	else if (dwAVPack == XC_AV_PACK_STANDARD) strAVPack = "Standard";
+	else strAVPack.Format("Unknown: %x", dwAVPack);
+	CLog::Log(LOGNOTICE, "AV Pack: %s", strAVPack.c_str());
+	CStdString strAVFlags;
+	if (HasWidescreen()) strAVFlags += "Widescreen,";
+	if (HasPAL60()) strAVFlags += "Pal60,";
+	if (Has480p()) strAVFlags += "480p,";
+	if (Has720p()) strAVFlags += "720p,";
+	if (Has1080i()) strAVFlags += "1080i,";
+	if (strAVFlags.size() > 1) strAVFlags = strAVFlags.Left(strAVFlags.size()-1);
+	CLog::Log(LOGNOTICE, "AV Flags: %s", strAVFlags.c_str());
+}

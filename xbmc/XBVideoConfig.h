@@ -19,6 +19,7 @@ public:
 	void GetModes(LPDIRECT3D8 pD3D);
 	RESOLUTION GetSafeMode() const;
   RESOLUTION GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS *p3dParams);
+	void PrintInfo() const;
 
 private:
 	bool bHasPAL;

@@ -2903,17 +2903,18 @@ void CUtil::SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, in
   if (iGamma < 0) iGamma=0;
   if (iGamma >100) iGamma=100;
 
-  float fBrightNess=(((float)iBrightNess)/50.0f) -1.0f;
-  float fContrast=(((float)iContrast)/50.0f);
-  float fGamma=(((float)iGamma)/40.0f)+0.5f;
+  float fBrightNess=(((float)iBrightNess)/50.0f) -1.0f;	// -1..1	Default: 0
+  float fContrast=(((float)iContrast)/50.0f);						// 0..2		Default: 1
+  float fGamma=(((float)iGamma)/40.0f)+0.5f;						// 0.5..3.0	Default: 1
   CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, bImmediate);
 }
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f))
 // Valid ranges:
-//  brightness -1 -> 1
-//  contrast    0 -> 2
-//  gamma     0.5 -> 3.5
+//  brightness -1 -> 1 (0 is default)
+//  contrast    0 -> 2 (1 is default)
+//  gamma     0.5 -> 3.5 (1 is default)
+//  default ramp is linear.
 void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate)
 {
 	// calculate ramp

@@ -295,7 +295,7 @@ extern "C"
 	{
 		int hr = pCloseFile();
     audio_uninit(1); //Fix to make sure audio device is deleted
-    video_uninit(); //Fix to make sure audio device is deleted
+//    video_uninit(); //Fix to make sure audio device is deleted
 
   	// Free allocated memory for FS segment
 		if (fs_seg != NULL) {
