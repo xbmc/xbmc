@@ -180,7 +180,14 @@ void CGUIButtonScroller::Render()
 		if (m_iScrollOffset > iMaxScroll || !m_bSmoothScrolling)
 		{
 			m_iScrollOffset = 0;
-			m_iOffset = m_bScrollUp ? GetNext(m_iOffset) : GetPrevious(m_iOffset);
+			if (m_bScrollUp)
+			{
+				if (GetNext(m_iOffset) != -1) m_iOffset = GetNext(m_iOffset);
+			}
+			else
+			{
+				if (GetPrevious(m_iOffset) != -1) m_iOffset = GetPrevious(m_iOffset);
+			}
 			// check for wraparound...
 			if (!m_bWrapAround)
 			{
@@ -303,7 +310,7 @@ int CGUIButtonScroller::GetNext(int iCurrent)
 		if (m_bWrapAround)
 			return 0;
 		else
-			return iCurrent;
+			return -1;
 	}
 	else
 		return iCurrent+1;
@@ -316,7 +323,7 @@ int CGUIButtonScroller::GetPrevious(int iCurrent)
 		if (m_bWrapAround)
 			return m_vecButtons.size()-1;
 		else
-			return iCurrent;
+			return -1;
 	}
 	else
 		return iCurrent-1;
@@ -360,7 +367,7 @@ void CGUIButtonScroller::SetActiveButton(int iButton)
 	{
 		int iItem = i;
 		for (int j=0; j<m_iDefaultSlot; j++)
-			iItem = GetNext(iItem);
+			if (GetNext(iItem) != -1) iItem = GetNext(iItem);
 		if (iItem == iButton)
 		{
 			m_iOffset = i;
@@ -444,7 +451,7 @@ void CGUIButtonScroller::DoDown()
 			{	// finish scroll for higher speed
 				m_bScrollUp = false;
 				m_iScrollOffset = 0;
-				m_iOffset = GetNext(m_iOffset);
+				if (GetNext(m_iOffset) != -1) m_iOffset = GetNext(m_iOffset);
 				OnChangeFocus();
 			}
 			else
@@ -468,6 +475,7 @@ void CGUIButtonScroller::DoDown()
 
 void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool bText)
 {
+	if (iOffset < 0) return;
 	float fStartAlpha, fEndAlpha;
 	GetScrollZone(fStartAlpha, fEndAlpha);
 	if (bText)
@@ -576,7 +584,7 @@ int CGUIButtonScroller::GetActiveButton()
 	if (m_iCurrentSlot<0) return -1;
 	int iCurrentItem = m_iOffset;
 	for (int i=0; i<m_iCurrentSlot; i++)
-		iCurrentItem = GetNext(iCurrentItem);
+		if (GetNext(iCurrentItem) != -1) iCurrentItem = GetNext(iCurrentItem);
 	return iCurrentItem;
 }
 

@@ -566,7 +566,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 
 	CUtil::ClearCache();
 	CUtil::SetThumbs(m_vecItems);
-	if (g_guiSettings.GetBool("ProgramsLists.HideExtensions"))
+	if (g_guiSettings.GetBool("FileLists.HideExtensions"))
 		CUtil::RemoveExtensions(m_vecItems);
 	CUtil::FillInDefaultIcons(m_vecItems);
 
