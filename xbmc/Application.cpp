@@ -1660,17 +1660,16 @@ void CApplication::CheckShutdown()
 	}
 	else
 	{
-		
 		if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_stSettings.m_iShutdownTime*60*1000L) )
 		{
-			if (!m_pPlayer->IsPlaying())	// make sure we're not playing something
+			if (m_pPlayer && m_pPlayer->IsPlaying())	// if we're playing something don't spindown
+			{
+				m_dwSaverTick=timeGetTime();
+			}
+			else										// not playing
 			{
 				g_application.Stop();		// Stop ourselves
 				XKUtils::XBOXPowerOff();	// Turn off the box
-			}
-			else							// we are playing, so reset the timer
-			{
-				m_dwSaverTick=timeGetTime();
 			}
 		}
 	}
