@@ -653,7 +653,7 @@ void CMPlayer::Process()
 			  }
 			  else 
 			  {
-				  xbox_video_CheckScreenSaver();		// Check for screen saver
+				  //xbox_video_CheckScreenSaver();		// Check for screen saver
 				  Sleep(100);
 			  }
 		  } while (m_bIsPlaying && !m_bStop);

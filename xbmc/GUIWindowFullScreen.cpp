@@ -10,6 +10,8 @@
 #include "cores/mplayer/mplayer.h"
 #include "utils/singlelock.h"
 #include "videodatabase.h"
+#include "cores/mplayer/ASyncDirectSound.h"
+
 #include <stdio.h>
 
 #define BLUE_BAR    0
@@ -41,6 +43,7 @@
 #define IMG_16X       20
 #define IMG_32X       21
 
+extern IDirectSoundRenderer* m_pAudioDecoder;
 extern int m_iAudioStreamIDX;
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 :CGUIWindow(0)
@@ -884,6 +887,13 @@ void CGUIWindowFullScreen::ChangetheSpeed(DWORD action)
 	if (m_iSpeed > 32 || m_iSpeed < -32)
 		m_iSpeed = 1;
 	g_application.m_pPlayer->ToFFRW(m_iSpeed);
+  if (m_pAudioDecoder)
+  {
+    if (m_iSpeed==1)
+      m_pAudioDecoder->SetCurrentVolume(m_pAudioDecoder->GetMaximumVolume());
+    else
+      m_pAudioDecoder->SetCurrentVolume(m_pAudioDecoder->GetMinimumVolume());
+  }
 }	
 
 void CGUIWindowFullScreen::Update()

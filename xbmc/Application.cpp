@@ -13,6 +13,7 @@
 #include "url.h"
 #include "autorun.h"
 #include "ActionManager.h"
+#include "cores/mplayer/ASyncDirectSound.h"
 #ifdef _DEBUG
 //	#pragma comment (lib,"lib/filezilla/xbfilezillad.lib") // SECTIONNAME=FILEZILL
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
@@ -45,11 +46,13 @@
 	#pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
 #endif
 
+extern IDirectSoundRenderer* m_pAudioDecoder;
 extern int m_iAudioStreamIDX;
 CApplication::CApplication(void)
 :m_ctrDpad(220,220)
 ,m_ctrIR(220,220)
 {
+    m_iPlaySpeed=1;
     m_strCurrentFile="";
 		m_bSpinDown=true;
 		m_bOverlayEnabled=true;
@@ -632,7 +635,15 @@ void CApplication::OnKey(CKey& key)
     // pause : pauses current audio song
 	  if (action.wID == ACTION_PAUSE)
 	  {
-		  if (m_pPlayer) m_pPlayer->Pause();
+		  if (m_pPlayer)
+      {
+        m_pPlayer->Pause();
+        if (!m_pPlayer->IsPaused())
+        {
+          m_iPlaySpeed=1;
+          m_pPlayer->ToFFRW(m_iPlaySpeed);
+        }
+      }
 	  }
 
     // previous : play previous song from playlist
@@ -646,6 +657,52 @@ void CApplication::OnKey(CKey& key)
 	  {
 		  g_playlistPlayer.PlayNext();
 	  }
+
+    if ( IsPlayingAudio())
+    {
+      if (!m_pPlayer->IsPaused())
+      {
+        // if we do a FF/RW in my music then map PLAY action togo back to normal speed
+        if (action.wID == ACTION_MUSIC_PLAY)
+        {
+          if ( IsPlayingAudio() && m_pAudioDecoder)
+          {
+            if (m_iPlaySpeed!=1)
+            {
+              m_iPlaySpeed=1;
+              m_pPlayer->ToFFRW(m_iPlaySpeed);
+            }
+          }
+        }
+        if (action.wID == ACTION_MUSIC_FORWARD || action.wID == ACTION_MUSIC_REWIND)
+        {
+          if ( IsPlayingAudio() && m_pAudioDecoder)
+          {
+            if (action.wID == ACTION_MUSIC_REWIND && m_iPlaySpeed == 1) // Enables Rewinding
+	            m_iPlaySpeed *=-2;
+            else if (action.wID == ACTION_MUSIC_REWIND && m_iPlaySpeed > 1) //goes down a notch if you're FFing
+	            m_iPlaySpeed /=2;
+            else if (action.wID == ACTION_MUSIC_FORWARD && m_iPlaySpeed < 1) //goes up a notch if you're RWing
+	            m_iPlaySpeed /= 2;
+            else 
+	            m_iPlaySpeed *= 2;
+
+            if (action.wID == ACTION_MUSIC_FORWARD && m_iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
+	            m_iPlaySpeed = 1;
+            if (m_iPlaySpeed > 32 || m_iPlaySpeed < -32)
+	            m_iPlaySpeed = 1;     
+            if (m_iPlaySpeed>=1)
+            {
+              m_pPlayer->ToFFRW(m_iPlaySpeed);
+            }
+            else
+            {
+              m_pPlayer->ToFFRW(m_iPlaySpeed);
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -837,6 +894,7 @@ void CApplication::Stop()
 
 bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 {
+  m_iPlaySpeed=1;
   if (!bRestart)
   {
     OutputDebugString("new file set audiostream:0\n");
@@ -900,6 +958,7 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 void CApplication::OnPlayBackEnded()
 {
   //playback ended
+  m_iPlaySpeed=1;
   OutputDebugString("Playback has finished\n");
 	CGUIMessage msg( GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL );
 	m_gWindowManager.SendThreadMessage( msg );
@@ -1308,4 +1367,9 @@ void CApplication::Restart(bool bSamePosition)
 const CStdString& CApplication::CurrentFile()
 {
   return m_strCurrentFile;
+}
+
+int CApplication::GetPlaySpeed() const
+{
+  return m_iPlaySpeed;
 }
