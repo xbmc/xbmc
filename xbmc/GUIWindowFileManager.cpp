@@ -218,6 +218,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 			m_iLastControl=GetFocusedControl();
 			m_iItemSelected=GetSelectedItem(m_iLastControl-CONTROL_LEFT_LIST);
 			Clear();
+			g_application.EnableOverlay();
 		}	
     break;
 
@@ -247,6 +248,8 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 				Update(i, m_strDirectory[i]);
 				CONTROL_SELECT_ITEM(GetID(), CONTROL_LEFT_LIST+i, iItem)
 			}
+
+			g_application.DisableOverlay();
 			return true;
 		}
     break;
@@ -483,6 +486,20 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 
 	GetDirectory(strDirectory, m_vecItems[iList]);
 	m_strDirectory[iList]=strDirectory;
+	// if we have a .tbn file, use itself as the thumb
+	for (int i=0; i<(int)m_vecItems[iList].size(); i++)
+	{
+		CFileItem *pItem = m_vecItems[iList][i];
+		if (!pItem->HasThumbnail())
+		{
+			CStdString strExtension;
+			CUtil::GetExtension(pItem->m_strPath, strExtension);
+			if (strExtension == ".tbn")
+			{
+				pItem->SetIconImage(pItem->m_strPath);
+			}
+		}
+	}
 	CUtil::SetThumbs(m_vecItems[iList]);
 	CUtil::FillInDefaultIcons(m_vecItems[iList]);
 
@@ -546,7 +563,19 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
   {
 		CUtil::RunXBE(pItem->m_strPath.c_str());
   }
+	if (CUtil::IsPicture(pItem->m_strPath))
+	{
+		CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+		if (!pSlideShow)
+			return;
+		if (g_application.IsPlayingVideo())
+			g_application.StopPlaying();
 
+		pSlideShow->Reset();
+		pSlideShow->Add(pItem->m_strPath);
+		pSlideShow->Select(pItem->m_strPath);
+		m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+	}
 }
 
 bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriveType )
