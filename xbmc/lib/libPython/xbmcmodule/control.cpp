@@ -43,7 +43,7 @@ namespace PYXBMC
 	{
 		DWORD posX = 0;
 		DWORD posY = 0;
-		if (!PyArg_ParseTuple(args, "ll", &posX, &posX)) return NULL;
+		if (!PyArg_ParseTuple(args, "ll", &posX, &posY)) return NULL;
 
 		g_graphicsContext.Lock();
 		self->pGUIControl->SetPosition(posX, posY);
