@@ -20,6 +20,7 @@ protected:
   void        ClearFileItems();
   void        UpdateListControl();
   void        RemovePlayListItem(int iItem);
+  void        MoveCurrentPlayListItem(int iAction); // up or down
   void        OnFileItemFormatLabel(CFileItem* pItem);
   void        DoSort(VECFILEITEMS& items);
   bool        GetKeyboard(CStdString& strInput);
@@ -27,6 +28,8 @@ protected:
   void        ShufflePlayList();
   void        SavePlayList();
   int         GetSelectedItem();
+  void        SetSelectedItem(int index);
+
   void        ShowThumbPanel();
   bool        ViewByIcon();
   bool        ViewByLargeIcon();
