@@ -13,6 +13,7 @@
 
 /* this defines the charset types used in samba */
 typedef enum {CH_UCS2=0, CH_UNIX=1, CH_DISPLAY=2, CH_DOS=3, CH_UTF8=4} charset_t;
+typedef void (*smb_log_callback)(const char* logMessage);
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,6 +32,8 @@ extern "C" {
 	size_t convert_string(charset_t from, charset_t to,
 		void const *src, size_t srclen, 
 		void *dest, size_t destlen);
+		
+	void set_log_callback(smb_log_callback fn);
 
 #ifdef __cplusplus
 }

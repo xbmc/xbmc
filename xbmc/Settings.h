@@ -313,10 +313,14 @@ public:
 		bool			m_bResampleMusicAudio;	// resample using SSRC
 		bool			m_bResampleVideoAudio;	// separate from music, as it causes a CPU hit
 		int       m_iLCDModChip;
-		int		m_iOSDTimeout;		// OSD timeout in seconds
+		int       m_iOSDTimeout;		// OSD timeout in seconds
 		char      szOnlineUsername[32]; // KAITAG (username)
 		char      szOnlinePassword[32]; // corresponding password
-		bool	m_mplayerDebug;
+		bool      m_mplayerDebug;
+		int       m_iSambaDebugLevel;
+		char      m_strSambaWorkgroup[128];
+		char      m_strSambaWinsServer[32];
+
 	};
 
 	VECSHARES					m_vecMyProgramsBookmarks;
