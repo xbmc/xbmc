@@ -24,6 +24,7 @@
 #include "GUISpinControl.h"
 #include "GUIListControl.h"
 #include "GUIThumbnailPanel.h"
+#include "utils/DownloadQueueManager.h"
 #include "utils/KaiClient.h"
 #include "utils/MemUnit.h"
 #include "FileSystem/DAAPDirectory.h"
@@ -38,6 +39,7 @@
 //#define USE_RELEASE_LIBS
 
 	#pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")
+	#pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
 
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
@@ -789,6 +791,9 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiMyWeather);						    // window id = 2600 WEATHER
 	m_gWindowManager.Add(&m_guiSettingsWeather);				  // window id = 17 WEATHER SETTINGS
 	m_gWindowManager.Add(&m_guiMyBuddies);						    // window id = 2700 BUDDIES
+
+	g_DownloadManager.Initialize();
+	CKaiClient::GetInstance()->Initialize();
 	CKaiClient::GetInstance()->SetObserver(&m_guiMyBuddies);
 
 	/* window id's 3000 - 3100 are reserved for python */
@@ -1806,6 +1811,8 @@ void CApplication::UpdateLCD()
 
 void CApplication::FrameMove()
 {
+	CKaiClient::GetInstance()->ProcessVoice();
+
 	// reset the fullscreen analog options if needed
 	m_guiWindowFullScreen.m_bSmoothFFwdRewd = false;
 

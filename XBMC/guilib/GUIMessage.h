@@ -16,6 +16,7 @@
 #define GUI_MSG_LOSTFOCUS       4   // control lost focus
 
 #define GUI_MSG_CLICKED         5   // control has been clicked
+#define GUI_MSG_SELCHANGED		25  // selection within the control has changed
 
 #define GUI_MSG_VISIBLE         6   // set control visible
 #define GUI_MSG_HIDDEN          7   // set control hidden
