@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-09-2004 added: German (Austria) language file (Thx to CEOMR)
   - 13-09-2004 added: [ 1026597 ] Polish language file (Thx to NaPeK)
   - 13-09-2004 fixed: my music songs, last control is always the list/thumb control when autoswitch list/thumb enabled
   - 13-09-2004 fixed: left mouse doesn't work in my pictures
