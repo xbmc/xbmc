@@ -442,16 +442,19 @@ void CApplication::OnKey(CKey& key)
 
 	if ( IsPlayingVideo() )
 	{
-		if (action.wID == ACTION_SHOW_GUI && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-		{
-			// switch to fullscreen mode
-			OutputDebugString("Flushing Texture Manager\n");
-			g_TextureManager.Flush();
-			OutputDebugString("Switching to FullScreen\n");
-			m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-			OutputDebugString("Now in Fullscreen mode\n");
-			return;
-		}
+    if ( !m_gWindowManager.IsRouted())
+    {
+		  if (action.wID == ACTION_SHOW_GUI && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+		  {
+			  // switch to fullscreen mode
+			  OutputDebugString("Flushing Texture Manager\n");
+			  g_TextureManager.Flush();
+			  OutputDebugString("Switching to FullScreen\n");
+			  m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+			  OutputDebugString("Now in Fullscreen mode\n");
+			  return;
+		  }
+    }
 	}
 	else 
 	{
