@@ -334,6 +334,12 @@ void CGraphicContext::ScaleXCoord(int& x, RESOLUTION res)
 	float fPercentX = ((float)m_iScreenWidth ) / ((float)m_pResInfo[res].iWidth);
 	x  = (int) ( (float(x))		 * fPercentX); 
 }
+void CGraphicContext::ScaleXCoord(long& x, RESOLUTION res)
+{
+	if (res == INVALID) return;
+	float fPercentX = ((float)m_iScreenWidth ) / ((float)m_pResInfo[res].iWidth);
+	x  = (long) ( (float(x))		 * fPercentX); 
+}
 void CGraphicContext::ScaleYCoord(DWORD& y, RESOLUTION res)
 {
 	if (res == INVALID) return;
@@ -345,6 +351,12 @@ void CGraphicContext::ScaleYCoord(int& y, RESOLUTION res)
 	if (res == INVALID) return;
 	float fPercentY = ((float)m_iScreenHeight ) / ((float)m_pResInfo[res].iHeight);
 	y  = (int) ( (float(y))		 * fPercentY); 
+}
+void CGraphicContext::ScaleYCoord(long& y, RESOLUTION res)
+{
+	if (res == INVALID) return;
+	float fPercentY = ((float)m_iScreenHeight ) / ((float)m_pResInfo[res].iHeight);
+	y  = (long) ( (float(y))		 * fPercentY); 
 }
 
 
