@@ -346,7 +346,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	  {
       if (!bSupportsSPDIFOut)
       {
-        iChannels=2;
+        if (iChannels > 2) iChannels=2;
       }
 		  switch(iChannels)
 		  {
