@@ -687,7 +687,7 @@ bool TiXmlDocument::LoadFile( const char* filename )
 			OutputDebugString(szTmp);
 			CloseHandle(file);
 
-			XMLSetError( TIXML_ERROR_OPENING_FILE );
+			XMLSetError( TIXML_ERROR_DOCUMENT_EMPTY );
 			return false;
 		}
 
@@ -723,7 +723,7 @@ bool TiXmlDocument::LoadFile( const char* filename )
 		{
 			return true;
 		}
-		sprintf(szTmp,"XMLReader:Parse %s returned an error\n");
+		sprintf(szTmp,"XMLReader:Parse returned an error: %s\n", GetErrorDesc());
 		OutputDebugString(szTmp);
 	}
 	else
