@@ -39,6 +39,7 @@ public:
 	long GetCurrentSongStart() { return m_currentSong.m_lStartOffset; };
 	long GetCurrentSongEnd() { return m_currentSong.m_lEndOffset; };
 	CStdString GetMusicLabel(const CStdString &strItem);
+	CStdString GetVideoLabel(const CStdString &strItem);
 	wstring GetFreeSpace(const CStdString &strDrive);
 
 protected:
