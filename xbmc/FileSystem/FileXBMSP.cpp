@@ -211,6 +211,14 @@ bool CFileXBMSP::Open(const char* strUserName, const char* strPassword,const cha
 	return true;
 }
 
+bool CFileXBMSP::Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport)
+{
+	bool exist(true);
+	exist=CFileXBMSP::Open(strUserName, strPassword, strHostName, strFileName, iport, true);
+	Close();
+	return exist;
+}
+
 //*********************************************************************************************
 unsigned int CFileXBMSP::Read(void *lpBuf, __int64 uiBufSize)
 {

@@ -127,6 +127,15 @@ bool CFileRelax::Open(const char* strUserName, const char* strPassword,const cha
 	return true;
 }
 
+
+bool CFileRelax::Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport)
+{
+	bool exist(true);
+	exist=CFileRelax::Open(strUserName, strPassword, strHostName, strFileName, iport, true);
+	Close();
+	return exist;
+}
+
 //*********************************************************************************************
 unsigned int CFileRelax::Read(void *lpBuf, __int64 uiBufSize)
 {

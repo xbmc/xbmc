@@ -166,6 +166,38 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 	return true;
 }
 
+bool CFileSMB::Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport)
+{
+	char szFileName[1024];
+
+	if (!strchr(strFileName, '/'))
+	{
+		m_fd = -1;
+		return false;
+	}
+
+	if (strPassword && strUserName)
+		sprintf(szFileName,"smb://%s:%s@%s/%s", strUserName, strPassword, strHostName, strFileName);
+	else
+		sprintf(szFileName,"smb://%s/%s", strHostName, strFileName);
+
+	// convert from string to UTF8
+	char strUtfFileName[1024];
+	int strLen = convert_string(CH_DOS, CH_UTF8, szFileName, (size_t)strlen(szFileName), strUtfFileName, 1024);
+	strUtfFileName[strLen] = 0;
+
+	struct __stat64 info;
+
+	smb.Lock();
+	int i = smbc_stat(szFileName, &info);
+	smb.Unlock();
+	
+	if (i<0) {
+		m_fd = -1;
+		return false;
+	}
+	return true;
+}
 unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
 {
 	if (m_fd == -1) return 0;

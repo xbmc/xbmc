@@ -50,6 +50,12 @@ bool CFileHD::Open(const char* strUserName, const char* strPassword,const char* 
 
 	return true;
 }
+
+bool CFileHD::Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport)
+{
+	return GetFileAttributes(strFileName) != -1;
+}
+
 //*********************************************************************************************
 bool CFileHD::OpenForWrite(const char* strFileName)
 {
