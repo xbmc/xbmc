@@ -36,6 +36,7 @@ void COSDMenu::Clear()
 		delete pSubMenu;
     i=m_vecSubMenus.erase(i);
 	}
+  m_iCurrentSubMenu=0;
 }
 
 
@@ -69,7 +70,11 @@ void COSDMenu::Draw()
 //	g_graphicsContext.Get3DDevice()->SetSoftDisplayFilter(true);
 //	g_graphicsContext.Get3DDevice()->SetFlickerFilter(5);
 
-  
+  if (m_iCurrentSubMenu < 0 || m_iCurrentSubMenu >=(int) m_vecSubMenus.size())
+  {
+    m_iCurrentSubMenu=0;
+    return;
+  }
 	COSDSubMenu* pSubMenu=m_vecSubMenus[m_iCurrentSubMenu];
 	pSubMenu->Draw();
 	
@@ -80,7 +85,7 @@ void COSDMenu::Draw()
 
 bool COSDMenu::OnAction(IExecutor& executor,const CAction& action)
 {
-	if (m_iCurrentSubMenu >= (int)m_vecSubMenus.size()) return false; // invalid choice.
+	if (m_iCurrentSubMenu < 0 || m_iCurrentSubMenu >= (int)m_vecSubMenus.size()) return false; // invalid choice.
 	COSDSubMenu* pSubMenu=m_vecSubMenus[m_iCurrentSubMenu];
 
 	
