@@ -20,6 +20,7 @@ void CGUIWindowSettings::OnAction(const CAction &action)
 {
 	if (action.wID == ACTION_PREVIOUS_MENU)
 	{
+		m_iLastControl=-1;
 		m_gWindowManager.PreviousWindow();
 		return;
 	}
@@ -33,18 +34,28 @@ bool CGUIWindowSettings::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_DEINIT:
 		{
-			m_iLastControl=GetFocusedControl();
+
 		}
 		break;
 
     case GUI_MSG_WINDOW_INIT:
 		{
+			int iFocusControl=m_iLastControl;
+
 			CGUIWindow::OnMessage(message);
 
-	    if (m_iLastControl>-1)
-				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+			if (iFocusControl>-1)
+			{
+				SET_CONTROL_FOCUS(GetID(), iFocusControl, 0);
+			}
 
 			return true;
+		}
+		break;
+
+		case GUI_MSG_SETFOCUS:
+		{
+			m_iLastControl=message.GetControlId();
 		}
 		break;
 

@@ -21,9 +21,10 @@ CGUIWindowSettingsUICalibration::~CGUIWindowSettingsUICalibration(void)
 void CGUIWindowSettingsUICalibration::OnAction(const CAction &action)
 {
 	if (action.wID == ACTION_PREVIOUS_MENU)
-    {
+	{
+		m_iLastControl=-1;
 		m_gWindowManager.PreviousWindow();
-    }
+	}
 	else if (action.wID == ACTION_CALIBRATE_RESET)
 	{
 		CGUIMoverControl *pControl = (CGUIMoverControl *)GetControl(CONTROL_MOVER);
@@ -54,10 +55,23 @@ bool CGUIWindowSettingsUICalibration::OnMessage(CGUIMessage& message)
 				pControl->SetLocation(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
 				pControl->SetFocus(true);
 			}
+
+			if (m_iLastControl>-1)
+			{
+				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+			}
+
 			return true;
 		}
 		break;
+
+		case GUI_MSG_SETFOCUS:
+		{
+			m_iLastControl=message.GetControlId();
+		}
+		break;
 	}
+
 	return CGUIWindow::OnMessage(message);
 }
 
