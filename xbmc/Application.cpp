@@ -324,6 +324,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiSettingsMusic);						// window id = 14
   m_gWindowManager.Add(&m_guiSettingsSubtitles);				// window id = 15
   m_gWindowManager.Add(&m_guiSettingsScreensaver);				// window id = 16
+  m_gWindowManager.Add(&m_guiSettingsOSD);					// window id = 18
 	m_gWindowManager.Add(&m_guiScripts);									// window id = 20
   m_gWindowManager.Add(&m_guiVideoGenre);								// window id = 21
   m_gWindowManager.Add(&m_guiVideoActors);							// window id = 22
@@ -494,6 +495,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettingsScreenCalibration.Load( strSkinPath+"\\settingsScreenCalibration.xml" );
 	m_guiSettingsSlideShow.Load( strSkinPath+"\\SettingsSlideShow.xml" );
 	m_guiSettingsScreensaver.Load( strSkinPath+"\\SettingsScreensaver.xml" );
+	m_guiSettingsOSD.Load( strSkinPath+"\\SettingsOSD.xml" );
   m_guiSettingsAutoRun.Load( strSkinPath+"\\SettingsAutoRun.xml" );
 	m_guiSettingsFilter.Load( strSkinPath+"\\SettingsFilter.xml" );
   m_guiSettingsCache.Load( strSkinPath+"\\SettingsCache.xml" );
