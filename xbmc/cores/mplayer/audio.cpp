@@ -203,7 +203,7 @@ static int audio_init(int rate,int channels,int format,int flags)
         //pao_data->buffersize  = ao_format_bits/8;
         //pao_data->buffersize *= channels;
         //pao_data->buffersize *= m_pAudioDecoder->GetChunkLen();
-        pao_data->buffersize = m_pAudioDecoder->GetChunkLen();
+        pao_data->buffersize = channels*m_pAudioDecoder->GetChunkLen();
   //}
 	pao_data->outburst=m_pAudioDecoder->GetChunkLen();
 	 return 1;
