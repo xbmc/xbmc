@@ -104,6 +104,7 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 	if (NULL != pTitle.get())
 	{
 		bResult = true;
+		tag.SetLoaded(true);
 		tag.SetTitle(pTitle.get());
 	}
 	if (NULL != pArtist.get())
@@ -182,7 +183,6 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
 		bool bResult=false;
 	//	CSectionLoader::Load("LIBID3");
 		tag.SetURL(strFileName);
-		tag.SetLoaded(true);
 		CFile file;
 		if ( file.Open( strFileName.c_str() ) ) 
 		{
