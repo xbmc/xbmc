@@ -261,7 +261,6 @@ void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, 
 	float fy=(float)y;
 	float fwidth=(float)width;
 	float fheight=(float)height;
-	g_graphicsContext.Correct(fx,fy);
 	
 
   vertex[0].p = D3DXVECTOR4( fx - 0.5f,	fy - 0.5f,		0, 0 );
