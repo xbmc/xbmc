@@ -12,16 +12,13 @@
 //			- in debug mode CSMBDirectory gives a stack corruption
 //
 //			- zoom/stretch
-//					- easy way 2 switch between zoom/stretch/normal
 //					- 4:3 / 16:9 compensation for movies
-//
 //			- subtitles:
 //					- if zoom/stretch : change subtitle font factor
 //
 //		  - video
 //				- video starts pretty slooowww..
 //				- fix video preview window
-//				- reset video window from 720x576 to 640x480 if movie <= 640x480?
 //
 // bugs reported by users
 //		    - MrMario64 : some (divx) movies crash

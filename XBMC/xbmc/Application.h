@@ -61,6 +61,7 @@ public:
 	bool									IsPlayingVideo() const ;
 	void									OnKey(CKey& key);
 	void									ResetVideoWindow();
+	void									GetD3DParameters(D3DPRESENT_PARAMETERS& params);
 
   CGUIWindowHome									m_guiHome;
   CGUIWindowPrograms							m_guiPrograms;

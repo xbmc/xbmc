@@ -28,6 +28,7 @@
 #include "mplayer.h"
 #include "GraphicContext.h"
 #include "../../settings.h"
+#include "../../application.h"
 
 static RECT                 rd;                     						//rect of our stretched image
 static RECT                 rs;                     						//rect of our source image
@@ -46,6 +47,10 @@ int												  m_dwVisibleOverlay=0;
 LPDIRECT3DTEXTURE8					m_pOverlay[2]={NULL,NULL};					// Overlay textures
 LPDIRECT3DSURFACE8					m_pSurface[2]={NULL,NULL};				  // Overlay Surfaces
 bool												m_bFlip=false;
+static int									m_iDeviceWidth;
+static int									m_iDeviceHeight;
+bool												m_bFullScreen=false;
+
 typedef struct directx_fourcc_caps
 {
     char*							img_format_name;      //human readable name
@@ -61,14 +66,141 @@ static directx_fourcc_caps g_ddpf[] =
 };
 #define NUM_FORMATS (sizeof(g_ddpf) / sizeof(g_ddpf[0]))
 
+void restore_resolution()
+{
+  D3DPRESENT_PARAMETERS params;
+	g_application.GetD3DParameters(params);
+	if (params.BackBufferWidth != m_iDeviceWidth ||
+		  params.BackBufferHeight !=m_iDeviceHeight)
+	{
+		m_iDeviceWidth  = g_graphicsContext.GetWidth();
+		m_iDeviceHeight = g_graphicsContext.GetHeight();
+		g_graphicsContext.Get3DDevice()->Reset(&params);
+	}
+}
+
+void choose_best_resolution()
+{
+	if (!g_graphicsContext.IsFullScreenVideo() )
+	{
+		m_iDeviceWidth  = g_graphicsContext.GetWidth();
+		m_iDeviceHeight = g_graphicsContext.GetHeight();
+		return;
+	}
+
+  D3DPRESENT_PARAMETERS params, orgparams;
+	g_application.GetD3DParameters(params);
+	g_application.GetD3DParameters(orgparams);
+	DWORD dwStandard = XGetVideoStandard();
+	DWORD dwFlags	   = XGetVideoFlags();
+	bool bWideScreen=false;
+	bool bPal60=false;
+
+	if ( dwFlags & XC_VIDEO_FLAGS_WIDESCREEN)
+	{
+		bWideScreen=true;
+	}
+
+	if ( (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz) && !bWideScreen )
+	{
+		bPal60=true;
+	}
+	if ( (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i) && g_graphicsContext.IsWidescreen() )
+	{
+		//1920x1080 16:9
+		if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
+		{
+			if (image_width>720 || image_height>576)
+			{
+				params.BackBufferWidth =1920;
+				params.BackBufferHeight=1080;
+				params.Flags=D3DPRESENTFLAG_WIDESCREEN;
+			}
+		}
+		else
+		{
+			if (image_width>720 || image_height>480)
+			{
+				params.BackBufferWidth =1920;
+				params.BackBufferHeight=1080;
+				params.Flags=D3DPRESENTFLAG_WIDESCREEN;
+			}
+		}
+	}
+
+
+	if ( (dwFlags&XC_VIDEO_FLAGS_HDTV_720p) && g_graphicsContext.IsWidescreen() )
+	{
+			//1280x720 16:9
+		if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
+		{
+			if (image_width>720 || image_height>576)
+			{
+				params.BackBufferWidth =1280;
+				params.BackBufferHeight=720;
+				params.Flags=D3DPRESENTFLAG_WIDESCREEN|D3DPRESENTFLAG_PROGRESSIVE;
+			}
+		}
+		else
+		{
+			if (image_width>720 || image_height>480)
+			{
+				params.BackBufferWidth =1280;
+				params.BackBufferHeight=720;
+				params.Flags=D3DPRESENTFLAG_WIDESCREEN|D3DPRESENTFLAG_PROGRESSIVE;
+			}
+		}
+	}
+
+
+	if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
+	{
+		if (image_width <= 720)
+		{
+			params.BackBufferWidth = 720;
+			if (image_height <= 576) params.BackBufferHeight=576;
+			if (image_height <= 480) params.BackBufferHeight=480;
+		}
+		if (image_width <= 640)
+		{
+			params.BackBufferWidth =640;
+			params.BackBufferHeight=480;
+		}
+		if (bPal60)
+		{
+			params.FullScreen_RefreshRateInHz=60;
+		}
+	}
+	else
+	{
+		if (image_width <= 720)
+		{
+			params.BackBufferWidth =720;
+			params.BackBufferHeight=480;
+		}
+		if (image_width <= 640)
+		{
+			params.BackBufferWidth =640;
+			params.BackBufferHeight=480;
+		}
+	}
+	if (params.BackBufferHeight != orgparams.BackBufferHeight ||
+		  params.BackBufferWidth  != orgparams.BackBufferWidth)
+	{
+		m_iDeviceWidth  = params.BackBufferWidth;
+		m_iDeviceHeight = params.BackBufferHeight;
+		g_graphicsContext.Get3DDevice()->Reset(&params);
+	}
+}
+
 static void Directx_CreateOverlay(unsigned int uiFormat)
 {
 	for (int i=0; i <=1; i++)
 	{
 		if ( m_pSurface[i]) m_pSurface[i]->Release();
 		if ( m_pOverlay[i]) m_pOverlay[i]->Release();
-		g_graphicsContext.Get3DDevice()->CreateTexture( g_graphicsContext.GetWidth(),
-																										g_graphicsContext.GetHeight(),
+		g_graphicsContext.Get3DDevice()->CreateTexture( m_iDeviceWidth,
+																										m_iDeviceHeight,
 																										1,
 																										0,
 																										D3DFMT_YUY2,
@@ -81,8 +213,8 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 
 static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height)
 {
-	int iScreenWidth =g_graphicsContext.GetWidth()  +g_stSettings.m_iMoviesOffsetX2-g_stSettings.m_iMoviesOffsetX1;
-	int iScreenHeight=g_graphicsContext.GetHeight() +g_stSettings.m_iMoviesOffsetY2-g_stSettings.m_iMoviesOffsetY1;
+	int iScreenWidth =m_iDeviceWidth  +g_stSettings.m_iMoviesOffsetX2-g_stSettings.m_iMoviesOffsetX1;
+	int iScreenHeight=m_iDeviceHeight +g_stSettings.m_iMoviesOffsetY2-g_stSettings.m_iMoviesOffsetY1;
 	if( g_graphicsContext.IsFullScreenVideo() )
   {
 		if (g_stSettings.m_bStretch)
@@ -166,10 +298,10 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 		iSubTitlePos = image_height;
 		bClearSubtitleRegion= true;
 
-		if (iSubTitlePos  + 2*iSubTitleHeight >= g_graphicsContext.GetHeight() -g_stSettings.m_iMoviesOffsetY2)
+		if (iSubTitlePos  + 2*iSubTitleHeight >= m_iDeviceHeight -g_stSettings.m_iMoviesOffsetY2)
 		{
 			bClearSubtitleRegion= false;
-			iSubTitlePos = g_graphicsContext.GetHeight() - g_stSettings.m_iMoviesOffsetY2 - iSubTitleHeight*2;
+			iSubTitlePos = m_iDeviceHeight - g_stSettings.m_iMoviesOffsetY2 - iSubTitleHeight*2;
 		}
 
 		return 0;
@@ -236,6 +368,7 @@ static unsigned int query_format(unsigned int format)
 
 static void video_uninit(void)
 {
+	restore_resolution();
 	OutputDebugString("video_uninit\n");
 	g_graphicsContext.Get3DDevice()->EnableOverlay(FALSE);
 	for (int i=0; i <=1; i++)
@@ -260,6 +393,7 @@ static unsigned int video_preinit(const char *arg)
 	bClearSubtitleRegion=false;
 	m_dwVisibleOverlay=0;
 	m_bFlip=false;
+	m_bFullScreen=false;
 	fs=1;
   return 0;
 }
@@ -302,8 +436,9 @@ static void video_flip_page(void)
 	}
 	else
 	{
-		g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
+		g_graphicsContext.Lock();
 		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, TRUE, 0x00010001  );
+		g_graphicsContext.Unlock();
 	}
 
 	m_dwVisibleOverlay=1-m_dwVisibleOverlay;
@@ -326,6 +461,15 @@ static void video_flip_page(void)
 				*(image + dstride*(iSubTitlePos + y)+x+1 ) = 0x80;
 			}
 		}
+	}
+
+	if (m_bFullScreen!=g_graphicsContext.IsFullScreenVideo())
+	{
+		m_bFullScreen=g_graphicsContext.IsFullScreenVideo();
+		g_graphicsContext.Lock();
+		if (m_bFullScreen) choose_best_resolution();
+		else restore_resolution();
+		g_graphicsContext.Unlock();
 	}
 }
 
@@ -384,11 +528,13 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
   image_height	 = height;
   d_image_width  = d_width;
   d_image_height = d_height;
-  
+
+	m_bFullScreen=g_graphicsContext.IsFullScreenVideo();
+	choose_best_resolution();
 
 	aspect_save_orig(image_width,image_height);
   aspect_save_prescale(d_image_width,d_image_height);
-  aspect_save_screenres( g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight() );
+  aspect_save_screenres( m_iDeviceWidth, m_iDeviceHeight );
   aspect(&d_image_width,&d_image_height,A_NOZOOM);
 
 	fs=1;//fullscreen
