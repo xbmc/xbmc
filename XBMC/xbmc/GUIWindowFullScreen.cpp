@@ -662,7 +662,7 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
 				itotal = ih+im+is;
 				unsigned int temp = g_application.m_pPlayer->GetTime();
 
-        if(itotal < temp)
+        if((unsigned int)itotal < temp)
 					g_application.m_pPlayer->SeekTime(itotal);
 				ts_counter = 0;
 			}

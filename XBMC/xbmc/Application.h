@@ -19,6 +19,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogSelect.h"
+#include "GUIDialogFileStacking.h"
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowSettingsGeneral.h"
 #include "GUIWindowSettingsScreen.h"
@@ -113,6 +114,7 @@ public:
 	CGUIWindowScripts								m_guiScripts;
 	CGUIWindowSettingsFilter				m_guiSettingsFilter;
 	CGUIDialogSelect								m_guiDialogSelect;
+	CGUIDialogFileStacking					m_guiDialogFileStacking;
 	CGUIWindowMusicOverlay					m_guiMusicOverlay;
 	CGUIWindowFullScreen						m_guiWindowFullScreen;
 	CGUIWindowVideoOverlay					m_guiWindowVideoOverlay;

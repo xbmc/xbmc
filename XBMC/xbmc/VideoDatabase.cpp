@@ -718,3 +718,28 @@ void CVideoDatabase::GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies)
     m_pDS->next();
   }
 }
+
+//********************************************************************************************************************************
+void CVideoDatabase::GetFiles(long lMovieId, VECMOVIESFILES& movies)
+{
+  movies.erase(movies.begin(),movies.end());
+	if (NULL==m_pDB.get()) return ;
+	if (NULL==m_pDS.get()) return ;
+
+	//long lMovieId=GetMovie(strFile);
+	if (lMovieId < 0) return;
+	
+	CStdString strSQL;
+  strSQL.Format("select * from path,files where path.idPath=files.idPath and files.idmovie=%i order by strFilename", lMovieId );
+  m_pDS->query( strSQL.c_str() );
+  if (m_pDS->num_rows() == 0)  return;
+  while (!m_pDS->eof()) 
+  {
+    CStdString strPath,strFile;
+    strFile=m_pDS->fv("files.strFilename").get_asString();
+    strPath=m_pDS->fv("path.strPath").get_asString();
+    strFile=strPath+strFile;
+    movies.push_back(strFile);
+    m_pDS->next();
+  }
+}

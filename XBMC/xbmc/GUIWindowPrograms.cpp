@@ -41,6 +41,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
   switch ( message.GetMessage() )
   {
     case GUI_MSG_WINDOW_DEINIT:
+
       Clear();
     break;
 
@@ -67,6 +68,12 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
       
       Update(m_strDirectory);
+
+      if (g_stSettings.m_iMyProgramsSelectedItem >=0)
+      {
+			  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,g_stSettings.m_iMyProgramsSelectedItem);
+			  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,g_stSettings.m_iMyProgramsSelectedItem);
+      }
 			return true;
     }
     break;
@@ -201,8 +208,10 @@ void CGUIWindowPrograms::OnAction(const CAction &action)
 {
 	if (action.wID == ACTION_PREVIOUS_MENU)
     {
-		m_gWindowManager.PreviousWindow();
-		return;
+        g_stSettings.m_iMyProgramsSelectedItem = GetSelectedItem();
+        g_settings.Save();
+        m_gWindowManager.PreviousWindow();
+        return;
     }
 	CGUIWindow::OnAction(action);
 }
@@ -328,6 +337,9 @@ void CGUIWindowPrograms::OnClick(int iItem)
   }
   else
   {
+    g_stSettings.m_iMyProgramsSelectedItem = GetSelectedItem();
+    g_settings.Save();
+
     // launch xbe...
     char szPath[1024];
     char szDevicePath[1024];
@@ -680,4 +692,20 @@ void CGUIWindowPrograms::DeleteThumbs(VECFILEITEMS& items)
 			}
 		}
 	}
+}
+
+int CGUIWindowPrograms::GetSelectedItem()
+{
+	int iControl;
+	if ( g_stSettings.m_bMyProgramsViewAsIcons) 
+	{
+		iControl=CONTROL_THUMBS;
+	}
+	else
+		iControl=CONTROL_LIST;
+
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
+  g_graphicsContext.SendMessage(msg);         
+  int iItem=msg.GetParam1();
+	return iItem;
 }
