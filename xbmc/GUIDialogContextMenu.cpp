@@ -50,6 +50,24 @@ void CGUIDialogContextMenu::OnInitWindow()
 	}
 }
 
+void CGUIDialogContextMenu::ClearButtons()
+{
+	// destroy our buttons (if we have them from a previous viewing)
+	for (int i=1; i<=m_iNumButtons; i++)
+	{
+		// get the button to remove...
+		CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE+i);
+		if (pControl)
+		{
+			// remove the control from our list
+			Remove(BUTTON_TEMPLATE+i);
+			// kill the button
+			delete pControl;
+		}
+	}
+	m_iNumButtons = 0;
+}
+
 void CGUIDialogContextMenu::AddButton(int iLabel)
 {
 	AddButton(g_localizeStrings.Get(iLabel));
@@ -127,24 +145,4 @@ void CGUIDialogContextMenu::EnableButton(int iButton, bool bEnable)
 {
 	CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE+iButton);
 	if (pControl) pControl->SetEnabled(bEnable);
-}
-
-void CGUIDialogContextMenu::Close()
-{
-	// call base class
-	CGUIDialog::Close();
-	// destroy our buttons
-	for (int i=1; i<=m_iNumButtons; i++)
-	{
-		// get the button to remove...
-		CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE+i);
-		if (pControl)
-		{
-			// remove the control from our list
-			Remove(BUTTON_TEMPLATE+i);
-			// kill the button
-			delete pControl;
-		}
-	}
-	m_iNumButtons = 0;
 }
