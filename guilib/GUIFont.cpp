@@ -94,7 +94,7 @@ void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256
 	{
 		if (m_pwzBuffer)
 		{
-			delete m_pwzBuffer;
+			delete[] m_pwzBuffer;
 		}
 		
 		m_nBufferSize = nStringLength + 1;
