@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 12-09-2004 fixed: display non-Latin ogg tags properly
+  - 12-09-2004 fixed: properly display non-Latin id3 tags which are UTF-16/UTF-8
+  - 12-09-2004 fixed: properly display non-Latin ogg tags
   - 12-09-2004 added: cdda disc ripping to samba shares
   - 11-09-2004 added: support for international characters in GUI (skin and file names)
   - 11-09-2004 fixed: retrieval of non $HOME <albums> location (sf patch #1026378 by kraqh3d)

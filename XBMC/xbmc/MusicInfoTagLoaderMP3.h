@@ -31,6 +31,10 @@ namespace MUSIC_INFO
 		bool ReadTag(ID3_Tag& id3tag, CMusicInfoTag& tag);
 		int	 ReadDuration(CFile& file, const ID3_Tag& id3tag);
 		bool IsMp3FrameHeader(unsigned long head);
+		char* GetString(const ID3_Frame *frame, ID3_FieldID fldName);
+		char* GetArtist(const ID3_Tag *tag);
+		char* GetAlbum(const ID3_Tag *tag);
+		char* GetTitle(const ID3_Tag *tag);
 	
 	private:
 		CStdString ParseMP3Genre(const CStdString& str);
