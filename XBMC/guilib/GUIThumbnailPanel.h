@@ -52,6 +52,7 @@ public:
   void         GetThumbDimensionsBig(int& iXpos, int& iYpos,int& iWidth, int& iHeight);
   void         GetThumbDimensionsLow(int& iXpos, int& iYpos,int& iWidth, int& iHeight);
   int                   GetSelectedItem(CStdString& strLabel);
+	void									SetSelectedItem(int iItem);
 	DWORD									GetTextColor() const { return m_dwTextColor;};
 	DWORD									GetSelectedColor() const { return m_dwSelectedColor;};
 	const char*						GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
@@ -130,7 +131,7 @@ protected:
   int                   m_iTextureWidthBig;
 
   bool                  m_bShowTexture;
-  int                   m_iOffset;
+  int                   m_iRowOffset;
 	float									m_fSmoothScrollOffset;
   int                   m_iItemHeight;
   int                   m_iItemWidth;

@@ -42,7 +42,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
 {
   m_iItemWidth=dwitemWidth;
   m_iItemHeight=dwitemHeight;
-  m_iOffset    = 0;
+  m_iRowOffset    = 0;
 	m_fSmoothScrollOffset = 0;
   m_dwSelectedColor=dwSelectedColor;
   m_pFont      = g_fontManager.GetFont(strFontName);
@@ -156,12 +156,12 @@ void CGUIThumbnailPanel::Render()
   g_graphicsContext.SetViewPort( (float)m_iPosX, (float)m_iPosY, (float)m_iColumns*m_iItemWidth, (float)m_iRows*m_iItemHeight);
 
   //free memory of thumbs that are not going to be displayed
-  int iStartItem = m_iOffset;
+  int iStartItem = m_iRowOffset*m_iColumns;
   if (m_bScrollUp)
   {
     iStartItem -= m_iColumns;
   }
-  int iEndItem = m_iOffset + (m_iColumns * m_iRows) - 1;
+  int iEndItem = (m_iRowOffset + m_iRows) * m_iColumns - 1;
   if (m_bScrollDown)
   {
     iEndItem += m_iColumns;
@@ -194,22 +194,22 @@ void CGUIThumbnailPanel::Render()
       m_pFont->Begin();
     }
 
-    if (m_bScrollUp)
+    if (m_bScrollUp && m_iRowOffset > 0)
     {
       // render item on top
       int iPosY = m_iPosY - m_iItemHeight + iScrollYOffset;
-      m_iOffset -= m_iColumns;
+      m_iRowOffset --;
       for (int iCol = 0; iCol < m_iColumns; iCol++)
       {
         int iPosX = m_iPosX + iCol*m_iItemWidth;
-        int iItem = iCol + m_iOffset;
+        int iItem = iCol + m_iRowOffset*m_iColumns;
         if (iItem >= 0 && iItem < (int)m_vecItems.size())
         {
           CGUIListItem *pItem = m_vecItems[iItem];
           RenderItem(false, iPosX, iPosY, pItem, iStage);
         }
       }
-      m_iOffset += m_iColumns;
+      m_iRowOffset++;
     }
 
     // render main panel
@@ -219,7 +219,7 @@ void CGUIThumbnailPanel::Render()
       for (int iCol = 0; iCol < m_iColumns; iCol++)
       {
         int iPosX = m_iPosX + iCol*m_iItemWidth;
-        int iItem = iRow*m_iColumns + iCol + m_iOffset;
+        int iItem = (iRow + m_iRowOffset)*m_iColumns + iCol;
         if (iItem < (int)m_vecItems.size())
         {
           CGUIListItem *pItem = m_vecItems[iItem];
@@ -236,7 +236,7 @@ void CGUIThumbnailPanel::Render()
       for (int iCol = 0; iCol < m_iColumns; iCol++)
       {
         int iPosX = m_iPosX + iCol*m_iItemWidth;
-        int iItem = m_iRows*m_iColumns + iCol + m_iOffset;
+        int iItem = (iRow + m_iRowOffset)*m_iColumns + iCol;
         if (iItem < (int)m_vecItems.size())
         {
           CGUIListItem *pItem = m_vecItems[iItem];
@@ -261,30 +261,30 @@ void CGUIThumbnailPanel::Render()
     if (m_iScrollCounter<=0)
     {
       m_bScrollDown=false;
-      m_iOffset+=m_iColumns;
+      m_iRowOffset++;
       // Check if we need to update our position
       if (!ValidItem(m_iCursorX, m_iCursorY))
       { // select the last item available
-        int iPos = m_vecItems.size()-1-m_iOffset;
+        int iPos = m_vecItems.size()-1-m_iRowOffset*m_iColumns;
         m_iCursorY = iPos / m_iColumns;
         m_iCursorX = iPos % m_iColumns;
       }
       // Update the page counter
-      int iPage = m_iOffset/(m_iRows*m_iColumns)+1;
-      if (m_iOffset + m_iRows*m_iColumns == (int)m_vecItems.size())
-        iPage++;
+      int iPage = m_iRowOffset/m_iRows+1;
+			if ((m_iRowOffset+m_iRows)*m_iColumns > (int)m_vecItems.size() && iPage < m_upDown.GetMaximum())
+				iPage++;	// last page
       m_upDown.SetValue(iPage);
     }
   }
   if (m_bScrollUp)
   {
     m_iScrollCounter-=iStep;
-    if (m_iScrollCounter<=0)
+    if (m_iScrollCounter<=0 && m_iRowOffset>0)
     {
       m_bScrollUp=false;
-      m_iOffset -= m_iColumns;
-      int iPage = m_iOffset/(m_iRows*m_iColumns);
-      m_upDown.SetValue(iPage+1);
+      m_iRowOffset--;
+      int iPage = m_iRowOffset/m_iRows+1;
+      m_upDown.SetValue(iPage);
     }
   }
   m_upDown.Render();
@@ -308,7 +308,7 @@ void CGUIThumbnailPanel::OnAction(const CAction &action)
 			while (m_fSmoothScrollOffset>10.0f/m_iRows)
 			{
 				m_fSmoothScrollOffset-=10.0f/m_iRows;
-				if (m_iOffset>0 && m_iCursorX<=m_iColumns/2 && m_iCursorY<=m_iRows/2)
+				if (m_iRowOffset>0 && m_iCursorX<=m_iColumns/2 && m_iCursorY<=m_iRows/2)
 				{
 					ScrollUp();
 				}
@@ -331,15 +331,15 @@ void CGUIThumbnailPanel::OnAction(const CAction &action)
 			while (m_fSmoothScrollOffset>10.0f/m_iRows)
 			{
 				m_fSmoothScrollOffset-=10.0f/m_iRows;
-				if (m_iOffset + iItemsPerPage < (int)m_vecItems.size() && m_iCursorX>=m_iColumns/2 && m_iCursorY>=m_iRows/2)
+				if (m_iRowOffset*m_iColumns + iItemsPerPage < (int)m_vecItems.size() && m_iCursorX>=m_iColumns/2 && m_iCursorY>=m_iRows/2)
 				{
 					ScrollDown();
 				}
-				else if (m_iCursorX<m_iColumns-1 && m_iOffset + m_iCursorY*m_iColumns+m_iCursorX < (int)m_vecItems.size()-1)
+				else if (m_iCursorX<m_iColumns-1 && (m_iRowOffset + m_iCursorY)*m_iColumns+m_iCursorX < (int)m_vecItems.size()-1)
 				{
 					m_iCursorX++;
 				}
-				else if (m_iCursorY<m_iRows-1 && m_iOffset + m_iCursorY*m_iColumns+m_iCursorX < (int)m_vecItems.size()-1)
+				else if (m_iCursorY<m_iRows-1 && (m_iRowOffset + m_iCursorY)*m_iColumns+m_iCursorX < (int)m_vecItems.size()-1)
 				{
 					m_iCursorY++;
 					m_iCursorX=0;
@@ -379,7 +379,7 @@ bool CGUIThumbnailPanel::OnMessage(CGUIMessage& message)
     {
       if (message.GetMessage() == GUI_MSG_CLICKED)
       {	// Page Control
-		  GetOffsetFromPage();
+				GetOffsetFromPage();
       }
     }
     if (message.GetMessage() == GUI_MSG_LOSTFOCUS ||
@@ -402,37 +402,17 @@ bool CGUIThumbnailPanel::OnMessage(CGUIMessage& message)
       m_vecItems.erase(m_vecItems.begin(),m_vecItems.end());
       m_upDown.SetRange(1,1);
       m_upDown.SetValue(1);
-      m_iCursorX=m_iCursorY=m_iOffset=0;
+      m_iCursorX=m_iCursorY=m_iRowOffset=0;
 			m_bScrollUp = false;
 			m_bScrollDown = false;
     }
     if (message.GetMessage()==GUI_MSG_ITEM_SELECTED)
     {
-      message.SetParam1(m_iOffset + m_iCursorY*m_iColumns+m_iCursorX);
+      message.SetParam1((m_iRowOffset + m_iCursorY) * m_iColumns + m_iCursorX);
     }
 		if (message.GetMessage()==GUI_MSG_ITEM_SELECT)
 		{
-			int iItem=message.GetParam1();
-			if (iItem >=0 && iItem < (int)m_vecItems.size())
-			{
-				int iPage=1;
-				m_iCursorX=0;
-				m_iCursorY=0;
-				m_iOffset=0;
-				while (iItem >= (m_iRows*m_iColumns) )
-				{
-					m_iOffset +=(m_iRows*m_iColumns);
-					iItem -= (m_iRows*m_iColumns);
-					iPage++;
-				}
-				while (iItem >= m_iColumns)
-				{
-					m_iCursorY++;
-					iItem -= m_iColumns;
-				}
-				m_upDown.SetValue(iPage);
-				m_iCursorX=iItem;
-			}
+			SetSelectedItem(message.GetParam1());
 		}
   }
 
@@ -472,10 +452,9 @@ void CGUIThumbnailPanel::Calculate()
   if (m_vecItems.size() % iItemsPerPage) iPages++;
   m_upDown.SetRange(1,iPages);
   m_upDown.SetValue(1);
-  // reset our position
-  //m_iOffset = 0;
-  //m_iCursorY = 0;
-  //m_iCursorX = 0;
+	// TODO reset our position
+	int iItem = (m_iRowOffset + m_iCursorY)*m_iColumns + m_iCursorX;
+	SetSelectedItem(iItem);
 }
 
 void CGUIThumbnailPanel::AllocResources()
@@ -500,7 +479,7 @@ bool CGUIThumbnailPanel::ValidItem(int iX, int iY)
 {
   if (iX >= m_iColumns) return false;
   if (iY >= m_iRows) return false;
-  if (m_iOffset + iY*m_iColumns+iX < (int)m_vecItems.size() ) return true;
+  if ((m_iRowOffset + iY)*m_iColumns+iX < (int)m_vecItems.size() ) return true;
   return false;
 }
 void CGUIThumbnailPanel::OnRight()
@@ -554,13 +533,13 @@ void CGUIThumbnailPanel::OnUp()
 {
   if (m_iSelect==CONTROL_LIST) 
   {
-	if (m_iCursorY > 0) 
+		if (m_iCursorY > 0) 
     {
       m_iCursorY--; 
     }
-    else if (m_iCursorY ==0 && m_iOffset)
+    else if (m_iCursorY ==0 && m_iRowOffset>0)
     {
-		ScrollUp();
+			ScrollUp();
     }
     else
     {
@@ -658,7 +637,7 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
     wcscat(wszOrgText,m_strSuffix.c_str());
     m_pFont->GetTextExtent( wszOrgText, &fTextWidth,&fTextHeight);
 
-    int iItem=m_iCursorX+m_iCursorY*m_iColumns+m_iOffset;
+    int iItem=m_iCursorX+(m_iCursorY+m_iRowOffset)*m_iColumns;
     if (fTextWidth > fMaxWidth)
     {
       m_pFont->End(); //deinit fontbatching before setting a new viewport
@@ -744,7 +723,7 @@ void CGUIThumbnailPanel::OnPageUp()
   {
     iPage--;
     m_upDown.SetValue(iPage);
-    m_iOffset=(m_upDown.GetValue()-1)* m_iColumns * m_iRows;
+    m_iRowOffset=(m_upDown.GetValue()-1) * m_iRows;
   }
 }
 
@@ -757,27 +736,27 @@ void CGUIThumbnailPanel::OnPageDown()
   int iPage = m_upDown.GetValue();
   if (iPage+1 <= iPages)
   {
-    iPage++;
-    m_upDown.SetValue(iPage);
-	GetOffsetFromPage();
+		iPage++;
+		m_upDown.SetValue(iPage);
+		GetOffsetFromPage();
   }
 }
 
 void CGUIThumbnailPanel::GetOffsetFromPage()
 {
-    m_iOffset=(m_upDown.GetValue()-1)*m_iColumns*m_iRows;
+	m_iRowOffset=(m_upDown.GetValue()-1)*m_iRows;
 	// make sure we have a full screen on the last page.
-	int iRows = (m_vecItems.size()-m_iOffset)/m_iColumns+1;
-	while (iRows < m_iRows && m_iOffset > 0)
+	int iRowsToGo = m_vecItems.size()/m_iColumns - m_iRowOffset + 1;
+	while (iRowsToGo < m_iRows && m_iRowOffset > 0)
 	{
-		iRows++;
-		m_iOffset-=m_iColumns;
+		iRowsToGo++;
+		m_iRowOffset--;
 	}
-	while  (m_iCursorX > 0 && m_iOffset + m_iCursorY*m_iColumns+m_iCursorX >= (int) m_vecItems.size() )
+	while  (m_iCursorX > 0 && (m_iRowOffset + m_iCursorY)*m_iColumns+m_iCursorX >= (int) m_vecItems.size() )
 	{
 		m_iCursorX--;
 	}
-	while  (m_iCursorY > 0 && m_iOffset + m_iCursorY*m_iColumns+m_iCursorX >= (int) m_vecItems.size() )
+	while  (m_iCursorY > 0 && (m_iRowOffset + m_iCursorY)*m_iColumns+m_iCursorX >= (int) m_vecItems.size() )
 	{
 		m_iCursorY--;
 	}
@@ -788,7 +767,6 @@ void CGUIThumbnailPanel::SetTextureDimensions(int iWidth, int iHeight)
 	m_iTextureWidth=iWidth;
 	m_iTextureHeight=iHeight;
 
-  
   m_imgFolder.SetHeight(m_iTextureHeight);
   m_imgFolderFocus.SetHeight(m_iTextureHeight);
 
@@ -804,6 +782,7 @@ void CGUIThumbnailPanel::SetThumbDimensions(int iXpos, int iYpos,int iWidth, int
   m_iThumbXPos=iXpos;
   m_iThumbYPos=iYpos;
 }
+
 void CGUIThumbnailPanel::GetThumbDimensions(int& iXpos, int& iYpos,int& iWidth, int& iHeight)
 {
   iWidth=m_iThumbWidth;
@@ -818,12 +797,14 @@ void CGUIThumbnailPanel::SetItemWidth(DWORD dwWidth)
   FreeResources();
   AllocResources();
 }
+
 void CGUIThumbnailPanel::SetItemHeight(DWORD dwHeight)
 {
   m_iItemHeight=dwHeight;
   FreeResources();
   AllocResources();
 }
+
 void CGUIThumbnailPanel::ShowTexture(bool bOnoff)
 {
   m_bShowTexture=bOnoff;
@@ -832,7 +813,7 @@ void CGUIThumbnailPanel::ShowTexture(bool bOnoff)
 int CGUIThumbnailPanel::GetSelectedItem(CStdString& strLabel)
 {
   strLabel="";
-  int iItem=m_iOffset + m_iCursorY*m_iColumns+m_iCursorX;
+  int iItem = (m_iRowOffset + m_iCursorY)*m_iColumns+m_iCursorX;
   if (iItem >=0 && iItem < (int)m_vecItems.size())
   {
    CGUIListItem *pItem=m_vecItems[iItem];
@@ -843,6 +824,30 @@ int CGUIThumbnailPanel::GetSelectedItem(CStdString& strLabel)
    }
   }
   return iItem;
+}
+
+void CGUIThumbnailPanel::SetSelectedItem(int iItem)
+{
+	if (iItem >=0 && iItem < (int)m_vecItems.size())
+	{
+		int iPage=1;
+		m_iCursorX=0;
+		m_iCursorY=0;
+		m_iRowOffset=0;
+		while (iItem >= (m_iRows*m_iColumns) )
+		{
+			m_iRowOffset += m_iRows;
+			iItem -= (m_iRows*m_iColumns);
+			iPage++;
+		}
+		while (iItem >= m_iColumns)
+		{
+			m_iCursorY++;
+			iItem -= m_iColumns;
+		}
+		m_upDown.SetValue(iPage);
+		m_iCursorX=iItem;
+	}
 }
 
 void CGUIThumbnailPanel::ShowBigIcons(bool bOnOff)
@@ -974,21 +979,21 @@ void CGUIThumbnailPanel::ScrollDown()
 	if (m_bScrollDown)
 	{
 		m_bScrollDown=false;
-		m_iOffset+=m_iColumns;
+		m_iRowOffset++;
 		// Check if we need to update our position
 		if (!ValidItem(m_iCursorX, m_iCursorY))
 		{	// select the last item available
-			int iPos = m_vecItems.size()-1-m_iOffset;
+			int iPos = m_vecItems.size()-1-m_iRowOffset*m_iColumns;
 			m_iCursorY = iPos / m_iColumns;
 			m_iCursorX = iPos % m_iColumns;
 		}
-		int iPage = m_iOffset/(m_iRows*m_iColumns)+1;
-		if (m_iOffset+m_iRows*m_iColumns == (int)m_vecItems.size())
+		int iPage = m_iRowOffset/m_iRows+1;
+		if ((m_iRowOffset+m_iRows)*m_iColumns > (int)m_vecItems.size() && iPage < m_upDown.GetMaximum())
 			iPage++;	// last page
 		m_upDown.SetValue(iPage);
 	}
 	// Now scroll down, if we can
-	if (m_iOffset+m_iRows*m_iColumns < (int)m_vecItems.size())
+	if ((m_iRowOffset+m_iRows)*m_iColumns < (int)m_vecItems.size())
 	{
 		m_iScrollCounter=m_iItemHeight;
 		m_bScrollDown = true;
@@ -1002,12 +1007,12 @@ void CGUIThumbnailPanel::ScrollUp()
 	{
 		m_iScrollCounter=0;
 		m_bScrollUp=false;
-		m_iOffset -= m_iColumns;
-		int iPage = m_iOffset/(m_iRows*m_iColumns);
-		m_upDown.SetValue(iPage+1);
+		m_iRowOffset --;
+		int iPage = m_iRowOffset/m_iRows + 1;
+		m_upDown.SetValue(iPage);
 	}
 	// scroll up, if possible
-	if (m_iOffset)
+	if (m_iRowOffset > 0)
 	{
 		m_iScrollCounter=m_iItemHeight;
 		m_bScrollUp=true;
