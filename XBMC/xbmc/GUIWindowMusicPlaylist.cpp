@@ -237,7 +237,10 @@ void CGUIWindowMusicPlayList::ClearPlayList()
 	ClearFileItems();
 	g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Clear();
 	if (g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC)
+	{
 			g_playlistPlayer.Reset();
+			g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
+	}
 	UpdateListControl();
 	UpdateButtons();
 	SET_CONTROL_FOCUS(GetID(), CONTROL_BTNVIEWASICONS, 0);

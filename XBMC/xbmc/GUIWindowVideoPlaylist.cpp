@@ -218,7 +218,10 @@ void CGUIWindowVideoPlaylist::ClearPlayList()
 	ClearFileItems();
 	g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).Clear();
 	if (g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO)
+	{
 		g_playlistPlayer.Reset();
+		g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
+	}
 	UpdateListControl();
 	UpdateButtons();
 	SET_CONTROL_FOCUS(GetID(), CONTROL_BTNVIEWASICONS, 0);
