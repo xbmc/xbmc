@@ -46,6 +46,8 @@ public:
   const WCHAR*	GetLabel() const;
   virtual void	SetFocus(bool bOnOff);
 	void					SetReverse(bool bOnOff);
+  int           GetMaximum() const;
+  int           GetMinimum() const;
 	const	CStdString& GetTexutureUpName() const { return m_imgspinUp.GetFileName(); };
 	const	CStdString& GetTexutureDownName() const { return m_imgspinDown.GetFileName(); };
 	const	CStdString& GetTexutureUpFocusName() const { return m_imgspinUpFocus.GetFileName(); };

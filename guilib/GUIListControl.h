@@ -49,7 +49,7 @@ public:
 	void									SetSpace(int iHeight);
 	void									SetFont2(const CStdString& strFont);
 	void									SetColors2(DWORD dwTextColor, DWORD dwSelectedColor);
-
+  int                   GetSelectedItem(CStdString& strLabel);
 	DWORD									GetTextColor() const { return m_dwTextColor;};
 	DWORD									GetTextColor2() const { return m_dwTextColor2;};
 	DWORD									GetSelectedColor() const { return m_dwSelectedColor;};
