@@ -68,6 +68,14 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
 				m_DefaultResolutionWide = m_DefaultResolution; // default to same as 4:3
 			CLog::Log(LOGINFO, "Default 16:9 resolution directory is %s%s", m_strBaseDir.c_str(), GetDirFromRes(m_DefaultResolutionWide).c_str());
 
+ 			// get the version
+			pChild = pRootElement->FirstChild("version");
+			if (pChild)
+			{
+				m_Version = atof(pChild->FirstChild()->Value());
+				CLog::Log(LOGINFO, "Skin version is: %s", pChild->FirstChild()->Value());
+			}
+
 			// now load the credits information
 			pChild = pRootElement->FirstChild("credits");
 			if (pChild)
