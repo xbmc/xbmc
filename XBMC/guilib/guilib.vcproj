@@ -239,6 +239,9 @@
 				RelativePath=".\GUIMessage.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIProgressControl.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIRadioButtonControl.cpp">
 			</File>
 			<File
@@ -329,6 +332,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIMessage.h">
+			</File>
+			<File
+				RelativePath=".\GUIProgressControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIRadioButtonControl.h">

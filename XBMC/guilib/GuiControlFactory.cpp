@@ -13,6 +13,7 @@
 #include "GUIToggleButtonControl.h" 
 #include "GUITextBox.h" 
 #include "guiVideoControl.h"
+#include "GUIProgressControl.h"
 
 CGUIControlFactory::CGUIControlFactory(void)
 {
@@ -332,7 +333,18 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       pControl->SetVisible(bVisible);
       return pControl;
   }
- 
+
+  if (strType=="progress")
+  {
+      CStdString strTextureBg, strTextureFg;
+      strTextureBg=pControlNode->FirstChild("texturebg")->FirstChild()->Value();
+			strTextureFg=pControlNode->FirstChild("texturefg")->FirstChild()->Value();
+
+      CGUIProgressControl* pControl= new CGUIProgressControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureBg,strTextureFg);
+      pControl->SetVisible(bVisible);
+      return pControl;
+  } 
+
   if (strType=="image")
   {
       CStdString strTexture;
