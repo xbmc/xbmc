@@ -103,6 +103,7 @@ public:
   virtual void          Process();
   void                  ResetScreenSaver();
   int                   GetPlaySpeed() const;  
+  void                  SetPlaySpeed(int iSpeed);  
 	CGUIWindowHome									m_guiHome;
   CGUIWindowPrograms							m_guiPrograms;
   CGUIWindowSettingsPrograms      m_guiSettingsPrograms;

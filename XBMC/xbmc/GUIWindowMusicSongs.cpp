@@ -461,6 +461,7 @@ bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
 	bool bCancel=false;
 	for (int i=0; i < (int)items.size(); ++i)
 	{
+    g_application.ResetScreenSaver();
 		CFileItem *pItem= items[i];
 		if (m_dlgProgress->IsCanceled())
 		{
@@ -888,6 +889,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
   // for every file found, but skip folder
   for (int i=nFolderCount; i < (int)items.size(); ++i)
 	{
+    g_application.ResetScreenSaver();
 		CFileItem* pItem=items[i];
 		CStdString strExtension;
 		CUtil::GetExtension(pItem->m_strPath,strExtension);
