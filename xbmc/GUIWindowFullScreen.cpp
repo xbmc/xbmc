@@ -95,6 +95,7 @@ void CGUIWindowFullScreen::AllocResources()
 
 void CGUIWindowFullScreen::FreeResources()
 {
+	g_settings.Save();
   g_application.m_guiWindowOSD.FreeResources();
   CGUIWindow::FreeResources();
 }
@@ -160,7 +161,6 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 			{
 				g_stSettings.m_bZoom=false;
 				g_stSettings.m_bStretch=true;
-				g_settings.Save();
 				return;
 			}
 			// stretch->normal
@@ -168,13 +168,11 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 			{
 				g_stSettings.m_bZoom=false;
 				g_stSettings.m_bStretch=false;
-				g_settings.Save();
 				return;
 			}
 			// normal->zoom
 			g_stSettings.m_bZoom=true;
 			g_stSettings.m_bStretch=false;
-			g_settings.Save();
 			return;
 		}
 		break;

@@ -11,7 +11,7 @@ using namespace AUTOPTR;
 SOUNDTRACK datastorage; //created a vector of the XSOUNDTRACK_DATA class to keep track of each album
 
 CSndtrkDirectory::CSndtrkDirectory(void)
-{	
+{	 
 }
 
 CSndtrkDirectory::~CSndtrkDirectory(void)
@@ -106,5 +106,47 @@ bool  CSndtrkDirectory::IsAlone(const CStdString& strPath)
 	if(strcmp(tmpvar,strPath) != 0)
 		return false;
 	return true;
+}
+
+void CSndtrkDirectory::FindTrackName(const CStdString& strPath, char *NameOfSong)
+{
+	char* ptr = strstr(strPath.c_str(),"E:\\TDATA\\fffe0000\\music\\");
+	if(ptr == NULL)	return;
+	ptr+=strlen("E:\\TDATA\\fffe0000\\music\\");
+	char album[5];
+	int x = 0;
+	for(x=0;x<4;x++)
+	{
+		album[x]=*ptr;
+		ptr+=1;
+	}
+	album[4]='\0';
+	ptr+=1;
+	char trackno[9];
+	for (x=0;x<8;x++)
+	{
+		trackno[x] = *ptr;
+		ptr+=1;
+	}
+	trackno[8]='\0';
+	int AlbumID,SongID;
+	sscanf(album,"%x",&AlbumID);
+	sscanf(trackno,"%x",&SongID);
+	x=0;
+	bool test=true;
+	while(test == true)
+	{
+		DWORD dwSongId;
+		DWORD dwSongLength; 
+		WCHAR Songname[64];
+		if( XGetSoundtrackSongInfo( AlbumID, x, &dwSongId, &dwSongLength, Songname, MAX_SONG_NAME ) == false)
+			test = false;
+		if(dwSongId==SongID)
+		{
+			wcstombs(NameOfSong,Songname,64);
+			return;
+		}
+		x++;
+	}
 }
 
