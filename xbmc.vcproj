@@ -690,6 +690,9 @@
 					RelativePath=".\xbmc\utils\MediaMonitor.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\MemUnit.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\NfoFile.cpp">
 				</File>
 				<File
@@ -1121,13 +1124,16 @@
 				RelativePath=".\xbmc\utils\MediaMonitor.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\MemUnit.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1797,10 +1803,10 @@
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
