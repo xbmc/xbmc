@@ -27,6 +27,8 @@ public:
 	VOID									Correct(FLOAT& fCoordinateX, FLOAT& fCoordinateY, FLOAT& fCoordinateX2, FLOAT& fCoordinateY2) const;
 	void									SetViewPort(float fx, float fy , float fwidth, float fheight);
 	void									RestoreViewPort();
+	const RECT&						GetViewWindow() const;
+	void									SetViewWindow(const RECT&	rc) ;
 protected:
   IMsgSenderCallback*     m_pCallback;
   LPDIRECT3DDEVICE8       m_pd3dDevice;
@@ -36,6 +38,7 @@ protected:
 	bool										m_bWidescreen;
   CStdString              m_strMediaDir;
 	D3DVIEWPORT8						m_oldviewport;
+	RECT										m_videoRect;
 };
 
 extern CGraphicContext g_graphicsContext;

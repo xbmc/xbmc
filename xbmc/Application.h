@@ -68,6 +68,7 @@ public:
 	CGUIWindowSettingsGeneral m_guiSettingsGeneral;
 	CGUIWindowMusicInfo			m_guiMusicInfo;
 	CGUIWindowVideoInfo			m_guiVideoInfo;
+	CGUIWindow							m_guiSettingsScreen;
 	CGUIDialogSelect				m_guiDialogSelect;
 	CGUIWindowMusicOverlay	m_guiMusicOverlay;
   CXBVirtualKeyboard   		m_keyboard;

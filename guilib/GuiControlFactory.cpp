@@ -12,6 +12,7 @@
 #include "GUIMButtonControl.h"
 #include "GUIToggleButtonControl.h" 
 #include "GUITextBox.h" 
+#include "guiVideoControl.h"
 
 CGUIControlFactory::CGUIControlFactory(void)
 {
@@ -90,6 +91,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       pControl->SetVisible(bVisible);
       return pControl;
   }
+
+  if (strType=="videowindow")
+  {
+      CGUIVideoControl* pControl = new CGUIVideoControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight);
+      return pControl;
+  }
+
 	if (strType=="fadelabel")
   {
       CStdString  strFont;

@@ -279,14 +279,45 @@ extern void vo_draw_alpha_rgb32(int w,int h, unsigned char* src, unsigned char *
 extern void vo_draw_alpha_rgb15(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
 extern void vo_draw_alpha_rgb16(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
 extern void aspect_save_orig(int orgw, int orgh);
-extern void aspect(int *srcw, int *srch, int zoom);
+extern void aspect(unsigned int *srcw, unsigned int *srch, int zoom);
 extern void aspect_save_prescale(int prew, int preh);
 extern void aspect_save_screenres(int scrw, int scrh);
-extern void aspect(int *srcw, int *srch, int zoom);
+
 extern void draw_alpha(int x0,int y0, int w,int h, unsigned char* src, unsigned char *srca, int stride);
 extern void vo_draw_text(int dxs,int dys,void (*draw_alpha)(int x0,int y0, int w,int h, unsigned char* src, unsigned char *srca, int stride));
 
 extern vo_functions_t video_functions;
+
+typedef struct
+{
+	unsigned char *y;
+	unsigned char *u;
+	unsigned char *v;
+}
+IMAGE;
+extern int image_output(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst, unsigned int dst_stride,int csp,int interlaced);
+#define XVID_CSP_RGB24 	0		/* [b|g|r] */
+#define XVID_CSP_YV12	1
+#define XVID_CSP_YUY2	2
+#define XVID_CSP_UYVY	3
+#define XVID_CSP_I420	4
+#define XVID_CSP_RGB555	10
+#define XVID_CSP_RGB565	11
+#define XVID_CSP_USER	12
+#define XVID_CSP_EXTERN      1004  // per slice rendering
+#define XVID_CSP_YVYU	1002
+#define XVID_CSP_RGB32 	1000	/* [b|g|r|a] */
+#define XVID_CSP_ABGR	1006	/* [a|b|g|r] */
+#define XVID_CSP_RGBA	1005	/* [r|g|b|a] */
+
+
+
+#define XVID_CSP_NULL 	9999
+
+#define XVID_CSP_VFLIP	0x80000000	// flip mask
+
+
+
 #ifdef __cplusplus
 };
 #endif

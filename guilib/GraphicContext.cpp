@@ -103,3 +103,15 @@ void CGraphicContext::RestoreViewPort()
 {
 	Get3DDevice()->SetViewport(&m_oldviewport);
 }
+
+const RECT&	CGraphicContext::GetViewWindow() const
+{
+	return m_videoRect;
+}
+void CGraphicContext::SetViewWindow(const RECT&	rc) 
+{
+	m_videoRect.left  = rc.left;
+	m_videoRect.top   = rc.top;
+	m_videoRect.right = rc.right;
+	m_videoRect.bottom= rc.bottom;
+}

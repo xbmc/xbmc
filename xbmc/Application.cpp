@@ -37,6 +37,7 @@ using namespace PLAYLIST;
 CApplication::CApplication(void)
 :m_ctrDpad(220,220)
 ,m_ctrIR(220,220)
+,m_guiSettingsScreen(0)
 {
 		m_bOverlayEnabled=true;
 		m_pPhytonParser=NULL;
@@ -195,8 +196,10 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiMyMusic);					// window id = 5
 	m_gWindowManager.Add(&m_guiMyVideo);					// window id = 6
 	m_gWindowManager.Add(&m_guiSettings);					// window id = 4
-	m_gWindowManager.Add(&m_guiSettingsGeneral);	// window id = 8
 	m_gWindowManager.Add(&m_guiSystemInfo);				// window id = 7
+	m_gWindowManager.Add(&m_guiSettingsGeneral);	// window id = 8
+	m_gWindowManager.Add(&m_guiSettingsScreen);		// window id = 9
+
   m_gWindowManager.Add(&m_guiDialogYesNo);			// window id = 100
   m_gWindowManager.Add(&m_guiDialogProgress);		// window id = 101
   m_gWindowManager.Add(&m_keyboard);						// window id = 1000
@@ -249,6 +252,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogOK.Load( strSkinPath+"\\dialogOK.xml" );  
 	m_guiVideoInfo.Load( strSkinPath+"\\DialogVideoInfo.xml" );  
 	m_guiMusicOverlay.Load( strSkinPath+"\\musicOverlay.xml" );  
+	m_guiSettingsScreen.Load( strSkinPath+"\\settingsScreen.xml" );  
 }
 
 

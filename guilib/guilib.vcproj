@@ -248,6 +248,9 @@
 				RelativePath=".\GUIToggleButtonControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIVideoControl.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIWindow.cpp">
 			</File>
 			<File
@@ -335,6 +338,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIToggleButtonControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIVideoControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIWindow.h">

@@ -42,9 +42,11 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		mplayer_load_dll(*m_pDLL);
 
 
+
 		int argc=2;
-		char *argv[] = {"xbmc.xbe","1.avi",NULL};
+		char *argv[] = {"xbmc.xbe", "1.avi",NULL};
 		mplayer_init(argc,argv);
+		mplayer_put_key('o');
 		Create();
 	}
 
