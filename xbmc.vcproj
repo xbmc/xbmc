@@ -492,6 +492,12 @@
 				RelativePath=".\xbmc\MusicInfoTagLoaderOgg.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\MusicInfoTagLoaderWMA.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\MusicInfoTagLoaderWMA.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\NfoFile.cpp">
 			</File>
 			<File
