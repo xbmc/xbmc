@@ -136,8 +136,6 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	else
 	{
 		m_dwNumPackets=8*iChannels;
-		if (!mplayer_HasVideo())
-			m_dwNumPackets *= 3; // fixes stuttering wav/wma
 	}
 
 	m_adwStatus    = new DWORD[ m_dwNumPackets ];
@@ -242,11 +240,18 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 
 	XMEDIAINFO info;
 	m_pStream->GetInfo(&info);
-	int fSize = 1024 / info.dwInputSize;
+	int fSize;
+	if (!mplayer_HasVideo())
+		fSize = 4096 / info.dwInputSize; // fixes stuttering wav/wma
+	else
+		fSize = 1024 / info.dwInputSize;
 	fSize *= info.dwInputSize;
 	m_dwPacketSize=(int)fSize;
-	for (DWORD dwX=0; dwX < m_dwNumPackets ; dwX++)
-		m_pbSampleData[dwX] = (BYTE*)XPhysicalAlloc( m_dwPacketSize, MAXULONG_PTR,0,PAGE_READWRITE|PAGE_NOCACHE);
+
+	// XphysicalAlloc has page (4k) granularity, so allocate all the buffers in one chunk to avoid wasting 3k per buffer
+	m_pbSampleData[0] = (BYTE*)XPhysicalAlloc(m_dwPacketSize * m_dwNumPackets, MAXULONG_PTR,0,PAGE_READWRITE|PAGE_NOCACHE);
+	for (DWORD dwX=1; dwX < m_dwNumPackets ; dwX++)
+		m_pbSampleData[dwX] = m_pbSampleData[dwX-1] + m_dwPacketSize;
 
 	m_nCurrentVolume = GetMaximumVolume();
 	m_pStream->SetVolume( m_nCurrentVolume );
@@ -297,11 +302,11 @@ HRESULT CASyncDirectSound::Deinitialize()
 	}
 	m_pDSound =NULL;
 
+	if (m_pbSampleData[0])
+		XPhysicalFree(m_pbSampleData[0]);
 	for (DWORD dwX=0; dwX < m_dwNumPackets ; dwX++)
-	{
-		if (m_pbSampleData[dwX]) XPhysicalFree(m_pbSampleData[dwX]) ;
 		m_pbSampleData[dwX]=NULL;
-	}
+
 	if ( m_adwStatus )
 		delete [] m_adwStatus;
 	m_adwStatus=NULL;
