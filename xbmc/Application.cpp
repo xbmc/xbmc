@@ -1085,7 +1085,25 @@ void CApplication::StartLEDControl(bool switchoff)
 	}
   else if (switchoff == false)
 	{
-		ILED::CLEDControl(g_guiSettings.GetInt("LED.Colour")); 
+		ILED::CLEDControl(g_guiSettings.GetInt("Front.LEDColour")); 
+	}
+	// and dim our LCD as required as well
+	DimLCDOnPlayback(switchoff);
+}
+
+void CApplication::DimLCDOnPlayback(bool dim)
+{
+  CLog::Log(LOGNOTICE, "Dim LCD On Playback");
+  if(g_lcd && g_guiSettings.GetInt("LCD.Mode") != LCD_MODE_NONE)
+	{
+		if (IsPlayingVideo() && dim == true && g_guiSettings.GetInt("LED.DisableOnPlayback") == LED_PLAYBACK_VIDEO)
+		{
+				g_lcd->SetBackLight(0);
+		}
+		else if (dim == false && g_guiSettings.GetInt("LED.DisableOnPlayback") == LED_PLAYBACK_VIDEO)
+		{
+		    g_lcd->SetBackLight(g_guiSettings.GetInt("LCD.BackLight"));
+		}
 	}
 }
 

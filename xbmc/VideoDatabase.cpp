@@ -354,7 +354,8 @@ long CVideoDatabase::GetMovie(const CStdString& strFilenameAndPath)
 {
   long lPathId;
   long lMovieId;
-  if (GetFile(strFilenameAndPath, lPathId, lMovieId) < 0)
+    // changed by JM 8 Mar 2005 to ignore fuzzy stacking
+  if (GetFile(strFilenameAndPath, lPathId, lMovieId, true) < 0)
   {
     return -1;
   }
@@ -1152,7 +1153,8 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
     long lMovieId;
  	  if (NULL==m_pDB.get()) return ;
 	  if (NULL==m_pDS.get()) return ;
-    if (GetFile(strFilenameAndPath, lPathId, lMovieId) < 0)
+    // changed by JM 8 Mar 2005 to ignore fuzzy stacking
+    if (GetFile(strFilenameAndPath, lPathId, lMovieId, true) < 0)
     {
       return ;
     }
