@@ -326,8 +326,9 @@ bool CHTTP::Connect()
 			{
 				if (strcmp(m_strHostName.c_str(),"ia.imdb.com")==0)
 					service.sin_addr.s_addr = inet_addr("193.108.153.16");
-				
 				else if (strcmp(m_strHostName.c_str(),"us.imdb.com")==0)
+					service.sin_addr.s_addr = inet_addr("207.171.166.140");
+				else if (strcmp(m_strHostName.c_str(),"www.imdb.com")==0)
 					service.sin_addr.s_addr = inet_addr("207.171.166.140");
 				else if (strcmp(m_strHostName.c_str(),"www.allmusic.com")==0)
 					service.sin_addr.s_addr = inet_addr("64.152.71.2");

@@ -24,6 +24,10 @@ HRESULT CNfoFile::Create(LPSTR szPath)
 		return E_FAIL;
 
 	CHAR* szUrl = strstr(m_doc,"http://us.imdb");
+	if (!szUrl )
+	{
+		szUrl = strstr(m_doc,"http://www.imdb.com");
+	}
 	if (szUrl)
 	{
 		char szScrape[1024];
