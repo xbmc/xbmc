@@ -525,6 +525,7 @@
   <string><id>758</id><value>Verknüpfung löschen</value></string> 
   <string><id>998</id><value>Online spielen</value></string>
   <string><id>999</id><value>Online spielen</value></string>
+  <string><id>1000</id><value>Bildschirmschoner Vorschau</value></string>
   <string><id>1396</id><value>Verwehungen</value></string> 
   <string><id>1397</id><value>und</value></string> 
   <string><id>1398</id><value>Gefrierend</value></string> 
@@ -730,6 +731,22 @@
   <string><id>13357</id><value>Pixel Shader (hohe Qualität)</value></string>
 
   <string><id>13360</id><value>Miniaturansichten erstellen</value></string>
+  <string><id>13361</id><value>Spracheingabe aktivieren</value></string> 
+  <string><id>13362</id><value>Sprachmaske</value></string> 
+  <string><id>13363</id><value>- Spektrale Form ändern</value></string> 
+  <string><id>13364</id><value>--></value></string> 
+  <string><id>13365</id><value>- Stimmlage ändern</value></string> 
+  <string><id>13366</id><value>--></value></string>
+  <string><id>13367</id><value>- Flüstereffekt verwenden</value></string> 
+  <string><id>13368</id><value>--></value></string>
+  <string><id>13369</id><value>- Robotereffekt verwenden</value></string> 
+  <string><id>13370</id><value>--></value></string>
+  <string><id>13371</id><value>- Anschluss 0</value></string> 
+  <string><id>13372</id><value>- Anschluss 1</value></string> 
+  <string><id>13373</id><value>- Anschluss 2</value></string> 
+  <string><id>13374</id><value>- Anschluss 3</value></string> 
+  <string><id>13375</id><value>Modul aktivieren</value></string> 
+  <string><id>13376</id><value>Lautstärke(%)</value></string> 
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln einfach</value></string>
   <string><id>14002</id><value>Koppeln unpräz.</value></string>
@@ -759,9 +776,11 @@
   <string><id>14026</id><value>Video Cache  - DVD Laufwerk</value></string>
   <string><id>14027</id><value>Video Cache  - lokales Netzwerk</value></string>
   <string><id>14028</id><value>Video Cache  - Internet</value></string>
+
   <string><id>14030</id><value>Audio Cache  - DVD Laufwerk</value></string>
   <string><id>14031</id><value>Audio Cache  - lokales Netzwerk</value></string>
   <string><id>14032</id><value>Audio Cache  - Internet</value></string>
+
   <string><id>14034</id><value>DVD Cache    - DVD Laufwerk</value></string>
   <string><id>14035</id><value>DVD Cache    - lokales Netzwerk</value></string>
   <string><id>14036</id><value>Server</value></string>
