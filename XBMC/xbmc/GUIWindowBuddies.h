@@ -15,7 +15,7 @@
 using namespace std;
 #include <map>
 
-// TODO: OnEnterArenaFailed, may incorrectly prompt user for password when not needed.
+class CGUIConsoleControl;
 
 class CGUIWindowBuddies : 	public CGUIWindow, public IBuddyObserver
 {
@@ -49,24 +49,28 @@ public:
 	virtual void			OnOpponentPing(CStdString& aOpponent, DWORD aPing, int aStatus, CStdString& aBearerCapability);
 	virtual void			OnOpponentLeave(CStdString& aOpponent);
 	virtual void			OnSupportedTitle(DWORD aTitleId, CStdString& aVector);
+	virtual void			OnJoinsChat(CStdString& aOpponent);
+	virtual void			OnChat(CStdString& aVector, CStdString& aOpponent, CStdString& aMessage);
+	virtual void			OnLeavesChat(CStdString& aOpponent);
 
 	virtual void			OnInitWindow();
 	virtual void			OnAction(const CAction &action);
 	virtual void			Render();
 
 protected:
-	enum State {Uninitialized,Buddies,Games,Arenas};
+	enum State {Uninitialized,Buddies,Games,Arenas,Chat};
 
-	void OnClickModeButton	(CGUIMessage& aMessage);
-	void OnClickAddButton	(CGUIMessage& aMessage);
-	void OnClickRemoveButton(CGUIMessage& aMessage);
-	void OnClickSpeexButton (CGUIMessage& aMessage);
-	void OnClickInviteButton(CGUIMessage& aMessage);
-	void OnClickJoinButton	(CGUIMessage& aMessage);
-	void OnClickPlayButton	(CGUIMessage& aMessage);
-	void OnClickHostButton	(CGUIMessage& aMessage);
-	void OnClickListItem	(CGUIMessage& aMessage);
-	void OnSelectListItem	(CGUIMessage& aMessage);
+	void OnClickModeButton		(CGUIMessage& aMessage);
+	void OnClickAddButton		(CGUIMessage& aMessage);
+	void OnClickRemoveButton	(CGUIMessage& aMessage);
+	void OnClickSpeexButton		(CGUIMessage& aMessage);
+	void OnClickInviteButton	(CGUIMessage& aMessage);
+	void OnClickJoinButton		(CGUIMessage& aMessage);
+	void OnClickPlayButton		(CGUIMessage& aMessage);
+	void OnClickHostButton		(CGUIMessage& aMessage);
+	void OnClickKeyboardButton	(CGUIMessage& aMessage);
+	void OnClickListItem		(CGUIMessage& aMessage);
+	void OnSelectListItem		(CGUIMessage& aMessage);
 
 	void	QueryInstalledGames();
 	bool	GetGamePathFromTitleId(DWORD aTitleId, CStdString& aGamePath);
@@ -107,6 +111,7 @@ protected:
 	CBuddyItem* m_pMe;
 
 	CKaiClient* m_pKaiClient;
+	CGUIConsoleControl* m_pConsole;
 
 	BOOL		m_bContactNotifications;
 
