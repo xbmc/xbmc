@@ -87,9 +87,9 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 						cddb.getDiskArtist(strArtist);
 
 					if ( !strArtist.IsEmpty() )
-						strLabel.Format("%i. %s - %s", i+1, strArtist.c_str(), strTitle.c_str() );
+						strLabel.Format("%02.2i. %s - %s", i+1, strArtist.c_str(), strTitle.c_str() );
 					else
-						strLabel.Format("%i. %s", i+1, strTitle.c_str() );
+						strLabel.Format("%02.2i. %s", i+1, strTitle.c_str() );
 
 					CFileItem* pItem = new CFileItem(strLabel);
 					pItem->m_strPath=strPath;
