@@ -29,6 +29,7 @@ public:
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
+  virtual void DynamicResourceAlloc(bool bOnOff);
   void ClearButtons();
   void AddButton(const wstring &strLabel, const CStdString &strExecute, const int iIcon);
   void SetActiveButton(int iButton);

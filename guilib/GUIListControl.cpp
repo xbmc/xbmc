@@ -579,6 +579,14 @@ void CGUIListControl::FreeResources()
   m_imgButton.FreeResources();
 }
 
+void CGUIListControl::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  m_upDown.DynamicResourceAlloc(bOnOff);
+  //  Image will be reloaded all the time
+  //m_imgButton.DynamicResourceAlloc(bOnOff);
+}
+
 void CGUIListControl::OnRight()
 {
   if (m_iSelect == CONTROL_LIST)

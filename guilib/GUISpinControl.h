@@ -61,6 +61,7 @@ public:
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
+  virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetPosition(int iPosX, int iPosY);
   virtual bool HitTest(int iPosX, int iPosY) const;
   virtual DWORD GetWidth() const;
