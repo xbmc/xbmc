@@ -8,7 +8,8 @@
 
 #pragma once
 
-#include "GUIImage.h"
+//  Forward
+class CGUIImage;
 
 /*!
  \ingroup controls

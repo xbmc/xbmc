@@ -25,8 +25,6 @@ using namespace std;
 //	guilib internal
 #include "tinyxml/tinyxml.h"
 #include "GUIWindowManager.h"
-#include "GUIDialog.h"
-#include "guilistitem.h"
 #include "LocalizeStrings.h"
 
 #include "utils/Thread.h"
@@ -38,6 +36,9 @@ using namespace std;
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 
+#include "MusicInfotag.h"
+using namespace MUSIC_INFO;
+#include "Song.h"
 #include "Url.h"
 #include "FileSystem/Directory.h"
 using namespace DIRECTORY;

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "musicinfotag.h"
 #include "IMusicInfoTagLoader.h"
 
 #include "OggTag.h"

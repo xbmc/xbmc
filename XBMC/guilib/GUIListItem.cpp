@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GUIListItem.h"
+#include "GUIImage.h"
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {

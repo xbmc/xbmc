@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "MusicDatabase.h"
+
 namespace MUSIC_INFO
 {
 	class IMusicInfoLoaderObserver

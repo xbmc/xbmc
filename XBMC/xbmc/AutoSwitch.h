@@ -1,5 +1,4 @@
 #pragma once
-#include "FileItem.h"
 
 class CAutoSwitch
 {
