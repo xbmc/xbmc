@@ -8,7 +8,6 @@ public:
 	virtual	~CGUIWindowMusicSongs(void);
 
   virtual	bool				OnMessage(CGUIMessage& message);
-  virtual void				OnAction(const CAction& action);
 
 protected:
 	virtual void				GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items);
@@ -25,6 +24,8 @@ protected:
 					void				OnScan();
 					bool				DoScan(VECFILEITEMS& items);
 					void				LoadPlayList(const CStdString& strPlayList);
+
+	virtual void				Update(const CStdString &strDirectory);
 
 	CStdString					m_strPrevDir;
 	bool								m_bScan;
