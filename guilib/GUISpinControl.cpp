@@ -20,6 +20,7 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
     m_fInterval=0.1f;
     m_iValue=0;
     m_dwAlign=dwAlign;
+	m_dwAlignY=XBFONT_CENTER_Y;
     m_fValue=0.0;
     m_strFont=strFont;
     m_pFont=NULL;
@@ -461,13 +462,21 @@ void CGUISpinControl::Render()
 
     if (m_pFont)
     {
+		float fPosY;
 
-        float fWidth,fHeight;
-        m_pFont->GetTextExtent( wszText, &fWidth,&fHeight);
-        fHeight/=2.0f;
-        float fPosY = ((float)m_dwHeight)/2.0f;
-        fPosY-=fHeight;
-        fPosY+=(float)(m_dwPosY+m_dwTextOffsetY);
+		if (m_dwAlignY==XBFONT_CENTER_Y)
+		{
+			float fWidth,fHeight;
+			m_pFont->GetTextExtent( wszText, &fWidth,&fHeight);
+			fHeight/=2.0f;
+			fPosY = ((float)m_dwHeight)/2.0f;
+			fPosY-=fHeight;
+			fPosY+=(float)m_dwPosY;
+		}
+		else
+		{
+			fPosY=(float)(m_dwPosY+m_dwTextOffsetY);
+		}
 
 		float fPosX = (float)(m_dwPosX+m_dwTextOffsetX) -3;
         if ( HasFocus() )
