@@ -114,6 +114,8 @@ public:
 	void									ScaleYCoord(int &x, RESOLUTION res);
 	void									ScaleYCoord(long &x, RESOLUTION res);
 	float									GetPixelRatio(RESOLUTION iRes) const;
+	void									CaptureStateBlock();
+	void									ApplyStateBlock();
 
 protected:
 	CRITICAL_SECTION			  m_critSection;
@@ -135,6 +137,7 @@ protected:
   bool                    m_bShowOverlay;
 	RESOLUTION									m_Resolution;
 	RESOLUTION_INFO								*m_pResInfo;
+	DWORD					m_stateBlock;
 };
 
 /*!

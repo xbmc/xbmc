@@ -114,6 +114,8 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 				
 				OutputDebugString("delete Visualisation()\n");
 				delete m_pVisualisation;
+
+				g_graphicsContext.ApplyStateBlock();
 			}
 			m_pVisualisation=NULL;
 			m_bInitialized=false;
@@ -142,6 +144,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 			{
 				m_pVisualisation->Stop();
 				delete m_pVisualisation;
+				g_graphicsContext.ApplyStateBlock();
 			}
 			m_pVisualisation=NULL;
 			if (g_application.m_pPlayer)
@@ -158,6 +161,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 			{
 				OutputDebugString("Visualisation::Create()\n");
 				m_pVisualisation->Create();
+				g_graphicsContext.CaptureStateBlock();
 				if (g_application.m_pPlayer)
 					g_application.m_pPlayer->RegisterAudioCallback(this);
 				
