@@ -68,6 +68,8 @@ public:
 	static DWORD GetXbeID( const CStdString& strFilePath);
 	static void FillInDefaultIcons(VECFILEITEMS &items);
 	static void FillInDefaultIcon(CFileItem* pItem);
+	static void CreateShortcuts(VECFILEITEMS &items);
+	static void CreateShortcut(CFileItem* pItem);
 	static void SetThumbs(VECFILEITEMS &items);
 	static void SetThumb(CFileItem* pItem);
 	static void GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS);
