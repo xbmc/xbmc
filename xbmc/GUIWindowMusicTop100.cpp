@@ -93,7 +93,7 @@ void CGUIWindowMusicTop100::GetDirectory(const CStdString &strDirectory, VECFILE
 	}
 
 	VECSONGS songs;
-	m_database.GetTop100(songs);
+	g_musicDatabase.GetTop100(songs);
 	for (int i=0; i < (int)songs.size(); ++i)
 	{
 		CSong & song=songs[i];
