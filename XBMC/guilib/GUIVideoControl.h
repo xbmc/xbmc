@@ -1,7 +1,7 @@
 /*!
-	\file GUIVideoControl.h
-	\brief 
-	*/
+\file GUIVideoControl.h
+\brief 
+*/
 
 #ifndef GUILIB_GUIVIDEOCONTROL_H
 #define GUILIB_GUIVIDEOCONTROL_H
@@ -11,11 +11,11 @@
 #include "GUIControl.h"
 
 /*!
-	\ingroup controls
-	\brief 
-	*/
+ \ingroup controls
+ \brief 
+ */
 class CGUIVideoControl :
-  public CGUIControl
+      public CGUIControl
 {
 public:
   CGUIVideoControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight);

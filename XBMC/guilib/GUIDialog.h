@@ -1,36 +1,36 @@
 /*!
-	\file GUIDialog.h
-	\brief 
-	*/
+\file GUIDialog.h
+\brief 
+*/
 
 #pragma once
 #include "GUIWindow.h"
 
 /*!
-	\ingroup winmsg
-	\brief 
-	*/
+ \ingroup winmsg
+ \brief 
+ */
 class CGUIDialog :
-	public CGUIWindow
+      public CGUIWindow
 {
 public:
-	CGUIDialog(DWORD dwID);
-	virtual ~CGUIDialog(void);
+  CGUIDialog(DWORD dwID);
+  virtual ~CGUIDialog(void);
 
-	virtual bool    OnMessage(CGUIMessage& message);
-	void			DoModal(DWORD dwParentId); // modal
-	void			Show(DWORD dwParentId); // modeless
-	virtual void	Close();
-	virtual bool    Load(const CStdString& strFileName, bool bContainsPath = false);
-	virtual bool	IsRunning() const { return m_bRunning; }
-	virtual bool	IsDialog() { return true;};
+  virtual bool OnMessage(CGUIMessage& message);
+  void DoModal(DWORD dwParentId); // modal
+  void Show(DWORD dwParentId); // modeless
+  virtual void Close();
+  virtual bool Load(const CStdString& strFileName, bool bContainsPath = false);
+  virtual bool IsRunning() const { return m_bRunning; }
+  virtual bool IsDialog() { return true;};
 
 protected:
-	DWORD			m_dwParentWindowID;
-	CGUIWindow* 	m_pParentWindow;
-	bool			m_bRunning;
-	bool			m_bModal;
+  DWORD m_dwParentWindowID;
+  CGUIWindow* m_pParentWindow;
+  bool m_bRunning;
+  bool m_bModal;
 
 private:
-	int       m_iPrevOverlayAllowed;
+  int m_iPrevOverlayAllowed;
 };

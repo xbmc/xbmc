@@ -21,52 +21,52 @@ class GUIEvent
 {
 public:
 
-    typedef void (GUIEvent::*MethodPtr)(Cookie);
+  typedef void (GUIEvent::*MethodPtr)(Cookie);
 
-    GUIEvent()
+  GUIEvent()
+  {
+    m_pInstance = NULL;
+    m_pMethod = NULL;
+  }
+
+  // Assign an EventHandler (EventHandler's are derived from Event)
+  operator=(GUIEvent<Cookie> &aEvent)
+  {
+    if (&aEvent)
     {
-        m_pInstance	= NULL;
-		m_pMethod	= NULL;
+      m_pInstance = aEvent.m_pInstance;
+      m_pMethod = aEvent.m_pMethod;
+    }
+    else
+    {
+      GUIEvent();
     }
 
-    // Assign an EventHandler (EventHandler's are derived from Event)
-    operator=(GUIEvent<Cookie> &aEvent)
-    {
-        if (&aEvent)
-		{
-			m_pInstance = aEvent.m_pInstance;
-			m_pMethod	= aEvent.m_pMethod;
-		}
-        else
-		{
-			GUIEvent();
-		}
+    return 0;
+  }
 
-        return 0;
-	}
+  // Are the class instance and method pointers initialised?
+  bool HasAHandler()
+  {
+    return (m_pInstance && m_pMethod);
+  }
 
-	// Are the class instance and method pointers initialised?
-    bool HasAHandler()
+  // Execute the associated class method
+  void Fire(Cookie aCookie)
+  {
+    if (HasAHandler())
     {
-        return (m_pInstance && m_pMethod);
+      (m_pInstance->*m_pMethod)(aCookie);
     }
-
-	// Execute the associated class method
-    void Fire(Cookie aCookie)
+    else
     {
-        if (HasAHandler())
-		{
-            (m_pInstance->*m_pMethod)(aCookie);
-		}
-		else
-		{
-			// Event is uninitialized, no handler has been assigned
-			assert(0);
-		}
+      // Event is uninitialized, no handler has been assigned
+      assert(0);
     }
+  }
 protected:
-	GUIEvent*		m_pInstance;
-	MethodPtr	m_pMethod;
+  GUIEvent* m_pInstance;
+  MethodPtr m_pMethod;
 };
 
 
@@ -74,14 +74,14 @@ template <class Class, class Cookie>
 class GUIEventHandler : public GUIEvent<Cookie>
 {
 public:
-    typedef void (Class::*MethodPtr)(Cookie);
+  typedef void (Class::*MethodPtr)(Cookie);
 
-    GUIEventHandler(Class* pInstance, MethodPtr aMethodPtr)
-    {
-		m_pInstance = (GUIEvent<Cookie>*) ((LPVOID) pInstance);
-		// Its dirty but it works!
-		memcpy(&m_pMethod, &aMethodPtr, sizeof(m_pMethod));
-    }
+  GUIEventHandler(Class* pInstance, MethodPtr aMethodPtr)
+  {
+    m_pInstance = (GUIEvent<Cookie>*) ((LPVOID) pInstance);
+    // Its dirty but it works!
+    memcpy(&m_pMethod, &aMethodPtr, sizeof(m_pMethod));
+  }
 };
 
 
@@ -90,52 +90,52 @@ template <class Result, class Cookie>
 class Callback
 {
 public:
-    typedef Result (Callback::*MethodPtr)(Cookie);
+  typedef Result (Callback::*MethodPtr)(Cookie);
 
-    Callback()
+  Callback()
+  {
+    m_pInstance = NULL;
+    m_pMethod = NULL;
+  }
+
+  // Assign a CallbackHandler (CallbackHandler's are derived from Callback)
+  operator=(Callback<Result, Cookie> &aCallback)
+  {
+    if (&aCallback)
     {
-        m_pInstance	= NULL;
-		m_pMethod	= NULL;
+      m_pInstance = aCallback.m_pInstance;
+      m_pMethod = aCallback.m_pMethod;
+    }
+    else
+    {
+      Callback();
     }
 
-    // Assign a CallbackHandler (CallbackHandler's are derived from Callback)
-    operator=(Callback<Result, Cookie> &aCallback)
-    {
-        if (&aCallback)
-		{
-			m_pInstance = aCallback.m_pInstance;
-			m_pMethod	= aCallback.m_pMethod;
-		}
-        else
-		{
-			Callback();
-		}
+    return 0;
+  }
 
-        return 0;
+  // Are the class instance and method pointers initialised?
+  bool HasAHandler()
+  {
+    return (m_pInstance && m_pMethod);
+  }
+
+  // Execute the associated class method and return the result
+  Result Fire(Cookie aCookie)
+  {
+    if (HasAHandler())
+    {
+      return (m_pInstance->*m_pMethod)(aCookie);
     }
 
-	// Are the class instance and method pointers initialised?
-    bool HasAHandler()
-    {
-        return (m_pInstance && m_pMethod);
-    }
-
-	// Execute the associated class method and return the result
-    Result Fire(Cookie aCookie)
-    {
-        if (HasAHandler())
-		{
-            return (m_pInstance->*m_pMethod)(aCookie);
-		}
-
-		 // Callback is uninitialized, no handler has been assigned
-        assert(0);
-        return 0;
-    }
+    // Callback is uninitialized, no handler has been assigned
+    assert(0);
+    return 0;
+  }
 
 protected:
-	Callback*	m_pInstance;
-	MethodPtr	m_pMethod;
+  Callback* m_pInstance;
+  MethodPtr m_pMethod;
 };
 
 
@@ -143,14 +143,14 @@ template <class Class, class Result, class Cookie>
 class CallbackHandler : public Callback<Result, Cookie>
 {
 public:
-    typedef Result (Class::*MethodPtr)(Cookie);
+  typedef Result (Class::*MethodPtr)(Cookie);
 
-    CallbackHandler (Class* pInstance, MethodPtr aMethodPtr)
-    {
-		m_pInstance = (Callback<Result,Cookie>*) ((LPVOID) pInstance);
-		// Its dirty but it works!
-		memcpy(&m_pMethod, &aMethodPtr, sizeof(m_pMethod));
-    }
+  CallbackHandler (Class* pInstance, MethodPtr aMethodPtr)
+  {
+    m_pInstance = (Callback<Result, Cookie>*) ((LPVOID) pInstance);
+    // Its dirty but it works!
+    memcpy(&m_pMethod, &aMethodPtr, sizeof(m_pMethod));
+  }
 };
 
 #endif // GUICALLBACK_H

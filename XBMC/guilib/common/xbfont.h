@@ -71,10 +71,10 @@
 //-----------------------------------------------------------------------------
 struct GLYPH_ATTR
 {
-    FLOAT tu1, tv1, tu2, tv2; // Texture coordinates for the image
-    SHORT wOffset;            // Pixel offset for glyph start
-    SHORT wWidth;             // Pixel width of the glyph
-    SHORT wAdvance;           // Pixels to advance after the glyph
+  FLOAT tu1, tv1, tu2, tv2; // Texture coordinates for the image
+  SHORT wOffset;            // Pixel offset for glyph start
+  SHORT wWidth;             // Pixel width of the glyph
+  SHORT wAdvance;           // Pixels to advance after the glyph
 };
 
 
@@ -82,120 +82,120 @@ struct GLYPH_ATTR
 
 //-----------------------------------------------------------------------------
 // Name: class CXBFont
-// Desc: Class to implement texture-based font rendering. A .tga image file of 
+// Desc: Class to implement texture-based font rendering. A .tga image file of
 //       the pre-rendered font is used to create the texture. A .abc file
 //       contains information for spacing the font characters (aka glyphs).
 //-----------------------------------------------------------------------------
 class CXBFont: public ITitleFontRenderer
 {
 public:
-    // Font vertical dimensions
-    FLOAT         m_fFontHeight;
-    FLOAT         m_fFontTopPadding;
-    FLOAT         m_fFontBottomPadding;
-    FLOAT         m_fFontYAdvance;
+  // Font vertical dimensions
+  FLOAT m_fFontHeight;
+  FLOAT m_fFontTopPadding;
+  FLOAT m_fFontBottomPadding;
+  FLOAT m_fFontYAdvance;
 
-    FLOAT         m_fXScaleFactor;
-    FLOAT         m_fYScaleFactor;
-    FLOAT         m_fSlantFactor;
+  FLOAT m_fXScaleFactor;
+  FLOAT m_fYScaleFactor;
+  FLOAT m_fSlantFactor;
 
-    FLOAT         m_fCursorX;
-    FLOAT         m_fCursorY;
+  FLOAT m_fCursorX;
+  FLOAT m_fCursorY;
 
-    // Translator table for supporting unicode ranges
-    WCHAR         m_cMaxGlyph;
-    SHORT*        m_TranslatorTable;
-    BOOL          m_bTranslatorTableWasAllocated;
+  // Translator table for supporting unicode ranges
+  WCHAR m_cMaxGlyph;
+  SHORT* m_TranslatorTable;
+  BOOL m_bTranslatorTableWasAllocated;
 
-    // Glyph data for the font
-    DWORD         m_dwNumGlyphs;
-    GLYPH_ATTR*   m_Glyphs;
+  // Glyph data for the font
+  DWORD m_dwNumGlyphs;
+  GLYPH_ATTR* m_Glyphs;
 
-    // Saved state for rendering (if not using a pure device)
-    BOOL          m_bSaveState;
-    DWORD         m_dwSavedState[16];
+  // Saved state for rendering (if not using a pure device)
+  BOOL m_bSaveState;
+  DWORD m_dwSavedState[16];
 
-    // D3D rendering objects
-    CXBPackedResource m_xprResource;
-    D3DTexture*       m_pFontTexture;
-    static DWORD      m_dwFontVertexShader;
-    static DWORD      m_dwFontPixelShader;
-    DWORD             m_dwNestedBeginCount;
+  // D3D rendering objects
+  CXBPackedResource m_xprResource;
+  D3DTexture* m_pFontTexture;
+  static DWORD m_dwFontVertexShader;
+  static DWORD m_dwFontPixelShader;
+  DWORD m_dwNestedBeginCount;
 
-    // ITitleFontRenderer
-    DWORD m_dwCurrentColor;
+  // ITitleFontRenderer
+  DWORD m_dwCurrentColor;
 
-    // Internal creation calls
-    HRESULT     CreateShaders();
-    
-    // Access functions for debugging purposes
-    D3DTexture* GetTexture() const    { return m_pFontTexture; }
-    FLOAT       GetFontHeight() const { return m_fFontYAdvance; }
+  // Internal creation calls
+  HRESULT CreateShaders();
+
+  // Access functions for debugging purposes
+  D3DTexture* GetTexture() const { return m_pFontTexture; }
+  FLOAT GetFontHeight() const { return m_fFontYAdvance; }
 
 public:
-    // Constructor/destructor
-    CXBFont();
-    ~CXBFont();
+  // Constructor/destructor
+  CXBFont();
+  ~CXBFont();
 
-    // Functions to create and destroy the internal objects
-    HRESULT Create( const CHAR* strFontResourceFileName, DWORD dwResourceOffset=0UL );
-    HRESULT Create( D3DTexture* pFontTexture, VOID* pFontData );
-    HRESULT Destroy();
+  // Functions to create and destroy the internal objects
+  HRESULT Create( const CHAR* strFontResourceFileName, DWORD dwResourceOffset = 0UL );
+  HRESULT Create( D3DTexture* pFontTexture, VOID* pFontData );
+  HRESULT Destroy();
 
-    // Returns the dimensions of a text CStdString
-    HRESULT GetTextExtent( const WCHAR* strText, FLOAT* pWidth, 
-                           FLOAT* pHeight, BOOL bFirstLineOnly=FALSE ) const;
-    HRESULT GetTextExtent( const WCHAR* strText, DWORD cchText, FLOAT* pWidth, 
-                           FLOAT* pHeight, BOOL bFirstLineOnly=FALSE ) const;
-    FLOAT   GetTextWidth( const WCHAR* strText ) const;
+  // Returns the dimensions of a text CStdString
+  HRESULT GetTextExtent( const WCHAR* strText, FLOAT* pWidth,
+                         FLOAT* pHeight, BOOL bFirstLineOnly = FALSE ) const;
+  HRESULT GetTextExtent( const WCHAR* strText, DWORD cchText, FLOAT* pWidth,
+                         FLOAT* pHeight, BOOL bFirstLineOnly = FALSE ) const;
+  FLOAT GetTextWidth( const WCHAR* strText ) const;
 
-    VOID    SetCursorPosition( FLOAT fCursorX, FLOAT fCursorY );
-    VOID    SetScaleFactors( FLOAT fXScaleFactor, FLOAT fYScaleFactor );
-    VOID    SetSlantFactor( FLOAT fSlantFactor );
+  VOID SetCursorPosition( FLOAT fCursorX, FLOAT fCursorY );
+  VOID SetScaleFactors( FLOAT fXScaleFactor, FLOAT fYScaleFactor );
+  VOID SetSlantFactor( FLOAT fSlantFactor );
 
-    // Function to create a texture containing rendered text
-    D3DTexture* CreateTexture( const WCHAR* strText, 
-                               D3DCOLOR dwBackgroundColor = 0x00000000,
-                               D3DCOLOR dwTextColor = 0xffffffff,
-                               D3DFORMAT d3dFormat = D3DFMT_LIN_A8R8G8B8 );
+  // Function to create a texture containing rendered text
+  D3DTexture* CreateTexture( const WCHAR* strText,
+                             D3DCOLOR dwBackgroundColor = 0x00000000,
+                             D3DCOLOR dwTextColor = 0xffffffff,
+                             D3DFORMAT d3dFormat = D3DFMT_LIN_A8R8G8B8 );
 
-    // Public calls to render text. Callers can simply call DrawText(), but for
-    // performance, they should batch multiple calls together, bracketed by 
-    // calls to Begin() and End().
-    HRESULT Begin();
-    virtual HRESULT DrawText( DWORD dwColor, const WCHAR* strText, DWORD dwFlags=0L,
-                      FLOAT fMaxPixelWidth = 0.0f );
-    virtual HRESULT DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, 
-                      const WCHAR* strText, DWORD dwFlags=0L,
-                      FLOAT fMaxPixelWidth = 0.0f );
-    virtual HRESULT DrawTextEx( FLOAT sx, FLOAT sy, DWORD dwColor, 
-                      const WCHAR* strText, DWORD cchText, DWORD dwFlags=0L,
-                      FLOAT fMaxPixelWidth = 0.0f );
-	virtual HRESULT DrawColourText( FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
-                      const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags = 0L,
-                      FLOAT fMaxPixelWidth = 0.0f );
-		
-    HRESULT End();
+  // Public calls to render text. Callers can simply call DrawText(), but for
+  // performance, they should batch multiple calls together, bracketed by
+  // calls to Begin() and End().
+  HRESULT Begin();
+  virtual HRESULT DrawText( DWORD dwColor, const WCHAR* strText, DWORD dwFlags = 0L,
+                            FLOAT fMaxPixelWidth = 0.0f );
+  virtual HRESULT DrawText( FLOAT sx, FLOAT sy, DWORD dwColor,
+                            const WCHAR* strText, DWORD dwFlags = 0L,
+                            FLOAT fMaxPixelWidth = 0.0f );
+  virtual HRESULT DrawTextEx( FLOAT sx, FLOAT sy, DWORD dwColor,
+                              const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0L,
+                              FLOAT fMaxPixelWidth = 0.0f );
+  virtual HRESULT DrawColourText( FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
+                                  const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags = 0L,
+                                  FLOAT fMaxPixelWidth = 0.0f );
 
-    // ITitleFontRenderer methods
-    STDMETHOD_(ULONG, Release)(THIS)  { return 0; }
+  HRESULT End();
 
-    STDMETHOD(SetHeight)(DWORD Height);
+  // ITitleFontRenderer methods
+  STDMETHOD_(ULONG, Release)(THIS) { return 0; }
 
-    STDMETHOD(SetColor)(D3DCOLOR Color);
- 
-    STDMETHOD(DrawText)(
-        IDirect3DSurface8* pSurface,
-        LPCWSTR pText,
-        DWORD CharCount,
-        DWORD X,
-        DWORD Y);
+  STDMETHOD(SetHeight)(DWORD Height);
 
-    STDMETHOD(GetTextSize)(
-        LPCWSTR pText,
-        DWORD CharCount,
-        DWORD* pWidth,
-        DWORD* pHeight);
+  STDMETHOD(SetColor)(D3DCOLOR Color);
+
+  STDMETHOD(DrawText)(
+    IDirect3DSurface8* pSurface,
+    LPCWSTR pText,
+    DWORD CharCount,
+    DWORD X,
+    DWORD Y);
+
+  STDMETHOD(GetTextSize)(
+    LPCWSTR pText,
+    DWORD CharCount,
+    DWORD* pWidth,
+    DWORD* pHeight);
 };
 
 

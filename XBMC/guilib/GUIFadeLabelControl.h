@@ -1,7 +1,7 @@
 /*!
-	\file GUIFadeLabelControl.h
-	\brief 
-	*/
+\file GUIFadeLabelControl.h
+\brief 
+*/
 
 #ifndef GUILIB_GUIFADELABELCONTROL_H
 #define GUILIB_GUIFADELABELCONTROL_H
@@ -11,34 +11,34 @@
 #include "GUIControl.h"
 
 /*!
-	\ingroup controls
-	\brief 
-	*/
-class CGUIFadeLabelControl :  public CGUIControl
+ \ingroup controls
+ \brief 
+ */
+class CGUIFadeLabelControl : public CGUIControl
 {
 public:
-  CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, DWORD dwTextColor,DWORD dwTextAlign);
+  CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, DWORD dwTextColor, DWORD dwTextAlign);
   virtual ~CGUIFadeLabelControl(void);
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
-	DWORD							GetTextColor() const { return m_dwTextColor;};
-	DWORD							GetAlignment() const { return m_dwdwTextAlign;};
-	const char *			GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
+  DWORD GetTextColor() const { return m_dwTextColor;};
+  DWORD GetAlignment() const { return m_dwdwTextAlign;};
+  const char * GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
 
 protected:
-	bool				 RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD dwTextColor, WCHAR* wszText,bool bScroll );
-  CGUIFont*								m_pFont;
-  vector<wstring>         m_vecLabels;
-  DWORD                   m_dwTextColor;
-  DWORD                   m_dwdwTextAlign;
-	int											m_iCurrentLabel;
-	int 										scroll_pos;
-	int 										iScrollX;
-	int 										iLastItem;
-	int 										iFrames;
-	int 										iStartFrame;
-	bool										m_bFadeIn;
-	int											m_iCurrentFrame;
+  bool RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll );
+  CGUIFont* m_pFont;
+  vector<wstring> m_vecLabels;
+  DWORD m_dwTextColor;
+  DWORD m_dwdwTextAlign;
+  int m_iCurrentLabel;
+  int scroll_pos;
+  int iScrollX;
+  int iLastItem;
+  int iFrames;
+  int iStartFrame;
+  bool m_bFadeIn;
+  int m_iCurrentFrame;
 };
 #endif

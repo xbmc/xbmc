@@ -1,7 +1,7 @@
 /*!
-	\file GUISelectButtonControl.h
-	\brief 
-	*/
+\file GUISelectButtonControl.h
+\brief 
+*/
 
 #ifndef GUILIB_GUIWINDOWSELECTCONTROL_H
 #define GUILIB_GUIWINDOWSELECTCONTROL_H
@@ -10,31 +10,31 @@
 #include "GUIButtonControl.h"
 
 /*!
-	\ingroup controls
-	\brief Button with multi selection choice.
-
-	Behaves like a normal button control, but when pressing,
-	it can show multiple strings. The user can choose one by
-	moving left or right. \n
-	\n
-	Messages the button reactes on: \n
-
-	- GUI_MSG_LABEL_ADD \n
-	Add a label to the control. Use CGUIMessage::SetLabel
-	to set the label text.
-	- GUI_MSG_LABEL_RESET \n
-	Remove all labels from the control.
-	- GUI_MSG_ITEM_SELECTED \n
-	After sending this message the CGUIMessage::GetParam1
-	contains the selected label as an integer.
-	\note The order of the items depends on the order they have been added to 
-	the control using GUI_MSG_LABEL_ADD.
-	- GUI_MSG_ITEM_SELECT \n
-	Send this message with CGUIMessage::SetParam1() set to the label
-	to be selected. \n
-	\n
-	Example entry to define a select button in a window or as reference control: \n
-	\verbatim
+ \ingroup controls
+ \brief Button with multi selection choice.
+ 
+ Behaves like a normal button control, but when pressing,
+ it can show multiple strings. The user can choose one by
+ moving left or right. \n
+ \n
+ Messages the button reactes on: \n
+ 
+ - GUI_MSG_LABEL_ADD \n
+ Add a label to the control. Use CGUIMessage::SetLabel
+ to set the label text.
+ - GUI_MSG_LABEL_RESET \n
+ Remove all labels from the control.
+ - GUI_MSG_ITEM_SELECTED \n
+ After sending this message the CGUIMessage::GetParam1
+ contains the selected label as an integer.
+ \note The order of the items depends on the order they have been added to 
+ the control using GUI_MSG_LABEL_ADD.
+ - GUI_MSG_ITEM_SELECT \n
+ Send this message with CGUIMessage::SetParam1() set to the label
+ to be selected. \n
+ \n
+ Example entry to define a select button in a window or as reference control: \n
+ \verbatim
     <control>
       <description>default select button</description
       <type>selectbutton</type>
@@ -59,63 +59,63 @@
       <onup>3</onup>
       <ondown>7</ondown>
     </control>
-		\endverbatim
-
-	\sa CGUIMessage
-	*/
+  \endverbatim
+ 
+ \sa CGUIMessage
+ */
 class CGUISelectButtonControl : public CGUIButtonControl
 {
 public:
-  CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId, 
-													int iPosX, int iPosY, 
-													DWORD dwWidth, DWORD dwHeight, 
-													const CStdString& strButtonFocus, const CStdString& strButton,
-													DWORD dwTextOffsetX,
-													DWORD dwTextOffsetY,
-													DWORD dwTextAlign,
-													const CStdString& strSelectBackground,
-													const CStdString& strSelectArrowLeft, const CStdString& strSelectArrowLeftFocus,
-													const CStdString& strSelectArrowRight, const CStdString& strSelectArrowRightFocus);
+  CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId,
+                          int iPosX, int iPosY,
+                          DWORD dwWidth, DWORD dwHeight,
+                          const CStdString& strButtonFocus, const CStdString& strButton,
+                          DWORD dwTextOffsetX,
+                          DWORD dwTextOffsetY,
+                          DWORD dwTextAlign,
+                          const CStdString& strSelectBackground,
+                          const CStdString& strSelectArrowLeft, const CStdString& strSelectArrowLeftFocus,
+                          const CStdString& strSelectArrowRight, const CStdString& strSelectArrowRightFocus);
   virtual ~CGUISelectButtonControl(void);
-  virtual void						Render();
-  virtual void						OnAction(const CAction &action) ;
-  virtual void						OnLeft();
-  virtual void						OnRight();
-  virtual bool						OnMessage(CGUIMessage& message);
-  virtual void						OnMouseOver();
-  virtual void						OnMouseClick(DWORD dwButton);
-  virtual void						OnMouseWheel();
+  virtual void Render();
+  virtual void OnAction(const CAction &action) ;
+  virtual void OnLeft();
+  virtual void OnRight();
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual void OnMouseOver();
+  virtual void OnMouseClick(DWORD dwButton);
+  virtual void OnMouseWheel();
 
-	virtual void PreAllocResources();
-  virtual void						AllocResources();
-  virtual void						FreeResources();
-	///	\brief Return the texture of the left arrow that is shown, when the control is in select mode
-	const CStdString				GetTextureLeft() const { return m_imgLeft.GetFileName();};
-	///	\brief Return the texture of the left arrow focused that is shown, when the control is in select mode
-	const CStdString				GetTextureLeftFocus() const { return m_imgLeftFocus.GetFileName();};
-	///	\brief Return the texture of the right arrow that is shown, when the control is in select mode
-	const CStdString				GetTextureRight() const { return m_imgRight.GetFileName();};
-	///	\brief Return the texture of the right arrow focused that is shown, when the control is in select mode
-	const CStdString				GetTextureRightFocus() const { return m_imgRightFocus.GetFileName();};
-	///	\brief Return the texture of the background that is shown, when the control is in select mode
-	const CStdString				GetTextureBackground() const { return m_imgBackground.GetFileName();};
+  virtual void PreAllocResources();
+  virtual void AllocResources();
+  virtual void FreeResources();
+  /// \brief Return the texture of the left arrow that is shown, when the control is in select mode
+  const CStdString GetTextureLeft() const { return m_imgLeft.GetFileName();};
+  /// \brief Return the texture of the left arrow focused that is shown, when the control is in select mode
+  const CStdString GetTextureLeftFocus() const { return m_imgLeftFocus.GetFileName();};
+  /// \brief Return the texture of the right arrow that is shown, when the control is in select mode
+  const CStdString GetTextureRight() const { return m_imgRight.GetFileName();};
+  /// \brief Return the texture of the right arrow focused that is shown, when the control is in select mode
+  const CStdString GetTextureRightFocus() const { return m_imgRightFocus.GetFileName();};
+  /// \brief Return the texture of the background that is shown, when the control is in select mode
+  const CStdString GetTextureBackground() const { return m_imgBackground.GetFileName();};
 
 protected:
-  virtual void						Update();
-	bool										m_bShowSelect;
-	CGUIImage								m_imgBackground;
-	CGUIImage								m_imgLeft;
-	CGUIImage								m_imgLeftFocus;
-	CGUIImage								m_imgRight;
-	CGUIImage								m_imgRightFocus;
-	vector<wstring>					m_vecItems;
-	int											m_iCurrentItem;
-	int											m_iDefaultItem;
-	int											m_iStartFrame;
-	bool										m_bLeftSelected;
-	bool										m_bRightSelected;
-	bool										m_bMovedLeft;
-	bool										m_bMovedRight;
-	DWORD										m_dwTicks;
+  virtual void Update();
+  bool m_bShowSelect;
+  CGUIImage m_imgBackground;
+  CGUIImage m_imgLeft;
+  CGUIImage m_imgLeftFocus;
+  CGUIImage m_imgRight;
+  CGUIImage m_imgRightFocus;
+  vector<wstring> m_vecItems;
+  int m_iCurrentItem;
+  int m_iDefaultItem;
+  int m_iStartFrame;
+  bool m_bLeftSelected;
+  bool m_bRightSelected;
+  bool m_bMovedLeft;
+  bool m_bMovedRight;
+  DWORD m_dwTicks;
 };
 #endif

@@ -1,7 +1,7 @@
 /*!
-	\file AnimatedGif.h
-	\brief 
-	*/
+\file AnimatedGif.h
+\brief 
+*/
 
 
 // ****************************************************************************
@@ -38,49 +38,53 @@
 
 #pragma pack(1)
 
-struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
-#define ALIGN sizeof(int)							  ///< Windows GDI expects all int-aligned
+struct COLOR {unsigned char b, g, r, x;}
+; // Windows GDI expects 4bytes per color
+#define ALIGN sizeof(int)         ///< Windows GDI expects all int-aligned
 
 /*!
-	\ingroup textures
-	\brief 
-	*/
-typedef struct tagGUIRGBQUAD 
+ \ingroup textures
+ \brief 
+ */
+typedef struct tagGUIRGBQUAD
 {
-        BYTE    rgbBlue;
-        BYTE    rgbGreen;
-        BYTE    rgbRed;
-        BYTE    rgbReserved;
-} GUIRGBQUAD;
+  BYTE rgbBlue;
+  BYTE rgbGreen;
+  BYTE rgbRed;
+  BYTE rgbReserved;
+}
+GUIRGBQUAD;
 
 /*!
-	\ingroup textures
-	\brief 
-	*/
+ \ingroup textures
+ \brief 
+ */
 typedef struct tagGUIBITMAPINFOHEADER
 {
-        DWORD      biSize;
-        LONG       biWidth;
-        LONG       biHeight;
-        WORD       biPlanes;
-        WORD       biBitCount;
-        DWORD      biCompression;
-        DWORD      biSizeImage;
-        LONG       biXPelsPerMeter;
-        LONG       biYPelsPerMeter;
-        DWORD      biClrUsed;
-        DWORD      biClrImportant;
-} GUIBITMAPINFOHEADER;
+  DWORD biSize;
+  LONG biWidth;
+  LONG biHeight;
+  WORD biPlanes;
+  WORD biBitCount;
+  DWORD biCompression;
+  DWORD biSizeImage;
+  LONG biXPelsPerMeter;
+  LONG biYPelsPerMeter;
+  DWORD biClrUsed;
+  DWORD biClrImportant;
+}
+GUIBITMAPINFOHEADER;
 
 /*!
-	\ingroup textures
-	\brief 
-	*/
-typedef struct tagBITMAPINFO 
+ \ingroup textures
+ \brief 
+ */
+typedef struct tagBITMAPINFO
 {
-    GUIBITMAPINFOHEADER    bmiHeader;
-    GUIRGBQUAD						 bmiColors[1];
-} GUIBITMAPINFO;
+  GUIBITMAPINFOHEADER bmiHeader;
+  GUIRGBQUAD bmiColors[1];
+}
+GUIBITMAPINFO;
 
 
 // ****************************************************************************
@@ -88,44 +92,44 @@ typedef struct tagBITMAPINFO
 // *    Storage class for single images                                       *
 // ****************************************************************************
 /*!
-	\ingroup textures
-	\brief Storage class for single images
-	*/
-class CAnimatedGif 
+ \ingroup textures
+ \brief Storage class for single images
+ */
+class CAnimatedGif
 {
 public:
-	CAnimatedGif();
-	virtual ~CAnimatedGif();
+  CAnimatedGif();
+  virtual ~CAnimatedGif();
 
-	// standard members:
-	int						Width, Height;			///< Dimensions in pixels
-	int						BPP;								// Bits Per Pixel	
-	char*					Raster;							///< Bits of Raster Data (Byte Aligned)
-	COLOR*				Palette;						///< Color Map
-	int						BytesPerRow;				///< Width (in bytes) including alignment!
-	int						Transparent;				///< Index of Transparent color (-1 for none)
+  // standard members:
+  int Width, Height;   ///< Dimensions in pixels
+  int BPP;        // Bits Per Pixel
+  char* Raster;       ///< Bits of Raster Data (Byte Aligned)
+  COLOR* Palette;      ///< Color Map
+  int BytesPerRow;    ///< Width (in bytes) including alignment!
+  int Transparent;    ///< Index of Transparent color (-1 for none)
 
-		// Extra members for animations:
-  int           nLoops;		
-	int						xPos, yPos;					///< Relative Position
-	int						Delay;							///< Delay after image in 1/1000 seconds.
-	int						Transparency;				///< Animation Transparency.
-	// Windows GDI specific:
-	GUIBITMAPINFO*		pbmi;								///< BITMAPINFO structure
+  // Extra members for animations:
+  int nLoops;
+  int xPos, yPos;     ///< Relative Position
+  int Delay;       ///< Delay after image in 1/1000 seconds.
+  int Transparency;    ///< Animation Transparency.
+  // Windows GDI specific:
+  GUIBITMAPINFO* pbmi;        ///< BITMAPINFO structure
 
-	// constructor and destructor:
+  // constructor and destructor:
 
-	// operator= (object copy)
-	CAnimatedGif& operator= (CAnimatedGif& rhs);
+  // operator= (object copy)
+  CAnimatedGif& operator= (CAnimatedGif& rhs);
 
-	/// \brief Image initializer (allocates space for raster and palette):
-	void					Init (int iWidth, int iHeight, int iBPP, int iLoops=0);
+  /// \brief Image initializer (allocates space for raster and palette):
+  void Init (int iWidth, int iHeight, int iBPP, int iLoops = 0);
 
-	inline char&	Pixel (int x, int y) {return Raster[y*BytesPerRow+x];}
+  inline char& Pixel (int x, int y) { return Raster[y*BytesPerRow + x];}
 
 #ifndef _XBOX
-	// Windows GDI Specific function to paint the image on a DC:
-	int						GDIPaint (HDC hdc, int xDest, int yDest);
+  // Windows GDI Specific function to paint the image on a DC:
+  int GDIPaint (HDC hdc, int xDest, int yDest);
 #endif
 
 };
@@ -135,31 +139,31 @@ public:
 // *    Storage class for sets of images                                      *
 // ****************************************************************************
 /*!
-	\ingroup textures
-	\brief Storage class for sets of images
-	*/
-class CAnimatedGifSet 
+ \ingroup textures
+ \brief Storage class for sets of images
+ */
+class CAnimatedGifSet
 {
 public:
 
-	// constructor and destructor:
-	CAnimatedGifSet();
-	virtual ~CAnimatedGifSet();
+  // constructor and destructor:
+  CAnimatedGifSet();
+  virtual ~CAnimatedGifSet();
 
-	int							FrameWidth, FrameHeight;	///< Dimensions of ImageSet in pixels.
-	int							nLoops;										// Number of Loops (0 = infinite)
-																						
-	vector<CAnimatedGif*>	m_vecimg;								///< Images' Vector.
+  int FrameWidth, FrameHeight; ///< Dimensions of ImageSet in pixels.
+  int nLoops;          // Number of Loops (0 = infinite)
 
-	void						AddImage (CAnimatedGif*);			///< Append new image to vector (push_back)
+  vector<CAnimatedGif*> m_vecimg;        ///< Images' Vector.
 
-	int							GetImageCount() const;
-	// File Formats:
-	int							LoadGIF (const char* szFile);
+  void AddImage (CAnimatedGif*);   ///< Append new image to vector (push_back)
 
-	void						Release();
+  int GetImageCount() const;
+  // File Formats:
+  int LoadGIF (const char* szFile);
+
+  void Release();
 protected:
-	unsigned char		getbyte(FILE *fd);
+  unsigned char getbyte(FILE *fd);
 };
 
 #pragma pack()
