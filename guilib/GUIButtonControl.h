@@ -58,13 +58,16 @@ public:
 	const wstring		GetLabel() const { return m_strLabel; };
 	DWORD				GetHyperLink() const { return m_lHyperLinkWindowID;};
 	const CStdString&	GetExecuteAction() const { return m_strExecuteAction; };
-	VOID				SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
+	void				SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
+	void				Flicker(bool bFlicker = TRUE);
 
 protected:
 	virtual void		Update() ;
 
 	CGUIImage			m_imgFocus;
-	CGUIImage			m_imgNoFocus;  
+	CGUIImage			m_imgNoFocus;
+	DWORD				m_dwFocusCounter;
+	DWORD				m_dwFlickerCounter;
 	DWORD				m_dwFrameCounter;
 	DWORD				m_dwTextOffsetX;
 	DWORD				m_dwTextOffsetY;
