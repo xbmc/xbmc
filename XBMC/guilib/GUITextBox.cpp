@@ -36,6 +36,7 @@ void CGUITextBox::Render()
   CGUIControl::Render();
   int iPosY=m_iPosY;
 	
+  m_pFont->Begin();
   for (int i=0; i < m_iItemsPerPage; i++)
   {
 		int iPosX=m_iPosX;
@@ -64,6 +65,7 @@ void CGUITextBox::Render()
       iPosY += (DWORD)m_iItemHeight;
     }
   }
+  m_pFont->End();
 	m_upDown.Render();
 }
 
