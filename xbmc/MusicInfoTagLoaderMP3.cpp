@@ -158,9 +158,23 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 				size_t nBufSize=0;
 				const BYTE* pPic=ID3_GetPictureBufferOfPicType(&id3tag, nPicTyp, &nBufSize );
 
-				CPicture pic;
-				if (pic.CreateAlbumThumbnailFromMemory(pPic, nBufSize, strExtension, strCoverArt))
-					CUtil::ThumbCacheAdd(strCoverArt, true);
+				if (pPic!=NULL)
+				{
+					CPicture pic;
+					if (pic.CreateAlbumThumbnailFromMemory(pPic, nBufSize, strExtension, strCoverArt))
+					{
+						CUtil::ThumbCacheAdd(strCoverArt, true);
+					}
+					else
+					{
+						CUtil::ThumbCacheAdd(strCoverArt, false);
+						CLog::Log("Tag loader mp3: Unable to create album art for %s", tag.GetURL().c_str());
+					}
+				}
+				else
+				{
+					CLog::Log("Tag loader mp3: Albumart is found in file %s, but no picture data", tag.GetURL().c_str());
+				}
 			}
 		}
 		else
@@ -201,7 +215,8 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
 						bResult = ReadTag( myTag, tag );
 					}
 				}
-				tag.SetDuration(ReadDuration(file, myTag));
+				if (bResult)
+					tag.SetDuration(ReadDuration(file, myTag));
 			}
 			file.Close();
 		}
