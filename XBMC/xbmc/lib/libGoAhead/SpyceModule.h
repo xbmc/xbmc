@@ -10,7 +10,7 @@ extern "C" {
 	{
 		static bool spyInitialized = false;
 		static PyThreadState* spyThreadState = NULL;
-
+		static PyObject* spyFunc;
 		int spyceOpen();
 		void spyceClose();
 		int spyceRequest(webs_t wp, char_t *lpath);

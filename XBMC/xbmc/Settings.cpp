@@ -48,6 +48,7 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_strTimeServer,"");
 	g_stSettings.m_bTimeServerEnabled=false;
 	g_stSettings.m_bFTPServerEnabled=false;
+	g_stSettings.m_bHTTPServerEnabled=false;
 	g_stSettings.m_iHTTPProxyPort=0;
 	strcpy(g_stSettings.m_szHTTPProxy,"");
   strcpy(g_stSettings.szDefaultSkin,"MediaCenter");
