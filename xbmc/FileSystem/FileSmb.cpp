@@ -109,9 +109,8 @@ __int64 CFileSMB::GetLength()
 	return m_fileSize;
 }
 
-bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char *strHostName, const char *strFileName,int iport, bool bBinary)
+bool CFileSMB::Open(const CURL& url, bool bBinary)
 {
-	char szFileName[1024];
 	m_bBinary = bBinary;
 
 	// since the syntax of the new smb is a little different, the workgroup is now specified
@@ -121,23 +120,21 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 	// should be fixed.
 
 	// we can't open files like smb://file.f or smb://server/file.f
-	if (!strchr(strFileName, '/'))
+	
+	if (!url.GetFileName().Find('/'))
 	{
 		m_fd = -1;
 		return false;
 	}
-
-	if (strPassword && strUserName)
-		sprintf(szFileName,"smb://%s:%s@%s/%s", strUserName, strPassword, strHostName, strFileName);
-	else
-		sprintf(szFileName,"smb://%s/%s", strHostName, strFileName);
-
-	Close();
+	CStdString strFileName;
+	url.GetURL(strFileName);
 
 	// convert from string to UTF8
 	char strUtfFileName[1024];
-	int strLen = convert_string(CH_DOS, CH_UTF8, szFileName, (size_t)strlen(szFileName), strUtfFileName, 1024, false);
+	int strLen = convert_string(CH_DOS, CH_UTF8, strFileName.c_str(), (size_t)strFileName.length(), strUtfFileName, 1024, false);
 	strUtfFileName[strLen] = 0;
+
+	Close();
 
 	smb.Lock();
 
@@ -165,7 +162,7 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 		// write error to logfile
 		int nt_error = map_nt_error_from_unix(errno);
 		CLog::Log("FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
-				szFileName, errno, nt_error, get_friendly_nt_error_msg(nt_error));
+				strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
 		return false;
 	}
 	UINT64 ret = smbc_lseek(m_fd, 0, SEEK_END);
@@ -192,30 +189,25 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 	return true;
 }
 
-bool CFileSMB::Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport)
+bool CFileSMB::Exists(const CURL& url)
 {
-	char szFileName[1024];
-
-	if (!strchr(strFileName, '/'))
+	if (url.GetFileName().Find('/')<0)
 	{
 		m_fd = -1;
 		return false;
 	}
-
-	if (strPassword && strUserName)
-		sprintf(szFileName,"smb://%s:%s@%s/%s", strUserName, strPassword, strHostName, strFileName);
-	else
-		sprintf(szFileName,"smb://%s/%s", strHostName, strFileName);
+	CStdString strFileName;
+	url.GetURL(strFileName);
 
 	// convert from string to UTF8
 	char strUtfFileName[1024];
-	int strLen = convert_string(CH_DOS, CH_UTF8, szFileName, (size_t)strlen(szFileName), strUtfFileName, 1024, false);
+	int strLen = convert_string(CH_DOS, CH_UTF8, strFileName.c_str(), (size_t)strFileName.length(), strUtfFileName, 1024, false);
 	strUtfFileName[strLen] = 0;
 
 	struct __stat64 info;
 
 	smb.Lock();
-	int i = smbc_stat(szFileName, &info);
+	int i = smbc_stat(strUtfFileName, &info);
 	smb.Unlock();
 	
 	if (i<0) {
@@ -225,22 +217,23 @@ bool CFileSMB::Exists(const char* strUserName, const char* strPassword,const cha
 	return true;
 }
 
-int CFileSMB::Stat(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport, struct __stat64* buffer)
+int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 {
-	char szFileName[1024];
-
-	if (strPassword && strUserName)
-		sprintf(szFileName,"smb://%s:%s@%s/%s", strUserName, strPassword, strHostName, strFileName);
-	else
-		sprintf(szFileName,"smb://%s/%s", strHostName, strFileName);
+	if (!url.GetFileName().Find('/'))
+	{
+		m_fd = -1;
+		return false;
+	}
+	CStdString strFileName;
+	url.GetURL(strFileName);
 
 	// convert from string to UTF8
 	char strUtfFileName[1024];
-	int strLen = convert_string(CH_DOS, CH_UTF8, szFileName, (size_t)strlen(szFileName), strUtfFileName, 1024, false);
+	int strLen = convert_string(CH_DOS, CH_UTF8, strFileName.c_str(), (size_t)strFileName.length(), strUtfFileName, 1024, false);
 	strUtfFileName[strLen] = 0;
 
 	smb.Lock();
-	int i = smbc_stat(szFileName, buffer);
+	int i = smbc_stat(strUtfFileName, buffer);
 	smb.Unlock();
 	return i;
 }

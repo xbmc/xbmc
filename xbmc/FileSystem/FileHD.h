@@ -23,9 +23,9 @@ namespace XFILE
 		virtual ~CFileHD();
 		virtual __int64			  GetPosition();
 		virtual __int64			  GetLength();
-		virtual bool					Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary=true);
-		virtual bool					Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport);
-		virtual int						Stat(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport, struct __stat64* buffer);
+		virtual bool					Open(const CURL& url, bool bBinary=true);
+		virtual bool					Exists(const CURL& url);
+		virtual int						Stat(const CURL& url, struct __stat64* buffer);
 		virtual unsigned int	Read(void* lpBuf, __int64 uiBufSize);
 		virtual int						Write(const void* lpBuf, __int64 uiBufSize);
 		virtual bool					ReadString(char *szLine, int iLineLength);

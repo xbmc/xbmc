@@ -31,7 +31,7 @@ CFileRTV::~CFileRTV()
 }
 
 //*********************************************************************************************
-bool CFileRTV::Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary)
+bool CFileRTV::Open(const char* strHostName, const char* strFileName,int iport, bool bBinary)
 {
 	// Close any existing connection
 	if (m_bOpened) Close();
@@ -72,6 +72,12 @@ bool CFileRTV::Open(const char* strUserName, const char* strPassword,const char*
   
 	return true;
 }
+
+bool CFileRTV::Open(const CURL& url, bool bBinary)
+{
+	return Open(url.GetHostName(), url.GetFileName(),url.GetPort(), bBinary);
+}
+
 
 //*********************************************************************************************
 unsigned int CFileRTV::Read(void *lpBuf, __int64 uiBufSize)
@@ -133,7 +139,7 @@ __int64 CFileRTV::Seek(__int64 iFilePosition, int iWhence)
 	// If the new file position is different from the old, then we must SEEK there!
 	if (m_filePos != newpos) {
 		m_filePos = newpos;
-		Open(NULL, NULL, m_hostName, m_fileName, m_iport, true);
+		Open(m_hostName, m_fileName, m_iport, true);
 	}
 	
 	// OLD CODE

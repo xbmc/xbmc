@@ -139,7 +139,7 @@ __int64 CFileShoutcast::GetLength()
 }
 
 
-bool CFileShoutcast::Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary)
+bool CFileShoutcast::Open(const CURL& url, bool bBinary)
 {
 	m_dwLastTime =timeGetTime();
 	int ret;
@@ -158,16 +158,16 @@ bool CFileShoutcast::Open(const char* strUserName, const char* strPassword,const
 	strcpy(m_opt.output_directory, "./");
 	m_opt.proxyurl[0] = (char)NULL;
 	char szURL[1024];
-	if ( strlen(strUserName)>0 && strlen(strPassword)>0 )
+	if ( strlen(url.GetUserName())>0 && strlen(url.GetPassWord())>0 )
 	{
-		sprintf(szURL,"http://%s:%s@%s:%i/%s",strUserName,strPassword, strHostName,iport,strFileName);
+		sprintf(szURL,"http://%s:%s@%s:%i/%s",url.GetUserName(),url.GetPassWord(), url.GetHostName(),url.GetPort(),url.GetFileName);
 	}
 	else
 	{
-		sprintf(szURL,"http://%s:%i/%s", strHostName,iport,strFileName);
+		sprintf(szURL,"http://%s:%i/%s", url.GetHostName(),url.GetPort(),url.GetFileName());
 	}
 	strncpy(m_opt.url, szURL, MAX_URL_LEN);
-	sprintf(m_opt.useragent, "x%s",strFileName);
+	sprintf(m_opt.useragent, "x%s",url.GetFileName());
 	if (dlgProgress)
   {
     dlgProgress->SetHeading(260);

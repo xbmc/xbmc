@@ -36,9 +36,9 @@ CFileSndtrk::~CFileSndtrk()
 
 }
 //*********************************************************************************************
-bool CFileSndtrk::Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary)
+bool CFileSndtrk::Open(const CURL& url, bool bBinary)
 {
-	m_hFile.attach( CreateFile(strFileName,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,0,NULL));
+	m_hFile.attach( CreateFile(url.GetFileName(),GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,0,NULL));
 	if ( !m_hFile.isValid() ) return false;
 
 	m_i64FilePos=0;

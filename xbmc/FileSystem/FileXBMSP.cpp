@@ -62,8 +62,14 @@ CFileXBMSP::~CFileXBMSP()
 }
 
 //*********************************************************************************************
-bool CFileXBMSP::Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary)
+bool CFileXBMSP::Open(const CURL& url, bool bBinary)
 {
+	const char* strUserName = url.GetUserName().c_str();
+	const char* strPassword = url.GetPassWord().c_str();
+	const char* strHostName = url.GetHostName().c_str();
+	const char* strFileName = url.GetFileName().c_str();
+	int iport = url.GetPort();
+
 	char *fn = NULL, *tmp1, *tmp2, *info;
 
 	if (m_bOpened) Close();
@@ -108,6 +114,7 @@ bool CFileXBMSP::Open(const char* strUserName, const char* strPassword,const cha
     
 		return false;
 	}
+	free(fn);
   CStdString strFile=CUtil::GetFileName(strFileName);
   
   char szPath[1024];
@@ -212,17 +219,17 @@ bool CFileXBMSP::Open(const char* strUserName, const char* strPassword,const cha
 	return true;
 }
 
-bool CFileXBMSP::Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport)
+bool CFileXBMSP::Exists(const CURL& url)
 {
 	bool exist(true);
-	exist=CFileXBMSP::Open(strUserName, strPassword, strHostName, strFileName, iport, true);
+	exist=CFileXBMSP::Open(url, true);
 	Close();
 	return exist;
 }
 
-int CFileXBMSP::Stat(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport, struct __stat64* buffer)
+int CFileXBMSP::Stat(const CURL& url, struct __stat64* buffer)
 {
-	if (Open(strUserName, strPassword, strHostName, strFileName, iport, true))
+	if (Open(url, true))
 	{
 		buffer->st_size = this->m_fileSize;
 		buffer->st_mode = _S_IFREG;
