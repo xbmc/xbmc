@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-01-2005 added: [ 1097508 ] Fix for FTP logging, new GetTime/DateFormat functions (Thanks to jarkkom)
+                      Logging is disabled by default, xbfilezilla will write a daily logfile to /xbmc/Logs/
+                      To enable logging set "Enable logging" in "FileZilla Server.xml" to 1 
   - 14-01-2005 changed: extended asx parsing to support entryref tags and different tag-casing
   - 14-01-2005 added: [ 1097753 ] Updated XBMC masterlock/share lock code (Thanks to slacker)
   - 13-01-2005 fixed: Album thumbs don't show as icon for folder in listview
