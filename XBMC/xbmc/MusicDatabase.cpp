@@ -558,9 +558,10 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1)
 	long lArtistId = AddArtist(album1.strArtist);
 	long lAlbumId  = AddAlbum(album1.strAlbum,lArtistId);
 
-	char szSQL[1024];
-	sprintf(szSQL,"select * from albuminfo where idAlbum=%i AND idGenre=%i AND idArtist=%i ", lAlbumId,lGenreId,lArtistId);
-	if (!m_pDS->query(szSQL)) return -1;
+
+	CStdString strSQL;
+	strSQL.Format("select * from albuminfo where idAlbum=%i AND idGenre=%i AND idArtist=%i ", lAlbumId,lGenreId,lArtistId);
+	if (!m_pDS->query(strSQL.c_str())) return -1;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound!= 0) 
 	{
@@ -569,8 +570,7 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1)
 		return lAlbumID;
 	}
 
-	char* pszSQL = new char[80000];
-	sprintf(pszSQL,"insert into albuminfo (idAlbumInfo,idAlbum,idArtist,idGenre,strTones,strStyles,strReview,strImage,iRating,iYear) values(NULL,%i,%i,%i,'%s','%s','%s','%s',%i,%i)",
+	strSQL.Format("insert into albuminfo (idAlbumInfo,idAlbum,idArtist,idGenre,strTones,strStyles,strReview,strImage,iRating,iYear) values(NULL,%i,%i,%i,'%s','%s','%s','%s',%i,%i)",
 											lAlbumId,lArtistId,lGenreId,
 											album.strTones.c_str(),
 											album.strStyles.c_str(),
@@ -578,8 +578,7 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1)
 											album.strImage.c_str(),
 											album.iRating,
 											album.iYear);
-	m_pDS->exec(pszSQL);
-	delete [] pszSQL;
+	m_pDS->exec(strSQL.c_str());
 	long lAlbumInfoId=sqlite_last_insert_rowid(m_pDB->getHandle());
 	return lAlbumInfoId;
 

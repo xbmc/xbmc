@@ -6,6 +6,7 @@
 #include <memory>
 using namespace std;
 
+typedef vector<CStdString> VECMOVIEYEARS;
 typedef vector<CStdString> VECMOVIEACTORS;
 typedef vector<CStdString> VECMOVIEGENRES;
 typedef vector<CIMDBMovie> VECMOVIES;
@@ -21,6 +22,7 @@ public:
   long    AddMovie(const CStdString& strFilenameAndPath, const CStdString& strcdLabel, bool bHassubtitles);
   void    GetGenres(VECMOVIEGENRES& genres);
   void    GetActors(VECMOVIEACTORS& actors);
+	void    GetYears(VECMOVIEYEARS& years);
 
   bool    HasMovieInfo(const CStdString& strFilenameAndPath);
   bool    HasSubtitle(const CStdString& strFilenameAndPath);
@@ -31,6 +33,7 @@ public:
   void    SetMovieInfo(const CStdString& strFilenameAndPath,CIMDBMovie& details);
   void    GetMoviesByGenre(CStdString& strGenre, VECMOVIES& movies);
   void    GetMoviesByActor(CStdString& strActor, VECMOVIES& movies);
+	void    GetMoviesByYear(CStdString& strYear, VECMOVIES& movies);
   void    GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies);
 protected:
   auto_ptr<SqliteDatabase>  m_pDB;

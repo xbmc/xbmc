@@ -43,6 +43,14 @@ bool CUtil::IsXBE(const CStdString& strFileName)
    return false;
 }
 
+bool CUtil::IsDefaultXBE(const CStdString& strFileName)
+{
+	char* pFileName=GetFileName(strFileName);
+	if (!pFileName) return false;
+	if (CUtil::cmpnocase(pFileName, "default.xbe")==0) return true;
+	return false;
+}
+
 bool CUtil::IsShortCut(const CStdString& strFileName)
 {
    char* pExtension=GetExtension(strFileName);
@@ -926,6 +934,7 @@ void CUtil::FillInDefaultIcons(VECFILEITEMS &items)
 void CUtil::SetThumbs(VECFILEITEMS &items)
 {
   CStdString strThumb;
+  bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
   for (int i=0; i < (int)items.size(); ++i)
   {
     CFileItem* pItem=items[i];
@@ -945,7 +954,7 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
 			}
 
 			// xbe
-			if (CUtil::IsXBE(pItem->m_strPath) )
+			if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
 			{
 				pItem->SetIconImage("defaultProgram.png");
 				if ( !CUtil::IsDVD(pItem->m_strPath) )
@@ -1005,6 +1014,12 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
 			}
 			if (CUtil::IsShortCut(pItem->m_strPath) )
 			{
+				CStdString strDescription;
+				CStdString strFName;
+				strFName=CUtil::GetFileName(pItem->m_strPath);
+				int iPos=strFName.ReverseFind(".");
+				strDescription=strFName.Left(iPos);
+				pItem->SetLabel(strDescription);
 				pItem->SetIconImage("defaultShortcut.png");
 			}
 		}
@@ -1035,28 +1050,31 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
 				}
         if (!bGotIcon && pItem->GetLabel() != "..")
         {
-          CStdString strFolderImage;
-          AddFileToFolder(pItem->m_strPath, "folder.jpg", strFolderImage);
-
-          if (CUtil::IsRemote(pItem->m_strPath) )
+          if (pItem->m_bIsFolder)
           {
-            CUtil::GetThumbnail( strFolderImage,strThumb);
-            CFile file;
-            if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
-					  {
-						  pItem->SetThumbnailImage(strThumb);
-					  }
-            else
+            CStdString strFolderImage;
+            AddFileToFolder(pItem->m_strPath, "folder.jpg", strFolderImage);
+
+            if (CUtil::IsRemote(pItem->m_strPath) )
             {
-              if (CUtil::FileExists(strThumb))
+              CUtil::GetThumbnail( strFolderImage,strThumb);
+              CFile file;
+              if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
+					    {
+						    pItem->SetThumbnailImage(strThumb);
+					    }
+              else
               {
-                pItem->SetThumbnailImage(strThumb);
+                if (CUtil::FileExists(strThumb))
+                {
+                  pItem->SetThumbnailImage(strThumb);
+                }
               }
             }
-          }
-          else if (CUtil::FileExists(strFolderImage) )
-          {
-            pItem->SetThumbnailImage(strFolderImage);
+            else if (CUtil::FileExists(strFolderImage) )
+            {
+              pItem->SetThumbnailImage(strFolderImage);
+            }
           }
         }
 			}
