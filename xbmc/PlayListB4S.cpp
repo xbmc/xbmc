@@ -29,6 +29,9 @@ CPlayListB4S::~CPlayListB4S(void)
 
 bool CPlayListB4S::Load(const CStdString& strFileName)
 {
+	CStdString strBasePath;
+	CUtil::GetParentPath(strFileName,strBasePath);
+
 	Clear();
 	
 	TiXmlDocument xmlDoc;
@@ -66,6 +69,7 @@ bool CPlayListB4S::Load(const CStdString& strFileName)
 			if (pNodeInfo)
 			{
 				CStdString strInfo = pNodeInfo->FirstChild()->Value();	
+				CUtil::GetQualifiedFilename(strBasePath,strFileName);
 				CPlayListItem newItem(strInfo,strFileName,lDuration);
 				Add(newItem);
 			}

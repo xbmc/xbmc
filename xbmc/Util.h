@@ -17,6 +17,7 @@ public:
   static bool  IsShortCut(const CStdString& strFileName);
   static int   cmpnocase(const char* str1,const char* str2);
   static bool  GetParentPath(const CStdString& strPath, CStdString& strParent);
+  static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static void LaunchXbe(char* szPath, char* szXbe, char* szParameters);
   static bool FileExists(const CStdString& strFileName);
   static void GetThumbnail(const CStdString& strFileName, CStdString& strThumb);
