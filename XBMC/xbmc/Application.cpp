@@ -360,7 +360,8 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiWindowScreensaver);				// window id = 2900 Screensaver
 	m_gWindowManager.Add(&m_guiMyWeather);						    // window id = 2600 WEATHER
 	m_gWindowManager.Add(&m_guiSettingsWeather);				  // window id = 17 WEATHER SETTINGS
-        m_gWindowManager.Add(&m_guiDialogInvite);	
+	m_gWindowManager.Add(&m_guiDialogInvite);
+	m_gWindowManager.Add(&m_guiDialogKeyboard);
 	m_gWindowManager.Add(&m_guiMyBuddies);						    // window id = 2700 BUDDIES
 	CKaiClient::GetInstance()->SetObserver(&m_guiMyBuddies);
 
@@ -528,7 +529,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettingsUserInterface.Load("SettingsUserInterface.xml");	// User Interface settings
 	m_guiSettingsAudio.Load("SettingsAudioOptions.xml");			// Audio Options
 	m_guiDialogInvite.Load( "dialogInvite.xml" );  
-        m_guiMyBuddies.Load( "mybuddies.xml");
+	m_guiDialogKeyboard.Load( "dialogKeyboard.xml" );  
+	m_guiMyBuddies.Load( "mybuddies.xml");
 
 	CGUIWindow::FlushReferenceCache(); // flush the cache so it doesn't use memory all the time
 
