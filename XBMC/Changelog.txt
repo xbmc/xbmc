@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-02-2005 fixed: Crash when going from FullScreenVideo -> other window -> press stop -> press back twice.
   - 16-02-2005 fixed: Crash bug in Thumbpanels + page number display.
   - 16-02-2005 cleanup: Video time/duration is all calculated in the infoManager now.
   - 16-02-2005 fixed: Lockups in blank dirs when hide parent folder item is on.

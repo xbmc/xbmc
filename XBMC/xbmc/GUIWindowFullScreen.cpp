@@ -380,6 +380,13 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 	{
 		case GUI_MSG_WINDOW_INIT:
 		{
+			// check whether we've come back here from a window during which time we've actually
+			// stopped playing videos
+			if (message.GetParam1() == WINDOW_INVALID && !g_application.IsPlayingVideo())
+			{	// why are we here if nothing is playing???
+				m_gWindowManager.PreviousWindow();
+				return true;
+			}
 			m_bLastRender=false;
 			m_bOSDVisible=false;
 
