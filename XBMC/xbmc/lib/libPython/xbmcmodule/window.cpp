@@ -37,7 +37,9 @@ namespace PYXBMC
 		{
 			// user specified window id, use this one if it exists
 			// It is not possible to capture key presses or button presses
+			PyGUILock();
 			self->pWindow = m_gWindowManager.GetWindow(self->iWindowId);
+			PyGUIUnlock();
 			if (!self->pWindow)
 			{
 				PyErr_SetString((PyObject*)self, "Window id does not exist");
@@ -55,13 +57,17 @@ namespace PYXBMC
 			// get first window id that is not in use
 			int id = 3000;
 			// if window 3099 is in use it means python can't create more windows
+			PyGUILock();
 			if (m_gWindowManager.GetWindow(3099))
 			{
+				PyGUIUnlock();
 				PyErr_SetString((PyObject*)self, "maximum number of windows reached");
 				self->ob_type->tp_free((PyObject*)self);
 				return NULL;
 			}
 			while(id < 3100 && m_gWindowManager.GetWindow(id) != NULL) id++;
+			PyGUIUnlock();
+
 			self->iWindowId = id;
 			self->iOldWindowId = 0;
 			self->bModal = false;
