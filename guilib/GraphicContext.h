@@ -79,7 +79,7 @@ public:
   DWORD									GetNewID();
 	const CStdString&     GetMediaDir() const { return m_strMediaDir; }
 	void									SetMediaDir(const CStdString& strMediaDir) { m_strMediaDir=strMediaDir; }
-	bool									IsWidescreen() const;
+	bool									IsWidescreen() const { return m_bWidescreen; }
 	void									Correct(float& fCoordinateX, float& fCoordinateY) const;	
 	void									Scale(float& fCoordinateX, float& fCoordinateY, float& fWidth, float& fHeight) const;
 	void									SetViewPort(float fx, float fy , float fwidth, float fheight);

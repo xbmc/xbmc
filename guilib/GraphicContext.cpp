@@ -59,11 +59,6 @@ DWORD CGraphicContext::GetNewID()
   return  m_dwID;
 }
 
-bool CGraphicContext::IsWidescreen() const
-{
-	return m_bWidescreen;
-}
-
 void CGraphicContext::Correct(float& fCoordinateX, float& fCoordinateY)  const
 {
 	fCoordinateX  += (float)m_iScreenOffsetX;
