@@ -274,6 +274,14 @@ void CKaiClient::Detach()
 }
 
 
+void CKaiClient::Reattach()
+{	
+	m_bHosting	= FALSE;
+	m_bContactsSettling = TRUE;
+	m_nFriendsOnline = 0;
+
+	Discover();
+}
 void CKaiClient::Attach(SOCKADDR_IN& aAddress)
 {	
 	client_state = State::Attaching;
