@@ -45,10 +45,7 @@ bool CCDDARipper::Init(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTa
 	// we have to set the tags before we init the Encoder
 	if (infoTag)
 	{
-		SYSTEMTIME datetime;
-		infoTag->GetReleaseDate(datetime);
-		CStdString strDate, strTrack;
-		if (datetime.wYear > 0) strDate.Format("%d", datetime.wYear);
+		CStdString strTrack;
 		strTrack.Format("%i", iTrack);
 
 		m_pEncoder->SetComment("Ripped with XBMC");
@@ -57,7 +54,7 @@ bool CCDDARipper::Init(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTa
 		m_pEncoder->SetAlbum(infoTag->GetAlbum().c_str());
 		m_pEncoder->SetGenre(infoTag->GetGenre().c_str());
 		m_pEncoder->SetTrack(strTrack.c_str());
-		m_pEncoder->SetYear(strDate.c_str());
+		m_pEncoder->SetYear(infoTag->GetYear().c_str());
 	}
 
 	// init encoder

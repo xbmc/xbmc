@@ -144,6 +144,7 @@ int CFileRelax::Stat(const CURL& url, struct __stat64* buffer)
 		buffer->st_size = this->m_fileSize;
 		buffer->st_mode = _S_IFREG;
 		Close();
+		return 0;
 	}
 	errno = ENOENT;
 	return -1;

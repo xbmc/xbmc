@@ -20,6 +20,8 @@
 #include "ringbuffer.h"
 //#include <dialog.h>
 #include "ShoutcastRipFile.h"
+#include "../MusicInfoTagLoaderMP3.h"
+#include "../utils/GUIInfoManager.h"
 
 const int SHOUTCASTTIMEOUT=100;
 static CRingBuffer m_ringbuf;
@@ -282,9 +284,14 @@ unsigned int CFileShoutcast::Read(void* lpBuf, __int64 uiBufSize)
 	if (timeGetTime() - m_dwLastTime > 500)
 	{		
 		m_dwLastTime =timeGetTime();
-		ID3_Tag tag;
-		GetID3TagInfo(tag);
-		g_application.m_guiMusicOverlay.SetID3Tag(tag);
+		ID3_Tag id3tag;
+		GetID3TagInfo(id3tag);
+		// convert to a standard tag, and update our new info
+		CMusicInfoTag tag;
+		CMusicInfoTagLoaderMP3 ldr;
+		ldr.ReadTag(id3tag, tag);
+		g_infoManager.SetCurrentSongTag(tag);
+		g_application.m_guiMusicOverlay.UpdateInfo(tag);
 	}
 	return iRead;
 }

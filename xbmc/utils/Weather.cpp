@@ -609,6 +609,7 @@ char *CWeather::GetLabel(DWORD dwLabel)
 	else if (dwLabel == WEATHER_LABEL_CURRENT_WIND) return m_szCurrentWind;
 	else if (dwLabel == WEATHER_LABEL_CURRENT_DEWP) return m_szCurrentDewPoint;
 	else if (dwLabel == WEATHER_LABEL_CURRENT_HUMI) return m_szCurrentHumidity;
+	else if (dwLabel == WEATHER_LABEL_LOCATION) return m_szLocation[m_iCurWeather];
 	return "";
 }
 

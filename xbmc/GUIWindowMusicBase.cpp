@@ -1575,9 +1575,7 @@ void CGUIWindowMusicBase::SetLabelFromTag(CFileItem *pItem)
 		}
 		else if (strFormat[iPos2+1] == 'Y')
 		{	// year
-			SYSTEMTIME dateTime;
-			tag.GetReleaseDate(dateTime);
-			if (dateTime.wYear > 0) str.Format("%i",dateTime.wYear);
+			str = tag.GetYear();
 		}
 		else if (strFormat[iPos2+1] == '%')
 		{	// %% to print %
