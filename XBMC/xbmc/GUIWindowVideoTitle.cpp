@@ -520,10 +520,7 @@ void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
     CIMDBMovie movie=movies[i];
     CFileItem *pItem = new CFileItem(movie.m_strTitle);
     pItem->m_strPath=movie.m_strSearchString;
-    if (CUtil::IsVideo(pItem->m_strPath))
-			pItem->m_bIsFolder=false;
-    else
-      pItem->m_bIsFolder=true;
+		pItem->m_bIsFolder=false;
     pItem->m_bIsShareOrDrive=false;
 
     CStdString strThumb;
