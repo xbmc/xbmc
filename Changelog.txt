@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 25-09-2004 fixed: [ 1033093 ] Movie Plots which contain HTML tags from IMDB
   - 24-09-2004 fixed: [ 1001048 ] Return to Dashboard broke
   - 24-09-2004 fixed: Graphical glitch when scrolling in thumbs view and another dir is brought up
   - 24-09-2004 added: Album info + Year now shown on the LCD during music playback (based on SF 935576)
