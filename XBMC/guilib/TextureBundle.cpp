@@ -89,7 +89,7 @@ bool CTextureBundle::OpenBundle()
 	CStdString strPath=g_graphicsContext.GetMediaDir();
 	strPath += "\\media\\Textures.xpr";
 
-	m_hFile = CreateFile(strPath.c_str(), GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_FLAG_NO_BUFFERING|FILE_FLAG_OVERLAPPED, 0);
+	m_hFile = CreateFile(strPath.c_str(), GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, 0, OPEN_EXISTING, FILE_FLAG_NO_BUFFERING|FILE_FLAG_OVERLAPPED, 0);
 	if (m_hFile == INVALID_HANDLE_VALUE)
 		return false;
 
@@ -120,22 +120,6 @@ bool CTextureBundle::OpenBundle()
 	if (!GetOverlappedResult(m_hFile, &m_Ovl[0], &n, TRUE) || n < HeaderSize)
 		goto LoadError;
 
-#ifdef CACHE_WHOLE_BUNDLE
-	// Do this here before creating map so it runs in background during the create
-	m_CacheOffset = HeaderSize + 512;
-	DWORD DataSize = ((pXPRHeader->dwTotalSize - m_CacheOffset) + 511) & ~511;
-	m_BundleCache = (BYTE*)VirtualAlloc(0, DataSize, MEM_COMMIT, PAGE_READWRITE);
-	if (m_BundleCache)
-	{
-		m_Ovl[0].Offset = m_CacheOffset;
-		if (!ReadFile(m_hFile, m_BundleCache, DataSize, &n, &m_Ovl[0]) && GetLastError() != ERROR_IO_PENDING)
-		{
-			VirtualFree(m_BundleCache, 0, MEM_RELEASE);
-			m_BundleCache = 0;
-		}
-	}
-#endif
-
 	struct DiskFileHeader_t
 	{
 		char Name[52];
@@ -159,6 +143,8 @@ bool CTextureBundle::OpenBundle()
 	m_CurFileHeader[0] = m_FileHeaders.end();
 	m_CurFileHeader[1] = m_FileHeaders.end();
 	m_PreloadIdx = m_LoadIdx = 0;
+
+	GetFileTime(m_hFile, NULL, NULL, &m_TimeStamp);
 
 	lzo_init();
 
@@ -186,18 +172,22 @@ void CTextureBundle::Cleanup()
 	if (m_PreLoadBuffer[1])
 		free(m_PreLoadBuffer[1]);
 	m_PreLoadBuffer[1] = 0;
-
-#ifdef CACHE_WHOLE_BUNDLE
-	if (m_BundleCache)
-		VirtualFree(m_BundleCache, 0, MEM_RELEASE);
-	m_BundleCache = 0;
-#endif
 }
 
 bool CTextureBundle::HasFile(const CStdString& Filename)
 {
 	if (m_hFile == INVALID_HANDLE_VALUE && !OpenBundle())
 		return false;
+	
+	FILETIME ts;
+	GetFileTime(m_hFile, NULL, NULL, &ts);
+	if (CompareFileTime(&m_TimeStamp, &ts))
+	{
+		CLog::Log("Texture bundle has changed, reloading");
+		Cleanup();
+		if (!OpenBundle())
+			return false;
+	}
 
 	CStdString name(Filename);
 	name.Normalize();
@@ -208,34 +198,6 @@ bool CTextureBundle::PreloadFile(const CStdString& Filename)
 {
 	CStdString name(Filename);
 	name.Normalize();
-
-#ifdef CACHE_WHOLE_BUNDLE
-	if (m_BundleCache)
-	{
-		if (m_Ovl[0].Offset)
-		{
-			DWORD n;
-			if (!GetOverlappedResult(m_hFile, &m_Ovl[0], &n, TRUE))
-			{
-				VirtualFree(m_BundleCache, 0, MEM_RELEASE);
-				m_BundleCache = 0;
-			}
-			m_Ovl[0].Offset = 0;
-		}
-
-		if (m_BundleCache)
-		{
-			m_CurFileHeader[m_PreloadIdx] = m_FileHeaders.find(name);
-			if (m_CurFileHeader[m_PreloadIdx] != m_FileHeaders.end())
-			{
-				m_PreLoadBuffer[m_PreloadIdx] = m_BundleCache + (m_CurFileHeader[m_PreloadIdx]->second.Offset - m_CacheOffset);
-				m_PreloadIdx = 1 - m_PreloadIdx;
-				return true;
-			}
-			return false;
-		}
-	}
-#endif
 
 	if (m_PreLoadBuffer[m_PreloadIdx])
 		free(m_PreLoadBuffer[m_PreloadIdx]);
@@ -283,6 +245,9 @@ bool CTextureBundle::PreloadFile(const CStdString& Filename)
 
 HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& UnpackedBuf)
 {
+	if (Filename == "-")
+		return NULL;
+
 	CStdString name(Filename);
 	name.Normalize();
 	if (m_CurFileHeader[0] != m_FileHeaders.end() && m_CurFileHeader[0]->first == name)
@@ -307,14 +272,9 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
 		return E_OUTOFMEMORY;
 	}
 
-#ifdef CACHE_WHOLE_BUNDLE
-	if (!m_BundleCache)
-#endif
-	{
-		DWORD n;
-		if (!GetOverlappedResult(m_hFile, &m_Ovl[m_LoadIdx], &n, TRUE) || n < m_CurFileHeader[m_LoadIdx]->second.PackedSize)
-			return E_FAIL;
-	}
+	DWORD n;
+	if (!GetOverlappedResult(m_hFile, &m_Ovl[m_LoadIdx], &n, TRUE) || n < m_CurFileHeader[m_LoadIdx]->second.PackedSize)
+		return E_FAIL;
 
 	lzo_uint s = m_CurFileHeader[m_LoadIdx]->second.UnpackedSize;
 	HRESULT hr = S_OK;
@@ -322,13 +282,8 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
 		s != m_CurFileHeader[m_LoadIdx]->second.UnpackedSize)
 		hr = E_FAIL;
 
-#ifdef CACHE_WHOLE_BUNDLE
-	if (!m_BundleCache)
-#endif
-	{
-		free(m_PreLoadBuffer[m_LoadIdx]);
-		m_PreLoadBuffer[m_LoadIdx] = 0;
-	}
+	free(m_PreLoadBuffer[m_LoadIdx]);
+	m_PreLoadBuffer[m_LoadIdx] = 0;
 	m_CurFileHeader[m_LoadIdx] = m_FileHeaders.end();
 
 	// switch on writecombine on memory and flush the cache for the gpu
