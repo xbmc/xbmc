@@ -187,33 +187,33 @@ INT CXBApplicationEx::Run()
         // Animate and render a frame
         //-----------------------------------------
 
-        try
-        {
+        //try
+        //{
           Process();
-        }
-        catch(...)
-        {
-          CLog::Log(LOGERROR, "exception in CApplication::Process()");
-        }
+        //}
+        //catch(...)
+        //{
+        //  CLog::Log(LOGERROR, "exception in CApplication::Process()");
+        //}
         // Frame move the scene
-        try
-        {
+        //try
+        //{
           FrameMove();
-        }
-        catch(...)
-        {
-          CLog::Log(LOGERROR, "exception in CApplication::FrameMove()");
-        }
+        //}
+        //catch(...)
+        //{
+        //  CLog::Log(LOGERROR, "exception in CApplication::FrameMove()");
+        //}
 
         // Render the scene
-        try
-        {
+        //try
+        //{
           Render();
-        }
-        catch(...)
-        {
-          CLog::Log(LOGERROR, "exception in CApplication::Render()");
-        }
+        //}
+        //catch(...)
+        //{
+        //  CLog::Log(LOGERROR, "exception in CApplication::Render()");
+        //}
     }
     CLog::Log(LOGNOTICE, "application stopped..." );
     return 0;

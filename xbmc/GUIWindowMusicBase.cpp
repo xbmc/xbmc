@@ -20,6 +20,7 @@
 #include "GuiUserMessages.h"
 #include "GUIThumbnailPanel.h"
 #include "GUIListControl.h"
+#include "FileSystem/DirectoryCache.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNTYPE						6
@@ -60,9 +61,12 @@ void CGUIWindowMusicBase::OnAction(const CAction& action)
 
   if (action.wID==ACTION_PREVIOUS_MENU)
   {
-		g_musicDatabase.Close();
-		CUtil::ThumbCacheClear();
-		CUtil::RemoveTempFiles();
+		if (!g_application.m_guiDialogMusicScan.IsRunning())
+		{
+			CUtil::ThumbCacheClear();
+			CUtil::RemoveTempFiles();
+		}
+
 		m_gWindowManager.ActivateWindow(WINDOW_HOME);
 		return;
   }
@@ -243,6 +247,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			m_nSelectedItem=GetSelectedItem();
 			m_iLastControl=GetFocusedControl();
       ClearFileItems();
+			g_musicDatabase.Close();
 			CSectionLoader::Unload("LIBID3");
 			CSectionLoader::Unload("LIBMP4");
 		}
@@ -255,8 +260,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			CSectionLoader::Load("LIBID3");
 			CSectionLoader::Load("LIBMP4");
 
-			if (!g_musicDatabase.IsOpen())
-				g_musicDatabase.Open();
+			g_musicDatabase.Open();
 
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
@@ -370,20 +374,7 @@ void CGUIWindowMusicBase::UpdateListControl()
   g_graphicsContext.SendMessage(msg2);
 
 	//	Cache available album thumbs
-  VECFILEITEMS qitems;
-  CHDDirectory dir;
-
-  CStdString strThumb=g_stSettings.m_szAlbumDirectory;
-  strThumb+="\\thumbs";
-  {
-    CFileItemList itemlist(qitems); // will clean up everything
-    dir.GetDirectory(strThumb.c_str(),qitems);			//	precache Q:\albums\thumbs directory
-  }
-  {
-    strThumb+="\\temp";
-    CFileItemList itemlist(qitems); // will clean up everything
-    dir.GetDirectory(strThumb.c_str(),qitems);			//	precache Q:\albums\thumbs\temp directory
-  }
+	g_directoryCache.InitMusicThumbCache();
 
 	for (int i=0; i < (int)m_vecItems.size(); i++)
 	{
@@ -395,7 +386,7 @@ void CGUIWindowMusicBase::UpdateListControl()
 		OnFileItemFormatLabel(pItem);
 	}
 
-  CUtil::ClearCache();
+  g_directoryCache.ClearMusicThumbCache();
 
 	DoSort(m_vecItems);
 
@@ -953,6 +944,23 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 			if (!pDlgAlbumInfo->NeedRefresh()) return;
 			bRefresh=true;
     }
+	}
+
+	//	If we are scanning for music info in the background,
+	//	other writing access to the database is prohibited.
+	CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+	if (dlgMusicScan->IsRunning())
+	{
+		CGUIDialogOK *pDlg= (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+		if (pDlg)
+		{
+			pDlg->SetHeading(189);
+			pDlg->SetLine(0, 14057);
+			pDlg->SetLine(1, "");
+			pDlg->SetLine(2, "");
+			pDlg->DoModal(GetID());
+			return;
+		}
 	}
 
 	// find album info

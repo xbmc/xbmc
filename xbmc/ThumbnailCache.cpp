@@ -2,8 +2,11 @@
 #include "stdafx.h"
 #include "ThumbnailCache.h"
 #include "util.h"
+#include "utils/SingleLock.h"
 
 CThumbnailCache* CThumbnailCache::m_pCacheInstance=NULL;
+
+CCriticalSection CThumbnailCache::m_cs;
 
 CThumbnailCache::~CThumbnailCache()
 {
@@ -16,6 +19,8 @@ CThumbnailCache::CThumbnailCache()
 
 CThumbnailCache* CThumbnailCache::GetThumbnailCache()
 {
+	CSingleLock lock(m_cs);
+
 	if (m_pCacheInstance==NULL)
 		m_pCacheInstance = new CThumbnailCache;
 
@@ -24,6 +29,8 @@ CThumbnailCache* CThumbnailCache::GetThumbnailCache()
 
 bool CThumbnailCache::ThumbExists(const CStdString& strFileName, bool bAddCache/*=false*/)
 {
+	CSingleLock lock(m_cs);
+
 	if (strFileName.size()==0) return false;
 	map<CStdString, bool>::iterator it;
 	it=m_Cache.find(strFileName);
@@ -39,6 +46,8 @@ bool CThumbnailCache::ThumbExists(const CStdString& strFileName, bool bAddCache/
 
 bool CThumbnailCache::IsCached(const CStdString& strFileName)
 {
+	CSingleLock lock(m_cs);
+
 	map<CStdString, bool>::iterator it;
 	it=m_Cache.find(strFileName);
 	if (it!=m_Cache.end())
@@ -49,6 +58,8 @@ bool CThumbnailCache::IsCached(const CStdString& strFileName)
 
 void CThumbnailCache::Clear()
 {
+	CSingleLock lock(m_cs);
+
 	if (m_pCacheInstance!=NULL)
 	{
 		m_Cache.erase(m_Cache.begin(),m_Cache.end());
@@ -60,6 +71,8 @@ void CThumbnailCache::Clear()
 
 void CThumbnailCache::Add(const CStdString& strFileName, bool bExists)
 {
+	CSingleLock lock(m_cs);
+
 	map<CStdString, bool>::iterator it;
 	it=m_Cache.find(strFileName);
 	if (it!=m_Cache.end())

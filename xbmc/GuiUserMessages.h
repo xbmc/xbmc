@@ -42,4 +42,11 @@
 //	dwParam2 = Playlistitem played when stopping
 #define GUI_MSG_PLAYLISTPLAYER_STOPPED	GUI_MSG_USER + 10
 
-#define GUI_MSG_LOAD_SKIN	GUI_MSG_USER + 11
+#define GUI_MSG_LOAD_SKIN								GUI_MSG_USER + 11
+
+//	Message is send by the dialog scan music
+//	Parameter:
+//	StringParam = Directory last scanned
+#define GUI_MSG_DIRECTORY_SCANNED				GUI_MSG_USER + 12
+
+#define GUI_MSG_SCAN_FINISHED						GUI_MSG_USER + 13

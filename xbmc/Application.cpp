@@ -54,7 +54,7 @@
 	#pragma comment (lib,"xbmc/lib/libOggVorbis/libOggVorbisd.lib")		 // SECTIONNAME=LIBOGGVO
 	#pragma comment (lib,"xbmc/lib/libPython/pythond.lib")	 // SECTIONNAME=PYTHON,PY_RW
 	#pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
-	#pragma comment (lib,"xbmc/lib/sqlLite/libSQLited.lib")
+	#pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3d.lib")
 	#pragma comment (lib,"xbmc/lib/libcdio/libcdiod.lib" )
 	#pragma comment (lib,"xbmc/lib/libshout/libshoutd.lib" )
 	#pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
@@ -76,7 +76,7 @@
 	#pragma comment (lib,"xbmc/lib/libOggVorbis/libOggVorbis.lib")
 	#pragma comment (lib,"xbmc/lib/libPython/python.lib")
 	#pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
-	#pragma comment (lib,"xbmc/lib/sqlLite/libSQLite.lib")
+	#pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3.lib")
 	#pragma comment (lib,"xbmc/lib/libcdio/libcdio.lib")
 	#pragma comment (lib,"xbmc/lib/libshout/libshout.lib")
 	#pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
@@ -834,6 +834,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiDialogPasswordNumeric);				// window id = 109
 	m_gWindowManager.Add(&m_guiDialogPasswordGamepad);				// window id = 110
 	m_gWindowManager.Add(&m_guiDialogButtonMenu);					// window id = 111
+	m_gWindowManager.Add(&m_guiDialogMusicScan);					// window id = 112
 	m_gWindowManager.Add(&m_guiMyMusicPlayList);					// window id = 500
 	m_gWindowManager.Add(&m_guiMyMusicSongs);							// window id = 501
 	m_gWindowManager.Add(&m_guiMyMusicAlbum);							// window id = 502
@@ -1074,6 +1075,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiDialogVolumeBar.ClearAll();
   m_guiDialogKaiToast.FreeResources();
   m_guiDialogKaiToast.ClearAll();
+  m_guiDialogMusicScan.FreeResources();
+  m_guiDialogMusicScan.ClearAll();
 
 	m_guiPointer.FreeResources();
 	m_guiPointer.ClearAll();
@@ -1131,6 +1134,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogSubMenu.Load("dialogSubMenu.xml");
 	m_guiDialogButtonMenu.Load("dialogButtonMenu.xml");
 	m_guiDialogContextMenu.Load("dialogContextMenu.xml");
+	m_guiDialogMusicScan.Load("dialogMusicScan.xml");
 	m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
 	m_guiMyMusicSongs.Load("mymusicsongs.xml");
 	m_guiMyMusicAlbum.Load("mymusicalbum.xml");
@@ -1175,6 +1179,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiWindowVideoOverlay.AllocResources();
 	m_guiDialogVolumeBar.AllocResources();
 	m_guiDialogKaiToast.AllocResources();
+	m_guiDialogMusicScan.AllocResources();
 	m_gWindowManager.AddMsgTarget(this);
 	m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
 	m_gWindowManager.SetCallback(*this);
@@ -1937,6 +1942,10 @@ void CApplication::FrameMove()
 		}
 	}
 
+	// Update display of the dialog if
+	// we are scanning for new music info
+	m_guiDialogMusicScan.UpdateState();
+
 	// reset the fullscreen analog options if needed
 	m_guiWindowFullScreen.m_bSmoothFFwdRewd = false;
 
@@ -2246,6 +2255,7 @@ void CApplication::Stop()
 		m_guiPointer.FreeResources();
 		m_guiDialogVolumeBar.FreeResources();
 		m_guiDialogKaiToast.FreeResources();
+		m_guiDialogMusicScan.FreeResources();
 		g_fontManager.Clear();
 		m_gWindowManager.DeInitialize();
 		g_TextureManager.Cleanup();
@@ -2906,10 +2916,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
 					}
 					else
 					{
-						if (g_musicDatabase.Open())
+						//	Can't write to the musicdatabase while scanning for music info
+						if (!m_guiDialogMusicScan.IsRunning())
 						{
-							g_musicDatabase.IncrTop100CounterByFileName(pItem->GetFileName());
-							g_musicDatabase.Close();
+							if (g_musicDatabase.Open())
+							{
+								g_musicDatabase.IncrTop100CounterByFileName(pItem->GetFileName());
+								g_musicDatabase.Close();
+							}
 						}
 					}
 				}
