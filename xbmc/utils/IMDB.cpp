@@ -384,7 +384,25 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 					strPlotStart += strlen("<p class=\"plotpar\">");
 					char *strPlotEnd=strstr(strPlotStart,"</p>");
 					if (strPlotEnd) *strPlotEnd=0;
-					html.ConvertHTMLToAnsi(strPlotStart, movieDetails.m_strPlot);
+
+					// Remove any tags that may appear in the text
+					bool inTag = false;
+					int iPlot = 0;
+					char* strPlot = new char[strlen(strPlotStart)];
+					for (int i = 0; i < strlen(strPlotStart); i++)
+					{
+						if (strPlotStart[i] == '<')
+							inTag = true;
+						else if (strPlotStart[i] == '>')
+							inTag = false;
+						else if (!inTag)
+							strPlot[iPlot++] = strPlotStart[i];
+					}
+					strPlot[iPlot] = '\0';
+
+					html.ConvertHTMLToAnsi(strPlot, movieDetails.m_strPlot);
+
+					delete [] strPlot;
 				}
 				delete [] szPlotHTML;
 			}
