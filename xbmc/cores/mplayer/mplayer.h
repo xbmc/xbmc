@@ -25,7 +25,7 @@ float   mplayer_getAVDelay();
 void    mplayer_setSubtitleDelay(float fDelay);
 float   mplayer_getSubtitleDelay();
 void    mplayer_setPercentage(int iPercent);
-int     mplayer_getPercentage(float fPercent);
+int     mplayer_getPercentage();
 
 #ifdef __cplusplus
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "iosdoption.h"
 #include "IExecutor.h" 
+#include "GUISliderControl.h"
 namespace OSD
 {
 	class COSDOptionFloatRange :
@@ -17,7 +18,9 @@ namespace OSD
 		virtual IOSDOption* Clone() const;
 		virtual void Draw(int x, int y, bool bFocus=false, bool bSelected=false);
 		virtual bool OnAction(IExecutor& executor,const CAction& action);
+    float GetValue() const;
 	private:
+    CGUISliderControl m_slider;
     int m_iAction;
 		float	m_fMin;
 		float	m_fMax;

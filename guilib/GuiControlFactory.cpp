@@ -14,7 +14,7 @@
 #include "GUITextBox.h" 
 #include "guiVideoControl.h"
 #include "GUIProgressControl.h"
-
+#include "GUISliderControl.h"
 CGUIControlFactory::CGUIControlFactory(void)
 {
 }
@@ -227,6 +227,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwWidth								= ((CGUISpinControl*)pReference)->GetSpinWidth();
 			dwHeight							= ((CGUISpinControl*)pReference)->GetSpinHeight();
 
+		}
+		if (strType=="slider")
+		{
+			strTextureBg	= ((CGUISliderControl*)pReference)->GetBackGroundTextureName();
+			strMid				= ((CGUISliderControl*)pReference)->GetBackTextureMidName();
 		}
 		if (strType=="progress")
 		{
@@ -513,6 +518,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       return pControl;
   }
 
+  if (strType=="slider")
+  {
+			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
+      CGUISliderControl* pControl= new CGUISliderControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureBg,strMid);
+      pControl->SetVisible(bVisible);
+      return pControl;
+  } 
   if (strType=="progress")
   {
 			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);

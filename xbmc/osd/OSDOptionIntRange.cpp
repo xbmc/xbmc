@@ -6,6 +6,7 @@
 #include "guifontmanager.h"
 using namespace OSD;
 COSDOptionIntRange::COSDOptionIntRange(int iAction,int iHeading)
+:m_slider(0, 1, 0, 0, 0, 0, "osd-pnl-bar.bmp","xb-ctl-nibv.bmp")
 {
 	m_iMin=0;
   m_iMax=10;
@@ -16,6 +17,7 @@ COSDOptionIntRange::COSDOptionIntRange(int iAction,int iHeading)
 }
 
 COSDOptionIntRange::COSDOptionIntRange(int iAction,int iHeading,int iStart, int iEnd, int iInterval, int iValue)
+:m_slider(0, 1, 0, 0, 0, 0, "osd-pnl-bar.bmp","xb-ctl-nibv.bmp")
 {
 	m_iMin=iStart;
   m_iMax=iEnd;
@@ -26,6 +28,7 @@ COSDOptionIntRange::COSDOptionIntRange(int iAction,int iHeading,int iStart, int 
 }
 
 COSDOptionIntRange::COSDOptionIntRange(const COSDOptionIntRange& option)
+:m_slider(0, 1, 0, 0, 0, 0, "osd-pnl-bar.bmp","xb-ctl-nibv.bmp")
 {
 	*this=option;
 }
@@ -69,33 +72,51 @@ void COSDOptionIntRange::Draw(int x, int y, bool bFocus,bool bSelected)
                               5,
                               0xFF020202);
   }
+
+  float fRange=(float)(m_iMax-m_iMin);
+  float fPos  =(float)(m_iValue-m_iMin);
+  float fPercent = (fPos/fRange)*100.0f;
+  m_slider.SetPercentage( (int) fPercent);
+  m_slider.AllocResources();
+  m_slider.SetPosition(x+200,y);
+  m_slider.Render();
+  m_slider.FreeResources();
 }
 
 bool COSDOptionIntRange::OnAction(IExecutor& executor, const CAction& action)
 {
-	if (action.wID==ACTION_MOVE_UP)
+	if (action.wID==ACTION_PAGE_DOWN)
 	{
     if (m_iValue+m_iInterval <=m_iMax)
     {
       m_iValue+=m_iInterval ;
+      executor.OnExecute(m_iAction,this);
     }
     else
     {
       m_iValue=m_iMin;
+      executor.OnExecute(m_iAction,this);
     }
     return true;
 	}
-	if (action.wID==ACTION_MOVE_DOWN)
+	if (action.wID==ACTION_PAGE_UP)
 	{
     if (m_iValue-m_iInterval >=m_iMin)
     {
       m_iValue-=m_iInterval ;
+      executor.OnExecute(m_iAction,this);
     }
     else
     {
       m_iValue=m_iMax;
+      executor.OnExecute(m_iAction,this);
     }
 		return true;
 	}
   return false;
+}
+
+int COSDOptionIntRange::GetValue() const
+{
+  return m_iValue;
 }
