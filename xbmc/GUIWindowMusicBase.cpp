@@ -640,7 +640,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 			}
 		}
 	}
-	else if (g_musicDatabase.GetAlbumsByPath(strPath, albums))
+	else if (pItem->m_bIsFolder && g_musicDatabase.GetAlbumsByPath(strPath, albums))
 	{	//	Normal folder, query database for albums in this directory
 
 		if (albums.size()==1)
@@ -682,7 +682,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 
 		bSaveDb=true;
 	}
-	else
+	else if (pItem->m_bIsFolder)
 	{
 		//	No album name found for folder found in database. Look into
 		//	the directory, but don't save albuminfo to database.
@@ -745,6 +745,27 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 				}
 
 				strLabel=pDlg->GetSelectedLabelText();
+			}
+		}
+	}
+	else
+	{
+		//	single file, not in database
+		//	get correct tag parser
+		CMusicInfoTagLoaderFactory factory;
+		auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+		if (NULL != pLoader.get())
+		{
+			// get id3tag
+			CMusicInfoTag& tag=pItem->m_musicInfoTag;
+			if ( pLoader->Load(pItem->m_strPath,tag))
+			{
+				//	get album
+				CStdString strAlbum=tag.GetAlbum();
+				if (!strAlbum.IsEmpty())
+				{
+					strLabel=strAlbum;
+				}
 			}
 		}
 	}
