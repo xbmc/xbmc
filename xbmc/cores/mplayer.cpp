@@ -71,6 +71,7 @@
 //Transforms a string into a language code used by dvd's
 #define DVDLANGCODE(x) ((int)(x[1]|(x[0]<<8)))
 
+void xbox_audio_do_work();
 void xbox_audio_wait_completion();
 void audio_pause();
 void audio_resume();
@@ -601,13 +602,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
 		else
 			iRet=mplayer_open_file(strFile.c_str());
-		if (iRet < 0)
+		if (iRet <= 0)
 		{
-			CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
-			closefile();
-			if (m_dlgCache) delete m_dlgCache;
-			m_dlgCache=NULL;
-			return false;
+      throw iRet;
 		}
 
 		if (bFileOnInternet ) 
@@ -692,13 +689,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
 						iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
 					else
 						iRet=mplayer_open_file(strFile.c_str());
-					if (iRet < 0)
+					if (iRet <= 0)
 					{
-						CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
-						closefile();
-						if (m_dlgCache) delete m_dlgCache;
-						m_dlgCache=NULL;
-						return false;
+            throw iRet;
 					}
 					// OK, now check what we've got now...
 					long lNewSampleRate;
@@ -797,13 +790,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
 					iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
 				else
 					iRet=mplayer_open_file(strFile.c_str());
-				if (iRet < 0)
+				if (iRet <= 0)
 				{
-					CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
-					closefile();
-					if (m_dlgCache) delete m_dlgCache;
-					m_dlgCache=NULL;
-					return false;
+          throw iRet;
 				}
 
 			}
@@ -824,12 +813,13 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			Create();
 		}
 
-	} 
+	}
 	catch(...)
 	{
-		CLog::Log("mplayer couldnt open file");
+		CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
 		if (m_dlgCache) delete m_dlgCache;
 		m_dlgCache=NULL;  
+		closefile();
 		return false;
 	}
 
@@ -1470,4 +1460,9 @@ void CMPlayer::ShowOSD(bool bOnoff)
 {
 	if (bOnoff) mplayer_showosd(1);
 	else mplayer_showosd(0);
+}
+
+void CMPlayer::DoAudioWork()
+{
+  xbox_audio_do_work();
 }

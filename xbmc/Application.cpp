@@ -68,7 +68,6 @@
 #pragma comment (lib,"xbmc/lib/libsidplay/resid_builder.lib")	// SECTIONNAME=SID_RW,SID_RX
 #endif
 
-void xbox_audio_do_work();
 
 CStdString g_LoadErrorStr;
 
@@ -918,7 +917,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 void CApplication::Render()
 {
 	// update sound
-	xbox_audio_do_work();
+  if (m_pPlayer) {
+    m_pPlayer->DoAudioWork();
+  }
 
 	// dont show GUI when playing full screen video
 	if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
