@@ -516,6 +516,12 @@
   <string><id>751</id><value>Poistetaan jako</value></string>
   <string><id>752</id><value>Muokkaa jaon polkua</value></string>
   <string><id>753</id><value>Muokkaa jaon nimeä</value></string>
+  <string><id>754</id><value>Lisää linkki ohjelmaan</value></string>
+  <string><id>755</id><value>Muokkaa ohjelman polkua</value></string>
+  <string><id>756</id><value>Muokkaa ohjelman nimeä</value></string>
+  <string><id>757</id><value>Muokkaa polun syvyyttä</value></string>
+  <string><id>758</id><value>Poistetaan linkki ohjelmaan</value></string>  
+  <string><id>759</id><value>Näytä: Iso lista</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Nettipelaaminen</value></string>
   <string><id>1000</id><value>Näytönsäästäjän esikatselu</value></string>
@@ -872,7 +878,7 @@
   <string><id>15060</id><value>Viesti tähän</value></string>
   <string><id>15061</id><value>Sinut on kutsuttu pelaamaan peliä %s.</value></string>
   <string><id>15062</id><value>Käytä vaihtoehtoista mplayer-hakemistoa</value></string>
-  <string><id>15100</id><value>Navi</value></string>
+  <string><id>15100</id><value>Kirjasto</value></string>
   <string><id>15101</id><value>Tietokanta</value></string>
   <string><id>15102</id><value>* Kaikki albumit</value></string>
   <string><id>15103</id><value>* Kaikki esittäjät</value></string>
@@ -880,3 +886,4 @@
   <string><id>15105</id><value>* Kaikki tyylilajit</value></string>
   <string><id>15106</id><value>Muista valittu tiedosto selattaessa eteenpäin</value></string>
 </strings>
+
