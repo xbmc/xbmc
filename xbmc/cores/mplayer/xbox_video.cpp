@@ -383,7 +383,7 @@ static void CalculateFrameAspectRatio()
 
 	// The following are the defined standard ratios for PAL and NTSC pixels
 	float fPALPixelRatio = 128.0f/117.0f;
-	float fNTSCPixelRatio = 72.0f/79.0f;
+	float fNTSCPixelRatio = 4320.0f/4739.0f;
 
 	// Calculate the correction needed for anamorphic sources
 	float fNon4by3Correction = (float)fSourceFrameRatio/(4.0f/3.0f);

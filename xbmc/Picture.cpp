@@ -37,7 +37,7 @@ void CPicture::Free()
 	}
 }
 
-IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth, int iMaxHeight)
+IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth, int iMaxHeight, bool bCreateThumb)
 {
 	IDirect3DTexture8* pTexture=NULL;
 	CStdString strExtension;
@@ -138,7 +138,14 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int &iOriginalW
 	m_dwWidth=image.GetWidth();
 	m_dwHeight=image.GetHeight();
 
-	return GetTexture(image);;
+	pTexture = GetTexture(image);
+	if (bCreateThumb)
+	{
+		CStdString strThumbnail;
+		CUtil::GetThumbnail(strFileName, strThumbnail);
+		CreateThumbFromImage(strFileName, strThumbnail, image, MAX_THUMB_WIDTH, MAX_THUMB_HEIGHT, true);
+	}
+	return pTexture;
 }
 
 IDirect3DTexture8* CPicture::LoadNative(const CStdString& strFileName)
@@ -315,6 +322,85 @@ bool CPicture::CreateThumnail(const CStdString& strFileName)
 	return DoCreateThumbnail(strFileName, strThumbnail, MAX_THUMB_WIDTH, MAX_THUMB_HEIGHT,bCacheFile);
 }
 
+bool CPicture::CreateThumbFromImage(const CStdString &strFileName, const CStdString &strThumbnail, CxImage& image, int nMaxWidth, int nMaxHeight, bool bNeedToConvert)
+{
+  try
+	{
+		// don't creat the thumb if it already exists
+		if (CUtil::FileExists(strThumbnail))
+			return true;
+		bool bResize=false;
+		int width = image.GetWidth();
+		int height = image.GetHeight();
+		float fAspect= ((float)width) / ((float)height);
+
+		if (width > nMaxWidth )
+		{
+			bResize=true;
+			width  = nMaxWidth;
+			height = (int)( ( (float)width) / fAspect);
+		}
+
+		if (height > nMaxHeight )
+		{
+			bResize=true;
+			height =nMaxHeight;
+			width  = (int)(  fAspect * ( (float)height) );
+		}
+
+		if (bResize)
+		{
+			if (!image.Resample(width,height, QUALITY) || !image.IsValid())
+			{
+				CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to resample image for thumbnail. Error:%s\n", image.GetLastError());
+				return false;
+			}
+			width=image.GetWidth();
+			height=image.GetHeight();
+			bNeedToConvert = true;
+		}
+
+		if ( image.GetNumColors() )
+		{
+			if (!image.IncreaseBpp(24) || !image.IsValid())
+			{
+				CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to convert to 24bpp: Error:%s\n", image.GetLastError());
+				return false;
+			}
+			bNeedToConvert = true;
+		}
+
+		::DeleteFile(strThumbnail.c_str());
+		// only resave the image if we have to (quality of the JPG saver isn't too hot!)
+		if (bNeedToConvert)
+		{
+			// May as well have decent quality thumbs
+			image.SetJpegQuality(90);
+			if (!image.Save(strThumbnail.c_str(),CXIMAGE_FORMAT_JPG))
+			{
+				CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to save image: %s Error:%s\n", strThumbnail.c_str(), image.GetLastError());
+				::DeleteFile(strThumbnail.c_str());
+				return false;
+			}
+		}
+		else
+		{	// Don't need to convert the file - cache it instead
+			CFile file;
+			if ( !file.Cache(strFileName.c_str(),strThumbnail.c_str(),NULL,NULL) )
+			{
+				CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to copy file %s\n", strFileName.c_str());
+				::DeleteFile(strThumbnail.c_str());
+				return false;
+			}
+		}
+		return true;
+	}
+	catch(...)
+	{
+	}
+	return false;
+}
+
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, int nMaxWidth, int nMaxHeight, bool bCacheFile/*=true*/)
 {
 	CLog::Log(LOGINFO, "Creating thumb from: %s", strFileName.c_str());
@@ -367,70 +453,8 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 			CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to open image: %s Error:%s\n", strCachedFile.c_str(), image.GetLastError());
 			return false;
 		}
-		m_dwWidth=image.GetWidth();
-		m_dwHeight=image.GetHeight();
 
-		bool bResize=false;
-		float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
-
-		if (m_dwWidth > (DWORD)nMaxWidth )
-		{
-			bResize=true;
-			m_dwWidth  = nMaxWidth;
-			m_dwHeight = (DWORD)( ( (float)m_dwWidth) / fAspect);
-		}
-
-		if (m_dwHeight > (DWORD)nMaxHeight )
-		{
-			bResize=true;
-			m_dwHeight =nMaxHeight;
-			m_dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
-		}
-
-		if (bResize)
-		{
-			if (!image.Resample(m_dwWidth,m_dwHeight, QUALITY) || !image.IsValid())
-			{
-				CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to resample image: %s Error:%s\n", strCachedFile.c_str(), image.GetLastError());
-				return false;
-			}
-			m_dwWidth=image.GetWidth();
-			m_dwHeight=image.GetHeight();
-			bNeedToConvert = true;
-		}
-
-		::DeleteFile(strThumbFileName.c_str());
-		if ( image.GetNumColors() )
-		{
-			if (!image.IncreaseBpp(24) || !image.IsValid())
-			{
-				CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to convert to 24bpp: %s Error:%s\n", strCachedFile.c_str(), image.GetLastError());
-				return false;
-			}
-			bNeedToConvert = true;
-		}
-		// only resave the image if we have to (quality of the JPG saver isn't too hot!)
-		if (bNeedToConvert)
-		{
-			// May as well have decent quality thumbs
-			image.SetJpegQuality(90);
-			if (!image.Save(strThumbFileName.c_str(),CXIMAGE_FORMAT_JPG))
-			{
-				CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to save image: %s Error:%s\n", strThumbFileName.c_str(), image.GetLastError());
-				::DeleteFile(strThumbFileName.c_str());
-				return false;
-			}
-		}
-		else
-		{	// Don't need to convert the file - cache it instead
-			CFile file;
-			if ( !file.Cache(strFileName.c_str(),strThumbFileName.c_str(),NULL,NULL) )
-			{
-				CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to copy file %s\n", strFileName.c_str());
-				::DeleteFile(strThumbFileName.c_str());
-				return false;
-			}
-		}
+		return CreateThumbFromImage(strCachedFile, strThumbFileName, image, nMaxWidth, nMaxHeight, bNeedToConvert);
 	}
 	catch(...)
 	{

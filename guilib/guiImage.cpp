@@ -334,9 +334,9 @@ void CGUIImage::Update()
 
   if (m_bKeepAspectRatio && m_iTextureWidth && m_iTextureHeight)
   {
-    int iResolution=g_stSettings.m_GUIResolution;
+    RESOLUTION iResolution=g_stSettings.m_GUIResolution;
     float fSourceFrameRatio = ((float)m_iTextureWidth) / ((float)m_iTextureHeight);
-    float fOutputFrameRatio = fSourceFrameRatio / g_settings.m_ResInfo[iResolution].fPixelRatio; 
+    float fOutputFrameRatio = fSourceFrameRatio / g_graphicsContext.GetPixelRatio(iResolution); 
 
     // maximize the thumbnails width
     float fNewWidth  = (float)m_dwWidth;
