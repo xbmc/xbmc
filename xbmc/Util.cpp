@@ -8,7 +8,6 @@
 #include "settings.h"
 #include "utils/log.h"
 #include "xbox/undocumented.h"
-#include "lib/common/xbnet.h"
 #include "url.h"
 #include "shortcut.h"
 #include "common/xbresource.h"
@@ -23,6 +22,8 @@
 #include "picture.h"
 #include "filesystem/hddirectory.h"
 #include "filesystem/DirectoryCache.h"
+
+bool CUtil::m_bNetworkUp = false;
 
 struct SSortByLabel
 {
@@ -361,7 +362,6 @@ void CUtil::GetTitleIP(CStdString& ip)
 
 bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer)
 {
-
   if (!IsEthernetConnected())
   {
     CLog::Log("network cable unplugged");
@@ -447,7 +447,13 @@ bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSub
   CLog::Log("ip adres:%s",g_szTitleIP);
   WSADATA WsaData;
   int err = WSAStartup( MAKEWORD(2,2), &WsaData );
-  return ( err == NO_ERROR );
+
+	if (err == NO_ERROR)
+	{
+		m_bNetworkUp = true;
+		return true;
+	}
+	return false;
 }
 
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
