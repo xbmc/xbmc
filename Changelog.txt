@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-12-2004 fixed: my pictures, View by button broken
   - 07-12-2004 fixed: Upscale to GUI res should now be working.
   - 06-12-2004 fixed: Various settings options weren't being displayed correctly.
   - 06-12-2004 fixed: LCD Off mode was missing.
