@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "CDDAReader.h"
-#include "..\utils\log.h"
+#include "../utils/log.h"
+
+#define SECTOR_COUNT 55
 
 CCDDAReader::CCDDAReader()
 {
@@ -12,6 +14,12 @@ CCDDAReader::CCDDAReader()
 	m_hReadEvent = CreateEvent(NULL, false, false, "rip read event");
 	m_hDataReadyEvent = CreateEvent(NULL, false, false, "rip dataready event");
 	m_hStopEvent = CreateEvent(NULL, false, false, "rip stop event");
+
+	m_pCdIo = NULL;
+
+	m_lsnStart = 0;
+	m_lsnEnd = 0;
+	m_lsnCurrent = 0;
 }
 
 CCDDAReader::~CCDDAReader()
@@ -24,43 +32,32 @@ CCDDAReader::~CCDDAReader()
 	CloseHandle(m_hDataReadyEvent);
 	CloseHandle(m_hStopEvent);
 
-	if (m_sRipBuffer[0].pbtStream == NULL) delete []m_sRipBuffer[0].pbtStream;
-	if (m_sRipBuffer[1].pbtStream == NULL) delete []m_sRipBuffer[1].pbtStream;
+	if (m_sRipBuffer[0].pbtStream) delete []m_sRipBuffer[0].pbtStream;
+	if (m_sRipBuffer[1].pbtStream) delete []m_sRipBuffer[1].pbtStream;
 }
 
 bool CCDDAReader::Init(int iTrack)
 {
-	DWORD dwStartSector;
-	DWORD dwEndSector;
+	m_pCdIo=cdio_open_win32("D:");
 
-	if (CDEX_OK != CR_Init(""))
+	// Open the Ripper session
+	if (!m_pCdIo)
 	{
-		CLog::Log(LOGERROR, "Error: CR_Init failed");
+		CLog::Log(LOGERROR, "Error: Opening DVD-Drive failed");
 		return false;
 	}
 
-	// get and set cdrom params
-	CR_GetCDROMParameters(&m_cdParams);
+	// Get Sart and end of the track to rip
+	m_lsnStart = cdio_get_track_lsn(m_pCdIo, iTrack);
+	m_lsnEnd = cdio_get_track_last_lsn(m_pCdIo, iTrack);
+	m_lsnCurrent = m_lsnStart;
 
-	//read around 128k per chunk instead of 0x1a which is the default. This makes the cd reading less noisy.
-	m_cdParams.nNumReadSectors = 0x37; 
-	CR_SetCDROMParameters(&m_cdParams);
-
-	CR_ReadToc();
-	dwStartSector = CR_GetTocEntry(iTrack - 1).dwStartSector;
-	dwEndSector = CR_GetTocEntry(iTrack).dwStartSector-1;
-	CLog::Log(LOGINFO, "Track %d, Sectors %d", CR_GetTocEntry(iTrack - 1).btTrackNumber,	dwEndSector - dwStartSector);
-
-	// Open ripper
-	if (CR_OpenRipper(&m_lBufferSize,	dwStartSector, dwEndSector) != CDEX_OK)
-	{
-		CLog::Log(LOGERROR, "Error: Failed to open ripper");
-		return false;
-	}
+	CLog::Log(LOGINFO, "Track %d, Sectors %d", iTrack,	m_lsnEnd - m_lsnStart);
 
 	// allocate 2 buffers
-	m_sRipBuffer[0].pbtStream = new BYTE[m_lBufferSize];
-	m_sRipBuffer[1].pbtStream = new BYTE[m_lBufferSize];
+	// read around 128k per chunk. This makes the cd reading less noisy.
+	m_sRipBuffer[0].pbtStream = new BYTE[CDIO_CD_FRAMESIZE_RAW*SECTOR_COUNT];
+	m_sRipBuffer[1].pbtStream = new BYTE[CDIO_CD_FRAMESIZE_RAW*SECTOR_COUNT];
 
 	Create();
 
@@ -82,12 +79,10 @@ bool CCDDAReader::DeInit()
 	m_sRipBuffer[1].pbtStream = NULL;
 
 	// Close the Ripper session
-	CR_CloseRipper();
-
-	if (CDEX_OK != CR_DeInit())
+	if (m_pCdIo)
 	{
-		CLog::Log(LOGERROR, "Error: CR_DeInit failed");
-		return false;
+		cdio_destroy(m_pCdIo);
+		m_pCdIo=NULL;
 	}
 
 	return true;
@@ -95,42 +90,29 @@ bool CCDDAReader::DeInit()
 
 int CCDDAReader::GetPercent()
 {
-	return m_iPercent;
+	return ((m_lsnCurrent-m_lsnStart)*100)/(m_lsnEnd-m_lsnStart);
 }
 
 int CCDDAReader::ReadChunk()
 {
-	CDEX_ERR ripErr;
-	BOOL bAbort = false;
+	// Are there enough sectors left to rip a fill chunk
+	int iSectorCount=SECTOR_COUNT;
+	while (m_lsnCurrent+iSectorCount>m_lsnEnd && iSectorCount>1)
+		iSectorCount--;
 
-	ripErr = CR_RipChunk(m_sRipBuffer[m_iCurrentBuffer].pbtStream,
-			&m_sRipBuffer[m_iCurrentBuffer].lBytesRead, bAbort);
-
-	// Get progress indication
-	m_iPercent = CR_GetPercentCompleted();
-
-	if (CDEX_RIPPING_DONE == ripErr) return CDDARIP_DONE; 
-
-	// Check for jitter errors
-	if (CDEX_JITTER_ERROR == ripErr)
+	// Read data
+	if (cdio_read_audio_sectors(m_pCdIo, m_sRipBuffer[m_iCurrentBuffer].pbtStream, m_lsnCurrent, iSectorCount)!=DRIVER_OP_SUCCESS)
 	{
-		CLog::Log(LOGERROR, "Found Jitter Error while reading cdda data");
-		/*
-		DWORD dwStartSector, dwEndSector;
-		// Get info where jitter error did occur
-		CR_GetLastJitterErrorPosition(dwStartSector,dwEndSector);
-		// and do something usefull with it ? :)*/
+		m_sRipBuffer[m_iCurrentBuffer].lBytesRead=0;
+		CLog::Log(LOGERROR, "Reading %d sectors of audio data starting at lsn %d failed", iSectorCount, m_lsnCurrent);
+		return CDDARIP_ERR;
 	}
 
-	if (CDEX_ERROR == ripErr)	return CDDARIP_ERR;
+	m_sRipBuffer[m_iCurrentBuffer].lBytesRead=CDIO_CD_FRAMESIZE_RAW*iSectorCount;
+	m_lsnCurrent+=iSectorCount;
 
-	/*// Get relative jitter position
-	nJitterPos = CR_GetJitterPosition();
-	// Get the Peak Value
-	nPeakValue = CR_GetPeakValue();
-	// Get the number of jitter errors
-	nJitterErrors = CR_GetNumberOfJitterErrors();
-	*/
+	if (m_lsnCurrent == m_lsnEnd) return CDDARIP_DONE; 
+
 	return CDDARIP_OK;
 }
 

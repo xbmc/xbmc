@@ -337,8 +337,15 @@ bool CCDDARipper::RipCD()
 		else
 			strFile.Format("%s%s%02i%s", strDirectory.c_str(), "Track-", iTrack, cExt);
 
+		DWORD dwTick=timeGetTime();
+		
 		// return false if Rip returned false (this means an error or the user cancelled
 		if (!Rip(iTrack, strFile.c_str(), vecItems[i]->m_musicInfoTag)) return false;
+
+		dwTick = timeGetTime() - dwTick;
+		CStdString strTmp;
+		CUtil::SecondsToHMSString(dwTick/1000, strTmp);
+		CLog::Log(LOGINFO,"Ripping Track %d took %s", iTrack, strTmp.c_str());
 	}
 	CLog::Log(LOGINFO, "Ripped CD succesfull");
 	return true;
