@@ -167,6 +167,7 @@ public:
 	void		Close() ;
 	void		AddSong(const CSong& song,bool bCheck=true);
 	long		AddAlbumInfo(const CAlbum& album);
+	long		UpdateAlbumInfo(const CAlbum& album);
 	bool		GetAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, CAlbum& album);
 	bool		GetSong(const CStdString& strTitle, CSong& song);
 	bool		GetSongByFileName(const CStdString& strFileName, CSong& song);

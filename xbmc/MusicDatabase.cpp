@@ -1455,3 +1455,59 @@ bool CMusicDatabase::FindAlbumsByName(const CStdString& strSearch1, VECALBUMS& a
 
 	return false;
 }
+
+long CMusicDatabase::UpdateAlbumInfo(const CAlbum& album1)
+{
+	CStdString strSQL;
+	try
+	{
+		CAlbum album;
+		album=album1;
+		RemoveInvalidChars(album.strAlbum);
+		RemoveInvalidChars(album.strGenre);
+		RemoveInvalidChars(album.strArtist);
+		RemoveInvalidChars(album.strTones);
+		RemoveInvalidChars(album.strStyles);
+		RemoveInvalidChars(album.strReview);
+		RemoveInvalidChars(album.strImage);
+		RemoveInvalidChars(album.strPath);
+
+		if (NULL==m_pDB.get()) return -1;
+		if (NULL==m_pDS.get()) return -1;
+		long lGenreId  = AddGenre(album1.strGenre);
+		long lPathId   = AddPath(album1.strPath);
+		long lArtistId = AddArtist(album1.strArtist);
+		long lAlbumId  = AddAlbum(album1.strAlbum,lArtistId,lPathId,album1.strPath);
+
+		strSQL.Format("select * from albuminfo where idAlbum=%i", lAlbumId);
+		if (!m_pDS->query(strSQL.c_str())) return -1;
+
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound== 0) 
+		{
+			return AddAlbumInfo(album1);
+		}
+
+		long idAlbumInfo=m_pDS->fv("idAlbumInfo").get_asLong();
+
+
+		strSQL.Format("update albuminfo set idAlbum=%i,idArtist=%i,idGenre=%i,strTones='%s',strStyles='%s',strReview='%s',strImage='%s',iRating=%i,iYear=%i where idAlbumInfo=%i",
+												lAlbumId,lArtistId,lGenreId,
+												album.strTones.c_str(),
+												album.strStyles.c_str(),
+												album.strReview.c_str(),
+												album.strImage.c_str(),
+												album.iRating,
+												album.iYear,
+												idAlbumInfo);
+		m_pDS->exec(strSQL.c_str());
+
+		return idAlbumInfo;
+	}
+	catch(...)
+	{
+    CLog::Log("musicdatabase:unable to updatealbuminfo (%s)", strSQL.c_str());
+	}
+
+	return -1;
+}
