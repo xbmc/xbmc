@@ -225,12 +225,19 @@ void CGUIWindowPrograms::Render()
 
 void CGUIWindowPrograms::OnAction(const CAction &action)
 {
-    if (action.wID == ACTION_PREVIOUS_MENU)
-    {
-        m_gWindowManager.PreviousWindow();
-        return;
-    }
-    CGUIWindow::OnAction(action);
+	if (action.wID==ACTION_PARENT_DIR)
+	{
+		GoParentFolder();
+		return;
+	}
+
+	if (action.wID == ACTION_PREVIOUS_MENU)
+	{
+			m_gWindowManager.PreviousWindow();
+			return;
+	}
+
+	CGUIWindow::OnAction(action);
 }
 
 
@@ -881,4 +888,19 @@ void CGUIWindowPrograms::ShowThumbPanel()
     CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iSelectedItem);
     CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iSelectedItem);
   }
+}
+
+/// \brief Call to go to parent folder
+void CGUIWindowPrograms::GoParentFolder()
+{
+	if (m_vecItems.size()==0) return;
+	CFileItem* pItem=m_vecItems[0];
+	if (pItem->m_bIsFolder)
+	{
+		if (pItem->GetLabel()=="..")
+		{
+			CStdString strPath=pItem->m_strPath;
+			Update(strPath);
+		}
+	}
 }
