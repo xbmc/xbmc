@@ -288,3 +288,10 @@ void CGUIWindowVisualisation::ClearBuffers()
 		m_fFreq[j] = 0.0f;
 	}
 }
+
+void CGUIWindowVisualisation::FreeResources()
+{
+	// Save changed settings from music OSD
+	g_settings.Save();
+	CGUIWindow::FreeResources();
+}
