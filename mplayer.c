@@ -3176,12 +3176,11 @@ if(auto_quality>0){
   //We let it display two frames a second
   if(ffrw_speed<0.0f)
   {
-    osd_function = ffrw_sstep > 0 ? OSD_FFW : OSD_REW;
+    osd_function = ffrw_speed > 0 ? OSD_FFW : OSD_REW;
     if(ffrw_sstepframes <= 0)
     {
       int newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + ffrw_startpts;
-      abs_seek_pos=1;
-      rel_seek_secs= (float)(newpts) + ffrw_speed/4.0f;
+      rel_seek_secs= (float)(newpts - voldpts) + ffrw_speed/2.0f;
       ffrw_sstepframes=2;
       playback_speed=4/sh_video->fps; //Take it slow
     }
@@ -3198,6 +3197,9 @@ if(auto_quality>0){
     if( (newpts - voldpts) > 2.0f )
         rel_seek_secs+= (newpts - voldpts) + ffrw_speed/2.0f; //Give it an headstart
 
+    vo_osd_progbar_type=0;
+	  vo_osd_progbar_value=demuxer_get_percent_pos(demuxer) * 256 / 100;
+	  vo_osd_changed(OSDTYPE_PROGBAR);
   }
 
 #else
@@ -5001,7 +5003,6 @@ void mplayer_ToFFRW(int iSpeed)
   {
       ffrw_startpts=0;
       ffrw_starttime=0;
-      ffrw_sstep = 0;
       ffrw_sstepframes = 0;
       ffrw_speed=0;
 
