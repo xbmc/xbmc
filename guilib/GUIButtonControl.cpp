@@ -17,7 +17,7 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD 
 	m_dwTextOffsetX = dwTextXOffset;
 	m_dwTextOffsetY = dwTextYOffset;
 	m_pFont=NULL;
-  m_lHyperLinkWindowID=-1;
+  m_lHyperLinkWindowID=WINDOW_INVALID;
 	m_strScriptAction="";
 	ControlType = GUICONTROL_BUTTON;
 }
@@ -85,7 +85,7 @@ void CGUIButtonControl::OnAction(const CAction &action)
 			g_actionManager.CallScriptAction(message);
 		}
 
-		if (m_lHyperLinkWindowID >=0)
+		if (m_lHyperLinkWindowID != WINDOW_INVALID)
 		{
 			m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
 			return;

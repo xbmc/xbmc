@@ -90,7 +90,7 @@ void CGUIWindowManager::PreviousWindow()
 		  iPrevActiveWindowID = pWindow->GetPreviousWindowID();
 		  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,iPrevActiveWindowID);
 		  pWindow->OnMessage(msg);
-		  m_iActiveWindow=-1;
+		  m_iActiveWindow=WINDOW_INVALID;
     }
 	}
 
@@ -167,9 +167,12 @@ void CGUIWindowManager::ActivateWindow(int iWindowID)
 	// new window doesnt exists. (maybe .xml file is invalid or doesnt exists)
 	// so we go back to the previous window
 	m_iActiveWindow=iPrevActiveWindow;
-	CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
-	CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
-	pWindow->OnMessage(msg);
+	if (m_iActiveWindow >= 0)
+	{
+		CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
+		CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
+		pWindow->OnMessage(msg);
+	}
 }
 
 
