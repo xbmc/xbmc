@@ -1,8 +1,8 @@
 <!-- Finnish - language resource                                                    !-->
 <!-- Finnish Translation 2004-11-7 by Nanite1000                                    !-->
 <!-- Based on CVS revision 2004-11-7 YYYY-MM-DD                                     !-->
-<!-- Finnish Translation Update 2005-02-06 by jutski                                !-->
-<!-- Based on CVS revision 2005-02-05 YYYY-MM-DD (English rev1.161)                 !-->
+<!-- Finnish Translation Update 2005-02-17 by jutski                                !-->
+<!-- Based on CVS revision 2005-02-15 YYYY-MM-DD (English rev1.162)                 !-->
 <!-- For comments PM me in xboxmediacenter forum or IRC: nanite1k @ #xbmc on efnet  !-->
 <!--   or send email to: nanite1000 _at_ users _dot_ sourceforge _dot_ net          !-->
 <!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta                   !-->
@@ -334,12 +334,12 @@
   <string><id>385</id><value>Fair</value></string>
   <string><id>386</id><value>Clear</value></string>
   <string><id>387</id><value>Clouds</value></string>
-  <string><id>388</id><value>N/A</value></string>
-  <string><id>389</id><value>N/A</value></string>
-  <string><id>390</id><value>N/A</value></string>
-  <string><id>391</id><value>N/A</value></string>
-  <string><id>392</id><value>N/A</value></string>
-  <string><id>393</id><value>N/A</value></string>
+  <string><id>388</id><value>Varhainen</value></string>
+  <string><id>389</id><value>Sadekuuro</value></string>
+  <string><id>390</id><value>Tuulista</value></string>
+  <string><id>391</id><value>Heikkoa</value></string>
+  <string><id>392</id><value>Kohtalaista</value></string>
+  <string><id>393</id><value>Voimakasta</value></string>
   <string><id>394</id><value>N/A</value></string>
   <string><id>395</id><value>N/A</value></string>
   <string><id>396</id><value>Hae paikkakunta</value></string>
@@ -768,6 +768,7 @@
   <string><id>14059</id><value>Etsi omia pikkukuvia etäjaoista</value></string>
   <string><id>14060</id><value>Tuntematon tyyppi Välimuisti - Internet</value></string>
   <string><id>14061</id><value>Automaattinen</value></string>
+  <string><id>14062</id><value>Anna käyttäjätunnus:</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Ei yhteyttä palveluun, haluaisitko</value></string>
