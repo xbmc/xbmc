@@ -249,13 +249,16 @@ VOID CGUIWindowHome::GetTime(WCHAR* szTime, LPSYSTEMTIME pTime)
 
 	if (g_guiSettings.GetBool("LookAndFeel.Clock12Hour"))
 	{
-		if (iHour>12)
+		if (iHour>11)
 		{
-			iHour-=12;
-			swprintf(szTime,L"%02d:%02d PM", iHour, pTime->wMinute);
+			iHour-=(12*(iHour>12));
+			swprintf(szTime,L"%2d:%02d PM", iHour, pTime->wMinute);
 		}
 		else
-			swprintf(szTime,L"%02d:%02d AM", iHour, pTime->wMinute);
+		{
+			iHour+=(12*(iHour<1));
+			swprintf(szTime,L"%2d:%02d AM", iHour, pTime->wMinute);
+		}
 	}
 	else
 		swprintf(szTime,L"%02d:%02d", iHour, pTime->wMinute);
