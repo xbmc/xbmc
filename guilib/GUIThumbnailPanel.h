@@ -58,7 +58,10 @@ public:
 	const CStdString			GetNoFocusName() const { return m_imgFolder.GetFileName();};
 	DWORD									GetItemWidth() const { return m_iItemWidth;};
 	DWORD									GetItemHeight() const { return m_iItemHeight;};
-
+	void                  SetItemWidth(DWORD dwWidth);
+	void                  SetItemHeight(DWORD dwHeight);
+  bool                  IsTextureShown() const { return m_bShowTexture;};
+  void                  ShowTexture(bool bOnoff);
 protected:
 	void				 RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUIListItem* pItem);
   void         RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText,bool bScroll );
@@ -68,7 +71,8 @@ protected:
   void         OnUp();
   void         OnPageUp();
   void         OnPageDown();
-  bool                  ValidItem(int iX, int iY);
+  bool         ValidItem(int iX, int iY);
+  bool                  m_bShowTexture;
   int                   m_iOffset;
   int                   m_iItemHeight;
   int                   m_iItemWidth;

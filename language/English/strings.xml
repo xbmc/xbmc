@@ -1246,4 +1246,8 @@
     <id>416</id>
     <value>Not available</value>
   </string> 
+  <string>
+    <id>417</id>
+    <value>Large Icons</value>
+  </string> 
 </strings>

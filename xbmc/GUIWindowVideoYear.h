@@ -23,6 +23,9 @@ public:
 private:
   void              SetIMDBThumbs(VECFILEITEMS& items);
 protected:
+  virtual bool      ViewByLargeIcon();
+  virtual bool      ViewByIcon();
+
   void							Clear();
   virtual void			OnSort();
   virtual void			UpdateButtons();
