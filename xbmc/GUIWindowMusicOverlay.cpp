@@ -253,6 +253,10 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 	auto_aptr<char>pArtist(ID3_GetArtist( &id3tag));
 	auto_aptr<char>pAlbum (ID3_GetAlbum( &id3tag ));
 	auto_aptr<char>pGenre (ID3_GetGenre( &id3tag ));
+
+  CMusicInfoTag tag;
+  tag.SetLoaded(true);
+
 	int nTrackNum=ID3_GetTrackNum( &id3tag );
 	{
 		CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), CONTROL_LOGO_PIC); 
@@ -267,6 +271,7 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 		msg1.SetLabel(pTitle.get() );
 		OnMessage(msg1);
+    tag.SetTitle(pTitle.get() );
 	}
 
 	if (NULL != pArtist.get())
@@ -274,6 +279,8 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 		msg1.SetLabel( pArtist.get());
 		OnMessage(msg1);
+    
+    tag.SetArtist(pArtist.get() );
 	}
 		
 	if ( NULL != pAlbum.get())
@@ -281,6 +288,7 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 		msg1.SetLabel( pAlbum.get() );
 		OnMessage(msg1);
+    tag.SetAlbum(pAlbum.get() );
 	}
 		
 	if (nTrackNum >=1)
@@ -294,6 +302,8 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 		msg1.SetLabel( strTrack );
 		OnMessage(msg1);
+    
+    tag.SetTrackNumber(nTrackNum);
 	}
 	if (NULL != pYear.get() )
 	{
@@ -306,7 +316,11 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 		msg1.SetLabel( strYear );
 		OnMessage(msg1);
+    SYSTEMTIME sysTime;
+    sysTime.wYear=atoi(pYear.get());
+    tag.SetReleaseDate(sysTime);
 	}
+  g_application.SetCurrentSong(tag);
 }
 
 /// \brief Tries to set the music tag information for \e strFile to window.
