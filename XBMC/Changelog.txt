@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 03-03-2005 updated: mplayer.dll to current cvs (final real fix + autosync fix)
   - 03-03-2005 changed: background music info scanner is default now (setting removed)
   - 03-03-2005 added: Cached thumb location is now stored in the database.  Music database SHOULD auto-update when you first access My Music.
   - 03-03-2005 removed: old mplayer use.  We now only use the system/players/mplayer directory.
