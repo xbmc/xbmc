@@ -22,6 +22,7 @@ rem	CONFIG START
 	set XBE=xbepatch.exe
 	set RAR=C:\Progra~1\Winrar\rar.exe
 	set RAROPS=a -r -idp -inul -m5 XBMC.rar BUILD
+	set TEX=XBMCTex.exe
 	set SKINS=..\Skins
 	set CODECS=..\Codecs
 rem	CONFIG END
@@ -41,6 +42,8 @@ copy *.xml BUILD
 copy *.txt BUILD
 xcopy mplayer BUILD\mplayer /E /Q /I /Y
 xcopy skin BUILD\skin /E /Q /I /Y
+%TEX% -input BUILD\skin\MediaCenter\media -output BUILD\skin\MediaCenter\media
+del /s BUILD\skin\MediaCenter\*.png
 xcopy language BUILD\language /E /Q /I /Y
 xcopy xbmc\keyboard\media BUILD\media /E /Q /I /Y
 xcopy visualisations BUILD\visualisations /E /Q /I /Y
