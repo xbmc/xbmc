@@ -609,7 +609,9 @@ bool CMPlayer::load()
 }
 void update_cache_dialog(const char* tmp)
 {
-	if (m_dlgCache)
+  //Make sure we lock here as this is called from the cache thread thread
+  g_graphicsContext.Lock(); 
+  if (m_dlgCache)
 	{
 		m_dlgCache->SetMessage(tmp);
 		m_dlgCache->Update();
@@ -619,6 +621,7 @@ void update_cache_dialog(const char* tmp)
 			mplayer_exit_player();
 		}
 	}
+  g_graphicsContext.Unlock();
 }
 bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
@@ -972,14 +975,22 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 	catch(...)
 	{
 		CLog::Log(LOGERROR, "cmplayer::openfile() %s failed",strFile.c_str());
-		if (m_dlgCache) delete m_dlgCache;
+
+    //Lock here to make sure cache thread isn't using the object
+    g_graphicsContext.Lock();
+    if (m_dlgCache) delete m_dlgCache;
 		m_dlgCache=NULL;  
-		CloseFile();
+    g_graphicsContext.Unlock();
+
+    CloseFile();
 		return false;
 	}
 
+  //Lock here to make sure cache thread isn't using the object
+  g_graphicsContext.Lock();
 	if (m_dlgCache) delete m_dlgCache;
 	m_dlgCache=NULL;
+  g_graphicsContext.Unlock();
 
 	//	mplayer return values: 
 	//	-1	internal error
