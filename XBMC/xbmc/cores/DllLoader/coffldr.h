@@ -19,7 +19,6 @@ protected:
     SymbolTable_t           *SymTable;
     char                    *StringTable;
     char                    **SectionData;
-	void					*hModule_M;		//actual memory allocate before alignment
 
 // Unnecessary data
 //  This is data that is used only during linking and is not necessary
