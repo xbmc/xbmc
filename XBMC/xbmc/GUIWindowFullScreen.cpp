@@ -24,6 +24,7 @@
 #define MENU_ACTION_SUBTITLEONOFF 4
 #define MENU_ACTION_SUBTITLELANGUAGE 5
 #define MENU_ACTION_INTERLEAVED 6
+#define MENU_ACTION_FRAMERATECONVERSIONS 7
 
 #define IMG_PAUSE     16
 
@@ -445,10 +446,12 @@ void CGUIWindowFullScreen::ShowOSD()
   int iValue=g_application.m_pPlayer->GetPercentage();
   COSDOptionIntRange   optionPercentage(MENU_ACTION_SEEK,298,true,0,100,1,iValue);
   COSDOptionBoolean    optionNonInterleaved(MENU_ACTION_INTERLEAVED,306, g_stSettings.m_bNonInterleaved);
+  COSDOptionBoolean    optionFrameRateConversions(MENU_ACTION_FRAMERATECONVERSIONS, 336, g_stSettings.m_bFrameRateConversions);
 
   videoMenu.AddOption(&optionAVDelay);
   videoMenu.AddOption(&optionPercentage);
   videoMenu.AddOption(&optionNonInterleaved);
+  videoMenu.AddOption(&optionFrameRateConversions);
   
 
   COSDSubMenu audioMenu(292,100,100);
@@ -527,9 +530,24 @@ void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
     break;
     
     case MENU_ACTION_INTERLEAVED:
-      const COSDOptionBoolean* boolOption = (const COSDOptionBoolean*)option;
-      g_stSettings.m_bNonInterleaved=!g_stSettings.m_bNonInterleaved;
-      g_application.Restart(true);
+	  {
+        const COSDOptionBoolean* boolOption = (const COSDOptionBoolean*)option;
+        g_stSettings.m_bNonInterleaved=!g_stSettings.m_bNonInterleaved;
+        HideOSD();
+        m_bOSDVisible=false;
+        g_application.Restart(true);
+        return;
+	  }
+	  break;
+	  case MENU_ACTION_FRAMERATECONVERSIONS:
+	  {
+		    const COSDOptionBoolean* boolOption = (const COSDOptionBoolean*)option;
+		    g_stSettings.m_bFrameRateConversions=!g_stSettings.m_bFrameRateConversions;
+        HideOSD();
+        m_bOSDVisible=false;
+		    g_application.Restart(true);
+        return;	  
+    }
     break;
   }
 }
