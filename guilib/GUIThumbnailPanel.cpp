@@ -70,53 +70,62 @@ CGUIThumbnailPanel::~CGUIThumbnailPanel(void)
 {
 }
 
-void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListItem* pItem)
+void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListItem* pItem, int iStage)
 {
-
-  CStdStringW strItemLabelUnicode;
-  
   float fTextPosY =(float)iPosY+ (float)m_iTextureHeight;
-  g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel().c_str(), strItemLabelUnicode);
-
-  DWORD dwColor=m_dwTextColor;
   int iCenteredPosX = iPosX + (m_iItemWidth-m_iTextureWidth)/2;
-	if (pItem->IsSelected()) dwColor=m_dwSelectedColor;
-  if (bFocus && HasFocus()&&m_iSelect==CONTROL_LIST )
+
+  if (iStage == 0) //render images
   {
-    m_imgFolderFocus.SetPosition(iCenteredPosX, iPosY);
-		if (m_bShowTexture) m_imgFolderFocus.Render();
-    
-		RenderText((float)iPosX,(float)fTextPosY,dwColor,(WCHAR*) strItemLabelUnicode.c_str(),true);
-  }
-  else
-  {
- 	m_imgFolder.SetPosition(iCenteredPosX, iPosY);
-    if (m_bShowTexture) m_imgFolder.Render();
-    
-	RenderText((float)iPosX,(float)fTextPosY,dwColor,(WCHAR*) strItemLabelUnicode.c_str(),false);
-  
-  }
-	if (pItem->HasThumbnail() )
-  {
-		CGUIImage *pImage=pItem->GetThumbnail();
-		if (!pImage )
+    if (bFocus && HasFocus()&&m_iSelect==CONTROL_LIST )
     {
-			pImage=new CGUIImage(0,0,m_iThumbXPos+iCenteredPosX,m_iThumbYPos+iPosY,m_iThumbWidth,m_iThumbHeight,pItem->GetThumbnailImage(),0x0);
-      pImage->SetKeepAspectRatio(true);
-      pImage->AllocResources();
-			pItem->SetThumbnail(pImage);
-      int xOff=(m_iThumbWidth-pImage->GetRenderWidth())/2;
-      int yOff=(m_iThumbHeight-pImage->GetRenderHeight())/2;
-      pImage->SetPosition(m_iThumbXPos+iCenteredPosX+xOff,m_iThumbYPos+iPosY+yOff);
+      m_imgFolderFocus.SetPosition(iCenteredPosX, iPosY);
+      if (m_bShowTexture) m_imgFolderFocus.Render();
     }
     else
     {
-      pImage->SetWidth(m_iThumbWidth);
-      pImage->SetHeight(m_iThumbHeight);
-      int xOff=(m_iThumbWidth-pImage->GetRenderWidth())/2;
-      int yOff=(m_iThumbHeight-pImage->GetRenderHeight())/2;
-      pImage->SetPosition(m_iThumbXPos+iCenteredPosX+xOff,m_iThumbYPos+iPosY+yOff);
-      pImage->Render();
+      m_imgFolder.SetPosition(iCenteredPosX, iPosY);
+      if (m_bShowTexture) m_imgFolder.Render();
+    }
+    if (pItem->HasThumbnail() )
+    {
+      CGUIImage *pImage=pItem->GetThumbnail();
+      if (!pImage )
+      {
+        pImage=new CGUIImage(0,0,m_iThumbXPos+iCenteredPosX,m_iThumbYPos+iPosY,m_iThumbWidth,m_iThumbHeight,pItem->GetThumbnailImage(),0x0);
+        pImage->SetKeepAspectRatio(true);
+        pImage->AllocResources();
+        pItem->SetThumbnail(pImage);
+        int xOff=(m_iThumbWidth-pImage->GetRenderWidth())/2;
+        int yOff=(m_iThumbHeight-pImage->GetRenderHeight())/2;
+        pImage->SetPosition(m_iThumbXPos+iCenteredPosX+xOff,m_iThumbYPos+iPosY+yOff);
+        pImage->Render();
+      }
+      else
+      {
+        pImage->SetWidth(m_iThumbWidth);
+        pImage->SetHeight(m_iThumbHeight);
+        int xOff=(m_iThumbWidth-pImage->GetRenderWidth())/2;
+        int yOff=(m_iThumbHeight-pImage->GetRenderHeight())/2;
+        pImage->SetPosition(m_iThumbXPos+iCenteredPosX+xOff,m_iThumbYPos+iPosY+yOff);
+        pImage->Render();
+      }
+    }
+  }
+  if (iStage == 1) //render text
+  {
+    CStdStringW strItemLabelUnicode;
+    g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel().c_str(), strItemLabelUnicode);
+
+    DWORD dwColor=m_dwTextColor;
+    if (pItem->IsSelected()) dwColor=m_dwSelectedColor;
+    if (bFocus && HasFocus()&&m_iSelect==CONTROL_LIST )
+    {
+      RenderText((float)iPosX,(float)fTextPosY,dwColor,(WCHAR*) strItemLabelUnicode.c_str(),true);
+    }
+    else
+    {
+      RenderText((float)iPosX,(float)fTextPosY,dwColor,(WCHAR*) strItemLabelUnicode.c_str(),false);
     }
   }
 }
@@ -133,121 +142,33 @@ void CGUIThumbnailPanel::Render()
   }
   CGUIControl::Render();
 
-	int iScrollYOffset=0;
-	if (m_bScrollDown)
-	{
-		iScrollYOffset=-(m_iItemHeight-m_iScrollCounter);
-	}
-	if (m_bScrollUp)
-	{
-		iScrollYOffset=m_iItemHeight-m_iScrollCounter;
-	}
-
-
-	g_graphicsContext.SetViewPort( (float)m_iPosX, (float)m_iPosY, (float)m_iColumns*m_iItemWidth, (float)m_iRows*m_iItemHeight);
-
-  int iStartItem=30000;
-  int iEndItem=-1;
-	if (m_bScrollUp)
-	{
-		// render item on top
-		int iPosY=m_iPosY -m_iItemHeight + iScrollYOffset;
-    m_iOffset-=m_iColumns;
-    for (int iCol=0; iCol < m_iColumns; iCol++)
-    {
-			int iPosX = m_iPosX + iCol*m_iItemWidth;
-      int iItem = iCol+m_iOffset;
-      if (iItem >= 0 && iItem < (int)m_vecItems.size())
-      {
-        CGUIListItem *pItem=m_vecItems[iItem];
-				RenderItem(false,iPosX,iPosY,pItem);
-        if (iItem<iStartItem) iStartItem=iItem;
-        if (iItem>iEndItem) iEndItem=iItem;
-      }
-    }
-    m_iOffset+=m_iColumns;
-	}
-
-	// render main panel
-  for (int iRow=0; iRow < m_iRows; iRow++)
+  int iScrollYOffset=0;
+  if (m_bScrollDown)
   {
-    int iPosY=m_iPosY + iRow*m_iItemHeight + iScrollYOffset;
-    for (int iCol=0; iCol < m_iColumns; iCol++)
-    {
-			int iPosX = m_iPosX + iCol*m_iItemWidth;
-	    int iItem = iRow*m_iColumns+iCol+m_iOffset;
-      if (iItem < (int)m_vecItems.size())
-      {
-        CGUIListItem *pItem=m_vecItems[iItem];
-				bool bFocus=(m_iCursorX==iCol && m_iCursorY==iRow );
-				RenderItem(bFocus,iPosX,iPosY,pItem);
-        if (iItem<iStartItem) iStartItem=iItem;
-        if (iItem>iEndItem) iEndItem=iItem;
-      }
-    }
+    iScrollYOffset=-(m_iItemHeight-m_iScrollCounter);
+  }
+  if (m_bScrollUp)
+  {
+    iScrollYOffset=m_iItemHeight-m_iScrollCounter;
   }
 
-	if (m_bScrollDown)
-	{
-		// render item on bottom
-		int iPosY=m_iPosY + m_iRows*m_iItemHeight + iScrollYOffset;
-    for (int iCol=0; iCol < m_iColumns; iCol++)
-    {
-			int iPosX = m_iPosX + iCol*m_iItemWidth;
-	    int iItem = m_iRows*m_iColumns+iCol+m_iOffset;
-      if (iItem < (int)m_vecItems.size())
-      {
-        CGUIListItem *pItem=m_vecItems[iItem];
-				RenderItem(false,iPosX,iPosY,pItem);
-        if (iItem<iStartItem) iStartItem=iItem;
-        if (iItem>iEndItem) iEndItem=iItem;
-      }
-    }
-	}
 
-	g_graphicsContext.RestoreViewPort();
-  
+  g_graphicsContext.SetViewPort( (float)m_iPosX, (float)m_iPosY, (float)m_iColumns*m_iItemWidth, (float)m_iRows*m_iItemHeight);
 
-	//
-  int iFrames=12;
-  int iStep=m_iItemHeight/iFrames;
-  if (!iStep) iStep=1;
-	if (m_bScrollDown)
-	{
-		m_iScrollCounter-=iStep;
-		if (m_iScrollCounter<=0)
-		{
-			m_bScrollDown=false;
-			m_iOffset+=m_iColumns;
-			// Check if we need to update our position
-			if (!ValidItem(m_iCursorX, m_iCursorY))
-			{	// select the last item available
-				int iPos = m_vecItems.size()-1-m_iOffset;
-				m_iCursorY = iPos / m_iColumns;
-				m_iCursorX = iPos % m_iColumns;
-			}
-			// Update the page counter
-			int iPage = m_iOffset/(m_iRows*m_iColumns)+1;
-			if (m_iOffset + m_iRows*m_iColumns == (int)m_vecItems.size())
-				iPage++;
-			m_upDown.SetValue(iPage);
-		}
-	}
-	if (m_bScrollUp)
-	{
-		m_iScrollCounter-=iStep;
-		if (m_iScrollCounter<=0)
-		{
-			m_bScrollUp=false;
-      m_iOffset -= m_iColumns;
-			int iPage = m_iOffset/(m_iRows*m_iColumns);
-			m_upDown.SetValue(iPage+1);
-		}
-	}
-  //free memory
+  //free memory of thumbs that are not going to be displayed
+  int iStartItem = m_iOffset;
+  if (m_bScrollUp)
+  {
+    iStartItem -= m_iColumns;
+  }
+  int iEndItem = m_iOffset + (m_iColumns * m_iRows) - 1;
+  if (m_bScrollDown)
+  {
+    iEndItem += m_iColumns;
+  }
   if (iStartItem < 30000)
   {
-    for (int i=0; i < iStartItem;++i)
+    for (int i = 0; i < iStartItem;++i)
     {
       CGUIListItem *pItem=m_vecItems[i];
       if (pItem)
@@ -256,13 +177,114 @@ void CGUIThumbnailPanel::Render()
       }
     }
   }
-
-  for (int i=iEndItem+1; i < (int)m_vecItems.size(); ++i) 
+  for (int i = iEndItem + 1; i < (int)m_vecItems.size(); ++i) 
   {
     CGUIListItem *pItem=m_vecItems[i];
     if (pItem)
     {
       pItem->FreeMemory();
+    }
+  }
+
+  //render in 2 loops, first the images, second all text (batched between Begin()/End())
+  for (int iStage = 0; iStage <= 1; iStage++)
+  {
+    if (iStage == 1) //text rendering
+    {
+      m_pFont->Begin();
+    }
+
+    if (m_bScrollUp)
+    {
+      // render item on top
+      int iPosY = m_iPosY - m_iItemHeight + iScrollYOffset;
+      m_iOffset -= m_iColumns;
+      for (int iCol = 0; iCol < m_iColumns; iCol++)
+      {
+        int iPosX = m_iPosX + iCol*m_iItemWidth;
+        int iItem = iCol + m_iOffset;
+        if (iItem >= 0 && iItem < (int)m_vecItems.size())
+        {
+          CGUIListItem *pItem = m_vecItems[iItem];
+          RenderItem(false, iPosX, iPosY, pItem, iStage);
+        }
+      }
+      m_iOffset += m_iColumns;
+    }
+
+    // render main panel
+    for (int iRow = 0; iRow < m_iRows; iRow++)
+    {
+      int iPosY = m_iPosY + iRow*m_iItemHeight + iScrollYOffset;
+      for (int iCol = 0; iCol < m_iColumns; iCol++)
+      {
+        int iPosX = m_iPosX + iCol*m_iItemWidth;
+        int iItem = iRow*m_iColumns + iCol + m_iOffset;
+        if (iItem < (int)m_vecItems.size())
+        {
+          CGUIListItem *pItem = m_vecItems[iItem];
+          bool bFocus = (m_iCursorX == iCol && m_iCursorY == iRow );
+          RenderItem(bFocus, iPosX, iPosY, pItem, iStage);
+        }
+      }
+    }
+
+    if (m_bScrollDown)
+    {
+      // render item on bottom
+      int iPosY = m_iPosY + m_iRows*m_iItemHeight + iScrollYOffset;
+      for (int iCol = 0; iCol < m_iColumns; iCol++)
+      {
+        int iPosX = m_iPosX + iCol*m_iItemWidth;
+        int iItem = m_iRows*m_iColumns + iCol + m_iOffset;
+        if (iItem < (int)m_vecItems.size())
+        {
+          CGUIListItem *pItem = m_vecItems[iItem];
+          RenderItem(false, iPosX, iPosY, pItem, iStage);
+        }
+      }
+    }
+    if (iStage == 1){ //end text rendering
+      m_pFont->End();
+    }
+  }
+
+  g_graphicsContext.RestoreViewPort();
+
+  //
+  int iFrames=12;
+  int iStep=m_iItemHeight/iFrames;
+  if (!iStep) iStep=1;
+  if (m_bScrollDown)
+  {
+    m_iScrollCounter-=iStep;
+    if (m_iScrollCounter<=0)
+    {
+      m_bScrollDown=false;
+      m_iOffset+=m_iColumns;
+      // Check if we need to update our position
+      if (!ValidItem(m_iCursorX, m_iCursorY))
+      { // select the last item available
+        int iPos = m_vecItems.size()-1-m_iOffset;
+        m_iCursorY = iPos / m_iColumns;
+        m_iCursorX = iPos % m_iColumns;
+      }
+      // Update the page counter
+      int iPage = m_iOffset/(m_iRows*m_iColumns)+1;
+      if (m_iOffset + m_iRows*m_iColumns == (int)m_vecItems.size())
+        iPage++;
+      m_upDown.SetValue(iPage);
+    }
+  }
+  if (m_bScrollUp)
+  {
+    m_iScrollCounter-=iStep;
+    if (m_iScrollCounter<=0)
+    {
+      m_bScrollUp=false;
+      m_iOffset -= m_iColumns;
+      int iPage = m_iOffset/(m_iRows*m_iColumns);
+      m_upDown.SetValue(iPage+1);
     }
   }
   m_upDown.Render();
@@ -589,122 +611,122 @@ void CGUIThumbnailPanel::OnDown()
 
 void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText,bool bScroll )
 {
-	if (!m_pFont) return;
-	static int scroll_pos = 0;
-	static int iScrollX=0;
-	static int iLastItem=-1;
-	static int iFrames=0;
-	static int iStartFrame=0;
+  if (!m_pFont) return;
+  static int scroll_pos = 0;
+  static int iScrollX=0;
+  static int iLastItem=-1;
+  static int iFrames=0;
+  static int iStartFrame=0;
 
   float fTextHeight,fTextWidth;
   m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
-	float fMaxWidth=(float)m_iItemWidth*0.9f;
-	fPosX += ((float)m_iItemWidth-fMaxWidth)/2.0f;
+  float fMaxWidth=(float)m_iItemWidth*0.9f;
+  fPosX += ((float)m_iItemWidth-fMaxWidth)/2.0f;
   if (!bScroll)
   {
-	// Center text to make it look nicer...
-	if (fTextWidth <= fMaxWidth) fPosX+=(fMaxWidth-fTextWidth)/2;
+  // Center text to make it look nicer...
+  if (fTextWidth <= fMaxWidth) fPosX+=(fMaxWidth-fTextWidth)/2;
     m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
     return;
   }
   else
-	{
-		if (fTextWidth <= fMaxWidth)
-		{	// Center text to make it look nicer...
-			fPosX+=(fMaxWidth-fTextWidth)/2;
-			m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
-			iLastItem = -1; // reset scroller
-			return;
-		}
-		float fPosCX=fPosX;
-		float fPosCY=fPosY;
-		g_graphicsContext.Correct(fPosCX, fPosCY);
-		if (fPosCX <0) fPosCX=0.0f;
-		if (fPosCY <0) fPosCY=0.0f;
-		if (fPosCY >g_graphicsContext.GetHeight()) fPosCY=(float)g_graphicsContext.GetHeight();
-		float fHeight=60.0f;
-		if (fHeight+fPosCY >= g_graphicsContext.GetHeight() )
-			fHeight = g_graphicsContext.GetHeight() - fPosCY -1;
-		if (fHeight <= 0) return ;
+  {
+    if (fTextWidth <= fMaxWidth)
+    { // Center text to make it look nicer...
+      fPosX+=(fMaxWidth-fTextWidth)/2;
+      m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
+      iLastItem = -1; // reset scroller
+      return;
+    }
+    float fPosCX=fPosX;
+    float fPosCY=fPosY;
+    g_graphicsContext.Correct(fPosCX, fPosCY);
+    if (fPosCX <0) fPosCX=0.0f;
+    if (fPosCY <0) fPosCY=0.0f;
+    if (fPosCY >g_graphicsContext.GetHeight()) fPosCY=(float)g_graphicsContext.GetHeight();
+    float fHeight=60.0f;
+    if (fHeight+fPosCY >= g_graphicsContext.GetHeight() )
+      fHeight = g_graphicsContext.GetHeight() - fPosCY -1;
+    if (fHeight <= 0) return ;
 
-//		float fwidth=fMaxWidth-5.0f;
-
-		D3DVIEWPORT8 newviewport,oldviewport;
-		g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
-		newviewport.X      = (DWORD)fPosCX;
-		newviewport.Y			 = (DWORD)fPosCY;
-		newviewport.Width  = (DWORD)(fMaxWidth);
-		newviewport.Height = (DWORD)(fHeight);
-		newviewport.MinZ   = 0.0f;
-		newviewport.MaxZ   = 1.0f;
-		g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
+//    float fwidth=fMaxWidth-5.0f;
 
     // scroll
     WCHAR wszOrgText[1024];
     wcscpy(wszOrgText, wszText);
-		wcscat(wszOrgText, L" ");
+    wcscat(wszOrgText, L" ");
     wcscat(wszOrgText,m_strSuffix.c_str());
     m_pFont->GetTextExtent( wszOrgText, &fTextWidth,&fTextHeight);
 
     int iItem=m_iCursorX+m_iCursorY*m_iColumns+m_iOffset;
     if (fTextWidth > fMaxWidth)
     {
-				fMaxWidth+= (float) (m_iItemWidth * 0.1);
-        WCHAR szText[1024];
-				if (iLastItem != iItem)
-				{
-					scroll_pos=0;
-					iLastItem=iItem;
-					iStartFrame=0;
-					iScrollX=1;
-				}
-        if (iStartFrame > 25)
-					{
-						WCHAR wTmp[3];
-						if (scroll_pos >= (int)wcslen(wszOrgText) )
-							wTmp[0]=L' ';
-						else
-							wTmp[0]=wszOrgText[scroll_pos];
-						wTmp[1]=0;
-            float fWidth,fHeight;
-						m_pFont->GetTextExtent(wTmp,&fWidth,&fHeight);
-						if ( iScrollX >= fWidth)
-						{
-							++scroll_pos;
-							if (scroll_pos > (int)wcslen(wszOrgText) )
-								scroll_pos = 0;
-							iFrames=0;
-							iScrollX=1;
-						}
-						else iScrollX++;
-					
-						int ipos=0;
-						for (int i=0; i < (int)wcslen(wszOrgText); i++)
-						{
-							if (i+scroll_pos < (int)wcslen(wszOrgText))
-								szText[i]=wszOrgText[i+scroll_pos];
-							else
-							{
-								if (ipos==0) szText[i]=L' ';
-								else szText[i]=wszOrgText[ipos-1];
-								ipos++;
-							}
-							szText[i+1]=0;
-						}
-						if (fPosY >=0.0)
-              m_pFont->DrawTextWidth(fPosX-iScrollX,fPosY,dwTextColor,szText,fMaxWidth);
-						
-					}
-					else
-					{
-						iStartFrame++;
-						if (fPosY >=0.0)
-              m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
-					}
-    }
-		
-		g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+      m_pFont->End(); //deinit fontbatching before setting a new viewport
+      D3DVIEWPORT8 newviewport,oldviewport;
+      g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
+      newviewport.X      = (DWORD)fPosCX;
+      newviewport.Y      = (DWORD)fPosCY;
+      newviewport.Width  = (DWORD)(fMaxWidth);
+      newviewport.Height = (DWORD)(fHeight);
+      newviewport.MinZ   = 0.0f;
+      newviewport.MaxZ   = 1.0f;
+      g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
 
+      fMaxWidth+= (float) (m_iItemWidth * 0.1);
+      WCHAR szText[1024];
+      if (iLastItem != iItem)
+      {
+        scroll_pos=0;
+        iLastItem=iItem;
+        iStartFrame=0;
+        iScrollX=1;
+      }
+      if (iStartFrame > 25)
+      {
+        WCHAR wTmp[3];
+        if (scroll_pos >= (int)wcslen(wszOrgText) )
+          wTmp[0]=L' ';
+        else
+          wTmp[0]=wszOrgText[scroll_pos];
+        wTmp[1]=0;
+        float fWidth,fHeight;
+        m_pFont->GetTextExtent(wTmp,&fWidth,&fHeight);
+        if ( iScrollX >= fWidth)
+        {
+          ++scroll_pos;
+          if (scroll_pos > (int)wcslen(wszOrgText) )
+            scroll_pos = 0;
+          iFrames=0;
+          iScrollX=1;
+        }
+        else iScrollX++;
+      
+        int ipos=0;
+        for (int i=0; i < (int)wcslen(wszOrgText); i++)
+        {
+          if (i+scroll_pos < (int)wcslen(wszOrgText))
+            szText[i]=wszOrgText[i+scroll_pos];
+          else
+          {
+            if (ipos==0) szText[i]=L' ';
+            else szText[i]=wszOrgText[ipos-1];
+            ipos++;
+          }
+          szText[i+1]=0;
+        }
+        if (fPosY >=0.0)
+          m_pFont->DrawTextWidth(fPosX-iScrollX,fPosY,dwTextColor,szText,fMaxWidth);
+        
+      }
+      else
+      {
+        iStartFrame++;
+        if (fPosY >=0.0)
+          m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
+      }
+      g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+      m_pFont->Begin(); //resume fontbatching
+    }
   }
 }
 
