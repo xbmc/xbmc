@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 06-09-2004 fixed: Issue with vertical alignment of text on controls (with references.xml)
   - 06-09-2004 fixed: Blackscreen on load if old skin was MediaCenter, and new version does not have the MediaCenter skin present
   - 05-09-2004 added: support for true type fonts in skins
   - 05-09-2004 added: <execute> tags to button controls for executing xbes/movies/scripts/audio

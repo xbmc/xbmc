@@ -267,7 +267,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			strFont				= ((CGUIButtonControl*)pReference)->GetFontName();
 			strLabel			= ((CGUIButtonControl*)pReference)->GetLabel();
 			dwTextColor			= ((CGUIButtonControl*)pReference)->GetTextColor();
-			dwAlign				= ((CGUIButtonControl*)pReference)->GetTextAlign();
+			dwAlign				= ((CGUIButtonControl*)pReference)->GetTextAlign() & 0x00000003;
+			dwAlignY                        = ((CGUIButtonControl*)pReference)->GetTextAlign() & 0x00000004;
 			dwDisabledColor		= ((CGUIButtonControl*)pReference)->GetDisabledColor() ;
 			iHyperLink			= ((CGUIButtonControl*)pReference)->GetHyperLink();
 			strExecuteAction		= ((CGUIButtonControl*)pReference)->GetExecuteAction();
