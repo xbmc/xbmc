@@ -2,6 +2,9 @@
 #include "pyutil.h"
 #include <wchar.h>
 #include "stdstring.h"
+#include "graphiccontext.h"
+
+static int iPyGUILockRef = 0;
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -26,5 +29,20 @@ namespace PYXBMC
 		buf = L"";
 		if (pos != -1) PyErr_Format(PyExc_TypeError, "argument %.200i must be unicode or str", pos);
 		return 0;
+	}
+
+	void PyGUILock()
+	{
+		if (iPyGUILockRef == 0) g_graphicsContext.Lock();
+		iPyGUILockRef++;
+	}
+
+	void PyGUIUnlock()
+	{
+		if (iPyGUILockRef > 0)
+		{
+			iPyGUILockRef--;
+			if (iPyGUILockRef == 0) g_graphicsContext.Unlock();	
+		}
 	}
 }

@@ -58,10 +58,10 @@ namespace PYXBMC
 		
 		if (cDisabledColor) sscanf(cDisabledColor, "%x", &self->dwDisabledColor);
 
-		g_graphicsContext.Lock();
+		PyGUILock();
 		if (self->pGUIControl) 
 			((CGUIButtonControl*)self->pGUIControl)->SetDisabledColor(self->dwDisabledColor);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -80,10 +80,10 @@ namespace PYXBMC
 		if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
 		else self->dwTextColor = 0xffffffff;
 
-		g_graphicsContext.Lock();
+		PyGUILock();
 		if (self->pGUIControl)
 			((CGUIButtonControl*)self->pGUIControl)->SetLabel(self->strFont, self->strText, self->dwTextColor);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;

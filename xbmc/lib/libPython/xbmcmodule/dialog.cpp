@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\python.h"
+#include "pyutil.h"
 #include "..\..\..\application.h"
 
 #define ACTIVE_WINDOW	m_gWindowManager.GetActiveWindow()

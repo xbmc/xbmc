@@ -5,6 +5,7 @@
 #include "GuiListControl.h"
 #include "GuiFadeLabelControl.h"
 #include "GuiTextBox.h"
+#include "pyutil.h"
 
 #define ACTIVE_WINDOW	m_gWindowManager.GetActiveWindow()
 
@@ -70,9 +71,9 @@ namespace PYXBMC
 			if (self->bIsPythonWindow)
 				((CGUIPythonWindow*)self->pWindow)->SetCallbackWindow((PyObject*)self);
 
-			g_graphicsContext.Lock();
+			PyGUILock();
 			m_gWindowManager.Add(self->pWindow);
-			g_graphicsContext.Unlock();
+			PyGUIUnlock();
 		}
 
 		return (PyObject*)self;
@@ -80,7 +81,7 @@ namespace PYXBMC
 
 	void Window_Dealloc(Window* self)
 	{
-		g_graphicsContext.Lock();
+		PyGUILock();
 		if (self->bIsPythonWindow)
 		{
 			// first change to an existing window
@@ -113,7 +114,7 @@ namespace PYXBMC
 			++it;
 		}
 
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 		if (self->bIsPythonWindow) delete self->pWindow;
 		self->ob_type->tp_free((PyObject*)self);
 	}
@@ -129,7 +130,7 @@ namespace PYXBMC
 		{
 			// error loading file. Since window id is now set to 9999 we set it to
 			// the old value again
-			g_graphicsContext.Lock();
+			PyGUILock();
 			pWindow->SetID(self->iWindowId);
 			g_graphicsContext.Unlock();
 
@@ -141,7 +142,7 @@ namespace PYXBMC
 		}
 		// load succeeded, just in case window id is specified in xml file, we set it
 		// to our own value here
-		g_graphicsContext.Lock();
+		PyGUILock();
 		pWindow->SetID(self->iWindowId);
 		g_graphicsContext.Unlock();
 
@@ -155,9 +156,9 @@ namespace PYXBMC
 				self->iWindowId != ACTIVE_WINDOW)
 			self->iOldWindowId = ACTIVE_WINDOW;
 
-		g_graphicsContext.Lock();
+		PyGUILock();
 		m_gWindowManager.ActivateWindow(self->iWindowId);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -169,10 +170,10 @@ namespace PYXBMC
 		if (self->bIsPythonWindow)
 			((CGUIPythonWindow*)self->pWindow)->PulseActionEvent();
 
-		g_graphicsContext.Lock();
+		PyGUILock();
 		m_gWindowManager.ActivateWindow(self->iOldWindowId);
 		self->iOldWindowId = 0;
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -340,14 +341,14 @@ namespace PYXBMC
 		pControl->pGUIControl->SetNavigation(pControl->iControlUp,
 				pControl->iControlDown,	pControl->iControlLeft, pControl->iControlRight);
 
-		g_graphicsContext.Lock();
+		PyGUILock();
 
 		// add control to list and allocate recources for the control
 		self->vecControls.push_back(pControl);
 		pControl->pGUIControl->AllocResources();
 		pWindow->Add(pControl->pGUIControl);
 
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -373,9 +374,9 @@ namespace PYXBMC
 			return NULL;
 		}
 
-		g_graphicsContext.Lock();
+		PyGUILock();
 		pWindow->OnMessage(CGUIMessage(GUI_MSG_SETFOCUS,pControl->iParentId, pControl->iControlId));
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -412,7 +413,7 @@ namespace PYXBMC
 			} else ++it;
 		}
 
-		g_graphicsContext.Lock();
+		PyGUILock();
 
 		pWindow->Remove(pControl->iControlId);
 		pControl->pGUIControl->FreeResources();
@@ -423,7 +424,7 @@ namespace PYXBMC
 		pControl->iControlId = 0;
 		pControl->iParentId = 0;
 		Py_DECREF(pControl);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "keyboard.h"
 #include "GUIWindowManager.h"
+#include "pyutil.h"
 #include "..\..\..\keyboard\virtualkeyboard.h"
 #include "..\..\..\ApplicationMessenger.h"
 #include "..\..\..\util.h"
