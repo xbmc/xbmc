@@ -845,11 +845,6 @@ void CGUIWindowPrograms::OnSort()
 	}
 }
 
-/// \brief Tests if the user is allowed to access the share folder
-/// \param pItem The share folder item to access
-/// \param strType The type of share being accessed, e.g. "music", "videos", etc. See CSettings::UpdateBookmark
-/// \return If access is granted, returns \e true
-
 void CGUIWindowPrograms::UpdateButtons()
 {
 	SET_CONTROL_HIDDEN(CONTROL_LIST);

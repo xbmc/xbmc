@@ -1456,7 +1456,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strO
 	if (strType == "programs") pShares = &m_vecMyProgramsBookmarks;
 	if (strType == "files") pShares = &m_vecMyFilesShares;
 	if (strType == "music") pShares = &m_vecMyMusicShares;
-	if (strType == "videos") pShares = &m_vecMyVideoShares;
+	if (strType == "video") pShares = &m_vecMyVideoShares;
 	if (strType == "pictures") pShares = &m_vecMyPictureShares;
 
 	if (!pShares) return false;
@@ -1523,7 +1523,7 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString &strN
 	VECSHARES *pShares = NULL;
 	if (strType == "files") pShares = &m_vecMyFilesShares;
 	if (strType == "music") pShares = &m_vecMyMusicShares;
-	if (strType == "videos") pShares = &m_vecMyVideoShares;
+	if (strType == "video") pShares = &m_vecMyVideoShares;
 	if (strType == "pictures") pShares = &m_vecMyPictureShares;
 
 	if (!pShares) return false;
@@ -1574,7 +1574,7 @@ bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName
 	VECSHARES *pShares = NULL;
 	if (strType == "files") pShares = &m_vecMyFilesShares;
 	if (strType == "music") pShares = &m_vecMyMusicShares;
-	if (strType == "videos") pShares = &m_vecMyVideoShares;
+	if (strType == "video") pShares = &m_vecMyVideoShares;
 	if (strType == "pictures") pShares = &m_vecMyPictureShares;
 
 	if (!pShares) return false;
@@ -1638,7 +1638,7 @@ bool CSettings::SetBookmarkLocks(const CStdString &strType, bool bEngageLocks)
 	VECSHARES *pShares = NULL;
 	if (strType == "files") pShares = &g_settings.m_vecMyFilesShares;
 	if (strType == "music") pShares = &g_settings.m_vecMyMusicShares;
-	if (strType == "videos") pShares = &g_settings.m_vecMyVideoShares;
+	if (strType == "video") pShares = &g_settings.m_vecMyVideoShares;
 	if (strType == "pictures") pShares = &g_settings.m_vecMyPictureShares;
 	if (strType == "myprograms") pShares = &g_settings.m_vecMyProgramsBookmarks;
 
