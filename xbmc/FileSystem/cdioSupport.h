@@ -32,6 +32,7 @@ namespace MEDIA_DETECT
 #define FS_3DO					9
 #define FS_UDFX					10
 #define FS_UDF					11
+#define FS_ISO_UDF			12
 #define FS_UNKNOWN				15
 #define FS_MASK					15
 
@@ -126,6 +127,9 @@ namespace MEDIA_DETECT
 		//	CD-ROM with both Macintosh HFS and ISO 9660 filesystem
 		bool IsISOHFS( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_ISO_HFS); }
 
+		//	CD-ROM with both UDF and ISO 9660 filesystem
+		bool IsISOUDF( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_ISO_UDF); }
+
 		//	CD-ROM with Unix UFS
 		bool IsUFS( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_UFS); }
 
@@ -176,6 +180,9 @@ namespace MEDIA_DETECT
 		//	UDF filesystem
 		bool IsUDF( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_UDF); }
 
+		//	Has the cd a filesystem that is readable by the xbox
+		bool IsValidFs() { return (IsISOHFS(1) || IsIso9660(1) || IsIso9660Interactive(1) || IsISOUDF(1) || IsUDF(1) || IsUDFX(1) || IsAudio(1)); }
+
 		void SetFirstTrack( int nTrack ) { m_nFirstTrack = nTrack; }
 		void SetTrackCount( int nCount ) { m_nNumTrack = nCount; }
 		void SetFirstAudioTrack( int nTrack ) { m_nFirstAudio = nTrack; }
@@ -221,9 +228,8 @@ namespace MEDIA_DETECT
 		INT 	ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
 		VOID	CloseCDROM(HANDLE hDevice);
 
-#ifdef _DEBUG
 		void	PrintAnalysis(int fs, int num_audio);
-#endif
+
 		CCdInfo*		GetCdInfo();
 	protected:
 		int		ReadBlock(int superblock, uint32_t offset, uint8_t bufnum, track_t track_num);
@@ -251,6 +257,8 @@ namespace MEDIA_DETECT
 		int m_nMsOffset;                /* multisession offset found by track-walking */
 		int m_nDataStart;                                       /* start of data area */
 		int m_nFs;
+		int m_nUDFVerMinor;
+		int m_nUDFVerMajor;
 
 		CdIo* cdio;
 		track_t m_nNumTracks;

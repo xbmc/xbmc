@@ -6,6 +6,7 @@
 #include "xbox/undocumented.h"
 #include "Settings.h"
 #include "playlistplayer.h"
+#include "utils/log.h"
 
 using namespace MEDIA_DETECT;
 
@@ -151,7 +152,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 void CDetectDVDMedia::DetectMediaType()
 {
 	bool bCDDA(false);
-	OutputDebugString( "Detecting DVD-ROM media filesystem...\n" );
+	CLog::Log("Detecting DVD-ROM media filesystem...");
 
 	CStdString strNewUrl;
 	CCdIoSupport cdio;
@@ -164,29 +165,27 @@ void CDetectDVDMedia::DetectMediaType()
 
 	//	Detect new CD-Information
 	m_pCdInfo = cdio.GetCdInfo();
-	if ( m_pCdInfo == NULL ) 
+	if (m_pCdInfo==NULL) 
 	{
-		OutputDebugString( "Detection of DVD-ROM media failed.\n" );
+		CLog::Log("Detection of DVD-ROM media failed.");
 		return;
 	}
-	char szLog[128];
-	sprintf(szLog,"tracks:%i audio tracks:%i data tracks:%i\n",
+	CLog::Log("Tracks overall:%i; Audio tracks:%i; Data tracks:%i",
 	m_pCdInfo->GetTrackCount(),
 	m_pCdInfo->GetAudioTrackCount(),
 	m_pCdInfo->GetDataTrackCount() );
-	OutputDebugString(szLog);
 
-	if (m_pCdInfo->IsUDF(1)||m_pCdInfo->IsUDFX(1))
-		strNewUrl = "D:\\";
+	//	Detect ISO9660(mode1/mode2), CDDA filesystem or UDF
+	if (m_pCdInfo->IsISOHFS(1) || m_pCdInfo->IsIso9660(1) || m_pCdInfo->IsIso9660Interactive(1))
+  {
+		strNewUrl = "iso9660://";
+    m_isoReader.Scan();
+  }
 	else
 	{
-		//	Detect ISO9660(mode1/mode2) or CDDA filesystem
-		if ( m_pCdInfo->IsIso9660( 1 ) || m_pCdInfo->IsIso9660Interactive( 1 ) )
-    {
-			strNewUrl = "iso9660://";
-      m_isoReader.Scan();
-    }
-		else if ( m_pCdInfo->IsAudio( 1 ) )
+		if (m_pCdInfo->IsISOUDF(1) || m_pCdInfo->IsUDF(1) || m_pCdInfo->IsUDFX(1))
+			strNewUrl = "D:\\";
+		else if (m_pCdInfo->IsAudio(1))
 		{
 			strNewUrl = "cdda://local/";
 			bCDDA=true;
@@ -195,12 +194,17 @@ void CDetectDVDMedia::DetectMediaType()
 			strNewUrl = "D:\\";
 	}
 
-	char buf[256];
-	sprintf( buf, "Using protocol %s\n", strNewUrl.c_str() );
-	OutputDebugString( buf );
+	CLog::Log("Using protocol %s", strNewUrl.c_str());
 
-  sprintf( buf, "disc label:%s\n", m_pCdInfo->GetDiscLabel().c_str() );
-	OutputDebugString( buf );
+	if (m_pCdInfo->IsValidFs())
+	{
+		if (!m_pCdInfo->IsAudio(1))
+			CLog::Log("Disc label: %s", m_pCdInfo->GetDiscLabel().c_str());
+	}
+	else
+	{
+		CLog::Log("Filesystem is not supported");
+	}
 
   CStdString strLabel="DVD-ROM";
 	CStdString strDiscLabel;
