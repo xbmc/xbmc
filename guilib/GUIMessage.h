@@ -138,6 +138,12 @@ using namespace std;
 	g_graphicsContext.SendMessage(msg); \
 }
 
+#define SET_CONTROL_SELECTED(dwSenderId, dwControlID, bSelect) \
+{ \
+	CGUIMessage msg(bSelect?GUI_MSG_SELECTED:GUI_MSG_DESELECTED, dwSenderId, dwControlID); \
+	g_graphicsContext.SendMessage(msg); \
+}
+
 /*!
 	\ingroup winmsg
 	\brief 
