@@ -9,7 +9,12 @@
 #include "exp2dll.h"
 using namespace std;
 Exp2Dll *Head = 0;
-extern "C" void dummy_Unresolved(void);
+extern "C" int dummy_Unresolved(void);
+static int ResolveName(char *Name, char* Function, void **Fixup);
+
+//hack to Free pe image, global variable.
+DllLoader * wmaDMOdll;
+DllLoader * wmvDMOdll;
 
 #ifdef DUMPING_DATA
 
@@ -153,10 +158,13 @@ int DllLoader::ResolveImports(void)
 					if( !ResolveOrdinal(Name, *Table&0x7ffffff, &Fixup) )
 					{
 						bResult=0;
-						printf("unable to resolve %s %x\n",Name,*Table&0x7ffffff);
-						return 0;       //  ungh linker error!
-					}
+						char szBuf[128];
+						sprintf(szBuf,"unable to resolve %s %d\n",Name,*Table&0x7ffffff);
+						OutputDebugString(szBuf);
+						*Addr = (unsigned long) dummy_Unresolved;
+					} else { 
 					*Addr = (unsigned long)Fixup;  //woohoo!!
+					}
 				}     
 				else
 				{
@@ -416,15 +424,26 @@ Exp2Dll::~Exp2Dll()
 }           
 
 #define DEFAULT_DLLPATH "Q:\\mplayer\\codecs"
+#define MODULE_HANDLE_kernel32 0xf3f30120			//kernel32.dll magic number
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR libname) 
 {
+	
+	if (strcmp(libname, "kernel32.dll") == 0 || strcmp(libname, "kernel32") == 0 ||
+		  strcmp(libname, "KERNEL32.DLL") == 0 || strcmp(libname, "KERNEL32") == 0 )
+		return (HMODULE)MODULE_HANDLE_kernel32;
+	
 	auto_ptr<char> plibname ( new char[strlen(libname)+120]); 
 	sprintf(plibname.get(), "%s\\%s", DEFAULT_DLLPATH ,(char *)libname);
 	DllLoader * dllhandle = new DllLoader(plibname.get());
 	dllhandle->Parse();
 	dllhandle->ResolveImports();
-
+	
+	//log bad guys who do not call Freelibrary 
+	if (strcmp(libname, "wma9dmod.dll") == 0 || strcmp(libname, "WMA9DMOD.DLL") == 0 )
+		wmaDMOdll = dllhandle;
+	if (strcmp(libname, "wmv9dmod.dll") == 0 || strcmp(libname, "WMV9DMOD.DLL") == 0 )
+		wmvDMOdll = dllhandle;
 
 	void * address = NULL;
 	dllhandle->ResolveExport("DllMain", &address);
@@ -444,6 +463,9 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR libname)
 
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 {
+	if ( hLibModule == (HMODULE)MODULE_HANDLE_kernel32 )
+		return 1;
+	
 	DllLoader * dllhandle = (DllLoader *)hLibModule;
 
 	EntryFunc * initdll = (EntryFunc *)dllhandle->EntryAddress;
@@ -456,16 +478,47 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 
 extern "C" FARPROC __stdcall dllGetProcAddress( HMODULE hModule, LPCSTR function )
 {
-	DllLoader * dllhandle = (DllLoader *)hModule;
 	void * address = NULL;
+	if ( hModule == (HMODULE)MODULE_HANDLE_kernel32 )
+		{
+		if ( ResolveName("kernel32.dll", (char *)function, &address)||
+			 ResolveName("KERNEL32.DLL", (char *)function, &address) )
+			 return (FARPROC) address;
+		else
+			return (FARPROC) NULL;
+		}
+
+	DllLoader * dllhandle = (DllLoader *)hModule;
 	dllhandle->ResolveExport((char *)function, &address);
 	return (FARPROC) address;
 }
 
 //dummy functions used to catch unresolved function calls
-extern "C" void dummy_Unresolved(void) {
+extern "C" int dummy_Unresolved(void) {
 		static int Count = 0;
+		DWORD rtn_addr;
 		char szBuf[128];
-		sprintf(szBuf,"unresolved function called, Count number %d\n",Count++);
+		__asm { mov eax, [ebp+4] }
+		__asm { mov rtn_addr, eax }
+		sprintf(szBuf,"unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
 		OutputDebugString(szBuf);
+		return 1;
+}
+
+static int ResolveName(char *Name, char* Function, void **Fixup)
+{
+	Exp2Dll* curr = Head;
+
+	while( curr )
+	{
+		if (stricmp(Name, curr->ObjectName) == 0 &&
+			strcmp(Function, curr->FunctionName) == 0)
+		{
+			*Fixup = (void*)(curr->Function);
+			return 1;
+		}
+		curr = curr->Next;
+	}
+	*Fixup = NULL;
+	return 0;
 }
