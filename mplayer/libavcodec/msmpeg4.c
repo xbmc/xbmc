@@ -1102,12 +1102,47 @@ void ff_msmpeg4_decode_uninit()
 {
     int i,q;
     for(i=0;i<NB_RL_TABLES;i++) {
+    	free_vlc(&(rl_table[i].vlc));
     	for(q=0;q<32;q++)
     	   if(rl_table[i].rl_vlc[q]) {
     	   	av_free(rl_table[i].rl_vlc[q]);
     	   	rl_table[i].rl_vlc[q] = NULL;
-    	   }	
+    	   }
+    	for(q=0; q<2; q++)  {	
+    	   if(rl_table[i].max_level[q]){
+    		av_free(rl_table[i].max_level[q]);
+    		rl_table[i].max_level[q] = NULL;
+    	   }
+    	   if(rl_table[i].max_run[q]){
+    		av_free(rl_table[i].max_run[q]);
+    		rl_table[i].max_run[q] = NULL;
+    	   }
+    	   if(rl_table[i].index_run[q]){
+    		av_free(rl_table[i].index_run[q]);
+    		rl_table[i].index_run[q] = NULL;
+    	   }
+        }
     }
+    for(i=0;i<2;i++) {
+        free_vlc(&(mv_tables[i].vlc));
+    }
+    free_vlc(&dc_lum_vlc[0]);
+    free_vlc(&dc_chroma_vlc[0]);
+    free_vlc(&dc_lum_vlc[1]);
+    free_vlc(&dc_chroma_vlc[1]);
+    free_vlc(&v2_dc_lum_vlc);
+    free_vlc(&v2_dc_chroma_vlc);
+    free_vlc(&cbpy_vlc);
+    free_vlc(&v2_intra_cbpc_vlc);
+    free_vlc(&v2_mb_type_vlc);
+    free_vlc(&v2_mv_vlc);
+    for(i=0; i<4; i++){
+        free_vlc(&mb_non_intra_vlc[i]);
+    }
+    free_vlc(&mb_intra_vlc);
+    free_vlc(&v1_intra_cbpc_vlc);
+    free_vlc(&v1_inter_cbpc_vlc);
+    free_vlc(&inter_intra_vlc);
 }
         
 /* init all vlc decoding tables */
