@@ -196,13 +196,16 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			{
 				CSectionLoader::Load("CXIMAGE");
 			}
-			if (m_strDirectory=="?")
-				m_strDirectory=g_stSettings.m_szDefaultPictures;
-
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
 			m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);
 			m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
+
+			if (m_strDirectory=="?")
+			{
+				m_strDirectory=g_stSettings.m_szDefaultPictures;
+				SetHistoryForPath(m_strDirectory);
+			}
 
 			if (m_iLastControl>-1)
 				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
@@ -499,39 +502,11 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 	}
   Clear();
 
-	CStdString strParentPath;
-	bool bParentExists=CUtil::GetParentPath(strDirectory, strParentPath);
-
-	// check if current directory is a root share
-  if ( !m_rootDir.IsShare(strDirectory) )
-  {
-		// no, do we got a parent dir?
-		if ( bParentExists )
-		{
-			// yes
-			CFileItem *pItem = new CFileItem("..");
-			pItem->m_strPath=strParentPath;
-			pItem->m_bIsFolder=true;
-      pItem->m_bIsShareOrDrive=false;
-			m_vecItems.push_back(pItem);
-		}
-  }
-  else
-  {
-		// yes, this is the root of a share
-		// add parent path to the virtual directory
-	  CFileItem *pItem = new CFileItem("..");
-	  pItem->m_strPath="";
-    pItem->m_bIsShareOrDrive=false;
-	  pItem->m_bIsFolder=true;
-	  m_vecItems.push_back(pItem);
-  }
-
+	GetDirectory(strDirectory, m_vecItems);
 
 	m_iLastControl=GetFocusedControl();
 
 	m_strDirectory=strDirectory;
-	m_rootDir.GetDirectory(strDirectory,m_vecItems);
 	CUtil::SetThumbs(m_vecItems);
 	if (g_stSettings.m_bHideExtensions)
 		CUtil::RemoveExtensions(m_vecItems);
@@ -891,4 +866,79 @@ void CGUIWindowPictures::GetDirectoryHistoryString(const CFileItem* pItem, CStdS
 		if (CUtil::HasSlashAtEnd(strHistoryString))
 			strHistoryString.Delete(strHistoryString.size()-1);
 	}
+}
+
+void CGUIWindowPictures::SetHistoryForPath(const CStdString& strDirectory)
+{
+	if (!strDirectory.IsEmpty())
+	{
+		//	Build the directory history for default path
+		CStdString strPath, strParentPath;
+		strPath=strDirectory;
+		VECFILEITEMS items;
+		CFileItemList itemlist(items);
+		GetDirectory("", items);
+
+		while (CUtil::GetParentPath(strPath, strParentPath))
+		{
+			bool bSet=false;
+			for (int i=0; i<(int)items.size(); ++i)
+			{
+				CFileItem* pItem=items[i];
+				while (CUtil::HasSlashAtEnd(pItem->m_strPath))
+					pItem->m_strPath.Delete(pItem->m_strPath.size()-1);
+				if (pItem->m_strPath==strPath)
+				{
+					CStdString strHistory;
+					GetDirectoryHistoryString(pItem, strHistory);
+					m_history.Set(strHistory, "");
+					return;
+				}
+			}
+
+			m_history.Set(strPath, strParentPath);
+			strPath=strParentPath;
+			while (CUtil::HasSlashAtEnd(strPath))
+				strPath.Delete(strPath.size()-1);
+		}
+	}
+}
+
+void CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items)
+{
+	if (items.size() )
+	{
+		// cleanup items
+		CFileItemList itemlist(items);
+	}
+
+	CStdString strParentPath;
+	bool bParentExists=CUtil::GetParentPath(strDirectory, strParentPath);
+
+	// check if current directory is a root share
+	if ( !m_rootDir.IsShare(strDirectory) )
+	{
+		// no, do we got a parent dir?
+		if ( bParentExists )
+		{
+			// yes
+			CFileItem *pItem = new CFileItem("..");
+			pItem->m_strPath=strParentPath;
+			pItem->m_bIsFolder=true;
+			pItem->m_bIsShareOrDrive=false;
+			items.push_back(pItem);
+		}
+	}
+	else
+	{
+		// yes, this is the root of a share
+		// add parent path to the virtual directory
+		CFileItem *pItem = new CFileItem("..");
+		pItem->m_strPath="";
+		pItem->m_bIsShareOrDrive=false;
+		pItem->m_bIsFolder=true;
+		items.push_back(pItem);
+	}
+	m_rootDir.GetDirectory(strDirectory,items);
+
 }
