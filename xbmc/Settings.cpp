@@ -252,6 +252,7 @@ CSettings::CSettings(void)
 
 	g_stSettings.m_bMyMusicRepeat=true;
 	g_stSettings.m_bMyMusicSongInfoInVis=true;
+	g_stSettings.m_bMyMusicSongThumbInVis=true;
 
 	g_stSettings.m_bMyMusicPlaylistRepeat=true;
 
@@ -1028,6 +1029,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "repeat",g_stSettings.m_bMyMusicRepeat);
 		GetInteger(pElement, "startwindow",g_stSettings.m_iMyMusicStartWindow,WINDOW_MUSIC_FILES,WINDOW_MUSIC_FILES,WINDOW_MUSIC_TOP100);//501; view songs
 		GetBoolean(pElement, "songinfoinvis",g_stSettings.m_bMyMusicSongInfoInVis);
+    GetBoolean(pElement, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
 	}
 	// myvideos settings
 	pElement = pRootElement->FirstChildElement("myvideos");
@@ -1391,6 +1393,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "repeat",g_stSettings.m_bMyMusicRepeat);
 	SetInteger(pNode, "startwindow",g_stSettings.m_iMyMusicStartWindow);
 	SetBoolean(pNode, "songinfoinvis",g_stSettings.m_bMyMusicSongInfoInVis);
+  SetBoolean(pNode, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
 
 	// myvideos settings
 	TiXmlElement videosNode("myvideos");
