@@ -22,10 +22,13 @@ namespace PYXBMC
 	{
 		static char *keywords[] = {	
 			"x", "y", "width", "height", "label", "focusTexture", "noFocusTexture", 
-			"checkWidth", "checkHeight", "alignment", 0 };
+			"checkWidth", "checkHeight", "alignment", "font", "textColor", "disabledColor", NULL };
 		ControlCheckMark *self;
+        char* cFont = NULL;
 		char* cTextureFocus = NULL;
 		char* cTextureNoFocus = NULL;
+		char* cTextColor = NULL;
+		char* cDisabledColor = NULL;
 
 		PyObject* pObjectText;
 		
@@ -38,8 +41,6 @@ namespace PYXBMC
         self->dwAlign = XBFONT_RIGHT;
 		self->strTextureFocus = PyGetDefaultImage( "checkmark", "textureFocus", "check-box.png" );
 		self->strTextureNoFocus = PyGetDefaultImage( "checkmark", "textureNoFocus", "check-boxNF.png" );
-
-		// these defaults cannot be supplied on construction
 		self->strFont = "font13";
 		self->dwTextColor = 0xffffffff;
 		self->dwDisabledColor = 0x60ffffff;
@@ -59,8 +60,26 @@ namespace PYXBMC
             &cTextureNoFocus,
             &self->dwCheckWidth,
             &self->dwCheckHeight,
-            &self->dwAlign )) return NULL;
-		if (!PyGetUnicodeString(self->strText, pObjectText, 5)) return NULL;
+            &self->dwAlign,
+			&cFont,
+			&cTextColor,
+			&cDisabledColor ))
+		{
+			Py_DECREF( self );
+			return NULL;
+		}
+		if (!PyGetUnicodeString(self->strText, pObjectText, 5))
+		{
+			Py_DECREF( self );
+			return NULL;
+		}
+
+        if (cFont) self->strFont = cFont;
+		if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
+        if (cDisabledColor)
+        {
+            sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
+        }
 
 		return (PyObject*)self;
 	}
@@ -117,8 +136,10 @@ namespace PYXBMC
 
 		PyGUILock();
 		if (self->pGUIControl) 
+        {
 			((CGUICheckMarkControl*)self->pGUIControl)->SetDisabledColor(
                 self->dwDisabledColor );
+        }
 		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
@@ -126,35 +147,51 @@ namespace PYXBMC
 	}
 
 	PyDoc_STRVAR(setLabel__doc__,
-		"setLabel(string label[, string fontName[, string textColor]]) -- Set's text for this button.\n"
+		"setLabel(label, font, textColor, disabledColor) -- Set's text for this button.\n"
 		"\n"
 		"label     : string or unicode string\n"
-        "fontName  : name of font\n"
-        "textColor : label text color" );
+		"font          : name of font (opt)\n"
+		"textColor     : label text color (opt)\n"
+		"disabledColor : disabled text color (opt)\n" );
 
 	PyObject* ControlCheckMark_SetLabel(ControlCheckMark *self, PyObject *args)
 	{
 		PyObject *pObjectText;
 		char *cFont = NULL;
 		char *cTextColor = NULL;
+		char* cDisabledColor = NULL;
 
-		if (!PyArg_ParseTuple(args, "O|ss", &pObjectText, &cFont, &cTextColor))
+		if (!PyArg_ParseTuple(
+            args,
+            "O|sss",
+            &pObjectText,
+            &cFont,
+            &cTextColor,
+            &cDisabledColor))
             return NULL;
 		if (!PyGetUnicodeString(self->strText, pObjectText, 1))
             return NULL;
 
-		self->strFont = cFont ? cFont : "font13";		
+        if (cFont) self->strFont = cFont;
 		if (cTextColor)
+		{
             sscanf(cTextColor, "%x", &self->dwTextColor);
-		else
-            self->dwTextColor = 0xffffffff;
+		}
+		if (cDisabledColor)
+		{
+			sscanf(cDisabledColor, "%x", &self->dwDisabledColor);
+		}
 
 		PyGUILock();
 		if (self->pGUIControl)
+        {
 			((CGUICheckMarkControl*)self->pGUIControl)->SetLabel(
                 self->strFont,
                 self->strText,
                 self->dwTextColor );
+			((CGUICheckMarkControl*)self->pGUIControl)->SetDisabledColor(
+				self->dwDisabledColor );
+        }
 		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
@@ -170,7 +207,9 @@ namespace PYXBMC
 
 		PyGUILock();
 		if (self->pGUIControl)
+        {
 			isSelected = ((CGUICheckMarkControl*)self->pGUIControl)->GetSelected();
+        }
 		PyGUIUnlock();
 
 		return Py_BuildValue("b", isSelected);
@@ -192,8 +231,10 @@ namespace PYXBMC
 
 		PyGUILock();
 		if (self->pGUIControl)
+        {
 			((CGUICheckMarkControl*)self->pGUIControl)->SetSelected(
                 isSelected );
+        }
 		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
@@ -211,14 +252,22 @@ namespace PYXBMC
 	PyDoc_STRVAR(controlCheckMark__doc__,
 		"ControlCheckMark class.\n"
 		"\n"
-		"ControlCheckMark(int x, int y, int width, int height[, label, focusTexture, noFocusTexture, checkWidth, checkHeight, align])\n"
+		"ControlCheckMark(x, y, width, height, label, focusTexture, noFocusTexture,\n" 
+        "                 checkWidth, checkHeight, alignment, font, textColor, disabledColor )\n"
 		"\n"
-		"label			: string or unicode string\n"
-		"focusTexture   : filename for focus texture\n"
-		"noFocusTexture : filename for no focus texture\n"
-        "checkWidth		: width of checkmark\n"
-        "checkHeight	: height of checkmark\n"
-        "alignment		: alignment of checkmark label" );
+		"x				: integer x coordinate of control\n"
+		"y              : integer y coordinate of control\n"
+		"width          : integer width of control\n"
+		"height         : integer height of control\n"
+		"label			: string or unicode string (opt)\n"
+		"focusTexture   : filename for focus texture (opt)\n"
+		"noFocusTexture : filename for no focus texture (opt)\n"
+		"checkWidth		: width of checkmark (opt)\n"
+		"checkHeight	: height of checkmark (opt)\n"
+		"alignment		: alignment of checkmark label (opt)\n"
+		"font           : name of font e.g. 'font13' (opt)\n"
+		"textColor      : color of text e.g. '0xffffffff' (opt)\n"
+		"disabledColor  : disabled color of text e.g. '0xffffffff' (opt)\n" );
 
 // Restore code and data sections to normal.
 #pragma code_seg()
