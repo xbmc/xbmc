@@ -250,11 +250,11 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
         g_graphicsContext.SendMessage(msg);         
         int iItem=msg.GetParam1();
-		int iAction=message.GetParam1();
-		if (iAction==ACTION_SELECT_ITEM)
-		{
-			OnClick(iItem);
-		}
+				int iAction=message.GetParam1();
+				if (iAction==ACTION_SELECT_ITEM)
+				{
+					OnClick(iItem);
+				}
       }
     }
     break;

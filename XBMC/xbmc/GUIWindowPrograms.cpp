@@ -167,11 +167,14 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
       {
          // get selected item
-        CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
-        g_graphicsContext.SendMessage(msg);         
-        int iItem=msg.GetParam1();
-        OnClick(iItem);
-        
+				int iAction=message.GetParam1();
+				if (ACTION_SELECT_ITEM==iAction)
+				{
+					CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
+					g_graphicsContext.SendMessage(msg);         
+					int iItem=msg.GetParam1();
+					OnClick(iItem);
+				}
       }
 			else if (iControl >= 100 && iControl <= 110)
 			{
@@ -313,6 +316,7 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 
 void CGUIWindowPrograms::OnClick(int iItem)
 {
+	if (iItem < 0 || iItem >(int)m_vecItems.size()) return;
   CFileItem* pItem=m_vecItems[iItem];
   if (pItem->m_bIsFolder)
   {

@@ -213,9 +213,9 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
         int iItem=msg.GetParam1();
         int iAction=message.GetParam1();
         if (iAction == ACTION_SELECT_ITEM)
-			{
-				OnClick(iItem);
-			}
+				{
+					OnClick(iItem);
+				}
       }
     }
 		break;
