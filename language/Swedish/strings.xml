@@ -316,12 +316,12 @@
   <string><id>385</id><value>Medel</value></string>
   <string><id>386</id><value>Klart</value></string>
   <string><id>387</id><value>Molnigt</value></string>
-  <string><id>388</id><value>N/A</value></string>
-  <string><id>389</id><value>N/A</value></string>
-  <string><id>390</id><value>N/A</value></string>
-  <string><id>391</id><value>N/A</value></string>
-  <string><id>392</id><value>N/A</value></string>
-  <string><id>393</id><value>N/A</value></string>
+  <string><id>388</id><value>Tidiga</value></string>
+  <string><id>389</id><value>Skurar</value></string>
+  <string><id>390</id><value>Lätt snöfall</value></string>
+  <string><id>391</id><value>Låg</value></string>
+  <string><id>392</id><value>Medium</value></string>
+  <string><id>393</id><value>Hög</value></string>
   <string><id>394</id><value>N/A</value></string>
   <string><id>395</id><value>N/A</value></string>
   <string><id>396</id><value>Välj plats</value></string>
