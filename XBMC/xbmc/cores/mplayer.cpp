@@ -216,7 +216,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	if ( !strstr(strAudioCodec,"SPDIF") ) 
 	{
 		int iRet,argc;
-	    char * argv1[] = {"xbmc.xbe", "-channels","szChannels","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+	    char * argv1[] = {"xbmc.xbe", "-channels","2","-autoq", "6", "-vf", "pp", "1.avi",NULL};
 		char * argv2[] = {"xbmc.xbe", "-channels","6","-af","channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5","-autoq", "6", "-vf", "pp", "1.avi",NULL};
 		char * argv3[] = {"xbmc.xbe", "-channels","4","-af","channels=4:4:0:0:1:1:2:2:2:3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
 
