@@ -262,40 +262,95 @@ struct CGUIRAMControl::SSortVideoListByName
 void CGUIRAMControl::PlayMovie(CFileItem& item)
 {
 	// is video stacking enabled?	
-	if (g_stSettings.m_bMyVideoVideoStack)
+	if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
 	{
 		CStdString strDirectory;
 		CUtil::GetDirectory(item.m_strPath,strDirectory);
+    CStdString fileName = CUtil::GetFileName(item.m_strPath);
+
+    CStdString fileTitle;
+    CStdString volumePrefix;
+    int volumeNumber;
+    bool fileStackable = true;
+    if (g_stSettings.m_iMyVideoVideoStack == STACK_SIMPLE)
+    {
+      if (!CUtil::GetVolumeFromFileName(fileName, fileTitle, volumePrefix, volumeNumber))
+      {
+        fileStackable = false;
+      }
+    }
 
 		// create a list of associated movie files (some movies span across multiple files!)
 		vector<CStdString> movies;
 		{
-			// create a list of all the files in the same directory
-			VECFILEITEMS items;
-			CVirtualDirectory dir;
-			dir.SetShares(g_settings.m_vecMyVideoShares);
-			dir.SetMask(g_stSettings.m_szMyVideoExtensions);
-			dir.GetDirectory(strDirectory,items);
+      if (fileStackable)
+      {
+				// create a list of all the files in the same directory
+				VECFILEITEMS items;
+				CVirtualDirectory dir;
+				dir.SetShares(g_settings.m_vecMyVideoShares);
+				dir.SetMask(g_stSettings.m_szMyVideoExtensions);
+				dir.GetDirectory(strDirectory,items);
 
-			// iterate through all the files, adding any files that appear similar to the selected movie file
-			for (int i=0; i < (int)items.size(); ++i)
-			{
-				CFileItem *pItemTmp=items[i];
-				if (!CUtil::IsNFO( pItemTmp->m_strPath) && !CUtil::IsPlayList(pItemTmp->m_strPath) )
+        // TODO: this code is copied from GUIWindowVideo.cpp - it should 
+        // be put in a place that can be shared
+
+				// iterate through all the files, adding any files that appear similar to the selected movie file
+				for (int i=0; i < (int)items.size(); ++i)
 				{
-					double fPercentage=fstrcmp(CUtil::GetFileName(pItemTmp->m_strPath),CUtil::GetFileName(item.m_strPath),COMPARE_PERCENTAGE_MIN);
-					if (fPercentage >=COMPARE_PERCENTAGE)
+					CFileItem *pItemTmp=items[i];
+					CStdString fileNameTemp = pItemTmp->m_strPath;
+					if (!CUtil::IsNFO(fileNameTemp) && !CUtil::IsPlayList(fileNameTemp))
 					{
-						if (CUtil::IsVideo(pItemTmp->m_strPath))
+						if (CUtil::IsVideo(fileNameTemp))
 						{
-							movies.push_back(pItemTmp->m_strPath);
+							fileNameTemp = CUtil::GetFileName(fileNameTemp);
+							bool stackFile = false;
+
+							if (fileName.Equals(fileNameTemp))
+							{
+								stackFile = true;
+							}
+							else if (g_stSettings.m_iMyVideoVideoStack == STACK_FUZZY)
+							{
+								// fuzzy stacking
+								double fPercentage=fstrcmp(fileNameTemp, fileName, COMPARE_PERCENTAGE_MIN);
+								if (fPercentage >=COMPARE_PERCENTAGE)
+								{
+									stackFile = true;
+								}
+							}
+              else
+              {
+                // simple stacking
+                CStdString fileTitle2;
+                CStdString volumePrefix2;
+                int volumeNumber2;
+                if (CUtil::GetVolumeFromFileName(fileNameTemp, fileTitle2, volumePrefix2, volumeNumber2))
+                {
+                  if (fileTitle.Equals(fileTitle2) && volumePrefix.Equals(volumePrefix2))
+                  {
+                    stackFile = true;
+                  }
+                }
+              }
+
+              if (stackFile)
+							{
+								movies.push_back(pItemTmp->m_strPath);
+							}
 						}
 					}
 				}
+				
+				CFileItemList itemlist(items); // will clean up everything
 			}
-			
-			CFileItemList itemlist(items); // will clean up everything
-		}
+      else
+      {
+        // file is not stackable - simply add it as the only item in the list
+        movies.push_back(item.m_strPath);
+      }
+    }
 		
 		// if for some strange reason we couldn't find any matching files (can't think of any reason why!)
 		if (movies.size() <=0)
@@ -342,6 +397,10 @@ void CGUIRAMControl::PlayMovie(CFileItem& item)
 			item.SetFileName(strFileName);
 			playlist.Add(item);
 		}
+
+		// TODO: there is something funny about the way this works - if the 
+		// volume we started on was not the first volume in the series, it 
+		// is not possible to go backwards to previous volumes before this one.
 
 		// play the first file on the playlist
 		g_playlistPlayer.PlayNext();

@@ -293,6 +293,30 @@ void CControlSocket::SendStatus(LPCTSTR status, int type)
 	}
 }
 
+BOOL CControlSocket::SendCurDir(const CStdString command,CStdString curDir)
+{
+  return SendDir(command, curDir, " is current directory.");
+}
+
+BOOL CControlSocket::SendDir(const CStdString command,CStdString curDir,const CStdString prompt)
+{
+  if (1 /*g_stSettings.m_bFTPSingleCharDrives*/
+    && (curDir.GetLength() >= 2) 
+    && (curDir[0] == '/') && isalpha(curDir[1]) && ((curDir.GetLength() == 2) || (curDir[2] == ':')))
+  {
+    // modified to be consistent with other xbox ftp behavior: drive 
+    // name is a single character without the ':' at the end
+    if (curDir.GetLength() > 3) 
+      curDir = curDir.Left(2).ToUpper() + curDir.Mid(3);
+    else
+      curDir = curDir.Left(2).ToUpper();
+  }
+
+  CStdString str;
+  str.Format("%s \"%s\"%s", command, curDir, prompt);
+	return Send(str);
+}
+
 BOOL CControlSocket::Send(LPCTSTR str)
 {
 	char *buffer = new char[strlen(str) + 3];
@@ -733,9 +757,7 @@ void CControlSocket::ParseCommand()
 
 			if((args == "/") && (user.nRelative == FALSE) && (m_pOwner->m_pPermissions->GetHomeDir(m_status.user) == "/")){
 				m_CurrentDir="/";
-				CStdString str;
-				str.Format("250 CWD successful. \"%s\" is current directory.",m_CurrentDir);
-				Send(str);
+        SendCurDir("250 CWD successful.",m_CurrentDir);
 			} 
       else
       { // check for real permissions
@@ -744,21 +766,15 @@ void CControlSocket::ParseCommand()
 			int res = m_pOwner->m_pPermissions->ChangeCurrentDir(m_status.user,m_CurrentDir,args);
 			if (!res)
 			{
-				CStdString str;
-				str.Format("250 CWD successful. \"%s\" is current directory.",m_CurrentDir);
-				Send(str);
+        SendCurDir("250 CWD successful.",m_CurrentDir);
 			}
 			else if (res & 1)
 			{
-				CStdString str;
-				str.Format("550 CWD failed. \"%s\": Permission denied.",args);
-				Send(str);
+        SendDir("550 CWD failed.", args, ": Permission denied.");
 			}
 			else if (res)
 			{
-				CStdString str;
-				str.Format("550 CWD failed. \"%s\": directory not found.",args);
-				Send(str);
+        SendDir("550 CWD failed.", args, ": directory not found.");
 			}
 #if defined(_XBOX)
       }
@@ -768,9 +784,7 @@ void CControlSocket::ParseCommand()
 	case COMMAND_PWD:
 	case COMMAND_XPWD:
 		{
-			CStdString str;
-			str.Format("257 \"%s\" is current directory.",m_CurrentDir);
-			Send(str);	
+      SendCurDir("257",m_CurrentDir);
 		}
 		break;
 	case COMMAND_PORT:
@@ -1015,6 +1029,8 @@ void CControlSocket::ParseCommand()
 				for (std::vector<t_directory>::const_iterator iter=user.permissions.begin(); iter!=user.permissions.end(); iter++) {
 					if((iter->dir != "/") && (iter->dir != "\\")) {
 
+						CStdString dirToList = iter->dir;
+
 						if (isalpha(iter->dir[0]) && iter->dir[1] == ':')
 						{
 							char drive = tolower(iter->dir[0]);
@@ -1029,9 +1045,16 @@ void CControlSocket::ParseCommand()
 										continue;
 								}
 							}
+
+              if (1 /*g_stSettings.m_bFTPSingleCharDrives*/)
+              {
+                // modified to be consistent with other xbox ftp behavior: drive 
+                // name is a single character without the ':' at the end
+                dirToList = drive;
+                dirToList.MakeUpper();
+              }
 						}
 
-						CStdString dirToList = iter->dir;
 						dirToList.TrimRight("\\");
 						dirToList.TrimRight("/");
 
@@ -1139,9 +1162,7 @@ void CControlSocket::ParseCommand()
 #endif
 			if (!res)
 			{
-				CStdString str;
-				str.Format("200 CDUP successful. \"%s\" is current directory.",m_CurrentDir);
-				Send(str);
+        SendCurDir("200 CDUP successful.",m_CurrentDir);
 			}
 			else if (res & 1)
 			{
@@ -1751,7 +1772,18 @@ void CControlSocket::ParseCommand()
 							pCurrent->pNext=NULL;
 						}
 
+            if (1 /*g_stSettings.m_bFTPSingleCharDrives*/
+              && (iter->dir.GetLength() == 3) 
+              && isalpha(iter->dir[0]) && (iter->dir[1] == ':') && (iter->dir[2] == '\\'))
+            {
+              // modified to be consistent with other xbox ftp behavior: drive 
+              // name is a single character without the ':' at the end
+              result=iter->dir[0];
+            }
+            else
+            {
 						result=iter->dir;
+            }
 						result+="\r\n";
 
 						strcpy(pCurrent->buffer, result);

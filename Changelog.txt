@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 30-10-2004 added: SF patch #1056254	New simple-stacking mode for video
+  - 30-10-2004 added: Possibility for skinners to define their own windows (custom*.xml where * is a number)
+  - 30-10-2004 added: SF patch #1056175 FTP server uses /E/ now instead of /E:/
+  - 30-10-2004 fixed: Bug in new video code (hopefully!)
   - 30-10-2004 fixed: Thumbs aspect ratio in list controls
   - 30-10-2004 added: Support for the context menu for editting bookmarks in My Videos, My Pictures, My Music
   - 30-10-2004 changed: Rearranged a lot of the My Videos code into a base class

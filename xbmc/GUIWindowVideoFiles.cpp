@@ -185,6 +185,8 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 
 			if (m_strDirectory=="?") 
 			{
+				m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
+				m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
 				m_strDirectory=g_stSettings.m_szDefaultVideos;
 				SetHistoryForPath(m_strDirectory);
 			}
@@ -231,7 +233,16 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 
       else if (iControl==CONTROL_STACK)
       {
-        g_stSettings.m_bMyVideoVideoStack=!g_stSettings.m_bMyVideoVideoStack;
+        // toggle between the following states:
+        //   0 : no stacking
+        //   1 : simple stacking
+        //   2 : fuzzy stacking
+				g_stSettings.m_iMyVideoVideoStack++;
+				if (g_stSettings.m_iMyVideoVideoStack > STACK_FUZZY) g_stSettings.m_iMyVideoVideoStack = STACK_NONE;
+        if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
+          g_stSettings.m_bMyVideoCleanTitles = true;
+				else
+					g_stSettings.m_bMyVideoCleanTitles = false;
         g_settings.Save();
         UpdateButtons();
         Update( m_strDirectory );
@@ -247,7 +258,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 void CGUIWindowVideoFiles::UpdateButtons()
 {
 	CGUIWindowVideoBase::UpdateButtons();
-	SET_CONTROL_LABEL(GetID(), CONTROL_STACK,g_stSettings.m_bMyVideoVideoStack ? 347 : 346);
+	SET_CONTROL_LABEL(GetID(), CONTROL_STACK,g_stSettings.m_iMyVideoVideoStack + 14000);
 }
 
 void CGUIWindowVideoFiles::FormatItemLabels()
@@ -349,72 +360,127 @@ void CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 
   m_strDirectory=strDirectory;
 
-  if (g_stSettings.m_bMyVideoVideoStack)
+  if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
   {
     VECFILEITEMS items;
 	  m_rootDir.GetDirectory(strDirectory,items);
     bool bDVDFolder(false);
-	//Figure out first if we are in a folder that contains a dvd
+		//Figure out first if we are in a folder that contains a dvd
     for (int i=0; i < (int)items.size(); ++i) //Do it this way to avoid an extra roundtrip to files
     {
-		CFileItem* pItem1= items[i];
-		if (CStdString(CUtil::GetFileName(pItem1->m_strPath)).Equals("VIDEO_TS.IFO"))
-		{
-			bDVDFolder = true;
-			m_vecItems.push_back(pItem1);
-			items.erase(items.begin() + i); //Make sure this is not included in the comeing search as it would have been deleted.
-			break;
+			CFileItem* pItem1= items[i];
+			if (CStdString(CUtil::GetFileName(pItem1->m_strPath)).Equals("VIDEO_TS.IFO"))
+			{
+				bDVDFolder = true;
+				m_vecItems.push_back(pItem1);
+				items.erase(items.begin() + i); //Make sure this is not included in the comeing search as it would have been deleted.
+				break;
+			}
 		}
-	}
 	  
-    for (int i=0; i < (int)items.size(); ++i)
-    {
-      bool bAdd(true);
-      CFileItem* pItem1= items[i];
-      if (CUtil::IsNFO(pItem1->m_strPath))
-      {
-        bAdd=false;
-      }
-	  else if(bDVDFolder && CUtil::IsDVDFile(pItem1->m_strPath, true, true)) //Hide all dvdfiles
-	  {
-        bAdd=false;
-      }
-      else
-      {
-        for (int x=0; x < (int)items.size(); ++x)
-        {
-          //don't stack folders and playlists
-          if ((!pItem1->m_bIsFolder) && !CUtil::IsPlayList(pItem1->m_strPath))
-          {
-            if (i != x)
-            {
-              CFileItem* pItem2= items[x];  
-              if ((!pItem2->m_bIsFolder) && !CUtil::IsPlayList(pItem2->m_strPath))
-              {
-                double fPercentage=fstrcmp(CUtil::GetFileName(pItem1->m_strPath),CUtil::GetFileName(pItem2->m_strPath),COMPARE_PERCENTAGE_MIN);
-                if (fPercentage>=COMPARE_PERCENTAGE)
-                {
-                  int iGreater=strcmp(pItem1->m_strPath.c_str(),pItem2->m_strPath.c_str());
-                  if (iGreater >0)
-                  {
-                    bAdd=false;
-                    break;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      if (bAdd)
-      {
-        m_vecItems.push_back(pItem1);
-      }
-      else
-      {
-        delete pItem1;
-      }
-    }
+		for (int i=0; i < (int)items.size(); ++i)
+		{
+			bool bAdd(true);
+			CFileItem* pItem1= items[i];
+			if (CUtil::IsNFO(pItem1->m_strPath))
+			{
+				bAdd=false;
+			}
+			else if(bDVDFolder && CUtil::IsDVDFile(pItem1->m_strPath, true, true)) //Hide all dvdfiles
+			{
+				bAdd=false;
+			}
+			else
+			{
+				//don't stack folders and playlists
+				if ((!pItem1->m_bIsFolder) && !CUtil::IsPlayList(pItem1->m_strPath))
+				{
+					CStdString fileName1 = CUtil::GetFileName(pItem1->m_strPath);
+
+					CStdString fileTitle;
+					CStdString volumePrefix;
+					int volumeNumber;
+
+					bool searchForStackedFiles = false;
+					if (g_stSettings.m_iMyVideoVideoStack == STACK_FUZZY)
+					{
+						searchForStackedFiles = true;
+					}
+					else
+					{
+						if (CUtil::GetVolumeFromFileName(fileName1, fileTitle, volumePrefix, volumeNumber))
+						{
+							if (volumeNumber > 1)
+							{
+								searchForStackedFiles = true;
+							}
+						}
+					}
+	          
+					if (searchForStackedFiles)
+					{
+						for (int x=0; x < (int)items.size(); ++x)
+						{
+							if (i != x)
+							{
+								CFileItem* pItem2= items[x];  
+								if ((!pItem2->m_bIsFolder) && !CUtil::IsPlayList(pItem2->m_strPath))
+								{
+									CStdString fileName2 = CUtil::GetFileName(pItem2->m_strPath);
+
+									if (g_stSettings.m_iMyVideoVideoStack == STACK_FUZZY)
+									{
+										// use "fuzzy" stacking
+
+										double fPercentage=fstrcmp(fileName1, fileName2, COMPARE_PERCENTAGE_MIN);
+										if (fPercentage>=COMPARE_PERCENTAGE)
+										{
+											int iGreater = strcmp(fileName1, fileName2);
+											if (iGreater >0)
+											{
+												bAdd=false;
+												break;
+											}
+										}
+									}
+									else
+									{
+										// use traditional "simple" stacking (like XBMP)
+										// file name must end in -CD[n], where only the first 
+										// one (-CD1) will be added to the display list
+
+										CStdString fileTitle2;
+										CStdString volumePrefix2;
+										int volumeNumber2;
+										if (CUtil::GetVolumeFromFileName(fileName2, fileTitle2, volumePrefix2, volumeNumber2))
+										{
+											// TODO: check volumePrefix - they should be in the 
+											// same category, but not necessarily equal!
+
+											if ((volumeNumber2 == 1) 
+													&& volumePrefix.Equals(volumePrefix2)
+													&& fileTitle.Equals(fileTitle2))
+											{
+												bAdd = false;
+												break;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			if (bAdd)
+			{
+				m_vecItems.push_back(pItem1);
+			}
+			else
+			{
+				delete pItem1;
+			}
+		}
   }
   else
   {
@@ -425,8 +491,10 @@ void CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 	m_iLastControl=GetFocusedControl();
 
 	CUtil::SetThumbs(m_vecItems);
-	if (g_stSettings.m_bHideExtensions)
+	if ((g_stSettings.m_bHideExtensions) || (g_stSettings.m_bMyVideoCleanTitles))
 		CUtil::RemoveExtensions(m_vecItems);
+  if (g_stSettings.m_bMyVideoCleanTitles)
+    CUtil::CleanFileNames(m_vecItems);
 
 	SetIMDBThumbs(m_vecItems);
 	CUtil::FillInDefaultIcons(m_vecItems);
@@ -492,21 +560,66 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
       return;
     }
     if (!CheckMovie(strFileName)) return;
-    if (g_stSettings.m_bMyVideoVideoStack)
+    if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
     {
+      CStdString fileName = CUtil::GetFileName(strFileName);
+
+      CStdString fileTitle;
+      CStdString volumePrefix;
+      int volumeNumber;
+      bool fileStackable = true;
+      if (g_stSettings.m_iMyVideoVideoStack == STACK_SIMPLE)
+      {
+        if (!CUtil::GetVolumeFromFileName(fileName, fileTitle, volumePrefix, volumeNumber))
+          fileStackable = false;
+      }
+
       vector<CStdString> movies;
       {
+        if (fileStackable)
+        {
         VECFILEITEMS items;
 	      m_rootDir.GetDirectory(m_strDirectory,items);
         for (int i=0; i < (int)items.size(); ++i)
         {
           CFileItem *pItemTmp=items[i];
-          if (!CUtil::IsNFO( pItemTmp->m_strPath) && !CUtil::IsPlayList(pItemTmp->m_strPath) )
-          {
-            double fPercentage=fstrcmp(CUtil::GetFileName(pItemTmp->m_strPath),CUtil::GetFileName(pItem->m_strPath),COMPARE_PERCENTAGE_MIN);
-            if (fPercentage >=COMPARE_PERCENTAGE)
+            CStdString fileNameTemp = pItemTmp->m_strPath;
+            if (!CUtil::IsNFO(fileNameTemp) && !CUtil::IsPlayList(fileNameTemp))
             {
-              if (CUtil::IsVideo(pItemTmp->m_strPath))
+              if (CUtil::IsVideo(fileNameTemp))
+              {
+                fileNameTemp = CUtil::GetFileName(fileNameTemp);
+                bool stackFile = false;
+
+                if (fileName.Equals(fileNameTemp))
+                {
+                  stackFile = true;
+                }
+                else if (g_stSettings.m_iMyVideoVideoStack == STACK_FUZZY)
+								{
+                  // fuzzy stacking
+                  double fPercentage=fstrcmp(fileNameTemp, fileName, COMPARE_PERCENTAGE_MIN);
+									if (fPercentage >=COMPARE_PERCENTAGE)
+									{
+                    stackFile = true;
+                  }
+                }
+                else
+                {
+                  // simple stacking
+                  CStdString fileTitle2;
+                  CStdString volumePrefix2;
+                  int volumeNumber2;
+                  if (CUtil::GetVolumeFromFileName(fileNameTemp, fileTitle2, volumePrefix2, volumeNumber2))
+                  {
+                    if (fileTitle.Equals(fileTitle2) && volumePrefix.Equals(volumePrefix2))
+                    {
+                      stackFile = true;
+                    }
+                  }
+                }
+
+                if (stackFile)
               {
                 movies.push_back(pItemTmp->m_strPath);
               }
@@ -514,6 +627,12 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
           }
         }
         CFileItemList itemlist(items); // will clean up everything
+      }
+        else
+        {
+          // file is not stackable - simply add it as the only item in the list
+          movies.push_back(strFileName);
+        }
       }
 		  if (movies.size() <=0) return;
       int iSelectedFile=1;

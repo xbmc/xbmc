@@ -5,6 +5,7 @@
 
 #include <xtl.h>
 #include "stdstring.h"
+#include "StringUtils.h"
 #include "GraphicContext.h"
 #include "Profile.h"
 #include <vector>
@@ -43,13 +44,17 @@ using namespace std;
 #define VOLUME_MINIMUM -6000	// -60dB
 #define VOLUME_MAXIMUM 0		// 0dB
 
-#define VIEW_MODE_NORMAL		0
-#define VIEW_MODE_ZOOM			1
-#define VIEW_MODE_STRETCH_4x3	2
+#define VIEW_MODE_NORMAL				0
+#define VIEW_MODE_ZOOM					1
+#define VIEW_MODE_STRETCH_4x3		2
 #define VIEW_MODE_STRETCH_14x9	3
 #define VIEW_MODE_STRETCH_16x9	4
-#define VIEW_MODE_ORIGINAL		5
-#define VIEW_MODE_CUSTOM		6
+#define VIEW_MODE_ORIGINAL			5
+#define VIEW_MODE_CUSTOM				6
+
+#define STACK_NONE					0
+#define STACK_SIMPLE				1
+#define STACK_FUZZY					2
 
 /*!
 \ingroup windows
@@ -367,10 +372,16 @@ public:
 		int				m_iMyVideoTitleSortMethod;
 		bool			m_bMyVideoTitleSortAscending;
 
-		bool			m_bMyVideoVideoStack;
+		int				m_iMyVideoVideoStack;
 		bool			m_bMyVideoActorStack;
 		bool			m_bMyVideoGenreStack;
 		bool			m_bMyVideoYearStack;
+		char			m_szMyVideoStackTokens[128];
+		char			m_szMyVideoStackSeparators[32];
+
+		bool			m_bMyVideoCleanTitles;
+		char			m_szMyVideoCleanTokens[256];
+		char			m_szMyVideoCleanSeparators[32];
 
 		int       m_iVideoStartWindow;
 		char			m_szWeatherArea[3][10];	//WEATHER
@@ -429,6 +440,12 @@ public:
 		bool			m_bShowFreeMem;
 		int				m_iMusicOSDTimeout;  // music OSD timeout
 	};
+
+	// cache copies of these parsed values, to avoid re-parsing over and over
+	CStdString m_szMyVideoStackSeparatorsString;
+	CStdStringArray m_szMyVideoStackTokensArray;
+	CStdString m_szMyVideoCleanSeparatorsString;
+	CStdStringArray m_szMyVideoCleanTokensArray;
 
 	VECSHARES					m_vecMyProgramsBookmarks;
 	VECSHARES					m_vecMyPictureShares;

@@ -176,11 +176,31 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_szExternalDVDPlayer,"");
 	strcpy(g_stSettings.m_szExternalCDDAPlayer,"");
 
-	g_stSettings.m_bMyVideoVideoStack =false;
 	g_stSettings.m_bMyVideoActorStack =false;
 	g_stSettings.m_bMyVideoGenreStack =false;
 	g_stSettings.m_bMyVideoYearStack =false;
 
+	// default to fuzzy stacking, to stay consistent with older versions
+	g_stSettings.m_iMyVideoVideoStack = STACK_NONE;
+
+	strcpy(g_stSettings.m_szMyVideoStackTokens, "cd|part");
+	strcpy(g_stSettings.m_szMyVideoStackSeparators, "- _.");
+
+	StringUtils::SplitString(g_stSettings.m_szMyVideoStackTokens, "|", g_settings.m_szMyVideoStackTokensArray);
+	g_settings.m_szMyVideoStackSeparatorsString = g_stSettings.m_szMyVideoStackSeparators;
+
+	for (int i = 0; i < (int)g_settings.m_szMyVideoStackTokensArray.size(); i++)
+		g_settings.m_szMyVideoStackTokensArray[i].MakeLower();
+
+	g_stSettings.m_bMyVideoCleanTitles = false;
+	strcpy(g_stSettings.m_szMyVideoCleanTokens, "divx|xvid|3ivx|ac3|ac351|dts|mp3|wma|m4a|mp4|aac|ogg|scr|ts|sharereactor|dvd|dvdrip");
+	strcpy(g_stSettings.m_szMyVideoCleanSeparators, "- _.[({+");
+
+	StringUtils::SplitString(g_stSettings.m_szMyVideoCleanTokens, "|", g_settings.m_szMyVideoCleanTokensArray);
+	g_settings.m_szMyVideoCleanSeparatorsString = g_stSettings.m_szMyVideoCleanSeparators;
+
+	for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
+		g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
 
 	g_stSettings.m_bPPAuto=true;//only has effect if m_bPostProcessing = true
 	g_stSettings.m_bPPVertical=false;
@@ -1105,10 +1125,28 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 	if (pElement)
 	{
 		GetInteger(pElement, "startwindow",g_stSettings.m_iVideoStartWindow,WINDOW_VIDEOS,WINDOW_VIDEO_GENRE,WINDOW_VIDEO_TITLE);
-		GetBoolean(pElement, "stackvideo", g_stSettings.m_bMyVideoVideoStack);
+		GetInteger(pElement, "stackvideomode", g_stSettings.m_iMyVideoVideoStack, STACK_NONE, STACK_NONE, STACK_FUZZY);
 		GetBoolean(pElement, "stackgenre", g_stSettings.m_bMyVideoGenreStack);
 		GetBoolean(pElement, "stackactor", g_stSettings.m_bMyVideoActorStack);
 		GetBoolean(pElement, "stackyear", g_stSettings.m_bMyVideoYearStack);
+		GetString(pElement, "stacktokens", g_stSettings.m_szMyVideoStackTokens, g_stSettings.m_szMyVideoStackTokens);
+		GetString(pElement, "stackseparators", g_stSettings.m_szMyVideoStackSeparators, g_stSettings.m_szMyVideoStackSeparators);
+
+		StringUtils::SplitString(g_stSettings.m_szMyVideoStackTokens, "|", g_settings.m_szMyVideoStackTokensArray);
+		g_settings.m_szMyVideoStackSeparatorsString = g_stSettings.m_szMyVideoStackSeparators;
+
+		for (int i = 0; i < (int)g_settings.m_szMyVideoStackTokensArray.size(); i++)
+			g_settings.m_szMyVideoStackTokensArray[i].MakeLower();
+
+		GetBoolean(pElement, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
+		GetString(pElement, "cleantokens", g_stSettings.m_szMyVideoCleanTokens, g_stSettings.m_szMyVideoCleanTokens);
+		GetString(pElement, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators, g_stSettings.m_szMyVideoCleanSeparators);
+
+		StringUtils::SplitString(g_stSettings.m_szMyVideoCleanTokens, "|", g_settings.m_szMyVideoCleanTokensArray);
+		g_settings.m_szMyVideoCleanSeparatorsString = g_stSettings.m_szMyVideoCleanSeparators;
+
+		for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
+			g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
 
 		GetInteger(pElement, "videoplaylistviewicons", g_stSettings.m_iMyVideoPlaylistViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
 		GetBoolean(pElement, "videoplaylistrepeat",g_stSettings.m_bMyVideoPlaylistRepeat);
@@ -1519,10 +1557,16 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	if (!pNode) return false;
 
 	SetInteger(pNode, "startwindow",g_stSettings.m_iVideoStartWindow);
-	SetBoolean(pNode, "stackvideo", g_stSettings.m_bMyVideoVideoStack);
+	SetInteger(pNode, "stackvideomode", g_stSettings.m_iMyVideoVideoStack);
 	SetBoolean(pNode, "stackgenre", g_stSettings.m_bMyVideoGenreStack);
 	SetBoolean(pNode, "stackactor", g_stSettings.m_bMyVideoActorStack);
 	SetBoolean(pNode, "stackyear", g_stSettings.m_bMyVideoYearStack);
+	SetString(pNode, "stacktokens", g_stSettings.m_szMyVideoStackTokens);
+	SetString(pNode, "stackseparators", g_stSettings.m_szMyVideoStackSeparators);
+
+	SetBoolean(pNode, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
+	SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);
+	SetString(pNode, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators);
 
 	SetInteger(pNode, "videoplaylistviewicons", g_stSettings.m_iMyVideoPlaylistViewAsIcons);
 	SetBoolean(pNode, "videoplaylistrepeat", g_stSettings.m_bMyVideoPlaylistRepeat);

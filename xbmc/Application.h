@@ -129,6 +129,7 @@ public:
 	void					Stop();
 	void					RestartApp();
 	void					LoadSkin(const CStdString& strSkin);
+	bool					LoadUserWindows(const CStdString& strSkinPath);
 	void					DelayLoadSkin();
 	void					CancelDelayLoadSkin();
 	const CStdString&		CurrentFile();
