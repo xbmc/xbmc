@@ -113,6 +113,10 @@
 #define ACTION_OSD_SHOW_VALUE_MIN   75
 #define ACTION_SMALL_STEP_BACK      76
 
+#define ACTION_MUSIC_FORWARD        77
+#define ACTION_MUSIC_REWIND         78
+#define ACTION_MUSIC_PLAY           79
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID								-1
 #define WINDOW_HOME										0

@@ -102,7 +102,7 @@ public:
 	void									ResetAllControls();
   virtual void          Process();
   void                  ResetScreenSaver();
-  
+  int                   GetPlaySpeed() const;  
 	CGUIWindowHome									m_guiHome;
   CGUIWindowPrograms							m_guiPrograms;
   CGUIWindowSettingsPrograms      m_guiSettingsPrograms;
@@ -162,6 +162,7 @@ public:
 	DWORD		m_dwSaverTick;	// CB: SCREENSAVER PATCH
 	CGUIWindowWeather						m_guiMyWeather;	//WEATHER
 protected:
+  int                     m_iPlaySpeed;
 	bool										m_bOverlayEnabled;
 	CStdString							m_strCurrentPlayer;
   bool                    m_bSettingsLoaded;

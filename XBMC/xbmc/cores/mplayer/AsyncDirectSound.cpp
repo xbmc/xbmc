@@ -412,6 +412,7 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 			m_adwStatus[ dwIndex ] = XMEDIAPACKET_STATUS_PENDING;
 
 			// Set up audio packet
+
 			xmpAudio.dwMaxSize        = iSize/m_iAudioSkip;
 			xmpAudio.pvBuffer         = m_pbSampleData[dwIndex];
 			xmpAudio.pdwStatus        = &m_adwStatus[ dwIndex ];
@@ -419,16 +420,16 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 			xmpAudio.prtTimestamp     = NULL;
 			xmpAudio.pContext         = NULL;
       
-			memcpy(xmpAudio.pvBuffer,&data[iBytesCopied],iSize);
+			memcpy(xmpAudio.pvBuffer,&data[iBytesCopied],iSize/m_iAudioSkip);
 			if (m_pCallback)
 			{
-				m_pCallback->OnAudioData(&data[iBytesCopied],iSize);
+				m_pCallback->OnAudioData(&data[iBytesCopied],iSize/m_iAudioSkip);
 			}
 			if (DS_OK != m_pStream->Process( &xmpAudio, NULL ))
 			{
 				return iBytesCopied;
 			}
-			buffered_bytes+=iSize;
+			buffered_bytes+=(iSize/m_iAudioSkip);
       iBytesCopied+=iSize;
 			len -=iSize;
 		}
@@ -500,7 +501,7 @@ int CASyncDirectSound::SetPlaySpeed(int iSpeed)
   if (iSpeed < 0)
 		return 0;
 
-	iSpeed++;
+	//iSpeed++;
 
   NewFreq = OrgFreq * (iSpeed);
 	

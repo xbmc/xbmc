@@ -14,6 +14,7 @@
 #define CONTROL_INFO			  5
 #define CONTROL_BIG_PLAYTIME 6
 
+
 CGUIWindowVideoOverlay::CGUIWindowVideoOverlay()
 :CGUIWindow(0)
 {
@@ -64,17 +65,27 @@ void CGUIWindowVideoOverlay::Render()
 
 	if (g_application.m_pPlayer->IsPaused() )
 	{
-		CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_PLAY_LOGO); 
-		OnMessage(msg1);
-		CGUIMessage msg2(GUI_MSG_VISIBLE, GetID(), CONTROL_PAUSE_LOGO); 
-		OnMessage(msg2); 
+		  SET_CONTROL_HIDDEN(GetID(), CONTROL_PLAY_LOGO); 
+      SET_CONTROL_VISIBLE(GetID(), CONTROL_PAUSE_LOGO); 
 	}
 	else
 	{
-		CGUIMessage msg1(GUI_MSG_VISIBLE, GetID(), CONTROL_PLAY_LOGO); 
-		OnMessage(msg1);
-		CGUIMessage msg2(GUI_MSG_HIDDEN, GetID(), CONTROL_PAUSE_LOGO); 
-		OnMessage(msg2); 
+    int iSpeed = g_application.GetPlaySpeed();
+    if (iSpeed > 1)
+    {
+		  SET_CONTROL_HIDDEN(GetID(), CONTROL_PLAY_LOGO); 
+      SET_CONTROL_HIDDEN(GetID(), CONTROL_PAUSE_LOGO); 
+    }
+    else if (iSpeed < 0)
+    {
+		  SET_CONTROL_HIDDEN(GetID(), CONTROL_PLAY_LOGO); 
+      SET_CONTROL_HIDDEN(GetID(), CONTROL_PAUSE_LOGO); 
+    }
+    else
+    {
+		  SET_CONTROL_VISIBLE(GetID(), CONTROL_PLAY_LOGO); 
+      SET_CONTROL_HIDDEN(GetID(), CONTROL_PAUSE_LOGO); 
+    }
 	}
 	CGUIWindow::Render();
 }
