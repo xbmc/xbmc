@@ -980,7 +980,7 @@ bool CUtil::IsCUESheet(const CStdString& strFileName)
 {
 	CStdString strExtension;
 	GetExtension(strFileName, strExtension);
-	return (strExtension == ".cue");
+	return (strExtension.CompareNoCase(".cue") == 0);
 }
 
 bool CUtil::IsAudio(const CStdString& strFile)

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-11-2004 fixed: multi byte language cue file not open correctly over SMB share
   - 11-11-2004 changed: Use msdash audio settings for analog audio (Stereo <-> Dolby Surround) instead of forcing Dolby Surround
   - 11-11-2004 added: Ability to define a built-in function in place of an action <id> in keymap.xml
                       eg. you can have <id>XBMC.ActivateWindow(501)</id> to go to My Music screen
