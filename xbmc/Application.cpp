@@ -80,7 +80,7 @@
 
 CStdString g_LoadErrorStr;
 
-extern IDirectSoundRenderer* m_pAudioDecoder;
+//extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
 :m_ctrDpad(220,220)
 ,m_ctrIR(220,220)
@@ -691,6 +691,9 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiSettingsProfile);          // window id = 34
 	m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
 	m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
+	m_gWindowManager.Add(&m_guiDialogInvite);						// window id = 102
+	m_gWindowManager.Add(&m_guiDialogKeyboard);						// window id = 103
+	m_gWindowManager.Add(&m_guiDialogVolumeBar);					// window id = 104
 	m_gWindowManager.Add(&m_guiMyMusicPlayList);					// window id = 500
 	m_gWindowManager.Add(&m_guiMyMusicSongs);							// window id = 501
 	m_gWindowManager.Add(&m_guiMyMusicAlbum);							// window id = 502
@@ -711,8 +714,6 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiWindowScreensaver);				// window id = 2900 Screensaver
 	m_gWindowManager.Add(&m_guiMyWeather);						    // window id = 2600 WEATHER
 	m_gWindowManager.Add(&m_guiSettingsWeather);				  // window id = 17 WEATHER SETTINGS
-	m_gWindowManager.Add(&m_guiDialogInvite);
-	m_gWindowManager.Add(&m_guiDialogKeyboard);
 	m_gWindowManager.Add(&m_guiMyBuddies);						    // window id = 2700 BUDDIES
 	CKaiClient::GetInstance()->SetObserver(&m_guiMyBuddies);
 
@@ -902,6 +903,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiMusicOverlay.FreeResources();
 	m_guiMusicOverlay.ClearAll();
 
+	m_guiPointer.FreeResources();
+	m_guiPointer.ClearAll();
+
 	m_gWindowManager.DeInitialize();
 	g_TextureManager.Cleanup();
 
@@ -950,6 +954,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiSettingsProfile.Load("SettingsProfile.xml");
 	m_guiDialogYesNo.Load("dialogYesNo.xml");
 	m_guiDialogProgress.Load("dialogProgress.xml");
+	m_guiDialogVolumeBar.Load("dialogVolumeBar.xml");
 	m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
 	m_guiMyMusicSongs.Load("mymusicsongs.xml");
 	m_guiMyMusicAlbum.Load("mymusicalbum.xml");
@@ -989,6 +994,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogKeyboard.Load( "dialogKeyboard.xml" );  
 	m_guiMyBuddies.Load( "mybuddies.xml");
 	m_guiSettingsCDRipper.Load("SettingsCDRipper.xml");
+	m_guiPointer.Load("Pointer.xml");
 
 	CGUIWindow::FlushReferenceCache(); // flush the cache so it doesn't use memory all the time
 
@@ -998,6 +1004,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	CLog::DebugLog("Load Skin XML: %.2fms", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
 
 	CLog::Log("  initialize new skin...");
+	m_guiPointer.AllocResources();
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
 	m_gWindowManager.AddMsgTarget(this);
@@ -1078,8 +1085,11 @@ void CApplication::Render()
 			m_guiMusicOverlay.Render();
 		}
 	}
-
-
+		// Render the mouse pointer
+		if (g_Mouse.IsActive())
+		{
+			m_guiPointer.Render();
+		}
 
 	{
 		// free memory if we got les then 10megs free ram
@@ -1160,6 +1170,8 @@ void CApplication::Render()
 
 void CApplication::OnKey(CKey& key)
 {
+	// Turn the mouse off, as we've just got a keypress from controller or remote
+	g_Mouse.SetInactive();
 	CAction action;
 	// a key has been pressed. 
 	// Reset the screensaver timer
@@ -1179,6 +1191,11 @@ void CApplication::OnKey(CKey& key)
 
 	// get the current active window 
 	int iWin = m_gWindowManager.GetActiveWindow();
+	// change this if we have a dialog up
+	if (m_gWindowManager.IsRouted())
+	{
+		iWin = m_gWindowManager.m_pRouteWindow->GetID();
+	}
 	if (iWin==WINDOW_FULLSCREEN_VIDEO)
 	{
 		// current active window is full screen video.
@@ -1203,40 +1220,10 @@ void CApplication::OnKey(CKey& key)
 		g_buttonTranslator.GetAction(iWin, key, action);
 	}
 
-	// special case for switching between GUI & fullscreen mode. (only if we're playing a movie)
-	if ( IsPlayingVideo() )
-	{
-		// dont allow switching between GUI & fullscreen mode if a dialog is onscreen
-		if ( !m_gWindowManager.IsRouted())
-		{
-			// if user wants 2 show fullscreen window
-			if (action.wID == ACTION_SHOW_GUI && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-			{
-				// then switch to fullscreen mode
-				m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-				g_TextureManager.Flush();
-				g_TextureManager.Dump();
-				return;
-			}
-		}
-	}
-	else 
-	{
-		// special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
-		if (IsPlayingAudio() )
-		{
-			// if user wants 2 show visualisation window
-			if (action.wID == ACTION_SHOW_GUI && m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
-			{
-				// dont allow switching between GUI & visualisation mode if a dialog is onscreen
-				if ( !m_gWindowManager.IsRouted())
-				{
-					// then switch to visualisation
-					m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
-				}
-				return;
-			}
-		}
+	// special case for switching between GUI & fullscreen mode.
+	if (action.wID == ACTION_SHOW_GUI)
+	{	// Switch to fullscreen mode if we can
+		if (SwitchToFullScreen()) return;
 	}
 
 	// in normal case
@@ -1320,6 +1307,19 @@ void CApplication::OnKey(CKey& key)
 				}
 			}
 		}
+	}
+	// Check for global volume control
+	if (action.wID == ACTION_VOLUME_UP || action.wID == ACTION_VOLUME_DOWN)
+	{	// increase or decrease the volume
+		g_stSettings.m_nVolumeLevel += (int)(action.fAmount1*100);
+		if (g_stSettings.m_nVolumeLevel > VOLUME_MAXIMUM) g_stSettings.m_nVolumeLevel = VOLUME_MAXIMUM;
+		if (g_stSettings.m_nVolumeLevel < VOLUME_MINIMUM) g_stSettings.m_nVolumeLevel = VOLUME_MINIMUM;
+		// tell our hardware to update the volume level...
+		if (m_pPlayer)
+			m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
+		// show visual feedback of volume change...
+		if (!m_guiDialogVolumeBar.IsRunning())
+			m_guiDialogVolumeBar.DoModal(m_gWindowManager.GetActiveWindow());
 	}
 }
 void CApplication::UpdateLCD()
@@ -1553,8 +1553,33 @@ void CApplication::UpdateLCD()
 void CApplication::FrameMove()
 {
 	if (g_lcd) UpdateLCD();
-	// read raw input from controller & remote control
+	// read raw input from controller, remote control, and mouse
 	ReadInput();
+	// process mouse actions
+	if (g_Mouse.IsActive())
+	{
+		// call OnAction with ACTION_MOUSE
+		CAction action;
+		action.wID = ACTION_MOUSE;
+		action.fAmount1 = (float) m_guiPointer.GetPosX();
+		action.fAmount2 = (float) m_guiPointer.GetPosY();
+		// send mouse event to the music + video overlays, if they're enabled
+		if (  m_bOverlayEnabled )
+		{
+			// if we're playing a movie
+			if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+			{
+				// then send the action to the video overlay window
+				m_guiWindowVideoOverlay.OnAction(action);
+			}
+			else if ( IsPlayingAudio() ) 
+			{
+				// send message to the audio overlay window
+				m_guiMusicOverlay.OnAction(action);
+			}
+		}
+		m_gWindowManager.OnAction(action);
+	}
 	XBIR_REMOTE* pRemote	= &m_DefaultIR_Remote;
 	XBGAMEPAD*  pGamepad	= &m_DefaultGamepad;
 
@@ -1585,7 +1610,19 @@ void CApplication::FrameMove()
 		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);   
 	}
-
+	// direction specific keys (for defining different actions for each direction)
+	if (pGamepad->fY2 > 0.1 && pGamepad->fX2 < pGamepad->fY2 && -pGamepad->fX2 < pGamepad->fY2)
+	{
+		bGotKey=true;
+		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_UP,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+		OnKey(key);   
+	}
+	if (pGamepad->fY2 < -0.1 && pGamepad->fX2 < -pGamepad->fY2 && -pGamepad->fX2 < -pGamepad->fY2)
+	{
+		bGotKey=true;
+		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_DOWN,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+		OnKey(key);   
+	}
 	if ( wDir & DC_LEFTTRIGGER)
 	{
 		bGotKey=true;
@@ -1823,7 +1860,9 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 	{
 		strNewPlayer = "sid";
 	}
-	if (m_pPlayer)
+	// We should restart the player, unless the previous and next tracks are using the cdda player
+	// (allows gapless cdda playback)
+	if (m_pPlayer && !(m_strCurrentPlayer == strNewPlayer && m_strCurrentPlayer == "cdda"))
 	{
 		if (1||m_strCurrentPlayer != strNewPlayer || !CUtil::IsAudio(m_strCurrentFile) )
 		{
@@ -2359,6 +2398,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
 			}
 		}
 		break;
+	case GUI_MSG_FULLSCREEN:
+		{	// Switch to fullscreen, if we can
+			SwitchToFullScreen();
+		}
+		break;
 	}
 	return true;
 }
@@ -2433,6 +2477,24 @@ const CStdString& CApplication::CurrentFile()
 	return m_strCurrentFile;
 }
 
+void CApplication::SetVolume(int iPercent)
+{
+	// convert the percentage to a mB (milliBell) value (*100 for dB)
+	if (iPercent<0) iPercent = 0;
+	if (iPercent>100) iPercent = 100;
+	float fHardwareVolume = ((float)iPercent)/100.0f * (VOLUME_MAXIMUM-VOLUME_MINIMUM) + VOLUME_MINIMUM;
+	// update our settings
+	g_stSettings.m_nVolumeLevel = (long)fHardwareVolume;
+	// and tell our player to update the volume
+	if (m_pPlayer)
+		m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
+}
+
+int CApplication::GetVolume() const
+{
+	// converts the hardware volume (in mB) to a percentage
+	return int(((float)(g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM))/(VOLUME_MAXIMUM-VOLUME_MINIMUM)*100.0f+0.5f);
+}
 
 void CApplication::SetPlaySpeed(int iSpeed)
 {
@@ -2455,16 +2517,17 @@ void CApplication::SetPlaySpeed(int iSpeed)
 	//else
 	//  iTime= m_pPlayer->GetTime() / (__int64)10; // for AUDIO the playtime is accurate during FF/RW
 	m_pPlayer->ToFFRW(m_iPlaySpeed);
-	if (m_pAudioDecoder)
+//	if (m_pAudioDecoder)
 	{
 		if(m_iPlaySpeed==1)
-		{
-			//m_pPlayer->SeekTime((int)iTime);
-			m_pAudioDecoder->Mute (false);
+		{	// restore volume
+			m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
+//			m_pAudioDecoder->Mute (false);
 		}
 		else
-		{
-			m_pAudioDecoder->Mute (true);
+		{	// mute volume
+			m_pPlayer->SetVolume(VOLUME_MINIMUM);
+//			m_pAudioDecoder->Mute (true);
 		}
 	}
 }
@@ -2480,4 +2543,26 @@ void CApplication::SetCurrentSong(const CMusicInfoTag& tag)
 void CApplication::SetCurrentMovie(const CIMDBMovie& tag)
 {
 	m_tagCurrentMovie=tag;
+}
+
+// SwitchToFullScreen() returns true if a switch is made, else returns false
+bool CApplication::SwitchToFullScreen()
+{	// don't switch if there is a dialog on screen
+	if (m_gWindowManager.IsRouted()) return false;
+	// See if we're playing a video, and are in GUI mode
+	if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+	{
+		// then switch to fullscreen mode
+		m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+		g_TextureManager.Flush();
+		g_TextureManager.Dump();
+		return true;
+	}
+	// special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
+	if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
+	{	// then switch to visualisation
+		m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
+		return true;
+	}
+	return false;
 }

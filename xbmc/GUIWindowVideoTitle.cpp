@@ -262,7 +262,6 @@ bool CGUIWindowVideoTitle::OnMessage(CGUIMessage& message)
 			  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected)
 			  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iItemSelected)
       }
-		
 			return true;
 		}
 		break;
@@ -316,11 +315,11 @@ bool CGUIWindowVideoTitle::OnMessage(CGUIMessage& message)
         g_graphicsContext.SendMessage(msg);         
         int iItem=msg.GetParam1();
         int iAction=message.GetParam1();
-        if (iAction == ACTION_SHOW_INFO) 
+        if (iAction == ACTION_SHOW_INFO || iAction == ACTION_MOUSE_MIDDLE_CLICK) 
         {
 					  OnInfo(iItem);
         }
-        if (iAction == ACTION_SELECT_ITEM)
+        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
 				{
 					OnClick(iItem);
 				}

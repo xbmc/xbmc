@@ -47,6 +47,11 @@
 #define OSD_NOCACHE 702
 #define OSD_ADJFRAMERATE 703
 
+#define OSD_ZOOM 707
+#define OSD_ZOOMLABEL 751
+#define OSD_PIXELRATIO 708
+#define OSD_PIXELRATIO_LABEL 755
+
 #define OSD_BRIGHTNESS 704
 #define OSD_BRIGHTNESSLABEL 752
 
@@ -212,6 +217,8 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       HIDE_CONTROL(GetID(), GetID());
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
 			g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
+			// save the settings
+			g_settings.Save();
 			return true;
 		}
 		break;
@@ -385,8 +392,9 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 					float fContrast=(float)g_settings.m_iContrast;
 					float fGamma=(float)g_settings.m_iGamma;
 					SetSliderValue(0.0f, 100.0f, (float) g_application.m_pPlayer->GetPercentage(), OSD_VIDEOPOS);
-          
-					SetSliderValue(0.0f, 100.0f, (float) fBrightNess, OSD_BRIGHTNESS);
+					SetSliderValue(1.0f, 2.0f, g_stSettings.m_fZoomAmount, OSD_ZOOM, 0.01f);
+					SetSliderValue(0.5f, 2.0f, g_stSettings.m_fUserPixelRatio, OSD_PIXELRATIO, 0.01f);
+   					SetSliderValue(0.0f, 100.0f, (float) fBrightNess, OSD_BRIGHTNESS);
 					SetSliderValue(0.0f, 100.0f, (float) fContrast, OSD_CONTRAST);
 					SetSliderValue(0.0f, 100.0f, (float) fGamma, OSD_GAMMA);
 
@@ -400,6 +408,10 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 					SET_CONTROL_VISIBLE(GetID(), OSD_NOCACHE);
 					SET_CONTROL_VISIBLE(GetID(), OSD_ADJFRAMERATE);
 					SET_CONTROL_VISIBLE(GetID(), OSD_VIDEOPOS_LABEL);
+					SET_CONTROL_VISIBLE(GetID(), OSD_ZOOM);
+					SET_CONTROL_VISIBLE(GetID(), OSD_ZOOMLABEL);
+					SET_CONTROL_VISIBLE(GetID(), OSD_PIXELRATIO);
+					SET_CONTROL_VISIBLE(GetID(), OSD_PIXELRATIO_LABEL);
 					SET_CONTROL_VISIBLE(GetID(), OSD_BRIGHTNESS);
 					SET_CONTROL_VISIBLE(GetID(), OSD_BRIGHTNESSLABEL);
 					SET_CONTROL_VISIBLE(GetID(), OSD_CONTRAST);
@@ -434,6 +446,11 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 	return CGUIWindow::OnMessage(message);
 }
 
+void CGUIWindowOSD::OnMouse()
+{
+	g_application.m_guiWindowFullScreen.OnMouse();
+}
+
 void CGUIWindowOSD::SetVideoProgress()
 {
 	if (g_application.m_pPlayer)
@@ -446,7 +463,7 @@ void CGUIWindowOSD::SetVideoProgress()
  		CGUISliderControl* pSlider = (CGUISliderControl*)GetControl(OSD_VIDEOPOS);
 		if (pSlider) pSlider->SetIntValue(iValue);				// Update our position bar accordingly ...
 
-		iValue=g_application.m_pPlayer->GetVolume();
+		iValue = g_application.GetVolume();
 		pSlider = (CGUISliderControl*)GetControl(OSD_VOLUMESLIDER);
 		if (pSlider) pSlider->SetPercentage(iValue);			// Update our volume bar accordingly ...
 
@@ -510,6 +527,8 @@ void CGUIWindowOSD::ToggleSubMenu(DWORD iButtonID, DWORD iBackID)
 	if (m_bSubMenuOn && iBackID != m_iActiveMenu)
 	{
 		m_bSubMenuOn = false;	// toggle it ready for the new menu requested
+		// set the current menu invisible
+		SET_CONTROL_HIDDEN(GetID(), m_iActiveMenu);
 	}
 
 	// Get button position
@@ -554,6 +573,11 @@ void CGUIWindowOSD::ToggleSubMenu(DWORD iButtonID, DWORD iBackID)
 	HIDE_CONTROL(GetID(), OSD_ADJFRAMERATE);
 	HIDE_CONTROL(GetID(), OSD_AVDELAY_LABEL);
   
+	HIDE_CONTROL(GetID(), OSD_ZOOM);
+	HIDE_CONTROL(GetID(), OSD_ZOOMLABEL);
+	HIDE_CONTROL(GetID(), OSD_PIXELRATIO);
+	HIDE_CONTROL(GetID(), OSD_PIXELRATIO_LABEL);
+
 	HIDE_CONTROL(GetID(), OSD_BRIGHTNESS);
 	HIDE_CONTROL(GetID(), OSD_BRIGHTNESSLABEL);
   
@@ -584,7 +608,7 @@ void CGUIWindowOSD::ToggleSubMenu(DWORD iButtonID, DWORD iBackID)
 	m_iActiveMenuButtonID = iButtonID;
 }
 
-void CGUIWindowOSD::SetSliderValue(float fMin, float fMax, float fValue, DWORD iControlID)
+void CGUIWindowOSD::SetSliderValue(float fMin, float fMax, float fValue, DWORD iControlID, float fInterval)
 {
 	CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
 	
@@ -595,6 +619,7 @@ void CGUIWindowOSD::SetSliderValue(float fMin, float fMax, float fValue, DWORD i
 			case SPIN_CONTROL_TYPE_FLOAT:
 				pControl->SetFloatRange(fMin, fMax);
 				pControl->SetFloatValue(fValue);
+				if (fInterval) pControl->SetFloatInterval(fInterval);
 				break;
 			
 			case SPIN_CONTROL_TYPE_INT:
@@ -636,12 +661,9 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
 			if (pControl)
 			{
-				// Set mplayers volume setting to the percentage requested
-				if (g_application.m_pPlayer)
-				{
-					int iPercentage=pControl->GetPercentage();
-					g_application.m_pPlayer->SetVolume(iPercentage);
-				}
+				// Set the global volume setting to the percentage requested
+				int iPercentage=pControl->GetPercentage();
+				g_application.SetVolume(iPercentage);
 			}
 		}
 		break;
@@ -653,6 +675,24 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			{
 				// Set mplayer's seek position to the percentage requested by the user
 				g_application.m_pPlayer->SeekPercentage(pControl->GetIntValue());
+			}
+		}
+		break;
+		case OSD_ZOOM:
+		{	
+			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
+			if (pControl)
+			{
+				g_stSettings.m_fZoomAmount = (float)pControl->GetFloatValue();
+			}
+		}
+		break;
+		case OSD_PIXELRATIO:
+		{	
+			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
+			if (pControl)
+			{
+				g_stSettings.m_fUserPixelRatio = (float)pControl->GetFloatValue();
 			}
 		}
 		break;
@@ -968,7 +1008,7 @@ void	CGUIWindowOSD::ResetAllControls()
   //reset all
 
 	int iResolution  =g_graphicsContext.GetVideoResolution();
-	int iBottom = g_settings.m_ResInfo[iResolution].Overscan.top + g_settings.m_ResInfo[iResolution].Overscan.height;
+	int iBottom = g_settings.m_ResInfo[iResolution].Overscan.bottom;
 
 	// ensure valid calibration
 	if (m_vecPositions[0].y + g_settings.m_ResInfo[iResolution].iOSDYOffset > iBottom)
@@ -1039,6 +1079,11 @@ void CGUIWindowOSD::Reset()
 	HIDE_CONTROL(GetID(), OSD_ADJFRAMERATE);
 	HIDE_CONTROL(GetID(), OSD_AVDELAY_LABEL);
   
+	HIDE_CONTROL(GetID(), OSD_ZOOM);
+	HIDE_CONTROL(GetID(), OSD_ZOOMLABEL);
+	HIDE_CONTROL(GetID(), OSD_PIXELRATIO);
+	HIDE_CONTROL(GetID(), OSD_PIXELRATIO_LABEL);
+
 	HIDE_CONTROL(GetID(), OSD_BRIGHTNESS);
 	HIDE_CONTROL(GetID(), OSD_BRIGHTNESSLABEL);
   

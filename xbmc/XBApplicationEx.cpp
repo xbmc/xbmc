@@ -138,14 +138,15 @@ HRESULT CXBApplicationEx::Create()
         return hr;
     }
 
-// XBMP 6.0 - START
     // Create the IR Remote devices
     if( FAILED( hr = XBInput_CreateIR_Remotes( ) ) )
     {
         CLog::Log(  "XBAppEx: Call to CreateIRRemotes() failed!" );
         return hr;
     }
-// XBMP 6.0 - END
+
+	// Create the Mouse devices
+	g_Mouse.Initialize();
 
     // Initialize the app's device-dependent objects
     if( FAILED( hr = Initialize() ) )
@@ -328,21 +329,23 @@ void CXBApplicationEx::ReadInput()
         // Handle input
         //-----------------------------------------
 
-        // Read the input for all connected gampads
+		// Read the input from the IR remote
+		XBInput_GetInput( m_IR_Remote );
+		ZeroMemory( &m_DefaultIR_Remote, sizeof(m_DefaultIR_Remote) );
+
+		for( DWORD i=0; i<4; i++ )
+		{
+			if( m_IR_Remote[i].hDevice)
+			{
+				m_DefaultIR_Remote.wButtons        = m_IR_Remote[i].wButtons;
+			}
+		}
+
+		// Read the input from the mouse
+		g_Mouse.Update();
+
+		// Read the input for all connected gampads
         XBInput_GetInput( m_Gamepad );
-
-				// XBMP 6.0 - START
-				XBInput_GetInput( m_IR_Remote );
-				ZeroMemory( &m_DefaultIR_Remote, sizeof(m_DefaultIR_Remote) );
-
-
-				for( DWORD i=0; i<4; i++ )
-				{
-					if( m_IR_Remote[i].hDevice)
-					{
-										m_DefaultIR_Remote.wButtons        = m_IR_Remote[i].wButtons;
-					}
-				}
 
         // Lump inputs of all connected gamepads into one common structure.
         // This is done so apps that need only one gamepad can function with
@@ -393,8 +396,7 @@ void CXBApplicationEx::ReadInput()
         m_DefaultGamepad.sThumbLY = SHORT( nThumbLY );
         m_DefaultGamepad.sThumbRX = SHORT( nThumbRX );
         m_DefaultGamepad.sThumbRY = SHORT( nThumbRY );
-
-        
+    
 }
 
 void CXBApplicationEx::Process()

@@ -16,6 +16,21 @@
  ***************************************************************************/
 /***************************************************************************
  *  $Log$
+ *  Revision 1.2  2004/08/03 19:45:59  jmarshallnz
+ *    - 03-08-2004 needed:  Textures.xpr needs repacking!
+ *    - 03-08-2004 changed: Replaced old virtual keyboard with new skinnable one.
+ *    - 03-08-2004 changed: Updated strings 216 and 217 (Zoom and Stretch) to make better sense.
+ *    - 03-08-2004 removed: ACTION_ASPECT_RATIO now no longer needed.
+ *    - 03-08-2004 changed: Zoom and Stretch are now fully controllable from the Video OSD.
+ *                          Can Zoom up to 200%, and can change the pixel ratio from 0.5:1 -> 2:1.
+ *    - 03-08-2004 added: USB Mouse support.  Left/Right/Middle buttons + Wheel supported.
+ *    - 03-08-2004 added: Two new controls (CGUIMoverControl and CGUIResizeControl) to better
+ *                        perform calibration with the Mouse.  All controls (except OSD positioning) are on
+ *                        screen at the same time.
+ *    - 03-08-2004 added: Volume control - mapped to right thumbstick up/down
+ *    - 03-08-2004 changed: CDDA player is now gapless :)
+ *    - 03-08-2004 added: GetAction() now checks keymap.xml for popup dialog specific actions
+ *
  *  Revision 1.1  2004/03/09 00:18:23  butcheruk
  *  Sid playback support
  *
@@ -66,7 +81,8 @@ public:
     virtual void *write () = 0;
     virtual void  close () = 0;
     virtual void  pause () = 0;
-    virtual const char *extension () const { return ""; }
+	virtual void  SetVolume(long nVolume) {};
+	virtual const char *extension () const { return ""; }
     void   *buffer () { return _sampleBuffer; }
 
     void getConfig (AudioConfig &cfg) const

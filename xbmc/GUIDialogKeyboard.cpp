@@ -8,6 +8,8 @@
 #include <vector>
 using namespace std;
 
+// TODO: Add support for caps lock, shift, lower case, and symbols.
+
 #define CTL_BUTTON_DONE		300
 #define CTL_BUTTON_CANCEL	301
 #define CTL_BUTTON_SHIFT	302
@@ -21,6 +23,8 @@ using namespace std;
 CGUIDialogKeyboard::CGUIDialogKeyboard(void) : CGUIDialog(0)
 {
 	m_bDirty = false;
+	m_bShift = false;
+	m_bCapsLock = false;
 }
 
 CGUIDialogKeyboard::~CGUIDialogKeyboard(void)
@@ -109,8 +113,12 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
 					Close();
 					break;
 				case CTL_BUTTON_SHIFT:
+					m_bShift = true;
+					UpdateButtons();
 					break;
 				case CTL_BUTTON_CAPS:
+					m_bCapsLock = !m_bCapsLock;
+					UpdateButtons();
 					break;
 				case CTL_BUTTON_SYMBOLS:
 					break;
@@ -144,6 +152,10 @@ void CGUIDialogKeyboard::Character(WCHAR wch)
 	{
 		m_bDirty = true;
 		wstring label = pEdit->GetLabel();
+		if ((m_bCapsLock && m_bShift) || (!m_bCapsLock && !m_bShift))
+		{	// make lower case
+			wch += 32;
+		}
 		label+=wch;
 		pEdit->SetText(label);
 	}
@@ -174,9 +186,35 @@ void CGUIDialogKeyboard::OnClickButton(int iButtonControl)
 	if (bChar)
 	{
 		Character((WCHAR)iButtonControl);
+		m_bShift = false;	// turn off the shift key
+		UpdateButtons();
 	}
 	else if (iButtonControl==CTL_BUTTON_BACKSPACE)
 	{
 		Backspace();
+	}
+}
+
+void CGUIDialogKeyboard::UpdateButtons()
+{
+	if (m_bShift)
+	{	// show the button depressed
+		CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CTL_BUTTON_SHIFT);
+		OnMessage(msg);
+	}
+	else
+	{
+		CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CTL_BUTTON_SHIFT);
+		OnMessage(msg);
+	}
+	if (m_bCapsLock)
+	{
+		CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CTL_BUTTON_CAPS);
+		OnMessage(msg);
+	}
+	else
+	{
+		CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CTL_BUTTON_CAPS);
+		OnMessage(msg);
 	}
 }

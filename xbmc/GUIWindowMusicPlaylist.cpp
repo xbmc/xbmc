@@ -7,7 +7,6 @@
 #include "PlayListFactory.h"
 #include "util.h"
 #include "url.h"
-#include "keyboard/virtualkeyboard.h"
 #include "PlayListM3U.h"
 #include "application.h"
 #include "playlistplayer.h"

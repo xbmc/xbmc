@@ -83,8 +83,49 @@ void CGUIWindowMusicOverlay::OnAction(const CAction &action)
 }
 
 bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)
-{
+{	// check that the mouse wasn't clicked on the thumb...
+	if (message.GetMessage() == GUI_MSG_CLICKED)
+	{
+		if (message.GetControlId() == GetID() && message.GetSenderId() == 0)
+		{
+			if (message.GetParam1() == ACTION_SELECT_ITEM)
+			{	// switch to fullscreen visualisation mode...
+				CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, GetID());
+				g_graphicsContext.SendMessage(msg);
+			}
+		}
+	}
   return CGUIWindow::OnMessage(message);
+}
+
+void CGUIWindowMusicOverlay::OnMouse()
+{
+	CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_LOGO_PIC);
+	if (pControl && pControl->HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+	{
+		// send highlight message
+		g_Mouse.SetState(MOUSE_STATE_FOCUS);
+		if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
+		{	// send mouse message
+			CGUIMessage message(GUI_MSG_FULLSCREEN, CONTROL_LOGO_PIC, GetID());
+			g_graphicsContext.SendMessage(message);
+			// reset the mouse button
+			g_Mouse.bClick[MOUSE_LEFT_BUTTON] = false;
+		}
+		if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
+		{	// toggle the playlist window
+			if (m_gWindowManager.GetActiveWindow() == WINDOW_MUSIC_PLAYLIST)
+				m_gWindowManager.PreviousWindow();
+			else
+				m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+			// reset it so that we don't call other actions
+			g_Mouse.bClick[MOUSE_RIGHT_BUTTON] = false;
+		}
+	}
+	else
+	{
+		CGUIWindow::OnMouse();
+	}
 }
 
 void CGUIWindowMusicOverlay::ShowControl(int iControl)

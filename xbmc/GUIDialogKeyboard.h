@@ -17,7 +17,7 @@ protected:
 	virtual void OnInitWindow();
 	virtual void OnAction(const CAction &action);
 	virtual bool OnMessage(CGUIMessage& message);
-
+	void		UpdateButtons();
 private:
 
 	void OnClickButton(int iButtonControl);
@@ -29,4 +29,6 @@ private:
 
 	CStdString	m_strEdit;
 	bool m_bDirty;
+	bool m_bCapsLock;
+	bool m_bShift;
 };

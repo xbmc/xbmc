@@ -113,7 +113,7 @@ void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action
 		wAction = GetActionCode(-1, key);
 	// Now fill our action structure
 	action.wID = wAction;
-	action.fAmount1 = 0;
+	action.fAmount1 = 1;	// digital button (could change this for repeat acceleration)
 	action.fAmount2 = 0;
 	action.m_dwButtonCode = key.GetButtonCode();
 	// get the action amounts of the analog buttons
@@ -134,6 +134,14 @@ void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action
 	{
 		action.fAmount1 = key.GetRightThumbX();
 		action.fAmount2 = key.GetRightThumbY();
+	}
+	if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_UP || key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
+	{
+		action.fAmount1 = key.GetRightThumbY();
+	}
+	if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT || key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
+	{
+		action.fAmount1 = key.GetRightThumbX();
 	}
 }
 
@@ -166,24 +174,28 @@ void CButtonTranslator::MapAction(WORD wAction, TiXmlNode *pNode, buttonMap &map
       if (pNode->FirstChild())
 			  strButton = pNode->FirstChild()->Value();
       else strButton ="";
-			if (strButton == "A")					wButtonCode = KEY_BUTTON_A;
-			if (strButton == "B")					wButtonCode = KEY_BUTTON_B;
-			if (strButton == "X")					wButtonCode = KEY_BUTTON_X;
-			if (strButton == "Y")					wButtonCode = KEY_BUTTON_Y;
-			if (strButton == "white")				wButtonCode = KEY_BUTTON_WHITE;
-			if (strButton == "black")				wButtonCode = KEY_BUTTON_BLACK;
-			if (strButton == "start")				wButtonCode = KEY_BUTTON_START;
-			if (strButton == "back")				wButtonCode = KEY_BUTTON_BACK;
-			if (strButton == "leftthumbbutton")		wButtonCode = KEY_BUTTON_LEFT_THUMB_BUTTON;
-			if (strButton == "rightthumbbutton")	wButtonCode = KEY_BUTTON_RIGHT_THUMB_BUTTON;
-			if (strButton == "leftthumbstick")		wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK;
-			if (strButton == "rightthumbstick")		wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK;
-			if (strButton == "lefttrigger")			wButtonCode = KEY_BUTTON_LEFT_TRIGGER;
-			if (strButton == "righttrigger")		wButtonCode = KEY_BUTTON_RIGHT_TRIGGER;
-			if (strButton == "dpadleft")			wButtonCode = KEY_BUTTON_DPAD_LEFT;
-			if (strButton == "dpadright")			wButtonCode = KEY_BUTTON_DPAD_RIGHT;
-			if (strButton == "dpadup")				wButtonCode = KEY_BUTTON_DPAD_UP;
-			if (strButton == "dpaddown")			wButtonCode = KEY_BUTTON_DPAD_DOWN;
+			if (strButton == "A")						wButtonCode = KEY_BUTTON_A;
+			if (strButton == "B")						wButtonCode = KEY_BUTTON_B;
+			if (strButton == "X")						wButtonCode = KEY_BUTTON_X;
+			if (strButton == "Y")						wButtonCode = KEY_BUTTON_Y;
+			if (strButton == "white")					wButtonCode = KEY_BUTTON_WHITE;
+			if (strButton == "black")					wButtonCode = KEY_BUTTON_BLACK;
+			if (strButton == "start")					wButtonCode = KEY_BUTTON_START;
+			if (strButton == "back")					wButtonCode = KEY_BUTTON_BACK;
+			if (strButton == "leftthumbbutton")			wButtonCode = KEY_BUTTON_LEFT_THUMB_BUTTON;
+			if (strButton == "rightthumbbutton")		wButtonCode = KEY_BUTTON_RIGHT_THUMB_BUTTON;
+			if (strButton == "leftthumbstick")			wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK;
+			if (strButton == "rightthumbstick")			wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK;
+			if (strButton == "rightthumbstickup")		wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
+			if (strButton == "rightthumbstickdown")		wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
+			if (strButton == "rightthumbstickleft")		wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
+			if (strButton == "rightthumbstickright")	wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+			if (strButton == "lefttrigger")				wButtonCode = KEY_BUTTON_LEFT_TRIGGER;
+			if (strButton == "righttrigger")			wButtonCode = KEY_BUTTON_RIGHT_TRIGGER;
+			if (strButton == "dpadleft")				wButtonCode = KEY_BUTTON_DPAD_LEFT;
+			if (strButton == "dpadright")				wButtonCode = KEY_BUTTON_DPAD_RIGHT;
+			if (strButton == "dpadup")					wButtonCode = KEY_BUTTON_DPAD_UP;
+			if (strButton == "dpaddown")				wButtonCode = KEY_BUTTON_DPAD_DOWN;
 		}
 		if (strNode=="remote")
 		{

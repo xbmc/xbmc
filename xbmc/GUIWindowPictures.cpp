@@ -816,8 +816,8 @@ void CGUIWindowPictures::ShowThumbPanel()
   }
   if (iItem>-1)
   {
-    CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected);
-    CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iItemSelected);
+    CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem);
+    CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem);
   }
 }
 
