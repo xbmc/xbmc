@@ -5,6 +5,7 @@
 #include "../../utils/log.h"
 #include <xtl.h>
 #include "conio.h"
+#include "../../util.h"
 
 /*
 HD44780 or equivalent
@@ -145,11 +146,8 @@ void CSmartXXLCD::SetLine(int iLine, const CStdString& strLine)
   
   CStdString strLineLong=strLine;
   strLineLong.Trim();
-  for (int i=0; i < (int)strLineLong.size(); ++i)
-  {
-    if (strLineLong.GetAt(i) >=127)
-      strLineLong.SetAt(i,' ');
-  }
+	CUtil::StringToLCDCharSet(strLineLong);
+
   while (strLineLong.size() < m_iColumns) strLineLong+=" ";
   if (strLineLong != m_strLine[iLine])
   {
@@ -303,13 +301,9 @@ void CSmartXXLCD::DisplaySetPos(unsigned char pos, unsigned char line)
 	if (line == 3) {
 		cursorpointer += m_iRow4adr;
 	}
-
 	DisplayOut(DISP_DDRAM_SET | cursorpointer, CMD);
 	m_iActualpos = cursorpointer;
-  
-	
 }
-
 
 //************************************************************************************************************************
 // DisplayWriteFixText: write a fixed text to actual cursor position
@@ -473,7 +467,7 @@ void CSmartXXLCD::Process()
 	  for (int iLine=0; iLine < (int)m_iRows; ++iLine)
     {
 	    if (m_bUpdate[iLine])
-      {
+			{
         CStdString strTmp=m_strLine[iLine];
         if (strTmp.size() > m_iColumns)
         {

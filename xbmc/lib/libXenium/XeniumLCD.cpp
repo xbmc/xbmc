@@ -5,6 +5,7 @@
 #include "../../utils/log.h"
 #include <xtl.h>
 #include "conio.h"
+#include "../../util.h"
 
 
 #define SCROLL_SPEED_IN_MSEC 250
@@ -65,11 +66,8 @@ void CXeniumLCD::SetLine(int iLine, const CStdString& strLine)
   
   CStdString strLineLong=strLine;
   strLineLong.Trim();
-  for (int i=0; i < (int)strLineLong.size(); ++i)
-  {
-    if (strLineLong.GetAt(i) >=127)
-      strLineLong.SetAt(i,' ');
-  }
+	CUtil::StringToLCDCharSet(strLineLong);
+
   while (strLineLong.size() < m_iColumns) strLineLong+=" ";
   if (strLineLong != m_strLine[iLine])
   {
