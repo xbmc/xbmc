@@ -502,7 +502,11 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	  // check if AC3 passthrough is enabled in MS dashboard
     // ifso we need 2 check if this movie has AC3 5.1 sound and if thats true
     // we reopen the movie with the ac3 5.1 passthrough audio filter
-    if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru )
+    bool bAc3PassTru(false);
+    if (iChannels==2 && g_stSettings.m_bDDStereoPassThrough) bAc3PassTru=true;
+    if (iChannels> 2 && g_stSettings.m_bDD_DTSMultiChannelPassThrough) bAc3PassTru=true;
+
+    if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut && bAc3PassTru )
 	  {
 		  // and the movie has an AC3 audio stream
 		  if ( strstr(strAudioCodec,"AC3-liba52") && (lSampleRate==48000) )
