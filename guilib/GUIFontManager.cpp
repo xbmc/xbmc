@@ -32,6 +32,19 @@ CGUIFont* GUIFontManager::Load(const CStdString& strFontName,const CStdString& s
   return NULL;
 }
 
+void GUIFontManager::Unload(const CStdString& strFontName)
+{
+	for (vector<CGUIFont*>::iterator iFont = m_vecFonts.begin(); iFont != m_vecFonts.end(); ++iFont)
+	{
+		if ((*iFont)->GetFontName() == strFontName)
+		{
+			delete (*iFont);
+			m_vecFonts.erase(iFont);
+			return;
+		}
+	}
+}
+
 CGUIFont*	GUIFontManager::GetFont(const CStdString& strFontName)
 {
   for (int i=0; i < (int)m_vecFonts.size(); ++i)
@@ -74,7 +87,7 @@ void GUIFontManager::LoadFonts(const CStdString& strFilename)
   {
     CStdString strValue=pChild->Value();
     if (strValue=="font")
-    {  
+    {
       const TiXmlNode *pNode = pChild->FirstChild("name");
       if (pNode)
       {
@@ -86,7 +99,6 @@ void GUIFontManager::LoadFonts(const CStdString& strFilename)
             Load(strFontName,strFontFileName);
           }
       }
-
     }
     pChild=pChild->NextSibling();  
   }

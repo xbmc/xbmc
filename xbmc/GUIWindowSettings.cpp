@@ -1,6 +1,9 @@
 
 #include "stdafx.h"
 #include "GUIWindowSettings.h"
+#include "Credits.h"
+
+#define CONTROL_CREDITS (10)
 
 CGUIWindowSettings::CGUIWindowSettings(void)
 :CGUIWindow(0)
@@ -41,6 +44,16 @@ bool CGUIWindowSettings::OnMessage(CGUIMessage& message)
 				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
 
 			return true;
+		}
+		break;
+
+		case GUI_MSG_CLICKED:
+		{
+			int iControl=message.GetSenderId();
+			if (iControl == CONTROL_CREDITS)
+			{
+				RunCredits();
+			}
 		}
 		break;
 	}
