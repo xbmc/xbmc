@@ -29,14 +29,15 @@ void CLog::Log(const char *format, ... )
     if ( tmp[ilen-1] == '\n' || tmp[ilen-1] == '\r' || tmp[ilen-1] ==' ') tmp[ilen-1]=0;
     else break;
   }
-
+  CStdString strLog=tmp;
+  strLog+="\n";
   strcat(tmp,"\r\n");
 	tmp[16384-1] = 0;
-  FILE* fd=fopen("Q:\\xbmc.log","a+");
+  FILE* fd=fopen("Q:\\xbmc.log","ab+");
   if (!fd) return;
   fwrite(strTime.c_str(),strTime.size(),1,fd);
   fwrite(tmp,strlen(tmp),1,fd);
   fclose(fd);
-	OutputDebugString(tmp);
+  OutputDebugString(strLog.c_str());
 }
 
