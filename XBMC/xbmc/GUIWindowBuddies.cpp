@@ -1342,9 +1342,9 @@ void CGUIWindowBuddies::OnUpdateArena(	CStdString& aVector, int nPlayers )
 	INT arenaDelimiter = aVector.ReverseFind('/')+1;
 	CStdString arenaLabel = aVector.Mid(arenaDelimiter);
 
-	CStdString strDebug;
-	strDebug.Format("KAI: updated %s player count: %d",aVector,nPlayers);
-	CLog::Log(LOGINFO,strDebug.c_str());
+	//CStdString strDebug;
+	//strDebug.Format("KAI: updated %s player count: %d",aVector,nPlayers);
+	//CLog::Log(LOGINFO,strDebug.c_str());
 
 	m_arena.Lock();
 	CArenaItem* pArena = (CArenaItem*) m_arena.Find(arenaLabel);
