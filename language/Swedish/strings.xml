@@ -2177,6 +2177,16 @@
  <value>Profile '%s' laddades ok!</value>
  </string>
 
+ <string>
+ <id>13204</id>
+ <value>Senast laddade profil:</value>
+ </string>
+
+   <string>
+ <id>13205</id>
+ <value>Okänd</value>
+ </string>
+
    <string>
 <id>13300</id>
 <value>Fläktfart:</value>
