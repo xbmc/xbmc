@@ -106,6 +106,7 @@ CMPlayer::Options::Options()
   m_fVolumeAmplification = 0.0f;
   m_bNonInterleaved = false;
   m_fSpeed = 1.0f;
+  m_fFPS = 0.0f;
 
   m_iAudioStream = -1;
   m_iSubtitleStream = -1;
@@ -309,18 +310,20 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("-speed");
     strTmp.Format("%f", m_fSpeed);
     m_vecOptions.push_back(strTmp);
-
-    //This shouldn't be set as then the speed adjustment will be applied to this new fps, and not original.
-    //Video will play way to fast, while audio will play correctly, so mplayer will constantly need to adjust.
-    //m_vecOptions.push_back("-fps");
-    //strTmp.Format("%f", m_fFPS);
-    //m_vecOptions.push_back(strTmp);
+  }
+  //This shouldn't be set as then the speed adjustment will be applied to this new fps, and not original.
+  //Video will play way to fast, while audio will play correctly, so mplayer will constantly need to adjust.
+  //Should only be set on videos that has wrong header info
+  if( m_fFPS != 0.0f )
+  {
+    m_vecOptions.push_back("-fps");
+    strTmp.Format("%f", m_fFPS);
+    m_vecOptions.push_back(strTmp);
 
     // set subtitle fps
     m_vecOptions.push_back("-subfps");
     strTmp.Format("%f", m_fFPS);
     m_vecOptions.push_back(strTmp);
-
   }
 
   if ( m_iAudioStream >= 0)
@@ -888,7 +891,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
           {
             // 23.978  fps -> 25fps frame rate conversion
             options.SetSpeed(25.0f / fFPS);
-            options.SetFPS(25.0f);
             options.SetAC3PassTru(false);
             options.SetDTSPassTru(false);
             bNeed2Restart = true;
@@ -902,7 +904,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
           if (fFPS >= 24 && fFPS <= 25.5)
           {
             options.SetSpeed(23.976f / fFPS);
-            options.SetFPS(23.976f);
             options.SetAC3PassTru(false);
             options.SetDTSPassTru(false);
             bNeed2Restart = true;
