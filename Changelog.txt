@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 06-02-2005 fixed: 12 hour clock display on homepage - thanks to Nuka1195 
   - 06-02-2005 fixed: Thumbnail is erronously set when last entry in comma separated <path> is an XBE.
   - 05-02-2005 fixed: Info on parent folder (..) in my music crash + some contextmenu are now disabled on parentfolder items.
   - 05-02-2005 changed: High quality pixel shader uses less memory.  Drops down to medium quality shader in GUI mode.
