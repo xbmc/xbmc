@@ -8,6 +8,7 @@ CVisualisationFactory::CVisualisationFactory()
 CVisualisationFactory::~CVisualisationFactory()
 {
 }
+extern "C" void __declspec(dllexport) get_module(struct Visualisation* pVisz);
 
 CVisualisation* CVisualisationFactory::LoadVisualisation(const CStdString& strVisz) const
 {

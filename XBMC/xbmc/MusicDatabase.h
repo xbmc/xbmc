@@ -2,6 +2,7 @@
 #include "lib/sqlLite/sqlitedataset.h"
 #include "StdString.h"
 #include <vector>
+#include <memory>
 using namespace std;
 
 class CSong
@@ -56,8 +57,8 @@ public:
 	bool    GetGenres(VECGENRES& genres);
 	void    Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
 protected:
-  SqliteDatabase* m_pDB;
-	Dataset*				m_pDS;
+  auto_ptr<SqliteDatabase> m_pDB;
+	auto_ptr<Dataset>				 m_pDS;
 	bool						CreateTables();
 	long						AddAlbum(const CStdString& strAlbum, long lArtistId);
 	long						AddGenre(const CStdString& strGenre);

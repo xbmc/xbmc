@@ -10,13 +10,37 @@
 #define LABEL_ROW2 11
 #define LABEL_ROW3 12
 
+
+CAudioBuffer::CAudioBuffer(int iSize)
+{
+	m_iLen=iSize;
+	m_pBuffer = new short[iSize];
+}
+
+CAudioBuffer::~CAudioBuffer()
+{
+	delete [] m_pBuffer;
+}
+
+const short* CAudioBuffer::Get() const
+{
+	return m_pBuffer;
+}
+
+void CAudioBuffer::Set(const short* psBuffer, int iSize)
+{
+	for (int i=0; i < iSize; ++i)
+	{
+		if (i < m_iLen) m_pBuffer[i] = psBuffer[i];
+	}
+	for (i=iSize; i < m_iLen;++i) m_pBuffer[i] = 0;
+}
+
 CGUIWindowVisualisation::CGUIWindowVisualisation(void)
 :CGUIWindow(0)
 { 
-	m_pVisualisation=NULL;
-	m_bCalculate_Freq = false;
-	m_iNumBuffers = 0;
-	m_iBuffer = 0;
+	m_pVisualisation= NULL;
+	m_iNumBuffers   = 0;
 }
 
 CGUIWindowVisualisation::~CGUIWindowVisualisation(void)
@@ -59,6 +83,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 			}
 			m_pVisualisation=NULL;
 			m_bInitialized=false;
+			ClearBuffers();
 		}
 		break;
 
@@ -88,6 +113,9 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 				m_pVisualisation->Create();
 				if (g_application.m_pPlayer)
 					g_application.m_pPlayer->RegisterAudioCallback(this);
+				
+				// Create new audio buffers
+				CreateBuffers();
 			}
 			return true;
 		}
@@ -102,16 +130,6 @@ void CGUIWindowVisualisation::Render()
 	{
 		if (m_bInitialized)
 		{
-			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
-			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-			g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
-			g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
-			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
-			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
 			try
 			{
 				m_pVisualisation->Render();
@@ -133,18 +151,16 @@ void CGUIWindowVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, in
 	if (!m_pVisualisation) 
 		return;
 
-	m_bInitialized=true;
-	m_iChannels = iChannels;
+	m_bInitialized   = true;
+	m_iChannels			 = iChannels;
 	m_iSamplesPerSec = iSamplesPerSec;
 	m_iBitsPerSample = iBitsPerSample;
 
-	// Clear our audio buffers
-	ClearBuffers();
 	// Start the visualisation (this loads settings etc.)
 	OutputDebugString("Visualisation::Start()\n");
 	m_pVisualisation->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample);
-	// Create new audio buffers
-	CreateBuffers();
+	m_bInitialized=true;
+
 }
 
 void CGUIWindowVisualisation::OnAudioData(const unsigned char* pAudioData, int iAudioDataLength)
@@ -152,49 +168,48 @@ void CGUIWindowVisualisation::OnAudioData(const unsigned char* pAudioData, int i
 	if (!m_pVisualisation) 
 		return;
 	if (!m_bInitialized) return;
-	CSingleLock lock(m_critSection);
-	VIS_INFO info;
-	m_pVisualisation->GetInfo(&info);
 
+	CSingleLock lock(m_critSection);
+	
 	// Convert data to 16 bit shorts
 	const short *sAudioData = (const short *)pAudioData;
 	iAudioDataLength/=2;
 
-
 	// Save our audio data in the buffers
-	for (int i=0; i < iAudioDataLength; i++)
-	{
-		if (i >= 2*AUDIO_BUFFER_SIZE) break;
-		m_pBuffer[m_iBuffer][i]=sAudioData[i];
-	}
-	// Fill with zeros if necessary...
-	for (int i=iAudioDataLength; i<2*AUDIO_BUFFER_SIZE; i++)
-	{
-		m_pBuffer[m_iBuffer][i]=0;
-	}
+	auto_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(2*AUDIO_BUFFER_SIZE) );
+	pBuffer->Set(sAudioData,iAudioDataLength);
+	m_vecBuffers.push_back( pBuffer.release() );
 
-	// Increment our delay pointer so that our data is now in sync
-	m_iBuffer++;
-	if (m_iBuffer >= m_iNumBuffers)
-		m_iBuffer = 0;
+	if ( (int)m_vecBuffers.size() < m_iNumBuffers) return;
+
+	auto_ptr<CAudioBuffer> ptrAudioBuffer ( m_vecBuffers.front() );
+	m_vecBuffers.pop_front();
 	// Fourier transform the data if the vis wants it...
-	if (info.bWantsFreq)
+	if (m_bWantsFreq)
 	{
 		// Convert to floats
+		const short* psAudioData=ptrAudioBuffer->Get();
 		for (int i=0; i<2*AUDIO_BUFFER_SIZE; i++)
-			m_pFreq[i] = (float) m_pBuffer[m_iBuffer][i];
+		{
+			m_fFreq[i] = (float)psAudioData[i];
+		}
+
 		// FFT the data
-		twochanwithwindow(m_pFreq, AUDIO_BUFFER_SIZE);
+		twochanwithwindow(m_fFreq, AUDIO_BUFFER_SIZE);
+
 		// Normalize the data
 		float fMinData = (float)AUDIO_BUFFER_SIZE*AUDIO_BUFFER_SIZE*3/8*0.5*0.5;	// 3/8 for the Hann window, 0.5 as minimum amplitude
 		for (int i=0; i<AUDIO_BUFFER_SIZE+2; i++)
-			m_pFreq[i] /= fMinData;
+		{
+			m_fFreq[i] /= fMinData;
+		}
+
 		// Transfer data to our visualisation
-		m_pVisualisation->AudioData(m_pBuffer[m_iBuffer], AUDIO_BUFFER_SIZE, m_pFreq, AUDIO_BUFFER_SIZE);
+		m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, m_fFreq, AUDIO_BUFFER_SIZE);
 	}
 	else
 	{	// Transfer data to our visualisation
-		m_pVisualisation->AudioData(m_pBuffer[m_iBuffer], AUDIO_BUFFER_SIZE, NULL, 0);
+		m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, NULL, 0);
 	}
 	return;
 }
@@ -202,31 +217,35 @@ void CGUIWindowVisualisation::OnAudioData(const unsigned char* pAudioData, int i
 void CGUIWindowVisualisation::CreateBuffers()
 {
 	CSingleLock lock(m_critSection);
+	ClearBuffers();
 
 	// Get the number of buffers from the current vis
 	VIS_INFO info;
 	m_pVisualisation->GetInfo(&info);
 	m_iNumBuffers = info.iSyncDelay + 1;
+	m_bWantsFreq  = info.bWantsFreq;
 	if (m_iNumBuffers > MAX_AUDIO_BUFFERS)
 		m_iNumBuffers = MAX_AUDIO_BUFFERS;
+	
 	if (m_iNumBuffers < 1)
 		m_iNumBuffers = 1;
-	// create the buffers
-	for (int i=0; i<m_iNumBuffers; i++)
-	{
-		//		m_pBuffer[i] = new short[AUDIO_BUFFER_SIZE*2];
-		for (int j=0; j<AUDIO_BUFFER_SIZE*2; j++)
-			m_pBuffer[i][j] = 0;
-	}
-	//	m_pFreq = new float[AUDIO_BUFFER_SIZE*2];
-	for (int j=0; j<AUDIO_BUFFER_SIZE*2; j++)
-		m_pFreq[j] = 0.0f;
-	// reset current buffer to zero
-	m_iBuffer = 0;
 }
 
 
 void CGUIWindowVisualisation::ClearBuffers()
 {
 	CSingleLock lock(m_critSection);
+	m_bWantsFreq  = false;
+	m_iNumBuffers = 0;
+	
+	while (m_vecBuffers.size() > 0)
+	{
+		CAudioBuffer* pAudioBuffer = m_vecBuffers.front();
+		delete pAudioBuffer;
+		m_vecBuffers.pop_front();
+	}
+	for (int j=0; j<AUDIO_BUFFER_SIZE*2; j++)
+	{
+		m_fFreq[j] = 0.0f;
+	}
 }

@@ -49,3 +49,29 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
 	m_musicInfoTag=item.m_musicInfoTag;
 	return *this;
 }
+
+
+CFileItemList::CFileItemList(VECFILEITEMS& items)
+:m_items(items)
+{
+}
+
+CFileItemList::~CFileItemList()
+{
+	if (m_items.size())
+	{
+		IVECFILEITEMS i;
+		i=m_items.begin(); 
+		while (i != m_items.end())
+		{
+			CFileItem* pItem = *i;
+			delete pItem;
+			i=m_items.erase(i);
+		}
+	}
+}
+
+VECFILEITEMS& CFileItemList::GetList() 
+{
+	return m_items;
+}

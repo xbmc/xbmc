@@ -321,12 +321,7 @@ void CGUIWindowPictures::OnSort()
 
 void CGUIWindowPictures::Clear()
 {
-  for (int i=0; i < (int)m_vecItems.size(); i++)
-  {
-    CFileItem* pItem=m_vecItems[i];
-    delete pItem;
-  }
-  m_vecItems.erase(m_vecItems.begin(),m_vecItems.end() );
+	CFileItemList itemlist(m_vecItems); // will clean up everything
 }
 
 void CGUIWindowPictures::UpdateButtons()

@@ -18,41 +18,36 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 	bool bResult= false;
 
 	SYSTEMTIME dateTime;
-	char *pYear=ID3_GetYear( &id3tag );
-	char *pTitle=ID3_GetTitle( &id3tag );
-	char *pArtist=ID3_GetArtist( &id3tag );
-	char *pAlbum=ID3_GetAlbum( &id3tag );
-	char *pGenre=ID3_GetGenre( &id3tag );
+	auto_ptr<char>pYear  (ID3_GetYear( &id3tag  ));
+	auto_ptr<char>pTitle (ID3_GetTitle( &id3tag ));
+	auto_ptr<char>pArtist(ID3_GetArtist( &id3tag));
+	auto_ptr<char>pAlbum (ID3_GetAlbum( &id3tag ));
+	auto_ptr<char>pGenre (ID3_GetGenre( &id3tag ));
 	int nTrackNum=ID3_GetTrackNum( &id3tag );
 
 	tag.SetTrackNumber(nTrackNum);
 
-	if (pGenre)
+	if (NULL != pGenre.get())
 	{
-		tag.SetGenre(pGenre);
-		delete [] pGenre;
+		tag.SetGenre(pGenre.get());
 	}
-	if (pTitle)
+	if (NULL != pTitle.get())
 	{
 		bResult = true;
-		tag.SetTitle(pTitle);
-		delete [] pTitle;
+		tag.SetTitle(pTitle.get());
 	}
-	if (pArtist)
+	if (NULL != pArtist.get())
 	{
-		tag.SetArtist(pArtist);
-		delete [] pArtist;
+		tag.SetArtist(pArtist.get());
 	}
-	if (pAlbum)
+	if (NULL != pAlbum.get())
 	{
-		tag.SetAlbum(pAlbum);
-		delete [] pAlbum;
+		tag.SetAlbum(pAlbum.get());
 	}
-	if (pYear)
+	if (NULL != pYear.get())
 	{
-		dateTime.wYear=atoi(pYear);
+		dateTime.wYear=atoi(pYear.get());
 		tag.SetReleaseDate(dateTime);
-		delete pYear;
 	}
 
 	const Mp3_Headerinfo* mp3info = id3tag.GetMp3HeaderInfo();

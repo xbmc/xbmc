@@ -163,7 +163,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 			
 			CShare share;
 			share.strName = "Q Drive";
-			share.strPath = "Q:\\";
+			share.strPath = "Q:\\scripts";
 			share.m_iBufferSize = 0;
 			share.m_iDriveType = SHARE_TYPE_LOCAL;
 			shares.push_back(share);
@@ -275,12 +275,7 @@ void CGUIWindowScripts::UpdateButtons()
 
 void CGUIWindowScripts::Clear()
 {
-  for (int i=0; i < (int)m_vecItems.size(); i++)
-  {
-    CFileItem* pItem=m_vecItems[i];
-    delete pItem;
-  }
-  m_vecItems.erase(m_vecItems.begin(),m_vecItems.end() );
+	CFileItemList itemlist(m_vecItems); // will clean up everything
 }
 
 void CGUIWindowScripts::OnSort()

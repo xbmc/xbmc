@@ -16,45 +16,35 @@ CVisualisation::CVisualisation(struct Visualisation* pVisz,DllLoader* pLoader)
 
 CVisualisation::~CVisualisation()
 {
-	delete m_pVisz;
-	m_pVisz=NULL;
-	delete m_pLoader;
-	m_pLoader=NULL;
 }
 
 void CVisualisation::Create()
 {
-	if (!m_pVisz) return;
 	m_pVisz->Create (g_graphicsContext.Get3DDevice() );
 }
 
 void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample)
 {
-	if (!m_pVisz) return;
 	m_pVisz->Start(iChannels, iSamplesPerSec, iBitsPerSample);
 }
 
-void CVisualisation::AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+void CVisualisation::AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
-	if (!m_pVisz) return;
-	m_pVisz->AudioData(pAudioData, iAudioDataLength, pFreqData, iFreqDataLength);
+	m_pVisz->AudioData(const_cast<short*>(pAudioData), iAudioDataLength, pFreqData, iFreqDataLength);
 }
 
 void CVisualisation::Render()
 {
-	if (!m_pVisz) return;
 	m_pVisz->Render();
 }
 
 void CVisualisation::Stop()
 {
-	if (!m_pVisz) return;
 	m_pVisz->Stop();
 }
 
 
 void CVisualisation::GetInfo(VIS_INFO *info)
 {
-	if (!m_pVisz) return;
 	m_pVisz->GetInfo(info);
 }

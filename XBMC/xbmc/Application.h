@@ -45,6 +45,7 @@
 #include "IMsgTargetCallback.h"
 #include "utils/CriticalSection.h"
 #include <vector>
+#include <memory>
 
 typedef struct {
 	DWORD dwMessage;

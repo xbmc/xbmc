@@ -336,7 +336,7 @@ void CApplication::Render()
 	g_graphicsContext.Lock();
 	// draw GUI (always enable soften filter when displaying the UI)
   m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-	m_pd3dDevice->SetSoftDisplayFilter(false);
+	m_pd3dDevice->SetSoftDisplayFilter(true);
 	m_pd3dDevice->SetFlickerFilter(5);
 
   m_gWindowManager.Render();
@@ -806,6 +806,15 @@ void CApplication::Stop()
 		delete m_pPythonParser;
 		m_pPythonParser=NULL;
 	}
+
+	vector<ThreadMessage*>::iterator it = m_vecThreadMessages.begin();
+	while (it != m_vecThreadMessages.end())
+	{
+		ThreadMessage* pMsg = *it;
+		delete pMsg;
+		it = m_vecThreadMessages.erase(it);
+	}
+
 	if (m_pPlayer)
 	{
 		delete m_pPlayer;
@@ -873,7 +882,7 @@ void CApplication::SendThreadMessage(ThreadMessage& message, bool wait)
 	if (wait)	message.hWaitEvent = CreateEvent(NULL, true, false, "threadWaitEvent");
 	else message.hWaitEvent = NULL;
 
-	ThreadMessage* msg = new ThreadMessage();
+	auto_ptr<ThreadMessage> msg (new ThreadMessage());
 	msg->dwMessage = message.dwMessage;
 	msg->dwParam1 = message.dwParam1;
 	msg->dwParam2 = message.dwParam2;
@@ -882,7 +891,7 @@ void CApplication::SendThreadMessage(ThreadMessage& message, bool wait)
 	msg->strParam = message.strParam;
 
 	CSingleLock lock(m_critSection);
-	m_vecThreadMessages.push_back(msg);
+	m_vecThreadMessages.push_back(msg.release() );
 	lock.Leave();
 
 	if (message.hWaitEvent)

@@ -390,10 +390,6 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 
 	DWORD		dwIndex = 0;
 	DWORD   iBytesCopied=0;
-	if (m_pCallback)
-	{
-		m_pCallback->OnAudioData(data,len);
-	}
 
 	while (len)
 	{
@@ -422,6 +418,10 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 			xmpAudio.pContext         = NULL;
 
 			memcpy(xmpAudio.pvBuffer,&data[iBytesCopied],iSize);
+			if (m_pCallback)
+			{
+				m_pCallback->OnAudioData(&data[iBytesCopied],iSize);
+			}
 
 /*			if (m_iCalcDelay == CALC_DELAY_START)
 			{
