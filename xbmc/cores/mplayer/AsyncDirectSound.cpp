@@ -181,13 +181,13 @@ bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, 
       { 
 		// left route to 4 channels
         {DSMIXBIN_FRONT_LEFT ,0},
-        {DSMIXBIN_FXSEND_13,-6000},
+        {DSMIXBIN_LOW_FREQUENCY,VOLUME_MIN},
         {DSMIXBIN_FRONT_RIGHT ,0},
-        {DSMIXBIN_FXSEND_13,-6000},
+        {DSMIXBIN_LOW_FREQUENCY,VOLUME_MIN},
         {DSMIXBIN_BACK_LEFT,0},
-        {DSMIXBIN_FXSEND_13,-6000},
+        {DSMIXBIN_LOW_FREQUENCY,VOLUME_MIN},
         {DSMIXBIN_BACK_RIGHT,0},
-        {DSMIXBIN_FXSEND_13,-6000}
+        {DSMIXBIN_LOW_FREQUENCY,VOLUME_MIN},
       };
       memcpy(dsmbvp, &dsm, sizeof(DSMIXBINVOLUMEPAIR)*(*MixBinCount));
       *dwChannelMask = SPEAKER_FRONT_LEFT|SPEAKER_FRONT_RIGHT|SPEAKER_BACK_LEFT|SPEAKER_BACK_RIGHT;
@@ -198,13 +198,13 @@ bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, 
       DSMIXBINVOLUMEPAIR dsm[8] =	     
       { 
 		// right route to 4 channels
-        {DSMIXBIN_FXSEND_13,-6000},
+        {DSMIXBIN_LOW_FREQUENCY,VOLUME_MIN},
         {DSMIXBIN_FRONT_LEFT ,0},
-        {DSMIXBIN_FXSEND_13,-6000},
+        {DSMIXBIN_LOW_FREQUENCY,VOLUME_MIN},
         {DSMIXBIN_FRONT_RIGHT ,0},
-        {DSMIXBIN_FXSEND_13,-6000},
+        {DSMIXBIN_LOW_FREQUENCY,VOLUME_MIN},
         {DSMIXBIN_BACK_LEFT,0},
-        {DSMIXBIN_FXSEND_13,-6000},
+        {DSMIXBIN_LOW_FREQUENCY,VOLUME_MIN},
         {DSMIXBIN_BACK_RIGHT,0},
       };
       memcpy(dsmbvp, &dsm, sizeof(DSMIXBINVOLUMEPAIR)*(*MixBinCount));
