@@ -186,10 +186,13 @@ CGUIWindow*  CGUIWindowManager::GetWindow(DWORD dwID)
   for (int i=0; i < (int)m_vecWindows.size(); i++)
   {
     CGUIWindow* pWindow=m_vecWindows[i];
-    if (pWindow->GetID() == dwID) 
-		{
-			return pWindow;
-		}
+    if (pWindow)
+    {
+      if (pWindow->GetID() == dwID) 
+		  {
+			  return pWindow;
+		  }
+    }
 	}
 	return NULL;
 }

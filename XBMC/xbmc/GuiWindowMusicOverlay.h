@@ -28,5 +28,6 @@ protected:
   int                 m_iPosOrgBigPlayTime;
   int                 m_iPosOrgPlayTime;
   int                 m_iPosOrgRectangle;
-  void SetPosition(int iControl, int iStep, int iMaxSteps,int iOrgPos);
+  void                SetPosition(int iControl, int iStep, int iMaxSteps,int iOrgPos);
+  int                 GetControlYPosition(int iControl);
 };

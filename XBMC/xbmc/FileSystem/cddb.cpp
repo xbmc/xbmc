@@ -66,19 +66,17 @@ bool Xcddb::closeSocket()
 //-------------------------------------------------------------------------------------------------------------------
 bool Xcddb::Send( const void *buffer, int bytes )
 {
-	char *tmp_buffer=new char[bytes+10];
-	strcpy(tmp_buffer,(const char*)buffer);
-	tmp_buffer[bytes]='.';
-	tmp_buffer[bytes+1]=0x0d;
-	tmp_buffer[bytes+2]=0x0a;
-	tmp_buffer[bytes+3]=0x00;
-	int iErr=send((SOCKET)m_cddb_socket,(const char*)tmp_buffer,bytes+3,0);
+	auto_ptr<char> tmp_buffer (new char[bytes+10]);
+	strcpy(tmp_buffer.get(),(const char*)buffer);
+	tmp_buffer.get()[bytes]='.';
+	tmp_buffer.get()[bytes+1]=0x0d;
+	tmp_buffer.get()[bytes+2]=0x0a;
+	tmp_buffer.get()[bytes+3]=0x00;
+	int iErr=send((SOCKET)m_cddb_socket,(const char*)tmp_buffer.get(),bytes+3,0);
 	if (iErr<=0)
 	{
-		delete [] tmp_buffer;
 		return false;
 	}
-	delete [] tmp_buffer;
 	return true;
 }
 

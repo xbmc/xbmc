@@ -175,7 +175,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			if (m_strDirectory=="?")
 				m_strDirectory=g_stSettings.m_szDefaultPictures;
 
-			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
+			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 			m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);
 			int iControl=CONTROL_LIST;
 
@@ -215,7 +215,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       int iControl=message.GetSenderId();
       if (iControl==CONTROL_BTNVIEWASICONS)
       {
-				//CGUIDialog* pDialog=(CGUIDialog*)m_gWindowManager.GetWindow(100);
+				//CGUIDialog* pDialog=(CGUIDialog*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
 				//pDialog->DoModal(GetID());
 
 		  if ( m_strDirectory.IsEmpty() )
@@ -481,12 +481,15 @@ bool CGUIWindowPictures::HaveDiscOrConnection( CStdString& strPath, int iDriveTy
 	if ( iDriveType == SHARE_TYPE_DVD ) {
 		CDetectDVDMedia::WaitMediaReady();
 		if ( !CDetectDVDMedia::IsDiscInDrive() ) {
-			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(2002);
-			dlg->SetHeading( 218 );
-			dlg->SetLine( 0, 219 );
-			dlg->SetLine( 1, L"" );
-			dlg->SetLine( 2, L"" );
-			dlg->DoModal( GetID() );
+			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+      if (dlg)
+      {
+			  dlg->SetHeading( 218 );
+			  dlg->SetLine( 0, 219 );
+			  dlg->SetLine( 1, L"" );
+			  dlg->SetLine( 2, L"" );
+			  dlg->DoModal( GetID() );
+      }
 			int iItem = GetSelectedItem();
 			Update( m_strDirectory );
 			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
@@ -497,12 +500,15 @@ bool CGUIWindowPictures::HaveDiscOrConnection( CStdString& strPath, int iDriveTy
 	else if ( iDriveType == SHARE_TYPE_REMOTE ) {
 			// TODO: Handle not connected to a remote share
 		if ( !CUtil::IsEthernetConnected() ) {
-			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(2002);
-			dlg->SetHeading( 220 );
-			dlg->SetLine( 0, 221 );
-			dlg->SetLine( 1, L"" );
-			dlg->SetLine( 2, L"" );
-			dlg->DoModal( GetID() );
+			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+      if (dlg)
+      {
+			  dlg->SetHeading( 220 );
+			  dlg->SetLine( 0, 221 );
+			  dlg->SetLine( 1, L"" );
+			  dlg->SetLine( 2, L"" );
+			  dlg->DoModal( GetID() );
+      }
 			return false;
 		}
 	}
@@ -549,8 +555,11 @@ void CGUIWindowPictures::OnSlideShow()
 
 void CGUIWindowPictures::OnCreateThumbs()
 {
-	m_dlgProgress->SetHeading(110);
-	m_dlgProgress->StartModal(GetID());
+  if (m_dlgProgress) 
+  {
+    m_dlgProgress->SetHeading(110);
+	  m_dlgProgress->StartModal(GetID());
+  }
   for (int i=0; i < (int)m_vecItems.size();++i)
   {
     CFileItem* pItem=m_vecItems[i];
@@ -561,16 +570,19 @@ void CGUIWindowPictures::OnCreateThumbs()
       swprintf(wstrProgress,L"   progress:%i/%i", i, m_vecItems.size() );
       swprintf(wstrFile,L"   picture:%S", pItem->GetLabel().c_str() );
 
-			m_dlgProgress->SetLine(0, wstrFile);
-			m_dlgProgress->SetLine(1, wstrProgress);
-			m_dlgProgress->SetLine(2, L"");
-			m_dlgProgress->Progress();
-			if ( m_dlgProgress->IsCanceled() ) break;
+			if (m_dlgProgress)
+      {
+        m_dlgProgress->SetLine(0, wstrFile);
+			  m_dlgProgress->SetLine(1, wstrProgress);
+			  m_dlgProgress->SetLine(2, L"");
+			  m_dlgProgress->Progress();
+			  if ( m_dlgProgress->IsCanceled() ) break;
+      }
 			CPicture picture;
       picture.CreateThumnail(pItem->m_strPath);
     }
   }
-	m_dlgProgress->Close();
+	if (m_dlgProgress) m_dlgProgress->Close();
   Update(m_strDirectory);
 }
 

@@ -11,11 +11,11 @@
 using namespace std;
 using namespace DIRECTORY;
 
-class CGUIWindowVideoGenre : 	public CGUIWindowVideo
+class CGUIWindowVideoYear : 	public CGUIWindowVideo
 {
 public:
-	CGUIWindowVideoGenre(void);
-	virtual ~CGUIWindowVideoGenre(void);
+	CGUIWindowVideoYear(void);
+	virtual ~CGUIWindowVideoYear(void);
   virtual bool    OnMessage(CGUIMessage& message);
   virtual void    OnAction(const CAction &action);
   virtual void    Render();

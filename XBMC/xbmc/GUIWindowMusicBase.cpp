@@ -156,7 +156,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
 			m_database.Open();
 
-			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
+			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
 			m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
 			m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
@@ -388,12 +388,15 @@ bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
 		CDetectDVDMedia::WaitMediaReady();
 		if ( !CDetectDVDMedia::IsDiscInDrive() ) 
 		{
-			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(2002);
-			dlg->SetHeading( 218 );
-			dlg->SetLine( 0, 219 );
-			dlg->SetLine( 1, L"" );
-			dlg->SetLine( 2, L"" );
-			dlg->DoModal( GetID() );
+			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+      if (dlg)
+      {
+			  dlg->SetHeading( 218 );
+			  dlg->SetLine( 0, 219 );
+			  dlg->SetLine( 1, L"" );
+			  dlg->SetLine( 2, L"" );
+			  dlg->DoModal( GetID() );
+      }
 			//	Update listcontrol, maybe share 
 			//	was selected while disc change
 			int iItem = GetSelectedItem();
@@ -408,12 +411,15 @@ bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
 		// TODO: Handle not connected to a remote share
 		if ( !CUtil::IsEthernetConnected() ) 
 		{
-			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(2002);
-			dlg->SetHeading( 220 );
-			dlg->SetLine( 0, 221 );
-			dlg->SetLine( 1, L"" );
-			dlg->SetLine( 2, L"" );
-			dlg->DoModal( GetID() );
+			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+      if (dlg)
+      {
+			  dlg->SetHeading( 220 );
+			  dlg->SetLine( 0, 221 );
+			  dlg->SetLine( 1, L"" );
+			  dlg->SetLine( 2, L"" );
+			  dlg->DoModal( GetID() );
+      }
 			return false;
 		}
 	}
@@ -425,7 +431,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 {
 	int iSelectedItem=GetSelectedItem();
 	bool bUpdate=false;
-	CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(2002);
+	CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
   CFileItem* pItem;
 	pItem=m_vecItems[iItem];
 
@@ -449,26 +455,32 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 		{
 			CMusicAlbumInfo album ;
 			album.Set(albuminfo);
-			CGUIWindowMusicInfo *pDlgAlbumInfo= (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(2001);
-			pDlgAlbumInfo->SetAlbum(album);
-			pDlgAlbumInfo->DoModal(GetID());
+			CGUIWindowMusicInfo *pDlgAlbumInfo= (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
+      if (pDlgAlbumInfo)
+      {
+			  pDlgAlbumInfo->SetAlbum(album);
+			  pDlgAlbumInfo->DoModal(GetID());
+      }
 			return;
 		}
 	}
 
 	// show dialog box indicating we're searching the album
-	m_dlgProgress->SetHeading(185);
-	m_dlgProgress->SetLine(0,strLabel);
-	m_dlgProgress->SetLine(1,"");
-	m_dlgProgress->SetLine(2,"");
-	m_dlgProgress->StartModal(GetID());
-	m_dlgProgress->Progress();
+  if (m_dlgProgress)
+  {
+	  m_dlgProgress->SetHeading(185);
+	  m_dlgProgress->SetLine(0,strLabel);
+	  m_dlgProgress->SetLine(1,"");
+	  m_dlgProgress->SetLine(2,"");
+	  m_dlgProgress->StartModal(GetID());
+	  m_dlgProgress->Progress();
+  }
 	bool bDisplayErr=false;
 	
 	// find album info
 	if (	scraper.FindAlbuminfo(strLabel) )
 	{
-		m_dlgProgress->Close();
+		if (m_dlgProgress) m_dlgProgress->Close();
 		// did we found at least 1 album?
 		int iAlbumCount=scraper.GetAlbumCount();
 		if (iAlbumCount >=1)
@@ -480,29 +492,35 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 			{
 				//show dialog with all albums found
 				const WCHAR* szText=g_localizeStrings.Get(181).c_str();
-				CGUIDialogSelect *pDlg= (CGUIDialogSelect*)m_gWindowManager.GetWindow(2000);
-				pDlg->SetHeading(szText);
-				pDlg->Reset();
-				for (int i=0; i < iAlbumCount; ++i)
-				{
-					CMusicAlbumInfo& info = scraper.GetAlbum(i);
-					pDlg->Add(info.GetTitle2());
-				}
-				pDlg->DoModal(GetID());
+				CGUIDialogSelect *pDlg= (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+        if (pDlg)
+        {
+				  pDlg->SetHeading(szText);
+				  pDlg->Reset();
+				  for (int i=0; i < iAlbumCount; ++i)
+				  {
+					  CMusicAlbumInfo& info = scraper.GetAlbum(i);
+					  pDlg->Add(info.GetTitle2());
+				  }
+				  pDlg->DoModal(GetID());
 
-				// and wait till user selects one
-				iSelectedAlbum= pDlg->GetSelectedLabel();
-				if (iSelectedAlbum< 0) return;
+				  // and wait till user selects one
+				  iSelectedAlbum= pDlg->GetSelectedLabel();
+				  if (iSelectedAlbum< 0) return;
+        }
 			}
 
 			// ok, now show dialog we're downloading the album info
 			CMusicAlbumInfo& album = scraper.GetAlbum(iSelectedAlbum);
-			m_dlgProgress->SetHeading(185);
-			m_dlgProgress->SetLine(0,album.GetTitle2());
-			m_dlgProgress->SetLine(1,"");
-			m_dlgProgress->SetLine(2,"");
-			m_dlgProgress->StartModal(GetID());
-			m_dlgProgress->Progress();
+			if (m_dlgProgress) 
+      {
+        m_dlgProgress->SetHeading(185);
+			  m_dlgProgress->SetLine(0,album.GetTitle2());
+			  m_dlgProgress->SetLine(1,"");
+			  m_dlgProgress->SetLine(2,"");
+			  m_dlgProgress->StartModal(GetID());
+			  m_dlgProgress->Progress();
+      }
 
 			// download the album info
 			bool bLoaded=album.Loaded();
@@ -513,7 +531,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 				// set album title from musicinfotag
 				album.SetTitle(strLabel);
 				// ok, show album info
-				m_dlgProgress->Close();
+				if (m_dlgProgress) m_dlgProgress->Close();
 				{
 					CAlbum albuminfo;
 					albuminfo.strAlbum  = album.GetTitle();
@@ -527,9 +545,12 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 					albuminfo.iYear 		= atol( album.GetDateOfRelease().c_str() );
 					m_database.AddAlbumInfo(albuminfo);
 				}
-				CGUIWindowMusicInfo *pDlgAlbumInfo= (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(2001);
-				pDlgAlbumInfo->SetAlbum(album);
-				pDlgAlbumInfo->DoModal(GetID());
+				CGUIWindowMusicInfo *pDlgAlbumInfo= (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
+        if (pDlgAlbumInfo)
+        {
+				  pDlgAlbumInfo->SetAlbum(album);
+				  pDlgAlbumInfo->DoModal(GetID());
+        }
 				bUpdate=true;
 			}
 			else
@@ -552,12 +573,16 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 	// if an error occured, then notice the user
 	if (bDisplayErr)
 	{
-		m_dlgProgress->Close();
-		pDlgOK->SetHeading(187);
-		pDlgOK->SetLine(0,L"");
-		pDlgOK->SetLine(2,L"");
-		pDlgOK->SetLine(1,187);
-		pDlgOK->DoModal(GetID());
+		if (m_dlgProgress) 
+      m_dlgProgress->Close();
+    if (pDlgOK)
+    {
+		  pDlgOK->SetHeading(187);
+		  pDlgOK->SetLine(0,L"");
+		  pDlgOK->SetLine(2,L"");
+		  pDlgOK->SetLine(1,187);
+		  pDlgOK->DoModal(GetID());
+    }
 	}
 	if (bUpdate)
 	{
@@ -603,10 +628,13 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
 		if (bScan)
 		{
 			strItem.Format("%i/%i", i+1, items.size());
-			m_dlgProgress->SetLine(0,strItem);
-			m_dlgProgress->SetLine(1,CUtil::GetFileName(pItem->m_strPath) );
-			m_dlgProgress->Progress();
-			if (m_dlgProgress->IsCanceled()) return;
+			if (m_dlgProgress) 
+      {
+        m_dlgProgress->SetLine(0,strItem);
+			  m_dlgProgress->SetLine(1,CUtil::GetFileName(pItem->m_strPath) );
+			  m_dlgProgress->Progress();
+			  if (m_dlgProgress->IsCanceled()) return;
+      }
 		}
     // dont try reading id3tags for folders or playlists
 		if (!pItem->m_bIsFolder && !CUtil::IsPlayList(pItem->m_strPath) )
@@ -754,11 +782,14 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
 
 bool CGUIWindowMusicBase::DoSearch(const CStdString strDir,const CStdString& strSearch,VECFILEITEMS& items)
 {
-	m_dlgProgress->SetLine(0,strSearch);
-	m_dlgProgress->SetLine(2,strDir );
-	m_dlgProgress->Progress();
+  if (m_dlgProgress) 
+  {
+	  m_dlgProgress->SetLine(0,strSearch);
+	  m_dlgProgress->SetLine(2,strDir );
+	  m_dlgProgress->Progress();
+	  if (m_dlgProgress->IsCanceled()) return false;
+  }
 
-	if (m_dlgProgress->IsCanceled()) return false;
 	VECFILEITEMS subDirItems;
 	CFileItemList itemlist(subDirItems);
 	GetDirectory(strDir,subDirItems);
@@ -775,22 +806,27 @@ bool CGUIWindowMusicBase::DoSearch(const CStdString strDir,const CStdString& str
 			if (pItem->GetLabel() != "..")
 			{
 				// search subfolder
-				if (m_dlgProgress->IsCanceled()) 
-				{
-					bCancel=true;
-					break;
-				}
+        if (m_dlgProgress)
+        {
+				  if (m_dlgProgress->IsCanceled()) 
+				  {
+					  bCancel=true;
+					  break;
+				  }
+        }
 				if (!DoSearch(pItem->m_strPath,strSearch, items))
 				{
 					bCancel=true;
 					break;
 				}
-				
-				if (m_dlgProgress->IsCanceled()) 
-				{
-					bCancel=true;
-					break;
-				}
+				if (m_dlgProgress)
+        {
+				  if (m_dlgProgress->IsCanceled()) 
+				  {
+					  bCancel=true;
+					  break;
+				  }
+        }
 			}
 		}
 		else
@@ -848,13 +884,16 @@ bool CGUIWindowMusicBase::DoSearch(const CStdString strDir,const CStdString& str
 				CStdString strFormat=g_localizeStrings.Get(282);
 				CStdString strResult;
 				strResult.Format(strFormat, items.size());
-				m_dlgProgress->SetLine(1,strResult);
-				m_dlgProgress->Progress();
-				if (m_dlgProgress->IsCanceled()) 
-				{
-					bCancel=true;
-					break;
-				}
+				if (m_dlgProgress)
+        {
+          m_dlgProgress->SetLine(1,strResult);
+				  m_dlgProgress->Progress();
+				  if (m_dlgProgress->IsCanceled()) 
+				  {
+					  bCancel=true;
+					  break;
+				  }
+        }
 			}
 		}
 	}
@@ -867,21 +906,22 @@ void CGUIWindowMusicBase::OnSearch()
 	if ( GetKeyboard(strSearch) )
 		return;
 
-	strSearch.ToLower();
-	m_dlgProgress->SetHeading(194);
-	
-	CStdString strResult;
+  CStdString strResult;
 	CStdString strFormat=g_localizeStrings.Get(282);
 	strResult.Format(strFormat, 0);
-	m_dlgProgress->SetLine(0,strSearch);
-	m_dlgProgress->SetLine(1,strResult);
-	m_dlgProgress->SetLine(2,m_strDirectory );
-	m_dlgProgress->StartModal(GetID());
-	m_dlgProgress->Progress();
-
+	strSearch.ToLower();
+	if (m_dlgProgress)
+  {
+    m_dlgProgress->SetHeading(194);
+	  m_dlgProgress->SetLine(0,strSearch);
+	  m_dlgProgress->SetLine(1,strResult);
+	  m_dlgProgress->SetLine(2,m_strDirectory );
+	  m_dlgProgress->StartModal(GetID());
+	  m_dlgProgress->Progress();
+  }
 	VECFILEITEMS items;
 	DoSearch(m_strDirectory,	strSearch, items);
-	m_dlgProgress->Close();
+	if (m_dlgProgress) m_dlgProgress->Close();
 
 	if (items.size())
 	{
@@ -900,19 +940,23 @@ void CGUIWindowMusicBase::OnSearch()
 	}
 	else
 	{
-		CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(2002);
-		dlg->SetHeading( 194 );
-		dlg->SetLine( 0, 284 );
-		dlg->SetLine( 1, L"" );
-		dlg->SetLine( 2, L"" );
-		dlg->DoModal( GetID() );
+		CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (dlg)
+    {
+		  dlg->SetHeading( 194 );
+		  dlg->SetLine( 0, 284 );
+		  dlg->SetLine( 1, L"" );
+		  dlg->SetLine( 2, L"" );
+		  dlg->DoModal( GetID() );
+    }
 	}
 }
 
 //	strInput will be set as defaultstring in keyboard
 bool CGUIWindowMusicBase::GetKeyboard(CStdString& strInput)
 {
-	CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(1000);
+	CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(WINDOW_VIRTUAL_KEYBOARD);
+  if (!pKeyboard) return false;
 	pKeyboard->Reset();
 	WCHAR wsString[1024];
   swprintf( wsString,L"%S", strInput.c_str() );

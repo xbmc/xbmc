@@ -508,24 +508,30 @@ bool CGUIWindowScripts::HaveDiscOrConnection( CStdString& strPath, int iDriveTyp
 	if ( iDriveType == SHARE_TYPE_DVD ) {
 		CDetectDVDMedia::WaitMediaReady();
 		if ( !CDetectDVDMedia::IsDiscInDrive() ) {
-			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(2002);
-			dlg->SetHeading( 218 );
-			dlg->SetLine( 0, 219 );
-			dlg->SetLine( 1, L"" );
-			dlg->SetLine( 2, L"" );
-			dlg->DoModal( GetID() );
+			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+      if (dlg)
+      {
+			  dlg->SetHeading( 218 );
+			  dlg->SetLine( 0, 219 );
+			  dlg->SetLine( 1, L"" );
+			  dlg->SetLine( 2, L"" );
+			  dlg->DoModal( GetID() );
+      }
 			return false;
 		}
 	}
 	else if ( iDriveType == SHARE_TYPE_REMOTE ) {
 			// TODO: Handle not connected to a remote share
 		if ( !CUtil::IsEthernetConnected() ) {
-			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(2002);
-			dlg->SetHeading( 220 );
-			dlg->SetLine( 0, 221 );
-			dlg->SetLine( 1, L"" );
-			dlg->SetLine( 2, L"" );
-			dlg->DoModal( GetID() );
+			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+      if (dlg)
+      {
+			  dlg->SetHeading( 220 );
+			  dlg->SetLine( 0, 221 );
+			  dlg->SetLine( 1, L"" );
+			  dlg->SetLine( 2, L"" );
+			  dlg->DoModal( GetID() );
+      }
 			return false;
 		}
 	}
@@ -536,8 +542,8 @@ bool CGUIWindowScripts::HaveDiscOrConnection( CStdString& strPath, int iDriveTyp
 
 void CGUIWindowScripts::OnInfo()
 {
-	CGUIWindowScriptsInfo* pDlgInfo= (CGUIWindowScriptsInfo*)m_gWindowManager.GetWindow(2004);
-	pDlgInfo->DoModal(GetID());
+	CGUIWindowScriptsInfo* pDlgInfo= (CGUIWindowScriptsInfo*)m_gWindowManager.GetWindow(WINDOW_SCRIPTS_INFO);
+	if (pDlgInfo) pDlgInfo->DoModal(GetID());
 }
 
 void CGUIWindowScripts::Render()

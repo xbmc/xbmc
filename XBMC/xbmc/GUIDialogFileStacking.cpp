@@ -40,7 +40,7 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
 			}
 
 			// disable CD's we dont use
-			for (int i=m_iNumberOfFiles+1;  i <= 5; ++i)
+			for (int i=m_iNumberOfFiles+1;  i <= 40; ++i)
 			{
 				SET_CONTROL_HIDDEN(GetID(), i);
 				CONTROL_DISABLE(GetID(), i);
@@ -79,13 +79,16 @@ void CGUIDialogFileStacking::Render()
 		for (int i=1;  i <= m_iNumberOfFiles; ++i)
 		{
 			CGUIControl* pControl=(CGUIControl*)GetControl(i);
-			DWORD dwEndPos     = dwScreenWidth - ((m_iNumberOfFiles-i)*32)-140;
-			DWORD dwStartPos   = dwScreenWidth;
-			float fStep= (float)(dwStartPos - dwEndPos);
-			fStep/=25.0f;
-      fStep*=(float)m_iFrames;
-			DWORD dwPosX = (DWORD) ( ((float)dwStartPos)-fStep );
-			pControl->SetPosition( dwPosX, pControl->GetYPosition() );
+      if (pControl)
+      {
+			  DWORD dwEndPos     = dwScreenWidth - ((m_iNumberOfFiles-i)*32)-140;
+			  DWORD dwStartPos   = dwScreenWidth;
+			  float fStep= (float)(dwStartPos - dwEndPos);
+			  fStep/=25.0f;
+        fStep*=(float)m_iFrames;
+			  DWORD dwPosX = (DWORD) ( ((float)dwStartPos)-fStep );
+			  pControl->SetPosition( dwPosX, pControl->GetYPosition() );
+      }
 		}
 		m_iFrames++;
 	}
