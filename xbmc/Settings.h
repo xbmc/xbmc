@@ -225,6 +225,7 @@ public:
 		RESOLUTION		m_GUIResolution;
 		int			  m_iHTTPProxyPort;
 		char		  m_szHTTPProxy[128];
+		int			  m_iWebServerPort;
 
 		int		m_iShutdownTime;
 		int		m_iScreenSaverTime;		// CB: SCREENSAVER PATCH

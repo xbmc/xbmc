@@ -233,6 +233,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bTimeServerEnabled=false;
 	g_stSettings.m_bFTPServerEnabled=false;
 	g_stSettings.m_bHTTPServerEnabled=false;
+	g_stSettings.m_iWebServerPort=80;
 	strcpy(g_stSettings.m_szHTTPProxy,"");
 	strcpy(g_stSettings.szDefaultSkin,"MediaCenter");
 	strcpy(g_stSettings.szHomeDir,"");
@@ -484,6 +485,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 	GetInteger(pRootElement, "startwindow", g_stSettings.m_iStartupWindow,0,0,INT_MAX);
 	g_stSettings.m_iStartupWindow += WINDOW_HOME;	// windows referenced from WINDOW_HOME
 	GetInteger(pRootElement, "httpproxyport", g_stSettings.m_iHTTPProxyPort,0,0,INT_MAX);
+	GetInteger(pRootElement, "webserverport", g_stSettings.m_iWebServerPort, 80,0,INT_MAX);
 
 	GetBoolean(pRootElement, "useFDrive", g_stSettings.m_bUseFDrive);
 	GetBoolean(pRootElement, "useGDrive", g_stSettings.m_bUseGDrive);
