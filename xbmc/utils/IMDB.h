@@ -12,8 +12,9 @@
 
 #include "http.h"
 #include "StdString.h"
+#include "../cores/DllLoader/dll.h"
 #include <vector>
-
+#include "tinyxml/tinyxml.h"
 
 class CIMDBUrl
 {
@@ -58,15 +59,17 @@ public:
 	CIMDB(const CStdString& strProxyServer, int iProxyPort);
 	virtual ~CIMDB();
 
+	bool LoadDLL();
 	bool FindMovie(const CStdString& strMovie,	IMDB_MOVIELIST& movielist);
 	bool GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails);
 	bool Download(const CStdString &strURL, const CStdString &strFileName);
 	void GetURL(const CStdString& strMovie,CStdString& strURL);
 protected:
-	void ParseAHREF(const char* ahref, CStdString& strURL, CStdString& strTitle);
-	void ParseGenres(const char* ahref, CStdString& strURL, CStdString& strTitle);
 	void RemoveAllAfter(char* szMovie,const char* szSearch);
+  bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue);
   CHTTP m_http;
+
+	DllLoader *m_pDll;
 };
 
 #endif // !defined(AFX_IMDB1_H__562A722A_CD2A_4B4A_8A67_32DE8088A7D3__INCLUDED_)

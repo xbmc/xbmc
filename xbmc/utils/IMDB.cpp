@@ -10,214 +10,134 @@
 #include "localizestrings.h"
 #include "../settings.h"
 #include "HTMLUtil.h"
+
 using namespace HTML;
 #pragma warning (disable:4018)
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+int (__cdecl* IMDbGetSearchResults)(char *,const char *, const char *);
+int (__cdecl* IMDbGetDetails)(char *,const char *, const char *);
+
 CIMDB::CIMDB()
 {
+	m_pDll = NULL;
 }
+
 CIMDB::CIMDB(const CStdString& strProxyServer, int iProxyPort)
 :m_http(strProxyServer,iProxyPort)
 {
-
+	m_pDll = NULL;
 }
 
 CIMDB::~CIMDB()
 {
+	if (m_pDll)
+		delete m_pDll;
+	m_pDll = NULL;
+}
 
+bool CIMDB::LoadDLL()
+{
+	CStdString strDll = "Q:\\system\\HTMLScraper.dll";
+	m_pDll = new DllLoader(strDll.c_str(), true);
+	if ( !m_pDll || !m_pDll->Parse() )
+	{
+		// failed,
+		CLog::Log(LOGERROR, "IMDB: Unable to load dll %s",strDll.c_str());
+		if (m_pDll) delete m_pDll;
+		m_pDll = NULL;
+		return false;
+	}
+	m_pDll->ResolveImports();
+
+	// get handle to the functions in the dll
+	m_pDll->ResolveExport("IMDbGetSearchResults", (void**)&IMDbGetSearchResults);
+	m_pDll->ResolveExport("IMDbGetDetails", (void**)&IMDbGetDetails);
+
+	if (!IMDbGetSearchResults || !IMDbGetDetails)
+	{
+		CLog::Log(LOGERROR, "IMDB: Unable to load dll %s",strDll.c_str());
+		delete m_pDll;
+		m_pDll = NULL;
+		return false;
+	}
+	return true;
 }
 
 bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 {
-	char szTitle[1024];
-	char szURL[1024];
+	// load our dll if need be
+	if (!m_pDll && !LoadDLL())
+		return false;
+
 	CIMDBUrl url;
 	movielist.clear();
-	bool bSkip=false;
-	int ipos=0;
 
 	CStdString strURL,strHTML;
 	GetURL(strMovie,strURL);
-	if (!m_http.Get(strURL,strHTML))
-		return false;
-
-	if (strHTML.size()==0) 
-  {
-    CLog::Log(LOGWARNING, "empty document returned");
-    return false;
-  }
-
-	char *szBuffer= new char [strHTML.size()+1];
-	if (!szBuffer) return false;
-	strcpy(szBuffer,strHTML.c_str());
-	
-	/*  AS OF 20-12-2004
-	<h2>Popular Results</h2>
-
-<b>Popular Titles</b> (Displaying 1 Result)<ol><li><a href="/title/tt0056869/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=1;ft=11;fm=1">The Birds</a> (1963)<br>&#160;aka <em>"Alfred Hitchcock's The Birds"</em> - UK <em>(complete title)</em></li></ol>
-</p>
-
-<h2>Other Results</h2>
-
-<p>
-<b>Titles (Exact Matches)</b> (Displaying 1 Result)<ol><li><a href="/title/tt0248808/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=2;ft=11;fm=1">For the Birds</a> (2000)</li></ol><b>Titles (Partial Matches)</b> (Displaying 4 Results)<ol><li><a href="/title/tt0045173/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=3;ft=11;fm=1">Something for the Birds</a> (1952)</li><li><a href="/title/tt0151087/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=4;ft=11;fm=1">It's for the Birds</a> (1967)</li><li><a href="/title/tt0284522/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=5;ft=11;fm=1">Strictly for the Birds</a> (1963)</li><li><a href="/title/tt0066281/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=6;ft=11;fm=1">The Rainbirds</a> (1971) (TV)<br>&#160;aka <em>"Play for Today: The Rainbirds"</em> - UK <em>(series title)</em></li></ol><b>Titles (Approx Matches)</b> (Displaying 5 Results)<ol><li><a href="/title/tt0366252/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=7;ft=11;fm=1">Borrowed Clothes; or, Fine Feathers Make Fine Birds</a> (1909)</li><li><a href="/title/tt0055934/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=8;ft=11;fm=1">Du mouron pour les petits oiseaux</a> (1962)<br>&#160;aka <em>"Chicken Feed for Little Birds"</em> - <em>(English title)</em></li><li><a href="/title/tt0151086/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=9;ft=11;fm=1">It's for the Birdies</a> (1962)</li><li><a href="/title/tt0032426/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=10;ft=11;fm=1">The Early Worm Gets the Bird</a> (1940)</li><li><a href="/title/tt0306741/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=11;ft=11;fm=1">Doraemon, Nobita to tsubasa no yuusacchi</a> (2001) (TV)<br>&#160;aka <em>"Doraemon, Nobita, and the Bird Kingdom"</em></li></ol>
-
-</p>
-<p>
-  */
-	/* OLD METHOD
-	<b>Exact Matches</b> (11 matches, by popularity)
-    </p>
-    <p>
-    <table>
-    <tr><td valign="top" align="right">1.&#160;</td><td valign="top" width="100%"><a href="/title/tt0313443/">Out of Time (2003/I)</a></td></tr>
-	///old way
-	<H2><A NAME="mov">Movies</A></H2>
-	<OL><LI><A HREF="/Title?0167261">Lord of the Rings: The Two Towers, The (2002)</A><BR>...aka <I>Two Towers, The (2002) (USA: short title)</I>
-	</LI>
-	*/
-
-	CHTMLUtil html;
-
-	char *pStartOfMovieList=strstr(szBuffer," Titles</b>");
-	if (!pStartOfMovieList)
-	{	// We don't have the "Titles</b>" tag, try "Matches)</b>
-		pStartOfMovieList=strstr(szBuffer," Matches)</b>");
-	}
-	if (!pStartOfMovieList)
+	if (!m_http.Get(strURL,strHTML) || strHTML.size()==0)
 	{
-		char* pMovieTitle	 = strstr(szBuffer,"\"title\">");
-		char* pMovieDirector = strstr(szBuffer,"Directed");
-		char* pMovieGenre	 = strstr(szBuffer,"Genre:");
-		char* pMoviePlot	 = strstr(szBuffer,"Plot");
+		CLog::Log(LOGERROR, "IMDB: Unable to retrieve web site");
+		return false;
+	}
 
-		// oh i say, it appears we've been redirected to the actual movie details...
+	char *szXML = new char[50000];
+	if (!IMDbGetSearchResults(szXML, strHTML.c_str(), strURL.c_str()))
+	{
+		CLog::Log(LOGERROR, "IMDB: Unable to parse web site");
+		return false;
+	}
 
-		// NOTE: pMovieDirector not always populated for TV series
-		if (pMovieTitle && pMovieGenre && pMoviePlot)
+	// ok, now parse the xml file
+	TiXmlDocument doc;
+	if (!doc.Parse(szXML))
+	{
+		CLog::Log(LOGERROR, "IMDB: Unable to parse xml");
+		return false;
+	}
+	TiXmlHandle docHandle( &doc );
+	TiXmlElement *movie = docHandle.FirstChild( "results" ).FirstChild( "movie" ).Element();
+
+	for( movie; movie; movie=movie->NextSiblingElement() )
+	{
+    TiXmlNode *title = movie->FirstChild("title");
+		TiXmlNode *link = movie->FirstChild("url");
+		if (title && title->FirstChild() && link && link->FirstChild())
 		{
-			pMovieTitle+=8;
-			char *pEnd = strstr(pMovieTitle,"<");
-			if (pEnd) *pEnd=0;
-
-      OutputDebugString("Got movie:");
-      OutputDebugString(pMovieTitle);
-      OutputDebugString("url:" );
-      OutputDebugString(m_http.m_redirectedURL.c_str());
-      OutputDebugString("\n" );
-			html.ConvertHTMLToAnsi(pMovieTitle, url.m_strTitle);
-			url.m_strURL   = m_http.m_redirectedURL;
+      url.m_strTitle = title->FirstChild()->Value();
+			url.m_strURL = link->FirstChild()->Value();
 			movielist.push_back(url);
-
-			delete [] szBuffer;
-			return true;
-		}
-
-		OutputDebugString("Unable to locate start of movie list.\n");
-		delete [] szBuffer;
-		return false;
-	}
-
-	pStartOfMovieList+=strlen("<table>");
-	char *pEndOfMovieList=strstr(pStartOfMovieList,"</table>");
-	if (!pEndOfMovieList)
-	{
-		pEndOfMovieList=pStartOfMovieList+strlen(pStartOfMovieList);
-		OutputDebugString("Unable to locate end of movie list.\n");
-//		delete [] szBuffer;
-	//	return false;
-	}
-
-	*pEndOfMovieList=0;
-	while(1)
-	{
-		char* pAHREF=strstr(pStartOfMovieList,"<a href=\"/title");
-		if (pAHREF)
-		{
-			//<a href="/title/tt0313443/">Out of Time</a>(2003/I)</tr>...
-			//<a href="/title/tt0313443/">Out of Time (2003/I)</a>
-			//old way
-			//<A HREF="/Title?0167261">Lord of the Rings: The Two Towers, The (2002)</A>
-			char* pendAHREF=strstr(pStartOfMovieList,"</a>");
-			if (pendAHREF)
-			{
-				char* pYear=pendAHREF+4;
-				char* pendYear = strstr(pYear, "<");
-				*pendAHREF	=0;
-				pAHREF+=strlen("<a href=.");
-				// get url
-				char *pURL=strstr(pAHREF,">");
-				if (pURL)
-				{
-					pURL--;
-					*pURL=0;
-					pURL++;
-					*pURL=0;
-          char* pURLEnd=strstr(pURL+1,"<");
-					char *pURLQuestion=strstr(pAHREF, "?fr");
-					if (pURLQuestion)
-					{
-						*pURLQuestion=0;
-						pURLQuestion++;
-						*pURLQuestion=0;
-					}
- 					char *pURLQuote=strstr(pAHREF, "\"");
-					if (pURLQuote)
-					{
-						*pURLQuote=0;
-						pURLQuote++;
-						*pURLQuote=0;
-					}
-         strcpy(szURL, pAHREF);
-					if (pURLEnd)  
-          {
-            *pURLEnd=0;
-            strcpy(szTitle, pURL+1);
-            *pURLEnd='<';
-          }
-          else
-            strcpy(szTitle, pURL+1);
-					if (pendYear)
-					{
-						*pendYear = 0;
-						strcat(szTitle, pYear);
-						pendAHREF = pendYear;
-					}
-					html.ConvertHTMLToAnsi(szTitle, url.m_strTitle);
-		
-					sprintf(szURL,"http://us.imdb.com/%s", &pAHREF[1]);
-					url.m_strURL=szURL;
-					movielist.push_back(url);
-				}
-				pStartOfMovieList = pendAHREF+1;
-				if (pStartOfMovieList >=pEndOfMovieList) break;
-			}
-			else
-			{
-				break;
-			}
-		}
-		else
-		{
-			break;
 		}
 	}
-
-	delete [] szBuffer;
 	return true;
 }
 
+bool CIMDB::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue)
+{
+	TiXmlNode* pNode=pRootNode->FirstChild(strTag );
+	if (!pNode) return false;
+	pNode = pNode->FirstChild();
+	if (pNode != NULL)
+  {
+    strStringValue=pNode->Value();
+    return true;
+  }
+	return false;
+}
 
 bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 {
-	CStdString strHTML;
+	// load our dll if need be
+	if (!m_pDll && !LoadDLL())
+		return false;
+
+  CStdString strHTML, strPlotHTML;
 	CStdString strURL = url.m_strURL;
 
+  // fill in the defaults
 	CStdString strLocNotAvail=g_localizeStrings.Get(416);	// Not available
-
 	movieDetails.m_strTitle=url.m_strTitle;
 	movieDetails.m_strDirector=strLocNotAvail;
 	movieDetails.m_strWritingCredits=strLocNotAvail;
@@ -233,13 +153,16 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 	movieDetails.m_strCast=strLocNotAvail;
 	movieDetails.m_iTop250=0;
 
-	if (!m_http.Get(strURL,strHTML))
+	if (!m_http.Get(strURL,strHTML) || strHTML.size()==0)
 		return false;
-	if (strHTML.size()==0) 
-		return false;
+
+  // grab our plot summary as well (if it's available)
+  m_http.Get(strURL + "plotsummary", strPlotHTML);
+
 	char *szBuffer= new char[strHTML.size()+1];
 	strcpy(szBuffer,strHTML.c_str());
 	
+  // get the IMDb number from our URL
   int idxUrlParams = strURL.Find('?');
   if (idxUrlParams != -1) {
     strURL = strURL.Left(idxUrlParams);
@@ -252,315 +175,49 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 
   movieDetails.m_strIMDBNumber=&szURL[ipos+1];
   CLog::Log(LOGINFO, "imdb number:%s\n", movieDetails.m_strIMDBNumber.c_str());
-	char *pDirectedBy=strstr(szBuffer,"Directed by");
-	char *pCredits=strstr(szBuffer,"Writing credits");
-	char* pGenre=strstr(szBuffer,"Genre:");
-	char* pTagLine=strstr(szBuffer,"Tagline:</b>");	
-	char* pPlotOutline=strstr(szBuffer,"Plot Outline:</b>");	
-	char* pPlotSummary=strstr(szBuffer,"Plot Summary:</b>");	
-	char* pPlot=strstr(szBuffer,"<a href=\"plotsummary");
-	char* pImage=strstr(szBuffer,"<img border=\"0\" alt=\"cover\" src=\"");
-	char* pRating=strstr(szBuffer,"User Rating:</b>");
-	char* pRuntime=strstr(szBuffer,"Runtime:</b>");
-	char* pCast=strstr(szBuffer,"first billed only: </b></td></tr>");
-	char* pCred=strstr(szBuffer,"redited cast:"); // Complete credited cast or Credited cast
-	char* pTop=strstr(szBuffer, "top 250:");
 
-	char *pYear=strstr(szBuffer,"/Sections/Years/");
-	if (pYear)
+  // now grab our details using the dll
+  char szXML[50000];
+  if (!IMDbGetDetails(szXML, strHTML.c_str(), strPlotHTML.c_str()))
+  {
+		CLog::Log(LOGERROR, "IMDB: Unable to parse web site");
+		return false;
+  }
+  
+	// ok, now parse the xml file
+  TiXmlBase::SetCondenseWhiteSpace(false);
+	TiXmlDocument doc;
+	if (!doc.Parse(szXML))
 	{
-		char szYear[5];
-		pYear+=strlen("/Sections/Years/");
-		strncpy(szYear,pYear,4);
-		szYear[4]=0;
-		movieDetails.m_iYear=atoi(szYear);
+		CLog::Log(LOGERROR, "IMDB: Unable to parse xml");
+		return false;
 	}
+  TiXmlNode *details = doc.FirstChild( "details" );
 
-	if (pDirectedBy) 
-		ParseAHREF(pDirectedBy, strURL, movieDetails.m_strDirector);
+  if (!details)
+  {
+		CLog::Log(LOGERROR, "IMDB: Invalid xml file");
+    return false;
+  }
 
-	if (pCredits) 
-		ParseAHREF(pCredits, strURL, movieDetails.m_strWritingCredits);
+  CStdString strTemp;
+  if (GetString(details, "rating", strTemp)) movieDetails.m_fRating = (float)atof(strTemp);
+  if (GetString(details, "year", strTemp)) movieDetails.m_iYear = atoi(strTemp);
+  if (GetString(details, "top250", strTemp)) movieDetails.m_iTop250 = atoi(strTemp);
 
-	if (pGenre)  
-		ParseGenres(pGenre, strURL, movieDetails.m_strGenre);
+  GetString(details, "votes", movieDetails.m_strVotes);
+  GetString(details, "cast", movieDetails.m_strCast);
+  GetString(details, "outline", movieDetails.m_strPlotOutline);
+  GetString(details, "runtime", movieDetails.m_strRuntime);
+  GetString(details, "thumb", movieDetails.m_strPictureURL);
+  GetString(details, "tagline", movieDetails.m_strTagLine);
+  GetString(details, "genre", movieDetails.m_strGenre);
+  GetString(details, "credits", movieDetails.m_strWritingCredits);
+  GetString(details, "director", movieDetails.m_strDirector);
+  GetString(details, "plot", movieDetails.m_strPlot);
 
-	if (pRating) // and votes
-	{
-		char *pStart = strstr(pRating, "<b>"); 
-		if(pStart) 
-		{
-			char *pEnd = strstr(pStart, "/");
-			*pEnd = 0;
-			// set rating
-			movieDetails.m_fRating = (float)atof(pStart+3);
-
-			if(movieDetails.m_fRating != 0.0) {
-				// now, votes
-				pStart = strstr(pEnd+2, "(");
-				if(pStart)
-					pEnd = strstr(pStart, " votes)");
-
-				if(pEnd) {
-					*pEnd = 0;
-					pStart++; // skip the parantese before votes
-					movieDetails.m_strVotes = pStart; // save
-				} else {
-					movieDetails.m_strVotes = "0";
-				}
-			}
-		}
-	}
-
-	if(pTop) // top rated movie :)
-	{
-		pTop += strlen("top 250:") + 2; // jump space and #
-		char *pEnd = strstr(pTop, "</a>");
-		*pEnd = 0;
-		movieDetails.m_iTop250 = atoi(pTop);
-	}
-
-	if(!pCast) 
-	{
-		pCast=pCred;
-	}
-
-	CHTMLUtil html;
-	if(pCast) 
-	{
-		char *pRealEnd = strstr(pCast, "&nbsp;");
-		char *pStart = strstr(pCast, "<a href");
-		char *pEnd = pCast;
-
-		if(pRealEnd &&  pStart && pEnd)
-		{
-			 movieDetails.m_strCast = "Cast overview:\n";
-
-			 while(pRealEnd > pStart) 
-			 {
-				CStdString url = "";
-				CStdString actor = "";
-				CStdString role = "";
-		
-				// actor
-					
-				pEnd = strstr(pStart, "</a>");
-
-				pEnd += 4;
-				*pEnd = 0;
-
-				pEnd += 1;
-
-				ParseAHREF(pStart, url, actor);
-
-
-				// role
-
-				pStart = strstr(pEnd, "<td valign=\"top\">");
-				pStart += strlen("<td valign=\"top\">");
-			
-				pEnd = strstr(pStart, "</td>");
-				*pEnd = 0;
-				
-				html.ConvertHTMLToAnsi(pStart, role);
-
-				pEnd += 1;
-
-				// add to cast
-				movieDetails.m_strCast += actor;
-				if(!role.empty()) // Role not always listed
-					movieDetails.m_strCast += " as " + role;
-				
-				movieDetails.m_strCast += "\n";
-				
-				// next actor
-				pStart = strstr(pEnd, "<a href");
-			}
-		}
-			
-	}
-
-	if (pTagLine)
-	{
-		pTagLine += strlen("Tagline:</b>");
-		char *pEnd = strstr(pTagLine,"<");
-		if (pEnd) *pEnd=0;
-		html.ConvertHTMLToAnsi(pTagLine,movieDetails.m_strTagLine);
-	}
-
-	if (pRuntime)
-	{
-		pRuntime += strlen("Runtime:</b>");
-		char *pEnd = strstr(pRuntime,"<");
-		if (pEnd) *pEnd=0;
-		html.ConvertHTMLToAnsi(pRuntime,movieDetails.m_strRuntime);
-	}
-
-	if (!pPlotOutline)
-	{
-		if (pPlotSummary)
-		{
-			pPlotSummary += strlen("Plot Summary:</b>");
-			char *pEnd = strstr(pPlotSummary,"<");
-			if (pEnd) *pEnd=0;
-			html.ConvertHTMLToAnsi(pPlotSummary,movieDetails.m_strPlotOutline);			
-		}
-	}
-	else
-	{
-		pPlotOutline += strlen("Plot Outline:</b>");
-		char *pEnd = strstr(pPlotOutline,"<");
-		if (pEnd) *pEnd=0;
-		html.ConvertHTMLToAnsi(pPlotOutline,movieDetails.m_strPlotOutline);
-		movieDetails.m_strPlot=movieDetails.m_strPlotOutline;
-	}
-
-	if (pImage)
-	{
-		pImage += strlen("<img border=\"0\" alt=\"cover\" src=\"");
-		char *pEnd = strstr(pImage,"\"");
-		if (pEnd) *pEnd=0;
-		movieDetails.m_strPictureURL=pImage;
-		movieDetails.m_strPictureURL.Replace('\r',(char)0);
-	}
-
-	if (pPlot)
-	{
-		CStdString strPlotURL = url.m_strURL;
-    if (idxUrlParams != -1)
-    {
-      strPlotURL = strPlotURL.Left(idxUrlParams);
-    }
-    strPlotURL = strPlotURL + "plotsummary";
-		CStdString strPlotHTML;
-		if ( m_http.Get(strPlotURL,strPlotHTML))
-		{
-			if (0!=strPlotHTML.size())
-			{
-				char* szPlotHTML = new char[1+strPlotHTML.size()];
-				strcpy(szPlotHTML ,strPlotHTML.c_str());
-				char *strPlotStart=strstr(szPlotHTML,"<p class=\"plotpar\">");
-				if (strPlotStart)
-				{
-					strPlotStart += strlen("<p class=\"plotpar\">");
-					char *strPlotEnd=strstr(strPlotStart,"</p>");
-					if (strPlotEnd) *strPlotEnd=0;
-
-					// Remove any tags that may appear in the text
-					bool inTag = false;
-					int iPlot = 0;
-					char* strPlot = new char[strlen(strPlotStart)+1];
-					for (int i = 0; i < strlen(strPlotStart); i++)
-					{
-						if (strPlotStart[i] == '<')
-							inTag = true;
-						else if (strPlotStart[i] == '>')
-							inTag = false;
-						else if (!inTag)
-							strPlot[iPlot++] = strPlotStart[i];
-					}
-					strPlot[iPlot] = '\0';
-
-					html.ConvertHTMLToAnsi(strPlot, movieDetails.m_strPlot);
-
-					delete [] strPlot;
-				}
-				delete [] szPlotHTML;
-			}
-		}
-	}
-	delete [] szBuffer;
-
+  TiXmlBase::SetCondenseWhiteSpace(true);
 	return true;
-}
-
-void CIMDB::ParseAHREF(const char *ahref, CStdString &strURL, CStdString &strTitle)
-{
-	char* szAHRef;
-	szAHRef=new char[strlen(ahref)+1];
-	strncpy(szAHRef,ahref,strlen(ahref));
-	szAHRef[strlen(ahref)]=0;
-	strURL="";
-	strTitle="";
-	char *pStart=strstr(szAHRef,"<a href=\"");
-	if (!pStart) pStart=strstr(szAHRef,"<A HREF=\"");
-	if (!pStart) 
-	{
-		delete [] szAHRef;
-		return;
-	}
-	char* pEnd = strstr(szAHRef,"</a>"); 
-	if (!pEnd) pEnd = strstr(szAHRef,"</A>"); 
-
-	if (!pEnd)
-	{
-		delete [] szAHRef;
-		return;
-	}
-	*pEnd=0;
-	pEnd+=2;
-	pStart += strlen("<a href=\"");
-	
-	char *pSep=strstr(pStart,">");
-	if (pSep) *pSep=0;
-	strURL=pStart;
-	pSep++;
-
-	CHTMLUtil html;
-	//strTitle=pSep;
-	html.ConvertHTMLToAnsi(pSep,strTitle);
-	
-	delete [] szAHRef;
-}
-
-void CIMDB::ParseGenres(const char *ahref, CStdString &strURL, CStdString &strTitle)
-{
-	char* szAHRef;
-	szAHRef=new char[strlen(ahref)+1];
-	strncpy(szAHRef,ahref,strlen(ahref));
-	szAHRef[strlen(ahref)]=0;
-
-	CStdString strGenre = "";
-
-	char *pStart;
-	char *pEnd=szAHRef;
-	
-	char *pSlash=strstr(szAHRef," / ");
-
-	strTitle = "";
-
-	if(pSlash) 
-	{
-		char *pRealEnd = strstr(szAHRef, "(more)");
-		if(!pRealEnd) pRealEnd=strstr(szAHRef, "<br><br>");
-    if (!pRealEnd)
-    {
-      OutputDebugString("1");
-    }
-		while(pSlash<pRealEnd)
-		{
-			pStart = pEnd+2;
-			pEnd = pSlash;
-			*pEnd = 0; // terminate CStdString after current genre
-      int iLen=pEnd-pStart;
-      if (iLen < 0) break;
-			char *szTemp = new char[iLen+1];
-			strncpy(szTemp, pStart, iLen);
-			szTemp[iLen] = 0;
-	
-			ParseAHREF(szTemp, strURL, strGenre);
-      delete [] szTemp;
-			strTitle = strTitle + strGenre + " / ";
-			pSlash=strstr(pEnd+2," / ");
-			if(!pSlash) pSlash = pRealEnd;
-		}
-	}
-	// last genre
-	pEnd+=2;
-	ParseAHREF(pEnd, strURL, strGenre);
-	strTitle = strTitle + strGenre;
-
-	delete [] szAHRef;
 }
 
 bool CIMDB::Download(const CStdString &strURL, const CStdString &strFileName)
@@ -596,13 +253,13 @@ void CIMDBMovie::Reset()
 	m_iYear=0;
 	m_fRating=0.0f;
 }
+
 void CIMDBMovie::Save(const CStdString &strFileName)
 {
 }
 
 bool CIMDBMovie::Load(const CStdString& strFileName)
 {
-
 	return true;
 }
 
