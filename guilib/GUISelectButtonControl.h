@@ -112,5 +112,6 @@ protected:
 	int											m_iStartFrame;
 	bool										m_bLeftSelected;
 	bool										m_bRightSelected;
+	DWORD										m_dwTicks;
 };
 #endif
