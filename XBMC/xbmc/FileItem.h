@@ -11,9 +11,12 @@ class CFileItem :
 {
 public:
   CFileItem(void);
+  CFileItem(const CFileItem& item);
   CFileItem(const CStdString& strLabel);
   virtual ~CFileItem(void);
 
+	
+  const CFileItem& operator=(const CFileItem& item);
   CStdString    m_strPath;						// complete path to item
   bool          m_bIsFolder;					// is item a folder or a file
   bool          m_bIsShareOrDrive;		// is this a root share/drive

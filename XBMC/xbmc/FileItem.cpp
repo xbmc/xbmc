@@ -1,12 +1,17 @@
 #include "fileitem.h"
 
+
+CFileItem::CFileItem(const CFileItem& item)
+{
+	*this=item;
+}
+
 CFileItem::CFileItem(void)
 {
   m_dwSize=0;
   m_bIsFolder=false;
   m_bIsShareOrDrive=false;
 	memset(&m_stTime,0,sizeof(m_stTime));
-  
 }
 
 
@@ -19,4 +24,25 @@ CFileItem::CFileItem(const CStdString& strLabel)
 
 CFileItem::~CFileItem(void)
 {
+}
+
+const CFileItem& CFileItem::operator=(const CFileItem& item)
+{
+	if (this==&item) return *this;
+  m_strLabel2=item.m_strLabel2;
+  m_strLabel=item.m_strLabel;
+  m_pThumbnailImage=NULL;
+  m_pIconImage=NULL;
+  m_bSelected=item.m_bSelected;
+  m_strIcon=item.m_strIcon;
+  m_strThumbnailImage=item.m_strThumbnailImage;
+
+
+	m_strPath=item.m_strPath;
+	m_bIsFolder=item.m_bIsFolder;
+	m_bIsShareOrDrive=item.m_bIsShareOrDrive;
+	memcpy(&m_stTime,&item.m_stTime,sizeof(SYSTEMTIME));
+	m_dwSize=item.m_dwSize;
+	m_musicInfoTag=item.m_musicInfoTag;
+	return *this;
 }

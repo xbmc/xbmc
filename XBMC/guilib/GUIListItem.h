@@ -12,8 +12,12 @@ class CGUIListItem
 {
 public:
   CGUIListItem(void);
+  CGUIListItem(const CGUIListItem& item);
   CGUIListItem(const CStdString& strLabel);
   virtual ~CGUIListItem(void);
+
+	
+  const CGUIListItem& operator =(const CGUIListItem& item);
 
   void							SetLabel(const CStdString& strLabel);
   const CStdString& GetLabel() const;

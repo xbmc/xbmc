@@ -1,5 +1,10 @@
 #include "guilistitem.h"
 
+CGUIListItem::CGUIListItem(const CGUIListItem& item)
+{
+	*this=item;
+}
+
 CGUIListItem::CGUIListItem(void)
 {
   m_strLabel2="";
@@ -115,4 +120,18 @@ void CGUIListItem::SetThumbnail(CGUIImage* pImage)
 void CGUIListItem::SetIcon(CGUIImage* pImage)
 {
   m_pIconImage=pImage;
+}
+
+
+const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
+{
+	if (&item==this) return *this;
+  m_strLabel2=item.m_strLabel2;
+  m_strLabel=item.m_strLabel;
+  m_pThumbnailImage=NULL;
+  m_pIconImage=NULL;
+  m_bSelected=item.m_bSelected;
+  m_strIcon=item.m_strIcon;
+  m_strThumbnailImage=item.m_strThumbnailImage;
+	return *this;
 }

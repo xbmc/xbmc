@@ -48,6 +48,12 @@ using namespace std;
 	g_graphicsContext.SendMessage(msg); \
 }
 
+#define SET_CONTROL_FOCUS(dwSenderId, dwControlID) \
+{ \
+	CGUIMessage msg(GUI_MSG_SETFOCUS, dwSenderId, dwControlID); \
+	g_graphicsContext.SendMessage(msg); \
+}
+
 #define SET_CONTROL_VISIBLE(dwSenderId, dwControlID) \
 { \
 	CGUIMessage msg(GUI_MSG_VISIBLE, dwSenderId, dwControlID); \

@@ -159,9 +159,6 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
 void CGUIWindow::AllocResources()
 {
-  CStdString strLog;
-  strLog.Format("window:%i ::AllocResources()\n", GetID() );
-  OutputDebugString(strLog.c_str());
 
   ivecControls i;
   for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
@@ -174,9 +171,6 @@ void CGUIWindow::AllocResources()
 
 void CGUIWindow::FreeResources()
 {
-  CStdString strLog;
-  strLog.Format("window:%i ::FreeResources()\n", GetID());
-  OutputDebugString(strLog.c_str());
   ivecControls i;
   for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
