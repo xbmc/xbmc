@@ -66,7 +66,13 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       //don't deinit, g_application handles it
-      return true;
+     if (m_pIcon)
+     {
+       m_pIcon->FreeResources();
+       delete m_pIcon;
+       m_pIcon = NULL;
+     }
+     return true;
     }
     break;
   }
@@ -79,7 +85,6 @@ void CGUIDialogKaiToast::QueueNotification(const CStdString& aCaption, const CSt
   EnterCriticalSection(&m_critical);
 
   Notification toast;
-  toast.image = NULL;
   toast.caption = aCaption;
   toast.description = aDescription;
   m_notifications.push(toast);
@@ -87,12 +92,12 @@ void CGUIDialogKaiToast::QueueNotification(const CStdString& aCaption, const CSt
   LeaveCriticalSection(&m_critical);
 }
 
-void CGUIDialogKaiToast::QueueNotification(CGUIImage* aImage, const CStdString& aCaption, const CStdString& aDescription)
+void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription)
 {
   EnterCriticalSection(&m_critical);
 
   Notification toast;
-  toast.image = aImage;
+  toast.imagefile = aImageFile;
   toast.caption = aCaption;
   toast.description = aDescription;
   m_notifications.push(toast);
@@ -121,18 +126,17 @@ bool CGUIDialogKaiToast::DoWork()
     msg2.SetLabel(toast.description);
     OnMessage(msg2);
 
-    CGUIImage* pOldIcon = m_pIcon;
-
-    if (pOldIcon)
+    if (m_pIcon)
     {
+      m_pIcon->FreeResources();
+      delete m_pIcon;
       m_pIcon = NULL;
-      pOldIcon->FreeResources();
     }
 
-    if (toast.image)
+    if (toast.imagefile.size()>0)
     {
-      toast.image->AllocResources();
-      m_pIcon = toast.image;
+      m_pIcon = new CGUIImage(0, 0, 0, 0, m_dwIconWidth, m_dwIconHeight, toast.imagefile);
+      m_pIcon->AllocResources();
     }
 
     g_graphicsContext.Unlock();

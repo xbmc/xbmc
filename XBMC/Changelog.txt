@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 31-03-2005 fixed: kai, crash when removing newly added contact when "just signed in" toast message is still on screen
+  - 31-03-2005 fixed: kai, crash when removing last contact
   - 31-03-2005 fixed: kai toast dialog only shows the last notification in the queue
   - 31-03-2005 added: New built-in command XBMC.ReloadSkin()
   - 31-03-2005 fixed: Several translation strings in My Weather.
