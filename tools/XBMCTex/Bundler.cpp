@@ -92,6 +92,7 @@ bool CBundler::AddFile(const char* Filename, int nBuffers, const void** Buffers,
 	lzo_voidp tmp = VirtualAlloc(0, LZO1X_999_MEM_COMPRESS, MEM_COMMIT, PAGE_READWRITE);
 	if (lzo1x_999_compress(buf, Header.UnpackedSize, Data+DataSize, (lzo_uint*)&Header.PackedSize, tmp) != LZO_E_OK)
 	{
+		printf("Compression failure\n");
 		VirtualFree(buf, 0, MEM_RELEASE);
 		VirtualFree(tmp, 0, MEM_RELEASE);
 		return false;
@@ -99,11 +100,7 @@ bool CBundler::AddFile(const char* Filename, int nBuffers, const void** Buffers,
 	VirtualFree(tmp, 0, MEM_RELEASE);
 
 	lzo_uint s;
-	if (lzo1x_optimize(Data+DataSize, Header.PackedSize, buf, &s, NULL) != LZO_E_OK)
-	{
-		VirtualFree(buf, 0, MEM_RELEASE);
-		return false;
-	}
+	lzo1x_optimize(Data+DataSize, Header.PackedSize, buf, &s, NULL);
 
 	VirtualFree(buf, 0, MEM_RELEASE);
 
