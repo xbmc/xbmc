@@ -1,8 +1,8 @@
 <!-- Finnish - language resource                                                    !-->
 <!-- Finnish Translation 2004-11-7 by Nanite1000                                    !-->
 <!-- Based on CVS revision 2004-11-7 YYYY-MM-DD                                     !-->
-<!-- Finnish Translation Update 2005-02-17 by jutski                                !-->
-<!-- Based on CVS revision 2005-02-15 YYYY-MM-DD (English rev1.162)                 !-->
+<!-- Finnish Translation Update 2005-02-22 by jutski                                !-->
+<!-- Based on CVS revision 2005-02-21 YYYY-MM-DD (English rev1.167)                 !-->
 <!-- For comments PM me in xboxmediacenter forum or IRC: nanite1k @ #xbmc on efnet  !-->
 <!--   or send email to: nanite1000 _at_ users _dot_ sourceforge _dot_ net          !-->
 <!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta                   !-->
@@ -316,32 +316,32 @@
   <string><id>367</id><value>Arvosanan mukaan</value></string>
   <string><id>368</id><value>IMDb</value></string>
   <string><id>369</id><value>Elokuvat</value></string>
-  <string><id>370</id><value>T-Storms</value></string>
-  <string><id>371</id><value>Partly</value></string>
-  <string><id>372</id><value>Mostly</value></string>
-  <string><id>373</id><value>Sunny</value></string>
-  <string><id>374</id><value>Cloudy</value></string>
-  <string><id>375</id><value>Snow</value></string>
-  <string><id>376</id><value>Rain</value></string>
-  <string><id>377</id><value>Light</value></string>
-  <string><id>378</id><value>AM</value></string>
-  <string><id>379</id><value>PM</value></string>
-  <string><id>380</id><value>Showers</value></string>
-  <string><id>381</id><value>Few</value></string>
-  <string><id>382</id><value>Scattered</value></string>
-  <string><id>383</id><value>Wind</value></string>
-  <string><id>384</id><value>Strong</value></string>
-  <string><id>385</id><value>Fair</value></string>
-  <string><id>386</id><value>Clear</value></string>
-  <string><id>387</id><value>Clouds</value></string>
-  <string><id>388</id><value>Varhainen</value></string>
-  <string><id>389</id><value>Sadekuuro</value></string>
-  <string><id>390</id><value>Tuulista</value></string>
+  <string><id>370</id><value>Ukkosta</value></string>
+  <string><id>371</id><value>Osittain</value></string>
+  <string><id>372</id><value>Enimmäkseen</value></string>
+  <string><id>373</id><value>Aurinkoista</value></string>
+  <string><id>374</id><value>Pilvistä</value></string>
+  <string><id>375</id><value>Lumi</value></string>
+  <string><id>376</id><value>Sade</value></string>
+  <string><id>377</id><value>Kevyttä</value></string>
+  <string><id>378</id><value>Ennen puoltapäivää</value></string>
+  <string><id>379</id><value>Puolenpäivän jälkeen</value></string>
+  <string><id>380</id><value>kuuroja</value></string>
+  <string><id>381</id><value>Joitakin</value></string>
+  <string><id>382</id><value>Hajanaisia</value></string>
+  <string><id>383</id><value>Tuulta</value></string>
+  <string><id>384</id><value>Voimakasta</value></string>
+  <string><id>385</id><value>Poutaa</value></string>
+  <string><id>386</id><value>Selkeää</value></string>
+  <string><id>387</id><value>Pilvistä</value></string>
+  <string><id>388</id><value>Varhaista</value></string>
+  <string><id>389</id><value>kuuro</value></string>
+  <string><id>390</id><value>Lumikuuroja</value></string>
   <string><id>391</id><value>Heikkoa</value></string>
   <string><id>392</id><value>Kohtalaista</value></string>
   <string><id>393</id><value>Voimakasta</value></string>
-  <string><id>394</id><value>N/A</value></string>
-  <string><id>395</id><value>N/A</value></string>
+  <string><id>394</id><value>Sumua</value></string>
+  <string><id>395</id><value>Usvaa</value></string>
   <string><id>396</id><value>Hae paikkakunta</value></string>
   <string><id>397</id><value>Päivitysväli</value></string>
   <string><id>398</id><value>Lämpötilan yksikkö</value></string>
@@ -438,7 +438,7 @@
   <string><id>489</id><value>Toista automaattisesti seuraava tiedosto</value></string>
   <string><id>490</id><value>Vaihda automaattisesti lista/kuvat kappaleissa</value></string>
   <string><id>491</id><value>- Isot kuvakkeet</value></string>
-  <string><id>492</id><value>Suurenna tekstitys</value></string>
+  <string><id>492</id><value>Tekstityksen koko</value></string>
   <string><id>493</id><value>Lisäasetukset (muuta vain jos tiedät mitä teet!)</value></string>
   <string><id>494</id><value>Overall Audio Headroom (dB)</value></string>
   <string><id>495</id><value>Suurenna videot käyttöliittymän resoluutioon</value></string>
@@ -536,6 +536,23 @@
   <string><id>753</id><value>Muokkaa jaon nimeä</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Nettipelaaminen</value></string>
+
+  <string><id>1396</id><value>Kasaantuvaa</value></string>
+  <string><id>1397</id><value>ja</value></string>
+  <string><id>1398</id><value>Jäätävää</value></string>
+  <string><id>1399</id><value>N/A</value></string>
+  <string><id>1400</id><value>N/A</value></string>
+  <string><id>1401</id><value>N/A</value></string>
+  <string><id>1402</id><value>N/A</value></string>
+  <string><id>1403</id><value>N/A</value></string>
+  <string><id>1404</id><value>N/A</value></string>
+  <string><id>1405</id><value>N/A</value></string>
+  <string><id>1406</id><value>N/A</value></string>
+  <string><id>1407</id><value>N/A</value></string>
+  <string><id>1408</id><value>N/A</value></string>
+  <string><id>1409</id><value>N/A</value></string>
+  <string><id>1410</id><value>N/A</value></string>
+
   <string><id>10000</id><value>Päävalikko</value></string>
   <string><id>10001</id><value>Ohjelmat</value></string>
   <string><id>10002</id><value>Kuvat</value></string>
@@ -707,6 +724,7 @@
   <string><id>13357</id><value>Yhdistelmämetodi (päällyskerros/PS)</value></string>
   <string><id>13358</id><value>Pixel Shader (korkealaatuinen)</value></string>
   <string><id>13359</id><value>Pixel Shader (normaalilaatuinen)</value></string>
+  <string><id>13359</id><value>Luo pikkukuvat</value></string>
 
   <string><id>14000</id><value>Älä yhdistä osia</value></string>
   <string><id>14001</id><value>Yhdistä osat (norm)</value></string>

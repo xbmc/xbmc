@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 23-02-2005 updated: Polish language file (Thnx to napek)
+  - 23-02-2005 updated: Norwegian language file (Thnx to vnm)
+  - 23-02-2005 updated: Italian language file (Thnx to kotix)
+  - 23-02-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+  - 23-02-2005 updated: Finnish language file (Thnx to jutski)
   - 23-02-2005 fixed: Switching from Fullscreen Video -> GUI now looks more professional (blank screen rather than stalled/mangled video)
   - 23-02-2005 added: [ 1149558 ] Printing XBE Title To LCD On Launch.  Thanks sniperkilla!
   - 22-02-2005 fixed: Crash when Kai is re-entered after a skin/font/etc. change.
