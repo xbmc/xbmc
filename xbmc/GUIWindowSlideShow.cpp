@@ -251,6 +251,12 @@ void CGUIWindowSlideShow::Render()
 	dest.top=y;
 	dest.right=dest.left+width;
 	dest.bottom=dest.top+height;
+
+	if (g_graphicsContext.GetVideoResolution() == HDTV_1080i)
+	{	// change the overlay to 540p (Overlays don't work properly in 1080i)
+		dest.top/=2;
+		dest.bottom/=2;
+	}
 	g_graphicsContext.Get3DDevice()->UpdateOverlay(m_pSurfaceBackGround, &source, &dest, true, 0x00010001);
 
 	if (m_pTextureCurrent) 
@@ -748,12 +754,6 @@ void CGUIWindowSlideShow::GetOutputRect(const int iSourceWidth, const int iSourc
 	int iScreenHeight = g_settings.m_ResInfo[iRes].Overscan.height;
 	float fPixelRatio = g_settings.m_ResInfo[iRes].fPixelRatio;
 
-	if (iRes == HDTV_1080i)
-	{	// change the overlay to 540p (Overlays don't work properly in 1080i)
-		iOffsetY1/=2;
-		iScreenHeight/=2;
-		fPixelRatio/=2;
-	}
 	float fSourceFrameAR = (float)iSourceWidth/iSourceHeight;
 	float fOutputFrameAR = fSourceFrameAR / fPixelRatio;
 	width = iScreenWidth;
@@ -782,8 +782,8 @@ void CGUIWindowSlideShow::GetOutputRect(const int iSourceWidth, const int iSourc
 		m_iZoomWidth = (int)(width/(m_iZoomFactor*fScaleWidthFactor));
 		m_iZoomHeight = (int)(height/(m_iZoomFactor*fScaleHeightFactor));
 	}
-	x = (g_settings.m_ResInfo[iRes].Overscan.width - width)/2 + iOffsetX1;
-	y = (g_settings.m_ResInfo[iRes].Overscan.height - height)/2 + iOffsetY1;
+	x = (iScreenWidth - width)/2 + iOffsetX1;
+	y = (iScreenHeight - height)/2 + iOffsetY1;
 }
 
 void CGUIWindowSlideShow::Zoom(int iZoom)
@@ -813,3 +813,10 @@ void CGUIWindowSlideShow::Zoom(int iZoom)
 		if (m_iZoomTop > (int)m_dwHeightBackGround-m_iZoomHeight) m_iZoomTop = m_dwHeightBackGround-m_iZoomHeight;
 	}
 }
+
+
+
+
+
+
+
