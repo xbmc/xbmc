@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-09-2004 fixed: my music songs, last control is always the list/thumb control when autoswitch list/thumb enabled
   - 13-09-2004 fixed: left mouse doesn't work in my pictures
   - 13-09-2004 fixed: when adding a directory to a videoplaylist the files where added in reverse order
   - 13-09-2004 added: Korean language file (thanks kimp93)
