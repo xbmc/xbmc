@@ -309,105 +309,198 @@ void CUtil::GetTitleIP(CStdString& ip)
 
 bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway)
 {
+  // see http://www.gamespp.com/xboxprogramming/settingUpTcpIp.html for details
+
 	if (!IsEthernetConnected())
   {
     CLog::Log("  network cable not connected!");
 		return false;
   }
-	// if local address is specified
-	if ( (szLocalAddress[0]!=0) &&
-		 (szLocalSubnet[0]!=0)  &&
-		 (szLocalGateway[0]!=0)  )
 
-	{
-		// Thanks and credits to Team Evox for the description of the 
-		// XNetConfigParams structure.
+  if (CUtil::cmpnocase(szLocalAddress,"dhcp") )
+  {
+    XNetStartupParams sXNetStartup;
+    WSADATA sWSAData;
+    DWORD vReturn;
+    WORD vVersionRequested;
+    bool isGateway;
+    int vError;
+    XNADDR sAddress;
+    char NETWORK_STATUS[256];
+    // use DHCP
+    CLog::Log("use DHCP to find new ip adres");
 
-		TXNetConfigParams configParams;   
+    CLog::Log("  initialise net");
+    int socketloop=1;
+	  // Start up NET
+	  memset(&sXNetStartup, 0, sizeof(sXNetStartup));
+	  sXNetStartup.cfgSizeOfStruct = sizeof(XNetStartupParams);
+	  sXNetStartup.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
+	  vError = XNetStartup(&sXNetStartup);
+	  vVersionRequested = MAKEWORD( 2, 2 );
 
-		OutputDebugString("Loading network configuration...\n");
-		XNetLoadConfigParams( (LPBYTE) &configParams );
-		OutputDebugString("Ready.\n");
+	  if( WSAStartup( vVersionRequested, &sWSAData ) != 0 ) 
+	  {
+      CLog::Log("wsastartup failed");
+		  return false;
+	  }
 
-		BOOL bXboxVersion2 = (configParams.V2_Tag == 0x58425632 );	// "XBV2"
-		BOOL bDirty = false;
+	  // If we didn't get version 2.2, return!
+	  if ( LOBYTE( sWSAData.wVersion ) != 2 || HIBYTE( sWSAData.wVersion ) != 2 ) 
+	  {
+		  WSACleanup( );
+		  CLog::Log("wsastartup didnt return version 2.2");
+	  }
 
-		OutputDebugString("User local address: ");
-		OutputDebugString(szLocalAddress);
-		OutputDebugString("\n");
-	
-		if (bXboxVersion2)
-		{
-			if (configParams.V2_IP != inet_addr(szLocalAddress))
-			{
-				configParams.V2_IP = inet_addr(szLocalAddress);
-				bDirty = true;
-			}
-		}
-		else
-		{
-			if (configParams.V1_IP != inet_addr(szLocalAddress))
-			{
-				configParams.V1_IP = inet_addr(szLocalAddress);
-				bDirty = true;
-			}
-		}
+    CLog::Log("  setting up network");
+	  while( socketloop )
+	  {
+		  //Setting up network
+		  isGateway = false;
+		  vReturn = XNetGetTitleXnAddr(&sAddress);
 
-		OutputDebugString("User subnet mask: ");
-		OutputDebugString(szLocalSubnet);
-		OutputDebugString("\n");
+		  if( vReturn && XNET_GET_XNADDR_GATEWAY ) 
+		  {
+			  isGateway = true;
+			  vReturn ^= XNET_GET_XNADDR_GATEWAY;
+			  //Gateway Present
+		  } 
 
-		if (bXboxVersion2)
-		{
-			if (configParams.V2_Subnetmask != inet_addr(szLocalSubnet))
-			{
-				configParams.V2_Subnetmask = inet_addr(szLocalSubnet);
-				bDirty = true;
-			}
-		}
-		else
-		{
-			if (configParams.V1_Subnetmask != inet_addr(szLocalSubnet))
-			{
-				configParams.V1_Subnetmask = inet_addr(szLocalSubnet);
-				bDirty = true;
-			}
-		}
+		  socketloop = 1;
 
-		OutputDebugString("User gateway address: ");
-		OutputDebugString(szLocalGateway);
-		OutputDebugString("\n");
+		  switch( vReturn ) 
+		  {
+		    case XNET_GET_XNADDR_DHCP:
+		    {
+          CLog::Log("  XNET_GET_XNADDR_DHCP\r\n");
+		    } break;
+		    case XNET_GET_XNADDR_DNS: 
+		    {
+			    CLog::Log("  XNET_GET_XNADDR_DNS\r\n");
+		    } break;
+		    case XNET_GET_XNADDR_ETHERNET: 
+		    {
+			    CLog::Log("  XNET_GET_XNADDR_ETHERNET\r\n");
+		    } break;
+		    case XNET_GET_XNADDR_NONE: 
+		    {
+			    CLog::Log("  XNET_GET_XNADDR_NONE\r\n");
+		    } break;
+		    case XNET_GET_XNADDR_ONLINE: 
+		    {
+			    CLog::Log("  XNET_GET_XNADDR_ONLINE\r\n");
+		    } break;
+		    case XNET_GET_XNADDR_PENDING: 
+		    {
+			    CLog::Log("  XNET_GET_XNADDR_PENDING\r\n");
+		    } break;
+		    case XNET_GET_XNADDR_STATIC:
+		    {
+			    CLog::Log("  XNET_GET_XNADDR_STATIC\r\n");
+		    } break;
+		    default : 
+		    {
+			    CLog::Log("  Unknown Return Code\r\n");
+		    } break;
+		  } 
 
-		if (bXboxVersion2)
-		{
-			if (configParams.V2_Defaultgateway != inet_addr(szLocalGateway))
-			{
-				configParams.V2_Defaultgateway = inet_addr(szLocalGateway);
-				bDirty = true;
-			}
-		}
-		else
-		{
-			if (configParams.V1_Defaultgateway != inet_addr(szLocalGateway))
-			{
-				configParams.V1_Defaultgateway = inet_addr(szLocalGateway);
-				bDirty = true;
-			}
-		}
+		  if( vReturn != XNET_GET_XNADDR_NONE ) 
+		  {
+			  char azIPAdd[256];
+			  //char azMessage[256];
 
-		if (configParams.Flag != (0x04|0x08) )
-		{
-			configParams.Flag = 0x04 | 0x08;
-			bDirty = true;
-		}
+			  memset(azIPAdd,0,sizeof(azIPAdd));
 
-		if (bDirty)
-		{
-			OutputDebugString("Updating network configuration...\n");
-			XNetSaveConfigParams( (LPBYTE) &configParams );
-			OutputDebugString("Ready.\n");
-		}
-	}
+			  XNetInAddrToString(sAddress.ina,azIPAdd,sizeof(azIPAdd));
+			  strcpy(NETWORK_STATUS,azIPAdd);
+
+			  if( !strstr(azIPAdd,"0.0.0.0"))
+			  socketloop = 0;
+		  }
+
+		  Sleep(50); 
+	  }
+    CLog::Log("done");
+  }
+  else
+  {
+	  // if local address is specified
+	  if ( (szLocalAddress[0]!=0) && ( szLocalSubnet[0]!=0) && (szLocalGateway[0]!=0)  )
+	  {
+		  // Thanks and credits to Team Evox & Avalaunch for the description of the  XNetConfigParams structure.
+      CLog::Log("set ipadres:%s", szLocalAddress);
+      CLog::Log("set netmask:%s", szLocalSubnet);
+      CLog::Log("set gateway:%s", szLocalGateway);
+      TXNetConfigParams configParams;   
+		  XNetLoadConfigParams( (LPBYTE) &configParams );
+
+		  BOOL bXboxVersion2 = (configParams.V2_Tag == 0x58425632 );	// "XBV2"
+		  BOOL bDirty = false;
+
+		  if (bXboxVersion2)
+		  {
+			  if (configParams.V2_IP != inet_addr(szLocalAddress))
+			  {
+				  configParams.V2_IP = inet_addr(szLocalAddress);
+				  bDirty = true;
+			  }
+		  }
+		  else
+		  {
+			  if (configParams.V1_IP != inet_addr(szLocalAddress))
+			  {
+				  configParams.V1_IP = inet_addr(szLocalAddress);
+				  bDirty = true;
+			  }
+		  }
+
+		  if (bXboxVersion2)
+		  {
+			  if (configParams.V2_Subnetmask != inet_addr(szLocalSubnet))
+			  {
+				  configParams.V2_Subnetmask = inet_addr(szLocalSubnet);
+				  bDirty = true;
+			  }
+		  }
+		  else
+		  {
+			  if (configParams.V1_Subnetmask != inet_addr(szLocalSubnet))
+			  {
+				  configParams.V1_Subnetmask = inet_addr(szLocalSubnet);
+				  bDirty = true;
+			  }
+		  }
+
+		  if (bXboxVersion2)
+		  {
+			  if (configParams.V2_Defaultgateway != inet_addr(szLocalGateway))
+			  {
+				  configParams.V2_Defaultgateway = inet_addr(szLocalGateway);
+				  bDirty = true;
+			  }
+		  }
+		  else
+		  {
+			  if (configParams.V1_Defaultgateway != inet_addr(szLocalGateway))
+			  {
+				  configParams.V1_Defaultgateway = inet_addr(szLocalGateway);
+				  bDirty = true;
+			  }
+		  }
+
+		  if (configParams.Flag != (0x04|0x08) )
+		  {
+			  configParams.Flag = 0x04 | 0x08;
+			  bDirty = true;
+		  }
+
+		  if (bDirty)
+		  {
+			  XNetSaveConfigParams( (LPBYTE) &configParams );
+		  }
+      CLog::Log(" done");
+	  }
+  }
 
 	XNetStartupParams xnsp;
 	memset(&xnsp, 0, sizeof(xnsp));
@@ -425,16 +518,18 @@ bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSub
   xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
 	INT err = XNetStartup(&xnsp);
 
+  CLog::Log("get local ip adres:");
 	XNADDR xna;
 	DWORD dwState;
 	do
 	{
 		dwState = XNetGetTitleXnAddr(&xna);
-		Sleep(500);
+		Sleep(50);
 	} while (dwState==XNET_GET_XNADDR_PENDING);
 
 	XNetInAddrToString(xna.ina,g_szTitleIP,32);
 
+  CLog::Log("ip adres:%s",g_szTitleIP);
 	WSADATA WsaData;
 	err = WSAStartup( MAKEWORD(2,2), &WsaData );
 	return ( err == NO_ERROR );

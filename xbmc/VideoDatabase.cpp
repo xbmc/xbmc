@@ -7,6 +7,7 @@
 #include "utils/fstrcmp.h"
 #include "utils/log.h"
 
+#define VIDEODATABASE "Q:\\albums\\MyVideos1.db"
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void)
 {
@@ -60,7 +61,7 @@ bool CVideoDatabase::Open()
 
 	// test id dbs already exists, if not we need 2 create the tables
 	bool bDatabaseExists=false;
-	FILE* fd= fopen("Q:\\albums\\MyVideos1.db","rb");
+	FILE* fd= fopen(VIDEODATABASE,"rb");
 	if (fd)
 	{
 		bDatabaseExists=true;
@@ -68,13 +69,14 @@ bool CVideoDatabase::Open()
 	}
 
 	m_pDB.reset(new SqliteDatabase() ) ;
-  m_pDB->setDatabase("Q:\\albums\\MyVideos1.db");
+  m_pDB->setDatabase(VIDEODATABASE);
 	
   m_pDS.reset(m_pDB->CreateDataset());
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 
 	{
     CLog::Log("videodatabase::unable to open Q:\\albums\\MyVideos1.db (old version?)");
 		Close();
+    ::DeleteFile(VIDEODATABASE);
 		return false;
 	}
 
@@ -84,6 +86,7 @@ bool CVideoDatabase::Open()
 		{
       CLog::Log("videodatabase::unable to create Q:\\albums\\MyVideos1.db");
 			Close();
+      ::DeleteFile(VIDEODATABASE);
 			return false;
 		}
 	}
