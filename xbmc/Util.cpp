@@ -2,6 +2,7 @@
 #include "xbox/iosupport.h"
 #include "crc32.h"
 #include "settings.h"
+#include "utils/log.h"
 #include "xbox/undocumented.h"
 #include "lib/common/xbnet.h"
 #include "url.h"
@@ -308,8 +309,10 @@ void CUtil::GetTitleIP(CStdString& ip)
 bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway)
 {
 	if (!IsEthernetConnected())
+  {
+    CLog::Log("  network cable not connected!");
 		return false;
-
+  }
 	// if local address is specified
 	if ( (szLocalAddress[0]!=0) &&
 		 (szLocalSubnet[0]!=0)  &&

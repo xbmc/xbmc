@@ -86,6 +86,7 @@ HRESULT CApplication::Create()
 
   CLog::Log("-----------------------------------------------------------------------");
   CLog::Log("starting...");
+  CLog::Log("Q is mapped to:%s",szDevicePath);
 	// Transfer the resolution information to our graphics context
 	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
 
@@ -93,14 +94,27 @@ HRESULT CApplication::Create()
 	m_bSettingsLoaded=g_settings.Load();
 	
   CLog::Log("map drives...");
+  CLog::Log("  map drive C:");
 	helper.Remap("C:,Harddisk0\\Partition2");
+  
+  CLog::Log("  map drive E:");
 	helper.Remap("E:,Harddisk0\\Partition1");
+
+  CLog::Log("  map drive D:");
 	helper.Remount("D:","Cdrom0");
 
-	if (g_stSettings.m_bUseFDrive) helper.Remap("F:,Harddisk0\\Partition6");
+	if (g_stSettings.m_bUseFDrive) 
+  {
+    CLog::Log(" map drive F:");
+    helper.Remap("F:,Harddisk0\\Partition6");
+  }
 
 	// used for the LBA-48 hack allowing >120 gig
-	if (g_stSettings.m_bUseGDrive) helper.Remap("G:,Harddisk0\\Partition7");
+	if (g_stSettings.m_bUseGDrive) 
+  {
+    CLog::Log(" map drive G:");
+    helper.Remap("G:,Harddisk0\\Partition7");
+  }
 	
 	// check settings to see if another home dir is defined.
 	// if there is, we check if it's a xbmc dir and map to it Q:
@@ -118,20 +132,29 @@ HRESULT CApplication::Create()
 
 			helper.Unmount("Q:");
 			helper.Mount("Q:", szDevicePath);	
+      CLog::Log("Q is mapped to:%s",szDevicePath);
 		}
 	}
 
-  CLog::Log("load language file");
 	CStdString strLanguagePath;
 	strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_stSettings.szDefaultLanguage);
-	g_localizeStrings.Load(strLanguagePath );
+
+  CLog::Log("load language file:%s",strLanguagePath.c_str());
+  g_localizeStrings.Load(strLanguagePath );
 	
-  CLog::Log("load keymap.xml");
+  CLog::Log("load keymapping");
   g_buttonTranslator.Load();
 
   CLog::Log("setup DirectX");
 	g_graphicsContext.SetGUIResolution(g_stSettings.m_ScreenResolution);
 	g_graphicsContext.SetOffset(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
+
+  int  iResolution=g_stSettings.m_ScreenResolution;
+  CLog::Log(" GUI format %ix%i %s",
+            g_settings.m_ResInfo[iResolution].iWidth, 
+            g_settings.m_ResInfo[iResolution].iHeight, 
+            g_settings.m_ResInfo[iResolution].strMode);
+  CLog::Log(" GUI screen offset (%i,%i)", g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
 	m_gWindowManager.Initialize();
 	g_actionManager.SetScriptActionCallback(&m_pythonParser);
 	return CXBApplicationEx::Create();
@@ -177,7 +200,11 @@ HRESULT CApplication::Initialize()
   }
 
   // initialize network
-  CLog::Log("initialize network");
+  CLog::Log("initialize network ip:%s netmask:%s gateway:%s",
+                    g_stSettings.m_strLocalIPAdres,
+                    g_stSettings.m_strLocalNetmask,
+                    g_stSettings.m_strGateway );
+
   if ( CUtil::InitializeNetwork(g_stSettings.m_strLocalIPAdres,
                             g_stSettings.m_strLocalNetmask,
                             g_stSettings.m_strGateway ) )
@@ -201,6 +228,10 @@ HRESULT CApplication::Initialize()
 				m_pFileZilla->Start();
 			}
 
+  }
+  else
+  {
+    CLog::Log("initialize network failed");
   }
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
   CLog::Log("load skin:%s",g_stSettings.szDefaultSkin);
