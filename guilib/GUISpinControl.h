@@ -56,6 +56,8 @@ public:
 	DWORD	GetTextOffsetY() const { return m_dwTextOffsetY;};
   	void	SetTextOffsetX(DWORD dwTextOffsetX) { m_dwTextOffsetX=dwTextOffsetX;};
 	void	SetTextOffsetY(DWORD dwTextOffsetY) { m_dwTextOffsetY=dwTextOffsetY;};
+	DWORD	GetAlignmentY() const { return m_dwAlignY;};
+	void	SetAlignmentY(DWORD dwAlignY) { m_dwAlignY=dwAlignY;};
 	const	CStdString& GetTexutureUpName() const { return m_imgspinUp.GetFileName(); };
 	const	CStdString& GetTexutureDownName() const { return m_imgspinDown.GetFileName(); };
 	const	CStdString& GetTexutureUpFocusName() const { return m_imgspinUpFocus.GetFileName(); };
@@ -102,7 +104,8 @@ protected:
   DWORD		m_dwTextOffsetY;
   DWORD     m_dwTextColor;
   DWORD     m_dwDisabledColor;
-	DWORD			m_dwAlign;
+	DWORD	m_dwAlign;
+	DWORD	m_dwAlignY;
   bool      m_bShowRange;
   char      m_szTyped[10];
   int       m_iTypedPos;
