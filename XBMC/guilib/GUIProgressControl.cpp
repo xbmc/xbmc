@@ -29,7 +29,7 @@ void CGUIProgressControl::Render()
 	iHeight=20;
 	float fWidth = (float)m_iPercent;
 	fWidth/=100.0f;
-	fWidth *= (float) m_guiMid.GetTextureWidth();
+	fWidth *= (float) (m_guiBackground.GetTextureWidth()-24-m_guiLeft.GetTextureWidth()-m_guiRight.GetTextureWidth());
 
 	int iXPos=12+m_guiBackground.GetXPosition();
 	int iYPos=4+m_guiBackground.GetYPosition() ;
