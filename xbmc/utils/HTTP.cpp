@@ -119,6 +119,8 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 		{
       CLog::Log("recv error:%i %i", GetLastError(), WSAGetLastError());
       m_socket.reset();
+			delete [] pszBuffer;
+			return false;
 		}
 		lReadTotal+=lenRead;
 	} while (strstr(pszBuffer,"\r\n\r\n")==NULL);
