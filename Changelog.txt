@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 22-08-2994 fixed: thumb aspectratio in videoinfo screen 
   - 22-08-2004 changed: New render code for video output (faster, less memory).
   - 21-08-2004 fixed: location of dialog windows did not scale correctly to other resolutions.
   - 21-08-2004 fixed: Volume control using digital buttons (such as the remote).
