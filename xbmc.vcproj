@@ -1887,6 +1887,15 @@
 				<File
 					RelativePath=".\xbmc\lib\libGoAhead\XBMCweb.h">
 				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\includes.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\XBMCConfiguration.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\XBMCConfiguration.h">
+				</File>
 			</Filter>
 			<Filter
 				Name="sqlite"
