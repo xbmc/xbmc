@@ -191,7 +191,7 @@ int CPermissions::GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting
 		return PERMISSION_DENIED;
 	
 	WIN32_FIND_DATA FindFileData;
-	WIN32_FIND_DATA NextFindFileData;
+//	WIN32_FIND_DATA NextFindFileData;
 	HANDLE hFind;
 	TIME_ZONE_INFORMATION tzInfo;
 	int tzRes = GetTimeZoneInformation(&tzInfo);
@@ -202,6 +202,10 @@ int CPermissions::GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting
 	pDir->len = 0;
 	pDir->pNext = NULL;
 	pResult = pDir;
+
+#ifdef _XBOX
+	XSetFileCacheSize(256*1024);
+#endif
 		
 	BOOL bIncludeLinks;
 	// If NOT searching for all files, exclude links in the first run
@@ -209,16 +213,11 @@ int CPermissions::GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting
 		bIncludeLinks = TRUE;
 	else
 		bIncludeLinks = FALSE;
-	hFind = FindFirstFile(directory.dir+"\\" + sFileSpec, &NextFindFileData);
-	while (hFind != INVALID_HANDLE_VALUE)
+	
+	for (hFind = FindFirstFile(directory.dir+"\\" + sFileSpec, &FindFileData);
+		hFind != INVALID_HANDLE_VALUE;
+		!FindNextFile(hFind, &FindFileData) ? hFind = (FindClose(hFind), INVALID_HANDLE_VALUE) : 0)
 	{
-		FindFileData=NextFindFileData;
-		if (!FindNextFile(hFind, &NextFindFileData))
-		{
-			FindClose(hFind);
-			hFind = INVALID_HANDLE_VALUE;
-		}
-
 		if (!_tcscmp(FindFileData.cFileName, _T(".")) || !_tcscmp(FindFileData.cFileName, _T("..")))
 			continue;
 		
@@ -334,9 +333,12 @@ int CPermissions::GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting
 		_int64 t2 = ((_int64)fTime.dwHighDateTime<<32) + fTime.dwLowDateTime;
 		const char months[][4]={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 		pDir->len += sprintf(pDir->buffer + pDir->len, " %s %02d ", months[sFileTime.wMonth-1], sFileTime.wDay);
+#if !defined(_XBOX)
+		// bug: wrong (future) year causes some ftp clients (e.g. flashfxp, cuteftp) to not display directory entries
 		if (t1 > t2 || (t2-t1) > ((_int64)1000000*60*60*24*350))
 			pDir->len += sprintf(pDir->buffer + pDir->len, "%d  ", sFileTime.wYear);
 		else
+#endif
 			pDir->len += sprintf(pDir->buffer + pDir->len, "%02d:%02d ", sFileTime.wHour, sFileTime.wMinute);
 
 		int len = fn.GetLength();
@@ -346,19 +348,18 @@ int CPermissions::GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting
 		pDir->buffer[pDir->len++] = '\n';
 	}
 	if (bIncludeLinks || !m_UsersList[index].ResolveLinks())
+	{
+#ifdef _XBOX
+		XSetFileCacheSize(64*1024);
+#endif
 		return 0;
+	}
 
 	// Now repeat the search with .lnk added
-	hFind = FindFirstFile(directory.dir+"\\" + sFileSpec + ".lnk", &NextFindFileData);
-	while (hFind != INVALID_HANDLE_VALUE)
+	for (hFind = FindFirstFile(directory.dir+"\\" + sFileSpec + ".lnk", &FindFileData);
+		hFind != INVALID_HANDLE_VALUE;
+		!FindNextFile(hFind, &FindFileData) ? hFind = (FindClose(hFind), INVALID_HANDLE_VALUE) : 0)
 	{
-		FindFileData=NextFindFileData;
-		if (!FindNextFile(hFind, &NextFindFileData))
-		{
-			FindClose(hFind);
-			hFind = INVALID_HANDLE_VALUE;
-		}
-			
 		if (!_tcscmp(FindFileData.cFileName, _T(".")) || !_tcscmp(FindFileData.cFileName, _T("..")))
 			continue;
 	
@@ -440,8 +441,7 @@ int CPermissions::GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting
 		const char months[][4]={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 		pDir->len += sprintf(pDir->buffer + pDir->len, " %s %02d ", months[sFileTime.wMonth-1], sFileTime.wDay);
 #if !defined(_XBOX)
-    // bug: wrong (future) year causes some ftp clients (e.g. flashfxp, cuteftp) 
-    //      to not display directory entries
+		// bug: wrong (future) year causes some ftp clients (e.g. flashfxp, cuteftp) to not display directory entries
 		if (t1 > t2 || (t2-t1) > ((_int64)1000000*60*60*24*350))
 			pDir->len += sprintf(pDir->buffer + pDir->len, "%d  ", sFileTime.wYear);
 		else
@@ -454,7 +454,11 @@ int CPermissions::GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting
 		pDir->buffer[pDir->len++] = '\r';
 		pDir->buffer[pDir->len++] = '\n';
 	}
-	
+
+#ifdef _XBOX
+	XSetFileCacheSize(64*1024);
+#endif
+
 	return 0;
 }
 
