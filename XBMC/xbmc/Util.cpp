@@ -2160,7 +2160,7 @@ CStdString CUtil::GetNextFilename(const char* fn_template, int max)
 	HANDLE hFind;	
 
 
-	if (NULL != strstr(fn_template, "%02d"))
+	if (NULL != strstr(fn_template, "%03d"))
 	{
 		for(i = 0; i <= max; i++)
 		{
@@ -2257,8 +2257,8 @@ void CUtil::TakeScreenshot()
 
 	if (strlen(g_stSettings.m_szScreenshotsDirectory))
 	{		
-		sprintf(fn, "%s\\screenshot%%02d.bmp", strDir.c_str());
-		strcpy(fn, CUtil::GetNextFilename(fn, 30).c_str());
+		sprintf(fn, "%s\\screenshot%%03d.bmp", strDir.c_str());
+		strcpy(fn, CUtil::GetNextFilename(fn, 999).c_str());
 
 		if (strlen(fn))
 		{
