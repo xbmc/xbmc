@@ -69,6 +69,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 			if (m_strDirectory=="?")
 			{
 				m_strDirectory=g_stSettings.m_szDefaultPrograms;
+				m_shareDirectory=g_stSettings.m_szDefaultPrograms;
 				m_iDepth=1;
 				m_strBookmarkName="default";
 				if (g_stSettings.m_bMyProgramsNoShortcuts && g_stSettings.m_szShortcutDirectory[0])	// let's remove shortcuts from vector
@@ -229,6 +230,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				if (iShare < (int)g_settings.m_vecMyProgramsBookmarks.size())
 				{
 					CShare share = g_settings.m_vecMyProgramsBookmarks[iControl-100];
+					m_shareDirectory=share.strPath;    // since m_strDirectory can change, we always want something that won't.
 					m_strDirectory=share.strPath;
 					m_strBookmarkName=share.strName;
 					m_iDepth=share.m_iDepthSize;
@@ -417,16 +419,20 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 		}
 	}
 
-	if (bFlattenDir)
+	if (!bFlattenDir)
 	{
+		vector<CStdString> vecOrigShare;
+		CUtil::Tokenize(m_shareDirectory, vecOrigShare, ",");
 		bParentPath=CUtil::GetParentPath(vecPaths[0],strParentPath);
-		if (strParentPath!=vecPaths[0])
-			bPastBookMark=false;
+		if (CUtil::HasSlashAtEnd(vecOrigShare[0]))
+			vecOrigShare[0].Delete(vecOrigShare[0].size()-1);
+		if (strParentPath<vecOrigShare[0])
+ 			bPastBookMark=false;
 	}
 
 	if ( strParentPath.size() && bParentPath && !bFlattenDir && bPastBookMark)
 	{
-		if (vecPaths[0] != strShortCutsDir)
+		if (strDir != strShortCutsDir)
 		{
 			CFileItem *pItem = new CFileItem("..");
 			pItem->m_strPath=strParentPath;

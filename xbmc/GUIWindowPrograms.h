@@ -30,6 +30,7 @@ protected:
 	CGUIDialogProgress*	m_dlgProgress;  
 	VECFILEITEMS		m_vecItems;
 	CStdString			m_strDirectory;
+	CStdString			m_shareDirectory;
 	int					m_iLastControl;
 	int					m_iSelectedItem;
 	int					m_iDepth;	
