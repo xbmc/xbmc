@@ -216,13 +216,15 @@ void CGUIWindowMusicInfo::Refresh()
 		//	Was the download successfull...
 		if (CUtil::FileExists(strThumb))
 		{
+			CUtil::ThumbCacheAdd(strThumb, true);
 			if (!CUtil::IsCDDA(m_pAlbum->GetAlbumPath()))
 			{
 				//	...also save a copy as directory thumb,
 				//	if the album isn't located on an audio cd.
 				CStdString strFolderThumb;
 				CUtil::GetAlbumThumb(m_pAlbum->GetAlbumPath(),strFolderThumb);
-				::CopyFile( strThumb, strFolderThumb, false);
+				if (::CopyFile(strThumb, strFolderThumb, false))
+					CUtil::ThumbCacheAdd(strFolderThumb, true);
 			}
 		}
 	}
