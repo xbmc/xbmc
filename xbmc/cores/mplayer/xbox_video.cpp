@@ -641,7 +641,7 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 	unsigned int iWidth,iHeight;
 	long tooearly, toolate;
 	mplayer_GetVideoInfo(strFourCC,strVideoCodec, &fps, &iWidth,&iHeight, &tooearly, &toolate);
-	if (fps ==25.0f)
+	if (fps == 25.0f)
 	{
 		m_bPal60Allowed=false;
 	}
