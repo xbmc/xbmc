@@ -14,6 +14,7 @@
 #include "lib/liblzo/LZO1X.H"
 #include "SkinInfo.h"
 #include "util.h"
+#include "guifontxpr.h"
 
 // Transition effects for text, must specific exactly one in and one out effect
 enum CRED_EFFECTS
@@ -900,7 +901,7 @@ void RunCredits()
 			// first try loading it
 			CStdString strFilename;
 			strFilename.Fmt("q:\\credits\\credits-font%d.xpr", Credits[i].Font);
-			CGUIFont* pFont = g_fontManager.Load(strFont, strFilename);
+			CGUIFont* pFont = g_fontManager.LoadXPR(strFont, strFilename);
 			if (!pFont)
 			{
 				// Find closest skin font size
@@ -1019,7 +1020,7 @@ void RunCredits()
 			{
 				if (Credits[NextCredit].Text)
 				{
-					CGUIFont* pFont = Fonts.find(Credits[NextCredit].Font)->second;
+					CGUIFontXPR* pFont = (CGUIFontXPR*) Fonts.find(Credits[NextCredit].Font)->second;
 					Credits[NextCredit].pTex = pFont->CreateTexture(Credits[NextCredit].Text, 0, 0xffffffff, D3DFMT_LIN_A8R8G8B8);
 					pFont->GetTextExtent(Credits[NextCredit].Text, &Credits[NextCredit].TextWidth, &Credits[NextCredit].TextHeight);
 				}
