@@ -1,0 +1,308 @@
+/*
+ * XBoxMediaPlayer
+ * Copyright (c) 2002 Frodo
+ * Portions Copyright (c) by the authors of ffmpeg and xvid
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+#include "FileXBMSP.h"
+#include "../sectionLoader.h"
+#include "../util.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+
+static UINT64 strtouint64(const char *s)
+{
+	UINT64 r = 0;
+
+	while ((*s != 0) && (isspace(*s)))
+		s++;
+	if (*s == '+')
+		s++;
+	while ((*s != 0) && (isdigit(*s)))
+	{
+		r = r * ((UINT64)10);
+		r += ((UINT64)(*s)) - ((UINT64)'0');
+		s++;
+	}
+	return r;
+}
+
+//////////////////////////////////////////////////////////////////////
+// Construction/Destruction
+//////////////////////////////////////////////////////////////////////
+
+CFileXBMSP::CFileXBMSP()
+{
+	m_fileSize=0;
+	m_bOpened=false;
+}
+
+CFileXBMSP::~CFileXBMSP()
+{
+	Close();
+}
+
+//*********************************************************************************************
+bool CFileXBMSP::Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary)
+{
+	char *fn = NULL, *tmp1, *tmp2, *info;
+
+	if (m_bOpened) Close();
+  CSectionLoader::Load("LIBXBMS");
+	m_bOpened=false;
+	m_fileSize=0;
+	m_filePos=0;
+	
+
+	if (cc_xstream_client_connect(strHostName, 
+																(iport > 0) ? iport : 1400,
+																&m_connection) != CC_XSTREAM_CLIENT_OK)
+	{
+	  return false;
+	}
+	if (cc_xstream_client_version_handshake(m_connection) != CC_XSTREAM_CLIENT_OK)
+	{
+		cc_xstream_client_disconnect(m_connection);
+		
+    return false;
+	}
+
+	// Authenticate here!  
+	if ((strPassword != NULL) && (strlen(strPassword) > 0))
+	{
+		// We don't check the return value here.  If authentication
+		// step fails, let's try if server lets us log in without
+		// authentication.
+		cc_xstream_client_password_authenticate(m_connection,
+												(strUserName != NULL) ? strUserName : "",
+												strPassword);
+	}
+ 
+	fn = strdup(strFileName);
+	if (fn == NULL)
+	{
+		cc_xstream_client_disconnect(m_connection);
+    
+		return false;
+	}
+  CStdString strFile=CUtil::GetFileName(strFileName);
+  
+  char szPath[1024];
+  strcpy(szPath,"");
+  if (strFile.size() != strlen(strFileName) )
+  {
+    strncpy(szPath,strFileName, strlen(strFileName)-(strFile.size()+1) );
+    szPath[ strlen(strFileName)-(strFile.size()+1)]=0;
+  }
+
+  if (szPath[0])
+  {
+	  if (cc_xstream_client_setcwd(m_connection, szPath) != CC_XSTREAM_CLIENT_OK)
+	  {
+		  return false;
+	  }
+  }
+	
+  if (cc_xstream_client_file_info(m_connection, strFile.c_str(), &info) != CC_XSTREAM_CLIENT_OK)
+	{
+		cc_xstream_client_disconnect(m_connection);
+    
+		return false;
+	}
+	
+	if (strstr(info, "<ATTRIB>file</ATTRIB>") != NULL)
+    { 
+		tmp1 = strstr(info, "<SIZE>");
+		tmp2 = strstr(info, "</SIZE>");
+		if ((tmp1 != NULL) && (tmp2 != NULL) && (tmp2 > tmp1) && ((tmp2 - tmp1) < 22))
+        { 
+			m_fileSize = strtouint64(tmp1 + 6);
+        }
+		else
+        { 
+			m_fileSize = 4000000000U; 
+        } 
+    } 
+	else 
+    { 
+		m_fileSize = 4000000000U; 
+    }
+	free(info);
+
+  if (cc_xstream_client_file_open(m_connection, strFile.c_str(), &m_handle) != CC_XSTREAM_CLIENT_OK)
+	{
+		cc_xstream_client_disconnect(m_connection);
+    
+		return false;
+	}
+	m_bOpened=true;
+  
+	return true;
+}
+
+//*********************************************************************************************
+unsigned int CFileXBMSP::Read(void *lpBuf, offset_t uiBufSize)
+{
+	unsigned char *buf;
+	size_t buflen;
+
+	if (!m_bOpened) return 0;
+	if (cc_xstream_client_file_read(m_connection, m_handle, (size_t)uiBufSize, &buf, &buflen) !=
+		CC_XSTREAM_CLIENT_OK)
+	{
+		return 0;
+	}
+	memcpy(lpBuf, buf, buflen);
+	free(buf);
+	m_filePos += buflen;
+	return buflen;
+}
+
+//*********************************************************************************************
+void CFileXBMSP::Close()
+{
+	
+	if (m_bOpened) 
+	{
+		cc_xstream_client_close(m_connection, m_handle);
+		cc_xstream_client_disconnect(m_connection);
+	}
+	m_bOpened=false;
+	m_fileSize=0;
+	CSectionLoader::Unload("LIBXBMS");
+}
+
+//*********************************************************************************************
+offset_t CFileXBMSP::Seek(offset_t iFilePosition, int iWhence)
+{
+	UINT64 newpos;
+
+	if (!m_bOpened) return 0;
+	switch(iWhence) 
+	{
+		case SEEK_SET:
+			// cur = pos
+			newpos = iFilePosition;
+			break;
+		case SEEK_CUR:
+			// cur += pos
+			newpos = m_filePos + iFilePosition;
+			break;
+		case SEEK_END:
+			// end -= pos
+			newpos = m_fileSize - iFilePosition;
+			break;
+	}
+	if (newpos < 1)
+		newpos = 0;
+	if (newpos > m_fileSize)
+		newpos = m_fileSize;
+	if ((newpos == 0) && (m_filePos != 0))
+	{
+		if (cc_xstream_client_file_rewind(m_connection, m_handle) ==
+			CC_XSTREAM_CLIENT_OK)
+		{
+			m_filePos = newpos;
+		}
+	}
+	else if (newpos > m_filePos)
+	{
+		if (cc_xstream_client_file_forward(m_connection, m_handle, (size_t)(newpos - m_filePos), 0) ==
+			CC_XSTREAM_CLIENT_OK)
+		{
+			m_filePos = newpos;
+		}
+	}
+	else if (newpos < m_filePos)
+	{
+		if (cc_xstream_client_file_backwards(m_connection, m_handle, (size_t)(m_filePos - newpos), 0) ==
+			CC_XSTREAM_CLIENT_OK)
+		{
+			m_filePos = newpos;
+		}
+	}
+	return m_filePos;
+}
+
+//*********************************************************************************************
+offset_t CFileXBMSP::GetLength()
+{
+	if (!m_bOpened) return 0;
+	return m_fileSize;
+}
+
+//*********************************************************************************************
+offset_t CFileXBMSP::GetPosition()
+{
+	if (!m_bOpened) return 0;
+	return m_filePos;
+}
+
+
+//*********************************************************************************************
+bool CFileXBMSP::ReadString(char *szLine, int iLineLength)
+{
+	if (!m_bOpened) return false;
+	offset_t iFilePos=GetPosition();
+
+	int iBytesRead=Read( (unsigned char*)szLine, iLineLength);
+	if (iBytesRead <= 0)
+	{
+		return false;
+	}
+
+	szLine[iBytesRead]=0;
+
+	for (int i=0; i < iBytesRead; i++)
+	{
+		if ('\n' == szLine[i])
+		{
+			if ('\r' == szLine[i+1])
+			{
+				szLine[i+2]=0;
+				Seek(iFilePos+i+2,SEEK_SET);
+			}
+			else
+			{
+				// end of line
+				szLine[i+1]=0;
+				Seek(iFilePos+i+1,SEEK_SET);
+			}
+			break;
+		}
+		else if ('\r'==szLine[i])
+		{
+			if ('\n' == szLine[i+1])
+			{
+				szLine[i+2]=0;
+				Seek(iFilePos+i+2,SEEK_SET);
+			}
+			else
+			{
+				// end of line
+				szLine[i+1]=0;
+				Seek(iFilePos+i+1,SEEK_SET);
+			}
+			break;
+		}
+	}
+	if (iBytesRead>0) 
+	{
+		return true;
+	}
+	return false;
+}
