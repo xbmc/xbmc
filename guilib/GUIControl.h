@@ -75,6 +75,8 @@ public:
   void          SetVisible(bool bVisible);
 	virtual void			EnableCalibration(bool bOnOff);
 	bool					CalibrationEnabled() const;
+  void SetGroup(int iGroup);
+  int GetGroup(void) const;
 
 	enum GUICONTROLTYPES { 
 		GUICONTROL_UNKNOWN,
@@ -109,7 +111,7 @@ protected:
   DWORD              m_dwControlRight;
   DWORD              m_dwControlUp;
   DWORD              m_dwControlDown;
-  int				 m_iPosX;
+  int				         m_iPosX;
   int                m_iPosY;
   DWORD              m_dwHeight;
   DWORD              m_dwWidth;
@@ -120,6 +122,7 @@ protected:
 	bool							 m_bVisible;
 	bool							 m_bDisabled;
   bool							 m_bSelected;
+  int                m_iGroup;
 	bool							 m_bCalibration;
 	GUICONTROLTYPES ControlType;
 };
