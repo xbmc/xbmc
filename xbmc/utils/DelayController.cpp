@@ -241,31 +241,36 @@ WORD	CDelayController::DpadInput( WORD wDpad,bool bLeftTrigger,bool bRightTrigge
 WORD	CDelayController::IRInput( WORD wIR )
 {
 	WORD wDir = 0;
-	if ( wIR == XINPUT_IR_REMOTE_UP )
-	{
-		wDir = DC_UP;
-	}
-	if ( wIR == XINPUT_IR_REMOTE_DOWN )
-	{
-		wDir = DC_DOWN;
-	}
-	if ( wIR == XINPUT_IR_REMOTE_LEFT )
-	{
-		wDir = DC_LEFT;
-	}
-	if ( wIR == XINPUT_IR_REMOTE_RIGHT )
-	{
-		wDir = DC_RIGHT;
-	}
-	if ( wIR == XINPUT_IR_REMOTE_REVERSE )
-	{
-		wDir = DC_LEFTTRIGGER;
-	}
-	if ( wIR == XINPUT_IR_REMOTE_FORWARD)
-	{
-		wDir = DC_RIGHTTRIGGER;
-	}
-	return DirInput( wDir );
+	if ( wIR == XINPUT_IR_REMOTE_UP )       wDir = DC_UP;
+	if ( wIR == XINPUT_IR_REMOTE_DOWN )     wDir = DC_DOWN;
+	if ( wIR == XINPUT_IR_REMOTE_LEFT )     wDir = DC_LEFT;
+	if ( wIR == XINPUT_IR_REMOTE_RIGHT )    wDir = DC_RIGHT;
+	if ( wIR == XINPUT_IR_REMOTE_REVERSE )  wDir = DC_LEFTTRIGGER;
+	if ( wIR == XINPUT_IR_REMOTE_FORWARD)   wDir = DC_RIGHTTRIGGER;
+	if ( wIR == XINPUT_IR_REMOTE_DISPLAY)		wDir=DC_REMOTE_DISPLAY;
+	if ( wIR == XINPUT_IR_REMOTE_PLAY)       wDir=DC_REMOTE_PLAY;
+	if ( wIR == XINPUT_IR_REMOTE_SKIP_MINUS) wDir=DC_REMOTE_SKIP_MINUS;
+	if ( wIR == XINPUT_IR_REMOTE_STOP)       wDir=DC_REMOTE_STOP;
+	if ( wIR == XINPUT_IR_REMOTE_PAUSE)      wDir=DC_REMOTE_PAUSE;
+	if ( wIR == XINPUT_IR_REMOTE_SKIP_PLUS)  wDir=DC_REMOTE_SKIP_PLUS;
+	if ( wIR == XINPUT_IR_REMOTE_TITLE)      wDir=DC_REMOTE_TITLE;
+	if ( wIR == XINPUT_IR_REMOTE_INFO)       wDir=DC_REMOTE_INFO;
+	if ( wIR == XINPUT_IR_REMOTE_SELECT)     wDir=DC_REMOTE_SELECT;
+	if ( wIR == XINPUT_IR_REMOTE_MENU)       wDir=DC_REMOTE_MENU;
+	if ( wIR == XINPUT_IR_REMOTE_BACK)       wDir=DC_REMOTE_BACK;
+	if ( wIR == XINPUT_IR_REMOTE_1)          wDir=DC_REMOTE_1;
+	if ( wIR == XINPUT_IR_REMOTE_2)          wDir=DC_REMOTE_2;
+	if ( wIR == XINPUT_IR_REMOTE_3)          wDir=DC_REMOTE_3;
+	if ( wIR == XINPUT_IR_REMOTE_4)          wDir=DC_REMOTE_4;
+	if ( wIR == XINPUT_IR_REMOTE_5)          wDir=DC_REMOTE_5;
+	if ( wIR == XINPUT_IR_REMOTE_6)          wDir=DC_REMOTE_6;
+	if ( wIR == XINPUT_IR_REMOTE_7)          wDir=DC_REMOTE_7;
+	if ( wIR == XINPUT_IR_REMOTE_8)          wDir=DC_REMOTE_8;
+	if ( wIR == XINPUT_IR_REMOTE_9)          wDir=DC_REMOTE_9;
+	if ( wIR == XINPUT_IR_REMOTE_0)          wDir=DC_REMOTE_0;
+
+
+	return DIRInput( wDir );
 }
 
 WORD	CDelayController::StickInput( int x, int y )
@@ -288,4 +293,71 @@ WORD	CDelayController::StickInput( int x, int y )
 		wDir = DC_RIGHT;
 	}
 	return DirInput( wDir );
+}
+
+WORD    CDelayController::DIRInput( WORD wDir )
+{
+	WORD wResult = 0;
+
+	if ( m_dwRepeatDelay == 0 )
+	{
+		m_dwRepeatDelay = 200;
+	}
+	if ( m_dwMoveDelay == 0 )
+	{
+		m_dwMoveDelay = 700;
+	}
+
+	if ( wDir != m_wLastDir )
+	{
+		if ( wDir >=DC_UP )
+		{
+			wResult = wDir;
+			m_dwTimer = GetTickCount()+m_dwRepeatDelay;
+		}
+		else
+		{
+			m_dwTimer = GetTickCount();
+		}
+		m_iCount=0;
+	}
+	else
+	{
+		if ( m_iCount > 10 )
+		{
+			if ( wDir >= DC_UP )
+			{
+				wResult = wDir;
+			}
+			else
+			{
+				m_dwTimer = GetTickCount();
+				m_iCount=0;
+			}
+		}
+		else
+		{
+			if ( wDir >= DC_UP )
+			{
+				if ( m_dwTimer < GetTickCount() )
+				{
+					wResult = wDir;
+					m_iCount++;
+					m_dwTimer = GetTickCount()+m_dwMoveDelay;
+				}
+				else
+				{
+					wResult = DC_SKIP;
+				}
+			}
+			else
+			{
+				m_dwTimer = GetTickCount();
+				m_iCount=0;
+			}
+		}
+
+	}
+	m_wLastDir = wDir;
+	return wResult;
 }
