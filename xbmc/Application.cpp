@@ -1626,6 +1626,18 @@ void CApplication::FrameMove()
 		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_DOWN,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);   
 	}
+	if (pGamepad->fX2 > 0.1 && pGamepad->fY2 < pGamepad->fX2 && -pGamepad->fY2 < pGamepad->fX2)
+	{
+		bGotKey=true;
+		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+		OnKey(key);   
+	}
+	if (pGamepad->fX2 < -0.1 && pGamepad->fY2 < -pGamepad->fX2 && -pGamepad->fY2 < -pGamepad->fX2)
+	{
+		bGotKey=true;
+		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_LEFT,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+		OnKey(key);   
+	}
 	if ( wDir & DC_LEFTTRIGGER)
 	{
 		bGotKey=true;
