@@ -317,9 +317,8 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
 						bResult = ReadTag( myTag, tag );
 					}
 				}
-//				if (bResult)
-					tag.SetDuration(ReadDuration(file, myTag));
 			}
+			tag.SetDuration(ReadDuration(file, myTag));
 			file.Close();
 		}
 
