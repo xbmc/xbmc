@@ -77,13 +77,23 @@ void CGUIWindowVisualisation::Render()
 		if (m_bInitialized)
 		{
 			/*
-			short pAudioData[1152*2];
-			for (int i=0; i < 1152*2; ++i)
-				pAudioData[i]=rand()%255;
-			OnAudioData((byte*)pAudioData, 1152*2);*/
+			short pAudioData[1152*2*4];
+			for (int i=0; i < 1152*2*4; ++i)
+				pAudioData[i]=(rand()%16384)-8192;
+			OnAudioData((byte*)pAudioData, 1152*2*4);
+			*/
+			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
+			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
+			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+			g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
+			g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
+			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
 			m_pVisualisation->Render();
-			m_pVisualisation->Render();
-			m_pVisualisation->Render();
+			return;
 		}
 	}
 	CGUIWindow::Render();

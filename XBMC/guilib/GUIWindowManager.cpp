@@ -190,3 +190,11 @@ void CGUIWindowManager::AddMsgTarget( IMsgTargetCallback* pMsgTarget )
 {
 	m_vecMsgTargets.push_back( pMsgTarget );
 }
+
+
+int CGUIWindowManager::GetActiveWindow() const
+{
+	if (m_iActiveWindow < 0) return 0;
+	CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
+	return pWindow->GetID();
+}
