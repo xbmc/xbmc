@@ -2,6 +2,8 @@
 #include "stdafx.h"
 #include "musicInfoTag.h"
 #include "util.h"
+#include "musicdatabase.h"
+
 using namespace MUSIC_INFO;
 CMusicInfoTag::CMusicInfoTag(void)
 {
@@ -160,4 +162,27 @@ void CMusicInfoTag::Save(const CStdString& strFileName)
 		CUtil::SaveDateTime(m_dwReleaseDate,fd);
 		fclose(fd);
 	}
+}
+
+void CMusicInfoTag::SetAlbum(const CAlbum& album)
+{
+	m_strArtist=album.strArtist;
+	m_strAlbum=album.strAlbum;
+	m_strURL=album.strPath;
+	m_bLoaded=true;
+}
+
+void CMusicInfoTag::SetSong(const CSong& song)
+{
+	m_strTitle=song.strTitle;
+	m_strGenre=song.strGenre;
+	m_strURL=song.strFileName;
+	m_strArtist=song.strArtist;
+	m_strAlbum=song.strAlbum;
+	SYSTEMTIME stTime;
+	stTime.wYear=song.iYear;
+	SetReleaseDate(stTime);
+	m_iTrack=song.iTrack;
+	m_iDuration=song.iDuration;
+	m_bLoaded=true;
 }

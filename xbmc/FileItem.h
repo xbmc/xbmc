@@ -6,6 +6,7 @@
 #include "guilistitem.h"
 #include "stdstring.h"
 #include "MusicInfoTag.h"
+#include "MusicDatabase.h"
 #include <vector>
 using namespace std;
 using namespace MUSIC_INFO;
@@ -22,6 +23,8 @@ public:
   CFileItem(void);
   CFileItem(const CFileItem& item);
   CFileItem(const CStdString& strLabel);
+	CFileItem(const CSong& song);
+	CFileItem(const CAlbum& album);
   virtual ~CFileItem(void);
 
 	

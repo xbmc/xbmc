@@ -30,7 +30,8 @@ void CGUIDialogProgress::StartModal(DWORD dwParentId)
 		return;
 	}
 
-	m_gWindowManager.RouteToWindow( GetID() );
+	m_dwPrevRouteWindow=m_gWindowManager.RouteToWindow( GetID() );
+	m_pPrevRouteWindow=m_gWindowManager.GetWindow(m_dwPrevRouteWindow);
 
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);

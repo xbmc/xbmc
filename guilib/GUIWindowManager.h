@@ -35,8 +35,8 @@ public:
 	void						Process();
 	void						SetCallback(IWindowManagerCallback& callback);
 	void						DeInitialize();
-  void            RouteToWindow(DWORD dwID);
-  void            UnRoute();
+  DWORD           RouteToWindow(DWORD dwID);
+  void            UnRoute(DWORD dwID);
 	void						SendThreadMessage(CGUIMessage& message);
 	void						DispatchThreadMessages();
 	void						AddMsgTarget( IMsgTargetCallback* pMsgTarget );

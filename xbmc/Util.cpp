@@ -24,6 +24,27 @@
 #include "filesystem/hddirectory.h"
 #include "filesystem/DirectoryCache.h"
 
+struct SSortByLabel
+{
+	bool operator()(CFileItem* pStart, CFileItem* pEnd)
+	{
+    CGUIListItem& rpStart=*pStart;
+    CGUIListItem& rpEnd=*pEnd;
+
+		CStdString strLabel1=rpStart.GetLabel();
+		strLabel1.ToLower();
+
+		CStdString strLabel2=rpEnd.GetLabel();
+		strLabel2.ToLower();
+
+		if (m_bSortAscending)
+			return (strcmp(strLabel1.c_str(),strLabel2.c_str())<0);
+		else
+			return (strcmp(strLabel1.c_str(),strLabel2.c_str())>=0);
+	}
+
+	bool m_bSortAscending;
+};
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
@@ -2431,4 +2452,11 @@ void CUtil::ClearCache()
   strThumb=g_stSettings.szThumbnailsDirectory;
   g_directoryCache.ClearDirectory(strThumb);
   g_directoryCache.ClearDirectory(strThumb+"\\imdb");
+}
+
+void CUtil::SortFileItemsByName(VECFILEITEMS& items, bool bSortAscending/*=true*/)
+{
+	SSortByLabel sortmethod;
+	sortmethod.m_bSortAscending=bSortAscending;
+	sort(items.begin(), items.end(), sortmethod);
 }
