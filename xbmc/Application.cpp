@@ -1554,11 +1554,10 @@ void CApplication::OnKey(CKey& key)
 
 void CApplication::SetKaiNotification(CStdString& aCaption, CStdString& aDescription)
 {
-	// show toast notification
-	if (!m_guiDialogKaiToast.IsRunning() && g_stSettings.m_bOnlineNotifications)
+	// queue toast notification
+	if (g_stSettings.m_bOnlineNotifications)
 	{
-		m_guiDialogKaiToast.SetNotification(aCaption,aDescription);
-		m_guiDialogKaiToast.DoModal(m_gWindowManager.GetActiveWindow());
+		m_guiDialogKaiToast.QueueNotification(aCaption,aDescription);
 	}
 }
 
@@ -1833,6 +1832,13 @@ void CApplication::UpdateLCD()
 void CApplication::FrameMove()
 {
 	CKaiClient::GetInstance()->DoWork();
+	if (m_guiDialogKaiToast.DoWork())
+	{
+		if (!m_guiDialogKaiToast.IsRunning())
+		{
+			m_guiDialogKaiToast.DoModal(m_gWindowManager.GetActiveWindow());
+		}
+	}
 
 	// reset the fullscreen analog options if needed
 	m_guiWindowFullScreen.m_bSmoothFFwdRewd = false;
