@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 21-03-2005 fixed: After seek or ff/rw in music, first 1/4 of a second of audio is from another part of the file.
+  - 21-03-2005 changed: Removed autosync=30 from mplayer.conf as it shouldn't be needed with the better audiorender accuracy.
+  - 21-03-2005 changed: Improved xbmc's audio renderers accuracy in reporting correct amount in buffers. 
   - 20-03-2005 fixed: Htmlparser didnt account for a true ampersand (example: genre 'R&B' from allmusic.com was parsed as 'R')
   - 20-03-2005 fixed: [ 1166726 ] Playback of some AVI files is corrupted.
   - 19-03-2005 added: <keepaspectratio> tag to images + infoimages.  Fixes SF bug 1162592.
