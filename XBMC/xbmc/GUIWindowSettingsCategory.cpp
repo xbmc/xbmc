@@ -522,6 +522,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
 			if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("System.RemotePlayHDSpinDown") != SPIN_DOWN_NONE);
 		}
+		else if (strSetting == "System.ShutDownWhilePlaying")
+		{	// only visible if we have spin down enabled
+			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+			if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("System.ShutDownTime") != 0);
+		}
 		else if (strSetting == "Servers.WebServerPassword")
 		{	// Fill in a blank pass if we don't have it
 			CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
