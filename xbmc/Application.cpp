@@ -1088,6 +1088,20 @@ void CApplication::FrameMove()
     OnKey(key);   
   }
 
+  if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_LEFT_THUMB)
+  {
+	  bGotKey=true;
+	  CKey key(KEY_BUTTON_LEFT_THUMB_BUTTON,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+	  OnKey(key);
+  }
+
+    if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
+  {
+	  bGotKey=true;
+	  CKey key(KEY_BUTTON_RIGHT_THUMB_BUTTON,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+	  OnKey(key);
+  }
+
 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_A])
   {
