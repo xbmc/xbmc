@@ -230,6 +230,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 	{
 		case GUI_MSG_WINDOW_INIT:
 		{
+      m_bLastRender=false;
       m_bOSDVisible=false;
 			CGUIWindow::OnMessage(message);
       g_graphicsContext.Lock();
@@ -275,11 +276,21 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowStatus) return true;
   if (m_bShowInfo) return true;
   if (m_bOSDVisible) return true;
+  if (m_bLastRender)
+  {
+    m_bLastRender=false;
+    g_graphicsContext.Lock();
+    g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+    g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
+    g_graphicsContext.Unlock();
+
+  }
   return false;
 }
 
 void CGUIWindowFullScreen::RenderFullScreen()
 {
+  m_bLastRender=true;
 	m_fFrameCounter+=1.0f;
 	FLOAT fTimeSpan=(float)(timeGetTime()-m_dwFPSTime);
 	if (fTimeSpan >=1000.0f)
