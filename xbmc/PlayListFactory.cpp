@@ -22,7 +22,7 @@ CPlayList* CPlayListFactory::Create(const CStdString& strFileName) const
 	{
 		return new CPlayListM3U();
 	}
-	if (strExtension==".pls")
+	if (strExtension==".pls" || strExtension==".strm")
 	{
 		return new CPlayListPLS();
 	}
