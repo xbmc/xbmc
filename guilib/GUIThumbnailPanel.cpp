@@ -231,15 +231,19 @@ void CGUIThumbnailPanel::Render()
 		}
 	}
   //free memory
-  for (int i=0; i < iStartItem;++i)
+  if (iStartItem < 30000)
   {
-    CGUIListItem *pItem=m_vecItems[i];
-    if (pItem)
+    for (int i=0; i < iStartItem;++i)
     {
-      pItem->FreeMemory();
+      CGUIListItem *pItem=m_vecItems[i];
+      if (pItem)
+      {
+        pItem->FreeMemory();
+      }
     }
   }
-  for (i=iEndItem+1; i < (int)m_vecItems.size(); ++i) 
+
+  for (int i=iEndItem+1; i < (int)m_vecItems.size(); ++i) 
   {
     CGUIListItem *pItem=m_vecItems[i];
     if (pItem)
