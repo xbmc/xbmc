@@ -1070,10 +1070,16 @@
 				RelativePath=".\xbmc\cores\CDDAPlayer.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\cores\EMUdummy.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\cores\EMUDX8.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\EMUkernel32.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\EMUmisc.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\EMUmsvcrt.cpp">
@@ -1088,13 +1094,13 @@
 				RelativePath=".\xbmc\cores\exports2.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\exports3.cpp">
-			</File>
-			<File
 				RelativePath=".\xbmc\cores\exports4.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\exports5.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\exportsmisc.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\IPlayer.h">
