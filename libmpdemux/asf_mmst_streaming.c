@@ -78,7 +78,42 @@ static void send_command (int s, int command, uint32_t switches,
 			  uint32_t extra, int length,
 			  char *data) 
 {
-  command_t  cmd;
+#ifdef _XBOX
+	// when using command_t on the xbox the memory is not getting allocated some way or another.
+	// seems it works this way.
+	command_t* cmd = (command_t*)malloc(sizeof(command_t));
+  int        len8;
+
+  len8 = (length + 7) / 8;
+
+  cmd->num_bytes = 0;
+
+  put_32 (cmd, 0x00000001); /* start sequence */
+  put_32 (cmd, 0xB00BFACE); /* #-)) */
+  put_32 (cmd, len8*8 + 32);
+  put_32 (cmd, 0x20534d4d); /* protocol type "MMS " */
+  put_32 (cmd, len8 + 4);
+  put_32 (cmd, seq_num);
+  seq_num++;
+  put_32 (cmd, 0x0);        /* unknown */
+  put_32 (cmd, 0x0);
+  put_32 (cmd, len8+2);
+  put_32 (cmd, 0x00030000 | command); /* dir | command */
+  put_32 (cmd, switches);
+  put_32 (cmd, extra);
+
+  memcpy (&cmd->buf[48], data, length);
+  if (length & 7)
+    memset(&cmd->buf[48 + length], 0, 8 - (length & 7));
+
+  if (send (s, cmd->buf, len8*8+48, 0) != (len8*8+48)) {
+    printf ("write error\n");
+  }
+	free(cmd);
+	
+#else//_XBOX
+
+  struct command_t  cmd;
   int        len8;
 
   len8 = (length + 7) / 8;
@@ -106,6 +141,7 @@ static void send_command (int s, int command, uint32_t switches,
   if (send (s, cmd.buf, len8*8+48, 0) != (len8*8+48)) {
     printf ("write error\n");
   }
+#endif //_XBOX
 }
 
 #ifdef USE_ICONV

@@ -20,7 +20,11 @@
 #define STREAMTYPE_VCDBINCUE 12      // vcd directly from bin/cue files
 #define STREAMTYPE_DVB 13
 
+#ifdef _XBOX
 #define STREAM_BUFFER_SIZE 16384
+#else
+#define STREAM_BUFFER_SIZE 2048
+#endif
 
 #define VCD_SECTOR_SIZE 2352
 #define VCD_SECTOR_OFFS 24
