@@ -978,7 +978,7 @@ void Xcddb::addInexactList(const char *list)
 		{
 			if (line_counter>0)
 			{
-				addInexactListLine(line_counter,list+start,end-start);
+				addInexactListLine(line_counter,list+start,end-start-1);
 			}
 			start=i+1;
 			line_counter++;
@@ -1314,6 +1314,7 @@ int Xcddb::queryCDinfo(CCdInfo* pInfo)
 	// Hier antwort auswerten
 	/*
 	200	Found exact match
+	210	Found exact matches, list follows (until terminating marker)
 	211	Found inexact matches, list follows (until terminating marker)
 	202	No match found
 	403	Database entry is corrupt
@@ -1354,6 +1355,15 @@ int Xcddb::queryCDinfo(CCdInfo* pInfo)
 				case 1:
 					switch (tmp_str[2]-48)
 					{
+						case 0:	//210
+						{
+							//	210 Found exact matches, list follows (until terminating `.')
+
+							//	Ugly but works to get the 210 response
+							CStdString buffer=Recv(true);
+							recv_buffer+=buffer;
+							tmp_str=(char *)recv_buffer.c_str();
+						}
 						case 1: //211
 							m_lastError=E_INEXACT_MATCH_FOUND;
 							/*
