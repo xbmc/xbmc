@@ -45,6 +45,7 @@ xcopy xbmc\keyboard\media BUILD\media /E /Q /I /Y
 xcopy visualisations BUILD\visualisations /E /Q /I /Y
 rem xcopy web BUILD\web /E /Q /I /Y
 rem xcopy python BUILD\python /E /Q /I /Y
+rem xcopy weather BUILD\weather /E /Q /I /Y
 xcopy %SKINS% Build\Skin /E /Q /I /Y
 ECHO ------------------------------
 ECHO Rarring...
