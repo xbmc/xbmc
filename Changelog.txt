@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 28-02-2005 fixed: Kai window showed incorrect image in Friends view.
+  - 28-02-2005 fixed: Possible crash bug when dialog in Fullscreen video is closed.
+  - 28-02-2005 fixed: 100k or so memleak in Settings screens.
   - 27-02-2005 fixed: switching between list/thumbs/bigthumbs in Music->Nav root window (& corrected date for the last few items added today to this changelog!)
   - 27-02-2005 change: Use alternate mplayer location now means old mplayer.dll location, and not setting it means new mplayer.dll
                        Remember to verify your settings to make sure you are using the proper dll (ie for most disable Use alternate mplayer location)
