@@ -111,6 +111,7 @@ CMPlayer::Options::Options()
 	else
 		m_iAudioStream=-1;
 	m_strDvdDevice="";
+	m_strFlipBiDiCharset="";
 }
 void  CMPlayer::Options::SetFPS(float fFPS)
 {
@@ -214,6 +215,11 @@ void CMPlayer::Options::SetDVDDevice(const string & strDevice)
 	m_strDvdDevice=strDevice;
 }
 
+void CMPlayer::Options::SetFlipBiDiCharset(const string& strCharset)
+{
+	m_strFlipBiDiCharset=strCharset;
+}
+
 void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 {
 	CStdString strTmp;
@@ -299,6 +305,19 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 		// try the other audio codecs (mp3, wma,...)
 		m_vecOptions.push_back("-ac");
 		m_vecOptions.push_back("hwac3,a52,");
+	}
+
+	if (m_strFlipBiDiCharset.length()>0)
+	{
+			CLog::Log("Flipping bi-directional subtitles in charset %s", g_stSettings.m_szFlipBiDiCharset);
+			m_vecOptions.push_back("-fribidi-charset");
+			m_vecOptions.push_back(m_strFlipBiDiCharset);
+			m_vecOptions.push_back("-flip-hebrew");
+	}
+	else
+	{
+		CLog::Log("Flipping bi-directional subtitles disabled");
+		m_vecOptions.push_back("-noflip-hebrew");
 	}
 
 	if ( g_stSettings.m_bPostProcessing )
@@ -534,6 +553,13 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
 		}
 		options.SetNoCache(g_stSettings.m_bNoCache);
+
+
+		if (g_stSettings.m_szFlipBiDiCharset != NULL && strlen(g_stSettings.m_szFlipBiDiCharset) > 0)
+		{
+			options.SetFlipBiDiCharset(g_stSettings.m_szFlipBiDiCharset);
+		}
+
 
 		bool bSupportsAC3Out=(XGetAudioFlags() & DSSPEAKER_ENABLE_AC3) != 0;
 		bool bSupportsDTSOut=(XGetAudioFlags() & DSSPEAKER_ENABLE_DTS) != 0;

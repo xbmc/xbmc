@@ -341,6 +341,8 @@ public:
 		char      m_strSambaWorkgroup[128];
 		char      m_strSambaWinsServer[32];
 		bool	  m_bHideExtensions;
+
+		char	  m_szFlipBiDiCharset[128];
 	};
 
 	VECSHARES					m_vecMyProgramsBookmarks;
