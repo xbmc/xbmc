@@ -88,7 +88,6 @@
 #include "LocalizeStrings.h"
 #include "utils/sntp.h"
 #include "utils/delaycontroller.h"
-//#include "keyboard/virtualkeyboard.h"
 #include "lib/libPython/XBPython.h"
 #include "lib/libGoAhead/webserver.h"
 #include "lib/libfilezilla/xbfilezilla.h"
@@ -245,7 +244,6 @@ public:
 	CGUIWindowSettingsMyMusic				m_guiSettingsMyMusic;
 	CGUIWindowPointer						m_guiPointer;
 
-//	CXBVirtualKeyboard   						m_keyboard;
 	CSNTPClient											m_sntpClient;
 	CDetectDVDMedia									m_DetectDVDType;
 	CAutorun												m_Autorun;
