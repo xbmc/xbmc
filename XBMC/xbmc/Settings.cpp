@@ -202,6 +202,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bAutorunXbox=true;
 	g_stSettings.m_bUseFDrive=true;
 	g_stSettings.m_bUseGDrive=false;
+	g_stSettings.m_bDetectAsIso=true;
 	strcpy(g_stSettings.szDefaultLanguage,"english");
 	strcpy(g_stSettings.szDefaultVisualisation,"goom.vis");
 	g_stSettings.m_bAllowPAL60=false;
@@ -433,6 +434,9 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 
 	GetBoolean(pRootElement, "useFDrive", g_stSettings.m_bUseFDrive);
 	GetBoolean(pRootElement, "useGDrive", g_stSettings.m_bUseGDrive);
+
+	GetBoolean(pRootElement, "detectAsIso", g_stSettings.m_bDetectAsIso);
+
 	GetBoolean(pRootElement, "displayremotecodes", g_stSettings.m_bDisplayRemoteCodes);
 
 	GetString(pRootElement, "dvdplayer", g_stSettings.m_szExternalDVDPlayer,"");
