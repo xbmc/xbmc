@@ -112,9 +112,9 @@ void CFileISO::Close()
 __int64 CFileISO::Seek(__int64 iFilePosition, int iWhence)
 {
 	if (!m_pIsoReader) return -1;
-	m_pIsoReader->Seek(1,iFilePosition,iWhence);
+	__int64 lNewPos=m_pIsoReader->Seek(1,iFilePosition,iWhence);
 	m_cache.Clear();
-	return iFilePosition;
+	return lNewPos;
 }
 
 //*********************************************************************************************
