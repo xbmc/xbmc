@@ -6,7 +6,7 @@
 #include "guifontmanager.h"
 using namespace OSD;
 COSDOptionFloatRange::COSDOptionFloatRange(int iAction, int iHeading)
-:m_slider(0, 1, 0, 0, 0, 0, "osd-pnl-bar.bmp","xb-ctl-nibv.bmp")
+:m_slider(0, 1, 0, 0, 0, 0, "osd-pnl-bar.bmp","xb-ctl-nibv.bmp","xb-ctl-nibv.bmp",0)
 {
 	m_fMin=0.0f;
   m_fMax=1.0f;
@@ -17,7 +17,7 @@ COSDOptionFloatRange::COSDOptionFloatRange(int iAction, int iHeading)
 }
 
 COSDOptionFloatRange::COSDOptionFloatRange(int iAction, int iHeading,float fStart, float fEnd, float fInterval, float fValue)
-:m_slider(0, 1, 0, 0, 0, 0, "osd-pnl-bar.bmp","xb-ctl-nibv.bmp")
+:m_slider(0, 1, 0, 0, 0, 0, "osd-pnl-bar.bmp","xb-ctl-nibv.bmp","xb-ctl-nibv.bmp",0)
 {
 	m_fMin=fStart;
   m_fMax=fEnd;
@@ -28,7 +28,7 @@ COSDOptionFloatRange::COSDOptionFloatRange(int iAction, int iHeading,float fStar
 }
 
 COSDOptionFloatRange::COSDOptionFloatRange(const COSDOptionFloatRange& option)
-:m_slider(0, 1, 0, 0, 0, 0, "osd-pnl-bar.bmp","xb-ctl-nibv.bmp")
+:m_slider(0, 1, 0, 0, 0, 0, "osd-pnl-bar.bmp","xb-ctl-nibv.bmp","xb-ctl-nibv.bmp",0)
 {
 	*this=option;
 }
