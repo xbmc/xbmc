@@ -14,8 +14,9 @@
 
 #define MAX_RENDER_METHODS 9
 #define MAX_ZOOM_FACTOR    10
-#define MAX_PICTURE_WIDTH  2048//1024
-#define MAX_PICTURE_HEIGHT 2048//1024
+#define MAX_PICTURE_WIDTH  4096
+#define MAX_PICTURE_HEIGHT 4096
+#define MAX_PICTURE_SIZE 2048*2048
 
 #define PICTURE_MOVE_AMOUNT					0.02f
 #define PICTURE_MOVE_AMOUNT_ANALOG	0.01f
@@ -29,6 +30,8 @@
 #define LABEL_ROW2				11
 #define LABEL_ROW2_EXTRA	12
 #define CONTROL_PAUSE			13
+
+static float zoomamount[10] = { 1.0f, 1.2f, 1.5f, 2.0f, 2.8f, 4.0f, 6.0f, 9.0f, 13.5f, 20.0f };
 
 CBackgroundPicLoader::CBackgroundPicLoader()
 {
@@ -63,8 +66,16 @@ void CBackgroundPicLoader::Process()
 				D3DTexture *pTexture = pic.Load(m_strFileName, iOriginalWidth, iOriginalHeight, m_maxWidth, m_maxHeight, g_guiSettings.GetBool("Slideshow.GenerateThumbs"));
 				// tell our parent
 				bool bFullSize = ((int)pic.GetWidth() < m_maxWidth) && ((int)pic.GetHeight() < m_maxHeight);
-				if (!bFullSize && pic.GetWidth() == MAX_PICTURE_WIDTH) bFullSize = true;
-				if (!bFullSize && pic.GetHeight() == MAX_PICTURE_HEIGHT) bFullSize = true;
+        if (!bFullSize)
+        {
+          int iSize = pic.GetWidth()*pic.GetHeight() - MAX_PICTURE_SIZE;
+          if ((iSize + (int)pic.GetWidth() > 0) || (iSize + (int)pic.GetHeight() > 0))
+            bFullSize = true;
+				  if (!bFullSize && pic.GetWidth() == MAX_PICTURE_WIDTH)
+            bFullSize = true;
+				  if (!bFullSize && pic.GetHeight() == MAX_PICTURE_HEIGHT)
+            bFullSize = true;
+        }
 				m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, pTexture, pic.GetWidth(), pic.GetHeight(), iOriginalWidth, iOriginalHeight, pic.GetExifOrientation(), bFullSize);
 			}
 		}
@@ -236,8 +247,12 @@ void CSlideShowPic::Process()
 			if (m_iCounter >= m_transistionTemp.start + m_transistionTemp.length)
 			{	// we're finished this transistion
 				if (m_transistionTemp.type == TRANSISTION_ZOOM)
-				{	// round to nearest inte
-					m_fZoomAmount = floor(m_fZoomAmount+0.4f);
+				{	// correct for any introduced inaccuracies.
+          int i;
+          for (i = 0; i < 10; i++)
+            if (fabs(m_fZoomAmount - zoomamount[i]) < 0.01*zoomamount[i])
+              break;
+					m_fZoomAmount = zoomamount[i];
 					m_bNoEffect = (m_fZoomAmount != 1.0f);	// turn effect rendering back on.
 				}
 				if (m_transistionTemp.type == TRANSISTION_ROTATE)
@@ -386,7 +401,7 @@ void CSlideShowPic::Zoom(int iZoom)
 	m_transistionTemp.type = TRANSISTION_ZOOM;
 	m_transistionTemp.start = m_iCounter;
 	m_transistionTemp.length = m_transistionStart.length;
-	m_fTransistionZoom = (float)(iZoom-m_fZoomAmount)/(float)m_transistionTemp.length;
+	m_fTransistionZoom = (float)(zoomamount[iZoom-1]-m_fZoomAmount)/(float)m_transistionTemp.length;
 	// reset the timer
 	m_transistionEnd.start = m_iCounter + m_transistionStart.length + g_guiSettings.GetInt("Slideshow.StayTime")*FPS;
 	// turn off the render effects until we're back down to normal zoom
@@ -829,8 +844,22 @@ void CGUIWindowSlideShow::Render()
 		if (m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1-m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && !m_bWaitForNextPic)
 		{	// reload the image if we need to
 			CLog::DebugLog("Reloading the current image %s", m_vecSlides[m_iCurrentSlide].c_str());
-			int maxWidth = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth * m_iZoomFactor;
-			int maxHeight = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight * m_iZoomFactor;
+      // first, our 1:1 pixel mapping size:
+			int maxWidth = (int)((float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth * zoomamount[m_iZoomFactor-1]);
+			int maxHeight = (int)((float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight * zoomamount[m_iZoomFactor-1]);
+      // now determine how big the image will be:
+      float fWidth = (float)m_Image[m_iCurrentPic].GetOriginalWidth();
+      float fHeight = (float)m_Image[m_iCurrentPic].GetOriginalHeight();
+      float fAR = fWidth/fHeight;
+      if (fWidth*fHeight > MAX_PICTURE_SIZE)
+      { // have to scale it down - it's bigger than 16Mb
+        float fScale = sqrt((float)MAX_PICTURE_SIZE/(fWidth*fHeight));
+        fWidth = (float)fWidth * fScale;
+        fHeight = (float)fHeight * fScale;
+      }
+      if (fWidth < maxWidth) maxWidth = (int)fWidth;
+      if (fHeight < maxHeight) maxHeight = (int)fHeight;
+      // can't have images larger than MAX_PICTURE_WIDTH (hardware constraint)
 			if (maxWidth > MAX_PICTURE_WIDTH) maxWidth = MAX_PICTURE_WIDTH;
 			if (maxHeight > MAX_PICTURE_HEIGHT) maxHeight = MAX_PICTURE_HEIGHT;
 			m_pBackgroundLoader->LoadPic(1-m_iCurrentPic, m_iCurrentSlide, m_vecSlides[m_iCurrentSlide], maxWidth, maxHeight);
@@ -1043,7 +1072,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 	{
 		case GUI_MSG_WINDOW_DEINIT:
 		{
-			Reset();
+//			Reset();
 			if (message.GetParam1() != WINDOW_PICTURES)
 			{
 				CSectionLoader::Unload("CXIMAGE");
@@ -1124,12 +1153,8 @@ void CGUIWindowSlideShow::Zoom(int iZoom)
 	// resolution as necessary
 	if (!m_Image[m_iCurrentPic].DrawNextImage())
 	{
-		// work out our max width and height to see if we need to reload the image
-		int maxWidth = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth * m_iZoomFactor;
-		int maxHeight = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight * m_iZoomFactor;
-		if (maxWidth > MAX_PICTURE_WIDTH) maxWidth = MAX_PICTURE_WIDTH;
-		if (maxHeight > MAX_PICTURE_HEIGHT) maxHeight = MAX_PICTURE_HEIGHT;
 		m_Image[m_iCurrentPic].Zoom(iZoom);
+    // check if we need to reload the image for better resolution
 		if (iZoom > m_iZoomFactor && !m_Image[m_iCurrentPic].FullSize())
 			m_bReloadImage = true;
 		if (iZoom == 1)
