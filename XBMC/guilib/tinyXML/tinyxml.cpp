@@ -126,6 +126,7 @@ TiXmlBase::StringToBuffer::~StringToBuffer()
 
 TiXmlNode::TiXmlNode( NodeType _type )
 {
+	strNull="";
 	parent = 0;
 	type = _type;
 	firstChild = 0;

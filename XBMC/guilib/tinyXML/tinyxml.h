@@ -236,7 +236,7 @@ class TiXmlNode : public TiXmlBase
 {
 	friend class TiXmlDocument;
 	friend class TiXmlElement;
-
+	TiXmlString strNull;
 public:
 	#ifdef TIXML_USE_STL	
 
@@ -297,9 +297,12 @@ public:
 	*/
 	const char * Value () const 
   { 
-    return value.c_str ();
+		if ( value.length() ) 
+		{
+			return value.c_str ();
+		}
+		else return strNull.c_str();
   }
-
 	/** Changes the value of the node. Defined as:
 		@verbatim
 		Document:	filename of the xml file

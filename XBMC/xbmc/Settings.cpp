@@ -47,6 +47,7 @@ CSettings::CSettings(void)
 	strcpy( g_stSettings.m_szDefaultVideos, "");	
 	strcpy( g_stSettings.m_szCDDBIpAdres,"");
 	g_stSettings.m_bUseCDDB=false;
+	g_stSettings.m_iMyMusicViewMethod=2;//view songs
 }
 
 CSettings::~CSettings(void)
@@ -282,7 +283,13 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 			}
 			if (strValue=="default")
 			{
-				strDefault=pChild->FirstChild()->Value();
+				const TiXmlNode *pValueNode=pChild->FirstChild();
+				if (pValueNode)
+				{
+					const char* pszText=pChild->FirstChild()->Value();
+					if (strlen(pszText) > 0)
+						strDefault=pszText;
+				}
 			}
 		  pChild=pChild->NextSibling();
 		}

@@ -34,8 +34,8 @@ void CGUIWindowMusicOverlay::Render()
 	if (!g_application.m_pPlayer) return;
 	__int64 lPTS=g_application.m_pPlayer->GetPTS();
   //int hh = (lPTS / 36000) % 100;
-  int mm = (lPTS / 600) % 60;
-  int ss = (lPTS /  10) % 60;
+  int mm = (int)((lPTS / 600) % 60);
+  int ss = (int)((lPTS /  10) % 60);
   //int f1 = lPTS % 10;
 	
 	char szTime[32];
