@@ -14,7 +14,7 @@
 // general:
 //			- MPLAYER
 //					- other formats like ogg,matroska,...
-//
+//			- python scripts GUI
 //			- CDDB query : show dialogs
 //			- keep groups together when sorting (hd, shares,...)
 //			-	ftp server
@@ -55,6 +55,7 @@
 // settings:
 //			- general:
 //          - restore to default settings
+//					- CDDB on/off?
 //			- audio:
 //          - output 2 all speakers
 //			- Slideshow

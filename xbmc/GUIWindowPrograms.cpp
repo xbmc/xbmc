@@ -11,11 +11,12 @@
 #include "guidialog.h"
 #include "sectionLoader.h"
 #include "application.h"
-
+#include "filesystem/HDDirectory.h"
 #include <algorithm>
 
+using namespace DIRECTORY;
 #define CONTROL_BTNVIEWAS     2
-#define CONTROL_BTNFLATTEN    3
+#define CONTROL_BTNSCAN		    3
 #define CONTROL_BTNSORTMETHOD 4
 #define CONTROL_BTNSORTASC    5
 #define CONTROL_LIST	        7
@@ -43,6 +44,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
     {
+			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
 			CUtil::GetHomePath(m_strDirectory);
 			m_strDirectory+="\\shortcuts";
       // make controls 100-110 invisible...
@@ -84,10 +86,43 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				
         UpdateButtons();
       }
-      else if (iControl==CONTROL_BTNFLATTEN) //flatten button
+      else if (iControl==CONTROL_BTNSCAN) // button
       {
-        g_stSettings.m_bMyProgramsFlatten = !g_stSettings.m_bMyProgramsFlatten;
-        Update(m_strDirectory);
+				int iTotalApps=0;
+				CUtil::GetHomePath(m_strDirectory);
+				m_strDirectory+="\\shortcuts";
+				
+				CHDDirectory rootDir;
+				Clear();
+				OnSort();
+				UpdateButtons();
+	
+				// remove shortcuts...
+				rootDir.SetMask(".cut");
+				rootDir.GetDirectory(m_strDirectory,m_vecItems);
+				for (int i=0; i < (int)m_vecItems.size(); ++i)
+				{
+					CFileItem* pItem=m_vecItems[i];
+					if (CUtil::IsShortCut(pItem->m_strPath))
+					{
+						DeleteFile(pItem->m_strPath.c_str());
+					}
+				}
+
+				// create new ones.
+				Clear();
+				rootDir.SetMask(".xbe");
+				rootDir.GetDirectory("C:\\",m_vecItems);
+        OnScan(m_vecItems,iTotalApps);
+				Clear();
+				rootDir.GetDirectory("E:\\",m_vecItems);
+        OnScan(m_vecItems,iTotalApps);
+				Clear();
+				rootDir.GetDirectory("F:\\",m_vecItems);
+        OnScan(m_vecItems,iTotalApps);
+				Clear();
+
+				Update(m_strDirectory);
       }
       else if (iControl==CONTROL_BTNSORTMETHOD) // sort by
       {
@@ -185,23 +220,13 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
       {
         if (strFileName != "." && strFileName != "..")
         {
-          if (g_stSettings.m_bMyProgramsFlatten)
-          {
-            if (bRecurseSubDirs) 
-            {
-              LoadDirectory(strFile);
-            }
-          }
-          else
-          {          
-            CFileItem *pItem = new CFileItem(strFileName);
-            pItem->m_strPath=strFile;
-            pItem->m_bIsFolder=true;
-            FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
-            FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-  		
-            m_vecItems.push_back(pItem);      
-          }
+          CFileItem *pItem = new CFileItem(strFileName);
+          pItem->m_strPath=strFile;
+          pItem->m_bIsFolder=true;
+          FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
+          FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+  	
+          m_vecItems.push_back(pItem);      
         }
       }
       else
@@ -257,17 +282,14 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 {
   Clear();
  
-  if (!g_stSettings.m_bMyProgramsFlatten)
+  CStdString strParentPath;
+  if (CUtil::GetParentPath(strDirectory,strParentPath))
   {
-    CStdString strParentPath;
-    if (CUtil::GetParentPath(strDirectory,strParentPath))
-    {
-      CFileItem *pItem = new CFileItem("..");
-      pItem->m_strPath=strParentPath;
-      pItem->m_bIsShareOrDrive=false;
-      pItem->m_bIsFolder=true;
-      m_vecItems.push_back(pItem);
-    }
+    CFileItem *pItem = new CFileItem("..");
+    pItem->m_strPath=strParentPath;
+    pItem->m_bIsShareOrDrive=false;
+    pItem->m_bIsFolder=true;
+    m_vecItems.push_back(pItem);
   }
  
   LoadDirectory(strDirectory);
@@ -541,4 +563,70 @@ void CGUIWindowPrograms::UpdateButtons()
 		SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
     
 
+}
+
+void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
+{
+	const WCHAR* pszText=(WCHAR*)g_localizeStrings.Get(212).c_str();
+	WCHAR wzTotal[128];
+	swprintf(wzTotal,L"%i %s",iTotalAppsFound, pszText );
+	m_dlgProgress->SetHeading(211);
+	m_dlgProgress->SetLine(0,wzTotal);
+	m_dlgProgress->SetLine(1,"");
+	m_dlgProgress->SetLine(2,m_strDirectory );
+	m_dlgProgress->StartModal(GetID());
+	m_dlgProgress->Progress();
+
+	bool bFound=false;
+	CUtil::SetThumbs(items);
+	bool bOpen=true;	
+	for (int i=0; i < (int)items.size(); ++i)
+	{
+		CFileItem *pItem= items[i];
+		if ( pItem->m_bIsFolder)
+		{
+			if (!bFound && pItem->GetLabel() != "..")
+			{
+				// load subfolder
+				CStdString strDir=m_strDirectory;
+				if (pItem->m_strPath != "E:\\UDATA" && pItem->m_strPath !="E:\\TDATA") 
+				{
+					m_strDirectory=pItem->m_strPath;
+					VECFILEITEMS subDirItems;
+					CHDDirectory rootDir;
+					rootDir.SetMask(".xbe");
+					rootDir.GetDirectory(pItem->m_strPath,subDirItems);
+					bOpen=false;	
+					m_dlgProgress->Close();
+					OnScan(subDirItems,iTotalAppsFound);
+					for (int x=0; x < (int)subDirItems.size(); ++x)
+					{
+						CFileItem *pSubItem= subDirItems[x];
+						delete pSubItem;
+					}
+					m_strDirectory=strDir;
+				}
+			}
+		}
+		else
+		{
+			if (CUtil::IsXBE(pItem->m_strPath) )
+			{
+				bFound=true;
+				CStdString strTotal;
+				iTotalAppsFound++;
+				
+				swprintf(wzTotal,L"%i %s",iTotalAppsFound, pszText );
+				CStdString strDescription;
+				CUtil::GetXBEDescription(pItem->m_strPath,strDescription);
+				if (strDescription="")
+					strDescription=CUtil::GetFileName(pItem->m_strPath);
+				m_dlgProgress->SetLine(0, wzTotal);
+				m_dlgProgress->SetLine(1,strDescription);
+				m_dlgProgress->Progress();
+			}
+		}
+	}
+	if (bOpen)
+		m_dlgProgress->Close();
 }
