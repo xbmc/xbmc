@@ -49,6 +49,8 @@ public:
 	void				 SetTextureDimensions(int iWidth, int iHeight);
   void         SetThumbDimensions(int iXpos, int iYpos,int iWidth, int iHeight);
   void         GetThumbDimensions(int& iXpos, int& iYpos,int& iWidth, int& iHeight);
+  void         GetThumbDimensionsBig(int& iXpos, int& iYpos,int& iWidth, int& iHeight);
+  void         GetThumbDimensionsLow(int& iXpos, int& iYpos,int& iWidth, int& iHeight);
   int                   GetSelectedItem(CStdString& strLabel);
 	DWORD									GetTextColor() const { return m_dwTextColor;};
 	DWORD									GetSelectedColor() const { return m_dwSelectedColor;};
@@ -72,16 +74,52 @@ public:
 	void                  SetItemHeight(DWORD dwHeight);
   bool                  IsTextureShown() const { return m_bShowTexture;};
   void                  ShowTexture(bool bOnoff);
+  void                  SetTextureWidthBig(int textureWidthBig) { m_iTextureWidthBig=textureWidthBig;};
+  void                  SetTextureHeightBig(int textureHeightBig){ m_iTextureHeightBig=textureHeightBig;};
+  void                  SetItemWidthBig(int itemWidthBig){ m_iItemWidthBig=itemWidthBig;};
+  void                  SetItemHeightBig(int itemHeightBig) { m_iItemHeightBig=itemHeightBig;};
+  
+  void                  SetTextureWidthLow(int textureWidthLow) { m_iTextureWidthLow=textureWidthLow;};
+  void                  SetTextureHeightLow(int textureHeightLow){ m_iTextureHeightLow=textureHeightLow;};
+  void                  SetItemWidthLow(int itemWidthLow){ m_iItemWidthLow=itemWidthLow;};
+  void                  SetItemHeightLow(int itemHeightLow) { m_iItemHeightLow=itemHeightLow;};
+
+  int                   GetTextureWidthBig() { return m_iTextureWidthBig;};
+  int                   GetTextureHeightBig(){ return m_iTextureHeightBig;};
+  int                   GetItemWidthBig(){ return m_iItemWidthBig;};
+  int                   GetItemHeightBig() { return m_iItemHeightBig;};
+  
+  int                   GetTextureWidthLow() { return m_iTextureWidthLow;};
+  int                   GetTextureHeightLow(){ return m_iTextureHeightLow;};
+  int                   GetItemWidthLow(){ return m_iItemWidthLow;};
+  int                   GetItemHeightLow() { return m_iItemHeightLow;};
+  void                  ShowBigIcons(bool bOnOff);
+  
+  void                  SetThumbDimensionsLow(int iXpos, int iYpos,int iWidth, int iHeight) { m_iThumbXPosLow=iXpos;m_iThumbYPosLow=iYpos;m_iThumbWidthLow=iWidth;m_iThumbHeightLow=iHeight;};
+  void                  SetThumbDimensionsBig(int iXpos, int iYpos,int iWidth, int iHeight) { m_iThumbXPosBig=iXpos;m_iThumbYPosBig=iYpos;m_iThumbWidthBig=iWidth;m_iThumbHeightBig=iHeight;};
+
 protected:
-	void				 RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUIListItem* pItem);
-  void         RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText,bool bScroll );
-  void         OnRight();
-  void         OnLeft();
-  void         OnDown();
-  void         OnUp();
-  void         OnPageUp();
-  void         OnPageDown();
-  bool         ValidItem(int iX, int iY);
+  void                  Calculate();
+	void				          RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUIListItem* pItem);
+  void                  RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText,bool bScroll );
+  void                  OnRight();
+  void                  OnLeft();
+  void                  OnDown();
+  void                  OnUp();
+  void                  OnPageUp();
+  void                  OnPageDown();
+  bool                  ValidItem(int iX, int iY);
+  
+  int                   m_iItemHeightLow;
+  int                   m_iItemWidthLow;
+  int                   m_iTextureHeightLow;
+  int                   m_iTextureWidthLow;
+
+  int                   m_iItemHeightBig;
+  int                   m_iItemWidthBig;
+  int                   m_iTextureHeightBig;
+  int                   m_iTextureWidthBig;
+
   bool                  m_bShowTexture;
   int                   m_iOffset;
   int                   m_iItemHeight;
@@ -104,6 +142,16 @@ protected:
   int                   m_iThumbYPos;
   int                   m_iThumbWidth;
   int                   m_iThumbHeight;
+  
+  int                   m_iThumbXPosLow;
+  int                   m_iThumbYPosLow;
+  int                   m_iThumbWidthLow;
+  int                   m_iThumbHeightLow;
+  
+  int                   m_iThumbXPosBig;
+  int                   m_iThumbYPosBig;
+  int                   m_iThumbWidthBig;
+  int                   m_iThumbHeightBig;
   CGUIFont*             m_pFont;
   CGUISpinControl       m_upDown;
   CGUIImage             m_imgFolder;

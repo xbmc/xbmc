@@ -129,6 +129,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	int 				iTextXOff2=0;
 	int 				iTextYOff2=0;
 	DWORD			 	dwitemWidth=16, dwitemHeight=16;
+  DWORD       textureWidthBig=128;
+  DWORD       textureHeightBig=128;
+  DWORD       itemWidthBig=150;
+  DWORD       itemHeightBig=150;
 	DWORD			 	dwTextColor2=dwTextColor;
 	DWORD			 	dwSelectedColor2;
 	int        	iSpace=2;
@@ -141,6 +145,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   int         iThumbYPos=10;
   int         iThumbWidth=64;
   int         iThumbHeight=64;
+
+  int         iThumbXPosBig=14;
+  int         iThumbYPosBig=14;
+  int         iThumbWidthBig=100;
+  int         iThumbHeightBig=100;
 	
 	// get defaults from reference control
 	if (pReference)
@@ -301,6 +310,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		}
 		if (strType=="thumbnailpanel")
 		{
+      
+      textureWidthBig = ((CGUIThumbnailPanel*)pReference)->GetTextureWidthBig();
+      textureHeightBig= ((CGUIThumbnailPanel*)pReference)->GetTextureHeightBig();
+      itemWidthBig    = ((CGUIThumbnailPanel*)pReference)->GetItemWidthBig();
+      itemHeightBig   = ((CGUIThumbnailPanel*)pReference)->GetItemHeightBig();
+
 			strFont					= ((CGUIThumbnailPanel*)pReference)->GetFontName();
 			strImage				= ((CGUIThumbnailPanel*)pReference)->GetNoFocusName();
 			strImageFocus		= ((CGUIThumbnailPanel*)pReference)->GetFocusName();
@@ -320,6 +335,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			iTextureWidth		= ((CGUIThumbnailPanel*)pReference)->GetTextureWidth();
 			iTextureHeight	= ((CGUIThumbnailPanel*)pReference)->GetTextureHeight();
       ((CGUIThumbnailPanel*)pReference)->GetThumbDimensions(iThumbXPos, iThumbYPos,iThumbWidth, iThumbHeight);
+      ((CGUIThumbnailPanel*)pReference)->GetThumbDimensionsBig(iThumbXPosBig, iThumbYPosBig,iThumbWidthBig, iThumbHeightBig);
       
 		}
 		if (strType=="selectbutton")
@@ -441,6 +457,18 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetInt(pControlNode,"thumbHeight",iThumbHeight);
 	GetInt(pControlNode,"thumbPosX",iThumbXPos);
 	GetInt(pControlNode,"thumbPosY",iThumbYPos);
+
+  
+	GetInt(pControlNode,"thumbWidthBig",iThumbWidthBig);
+	GetInt(pControlNode,"thumbHeightBig",iThumbHeightBig);
+	GetInt(pControlNode,"thumbPosXBig",iThumbXPosBig);
+	GetInt(pControlNode,"thumbPosYBig",iThumbYPosBig);
+
+  GetDWORD(pControlNode,"textureWidthBig",textureWidthBig);
+	GetDWORD(pControlNode,"textureHeightBig",textureHeightBig);
+  GetDWORD(pControlNode,"itemWidthBig",itemWidthBig);
+	GetDWORD(pControlNode,"itemHeightBig",itemHeightBig);
+	
 
 	if ( GetString(pControlNode, "label", strTmp))
 	{
@@ -643,6 +671,18 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       pControl->SetVisible(bVisible);
 			pControl->SetTextureDimensions(iTextureWidth,iTextureHeight);
       pControl->SetThumbDimensions(iThumbXPos, iThumbYPos,iThumbWidth, iThumbHeight);
+
+      pControl->SetTextureWidthBig(textureWidthBig);
+      pControl->SetTextureHeightBig(textureHeightBig);
+      pControl->SetItemWidthBig(itemWidthBig);
+      pControl->SetItemHeightBig(itemHeightBig);
+
+      pControl->SetTextureWidthLow(iTextureWidth);
+      pControl->SetTextureHeightLow(iTextureHeight);
+      pControl->SetItemWidthLow(dwitemWidth);
+      pControl->SetItemHeightLow(dwitemHeight);
+      pControl->SetThumbDimensionsLow(iThumbXPos, iThumbYPos,iThumbWidth, iThumbHeight);
+      pControl->SetThumbDimensionsBig(iThumbXPosBig, iThumbYPosBig,iThumbWidthBig, iThumbHeightBig);
 
       return pControl;
   }
