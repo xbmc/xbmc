@@ -57,7 +57,9 @@ bool                    m_bFlip=false;
 bool                    m_bRenderGUI=false;
 static RESOLUTION       m_iResolution=PAL_4x3;
 bool                    m_bFlipped;
-bool					m_bHasDimView;		// Screensaver
+bool					          m_bHasDimView;		// Screensaver
+float                   m_fps;
+__int64                 m_lFrameCounter;
 
 typedef struct directx_fourcc_caps
 {
@@ -698,7 +700,7 @@ static void video_flip_page(void)
   Directx_ManageDisplay();
   if (!m_bPauseDrawing)
   {
-	m_bHasDimView = false;		// reset for next screensaver event
+	  m_bHasDimView = false;		// reset for next screensaver event
 
     if (g_graphicsContext.IsFullScreenVideo() )
     {
@@ -755,6 +757,25 @@ static void video_flip_page(void)
   }
 
   m_bFlipped=true;
+
+  // when movie is running,
+  // check the FPS again after 50 frames
+  // after 50 frames mplayer has determined the REAL fps instead of just the one mentioned in the header
+  // if its different we might need pal60
+  m_lFrameCounter++;
+  if (m_lFrameCounter==50)
+  {
+    char strFourCC[12];
+    char strVideoCodec[256];
+    unsigned int iWidth,iHeight;
+    long tooearly, toolate;
+    float fps;
+    mplayer_GetVideoInfo(strFourCC,strVideoCodec, &fps, &iWidth,&iHeight, &tooearly, &toolate);
+    if (fps != m_fps)
+    {
+      choose_best_resolution(fps);
+    }
+  }
 }
 
 //********************************************************************************************************
@@ -923,11 +944,12 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 {
   char strFourCC[12];
   char strVideoCodec[256];
-  float fps;
+  
   unsigned int iWidth,iHeight;
   long tooearly, toolate;
 
-  mplayer_GetVideoInfo(strFourCC,strVideoCodec, &fps, &iWidth,&iHeight, &tooearly, &toolate);
+  m_lFrameCounter=0;
+  mplayer_GetVideoInfo(strFourCC,strVideoCodec, &m_fps, &iWidth,&iHeight, &tooearly, &toolate);
 
   OutputDebugString("video_config\n");
   fs = options & 0x01;
@@ -939,7 +961,7 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio();
-  choose_best_resolution(fps);
+  choose_best_resolution(m_fps);
 
   fs=1;//fullscreen
 
