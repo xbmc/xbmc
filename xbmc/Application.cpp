@@ -324,12 +324,13 @@ void CApplication::Render()
 	}
 
   {
+#ifdef _DEBUG
 	  MEMORYSTATUS stat;
 	  GlobalMemoryStatus(&stat);
 		CStdStringW wszText;
 		wszText.Format(L"FreeMem %i/%iMB",stat.dwAvailPhys  /(1024*1024),
 																					  stat.dwTotalPhys  /(1024*1024)  );
-
+#endif
     
     CGUIFont* pFont=g_fontManager.GetFont("font13");
     if (pFont)
