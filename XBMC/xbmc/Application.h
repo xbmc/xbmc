@@ -25,6 +25,7 @@
 #include "GUIDialogSelect.h"
 #include "GUIDialogFileStacking.h"
 #include "GUIWindowSystemInfo.h"
+#include "GUIWindowSettingsLCD.h"
 #include "GUIWindowSettingsGeneral.h"
 #include "GUIWindowSettingsScreen.h"
 #include "GUIWindowSettingsUICalibration.h"
@@ -150,6 +151,7 @@ public:
 	CGUIWindowMusicGenres						m_guiMyMusicGenres;
 	CGUIWindowMusicTop100						m_guiMyMusicTop100;
 	CGUIWindowScreensaver					m_guiWindowScreensaver;
+  CGUIWindowSettingsLCD           m_guiSettingsLCD;
   CGUIWindowSettingsSubtitles     m_guiSettingsSubtitles;
   CGUIWindowVideoGenre            m_guiVideoGenre;
   CGUIWindowVideoActors           m_guiVideoActors;

@@ -1454,4 +1454,32 @@
     <id>447</id>
     <value>Autorun</value>
   </string> 
+  <string>
+    <id>448</id>
+    <value>LCD</value>
+  </string> 
+  <string>
+    <id>449</id>
+    <value>Enabled</value>
+  </string> 
+  <string>
+    <id>450</id>
+    <value>Columns</value>
+  </string> 
+  <string>
+    <id>451</id>
+    <value>Row 1 adress:</value>
+  </string> 
+  <string>
+    <id>452</id>
+    <value>Row 2 adress:</value>
+  </string> 
+  <string>
+    <id>453</id>
+    <value>Row 3 adress:</value>
+  </string> 
+  <string>
+    <id>454</id>
+    <value>Row 4 adress:</value>
+  </string> 
 </strings>
