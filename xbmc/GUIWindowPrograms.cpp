@@ -457,9 +457,22 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
         }
     }
 
+	m_iLastControl=GetFocusedControl();
+
 	LoadDirectory(strDir);
 	OnSort();
 	UpdateButtons();
+
+	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
+	{
+		if ( ViewByIcon() ) {	
+			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+		}
+		else {
+			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+		}
+	}
+	ShowThumbPanel();
 }
 
 void CGUIWindowPrograms::OnClick(int iItem)
