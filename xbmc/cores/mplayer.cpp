@@ -66,6 +66,7 @@ extern "C" void dllReleaseAll( );
 #define KEY_KPENTER (KEY_KEYPAD+13)
 
 extern "C" void free_registry(void);
+extern void xbox_video_wait();
 
 CMPlayer::Options::Options()
 {
@@ -866,6 +867,8 @@ bool CMPlayer::Record(bool bOnOff)
 void CMPlayer::SeekPercentage(int iPercent)
 {
   mplayer_setPercentage( iPercent);
+  SwitchToThread();
+  xbox_video_wait();
 }
 
 int CMPlayer::GetPercentage()

@@ -20,6 +20,8 @@ namespace OSD
 		virtual bool OnAction(IExecutor& executor,const CAction& action);
 
     int GetValue() const;
+    virtual int  GetMessage() const {return m_iAction;};
+    virtual void SetValue(int iValue){m_iValue=iValue;};
 	private:
     CGUISliderControl m_slider;
     bool m_bPercent;

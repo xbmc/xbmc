@@ -18,7 +18,9 @@ namespace OSD
 		virtual IOSDOption* Clone() const;
 		virtual void Draw(int x, int y, bool bFocus=false, bool bSelected=false);
 		virtual bool OnAction(IExecutor& executor, const CAction& action);
-    bool GetValue() const;
+    bool         GetValue() const;
+    virtual int  GetMessage() const {return m_iAction;};
+    virtual void SetValue(int iValue){};
 	private:
     int                    m_iAction;
 		bool	                 m_bValue;

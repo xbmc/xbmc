@@ -28,6 +28,7 @@ namespace OSD
 
     int  GetSelectedMenu() const;
     void Clear();
+    void SetValue(int iMessage, int iValue);
 	private:
 		typedef	vector<COSDSubMenu*>::iterator ivecSubMenus;
 		typedef	vector<COSDSubMenu*>::const_iterator icvecSubMenus;						
