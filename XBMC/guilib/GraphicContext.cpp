@@ -7,6 +7,7 @@ CGraphicContext g_graphicsContext;
 
 CGraphicContext::CGraphicContext(void)
 {
+	InitializeCriticalSection(&m_critSection);
   m_iScreenWidth=720;
   m_iScreenHeight=576;
 	m_iScreenOffsetX=0;
@@ -18,6 +19,7 @@ CGraphicContext::CGraphicContext(void)
 
 CGraphicContext::~CGraphicContext(void)
 {
+	DeleteCriticalSection(&m_critSection);
 }
 
 
@@ -122,7 +124,9 @@ void CGraphicContext::SetViewWindow(const RECT&	rc)
 
 void CGraphicContext::SetFullScreenVideo(bool bOnOff)
 {
+	Lock();
 	m_bFullScreenVideo=bOnOff;
+	Unlock();
 }
 
 bool CGraphicContext::IsFullScreenVideo() const
@@ -134,4 +138,13 @@ void CGraphicContext::SetOffset(int iXoffset, int iYoffset)
 {
 	m_iScreenOffsetX=iXoffset;
 	m_iScreenOffsetY=iYoffset;
+}
+void CGraphicContext::Lock()
+{
+	EnterCriticalSection(&m_critSection);
+}
+
+void CGraphicContext::Unlock()
+{
+	LeaveCriticalSection(&m_critSection);
 }

@@ -13,7 +13,7 @@ class CGraphicContext
 {
 public:
   CGraphicContext(void);
-  ~CGraphicContext(void);
+  virtual ~CGraphicContext(void);
   LPDIRECT3DDEVICE8			Get3DDevice();
   void									Set(LPDIRECT3DDEVICE8 p3dDevice, int iWidth, int iHeight, int iOffsetX, int iOffsetY, bool bWideScreen=false);
   int										GetWidth() const;
@@ -32,7 +32,10 @@ public:
 	void									SetFullScreenVideo(bool bOnOff); 
 	bool									IsFullScreenVideo() const; 
 	void									SetOffset(int iXoffset, int iYoffset);
+	void									Lock();
+	void									Unlock();
 protected:
+	CRITICAL_SECTION			  m_critSection;
   IMsgSenderCallback*     m_pCallback;
   LPDIRECT3DDEVICE8       m_pd3dDevice;
   int                     m_iScreenHeight;

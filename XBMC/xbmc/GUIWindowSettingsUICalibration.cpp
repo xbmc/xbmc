@@ -32,7 +32,7 @@ void CGUIWindowSettingsUICalibration::OnKey(const CKey& key)
   {
     if ( key.GetButtonCode() == KEY_BUTTON_BACK  || key.GetButtonCode() == KEY_REMOTE_BACK)
     {
-      m_gWindowManager.ActivateWindow(0); // back 2 home
+      m_gWindowManager.ActivateWindow(9); // back 2 home
       return;
     }
 		if (m_iSpeed>10) m_iSpeed=10; // Speed limit for accellerated cursors
@@ -54,7 +54,7 @@ void CGUIWindowSettingsUICalibration::OnKey(const CKey& key)
 			case KEY_BUTTON_DPAD_LEFT:
 			case KEY_REMOTE_LEFT:
 			{
-				if (iXOff>0)
+				if (iXOff>-128)
 				{
 					iXOff-=m_iSpeed;
 					m_iCountL++;
@@ -84,7 +84,7 @@ void CGUIWindowSettingsUICalibration::OnKey(const CKey& key)
 			case KEY_BUTTON_DPAD_UP:
 			case KEY_REMOTE_UP:
 			{
-				if (iYOff>0)
+				if (iYOff>-128)
 				{
 					iYOff-=m_iSpeed;
 					m_iCountU++;
@@ -125,11 +125,11 @@ void CGUIWindowSettingsUICalibration::OnKey(const CKey& key)
 	if ( (fX<=-1 || fX >=1) || (fY<=-1 || fY >=1) )
 	{
 		iXOff += (int)fX;
-		if ( iXOff < 0	 ) iXOff=0;
+		if ( iXOff < -128	 ) iXOff=-128;
 		if ( iXOff > 128 ) iXOff=128;
 
 		iYOff += (int)fY;
-		if ( iYOff < 0	 ) g_stSettings.m_iUIOffsetY=0;
+		if ( iYOff < -128	 ) iYOff=-128;
 		if ( iYOff > 128 ) iYOff=128;
 
 	}

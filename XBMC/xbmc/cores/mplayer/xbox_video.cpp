@@ -27,6 +27,7 @@
 #include "video.h"
 #include "mplayer.h"
 #include "GraphicContext.h"
+#include "../../settings.h"
 
 static RECT                 rd;                     						//rect of our stretched image
 static RECT                 rs;                     						//rect of our source image
@@ -94,19 +95,53 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
   DWORD           dwUpdateFlags=0;
   unsigned int    xscreen = g_graphicsContext.GetWidth();
   unsigned int    yscreen = g_graphicsContext.GetHeight();
-  if(fs)
+	if( g_graphicsContext.IsFullScreenVideo() )
   {
+		if ( g_stSettings.m_bStretch) 
+		{
+			rd.left=0;
+			rd.top=0;
+			rd.right=xscreen;
+			rd.bottom=yscreen;
+			return 0;
+		}
+
     /*center and zoom image*/
     rd_window.top = 0;
     rd_window.left = 0;
     rd_window.right = xscreen;
     rd_window.bottom = yscreen;
-    aspect(&width,&height,A_ZOOM);
+		if (g_stSettings.m_bZoom)
+		{
+			aspect(&width,&height,A_ZOOM);
+		}
+		else
+		{
+			aspect(&width,&height,A_NOZOOM);
+		}
     rd.left = (xscreen-width)/2;
     rd.right = rd.left+width;
     rd.top = (yscreen-height)/2;
     rd.bottom = rd.top + height;
   }
+	else
+	{
+		const RECT& rc=g_graphicsContext.GetViewWindow();
+		width = rc.right-rc.left;
+		height = rc.bottom-rc.top;
+		int iwidth = (width/16)*16;
+		int iheight = (height/16)*16;
+		if (width%16) iwidth+=16;
+		if (iheight%16) iheight+=16;
+
+		rd.top=rc.top;
+		rd.left=rc.left;
+		rd.right=iwidth+rd.left;
+		rd.bottom=iheight+rd.top;
+
+		return 0;
+
+	}
 	unsigned int uStretchFactor1000;  //minimum stretch 
 	unsigned int xstretch1000,ystretch1000; 
 
@@ -237,18 +272,21 @@ static void video_flip_page(void)
 	m_bFlip=false;
 	m_pOverlay[m_dwVisibleOverlay]->UnlockRect(0);			
 
+	Directx_ManageDisplay(d_image_width,d_image_height);
 	if ( g_graphicsContext.IsFullScreenVideo())
 	{
+		g_graphicsContext.Lock();
 		g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0xff202020, 1.0f, 0L );
 	  g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
 		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, FALSE, 0x00010001  );
 		g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
+		g_graphicsContext.Unlock();
 	}
 	else
 	{
+		g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
 		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, FALSE, 0x00010001  );
 	}
-
 
 	m_dwVisibleOverlay=1-m_dwVisibleOverlay;
 	D3DLOCKED_RECT rectLocked;
@@ -357,6 +395,11 @@ static unsigned int video_control(unsigned int request, void *data, ...)
     return VO_TRUE;
   };
   return VO_NOTIMPL;
+}
+
+void mplayer_reset_video_window()
+{
+	Directx_ManageDisplay(d_image_width,d_image_height);
 }
 
 static vo_info_t video_info =

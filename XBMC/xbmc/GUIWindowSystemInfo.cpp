@@ -21,7 +21,7 @@ void CGUIWindowSystemInfo::OnKey(const CKey& key)
   {
     if ( key.GetButtonCode() == KEY_BUTTON_BACK  || key.GetButtonCode() == KEY_REMOTE_BACK)
     {
-      m_gWindowManager.ActivateWindow(0); // back 2 home
+      m_gWindowManager.ActivateWindow(4); // back 2 home
       return;
     }
   }

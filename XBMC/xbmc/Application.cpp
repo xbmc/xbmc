@@ -200,6 +200,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiSettingsGeneral);					// window id = 8
 	m_gWindowManager.Add(&m_guiSettingsScreen);						// window id = 9
 	m_gWindowManager.Add(&m_guiSettingsUICalibration);		// window id = 10
+	
 
   m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
   m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
@@ -217,6 +218,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.SetCallback(*this);
 	m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
 	m_guiMusicOverlay.AllocResources();
+	m_guiWindowFullScreen.AllocResources();
   return S_OK;
 }
 
@@ -230,6 +232,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	strSkinPath+=strSkin;
 
 	m_guiMusicOverlay.FreeResources();
+	m_guiWindowFullScreen.FreeResources();
 	m_gWindowManager.DeInitialize();
 	g_TextureManager.Cleanup();
 
@@ -310,6 +313,23 @@ void CApplication::Render()
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 }
 
+void CApplication::OnKey(CKey& key)
+{
+	if (g_application.IsPlayingVideo() )
+	{
+		if ( key.GetButtonCode() == KEY_BUTTON_X  || key.GetButtonCode() == KEY_REMOTE_DISPLAY)
+		{
+			// switch between fullscreen & normal video screen
+			g_graphicsContext.SetFullScreenVideo( !g_graphicsContext.IsFullScreenVideo() );
+			ResetVideoWindow();
+			return;
+		}
+		m_guiWindowFullScreen.OnKey(key);
+		return;
+	}
+	m_gWindowManager.OnKey(key);   
+}
+
 void CApplication::FrameMove()
 {
   ReadInput();
@@ -326,78 +346,78 @@ void CApplication::FrameMove()
   if ( wDir & DC_LEFTTRIGGER)
   {
     CKey key(true,KEY_BUTTON_LEFT_TRIGGER,pGamepad->fX1,pGamepad->fY1);
-    m_gWindowManager.OnKey(key);   
+    OnKey(key);   
   }
   if ( wDir & DC_RIGHTTRIGGER)
   {
     CKey key(true,KEY_BUTTON_RIGHT_TRIGGER,pGamepad->fX1,pGamepad->fY1);
-    m_gWindowManager.OnKey(key);   
+    OnKey(key);   
   }
   if ( wDir & DC_LEFT )
   {
     CKey key(true,KEY_BUTTON_DPAD_LEFT,pGamepad->fX1,pGamepad->fY1);
-    m_gWindowManager.OnKey(key);   
+    OnKey(key);   
   }
   if ( wDir & DC_RIGHT)
   {
     CKey key(true,KEY_BUTTON_DPAD_RIGHT,pGamepad->fX1,pGamepad->fY1);
-    m_gWindowManager.OnKey(key);   
+    OnKey(key);   
   }
   if ( wDir & DC_UP )
   {
     CKey key(true,KEY_BUTTON_DPAD_UP,pGamepad->fX1,pGamepad->fY1);
-    m_gWindowManager.OnKey(key);   
+    OnKey(key);   
   }
   if ( wDir & DC_DOWN )
   {
     CKey key(true,KEY_BUTTON_DPAD_DOWN,pGamepad->fX1,pGamepad->fY1);
-    m_gWindowManager.OnKey(key);   
+    OnKey(key);   
   }
 
   
 	if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_BACK )
   {
     CKey key(true,KEY_BUTTON_BACK,pGamepad->fX1,pGamepad->fY1);
-    m_gWindowManager.OnKey(key);   
+    OnKey(key);   
   }
 	if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_START)
   {
     CKey key(true,KEY_BUTTON_START,pGamepad->fX1,pGamepad->fY1);
-    m_gWindowManager.OnKey(key);   
+    OnKey(key);   
   }
 
 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_A])
   {
     CKey key(true,KEY_BUTTON_A,pGamepad->fX1,pGamepad->fY1);
-    m_gWindowManager.OnKey(key);   
+    OnKey(key);   
   }
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_B])
   {
     CKey key(true,KEY_BUTTON_B,pGamepad->fX1,pGamepad->fY1);
-    m_gWindowManager.OnKey(key);
+    OnKey(key);
   }
   
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_X])
   {
     CKey key(true,KEY_BUTTON_X,pGamepad->fX1,pGamepad->fY1);
-    m_gWindowManager.OnKey(key);
+    OnKey(key);
 		
   }
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_Y])
   {
     CKey key(true,KEY_BUTTON_Y,pGamepad->fX1,pGamepad->fY1);
-    m_gWindowManager.OnKey(key);   
+    OnKey(key);   
   } 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_BLACK])
   {
     CKey key(true,KEY_BUTTON_BLACK,pGamepad->fX1,pGamepad->fY1);
-    m_gWindowManager.OnKey(key);   
+    OnKey(key);   
   } 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_WHITE])
   {
     CKey key(true,KEY_BUTTON_WHITE,pGamepad->fX1,pGamepad->fY1);
-    m_gWindowManager.OnKey(key);   
+    OnKey(key);   
   } 
 	
   switch (pRemote->wPressedButtons)
@@ -405,49 +425,49 @@ void CApplication::FrameMove()
 		case XINPUT_IR_REMOTE_MENU:
     {
 		  CKey key(true,KEY_REMOTE_MENU);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
 		case XINPUT_IR_REMOTE_BACK:
     {
 		  CKey key(true,KEY_REMOTE_BACK);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
 		case XINPUT_IR_REMOTE_SELECT:
     {
 		  CKey key(true,KEY_REMOTE_SELECT);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
 		case XINPUT_IR_REMOTE_DISPLAY:
     {
 		  CKey key(true,KEY_REMOTE_DISPLAY);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
 		case XINPUT_IR_REMOTE_TITLE:
     {
 		  CKey key(true,KEY_REMOTE_TITLE);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
 		case XINPUT_IR_REMOTE_INFO:
     {
 		  CKey key(true,KEY_REMOTE_INFO);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
 		case XINPUT_IR_REMOTE_PLAY:
     {
 		  CKey key(true,KEY_REMOTE_PLAY);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
 		case XINPUT_IR_REMOTE_PAUSE:
     {
 		  CKey key(true,KEY_REMOTE_PAUSE);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 			if (m_pPlayer)
 			{
 				if (m_pPlayer->IsPlaying() )
@@ -460,7 +480,7 @@ void CApplication::FrameMove()
 		case XINPUT_IR_REMOTE_STOP:
     {
 		  CKey key(true,KEY_REMOTE_STOP);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 			if (m_pPlayer)
 			{
 				if (m_pPlayer->IsPlaying() )
@@ -473,7 +493,7 @@ void CApplication::FrameMove()
 		case XINPUT_IR_REMOTE_SKIP_MINUS:
     {
 		  CKey key(true,KEY_REMOTE_SKIPMINUS);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 			if (m_pPlayer && g_playlistPlayer.size() )
 			{
 				g_playlistPlayer.PlayPrevious();
@@ -483,7 +503,7 @@ void CApplication::FrameMove()
 		case XINPUT_IR_REMOTE_SKIP_PLUS:
     {
 		  CKey key(true,KEY_REMOTE_SKIPPLUS);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 			if (m_pPlayer && g_playlistPlayer.size() )
 			{
 				g_playlistPlayer.PlayNext();
@@ -494,75 +514,75 @@ void CApplication::FrameMove()
 	case XINPUT_IR_REMOTE_0:
     {
 		  CKey key(true,KEY_REMOTE_0);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_1:
     {
 		  CKey key(true,KEY_REMOTE_1);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_2:
     {
 		  CKey key(true,KEY_REMOTE_2);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_3:
     {
 		  CKey key(true,KEY_REMOTE_3);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_4:
     {
 		  CKey key(true,KEY_REMOTE_4);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_5:
     {
 		  CKey key(true,KEY_REMOTE_5);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_6:
     {
 		  CKey key(true,KEY_REMOTE_6);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_7:
     {
 		  CKey key(true,KEY_REMOTE_7);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_8:
     {
 		  CKey key(true,KEY_REMOTE_8);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_9:
     {
 		  CKey key(true,KEY_REMOTE_9);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
 
     case XINPUT_IR_REMOTE_REVERSE:
     {
 		  CKey key(true,KEY_REMOTE_REVERSE);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
 
     case XINPUT_IR_REMOTE_FORWARD:
     {
 		  CKey key(true,KEY_REMOTE_FORWARD);
-      m_gWindowManager.OnKey(key);   
+      OnKey(key);   
 		  break;
     }
 
@@ -683,4 +703,10 @@ bool CApplication::IsPlayingVideo() const
 	if (!m_pPlayer->IsPlaying()) return false;
 	if (m_pPlayer->HasVideo()) return true;
 	return false;
+}
+
+void	CApplication::ResetVideoWindow()
+{
+	if (!m_pPlayer) return;
+	m_pPlayer->VideoWindowChanged();
 }
