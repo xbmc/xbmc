@@ -542,31 +542,31 @@ void CIMDB::GetURL(const string &strMovie, string& strURL)
 	for (int i=0; i < imax;i++)
 	{
 		char kar=strMovie[i];
-		if (kar !='.') 
-    {
-      if (kar ==32) kar = '+';
-		  if (kar == '[' || kar=='(' ) bSkip=true;			//skip everthing between () and []
-		  else if (kar == ']' || kar==')' ) bSkip=false;
-		  else if (!bSkip)
-		  {
-        if (ipos > 0)
+		if (kar =='.') kar=' ';
+    
+    if (kar ==32) kar = '+';
+		if (kar == '[' || kar=='(' ) bSkip=true;			//skip everthing between () and []
+		else if (kar == ']' || kar==')' ) bSkip=false;
+		else if (!bSkip)
+		{
+      if (ipos > 0)
+      {
+        if (!isalnum(kar)) 
         {
-          if (!isalnum(kar)) 
-          {
-            if (szMovie[ipos-1] != '+')
-              kar='+';
-            else 
-              kar='.';
-          }
+          if (szMovie[ipos-1] != '+')
+            kar='+';
+          else 
+            kar='.';
         }
-			  if (isalnum(kar) ||kar==' ' || kar=='+')
-			  {
-				  szMovie[ipos]=kar;
-				  szMovie[ipos+1]=0;
-				  ipos++;
-			  }
-        }
-		}
+      }
+			if (isalnum(kar) ||kar==' ' || kar=='+')
+			{
+				szMovie[ipos]=kar;
+				szMovie[ipos+1]=0;
+				ipos++;
+			}
+      }
+	
 	}
 	string strHTML;
 	sprintf(szURL,"http://us.imdb.com/Tsearch?title=%s", szMovie);
