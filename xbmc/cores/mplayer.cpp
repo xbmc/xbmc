@@ -672,6 +672,7 @@ CMPlayer::CMPlayer(IPlayerCallback& callback)
 	m_pDLL=NULL;
 	m_bIsPlaying=false;
 	m_bPaused=false;
+	m_bIsMplayeropenfile=false;
 }
 
 CMPlayer::~CMPlayer()
@@ -695,7 +696,7 @@ bool CMPlayer::load()
 	Unload();
 	if (!m_pDLL)
 	{
-		m_pDLL = new DllLoader("Q:\\mplayer\\mplayer.dll");
+		m_pDLL = new DllLoader("Q:\\mplayer\\mplayer.dll",true);
 		if( !m_pDLL->Parse() )
 		{
 			CLog::Log(LOGERROR, "cmplayer::load() parse failed");
@@ -910,10 +911,14 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 		mplayer_init(argc,argv);
 		mplayer_setcache_size(iCacheSize);
 		mplayer_setcache_backbuffer(iCacheSizeBackBuffer);
-		if(bFileIsDVDImage || bFileIsDVDIfoFile)
+		if(bFileIsDVDImage || bFileIsDVDIfoFile) {
 			iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
-		else
+			m_bIsMplayeropenfile = true;
+		}
+		else {
 			iRet=mplayer_open_file(strFile.c_str());
+			m_bIsMplayeropenfile = true;
+		}
 		if (iRet <= 0 || m_bCanceling)
 		{
       throw iRet;
@@ -997,16 +1002,23 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 			{
 				CLog::Log(LOGINFO, "  --------------- restart ---------------");
 				//CLog::Log(LOGINFO, "  open 2nd time");
-				mplayer_close_file();
+				if (m_bIsMplayeropenfile) {
+					mplayer_close_file();
+					m_bIsMplayeropenfile = false;
+				}
 				options.GetOptions(argc,argv);
 				load();
 				mplayer_init(argc,argv);
 				mplayer_setcache_size(iCacheSize);
 				mplayer_setcache_backbuffer(iCacheSizeBackBuffer);
-				if(bFileIsDVDImage || bFileIsDVDIfoFile)
+				if(bFileIsDVDImage || bFileIsDVDIfoFile) {
 					iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
-				else
+					m_bIsMplayeropenfile = true;
+				}
+				else {
 					iRet=mplayer_open_file(strFile.c_str());
+					m_bIsMplayeropenfile = true;
+				}
 				if (iRet <= 0 || m_bCanceling)
 				{
           throw iRet;
@@ -1155,7 +1167,10 @@ void CMPlayer::Process()
 
     try
     {
-      mplayer_close_file();
+		if (m_bIsMplayeropenfile) {
+            mplayer_close_file();
+			m_bIsMplayeropenfile = false;
+		}
     }
     catch(...)
     {
@@ -1178,8 +1193,11 @@ void CMPlayer::Unload()
 		// and thus we can call mplayer_close_file now.
     try
     {
-		  mplayer_close_file();
-    }
+		if (m_bIsMplayeropenfile) {
+            mplayer_close_file();
+			m_bIsMplayeropenfile = false;
+		}
+	}
     catch(...)
     {
       CLog::Log(LOGERROR, "mplayer generated exception in mplayer_close_file");
