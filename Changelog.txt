@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 27-12-2004 fixed: shoutcast playing hangs when cd+g is enabled
   - 27-12-2004 fixed: language code expansion didn't work if running as dash
   - 25-12-2004 changed: removed specification of first subtitle to allow new mplayer.dll to function properly
   - 23-12-2004 fixed: [ 1087503 ] DVD XBE Title being cached in database.

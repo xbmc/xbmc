@@ -2407,7 +2407,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 		m_guiMusicOverlay.SetCurrentFile(m_itemCurrentFile);
 		m_guiWindowVideoOverlay.SetCurrentFile(m_itemCurrentFile.m_strPath);
 
-		if(CUtil::IsAudio(m_itemCurrentFile.m_strPath) && g_guiSettings.GetBool("Karaoke.Enabled"))
+		if(CUtil::IsAudio(m_itemCurrentFile.m_strPath) && !CUtil::IsInternetStream(m_itemCurrentFile.m_strPath) && g_guiSettings.GetBool("Karaoke.Enabled"))
 			m_CdgParser.Start(m_itemCurrentFile.m_strPath);
 
 		m_dwIdleTime=timeGetTime();

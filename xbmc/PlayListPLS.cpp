@@ -62,9 +62,9 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
 	{
 		CURL url(strLine);
 		CStdString strProtocol = url.GetProtocol();
-		if (strProtocol == "http" || strProtocol == "mms" || strProtocol == "rtp" || strProtocol == "udp" || strProtocol == "ftp"  || strProtocol == "rtsp")
+		if (CUtil::IsInternetStream(strLine))
 		{
-			if (bShoutCast && !CUtil::IsAudio(strLine) && !CUtil::IsAudio(strLine))
+			if (bShoutCast && !CUtil::IsAudio(strLine))
 			{
 				strLine.Replace("http:","shout:");
 			}

@@ -1056,6 +1056,24 @@ bool CUtil::IsRAR(const CStdString& strFile)
   return false;
 }
 
+bool CUtil::IsInternetStream(const CStdString& strFile)
+{
+	CURL url(strFile);
+	CStdString strProtocol=url.GetProtocol();
+	strProtocol.ToLower();
+
+	if (strProtocol.size()==0)
+		return false;
+
+  if (strProtocol=="shout" || strProtocol=="mms" || 
+			strProtocol=="http"  || strProtocol=="ftp" || 
+			strProtocol=="rtsp"  || strProtocol=="rtp" || 
+			strProtocol=="udp") 
+			return true;
+
+	return false;
+}
+
 int CUtil::GetDVDIfoTitle(const CStdString& strFile)
 {
 	CStdString strFilename = GetFileName(strFile);
@@ -1480,14 +1498,7 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
 						if (pPlayList->Load(pItem->m_strPath) && pPlayList->size()>0)
 						{
 							const CPlayList::CPlayListItem& item=(*pPlayList.get())[0];
-							CURL url(item.GetFileName());
-							if (!(url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") &&
-									!(url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") &&
-									!(url.GetProtocol() =="mms" || url.GetProtocol()=="MMS")  &&
-									!(url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") && 
-									!(url.GetProtocol() =="ftp" || url.GetProtocol()=="FTP") && 
-									!(url.GetProtocol() =="udp" || url.GetProtocol()=="UDP") && 
-									!(url.GetProtocol() =="rtsp" || url.GetProtocol()=="RTSP"))
+							if (!CUtil::IsInternetStream(item.GetFileName()))
 							{
 								pPlayList->Save(strDir);
 							}
@@ -1631,15 +1642,9 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
   // remote or local file?
   if (CUtil::IsRemote(strFolder) || CUtil::IsDVD(strFolder) || CUtil::IsISO9660(strFolder) )
   {
-    CURL url(strFolder);
     // dont try to locate a folder.jpg for streams &  shoutcast
-    if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return false;
-    if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return false;
-    if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return false;
-    if (url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") return false;
-    if (url.GetProtocol() =="ftp" || url.GetProtocol()=="FTP") return false;
-    if (url.GetProtocol() =="udp" || url.GetProtocol()=="UDP") return false;
-    if (url.GetProtocol() =="rtsp" || url.GetProtocol()=="RTSP") return false;
+    if (CUtil::IsInternetStream(strFolder))
+      return false;
 
     CUtil::GetThumbnail( strFolderImage,strThumb);
     // if local cache of thumb doesnt exists yet
@@ -2026,13 +2031,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 	ClearSubtitles();
 
   CURL url(strMovie);
-  if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return ;
-  if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return ;
-  if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return ;
-  if (url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") return ;
-  if (url.GetProtocol() =="ftp" || url.GetProtocol()=="FTP") return ;
-  if (url.GetProtocol() =="udp" || url.GetProtocol()=="UDP") return ;
-  if (url.GetProtocol() =="rtsp" || url.GetProtocol()=="RTSP") return ;
+  if (CUtil::IsInternetStream(strMovie)) return;
   if (CUtil::IsPlayList(strMovie)) return;
   if (!CUtil::IsVideo(strMovie)) return;
 
@@ -2661,17 +2660,8 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
   // if it already has a thumbnail, then return
   if ( pItem->HasThumbnail() ) return;
 
-  if (CUtil::IsRemote(pItem->m_strPath))
-  {
-    CURL url(pItem->m_strPath);
-    if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return ;
-    if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return ;
-    if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return ;
-    if (url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") return ;
-    if (url.GetProtocol() =="ftp" || url.GetProtocol()=="FTP") return ;
-    if (url.GetProtocol() =="udp" || url.GetProtocol()=="UDP") return ;
-    if (url.GetProtocol() =="rtsp" || url.GetProtocol()=="RTSP") return ;
-  }
+  if (CUtil::IsInternetStream(pItem->m_strPath)) return;
+
   CStdString strThumb, strPath, strFileName;
 
 	//	If item is not a folder, extract its path
