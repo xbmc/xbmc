@@ -228,6 +228,7 @@ static unsigned int query_format(unsigned int format)
 
 static void video_uninit(void)
 {
+	OutputDebugString("video_uninit\n");
 	g_graphicsContext.Get3DDevice()->EnableOverlay(FALSE);
 	for (int i=0; i <=1; i++)
 	{
@@ -236,6 +237,7 @@ static void video_uninit(void)
 		m_pSurface[i]=NULL;
 		m_pOverlay[i]=NULL;
 	}
+	OutputDebugString("video_uninit done\n");
 }
 
 //***********************************************************************************************************
@@ -349,6 +351,7 @@ static unsigned int put_image(mp_image_t *mpi)
 
 static unsigned int video_config(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format)
 {
+	OutputDebugString("video_config\n");
   fs = options & 0x01;
   image_format	 =  format;
   image_width		 = width;
@@ -374,6 +377,7 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 		dstride=rectLocked.Pitch;
 		image  =(unsigned char*)rectLocked.pBits;
 	}
+	OutputDebugString("video_config() done\n");
   return 0;
 }
 static unsigned int video_control(unsigned int request, void *data, ...)

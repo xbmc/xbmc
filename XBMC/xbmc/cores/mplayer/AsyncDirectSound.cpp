@@ -65,6 +65,7 @@ void CASyncDirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 //***********************************************************************************************
 CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample)
 {
+	OutputDebugString("CASyncDirectSound() ctor\n");
 	m_pCallback=pCallback;
 	if(0/*!g_playerSettings.bAudioOnAllSpeakers*/ ) 
 	{
@@ -235,6 +236,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 //***********************************************************************************************
 CASyncDirectSound::~CASyncDirectSound()
 {
+	OutputDebugString("CASyncDirectSound() dtor\n");
 	Deinitialize();
 }
 
@@ -242,7 +244,7 @@ CASyncDirectSound::~CASyncDirectSound()
 //***********************************************************************************************
 HRESULT CASyncDirectSound::Deinitialize()
 {
-	//mp_msg(0,0,"CASyncDirectSound::Deinitialize");
+	OutputDebugString("CASyncDirectSound::Deinitialize\n");
 	m_bIsAllocated = false;
 	if (m_pStream)
 	{

@@ -32,4 +32,5 @@ protected:
 	DllLoader*			m_pDLL;
 	CEvent					m_startEvent;
 	__int64					m_iPTS;
+	DWORD						m_dwTime;
 };
