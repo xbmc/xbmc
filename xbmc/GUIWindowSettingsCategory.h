@@ -54,4 +54,5 @@ protected:
 	CStdString m_strNewSkinFontSet;
 	CStdString m_strNewSkin;
 	CStdString m_strNewLanguage;
+	CStdStringW m_strErrorMessage;
 };

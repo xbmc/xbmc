@@ -117,10 +117,11 @@ CStdString CSettingHex::ToString()
 	return strValue;
 }
 
-CSettingString::CSettingString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType)
+CSettingString::CSettingString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty)
 :CSetting(iOrder, strSetting, iLabel, iControlType)
 {
 	m_strData = strData;
+	m_bAllowEmpty = bAllowEmpty;
 }
 
 void CSettingString::FromString(const CStdString &strValue)
@@ -343,7 +344,7 @@ CGUISettings::CGUISettings(void)
 	AddString(3, "Servers.TimeAddress", 731, "207.46.130.100");
 	AddBool(3, "Servers.WebServer", 263, false);
 	AddString(4, "Servers.WebServerPort", 730, "80");
-	AddString(5, "Servers.WebServerPassword", 733, "", BUTTON_CONTROL_HIDDEN_INPUT);
+	AddString(5, "Servers.WebServerPassword", 733, "", BUTTON_CONTROL_HIDDEN_INPUT, true);
 
 	// appearance settings
 	AddGroup(7, 480);
@@ -534,9 +535,9 @@ void CGUISettings::SetInt(const char *strSetting, int iSetting)
 	CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
-void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType)
+void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty)
 {
-	CSettingString* pSetting = new CSettingString(iOrder, strSetting, iLabel, strData, iControlType);
+	CSettingString* pSetting = new CSettingString(iOrder, strSetting, iLabel, strData, iControlType, bAllowEmpty);
 	if (!pSetting) return;
 	settingsMap.insert(pair<CStdString,CSetting*>(strSetting,pSetting));
 }

@@ -5,7 +5,15 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 16-12-2004 added: Settings option for skin shows all skins, regardless of version.  Old version skins (which are incompatible with XBMC) are shown greyed out, and do not load when selected.
+  - 19-12-2004 added: If the <home> tag does not work, XBMC looks in: E:\Apps\XBMC, E:\XBMC, F:\apps\XBMC, F:\xbmc to find it's home dir.
+  - 19-12-2004 added: Auto-detect of F and G.  <useFdrive> and <useGdrive> should be no longer needed (and are now ignored)
+  - 19-12-2004 fixed: buttonscroller - some images were shown when they shouldn't have been.
+  - 19-12-2004 fixed: Some of the timings for the slideshow weren't quite accurate
+  - 19-12-2004 changed: Incremented video database version number.
+  - 19-12-2004 fixed: Runtime is saved to the video database.
+  - 19-12-2004 changed: Image loader now scales jpgs while they load (Now uses only the memory needed for the screen image).  Only working for jpgs.
+  - 19-12-2004 fixed: Password could not be set blank for webserver
+  - 19-12-2004 added: Settings option for skin shows all skins, regardless of version.  Old version skins (which are incompatible with XBMC) are shown greyed out, and do not load when selected.  Message is shown on the bottom of screen.
   - 16-12-2004 fixed: Karaoke background alpha
   - 16-12-2004 added: Context menu to My Music
   - 16-12-2004 fixed: Corrupt picture files could cause endless loops in slideshow/picture viewer
