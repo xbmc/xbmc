@@ -81,6 +81,8 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
 				{
 					CStdString strThumb;
 					CUtil::GetAlbumThumb(m_pAlbum->GetTitle()+m_pAlbum->GetAlbumPath(),strThumb);
+
+          CUtil::ClearCache();
 					DeleteFile(strThumb.c_str());
 				}
 				Refresh();
