@@ -20,8 +20,8 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="3"
-				GlobalOptimizations="TRUE"
+				Optimization="1"
+				GlobalOptimizations="FALSE"
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
@@ -31,7 +31,7 @@
 				StringPooling="FALSE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
-				EnableEnhancedInstructionSet="1"
+				EnableEnhancedInstructionSet="0"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Release/XBFileZilla.pch"
