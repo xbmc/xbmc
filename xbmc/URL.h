@@ -20,8 +20,9 @@ public:
 	const CStdString& GetHostName() const;
 	const CStdString& GetUserName() const;
 	const CStdString& GetPassWord() const;
-	const CStdString& GetFileName() const;	
+	const CStdString& GetFileName() const;
 	const CStdString& GetProtocol() const;
+	const CStdString& GetFileType() const;
   void							GetURL(CStdString& strURL) ;
 protected:
 	int				 m_iPort;
@@ -30,4 +31,5 @@ protected:
 	CStdString m_strPassword;
 	CStdString m_strFileName;
 	CStdString m_strProtocol;
+	CStdString m_strFileType;
 };

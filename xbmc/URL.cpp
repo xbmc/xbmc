@@ -8,6 +8,7 @@ CURL::CURL(const CStdString& strURL)
 	m_strPassword="";
 	m_strFileName="";
 	m_strProtocol="";
+	m_strFileType="";
 	m_iPort=0;
 
 	// strURL can be one of the following:
@@ -23,6 +24,9 @@ CURL::CURL(const CStdString& strURL)
 	{
 		// form is drive:directoryandfile
 		m_strFileName=strURL;
+		int iFileType = m_strFileName.ReverseFind('.') + 1;
+		if (iFileType)
+			m_strFileType = m_strFileName.Right(m_strFileName.size()-iFileType);
 		return;
 	}
 
@@ -108,6 +112,10 @@ CURL::CURL(const CStdString& strURL)
 			m_strHostName="";
 		}
 	}
+
+	int iFileType = m_strFileName.ReverseFind('.');
+	if (iFileType != -1)
+		m_strFileType = m_strFileName.Right(m_strFileName.size()-iFileType);
 }
 
 CURL::~CURL()
@@ -117,6 +125,10 @@ CURL::~CURL()
 void CURL::SetFileName(const CStdString& strFileName)
 {
   m_strFileName=strFileName;
+
+	int iFileType = m_strFileName.ReverseFind('.');
+	if (iFileType != -1)
+		m_strFileType = m_strFileName.Right(m_strFileName.size()-iFileType);
 }
 
 void CURL::SetHostName(const CStdString& strHostName)
@@ -158,6 +170,11 @@ const CStdString&  CURL::GetFileName() const
 const CStdString&  CURL::GetProtocol() const
 {
 	return m_strProtocol;
+}
+
+const CStdString&  CURL::GetFileType() const
+{
+	return m_strFileType;
 }
 
 void  CURL::GetURL(CStdString& strURL)
