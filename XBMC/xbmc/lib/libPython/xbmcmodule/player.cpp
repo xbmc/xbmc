@@ -227,7 +227,7 @@ namespace PYXBMC
 			return NULL;
 		}
 
-		return (PyObject*)InfoTagVideo_FromCIMDBMovie(*g_application.GetCurrentMovie());
+		return (PyObject*)InfoTagVideo_FromCIMDBMovie(*(g_application.GetCurrentMovie()));
 	}
 
 	// Player_GetMusicInfoTag
@@ -245,7 +245,7 @@ namespace PYXBMC
 			return NULL;
 		}
 
-		return (PyObject*)InfoTagMusic_FromCMusicInfoTag(*g_application.GetCurrentSong());
+		return (PyObject*)InfoTagMusic_FromCMusicInfoTag(*(g_application.GetCurrentSong()));
 	}
 
 	PyMethodDef Player_methods[] = {
