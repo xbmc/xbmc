@@ -1065,4 +1065,525 @@
     <id>340</id>
     <value>Rozni artysci</value>
   </string>
+ <string>
+    <id>341</id>
+    <value>Odtwarzaj DVD</value>
+  </string>
+  <string>
+    <id>342</id>
+    <value>Filmy</value>
+  </string>
+  <string>
+    <id>343</id>
+    <value>Ustaw liczbe klatek</value>
+  </string>
+  <string>
+    <id>344</id>
+    <value>Obsada</value>
+  </string>
+  <string>
+    <id>345</id>
+    <value>Rok</value>
+  </string>
+  <string>
+    <id>346</id>
+    <value>Stack</value>
+  </string>
+  <string>
+    <id>347</id>
+    <value>Unstack</value>
+  </string>
+  <string>
+    <id>348</id>
+    <value>Flatten Directory Hierarchy</value>
+  </string>
+  <string>
+    <id>349</id>
+    <value>Pokazuj tylko Default.xbe</value>
+  </string>
+  <string>
+    <id>350</id>
+    <value>Programy</value>
+  </string>
+  <string>
+    <id>351</id>
+    <value>Wylacz</value>
+  </string>
+  <string>
+    <id>352</id>
+    <value>Dim</value>
+  </string>
+  <string>
+    <id>353</id>
+    <value>Czarny</value>
+  </string>
+  <string>
+    <id>354</id>
+    <value>Matrix Trails</value>
+  </string>
+  <string>
+    <id>355</id>
+    <value>Screensaver Idle Timeout</value>
+  </string>
+  <string>
+    <id>356</id>
+    <value>Tryb wygaszacza</value>
+  </string>
+  <string>
+    <id>357</id>
+    <value>Shutdown Idle Timeout</value>
+  </string>
+  <string>
+    <id>358</id>
+    <value>Wszystkie albumy</value>
+  </string>
+  <string>
+    <id>359</id>
+    <value>Recent albums</value>
+  </string>
+  <string>
+    <id>360</id>
+    <value>Wygaszacz</value>
+  </string>
+  <string>
+    <id>361</id>
+    <value>R. SlideShow</value>
+  </string>   
+  <string>
+    <id>362</id>
+    <value>Screensaver Fade Level (%)</value>
+  </string>
+  <string>
+    <id>363</id>
+    <value>Sortuj: Plikami</value>
+  </string>   
+  <string>
+    <id>364</id>
+    <value>DD/DTS Multichannel Passthrough</value>
+  </string>   
+  <string>
+    <id>365</id>
+    <value>Sortuj: Nazwami</value>
+  </string>   
+  <string>
+    <id>366</id>
+    <value>Sortuj: Latami</value>
+  </string>   
+  <string>
+    <id>367</id>
+    <value>Sortuj: Ocenami</value>
+  </string>   
+  <string>
+    <id>368</id>
+    <value>IMDB</value>
+  </string>   
+  <string>
+    <id>369</id>
+    <value>Tytul</value>
+  </string>
+  <string>
+    <id>370</id>
+    <value>T-Storms</value>
+  </string>
+  <string>
+    <id>371</id>
+    <value>Partly</value>
+  </string>
+  <string>
+    <id>372</id>
+    <value>Mostly</value>
+  </string>
+  <string>
+    <id>373</id>
+    <value>Slonecznie</value>
+  </string>
+  <string>
+    <id>374</id>
+    <value>pochmurnie</value>
+  </string>
+  <string>
+    <id>375</id>
+    <value>Snieg</value>
+  </string>
+  <string>
+    <id>376</id>
+    <value>Deszcz</value>
+  </string>
+  <string>
+    <id>377</id>
+    <value>Light</value>
+  </string>
+  <string>
+    <id>378</id>
+    <value>Rano</value>
+  </string>
+  <string>
+    <id>379</id>
+    <value>Wieczorem</value>
+  </string>
+  <string>
+    <id>380</id>
+    <value>Showers</value>
+  </string>
+  <string>
+    <id>381</id>
+    <value>Few</value>
+  </string>
+  <string>
+    <id>382</id>
+    <value>Scattered</value>
+  </string>
+  <string>
+    <id>383</id>
+    <value>Wiatr</value>
+  </string>
+  <string>
+    <id>384</id>
+    <value>Strong</value>
+  </string>
+  <string>
+    <id>385</id>
+    <value>Fair</value>
+  </string>
+  <string>
+  <id>396</id> 
+  <value>Wybierz Lokacje</value> 
+  </string>
+  <string>
+  <id>397</id> 
+  <value>Odswierz czas</value> 
+  </string>
+  <string>
+  <id>398</id> 
+  <value>Temperature Units</value> 
+  </string>
+  <string>
+  <id>399</id> 
+  <value>Speed Units</value> 
+  </string>
+  <string>
+  <id>400</id> 
+  <value>Pogoda</value> 
+  </string>
+  <string>
+    <id>401</id>
+    <value>Temperatura</value>
+  </string>   
+  <string>
+    <id>402</id>
+    <value>Feels Like</value>
+  </string> 
+  <string>
+    <id>403</id>
+    <value>UV Index</value>
+  </string>
+  <string>
+    <id>404</id>
+    <value>Wiatr</value>
+  </string>   
+  <string>
+    <id>405</id>
+    <value>Dew Point</value>
+  </string> 
+  <string>
+    <id>406</id>
+    <value>Humidity</value>
+  </string> 
+  <string>
+    <id>407</id>
+    <value>From</value>
+  </string>
+  <string>
+    <id>408</id>
+    <value>at</value>
+  </string>      
+  <string>
+    <id>410</id>
+    <value>Accessing Weather.com</value>
+  </string>       
+  <string>
+    <id>411</id>
+    <value>Pobieram pogode dla:</value>
+  </string> 
+  <string>
+    <id>412</id>
+    <value>Nie moge uzyskac danych pogodowych</value>
+  </string>    
+  <string>
+    <id>413</id>
+    <value>Manual</value>
+  </string>    
+  <string>
+    <id>414</id>
+    <value>No review for this album</value>
+  </string>    
+  <string>
+    <id>415</id>
+    <value>Sciagam miniaturki...</value>
+  </string> 
+  <string>
+    <id>416</id>
+    <value>Nie dostepne</value>
+  </string> 
+  <string>
+    <id>417</id>
+    <value>Pokazuj: Duze ikony</value>
+  </string> 
+  <string>
+    <id>418</id>
+    <value>My Videos/Genres</value>
+  </string> 
+  <string>
+    <id>419</id>
+    <value>My Videos/Actors</value>
+  </string> 
+  <string>
+    <id>420</id>
+    <value>My Videos/Years</value>
+  </string> 
+  <string>
+    <id>421</id>
+    <value>My Videos/Title</value>
+  </string> 
+  <string>
+    <id>422</id>
+    <value>Delete albuminfo</value>
+  </string> 
+  <string>
+    <id>423</id>
+    <value>Delete CDDB info</value>
+  </string> 
+  <string>
+    <id>424</id>
+    <value>Wybierz</value>
+  </string> 
+  <string>
+    <id>425</id>
+    <value>No albuminfo found.</value>
+  </string> 
+  <string>
+    <id>426</id>
+    <value>No CDDB info found.</value>
+  </string> 
+  <string>
+    <id>427</id>
+    <value>Dysk:</value>
+  </string> 
+  <string>
+    <id>428</id>
+    <value>Wsadz poprawny CD/DVD</value>
+  </string> 
+  <string>
+    <id>429</id>
+    <value>Please insert the following CD/DVD</value>
+  </string>  
+  <string>
+    <id>430</id>
+    <value>Sort by: DVD#</value>
+  </string>  
+  <string>
+    <id>431</id>
+    <value>No Cache</value>
+  </string>  
+  <string>
+    <id>432</id>
+    <value>Skasuj film z bazy danych</value>
+  </string>  
+  <string>
+    <id>433</id>
+    <value>Are you sure to remove</value>
+  </string>  
+  <string>
+    <id>434</id>
+    <value>the movie?</value>
+  </string> 
+  <string>
+    <id>435</id>
+    <value>Sciezka</value>
+  </string> 
+  <string>
+    <id>436</id>
+    <value>Rok:</value>
+  </string> 
+  <string>
+    <id>437</id>
+    <value>Duration:</value>
+  </string> 
+  <string>
+    <id>438</id>
+    <value>Otwieram plik</value>
+  </string> 
+  <string>
+    <id>439</id>
+    <value>Cache</value>
+  </string> 
+  <string>
+    <id>440</id>
+    <value>Dysk twardy</value>
+  </string> 
+  <string>
+    <id>441</id>
+    <value>UDF</value>
+  </string> 
+  <string>
+    <id>442</id>
+    <value>LAN</value>
+  </string> 
+  <string>
+    <id>443</id>
+    <value>Internet</value>
+  </string> 
+  <string>
+    <id>444</id>
+    <value>video</value>
+  </string> 
+  <string>
+    <id>445</id>
+    <value>audio</value>
+  </string> 
+  <string>
+    <id>446</id>
+    <value>DVD</value>
+  </string> 
+  <string>
+    <id>447</id>
+    <value>Autorun</value>
+  </string> 
+  <string>
+    <id>448</id>
+    <value>LCD</value>
+  </string> 
+  <string>
+    <id>449</id>
+    <value>Wlaczone</value>
+  </string> 
+  <string>
+    <id>450</id>
+    <value>Kolumn</value>
+  </string> 
+  <string>
+    <id>451</id>
+    <value>Row 1 adress:</value>
+  </string> 
+  <string>
+    <id>452</id>
+    <value>Row 2 adress:</value>
+  </string> 
+  <string>
+    <id>453</id>
+    <value>Row 3 adress:</value>
+  </string> 
+  <string>
+    <id>454</id>
+    <value>Row 4 adress:</value>
+  </string> 
+  <string>
+    <id>455</id>
+    <value>Rows:</value>
+  </string> 
+  <string>
+    <id>456</id>
+    <value>Tryb:</value>
+  </string> 
+  <string>
+    <id>457</id>
+    <value>Przelacz obraz</value>
+  </string> 
+  <string>
+    <id>458</id>
+    <value>B/Mark</value>
+  </string>
+  <string>
+    <id>459</id>
+    <value>Subs</value>
+  </string>
+  <string>
+    <id>460</id>
+    <value>Strumien Audio</value>
+  </string>
+  <string>
+    <id>461</id>
+    <value>[active]</value>
+  </string>
+  <string>
+    <id>462</id>
+    <value>Napisy</value>
+  </string>
+  <string>
+    <id>463</id>
+    <value>Backlight</value>
+  </string>
+  <string>
+    <id>464</id>
+    <value>Jasnosc</value>
+  </string> 
+  <string>
+    <id>465</id>
+    <value>Kontrast</value>
+  </string> 
+  <string>
+    <id>466</id>
+    <value>Gamma</value>
+  </string> 
+  <string>
+    <id>467</id>
+    <value>Typ</value>
+  </string> 
+  <string>
+    <id>468</id>
+    <value>Move the bar to change the osd position</value>
+  </string>
+  <string>
+    <id>469</id>
+    <value>Pozycja OSD</value>
+  </string>
+<string><id>10000</id><value>Home</value></string>
+<string><id>10001</id><value>Moje programy</value></string>
+<string><id>10002</id><value>Moje obrazy</value></string>
+<string><id>10003</id><value>Moje pliki</value></string>
+<string><id>10004</id><value>Ustawienia</value></string>
+<string><id>10005</id><value>Moja muzyka</value></string>
+<string><id>10006</id><value>Moje filmy</value></string>
+<string><id>10007</id><value>Informacje systemowe</value></string>
+<string><id>10008</id><value>Ustawienia->Ogolne</value></string>
+<string><id>10009</id><value>Ustawienia->Ekran</value></string>
+<string><id>10010</id><value>Ustawienia->Ekran->UI Calibration</value></string>
+<string><id>10011</id><value>Ustawienia->Ekran->Screen Calibration</value></string>
+<string><id>10012</id><value>Ustawienia->SlideShow</value></string>
+<string><id>10013</id><value>Ustawienia->Ekran->Filtry</value></string>
+<string><id>10014</id><value>Ustawienia->Muzyka</value></string>
+<string><id>10015</id><value>Ustawienia->Ekran->Napisy</value></string>
+<string><id>10016</id><value>Ustawienia->Ekran->Wygaszacz</value></string>
+<string><id>10017</id><value>Ustawienia->Pogoda</value></string>
+<string><id>10020</id><value>Ustawienia->Skrypty</value></string>
+<string><id>10021</id><value>Moje filmy/gatunek</value></string>
+<string><id>10022</id><value>Moje filmy/aktor</value></string>
+<string><id>10023</id><value>Moje filmy/rok</value></string>
+<string><id>10024</id><value>Ustawienia->Programy</value></string>
+<string><id>10025</id><value>Moje filmy/tytul</value></string>
+<string><id>10026</id><value>Ustawienia->Ogolne->Cache</value></string>
+<string><id>10027</id><value>Ustawienia->Ogolne->Autorun</value></string>
+<string><id>10028</id><value>Moje filmy/playlista</value></string>
+<string><id>10029</id><value>Ustawienia->ogolne->LCD</value></string>
+<string><id>10100</id><value>Tak/nie dialog</value></string>
+<string><id>10101</id><value>Progress dialog</value></string>
+<string><id>10500</id><value>Moja muzyka/playlista</value></string>
+<string><id>10501</id><value>Moja muzyka/pliki</value></string>
+<string><id>10502</id><value>Moja muzyka/albumy</value></string>
+<string><id>10503</id><value>Moja muzyka/artysci</value></string>
+<string><id>10504</id><value>Moja muzyka/gatunki</value></string>
+<string><id>10505</id><value>Moja muzyka/top100</value></string>
+<string><id>11000</id><value>klawiatura</value></string>
+<string><id>12000</id><value>Wybierz dialog</value></string>
+<string><id>12001</id><value>Moja muzyka/info</value></string>
+<string><id>12002</id><value>Dialog OK</value></string>
+<string><id>12003</id><value>Moje filmy/Info</value></string>
+<string><id>12004</id><value>My Scripts/Info</value></string>
+<string><id>12005</id><value>Fullscreen video</value></string>
+<string><id>12006</id><value>Audio visisalisation</value></string>
+<string><id>12007</id><value>Moje obrazy/slideshow</value></string>
+<string><id>12008</id><value>Filestacking dialog</value></string>
+<string><id>12600</id><value>Moja pogoda</value></string>
+<string><id>12900</id><value>Wygaszacz</value></string>
+<string><id>12901</id><value>Fullscreen OSD</value></string>
 </strings>

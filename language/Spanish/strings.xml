@@ -1140,11 +1140,11 @@
   </string>
   <string>
     <id>358</id>
-    <value>Todos los albums</value>
+    <value>Todos los Album</value>
   </string>
   <string>
     <id>359</id>
-    <value>Albums recientess</value>
+    <value>Album Recientes</value>
   </string>
   <string>
     <id>360</id>
@@ -1594,7 +1594,46 @@
   	<id>482</id>
   	<value>About XBMC</value>
   </string>
-  
+  <string>
+    <id>483</id>
+    <value>Album</value>
+  </string>
+  <string>
+    <id>484</id>
+    <value>Artista</value>
+  </string> 
+  <string>
+    <id>485</id>
+    <value>Borrar Album</value>
+  </string>
+  <string>
+    <id>486</id>
+    <value>Repetir</value>
+  </string>
+  <string>
+    <id>487</id>
+    <value>Repetir Una</value>
+  </string>
+  <string>
+    <id>488</id>
+    <value>Repetir Lista</value>
+  </string>
+  <string>
+    <id>489</id>
+    <value>Usa Lista en Cancion</value>
+  </string>
+  <string>
+    <id>490</id>
+    <value>Auto switch lista e iconos en canciones</value>
+  </string>
+  <string>
+    <id>491</id>
+    <value>Usar iconos grandes</value>
+  </string>
+  <string>
+    <id>492</id>
+    <value>Alargar Subtitulos</value>
+  </string>
   
 <string><id>10000</id><value>Inicio</value></string>
 <string><id>10001</id><value>Mis Programas</value></string>

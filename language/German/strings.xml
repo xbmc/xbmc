@@ -1576,11 +1576,62 @@
     <id>478</id>
     <value>OSD</value>
   </string>
-
-<string><id>479</id><value>Darstellung-Sprache</value></string>
-<string><id>480</id><value>Benutzeroberfläche</value></string>
-<string><id>481</id><value>Audio Optionen</value></string>
-<string><id>482</id><value>Info XBMC</value></string>
+  <string>
+    <id>479</id>
+    <value>Darstellung-Sprache</value>
+  </string>
+  <string>
+    <id>480</id>
+    <value>Benutzeroberfläche</value>
+  </string>
+  <string>
+    <id>481</id>
+    <value>Audio Optionen</value>
+  </string>
+  <string>
+    <id>482</id>
+    <value>Info über XBMC</value>
+  </string>
+  <string>
+    <id>483</id>
+    <value>Album</value>
+  </string>
+  <string>
+    <id>484</id>
+    <value>Künstler</value>
+  </string>
+  <string>
+    <id>485</id>
+    <value>Lösche Album</value>
+  </string>
+  <string>
+    <id>486</id>
+    <value>Wiederholen</value>
+  </string>
+  <string>
+    <id>487</id>
+    <value>Wiederhole</value>
+  </string>
+  <string>
+    <id>488</id>
+    <value>Wiederhole Ordner Wiedergabeliste</value>
+  </string>
+  <string>
+    <id>489</id>
+    <value>Verwende Wiedergabeliste für Lieder</value>
+  </string>
+  <string>
+    <id>490</id>
+    <value>Listenansicht mit Symbolansicht tauschen</value>
+  </string>
+  <string>
+    <id>491</id>
+    <value>große Symbole verwenden</value>
+  </string>
+  <string>
+    <id>492</id>
+    <value>VobSubs vergrößern</value>
+  </string>
 
 <string><id>10000</id><value>Hauptmenü</value></string>
 <string><id>10001</id><value>Programme</value></string>
