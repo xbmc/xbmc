@@ -1,6 +1,9 @@
 #include "guidialogprogress.h"
 #include "guiWindowManager.h"
 #include "localizeStrings.h"
+#include "GUIProgressControl.h"
+
+#define CONTROL_PROGRESS_BAR 20
 
 CGUIDialogProgress::CGUIDialogProgress(void)
 :CGUIDialog(0)
@@ -29,6 +32,8 @@ void CGUIDialogProgress::StartModal(DWORD dwParentId)
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
   OnMessage(msg);
+	ShowProgressBar(false);
+	SetPercentage(0);
 	m_bRunning=true;
 }
 
@@ -103,4 +108,23 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
 bool CGUIDialogProgress::IsCanceled() const
 {
 	return m_bCanceled;
+}
+
+void CGUIDialogProgress::SetPercentage(int iPercentage)
+{
+	CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS_BAR);
+	pControl->SetPercentage(iPercentage);
+}
+void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
+{
+	if (bOnOff)
+	{
+		CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), CONTROL_PROGRESS_BAR); 
+		OnMessage(msg);
+	}
+	else
+	{
+		CGUIMessage msg(GUI_MSG_HIDDEN, GetID(), CONTROL_PROGRESS_BAR); 
+		OnMessage(msg);
+	}
 }
