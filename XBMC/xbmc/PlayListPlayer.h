@@ -2,6 +2,8 @@
 
 #include "StdString.h"
 #include "playlist.h"
+#include "IMsgTargetCallback.h"
+#include "GUIMessage.h"
 #include <vector>
 
 #define PLAYLIST_MUSIC			0
@@ -14,11 +16,12 @@ using namespace PLAYLIST;
 
 namespace PLAYLIST
 {
-	class CPlayListPlayer/*: public CPlayList*/
+	class CPlayListPlayer : public IMsgTargetCallback
 	{
 	public:
 		CPlayListPlayer(void);
 		virtual ~CPlayListPlayer(void);
+		virtual bool OnMessage(CGUIMessage &message);
 		void			PlayNext(bool bAutoPlay=false);
 		void			PlayPrevious();
 		void			Play(int iSong);

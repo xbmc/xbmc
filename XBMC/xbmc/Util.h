@@ -77,4 +77,5 @@ public:
 	static bool IsShoutCast(const CStdString& strFileName);
 	static void RemoveIllegalChars( CStdString& strText);
 	static void CacheSubtitles(const CStdString& strMovie);
+	static void SecondsToHMSString( long lSeconds, CStdString& strHMS);
 };

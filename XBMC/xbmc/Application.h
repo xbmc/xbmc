@@ -36,6 +36,12 @@
 #include "GUIWindowScripts.h"
 #include "GUIWindowVisualisation.h"
 #include "GUIWindowSlideshow.h"
+#include "GUIWindowMusicPlaylist.h" 
+#include "GUIWindowMusicSongs.h" 
+#include "GUIWindowMusicAlbum.h"
+#include "GUIWindowMusicArtists.h"
+#include "GUIWindowMusicGenres.h" 
+#include "GUIWindowMusicTop100.h" 
 #include "LocalizeStrings.h"
 #include "utils/sntp.h"
 #include "utils/delaycontroller.h"
@@ -87,7 +93,6 @@ public:
 	CGUIDialogProgress							m_guiDialogProgress;
 	CGUIDialogOK										m_guiDialogOK;
 	CGUIWindowMyFiles								m_guiMyFiles;
-	CGUIWindowMusic									m_guiMyMusic;
 	CGUIWindowVideo									m_guiMyVideo;
 	CGUIWindowSettings							m_guiSettings;
 	CGUIWindowSystemInfo						m_guiSystemInfo;
@@ -107,7 +112,13 @@ public:
 	CGUIWindowVideoOverlay					m_guiWindowVideoOverlay;
 	CGUIWindowVisualisation					m_guiWindowVisualisation;
 	CGUIWindowSettingsMusic					m_guiSettingsMusic;
-	CGUIWindowSlideShow						m_guiWindowSlideshow;
+	CGUIWindowSlideShow							m_guiWindowSlideshow;
+  CGUIWindowMusicPlayList					m_guiMyMusicPlayList;
+	CGUIWindowMusicSongs						m_guiMyMusicSongs;
+  CGUIWindowMusicAlbum						m_guiMyMusicAlbum;
+	CGUIWindowMusicArtists					m_guiMyMusicArtists;
+	CGUIWindowMusicGenres						m_guiMyMusicGenres;
+	CGUIWindowMusicTop100						m_guiMyMusicTop100;
   CXBVirtualKeyboard   						m_keyboard;
 	CSNTPClient											m_sntpClient;
 	CDetectDVDMedia									m_DetectDVDType;

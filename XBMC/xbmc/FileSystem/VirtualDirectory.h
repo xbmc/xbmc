@@ -19,6 +19,7 @@ namespace DIRECTORY
     virtual bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
     void          SetShares(VECSHARES& vecShares);
 		bool					IsShare(const CStdString& strPath) const;
+		CStdString		GetDVDDriveUrl();
   
   protected:
     void          CacheThumbs(VECFILEITEMS &items);
