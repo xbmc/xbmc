@@ -515,6 +515,10 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
     (D3D_OK == m_pOSDYTexture[iOSDBuffer]->LockRect(0, &lr, &rc, 0)) &&
     (D3D_OK == m_pOSDATexture[iOSDBuffer]->LockRect(0, &lra, &rc, 0))
   ) {
+    //clear the textures
+    fast_memset(lr.pBits, 0, lr.Pitch*image_height);
+    fast_memset(lra.pBits, 0, lra.Pitch*image_height);
+    //draw the osd/subs
     vo_draw_alpha_xbox(w,h,src,srca,stride, (BYTE*)lr.pBits, (BYTE*)lra.pBits, lr.Pitch);
   }
   m_pOSDYTexture[iOSDBuffer]->UnlockRect(0);
