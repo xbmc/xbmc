@@ -689,6 +689,7 @@
   <string><id>13357</id><value>Kombination av Overlay/Shader</value></string>
   <string><id>13358</id><value>Pixel Shader med hög kvalite</value></string>
   <string><id>13359</id><value>Pixel Shader med medium kvalite</value></string>
+  <string><id>13360</id><value>Generera Thumbnails</value></string>
   <string><id>14000</id><value>Stacking Av</value></string>
   <string><id>14001</id><value>Stacking enkel</value></string>
   <string><id>14002</id><value>Stacking luddig</value></string>
