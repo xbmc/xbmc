@@ -373,7 +373,7 @@
 	</string>
 	<string>
 		<id>166</id>
-		<value>Skin :</value>
+		<value>Thème :</value>
 	</string>
 	<string>
 		<id>167</id>
@@ -713,7 +713,7 @@
 	</string>
 	<string>
 		<id>252</id>
-		<value>- Utiliser tous les hauts-parleurs</value>
+		<value>- Utiliser tous les hauts-parleurs en stéréo</value>
 	</string>
 	<string>
 		<id>253</id>
@@ -721,7 +721,7 @@
 	</string>
 	<string>
 		<id>254</id>
-		<value>- Utiliser l'AC3</value>
+		<value>- Périphérique compatible DTS</value>
 	</string>
 	<string>
 		<id>255</id>
@@ -857,7 +857,7 @@
 	</string>
 	<string>
 		<id>288</id>
-		<value>Polices</value>
+		<value>Fontes</value>
 	</string>
 	<string>
 		<id>289</id>
@@ -953,7 +953,7 @@
 	</string>
 	<string>
 		<id>313</id>
-		<value>Réorganisez la base de données</value>
+		<value>Optimiser la base de données</value>
 	</string>
 	<string>
 		<id>314</id>
@@ -969,47 +969,47 @@
 	</string>
 	<string>
 		<id>317</id>
-		<value>Réorganisation efféctuée</value>
+		<value>Optimisation efféctuée</value>
 	</string>
 	<string>
 		<id>318</id>
-		<value>Marquage des titres supprimés</value>
+		<value>Optimisation des morceaux</value>
 	</string>
 	<string>
 		<id>319</id>
-		<value>Erreur sur la réorganisation des titres</value>
+		<value>Erreur à l'optimisation des morceaux</value>
 	</string>
 	<string>
 		<id>320</id>
-		<value>Recherche des artistes</value>
+		<value>Optimisation des artistes</value>
 	</string>
 	<string>
 		<id>321</id>
-		<value>Erreur sur la réorganisation des artistes</value>
+		<value>Erreur à l'optimisation des artistes</value>
 	</string>
 	<string>
 		<id>322</id>
-		<value>Recherche de genres</value>
+		<value>Optimisation des genres</value>
 	</string>
 	<string>
 		<id>323</id>
-		<value>Erreur sur la réorganisation des genres</value>
+		<value>Erreur à l'optimisation des genres</value>
 	</string>
 	<string>
 		<id>324</id>
-		<value>Recherche de chemins de fichier</value>
+		<value>Optimisation des chemins de fichier</value>
 	</string>
 	<string>
 		<id>325</id>
-		<value>Erreur dans la réorganisation des chemins de fichier</value>
+		<value>Erreur à l'optimisation des chemins de fichier</value>
 	</string>
 	<string>
 		<id>326</id>
-		<value>Recherche d'albums</value>
+		<value>Optimisation des albums</value>
 	</string>
 	<string>
 		<id>327</id>
-		<value>Erreur dans la réorganisation des albums</value>
+		<value>Erreur à l'optimisation des albums</value>
 	</string>
 	<string>
 		<id>328</id>
@@ -1033,11 +1033,11 @@
 	</string>
 	<string>
 		<id>333</id>
-		<value>Voulez vous réorganiser votre BDD musicale ?</value>
+		<value>Voulez vous optimiser votre BDD musicale ?</value>
 	</string>
 	<string>
 		<id>334</id>
-		<value>Réorganiser la BDD des musiques</value>
+		<value>Optimiser la BDD des musiques</value>
 	</string>
 	<string>
 		<id>335</id>
@@ -1157,7 +1157,7 @@
 	</string>
 	<string>
 		<id>364</id>
-		<value>- DD/DTS multicannal</value>
+		<value>- Périphérique compatible AC3</value>
 	</string>
 	<string>
 		<id>365</id>
@@ -1417,7 +1417,7 @@
 	</string>
 	<string>
 		<id>430</id>
-		<value>Classer par : DVD#</value>
+		<value>Lister : DVD#</value>
 	</string>
 	<string>
 		<id>431</id>
@@ -1613,7 +1613,7 @@
 	</string>
 	<string>
 		<id>479</id>
-		<value>Skin et langue</value>
+		<value>Thème et langue</value>
 	</string>
 	<string>
 		<id>480</id>
@@ -1722,7 +1722,16 @@
 	<string>
 		<id>506</id>
 		<value>Utiliser les noms des dossiers comme descrip.</value>
-	</string> <string>
+	</string>
+	<string>
+		<id>507</id>
+		<value>Lister : usage</value>
+	</string>
+	<string>
+		<id>508</id>
+		<value>Ne pas utiliser les raccourcis et le scan</value>
+	</string>
+	<string>
 		<id>600</id>
 		<value>Importer CD</value>
 	</string>
@@ -1787,7 +1796,60 @@
 		<value>Toutes les chansons de</value>
 	</string>
 	
-	
+    <string>
+        <id>629</id>
+        <value>Type de vue</value>
+    </string>
+    <string>
+        <id>630</id>
+        <value>Normal</value>
+    </string>
+    <string>
+    	   <id>631</id>
+       	<value>Zoom</value>
+    </string>
+    <string>
+        <id>632</id>
+    	   <value>Étirée 4:3</value>
+    </string>
+    <string>
+       	<id>633</id>
+        	<value>Étirée 14:9</value>
+    </string>
+    <string>
+       	<id>634</id>
+        	<value>Étirée 16:9</value>
+    </string>
+    <string>
+       	<id>635</id>
+        	<value>Originale</value>
+    </string>
+    <string>
+       	<id>636</id>
+        	<value>Personnalisée</value>
+    </string>
+
+    <string>
+       	<id>700</id>
+        <value>Optimisation de la base de données</value>
+    </string>
+    <string>
+       	<id>701</id>
+        <value>Suppression des anciens morceaux de la base de données</value>
+    </string>
+    <string>
+       	<id>702</id>
+        <value>Ce chemin a été scanné</value>
+    </string>
+    <string>
+       	<id>703</id>
+        <value>Choisissez Oui pour mettre à jour tous les titres de ce répertoire</value>
+    </string>
+    <string>
+       	<id>704</id>
+        <value>Choisissez Non pour seulement rajouter les nouveaux morceaux.</value>
+    </string>
+           	
 	<string>
 		<id>998</id>
 		<value>XLink KAI</value>
@@ -2030,6 +2092,14 @@
         <value>Le profil '%s' a été chargé avec succès</value>
     </string>
     <string>
+        <id>13204</id>
+        <value>Dernier profil chargé :</value>
+    </string>
+    <string>
+        <id>13205</id>
+        <value>Inconnu</value>
+    </string>
+    <string>
         <id>13300</id>
         <value>Vitesse du ventilateur :</value>
     </string>
@@ -2041,5 +2111,12 @@
         <id>13302</id>
         <value>Contrôle de la vitesse du ventilateur</value>
     </string>
-
+    <string>
+        <id>13303</id>
+        <value>Fonte du thème :</value>
+    </string>
+    <string>
+        <id>13303</id>
+        <value>Encodage de caractère :</value>
+    </string>
 </strings>
