@@ -1,5 +1,6 @@
 #include "guiselectbuttoncontrol.h"
 #include "guifontmanager.h"
+#include "guiwindowmanager.h"
 
 
 CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId, 
@@ -25,6 +26,7 @@ CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwContr
 	m_iStartFrame=0;
 	m_bLeftSelected=false;
 	m_bRightSelected=false;
+	m_dwTicks=0;
 }
 
 CGUISelectButtonControl::~CGUISelectButtonControl(void)
@@ -35,20 +37,21 @@ void CGUISelectButtonControl::Render()
 {
 	if (!IsVisible() ) return;
 
+
 	//	Are we in selection mode
 	if (m_bShowSelect)
 	{
 		//	Yes, render the select control
 
-		//	background, left and right arrow
+		//	render background, left and right arrow
 
 		m_imgBackground.Render();
 
 		D3DCOLOR dwTextColor=m_dwTextColor;
+
 		//	User has moved left...
 		if(m_bLeftSelected)
 		{
-			dwTextColor=m_dwDisabledColor;
 			//	...render focused arrow
 			m_iStartFrame++;
 			if(m_iStartFrame>=10)
@@ -57,6 +60,10 @@ void CGUISelectButtonControl::Render()
 				m_bLeftSelected=false;
 			}
 			m_imgLeftFocus.Render();
+
+			//	If we are moving left
+			//	render item text as disabled
+			dwTextColor=m_dwDisabledColor;
 		}
 		else
 		{
@@ -68,7 +75,6 @@ void CGUISelectButtonControl::Render()
 		//	User has moved right...
 		if(m_bRightSelected)
 		{
-			dwTextColor=m_dwDisabledColor;
 			//	...render focused arrow
 			m_iStartFrame++;
 			if(m_iStartFrame>=10)
@@ -77,6 +83,10 @@ void CGUISelectButtonControl::Render()
 				m_bRightSelected=false;
 			}
 			m_imgRightFocus.Render();
+
+			//	If we are moving right
+			//	render item text as disabled
+			dwTextColor=m_dwDisabledColor;
 		}
 		else
 		{
@@ -84,9 +94,27 @@ void CGUISelectButtonControl::Render()
 			m_imgRight.Render();
 		}
 
+
 		//	Render text if a current item is available
 		if (m_iCurrentItem>=0 && m_pFont)
 			m_pFont->DrawText((float)m_dwPosX+m_imgLeft.GetWidth()+15, (float)2+m_dwPosY, dwTextColor, m_vecItems[m_iCurrentItem].c_str());
+
+
+		//	Select current item, if user doesn't 
+		//	move left or right for 1.5 sec.
+		DWORD dwTicksSpan=timeGetTime()-m_dwTicks;
+		if ((float)(dwTicksSpan/1000)>1.5f)
+		{
+			//	User hasn't moved disable selection mode...
+			m_bShowSelect=false;
+
+			//	...and send a thread message.
+			//	(Sending a message with SendMessage 
+			//	can result in a GPF.)
+			CGUIMessage message(GUI_MSG_CLICKED,GetID(), GetParentID() );
+			m_gWindowManager.SendThreadMessage(message);
+		}
+
 	}	//	if (m_bShowSelect)
 	else
 	{
@@ -136,6 +164,11 @@ void CGUISelectButtonControl::OnAction(const CAction &action)
 		{
 			//	Enter selection mode
 			m_bShowSelect=true;
+
+			//	Start timer, if user doesn't select an item
+			//	or moves left/right. The control will 
+			//	automatically select the current item.
+			m_dwTicks=timeGetTime();
 		}
 		else
 			CGUIButtonControl::OnAction(action);
@@ -144,9 +177,10 @@ void CGUISelectButtonControl::OnAction(const CAction &action)
 	{
 		if (action.wID == ACTION_SELECT_ITEM)
 		{
-			//	User has selected an item, disable select mode
+			//	User has selected an item, disable selection mode...
 			m_bShowSelect=false;
-			// and send a message.
+
+			// ...and send a message.
 			CGUIMessage message(GUI_MSG_CLICKED,GetID(), GetParentID() );
 			g_graphicsContext.SendMessage(message);
 			return;
@@ -156,6 +190,11 @@ void CGUISelectButtonControl::OnAction(const CAction &action)
 			//	Set for visual feedback
 			m_bLeftSelected=true;
 			m_iStartFrame=0;
+
+			//	Reset timer for automatically selecting
+			//	the current item.
+			m_dwTicks=timeGetTime();
+
 			//	Switch to previous item
 			if (m_vecItems.size()>0)
 			{
@@ -170,6 +209,11 @@ void CGUISelectButtonControl::OnAction(const CAction &action)
 			//	Set for visual feedback
 			m_bRightSelected=true;
 			m_iStartFrame=0;
+
+			//	Reset timer for automatically selecting
+			//	the current item.
+			m_dwTicks=timeGetTime();
+
 			//	Switch to next item
 			if (m_vecItems.size()>0)
 			{

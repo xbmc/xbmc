@@ -278,9 +278,14 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
 					nNewWindow=WINDOW_VIDEO_TITLE;
 					break;
 				}
-				g_stSettings.m_iVideoStartWindow=nNewWindow;
-				g_settings.Save();
-				m_gWindowManager.ActivateWindow(nNewWindow);
+
+				if (nNewWindow!=GetID())
+				{
+					g_stSettings.m_iVideoStartWindow=nNewWindow;
+					g_settings.Save();
+					m_gWindowManager.ActivateWindow(nNewWindow);
+				}
+
         return true;
       }
     }
