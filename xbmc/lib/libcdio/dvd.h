@@ -20,14 +20,14 @@
 */
 
 /*!
-   \file scsi_mmc.h 
+   \file dvd.h 
    \brief Definitions for DVD access.
 */
 
 #ifndef __CDIO_DVD_H__
 #define __CDIO_DVD_H__
 
-#include <cdio/types.h>
+#include <types.h>
 
 /*! Values used in a READ DVD STRUCTURE */
 

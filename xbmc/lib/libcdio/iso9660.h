@@ -32,8 +32,11 @@
 #ifndef __CDIO_ISO9660_H__
 #define __CDIO_ISO9660_H__
 
-#include <cdio/cdio.h>
-#include <cdio/xa.h>
+#include "config.h"
+
+#include <cdio.h>
+#include <ds.h>
+#include <xa.h>
 
 #include <time.h>
 
@@ -56,32 +59,35 @@
     =	 38 chars
 \endverbatim 
 */
+
+/*! size in bytes of the filename portion + null byte */
 #define LEN_ISONAME     31
+
+/*! Max # characters in the entire ISO 9660 filename. */
 #define MAX_ISONAME     37
 
+/*! Max # characters in the entire ISO 9660 filename. */
 #define MAX_ISOPATHNAME 255
 
-/*! \def Max # characters in an perparer id. */
+/*! Max # characters in an perparer id. */
 #define ISO_MAX_PREPARER_ID 128
 
-/*! \def Max # characters in an publisher id. */
+/*! Max # characters in an publisher id. */
 #define ISO_MAX_PUBLISHER_ID 128
 
-/*! \def Max # characters in an application id. */
+/*! Max # characters in an application id. */
 #define ISO_MAX_APPLICATION_ID 128
 
-/*! \def Max # characters in an system id. */
+/*! Max # characters in an system id. */
 #define ISO_MAX_SYSTEM_ID 32
 
-/*! \def Max # characters in an volume id. */
+/*! Max # characters in an volume id. */
 #define ISO_MAX_VOLUME_ID 32
 
-/*! \def Max # characters in an volumeset id. */
+/*! Max # characters in an volume-set id. */
 #define ISO_MAX_VOLUMESET_ID 128
 
-/*
- * ISO 9660 directory flags.
- */
+/**! ISO 9660 directory flags. */
 #define	ISO_FILE	  0	/**< Not really a flag...		  */
 #define	ISO_EXISTENCE	  1	/**< Do not make existence known (hidden) */
 #define	ISO_DIRECTORY	  2	/**< This file is a directory		  */
@@ -92,18 +98,23 @@
 #define	ISO_DRESERVED2	 64	/**< Reserved bit 6			  */
 #define	ISO_MULTIEXTENT	128	/**< Not final entry of a mult. ext. file */
 
-/* Volume descriptor types */
+/**! Volume descriptor types */
 #define ISO_VD_PRIMARY             1
 #define ISO_VD_SUPPLEMENTARY	   2  /**< Used by Joliet */
 #define ISO_VD_END	         255
 
-#define ISO_PVD_SECTOR  16      /**< Sector of Primary Volume Descriptor */
-#define ISO_EVD_SECTOR  17      /**< Sector of End Volume Descriptor */
+/*! Sector of Primary Volume Descriptor */
+#define ISO_PVD_SECTOR  16
 
-#define ISO_STANDARD_ID      "CD001" /**< String inside track identifying an 
-                                        ISO 9660 filesystem. */
-#define ISO_BLOCKSIZE           2048 /**< Number of bytes in an ISO
-                                        9660 block */
+/*! Sector of End Volume Descriptor */
+#define ISO_EVD_SECTOR  17  
+
+/*! String inside track identifying an ISO 9660 filesystem. */
+#define ISO_STANDARD_ID      "CD001" 
+
+
+/*! Number of bytes in an ISO 9660 block */
+#define ISO_BLOCKSIZE           2048 
 
 #ifdef __cplusplus
 extern "C" {
@@ -116,7 +127,15 @@ enum strncpy_pad_check {
   ISO9660_DCHARS
 };
 
+#ifndef  EMPTY_ARRAY_SIZE
+#define EMPTY_ARRAY_SIZE
+#endif
+
+#ifdef _XBOX
+#pragma pack(1)
+#else
 PRAGMA_BEGIN_PACKED
+#endif
 
 /*! 
   \brief ISO-9660 shorter-format time structure.
@@ -162,120 +181,6 @@ struct	iso9660_ltime {
 
 typedef struct iso9660_ltime  iso9660_ltime_t;
 
-/*! 
-  \brief ISO-9660 Primary Volume Descriptor.
- */
-struct iso9660_pvd {
-  uint8_t          type;                         /**< 711 encoded */
-  char             id[5];
-  uint8_t          version;                      /**< 711 encoded */
-  char             unused1[1];
-  char             system_id[ISO_MAX_SYSTEM_ID]; /**< each char is an achar */
-  char             volume_id[ISO_MAX_VOLUME_ID]; /**< each char is a dchar */
-  char             unused2[8];
-  uint64_t         volume_space_size;            /**< 733 encoded */
-  char             unused3[32];
-  uint32_t         volume_set_size;              /**< 723 encoded */
-  uint32_t         volume_sequence_number;       /**< 723 encoded */
-  uint32_t         logical_block_size;           /**< 723 encoded */
-  uint64_t         path_table_size;              /**< 733 encoded */
-  uint32_t         type_l_path_table;            /**< 731 encoded */
-  uint32_t         opt_type_l_path_table;        /**< 731 encoded */
-  uint32_t         type_m_path_table;            /**< 732 encoded */
-  uint32_t         opt_type_m_path_table;        /**< 732 encoded */
-  char             root_directory_record[34];    /**< See section 9.1 of
-                                                    ISO 9660 spec. */
-  char             volume_set_id[ISO_MAX_VOLUMESET_ID];    /**< dchars */
-  char             publisher_id[ISO_MAX_PUBLISHER_ID];     /**< achars */
-  char             preparer_id[ISO_MAX_PREPARER_ID];       /**< achars */
-  char             application_id[ISO_MAX_APPLICATION_ID]; /**< achars */
-  char             copyright_file_id[37];     /**< See section 7.5 of
-                                                 ISO 9660 spec. Each char is 
-                                                 a dchar */
-  char             abstract_file_id[37];      /**< See section 7.5 of 
-                                                 ISO 9660 spec. Each char is 
-                                                 a dchar */
-  char             bibliographic_file_id[37]; /**< See section 7.5 of 
-                                                 ISO 9660 spec. Each char is
-                                                 a dchar. */
-  iso9660_ltime_t  creation_date;             /**< See section 8.4.26.1 of
-                                                 ISO 9660 spec. */
-  iso9660_ltime_t  modification_date;         /**< See section 8.4.26.1 of 
-                                                 ISO 9660 spec. */
-  iso9660_ltime_t  expiration_date;           /**< See section 8.4.26.1 of
-                                                 ISO 9660 spec. */
-  iso9660_ltime_t  effective_date;            /**< See section 8.4.26.1 of
-                                                 ISO 9660 spec. */
-  uint8_t          file_structure_version;    /**< 711 encoded */
-  char             unused4[1];
-  char             application_data[512];
-  char             unused5[653];
-} GNUC_PACKED;
-
-/*! 
-  \brief ISO-9660 Supplimentary Volume Descriptor. 
-
-  This is used for Joliet Extentions and is almost the same as the
-  the primary descriptor but two unused fields, "unused1" and "unused3
-  become "flags and "escape_sequences" respectively.
-*/
-struct iso9660_svd {
-  uint8_t          type;                         /**< 711 encoded */
-  char             id[5];
-  uint8_t          version;                      /**< 711 encoded */
-  char             flags;			 /**< 853 */
-  char             system_id[ISO_MAX_SYSTEM_ID]; /**< each char is an achar */
-  char             volume_id[ISO_MAX_VOLUME_ID]; /**< each char is a dchar */
-  char             unused2[8];
-  uint64_t         volume_space_size;            /**< 733 encoded */
-  char             escape_sequences[32];         /**< 856 */
-  uint32_t         volume_set_size;              /**< 723 encoded */
-  uint32_t         volume_sequence_number;       /**< 723 encoded */
-  uint32_t         logical_block_size;           /**< 723 encoded */
-  uint64_t         path_table_size;              /**< 733 encoded */
-  uint32_t         type_l_path_table;            /**< 731 encoded */
-  uint32_t         opt_type_l_path_table;        /**< 731 encoded */
-  uint32_t         type_m_path_table;            /**< 732 encoded */
-  uint32_t         opt_type_m_path_table;        /**< 732 encoded */
-  char             root_directory_record[34];    /**< See section 9.1 of
-                                                    ISO 9660 spec. */
-  char             volume_set_id[ISO_MAX_VOLUMESET_ID];    /**< dchars */
-  char             publisher_id[ISO_MAX_PUBLISHER_ID];     /**< achars */
-  char             preparer_id[ISO_MAX_PREPARER_ID];       /**< achars */
-  char             application_id[ISO_MAX_APPLICATION_ID]; /**< achars */
-  char             copyright_file_id[37];     /**< See section 7.5 of
-                                                 ISO 9660 spec. Each char is 
-                                                 a dchar */
-  char             abstract_file_id[37];      /**< See section 7.5 of 
-                                                 ISO 9660 spec. Each char is 
-                                                 a dchar */
-  char             bibliographic_file_id[37]; /**< See section 7.5 of 
-                                                 ISO 9660 spec. Each char is
-                                                 a dchar. */
-  iso9660_ltime_t  creation_date;             /**< See section 8.4.26.1 of
-                                                 ISO 9660 spec. */
-  iso9660_ltime_t  modification_date;         /**< See section 8.4.26.1 of 
-                                                 ISO 9660 spec. */
-  iso9660_ltime_t  expiration_date;           /**< See section 8.4.26.1 of
-                                                 ISO 9660 spec. */
-  iso9660_ltime_t  effective_date;            /**< See section 8.4.26.1 of
-                                                 ISO 9660 spec. */
-  uint8_t          file_structure_version;    /**< 711 encoded */
-  char             unused4[1];
-  char             application_data[512];
-  char             unused5[653];
-};
-
-typedef struct iso9660_dir  iso9660_dir_t;
-typedef struct iso9660_pvd  iso9660_pvd_t;
-typedef struct iso9660_svd  iso9660_svd_t;
-typedef struct iso9660_stat iso9660_stat_t;
-
-#ifndef  EMPTY_ARRAY_SIZE
-#define EMPTY_ARRAY_SIZE 0
-#endif
-
-
 /*! \brief Format of an ISO-9660 directory record 
 
  This structure may have an odd length depending on how many
@@ -299,11 +204,125 @@ struct iso9660_dir {
   uint8_t          interleave_gap;    /*! 711 encoded */
   uint32_t volume_sequence_number;    /*! 723 encoded */
   uint8_t          filename_len;      /*! 711 encoded */
-  char             filename[EMPTY_ARRAY_SIZE];
+  char             filename[512];
 } GNUC_PACKED;
 
+typedef struct iso9660_dir  iso9660_dir_t;
 
+/*! 
+  \brief ISO-9660 Primary Volume Descriptor.
+ */
+struct iso9660_pvd {
+  uint8_t          type;                         /**< 711 encoded */
+  char             id[5];
+  uint8_t          version;                      /**< 711 encoded */
+  char             unused1[1];
+  char             system_id[ISO_MAX_SYSTEM_ID]; /**< each char is an achar */
+  char             volume_id[ISO_MAX_VOLUME_ID]; /**< each char is a dchar */
+  char             unused2[8];
+  uint64_t         volume_space_size;            /**< 733 encoded */
+  char             unused3[32];
+  uint32_t         volume_set_size;              /**< 723 encoded */
+  uint32_t         volume_sequence_number;       /**< 723 encoded */
+  uint32_t         logical_block_size;           /**< 723 encoded */
+  uint64_t         path_table_size;              /**< 733 encoded */
+  uint32_t         type_l_path_table;            /**< 731 encoded */
+  uint32_t         opt_type_l_path_table;        /**< 731 encoded */
+  uint32_t         type_m_path_table;            /**< 732 encoded */
+  uint32_t         opt_type_m_path_table;        /**< 732 encoded */
+  iso9660_dir_t    root_directory_record;        /**< See section 9.1 of
+                                                    ISO 9660 spec. */
+  char             root_directory_filename;      /**< Is \0 */
+  char             volume_set_id[ISO_MAX_VOLUMESET_ID];    /**< dchars */
+  char             publisher_id[ISO_MAX_PUBLISHER_ID];     /**< achars */
+  char             preparer_id[ISO_MAX_PREPARER_ID];       /**< achars */
+  char             application_id[ISO_MAX_APPLICATION_ID]; /**< achars */
+  char             copyright_file_id[37];     /**< See section 7.5 of
+                                                 ISO 9660 spec. Each char is 
+                                                 a dchar */
+  char             abstract_file_id[37];      /**< See section 7.5 of 
+                                                 ISO 9660 spec. Each char is 
+                                                 a dchar */
+  char             bibliographic_file_id[37]; /**< See section 7.5 of 
+                                                 ISO 9660 spec. Each char is
+                                                 a dchar. */
+  iso9660_ltime_t  creation_date;             /**< See section 8.4.26.1 of
+                                                 ISO 9660 spec. */
+  iso9660_ltime_t  modification_date;         /**< See section 8.4.26.1 of 
+                                                 ISO 9660 spec. */
+  iso9660_ltime_t  expiration_date;           /**< See section 8.4.26.1 of
+                                                 ISO 9660 spec. */
+  iso9660_ltime_t  effective_date;            /**< See section 8.4.26.1 of
+                                                 ISO 9660 spec. */
+  uint8_t          file_structure_version;    /**< 711 encoded */
+  char             unused4[1];
+  char             application_data[512];
+  char             unused5[653];
+} GNUC_PACKED;
+
+typedef struct iso9660_pvd  iso9660_pvd_t;
+
+/*! 
+  \brief ISO-9660 Supplementary Volume Descriptor. 
+
+  This is used for Joliet Extentions and is almost the same as the
+  the primary descriptor but two unused fields, "unused1" and "unused3
+  become "flags and "escape_sequences" respectively.
+*/
+struct iso9660_svd {
+  uint8_t          type;                         /**< 711 encoded */
+  char             id[5];
+  uint8_t          version;                      /**< 711 encoded */
+  char             flags;			 /**< 853 */
+  char             system_id[ISO_MAX_SYSTEM_ID]; /**< each char is an achar */
+  char             volume_id[ISO_MAX_VOLUME_ID]; /**< each char is a dchar */
+  char             unused2[8];
+  uint64_t         volume_space_size;            /**< 733 encoded */
+  char             escape_sequences[32];         /**< 856 */
+  uint32_t         volume_set_size;              /**< 723 encoded */
+  uint32_t         volume_sequence_number;       /**< 723 encoded */
+  uint32_t         logical_block_size;           /**< 723 encoded */
+  uint64_t         path_table_size;              /**< 733 encoded */
+  uint32_t         type_l_path_table;            /**< 731 encoded */
+  uint32_t         opt_type_l_path_table;        /**< 731 encoded */
+  uint32_t         type_m_path_table;            /**< 732 encoded */
+  uint32_t         opt_type_m_path_table;        /**< 732 encoded */
+  iso9660_dir_t    root_directory_record;        /**< See section 9.1 of
+                                                    ISO 9660 spec. */
+  char             volume_set_id[ISO_MAX_VOLUMESET_ID];    /**< dchars */
+  char             publisher_id[ISO_MAX_PUBLISHER_ID];     /**< achars */
+  char             preparer_id[ISO_MAX_PREPARER_ID];       /**< achars */
+  char             application_id[ISO_MAX_APPLICATION_ID]; /**< achars */
+  char             copyright_file_id[37];     /**< See section 7.5 of
+                                                 ISO 9660 spec. Each char is 
+                                                 a dchar */
+  char             abstract_file_id[37];      /**< See section 7.5 of 
+                                                 ISO 9660 spec. Each char is 
+                                                 a dchar */
+  char             bibliographic_file_id[37]; /**< See section 7.5 of 
+                                                 ISO 9660 spec. Each char is
+                                                 a dchar. */
+  iso9660_ltime_t  creation_date;             /**< See section 8.4.26.1 of
+                                                 ISO 9660 spec. */
+  iso9660_ltime_t  modification_date;         /**< See section 8.4.26.1 of 
+                                                 ISO 9660 spec. */
+  iso9660_ltime_t  expiration_date;           /**< See section 8.4.26.1 of
+                                                 ISO 9660 spec. */
+  iso9660_ltime_t  effective_date;            /**< See section 8.4.26.1 of
+                                                 ISO 9660 spec. */
+  uint8_t          file_structure_version;    /**< 711 encoded */
+  char             unused4[1];
+  char             application_data[512];
+  char             unused5[653];
+} GNUC_PACKED;
+
+typedef struct iso9660_svd  iso9660_svd_t;
+
+#ifdef _XBOX
+#pragma pack()
+#else
 PRAGMA_END_PACKED
+#endif
 
 /*! \brief Unix stat-like version of iso9660_dir
 
@@ -324,15 +343,43 @@ struct iso9660_stat { /* big endian!! */
   char         filename[EMPTY_ARRAY_SIZE]; /**< filename */
 };
 
+typedef struct iso9660_stat iso9660_stat_t;
+
+
+/** A mask used in iso9660_ifs_read_vd which allows what kinds 
+    of extensions we allow, eg. Joliet, Rock Ridge, etc. */
+typedef uint8_t iso_extension_mask_t;
+
+#define ISO_EXTENSION_JOLIET_LEVEL1 0x01
+#define ISO_EXTENSION_JOLIET_LEVEL2 0x02
+#define ISO_EXTENSION_JOLIET_LEVEL3 0x04
+#define ISO_EXTENSION_ROCK_RIDGE    0x08
+#define ISO_EXTENSION_HIGH_SIERRA   0x10
+
+#define ISO_EXTENSION_ALL           0xFF
+#define ISO_EXTENSION_NONE          0x00
+#define ISO_EXTENSION_JOLIET     \
+  (ISO_EXTENSION_JOLIET_LEVEL1 | \
+   ISO_EXTENSION_JOLIET_LEVEL2 | \
+   ISO_EXTENSION_JOLIET_LEVEL3 )
+  
 
 /** This is an opaque structure. */
 typedef struct _iso9660 iso9660_t; 
 
 /*!
   Open an ISO 9660 image for reading. Maybe in the future we will have
-  flags and mode. NULL is returned on error.
+  a mode. NULL is returned on error.
 */
-  iso9660_t *iso9660_open (const char *pathname /*flags, mode */);
+  iso9660_t *iso9660_open (const char *psz_pathname /*flags, mode */);
+
+/*!
+  Open an ISO 9660 image for reading allowing various ISO 9660
+  extensions.  Maybe in the future we will have a mode. NULL is
+  returned on error.
+*/
+  iso9660_t *iso9660_open_ext (const char *psz_pathname, 
+                               iso_extension_mask_t iso_extension_mask);
 
 /*!
   Close previously opened ISO 9660 image.
@@ -346,7 +393,14 @@ typedef struct _iso9660 iso9660_t;
   Seek to a position and then read n bytes. Size read is returned.
 */
   long int iso9660_iso_seek_read (const iso9660_t *p_iso, void *ptr, 
-                                  lsn_t start, long int size);
+                                  lsn_t start, long int i_size);
+
+/*!
+  Read the Primary Volume Descriptor for a CD.
+  True is returned if read, and false if there was an error.
+*/
+  bool iso9660_fs_read_pvd ( const CdIo *p_cdio, 
+                             /*out*/ iso9660_pvd_t *p_pvd );
 
 /*!
   Read the Primary Volume Descriptor for an ISO 9660 image.
@@ -356,12 +410,21 @@ typedef struct _iso9660 iso9660_t;
                              /*out*/ iso9660_pvd_t *p_pvd);
 
 /*!
-  Read the Primary Volume Descriptor for a CD.
-  True is returned if read, and false if there was an error.
+  Read the Super block of an ISO 9660 image. This is the 
+  Primary Volume Descriptor (PVD) and perhaps a Supplemental Volume 
+  Descriptor if (Joliet) extensions are acceptable.
 */
-  bool iso9660_fs_read_mode2_pvd (const CdIo *p_cdio, 
-                                  /*out*/ iso9660_pvd_t *p_pvd,
-                                  bool b_form2);
+  bool iso9660_fs_read_superblock (CdIo *p_cdio, 
+                                   iso_extension_mask_t iso_extension_mask);
+
+/*!
+  Read the Supper block of an ISO 9660 image. This is the 
+  Primary Volume Descriptor (PVD) and perhaps a Supplemental Volume 
+  Descriptor if (Joliet) extensions are acceptable.
+*/
+  bool iso9660_ifs_read_superblock (iso9660_t *p_iso,
+                                    iso_extension_mask_t iso_extension_mask);
+
 
 /*====================================================
   Time conversion 
@@ -411,12 +474,23 @@ bool iso9660_isachar (int c);
 /*!
    Convert ISO-9660 file name that stored in a directory entry into 
    what's usually listed as the file name in a listing.
-   Lowercase name, and drop deal with trailing ;1's or .;1's or 
-   ; version numbers.
+   Lowercase name, and remove trailing ;1's or .;1's and
+   turn the other ;'s into version numbers.
 
    The length of the translated string is returned.
 */
-int iso9660_name_translate(const char *oldname, char *newname);
+int iso9660_name_translate(const char *psz_oldname, char *psz_newname);
+
+/*!
+   Convert ISO-9660 file name that stored in a directory entry into
+   what's usually listed as the file name in a listing.  Lowercase
+   name if not using Joliet extension. Remove trailing ;1's or .;1's and
+   turn the other ;'s into version numbers.
+
+   The length of the translated string is returned.
+*/
+int iso9660_name_translate_ext(const char *old, char *new, 
+                               uint8_t i_joliet_level);
 
 /*!  
   Pad string src with spaces to size len and copy this to dst. If
@@ -454,7 +528,7 @@ bool iso9660_dirname_valid_p (const char pathname[]);
   number. For example, mydir/file.ext -> MYDIR/FILE.EXT;1 for version
   1. The resulting ISO-9660 pathname is returned.
 */
-char *iso9660_pathname_isofy (const char pathname[], uint16_t version);
+char *iso9660_pathname_isofy (const char pathname[], uint16_t i_version);
 
 /*!
   Check that pathname is a valid ISO-9660 pathname.  
@@ -500,7 +574,7 @@ iso9660_dir_calc_record_size (unsigned int namelen, unsigned int su_len);
 
    Returns stat_t of entry if we found lsn, or NULL otherwise.
  */
-iso9660_stat_t *iso9660_find_fs_lsn(const CdIo *p_cdio, lsn_t lsn);
+iso9660_stat_t *iso9660_find_fs_lsn(CdIo *p_cdio, lsn_t i_lsn);
 
 
 /*!
@@ -509,14 +583,14 @@ iso9660_stat_t *iso9660_find_fs_lsn(const CdIo *p_cdio, lsn_t lsn);
 
    Returns stat_t of entry if we found lsn, or NULL otherwise.
  */
-iso9660_stat_t *iso9660_find_ifs_lsn(const iso9660_t *iso, lsn_t lsn);
+iso9660_stat_t *iso9660_find_ifs_lsn(const iso9660_t *p_iso, lsn_t i_lsn);
 
 
 /*!
   Get file status for pathname into stat. NULL is returned on error.
  */
-iso9660_stat_t *iso9660_fs_stat (const CdIo *obj, const char pathname[], 
-                                 bool is_mode2);
+iso9660_stat_t *iso9660_fs_stat (CdIo *p_cdio, const char pathname[]);
+  
 
 /*!
   Get file status for pathname into stat. NULL is returned on error.
@@ -524,14 +598,14 @@ iso9660_stat_t *iso9660_fs_stat (const CdIo *obj, const char pathname[],
   name are dropped, i.e. ;1 is removed and if level 1 ISO-9660 names
   are lowercased.
  */
-iso9660_stat_t *iso9660_fs_stat_translate (const CdIo *obj, 
+iso9660_stat_t *iso9660_fs_stat_translate (CdIo *p_cdio, 
                                            const char pathname[], 
-                                           bool is_mode2);
+                                           bool b_mode2);
 
 /*!
   Get file status for pathname into stat. NULL is returned on error.
  */
-void *iso9660_ifs_stat (iso9660_t *iso, const char pathname[]);
+iso9660_stat_t *iso9660_ifs_stat (iso9660_t *p_iso, const char pathname[]);
 
 
 /*!
@@ -540,35 +614,46 @@ void *iso9660_ifs_stat (iso9660_t *iso, const char pathname[]);
   name are dropped, i.e. ;1 is removed and if level 1 ISO-9660 names
   are lowercased.
  */
-void *iso9660_ifs_stat_translate (iso9660_t *iso, const char pathname[]);
-
-
-
-/*! 
-  Read pathname (a directory) and return a list of iso9660_stat_t
-  of the files inside that. The caller must free the returned result.
-*/
-void * iso9660_fs_readdir (const CdIo *obj, const char pathname[], bool mode2);
+iso9660_stat_t *iso9660_ifs_stat_translate (iso9660_t *p_iso, 
+                                            const char pathname[]);
 
 /*! 
   Read pathname (a directory) and return a list of iso9660_stat_t
   of the files inside that. The caller must free the returned result.
 */
-void * iso9660_ifs_readdir (iso9660_t *iso, const char pathname[]);
+CdioList * iso9660_fs_readdir (CdIo *p_cdio, const char pathname[], 
+                               bool b_mode2);
+
+/*! 
+  Read pathname (a directory) and return a list of iso9660_stat_t
+  of the files inside that. The caller must free the returned result.
+*/
+CdioList * iso9660_ifs_readdir (iso9660_t *p_iso, const char pathname[]);
 
 /*!
   Return the PVD's application ID.
   NULL is returned if there is some problem in getting this. 
   */
-const char * iso9660_get_application_id(const iso9660_pvd_t *p_pvd);
+char * iso9660_get_application_id(iso9660_pvd_t *p_pvd);
 
+/*!  
+  Get the application ID.  psz_app_id is set to NULL if there
+  is some problem in getting this and false is returned.
+*/
+bool iso9660_ifs_get_application_id(iso9660_t *p_iso,
+                                    /*out*/ char **p_psz_app_id);
 
-uint8_t iso9660_get_dir_len(const iso9660_dir_t *idr);
+/*!  
+  Return the Joliet level recognized for p_iso.
+*/
+uint8_t iso9660_ifs_get_joliet_level(iso9660_t *p_iso);
+
+uint8_t iso9660_get_dir_len(const iso9660_dir_t *p_idr);
 
 #if FIXME
-uint8_t iso9660_get_dir_size(const iso9660_dir_t *idr);
+uint8_t iso9660_get_dir_size(const iso9660_dir_t *p_idr);
 
-lsn_t iso9660_get_dir_extent(const iso9660_dir_t *idr);
+lsn_t iso9660_get_dir_extent(const iso9660_dir_t *p_idr);
 #endif
 
 /*!
@@ -576,27 +661,41 @@ lsn_t iso9660_get_dir_extent(const iso9660_dir_t *idr);
 
   A string is allocated: the caller must deallocate.
 */
-char * iso9660_dir_to_name (const iso9660_dir_t *iso9660_dir);
+char * iso9660_dir_to_name (const iso9660_dir_t *p_iso9660_dir);
   
 /*!
    Return a string containing the preparer id with trailing
    blanks removed.
 */
-const char *iso9660_get_preparer_id(const iso9660_pvd_t *pvd);
+char *iso9660_get_preparer_id(const iso9660_pvd_t *p_pvd);
+  
+/*!  
+  Get the preparer ID.  psz_preparer_id is set to NULL if there
+  is some problem in getting this and false is returned.
+*/
+bool iso9660_ifs_get_preparer_id(iso9660_t *p_iso,
+                                 /*out*/ char **p_psz_preparer_id);
   
 /*!
    Return a string containing the PVD's publisher id with trailing
    blanks removed.
 */
-const char *iso9660_get_publisher_id(const iso9660_pvd_t *pvd);
+char *iso9660_get_publisher_id(const iso9660_pvd_t *p_pvd);
 
-uint8_t iso9660_get_pvd_type(const iso9660_pvd_t *pvd);
+/*!  
+  Get the publisher ID.  psz_publisher_id is set to NULL if there
+  is some problem in getting this and false is returned.
+*/
+bool iso9660_ifs_get_publisher_id(iso9660_t *p_iso,
+                                  /*out*/ char **p_psz_publisher_id);
 
-const char * iso9660_get_pvd_id(const iso9660_pvd_t *pvd);
+uint8_t iso9660_get_pvd_type(const iso9660_pvd_t *p_pvd);
 
-int iso9660_get_pvd_space_size(const iso9660_pvd_t *pvd);
+const char * iso9660_get_pvd_id(const iso9660_pvd_t *p_pvd);
 
-int iso9660_get_pvd_block_size(const iso9660_pvd_t *pvd) ;
+int iso9660_get_pvd_space_size(const iso9660_pvd_t *p_pvd);
+
+int iso9660_get_pvd_block_size(const iso9660_pvd_t *p_pvd) ;
 
 /*! Return the primary volume id version number (of pvd).
     If there is an error 0 is returned. 
@@ -607,24 +706,45 @@ int iso9660_get_pvd_version(const iso9660_pvd_t *pvd) ;
    Return a string containing the PVD's system id with trailing
    blanks removed.
 */
-const char *iso9660_get_system_id(const iso9660_pvd_t *pvd);
+char *iso9660_get_system_id(const iso9660_pvd_t *p_pvd);
+  
+/*!  
+  Get the system ID.  psz_system_id is set to NULL if there
+  is some problem in getting this and false is returned.
+*/
+bool iso9660_ifs_get_system_id(iso9660_t *p_iso,
+                                  /*out*/ char **p_psz_system_id);
   
 
 /*! Return the LSN of the root directory for pvd.
     If there is an error CDIO_INVALID_LSN is returned. 
  */
-lsn_t iso9660_get_root_lsn(const iso9660_pvd_t *pvd);
+lsn_t iso9660_get_root_lsn(const iso9660_pvd_t *p_pvd);
 
 /*!
   Return the PVD's volume ID.
 */
-const char *iso9660_get_volume_id(const iso9660_pvd_t *pvd);
+char *iso9660_get_volume_id(const iso9660_pvd_t *p_pvd);
+
+/*!  
+  Get the system ID.  psz_system_id is set to NULL if there
+  is some problem in getting this and false is returned.
+*/
+bool iso9660_ifs_get_volume_id(iso9660_t *p_iso,
+                               /*out*/ char **p_psz_volume_id);
 
 /*!
   Return the PVD's volumeset ID.
   NULL is returned if there is some problem in getting this. 
 */
-const char *iso9660_get_volumeset_id(const iso9660_pvd_t *pvd);
+char *iso9660_get_volumeset_id(const iso9660_pvd_t *p_pvd);
+
+/*!  
+  Get the systemset ID.  psz_systemset_id is set to NULL if there
+  is some problem in getting this and false is returned.
+*/
+bool iso9660_ifs_get_volumeset_id(iso9660_t *p_iso,
+                                  /*out*/ char **p_psz_volumeset_id);
 
 /* pathtable */
 
@@ -654,6 +774,12 @@ iso9660_set_pvd (void *pd, const char volume_id[], const char application_id[],
 
 void 
 iso9660_set_evd (void *pd);
+
+/*!
+  Return true if ISO 9660 image has extended attrributes (XA).
+*/
+bool iso9660_ifs_is_xa (const iso9660_t * p_iso);
+
 
 #ifdef __cplusplus
 }
