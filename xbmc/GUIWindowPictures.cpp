@@ -479,10 +479,13 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 	  m_vecItems.push_back(pItem);
   }
 
+
 	m_iLastControl=GetFocusedControl();
 
 	m_strDirectory=strDirectory;
 	m_rootDir.GetDirectory(strDirectory,m_vecItems);
+	CUtil::SetThumbs(m_vecItems);
+	CUtil::FillInDefaultIcons(m_vecItems);
 	OnSort();
 	UpdateButtons();
 

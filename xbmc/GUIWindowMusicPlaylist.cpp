@@ -452,6 +452,9 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 			pItem->SetLabel2(str);
 		}
 	}
+	//	set thumbs and default icons
+	CUtil::SetMusicThumb(pItem);
+	CUtil::FillInDefaultIcon(pItem);
 }
 
 void CGUIWindowMusicPlayList::DoSort(VECFILEITEMS& items)
