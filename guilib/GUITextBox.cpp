@@ -21,6 +21,7 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
 	m_iMaxPages=50;
   m_pFont=g_fontManager.GetFont(strFontName);
   m_dwTextColor=dwTextColor;
+	m_upDown.SetShowRange(true);	// show the range by default
 	ControlType = GUICONTROL_TEXTBOX;
 }
 
