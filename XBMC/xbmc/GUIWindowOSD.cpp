@@ -75,6 +75,12 @@
 	OnMessage(msg); \
 }
 
+#define FOCUS_CONTROL(dwSenderId, dwControlID, dwParam) \
+{ \
+	CGUIMessage msg(GUI_MSG_SETFOCUS, dwSenderId, dwControlID, dwParam); \
+	OnMessage(msg); \
+}
+
 extern int m_iAudioStreamIDX;
 
 CGUIWindowOSD::CGUIWindowOSD(void)
@@ -121,7 +127,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 		{
       if (m_bSubMenuOn)						// is sub menu on?
 			{
-				SET_CONTROL_FOCUS(GetID(), m_iActiveMenuButtonID, 0);	// set focus to last menu button
+				FOCUS_CONTROL(GetID(), m_iActiveMenuButtonID, 0);	// set focus to last menu button
 				ToggleSubMenu(0, m_iActiveMenu);						// hide the currently active sub-menu
 			}
 			return;
@@ -203,7 +209,9 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 		{
 			OutputDebugString("OSD:DEINIT\n");
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
-			//CGUIWindow::OnMessage(message); - I've took this call out as it seemed to stop the OSD from re-displaying [forza]
+      // following line should stay. Problems with OSD not
+      // appearing are already fixed elsewhere
+			FreeResources();
 			return true;
 		}
 		break;
@@ -212,21 +220,28 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 		{
 
 			OutputDebugString("OSD:INIT\n");
-			//CGUIWindow::OnMessage(message); - I've took this call out as it seemed to stop the OSD from re-displaying [forza]
+      // following line should stay. Problems with OSD not
+      // appearing are already fixed elsewhere
+			AllocResources();
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(false);
 			ResetAllControls();							// make sure the controls are positioned relevant to the OSD Y offset
 			m_bSubMenuOn=false;
 			m_iActiveMenuButtonID=0;
 			m_iActiveMenu=0;
 			Reset();
-			SET_CONTROL_FOCUS(GetID(), OSD_PLAY, 0);	// set focus to play button by default when window is shown
+        FOCUS_CONTROL(GetID(), OSD_PLAY, 0);	// set focus to play button by default when window is shown
+
 			return true;
 		}
 		break;
 
-		case GUI_MSG_SETFOCUS:
-		case GUI_MSG_LOSTFOCUS:
-		break;
+
+    case GUI_MSG_SETFOCUS:
+    case GUI_MSG_LOSTFOCUS:
+    {
+      if (message.GetSenderId() != WINDOW_OSD) return true;
+    }
+    break;
 
 		case GUI_MSG_CLICKED:
 		{
@@ -263,7 +278,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 			{
 				if (m_bSubMenuOn)	// sub menu currently active ?
 				{
-					SET_CONTROL_FOCUS(GetID(), m_iActiveMenuButtonID, 0);	// set focus to last menu button
+					FOCUS_CONTROL(GetID(), m_iActiveMenuButtonID, 0);	// set focus to last menu button
 					ToggleSubMenu(0, m_iActiveMenu);						// hide the currently active sub-menu
 				}
 				OutputDebugString("OSD:STOP\n");
@@ -313,11 +328,11 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 				if (m_bSubMenuOn)										// is sub menu on?
 				{
 					SET_CONTROL_VISIBLE(GetID(), OSD_VOLUMESLIDER);		// show the volume control
-					SET_CONTROL_FOCUS(GetID(), OSD_VOLUMESLIDER, 0);	// set focus to it
+					FOCUS_CONTROL(GetID(), OSD_VOLUMESLIDER, 0);	// set focus to it
 				}
 				else													// sub menu is off
 				{
-					SET_CONTROL_FOCUS(GetID(), OSD_MUTE, 0);			// set focus to the mute button
+					FOCUS_CONTROL(GetID(), OSD_MUTE, 0);			// set focus to the mute button
 				}
 			}
 
@@ -342,7 +357,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 					SET_CONTROL_VISIBLE(GetID(), OSD_SUBTITLE_ONOFF);
 					SET_CONTROL_VISIBLE(GetID(), OSD_SUBTITLE_LIST);
 
-					SET_CONTROL_FOCUS(GetID(), OSD_SUBTITLE_DELAY, 0);	// set focus to the first control in our group
+					FOCUS_CONTROL(GetID(), OSD_SUBTITLE_DELAY, 0);	// set focus to the first control in our group
 					PopulateSubTitles();	// populate the list control with subtitles for this video
 				}
 			}
@@ -358,7 +373,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 					SET_CONTROL_VISIBLE(GetID(), OSD_BOOKMARKS_LIST_LABEL);
 					SET_CONTROL_VISIBLE(GetID(), OSD_CLEARBOOKMARKS);
 
-					SET_CONTROL_FOCUS(GetID(), OSD_CREATEBOOKMARK, 0);	// set focus to the first control in our group
+					FOCUS_CONTROL(GetID(), OSD_CREATEBOOKMARK, 0);	// set focus to the first control in our group
 					PopulateBookmarks();	// populate the list control with bookmarks for this video
 				}
 			}
@@ -394,7 +409,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 					SET_CONTROL_VISIBLE(GetID(), OSD_CONTRASTLABEL);
 					SET_CONTROL_VISIBLE(GetID(), OSD_GAMMA);
 					SET_CONTROL_VISIBLE(GetID(), OSD_GAMMALABEL);
-					SET_CONTROL_FOCUS(GetID(), OSD_VIDEOPOS, 0);	// set focus to the first control in our group
+					FOCUS_CONTROL(GetID(), OSD_VIDEOPOS, 0);	// set focus to the first control in our group
 				}
 			}
 
@@ -411,7 +426,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 					SET_CONTROL_VISIBLE(GetID(), OSD_AVDELAY_LABEL);
 					SET_CONTROL_VISIBLE(GetID(), OSD_AUDIOSTREAM_LIST);
 
-					SET_CONTROL_FOCUS(GetID(), OSD_AVDELAY, 0);	// set focus to the first control in our group
+					FOCUS_CONTROL(GetID(), OSD_AVDELAY, 0);	// set focus to the first control in our group
 					PopulateAudioStreams();		// populate the list control with audio streams for this video
 				}
 			}
@@ -1043,4 +1058,6 @@ void CGUIWindowOSD::Reset()
 	ToggleButton(OSD_BOOKMARKS, false);
 	ToggleButton(OSD_VIDEO, false);
 	ToggleButton(OSD_AUDIO, false);
+			
+
 }

@@ -457,6 +457,9 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_SETFOCUS:
     {
+      CStdString strTmp;
+      //strTmp.Format("set focus to control:%i window:%i (%i)\n", message.GetControlId(),message.GetSenderId(), GetID());
+      //OutputDebugString(strTmp.c_str());
       if ( message.GetControlId() )
       {
         ivecControls i;
@@ -467,6 +470,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
           {
             CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS,GetID(),pControl->GetID(),message.GetControlId());
             pControl->OnMessage(msgLostFocus);
+
           }
         }
         for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
