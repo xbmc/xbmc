@@ -1,19 +1,20 @@
-<!-- Finnish - language resource  -->
-<!-- Finnish Translation 2004-11-7 by Nanite1000 -->
-<!-- Based on CVS revision 2004-11-7 YYYY-MM-DD -->
-<!-- Finnish Translation Update 2004-12-22 by jutski -->
-<!-- Based on CVS revision 2004-12-16 YYYY-MM-DD (English rev1.145)-->
-<!-- For comments PM me in xboxmediacenter forum or IRC: nanite1k @ #xbmc on efnet-->
-<!--   or send email to: nanite1000 _at_ users _dot_ sourceforge _dot_ net  -->
-<!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta -->
-<!--   tai sähköpostina: nanite1000 _miuku_ users _piste_ sourceforge _piste_ net  -->
-<!-- Not all weather strings are tranlated, cant get it to look correct/too long -->
-<!--    Weather strings can be tranlated if all combinations has its own string -->
-<!--    Ie.  light+snow, rain+showers... -->
-<!-- LCD strings not verified, i dont have LCD screen -->
-<!-- Thanks to nanite1000 for his great work, but I felt this needed to be updated. -->
-<!-- Should be mostly up-to-date now, let me know if anything's missing/wrong/etc. -->
-<!--    jutski (privmsg jutski, ircnet only) -->
+<!-- Finnish - language resource                                                    !-->
+<!-- Finnish Translation 2004-11-7 by Nanite1000                                    !-->
+<!-- Based on CVS revision 2004-11-7 YYYY-MM-DD                                     !-->
+<!-- Finnish Translation Update 2004-12-28 by jutski                                !-->
+<!-- Based on CVS revision 2004-12-16 YYYY-MM-DD (English rev1.145)                 !-->
+<!-- For comments PM me in xboxmediacenter forum or IRC: nanite1k @ #xbmc on efnet  !-->
+<!--   or send email to: nanite1000 _at_ users _dot_ sourceforge _dot_ net          !-->
+<!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta                   !-->
+<!--   tai sähköpostina: nanite1000 _miuku_ users _piste_ sourceforge _piste_ net   !-->
+<!-- Not all weather strings are tranlated, cant get it to look correct/too long    !-->
+<!--    Weather strings can be tranlated if all combinations has its own string     !-->
+<!--    Ie.  light+snow, rain+showers...                                            !-->
+<!-- LCD strings not verified, i dont have LCD screen                               !-->
+<!-- Thanks to nanite1000 for his great work, but I felt this needed to be updated. !-->
+<!-- Should be mostly up-to-date now, let me know if anything's missing/wrong/etc.  !-->
+<!--    jutski (IRC: privmsg jutski, ircnet only;                                   !-->
+<!--            or email jutski _at_ users.sourceforge.net)                         !-->
 <strings>
   <string><id>0</id><value>Ohjelmat</value></string>
   <string><id>1</id><value>Kuvat</value></string>
@@ -24,25 +25,27 @@
   <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Tiedostohallinta</value></string>
   <string><id>8</id><value>Säätila</value></string>
-  <string><id>11</id><value>Maanantai</value></string>
-  <string><id>12</id><value>Tiistai</value></string>
-  <string><id>13</id><value>Keskiviikko</value></string>
-  <string><id>14</id><value>Torstai</value></string>
-  <string><id>15</id><value>Perjantai</value></string>
-  <string><id>16</id><value>Lauantai</value></string>
-  <string><id>17</id><value>Sunnuntai</value></string>
-  <string><id>21</id><value>Tammikuu</value></string>
-  <string><id>22</id><value>Helmikuu</value></string>
-  <string><id>23</id><value>Maaliskuu</value></string>
-  <string><id>24</id><value>Huhtikuu</value></string>
-  <string><id>25</id><value>Toukokuu</value></string>
-  <string><id>26</id><value>Kesäkuu</value></string>
-  <string><id>27</id><value>Heinäkuu</value></string>
-  <string><id>28</id><value>Elokuu</value></string>
-  <string><id>29</id><value>Syyskuu</value></string>
-  <string><id>30</id><value>Lokakuu</value></string>
-  <string><id>31</id><value>Marraskuu</value></string>
-  <string><id>32</id><value>Joulukuu</value></string>
+  <string><id>11</id><value>maanantai</value></string>
+  <string><id>12</id><value>tiistai</value></string>
+  <string><id>13</id><value>keskiviikko</value></string>
+  <string><id>14</id><value>torstai</value></string>
+  <string><id>15</id><value>perjantai</value></string>
+  <string><id>16</id><value>lauantai</value></string>
+  <string><id>17</id><value>sunnuntai</value></string>
+  <string><id>21</id><value>tammikuu</value></string>
+  <string><id>22</id><value>helmikuu</value></string>
+  <string><id>23</id><value>maaliskuu</value></string>
+  <string><id>24</id><value>huhtikuu</value></string>
+  <string><id>25</id><value>toukokuu</value></string>
+  <string><id>26</id><value>kesäkuu</value></string>
+  <string><id>27</id><value>heinäkuu</value></string>
+  <string><id>28</id><value>elokuu</value></string>
+  <string><id>29</id><value>syyskuu</value></string>
+  <string><id>30</id><value>lokakuu</value></string>
+  <string><id>31</id><value>marraskuu</value></string>
+  <string><id>32</id><value>joulukuu</value></string>
+  <string><id>98</id><value>Näytä autom.</value></string>
+  <string><id>99</id><value>Näytä autom. isot</value></string>
   <string><id>100</id><value>Näytä kuvakkeina</value></string>
   <string><id>101</id><value>Näytä listana</value></string>
   <string><id>102</id><value>Päivitä</value></string>
@@ -93,7 +96,7 @@
   <string><id>147</id><value>Kiinteä IP-osoite</value></string>
   <string><id>148</id><value>DHCP</value></string>
   <string><id>149</id><value>MAC</value></string>
-  <string><id>150</id><value>IP:</value></string>
+  <string><id>150</id><value>IP</value></string>
   <string><id>151</id><value>Linkki:</value></string>
   <string><id>152</id><value>Half duplex</value></string>
   <string><id>153</id><value>Full duplex</value></string>
@@ -152,12 +155,12 @@
   <string><id>205</id><value>Arvosanoja:</value></string>
   <string><id>206</id><value>Näyttelijät</value></string>
   <string><id>207</id><value>Juoni</value></string>
-  <string><id>208</id><value>Soita</value></string>
+  <string><id>208</id><value>Toista</value></string>
   <string><id>209</id><value>Seuraava</value></string>
   <string><id>210</id><value>Edellinen</value></string>
   <string><id>211</id><value>Haetaan sovellukset</value></string>
   <string><id>212</id><value>sovellusta löytynyt</value></string>
-  <string><id>213</id><value>Menunäytön paikka</value></string>
+  <string><id>213</id><value>Käyttöliittymän keskitys</value></string>
   <string><id>214</id><value>Kuvaruudun säätö</value></string>
   <string><id>215</id><value>Pehmennä</value></string>
   <string><id>216</id><value>Suurennus</value></string>
@@ -170,7 +173,7 @@
   <string><id>223</id><value>Vaihda näytön laajakuvatila automaattisesti</value></string>
   <string><id>224</id><value>Näyttöaika</value></string>
   <string><id>225</id><value>Siirtymäaika</value></string>
-  <string><id>226</id><value>Käytä PAL60</value></string>
+  <string><id>226</id><value>PAL60-televisio käytössä</value></string>
   <string><id>227</id><value>Käytä CDDB</value></string>
   <string><id>228</id><value>Sekoita Soittolista ladattaessa</value></string>
   <string><id>229</id><value>Kiintolevyn sammutusaika</value></string>
@@ -205,7 +208,7 @@
   <string><id>259</id><value>Avataan</value></string>
   <string><id>260</id><value>Shoutcast</value></string>
   <string><id>261</id><value>Käynnistetään...</value></string>
-  <string><id>262</id><value>Scripts Output</value></string>
+  <string><id>262</id><value>Skriptin tuloste</value></string>
   <string><id>263</id><value>Web-palvelin (HTTP) käytössä</value></string>
   <string><id>264</id><value>Nauhoita</value></string>
   <string><id>265</id><value>Pysäytä nauh.</value></string>
@@ -219,20 +222,20 @@
   <string><id>273</id><value>Aktiivisen kuva-alan oikea alakulma</value></string>
   <string><id>274</id><value>Tekstityksen sijainti</value></string>
   <string><id>275</id><value>Kuvasuhteen säätö</value></string>
-  <string><id>276</id><value>Siirtämällä nuolta, voit määrittää aktiivisen kuva-alan reunan</value></string>
-  <string><id>277</id><value>Siirtämällä palkkia, voit määrittää tekstityksen sijainnin</value></string>
-  <string><id>278</id><value>Muuta laatikon muotoa niin, että se on neliö</value></string>
+  <string><id>276</id><value>Siirtämällä nuolta voit määrittää aktiivisen kuva-alan reunan</value></string>
+  <string><id>277</id><value>Siirtämällä palkkia voit määrittää tekstityksen sijainnin</value></string>
+  <string><id>278</id><value>Muuta laatikon muotoa niin, että se on täysin neliö</value></string>
   <string><id>279</id><value>Asetuksia ei voitu ladata</value></string>
-  <string><id>280</id><value>Perusasetukset otettu käyttöön</value></string>
+  <string><id>280</id><value>oletusasetukset otettu käyttöön</value></string>
   <string><id>281</id><value>Tarkista .xml tiedostot</value></string>
   <string><id>282</id><value>%i kpl nimikkeitä löydetty</value></string>
-  <string><id>283</id><value>Haun Tulos</value></string>
+  <string><id>283</id><value>Haun tulos</value></string>
   <string><id>284</id><value>Nimikkeitä ei löytynyt</value></string>
   <string><id>285</id><value>Lomituksen poisto</value></string>
   <string><id>286</id><value>Jälkikäsittely</value></string>
-  <string><id>287</id><value>SRT Tekstitys</value></string>
+  <string><id>287</id><value>Tekstitys</value></string>
   <string><id>288</id><value>Fontti</value></string>
-  <string><id>289</id><value>Koko</value></string>
+  <string><id>289</id><value>- koko</value></string>
   <string><id>290</id><value>Äänen vahvistus (dB)</value></string>
   <string><id>291</id><value>Kuva</value></string>
   <string><id>292</id><value>Ääni</value></string>
@@ -252,7 +255,7 @@
   <string><id>307</id><value>- Automaattinen jälkikäsittely</value></string>
   <string><id>308</id><value>- vertical deblocking-suodatus</value></string>
   <string><id>309</id><value>- horizontal deblocking-suodat.</value></string>
-  <string><id>310</id><value>- Auto kirkkaus/kontrasti</value></string>
+  <string><id>310</id><value>- Autom. kirkkaus/kontrasti</value></string>
   <string><id>311</id><value>- Dering</value></string>
   <string><id>312</id><value>(0=auto)</value></string>
   <string><id>313</id><value>Päivitä tietokanta</value></string>
@@ -303,8 +306,8 @@
   <string><id>358</id><value>Kaikki</value></string>
   <string><id>359</id><value>Uusimmat</value></string>
   <string><id>360</id><value>Näytönsäästäjä</value></string>
-  <string><id>361</id><value>Diaesit. Kaikki</value></string>
-  <string><id>362</id><value>Näytönsääst. tummuus (%) </value></string>
+  <string><id>361</id><value>Rekurs. Diaesitys</value></string>
+  <string><id>362</id><value>Näytönsäästäjän tummuus</value></string>
   <string><id>363</id><value>Nimen mukaan</value></string>
   <string><id>364</id><value>- AC3-äänentoistolaite käytössä</value></string>
   <string><id>365</id><value>Nimen mukaan</value></string>
@@ -351,14 +354,14 @@
   <string><id>406</id><value>Kosteus</value></string>
   <string><id>407</id><value>suunta:</value></string>
   <string><id>408</id><value>nopeus:</value></string>
-  <string><id>410</id><value>Yhdistetään Weather.com palvelimeen</value></string>
+  <string><id>410</id><value>Yhdistetään palvelimeen Weather.com</value></string>
   <string><id>411</id><value>Haetaan säätiedot:</value></string>
   <string><id>412</id><value>Säätietoja ei saatu haettua</value></string>
   <string><id>413</id><value>Manuaalisesti</value></string>
   <string><id>414</id><value>Tälle albumille ei ole arvostelua.</value></string>
   <string><id>415</id><value>Ladataan kansikuva...</value></string>
   <string><id>416</id><value>Tietoja ei saatavilla</value></string>
-  <string><id>417</id><value>Isoina kuvakkeina</value></string>
+  <string><id>417</id><value>Isot kuvakkeet</value></string>
   <string><id>418</id><value>Videot/Tyylilajit</value></string>
   <string><id>419</id><value>Videot/Näyttelijät</value></string>
   <string><id>420</id><value>Videot/Valmistusvuosi</value></string>
@@ -370,8 +373,8 @@
   <string><id>426</id><value>CD-levyn tietoja ei löytynyt.</value></string>
   <string><id>427</id><value>Levy:</value></string>
   <string><id>428</id><value>Aseta oikea CD/DVD</value></string>
-  <string><id>429</id><value>Aseta CD/DVD-levy no:</value></string>
-  <string><id>430</id><value>DVDno. Mukaan</value></string>
+  <string><id>429</id><value>Aseta CD/DVD-levy nro:</value></string>
+  <string><id>430</id><value>DVD nro:n mukaan</value></string>
   <string><id>431</id><value>Välimuisti pois</value></string>
   <string><id>432</id><value>Poista elokuva tietokannasta</value></string>
   <string><id>433</id><value>Haluatko varmasti poistaa</value></string>
@@ -431,9 +434,9 @@
   <string><id>486</id><value>Toista</value></string>
   <string><id>487</id><value>Toista yksi</value></string>
   <string><id>488</id><value>Toista hakemisto</value></string>
-  <string><id>489</id><value>Siirry automaattisesti seuraavaan</value></string>
+  <string><id>489</id><value>Toista automaattisesti seuraava tiedosto</value></string>
   <string><id>490</id><value>Vaihda automaattisesti lista/kuvat kappaleissa</value></string>
-  <string><id>491</id><value>- Isoina kuvakkeina</value></string>
+  <string><id>491</id><value>- Isot kuvakkeet</value></string>
   <string><id>492</id><value>Suurenna tekstitys</value></string>
   <string><id>493</id><value>Lisäasetukset (muuta vain jos tiedät mitä teet!)</value></string>
   <string><id>494</id><value>Overall Audio Headroom (dB)</value></string>
@@ -441,7 +444,7 @@
   <string><id>496</id><value>Kuvaruudun säätö</value></string>
   <string><id>497</id><value>Piilota tiedostojen tarkenteet</value></string>
   <string><id>498</id><value>Tyypin mukaan</value></string>
-  <string><id>499</id><value>Ei yhteyttä www.allmusic.com palvelimeen</value></string>
+  <string><id>499</id><value>Ei yhteyttä palvelimeen www.allmusic.com</value></string>
   <string><id>500</id><value>Albumin tietojen lataus ei onnistunut</value></string>
   <string><id>501</id><value>Etsitään albumien nimiä...</value></string>
   <string><id>502</id><value>Auki</value></string>
@@ -450,7 +453,7 @@
   <string><id>505</id><value>Haetaan median tiedot tiedostoista...</value></string>
   <string><id>506</id><value>Nimet hakemistojen nimistä</value></string>
   <string><id>507</id><value>Käytön mukaan</value></string>
-  <string><id>508</id><value>Älä näytä Kirjanmerkit- ja Päivitys- painikkeita</value></string>
+  <string><id>508</id><value>Älä näytä Kirjanmerkit- ja Päivitys-painikkeita</value></string>
   <string><id>600</id><value>Rippaa CD</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standardi</value></string>
@@ -473,7 +476,7 @@
   <string><id>632</id><value>Venytetty 4:3</value></string>
   <string><id>633</id><value>Venytetty 14:9</value></string>
   <string><id>634</id><value>Venytetty 16:9</value></string>
-  <string><id>635</id><value>Alkuperäinen</value></string>
+  <string><id>635</id><value>Alkuperäinen koko</value></string>
   <string><id>636</id><value>Oma</value></string>
   <string><id>700</id><value>Päivitetään tietokantaa</value></string>
   <string><id>701</id><value>Poistetaan vanhat kappaleet tietokannasta</value></string>
@@ -484,9 +487,9 @@
   <string><id>706</id><value>HTTP-välityspalvelin</value></string>
   <string><id>707</id><value>HTTP-välityspalvelimen portti</value></string>
   <string><id>708</id><value>HTTP-välityspalvelin käytössä</value></string>
-  <string><id>709</id><value>XLink Kai XTag tunnus</value></string>
+  <string><id>709</id><value>XLink Kai XTag-tunnus</value></string>
   <string><id>710</id><value>XLink Kai salasana</value></string>
-  <string><id>711</id><value>IP-verkkoasetukset</value></string>
+  <string><id>711</id><value>Verkkoasetukset</value></string>
   <string><id>712</id><value>Portin on oltava väliltä 1 - 65535.</value></string>
   <string><id>713</id><value>HTTP-välityspalvelin</value></string>
   <string><id>714</id><value>XLink Kai</value></string>
@@ -504,58 +507,58 @@
   <string><id>726</id><value>Poistu tallentamatta muutoksia?</value></string>
   <string><id>727</id><value>Web-palvelin</value></string>
   <string><id>728</id><value>FTP-palvelin</value></string>
-  <string><id>729</id><value>Internet Aika</value></string>
+  <string><id>729</id><value>Internet aika</value></string>
   <string><id>730</id><value>Web-palvelimen portti</value></string>
   <string><id>731</id><value>Internet Aikapalvelin</value></string>
-  <string><id>732</id><value>Tallenna &amp; Ota Käyttöön</value></string>
-  <string><id>733</id><value>Web Palvelimen Salasana</value></string>
+  <string><id>732</id><value>Tallenna &amp; Ota käyttöön</value></string>
+  <string><id>733</id><value>Web-palvelimen salasana</value></string>
   <string><id>734</id><value>Ei salasanaa</value></string>
-  <string><id>735</id><value>Merkistö</value></string>
-  <string><id>736</id><value>Tyyli</value></string>
-  <string><id>737</id><value>Väri</value></string>
-  <string><id>738</id><value>Normaali</value></string>
-  <string><id>739</id><value>Lihavoitu</value></string>
-  <string><id>740</id><value>Kursivoitu</value></string>
-  <string><id>741</id><value>Lihavoitu Kursivoitu</value></string>
-  <string><id>742</id><value>Valkoinen</value></string>
-  <string><id>743</id><value>Keltainen</value></string>
+  <string><id>735</id><value>- merkistö</value></string>
+  <string><id>736</id><value>- tyyli</value></string>
+  <string><id>737</id><value>- väri</value></string>
+  <string><id>738</id><value>normaali</value></string>
+  <string><id>739</id><value>lihavoitu</value></string>
+  <string><id>740</id><value>kursivoitu</value></string>
+  <string><id>741</id><value>lihavoitu ja kursivoitu</value></string>
+  <string><id>742</id><value>valkoinen</value></string>
+  <string><id>743</id><value>keltainen</value></string>
   <string><id>744</id><value>Tiedostot</value></string>
   <string><id>745</id><value>Tälle näkymälle ei ole haettu median tietoja</value></string>
   <string><id>746</id><value>Vaihda Tiedostot-näkymään</value></string>
   <string><id>747</id><value>Ei tarpeeksi muistia kuvan lataamiseen</value></string>
-  <string><id>748</id><value>Muokkaa Polkua</value></string>
-  <string><id>749</id><value>Lisää Asema</value></string>
+  <string><id>748</id><value>Muokkaa polkua</value></string>
+  <string><id>749</id><value>Lisää jako</value></string>
   <string><id>750</id><value>Oletko varma?</value></string>
-  <string><id>751</id><value>Poistetaan Asema</value></string>
-  <string><id>752</id><value>Muokkaa Aseman Polku</value></string>
-  <string><id>753</id><value>Muokkaa Aseman Nimi</value></string>
+  <string><id>751</id><value>Poistetaan jako</value></string>
+  <string><id>752</id><value>Muokkaa jaon polkua</value></string>
+  <string><id>753</id><value>Muokkaa jaon nimeä</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
-  <string><id>999</id><value>Online Pelaaminen</value></string>
+  <string><id>999</id><value>Nettipelaaminen</value></string>
   <string><id>10000</id><value>Päävalikko</value></string>
   <string><id>10001</id><value>Ohjelmat</value></string>
   <string><id>10002</id><value>Kuvat</value></string>
-  <string><id>10003</id><value>Tiedostohallinta</value></string>
+  <string><id>10003</id><value>Tiedostonhallinta</value></string>
   <string><id>10004</id><value>Asetukset</value></string>
   <string><id>10005</id><value>Musiikki</value></string>
   <string><id>10006</id><value>Videot</value></string>
-  <string><id>10007</id><value>Jarjestelma</value></string>
+  <string><id>10007</id><value>Järjestelmä</value></string>
   <string><id>10008</id><value>Asetukset-&gt;Yleiset</value></string>
-  <string><id>10009</id><value>Asetukset-&gt;Naytto</value></string>
-  <string><id>10010</id><value>Asetukset-&gt;Naytto-&gt;Menunayton paikka</value></string>
-  <string><id>10011</id><value>Asetukset-&gt;Naytto-&gt;Kuvaruudun Saato</value></string>
+  <string><id>10009</id><value>Asetukset-&gt;Näyttö</value></string>
+  <string><id>10010</id><value>Asetukset-&gt;Näyttö-&gt;Menunäytön paikka</value></string>
+  <string><id>10011</id><value>Asetukset-&gt;Näyttö-&gt;Kuvaruudun säätö</value></string>
   <string><id>10012</id><value>Asetukset-&gt;Diaesitys</value></string>
-  <string><id>10013</id><value>Asetukset-&gt;Naytto-&gt;Filtterit</value></string>
+  <string><id>10013</id><value>Asetukset-&gt;Näyttö-&gt;Filtterit</value></string>
   <string><id>10014</id><value>Asetukset-&gt;Musiikki</value></string>
-  <string><id>10015</id><value>Asetukset-&gt;Naytto-&gt;Tekstitys</value></string>
-  <string><id>10016</id><value>Asetukset-&gt;Naytto-&gt;Naytonsaastaja</value></string>
-  <string><id>10017</id><value>Asetukset-&gt;Saa</value></string>
-  <string><id>10020</id><value>Asetukset-&gt;Scriptit</value></string>
+  <string><id>10015</id><value>Asetukset-&gt;Näyttö-&gt;Tekstitys</value></string>
+  <string><id>10016</id><value>Asetukset-&gt;Näyttö-&gt;Näytönsäästäjä</value></string>
+  <string><id>10017</id><value>Asetukset-&gt;Sää</value></string>
+  <string><id>10020</id><value>Asetukset-&gt;Skriptit</value></string>
   <string><id>10021</id><value>Videot/tyylit</value></string>
-  <string><id>10022</id><value>Videot/nayttelijat</value></string>
+  <string><id>10022</id><value>Videot/näyttelijät</value></string>
   <string><id>10023</id><value>Videot/vuosi</value></string>
   <string><id>10024</id><value>Asetukset-&gt;Ohjelmat</value></string>
   <string><id>10025</id><value>Videot/nimi</value></string>
-  <string><id>10026</id><value>Asetukset-&gt;Yleiset-&gt;Valimuisti</value></string>
+  <string><id>10026</id><value>Asetukset-&gt;Yleiset-&gt;Välimuisti</value></string>
   <string><id>10027</id><value>Asetukset-&gt;Yleiset-&gt;Autorun</value></string>
   <string><id>10028</id><value>Videot/soittolista</value></string>
   <string><id>10029</id><value>Asetukset-&gt;Yleiset-&gt;LCD</value></string>
@@ -572,7 +575,7 @@
   <string><id>12001</id><value>Musiikki/info</value></string>
   <string><id>12002</id><value>Dialogi OK</value></string>
   <string><id>12003</id><value>Videot/Info</value></string>
-  <string><id>12004</id><value>Scriptit/Info</value></string>
+  <string><id>12004</id><value>Skriptit/Info</value></string>
   <string><id>12005</id><value>Kokoruudun video</value></string>
   <string><id>12006</id><value>Äanen visualisointi</value></string>
   <string><id>12007</id><value>Kuvat/diaesitys</value></string>
@@ -587,8 +590,8 @@
   <string><id>12317</id><value>7</value></string>
   <string><id>12318</id><value>8</value></string>
   <string><id>12319</id><value>9</value></string>
-  <string><id>12320</id><value>c</value></string>
-  <string><id>12321</id><value>ok</value></string>
+  <string><id>12320</id><value>C</value></string>
+  <string><id>12321</id><value>OK</value></string>
   <string><id>12322</id><value>*</value></string>
   <string><id>12324</id><value>XBMC Päälukitus</value></string>
   <string><id>12325</id><value>Hakemisto lukittu</value></string>
@@ -611,7 +614,7 @@
   <string><id>12342</id><value>Väärä salasana,</value></string>
   <string><id>12343</id><value>yritystä jäljellä </value></string>
   <string><id>12344</id><value>Annetut salasanat eivät täsmää.</value></string>
-  <string><id>12345</id><value>Pääsy kielletty</value></string>
+  <string><id>12345</id><value>Pääsy evätty</value></string>
   <string><id>12346</id><value>Yritykset käytetty.</value></string>
   <string><id>12347</id><value>XBOX sammutetaan nyt.</value></string>
   <string><id>12600</id><value>Säätila</value></string>
@@ -620,9 +623,9 @@
   <string><id>13000</id><value>Järjestelmä</value></string>
   <string><id>13001</id><value>Kiintolevyn sammutus heti</value></string>
   <string><id>13002</id><value>Vain Videoille</value></string>
-  <string><id>13003</id><value>- Viive</value></string>
-  <string><id>13004</id><value>- Pienin videon kestoaika</value></string>
-  <string><id>13005</id><value>Shutdown</value></string>
+  <string><id>13003</id><value>- Sammutuksen viive</value></string>
+  <string><id>13004</id><value>- Tiedoston vähimmäiskesto</value></string>
+  <string><id>13005</id><value>Sammuta XBOX</value></string>
   <string><id>13006</id><value>Dashboard</value></string>
   <string><id>13100</id><value>Välkkymisen poisto</value></string>
   <string><id>13200</id><value>Profiilit</value></string>
@@ -632,7 +635,7 @@
   <string><id>13204</id><value>Viimeksi ladattu profiili:</value></string>
   <string><id>13205</id><value>Tuntematon</value></string>
   <string><id>13299</id><value>Tavoitelämpötila</value></string>
-  <string><id>13300</id><value>Tuulettimen nopeus</value></string>
+  <string><id>13300</id><value>Tuulettimen nopeuden säätö</value></string>
   <string><id>13301</id><value>Automaattinen lämpötilan säätö</value></string>
   <string><id>13302</id><value>Tuulettimen nopeus</value></string>
   <string><id>13303</id><value>Skinin fontti</value></string>
@@ -645,20 +648,20 @@
   <string><id>13310</id><value>Zoomaus-efekti</value></string>
   <string><id>13311</id><value>Kellumis-efekti</value></string>
   <string><id>13312</id><value>Mustan reunan pienennys</value></string>
-  <string><id>13313</id><value>XBOXin Uudelleenkäynnistys</value></string>
-  <string><id>13314</id><value>Kappaleen tietojen näyttöaika</value></string>
+  <string><id>13313</id><value>Käynnistä uudelleen</value></string>
+  <string><id>13314</id><value>Näytä kappaleen tiedot</value></string>
   <string><id>13315</id><value>Luo pikkukuvat</value></string>
   <string><id>13316</id><value>Pikkukuvat rekursiivisesti</value></string>
   <string><id>13317</id><value>Näytä Diaesitys</value></string>
-  <string><id>13318</id><value>Diaesitys rekursiivisesti</value></string>
+  <string><id>13318</id><value>Rekursiivinen Diaesitys</value></string>
   <string><id>13319</id><value>Sekoita</value></string>
   <string><id>13320</id><value>Stereo</value></string>
-  <string><id>13321</id><value>Vain Vasen</value></string>
-  <string><id>13322</id><value>Vain Oikea</value></string>
+  <string><id>13321</id><value>Vain vasen</value></string>
+  <string><id>13322</id><value>Vain oikea</value></string>
   <string><id>13323</id><value>Käytä CD+G</value></string>
-  <string><id>13324</id><value>Taustan Läpinäkyvyys</value></string>
-  <string><id>13325</id><value>Edustan Läpinäkyvyys</value></string>
-  <string><id>13326</id><value>A/V viive</value></string>
+  <string><id>13324</id><value>Taustan läpinäkyvyys</value></string>
+  <string><id>13325</id><value>Edustan läpinäkyvyys</value></string>
+  <string><id>13326</id><value>Äänen viive</value></string>
   <string><id>13327</id><value>Karaoke</value></string>
   <string><id>13328</id><value>%s ei löytynyt.</value></string>
   <string><id>13329</id><value>Virhe avattaessa: %s</value></string>
@@ -669,7 +672,7 @@
   <string><id>13334</id><value>Muuta nimeä</value></string>
   <string><id>13335</id><value>Aseta oletukseksi</value></string>
   <string><id>13336</id><value>Poista painike</value></string>
-  <string><id>13337</id><value>- 2-kanavaisen PCM-äänen läpivienti</value></string>
+  <string><id>13337</id><value>- PCM stereoäänen läpivienti</value></string>
   <string><id>13338</id><value>Etupaneelin LED</value></string>
   <string><id>13339</id><value>Etupaneelin LEDin väri</value></string>
   <string><id>13340</id><value>Anna olla</value></string>
@@ -681,29 +684,30 @@
   <string><id>13346</id><value>Elokuvan tiedot</value></string>
   <string><id>13347</id><value>Lisää soittolistaan</value></string>
   <string><id>13348</id><value>Hae IMDb:stä...</value></string>
-  <string><id>13349</id><value>Hae tiedot kaikille</value></string>
+  <string><id>13349</id><value>Hae kaikkien tiedot</value></string>
   <string><id>13350</id><value>Toistetaan...</value></string>
   <string><id>13351</id><value>Levyn tiedot</value></string>
-  <string><id>13352</id><value>Skannaa hakemisto tietokantaan</value></string>
+  <string><id>13352</id><value>Skannaa hakemisto</value></string>
   <string><id>13353</id><value>Pysäytä skannaaminen</value></string>
-  <string><id>14000</id><value>Osien yhd.: Ei</value></string>
-  <string><id>14001</id><value>Osien yhd.: Perus</value></string>
-  <string><id>14002</id><value>Osien yhd.: Sumea</value></string>
+
+  <string><id>14000</id><value>Älä yhdistä osia</value></string>
+  <string><id>14001</id><value>Yhdistä osat (norm)</value></string>
+  <string><id>14002</id><value>Yhdistä osat (sumea)</value></string>
   <string><id>14003</id><value>Ladataan soittolistatiedosto...</value></string>
   <string><id>14004</id><value>Ladataan streams-lista...</value></string>
   <string><id>14005</id><value>Tulkitaan streams-lista...</value></string>
   <string><id>14006</id><value>Streams-listan lataus ei onnistunut</value></string>
-  <string><id>14007</id><value>Soittolistatiedoston lataus ei onnistunut</value></string>
+  <string><id>14007</id><value>Soittolistan lataus ei onnistunut</value></string>
   <string><id>14008</id><value>Kai Huomautukset käytössä</value></string>
   <string><id>14009</id><value>Peli-hakemisto</value></string>
   <string><id>14010</id><value>Vaihda pikkukuviin automaattisesti, jos</value></string>
-  <string><id>14011</id><value>Automaattinen vaihto pikkukuviin käytössä</value></string>
+  <string><id>14011</id><value>Vaihda automaattisesti pikkukuviin</value></string>
   <string><id>14012</id><value>- Käytä suuria kuvakkeita</value></string>
   <string><id>14013</id><value>- Vaihda, jos</value></string>
   <string><id>14014</id><value>- Prosenttiosuus</value></string>
   <string><id>14015</id><value>ei tiedostoja ja ainakin yksi pikkukuva</value></string>
   <string><id>14016</id><value>ainakin yksi tiedosto ja yksi pikkukuva</value></string>
-  <string><id>14017</id><value>pikkukuvien prosenttiosuus</value></string>
+  <string><id>14017</id><value>pikkukuvien osuus</value></string>
   <string><id>14018</id><value>Selausasetukset</value></string>
   <string><id>14019</id><value>Sääasema 1</value></string>
   <string><id>14020</id><value>Sääasema 2</value></string>
@@ -734,8 +738,8 @@
   <string><id>14045</id><value>%i sek</value></string>
   <string><id>14046</id><value>%i ms</value></string>
   <string><id>14047</id><value>%i %%</value></string>
-  <string><id>14048</id><value>%i kt/s</value></string>
-  <string><id>14049</id><value>%i kt</value></string>
+  <string><id>14048</id><value>%i kbps</value></string>
+  <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
   <string><id>14051</id><value>Näytä kello 12-tuntisena</value></string>
   <string><id>14052</id><value>Vaihda päivän ja kuukauden paikkaa päävalikossa</value></string>

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 28-12-2004 updated: Finnish language file (Thnx to jutski)
   - 28-12-2004 updated: Polish language file (Thnx to napek)
   - 28-12-2004 fixed: scan of the shoutcast top 500 directory was possible using the context menu
   - 28-12-2004 fixed: shoutcast top 500, first stream disappears when Hide parent folder items is enabled
