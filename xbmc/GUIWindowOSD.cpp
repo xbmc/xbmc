@@ -80,6 +80,11 @@ CGUIWindowOSD::~CGUIWindowOSD(void)
 {
 }
 
+bool CGUIWindowOSD::SubMenuVisible()
+{
+	return m_bSubMenuOn;
+}
+
 void CGUIWindowOSD::Render()
 {
 	SetVideoProgress();			// get the percentage of playback complete so far
@@ -92,19 +97,23 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 	switch (action.wID)
 	{
 		case ACTION_OSD_HIDESUBMENU:
+		case ACTION_SHOW_OSD:
+		{
 			if (m_bSubMenuOn)						// is sub menu on?
 			{
 				SET_CONTROL_FOCUS(GetID(), m_iActiveMenuButtonID, 0);	// set focus to last menu button
 				ToggleSubMenu(0, m_iActiveMenu);						// hide the currently active sub-menu
-				return;
 			}
-			break;
+			return;
+		}
+		break;
 
 		case ACTION_PAUSE:
 		{
 			// push a message through to this window to handle the remote control button
 			CGUIMessage msgSet(GUI_MSG_CLICKED,OSD_PLAY,OSD_PLAY,0,0,NULL);
 			OnMessage(msgSet);
+			return;
 		}
 		break;
 
@@ -113,6 +122,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 			// push a message through to this window to handle the remote control button
 			CGUIMessage msgSet(GUI_MSG_CLICKED,OSD_PLAY,OSD_PLAY,0,0,NULL);
 			OnMessage(msgSet);
+			return;
 		}
 		break;
 
@@ -121,6 +131,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 			// push a message through to this window to handle the remote control button
 			CGUIMessage msgSet(GUI_MSG_CLICKED,OSD_STOP,OSD_STOP,0,0,NULL);
 			OnMessage(msgSet);
+			return;
 		}
 		break;
 
@@ -129,6 +140,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 			// push a message through to this window to handle the remote control button
 			CGUIMessage msgSet(GUI_MSG_CLICKED,OSD_FFWD,OSD_FFWD,0,0,NULL);
 			OnMessage(msgSet);
+			return;
 		}
 		break;
 
@@ -137,6 +149,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 			// push a message through to this window to handle the remote control button
 			CGUIMessage msgSet(GUI_MSG_CLICKED,OSD_REWIND,OSD_REWIND,0,0,NULL);
 			OnMessage(msgSet);
+			return;
 		}
 		break;
 
@@ -145,6 +158,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 			// push a message through to this window to handle the remote control button
 			CGUIMessage msgSet(GUI_MSG_CLICKED,OSD_SKIPFWD,OSD_SKIPFWD,0,0,NULL);
 			OnMessage(msgSet);
+			return;
 		}
 		break;
 
@@ -153,6 +167,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 			// push a message through to this window to handle the remote control button
 			CGUIMessage msgSet(GUI_MSG_CLICKED,OSD_SKIPBWD,OSD_SKIPBWD,0,0,NULL);
 			OnMessage(msgSet);
+			return;
 		}
 		break;
 	}
@@ -166,7 +181,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 	{
 		case GUI_MSG_WINDOW_DEINIT:	// fired when OSD is hidden
 		{
-      if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
+			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
 			if (m_bSubMenuOn)						// is sub menu on?
 			{
 				SET_CONTROL_FOCUS(GetID(), m_iActiveMenuButtonID, 0);	// set focus to last menu button
@@ -178,8 +193,9 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 
 		case GUI_MSG_WINDOW_INIT:	// fired when OSD is shown
 		{
-      g_application.m_pPlayer->ShowOSD(false);
+			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(false);
 			SET_CONTROL_FOCUS(GetID(), OSD_PLAY, 0);	// set focus to play button by default when window is shown
+			ResetAllControls();							// make sure the controls are positioned relevant to the OSD Y offset
 			return true;
 		}
 		break;
@@ -188,9 +204,9 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 		{
 			int iControl=message.GetSenderId();		// get the ID of the control sending us a message
 
-			if (iControl >= OSD_VOLUMESLIDER)	// one of the settings (sub menu) controls is sending us a message
+			if (iControl >= OSD_VOLUMESLIDER)		// one of the settings (sub menu) controls is sending us a message
 			{
-				Handle_ControlSetting(iControl);
+				Handle_ControlSetting(iControl, message.GetParam1());
 			}
 
 			if (iControl == OSD_PLAY)
@@ -558,7 +574,7 @@ void CGUIWindowOSD::SetCheckmarkValue(BOOL bValue, DWORD iControlID)
 	}
 }
 
-void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID)
+void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 {
 	const CStdString& strMovie=g_application.CurrentFile();
 	CVideoDatabase dbs;
@@ -622,13 +638,16 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID)
 
 		case OSD_AUDIOSTREAM_LIST:
 		{
-			CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),OSD_AUDIOSTREAM_LIST,0,0,NULL);
-			OnMessage(msg);
-			g_stSettings.m_iAudioStream = msg.GetParam1();				// Set the audio stream to the one selected
-			mplayer_getAudioStream(g_stSettings.m_iAudioStream);		// Tell mplayer ...
-			m_bSubMenuOn = false;										// hide the sub menu
-			g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
-			g_application.Restart(true);								// restart to make new audio track active
+			if (wID)	// check to see if list control has an action ID, remote can cause 0 based events
+			{
+				CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),OSD_AUDIOSTREAM_LIST,0,0,NULL);
+				OnMessage(msg);
+				g_stSettings.m_iAudioStream = msg.GetParam1();				// Set the audio stream to the one selected
+				mplayer_getAudioStream(g_stSettings.m_iAudioStream);		// Tell mplayer ...
+				m_bSubMenuOn = false;										// hide the sub menu
+				g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
+				g_application.Restart(true);								// restart to make new audio track active
+			}
 		}
 		break;
 
@@ -683,16 +702,19 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID)
 
 		case OSD_BOOKMARKS_LIST:
 		{
-			CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),OSD_BOOKMARKS_LIST,0,0,NULL);
-			OnMessage(msg);
-			m_iCurrentBookmark = msg.GetParam1();					// index of bookmark user selected
+			if (wID)	// check to see if list control has an action ID, remote can cause 0 based events
+			{
+				CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),OSD_BOOKMARKS_LIST,0,0,NULL);
+				OnMessage(msg);
+				m_iCurrentBookmark = msg.GetParam1();					// index of bookmark user selected
 
-			dbs.Open();												// open the bookmark d/b
-			dbs.GetBookMarksForMovie(strMovie, bookmarks);			// load the stored bookmarks
-			dbs.Close();											// close the d/b
-			if (bookmarks.size()<=0) return;						// no bookmarks? leave if so ...
+				dbs.Open();												// open the bookmark d/b
+				dbs.GetBookMarksForMovie(strMovie, bookmarks);			// load the stored bookmarks
+				dbs.Close();											// close the d/b
+				if (bookmarks.size()<=0) return;						// no bookmarks? leave if so ...
 
-			g_application.m_pPlayer->SeekTime((long) bookmarks[m_iCurrentBookmark]);	// set mplayers play position
+				g_application.m_pPlayer->SeekTime((long) bookmarks[m_iCurrentBookmark]);	// set mplayers play position
+			}
 		}
 		break;
 
@@ -732,9 +754,12 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID)
 
 		case OSD_SUBTITLE_LIST:
 		{
-			CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),OSD_SUBTITLE_LIST,0,0,NULL);
-			OnMessage(msg);								// retrieve the selected list item
-			mplayer_setSubtitle(msg.GetParam1());		// set the current subtitle
+			if (wID)	// check to see if list control has an action ID, remote can cause 0 based events
+			{
+				CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),OSD_SUBTITLE_LIST,0,0,NULL);
+				OnMessage(msg);								// retrieve the selected list item
+				mplayer_setSubtitle(msg.GetParam1());		// set the current subtitle
+			}
 		}
 		break;
 	}
