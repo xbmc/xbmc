@@ -17,7 +17,7 @@ namespace DIRECTORY
 public:
 		CDAAPDirectory(void);
 		virtual ~CDAAPDirectory(void);
-		virtual bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
+		virtual bool  GetDirectory(const CStdString& strPath,CFileItemList &items);
 		virtual void  CloseDAAP(void);
 
 private:

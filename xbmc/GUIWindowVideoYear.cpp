@@ -33,7 +33,7 @@
 //****************************************************************************************************************************
 struct SSortVideoYearByName
 {
-	bool operator()(CFileItem* pStart, CFileItem* pEnd)
+	static bool Sort(CFileItem* pStart, CFileItem* pEnd)
 	{
     CFileItem& rpStart=*pStart;
     CFileItem& rpEnd=*pEnd;
@@ -88,9 +88,11 @@ struct SSortVideoYearByName
 		return true;
 	}
 
-	bool m_bSortAscending;
-	int m_iSortMethod;
+	static bool m_bSortAscending;
+	static int m_iSortMethod;
 };
+bool SSortVideoYearByName::m_bSortAscending;
+int SSortVideoYearByName::m_iSortMethod;
 
 //****************************************************************************************************************************
 CGUIWindowVideoYear::CGUIWindowVideoYear()
@@ -160,7 +162,7 @@ bool CGUIWindowVideoYear::OnMessage(CGUIMessage& message)
 //****************************************************************************************************************************
 void CGUIWindowVideoYear::FormatItemLabels()
 {
-  for (int i=0; i < (int)m_vecItems.size(); i++)
+  for (int i=0; i < m_vecItems.Size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
     if (g_stSettings.m_iMyVideoYearSortMethod==0||g_stSettings.m_iMyVideoYearSortMethod==2)
@@ -187,20 +189,19 @@ void CGUIWindowVideoYear::FormatItemLabels()
   }
 }
 
-void CGUIWindowVideoYear::SortItems(VECFILEITEMS& items)
+void CGUIWindowVideoYear::SortItems(CFileItemList& items)
 {
-  SSortVideoYearByName sortmethod;
 	if (m_Directory.IsVirtualDirectoryRoot())
 	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyVideoYearRootSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyVideoYearRootSortAscending;
+		SSortVideoYearByName::m_iSortMethod=g_stSettings.m_iMyVideoYearRootSortMethod;
+		SSortVideoYearByName::m_bSortAscending=g_stSettings.m_bMyVideoYearRootSortAscending;
 	}
 	else
 	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyVideoYearSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyVideoYearSortAscending;
+		SSortVideoYearByName::m_iSortMethod=g_stSettings.m_iMyVideoYearSortMethod;
+		SSortVideoYearByName::m_bSortAscending=g_stSettings.m_bMyVideoYearSortAscending;
 	}
-  sort(items.begin(), items.end(), sortmethod);
+	items.Sort(SSortVideoYearByName::Sort);
 }
 
 //****************************************************************************************************************************
@@ -209,7 +210,7 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
   // get selected item
 	int iItem=GetSelectedItem();
 	CStdString strSelectedItem="";
-	if (iItem >=0 && iItem < (int)m_vecItems.size())
+	if (iItem >=0 && iItem < m_vecItems.Size())
 	{
 		CFileItem* pItem=m_vecItems[iItem];
 		if (pItem->GetLabel() != "..")
@@ -232,7 +233,7 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
 			pItem->m_strPath=years[i];
 			pItem->m_bIsFolder=true;
       pItem->m_bIsShareOrDrive=false;
-			m_vecItems.push_back(pItem);
+			m_vecItems.Add(pItem);
     }
     SET_CONTROL_LABEL(LABEL_YEAR,"");
   }
@@ -244,7 +245,7 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
 			pItem->m_strPath="";
 			pItem->m_bIsFolder=true;
       pItem->m_bIsShareOrDrive=false;
-			m_vecItems.push_back(pItem);
+			m_vecItems.Add(pItem);
 		}
 		m_strParentPath = "";
 		VECMOVIES movies;
@@ -263,16 +264,16 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
 				pItem->SetThumbnailImage(strThumb);
 			pItem->m_fRating     = movie.m_fRating; 
 			pItem->m_stTime.wYear= movie.m_iYear;
-			m_vecItems.push_back(pItem);
+			m_vecItems.Add(pItem);
 		}
 		SET_CONTROL_LABEL(LABEL_YEAR,m_Directory.m_strPath);
   }
-	CUtil::SetThumbs(m_vecItems);
+	m_vecItems.SetThumbs();
   SetIMDBThumbs(m_vecItems);
 
 	// Fill in default icons
 	CStdString strPath;
-	for (int i=0; i<(int)m_vecItems.size(); i++)
+	for (int i=0; i<(int)m_vecItems.Size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[i];
 		strPath=pItem->m_strPath;
@@ -299,7 +300,7 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
 		}
 	}
 
-  for (int i=0; i < (int)m_vecItems.size(); ++i)
+  for (int i=0; i < (int)m_vecItems.Size(); ++i)
 	{
 		CFileItem* pItem=m_vecItems[i];
 		if (pItem->m_strPath==strSelectedItem)
@@ -314,7 +315,7 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
 //****************************************************************************************************************************
 void CGUIWindowVideoYear::OnClick(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
   CFileItem* pItem=m_vecItems[iItem];
   CStdString strPath=pItem->m_strPath;
 
@@ -373,7 +374,7 @@ void CGUIWindowVideoYear::OnClick(int iItem)
 
 void CGUIWindowVideoYear::OnInfo(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
   if ( m_Directory.IsVirtualDirectoryRoot() ) return;
 	CGUIWindowVideoBase::OnInfo(iItem);
 }

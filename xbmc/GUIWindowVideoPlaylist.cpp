@@ -52,7 +52,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 		case GUI_MSG_PLAYBACK_STOPPED:
 		case GUI_MSG_PLAYLISTPLAYER_STOPPED:
 		{
-			for (int i=0; i < (int)m_vecItems.size(); ++i)
+			for (int i=0; i < (int)m_vecItems.Size(); ++i)
 			{
 				CFileItem* pItem=m_vecItems[i];
 				if (pItem && pItem->IsSelected())
@@ -71,7 +71,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 			//	global playlist changed outside playlist window
 			Update("");
 
-			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.size()<=0)
+			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.Size()<=0)
 			{
 				m_iLastControl=CONTROL_BTNVIEWASICONS;
 				SET_CONTROL_FOCUS(m_iLastControl, 0);
@@ -95,7 +95,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 
 			Update("");
 
-			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.size()<=0)
+			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.Size()<=0)
 			{
 				m_iLastControl=CONTROL_BTNVIEWASICONS;
 				SET_CONTROL_FOCUS(m_iLastControl, 0);
@@ -125,7 +125,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 			if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO)
 			{
 				int iSong=g_playlistPlayer.GetCurrentSong();
-				if (iSong >= 0 && iSong<=(int)m_vecItems.size())
+				if (iSong >= 0 && iSong<=(int)m_vecItems.Size())
 				{
 					CONTROL_SELECT_ITEM(CONTROL_LIST,iSong);
 					CONTROL_SELECT_ITEM(CONTROL_THUMBS,iSong);
@@ -317,7 +317,7 @@ void CGUIWindowVideoPlaylist::ClearFileItems()
   CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
   g_graphicsContext.SendMessage(msg2);         
 
-	CFileItemList itemlist(m_vecItems); // will clean up everything
+	m_vecItems.Clear(); // will clean up everything
 
 }
 
@@ -329,7 +329,7 @@ void CGUIWindowVideoPlaylist::UpdateListControl()
   CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
   g_graphicsContext.SendMessage(msg2);         
 
-	for (int i=0; i < (int)m_vecItems.size(); i++)
+	for (int i=0; i < (int)m_vecItems.Size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[i];
 
@@ -342,7 +342,7 @@ void CGUIWindowVideoPlaylist::UpdateListControl()
 
 	ShowThumbPanel();
 
-	for (int i=0; i < (int)m_vecItems.size(); i++)
+	for (int i=0; i < (int)m_vecItems.Size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[i];
 
@@ -363,7 +363,7 @@ void CGUIWindowVideoPlaylist::OnFileItemFormatLabel(CFileItem* pItem)
 	pItem->SetLabel(CUtil::GetTitleFromPath(pItem->GetLabel()));
 }
 
-void CGUIWindowVideoPlaylist::DoSort(VECFILEITEMS& items)
+void CGUIWindowVideoPlaylist::DoSort(CFileItemList& items)
 {
 
 }
@@ -371,7 +371,7 @@ void CGUIWindowVideoPlaylist::DoSort(VECFILEITEMS& items)
 void CGUIWindowVideoPlaylist::UpdateButtons()
 {
 	//	Update playlist buttons
-	if (m_vecItems.size() )
+	if (m_vecItems.Size() )
 	{
 		CONTROL_ENABLE(CONTROL_BTNCLEAR);
 		CONTROL_ENABLE(CONTROL_BTNSAVE);
@@ -456,7 +456,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 	SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS,iString);
 
 	//	Update object count label
-	int iItems=m_vecItems.size();
+	int iItems=m_vecItems.Size();
 	if (iItems)
 	{
 		CFileItem* pItem=m_vecItems[0];
@@ -503,7 +503,7 @@ int CGUIWindowVideoPlaylist::GetSelectedItem()
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
   g_graphicsContext.SendMessage(msg);         
   int iItem=msg.GetParam1();
-	if (iItem >= (int)m_vecItems.size())
+	if (iItem >= (int)m_vecItems.Size())
 		return -1;
 	return iItem;
 }
@@ -537,11 +537,11 @@ void CGUIWindowVideoPlaylist::ShowThumbPanel()
   }
 }
 
-void CGUIWindowVideoPlaylist::GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items)
+void CGUIWindowVideoPlaylist::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-	if (items.size()) 
+	if (items.Size()) 
 	{
-		CFileItemList itemlist(items); // will clean up everything
+		items.Clear(); // will clean up everything
 	}
 
 	CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
@@ -577,7 +577,7 @@ void CGUIWindowVideoPlaylist::GetDirectory(const CStdString &strDirectory, VECFI
 			else
 				pItem->SetLabel2("");
 		}
-		items.push_back(pItem);
+		items.Add(pItem);
 	}
 }
 
@@ -586,7 +586,7 @@ void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
 	// get selected item
 	int iItem=GetSelectedItem();
 	CStdString strSelectedItem="";
-	if (iItem >=0 && iItem < (int)m_vecItems.size())
+	if (iItem >=0 && iItem < (int)m_vecItems.Size())
 	{
 		CFileItem* pItem=m_vecItems[iItem];
 		if (pItem->GetLabel() != "..")
@@ -630,7 +630,7 @@ void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
 	}
 
 	bool bSelectedFound=false;
-	for (int i=0; i < (int)m_vecItems.size(); ++i)
+	for (int i=0; i < (int)m_vecItems.Size(); ++i)
 	{
 		CFileItem* pItem=m_vecItems[i];
 
@@ -666,7 +666,7 @@ void CGUIWindowVideoPlaylist::GetDirectoryHistoryString(const CFileItem* pItem, 
 }
 void CGUIWindowVideoPlaylist::OnClick(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
 	CFileItem* pItem=m_vecItems[iItem];
 	CStdString strPath=pItem->m_strPath;
 	g_playlistPlayer.SetCurrentPlaylist( PLAYLIST_VIDEO);
@@ -676,7 +676,7 @@ void CGUIWindowVideoPlaylist::OnClick(int iItem)
 
 void CGUIWindowVideoPlaylist::OnQueueItem(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
 	RemovePlayListItem(iItem);
 }
 
@@ -700,23 +700,12 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
 		}
 	}
 
-	int iCount=0;
-	ivecItems it=m_vecItems.begin();
-	while (it!=m_vecItems.end())
-	{
-		if (iCount==iItem)
-		{
-			m_vecItems.erase(it);
-			break;
-		}
-		++it;
-		iCount++;
-	}
+	m_vecItems.Remove(iItem);
 
 	UpdateListControl();
 	UpdateButtons();
 
-	if (m_vecItems.size()<=0)
+	if (m_vecItems.Size()<=0)
 	{
 		SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 	}
@@ -768,7 +757,7 @@ void CGUIWindowVideoPlaylist::SavePlayList()
 		strPath += strNewFileName;
 		strPath+=".m3u";
 		CPlayListM3U playlist;
-		for (int i=0; i < (int)m_vecItems.size(); ++i)
+		for (int i=0; i < m_vecItems.Size(); ++i)
 		{
 			CFileItem* pItem = m_vecItems[i];
 			CPlayList::CPlayListItem newItem;

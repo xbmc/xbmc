@@ -22,10 +22,10 @@ CSMBDirectory::~CSMBDirectory(void)
 {
 }
 
-bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
+bool  CSMBDirectory::GetDirectory(const CStdString& strPath,CFileItemList &items)
 {
 	// We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
-	VECFILEITEMS vecCacheItems;
+	CFileItemList vecCacheItems;
     g_directoryCache.ClearDirectory(strPath);
 
 	//Separate roots for the authentication and the containing items to allow browsing to work correctly
@@ -151,8 +151,8 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 					if(!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
 					pItem->m_bIsFolder = true;
 					FileTimeToSystemTime(&localTime, &pItem->m_stTime);  
-					vecCacheItems.push_back(pItem);
-					items.push_back(new CFileItem(*pItem));
+					vecCacheItems.Add(pItem);
+					items.Add(new CFileItem(*pItem));
 				}
 				else
 				{
@@ -162,8 +162,8 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 					pItem->m_dwSize = iSize;
 					FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 		        
-					vecCacheItems.push_back(pItem);
-					if (IsAllowed(dirEnt->name)) items.push_back(new CFileItem(*pItem));
+					vecCacheItems.Add(pItem);
+					if (IsAllowed(dirEnt->name)) items.Add(new CFileItem(*pItem));
 				}
 			}
 			smb.Lock();

@@ -12,7 +12,7 @@ public:
 
 protected:
   void        GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
-  void        GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items);
+  void        GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   void        Update(const CStdString &strDirectory);
 	void				ClearPlayList();
   void        ClearFileItems();
@@ -20,7 +20,7 @@ protected:
   void        RemovePlayListItem(int iItem);
   void        MoveCurrentPlayListItem(int iAction); // up or down
   void        OnFileItemFormatLabel(CFileItem* pItem);
-  void        DoSort(VECFILEITEMS& items);
+  void        DoSort(CFileItemList& items);
   bool        GetKeyboard(CStdString& strInput);
   void        UpdateButtons();
   void        ShufflePlayList();
@@ -35,7 +35,7 @@ protected:
   void        OnQueueItem(int iItem);
   int         m_iItemSelected;
   int         m_iLastControl;
-  VECFILEITEMS							m_vecItems;
+  CFileItemList							m_vecItems;
 	CDirectoryHistory		m_history;
   CFileItem m_Directory;
 	typedef vector <CFileItem*>::iterator ivecItems;

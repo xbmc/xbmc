@@ -180,12 +180,12 @@ void CMediaMonitor::GetSharedMovies(VECSHARES& vecShares, MOVIELIST& movies)
 	directory.SetMask(g_stSettings.m_szMyVideoExtensions);
 
 	CStdString path;
-	VECFILEITEMS items;
+	CFileItemList items;
 	if (directory.GetDirectory(path,items))
 	{
-		for (int i=0; i < (int)items.size(); ++i)
+		for (int i=0; i < (int)items.Size(); ++i)
 		{
-			CFileItem* pItem = items.at(i);
+			CFileItem* pItem = items[i];
 			if (pItem->m_iDriveType == SHARE_TYPE_REMOTE)
 			{
 				Scan(directory, pItem->m_strPath, movies);
@@ -453,15 +453,15 @@ void CMediaMonitor::Scan(DIRECTORY::IDirectory& directory, CStdString& aPath, MO
 	// dispatch any pending commands first before scanning this directory!
 	DispatchNextCommand();
 
-	VECFILEITEMS items;
+	CFileItemList items;
 	if (!directory.GetDirectory(aPath,items))
 	{
 		return;
 	}
 
-	for (int i=0; i < (int)items.size(); ++i)
+	for (int i=0; i < (int)items.Size(); ++i)
 	{
-		CFileItem* pItem = items.at(i);
+		CFileItem* pItem = items[i];
 		
 		if (pItem->m_bIsFolder)
 		{

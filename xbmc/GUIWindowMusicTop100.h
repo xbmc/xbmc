@@ -11,12 +11,12 @@ public:
   virtual	void				OnAction(const CAction &action);
 
 protected:
-	virtual void				GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items);
+	virtual void				GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual	void				UpdateButtons();
 	virtual void				OnFileItemFormatLabel(CFileItem* pItem);
   virtual void				OnClick(int iItem);
-	virtual	void				DoSort(VECFILEITEMS& items);
-	virtual	void				DoSearch(const CStdString& strSearch,VECFILEITEMS& items);
+	virtual	void				DoSort(CFileItemList& items);
+	virtual	void				DoSearch(const CStdString& strSearch,CFileItemList& items);
 	virtual	void				OnSearchItemFound(const CFileItem* pItem);
 	virtual	void				ShowThumbPanel(){}
 

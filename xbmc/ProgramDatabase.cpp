@@ -153,7 +153,7 @@ bool CProgramDatabase::CreateTables()
 
 //********************************************************************************************************************************
 
-long CProgramDatabase::GetFile(const CStdString& strFilenameAndPath, VECFILEITEMS& programs)
+long CProgramDatabase::GetFile(const CStdString& strFilenameAndPath, CFileItemList& programs)
 {
 	try
 	{
@@ -188,7 +188,7 @@ long CProgramDatabase::GetFile(const CStdString& strFilenameAndPath, VECFILEITEM
 				FileTimeToLocalFileTime(&FileAttributeData.ftLastWriteTime,&localTime);
 				FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 				pItem->m_dwSize=FileAttributeData.nFileSizeLow;
-				programs.push_back(pItem);
+				programs.Add(pItem);
         m_pDS->close();
 				return lFileId;
 			}
@@ -460,7 +460,7 @@ long CProgramDatabase::AddProgram(const CStdString& strFilenameAndPath, DWORD ti
 }
 
 //********************************************************************************************************************************
-void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, VECFILEITEMS& programs, bool bOnlyDefaultXBE)
+void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, CFileItemList& programs, bool bOnlyDefaultXBE)
 {
 	try {	
 		VECPROGRAMPATHS todelete;
@@ -498,7 +498,7 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, VECFILEITE
 				FileTimeToLocalFileTime(&FileAttributeData.ftLastWriteTime,&localTime);
 				FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 				pItem->m_dwSize=FileAttributeData.nFileSizeLow;
-				programs.push_back(pItem);
+				programs.Add(pItem);
 			}
 			else
 			{
@@ -524,7 +524,7 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, VECFILEITE
 
 }
 
-void CProgramDatabase::GetProgramsByPath(const CStdString& strPath, VECFILEITEMS& programs, int iDepth, bool bOnlyDefaultXBE)
+void CProgramDatabase::GetProgramsByPath(const CStdString& strPath, CFileItemList& programs, int iDepth, bool bOnlyDefaultXBE)
 {
 	try {	
 		VECPROGRAMPATHS todelete;
@@ -572,7 +572,7 @@ void CProgramDatabase::GetProgramsByPath(const CStdString& strPath, VECFILEITEMS
 				FileTimeToLocalFileTime(&FileAttributeData.ftLastWriteTime,&localTime);
 				FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 				pItem->m_dwSize=FileAttributeData.nFileSizeLow;
-				programs.push_back(pItem);
+				programs.Add(pItem);
 			}
 			else
 			{

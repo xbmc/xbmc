@@ -12,13 +12,13 @@ public:
   virtual	void				OnAction(const CAction &action);
 
 protected:
-	virtual void				GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items);
+	virtual void				GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual	void				UpdateButtons();
   virtual void				OnClick(int iItem);
 	virtual	void				OnQueueItem(int iItem);
-	virtual	void				DoSort(VECFILEITEMS& items) {};
+	virtual	void				DoSort(CFileItemList& items) {};
 	virtual void				OnFileItemFormatLabel(CFileItem* pItem) {};
-	virtual void				OnRetrieveMusicInfo(VECFILEITEMS& items) {};
+	virtual void				OnRetrieveMusicInfo(CFileItemList& items) {};
 	virtual void				OnItemLoaded(CFileItem* pItem);
 	virtual void				ClearFileItems();
 	virtual void				Update(const CStdString& strDirectory);

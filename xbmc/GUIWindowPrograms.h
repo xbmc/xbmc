@@ -17,7 +17,7 @@ protected:
 	void				ShowThumbPanel();  
 	bool				ViewByLargeIcon();
 	bool				ViewByIcon();
-	void				OnScan(VECFILEITEMS& items, int& iTotalAppsFound)  ;
+	void				OnScan(CFileItemList& items, int& iTotalAppsFound)  ;
 	void				Update(const CStdString& strDirectory);
 	void				UpdateDir(const CStdString& strDirectory);
 	void				LoadDirectory(const CStdString& strDirectory, int depth);
@@ -25,11 +25,11 @@ protected:
 	void				OnSort();
 	void				UpdateButtons();
 	void				ClearFileItems();
-	void				DeleteThumbs(VECFILEITEMS& items);
+	void				DeleteThumbs(CFileItemList& items);
 	int					GetSelectedItem();
 	void				GoParentFolder();
 	CGUIDialogProgress*	m_dlgProgress;  
-	VECFILEITEMS		m_vecItems;
+	CFileItemList		m_vecItems;
 	CFileItem			m_Directory;
 	CStdString			m_shareDirectory;
 	int					m_iLastControl;

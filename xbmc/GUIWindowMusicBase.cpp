@@ -133,7 +133,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			if ((m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory==strDirectory)
 					|| (GetID()==WINDOW_MUSIC_PLAYLIST) )
 			{
-				for (int i=0; i < (int)m_vecItems.size(); ++i)
+				for (int i=0; i < m_vecItems.Size(); ++i)
 				{
 					CFileItem* pItem=m_vecItems[i];
 					if (pItem && pItem->IsSelected())
@@ -171,10 +171,10 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 					nPreviousItem=HIWORD(message.GetParam2());
 				}
 
-				int nFolderCount=CUtil::GetFolderCount(m_vecItems);
+				int nFolderCount=m_vecItems.GetFolderCount();
 
 				//	is the previous item in this directory
-				for (int i=nFolderCount, n=0; i<(int)m_vecItems.size(); i++)
+				for (int i=nFolderCount, n=0; i<m_vecItems.Size(); i++)
 				{
 					CFileItem* pItem=m_vecItems[i];
 
@@ -182,9 +182,9 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 						pItem->Select(false);
 				}
 
-				if (nFolderCount+nCurrentItem<(int)m_vecItems.size())
+				if (nFolderCount+nCurrentItem<m_vecItems.Size())
 				{
-					for (int i=nFolderCount, n=0; i<(int)m_vecItems.size(); i++)
+					for (int i=nFolderCount, n=0; i<m_vecItems.Size(); i++)
 					{
 						CFileItem* pItem=m_vecItems[i];
 
@@ -356,7 +356,7 @@ void CGUIWindowMusicBase::ClearFileItems()
   CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
   g_graphicsContext.SendMessage(msg2);
 
-	CFileItemList itemlist(m_vecItems); // will clean up everything
+	m_vecItems.Clear(); // will clean up everything
 }
 
 /// \brief Updates list/thumb control
@@ -372,7 +372,7 @@ void CGUIWindowMusicBase::UpdateListControl()
 	//	Cache available album thumbs
 	g_directoryCache.InitMusicThumbCache();
 
-	for (int i=0; i < (int)m_vecItems.size(); i++)
+	for (int i=0; i < m_vecItems.Size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[i];
 
@@ -387,7 +387,7 @@ void CGUIWindowMusicBase::UpdateListControl()
 
 	ShowThumbPanel();
 
-	for (int i=0; i < (int)m_vecItems.size(); i++)
+	for (int i=0; i < m_vecItems.Size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[i];
 
@@ -415,7 +415,7 @@ int CGUIWindowMusicBase::GetSelectedItem()
   g_graphicsContext.SendMessage(msg);
 
   int iItem=msg.GetParam1();
-	if (iItem >= (int)m_vecItems.size())
+	if (iItem >= m_vecItems.Size())
 		return -1;
 	return iItem;
 }
@@ -432,7 +432,7 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 	// get selected item
 	int iItem=GetSelectedItem();
 	CStdString strSelectedItem="";
-	if (iItem >=0 && iItem < (int)m_vecItems.size())
+	if (iItem >=0 && iItem < m_vecItems.Size())
 	{
 		CFileItem* pItem=m_vecItems[iItem];
 		if (pItem->GetLabel() != "..")
@@ -484,7 +484,7 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 
 	bool bSelectedFound=false, bCurrentSongFound=false;
 	int iSongInDirectory=-1;
-	for (int i=0; i < (int)m_vecItems.size(); ++i)
+	for (int i=0; i < m_vecItems.Size(); ++i)
 	{
 		CFileItem* pItem=m_vecItems[i];
 
@@ -593,7 +593,7 @@ bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
 /// \param iItem Item in list/thumb control
 void CGUIWindowMusicBase::OnInfo(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= m_vecItems.Size() ) return;
 	CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
   CFileItem* pItem;
 	pItem=m_vecItems[iItem];
@@ -648,7 +648,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 			set<CStdString> albums;
 
 			//	Get album names found in directory
-			for (int i=0; i<(int)m_vecItems.size(); i++)
+			for (int i=0; i<m_vecItems.Size(); i++)
 			{
 				CFileItem* pItem=m_vecItems[i];
 				if (pItem->m_musicInfoTag.Loaded() && !pItem->m_musicInfoTag.GetAlbum().IsEmpty())
@@ -713,15 +713,14 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 	{
 		//	No album name found for folder found in database. Look into
 		//	the directory, but don't save albuminfo to database.
-		VECFILEITEMS items;
-		CFileItemList itemlist(items);		//	will cleanup everthing
+		CFileItemList items;
 		GetDirectory(strPath, items);
 		OnRetrieveMusicInfo(items);
 
 		set<CStdString> albums;
 
 		//	Get album names found in directory
-		for (int i=0; i<(int)items.size(); i++)
+		for (int i=0; i<items.Size(); i++)
 		{
 			CFileItem* pItem=items[i];
 			if (pItem->m_musicInfoTag.Loaded() && !pItem->m_musicInfoTag.GetAlbum().IsEmpty())
@@ -967,14 +966,14 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 		else
 		{
 			//	Refresh all items 
-			for (int i=0; i<(int)m_vecItems.size(); ++i)
+			for (int i=0; i<m_vecItems.Size(); ++i)
 			{
 				CFileItem* pItem=m_vecItems[i];
 				pItem->FreeIcons();
 			}
 
-			CUtil::SetMusicThumbs(m_vecItems);
-			CUtil::FillInDefaultIcons(m_vecItems);
+			m_vecItems.SetMusicThumbs();
+			m_vecItems.FillInDefaultIcons();
 		}
 
 		//	HACK: If we are in files view
@@ -1004,7 +1003,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 
 /// \brief Can be overwritten to implement an own tag filling function.
 /// \param items File items to fill
-void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items)
+void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 {
 
 }
@@ -1026,7 +1025,7 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
 /// \param iItem Selected Item in list/thumb control
 void CGUIWindowMusicBase::OnQueueItem(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= m_vecItems.Size() ) return;
 	// add item 2 playlist
 	const CFileItem* pItem=m_vecItems[iItem];
 	AddItemToPlayList(pItem);
@@ -1060,11 +1059,10 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
 		if (pItem->GetLabel() == "..") return;
 		CStdString strDirectory=m_Directory.m_strPath;
 		m_Directory.m_strPath=pItem->m_strPath;
-		VECFILEITEMS items;
-		CFileItemList itemlist(items);
+		CFileItemList items;
 		GetDirectory(m_Directory.m_strPath, items);
 		DoSort(items);
-		for (int i=0; i < (int) items.size(); ++i)
+		for (int i=0; i < items.Size(); ++i)
 		{
 			AddItemToPlayList(items[i]);
 		}
@@ -1084,7 +1082,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
 /// \brief Make the actual search for the OnSearch function.
 /// \param strSearch The search string
 /// \param items Items Found
-void CGUIWindowMusicBase::DoSearch(const CStdString& strSearch,VECFILEITEMS& items)
+void CGUIWindowMusicBase::DoSearch(const CStdString& strSearch,CFileItemList& items)
 {
 
 }
@@ -1106,17 +1104,17 @@ void CGUIWindowMusicBase::OnSearch()
 	  m_dlgProgress->StartModal(GetID());
 	  m_dlgProgress->Progress();
   }
-	VECFILEITEMS items;
+	CFileItemList items;
 	DoSearch(strSearch, items);
 
-	if (items.size())
+	if (items.Size())
 	{
 		CGUIDialogSelect* pDlgSelect=(CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
 		pDlgSelect->Reset();
 		pDlgSelect->SetHeading(283);
 		CUtil::SortFileItemsByName(items);
 
-		for (int i=0; i<(int)items.size(); i++)
+		for (int i=0; i<(int)items.Size(); i++)
 		{
 			CFileItem* pItem=items[i];
 			pDlgSelect->Add(pItem->GetLabel());
@@ -1132,10 +1130,6 @@ void CGUIWindowMusicBase::OnSearch()
 		}
 
 		CFileItem* pSelItem=new CFileItem(*items[iItem]);
-
-		{
-			CFileItemList itemlist(items);	//	will cleanup everything
-		}
 
 		OnSearchItemFound(pSelItem);
 
@@ -1445,7 +1439,7 @@ void CGUIWindowMusicBase::Render()
 
 void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= m_vecItems.Size() ) return;
 	// calculate our position
 	int iPosX=200;
 	int iPosY=100;

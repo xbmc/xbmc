@@ -13,13 +13,13 @@ namespace DIRECTORY
     {
     public:
       CStdString    m_strPath;
-      VECFILEITEMS  m_Items;
+      CFileItemList  m_Items;
     };
   public:
     CDirectoryCache(void);
     virtual ~CDirectoryCache(void);
-    static bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
-    static void  SetDirectory(const CStdString& strPath,const VECFILEITEMS &items);
+    static bool  GetDirectory(const CStdString& strPath,CFileItemList &items);
+    static void  SetDirectory(const CStdString& strPath,const CFileItemList &items);
     static void  ClearDirectory(const CStdString& strPath);
     static void  Clear();
     static bool  FileExists(const CStdString& strPath,bool& bInCache);
@@ -32,8 +32,8 @@ protected:
 		static void  ClearCache(set<CStdString>& dirs);
 		static bool  IsCacheDir(CStdString strPath);
 
-    vector<CDir> m_vecCache;
-    typedef vector<CDir>::iterator ivecCache;
+    vector<CDir*> m_vecCache;
+    typedef vector<CDir*>::iterator ivecCache;
 
 		static CCriticalSection m_cs;
 		set<CStdString> m_thumbDirs;

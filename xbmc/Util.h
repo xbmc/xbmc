@@ -21,13 +21,9 @@ public:
   CUtil(void);
   virtual ~CUtil(void);
   static char* GetExtension(const CStdString& strFileName);
-  static void  RemoveExtension(CFileItem* pItem);
   static void  RemoveExtension(CStdString& strFileName);
-  static void  RemoveExtensions(VECFILEITEMS &items);
   static bool  GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumePrefix, int& volumeNumber);
-  static void  CleanFileName(CFileItem *pItem);
   static void  CleanFileName(CStdString& strFileName);
-  static void  CleanFileNames(VECFILEITEMS &items);
   static char* GetFileName(const CStdString& strFileNameAndPath);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath);
   static bool  IsHD(const CStdString& strFileName);
@@ -77,10 +73,8 @@ public:
 	static bool GetXBEDescription(const CStdString& strFileName, CStdString& strDescription);
 	static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
 	static DWORD GetXbeID( const CStdString& strFilePath);
-	static void FillInDefaultIcons(VECFILEITEMS &items);
-	static void CreateShortcuts(VECFILEITEMS &items);
+	static void CreateShortcuts(CFileItemList &items);
 	static void CreateShortcut(CFileItem* pItem);
-	static void SetThumbs(VECFILEITEMS &items);
 	static void GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS);
 	static void GetGenreDatabase(const CStdString& strFileName, CStdString& strGenreDBS);
 	static void ShortenFileName(CStdString& strFileNameAndPath);
@@ -108,8 +102,6 @@ public:
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
   static void GetPath(const CStdString& strFileName, CStdString& strPath);
 	static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
-	static int  GetFolderCount(VECFILEITEMS &items);
-	static int GetFileCount(VECFILEITEMS &items);
 	static bool	ThumbExists(const CStdString& strFileName, bool bAddCache=false);
 	static bool ThumbCached(const CStdString& strFileName);
 	static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
@@ -117,7 +109,6 @@ public:
   static void PlayDVD();
   static DWORD SetUpNetwork( bool resetmode, struct network_info& networkinfo );
   static void GetVideoThumbnail(const CStdString& strIMDBID, CStdString& strThumb);
-  static void SetMusicThumbs(VECFILEITEMS &items);
   static CStdString GetNextFilename(const char* fn_template, int max);
   static void TakeScreenshot();
 	static void SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate);
@@ -127,7 +118,7 @@ public:
   static void RestoreBrightnessContrastGamma();
   static void InitGamma();
   static void ClearCache();
-	static void SortFileItemsByName(VECFILEITEMS& items, bool bSortAscending=true);
+	static void SortFileItemsByName(CFileItemList& items, bool bSortAscending=true);
 	static bool IsNetworkUp() { return m_bNetworkUp; }
 	static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
 	static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);

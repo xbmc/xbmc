@@ -12,7 +12,7 @@ extern "C" {
 }
 
 struct DiscoveryCallbackContext {
-	VECFILEITEMS *items;
+	CFileItemList *items;
 	const char *username;
 	const char *password;
 };
@@ -32,7 +32,7 @@ CXBMSDirectory::~CXBMSDirectory(void)
 
 
 
-bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
+bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,CFileItemList &items)
 {
 	unsigned long handle;
 	char *filename, *fileinfo;
@@ -43,7 +43,7 @@ bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 	if (!CUtil::HasSlashAtEnd(strPath) )
 		strRoot+="/";
 
-	VECFILEITEMS vecCacheItems;
+	CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strPath);	
 
 	CcXstreamServerConnection conn = NULL;
@@ -195,10 +195,10 @@ bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 
 		if ( bIsDirectory || IsAllowed( filename) )
 		{
-			items.push_back(new CFileItem(*pItem));
+			items.Add(new CFileItem(*pItem));
 		}
 
-		vecCacheItems.push_back(pItem);
+		vecCacheItems.Add(pItem);
 
 		free(filename);
 		free(fileinfo);
@@ -257,5 +257,5 @@ static void DiscoveryCallback(const char *addr, const char *port, const char *ve
 	pItem->m_strPath=strPath;
 	pItem->m_bIsFolder=true;
 	pItem->m_bIsShareOrDrive=true;
-	c->items->push_back(pItem);
+	c->items->Add(pItem);
 }

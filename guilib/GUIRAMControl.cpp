@@ -284,7 +284,7 @@ void CGUIRAMControl::PlayMovie(CFileItem& item)
       if (fileStackable)
       {
         // create a list of all the files in the same directory
-        VECFILEITEMS items;
+        CFileItemList items;
         CVirtualDirectory dir;
         dir.SetShares(g_settings.m_vecMyVideoShares);
         dir.SetMask(g_stSettings.m_szMyVideoExtensions);
@@ -294,7 +294,7 @@ void CGUIRAMControl::PlayMovie(CFileItem& item)
         // be put in a place that can be shared
 
         // iterate through all the files, adding any files that appear similar to the selected movie file
-        for (int i = 0; i < (int)items.size(); ++i)
+        for (int i=0; i < items.Size(); ++i)
         {
           CFileItem *pItemTmp = items[i];
           if (!pItemTmp->IsNFO() && !pItemTmp->IsPlayList())
@@ -339,8 +339,6 @@ void CGUIRAMControl::PlayMovie(CFileItem& item)
             }
           }
         }
-
-        CFileItemList itemlist(items); // will clean up everything
       }
       else
       {

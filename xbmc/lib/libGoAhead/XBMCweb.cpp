@@ -93,7 +93,7 @@
 
 struct SSortWebFilesByName
 {
-	bool operator()(CFileItem* pStart, CFileItem* pEnd)
+	static bool Sort(CFileItem* pStart, CFileItem* pEnd)
 	{
     CFileItem& rpStart=*pStart;
     CFileItem& rpEnd=*pEnd;
@@ -204,9 +204,9 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
 		// recursive
 		if (pItem->GetLabel() == "..") return;
 		CStdString strDirectory=pItem->m_strPath;
-		VECFILEITEMS items;
+		CFileItemList items;
 		directory->GetDirectory(strDirectory, items);
-		for (int i=0; i < (int) items.size(); ++i)
+		for (int i=0; i < (int) items.Size(); ++i)
 		{
 			AddItemToPlayList(items[i]);
 			delete items[i];
@@ -320,7 +320,7 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
 			delete directory;
 			directory = NULL;
 		}
-		webDirItems.clear();
+		webDirItems.Clear();
 
 		return 0;
 	}
@@ -340,7 +340,7 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
 				directory = NULL;
 			}
 
-			webDirItems.clear();
+			webDirItems.Clear();
 						
 			//make a new directory and set the nessecary shares
 			directory = new CVirtualDirectory();
@@ -386,7 +386,7 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
 			directory->GetDirectory("",webDirItems);
 
 			//sort items
-			sort(webDirItems.begin(), webDirItems.end(), SSortWebFilesByName());
+			webDirItems.Sort(SSortWebFilesByName::Sort);
 
 			return 0;
 		}
@@ -468,7 +468,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 			iItemCount = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size();
 		else if (navigatorState == WEB_NAV_VIDEOPLAYLIST)
 			iItemCount = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size();
-		else iItemCount = webDirItems.size();
+		else iItemCount = webDirItems.Size();
 
 		// have we requested a catalog item name?
 		if( strstr( parameter, XBMC_CAT_NAME) != NULL)
@@ -729,7 +729,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 						// enter the directory
 						CStdString strDirectory = itm->m_strPath;
 						CStdString strParentPath;
-						webDirItems.clear();
+						webDirItems.Clear();
 
 						//set new current directory for webserver
 						SetCurrentDir(strDirectory.c_str());
@@ -747,7 +747,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 								pItem->m_strPath=strParentPath;
 								pItem->m_bIsFolder=true;
 								pItem->m_bIsShareOrDrive=false;
-								webDirItems.push_back(pItem);
+								webDirItems.Add(pItem);
 							}
 						}
 						else
@@ -758,10 +758,10 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 							pItem->m_strPath="";
 							pItem->m_bIsShareOrDrive=false;
 							pItem->m_bIsFolder=true;
-							webDirItems.push_back(pItem);
+							webDirItems.Add(pItem);
 						}
 						directory->GetDirectory(strDirectory, webDirItems);
-						sort(webDirItems.begin(), webDirItems.end(), SSortWebFilesByName());
+						webDirItems.Sort(SSortWebFilesByName::Sort);
 					}
 					else
 					{

@@ -39,7 +39,7 @@ using namespace XFILE;
 
 struct SSortFilesByName
 {
-	bool operator()(CFileItem* pStart, CFileItem* pEnd)
+	static bool Sort(CFileItem* pStart, CFileItem* pEnd)
 	{
     CFileItem& rpStart=*pStart;
     CFileItem& rpEnd=*pEnd;
@@ -114,9 +114,12 @@ struct SSortFilesByName
     if (!rpStart.m_bIsFolder) return false;
 		return true;
 	}
-	bool m_bSortAscending;
-	int m_iSortMethod;
+	static bool m_bSortAscending;
+	static int m_iSortMethod;
 };
+
+bool SSortFilesByName::m_bSortAscending;
+int SSortFilesByName::m_iSortMethod;
 
 CGUIWindowFileManager::CGUIWindowFileManager(void)
 :CGUIWindow(0)
@@ -341,22 +344,21 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 
 void CGUIWindowFileManager::OnSort(int iList)
 {
-  SSortFilesByName sortmethod;
 	if (m_Directory[iList].IsVirtualDirectoryRoot())
 	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyFilesSourceRootSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyFilesSourceRootSortAscending;
+		SSortFilesByName::m_iSortMethod=g_stSettings.m_iMyFilesSourceRootSortMethod;
+		SSortFilesByName::m_bSortAscending=g_stSettings.m_bMyFilesSourceRootSortAscending;
 	}
 	else
 	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyFilesSourceSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyFilesSourceSortAscending;
+		SSortFilesByName::m_iSortMethod=g_stSettings.m_iMyFilesSourceSortMethod;
+		SSortFilesByName::m_bSortAscending=g_stSettings.m_bMyFilesSourceSortAscending;
 	}
 
-	for (int i=0; i < (int)m_vecItems[iList].size(); i++)
+	for (int i=0; i < m_vecItems[iList].Size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[iList][i];
-		if (sortmethod.m_iSortMethod==0 || sortmethod.m_iSortMethod==2)
+		if (SSortFilesByName::m_iSortMethod==0 || SSortFilesByName::m_iSortMethod==2)
 		{
 			if (pItem->m_bIsFolder) pItem->SetLabel2("");
 			else 
@@ -405,7 +407,7 @@ void CGUIWindowFileManager::OnSort(int iList)
 
 	}
 
-	sort(m_vecItems[iList].begin(), m_vecItems[iList].end(), sortmethod);
+	m_vecItems[iList].Sort(SSortFilesByName::Sort);
 
 //	UpdateControl(iList);
 }
@@ -415,7 +417,7 @@ void CGUIWindowFileManager::ClearFileItems(int iList)
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),iList+CONTROL_LEFT_LIST,0,0,NULL);
   g_graphicsContext.SendMessage(msg);         
 
-	CFileItemList itemleftlist(m_vecItems[iList]); // will clean up everything
+	m_vecItems[iList].Clear(); // will clean up everything
 }
 
 void CGUIWindowFileManager::UpdateButtons()
@@ -463,7 +465,7 @@ void CGUIWindowFileManager::UpdateButtons()
 	{
 		WCHAR wszText[20];
 		const WCHAR* szText=g_localizeStrings.Get(127).c_str();
-		int iItems=m_vecItems[i].size();
+		int iItems=m_vecItems[i].Size();
 		if (iItems)
 		{
 			CFileItem* pItem=m_vecItems[i][0];
@@ -480,7 +482,7 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 	int iItem=GetSelectedItem(iList);
 	CStdString strSelectedItem="";
 
-	if (iItem >=0 && iItem < (int)m_vecItems[iList].size())
+	if (iItem >=0 && iItem < (int)m_vecItems[iList].Size())
 	{
 		CFileItem* pItem=m_vecItems[iList][iItem];
 		if (pItem->GetLabel() != "..")
@@ -499,7 +501,7 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 	else
 		m_Directory[iList].m_strPath=strDirectory;
 	// if we have a .tbn file, use itself as the thumb
-	for (int i=0; i<(int)m_vecItems[iList].size(); i++)
+	for (int i=0; i<(int)m_vecItems[iList].Size(); i++)
 	{
 		CFileItem *pItem = m_vecItems[iList][i];
 		CStdString strExtension;
@@ -509,8 +511,8 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 			pItem->SetThumb();
 		}
 	}
-//	CUtil::SetThumbs(m_vecItems[iList]);
-	CUtil::FillInDefaultIcons(m_vecItems[iList]);
+//	m_vecItems[iList].SetThumbs();
+	m_vecItems[iList].FillInDefaultIcons();
 
 
 	OnSort(iList);
@@ -518,7 +520,7 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 	UpdateControl(iList);
 
 	strSelectedItem=m_history[iList].Get(m_Directory[iList].m_strPath);
-	for (int i=0; i < (int)m_vecItems[iList].size(); ++i)
+	for (int i=0; i < m_vecItems[iList].Size(); ++i)
 	{
 		CFileItem* pItem=m_vecItems[iList][i];
 		CStdString strHistory;
@@ -535,7 +537,7 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 void CGUIWindowFileManager::OnClick(int iList, int iItem)
 {
 	if ( iList < 0 || iList > 2) return;
-	if ( iItem < 0 || iItem >= (int)m_vecItems[iList].size() ) return;
+	if ( iItem < 0 || iItem >= m_vecItems[iList].Size() ) return;
 
 	CFileItem *pItem=m_vecItems[iList][iItem];
 
@@ -646,7 +648,7 @@ void CGUIWindowFileManager::UpdateControl(int iList)
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),iList+CONTROL_LEFT_LIST,0,0,NULL);
   g_graphicsContext.SendMessage(msg);         
 
-	for (int i=0; i < (int)m_vecItems[iList].size(); i++)
+	for (int i=0; i < m_vecItems[iList].Size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[iList][i];
 		CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),iList+CONTROL_LEFT_LIST,0,0,(void*)pItem);
@@ -797,10 +799,9 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
 
 bool CGUIWindowFileManager::DoProcessFolder(int iAction, const CStdString& strPath, const CStdString& strDestFile)
 {
-  VECFILEITEMS items;
-	CFileItemList itemlist(items); 
+  CFileItemList items;
   m_rootDir.GetDirectory(strPath,items);
-  for (int i=0; i < (int)items.size(); i++)
+  for (int i=0; i < items.Size(); i++)
   {
     CFileItem* pItem=items[i];
 		pItem->Select(true);
@@ -815,10 +816,10 @@ bool CGUIWindowFileManager::DoProcessFolder(int iAction, const CStdString& strPa
 	return true;
 }
 
-bool CGUIWindowFileManager::DoProcess(int iAction,VECFILEITEMS & items, const CStdString& strDestFile)
+bool CGUIWindowFileManager::DoProcess(int iAction,CFileItemList & items, const CStdString& strDestFile)
 {
 	bool bCancelled(false);
-  for (int iItem=0; iItem < (int)items.size(); ++iItem)
+  for (int iItem=0; iItem < items.Size(); ++iItem)
   {
     CFileItem* pItem=items[iItem];
 		if (pItem->IsSelected())
@@ -937,7 +938,7 @@ void CGUIWindowFileManager::OnDelete(int iList)
 void CGUIWindowFileManager::OnRename(int iList)
 {
   CStdString strFile;
-  for (int i=0; i < (int)m_vecItems[iList].size();++i)
+  for (int i=0; i < m_vecItems[iList].Size();++i)
   {
     CFileItem* pItem=m_vecItems[iList][i];
     if (pItem->IsSelected())
@@ -954,7 +955,7 @@ void CGUIWindowFileManager::OnRename(int iList)
 
 void CGUIWindowFileManager::OnSelectAll(int iList)
 {
-  for (int i=0; i < (int)m_vecItems[iList].size();++i)
+  for (int i=0; i < m_vecItems[iList].Size();++i)
   {
     CFileItem* pItem=m_vecItems[iList][i];
     if (pItem->GetLabel() != "..")
@@ -1027,7 +1028,7 @@ void CGUIWindowFileManager::Refresh(int iList)
 //	UpdateButtons();
  // UpdateControl(iList);
 
-	while (nSel>(int)m_vecItems[iList].size())
+	while (nSel>m_vecItems[iList].Size())
 		nSel--;
 
 	CONTROL_SELECT_ITEM(iList+CONTROL_LEFT_LIST, nSel);
@@ -1046,7 +1047,7 @@ void CGUIWindowFileManager::Refresh()
 //  UpdateControl(0);
 //	UpdateControl(1);
 
-	while (nSel>(int)m_vecItems[iList].size())
+	while (nSel>(int)m_vecItems[iList].Size())
 		nSel--;
 
 	CONTROL_SELECT_ITEM(iList+CONTROL_LEFT_LIST, nSel);
@@ -1055,7 +1056,7 @@ void CGUIWindowFileManager::Refresh()
 int CGUIWindowFileManager::GetSelectedItem(int iControl)
 {
 	CGUIListControl *pControl = (CGUIListControl *)GetControl(iControl+CONTROL_LEFT_LIST);
-	if (!pControl || !m_vecItems[iControl].size()) return -1;
+	if (!pControl || !m_vecItems[iControl].Size()) return -1;
 	return pControl->GetSelectedItem();
 }
 
@@ -1131,7 +1132,7 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
 	}
 }
 
-void CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirectory, VECFILEITEMS &items)
+void CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirectory, CFileItemList &items)
 {
   CStdString strParentPath;
 	bool bParentExists=CUtil::GetParentPath(strDirectory, strParentPath);
@@ -1149,7 +1150,7 @@ void CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
 				pItem->m_strPath=strParentPath;
 				pItem->m_bIsFolder=true;
 				pItem->m_bIsShareOrDrive=false;
-				items.push_back(pItem);
+				items.Add(pItem);
 			}
 			m_strParentPath[iList] = strParentPath;
 		}
@@ -1164,7 +1165,7 @@ void CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
 			pItem->m_strPath="";
 			pItem->m_bIsFolder=true;
 			pItem->m_bIsShareOrDrive=false;
-			items.push_back(pItem);
+			items.Add(pItem);
 		}
 		m_strParentPath[iList] = "";
   }
@@ -1218,7 +1219,7 @@ bool CGUIWindowFileManager::CanNewFolder(int iList)
 int CGUIWindowFileManager::NumSelected(int iList)
 {
 	int iSelectedItems = 0;
-	for (int iItem=0; iItem < (int)m_vecItems[iList].size(); ++iItem)
+	for (int iItem=0; iItem < m_vecItems[iList].Size(); ++iItem)
   {
     if (m_vecItems[iList][iItem]->IsSelected()) iSelectedItems++;
 	}
@@ -1266,7 +1267,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
 		m_vecItems[list][item]->Select(false);
 		return;
 	}
-	if (item < 0 || item >= (int)m_vecItems[list].size()) return;
+	if (item < 0 || item >= m_vecItems[list].Size()) return;
 	// popup the context menu
 	CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
 	if (pMenu)

@@ -27,7 +27,7 @@
 
 struct SSortPicturesByName
 {
-	bool operator()(CFileItem* pStart, CFileItem* pEnd)
+	static bool Sort(CFileItem* pStart, CFileItem* pEnd)
 	{
     CFileItem& rpStart=*pStart;
     CFileItem& rpEnd=*pEnd;
@@ -102,9 +102,11 @@ struct SSortPicturesByName
     if (!rpStart.m_bIsFolder) return false;
 		return true;
 	}
-	bool m_bSortAscending;
-	int m_iSortMethod;
+	static bool m_bSortAscending;
+	static int m_iSortMethod;
 };
+bool SSortPicturesByName::m_bSortAscending;
+int SSortPicturesByName::m_iSortMethod;
 
 CGUIWindowPictures::CGUIWindowPictures(void)
 :CGUIWindow(0)
@@ -353,7 +355,7 @@ void CGUIWindowPictures::OnSort()
 
   
   
-  for (int i=0; i < (int)m_vecItems.size(); i++)
+  for (int i=0; i < (int)m_vecItems.Size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
     if (g_stSettings.m_iMyPicturesSortMethod==0||g_stSettings.m_iMyPicturesSortMethod==2)
@@ -381,7 +383,7 @@ void CGUIWindowPictures::OnSort()
 
 	SortItems(m_vecItems);
 
-  for (int i=0; i < (int)m_vecItems.size(); i++)
+  for (int i=0; i < (int)m_vecItems.Size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
     CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),CONTROL_LIST,0,0,(void*)pItem);
@@ -399,7 +401,7 @@ void CGUIWindowPictures::ClearFileItems()
 	CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
   g_graphicsContext.SendMessage(msg2);         
 
-	CFileItemList itemlist(m_vecItems); // will clean up everything
+	m_vecItems.Clear(); // will clean up everything
 }
 
 void CGUIWindowPictures::UpdateButtons()
@@ -456,7 +458,7 @@ void CGUIWindowPictures::UpdateButtons()
     g_graphicsContext.SendMessage(msg);
   }
 
-  int iItems=m_vecItems.size();
+  int iItems=m_vecItems.Size();
   if (iItems)
   {
     CFileItem* pItem=m_vecItems[0];
@@ -470,8 +472,8 @@ void CGUIWindowPictures::UpdateButtons()
 	SET_CONTROL_LABEL(CONTROL_LABELFILES,wszText);
 
 	// check we can slideshow or recursive slideshow
-	int nFolders = CUtil::GetFolderCount(m_vecItems);
-	if (nFolders == m_vecItems.size())
+	int nFolders = m_vecItems.GetFolderCount();
+	if (nFolders == m_vecItems.Size())
 	{
 		CONTROL_DISABLE(CONTROL_BTNSLIDESHOW);
 	}
@@ -479,7 +481,7 @@ void CGUIWindowPictures::UpdateButtons()
 	{
 		CONTROL_ENABLE(CONTROL_BTNSLIDESHOW);
 	}
-	if (m_vecItems.size() == 0)
+	if (m_vecItems.Size() == 0)
 	{
 		CONTROL_DISABLE(CONTROL_BTNSLIDESHOW_RECURSIVE);
 	}
@@ -515,7 +517,7 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 // get selected item
 	int iItem=GetSelectedItem();
 	CStdString strSelectedItem="";
-	if (iItem >=0 && iItem < (int)m_vecItems.size())
+	if (iItem >=0 && iItem < (int)m_vecItems.Size())
 	{
 		CFileItem* pItem=m_vecItems[iItem];
 		if (pItem->GetLabel() != "..")
@@ -531,10 +533,10 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 	m_iLastControl=GetFocusedControl();
 
 	m_Directory.m_strPath=strDirectory;
-	CUtil::SetThumbs(m_vecItems);
+	m_vecItems.SetThumbs();
 	if (g_guiSettings.GetBool("FileLists.HideExtensions"))
-		CUtil::RemoveExtensions(m_vecItems);
-	CUtil::FillInDefaultIcons(m_vecItems);
+		m_vecItems.RemoveExtensions();
+	m_vecItems.FillInDefaultIcons();
 	OnSort();
 	UpdateButtons();
 
@@ -552,7 +554,7 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 	}
 	UpdateThumbPanel();
 
-	for (int i=0; i < (int)m_vecItems.size(); ++i)
+	for (int i=0; i < (int)m_vecItems.Size(); ++i)
 	{
 		CFileItem* pItem=m_vecItems[i];
 		CStdString strHistory;
@@ -569,7 +571,7 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 
 void CGUIWindowPictures::OnClick(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
   CFileItem* pItem=m_vecItems[iItem];
   CStdString strPath=pItem->m_strPath;
 	if (pItem->m_bIsFolder)
@@ -642,7 +644,7 @@ void CGUIWindowPictures::OnShowPicture(const CStdString& strPicture)
     g_application.StopPlaying();
 
 	pSlideShow->Reset();
-  for (int i=0; i < (int)m_vecItems.size();++i)
+  for (int i=0; i < (int)m_vecItems.Size();++i)
   {
     CFileItem* pItem=m_vecItems[i];
     if (!pItem->m_bIsFolder)
@@ -657,11 +659,11 @@ void CGUIWindowPictures::OnShowPicture(const CStdString& strPicture)
 void CGUIWindowPictures::AddDir(CGUIWindowSlideShow *pSlideShow,const CStdString& strPath)
 {
   if (!pSlideShow) return;
-  VECFILEITEMS items;
+  CFileItemList items;
   m_rootDir.GetDirectory(strPath,items);
 	SortItems(items);
 
-  for (int i=0; i < (int)items.size();++i)
+  for (int i=0; i < (int)items.Size();++i)
   {
     CFileItem* pItem=items[i];
     if (!pItem->m_bIsFolder)
@@ -673,7 +675,6 @@ void CGUIWindowPictures::AddDir(CGUIWindowSlideShow *pSlideShow,const CStdString
       AddDir(pSlideShow,pItem->m_strPath);
     }
   }
-  CFileItemList itemlist(items); // will clean up everything
 }
 
 void  CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
@@ -715,7 +716,7 @@ void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
       g_application.StopPlaying();
 
 	pSlideShow->Reset();
-  for (int i=0; i < (int)m_vecItems.size();++i)
+  for (int i=0; i < (int)m_vecItems.Size();++i)
   {
     CFileItem* pItem=m_vecItems[i];
     if (!pItem->m_bIsFolder)
@@ -739,7 +740,7 @@ bool CGUIWindowPictures::OnCreateThumbs()
   }
   CSectionLoader::Load("CXIMAGE");
   // calculate the number of items to take thumbs of
-  int iTotalItems = m_vecItems.size()-CUtil::GetFolderCount(m_vecItems);
+  int iTotalItems = m_vecItems.Size()-m_vecItems.GetFolderCount();
   int iCurrentItem = 0;
   
   if (m_dlgProgress->IsCanceled()) return false;
@@ -747,7 +748,7 @@ bool CGUIWindowPictures::OnCreateThumbs()
   bool bCancel=false;
 
   // now run through and create the thumbs
-  for (int i=0; i < (int)m_vecItems.size();++i)
+  for (int i=0; i < (int)m_vecItems.Size();++i)
   {
     CFileItem* pItem=m_vecItems[i];
 	
@@ -805,23 +806,19 @@ bool CGUIWindowPictures::DoCreateFolderThumbs(CStdString &strFolder, int *iTotal
 {
 	// we have to grab the new folder recursively, and run through it, generating the thumbs
 	// calculate the number of items to take thumbs of
-	VECFILEITEMS items;
+	CFileItemList items;
 	GetDirectory(strFolder, items);
 	SortItems(items);
-  CFileItemList itemlist(items); // will clean up everything
 
-	*iTotalItems += CUtil::GetFileCount(items);
+	*iTotalItems += items.GetFileCount();
 
 	// now run through and create the thumbs
-	for (int i=0; i < (int)items.size();++i)
+	for (int i=0; i < (int)items.Size();++i)
 	{
 		CFileItem* pItem=items[i];
 	
 		if (m_dlgProgress->IsCanceled())
-		{
-			items.erase(items.begin(), items.end());
 			return false;
-		}
 
 		if (!pItem->m_bIsFolder)
 		{	
@@ -838,10 +835,7 @@ bool CGUIWindowPictures::DoCreateFolderThumbs(CStdString &strFolder, int *iTotal
 				m_dlgProgress->SetLine(2, L"");
 				m_dlgProgress->Progress();
 				if ( m_dlgProgress->IsCanceled() ) 
-				{
-					items.erase(items.begin(), items.end());
 					return false;
-				}
 			}
 			CPicture picture;
 			picture.CreateThumnail(pItem->m_strPath);
@@ -851,16 +845,13 @@ bool CGUIWindowPictures::DoCreateFolderThumbs(CStdString &strFolder, int *iTotal
 			if (pItem->GetLabel() != "..")
 			{
 				if (bRecurse && !DoCreateFolderThumbs(pItem->m_strPath, iTotalItems, iCurrentItem, bRecurse))
-				{
-					items.erase(items.begin(), items.end());
 					return false;
-				}
 			}
 		}
   }
 	// create the folder thumb by choosing 4 random thumbs within the folder and putting
 	// them into one thumb.
-	int iNumFiles = CUtil::GetFileCount(items);
+	int iNumFiles = items.GetFileCount();
 	if (iNumFiles == 0)
 	{	// no thumbs in the folder
 		return true;
@@ -895,7 +886,7 @@ bool CGUIWindowPictures::DoCreateFolderThumbs(CStdString &strFolder, int *iTotal
 	// we basically load the 4 thumbs, resample to 62x62 pixels, and add them
 	CStdString strFiles[4];
 	int n = 0;
-	for (int i=0; i < (int)items.size(); i++)
+	for (int i=0; i < items.Size(); i++)
 	{
 		if (n>=4) break;
 		if (!items[i]->m_bIsFolder)
@@ -931,7 +922,7 @@ int CGUIWindowPictures::GetSelectedItem()
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
   g_graphicsContext.SendMessage(msg);         
   int iItem=msg.GetParam1();
-	if (iItem >= (int)m_vecItems.size())
+	if (iItem >= (int)m_vecItems.Size())
 		return -1;
 	return iItem;
 }
@@ -1044,14 +1035,13 @@ void CGUIWindowPictures::SetHistoryForPath(const CStdString& strDirectory)
 		//	Build the directory history for default path
 		CStdString strPath, strParentPath;
 		strPath=strDirectory;
-		VECFILEITEMS items;
-		CFileItemList itemlist(items);
+		CFileItemList items;
 		GetDirectory("", items);
 
 		while (CUtil::GetParentPath(strPath, strParentPath))
 		{
 			bool bSet=false;
-			for (int i=0; i<(int)items.size(); ++i)
+			for (int i=0; i<items.Size(); ++i)
 			{
 				CFileItem* pItem=items[i];
 				while (CUtil::HasSlashAtEnd(pItem->m_strPath))
@@ -1070,15 +1060,16 @@ void CGUIWindowPictures::SetHistoryForPath(const CStdString& strDirectory)
 			while (CUtil::HasSlashAtEnd(strPath))
 				strPath.Delete(strPath.size()-1);
 		}
+		items.Clear();
 	}
 }
 
-void CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items)
+void CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-	if (items.size() )
+	if (items.Size())
 	{
 		// cleanup items
-		CFileItemList itemlist(items);
+		items.Clear();
 	}
 
 	CStdString strParentPath;
@@ -1097,7 +1088,7 @@ void CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, VECFILEITE
 				pItem->m_strPath=strParentPath;
 				pItem->m_bIsFolder=true;
 				pItem->m_bIsShareOrDrive=false;
-				items.push_back(pItem);
+				items.Add(pItem);
 			}
 			m_strParentPath = strParentPath;
 		}
@@ -1112,7 +1103,7 @@ void CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, VECFILEITE
 			pItem->m_strPath="";
 			pItem->m_bIsShareOrDrive=false;
 			pItem->m_bIsFolder=true;
-			items.push_back(pItem);
+			items.Add(pItem);
 		}
 		m_strParentPath = "";
 	}
@@ -1164,7 +1155,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
 		pMenu->AddButton(13315);	// Create Thumbnails
 		pMenu->AddButton(13316);	// Recursive Thumbnails
 		pMenu->AddButton(13317);	// View Slideshow
-		if (CUtil::GetFileCount(m_vecItems)==0)
+		if (m_vecItems.GetFileCount()==0)
 		{
 			pMenu->EnableButton(1, false);
 			pMenu->EnableButton(3, false);
@@ -1235,18 +1226,17 @@ bool CGUIWindowPictures::SortAscending()
 		return g_stSettings.m_bMyPicturesSortAscending;
 }
 
-void CGUIWindowPictures::SortItems(VECFILEITEMS& items)
+void CGUIWindowPictures::SortItems(CFileItemList& items)
 {
-	SSortPicturesByName sortmethod;
 	if (m_Directory.IsVirtualDirectoryRoot())
 	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyPicturesRootSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyPicturesRootSortAscending;
+		SSortPicturesByName::m_iSortMethod=g_stSettings.m_iMyPicturesRootSortMethod;
+		SSortPicturesByName::m_bSortAscending=g_stSettings.m_bMyPicturesRootSortAscending;
 	}
 	else
 	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyPicturesSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyPicturesSortAscending;
+		SSortPicturesByName::m_iSortMethod=g_stSettings.m_iMyPicturesSortMethod;
+		SSortPicturesByName::m_bSortAscending=g_stSettings.m_bMyPicturesSortAscending;
 	}
-  sort(items.begin(), items.end(), sortmethod);
+	items.Sort(SSortPicturesByName::Sort);
 }

@@ -14,6 +14,6 @@ namespace DIRECTORY
   public:
     CRTVDirectory(void);
     virtual ~CRTVDirectory(void);
-    virtual bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
+    virtual bool  GetDirectory(const CStdString& strPath,CFileItemList &items);
   };
 }
