@@ -301,7 +301,7 @@ CGUISettings::CGUISettings(void)
 	
 	AddCategory(5, "PostProcessing", 14041);
 	AddBool(1, "PostProcessing.DeInterlace", 285, false);
-	AddBool(2, "PostProcessing.Enable", 286, false);
+  AddBool(2, "PostProcessing.Enable", 286, false);
 	AddBool(3, "PostProcessing.Auto", 307, true);	// only has effect if PostProcessing.Enable is on.
 	AddBool(4, "PostProcessing.VerticalDeBlocking", 308, false);
 	AddInt(5, "PostProcessing.VerticalDeBlockLevel", 308, 0, 0, 1, 100, SPIN_CONTROL_INT);
@@ -314,6 +314,8 @@ CGUISettings::CGUISettings(void)
 	AddInt(1, "Filters.Flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
 	AddBool(2, "Filters.Soften", 215, false);
 	AddInt(3, "Filters.RenderMethod", 13354, RENDER_PIXEL_SHADER, RENDER_PIXEL_SHADER, 1, RENDER_OVERLAYS_FAST, SPIN_CONTROL_TEXT);
+	AddBool(4, "Filters.Noise", 14058, false);
+	AddInt(5, "Filters.NoiseLevel", 14058, 10, 0, 1, 100, SPIN_CONTROL_INT);
 
 	AddCategory(5, "Subtitles", 287);
 	AddString(1, "Subtitles.Font", 288, "arial-iso-8859-1", SPIN_CONTROL_TEXT);
