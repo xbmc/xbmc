@@ -383,20 +383,25 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
 {
 	DWORD dwImageType=CXIMAGE_FORMAT_UNKNOWN;
 
-	if (!strExtension.size()) return false;
-
-	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"bmp") ) dwImageType=CXIMAGE_FORMAT_BMP;
-	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"bitmap") ) dwImageType=CXIMAGE_FORMAT_BMP;
-	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"gif") ) dwImageType=CXIMAGE_FORMAT_GIF;
-	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"jpg") ) dwImageType=CXIMAGE_FORMAT_JPG;
-	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"tbn") ) dwImageType=CXIMAGE_FORMAT_JPG;
-	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"jpeg") ) dwImageType=CXIMAGE_FORMAT_JPG;
-	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"png") ) dwImageType=CXIMAGE_FORMAT_PNG;
-	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"ico") ) dwImageType=CXIMAGE_FORMAT_ICO;
-	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"tif") ) dwImageType=CXIMAGE_FORMAT_TIF;
-	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"tiff") ) dwImageType=CXIMAGE_FORMAT_TIF;
-	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"tga") ) dwImageType=CXIMAGE_FORMAT_TGA;
-	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"pcx") ) dwImageType=CXIMAGE_FORMAT_PCX;
+	if (strExtension.IsEmpty())
+	{
+		dwImageType=DetectFileType(pBuffer, nBufSize);
+	}
+	else
+	{
+		if ( 0==CUtil::cmpnocase(strExtension.c_str(),"bmp") ) dwImageType=CXIMAGE_FORMAT_BMP;
+		if ( 0==CUtil::cmpnocase(strExtension.c_str(),"bitmap") ) dwImageType=CXIMAGE_FORMAT_BMP;
+		if ( 0==CUtil::cmpnocase(strExtension.c_str(),"gif") ) dwImageType=CXIMAGE_FORMAT_GIF;
+		if ( 0==CUtil::cmpnocase(strExtension.c_str(),"jpg") ) dwImageType=CXIMAGE_FORMAT_JPG;
+		if ( 0==CUtil::cmpnocase(strExtension.c_str(),"tbn") ) dwImageType=CXIMAGE_FORMAT_JPG;
+		if ( 0==CUtil::cmpnocase(strExtension.c_str(),"jpeg") ) dwImageType=CXIMAGE_FORMAT_JPG;
+		if ( 0==CUtil::cmpnocase(strExtension.c_str(),"png") ) dwImageType=CXIMAGE_FORMAT_PNG;
+		if ( 0==CUtil::cmpnocase(strExtension.c_str(),"ico") ) dwImageType=CXIMAGE_FORMAT_ICO;
+		if ( 0==CUtil::cmpnocase(strExtension.c_str(),"tif") ) dwImageType=CXIMAGE_FORMAT_TIF;
+		if ( 0==CUtil::cmpnocase(strExtension.c_str(),"tiff") ) dwImageType=CXIMAGE_FORMAT_TIF;
+		if ( 0==CUtil::cmpnocase(strExtension.c_str(),"tga") ) dwImageType=CXIMAGE_FORMAT_TGA;
+		if ( 0==CUtil::cmpnocase(strExtension.c_str(),"pcx") ) dwImageType=CXIMAGE_FORMAT_PCX;
+	}
 
 	if (dwImageType==CXIMAGE_FORMAT_UNKNOWN)
 	{
@@ -421,6 +426,10 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
 			CLog::Log("PICTURE::createthumbnailfrommemory: Unable to load image from memory Error:%s\n", image.GetLastError());
 			return false;
 		}
+
+		if (!image.IsValid())
+			return false;
+
 		m_dwWidth=image.GetWidth();
 		m_dwHeight=image.GetHeight();
 	  
@@ -468,6 +477,23 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
 		CLog::Log("PICTURE::createthumbnailfrommemory: exception: memfile FileType: %s\n", strExtension.c_str());
   }
 	return false;
+}
+
+int CPicture::DetectFileType(const BYTE* pBuffer, int nBufSize)
+{
+	if (nBufSize<=5)
+		return CXIMAGE_FORMAT_UNKNOWN;
+
+	if (pBuffer[1]=='P' && pBuffer[2]=='N' && pBuffer[3]=='G')
+		return CXIMAGE_FORMAT_PNG;
+
+	if (pBuffer[0]=='B' && pBuffer[1]=='M')
+		return CXIMAGE_FORMAT_BMP;
+
+	if (pBuffer[0]==0xFF && pBuffer[1]==0xD8 && pBuffer[2]==0xFF && pBuffer[3]==0xE0)
+		return CXIMAGE_FORMAT_JPG;
+
+	return CXIMAGE_FORMAT_UNKNOWN;
 }
 
 void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, int height, int iTextureWidth, int iTextureHeight, int iTextureLeft, int iTextureTop)
