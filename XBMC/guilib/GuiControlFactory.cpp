@@ -340,7 +340,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
 	GetDWORD(pControlNode,"MarkWidth",dwCheckWidth);
 	GetDWORD(pControlNode,"MarkHeight",dwCheckHeight);
-	GetString(pControlNode,"strTextureCheckMark",strTextureCheckMark);
+	GetString(pControlNode,"textureCheckmark",strTextureCheckMark);
 
 	GetString(pControlNode,"textureRadioFocus",strTextureRadioFocus);
 	GetString(pControlNode,"textureRadioNoFocus",strTextureRadioNoFocus);
