@@ -331,22 +331,24 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         int iItem=GetSelectedItem();
 				int iAction=message.GetParam1();
 
+				// iItem is checked for validity inside these routines
 				if (iAction == ACTION_QUEUE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
-        {
+				{
 					OnQueueItem(iItem);
-        }
-        else if (iAction==ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
-        {
-          OnPopupMenu(iItem);
-        }
-        else if (iAction==ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
-        {
-          OnClick(iItem);
-        }
+				}
+				else if (iAction==ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+				{
+					OnClick(iItem);
+				}
 				else if (iAction==ACTION_SHOW_INFO)
 				{
 					OnInfo(iItem);
 				}
+				else if (iAction==ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
+				{
+					OnPopupMenu(iItem);
+				}
+
       }
     }
 	}
@@ -422,6 +424,8 @@ int CGUIWindowMusicBase::GetSelectedItem()
   g_graphicsContext.SendMessage(msg);
 
   int iItem=msg.GetParam1();
+	if (iItem >= (int)m_vecItems.size())
+		return -1;
 	return iItem;
 }
 
@@ -595,6 +599,7 @@ bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
 /// \param iItem Item in list/thumb control
 void CGUIWindowMusicBase::OnInfo(int iItem)
 {
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
 	CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
   CFileItem* pItem;
 	pItem=m_vecItems[iItem];
@@ -956,15 +961,13 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 	if (bUpdate)
 	{
 		int iSelectedItem=GetSelectedItem();
-		CFileItem* pItem=m_vecItems[iSelectedItem];
-
-		if (pItem && pItem->m_bIsFolder)
+		if (iSelectedItem >= 0 && m_vecItems[iSelectedItem] && m_vecItems[iSelectedItem]->m_bIsFolder)
 		{
 			//	refresh only the icon of
 			//	the current folder 
-			pItem->FreeIcons();
-			CUtil::SetMusicThumb(pItem);
-			CUtil::FillInDefaultIcon(pItem);
+			m_vecItems[iSelectedItem]->FreeIcons();
+			CUtil::SetMusicThumb(m_vecItems[iSelectedItem]);
+			CUtil::FillInDefaultIcon(m_vecItems[iSelectedItem]);
 		}
 		else
 		{
@@ -1028,6 +1031,7 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
 /// \param iItem Selected Item in list/thumb control
 void CGUIWindowMusicBase::OnQueueItem(int iItem)
 {
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
 	// add item 2 playlist
 	const CFileItem* pItem=m_vecItems[iItem];
 	AddItemToPlayList(pItem);
@@ -1441,6 +1445,7 @@ void CGUIWindowMusicBase::Render()
 
 void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 {
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
 	// calculate our position
 	int iPosX=200;
 	int iPosY=100;

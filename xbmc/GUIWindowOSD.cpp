@@ -15,6 +15,7 @@
 #include "sectionloader.h"
 //#include "cores/mplayer/mplayer.h"
 #include "utils/log.h"
+#include "utils/GUIInfoManager.h"
 
 #define OSD_VIDEOPROGRESS 101
 #define OSD_SKIPBWD 210
@@ -526,25 +527,8 @@ void CGUIWindowOSD::Get_TimeInfo()
 	if (!g_application.m_pPlayer) return;
 	if (!g_application.m_pPlayer->HasVideo()) return;
 
-	// get the current playing time position
-	_int64 lPTS1=10*g_application.m_pPlayer->GetTime();			
-	int hh = (int)(lPTS1 / 36000) % 100;
-	int mm = (int)((lPTS1 / 600) % 60);
-	int ss = (int)((lPTS1 /  10) % 60);
-
-	// get the total play back time
-	_int64 lPTS2=10*g_application.m_pPlayer->GetTotalTime();	
-	int thh = (int)(lPTS2 / 36000) % 100;
-	int tmm = (int)((lPTS2 / 600) % 60);
-	int tss = (int)((lPTS2 /  10) % 60);
-	
-	// format it up for display
-	char szTime[128];
-	sprintf(szTime,"%02.2i:%02.2i:%02.2i/%02.2i:%02.2i:%02.2i",hh,mm,ss,thh,tmm,tss);	
-
-	CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), OSD_TIMEINFO);
-	msg.SetLabel(szTime); 
-    OnMessage(msg);			// ask our label to update it's caption
+	// get the current playing time position and the total play back time
+	SET_CONTROL_LABEL(OSD_TIMEINFO, g_infoManager.GetVideoLabel("time") + "/" + g_infoManager.GetVideoLabel("duration"));
 
 	// Get the estimated end time
 	SYSTEMTIME time;

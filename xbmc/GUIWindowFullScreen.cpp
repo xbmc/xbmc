@@ -11,6 +11,7 @@
 #include "cores/mplayer/ASyncDirectSound.h"
 #include "playlistplayer.h"
 #include "utils/CharsetConverter.h"
+#include "utils/GUIInfoManager.h"
 
 #include <stdio.h>
 
@@ -685,40 +686,18 @@ void CGUIWindowFullScreen::RenderFullScreen()
 			return;
 		}
 		bRenderGUI=true;
-		char displaytime[32] = "??:??/??:??:?? [??:??:??]";
+		CStdString strDispTime = "??:??";
+
 		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
 		for(int count = 0; count < m_iTimeCodePosition; count++)
 		{
 			if(m_strTimeStamp[count] == -1)
-				displaytime[count] = ':';
+				strDispTime[count] = ':';
 			else
-				displaytime[count] = (char)m_strTimeStamp[count]+48;
+				strDispTime[count] = (char)m_strTimeStamp[count]+48;
 		}
-		unsigned int tmpvar = g_application.m_pPlayer->GetTotalTime();
-		if(tmpvar != 0)
-		{
-			int ihour = tmpvar / 3600;
-			int imin  = (tmpvar-ihour*3600) / 60;
-			int isec = (tmpvar-ihour*3600) % 60;
-			sprintf(&displaytime[5], "/%2.2d:%2.2d:%2.2d", ihour,imin,isec);
-		}
-    else 
-		{
-			sprintf(&displaytime[5], "/00:00:00");
-		}
-		__int64 iCurrentTime=g_application.m_pPlayer->GetTime();
-		if(iCurrentTime != 0)
-		{
-			__int64 ihour = iCurrentTime / (__int64)3600;
-			__int64 imin  = (iCurrentTime-ihour*3600) / 60;
-			__int64 isec = (iCurrentTime-ihour*3600) % 60;
-			sprintf(&displaytime[14], " [%2.2d:%2.2d:%2.2d]", (int)ihour,(int)imin,(int)isec);
-		}
-		else
-		{
-			sprintf(&displaytime[14], " [??:??:??]");
-		}
-		msg.SetLabel(displaytime); 
+		strDispTime += "/" + g_infoManager.GetVideoLabel("duration") + " [" + g_infoManager.GetVideoLabel("time") + "]";
+		msg.SetLabel(strDispTime); 
 		OnMessage(msg);
 	}	
 
@@ -789,18 +768,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		CStdString strTime;
 		bRenderGUI =true;
 		SET_CONTROL_VISIBLE(LABEL_CURRENT_TIME);
-		__int64 lPTS=10*g_application.m_pPlayer->GetTime();
-		int hh = (int)(lPTS / 36000) % 100;
-		int mm = (int)((lPTS / 600) % 60);
-		int ss = (int)((lPTS /  10) % 60);
-	  
-		if (hh>=1)
-			strTime.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
-		else
-			strTime.Format("%02.2i:%02.2i",mm,ss);
-		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_CURRENT_TIME); 
-		msg.SetLabel(strTime); 
-		OnMessage(msg); 
+		SET_CONTROL_LABEL(LABEL_CURRENT_TIME, g_infoManager.GetLabel("videoplayer.time"));
 		if ( (timeGetTime() - m_dwTimeCodeTimeout) >=2500)
 		{
 			m_bShowCurrentTime = false;

@@ -209,6 +209,8 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       {
         int iItem=GetSelectedItem();
 				int iAction=message.GetParam1();
+				if (iItem < 0)
+					break;
 
 				if (iAction == ACTION_QUEUE_ITEM)
         {
@@ -412,9 +414,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
   {
 	  if (!pControl->IsVisible())
 	  {
-		  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_LIST,0,0,NULL);
-		  g_graphicsContext.SendMessage(msg);
-		  int iItem=msg.GetParam1();
+		  int iItem=GetSelectedItem();
 		  CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem);
 	  }
   }
@@ -423,9 +423,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
   {
     if (!pControl->IsVisible())
 	  {
-		  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_THUMBS,0,0,NULL);
-		  g_graphicsContext.SendMessage(msg);
-		  int iItem=msg.GetParam1();
+		  int iItem=GetSelectedItem();
 		  CONTROL_SELECT_ITEM(CONTROL_LIST,iItem);
 	  }
   }
@@ -510,6 +508,8 @@ int CGUIWindowVideoPlaylist::GetSelectedItem()
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
   g_graphicsContext.SendMessage(msg);         
   int iItem=msg.GetParam1();
+	if (iItem >= (int)m_vecItems.size())
+		return -1;
 	return iItem;
 }
 
@@ -671,6 +671,7 @@ void CGUIWindowVideoPlaylist::GetDirectoryHistoryString(const CFileItem* pItem, 
 }
 void CGUIWindowVideoPlaylist::OnClick(int iItem)
 {
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
 	CFileItem* pItem=m_vecItems[iItem];
 	CStdString strPath=pItem->m_strPath;
 	g_playlistPlayer.SetCurrentPlaylist( PLAYLIST_VIDEO);
@@ -680,6 +681,7 @@ void CGUIWindowVideoPlaylist::OnClick(int iItem)
 
 void CGUIWindowVideoPlaylist::OnQueueItem(int iItem)
 {
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
 	RemovePlayListItem(iItem);
 }
 

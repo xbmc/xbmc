@@ -358,6 +358,7 @@ void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
 //****************************************************************************************************************************
 void CGUIWindowVideoTitle::OnClick(int iItem)
 {
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
   CFileItem* pItem=m_vecItems[iItem];
   CStdString strPath=pItem->m_strPath;
 
