@@ -180,8 +180,8 @@ void CGUIWindowVisualisation::LoadVisualisation()
   if (m_pVisualisation)
   {
     OutputDebugString("Visualisation::Create()\n");
-    m_pVisualisation->Create();
     g_graphicsContext.CaptureStateBlock();
+    m_pVisualisation->Create(0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight());
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->RegisterAudioCallback(this);
 
