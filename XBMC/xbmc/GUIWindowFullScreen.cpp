@@ -82,44 +82,11 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 
 void CGUIWindowFullScreen::OnAction(const CAction &action)
 {
-  if (m_bOSDVisible)
-  {
-	  switch (action.wID)
-    {
-		  case ACTION_SHOW_OSD:
-			  //g_application.m_pPlayer->ToggleOSD();
-        m_bOSDVisible=!m_bOSDVisible;
-        if (m_bOSDVisible) ShowOSD();
-        else 
-        {
-          g_graphicsContext.Lock();
-			    g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-			    g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-			    g_graphicsContext.Unlock();
-          HideOSD();
-        }
-		  break;
-
-		case ACTION_SHOW_GUI:
-			// switch back to the menu
-			OutputDebugString("Switching to GUI\n");
-			m_gWindowManager.PreviousWindow();
-			if (g_application.m_pPlayer)
-				g_application.m_pPlayer->Update();
-			OutputDebugString("Now in GUI\n");
-			return;
-		break;
-		default:
-//        CSingleLock lock(m_section);      
-        m_osdMenu.OnAction(*this,action);
-        SET_CONTROL_FOCUS(GetID(), m_osdMenu.GetSelectedMenu()+BTN_OSD_VIDEO); 
-		  break;
-    }
-    return;
-  }
+  
 	switch (action.wID)
 	{
 		case ACTION_SHOW_GUI:
+    {
 			// switch back to the menu
 			OutputDebugString("Switching to GUI\n");
 			m_gWindowManager.PreviousWindow();
@@ -127,7 +94,9 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 				g_application.m_pPlayer->Update();
 			OutputDebugString("Now in GUI\n");
 			return;
-		break;
+    }
+    break;
+
 		case ACTION_ASPECT_RATIO:
 		{
 			m_bShowStatus=true;
@@ -155,7 +124,8 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 			return;
 		}
 		break;
-		case ACTION_STEP_BACK:
+		
+    case ACTION_STEP_BACK:
     {
       int iPercent=g_application.m_pPlayer->GetPercentage();
       if (iPercent>=2)
@@ -196,29 +166,39 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
     break;
 
 		case ACTION_SHOW_OSD:
-			//g_application.m_pPlayer->ToggleOSD();
+    {	
+      //g_application.m_pPlayer->ToggleOSD();
       m_bOSDVisible=!m_bOSDVisible;
       if (m_bOSDVisible) ShowOSD();
       else HideOSD();
-		break;
+    }
+    break;
 			
 		case ACTION_SHOW_SUBTITLES:
-			g_application.m_pPlayer->ToggleSubtitles();
+    {	
+      g_application.m_pPlayer->ToggleSubtitles();
+    }
 		break;
 
 		case ACTION_SHOW_CODEC:
-			m_bShowInfo = !m_bShowInfo;
+    {
+      m_bShowInfo = !m_bShowInfo;
+    }
 		break;
 
 		case ACTION_NEXT_SUBTITLE:
-			g_application.m_pPlayer->SwitchToNextLanguage();
+    {
+      g_application.m_pPlayer->SwitchToNextLanguage();
+    }
 		break;
 
 		case ACTION_STOP:
-      m_iSpeed=1;
+    {
+        m_iSpeed=1;
 			g_application.m_pPlayer->closefile();
 			// Switch back to the previous window (GUI)
 			m_gWindowManager.PreviousWindow();
+    }
 		break;
 
 		// PAUSE action is handled globally in the Application class
@@ -289,6 +269,22 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		case REMOTE_9:
 			ChangetheTimeCode(REMOTE_9);
 		break;
+
+    case ACTION_OSD_SHOW_LEFT:
+    case ACTION_OSD_SHOW_RIGHT:
+    case ACTION_OSD_SHOW_UP:
+    case ACTION_OSD_SHOW_DOWN:
+    case ACTION_OSD_SHOW_SELECT:
+    case ACTION_OSD_SHOW_VALUE_PLUS:
+    case ACTION_OSD_SHOW_VALUE_MIN:
+    {
+      if (m_bOSDVisible)
+      {
+        m_osdMenu.OnAction(*this,action);
+      }
+      return;
+    }
+    break;
 	}
 	CGUIWindow::OnAction(action);
 }
