@@ -939,6 +939,7 @@ bool CGUIWindowMusicBase::ViewByLargeIcon()
 
 void CGUIWindowMusicBase::ShowThumbPanel()
 {
+  int iItem=GetSelectedItem(); 
   if ( ViewByLargeIcon() )
   {
     CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
@@ -960,6 +961,11 @@ void CGUIWindowMusicBase::ShowThumbPanel()
 			pControl->SetItemHeight(128);
 			pControl->SetItemWidth(128);
 		}
+  }
+  if (iItem>-1)
+  {
+    CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem);
+    CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem);
   }
 }
 
