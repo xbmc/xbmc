@@ -748,35 +748,78 @@ HRESULT CApplication::Initialize()
 	return S_OK;
 }
 
+void CApplication::StartWebServer() 
+{
+ 	if (g_stSettings.m_bHTTPServerEnabled && CUtil::IsNetworkUp())
+	{
+		CLog::Log("start webserver");
+		CSectionLoader::Load("LIBHTTP");
+		m_pWebServer = new CWebServer();
+		CStdString ipadres;
+		CUtil::GetTitleIP(ipadres);
+		m_pWebServer->Start(ipadres.c_str(), g_stSettings.m_iWebServerPort, "Q:\\web");
+	} 
+}
+
+void CApplication::StopWebServer() 
+{
+ 	if (m_pWebServer)
+	{
+		CLog::Log("stop webserver");
+		m_pWebServer->Stop();
+    m_pWebServer->WaitForThreadExit(INFINITE);
+		delete m_pWebServer;
+		m_pWebServer = NULL;
+    CSectionLoader::Unload("LIBHTTP");
+	}
+}
+
+void CApplication::StartFtpServer()
+{
+	if ( g_stSettings.m_bFTPServerEnabled && CUtil::IsNetworkUp())
+	{
+		CLog::Log("start ftpserver");
+    if (!m_pFileZilla) {
+			m_pFileZilla = new CXBFileZilla("Q:\\");
+  		m_pFileZilla->Start();
+    }
+	}
+}
+
+void CApplication::StopFtpServer()
+{
+  /* filezilla doesn't like to be deleted?
+  if (m_pFileZilla) {
+		CLog::Log("stop ftpserver");
+		m_pFileZilla->Stop();
+    delete m_pFileZilla;
+    m_pFileZilla = NULL;
+  }
+  */
+}
+
+void CApplication::StartTimeServer()
+{
+ 	if (g_stSettings.m_bTimeServerEnabled && CUtil::IsNetworkUp())
+	{
+		CLog::Log("start timeserver thread");
+		m_sntpClient.Create(); 
+	}
+}
+
+void CApplication::StopTimeServer()
+{
+  CLog::Log("stop time server");
+	m_sntpClient.StopThread();
+}
+
 void CApplication::StartServices() 
 {
-  if (CUtil::IsNetworkUp()) {
-		if (g_stSettings.m_bTimeServerEnabled)
-		{
-			CLog::Log("start timeserver thread");
-			m_sntpClient.Create(); 
-		}
+  StartTimeServer();
+  StartWebServer();
+  StartFtpServer();
 
-		if (g_stSettings.m_bHTTPServerEnabled)
-		{
-			CLog::Log("start webserver");
-			CSectionLoader::Load("LIBHTTP");
-			m_pWebServer = new CWebServer();
-			CStdString ipadres;
-			CUtil::GetTitleIP(ipadres);
-			m_pWebServer->Start(ipadres.c_str(), g_stSettings.m_iWebServerPort, "Q:\\web");
-		} 
-
-		if ( g_stSettings.m_bFTPServerEnabled)
-		{
-			CLog::Log("start ftpserver");
-      if (!m_pFileZilla) {
-			  m_pFileZilla = new CXBFileZilla("Q:\\");
-  			m_pFileZilla->Start();
-      }
-		}
-  }
- 	//	Start Thread for DVD Mediatype detection
+  //	Start Thread for DVD Mediatype detection
 	CLog::Log("start dvd mediatype detection");	
 	m_DetectDVDType.Create( false);
 
@@ -793,32 +836,16 @@ void CApplication::StartServices()
 
 void CApplication::StopServices() 
 {
- 	if (m_pWebServer)
-	{
-		CLog::Log("stop webserver");
-		m_pWebServer->Stop();
-		delete m_pWebServer;
-		m_pWebServer = NULL;
-    //CSectionLoader::Unload("LIBHTTP");
-	}
-
-  /* filezilla doesn't like to be deleted?
-  if (m_pFileZilla) {
-		CLog::Log("stop ftpserver");
-		m_pFileZilla->Stop();
-    delete m_pFileZilla;
-    m_pFileZilla = NULL;
-  }
-  */
-
-  CLog::Log("stop time server");
-	m_sntpClient.StopThread();
+  StopWebServer();
+  StopTimeServer();
+  StopFtpServer();
 
 	CLog::Log("stop dvd detect media");
 	m_DetectDVDType.StopThread();
 
 	CLog::Log("stop LCD");
 	g_lcd->Stop();
+  g_lcd->WaitForThreadExit(INFINITE);
   delete g_lcd;
 }
 
@@ -1688,6 +1715,7 @@ void CApplication::Stop()
 {
 	try
 	{
+    m_bStop = true;
 		CLog::Log("stop all");
 
 		CKaiClient::GetInstance()->RemoveObserver();

@@ -108,6 +108,13 @@ public:
 
   void StartServices(); 
   void StopServices();
+  void StartWebServer();
+  void StopWebServer();
+  void StartFtpServer();
+  void StopFtpServer();
+  void StartTimeServer();
+  void StopTimeServer();
+
 	void					Stop();
 	void					LoadSkin(const CStdString& strSkin);
 	void					DelayLoadSkin();
