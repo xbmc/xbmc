@@ -25,6 +25,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	m_iPTS=0;
 	m_bPaused=false;
 	closefile();
+	m_bStopPlaying=false;
+	m_bIsPlaying=true;
+
 	if (!m_pDLL)
 	{
 		OutputDebugString("cmplayer::openfile() load dll\n");
@@ -78,8 +81,6 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	}
 	
 	m_dwTime=timeGetTime();
-	m_bStopPlaying=false;
-	m_bIsPlaying=true;
 	m_startEvent.Set();
 	return true;
 }
@@ -119,7 +120,7 @@ void CMPlayer::Process()
 	{
 		m_dwTime=timeGetTime();
 		bool bGotStartEvent=m_startEvent.WaitMSec(6000);
-		if (!bGotStartEvent && timeGetTime() - m_dwTime > 5000)
+		if (!m_bIsPlaying && !bGotStartEvent && timeGetTime() - m_dwTime > 5000)
 		{
 			// unload the dll if we didnt play anything for > 5 sec
 			if (m_pDLL)

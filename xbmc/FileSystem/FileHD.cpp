@@ -138,6 +138,7 @@ offset_t CFileHD::GetPosition()
 //*********************************************************************************************
 bool CFileHD::ReadString(char *szLine, int iLineLength)
 {
+	szLine[0]=0;
 	if (m_hFile==INVALID_HANDLE_VALUE) return false;
 	offset_t iFilePos=GetPosition();
 
@@ -155,13 +156,15 @@ bool CFileHD::ReadString(char *szLine, int iLineLength)
 		{
 			if ('\r' == szLine[i+1])
 			{
-				szLine[i+2]=0;
+				szLine[i+1]=0;
+				
 				Seek(iFilePos+i+2,SEEK_SET);
 			}
 			else
 			{
 				// end of line
 				szLine[i+1]=0;
+				
 				Seek(iFilePos+i+1,SEEK_SET);
 			}
 			break;
@@ -170,7 +173,8 @@ bool CFileHD::ReadString(char *szLine, int iLineLength)
 		{
 			if ('\n' == szLine[i+1])
 			{
-				szLine[i+2]=0;
+				szLine[i+1]=0;
+				
 				Seek(iFilePos+i+2,SEEK_SET);
 			}
 			else
@@ -178,6 +182,7 @@ bool CFileHD::ReadString(char *szLine, int iLineLength)
 				// end of line
 				szLine[i+1]=0;
 				Seek(iFilePos+i+1,SEEK_SET);
+				
 			}
 			break;
 		}

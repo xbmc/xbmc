@@ -1,21 +1,5 @@
 // XboxMediaCenter
 //
-// todo for demo 8:
-//   test:
-//		- fopen... in dllloader for subtitles
-//		- iso9660 doesnt work?
-//		- memory leak?
-//   fix:
-//		- .fli , the animatrix & sweet home alabama files dont work
-//
-//   check:
-//		- startup of video takes couple of seconds, why?
-//		- check bobbin007 autodetect on .it
-//
-//   todo:
-//		- version info on mplayer.dll?
-//		- movie/stretch : change for subtitles
-//		- flickering screen settings?
 //
 // libraries: 
 //			- CDRipX			: doesnt support section loading yet			
