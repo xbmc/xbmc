@@ -53,13 +53,22 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".pcx") ) dwImageType=CXIMAGE_FORMAT_PCX;
 
 
-	strCachedFile="T:\\cachedpic";
-	strCachedFile+= strExtension;
-	CFile file;
-	if ( !file.Cache(strFileName.c_str(),strCachedFile.c_str(),NULL,NULL) )
-	{
-		return NULL;
-	}
+  if (! CUtil::IsHD(strFileName))
+  {
+	  strCachedFile="T:\\cachedpic";
+	  strCachedFile+= strExtension;
+	  CFile file;
+    ::DeleteFile(strCachedFile.c_str());
+	  if ( !file.Cache(strFileName.c_str(),strCachedFile.c_str(),NULL,NULL) )
+	  {
+      ::DeleteFile(strCachedFile.c_str());
+		  return NULL;
+	  }
+  }
+  else
+  {
+    strCachedFile=strFileName;
+  }
 
 	if (!m_bSectionLoaded)
 	{
@@ -68,15 +77,29 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
 	}
 
 	CxImage image(dwImageType);
-	if (!image.Load(strCachedFile.c_str(),dwImageType))
-	{
-		return NULL;
-	}
-
-    for (int i=0; i < iRotate; ++i) 
+  try
+  {
+	  if (!image.Load(strCachedFile.c_str(),dwImageType))
+	  {
+		  return NULL;
+	  }
+  }
+  catch(...)
+  {
+    OutputDebugString("---------- CXIMAGE IS UNABLE TO OPEN FILE ---------------------------\n");
+    OutputDebugString(strCachedFile.c_str());
+    OutputDebugString("\n");
+    if (CUtil::IsHD(strCachedFile) )
     {
-		image.RotateRight();
+      ::DeleteFile(strCachedFile.c_str());
     }
+    return NULL;
+  }
+
+  for (int i=0; i < iRotate; ++i) 
+  {
+		image.RotateRight();
+  }
 
 	m_dwWidth  = image.GetWidth();
 	m_dwHeight = image.GetHeight();
@@ -272,6 +295,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 		m_bSectionLoaded=true;
 	}
 
+  try
 	{
 
 		CxImage image(dwImageType);
@@ -279,8 +303,11 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 		{
 			OutputDebugString("Unable to load image:");
 			OutputDebugString(strCachedFile.c_str());
-			OutputDebugString("\n");
-			return NULL;
+      OutputDebugString("\nerr:");
+      OutputDebugString(image.GetLastError());
+      OutputDebugString("\n");
+
+			return false;
 		}
 		m_dwWidth=image.GetWidth();
 		m_dwHeight=image.GetHeight();
@@ -309,9 +336,29 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 			m_dwHeight=image.GetHeight();
 		}
 
-		image.Save(strThumbFileName.c_str(),CXIMAGE_FORMAT_JPG);
-	}
+    ::DeleteFile(strThumbFileName.c_str());
+    if ( image.GetNumColors() )
+    {
+      image.IncreaseBpp(24);
+    }
+		if (!image.Save(strThumbFileName.c_str(),CXIMAGE_FORMAT_JPG))
+    {
+      OutputDebugString("PICTURE:: unable to save image:");
+      OutputDebugString(strThumbFileName.c_str());
+      OutputDebugString("\nerr:");
+      OutputDebugString(image.GetLastError());
+      OutputDebugString("\n");
 
+      ::DeleteFile(strThumbFileName.c_str());
+      return false;
+    }
+	}
+  catch(...)
+  {
+    OutputDebugString("PICTURE:: exception:");
+    OutputDebugString(strCachedFile.c_str());
+    OutputDebugString("\n");
+  }
 	return true;
 }
 
@@ -404,13 +451,21 @@ bool CPicture::Convert(const CStdString& strSource,const CStdString& strDest)
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".pcx") ) dwImageType=CXIMAGE_FORMAT_PCX;
 
 
-	strCachedFile="T:\\cachedpic";
-	strCachedFile+= strExtension;
-	CFile file;
-	if ( !file.Cache(strSource.c_str(),strCachedFile.c_str(),NULL,NULL) )
-	{
-		return NULL;
-	}
+  if (!CUtil::IsHD(strSource))
+  {
+	  strCachedFile="T:\\cachedpic";
+	  strCachedFile+= strExtension;
+	  CFile file;
+	  if ( !file.Cache(strSource.c_str(),strCachedFile.c_str(),NULL,NULL) )
+	  {
+      ::DeleteFile(strCachedFile.c_str());
+		  return NULL;
+	  }
+  }
+  else
+  {
+    strCachedFile=strSource;
+  }
 
 	if (!m_bSectionLoaded)
 	{
@@ -418,16 +473,45 @@ bool CPicture::Convert(const CStdString& strSource,const CStdString& strDest)
 		m_bSectionLoaded=true;
 	}
 
+  try
 	{
-
 		CxImage image(dwImageType);
 		if (!image.Load(strCachedFile.c_str(),dwImageType))
 		{	
+      OutputDebugString("PICTURE:: unable to load image:");
+      OutputDebugString(strCachedFile.c_str());
+      OutputDebugString("\nerr:");
+      OutputDebugString(image.GetLastError());
+      OutputDebugString("\n");
+
 			return false;
 		}
-		
-		image.Save(strDest.c_str(),CXIMAGE_FORMAT_JPG);
+
+    ::DeleteFile(strDest.c_str());		
+    if ( image.GetNumColors() )
+    {
+      image.IncreaseBpp(24);
+    }
+		if (!image.Save(strDest.c_str(),CXIMAGE_FORMAT_JPG))
+    {
+      
+      OutputDebugString("PICTURE:: unable to save image:");
+      OutputDebugString(strDest.c_str());
+      OutputDebugString("\nerr:");
+      OutputDebugString(image.GetLastError());
+      OutputDebugString("\n");
+      ::DeleteFile(strDest.c_str());
+      return false;
+    }
 	}
+  catch(...)
+  {
+    OutputDebugString("PICTURE:: exception:");
+    OutputDebugString(strCachedFile.c_str());
+    OutputDebugString("\n");
+    ::DeleteFile(strDest.c_str());
+    return false;
+  }
 
 	return true;
 }

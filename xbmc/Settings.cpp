@@ -9,6 +9,12 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
+  g_stSettings.m_bMyVideoVideoStack =true;
+  g_stSettings.m_bMyVideoActorStack =true;
+  g_stSettings.m_bMyVideoGenreStack =true;
+  g_stSettings.m_bMyVideoYearStack =true;
+
+
   g_stSettings.m_iMyProgramsSelectedItem=0;
   g_stSettings.m_iAudioStream=0;
   g_stSettings.m_bPPAuto=true;
@@ -55,6 +61,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyProgramsSortAscending=true;
 	g_stSettings.m_iMyProgramsSortMethod=0;
 	g_stSettings.m_bMyProgramsFlatten=false;
+	g_stSettings.m_bMyProgramsDefaultXBE=false;
   strcpy(g_stSettings.szDashboard,"C:\\xboxdash.xbe");
   strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"");
   g_stSettings.m_iStartupWindow=0;
@@ -133,6 +140,15 @@ CSettings::CSettings(void)
   g_stSettings.m_iMyVideoGenreSortMethod=0;
   g_stSettings.m_bMyVideoGenreSortAscending=true;
 
+  g_stSettings.m_bMyVideoActorViewAsIcons=true;
+  g_stSettings.m_bMyVideoActorRootViewAsIcons=true;
+  g_stSettings.m_iMyVideoActorSortMethod=0;
+  g_stSettings.m_bMyVideoActorSortAscending=true;
+
+  g_stSettings.m_bMyVideoYearViewAsIcons=true;
+  g_stSettings.m_bMyVideoYearRootViewAsIcons=true;
+  g_stSettings.m_iMyVideoYearSortMethod=0;
+  g_stSettings.m_bMyVideoYearSortAscending=true;
 
 	g_stSettings.m_bMyFilesSourceViewAsIcons=false;
 	g_stSettings.m_bMyFilesSourceRootViewAsIcons=true;
@@ -687,7 +703,12 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	// myvideos settings
 	pElement = pRootElement->FirstChildElement("myvideos");
 	if (pElement)
-	{
+	{ 
+    GetBoolean(pElement, "stackvideo", g_stSettings.m_bMyVideoVideoStack);
+    GetBoolean(pElement, "stackgenre", g_stSettings.m_bMyVideoGenreStack);
+    GetBoolean(pElement, "stackactor", g_stSettings.m_bMyVideoActorStack);
+    GetBoolean(pElement, "stackyear", g_stSettings.m_bMyVideoYearStack);
+    
 		GetBoolean(pElement, "viewicons", g_stSettings.m_bMyVideoViewAsIcons);
 		GetBoolean(pElement, "rooticons", g_stSettings.m_bMyVideoRootViewAsIcons);
 		GetInteger(pElement, "sortmethod",g_stSettings.m_iMyVideoSortMethod);
@@ -697,6 +718,16 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "genrerooticons", g_stSettings.m_bMyVideoGenreRootViewAsIcons);
 		GetInteger(pElement, "genresortmethod",g_stSettings.m_iMyVideoGenreSortMethod);
 		GetBoolean(pElement, "genresortascending", g_stSettings.m_bMyVideoGenreSortAscending);
+
+		GetBoolean(pElement, "actorviewicons", g_stSettings.m_bMyVideoActorViewAsIcons);
+		GetBoolean(pElement, "actorrooticons", g_stSettings.m_bMyVideoActorRootViewAsIcons);
+		GetInteger(pElement, "actorsortmethod",g_stSettings.m_iMyVideoActorSortMethod);
+		GetBoolean(pElement, "actorsortascending", g_stSettings.m_bMyVideoActorSortAscending);
+    
+		GetBoolean(pElement, "yearviewicons", g_stSettings.m_bMyVideoYearViewAsIcons);
+		GetBoolean(pElement, "yearrooticons", g_stSettings.m_bMyVideoYearRootViewAsIcons);
+		GetInteger(pElement, "yearsortmethod",g_stSettings.m_iMyVideoYearSortMethod);
+		GetBoolean(pElement, "yearsortascending", g_stSettings.m_bMyVideoYearSortAscending);
     
 		GetBoolean(pElement, "postprocessing", g_stSettings.m_bPostProcessing);
 		GetBoolean(pElement, "deinterlace", g_stSettings.m_bDeInterlace);
@@ -730,6 +761,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "autorunmusic", g_stSettings.m_bAutorunMusic);
 		GetBoolean(pElement, "autorunvideo", g_stSettings.m_bAutorunVideo);
 		GetBoolean(pElement, "autorunpictures", g_stSettings.m_bAutorunPictures);
+		GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramsFlatten);
+		GetBoolean(pElement, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
 		GetString(pElement, "language", g_stSettings.szDefaultLanguage, g_stSettings.szDefaultLanguage);
 	}
 	// slideshow settings
@@ -910,6 +943,12 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	TiXmlElement videosNode("myvideos");
 	pNode = pRoot->InsertEndChild(videosNode);
 	if (!pNode) return false;
+
+  SetBoolean(pNode, "stackvideo", g_stSettings.m_bMyVideoVideoStack);
+  SetBoolean(pNode, "stackgenre", g_stSettings.m_bMyVideoGenreStack);
+  SetBoolean(pNode, "stackactor", g_stSettings.m_bMyVideoActorStack);
+  SetBoolean(pNode, "stackyear", g_stSettings.m_bMyVideoYearStack);
+
 	SetBoolean(pNode, "viewicons", g_stSettings.m_bMyVideoViewAsIcons);
 	SetBoolean(pNode, "rooticons", g_stSettings.m_bMyVideoRootViewAsIcons);
 	SetInteger(pNode, "sortmethod",g_stSettings.m_iMyVideoSortMethod);
@@ -919,6 +958,16 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "genrerooticons", g_stSettings.m_bMyVideoGenreRootViewAsIcons);
 	SetInteger(pNode, "genresortmethod",g_stSettings.m_iMyVideoGenreSortMethod);
 	SetBoolean(pNode, "genresortascending", g_stSettings.m_bMyVideoGenreSortAscending);
+
+	SetBoolean(pNode, "actorviewicons", g_stSettings.m_bMyVideoActorViewAsIcons);
+	SetBoolean(pNode, "actorrooticons", g_stSettings.m_bMyVideoActorRootViewAsIcons);
+	SetInteger(pNode, "actorsortmethod",g_stSettings.m_iMyVideoActorSortMethod);
+	SetBoolean(pNode, "actorsortascending", g_stSettings.m_bMyVideoActorSortAscending);
+
+	SetBoolean(pNode, "yearviewicons", g_stSettings.m_bMyVideoYearViewAsIcons);
+	SetBoolean(pNode, "yearrooticons", g_stSettings.m_bMyVideoYearRootViewAsIcons);
+	SetInteger(pNode, "yearsortmethod",g_stSettings.m_iMyVideoYearSortMethod);
+	SetBoolean(pNode, "yearsortascending", g_stSettings.m_bMyVideoYearSortAscending);
 
 	SetBoolean(pNode, "postprocessing", g_stSettings.m_bPostProcessing);
 	SetBoolean(pNode, "deinterlace", g_stSettings.m_bDeInterlace);
@@ -951,6 +1000,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "autorunmusic", g_stSettings.m_bAutorunMusic);
 	SetBoolean(pNode, "autorunvideo", g_stSettings.m_bAutorunVideo);
 	SetBoolean(pNode, "autorunpictures", g_stSettings.m_bAutorunPictures);
+	SetBoolean(pNode, "flatten", g_stSettings.m_bMyProgramsFlatten);
+	SetBoolean(pNode, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
 	SetString(pNode, "language", g_stSettings.szDefaultLanguage);
 	// slideshow settings
 	TiXmlElement slideshowNode("slideshow");

@@ -1078,4 +1078,32 @@
     <id>343</id>
     <value>7. Adjust Framerate</value>
   </string>
+  <string>
+    <id>344</id>
+    <value>Actors</value>
+  </string>
+  <string>
+    <id>345</id>
+    <value>Year</value>
+  </string>
+  <string>
+    <id>346</id>
+    <value>Stack</value>
+  </string>
+  <string>
+    <id>347</id>
+    <value>Unstack</value>
+  </string>
+  <string>
+    <id>348</id>
+    <value>Flatten Directory Hierarchy</value>
+  </string>
+  <string>
+    <id>349</id>
+    <value>Show only Default.xbe</value>
+  </string>
+  <string>
+    <id>350</id>
+    <value>Programs</value>
+  </string>
 </strings>
