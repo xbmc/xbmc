@@ -48,7 +48,7 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUI
   m_pFont->GetTextExtent( L"W", &fTextWidth,&fTextHeight);
 
   WCHAR wszText[1024];
-  float fTextPosY =dwPosY+ m_iTextureHeight;
+  float fTextPosY =(float)dwPosY+ (float)m_iTextureHeight;
 	swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
 
   DWORD dwColor=m_dwTextColor;
