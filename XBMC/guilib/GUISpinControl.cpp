@@ -135,6 +135,7 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
 			case GUI_MSG_ITEM_SELECTED:
 			{
 				message.SetParam1( GetValue() );
+				message.SetParam2(m_iSelect);
 
 				if (m_iType==SPIN_CONTROL_TYPE_TEXT)
 				{
