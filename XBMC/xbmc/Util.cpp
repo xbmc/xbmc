@@ -447,7 +447,7 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
 CURL url(strFile);
-if (url.GetProtocol()==".cdda") 
+if (url.GetProtocol()=="cdda") 
 	return true;
 return false;
 }

@@ -137,6 +137,7 @@ void CGUIWindowMusicOverlay::Render()
 								song.iDuration=pItem->m_musicInfoTag.GetDuration();
 								pItem->m_musicInfoTag.GetReleaseDate(systime);
 								song.iYear=systime.wYear;
+								strAlbum=song.strAlbum ;
 								bContinue=true;
 							}
 							delete pItem;
@@ -146,74 +147,75 @@ void CGUIWindowMusicOverlay::Render()
 				else
 				{
 					bContinue=dbs.GetSongByFileName(strFile, song);
-				}
-				if (bContinue)
-				{
-					if (song.strTitle.size())
+					
+					if (bContinue)
 					{
-						CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-						msg1.SetLabel(song.strTitle );
-						OnMessage(msg1);
-						
-						if (song.strArtist.size())
+						if (song.strTitle.size())
 						{
 							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-							msg1.SetLabel( song.strArtist );
+							msg1.SetLabel(song.strTitle );
 							OnMessage(msg1);
-						}
-						
-						if ( song.strAlbum.size())
-						{
-							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-							msg1.SetLabel( song.strAlbum );
-							OnMessage(msg1);
-							strAlbum=song.strAlbum;
-						}
-						
-						int iTrack=song.iTrack;
-						if (iTrack >=1)
-						{
-							CStdString strTrack;
-							strTrack.Format("Track %i", iTrack);
 							
-							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-							msg1.SetLabel( strTrack );
-							OnMessage(msg1);
-						}
+							if (song.strArtist.size())
+							{
+								CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+								msg1.SetLabel( song.strArtist );
+								OnMessage(msg1);
+							}
+							
+							if ( song.strAlbum.size())
+							{
+								CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+								msg1.SetLabel( song.strAlbum );
+								OnMessage(msg1);
+								strAlbum=song.strAlbum;
+							}
+							
+							int iTrack=song.iTrack;
+							if (iTrack >=1)
+							{
+								CStdString strTrack;
+								strTrack.Format("Track %i", iTrack);
+								
+								CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+								msg1.SetLabel( strTrack );
+								OnMessage(msg1);
+							}
 
-						if (song.iYear >=1900)
-						{
-							CStdString strYear;
-							strYear.Format("Year:%i", song.iYear);
-							
-							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-							msg1.SetLabel( strYear );
-							OnMessage(msg1);
+							if (song.iYear >=1900)
+							{
+								CStdString strYear;
+								strYear.Format("Year:%i", song.iYear);
+								
+								CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+								msg1.SetLabel( strYear );
+								OnMessage(msg1);
+							}
+							if (song.iDuration > 0)
+							{
+								CStdString strYear;
+								strYear.Format("Duration: %i:%02.2i", song.iDuration/60, song.iDuration%60);
+								
+								CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+								msg1.SetLabel( strYear );
+								OnMessage(msg1);
+							}
 						}
-						if (song.iDuration > 0)
+						else 
 						{
-							CStdString strYear;
-							strYear.Format("Duration: %i:%02.2i", song.iDuration/60, song.iDuration%60);
-							
-							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-							msg1.SetLabel( strYear );
-							OnMessage(msg1);
+								CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+								msg1.SetLabel( CUtil::GetFileName(strFile) );
+								OnMessage(msg1);
 						}
 					}
-					else
+					else 
 					{
 							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 							msg1.SetLabel( CUtil::GetFileName(strFile) );
 							OnMessage(msg1);
 					}
+					dbs.Close();
 				}
-				else
-				{
-						CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-						msg1.SetLabel( CUtil::GetFileName(strFile) );
-						OnMessage(msg1);
-				}
-				dbs.Close();
 			}
 			else
 			{
@@ -221,6 +223,7 @@ void CGUIWindowMusicOverlay::Render()
 					msg1.SetLabel( CUtil::GetFileName(strFile) );
 					OnMessage(msg1);
 			}
+
 		
 			if ( dbs.Open() )
 			{
