@@ -22,7 +22,10 @@
 #include "filesystem/file.h"
 #include "xbox/iosupport.h"
 #include "playlistplayer.h"
-#include "GUIDialogFileStacking.h"
+
+#define VIEW_AS_LIST           0
+#define VIEW_AS_ICONS          1
+#define VIEW_AS_LARGEICONS     2
 #define CONTROL_BTNVIEWASICONS		 2
 #define CONTROL_BTNSORTBY					 3
 #define CONTROL_BTNSORTASC				 4
@@ -170,6 +173,7 @@ bool CGUIWindowVideoActors::OnMessage(CGUIMessage& message)
 			m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
 			Update(m_strDirectory);
 
+      ShowThumbPanel();
       if (m_iItemSelected >=0)
       {
 			  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected)
@@ -185,10 +189,18 @@ bool CGUIWindowVideoActors::OnMessage(CGUIMessage& message)
       int iControl=message.GetSenderId();
       if (iControl==CONTROL_BTNVIEWASICONS)
       {
-		  if ( m_strDirectory.IsEmpty() )
-		    g_stSettings.m_bMyVideoActorRootViewAsIcons=!g_stSettings.m_bMyVideoActorRootViewAsIcons;
-		  else
-		    g_stSettings.m_bMyVideoActorViewAsIcons=!g_stSettings.m_bMyVideoActorViewAsIcons;
+        bool bLargeIcons(false);
+		    if ( m_strDirectory.IsEmpty() )
+        {
+		      g_stSettings.m_iMyVideoActorRootViewAsIcons++;
+          if (g_stSettings.m_iMyVideoActorRootViewAsIcons > VIEW_AS_LARGEICONS) g_stSettings.m_iMyVideoActorRootViewAsIcons=VIEW_AS_LIST;
+        }
+		    else
+        {
+		      g_stSettings.m_iMyVideoActorViewAsIcons++;
+          if (g_stSettings.m_iMyVideoActorViewAsIcons > VIEW_AS_LARGEICONS) g_stSettings.m_iMyVideoActorViewAsIcons=VIEW_AS_LIST;
+        }
+        ShowThumbPanel();
 
 				g_settings.Save();
         UpdateButtons();
@@ -250,11 +262,42 @@ void CGUIWindowVideoActors::UpdateButtons()
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 	bool bViewIcon = false;
-	if ( m_strDirectory.IsEmpty() ) {
-		bViewIcon = g_stSettings.m_bMyVideoActorRootViewAsIcons;
+  int iString;
+	if ( m_strDirectory.IsEmpty() ) 
+  {
+		switch (g_stSettings.m_iMyVideoActorRootViewAsIcons)
+    {
+      case VIEW_AS_LIST:
+        iString=100; // view as icons
+      break;
+      
+      case VIEW_AS_ICONS:
+        iString=417;  // view as large icons
+        bViewIcon=true;
+      break;
+      case VIEW_AS_LARGEICONS:
+        iString=101; // view as list
+        bViewIcon=true;
+      break;
+    }
 	}
-	else {
-		bViewIcon = g_stSettings.m_bMyVideoActorViewAsIcons;
+	else 
+  {
+		switch (g_stSettings.m_iMyVideoActorViewAsIcons)
+    {
+      case VIEW_AS_LIST:
+        iString=100; // view as icons
+      break;
+      
+      case VIEW_AS_ICONS:
+        iString=417;  // view as large icons
+        bViewIcon=true;
+      break;
+      case VIEW_AS_LARGEICONS:
+        iString=101; // view as list
+        bViewIcon=true;
+      break;
+    }		
 	}
    if (bViewIcon) 
     {
@@ -265,11 +308,6 @@ void CGUIWindowVideoActors::UpdateButtons()
       SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
     }
 
-    int iString=101;
-    if (!bViewIcon) 
-    {
-      iString=100;
-    }
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyVideoActorSortMethod+365);
 
@@ -422,13 +460,7 @@ void CGUIWindowVideoActors::Update(const CStdString &strDirectory)
   UpdateButtons();
   strSelectedItem=m_history.Get(m_strDirectory);	
 
-  bool bViewAsIcon = false;
-	if ( m_strDirectory.IsEmpty() )
-		bViewAsIcon = g_stSettings.m_bMyVideoActorRootViewAsIcons;
-	else
-		bViewAsIcon = g_stSettings.m_bMyVideoActorViewAsIcons;
-
-	if ( bViewAsIcon ) {	
+	if ( ViewByIcon() ) {	
 		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);
 	}
 	else {
@@ -526,13 +558,7 @@ int CGUIWindowVideoActors::GetSelectedItem()
 {
 	int iControl;
 	bool bViewIcon = false;
-	if ( m_strDirectory.IsEmpty() ) {
-		bViewIcon = g_stSettings.m_bMyVideoActorRootViewAsIcons;
-	}
-	else {
-		bViewIcon = g_stSettings.m_bMyVideoActorViewAsIcons;
-	}
-	if ( bViewIcon) 
+	if ( ViewByIcon() ) 
 	{
 		iControl=CONTROL_THUMBS;
 	}
@@ -545,7 +571,32 @@ int CGUIWindowVideoActors::GetSelectedItem()
 	return iItem;
 }
 
-
 void CGUIWindowVideoActors::SetIMDBThumbs(VECFILEITEMS& items)
 {
+}
+
+
+bool CGUIWindowVideoActors::ViewByIcon()
+{
+  if ( m_strDirectory.IsEmpty() )
+  {
+    if (g_stSettings.m_iMyVideoActorRootViewAsIcons != VIEW_AS_LIST) return true;
+  }  else
+  {
+    if (g_stSettings.m_iMyVideoActorViewAsIcons != VIEW_AS_LIST) return true;
+  }
+  return false;
+}
+
+bool CGUIWindowVideoActors::ViewByLargeIcon()
+{
+  if ( m_strDirectory.IsEmpty() )
+  {
+    if (g_stSettings.m_iMyVideoActorRootViewAsIcons == VIEW_AS_LARGEICONS) return true;
+  }
+  else
+  {
+    if (g_stSettings.m_iMyVideoActorViewAsIcons== VIEW_AS_LARGEICONS) return true;
+  }
+  return false;
 }

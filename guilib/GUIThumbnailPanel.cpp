@@ -50,6 +50,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, DWOR
   m_strSuffix=L"|";  
 	m_bScrollUp=false;
 	m_bScrollDown=false;
+  m_bShowTexture=true;
 	m_iScrollCounter=0;
 	m_iLastItem=-1;
 	m_iTextureWidth=80;
@@ -79,14 +80,14 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUI
   if (bFocus && HasFocus()&&m_iSelect==CONTROL_LIST )
   {
     m_imgFolderFocus.SetPosition(dwPosX, dwPosY);
-		m_imgFolderFocus.Render();
+		if (m_bShowTexture) m_imgFolderFocus.Render();
     
     RenderText((float)dwPosX,(float)fTextPosY,dwColor,wszText,true);
   }
   else
   {
     m_imgFolder.SetPosition(dwPosX, dwPosY);
-    m_imgFolder.Render();
+    if (m_bShowTexture) m_imgFolder.Render();
     
     RenderText((float)dwPosX,(float)fTextPosY,dwColor,wszText,false);
   
@@ -690,6 +691,13 @@ void CGUIThumbnailPanel::SetTextureDimensions(int iWidth, int iHeight)
 {
 	m_iTextureWidth=iWidth;
 	m_iTextureHeight=iHeight;
+
+  
+  m_imgFolder.SetHeight(m_iTextureHeight);
+  m_imgFolderFocus.SetHeight(m_iTextureHeight);
+
+  m_imgFolder.SetWidth(m_iTextureWidth);
+  m_imgFolderFocus.SetWidth(m_iTextureWidth);
 }
 
 
@@ -706,4 +714,21 @@ void CGUIThumbnailPanel::GetThumbDimensions(int& iXpos, int& iYpos,int& iWidth, 
   iHeight=m_iThumbHeight;
   iXpos=m_iThumbXPos;
   iYpos=m_iThumbYPos;
+}
+
+void CGUIThumbnailPanel::SetItemWidth(DWORD dwWidth)
+{
+  m_iItemWidth=dwWidth;
+  FreeResources();
+  AllocResources();
+}
+void CGUIThumbnailPanel::SetItemHeight(DWORD dwHeight)
+{
+  m_iItemHeight=dwHeight;
+  FreeResources();
+  AllocResources();
+}
+void CGUIThumbnailPanel::ShowTexture(bool bOnoff)
+{
+  m_bShowTexture=bOnoff;
 }

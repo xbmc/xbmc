@@ -288,7 +288,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 
  		case ACTION_SMALL_STEP_BACK:
     {
-      int orgpos=g_application.m_pPlayer->GetTime();
+      int orgpos=(int)g_application.m_pPlayer->GetTime();
       int jumpsize = 8; // secs; of course better if configurable
       int setpos=(orgpos > jumpsize) ? orgpos-jumpsize : 0; // First jump = 2*jumpsize
       int newpos;
