@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-03-2005 fixed: "View: ..." settings are not applied when <default> path is empty
   - 07-03-2005 updated: German language file
   - 07-03-2005 updated: Norwegian language file (Thnx to vnm)
   - 07-03-2005 updated: Chinese (Traditional) language file (Thnx to woozc)

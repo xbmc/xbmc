@@ -219,7 +219,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			// otherwise, is this the first time accessing this window?
 			else if (m_Directory.m_strPath=="?")
 			{
-				strDestination = g_stSettings.m_szDefaultPictures;
+				m_Directory.m_strPath = strDestination = g_stSettings.m_szDefaultPictures;
 				CLog::Log(LOGINFO,"Attempting to default to: %s",strDestination.c_str());
 			}
 			// try to open the destination path
@@ -234,7 +234,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 				{
 					// set current directory to matching share
 					if (bIsBookmarkName)
-                        m_Directory.m_strPath=g_settings.m_vecMyPictureShares[iIndex].strPath;
+						m_Directory.m_strPath=g_settings.m_vecMyPictureShares[iIndex].strPath;
 					else
 						m_Directory.m_strPath=strDestination;
 					CLog::Log(LOGINFO,"  Success! Opened destination path: %s",strDestination.c_str());

@@ -211,7 +211,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 			// a quickpath overrides the a default parameter
 			if (m_Directory.m_strPath=="?" && strDestination.IsEmpty())
 			{
-				strDestination = g_stSettings.m_szDefaultVideos;
+				m_Directory.m_strPath = strDestination = g_stSettings.m_szDefaultVideos;
 				CLog::Log(LOGINFO,"Attempting to default to: %s",strDestination.c_str());
 			}
 
