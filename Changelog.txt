@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-03-2005 enabled: autosync=30 by default
+  - 04-03-2005 fixed: using autosync caueses problems when resuming from pause. (updated mplayer.dll again)
   - 03-03-2005 updated: mplayer.dll to current cvs (final real fix + autosync fix)
   - 03-03-2005 changed: background music info scanner is default now (setting removed)
   - 03-03-2005 added: Cached thumb location is now stored in the database.  Music database SHOULD auto-update when you first access My Music.
