@@ -588,7 +588,6 @@ void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.Reset();
     g_playlistPlayer.Play(0);
-
     // and activate the playlist window if its not activated yet
     if (GetID() == m_gWindowManager.GetActiveWindow())
     {
