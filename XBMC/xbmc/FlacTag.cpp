@@ -17,8 +17,9 @@ CFlacTag::~CFlacTag()
 }
 
 // overridden from COggTag
-bool CFlacTag::FindVobisTagHeader(void)
+bool CFlacTag::ReadTag( CFile* file )
 {
+	m_file = file;
 
 	// format is:
 	// fLaC METABLOCK ... METABLOCK
@@ -51,7 +52,14 @@ bool CFlacTag::FindVobisTagHeader(void)
 	while (!bFound);
 
 	if (bFound)		// Yay, we've found the vorbis_comment section - seek to the right place
+	{
 		m_file->Seek(iPos+4, SEEK_SET);
+		// now read in a chunk of data
+		char pBuffer[8192];
+		m_file->Read((void*)pBuffer, 8192);
+		// Process this tag info
+		ProcessVorbisComment(pBuffer);
+	}
 	return bFound;
 }
 
@@ -71,7 +79,7 @@ int CFlacTag::ReadFlacHeader(void)
 	m_file->Read(buffer,8);				// read 64 bits of data
 	int iFreq = (buffer[0]<<12) |(buffer[1]<<4) | (buffer[2]>>4);
 	__int64 iNumSamples = (__int64(buffer[3]&0x0F)<<32) | (__int64(buffer[4])<<24) | (buffer[5]<<16) | (buffer[6]<<8) | buffer[7];
-	m_nDuration = (int)(iNumSamples/iFreq);
+	m_nDuration = (int)((iNumSamples*75)/iFreq);
 	return iPos+38;
 }
 
@@ -98,10 +106,4 @@ int CFlacTag::FindFlacHeader(void)
 	}
 
 	return 0;
-}
-
-// FLAC doesn't need the frame bit set
-bool CFlacTag::ReadBit(void)
-{
-	return true;
 }

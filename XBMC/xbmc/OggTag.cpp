@@ -5,9 +5,16 @@
 
 using namespace MUSIC_INFO;
 
+#define CHUNK_SIZE 8192		// should suffice for most tags
+
 COggTag::COggTag()
 {
 	m_nTrackNum=0;
+	m_nDuration=0;
+	m_nSamplesPerSec=0;
+	m_nChannels=0;
+	m_nBitrate=0;
+	m_nSamples=0;
 }
 
 COggTag::~COggTag()
@@ -18,107 +25,89 @@ bool COggTag::ReadTag( CFile* file )
 {
 	m_file = file;
 
-	//	Do we have a vorbis tag header?
-	if ( !FindVobisTagHeader( ) ) {
-		return false;
+    char* const pBuffer=new char[CHUNK_SIZE+100]; //+100 for later...
+    unsigned char* const pBufferU=(unsigned char*)pBuffer;	//unsigned char pointer to data
+	m_file->Read((void *)pBuffer, CHUNK_SIZE);
+
+    // Check we've got an ogg file
+    if (pBuffer[0]!='O' || pBuffer[1]!='g' || pBuffer[2]!='g' || pBuffer[3]!='S')
+        return false;
+
+    int iNext=4; //Next page of data's offset
+    int iOffset=0; //iOffset in file
+
+    while (iOffset+iNext<CHUNK_SIZE)
+    {
+		// find the next chunk of data
+        iNext=4;
+        while ((pBuffer[iOffset+iNext]!='O' || pBuffer[iOffset+iNext+1]!='g' || pBuffer[iOffset+iNext+2]!='g' || pBuffer[iOffset+iNext+3]!='S') && iOffset+iNext<CHUNK_SIZE)
+            iNext++;
+        if (iOffset+iNext<CHUNK_SIZE)
+        {
+            int iStart=iOffset+28+pBuffer[iOffset+26]; //Start of header
+            int Id=pBuffer[iStart-1];					// Id of header
+            if (Id==1)		// Vorbis header field
+            {
+                if (pBuffer[iOffset+29]=='v' && pBuffer[iOffset+30]=='o') // vorbis audio header
+                {
+					m_nChannels = (int)*(pBufferU+iOffset+39);	//LittleEndian2int8u;
+					m_nSamplesPerSec = *(int *)(pBufferU+iOffset+40);//LittleEndian2int64u;
+					m_nBitrate = *(int*)(pBufferU+iOffset+48);	//LittleEndian2int64s
+               }
+            }
+            else if (Id==3)	// Vorbis Comment field
+            {
+                //vendorlength, vendor, number of comments, comment length, comment
+				ProcessVorbisComment(pBuffer+iStart+6);
+            }
+            iOffset+=iNext;
+            iNext=0;
+        }
+    }
+
+	// Find the last data packet
+    iOffset=-1;
+    int AA=0;
+    while (iOffset==-1 || AA>128)
+    {
+		AA++;
+		m_file->Seek(-CHUNK_SIZE*AA, SEEK_END);//fseek(fb, -CHUNK_SIZE*AA, SEEK_END);
+		m_file->Read((void *)pBuffer, CHUNK_SIZE+100); //+100 for possible overlaps in the data pages
+
+		iOffset=CHUNK_SIZE+100-1;
+		while ((pBuffer[iOffset]!='O' || pBuffer[iOffset+1]!='g' || pBuffer[iOffset+2]!='g' || pBuffer[iOffset+3]!='S') && iOffset>=0)
+			iOffset--;
 	}
-
-	//	Read ventor string 
-	char* vendor;
-	UINT vendor_lenght = ReadLength();
-	if ( vendor_lenght == 0 )
-		return false;
-
-	vendor = ReadString( vendor_lenght );
-	//	Vendor can be discarded
-	delete[] vendor;
-
-	//	Read taglist lenght
-	UINT user_comment_list_lenght = ReadLength();
-	if ( user_comment_list_lenght == 0 )
-		return false;
-
-	//	Read tags like Artist etc.
-	UINT j = 0;
-	while ( j < user_comment_list_lenght ) {
-		char* item;
-		UINT length = ReadLength();
-		if ( length == 0 )
-			return false;
-		item = ReadString( length );
-		CStdString strItem = item;
-		parseTagEntry( strItem );
-		delete[] item;
-		j++;
-	}
-
-	//	Read Framebit
-	bool bFrameBit = ReadBit();
-
-	if ( bFrameBit == false )
-		return false;
+	// OK, grab the granule position (this is the position in samples)
+    if (iOffset>=0)
+    {
+        m_nSamples=*(int *)(pBufferU+iOffset+6); //Granule Pos
+		m_nDuration = (int)((m_nSamples*75)/m_nSamplesPerSec);	// *75 for frames
+    }
 
 	return true;
 }
 
-UINT COggTag::ReadLength(void)
+void COggTag::ProcessVorbisComment(const char *pBuffer)
 {
-	UINT nLenght;
-	char buffer[4];
-	m_file->Read( (void*) buffer, 4 );
-
-	//	Convert 4-Byte as char to UINT
-	nLenght = (UINT) buffer[0];
-	nLenght += (UINT) buffer[1]*100;
-	nLenght += (UINT) buffer[2]*10000;
-	nLenght += (UINT) buffer[3]*1000000;
-
-	if ( nLenght > 0 && nLenght <= UINT_MAX )
-		return nLenght;
-
-	return 0;
-}
-
-char* COggTag::ReadString( int nLenght )
-{
-	char* buffer = new char[nLenght+1];
-	ZeroMemory( buffer, sizeof(char)*nLenght+1);
-	m_file->Read( (void*) buffer, nLenght );
-	return buffer;
-}
-
-bool COggTag::ReadBit(void)
-{
-	char buffer[2];
-	m_file->Read( (void*) buffer, 1 );
-	return (buffer[0] > 0 ? true : false);
-}
-
-bool COggTag::FindVobisTagHeader(void)
-{
-	bool bFound = false;
-	char tag[1024];
-	m_file->Read( (void*) tag, 1023 );
-
-	//	Find vorbis header type 3 (tags)
-	int i = 0;
-	while ( i < 1023 ) {
-		if ( tag[i]== 'v' )
-			if ( tag[i+1] == 'o' && tag[i+2] == 'r' && tag[i+3] == 'b' && tag[i+4] == 'i' && tag[i+5] == 's' ) {
-				if ( tag[i-1] == 3 ) {
-					bFound = true;
-					break;
-				}
-			}
-			i++;
-	}
-
-	//	Set filepointer position
-	//	to the tag header after the vorbis-string
-	if ( bFound )
-		m_file->Seek( i+6, SEEK_SET );
-
-	return bFound;
+    int Pos=0;						// position in the buffer
+    int *I1=(int*)(pBuffer+Pos);	// length of vendor string
+    Pos+=I1[0]+4;					// just pass the vendor string
+    I1=(int*)(pBuffer+Pos);			// number of comments
+    int Count=I1[0];
+    Pos+=4;				// Start of the first comment
+    char C1[CHUNK_SIZE];
+    for (int I2=0; I2<Count; I2++) // Run through the comments
+    {
+        I1=(int*)(pBuffer+Pos);			// Length of comment
+        strncpy(C1, pBuffer+Pos+4, I1[0]);
+        C1[I1[0]]='\0';
+		CStdString strItem = C1;		// convert to string
+		// Parse the tag entry
+		parseTagEntry( strItem );
+        // Increment our position in the file buffer
+        Pos+=I1[0]+4;
+    }
 }
 
 int COggTag::parseTagEntry(CStdString& strTagEntry)
