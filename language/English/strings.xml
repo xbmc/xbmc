@@ -1578,6 +1578,12 @@
     <id>478</id>
     <value>OSD</value>
   </string>
+
+<string><id>479</id><value>Skin and Language</value></string>
+<string><id>480</id><value>User Interface</value></string>
+<string><id>481</id><value>Audio Options</value></string>
+<string><id>482</id><value>About XBMC</value></string>
+
 <string><id>10000</id><value>Home</value></string>
 <string><id>10001</id><value>My Programs</value></string>
 <string><id>10002</id><value>My Pictures</value></string>
