@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 29-10-2004 added: display and switching of audiostreams in matroska
+  - 29-10-2004 fixed: DTS in matroska container where not being detected
   - 12-10-2004 fixed: multi Channel DTS decoding should be full functional
   - 12-10-2004 changed/fixed: decss code. should now decrypt instead of cracking encryption on all DVD-drives [ 1011174 ]
 

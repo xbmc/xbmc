@@ -4586,6 +4586,10 @@ int mplayer_getAudioStreamCount()
     int i,c = 0;
     if (!demuxer)
         return 0;
+
+		if(demuxer->type == DEMUXER_TYPE_MATROSKA)
+			return xbmc_mkv_audiocount(demuxer->priv);
+
     for ( i=0;i < MAX_A_STREAMS;i++ )
     {
         if ( demuxer->a_streams[i] )
@@ -4597,8 +4601,18 @@ int mplayer_getAudioStreamCount()
 int mplayer_getAudioStream()
 {
     int i,c = 0;
-    if (!demuxer | !stream)
+    if (!demuxer || !demuxer->audio)
         return -1;
+
+    if(demuxer->type == DEMUXER_TYPE_MATROSKA)
+    {
+      if(demuxer->audio->id >= 0)
+			  return xbmc_mkv_get_aid_from_num(demuxer->priv, demuxer->audio->id-1); //Matroska seems to base it's tnum=id on 1 instead of 0
+      else
+        return 0;
+
+    }
+
     for ( i=0;i < MAX_A_STREAMS;i++ )
     {
         if ( demuxer->a_streams[i] )
@@ -4758,7 +4772,7 @@ int mplayer_getAudioStreamInfo(int iStream, stream_language_t* stream_info)
 	if(!stream) return -1;
 	if(demuxer)
 	{
-		if(demuxer->type == DEMUXER_TYPE_OGG) //Ogg uses a 0 based stream identifier now. wish all could do that
+		if(demuxer->type == DEMUXER_TYPE_OGG) //Ogg & Matroska uses a 0 based stream identifier now. wish all could do that
 		{
 			if(stream_info)
 			{
@@ -4770,6 +4784,16 @@ int mplayer_getAudioStreamInfo(int iStream, stream_language_t* stream_info)
 
 			return iStream;
 		}
+
+		if(demuxer->type == DEMUXER_TYPE_MATROSKA)
+		{
+			if(stream_info)
+			{
+        xbmc_mkv_fill_audioinfo(demuxer->priv, stream_info,iStream);
+			}
+			return iStream;
+		}
+
 		int i,c = 0;
 		for (i=0;i < MAX_A_STREAMS;i++ )
 		{
@@ -4936,7 +4960,7 @@ void xbmc_update_subs()
 	if(demuxer->type == DEMUXER_TYPE_MATROSKA)
 	{
 		printf("Building sub database for MKV");
-		xbmc_update_matroskasubs(demuxer->priv);
+		xbmc_mkv_updatesubs(demuxer->priv);
 	}
 
 	if (vo_vobsub) // Vobsubs

@@ -21,7 +21,6 @@
 #include "bswap.h"
 
 #ifdef _XBOX
-void xbmc_addsub(int id, char* name, int type, int invalid);
 #include "xbmc.h"
 #endif
 #include "../subreader.h"
@@ -233,7 +232,7 @@ extern char *dvdsub_lang;
 extern char *audio_lang;
 
 #ifdef _XBOX
-void xbmc_update_matroskasubs(void *mkvdemuxer)
+void xbmc_mkv_updatesubs(void *mkvdemuxer)
 {
   mkv_demuxer_t *d = (mkv_demuxer_t*)mkvdemuxer;
   int i, id;
@@ -243,6 +242,57 @@ void xbmc_update_matroskasubs(void *mkvdemuxer)
 		id++;
 		xbmc_addsub(d->tracks[i]->tnum, d->tracks[i]->language, XBMC_SUBTYPE_MKVSUB, 0);
 	}
+}
+
+int xbmc_mkv_audiocount(void *mkvdemuxer)
+{
+ mkv_demuxer_t *d = (mkv_demuxer_t*)mkvdemuxer;
+  int i, id;
+  for (i=0, id=0; i < d->num_tracks; i++)
+    if (d->tracks[i] != NULL && d->tracks[i]->type == MATROSKA_TRACK_AUDIO)
+    {
+	    id++;
+    }
+  return id;
+}
+
+int xbmc_mkv_get_aid_from_num(void *mkvdemuxer, int num)
+{
+  mkv_demuxer_t *d = (mkv_demuxer_t*)mkvdemuxer;
+  if (d->tracks[num] == NULL || d->tracks[num]->type != MATROSKA_TRACK_AUDIO) 
+    return -1;
+
+  int i=0, id=0;
+  for (i=0; i < num; i++)
+    if (d->tracks[i] != NULL && d->tracks[i]->type == MATROSKA_TRACK_AUDIO)
+	    id++;
+
+  return id;
+}
+
+static mkv_track_t *
+demux_mkv_find_track_by_num (mkv_demuxer_t *d, int n, int type);
+
+int xbmc_mkv_fill_audioinfo(void *mkvdemuxer, void* si, int aid)
+{
+  stream_language_t* slt = (stream_language_t*)si;
+  mkv_track_t* track;
+  track = demux_mkv_find_track_by_num((mkv_demuxer_t*)mkvdemuxer, aid, MATROSKA_TRACK_AUDIO);
+  if(track)
+  {
+    slt->channels = track->a_channels-1; //0 based instead of 1 based for some reason
+    slt->id = aid;
+    slt->language = track->language[1]|(track->language[0]<<8); //Way wrong, matroska uses three letters instead of two.. use this untill later
+    if(!strcmp(track->codec_id, MKV_A_DTS)) //DTS
+      slt->type=6;
+    else if(!strncmp(track->codec_id, MKV_A_AC3, strlen(MKV_A_AC3))) //AC3
+      slt->type=0;
+    else if(!strcmp(track->codec_id, MKV_A_PCM) ||
+               !strcmp(track->codec_id, MKV_A_PCM_BE)) //PCM
+      slt->type=4;
+    else
+      slt->type=1; //Unknown
+  }
 }
 #endif
 
@@ -1703,9 +1753,10 @@ demux_mkv_open_audio (demuxer_t *demuxer, mkv_track_t *track)
       if (!strcmp(track->codec_id, MKV_A_MP3) ||
           !strcmp(track->codec_id, MKV_A_MP2))
         track->a_formattag = 0x0055;
-      else if (!strncmp(track->codec_id, MKV_A_AC3, strlen(MKV_A_AC3)) ||
-               !strcmp(track->codec_id, MKV_A_DTS))
+      else if (!strncmp(track->codec_id, MKV_A_AC3, strlen(MKV_A_AC3)))
         track->a_formattag = 0x2000;
+      else if (!strcmp(track->codec_id, MKV_A_DTS))
+        track->a_formattag = 0x2001;
       else if (!strcmp(track->codec_id, MKV_A_PCM) ||
                !strcmp(track->codec_id, MKV_A_PCM_BE))
         track->a_formattag = 0x0001;
@@ -1816,12 +1867,21 @@ demux_mkv_open_audio (demuxer_t *demuxer, mkv_track_t *track)
       sh_a->wf->wBitsPerSample = 0;
       sh_a->samplesize = 0;
     }
-  else if (!strncmp(track->codec_id, MKV_A_AC3, strlen(MKV_A_AC3)))
+  else if (track->a_formattag == 0x2000) /* AC3 */
     {
       sh_a->wf->nAvgBytesPerSec = 16000;
       sh_a->wf->nBlockAlign = 1536;
       sh_a->wf->wBitsPerSample = 0;
       sh_a->samplesize = 0;
+
+    }
+  else if (track->a_formattag == 0x2001) /* DTS */
+    {
+      sh_a->wf->nAvgBytesPerSec = 16000;
+      sh_a->wf->nBlockAlign = 1536;
+      sh_a->wf->wBitsPerSample = 0;
+      sh_a->samplesize = 0;
+
     }
   else if (track->a_formattag == 0x0001)  /* PCM || PCM_BE */
     {
