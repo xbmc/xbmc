@@ -7,22 +7,13 @@
 #undef CYGWIN
 
 /* what to put between the brackets for empty arrays */
-#define EMPTY_ARRAY_SIZE
+#undef EMPTY_ARRAY_SIZE
 
 /* Define 1 if you have BSDI-type CD-ROM support */
 #undef HAVE_BSDI_CDROM
 
-/* Define to 1 if you have the `bzero' function. */
-#undef HAVE_BZERO
-
 /* Define this if you have libcddb installed */
-#undef HAVE_CDDB
-
-/* Define to 1 if you have the <CoreFoundation/CFBase.h> header file. */
-#undef HAVE_COREFOUNDATION_CFBASE_H
-
-/* Define 1 if you have Darwin OS X-type CD-ROM support */
-#undef HAVE_DARWIN_CDROM
+#define HAVE_CDDB 1
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
@@ -30,23 +21,8 @@
 /* Define to 1 if you have the <dvd.h> header file. */
 #undef HAVE_DVD_H
 
-/* Define to 1 if you have the <errno.h> header file. */
-#define HAVE_ERRNO_H 1
-
-/* Define to 1 if you have the <fcntl.h> header file. */
-#undef HAVE_FCNTL_H
-
-/* Define 1 if you have FreeBSD CD-ROM support */
-#undef HAVE_FREEBSD_CDROM
-
-/* Define to 1 if you have the <glob.h> header file. */
-#undef HAVE_GLOB_H
-
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
-
-/* Define to 1 if you have the <IOKit/IOKitLib.h> header file. */
-#undef HAVE_IOKIT_IOKITLIB_H
 
 /* Supports ISO _Pragma() macro */
 #undef HAVE_ISOC99_PRAGMA
@@ -69,14 +45,8 @@
 /* Define to 1 if you have the <linux/version.h> header file. */
 #undef HAVE_LINUX_VERSION_H
 
-/* Define to 1 if you have the `memcpy' function. */
-#define HAVE_MEMCPY 1
-
 /* Define to 1 if you have the <memory.h> header file. */
-#define HAVE_MEMORY_H 1
-
-/* Define to 1 if you have the `memset' function. */
-#define HAVE_MEMSET 1
+#undef HAVE_MEMORY_H
 
 /* Define 1 if you have Solaris CD-ROM support */
 #undef HAVE_SOLARIS_CDROM
@@ -106,10 +76,7 @@
 #undef HAVE_SYS_STAT_H
 
 /* Define to 1 if you have the <sys/types.h> header file. */
-#define HAVE_SYS_TYPES_H 1
-
-/* Define if struct tm has the tm_gmtoff member. */
-#undef HAVE_TM_GMTOFF
+#undef HAVE_SYS_TYPES_H
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
@@ -118,10 +85,13 @@
 #undef HAVE_VCDINFO
 
 /* Define 1 if you have MinGW CD-ROM support */
-#define HAVE_WIN32_CDROM 1
+#undef HAVE_WIN32_CDROM
 
 /* Define 1 if you are compiling using MinGW */
 #undef MINGW32
+
+/* Define 1 if you have XBOX CD-ROM support */
+#define HAVE_XBOX_CDROM 1
 
 /* Name of package */
 #undef PACKAGE
@@ -139,13 +109,13 @@
 #undef PACKAGE_TARNAME
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION 1
+#undef PACKAGE_VERSION
 
 /* Define to 1 if you have the ANSI C header files. */
-#define STDC_HEADERS 1
+#undef STDC_HEADERS
 
 /* Version number of package */
-#define VERSION "1"
+//#define VERSION 1
 
 /* Define to 1 if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
@@ -154,7 +124,6 @@
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
 
-/* Define to `__inline__' or `__inline' if that's what the C compiler
-   calls it, or to nothing if 'inline' is not supported under any name.  */
+/* Define as `__inline' if that's what the C compiler calls it, or to nothing
+   if it is not supported. */
 #define inline
-
