@@ -1828,7 +1828,7 @@ void CApplication::UpdateLCD()
 				{
 					int hour = (time.wHour > 12) ? time.wHour-12 : time.wHour;
 					if (hour == 0) hour = 12;
-					strTime.Format("%02.2i:%02.2i %s", hour, time.wMinute, time.wSecond, time.wHour>12 ? "PM" : "AM");
+					strTime.Format("%02.2i:%02.2i %s", hour, time.wMinute, time.wHour>12 ? "PM" : "AM");
 				}
 				else
 					strTime.Format("%02.2i:%02.2i:%02.2i", time.wHour,time.wMinute,time.wSecond);
@@ -1903,7 +1903,7 @@ void CApplication::UpdateLCD()
 					{
 						int hour = (time.wHour > 12) ? time.wHour-12 : time.wHour;
 						if (hour == 0) hour = 12;
-						strTime.Format("%02.2i:%02.2i %s", hour, time.wMinute, time.wSecond, time.wHour>12 ? "PM" : "AM");
+						strTime.Format("%02.2i:%02.2i %s", hour, time.wMinute, time.wHour>12 ? "PM" : "AM");
 					}
 					else
 						strTime.Format("%02.2i:%02.2i:%02.2i", time.wHour,time.wMinute,time.wSecond);

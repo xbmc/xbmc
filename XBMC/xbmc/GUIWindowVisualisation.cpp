@@ -193,7 +193,7 @@ void CGUIWindowVisualisation::Render()
 			try
 			{
 				m_pVisualisation->Render();
-				CLog::Log(LOGERROR, "Test");
+//				CLog::Log(LOGERROR, "Test");
 			}
 			catch(...)
 			{
