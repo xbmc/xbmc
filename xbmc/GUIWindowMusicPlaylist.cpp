@@ -471,10 +471,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   {
 	  if (!pControl->IsVisible())
 	  {
-		  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_LIST,0,0,NULL);
-		  g_graphicsContext.SendMessage(msg);
-		  int iItem=msg.GetParam1();
-		  CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem);
+		  CONTROL_SELECT_ITEM(CONTROL_THUMBS,GetSelectedItem());
 	  }
   }
 	pControl=GetControl(CONTROL_LIST);
@@ -482,10 +479,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   {
     if (!pControl->IsVisible())
 	  {
-		  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_THUMBS,0,0,NULL);
-		  g_graphicsContext.SendMessage(msg);
-		  int iItem=msg.GetParam1();
-		  CONTROL_SELECT_ITEM(CONTROL_LIST,iItem);
+		  CONTROL_SELECT_ITEM(CONTROL_LIST,GetSelectedItem());
 	  }
   }
 
@@ -537,6 +531,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 
 void CGUIWindowMusicPlayList::OnClick(int iItem)
 {
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
 	CFileItem* pItem=m_vecItems[iItem];
 	CStdString strPath=pItem->m_strPath;
 	g_playlistPlayer.SetCurrentPlaylist( PLAYLIST_MUSIC );
@@ -546,6 +541,7 @@ void CGUIWindowMusicPlayList::OnClick(int iItem)
 
 void CGUIWindowMusicPlayList::OnQueueItem(int iItem)
 {
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
 	RemovePlayListItem(iItem);
 }
 

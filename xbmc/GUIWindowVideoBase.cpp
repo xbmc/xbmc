@@ -290,26 +290,26 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
       {
          // get selected item
-        CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
-        g_graphicsContext.SendMessage(msg);         
-        int iItem=msg.GetParam1();
+        int iItem=GetSelectedItem();
         int iAction=message.GetParam1();
-        if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK) 
-        {
-					OnPopupMenu(iItem);
-        }
-        else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+
+				// iItem is checked for validity inside these routines
+				if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
 				{
 					OnClick(iItem);
 				}
-        else if (iAction == ACTION_QUEUE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
-        {
+				else if (iAction == ACTION_QUEUE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
+				{
 					OnQueueItem(iItem);
-        }
+				}
  				else if (iAction==ACTION_SHOW_INFO)
 				{
 					OnInfo(iItem);
 				}
+        else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK) 
+        {
+					OnPopupMenu(iItem);
+        }
 			}
  			else if (iControl==CONTROL_IMDB)
 			{
@@ -458,6 +458,8 @@ int CGUIWindowVideoBase::GetSelectedItem()
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
   g_graphicsContext.SendMessage(msg);         
   int iItem=msg.GetParam1();
+	if (iItem >= (int)m_vecItems.size())
+		return -1;
 	return iItem;
 }
 
@@ -508,6 +510,7 @@ bool CGUIWindowVideoBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
 
 void CGUIWindowVideoBase::OnInfo(int iItem)
 {
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
 	CFileItem* pItem=m_vecItems[iItem];
   VECMOVIESFILES movies;
   m_database.GetFiles(atol(pItem->m_strPath),movies);
@@ -736,7 +739,6 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
 	if (bUpdate)
 	{
 		int iSelectedItem=GetSelectedItem();
-		CFileItem* pItem=m_vecItems[iSelectedItem];
 
 		//	Refresh all items 
 		for (int i=0; i<(int)m_vecItems.size(); ++i)
@@ -881,6 +883,7 @@ bool CGUIWindowVideoBase::CheckMovie(const CStdString& strFileName)
 
 void CGUIWindowVideoBase::OnQueueItem(int iItem)
 {
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
 	// add item 2 playlist
 	const CFileItem* pItem=m_vecItems[iItem];
 	AddItemToPlayList(pItem);
@@ -938,6 +941,7 @@ void CGUIWindowVideoBase::DisplayEmptyDatabaseMessage(bool bDisplay)
 
 void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 {
+	if (iItem < 0 || iItem >= (int)m_vecItems.size()) return;
 	// calculate our position
 	int iPosX=200;
 	int iPosY=100;

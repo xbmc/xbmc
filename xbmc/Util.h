@@ -116,7 +116,7 @@ public:
 	static void RemoveIllegalChars( CStdString& strText);
 	static void CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached);
 	static void ClearSubtitles();
-	static void SecondsToHMSString( long lSeconds, CStdString& strHMS);
+	static void SecondsToHMSString( long lSeconds, CStdString& strHMS, bool bMustUseHHMMSS = false);
   static void PrepareSubtitleFonts();
   static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);

@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-02-2005 cleanup: Video time/duration is all calculated in the infoManager now.
+  - 16-02-2005 fixed: Lockups in blank dirs when hide parent folder item is on.
   - 15-02-2005 fixed: possible lock ups in video playlist and my programs when no ThumbnailPanel present
   - 15-02-2005 fixed: [ 1122417 ] Pressing pause after playing finished results in an exception
   - 15-02-2005 fixed: enable/disable "Repeat Folders" option only works after restart

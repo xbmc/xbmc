@@ -43,6 +43,8 @@ wstring CGUIInfoManager::GetLabel(const CStdString &strInfo)
 		return GetDate();
 	else if (strTest.Left(11) == "musicplayer")
 		strLabel = GetMusicLabel(strTest.Mid(12));
+	else if (strTest.Left(11) == "videoplayer")
+		strLabel = GetVideoLabel(strTest.Mid(12));
 	else if (strTest.Left(16) == "system.freespace")
 		return GetFreeSpace(strTest.Mid(17,1).ToUpper());
 	else if (strTest == "network.ipaddress")
@@ -200,22 +202,23 @@ CStdString CGUIInfoManager::GetMusicLabel(const CStdString &strItem)
 
 CStdString CGUIInfoManager::GetVideoLabel(const CStdString &strItem)
 {
-	if (strItem == "time")
+	if (strItem == "time") return GetCurrentPlayTime();
+	else if (strItem == "timespeed")
 	{
 		CStdString strTime;
-		__int64 lPTS=10*g_application.m_pPlayer->GetTime();
-		int hh = (int)(lPTS / 36000) % 100;
-		int mm = (int)((lPTS / 600) % 60);
-		int ss = (int)((lPTS /  10) % 60);
-		if (hh >=1)
-		{
-			strTime.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
-		}
+		if (g_application.GetPlaySpeed() != 1)
+			strTime.Format("%s (%ix)", GetCurrentPlayTime().c_str(), g_application.GetPlaySpeed());
 		else
-		{
-			strTime.Format("%02.2i:%02.2i",mm,ss);
-		}
+			strTime = GetCurrentPlayTime();
 		return strTime;
+	}
+	else if (strItem == "duration")
+	{
+		CStdString strDuration = "00:00:00";
+		unsigned int iTotal = g_application.m_pPlayer->GetTotalTime();
+		if (iTotal > 0)
+			CUtil::SecondsToHMSString(iTotal, strDuration, true);
+		return strDuration;
 	}
 	return "";
 }
@@ -223,8 +226,16 @@ CStdString CGUIInfoManager::GetVideoLabel(const CStdString &strItem)
 CStdString CGUIInfoManager::GetCurrentPlayTime()
 {
 	CStdString strTime;
-  __int64 lPTS=g_application.m_pPlayer->GetPTS() - (g_infoManager.GetCurrentSongStart()*10)/75;
-	CUtil::SecondsToHMSString((long)(lPTS/10), strTime);
+	if (g_application.IsPlayingAudio())
+	{
+		__int64 lPTS=g_application.m_pPlayer->GetPTS() - (g_infoManager.GetCurrentSongStart()*10)/75;
+		CUtil::SecondsToHMSString((long)(lPTS/10), strTime);
+	}
+	else if (g_application.IsPlayingVideo())
+	{
+		__int64 lPTS=10*g_application.m_pPlayer->GetTime();
+		CUtil::SecondsToHMSString((long)(lPTS/10), strTime, true);
+	}
 	return strTime;
 }
 
