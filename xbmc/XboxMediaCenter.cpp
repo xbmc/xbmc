@@ -1,13 +1,18 @@
 // XboxMediaCenter
 //
 // todo for demo 8:
+//   test:
 //		- fopen... in dllloader for subtitles
+//		- iso9660 doesnt work?
+//		- memory leak?
+//   fix:
 //		- .fli , the animatrix & sweet home alabama files dont work
+//
+//   check:
 //		- startup of video takes couple of seconds, why?
 //		- check bobbin007 autodetect on .it
-//		- iso9660 doesnt work?
-//	  - movies calibration
-//		- memory leak?
+//
+//   todo:
 //		- version info on mplayer.dll?
 //		- movie/stretch : change for subtitles
 //		- flickering screen settings?
@@ -23,7 +28,6 @@
 //
 // general:
 //			- different skins for 4:3 / 16:9
-//			- movie screen calibration : scale movie
 //			- python scripts GUI (darki)
 //			- CDDB query : show progress dialogs
 //			- keep groups together when sorting (hd, shares, dirs, files, ...)
@@ -60,7 +64,7 @@
 // my videos:
 //		  - control panel like in xbmp
 //		  - back 7 sec, forward 30 sec buttons
-//			- when playing : show video in leftbottom corner
+//			- when playing : show video info in leftbottom corner 
 //			- bookmarks
 //			- OSD
 //			- subtitles (positioning also)
@@ -75,8 +79,6 @@
 //			- Slideshow
 //					- specify mypics transition time/slideshow time
 //		  - screen:
-//					- movies screen calibration 
-//					- stretch / zoom
 //
 
 #include "stdafx.h"
