@@ -236,7 +236,7 @@ public:
 	char			m_szWeatherFSpeed[2];	//WEATHER
 	int				m_iWeatherRefresh;		//WEATHER
 	char			m_szExternalDVDPlayer[128];
-
+  bool      m_bNoCache;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

@@ -36,6 +36,8 @@
 #define MENU_ACTION_NEXT_BOOKMARK  10
 #define MENU_ACTION_CLEAR_BOOKMARK  11
 
+#define MENU_ACTION_NOCACHE 12
+
 #define IMG_PAUSE     16
 #define IMG_2X	      17
 #define IMG_4X	      18
@@ -655,7 +657,8 @@ void CGUIWindowFullScreen::ShowOSD()
   COSDOptionIntRange   optionPercentage(MENU_ACTION_SEEK,298,true,0,100,1,iValue);
   COSDOptionBoolean    optionNonInterleaved(MENU_ACTION_INTERLEAVED,306, g_stSettings.m_bNonInterleaved);
   COSDOptionBoolean    optionFrameRateConversions(MENU_ACTION_FRAMERATECONVERSIONS, 343, g_stSettings.m_bFrameRateConversions);
-
+  COSDOptionBoolean    optionNoCache(MENU_ACTION_NOCACHE,431, g_stSettings.m_bNoCache);
+  
   videoMenu.AddOption(&optionNewBookmark);
   videoMenu.AddOption(&optionNextBookmark);
   videoMenu.AddOption(&optionClearbookmarks);
@@ -663,6 +666,7 @@ void CGUIWindowFullScreen::ShowOSD()
   videoMenu.AddOption(&optionAVDelay);
   videoMenu.AddOption(&optionPercentage);
   videoMenu.AddOption(&optionNonInterleaved);
+  videoMenu.AddOption(&optionNoCache);
   videoMenu.AddOption(&optionFrameRateConversions);
   
 
@@ -763,6 +767,18 @@ void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
         return;
 	  }
 	  break;
+
+   case MENU_ACTION_NOCACHE:
+	  {
+        const COSDOptionBoolean* boolOption = (const COSDOptionBoolean*)option;
+        g_stSettings.m_bNoCache=!g_stSettings.m_bNoCache;
+        HideOSD();
+        m_bOSDVisible=false;
+        g_application.Restart(true);
+        return;
+	  }
+	  break;
+
 	  case MENU_ACTION_FRAMERATECONVERSIONS:
 	  {
 		    const COSDOptionBoolean* boolOption = (const COSDOptionBoolean*)option;
