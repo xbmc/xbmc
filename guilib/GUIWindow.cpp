@@ -364,10 +364,10 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_INIT:
       {
         AllocResources();
-		if (message.GetParam1()!=WINDOW_INVALID)
-		{
-			m_dwPreviousWindowId = message.GetParam1();
-		}
+		    if (message.GetParam1()!=WINDOW_INVALID)
+		    {
+			    m_dwPreviousWindowId = message.GetParam1();
+		    }
         CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwDefaultFocusControlID);
         g_graphicsContext.SendMessage(msg);
       }

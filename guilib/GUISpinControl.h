@@ -52,6 +52,8 @@ public:
   bool              GetShowRange() const;
   void              SetShowRange(bool bOnoff) ;
 protected:
+  void      PageUp();
+  void      PageDown();
 	bool			CanMoveDown();
 	bool			CanMoveUp();
 	void			MoveUp();
@@ -77,5 +79,7 @@ protected:
   DWORD     m_dwTextColor;
 	DWORD			m_dwAlign;
   bool      m_bShowRange;
+  char      m_szTyped[10];
+  int       m_iTypedPos;
 };
 #endif
