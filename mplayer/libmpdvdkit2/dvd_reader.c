@@ -272,6 +272,7 @@ dvd_reader_t *DVDOpen( const char *path )
     char *dev_name = 0;
 
     if( !path ) return 0;
+
 #ifndef _XBOX
     ret = stat( path, &fileinfo );
     if( ret < 0 ) {
@@ -306,6 +307,7 @@ dvd_reader_t *DVDOpen( const char *path )
 #else
 	return DVDOpenImageFile( path, have_css );
 #endif
+
 #ifdef _XBOX
     } else {
 #else
@@ -321,6 +323,7 @@ dvd_reader_t *DVDOpen( const char *path )
 
 	/* XXX: We should scream real loud here. */
 	if( !(path_copy = strdup( path ) ) ) return 0;
+
 #ifndef _XBOX
 	/* Resolve any symlinks and get the absolut dir name. */
 	{
@@ -520,6 +523,7 @@ static int findDirFile( const char *path, const char *file, char *filename )
             return 0;
         }
     }
+
 #endif //_XBOX
     return -1;
 }
