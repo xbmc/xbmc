@@ -46,14 +46,34 @@ public:
 	CMediaMonitor();
 	virtual ~CMediaMonitor();
 
+	enum CommandType {Refresh,Update};
+
+	struct Command
+	{
+		CommandType rCommand;
+		CStdString  strParam1;
+		CStdString  strParam2;
+		INT			nParam1;
+	};
+
 	void Create(IMediaObserver* aObserver);
+	void QueueCommand(CMediaMonitor::Command& aCommand);
+
+protected:
+
+	vector<Command> m_commands;
+	typedef vector<Command> ::iterator COMMANDITERATOR;
+	void DispatchNextCommand();
 
 private:
 	void Process();
 	void InitializeObserver();
+	void Scan();
 	void Scan(DIRECTORY::CDirectory& directory, CStdString& aPath);
+	void UpdateTitle(INT nIndex, CStdString& strTitle, CStdString& strFilepath);
 	bool GetMovieInfo(CStdString& strFilepath, CIMDBMovie& aMovieRecord);
-	bool GetMovieArt(CStdString& strIMDBNumber, CStdString& strPictureUrl, CStdString& strImagePath);
+	bool imdb_GetMovieInfo(CStdString& strTitle, CIMDBMovie& aMovieRecord);
+	bool imdb_GetMovieArt(CStdString& strIMDBNumber, CStdString& strPictureUrl, CStdString& strImagePath);
 
 	static bool SortMoviesByDateAndTime(Movie aMovie1, Movie aMovie2);
 
@@ -63,9 +83,11 @@ private:
 	static int	parse_GetLength(char* szText, int start);
 	static long parse_AggregateValue(CStdString& strFilepath);
 
-	IMediaObserver*	m_pObserver;
-	MOVIELIST		m_movies;
-	CVideoDatabase  m_database;
+	IMediaObserver*		m_pObserver;
+	MOVIELIST			m_movies;
+	CVideoDatabase		m_database;
+	CRITICAL_SECTION	m_critical_section;
+	HANDLE				m_hCommand;
 };
 
 #endif // !defined(AFX_MediaMonitor_H__157FED93_0CDE_4295_A9AF_75BEF4E81761__INCLUDED_)
