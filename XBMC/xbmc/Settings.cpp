@@ -266,6 +266,9 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_strSambaWinsServer, "");
 
 	g_stSettings.m_nVolumeLevel = 0;
+  g_stSettings.m_iPreMuteVolumeLevel = 0;
+  g_stSettings.m_bMute = false;
+
 	g_stSettings.m_iLogLevel = LOGNOTICE;
 	g_stSettings.m_bUnhandledExceptionToFatalError = false;
 	g_stSettings.m_bShowFreeMem=false;
