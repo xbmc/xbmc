@@ -333,7 +333,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int depth
 					}
 					else
 					{
-						m_database.AddProgram(strFile,strDescription,m_bookmarkName);
+						m_database.AddProgram(strFile,m_strDirectory,strDescription,m_bookmarkName);
 					}
 				}
 
@@ -353,7 +353,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int depth
 
 					else 
 					{
-						m_database.AddProgram(strFile,wfd.cFileName,m_bookmarkName);
+						m_database.AddProgram(strFile,m_strDirectory,wfd.cFileName,m_bookmarkName);
 					}
 				}
 			}
@@ -373,62 +373,95 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 	bool   bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
     bool   bParentPath(false);
     bool   bPastBookMark(true);
+	bool   bOnlyOnePath(true);
     CStdString strParentPath;
 	CStdString strDir = strDirectory;
 	int depth;
+	vector<CStdString> pathArray;
 
     Clear();
+	
+	if ( strDir.Find(",")>=0 )
+		bOnlyOnePath=false;
+	
+	CUtil::Tokenize(strDir, pathArray, ",");
+	CLog::Log("bOnlyOnePath=true");
+	CLog::Log("strDir: %s", strDir.c_str());
+	CLog::Log("pathArray[0]: %s", pathArray[0].c_str());
+
     //CStdString strShortCutsDir = "Q:\\shortcuts";
 	CStdString strShortCutsDir = g_stSettings.m_szShortcutDirectory;
 	if (CUtil::HasSlashAtEnd(strShortCutsDir))
 		strShortCutsDir.Delete(strShortCutsDir.size()-1);
 
-    bParentPath=CUtil::GetParentPath(strDir,strParentPath);
 	
-    for (int i=0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
-    {
-        CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
-		if (CUtil::HasSlashAtEnd(share.strPath))
+	for (int i=0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
+	{
+		CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
+		vector<CStdString> shareArray;
+		CUtil::Tokenize(share.strPath, shareArray, ",");
+
+		for (int k=0; k < (int)shareArray.size(); k++)
 		{
-			share.strPath.Delete(share.strPath.size()-1);
-		}
-		if (CUtil::HasSlashAtEnd(strDir))
-		{
-			strDir.Delete(strDir.size()-1);
+			int start = shareArray[k].find_first_not_of(" \t");
+			int end = shareArray[k].find_last_not_of(" \t") + 1;
+			shareArray[k]=shareArray[k].substr(start, end - start);
+			if (CUtil::HasSlashAtEnd(shareArray[k]))
+			{
+				shareArray[k].Delete(shareArray[k].size()-1);
+			}
 		}
 
-		if (strDir==share.strPath) {
+		for (int k=0; k < (int)pathArray.size(); k++)
+		{
+			int start = pathArray[k].find_first_not_of(" \t");
+			int end = pathArray[k].find_last_not_of(" \t") + 1;
+			pathArray[k]=pathArray[k].substr(start, end - start);
+			if (CUtil::HasSlashAtEnd(pathArray[k]))
+			{
+				pathArray[k].Delete(pathArray[k].size()-1);
+			}
+		}
+
+		if (pathArray==shareArray) {
 			m_bookmarkName=share.strName;
 			depth=share.m_iDepthSize;
-			if (strParentPath!=share.strPath)
-				bPastBookMark=false;
+			if (bFlattenDir)
+			{
+				bParentPath=CUtil::GetParentPath(pathArray[0],strParentPath);
+				if (strParentPath!=shareArray[0])
+					bPastBookMark=false;
+			}
 		}
-    }
+	}
 
-	if (strDir==strShortCutsDir)
+	if (pathArray[0]==strShortCutsDir)
 		m_bookmarkName="shortcuts";
 
-    if ( strParentPath.size() && bParentPath && !bFlattenDir && bPastBookMark)
-    {
-        if (strDir != strShortCutsDir)
-        {
-            CFileItem *pItem = new CFileItem("..");
-            pItem->m_strPath=strParentPath;
-            pItem->m_bIsShareOrDrive=false;
-            pItem->m_bIsFolder=true;
-            m_vecItems.push_back(pItem);
-        }
-    }
+	if ( strParentPath.size() && bParentPath && !bFlattenDir && bPastBookMark)
+	{
+		if (pathArray[0] != strShortCutsDir)
+	    {
+		    CFileItem *pItem = new CFileItem("..");
+	        pItem->m_strPath=strParentPath;
+		    pItem->m_bIsShareOrDrive=false;
+		    pItem->m_bIsFolder=true;
+			m_vecItems.push_back(pItem);
+		}
+	}
 
 	m_iLastControl=GetFocusedControl();
 
-
-	LoadDirectory(strDir, depth);
+	for (int j=0; j < (int)pathArray.size(); j++)
+	{
+		m_strDirectory=pathArray[j];
+		LoadDirectory(pathArray[j], depth);
+	}
 
 	if (m_bookmarkName=="shortcuts")
 		bOnlyDefaultXBE=false;			// let's do this so that we don't only grab default.xbe from database when getting shortcuts
 	if (bFlattenDir) 
-		m_database.GetProgramsByBookmark(m_bookmarkName, m_vecItems, bOnlyDefaultXBE); 
+		m_database.GetProgramsByBookmark(m_bookmarkName, m_vecItems, pathArray[0], bOnlyDefaultXBE, bOnlyOnePath); 
 	CUtil::ClearCache();
 	CUtil::SetThumbs(m_vecItems);
 	if (g_stSettings.m_bHideExtensions)
