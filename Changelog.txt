@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 20-12-2004 fixed: Crash in Pictures context menu.
+  - 20-12-2004 fixed: Text glitches in some IMDb lookups
   - 19-12-2004 added: If the <home> tag does not work, XBMC looks in: E:\Apps\XBMC, E:\XBMC, F:\apps\XBMC, F:\xbmc to find it's home dir.
   - 19-12-2004 added: Auto-detect of F and G.  <useFdrive> and <useGdrive> should be no longer needed (and are now ignored)
   - 19-12-2004 fixed: buttonscroller - some images were shown when they shouldn't have been.
