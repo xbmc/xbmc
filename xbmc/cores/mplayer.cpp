@@ -813,7 +813,8 @@ void CMPlayer::Process()
 		m_callback.OnPlayBackStarted();
 
 		int exceptionCount = 0;
-		clock_t mark = clock();
+		time_t mark = time(NULL);
+		bool FirstLoop = true;
 
 		do 
 		{
@@ -834,6 +835,8 @@ void CMPlayer::Process()
 					{
 						m_iPTS=iPTS;
 					}
+
+					FirstLoop = false;
 				}
 				else // we're paused
 				{
@@ -848,24 +851,28 @@ void CMPlayer::Process()
 			}
 			catch(...)
 			{
-				//char module[100];
-				//mplayer_get_current_module(module, sizeof(module));
-				//CLog::Log("mplayer generated exception in %s", module);
-				CLog::Log("mplayer generated exception!");
+				char module[100];
+				mplayer_get_current_module(module, sizeof(module));
+				CLog::Log("mplayer generated exception in %s", module);
+				//CLog::Log("mplayer generated exception!");
 				exceptionCount++;
+
+				// bad codec detection
+				if (FirstLoop)
+					m_bIsPlaying = false;
 			}
 
 			if (exceptionCount>0)
 			{
-				bool oneSecondHasElapsed = (clock()-mark)>CLOCKS_PER_SEC;
-				if (oneSecondHasElapsed)
+				time_t t = time(NULL);
+				if (t != mark)
 				{
-					mark = clock();
+					mark = t;
 					exceptionCount--;
 				}
 			}
 
-		} while ((m_bIsPlaying && !m_bStop) && (exceptionCount<10));
+		} while ((m_bIsPlaying && !m_bStop) && (exceptionCount<5));
 
 		if (!m_bStop)
 		{
