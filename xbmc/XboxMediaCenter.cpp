@@ -1,25 +1,21 @@
-// guiTest.cpp : Defines the entry point for the application.
+// XboxMediaCenter
 //
 // graphics:
 //			- pike:special icon for files (they now use the folder icon)
 //
-// need 2 test: 
-//      - tijd van files (loopt 1 uur voor/achter??)
-//      - dialog wat groter ge	maakt
 // bugs: 
 //			- reboot button blinks 1/2 speed???
+//		  - reboot doesnt work on some biosses
 //	
-// algemeen:
-//			- datum/tijd van Relax
+// general:
 //			- keep groups together when sorting (hd, shares,...)
 //			-	ftp server
-//      - thumbnails : centreren in folder indien thumb <64x64
+//      - thumbnails need 2b centered in folder icon
 //
 // guilib:
-//		  - alpha text voor thumbnail
+//		  - thumbnail: render text with disolving alpha
 //      - screen calibration offsets
 //  		- 4:3/16:9 aspect ratio
-//  		- radio button: radio is vierkant ipv een rondje?
 //			- skinnable key mapping for controls
 //
 // My Pictures:
@@ -50,12 +46,12 @@
 //					- specify mypics transition time/slideshow time
 //		  - screen:
 //					- screen calibration offsets
-//					- video params: 16:9 / 4:3  pal/ntsc  resolution
 //
 //
 
 #include "stdafx.h"
 #include "application.h"
+
 
 CApplication g_application;
 void main()

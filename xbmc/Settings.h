@@ -95,6 +95,7 @@ public:
 		bool			m_bFTPServerEnabled;
 		int       m_iSlideShowTransistionFrames;
 		int       m_iSlideShowStayTime;
+		int				m_iScreenResolution;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

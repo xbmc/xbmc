@@ -130,6 +130,7 @@ void CUtil::LaunchXbe(char* szPath, char* szXbe, char* szParameters)
 
 bool CUtil::FileExists(const CStdString& strFileName)
 {
+	if (strFileName.size()==0) return false;
   FILE *fd;
   fd=fopen(strFileName.c_str(),"rb");
   if (fd != NULL)

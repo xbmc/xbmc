@@ -18,7 +18,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyProgramsFlatten=false;
   strcpy(g_stSettings.szDashboard,"C:\\xboxdash.xbe");
   g_stSettings.m_iStartupWindow=0;
-  
+  g_stSettings.m_iScreenResolution=0;
   strcpy(g_stSettings.m_strLocalIPAdres,"");
   strcpy(g_stSettings.m_strLocalNetmask,"");
   strcpy(g_stSettings.m_strGateway,"");

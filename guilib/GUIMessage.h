@@ -27,6 +27,7 @@
 
 #define GUI_MSG_LABEL_RESET    14
 #define GUI_MSG_ITEM_SELECTED  15
+#define GUI_MSG_ITEM_SELECT		 16
 
 #define GUI_MSG_USER         1000
 #include <string>

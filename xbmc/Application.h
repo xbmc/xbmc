@@ -32,6 +32,8 @@ public:
   virtual HRESULT Initialize();
   virtual void		FrameMove();
   virtual void		Render();
+	virtual HRESULT Create();
+
 	void						Stop();
 	void						LoadSkin(const CStdString& strSkin);
   CGUIWindowHome        m_guiHome;
