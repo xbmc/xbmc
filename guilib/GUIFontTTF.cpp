@@ -64,12 +64,14 @@ void CGUIFontTTF::DrawTextImpl( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* 
 	int i = 0,j = 0;
 	unsigned lineHeight = m_pTrueTypeFont->GetTextHeight();
 	unsigned lineWidth;
-	while (j < len)
+	while (i < len)
 	{
 		// find a carrage return
 		for(j = i; j < len; j++)
+		{
 			if (strText[j] == L'\n')
 				break;
+		}
 
 		// copy text up until the carriage return into a buffer
 		wcsncpy(buf, strText+i, j - i);
@@ -96,6 +98,9 @@ void CGUIFontTTF::DrawTextImpl( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* 
 		DrawTrueType((long)sx, (long)sy, (WCHAR *)buf, wcslen(strText));
 
 		sy += lineHeight;
+
+		// continue from next character
+		i = j + 1;
 	}
 }
 
