@@ -189,6 +189,45 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		}
 	}	
 
+	if ((strAudioInfo.Find("chns:3") >= 0)||(strAudioInfo.Find("chns:4") >= 0)) 
+	{
+		mplayer_close_file();
+		int argc=8;
+		char *argv[] = {"xbmc.xbe", "-channels","4","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+		mplayer_init(argc,argv);
+		mplayer_setcache_size(1024);
+		if (CUtil::IsAudio(strFile) )
+		{
+			mplayer_setcache_size(0);
+		}
+		int iRet=mplayer_open_file(strFile.c_str());
+		if (iRet < 0)
+		{
+			OutputDebugString("cmplayer::openfile() openfile failed\n");
+			closefile();
+			return false;
+		}
+	}
+
+	if (strAudioInfo.Find("chns:2") >= 0) 
+	{
+		mplayer_close_file();
+		int argc=8;
+		char *argv[] = {"xbmc.xbe", "-channels","2","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+		mplayer_init(argc,argv);
+		mplayer_setcache_size(1024);
+		if (CUtil::IsAudio(strFile) )
+		{
+			mplayer_setcache_size(0);
+		}
+		int iRet=mplayer_open_file(strFile.c_str());
+		if (iRet < 0)
+		{
+			OutputDebugString("cmplayer::openfile() openfile failed\n");
+			closefile();
+			return false;
+		}
+	}
 	
 	m_bIsPlaying=true;
 	if ( ThreadHandle() == NULL)
