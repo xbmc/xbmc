@@ -1281,7 +1281,6 @@ void CApplication::Stop()
     CLog::Log("unload skin");
 	  m_guiMusicOverlay.FreeResources();
 	  m_guiWindowVideoOverlay.FreeResources();
-	  m_guiWindowOSD.FreeResources();
 	  g_fontManager.Clear();
 	  m_gWindowManager.DeInitialize();
 	  g_TextureManager.Cleanup();
@@ -1405,6 +1404,11 @@ void CApplication::OnPlayBackStarted()
       m_bSpinDown      = true;
       m_dwSpinDownTime = 0;
 	}
+  else 
+  {
+    //reset spindowntime
+		m_dwSpinDownTime = timeGetTime();
+  }
 }
 
 void CApplication::EnableOverlay()
