@@ -28,7 +28,8 @@ public:
   virtual bool  IsSelected() const;
   virtual void  SetPosition(DWORD dwPosX, DWORD dwPosY);
   virtual void  SetAlpha(DWORD dwAlpha);
-  virtual void  SetColourDiffuse(D3DCOLOR colour);
+	virtual void  SetColourDiffuse(D3DCOLOR colour);
+	virtual DWORD GetColourDiffuse() const { return m_colDiffuse;};
   DWORD         GetXPosition() const;
   DWORD         GetYPosition() const;
   virtual DWORD GetWidth() const;
@@ -38,6 +39,7 @@ public:
   void          SetWidth(int iWidth);
   void          SetHeight(int iHeight);
   void          SetVisible(bool bVisible);
+
 protected:  
   virtual void       Update() {};
   DWORD              m_dwControlLeft;
@@ -49,11 +51,11 @@ protected:
   DWORD              m_dwHeight;
   DWORD              m_dwWidth;
   D3DCOLOR           m_colDiffuse;
-  DWORD        m_dwControlID;
-  DWORD        m_dwParentID;
-  bool         m_bHasFocus;
-	bool				 m_bVisible;
-	bool				 m_bDisabled;
-  bool         m_bSelected;
+  DWORD							 m_dwControlID;
+  DWORD							 m_dwParentID;
+  bool							 m_bHasFocus;
+	bool							 m_bVisible;
+	bool							 m_bDisabled;
+  bool							 m_bSelected;
 };
 #endif

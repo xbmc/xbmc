@@ -38,6 +38,25 @@ public:
   void         SetScrollySuffix(CStdString wstrSuffix);
 	void				 SetTextureDimensions(int iWidth, int iHeight);
 
+	DWORD									GetTextColor() const { return m_dwTextColor;};
+	DWORD									GetSelectedColor() const { return m_dwSelectedColor;};
+	const CStdString&			GetFontName() const { return m_pFont->GetFontName(); };
+	DWORD									GetSpinWidth() const { return m_upDown.GetWidth(); };
+	DWORD									GetSpinHeight() const { return m_upDown.GetHeight(); };
+	const	CStdString&			GetTexutureUpName() const { return m_upDown.GetTexutureUpName(); };
+	const	CStdString&			GetTexutureDownName() const { return m_upDown.GetTexutureDownName(); };
+	const	CStdString&			GetTexutureUpFocusName() const { return m_upDown.GetTexutureUpFocusName(); };
+	const	CStdString&			GetTexutureDownFocusName() const { return m_upDown.GetTexutureDownFocusName(); };
+	DWORD									GetSpinTextColor() const { return m_upDown.GetTextColor();};
+	DWORD									GetSpinX() const { return m_upDown.GetXPosition();};
+	DWORD									GetSpinY() const { return m_upDown.GetYPosition();};
+	DWORD									GetTextureWidth() const { return m_iTextureWidth;};
+	DWORD									GetTextureHeight() const { return m_iTextureHeight;};
+	const CStdString			GetFocusName() const { return m_imgFolderFocus.GetFileName();};
+	const CStdString			GetNoFocusName() const { return m_imgFolder.GetFileName();};
+	DWORD									GetItemWidth() const { return m_iItemWidth;};
+	DWORD									GetItemHeight() const { return m_iItemHeight;};
+
 protected:
 	void				 RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUIListItem* pItem);
   void         RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText,bool bScroll );

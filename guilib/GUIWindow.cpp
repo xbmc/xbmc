@@ -17,6 +17,44 @@ CGUIWindow::~CGUIWindow(void)
 }
 
 
+
+bool CGUIWindow::LoadReference(const CStdString& strFileName, map<string,CGUIControl*>& controls)
+{
+	// load references.xml
+	controls.erase(controls.begin(), controls.end());
+	TiXmlDocument xmlDoc;
+	int iPos = strFileName.ReverseFind('\\');
+	CStdString strReferenceFile=strFileName.Left(iPos);
+	strReferenceFile += "\\references.xml";
+	if ( !xmlDoc.LoadFile(strReferenceFile.c_str()) )
+	{
+		OutputDebugString("Unable to load:");
+		OutputDebugString(strReferenceFile.c_str());
+		OutputDebugString("\n");
+		return false;
+	}
+
+	TiXmlElement* pRootElement =xmlDoc.RootElement();
+	CStdString strValue=pRootElement->Value();
+	if (strValue!=CStdString("controls")) return false;
+
+	string strType;
+	const TiXmlNode *pControl = pRootElement->FirstChild();
+	while (pControl)
+	{
+		CGUIControlFactory factory;
+		CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,NULL);
+		if (pGUIControl)
+		{
+			TiXmlNode* pNode=pControl->FirstChild("type");
+			strType = pNode->FirstChild()->Value();
+			controls[strType]=pGUIControl;
+		}
+		pControl=pControl->NextSibling();
+	}
+	return true;
+}
+
 bool CGUIWindow::Load(const CStdString& strFileName)
 {
   TiXmlDocument xmlDoc;
@@ -33,6 +71,10 @@ bool CGUIWindow::Load(const CStdString& strFileName)
   if (strValue!=CStdString("window")) return false;
   
   m_dwDefaultFocusControlID=0;
+	
+	map<string,CGUIControl*> referencecontrols;
+	map<string,CGUIControl*>::iterator it;
+	LoadReference(strFileName, referencecontrols);
  
   const TiXmlNode *pChild = pRootElement->FirstChild();
   while (pChild)
@@ -48,21 +90,46 @@ bool CGUIWindow::Load(const CStdString& strFileName)
     }
     if (strValue=="controls")
     {
+			
        const TiXmlNode *pControl = pChild->FirstChild();
        while (pControl)
        {
-         CGUIControlFactory factory;
-         CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl);
-         if (pGUIControl)
-         {
-           Add(pGUIControl);
-         }
+				 // get control type
+				 TiXmlNode* pNode=pControl->FirstChild("type");
+				 if (pNode)
+				 {
+					string strType = pNode->FirstChild()->Value();
+					 
+					// get reference control
+					CGUIControl* pGUIReferenceControl=NULL;
+					it = referencecontrols.find(strType);
+					if (it != referencecontrols.end() )
+					{
+						pGUIReferenceControl=it->second;
+					}
+
+					CGUIControlFactory factory;
+					CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,pGUIReferenceControl);
+					if (pGUIControl)
+					{
+						Add(pGUIControl);
+					}
+				}
          pControl=pControl->NextSibling();
        }
     }
 
     pChild=pChild->NextSibling();
   }
+
+	
+	it=referencecontrols.begin();
+	while (it != referencecontrols.end() )
+	{
+		CGUIControl* pControl = it->second;
+		delete pControl ;
+		it = referencecontrols.erase(it);
+	}
   return true;
 }
 

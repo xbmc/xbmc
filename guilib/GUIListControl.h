@@ -41,6 +41,32 @@ public:
 	void									SetFont2(const CStdString& strFont);
 	void									SetColors2(DWORD dwTextColor, DWORD dwSelectedColor);
 
+	DWORD									GetTextColor() const { return m_dwTextColor;};
+	DWORD									GetTextColor2() const { return m_dwTextColor2;};
+	DWORD									GetSelectedColor() const { return m_dwSelectedColor;};
+	DWORD									GetSelectedColor2() const { return m_dwSelectedColor2;};
+	const CStdString&			GetFontName() const { return m_pFont->GetFontName(); };
+	const char*						GetFontName2() const { if (!m_pFont2) return ""; else return m_pFont2->GetFontName().c_str(); };
+	DWORD									GetSpinWidth() const { return m_upDown.GetWidth(); };
+	DWORD									GetSpinHeight() const { return m_upDown.GetHeight(); };
+	const	CStdString&			GetTexutureUpName() const { return m_upDown.GetTexutureUpName(); };
+	const	CStdString&			GetTexutureDownName() const { return m_upDown.GetTexutureDownName(); };
+	const	CStdString&			GetTexutureUpFocusName() const { return m_upDown.GetTexutureUpFocusName(); };
+	const	CStdString&			GetTexutureDownFocusName() const { return m_upDown.GetTexutureDownFocusName(); };
+	DWORD									GetSpinTextColor() const { return m_upDown.GetTextColor();};
+	DWORD									GetSpinX() const { return m_upDown.GetXPosition();};
+	DWORD									GetSpinY() const { return m_upDown.GetYPosition();};
+	DWORD									GetSpace() const { return m_iSpaceBetweenItems;};
+	DWORD									GetItemHeight() const { return m_iItemHeight;	};
+	DWORD									GetTextOffsetX() const { return m_iTextOffsetX;};
+	DWORD									GetTextOffsetY() const { return m_iTextOffsetY;};
+	DWORD									GetTextOffsetX2() const { return m_iTextOffsetX2;};
+	DWORD									GetTextOffsetY2() const { return m_iTextOffsetY2;};
+	DWORD									GetImageWidth() const { return m_iImageWidth;};
+	DWORD									GetImageHeight() const { return m_iImageHeight;};
+	const wstring&				GetSuffix() const { return m_strSuffix;};
+	const CStdString			GetButtonFocusName() const { return m_imgButton.GetTexutureFocusName();};
+	const CStdString			GetButtonNoFocusName() const { return m_imgButton.GetTexutureNoFocusName();};
 protected:
    
   void         					RenderText(float fPosX, float fPosY,float fMaxWidth, DWORD dwTextColor, WCHAR* wszText,bool bScroll );

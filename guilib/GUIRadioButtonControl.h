@@ -12,6 +12,8 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void AllocResources();
   virtual void FreeResources();
+	const	CStdString& GetTexutureRadioFocusName() const { return m_imgRadioFocus.GetFileName(); };
+	const	CStdString& GetTexutureRadioNoFocusName() const { return m_imgRadioNoFocus.GetFileName(); };
 protected:
   virtual void       Update();
   CGUIImage    m_imgRadioFocus;

@@ -18,19 +18,23 @@ public:
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
+	DWORD							GetTextColor() const { return m_dwTextColor;};
+	DWORD							GetAlignment() const { return m_dwdwTextAlign;};
+	const CStdString& GetFontName() const { return m_pFont->GetFontName(); };
+
 protected:
-	bool	RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD dwTextColor, WCHAR* wszText,bool bScroll );
+	bool				 RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD dwTextColor, WCHAR* wszText,bool bScroll );
   CGUIFont*								m_pFont;
   vector<wstring>         m_vecLabels;
   DWORD                   m_dwTextColor;
   DWORD                   m_dwdwTextAlign;
 	int											m_iCurrentLabel;
-	int scroll_pos;
-	int iScrollX;
-	int iLastItem;
-	int iFrames;
-	int iStartFrame;
-	bool	m_bFadeIn;
-	int		m_iCurrentFrame;
+	int 										scroll_pos;
+	int 										iScrollX;
+	int 										iLastItem;
+	int 										iFrames;
+	int 										iStartFrame;
+	bool										m_bFadeIn;
+	int											m_iCurrentFrame;
 };
 #endif

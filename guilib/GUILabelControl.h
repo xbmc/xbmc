@@ -18,6 +18,10 @@ public:
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
+	DWORD							GetTextColor() const { return m_dwTextColor;};
+	DWORD							GetAlignment() const { return m_dwdwTextAlign;};
+	const CStdString& GetFontName() const { return m_pFont->GetFontName(); };
+	const wstring			GetLabel() const { return m_strLabel; };
 protected:
   CGUIFont*								m_pFont;
   wstring                 m_strLabel;

@@ -32,6 +32,17 @@ public:
 
   virtual void AllocResources() ;
   virtual void FreeResources() ;
+	DWORD									GetTextColor() const { return m_dwTextColor;};
+	const CStdString&			GetFontName() const { return m_pFont->GetFontName(); };
+	DWORD									GetSpinWidth() const { return m_upDown.GetWidth(); };
+	DWORD									GetSpinHeight() const { return m_upDown.GetHeight(); };
+	const	CStdString&			GetTexutureUpName() const { return m_upDown.GetTexutureUpName(); };
+	const	CStdString&			GetTexutureDownName() const { return m_upDown.GetTexutureDownName(); };
+	const	CStdString&			GetTexutureUpFocusName() const { return m_upDown.GetTexutureUpFocusName(); };
+	const	CStdString&			GetTexutureDownFocusName() const { return m_upDown.GetTexutureDownFocusName(); };
+	DWORD									GetSpinTextColor() const { return m_upDown.GetTextColor();};
+	DWORD									GetSpinX() const { return m_upDown.GetXPosition();};
+	DWORD									GetSpinY() const { return m_upDown.GetYPosition();};
 
 protected:
 	void				 SetText(const wstring &strText);

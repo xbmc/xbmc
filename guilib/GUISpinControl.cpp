@@ -184,7 +184,7 @@ void CGUISpinControl::Render()
 	else
 	{
 		swprintf(wszText,L"");
-		if (m_iValue < m_vecLabels.size() )
+		if (m_iValue < (int)m_vecLabels.size() )
 			swprintf(wszText,L"%s", m_vecLabels[m_iValue].c_str() );
 	}
 

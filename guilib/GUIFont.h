@@ -31,7 +31,6 @@ public:
   virtual HRESULT DrawTextEx( FLOAT sx, FLOAT sy, DWORD dwColor, 
                     const WCHAR* strText, DWORD cchText, DWORD dwFlags=0L,
                     FLOAT fMaxPixelWidth = 0.0f );
-	
 protected:
   CStdString m_strFontName;
 };
