@@ -1,7 +1,7 @@
 <!-- Finnish - language resource  -->
-<!-- Finnish Translation 2004-4-12 by Nanite1000 -->
-<!-- Based on CVS revision 2004-4-12 YYYY-MM-DD -->
-<!-- For comments PM me in xboxmediacenter forum -->
+<!-- Finnish Translation 2004-4-25 by Nanite1000 -->
+<!-- Based on CVS revision 2004-4-25 YYYY-MM-DD -->
+<!-- For comments PM me in xboxmediacenter forum or IRC: nanite1k @ #xbmc on efnet-->
 <!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta -->
 <!-- Not all weather strings are tranlated, cant get it to look correct/too long -->
 <!--    Weather strings can be tranlated if all combinations has its own string -->
@@ -864,7 +864,7 @@
   </string>
   <string>
     <id>287</id>
-    <value>Tekstitys</value>
+    <value>SRT Tekstitys</value>
   </string>
   <string>
     <id>288</id>
@@ -1190,70 +1190,32 @@
     <id>369</id>
     <value>Elokuvat</value>
   </string>
-  <string>
-    <id>370</id>
-    <value>T-Storms</value>
-  </string>
-  <string>
-    <id>371</id>
-    <value>Partly</value>
-  </string>
-  <string>
-    <id>372</id>
-    <value>Mostly</value>
-  </string>
-  <string>
-    <id>373</id>
-    <value>Sunny</value>
-  </string>
-  <string>
-    <id>374</id>
-    <value>Cloudy</value>
-  </string>
-  <string>
-    <id>375</id>
-    <value>Snow</value>
-  </string>
-  <string>
-    <id>376</id>
-    <value>Rain</value>
-  </string>
-  <string>
-    <id>377</id>
-    <value>Light</value>
-  </string>
-  <string>
-    <id>378</id>
-    <value>AM</value>
-  </string>
-  <string>
-    <id>379</id>
-    <value>PM</value>
-  </string>
-  <string>
-    <id>380</id>
-    <value>Showers</value>
-  </string>
-  <string>
-    <id>381</id>
-    <value>Few</value>
-  </string>
-  <string>
-    <id>382</id>
-    <value>Scattered</value>
-  </string>
-  <string>
-    <id>383</id>
-    <value>Wind</value>
-  </string>
-  <string>
-    <id>384</id>
-    <value>Strong</value>
-  </string>
-  <string>
-    <id>385</id>
-    <value>Fair</value>
-  </string>
+  <string><id>370</id><value>T-Storms</value></string>
+  <string><id>371</id><value>Partly</value></string>
+  <string><id>372</id><value>Mostly</value></string>
+  <string><id>373</id><value>Sunny</value></string>
+  <string><id>374</id><value>Cloudy</value></string>
+  <string><id>375</id><value>Snow</value></string>
+  <string><id>376</id><value>Rain</value></string>
+  <string><id>377</id><value>Light</value></string>
+  <string><id>378</id><value>AM</value></string>
+  <string><id>379</id><value>PM</value></string>
+  <string><id>380</id><value>Showers</value></string>
+  <string><id>381</id><value>Few</value></string>
+  <string><id>382</id><value>Scattered</value></string>
+  <string><id>383</id><value>Wind</value></string>
+  <string><id>384</id><value>Strong</value></string>
+  <string><id>385</id><value>Fair</value></string>
+  <string><id>386</id><value>Clear</value></string>
+  <string><id>387</id><value>Clouds</value></string>
+  <string><id>388</id><value>N/A</value></string>
+  <string><id>389</id><value>N/A</value></string>
+  <string><id>390</id><value>N/A</value></string>
+  <string><id>391</id><value>N/A</value></string>
+  <string><id>392</id><value>N/A</value></string>
+  <string><id>393</id><value>N/A</value></string>
+  <string><id>394</id><value>N/A</value></string>
+  <string><id>395</id><value>N/A</value></string>
   <string>
     <id>396</id> 
     <value>Hae paikkakunta</value> 
@@ -1560,7 +1522,7 @@
   </string>
   <string>
     <id>473</id>
-    <value>Korkealaatu Resampling</value>
+    <value>High Quality Resampling</value>
   </string>
   <string>
     <id>474</id>
@@ -1637,6 +1599,18 @@
   <string>
     <id>492</id>
     <value>Suurenna tekstitys</value>
+  </string>
+  <string>
+    <id>493</id>
+    <value>Lisäasetukset (muuta vain jos tiedät mitä teet!)</value>
+  </string>
+  <string>
+    <id>494</id>
+    <value>Overall Audio Headroom (dB)</value>
+  </string>
+  <string>
+    <id>495</id>
+    <value>Suurenna videot käyttöliit. resoluutioon</value>
   </string>
 
 <string><id>10000</id><value>Paavalikko</value></string>
