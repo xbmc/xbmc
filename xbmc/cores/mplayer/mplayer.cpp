@@ -56,7 +56,7 @@ int             (__cdecl* pgetSubtitleCount)();
 int             (__cdecl* pgetSubtitleVisible)();
 int             (__cdecl* pgetAudioLanguageCount)();
 int             (__cdecl* pgetAudioLanguage)();
-int             (__cdecl* pgetAudioStream)();
+int             (__cdecl* pgetAudioStream)(int);
 int             (__cdecl* pgetAudioStreamCount)();
 extern "C" 
 {
@@ -70,9 +70,9 @@ extern "C"
     return pgetAudioLanguage();
   }
   
-  int mplayer_getAudioStream()
+  int mplayer_getAudioStream(int iStream)
   {
-    return pgetAudioStream();
+    return pgetAudioStream(iStream);
   }
 
   int mplayer_getAudioStreamCount()
@@ -426,7 +426,7 @@ extern "C"
 		pgetAudioLanguage=(int(__cdecl*)())pProc;
     
 		dll.ResolveExport("mplayer_getAudioStream", &pProc);
-		pgetAudioStream=(int(__cdecl*)())pProc;
+		pgetAudioStream=(int(__cdecl*)(int))pProc;
     
 		dll.ResolveExport("mplayer_getAudioStreamCount", &pProc);
 		pgetAudioStreamCount=(int(__cdecl*)())pProc;

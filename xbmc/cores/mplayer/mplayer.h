@@ -35,7 +35,7 @@ void    mplayer_showSubtitle(int bOnOff);
 int     mplayer_SubtitleVisible();
 int     mplayer_getAudioLanguageCount();
 int     mplayer_getAudioLanguage();
-int     mplayer_getAudioStream();
+int     mplayer_getAudioStream(int iStream);
 int     mplayer_getAudioStreamCount();
 void    mplayer_setAudioLanguage(int iAudioLang);
 #ifdef __cplusplus
