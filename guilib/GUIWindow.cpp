@@ -403,7 +403,10 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
 {
   m_dwDefaultFocusControlID = 0;
-  m_dwWidth = m_dwHeight = 0;
+  m_bRelativeCoords = false;
+  m_bNeedsScaling = false;
+  m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
+  m_iOverlayAllowed = -1;   // Use parent or previous window's state
 
   VECREFERENCECONTOLS referencecontrols;
   IVECREFERENCECONTOLS it;
