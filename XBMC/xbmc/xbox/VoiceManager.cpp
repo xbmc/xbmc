@@ -78,6 +78,11 @@ struct COMPLETED_PACKET
 // Name: CVoiceManager (ctor)
 // Desc: Initializes member variables
 //-----------------------------------------------------------------------------
+
+
+DWORD CVoiceManager::m_dwMicrophoneState = 0;
+DWORD CVoiceManager::m_dwHeadphoneState = 0;
+
 CVoiceManager::CVoiceManager()
 {
     ZeroMemory( &m_cfg, sizeof( VOICE_MANAGER_CONFIG ) );
@@ -89,8 +94,6 @@ CVoiceManager::CVoiceManager()
 
     // Set up communicators
     m_dwConnectedCommunicators      = 0;
-    m_dwMicrophoneState             = 0;
-    m_dwHeadphoneState              = 0;
     m_dwLoopback                    = 0;
     m_dwEnabled                     = 0x0000000F;
     m_bVoiceThroughSpeakers         = FALSE;
@@ -101,6 +104,7 @@ CVoiceManager::CVoiceManager()
     m_dwNumCompletedPackets         = 0;
 
 	m_nSilentFrameCounter			= 0;
+	m_bResetDeviceState				= FALSE;
 }
 
 
@@ -218,8 +222,6 @@ HRESULT CVoiceManager::Initialize( VOICE_MANAGER_CONFIG* pConfig )
 
     // Set up communicators
     m_dwConnectedCommunicators      = 0;
-    m_dwMicrophoneState             = 0;
-    m_dwHeadphoneState              = 0;
     m_dwLoopback                    = 0;
     m_dwEnabled                     = 0x0000000F;
     m_bVoiceThroughSpeakers         = FALSE;
@@ -533,8 +535,37 @@ HRESULT CVoiceManager::ResetChatter( DWORD dwPlayer )
 
 BOOL CVoiceManager::IsHeadsetConnected()
 {
-	return XGetDevices( XDEVICE_TYPE_VOICE_MICROPHONE ) > 0;
+	CheckDeviceChangesLite();
+	return (m_dwMicrophoneState && m_dwHeadphoneState);
 }
+
+
+
+VOID CVoiceManager::CheckDeviceChangesLite()
+{
+    DWORD dwMicrophoneInsertions;
+    DWORD dwMicrophoneRemovals;
+    DWORD dwHeadphoneInsertions;
+    DWORD dwHeadphoneRemovals;
+
+    // Must call XGetDevice changes to track possible removal and insertion
+    // in one frame
+    XGetDeviceChanges( XDEVICE_TYPE_VOICE_MICROPHONE,
+                       &dwMicrophoneInsertions,
+                       &dwMicrophoneRemovals );
+    XGetDeviceChanges( XDEVICE_TYPE_VOICE_HEADPHONE,
+                       &dwHeadphoneInsertions,
+                       &dwHeadphoneRemovals );
+
+    // Update state for removals
+    m_dwMicrophoneState &= ~( dwMicrophoneRemovals );
+    m_dwHeadphoneState  &= ~( dwHeadphoneRemovals );
+
+    // Then update state for new insertions
+    m_dwMicrophoneState |= ( dwMicrophoneInsertions );
+    m_dwHeadphoneState  |= ( dwHeadphoneInsertions );
+}
+
 
 //-----------------------------------------------------------------------------
 // Name: CheckDeviceChanges
@@ -565,28 +596,41 @@ HRESULT CVoiceManager::CheckDeviceChanges()
     m_dwMicrophoneState |= ( dwMicrophoneInsertions );
     m_dwHeadphoneState  |= ( dwHeadphoneInsertions );
 
-    for( WORD i = 0; i < XGetPortCount(); i++ )
-    {
-        // If either the microphone or the headphone was
-        // removed since last call, remove the communicator
-        if( m_dwConnectedCommunicators & ( 1 << i ) &&
-            ( ( dwMicrophoneRemovals   & ( 1 << i ) ) ||
-              ( dwHeadphoneRemovals    & ( 1 << i ) ) ) )
-        {
-            OnCommunicatorRemoved( i );
-        }
+    // want to preserve the dwMicrophoneRemovals and dwHeadphoneRemovals so 
+	// so that when we eventually execute the following code we will follow
+	// the code path that processes an insertion (assuming headset was connected)
+	if (IsInChatSession())
+	{
+		if (m_bResetDeviceState) 
+		{
+			m_bResetDeviceState = FALSE;
+			dwHeadphoneInsertions  = m_dwHeadphoneState;
+			dwMicrophoneInsertions = m_dwMicrophoneState;
+		}
 
-        // If both microphone and headphone are present, and
-        // we didn't have a communicator here last frame, and
-        // the communicator is enabled, then register the insertion
-        if( ( m_dwMicrophoneState         & ( 1 << i ) ) &&
-            ( m_dwHeadphoneState          & ( 1 << i ) ) &&
-            !( m_dwConnectedCommunicators & ( 1 << i ) ) &&
-            ( m_dwEnabled                 & ( 1 << i ) ) )
-        {
-            OnCommunicatorInserted( i );
-        }
-    }
+		for( WORD i = 0; i < XGetPortCount(); i++ )
+		{
+			// If either the microphone or the headphone was
+			// removed since last call, remove the communicator
+			if( m_dwConnectedCommunicators & ( 1 << i ) &&
+				( ( dwMicrophoneRemovals   & ( 1 << i ) ) ||
+				( dwHeadphoneRemovals    & ( 1 << i ) ) ) )
+			{
+				OnCommunicatorRemoved( i );
+			}
+
+			// If both microphone and headphone are present, and
+			// we didn't have a communicator here last frame, and
+			// the communicator is enabled, then register the insertion
+			if( ( m_dwMicrophoneState         & ( 1 << i ) ) &&
+				( m_dwHeadphoneState          & ( 1 << i ) ) &&
+				!( m_dwConnectedCommunicators & ( 1 << i ) ) &&
+				( m_dwEnabled                 & ( 1 << i ) ) )
+			{
+				OnCommunicatorInserted( i );
+			}
+		}
+	}
 
     return S_OK;
 }
@@ -714,6 +758,7 @@ VOID CVoiceManager::EnterChatSession()
         return;
 
     m_bIsInChatSession = TRUE;
+	m_bResetDeviceState = TRUE;
 
     for( WORD i = 0; i < XGetPortCount(); i++ )
     {
@@ -744,6 +789,7 @@ VOID CVoiceManager::LeaveChatSession()
     }
 
     m_bIsInChatSession = FALSE;
+	m_bResetDeviceState = FALSE;
 }
 
 
@@ -1514,30 +1560,30 @@ HRESULT CVoiceManager::HeadphonePacketCallback( DWORD dwPort, LPVOID pPacketCont
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::ProcessVoice()
 {
-    // Adjust the gain level of each headphone output based on whether or
-    // not (and for how long) that player is talking
-    for( DWORD i = 0; i < XGetPortCount(); i++ )
-    {
-        if( m_dwConnectedCommunicators & ( 1 << i ) )
-        {
-            FLOAT fGain = MAX_GAIN - ( m_aVoiceCommunicators[i].m_dwRampTime * ( MAX_GAIN - MIN_GAIN ) / MAX_RAMP_TIME );
-            SetSRCGain( i, fGain );
-        }
-    }
+	// Adjust the gain level of each headphone output based on whether or
+	// not (and for how long) that player is talking
+	for( DWORD i = 0; i < XGetPortCount(); i++ )
+	{
+		if( m_dwConnectedCommunicators & ( 1 << i ) )
+		{
+			FLOAT fGain = MAX_GAIN - ( m_aVoiceCommunicators[i].m_dwRampTime * ( MAX_GAIN - MIN_GAIN ) / MAX_RAMP_TIME );
+			SetSRCGain( i, fGain );
+		}
+	}
 
-    // Fire callbacks for all buffered packets
-    if( m_cfg.pfnVoiceDataCallback )
-    {
-        for( DWORD i = 0; i < m_dwNumCompletedPackets; i++ )
-        {
-            COMPLETED_PACKET* pPacket = (COMPLETED_PACKET*)( m_pbCompletedPackets + i * m_dwCompletedPacketSize );
-            m_cfg.pfnVoiceDataCallback( pPacket->Port,
-                                        m_dwCompressedSize, 
-                                        pPacket->abData, 
-                                        m_cfg.pCallbackContext );
-        }
-    }
-    m_dwNumCompletedPackets = 0;
+	// Fire callbacks for all buffered packets
+	if( m_cfg.pfnVoiceDataCallback )
+	{
+		for( DWORD i = 0; i < m_dwNumCompletedPackets; i++ )
+		{
+			COMPLETED_PACKET* pPacket = (COMPLETED_PACKET*)( m_pbCompletedPackets + i * m_dwCompletedPacketSize );
+			m_cfg.pfnVoiceDataCallback( pPacket->Port,
+										m_dwCompressedSize, 
+										pPacket->abData, 
+										m_cfg.pCallbackContext );
+		}
+	}
+	m_dwNumCompletedPackets = 0;
 
     // Check for insertions and removals
     CheckDeviceChanges();
