@@ -124,6 +124,7 @@ public:
 	void					OnKey(CKey& key);
 	void					RenderFullScreen();
 	bool					NeedRenderFullScreen();
+  bool          MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown = true);
   void          CheckNetworkHDSpinDown(bool playbackStarted = false);
 	void					CheckHDSpindown();
 	void				  CheckScreenSaver();		// CB: SCREENSAVER PATCH

@@ -61,6 +61,7 @@ public:
   virtual void    SetSubtitle(int iStream){};
   virtual bool    GetSubtitleVisible(){return false;};
   virtual void    SetSubtitleVisible(bool bVisible){};
+  virtual bool	  GetSubtitleExtension(CStdString &strSubtitleExtension){return false;};
 
   virtual int     GetAudioStreamCount(){return 1;};
   virtual int     GetAudioStream(){return 0;};

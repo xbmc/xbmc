@@ -740,7 +740,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		// cache (remote) subtitles to HD
 		if (!bFileOnInternet && bIsVideo && !bIsDVD)
 		{
-			CUtil::CacheSubtitles(strFile);
+			CUtil::CacheSubtitles(strFile, _SubtitleExtension);
 			CUtil::PrepareSubtitleFonts();
 		}
 		else
@@ -1258,7 +1258,7 @@ void CMPlayer::Process()
 		{
 			xbox_audio_wait_completion();
 		}
-		
+		_SubtitleExtension.Empty();
 		mplayer_close_file();
 	}
 	m_bIsPlaying=false;
@@ -1805,3 +1805,10 @@ void CMPlayer::DoAudioWork()
 {
   xbox_audio_do_work();
 }
+
+bool CMPlayer::GetSubtitleExtension(CStdString &strSubtitleExtension) 
+{
+  strSubtitleExtension = _SubtitleExtension;
+  return (!_SubtitleExtension.IsEmpty());
+}
+
