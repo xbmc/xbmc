@@ -11,8 +11,8 @@
 
 FLOAT lasttime;
 
-FLOAT IR_INTERVAL ;
-FLOAT FAST_IR_INTERVAL =0.085f;
+#define INTERVAL 0.1f
+
 DWORD g_prevPacketNumber[10]={0,0,0,0,0,0,0,0,0,0};
 // Global instance of input states
 XINPUT_STATEEX g_InputStatesEx[4];
@@ -52,7 +52,8 @@ HRESULT XBInput_CreateIR_Remotes( XBIR_REMOTE** ppIR_Remote )
 
 
             // Get a handle to the device
-            g_IR_Remote[i].hDevice = XInputOpen( XDEVICE_TYPE_IR_REMOTE, i,   XDEVICE_NO_SLOT, &pollValues );
+            g_IR_Remote[i].hDevice = XInputOpen( XDEVICE_TYPE_IR_REMOTE, i, 
+                                                XDEVICE_NO_SLOT, &pollValues );
 
         }
     }
@@ -62,9 +63,10 @@ HRESULT XBInput_CreateIR_Remotes( XBIR_REMOTE** ppIR_Remote )
     if( ppIR_Remote )
         (*ppIR_Remote) = g_IR_Remote;
 
-		IR_INTERVAL=(float)0.4;
     return S_OK;
 }
+
+
 
 
 
@@ -75,11 +77,10 @@ HRESULT XBInput_CreateIR_Remotes( XBIR_REMOTE** ppIR_Remote )
 //-----------------------------------------------------------------------------
 VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote, FLOAT m_fTime)
 {
-	
-	if (m_fTime < lasttime + IR_INTERVAL)
+	if (m_fTime < lasttime + INTERVAL)
 	{
-	  for( DWORD i=0; i < XGetPortCount(); i++ )
-	  {
+	    for( DWORD i=0; i < XGetPortCount(); i++ )
+	    {
 			if (pIR_Remote[i].hDevice)
 				pIR_Remote[i].wPressedButtons = 0;
 		}
@@ -87,112 +88,84 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote, FLOAT m_fTime)
 	}
 	
 	lasttime = m_fTime;
-  XINPUT_POLLING_PARAMETERS pollValues;
-  pollValues.fAutoPoll       = TRUE;
-  pollValues.fInterruptOut   = TRUE;
-  pollValues.bInputInterval  = 255;  
-  pollValues.bOutputInterval = 8;
-  pollValues.ReservedMBZ1    = 0;
-  pollValues.ReservedMBZ2    = 0;
+    XINPUT_POLLING_PARAMETERS pollValues;
+    pollValues.fAutoPoll       = TRUE;
+    pollValues.fInterruptOut   = TRUE;
+    pollValues.bInputInterval  = 255;  
+    pollValues.bOutputInterval = 8;
+    pollValues.ReservedMBZ1    = 0;
+    pollValues.ReservedMBZ2    = 0;
 
-  if( NULL == pIR_Remote )
-      pIR_Remote = g_IR_Remote;
+    if( NULL == pIR_Remote )
+        pIR_Remote = g_IR_Remote;
 
-	// TCR 3-21 Controller Discovery
-	// Get status about Remote insertions and removals. Note that, in order to
-	// not miss devices, we will check for removed device BEFORE checking for
-	// insertions.  
+    // TCR 3-21 Controller Discovery
+    // Get status about Remote insertions and removals. Note that, in order to
+    // not miss devices, we will check for removed device BEFORE checking for
+    // insertions.  
 	// Looks like the Remote doesn't send a signal when it's removed...
-  DWORD dwInsertions, dwRemovals;
-  XGetDeviceChanges( XDEVICE_TYPE_IR_REMOTE, &dwInsertions, &dwRemovals );
+    DWORD dwInsertions, dwRemovals;
+    XGetDeviceChanges( XDEVICE_TYPE_IR_REMOTE, &dwInsertions, &dwRemovals );
 
 
-  // Loop through all gamepads
-  for( DWORD i=0; i < XGetPortCount(); i++ )
-  {
-    // Handle removed devices.
-    pIR_Remote[i].bRemoved = ( dwRemovals & (1<<i) ) ? TRUE : FALSE;
-    if( pIR_Remote[i].bRemoved )
+    // Loop through all gamepads
+    for( DWORD i=0; i < XGetPortCount(); i++ )
     {
-      // if the controller was removed after XGetDeviceChanges but before
-      // XInputOpen, the device handle will be NULL
-      if( pIR_Remote[i].hDevice )
-          XInputClose( pIR_Remote[i].hDevice );
-      pIR_Remote[i].hDevice = NULL;
-    }
-
-    // Handle inserted devices
-    pIR_Remote[i].bInserted = ( dwInsertions & (1<<i) ) ? TRUE : FALSE;
-
-    if( pIR_Remote[i].bInserted ) 
-    {
-      // TCR 1-14 Device Types
-
-      pIR_Remote[i].hDevice = XInputOpen( XDEVICE_TYPE_IR_REMOTE, i,  XDEVICE_NO_SLOT, &pollValues);
-
-    }
-
-    // If we have a valid device, poll it's state and track button changes
-    if( pIR_Remote[i].hDevice )
-    {
-      // Read the input state
-      XInputGetState( pIR_Remote[i].hDevice, (XINPUT_STATE*) &g_InputStatesEx[i] );
-
-	    if (g_prevPacketNumber[i] != g_InputStatesEx[i].dwPacketNumber)
-	    {
-		    g_prevPacketNumber[i]=g_InputStatesEx[i].dwPacketNumber;
-		    // Copy remote to local structure
-		    memcpy( &pIR_Remote[i], &g_InputStatesEx[i].IR_Remote, sizeof(XINPUT_IR_REMOTE) );
-
- 		    if (pIR_Remote[i].wOlderButtons == pIR_Remote[i].wOldButtons && 
-          pIR_Remote[i].wOldButtons == pIR_Remote[i].wButtons && 
-          pIR_Remote[i].wButtons != 0)
+        // Handle removed devices.
+        pIR_Remote[i].bRemoved = ( dwRemovals & (1<<i) ) ? TRUE : FALSE;
+        if( pIR_Remote[i].bRemoved )
         {
-				  IR_INTERVAL = FAST_IR_INTERVAL;
-        }
-        else
-        {
-          IR_INTERVAL = 0.8f;
-        }
-		    pIR_Remote[i].wOlderButtons = pIR_Remote[i].wOldButtons;				
-		    pIR_Remote[i].wOldButtons = pIR_Remote[i].wButtons;
-/*
-        char szTmp[128];
-        sprintf(szTmp,"older:%x old:%x now:%x last:%x  %03.3f\n",
-                pIR_Remote[i].wOlderButtons ,
-                pIR_Remote[i].wOldButtons ,
-                pIR_Remote[i].wButtons ,
-                pIR_Remote[i].wLastButtons ,
-                IR_INTERVAL);
-        OutputDebugString(szTmp);
-*/
-	        // Get the currently pressed button	
-		    if (pIR_Remote[i].wLastButtons!=pIR_Remote[i].wButtons || IR_INTERVAL == FAST_IR_INTERVAL)
-        {
-			    pIR_Remote[i].wPressedButtons = pIR_Remote[i].wButtons;
-          //OutputDebugString("GOT KET\n" );
-        }
-        else
-		    {
-			    pIR_Remote[i].wPressedButtons = 0;
-			    pIR_Remote[i].wButtons = 0;
-		    }
+            // if the controller was removed after XGetDeviceChanges but before
+            // XInputOpen, the device handle will be NULL
+            if( pIR_Remote[i].hDevice )
+                XInputClose( pIR_Remote[i].hDevice );
+            pIR_Remote[i].hDevice = NULL;
 
-	      pIR_Remote[i].wLastButtons = pIR_Remote[i].wButtons;				
-	    }
-      else
-      {
-        pIR_Remote[i].wButtons = 0;
-        pIR_Remote[i].wPressedButtons = 0;
-        pIR_Remote[i].wOldButtons=0;
-        pIR_Remote[i].wOlderButtons =0;
-        pIR_Remote[i].wLastButtons =0;
-      }
-	    // Needs to reset it... don't know a better way to do it
-	    //XInputClose( pIR_Remote[i].hDevice);
-      //  pIR_Remote[i].hDevice = XInputOpen( XDEVICE_TYPE_IR_REMOTE, i,  XDEVICE_NO_SLOT, &pollValues);
-    }
-  }
+        }
+
+        // Handle inserted devices
+        pIR_Remote[i].bInserted = ( dwInsertions & (1<<i) ) ? TRUE : FALSE;
+
+        if( pIR_Remote[i].bInserted ) 
+        {
+
+            // TCR 1-14 Device Types
+
+            pIR_Remote[i].hDevice = XInputOpen( XDEVICE_TYPE_IR_REMOTE, i, 
+                                               XDEVICE_NO_SLOT, &pollValues);
+	
+        }
+
+
+        // If we have a valid device, poll it's state and track button changes
+        if( pIR_Remote[i].hDevice )
+        {
+            // Read the input state
+            XInputGetState( pIR_Remote[i].hDevice, (XINPUT_STATE*) &g_InputStatesEx[i] );
+
+						if (g_prevPacketNumber[i] != g_InputStatesEx[i].dwPacketNumber)
+						{
+							g_prevPacketNumber[i]=g_InputStatesEx[i].dwPacketNumber;
+							// Copy remote to local structure
+							memcpy( &pIR_Remote[i], &g_InputStatesEx[i].IR_Remote, sizeof(XINPUT_IR_REMOTE) );
+
+							// Get the currently pressed button	
+							if (pIR_Remote[i].wLastButtons!=pIR_Remote[i].wButtons)
+								pIR_Remote[i].wPressedButtons = pIR_Remote[i].wButtons;
+							else
+							{
+								pIR_Remote[i].wPressedButtons = 0;
+								pIR_Remote[i].wButtons = 0;
+							}
+
+						pIR_Remote[i].wLastButtons = pIR_Remote[i].wButtons;				
+						}
+						// Needs to reset it... don't know a better way to do it
+						XInputClose( pIR_Remote[i].hDevice);
+            pIR_Remote[i].hDevice = XInputOpen( XDEVICE_TYPE_IR_REMOTE, i, 
+                                               XDEVICE_NO_SLOT, &pollValues);
+        }
+    }	
 }
 
 

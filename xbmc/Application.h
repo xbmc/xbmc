@@ -18,6 +18,7 @@
 #include "GUIDialogProgress.h"
 #include "LocalizeStrings.h"
 #include "utils/sntp.h"
+#include "utils/delaycontroller.h"
 #include "keyboard/virtualkeyboard.h"
 
 class CApplication :
@@ -42,6 +43,8 @@ public:
 	CGUIWindowSettings		m_guiSettings;
   CXBVirtualKeyboard    m_keyboard;
 	CSNTPClient						m_sntpClient;
+	CDelayController			m_ctrDpad;
+	CDelayController			m_ctrIR;
 };
 
 extern CApplication g_application;

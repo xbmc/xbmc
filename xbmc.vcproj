@@ -210,7 +210,8 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="XboxDeploymentTool"/>
+				Name="XboxDeploymentTool"
+				RemotePath="xe:\guilib\default.xbe"/>
 			<Tool
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
@@ -670,6 +671,12 @@
 		<Filter
 			Name="utils"
 			Filter="">
+			<File
+				RelativePath=".\xbmc\utils\DelayController.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\DelayController.h">
+			</File>
 			<File
 				RelativePath=".\xbmc\utils\Sntp.cpp">
 			</File>

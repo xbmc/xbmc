@@ -218,10 +218,12 @@ void CGUIListControl::OnKey(const CKey& key)
 
   switch (key.GetButtonCode())
   {
+    case KEY_REMOTE_REVERSE:
     case KEY_BUTTON_LEFT_TRIGGER:
       OnPageUp();
     break;
 
+    case KEY_REMOTE_FORWARD:
     case KEY_BUTTON_RIGHT_TRIGGER:
       OnPageDown();
     break;
