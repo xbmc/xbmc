@@ -186,6 +186,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bUseDigitalOutput=false;
 
 	strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
+	strcpy(g_stSettings.m_szFlipBiDiCharset, ""); 
 	g_stSettings.m_iEnlargeSubtitlePercent = 0;
 	g_stSettings.m_bPostProcessing=true;
 	g_stSettings.m_bDeInterlace=false;
@@ -451,6 +452,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 
 	GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory,"");
 	GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory,"");
+	GetString(pRootElement, "flipcharset", g_stSettings.m_szFlipBiDiCharset, "");
 
 	GetString(pRootElement, "pictureextensions", g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
 

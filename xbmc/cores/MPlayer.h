@@ -45,8 +45,8 @@ public:
 		void         SetFPS(float fFPS);
 		float        GetFPS() const; 
 		void         GetOptions(int& argc, char* argv[]);
-		void            SetDVDDevice(const string & strDevice);
-
+		void         SetDVDDevice(const string & strDevice);
+		void		SetFlipBiDiCharset(const string& strCharset);
 	private:
 		bool  m_bResampleAudio;
 		bool    m_bNoCache;
@@ -60,6 +60,7 @@ public:
 		bool    m_bNonInterleaved;
 		string  m_strChannelMapping;
 		string  m_strDvdDevice;
+		string  m_strFlipBiDiCharset;
 		vector<string> m_vecOptions;
 
 	};
