@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 23-02-2005 added: [ 1149558 ] Printing XBE Title To LCD On Launch.  Thanks sniperkilla!
+  - 23-02-2005 added: [ 1149558 ] Printing XBE Title To LCD On Launch.
   - 22-02-2005 fixed: Crash when Kai is re-entered after a skin/font/etc. change.
   - 21-02-2005 fixed: Yet another weather localization fix.  Thanks KoTiX!
   - 21-02-2005 fixed: Updated system/players/mplayer/mplayer.dll to current CVS (includes flac fix + crash fix)
