@@ -240,6 +240,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
 		CStdString strPath=g_stSettings.m_szAlbumDirectory;
 		strPath+="\\playlists\\";
 
+		CUtil::RemoveIllegalChars( strNewFileName );
 		strPath += strNewFileName;
 		strPath+=".m3u";
 		CPlayListM3U playlist;
