@@ -3,6 +3,8 @@
 // - g_stSettings.m_bMyVideoRootViewAsIcons
 // - g_stSettings.m_bMyVideoViewAsIcons
 // - if movie is directory then show files in directory...
+// - if movie does not exists when play movie is called then show dialog asking to insert the correct CD
+
 #include "guiwindowVideoGenre.h"
 #include "settings.h"
 #include "guiWindowManager.h"
@@ -30,6 +32,7 @@
 #define CONTROL_LIST							10
 #define CONTROL_THUMBS						11
 #define CONTROL_LABELFILES         12
+#define LABEL_GENRE               100
 
 struct SSortVideoGenreByName
 {
@@ -377,6 +380,7 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
       pItem->m_bIsShareOrDrive=false;
 			m_vecItems.push_back(pItem);
     }
+    SET_CONTROL_LABEL(GetID(), LABEL_GENRE,"");
   }
   else
   {
@@ -400,6 +404,7 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
         pItem->m_bIsShareOrDrive=false;
 			  m_vecItems.push_back(pItem);
       }
+      SET_CONTROL_LABEL(GetID(), LABEL_GENRE,m_strDirectory);
   }
 	CUtil::SetThumbs(m_vecItems);
 	CUtil::FillInDefaultIcons(m_vecItems);
@@ -425,3 +430,38 @@ void CGUIWindowVideoGenre::Render()
 	CGUIWindow::Render();
 }
 
+void CGUIWindowVideoGenre::OnClick(int iItem)
+{
+  CFileItem* pItem=m_vecItems[iItem];
+  CStdString strPath=pItem->m_strPath;
+
+	CStdString strExtension;
+	CUtil::GetExtension(pItem->m_strPath,strExtension);
+	if ( CUtil::cmpnocase(strExtension.c_str(),".nfo") ==0) 
+	{
+		OnInfo(iItem);
+		return;
+	}
+
+  if (pItem->m_bIsFolder)
+  {
+    m_iItemSelected=-1;
+		if ( pItem->m_bIsShareOrDrive ) 
+		{
+			if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
+				return;
+		}
+    Update(strPath);
+  }
+  else if (CUtil::IsVideo(pItem->m_strPath))
+	{
+    // Set selected item
+	  m_iItemSelected=GetSelectedItem();
+	  
+		// play movie...
+		g_TextureManager.Flush();
+		g_graphicsContext.SetFullScreenVideo(true);
+		m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+		g_application.PlayFile(strPath);
+	}
+}
