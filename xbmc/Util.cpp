@@ -16,6 +16,7 @@
 #include "shortcut.h"
 #include "playlistplayer.h"
 #include "lib/libPython/XBPython.h"
+#include "utils/RegExp.h"
 
 bool CUtil::m_bNetworkUp = false;
 
@@ -111,71 +112,41 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath)
   return strFilename;
 }
 
-bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumePrefix, int& volumeNumber)
+bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber)
 {
-  bool result = false;
-  CStdString strFileNameTemp = strFileName;
+  const CStdStringArray &regexps = g_settings.m_MyVideoStackRegExps;
 
-  // remove any extension
-  int pos = strFileNameTemp.ReverseFind('.');
-  if (pos > 0)
-    strFileNameTemp = strFileNameTemp.Left(pos);
+  CStdString strFileNameLower = strFileName;
+  strFileNameLower.MakeLower();
 
-  const CStdString & separatorsString = g_settings.m_szMyVideoStackSeparatorsString;
-  const CStdStringArray & tokens = g_settings.m_szMyVideoStackTokensArray;
+  CStdString strVolume;
+  CStdString strTestString;
+  CRegExp reg;
 
-  CStdString strFileNameTempLower = strFileNameTemp;
-  strFileNameTempLower.MakeLower();
-
-  for (int i = 0; i < (int)tokens.size(); i++)
+  for (unsigned int i = 0; i < regexps.size(); i++)
   {
-    const CStdString & token = tokens[i];
-    pos = strFileNameTempLower.ReverseFind(token);
-    //CLog::Log(LOGERROR, "GetVolumeFromFileName : " + strFileNameTemp + " : " + token + " : 1");
-    if ((pos > 0) && (pos < (int)strFileNameTemp.size()))
-    {
-      //CLog::Log(LOGERROR, "GetVolumeFromFileName : " + strFileNameTemp + " : " + token + " : 2");
-      // token found at end
-      if (separatorsString.Find(strFileNameTemp.GetAt(pos - 1)) > -1)
+    if (!reg.RegComp(regexps[i].c_str()))
+    { // invalid regexp - complain in logs
+      CLog::Log(LOGERROR, "Invalid RegExp: %s.  Check XBoxMediaCenter.xml", regexps[i].c_str());
+      continue;
+    }
+    int iFoundToken = reg.RegFind(strFileNameLower.c_str());
+    if (iFoundToken >= 0)
+    { // found this token
+      int iRegLength = reg.GetFindLen();
+      char *pReplace = reg.GetReplaceString("\\1");
+      if (pReplace)
       {
-        // appropriate separator found between file title and token
-
-        CStdString volumeNumberString = strFileNameTemp.Mid(pos + token.size()).Trim();
-        //CLog::Log(LOGERROR, "GetVolumeFromFileName : " + strFileNameTemp + " : " + token + " : " + volumeNumberString + " : 3");
-        volumeNumber = atoi(volumeNumberString.c_str());
-        // the parsed result must be > 0
-        if (volumeNumber > 0)
-        {
-          //CLog::Log(LOGERROR, "GetVolumeFromFileName : " + strFileNameTemp + " : " + token + " : " + volumeNumberString + " : 4");
-          bool volumeNumberValid = true;
-          // make sure only numbers follow the token
-          for (int j = 1; j < (int)volumeNumberString.size(); j++)
-          {
-            char c = volumeNumberString.GetAt(j);
-            if ((c < '0') || (c > '9'))
-            {
-              volumeNumberValid = false;
-              break;
-            }
-          }
-
-          if (volumeNumberValid)
-          {
-            //CLog::Log(LOGERROR, "GetVolumeFromFileName : " + strFileNameTemp + " : " + token + " : " + volumeNumberString + " : 5");
-
-            result = true;
-            strFileTitle = strFileNameTemp.Left(pos - 1);
-            // trim all additional separator characters
-            strFileTitle.TrimRight(separatorsString.c_str());
-            strVolumePrefix = token;
-            break;
-          }
-        }
+        strVolumeNumber = pReplace;
+        free(pReplace);
+        CStdString strFileRight = strFileName.Mid(iFoundToken + iRegLength);
+        RemoveExtension(strFileRight);
+        strFileTitle = strFileName.Left(iFoundToken) + strFileRight;
+        return true;
       }
     }
   }
-
-  return result;
+  return false;
 }
 
 void CUtil::RemoveExtension(CStdString& strFileName)
@@ -205,56 +176,11 @@ void CUtil::CleanFileName(CStdString& strFileName)
 
   // assume extension has already been removed
 
-  // remove volume indicator
-
-  {
-    const CStdString & separatorsString = g_settings.m_szMyVideoStackSeparatorsString;
-    const CStdStringArray & tokens = g_settings.m_szMyVideoStackTokensArray;
-
-    CStdString strFileNameTempLower = strFileName;
-    strFileNameTempLower.MakeLower();
-
-    for (int i = 0; i < (int)tokens.size(); i++)
-    {
-      const CStdString & token = tokens[i];
-      int pos = strFileNameTempLower.ReverseFind(token);
-      if ((pos > 0) && (pos < (int)strFileName.size()))
-      {
-        // token found at end
-        if (separatorsString.Find(strFileName.GetAt(pos - 1)) > -1)
-        {
-          // appropriate separator found between file title and token
-
-          CStdString volumeNumberString = strFileName.Mid(pos + token.size()).Trim();
-          int volumeNumber = atoi(volumeNumberString.c_str());
-          // the parsed result must be > 0
-          if (volumeNumber > 0)
-          {
-            bool volumeNumberValid = true;
-            // make sure only numbers follow the token
-            for (int j = 1; j < (int)volumeNumberString.size(); j++)
-            {
-              char c = volumeNumberString.GetAt(j);
-              if ((c < '0') || (c > '9'))
-              {
-                volumeNumberValid = false;
-                break;
-              }
-            }
-
-            if (volumeNumberValid)
-            {
-              strFileName = strFileName.Left(pos - 1);
-              // trim all additional separator characters
-              strFileName.TrimRight(separatorsString.c_str());
-              break;
-            }
-          }
-        }
-      }
-    }
-  }
-
+  // remove volume indicator from stacked files
+  CStdString strFileTitle;
+  CStdString strVolumeNumber;
+  if (GetVolumeFromFileName(strFileName, strFileTitle, strVolumeNumber))
+    strFileName = strFileTitle;
 
   // remove known tokens:      { "divx", "xvid", "3ivx", "ac3", "ac351", "mp3", "wma", "m4a", "mp4", "ogg", "SCR", "TS", "sharereactor" }
   // including any separators: { ' ', '-', '_', '.', '[', ']', '(', ')' }
@@ -1496,39 +1422,6 @@ bool CUtil::IsHD(const CStdString& strFileName)
   }
   return false;
 }
-
-// Following 6 routines added by JM to determine (possible) source type based
-// on frame size
-bool CUtil::IsNTSC_VCD(int iWidth, int iHeight)
-{
-  return (iWidth == 352 && iHeight == 240);
-}
-
-bool CUtil::IsNTSC_SVCD(int iWidth, int iHeight)
-{
-  return (iWidth == 480 && iHeight == 480);
-}
-
-bool CUtil::IsNTSC_DVD(int iWidth, int iHeight)
-{
-  return (iWidth == 720 && iHeight == 480);
-}
-
-bool CUtil::IsPAL_VCD(int iWidth, int iHeight)
-{
-  return (iWidth == 352 && iHeight == 488);
-}
-
-bool CUtil::IsPAL_SVCD(int iWidth, int iHeight)
-{
-  return (iWidth == 480 && iHeight == 576);
-}
-
-bool CUtil::IsPAL_DVD(int iWidth, int iHeight)
-{
-  return (iWidth == 720 && iHeight == 576);
-}
-
 
 void CUtil::RemoveIllegalChars( CStdString& strText)
 {

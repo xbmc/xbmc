@@ -123,7 +123,7 @@
 				RelativePath=".\HTMLScraper.cpp">
 			</File>
 			<File
-				RelativePath=".\RegExp.cpp">
+				RelativePath="..\..\xbmc\utils\RegExp.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -134,7 +134,7 @@
 				RelativePath=".\HTMLScraper.h">
 			</File>
 			<File
-				RelativePath=".\RegExp.h">
+				RelativePath="..\..\xbmc\utils\RegExp.h">
 			</File>
 		</Filter>
 	</Files>

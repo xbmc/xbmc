@@ -310,7 +310,6 @@ void CTestScraperDlg::OnNMDblclkSearchResults(NMHDR *pNMHDR, LRESULT *pResult)
 	{
 		CDetailsDialog dlg;
 		dlg.m_strXML = szXML;
-		dlg.m_strTitle = strTitle;
 		dlg.DoModal();
 	}
 	*pResult = 0;

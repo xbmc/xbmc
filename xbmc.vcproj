@@ -733,6 +733,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\Profile.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\RegExp.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\RegExp.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\RssReader.cpp">
 				</File>
 				<File
