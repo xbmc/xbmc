@@ -24,6 +24,7 @@ public:
 	static void GetHomePath(CStdString& strPath);
   static bool InitializeNetwork(const char* szLocalAdres, const char* szLocalSubnet, const char* szLocalGateway);
   static bool IsEthernetConnected();
+	static void GetTitleIP(CStdString& ip);
   static void ConvertTimeTToFileTime(__int64 sec, long nsec, FILETIME &ftTime);
 	static void ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile);
 	static void GetExtension(const CStdString& strFile, CStdString& strExtension);
