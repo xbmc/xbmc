@@ -349,7 +349,7 @@ void CGUIInfoManager::SetCurrentSong(const CFileItem &item)
 		}	//	if (!tag.Loaded() && url.GetProtocol()=="cdda" )
 		else
 		{	// at worse, set our title as the filename
-			tag.SetTitle( CUtil::GetFileName(m_currentSong.m_strPath) );
+			tag.SetTitle( CUtil::GetTitleFromPath(m_currentSong.m_strPath) );
 		}	// we now have at least the title
 		tag.SetLoaded(true);
 	}
