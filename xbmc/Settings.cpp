@@ -123,7 +123,10 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_szWeatherArea, "UKXX0085");	//default WEATHER to London for no good reason
 	strcpy(g_stSettings.m_szWeatherFTemp, "C");			//default WEATHER temp units 
 	strcpy(g_stSettings.m_szWeatherFSpeed, "K");		//default WEATHER speed units
-	g_stSettings.m_iWeatherRefresh = 1;
+	g_stSettings.m_iWeatherRefresh = 20;
+
+  g_stSettings.m_minFilter= D3DTEXF_LINEAR;
+  g_stSettings.m_maxFilter= D3DTEXF_LINEAR;
 }
 
 CSettings::~CSettings(void)
@@ -777,8 +780,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "stretch", g_stSettings.m_bStretch);
 		GetBoolean(pElement, "allowswitching", g_stSettings.m_bAllowVideoSwitching);
 		GetBoolean(pElement, "allowpal60", g_stSettings.m_bAllowPAL60);
-		GetInteger(pElement, "minfilter", (int &)g_stSettings.m_minFilter,D3DTEXF_LINEAR,INT_MIN,INT_MAX);
-		GetInteger(pElement, "maxfilter", (int &)g_stSettings.m_maxFilter,D3DTEXF_LINEAR,INT_MIN,INT_MAX);
+		GetInteger(pElement, "minfilter", (int &)g_stSettings.m_minFilter, D3DTEXF_LINEAR, D3DTEXF_LINEAR,D3DTEXF_GAUSSIANCUBIC);
+		GetInteger(pElement, "maxfilter", (int &)g_stSettings.m_maxFilter, D3DTEXF_LINEAR, D3DTEXF_LINEAR,D3DTEXF_GAUSSIANCUBIC);
 	}
 	// audio settings
 	pElement = pRootElement->FirstChildElement("audio");
