@@ -137,7 +137,6 @@ HRESULT CApplication::Create()
     CLog::Log("map Q: to homedir:%s...",g_stSettings.szHomeDir);
 		// home dir is defined in xboxmediacenter.xml
 		CStdString strHomePath = g_stSettings.szHomeDir;
-		strHomePath.TrimRight("\\");
 
 		if(!access(strHomePath + "\\skin", 0))
 		{
@@ -387,6 +386,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   {
     CLog::Log(" stop playing...");
     m_pPlayer->closefile();
+    m_strCurrentFile="";
+		delete m_pPlayer;
+		m_pPlayer=NULL;
   }
 
   CLog::Log("  delete old skin...");
@@ -1324,6 +1326,7 @@ void CApplication::StopPlaying()
   }
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
   m_gWindowManager.SendThreadMessage( msg );
+  m_strCurrentFile="";
 }
 
 
