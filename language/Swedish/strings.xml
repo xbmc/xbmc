@@ -109,11 +109,11 @@
   </string> 
  <string>
  <id>98</id>
- <value>Vy: Auto</value>
+ <value>Vy Auto</value>
  </string>
  <string>
  <id>99</id>
- <value>Vy: Auto stor</value>
+ <value>Vy Auto stor</value>
  </string>
   <string>
     <id>100</id>
@@ -169,11 +169,11 @@
   </string>   
   <string>
     <id>113</id>
-    <value>Mina filer : Källa</value>
+    <value>Mina filer  Källa</value>
   </string>   
   <string>
     <id>114</id>
-    <value>Mina filer : Destination</value>
+    <value>Mina filer  Destination</value>
   </string>   
   <string>
     <id>115</id>
@@ -253,7 +253,7 @@
   </string>  
   <string>
     <id>134</id>
-    <value>Låtar:</value>
+    <value>Låtar</value>
   </string>  
   <string>
     <id>135</id>
@@ -273,35 +273,35 @@
   </string>  
   <string>
     <id>139</id>
-    <value>Temperaturer:</value>
+    <value>Temperaturer</value>
   </string> 
   <string>
     <id>140</id>
-    <value>CPU:</value>
+    <value>CPU</value>
   </string> 
   <string>
     <id>141</id>
-    <value>GPU:</value>
+    <value>GPU</value>
   </string> 
   <string>
     <id>142</id>
-    <value>Tid:</value>
+    <value>Tid</value>
   </string> 
   <string>
     <id>143</id>
-    <value>Nuvarande:</value>
+    <value>Nuvarande</value>
   </string> 
   <string>
     <id>144</id>
-    <value>Bygge:</value>
+    <value>Bygge</value>
   </string> 
   <string>
     <id>145</id>
-    <value>Nätverk:</value>
+    <value>Nätverk</value>
   </string> 
   <string>
     <id>146</id>
-    <value>Typ:</value>
+    <value>Typ</value>
   </string> 
   <string>
     <id>147</id>
@@ -317,11 +317,11 @@
   </string> 
   <string>
     <id>150</id>
-    <value>IP:</value>
+    <value>IP</value>
   </string> 
   <string>
     <id>151</id>
-    <value>Status:</value>
+    <value>Status</value>
   </string> 
   <string>
     <id>152</id>
@@ -381,55 +381,55 @@
   </string> 
   <string>
     <id>166</id>
-    <value>Skal:</value>
+    <value>Skal</value>
   </string> 
   <string>
     <id>167</id>
-    <value>Aktivera Ftp-Server:</value>
+    <value>Aktivera ftp-server</value>
   </string> 
   <string>
     <id>168</id>
-    <value>Aktivera tidserver:</value>
+    <value>Aktivera tidserver</value>
   </string> 
   <string>
     <id>169</id>
-    <value>Upplösning:</value>
+    <value>Upplösning</value>
   </string> 
   <string>
     <id>170</id>
-    <value>Album:</value>
+    <value>Album</value>
   </string> 
   <string>
     <id>171</id>
-    <value>Artist:</value>
+    <value>Artist</value>
   </string> 
   <string>
     <id>172</id>
-    <value>Årtal:</value>
+    <value>Årtal</value>
   </string> 
   <string>
     <id>173</id>
-    <value>Betyg:</value>
+    <value>Betyg</value>
   </string> 
   <string>
     <id>174</id>
-    <value>Genre:</value>
+    <value>Genre</value>
   </string> 
   <string>
     <id>175</id>
-    <value>Musiktyp:</value>
+    <value>Musiktyp</value>
   </string> 
   <string>
     <id>176</id>
-    <value>Stilar:</value>
+    <value>Stilar</value>
   </string> 
   <string>
     <id>177</id>
-    <value>Recension:</value>
+    <value>Recension</value>
   </string> 
   <string>
     <id>178</id>
-    <value>Spår:</value>
+    <value>Spår</value>
   </string> 
   <string>
     <id>179</id>
@@ -501,7 +501,7 @@
   </string> 
   <string>
     <id>196</id>
-    <value>Välj film:</value>
+    <value>Välj film</value>
   </string> 
   <string>
     <id>197</id>
@@ -537,9 +537,8 @@
   </string> 
   <string>
  <id>2050</id>
- <value>Speltid:</value>
+ <value>Speltid</value>
  </string>
-
   <string>
     <id>205</id>
     <value>Röster</value>
@@ -670,11 +669,11 @@
   </string> 
   <string>
     <id>237</id>
-    <value>Förminskning:</value>
+    <value>Förminskning</value>
   </string> 
   <string>
     <id>238</id>
-    <value>Förstoring:</value>
+    <value>Förstoring</value>
   </string>
   <string>
     <id>240</id>
@@ -698,11 +697,11 @@
   </string>
   <string>
     <id>245</id>
-    <value>Starta musik automatiskt</value>
+    <value>Starta Musik automatiskt</value>
   </string>
   <string>
     <id>246</id>
-    <value>Starta bilder automatiskt</value>
+    <value>Starta Bilder automatiskt</value>
   </string>
   <string>
     <id>247</id>
@@ -770,7 +769,7 @@
   </string>
   <string>
     <id>263</id>
-    <value>Aktivera Web-server:</value>
+    <value>Aktivera Web-server</value>
   </string>
   <string>
     <id>264</id>
@@ -822,7 +821,7 @@
   </string>
   <string>
     <id>276</id>
-    <value>Flytta pilen för att ändra mängd av overscan</value>
+    <value>Flytta pilen för att ändra mängd overscan</value>
   </string>
   <string>
     <id>277</id>
@@ -1024,7 +1023,6 @@
   <id>327</id>
  <value>Fel vid rensning av album</value>
   </string>
-
   <string>
     <id>328</id>
     <value>Skriver förändringar...</value>
@@ -1063,7 +1061,7 @@
   </string>
   <string>
     <id>337</id>
-    <value>Ljudoutput:</value>
+    <value>Ljudoutput</value>
   </string>
   <string>
     <id>338</id>
@@ -1157,7 +1155,6 @@
     <id>360</id>
     <value>Skärmsläckare</value>
   </string>
-
   <string>
     <id>361</id>
     <value>R. SlideShow</value>
@@ -1194,7 +1191,6 @@
     <id>369</id>
     <value>Titel</value>
   </string>
-
   <string>
     <id>370</id>
      <value>Åska</value>
@@ -1219,7 +1215,6 @@
      <id>375</id>
      <value>Snö</value>
    </string>
-
    <string>
      <id>376</id>
      <value>Regn</value>
@@ -1264,7 +1259,6 @@
  <id>386</id>
  <value>Klart</value>
  </string>
-
  <string>
  <id>387</id>
  <value>Molnigt</value>
@@ -1360,11 +1354,11 @@
   </string>       
   <string>
     <id>411</id>
-    <value>Tar emot väder för:</value>
+    <value>Tar emot väder för</value>
   </string> 
   <string>
     <id>412</id>
-    <value>Kunde Inte ta emot väderdata</value>
+    <value>Kunde inte ta emot väderdata</value>
   </string>    
   <string>
     <id>413</id>
@@ -1424,7 +1418,7 @@
   </string> 
   <string>
     <id>427</id>
-    <value>Disc:</value>
+    <value>Disc</value>
   </string> 
   <string>
     <id>428</id>
@@ -1460,7 +1454,7 @@
    </string> 
    <string>
     <id>436</id>
-    <value>År:</value> 
+    <value>År</value> 
   </string> 
   <string>
  <id>437</id>  
@@ -1520,31 +1514,31 @@
   </string> 
   <string>
     <id>451</id>
-    <value>Rad 1 adress:</value>
+    <value>Rad 1 adress</value>
   </string> 
   <string>
     <id>452</id>
-    <value>Rad 2 adress:</value>
+    <value>Rad 2 adress</value>
   </string> 
   <string>
     <id>453</id>
-    <value>Rad 3 adress:</value>
+    <value>Rad 3 adress</value>
   </string> 
   <string>
     <id>454</id>
-    <value>Rad 4 adress:</value>
+    <value>Rad 4 adress</value>
   </string>
    <string>
      <id>455</id>
-     <value>Rad:</value>
+     <value>Rad</value>
    </string> 
    <string>
      <id>456</id>
-     <value>Läge:</value>
+     <value>Läge</value>
    </string> 
    <string>
      <id>457</id>
-     <value>Växla vy:</value>
+     <value>Växla vy</value>
    </string> 
    <string>
      <id>458</id>
@@ -1692,7 +1686,7 @@
    </string>
    <string>
      <id>494</id>
-     <value>Overall Audio Headroom (dB)</value>
+     <value>Overall audio headroom (dB)</value>
    </string>
    <string>
      <id>495</id>
@@ -1706,12 +1700,10 @@
  <id>497</id>
  <value>Göm filändelse</value>
  </string>
-
  <string>
  <id>498</id>
- <value>Sortera: Typ</value>
+ <value>Sortera Typ</value>
  </string>
-
  <string>
  <id>499</id>
  <value>Kunde inte kontakta www.allmusic.com</value>
@@ -1784,7 +1776,7 @@
 
  <string>
  <id>604</id>
- <value>Konstant BitRate</value>
+ <value>Konstant bitrate</value>
  </string>
 
  <string>
@@ -1794,12 +1786,12 @@
 
  <string>
  <id>606</id>
- <value>Track Nummer:</value>
+ <value>Track Nummer</value>
  </string>
 
  <string>
  <id>607</id>
- <value>Till:</value>
+ <value>Till</value>
  </string>
 
  <string>
@@ -1809,12 +1801,12 @@
 
  <string>
  <id>609</id>
- <value>CDDARipPath är inte satt i XboxMediaCenter.xml</value>
+ <value>CDDA rippath är inte satt i Xboxmediacenter.xml</value>
  </string>
 
  <string>
  <id>620</id>
- <value>CD Rippning</value>
+ <value>CD rippning</value>
  </string>
 
  <string>
@@ -1859,17 +1851,17 @@
 
  <string>
  <id>632</id>
- <value>Sträck 4:3</value>
+ <value>Sträck 43</value>
  </string>
 
  <string>
  <id>633</id>
- <value>Sträck 14:9</value>
+ <value>Sträck 149</value>
  </string>
 
  <string>
  <id>634</id>
- <value>Sträck 16:9</value>
+ <value>Sträck 169</value>
  </string>
 
  <string>
@@ -1910,15 +1902,15 @@
 	</string>
 	<string>
 		<id>706</id>
-		<value>HTTP Proxy värd</value>
+		<value>HTTP proxy värd</value>
 	</string>
 	<string>
 		<id>707</id>
-		<value>HTTP Proxy Port</value>
+		<value>HTTP proxy port</value>
 	</string>
 	<string>
 		<id>708</id>
-		<value>Använd HTTP Proxy</value>
+		<value>Använd HTTP proxy</value>
 	</string>
 	<string>
 		<id>709</id>
@@ -1994,11 +1986,11 @@
 	</string>
 <string>
  <id>727</id>
- <value>Web Server</value>
+ <value>Webserver</value>
  </string> 
  <string>
  <id>728</id>
- <value>FTP Server</value>
+ <value>FTPserver</value>
  </string> 
  <string>
  <id>729</id>
@@ -2006,7 +1998,7 @@
  </string> 
  <string>
  <id>730</id>
- <value>Web Server Port</value>
+ <value>Webserver port</value>
  </string> 
  <string>
  <id>731</id>
@@ -2018,7 +2010,7 @@
  </string> 
  <string>
  <id>733</id>
- <value>Web Server lösenord</value>
+ <value>WebServer lösenord</value>
  </string>
  <string>
  <id>734</id>
@@ -2070,7 +2062,7 @@
  </string> 
  <string>
  <id>746</id>
- <value>Ändra till Fil vy</value>
+ <value>Ändra till fil vy</value>
   </string> 
  <string>
  <id>747</id>
@@ -2363,22 +2355,22 @@
 
  <string>
  <id>13001</id>
- <value>Omedelbar HD nerspin:</value>
+ <value>Omedelbar HD nerspin</value>
  </string>
 
  <string>
  <id>13002</id>
- <value>Bara Video</value>
+ <value>Bara video</value>
  </string>
 
  <string>
  <id>13003</id>
- <value>- Fördröjning:</value>
+ <value>- Fördröjning</value>
  </string>
 
  <string>
  <id>13004</id>
- <value>- Minimum speltid:</value>
+ <value>- Minimum speltid</value>
  </string>
 
  <string>
@@ -2408,7 +2400,7 @@
 
  <string>
  <id>13204</id>
- <value>Senast laddade profil:</value>
+ <value>Senast laddade profil</value>
  </string>
 
    <string>
@@ -2418,7 +2410,7 @@
 
    <string>
 <id>13300</id>
-<value>Fläktfart:</value>
+<value>Fläktfart</value>
 </string>
 
    <string>
@@ -2438,7 +2430,7 @@
 
    <string>
 <id>13304</id>
-<value>Vänd Texthåll</value>
+<value>Vänd texthåll</value>
 </string>
 
 <string>
@@ -2453,7 +2445,7 @@
   
 <string>
 <id>13307</id>
-<value>Reset/Starta om</value>
+<value>Göm låt nummer</value>
 </string>
 
 <string>
@@ -2477,7 +2469,7 @@
 
 <string>
 <id>13312</id>
-<value>Border reduction</value>
+<value>Gräns reduktion</value>
 </string>
 
 <string>
@@ -2485,8 +2477,8 @@
 <value>Reseta/Starta om</value>
 </string>
 
-  <string><id>13314</id><value>Musik OSD Timeout</value></string>
-  <string><id>13315</id><value>Skapa Miniatyrer</value></string>
+  <string><id>13314</id><value>Musik OSD timeout</value></string>
+  <string><id>13315</id><value>Skapa miniatyrer</value></string>
   <string><id>13316</id><value>Recursive miniatyrer</value></string>
   <string><id>13317</id><value>Titta på bildspel</value></string>
   <string><id>13318</id><value>Recursive bildspel</value></string>
@@ -2502,7 +2494,7 @@
   <string><id>13328</id><value>%s inte funnen.</value></string>
   <string><id>13329</id><value>Fel vid öppnande av %s</value></string>
   <string><id>13330</id><value>Gick inte ladda %s</value></string>
-  <string><id>13331</id><value>Fel:För lite ledigt minne.</value></string>
+  <string><id>13331</id><value>Fel! För lite ledigt minne.</value></string>
   <string><id>13332</id><value>Gå uppåt</value></string>
   <string><id>13333</id><value>Gå neråt</value></string>
   <string><id>13334</id><value>Ändra Namn</value></string>
@@ -2511,19 +2503,19 @@
   <string><id>13337</id><value>Stereo PCM passthrough</value></string>
 <string>
 <id>14000</id>
-<value>Stacking: Av</value>
+<value>Stacking Av</value>
 </string>
    <string>
 <id>14001</id>
-<value>Stacking: Enkel</value>
+<value>Stacking enkel</value>
 </string>
    <string>
 <id>14002</id>
-<value>Stacking: Luddig</value>
+<value>Stacking luddig</value>
 </string>
    <string>
 <id>14003</id>
-<value>Downloading playlist file...</value>
+<value>Laddar ner playlist...</value>
 </string>
    <string>
 <id>14004</id>
@@ -2546,11 +2538,11 @@
    <string><id>14010</id><value>Autoväxla val</value></string>
    <string><id>14011</id><value>Aktivera autoväxling</value></string>
    <string><id>14012</id><value>Använd stora ikoner</value></string>
-   <string><id>14013</id><value>Metod:</value></string>
-   <string><id>14014</id><value>Procent:</value></string>
+   <string><id>14013</id><value>Metod</value></string>
+   <string><id>14014</id><value>Procent</value></string>
    <string><id>14015</id><value>Thumbpanel om inga filer</value></string>
    <string><id>14016</id><value>Listpanel om inga mappar</value></string>
-   <string><id>14017</id><value>Procent av tumnaglar</value></string>
+   <string><id>14017</id><value>Procent av miniatyrer</value></string>
    <string><id>14018</id><value>Vy val</value></string>
    <string><id>14019</id><value>Områdeskod 1</value></string>
    <string><id>14020</id><value>Områdeskod 2</value></string>
@@ -2560,17 +2552,17 @@
    <string><id>14024</id><value>Skriv in största närmaste stad</value></string>
    <string><id>14025</id><value>Video från hårddisk</value></string>
    <string><id>14026</id><value>Video från DVDRom</value></string>
-   <string><id>14027</id><value>Video från Lokalt Nätverk</value></string>
-   <string><id>14028</id><value>Video från Internet</value></string>
+   <string><id>14027</id><value>Video från lokalt nätverk</value></string>
+   <string><id>14028</id><value>Video från internet</value></string>
    <string><id>14029</id><value>Audio från hårddisk</value></string>
    <string><id>14030</id><value>Audio från DVDRom</value></string>
-   <string><id>14031</id><value>Audio från Lokalt Nätverk</value></string>
+   <string><id>14031</id><value>Audio från lokalt nätverk</value></string>
    <string><id>14032</id><value>Audio från Internet</value></string>
    <string><id>14033</id><value>DVD från hårddisk</value></string>
    <string><id>14034</id><value>DVD från DVDRom</value></string>
-   <string><id>14035</id><value>DVD från Lokalt Nätverk</value></string>
+   <string><id>14035</id><value>DVD från lokalt nätverk</value></string>
    <string><id>14036</id><value>Servrar</value></string>
-   <string><id>14037</id><value>Look and Feel</value></string>
+   <string><id>14037</id><value>Utseende och känsla</value></string>
    <string><id>14038</id><value>Nätverks inställningar ändrade</value></string>
    <string><id>14039</id><value>XBMC behöver startas om för att slutföra din</value></string>
    <string><id>14040</id><value>nätverksinställng. Vill du starta om nu?</value></string>
