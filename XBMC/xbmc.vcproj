@@ -1288,10 +1288,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -2070,10 +2070,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -2545,6 +2545,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\lib\libGoAhead\XBMCConfiguration.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\XBMChttp.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\XBMChttp.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\lib\libGoAhead\XBMCweb.cpp">
