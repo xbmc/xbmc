@@ -31,6 +31,7 @@ CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwContr
 	m_bLeftSelected=false;
 	m_bRightSelected=false;
 	m_dwTicks=0;
+	ControlType = GUICONTROL_SELECTBUTTON;
 }
 
 CGUISelectButtonControl::~CGUISelectButtonControl(void)

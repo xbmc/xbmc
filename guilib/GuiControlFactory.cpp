@@ -223,16 +223,16 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			strFont				= ((CGUILabelControl*)pReference)->GetFontName();
 			strLabel			= ((CGUILabelControl*)pReference)->GetLabel();
 			dwTextColor			= ((CGUILabelControl*)pReference)->GetTextColor();
-			dwAlign				= ((CGUILabelControl*)pReference)->GetAlignment();
+			dwAlign				= ((CGUILabelControl*)pReference)->m_dwTextAlign;
 			dwDisabledColor		= ((CGUILabelControl*)pReference)->GetDisabledColor();
 		}
-		if (strType=="fadelabel")
+		else if (strType=="fadelabel")
 		{
 			strFont				= ((CGUIFadeLabelControl*)pReference)->GetFontName();
 			dwTextColor			= ((CGUIFadeLabelControl*)pReference)->GetTextColor();
 			dwAlign				= ((CGUIFadeLabelControl*)pReference)->GetAlignment();
 		}
-		if (strType=="rss")
+		else if (strType=="rss")
 		{
 			strFont				= ((CGUIRSSControl*)pReference)->GetFontName();
 			strRSSUrl			= ((CGUIRSSControl*)pReference)->GetUrl();
@@ -240,7 +240,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextColor2		= ((CGUIRSSControl*)pReference)->GetHeadlineTextColor();
 			dwTextColor			= ((CGUIRSSControl*)pReference)->GetNormalTextColor();
 		}
-		if (strType=="ram")
+		else if (strType=="ram")
 		{
 			strFont				= ((CGUIRAMControl*)pReference)->GetFontName();
 			strFont2			= ((CGUIRAMControl*)pReference)->GetFont2Name();
@@ -254,7 +254,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			((CGUIRAMControl*)pReference)->GetThumbAttributes(dwThumbWidth,dwThumbHeight,dwThumbSpaceX,dwThumbSpaceY,strDefaultThumb);
 
 		}
-		if (strType=="button")
+		else if (strType=="button")
 		{
 			strTextureFocus		= ((CGUIButtonControl*)pReference)->GetTexutureFocusName();
 			strTextureNoFocus	= ((CGUIButtonControl*)pReference)->GetTexutureNoFocusName();
@@ -267,7 +267,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextOffsetX		= ((CGUIButtonControl*)pReference)->GetTextOffsetX();
 			dwTextOffsetY		= ((CGUIButtonControl*)pReference)->GetTextOffsetY();
 		}
-		if (strType=="spinbutton")
+		else if (strType=="spinbutton")
 		{
 			iType				= ((CGUISpinButtonControl*)pReference)->GetType();
 			strTextureDownFocus	= ((CGUISpinButtonControl*)pReference)->GetTexutureDownFocusName();
@@ -278,7 +278,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextColor			= ((CGUISpinButtonControl*)pReference)->GetTextColor();
 			dwDisabledColor		= ((CGUISpinButtonControl*)pReference)->GetDisabledColor() ;
 		}
-		if (strType=="togglebutton")
+		else if (strType=="togglebutton")
 		{
 			strTextureAltFocus	= ((CGUIToggleButtonControl*)pReference)->GetTexutureAltFocusName();
 			strTextureAltNoFocus= ((CGUIToggleButtonControl*)pReference)->GetTexutureAltNoFocusName();
@@ -292,7 +292,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextOffsetX		= ((CGUIToggleButtonControl*)pReference)->GetTextOffsetX();
 			dwTextOffsetY		= ((CGUIToggleButtonControl*)pReference)->GetTextOffsetY();
 		}
-		if (strType=="buttonM")
+		else if (strType=="buttonM")
 		{
 			dwItems				= ((CGUIMButtonControl*)pReference)->GetItems();
 			strTextureFocus		= ((CGUIMButtonControl*)pReference)->GetTexutureFocusName();
@@ -305,7 +305,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextOffsetX		= ((CGUIMButtonControl*)pReference)->GetTextOffsetX();
 			dwTextOffsetY		= ((CGUIMButtonControl*)pReference)->GetTextOffsetY();
 		}
-		if (strType=="checkmark")
+		else if (strType=="checkmark")
 		{
 			bShadow             = ((CGUICheckMarkControl*)pReference)->GetShadow();
 			strTextureCheckMark	= ((CGUICheckMarkControl*)pReference)->GetCheckMarkTextureName();
@@ -318,7 +318,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextColor			= ((CGUICheckMarkControl*)pReference)->GetTextColor();
 			dwDisabledColor		= ((CGUICheckMarkControl*)pReference)->GetDisabledColor();
 		}
-		if (strType=="radiobutton")
+		else if (strType=="radiobutton")
 		{
 			strTextureRadioFocus= ((CGUIRadioButtonControl*)pReference)->GetTexutureRadioFocusName();;
 			strTextureRadioNoFocus= ((CGUIRadioButtonControl*)pReference)->GetTexutureRadioNoFocusName();;
@@ -332,7 +332,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextOffsetX		= ((CGUIRadioButtonControl*)pReference)->GetTextOffsetX();
 			dwTextOffsetY		= ((CGUIRadioButtonControl*)pReference)->GetTextOffsetY();
 		}
-		if (strType=="spincontrol")
+		else if (strType=="spincontrol")
 		{
 			strFont				= ((CGUISpinControl*)pReference)->GetFontName();
 			dwTextColor			= ((CGUISpinControl*)pReference)->GetTextColor();
@@ -349,26 +349,26 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextOffsetX		= ((CGUISpinControl*)pReference)->GetTextOffsetX();
 			dwTextOffsetY		= ((CGUISpinControl*)pReference)->GetTextOffsetY();
 		}
-		if (strType=="slider")
+		else if (strType=="slider")
 		{
 			strTextureBg		= ((CGUISliderControl*)pReference)->GetBackGroundTextureName();
 			strMid				= ((CGUISliderControl*)pReference)->GetBackTextureMidName();
 			dwControlOffsetX	= ((CGUISliderControl*)pReference)->GetControlOffsetX();
 			dwControlOffsetY	= ((CGUISliderControl*)pReference)->GetControlOffsetY();
 		}
-		if (strType=="progress")
+		else if (strType=="progress")
 		{
 			strTextureBg		= ((CGUIProgressControl*)pReference)->GetBackGroundTextureName();
 			strLeft				= ((CGUIProgressControl*)pReference)->GetBackTextureLeftName();
 			strMid				= ((CGUIProgressControl*)pReference)->GetBackTextureMidName();
 			strRight			= ((CGUIProgressControl*)pReference)->GetBackTextureRightName();
 		}
-		if (strType=="image")
+		else if (strType=="image")
 		{
 			strTexture			= ((CGUIImage *)pReference)->GetFileName();
 			dwColorKey			= ((CGUIImage *)pReference)->GetColorKey();
 		}
-		if (strType=="listcontrol")
+		else if (strType=="listcontrol")
 		{
 			strFont				= ((CGUIListControl*)pReference)->GetFontName();
 			dwSpinWidth			= ((CGUIListControl*)pReference)->GetSpinWidth();
@@ -399,7 +399,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextOffsetX		= ((CGUIListControl*)pReference)->GetButtonTextOffsetX();
 			dwTextOffsetY		= ((CGUIListControl*)pReference)->GetButtonTextOffsetY();
 		}
-		if (strType=="listcontrolex")
+		else if (strType=="listcontrolex")
 		{
 			strFont				= ((CGUIListControlEx*)pReference)->GetFontName();
 			dwSpinWidth			= ((CGUIListControlEx*)pReference)->GetSpinWidth();
@@ -426,7 +426,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextOffsetX		= ((CGUIListControlEx*)pReference)->GetTextOffsetX();
 			dwTextOffsetY		= ((CGUIListControlEx*)pReference)->GetTextOffsetY();
 		}
-		if (strType=="textbox")
+		else if (strType=="textbox")
 		{
 			strFont				= ((CGUITextBox*)pReference)->GetFontName();
 			dwTextColor			= ((CGUITextBox*)pReference)->GetTextColor();
@@ -442,7 +442,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwSpinWidth			= ((CGUITextBox*)pReference)->GetSpinWidth();
 			dwSpinHeight 		= ((CGUITextBox*)pReference)->GetSpinHeight();
 		}
-		if (strType=="thumbnailpanel")
+		else if (strType=="thumbnailpanel")
 		{      
 			textureWidthBig		= ((CGUIThumbnailPanel*)pReference)->GetTextureWidthBig();
 			textureHeightBig	= ((CGUIThumbnailPanel*)pReference)->GetTextureHeightBig();
@@ -469,7 +469,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			((CGUIThumbnailPanel*)pReference)->GetThumbDimensions(iThumbXPos, iThumbYPos,iThumbWidth, iThumbHeight);
 			((CGUIThumbnailPanel*)pReference)->GetThumbDimensionsBig(iThumbXPosBig, iThumbYPosBig,iThumbWidthBig, iThumbHeightBig);      
 		}
-		if (strType=="selectbutton")
+		else if (strType=="selectbutton")
 		{
 			strTextureBg  		= ((CGUISelectButtonControl*)pReference)->GetTextureBackground();
 			strLeft				= ((CGUISelectButtonControl*)pReference)->GetTextureLeft();

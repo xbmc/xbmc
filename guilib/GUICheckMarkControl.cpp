@@ -15,6 +15,7 @@ CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, 
   m_bSelected=false;
 	m_dwAlign=dwAlign;
   m_bShadow=false;
+	ControlType = GUICONTROL_CHECKMARK;
 }
 
 CGUICheckMarkControl::~CGUICheckMarkControl(void)

@@ -26,6 +26,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dw
 	m_iImageWidth = 0;
 	m_iImageHeight = 0;
 	m_bWasVisible = m_bVisible;
+	ControlType = GUICONTROL_IMAGE;
 }
 
 

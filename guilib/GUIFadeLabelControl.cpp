@@ -17,6 +17,7 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, 
 	iStartFrame=0;
 	m_bFadeIn=false;
 	m_iCurrentFrame=0;
+	ControlType = GUICONTROL_FADELABEL;
 }
 
 CGUIFadeLabelControl::~CGUIFadeLabelControl(void)

@@ -28,20 +28,21 @@ public:
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
 
-	DWORD							GetTextColor() const { return m_dwTextColor;};
-	DWORD							GetDisabledColor() const { return m_dwDisabledColor;};
-	DWORD							GetAlignment() const { return m_dwdwTextAlign;};
-	const CStdString& GetFontName() const { return m_pFont->GetFontName(); };
-	const wstring			GetLabel() const { return m_strLabel; };
+	DWORD							GetTextColor() const { return m_dwTextColor;}
+	DWORD							GetDisabledColor() const { return m_dwDisabledColor;}
+	const CStdString& GetFontName() const { return m_pFont->GetFontName(); }
+	const wstring			GetLabel() const { return m_strLabel; }
 	void	SetText(CStdString aLabel);
 	void	ShowCursor(bool bShow=true);
+
+	DWORD             m_dwTextAlign;
+
 protected:
 	void							ShortenPath();
 protected:
   CGUIFont*								m_pFont;
   wstring		              m_strLabel;
   DWORD                   m_dwTextColor;
-  DWORD                   m_dwdwTextAlign;
 	bool										m_bHasPath;
   DWORD		m_dwDisabledColor;
   bool m_bShowCursor;
