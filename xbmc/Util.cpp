@@ -182,7 +182,7 @@ void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
   strThumb= szThumbNail;
 }
 
-void CUtil::GetFileSize(DWORD dwFileSize, CStdString& strFileSize)
+void CUtil::GetFileSize(__int64 dwFileSize, CStdString& strFileSize)
 {
   char szTemp[128];
   if (dwFileSize < 1024)
