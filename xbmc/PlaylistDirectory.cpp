@@ -20,7 +20,7 @@ bool CPlayListDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &it
 	if ( !CUtil::IsPlayList(strPath) )
 	{
 		CHDDirectory dirLoader;
-		dirLoader.SetMask(".m3u|.b4s|.pls");
+		dirLoader.SetMask(".m3u|.b4s|.pls|.strm");
 		VECFILEITEMS tmpitems;
 		CStdString strDir=g_stSettings.m_szAlbumDirectory;
 		strDir+="\\playlists";
