@@ -5,7 +5,7 @@
 
 using namespace PLAYLIST;
 
-CPlayList::CPlayListItem::CPlayListItem()
+CPlayList::CPlayListItem::CPlayListItem() : m_lDuration(0)
 {
 }
 
