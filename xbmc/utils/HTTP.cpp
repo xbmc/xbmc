@@ -280,11 +280,12 @@ bool CHTTP::Connect()
 		service.sin_addr.s_addr = inet_addr(m_strHostName.c_str());
 		if(service.sin_addr.s_addr==INADDR_NONE)
 		{
-			CStdString strIpAddress;
+			CStdString strIpAddress="";
 			CDNSNameCache::Lookup(m_strHostName,strIpAddress);
 			service.sin_addr.s_addr = inet_addr(strIpAddress.c_str());
-			if (service.sin_addr.s_addr == INADDR_NONE)
+			if (service.sin_addr.s_addr == INADDR_NONE || strIpAddress=="")
 			{
+				CLog::Log("ERROR: Your DNS(<nameserver> tag) is not properly set.  Please fix.  Defaulting to using hard-coded IP address for known Hosts.");
 				if (strcmp(m_strHostName.c_str(),"ia.imdb.com")==0)
 					service.sin_addr.s_addr = inet_addr("193.108.152.15");
 				else if (strcmp(m_strHostName.c_str(),"us.imdb.com")==0)
