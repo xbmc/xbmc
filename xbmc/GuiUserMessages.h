@@ -55,3 +55,5 @@
 #define GUI_MSG_MUTE_ON                 GUI_MSG_USER + 14
 #define GUI_MSG_MUTE_OFF                GUI_MSG_USER + 15
 
+#define GUI_MSG_CHANGE_VISUALISATION    GUI_MSG_USER + 16
+

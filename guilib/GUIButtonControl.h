@@ -44,8 +44,8 @@ public:
   void SetText2(const wstring & aLabel2);
   void SetHyperLink(long dwWindowID);
   void SetExecuteAction(const CStdString& strExecuteAction);
-  const CStdString& GetTexutureFocusName() const { return m_imgFocus.GetFileName(); };
-  const CStdString& GetTexutureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
+  const CStdString& GetTextureFocusName() const { return m_imgFocus.GetFileName(); };
+  const CStdString& GetTextureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
   DWORD GetTextOffsetX() const { return m_dwTextOffsetX;};
   DWORD GetTextOffsetY() const { return m_dwTextOffsetY;};
   void SetTextColor(D3DCOLOR dwTextColor) { m_dwTextColor = dwTextColor;};
@@ -59,9 +59,9 @@ public:
   const CStdString& GetExecuteAction() const { return m_strExecuteAction; };
   void SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
   void Flicker(bool bFlicker = TRUE);
+  virtual void Update();
 
 protected:
-  virtual void Update() ;
 
   CGUIImage m_imgFocus;
   CGUIImage m_imgNoFocus;

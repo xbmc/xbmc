@@ -32,8 +32,8 @@ public:
   DWORD GetAlignment() const { return m_buttonControl.GetTextAlign() & 0x00000004;};
   DWORD GetTextOffsetX() const { return m_buttonControl.GetTextOffsetX();};
   DWORD GetTextOffsetY() const { return m_buttonControl.GetTextOffsetY();};
-  const CStdString& GetTextureFocusName() const { return m_buttonControl.GetTexutureFocusName(); };
-  const CStdString& GetTextureNoFocusName() const { return m_buttonControl.GetTexutureNoFocusName(); };
+  const CStdString& GetTextureFocusName() const { return m_buttonControl.GetTextureFocusName(); };
+  const CStdString& GetTextureNoFocusName() const { return m_buttonControl.GetTextureNoFocusName(); };
   const wstring GetLabel() const { return m_buttonControl.GetLabel(); };
   const CStdString GetCurrentLabel() const;
   void SetLabel(const CStdString &aLabel) {m_buttonControl.SetText(aLabel);};
