@@ -522,7 +522,7 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 				pItem->SetLabel2(str);
 			}
 		}
-		else
+		else if (pItem->GetLabel() == "") // pls labels come in preformatted
 		{
 			// No music info and it's not CDDA so we'll just show the filename
 			CStdString str;
