@@ -232,6 +232,10 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 	char *szBuffer= new char[strHTML.size()+1];
 	strcpy(szBuffer,strHTML.c_str());
 	
+  int idx = strURL.Find('?');
+  if (idx != -1) {
+    strURL = strURL.Left(idx);
+  }
   char szURL[1024];
   strcpy(szURL, strURL.c_str());
   if (CUtil::HasSlashAtEnd(strURL)) szURL[ strURL.size()-1 ]=0;
