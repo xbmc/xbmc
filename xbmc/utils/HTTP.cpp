@@ -29,6 +29,7 @@ CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
 	hEvent = WSA_INVALID_EVENT;
 	m_RecvBytes = 0;
 	m_RecvBuffer = 0;
+	m_redirectedURL = "";
 }
 
 
@@ -41,6 +42,7 @@ CHTTP::CHTTP()
 	hEvent = WSA_INVALID_EVENT;
 	m_RecvBytes = 0;
 	m_RecvBuffer = 0;
+	m_redirectedURL = "";
 }
 
 
@@ -510,6 +512,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 {
 	string strFile="";
 	m_strHostName="";
+	m_redirectedURL = strURL;
 	if (!BreakURL(strURL, m_strHostName, m_iPort, strFile))
 	{
     CLog::Log("Invalid url: %s",strURL.c_str());
@@ -651,6 +654,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 			}
 			CLog::Log("%d Redirected: %s", status, strURL.c_str());
 			m_RecvBytes = 0;
+			m_redirectedURL = strURL;
 			return Open(strURL, verb, pData);
 		}
 		else
