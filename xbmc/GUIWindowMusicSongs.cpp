@@ -1303,6 +1303,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 				else if (!tag.Loaded() && !bFoundInHddCache) //	Loaded from cache?
 				{
 					tag.SetSong(song);
+          pItem->SetThumbnailImage(song.strThumb);
 				}
 			}//if (!tag.Loaded() )
 			else if (m_bScan)

@@ -153,13 +153,13 @@ bool CMusicDatabase::Open()
 		}
 		if (fVersion < MUSIC_DATABASE_VERSION && !UpdateOldVersion(fVersion))
 		{
-			CLog::Log(LOGERROR, "Can't update the video database from version %f to %f", fVersion, MUSIC_DATABASE_VERSION);
+			CLog::Log(LOGERROR, "Can't update the music database from version %f to %f", fVersion, MUSIC_DATABASE_VERSION);
 			Close();
 			return false;
 		}
 		else if (fVersion > MUSIC_DATABASE_VERSION)
 		{
-			CLog::Log(LOGERROR, "Can't open the video database as it is a NEWER version than what we were expecting!");
+			CLog::Log(LOGERROR, "Can't open the music database as it is a NEWER version than what we were expecting!");
 			Close();
 			return false;
 		}
