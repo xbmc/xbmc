@@ -279,7 +279,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
 			if (m_nSelectedItem>-1)
 			{
-        SetSelectedItem(m_nSelectedItem);
+				SetSelectedItem(m_nSelectedItem);
 			}
 			return true;
 		}
@@ -460,8 +460,8 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 	GetDirectory(m_strDirectory, m_vecItems);
 
 	RetrieveMusicInfo();
-
-  UpdateListControl();
+	
+	UpdateListControl();
 	UpdateButtons();
 
 	strSelectedItem=m_history.Get(m_strDirectory);
@@ -1280,6 +1280,11 @@ void CGUIWindowMusicBase::UpdateButtons()
 	g_graphicsContext.SendMessage(msg2);
 
 	strItem=g_localizeStrings.Get(271);	//	Top 100
+	msg2.SetLabel(strItem);
+	g_graphicsContext.SendMessage(msg2);
+
+	// new nav window
+	strItem=g_localizeStrings.Get(15100);	//	Navigation Window
 	msg2.SetLabel(strItem);
 	g_graphicsContext.SendMessage(msg2);
 

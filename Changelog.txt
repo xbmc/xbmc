@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 24-02-2005 added: My Music iPod-style Navigator. (Initial commit. Support for multiple artists and genres coming SOON!)
   - 24-02-2005 fixed: Timing Issues: Printing XBE Title To LCD On Launch
   - 24-02-2005 fixed: Some long-lined vobsubs were not displayed. Fixed in alternate mplayer only.
   - 24-02-2005 changed: Delay audio output until video is ready to play
