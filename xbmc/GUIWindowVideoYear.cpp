@@ -197,7 +197,7 @@ void CGUIWindowVideoYear::FormatItemLabels()
   }
 }
 
-void CGUIWindowVideoYear::SortItems()
+void CGUIWindowVideoYear::SortItems(VECFILEITEMS& items)
 {
   SSortVideoYearByName sortmethod;
 	if (m_strDirectory.IsEmpty())
@@ -210,7 +210,7 @@ void CGUIWindowVideoYear::SortItems()
 		sortmethod.m_iSortMethod=g_stSettings.m_iMyVideoYearSortMethod;
 		sortmethod.m_bSortAscending=g_stSettings.m_bMyVideoYearSortAscending;
 	}
-  sort(m_vecItems.begin(), m_vecItems.end(), sortmethod);
+  sort(items.begin(), items.end(), sortmethod);
 }
 
 //****************************************************************************************************************************
