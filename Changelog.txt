@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 24-09-2004 changed: German (Austrian) language file
   - 24-09-2004 fixed: in thumbnail view the up arrow was not reachable
   - 23-09-2004 fixed: list item is not centerally aligned when TTF fonts enabled
   - 23-09-2004 fixed: song title text would overlap with the size/time when TTF fonts enabled
