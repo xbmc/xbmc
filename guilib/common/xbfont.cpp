@@ -56,39 +56,39 @@
 DWORD CXBFont::m_dwFontVertexShader = 0L;
 DWORD CXBFont::m_dwFontPixelShader  = 0L;
 
-    
-    
-    
+
+
+
 //-----------------------------------------------------------------------------
 // Name: CXBFont()
 // Desc: Font class constructor.
 //-----------------------------------------------------------------------------
 CXBFont::CXBFont()
 {
-    m_pFontTexture       = NULL;
+	m_pFontTexture       = NULL;
 
-    m_fFontHeight        = 36.0f;
-    m_fFontTopPadding    =  0.0f;
-    m_fFontBottomPadding =  0.0f;
-    m_fFontYAdvance      = 36.0f;
+	m_fFontHeight        = 36.0f;
+	m_fFontTopPadding    =  0.0f;
+	m_fFontBottomPadding =  0.0f;
+	m_fFontYAdvance      = 36.0f;
 
-    m_dwNumGlyphs        = 0L;
-    m_Glyphs             = NULL;
+	m_dwNumGlyphs        = 0L;
+	m_Glyphs             = NULL;
 
-    m_fCursorX           = 0.0f;
-    m_fCursorY           = 0.0f;
+	m_fCursorX           = 0.0f;
+	m_fCursorY           = 0.0f;
 
-    m_fXScaleFactor      = 1.0f;
-    m_fYScaleFactor      = 1.0f;
-    m_fSlantFactor       = 0.0f;
+	m_fXScaleFactor      = 1.0f;
+	m_fYScaleFactor      = 1.0f;
+	m_fSlantFactor       = 0.0f;
 
-    m_cMaxGlyph          = 0;
-    m_TranslatorTable    = NULL;
-    m_bTranslatorTableWasAllocated = FALSE;
-    
-    m_dwNestedBeginCount = 0L;
+	m_cMaxGlyph          = 0;
+	m_TranslatorTable    = NULL;
+	m_bTranslatorTableWasAllocated = FALSE;
 
-    m_dwCurrentColor = 0xffffffff; // white
+	m_dwNestedBeginCount = 0L;
+
+	m_dwCurrentColor = 0xffffffff; // white
 }
 
 
@@ -100,7 +100,7 @@ CXBFont::CXBFont()
 //-----------------------------------------------------------------------------
 CXBFont::~CXBFont()
 {
-    Destroy();
+	Destroy();
 }
 
 
@@ -113,70 +113,70 @@ CXBFont::~CXBFont()
 //-----------------------------------------------------------------------------
 HRESULT CXBFont::CreateShaders()
 {
-    // Create the vertex shader
-    if( 0L == m_dwFontVertexShader )
-    {
-        // Specify the vertex declaration, used here to manually specify a constant.
-        DWORD dwFontVertexDecl[] =
-        {
-            D3DVSD_STREAM(0),
-            D3DVSD_REG( 0, D3DVSDT_FLOAT4 ),        // Vertex/tex coord combo
-            D3DVSD_REG( 3, D3DVSDT_D3DCOLOR ),      // Color
-            D3DVSD_END()
-        };
+	// Create the vertex shader
+	if( 0L == m_dwFontVertexShader )
+	{
+		// Specify the vertex declaration, used here to manually specify a constant.
+		DWORD dwFontVertexDecl[] =
+		{
+			D3DVSD_STREAM(0),
+				D3DVSD_REG( 0, D3DVSDT_FLOAT4 ),        // Vertex/tex coord combo
+				D3DVSD_REG( 3, D3DVSDT_D3DCOLOR ),      // Color
+				D3DVSD_END()
+		};
 
-        // Microcode for the vertex shader, where input is defined as:
-        //    v0.xy = screen space position
-        //    v0.zw = tex coords
-        //    v3    = diffuse color
-        static DWORD dwFontVertexShaderInstructions[] = 
-        {
-            0x00032078,
-            0x00000000, 0x00200015, 0x0836106c, 0x2070c800, // mov oPos.xy, v0.xy
-            0x00000000, 0x002000bf, 0x0836106c, 0x2070c848, // mov oT0.xy, v0.zw
-            0x00000000, 0x0020061b, 0x0836106c, 0x2070f819  // mov oD0, v3
-        };
+		// Microcode for the vertex shader, where input is defined as:
+		//    v0.xy = screen space position
+		//    v0.zw = tex coords
+		//    v3    = diffuse color
+		static DWORD dwFontVertexShaderInstructions[] = 
+		{
+			0x00032078,
+				0x00000000, 0x00200015, 0x0836106c, 0x2070c800, // mov oPos.xy, v0.xy
+				0x00000000, 0x002000bf, 0x0836106c, 0x2070c848, // mov oT0.xy, v0.zw
+				0x00000000, 0x0020061b, 0x0836106c, 0x2070f819  // mov oD0, v3
+		};
 
-        // Create the vertex shader
-        if( FAILED( D3DDevice::CreateVertexShader( dwFontVertexDecl, 
-                                                   dwFontVertexShaderInstructions, 
-                                                   &m_dwFontVertexShader,
-                                                   D3DUSAGE_PERSISTENTDIFFUSE ) ) )
-        return E_FAIL;
+		// Create the vertex shader
+		if( FAILED( D3DDevice::CreateVertexShader( dwFontVertexDecl, 
+			dwFontVertexShaderInstructions, 
+			&m_dwFontVertexShader,
+			D3DUSAGE_PERSISTENTDIFFUSE ) ) )
+			return E_FAIL;
 
-    }
+	}
 
-    // Create the pixel shader
-    if( 0L == m_dwFontPixelShader )
-    {
-        D3DPIXELSHADERDEF psd;
-        ZeroMemory( &psd, sizeof(psd) );
-        psd.PSCombinerCount = PS_COMBINERCOUNT( 1, 0 );
-        psd.PSTextureModes  = PS_TEXTUREMODES( PS_TEXTUREMODES_PROJECT2D, 0, 0, 0 );
+	// Create the pixel shader
+	if( 0L == m_dwFontPixelShader )
+	{
+		D3DPIXELSHADERDEF psd;
+		ZeroMemory( &psd, sizeof(psd) );
+		psd.PSCombinerCount = PS_COMBINERCOUNT( 1, 0 );
+		psd.PSTextureModes  = PS_TEXTUREMODES( PS_TEXTUREMODES_PROJECT2D, 0, 0, 0 );
 
-        //------------- Stage 0 -------------
-        psd.PSRGBInputs[0]    = PS_COMBINERINPUTS( PS_REGISTER_T0|PS_CHANNEL_RGB,   PS_REGISTER_V0|PS_CHANNEL_RGB,   0, 0 );
-        psd.PSAlphaInputs[0]  = PS_COMBINERINPUTS( PS_REGISTER_T0|PS_CHANNEL_ALPHA, PS_REGISTER_V0|PS_CHANNEL_ALPHA, 0, 0 );
-        psd.PSRGBOutputs[0]   = PS_COMBINEROUTPUTS( PS_REGISTER_R0, 0, 0, PS_COMBINEROUTPUT_AB_MULTIPLY );
-        psd.PSAlphaOutputs[0] = PS_COMBINEROUTPUTS( PS_REGISTER_R0, 0, 0, PS_COMBINEROUTPUT_AB_MULTIPLY );
+		//------------- Stage 0 -------------
+		psd.PSRGBInputs[0]    = PS_COMBINERINPUTS( PS_REGISTER_T0|PS_CHANNEL_RGB,   PS_REGISTER_V0|PS_CHANNEL_RGB,   0, 0 );
+		psd.PSAlphaInputs[0]  = PS_COMBINERINPUTS( PS_REGISTER_T0|PS_CHANNEL_ALPHA, PS_REGISTER_V0|PS_CHANNEL_ALPHA, 0, 0 );
+		psd.PSRGBOutputs[0]   = PS_COMBINEROUTPUTS( PS_REGISTER_R0, 0, 0, PS_COMBINEROUTPUT_AB_MULTIPLY );
+		psd.PSAlphaOutputs[0] = PS_COMBINEROUTPUTS( PS_REGISTER_R0, 0, 0, PS_COMBINEROUTPUT_AB_MULTIPLY );
 
-        //------------- Final combiner -------------
-        psd.PSFinalCombinerInputsABCD = PS_COMBINERINPUTS( PS_REGISTER_C0, PS_REGISTER_R0, PS_REGISTER_ZERO, PS_REGISTER_C1 );
-        psd.PSFinalCombinerInputsEFG  = PS_COMBINERINPUTS( 0, 0, PS_REGISTER_R0|PS_CHANNEL_ALPHA, 0 );
+		//------------- Final combiner -------------
+		psd.PSFinalCombinerInputsABCD = PS_COMBINERINPUTS( PS_REGISTER_C0, PS_REGISTER_R0, PS_REGISTER_ZERO, PS_REGISTER_C1 );
+		psd.PSFinalCombinerInputsEFG  = PS_COMBINERINPUTS( 0, 0, PS_REGISTER_R0|PS_CHANNEL_ALPHA, 0 );
 
-        // Set constants to scale output to an NTSC-safe range
-        // NTSC_MAX = 0.8549f => 0x00dadada
-        // NTSC_MIN = 0.0625f => 0x00101010
-        psd.PSFinalCombinerConstant0 = 0x00dadada;
-        psd.PSFinalCombinerConstant1 = 0x00101010;
-        psd.PSFinalCombinerConstants = PS_FINALCOMBINERCONSTANTS(0,1,PS_GLOBALFLAGS_NO_TEXMODE_ADJUST);
+		// Set constants to scale output to an NTSC-safe range
+		// NTSC_MAX = 0.8549f => 0x00dadada
+		// NTSC_MIN = 0.0625f => 0x00101010
+		psd.PSFinalCombinerConstant0 = 0x00dadada;
+		psd.PSFinalCombinerConstant1 = 0x00101010;
+		psd.PSFinalCombinerConstants = PS_FINALCOMBINERCONSTANTS(0,1,PS_GLOBALFLAGS_NO_TEXMODE_ADJUST);
 
-        // Create the pixel shader, as defined above.
-        if( FAILED( D3DDevice::CreatePixelShader( &psd, &m_dwFontPixelShader ) ) )
-            return E_FAIL;
-    }
+		// Create the pixel shader, as defined above.
+		if( FAILED( D3DDevice::CreatePixelShader( &psd, &m_dwFontPixelShader ) ) )
+			return E_FAIL;
+	}
 
-    return S_OK;
+	return S_OK;
 }
 
 
@@ -189,12 +189,12 @@ HRESULT CXBFont::CreateShaders()
 //-----------------------------------------------------------------------------
 HRESULT CXBFont::Create( const CHAR* strFontResourceFileName, DWORD dwResourceOffset )
 {
-    // Load the resource for the font
-    if( FAILED( m_xprResource.Create( strFontResourceFileName ) ) )
-        return E_FAIL;
+	// Load the resource for the font
+	if( FAILED( m_xprResource.Create( strFontResourceFileName ) ) )
+		return E_FAIL;
 
-    return Create( m_xprResource.GetTexture( dwResourceOffset ), 
-                   m_xprResource.GetData( dwResourceOffset + sizeof(D3DTexture) ) );
+	return Create( m_xprResource.GetTexture( dwResourceOffset ), 
+		m_xprResource.GetData( dwResourceOffset + sizeof(D3DTexture) ) );
 }
 
 
@@ -206,100 +206,100 @@ HRESULT CXBFont::Create( const CHAR* strFontResourceFileName, DWORD dwResourceOf
 //-----------------------------------------------------------------------------
 HRESULT CXBFont::Create( D3DTexture* pFontTexture, VOID* pFontData )
 {
-    m_pFontTexture = pFontTexture;
+	m_pFontTexture = pFontTexture;
 
-    BYTE* pData = (BYTE*)pFontData;
-    DWORD dwResourceType = ((DWORD*)pData)[0];
-    DWORD dwResourceSize = ((DWORD*)pData)[1];
-    pData += 2*sizeof(DWORD);
-    (VOID)dwResourceType; // not used
-    (VOID)dwResourceSize; // not used
+	BYTE* pData = (BYTE*)pFontData;
+	DWORD dwResourceType = ((DWORD*)pData)[0];
+	DWORD dwResourceSize = ((DWORD*)pData)[1];
+	pData += 2*sizeof(DWORD);
+	(VOID)dwResourceType; // not used
+	(VOID)dwResourceSize; // not used
 
-    DWORD dwFileVersion = *((DWORD*)pData); pData += sizeof(DWORD);
+	DWORD dwFileVersion = *((DWORD*)pData); pData += sizeof(DWORD);
 
-    // Check version of file (to make sure it matches up with the FontMaker tool)
-    if( dwFileVersion == 0x00000004 )
-    {
-        // Note: Version 0x00000004 is now considered to be the "old" way of
-        // doing fonts. Support for this version of font files will be going
-        // away, and a more recent version of FontMaker should now be used.
-        m_fFontHeight    = (FLOAT)*((DWORD*)pData); pData += sizeof(DWORD);
-        m_fFontYAdvance  = m_fFontHeight;
-        FLOAT fTexWidth  = (FLOAT)*((DWORD*)pData); pData += sizeof(DWORD);
-        FLOAT fTexHeight = (FLOAT)*((DWORD*)pData); pData += sizeof(DWORD);
-        DWORD dwBPP      = *((DWORD*)pData);        pData += sizeof(DWORD);
-        (VOID)dwBPP; // not used
+	// Check version of file (to make sure it matches up with the FontMaker tool)
+	if( dwFileVersion == 0x00000004 )
+	{
+		// Note: Version 0x00000004 is now considered to be the "old" way of
+		// doing fonts. Support for this version of font files will be going
+		// away, and a more recent version of FontMaker should now be used.
+		m_fFontHeight    = (FLOAT)*((DWORD*)pData); pData += sizeof(DWORD);
+		m_fFontYAdvance  = m_fFontHeight;
+		FLOAT fTexWidth  = (FLOAT)*((DWORD*)pData); pData += sizeof(DWORD);
+		FLOAT fTexHeight = (FLOAT)*((DWORD*)pData); pData += sizeof(DWORD);
+		DWORD dwBPP      = *((DWORD*)pData);        pData += sizeof(DWORD);
+		(VOID)dwBPP; // not used
 
-        // Read the low and high char
-        WCHAR cLowChar  = *((WCHAR*)pData); pData += sizeof(WCHAR);
-        WCHAR cHighChar = *((WCHAR*)pData); pData += sizeof(WCHAR);
+		// Read the low and high char
+		WCHAR cLowChar  = *((WCHAR*)pData); pData += sizeof(WCHAR);
+		WCHAR cHighChar = *((WCHAR*)pData); pData += sizeof(WCHAR);
 
-        // Read the glyph attributes from the file
-        m_Glyphs = (GLYPH_ATTR*)(pData+4);
+		// Read the glyph attributes from the file
+		m_Glyphs = (GLYPH_ATTR*)(pData+4);
 
-        m_cMaxGlyph = cHighChar;
-        m_TranslatorTable = new SHORT[m_cMaxGlyph+1];
-        m_bTranslatorTableWasAllocated = TRUE;
+		m_cMaxGlyph = cHighChar;
+		m_TranslatorTable = new SHORT[m_cMaxGlyph+1];
+		m_bTranslatorTableWasAllocated = TRUE;
 
-        for( WORD i=0; i<=m_cMaxGlyph; i++ )
-        {
-            if( i < cLowChar )
-                m_TranslatorTable[i] = 0;
-            else
-            {
-                m_TranslatorTable[i] = i-cLowChar;
+		for( WORD i=0; i<=m_cMaxGlyph; i++ )
+		{
+			if( i < cLowChar )
+				m_TranslatorTable[i] = 0;
+			else
+			{
+				m_TranslatorTable[i] = i-cLowChar;
 
-                GLYPH_ATTR* pGlyph = &m_Glyphs[m_TranslatorTable[i]];
+				GLYPH_ATTR* pGlyph = &m_Glyphs[m_TranslatorTable[i]];
 
-                pGlyph->tu1 *= ( fTexWidth-1) / fTexWidth;
-                pGlyph->tv1 *= (fTexHeight-1) / fTexHeight;
-                pGlyph->tu2 *= ( fTexWidth-1) / fTexWidth;
-                pGlyph->tv2 *= (fTexHeight-1) / fTexHeight;
+				pGlyph->tu1 *= ( fTexWidth-1) / fTexWidth;
+				pGlyph->tv1 *= (fTexHeight-1) / fTexHeight;
+				pGlyph->tu2 *= ( fTexWidth-1) / fTexWidth;
+				pGlyph->tv2 *= (fTexHeight-1) / fTexHeight;
 
-                pGlyph->wWidth += 1;
-            }
-        }
+				pGlyph->wWidth += 1;
+			}
+		}
 
-        m_fFontHeight = m_fFontHeight + 1;
-    }
-    else if( dwFileVersion == 0x00000005 )
-    {
-        // Note: Version 0x00000004 is considered to be the "new" way of
-        // doing fonts, using the most recent version of the FontMaker tool.
-        m_fFontHeight        = *((FLOAT*)pData); pData += sizeof(FLOAT);
-        m_fFontTopPadding    = *((FLOAT*)pData); pData += sizeof(FLOAT);
-        m_fFontBottomPadding = *((FLOAT*)pData); pData += sizeof(FLOAT);
-        m_fFontYAdvance      = *((FLOAT*)pData); pData += sizeof(FLOAT);
+		m_fFontHeight = m_fFontHeight + 1;
+	}
+	else if( dwFileVersion == 0x00000005 )
+	{
+		// Note: Version 0x00000004 is considered to be the "new" way of
+		// doing fonts, using the most recent version of the FontMaker tool.
+		m_fFontHeight        = *((FLOAT*)pData); pData += sizeof(FLOAT);
+		m_fFontTopPadding    = *((FLOAT*)pData); pData += sizeof(FLOAT);
+		m_fFontBottomPadding = *((FLOAT*)pData); pData += sizeof(FLOAT);
+		m_fFontYAdvance      = *((FLOAT*)pData); pData += sizeof(FLOAT);
 
-        // Point to the translator CStdString
-        m_cMaxGlyph = ((WORD*)pData)[0];
-        pData += sizeof(WORD);
-        m_TranslatorTable = (SHORT*)pData;
-        pData += sizeof(WCHAR)*(m_cMaxGlyph+1);
-        m_bTranslatorTableWasAllocated = FALSE;
+		// Point to the translator CStdString
+		m_cMaxGlyph = ((WORD*)pData)[0];
+		pData += sizeof(WORD);
+		m_TranslatorTable = (SHORT*)pData;
+		pData += sizeof(WCHAR)*(m_cMaxGlyph+1);
+		m_bTranslatorTableWasAllocated = FALSE;
 
-        // Read the glyph attributes from the file
-        m_dwNumGlyphs = ((DWORD*)pData)[0];
-        pData += sizeof(DWORD);
-        m_Glyphs = (GLYPH_ATTR*)pData;
-    }
-    else
-    {
-        OUTPUT_DEBUG_STRING( "XBFont: Incorrect version number on font file!\n" );
-        return E_FAIL;
-    }
-    
-    // Creates the vertex shader for rendering fonts, and a pixel shader for
-    // font rendering to ensure NTSC safe colors
-    if( FAILED( CreateShaders() ) )
-        return E_FAIL;
+		// Read the glyph attributes from the file
+		m_dwNumGlyphs = ((DWORD*)pData)[0];
+		pData += sizeof(DWORD);
+		m_Glyphs = (GLYPH_ATTR*)pData;
+	}
+	else
+	{
+		OUTPUT_DEBUG_STRING( "XBFont: Incorrect version number on font file!\n" );
+		return E_FAIL;
+	}
 
-    // Determine whether we should save/restore state
-    D3DDEVICE_CREATION_PARAMETERS d3dcp;
-    D3DDevice::GetCreationParameters( &d3dcp );
-    m_bSaveState = (d3dcp.BehaviorFlags&D3DCREATE_PUREDEVICE) ? FALSE : TRUE;
+	// Creates the vertex shader for rendering fonts, and a pixel shader for
+	// font rendering to ensure NTSC safe colors
+	if( FAILED( CreateShaders() ) )
+		return E_FAIL;
 
-    return S_OK;
+	// Determine whether we should save/restore state
+	D3DDEVICE_CREATION_PARAMETERS d3dcp;
+	D3DDevice::GetCreationParameters( &d3dcp );
+	m_bSaveState = (d3dcp.BehaviorFlags&D3DCREATE_PUREDEVICE) ? FALSE : TRUE;
+
+	return S_OK;
 }
 
 
@@ -311,29 +311,29 @@ HRESULT CXBFont::Create( D3DTexture* pFontTexture, VOID* pFontData )
 //-----------------------------------------------------------------------------
 HRESULT CXBFont::Destroy()
 {
-    m_xprResource.Destroy();
+	m_xprResource.Destroy();
 
-    m_pFontTexture       = NULL;
+	m_pFontTexture       = NULL;
 
-    m_fFontHeight        = 0.0f;
-    m_fFontTopPadding    = 0.0f;
-    m_fFontBottomPadding = 0.0f;
-    m_fFontYAdvance      = 0.0f;
+	m_fFontHeight        = 0.0f;
+	m_fFontTopPadding    = 0.0f;
+	m_fFontBottomPadding = 0.0f;
+	m_fFontYAdvance      = 0.0f;
 
-    m_dwNumGlyphs        = 0L;
-    m_Glyphs             = NULL;
+	m_dwNumGlyphs        = 0L;
+	m_Glyphs             = NULL;
 
-    m_cMaxGlyph          = 0;
-    
-    if( m_bTranslatorTableWasAllocated )
-        delete[] m_TranslatorTable;
+	m_cMaxGlyph          = 0;
 
-    m_TranslatorTable    = NULL;
-    m_bTranslatorTableWasAllocated = FALSE;
+	if( m_bTranslatorTableWasAllocated )
+		delete[] m_TranslatorTable;
 
-    m_dwNestedBeginCount = 0L;
+	m_TranslatorTable    = NULL;
+	m_bTranslatorTableWasAllocated = FALSE;
 
-    return S_OK;
+	m_dwNestedBeginCount = 0L;
+
+	return S_OK;
 }
 
 
@@ -345,8 +345,8 @@ HRESULT CXBFont::Destroy()
 //-----------------------------------------------------------------------------
 VOID CXBFont::SetCursorPosition( FLOAT fCursorX, FLOAT fCursorY )
 {
-    m_fCursorX = floorf( fCursorX );
-    m_fCursorY = floorf( fCursorY );
+	m_fCursorX = floorf( fCursorX );
+	m_fCursorY = floorf( fCursorY );
 }
 
 
@@ -360,8 +360,8 @@ VOID CXBFont::SetCursorPosition( FLOAT fCursorX, FLOAT fCursorY )
 //-----------------------------------------------------------------------------
 VOID CXBFont::SetScaleFactors( FLOAT fXScaleFactor, FLOAT fYScaleFactor )
 {
-    m_fXScaleFactor = fXScaleFactor;
-    m_fYScaleFactor = fYScaleFactor;
+	m_fXScaleFactor = fXScaleFactor;
+	m_fYScaleFactor = fYScaleFactor;
 }
 
 
@@ -373,7 +373,7 @@ VOID CXBFont::SetScaleFactors( FLOAT fXScaleFactor, FLOAT fYScaleFactor )
 //-----------------------------------------------------------------------------
 VOID CXBFont::SetSlantFactor( FLOAT fSlantFactor )
 {
-    m_fSlantFactor = fSlantFactor;
+	m_fSlantFactor = fSlantFactor;
 }
 
 
@@ -384,10 +384,9 @@ VOID CXBFont::SetSlantFactor( FLOAT fSlantFactor )
 // Desc: Get the dimensions of a text CStdString
 //-----------------------------------------------------------------------------
 HRESULT CXBFont::GetTextExtent( const WCHAR* strText, FLOAT* pWidth, 
-                                FLOAT* pHeight, BOOL bFirstLineOnly ) const
+															 FLOAT* pHeight, BOOL bFirstLineOnly ) const
 {
-   return GetTextExtent( strText, wcslen( strText),  pWidth, 
-                         pHeight, bFirstLineOnly );
+	return GetTextExtent( strText, wcslen( strText),  pWidth, pHeight, bFirstLineOnly );
 }
 
 
@@ -398,55 +397,55 @@ HRESULT CXBFont::GetTextExtent( const WCHAR* strText, FLOAT* pWidth,
 // Desc: Get the dimensions of a text CStdString
 //-----------------------------------------------------------------------------
 HRESULT CXBFont::GetTextExtent( const WCHAR* strText, DWORD cchText, FLOAT* pWidth, 
-                                FLOAT* pHeight, BOOL bFirstLineOnly ) const
+															 FLOAT* pHeight, BOOL bFirstLineOnly ) const
 {
-    // Check parameters
-    if( NULL==strText || NULL==pWidth || NULL==pHeight )
-        return E_INVALIDARG;
+	// Check parameters
+	if( NULL==strText || NULL==pWidth || NULL==pHeight )
+		return E_INVALIDARG;
 
-    // Set default text extent in output parameters
-    (*pWidth)   = 0.0f;
-    (*pHeight)  = 0.0f;
+	// Set default text extent in output parameters
+	(*pWidth)   = 0.0f;
+	(*pHeight)  = 0.0f;
 
-    // Initialize counters that keep track of text extent
-    FLOAT sx = 0.0f;
-    FLOAT sy = m_fFontHeight;
+	// Initialize counters that keep track of text extent
+	FLOAT sx = 0.0f;
+	FLOAT sy = m_fFontHeight;
 
-    // Loop through each character and update text extent
-    while( cchText-- )
-    {
-        WCHAR letter = *strText++;
-    
-        // Handle newline character
-        if( letter == L'\n' )
-        {
-            if( bFirstLineOnly )
-                return S_OK;
-            sx  = 0.0f;
-            sy += m_fFontYAdvance;
-        }
+	// Loop through each character and update text extent
+	while( cchText-- )
+	{
+		WCHAR letter = *strText++;
 
-        // Translate unprintable characters
-        GLYPH_ATTR* pGlyph;
-        if( letter > m_cMaxGlyph || m_TranslatorTable[letter] == 0 )
-            pGlyph = &m_Glyphs[0];
-        else
-            pGlyph = &m_Glyphs[m_TranslatorTable[letter]];
+		// Handle newline character
+		if( letter == L'\n' )
+		{
+			if( bFirstLineOnly )
+				return S_OK;
+			sx  = 0.0f;
+			sy += m_fFontYAdvance;
+		}
 
-        // Get text extent for this character's glyph
-        sx += pGlyph->wOffset;
-        sx += pGlyph->wAdvance;
+		// Translate unprintable characters
+		GLYPH_ATTR* pGlyph;
+		if( letter > m_cMaxGlyph || m_TranslatorTable[letter] == 0 )
+			pGlyph = &m_Glyphs[0];
+		else
+			pGlyph = &m_Glyphs[m_TranslatorTable[letter]];
 
-        // Store text extent of CStdString in output parameters
-        if( sx > (*pWidth) )   (*pWidth)  = sx;
-        if( sy > (*pHeight) )  (*pHeight) = sy;
-     }
+		// Get text extent for this character's glyph
+		sx += pGlyph->wOffset;
+		sx += pGlyph->wAdvance;
 
-    // Apply the scale factor to the result
-    (*pWidth)  *= m_fXScaleFactor;
-    (*pHeight) *= m_fYScaleFactor;
+		// Store text extent of CStdString in output parameters
+		if( sx > (*pWidth) )   (*pWidth)  = sx;
+		if( sy > (*pHeight) )  (*pHeight) = sy;
+	}
 
-    return S_OK;
+	// Apply the scale factor to the result
+	(*pWidth)  *= m_fXScaleFactor;
+	(*pHeight) *= m_fYScaleFactor;
+
+	return S_OK;
 }
 
 
@@ -458,11 +457,11 @@ HRESULT CXBFont::GetTextExtent( const WCHAR* strText, DWORD cchText, FLOAT* pWid
 //-----------------------------------------------------------------------------
 FLOAT CXBFont::GetTextWidth( const WCHAR* strText ) const
 {
-    FLOAT fTextWidth  = 0.0f;
-    FLOAT fTextHeight = 0.0f;
+	FLOAT fTextWidth  = 0.0f;
+	FLOAT fTextHeight = 0.0f;
 
-    GetTextExtent( strText, &fTextWidth, &fTextHeight );
-    return fTextWidth;
+	GetTextExtent( strText, &fTextWidth, &fTextHeight );
+	return fTextWidth;
 }
 
 
@@ -474,57 +473,57 @@ FLOAT CXBFont::GetTextWidth( const WCHAR* strText ) const
 //-----------------------------------------------------------------------------
 HRESULT CXBFont::Begin()
 {
-    // Set state on the first call
-    if( 0 == m_dwNestedBeginCount )
-    {
-        // Save state
-        if( m_bSaveState )
-        {
-            // Note, we are not saving the texture, vertex, or pixel shader,
-            //       since it's not worth the performance. We're more interested
-            //       in saving state that would cause hard to find problems.
-            D3DDevice::GetRenderState( D3DRS_ALPHABLENDENABLE, &m_dwSavedState[0] );
-            D3DDevice::GetRenderState( D3DRS_SRCBLEND,         &m_dwSavedState[1] );
-            D3DDevice::GetRenderState( D3DRS_DESTBLEND,        &m_dwSavedState[2] );
-            D3DDevice::GetRenderState( D3DRS_ALPHATESTENABLE,  &m_dwSavedState[3] );
-            D3DDevice::GetRenderState( D3DRS_ALPHAREF,         &m_dwSavedState[4] );
-            D3DDevice::GetRenderState( D3DRS_ALPHAFUNC,        &m_dwSavedState[5] );
-            D3DDevice::GetRenderState( D3DRS_FILLMODE,         &m_dwSavedState[6] );
-            D3DDevice::GetRenderState( D3DRS_CULLMODE,         &m_dwSavedState[7] );
-            D3DDevice::GetRenderState( D3DRS_ZENABLE,          &m_dwSavedState[8] );
-            D3DDevice::GetRenderState( D3DRS_STENCILENABLE,    &m_dwSavedState[9] );
-            D3DDevice::GetRenderState( D3DRS_EDGEANTIALIAS,    &m_dwSavedState[10] );
-            //D3DDevice::GetTextureStageState( 0, D3DTSS_MINFILTER, &m_dwSavedState[11] );
-            //D3DDevice::GetTextureStageState( 0, D3DTSS_MAGFILTER, &m_dwSavedState[12] );
-        }
+	// Set state on the first call
+	if( 0 == m_dwNestedBeginCount )
+	{
+		// Save state
+		if( m_bSaveState )
+		{
+			// Note, we are not saving the texture, vertex, or pixel shader,
+			//       since it's not worth the performance. We're more interested
+			//       in saving state that would cause hard to find problems.
+			D3DDevice::GetRenderState( D3DRS_ALPHABLENDENABLE, &m_dwSavedState[0] );
+			D3DDevice::GetRenderState( D3DRS_SRCBLEND,         &m_dwSavedState[1] );
+			D3DDevice::GetRenderState( D3DRS_DESTBLEND,        &m_dwSavedState[2] );
+			D3DDevice::GetRenderState( D3DRS_ALPHATESTENABLE,  &m_dwSavedState[3] );
+			D3DDevice::GetRenderState( D3DRS_ALPHAREF,         &m_dwSavedState[4] );
+			D3DDevice::GetRenderState( D3DRS_ALPHAFUNC,        &m_dwSavedState[5] );
+			D3DDevice::GetRenderState( D3DRS_FILLMODE,         &m_dwSavedState[6] );
+			D3DDevice::GetRenderState( D3DRS_CULLMODE,         &m_dwSavedState[7] );
+			D3DDevice::GetRenderState( D3DRS_ZENABLE,          &m_dwSavedState[8] );
+			D3DDevice::GetRenderState( D3DRS_STENCILENABLE,    &m_dwSavedState[9] );
+			D3DDevice::GetRenderState( D3DRS_EDGEANTIALIAS,    &m_dwSavedState[10] );
+			//D3DDevice::GetTextureStageState( 0, D3DTSS_MINFILTER, &m_dwSavedState[11] );
+			//D3DDevice::GetTextureStageState( 0, D3DTSS_MAGFILTER, &m_dwSavedState[12] );
+		}
 
-        // Set the necessary render states
-        D3DDevice::SetTexture( 0, m_pFontTexture );
-        D3DDevice::SetVertexShader( m_dwFontVertexShader );
-        D3DDevice::SetPixelShader( m_dwFontPixelShader );
-        D3DDevice::SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-        D3DDevice::SetRenderState( D3DRS_SRCBLEND,         D3DBLEND_SRCALPHA );
-        D3DDevice::SetRenderState( D3DRS_DESTBLEND,        D3DBLEND_INVSRCALPHA );
-				D3DDevice::SetRenderState( D3DRS_YUVENABLE, FALSE);
-        D3DDevice::SetRenderState( D3DRS_ALPHATESTENABLE,  TRUE );
-        D3DDevice::SetRenderState( D3DRS_ALPHAREF,         0x08 );
-        D3DDevice::SetRenderState( D3DRS_ALPHAFUNC,        D3DCMP_GREATEREQUAL );
-        D3DDevice::SetRenderState( D3DRS_FILLMODE,         D3DFILL_SOLID );
-        D3DDevice::SetRenderState( D3DRS_CULLMODE,         D3DCULL_CCW );
-        D3DDevice::SetRenderState( D3DRS_ZENABLE,          FALSE );
-        D3DDevice::SetRenderState( D3DRS_STENCILENABLE,    FALSE );
-        D3DDevice::SetRenderState( D3DRS_EDGEANTIALIAS,    FALSE );
-        //D3DDevice::SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
-        //D3DDevice::SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
+		// Set the necessary render states
+		D3DDevice::SetTexture( 0, m_pFontTexture );
+		D3DDevice::SetVertexShader( m_dwFontVertexShader );
+		D3DDevice::SetPixelShader( m_dwFontPixelShader );
+		D3DDevice::SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+		D3DDevice::SetRenderState( D3DRS_SRCBLEND,         D3DBLEND_SRCALPHA );
+		D3DDevice::SetRenderState( D3DRS_DESTBLEND,        D3DBLEND_INVSRCALPHA );
+		D3DDevice::SetRenderState( D3DRS_YUVENABLE, FALSE);
+		D3DDevice::SetRenderState( D3DRS_ALPHATESTENABLE,  TRUE );
+		D3DDevice::SetRenderState( D3DRS_ALPHAREF,         0x08 );
+		D3DDevice::SetRenderState( D3DRS_ALPHAFUNC,        D3DCMP_GREATEREQUAL );
+		D3DDevice::SetRenderState( D3DRS_FILLMODE,         D3DFILL_SOLID );
+		D3DDevice::SetRenderState( D3DRS_CULLMODE,         D3DCULL_CCW );
+		D3DDevice::SetRenderState( D3DRS_ZENABLE,          FALSE );
+		D3DDevice::SetRenderState( D3DRS_STENCILENABLE,    FALSE );
+		D3DDevice::SetRenderState( D3DRS_EDGEANTIALIAS,    FALSE );
+		//D3DDevice::SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
+		//D3DDevice::SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
 
-        // Begin the drawing of vertices
-        D3DDevice::Begin( D3DPT_QUADLIST );
-    }
+		// Begin the drawing of vertices
+		D3DDevice::Begin( D3DPT_QUADLIST );
+	}
 
-    // Keep track of the nested begin/end calls.
-    m_dwNestedBeginCount++;
+	// Keep track of the nested begin/end calls.
+	m_dwNestedBeginCount++;
 
-    return S_OK;
+	return S_OK;
 }
 
 
@@ -535,10 +534,10 @@ HRESULT CXBFont::Begin()
 // Desc: Draws text as textured polygons
 //-----------------------------------------------------------------------------
 HRESULT CXBFont::DrawText( DWORD dwColor, const WCHAR* strText, DWORD dwFlags,
-                           FLOAT fMaxPixelWidth )
+													FLOAT fMaxPixelWidth )
 {
-    return DrawText( m_fCursorX, m_fCursorY, dwColor, strText, 
-                     dwFlags, fMaxPixelWidth );
+	return CXBFont::DrawText( m_fCursorX, m_fCursorY, dwColor, strText, 
+		dwFlags, fMaxPixelWidth );
 }
 
 
@@ -549,11 +548,11 @@ HRESULT CXBFont::DrawText( DWORD dwColor, const WCHAR* strText, DWORD dwFlags,
 // Desc: Draws text as textured polygons
 //-----------------------------------------------------------------------------
 HRESULT CXBFont::DrawText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
-                           const WCHAR* strText, DWORD dwFlags,
-                           FLOAT fMaxPixelWidth )
+													const WCHAR* strText, DWORD dwFlags,
+													FLOAT fMaxPixelWidth )
 {
-    return DrawTextEx( fOriginX, fOriginY, dwColor, strText, wcslen( strText ),
-                     dwFlags, fMaxPixelWidth );
+	return CXBFont::DrawTextEx( fOriginX, fOriginY, dwColor, strText, wcslen( strText ),
+		dwFlags, fMaxPixelWidth );
 }
 
 
@@ -564,126 +563,126 @@ HRESULT CXBFont::DrawText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 // Desc: Draws text as textured polygons
 //-----------------------------------------------------------------------------
 HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
-                           const WCHAR* strText, DWORD cchText, DWORD dwFlags,
-                           FLOAT fMaxPixelWidth )
+														const WCHAR* strText, DWORD cchText, DWORD dwFlags,
+														FLOAT fMaxPixelWidth )
 {
-    // Set up stuff (i.e. lock the vertex buffer) to prepare for drawing text
-    Begin();
+	// Set up stuff (i.e. lock the vertex buffer) to prepare for drawing text
+	Begin();
 
-    // Set the common color for all the vertices to follow
-    D3DDevice::SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor );
+	// Set the common color for all the vertices to follow
+	D3DDevice::SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor );
 
-    // Set the starting screen position
-    m_fCursorX = floorf( fOriginX );
-    m_fCursorY = floorf( fOriginY );
+	// Set the starting screen position
+	m_fCursorX = floorf( fOriginX );
+	m_fCursorY = floorf( fOriginY );
 
-    // Adjust for padding
-    fOriginY -= m_fFontTopPadding;
+	// Adjust for padding
+	fOriginY -= m_fFontTopPadding;
 
-    FLOAT fEllipsesPixelWidth = m_fXScaleFactor * 3.0f * (m_Glyphs[m_TranslatorTable[L'.']].wOffset + m_Glyphs[m_TranslatorTable[L'.']].wAdvance);
+	FLOAT fEllipsesPixelWidth = m_fXScaleFactor * 3.0f * (m_Glyphs[m_TranslatorTable[L'.']].wOffset + m_Glyphs[m_TranslatorTable[L'.']].wAdvance);
 
-    if( dwFlags & XBFONT_TRUNCATED )
-    {
-        // Check if we will really need to truncate the CStdString
-        if( fMaxPixelWidth <= 0.0f )
-        {
-            dwFlags &= (~XBFONT_TRUNCATED);
-        }
-        else
-        {
-            FLOAT w, h;
-            GetTextExtent( strText, cchText, &w, &h, TRUE );
-    
-            // If not, then clear the flag
-            if( w <= fMaxPixelWidth )
-                dwFlags &= (~XBFONT_TRUNCATED);
-        }
-    }
+	if( dwFlags & XBFONT_TRUNCATED )
+	{
+		// Check if we will really need to truncate the CStdString
+		if( fMaxPixelWidth <= 0.0f )
+		{
+			dwFlags &= (~XBFONT_TRUNCATED);
+		}
+		else
+		{
+			FLOAT w, h;
+			GetTextExtent( strText, cchText, &w, &h, TRUE );
 
-    // If vertically centered, offset the starting m_fCursorY value
-    if( dwFlags & XBFONT_CENTER_Y )
-    {
-        FLOAT w, h;
-        GetTextExtent( strText, &w, &h );
-        m_fCursorY = floorf( m_fCursorY - h/2 );
-    }
+			// If not, then clear the flag
+			if( w <= fMaxPixelWidth )
+				dwFlags &= (~XBFONT_TRUNCATED);
+		}
+	}
 
-    // Set a flag so we can determine initial justification effects
-    BOOL bStartingNewLine = TRUE;
+	// If vertically centered, offset the starting m_fCursorY value
+	if( dwFlags & XBFONT_CENTER_Y )
+	{
+		FLOAT w, h;
+		GetTextExtent( strText, &w, &h );
+		m_fCursorY = floorf( m_fCursorY - h/2 );
+	}
 
-    while( cchText-- )
-    {
-        // If starting text on a new line, determine justification effects
-        if( bStartingNewLine )
-        {
-            if( dwFlags & (XBFONT_RIGHT|XBFONT_CENTER_X) )
-            {
-                // Get the extent of this line
-                FLOAT w, h;
-                GetTextExtent( strText, &w, &h, TRUE );
+	// Set a flag so we can determine initial justification effects
+	BOOL bStartingNewLine = TRUE;
 
-                // Offset this line's starting m_fCursorX value
-                if( dwFlags & XBFONT_RIGHT )
-                    m_fCursorX = floorf( fOriginX - w );
-                if( dwFlags & XBFONT_CENTER_X )
-                    m_fCursorX = floorf( fOriginX - w/2 );
-            }
-            bStartingNewLine = FALSE;
-        }
+	while( cchText-- )
+	{
+		// If starting text on a new line, determine justification effects
+		if( bStartingNewLine )
+		{
+			if( dwFlags & (XBFONT_RIGHT|XBFONT_CENTER_X) )
+			{
+				// Get the extent of this line
+				FLOAT w, h;
+				GetTextExtent( strText, &w, &h, TRUE );
 
-        // Get the current letter in the CStdString
-        WCHAR letter = *strText++;
+				// Offset this line's starting m_fCursorX value
+				if( dwFlags & XBFONT_RIGHT )
+					m_fCursorX = floorf( fOriginX - w );
+				if( dwFlags & XBFONT_CENTER_X )
+					m_fCursorX = floorf( fOriginX - w/2 );
+			}
+			bStartingNewLine = FALSE;
+		}
 
-        // Handle the newline character
-        if( letter == L'\n' )
-        {
-            m_fCursorX  = fOriginX;
-            m_fCursorY += m_fFontYAdvance;
-            bStartingNewLine = TRUE;
-            continue;
-        }
+		// Get the current letter in the CStdString
+		WCHAR letter = *strText++;
 
-        // Translate unprintable characters
-        GLYPH_ATTR* pGlyph = &m_Glyphs[ (letter<=m_cMaxGlyph) ? m_TranslatorTable[letter] : 0 ];
+		// Handle the newline character
+		if( letter == L'\n' )
+		{
+			m_fCursorX  = fOriginX;
+			m_fCursorY += m_fFontYAdvance;
+			bStartingNewLine = TRUE;
+			continue;
+		}
 
-        FLOAT fOffset  = m_fXScaleFactor * (FLOAT)pGlyph->wOffset;
-        FLOAT fAdvance = m_fXScaleFactor * (FLOAT)pGlyph->wAdvance;
-        FLOAT fWidth   = m_fXScaleFactor * (FLOAT)pGlyph->wWidth;
-        FLOAT fHeight  = m_fYScaleFactor * m_fFontHeight;
+		// Translate unprintable characters
+		GLYPH_ATTR* pGlyph = &m_Glyphs[ (letter<=m_cMaxGlyph) ? m_TranslatorTable[letter] : 0 ];
 
-        if( dwFlags & XBFONT_TRUNCATED )
-        {
-            // Check if we will be exceeded the max allowed width
-            if( m_fCursorX + fOffset + fWidth + fEllipsesPixelWidth + m_fSlantFactor > fOriginX + fMaxPixelWidth )
-            {
-                // Yup. Let's draw the ellipses, then bail
-                DrawText( m_fCursorX, m_fCursorY, dwColor, L"..." );
-                End();
-                return S_OK;
-            }
-        }
+		FLOAT fOffset  = m_fXScaleFactor * (FLOAT)pGlyph->wOffset;
+		FLOAT fAdvance = m_fXScaleFactor * (FLOAT)pGlyph->wAdvance;
+		FLOAT fWidth   = m_fXScaleFactor * (FLOAT)pGlyph->wWidth;
+		FLOAT fHeight  = m_fYScaleFactor * m_fFontHeight;
 
-        // Setup the screen coordinates
-        m_fCursorX += fOffset;
-        FLOAT left1  = m_fCursorX;
-        FLOAT left2  = left1 + m_fSlantFactor;
-        FLOAT right1 = left1 + fWidth;
-        FLOAT right2 = left2 + fWidth;
-        FLOAT top    = m_fCursorY;
-        FLOAT bottom = top + fHeight;
-        m_fCursorX += fAdvance;
+		if( dwFlags & XBFONT_TRUNCATED )
+		{
+			// Check if we will be exceeded the max allowed width
+			if( m_fCursorX + fOffset + fWidth + fEllipsesPixelWidth + m_fSlantFactor > fOriginX + fMaxPixelWidth )
+			{
+				// Yup. Let's draw the ellipses, then bail
+				DrawText( m_fCursorX, m_fCursorY, dwColor, L"..." );
+				End();
+				return S_OK;
+			}
+		}
 
-        // Draw the quad using SetVertexData
-        D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, left1,  bottom, pGlyph->tu1, pGlyph->tv2 );
-        D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, left2,  top,    pGlyph->tu1, pGlyph->tv1 );
-        D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, right2, top,    pGlyph->tu2, pGlyph->tv1 );
-        D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, right1, bottom, pGlyph->tu2, pGlyph->tv2 );
-    }
+		// Setup the screen coordinates
+		m_fCursorX += fOffset;
+		FLOAT left1  = m_fCursorX;
+		FLOAT left2  = left1 + m_fSlantFactor;
+		FLOAT right1 = left1 + fWidth;
+		FLOAT right2 = left2 + fWidth;
+		FLOAT top    = m_fCursorY;
+		FLOAT bottom = top + fHeight;
+		m_fCursorX += fAdvance;
 
-    // Call End() to complete the begin/end pair for drawing text
-    End();
+		// Draw the quad using SetVertexData
+		D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, left1,  bottom, pGlyph->tu1, pGlyph->tv2 );
+		D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, left2,  top,    pGlyph->tu1, pGlyph->tv1 );
+		D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, right2, top,    pGlyph->tu2, pGlyph->tv1 );
+		D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, right1, bottom, pGlyph->tu2, pGlyph->tv2 );
+	}
 
-    return S_OK;
+	// Call End() to complete the begin/end pair for drawing text
+	End();
+
+	return S_OK;
 }
 
 
@@ -696,37 +695,37 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 //-----------------------------------------------------------------------------
 HRESULT CXBFont::End()
 {
-    // Keep track of nested calls to begin/end.
-    if( 0L == m_dwNestedBeginCount )
-        return E_FAIL;
-    if( --m_dwNestedBeginCount > 0 )
-        return S_FALSE;
+	// Keep track of nested calls to begin/end.
+	if( 0L == m_dwNestedBeginCount )
+		return E_FAIL;
+	if( --m_dwNestedBeginCount > 0 )
+		return S_FALSE;
 
-    // End the drawing of vertex data
-    D3DDevice::End();
+	// End the drawing of vertex data
+	D3DDevice::End();
 
-    // Restore state
-    if( m_bSaveState )
-    {
-        D3DDevice::SetTexture( 0, NULL );
-        D3DDevice::SetPixelShader( NULL );
-        D3DDevice::SetRenderState( D3DRS_ALPHABLENDENABLE, m_dwSavedState[0] );
-        D3DDevice::SetRenderState( D3DRS_SRCBLEND,         m_dwSavedState[1] );
-        D3DDevice::SetRenderState( D3DRS_DESTBLEND,        m_dwSavedState[2] );
+	// Restore state
+	if( m_bSaveState )
+	{
+		D3DDevice::SetTexture( 0, NULL );
+		D3DDevice::SetPixelShader( NULL );
+		D3DDevice::SetRenderState( D3DRS_ALPHABLENDENABLE, m_dwSavedState[0] );
+		D3DDevice::SetRenderState( D3DRS_SRCBLEND,         m_dwSavedState[1] );
+		D3DDevice::SetRenderState( D3DRS_DESTBLEND,        m_dwSavedState[2] );
 		D3DDevice::SetRenderState( D3DRS_YUVENABLE, FALSE);
-        D3DDevice::SetRenderState( D3DRS_ALPHATESTENABLE,  m_dwSavedState[3] );
-        D3DDevice::SetRenderState( D3DRS_ALPHAREF,         m_dwSavedState[4] );
-        D3DDevice::SetRenderState( D3DRS_ALPHAFUNC,        m_dwSavedState[5] );
-        D3DDevice::SetRenderState( D3DRS_FILLMODE,         m_dwSavedState[6] );
-        D3DDevice::SetRenderState( D3DRS_CULLMODE,         m_dwSavedState[7] );
-        D3DDevice::SetRenderState( D3DRS_ZENABLE,          m_dwSavedState[8] );
-        D3DDevice::SetRenderState( D3DRS_STENCILENABLE,    m_dwSavedState[9] );
-        D3DDevice::SetRenderState( D3DRS_EDGEANTIALIAS,    m_dwSavedState[10] );
-        //D3DDevice::SetTextureStageState( 0, D3DTSS_MINFILTER, m_dwSavedState[11] );
-        //D3DDevice::SetTextureStageState( 0, D3DTSS_MAGFILTER, m_dwSavedState[12] );
-    }
+		D3DDevice::SetRenderState( D3DRS_ALPHATESTENABLE,  m_dwSavedState[3] );
+		D3DDevice::SetRenderState( D3DRS_ALPHAREF,         m_dwSavedState[4] );
+		D3DDevice::SetRenderState( D3DRS_ALPHAFUNC,        m_dwSavedState[5] );
+		D3DDevice::SetRenderState( D3DRS_FILLMODE,         m_dwSavedState[6] );
+		D3DDevice::SetRenderState( D3DRS_CULLMODE,         m_dwSavedState[7] );
+		D3DDevice::SetRenderState( D3DRS_ZENABLE,          m_dwSavedState[8] );
+		D3DDevice::SetRenderState( D3DRS_STENCILENABLE,    m_dwSavedState[9] );
+		D3DDevice::SetRenderState( D3DRS_EDGEANTIALIAS,    m_dwSavedState[10] );
+		//D3DDevice::SetTextureStageState( 0, D3DTSS_MINFILTER, m_dwSavedState[11] );
+		//D3DDevice::SetTextureStageState( 0, D3DTSS_MAGFILTER, m_dwSavedState[12] );
+	}
 
-    return S_OK;
+	return S_OK;
 }
 
 
@@ -738,79 +737,79 @@ HRESULT CXBFont::End()
 //       format defaults to a 32-bit linear texture
 //-----------------------------------------------------------------------------
 LPDIRECT3DTEXTURE8 CXBFont::CreateTexture( const WCHAR* strText, 
-                                           D3DCOLOR dwBackgroundColor, 
-                                           D3DCOLOR dwTextColor, 
-                                           D3DFORMAT d3dFormat )
+																					D3DCOLOR dwBackgroundColor, 
+																					D3DCOLOR dwTextColor, 
+																					D3DFORMAT d3dFormat )
 {
-    // Calculate texture dimensions
-    FLOAT fTexWidth;
-    FLOAT fTexHeight;
-    GetTextExtent( strText, &fTexWidth, &fTexHeight );
-    DWORD dwWidth  = (DWORD)fTexWidth;
-    DWORD dwHeight = (DWORD)fTexHeight;
+	// Calculate texture dimensions
+	FLOAT fTexWidth;
+	FLOAT fTexHeight;
+	GetTextExtent( strText, &fTexWidth, &fTexHeight );
+	DWORD dwWidth  = (DWORD)fTexWidth;
+	DWORD dwHeight = (DWORD)fTexHeight;
 
-    switch( d3dFormat )
-    {
-        case D3DFMT_A8R8G8B8:
-        case D3DFMT_X8R8G8B8:
-        case D3DFMT_R5G6B5:
-        case D3DFMT_X1R5G5B5:
-            // For swizzled textures, make sure the dimensions are a power of two
-            for( DWORD wmask=1; dwWidth&(dwWidth-1); wmask = (wmask<<1)+1 )
-                dwWidth  = ( dwWidth + wmask ) & ~wmask;
-            for( DWORD hmask=1; dwHeight&(dwHeight-1); hmask = (hmask<<1)+1 )
-                dwHeight = ( dwHeight + hmask ) & ~hmask;
+	switch( d3dFormat )
+	{
+	case D3DFMT_A8R8G8B8:
+	case D3DFMT_X8R8G8B8:
+	case D3DFMT_R5G6B5:
+	case D3DFMT_X1R5G5B5:
+		// For swizzled textures, make sure the dimensions are a power of two
+		for( DWORD wmask=1; dwWidth&(dwWidth-1); wmask = (wmask<<1)+1 )
+			dwWidth  = ( dwWidth + wmask ) & ~wmask;
+		for( DWORD hmask=1; dwHeight&(dwHeight-1); hmask = (hmask<<1)+1 )
+			dwHeight = ( dwHeight + hmask ) & ~hmask;
 
-            // Also, enforce a minimum pitch of 64 bytes
-            dwWidth = max( 64/XGBytesPerPixelFromFormat(d3dFormat), dwWidth );
+		// Also, enforce a minimum pitch of 64 bytes
+		dwWidth = max( 64/XGBytesPerPixelFromFormat(d3dFormat), dwWidth );
 
-            break;
+		break;
 
-        case D3DFMT_LIN_A8R8G8B8:
-        case D3DFMT_LIN_X8R8G8B8:
-        case D3DFMT_LIN_R5G6B5:
-        case D3DFMT_LIN_X1R5G5B5:
-            // For linear textures, make sure the stride is a multiple of 64 bytes
-            dwWidth  = ( dwWidth + 0x1f ) & ~0x1f;
-            break;
+	case D3DFMT_LIN_A8R8G8B8:
+	case D3DFMT_LIN_X8R8G8B8:
+	case D3DFMT_LIN_R5G6B5:
+	case D3DFMT_LIN_X1R5G5B5:
+		// For linear textures, make sure the stride is a multiple of 64 bytes
+		dwWidth  = ( dwWidth + 0x1f ) & ~0x1f;
+		break;
 
-        default:
-            // All other formats are unsupported as render targets
-            return NULL;
-    }
+	default:
+		// All other formats are unsupported as render targets
+		return NULL;
+	}
 
-    // Create the texture
-    LPDIRECT3DTEXTURE8 pTexture;
-    if( FAILED( D3DDevice::CreateTexture( dwWidth, dwHeight, 1, 0L, d3dFormat, 
-                                          D3DPOOL_DEFAULT, &pTexture ) ) )
-        return NULL;
-    
-    // Get the current backbuffer and zbuffer
-    LPDIRECT3DSURFACE8 pBackBuffer, pZBuffer;
-    D3DDevice::GetRenderTarget( &pBackBuffer );
-    D3DDevice::GetDepthStencilSurface( &pZBuffer );
+	// Create the texture
+	LPDIRECT3DTEXTURE8 pTexture;
+	if( FAILED( D3DDevice::CreateTexture( dwWidth, dwHeight, 1, 0L, d3dFormat, 
+		D3DPOOL_DEFAULT, &pTexture ) ) )
+		return NULL;
 
-    // Set the new texture as the render target
-    LPDIRECT3DSURFACE8 pTextureSurface;
-    pTexture->GetSurfaceLevel( 0, &pTextureSurface );
-    D3DVIEWPORT8 vp = { 0, 0, dwWidth, dwHeight, 0.0f, 1.0f };
-    D3DDevice::SetRenderTarget( pTextureSurface, NULL );
-    D3DDevice::SetViewport( &vp );
-    D3DDevice::Clear( 0L, NULL, D3DCLEAR_TARGET, dwBackgroundColor, 1.0f, 0L );
+	// Get the current backbuffer and zbuffer
+	LPDIRECT3DSURFACE8 pBackBuffer, pZBuffer;
+	D3DDevice::GetRenderTarget( &pBackBuffer );
+	D3DDevice::GetDepthStencilSurface( &pZBuffer );
 
-    // Render the text
-    DrawText( 0, 0, dwTextColor, strText, 0L );
+	// Set the new texture as the render target
+	LPDIRECT3DSURFACE8 pTextureSurface;
+	pTexture->GetSurfaceLevel( 0, &pTextureSurface );
+	D3DVIEWPORT8 vp = { 0, 0, dwWidth, dwHeight, 0.0f, 1.0f };
+	D3DDevice::SetRenderTarget( pTextureSurface, NULL );
+	D3DDevice::SetViewport( &vp );
+	D3DDevice::Clear( 0L, NULL, D3DCLEAR_TARGET, dwBackgroundColor, 1.0f, 0L );
 
-    // Restore the render target
-    D3DVIEWPORT8 vpBackBuffer = { 0, 0, 640, 480, 0.0f, 1.0f };
-    D3DDevice::SetRenderTarget( pBackBuffer, pZBuffer );
-    D3DDevice::SetViewport( &vpBackBuffer );
-    SAFE_RELEASE( pBackBuffer );
-    SAFE_RELEASE( pZBuffer );
-    SAFE_RELEASE( pTextureSurface );
+	// Render the text
+	CXBFont::DrawText( 0, 0, dwTextColor, strText, 0L );
 
-    // Return the new texture
-    return pTexture;
+	// Restore the render target
+	D3DVIEWPORT8 vpBackBuffer = { 0, 0, 640, 480, 0.0f, 1.0f };
+	D3DDevice::SetRenderTarget( pBackBuffer, pZBuffer );
+	D3DDevice::SetViewport( &vpBackBuffer );
+	SAFE_RELEASE( pBackBuffer );
+	SAFE_RELEASE( pZBuffer );
+	SAFE_RELEASE( pTextureSurface );
+
+	// Return the new texture
+	return pTexture;
 }
 
 
@@ -822,8 +821,8 @@ LPDIRECT3DTEXTURE8 CXBFont::CreateTexture( const WCHAR* strText,
 //-----------------------------------------------------------------------------
 STDMETHODIMP CXBFont::SetHeight( DWORD Height )
 {
-    // Since we are using a fixed font, this is ignored
-    return S_OK;
+	// Since we are using a fixed font, this is ignored
+	return S_OK;
 }
 
 
@@ -835,8 +834,8 @@ STDMETHODIMP CXBFont::SetHeight( DWORD Height )
 //-----------------------------------------------------------------------------
 STDMETHODIMP CXBFont::SetColor( D3DCOLOR Color )
 {
-    m_dwCurrentColor = (DWORD) Color;
-    return S_OK;
+	m_dwCurrentColor = (DWORD) Color;
+	return S_OK;
 }
 
 
@@ -847,27 +846,27 @@ STDMETHODIMP CXBFont::SetColor( D3DCOLOR Color )
 // Desc: Render a chunk of text
 //-----------------------------------------------------------------------------
 STDMETHODIMP CXBFont::DrawText(
-                               IDirect3DSurface8* pSurface,
-                               LPCWSTR pText,
-                               DWORD CharCount,
-                               DWORD X,
-                               DWORD Y)
+															 IDirect3DSurface8* pSurface,
+															 LPCWSTR pText,
+															 DWORD CharCount,
+															 DWORD X,
+															 DWORD Y)
 {  
-    if( CharCount == 0 ) return S_OK;
-    if( CharCount == (DWORD) -1) CharCount = wcslen( pText );
-    // Save current render target and depth buffer
-    LPDIRECT3DSURFACE8 pRenderTarget, pZBuffer;
-    D3DDevice::GetRenderTarget( &pRenderTarget );
-    D3DDevice::GetDepthStencilSurface( &pZBuffer );
+	if( CharCount == 0 ) return S_OK;
+	if( CharCount == (DWORD) -1) CharCount = wcslen( pText );
+	// Save current render target and depth buffer
+	LPDIRECT3DSURFACE8 pRenderTarget, pZBuffer;
+	D3DDevice::GetRenderTarget( &pRenderTarget );
+	D3DDevice::GetDepthStencilSurface( &pZBuffer );
 
-    D3DDevice::SetRenderTarget( pSurface, NULL );
-    HRESULT hr = DrawTextEx( (FLOAT) X, (FLOAT) Y, m_dwCurrentColor,
-        pText, CharCount, 0, 0.0 );
-    // Restore render target and zbuffer
-    D3DDevice::SetRenderTarget( pRenderTarget, pZBuffer );
-    if( pRenderTarget ) pRenderTarget->Release();
-    if( pZBuffer )      pZBuffer->Release();
-    return hr;
+	D3DDevice::SetRenderTarget( pSurface, NULL );
+	HRESULT hr = DrawTextEx( (FLOAT) X, (FLOAT) Y, m_dwCurrentColor,
+		pText, CharCount, 0, 0.0 );
+	// Restore render target and zbuffer
+	D3DDevice::SetRenderTarget( pRenderTarget, pZBuffer );
+	if( pRenderTarget ) pRenderTarget->Release();
+	if( pZBuffer )      pZBuffer->Release();
+	return hr;
 }
 
 
@@ -878,18 +877,18 @@ STDMETHODIMP CXBFont::DrawText(
 // Desc: Calculate the size of text
 //-----------------------------------------------------------------------------
 STDMETHODIMP CXBFont::GetTextSize(
-                                  LPCWSTR pText,
-                                  DWORD CharCount,
-                                  DWORD* pWidth,
-                                  DWORD* pHeight)
+																	LPCWSTR pText,
+																	DWORD CharCount,
+																	DWORD* pWidth,
+																	DWORD* pHeight)
 {
-    FLOAT fWidth;
-    FLOAT fHeight;
-    if( CharCount == (DWORD) -1) CharCount = wcslen( pText );
-    HRESULT hr = GetTextExtent( pText, CharCount, &fWidth,  &fHeight );
-    *pWidth = (DWORD) fWidth;
-    *pHeight = (DWORD) fHeight;
-    return hr;
+	FLOAT fWidth;
+	FLOAT fHeight;
+	if( CharCount == (DWORD) -1) CharCount = wcslen( pText );
+	HRESULT hr = GetTextExtent( pText, CharCount, &fWidth,  &fHeight );
+	*pWidth = (DWORD) fWidth;
+	*pHeight = (DWORD) fHeight;
+	return hr;
 }
 
 
