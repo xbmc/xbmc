@@ -2,6 +2,8 @@
 #include "guifontmanager.h"
 #include "tinyxml/tinyxml.h"
 #include "../xbmc/utils/log.h"
+#include "SkinInfo.h"
+
 GUIFontManager  g_fontManager;
 
 GUIFontManager::GUIFontManager(void)
@@ -65,21 +67,25 @@ void GUIFontManager::Clear()
 	m_vecFonts.erase(m_vecFonts.begin(),m_vecFonts.end());
 }
 
-void GUIFontManager::LoadFonts(const CStdString& strFilename)
+void GUIFontManager::LoadFonts()
 {
-  CLog::Log("Loading fonts from %s",strFilename.c_str());
+	// Get the file to load fonts from:
+	RESOLUTION res;
+	CStdString strPath = g_SkinInfo.GetSkinPath("font.xml", &res);
+  CLog::Log("Loading fonts from %s",strPath.c_str());
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile(strFilename.c_str()) )
+  // first try our preferred file
+  if ( !xmlDoc.LoadFile(strPath.c_str()) )
   {
-    CLog::Log("Could'nt load %s",strFilename.c_str());
-    return ;
+		CLog::Log("Could'nt load %s",strPath.c_str());
+		return ;
   }
   TiXmlElement* pRootElement =xmlDoc.RootElement();
 
   CStdString strValue=pRootElement->Value();
   if (strValue!=CStdString("fonts")) 
   {
-    CLog::Log("file %s doesnt start with <fonts>",strFilename.c_str());
+    CLog::Log("file %s doesnt start with <fonts>",strPath.c_str());
     return ;
   }
   const TiXmlNode *pChild = pRootElement->FirstChild();

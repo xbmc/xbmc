@@ -14,6 +14,7 @@
 #include "GUIButtonControl.h"
 #include "GUIImage.h"
 #include "GUIFontManager.h"
+#include "SkinInfo.h"
 #include "key.h"
 #include "utils/imdb.h"
 

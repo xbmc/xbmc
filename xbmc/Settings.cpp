@@ -1022,7 +1022,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	pElement = pRootElement->FirstChildElement("screen");
 	if (pElement)
 	{
-		GetInteger(pElement, "resolution",(int &)g_stSettings.m_ScreenResolution,(int)PAL_4x3,(int)HDTV_1080i,(int)PAL60_16x9);
+		GetInteger(pElement, "resolution",(int &)g_stSettings.m_GUIResolution,(int)PAL_4x3,(int)HDTV_1080i,(int)PAL60_16x9);
 		GetInteger(pElement, "uioffsetx",g_stSettings.m_iUIOffsetX,0,INT_MIN,INT_MAX);
 		GetInteger(pElement, "uioffsety",g_stSettings.m_iUIOffsetY,0,INT_MIN,INT_MAX);
 		GetBoolean(pElement, "soften", g_stSettings.m_bSoften);
@@ -1333,7 +1333,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	TiXmlElement screenNode("screen");
 	pNode = pRoot->InsertEndChild(screenNode);
 	if (!pNode) return false;
-	SetInteger(pNode, "resolution", (int)g_stSettings.m_ScreenResolution);
+	SetInteger(pNode, "resolution", (int)g_stSettings.m_GUIResolution);
 	SetInteger(pNode, "uioffsetx",g_stSettings.m_iUIOffsetX);
 	SetInteger(pNode, "uioffsety",g_stSettings.m_iUIOffsetY);
 	SetBoolean(pNode, "soften", g_stSettings.m_bSoften);

@@ -5,8 +5,8 @@ class CBundler
 	XPR_HEADER XPRHeader;
 	struct FileHeader_t
 	{
-		// 64 bytes total
-		char Name[52];
+		// 128 bytes total
+		char Name[116];
 		DWORD Offset;
 		DWORD UnpackedSize;
 		DWORD PackedSize;

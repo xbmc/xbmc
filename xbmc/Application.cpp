@@ -175,10 +175,10 @@ HRESULT CApplication::Create()
   g_buttonTranslator.Load();
 
   CLog::Log("setup DirectX");
-	g_graphicsContext.SetGUIResolution(g_stSettings.m_ScreenResolution);
+	g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
 	g_graphicsContext.SetOffset(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
 
-  int  iResolution=g_stSettings.m_ScreenResolution;
+  int  iResolution=g_stSettings.m_GUIResolution;
   CLog::Log(" GUI format %ix%i %s",
             g_settings.m_ResInfo[iResolution].iWidth, 
             g_settings.m_ResInfo[iResolution].iHeight, 
@@ -412,7 +412,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_dwSkinTime = 0;
 
 	CStdString strHomePath;
-	string strSkinPath = "Q:\\skin\\";
+	CStdString strSkinPath = "Q:\\skin\\";
 	strSkinPath+=strSkin;
 
   CLog::Log("  load skin from:%s",strSkinPath.c_str());	
@@ -438,16 +438,19 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	g_TextureManager.Cleanup();
 
 	g_fontManager.Clear();
-  
-  CLog::Log("  load fonts for skin...");
+
+	// Load in the skin.xml file if it exists
+	g_SkinInfo.Load(strSkinPath);
+
+	CLog::Log("  load fonts for skin...");
   g_graphicsContext.SetMediaDir(strSkinPath);
-  g_fontManager.LoadFonts(strSkinPath+string("\\font.xml")) ;
+  g_fontManager.LoadFonts();
 
 	LARGE_INTEGER start;
 	QueryPerformanceCounter(&start);
 
   CLog::Log("  load new skin...");
-  if (!m_guiHome.Load( strSkinPath+"\\home.xml" ))
+  if (!m_guiHome.Load( "home.xml"))
   {
     // failed to load home.xml
     // fallback to mediacenter skin
@@ -458,55 +461,55 @@ void CApplication::LoadSkin(const CStdString& strSkin)
       return;
     }
   }
-  m_guiPrograms.Load( strSkinPath+"\\myprograms.xml" );  
-	m_guiPictures.Load( strSkinPath+"\\mypics.xml" );  
-	m_guiMyFiles.Load( strSkinPath+"\\myfiles.xml" );  
-	m_guiMyVideo.Load( strSkinPath+"\\myvideo.xml" );  
-  m_guiVideoGenre.Load( strSkinPath+"\\myvideogenre.xml" );  
-  m_guiVideoActors.Load( strSkinPath+"\\myvideoactors.xml" );  
-	m_guiVideoYear.Load( strSkinPath+"\\myvideoYear.xml" );  
-  m_guiVideoTitle.Load( strSkinPath+"\\myvideoTitle.xml" );  
-	m_guiSettings.Load( strSkinPath+"\\settings.xml" );  
-  m_guiMyVideoPlayList.Load( strSkinPath+"\\myvideoplaylist.xml" );  
-  m_guiSettingsLCD.Load( strSkinPath+"\\settingsLCD.xml" );  
-	m_guiSystemInfo.Load( strSkinPath+"\\SettingsSystemInfo.xml" );  
-	m_guiMusicInfo.Load( strSkinPath+"\\DialogAlbumInfo.xml" );  
-	m_guiScriptsInfo.Load( strSkinPath+"\\DialogScriptInfo.xml" ); 
-	m_guiSettingsGeneral.Load( strSkinPath+"\\SettingsGeneral.xml" );  
-  m_guiSettingsPrograms.Load( strSkinPath+"\\SettingsPrograms.xml" );  
-	m_guiDialogYesNo.Load( strSkinPath+"\\dialogYesNo.xml" );  
-	m_guiDialogProgress.Load( strSkinPath+"\\dialogProgress.xml" );  
-  m_guiMyMusicPlayList.Load( strSkinPath+"\\mymusicplaylist.xml" );
-	m_guiMyMusicSongs.Load( strSkinPath+"\\mymusicsongs.xml" );
-  m_guiMyMusicAlbum.Load( strSkinPath+"\\mymusicalbum.xml" );
-	m_guiMyMusicArtists.Load( strSkinPath+"\\mymusicartists.xml" );
-	m_guiMyMusicGenres.Load( strSkinPath+"\\mymusicgenres.xml" );
-	m_guiMyMusicTop100.Load( strSkinPath+"\\mymusictop100.xml" );
-	m_guiDialogSelect.Load( strSkinPath+"\\dialogSelect.xml" );  
-	m_guiDialogOK.Load( strSkinPath+"\\dialogOK.xml" );  
-	m_guiDialogFileStacking.Load( strSkinPath+"\\dialogFileStacking.xml" );  
-	m_guiVideoInfo.Load( strSkinPath+"\\DialogVideoInfo.xml" );  
-	m_guiMusicOverlay.Load( strSkinPath+"\\musicOverlay.xml" );  
-	m_guiSettingsScreen.Load( strSkinPath+"\\settingsScreen.xml" );
-	m_guiSettingsUICalibration.Load( strSkinPath+"\\settingsUICalibration.xml" );
-	m_guiSettingsScreenCalibration.Load( strSkinPath+"\\settingsScreenCalibration.xml" );
-	m_guiSettingsSlideShow.Load( strSkinPath+"\\SettingsSlideShow.xml" );
-	m_guiSettingsScreensaver.Load( strSkinPath+"\\SettingsScreensaver.xml" );
-	m_guiSettingsOSD.Load( strSkinPath+"\\SettingsOSD.xml" );
-  m_guiSettingsAutoRun.Load( strSkinPath+"\\SettingsAutoRun.xml" );
-	m_guiSettingsFilter.Load( strSkinPath+"\\SettingsFilter.xml" );
-  m_guiSettingsCache.Load( strSkinPath+"\\SettingsCache.xml" );
-	m_guiWindowVideoOverlay.Load( strSkinPath+"\\videoOverlay.xml" );
-	m_guiWindowFullScreen.Load( strSkinPath+"\\videoFullScreen.xml" );
-	m_guiScripts.Load( strSkinPath+"\\myscripts.xml");
-	m_guiWindowVisualisation.Load( strSkinPath+"\\musicVisualisation.xml");
-	m_guiSettingsMusic.Load( strSkinPath+"\\SettingsMusic.xml");
-	m_guiWindowSlideshow.Load( strSkinPath+"\\slideshow.xml");
-	m_guiSettingsSubtitles.Load( strSkinPath+"\\SettingsScreenSubtitles.xml");
+  m_guiPrograms.Load( "myprograms.xml");
+	m_guiPictures.Load( "mypics.xml");
+	m_guiMyFiles.Load( "myfiles.xml"); 
+	m_guiMyVideo.Load("myvideo.xml");
+  m_guiVideoGenre.Load("myvideogenre.xml");
+  m_guiVideoActors.Load("myvideoactors.xml");
+	m_guiVideoYear.Load("myvideoYear.xml");
+  m_guiVideoTitle.Load("myvideoTitle.xml");
+	m_guiSettings.Load("settings.xml");
+  m_guiMyVideoPlayList.Load("myvideoplaylist.xml");
+  m_guiSettingsLCD.Load("settingsLCD.xml");
+	m_guiSystemInfo.Load("SettingsSystemInfo.xml");
+	m_guiMusicInfo.Load("DialogAlbumInfo.xml");
+	m_guiScriptsInfo.Load("DialogScriptInfo.xml");
+	m_guiSettingsGeneral.Load("SettingsGeneral.xml");
+  m_guiSettingsPrograms.Load("SettingsPrograms.xml");
+	m_guiDialogYesNo.Load("dialogYesNo.xml");
+	m_guiDialogProgress.Load("dialogProgress.xml");
+  m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
+	m_guiMyMusicSongs.Load("mymusicsongs.xml");
+  m_guiMyMusicAlbum.Load("mymusicalbum.xml");
+	m_guiMyMusicArtists.Load("mymusicartists.xml");
+	m_guiMyMusicGenres.Load("mymusicgenres.xml");
+	m_guiMyMusicTop100.Load("mymusictop100.xml");
+	m_guiDialogSelect.Load("dialogSelect.xml");
+	m_guiDialogOK.Load("dialogOK.xml");
+	m_guiDialogFileStacking.Load("dialogFileStacking.xml");
+	m_guiVideoInfo.Load("DialogVideoInfo.xml");
+	m_guiMusicOverlay.Load("musicOverlay.xml");
+	m_guiSettingsScreen.Load("settingsScreen.xml");
+	m_guiSettingsUICalibration.Load("settingsUICalibration.xml");
+	m_guiSettingsScreenCalibration.Load("settingsScreenCalibration.xml");
+	m_guiSettingsSlideShow.Load("SettingsSlideShow.xml");
+	m_guiSettingsScreensaver.Load("SettingsScreensaver.xml");
+	m_guiSettingsOSD.Load("SettingsOSD.xml");
+  m_guiSettingsAutoRun.Load("SettingsAutoRun.xml");
+	m_guiSettingsFilter.Load("SettingsFilter.xml");
+  m_guiSettingsCache.Load("SettingsCache.xml");
+	m_guiWindowVideoOverlay.Load("videoOverlay.xml");
+	m_guiWindowFullScreen.Load("videoFullScreen.xml");
+	m_guiScripts.Load("myscripts.xml");
+	m_guiWindowVisualisation.Load("musicVisualisation.xml");
+	m_guiSettingsMusic.Load("SettingsMusic.xml");
+	m_guiWindowSlideshow.Load("slideshow.xml");
+	m_guiSettingsSubtitles.Load("SettingsScreenSubtitles.xml");
 	m_guiWindowScreensaver.SetID(WINDOW_SCREENSAVER);		// CB: Matrix Screensaver - saves us having to have our own XML file
-	m_guiWindowOSD.Load( strSkinPath+"\\videoOSD.xml" );
-	m_guiMyWeather.Load( strSkinPath+"\\myweather.xml");	//WEATHER
-	m_guiSettingsWeather.Load(strSkinPath+"\\SettingsWeather.xml");	//WEATHER SETTINGS
+	m_guiWindowOSD.Load("videoOSD.xml");
+	m_guiMyWeather.Load("myweather.xml");	//WEATHER
+	m_guiSettingsWeather.Load("SettingsWeather.xml");	//WEATHER SETTINGS
 	CGUIWindow::FlushReferenceCache(); // flush the cache so it doesn't use memory all the time
 
 	LARGE_INTEGER end, freq;
