@@ -29,13 +29,13 @@
 
 #pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")    
 #ifdef _DEBUG
-//	#pragma comment (lib,"lib/filezilla/xbfilezillad.lib") // SECTIONNAME=FILEZILL
 #pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
 #pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
 #pragma comment (lib,"xbmc/lib/cximage/ImageLibd.lib")   // SECTIONNAME=CXIMAGE
 #pragma comment (lib,"xbmc/lib/libID3/i3dlibd.lib")			 // SECTIONNAME=LIBID3
 #pragma comment (lib,"xbmc/lib/libCDRip/cdripd.lib")		 // SECTIONNAME=LIBCDRIP
-#pragma comment (lib,"xbmc/lib/libPython/pythond.lib")	 // SECTIONNAME=PYTHON/PY_RW
+#pragma comment (lib,"xbmc/lib/libLame/liblamed.lib")		 // SECTIONNAME=LIBLAME
+#pragma comment (lib,"xbmc/lib/libPython/pythond.lib")	 // SECTIONNAME=PYTHON,PY_RW
 #pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
 #pragma comment (lib,"xbmc/lib/sqlLite/libSQLited.lib")    
 #pragma comment (lib,"guilib/debug/guiLib.lib")				   // -
@@ -48,26 +48,25 @@
 #pragma comment (lib,"xbmc/lib/libsidplay/libsidutilsd.lib")		// SECTIONNAME=SID_RW,SID_RX
 #pragma comment (lib,"xbmc/lib/libsidplay/resid_builderd.lib")	// SECTIONNAME=SID_RW,SID_RX
 #else
-//#pragma comment (lib,"lib/filezilla/xbfilezilla.lib")
-#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")          
-#pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")           
+#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
+#pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
 #pragma comment (lib,"xbmc/lib/cximage/ImageLib.lib")
-#pragma comment (lib,"xbmc/lib/libID3/i3dlib.lib")					
-#pragma comment (lib,"xbmc/lib/libCDRip/cdrip.lib")						
-#pragma comment (lib,"xbmc/lib/libPython/python.lib")		 
+#pragma comment (lib,"xbmc/lib/libID3/i3dlib.lib")
+#pragma comment (lib,"xbmc/lib/libCDRip/cdrip.lib")
+#pragma comment (lib,"xbmc/lib/libLame/liblame.lib")
+#pragma comment (lib,"xbmc/lib/libPython/python.lib")
 #pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
-#pragma comment (lib,"xbmc/lib/sqlLite/libSQLite.lib")    
+#pragma comment (lib,"xbmc/lib/sqlLite/libSQLite.lib")
 #pragma comment (lib,"guiLib/release/guiLib.lib")
 #pragma comment (lib,"xbmc/cores/dllLoader/release/dllloader.lib")				   // -
-#pragma comment (lib, "xbmc/lib/libcdio/libcdio.lib" )
-#pragma comment (lib, "xbmc/lib/libshout/libshout.lib" )
+#pragma comment (lib, "xbmc/lib/libcdio/libcdio.lib")
+#pragma comment (lib, "xbmc/lib/libshout/libshout.lib")
 #pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
 #pragma comment (lib,"xbmc/lib/mikxbox/mikxbox.lib")
-#pragma comment (lib,"xbmc/lib/libsidplay/libsidplay.lib")			// SECTIONNAME=SID_RW,SID_RX
-#pragma comment (lib,"xbmc/lib/libsidplay/libsidutils.lib")		// SECTIONNAME=SID_RW,SID_RX
-#pragma comment (lib,"xbmc/lib/libsidplay/resid_builder.lib")	// SECTIONNAME=SID_RW,SID_RX
+#pragma comment (lib,"xbmc/lib/libsidplay/libsidplay.lib")    // SECTIONNAME=SID_RW,SID_RX
+#pragma comment (lib,"xbmc/lib/libsidplay/libsidutils.lib")   // SECTIONNAME=SID_RW,SID_RX
+#pragma comment (lib,"xbmc/lib/libsidplay/resid_builder.lib") // SECTIONNAME=SID_RW,SID_RX
 #endif
-
 
 CStdString g_LoadErrorStr;
 

@@ -109,7 +109,6 @@ void CGUIDialogOK::SetHeading(int iString)
 	OnMessage(msg);
 }
 
-
 void	CGUIDialogOK::SetLine(int iLine, int iString)
 {
 	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
