@@ -100,7 +100,7 @@ void CGUIWindowMusicOverlay::SetPosition(int iControl, int iStep, int iSteps,int
   fPos *= -((float)iStep);
   fPos += (float)iScreenHeight;
   CGUIControl* pControl=(CGUIControl*)GetControl(iControl);
-  if (pControl) pControl->SetPosition(pControl->GetXPosition(), (int)fPos);
+  if (pControl) pControl->SetPosition(pControl->GetXPosition(), (DWORD)fPos);
 }
 int CGUIWindowMusicOverlay::GetControlYPosition(int iControl)
 {
