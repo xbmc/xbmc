@@ -83,4 +83,6 @@ public:
   static void PrepareSubtitleFonts();
   static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
+  static bool IsNFO(const CStdString& strFile);
+  static void GetPath(const CStdString& strFileName, CStdString& strPath);
 };

@@ -11,6 +11,11 @@ typedef vector<CStdString> VECMOVIEACTORS;
 typedef vector<CStdString> VECMOVIEGENRES;
 typedef vector<CIMDBMovie> VECMOVIES;
 typedef vector<CStdString> VECMOVIESFILES;
+typedef vector<float> VECBOOKMARKS;
+
+#define COMPARE_PERCENTAGE     0.90f // 90%
+#define COMPARE_PERCENTAGE_MIN 0.50f // 50%
+
 
 class CVideoDatabase
 {
@@ -35,13 +40,18 @@ public:
   void    GetMoviesByActor(CStdString& strActor, VECMOVIES& movies);
 	void    GetMoviesByYear(CStdString& strYear, VECMOVIES& movies);
   void    GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies);
+  void    GetBookMarksForMovie(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks);
+  void    AddBookMarkToMovie(const CStdString& strFilenameAndPath, float fPercentage);
+  void    ClearBookMarksOfMovie(const CStdString& strFilenameAndPath);
+
 protected:
   auto_ptr<SqliteDatabase>  m_pDB;
 	auto_ptr<Dataset>				  m_pDS;
+
   long    GetPath(const CStdString& strPath);
   long    AddPath(const CStdString& strPath, const CStdString& strCdLabel);
   
-  long    GetFile(const CStdString& strFilenameAndPath, long &lPathId, long& lMovieId);
+  long    GetFile(const CStdString& strFilenameAndPath, long &lPathId, long& lMovieId, bool bExact=false);
   long    AddFile(long lMovieId, long lPathId, const CStdString& strFileName);
 
   long    GetMovie(const CStdString& strFilenameAndPath);

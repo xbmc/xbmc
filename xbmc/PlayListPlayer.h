@@ -33,6 +33,7 @@ namespace PLAYLIST
 		CPlayList&	GetPlaylist( int nPlayList);
 		int					RemoveDVDItems();
 		virtual void Shuffle();
+    void        Reset();
 	protected:
 		bool				m_bChanged;
 		int					m_iCurrentSong;
