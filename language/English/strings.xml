@@ -743,4 +743,5 @@
   <string><id>14055</id><value>Use Background Scanning</value></string>
   <string><id>14056</id><value>Stop Scan</value></string>
   <string><id>14057</id><value>Not possible while scanning for media info</value></string>
+  <string><id>14058</id><value>Film Grain Effect</value></string>
 </strings>

@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-01-2004 changed: mplayer command for postprocessing, no quality changes
+  - 16-01-2004 added: Option to add Film Grain on video
   - 16-01-2005 updated: Korean language file (Thnx to akoakoako)
   - 16-01-2005 updated: Polish language file (Thnx to napek)
   - 16-01-2005 fixed: CDDA playback broken
