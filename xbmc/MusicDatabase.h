@@ -193,6 +193,7 @@ protected:
 	map<CStdString, CPathCache> m_pathCache;
 	map<CStdString, CAlbumCache> m_albumCache;
 	bool		m_bOpen;
+	int			m_iRefCount;
 	bool		CreateTables();
 	long		AddAlbum(const CStdString& strAlbum, long lArtistId, long lPathId, const CStdString& strPath);
 	long		AddGenre(const CStdString& strGenre);
@@ -200,3 +201,5 @@ protected:
 	long		AddPath(const CStdString& strPath);
 	void		RemoveInvalidChars(CStdString& strTxt);
 };
+
+extern CMusicDatabase	g_musicDatabase;

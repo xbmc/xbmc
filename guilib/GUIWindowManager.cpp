@@ -24,6 +24,7 @@ void CGUIWindowManager::Initialize()
 
 void CGUIWindowManager::SendMessage(CGUIMessage& message)
 {
+	//	Send the message to all none window targets
 	for (int i=0; i < (int) m_vecMsgTargets.size(); i++)
 	{
 		IMsgTargetCallback* pMsgTarget = m_vecMsgTargets[i];
@@ -31,14 +32,28 @@ void CGUIWindowManager::SendMessage(CGUIMessage& message)
 			pMsgTarget->OnMessage( message );
 	}
 
+	//	Have we a routed window...
   if (m_pRouteWindow)
-  {
-    m_pRouteWindow->OnMessage(message);
-    return;
-  }
-  if (m_iActiveWindow < 0) return;
-  CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
-  pWindow->OnMessage(message);
+	{
+		//	...send the message to it.
+		m_pRouteWindow->OnMessage(message);
+
+		if (m_iActiveWindow < 0) return;
+		CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
+		//	Also send the message to the parent of the routed window, if its the target
+		if (message.GetSenderId()==pWindow->GetID() || message.GetControlId()==pWindow->GetID() 
+				|| message.GetSenderId()==0)
+		{
+			pWindow->OnMessage(message);
+		}
+	}
+	else
+	{
+		//	..no, only call message function of the active window
+		if (m_iActiveWindow < 0) return;
+		CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
+		pWindow->OnMessage(message);
+	}
 }
 
 void CGUIWindowManager::Add(CGUIWindow* pWindow)
@@ -202,6 +217,7 @@ void CGUIWindowManager::Process()
 {
 	if (m_pCallback)
 	{
+		m_pCallback->Process();
 		m_pCallback->FrameMove();
 		m_pCallback->Render();
 

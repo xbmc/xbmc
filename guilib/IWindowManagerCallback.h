@@ -17,4 +17,5 @@ public:
 
 	virtual void FrameMove()=0;
 	virtual void Render()=0;
+	virtual void Process()=0;
 };

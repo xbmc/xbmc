@@ -382,7 +382,7 @@ void CGUIWindowMusicSongs::OnScan()
 
 	CUtil::ThumbCacheClear();
 
-	m_database.BeginTransaction();
+	g_musicDatabase.BeginTransaction();
 
 	// enable scan mode in OnRetrieveMusicInfo()
 	m_bScan=true;
@@ -393,12 +393,12 @@ void CGUIWindowMusicSongs::OnScan()
 		m_dlgProgress->SetLine(1,"");
 		m_dlgProgress->SetLine(2,330 );
 		m_dlgProgress->Progress();
-		m_database.CommitTransaction();
+		g_musicDatabase.CommitTransaction();
 	}
 	else
-		m_database.RollbackTransaction();
+		g_musicDatabase.RollbackTransaction();
 
-	m_database.EmptyCache();
+	g_musicDatabase.EmptyCache();
 
 	CSectionLoader::Unload("CXIMAGE");
 
@@ -411,7 +411,10 @@ void CGUIWindowMusicSongs::OnScan()
 
 	m_dlgProgress->Close();
 
+	int iItem=GetSelectedItem();
 	Update(m_strDirectory);
+	CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST, iItem);
+	CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, iItem);
 
 	dwTick = timeGetTime() - dwTick;
 	CStdString strTmp, strTmp1;
@@ -431,7 +434,7 @@ bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
 	m_dlgProgress->Progress();
 
 	OnRetrieveMusicInfo(items);
-	m_database.CheckVariousArtistsAndCoverArt();
+	g_musicDatabase.CheckVariousArtistsAndCoverArt();
 	
 	if (m_dlgProgress->IsCanceled()) return false;
 	
@@ -911,7 +914,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 	CStdString strItem;
   MAPSONGS songsMap;
   // get all information for all files in current directory from database 
-  m_database.GetSongsByPath(m_strDirectory,songsMap);
+  g_musicDatabase.GetSongsByPath(m_strDirectory,songsMap);
 
   // for every file found, but skip folder
   for (int i=0; i < (int)items.size(); ++i)
@@ -952,7 +955,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
             CUtil::Split(pItem->m_strPath, strPathName, strFileName);
             if (strPathName != m_strDirectory)
             {
-              if ( m_database.GetSongByFileName(pItem->m_strPath, song) )
+              if ( g_musicDatabase.GetSongByFileName(pItem->m_strPath, song) )
               {
                 bFound=true;
               }
@@ -1010,7 +1013,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 				song.iTrack			= tag.GetTrackNumber();
 				song.iDuration	= tag.GetDuration();
 
-				m_database.AddSong(song,false);
+				g_musicDatabase.AddSong(song,false);
 			}
 		}//if (!pItem->m_bIsFolder)
 	}

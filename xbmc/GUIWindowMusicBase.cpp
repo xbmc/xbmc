@@ -36,8 +36,6 @@ using namespace PLAYLIST;
 int CGUIWindowMusicBase::m_nTempPlayListWindow=0;
 CStdString CGUIWindowMusicBase::m_strTempPlayListDirectory="";
 
-CMusicDatabase CGUIWindowMusicBase::m_database;
-
 CGUIWindowMusicBase::CGUIWindowMusicBase ()
 :CGUIWindow(0)
 {
@@ -62,7 +60,7 @@ void CGUIWindowMusicBase::OnAction(const CAction& action)
 
   if (action.wID==ACTION_PREVIOUS_MENU)
   {
-		m_database.Close();
+		g_musicDatabase.Close();
 		CUtil::ThumbCacheClear();
 		CUtil::RemoveTempFiles();
 		m_gWindowManager.ActivateWindow(WINDOW_HOME);
@@ -230,8 +228,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
 			CSectionLoader::Load("LIBID3");
 
-			if (!m_database.IsOpen())
-				m_database.Open();
+			g_musicDatabase.Open();
 
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
@@ -593,7 +590,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 				bSaveDb=true;
 			}
 		}
-		else if (m_database.GetAlbumByPath(pItem->m_strPath, album))
+		else if (g_musicDatabase.GetAlbumByPath(pItem->m_strPath, album))
 		{	//	Normal folder, query database for album name
 			if (album.strAlbum.size())
 			{
@@ -629,7 +626,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 		CAlbum album;
 		CStdString strAlbum=pItem->m_musicInfoTag.GetAlbum();
 		//	Is album in database?
-		if (m_database.GetAlbumByPath(strPath, album))
+		if (g_musicDatabase.GetAlbumByPath(strPath, album))
 		{
 			//	yes, save query results to database
 			strLabel=album.strAlbum;
@@ -643,10 +640,10 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 
 	// check cache
 	CAlbum albuminfo;
-	if ( m_database.GetAlbumInfo(strLabel, strPath, albuminfo) )
+	if ( g_musicDatabase.GetAlbumInfo(strLabel, strPath, albuminfo) )
 	{
 		VECSONGS songs;
-		m_database.GetSongsByAlbum(strLabel, strPath, songs);
+		g_musicDatabase.GetSongsByAlbum(strLabel, strPath, songs);
 
 		vector<CMusicSong> vecSongs;
 		for (int i=0; i<(int)songs.size(); i++)
@@ -753,7 +750,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 					albuminfo.iYear 		= atol( album.GetDateOfRelease().c_str() );
 					albuminfo.strPath   = album.GetAlbumPath();
 					// save to database
-					m_database.AddAlbumInfo(albuminfo);
+					g_musicDatabase.AddAlbumInfo(albuminfo);
 				}
 				if (m_dlgProgress) 
 					m_dlgProgress->Close();
