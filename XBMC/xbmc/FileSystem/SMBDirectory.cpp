@@ -2,10 +2,6 @@
 #include "stdafx.h"
 /*
  * know bugs:
- * - doing smbc_stat on for example an IPC_SHARE leaves an open socket
- *   this happens when listing all shares from a pc ("smb://pc-name")
- * - samba is not thread safe, so listening to music and browsing at the
- *	 same time is not possible (sound can stutter)
  * - when opening a server for the first time with ip adres and the second time
  *   with server name, access to the server is denied.
  * - when browsing entire network, user can't go back one step
