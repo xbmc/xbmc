@@ -320,7 +320,7 @@ void CGUIWindowVideoInfo::Refresh()
 		    CHTTP http;
 		    CStdString strExtension;
 		    CUtil::GetExtension(strImage,strExtension);
-		    CStdString strTemp="T:\\temp";
+		    CStdString strTemp="Z:\\temp";
 		    strTemp+=strExtension;
         ::DeleteFile(strTemp.c_str());
 		    http.Download(strImage, strTemp);
