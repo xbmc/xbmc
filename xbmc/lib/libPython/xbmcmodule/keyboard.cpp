@@ -6,6 +6,8 @@
 #include "GUIWindowManager.h"
 #include "../../../util.h"
 
+using namespace std;
+
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
