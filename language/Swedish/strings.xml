@@ -568,6 +568,25 @@
   <string><id>10503</id><value>Min Musik/artister</value></string>
   <string><id>10504</id><value>Min Musik/genres</value></string>
   <string><id>10505</id><value>Min Muisk/top100</value></string>
+  <string><id>10506</id><value>Program</value></string>
+  <string><id>10507</id><value>Konfigurera</value></string>
+  <string><id>10508</id><value>Väder prognos</value></string>
+  <string><id>10509</id><value>Spela via Xlink Kai</value></string>
+  <string><id>10510</id><value>Tillägg</value></string>
+  <string><id>10511</id><value>System Info</value></string>
+  <string><id>10512</id><value>Min Musik - Album</value></string>
+  <string><id>10513</id><value>Min Musik - Artister</value></string>
+  <string><id>10514</id><value>Min Musik - Genres</value></string>
+  <string><id>10515</id><value>Min Musik - Top 100</value></string>
+  <string><id>10516</id><value>Min Musik - Bibliotek</value></string>
+  <string><id>10517</id><value>Min Musik - Spellist</value></string>
+  <string><id>10518</id><value>Mina Filmer - Skådespelare</value></string>
+  <string><id>10519</id><value>Mina Filmer - Genres</value></string>
+  <string><id>10520</id><value>Mina Filmer - Titl</value></string>
+  <string><id>10521</id><value>Mina Filmer - År</value></string>
+  <string><id>10522</id><value>Mina Filmer - Spellista</value></string>
+  <string><id>10523</id><value>Album Info</value></string>
+  <string><id>10524</id><value>Film Info</value></string>
   <string><id>11000</id><value>Tangentbord</value></string>
   <string><id>12000</id><value>Välj dialog</value></string>
   <string><id>12001</id><value>Min Muisk/info</value></string>
