@@ -2129,7 +2129,8 @@ void CApplication::OnPlayBackEnded()
 
 	OutputDebugString("Playback has finished\n");
 	CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL);
-	m_gWindowManager.SendThreadMessage(msg);
+	// don't send this as a thread message, the player should be imidiatly stopped
+	m_gWindowManager.SendMessage(msg);
 }
 
 void CApplication::OnPlayBackStarted()
