@@ -2727,7 +2727,7 @@ while(sh_audio){
 if(!sh_video) {
   // handle audio-only case:
 #ifdef _XBOX
-  aoldpts= 10 * (sh_audio->delay - audio_out->get_delay());
+  aoldpts= 10 * sh_audio->delay - audio_out->get_delay();
 #else
   if(!quiet) {
     float a_pos = sh_audio->delay - audio_out->get_delay() * playback_speed;
