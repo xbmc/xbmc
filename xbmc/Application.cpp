@@ -1849,6 +1849,7 @@ void CApplication::FrameMove()
 		bGotKey=true;
 		CKey key(KEY_BUTTON_BACK,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
+		return;
 	}
 	if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_START)
 	{

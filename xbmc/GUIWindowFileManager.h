@@ -38,11 +38,12 @@ protected:
   void              OnMove(int iList);
   void              OnDelete(int iList);
   void              OnRename(int iList);
+	void							OnSelectAll(int iList);
   void							RenameFile(const CStdString &strFile);
   void              OnNewFolder(int iList);
-  void              DoProcess(int iAction,VECFILEITEMS & items, const CStdString& strDestFile);
-  void              DoProcessFile(int iAction, const CStdString& strFile, const CStdString& strDestFile);
-  void              DoProcessFolder(int iAction, const CStdString& strPath, const CStdString& strDestFile);
+  bool              DoProcess(int iAction,VECFILEITEMS & items, const CStdString& strDestFile);
+  bool              DoProcessFile(int iAction, const CStdString& strFile, const CStdString& strDestFile);
+  bool              DoProcessFolder(int iAction, const CStdString& strPath, const CStdString& strDestFile);
   void              Refresh();
 	void							Refresh(int iList);
   int				        GetSelectedItem(int iList);

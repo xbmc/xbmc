@@ -298,28 +298,26 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 						// clean any buttons not needed
 						pMenu->ClearButtons();
 						// add the needed buttons
+						pMenu->AddButton(188);	// SelectAll
 						pMenu->AddButton(118);	// Rename
 						pMenu->AddButton(117);	// Delete
 						pMenu->AddButton(115);	// Copy
 						pMenu->AddButton(116);	// Move
 						pMenu->AddButton(119);	// New Folder
-						pMenu->EnableButton(1, CanRename(list));
-						pMenu->EnableButton(2, CanDelete(list));
-						pMenu->EnableButton(3, CanCopy(list));
-						pMenu->EnableButton(4, CanMove(list));
-						pMenu->EnableButton(5, CanNewFolder(list));
+						pMenu->EnableButton(1, true);
+						pMenu->EnableButton(2, CanRename(list));
+						pMenu->EnableButton(3, CanDelete(list));
+						pMenu->EnableButton(4, CanCopy(list));
+						pMenu->EnableButton(5, CanMove(list));
+						pMenu->EnableButton(6, CanNewFolder(list));
 						// get the position we need...
 						int iPosX=200;
 						int iPosY=100;
 						CGUIListControl *pList = (CGUIListControl *)GetControl(list+CONTROL_LEFT_LIST);
 						if (pList)
 						{
-							pList->GetPointFromItem(iPosX, iPosY);
-							if (iPosY + pMenu->GetHeight() > pList->GetHeight())
-								iPosY -= pMenu->GetHeight();
-							iPosX += pList->GetXPosition();
-							iPosX -= pMenu->GetWidth()/2;
-							iPosY += pList->GetYPosition();
+							iPosX = pList->GetXPosition()+(pList->GetWidth()-pMenu->GetWidth())/2;
+							iPosY = pList->GetYPosition()+(pList->GetHeight()-pMenu->GetHeight())/2;
 						}
 						// ok, now figure out if it should be above or below this point...
 						pMenu->SetPosition(iPosX,iPosY);
@@ -327,18 +325,21 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 						switch (pMenu->GetButton())
 						{
 						case 1:
-							OnRename(list);
+							OnSelectAll(list);
 							break;
 						case 2:
-							OnDelete(list);
+							OnRename(list);
 							break;
 						case 3:
-							OnCopy(list);
+							OnDelete(list);
 							break;
 						case 4:
-							OnMove(list);
+							OnCopy(list);
 							break;
 						case 5:
+							OnMove(list);
+							break;
+						case 6:
 							OnNewFolder(list);
 							break;
 						default:
@@ -647,7 +648,7 @@ void CGUIWindowFileManager::OnMark(int iList, int iItem)
 //	UpdateButtons();
 }
 
-void CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile, const CStdString& strDestFile)
+bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile, const CStdString& strDestFile)
 {
 	CStdString strShortSourceFile;
 	CStdString strShortDestFile;
@@ -766,9 +767,10 @@ void CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
     break;
   }
   if (m_dlgProgress) m_dlgProgress->Progress();
+	return !m_dlgProgress->IsCanceled();
 }
 
-void CGUIWindowFileManager::DoProcessFolder(int iAction, const CStdString& strPath, const CStdString& strDestFile)
+bool CGUIWindowFileManager::DoProcessFolder(int iAction, const CStdString& strPath, const CStdString& strDestFile)
 {
   VECFILEITEMS items;
 	CFileItemList itemlist(items); 
@@ -779,16 +781,18 @@ void CGUIWindowFileManager::DoProcessFolder(int iAction, const CStdString& strPa
 		pItem->Select(true);
   }
 
-  DoProcess(iAction,items,strDestFile);
+  if (!DoProcess(iAction,items,strDestFile)) return false;
 
 	if (iAction==ACTION_MOVE)
 	{
 		CDirectory::Remove(strPath.c_str());
 	}
+	return true;
 }
 
-void CGUIWindowFileManager::DoProcess(int iAction,VECFILEITEMS & items, const CStdString& strDestFile)
+bool CGUIWindowFileManager::DoProcess(int iAction,VECFILEITEMS & items, const CStdString& strDestFile)
 {
+	bool bCancelled(false);
   for (int iItem=0; iItem < (int)items.size(); ++iItem)
   {
     CFileItem* pItem=items[iItem];
@@ -812,20 +816,21 @@ void CGUIWindowFileManager::DoProcess(int iAction,VECFILEITEMS & items, const CS
         
         if (iAction != ACTION_DELETE)
         {
-          DoProcessFile(ACTION_CREATEFOLDER, strnewDestFile, strnewDestFile);
+          if (!DoProcessFile(ACTION_CREATEFOLDER, strnewDestFile, strnewDestFile)) return false;
         }
-        DoProcessFolder(iAction,strCorrectedPath,strnewDestFile);
+        if (!DoProcessFolder(iAction,strCorrectedPath,strnewDestFile)) return false;
         if (iAction == ACTION_DELETE)
         {
-           DoProcessFile(ACTION_DELETEFOLDER, strCorrectedPath, pItem->m_strPath);
+           if (!DoProcessFile(ACTION_DELETEFOLDER, strCorrectedPath, pItem->m_strPath)) return false;
         }
       }
       else
       {
-        DoProcessFile(iAction,strCorrectedPath,strnewDestFile);
+        if (!DoProcessFile(iAction,strCorrectedPath,strnewDestFile)) return false;
       }
     }
   }
+	return true;
 }
 
 void CGUIWindowFileManager::OnCopy(int iList)
@@ -920,6 +925,18 @@ void CGUIWindowFileManager::OnRename(int iList)
   RenameFile(strFile);
 
   Refresh(iList);
+}
+
+void CGUIWindowFileManager::OnSelectAll(int iList)
+{
+  for (int i=0; i < (int)m_vecItems[iList].size();++i)
+  {
+    CFileItem* pItem=m_vecItems[iList][i];
+    if (pItem->GetLabel() != "..")
+    {
+      pItem->Select(true);
+    }
+  }
 }
 
 void CGUIWindowFileManager::RenameFile(const CStdString &strFile)
@@ -1215,13 +1232,10 @@ void CGUIWindowFileManager::OnBookmarksPopupMenu(int list, int item)
 		CGUIListControl *pList = (CGUIListControl *)GetControl(list+CONTROL_LEFT_LIST);
 		if (pList)
 		{
-			pList->GetPointFromItem(iPosX, iPosY);
-			if (iPosY + pMenu->GetHeight() > pList->GetHeight())
-				iPosY -= pMenu->GetHeight();
-			iPosX += pList->GetXPosition();
-			iPosX -= pMenu->GetWidth()/2;
-			iPosY += pList->GetYPosition();
+			iPosX = pList->GetXPosition()+(pList->GetWidth()-pMenu->GetWidth())/2;
+			iPosY = pList->GetYPosition()+(pList->GetHeight()-pMenu->GetHeight())/2;
 		}
+
 		// ok, now figure out if it should be above or below this point...
 		pMenu->SetPosition(iPosX,iPosY);
 		pMenu->DoModal(GetID());
@@ -1239,6 +1253,7 @@ void CGUIWindowFileManager::OnBookmarksPopupMenu(int list, int item)
 						Refresh();
 					else
 						Refresh(list);
+					return;
 				}
 			}
 			break;
@@ -1254,6 +1269,7 @@ void CGUIWindowFileManager::OnBookmarksPopupMenu(int list, int item)
 						Refresh();
 					else
 						Refresh(list);
+					return;
 				}
 			}
 			break;
@@ -1274,6 +1290,7 @@ void CGUIWindowFileManager::OnBookmarksPopupMenu(int list, int item)
 							Refresh();
 						else
 							Refresh(list);
+						return;
 					}
 				}
 			}
@@ -1293,10 +1310,12 @@ void CGUIWindowFileManager::OnBookmarksPopupMenu(int list, int item)
 							Refresh();
 						else
 							Refresh(list);
+						return;
 					}
 				}
 			}
 			break;
 		}
 	}
+	m_vecItems[list][item]->Select(false);
 }
