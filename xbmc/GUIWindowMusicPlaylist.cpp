@@ -54,6 +54,13 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 		{
 			//	global playlist changed outside playlist window
 			Update("");
+
+			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.size()<=0)
+			{
+				m_iLastControl=CONTROL_BTNVIEWASICONS;
+				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+			}
+
 		}
 		break;
 
@@ -70,6 +77,12 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 			m_iViewAsIconsRoot=g_stSettings.m_iMyMusicPlaylistViewAsIcons;
 
 			Update(m_strDirectory);
+
+			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.size()<=0)
+			{
+				m_iLastControl=CONTROL_BTNVIEWASICONS;
+				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+			}
 
 			if (m_nSelectedItem>-1)
 			{
@@ -235,6 +248,7 @@ void CGUIWindowMusicPlayList::ClearPlayList()
 	g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Clear();
 	UpdateListControl();
 	UpdateButtons();
+	SET_CONTROL_FOCUS(GetID(), CONTROL_BTNVIEWASICONS, 0);
 }
 
 void CGUIWindowMusicPlayList::ShufflePlayList()

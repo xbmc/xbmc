@@ -105,6 +105,7 @@ CGUIWindowPictures::CGUIWindowPictures(void)
 {
 	m_strDirectory="?";
   m_iItemSelected=-1;
+	m_iLastControl=-1;
 }
 
 CGUIWindowPictures::~CGUIWindowPictures(void)
@@ -165,11 +166,16 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 		}
 		break;
     case GUI_MSG_WINDOW_DEINIT:
-	      Clear();
-		  	if (message.GetParam1() != WINDOW_SLIDESHOW)
+		{
+			m_iLastControl=GetFocusedControl();
+			m_iItemSelected=GetSelectedItem();
+
+			Clear();
+			if (message.GetParam1() != WINDOW_SLIDESHOW)
 			{
 				CSectionLoader::Unload("CXIMAGE");
 			}
+		}
     break;
 
     case GUI_MSG_WINDOW_INIT:
@@ -201,7 +207,12 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       }
 
 			m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
+
+			if (m_iLastControl>-1)
+				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+
 			Update(m_strDirectory);
+
       if (m_iItemSelected >=0)
       {
 			  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected)
@@ -468,19 +479,24 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 	  m_vecItems.push_back(pItem);
   }
 
-  m_strDirectory=strDirectory;
+	m_iLastControl=GetFocusedControl();
+
+	m_strDirectory=strDirectory;
 	m_rootDir.GetDirectory(strDirectory,m_vecItems);
-  OnSort();
-  UpdateButtons();
+	OnSort();
+	UpdateButtons();
 
 	strSelectedItem=m_history.Get(m_strDirectory);	
 
-	if ( ViewByIcon() ) 
-  {	
-		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
-	}
-	else {
-		SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
+	{
+		if ( ViewByIcon() ) 
+		{	
+			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+		}
+		else {
+			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+		}
 	}
 
 	for (int i=0; i < (int)m_vecItems.size(); ++i)

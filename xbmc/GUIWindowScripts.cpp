@@ -106,6 +106,8 @@ CGUIWindowScripts::CGUIWindowScripts()
 	m_bViewOutput = false;
 	m_strDirectory="?";
 	scriptSize = 0;
+	m_iLastControl=-1;
+	m_iSelectedItem=-1;
 }
 
 CGUIWindowScripts::~CGUIWindowScripts()
@@ -153,8 +155,13 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 		if ( m_strDirectory.IsEmpty() )
 			m_bDVDDiscChanged = true;
 		break;
+
     case GUI_MSG_WINDOW_DEINIT:
+		{
+			m_iSelectedItem=GetSelectedItem();
+			m_iLastControl=GetFocusedControl();
 			Clear();
+		}
     break;
 
     case GUI_MSG_WINDOW_INIT:
@@ -173,7 +180,18 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 			shares.push_back(share);
 
 			m_rootDir.SetShares(shares);//g_settings.m_vecScriptShares);
+
+			if (m_iLastControl>-1)
+				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+
 			Update(m_strDirectory);
+
+			if (m_iSelectedItem>-1)
+			{
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iSelectedItem);
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iSelectedItem);
+			}
+
 			return true;
 		}
 		break;
@@ -405,22 +423,26 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 		}
 	}
 
+	m_iLastControl=GetFocusedControl();
   OnSort();
   UpdateButtons();
 
 	strSelectedItem=m_history.Get(m_strDirectory);	
 
-	bool bViewAsIcon = false;
-	if ( m_strDirectory.IsEmpty() )
-		bViewAsIcon = g_stSettings.m_bScriptsRootViewAsIcons;
-	else
-		bViewAsIcon = g_stSettings.m_bScriptsViewAsIcons;
+	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
+	{
+		bool bViewAsIcon = false;
+		if ( m_strDirectory.IsEmpty() )
+			bViewAsIcon = g_stSettings.m_bScriptsRootViewAsIcons;
+		else
+			bViewAsIcon = g_stSettings.m_bScriptsViewAsIcons;
 
-	if ( bViewAsIcon ) {	
-		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
-	}
-	else {
-		SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+		if ( bViewAsIcon ) {	
+			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+		}
+		else {
+			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+		}
 	}
 
 	for (int i=0; i < (int)m_vecItems.size(); ++i)

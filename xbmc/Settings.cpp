@@ -938,7 +938,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	GetBoolean(pElement, "programsviewicons", g_stSettings.m_bMyProgramsViewAsIcons);
 	GetInteger(pElement, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod,0,0,2);
 	GetBoolean(pElement, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
-	GetInteger(pElement, "selecteditem",g_stSettings.m_iMyProgramsSelectedItem,0,0,INT_MAX);
 
 	  GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramsFlatten);
    	GetBoolean(pElement, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
@@ -962,7 +961,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
 	SetBoolean(pNode, "flatten", g_stSettings.m_bMyProgramsFlatten);
 	SetBoolean(pNode, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
-  SetInteger(pNode, "selecteditem",g_stSettings.m_iMyProgramsSelectedItem);
 
 	// mypictures settings
 	TiXmlElement picturesNode("mypictures");

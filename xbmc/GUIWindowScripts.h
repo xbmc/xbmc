@@ -37,5 +37,7 @@ protected:
 	bool								m_bDVDDiscEjected;
 	bool								m_bViewOutput;
 	int									scriptSize;
+	int									m_iLastControl;
+	int									m_iSelectedItem;
 	VECSHARES shares;
 };

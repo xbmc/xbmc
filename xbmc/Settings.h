@@ -229,7 +229,6 @@ public:
     bool			m_bMyVideoGenreStack;
     bool			m_bMyVideoYearStack;
 
-    int       m_iMyProgramsSelectedItem;
     int       m_iVideoStartWindow;
 	char			m_szWeatherArea[10];	//WEATHER
 	char			m_szWeatherFTemp[2];	//WEATHER

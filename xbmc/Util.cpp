@@ -1467,8 +1467,6 @@ int CUtil::GetFolderCount(VECFILEITEMS &items)
 		CFileItem* pItem = items[i];
 		if (pItem->m_bIsFolder) 
 			nFolderCount++;
-		else
-			break;
 	}
 
 	return nFolderCount;
