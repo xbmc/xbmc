@@ -4,6 +4,8 @@
 #include "../xbmc/util.h"
 #include "../xbmc/settings.h"
 
+#define SKIN_MIN_VERSION 1.2
+
 CSkinInfo g_SkinInfo;	// global
 
 CSkinInfo::CSkinInfo()
@@ -18,7 +20,7 @@ CSkinInfo::~CSkinInfo()
 {
 }
 
-void CSkinInfo::Load(CStdString& strSkinDir)
+void CSkinInfo::Load(const CStdString& strSkinDir)
 {
 	m_strBaseDir = strSkinDir;
 	m_DefaultResolution = INVALID;		// set to INVALID to denote that there is no default res here
@@ -91,8 +93,9 @@ void CSkinInfo::Load(CStdString& strSkinDir)
 
 }
 
-bool CSkinInfo::Check(CStdString& strSkinDir)
+bool CSkinInfo::Check(const CStdString& strSkinDir)
 {
+	bool bVersionOK = false;
 	// Load from skin.xml
 	TiXmlDocument xmlDoc;
 	CStdString strFile = strSkinDir + "\\skin.xml";
@@ -109,6 +112,13 @@ bool CSkinInfo::Check(CStdString& strSkinDir)
 				strGoodPath += "\\";
 				strGoodPath += pChild->FirstChild()->Value();
 			}
+			// get the version
+			pChild = pRootElement->FirstChild("version");
+			if (pChild)
+			{
+				bVersionOK = atof(pChild->FirstChild()->Value()) >= SKIN_MIN_VERSION;
+				CLog::Log(LOGINFO, "Skin version is: %s", pChild->FirstChild()->Value());
+			}
 		}
 	}
 	// Check to see if we have a good path
@@ -117,7 +127,7 @@ bool CSkinInfo::Check(CStdString& strSkinDir)
 	CStdString strReferencesXML=strGoodPath+"\\references.xml";
 	if ( CUtil::FileExists(strFontXML) && 
 			CUtil::FileExists(strHomeXML)  && 
-			CUtil::FileExists(strReferencesXML)  )
+			CUtil::FileExists(strReferencesXML) && bVersionOK )
 	{
 		return true;
 	}
@@ -194,4 +204,9 @@ wchar_t* CSkinInfo::GetCreditsLine(int i)
 		return credits[i];
 	else
 		return NULL;
+}
+
+double CSkinInfo::GetMinVersion()
+{
+	return SKIN_MIN_VERSION;
 }

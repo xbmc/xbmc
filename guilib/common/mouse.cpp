@@ -4,6 +4,13 @@
 
 CMouse g_Mouse;	// global
 
+static DWORD anMouseBitmapTable[4*2] =
+{
+	1<<0,  1<<1,  1<<2,  1<<3,
+	1<<16, 1<<17, 1<<18, 1<<19
+};
+
+
 CMouse::CMouse()
 {
 	ZeroMemory(&m_CurrentState, sizeof XINPUT_STATE);
@@ -23,13 +30,21 @@ void CMouse::Initialize()
 	m_dwMousePort = XGetDevices( XDEVICE_TYPE_DEBUG_MOUSE );
 
   // See if a mouse is attached and get a handle to it, if it is.
-  for( DWORD i=0; i < XGetPortCount(); i++ )
+  for( DWORD i=0; i < XGetPortCount()*2; i++ )
   {
-    if( ( m_hMouseDevice[i] == NULL ) && ( m_dwMousePort & ( 1 << i ) ) ) 
+    if( ( m_hMouseDevice[i] == NULL ) && ( m_dwMousePort & anMouseBitmapTable[i] ) ) 
     {
       // Get a handle to the device
-      m_hMouseDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_MOUSE, i, 
-                                      XDEVICE_NO_SLOT, NULL );
+			if (i<XGetPortCount())
+			{
+				m_hMouseDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_MOUSE, i, 
+																				XDEVICE_NO_SLOT, NULL );
+			}
+			else
+			{
+				m_hMouseDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_MOUSE, i-XGetPortCount(), 
+																				XDEVICE_BOTTOM_SLOT, NULL );
+			}
 			CLog::Log(LOGINFO, "Found mouse on port %i", i);
     }
   }
@@ -46,9 +61,9 @@ void CMouse::Update()
                           &dwNumRemovals ) )
   {
     // Loop through all ports and remove any mice that have been unplugged
-    for( DWORD i=0; i < XGetPortCount(); i++ )
+    for( DWORD i=0; i < XGetPortCount()*2; i++ )
     {
-      if( ( dwNumRemovals & ( 1 << i ) ) && ( m_hMouseDevice[i] != NULL ) )
+      if( ( dwNumRemovals & anMouseBitmapTable[i]) && ( m_hMouseDevice[i] != NULL ) )
       {
 				XInputClose( m_hMouseDevice[i] );
 				m_hMouseDevice[i] = NULL;
@@ -59,13 +74,21 @@ void CMouse::Update()
     // Set the bits for all of the mice plugged in.
     // We get the handles on the next pass through.
     m_dwMousePort = dwNumInsertions;
-		for ( DWORD i=0; i< XGetPortCount(); i++ )
+		for ( DWORD i=0; i< XGetPortCount()*2; i++ )
 		{
-			if( ( m_hMouseDevice[i] == NULL ) && ( m_dwMousePort & ( 1 << i ) ) ) 
+			if( ( m_hMouseDevice[i] == NULL ) && ( m_dwMousePort & anMouseBitmapTable[i] ) )
 			{
 				// Get a handle to the device
-				m_hMouseDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_MOUSE, i, 
-																				XDEVICE_NO_SLOT, NULL );
+				if (i<XGetPortCount())
+				{
+					m_hMouseDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_MOUSE, i, 
+																					XDEVICE_NO_SLOT, NULL );
+				}
+				else
+				{
+					m_hMouseDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_MOUSE, i-XGetPortCount(), 
+																					XDEVICE_BOTTOM_SLOT, NULL );
+				}
 				CLog::Log(LOGINFO, "Mouse inserted on port %i", i);
 			}
 		}
@@ -73,14 +96,14 @@ void CMouse::Update()
 
   // Poll the mouse.
   DWORD bMouseMoved = 0;
-  for( DWORD i=0; i < XGetPortCount(); i++ )
+  for( DWORD i=0; i < XGetPortCount()*2; i++ )
   {
     if( m_hMouseDevice[i] )
       XInputGetState( m_hMouseDevice[i], &m_MouseState[i] );
 
     if( m_dwLastMousePacket[i] != m_MouseState[i].dwPacketNumber )
     {
-      bMouseMoved |= (1 << i); 
+      bMouseMoved |= anMouseBitmapTable[i]; 
       m_dwLastMousePacket[i] = m_MouseState[i].dwPacketNumber;
     }
   }
@@ -89,9 +112,9 @@ void CMouse::Update()
 	if (bMouseMoved)
 	{
 		// Yes - update our current state
-		for( DWORD i=0; i < XGetPortCount(); i++ )
+		for( DWORD i=0; i < XGetPortCount()*2; i++ )
 		{
-			if( bMouseMoved & ( 1 << i ) )
+			if( bMouseMoved & anMouseBitmapTable[i] )
 			{
 				m_CurrentState = m_MouseState[i];
 			}

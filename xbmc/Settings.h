@@ -37,6 +37,26 @@ using namespace std;
 #define STACK_SIMPLE				1
 #define STACK_FUZZY					2
 
+class CFolderView
+{
+public:
+	CFolderView(CStdString &strPath, int iView, int iSort, bool bSortAscending)
+	{
+		m_strPath = strPath;
+		m_iView = iView;
+		m_iSort = iSort;
+		m_bSortAscending = bSortAscending;
+	};
+	~CFolderView() {};
+
+	CStdString m_strPath;
+	int m_iView;
+	int m_iSort;
+	bool m_bSortAscending;
+};
+
+typedef vector<CFolderView*> VECFOLDERVIEWS;
+
 /*!
 \ingroup windows
 \brief Represents a share.
@@ -159,6 +179,9 @@ public:
 	bool DeleteBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
 	bool AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
 	bool SaveHomeButtons();
+
+	bool LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
+	bool SaveFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
 
 	struct stSettings
 	{
