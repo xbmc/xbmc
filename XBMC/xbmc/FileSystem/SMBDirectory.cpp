@@ -49,7 +49,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	// that's why we have to convert strings and wstrings to UTF8.
 	char strUtfPath[1024];
 	size_t strLen;
-	CStdString strRoot;
+	CStdString strRoot = strPath;
 
 	if (!CUtil::HasSlashAtEnd(strPath))
 		strRoot+="/";
