@@ -39,6 +39,8 @@
 //			- when playing : show album info/playtime/... in leftbottom corner
 //			- ff/rwnd
 //			- status of FF/RWND/pause
+//			- cancel search 
+//			- cancel scan.
 //
 // my videos:
 //		  - control panel like in xbmp
