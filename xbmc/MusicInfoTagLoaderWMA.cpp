@@ -197,8 +197,8 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 				}
 				else if (Nom=="WM/TrackNumber")
 				{
-					if (tag.GetTrackNumber()<=0)
-						tag.SetTrackNumber(Valeur[0]);
+					//if (tag.GetTrackNumber()<=0) tag.SetTrackNumber(Valeur[0]);
+					if (tag.GetTrackNumber()<=0) tag.SetTrackNumber(atoi(Valeur));
 				}
 				else if (Nom=="WM/Track")
 				{
