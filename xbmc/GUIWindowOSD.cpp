@@ -75,6 +75,8 @@
 	OnMessage(msg); \
 }
 
+extern int m_iAudioStreamIDX;
+
 CGUIWindowOSD::CGUIWindowOSD(void)
 :CGUIWindow(0)
 {
@@ -199,9 +201,9 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 	{
 		case GUI_MSG_WINDOW_DEINIT:	// fired when OSD is hidden
 		{
-      OutputDebugString("OSD:DEINIT\n");
+			OutputDebugString("OSD:DEINIT\n");
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
-			CGUIWindow::OnMessage(message);
+			//CGUIWindow::OnMessage(message); - I've took this call out as it seemed to stop the OSD from re-displaying [forza]
 			return true;
 		}
 		break;
@@ -209,24 +211,22 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_INIT:	// fired when OSD is shown
 		{
 
-      OutputDebugString("OSD:INIT\n");
-      CGUIWindow::OnMessage(message);
+			OutputDebugString("OSD:INIT\n");
+			//CGUIWindow::OnMessage(message); - I've took this call out as it seemed to stop the OSD from re-displaying [forza]
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(false);
 			ResetAllControls();							// make sure the controls are positioned relevant to the OSD Y offset
-      
 			m_bSubMenuOn=false;
-	    m_iActiveMenuButtonID=0;
-		  m_iActiveMenu=0;
-	    Reset();
+			m_iActiveMenuButtonID=0;
+			m_iActiveMenu=0;
+			Reset();
 			SET_CONTROL_FOCUS(GetID(), OSD_PLAY, 0);	// set focus to play button by default when window is shown
-      
-      return true;
+			return true;
 		}
 		break;
 
-    case GUI_MSG_SETFOCUS:
-    case GUI_MSG_LOSTFOCUS:
-    break;
+		case GUI_MSG_SETFOCUS:
+		case GUI_MSG_LOSTFOCUS:
+		break;
 
 		case GUI_MSG_CLICKED:
 		{
@@ -266,7 +266,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 					SET_CONTROL_FOCUS(GetID(), m_iActiveMenuButtonID, 0);	// set focus to last menu button
 					ToggleSubMenu(0, m_iActiveMenu);						// hide the currently active sub-menu
 				}
-        OutputDebugString("OSD:STOP\n");
+				OutputDebugString("OSD:STOP\n");
 				g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
 				g_application.m_pPlayer->closefile();						// close our media
 				m_gWindowManager.PreviousWindow();							// go back to the previous window
@@ -369,14 +369,14 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 				if (m_bSubMenuOn)						// is sub menu on?
 				{
 					// set the controls values
-          float fBrightNess=(float)g_settings.m_iBrightness;
-          float fContrast=(float)g_settings.m_iContrast;
-          float fGamma=(float)g_settings.m_iGamma;
+					float fBrightNess=(float)g_settings.m_iBrightness;
+					float fContrast=(float)g_settings.m_iContrast;
+					float fGamma=(float)g_settings.m_iGamma;
 					SetSliderValue(0.0f, 100.0f, (float) g_application.m_pPlayer->GetPercentage(), OSD_VIDEOPOS);
           
-          SetSliderValue(0.0f, 100.0f, (float) fBrightNess, OSD_BRIGHTNESS);
-          SetSliderValue(0.0f, 100.0f, (float) fContrast, OSD_CONTRAST);
-          SetSliderValue(0.0f, 100.0f, (float) fGamma, OSD_GAMMA);
+					SetSliderValue(0.0f, 100.0f, (float) fBrightNess, OSD_BRIGHTNESS);
+					SetSliderValue(0.0f, 100.0f, (float) fContrast, OSD_CONTRAST);
+					SetSliderValue(0.0f, 100.0f, (float) fGamma, OSD_GAMMA);
 
 					SetCheckmarkValue(g_stSettings.m_bNonInterleaved, OSD_NONINTERLEAVED);
 					SetCheckmarkValue(g_stSettings.m_bNoCache, OSD_NOCACHE);
@@ -431,7 +431,7 @@ void CGUIWindowOSD::SetVideoProgress()
 		CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(OSD_VIDEOPROGRESS);
 		if (pControl) pControl->SetPercentage(iValue);			// Update our progress bar accordingly ...
 
-    iValue=g_application.m_pPlayer->GetVolume();
+	    iValue=g_application.m_pPlayer->GetVolume();
 		CGUISliderControl* pSlider = (CGUISliderControl*)GetControl(OSD_VOLUMESLIDER);
 		if (pSlider) pSlider->SetPercentage(iValue);			// Update our progress bar accordingly ...
 
@@ -640,37 +640,37 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 				g_application.m_pPlayer->SeekPercentage(pControl->GetPercentage());
 			}
 		}
-    break;
-    case OSD_BRIGHTNESS:
+		break;
+		case OSD_BRIGHTNESS:
 		{
 			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
 			if (pControl)
 			{
 				// Set mplayer's seek position to the percentage requested by the user
 				g_settings.m_iBrightness=pControl->GetPercentage();
-        CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
+		CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
 			}
 		}
 		break;
-    case OSD_CONTRAST:
+		case OSD_CONTRAST:
 		{
 			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
 			if (pControl)
 			{
 				// Set mplayer's seek position to the percentage requested by the user
 				g_settings.m_iContrast=pControl->GetPercentage();
-        CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
+				CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
 			}
 		}
 		break;
-    case OSD_GAMMA:
+		case OSD_GAMMA:
 		{
 			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
 			if (pControl)
 			{
 				// Set mplayer's seek position to the percentage requested by the user
 				g_settings.m_iGamma=pControl->GetPercentage();
-        CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
+				CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
 			}
 		}
 		break;
@@ -681,12 +681,20 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			{
 				CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),OSD_AUDIOSTREAM_LIST,0,0,NULL);
 				OnMessage(msg);
-				g_stSettings.m_iAudioStream = msg.GetParam1();				// Set the audio stream to the one selected
-				mplayer_getAudioStream(g_stSettings.m_iAudioStream);		// Tell mplayer ...
-				m_bSubMenuOn = false;										// hide the sub menu
-        OutputDebugString("OSD:RESTART1\n");
-				g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
-				g_application.Restart(true);								// restart to make new audio track active
+				// only change the audio stream if a different one has been asked for
+				if (g_stSettings.m_iAudioStream != msg.GetParam1())	
+				{
+					g_stSettings.m_iAudioStream = msg.GetParam1();				// Set the audio stream to the one selected
+					//mplayer_getAudioStream(g_stSettings.m_iAudioStream);		// Tell mplayer ...
+					if (g_stSettings.m_iAudioStream)
+						m_iAudioStreamIDX = (g_stSettings.m_iAudioStream + 1);	// audio streams are 1 based
+					else
+						m_iAudioStreamIDX = -1;		// -1 = first audio stream ?
+					m_bSubMenuOn = false;										// hide the sub menu
+					OutputDebugString("OSD:RESTART1\n");
+					g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
+					g_application.Restart(true);								// restart to make new audio track active
+				}
 			}
 		}
 		break;
@@ -706,7 +714,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 		{
 			g_stSettings.m_bNonInterleaved=!g_stSettings.m_bNonInterleaved;
 			m_bSubMenuOn = false;										// hide the sub menu
-      OutputDebugString("OSD:RESTART2\n");
+			OutputDebugString("OSD:RESTART2\n");
 			g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
 			g_application.Restart(true);								// restart to make the new setting active
 		}
@@ -716,7 +724,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 		{
 			g_stSettings.m_bNoCache=!g_stSettings.m_bNoCache;
 			m_bSubMenuOn = false;										// hide the sub menu
-      OutputDebugString("OSD:RESTART3\n");
+			OutputDebugString("OSD:RESTART3\n");
 			g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
 			g_application.Restart(true);								// restart to make the new setting active
 		}
@@ -726,7 +734,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 		{
 			g_stSettings.m_bFrameRateConversions=!g_stSettings.m_bFrameRateConversions;
 			m_bSubMenuOn = false;										// hide the sub menu
-      OutputDebugString("OSD:RESTART4\n");
+			OutputDebugString("OSD:RESTART4\n");
 			g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
 		    g_application.Restart(true);								// restart to make the new setting active
 		}
