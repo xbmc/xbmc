@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-11-2004 fixed: Accurate Kai reporting of XBOX Live Communicator / Headset status.
+  - 16-11-2004 fixed: Improved performance sorting Kai views (Friends, Games and Arenas).
   - 15-11-2004 added: New screensaver interface/API with Template and sample (Pyro) screensaver
   - 15-11-2004 updated: German (Austrian) language file (Thnx to CEOMR)
   - 15-11-2004 updated: Portuguese (Brazil) language file (Thnx to wellingtontu)

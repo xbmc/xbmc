@@ -83,6 +83,8 @@ public:
     HRESULT SetLoopback( DWORD dwControllerPort, BOOL bLoopback );
     HRESULT SetVoiceThroughSpeakers( BOOL bEnabled );
 
+	static BOOL IsHeadsetConnected();
+
 protected:
     // Helper methods, primarily for use by CVoiceCommunicator class
     friend CVoiceCommunicator;

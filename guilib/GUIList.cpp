@@ -5,6 +5,7 @@
 
 CGUIList::CGUIList()
 {
+	m_comparision = NULL;
 	InitializeCriticalSection(&m_critical);
 }
 
@@ -59,7 +60,15 @@ void CGUIList::Remove(CStdString aListItemLabel)
 		{
 			if (aListItemLabel.Compare((*iterator)->GetName())==0)
 			{
-				delete *iterator;
+				try
+				{
+					delete *iterator;
+				}
+				catch (...)
+				{
+				//	OutputDebugString("Unable to free stuff\r\n");
+				}
+
 				m_listitems.erase(iterator);
 				break;
 			}
@@ -110,26 +119,15 @@ CGUIList::GUILISTITEMS& CGUIList::Lock()
 	return m_listitems;
 }
 
-CGUISortedList::CGUISortedList() : CGUIList()
-{
-	m_comparision = NULL;
-}
-
-CGUISortedList::~CGUISortedList(void)
-{
-}
-
-void CGUISortedList::SetSortingAlgorithm(GUILISTITEMCOMPARISONFUNC aFunction)
+void CGUIList::SetSortingAlgorithm(GUILISTITEMCOMPARISONFUNC aFunction)
 {
 	m_comparision = aFunction;
 }
 
-void CGUISortedList::Add(CGUIItem* aListItem)
+void CGUIList::Sort()
 {
 	EnterCriticalSection(&m_critical);
-	
-	m_listitems.push_back(aListItem);
-	
+
 	if (m_comparision)
 	{
 		sort(m_listitems.begin(), m_listitems.end(), m_comparision );
