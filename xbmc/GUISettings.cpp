@@ -205,6 +205,7 @@ CGUISettings::CGUISettings(void)
 	AddString(3,"MusicLibrary.Cleanup", 334, "", BUTTON_CONTROL_STANDARD);
 	AddString(4,"MusicLibrary.DeleteAlbumInfo", 422, "", BUTTON_CONTROL_STANDARD);
 	AddString(5,"MusicLibrary.DeleteCDDBInfo", 423, "", BUTTON_CONTROL_STANDARD);
+	AddBool(6,"MusicLibrary.FindRemoteThumbs", 14059, true);
 	
 	// music osd 13314
 	AddCategory(3, "CDDARipper", 620);
@@ -299,6 +300,9 @@ CGUISettings::CGUISettings(void)
 	AddInt(4,"VideoLists.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
 	AddInt(5,"VideoLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 	
+ 	AddCategory(5, "VideoLibrary", 14022);
+	AddBool(1,"VideoLibrary.FindRemoteThumbs", 14059, true);
+
 	AddCategory(5, "PostProcessing", 14041);
 	AddBool(1, "PostProcessing.DeInterlace", 285, false);
   AddBool(2, "PostProcessing.Enable", 286, false);
