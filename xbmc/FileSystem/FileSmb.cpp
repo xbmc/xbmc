@@ -65,18 +65,18 @@ CFileSMB::~CFileSMB()
 	Close();
 }
 
-offset_t CFileSMB::GetPosition()
+__int64 CFileSMB::GetPosition()
 {
 	if (m_fd == -1) return 0;
 	smb.Lock();
-	offset_t pos = smbc_lseek(m_fd, 0, SEEK_CUR);
+	__int64 pos = smbc_lseek(m_fd, 0, SEEK_CUR);
 	smb.Unlock();
 	if( pos < 0 )
 		return 0;
 	return pos;
 }
 
-offset_t CFileSMB::GetLength()
+__int64 CFileSMB::GetLength()
 {
 	if (m_fd == -1) return 0;
 	return m_fileSize;
@@ -138,7 +138,7 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 	return true;
 }
 
-unsigned int CFileSMB::Read(void *lpBuf, offset_t uiBufSize)
+unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
 {
 	if (m_fd == -1) return 0;
 	smb.Lock();
@@ -157,7 +157,7 @@ unsigned int CFileSMB::Read(void *lpBuf, offset_t uiBufSize)
 bool CFileSMB::ReadString(char *szLine, int iLineLength)
 {
 	if (m_fd == -1) return false;
-	offset_t iFilePos=GetPosition();
+	__int64 iFilePos=GetPosition();
 
 	smb.Lock();	
 	int iBytesRead = smbc_read(m_fd, (unsigned char*)szLine, iLineLength);
@@ -210,7 +210,7 @@ bool CFileSMB::ReadString(char *szLine, int iLineLength)
 
 }
 
-offset_t CFileSMB::Seek(offset_t iFilePosition, int iWhence)
+__int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
 {
 	if (m_fd == -1) return 0;
 
@@ -220,7 +220,7 @@ offset_t CFileSMB::Seek(offset_t iFilePosition, int iWhence)
 
 	if( pos < 0 )	return 0;
 
-	return (offset_t)pos;
+	return (__int64)pos;
 }
 
 void CFileSMB::Close()
@@ -234,7 +234,7 @@ void CFileSMB::Close()
 	m_fd = -1;
 }
 
-int CFileSMB::Write(const void* lpBuf, offset_t uiBufSize)
+int CFileSMB::Write(const void* lpBuf, __int64 uiBufSize)
 {
 	if (m_fd == -1) return -1;
 

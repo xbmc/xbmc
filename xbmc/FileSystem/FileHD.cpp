@@ -64,7 +64,7 @@ bool CFileHD::OpenForWrite(const char* strFileName)
 }
 
 //*********************************************************************************************
-unsigned int CFileHD::Read(void *lpBuf, offset_t uiBufSize)
+unsigned int CFileHD::Read(void *lpBuf, __int64 uiBufSize)
 {
 	if (!m_hFile.isValid()) return 0;
 	DWORD nBytesRead;
@@ -77,7 +77,7 @@ unsigned int CFileHD::Read(void *lpBuf, offset_t uiBufSize)
 }
 
 //*********************************************************************************************
-unsigned int CFileHD::Write(void *lpBuf, offset_t uiBufSize)
+unsigned int CFileHD::Write(void *lpBuf, __int64 uiBufSize)
 {
 	if (!m_hFile.isValid()) return 0;
 	DWORD nBytesWriten;
@@ -95,7 +95,7 @@ void CFileHD::Close()
 }
 
 //*********************************************************************************************
-offset_t CFileHD::Seek(offset_t iFilePosition, int iWhence)
+__int64 CFileHD::Seek(__int64 iFilePosition, int iWhence)
 {
 	LARGE_INTEGER lPos,lNewPos;
 	lPos.QuadPart=iFilePosition;
@@ -118,7 +118,7 @@ offset_t CFileHD::Seek(offset_t iFilePosition, int iWhence)
 }
 
 //*********************************************************************************************
-offset_t CFileHD::GetLength()
+__int64 CFileHD::GetLength()
 {
 	LARGE_INTEGER i64Size;
 	GetFileSizeEx((HANDLE)m_hFile, &i64Size);
@@ -128,7 +128,7 @@ offset_t CFileHD::GetLength()
 }
 
 //*********************************************************************************************
-offset_t CFileHD::GetPosition()
+__int64 CFileHD::GetPosition()
 {
 	return m_i64FilePos;
 }
@@ -139,7 +139,7 @@ bool CFileHD::ReadString(char *szLine, int iLineLength)
 {
 	szLine[0]=0;
 	if (!m_hFile.isValid()) return false;
-	offset_t iFilePos=GetPosition();
+	__int64 iFilePos=GetPosition();
 
 	int iBytesRead=Read( (unsigned char*)szLine, iLineLength);
 	if (iBytesRead <= 0)
@@ -194,7 +194,7 @@ bool CFileHD::ReadString(char *szLine, int iLineLength)
 }
 
 
-int CFileHD::Write(const void* lpBuf, offset_t uiBufSize)
+int CFileHD::Write(const void* lpBuf, __int64 uiBufSize)
 {
 	if (!m_hFile.isValid()) return -1;
 	DWORD dwNumberOfBytesWritten=0;
