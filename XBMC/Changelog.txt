@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 03-10-2004 fixed: fanspeed was being restored on exit when no fanoptions enabled.
   - 02-10-2004 fixed: FileTimetoSystemTime debug assertion fail
   - 02-10-2004 fixed: truncation of chinese charactor long file name in joilet format
   - 02-10-2004 fixed: display performance when TTF font was selected
