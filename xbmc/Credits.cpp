@@ -88,6 +88,7 @@ CreditLine_t Credits[] =
   {  50,  35,   7620,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"jwnmulder" },
   {  50,  45,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"monkeyhappy" },
   {  50,  55,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Tslayer" },
+  {  50,  65,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"elupus" },
 
   // Project management flash 0.5, on 63, crossfade 3.5
 	{  50,  18,   7740,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Project Management" },
@@ -293,6 +294,13 @@ CreditLine_t Credits[] =
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and would never have had a chance" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"to become part of this amazing team." },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanks all!" },
+
+	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"elupus" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanx to everybody on the XBMC team," },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"with special thanx to frodo for giving me" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"cvs access and in that something else" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"to do instead of sleeping at nights." },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanx a bunch!" },
 
 	// can duplicate the lines below as many times as required for more credits
 //	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"" },
