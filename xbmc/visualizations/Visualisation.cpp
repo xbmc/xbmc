@@ -20,7 +20,12 @@ CVisualisation::~CVisualisation()
 
 void CVisualisation::Create()
 {
-	m_pVisz->Create (g_graphicsContext.Get3DDevice() );
+  int iWidth = g_graphicsContext.GetWidth();
+  int iHeight= g_graphicsContext.GetHeight();
+  char szTmp[129];
+  sprintf(szTmp,"create:%ix%i\n", iWidth,iHeight);
+  OutputDebugString(szTmp);
+  m_pVisz->Create (g_graphicsContext.Get3DDevice(),iWidth,iHeight );
 }
 
 void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample)
