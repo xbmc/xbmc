@@ -522,6 +522,12 @@
 				RelativePath=".\xbmc\GUIWindowVisualisation.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowWeather.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowWeather.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\MusicDatabase.cpp">
 			</File>
 			<File

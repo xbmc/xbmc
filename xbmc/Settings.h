@@ -231,6 +231,9 @@ public:
 
     int       m_iMyProgramsSelectedItem;
     int       m_iVideoStartWindow;
+	  char			m_szWeatherArea[10];	//WEATHER
+	  char			m_szWeatherFormat[2];	//WEATHER
+
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

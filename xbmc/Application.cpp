@@ -238,6 +238,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiDialogFileStacking);				// window id = 2008
 
 	m_gWindowManager.Add(&m_guiWindowScreensaver);				// window id = 2900 Screensaver
+	m_gWindowManager.Add(&m_guiMyWeather);						// window id = 2600 WEATHER
 
 	/* window id's 3000 - 3100 are reserved for python */
   	
@@ -327,6 +328,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiWindowSlideshow.Load( strSkinPath+"\\slideshow.xml");
 	m_guiSettingsSubtitles.Load( strSkinPath+"\\SettingsScreenSubtitles.xml");
 	m_guiWindowScreensaver.SetID(WINDOW_SCREENSAVER);		// CB: Matrix Screensaver - saves us having to have our own XML file
+	m_guiMyWeather.Load( strSkinPath+"\\myweather.xml");	//WEATHER
 
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
