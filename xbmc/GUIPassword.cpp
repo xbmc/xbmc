@@ -119,6 +119,99 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
   return true;
 }
 
+/// \brief Tests if the user is allowed to access the share folder
+/// \param pItem The share folder item to access
+/// \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateBookmark
+/// \return If access is granted, returns \e true
+bool CGUIPassword::IsItemUnlocked(CShare* pItem, const CStdString &strType)
+{
+  while (LOCK_MODE_EVERYONE < pItem->m_iLockMode)
+  {
+    CStdString strLabel = pItem->strName;
+    bool bConfirmed = false;
+    bool bCanceled = false;
+    int iResult = 0;  // init to user succeeded state, doing this to optimize switch statement below
+    char buffer[33]; // holds 32 places plus sign character
+
+    int iRetries = 0;
+    if (!(1 > pItem->m_iBadPwdCount))
+    {
+      iRetries = g_stSettings.m_iMasterLockMaxRetry - pItem->m_iBadPwdCount;
+    }
+
+    if (0 != g_stSettings.m_iMasterLockMaxRetry && pItem->m_iBadPwdCount >= g_stSettings.m_iMasterLockMaxRetry)
+    {
+      // user previously exhausted all retries, show access denied error
+      CGUIDialogOK::ShowAndGetInput(L"12345", L"12346", L"", L"");
+      return false;
+    }
+
+    // show the appropriate lock dialog
+    CStdStringW strHeading = L"";
+    /* CShares don't have this attribute
+    if (pItem->m_bIsFolder)
+      strHeading = L"12325";
+    else
+    */
+      strHeading = L"12348";
+
+    switch (pItem->m_iLockMode)
+    {
+    case LOCK_MODE_NUMERIC:
+        if (!g_application.m_bMasterLockOverridesLocalPasswords)
+          iResult = CGUIDialogNumeric::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
+        break;
+    case LOCK_MODE_GAMEPAD:
+        if (!g_application.m_bMasterLockOverridesLocalPasswords)
+          iResult = CGUIDialogGamepad::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
+        break;
+    case LOCK_MODE_QWERTY:
+        if (!g_application.m_bMasterLockOverridesLocalPasswords)
+          iResult = CGUIDialogKeyboard::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
+        break;
+    default:
+        // pItem->m_iLockMode isn't set to an implemented lock mode, so treat as unlocked
+        return true;
+        break;
+    }
+
+    switch (iResult)
+    {
+    case -1:
+      {
+        // user canceled out
+        return false;
+        break;
+      }
+    case 0:
+      {
+        // password entry succeeded
+        pItem->m_iLockMode = pItem->m_iLockMode * -1;
+        itoa(pItem->m_iLockMode, buffer, 10);
+        g_settings.UpdateBookmark(strType, strLabel, "lockmode", itoa(pItem->m_iLockMode, buffer, 10));
+        pItem->m_iBadPwdCount = 0;
+        g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", itoa(pItem->m_iBadPwdCount, buffer, 10));
+        break;
+      }
+    case 1:
+      {
+        // password entry failed
+        if (0 != g_stSettings.m_iMasterLockMaxRetry)
+          pItem->m_iBadPwdCount++;
+        g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", itoa(pItem->m_iBadPwdCount, buffer, 10));
+        break;
+      }
+    default:
+      {
+        // this should never happen, but if it does, do nothing
+        return false;
+        break;
+      }
+    }
+  }
+  return true;
+}
+
 // \brief Verify whether Master Lock is currently unlocked.
 // \param bPromptUser If set to true and masterlock is locked, show Master Lock dialog to user for verification.
 // \return true if masterlock is unlocked and/or if user enters correct mastercode. false if not unlocked.

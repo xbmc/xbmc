@@ -208,6 +208,7 @@ public:
 	bool UpdateBookmark(const CStdString &strType, const CStdString &strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
 	bool DeleteBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
 	bool AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
+	bool AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath, const int iDepth);
   bool SetBookmarkLocks(const CStdString& strType, bool bEngageLocks);
 	bool SaveHomeButtons();
 
@@ -284,6 +285,7 @@ public:
 		char			m_szDefaultVideos[128];
 
 		char			m_szCDDBIpAdres[128];
+		char			m_szIMDBurl[128];
 
 		char			m_strRipPath[MAX_PATH+1];
 		char			m_szMusicRecordingDirectory[128];
