@@ -39,12 +39,8 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 
 	CStdString strURL,strHTML;
 	GetURL(strMovie,strURL);
-  CLog::Log("Retrieve:%s",strURL.c_str());
 	if (!m_http.Get(strURL,strHTML))
-	{
-    CLog::Log("Unable to retrieve web page:%%s ",strURL.c_str());
 		return false;
-	}
 
 	if (strHTML.size()==0) 
   {
