@@ -57,19 +57,28 @@ bool CFileHD::Open(const char* strUserName, const char* strPassword,const char* 
 
 bool CFileHD::Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport)
 {
-	return GetFileAttributes(strFileName) != -1;
+	CStdString strFile(strFileName);
+	strFile.Replace("/", "\\");
+
+	return GetFileAttributes(strFile.c_str()) != -1;
 }
 
 int CFileHD::Stat(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport, struct __stat64* buffer)
 {
-	return _stat64(strFileName, buffer);
+	CStdString strFile(strFileName);
+	strFile.Replace("/", "\\");
+
+	return _stat64(strFile.c_str(), buffer);
 }
 
 
 //*********************************************************************************************
 bool CFileHD::OpenForWrite(const char* strFileName)
 {
-	m_hFile.attach(CreateFile(strFileName,GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL));
+	CStdString strFile(strFileName);
+	strFile.Replace("/", "\\");
+
+	m_hFile.attach(CreateFile(strFile.c_str(),GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL));
 	if (!m_hFile.isValid()) return false;
 
 	m_i64FilePos=0;
