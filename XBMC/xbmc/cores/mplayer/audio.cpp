@@ -90,8 +90,8 @@ static int audio_init(int rate,int channels,int format,int flags)
 			// Check that we are allowed to pass through DD or DTS
 			if (strstr(strAudioCodec,"SPDIF") && (g_stSettings.m_bDD_DTSMultiChannelPassThrough || g_stSettings.m_bDDStereoPassThrough))
 				bAC3PassThru=true;
-			else if (lSampleRate == 48000 && iChannels == 2) // Check for stereo 48kHz audio for direct digital out
-				bAC3PassThru=true;
+			else if (lSampleRate == 48000 && iChannels == 2 && g_stSettings.m_bDDStereoPassThrough) 
+				bAC3PassThru=true; // use direct digital out for stereo 48kHz audio only if stereo passthru option is enabled
 		}
 		pao_data=GetAOData();
 		if (bAC3PassThru)
