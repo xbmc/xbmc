@@ -525,11 +525,12 @@ off_t len;
 			stream=new_stream(f,STREAMTYPE_SMB);
 			stream->end_pos=len;
 			return stream;
-#else
+#elif !defined _XBOX
 	    mp_msg(MSGT_OPEN,MSGL_ERR,MSGTR_SMBNotCompiled);
 	    return NULL;
 #endif
 		}
+#ifdef _XBOX
 		printf("protocol:%s",url->protocol);
 		if (stricmp(url->protocol, "http") ==0||
 			stricmp(url->protocol, "mms") ==0||
@@ -538,6 +539,7 @@ off_t len;
 			)
 		{
 			printf("open stream protocol:%s\n", url->protocol);
+#endif //_XBOX
 			stream=new_stream(f,STREAMTYPE_STREAM);
 	if( streaming_start( stream, file_format, url )<0){
           mp_msg(MSGT_OPEN,MSGL_ERR,MSGTR_UnableOpenURL, filename);
@@ -549,12 +551,14 @@ off_t len;
 				return stream;
 			}
 		}
+#ifdef _XBOX
 		else
 		{
 			printf("use standard file for protocol:%s\n", url->protocol);
 			url_free(url);
 		}
 	} // of if URL
+#endif //_XBOX
 #endif
 
 	//============ Open STDIN or plain FILE ============
