@@ -285,6 +285,12 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 		m_vecOptions.push_back(strTmp);
 	}
 
+	//Force mplayer to allways allocate a subtitle demuxer, otherwise we 
+	//might not be able to enable it later. Will make sure later that it isn't visible.
+	//For after 1.0 add command to ask for a specific language as an alternative.
+	m_vecOptions.push_back("-sid");
+	m_vecOptions.push_back("0");
+
 	if ( m_iChannels) 
 	{
 		// set number of audio channels
@@ -825,6 +831,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			}
 		}
 		m_bIsPlaying= true;
+		
+		//Make sure subtitles isn't visible by default. will not be correct if osd has asked for a restart.
+		mplayer_showSubtitle(false);
 
 		bIsVideo=HasVideo();
 		bIsAudio=HasAudio();
