@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 02-03-2005 changed: GUIButtonControl and GUIToggleButtonControl send their click message before executing a action or a hyperlink
   - 02-03-2005 fixed: screensaver preview sometimes crashes
   - 02-03-2005 fixed: screensaver preview button is enabled when screensaver is off
   - 02-03-2005 changed: folders and files from smb will be sorted by modification date now
