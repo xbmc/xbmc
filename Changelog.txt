@@ -5,7 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 17-10-2004 fixed: mplayer leaks memory (next partial fix) audio render wasn't being freed
+  - 20-10-2004 added: USB Keyboard support (see keymap.xml for mapping)
+  - 20-10-2004 added: New Filemanager
+  - 20-10-2004 added: New setting to disable the display of tracknumbers in My Music
+  - 20-10-2004 added: New setting to remove Parent Dir items from lists + thumbpanels
+  - 20-10-2004 added: List Controls now display the thumbs instead of just icons
+  - 19-10-2004 fixed: mplayer leaks memory (next partial fix) audio render wasn't being freed
   - 19-10-2004 fixed: memleaks in RSS feed reader
   - 19-10-2004 fixed: possible memleak in filezilla
   - 19-10-2004 fixed: [ 1049621 ] hdd spindown broken

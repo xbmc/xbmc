@@ -517,6 +517,9 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 /// \brief Call to go to parent folder
 void CGUIWindowMusicBase::GoParentFolder()
 {
+	CStdString strPath=m_strParentPath;
+	Update(strPath);
+	/*
 	if (m_vecItems.size()==0) return;
 	CFileItem* pItem=m_vecItems[0];
 	if (pItem->m_bIsFolder)
@@ -526,7 +529,7 @@ void CGUIWindowMusicBase::GoParentFolder()
 			CStdString strPath=pItem->m_strPath;
 			Update(strPath);
 		}
-	}
+	}*/
 }
 
 /// \brief Tests if a network/removeable share is available

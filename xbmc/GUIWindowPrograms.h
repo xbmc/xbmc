@@ -36,5 +36,5 @@ protected:
 	int					m_iDepth;	
 	CStdString			m_strBookmarkName;
 	CProgramDatabase	m_database;
-
+	CStdString			m_strParentPath;
 };

@@ -31,7 +31,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="\DX90SDK\Lib\D3D8.lib \DX90SDK\Lib\D3DX8.lib xgraphics.lib"
+				AdditionalDependencies="&quot;C:\Program Files\Microsoft DirectX 9.0 SDK (Summer 2004)\Lib\D3D8.lib&quot; &quot;C:\Program Files\Microsoft DirectX 9.0 SDK (Summer 2004)\Lib\D3DX8.lib&quot; xgraphics.lib"
 				OutputFile="$(OutDir)/XBMCTex.exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libci.lib,libm.lib,libirc.lib,libc"
@@ -81,7 +81,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="\DX90SDK\Lib\D3D8.lib \DX90SDK\Lib\D3DX8.lib xgraphics.lib"
+				AdditionalDependencies="&quot;C:\Program Files\Microsoft DirectX 9.0 SDK (Summer 2004)\Lib\D3D8.lib&quot; &quot;C:\Program Files\Microsoft DirectX 9.0 SDK (Summer 2004)\Lib\D3DX8.lib&quot; xgraphics.lib"
 				OutputFile="$(OutDir)/XBMCTex.exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libci.lib,libm.lib,libirc.lib"

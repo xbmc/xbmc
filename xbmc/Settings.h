@@ -223,7 +223,7 @@ public:
 		bool			m_bMyMusicRepeat;
 		bool			m_bMyMusicSongInfoInVis;
     bool      m_bMyMusicSongThumbInVis;
-		bool			m_bMyMusicShowTrackNumber;
+		bool			m_bMyMusicHideTrackNumber;
 		int 			m_iMyVideoViewAsIcons;
 		int 			m_iMyVideoRootViewAsIcons;
 		int				m_iMyVideoSortMethod;
@@ -246,8 +246,10 @@ public:
 		bool			m_bTimeServerEnabled;
 		bool			m_bFTPServerEnabled;
 		bool			m_bHTTPServerEnabled;
-		int       m_iSlideShowTransistionFrames;
+		int       m_iSlideShowTransistionTime;
 		int       m_iSlideShowStayTime;
+		float			m_fSlideShowMoveAmount;
+		float			m_fSlideShowZoomAmount;
 		RESOLUTION		m_GUIResolution;
 		bool		  m_bHTTPProxyEnabled;
 		int			  m_iHTTPProxyPort;
@@ -411,6 +413,7 @@ public:
 		char      m_strSambaDefaultPassword[128];
 
 		bool      m_bHideExtensions;
+		bool			m_bHideParentDirItems;
 
 		bool      m_bRipWithTrackNumber;
 		int       m_iRipEncoder;

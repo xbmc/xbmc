@@ -511,8 +511,9 @@ HRESULT CApplication::Create()
 		return hr;
 	}
 
-	// Create the Mouse devices
+	// Create the Mouse and Keyboard devices
 	g_Mouse.Initialize();
+	g_Keyboard.Initialize();
 
 	// Wait for controller polling to finish. in an elegant way, instead of a Sleep(1000)
 	while (XGetDeviceEnumerationStatus()==XDEVICE_ENUMERATION_BUSY) {
@@ -1325,7 +1326,16 @@ void CApplication::OnKey(CKey& key)
 		// current active window isnt the fullscreen window
 		// just use corresponding section from keymap.xml
 		// to map key->action
-		g_buttonTranslator.GetAction(iWin, key, action);
+		if (key.FromKeyboard() && iWin == WINDOW_DIALOG_KEYBOARD)
+		{
+			// see if we've got an ascii key
+			if (g_Keyboard.GetAscii() != 0)
+				action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII;
+			else
+				action.wID = (WORD)g_Keyboard.GetKey() | KEY_VKEY;
+		}
+		else
+			g_buttonTranslator.GetAction(iWin, key, action);
 	}
 
 	// special case for switching between GUI & fullscreen mode.
@@ -1707,7 +1717,7 @@ void CApplication::FrameMove()
 	m_guiWindowFullScreen.m_bSmoothFFwdRewd = false;
 
 	if (g_lcd) UpdateLCD();
-	// read raw input from controller, remote control, and mouse
+	// read raw input from controller, remote control, mouse and keyboard
 	ReadInput();
 	// process mouse actions
 	if (g_Mouse.IsActive())
@@ -1738,6 +1748,18 @@ void CApplication::FrameMove()
 		}
 		m_gWindowManager.OnAction(action);
 	}
+	// process the keyboard buttons etc.
+	BYTE vkey = g_Keyboard.GetKey();
+	if (vkey)
+	{
+		// got a valid keypress - convert to a key code
+		WORD wkeyID = (WORD)vkey | KEY_VKEY;
+//		CLog::DebugLog("Keyboard: time=%i key=%i", timeGetTime(), vkey);
+		CKey key(wkeyID);
+		OnKey(key);
+		return;
+	}
+
 	XBIR_REMOTE* pRemote	= &m_DefaultIR_Remote;
 	XBGAMEPAD*  pGamepad	= &m_DefaultGamepad;
 

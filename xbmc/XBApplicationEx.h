@@ -17,6 +17,7 @@
 #include "common/XBUtil.h"
 #include "IWindowManagerCallback.h"
 #include "common/mouse.h"
+#include "common/keyboard.h"
 
 //-----------------------------------------------------------------------------
 // Global access to common members

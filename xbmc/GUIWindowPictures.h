@@ -47,4 +47,5 @@ protected:
 	CDirectoryHistory		m_history;
   int                 m_iItemSelected;
 	int									m_iLastControl;
+	CStdString					m_strParentPath;
 };

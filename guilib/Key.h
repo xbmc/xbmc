@@ -43,6 +43,10 @@
 #define KEY_BUTTON_LEFT_ANALOG_TRIGGER      278
 #define KEY_BUTTON_RIGHT_ANALOG_TRIGGER     279
 
+// 0xF000 -> 0xF1FF is reserved for the keyboard
+#define KEY_VKEY											0xF000
+#define KEY_ASCII											0xF100
+
 #define KEY_INVALID                   0xffff
 
 // actions that we have defined...
@@ -168,9 +172,15 @@
 #define ACTION_ANALOG_FORWARD			113
 #define ACTION_ANALOG_REWIND			114
 
-#define ACTION_MOVE_ITEM_UP     115  // move item up in playlist
-#define ACTION_MOVE_ITEM_DOWN   116  // move item down in playlist
-#define ACTION_CONTEXT_MENU			117		// pops up the context menu
+#define ACTION_MOVE_ITEM_UP				115  // move item up in playlist
+#define ACTION_MOVE_ITEM_DOWN			116  // move item down in playlist
+#define ACTION_CONTEXT_MENU				117		// pops up the context menu
+
+// stuff for virtual keyboard shortcuts
+#define ACTION_SHIFT							118
+#define ACTION_SYMBOLS						119
+#define ACTION_CURSOR_LEFT				120
+#define ACTION_CURSOR_RIGHT				121
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                 9999
@@ -274,7 +284,8 @@ public:
   float       GetLeftThumbY() const;
   float       GetRightThumbX() const;
   float       GetRightThumbY() const;
-  
+  bool				FromKeyboard() const;
+
 private:
   DWORD     m_dwButtonCode;
   BYTE      m_bLeftTrigger;
