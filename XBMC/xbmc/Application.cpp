@@ -261,7 +261,7 @@ HRESULT CApplication::Initialize()
 			  m_sntpClient.Create(); 
       }
       
-			if (g_stSettings.m_bHTTPServerEnabled)
+			if (!m_bSettingsLoaded ||g_stSettings.m_bHTTPServerEnabled)
 			{
         CLog::Log("start webserver");
 				CSectionLoader::Load("LIBHTTP");
@@ -365,7 +365,7 @@ HRESULT CApplication::Initialize()
 		CStdString test;
 		CUtil::GetHomePath(test);
     m_guiDialogOK.SetHeading(279);
-    m_guiDialogOK.SetLine(0,test);
+    m_guiDialogOK.SetLine(0,"Error while loading settings");
     m_guiDialogOK.SetLine(1,test);
     m_guiDialogOK.SetLine(2,L"");
     m_guiDialogOK.DoModal(g_stSettings.m_iStartupWindow);
