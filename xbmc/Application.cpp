@@ -191,43 +191,43 @@ HRESULT CApplication::Create()
 
 HRESULT CApplication::Initialize()
 {
-  CLog::Log("creating subdirectories");
-  if (g_stSettings.szThumbnailsDirectory[0]==0)
-  {
+	CLog::Log("creating subdirectories");
+	if (g_stSettings.szThumbnailsDirectory[0]==0)
+	{
 		strcpy(g_stSettings.szThumbnailsDirectory,"Q:\\thumbs");
-  }
-  if (g_stSettings.m_szShortcutDirectory[0]==0)
-  {
+	}
+	if (g_stSettings.m_szShortcutDirectory[0]==0)
+	{
 		strcpy(g_stSettings.m_szShortcutDirectory,"Q:\\shortcuts");		
-  }
-  if (g_stSettings.m_szAlbumDirectory[0]==0)
-  {
+	}
+	if (g_stSettings.m_szAlbumDirectory[0]==0)
+	{
 		strcpy(g_stSettings.m_szAlbumDirectory,"Q:\\albums");		
-  }
-  if (g_stSettings.m_szMusicRecordingDirectory[0]==0)
-  {
+	}
+	if (g_stSettings.m_szMusicRecordingDirectory[0]==0)
+	{
 		strcpy(g_stSettings.m_szMusicRecordingDirectory,"Q:\\recordings");		
-  }
-  if (g_stSettings.m_szScreenshotsDirectory[0]==0)
-  {
-	  strcpy(g_stSettings.m_szScreenshotsDirectory, "Q:\\screenshots");
-  }
+	}
+	if (g_stSettings.m_szScreenshotsDirectory[0]==0)
+	{
+		strcpy(g_stSettings.m_szScreenshotsDirectory, "Q:\\screenshots");
+	}
 
-  CreateDirectory(g_stSettings.szThumbnailsDirectory,NULL);
-  CStdString strThumbIMDB=g_stSettings.szThumbnailsDirectory;
-  strThumbIMDB+="\\imdb";
-  CreateDirectory(strThumbIMDB.c_str(),NULL);
+	CreateDirectory(g_stSettings.szThumbnailsDirectory,NULL);
+	CStdString strThumbIMDB=g_stSettings.szThumbnailsDirectory;
+	strThumbIMDB+="\\imdb";
+	CreateDirectory(strThumbIMDB.c_str(),NULL);
 
 	CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szMusicRecordingDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szScreenshotsDirectory, NULL);
 
-  CLog::Log("  thumbnails folder:%s", g_stSettings.szThumbnailsDirectory);
-  CLog::Log("  shortcuts folder:%s", g_stSettings.m_szShortcutDirectory);
-  CLog::Log("  albums folder:%s", g_stSettings.m_szAlbumDirectory);
-  CLog::Log("  recording folder:%s", g_stSettings.m_szMusicRecordingDirectory);
-  CLog::Log("  screenshots folder:%s", g_stSettings.m_szScreenshotsDirectory);
+	CLog::Log("  thumbnails folder:%s", g_stSettings.szThumbnailsDirectory);
+	CLog::Log("  shortcuts folder:%s", g_stSettings.m_szShortcutDirectory);
+	CLog::Log("  albums folder:%s", g_stSettings.m_szAlbumDirectory);
+	CLog::Log("  recording folder:%s", g_stSettings.m_szMusicRecordingDirectory);
+	CLog::Log("  screenshots folder:%s", g_stSettings.m_szScreenshotsDirectory);
 
 	string strAlbumDir=g_stSettings.m_szAlbumDirectory;
 	CreateDirectory((strAlbumDir+"\\playlists").c_str(),NULL);
@@ -239,165 +239,170 @@ HRESULT CApplication::Initialize()
 	CreateDirectory("Q:\\language",NULL);
 	CreateDirectory("Q:\\visualisations",NULL);
 
-  if (g_stSettings.m_szAlternateSubtitleDirectory[0]==0)
-  {
-    strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"Q:\\subtitles");
-  }
-  CLog::Log("  subtitle folder:%s", g_stSettings.m_szAlternateSubtitleDirectory);
-  CreateDirectory(g_stSettings.m_szAlternateSubtitleDirectory,NULL);
-  
-  // initialize network
-  if (!m_bXboxMediacenterLoaded)
-  {
-    CLog::Log("using default network settings");
-    strcpy (g_stSettings.m_strLocalIPAdres,"192.168.0.100");
-    strcpy (g_stSettings.m_strLocalNetmask,"255.255.255.0");
-    strcpy (g_stSettings.m_strGateway,"192.168.0.1");
-    strcpy (g_stSettings.m_strNameServer,"192.168.0.1");
-    g_stSettings.m_bFTPServerEnabled=true;
-    g_stSettings.m_bHTTPServerEnabled=false;
-    g_stSettings.m_bTimeServerEnabled=false;
-  }
-  CLog::Log("initialize network ip:[%s] netmask:[%s] gateway:[%s] nameserver:[%s]",
-                    g_stSettings.m_strLocalIPAdres,
-                    g_stSettings.m_strLocalNetmask,
-                    g_stSettings.m_strGateway,
-                    g_stSettings.m_strNameServer);
+	if (g_stSettings.m_szAlternateSubtitleDirectory[0]==0)
+	{
+		strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"Q:\\subtitles");
+	}
+	CLog::Log("  subtitle folder:%s", g_stSettings.m_szAlternateSubtitleDirectory);
+	CreateDirectory(g_stSettings.m_szAlternateSubtitleDirectory,NULL);
 
-  if ( CUtil::InitializeNetwork(g_stSettings.m_strLocalIPAdres,
-                            g_stSettings.m_strLocalNetmask,
-                            g_stSettings.m_strGateway,
-                            g_stSettings.m_strNameServer) )
-  {
-      if (g_stSettings.m_bTimeServerEnabled)
-      {
-        CLog::Log("start timeserver thread");
-			  m_sntpClient.Create(); 
-      }
-      
-			if (g_stSettings.m_bHTTPServerEnabled)
-			{
-        CLog::Log("start webserver");
-				CSectionLoader::Load("LIBHTTP");
-				m_pWebServer = new CWebServer();
-				CStdString ipadres;
-				CUtil::GetTitleIP(ipadres);
-				m_pWebServer->Start(ipadres.c_str(), 80, "Q:\\web");
-			} 
+	// initialize network
+	if (!m_bXboxMediacenterLoaded)
+	{
+		CLog::Log("using default network settings");
+		strcpy (g_stSettings.m_strLocalIPAdres,"192.168.0.100");
+		strcpy (g_stSettings.m_strLocalNetmask,"255.255.255.0");
+		strcpy (g_stSettings.m_strGateway,"192.168.0.1");
+		strcpy (g_stSettings.m_strNameServer,"192.168.0.1");
+		g_stSettings.m_bFTPServerEnabled=true;
+		g_stSettings.m_bHTTPServerEnabled=false;
+		g_stSettings.m_bTimeServerEnabled=false;
+	}
+	CLog::Log("initialize network ip:[%s] netmask:[%s] gateway:[%s] nameserver:[%s]",
+					g_stSettings.m_strLocalIPAdres,
+					g_stSettings.m_strLocalNetmask,
+					g_stSettings.m_strGateway,
+					g_stSettings.m_strNameServer);
 
-      if ( g_stSettings.m_bFTPServerEnabled)
-			{
-        CLog::Log("start ftpserver");
-				m_pFileZilla = new CXBFileZilla("Q:\\");
-				m_pFileZilla->Start();
-			}
+	if ( CUtil::InitializeNetwork(g_stSettings.m_strLocalIPAdres,
+							g_stSettings.m_strLocalNetmask,
+							g_stSettings.m_strGateway,
+							g_stSettings.m_strNameServer) )
+	{
+		if (g_stSettings.m_bTimeServerEnabled)
+		{
+			CLog::Log("start timeserver thread");
+			m_sntpClient.Create(); 
+		}
+	    
+		if (g_stSettings.m_bHTTPServerEnabled)
+		{
+			CLog::Log("start webserver");
+			CSectionLoader::Load("LIBHTTP");
+			m_pWebServer = new CWebServer();
+			CStdString ipadres;
+			CUtil::GetTitleIP(ipadres);
+			m_pWebServer->Start(ipadres.c_str(), 80, "Q:\\web");
+		} 
 
-  }
-  else
-  {
-    CLog::Log("initialize network failed");
-  }
+		if ( g_stSettings.m_bFTPServerEnabled)
+		{
+			CLog::Log("start ftpserver");
+			m_pFileZilla = new CXBFileZilla("Q:\\");
+			m_pFileZilla->Start();
+		}
+	}
+	else
+	{
+		CLog::Log("initialize network failed");
+	}
 
 	// set filters
 	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, g_stSettings.m_minFilter );
 	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, g_stSettings.m_maxFilter );
 
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
-  CLog::Log("load default skin:[%s]",g_stSettings.szDefaultSkin);
+	CLog::Log("load default skin:[%s]",g_stSettings.szDefaultSkin);
 	LoadSkin(g_stSettings.szDefaultSkin);
 
-  CLog::Log("initializing skin");
-  m_gWindowManager.Add(&m_guiHome);											// window id = 0
-  m_gWindowManager.Add(&m_guiPrograms);									// window id = 1
-	m_gWindowManager.Add(&m_guiPictures);									// window id = 2
-  m_gWindowManager.Add(&m_guiMyFiles);									// window id = 3
-	m_gWindowManager.Add(&m_guiMyVideo);									// window id = 6
-	m_gWindowManager.Add(&m_guiSettings);									// window id = 4
-	m_gWindowManager.Add(&m_guiSystemInfo);								// window id = 7
-	m_gWindowManager.Add(&m_guiSettingsGeneral);					// window id = 8
-	m_gWindowManager.Add(&m_guiSettingsScreen);						// window id = 9
-	m_gWindowManager.Add(&m_guiSettingsUICalibration);		// window id = 10
-	m_gWindowManager.Add(&m_guiSettingsScreenCalibration);	// window id = 11
+	CLog::Log("initializing skin");
+	m_gWindowManager.Add(&m_guiHome);							// window id = 0
+	m_gWindowManager.Add(&m_guiPrograms);						// window id = 1
+	m_gWindowManager.Add(&m_guiPictures);						// window id = 2
+	m_gWindowManager.Add(&m_guiMyFiles);						// window id = 3
+	m_gWindowManager.Add(&m_guiMyVideo);						// window id = 6
+	m_gWindowManager.Add(&m_guiSettings);						// window id = 4
+	m_gWindowManager.Add(&m_guiSystemInfo);						// window id = 7
+	m_gWindowManager.Add(&m_guiSettingsGeneral);				// window id = 8
+	//m_gWindowManager.Add(&m_guiSettingsScreen);				// window id = 9
+	m_gWindowManager.Add(&m_guiSettingsMyVideo);				// window id = 9
+	m_gWindowManager.Add(&m_guiSettingsUICalibration);			// window id = 10
+	m_gWindowManager.Add(&m_guiSettingsScreenCalibration);		// window id = 11
 	m_gWindowManager.Add(&m_guiSettingsSlideShow);				// window id = 12 slideshow:window id 2007
-	m_gWindowManager.Add(&m_guiSettingsFilter);						// window id = 13
-	m_gWindowManager.Add(&m_guiSettingsMusic);						// window id = 14
-  m_gWindowManager.Add(&m_guiSettingsSubtitles);				// window id = 15
-  m_gWindowManager.Add(&m_guiSettingsScreensaver);				// window id = 16
-  m_gWindowManager.Add(&m_guiSettingsOSD);					// window id = 18
-	m_gWindowManager.Add(&m_guiScripts);									// window id = 20
-  m_gWindowManager.Add(&m_guiVideoGenre);								// window id = 21
-  m_gWindowManager.Add(&m_guiVideoActors);							// window id = 22
-	m_gWindowManager.Add(&m_guiVideoYear);							  // window id = 23
-  m_gWindowManager.Add(&m_guiSettingsPrograms);					// window id = 24
-	m_gWindowManager.Add(&m_guiVideoTitle);							  // window id = 25
-  m_gWindowManager.Add(&m_guiSettingsCache);						// window id = 26
-  m_gWindowManager.Add(&m_guiSettingsAutoRun);					// window id = 27
-  m_gWindowManager.Add(&m_guiMyVideoPlayList);					// window id = 28
-  m_gWindowManager.Add(&m_guiSettingsLCD);					    // window id = 29
+	m_gWindowManager.Add(&m_guiSettingsFilter);					// window id = 13
+	//m_gWindowManager.Add(&m_guiSettingsMusic);				// window id = 14
+	m_gWindowManager.Add(&m_guiSettingsMyMusic);				// window id = 14
+	m_gWindowManager.Add(&m_guiSettingsSubtitles);				// window id = 15
+	m_gWindowManager.Add(&m_guiSettingsScreensaver);			// window id = 16
+	m_gWindowManager.Add(&m_guiSettingsSkinLanguage);			// window id = 19
+	m_gWindowManager.Add(&m_guiScripts);						// window id = 20
+	m_gWindowManager.Add(&m_guiVideoGenre);						// window id = 21
+	m_gWindowManager.Add(&m_guiVideoActors);					// window id = 22
+	m_gWindowManager.Add(&m_guiVideoYear);						// window id = 23
+	m_gWindowManager.Add(&m_guiSettingsPrograms);				// window id = 24
+	m_gWindowManager.Add(&m_guiVideoTitle);						// window id = 25
+	m_gWindowManager.Add(&m_guiSettingsCache);					// window id = 26
+	m_gWindowManager.Add(&m_guiSettingsAutoRun);				// window id = 27
+	m_gWindowManager.Add(&m_guiMyVideoPlayList);				// window id = 28
+	m_gWindowManager.Add(&m_guiSettingsLCD);					// window id = 29
+	m_gWindowManager.Add(&m_guiSettingsUserInterface);			// window id = 30
+	m_gWindowManager.Add(&m_guiSettingsAudio);					// window id = 31
 
-  m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
-  m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
-  m_gWindowManager.Add(&m_guiMyMusicPlayList);					// window id = 500
-	m_gWindowManager.Add(&m_guiMyMusicSongs);							// window id = 501
-  m_gWindowManager.Add(&m_guiMyMusicAlbum);							// window id = 502
-	m_gWindowManager.Add(&m_guiMyMusicArtists);						// window id = 503
-	m_gWindowManager.Add(&m_guiMyMusicGenres);						// window id = 504
-	m_gWindowManager.Add(&m_guiMyMusicTop100);						// window id = 505
-  m_gWindowManager.Add(&m_keyboard);										// window id = 1000
-	m_gWindowManager.Add(&m_guiDialogSelect);							// window id = 2000
-	m_gWindowManager.Add(&m_guiMusicInfo);								// window id = 2001
-	m_gWindowManager.Add(&m_guiDialogOK);									// window id = 2002
-	m_gWindowManager.Add(&m_guiVideoInfo);								// window id = 2003
-	m_gWindowManager.Add(&m_guiScriptsInfo);							// window id = 2004
-	m_gWindowManager.Add(&m_guiWindowFullScreen);					// window id = 2005
+	m_gWindowManager.Add(&m_guiDialogYesNo);					// window id = 100
+	m_gWindowManager.Add(&m_guiDialogProgress);					// window id = 101
+	m_gWindowManager.Add(&m_guiMyMusicPlayList);				// window id = 500
+	m_gWindowManager.Add(&m_guiMyMusicSongs);					// window id = 501
+	m_gWindowManager.Add(&m_guiMyMusicAlbum);					// window id = 502
+	m_gWindowManager.Add(&m_guiMyMusicArtists);					// window id = 503
+	m_gWindowManager.Add(&m_guiMyMusicGenres);					// window id = 504
+	m_gWindowManager.Add(&m_guiMyMusicTop100);					// window id = 505
+	m_gWindowManager.Add(&m_keyboard);							// window id = 1000
+	m_gWindowManager.Add(&m_guiDialogSelect);					// window id = 2000
+	m_gWindowManager.Add(&m_guiMusicInfo);						// window id = 2001
+	m_gWindowManager.Add(&m_guiDialogOK);						// window id = 2002
+	m_gWindowManager.Add(&m_guiVideoInfo);						// window id = 2003
+	m_gWindowManager.Add(&m_guiScriptsInfo);					// window id = 2004
+	m_gWindowManager.Add(&m_guiWindowFullScreen);				// window id = 2005
 	m_gWindowManager.Add(&m_guiWindowVisualisation);			// window id = 2006
-	m_gWindowManager.Add(&m_guiWindowSlideshow);					// window id = 2007
+	m_gWindowManager.Add(&m_guiWindowSlideshow);				// window id = 2007
 	m_gWindowManager.Add(&m_guiDialogFileStacking);				// window id = 2008
 	m_gWindowManager.Add(&m_guiWindowOSD);						// window id = 2901
 	m_gWindowManager.Add(&m_guiWindowScreensaver);				// window id = 2900 Screensaver
-	m_gWindowManager.Add(&m_guiMyWeather);						    // window id = 2600 WEATHER
-	m_gWindowManager.Add(&m_guiSettingsWeather);				  // window id = 17 WEATHER SETTINGS
+	m_gWindowManager.Add(&m_guiMyWeather);						// window id = 2600 WEATHER
+	m_gWindowManager.Add(&m_guiSettingsWeather);				// window id = 17 WEATHER SETTINGS
 
 	/* window id's 3000 - 3100 are reserved for python */
-  CLog::Log("initializing virtual keyboard");	
-  m_keyboard.Initialize();
+	CLog::Log("initializing virtual keyboard");	
+	m_keyboard.Initialize();
 
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
 	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);
 
 	m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
 	CLog::Log("removing tempfiles");	
-  CUtil::RemoveTempFiles();
+	CUtil::RemoveTempFiles();
 
 	//	Start Thread for DVD Mediatype detection
-  CLog::Log("start dvd mediatype detection");	
+	CLog::Log("start dvd mediatype detection");	
 	m_DetectDVDType.Create( false);
 
 
-  if (!m_bAllSettingsLoaded)
-  {
-    CLog::Log("settings not correct, show dialog");	
+	if (!m_bAllSettingsLoaded)
+	{
+		CLog::Log("settings not correct, show dialog");	
 		CStdString test;
 		CUtil::GetHomePath(test);
-    m_guiDialogOK.SetHeading(279);
-    m_guiDialogOK.SetLine(0,"Error while loading settings");
-    m_guiDialogOK.SetLine(1,test);
-    m_guiDialogOK.SetLine(2,L"");
-    m_guiDialogOK.DoModal(g_stSettings.m_iStartupWindow);
-  }
-  if (g_stSettings.m_bLCDUsed)
-  {
-    if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV)
-    {
-      // jump to my music when we're in NO tv mode
-      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
-    }
-  }
-  CLog::Log("initialize done");	
-  CLCDFactory factory;
-  g_lcd=factory.Create();
-  g_lcd->Initialize();
-  CUtil::InitGamma();
+		m_guiDialogOK.SetHeading(279);
+		m_guiDialogOK.SetLine(0,"Error while loading settings");
+		m_guiDialogOK.SetLine(1,test);
+		m_guiDialogOK.SetLine(2,L"");
+		m_guiDialogOK.DoModal(g_stSettings.m_iStartupWindow);
+	}
+
+	if (g_stSettings.m_bLCDUsed)
+	{
+		if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV)
+		{
+			// jump to my music when we're in NO tv mode
+			m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
+		}
+	}
+
+	CLog::Log("initialize done");	
+	CLCDFactory factory;
+	g_lcd=factory.Create();
+	g_lcd->Initialize();
+	CUtil::InitGamma();
 	return S_OK;
 }
 
@@ -415,25 +420,24 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	CStdString strSkinPath = "Q:\\skin\\";
 	strSkinPath+=strSkin;
 
-  CLog::Log("  load skin from:%s",strSkinPath.c_str());	
+	CLog::Log("  load skin from:%s",strSkinPath.c_str());	
 
-
-  if ( IsPlaying() )
-  {
-    CLog::Log(" stop playing...");
-    m_pPlayer->closefile();
-    m_strCurrentFile="";
+	if ( IsPlaying() )
+	{
+		CLog::Log(" stop playing...");
+		m_pPlayer->closefile();
+		m_strCurrentFile="";
 		delete m_pPlayer;
 		m_pPlayer=NULL;
-  }
+	}
 
-  CLog::Log("  delete old skin...");
+	CLog::Log("  delete old skin...");
 	m_guiWindowVideoOverlay.FreeResources();
 	m_guiWindowVideoOverlay.ClearAll();
 
 	m_guiMusicOverlay.FreeResources();
 	m_guiMusicOverlay.ClearAll();
-	
+
 	m_gWindowManager.DeInitialize();
 	g_TextureManager.Cleanup();
 
@@ -443,45 +447,46 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	g_SkinInfo.Load(strSkinPath);
 
 	CLog::Log("  load fonts for skin...");
-  g_graphicsContext.SetMediaDir(strSkinPath);
-  g_fontManager.LoadFonts();
+	g_graphicsContext.SetMediaDir(strSkinPath);
+	g_fontManager.LoadFonts();
 
 	LARGE_INTEGER start;
 	QueryPerformanceCounter(&start);
 
-  CLog::Log("  load new skin...");
-  if (!m_guiHome.Load( "home.xml"))
-  {
-    // failed to load home.xml
-    // fallback to mediacenter skin
-    if ( CUtil::cmpnocase(strSkin.c_str(),"mediacenter") !=0)
-    {
-      CLog::Log("failed to load home.xml for skin:%s, fallback to mediacenter skin", strSkin.c_str());
-      LoadSkin("mediacenter");
-      return;
-    }
-  }
-  m_guiPrograms.Load( "myprograms.xml");
+	CLog::Log("  load new skin...");
+	if (!m_guiHome.Load( "home.xml"))
+	{
+		// failed to load home.xml
+		// fallback to mediacenter skin
+		if ( CUtil::cmpnocase(strSkin.c_str(),"mediacenter") !=0)
+		{
+			CLog::Log("failed to load home.xml for skin:%s, fallback to mediacenter skin", strSkin.c_str());
+			LoadSkin("mediacenter");
+			return;
+		}
+	}
+
+	m_guiPrograms.Load( "myprograms.xml");
 	m_guiPictures.Load( "mypics.xml");
 	m_guiMyFiles.Load( "myfiles.xml"); 
 	m_guiMyVideo.Load("myvideo.xml");
-  m_guiVideoGenre.Load("myvideogenre.xml");
-  m_guiVideoActors.Load("myvideoactors.xml");
+	m_guiVideoGenre.Load("myvideogenre.xml");
+	m_guiVideoActors.Load("myvideoactors.xml");
 	m_guiVideoYear.Load("myvideoYear.xml");
-  m_guiVideoTitle.Load("myvideoTitle.xml");
+	m_guiVideoTitle.Load("myvideoTitle.xml");
 	m_guiSettings.Load("settings.xml");
-  m_guiMyVideoPlayList.Load("myvideoplaylist.xml");
-  m_guiSettingsLCD.Load("settingsLCD.xml");
+	m_guiMyVideoPlayList.Load("myvideoplaylist.xml");
+	m_guiSettingsLCD.Load("settingsLCD.xml");
 	m_guiSystemInfo.Load("SettingsSystemInfo.xml");
 	m_guiMusicInfo.Load("DialogAlbumInfo.xml");
 	m_guiScriptsInfo.Load("DialogScriptInfo.xml");
 	m_guiSettingsGeneral.Load("SettingsGeneral.xml");
-  m_guiSettingsPrograms.Load("SettingsPrograms.xml");
+	m_guiSettingsPrograms.Load("SettingsPrograms.xml");
 	m_guiDialogYesNo.Load("dialogYesNo.xml");
 	m_guiDialogProgress.Load("dialogProgress.xml");
-  m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
+	m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
 	m_guiMyMusicSongs.Load("mymusicsongs.xml");
-  m_guiMyMusicAlbum.Load("mymusicalbum.xml");
+	m_guiMyMusicAlbum.Load("mymusicalbum.xml");
 	m_guiMyMusicArtists.Load("mymusicartists.xml");
 	m_guiMyMusicGenres.Load("mymusicgenres.xml");
 	m_guiMyMusicTop100.Load("mymusictop100.xml");
@@ -490,26 +495,31 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogFileStacking.Load("dialogFileStacking.xml");
 	m_guiVideoInfo.Load("DialogVideoInfo.xml");
 	m_guiMusicOverlay.Load("musicOverlay.xml");
-	m_guiSettingsScreen.Load("settingsScreen.xml");
+	//m_guiSettingsScreen.Load("settingsScreen.xml");
+	m_guiSettingsMyVideo.Load("SettingsMyVideo.xml");
 	m_guiSettingsUICalibration.Load("settingsUICalibration.xml");
 	m_guiSettingsScreenCalibration.Load("settingsScreenCalibration.xml");
 	m_guiSettingsSlideShow.Load("SettingsSlideShow.xml");
 	m_guiSettingsScreensaver.Load("SettingsScreensaver.xml");
-	m_guiSettingsOSD.Load("SettingsOSD.xml");
-  m_guiSettingsAutoRun.Load("SettingsAutoRun.xml");
+	m_guiSettingsAutoRun.Load("SettingsAutoRun.xml");
 	m_guiSettingsFilter.Load("SettingsFilter.xml");
-  m_guiSettingsCache.Load("SettingsCache.xml");
+	m_guiSettingsCache.Load("SettingsCache.xml");
 	m_guiWindowVideoOverlay.Load("videoOverlay.xml");
 	m_guiWindowFullScreen.Load("videoFullScreen.xml");
 	m_guiScripts.Load("myscripts.xml");
 	m_guiWindowVisualisation.Load("musicVisualisation.xml");
-	m_guiSettingsMusic.Load("SettingsMusic.xml");
+	//m_guiSettingsMusic.Load("SettingsMusic.xml");
+	m_guiSettingsMyMusic.Load("SettingsMyMusic.xml");
 	m_guiWindowSlideshow.Load("slideshow.xml");
 	m_guiSettingsSubtitles.Load("SettingsScreenSubtitles.xml");
-	m_guiWindowScreensaver.SetID(WINDOW_SCREENSAVER);		// CB: Matrix Screensaver - saves us having to have our own XML file
+	m_guiWindowScreensaver.SetID(WINDOW_SCREENSAVER);				// Matrix Screensaver - saves us having to have our own XML file
 	m_guiWindowOSD.Load("videoOSD.xml");
-	m_guiMyWeather.Load("myweather.xml");	//WEATHER
-	m_guiSettingsWeather.Load("SettingsWeather.xml");	//WEATHER SETTINGS
+	m_guiMyWeather.Load("myweather.xml");							//WEATHER
+	m_guiSettingsWeather.Load("SettingsWeather.xml");				//WEATHER SETTINGS
+	m_guiSettingsSkinLanguage.Load("SettingsSkinLanguage.xml");		// Skin & Language settings
+	m_guiSettingsUserInterface.Load("SettingsUserInterface.xml");	// User Interface settings
+	m_guiSettingsAudio.Load("SettingsAudioOptions.xml");			// Audio Options
+
 	CGUIWindow::FlushReferenceCache(); // flush the cache so it doesn't use memory all the time
 
 	LARGE_INTEGER end, freq;
@@ -517,14 +527,14 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	QueryPerformanceFrequency(&freq);
 	CLog::DebugLog("Load Skin XML: %.2fms", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
 
-  CLog::Log("  initialize new skin...");
+	CLog::Log("  initialize new skin...");
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
 	m_gWindowManager.AddMsgTarget(this);
 	m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
 	m_gWindowManager.SetCallback(*this);
-  m_gWindowManager.Initialize();
-  CLog::Log("  skin loaded...");
+	m_gWindowManager.Initialize();
+	CLog::Log("  skin loaded...");
 }
 
 
