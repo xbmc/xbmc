@@ -480,7 +480,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
 	GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory,"");
 	GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory,"");
-	GetString(pRootElement, "flipcharset", g_stSettings.m_szFlipBiDiCharset, "");
 
 	GetString(pRootElement, "pictureextensions", g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
 
