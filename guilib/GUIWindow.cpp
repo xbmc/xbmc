@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "guiwindow.h"
 #include "LocalizeStrings.h"
 #include "texturemanager.h"
@@ -359,7 +360,7 @@ bool CGUIWindow::Load(const CStdString& strFileNameAndPath)
 		struct stReferenceControl stControl=referencecontrols[i];
 		delete stControl.m_pControl;
 	}
-  OnSkinLoaded();
+  OnWindowLoaded();
   return true;
 }
 
@@ -643,8 +644,9 @@ void CGUIWindow::ResetAllControls()
 	}
 }
 
-void CGUIWindow::OnSkinLoaded()
+void CGUIWindow::OnWindowLoaded()
 {
+  m_vecControls.erase(m_vecControls.begin(),m_vecControls.end());
 	for (int i=0;i < (int)m_vecControls.size(); ++i)
   {
     CGUIControl* pControl= m_vecControls[i];

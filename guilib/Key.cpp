@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "key.h"
 
 CKey::CKey(void)

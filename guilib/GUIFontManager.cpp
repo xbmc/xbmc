@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "guifontmanager.h"
 #include "tinyxml/tinyxml.h"
 #include "../xbmc/utils/log.h"

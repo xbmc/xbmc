@@ -51,7 +51,7 @@ public:
 	virtual void				ResetAllControls();
 	static void         FlushReferenceCache();
 protected:
-  virtual void        OnSkinLoaded();
+  virtual void        OnWindowLoaded();
 	struct stReferenceControl
 	{
 		char				 m_szType[128];

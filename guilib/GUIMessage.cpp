@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "guimessage.h"
 #include "localizestrings.h"
 

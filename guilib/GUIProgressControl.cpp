@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "GUIProgressControl.h"
 #include "guifontmanager.h"
 
