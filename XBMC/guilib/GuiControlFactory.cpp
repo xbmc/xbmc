@@ -267,6 +267,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			strFont				= ((CGUIButtonControl*)pReference)->GetFontName();
 			strLabel			= ((CGUIButtonControl*)pReference)->GetLabel();
 			dwTextColor			= ((CGUIButtonControl*)pReference)->GetTextColor();
+			dwAlign				= ((CGUIButtonControl*)pReference)->GetTextAlign();
 			dwDisabledColor		= ((CGUIButtonControl*)pReference)->GetDisabledColor() ;
 			iHyperLink			= ((CGUIButtonControl*)pReference)->GetHyperLink();
 			strScriptAction		= ((CGUIButtonControl*)pReference)->GetScriptAction();
@@ -767,7 +768,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		CGUIButtonControl* pControl = new CGUIButtonControl(
 					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,
 					strTextureFocus,strTextureNoFocus,
-					lTextOffsetX,lTextOffsetY);
+					lTextOffsetX,lTextOffsetY,dwAlign);
 
 		pControl->SetLabel(strFont,strLabel,dwTextColor);
 		pControl->SetDisabledColor(dwDisabledColor);

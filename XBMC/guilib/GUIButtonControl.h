@@ -25,7 +25,7 @@ public:
   CGUIButtonControl(DWORD dwParentID, DWORD dwControlId,
 	  int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
 	  const CStdString& strTextureFocus,const CStdString& strTextureNoFocus,
-	  DWORD dwTextXOffset, DWORD dwTextYOffset);
+	  DWORD dwTextXOffset, DWORD dwTextYOffset, DWORD dwAlign=XBFONT_LEFT);
 
   virtual ~CGUIButtonControl(void);
   
@@ -42,7 +42,8 @@ public:
   virtual void SetDisabledColor(D3DCOLOR color);
 	void        SetLabel(const CStdString& strFontName,const wstring& strLabel,D3DCOLOR dwColor);
 	void        SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor);
-	void		SetText(CStdString aLabel);
+	void				SetText(const CStdString &aLabel);
+	void				SetText(const wstring & aLabel);
   void        SetHyperLink(long dwWindowID);
 	void				SetScriptAction(const CStdString& strScriptAction);
 	const	CStdString& GetTexutureFocusName() const { return m_imgFocus.GetFileName(); };
@@ -51,6 +52,7 @@ public:
 	DWORD	GetTextOffsetY() const { return m_dwTextOffsetY;};
 	void							SetTextColor(D3DCOLOR dwTextColor) { m_dwTextColor=dwTextColor;};
 	DWORD							GetTextColor() const { return m_dwTextColor;};
+	DWORD							GetTextAlign() const { return m_dwTextAlignment;};
 	DWORD							GetDisabledColor() const { return m_dwDisabledColor;};
 	const char *			GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
 	const wstring			GetLabel() const { return m_strLabel; };
@@ -58,17 +60,18 @@ public:
 	const CStdString& GetScriptAction() const { return m_strScriptAction; };
 
 protected:
-  virtual void       Update() ;
-  CGUIImage               m_imgFocus;
-  CGUIImage               m_imgNoFocus;  
-  DWORD                   m_dwFrameCounter;
-  DWORD					m_dwTextOffsetX;
-  DWORD					m_dwTextOffsetY;
-	wstring									m_strLabel;
-	CGUIFont*								m_pFont;
-	D3DCOLOR								m_dwTextColor;
-  D3DCOLOR                m_dwDisabledColor;
-  long                    m_lHyperLinkWindowID;
-	CStdString							m_strScriptAction;
+  virtual void				Update() ;
+  CGUIImage						m_imgFocus;
+  CGUIImage						m_imgNoFocus;  
+  DWORD								m_dwFrameCounter;
+  DWORD								m_dwTextOffsetX;
+  DWORD								m_dwTextOffsetY;
+	DWORD								m_dwTextAlignment;
+	wstring							m_strLabel;
+	CGUIFont*						m_pFont;
+	D3DCOLOR						m_dwTextColor;
+  D3DCOLOR						m_dwDisabledColor;
+  long								m_lHyperLinkWindowID;
+	CStdString					m_strScriptAction;
 };
 #endif
