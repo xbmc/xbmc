@@ -524,7 +524,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 	//m_vecOptions.push_back("-forcedsubsonly");
 
 	//  Rescaler for YUY2 output methods
-	if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS_FAST)
+	if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS)
 	{
 		m_vecOptions.push_back("-sws");
 		m_vecOptions.push_back("0");
