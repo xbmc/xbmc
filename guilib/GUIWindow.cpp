@@ -1,6 +1,7 @@
 #include "guiwindow.h"
 #include "texturemanager.h"
 #include "tinyxml/tinyxml.h"
+#include "../xbmc/utils/log.h"
 #include "GUIControlFactory.h"
 
 #include<string>
@@ -29,15 +30,17 @@ bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOL
 	strReferenceFile += "\\references.xml";
 	if ( !xmlDoc.LoadFile(strReferenceFile.c_str()) )
 	{
-		OutputDebugString("Unable to load:");
-		OutputDebugString(strReferenceFile.c_str());
-		OutputDebugString("\n");
+    CLog::Log("unable to load:%s", strReferenceFile.c_str());
 		return false;
 	}
 
 	TiXmlElement* pRootElement =xmlDoc.RootElement();
 	CStdString strValue=pRootElement->Value();
-	if (strValue!=CStdString("controls")) return false;
+	if (strValue!=CStdString("controls")) 
+  {
+    CLog::Log("references.xml doesnt contain <controls>");
+    return false;
+  }
 
 	CGUIControlFactory factory;
 	string strType;
@@ -67,15 +70,17 @@ bool CGUIWindow::Load(const CStdString& strFileName)
   TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile(strFileName.c_str()) )
   {
-		OutputDebugString("Unable to load window:");
-		OutputDebugString(strFileName.c_str());
-		OutputDebugString("\n");
+    CLog::Log("unable to load:%s", strFileName.c_str());
 		m_dwWindowId=9999;
     return false;
   }
   TiXmlElement* pRootElement =xmlDoc.RootElement();
   CStdString strValue=pRootElement->Value();
-  if (strValue!=CStdString("window")) return false;
+  if (strValue!=CStdString("window")) 
+  {
+    CLog::Log("file :%s doesnt contain <window>", strFileName.c_str());
+    return false;
+  }
   
   m_dwDefaultFocusControlID=0;
 	

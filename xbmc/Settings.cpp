@@ -1,5 +1,6 @@
 #include "settings.h"
 #include "util.h"
+#include "utils/log.h"
 #include "localizestrings.h"
 #include "stdstring.h"
 using namespace std;
@@ -192,11 +193,11 @@ void CSettings::Save() const
 {
 	if (!SaveSettings("T:\\settings.xml"))
 	{
-		OutputDebugString("Unable to save settings file\n");
+    CLog::Log("Unable to T:\\settings.xml");
 	}
 	if (!SaveCalibration("T:\\calibration.xml"))
 	{
-		OutputDebugString("Unable to save calibration file\n");
+		CLog::Log("Unable to T:\\calibration.xml");
 	}
 }
 
@@ -205,12 +206,12 @@ bool CSettings::Load()
 	// load settings file...
 	if (!LoadSettings("T:\\settings.xml"))
 	{
-		OutputDebugString("LoadSettings() Failed\n");
+    CLog::Log("Unable to load T:\\settings.xml");
 	}
 	// load calibration file...
 	if (!LoadCalibration("T:\\calibration.xml"))
 	{
-		OutputDebugString("LoadCalibration() Failed\n");
+		CLog::Log("Unable to load T:\\calibration.xml");
 	}
 
 	// load xml file...
@@ -218,15 +219,17 @@ bool CSettings::Load()
 	TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) 
 	{
-		OutputDebugString("unable to load:");
-		OutputDebugString(strXMLFile.c_str());
-		OutputDebugString("\n");
+    CLog::Log("unable to load:%s",strXMLFile.c_str());
 		return false;
 	}
 
 	TiXmlElement* pRootElement =xmlDoc.RootElement();
   CStdString strValue=pRootElement->Value();
-	if ( strValue != "xboxmediacenter") return false;
+	if ( strValue != "xboxmediacenter") 
+  {
+    CLog::Log("%s doesnt contain <xboxmediacenter>",strXMLFile.c_str());
+    return false;
+  }
 
 	TiXmlElement* pFileTypeIcons =pRootElement->FirstChildElement("filetypeicons");
 	TiXmlNode* pFileType=pFileTypeIcons->FirstChild();
@@ -619,14 +622,13 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	TiXmlDocument xmlDoc;
 	if (!xmlDoc.LoadFile(strSettingsFile))
 	{
-		OutputDebugString("Unable to load:");
-		OutputDebugString(strSettingsFile.c_str());
-		OutputDebugString("\n");
+    CLog::Log("Unable to load:%s",strSettingsFile.c_str());
 		return false;
 	}
 	TiXmlElement *pRootElement = xmlDoc.RootElement();
 	if (CUtil::cmpnocase(pRootElement->Value(),"settings")!=0)
 	{
+    CLog::Log("%s doesnt contain <settings>",strSettingsFile.c_str());
 		return false;
 	}
 	// mypictures

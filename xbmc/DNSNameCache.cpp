@@ -1,5 +1,6 @@
 #include "dnsnamecache.h"
 #include "lib/common/xbnet.h"
+#include "utils/log.h"
 
 CDNSNameCache g_DNSCache;
 
@@ -61,6 +62,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
 		WSACloseEvent(hEvent);
 		return true;
 	}
+  CLog::Log("DNS lookup for %s failed (no nameserver configured?)", strHostName.c_str());
 	if( pDns )
 		XNetDnsRelease(pDns);
 	WSACloseEvent(hEvent);

@@ -1,6 +1,6 @@
 #include "guifontmanager.h"
 #include "tinyxml/tinyxml.h"
-
+#include "../xbmc/utils/log.h"
 GUIFontManager  g_fontManager;
 
 GUIFontManager::GUIFontManager(void)
@@ -26,11 +26,7 @@ CGUIFont* GUIFontManager::Load(const CStdString& strFontName,const CStdString& s
     return pNewFont;
   }
   // font could not b loaded
-  OutputDebugString("Could'nt load font name:");
-  OutputDebugString(strFontName.c_str());
-  OutputDebugString("  filename:");
-  OutputDebugString(strFilename.c_str());
-  OutputDebugString("\n");
+  CLog::Log("Could'nt load font name:%s file:%s", strFontName.c_str(),strFilename.c_str());
   delete pNewFont;
   return NULL;
 }
@@ -60,16 +56,17 @@ void GUIFontManager::LoadFonts(const CStdString& strFilename)
   TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile(strFilename.c_str()) )
   {
-    OutputDebugString("Could'nt load font xml:");
-    OutputDebugString(strFilename.c_str());
-    OutputDebugString("\n");
-
+    CLog::Log("Could'nt load %s",strFilename.c_str());
     return ;
   }
   TiXmlElement* pRootElement =xmlDoc.RootElement();
 
   CStdString strValue=pRootElement->Value();
-  if (strValue!=CStdString("fonts")) return ;
+  if (strValue!=CStdString("fonts")) 
+  {
+    CLog::Log("file %s doesnt start with <fonts>",strFilename.c_str());
+    return ;
+  }
   const TiXmlNode *pChild = pRootElement->FirstChild();
   while (pChild)
   {

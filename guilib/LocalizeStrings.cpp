@@ -1,5 +1,6 @@
 #include "localizestrings.h"
 #include "tinyxml/tinyxml.h"
+#include "../xbmc/utils/log.h"
 
 CLocalizeStrings g_localizeStrings;
 
@@ -19,11 +20,16 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
 		TiXmlDocument xmlDoc;
 		if ( !xmlDoc.LoadFile(strFileName.c_str()) )
 		{
+      CLog::Log("unable to load %s\n", strFileName.c_str());
 			return false;
 		}
 		TiXmlElement* pRootElement =xmlDoc.RootElement();
 		CStdString strValue=pRootElement->Value();
-		if (strValue!=CStdString("strings")) return false;
+		if (strValue!=CStdString("strings")) 
+    {
+      CLog::Log("%s doesnt start with <strings>\n", strFileName.c_str());
+      return false;
+    }
 		const TiXmlNode *pChild = pRootElement->FirstChild();
 		while (pChild)
 		{
