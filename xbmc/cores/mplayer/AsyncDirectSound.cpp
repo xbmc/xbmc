@@ -486,9 +486,9 @@ DWORD CASyncDirectSound::GetBytesInBuffer()
 FLOAT CASyncDirectSound::GetDelay()
 {
 	if (g_stSettings.m_bUseDigitalOutput)
-		return 0.049f;			//(Ac3 encoder 29ms)+(receiver 20ms)
+		return -0.049f;			//(Ac3 encoder 29ms)+(receiver 20ms)
 	else
-		return 0.008f;			//PCM output 8ms
+		return -0.008f;			//PCM output 8ms
 }
 
 //***********************************************************************************************

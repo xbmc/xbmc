@@ -22,6 +22,7 @@ CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
 ,m_socket(INVALID_SOCKET)
 {
 	m_strCookie="";
+	m_iHTTPver=1;
 }
 
 
@@ -523,11 +524,11 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 	
 	if (m_strProxyServer.size())
 	{
-		sprintf(szGet,"GET %s HTTP/1.1\r%s\r\n",strURL.c_str(),szHTTPHEADER);
+		sprintf(szGet,"GET %s HTTP/1.%i\r%s\r\n",strURL.c_str(),m_iHTTPver,szHTTPHEADER);
 	}
 	else
 	{
-		sprintf(szGet,"GET %s HTTP/1.1\r\n%s\r\n",strFile.c_str(),szHTTPHEADER);
+		sprintf(szGet,"GET %s HTTP/1.%i\r\n%s\r\n",strFile.c_str(),m_iHTTPver,szHTTPHEADER);
 	}
 	//printf("send %s", szGet);
 	if ( !Send((unsigned char*)szGet,strlen(szGet) ) )
@@ -723,6 +724,14 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 }
 
 
+//------------------------------------------------------------------------------------------------------------------
+void CHTTP::SetHTTPVer(unsigned int iVer)
+{
+	if(iVer == 0)
+		m_iHTTPver = 0;
+	else
+		m_iHTTPver = 1;
+}
 //------------------------------------------------------------------------------------------------------------------
 void CHTTP::SetCookie(const string &strCookie)
 {
