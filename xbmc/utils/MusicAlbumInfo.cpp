@@ -234,22 +234,24 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 
 	// parse review/image
 	iStartOfTable=strHTMLLow.Find("review",0);
-	if (iStartOfTable < 0) return false;
-	strTable=strHTML.Right((int)strHTML.size()-iStartOfTable);
-	table.Parse(strTable);
-	int iRows=table.GetRows();
-	if (iRows > 0)
+	if (iStartOfTable >= 0)
 	{
-		const CHTMLRow& row=table.GetRow(0);
-		int iColums=row.GetColumns();
-		if (iColums>=1)
+		strTable=strHTML.Right((int)strHTML.size()-iStartOfTable);
+		table.Parse(strTable);
+		int iRows=table.GetRows();
+		if (iRows > 0)
 		{
-			const CStdString strReviewAndImage=row.GetColumValue(0);
-			
-			util.getAttributeOfTag(strReviewAndImage,"src=",m_strImageURL);
-			m_strReview=strReviewAndImage;
-			util.RemoveTags(m_strReview);
-			util.ConvertHTMLToAnsi(m_strReview, m_strReview);
+			const CHTMLRow& row=table.GetRow(0);
+			int iColums=row.GetColumns();
+			if (iColums>=1)
+			{
+				const CStdString strReviewAndImage=row.GetColumValue(0);
+				
+				util.getAttributeOfTag(strReviewAndImage,"src=",m_strImageURL);
+				m_strReview=strReviewAndImage;
+				util.RemoveTags(m_strReview);
+				util.ConvertHTMLToAnsi(m_strReview, m_strReview);
+			}
 		}
 	}
 
@@ -258,67 +260,71 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 
 	// parse songs...
 	iStartOfTable=strHTMLLow.Find("htrk1.gif",0);
-	if (iStartOfTable < 0) return false;
-	iStartOfTable=strHTMLLow.ReverseFind("<table",iStartOfTable);
-	if (iStartOfTable < 0) return false;
-	strTable=strHTML.Right((int)strHTML.size()-iStartOfTable);
-	table.Parse(strTable);
-	for (int iRow=0; iRow < table.GetRows(); iRow++)
+	if (iStartOfTable >= 0)
 	{
-		const CHTMLRow& row=table.GetRow(iRow);
-		int iCols=row.GetColumns();
-		if (iCols >=5)
+		iStartOfTable=strHTMLLow.ReverseFind("<table",iStartOfTable);
+		if (iStartOfTable >= 0)
 		{
-			CStdString strTrack;
-			for (int i=0; i < iCols;i++)
+			strTable=strHTML.Right((int)strHTML.size()-iStartOfTable);
+			table.Parse(strTable);
+			for (int iRow=0; iRow < table.GetRows(); iRow++)
 			{
-				strTrack=row.GetColumValue(i);
-				int ipos=strTrack.Find(".");
-				if (ipos>=0)
+				const CHTMLRow& row=table.GetRow(iRow);
+				int iCols=row.GetColumns();
+				if (iCols >=5)
 				{
-					bool bok=true;
-					for (int x=0; x <ipos; x++)
+					CStdString strTrack;
+					for (int i=0; i < iCols;i++)
 					{
-						if (!isdigit( strTrack[x] ) )
+						strTrack=row.GetColumValue(i);
+						int ipos=strTrack.Find(".");
+						if (ipos>=0)
 						{
-							bok=false;
-							break;
+							bool bok=true;
+							for (int x=0; x <ipos; x++)
+							{
+								if (!isdigit( strTrack[x] ) )
+								{
+									bok=false;
+									break;
+								}
+							}
+							if (bok) break;
 						}
 					}
-					if (bok) break;
+					CStdString strNameAndDuration=row.GetColumValue(4);
+
+					
+					CStdString strName,strDuration="0";
+					int iDuration=0;
+					util.getValueOfTag(strNameAndDuration,strName);
+					int iPos=strNameAndDuration.ReverseFind("-");
+					if (iPos > 0)
+					{
+						iPos+=2;
+						strDuration=strNameAndDuration.Right( (int)strNameAndDuration.size()-iPos);
+						CStdString strMin="0", strSec="0";
+						iPos=strDuration.Find(":");
+						if (iPos>=0)
+						{
+							strMin=strDuration.Left(iPos);
+							iPos++;
+							strSec=strDuration.Right((int)strDuration.size()-iPos);
+							int iMin=atoi(strMin.c_str());
+							int iSec=atoi(strSec.c_str());
+							iDuration=iMin*60+iSec;
+						}
+					}
+					iPos=strTrack.Find(".");
+					if (iPos > 0) strTrack = strTrack.Left(iPos);
+
+					int iTrack=atoi(strTrack.c_str());
+					CStdString strStripped;
+					util.ConvertHTMLToAnsi(strName, strStripped);
+					CMusicSong newSong(iTrack, strStripped, iDuration);
+					m_vecSongs.push_back(newSong);
 				}
 			}
-			CStdString strNameAndDuration=row.GetColumValue(4);
-
-			
-			CStdString strName,strDuration="0";
-			int iDuration=0;
-			util.getValueOfTag(strNameAndDuration,strName);
-			int iPos=strNameAndDuration.ReverseFind("-");
-			if (iPos > 0)
-			{
-				iPos+=2;
-				strDuration=strNameAndDuration.Right( (int)strNameAndDuration.size()-iPos);
-				CStdString strMin="0", strSec="0";
-				iPos=strDuration.Find(":");
-				if (iPos>=0)
-				{
-					strMin=strDuration.Left(iPos);
-					iPos++;
-					strSec=strDuration.Right((int)strDuration.size()-iPos);
-					int iMin=atoi(strMin.c_str());
-					int iSec=atoi(strSec.c_str());
-					iDuration=iMin*60+iSec;
-				}
-			}
-			iPos=strTrack.Find(".");
-			if (iPos > 0) strTrack = strTrack.Left(iPos);
-
-			int iTrack=atoi(strTrack.c_str());
-			CStdString strStripped;
-			util.ConvertHTMLToAnsi(strName, strStripped);
-			CMusicSong newSong(iTrack, strStripped, iDuration);
-			m_vecSongs.push_back(newSong);
 		}
 	}
 	if (m_strTitle2="") m_strTitle2=m_strTitle;
