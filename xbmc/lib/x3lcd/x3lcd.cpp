@@ -184,6 +184,8 @@ void CX3LCD::DisplayBuildCustomChars()
 	static char Bar0[] ={0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10};
 	static char Bar1[] ={0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18};
 	static char Bar2[] ={0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c};
+	static char Bar3[] ={0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e};	//4pixel
+	//static char Bar4[] =
 	static char REW[8][8]=
 	{
 		{0x00, 0x05, 0x0a, 0x14, 0x0a, 0x05, 0x00, 0x00},
@@ -218,7 +220,8 @@ void CX3LCD::DisplayBuildCustomChars()
 	for(I=0;I<8;I++) DisplayOut(REW[X3LcdAnimIndex][I], DAT);   	// REW
 	for(I=0;I<8;I++) DisplayOut(FF[X3LcdAnimIndex][I], DAT);    	// FF
 	for(I=0;I<8;I++) DisplayOut(Play[I], DAT);  			// Play
-	for(I=0;I<8;I++) DisplayOut(Stop[I], DAT);  			// Stop
+	//for(I=0;I<8;I++) DisplayOut(Stop[I], DAT);  			// Stop
+	for(I=0;I<8;I++) DisplayOut(Bar3[I], DAT);
 	for(I=0;I<8;I++) DisplayOut(Pause[I], DAT); 			// Pause
 	DisplayOut(DISP_DDRAM_SET, CMD);
 	X3LcdAnimIndex=(X3LcdAnimIndex+1) & 0x7;
@@ -335,7 +338,7 @@ void CX3LCD::DisplayProgressBar(unsigned char percent, unsigned char charcnt)
 //************************************************************************************************************************
 void CX3LCD::DisplaySetBacklight(unsigned char level) 
 {
-	outb(DISP_O_LIGHT, level);
+	outb(DISP_O_LIGHT, (int)(2.55*(double)level) );
 }
 //************************************************************************************************************************
 void CX3LCD::DisplayInit()
