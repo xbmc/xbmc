@@ -247,10 +247,10 @@ HRESULT CApplication::Initialize()
   if (!m_bXboxMediacenterLoaded)
   {
     CLog::Log("using default network settings");
-    strcpy (g_stSettings.m_strLocalIPAdres,"192.168.0.1");
+    strcpy (g_stSettings.m_strLocalIPAdres,"192.168.0.100");
     strcpy (g_stSettings.m_strLocalNetmask,"255.255.255.0");
-    strcpy (g_stSettings.m_strGateway,"");
-    strcpy (g_stSettings.m_strNameServer,"");
+    strcpy (g_stSettings.m_strGateway,"192.168.0.1");
+    strcpy (g_stSettings.m_strNameServer,"192.168.0.1");
     g_stSettings.m_bFTPServerEnabled=true;
     g_stSettings.m_bHTTPServerEnabled=false;
     g_stSettings.m_bTimeServerEnabled=false;
