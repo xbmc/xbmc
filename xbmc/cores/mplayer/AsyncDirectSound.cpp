@@ -24,7 +24,6 @@
 #include "../../settings.h"
 #include "../../utils/log.h"
 
-
 #define VOLUME_MIN    DSBVOLUME_MIN
 #define VOLUME_MAX    DSBVOLUME_MAX
 
@@ -53,11 +52,15 @@ void CASyncDirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample)
+CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample)
 {
   buffered_bytes=0;
   m_pCallback=pCallback;
   
+  m_bResampleAudio = false;
+  if (bResample && uiSamplesPerSec != 48000)
+	  m_bResampleAudio = true;
+
   bool  bAudioOnAllSpeakers(false);
   if (g_stSettings.m_bUseDigitalOutput)
   {
@@ -92,7 +95,16 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
   m_adwStatus        = NULL;
   m_pStream          = NULL;
   m_adwStatus        = NULL;
-  m_uiSamplesPerSec = uiSamplesPerSec;
+  if (m_bResampleAudio)
+  {
+	  m_uiSamplesPerSec = 48000;
+	  m_uiBitsPerSample = 16;
+  }
+  else
+  {
+	  m_uiSamplesPerSec = uiSamplesPerSec;
+	  m_uiBitsPerSample = uiBitsPerSample;
+  }
   ZeroMemory(m_pbSampleData,sizeof(m_pbSampleData));
   m_bFirstPackets    = true;
   m_iCalcDelay       = CALC_DELAY_START;
@@ -101,11 +113,10 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
   ZeroMemory(&m_wfx,sizeof(m_wfx)); 
   m_wfx.cbSize=sizeof(m_wfx);
   XAudioCreatePcmFormat(  iChannels,
-                          uiSamplesPerSec,
-                          uiBitsPerSample,
+                          m_uiSamplesPerSec,
+                          m_uiBitsPerSample,
                           &m_wfx
                           );
-
 
   // Create enough samples to hold approx 2 sec worth of audio.
   // date    m_dwPacketSize           m_dwNumPackets   description
@@ -154,12 +165,9 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
   
   ZeroMemory(&m_wfxex,sizeof(m_wfxex));
 
-  m_wfxex.Format = m_wfx;
+	m_wfxex.Format = m_wfx;
   m_wfxex.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
   m_wfxex.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX) ;
-//  m_wfxex.Samples.wSamplesPerBlock    =0;
-//  m_wfxex.Samples.wValidBitsPerSample = wfx.Format.wBitsPerSample;
-
   m_wfxex.Samples.wReserved=0;
   m_wfxex.dwChannelMask    = SPEAKER_FRONT_LEFT|SPEAKER_FRONT_RIGHT|SPEAKER_FRONT_CENTER|SPEAKER_LOW_FREQUENCY|SPEAKER_BACK_LEFT|SPEAKER_BACK_RIGHT;
   dsmb.dwMixBinCount       = 6;
@@ -244,7 +252,11 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
   m_bIsAllocated   = true;
   if (m_pCallback)
   {
-    m_pCallback->OnInitialize(iChannels, uiSamplesPerSec, uiBitsPerSample);
+	m_pCallback->OnInitialize(iChannels, m_uiSamplesPerSec, m_uiBitsPerSample);
+  }
+  if (m_bResampleAudio)
+  {
+	  m_Resampler.InitConverter(uiSamplesPerSec, uiBitsPerSample, iChannels, 48000, 16, m_dwPacketSize);
   }
 }
 
@@ -280,7 +292,6 @@ HRESULT CASyncDirectSound::Deinitialize()
     if (m_pbSampleData[dwX]) XPhysicalFree(m_pbSampleData[dwX]) ;
     m_pbSampleData[dwX]=NULL;
   }
-
   if ( m_adwStatus )
     delete [] m_adwStatus;
   m_adwStatus=NULL;
@@ -399,9 +410,78 @@ DWORD CASyncDirectSound::GetSpace()
   return dwSize;
 }
 
+// 48kHz resampled data method
+DWORD CASyncDirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
+{
+	DWORD   dwIndex = 0;
+	DWORD   iBytesCopied=0;
+	while (true)
+	{
+		// Get the next free packet to fill with our output audio
+		if( FindFreePacket(dwIndex) )
+		{
+			XMEDIAPACKET xmpAudio = {0};
+
+			// loop around, grabbing data from the input buffer and resampling 
+			// until we fill up this packet
+			while(true)
+			{
+				// check if we have resampled data to send
+				if (m_Resampler.GetData(m_pbSampleData[dwIndex]))
+				{
+					// Set up audio packet
+					m_adwStatus[ dwIndex ] = XMEDIAPACKET_STATUS_PENDING;
+					xmpAudio.dwMaxSize        = m_dwPacketSize;
+					xmpAudio.pvBuffer         = m_pbSampleData[dwIndex];
+					xmpAudio.pdwStatus        = &m_adwStatus[ dwIndex ];
+					xmpAudio.pdwCompletedSize = NULL;
+					xmpAudio.prtTimestamp     = NULL;
+					xmpAudio.pContext         = NULL;
+					// Pass audio to the callback functions for visualization
+					if (m_pCallback)
+					{
+						m_pCallback->OnAudioData(m_pbSampleData[dwIndex],m_dwPacketSize);
+					}
+					// Process the audio
+					if (DS_OK != m_pStream->Process( &xmpAudio, NULL ))
+					{
+						return iBytesCopied;
+					}
+					// Okay - we've done this bit, update our data info
+					buffered_bytes+=m_dwPacketSize;
+					// break to get another packet and restart the loop
+					break;
+				}
+				else
+				{	// put more data into the resampler
+					DWORD iSize = m_Resampler.PutData(&pData[iBytesCopied], iLeft);
+					if (iSize == -1)
+					{	// Failed - we don't have enough data
+						return iBytesCopied;
+					}
+					else
+					{	// Success - update the amount that we have processed
+						iBytesCopied+=iSize;
+						iLeft -=iSize;
+					}
+					// Now loop back around and output data, or read more in
+				}
+			}
+		}
+		else
+		{	// no packets free - send data back to sender
+			return iBytesCopied;
+		}
+	}
+	return iBytesCopied;
+}
+
 //***********************************************************************************************
 DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 {
+	// Check if we are resampling using SSRC
+  if (m_bResampleAudio)
+	return AddPacketsResample(data, len);
 
   DWORD   dwIndex = 0;
   DWORD   iBytesCopied=0;
@@ -537,7 +617,10 @@ void CASyncDirectSound::RegisterAudioCallback(IAudioCallback *pCallback)
 {
   if (!m_pCallback)
   {
-    pCallback->OnInitialize(m_wfx.nChannels, m_wfx.nSamplesPerSec, m_wfx.wBitsPerSample );
+	  if (m_bResampleAudio)
+		pCallback->OnInitialize(m_wfx.nChannels, 48000, 16);
+	  else
+		pCallback->OnInitialize(m_wfx.nChannels, m_wfx.nSamplesPerSec, m_wfx.wBitsPerSample );
   }
   m_pCallback=pCallback;
 }
