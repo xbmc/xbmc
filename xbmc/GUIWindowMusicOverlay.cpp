@@ -12,6 +12,7 @@
 #include "url.h"
 #include "lib/libID3/tag.h"
 #include "lib/libID3/misc_support.h"
+#include "musicInfoTagLoaderFactory.h"
 
 using namespace MUSIC_INFO;
 
@@ -200,7 +201,7 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 								song.strAlbum =pItem->m_musicInfoTag.GetAlbum();
 								song.strArtist=pItem->m_musicInfoTag.GetArtist();
 								song.strFileName=strFile;
-								song.strGenre==pItem->m_musicInfoTag.GetGenre();
+								song.strGenre=pItem->m_musicInfoTag.GetGenre();
 								song.strTitle=pItem->m_musicInfoTag.GetTitle();
 								song.iDuration=pItem->m_musicInfoTag.GetDuration();
 								pItem->m_musicInfoTag.GetReleaseDate(systime);
@@ -215,6 +216,32 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 				else
 				{
 					bContinue=dbs.GetSongByFileName(strFile, song);
+					if (!bContinue && g_stSettings.m_bUseID3)
+					{
+            // get correct tag parser
+						CMusicInfoTagLoaderFactory factory;
+						auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(strFile));
+						if (NULL != pLoader.get())
+						{
+							CMusicInfoTag tag;
+							// get id3tag
+							if ( pLoader->Load(strFile,tag))
+							{
+								SYSTEMTIME systime;
+								song.iTrack		=tag.GetTrackNumber();
+								song.strAlbum =tag.GetAlbum();
+								song.strArtist=tag.GetArtist();
+								song.strFileName=strFile;
+								song.strGenre=tag.GetGenre();
+								song.strTitle=tag.GetTitle();
+								song.iDuration=tag.GetDuration();
+								tag.GetReleaseDate(systime);
+								song.iYear=systime.wYear;
+								strAlbum=song.strAlbum ;
+								bContinue=true;
+							}
+						}
+					}
 				}
 				if (bContinue)
 				{
@@ -253,7 +280,7 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 						if (song.iYear >=1900)
 						{
 							CStdString strYear;
-							strYear.Format("Year:%i", song.iYear);
+							strYear.Format("Year: %i", song.iYear);
 							
 							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 							msg1.SetLabel( strYear );
