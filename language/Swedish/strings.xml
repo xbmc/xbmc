@@ -1901,11 +1901,11 @@
 	</string>
 	<string>
 		<id>706</id>
-		<value>HTTP Proxy:</value>
+		<value>HTTP Proxy värd</value>
 	</string>
 	<string>
 		<id>707</id>
-		<value>HTTP Proxy Port:</value>
+		<value>HTTP Proxy Port</value>
 	</string>
 	<string>
 		<id>708</id>
@@ -1913,11 +1913,11 @@
 	</string>
 	<string>
 		<id>709</id>
-		<value>XLink Kai XTag:</value>
+		<value>XLink Kai XTag</value>
 	</string>
 	<string>
 		<id>710</id>
-		<value>XLink Kai lösenord:</value>
+		<value>XLink Kai lösenord</value>
 	</string>
 	<string>
 		<id>711</id>
@@ -1937,7 +1937,7 @@
 	</string>	
 	<string>
 		<id>715</id>
-		<value>Tilldelning:</value>
+		<value>Tilldelning</value>
 	</string>	
 	<string>
 		<id>716</id>
@@ -1953,19 +1953,19 @@
 	</string>	
 	<string>
 		<id>719</id>
-		<value>IP Adress:</value>
+		<value>IP Adress</value>
 	</string>	
 	<string>
 		<id>720</id>
-		<value>Nätmask:</value>
+		<value>Nätmask</value>
 	</string>	
 	<string>
 		<id>721</id>
-		<value>Gateway:</value>
+		<value>Gateway</value>
 	</string>	
 	<string>
 		<id>722</id>
-		<value>DNS Server:</value>
+		<value>DNS Server</value>
 	</string>
 	<string>
 		<id>723</id>
@@ -1985,23 +1985,23 @@
 	</string>
 <string>
  <id>727</id>
- <value>Web Server Inställningar</value>
+ <value>Web Server</value>
  </string> 
  <string>
  <id>728</id>
- <value>FTP Inställningar</value>
+ <value>FTP Server</value>
  </string> 
  <string>
  <id>729</id>
- <value>Tidserver Inställningar</value>
+ <value>Tidserver</value>
  </string> 
  <string>
  <id>730</id>
- <value>Web Server Port:</value>
+ <value>Web Server Port</value>
  </string> 
  <string>
  <id>731</id>
- <value>Adress till tidserver:</value>
+ <value>Adress till tidserver</value>
  </string>
  <string>
  <id>732</id>
@@ -2341,12 +2341,12 @@
 
    <string>
 <id>13303</id>
-<value>Skal Fonter:</value>
+<value>Skal Fonter</value>
 </string>
 
    <string>
 <id>13304</id>
-<value>Vänd Texthåll:</value>
+<value>Vänd Texthåll</value>
 </string>
 
 </strings>
