@@ -8,6 +8,28 @@
 #define CONTROL_NUMBEROFFILES 2
 #define CONTROL_BUTTON        5
 
+struct SSortDialogSelect
+{
+	bool operator()(CGUIListItem* pStart, CGUIListItem* pEnd)
+	{
+    CGUIListItem& rpStart=*pStart;
+    CGUIListItem& rpEnd=*pEnd;
+
+		CStdString strLabel1=rpStart.GetLabel();
+		strLabel1.ToLower();
+
+		CStdString strLabel2=rpEnd.GetLabel();
+		strLabel2.ToLower();
+
+		if (m_bSortAscending)
+			return (strcmp(strLabel1.c_str(),strLabel2.c_str())<0);
+		else
+			return (strcmp(strLabel1.c_str(),strLabel2.c_str())>=0);
+	}
+
+	bool m_bSortAscending;
+};
+
 CGUIDialogSelect::CGUIDialogSelect(void)
 :CGUIDialog(0)
 {
@@ -88,6 +110,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 					CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
 					g_graphicsContext.SendMessage(msg);         
 					m_iSelected=msg.GetParam1();
+					m_strSelected=m_vecList[m_iSelected]->GetLabel();
 					Close();
 				}
 			}
@@ -125,6 +148,10 @@ void CGUIDialogSelect::Add(const CStdString& strLabel)
 int CGUIDialogSelect::GetSelectedLabel() const
 {
 	return m_iSelected;
+}
+const CStdString& CGUIDialogSelect::GetSelectedLabelText()
+{
+	return m_strSelected;
 }
 void  CGUIDialogSelect::SetHeading(const wstring& strLine)
 {
@@ -164,3 +191,11 @@ bool CGUIDialogSelect::IsButtonPressed()
 {
   return m_bButtonPressed;
 }
+
+void CGUIDialogSelect::Sort(bool bSortAscending/*=true*/)
+{
+	SSortDialogSelect sortmethod;
+	sortmethod.m_bSortAscending=bSortAscending;
+	sort(m_vecList.begin(), m_vecList.end(), sortmethod);
+}
+
