@@ -69,6 +69,7 @@ static int										m_iOSDBuffer;
 static bool                   m_OSDRendered;
 //static bool										m_SubsOnOSD;
 static int                    m_iOSDTextureWidth;
+static int                    m_iOSDTextureHeight;
 
 // YV12 decoder textures
 static LPDIRECT3DTEXTURE8     m_YTexture[NUM_BUFFERS];
@@ -300,15 +301,16 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 
 	RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
 	m_iOSDTextureWidth = g_settings.m_ResInfo[iRes].Overscan.right-g_settings.m_ResInfo[iRes].Overscan.left;
+  m_iOSDTextureHeight = g_settings.m_ResInfo[iRes].Overscan.bottom-g_settings.m_ResInfo[iRes].Overscan.top;
 	// Create osd textures
 	for (int i = 0; i < 2; ++i)
 	{
 		if (m_pOSDYTexture[i])
 			m_pOSDYTexture[i]->Release();
-    g_graphicsContext.Get3DDevice()->CreateTexture(m_iOSDTextureWidth, OSD_TEXTURE_HEIGHT, 1, 0, D3DFMT_LIN_L8, 0, &m_pOSDYTexture[i]);
+    g_graphicsContext.Get3DDevice()->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight, 1, 0, D3DFMT_LIN_L8, 0, &m_pOSDYTexture[i]);
 		if (m_pOSDATexture[i])
 			m_pOSDATexture[i]->Release();
-		g_graphicsContext.Get3DDevice()->CreateTexture(m_iOSDTextureWidth, OSD_TEXTURE_HEIGHT, 1, 0, D3DFMT_LIN_A8, 0, &m_pOSDATexture[i]);
+		g_graphicsContext.Get3DDevice()->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight, 1, 0, D3DFMT_LIN_A8, 0, &m_pOSDATexture[i]);
 
 		m_OSDWidth = m_OSDHeight = 0;
 	}
@@ -500,7 +502,7 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 
 	// clip to buffer
 	if (w > m_iOSDTextureWidth) w = m_iOSDTextureWidth;
-	if (h > OSD_TEXTURE_HEIGHT) h = OSD_TEXTURE_HEIGHT;
+	if (h > m_iOSDTextureHeight) h = m_iOSDTextureHeight;
 
 	RECT rc = { 0, 0, w, h };
 
