@@ -102,7 +102,14 @@ void CGUISelectButtonControl::Render()
 
 		//	Render text if a current item is available
 		if (m_iCurrentItem>=0 && m_pFont)
-			m_pFont->DrawText((float)m_dwPosX+m_imgLeft.GetWidth()+15, (float)2+m_dwPosY, dwTextColor, m_vecItems[m_iCurrentItem].c_str());
+		{
+			float fTextWidth,fTextHeight;
+			m_pFont->GetTextExtent( m_vecItems[m_iCurrentItem].c_str(), &fTextWidth, &fTextHeight );		
+			DWORD dwOffsetX = (m_imgBackground.GetWidth()-(DWORD)fTextWidth)/2;
+
+			m_pFont->DrawText(	(float)m_dwPosX+dwOffsetX,
+								(float)m_dwPosY+m_dwTextOffsetY, dwTextColor, m_vecItems[m_iCurrentItem].c_str());
+		}
 
 
 		//	Select current item, if user doesn't 
