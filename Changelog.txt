@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 24-01-2005 updated: Finnish language file (Thnx to jutski)
+  - 24-01-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+  - 24-01-2005 updated: Norwegian language file (Thnx to vnmartinsen)
+  - 24-01-2005 updated: Italian language file (Thnx to kotix)
   - 24-01-2005 fixed: Zoom mode in Combo renderer + glitches.  Should be as good as (or surpass) the YUY2 Overlays method now.
   - 22-01-2005 fixed: memory leak in Kai UI
   - 21-01-2005 fixed: the heading of dialog keyboard was not displayed
