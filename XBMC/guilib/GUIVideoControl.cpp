@@ -15,10 +15,14 @@ CGUIVideoControl::~CGUIVideoControl(void)
 void CGUIVideoControl::Render()
 {
 	RECT rc;
-	rc.left    = m_dwPosX;
-	rc.top    = m_dwPosY;
-	rc.right	= m_dwPosX+m_dwWidth;
-	rc.bottom = m_dwPosY+m_dwHeight;
+	float x = (float)m_dwPosX;
+	float y = (float)m_dwPosY;
+	g_graphicsContext.Correct(x, y);
+
+	rc.left    = (DWORD)x;
+	rc.top    = (DWORD)y;
+	rc.right	= rc.left+m_dwWidth;
+	rc.bottom = rc.top+m_dwHeight;
 	g_graphicsContext.SetViewWindow(rc);
 	  
 }

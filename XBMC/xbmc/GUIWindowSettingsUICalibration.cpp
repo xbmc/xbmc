@@ -55,6 +55,7 @@ void CGUIWindowSettingsUICalibration::OnKey(const CKey& key)
 			case KEY_BUTTON_DPAD_LEFT:
 			case KEY_REMOTE_LEFT:
 			{
+				if (m_iCountL==0) m_iSpeed=1;
 				if (iXOff>-128)
 				{
 					iXOff-=m_iSpeed;
@@ -64,12 +65,16 @@ void CGUIWindowSettingsUICalibration::OnKey(const CKey& key)
 						m_iCountL=1;
 					}
 				}
+				m_iCountU=0;
+				m_iCountD=0;
+				m_iCountR=0;
 			}
 			break;
 
 			case KEY_BUTTON_DPAD_RIGHT:
 			case KEY_REMOTE_RIGHT:
 			{
+				if (m_iCountR==0) m_iSpeed=1;
 				if (iXOff<128)
 				{
 					iXOff+=m_iSpeed;
@@ -79,12 +84,16 @@ void CGUIWindowSettingsUICalibration::OnKey(const CKey& key)
 						m_iCountR=1;
 					}
 				}
+				m_iCountU=0;
+				m_iCountD=0;
+				m_iCountL=0;
 			}
 			break;
 
 			case KEY_BUTTON_DPAD_UP:
 			case KEY_REMOTE_UP:
 			{
+				if (m_iCountU==0) m_iSpeed=1;
 				if (iYOff>-128)
 				{
 					iYOff-=m_iSpeed;
@@ -103,6 +112,7 @@ void CGUIWindowSettingsUICalibration::OnKey(const CKey& key)
 			case KEY_BUTTON_DPAD_DOWN:
 			case KEY_REMOTE_DOWN:
 			{
+				if (m_iCountD==0) m_iSpeed=1;
 				if ( iYOff< 128 )
 				{
 					iYOff+=m_iSpeed;
@@ -117,7 +127,6 @@ void CGUIWindowSettingsUICalibration::OnKey(const CKey& key)
 				m_iCountR=0;
 			}
 			break;
-
 		}
   }
 
