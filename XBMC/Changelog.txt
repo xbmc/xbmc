@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 08-12-2004 changed: my music albums, recent albums can now be displayed
   - 08-12-2004 updated: Polish language file (Thnx to napek)
   - 08-12-2004 updated: German (Austrian) language file (Thnx to CEOMR)
   - 08-12-2004 updated: German language file
