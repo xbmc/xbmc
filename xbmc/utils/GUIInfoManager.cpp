@@ -76,9 +76,9 @@ wstring CGUIInfoManager::GetDate(bool bNumbersOnly)
 	{
 		CStdString strDate;
 		if (g_guiSettings.GetBool("LookAndFeel.SwapMonthAndDay"))
-			swprintf(szText,L"%02.2i-%02.2i-%02.2i",time.wMonth,time.wDay,time.wYear);
-		else
 			swprintf(szText,L"%02.2i-%02.2i-%02.2i",time.wDay,time.wMonth,time.wYear);
+		else
+			swprintf(szText,L"%02.2i-%02.2i-%02.2i",time.wMonth,time.wDay,time.wYear);
 	}
 	else
 	{
