@@ -23,12 +23,13 @@ bool  CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	memset(&wfd,0,sizeof(wfd));
 	if (!CUtil::HasSlashAtEnd(strPath) )
 		strRoot+="\\";
-
+#if 0
 	if ( CUtil::IsDVD(strRoot) )
   {
     CIoSupport helper;
     helper.Remount("D:","Cdrom0");
   }
+#endif
   CStdString strSearchMask=strRoot;
   strSearchMask+="*.*";
 
