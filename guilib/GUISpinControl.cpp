@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "guispincontrol.h"
 #include "guifontmanager.h"
+#include "../xbmc/utils/CharsetConverter.h"
 
 #define SPIN_BUTTON_DOWN 0
 #define SPIN_BUTTON_UP   1
@@ -46,13 +47,13 @@ void CGUISpinControl::SetNonProportional(bool bOnOff)
 	{
 		m_bShowRange = false;
 
-	    WCHAR wszText[1024];
+	    CStdStringW strLabelUnicode;
         float fTextHeight,fTextWidth;
 
 		for(int i=0;i<(int)m_vecLabels.size();i++)
 		{
-			swprintf(wszText,L"%s", m_vecLabels[m_iValue].c_str() );
-			m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
+			g_charsetConverter.stringCharsetToFontCharset(m_vecLabels[m_iValue].c_str(), strLabelUnicode);
+			m_pFont->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth,&fTextHeight);
 			
 			if (fTextWidth>m_fMaxTextWidth)
 			{
@@ -356,6 +357,7 @@ void CGUISpinControl::Render()
 
     int iPosX=m_iPosX;
     WCHAR wszText[1024];
+	CStdStringW strTextUnicode;
 
     if (m_iType == SPIN_CONTROL_TYPE_INT)
         swprintf(wszText,L"%i/%i",m_iValue, m_iEnd);
@@ -378,10 +380,13 @@ void CGUISpinControl::Render()
         else swprintf(wszText,L"?%i?",m_iValue);
         
     }
+
+	g_charsetConverter.stringCharsetToFontCharset(wszText, strTextUnicode);
+
 	// Calculate the size of our text (for use in HitTest)
 	float fTextWidth, fTextHeight;
 	if (m_pFont)
-		m_pFont->GetTextExtent( wszText, &fTextWidth, &fTextHeight);
+		m_pFont->GetTextExtent( strTextUnicode.c_str(), &fTextWidth, &fTextHeight);
 	// Position the arrows
 	if (m_fMaxTextWidth>0)
 	{
@@ -443,11 +448,11 @@ void CGUISpinControl::Render()
 		float fPosX = (float)(m_iPosX+m_lTextOffsetX) -3;
 		if ( HasFocus() )
 		{
-			m_pFont->DrawText(fPosX, fPosY, m_dwTextColor,wszText,m_dwAlign);
+			m_pFont->DrawText(fPosX, fPosY, m_dwTextColor,strTextUnicode.c_str(),m_dwAlign);
 		}
 		else
 		{
-			m_pFont->DrawText(fPosX, fPosY, m_dwDisabledColor,wszText,m_dwAlign);
+			m_pFont->DrawText(fPosX, fPosY, m_dwDisabledColor,strTextUnicode.c_str(),m_dwAlign);
 		}
 		// set our hit rectangle for MouseOver events
 		if (m_dwAlign & XBFONT_LEFT)

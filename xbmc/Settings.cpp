@@ -191,7 +191,8 @@ CSettings::CSettings(void)
 	g_stSettings.m_bUseDigitalOutput=false;
 
 	strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
-	strcpy(g_stSettings.m_szFlipBiDiCharset, "");
+	strcpy(g_stSettings.m_szStringCharset, "ISO-8859-1");
+	g_stSettings.m_bFlipBiDiCharset = true;
 	g_stSettings.m_iEnlargeSubtitlePercent = 0;
 	g_stSettings.m_bPostProcessing=false;
 	g_stSettings.m_bDeInterlace=false;
@@ -397,6 +398,14 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 		Save();
 		if (!(bSettings=LoadSettings("T:\\settings.xml", true)))
 			return false;
+	}
+
+	// This is for backward compatibility since we deleted "Hebrew" from the PM fontset
+	if (stricmp(g_stSettings.m_szSkinFontSet, "Hebrew") == 0)
+	{
+		strcpy(g_stSettings.m_szSkinFontSet, "TTF");
+		strcpy(g_stSettings.m_szStringCharset, "CP1255");
+		g_stSettings.m_bFlipBiDiCharset = true;
 	}
 
 	// load xml file...
@@ -1110,6 +1119,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetInteger(pElement, "enlargesubtitlepercent",g_stSettings.m_iEnlargeSubtitlePercent, 0, 0, 200);
 		GetInteger(pElement, "subtitleheight",g_stSettings.m_iSubtitleHeight,28,1,128);
 		GetString(pElement, "subtitlefont", g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
+		GetString(pElement, "stringcharset", g_stSettings.m_szStringCharset, "ISO-8859-1");
 		GetInteger(pElement, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds,7,1,INT_MAX);
 		GetInteger(pElement, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries,3,1,10);
 		GetInteger(pElement, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay,300,100,5000); //MS
@@ -1147,7 +1157,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetBoolean(pElement, "autorunpictures", g_stSettings.m_bAutorunPictures);
 		GetString(pElement, "language", g_stSettings.szDefaultLanguage, g_stSettings.szDefaultLanguage);
 		GetString(pElement, "skinfontset", g_stSettings.m_szSkinFontSet, g_stSettings.m_szSkinFontSet);
-		GetString(pElement, "flipbidicharset", g_stSettings.m_szFlipBiDiCharset, g_stSettings.m_szFlipBiDiCharset);
+
+
+		GetBoolean(pElement, "flipbidicharset", g_stSettings.m_bFlipBiDiCharset);
 
 		GetInteger(pElement, "shutdowntime", g_stSettings.m_iShutdownTime,0,0,INT_MAX);
 		GetBoolean(pElement, "enablerss", g_stSettings.m_bEnableRSS);
@@ -1512,6 +1524,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetInteger(pNode, "enlargesubtitlepercent",g_stSettings.m_iEnlargeSubtitlePercent);
 	SetInteger(pNode, "subtitleheight",g_stSettings.m_iSubtitleHeight);
 	SetString(pNode, "subtitlefont", g_stSettings.m_szSubtitleFont);
+	SetString(pNode, "stringcharset", g_stSettings.m_szStringCharset);
 	SetInteger(pNode, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds);
 	SetInteger(pNode, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries);
 	SetInteger(pNode, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay);
@@ -1548,7 +1561,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetBoolean(pNode, "autorunpictures", g_stSettings.m_bAutorunPictures);
 	SetString(pNode, "language", g_stSettings.szDefaultLanguage);
 	SetString(pNode, "skinfontset", g_stSettings.m_szSkinFontSet);
-	SetString(pNode, "flipbidicharset", g_stSettings.m_szFlipBiDiCharset);
+	SetBoolean(pNode, "flipbidicharset", g_stSettings.m_bFlipBiDiCharset);
 
 	SetInteger(pNode, "shutdowntime", g_stSettings.m_iShutdownTime);
 	SetBoolean(pNode, "enablerss", g_stSettings.m_bEnableRSS);

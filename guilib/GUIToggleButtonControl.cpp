@@ -2,7 +2,7 @@
 #include "GUIToggleButtonControl.h"
 #include "guifontmanager.h"
 #include "guiWindowManager.h"
-
+#include "../xbmc/utils/CharsetConverter.h"
 
 CGUIToggleButtonControl::CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, const CStdString& strAltTextureFocus,const CStdString& strAltTextureNoFocus)
 :CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
@@ -67,8 +67,11 @@ void CGUIToggleButtonControl::Render()
 		float fTextX = (float)10+m_iPosX+m_lTextOffsetX;
 		float fTextY = (float) 2+m_iPosY+m_lTextOffsetY;
 
+		CStdStringW strLabelUnicode;
+		g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
+
 		m_pFont->DrawText(fTextX, fTextY, 
-			IsDisabled() ? m_dwDisabledColor : m_dwTextColor, m_strLabel.c_str() );
+			IsDisabled() ? m_dwDisabledColor : m_dwTextColor, strLabelUnicode.c_str() );
 	}
 
 }

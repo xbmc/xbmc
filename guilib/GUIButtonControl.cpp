@@ -3,7 +3,7 @@
 #include "guifontmanager.h"
 #include "guiWindowManager.h"
 #include "guiDialog.h"
-//#include "ActionManager.h"
+#include "../xbmc/utils/CharsetConverter.h"
 
 CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, DWORD dwTextXOffset, DWORD dwTextYOffset, DWORD dwAlign)
 :CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
@@ -69,13 +69,18 @@ void CGUIButtonControl::Render()
 			fPosX = (float)m_iPosX + m_dwWidth/2;
 		if (m_dwTextAlignment & XBFONT_CENTER_Y)
 			fPosY = (float)m_iPosY + m_dwHeight/2;
+
+
+		CStdStringW strLabelUnicode;
+		g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
+
 		if (IsDisabled() )
 		{
-			m_pFont->DrawText( fPosX, fPosY,m_dwDisabledColor,m_strLabel.c_str(), m_dwTextAlignment);
+			m_pFont->DrawText( fPosX, fPosY,m_dwDisabledColor,strLabelUnicode.c_str(), m_dwTextAlignment);
 		}
 		else
 		{
-			m_pFont->DrawText( fPosX, fPosY,m_dwTextColor,m_strLabel.c_str(),m_dwTextAlignment);
+			m_pFont->DrawText( fPosX, fPosY,m_dwTextColor,strLabelUnicode.c_str(),m_dwTextAlignment);
 		}
 	}
 
@@ -162,7 +167,6 @@ void CGUIButtonControl::SetText(const wstring &label)
 {
 	m_strLabel=label;
 }
-
 void CGUIButtonControl::SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor)
 {
   WCHAR wszText[1024];

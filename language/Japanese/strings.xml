@@ -1,151 +1,151 @@
 <strings>
 	<string>
 		<id>0</id>
-		<value>My Programs</value>
+		<value>プログラム</value>
 	</string>
 	<string>
 		<id>1</id>
-		<value>My Pictures</value>
+		<value>画像</value>
 	</string>
 	<string>
 		<id>2</id>
-		<value>My Music</value>
+		<value>音楽</value>
 	</string>
 	<string>
 		<id>3</id>
-		<value>My Videos</value>
+		<value>動画</value>
 	</string>
 	<string>
 		<id>4</id>
-		<value>TV Guide</value>
+		<value>テレビ欄</value>
 	</string>
 	<string>
 		<id>5</id>
-		<value>Settings</value>
+		<value>設定</value>
 	</string>
 	<string>
 		<id>6</id>
-		<value>XBOX Media Center 1.0.0</value>
+		<value>ぬるぽ XBMC jp</value>
 	</string>
 	<string>
 		<id>7</id>
-		<value>My Files</value>
+		<value>俺のファイル</value>
 	</string>
 	<string>
 		<id>8</id>
-		<value>Weather</value>
+		<value>天気</value>
 	</string>
 	<string>
 		<id>11</id>
-		<value>Monday</value>
+		<value>月曜</value>
 	</string>
 	<string>
 		<id>12</id>
-		<value>Tuesday</value>
+		<value>火曜</value>
 	</string>
 	<string>
 		<id>13</id>
-		<value>Wednesday</value>
+		<value>水曜</value>
 	</string>
 	<string>
 		<id>14</id>
-		<value>Thursday</value>
+		<value>木曜</value>
 	</string>
 	<string>
 		<id>15</id>
-		<value>Friday</value>
+		<value>金曜</value>
 	</string>
 	<string>
 		<id>16</id>
-		<value>Saturday</value>
+		<value>土曜</value>
 	</string>
 	<string>
 		<id>17</id>
-		<value>Sunday</value>
+		<value>日曜</value>
 	</string>
 	<string>
 		<id>21</id>
-		<value>January</value>
+		<value>一月</value>
 	</string>
 	<string>
 		<id>22</id>
-		<value>February</value>
+		<value>二月</value>
 	</string>
 	<string>
 		<id>23</id>
-		<value>March</value>
+		<value>三月</value>
 	</string>
 	<string>
 		<id>24</id>
-		<value>April</value>
+		<value>四月</value>
 	</string>
 	<string>
 		<id>25</id>
-		<value>May</value>
+		<value>五月</value>
 	</string>
 	<string>
 		<id>26</id>
-		<value>June</value>
+		<value>六月</value>
 	</string>
 	<string>
 		<id>27</id>
-		<value>July</value>
+		<value>七月</value>
 	</string>
 	<string>
 		<id>28</id>
-		<value>August</value>
+		<value>八月</value>
 	</string>
 	<string>
 		<id>29</id>
-		<value>September</value>
+		<value>九月</value>
 	</string>
 	<string>
 		<id>30</id>
-		<value>October</value>
+		<value>十月</value>
 	</string>
 	<string>
 		<id>31</id>
-		<value>November</value>
+		<value>十一月</value>
 	</string>
 	<string>
 		<id>32</id>
-		<value>December</value>
+		<value>十二月</value>
 	</string>
 	<string>
 		<id>100</id>
-		<value>View: Icons</value>
+		<value>アイコン表示</value>
 	</string>
 	<string>
 		<id>101</id>
-		<value>View: List</value>
+		<value>リスト表示</value>
 	</string>
 	<string>
 		<id>102</id>
-		<value>Scan</value>
+		<value>スキャン</value>
 	</string>
 	<string>
 		<id>103</id>
-		<value>Sort by: Name</value>
+		<value>名前ソート</value>
 	</string>
 	<string>
 		<id>104</id>
-		<value>Sort by: Date</value>
+		<value>日付ソート</value>
 	</string>
 	<string>
 		<id>105</id>
-		<value>Sort by: Size</value>
+		<value>サイズソート</value>
 	</string>
 	<string>
 		<id>106</id>
-		<value>No</value>
+		<value>いいえ</value>
 	</string>
 	<string>
 		<id>107</id>
-		<value>Yes</value>
+		<value>はい</value>
 	</string>
 	<string>
 		<id>108</id>
-		<value>SlideShow</value>
+		<value>スライドショー</value>
 	</string>
 	<string>
 		<id>109</id>
@@ -157,11 +157,11 @@
 	</string>
 	<string>
 		<id>111</id>
-		<value>Shortcuts</value>
+		<value>ショートカット</value>
 	</string>
 	<string>
 		<id>112</id>
-		<value>PAUSED</value>
+		<value>ポーズ</value>
 	</string>
 	<string>
 		<id>113</id>
@@ -173,19 +173,19 @@
 	</string>
 	<string>
 		<id>115</id>
-		<value>Copy</value>
+		<value>複製</value>
 	</string>
 	<string>
 		<id>116</id>
-		<value>Move</value>
+		<value>移動</value>
 	</string>
 	<string>
 		<id>117</id>
-		<value>Delete</value>
+		<value>削除</value>
 	</string>
 	<string>
 		<id>118</id>
-		<value>Rename</value>
+		<value>変名</value>
 	</string>
 	<string>
 		<id>119</id>
@@ -229,7 +229,7 @@
 	</string>
 	<string>
 		<id>129</id>
-		<value>Slideshow</value>
+		<value>スライドショー</value>
 	</string>
 	<string>
 		<id>130</id>
@@ -381,11 +381,11 @@
 	</string>
 	<string>
 		<id>167</id>
-		<value>Enable FTP Server</value>
+		<value>FTP server</value>
 	</string>
 	<string>
 		<id>168</id>
-		<value>Enable Internet Time Synchronization</value>
+		<value>Synchronize Time</value>
 	</string>
 	<string>
 		<id>169</id>
@@ -577,11 +577,11 @@
 	</string>
 	<string>
 		<id>216</id>
-		<value>Zoom Amount</value>
+		<value>Zoom</value>
 	</string>
 	<string>
 		<id>217</id>
-		<value>Pixel Ratio</value>
+		<value>Stretch</value>
 	</string>
 	<string>
 		<id>218</id>
@@ -589,7 +589,7 @@
 	</string>
 	<string>
 		<id>219</id>
-		<value>Please insert disc</value>
+		<value>ディスクを入れれ</value>
 	</string>
 	<string>
 		<id>220</id>
@@ -717,7 +717,7 @@
 	</string>
 	<string>
 		<id>252</id>
-		<value>- Output Stereo to all speakers</value>
+		<value>- Output to all speakers</value>
 	</string>
 	<string>
 		<id>253</id>
@@ -725,7 +725,7 @@
 	</string>
 	<string>
 		<id>254</id>
-		<value>- DTS Capable Receiver</value>
+		<value>- DD Stereo Passthrough</value>
 	</string>
 	<string>
 		<id>255</id>
@@ -761,7 +761,7 @@
 	</string>
 	<string>
 		<id>263</id>
-		<value>Enable Web Server</value>
+		<value>HTTP server</value>
 	</string>
 	<string>
 		<id>264</id>
@@ -957,7 +957,7 @@
 	</string>
 	<string>
 		<id>313</id>
-		<value>Cleaning database</value>
+		<value>Reorganize database</value>
 	</string>
 	<string>
 		<id>314</id>
@@ -973,47 +973,47 @@
 	</string>
 	<string>
 		<id>317</id>
-		<value>Cleaning database successful</value>
+		<value>Reorganization successfull</value>
 	</string>
 	<string>
 		<id>318</id>
-		<value>Cleaning songs...</value>
+		<value>Marking deleted songs</value>
 	</string>
 	<string>
 		<id>319</id>
-		<value>Error cleaning songs</value>
+		<value>Error reorganizing songs</value>
 	</string>
 	<string>
 		<id>320</id>
-		<value>Cleaning artists...</value>
+		<value>Searching artists...</value>
 	</string>
 	<string>
 		<id>321</id>
-		<value>Error cleaning artists</value>
+		<value>Error reorganizing artists</value>
 	</string>
 	<string>
 		<id>322</id>
-		<value>Cleaning genres...</value>
+		<value>Searching genres...</value>
 	</string>
 	<string>
 		<id>323</id>
-		<value>Error cleaning genres</value>
+		<value>Error reorganizing genres</value>
 	</string>
 	<string>
 		<id>324</id>
-		<value>Cleaning pathes...</value>
+		<value>Searching pathes...</value>
 	</string>
 	<string>
 		<id>325</id>
-		<value>Error cleaning pathes</value>
+		<value>Error reorganizing pathes</value>
 	</string>
 	<string>
 		<id>326</id>
-		<value>Cleaning albums...</value>
+		<value>Searching albums...</value>
 	</string>
 	<string>
 		<id>327</id>
-		<value>Error cleaning albums</value>
+		<value>Error reorganizing albums</value>
 	</string>
 	<string>
 		<id>328</id>
@@ -1037,11 +1037,11 @@
 	</string>
 	<string>
 		<id>333</id>
-		<value>Do you want to clean the music database?</value>
+		<value>Do you want to reorganize my music database?</value>
 	</string>
 	<string>
 		<id>334</id>
-		<value>Clean the music database</value>
+		<value>Reorganize my music database</value>
 	</string>
 	<string>
 		<id>335</id>
@@ -1053,7 +1053,7 @@
 	</string>
 	<string>
 		<id>337</id>
-		<value>Audio Output</value>
+		<value>音の出力</value>
 	</string>
 	<string>
 		<id>338</id>
@@ -1161,7 +1161,7 @@
 	</string>
 	<string>
 		<id>364</id>
-		<value>- AC3 Capable Receiver</value>
+		<value>- DD/DTS Multichannel Passthrough</value>
 	</string>
 	<string>
 		<id>365</id>
@@ -1504,10 +1504,6 @@
 		<value>Columns</value>
 	</string>
 	<string>
-		<id>4501</id>
-		<value>LCD Type</value>
-	</string>
-	<string>
 		<id>451</id>
 		<value>Row 1 adress</value>
 	</string>
@@ -1731,16 +1727,7 @@
 		<string>
 		<id>506</id>
 		<value>Use directory names for description</value>
-	</string> 
-      <string> 	 
-            <id>507</id> 	 
-            <value>Sort by: Usage</value> 	 
-      </string>
-      <string>
-		<id>508</id>
-		<value>Do not use Shortcuts or Scan</value>
-	</string>
-	<string>
+	</string> <string>
 		<id>600</id>
 		<value>Rip CD</value>
 	</string>
@@ -1800,194 +1787,15 @@
 		<id>624</id>
 		<value>Include Track number</value>
 	</string>
-	<string>
-		<id>625</id>
-		<value>All songs of</value>
-	</string>
-	<string>
-		<id>629</id>
-		<value>View Mode</value>
-	</string>
-	<string>
-		<id>630</id>
-		<value>Normal</value>
-	</string>
-	<string>
-		<id>631</id>
-		<value>Zoom</value>
-	</string>
-	<string>
-		<id>632</id>
-		<value>Stretch 4:3</value>
-	</string>
-	<string>
-		<id>633</id>
-		<value>Stretch 14:9</value>
-	</string>
-	<string>
-		<id>634</id>
-		<value>Stretch 16:9</value>
-	</string>
-	<string>
-		<id>635</id>
-		<value>Original Size</value>
-	</string>
-	<string>
-		<id>636</id>
-		<value>Custom</value>
-	</string>
-	<string>
-		<id>700</id>
-		<value>Cleaning up Database</value>
-	</string>
-	<string>
-		<id>701</id>
-		<value>Removing old songs from the Database</value>
-	</string>
-	<string>
-		<id>702</id>
-		<value>This path has been scanned before.</value>
-	</string>
-	<string>
-		<id>703</id>
-		<value>Press Yes to update all songs in this path.</value>
-	</string>
-	<string>
-		<id>704</id>
-		<value>Press No to just add new songs.</value>
-	</string>
-	<string>
-		<id>705</id>
-		<value>Network</value>
-	</string>
-	<string>
-		<id>706</id>
-		<value>HTTP Proxy Host</value>
-	</string>
-	<string>
-		<id>707</id>
-		<value>HTTP Proxy Port</value>
-	</string>
-	<string>
-		<id>708</id>
-		<value>Enable HTTP Proxy</value>
-	</string>
-	<string>
-		<id>709</id>
-		<value>XLink Kai XTag</value>
-	</string>
-	<string>
-		<id>710</id>
-		<value>XLink Kai Password</value>
-	</string>
-	<string>
-		<id>711</id>
-		<value>Internet Protocol (IP)</value>
-	</string>
-	<string>
-		<id>712</id>
-		<value>Invalid port specified. Value must be between 1 and 65535.</value>
-	</string>
-	<string>
-		<id>713</id>
-		<value>HTTP Proxy</value>
-	</string>	
-	<string>
-		<id>714</id>
-		<value>XLink Kai</value>
-	</string>	
-	<string>
-		<id>715</id>
-		<value>Assignment</value>
-	</string>	
-	<string>
-		<id>716</id>
-		<value>Automatic (DHCP)</value>
-	</string>	
-	<string>
-		<id>717</id>
-		<value>Manual (Static)</value>
-	</string>	
-	<string>
-		<id>718</id>
-		<value>Default (Dashboard)</value>
-	</string>	
-	<string>
-		<id>719</id>
-		<value>IP Address</value>
-	</string>	
-	<string>
-		<id>720</id>
-		<value>Netmask</value>
-	</string>	
-	<string>
-		<id>721</id>
-		<value>Default Gateway</value>
-	</string>	
-	<string>
-		<id>722</id>
-		<value>DNS Server</value>
-	</string>
-	<string>
-		<id>723</id>
-		<value>Save &amp; Restart</value>
-	</string>
-	<string>
-		<id>724</id>
-		<value>Invalid address specified. Value must be AAA.BBB.CCC.DDD</value>
-	</string>
-	<string>
-		<id>725</id>
-		<value>with numbers between 0 and 255.</value>
-	</string>
-	<string>
-		<id>726</id>
-		<value>Changes not saved. Continue without saving?</value>
-	</string>
-	<string>
-		<id>727</id>
-		<value>Web Server</value>
-	</string>	
-	<string>
-		<id>728</id>
-		<value>FTP Server</value>
-	</string>	
-	<string>
-		<id>729</id>
-		<value>Internet Time</value>
-	</string>	
-	<string>
-		<id>730</id>
-		<value>Web Server Port</value>
-	</string>	
-	<string>
-		<id>731</id>
-		<value>Time Server Host</value>
-	</string>
-	<string>
-		<id>732</id>
-		<value>Save &amp; Apply</value>
-	</string>
-	<string>
-		<id>733</id>
-		<value>Web Server Password</value>
-	</string>
-	<string>
-		<id>734</id>
-		<value>No Pass</value>
-	</string>
-	<string>
-		<id>735</id>
-		<value>Charset:</value>
-	</string>	
+	
 	<string>
 		<id>998</id>
-		<value>XLink Kai</value>
+		<value>XLink KAI</value>
 	</string>
 	<string>
 		<id>999</id>
 		<value>Online Gaming</value>
-	</string>
+	</string> 
 	
 	<string>
 		<id>10000</id>
@@ -2191,16 +1999,4 @@
   <string><id>13003</id><value>- Delay</value></string>
   <string><id>13004</id><value>- Minimum file duration</value></string>
   <string><id>13100</id><value>Flicker filter</value></string>
-  <string><id>13200</id><value>Profiles</value></string>
-  <string><id>13201</id><value>Delete profile '%s'?</value></string>
-  <string><id>13202</id><value>Save current settings as profile...</value></string>
-  <string><id>13203</id><value>Profile '%s' loaded successfully</value></string>
-  <string><id>13204</id><value>Last loaded profile:</value></string>
-  <string><id>13205</id><value>Unknown</value></string>
-  <string><id>13300</id><value>Fanspeed:</value></string>
-  <string><id>13301</id><value>Auto temperature control</value></string>
-  <string><id>13302</id><value>Fanspeed control</value></string>
-  <string><id>13303</id><value>Skin Fonts</value></string>
-  <string><id>13304</id><value>Enable Flipping Bi-Directional Strings</value></string>
-  <string><id>13305</id><value>Enable RSS Feeds</value></string>
 </strings>

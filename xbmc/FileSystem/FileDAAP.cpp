@@ -107,7 +107,7 @@ bool CFileDAAP::Open(const CURL& url, bool bBinary)
 	if (g_application.m_DAAPSong)
 	{
 		m_bOpened = true;
-		m_song.size = g_application.m_DAAPSongSize;
+		m_song.size = (int) g_application.m_DAAPSongSize;
 		m_song.data = malloc(m_song.size);
 		memcpy(m_song.data, g_application.m_DAAPSong, m_song.size);
 		m_filePos = 0;
@@ -253,10 +253,10 @@ unsigned int CFileDAAP::Read(void *lpBuf, __int64 uiBufSize)
 	buf = (unsigned char *) m_song.data;
 	buf += m_filePos;
 
-	if (uiBufSize > (m_song.size - m_filePos))
-		buflen = (m_song.size - m_filePos);
+	if (uiBufSize > (__int64) (m_song.size - m_filePos))
+		buflen = (size_t) (m_song.size - m_filePos);
 	else
-		buflen = uiBufSize;
+		buflen = (size_t) uiBufSize;
 
 	fast_memcpy(lpBuf, buf, buflen);
 	//pBuffer[uiBufSize] = 0x00;

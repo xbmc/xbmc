@@ -11,7 +11,7 @@
 #include "../FileSystem/FileSmb.h"
 #include "../FileSystem/File.h"
 #include "../XBAudioConfig.h"
-
+#include "../utils/CharsetConverter.h"
 #define KEY_ENTER 13
 #define KEY_TAB 9
 
@@ -511,9 +511,9 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 
 	if (m_strFlipBiDiCharset.length()>0)
 	{
-			CLog::Log(LOGINFO, "Flipping bi-directional subtitles in charset %s", g_stSettings.m_szFlipBiDiCharset);
+			CLog::Log(LOGINFO, "Flipping bi-directional subtitles in charset %s", m_strFlipBiDiCharset.c_str());
 			m_vecOptions.push_back("-fribidi-charset");
-			m_vecOptions.push_back(m_strFlipBiDiCharset);
+			m_vecOptions.push_back(m_strFlipBiDiCharset.c_str());
 			m_vecOptions.push_back("-flip-hebrew");
 	}
 	else
@@ -778,9 +778,9 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 		options.SetNoCache(g_stSettings.m_bNoCache);
 
 
-		if (g_stSettings.m_szFlipBiDiCharset != NULL && strlen(g_stSettings.m_szFlipBiDiCharset) > 0)
+		if (g_stSettings.m_bFlipBiDiCharset && g_charsetConverter.isBidiCharset(g_stSettings.m_szStringCharset) > 0)
 		{
-			options.SetFlipBiDiCharset(g_stSettings.m_szFlipBiDiCharset);
+			options.SetFlipBiDiCharset(g_stSettings.m_szStringCharset);
 		}
 
 		bool bSupportsAC3Out=g_audioConfig.GetAC3Enabled();

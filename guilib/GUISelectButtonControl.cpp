@@ -2,7 +2,7 @@
 #include "guiselectbuttoncontrol.h"
 #include "guifontmanager.h"
 #include "guiwindowmanager.h"
-
+#include "../xbmc/utils/CharsetConverter.h"
 
 CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId, 
 																								 int iPosX, int iPosY, 
@@ -104,14 +104,17 @@ void CGUISelectButtonControl::Render()
 		{
 			if (m_vecItems[m_iCurrentItem].size())
 			{
+				CStdStringW itemStrUnicode;
+				g_charsetConverter.stringCharsetToFontCharset(m_vecItems[m_iCurrentItem].c_str(), itemStrUnicode);
+
 				float fTextWidth,fTextHeight;
-				m_pFont->GetTextExtent( m_vecItems[m_iCurrentItem].c_str(), &fTextWidth, &fTextHeight );		
+				m_pFont->GetTextExtent( itemStrUnicode.c_str(), &fTextWidth, &fTextHeight );		
 				DWORD dwOffsetX = (m_imgBackground.GetWidth()-(DWORD)fTextWidth)/2;
 				float fPosY = (float)m_iPosY+m_dwTextOffsetY;
 				if (m_dwTextAlignment & XBFONT_CENTER_Y)
 					fPosY = (float)m_iPosY+m_imgBackground.GetHeight()/2;
 				m_pFont->DrawText(	(float)m_iPosX+dwOffsetX,
-					fPosY, dwTextColor, m_vecItems[m_iCurrentItem].c_str(), m_dwTextAlignment);
+					fPosY, dwTextColor, itemStrUnicode.c_str(), m_dwTextAlignment);
 			}
 		}
 
