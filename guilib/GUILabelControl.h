@@ -33,6 +33,7 @@ public:
 	DWORD							GetAlignment() const { return m_dwdwTextAlign;};
 	const CStdString& GetFontName() const { return m_pFont->GetFontName(); };
 	const wstring			GetLabel() const { return m_strLabel; };
+	void	SetText(CStdString aLabel);
 protected:
 	void							ShortenPath();
 protected:
