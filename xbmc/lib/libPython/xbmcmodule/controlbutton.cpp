@@ -48,6 +48,11 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
+	PyDoc_STRVAR(setDisabledColor__doc__,
+		"setDisabledColor(string hexcolor) -- .\n"
+		"\n"
+		"hexcolor     : hexString (example, '0xFFFF3300')");
+
 	PyObject* ControlButton_SetDisabledColor(ControlButton *self, PyObject *args)
 	{
 		char *cDisabledColor = NULL;
@@ -66,7 +71,12 @@ namespace PYXBMC
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
-	
+
+	PyDoc_STRVAR(setLabel__doc__,
+		"setLabel(string label) -- Set's text for this button.\n"
+		"\n"
+		"label     : string or unicode string");
+
 	PyObject* ControlButton_SetLabel(ControlButton *self, PyObject *args)
 	{
 		PyObject *pObjectText;
@@ -90,10 +100,19 @@ namespace PYXBMC
 	}
 
 	PyMethodDef ControlButton_methods[] = {
-		{"setLabel", (PyCFunction)ControlButton_SetLabel, METH_VARARGS, ""},
-		{"setDisabledColor", (PyCFunction)ControlButton_SetDisabledColor, METH_VARARGS, ""},
+		{"setLabel", (PyCFunction)ControlButton_SetLabel, METH_VARARGS, setLabel__doc__},
+		{"setDisabledColor", (PyCFunction)ControlButton_SetDisabledColor, METH_VARARGS, setDisabledColor__doc__},
 		{NULL, NULL, 0, NULL}
 	};
+
+	PyDoc_STRVAR(controlButton__doc__,
+		"ControlButton class.\n"
+		"\n"
+		"ControlButton(int x, int y, int width, int height[, label, focus, nofocus])\n"
+		"\n"
+		"label     : string or unicode string\n"
+		"focus     : filename for focus texture\n"
+		"nofocus   : filename for no focus texture");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
@@ -123,7 +142,7 @@ namespace PYXBMC
 			0,                         /*tp_setattro*/
 			0,                         /*tp_as_buffer*/
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			"ControlButton Objects",    /* tp_doc */
+			controlButton__doc__,      /* tp_doc */
 			0,		                     /* tp_traverse */
 			0,		                     /* tp_clear */
 			0,		                     /* tp_richcompare */

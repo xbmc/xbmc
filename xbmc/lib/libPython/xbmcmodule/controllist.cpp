@@ -85,6 +85,11 @@ namespace PYXBMC
 	 * ListItem is added to vector
 	 * For a string we create a new ListItem and add it to the vector
 	 */
+PyDoc_STRVAR(addItem__doc__,
+		"addItem(item) -- Add a new item to this control list.\n"
+		"\n"
+		"item can be a string / unicode string or a ListItem.");
+
 	PyObject* ControlList_AddItem(ControlList *self, PyObject *args)
 	{
 		PyObject *pObject;
@@ -123,6 +128,9 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(reset__doc__,
+		"reset() -- Clear all ListItems in this control list.");
+
 	PyObject* ControlList_Reset(ControlList *self, PyObject *args)
 	{
 		// create message
@@ -149,11 +157,21 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(getSpinControl__doc__,
+		"getSpinControl() -- returns the associated ControlSpin."
+		"\n"
+		"- Not working completely yet -\n"
+		"After adding this control list to a window it is not possible to change\n"
+		"the settings of this spin control.");
+
 	PyObject* ControlList_GetSpinControl(ControlTextBox *self, PyObject *args)
 	{
 		Py_INCREF(self->pControlSpin);
 		return (PyObject*)self->pControlSpin;
 	}
+
+	PyDoc_STRVAR(setImageDimensions__doc__,
+		"setImageDimensions(int width, int height) -- ");
 
 	PyObject* ControlList_SetImageDimensions(ControlList *self, PyObject *args)
 	{
@@ -168,6 +186,9 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(setItemHeight__doc__,
+		"setItemHeight(int height) -- ");
+
 	PyObject* ControlList_SetItemHeight(ControlList *self, PyObject *args)
 	{
 		if (!PyArg_ParseTuple(args, "l", &self->dwItemHeight)) return NULL;
@@ -181,6 +202,9 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(setSpace__doc__,
+		"setSpace(int space) -- Set's the space between ListItems");
+
 	PyObject* ControlList_SetSpace(ControlList *self, PyObject *args)
 	{
 		if (!PyArg_ParseTuple(args, "l", &self->dwSpace)) return NULL;
@@ -193,7 +217,12 @@ namespace PYXBMC
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
-				
+	
+	PyDoc_STRVAR(getSelectedPosition__doc__,
+		"getSelectedPosition() -- Returns the position of the selected item.\n"
+		"\n"
+		"Position will be returned as an int");
+
 	PyObject* ControlList_GetSelectedPosition(ControlList *self, PyObject *args)
 	{
 		// create message
@@ -207,6 +236,12 @@ namespace PYXBMC
 
 		return Py_BuildValue("l", msg.GetParam1());
 	}
+
+	PyDoc_STRVAR(getSelectedItem__doc__,
+		"getSelectedPosition() -- Returns the selected ListItem.\n"
+		"\n"
+		"Same as getSelectedPosition(), but instead of an int a ListItem is returned.\n"
+		"See windowexample.py on how to use this.");
 
 	PyObject* ControlList_GetSelectedItem(ControlList *self, PyObject *args)
 	{
@@ -227,16 +262,21 @@ namespace PYXBMC
 	}
 			
 	PyMethodDef ControlList_methods[] = {
-		{"addItem", (PyCFunction)ControlList_AddItem, METH_VARARGS, ""},
-		{"reset", (PyCFunction)ControlList_Reset, METH_VARARGS, ""},
-		{"getSpinControl", (PyCFunction)ControlList_GetSpinControl, METH_VARARGS, ""},
-		{"getSelectedPosition", (PyCFunction)ControlList_GetSelectedPosition, METH_VARARGS, ""},
-		{"getSelectedItem", (PyCFunction)ControlList_GetSelectedItem, METH_VARARGS, ""},
-		{"setImageDimensions", (PyCFunction)ControlList_SetImageDimensions, METH_VARARGS, ""},
-		{"setItemHeight", (PyCFunction)ControlList_SetItemHeight, METH_VARARGS, ""},
-		{"setSpace", (PyCFunction)ControlList_SetSpace, METH_VARARGS, ""},
+		{"addItem", (PyCFunction)ControlList_AddItem, METH_VARARGS, addItem__doc__},
+		{"reset", (PyCFunction)ControlList_Reset, METH_VARARGS, reset__doc__},
+		{"getSpinControl", (PyCFunction)ControlList_GetSpinControl, METH_VARARGS, getSpinControl__doc__},
+		{"getSelectedPosition", (PyCFunction)ControlList_GetSelectedPosition, METH_VARARGS, getSelectedPosition__doc__},
+		{"getSelectedItem", (PyCFunction)ControlList_GetSelectedItem, METH_VARARGS, getSelectedItem__doc__},
+		{"setImageDimensions", (PyCFunction)ControlList_SetImageDimensions, METH_VARARGS, setImageDimensions__doc__},
+		{"setItemHeight", (PyCFunction)ControlList_SetItemHeight, METH_VARARGS, setItemHeight__doc__},
+		{"setSpace", (PyCFunction)ControlList_SetSpace, METH_VARARGS, setSpace__doc__},
 		{NULL, NULL, 0, NULL}
 	};
+
+	PyDoc_STRVAR(controlList__doc__,
+		"ControlList class.\n"
+		"\n"
+		"ControlList(int x, int y, int width, int height[, buttonTexture, buttonFocusTexture])");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
@@ -266,14 +306,14 @@ namespace PYXBMC
 			0,                         /*tp_setattro*/
 			0,                         /*tp_as_buffer*/
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			"ControlList Objects",    /* tp_doc */
+			controlList__doc__,        /* tp_doc */
 			0,		                     /* tp_traverse */
 			0,		                     /* tp_clear */
 			0,		                     /* tp_richcompare */
 			0,		                     /* tp_weaklistoffset */
 			0,		                     /* tp_iter */
 			0,		                     /* tp_iternext */
-			ControlList_methods,      /* tp_methods */
+			ControlList_methods,       /* tp_methods */
 			0,                         /* tp_members */
 			0,                         /* tp_getset */
 			&Control_Type,             /* tp_base */

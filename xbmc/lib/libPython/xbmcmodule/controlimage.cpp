@@ -46,6 +46,14 @@ namespace PYXBMC
 		{NULL, NULL, 0, NULL}
 	};
 
+	PyDoc_STRVAR(controlImage__doc__,
+		"ControlImage class.\n"
+		"\n"
+		"ControlImage(int x, int y, int width, int height[, filename, ColorKey])\n"
+		"\n"
+		"filename  : image filename\n"
+		"ColorKey  : hexString (example, '0xFFFF3300')");
+
 // Restore code and data sections to normal.
 #pragma code_seg()
 #pragma data_seg()
@@ -74,7 +82,7 @@ namespace PYXBMC
 			0,                         /*tp_setattro*/
 			0,                         /*tp_as_buffer*/
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			"ControlImage Objects",    /* tp_doc */
+			controlImage__doc__,       /* tp_doc */
 			0,		                     /* tp_traverse */
 			0,		                     /* tp_clear */
 			0,		                     /* tp_richcompare */

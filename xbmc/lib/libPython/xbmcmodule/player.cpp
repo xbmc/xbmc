@@ -36,6 +36,13 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
+	PyDoc_STRVAR(play__doc__,
+		"play([item]) -- Play this item.\n"
+		"\n"
+		"item can be a filename or a PlayList.\n"
+		"If item is not given then the Player will try to play the current item\n"
+		"in the current playlist.");
+
 	// play a file or python playlist
 	PyObject* Player_Play(Player *self, PyObject *args)
 	{
@@ -77,6 +84,9 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(stop__doc__,
+		"stop() -- Stop playing.");
+
 	PyObject* Player_Stop(PyObject *self, PyObject *args)
 	{
 		g_applicationMessenger.MediaStop();
@@ -84,6 +94,9 @@ namespace PYXBMC
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
+
+	PyDoc_STRVAR(pause__doc__,
+		"pause() -- Pause playing.");
 
 	PyObject* Player_Pause(PyObject *self, PyObject *args)
 	{
@@ -93,6 +106,9 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(playnext__doc__,
+		"playnext() -- Play next item in playlist.");
+
 	PyObject* Player_PlayNext(PyObject *self, PyObject *args)
 	{
 		g_applicationMessenger.PlayListPlayerNext();
@@ -100,6 +116,9 @@ namespace PYXBMC
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
+
+	PyDoc_STRVAR(playprevious__doc__,
+		"playprevious() -- Play previous item in playlist.");
 
 	PyObject* Player_PlayPrevious(PyObject *self, PyObject *args)
 	{
@@ -110,13 +129,18 @@ namespace PYXBMC
 	}
 
 	PyMethodDef Player_methods[] = {
-		{"play", (PyCFunction)Player_Play, METH_VARARGS, ""},
-		{"stop", (PyCFunction)Player_Stop, METH_VARARGS, ""},
-		{"pause", (PyCFunction)Player_Pause, METH_VARARGS, ""},
-		{"playnext", (PyCFunction)Player_PlayNext, METH_VARARGS, ""},
-		{"playprevious", (PyCFunction)Player_PlayPrevious, METH_VARARGS, ""},
+		{"play", (PyCFunction)Player_Play, METH_VARARGS, play__doc__},
+		{"stop", (PyCFunction)Player_Stop, METH_VARARGS, stop__doc__},
+		{"pause", (PyCFunction)Player_Pause, METH_VARARGS, pause__doc__},
+		{"playnext", (PyCFunction)Player_PlayNext, METH_VARARGS, playnext__doc__},
+		{"playprevious", (PyCFunction)Player_PlayPrevious, METH_VARARGS, playprevious__doc__},
 		{NULL, NULL, 0, NULL}
 	};
+
+	PyDoc_STRVAR(player__doc__,
+		"Player class.\n"
+		"\n"
+		"Player() -- Creates a new Player with as default the xbmc music playlist.");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
@@ -146,7 +170,7 @@ namespace PYXBMC
 			0,                         /*tp_setattro*/
 			0,                         /*tp_as_buffer*/
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			"Player Objects",          /* tp_doc */
+			player__doc__,             /* tp_doc */
 			0,		                     /* tp_traverse */
 			0,		                     /* tp_clear */
 			0,		                     /* tp_richcompare */
