@@ -342,34 +342,7 @@ void CGUIWindowVideoGenre::OnClick(int iItem)
     int iSelectedFile = 1;
     VECMOVIESFILES movies;
     m_database.GetFiles(atol(pItem->m_strPath), movies);
-    if (movies.size() <= 0) return ;
-    if (!CheckMovie(movies[0])) return ;
-    if (movies.size() > 1)
-    {
-      CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
-      if (dlg)
-      {
-        dlg->SetNumberOfFiles(movies.size());
-        dlg->DoModal(GetID());
-      }
-      iSelectedFile = dlg->GetSelectedFile();
-      if (iSelectedFile < 1) return ;
-    }
-
-    g_playlistPlayer.Reset();
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
-    CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
-    playlist.Clear();
-    for (int i = iSelectedFile - 1; i < (int)movies.size(); ++i)
-    {
-      CStdString strFileName = movies[i];
-      CPlayList::CPlayListItem item;
-      item.SetFileName(strFileName);
-      playlist.Add(item);
-    }
-
-    // play movie...
-    g_playlistPlayer.PlayNext();
+    PlayMovies(movies, pItem->m_lStartOffset);
   }
 }
 
