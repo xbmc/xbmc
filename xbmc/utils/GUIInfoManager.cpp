@@ -190,6 +190,7 @@ CStdString CGUIInfoManager::GetMusicLabel(const CStdString &strItem)
 	else if (strItem == "year") return tag.GetYear();
 	else if (strItem == "genre") return tag.GetGenre();
 	else if (strItem == "time") return GetCurrentPlayTime();
+	else if (strItem == "timeremaining") return GetCurrentPlayTimeRemaining();
 	else if (strItem == "timespeed")
 	{
 		CStdString strTime;
@@ -218,6 +219,7 @@ CStdString CGUIInfoManager::GetMusicLabel(const CStdString &strItem)
 CStdString CGUIInfoManager::GetVideoLabel(const CStdString &strItem)
 {
 	if (strItem == "time") return GetCurrentPlayTime();
+	else if (strItem == "timeremaining") return GetCurrentPlayTimeRemaining();
 	else if (strItem == "timespeed")
 	{
 		CStdString strTime;
@@ -251,6 +253,34 @@ CStdString CGUIInfoManager::GetCurrentPlayTime()
 	{
 		__int64 lPTS=10*g_application.m_pPlayer->GetTime();
 		CUtil::SecondsToHMSString((long)(lPTS/10), strTime, true);
+	}
+	return strTime;
+}
+
+CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining()
+{
+	CStdString strTime;
+	if (g_application.IsPlayingAudio())
+	{
+		int iTotalTime=g_application.m_pPlayer->GetTotalTime();
+		if (m_currentSong.m_musicInfoTag.GetDuration()>0)
+			iTotalTime=m_currentSong.m_musicInfoTag.GetDuration();
+		else if (iTotalTime<0)
+			iTotalTime=0;
+
+		__int64 lPTS=g_application.m_pPlayer->GetPTS() - (g_infoManager.GetCurrentSongStart()*10)/75;
+    if (lPTS < 0) lPTS = 0;
+		int iReverse=iTotalTime-(int)(lPTS/10);
+		CUtil::SecondsToHMSString(iReverse, strTime);
+	}
+	else if (g_application.IsPlayingVideo())
+	{
+		int iTotalTime=g_application.m_pPlayer->GetTotalTime();
+		if (iTotalTime<0)
+			iTotalTime=0;
+
+		int iReverse=iTotalTime-(int)g_application.m_pPlayer->GetTime();
+		CUtil::SecondsToHMSString(iReverse, strTime, true);
 	}
 	return strTime;
 }
