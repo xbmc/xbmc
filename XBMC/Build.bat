@@ -11,6 +11,7 @@ rem and finally set the options for the final rar.
 rem ---------------------------------------------
 rem Remove 'rem' from %NET% to compile and/or clean the solution prior packing it.
 rem Remove 'rem' from 'xcopy web/python' to copy these to the BUILD directory.
+rem pike: I've temporarily commented out xbmctex sections. Let's call it an evaluation.. 
 rem ---------------------------------------------
 TITLE XBMC Build Prepare Script
 ECHO Wait while preparing the build.
@@ -43,7 +44,10 @@ copy *.txt BUILD
 xcopy mplayer BUILD\mplayer /E /Q /I /Y
 xcopy skin\Projec~1\fonts "BUILD\skin\Project Mayhem\fonts" /E /Q /I /Y
 xcopy skin\Projec~1\*.xml "BUILD\skin\Project Mayhem\" /E /Q /I /Y
-%TEX% -input skin\Projec~1\media -output "BUILD\skin\Project Mayhem\media"
+REM %TEX% -input skin\Projec~1\media -output "BUILD\skin\Project Mayhem\media"
+xcopy skin\Projec~1\media\Textures.xpr "BUILD\skin\Project Mayhem\media" /Q /I /Y
+xcopy skin\Projec~1\media\background.png "BUILD\skin\Project Mayhem\media" /Q /I /Y
+xcopy skin\Projec~1\media\background2.png "BUILD\skin\Project Mayhem\media" /Q /I /Y
 xcopy credits BUILD\credits /Q /I /Y
 xcopy language BUILD\language /E /Q /I /Y
 xcopy xbmc\keyboard\media BUILD\media /E /Q /I /Y
@@ -55,9 +59,9 @@ rem xcopy python BUILD\python /E /Q /I /Y
 rem xcopy %SKINS% Build\Skin /E /Q /I /Y
 rem xcopy %CODECS% Build\mplayer\codecs /E /Q /I /Y
 
-ECHO ------------------------------
-ECHO Removing CVS directories from build
-FOR /R BUILD %%d IN (CVS) DO @RD /S /Q %%d
+REM ECHO ------------------------------
+REM ECHO Removing CVS directories from build
+REM FOR /R BUILD %%d IN (CVS) DO @RD /S /Q %%d
 
 ECHO ------------------------------
 ECHO Rarring...
