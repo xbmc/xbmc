@@ -1,0 +1,118 @@
+<Info>
+	ShadeWorms By MrC
+	Maximum of 32 maps and worms.
+</Info>
+
+<NumWorms>16</NumWorms>
+<DrawTime>8</DrawTime>
+<RandomColMap>true</RandomColMap>
+
+<Map>
+	<Col>0   0xff000080</Col>
+	<Col>37  0xff0080ff</Col>
+	<Col>83  0xffffffff</Col>
+	<Col>156 0xfffecb01</Col>
+	<Col>255 0xffff8000</Col>
+</Map>
+
+<Map>
+	<Col>0   0xff000000</Col>
+	<Col>52  0xff004080</Col>
+	<Col>65  0xff0080ff</Col>
+	<Col>80  0xffffffff</Col>
+	<Col>94  0xff0080c0</Col>
+	<Col>107 0xff004080</Col>
+	<Col>143 0xff000000</Col>
+	<Col>158 0xffff0000</Col>
+	<Col>171 0xffff8000</Col>
+	<Col>185 0xffffffff</Col>
+	<Col>197 0xffff8000</Col>
+	<Col>212 0xffff0000</Col>
+	<Col>255 0xff000000</Col>
+</Map>
+
+<Map>
+	<Col>0   0xff000000</Col>
+	<Col>25  0xff400040</Col>
+	<Col>51  0xff400080</Col>
+	<Col>81  0xff8080ff</Col>
+	<Col>113 0xff8080c0</Col>
+	<Col>146 0xffff0080</Col>
+	<Col>173 0xffff0000</Col>
+	<Col>201 0xffff8000</Col>
+	<Col>231 0xffffff00</Col>
+	<Col>255 0xffffffff</Col>
+</Map>
+
+<Map>
+	<Col>0   0xff000000</Col>
+	<Col>100 0xff80ffff</Col>
+	<Col>155 0xffff80c0</Col>
+	<Col>255 0xffff80c0</Col>
+</Map>
+
+<Map>
+	<Col>0   0xff000000</Col>
+	<Col>80  0xff008000</Col>
+	<Col>106 0xffffff00</Col>
+	<Col>164 0xffff8000</Col>
+	<Col>229 0xffffff00</Col>
+	<Col>239 0xffffffff</Col>
+	<Col>255 0xffffffff</Col>
+</Map>
+
+<Map>
+	<Col>0   0xff000000</Col>
+	<Col>30  0xffff8000</Col>
+	<Col>55  0xffff0000</Col>
+	<Col>101 0xff800000</Col>
+	<Col>130 0xff000000</Col>
+	<Col>153 0xff000080</Col>
+	<Col>205 0xff0000ff</Col>
+	<Col>230 0xff0080ff</Col>
+	<Col>255 0xff00ffff</Col>	
+</Map>
+
+<Map>
+	<Col>0   0xff000000</Col>
+	<Col>85  0xffff0000</Col>
+	<Col>170 0xff00ff00</Col>
+	<Col>255 0xff0000ff</Col>
+</Map>
+
+<Map>
+	<Col>0  0xff000000</Col>
+	<Col>10  0xffffffff</Col>
+	<Col>20  0xff000000</Col>
+	<Col>30  0xffffffff</Col>
+	<Col>40  0xff000000</Col>
+	<Col>50  0xffffffff</Col>
+	<Col>60  0xff000000</Col>
+	<Col>70  0xffffffff</Col>
+	<Col>80  0xff000000</Col>
+	<Col>90  0xffffffff</Col>
+	<Col>100 0xff000000</Col>
+	<Col>110 0xffffffff</Col>
+	<Col>120 0xff000000</Col>
+	<Col>130 0xffffffff</Col>
+	<Col>140 0xff000000</Col>
+	<Col>150 0xffffffff</Col>
+	<Col>160 0xff000000</Col>
+	<Col>170 0xffffffff</Col>
+	<Col>180 0xff000000</Col>
+	<Col>190 0xffffffff</Col>
+	<Col>200 0xff000000</Col>
+	<Col>210 0xffffffff</Col>
+	<Col>220 0xff000000</Col>
+	<Col>230 0xffffffff</Col>
+	<Col>240 0xff000000</Col>
+	<Col>255 0xffffffff</Col>
+</Map>
+	
+<Map>
+	<Col>0   0xff000000</Col>
+	<Col>36  0xff204080</Col>
+	<Col>149 0xff800000</Col>
+	<Col>202 0xffff8000</Col>
+	<Col>255 0xffffffff</Col>
+</Map>

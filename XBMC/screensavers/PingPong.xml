@@ -1,0 +1,9 @@
+<!-- The ping pong screensaver by Joakim Eriksson -->
+<screensaver>
+
+ <!-- The paddle & ball colors -->
+ <ColorPaddle1>1.0 1.0 1.0</ColorPaddle1>
+ <ColorPaddle2>1.0 1.0 1.0</ColorPaddle2>
+ <ColorBall>1.0 1.0 1.0</ColorBall>
+
+</screensaver>
