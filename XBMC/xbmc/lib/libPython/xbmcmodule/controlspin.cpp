@@ -94,6 +94,11 @@ namespace PYXBMC
 	 * set textures
 	 * (string textureUp, string textureDown, string textureUpFocus, string textureDownFocus)
 	 */
+	PyDoc_STRVAR(setTextures__doc__,
+		"setTextures(up, down, upFocus, downFocus) -- Set's textures for this control.\n"
+		"\n"
+		"texture are image files that are used for example in the skin");
+
 	PyObject* ControlSpin_SetTextures(ControlSpin *self, PyObject *args)
 	{
 		char *cLine[4];
@@ -118,9 +123,16 @@ namespace PYXBMC
 	
 	PyMethodDef ControlSpin_methods[] = {
 		//{"setColor", (PyCFunction)ControlSpin_SetColor, METH_VARARGS, ""},
-		{"setTextures", (PyCFunction)ControlSpin_SetTextures, METH_VARARGS, ""},
+		{"setTextures", (PyCFunction)ControlSpin_SetTextures, METH_VARARGS, setTextures__doc__},
 		{NULL, NULL, 0, NULL}
 	};
+
+	PyDoc_STRVAR(controlSpin__doc__,
+		"ControlSpin class.\n"
+		"\n"
+		" - Not working yet -.\n"
+		"\n"
+		"you can't create this object, it is returned by objects like ControlTextBox and ControlList.");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
@@ -150,7 +162,7 @@ namespace PYXBMC
 			0,                         /*tp_setattro*/
 			0,                         /*tp_as_buffer*/
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			"ControlSpin Objects",     /* tp_doc */
+			controlSpin__doc__,        /* tp_doc */
 			0,		                     /* tp_traverse */
 			0,		                     /* tp_clear */
 			0,		                     /* tp_richcompare */

@@ -20,6 +20,13 @@ namespace PYXBMC
     PyObject_HEAD
 	} Dialog;
 
+	PyDoc_STRVAR(ok__doc__,
+		"ok(heading, line 1[, line 2, line3]) -- Show a dialog 'OK'.\n"
+		"\n"
+		"heading     : string or unicode string\n"
+		"lines       : string or unicode string\n"
+		"returns True when user pressed 'OK'");
+
 	PyObject* Dialog_OK(PyObject *self, PyObject *args)
 	{
 		const DWORD dWindow = 2002;
@@ -42,6 +49,13 @@ namespace PYXBMC
 		return Py_BuildValue("b", pDialog->IsConfirmed());
 	}
 
+	PyDoc_STRVAR(yesno__doc__,
+		"yesno(heading, line 1[, line 2, line3]) -- Show a dialog 'YES / NO'.\n"
+		"\n"
+		"heading     : string or unicode string\n"
+		"lines       : string or unicode string\n"
+		"returns True when user pressed 'OK', else False");
+
 	PyObject* Dialog_YesNo(PyObject *self, PyObject *args)
 	{
 		const DWORD dWindow = 100;
@@ -63,6 +77,13 @@ namespace PYXBMC
 
 		return Py_BuildValue("b", pDialog->IsConfirmed());
 	}
+
+	PyDoc_STRVAR(select__doc__,
+		"select(heading, list) -- Show a select dialog.\n"
+		"\n"
+		"heading     : string or unicode string\n"
+		"list        : python list with strings\n"
+		"returns the position of the selected item");
 
 	PyObject* Dialog_Select(PyObject *self, PyObject *args)
 	{
@@ -91,47 +112,6 @@ namespace PYXBMC
 		return Py_BuildValue("i", pDialog->GetSelectedLabel());
 	}
 
-	/* xbmc Dialog functions for use in python */
-	PyMethodDef Dialog_methods[] = {
-		{"yesno", (PyCFunction)Dialog_YesNo, METH_VARARGS, ""},
-		{"select", (PyCFunction)Dialog_Select, METH_VARARGS, ""},
-		{"ok", (PyCFunction)Dialog_OK, METH_VARARGS, ""},
-		{NULL, NULL, 0, NULL}
-	};
-
-	PyTypeObject DialogType = {
-			PyObject_HEAD_INIT(NULL)
-			0,                         /*ob_size*/
-			"xbmcgui.Dialog",             /*tp_name*/
-			sizeof(Dialog),            /*tp_basicsize*/
-			0,                         /*tp_itemsize*/
-			0,                         /*tp_dealloc*/
-			0,                         /*tp_print*/
-			0,                         /*tp_getattr*/
-			0,                         /*tp_setattr*/
-			0,                         /*tp_compare*/
-			0,                         /*tp_repr*/
-			0,                         /*tp_as_number*/
-			0,                         /*tp_as_sequence*/
-			0,                         /*tp_as_mapping*/
-			0,                         /*tp_hash */
-			0,                         /*tp_call*/
-			0,                         /*tp_str*/
-			0,                         /*tp_getattro*/
-			0,                         /*tp_setattro*/
-			0,                         /*tp_as_buffer*/
-			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			"Dialog Objects",          /* tp_doc */
-			0,		                     /* tp_traverse */
-			0,		                     /* tp_clear */
-			0,		                     /* tp_richcompare */
-			0,		                     /* tp_weaklistoffset */
-			0,		                     /* tp_iter */
-			0,		                     /* tp_iternext */
-			Dialog_methods,            /* tp_methods */
-			0,                         /* tp_members */
-	};
-
 /*****************************************************************
  * start of dialog process methods and python objects
  *****************************************************************/
@@ -139,6 +119,12 @@ namespace PYXBMC
 	typedef struct {
     PyObject_HEAD
 	} DialogProgress;
+
+	PyDoc_STRVAR(create__doc__,
+		"create(heading[, line 1, line 2, line3]) -- Create and show a progress dialog.\n"
+		"\n"
+		"heading     : string or unicode string\n"
+		"lines       : string or unicode string\n");
 
 	PyObject* Dialog_ProgressCreate(PyObject *self, PyObject *args)
 	{
@@ -172,6 +158,13 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(update__doc__,
+		"ureate(int value) -- Update's the progress dialog.\n"
+		"\n"
+		"value       : int from 0 - 100\n"
+		"\n"
+		"If value is 0, the progress bar will be hidden.");
+
 	PyObject* Dialog_ProgressUpdate(PyObject *self, PyObject *args)
 	{
 		int percentage = 0;
@@ -195,6 +188,9 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(isCanceled__doc__,
+		"iscanceled() -- Returns True if the user pressed cancle.");
+
 	PyObject* Dialog_ProgressIsCanceled(PyObject *self, PyObject *args)
 	{
 		bool canceled = false;
@@ -206,6 +202,9 @@ namespace PYXBMC
 
 		return Py_BuildValue("b", canceled);
 	}
+
+	PyDoc_STRVAR(close__doc__,
+		"close() -- Close the dialog.");
 
 	PyObject* Dialog_ProgressClose(PyObject *self, PyObject *args)
 	{
@@ -219,20 +218,67 @@ namespace PYXBMC
 		return Py_None;
 	}
 
-	/* xbmc progress Dialog functions for use in python */
-	static PyMethodDef DialogProgress_methods[] = {
-		{"create", (PyCFunction)Dialog_ProgressCreate, METH_VARARGS, ""},
-		{"update", (PyCFunction)Dialog_ProgressUpdate, METH_VARARGS, ""},
-		{"close", (PyCFunction)Dialog_ProgressClose, METH_VARARGS, ""},
-		{"iscanceled", (PyCFunction)Dialog_ProgressIsCanceled, METH_VARARGS, ""},
+	/* xbmc Dialog functions for use in python */
+	PyMethodDef Dialog_methods[] = {
+		{"yesno", (PyCFunction)Dialog_YesNo, METH_VARARGS, yesno__doc__},
+		{"select", (PyCFunction)Dialog_Select, METH_VARARGS, select__doc__},
+		{"ok", (PyCFunction)Dialog_OK, METH_VARARGS, ok__doc__},
 		{NULL, NULL, 0, NULL}
 	};
+
+	/* xbmc progress Dialog functions for use in python */
+	PyMethodDef DialogProgress_methods[] = {
+		{"create", (PyCFunction)Dialog_ProgressCreate, METH_VARARGS, create__doc__},
+		{"update", (PyCFunction)Dialog_ProgressUpdate, METH_VARARGS, update__doc__},
+		{"close", (PyCFunction)Dialog_ProgressClose, METH_VARARGS, close__doc__},
+		{"iscanceled", (PyCFunction)Dialog_ProgressIsCanceled, METH_VARARGS, isCanceled__doc__},
+		{NULL, NULL, 0, NULL}
+	};
+
+	PyDoc_STRVAR(dialog__doc__,
+		"Dialog class.\n");
+
+	PyDoc_STRVAR(dialogProgress__doc__,
+		"DialogProgress class.\n");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+
+	PyTypeObject DialogType = {
+			PyObject_HEAD_INIT(NULL)
+			0,                         /*ob_size*/
+			"xbmcgui.Dialog",             /*tp_name*/
+			sizeof(Dialog),            /*tp_basicsize*/
+			0,                         /*tp_itemsize*/
+			0,                         /*tp_dealloc*/
+			0,                         /*tp_print*/
+			0,                         /*tp_getattr*/
+			0,                         /*tp_setattr*/
+			0,                         /*tp_compare*/
+			0,                         /*tp_repr*/
+			0,                         /*tp_as_number*/
+			0,                         /*tp_as_sequence*/
+			0,                         /*tp_as_mapping*/
+			0,                         /*tp_hash */
+			0,                         /*tp_call*/
+			0,                         /*tp_str*/
+			0,                         /*tp_getattro*/
+			0,                         /*tp_setattro*/
+			0,                         /*tp_as_buffer*/
+			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
+			dialog__doc__,             /* tp_doc */
+			0,		                     /* tp_traverse */
+			0,		                     /* tp_clear */
+			0,		                     /* tp_richcompare */
+			0,		                     /* tp_weaklistoffset */
+			0,		                     /* tp_iter */
+			0,		                     /* tp_iternext */
+			Dialog_methods,            /* tp_methods */
+			0,                         /* tp_members */
+	};
 
 	PyTypeObject DialogProgressType = {
 			PyObject_HEAD_INIT(NULL)
@@ -256,7 +302,7 @@ namespace PYXBMC
 			0,                         /*tp_setattro*/
 			0,                         /*tp_as_buffer*/
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			"DialogProgress Objects",  /* tp_doc */
+			dialogProgress__doc__,     /* tp_doc */
 			0,		                     /* tp_traverse */
 			0,		                     /* tp_clear */
 			0,		                     /* tp_richcompare */

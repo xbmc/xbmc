@@ -37,6 +37,9 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
+	PyDoc_STRVAR(doModal__doc__,
+		"doModal() -- Show keyboard and wait for user action.");
+
 	PyObject* Keyboard_DoModal(Keyboard *self, PyObject *args)
 	{
 		CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(WINDOW_VIRTUAL_KEYBOARD);
@@ -60,6 +63,9 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(setDefault__doc__,
+		"setDefault(string text) -- Set new text that is displayed as default.");
+
 	PyObject* Keyboard_SetDefault(Keyboard *self, PyObject *args)
 	{
 		char *cLine = NULL;
@@ -82,6 +88,12 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(getText__doc__,
+		"getText() -- Returns the user input.\n"
+		"\n"
+		"This will only succeed if the user entered some text or if there is a default\n"
+		"text set for this Keyboard.");
+
 	PyObject* Keyboard_GetText(Keyboard *self, PyObject *args)
 	{
 		CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(WINDOW_VIRTUAL_KEYBOARD);
@@ -97,6 +109,9 @@ namespace PYXBMC
 		return Py_BuildValue("s", strAnsi.c_str());
 	}
 
+	PyDoc_STRVAR(isConfirmed__doc__,
+		"isConfirmed() -- Returns False if the user cancelled the input.");
+
 	PyObject* Keyboard_IsConfirmed(Keyboard *self, PyObject *args)
 	{
 		CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(WINDOW_VIRTUAL_KEYBOARD);
@@ -110,12 +125,18 @@ namespace PYXBMC
 	}
 
 	PyMethodDef Keyboard_methods[] = {
-		{"doModal", (PyCFunction)Keyboard_DoModal, METH_VARARGS, ""},
-		{"setDefault", (PyCFunction)Keyboard_SetDefault, METH_VARARGS, ""},
-		{"getText", (PyCFunction)Keyboard_GetText, METH_VARARGS, ""},
-		{"isConfirmed", (PyCFunction)Keyboard_IsConfirmed, METH_VARARGS, ""},
+		{"doModal", (PyCFunction)Keyboard_DoModal, METH_VARARGS, doModal__doc__},
+		{"setDefault", (PyCFunction)Keyboard_SetDefault, METH_VARARGS, setDefault__doc__},
+		{"getText", (PyCFunction)Keyboard_GetText, METH_VARARGS, getText__doc__},
+		{"isConfirmed", (PyCFunction)Keyboard_IsConfirmed, METH_VARARGS, isConfirmed__doc__},
 		{NULL, NULL, 0, NULL}
 	};
+
+	PyDoc_STRVAR(keyboard__doc__,
+		"Keyboard class.\n"
+		"\n"
+		"Keyboard([string default]) -- Creates a new Keyboard object with default text\n"
+		"                              if supplied.");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
@@ -145,14 +166,14 @@ namespace PYXBMC
 			0,                         /*tp_setattro*/
 			0,                         /*tp_as_buffer*/
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			"Keyboard Objects",          /* tp_doc */
+			keyboard__doc__,           /* tp_doc */
 			0,		                     /* tp_traverse */
 			0,		                     /* tp_clear */
 			0,		                     /* tp_richcompare */
 			0,		                     /* tp_weaklistoffset */
 			0,		                     /* tp_iter */
 			0,		                     /* tp_iternext */
-			Keyboard_methods,            /* tp_methods */
+			Keyboard_methods,          /* tp_methods */
 			0,                         /* tp_members */
 			0,                         /* tp_getset */
 			0,                         /* tp_base */

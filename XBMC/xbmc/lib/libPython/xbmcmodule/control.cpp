@@ -48,10 +48,16 @@ namespace PYXBMC
 		return 0;
 	}
 
+	PyDoc_STRVAR(getId__doc__,
+		"getId() -- Get the control's current id.\n");
+
 	PyObject* Control_GetId(Control* self, PyObject* args)
 	{
 		return Py_BuildValue("i", self->iControlId);
 	}
+
+	PyDoc_STRVAR(setVisible__doc__,
+		"setVisible(bool) -- Hide's or Show's this control.\n");
 
 	PyObject* Control_SetVisible(Control* self, PyObject* args)
 	{
@@ -66,6 +72,9 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(setPosition__doc__,
+		"setPosition(int x, int y) -- Set's the position of this control.\n");
+
 	PyObject* Control_SetPosition(Control* self, PyObject* args)
 	{
 		if (!PyArg_ParseTuple(args, "ll", &self->dwPosX, &self->dwPosY)) return NULL;
@@ -77,6 +86,9 @@ namespace PYXBMC
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
+
+	PyDoc_STRVAR(setWidth__doc__,
+		"setWidth(int width) -- Set's the width of this control.\n");
 
 	PyObject* Control_SetWidth(Control* self, PyObject* args)
 	{
@@ -90,6 +102,9 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(setHeight__doc__,
+		"setHeight(int height) -- Set's the height of this control.\n");
+
 	PyObject* Control_SetHeight(Control* self, PyObject* args)
 	{
 		if (!PyArg_ParseTuple(args, "l", &self->dwHeight)) return NULL;
@@ -101,6 +116,11 @@ namespace PYXBMC
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
+
+	PyDoc_STRVAR(setNavigation__doc__,
+		"setNavigation( Control up, Control down, Control left, Control right) -- Set's navigation.\n"
+		"\n"
+		"Same as controlUp(), controlDown(), controlLeft(), controlRight().");
 
 	PyObject* Control_SetNavigation(Control* self, PyObject* args)
 	{
@@ -140,6 +160,12 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(controlUp__doc__,
+		"controlUp( Control ) -- Set onUp control.\n"
+		"\n"
+		"When this control is active and the user presses up, the supplied Control\n"
+		"will recieve focus.");
+
 	PyObject* Control_ControlUp(Control* self, PyObject* args)
 	{
 		Control* pControl;
@@ -165,6 +191,12 @@ namespace PYXBMC
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
+
+	PyDoc_STRVAR(controlDown__doc__,
+		"controlDown( Control ) -- Set onDown control.\n"
+		"\n"
+		"When this control is active and the user presses down, the supplied Control\n"
+		"will recieve focus.");
 
 	PyObject* Control_ControlDown(Control* self, PyObject* args)
 	{
@@ -192,6 +224,12 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(controlLeft__doc__,
+		"controlLeft( Control ) -- Set onLeft control.\n"
+		"\n"
+		"When this control is active and the user presses left, the supplied Control\n"
+		"will recieve focus.");
+
 	PyObject* Control_ControlLeft(Control* self, PyObject* args)
 	{
 		Control* pControl;
@@ -217,6 +255,12 @@ namespace PYXBMC
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
+
+	PyDoc_STRVAR(controlRight__doc__,
+		"controlRight( Control ) -- Set onRight control.\n"
+		"\n"
+		"When this control is active and the user presses right, the supplied Control\n"
+		"will recieve focus.");
 
 	PyObject* Control_ControlRight(Control* self, PyObject* args)
 	{
@@ -245,18 +289,23 @@ namespace PYXBMC
 	}
 
 	PyMethodDef Control_methods[] = {
-		{"getId", (PyCFunction)Control_GetId, METH_VARARGS, ""},
-		{"setVisible", (PyCFunction)Control_SetVisible, METH_VARARGS, ""},
-		{"setPosition", (PyCFunction)Control_SetPosition, METH_VARARGS, ""},
-		{"setWidth", (PyCFunction)Control_SetWidth, METH_VARARGS, ""},
-		{"setHeight", (PyCFunction)Control_SetHeight, METH_VARARGS, ""},
-		{"setNavigation", (PyCFunction)Control_SetNavigation, METH_VARARGS, ""},
-		{"controlUp", (PyCFunction)Control_ControlUp, METH_VARARGS, ""},
-		{"controlDown", (PyCFunction)Control_ControlDown, METH_VARARGS, ""},
-		{"controlLeft", (PyCFunction)Control_ControlLeft, METH_VARARGS, ""},
-		{"controlRight", (PyCFunction)Control_ControlRight, METH_VARARGS, ""},
+		{"getId", (PyCFunction)Control_GetId, METH_VARARGS, getId__doc__},
+		{"setVisible", (PyCFunction)Control_SetVisible, METH_VARARGS, setVisible__doc__},
+		{"setPosition", (PyCFunction)Control_SetPosition, METH_VARARGS, setPosition__doc__},
+		{"setWidth", (PyCFunction)Control_SetWidth, METH_VARARGS, setWidth__doc__},
+		{"setHeight", (PyCFunction)Control_SetHeight, METH_VARARGS, setHeight__doc__},
+		{"setNavigation", (PyCFunction)Control_SetNavigation, METH_VARARGS, setNavigation__doc__},
+		{"controlUp", (PyCFunction)Control_ControlUp, METH_VARARGS, controlUp__doc__},
+		{"controlDown", (PyCFunction)Control_ControlDown, METH_VARARGS, controlDown__doc__},
+		{"controlLeft", (PyCFunction)Control_ControlLeft, METH_VARARGS, controlLeft__doc__},
+		{"controlRight", (PyCFunction)Control_ControlRight, METH_VARARGS, controlRight__doc__},
 		{NULL, NULL, 0, NULL}
 	};
+
+	PyDoc_STRVAR(control__doc__,
+		"Control class.\n"
+		"\n"
+		"Base class for all controls.");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
@@ -286,7 +335,7 @@ namespace PYXBMC
 			0,                         /*tp_setattro*/
 			0,                         /*tp_as_buffer*/
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			"Control Objects",         /* tp_doc */
+			control__doc__,            /* tp_doc */
 			0,		                     /* tp_traverse */
 			0,		                     /* tp_clear */
 			0,		                     /* tp_richcompare */
