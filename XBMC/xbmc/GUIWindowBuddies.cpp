@@ -653,7 +653,14 @@ void CGUIWindowBuddies::Render()
 			pBuddy->m_bProfileRequested = TRUE;
 			CStdString aName = pBuddy->GetName();
 			m_pKaiClient->QueryUserProfile(aName);
-			m_pKaiClient->QueryAvatar(aName);
+
+			if (!pBuddy->m_pAvatar && pBuddy->IsAvatarCached())
+			{
+				if (pBuddy->IsAvatarCached())
+					pBuddy->UseCachedAvatar();
+				else
+					m_pKaiClient->QueryAvatar(aName);
+			}
 		}
 	}
 
