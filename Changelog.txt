@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 26-01-2005 updated: Polish language file (Thnx to napek)
+  - 26-01-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+  - 26-01-2005 updated: Norwegian language file (Thnx to vnmartinsen)
   - 26-01-2005 added: Options to disable looking for custom thumbs on remote shares (folder.jpg/folder.tbn/<filename>.tbn),
                       Will speed things up on a slow connection and/or slow server and/or you have many folders.
                       Settings -> My Videos/My Music -> Library

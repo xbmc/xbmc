@@ -720,4 +720,68 @@
   <string><id>14055</id><value>U¿yj skanowania w tle</value></string>
   <string><id>14056</id><value>Zatrzymaj skanowanie</value></string>
   <string><id>14057</id><value>Nie mo¿liwe dopóki wyszukujê informacje o mediach</value></string>
+  <string><id>14058</id><value>Efekt Grain</value></string>
+
+  <string><id>15000</id><value>XLink Kai</value></string>
+  <string><id>15001</id><value>Serwis nie jest podlaczony, czy chcesz siê</value></string>
+  <string><id>15002</id><value>pod³¹czyæza pomoc¹ Xbox Media Center?</value></string>
+  <string><id>15003</id><value>Wpisz swoj¹ wiadomoœæ.</value></string>
+  <string><id>15004</id><value>Zosta³eœ zaproszony do gry %s.</value></string>
+  <string><id>15005</id><value>Data: %s</value></string>
+  <string><id>15006</id><value>Z: %s</value></string>
+  <string><id>15007</id><value>Zaproszenie</value></string>
+  <string><id>15008</id><value>Zosta³eœ zaproszony do dol¹czenia do %s.</value></string>
+  <string><id>15009</id><value>Od³¹czony</value></string>
+  <string><id>15010</id><value>Przyjaciele</value></string>
+  <string><id>15011</id><value>Wyœwietl: Przyjació³</value></string>
+  <string><id>15012</id><value>Do³¹cz</value></string>
+  <string><id>15013</id><value>G³os</value></string>
+  <string><id>15014</id><value>Zaproœ</value></string>
+  <string><id>15015</id><value>Usuñ</value></string>
+  <string><id>15016</id><value>Gry</value></string>
+  <string><id>15017</id><value>Wyœwietl: gry</value></string>
+  <string><id>15018</id><value>WprowadŸ</value></string>
+  <string><id>15019</id><value>Dodaj</value></string>
+  <string><id>15020</id><value>Host</value></string>
+  <string><id>15021</id><value>Areny</value></string>
+  <string><id>15022</id><value>Wyœwietl: Areny</value></string>
+  <string><id>15023</id><value>Graj</value></string>
+  <string><id>15024</id><value>Dodaj</value></string>
+  <string><id>15025</id><value>Host</value></string>
+  <string><id>15026</id><value>Czat</value></string>
+  <string><id>15027</id><value>Wyœwietl: Czaty</value></string>
+  <string><id>15028</id><value>Klawiatura</value></string>
+  <string><id>15029</id><value>Aby do³¹czyæ do tej areny wymagane jest has³o.</value></string>
+  <string><id>15030</id><value>Serwis od³¹czony</value></string>
+  <string><id>15031</id><value>XLink Kai uwierzytelnianie</value></string>
+  <string><id>15032</id><value>Login i has³o zosta³y odrzucone przez</value></string>
+  <string><id>15033</id><value>serwer. SprawdŸ swoj¹ konfiguracjê.</value></string>
+  <string><id>15034</id><value>w³aœnie siê zalogowa³</value></string>
+  <string><id>15035</id><value>zainicjowa³ rozmowê g³osow¹</value></string>
+  <string><id>15036</id><value>wys³a³ ci zaproszenie</value></string>
+  <string><id>15037</id><value>XBMC nie mo¿e uzyskaæ dotêpu do sieci.</value></string>
+  <string><id>15038</id><value>Mog¹ wyst¹piæ trudnoœci przy do³¹czniu i hostowaniu gry.</value></string>
+  <string><id>15039</id><value>Xbox Media Center nie mo¿e zlokalizowaæ gry automatycznie.</value></string>
+  <string><id>15040</id><value>W³ó¿ dysk z gr¹ lub wciœnij 'A' aby anulowaæ</value></string>
+  <string><id>15041</id><value>i uruchomiæ grê rêcznie.</value></string>
+  <string><id>15042</id><value>Odmowa dostêpu</value></string>
+  <string><id>15043</id><value>%s do³ancza do czata.</value></string>
+  <string><id>15044</id><value>%s opuszcza czat.</value></string>
+  <string><id>15045</id><value>Wpisz swoj¹ prywatn¹ wiadomoœæ.</value></string>
+  <string><id>15046</id><value>Obecna Arena</value></string>
+  <string><id>15047</id><value>Podaj has³o dla swojej areny.</value></string>
+  <string><id>15048</id><value>Podaj opis dla swojej areny.</value></string>
+  <string><id>15049</id><value>Hostuj grê</value></string>
+  <string><id>15050</id><value>Hostuj prywatn¹ arenê</value></string>
+  <string><id>15051</id><value>Limit graczy</value></string>
+  <string><id>15052</id><value>Has³o</value></string>
+  <string><id>15053</id><value>Opis</value></string>
+  <string><id>15054</id><value>Okienko zaproszenia</value></string>
+  <string><id>15055</id><value>Wybierz grê:</value></string>
+  <string><id>15056</id><value>Wpisz wiadomoœæ:</value></string>
+  <string><id>15057</id><value>Wyœlij</value></string>
+  <string><id>15058</id><value>Host</value></string>
+  <string><id>15059</id><value>Zaproszenie zaakceptowane!</value></string>
+  <string><id>15060</id><value>Wiadomoœæ</value></string>
+  <string><id>15061</id><value>Zosta³eœ zaproszony do gry %s.</value></string>
 </strings>
