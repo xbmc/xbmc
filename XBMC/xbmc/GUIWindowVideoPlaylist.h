@@ -22,7 +22,10 @@ protected:
   void        RemovePlayListItem(int iItem);
   void        OnFileItemFormatLabel(CFileItem* pItem);
   void        DoSort(VECFILEITEMS& items);
+  bool        GetKeyboard(CStdString& strInput);
   void        UpdateButtons();
+  void        ShufflePlayList();
+  void        SavePlayList();
   int         GetSelectedItem();
   void        ShowThumbPanel();
   bool        ViewByIcon();

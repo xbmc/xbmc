@@ -16,6 +16,8 @@
 #define CONTROL_BTNSORTBY					3
 #define CONTROL_BTNSORTASC				4
 
+#define CONTROL_BTNSHUFFLE				20
+#define CONTROL_BTNSAVE						21
 #define CONTROL_BTNCLEAR					22
 
 #define CONTROL_BTNPLAY						23
@@ -125,6 +127,14 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 				g_settings.Save();
         UpdateButtons();
 
+			}
+			else if (iControl==CONTROL_BTNSHUFFLE)
+			{
+				ShufflePlayList();
+			}
+			else if (iControl==CONTROL_BTNSAVE)
+			{
+				SavePlayList();
 			}
 			else if (iControl==CONTROL_BTNCLEAR)
 			{
@@ -583,4 +593,79 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
 	UpdateButtons();
 	CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
 	CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+}
+
+void CGUIWindowVideoPlaylist::ShufflePlayList()
+{
+	ClearFileItems();
+	CPlayList& playlist=g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+	
+	CStdString strFileName;
+	if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC)
+	{
+		const CPlayList::CPlayListItem& item=playlist[g_playlistPlayer.GetCurrentSong()];
+		strFileName=item.GetFileName();
+	}
+	playlist.Shuffle();
+
+	if (!strFileName.IsEmpty()) 
+	{
+		for (int i=0; i < playlist.size(); i++)
+		{
+			const CPlayList::CPlayListItem& item=playlist[i];
+			if (item.GetFileName()==strFileName)
+				g_playlistPlayer.SetCurrentSong(i);
+		}
+	}
+
+	Update(m_strDirectory);
+}
+
+/// \brief Save current playlist to playlist folder
+void CGUIWindowVideoPlaylist::SavePlayList()
+{
+	CStdString strNewFileName;
+	if (GetKeyboard(strNewFileName))
+	{
+		// need 2 rename it
+		CStdString strPath=g_stSettings.m_szAlbumDirectory;
+		strPath+="\\playlists\\";
+
+		strPath += strNewFileName;
+		strPath+=".m3u";
+		CPlayListM3U playlist;
+		for (int i=0; i < (int)m_vecItems.size(); ++i)
+		{
+			CFileItem* pItem = m_vecItems[i];
+			CPlayList::CPlayListItem newItem;
+			newItem.SetFileName(pItem->m_strPath);
+			newItem.SetDescription(pItem->GetLabel());
+			if (pItem->m_musicInfoTag.Loaded())
+				newItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+			else
+				newItem.SetDuration(0);
+			playlist.Add(newItem);
+		}
+		playlist.Save(strPath);
+	}
+}
+/// \brief Display virtual keyboard
+///	\param strInput Set as defaultstring in keyboard and retrieves the input from keyboard
+bool CGUIWindowVideoPlaylist::GetKeyboard(CStdString& strInput)
+{
+	CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(WINDOW_VIRTUAL_KEYBOARD);
+  if (!pKeyboard) return false;
+	pKeyboard->Reset();
+	WCHAR wsString[1024];
+  swprintf( wsString,L"%S", strInput.c_str() );
+	pKeyboard->SetText(wsString);
+	pKeyboard->DoModal(m_gWindowManager.GetActiveWindow());
+	if (pKeyboard->IsConfirmed())
+	{
+		const WCHAR* pSearchString=pKeyboard->GetText();
+		CUtil::Unicode2Ansi(pSearchString,strInput);
+		return true;
+	}
+
+	return false;
 }
