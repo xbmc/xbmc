@@ -318,6 +318,22 @@ void CGUIWindowMusicBase::UpdateListControl()
   CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
   g_graphicsContext.SendMessage(msg2);         
 
+	//	Cache available album thumbs
+  VECFILEITEMS qitems;
+  CHDDirectory dir;
+
+  CStdString strThumb=g_stSettings.m_szAlbumDirectory;
+  strThumb+="\\thumbs";
+  {
+    CFileItemList itemlist(qitems); // will clean up everything
+    dir.GetDirectory(strThumb.c_str(),qitems);			//	precache Q:\albums\thumbs directory
+  }
+  {
+    strThumb+="\\temp";
+    CFileItemList itemlist(qitems); // will clean up everything
+    dir.GetDirectory(strThumb.c_str(),qitems);			//	precache Q:\albums\thumbs\temp directory
+  }
+
 	for (int i=0; i < (int)m_vecItems.size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[i];
@@ -326,6 +342,8 @@ void CGUIWindowMusicBase::UpdateListControl()
 		//	and set thumb/icon for item
 		OnFileItemFormatLabel(pItem);
 	}
+
+  CUtil::ClearCache();
 
 	DoSort(m_vecItems);
 

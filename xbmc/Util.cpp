@@ -1092,14 +1092,12 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
   CStdString strThumb=g_stSettings.szThumbnailsDirectory;
   {
     CFileItemList itemlist(qitems); // will clean up everything
-    dir.GetDirectory(strThumb.c_str(),qitems);
-    g_directoryCache.SetDirectory(strThumb.c_str(),qitems);
+    dir.GetDirectory(strThumb.c_str(),qitems);		//	precache Q:\thumbs directory
   }
   {
     strThumb+="\\imdb";
     CFileItemList itemlist(qitems); // will clean up everything
-    dir.GetDirectory(strThumb.c_str(),qitems);
-    g_directoryCache.SetDirectory(strThumb.c_str(),qitems);
+    dir.GetDirectory(strThumb.c_str(),qitems);			//	precache Q:\thumbs\imdb directory
   }
 
   
@@ -1239,6 +1237,19 @@ void CUtil::SetThumb(CFileItem* pItem)
         }
       }
     }
+		// fill in the folder thumbs
+		if (!bGotIcon && pItem->GetLabel() != "..")
+		{
+			// this is a folder ?
+			if (pItem->m_bIsFolder)
+			{
+				// yes, then get the folder thumbnail
+				if ( CUtil::GetFolderThumb(strFileName, strThumb))
+				{
+					pItem->SetThumbnailImage(strThumb);
+				}
+			}
+		}
   }
   else
   {
@@ -2003,14 +2014,12 @@ void CUtil::SetMusicThumbs(VECFILEITEMS &items)
   strThumb+="\\thumbs";
   {
     CFileItemList itemlist(qitems); // will clean up everything
-    dir.GetDirectory(strThumb.c_str(),qitems);
-    g_directoryCache.SetDirectory(strThumb.c_str(),qitems);
+    dir.GetDirectory(strThumb.c_str(),qitems);			//	precache Q:\albums\thumbs directory
   }
   {
     strThumb+="\\temp";
     CFileItemList itemlist(qitems); // will clean up everything
-    dir.GetDirectory(strThumb.c_str(),qitems);
-    g_directoryCache.SetDirectory(strThumb.c_str(),qitems);
+    dir.GetDirectory(strThumb.c_str(),qitems);			//	precache Q:\albums\thumbs\temp directory
   }
 
   for (int i=0; i < (int)items.size(); ++i)
@@ -2063,7 +2072,7 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
   {
     // look for a permanent thumb (Q:\albums\thumbs)
     CUtil::GetAlbumThumb(strAlbum+strPath,strThumb);
-    if (CUtil::ThumbExists(strThumb,true))
+    if (CUtil::FileExists(strThumb))
     {
 			//	found it, we are finished.
       pItem->SetIconImage(strThumb);
@@ -2073,7 +2082,7 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
     {
       // look for a temporary thumb (Q:\albums\thumbs\temp)
       CUtil::GetAlbumThumb(strAlbum+strPath,strThumb, true);
-      if (CUtil::ThumbExists(strThumb, true) )
+      if (CUtil::FileExists(strThumb) )
       {
 				//	found it
         pItem->SetIconImage(strThumb);
@@ -2096,7 +2105,7 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 			//	Query local cache
 			CStdString strCached;
 			CUtil::GetAlbumThumb(strThumb, strCached, true);
-			if (CUtil::ThumbExists(strCached, true))
+			if (CUtil::FileExists(strCached))
 			{
 				//	Remote thumb found in local cache
 				pItem->SetIconImage(strCached);
@@ -2106,14 +2115,13 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 			{
 				//	create cached thumb, if a .tbn file is found
 				//	on a remote share
-				if (CUtil::ThumbExists(strThumb, true))
+				if (CUtil::FileExists(strThumb))
 				{
 					//	found, save a thumb 
 					//	to the temp thumb dir.
 					CPicture pic;
 					if (pic.CreateAlbumThumbnail(strThumb, strThumb))
 					{
-						CUtil::ThumbCacheAdd(strCached, true);
 						pItem->SetIconImage(strCached);
 						pItem->SetThumbnailImage(strCached);
 					}
@@ -2133,7 +2141,7 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 		}
 		else
 		{
-			if (CUtil::ThumbExists(strThumb, true))
+			if (CUtil::FileExists(strThumb))
 			{
 				//	use local .tbn file as thumb
 				pItem->SetIconImage(strThumb);
@@ -2154,12 +2162,12 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 		//	Lookup permanent thumbs on HD, if a
 		//	thumb for this folder exists
     CUtil::GetAlbumThumb(strPath,strFolderThumb);
-		if (!CUtil::ThumbExists(strFolderThumb, true))
+		if (!CUtil::FileExists(strFolderThumb))
 		{
 			//	No, lookup saved temp thumbs on HD, if a previously 
 			//	cached thumb for this folder exists...
 			CUtil::GetAlbumThumb(strPath,strFolderThumb, true);
-			if (!CUtil::ThumbExists(strFolderThumb, true))
+			if (!CUtil::FileExists(strFolderThumb))
 			{
 				if (pItem->m_bIsFolder)
 				{
@@ -2170,11 +2178,7 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 						//	found, save a thumb for this folder 
 						//	to the temp thumb dir.
 						CPicture pic;
-						if (pic.CreateAlbumThumbnail(strThumb, strPath))
-						{
-							CUtil::ThumbCacheAdd(strFolderThumb, true);
-						}
-						else
+						if (!pic.CreateAlbumThumbnail(strThumb, strPath))
 						{
 							//	save temp thumb failed,
 							//	no thumb available

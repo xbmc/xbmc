@@ -8,6 +8,7 @@
 #include "../DetectDVDType.h"
 #include "../GUIDialogOK.h"
 #include "guiwindowmanager.h"
+#include "directorycache.h"
 
 
 using namespace DIRECTORY;
@@ -63,6 +64,9 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 			CDirectory *pDirectory = factory.Create(share.strPath);
 
 			if (!pDirectory) return false;
+
+			//	Only cache directory we are getting now
+			g_directoryCache.Clear();
 			pDirectory->SetMask(m_strFileMask);
 			bool bResult=pDirectory->GetDirectory(strPath,items);
 			//CUtil::SetThumbs(items);

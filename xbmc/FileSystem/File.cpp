@@ -20,6 +20,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 #include "File.h"
+#include "../utils/log.h"
 #include "filefactory.h"
 #include "../url.h"
 #include "../application.h"
@@ -64,6 +65,13 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 {
 	if ( Open(strFileName,true))
 	{
+		if (GetLength()<=0)
+		{
+			CLog::Log("FILE::cache: the file %s has a lenght of 0 bytes", strFileName);
+			Close();
+			return false;
+		}
+
 		::DeleteFile(szDest);
 		CAutoPtrHandle hMovie ( CreateFile( szDest, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL ) );
 		if (!hMovie.isValid() )
