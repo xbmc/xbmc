@@ -36,7 +36,8 @@ CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
 	m_iSpaceBetweenItems=4;
 	m_iTextOffsetX2=0;
 	m_iTextOffsetY2=0;
-	m_bUpDownVisible = true;	// show the spin control by default
+	m_bUpDownVisible = true;			// show the spin control by default
+	m_upDown.SetShowRange(true);	// show the range by default
 	m_dwTextAlign = 0;
 	m_dwTextColor2=dwTextColor;
 	m_dwSelectedColor2=dwSelectedColor;
@@ -641,7 +642,11 @@ int CGUIListControl::GetPage()
 	if (m_iOffset >= (int)m_vecItems.size()-m_iItemsPerPage)
 	{
 		m_iOffset = m_vecItems.size()-m_iItemsPerPage;
-		if (m_iOffset < 0) m_iOffset = 0;
+		if (m_iOffset <= 0)
+		{
+			m_iOffset = 0;
+			return 1;
+		}
 		return m_vecItems.size()/m_iItemsPerPage+1;
 	}
 	else

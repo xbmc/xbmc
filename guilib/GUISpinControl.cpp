@@ -30,7 +30,7 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
 	m_dwDisabledColor = 0xFF606060; 
     m_iType=iType;
     m_iSelect=SPIN_BUTTON_DOWN;
-    m_bShowRange=true;
+    m_bShowRange=false;
     m_iTypedPos=0;
     strcpy(m_szTyped,"");
 m_dwBuddyControlID = 0;
