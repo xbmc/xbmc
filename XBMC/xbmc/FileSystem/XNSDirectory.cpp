@@ -68,6 +68,8 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 		strcpy(buff,"*CAT");
 	}
 
+	OutputDebugString(buff);
+	OutputDebugString("\n");
 	// evalute the response, positive is the amount of bytes to get, negative is error.
 	send(s,buff,strlen(buff),0);
 	recv(s,szResult,32,0);
