@@ -126,12 +126,12 @@ void CFileShoutcast::StopRecording()
 }
 
 
-offset_t CFileShoutcast::GetPosition()
+__int64 CFileShoutcast::GetPosition()
 {
 	return 0;
 }
 
-offset_t CFileShoutcast::GetLength()
+__int64 CFileShoutcast::GetLength()
 {
 	return 0;
 }
@@ -248,7 +248,7 @@ bool CFileShoutcast::Open(const char* strUserName, const char* strPassword,const
 	return true;
 }
 
-unsigned int CFileShoutcast::Read(void* lpBuf, offset_t uiBufSize)
+unsigned int CFileShoutcast::Read(void* lpBuf, __int64 uiBufSize)
 {
 	if (m_fileState.bRipDone) 
 	{
@@ -283,7 +283,7 @@ bool CFileShoutcast::ReadString(char *szLine, int iLineLength)
 	return false;
 }
 
-offset_t CFileShoutcast::Seek(offset_t iFilePosition, int iWhence)
+__int64 CFileShoutcast::Seek(__int64 iFilePosition, int iWhence)
 {
 	return 0;
 }

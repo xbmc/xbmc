@@ -210,7 +210,7 @@ bool CFileXBMSP::Open(const char* strUserName, const char* strPassword,const cha
 }
 
 //*********************************************************************************************
-unsigned int CFileXBMSP::Read(void *lpBuf, offset_t uiBufSize)
+unsigned int CFileXBMSP::Read(void *lpBuf, __int64 uiBufSize)
 {
 	unsigned char *buf;
 	size_t buflen;
@@ -241,7 +241,7 @@ void CFileXBMSP::Close()
 }
 
 //*********************************************************************************************
-offset_t CFileXBMSP::Seek(offset_t iFilePosition, int iWhence)
+__int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
 {
 	UINT64 newpos;
 
@@ -314,14 +314,14 @@ offset_t CFileXBMSP::Seek(offset_t iFilePosition, int iWhence)
 }
 
 //*********************************************************************************************
-offset_t CFileXBMSP::GetLength()
+__int64 CFileXBMSP::GetLength()
 {
 	if (!m_bOpened) return 0;
 	return m_fileSize;
 }
 
 //*********************************************************************************************
-offset_t CFileXBMSP::GetPosition()
+__int64 CFileXBMSP::GetPosition()
 {
 	if (!m_bOpened) return 0;
 	return m_filePos;
@@ -332,7 +332,7 @@ offset_t CFileXBMSP::GetPosition()
 bool CFileXBMSP::ReadString(char *szLine, int iLineLength)
 {
 	if (!m_bOpened) return false;
-	offset_t iFilePos=GetPosition();
+	__int64 iFilePos=GetPosition();
 
 	int iBytesRead=Read( (unsigned char*)szLine, iLineLength);
 	if (iBytesRead <= 0)

@@ -125,7 +125,7 @@ bool CFile::Open(const char* strFileName, bool bBinary)
 }
 
 //*********************************************************************************************
-unsigned int CFile::Read(void *lpBuf, offset_t uiBufSize)
+unsigned int CFile::Read(void *lpBuf, __int64 uiBufSize)
 {
 	if (m_pFile) return m_pFile->Read(lpBuf,uiBufSize);
 	return 0;
@@ -143,21 +143,21 @@ void CFile::Close()
 }
 
 //*********************************************************************************************
-offset_t CFile::Seek(offset_t iFilePosition, int iWhence)
+__int64 CFile::Seek(__int64 iFilePosition, int iWhence)
 {
 	if (m_pFile) return m_pFile->Seek( iFilePosition, iWhence);
 	return 0;
 }
 
 //*********************************************************************************************
-offset_t CFile::GetLength() 
+__int64 CFile::GetLength() 
 {
 	if (m_pFile) return m_pFile->GetLength();
 	return 0;
 }
 
 //*********************************************************************************************
-offset_t CFile::GetPosition() 
+__int64 CFile::GetPosition() 
 {
 	if (m_pFile) return m_pFile->GetPosition();
 	return -1;
@@ -171,7 +171,7 @@ bool CFile::ReadString(char *szLine, int iLineLength)
 	return false;
 }
 
-int CFile::Write(const void* lpBuf, offset_t uiBufSize) 
+int CFile::Write(const void* lpBuf, __int64 uiBufSize) 
 {
 	if (m_pFile) 
 		return m_pFile->Write(lpBuf,uiBufSize);

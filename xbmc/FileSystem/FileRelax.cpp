@@ -126,7 +126,7 @@ bool CFileRelax::Open(const char* strUserName, const char* strPassword,const cha
 }
 
 //*********************************************************************************************
-unsigned int CFileRelax::Read(void *lpBuf, offset_t uiBufSize)
+unsigned int CFileRelax::Read(void *lpBuf, __int64 uiBufSize)
 {
 	char cmd[1024];
 	char result[1024];
@@ -196,7 +196,7 @@ void CFileRelax::Close()
 }
 
 //*********************************************************************************************
-offset_t CFileRelax::Seek(offset_t iFilePosition, int iWhence)
+__int64 CFileRelax::Seek(__int64 iFilePosition, int iWhence)
 {
 	if (!m_bOpened) return 0;
 	switch(iWhence) 
@@ -221,14 +221,14 @@ offset_t CFileRelax::Seek(offset_t iFilePosition, int iWhence)
 }
 
 //*********************************************************************************************
-offset_t CFileRelax::GetLength()
+__int64 CFileRelax::GetLength()
 {
 	if (!m_bOpened) return 0;
 	return m_fileSize;
 }
 
 //*********************************************************************************************
-offset_t CFileRelax::GetPosition()
+__int64 CFileRelax::GetPosition()
 {
 	if (!m_bOpened) return 0;
 	return m_filePos;
@@ -239,7 +239,7 @@ offset_t CFileRelax::GetPosition()
 bool CFileRelax::ReadString(char *szLine, int iLineLength)
 {
 	if (!m_bOpened) return false;
-	offset_t iFilePos=GetPosition();
+	__int64 iFilePos=GetPosition();
 
 	int iBytesRead=Read( (unsigned char*)szLine, iLineLength);
 	if (iBytesRead <= 0)
