@@ -24,9 +24,13 @@ class CSMB
 {
 public:
 	CSMB();
+	~CSMB();
 	void Init();
+	void Lock();
+	void Unlock();
 private:
 	bool binitialized;
+	CRITICAL_SECTION	m_critSection;
 };
 
 extern CSMB smb;
