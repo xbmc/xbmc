@@ -2,6 +2,7 @@
 #include "stdstring.h"
 #include "sectionloader.h"
 #include "Util.h"
+#include "picture.h"
 
 #define BYTES2INT(b1,b2,b3,b4) (((b1 & 0xFF) << (3*8)) | \
                                 ((b2 & 0xFF) << (2*8)) | \
@@ -84,6 +85,7 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 	if (ID3_HasPicture(&id3tag))
 	{
 		ID3_PictureType nPicTyp=ID3PT_COVERFRONT;
+		CStdString strExtension;
 		bool bFound=false;
 		auto_ptr<char>pMimeTyp (ID3_GetMimeTypeOfPicType(&id3tag, nPicTyp));
 		if (pMimeTyp.get() == NULL)
@@ -91,19 +93,34 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 			nPicTyp=ID3PT_OTHER;
 			auto_ptr<char>pMimeTyp (ID3_GetMimeTypeOfPicType(&id3tag, nPicTyp));
 			if (pMimeTyp.get() != NULL)
+			{
+				strExtension=pMimeTyp.get();
 				bFound=true;
+			}
 		}
 		else
+		{
+			strExtension=pMimeTyp.get();
 			bFound=true;
+		}
 
 		if (bFound)
 		{
 			CStdString strCoverArt;
 			CUtil::GetAlbumThumb(tag.GetAlbum(), strCoverArt);
 			if (!CUtil::FileExists(strCoverArt))
-				ID3_GetPictureDataOfPicType(&id3tag, strCoverArt, nPicTyp);
+			{
+				CPicture pic;
+				int nPos=strExtension.Find('/');
+				if (nPos>-1)
+					strExtension.Delete(0, nPos+1);
+				ID3_GetPictureDataOfPicType(&id3tag, "T:\\ID3CoverArt."+strExtension, nPicTyp);
+				pic.CreateAlbumThumbnail("T:\\ID3CoverArt."+strExtension, tag.GetAlbum());
+				::DeleteFile("T:\\ID3CoverArt."+strExtension);
+			}
 		}
 	}
+
 	const Mp3_Headerinfo* mp3info = id3tag.GetMp3HeaderInfo();
 	if ( mp3info != NULL )
 		tag.SetDuration( mp3info->time );
