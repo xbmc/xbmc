@@ -222,7 +222,7 @@
   </string>  
   <string>
     <id>127</id>
-    <value>Objekte</value>
+    <value>Objekt(e)</value>
   </string>  
   <string>
     <id>128</id>
@@ -330,7 +330,7 @@
   </string> 
   <string>
     <id>154</id>
-    <value>Speicher:</value>
+    <value>Speicherplatz:</value>
   </string> 
   <string>
     <id>155</id>
@@ -414,7 +414,7 @@
   </string> 
   <string>
     <id>175</id>
-    <value>Töne:</value>
+    <value>Klangfarbe:</value>
   </string> 
   <string>
     <id>176</id>
@@ -470,7 +470,7 @@
   </string>  
   <string>
     <id>189</id>
-    <value>Suche MedienInfo</value>
+    <value>Auslesen von Informationen</value>
   </string>  
   <string>
     <id>190</id>
@@ -490,11 +490,11 @@
   </string>  
   <string>
     <id>194</id>
-    <value>Durchsuche...</value>
+    <value>Durchsuche Datenbank..</value>
   </string> 
   <string>
     <id>195</id>
-    <value>Keinen Datenbankeintrag gefunden!</value>
+    <value>Es wurde kein Datenbankeintrag gefunden!</value>
   </string> 
   <string>
     <id>196</id>
@@ -502,11 +502,11 @@
   </string> 
   <string>
     <id>197</id>
-    <value>Datenbank durchsuchend..</value>
+    <value>Durchsuche Datenbank..</value>
   </string> 
   <string>
     <id>198</id>
-    <value>Lade Videoinformationen</value>
+    <value>Lade Video-Informationen</value>
   </string> 
   <string>
     <id>199</id>
@@ -531,7 +531,11 @@
   <string>
     <id>204</id>
     <value>Bewertung:</value>
-  </string> 
+  </string>
+  <string> 
+    <id>2050</id> 
+    <value>Länge:</value> 
+  </string>
   <string>
     <id>205</id>
     <value>Votum:</value>
@@ -570,7 +574,7 @@
   </string> 
   <string>
     <id>214</id>
-    <value>Bild Kalibrierung</value>
+    <value>Kalibrierung</value>
   </string> 
   <string>
     <id>215</id>
@@ -618,19 +622,19 @@
   </string> 
   <string>
     <id>226</id>
-    <value>Aktiviere PAL60</value>
+    <value>PAL60 aktivieren</value>
   </string> 
   <string>
     <id>227</id>
-    <value>Aktiviere CDDB</value>
+    <value>CDDB aktivieren</value>
   </string> 
   <string>
     <id>228</id>
-    <value>Wiedergabeliste: Zufällige Wiedergabe</value>
+    <value>Zufälliges Abspielen der Wiedergabeliste</value>
   </string> 
   <string>
     <id>229</id>
-    <value>Festplatten Abschaltzeit</value>
+    <value>Festplatten ausschalten nach</value>
   </string> 
   <string>
     <id>230</id>
@@ -682,7 +686,7 @@
   </string>
   <string>
     <id>243</id>
-    <value>Autostart XBox Spiele</value>
+    <value>Autostart XBOX Spiele</value>
   </string>
   <string>
     <id>244</id>
@@ -714,7 +718,7 @@
   </string>
   <string>
     <id>251</id>
-    <value>Wähle einen Ziel-Ordner</value>
+    <value>Ziel-Ordner wählen</value>
   </string>
   <string>
     <id>252</id>
@@ -742,7 +746,7 @@
   </string>
   <string>
     <id>258</id>
-    <value>ID3 tags anzeigen</value>
+    <value>ID3-Informationen anzeigen</value>
   </string>
   <string>
     <id>259</id>
@@ -842,11 +846,11 @@
   </string>
   <string>
     <id>283</id>
-    <value>Resultat der Suche:</value>
+    <value>Resultate:</value>
   </string>
   <string>
     <id>284</id>
-    <value>Keine</value>
+    <value>Durchsuchen ohne Erfolg.</value>
   </string>
   <string>
     <id>285</id>
@@ -958,11 +962,11 @@
   </string>
   <string>
     <id>313</id>
-    <value>Reorganisiere Datenbank..</value>
+    <value>Musik-Datenbank reorganisieren</value>
   </string>
   <string>
     <id>314</id>
-    <value>Vorbereitung...</value>
+    <value>Daten werden eingelesen...</value>
   </string>
   <string>
     <id>315</id>
@@ -970,15 +974,15 @@
   </string>
   <string>
     <id>316</id>
-    <value>Durchsuche Titel...</value>
+    <value>Durchsuche Musikdateien...</value>
   </string>
   <string>
     <id>317</id>
-    <value>Reorganisation erfolgreich.</value>
+    <value>Reorganisieren erfolgreich.</value>
   </string>
   <string>
     <id>318</id>
-    <value>Markiere gelöschte Dateien..</value>
+    <value>Titel werden überprüft..</value>
   </string>
   <string>
     <id>319</id>
@@ -986,7 +990,7 @@
   </string>
   <string>
     <id>320</id>
-    <value>Durchsuche Interpreten...</value>
+    <value>Interpreten werden überprüft...</value>
   </string>
   <string>
     <id>321</id>
@@ -994,7 +998,7 @@
   </string>
   <string>
     <id>322</id>
-    <value>Durchsuche Genres...</value>
+    <value>Genres werden überprüft...</value>
   </string>
   <string>
     <id>323</id>
@@ -1002,7 +1006,7 @@
   </string>
   <string>
     <id>324</id>
-    <value>Durchsuche Pfade...</value>
+    <value>Pfade werden überprüft...</value>
   </string>
   <string>
     <id>325</id>
@@ -1010,7 +1014,7 @@
   </string>
   <string>
     <id>326</id>
-    <value>Durchsuche Alben...</value>
+    <value>Alben werden überprüft...</value>
   </string>
   <string>
     <id>327</id>
@@ -1038,15 +1042,15 @@
   </string>
   <string>
     <id>333</id>
-    <value>Wollen sie die Musik-Datenbank reorganisieren?</value>
+    <value>Wollen sie die Datenbank reorganisieren?</value>
   </string>
   <string>
     <id>334</id>
-    <value>Reorganisiere Musik-Datenbank..</value>
+    <value>Musik-Datenbank reorganisieren</value>
   </string>
   <string>
     <id>335</id>
-    <value>- OK -</value>
+    <value>Ausführen</value>
   </string>
   <string>
     <id>336</id>
@@ -1134,7 +1138,7 @@
   </string>
   <string>
     <id>357</id>
-    <value>Ausschaltzeit/Leerlaufzeit</value>
+    <value>Ausschalten nach Leerlauf von</value>
   </string>
   <string>
     <id>358</id>
@@ -1342,11 +1346,11 @@
   </string>      
   <string>
     <id>410</id>
-    <value>Initialisiere Weather.com..</value>
+    <value>Wettervorhersage</value>
   </string>       
   <string>
     <id>411</id>
-    <value>Erhalte Wetterinformationen für:</value>
+    <value>Wetterinformationen werden geladen für:</value>
   </string> 
   <string>
     <id>412</id>
@@ -1354,7 +1358,7 @@
   </string>    
   <string>
     <id>413</id>
-    <value>Handbuch</value>
+    <value>Titeleingabe</value>
   </string>    
   <string>
     <id>414</id>
@@ -1390,23 +1394,23 @@
   </string> 
   <string>
     <id>422</id>
-    <value>Lösche Albuminfo</value>
+    <value>Album-Informationen löschen</value>
   </string> 
   <string>
     <id>423</id>
-    <value>Lösche CDDBinfo</value>
+    <value>CDDB-Informationen löschen</value>
   </string> 
   <string>
     <id>424</id>
-    <value>- OK -</value>
+    <value>Auswählen</value>
   </string> 
   <string>
     <id>425</id>
-    <value>Keine Albuminfo gefunden!</value>
+    <value>Keine Album-Informationen gefunden!</value>
   </string> 
   <string>
     <id>426</id>
-    <value>Keine CDDBinfo gefunden!</value>
+    <value>Keine CDDB-Informationen gefunden!</value>
   </string> 
   <string>
     <id>427</id>
@@ -1594,7 +1598,7 @@
   </string>
   <string>
     <id>472</id>
-    <value>OSD ausblenden nach</value>
+    <value>OSD Einblendzeit</value>
   </string>
   <string>
     <id>473</id>
@@ -1602,15 +1606,15 @@
   </string>
   <string>
     <id>474</id>
-    <value>AUS</value>
+    <value>deaktiviert</value>
   </string>
   <string>
     <id>475</id>
-    <value>nur Musik</value>
+    <value>Audio</value>
   </string>
   <string>
     <id>476</id>
-    <value>Musik &amp; Video</value>
+    <value>Audio &amp; Video</value>
   </string>
   <string>
     <id>477</id>
@@ -1618,7 +1622,7 @@
   </string>
   <string>
     <id>478</id>
-    <value>OSD</value>
+    <value>OSD Einblendzeit</value>
   </string>
   <string>
     <id>479</id>
@@ -1654,7 +1658,7 @@
   </string>
   <string>
     <id>487</id>
-    <value>Wiederhole</value>
+    <value>nur akt. Titel</value>
   </string>
   <string>
     <id>488</id>
@@ -1726,7 +1730,7 @@
   </string>
   <string>
     <id>505</id> 
-    <value>Medien-Informationen werden geladen...</value> 
+    <value>Informationen werden geladen...</value> 
   </string>
   <string>
   <id>506</id> 
@@ -1738,7 +1742,7 @@
   </string>
   <string>
     <id>508</id>
-    <value>Deaktiviere Verknüpfungen und Durchsuchen</value>
+    <value>Verknüpfungen und Durchsuchen deaktivieren</value>
   </string>
 
   <string>
@@ -1871,7 +1875,7 @@
   </string>
   <string>
     <id>708</id>
-    <value>Aktiviere HTTP Proxy</value>
+    <value>HTTP Proxy aktivieren</value>
   </string>
   <string>
     <id>709</id>
@@ -1943,7 +1947,7 @@
   </string>
   <string>
     <id>726</id>
-    <value>Änderungen nicht gespeichert.Fortfahren?</value>
+    <value>Änderungen nicht gespeichert. Fortfahren?</value>
   </string>
   <string>
     <id>727</id>
@@ -1967,7 +1971,7 @@
   </string>
   <string>
     <id>732</id>
-    <value>Sichern &amp; Annehmen</value>
+    <value>Sichern &amp; Übernehmen</value>
   </string>
   <string>
     <id>733</id>
@@ -2177,11 +2181,11 @@
 
   <string>
     <id>10100</id>
-    <value>JA/NEIN Dialog</value>
+    <value>Auswahlmenü</value>
   </string>
   <string>
     <id>10101</id>
-    <value>in Arbeit Dialog</value>
+    <value>Fortschritt</value>
   </string>
   <string>
     <id>10500</id>
@@ -2267,19 +2271,19 @@
   </string>
   <string>
     <id>13001</id> 
-    <value>Festplatte sofort abschalten</value> 
+    <value>- ausschalten während Stream</value> 
   </string>
   <string>
     <id>13002</id> 
-    <value>nur Video</value> 
+    <value>Video</value> 
   </string>
   <string>
     <id>13003</id> 
-    <value>- Verzögerung</value> 
+    <value>-- Verzögerung</value> 
   </string>
   <string>
     <id>13004</id> 
-    <value>- minimale Datendauer</value> 
+    <value>-- minimale Datendauer</value> 
   </string>
   <string>
     <id>13100</id> 
@@ -2295,7 +2299,7 @@
   </string>
   <string>
     <id>13202</id> 
-    <value>Einstellungen als Profil sichern ...</value> 
+    <value>Einstellungen als Profil sichern</value> 
   </string>
   <string>
     <id>13203</id> 
@@ -2327,18 +2331,18 @@
   </string>
   <string>
     <id>13304</id>
-    <value>Aktiviere Bi-Direktionale Zeichenfolge</value>
+    <value>links-/rechtsläufige Zeichenfolgen ermöglichen</value>
   </string>
   <string>
     <id>13305</id>
-    <value>RSS Feed aktivieren [Newsflash]</value>
+    <value>RSS Feed [Newsflash] aktivieren</value>
   </string>
 
   <string><id>13306</id>
-<value>Verknüpfung .. übergeordnete Ordner ausblenden</value>
+<value>Link zu übergeordnetem Verzeichnis ausblenden</value>
 </string> 
   <string><id>13307</id>
-<value>Titel Nummern ausblenden</value>
+<value>Titelnummern ausblenden</value>
 </string> 
    <string><id>13308</id>
 <value>Drücke - JA - um die XBOX neu zu starten</value>
@@ -2356,10 +2360,10 @@
 <value>Ränderreduktion</value>
 </string> 
    <string><id>13313</id>
-<value>Reset/Neustart</value>
+<value>XBOX MediaCenter Neustart</value>
 </string>
    <string><id>13314</id>
-<value>Musik OSD Einblendzeit</value>
+<value>OSD Einblendzeit</value>
 </string>
    <string><id>13315</id>
 <value>Miniaturansichten erstellen</value>
@@ -2424,10 +2428,10 @@
 <value>Beschriftung ändern</value>
 </string> 
      <string><id>13335</id>
-<value>Standard setzen</value>
+<value>Als Standard setzen</value>
 </string> 
      <string><id>13336</id>
-<value>Button entfernen</value>
+<value>Eintrag entfernen</value>
 </string>
    <string><id>13337</id>
 <value>2 Kanal Pulse Code Modulation</value>
@@ -2440,7 +2444,7 @@
 <value>Koppeln einfach</value>
 </string> 
    <string><id>14002</id>
-<value>Koppeln komplex</value>
+<value>Koppeln unpräz.</value>
 </string> 
     <string><id>14003</id>
 <value>Wiedergabeliste wird heruntergeladen...</value>
@@ -2458,7 +2462,7 @@
 <value>Fehler beim Erhalt der Wiedergabeliste</value>
 </string>
     <string><id>14008</id>
-<value>Aktiviere Kai Benachrichtigung</value>
+<value>Kai Benachrichtigung aktivieren</value>
 </string> 
      <string><id>14009</id>
 <value>Spieleverzeichnis</value>

@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 02-12-2004 updated: Dutch language file (Thnx to joepmeloenx)
+  - 02-12-2004 updated: German (Austrian) language file (Thnx to CEOMR)
+  - 02-12-2004 updated: German language file
   - 02-12-2004 added: New Settings System + various SF patches
                       NOTE: THIS WILL BREAK ALL CURRENT SKINS.  ONLY USE PROJECT MAYHEM IN CVS!!!
   - 01-12-2004 added: extended memory tracking for dll's + added dll tracking for dll's
