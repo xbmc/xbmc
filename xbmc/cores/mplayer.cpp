@@ -260,6 +260,7 @@ CMPlayer::Options::Options()
 
 	m_strDvdDevice="";
 	m_strFlipBiDiCharset="";
+  m_strHexRawAudioFormat="";
 }
 void  CMPlayer::Options::SetFPS(float fFPS)
 {
@@ -377,6 +378,11 @@ void CMPlayer::Options::SetFlipBiDiCharset(const string& strCharset)
 	m_strFlipBiDiCharset=strCharset;
 }
 
+void CMPlayer::Options::SetRawAudioFormat(const string& strHexRawAudioFormat)
+{
+	m_strHexRawAudioFormat=strHexRawAudioFormat;
+}
+
 void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 {
 	CStdString strTmp;
@@ -385,6 +391,10 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 
 	// enable direct rendering (mplayer directly draws on xbmc's overlay texture)
 	m_vecOptions.push_back("-dr");    
+  if (m_strHexRawAudioFormat.length()>0) {
+	  m_vecOptions.push_back("-rawaudio");    
+    m_vecOptions.push_back("on:format=" + m_strHexRawAudioFormat);//0x2000
+  }
 	//m_vecOptions.push_back("-verbose");    
 	//m_vecOptions.push_back("1");    
 	if (g_stSettings.m_mplayerDebug)
@@ -804,6 +814,10 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			CLog::Log(" dvddevice: %s", strPath.c_str());
 		}	
 
+ 		CStdString strExtension;
+		CUtil::GetExtension(strFile,strExtension);
+		strExtension.MakeLower();
+
 		CFile* pFile = new CFile();
 		__int64 len = 0;
 		if (pFile->Open(strFile.c_str(), true))
@@ -814,9 +828,6 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
 		if (len > 0x7fffffff)
 		{
-			CStdString strExtension;
-			CUtil::GetExtension(strFile,strExtension);
-			strExtension.MakeLower();
 			if (strExtension == ".avi")
 			{
 				// fixes large opendml avis - mplayer can't handle big indices
@@ -846,6 +857,14 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			options.SetSubtitleStream(g_stSettings.m_iSubtitleStream);
 
 
+    //force mplayer to play ac3 and dts files with correct codec
+    if (strExtension == ".ac3") {
+      options.SetRawAudioFormat("0x2000");
+    }
+    else if (strExtension == ".dts") {
+      options.SetRawAudioFormat("0x2001");
+    }
+
 		options.GetOptions(argc,argv);
 		
 
@@ -862,7 +881,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
       throw iRet;
 		}
 
-		if (bFileOnInternet ) 
+    if (bFileOnInternet) 
 		{
 			// for streaming we're done.
 		}
