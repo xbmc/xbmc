@@ -16,7 +16,7 @@ public:
   CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark,DWORD dwCheckWidth, DWORD dwCheckHeight,DWORD dwAlign=XBFONT_RIGHT);
   virtual ~CGUICheckMarkControl(void);
   virtual void Render();
-  virtual void OnKey(const CKey& key) ;
+  virtual void OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
   virtual void AllocResources();
   virtual void FreeResources();

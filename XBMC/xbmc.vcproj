@@ -363,6 +363,9 @@
 				RelativePath=".\xbmc\Autorun.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\ButtonTranslator.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\Crc32.cpp">
 			</File>
 			<File
@@ -561,6 +564,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\Autorun.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\ButtonTranslator.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\Crc32.h">

@@ -17,7 +17,7 @@ public:
   virtual ~CGUIWindow(void);
   bool            		Load(const CStdString& strFileName);
   virtual void    		Render();
-  virtual void    		OnKey(const CKey& key);
+  virtual void    		OnAction(const CAction &action);
   virtual bool    		OnMessage(CGUIMessage& message);
   void            		Add(CGUIControl* pControl);
   int             		GetFocusControl();

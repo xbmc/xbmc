@@ -2,8 +2,9 @@
 
 CKey::CKey(void)
 {
-	m_bIsButton		 = false;
 	m_dwButtonCode = KEY_INVALID;
+	m_bLeftTrigger = 0;
+	m_bRightTrigger = 0;
 	m_fLeftThumbX	 = 0.0f;
 	m_fLeftThumbY	 = 0.0f;
 	m_fRightThumbX = 0.0f;
@@ -14,13 +15,14 @@ CKey::~CKey(void)
 {
 }
 
-CKey::CKey(bool bButton, DWORD dwButtonCode, float fLeftThumbX, float fLeftThumbY, float fRightThumbX, float fRightThumbY)
+CKey::CKey(DWORD dwButtonCode, BYTE bLeftTrigger, BYTE bRightTrigger, float fLeftThumbX, float fLeftThumbY, float fRightThumbX, float fRightThumbY)
 {
+	m_bLeftTrigger = bLeftTrigger;
+	m_bRightTrigger = bRightTrigger;
 	m_fLeftThumbX	 = fLeftThumbX;
 	m_fLeftThumbY	 = fLeftThumbY;
 	m_fRightThumbX = fRightThumbX;
 	m_fRightThumbY = fRightThumbY;
-  m_bIsButton    = bButton;
   m_dwButtonCode = dwButtonCode;
 }
 
@@ -29,25 +31,31 @@ CKey::CKey(const CKey& key)
   *this=key;
 }
 
-bool CKey::IsButton() const
-{
-  return m_bIsButton;
-}
-
 DWORD CKey::GetButtonCode() const
 {
   return m_dwButtonCode;
 }
 const CKey& CKey::operator=(const CKey& key)
 {
-  if (&key==this) return *this;
-  m_bIsButton			= key.m_bIsButton;
-  m_dwButtonCode	= key.m_dwButtonCode;
+	if (&key==this) return *this;
+	m_bLeftTrigger = key.m_bLeftTrigger;
+	m_bRightTrigger = key.m_bRightTrigger;
+	m_dwButtonCode	= key.m_dwButtonCode;
 	m_fLeftThumbX	  = key.m_fLeftThumbX;
 	m_fLeftThumbY		= key.m_fLeftThumbY;
 	m_fRightThumbX	= key.m_fRightThumbX;
 	m_fRightThumbY	= key.m_fRightThumbY;
   return *this;
+}
+
+BYTE CKey::GetLeftTrigger() const
+{
+	return m_bLeftTrigger;
+}
+
+BYTE CKey::GetRightTrigger() const
+{
+	return m_bRightTrigger;
 }
 
 float CKey::GetLeftThumbX() const

@@ -8,7 +8,7 @@ public:
   CGUIWindowSettingsUICalibration(void);
   virtual ~CGUIWindowSettingsUICalibration(void);
   virtual bool    OnMessage(CGUIMessage& message);
-  virtual void    OnKey(const CKey& key);
+  virtual void    OnAction(const CAction &action);
 protected:
 	int			m_iCountU;
 	int			m_iCountD;

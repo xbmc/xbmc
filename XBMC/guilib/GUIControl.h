@@ -15,7 +15,7 @@ public:
   CGUIControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight);
   virtual ~CGUIControl(void);
   virtual void  Render();
-  virtual void  OnKey(const CKey& key) ;
+  virtual void  OnAction(const CAction &action) ;
   virtual bool  OnMessage(CGUIMessage& message);
   DWORD         GetID(void) const; 
   DWORD         GetParentID(void) const; 

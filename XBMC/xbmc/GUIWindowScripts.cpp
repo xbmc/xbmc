@@ -115,24 +115,20 @@ CGUIWindowScripts::~CGUIWindowScripts()
 }
 
 
-void CGUIWindowScripts::OnKey(const CKey& key)
+void CGUIWindowScripts::OnAction(const CAction &action)
 {
+	if (action.wID == ACTION_PARENT_DIR)
+	{
+		GoParentFolder();
+		return;
+	}
 
-  if (key.IsButton())
-  {
-		if ( key.GetButtonCode() == KEY_BUTTON_B )
-		{
-			GoParentFolder();
-			return;
-		}
-
-    if ( key.GetButtonCode() == KEY_BUTTON_BACK  || key.GetButtonCode() == KEY_REMOTE_BACK)
+    if (action.wID == ACTION_PARENT_MENU)
     {
-      m_gWindowManager.ActivateWindow(0); // back 2 home
-      return;
+		m_gWindowManager.ActivateWindow(WINDOW_HOME); // back 2 home
+		return;
     }
-  }
-  CGUIWindow::OnKey(key);
+	CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
@@ -216,11 +212,11 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
         g_graphicsContext.SendMessage(msg);         
         int iItem=msg.GetParam1();
-        int iKey=message.GetParam1();
-        if (iKey==KEY_BUTTON_A || iKey==KEY_REMOTE_SELECT)
-				{
-					OnClick(iItem);
-				}
+        int iAction=message.GetParam1();
+        if (iAction == ACTION_SELECT_ITEM)
+			{
+				OnClick(iItem);
+			}
       }
     }
 		break;

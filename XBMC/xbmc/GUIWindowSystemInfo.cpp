@@ -15,17 +15,14 @@ CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 {
 }
 
-void CGUIWindowSystemInfo::OnKey(const CKey& key)
+void CGUIWindowSystemInfo::OnAction(const CAction &action)
 {
-  if (key.IsButton())
-  {
-    if ( key.GetButtonCode() == KEY_BUTTON_BACK  || key.GetButtonCode() == KEY_REMOTE_BACK)
-    {
-      m_gWindowManager.ActivateWindow(4); // back 2 home
-      return;
-    }
-  }
-  CGUIWindow::OnKey(key);
+	if (action.wID == ACTION_PARENT_MENU)
+	{
+		m_gWindowManager.ActivateWindow(WINDOW_SETTINGS); // back 2 home
+		return;
+	}
+	CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)

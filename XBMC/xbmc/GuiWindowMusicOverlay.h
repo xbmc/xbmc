@@ -11,7 +11,7 @@ public:
 	CGUIWindowMusicOverlay(void);
 	virtual ~CGUIWindowMusicOverlay(void);
   virtual bool				OnMessage(CGUIMessage& message);
-  virtual void				OnKey(const CKey& key);
+  virtual void				OnAction(const CAction &action);
 	virtual void				Render();
 	void								SetCurrentFile(const CStdString& strFile);
 	IDirect3DTexture8* 	m_pTexture;

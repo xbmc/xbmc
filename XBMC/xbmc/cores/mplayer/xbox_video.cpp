@@ -87,10 +87,13 @@ void restore_resolution()
 	}
 }
 
-void obtain_resolution_parameters(int iResolution, D3DPRESENT_PARAMETERS &params)
+void obtain_resolution_parameters(RESOLUTION iResolution, D3DPRESENT_PARAMETERS &params)
 {
 	params.BackBufferWidth = resInfo[iResolution].iWidth;
 	params.BackBufferHeight = resInfo[iResolution].iHeight;
+	// Fix 1080i mode to 540p (keep the backbuffer at 1080, but everything else at 540)
+	if (iResolution == HDTV_1080i)
+		params.BackBufferHeight *=2;
 	params.Flags = resInfo[iResolution].dwFlags;
 }
 
@@ -198,15 +201,17 @@ void choose_best_resolution(float fps)
 	{
 		// Check if the picture warrants HDTV mode
 		// And if HDTV modes (1080i and 720p) are available
-		if ((image_width>720 || image_height>480) && (dwFlags&(XC_VIDEO_FLAGS_HDTV_1080i|XC_VIDEO_FLAGS_HDTV_720p)))
-		{
-			// Choose between 1080i and 720p for our output - currently 1080i is favoured
-			// but there may be reason in future to favour 720p in some circumstances
-			// (based for instance on whether the source is interlaced)
-			if (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i)  //1080i is available
-				m_iResolution = HDTV_1080i;
-			else									// 720p is available
-				m_iResolution = HDTV_720p;
+		if ((image_height>540) && (dwFlags&XC_VIDEO_FLAGS_HDTV_720p))
+		{	//image suits 720p if it's available
+			m_iResolution = HDTV_720p;
+		}
+		else if ((image_height>480 || image_width>720) && (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i))									//1080i is available
+		{	// image suits 1080i (540p) if it is available
+			m_iResolution = HDTV_1080i;
+		}
+		else if ((image_height>480 || image_width>720) && (dwFlags&XC_VIDEO_FLAGS_HDTV_720p))
+		{	// image suits 1080i or 720p and obviously 1080i is unavailable
+			m_iResolution = HDTV_720p;
 		}
 		else	// either picture does not warrant HDTV, or HDTV modes are unavailable
 		{
@@ -356,6 +361,7 @@ static unsigned int Directx_ManageDisplay()
 
 	float iScreenWidth =(float)resInfo[m_iResolution].iWidth + fOffsetX2-fOffsetX1;
 	float iScreenHeight=(float)resInfo[m_iResolution].iHeight + fOffsetY2-fOffsetY1;
+
 	if( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
 	{
 		const RECT& rv = g_graphicsContext.GetViewWindow();

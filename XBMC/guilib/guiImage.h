@@ -17,7 +17,7 @@ public:
   
   virtual void Render();
   virtual void Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight);
-  virtual void OnKey(const CKey& key) ;
+  virtual void OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
   virtual void AllocResources();
   virtual void FreeResources();

@@ -46,43 +46,38 @@ void CGUIControl::Render()
 {
 }
 
-void CGUIControl::OnKey(const CKey& key) 
+void CGUIControl::OnAction(const CAction &action) 
 {
-  if (!key.IsButton() ) return;
-  switch (key.GetButtonCode())
+  switch (action.wID)
   {
-    case KEY_REMOTE_DOWN:
-    case KEY_BUTTON_DPAD_DOWN:
+    case ACTION_MOVE_DOWN:
     {
       SetFocus(false);
-      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlDown, key.GetButtonCode());
+      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlDown, action.wID);
       g_graphicsContext.SendMessage(msg);
     }
     break;
     
-    case KEY_REMOTE_UP:
-    case KEY_BUTTON_DPAD_UP:
+    case ACTION_MOVE_UP:
     {
       SetFocus(false);
-      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlUp, key.GetButtonCode());
+      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlUp, action.wID);
       g_graphicsContext.SendMessage(msg);
     }
     break;
     
-    case KEY_REMOTE_LEFT:
-    case KEY_BUTTON_DPAD_LEFT:
+    case ACTION_MOVE_LEFT:
     {
       SetFocus(false);
-      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlLeft, key.GetButtonCode());
+      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlLeft, action.wID);
       g_graphicsContext.SendMessage(msg);
     }
     break;
 
-    case KEY_REMOTE_RIGHT:
-    case KEY_BUTTON_DPAD_RIGHT:
+    case ACTION_MOVE_RIGHT:
     {
       SetFocus(false);
-      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlRight, key.GetButtonCode());
+      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlRight, action.wID);
       g_graphicsContext.SendMessage(msg);
     }
     break;
@@ -124,10 +119,10 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
         if ( IsDisabled() || !IsVisible() || !CanFocus() )
         {
           DWORD dwControl=0;
-          if (message.GetParam1()==KEY_BUTTON_DPAD_DOWN) dwControl = m_dwControlDown;
-          if (message.GetParam1()==KEY_BUTTON_DPAD_UP) dwControl = m_dwControlUp;
-          if (message.GetParam1()==KEY_BUTTON_DPAD_LEFT) dwControl = m_dwControlLeft;
-          if (message.GetParam1()==KEY_BUTTON_DPAD_RIGHT) dwControl = m_dwControlRight;
+          if (message.GetParam1()==ACTION_MOVE_DOWN) dwControl = m_dwControlDown;
+          if (message.GetParam1()==ACTION_MOVE_UP) dwControl = m_dwControlUp;
+          if (message.GetParam1()==ACTION_MOVE_LEFT) dwControl = m_dwControlLeft;
+          if (message.GetParam1()==ACTION_MOVE_RIGHT) dwControl = m_dwControlRight;
           CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), dwControl, message.GetParam1());
           g_graphicsContext.SendMessage(msg);
           return true;

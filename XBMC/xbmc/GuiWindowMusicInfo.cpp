@@ -32,17 +32,14 @@ CGUIWindowMusicInfo::~CGUIWindowMusicInfo(void)
 }
 
 
-void CGUIWindowMusicInfo::OnKey(const CKey& key)
+void CGUIWindowMusicInfo::OnAction(const CAction &action)
 {
-  if (key.IsButton())
-  {
-    if ( key.GetButtonCode() == KEY_BUTTON_BACK  || key.GetButtonCode() == KEY_REMOTE_BACK)
+	if (action.wID == ACTION_PARENT_MENU)
     {
-      Close();
-      return;
+		Close();
+		return;
     }
-  }
-  CGUIWindow::OnKey(key);
+	CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)

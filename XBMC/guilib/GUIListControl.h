@@ -28,7 +28,7 @@ public:
                   const CStdString& strButton, const CStdString& strButtonFocus);
   virtual ~CGUIListControl(void);
   virtual void 					Render();
-  virtual void 					OnKey(const CKey& key) ;
+  virtual void 					OnAction(const CAction &action) ;
   virtual bool 					OnMessage(CGUIMessage& message);
 
   virtual void 					AllocResources() ;

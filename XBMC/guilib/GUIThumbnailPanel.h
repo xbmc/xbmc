@@ -30,7 +30,7 @@ public:
                     const CStdString& strFont, DWORD dwTextColor,DWORD dwSelectedColor);
   virtual ~CGUIThumbnailPanel(void);
   virtual void Render();
-  virtual void OnKey(const CKey& key) ;
+  virtual void OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
 
   virtual void AllocResources() ;

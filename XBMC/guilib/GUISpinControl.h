@@ -21,7 +21,7 @@ public:
   CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType,DWORD dwAlign=XBFONT_RIGHT);
   virtual ~CGUISpinControl(void);
   virtual void 	Render();
-  virtual void 	OnKey(const CKey& key) ;
+  virtual void 	OnAction(const CAction &action) ;
   virtual bool 	OnMessage(CGUIMessage& message);
   virtual void 	AllocResources();
   virtual void 	FreeResources();

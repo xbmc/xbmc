@@ -132,7 +132,7 @@ void CGUIImage::Render()
 
 }
 
-void CGUIImage::OnKey(const CKey& key) 
+void CGUIImage::OnAction(const CAction &action) 
 {
 }
 

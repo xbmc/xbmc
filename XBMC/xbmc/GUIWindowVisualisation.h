@@ -30,7 +30,7 @@ public:
   CGUIWindowVisualisation(void);
   virtual ~CGUIWindowVisualisation(void);
   virtual bool    OnMessage(CGUIMessage& message);
-  virtual void    OnKey(const CKey& key);
+  virtual void    OnAction(const CAction &action);
 	virtual void		Render();
 	virtual void		OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
 	virtual void		OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);

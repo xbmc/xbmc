@@ -17,17 +17,14 @@ CGUIDialogSelect::~CGUIDialogSelect(void)
 }
 
 
-void CGUIDialogSelect::OnKey(const CKey& key)
+void CGUIDialogSelect::OnAction(const CAction &action)
 {
-  if (key.IsButton())
-  {
-    if ( key.GetButtonCode() == KEY_BUTTON_BACK  || key.GetButtonCode() == KEY_REMOTE_BACK)
+	if (action.wID == ACTION_CLOSE_DIALOG)
     {
-      Close();
-      return;
+		Close();
+		return;
     }
-  }
-  CGUIWindow::OnKey(key);
+	CGUIWindow::OnAction(action);
 }
 
 bool CGUIDialogSelect::OnMessage(CGUIMessage& message)

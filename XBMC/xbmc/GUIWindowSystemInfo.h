@@ -8,7 +8,7 @@ public:
 	CGUIWindowSystemInfo(void);
 	virtual ~CGUIWindowSystemInfo(void);
   virtual bool    OnMessage(CGUIMessage& message);
-  virtual void    OnKey(const CKey& key);
+  virtual void    OnAction(const CAction &action);
 	virtual void		Render();
 protected:
 	void						GetValues();
