@@ -25,6 +25,7 @@
 #include "Permissions.h"
 #include "misc\MarkupSTL.h"
 #include "options.h"
+//#include "../../Settings.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -821,6 +822,14 @@ int CPermissions::GetRealDirectory(CStdString directory, int user, t_directory &
 		CStdString path = PathPieces.front();
 		PathPieces.pop_front();
 
+    if (1 /*g_stSettings.m_bFTPSingleCharDrives*/)
+    {
+      // modified to be consistent with other xbox ftp behavior: drive 
+      // name is a single character without the ':' at the end
+      if (path.size() == 1)
+        path += ':';
+    }
+
 		for (std::list<CStdString>::iterator iter = PathPieces.begin(); iter!=PathPieces.end(); iter++)
 		{
 			CStdString piece=*iter;
@@ -1056,8 +1065,25 @@ int CPermissions::ChangeCurrentDir(LPCTSTR user, CStdString &currentdir, CStdStr
 				//dir starts with a / - Does that include the driver letter?
 				if (dir.GetLength()<3 || !isalpha(dir[1]) || (dir[2] != ':'))
 				{
+          if (1 /*g_stSettings.m_bFTPSingleCharDrives*/ &&
+              (isalpha(dir[1]) && ((dir.GetLength() == 2) || (dir[2] == '/'))))
+          {
+            // modified to be consistent with other xbox ftp behavior: drive 
+            // name is a single character without the ':' at the end
+            // this is the drive letter specified without the ':' character 
+            // at the end - correct it
+            CString drive = dir.substr(0, 2);
+            drive.ToUpper();
+            if (dir.GetLength() > 3)
+              dir = drive + ":/" + dir.Mid(3);
+            else
+              dir = drive + ":/";
+          }
+          else
+          {
 				  //We were given an absolute path without a drive letter we need to put one in the dir list
 				  piecelist.push_back(currentdir.Mid(1, 2));
+					}
 				}
 			}
 		}
@@ -1124,6 +1150,8 @@ int CPermissions::ChangeCurrentDir(LPCTSTR user, CStdString &currentdir, CStdStr
 		directory.dir.TrimRight("/");
 		currentdir="/"+directory.dir;
 	}
+  if ((currentdir.size() == 3) && (currentdir[0]=='/') && (isalpha(currentdir[1])) && (currentdir[2]==':'))
+    currentdir.MakeUpper();
 	return 0;
 }
 

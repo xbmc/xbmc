@@ -2284,4 +2284,7 @@
   <string><id>13312</id><value>Black bar reduction</value></string>
   <string><id>13313</id><value>Reset/Reboot</value></string>
   <string><id>13314</id><value>Music OSD Timeout</value></string>
+  <string><id>14000</id><value>Stacking: Off</value></string>
+  <string><id>14001</id><value>Stacking: Simple</value></string>
+  <string><id>14002</id><value>Stacking: Fuzzy</value></string>
 </strings>
