@@ -51,8 +51,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 		if ( share.strPath == strPath.Left( share.strPath.size() )  ||
 			share.strPath == strPath2.Left( share.strPath.size() )  ||
 			share.strPath == strPath3.Left( share.strPath.size() ) ||
-			strPath.Mid(1,1)==":" || strPath.Mid(1,1)==":")
-		 // strPath.Left(2)=="Q:" || strPath.Left(2)=="q:")
+			strPath.Mid(1,1) == ":" )
 		{
 /*
 			//	Check if cd is detected already before
@@ -61,12 +60,10 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 				CDetectDVDMedia::WaitMediaReady();
 */
 			CFactoryDirectory factory;
-			//IDirectory *pDirectory = factory.Create(share.strPath);
 			CStdString path;
 
 			// get local path
-			//if (strPath.Left(2)=="Q:" || strPath.Left(2)=="q:")
-			if (strPath.Mid(1,1)==":" || strPath.Mid(1,1)==":")
+			if (strPath.Mid(1,1) == ":")
 			{
 				path = strPath;
 			}
