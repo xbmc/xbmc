@@ -2066,6 +2066,10 @@ void CApplication::CheckShutdown()
 bool CApplication::MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown) 
 {
   if (IsPlayingVideo()) {
+    //block immediate spindown when playing a video non-fullscreen (videocontrol is playing)
+    if ((!bCheckThisForNormalSpinDown) && (!g_graphicsContext.IsFullScreenVideo())) {
+      return true;
+    }
     //allow normal hd spindown always if the movie is paused
     if ((bCheckThisForNormalSpinDown) && (m_pPlayer->IsPaused())) {
       return false;
