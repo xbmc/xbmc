@@ -1,0 +1,992 @@
+*************************************************************************************************************
+*************************************************************************************************************
+                                      Xbox Media Center CHANGELOG
+************************************************************************************************************* 
+*************************************************************************************************************
+
+added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 12-07-2004 changed: immediate hd-spindown disabled while not playing fullscreen (preview/calibrating)
+  - 12-07-2004 added: added Soften setting to Settings->User Interface
+                      added Flicker filter setting to Settings->User Interface
+                      moved Soften setting from Settings->My Videos to Settings->My Videos->Filters
+                      added Flicker filter setting to Settings->My Videos->Filters
+  - 10-07-2004 fixed: Auto-shutdown sometimes resets settings (hopefully)
+  - 10-07-2004 fixed: AC3 5.1 was being played as 2 channel when digital enabled but passthrough disabled.
+  - 08-07-2004 added: my music artist view now also shows the albums of the artist
+  - 08-07-2004 added: My Programs now allows a depth when using flattening (default of 1) [REF: 982895].
+  - 08-07-2004 added: possibility to specify default username for samba. usfull for smb browsing.
+  - 08-07-2004 fixed: xbmc sometimes didn't go back to the share root when navigating up a directory.
+  - 07-07-2004 fixed: cdda ripping speed increase. Two times faster now
+  - 07-07-2004 added: cdda ripping to ogg / vorbis
+  - 06-07-2004 fixed: album info can't be downloaded for folders with files without a taginfoloader
+  - 06-07-2004 fixed: mp4 tag loader leaves open files
+  - 06-07-2004 changed: HD spindown disabled when playing videos with vobsubs, vobsubs requires harddisk access
+  - 06-07-2004 added: patch: [ 985491 ] Changes to able detect TS stream from Dreambox / Dbox2.
+  - 04-07-2004 added: auto discovery of XBMS servers (sf patch #915787 by savvy)
+  - 04-07-2004 changed: output of python scripts to the script info window is now limited to 5 pages
+  - 04-07-2004 added: CD ripping options for audio CD's can now be set in the settings screen
+  - 03-07-2004 added: options to put the harddisk in standby-mode (with a delay) when playing files from network
+                      added General->System settingsscreen
+                      moved HD Spindown time setting from General settings to General->System
+                      moved Shutdown idle timeout settings from General->Screensaver to General->System
+  - 03-07-2004 fixed: vobsubs wouldn't show up in osd unless first index used was 0
+  - 03-07-2004 changed: updated python engine to version 2.3.4
+  - 03-07-2004 fixed: typo in weather window sources (thx to kraqh3d)
+  - 03-07-2004 added: m4a tags
+  - 03-07-2004 added: play raw .ac3 and .dts audiofiles (48kHz, passthrough only for DTS files)
+  - 03-07-2004 fixed: harddisk spins up during movie for no apparent reason
+  - 02-07-2004 changed: rework of wma tagloader
+  - 02-07-2004 added: extract cover art from wma tag
+  - 02-07-2004 added: cdda ripping support
+  - 02-07-2004 fixed: crash in debug build when an unresolved dll symbol was called
+                      + lot's off other fixes to the dll loader.
+  - 02-07-2004 added: support for vp4 / vp5 and vp6
+  - 30-06-2004 fixed: My Programs displayed underscore(_) at the beginning of program name if there is no embedded XBE description
+  - 29-06-2004 fixed: playlist files on a remote share and whose entries have a '\' at the beginning, where not saved correctly
+
+-------------------------------------------------------------------------------
+XBMC V 1.0.0
+-------------------------------------------------------------------------------
+
+  - 28-06-2004 fixed: switching srt's included in mkv + small bugfix for switching vobsubs in mkv's.
+  - 27-06-2004 moved: default subtitle selection to mplayer.conf to allow them to be overridden on a per file basis.
+  - 27-06-2004 added: default language selection for subtitles now possible in mplayer.conf
+  - 27-06-2004 added: all know language codes for audio and subtitle selection.  
+  - 27-06-2004 fixed: deleting a program from My Programs works properly now
+  - 26-06-2004 fixed: no directory history if default path is set
+  - 24-06-2004 changed: made sure that resolution switching only happens once when starting in pal60 mode.
+  - 23-06-2004 fixed: lockups when switching between fullscreen and small video window.
+  - 23-06-2004 fixed: when an autorun event occurs the screensaver is now reset
+  - 22-06-2004 changed: postprocessing is now turned off by default.
+  - 22-06-2004 fixed: subs not showing + added switching support for subtitles included in mkv containers (vobsubs).
+  - 21-06-2004 fixed: Not showning first icon during scrolling in control (sf patch #976191 by seism)
+  - 20-06-2004 fixed: support for foldername.tbn files
+  - 19-06-2004 fixed: [ 975462 ] N/A weather image (wrong icon shown if weather is N/A)
+  - 18-06-2004 fixed: if mplayer fails to open a file, xbmc will crash after selecting a new file to play
+  - 18-06-2004 removed: ability to select audio resampling for video. never worked correctly and allmost allways caused stuttering.
+  - 18-06-2004 changed: reverted to using ffmpeg for decoding of xvid material
+  - 15-06-2004 fixed: H: and I: was not present in filezilla server.xml (Used for memory card)
+  - 14-06-2004 fixed: [ 966026 ] Negative Text Offset does not work on 720p / 1080i
+  - 08-06-2004 added: New option in XBoxMediaCenter.xml to specify external application for handling CDDA
+  - 08-06-2004 added: [ 905913 ] abilty to cancel startup of video/audiostreams.
+  - 08-06-2004 fixed: My Weather display issues (SF bug #945652)
+  - 08-06-2004 added: support for foldername.tbn files
+  - 07-06-2004 fixed: hopefully dvd playback on samsung drives
+  - 06-06-2004 fixed: SF bug[965436] boxilizer 2 crash
+  - 06-06-2004 fixed: Remembering the entered share doesn't work for DVD shares
+  - 06-06-2004 fixed: gif loading crashes. This means you can use the KML script again.
+  - 06-06-2004 fixed: [ 963099 ] Subtitles state forgotten between stacked items.
+  - 06-06-2004 fixed: [ 907968 ] Video.mp3.avi detected as music
+  - 06-06-2004 fixed: my music songs, adding a file to playlist with a dot in the name and hide extensions enabled cuts off everything behind the dot
+  - 06-06-2004 changed: my music songs, when loading a directory with id3 enabled and reading takes more then 1.5 sec. a progress dialog is shown
+  - 05-06-2004 fixed: album info didn't worked on unscanned file
+  - 05-06-2004 fixed: my music, Directory reading speed-up for unscanned directories with id3 tags disabled
+  - 05-06-2004 fixed: my music songs, autoswitch list/thumb doesn't always work
+  - 04-06-2004 fixed: list control label2 was always rendered as selected
+  - 04-06-2004 added: SF patch[922265] Display names from soundtracks *updated* - Thanks to dfangel 
+  - 04-06-2004 changed: my videos, removing file extension before submitting filename to imdb, hopefully more accurate search results for scan
+  - 04-06-2004 fixed: SF[966020] Selectbutton in My Videos doesn't get focus if view is switched the first time
+  - 03-06-2004 fixed: cache buffer will now stay at 100% instead of 50% (this means that half the cache size will do now)
+  - 03-06-2004 fixed: SF[965551] IMDB Thumbs no longer work  
+  - 03-06-2004 changed: xbe icons are caches as 128x128 tbn now
+  - 01-06-2004 fixed: SF[964872] Unable to change DVD-ROM bookmark name
+  - 01-06-2004 fixed: some lcd issues like (LCD sometimes shows garbage)
+  - 01-06-2004 added: title image and savegame image in release project
+  - 01-06-2004 fixed: my music songs playlists button speedup
+  - 01-06-2004 changed: playlist containing remote files (http/mms) are not saved to playlist directory anymore
+  - 01-06-2004 fixed: LCD dont show והצ.
+  - 31-05-2004 fixed: my music song, when entering after bootup and <default> tag is set, icon or list isn't automatically switched
+  - 31-05-2004 fixed: album info: album thumb was not assigned to a unscanned folder, if folder contains one album
+  - 31-05-2004 fixed: album info shows a list of albums for a folder if more then one is available
+  - 30-05-2004 fixed: dvdfolder playback from local disk. wonder how many times this has been broken and fixed
+  - 29-05-2004 fixed: ogg 6ch channel mapping. very limited in non digital mode. only left and right channel is audioable
+  - 28-05-2004 added: subtitle charsets for Hebrew(arial-iso-8859-8, size 18), Turkish(arial-iso-8859-9, size 18,24)
+  - 28-05-2004 fixed: selected state of passthrough and output to all channels settings sometimes incorrect when switching from analog to digital
+  - 28-05-2004 fixed: channel mapping of aac audio when using analog output (somewhat uggly, all channels are just mapped down to left or right unchanged)
+  - 28-05-2004 fixed: tivo playback
+  - 28-05-2004 changed: changes a few language files to be consistent in Settings such that there are no colons (Chokeman).
+  - 27-05-2004 fixed: album info: Track duration was shown as 0:00, if no duration available on allmusic.com
+  - 27-05-2004 fixed: my music: album art (downloaded/from id3 tag) was always assigned to the every file in the directory
+  - 26-05-2004 fixed: Shortcuts no longer hardcoded to Q:\Shortcuts.  Will use what is defined in XboxMediaCenter.xml.
+  - 26-05-2004 changed: If no default is specified for My Programs, then keep it that way.  Do not default to Q:\Shortcuts.
+  - 26-05-2004 changed: Scan in My Programs will find any XBE regardless of whether Show Only Default.xbe is specified.
+  - 25-05-2004 fixed: wrong icon for playlists used
+  - 25-05-2004 fixed: xbmc was starting the shoutcast streamripper for every stream with 'http://',
+               removed so movie streams start a bit faster.
+  - 25-05-2004 fixed: [ 955044 ] Playlists of streamed files don't advance (and hangs later)
+  - 25-05-2004 fixed: subvobs don't enlarge, caused by the "enlarge subtitles, use more lines instead of rendering offscreen" change which is now removed
+  - 24-05-2004 OSD video settings: move slider (eg contrast) left 2 steps. move it 1 step right. the effective setting goes to -3 instead of -2. same in other direction
+  - 24-05-2004 fixed: [ 959121 ] SMB path can no longer contain '?'
+  - 24-05-2004 fixed: dvd playback from disk (css auth)
+  - 23-05-2004 added: language code for vobsubs.
+  - 23-05-2004 changed: increased stream cache size to 16384. hopefully solves some stuttering problems
+  - 23-05-2004 fixed: choppy playback of mono wmv.
+  - 23-05-2004 fixed: channel mapping for 6channel AAC audio.
+  - 23-05-2004 fixed: pictures create thumbs, cancel button doesn't work
+  - 23-05-2004 changed: enlarge subtitles, use more lines instead of rendering offscreen
+  - 23-05-2004 fixed: subtitles get bigger as videoresolution gets lower
+  - 21-05-2004 fixed: music database reorg, cancel button doesn't work
+  - 21-05-2004 fixed: my video genre, actors... do not show default icons if no thumb is available
+  - 20-05-2004 fixed: Subtitle texture scaling was not filtering correctly.
+  - 20-05-2004 fixed: album info can now be refreshed when 1. time downloaded
+  - 20-05-2004 fixed: spin control: can't focus the left or right control, if first page or last page is shown
+  - 20-05-2004 fixed: album info: album image was not parsed, if no review is available
+  - 20-05-2004 fixed: sometimes large icons remembered but normal icons shown 
+  - 20-05-2004 fixed: Support Rockridge extensions without Joliet (DVD/CD) (sf patch #957049 by nikon70)
+  - 19-05-2004 fixed: Streaming Video Audio stutters
+  - 19-05-2004 fixed: Low framerate when playing video with multichannel audio (non ac3) -> digital out
+  - 19-05-2004 fixed: Large opendml AVIs now play (no seeking)
+  - 19-05-2004 fixed: DTS AVIs now play with sound (if you have DTS output support)
+  - 19-05-2004 changed: subtitles now default to be off.
+  - 19-05-2004 fixed: DVD subtitles weren't displaying and wasn't possible to switch.
+  - 18-05-2004 fixed: unable to play a .pls file with items like http://12.54.64.32/music/file-1.mp3
+  - 18-05-2004 changed: Select dialog, Hidding button on the left when not used
+  - 18-05-2004 changed: album info: shows albumname too, when inexact matches are found
+  - 18-05-2004 added: album info: manual album lookup
+  - 18-05-2004 changed: album info: refresh button requeries allmusic.com
+  - 18-05-2004 added: support for flipping hebrew subtitles
+  - 17-05-2004 fixed: shoutcast name resolving and some shoutcast crashes
+  - 17-05-2004 fixed: enlarge subtitles
+  - 17-05-2004 fixed: after the CURL change samba leaves a lot of open session on the server
+  - 16-05-2004 fixed: scroll suffix in skin files was ignored for thumbnail panels
+  - 16-05-2004 fixed: make sure file exists before trying to cache it when looking for folder.jpg files.
+  - 16-05-2004 fixed: samba didn't connect with domain information to server. allways disregarded it. 
+  - 16-05-2004 fixed: samba didn't stat with utf8 formatting.
+  - 16-05-2004 changed: fileprotocol changed to take a CURL as parameter instead of separated values.
+  - 16-05-2004 fixed: If your nameserver is not working properly, default to using IP address for known hosts (weather, imdb, allmusic).
+  - 16-05-2004 added: more logging for samba + removed some bugs from bugs.txt that did not exist anymore
+  - 16-05-2004 fixed: streaming from internet when multichannel (passtrough) output is selected.
+  - 16-05-2004 fixed: Q:\albums directory had to exist for the databases to create even though your specified a different <albums> location in XboxMediaCenter.xml.
+  - 15-05-2004 play a video, stop. go into settings -> my video: big white area covering most of the screen
+  - 14-05-2004 fixed: vobsubs crash xbmc
+  - 14-05-2004 fixed: Weather and IMDB now work when a transparent proxy is involved (like squid).  Weather still does not use proxy settings though.
+  - 14-05-2004 added: some optimizations for text rendering in our GUI
+  - 14-05-2004 fixed: rss feeds now scroll at the same speed
+  - 14-05-2004 added: rss feeds now handle special html characters
+  - 14-05-2004 fixed: my music: MS Sondtrack share had the remote icon, changed to harddisk icon
+  - 14-05-2004 added: my music, video, files, pictures: sort by share type in virtual directory
+  - 14-05-2004 changed: music osd is shown again on track change and remembers it's last state (shown/not shown) when entering the vis again
+  - 13-05-2004 fixed: IMDB thumbnails will now download properly.
+  - 12-05-2004 fixed: updated samba 3.0.1 to samba 3.0.4.
+  - 10-05-2004 fixed: There was still 1 more hardcoded Q:\albums directory.  Thx to ush285t for the fix.
+  - 09-05-2004 fixed: samba could crash on filenames with strange characters in it.
+  - 09-05-2004 fixed: allmusic.com parsing bugs (sf bug #941107)
+  - 07-05-2004 fixed: Loading database info / thumbs for playlist files (sf patch #950246 by herg for bug #944135)
+  - 07-05-2004 changed: settings windows with buttons remember the selected button when selecting a subwindow
+  - 07-05-2004 fixed: creating dialogs with python crashes xbmc
+  - 06-05-2004 fixed: wma tag loader did not get track number correctly
+  - 06-05-2004 fixed: No visualizations with CD music (sf bug #948156)
+  - 06-05-2004 added: updated 'Boxalizer' visualisation SF[937508]
+  - 06-05-2004 added: updated 'StarBurst' visualisation SF[939719]
+  - 06-05-2004 fixed: buttons-labels in weather settings were not always updated
+  - 05-05-2004 added: matching of subtitle with video file is now done case insensitive [SF 942131]
+  - 05-05-2004 fixed: when playing a file from a samba share, mplayer did not react to button presses
+  - 05-05-2004 changed: sort settings in my files, my videos, my pictures are remembered for root and directories
+  - 05-05-2004 fixed: Skin scaling wasn't scaling everything properly.
+  - 04-05-2004 added: More GUI tweaks
+  - 04-05-2004 fixed: crash changing views in mymusic
+  - 04-05-2004 fixed: Databases no longer hardcoded to Q:\\albums directory.  It will use whatever is defined in <albums> tag in XboxMediaCenter.xml.
+  - 03-05-2004 fixed: inexact cddb matches don't get cached to local hdd
+  - 03-05-2004 added: More 720p skin changes + 1080i now tries 720p subdir before dropping to the defaultres dirs
+  - 03-05-2004 added: Better thumbnail quality (JPEG quality set to 90% instead of 75%)  Also doesn't load/save thumbs for scaling unless it has to (128x128 thumbs pass straight through)
+  - 03-05-2004 added: Various GUI related tweaks + Niceties
+  - 02-05-2004 Changed: When correct cd/dvd is already in drive the dialog asking for that cd/dvd won't be shown
+  - 02-05-2004 fixed: Can't launch movie from cd/dvd using imdb info
+  - 02-05-2004 fixed: My Files: move a game directory with many subdirs to another drive, lots empty subdirs are left in the source tree
+  - 02-05-2004 fixed: Sub display optimized
+  - 02-05-2004 fixed: Quality improvement for video output
+  - 01-05-2004 added: New option to general settings to hide media extensions for Music, Video + Pictures.
+  - 01-05-2004 fixed: Thumbnail panel view cosmetic fixes. Text is centered under buttons + scroller is reset properly.
+  - 01-05-2004 fixed: vobsubs not working.
+  - 01-05-2004 fixed: FF/RW will now take a paused video out of paused state
+  - 30-04-2004 fixed: virtual keyboard could not be found by windowmanager because ID's did not match (music/imdb/weather search broken).
+  - 30-04-2004 fixed: Fixed closing tag in fountain.xml (Thanks Wabid)
+  - 30-04-2004 fixed: Release with Debug project config
+  - 30-04-2004 added: 720p version of skin by Aurora13
+  - 30-04-2004 fixed: Thumbnail creation in my programs now has accurate counter
+  - 30-04-2004 fixed: AC3 passthru for stereo files should be working properly now
+  - 30-04-2004 fixed: Refresh button in IMDb used to launch DVD player
+  - 30-04-2004 changed: Window ID's internally start at 10000 now.  Values in .xml files offsets from WINDOW_HOME.
+  - 29-04-2004 fixed: weather is broken - lookup or location select = freeze
+  - 29-04-2004 fixed: strm files not visible in MY Movies if stack is enabled (sf bug #939542)
+  - 29-04-2004 fixed: Slideshow: previous/next is broken (sf bug #939845)
+  - 29-04-2004 opendml now fixed? 2 files that previously didnt play now work fine
+  - 29-04-2004 fixed: IMDB lookup crashes XBMC.
+  - 29-04-2004 added: new mplayer (1.0pre4) code.
+  - 28-04-2004 fixed: seeking in ogg video is buggy, updated demux_ogg.c to current mplayer cvs plus fixes for audiostream switching.
+  - 27-04-2004 added: better xml error reporting.
+  - 27-04-2004 added: if xbmc fails to start you can reboot with the start button.
+  - 27-04-2004 fixed: SMB - Move up to parent directory goes to root (sf bug #939530)
+  - 27-04-2004 added: If xbmc can't load it's settings correctly it will go into recovery mode:
+                      - The screen is set to the default res for pal or ntsc as appropriate.
+                      - Error text is displayed informing the user what happened.
+                      - The network is initialised from dash settings, or DHCP if that fails, or static (192.168.0.42/255.255.255.0) if DHCP fails.
+                      - The FTP server is started on port 21 and a default login of xbox/xbox is enabled with access to C: D: and E:
+                      - XBMC will then "hang" leaving the FTP server running, users can FTP in, fix the problem and power cycle to reboot.
+  - 26-04-2004 fixed: Playlist now shows sequence (play order) number instead of track number (SF bug #910831)
+  - 26-04-2004 fixed: Rss Reader now handles html characters like &#237 properly
+  - 26-04-2004 fixed: Rss Reader now handles CDATA sections in xml feeds
+  - 26-04-2004 fixed: Bug in widescreen switching (thnx Deltop)
+  - 26-04-2004 fixed: OSD bugs (sf bugs: 940686, 940687, 940689)
+  - 25-04-2004 fixed: Weird sort order of viz selection in the UI (sf bug #941118)
+  - 25-04-2004 fixed: shoutcast stream names not displaying in playlist view
+  - 25-04-2004 fixed: Streaming of mp3 and ogg is broken (sf bug #941662)
+  - 25-04-2004 fixed: Shoutcast recording is broken
+  - 25-04-2004 fixed: Shoutcast title streaming not working
+  - 25-04-2004 changed: id3 tags always loaded for currently playing file
+  - 25-04-2004 fixed: if id3tag is disabled, some info like duration is not shown on LCD.
+  - 25-04-2004 fixed: smb sessions not closed when media finishes playing
+  - 25-04-2004 fixed: Large playlists crash XBMC (sf bug: #929356)
+  - 25-04-2004 fixed: My Programs would allow to browse back higher than bookmark when flattening was off (SF bug #939590)
+  - 25-04-2004 added: height,width tags to home.xml for (hopefully) better viewing in 720p/1080i
+  - 25-04-2004 fixed: small skin problems in Audio options
+  - 24-04-2004 fixed: samba workgroup setting in xboxmediacenter.xml didn't work
+  - 24-04-2004 fixed: samba, external file based database didn't work. Now we use the internal in memory database
+                      for saving nameresolving results
+  - 24-04-2004 changed: Auto widescreen switching only does widescreen switching now
+  - 24-04-2004 added: New option in My Videos for upsampling videos to GUI resolution
+  - 24-04-2004 fixed: Added ability to set the audio headroom used.  Defaults to 6dB
+  - 24-04-2004 changed: Put Headroom adjustment and High Quality resampling under an "Experts Only" setting.
+  - 23-04-2004 changed: Disabled the z-buffer again (memory saving), except for in vis, vis now uses 16-bit float z-buffer.
+  - 23-04-2004 fixed: xbmc would crash (no error dialog is shown) when xboxmediacenter.xml is corrupted
+  - 23-04-2004 fixed: disabled 'wins' in samba by default (this will result in faster network browsing).
+  - 23-04-2004 added: samba configuration options in xboxmediacenter.xml
+  - 22-04-2004 added: option in xboxmediacenter.xml how ISO/UDF discs should be treated
+  - 22-04-2004 fixed: seperate ISO and UDF share doesn't work for ISO/UDF discs
+  - 22-04-2004 changed: scripts window, parent to virtual directory removed
+  - 22-04-2004 fixed: my video, items where added unsorted to the playlist
+  - 22-04-2004 fixed: my video playlist, last selected control was not remembered
+  - 21-04-2004 fixed: prevented OSD drifting too far off the screen
+  - 21-04-2004 added: Powerdown on button press (hold for 3s)
+  - 21-04-2004 fixed: Location text only works for location 1 in weather screen
+  - 21-04-2004 fixed: Weather search accepts weather.com codes
+  - 21-04-2004 fixed: settings skin/language, selecting language was slow
+  - 21-04-2004 changed: settings skin/language, the delayed skin load is canceled when skin/language spin control loses focus
+  - 21-04-2004 changed: settings skin/language, skin/language is not reloaded, if its the current
+  - 21-04-2004 disabled immediate hd spindown upon starting network play, just reset spindown counter at start instead
+  - 21-04-2004 Fixed: Play lists gave invalid handle or did not show if first share in My Music was not a HD
+  - 21-04-2004 Fixed: My Weather settings jammed if search not found and cancel button selected (SF Bug #938133)
+  - 20-04-2004 fixed: my files, source/destination label was not shown
+  - 20-04-2004 fixed: my music songs, autoswitch list/thumb control does not switch to list for folders without thumbs
+  - 20-04-2004 fixed: my pictures remembers large icons but shows normal icons
+  - 20-04-2004 fixed: music overlay does not show filename (tnx to tagevm)
+  - 19-04-2004 fixed: Text no longer extends outside of dialogs - all text is clipped to dialog borders.
+  - 19-04-2004 fixed: some WMV files don't finish playing. it's random for how long they play each time (see milkshake.wmv)
+  - 19-04-2004 added: Sub enlargment now configurable from 0% to 200% in 10% steps
+  - 19-04-2004 added: 2 new visuals: "StarBurst" and "Boxalizer"
+  - 19-04-2004 fixed: Scanning in My Videos now works properly.  Progress dialog wasn't being closed before recursive call to OnScan.
+  - 18-04-2004 added: when no texture is supplied when creating python control, it will try to find the texture name in
+                      references.xml instead of using a hardcoded default.
+  - 18-04-2004 fixed: visualisations crash xbmc
+  - 18-04-2004 fixed: when creating a python window from within a python window xbmc would crash
+  - 18-04-2004 fixed: AV sync is maintained when switching stacked videos
+  - 18-04-2004 added: pressing the info button again in scripts debug window will erase current output
+  - 18-04-2004 fixed: webserver crashed when trying to open a playlist (m3u, pls) with a web browser
+  - 18-04-2004 added: Support for memory units.
+  - 17-04-2004 fixed: Shortcuts in My Programs now display even if Show Only Default.xbe is used (when clicking Shortcuts button)
+  - 16-04-2004 fixed: my music songs, sort by file was not saved
+  - 15-04-2004 fixed: Settings->Info showed C: free space as: Mbfree.  Should now be MB free.
+  - 14-04-2004 removed: accelerated scrolling and faster standard navigation. restored earlier, casued to many probs
+  - 14-04-2004 added: patch from sf: return false from Http.Connect if link is disconnected
+  - 13-04-2004 fixed: visualisations desynced and spectrums flashing erratically.
+  - 13-04-2004 fixed: visualisations playing slow
+  - 13-04-2004 added: new python methods (getLanguage, getIPAddress, getDVDState, getFreeMem, getCpuTemp)
+  - 13-04-2004 added: python documentation
+  - 13-04-2004 fixed: My Programs did not display programs in the root of the share.
+  - 13-04-2004 fixed: AC3 passthrough not working.
+  - 12-04-2004 added: accelerated scrolling and faster standard navigation
+  - 12-04-2004 fixed: bug in python fuction window.addControl()
+  - 12-04-2004 added: Enlarge subtitles option to scale subtitles up (useful for hard to read vobsubs).
+  - 12-04-2004 fixed: vobsubs are very slow loading.
+  - 11-04-2004 fixed: music output chopping ~3s off the end of files.
+  - 11-04-2004 added: sf patch [ 931622 ] don't timeout audio OSD if timeout is set to 0
+  - 11-04-2004 fixed: my music db reorg scans for new files now
+  - 11-04-2004 fixed: my music db reorg cover art was not re-read and various artist was not checked
+  - 11-04-2004 fixed: large vobsubs crash XBMC.
+  - 10-04-2004 changed: reverted change for RSS feed location in NTSC. Fix needs to be in resizing.
+  - 10-04-2004 fixed: Changed Y position for RSS feed in home.xml for NTSC so it displays correctly.
+  - 10-04-2004 fixed: added a few missing lines to cores\EMUmsvcrt.cpp, oops
+  - 09-04-2004 fixed: Shoutcast broken since 6th or 7th april cvs.
+  - 09-04-2004 fixed: Questor\Fused's bugfix to CXmlDocument (vis bugfix)
+  - 09-04-2004 fixed: updated vis sources and recompiled .vis files
+  - 09-04-2004 added: new vizualisation G-Force ported by Questor/Fused
+  - 09-04-2004 added: Playlist windows, repeat and repeat one button
+  - 09-04-2004 added: settings my music, option to disable playlist in songs window
+  - 09-04-2004 added: settings my music, option to disable repeat in my music windows
+  - 09-04-2004 added: my music songs, Option to auto switch between list and thumb control, disabled by default
+                      Directory should not contain files. If one folder of the directory 
+                      has a thumbnail, view is switched to thumbs control else the list 
+                      control is used.
+  - 07-04-2004 fixed: cmplayer::load() resolve imports failed, missed strspn and strcspn.
+  - 06-04-2004 fixed: folder.jpg, .tbn support for DVD
+  - 06-04-2004 fixed: python, playlist items did not get freed properly (small memory leak)
+  - 06-04-2004 fixed: a bug in python where adding a python control to a python window could crash xbmc
+  - 06-04-2004 added: added a listcontrol to python module xbmcgui
+  - 06-04-2004 added: (sf patch) [ 928143 ] let info button bring OSD up and down in audio vis
+  - 06-04-2004 fixed: my music, trimming spaces for title, artist,... in musictags when loading from file
+  - 06-04-2004 added: my music, option to delete a single album from database
+  - 05-04-2004 added: getLocalizedString function for python
+  - 05-04-2004 fixed: XBMC was not booting under NTSC due to missing info in references.xml
+  - 05-04-2004 fixed: Fixed topbar (pal and ntsc)
+  - 04-04-2004 fixed: progress dialogs for cddb and in weather settings was not closed anymore
+  - 04-04-2004 added: python, gui lock and unlock for faster GUI manipulation with python
+  - 04-04-2004 added: python, textbox
+  - 04-04-2004 fixed: removed unneeded includes in the python library
+  - 04-04-2004 added: my music, search based on musicdatabase
+  - 04-04-2004 changed: show more then on dialog at the same time
+  - 03-04-2004 fixed: exception in Render when window has a list control
+  - 02-04-2004 changed: listcontrol shows full page when moving from top to bottom
+  - 02-04-2004 changed: making musicdatabase global
+  - 02-04-2004 fixed: playlist doesn't continue when modal or progress dialog is shown
+  - 01-04-2004 fixed: dvd subtitles for dvd's with only i subtitle stream (hopefully)
+  - 01-04-2004 fixed: ogm files subtitle stream selection didn't work
+  - 01-04-2004 changed: skin directory layout now handles subdirs for all resolutions.
+  - 01-04-2004 changed: media/ dir in skin can now contain subdirs to help organise skin files
+  - 01-04-2004 changed: converted pal coordinates in the ntsc skin to ntsc coordinates.
+  - 01-04-2004 changed: credits.txt replaced by tags in the skin.xml file.
+  - 31-03-2004 changed: audio/subtitle selection now works with dvd's with the language of the stream shown in osd. (new mplayer.dll)
+  - 30-03-2004 fixed: cdda playback broken
+  - 30-03-2004 fixed: album info, if no review and/or picture is available the album was not shown
+  - 30-03-2004 fixed: album info was broken
+  - 27-03-2004 changed: Flatten Hierarchy and only show default.xbe is now defaulted to true in Settings->Programs
+  - 18-03-2004 fixed: "Exit" symbol turns off the xbox? suggest to make exit go to dashboard and another icon for poweroff
+  - 27-03-2004 fixed: Subtitle On/Off reversed in OSD and [ACTIVE] text behind chosen sub doesnt update when you select
+  - 27-03-2004 fixed: Choppy lossless WMA audio.
+  - 27-03-2004 fixed: Enter a subdir of the XBMSP root. Go back, ".." is missing from the XBMSP root and u cant go back to share list. Happens ONLY in videos w/ xbmsp
+  - 26-03-2004 fixed: playing a 4.3G dvdr .img file (using the new -dvd-device code) via XBMSP: doesnt load at all
+  - 26-03-2004 fixed: playing a 4.3G dvdr .img file (using the new -dvd-device code) past 2gb limit: doesn't work
+  - 26-03-2004 added: virtual keyboard for python
+  - 26-03-2004 added: l8test HD spindown patch from SF
+  - 26-03-2004 added: show tracknames for soundstracks patch from SF
+  - 26-03-2004 fixed: uses lseek64 in mplayer.dll for files > 2gb
+  - 25-03-2004 fixed: dvdfolder playback on samba shares.
+  - 25-03-2004 fixed: On ISO/UDF discs UDF disc label was used, should be ISO label
+  - 24-03-2004 fixed: virtual keyboard did not work in debug mode
+  - 24-03-2004 fixed: show some pictures through webserver. After pressing back or stop screen will turn black
+  - 24-03-2004 fixed: in webserver, wrong configfile was loaded when using xbmc in dash mode
+  - 24-03-2004 added: pyexpat module to python, should fix all those xml problems
+  - 23-03-2004 fixed: HD spindown
+  - 23-03-2004 fixed: DVD playback from HD now works
+  - 23-03-2004 fixed: autorun didn't worked for ISO/UDF discs
+  - 23-03-2004 fixed: my music, after scanning, directory isn't updated to show new thumbs
+  - 23-03-2004 fixed: my music, tag reading for unscanned files was broken
+  - 23-03-2004 added: duration of VBRI mp3 files
+  - 23-03-2004 fixed: sometimes duration of CBR mp3s was calculated incorrect
+  - 23-03-2004 added: Added My Programs database.  Speed increase in displaying My Programs bookmarks.
+  - 23-03-2004 changed: iso/udf discs are treated as iso now
+  - 23-03-2004 fixed: memory leak in ogg tag loader
+  - 23-03-2004 fixed: memory leak in wma tag loader
+  - 23-03-2004 added: Duration for .ogg files
+  - 22-03-2004 fixed: my files, using eg. copy or move action, last selected items was not remembered
+  - 22-03-2004 fixed: Playlists, removing an item above current, pressing next -> wrong item
+  - 22-03-2004 fixed: my video playlist, two items with same name where both highlighted when entering playlist
+  - 22-03-2004 fixed: my music playlist, two items with same name where both highlighted when entering playlist
+  - 22-03-2004 fixed: my music songs, folder containing playlist and songs, current selected item was incorrect
+  - 22-03-2004 added: Logging for DVD media detection 
+  - 22-03-2004 added: UDF version detection, if ISO/UDF disc with other UDF version then 1.02 is detected ISO is used
+  - 21-03-2004 changed: Visual tweaks for credits
+  - 19-03-2004 fixed: when using xbmc as dash, configfile was not saved to c:\ when using configure->save in the http server
+  - 19-03-2004 added: file with licence and permission for icon usage.
+  - 19-03-2004 added: new icons for weather
+  - 19-03-2004 fixed: configwebpage in http server, settings for G drive where not saved
+  - 19-03-2004 added: music and video playlist to http server
+  - 19-03-2004 fixed: can't return to home screen when a video is started from the webserver
+  - 19-03-2004 fixed: cleaned up the source files for the webserver
+  - 19-03-2004 fixed: folder.jpg for my videos was broken
+  - 19-03-2004 changed: Directory cache now caches all directory entries
+  - 19-03-2004 fixed: Directory cache didn't worked for smb
+  - 18-03-2004 changed: New credits sequence with music, graphics, etc. (please see docs\readme.txt for details of uploading the credits resources).
+  - 16-03-2004 added: FLAC tag and duration reading (uses Vorbis comments like Ogg)
+  - 16-03-2004 fixed: CPU temperature display was being calculated incorrectly.
+  - 16-03-2004 fixed: CFile::Cache doesn't work for xbms files greater approx. 120k
+  - 16-03-2004 fixed: myweather didnt work when XBMC is started from DVD (SF patch)
+  - 16-03-2004 added: myweather now supports 3 locations (SF patch)
+  - 16-03-2004 added: High quality audio resampling with CDDA playback
+  - 15-03-2004 fixed: my files, when copying from smb share no folder where created (using patch from forum by Moby)
+  - 15-03-2004 changed: my files, enabled rename button for destination
+  - 15-03-2004 changed: my files, disable copy and move actions in destination
+  - 14-03-2004 changed: video playlist window now repeates its playlist
+  - 14-03-2004 changed: video windows now use the temp video playlist for stacked playing
+  - 14-03-2004 fixed: video playlist window doesn't deselect playing item after stopping
+  - 14-03-2004 fixed: shuffle buttons in playlist windows screwed up other active playlists
+  - 14-03-2004 changed: disabling playlistplayer when stopping
+  - 14-03-2004 fixed: unlimited cycling through playlist, if all files in playlist do not exist
+  - 14-03-2004 fixed: subtitles in same folder as movie didnt work anymore
+  - 14-03-2004 added: SSRC 48kHz resampling of all mplayer audio + GUI option for the same
+  - 13-03-2004 fixed: no video info is shown for mpegs
+  - 13-03-2004 fixed: SKIN bug: cant see current playing song in my music
+  - 13-03-2004 fixed: Gifs delays were sometimes wrong
+  - 13-03-2004 fixed: in python changed getdiscription to getdescription
+  - 13-03-2004 fixed: directory browsing in webserver didn't worked at all since last update
+  - 13-03-2004 added: support for Xenium LCD
+  - 13-03-2004 fixed: .tbn was broken
+  - 13-03-2004 fixed: subtitle selection in OSD (not working yet for movies with embedded subtitles like ogm)
+  - 13-03-2004 fixed: volume control. When I bring the volume down below half way, I then cannot put it back above that half way point.
+  - 13-03-2004 fixed: skin my music album, view by icon, Artist name has a little offset
+  - 13-03-2004 Fixed: Added missing libgoahead files to xbmc.vcproj (Thx to Snyper)
+  - 13-03-2004 Fixed: Credits and reboot button position
+  - 13-03-2004 added: basic support for configuring xbmc through the webserver
+  - 13-03-2004 added: removed old xbmc webpages and add new ones for the webserver
+  - 11-03-2004 fixed: problem with IMDB not finding any movie
+  - 11-03-2004 fixed: crash: simply play music until internal playlist ends, then SKIP to NEXT track = crash (local or smb, doesnt matter, no viz needed)/pike 
+  - 12-03-2004 added: fix from SF for Weather localization
+  - 12-03-2004 added: directory cache
+  - 12-03-2004 added: reboot/back to smartxx OS button on home
+  - 12-03-2004 added: credits screen to ? button on home
+  - 12-03-2004 added: Possible increase in directory loading by calling stat and GetFileAttributes instead of opening the file.
+  - 12-03-2004 added: Credits screen.
+  - 12-03-2004 fixed: Rotated pictures showing incorrect colours
+  - 12-03-2004 added: More checks for music scan
+  - 12-03-2004 added: High quality 48kHz upsampling support (currently disabled)
+  - 12-03-2004 fixed: Pictures/Slideshow now use RGB with filtering output instead of hardware overlays
+  - 11-03-2004 fixed: Texture loader DVD compatibility (works without the DVD in the drive).
+  - 11-03-2004 fixed: if a file is created/opened by python, nothing else can access it.
+  - 11-03-2004 added: support for OGM subtitles
+  - 11-03-2004 added: support for MS soundtracks (SF submitted patch)
+  - 11-03-2004 fixed: Pause function seems to pause, then skip back a frame
+  - 11-03-2004 fixed: OSD: no controls didnt have the focus
+  - 11-03-2004 fixed: Texture bundle loader doesn't work with DVDs.
+  - 11-03-2004 fixed: Black screen when XBMC loads
+  - 11-03-2004 fixed: Texture tool crashes when given a single-image gif
+  - 10-03-2004 fixed: pal60 OSD calibration: make sure OSD is always visible
+  - 10-03-2004 added: volume control (analog output only)
+  - 10-03-2004 fixed: More 1080i aspect ratio fixes
+  - 10-03-2004 fixed: 1080i video only playing on half the screen
+  - 10-03-2004 fixed: Some memory leaks in the sid player (still leaks ~5k per play).
+  - 10-03-2004 fixed: YV12 converter uses filter settings (was forcing linear previously)
+  - 10-03-2004 fixed: filter settings were not being applied at startup
+  - 10-03-2004 fixed: SID playback not working on digital out (only ^&%&^% noise)
+  - 10-03-2004 fixed: Selection of the different sids in 1 sid file not working
+  - 10-03-2004 fixed: my music thumbs where not shown after getting album info
+  - 10-03-2004 added: FF/RW can be used to skip tracks in a multi-track sid file.
+  - 10-03-2004 added: pixel wastage counter to texture tool, pay attention to it please!
+  - 10-03-2004 fixed: YV12->RGB convertor:video playback of a movie 300x150 crashes in xbox_video.cpp. reason: XGSetTextureHeader() fails for U/V planes in Directx_CreateOverlay()
+  - 10-03-2004 fixed: SERIOUS MEMORY LEAK with latest project mayhem skin (  http://www.critikill.net )
+  - 10-03-2004 fixed: Digital output of 48kHz PCM streams set to PCM mode now instead of ENCODED.
+  - 10-03-2004 added: MCPx output is now boosted by 6dB across the board.  Should now be at maximum possible output without clipping.
+  - 09-03-2004 fixed: LCD doesnt show all information when playing shoutcast
+  - 09-03-2004 fixed: Texture manager unable to load file: Q:\skin\MediaCenter\media\osd-video.png
+  - 09-03-2004 fixed: Texture manager unable to load file: Q:\skin\MediaCenter\media\0.png
+  - 09-03-2004 fixed: audio hickup when OSD pops up
+  - 09-03-2004 fixed: made big/small icon view skinnable
+  - 09-03-2004 fixed: in many windows theres only 3 instead of 4 columns when 'View by icon'
+  - 08-03-2004 fixed: Skin: Video playlist wasn't working
+  - 08-03-2004 fixed: the characters '´' והצ isn't supported in new skin fonts. Lcd dont show והצ.
+  - 09-03-2004 added: fix problems with choppy xvids
+  - 08-03-2004 added: Sid playback support.
+  - 08-03-2004 fixed: in many windows the pagecounter (1/3) is not visible when 'View by icon'
+  - 08-03-2004 fixed: mplayer osd (white button) and playtime display (play button on remote) not working
+  - 08-03-2004 fixed: OSD invisible in 720x480 PAL60 mode - solved by osd calibration
+  - 08-03-2004 fixed: OSD calibration now shows OSD when calibration
+  - 08-03-2004 fixed: my music cddb names showed weird character at the end
+  - 08-03-2004 fixed: my music album info is only saved, if album exists in database
+  - 08-03-2004 fixed: my music album and top 100 says view list but it is icons
+  - 08-03-2004 fixed: pal60 (hopefully)
+  - 08-03-2004 fixed: mplayer.dll still showed during OSD
+  - 07-03-2004 fixed: my files, settings->scripts says view list but it is icons (reported by wabid)
+  - 08-03-2004 added: jcmarshall changed digitial audio things?
+  - 07-03-2004 added: 5 sec timeout for OSD
+  - 07-03-2004 fixed: one loop gif-animations play once but once only... on second use it just show last frame of gif-animation. (fixed ages ago)
+  - 07-03-2004 added: 1.5 sec. timeout to select button control if not moving 
+  - 07-03-2004 missing screensaver settings
+  - 07-03-2004 fixed: colour balance/brightness in movie playback
+  - 07-03-2004 added: OSD Ypos calibration (settings->screen calibration)
+  - 07-03-2004 added: Support for compressed texture archives (use new texture tool).
+  - 07-03-2004 added: extended max number of screenshots to 999
+  - 07-03-2004 fixed: bug that xbmc tried to open .tbn files for shoutcast files
+  - 07-03-2004 added: skin engine now supports pal/ en pal/media subdirectory which is used for pal boxes
+                      if its not in the pal/ subdirs then normal dirs are used
+                    so now its:
+                      skin/skinname/               (contains the .xmls)
+                      skin/skinname/fonts          (contains the fonts)
+                      skin/skinname/media          (contains the media/.xpr)
+                      skin/skinname/pal            (contains PAL specific .xmls)
+                      skin/skinname/pal/media      (contains PAL specific media)
+  - 07-03-2004 changed default skin to shadows/wabid/chokemans Dell mediacenter skin
+  - 07-03-2004 fixed: subtitles where drawn on top of OSD
+  - 07-03-2004 fixed: mplayer bar was visible during OSD
+  - 07-03-2004 fixed: reorganize music show username/password
+  - 07-03-2004 fixed: scan my programs deletes all default.tbns               
+  - 06-03-2004 fixed: scan my videos, programs, music shows username/password
+  - 06-03-2004 added: window select button for my music and my videos
+  - 06-03-2004 fixed: .tbn support for my music
+  - 04-03-2004 added: support for VFD displays & brightness control
+  - 04-03-2004 added: brightness/contrast/gamma control to OSD
+  - 04-03-2004 fixed: video small horizontal stripes
+  - 04-03-2004 fixed: video: mpeg1/2 most mpegs crash or play a few frames forward/backward/forward/backward
+  - 04-03-2004 fixed: video: divx: smooth_sample.rar on .it shows weird artifacts
+  - 04-03-2004 fixed: video: WMV:  racecars.rar on .it is played with totally the wrong colors
+  - 04-03-2004 fixed: quality issues with Hardware YV12 ->RGB converter 
+  - 04-03-2004 fixed: video: pause shows black screen
+  - 04-03-2004 fixed: view by icons is very slow.
+  - 04-03-2004 fixed: screenshots now work while video is playing
+  - 04-03-2004 fixed: Screenshots are now mapped in keymap.xml (default left thumbstick button on controller)
+  - 04-03-2004 fixed: mpeg1/2 was broken since Hardware YV12 ->RGB converter 
+  - 04-03-2004 fixed: my music playlist, cddb information where not shown in playlist
+  - 04-03-2004 fixed: DVD share label showed empty brackets when cdda in drive, trimming spaces behind a disclabel
+  - 04-03-2004 added: ff/rw for cdda
+  - 04-03-2004 added: Hardware YV12 to RGB converter for movie playback
+  - 04-03-2004 added: <displayremotecode> added to XBoxMediaCenter.xml to help universal remote users.  Displays the remote code with each button press.
+  - 03-03-2004 fixed: .asf streams didnt play
+  - 03-03-2004 fixed: problems with some tv's when switching between 4:3 / 16:9
+  - 03-03-2004 fixed: Scanning in My Programs no longer deletes the .tbn in the same directory as the program being scanned.
+  - 02-03-2004 added: backlight control for the LCD
+  - 02-03-2004 fixed: after skinchange the music overlay's time is badly positioned. After a restart it does load correctly.
+  - 02-03-2004 fixed: auto_ptr class does not handle arrays correct, added auto_aptr for array handling
+  - 02-03-2004 fixed: playback of Tivo (.ty) files
+  - 02-03-2004 fixed: added latest patch for OpenDMLv2.0 support to mplayer.dll
+  - 02-03-2004 added: logging of python errors to q:\log
+  - 02-03-2004 added: added playlist support for python (pls / m3u files)           
+  - 02-03-2004 fixed: golden oldie: press right in any window with just pagecounter:1/1 ->focus disappears
+  - 02-03-2004 fixed: show dvd status as DVD-ROM (status) or DVD-ROM (label)
+  - 02-03-2004 added: update LCD faster when doing ff/rw
+  - 01-03-2004 added: support for leftthumbbutton and rightthumbbutton
+  - 01-03-2004 added: LCD animation.
+  - 01-03-2004 fixed: my programs had no support for parent dir action
+  - 01-03-2004 fixed: smb directory history for my files and my pictures was broken
+  - 01-03-2004 changed: music info, cdda albums are not saved to database
+  - 01-03-2004 fixed: music info, album image was redownloaded everytime when album is read from database
+  - 01-03-2004 fixed: music info, a directory thumb was created each time music info was shown
+  - 01-03-2004 fixed: wma tag loader hasn't set CMusicInfoTag's filename (url) while reading tag
+  - 01-03-2004 fixed: my files: After deleteing, copying,... using the buttons, no control had the focus
+  - 01-03-2004 fixed: LCD stops updating when starting a slideshow and lcd in no-tv mode
+  - 01-03-2004 fixed: <homepath> in xboxmediacenter.xml only worked if last character was a backslash
+  - 01-03-2004 fixed: Screen calibration is broken when using compressed .xpr textures
+  - 01-03-2004 fixed: spin down HD immediately when playing a file from a share or DVD
+  - 01-03-2004 fixed: -in mpeg2: short periods of rewinding sometimes result in jumping forwards several minutes. usually a few seconds or more off when you press play
+                      -in divx: usually +- 5 seconds (or more) off when you press play after ffwd (check with mplayer osd enabled for time display)
+                         if you go quickly to 8x or 16x, let it seek forwards a few mins, press play, it sometimes resumes at the position where you started ffwd
+  - 01-03-2004 ogm (ogg video) seeking doesnt work at all, always goes back to start. works in mplayer, although mplayer also shows total time as 0 like xbmc
+  - 01-03-2004 fixed: animated .gif of floink (restore to background)
+  - 01-03-2004 fixed: ff / rw in MP3 and wma is broken. Always starts at 00:00 after pressing play again.
+  - 29-02-2004 added: Texture compression tool support for gifs.
+  - 29-02-2004 added: new visualisation Saville (thx to nmrs)
+  - 29-02-2004 fixed: thumbnails images slightly off-centre.
+  - 29-02-2004 added: more logging when scanning mp3's album art
+  - 29-02-2004 fixed: go to parent dir in my video always goes to to the top of the list, doesn't point to the directory we were just in
+  - 29-02-2004 changed: Time server only sets time once on boot.
+  - 29-02-2004 changed: Disabled the z-buffer (memory saving).
+  - 29-02-2003 changed: removed select button control from my music
+  - 28-02-2004 fixed: Bug in mod player panning causing some voices not to play
+  - 28-02-2004 added: feedback for user in select button control
+  - 28-02-2004 added: Texture compression tool for compressed textures, textures loaded without being processed by this are loaded uncompressed.
+  - 28-02-2004 added: my music: select button control for window switching
+  - 28-02-2004 fixed:   FF more then 4x freezed video output for divx/ogm movies
+  - 28-02-2004 changed: Configurable <screenshots> directory in XboxMediaCenter.xml
+  - 28-02-2004 changed: Better naming of screenshot files.
+  - 28-02-2004 fixed: disabled compressed textures for now. It caused skins to become ugly. 
+                      So its disabled until its solved. All sourcecode is still there. You can
+                      enable it by #define ALLOW_TEXTURE_COMPRESSION in guilib/gui3d.h
+  - 28-02-2004 fixed: directorys in the xml of the form $HOME\path didn't work if path was more than 8 characters.
+  - 28-02-2004 changed: Moved texture cache to a separate cache directory
+  - 28-02-2004 changed: lower memory use for texture caching
+  - 28-02-2004 fixed: hang when loading certain screens in some skins.
+  - 28-02-2004 added: take screenshots.  Only using 9 on remote.  No screenshots when video is playing yet.
+  - 27-02-2004 changed: compressed textures are cached for improved load times.
+  - 27-02-2004 changed: Gifs are now displayed as palettised textures instead of compressed (big load speed increase).
+  - 27-02-2004 fixed: display bug with multiple image textures
+  - 27-02-2004 fixed: animated gifs now load as compressed textures correctly
+  - 27-02-2004 added: Texture compression support
+  - 27-02-2004 added: improved texture memory management for BIG skins like project mayhem
+  - 27-02-2004 added: video:fixed after FF playing resumes where you started
+  - 27-02-2004 added: video:show current playtime during FF/RW
+  - 27-02-2004 added: shuffle & save playlist to my videos/playlist
+  - 27-02-2004 fixed: bug in keymap.xml change video<->gui is always done with X in any screen. So dont re-map X in my files or other windows
+  - 27-02-2004 fixed: bug with channel management in mod player
+  - 26-02-2004 added: Added delay for language changing as well as skins.
+  - 26-02-2004 fixed: lock up in mod loader if the module was invalid.
+  - 26-02-2004 added: navigate my music with LCD if TV is not used (settings->general->lcd)
+  - 26-02-2004 fixed: fall back to mediacenter skin if skin can not be loaded at startup
+  - 26-02-2004 fixed: skins are now sorted by name in general settings
+  - 26-02-2004 fixed: LCD looked a bit messy when playing cd's
+  - 25-02-2004 added: (patch from SF) my videos. show current play time when pressing PLAY
+  - 24-02-2004 fixed: mod player is dropping notes a lot. :(
+  - 24-02-2004 fixed: hangup when ftp-ing
+  - 24-02-2004 added: my programs if flattenning is enabled (but show only default.xbe is not) it will still show .cut as well..
+  - 24-02-2004 fixed: music playlist: switching between list, icons, large icons was uncontrolable
+  - 24-02-2004 added: show info on LCD about current audio/video file playing
+  - 24-02-2004 fixed: video playlist: skip+ on remote works while in the menu, does nothing in fullscreen.
+  - 24-02-2004 fixed: video playlist: menu button doesn't work for returning to main menu in video playlist screen (global binding), works fine in music playlists.
+  - 24-02-2004 fixed: video playlist: doesn't continue to next file when video ends (smb)
+  - 24-02-2004 fixed: mod player: s3m effects not working correctly
+  - 24-02-2004 fixed: music overlay displayed not every possible thumb for file
+  - 24-02-2004 added: music overlay displays tracknumber and duration for cdda without cddb
+  - 24-02-2004 added: my music: .tbn for music files
+  - 24-02-2004 fixed: music info saved a directory thumb for cdda
+  - 23-02-2004 fixed: playlist didn't advance while playing mods
+  - 23-02-2004 changed: new mod player code - much faster.
+  - 23-02-2004 fixed: tracker modules don't loop correctly (get random sounds on some of the channels).
+  - 23-02-2004 fixed: fixed some autostart problems with xbox games
+  - 23-02-2004 fixed: crashes for some mms .strm files
+  - 23-02-2004 added: prelimenary general support for LCD's
+  - 23-02-2004 added: video playlists
+  - 23-02-2004 moved: auto run settings from general settings into seperate window
+  - 23-02-2004 added: iso9660 directory cache.
+  - 23-02-2004 changed: my music, folder.jpg, album thumbs from allmusic and id3 album art is used for files and folders 
+                       (may needed to be delete: Q:\albums\thumbs and Q:\albums\thumbs\temp. And do a reorg)
+  - 22-02-2004 fixed: use volume amp. only for videos
+  - 22-02-2004 fixed: imdb lookup didnt work in my videos genre/actors/year/title
+  - 22-02-2004 fixed: Tunes in albuminfo screen now scroll when line is too long
+  - 22-02-2004 fixed: IMDB Lookup did not work for some movies
+  - 21-02-2004 added: autorun pictures now supports kodak picture cd's 
+  - 21-02-2004 added: GUI for changing cachesize settings 
+  - 21-02-2004 my music: folder.jpg stopped working (reported by chokeman)
+  - 21-02-2004 added: cachesize settings to settings.xml (still need a gui for it to change values)
+  - 20-02-2004 new default keymap.xml is as follows:
+    global           -> controller: start=stop music. remote: display=toggle FS
+    fullscreen video -> controller: A=pause/unpause, B=stop, X=toggle FS, Y=toggle OSD
+                                    black=show codec, white=toggle mplayer OSD, back=small step back
+                            remote: menu=OSD (back to leave OSD), select=small step back, back=zoom/normal
+
+  - 20-02-2004 fixed: all sections: scroll down list, change from small to big thumbs, scroll up again -> sometimes buttons flicker and xbmc goes weird
+  - 20-02-2004 fixed: movies without audio play 2 fast
+  - 20-02-2004 added: new action ACTION_SHOW_MPLAYER_OSD 83 (see guilib/key.h) which you can use when viewing videos to toggle mplayers osd on/off
+  - 19-02-2004 fixed: my music: sometimes when starting an .strm the cddb dialog pops up
+  - 19-02-2004 fixed: .tbn support for my programs
+  - 19-02-2004 added: my programs: view by large icons 
+  - 19-02-2004 fixed: cdda was broken
+  - 19-02-2004 fixed: more streams work now
+  - 19-02-2004 fixed: show status/progress when buffering/starting a stream
+  - 19-02-2004 fixed: streams now use a cache
+  - 19-02-2004 added: auto switch between 16:9 / 4:3 if choose best resolution is enabled  
+  - 19-02-2004 fixed: my music: select .pls with more then 1 stream in it-> icon button gets focus instead of 1st stream from .pls file
+  - 19-02-2004 fixed: my music: some .pls show red items (examples on .it)
+  - 18-02-2004 added: .tbn support for my videos, my files 
+  - 18-02-2004 fixed: problem with some streams like http://ogg.tv-radio.fr:1441/encoderfip.ogg
+  - 18-02-2004 fixed: reversed patch for openDML support since it broke playback of certain .avi movies
+  - 18-02-2004 fixed: problem with my weather if name included spaces
+  - 18-02-2004 added: pass songname & visualisation name to visualisation plugins
+  - 18-02-2004 fixed: play movie->pause->back 2 gui : video preview window isnt scaled correctly
+  - 18-02-2004 fixed: DTS passthrough (hopefully)
+  - 18-02-2004 changed: music database stays open when switching between music windows
+  - 18-02-2004 changed: music overlay strings (year, duration, track) are localizable now
+  - 17-02-2004 added: delete movie info in movies/title (press X)
+  - 17-02-2004 added: new actions in keymap.xml for copying, moving,deleting items. You can use them in my files
+  - 17-02-2004 changed: my music songs: directory reading and adding items to playlist speeded up 
+  - 17-02-2004 fixed: my music: directory history for album (sometimes) and smb broken
+  - 17-02-2004 fixed: cant compile project. its missing source files in CVS!!!
+  - 17-02-2004 fixed: GOOM only shows 1 channel
+  - 17-02-2004 fixed: music reorg doesn't work for file with a ' in name
+  - 17-02-2004 added: more logging 
+  - 17-02-2004 fixed: video database: movies (DVD#) from cd wont start if autorun is disabled
+  - 17-02-2004 fixed: video database: movies (DVD#) from cd wont start if autorun is enabled but mp3 (any) is playing
+  - 17-02-2004 fixed: reversed last patch to guicontrol.cpp (Skin changing broke the spin arrow, now works again.)
+                      causes major problems that 
+  - 17-02-2004 added: video database:select DVD# using remote control 0-9
+  - 17-02-2004 added: video database:select DVD# using L/R triggers
+  - 17-02-2004 fixed: video database: cd's with a number in cdname (40 days, 40 nights) can't be given a DVD#
+  - 17-02-2004 fixed: video database: 1st IMDB lookup for movie on CD shows HD instead of DVD#, gotta exit and lookup again
+  - 16-02-2004 fixed: pause now works with module player
+  - 16-02-2004 fixed: module player works with vis (may skip on many tracked modules)
+  - 16-02-2004 fixed: module player reports PTS
+  - 16-02-2004 changed: module player in it's own section
+  - 16-02-2004 changed: module player uses higher quality mixing
+  - 15-02-2004 added: Support for playing module (.mod, .s3m, .it, .xm, .669, etc). Very basic currently.
+  - 15-02-2004 fixed: short delay on skin change broke the spin arrow, now works again. Skin also now changes instantly if you switch control or go back to prev window.
+  - 15-02-2004 changed: every window, except settings windows without buttons, remember there last selected item and control
+  - 14-02-2004 added: short delay on skin change so you can scroll them quickly.
+  - 14-02-2004 added: skin loading speed improvments (350% faster).
+  - 14-02-2004 fixed: GUI bug when changing language or skin - spin control arrow always focuses on down arrow after a change
+  - 14-02-2004 fixed: exception when audio is paused and screensaver gets activated
+  - 13-02-2004 changed: my music windows remember last selected control
+  - 12-02-2004 added: my programs sf patch: show directory name if .xbe doesnt contain a description
+  - 11-02-2004 fixed: if playlist just has 1 song, then just play it instead of creating a playlist with only 1 song
+  - 11-02-2004 fixed: changed. use .pls for shoutcast (as b4), use .strm for movie/audio streaming
+  - 11-02-2004 fixed: caching .m3u files didnt work
+  - 11-02-2004 fixed: Skin change when playing video: thumbnail goes black, screen starts scrolling "Guns & Roses - November Rain (1988)" instead of .avi filename
+  - 11-02-2004 fixed: dont show full SMB path when loading a .m3u playlist
+  - 11-02-2004 fixed: aspect ratio for thumbnails
+  - 11-02-2004 fixed: my programs scan was broken
+  - 11-02-2004 fixed: out of memory problems for folders with many thumbnails
+  - 11-02-2004 added: localized strings for myweather
+  - 11-02-2004 fixed: choppy playback/avsync issues
+  - 11-02-2004 fixed: several codec related crashes
+  - 11-02-2004 fixed: mono audio playback was broken  
+  - 11-02-2004 fixed: dont use matrix screensaver during video playback. Dim display instead
+  - 11-02-2004 fixed: ff/rw for mymusic was broken
+  - 11-02-2004 added: log all calibration settings on startup
+  - 11-02-2004 fixed: changing screen->filters while video playing->crash
+  - 10-02-2004 fixed: choppy playback for AC3 wmv movie / digital output
+  - 10-02-2004 added: imdb thumbnails are now stored in thumbs\imdb by using IMDB numbers
+  - 10-02-2004 added: nocache option in OSD for very badly interleaved files
+  - 10-02-2004 fixed: my music, adding from album window to playlist, does not add in sortorder selected for tracks
+  - 10-02-2004 fixed: xbmc hangs on startup if <dvdplayer> (or other) tag is empty?
+  - 10-02-2004 fixed: position jumps several seconds ahead when you press play (02-10)
+  - 10-02-2004 changed: my music saving folder.jpg as temp thumb and resizing it
+  - 10-02-2004 added: settings screen window remembers last selected control
+  - 10-02-2004 added: sort by DVD# in my videos->view by title
+  - 10-02-2004 fixed: entering DVD# when viewing IMDB movie
+  - 09-02-2004 fixed: smb leaving open sessions
+  - 09-02-2004 fixed: SQLite database problems & upgraded to sqlite version of 8-feb-2004
+  - 09-02-2004 fixed: movies without audio played too fast
+  - 09-02-2004 updated: mplayer.dll to XVID codec 1.0 RC2 Jambo
+  - 09-02-2004 added: option to specify external dvd player (see xboxmediacenter.xml)
+  - 09-02-2004 fixed: FF/FW mpeg and divx: if you press play to return to normal playback after forwarding, playback often starts where you started forwarding
+  - 09-02-2004 added: View IMDB info now allows you to set the DVD number for movies located on DVDs. XBMC
+                      will ask you to insert the correct DVD when you l8 wanna play it
+  - 09-02-2004 added: view by large icons in my pictures
+  - 09-02-2004 fixed: my music: folder.jpg doesnt work with smb folders, only with local xbox folders
+  - 08-02-2004 fixed: ("not nice") <ipadres> tag in xml should be spelled <ipaddress>, or why not just <ip> or <xboxip>
+  - 09-02-2004 added: memory leak tracking and cleanup for visualisations (stops goom leaking 3MB a time).
+  - 09-02-2004 fixed: ("not nice") my weather: set a default value for refresh if not set in xml. seems to be 0 sec so if your xml is not updated you can get stuck
+  - 09-02-2004 added: settings window remembers last selected control
+  - 09-02-2004 added: my music: delete album info option   
+  - 09-02-2004 added: my music: delete CDDB  info option   
+  - 08-02-2004 fixed: my music: do SCAN 2x on a SMB folder -> songs are added 2x to the music database
+  - 08-02-2004 added: weather refresh patch from mynci
+  - 08-02-2004 added: more logging for imdb/http
+  - 08-02-2004 fixed: ff/rw doesnt work in video overlay
+  - 08-02-2004 fixed: FF/RW 2x, 4X on my music: after pressing play it starts where you started
+  - 08-02-2004 fixed: FF/RW 2x rewind on mpeg 1 or 2 videos does nothing 
+  - 08-02-2004 fixed: RW mp3 to 00:00->starts playing @ 00:02
+  - 08-02-2004 fixed: my pictures: it was possible to play a movie & view pictures
+  - 08-02-2004 fixed: IMDB thumbnails didnt work for SMB filenames
+  - 08-02-2004 fixed: XBMC become pretty slow if the log file became very big
+  - 08-02-2004 added: samba error dialogs
+  - 07-02-2004 added: folder.jpg supported in my music album
+  - 07-02-2004 fixed: my music: when a playlist is done playing (or a single tune) player should go back to filelist/playlist (from vis)
+  - 07-02-2004 fixed: my music: vis stopped when playing from other music window then playlist
+  - 07-02-2004 changed: Visualisation window is closed when stopping music
+  - 07-02-2004 fixed: animated gifs with a loopcount of 1
+  - 07-02-2004 added: show FF/RW status on video overlay as well
+  - 07-02-2004 fixed: when rewinding music comes to 00:00 it goes back into play mode again
+  - 07-02-2004 fixed: music RW icon was ugly
+  - 07-02-2004 fixed: dont start screensaver when scanning music or video
+  - 07-02-2004 fixed: video overlay (was messed up by latest updates)
+  - 06-02-2004 added: network browsing with samba and faster name resolving.
+  - 06-02-2004 fixed: choppy playback for ac3 movies and when ac3 passtru active
+  - 06-02-2004 added: <default> tag for my programs (set it in xboxmediacenter.xml)
+  - 06-02-2004 added: ff/rw for audio files
+  - 06-02-2004 added: folder.jpg is now shown in Music overlay
+  - 06-02-2004 fixed: albuminfo had no songs when reading from database
+  - 06-02-2004 added: Large Icons for my music
+  - 06-02-2004 added: musicdatabase exception handling and Log writes like videodatabase
+  - 06-02-2004 fixed: my music: top 100->view by icon->its showing defaultAudio.png instead of defaultAudioBIG.png
+  - 06-02-2004 fixed: ac3/avi movies are choppy (digital output)
+  - 06-02-2004 fixed: ac3/avi with passtru disabled wont play @ all
+  - 06-02-2004 added: new mplayer.dll with support for openDML in avi files (http://www.the-labs.com/Video/odmlff2-avidef.pdf)
+  - 05-02-2004 fixed: timing of animated .gif didnt work
+  - 05-02-2004 added: DHCP support (see xboxmediacenter.xml)
+  - 05-02-2004 fixed: OSD when selecting different osd submenu the selected icon didnt change
+  - 05-02-2004 added: view by large icons in my video
+  - 05-02-2004 fixed: FF 2x / 4x didnt seem 2 do anything
+  - 05-02-2004 added: SF patch 'step a few seconds back to see missed subtitles'. new action defined with number 76 (see key.h)
+  - 04-02-2004 added: support for video streaming(ogm,avi,mpg) via .pls (need nicer gui for it)
+                    try .pls file with : http://www.kicken.com/funnyfiles2/www.kicken.com-echte.mannen.mpg
+  - 04-02-2004 added: added user python scripts to cvs
+  - 04-02-2004 changed: my video default settings is now unstack
+  - 04-02-2004 fixed: shutdowntimer : xbox shuts down while listening to a shoutcast stream
+  - 04-02-2004 fixed: musicinfo window sometimes shows build string
+  - 04-02-2004 fixed: musicinfo window, rating and date was not/incorrect shown
+  - 04-02-2004 added: log mplayer message and keep copy of previous log (xbmc.old.log)
+  - 04-02-2004 added: XBMC now logs to xbmc.log when starting up. Helps finding those installation problems..
+  - 04-02-2004 added: my video: scan button now does auto-IMDB lookup for every movie found
+  - 03-02-2004 fixed: slow reboot/shutdown etc when python scripts where running
+  - 03-02-2004 added: seperate section in keymap.xml for controlling the OSD
+  - 03-02-2004 fixed: icon for settings in home
+  - 03-02-2004 fixed: my weather layout for NTSC 
+  - 03-02-2004 fixed: Cached albuminfo was not queried with album, path
+  - 03-02-2004 changed: more my music scan speedup
+  - 03-02-2004 fixed: if ogg tag file had no tracknumber, a wired tracknumber was shown
+  - 03-02-2004 added: support for .asx streams. Put your the URL of you stream in a .pls file and play it.
+               example of a stream http://ms.stream.garnierprojects.com/veronica
+                                   http://64.236.34.196:80/stream/1040
+  - 03-02-2004 added: video bookmarks 
+  - 03-02-2004 added: if (correct) IMDB is not found you can do a manual lookup now.
+  - 02-02-2004 fixed: press play after FF 2x or 4x returns to point b4 doing FF
+  - 02-02-2004 added: my weather (thx to mynci for programming it!)
+  - 02-02-2004 added: replay tv patch from sourceforge (dunno if it works though, since i dont got a replaytv unit...)
+  - 02-02-2004 added: my video: remember default active window (movies,genre,actors,year or title)
+  - 02-02-2004 added: new function in mplayer.dll to request the current playtime
+  - 02-02-2004 fixed: file stacking: all movie names under 10 chars (without extension) are removed from the list (names like: Jet lag.avi,Python.avi...)
+  - 02-02-2004 added: my videos: view by title
+  - 02-02-2004 fixed: after changing skins theres no element selected in main menu - happens always when changing to lixxbox, sometimes with other skins
+  - 02-02-2004 added: manual IMDB for my video allowing you to enter a movie name and xbmc will show the imdb info for it
+  - 02-02-2004 added: my video sort by year,rating,name for genres,actors,years
+  - 02-02-2004 update: python: fixed some bugs and added playlist's / window buttons for use in scripts
+  - 02-02-2004 fixed: my music press Y on a folder with mp3's and an .nfo file in it ->crash
+  - 02-02-2004 fixed: my files hardisk sleeps while copying file to it
+  - 02-02-2004 fixed: OSD audio channel switching (DVD source): works, but available channels are displayed as 1 even if the DVD has 2 or more
+  - 02-02-2004 fixed: spectrum analyser visualisation
+  - 02-02-2004 fixed: fast forwarding: sometimes when you quickly go to 4x ffwd the picture is frozen while seeking continues
+  - 02-02-2004 fixed: fixed mymusic didnt remember sort by settings
+  - 02-02-2004 added: splitted ac3 passtru option in 2 seperate options. One for stereo AC3 and one for multichannel AC3
+  - 01-02-2004 fixed: avsync
+  - 01-02-2004 fixed: screensaver popped up when listening to music & watching visualisation
+  - 01-02-2004 fixed: xbmc didnt support .m3u files without the #EXTINF markers
+  - 25-01-2004 fixed: IMDB: cover + title is sometimes from a previously checked movie, title is sometimes "Xbox Mediacenter CVS". cover loading slower than before?
+  - 31-01-2004 fixed: xbmc shows way 2 long playtimes for mp3's in a .m3u file
+  - 31-01-2004 fixed: entering timecode while viewing a movie -> info screen didnt dissapear
+  - 31-01-2004 fixed: screensaver started between 2 movies or when viewing a pciture slideshow
+  - 31-01-2004 fixed: added option for skinners to thumbnailpanel for supporting thumbnails like 128x128 instead of 64x64
+  - 31-01-2004 fixed: avsync issues for movies with ac3 audio when NOT using ac3 passtru
+  - 31-01-2004 fixed: OSD now remains longer onscreen when seeking
+  - 30-01-2004 fixed: .m3u files found via SMB gets cached locally on the xbox, but this fails if the .m3u file doesnt contain the full path to the mp3 files
+  - 30-01-2004 fixed: pressing Y on a couple of songs adds them all to the playlist BUT just plays the 1st song and then stops
+  - 30-01-2004 fixed: my music songs, sort for root items was not loaded from settings
+  - 30-01-2004 added: my music songs, Sort by filename
+  - 30-01-2004 added: speeded up FTP server
+  - 30-01-2004 fixed: my music playlist, tag's not loaded
+  - 30-01-2004 changed: my music, speeded up switching to playlist a bit
+  - 29-01-2004 fixed: my music songs, queueing items to playlist speeded up again
+  - 29-01-2004 fixed: IMDB problems when doing IMDB on a folder without any video files
+  - 29-01-2004 fixed: avsync issues for analog/digital output movies with 2 channel audio
+  - 29-01-2004 fixed: screensaver didnt start problem
+  - 29-01-2004 added: HTTP patch from sourceforge
+  - 29-01-2004 added: mplayer: updated with xvid rc1
+  - 29-01-2004 fixed: adding music to playlist, starts playing last active playlist (eg. videoplaylist)
+  - 29-01-2004 added: FF/RW patch from sourceforge
+  - 28-01-2004 added: my pictures recursive slideshow
+  - 28-01-2004 fixed: adding complete albums to playlist broken
+  - 28-01-2004 changed: my music, more scan speedup
+  - 27-01-2004 fixed: avsync for mono audio movies
+  - 27-01-2004 fixed: next/prev picture doesnt work in my pictures?
+  - 27-01-2004 fixed: ogg tag reading was broken
+  - 27-01-2004 changed: my music speed up scan
+  - 27-01-2004 fixed: my music, albums with same name and different artist are recognized correctly now
+  - 27-01-2004 added: my music, recently played albums
+  - 27-01-2004 added: my music, temp dir for album thumbs, which are not scanned
+  - 27-01-2004 fixed: my music, button view by list/icon swapped
+  - 26-01-2004 fixed:  file stacking displays disc logos and selecting works, but no auto-continue at the end of a disc
+  - 26-01-2004 fixed:  dont use filestacking on .nfo files 
+  - 26-01-2004 synced: mplayer.dll with mplayer's cvs of 25-1-2004
+                          -fixed problem with sami subtitles
+                          -now uses ffmpeg for .fli video's
+                          -matroska (.mkv) fixes
+                          -realmedia fixes
+                          -MPEG Aspect code 4 fixed
+                          -fixed chrom-swapping in Hauppauge Macroblock decoder
+                          -MMX and SSE2 optimized H.263 denoiser
+                          -MMX and MMX2 optimized interlaced DCT decision
+                          -slightly optimized (2x faster) the MPEG layer 3 decoder
+                          -grayscale coded MJPEG decoding support
+                          -avimszh and avizlib decoders
+                          -packed" XVID decoding
+                          -fixed some bugs in RV20 B-frames decoding
+
+  - 24-01-2004 fixed: crash if IMDB lookup or album art lookup returned an 256 color .gif thumbnail 
+  - 24-01-2004 added: SF patch for my programs (flatten hierarchy & default.xbe)
+  - 23-01-2004 added: enable/disable file stacking in my videos
+  - 23-01-2004 added: directory history to my video genre,years,actors
+  - 23-01-2004 added: added my video view by years
+  - 23-01-2004 added: added my video view by actors 
+  - 23-01-2004 fixed: crash in file stacking and extended it to a maximum of 20 cd's
+  - 23-01-2004 fixed: OSD slider elements are doubled
+  - 23-01-2004 fixed: no G: support in filezilla ftp server
+  - 22-01-2004 fixed: thumbnails with a bigger width then height show weird effect 
+  - 22-01-2004 added: remember last selected item in my programs
+  - 22-01-2004 added: filestacking 
+  - 21-01-2004 added: show drive status or cd/dvd DISC label when viewing shares
+  - 21-01-2004 added: to give a folder a thumbnail, you can now place a folder.jpg in the folder 
+  - 21-01-2004 added: Time code search patch from SF (enter timecode while viewing a movie)
+  - 19-01-2004 added: UDF and ISO9660 disc label read on insertion
+  - 19-01-2004 fixed: visualisations now only show id3tag info when switching to next song
+  - 19-01-2004 fixed: updated 2 l8test mplayer of 19-1-2003
+  - 19-01-2004 fixed: dont allow switching audio streams if there's only 1 stream
+  - 18-01-2004 fixed: dvd iso9660 playback
+  - 18-01-2004 fixed: mymusic playlists button didnt work anymore
+  - 18-01-2004 fixed: SMB shares require a trailing / or else .. is missing and going back to root is impossible
+  - 18-01-2004 fixed: dont allow switching between gui & full screen video when dialog is onscreen
+  - 18-01-2004 fixed: refresh imdb info now pops up the movie selection screen as well
+  - 18-01-2004 fixed: my pictures slideshow sometimes didnt start
+  - 17-01-2004 fixed: added new option to OSD to switch between multiple audio stream
+  - 17-01-2004 fixed: added sf patch : support relative playlists
+  - 17-01-2004 fixed: music visualisations now use the full screen area
+  - 17-01-2004 fixed: volume amplification settings were not saved
+  - 17-01-2004 added: play dvd button to my videos
+  - 17-01-2004 added: general->settings show (1/3) etc for the skin spin control
+  - 17-01-2004 fixed: smoother dvd playback 
+  - 16-01-2004 added: resizing mp3 album art while scanning
+  - 16-01-2004 added: support for .mkv (matroska) files
+  - 16-01-2004 changed: my music, increase speed of scan
+  - 16-01-2004 fixed: my music songs does not remember view by icon/list setting correct
+  - 15-01-2004 big files over SMB now list correctly ("4.4G" for a dvdr image), but when playing the length is only ~300mb
+  - 14-01-2004 fixed: added emulation of win32 api GetVersion() for DVD playback
+  - 14-01-2004 fixed: SMB support for files > 2gb (hopefully)
+  - 14-01-2004 added: Showing "Various Artists" in album view, if album has different artists (need reorg for current albums)
+  - 14-01-2004 fixed: pop-ups "insert DVD" etc. where sometimes shown, when browsing HDD directories
+  - 13-01-2004 changed: screensaver to 2stage screensaver patch from SF
+  - 13-01-2004 fixed: XBMC as dashboard doesnt work for F: only for E:  
+  - 13-01-2004 fixed: more fixes for files >2 Gb
+  - 12-01-2004 fixed: Remember active control when going back to main menu
+  - 12-01-2004 fixed: imdb now scrolls tagline/plot outline if they are 2 big
+  - 12-01-2004 fixed: draw shadow around subtitles so they are much better visible
+  - 12-01-2004 fixed: allow user to select if they listen to analog or digital output
+  - 11-01-1004 fixed: subtitles are not in sync when frame rate conversion is enabled
+  - 11-01-2004 added: duration of Xing VBR mp3-files
+  - 11-11-2004 added: XBMC as dashboard
+  - 11-11-2004 fixed: aspect ratio of thumbs = wrong (mrMario)
+  - 11-01-2004 fixed: imdb info was not working anymore due to changed imdb.com html layout
+  - 11-01-2004 added: Show more info in video section of general system information screen
+  - 11-01-2004 fixed: play mp3, pressing X when a dialog is onscreen->crash
+  - 11-01-2004 fixed: Try to launch an AVI while playing a WMV in thumbnail -> crash. Works ok if you stop the WMV first
+  - 11-01-2004 fixed: menu in 720x576 PAL. playing video in 720x480 PAL60, press X -> sound continues playing, totally blank picture. stop works fine  
+  - 11-01-2004 added: sf patch for IMDB
+  - 11-01-2004 added: sf patch for screensaver
+  - 11-01-2004 added: sf patch which adds framerate conversion on/off to OSD
+  - 07-01-2003 fixed: When playing an mp3 that is not stored in the database the scrolling info at the bottom right of the screen only shows the filename
+  - 06-01-2003 fixed: if you have no albums.. and you do a 'sort'. XBMC hangs
+  - 06-01-2004 fixed: crash when adding directory with .nfo file to playlist
+  - 06-01-2004 fixed: my music songs, record button couldn't get focus
+  - 06-01-2004 fixed: reorg my music database remote file reading and improved error handling
+  - 01-01-2004 fixed: shuffle is now more random
+  - 29-12-2003 added: when accessing playlist window, selected item is the current playing item
+  - 29-12-2003 fixed: Expert settings in xboxmediacenter.xml for shares had ISO9660:// instead of iso9660://
+  - 29-12-2003 added: frame rate adjustments/conversions (settings->screen) for perfect playback of ntsc movies in pal mode and vice versa
+  - 29-12-2003 fixed: choppy playback since last mplayer.dll
+  - 28-12-2003 fixed: checkboxes have shadow around it. Should only be in OSD not in GUI
+  - 23-12-2003 added: reorg my music database, cleans up database and re-reads tags
+  - 22-12-2003 fixed: avsync problem with movies which have mono audio
+  - 22-12-2003 fixed: mplayer compiled with gcc 3.3 & xvid codec updated to 1.0.0 beta 2
+  - 22-12-2003 added: more postprocessing settings in settings->screen->filters
+  - 21-12-2003 fixed: key repeat problem with remote control
+  - 21-12-2003 fixed: crash in shoutcast
+  - 20-12-2003 fixed: problems with quote (') character in filenames & music database
+  - 20-12-2003 fixed: seeking problems with xbms protocol
+  - 20-12-2003 fixed: imdb crashes with some filenames like '13th Child.avi'
+  - 20-12-2003 added: show pause symbol while pause during fullscreen
+  - 20-12-2003 fixed: some crashes in OSD
+  - 20-12-2003 fixed: remote control now works in OSD
+  - 19-12-2003 fixed: cddb is searched on next track if no cddb info is available
+  - 19-12-2003 fixed: allmusic.com, if album has an other name then in tag, thumb saved under wrong name 
+  - 19-12-2003 added: support for wma tags 
+  - 17-12-2003 fixed: play movie->stop->cursor is @ start of the list.
+  - 17-12-2003 fixed: IMDB: stripped spaces before votes
+  - 17-12-2003 added: OSD
+  - 17-12-2003 added: myfiles :start apps & play files  by clicking on the file
+  - 17-12-2003 fixed: xvid problems
+  - 16-12-2003 added: support for id3 cover art when scanning media
+  - 14-12-2003 fixed: old cached subtitles on T: get deleted b4 playing a movie
+  - 14-12-2003 fixed: some xvids (Dave_Gale_AC3_TEST.avi) that are synced with ac3 passthru are desync with liba52 output. synced with mplayer on linux and win32
+  - 14-12-2003 added: first look for subtitles in subtitle dir, then in movie dir
+  - 14-12-2003 fixed: could not copy files from D: -> hd in my files
+  - 13-12-2003 added subtitle font/size selection in settings->screen->subtitles
+  - 13-12-2003 added deinterlace/postprocessing filter (settings->screen->filters)                    
+  - 13-12-2003 added hardware audio delay compensation
+  - 13-12-2003 My Music: Top100 and Artists view shows incorrect button label "create thumbnails", also view by name/size/ should be swapped
+  - 13-12-2003 My Music: start playing an mp3, add 2 other mp3s to playlist, switch to playlist view, press Next -> crash
+  - 13-12-2003 my music cleanup
+  - 05-12-2003 My Programs: some people reporting that any program launch on hd crashes -> fixed by http server related change on 12-11?
+  - 07-12-2003 beeps in ogm & realmedia files
+  - 08-12-2003 xvid with ac3 passthru - audio sync is lost when skipping back and forth a few times
+  - 08-12-2003 URGENT: xbmc launch hangs if settings.xml/calibration.xml is not there
+  - 07-12-2003 fixed DNS resolving for shoutcast
+  - 06-12-2003 fixed imdb problem that it couldnt find the info for some movies
+  - 06-12-2003 fixed imdb crashes 
+  - 06-12-2003 xbmc gives a dialog when .xml file is invalid
+  - 06-12-2003 cache buffer sizes are 8 megs for remote/dvd and 1 meg for local files
+  - 03-12-2003 ac3 passthru working again for ac3 audio files with any number of channels
+  - 03-12-2003 2nd/3rd/4th controller ports don't work - if 4 controllers are connected, controls go crazy. controller only works right on 1st port.
+  - 03-12-2003 "output to all speakers" broken with new mplayer.dll, output only on front speakers
+  - 02-12-2003 press A on any mp3 while one is already playing = crash
+  - 02-12-2003 vobsubs working fine incl. lang selection (tested by poing)
+  - 30-11-2003 improved: pictures/slideshow now uses YUY2 overlays for improved quality
+  - 29-11-2003 added: separate UDF share
+  - 28-11-2003 fixed: subtitle flicker
+  - 28-11-2003 added: auto execute script at startup (see python\autoexec.py)
+  - 28-11-2003 added: windows and controls which makes it possible to draw images and text in xbmc with python
+  - 28-11-2003 fixed: System info now shows 4:3 and 16:9 correctly
+  - 28-11-2003 fixed: Long subtitles on very small movies now display correctly
+  - 28-11-2003 fixed : view as icons/list was reversed in my music
+  - 28-11-2003 fixed : sort by showed 'create thumbnails' in my music
+  - 27-11-2003 added: filezilla
