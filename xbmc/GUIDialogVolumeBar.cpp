@@ -76,8 +76,13 @@ bool CGUIDialogVolumeBar::OnMessage(CGUIMessage& message)
       }
     }
     break;
+  case GUI_MSG_LABEL_SET:
+    {
+      if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_VOLUME_LEVEL_TEXT)
+        CGUIDialog::OnMessage(message);
+    }
   }
-  return CGUIDialog::OnMessage(message);
+  return false; // don't process anything other than what we need!
 }
 
 void CGUIDialogVolumeBar::ResetTimer()
