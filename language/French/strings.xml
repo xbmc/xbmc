@@ -1111,4 +1111,16 @@
     <id>357</id>
     <value>Arret automatique de la console</value>
   </string>
+  <string>
+    <id>361</id>
+    <value>Diaporama inversé</value>
+  </string>   
+  <string>
+    <id>362</id>
+    <value>Transparence de l'economiseur d'écran (%)</value>
+  </string>
+  <string>
+    <id>363</id>
+    <value>Lister par fichier</value>
+  </string>   
 </strings>
