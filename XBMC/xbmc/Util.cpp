@@ -1123,7 +1123,7 @@ void CUtil::SetThumb(CFileItem* pItem)
 	{
     // no thumb does NOT exits
 		bool bGotIcon(false);
-		if (CUtil::IsRemote(strThumb) )
+		if (CUtil::IsRemote(pItem->m_strPath) )
 		{
 			CFile file;
 			CStdString strThumbnailFileName;
