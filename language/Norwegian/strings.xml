@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.172. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.173. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -524,6 +524,7 @@
   <string><id>758</id><value>Fjerner programlink</value></string>  
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Spill på nettet</value></string>
+  <string><id>1000</id><value>Forhåndsvisning av skjermbeskytter</value></string>
 
   <string><id>1396</id><value>Forbigående</value></string>
   <string><id>1397</id><value>og</value></string>
@@ -577,16 +578,16 @@
   <string><id>10503</id><value>Musikk/artister</value></string>
   <string><id>10504</id><value>Musikk/sjangere</value></string>
   <string><id>10505</id><value>Musikk/topp100</value></string>
-  <string><id>11000</id><value>tastatur</value></string>
-  <string><id>12000</id><value>Valgdialog</value></string>
-  <string><id>12001</id><value>Musikk/informasjon</value></string>
-  <string><id>12002</id><value>OK-dialog</value></string>
-  <string><id>12003</id><value>Filmer/informasjon</value></string>
-  <string><id>12004</id><value>Skript/informasjon</value></string>
-  <string><id>12005</id><value>Fullskjermsvisning</value></string>
-  <string><id>12006</id><value>Lydvisualisering</value></string>
-  <string><id>12007</id><value>Bilder/bildevisning</value></string>
-  <string><id>12008</id><value>Filstablingsdialog</value></string>
+  <string><id>10506</id><value>Programmer</value></string>
+  <string><id>10507</id><value>Konfigurasjon</value></string>
+  <string><id>10508</id><value>Værmelding</value></string>
+  <string><id>10509</id><value>Spilling over nettverk</value></string>
+  <string><id>10510</id><value>Tillegg</value></string>
+  <string><id>10511</id><value>Systeminformasjon</value></string>
+  <string><id>10512</id><value>Min musikk - Album</value></string>
+  <string><id>10513</id><value>Min musikk - Artist</value></string>
+  <string><id>10514</id><value>Min musikk - Sjanger</value></string>
+  <string><id>10515</id><value>Min musikk - Topp 100</value></string>
   <string><id>10516</id><value>Min musikk - Bibliotek</value></string>
   <string><id>10517</id><value>Min musikk - Spilleliste</value></string>
   <string><id>10518</id><value>Min video - Skuespiller</value></string>
