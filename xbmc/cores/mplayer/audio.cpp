@@ -182,8 +182,9 @@ static float audio_get_delay()
 	FLOAT fDelay=m_pAudioDecoder->GetDelay();
   fDelay += (float)(m_pAudioDecoder->GetBytesInBuffer() + pao_data->buffersize) / (float)pao_data->bps;
 	return fDelay;
-	//return (float)(m_pAudioDecoder->GetBytesInBuffer() + pao_data->buffersize) / (float)pao_data->bps;
-	
+
+  //mplayer:
+	//return (float)(buffered_bytes + ao_data.buffersize)/(float)ao_data.bps;	
 }
 
 // to set/get/query special features/parameters

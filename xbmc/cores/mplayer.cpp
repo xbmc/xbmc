@@ -585,7 +585,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			}
 			
     }
-
+#if 0
     if (!g_stSettings.m_bUseDigitalOutput)
     {
       // if we're playing an movie with AC3 audio and are using the analog output
@@ -603,6 +603,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
          SetAVDelay( -0.130f );
       }
     }
+#endif
   }
   m_bIsPlaying= true;
 	if ( ThreadHandle() == NULL)

@@ -37,6 +37,7 @@
 #define CALC_DELAY_STARTED 1
 #define CALC_DELAY_DONE		 2
 
+static long buffered_bytes=0;
 //***********************************************************************************************
 void CALLBACK CASyncDirectSound::StaticStreamCallback(LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus)
 {
@@ -48,13 +49,17 @@ void CALLBACK CASyncDirectSound::StaticStreamCallback(LPVOID pStreamContext, LPV
 //***********************************************************************************************
 void CASyncDirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 {
+  buffered_bytes -=m_dwPacketSize;
+  if (buffered_bytes<0) buffered_bytes=0;
 }
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
 CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample)
 {
+  buffered_bytes=0;
 	m_pCallback=pCallback;
   
   bool  bAudioOnAllSpeakers(false);
@@ -82,10 +87,9 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	LARGE_INTEGER qwTicksPerSec;
   QueryPerformanceFrequency( &qwTicksPerSec );   // ticks/sec
 	m_dwTicksPerSec=qwTicksPerSec.QuadPart;
-	
-	m_dwPacketSize		 = 1152 * (uiBitsPerSample/8) * iChannels;
+
 	m_bPause           = false;
-	m_iAudioSkip	   = 1;
+	m_iAudioSkip	     = 1;
 	m_bIsPlaying       = false;
 	m_bIsAllocated     = false;
 	m_pDSound          = NULL;
@@ -108,7 +112,12 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 
 
 	// Create enough samples to hold approx 2 sec worth of audio.
-	m_dwNumPackets = ( (m_wfx.nSamplesPerSec / ( m_dwPacketSize / ((uiBitsPerSample/8) * m_wfx.nChannels) )) / 2);
+	
+	//m_dwPacketSize		 = 1152 * (uiBitsPerSample/8) * iChannels;
+	//m_dwNumPackets = ( (m_wfx.nSamplesPerSec / ( m_dwPacketSize / ((uiBitsPerSample/8) * m_wfx.nChannels) )) / 2);
+  m_dwPacketSize=1024;
+  m_dwNumPackets=16;
+
 	for (DWORD dwX=0; dwX < m_dwNumPackets ; dwX++)
 		m_pbSampleData[dwX] = (BYTE*)XPhysicalAlloc( m_dwPacketSize, MAXULONG_PTR,0,PAGE_READWRITE|PAGE_NOCACHE);
 	m_adwStatus		 = new DWORD[ m_dwNumPackets ];
@@ -291,6 +300,7 @@ HRESULT CASyncDirectSound::Resume()
 //***********************************************************************************************
 HRESULT CASyncDirectSound::Stop()
 {
+  buffered_bytes=0;
 	if (m_bPause) return S_OK;
 	m_bPause=true;
 
@@ -390,9 +400,6 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 		if( FindFreePacket(dwIndex) )
 		{
 			XMEDIAPACKET xmpAudio = {0};
-
-//			DirectSoundDoWork();
-
 			
 			DWORD iSize=m_dwPacketSize;
 			if (len < m_dwPacketSize) 
@@ -410,37 +417,18 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 			xmpAudio.pdwCompletedSize = NULL;
 			xmpAudio.prtTimestamp     = NULL;
 			xmpAudio.pContext         = NULL;
-
+      
 			memcpy(xmpAudio.pvBuffer,&data[iBytesCopied],iSize);
 			if (m_pCallback)
 			{
 				m_pCallback->OnAudioData(&data[iBytesCopied],iSize);
 			}
-
-/*			if (m_iCalcDelay == CALC_DELAY_START)
-			{
-				// start a new delay measurement
-				xmpAudio.pContext=((LPVOID)0x1234);	// calculate delay for this packet
-				LARGE_INTEGER curTime;
-				QueryPerformanceCounter( &curTime);		// set start time
-				m_startTime = curTime.QuadPart;
-				m_iCalcDelay = CALC_DELAY_STARTED;	// run it
-			}
-
-			if (m_iCalcDelay == CALC_DELAY_DONE)
-			{
-				m_fCurDelay = (FLOAT(m_delay))/ ((FLOAT)m_dwTicksPerSec);
-
-			}
-*/
 			if (DS_OK != m_pStream->Process( &xmpAudio, NULL ))
 			{
-				//m_iCalcDelay = CALC_DELAY_DONE;
-				//mp_msg(0,0,"IDirectSoundStream::Process() failed");
 				return iBytesCopied;
 			}
-			////mp_msg(0,0,"audio decoder process done");
-			iBytesCopied+=iSize;
+			buffered_bytes+=iSize;
+      iBytesCopied+=iSize;
 			len -=iSize;
 		}
 		else 
@@ -470,6 +458,8 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 //***********************************************************************************************
 DWORD CASyncDirectSound::GetBytesInBuffer()
 {
+  return buffered_bytes;
+  /*
 	DWORD dwBytesInBuffer=0;
 	for( DWORD i = 0; i < m_dwNumPackets; i++ )
   {
@@ -479,16 +469,16 @@ DWORD CASyncDirectSound::GetBytesInBuffer()
 			dwBytesInBuffer+=m_dwPacketSize;
 		}
 	}
-	return dwBytesInBuffer;
+	return dwBytesInBuffer;*/
 }
 
 //***********************************************************************************************
 FLOAT CASyncDirectSound::GetDelay()
 {
 	if (g_stSettings.m_bUseDigitalOutput)
-		return -0.049f;			//(Ac3 encoder 29ms)+(receiver 20ms)
+		return 0.049f;			//(Ac3 encoder 29ms)+(receiver 20ms)
 	else
-		return -0.008f;			//PCM output 8ms
+		return 0.008f;			//PCM output 8ms
 }
 
 //***********************************************************************************************
