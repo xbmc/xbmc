@@ -58,7 +58,7 @@ public:
 	virtual void		RegisterAudioCallback(IAudioCallback* pCallback);
 	virtual DWORD		GetChunkLen();
 	virtual FLOAT		GetDelay();
-	CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers = 0, char* strAudioCodec = "", bool bDelayFirstAudioPacket = false);
+	CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers = 0, char* strAudioCodec = "");
 	virtual ~CASyncDirectSound();
 
 	virtual DWORD 	AddPacketsResample(unsigned char* data, DWORD len);
@@ -104,8 +104,6 @@ private:
 	DWORD*								m_adwStatus;
 	bool									m_bPause;
 	bool									m_bIsPlaying;
-  bool                  m_bDelayFirstAudioPacket;
-  bool                  m_bFirstPacketDone;
 	bool									m_bIsAllocated;
 	bool									m_bFirstPackets;
 	PBYTE									m_VisBuffer;

@@ -233,13 +233,11 @@ bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, 
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers, char* strAudioCodec, bool bDelayFirstAudioPacket)
+CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers, char* strAudioCodec)
 {
 	buffered_bytes=0;
 	m_pCallback=pCallback;
 
-  m_bFirstPacketDone       = false;
-  m_bDelayFirstAudioPacket = bDelayFirstAudioPacket;
 	m_bResampleAudio         = false;
 	if (bResample && g_guiSettings.GetBool("AudioOutput.HighQualityResampling") && uiSamplesPerSec != 48000)
 		m_bResampleAudio = true;
@@ -682,17 +680,6 @@ DWORD CASyncDirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
 //***********************************************************************************************
 DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 {
-  //Don't accept first packet recieved from mplayer since
-  //video modes(video_config) is set after this is recieved.
-  //video_config takes longer than this sample will last
-  //and such will make the renderer run out of data
-  //mplayer should sync this up by itself quickly.
-  if(!m_bFirstPacketDone)
-  {
-    m_bFirstPacketDone=true;
-    if(m_bDelayFirstAudioPacket) return 0;
-  }
-
 	// Check if we are resampling using SSRC
 	if (m_bResampleAudio)
 		return AddPacketsResample(data, len);
