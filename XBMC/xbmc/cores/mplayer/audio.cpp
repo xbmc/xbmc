@@ -86,7 +86,7 @@ static int audio_init(int rate,int channels,int format,int flags)
 		mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
 		if (strstr(strAudioCodec,"SPDIF"))
 		{
-      if (g_stSettings.m_bUseDigitalOutput && g_stSettings.m_bAC3PassThru )
+      if (g_stSettings.m_bUseDigitalOutput && (g_stSettings.m_bDD_DTSMultiChannelPassThrough || g_stSettings.m_bDDStereoPassThrough) )
       {
 			  bAC3PassThru=true;
       }
