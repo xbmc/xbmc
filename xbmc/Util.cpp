@@ -357,11 +357,11 @@ bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSub
     {
       CLog::Log("Error initializing network. To setup a network you must choose:");
       CLog::Log("Static ip:"); 
-      CLog::Log("  fill in the <ipadres>, <netmask>, <defaultgateway>, <nameserver> tags in xboxmediacenter.xml");
+      CLog::Log("  fill in the <ip>, <netmask>, <defaultgateway>, <nameserver> tags in xboxmediacenter.xml");
       CLog::Log("DHCP:");
-      CLog::Log("  just set <ipadres>DHCP</ipadres> in xboxmediacenter.xml");
+      CLog::Log("  just set <ip>DHCP</ip> in xboxmediacenter.xml");
       CLog::Log("use existing settings from dashboard:");
-      CLog::Log("  leave the <ipadres>, <netmask>, <defaultgateway>, <nameserver> tags in xboxmediacenter.xml empty");
+      CLog::Log("  leave the <ip>, <netmask>, <defaultgateway>, <nameserver> tags in xboxmediacenter.xml empty");
       CLog::Log("your current setup doesnt do any of those options. You filled in some tags, but not all!!");
     }
   }
