@@ -56,6 +56,8 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
 	// set the correct ID range...
 	m_dwIDRange = 8;
 	m_iScreen = 0;
+	// set the network settings so that we don't reset them unnecessarily
+	m_iNetworkAssignment = -1;
 }
 
 CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
@@ -332,6 +334,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
 		{
 			CSettingInt *pSettingInt = (CSettingInt*)pSetting;
 			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+			pControl->AddLabel(g_localizeStrings.Get(351), LCD_MODE_NONE);
 			pControl->AddLabel(g_localizeStrings.Get(630), LCD_MODE_NORMAL);
 			pControl->AddLabel(g_localizeStrings.Get(14023), LCD_MODE_NOTV);
 			pControl->SetValue(pSettingInt->GetData());
@@ -465,25 +468,45 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 		CBaseSettingControl *pSettingControl = m_vecSettings[i];
 		pSettingControl->Update();
 		CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-		if (strSetting == "Pictures.AutoSwitchPercentage")
+		if (strSetting == "Pictures.AutoSwitchUseLargeThumbs" || strSetting == "Pictures.AutoSwitchMethod")
+		{
+			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Pictures.UseAutoSwitching"));
+		}
+		else if (strSetting == "Pictures.AutoSwitchPercentage")
 		{	// set visibility based on our other setting...
 			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-			if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("Pictures.AutoSwitchMethod") == 2);
+			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Pictures.UseAutoSwitching") && g_guiSettings.GetInt("Pictures.AutoSwitchMethod") == 2);
+		}
+		else if (strSetting == "Programs.AutoSwitchUseLargeThumbs" || strSetting == "Programs.AutoSwitchMethod")
+		{
+			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Programs.UseAutoSwitching"));
 		}
 		else if (strSetting == "Programs.AutoSwitchPercentage")
 		{	// set visibility based on our other setting...
 			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-			if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("Programs.AutoSwitchMethod") == 2);
+			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Programs.UseAutoSwitching") && g_guiSettings.GetInt("Programs.AutoSwitchMethod") == 2);
+		}
+		else if (strSetting == "MusicLists.AutoSwitchUseLargeThumbs" || strSetting == "MusicLists.AutoSwitchMethod")
+		{
+			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MusicLists.UseAutoSwitching"));
 		}
 		else if (strSetting == "MusicLists.AutoSwitchPercentage")
 		{	// set visibility based on our other setting...
 			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-			if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("MusicLists.AutoSwitchMethod") == 2);
+			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MusicLists.UseAutoSwitching") && g_guiSettings.GetInt("MusicLists.AutoSwitchMethod") == 2);
+		}
+		else if (strSetting == "VideoLists.AutoSwitchUseLargeThumbs" || strSetting == "VideoLists.AutoSwitchMethod")
+		{
+			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VideoLists.UseAutoSwitching"));
 		}
 		else if (strSetting == "VideoLists.AutoSwitchPercentage")
 		{	// set visibility based on our other setting...
 			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-			if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("VideoLists.AutoSwitchMethod") == 2);
+			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VideoLists.UseAutoSwitching") && g_guiSettings.GetInt("VideoLists.AutoSwitchMethod") == 2);
 		}
 		else if (strSetting == "CDDARipper.Quality")
 		{	// only visible if we are doing non-WAV ripping
@@ -531,13 +554,34 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 		{	// Fill in a blank pass if we don't have it
 			CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
 			if (((CSettingString *)pSettingControl->GetSetting())->GetData().size() == 0 && pControl)
+			{
 				pControl->SetText2(g_localizeStrings.Get(734));
+				pControl->SetEnabled(g_guiSettings.GetBool("Servers.WebServer"));
+			}
+		}
+		else if (strSetting == "Servers.WebServerPort")
+		{
+			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Servers.WebServer"));
+		}
+		else if (strSetting == "Servers.TimeAddress")
+		{
+			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Servers.TimeServer"));
 		}
 		else if (strSetting == "Network.IPAddress" || strSetting == "Network.Subnet" || strSetting == "Network.Gateway" || strSetting == "Network.DNS")
 		{
 			CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
-			if (g_guiSettings.GetInt("Network.Assignment") != NETWORK_STATIC && pControl)
-				pControl->SetText2("-");
+			if (pControl)
+			{
+				if (g_guiSettings.GetInt("Network.Assignment") != NETWORK_STATIC) pControl->SetText2("-");
+				pControl->SetEnabled(g_guiSettings.GetInt("Network.Assignment") == NETWORK_STATIC);
+			}
+		}
+		else if (strSetting == "Network.HTTPProxyServer" || strSetting == "Network.HTTPProxyPort")
+		{
+			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Network.UseHTTPProxy"));
 		}
 		else if (strSetting == "PostProcessing.VerticalDeBlockLevel")
 		{
@@ -594,6 +638,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 		{
 			CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
 			pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode")=="Dim");
+		}
+		else if (strSetting.Left(16) == "Weather.AreaCode")
+		{
+			CSettingString *pSetting = (CSettingString *)GetSetting(strSetting)->GetSetting();
+			CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
+			pControl->SetText2(pSetting->GetData());
 		}
 	}
 }
@@ -981,6 +1031,11 @@ void CGUIWindowSettingsCategory::Render()
 void CGUIWindowSettingsCategory::CheckNetworkSettings()
 {
 	// check if our network needs restarting (requires a reset, so check well!)
+	if (m_iNetworkAssignment == -1)
+	{
+		// nothing to do here, folks - move along.
+		return;
+	}
 	// we need a reset if:
 	// 1.  The Network Assignment has changed OR
 	// 2.  The Network Assignment is STATIC and one of the network fields have changed
