@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-10-2004 fixed: my programs, exception when no default path is set
   - 10-10-2004 fixed: Various network settings didn't exit properly when BACK was pressed
   - 10-10-2004 fixed: My files, Files list doesn't update after Move [sf bug #1043881]
   - 10-10-2004 fixed: textbox control doesn't show number of pages
