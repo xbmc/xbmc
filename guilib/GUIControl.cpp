@@ -257,3 +257,8 @@ void CGUIControl::SetHeight(int iHeight)
   m_dwHeight=iHeight;
   Update();
 }
+
+void CGUIControl::SetVisible(bool bVisible)
+{
+  m_bVisible=bVisible;
+}

@@ -44,7 +44,7 @@ void CGraphicContext::SetMediaDir(const CStdString& strMediaDir)
   m_strMediaDir=strMediaDir;
 }
 
-const CStdString& CGraphicContext::GetMediaDir()
+const CStdString& CGraphicContext::GetMediaDir() const
 {
   return m_strMediaDir;
 }

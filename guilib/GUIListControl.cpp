@@ -61,19 +61,24 @@ void CGUIListControl::Render()
       m_imgButton.SetPosition(m_dwPosX, dwPosY);	
       m_imgButton.Render();
       
-      if (pItem->HasImage() )
+			if (pItem->HasIcon() )
       {
         // show icon
-        float fPosY=(float)m_imgButton.GetHeight();
-        fPosY/=2.0f;
-        fPosY -= ((float)m_imgFolder.GetHeight()/2.0f);
+				CGUIImage* pImage=pItem->GetIcon();
+				if (!pImage)
+				{
+					pImage=new CGUIImage(0,0,0,0,0,0,pItem->GetIconImage(),0xffffffff);
+					pImage->AllocResources();
+					pItem->SetIcon(pImage);
+				}
+				float fPosY=5.0;
         fPosY += dwPosY;
-			  m_imgFolder.SetPosition(dwPosX+8, (DWORD)fPosY);
-        m_imgFolder.Render();
+			  pImage->SetPosition(dwPosX+8, (DWORD)fPosY);
+        pImage->Render();
       }
 
       DWORD dwColor=m_dwTextColor;
-      if (pItem->m_bSelected)
+			if (pItem->IsSelected())
         dwColor=m_dwSelectedColor;
       
 			dwPosX += m_imgFolder.GetWidth()+2;
@@ -194,6 +199,14 @@ void CGUIListControl::OnKey(const CKey& key)
 
   switch (key.GetButtonCode())
   {
+    case KEY_BUTTON_LEFT_TRIGGER:
+      OnPageUp();
+    break;
+
+    case KEY_BUTTON_RIGHT_TRIGGER:
+      OnPageDown();
+    break;
+
     case KEY_REMOTE_DOWN:
     case KEY_BUTTON_DPAD_DOWN:
     {
@@ -411,4 +424,34 @@ void CGUIListControl::SetScrollySuffix(CStdString wstrSuffix)
   WCHAR wsSuffix[128];
   swprintf(wsSuffix,L"%S", wstrSuffix.c_str());
   m_strSuffix=wsSuffix;
+}
+
+
+void CGUIListControl::OnPageUp()
+{
+  int iPage = m_upDown.GetValue();
+  if (iPage > 1)
+  {
+    iPage--;
+    m_upDown.SetValue(iPage);
+    m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
+  }
+}
+
+void CGUIListControl::OnPageDown()
+{
+  int iPages=m_vecItems.size() / m_iItemsPerPage;
+  if (m_vecItems.size() % m_iItemsPerPage) iPages++;
+
+  int iPage = m_upDown.GetValue();
+  if (iPage+1 <= iPages)
+  {
+    iPage++;
+    m_upDown.SetValue(iPage);
+    m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
+  }
+  if (m_iOffset+m_iCursorY >= (int)m_vecItems.size() )
+  {
+    m_iCursorY = (m_vecItems.size()-m_iOffset)-1;
+  }
 }

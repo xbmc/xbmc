@@ -44,7 +44,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
 
 static wstring wszEmptyString=L"";
 
-const wstring&  CLocalizeStrings::Get(DWORD dwCode)
+const wstring&  CLocalizeStrings::Get(DWORD dwCode) const
 {
   ivecStrings i;
   i = m_vecStrings.find(dwCode);

@@ -43,6 +43,8 @@ protected:
   void         OnLeft();
   void         OnDown();
   void         OnUp();
+  void         OnPageUp();
+  void         OnPageDown();
   bool                  ValidItem(int iX, int iY);
   int                   m_iOffset;
   int                   m_iItemHeight;

@@ -50,11 +50,11 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUI
 	swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
 
   DWORD dwColor=m_dwTextColor;
-  if (pItem->m_bSelected) dwColor=m_dwSelectedColor;
+	if (pItem->IsSelected()) dwColor=m_dwSelectedColor;
   if (bFocus && HasFocus()&&m_iSelect==CONTROL_LIST )
   {
     m_imgFolderFocus.SetPosition(dwPosX, dwPosY);
-    m_imgFolderFocus.Render();
+		m_imgFolderFocus.Render();
     
     RenderText((float)dwPosX,(float)fTextPosY,dwColor,wszText,true);
   }
@@ -66,17 +66,19 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUI
     RenderText((float)dwPosX,(float)fTextPosY,dwColor,wszText,false);
   
   }
-  if (pItem->m_strThumbnailImage != "")
+	if (pItem->HasThumbnail() )
   {
-    if (!pItem->m_pImage)
+		CGUIImage *pImage=pItem->GetThumbnail();
+		if (!pImage )
     {
-      pItem->m_pImage=new CGUIImage(0,0,dwPosX+4,dwPosY+16,64,64,pItem->m_strThumbnailImage,0xffffffff);
-      pItem->m_pImage->AllocResources();
+			pImage=new CGUIImage(0,0,dwPosX+4,dwPosY+16,64,64,pItem->GetThumbnailImage(),0xffffffff);
+      pImage->AllocResources();
+			pItem->SetThumbnail(pImage);
     }
     else
     {
-      pItem->m_pImage->SetPosition(dwPosX+4,dwPosY+16);
-      pItem->m_pImage->Render();
+      pImage->SetPosition(dwPosX+4,dwPosY+16);
+      pImage->Render();
     }
   }
 }
@@ -198,6 +200,14 @@ void CGUIThumbnailPanel::OnKey(const CKey& key)
 
   switch (key.GetButtonCode())
   {
+    case KEY_BUTTON_LEFT_TRIGGER:
+      OnPageUp();
+    break;
+
+    case KEY_BUTTON_RIGHT_TRIGGER:
+      OnPageDown();
+    break;
+
 
     case KEY_REMOTE_DOWN:
     case KEY_BUTTON_DPAD_DOWN:
@@ -536,4 +546,39 @@ void CGUIThumbnailPanel::SetScrollySuffix(CStdString wstrSuffix)
   WCHAR wsSuffix[128];
   swprintf(wsSuffix,L"%S", wstrSuffix.c_str());
   m_strSuffix=wsSuffix;
+}
+
+void CGUIThumbnailPanel::OnPageUp()
+{
+  int iPage = m_upDown.GetValue();
+  if (iPage > 1)
+  {
+    iPage--;
+    m_upDown.SetValue(iPage);
+    m_iOffset=(m_upDown.GetValue()-1)* m_iColumns * m_iRows;
+  }
+}
+
+void CGUIThumbnailPanel::OnPageDown()
+{
+  int iItemsPerPage=m_iRows*m_iColumns;
+  int iPages=m_vecItems.size() / iItemsPerPage;
+  if (m_vecItems.size() % iItemsPerPage) iPages++;
+
+  int iPage = m_upDown.GetValue();
+  if (iPage+1 <= iPages)
+  {
+    iPage++;
+    m_upDown.SetValue(iPage);
+    m_iOffset=(m_upDown.GetValue()-1)*iItemsPerPage;
+  }
+  while  (m_iCursorX > 0 && m_iOffset + m_iCursorY*m_iColumns+m_iCursorX >= (int) m_vecItems.size() )
+  {
+    m_iCursorX--;
+  }
+  while  (m_iCursorY > 0 && m_iOffset + m_iCursorY*m_iColumns+m_iCursorX >= (int) m_vecItems.size() )
+  {
+    m_iCursorY--;
+  }
+
 }

@@ -13,10 +13,10 @@ public:
   CLocalizeStrings(void);
   virtual ~CLocalizeStrings(void);
   bool            Load(const CStdString& strFileName);
-  const wstring&  Get(DWORD dwCode);
+  const wstring&  Get(DWORD dwCode) const;
 protected:
   map<DWORD,wstring> m_vecStrings;
-  typedef map<DWORD,wstring>::iterator ivecStrings;
+  typedef map<DWORD,wstring>::const_iterator ivecStrings;
 };
 
 extern CLocalizeStrings g_localizeStrings;

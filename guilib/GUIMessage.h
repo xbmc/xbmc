@@ -43,9 +43,9 @@ public:
   DWORD GetParam1()   const;
   DWORD GetParam2()   const;
   DWORD GetSenderId() const;
-  void SetParam1(DWORD dwParam1);
-  void SetParam2(DWORD dwParam2);
-  void SetLPVOID(void* lpVoid);
+  void	SetParam1(DWORD dwParam1);
+  void	SetParam2(DWORD dwParam2);
+  void	SetLPVOID(void* lpVoid);
 private:
   DWORD m_dwSenderID;
   DWORD m_dwControlID;

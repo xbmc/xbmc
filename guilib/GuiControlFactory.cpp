@@ -55,6 +55,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   pNode=pControlNode->FirstChild("colordiffuse" );
   if (pNode) sscanf(pNode->FirstChild()->Value(),"%x",&dwColorDiffuse);
   
+  bool bVisible=true;
+  pNode=pControlNode->FirstChild("visible" );
+  if (pNode) 
+  {
+    CStdString strEnabled=pNode->FirstChild()->Value();
+    strEnabled.ToLower();
+    if (strEnabled=="no"||strEnabled=="disabled") bVisible=false;
+  }
+  
 
   if (strType=="label")
   {
@@ -76,6 +85,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
       CGUILabelControl* pControl = new CGUILabelControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strFont,strLabel,dwTextColor,dwAlign);
       pControl->SetColourDiffuse(dwColorDiffuse);
+      pControl->SetVisible(bVisible);
       return pControl;
   }
 
@@ -111,6 +121,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
         int iHyperLink=atoi(pNode->FirstChild()->Value());
         pControl->SetHyperLink(iHyperLink);
       }
+      pControl->SetVisible(bVisible);
       return pControl;
   }
   
@@ -149,6 +160,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
         int iHyperLink=atoi(pNode->FirstChild()->Value());
         pControl->SetHyperLink(iHyperLink);
       }
+      pControl->SetVisible(bVisible);
       return pControl;
   }
 
@@ -186,6 +198,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
         int iHyperLink=atoi(pNode->FirstChild()->Value());
         pControl->SetHyperLink(iHyperLink);
       }
+      pControl->SetVisible(bVisible);
       return pControl;
   }
   
@@ -210,6 +223,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       pControl->SetDisabledColor(dwDisabledColor);
       pControl->SetNavigation(up,down,left,right);
       pControl->SetColourDiffuse(dwColorDiffuse);
+      pControl->SetVisible(bVisible);
       return pControl;
   }
 
@@ -242,6 +256,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
         int iHyperLink=atoi(pNode->FirstChild()->Value());
         pControl->SetHyperLink(iHyperLink);
       }
+      pControl->SetVisible(bVisible);
       return pControl;
   }
  
@@ -268,6 +283,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       CGUISpinControl* pControl = new CGUISpinControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strUp,strDown,strUpFocus,strDownFocus,strFont,dwTextColor,iType);
       pControl->SetNavigation(up,down,left,right);
       pControl->SetColourDiffuse(dwColorDiffuse);
+      pControl->SetVisible(bVisible);
       return pControl;
   }
  
@@ -284,6 +300,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       CGUIImage* pControl = new CGUIImage(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTexture,dwColorKey);
       pControl->SetNavigation(up,down,left,right);
       pControl->SetColourDiffuse(dwColorDiffuse);
+      pControl->SetVisible(bVisible);
       return pControl;
   }
  if (strType=="listcontrol")
@@ -327,6 +344,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
         CStdString strSuffix=pControlNode->FirstChild("suffix" )->FirstChild()->Value();
         pControl->SetScrollySuffix(strSuffix);
       }
+      pControl->SetVisible(bVisible);
       return pControl;
   }
 
@@ -377,6 +395,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
         strSuffix=pControlNode->FirstChild("suffix" )->FirstChild()->Value();
         pControl->SetScrollySuffix(strSuffix);
       }
+      pControl->SetVisible(bVisible);
       return pControl;
   }
  

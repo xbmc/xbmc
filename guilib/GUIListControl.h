@@ -43,6 +43,9 @@ protected:
   void         OnLeft();
   void         OnDown();
   void         OnUp();
+  void         OnPageUp();
+  void         OnPageDown();
+
   int                   m_iOffset;
   int                   m_iItemsPerPage;
   int                   m_iItemHeight;
