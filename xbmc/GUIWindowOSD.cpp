@@ -217,8 +217,9 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       HIDE_CONTROL(GetID(), GetID());
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
 			g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
-			// save the settings
-			g_settings.Save();
+			// don't save the settings here, it's bad for the hd-spindown feature (causes spinup)
+      // settings are saved in FreeResources in GUIWindowFullScreen
+			//g_settings.Save();
 			return true;
 		}
 		break;
