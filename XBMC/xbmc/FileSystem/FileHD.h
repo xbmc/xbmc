@@ -31,6 +31,7 @@ namespace XFILE
 		virtual bool					ReadString(char *szLine, int iLineLength);
 		virtual __int64			  Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
 		virtual void					Close();
+		virtual void          Flush();
 
 		virtual bool					OpenForWrite(const CURL& url, bool bBinary=true);
 		unsigned int					Write(void *lpBuf, __int64 uiBufSize);
