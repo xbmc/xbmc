@@ -1117,7 +1117,8 @@ void RunCredits()
 			if (g_application.m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_B] > XINPUT_GAMEPAD_MAX_CROSSTALK ||
 				g_application.m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_BACK ||
 				g_application.m_DefaultIR_Remote.wButtons == XINPUT_IR_REMOTE_BACK ||
-				g_application.m_DefaultIR_Remote.wButtons == XINPUT_IR_REMOTE_MENU)
+				g_application.m_DefaultIR_Remote.wButtons == XINPUT_IR_REMOTE_MENU ||
+				g_Mouse.bClick[MOUSE_LEFT_BUTTON] || g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
 			{
 				s_bStopPlaying = true;
 				CloseHandle(hMusicThread);

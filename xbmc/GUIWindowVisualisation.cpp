@@ -152,6 +152,23 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 	return CGUIWindow::OnMessage(message);
 }
 
+void CGUIWindowVisualisation::OnMouse()
+{
+	if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
+	{	// no control found to absorb this click - go back to GUI
+		CAction action;
+		action.wID = ACTION_SHOW_GUI;
+		OnAction(action);
+		return;
+	}
+	if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
+	{	// no control found to absorb this click - toggle the track INFO
+		CAction action;
+		action.wID = ACTION_SHOW_INFO;
+		OnAction(action);
+	}
+}
+
 void CGUIWindowVisualisation::Render()
 {
   g_application.ResetScreenSaver();
