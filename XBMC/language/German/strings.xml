@@ -2374,4 +2374,24 @@
     <id>14002</id>
     <value>Stapeln: Fuzzy</value>
   </string>
+  <string>
+    <id>14003</id>
+    <value>Playlist wird heruntergeladen...</value>
+  </string>
+  <string>
+    <id>14004</id>
+    <value>Liste mit Streams wird heruntergeladen...</value>
+  </string>
+  <string>
+    <id>14005</id>
+    <value>Liste mit Streams wird verarbeitet...</value>
+  </string>
+  <string>
+    <id>14006</id>
+    <value>Herunterladen der Streams Liste fehlgeschlagen</value>
+  </string>
+  <string>
+    <id>14007</id>
+    <value>Herunterladen der Playlist fehlgeschlagen</value>
+  </string>
 </strings>
