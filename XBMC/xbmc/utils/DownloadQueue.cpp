@@ -102,11 +102,12 @@ void CDownloadQueue::Process()
 			LeaveCriticalSection(&m_critical);
 
 			bool bFileRequest = request.content.length()>0;
+			DWORD dwSize = 0;
 
 			if (bFileRequest)
 			{
 				::DeleteFile(request.content.c_str());
-				bSuccess = http.Download(request.location, request.content);
+				bSuccess = http.Download(request.location, request.content, &dwSize);
 			}
 			else
 			{
@@ -121,7 +122,7 @@ void CDownloadQueue::Process()
 			{
 				if (bFileRequest)
 				{
-					request.observer->OnFileComplete(request.ticket, request.content, http.GetBytesRecvCount(),
+					request.observer->OnFileComplete(request.ticket, request.content, dwSize,
 						bSuccess ? IDownloadQueueObserver::Succeeded : IDownloadQueueObserver::Failed );
 				}
 				else
