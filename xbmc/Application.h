@@ -102,6 +102,8 @@
 #include "GUIWindowSettingsAudio.h"
 #include "GUIWindowSettingsSystem.h"
 #include "GUIWindowSettingsProfile.h"
+#include "GUIWindowSettingsCdg.h"
+#include "CdgParser.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;
@@ -230,6 +232,7 @@ public:
 	CGUIWindowSettingsNetworkWeb			m_guiSettingsNetworkWeb;
 	CGUIWindowSettingsNetworkFTP			m_guiSettingsNetworkFTP;
 	CGUIWindowSettingsNetworkTime			m_guiSettingsNetworkTime;
+	CGUIWindowSettingsCdg				m_guiSettingsCdg;
 	CGUIWindowOSD							m_guiWindowOSD;
 	CGUIWindowSettingsCache					m_guiSettingsCache;
 	CGUIWindowSettingsSkinLanguage	m_guiSettingsSkinLanguage;
@@ -264,6 +267,7 @@ public:
 	void		*m_DAAPSong;
 	UINT64		m_DAAPSongSize;
 	void		*m_DAAPArtistPtr;
+	CCdgParser	m_CdgParser;
 
 protected:
   CStdString							m_strCurrentPlayer;

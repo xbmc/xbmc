@@ -390,6 +390,11 @@ CSettings::CSettings(void)
 	g_stSettings.m_bEnableRSS=true;
 	g_stSettings.m_bShowFreeMem=false;
 
+	g_stSettings.m_bIsCdgEnabled = false;
+	g_stSettings.m_iCdgBgAlpha = 0;
+	g_stSettings.m_iCdgFgAlpha = 255;
+	g_stSettings.m_fCdgAVDelay = 0.8f;
+
 	g_stSettings.m_iMusicOSDTimeout=5;
 
 	g_stSettings.m_bSlideShowShuffle = false;
@@ -1369,6 +1374,16 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetInteger(pElement, "ripbitrate", g_stSettings.m_iRipBitRate, 192, 64, 512);
 	}
 
+	// Cd+g settings
+	pElement = pRootElement->FirstChildElement("cdg");
+	if (pElement)
+	{
+		GetBoolean(pElement, "EnableCdg", g_stSettings.m_bIsCdgEnabled);
+		GetInteger(pElement, "CdgFgAlpha", g_stSettings.m_iCdgFgAlpha,255, 0, 255);
+		GetInteger(pElement, "CdgBgAlpha", g_stSettings.m_iCdgBgAlpha,255, 0, 255);
+		GetFloat(pElement,"CdgAVDelay",g_stSettings.m_fCdgAVDelay,0.8f,-3.0f,3.0f);
+	}
+
   LoadCalibration(pRootElement, strSettingsFile);
 
 	return true;
@@ -1763,6 +1778,15 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetInteger(pNode, "ripencoder", g_stSettings.m_iRipEncoder);
 	SetInteger(pNode, "ripquality", g_stSettings.m_iRipQuality);
 	SetInteger(pNode, "ripbitrate", g_stSettings.m_iRipBitRate);
+
+	// Cd+g settings
+	TiXmlElement CdgNode("cdg");
+	pNode = pRoot->InsertEndChild(CdgNode);
+	if (!pNode) return false;
+	SetBoolean(pNode, "EnableCdg", g_stSettings.m_bIsCdgEnabled);
+	SetInteger(pNode, "CdgBgAlpha", g_stSettings.m_iCdgBgAlpha);
+	SetInteger(pNode, "CdgFgAlpha", g_stSettings.m_iCdgFgAlpha);
+	SetFloat(pNode,"CdgAVDelay",g_stSettings.m_fCdgAVDelay);
 
   SaveCalibration(pRoot);
 

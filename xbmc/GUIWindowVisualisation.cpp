@@ -84,7 +84,17 @@ void CGUIWindowVisualisation::OnAction(const CAction &action)
 			g_application.m_guiMusicOverlay.OnAction(action);
 			m_gWindowManager.PreviousWindow();
 			break;
-	}
+
+		case KEY_BUTTON_Y:
+			g_application.m_CdgParser.Pause();
+			break;
+
+		case ACTION_ANALOG_FORWARD:
+			// calculate the speed based on the amount the button is held down
+			float	 AVDelay = g_application.m_CdgParser.GetAVDelay();
+			g_application.m_CdgParser.SetAVDelay(AVDelay - action.fAmount1/4.0f);
+			break;
+		}
 	CGUIWindow::OnAction(action);
 }
 

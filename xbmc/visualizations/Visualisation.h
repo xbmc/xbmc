@@ -45,15 +45,15 @@ class CVisualisation
 {
 public:
 	CVisualisation(struct Visualisation* pVisz,DllLoader* pLoader, const CStdString& strVisualisationName);
-	virtual ~CVisualisation();
+	 ~CVisualisation();
 
 	// Things that MUST be supplied by the child classes
-	virtual void Create();
-	virtual void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName);
-	virtual void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
-	virtual void Render();
-	virtual void Stop();
-	virtual void GetInfo(VIS_INFO *info);
+	void Create();
+	void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName);
+	void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
+	void Render();
+	void Stop();
+	void GetInfo(VIS_INFO *info);
 protected:
 	auto_ptr<struct Visualisation> m_pVisz;
 	auto_ptr<DllLoader> m_pLoader;

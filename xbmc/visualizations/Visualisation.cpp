@@ -3,8 +3,10 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#include "../application.h"
 #include "Visualisation.h"
 #include "GraphicContext.h"
+#include "../settings.h"
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -18,6 +20,7 @@ CVisualisation::CVisualisation(struct Visualisation* pVisz,DllLoader* pLoader, c
 
 CVisualisation::~CVisualisation()
 {
+	g_application.m_CdgParser.FreeGraphics();
 }
 
 void CVisualisation::Create()
@@ -31,6 +34,8 @@ void CVisualisation::Create()
   sprintf(szTmp,"create:%ix%i %s\n", iWidth,iHeight,m_strVisualisationName.c_str());
   OutputDebugString(szTmp);
   m_pVisz->Create (g_graphicsContext.Get3DDevice(),iWidth,iHeight, m_strVisualisationName.c_str());
+  if(g_stSettings.m_bIsCdgEnabled)
+		g_application.m_CdgParser.AllocGraphics();
 }
 
 void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName)
@@ -54,6 +59,8 @@ void CVisualisation::Render()
 {
   // ask visz. to render itself
 	m_pVisz->Render();
+	if(g_stSettings.m_bIsCdgEnabled)
+		g_application.m_CdgParser.Render();
 }
 
 void CVisualisation::Stop()
