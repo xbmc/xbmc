@@ -65,6 +65,7 @@ int						(__cdecl*	pgetAudioStream)();
 int						(__cdecl*	pgetAudioStreamCount)();
 int						(__cdecl*	pgetAudioStreamInfo)(int iStream,	stream_language_t* stream_info);
 int						(__cdecl*	pgetSubtitleStreamInfo)(int	iStream, stream_language_t*	stream_info);
+char* 				(__cdecl*	pgetSubtitleInfo)(int	iStream, xbmc_subtitle* sub);
 int						(__cdecl*	pgetTime)();
 __int64				(__cdecl*	pgetCurrentTime)();
 void					(__cdecl*	pShowOSD)(int);
@@ -160,10 +161,39 @@ extern "C"
 		return pgetSubtitleVisible();
 	}
 
+  //Obsolete
 	int mplayer_getSubtitleStreamInfo(int iStream, stream_language_t* stream_info)
 	{
 		return pgetSubtitleStreamInfo(iStream, stream_info);
 	}
+
+  char* mplayer_getSubtitleInfo(int iStream, xbmc_subtitle* sub)
+  {
+    if(pgetSubtitleInfo)
+      return pgetSubtitleInfo(iStream, sub);
+    else if(pgetSubtitleStreamInfo)
+    {
+	    stream_language_t slt;
+	    pgetSubtitleStreamInfo(iStream, &slt);
+      CLog::Log(LOGNOTICE, "mplayer: falling back to old style subtitle interface");
+
+      sub->id = slt.id;
+      sub->invalid = 0;
+      sub->type = XBMC_SUBTYPE_STANDARD;
+
+      if(slt.language != 0)
+	    {
+        sub->name[2]=0;
+		    sub->name[1]=(slt.language&255);
+		    sub->name[0]=(slt.language>>8);
+      }
+      else
+        sub->name[0]=0;
+
+      return sub->name;
+    }
+    return NULL;
+  }
 
 	void mplayer_setAVDelay(float fDelay)
 	{
@@ -416,7 +446,9 @@ extern "C"
 		dll.ResolveExport("mplayer_getPercentage", (void**)&pgetPercentage);
 		dll.ResolveExport("mplayer_getSubtitle", (void**)&pgetSubtitle);
 		dll.ResolveExport("mplayer_getSubtitleCount", (void**)&pgetSubtitleCount);
-		dll.ResolveExport("mplayer_getSubtitleStreamInfo", (void**)&pgetSubtitleStreamInfo);
+    dll.ResolveExport("mplayer_getSubtitleInfo", (void**)&pgetSubtitleInfo);    
+    if(!pgetSubtitleInfo) //New interface missing. Resolve oldstyle
+		  dll.ResolveExport("mplayer_getSubtitleStreamInfo", (void**)&pgetSubtitleStreamInfo);
 		dll.ResolveExport("mplayer_SubtitleVisible", (void**)&pgetSubtitleVisible);
 		dll.ResolveExport("mplayer_setPercentage", (void**)&psetPercentage);
 		dll.ResolveExport("mplayer_setSubtitle", (void**)&psetSubtitle);
