@@ -74,7 +74,25 @@ CMPlayer::Options::Options()
     m_strChannelMapping="";
     m_fVolumeAmplification=0.0f;
     m_bNonInterleaved=false;
+    m_fSpeed=1.0f;
 }
+void  CMPlayer::Options::SetFPS(float fFPS)
+{
+  m_fFPS=fFPS;
+}
+float CMPlayer::Options::GetFPS() const
+{
+  return m_fFPS;
+}
+void  CMPlayer::Options::SetSpeed(float fSpeed)
+{
+  m_fSpeed=fSpeed;
+}
+float CMPlayer::Options::GetSpeed() const
+{
+  return m_fSpeed;
+}
+
 bool CMPlayer::Options::GetNonInterleaved() const
 {
   return m_bNonInterleaved;
@@ -148,6 +166,17 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   //m_vecOptions.push_back("-autosync");
   //m_vecOptions.push_back("30");
   
+  if (m_fSpeed != 1.0f)
+  {
+    // set playback speed
+    m_vecOptions.push_back("-speed");
+    strTmp.Format("%f", m_fSpeed);
+    m_vecOptions.push_back(strTmp);
+    m_vecOptions.push_back("-fps");
+    strTmp.Format("%f", m_fFPS);
+    m_vecOptions.push_back(strTmp);
+  }
+
   if ( m_iChannels) 
   {
     // set number of audio channels
@@ -360,13 +389,45 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
   if (!CUtil::IsShoutCast(strFile) ) 
   {
-	  char strFourCC[10];
-	  char strAudioCodec[128];
+	  char strFourCC[10],strVidFourCC[10];
+	  char strAudioCodec[128],strVideoCodec[128];
 	  long lBitRate;
 	  long lSampleRate;
 	  int	 iChannels;
 	  BOOL bVBR;
+	  float fFPS;
+	  unsigned int   iWidth;
+	  unsigned int   iHeight;
+	  long  lFrames2Early;
+	  long  lFrames2Late;
 	  mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
+    mplayer_GetVideoInfo(strVidFourCC,strVideoCodec, &fFPS, &iWidth,&iHeight, &lFrames2Early, &lFrames2Late);
+
+    if (g_stSettings.m_bFrameRateConversions)
+    {
+      DWORD dwVideoStandard=XGetVideoStandard();
+      if (dwVideoStandard==XC_VIDEO_STANDARD_PAL_I)
+      {
+        // PAL. Framerate for pal=25.0fps
+        // do frame rate conversions for NTSC movie playback under PAL
+        if (fFPS <= 24.5f || fFPS >= 25.5f)
+        {
+          // 23.978  fps -> 25fps frame rate conversion
+          options.SetSpeed(25.0f / fFPS); 
+          options.SetFPS(25.0f);
+        }
+      }
+      else
+      {
+        //NTSC framerate=29.978 fps
+        // do frame rate conversions for PAL movie playback under NTSC
+        if (fFPS<=29.0)
+        {
+          options.SetSpeed(23.976f / fFPS); 
+          options.SetFPS(23.976f);
+        }
+      }
+    }
 
 	  // if AC3 pass Thru is enabled
 	  bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;

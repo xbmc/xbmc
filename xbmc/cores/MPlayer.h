@@ -30,10 +30,15 @@ public:
 
     const string GetChannelMapping() const;
     void         SetChannelMapping(const string& strMapping);
-    
+    void         SetSpeed(float fSpeed);
+    float        GetSpeed() const; 
+    void         SetFPS(float fFPS);
+    float        GetFPS() const; 
     void         GetOptions(int& argc, char* argv[]);
 
     private:
+      float   m_fSpeed;
+      float   m_fFPS;
       int     m_iChannels;
       bool    m_bAC3PassTru;
       float   m_fVolumeAmplification;
