@@ -2423,7 +2423,34 @@ bool CApplication::ResetScreenSaverWindow()
 		else
 		{
 			// Fade to dim or black screensaver is active
-			// just un-dim the screen
+			// fade in
+      float fFadeLevel = 1.0f;
+      switch (g_stSettings.m_iScreenSaverMode)
+			{
+			case SCREENSAVER_FADE:
+				{
+					fFadeLevel = (float)g_stSettings.m_iScreenSaverFadeLevel / 100;
+				}
+				break;
+			case SCREENSAVER_BLACK:
+				{
+					fFadeLevel = 0;
+				}
+				break;
+      }
+
+			D3DGAMMARAMP Ramp;
+			for (float fade=fFadeLevel; fade<=1; fade+=0.01f)
+			{
+				for(int i=0;i<256;i++)
+				{
+					Ramp.red[i]=(int)((float)m_OldRamp.red[i]*fade);
+					Ramp.green[i]=(int)((float)m_OldRamp.green[i]*fade);
+					Ramp.blue[i]=(int)((float)m_OldRamp.blue[i]*fade);
+				}
+				Sleep(5);
+				m_pd3dDevice->SetGammaRamp(D3DSGR_IMMEDIATE, &Ramp);	// use immediate to get a smooth fade
+			}
 			m_pd3dDevice->SetGammaRamp(0, &m_OldRamp);	// put the old gamma ramp back in place
 		}
 		return true;
