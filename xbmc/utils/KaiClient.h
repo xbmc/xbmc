@@ -32,6 +32,7 @@ public:
 	virtual ~CKaiClient(void);
 
 	void SetObserver(IBuddyObserver* aObserver);
+	void RemoveObserver();
 	void EnterVector(CStdString& aVector);
 	void ExitVector();
 	void GetSubVectors(CStdString& aVector);
@@ -43,9 +44,10 @@ public:
 	CStdString GetCurrentVector();
 
 protected:
-	enum State {Discovering,Attaching,Querying,LoggingIn,Authenticated};
+	enum State {Discovering,Attaching,Querying,LoggingIn,Authenticated,Disconnecting};
 
 	void Discover();
+	void Disconnect();
 	void Attach(SOCKADDR_IN& aAddress);
 	void TakeOver();
 	void Query();
