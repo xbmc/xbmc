@@ -1181,3 +1181,15 @@ void CGUIWindowMusicSongs::AutoSwitchControlThumbList()
 		}
 	}
 }
+
+void CGUIWindowMusicSongs::OnAction(const CAction& action)
+{
+	if (action.wID==ACTION_PARENT_DIR)
+	{
+		CGUIWindowMusicBase::OnAction(action);
+		AutoSwitchControlThumbList();
+		return;
+	}
+
+	CGUIWindowMusicBase::OnAction(action);
+}
