@@ -64,7 +64,7 @@
 				IncludeDebugInfo="TRUE"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r;$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBLAME;LIBMP4;LIBOGGVO;LIBXDAAP"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center Debug"/>
@@ -248,7 +248,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x80000"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r;$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBLAME;LIBOGGVO"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"
@@ -1252,10 +1252,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1931,64 +1931,64 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\cores\mplayer\xbox_video.cpp">
 				</File>
-                                 <File 	 
-                                         RelativePath=".\xbmc\cores\mplayer\YV12toRGB.pxl"> 	 
-                                         <FileConfiguration 	 
-                                                 Name="Debug|Xbox"> 	 
-                                                 <Tool 	 
-                                                         Name="VCCustomBuildTool" 	 
-                                                         Description="$(InputFileName)" 	 
-                                                         CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;" 	 
-                                                         Outputs="$(TargetDir)$(InputName).xpu"/> 	 
-                                         </FileConfiguration> 	 
-                                         <FileConfiguration 	 
-                                                 Name="Profile|Xbox"> 	 
-                                                 <Tool 	 
-                                                         Name="VCCustomBuildTool" 	 
-                                                         Description="$(InputFileName)" 	 
-                                                         CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;" 	 
-                                                         Outputs="$(TargetDir)$(InputName).xpu"/> 	 
-                                         </FileConfiguration> 	 
-                                         <FileConfiguration 	 
-                                                 Name="Profile_FastCap|Xbox"> 	 
-                                                 <Tool 	 
-                                                         Name="VCCustomBuildTool" 	 
-                                                         Description="$(InputFileName)" 	 
-                                                         CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;" 	 
-                                                         Outputs="$(TargetDir)$(InputName).xpu"/> 	 
-                                         </FileConfiguration> 	 
-                                         <FileConfiguration 	 
-                                                 Name="Release|Xbox"> 	 
-                                                 <Tool 	 
-                                                         Name="VCCustomBuildTool" 	 
-                                                         Description="$(InputFileName)" 	 
-                                                         CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;" 	 
-                                                         Outputs="$(TargetDir)$(InputName).xpu"/> 	 
-                                         </FileConfiguration> 	 
-                                         <FileConfiguration 	 
-                                                 Name="Release_LTCG|Xbox"> 	 
-                                                 <Tool 	 
-                                                         Name="VCCustomBuildTool" 	 
-                                                         Description="$(InputFileName)" 	 
-                                                         CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;" 	 
-                                                         Outputs="$(TargetDir)$(InputName).xpu"/> 	 
-                                         </FileConfiguration> 	 
-                                         <FileConfiguration 	 
-                                                 Name="Release Xbox  Debugging|Xbox"> 	 
-                                                 <Tool 	 
-                                                         Name="VCCustomBuildTool" 	 
-                                                         Description="$(InputFileName)" 	 
-                                                         CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;" 	 
-                                                         Outputs="$(TargetDir)$(InputName).xpu"/> 	 
-					</FileConfiguration> 	 
-					<FileConfiguration 	 
- 						Name="Debug Xbox No Memory Tracking|Xbox"> 	 
-						<Tool 	 
-							Name="VCCustomBuildTool" 	 
-							Description="$(InputFileName)" 	 
-							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;" 	 
-							Outputs="$(TargetDir)$(InputName).xpu"/> 	 
-					</FileConfiguration> 	 
+				<File
+					RelativePath=".\xbmc\cores\mplayer\YV12toRGB.pxl">
+					<FileConfiguration
+						Name="Debug|Xbox">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="$(InputFileName)"
+							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
+							Outputs="$(TargetDir)$(InputName).xpu"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Profile|Xbox">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="$(InputFileName)"
+							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
+							Outputs="$(TargetDir)$(InputName).xpu"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Profile_FastCap|Xbox">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="$(InputFileName)"
+							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
+							Outputs="$(TargetDir)$(InputName).xpu"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Xbox">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="$(InputFileName)"
+							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
+							Outputs="$(TargetDir)$(InputName).xpu"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release_LTCG|Xbox">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="$(InputFileName)"
+							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
+							Outputs="$(TargetDir)$(InputName).xpu"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release Xbox  Debugging|Xbox">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="$(InputFileName)"
+							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
+							Outputs="$(TargetDir)$(InputName).xpu"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug Xbox No Memory Tracking|Xbox">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="$(InputFileName)"
+							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
+							Outputs="$(TargetDir)$(InputName).xpu"/>
+					</FileConfiguration>
 				</File>
 			</Filter>
 			<Filter
@@ -2004,10 +2004,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -2404,6 +2404,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\cdrip\Encoder.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cdrip\EncoderDLL.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cdrip\EncoderDLL.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\cdrip\EncoderLame.cpp">
