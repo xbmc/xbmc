@@ -77,7 +77,7 @@ void COSDOptionBoolean::Draw(int x, int y, bool bFocus,bool bSelected)
 
 bool COSDOptionBoolean::OnAction(IExecutor& executor, const CAction& action)
 {
-	if (action.wID==ACTION_SELECT_ITEM)
+	if (action.wID==ACTION_SELECT_ITEM||action.wID==ACTION_STOP)
 	{
 		m_bValue=!m_bValue;
     executor.OnExecute(m_iAction,this);
