@@ -101,16 +101,16 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUI
       pImage->SetKeepAspectRatio(true);
       pImage->AllocResources();
 			pItem->SetThumbnail(pImage);
-      int xOff=(m_iThumbWidth-pImage->GetWidth())/2;
-      int yOff=(m_iThumbHeight-pImage->GetHeight())/2;
+      int xOff=(m_iThumbWidth-pImage->GetRenderWidth())/2;
+      int yOff=(m_iThumbHeight-pImage->GetRenderHeight())/2;
       pImage->SetPosition(m_iThumbXPos+dwPosX+xOff,m_iThumbYPos+dwPosY+yOff);
     }
     else
     {
       pImage->SetWidth(m_iThumbWidth);
       pImage->SetHeight(m_iThumbHeight);
-      int xOff=(m_iThumbWidth-pImage->GetWidth())/2;
-      int yOff=(m_iThumbHeight-pImage->GetHeight())/2;
+      int xOff=(m_iThumbWidth-pImage->GetRenderWidth())/2;
+      int yOff=(m_iThumbHeight-pImage->GetRenderHeight())/2;
       pImage->SetPosition(m_iThumbXPos+dwPosX+xOff,m_iThumbYPos+dwPosY+yOff);
       pImage->Render();
     }
