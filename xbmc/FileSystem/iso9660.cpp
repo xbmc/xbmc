@@ -493,7 +493,7 @@ HANDLE iso9660::OpenFile( const char* filename)
 	m_dwStartSector = m_searchpointer->Location;
 
 	EnterCriticalSection(&m_critSection);
-	memcpy(&m_openfileinfo, m_searchpointer, sizeof( m_openfileinfo ));
+//	memcpy(&m_openfileinfo, m_searchpointer, sizeof( m_openfileinfo ));
 	DWORD dwPos = ::SetFilePointer( m_info.ISO_HANDLE, calc ,0,FILE_BEGIN );
 	
 	DWORD dwBytesRead;
