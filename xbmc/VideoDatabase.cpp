@@ -1229,3 +1229,25 @@ void CVideoDatabase::SetDVDLabel(long lMovieId, const CStdString& strDVDLabel1)
     CLog::Log("CVideoDatabase::SetDVDLabel() failed");
   }
 }
+
+//********************************************************************************************************************************
+void CVideoDatabase::GetDVDLabel(long lMovieId, CStdString& strDVDLabel)
+{
+  strDVDLabel = "";
+  try
+  {
+    if (NULL==m_pDB.get()) return;
+	  if (NULL==m_pDS.get()) return;
+
+	  CStdString strSQL;
+
+    strSQL.Format("select cdlabel from movie where idMovie=%i", lMovieId);
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->num_rows() != 1)  return;
+    strDVDLabel=m_pDS->fv("cdlabel").get_asString();
+  }
+  catch(...)
+  {
+    CLog::Log("CVideoDatabase::GetDVDLabel() failed");
+  }
+}

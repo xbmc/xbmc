@@ -173,7 +173,16 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
           {
             CVideoDatabase dbs;
             dbs.Open();
-            dbs.SetDVDLabel( lMovieId,strItem);
+            CStdString label;
+            dbs.GetDVDLabel(lMovieId, label);
+            int iPos = label.Find("DVD#");
+            if (iPos >= 0) {
+              label.Delete(iPos, label.GetLength());
+            }
+            label = label.TrimRight(" ");
+            label += " ";
+            label += strItem;
+            dbs.SetDVDLabel( lMovieId,label);
             dbs.Close();
           }
         }
