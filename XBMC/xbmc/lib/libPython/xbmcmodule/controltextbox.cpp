@@ -41,7 +41,6 @@ namespace PYXBMC
 		else self->dwTextColor = 0xffffffff;
 
 		// default values for spin control
-		//self->pControlSpin->pGUIControl = (CGUIControl*) &((CGUITextBox*)self->pGUIControl)->GetSpinControl();
 		self->pControlSpin->dwPosX = self->dwPosX + self->dwWidth - 25;
 		self->pControlSpin->dwPosY = self->dwPosY + self->dwHeight - 30;
 
@@ -90,7 +89,7 @@ namespace PYXBMC
 		return Py_None;
 	}
 
-	PyObject* Control_GetSpinControl(ControlTextBox *self, PyObject *args)
+	PyObject* ControlTextBox_GetSpinControl(ControlTextBox *self, PyObject *args)
 	{
 		Py_INCREF(self->pControlSpin);
 		return (PyObject*)self->pControlSpin;
@@ -99,7 +98,7 @@ namespace PYXBMC
 	PyMethodDef ControlTextBox_methods[] = {
 		{"setText", (PyCFunction)ControlTextBox_SetText, METH_VARARGS, ""},
 		{"reset", (PyCFunction)ControlTextBox_Reset, METH_VARARGS, ""},
-		{"getSpinControl", (PyCFunction)Control_GetSpinControl, METH_VARARGS, ""},
+		{"getSpinControl", (PyCFunction)ControlTextBox_GetSpinControl, METH_VARARGS, ""},
 		{NULL, NULL, 0, NULL}
 	};
 

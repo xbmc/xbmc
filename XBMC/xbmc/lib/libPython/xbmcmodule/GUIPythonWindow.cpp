@@ -60,6 +60,7 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
 			if(pCallbackWindow)
 			{
 				PyXBMCAction* inf = new PyXBMCAction;
+				inf->pObject = NULL;
 				// find python control object with same iControl
 				std::vector<Control*>::iterator it = ((Window*)pCallbackWindow)->vecControls.begin();
 				while (it != ((Window*)pCallbackWindow)->vecControls.end())
@@ -72,12 +73,22 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
 					}
 					++it;
 				}
-				inf->dwParam = iControl;
-				inf->pCallbackWindow = pCallbackWindow;
+				// did we find our control?
+				if (inf->pObject)
+				{
+					// currently we only accept messages from a button or controllist with a select action
+          if ((ControlList_CheckExact(inf->pObject) && message.GetParam1() == ACTION_SELECT_ITEM)||
+							ControlButton_CheckExact(inf->pObject))
+					{
+						// create a new call and set it in the python queue
+						inf->dwParam = iControl;
+						inf->pCallbackWindow = pCallbackWindow;
 
-				// aquire lock?
-				Py_AddPendingCall(Py_XBMC_Event_OnControl, inf);
-				PulseActionEvent();
+						// aquire lock?
+						Py_AddPendingCall(Py_XBMC_Event_OnControl, inf);
+						PulseActionEvent();
+					}
+				}
 			}
 		}
 		break;
@@ -101,6 +112,9 @@ void CGUIPythonWindow::PulseActionEvent()
 	PulseEvent(m_actionEvent);
 }
 
+/*
+ * called from python library!
+ */
 int Py_XBMC_Event_OnControl(void* arg)
 {
 	if (arg != NULL)
@@ -114,6 +128,9 @@ int Py_XBMC_Event_OnControl(void* arg)
 	return 0;
 }
 
+/*
+ * called from python library!
+ */
 int Py_XBMC_Event_OnAction(void* arg)
 {
 	if (arg != NULL)
