@@ -150,6 +150,7 @@ public:
 		int		m_iScreenSaverMode;		// CB: SCREENSAVER
 		int		m_iScreenSaverFadeLevel;
 
+		char			m_szDefaultPrograms[128];
 		char			m_szDefaultMusic[128];
 		char			m_szDefaultPictures[128];
 		char			m_szDefaultFiles[128];
