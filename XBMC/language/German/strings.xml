@@ -732,7 +732,7 @@
   </string>
   <string>
     <id>256</id>
-    <value>Suche in FreeDB nach CDDB Infos</value>
+    <value>Suche in freedb nach CDDB Infos</value>
   </string>
   <string>
     <id>257</id>
@@ -1312,7 +1312,7 @@
   </string>
   <string>
     <id>402</id>
-    <value>Subjektiv</value>
+    <value>Gefühlt</value>
   </string>
   <string>
     <id>403</id>
@@ -1356,7 +1356,7 @@
   </string>
   <string>
     <id>414</id>
-    <value>Keine Vorschau für dieses Album</value>
+    <value>Keine Bewertung für dieses Album</value>
   </string>
   <string>
     <id>415</id>
@@ -1364,7 +1364,7 @@
   </string>
   <string>
     <id>416</id>
-    <value>Nicht erreichbar</value>
+    <value>Nicht verfügbar</value>
   </string>
   <string>
     <id>417</id>
@@ -1436,7 +1436,7 @@
   </string>
   <string>
     <id>434</id>
-    <value> werden?</value>
+    <value></value>
   </string>
   <string>
     <id>435</id>
@@ -1600,7 +1600,7 @@
   </string>
   <string>
     <id>474</id>
-    <value>AUS</value>
+    <value>Aus</value>
   </string>
   <string>
     <id>475</id>
