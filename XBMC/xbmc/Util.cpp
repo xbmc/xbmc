@@ -1315,6 +1315,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
 			CFile file;
 			if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
       {
+        CLog::Log(" cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
         bFoundSubs=true;
       }
 		}
@@ -1338,6 +1339,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
 			CFile file;
 			if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
       {
+        CLog::Log(" cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
         bFoundSubs=true;
       }
 		}
