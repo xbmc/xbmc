@@ -136,13 +136,11 @@ bool CSettings::Load()
 	if (!LoadSettings("T:\\settings.xml"))
 	{
 		OutputDebugString("LoadSettings() Failed\n");
-    return false;
 	}
 	// load calibration file...
 	if (!LoadCalibration("T:\\calibration.xml"))
 	{
 		OutputDebugString("LoadCalibration() Failed\n");
-    return false;
 	}
 
 	// load xml file...
