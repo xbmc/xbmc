@@ -106,11 +106,10 @@ CMPlayer::Options::Options()
 	m_fVolumeAmplification=0.0f;
 	m_bNonInterleaved=false;
 	m_fSpeed=1.0f;
-	//Workaround for the need to restart
-	if(g_stSettings.m_iAudioStream >=0)
-		m_iAudioStream=g_stSettings.m_iAudioStream;
-	else
-		m_iAudioStream=-1;
+
+	m_iAudioStream=-1;
+	m_iSubtitleStream=-1;
+
 	m_strDvdDevice="";
 	m_strFlipBiDiCharset="";
 }
@@ -168,6 +167,15 @@ int CMPlayer::Options::GetAudioStream() const
 void CMPlayer::Options::SetAudioStream(int iStream)
 {
 	m_iAudioStream=iStream;
+}
+
+int CMPlayer::Options::GetSubtitleStream() const
+{
+	return m_iSubtitleStream;
+}
+void CMPlayer::Options::SetSubtitleStream(int iStream)
+{
+	m_iSubtitleStream=iStream;
 }
 
 float CMPlayer::Options::GetVolumeAmplification() const
@@ -288,11 +296,21 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 		m_vecOptions.push_back(strTmp);
 	}
 
-	//Force mplayer to allways allocate a subtitle demuxer, otherwise we 
-	//might not be able to enable it later. Will make sure later that it isn't visible.
-	//For after 1.0 add command to ask for a specific language as an alternative.
-	m_vecOptions.push_back("-sid");
-	m_vecOptions.push_back("0");
+	if ( m_iSubtitleStream >=0)
+	{
+		CLog::Log(" Playing subtitle stream: %d", m_iSubtitleStream);
+		m_vecOptions.push_back("-sid");
+		strTmp.Format("%i", m_iSubtitleStream);
+		m_vecOptions.push_back(strTmp);
+	}
+	else
+	{
+		//Force mplayer to allways allocate a subtitle demuxer, otherwise we 
+		//might not be able to enable it later. Will make sure later that it isn't visible.
+		//For after 1.0 add command to ask for a specific language as an alternative.
+		m_vecOptions.push_back("-sid");
+		m_vecOptions.push_back("0");
+	}
 
 	if ( m_iChannels) 
 	{
@@ -662,7 +680,18 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			// This means you can play a movie gaplessly from 50 rar files without unraring, which is neat.
 		}
 
+
+		//Make sure we remeber what subtitle stream and audiostream we where playing so that stacked items gets the same.
+		//These will be reset in Application.Playfile if the restart parameter isn't set.
+		if(g_stSettings.m_iAudioStream >= 0)
+			options.SetAudioStream(g_stSettings.m_iAudioStream);
+		
+		if(g_stSettings.m_iSubtitleStream >= 0)
+			options.SetSubtitleStream(g_stSettings.m_iSubtitleStream);
+
+
 		options.GetOptions(argc,argv);
+		
 
 		//CLog::Log("  open 1st time");
 		mplayer_init(argc,argv);
@@ -1430,6 +1459,8 @@ void      CMPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
 void    CMPlayer::SetSubtitle(int iStream)
 {
 	mplayer_setSubtitle(iStream);
+	options.SetSubtitleStream(iStream);
+	g_stSettings.m_iSubtitleStream = iStream;
 };
 
 bool    CMPlayer::GetSubtitleVisible()
