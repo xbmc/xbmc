@@ -1,7 +1,5 @@
-<!-- Translator: Wellington Terumi Uemura -->
-<!-- Email: wellingtonuemura@hotmail.com -->
-<!-- Translation date: 16/09/2004 -->
-<!-- Translation Version: v1.104 -->
+<!-- Translation date: 10/11/2004 -->
+<!-- Translation Version: v1.107 -->
 <!-- Language: Portuguese Brazil (pt_BR )-->
 <strings>
   <string>
@@ -27,6 +25,10 @@
   <string>
     <id>5</id>
     <value>Configurações</value>
+  </string>
+  <string>
+    <id>6</id>
+    <value>XBOX Media Center 1.0.0</value>
   </string>
   <string>
     <id>7</id>
@@ -1898,6 +1900,10 @@
 		<id>734</id>
 		<value>Sem Senha</value>
 	</string>
+		<string>
+		<id>735</id>
+		<value>Codificação:</value>
+	</string>	
 	<string>
     <id>736</id>
    <value>Estilo:</value>
@@ -1930,7 +1936,47 @@
      <id>743</id>
   <value>Amarelo</value>
   </string>
+  <string>
+  	 <id>744</id>
+  <value>Files</value>
+  </string>
+  <string>
+  	 <id>745</id>
+  <value>Não há informação analizada para essa visualização</value>
+  </string>
+  <string>
+  	 <id>746</id>
+  <value>Mudar visualização dos arquivos</value>
+  </string>
 	<string>
+    <id>747</id>
+  <value>Não há memória suficiente para carregar a imagem</value>
+  </string>
+  <string>
+    <id>748</id>
+  <value>Editar Caminho</value>
+  </string>
+  <string>
+    <id>749</id>
+  <value>Adcionar Compartilhamento</value>
+  </string>
+  <string>
+    <id>750</id>
+  <value>Tem Certeza?</value>
+  </string>
+  <string>
+    <id>751</id>
+  <value>Removendo Compartilhamento</value>
+  </string>
+  <string>
+    <id>752</id>
+  <value>Editar caminho do compartilhamento</value>
+  </string>
+  <string>
+    <id>753</id>
+  <value>Editar nome do compartilhamento</value>
+  </string>
+  <string>
 		<id>998</id>
 	<value>XLink Kai</value>
 	</string>
@@ -2001,6 +2047,7 @@
 <string><id>13205</id><value>Desconhecido</value></string>
 <string><id>13300</id><value>Fanspeed:</value></string>
 <string><id>13301</id><value>Controle de temperatura</value></string>
+<string><id>13302</id><value>Velocidade da FAN</value></string>
 <string><id>13303</id><value>Fonte:</value></string>
 <string><id>13304</id><value>Codificação:</value></string>
 <string><id>13305</id><value>Ativar Notícias RSS</value></string>
