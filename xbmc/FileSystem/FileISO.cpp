@@ -26,13 +26,13 @@
 //*********************************************************************************************
 CFileISO::CFileISO()
 {
-	m_pIsoReader=NULL;
+	m_bOpened=false;
 }
 
 //*********************************************************************************************
 CFileISO::~CFileISO()
 {
-	if (m_pIsoReader)
+	if (m_bOpened)
 	{
 		Close();
 	}
@@ -40,20 +40,21 @@ CFileISO::~CFileISO()
 //*********************************************************************************************
 bool CFileISO::Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport,bool bBinary)
 {
-	m_pIsoReader = new iso9660();
+	
 	string strFName="\\";
 	strFName+=strFileName;
 	for (int i=0; i < (int)strFName.size(); ++i )
 	{
 		if (strFName[i]=='/') strFName[i]='\\';
 	}
-	if ( m_pIsoReader->OpenFile((char*)strFName.c_str()) == INVALID_HANDLE_VALUE)
+  m_hFile=m_isoReader.OpenFile((char*)strFName.c_str());
+  if (m_hFile == INVALID_HANDLE_VALUE)
 	{
-		delete m_pIsoReader;
-		m_pIsoReader=NULL;
+    m_bOpened=false;
     return false;
 	}
 
+  m_bOpened=true;
 	// cache text files...
 	if (!bBinary)
 	{
@@ -65,7 +66,7 @@ bool CFileISO::Open(const char* strUserName, const char* strPassword,const char*
 //*********************************************************************************************
 unsigned int CFileISO::Read(void *lpBuf, __int64 uiBufSize)
 {
-	if (!m_pIsoReader) return 0;
+	if (!m_bOpened) return 0;
 	if (m_cache.Size() > 0)
 	{
 		long lTotalBytesRead=0;
@@ -83,7 +84,7 @@ unsigned int CFileISO::Read(void *lpBuf, __int64 uiBufSize)
 			if (m_cache.GetMaxWriteSize() > 5000)
 			{
 				byte buffer[5000];
-				long lBytesRead=m_pIsoReader->ReadFile( 1,buffer,sizeof(buffer));
+        long lBytesRead=m_isoReader.ReadFile( m_hFile,buffer,sizeof(buffer));
 				if (lBytesRead > 0)
 				{
 					m_cache.WriteBinary((char*)buffer,lBytesRead);
@@ -96,23 +97,21 @@ unsigned int CFileISO::Read(void *lpBuf, __int64 uiBufSize)
 		}
 		return lTotalBytesRead;
 	}
-	return m_pIsoReader->ReadFile( 1,(byte*)lpBuf,(long)uiBufSize);
+  return m_isoReader.ReadFile( m_hFile,(byte*)lpBuf,(long)uiBufSize);
 }
 
 //*********************************************************************************************
 void CFileISO::Close()
 {
-	if (!m_pIsoReader) return ;
-	m_pIsoReader->CloseFile( );
-	delete m_pIsoReader;
-	m_pIsoReader=NULL;
+	if (!m_bOpened) return ;
+  m_isoReader.CloseFile( m_hFile);
 }
 
 //*********************************************************************************************
 __int64 CFileISO::Seek(__int64 iFilePosition, int iWhence)
 {
-	if (!m_pIsoReader) return -1;
-	__int64 lNewPos=m_pIsoReader->Seek(1,iFilePosition,iWhence);
+	if (!m_bOpened) return -1;
+  __int64 lNewPos=m_isoReader.Seek(m_hFile,iFilePosition,iWhence);
 	m_cache.Clear();
 	return lNewPos;
 }
@@ -120,22 +119,22 @@ __int64 CFileISO::Seek(__int64 iFilePosition, int iWhence)
 //*********************************************************************************************
 __int64 CFileISO::GetLength()
 {
-	if (!m_pIsoReader) return -1;
-	return m_pIsoReader->GetFileSize();
+	if (!m_bOpened) return -1;
+  return m_isoReader.GetFileSize(m_hFile);
 }
 
 //*********************************************************************************************
 __int64 CFileISO::GetPosition()
 {
-	if (!m_pIsoReader) return -1;
-	return m_pIsoReader->GetFilePosition();
+	if (!m_bOpened) return -1;
+  return m_isoReader.GetFilePosition(m_hFile);
 }
 
 
 //*********************************************************************************************
 bool CFileISO::ReadString(char *szLine, int iLineLength)
 {
-	if (!m_pIsoReader) return false;
+	if (!m_bOpened) return false;
 	int iBytesRead=0;
 	__int64 iPrevFilePos = GetPosition();
 	strcpy(szLine,"");
