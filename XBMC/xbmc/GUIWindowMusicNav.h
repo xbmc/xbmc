@@ -33,4 +33,5 @@ protected:
   CStdString m_strGenre;
   CStdString m_strArtist;
   CStdString m_strAlbum;
+  CStdString m_strAlbumPath;
 };
