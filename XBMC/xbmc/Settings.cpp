@@ -184,6 +184,7 @@ CSettings::CSettings(void)
   g_stSettings.m_bUseDigitalOutput=false;
 
   strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
+	g_stSettings.m_bEnlargeSubtitles = false;
   g_stSettings.m_bPostProcessing=true;
   g_stSettings.m_bDeInterlace=false;
   g_stSettings.m_bNonInterleaved=false;
@@ -673,9 +674,9 @@ void CSettings::GetBoolean(const TiXmlElement* pRootElement, const CStdString& s
 			 CUtil::cmpnocase(szString,"true")==0 )
 	{
 		bValue = true;
-		return;
 	}
-	if (strlen(szString)!=0) bValue = false;
+	else if (strlen(szString)!=0)
+		bValue = false;
 	
 	CLog::Log("  %s: %s", strTagName.c_str(), bValue ? "true" : "false");
 }
@@ -989,6 +990,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "postprocessing", g_stSettings.m_bPostProcessing);
 		GetBoolean(pElement, "deinterlace", g_stSettings.m_bDeInterlace);
       
+		GetBoolean(pElement, "enlargesubtitles",g_stSettings.m_bEnlargeSubtitles);
 		GetInteger(pElement, "subtitleheight",g_stSettings.m_iSubtitleHeight,28,1,128);
 		GetString(pElement, "subtitlefont", g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
 		GetInteger(pElement, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds,7,1,INT_MAX);
@@ -1306,6 +1308,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "postprocessing", g_stSettings.m_bPostProcessing);
 	SetBoolean(pNode, "deinterlace", g_stSettings.m_bDeInterlace);
 
+	SetBoolean(pNode, "enlargesubtitles",g_stSettings.m_bEnlargeSubtitles);
 	SetInteger(pNode, "subtitleheight",g_stSettings.m_iSubtitleHeight);
 	SetString(pNode, "subtitlefont", g_stSettings.m_szSubtitleFont);
 	SetInteger(pNode, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds);

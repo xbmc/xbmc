@@ -292,20 +292,30 @@ void xbox_video_update_subtitle_position()
 	SUBVERTEX* vertex=NULL;
 	m_pSubtitleVB->Lock( 0, 0, (BYTE**)&vertex, 0L );
 	float fSubtitleHeight = (float)g_settings.m_ResInfo[m_iResolution].iWidth/SUBTITLE_TEXTURE_WIDTH*SUBTITLE_TEXTURE_HEIGHT;
+	if (g_stSettings.m_bEnlargeSubtitles)
+		fSubtitleHeight *= 2;
 	float fSubtitlePosition = g_settings.m_ResInfo[m_iResolution].iSubtitles - fSubtitleHeight;
-	vertex[0].p = D3DXVECTOR4( 0, fSubtitlePosition,    0, 0 );
+	if (g_stSettings.m_bEnlargeSubtitles)
+	{
+		vertex[0].p = D3DXVECTOR4(-(float)g_settings.m_ResInfo[m_iResolution].iWidth / 2, fSubtitlePosition, 0, 0);
+		vertex[1].p = D3DXVECTOR4((float)g_settings.m_ResInfo[m_iResolution].iWidth * 3 / 2, fSubtitlePosition, 0, 0);
+		vertex[2].p = D3DXVECTOR4((float)g_settings.m_ResInfo[m_iResolution].iWidth * 3 / 2, fSubtitlePosition + fSubtitleHeight, 0, 0);
+		vertex[3].p = D3DXVECTOR4(-(float)g_settings.m_ResInfo[m_iResolution].iWidth / 2, fSubtitlePosition + fSubtitleHeight, 0, 0);
+	}
+	else
+	{
+		vertex[0].p = D3DXVECTOR4(0, fSubtitlePosition, 0, 0);
+		vertex[1].p = D3DXVECTOR4((float)g_settings.m_ResInfo[m_iResolution].iWidth, fSubtitlePosition, 0, 0);
+		vertex[2].p = D3DXVECTOR4((float)g_settings.m_ResInfo[m_iResolution].iWidth, fSubtitlePosition + fSubtitleHeight, 0, 0);
+		vertex[3].p = D3DXVECTOR4(0, fSubtitlePosition + fSubtitleHeight, 0, 0);
+	}
+
 	vertex[0].tu = 0;
 	vertex[0].tv = 0;
-
-	vertex[1].p = D3DXVECTOR4( (float)g_settings.m_ResInfo[m_iResolution].iWidth, fSubtitlePosition,    0, 0 );
 	vertex[1].tu = SUBTITLE_TEXTURE_WIDTH;
 	vertex[1].tv = 0;
-
-	vertex[2].p = D3DXVECTOR4( (float)g_settings.m_ResInfo[m_iResolution].iWidth, fSubtitlePosition + fSubtitleHeight,  0, 0 );
 	vertex[2].tu = SUBTITLE_TEXTURE_WIDTH;
 	vertex[2].tv = SUBTITLE_TEXTURE_HEIGHT;
-
-	vertex[3].p = D3DXVECTOR4( 0, fSubtitlePosition + fSubtitleHeight,  0, 0 );
 	vertex[3].tu = 0;
 	vertex[3].tv = SUBTITLE_TEXTURE_HEIGHT;
 
