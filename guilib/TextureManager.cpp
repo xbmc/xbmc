@@ -278,8 +278,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
   if (strTextureName.c_str()[1] == ':')
     strPath=strTextureName;
 
-  OutputDebugString(strPath.c_str());
-  OutputDebugString("\n");
+  //OutputDebugString(strPath.c_str());
+  //OutputDebugString("\n");
 
   if (strPath.Right(4).ToLower()==".gif")
   {
@@ -382,7 +382,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iPicture)
 {
   // dont release skin textures, they are reloaded each time
-  if (strTextureName.GetAt(1) != ':') return;
+  //if (strTextureName.GetAt(1) != ':') return;
   //CLog::Log("release:%s", strTextureName.c_str());
 
   ivecTextures i;
