@@ -1,21 +1,3 @@
-<!-- Finnish - language resource                                                    !-->
-<!-- Finnish Translation 2004-11-7 by Nanite1000                                    !-->
-<!-- Based on CVS revision 2004-11-7 YYYY-MM-DD                                     !-->
-<!-- Finnish Translation Update 2005-03-01 by jutski                                !-->
-<!-- Based on CVS revision 2005-02-28 YYYY-MM-DD (English rev1.172)                 !-->
-<!-- For comments PM me in xboxmediacenter forum or IRC: nanite1k @ #xbmc on efnet  !-->
-<!--   or send email to: nanite1000 _at_ users _dot_ sourceforge _dot_ net          !-->
-<!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta                   !-->
-<!--   tai sähköpostina: nanite1000 _miuku_ users _piste_ sourceforge _piste_ net   !-->
-<!-- Not all weather strings are tranlated, cant get it to look correct/too long    !-->
-<!--    Weather strings can be tranlated if all combinations has its own string     !-->
-<!--    Ie.  light+snow, rain+showers...                                            !-->
-<!-- LCD strings not verified, i dont have LCD screen                               !-->
-<!-- Thanks to nanite1000 for his great work, but I felt this needed to be updated. !-->
-<!--                                                                                !-->
-<!-- Should be up-to-date now, let me know if anything's missing/wrong/etc.         !-->
-<!--    jutski (IRC: privmsg jutski, ircnet only;                                   !-->
-<!--            or email jutski _at_ users.sourceforge.net)                         !-->
 <strings>
   <string><id>0</id><value>Ohjelmat</value></string>
   <string><id>1</id><value>Kuvat</value></string>
@@ -335,7 +317,7 @@
   <string><id>386</id><value>Selkeää</value></string>
   <string><id>387</id><value>Pilvistä</value></string>
   <string><id>388</id><value>Varhaista</value></string>
-  <string><id>389</id><value>kuuro</value></string>
+  <string><id>389</id><value>kuuroja</value></string>
   <string><id>390</id><value>Lumikuuroja</value></string>
   <string><id>391</id><value>Heikkoa</value></string>
   <string><id>392</id><value>Kohtalaista</value></string>
@@ -536,6 +518,7 @@
   <string><id>753</id><value>Muokkaa jaon nimeä</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Nettipelaaminen</value></string>
+  <string><id>1000</id><value>Näytönsäästäjän esikatselu</value></string>
 
   <string><id>1396</id><value>Kasaantuvaa</value></string>
   <string><id>1397</id><value>ja</value></string>
