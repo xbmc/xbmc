@@ -16,3 +16,7 @@ XBMC key mappings:
       L/R trigger : switch between source/destination window
       Y button    : (de)select files/directory
    
+   my music:
+			L/R trigger : switch between files & playlist
+			Y button	  : add file 2 playlist
+			white button: find album info for file
