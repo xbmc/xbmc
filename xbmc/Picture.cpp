@@ -277,6 +277,7 @@ bool CPicture::CreateThumnail(const CStdString& strFileName)
 
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, int nMaxWidth, int nMaxHeight, bool bCacheFile/*=true*/)
 {
+	CLog::Log(LOGINFO, "Creating thumb from: %s", strFileName.c_str());
 	CStdString strExtension;
 	CStdString strCachedFile;
 	DWORD dwImageType=CXIMAGE_FORMAT_JPG;
@@ -321,7 +322,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 	{
 		bool bNeedToConvert = dwImageType != CXIMAGE_FORMAT_JPG;
 		CxImage image(dwImageType);
-		if (!image.Load(strCachedFile.c_str(),dwImageType))
+		if (!image.Load(strCachedFile.c_str(),dwImageType) || !image.IsValid())
 		{
 			CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to open image: %s Error:%s\n", strCachedFile.c_str(), image.GetLastError());
 			return false;
@@ -348,7 +349,11 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 
 		if (bResize)
 		{
-			image.Resample(m_dwWidth,m_dwHeight, QUALITY);
+			if (!image.Resample(m_dwWidth,m_dwHeight, QUALITY) || !image.IsValid())
+			{
+				CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to resample image: %s Error:%s\n", strCachedFile.c_str(), image.GetLastError());
+				return false;
+			}
 			m_dwWidth=image.GetWidth();
 			m_dwHeight=image.GetHeight();
 			bNeedToConvert = true;
@@ -357,7 +362,11 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 		::DeleteFile(strThumbFileName.c_str());
 		if ( image.GetNumColors() )
 		{
-			image.IncreaseBpp(24);
+			if (!image.IncreaseBpp(24) || !image.IsValid())
+			{
+				CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to convert to 24bpp: %s Error:%s\n", strCachedFile.c_str(), image.GetLastError());
+				return false;
+			}
 			bNeedToConvert = true;
 		}
 		// only resave the image if we have to (quality of the JPG saver isn't too hot!)
@@ -393,6 +402,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 
 bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
 {
+	CLog::Log(LOGINFO, "Creating album thumb from memory: %s", strThumbFileName.c_str());
 	DWORD dwImageType=CXIMAGE_FORMAT_UNKNOWN;
 
 	if (strExtension.IsEmpty())
@@ -433,14 +443,11 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
   try
 	{
 		CxImage image(dwImageType);
-		if (!image.Decode(pPicture.get(),nBufSize,dwImageType))
+		if (!image.Decode(pPicture.get(),nBufSize,dwImageType) || !image.IsValid())
 		{
 			CLog::Log(LOGERROR, "PICTURE::createthumbnailfrommemory: Unable to load image from memory Error:%s\n", image.GetLastError());
 			return false;
 		}
-
-		if (!image.IsValid())
-			return false;
 
 		m_dwWidth=image.GetWidth();
 		m_dwHeight=image.GetHeight();
@@ -464,7 +471,11 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
 
     if (bResize)
     {
-			image.Resample(m_dwWidth,m_dwHeight, QUALITY);
+			if (!image.Resample(m_dwWidth,m_dwHeight, QUALITY) || !image.IsValid())
+			{
+				CLog::Log(LOGERROR, "PICTURE::createthumbnailfrommemory: Unable to resample image Error:%s\n", image.GetLastError());
+				return false;
+			}
 			m_dwWidth=image.GetWidth();
 			m_dwHeight=image.GetHeight();
 		}
@@ -472,7 +483,11 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
     ::DeleteFile(strThumbFileName.c_str());
     if ( image.GetNumColors() )
     {
-      image.IncreaseBpp(24);
+      if (!image.IncreaseBpp(24) || !image.IsValid())
+			{
+				CLog::Log(LOGERROR, "PICTURE::createthumbnailfrommemory: Unable to increase bpp Error:%s\n", image.GetLastError());
+				return false;
+			}
     }
 		image.SetJpegQuality(90);	// decent quality thumbs needed!
 		if (!image.Save(strThumbFileName.c_str(),CXIMAGE_FORMAT_JPG))

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 27-09-2004 added: Extra checking for errors + debug info to thumbnail creation
   - 27-09-2004 fixed: [ 1034556 ] Picture playback holds when playing music
   - 27-09-2004 fixed: Albums Icon view had text alignment problems.
   - 27-09-2004 added: Listcontrols can have <alignY>center</alignY> tags.  This should be the default
