@@ -35,6 +35,8 @@ void CAutorun::ExecuteAutorun()
 	if ( pInfo == NULL )
 		return;
 
+	g_application.ResetScreenSaverWindow();		// turn off the screensaver if it's active
+
 	if ( g_stSettings.m_bAutorunCdda && pInfo->IsAudio( 1 ) )
 	{
 		RunCdda();
