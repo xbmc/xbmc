@@ -167,10 +167,14 @@ HRESULT CApplication::Initialize()
 	CreateDirectory(g_stSettings.m_szIMDBDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
 	string strDir=g_stSettings.m_szAlbumDirectory;
-	CreateDirectory((strDir+"\\artists").c_str(),NULL);
-	CreateDirectory((strDir+"\\genres").c_str(),NULL);
-	CreateDirectory((strDir+"\\albums").c_str(),NULL);
+	CreateDirectory((strDir+"\\artistdbs").c_str(),NULL);		// contains the .ardbs files
+	CreateDirectory((strDir+"\\genredbs").c_str(),NULL);			// contains the .grdbs files
 	CreateDirectory((strDir+"\\playlists").c_str(),NULL);
+	CreateDirectory((strDir+"\\songinfo").c_str(),NULL); // contains the .si files
+	CreateDirectory((strDir+"\\albuminfo").c_str(),NULL); // contains the .ai files
+	CreateDirectory((strDir+"\\albumdbs").c_str(),NULL); // contains the .adbs files
+	CreateDirectory((strDir+"\\thumbs").c_str(),NULL); // contains the album thumbs
+
 	CreateDirectory((strDir+"\\cddb").c_str(),NULL);
 
 	

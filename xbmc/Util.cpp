@@ -611,7 +611,7 @@ void CUtil::GetSongInfo(const CStdString& strFileName, CStdString& strSongCacheN
 	Crc32 crc;
 	crc.Reset();
   crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
-	strSongCacheName.Format("%s\\%x.si",g_stSettings.m_szAlbumDirectory,crc);
+	strSongCacheName.Format("%s\\songinfo\\%x.si",g_stSettings.m_szAlbumDirectory,crc);
 }
 
 void CUtil::GetAlbumThumb(const CStdString& strFileName, CStdString& strThumb)
@@ -619,7 +619,7 @@ void CUtil::GetAlbumThumb(const CStdString& strFileName, CStdString& strThumb)
 	Crc32 crc;
 	crc.Reset();
   crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
-	strThumb.Format("%s\\albums\\%x.tbn",g_stSettings.m_szAlbumDirectory,crc);
+	strThumb.Format("%s\\thumbs\\%x.tbn",g_stSettings.m_szAlbumDirectory,crc);
 }
 void CUtil::GetAlbumInfo(const CStdString& strFileName, CStdString& strAlbumThumb)
 {
@@ -633,7 +633,7 @@ void CUtil::GetAlbumInfo(const CStdString& strFileName, CStdString& strAlbumThum
 	Crc32 crc;
 	crc.Reset();
   crc.Compute(strTmp.c_str(),strTmp.size());
-	strAlbumThumb.Format("%s\\albums\\%x.ai",g_stSettings.m_szAlbumDirectory,crc);
+	strAlbumThumb.Format("%s\\albuminfo\\%x.ai",g_stSettings.m_szAlbumDirectory,crc);
 }
 
 void CUtil::GetAlbumDatabase(const CStdString& strFileName, CStdString& strAlbumThumb)
@@ -648,7 +648,7 @@ void CUtil::GetAlbumDatabase(const CStdString& strFileName, CStdString& strAlbum
 	Crc32 crc;
 	crc.Reset();
   crc.Compute(strTmp.c_str(),strTmp.size());
-	strAlbumThumb.Format("%s\\albums\\%x.aldbs",g_stSettings.m_szAlbumDirectory,crc);
+	strAlbumThumb.Format("%s\\albumdbs\\%x.aldbs",g_stSettings.m_szAlbumDirectory,crc);
 }
 
 void CUtil::GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS)
@@ -663,7 +663,7 @@ void CUtil::GetArtistDatabase(const CStdString& strFileName, CStdString& strArti
 	Crc32 crc;
 	crc.Reset();
   crc.Compute(strTmp.c_str(),strTmp.size());
-	strArtistDBS.Format("%s\\artists\\%x.ardbs",g_stSettings.m_szAlbumDirectory,crc);
+	strArtistDBS.Format("%s\\artistdbs\\%x.ardbs",g_stSettings.m_szAlbumDirectory,crc);
 }
 
 void CUtil::GetGenreDatabase(const CStdString& strFileName, CStdString& strGenreDBS)
@@ -678,7 +678,7 @@ void CUtil::GetGenreDatabase(const CStdString& strFileName, CStdString& strGenre
 	Crc32 crc;
 	crc.Reset();
   crc.Compute(strTmp.c_str(),strTmp.size());
-	strGenreDBS.Format("%s\\genres\\%x.grdbs",g_stSettings.m_szAlbumDirectory,crc);
+	strGenreDBS.Format("%s\\genredbs\\%x.grdbs",g_stSettings.m_szAlbumDirectory,crc);
 }
 bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 {
