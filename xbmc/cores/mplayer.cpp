@@ -80,6 +80,7 @@ CMPlayer::Options::Options()
 {
 	m_bResampleAudio=false;
     m_bNoCache=false;
+    m_bNoIdx=false;
     m_iChannels=0;
     m_bAC3PassTru=false;
     m_strChannelMapping="";
@@ -107,6 +108,15 @@ void CMPlayer::Options::SetNoCache(bool bOnOff)
   m_bNoCache=bOnOff;
 }
 
+bool CMPlayer::Options::GetNoIdx() const
+{
+  return m_bNoIdx;
+}
+
+void CMPlayer::Options::SetNoIdx(bool bOnOff) 
+{
+  m_bNoIdx=bOnOff;
+}
 
 void  CMPlayer::Options::SetSpeed(float fSpeed)
 {
@@ -197,6 +207,13 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   {
     m_vecOptions.push_back("-nocache");    
   }
+
+  if (m_bNoIdx)
+  {
+    m_vecOptions.push_back("-noidx");    
+  }
+  
+  
   //limit A-V sync correction in order to get smoother playback.
   //defaults to 0.01 but for high quality videos 0.0001 results in 
   // much smoother playback but slow reaction time to fix A-V desynchronization
@@ -530,6 +547,18 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		options.SetDVDDevice(strPath);
 		CLog::Log(" dvddevice: %s", strPath.c_str());
 	}	
+
+    if (CUtil::IsRAR(strFile))
+    {
+    	options.SetNoIdx(true);
+	CLog::Log("Trying to play a rar file (%s). Setting -noidx", strFile.c_str());
+	// -noidx enables mplayer to play an .avi file from a streaming source that is not seekable.
+        // it tells mplayer to _not_ try getting the avi index from the end of the file.
+        // this option is enabled if we try play video from a rar file, as there is a modified version
+        // of ccxstream which sends unrared data when you request the first .rar of a movie.
+        // This means you can play a movie gaplessly from 50 rar files without unraring, which is neat.
+    }
+
     options.GetOptions(argc,argv);
     
     //CLog::Log("  open 1st time");
