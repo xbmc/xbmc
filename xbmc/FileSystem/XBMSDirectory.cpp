@@ -138,7 +138,7 @@ bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 				pstrSizeStart+=strlen("<SIZE>");
 				strncpy(szSize,pstrSizeStart, pstrSizeEnd-pstrSizeStart);
 				szSize[pstrSizeEnd-pstrSizeStart]=0;
-				pItem->m_dwSize = atol(szSize);
+				pItem->m_dwSize = _atoi64(szSize);
 			}
 
 			char* pstrAccessStart=strstr(fileinfo, "<ACCESS>");
