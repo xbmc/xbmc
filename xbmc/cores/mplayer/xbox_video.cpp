@@ -783,15 +783,15 @@ void xbox_video_CheckScreenSaver()
 		{
 			// Drop brightness of current surface to 20%
 			DWORD strideScreen=lr.Pitch;
-			for (DWORD y=0; y < (rs.top + rs.bottom); y++)
+			for (DWORD y=0; y < UINT (rs.top + rs.bottom); y++)
 			{
 				BYTE *pDest = (BYTE*)lr.pBits + strideScreen*y;
-				for (DWORD x=0; x < ((rs.left + rs.right)>>1); x++)
+				for (DWORD x=0; x < UINT ((rs.left + rs.right)>>1); x++)
 				{
-					pDest[0] = (pDest[0] * 0.20);	// Y1
-					pDest[1] = ((pDest[1] - 128) * 0.20) + 128;	// U (with 128 shift!)
-					pDest[2] = (pDest[2] * 0.20);	// Y2
-					pDest[3] = ((pDest[3] - 128) * 0.20) + 128;	// V (with 128 shift!)
+					pDest[0] = BYTE (pDest[0] * 0.20f);	// Y1
+					pDest[1] = BYTE ((pDest[1] - 128) * 0.20f) + 128;	// U (with 128 shift!)
+					pDest[2] = BYTE (pDest[2] * 0.20f);	// Y2
+					pDest[3] = BYTE ((pDest[3] - 128) * 0.20f) + 128;	// V (with 128 shift!)
 					pDest += 4;
 				}
 			}
