@@ -1018,7 +1018,7 @@ void CControlSocket::ParseCommand()
 						if (isalpha(iter->dir[0]) && iter->dir[1] == ':')
 						{
 							char drive = tolower(iter->dir[0]);
-							if (drive >= 'f')
+							if (drive >= 'f' && drive != 'q')
 							{
 								// check it's available
 								if (drive > 'g' ||
