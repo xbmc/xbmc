@@ -437,6 +437,7 @@
   <string><id>506</id><value>Use Directory Names for Description</value></string>
   <string><id>507</id><value>Sort by: Usage</value></string>
   <string><id>508</id><value>Do not use Shortcuts or Scan</value></string>
+  <string><id>509</id><value>Cache Program Thumbnails</value></string>
   <string><id>600</id><value>Rip CD Audio</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standard</value></string>

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 01-02-2005 added: My Programs option to cache thumbnails.  HDDLoader users will want to turn this off.
   - 31-01-2005 fixed: Screenshot mem is freed correctly in overlays mode
   - 31-01-2005 fixed: Some defaults for movie viewing + "subs delay" message no longer shows on movie start.
   - 31-01-2005 fixed: Incorrect webrequest HEAD sent when a value was entered for HTTP Proxy Host but HTTP proxy was disabled.
