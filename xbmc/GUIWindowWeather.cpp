@@ -43,7 +43,9 @@
 #define PARTNER_ID				"1004124588"			//weather.com partner id
 #define PARTNER_KEY				"079f24145f208494"		//weather.com partner key
 
-
+#define MAX_LOCATION			3
+#define LOCALIZED_TOKEN_FIRSTID	370
+#define LOCALIZED_TOKEN_LASTID	395
 /*
 FIXME'S
 >strings are not centered
@@ -77,7 +79,10 @@ CGUIWindowWeather::CGUIWindowWeather(void)
 :CGUIWindow(0)
 {
 	pNowImage = NULL;
-	strcpy(m_szLocation, "");
+	for(int i=0; i<MAX_LOCATION; i++)
+	{
+		strcpy(m_szLocation[i],"");
+	}
 	strcpy(m_szUpdated, "");
 	strcpy(m_szNowIcon, "Q:\\weather\\128x128\\na.png");
 	strcpy(m_szNowCond, "");
@@ -134,6 +139,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
 					m_dfForcast[i].pImage = (CGUIImage*)GetControl(CONTROL_IMAGED0IMG+(i*10));
 				UpdateButtons();
 				m_lRefreshTime = timeGetTime() - (g_stSettings.m_iWeatherRefresh*60000) + 2000; //refresh in 2 seconds
+			LoadLocalizedToken();
 		break;
 
 		case GUI_MSG_CLICKED:
@@ -158,7 +164,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
 void CGUIWindowWeather::UpdateButtons()
 {
 	SET_CONTROL_LABEL(GetID(), CONTROL_BTNREFRESH, 184);			//Refresh
-	SET_CONTROL_LABEL(GetID(), CONTROL_LABELLOCATION, m_szLocation);
+	SET_CONTROL_LABEL(GetID(), CONTROL_LABELLOCATION, m_szLocation[m_iCurWeather]);
 	SET_CONTROL_LABEL(GetID(), CONTROL_LABELUPDATED, m_szUpdated);
 
 	//urgh, remove, create then add image each refresh to update nicely
@@ -204,8 +210,11 @@ void CGUIWindowWeather::UpdateButtons()
 	CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SELECTLOCATION, 0, 0, NULL);
 	g_graphicsContext.SendMessage(msg);
 	CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_SELECTLOCATION, 0, 0);
-	for(int i=0; i<3; i++)
+	for(int i=0; i<MAX_LOCATION; i++)
 	{
+		if(strlen(m_szLocation[i]) > 1)							//got the location string yet?
+			msg2.SetLabel(m_szLocation[i]);
+		else
 		msg2.SetLabel(g_stSettings.m_szWeatherArea[i]);
 		g_graphicsContext.SendMessage(msg2);
 	}
@@ -289,7 +298,7 @@ bool CGUIWindowWeather::LoadWeather(const CStdString& strWeatherFile)
 	TiXmlElement *pElement = pRootElement->FirstChildElement("loc");
 	if(pElement)
 	{
-		GetString(pElement, "dnam", m_szLocation, "");
+		GetString(pElement, "dnam", m_szLocation[m_iCurWeather], "");
 	}
 
 	//current weather
@@ -432,8 +441,8 @@ void CGUIWindowWeather::RefreshMe(bool autoUpdate)
 		pDlgProgress->SetHeading(410);							//"Accessing Weather.com"
 		pDlgProgress->SetLine(0, 411);							//"Getting Weather For:"
 		pDlgProgress->SetLine(1, g_stSettings.m_szWeatherArea[m_iCurWeather]);	//Area code
-		if(strlen(m_szLocation) > 1)							//got the location string yet?
-			pDlgProgress->SetLine(2, m_szLocation);
+		if(strlen(m_szLocation[m_iCurWeather]) > 1)							//got the location string yet?
+			pDlgProgress->SetLine(2, m_szLocation[m_iCurWeather]);
 		else
 			pDlgProgress->SetLine(2, "");
 		pDlgProgress->StartModal(GetID());
@@ -512,43 +521,55 @@ void CGUIWindowWeather::LocalizeDay(char *szDay)
 }
 
 
+void CGUIWindowWeather::LoadLocalizedToken()
+{
+	TiXmlDocument xmlDoc;
+	if ( !xmlDoc.LoadFile("Q:\\language\\english\\strings.xml") )
+	{
+		return;
+	}
+	TiXmlElement* pRootElement =xmlDoc.RootElement();
+	CStdString strValue=pRootElement->Value();
+	if (strValue!=CStdString("strings")) return;
+	const TiXmlNode *pChild = pRootElement->FirstChild();
+	while (pChild)
+	{
+		CStdString strValue=pChild->Value();
+		if (strValue=="string")
+		{
+			const TiXmlNode *pChildID = pChild->FirstChild("id");
+			const TiXmlNode *pChildText = pChild->FirstChild("value");
+			DWORD dwID=atoi(pChildID->FirstChild()->Value());
+			if (LOCALIZED_TOKEN_FIRSTID <= dwID && dwID <= LOCALIZED_TOKEN_LASTID)
+			{
+				WCHAR wszText[1024];
+				swprintf(wszText,L"%S", pChildText->FirstChild()->Value() );
+				if (wcslen(wszText) > 0)
+				{
+					wstring strText=wszText;
+					m_localizedTokens.insert(std::pair<wstring,DWORD>(strText, dwID));
+				}
 
+			}
+		}
+		pChild=pChild->NextSibling();
+	}
+}
 void CGUIWindowWeather::LocalizeOverviewToken(char *szToken)
 {
 	CStdString strLocStr="";
-	if(strcmp(szToken, "T-Storms") == 0)
-		strLocStr = g_localizeStrings.Get(370);
-	else if(strcmp(szToken, "Partly") == 0)
-		strLocStr = g_localizeStrings.Get(371);
-	else if(strcmp(szToken, "Mostly") == 0)
-		strLocStr = g_localizeStrings.Get(372);
-	else if(strcmp(szToken, "Sunny") == 0)
-		strLocStr = g_localizeStrings.Get(373);
-	else if(strcmp(szToken, "Cloudy") == 0)
-		strLocStr = g_localizeStrings.Get(374);
-	else if(strcmp(szToken, "Snow") == 0)
-		strLocStr = g_localizeStrings.Get(375);
-	else if(strcmp(szToken, "Rain") == 0)
-		strLocStr = g_localizeStrings.Get(376);
-	else if(strcmp(szToken, "Light") == 0)
-		strLocStr = g_localizeStrings.Get(377);
-	else if(strcmp(szToken, "AM") == 0)
-		strLocStr = g_localizeStrings.Get(378);
-	else if(strcmp(szToken, "PM") == 0)
-		strLocStr = g_localizeStrings.Get(379);
-	else if(strcmp(szToken, "Showers") == 0)
-		strLocStr = g_localizeStrings.Get(380);
-	else if(strcmp(szToken, "Few") == 0)
-		strLocStr = g_localizeStrings.Get(381);
-	else if(strcmp(szToken, "Scattered") == 0)
-		strLocStr = g_localizeStrings.Get(382);
-	else if(strcmp(szToken, "Wind") == 0)
-		strLocStr = g_localizeStrings.Get(383);
-	else if(strcmp(szToken, "Strong") == 0)
-		strLocStr = g_localizeStrings.Get(384);
-	else if(strcmp(szToken, "Fair") == 0)
-		strLocStr = g_localizeStrings.Get(385);
-
+	WCHAR wszText[1024];
+	swprintf(wszText,L"%S", szToken );
+	if (wcslen(wszText) > 0)
+	{
+		wstring strText=wszText;
+		ilocalizedTokens i;
+		i = m_localizedTokens.find(strText);
+		if (i!=m_localizedTokens.end())
+		{
+			strLocStr = g_localizeStrings.Get(i->second);
+		}
+	}
 	if(strLocStr == "")
 		strLocStr = szToken;	//if not found, let fallback
 	strLocStr += " "; 
