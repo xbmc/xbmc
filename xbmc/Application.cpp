@@ -2844,6 +2844,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
 			m_dwIdleTime=timeGetTime();
 			CStdString strFile=m_itemCurrentFile.m_strPath;
 
+			// reset our infoManager details
+			g_infoManager.ResetCurrentSong();
+
 			if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
 			{
 				if (CUtil::IsVideo(strFile) && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO_TEMP)
@@ -2893,8 +2896,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
 				}
 			}
 
-			// reset our infoManager details
-			g_infoManager.ResetCurrentSong();
 			if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
 			{
 				m_gWindowManager.PreviousWindow();
