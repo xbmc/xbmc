@@ -411,6 +411,7 @@ void  CMusicAlbumInfo::Set(CAlbum& album)
 	m_strReview				= album.strReview;
 	m_strImageURL			= album.strImage;
 	m_iRating					= album.iRating;
+	m_strAlbumPath		= album.strPath;
 	m_strTitle2				= "";
 	m_bLoaded					= true;
 }
