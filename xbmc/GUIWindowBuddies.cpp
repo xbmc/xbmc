@@ -200,7 +200,7 @@ void CGUIWindowBuddies::OnInitWindow()
 		if (pDialog->IsConfirmed())
 		{
 			m_pKaiClient->Reattach();
-			Sleep(2000);
+			Sleep(3000);
 		}
 		else
 		{
