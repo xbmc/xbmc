@@ -50,8 +50,8 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 			if (!pDirectory) return false;
 			pDirectory->SetMask(m_strFileMask);
 			bool bResult=pDirectory->GetDirectory(strPath,items);
-			CUtil::SetThumbs(items);
-			CUtil::FillInDefaultIcons(items);
+			//CUtil::SetThumbs(items);
+			//CUtil::FillInDefaultIcons(items);
 			delete pDirectory;
 			return bResult;
 		}
