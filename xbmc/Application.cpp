@@ -145,7 +145,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 	bool Pal = XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I;
 	if (InitD3D)
 	{
-		CLog::Log(LOGFATAL, "Init display in default mode: %s", Pal ? "PAL" : "NTSC");
+		CLog::Log(LOGINFO, "Init display in default mode: %s", Pal ? "PAL" : "NTSC");
 		// init D3D with defaults (NTSC or PAL standard res)
 		m_d3dpp.BackBufferWidth        = 720;
 		m_d3dpp.BackBufferHeight       = Pal ? 576 : 480;
@@ -170,10 +170,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
 		m_pd3dDevice->GetBackBuffer(0, 0, &m_pBackBuffer);
 
-		XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
+//		XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
 
 		// Create the gamepad devices
-		HaveGamepad = (XBInput_CreateGamepads(&m_Gamepad) == S_OK);
+//		HaveGamepad = (XBInput_CreateGamepads(&m_Gamepad) == S_OK);
 	}
 	m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
 
