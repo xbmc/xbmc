@@ -153,7 +153,7 @@ void CGUIThumbnailPanel::Render()
     {
 			DWORD dwPosX = m_dwPosX + iCol*m_iItemWidth;
       int iItem = iCol+m_iOffset;
-      if (iItem>0 && iItem < (int)m_vecItems.size())
+      if (iItem >= 0 && iItem < (int)m_vecItems.size())
       {
         CGUIListItem *pItem=m_vecItems[iItem];
 				RenderItem(false,dwPosX,dwPosY,pItem);
