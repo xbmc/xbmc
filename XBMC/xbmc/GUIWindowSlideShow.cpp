@@ -584,14 +584,28 @@ void CGUIWindowSlideShow::OnAction(const CAction &action)
 				ShowPrevious();
 		break;
 		case ACTION_MOVE_RIGHT:
-			if (m_iZoomFactor!=1) m_iZoomLeft+=25;
-			if (m_iZoomLeft > (int)m_dwWidthBackGround - m_iZoomWidth) m_iZoomLeft = m_dwWidthBackGround - m_iZoomWidth;
+      if (m_iZoomFactor==1)
+      {
+        ShowNext();
+      }
+      else
+      {
+			  m_iZoomLeft+=25;
+			  if (m_iZoomLeft > (int)m_dwWidthBackGround - m_iZoomWidth) m_iZoomLeft = m_dwWidthBackGround - m_iZoomWidth;
+      }
 			m_lSlideTime=timeGetTime();
 		break;
       
 		case ACTION_MOVE_LEFT:
-			if (m_iZoomFactor!=1) m_iZoomLeft-=25;
-			if (m_iZoomLeft < 0) m_iZoomLeft = 0;
+			if (m_iZoomFactor==1) 
+      {
+        ShowPrevious();
+      }
+      else
+      {
+        m_iZoomLeft-=25;
+			  if (m_iZoomLeft < 0) m_iZoomLeft = 0;
+      }
 			m_lSlideTime=timeGetTime();
 		break;
 
