@@ -391,16 +391,32 @@ void CApplication::OnKey(CKey& key)
 			return;
 		}
 	}
-//#ifdef _DEBUG
-	else //if (IsPlayingAudio() )
+	else 
 	{
-		if ( key.GetButtonCode() == KEY_BUTTON_X  || key.GetButtonCode() == KEY_REMOTE_MENU)
+		if (IsPlayingAudio() )
 		{
-			m_gWindowManager.ActivateWindow(2006);//visz.
-			return;
+			if ( key.GetButtonCode() == KEY_BUTTON_X  || key.GetButtonCode() == KEY_REMOTE_MENU)
+			{
+				if (m_gWindowManager.GetActiveWindow()==2006)
+				{
+					m_gWindowManager.ActivateWindow(0);//home.
+				}
+				else
+				{
+					m_gWindowManager.ActivateWindow(2006);//visz.
+				}
+				return;
+			}
+		}
+		else
+		{
+			// music stopped.
+			if (m_gWindowManager.GetActiveWindow()==2006)
+			{
+				m_gWindowManager.ActivateWindow(0);//home.
+			}
 		}
 	}
-//#endif
 	m_gWindowManager.OnKey(key);   
 }
 

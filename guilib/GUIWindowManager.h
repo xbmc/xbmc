@@ -27,6 +27,7 @@ public:
 	void						SendThreadMessage(CGUIMessage& message);
 	void						DispatchThreadMessages();
 	void						AddMsgTarget( IMsgTargetCallback* pMsgTarget );
+	int							GetActiveWindow() const;
 private:
   vector <CGUIWindow*>					m_vecWindows;
   int														m_iActiveWindow;
