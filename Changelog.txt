@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-03-2005 added: wma tag loader, support for multiple artists and genres
   - 04-03-2005 changed: Reversed Clear() change as it caused graphics leak through when UI calibration was not at 0,0.
   - 04-03-2005 added: Thumbs table clean up on cleanup of the music library.
   - 04-03-2005 fixed: Small thumbs in list controls weren't centered + other small graphical glitches here and there.
