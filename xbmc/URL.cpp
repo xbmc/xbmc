@@ -26,7 +26,10 @@ CURL::CURL(const CStdString& strURL)
 		m_strFileName=strURL;
 		int iFileType = m_strFileName.ReverseFind('.') + 1;
 		if (iFileType)
+		{
 			m_strFileType = m_strFileName.Right(m_strFileName.size()-iFileType);
+			m_strFileType.Normalize();
+		}
 		return;
 	}
 
@@ -115,7 +118,10 @@ CURL::CURL(const CStdString& strURL)
 
 	int iFileType = m_strFileName.ReverseFind('.') + 1;
 	if (iFileType)
+	{
 		m_strFileType = m_strFileName.Right(m_strFileName.size()-iFileType);
+		m_strFileType.Normalize();
+	}
 }
 
 CURL::~CURL()
