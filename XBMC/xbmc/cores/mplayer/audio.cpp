@@ -196,6 +196,7 @@ ao_functions_t audio_functions=
 extern void xbox_audio_registercallback(IAudioCallback* pCallback)
 {
 	if (!m_pAudioDecoder) return;
+	m_pAudioCallback=pCallback;
 	m_pAudioDecoder->RegisterAudioCallback(pCallback);
 }
 extern void xbox_audio_unregistercallback()
