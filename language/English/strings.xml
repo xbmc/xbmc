@@ -1734,7 +1734,7 @@
 	</string>
 	<string>
 		<id>602</id>
-		<value>Normal</value>
+		<value>Standard</value>
 	</string>
 	<string>
 		<id>603</id>
@@ -1746,7 +1746,7 @@
 	</string>
 	<string>
 		<id>605</id>
-		<value>Ripping</value>
+		<value>Ripping...</value>
 	</string>
 	<string>
 		<id>606</id>
@@ -1763,6 +1763,26 @@
 	<string>
 		<id>609</id>
 		<value>CDDARipPath is not set in XboxMediaCenter.xml</value>
+	</string>
+	<string>
+		<id>620</id>
+		<value>CD Ripping</value>
+	</string>
+	<string>
+		<id>621</id>
+		<value>Encoder</value>
+	</string>
+	<string>
+		<id>622</id>
+		<value>Quality</value>
+	</string>
+	<string>
+		<id>623</id>
+		<value>Bit Rate</value>
+	</string>
+	<string>
+		<id>624</id>
+		<value>Include Track number</value>
 	</string>
 	
 	<string>
