@@ -570,7 +570,10 @@ void CGUIListControl::SetSpace(int iHeight)
 
 void CGUIListControl::SetFont2(const CStdString& strFont)
 {
-	m_pFont2=g_fontManager.GetFont(strFont);
+	if (strFont != "")
+	{
+		m_pFont2=g_fontManager.GetFont(strFont);
+	}
 }
 void CGUIListControl::SetColors2(DWORD dwTextColor, DWORD dwSelectedColor)
 {

@@ -28,6 +28,9 @@ public:
 	void				 SetTextureHeight(int iHeight);
 	int					 GetTextureWidth() const;
 	int					 GetTextureHeight() const;
+
+	const CStdString& GetFileName() const {return m_strFileName;};
+	DWORD						  GetColorKey() const {return m_dwColorKey;};
 protected:
   virtual void       Update();
 	void							 Process();

@@ -37,6 +37,17 @@ public:
   const WCHAR*	GetLabel() const;
   virtual void	SetFocus(bool bOnOff);
 	void					SetReverse(bool bOnOff);
+	const	CStdString& GetTexutureUpName() const { return m_imgspinUp.GetFileName(); };
+	const	CStdString& GetTexutureDownName() const { return m_imgspinDown.GetFileName(); };
+	const	CStdString& GetTexutureUpFocusName() const { return m_imgspinUpFocus.GetFileName(); };
+	const	CStdString& GetTexutureDownFocusName() const { return m_imgspinDownFocus.GetFileName(); };
+	DWORD							GetTextColor() const { return m_dwTextColor;};
+	const CStdString& GetFontName() const { return m_strFont; };
+	DWORD							GetAlignment() const { return m_dwAlign;};
+	int								GetType() const { return m_iType;};
+	DWORD							GetSpinWidth() const { return m_imgspinUp.GetWidth(); };
+	DWORD							GetSpinHeight() const { return m_imgspinUp.GetHeight(); };
+
 protected:
 	bool			CanMoveDown();
 	bool			CanMoveUp();

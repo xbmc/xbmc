@@ -2,6 +2,9 @@
 #define GUILIB_GUIWINDOW_H
 
 #pragma once
+
+#include <map>
+#include <string>
 #include <vector>
 using namespace std;
 #include "guicontrol.h" 
@@ -27,6 +30,7 @@ public:
   void								FreeResources();
 	void								ResetAllControls();  
 protected:
+	bool LoadReference(const CStdString& strFileName, map<string,CGUIControl*>& controls);
   vector<CGUIControl*> m_vecControls;
   typedef vector<CGUIControl*>::iterator ivecControls;
   DWORD  m_dwWindowId;

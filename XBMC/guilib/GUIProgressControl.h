@@ -22,6 +22,10 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 	void				 SetPercentage(int iPercent);
 	int 				 GetPercentage() const;
+	const CStdString& GetBackGroundTextureName() const { return m_guiBackground.GetFileName();};
+	const CStdString& GetBackTextureLeftName() const { return m_guiLeft.GetFileName();};
+	const CStdString& GetBackTextureRightName() const { return m_guiRight.GetFileName();};
+	const CStdString& GetBackTextureMidName() const { return m_guiMid.GetFileName();};
 protected:
 	CGUIImage				m_guiBackground;
 	CGUIImage				m_guiLeft;

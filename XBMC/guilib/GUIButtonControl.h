@@ -28,6 +28,13 @@ public:
 	void        SetLabel(const CStdString& strFontName,const wstring& strLabel,D3DCOLOR dwColor);
 	void        SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor);
   void        SetHyperLink(long dwWindowID);
+	const	CStdString& GetTexutureFocusName() const { return m_imgFocus.GetFileName(); };
+	const	CStdString& GetTexutureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
+	DWORD							GetTextColor() const { return m_dwTextColor;};
+	DWORD							GetDisabledColor() const { return m_dwDisabledColor;};
+	const CStdString& GetFontName() const { return m_pFont->GetFontName(); };
+	const wstring			GetLabel() const { return m_strLabel; };
+	DWORD							GetHyperLink() const { return m_lHyperLinkWindowID;};
 
 protected:
   virtual void       Update() ;
