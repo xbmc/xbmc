@@ -1774,7 +1774,8 @@ void CApplication::UpdateLCD()
 
 			if (iLine<4 && m_tagCurrentMovie.m_strGenre!="") g_lcd->SetLine(iLine++,m_tagCurrentMovie.m_strGenre);
 
-			strProgressBar = g_infoManager.GetProgressBar("video");
+			strProgressBar = g_lcd->GetProgressBar((double)g_application.m_pPlayer->GetPTS(),
+                                                    (double)g_application.m_pPlayer->GetTotalTime());
 			g_lcd->SetLine(iLine++, strProgressBar);
 			/*
 			if (iLine<4 && m_tagCurrentMovie.m_iYear>1900)
@@ -1826,8 +1827,10 @@ void CApplication::UpdateLCD()
 			if (iLine < 4 && strLine!="") g_lcd->SetLine(iLine++,strLine);
 			strLine = g_infoManager.GetMusicLabel("album");
 
-			strProgressBar = g_infoManager.GetProgressBar("audio");
-			g_lcd->SetLine(iLine++, strProgressBar);
+			strProgressBar = g_lcd->GetProgressBar( (double)g_application.m_pPlayer->GetPTS()/10 - (g_infoManager.GetCurrentSongStart())/75,
+ 		                                                  (double)g_application.m_pPlayer->GetTotalTime());
+
+      g_lcd->SetLine(iLine++, strProgressBar);
 	  
 			if (iLine < 4 && strLine!="")
 			{

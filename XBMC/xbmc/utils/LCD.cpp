@@ -80,3 +80,46 @@ void ILCD::StringToLCDCharSet(CStdString& strText)
 			0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff
 			}
 	*/
+
+CStdString ILCD::GetProgressBar(double tCurrent, double tTotal)
+{	
+	CStdString strProgressBar;
+	double tmpTest, dBlockSize, dBlockSizeRest;
+	unsigned char cLCDsmallBlocks = 0xb0;	//this char (0xAC-0xAF) will be translated in LCD.cpp to the smallBlock
+	unsigned char cLCDbigBlock = 0xa0;		//this char will be translated in LCD.cpp to the right bigBlock
+	int iBigBlock = 5;						// a big block is a combination of 5 small blocks
+	int m_iColumns = g_guiSettings.GetInt("LCD.Columns") - 2;
+
+	if (m_iColumns>0)
+	{
+		dBlockSize = tTotal/m_iColumns/iBigBlock;
+		dBlockSizeRest = (tCurrent-((int)(tCurrent/dBlockSize)*dBlockSize));
+
+		strProgressBar = "[";
+		for (int i=1;i<=m_iColumns;i++)
+		{
+			//set full blocks
+			if (tCurrent >= i * iBigBlock * dBlockSize)
+			{
+				strProgressBar += char(cLCDbigBlock);
+			}
+			//set a part of a block at the end, when needed
+			else if (tCurrent > (i-1) * iBigBlock * dBlockSize + dBlockSize)
+			{
+				tmpTest= tCurrent - ((int)(tCurrent/(iBigBlock * dBlockSize)) * iBigBlock * dBlockSize );
+				tmpTest=(tmpTest/dBlockSize);
+				if (tmpTest>=iBigBlock) tmpTest=iBigBlock-1;
+				strProgressBar += char(cLCDsmallBlocks-(int)tmpTest);
+				dBlockSizeRest=0;
+			}
+			//fill up the rest with blanks
+			else 
+			{
+				strProgressBar += " ";
+			}
+		}
+		strProgressBar += "]";
+		return strProgressBar;
+	}
+	else return "";
+}
