@@ -4,6 +4,7 @@
 #include "guiwindowmanager.h"
 #include "graphiccontext.h"
 #include "key.h"
+#include "guilistitem.h"
 
 #include <vector>
 #include "stdstring.h"
@@ -33,11 +34,18 @@ protected:
 	virtual void	SetCheckmarkValue(BOOL bValue, DWORD iControlID);
 	virtual void	Handle_ControlSetting(DWORD iControlID, DWORD wID);
 	virtual void	PopulateBookmarks();
+					void	ClearBookmarkItems();
 	virtual void	PopulateAudioStreams();
+					void	ClearAudioStreamItems();
 	virtual void	PopulateSubTitles();
-    void			Reset();
+					void	ClearSubTitleItems();
+  void			Reset();
 	bool			m_bSubMenuOn;
 	int				m_iActiveMenu;
 	DWORD			m_iActiveMenuButtonID;
 	int       m_iCurrentBookmark;
+
+	vector<CGUIListItem*> m_vecBookmarksItems;
+	vector<CGUIListItem*> m_vecAudioStreamItems;
+	vector<CGUIListItem*> m_vecSubTitlesItems;
 };
