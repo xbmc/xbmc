@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 12-10-2004 added: prelim. support for Xecutor LCD (untested) [ 1021947 ] + minor modifications
   - 12-10-2004 changed: System used to determine a single artist compilation (with contributing artists).
   - 12-10-2004 changed: Multiple artists/genres are detected using " / " instead of "/" (Have fun AC/DC fans :)
   - 12-10-2004 added: On scan, we commit to the database every 500 songs, instead of only at the end.
