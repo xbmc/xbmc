@@ -55,6 +55,9 @@ CApplication::CApplication(void)
 		XSetProcessQuantumLength(5); //default=20msec
 		XSetFileCacheSize (256*1024);//default=64kb
 		m_dwSpinDownTime=timeGetTime();		
+		m_bInactive = false;			// CB: SCREENSAVER PATCH
+		m_bScreenSave = false;			// CB: SCREENSAVER PATCH
+		m_dwSaverTick=timeGetTime();	// CB: SCREENSAVER PATCH
 }	
 
 CApplication::~CApplication(void)
@@ -428,6 +431,12 @@ void CApplication::Render()
 void CApplication::OnKey(CKey& key)
 {
 	CAction action;
+	m_bInactive=false;		// reset the inactive flag as a key has been pressed
+	if (m_bScreenSave)		// Screen saver is active
+	{
+		m_pd3dDevice->SetGammaRamp(0, &m_OldRamp);	// put the old gamma ramp back in place
+		m_bScreenSave = false;	// Reset the screensaver active flag
+	}
 	// get the current window to send to
 	int iWin = m_gWindowManager.GetActiveWindow();
   g_buttonTranslator.GetAction(iWin, key, action);
@@ -761,6 +770,64 @@ void CApplication::RenderFullScreen()
 //	OutputDebugString("RenderFullScreen Done\n");
 }
 
+void CApplication::CheckScreenSaver()
+{
+	D3DGAMMARAMP Ramp;
+
+	if (!m_bInactive)
+	{
+		if (IsPlayingVideo())	// are we playing a movie?
+		{
+			m_bInactive=false;
+		}
+		else if (IsPlayingAudio())	// are we playing some music?
+		{
+			if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+			{
+				m_bInactive=false;	// visualisation is on, so leave it alone
+			}
+			else
+			{
+				m_bInactive=true;	// music playing from menu, so start the timer going
+			}
+		}
+		else				// nothing doing here, so start the timer going
+		{
+			m_bInactive=true;
+		}
+
+		if (m_bInactive) 
+		{
+			m_dwSaverTick=timeGetTime();		// Start the timer going ...
+		}
+	}
+	else
+	{
+		if (!m_bScreenSave)	// Check we're not already in screensaver mode
+		{
+			if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_stSettings.m_iScreenSaverTime*1000L) )
+			{
+				m_bScreenSave = true;
+
+				m_pd3dDevice->GetGammaRamp(&m_OldRamp);	// Store the old gamma ramp
+				// Fade to very dark (approx 7% brightness) ...
+				for (float fade=1.f; fade>=0.07f; fade-=0.01f)
+				{
+					for(int i=0;i<256;i++)
+					{
+						Ramp.red[i]=(int)((float)m_OldRamp.red[i]*fade);
+						Ramp.green[i]=(int)((float)m_OldRamp.green[i]*fade);
+						Ramp.blue[i]=(int)((float)m_OldRamp.blue[i]*fade);
+					}
+					Sleep(5);
+					m_pd3dDevice->SetGammaRamp(0, &Ramp);
+				}
+			}
+		}
+	}
+
+	return;
+}
 void CApplication::SpinHD()
 {
 	if (!g_stSettings.m_iHDSpinDownTime) return;// dont do HD spindown
@@ -896,6 +963,7 @@ void CApplication::Process()
 	m_pythonParser.Process();
 
 	SpinHD();
+	if (g_stSettings.m_iScreenSaverTime) CheckScreenSaver();
 	// process messages, even if a movie is playing
 	g_applicationMessenger.ProcessMessages();
 
