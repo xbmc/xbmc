@@ -594,6 +594,9 @@
 				RelativePath=".\xbmc\Shortcut.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\ThumbnailCache.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\URL.cpp">
 			</File>
 			<File
@@ -825,6 +828,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\stdafx.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\ThumbnailCache.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\URL.h">

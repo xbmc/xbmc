@@ -89,7 +89,7 @@ public:
 	void		Close() ;
 	void		AddSong(const CSong& song,bool bCheck=true);
 	long		AddAlbumInfo(const CAlbum& album);
-	bool		GetAlbumInfo(const CStdString& strAlbum, CAlbum& album);
+	bool		GetAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, CAlbum& album);
 	bool		GetSong(const CStdString& strTitle, CSong& song);
 	bool		GetSongByFileName(const CStdString& strFileName, CSong& song);
 	bool		GetSongsByPath(const CStdString& strPath, VECSONGS& songs);

@@ -5,6 +5,7 @@ using namespace MUSIC_INFO;
 
 COggTag::COggTag()
 {
+	m_nTrackNum=0;
 }
 
 COggTag::~COggTag()

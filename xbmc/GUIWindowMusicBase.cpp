@@ -144,6 +144,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       ClearFileItems();
 			CSectionLoader::Unload("LIBID3");
 			m_database.Close();
+			CUtil::ThumbCacheClear();
 			CUtil::RemoveTempFiles();
 		}
 		break;
@@ -355,7 +356,7 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 				strPath=pItem->m_strPath;
 			// permanent thumbs
 			CUtil::GetAlbumThumb(strAlbum+strPath,strThumb);
-			if (CUtil::FileExists(strThumb) )
+			if (CUtil::ThumbExists(strThumb,true) )
 			{
 				pItem->SetIconImage(strThumb);
 				pItem->SetThumbnailImage(strThumb);
@@ -364,7 +365,7 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 			{
 				// temporary thumbs
 				CUtil::GetAlbumThumb(strAlbum+strPath,strThumb, true);
-				if (!pItem->m_bIsFolder && CUtil::FileExists(strThumb) )
+				if (!pItem->m_bIsFolder && CUtil::ThumbExists(strThumb, true) )
 				{
 					pItem->SetIconImage(strThumb);
 					pItem->SetThumbnailImage(strThumb);
@@ -485,7 +486,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 	{
 		// check cache
 		CAlbum albuminfo;
-		if ( m_database.GetAlbumInfo(strLabel, albuminfo) )
+		if ( m_database.GetAlbumInfo(strLabel, strPath, albuminfo) )
 		{
 			CMusicAlbumInfo album ;
 			album.Set(albuminfo);

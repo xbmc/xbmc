@@ -2,9 +2,9 @@
 #include <xtl.h>
 #include "stdstring.h"
 #include "fileitem.h"
+#include <map>
 
 using namespace std;
-
 class CUtil
 {
 public:
@@ -89,4 +89,8 @@ public:
   static void GetPath(const CStdString& strFileName, CStdString& strPath);
 	static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
 	static int  GetFolderCount(VECFILEITEMS &items);
+	static bool	ThumbExists(const CStdString& strFileName, bool bAddCache=false);
+	static bool ThumbCached(const CStdString& strFileName);
+	static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
+	static void ThumbCacheClear();
 };

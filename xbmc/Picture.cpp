@@ -330,7 +330,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
     if (m_dwHeight > (DWORD)nMaxHeight )
     {
       bResize=true;
-      m_dwHeight =MAX_THUMB_HEIGHT;
+      m_dwHeight =nMaxHeight;
       m_dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
     }
 
@@ -364,6 +364,99 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
     OutputDebugString(strCachedFile.c_str());
     OutputDebugString("\n");
   }
+	return true;
+}
+
+bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
+{
+	DWORD dwImageType=CXIMAGE_FORMAT_JPG;
+
+	BYTE* pPicture = new BYTE[nBufSize];
+	memcpy(pPicture, pBuffer, nBufSize);
+	
+	if (!strExtension.size()) return false;
+
+	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".bmp") ) dwImageType=CXIMAGE_FORMAT_BMP;
+	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".gif") ) dwImageType=CXIMAGE_FORMAT_GIF;
+	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".jpg") ) dwImageType=CXIMAGE_FORMAT_JPG;
+	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".tbn") ) dwImageType=CXIMAGE_FORMAT_JPG;
+	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".jpeg") ) dwImageType=CXIMAGE_FORMAT_JPG;
+	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".png") ) dwImageType=CXIMAGE_FORMAT_PNG;
+	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".ico") ) dwImageType=CXIMAGE_FORMAT_ICO;
+	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".tif") ) dwImageType=CXIMAGE_FORMAT_TIF;
+	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".tiff") ) dwImageType=CXIMAGE_FORMAT_TIF;
+	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".tga") ) dwImageType=CXIMAGE_FORMAT_TGA;
+	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".pcx") ) dwImageType=CXIMAGE_FORMAT_PCX;
+
+	if (!m_bSectionLoaded)
+	{
+		CSectionLoader::Load("CXIMAGE");
+		m_bSectionLoaded=true;
+	}
+
+  try
+	{
+
+		CxImage image(dwImageType);
+		if (!image.Decode(pPicture,nBufSize,dwImageType))
+		{
+			OutputDebugString("PICTURE:: Unable to load image from memory");
+      OutputDebugString("\nerr:");
+      OutputDebugString(image.GetLastError());
+      OutputDebugString("\n");
+			delete[] pPicture;
+			return false;
+		}
+		m_dwWidth=image.GetWidth();
+		m_dwHeight=image.GetHeight();
+	  
+    bool bResize=false;
+    float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
+
+		if (m_dwWidth > (DWORD)MAX_ALBUM_THUMB_WIDTH )
+    {
+      bResize=true;
+      m_dwWidth  = MAX_ALBUM_THUMB_WIDTH;
+      m_dwHeight = (DWORD)( ( (float)m_dwWidth) / fAspect);
+    }
+
+    if (m_dwHeight > (DWORD)MAX_ALBUM_THUMB_HEIGHT )
+    {
+      bResize=true;
+      m_dwHeight =MAX_ALBUM_THUMB_HEIGHT;
+      m_dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
+    }
+
+    if (bResize)
+    {
+			image.Resample(m_dwWidth,m_dwHeight, QUALITY);
+			m_dwWidth=image.GetWidth();
+			m_dwHeight=image.GetHeight();
+		}
+
+    ::DeleteFile(strThumbFileName.c_str());
+    if ( image.GetNumColors() )
+    {
+      image.IncreaseBpp(24);
+    }
+		if (!image.Save(strThumbFileName.c_str(),CXIMAGE_FORMAT_JPG))
+    {
+      OutputDebugString("PICTURE:: unable to save image:");
+      OutputDebugString(strThumbFileName.c_str());
+      OutputDebugString("\nerr:");
+      OutputDebugString(image.GetLastError());
+      OutputDebugString("\n");
+			delete[] pPicture;
+
+      ::DeleteFile(strThumbFileName.c_str());
+      return false;
+    }
+	}
+  catch(...)
+  {
+    OutputDebugString("PICTURE:: exception: memfile\n");
+  }
+	delete[] pPicture;
 	return true;
 }
 

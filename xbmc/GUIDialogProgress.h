@@ -11,6 +11,7 @@ public:
 	void						StartModal(DWORD dwParentId);
   virtual bool    OnMessage(CGUIMessage& message);
 	void						Progress();
+	void						ProgressKeys();
 	void					  SetLine(int iLine, const wstring& strLine);
 	void					  SetLine(int iLine, const string& strLine);
 	void						SetLine(int iLine, int iString);

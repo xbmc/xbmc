@@ -408,7 +408,7 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 			CStdString strThumb, strPath, strFileName;
 			CUtil::Split(strFile, strPath, strFileName);
 			CUtil::GetAlbumThumb(strAlbum+strPath,strThumb);
-			if (CUtil::FileExists(strThumb) )
+			if (CUtil::ThumbExists(strThumb) )
 			{
 				CPicture picture;
 				m_pTexture=picture.Load(strThumb);
@@ -423,7 +423,7 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 			else
 			{
 				CUtil::GetAlbumThumb(strAlbum+strPath,strThumb,true);
-				if (CUtil::FileExists(strThumb) )
+				if (CUtil::ThumbExists(strThumb) )
 				{
 					CPicture picture;
 					m_pTexture=picture.Load(strThumb);
