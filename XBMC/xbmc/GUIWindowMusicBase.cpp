@@ -19,6 +19,7 @@
 #include <algorithm>
 #include "GuiUserMessages.h"
 #include "GUIThumbnailPanel.h"
+#include "picture.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNTYPE						6
@@ -45,6 +46,31 @@ CGUIWindowMusicBase::CGUIWindowMusicBase ()
 CGUIWindowMusicBase::~CGUIWindowMusicBase ()
 {
 
+}
+
+void CGUIWindowMusicBase::OnAction(const CAction& action)
+{
+	if (action.wID==ACTION_PARENT_DIR)
+	{
+		GoParentFolder();
+		return;
+	}
+
+  if (action.wID==ACTION_PREVIOUS_MENU)
+  {
+		CUtil::ThumbCacheClear();
+		CUtil::RemoveTempFiles();
+		m_gWindowManager.ActivateWindow(WINDOW_HOME);
+		return;
+  }
+
+	if (action.wID==ACTION_SHOW_PLAYLIST)
+	{
+		m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+		return;
+	}
+
+	CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
@@ -148,8 +174,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       ClearFileItems();
 			CSectionLoader::Unload("LIBID3");
 			m_database.Close();
-			CUtil::ThumbCacheClear();
-			CUtil::RemoveTempFiles();
 		}
 		break;
 
@@ -379,7 +403,7 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 			}
 			else 
 			{
-				// look for a temporary thumbs (Q:\albums\thumbs\temp)
+				// look for a temporary thumb (Q:\albums\thumbs\temp)
 				CUtil::GetAlbumThumb(strAlbum+strPath,strThumb, true);
 				if (CUtil::ThumbExists(strThumb, true) )
 				{
@@ -388,8 +412,23 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 				}
 				else if (pItem->m_bIsFolder) //	fill thumb for directory in albumwindow
 				{
-          if ( CUtil::GetFolderThumb(pItem->m_strPath, strThumb))
+					CUtil::AddFileToFolder(pItem->m_strPath, "folder.jpg", strThumb);
+					if (CUtil::ThumbExists(strThumb, true))
 					{
+						//	We found a folder.jpg, resize it and save it to the temp thumb dir
+						CStdString strFolderThumb;
+						CUtil::GetAlbumThumb(strThumb,strFolderThumb, true);
+						if (!CUtil::ThumbExists(strFolderThumb))
+						{
+							CPicture pic;
+							pic.CreateAlbumThumbnail(strThumb, strThumb);
+							strThumb=strFolderThumb;
+							CUtil::ThumbCacheAdd(strThumb, true);
+						}
+						else
+						{
+							strThumb=strFolderThumb;
+						}
 						pItem->SetIconImage(strThumb);
 						pItem->SetThumbnailImage(strThumb);
 					}
@@ -415,10 +454,14 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 
 
 		// Hack for Top 100 window that a correct looking icon is shown
+		// CONTROL_THUMB in top 100 is a listcontrol, so big iconimages have to be shown
+		// if its enabled
 		if (GetID()==WINDOW_MUSIC_TOP100 && strThumb.IsEmpty() && ViewByIcon())
 			pItem->SetIconImage(pItem->GetThumbnailImage());
 
 		// Hack for Album window that a correct looking icon for subdirs is show
+		// CONTROL_THUMB in album is a listcontrol, so big iconimages have to be shown
+		// if its enabled
 		if (GetID()==WINDOW_MUSIC_ALBUM && strThumb.IsEmpty() && !m_strDirectory.IsEmpty() && ViewByIcon())
 			pItem->SetIconImage(pItem->GetThumbnailImage());
 
