@@ -47,7 +47,7 @@ public:
 	DWORD									GetSelectedColor2() const { return m_dwSelectedColor2;};
 	const CStdString&			GetFontName() const { return m_pFont->GetFontName(); };
 	const char*						GetFontName2() const { if (!m_pFont2) return ""; else return m_pFont2->GetFontName().c_str(); };
-	DWORD									GetSpinWidth() const { return m_upDown.GetWidth(); };
+	DWORD									GetSpinWidth() const { return m_upDown.GetWidth()/2; };
 	DWORD									GetSpinHeight() const { return m_upDown.GetHeight(); };
 	const	CStdString&			GetTexutureUpName() const { return m_upDown.GetTexutureUpName(); };
 	const	CStdString&			GetTexutureDownName() const { return m_upDown.GetTexutureDownName(); };
