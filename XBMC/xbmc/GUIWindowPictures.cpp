@@ -791,7 +791,7 @@ bool CGUIWindowPictures::OnCreateThumbs()
         if ( m_dlgProgress->IsCanceled() ) break;
       }
       CPicture picture;
-      picture.CreateThumnail(pItem->m_strPath);
+      picture.CreateThumbnail(pItem->m_strPath);
 
       if (bCancel) break;
     }
@@ -854,7 +854,7 @@ bool CGUIWindowPictures::DoCreateFolderThumbs(CStdString &strFolder, int *iTotal
           return false;
       }
       CPicture picture;
-      picture.CreateThumnail(pItem->m_strPath);
+      picture.CreateThumbnail(pItem->m_strPath);
     }
     else
     { // a folder, let's call us again recursively

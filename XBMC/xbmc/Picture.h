@@ -10,7 +10,7 @@ public:
   CxImage* LoadImage(const CStdString& strFilename, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth = 128, int iMaxHeight = 128);
 
   bool CreateThumbFromImage(const CStdString &strFileName, const CStdString& strThumbnailImage, CxImage& image, int iMaxWidth, int iMaxHeight, bool bWrongFormat = false);
-  bool CreateThumnail(const CStdString& strFileName);
+  bool CreateThumbnail(const CStdString& strFileName);
   bool CreateAlbumThumbnail(const CStdString& strFileName, const CStdString& strAlbum);
   bool CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName);
   int DetectFileType(const BYTE* pBuffer, int nBufSize);
