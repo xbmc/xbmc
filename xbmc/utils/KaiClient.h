@@ -68,6 +68,7 @@ public:
 	void Invite(CStdString& aPlayer, CStdString& aVector, CStdString& aMessage);
 	void EnableContactVoice(CStdString& aContactName, BOOL bEnable=TRUE);
 	void Host(CStdString& aPassword, int aPlayerLimit, CStdString& aDescription);
+	void Reattach();
 
 	CStdString GetCurrentVector();
 

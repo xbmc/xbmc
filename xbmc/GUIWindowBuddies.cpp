@@ -145,8 +145,8 @@ void CGUIWindowBuddies::OnInitWindow()
 			SET_CONTROL_DISABLED(GetID(), CONTROL_BTNMODE);	
 
 			CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-			pDialog->SetHeading("X-Link KAI Service Unavailable");
-			pDialog->SetLine(0,L"Please ensure that both XBOX network and KAI engine");
+			pDialog->SetHeading("XLink Kai Service Unavailable");
+			pDialog->SetLine(0,L"Please ensure that both XBOX network and Kai engine");
 			pDialog->SetLine(1,L"are available and configured correctly before restarting.");
 			pDialog->SetLine(2,L"");
 			pDialog->DoModal(GetID());
@@ -877,20 +877,30 @@ void CGUIWindowBuddies::Enter(CArenaItem& aArena)
 /* IBuddyObserver methods */
 void CGUIWindowBuddies::OnEngineDetached()
 {
-	CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-	pDialog->SetHeading("X-Link KAI Shutdown");
-	pDialog->SetLine(0,L"The service terminated, please restart Xbox Media Center");
-	pDialog->SetLine(1,L"after restoring connectivity.");
-	pDialog->SetLine(2,L"");
+	if (g_graphicsContext.IsFullScreenVideo())
+	{
+		m_gWindowManager.PreviousWindow();
+		if (g_application.m_pPlayer)
+			g_application.m_pPlayer->Update();
+	}
 
-	ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
-	g_applicationMessenger.SendMessage(tMsg, false);
+	CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+	pDialog->SetHeading("XLink Kai Disconnected");
+	pDialog->SetLine(0,L"The service has disconnected, would you like to attempt");
+	pDialog->SetLine(1,L"reconnecting it with Xbox Media Center?");
+	pDialog->SetLine(2,L"");
+	pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+
+	if (pDialog->IsConfirmed())
+	{
+		m_pKaiClient->Reattach();
+	}
 }
 
 void CGUIWindowBuddies::OnAuthenticationFailed(CStdString& aUsername)
 {
 	CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-	pDialog->SetHeading("X-Link KAI Authentication");
+	pDialog->SetHeading("XLink Kai Authentication");
 	pDialog->SetLine(0,L"Your username and/or password was rejected by the");
 	pDialog->SetLine(1,L"orbital server. Please check your configuration.");
 	pDialog->SetLine(2,L"");
