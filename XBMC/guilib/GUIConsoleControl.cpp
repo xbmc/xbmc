@@ -25,17 +25,16 @@ CGUIConsoleControl::CGUIConsoleControl(DWORD dwParentID, DWORD dwControlId,
 		m_pFont->GetTextExtent(L"X", &fTextW, &m_fFontHeight);
 	}
 
-	m_nMaxLines			= 10;
+	m_nMaxLines			= dwHeight / (DWORD)(m_fFontHeight+CONSOLE_LINE_SPACING);
 	m_dwLineCounter		= 0;
 	m_dwFrameCounter	= 0;
 
 	Line line;
 	line.text	= "";
-	line.colour = 0xFF00FF00;
+	line.colour = 0;
 
 	for(int i=0; i<m_nMaxLines; i++)
 	{
-		line.text.Format("Test line No. %d",i);
 		m_lines.push_back(line);
 	}
 
@@ -75,12 +74,12 @@ void CGUIConsoleControl::Render()
 
 	m_dwFrameCounter++;
 
-	if (m_dwFrameCounter%250==0)
+	/* Debugging
+	if (m_dwFrameCounter%500==0)
 	{
-		CStdString strDebug;
-		strDebug.Format("DEBUG %u",m_dwLineCounter);
-		AddLine(strDebug,0xFFFF0000);
-	}
+		CStdString strDebug = "Okay, so perhaps the name 'Magic Box' is slightly misleading - this nifty little attachment isn't much use if you're looking to produce rabbits out of thin air or saw your XBOX in half without destroying it.  What it does do, though, is provide XBOX owners with the opportunity to plugin in their favourite joypad (or, as the box puts it, 'use your familiar and loving controller') instead of a regular XBOX one.  It takes Saturn, Dreamcast and all PS2 pads and joysticks - including the rather meaty Hori one also shown on this page - which means that the excuse of not being use to the controller when you're being thrashed at Pro Evolution Soccer, Street Fighter II, Tony Hawk or any other game that's best played on a PS2 pad no longer applies.  As invaluable a peripheral as they come, we'd recommend buying four... and some spares besides.";
+		Write(strDebug,0xFF00FF00);
+	}*/
 
 	FLOAT fTextX	= (FLOAT) m_iPosX;
 	FLOAT fTextY	= (FLOAT) m_iPosY;
@@ -100,10 +99,10 @@ void CGUIConsoleControl::Render()
 	}	
 }
 
-void CGUIConsoleControl::AddLine(CStdString& aString, DWORD aColour)
+void CGUIConsoleControl::AddLine(CStdString& aLine, DWORD aColour)
 {
 	Line line;
-	line.text = aString;
+	line.text = aLine;
 	line.colour = aColour;
 
 	// determine which line appears at the bottom of the console
@@ -113,3 +112,75 @@ void CGUIConsoleControl::AddLine(CStdString& aString, DWORD aColour)
 
 	m_dwLineCounter++;
 }
+
+void CGUIConsoleControl::Write(CStdString& aString, DWORD aColour)
+{
+	CStdString	strLine;
+	CStdStringW	strLineW;
+
+	int nLastSpace	 = -1;
+	int nStartOfLine = 0;
+	int nPosition	 = 0;
+
+	while( nPosition < (int)aString.length() )
+	{
+		// Get the current letter in the string
+		char letter = aString[nPosition];
+
+		// Handle the newline character
+		if (letter == '\n' )
+		{
+			// Add as much of the text as we have accumulated, irrespective
+			// of whether we have reached the end of the line.
+			CStdString lineOfText = strLine;
+			AddLine(lineOfText,aColour);
+
+			// Reset state
+			nLastSpace			= -1;
+			nStartOfLine		= nPosition;
+			strLine.clear();
+		}
+		else
+		{
+			if (letter==' ') 
+			{
+				// Note the position of this space, we may need to refer to it.
+				nLastSpace = nPosition;
+			}
+
+			// Add the current letter to our string.
+			strLine += letter;
+
+			// Calculate the accumulated text dimensions.
+			g_charsetConverter.stringCharsetToFontCharset(strLine, strLineW);
+			FLOAT fWidth,fHeight;
+			m_pFont->GetTextExtent(strLineW.c_str(), &fWidth, &fHeight);
+
+			// If we have exceeded the allowable line width
+			if (fWidth > m_dwWidth)
+			{
+				// If we have detected a space separating a previous word
+				if (nLastSpace > 0)
+				{
+					strLine = aString.Mid(nStartOfLine,nLastSpace-nStartOfLine);
+					nPosition = nLastSpace;
+				}
+
+				AddLine(strLine,aColour);
+
+				// Reset state
+				nLastSpace			= -1;
+				nStartOfLine		= nPosition+1;
+				strLine.clear();
+			}
+		}
+
+		nPosition++;
+	}
+
+	if (strLine.length() > 0)
+	{
+		AddLine(strLine,aColour);
+	}
+}
+
