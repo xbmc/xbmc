@@ -84,7 +84,13 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
 
 			if (g_stSettings.m_bMyProgramsNoShortcuts)				// let's hide Scan button
+			{
 				SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNSCAN);
+			}
+			else
+			{
+				SET_CONTROL_VISIBLE(GetID(), CONTROL_BTNSCAN);
+			}
 
 
 			int iStartID=100;
@@ -404,7 +410,7 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 		if (CUtil::HasSlashAtEnd(strShortCutsDir))
 			strShortCutsDir.Delete(strShortCutsDir.size()-1);
 
-		if (vecPaths[0]==strShortCutsDir)
+		if (vecPaths.size()>0 && vecPaths[0]==strShortCutsDir)
 			m_strBookmarkName="shortcuts";
 	}
 
@@ -423,11 +429,14 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 	{
 		vector<CStdString> vecOrigShare;
 		CUtil::Tokenize(m_shareDirectory, vecOrigShare, ",");
-		bParentPath=CUtil::GetParentPath(vecPaths[0],strParentPath);
-		if (CUtil::HasSlashAtEnd(vecOrigShare[0]))
-			vecOrigShare[0].Delete(vecOrigShare[0].size()-1);
-		if (strParentPath<vecOrigShare[0])
- 			bPastBookMark=false;
+		if (vecOrigShare.size() && vecPaths.size())
+		{
+			bParentPath=CUtil::GetParentPath(vecPaths[0],strParentPath);
+			if (CUtil::HasSlashAtEnd(vecOrigShare[0]))
+				vecOrigShare[0].Delete(vecOrigShare[0].size()-1);
+			if (strParentPath<vecOrigShare[0])
+ 				bPastBookMark=false;
+		}
 	}
 
 	if ( strParentPath.size() && bParentPath && !bFlattenDir && bPastBookMark)
