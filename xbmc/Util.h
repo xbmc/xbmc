@@ -109,5 +109,5 @@ public:
   static void SetMusicThumb(CFileItem* pItem);
   static CStdString GetNextFilename(const char* fn_template, int max);
   static void TakeScreenshot();
-
+	static void FlashScreen(bool bImmediate);
 };

@@ -22,7 +22,7 @@
 //-----------------------------------------------------------------------------
 // Global access to common members
 //-----------------------------------------------------------------------------
-extern LPDIRECT3DDEVICE8 g_pd3dDevice;
+//extern LPDIRECT3DDEVICE8 g_pd3dDevice;
 
 
 
