@@ -2,7 +2,7 @@
     $Id$
 
     Copyright (C) 2001 Sven Ottemann <ac-logic@freenet.de>
-                  2001, 2004 Herbert Valerio Riedel <hvr@gnu.org>
+                  2001, 2004, 2005 Herbert Valerio Riedel <hvr@gnu.org>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,6 +19,13 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/** \file bytesex_asm.h 
+ *  \brief  Assembly code to handle byte-swapping.
+
+    Note: this header will is slated to get removed and libcdio will use 
+    glib.h routines instead. 
+*/
+
 #ifndef __CDIO_BYTESEX_ASM_H__
 #define __CDIO_BYTESEX_ASM_H__
 #if !defined(DISABLE_ASM_OPTIMIZE)

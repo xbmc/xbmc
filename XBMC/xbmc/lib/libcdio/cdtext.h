@@ -1,7 +1,7 @@
 /*
     $Id$
 
-    Copyright (C) 2004 Rocky Bernstein <rocky@panix.com>
+    Copyright (C) 2004, 2005 Rocky Bernstein <rocky@panix.com>
     adapted from cuetools
     Copyright (C) 2003 Svend Sanjay Sorensen <ssorensen@fastmail.fm>
 
@@ -21,7 +21,9 @@
 */
 /*!
  * \file cdtext.h 
- * \brief Header CD-Text information
+ *
+ * \brief The top-level header for CD-Text information. Applications
+ *  include this for CD-Text access.
 */
 
 
@@ -74,13 +76,15 @@ extern "C" {
   /*! Free memory assocated with cdtext*/
   void cdtext_destroy (cdtext_t *cdtext);
   
-  /*! returns the string associated with the given field.  NULL is
+  /*! returns an allocated string associated with the given field.  NULL is
     returned if key is CDTEXT_INVALID or the field is not set.
+
+    The user needs to free the string when done with it.
 
     @see cdio_get_cdtext to retrieve the cdtext structure used as
     input here.
   */
-  const char *cdtext_get (cdtext_field_t key, const cdtext_t *cdtext);
+  char *cdtext_get (cdtext_field_t key, const cdtext_t *cdtext);
   
   /*!
     returns enum of keyword if key is a CD-Text keyword, 

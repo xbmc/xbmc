@@ -2,6 +2,7 @@
     $Id$
 
     Copyright (C) 2000, 2004 Herbert Valerio Riedel <hvr@gnu.org>
+    Copyright (C) 2005 Rocky Bernstein <rocky@panix.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,6 +19,13 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/** \file bytesex.h 
+ *  \brief  Generic Byte-swapping routines.
+ *
+ *   Note: this header will is slated to get removed and libcdio will
+ *   use glib.h routines instead.
+*/
+
 #ifndef __CDIO_BYTESEX_H__
 #define __CDIO_BYTESEX_H__
 
@@ -25,18 +33,19 @@
 #include <bytesex_asm.h>
 #include <logging.h>
 
-/* generic byteswap routines */
-
+/** 16-bit big-endian to little-endian */
 #define UINT16_SWAP_LE_BE_C(val) ((uint16_t) ( \
     (((uint16_t) (val) & (uint16_t) 0x00ffU) << 8) | \
     (((uint16_t) (val) & (uint16_t) 0xff00U) >> 8)))
 
+/** 32-bit big-endian to little-endian */
 #define UINT32_SWAP_LE_BE_C(val) ((uint32_t) ( \
     (((uint32_t) (val) & (uint32_t) 0x000000ffU) << 24) | \
     (((uint32_t) (val) & (uint32_t) 0x0000ff00U) <<  8) | \
     (((uint32_t) (val) & (uint32_t) 0x00ff0000U) >>  8) | \
     (((uint32_t) (val) & (uint32_t) 0xff000000U) >> 24)))
 
+/** 64-bit big-endian to little-endian */
 #define UINT64_SWAP_LE_BE_C(val) ((uint64_t) ( \
     (((uint64_t) (val) & (uint64_t) UINT64_C(0x00000000000000ff)) << 56) | \
     (((uint64_t) (val) & (uint64_t) UINT64_C(0x000000000000ff00)) << 40) | \
@@ -99,7 +108,7 @@ uint64_t uint64_swap_le_be (const uint64_t val)
 # define UINT64_TO_LE(val)     ((uint64_t) (val))
 #endif
 
-/* symmetric conversions */
+/** symmetric conversions */
 #define UINT8_FROM_BE(val)     (UINT8_TO_BE (val))
 #define UINT8_FROM_LE(val)     (UINT8_TO_LE (val))
 #define UINT16_FROM_BE(val)    (UINT16_TO_BE (val))
@@ -109,7 +118,7 @@ uint64_t uint64_swap_le_be (const uint64_t val)
 #define UINT64_FROM_BE(val)    (UINT64_TO_BE (val))
 #define UINT64_FROM_LE(val)    (UINT64_TO_LE (val))
 
-/* converter function template */
+/** converter function template */
 #define CVT_TO_FUNC(bits) \
  static inline uint ## bits ## _t \
  uint ## bits ## _to_be (uint ## bits ## _t val) \
@@ -134,7 +143,7 @@ CVT_TO_FUNC(64)
 #define uint64_from_be(val)    (uint64_to_be (val))
 #define uint64_from_le(val)    (uint64_to_le (val))
 
-/* ISO9660 related stuff */
+/** ISO9660-related field conversion routines */
 
 #define to_711(i)   uint8_to_le(i)
 #define from_711(i) uint8_from_le(i)
