@@ -1,4 +1,3 @@
-#pragma once
 // -*- C++ -*-
 // $Id$
 
@@ -99,6 +98,7 @@ public:
   size_t     Link(ID3_Reader &reader, flags_t = (flags_t) ID3TT_ALL);
 
   flags_t    Update(flags_t = (flags_t) ID3TT_ALL);
+  flags_t    Update(const char* szFileName,flags_t = (flags_t) ID3TT_ALL);
   flags_t    Strip(flags_t = (flags_t) ID3TT_ALL);
 
   size_t     GetPrependedBytes() const;
