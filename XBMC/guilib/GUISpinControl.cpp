@@ -33,8 +33,8 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
     strcpy(m_szTyped,"");
 m_dwBuddyControlID = 0;
 	m_bBuddyDisabled = false;
-	m_dwTextOffsetX = 0;
-	m_dwTextOffsetY = 0;
+	m_lTextOffsetX = 0;
+	m_lTextOffsetY = 0;
 	ControlType = GUICONTROL_SPIN;
 }
 
@@ -486,10 +486,10 @@ void CGUISpinControl::Render()
 		}
 		else
 		{
-			fPosY=(float)(m_dwPosY+m_dwTextOffsetY);
+			fPosY=(float)(m_dwPosY+m_lTextOffsetY);
 		}
 
-		float fPosX = (float)(m_dwPosX+m_dwTextOffsetX) -3;
+		float fPosX = (float)(m_dwPosX+m_lTextOffsetX) -3;
         if ( HasFocus() )
 		{
             m_pFont->DrawText(fPosX, fPosY, m_dwTextColor,wszText,m_dwAlign);
