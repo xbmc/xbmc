@@ -9,6 +9,7 @@ CGUIControl::CGUIControl()
 	m_bVisible=true;
 	m_bDisabled=false;
   m_bSelected=false;
+	m_bCalibration=true;
   m_colDiffuse	= 0xFFFFFFFF;  
   m_dwPosX=0;
   m_dwPosY=0;
@@ -31,6 +32,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWOR
 	m_bVisible=true;
 	m_bDisabled=false;
   m_bSelected=false;
+	m_bCalibration=true;
   m_dwControlLeft=0;
   m_dwControlRight=0;
   m_dwControlUp=0;
@@ -256,4 +258,13 @@ void CGUIControl::SetHeight(int iHeight)
 void CGUIControl::SetVisible(bool bVisible)
 {
   m_bVisible=bVisible;
+}
+
+void CGUIControl::EnableCalibration(bool bOnOff)
+{
+	m_bCalibration=bOnOff;
+}
+bool CGUIControl::CalibrationEnabled() const
+{
+	return m_bCalibration;
 }

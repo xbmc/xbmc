@@ -63,7 +63,10 @@ void CGUIImage::Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight
   float nw =(float)dwWidth;
   float nh=(float)dwHeight;
 
-	g_graphicsContext.Correct(x, y);
+	if (CalibrationEnabled())
+	{
+		g_graphicsContext.Correct(x, y);
+	}
 	
   int iXOffset=m_iBitmap*m_dwWidth;
 
@@ -220,7 +223,10 @@ void CGUIImage::Update()
   float nw =(float)m_dwWidth;
   float nh=(float)m_dwHeight;
 
-	g_graphicsContext.Correct(x, y);
+	if (CalibrationEnabled())
+	{
+		g_graphicsContext.Correct(x, y);
+	}
   int iXOffset=m_iBitmap*m_dwWidth;
 
   vertex[0].p = D3DXVECTOR4( x - 0.5f,	y - 0.5f,		0, 0 );
