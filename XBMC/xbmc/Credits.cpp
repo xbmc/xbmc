@@ -836,9 +836,9 @@ void RunCredits()
 	g_graphicsContext.SetVideoResolution(res, TRUE);
 	float fFrameTime;
 	if (res == PAL_4x3 || res == PAL_16x9)
-		fFrameTime = 50.0f / 1000;
+		fFrameTime = 1.0f / 50.0f;
 	else
-		fFrameTime = 59.94f / 1000;
+		fFrameTime = 1.0f / 59.94f;
 
 	D3DDevice::Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
 	D3DDevice::Present(0, 0, 0, 0);
