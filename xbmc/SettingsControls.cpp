@@ -4,6 +4,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogOK.h"
 #include "GUIWindowManager.h"
+#include "LocalizeStrings.h"
 
 CBaseSettingControl::CBaseSettingControl(DWORD dwID, CSetting *pSetting)
 {
@@ -53,7 +54,13 @@ CSpinExSettingControl::CSpinExSettingControl(CGUISpinControlEx *pSpin, DWORD dwI
 		CStdString strLabel;
 		for (int i=pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i+= pSettingInt->m_iStep)
 		{
-			strLabel.Format(pSettingInt->m_strFormat, i);
+			if (pSettingInt->m_iFormat>-1)
+			{
+				CStdString strFormat=g_localizeStrings.Get(pSettingInt->m_iFormat);
+				strLabel.Format(strFormat, i);
+			}
+			else
+				strLabel.Format(pSettingInt->m_strFormat, i);
 			m_pSpin->AddLabel(strLabel, (i-pSettingInt->m_iMin)/pSettingInt->m_iStep);
 		}
 	}
