@@ -21,6 +21,9 @@
 #include "playlistfactory.h"
 #include "ThumbnailCache.h"
 #include "picture.h"
+#include "filesystem/hddirectory.h"
+#include "filesystem/DirectoryCache.h"
+
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
@@ -1080,6 +1083,25 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
 
 void CUtil::SetThumbs(VECFILEITEMS &items)
 {
+  VECFILEITEMS qitems;
+  CHDDirectory dir;
+
+  //cache thumbnails directory
+  CStdString strThumb=g_stSettings.szThumbnailsDirectory;
+  {
+    CFileItemList itemlist(qitems); // will clean up everything
+    dir.GetDirectory(strThumb.c_str(),qitems);
+    g_directoryCache.SetDirectory(strThumb.c_str(),qitems);
+  }
+  {
+    strThumb+="\\imdb";
+    CFileItemList itemlist(qitems); // will clean up everything
+    dir.GetDirectory(strThumb.c_str(),qitems);
+    g_directoryCache.SetDirectory(strThumb.c_str(),qitems);
+  }
+
+  
+
   for (int i=0; i < (int)items.size(); ++i)
   {
     CFileItem* pItem=items[i];
@@ -1952,6 +1974,24 @@ void CUtil::GetVideoThumbnail(const CStdString& strIMDBID, CStdString& strThumb)
 
 void CUtil::SetMusicThumbs(VECFILEITEMS &items)
 {
+  VECFILEITEMS qitems;
+  CHDDirectory dir;
+
+  
+  CStdString strThumb=g_stSettings.m_szAlbumDirectory;
+  strThumb+="\\thumbs";
+  {
+    CFileItemList itemlist(qitems); // will clean up everything
+    dir.GetDirectory(strThumb.c_str(),qitems);
+    g_directoryCache.SetDirectory(strThumb.c_str(),qitems);
+  }
+  {
+    strThumb+="\\temp";
+    CFileItemList itemlist(qitems); // will clean up everything
+    dir.GetDirectory(strThumb.c_str(),qitems);
+    g_directoryCache.SetDirectory(strThumb.c_str(),qitems);
+  }
+
   for (int i=0; i < (int)items.size(); ++i)
   {
     CFileItem* pItem=items[i];

@@ -4,6 +4,7 @@
 #include "../url.h"
 #include "../util.h"
 #include "../sectionloader.h"
+#include "directorycache.h"
 
 extern "C" {
 	#include "../lib/libxbms/ccincludes.h"
@@ -35,7 +36,7 @@ bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 	if (!CUtil::HasSlashAtEnd(strPath) )
 		strRoot+="/";
 
-	
+  g_directoryCache.ClearDirectory(strPath);	
 
 	CcXstreamServerConnection conn = NULL;
 
@@ -179,6 +180,7 @@ bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 		cc_xstream_client_disconnect(conn);
 	
 	
+  g_directoryCache.SetDirectory(strPath,items);
 
 	return true;
 }
