@@ -551,6 +551,13 @@ void CGUIThumbnailPanel::OnDown()
 		{
 			m_bScrollDown=false;
 			m_iOffset+=m_iColumns;
+			// Check if we need to update our position
+			if (!ValidItem(m_iCursorX, m_iCursorY))
+			{	// select the last item available
+				int iPos = m_vecItems.size()-1-m_iOffset;
+				m_iCursorY = iPos / m_iColumns;
+				m_iCursorX = iPos % m_iColumns;
+			}
 			int iPage = m_iOffset/(m_iRows*m_iColumns);
 			m_upDown.SetValue(iPage+1);
 		}

@@ -87,7 +87,8 @@ void CGUIListControl::Render()
 				}
 				pImage->SetWidth(m_iImageWidth);
 				pImage->SetHeight(m_iImageHeight);
-				pImage->SetPosition(dwPosX+8, dwPosY+5);
+				// center vertically
+				pImage->SetPosition(dwPosX+8, dwPosY+(m_iItemHeight-m_iImageHeight)/2);
 				pImage->Render();
       }
 			dwPosX+=(m_iImageWidth+10);
@@ -126,7 +127,7 @@ void CGUIListControl::Render()
       if (strLabel2.size()>0)
       {
 				dwColor=m_dwTextColor2;
-				if (pItem->IsSelected())
+				if (bSelected)
 				{
 					dwColor=m_dwSelectedColor2;
 				}
