@@ -8,6 +8,7 @@ CFileItem::CFileItem(const CSong& song)
 	m_strLabel=song.strTitle;
 	m_strPath=song.strFileName;
 	m_bIsFolder=false;
+	memset(&m_stTime,0,sizeof(m_stTime));
 	m_musicInfoTag.SetSong(song);
 	m_lStartOffset = song.iStartOffset;
 	m_lEndOffset = song.iEndOffset;
@@ -19,6 +20,7 @@ CFileItem::CFileItem(const CAlbum& album)
 	m_strPath=album.strPath;
 	m_bIsFolder=true;
 	m_strLabel2=album.strArtist;
+	memset(&m_stTime,0,sizeof(m_stTime));
 	m_musicInfoTag.SetAlbum(album);
 	m_lStartOffset = 0;
 	m_lEndOffset = 0;
@@ -30,6 +32,7 @@ CFileItem::CFileItem(const CPlayList::CPlayListItem& item)
 	m_strPath=item.GetFileName();
 	m_bIsFolder=false;
 	m_bIsShareOrDrive = false;
+	memset(&m_stTime,0,sizeof(m_stTime));
 	m_lStartOffset = item.GetStartOffset();
 	m_lEndOffset = item.GetEndOffset();
 	m_musicInfoTag = item.GetMusicTag();
