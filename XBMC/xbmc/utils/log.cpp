@@ -78,6 +78,20 @@ void CLog::Log(int loglevel, const char *format, ... )
 		fwrite(tmp,strlen(tmp),1,fd);
 		fflush(fd);
 	}
+#ifdef _DEBUG
+	else
+	{
+		// In debug mode dump everything to devstudio regardless of level
+		CSingleLock waitLock(critSec);
+		va_list va;
+
+		va_start(va, format);
+		_vsnprintf(tmp, 16384, format, va);
+		va_end(va);
+		strcat(tmp, "\n");
+		OutputDebugString(tmp);
+	}
+#endif
 }
 
 void CLog::DebugLog(const char *format, ... )
