@@ -40,6 +40,27 @@ extern XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
 #define XINPUT_IR_REMOTE_9            198
 #define XINPUT_IR_REMOTE_0            207
 
+// additional keys from the media center extender for xbox remote
+#define XINPUT_IR_REMOTE_POWER          196
+#define XINPUT_IR_REMOTE_MY_TV          49
+#define XINPUT_IR_REMOTE_MY_MUSIC       9
+#define XINPUT_IR_REMOTE_MY_PICTURES    6
+#define XINPUT_IR_REMOTE_MY_VIDEOS      7
+
+#define XINPUT_IR_REMOTE_RECORD         23
+
+#define XINPUT_IR_REMOTE_START          37
+#define XINPUT_IR_REMOTE_VOLUME_PLUS    208
+#define XINPUT_IR_REMOTE_VOLUME_MINUS   209
+#define XINPUT_IR_REMOTE_CHANNEL_PLUS   210
+#define XINPUT_IR_REMOTE_CHANNEL_MINUS  211
+#define XINPUT_IR_REMOTE_MUTE           192
+
+#define XINPUT_IR_REMOTE_RECORDED_TV    101
+#define XINPUT_IR_REMOTE_LIVE_TV        24
+
+#define XINPUT_IR_REMOTE_CLEAR          249
+
 
 typedef struct _XINPUT_IR_REMOTE
 {
