@@ -31,7 +31,10 @@ m_config_free(m_config_t* config) {
 #endif
   
   while(i) {
-    sl = i->slots;
+    if (i->flags & M_CFG_OPT_ALIAS)
+    	sl = NULL;
+    else
+     	sl = i->slots;
     while(sl) {
       m_option_free(i->opt,sl->data);
       st = sl->prev;
@@ -42,7 +45,7 @@ m_config_free(m_config_t* config) {
       free(i->name);
     ct = i->next;
     free(i);
-    ct = i;
+    i = ct;
   }
   free(config);  
 }
@@ -146,6 +149,7 @@ m_config_add_option(m_config_t *config, m_option_t *arg, char* prefix) {
 
   // Option with childs -> add them
   if(arg->type->flags & M_OPT_TYPE_HAS_CHILD) {
+    co->slots = NULL;	
     m_option_t *ol = arg->p;
     int i;
     for(i = 0 ; ol[i].name != NULL ; i++)
@@ -173,6 +177,7 @@ m_config_add_option(m_config_t *config, m_option_t *arg, char* prefix) {
       m_option_set(arg,arg->p,sl->data);
     }
     sl->lvl = 0;
+    sl->prev = NULL;
     co->slots = (m_config_save_slot_t*)calloc(1,sizeof(m_config_save_slot_t) + arg->type->size);
     co->slots->prev = sl;
     co->slots->lvl = config->lvl;
