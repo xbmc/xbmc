@@ -2581,8 +2581,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
 				m_gWindowManager.PreviousWindow();
 			}
 
-			//	CDDA ejected while playing in vis ?
-			if (!IsPlayingAudio() && CUtil::IsCDDA(strFile) && !CDetectDVDMedia::IsDiscInDrive() && m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
+			//	DVD ejected while playing in vis ?
+			if (!IsPlayingAudio() && (CUtil::IsCDDA(strFile) || CUtil::IsDVD(strFile) || CUtil::IsISO9660(strFile))  && !CDetectDVDMedia::IsDiscInDrive() && m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
 			{
 				//	yes, disable vis
 				m_gWindowManager.PreviousWindow();
