@@ -115,8 +115,8 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	// Create enough samples to hold approx 2 sec worth of audio.
 	
 	//m_dwPacketSize		 = 1152 * (uiBitsPerSample/8) * iChannels;
-	//m_dwNumPackets = ( (m_wfx.nSamplesPerSec / ( m_dwPacketSize / ((uiBitsPerSample/8) * m_wfx.nChannels) )) / 2);
-  m_dwPacketSize=1152* (iChannels);
+	//m_dwNumPackets = ( (m_wfx.nSamplesPerSec / ( m_dwPa2cketSize / ((uiBitsPerSample/8) * m_wfx.nChannels) )) / 2);
+  m_dwPacketSize=1152* (iChannels*2);
   m_dwNumPackets=8*iChannels;
 
 	for (DWORD dwX=0; dwX < m_dwNumPackets ; dwX++)
