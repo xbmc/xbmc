@@ -197,8 +197,8 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 		{
 			iSubTitlePos = g_graphicsContext.GetHeight() - h - 10;
 		}
-		// clear subtitle area
-		for (int y=0; y < h; y++)
+		// clear subtitle area (2 rows)
+		for (int y=0; y < h*2; y++)
 		{
 			for (int x=0; x < (int)(dstride); x+=2)
 			{

@@ -9,6 +9,9 @@
 //			- reboot button blinks 1/2 speed???
 //		  - reboot doesnt work on some biosses
 //			- in debug mode CSMBDirectory gives a stack corruption
+//			- zoom doesnt work if movie height>movie width
+//			- subtitles are resized in stretch mode 2?
+//		  - video starts pretty slooowww..
 //
 // general:
 //			- different skins for 4:3 / 16:9
