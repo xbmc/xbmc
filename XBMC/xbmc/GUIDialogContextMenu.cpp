@@ -520,5 +520,5 @@ bool CGUIDialogContextMenu::CheckMasterCode(int iLockMode)
 		g_application.m_iMasterCodeRetriesRemaining = g_stSettings.m_iMasterLockMaxRetry;
 		return true;
 	}
-	return false;
+	return true;
 }
