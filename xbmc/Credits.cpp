@@ -107,15 +107,13 @@ CreditLine_t Credits[] =
   {  50,  45,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL" },
   {  50,  55,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"[XC]D-Ice" },
   {  50,  65,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Chokemaniac" },
-  {  50,  75,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Wabid" },
-  {  50,  85,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Blackwolf" },
+
 
   // Patches  flash 0.5, on 63, crossfade 3.5
   {  50,  22,   7740,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Exceptional Patches" },
-  {  50,  35,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Q-Silver" },
-  {  50,  45,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"WiSo" },
-  {  50,  55,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Tilmann" },
-  {  50,  65,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"kraqh3d" },
+  {  50,  35,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"WiSo" },
+  {  50,  45,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Tilmann" },
+  {  50,  55,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"kraqh3d" },
 
   // Stream server  crossfade 3.5, on 60 crossfade 3
   {  50,  22,   7620,   7200,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Stream Servers" },
@@ -159,6 +157,7 @@ CreditLine_t Credits[] =
   {  50,  59,      0,   5520,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Xbox-scene.com" },
   {  50,  67,      0,   5520,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"bestplayer.de" },
   {  50,  75,      0,   5520,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"modplug (credits music)" },
+  {  50,  85,      0,   5520,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Wabid" },
 
   // Visualizations crossfade 3, on 61, fadeout 16
   {  50,  22,   7680,   7320,  360,  1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Visualizations by" },
@@ -205,7 +204,7 @@ CreditLine_t Credits[] =
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Gandalf, Legolas, Gimli, Aragorn, Boromir" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Merry, Pippin and ofcourse Samwise" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and..." },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Team-XBMC wants to wish Frodo:" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Team-XBMC wants to wish Frodo" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Good Luck with his future projects!" },
 
   // section dday
