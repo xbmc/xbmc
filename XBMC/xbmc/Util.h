@@ -64,6 +64,7 @@ public:
 	static void GetAlbumDatabase(const CStdString& strFileName, CStdString& strAlbumThumb);
 	static bool GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon);
 	static bool GetXBEDescription(const CStdString& strFileName, CStdString& strDescription);
+	static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
 	static DWORD GetXbeID( const CStdString& strFilePath);
 	static void FillInDefaultIcons(VECFILEITEMS &items);
 	static void FillInDefaultIcon(CFileItem* pItem);
