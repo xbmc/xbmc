@@ -73,7 +73,7 @@ void CTransferSocket::Init(t_dirlisting *pDir, int nMode)
 	m_bReady = TRUE;
 	m_status = 0;
 	if (m_pBuffer)
-		VirtualFree(m_pBuffer, 0, MEM_RELEASE);
+		XPhysicalFree(m_pBuffer);
 	m_pBuffer = 0;
 	m_pDirListing = pDir;
 
@@ -107,7 +107,7 @@ void CTransferSocket::Init(CStdString filename, int nMode, _int64 rest, BOOL bBi
 CTransferSocket::~CTransferSocket()
 {
 	if (m_pBuffer)
-		VirtualFree(m_pBuffer, 0, MEM_RELEASE);
+		XPhysicalFree(m_pBuffer);
 	if (m_hFile != INVALID_HANDLE_VALUE)
 	{
 		CloseHandle(m_hFile);
@@ -504,6 +504,18 @@ void CTransferSocket::OnReceive(int nErrorCode)
 			// Also allows realignment to page alignment when restarting.
 			m_nBufSize = 160*1024;
 			m_pBuffer = (char*)XPhysicalAlloc(m_nBufSize, MAXULONG_PTR, 0, PAGE_READWRITE);
+			if (!m_pBuffer)
+			{
+				CloseHandle(m_hFile);
+				m_hFile = INVALID_HANDLE_VALUE;
+				Close();
+				if (!m_bSentClose)
+				{
+					m_bSentClose=TRUE;
+					m_status=6;
+					m_pOwner->m_pOwner->PostThreadMessage(WM_FILEZILLA_THREADMSG, FTM_TRANSFERMSG, m_pOwner->m_userid);
+				}
+			}
 			m_nPreAlloc = 0;
 		}
 
@@ -700,10 +712,17 @@ BOOL CTransferSocket::InitTransfer(BOOL bCalledFromSend)
 	if (m_nMode==TRANSFERMODE_SEND)
 	{
 		if (m_pBuffer)
-			VirtualFree(m_pBuffer, 0, MEM_RELEASE);
+			XPhysicalFree(m_pBuffer);
 		// smaller read buffer than for writes to avoid having to do massive data moves
 		m_nBufSize = 32*1024;
 		m_pBuffer = (char*)XPhysicalAlloc(m_nBufSize, MAXULONG_PTR, 0, PAGE_READWRITE | PAGE_WRITECOMBINE);
+		if (!m_pBuffer)
+		{
+			m_status=6;
+			m_pOwner->m_pOwner->PostThreadMessage(WM_FILEZILLA_THREADMSG, FTM_TRANSFERMSG, m_pOwner->m_userid);
+			Close();
+			return FALSE;
+		}
 		ASSERT(m_Filename!="");
 		m_hFile = CreateFile(m_Filename, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
 		if (m_hFile == INVALID_HANDLE_VALUE)
