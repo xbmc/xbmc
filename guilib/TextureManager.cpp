@@ -49,7 +49,7 @@ void CTexture::FreeTexture()
 			m_pTexture->BlockUntilNotBusy();
 			void* Data = (void*)(*(DWORD*)(((char*)m_pTexture) + sizeof(D3DTexture)));
 			if (Data)
-				D3D_FreeContiguousMemory(Data);
+				XPhysicalFree(Data);
 			delete [] m_pTexture;
 		}
 		else
@@ -442,6 +442,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 			}
 		}
 	}
+	else
+		strPath=strTextureName;
 
   //OutputDebugString(strPath.c_str());
   //OutputDebugString("\n");
@@ -793,6 +795,7 @@ void CGUITextureManager::Cleanup()
     delete pMap;
     i=m_vecTextures.erase(i);
   }
+	m_TexBundle.Cleanup();
 }
 
 void CGUITextureManager::Dump() const

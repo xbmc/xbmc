@@ -38,7 +38,7 @@ HRESULT LoadPackedTexture(LPDIRECT3DDEVICE8 pDevice, const char* szFilename, D3D
 	D3DPalette* pPal = 0;
 
 	DWORD ResDataSize = XPRHeader.dwTotalSize - XPRHeader.dwHeaderSize;
-	void* ResData = D3D_AllocContiguousMemory(ResDataSize, 4096);
+	void* ResData = XPhysicalAlloc(ResDataSize, MAXULONG_PTR, 128, PAGE_READWRITE | PAGE_WRITECOMBINE);
 	if (!ResData)
 		goto PackedLoadError;
 
@@ -176,7 +176,7 @@ int LoadPackedAnim(LPDIRECT3DDEVICE8 pDevice, const char* szFilename, D3DXIMAGE_
 	D3DPalette* pPal = 0;
 
 	DWORD ResDataSize = XPRHeader.dwTotalSize - XPRHeader.dwHeaderSize;
-	void* ResData = D3D_AllocContiguousMemory(ResDataSize, 4096);
+	void* ResData = XPhysicalAlloc(ResDataSize, MAXULONG_PTR, 128, PAGE_READWRITE | PAGE_WRITECOMBINE);
 	if (!ResData)
 		goto PackedAnimError;
 
