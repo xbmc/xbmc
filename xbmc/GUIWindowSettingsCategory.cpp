@@ -394,10 +394,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
 		{
 			CSettingInt *pSettingInt = (CSettingInt*)pSetting;
 			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+			CStdString strPercentMask=g_localizeStrings.Get(14047);
 			for (int i=pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i+=5)
 			{
 				CStdString strLabel;
-				strLabel.Format("%i%%", i*2);
+				strLabel.Format(strPercentMask.c_str(), i*2);
 				pControl->AddLabel(strLabel, i);
 			}
 			pControl->SetValue(int(pSettingInt->GetData()/5)-1);
