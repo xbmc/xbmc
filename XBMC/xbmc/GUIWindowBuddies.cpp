@@ -625,9 +625,9 @@ void CGUIWindowBuddies::Render()
 	CBuddyItem* pBuddy = GetBuddySelection();
 	if (pBuddy)
 	{
-		BOOL bItemFocusedLongEnough = (pBuddy->GetFramesFocused() > 150);
+		BOOL bItemFocusedLongEnough = (pBuddy->GetFramesFocused() > 100);
 
-		if (pBuddy && !pBuddy->m_bProfileRequested)
+		if (bItemFocusedLongEnough && !pBuddy->m_bProfileRequested)
 		{
 			pBuddy->m_bProfileRequested = TRUE;
 			CStdString aName = pBuddy->GetName();
