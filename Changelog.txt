@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-10-2004 fixed: [ 1040425 ] XBE titles don't show correct
   - 05-10-2004 updated: German language file
   - 05-10-2004 fixed: [ 1039240 ] "Out of Memory Error" switching between pictures/slideshow
   - 05-10-2004 fixed: PAL60 startup for emergency recovery console
