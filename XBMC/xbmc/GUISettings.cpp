@@ -313,7 +313,7 @@ CGUISettings::CGUISettings(void)
 	AddCategory(5, "Filters", 230);
 	AddInt(1, "Filters.Flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
 	AddBool(2, "Filters.Soften", 215, false);
-	AddInt(3, "Filters.RenderMethod", 13354, RENDER_PIXEL_SHADER, RENDER_PIXEL_SHADER, 1, RENDER_OVERLAYS, SPIN_CONTROL_TEXT);
+	AddInt(3, "Filters.RenderMethod", 13354, RENDER_PIXEL_SHADER, RENDER_PIXEL_SHADER, 1, RENDER_OVERLAYS_FAST, SPIN_CONTROL_TEXT);
 
 	AddCategory(5, "Subtitles", 287);
 	AddString(1, "Subtitles.Font", 288, "arial-iso-8859-1", SPIN_CONTROL_TEXT);
