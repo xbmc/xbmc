@@ -920,6 +920,10 @@ void CApplication::UpdateLCD()
       }
       if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV)
       {
+        // line 0: window name like   My music/songs
+        // line 1: current control or selected item
+        // line 2: time/date
+        // line 3: free memory (megs)
         CStdString strTmp;
         int iWin=m_gWindowManager.GetActiveWindow();        
         CGUIWindow* pWindow=m_gWindowManager.GetWindow(iWin);
@@ -956,8 +960,16 @@ void CApplication::UpdateLCD()
               pThumbControl->GetSelectedItem(strTmp);
               g_lcd.SetLine(1,strTmp);
             }
-            g_lcd.SetLine(2,"");
-            g_lcd.SetLine(3,"");
+            SYSTEMTIME time;
+	          GetLocalTime(&time);
+            strLine.Format("%02.2i:%02.2i:%02.2i %02.2i-%02.2i-%02.2i", time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
+            g_lcd.SetLine(2,strLine);
+	          MEMORYSTATUS stat;
+	          GlobalMemoryStatus(&stat);
+		        DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
+            strLine.Format("Freemem:%i meg", dwMegFree);
+            g_lcd.SetLine(3,strLine);
+
           }
         }
       }
