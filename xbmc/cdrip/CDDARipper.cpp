@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "CDDARipper.h"
 #include "..\utils\log.h"
 #include "..\util.h"

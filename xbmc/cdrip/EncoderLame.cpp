@@ -1,4 +1,4 @@
-#include <xtl.h>
+#include "stdafx.h"
 #include "EncoderLame.h"
 #include "..\utils\log.h"
 #include "..\sectionLoader.h"
