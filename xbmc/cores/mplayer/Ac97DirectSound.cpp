@@ -66,7 +66,6 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
 	m_bPause           = false;
 	m_bMute            = false;
 	m_bIsAllocated     = false;
-	m_pDSound          = NULL;
 	m_adwStatus        = NULL;
 	ZeroMemory(m_pbSampleData,sizeof(m_pbSampleData));
 	
@@ -127,11 +126,6 @@ HRESULT CAc97DirectSound::Deinitialize()
 	{
 		m_pDigitalOutput->Release();
 		m_pDigitalOutput=NULL;
-	}
-	if ( m_pDSound )
-	{
-		m_pDSound->Release() ;
-		m_pDSound =NULL;
 	}
 
 	if (m_pbSampleData[0])
