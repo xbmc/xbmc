@@ -12,16 +12,19 @@
 #include <memory>
 using namespace std;
 
-class CAutorun
+namespace MEDIA_DETECT 
 {
-public:
-	CAutorun();
-	virtual			~CAutorun();
-	void				HandleAutorun();
-protected:
-	void				ExecuteAutorun();
-	void				RunXboxCd();
-	void				RunCdda();
-	void				RunISOMedia();
-	bool				RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot);
-};
+	class CAutorun
+	{
+	public:
+		CAutorun();
+		virtual			~CAutorun();
+		void				HandleAutorun();
+	protected:
+		void				ExecuteAutorun();
+		void				RunXboxCd();
+		void				RunCdda();
+		void				RunISOMedia();
+		bool				RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot);
+	};
+}

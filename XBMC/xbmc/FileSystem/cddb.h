@@ -34,6 +34,7 @@ namespace CDDB
 	#define CDDB_PORT 8880;
 
 	using namespace std;
+	using namespace MEDIA_DETECT;
 
 
 	struct toc {

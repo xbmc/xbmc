@@ -14,7 +14,8 @@
 #include "stdstring.h"
 #include "../lib/libcdio/cdio.h"
 
-namespace XISO9660 {
+namespace MEDIA_DETECT 
+{
 
 #define STRONG "__________________________________\n"
 #define NORMAL ""
@@ -84,7 +85,7 @@ namespace XISO9660 {
 	class CCdInfo
 	{
 	public:
-		CCdInfo() { ZeroMemory( (void*)&m_ti, sizeof( m_ti ) ); m_nLenght = m_nFirstTrack = m_nNumTrack = m_nNumAudio = m_nFirstAudio = m_nNumData = m_nFirstData = 0; }
+		CCdInfo() { m_bHasCDDBInfo=true; ZeroMemory( (void*)&m_ti, sizeof( m_ti ) ); m_nLenght = m_nFirstTrack = m_nNumTrack = m_nNumAudio = m_nFirstAudio = m_nNumData = m_nFirstData = 0; }
 		virtual ~CCdInfo() {}
 		trackinfo GetTrackInformation( int nTrack ) { return m_ti[nTrack-1]; }
 		bool HasDataTracks() { return (m_nNumData > 0); }
@@ -184,6 +185,8 @@ namespace XISO9660 {
 
 		void SetCddbDiscId( ULONG ulCddbDiscId ) { m_ulCddbDiscId = ulCddbDiscId; }
 		void SetDiscLength( int nLenght ) { m_nLenght = nLenght; }
+		bool HasCDDBInfo() { return m_bHasCDDBInfo; }
+		void SetNoCDDBInfo() { m_bHasCDDBInfo=false; }
 
 	private:
 		int m_nFirstData;        /* # of first data track */
@@ -195,6 +198,7 @@ namespace XISO9660 {
 		trackinfo m_ti[100];
 		ULONG m_ulCddbDiscId;
 		int m_nLenght;			//	Disclenght can be used for cddb query, also see trackinfo.nFrames
+		bool m_bHasCDDBInfo;
 	};
 
 	class CCdIoSupport
