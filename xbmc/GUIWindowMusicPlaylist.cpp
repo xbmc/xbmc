@@ -563,40 +563,8 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 	}
 
 	if (pItem->m_musicInfoTag.Loaded())
-	{
-		//	set label 1
-		CStdString str;
-		CMusicInfoTag& tag=pItem->m_musicInfoTag;
-		CStdString strTitle=tag.GetTitle();
-		CStdString strArtist=tag.GetArtist();
-		if (strTitle.size()) 
-		{
-			if (strArtist)
-			{
-				//int iTrack=tag.GetTrackNumber();
-				if (iTrack>0 && !g_guiSettings.GetBool("MusicLists.HideTrackNumber"))
-					str.Format("%02.2i. %s - %s",iTrack, tag.GetArtist().c_str(), tag.GetTitle().c_str());
-				else 
-					str.Format("%s - %s", tag.GetArtist().c_str(), tag.GetTitle().c_str());
-			}
-			else
-			{
-				//int iTrack=tag.GetTrackNumber();
-				if (iTrack>0 && !g_guiSettings.GetBool("MusicLists.HideTrackNumber"))
-					str.Format("%02.2i. %s ",iTrack, tag.GetTitle().c_str());
-				else 
-					str.Format("%s", tag.GetTitle().c_str());
-			}
-			pItem->SetLabel(str);
-		}
-
-		//	set label 2
-		int nDuration=tag.GetDuration();
-		if (nDuration > 0)
-		{
-			CUtil::SecondsToHMSString(nDuration, str);
-			pItem->SetLabel2(str);
-		}
+	{	//	set label 1+2 from tags
+		SetLabelFromTag(pItem);
 	}	//	if (pItem->m_musicInfoTag.Loaded())
 	else
 	{
