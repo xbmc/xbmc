@@ -24,6 +24,7 @@
 #include "GUIListControl.h"
 #include "GUIThumbnailPanel.h"
 #include "utils/KaiClient.h"
+#include "utils/MemUnit.h"
 
 #pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")    
 #ifdef _DEBUG
@@ -248,6 +249,8 @@ HRESULT CApplication::Initialize()
   }
   CLog::Log("  subtitle folder:%s", g_stSettings.m_szAlternateSubtitleDirectory);
   CreateDirectory(g_stSettings.m_szAlternateSubtitleDirectory,NULL);
+
+	InitMemoryUnits();
   
   // initialize network
   if (!m_bXboxMediacenterLoaded)
@@ -1874,6 +1877,9 @@ void CApplication::Process()
 
 	// process messages, even if a movie is playing
 	g_applicationMessenger.ProcessMessages();
+
+	// check for memory unit changes
+	UpdateMemoryUnits();
 }
 void CApplication::Restart(bool bSamePosition)
 {
