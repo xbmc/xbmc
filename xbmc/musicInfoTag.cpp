@@ -27,6 +27,11 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_strAlbum = tag.m_strAlbum;
   m_strGenre = tag.m_strGenre;
   m_strTitle = tag.m_strTitle;
+  m_strMusicBrainzTrackID = tag.m_strMusicBrainzTrackID;
+  m_strMusicBrainzArtistID = tag.m_strMusicBrainzArtistID;
+  m_strMusicBrainzAlbumID = tag.m_strMusicBrainzAlbumID;
+  m_strMusicBrainzAlbumArtistID = tag.m_strMusicBrainzAlbumArtistID;
+  m_strMusicBrainzTRMID = tag.m_strMusicBrainzTRMID;
   m_iDuration = tag.m_iDuration;
   m_iTrack = tag.m_iTrack;
   m_bLoaded = tag.m_bLoaded;
@@ -142,6 +147,56 @@ bool CMusicInfoTag::Loaded() const
   return m_bLoaded;
 }
 
+const CStdString& CMusicInfoTag::GetMusicBrainzTrackID() const
+{
+  return m_strMusicBrainzTrackID;
+}
+
+const CStdString& CMusicInfoTag::GetMusicBrainzArtistID() const
+{
+  return m_strMusicBrainzArtistID;
+}
+
+const CStdString& CMusicInfoTag::GetMusicBrainzAlbumID() const
+{
+  return m_strMusicBrainzAlbumID;
+}
+
+const CStdString& CMusicInfoTag::GetMusicBrainzAlbumArtistID() const
+{
+  return m_strMusicBrainzAlbumArtistID;
+}
+
+const CStdString& CMusicInfoTag::GetMusicBrainzTRMID() const
+{
+  return m_strMusicBrainzTRMID;
+}
+
+void CMusicInfoTag::SetMusicBrainzTrackID(const CStdString& strTrackID)
+{
+  m_strMusicBrainzTrackID=strTrackID;
+}
+
+void CMusicInfoTag::SetMusicBrainzArtistID(const CStdString& strArtistID)
+{
+  m_strMusicBrainzArtistID=strArtistID;
+}
+
+void CMusicInfoTag::SetMusicBrainzAlbumID(const CStdString& strAlbumID)
+{
+  m_strMusicBrainzAlbumID=strAlbumID;
+}
+
+void CMusicInfoTag::SetMusicBrainzAlbumArtistID(const CStdString& strAlbumArtistID)
+{
+  m_strMusicBrainzAlbumArtistID=strAlbumArtistID;
+}
+
+void CMusicInfoTag::SetMusicBrainzTRMID(const CStdString& strTRMID)
+{
+  m_strMusicBrainzTRMID=strTRMID;
+}
+
 bool CMusicInfoTag::Load(const CStdString& strFileName)
 {
   FILE* fd = fopen(strFileName.c_str(), "rb");
@@ -193,6 +248,11 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetGenre(song.strGenre);
   SetArtist(song.strArtist);
   SetAlbum(song.strAlbum);
+  SetMusicBrainzTrackID(song.strMusicBrainzTrackID);
+  SetMusicBrainzArtistID(song.strMusicBrainzArtistID);
+  SetMusicBrainzAlbumID(song.strMusicBrainzAlbumID);
+  SetMusicBrainzAlbumArtistID(song.strMusicBrainzAlbumArtistID);
+  SetMusicBrainzTRMID(song.strMusicBrainzTRMID);
   m_strURL = song.strFileName;
   SYSTEMTIME stTime;
   stTime.wYear = song.iYear;
@@ -215,6 +275,11 @@ void CMusicInfoTag::Serialize(CArchive& ar)
     ar << m_iTrack;
     ar << m_bLoaded;
     ar << m_dwReleaseDate;
+    ar << m_strMusicBrainzTrackID;
+    ar << m_strMusicBrainzArtistID;
+    ar << m_strMusicBrainzAlbumID;
+    ar << m_strMusicBrainzAlbumArtistID;
+    ar << m_strMusicBrainzTRMID;
   }
   else
   {
@@ -227,7 +292,12 @@ void CMusicInfoTag::Serialize(CArchive& ar)
     ar >> m_iTrack;
     ar >> m_bLoaded;
     ar >> m_dwReleaseDate;
-  }
+    ar >> m_strMusicBrainzTrackID;
+    ar >> m_strMusicBrainzArtistID;
+    ar >> m_strMusicBrainzAlbumID;
+    ar >> m_strMusicBrainzAlbumArtistID;
+    ar >> m_strMusicBrainzTRMID;
+ }
 }
 
 void CMusicInfoTag::Clear()
@@ -237,6 +307,11 @@ void CMusicInfoTag::Clear()
   m_strAlbum = "";
   m_strGenre = "";
   m_strTitle = "";
+  m_strMusicBrainzTrackID = "";
+  m_strMusicBrainzArtistID = "";
+  m_strMusicBrainzAlbumID = "";
+  m_strMusicBrainzAlbumArtistID = "";
+  m_strMusicBrainzTRMID = "";
   m_iDuration = 0;
   m_iTrack = 0;
   m_bLoaded = false;

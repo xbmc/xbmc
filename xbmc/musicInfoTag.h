@@ -27,6 +27,11 @@ public:
   int GetDuration() const;
   void GetReleaseDate(SYSTEMTIME& dateTime) const;
   CStdString GetYear() const;
+  const CStdString& GetMusicBrainzTrackID() const;
+  const CStdString& GetMusicBrainzArtistID() const;
+  const CStdString& GetMusicBrainzAlbumID() const;
+  const CStdString& GetMusicBrainzAlbumArtistID() const;
+  const CStdString& GetMusicBrainzTRMID() const;
 
   void SetURL(const CStdString& strURL) ;
   void SetTitle(const CStdString& strTitle) ;
@@ -39,6 +44,11 @@ public:
   void SetLoaded(bool bOnOff = true);
   void SetAlbum(const CAlbum& album);
   void SetSong(const CSong& song);
+  void SetMusicBrainzTrackID(const CStdString& strTrackID);
+  void SetMusicBrainzArtistID(const CStdString& strArtistID);
+  void SetMusicBrainzAlbumID(const CStdString& strAlbumID);
+  void SetMusicBrainzAlbumArtistID(const CStdString& strAlbumArtistID);
+  void SetMusicBrainzTRMID(const CStdString& strTRMID);
 
   virtual void Serialize(CArchive& ar);
 
@@ -49,6 +59,11 @@ protected:
   CStdString m_strArtist;
   CStdString m_strAlbum;
   CStdString m_strGenre;
+  CStdString m_strMusicBrainzTrackID;
+  CStdString m_strMusicBrainzArtistID;
+  CStdString m_strMusicBrainzAlbumID;
+  CStdString m_strMusicBrainzAlbumArtistID;
+  CStdString m_strMusicBrainzTRMID;
   int m_iDuration;
   int m_iTrack;
   bool m_bLoaded;
