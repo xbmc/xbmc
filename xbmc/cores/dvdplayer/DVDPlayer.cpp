@@ -302,14 +302,14 @@ void CDVDPlayer::Process()
     else if (!pPacket)
     {
       CLog::Log(LOGERROR, "Error reading data form demuxer");
-      break;
+      continue;
     }
 
     if (pPacket)
     {
       oldstate = DVDSTATE_NORMAL;
     }
-   
+
     int iFileStreamId = m_pDemuxer->GetStream(pPacket->iStreamId)->iId;
     if (iFileStreamId >= m_dvd.iSelectedSPUStream &&
         iFileStreamId <= m_dvd.iSelectedSPUStream)
@@ -340,12 +340,14 @@ void CDVDPlayer::Process()
     
         m_dvdPlayerVideo.m_overlay.Add(pOverlayPicture);
         
-        if (pSPUInfo->bForced && m_dvd.state == DVDSTATE_STILL)
+        // JM hack (commented out m_dvd.state == DVDSTATE_STILL)
+        if (pSPUInfo->bForced /*&& m_dvd.state == DVDSTATE_STILL*/)
         {
           // recieved new menu overlay (button), update the screen when displaying a still
           OnDVDNavResult(NULL, DVDNAV_HIGHLIGHT); // hack
         }
-        
+        // end JM hack
+
         delete pSPUInfo;
       }
       // free it, content is already copied into a special structure
@@ -1207,6 +1209,13 @@ bool CDVDPlayer::OnAction(const CAction &action)
 	      return true;
 	    }
 	    break;
+      case ACTION_SHOW_MPLAYER_OSD:  // white
+      {
+        CLog::DebugLog(" - go to menu");
+        pStream->OnMenu();
+ 	      m_dvd.state = DVDSTATE_NORMAL;
+      }
+      break;
 	  }
 	      
     if (pStream->IsInMenu())
