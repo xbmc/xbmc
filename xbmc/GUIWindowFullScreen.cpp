@@ -7,9 +7,14 @@
 #include "osd/OSDOptionIntRange.h"
 #include "osd/OSDOptionBoolean.h"
 
+#define BLUE_BAR    0
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11
 #define LABEL_ROW3 12
+
+#define BTN_OSD_VIDEO 13
+#define BTN_OSD_AUDIO 14
+#define BTN_OSD_SUBTITLE 15
 
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 :CGUIWindow(0)
@@ -44,9 +49,9 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   videoMenu.AddOption(&optionPercentage);
   
 
-  COSDSubMenu audioMenu(292,300,100);
+  COSDSubMenu audioMenu(292,100,100);
 
-  COSDSubMenu SubtitleMenu(293,500,100);
+  COSDSubMenu SubtitleMenu(293,100,100);
   COSDOptionFloatRange optionSubtitleDelay(-10.0f,10.0f,0.01f,0.0f);
   COSDOptionBoolean    optionEnable;
 
@@ -120,7 +125,10 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		break;
 
 		case ACTION_SHOW_OSD:
-			g_application.m_pPlayer->ToggleOSD();
+			//g_application.m_pPlayer->ToggleOSD();
+      m_bOSDVisible=!m_bOSDVisible;
+      if (m_bOSDVisible) ShowOSD();
+      else HideOSD();
 		break;
 			
 		case ACTION_SHOW_SUBTITLES:
@@ -176,6 +184,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			g_graphicsContext.Unlock();
 			if (g_application.m_pPlayer)
 				g_application.m_pPlayer->Update();
+      HideOSD();
 			return true;
 		}
 		case GUI_MSG_WINDOW_DEINIT:
@@ -266,31 +275,63 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		return;
 	}
 	//------------------------
-	if (!m_bShowInfo) return;
-	if (!g_application.m_pPlayer) return;
-	// show audio codec info
-	CStdString strAudio, strVideo, strGeneral;
-	g_application.m_pPlayer->GetAudioInfo(strAudio);
-	{	
-		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
-		msg.SetLabel(strAudio); 
-		OnMessage(msg);
-	}
-	// show video codec info
-	g_application.m_pPlayer->GetVideoInfo(strVideo);
-	{	
-		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2); 
-		msg.SetLabel(strVideo); 
-		OnMessage(msg);
-	}
-	// show general info
-	g_application.m_pPlayer->GetGeneralInfo(strGeneral);
-	{	
-		CStdString strGeneralFPS;
-		strGeneralFPS.Format("fps:%02.2f %s", m_fFPS, strGeneral.c_str() );
-		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3); 
-		msg.SetLabel(strGeneralFPS); 
-		OnMessage(msg);
-	}
-	CGUIWindow::Render();
+	if (m_bShowInfo) 
+  {
+	  if (!g_application.m_pPlayer) return;
+	  // show audio codec info
+	  CStdString strAudio, strVideo, strGeneral;
+	  g_application.m_pPlayer->GetAudioInfo(strAudio);
+	  {	
+		  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
+		  msg.SetLabel(strAudio); 
+		  OnMessage(msg);
+	  }
+	  // show video codec info
+	  g_application.m_pPlayer->GetVideoInfo(strVideo);
+	  {	
+		  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2); 
+		  msg.SetLabel(strVideo); 
+		  OnMessage(msg);
+	  }
+	  // show general info
+	  g_application.m_pPlayer->GetGeneralInfo(strGeneral);
+	  {	
+		  CStdString strGeneralFPS;
+		  strGeneralFPS.Format("fps:%02.2f %s", m_fFPS, strGeneral.c_str() );
+		  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3); 
+		  msg.SetLabel(strGeneralFPS); 
+		  OnMessage(msg);
+	  }
+	  CGUIWindow::Render();
+    return;
+  }
+  if (m_bOSDVisible)
+  {
+	  CGUIWindow::Render();
+    m_osdMenu.Draw();
+  }
+}
+
+void CGUIWindowFullScreen::HideOSD()
+{
+  SET_CONTROL_HIDDEN(GetID(),BTN_OSD_VIDEO);
+  SET_CONTROL_HIDDEN(GetID(),BTN_OSD_AUDIO);
+  SET_CONTROL_HIDDEN(GetID(),BTN_OSD_SUBTITLE);
+
+  SET_CONTROL_VISIBLE(GetID(),LABEL_ROW1);
+  SET_CONTROL_VISIBLE(GetID(),LABEL_ROW2);
+  SET_CONTROL_VISIBLE(GetID(),LABEL_ROW3);
+  SET_CONTROL_VISIBLE(GetID(),BLUE_BAR);
+}
+
+void CGUIWindowFullScreen::ShowOSD()
+{
+  SET_CONTROL_VISIBLE(GetID(),BTN_OSD_VIDEO);
+  SET_CONTROL_VISIBLE(GetID(),BTN_OSD_AUDIO);
+  SET_CONTROL_VISIBLE(GetID(),BTN_OSD_SUBTITLE);
+
+  SET_CONTROL_HIDDEN(GetID(),LABEL_ROW1);
+  SET_CONTROL_HIDDEN(GetID(),LABEL_ROW2);
+  SET_CONTROL_HIDDEN(GetID(),LABEL_ROW3);
+  SET_CONTROL_HIDDEN(GetID(),BLUE_BAR);
 }
