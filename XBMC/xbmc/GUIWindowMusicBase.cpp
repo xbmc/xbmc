@@ -1579,7 +1579,7 @@ void CGUIWindowMusicBase::SetLabelFromTag(CFileItem *pItem)
 		iPos1 = iPos2+2;
 		iPos2 = strFormat.Find('%', iPos1);
 	}
-	if (iPos1 < (int)strFormat.size()-1)
+	if (iPos1 < (int)strFormat.size())
 		strLabel += strFormat.Right(strFormat.size()-iPos1);
 	pItem->SetLabel( strLabel );
 
