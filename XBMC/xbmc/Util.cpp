@@ -849,32 +849,34 @@ void CUtil::FillInDefaultIcons(VECFILEITEMS &items)
 	for (int i=0; i < (int)items.size(); ++i)
 	{
 		CFileItem* pItem=items[i];
-		if (pItem->GetThumbnailImage()=="")
+	
+		if (pItem->m_bIsFolder)
 		{
-			if (pItem->GetIconImage()=="")
-			{
-				if (pItem->m_bIsFolder)
-				{
-					pItem->SetIconImage("defaultFolder.png");
-				}
-				else
-				{
-					CStdString strExtension;
-					CUtil::GetExtension(pItem->m_strPath,strExtension);
-					
-					for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
-					{
-						CFileTypeIcon& icon=g_settings.m_vecIcons[i];
+			pItem->SetIconImage("defaultFolder.png");
+		}
 
-						if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
-						{
-							pItem->SetIconImage(icon.m_strIcon);
-							break;
-						}
+		if (pItem->GetIconImage()=="")
+		{
+			if (!pItem->m_bIsFolder)
+			{
+				CStdString strExtension;
+				CUtil::GetExtension(pItem->m_strPath,strExtension);
+				
+				for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
+				{
+					CFileTypeIcon& icon=g_settings.m_vecIcons[i];
+
+					if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
+					{
+						pItem->SetIconImage(icon.m_strIcon);
+						break;
 					}
 				}
 			}
+		}
 
+		if (pItem->GetThumbnailImage()=="")
+		{
 			if (pItem->GetIconImage()!="")
 			{
 				CStdString strBig;
