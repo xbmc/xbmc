@@ -376,9 +376,9 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 
 	m_wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
 
-	//xbox_Ac3encoder_active = false;
-	//if ( (dsmb.dwMixBinCount>2) && ((XGetAudioFlags()&(DSSPEAKER_ENABLE_AC3|DSSPEAKER_ENABLE_DTS)) != 0 ) )
-	//xbox_Ac3encoder_active = true;
+	xbox_Ac3encoder_active = false;
+	if ( (dsmb.dwMixBinCount>2) && ((XGetAudioFlags()&(DSSPEAKER_ENABLE_AC3|DSSPEAKER_ENABLE_DTS)) != 0 ) )
+	xbox_Ac3encoder_active = true;
 
 	DSSTREAMDESC dssd; 
 	memset(&dssd,0,sizeof(dssd));
@@ -609,7 +609,7 @@ DWORD CASyncDirectSound::GetSpace()
 	DWORD dwSize= iFreePackets*m_dwPacketSize;
 	if (m_bResampleAudio)
 	{	// calculate the actual amount of data that we can handle
-		float fBytesPerSecOutput = 48000*16*2;
+		float fBytesPerSecOutput = 48000*16*m_wfx.nChannels; //use correct channel, do not assume 2 channel
 		dwSize = (DWORD)((float)dwSize*(float)m_Resampler.GetInputBitrate()/fBytesPerSecOutput);
 	}
 
@@ -768,7 +768,7 @@ DWORD CASyncDirectSound::GetBytesInBuffer()
 //***********************************************************************************************
 FLOAT CASyncDirectSound::GetDelay()
 {
-	if (g_stSettings.m_bUseDigitalOutput)
+	if (xbox_Ac3encoder_active) //2 channel materials will not be encoded as ac3 stream
 		return 0.049f;      //(Ac3 encoder 29ms)+(receiver 20ms)
 	else
 		return 0.008f;      //PCM output 8ms
