@@ -73,25 +73,32 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 		int error;
 		if (errno == ENODEV) error = NT_STATUS_INVALID_COMPUTER_NAME;
 		else error = map_nt_error_from_unix(errno);
-		
-		const char* cError = get_friendly_nt_error_msg(error);
-		
-		CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-		pDialog->SetHeading(257);
-    pDialog->SetLine(0,cError);
-		pDialog->SetLine(1,L"");
-    pDialog->SetLine(2,L"");
 
-		ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
-		g_applicationMessenger.SendMessage(tMsg, false);
+		// is we have an 'invalid handle' error we don't display the error
+		// because most of the time this means there is no cdrom in the server's
+		// cdrom drive.
+		if (error != 0xc0000008)
+		{
+			const char* cError = get_friendly_nt_error_msg(error);
+			
+			CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+			pDialog->SetHeading(257);
+			pDialog->SetLine(0,cError);
+			pDialog->SetLine(1,L"");
+			pDialog->SetLine(2,L"");
 
+			ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+			g_applicationMessenger.SendMessage(tMsg, false);
+		}
 		return false;
 	}
 	else
 	{
 		struct smbc_dirent* dirEnt;
-		wchar_t wStrFile[1024];
-		char strUtfFile[1024];
+		wchar_t wStrFile[1024]; // buffer for converting strings
+		char strUtfFile[1024]; // buffer for converting strings
+		CStdString strFile;
+		CStdString strFullName;
 
 		smb.Lock();
 		dirEnt = smbc_readdir(fd);
@@ -110,6 +117,8 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 				strLen = convert_string(CH_UTF8, CH_UCS2, dirEnt->name, dirEnt->namelen, wStrFile, 1024);
 				wStrFile[strLen] = 0;
 
+				CUtil::Unicode2Ansi(wStrFile, strFile);
+
 				// doing stat on one of these types of shares leaves an open session
 				// so just skip them and only stat real dirs / files.
 				if( dirEnt->smbc_type != SMBC_IPC_SHARE &&
@@ -120,10 +129,9 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 						dirEnt->smbc_type != SMBC_SERVER)
 				{
 					struct __stat64 info;
-					CStdString strFile = strRoot + wStrFile;
-
+					strFullName = strRoot + strFile;
 					// convert from string to UTF8
-					strLen = convert_string(CH_DOS, CH_UTF8, strFile, strFile.length(), strUtfFile, 1024);
+					strLen = convert_string(CH_DOS, CH_UTF8, strFullName, strFullName.length(), strUtfFile, 1024);
 					strUtfFile[strLen] = 0;
 
 					smb.Lock();
@@ -139,12 +147,11 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 				LONGLONG ll = Int32x32To64(lTimeDate & 0xffffffff, 10000000) + 116444736000000000;
 				fileTime.dwLowDateTime = (DWORD) (ll & 0xffffffff);
 				fileTime.dwHighDateTime = (DWORD)(ll >>32);
-
 				FileTimeToLocalFileTime(&fileTime,&localTime); 
 
 				if (bIsDir)
 				{
-					CFileItem *pItem = new CFileItem(wStrFile);
+					CFileItem *pItem = new CFileItem(strFile);
 					pItem->m_strPath = strRoot;
 
 					// needed for network / workgroup browsing
@@ -162,7 +169,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 								pItem->m_strPath = "smb://";
 						}
 					}
-					pItem->m_strPath += wStrFile;
+					pItem->m_strPath += strFile;
 					if(!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
 					pItem->m_bIsFolder = true;
 					FileTimeToSystemTime(&localTime, &pItem->m_stTime);  
@@ -171,19 +178,15 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 				}
 				else
 				{
-					CFileItem *pItem = new CFileItem(wStrFile);
-					pItem->m_strPath = strRoot;
-					pItem->m_strPath += wStrFile;
+					CFileItem *pItem = new CFileItem(strFile);
+					pItem->m_strPath = strRoot + strFile;
 					pItem->m_bIsFolder = false;
 					pItem->m_dwSize = iSize;
 					FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 		        
 					vecCacheItems.push_back(pItem);
 
-					if (IsAllowed(wStrFile))
-					{
-						items.push_back(new CFileItem(*pItem));
-					}
+					if (IsAllowed(strFile)) items.push_back(new CFileItem(*pItem));
 				}
 			}
 			smb.Lock();
