@@ -106,13 +106,18 @@ static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...
 	va_start(args, fmt);
 	_vsnwprintf(buf, 100, fmt, args);
 	va_end(args);
+	
 	if (!(iLine & 0x8000))
 		CLog::Log("%S", buf);
+
+	bool Center = (iLine & 0x10000) > 0;
+	pFont->SetTextAlignment(Center ? XFONT_CENTER : XFONT_LEFT);
+
 	iLine &= 0x7fff;
 
 	D3DRECT rc = { 0, 50 + 25*iLine, 720, 50 + 25*(iLine+1) };
 	D3DDevice::Clear(1, &rc, D3DCLEAR_TARGET, 0, 0, 0);
-	pFont->TextOut(g_application.m_pBackBuffer, buf, -1, 80, 50 + 25*iLine);
+	pFont->TextOut(g_application.m_pBackBuffer, buf, -1, Center ? 360 : 80, 50 + 25*iLine);
 	D3DDevice::Present(0,0,0,0);
 }
 
@@ -123,9 +128,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 	// g_LoadErrorStr should contain the reason
 	CLog::Log("Emergency recovery console starting...");
 
+	bool HaveGamepad = !InitD3D;
+	bool Pal = XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I;
 	if (InitD3D)
 	{
-		bool Pal = XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I;
 		CLog::Log("Init display in default mode: %s", Pal ? "PAL" : "NTSC");
 		// init D3D with defaults (NTSC or PAL standard res)
 		m_d3dpp.BackBufferWidth        = 720;
@@ -150,6 +156,11 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 		}
 
 		m_pd3dDevice->GetBackBuffer(0, 0, &m_pBackBuffer);
+
+		XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
+
+		// Create the gamepad devices
+		HaveGamepad = (XBInput_CreateGamepads(&m_Gamepad) == S_OK);
 	}
 	m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
 
@@ -168,7 +179,15 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
 	int iLine = 0;
 	FEH_TextOut(pFont, iLine++, L"XBMC Fatal Load Error:");
-	FEH_TextOut(pFont, iLine++, L"%S", g_LoadErrorStr.c_str());
+	char buf[500];
+	strncpy(buf, g_LoadErrorStr.c_str(), 500);
+	buf[499] = 0;
+	char* pNewline = strtok(buf, "\n");
+	while (pNewline)
+	{
+		FEH_TextOut(pFont, iLine++, L"%S", pNewline);
+		pNewline = strtok(NULL, "\n");
+	}
 	++iLine;
 
 	if (MapDrives)
@@ -179,6 +198,9 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 		helper.Remount("D:","Cdrom0");
 		helper.Remap("E:,Harddisk0\\Partition1");
 	}
+
+	if (HaveGamepad)
+		FEH_TextOut(pFont, (Pal ? 16 : 12) | 0x18000, L"Press start to reboot");
 
 	// Boot up the network for FTP
 	bool NetworkUp = false;
@@ -228,6 +250,13 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 					{
 						Sleep(50);
 						++iCount;
+
+						if (HaveGamepad)
+						{
+							ReadInput();
+							if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
+								XKUtils::XBOXPowerCycle();
+						}
 					}
 
 					if (err)
@@ -245,6 +274,13 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 						{
 							Sleep(50);
 							++iCount;
+
+							if (HaveGamepad)
+							{
+								ReadInput();
+								if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
+									XKUtils::XBOXPowerCycle();
+							}
 						}
 					}
 				}
@@ -257,6 +293,13 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 					{
 						dwState = XNetGetTitleXnAddr(&xna);
 						Sleep(50);
+
+						if (HaveGamepad)
+						{
+							ReadInput();
+							if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
+								XKUtils::XBOXPowerCycle();
+						}
 					} while (dwState==XNET_GET_XNADDR_PENDING);
 					ip_addr = xna.ina;
 
@@ -277,8 +320,18 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 				int n = 10;
 				while (n)
 				{
-					FEH_TextOut(pFont, iLine|0x8000, L"Unable to init network, retrying in %d seconds", n--);
-					Sleep(1000);
+					FEH_TextOut(pFont, (iLine+1)|0x8000, L"Unable to init network, retrying in %d seconds", n--);
+					for (int i = 0; i < 20; ++i)
+					{
+						Sleep(50);
+
+						if (HaveGamepad)
+						{
+							ReadInput();
+							if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
+								XKUtils::XBOXPowerCycle();
+						}
+					}
 				}
 			}
 			else
@@ -295,6 +348,13 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 		{
 			dwState = XNetGetTitleXnAddr(&xna);
 			Sleep(50);
+
+			if (HaveGamepad)
+			{
+				ReadInput();
+				if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
+					XKUtils::XBOXPowerCycle();
+			}
 		} while (dwState==XNET_GET_XNADDR_PENDING);
 		ip_addr = xna.ina;
 	}
@@ -334,7 +394,18 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 		++iLine;
 	}
 
-	Sleep(INFINITE); // die
+	if (HaveGamepad)
+	{
+		for (;;)
+		{
+			Sleep(50);
+			ReadInput();
+			if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
+				XKUtils::XBOXPowerCycle();
+		}
+	}
+	else
+		Sleep(INFINITE);
 }
 
 HRESULT CApplication::Create()
