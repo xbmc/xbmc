@@ -472,7 +472,10 @@ bool CMPlayer::openfile(const CStdString& strFile)
     bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
     if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut )
     {
-      options.SetAC3PassTru(true);
+      if ( g_stSettings.m_bDDStereoPassThrough || g_stSettings.m_bDD_DTSMultiChannelPassThrough)
+      {
+        options.SetAC3PassTru(true);
+      }
     }
     options.SetAudioStream(m_iAudioStreamIDX);
     options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
