@@ -123,7 +123,9 @@ public:
 		int       m_iMyPicturesViewAsIcons;
 		int       m_iMyPicturesRootViewAsIcons;
 		int				m_iMyPicturesSortMethod;
+		int				m_iMyPicturesRootSortMethod;
 		bool			m_bMyPicturesSortAscending;
+		bool			m_bMyPicturesRootSortAscending;
 
 		char      m_szMyPicturesExtensions[256];
 		char      m_szMyMusicExtensions[256];
@@ -136,8 +138,14 @@ public:
 		bool			m_bMyFilesSourceRootViewAsIcons;
 		bool			m_bMyFilesDestViewAsIcons;
 		bool			m_bMyFilesDestRootViewAsIcons;
-		int				m_iMyFilesSortMethod;
-		bool			m_bMyFilesSortAscending;
+		int				m_iMyFilesSourceSortMethod;
+		int				m_iMyFilesSourceRootSortMethod;
+		bool			m_bMyFilesSourceSortAscending;
+		bool			m_bMyFilesSourceRootSortAscending;
+		int				m_iMyFilesDestSortMethod;
+		int				m_iMyFilesDestRootSortMethod;
+		bool			m_bMyFilesDestSortAscending;
+		bool			m_bMyFilesDestRootSortAscending;
 
 		int				m_iMyMusicSongsRootViewAsIcons;
 		int				m_iMyMusicSongsViewAsIcons;
@@ -176,7 +184,9 @@ public:
 		int 			m_iMyVideoViewAsIcons;
 		int 			m_iMyVideoRootViewAsIcons;
 		int				m_iMyVideoSortMethod;
+		int				m_iMyVideoRootSortMethod;
 		bool			m_bMyVideoSortAscending;
+		bool			m_bMyVideoRootSortAscending;
 
 		bool			m_bScriptsViewAsIcons;
 		bool			m_bScriptsRootViewAsIcons;
@@ -265,17 +275,23 @@ public:
 		int			m_iMyVideoGenreViewAsIcons;
 		int			m_iMyVideoGenreRootViewAsIcons;
 		int				m_iMyVideoGenreSortMethod;
+		int				m_iMyVideoGenreRootSortMethod;
 		bool			m_bMyVideoGenreSortAscending;
+		bool			m_bMyVideoGenreRootSortAscending;
 
 		int			m_iMyVideoActorViewAsIcons;
 		int			m_iMyVideoActorRootViewAsIcons;
 		int				m_iMyVideoActorSortMethod;
+		int				m_iMyVideoActorRootSortMethod;
 		bool			m_bMyVideoActorSortAscending;
+		bool			m_bMyVideoActorRootSortAscending;
 
 		int			m_iMyVideoYearViewAsIcons;
 		int			m_iMyVideoYearRootViewAsIcons;
 		int				m_iMyVideoYearSortMethod;
+		int				m_iMyVideoYearRootSortMethod;
 		bool			m_bMyVideoYearSortAscending;
+		bool			m_bMyVideoYearRootSortAscending;
 
 		int			m_iMyVideoTitleViewAsIcons;
 		int			m_iMyVideoTitleRootViewAsIcons;

@@ -39,13 +39,13 @@ struct SSortPicturesByName
 		if (rpStart.GetLabel()=="..") return true;
 		if (rpEnd.GetLabel()=="..") return false;
 		bool bGreater=true;
-		if (g_stSettings.m_bMyPicturesSortAscending) bGreater=false;
+		if (m_bSortAscending) bGreater=false;
     if ( rpStart.m_bIsFolder   == rpEnd.m_bIsFolder)
 		{
 			char szfilename1[1024];
 			char szfilename2[1024];
 
-			switch ( g_stSettings.m_iMyPicturesSortMethod ) 
+			switch ( m_iSortMethod ) 
 			{
 				case 0:	//	Sort by Filename
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
@@ -92,7 +92,7 @@ struct SSortPicturesByName
 				szfilename2[i]=tolower((unsigned char)szfilename2[i]);
 			//return (rpStart.strPath.compare( rpEnd.strPath )<0);
 
-			if (g_stSettings.m_bMyPicturesSortAscending)
+			if (m_bSortAscending)
 				return (strcmp(szfilename1,szfilename2)<0);
 			else
 				return (strcmp(szfilename1,szfilename2)>=0);
@@ -100,6 +100,8 @@ struct SSortPicturesByName
     if (!rpStart.m_bIsFolder) return false;
 		return true;
 	}
+	bool m_bSortAscending;
+	int m_iSortMethod;
 };
 
 CGUIWindowPictures::CGUIWindowPictures(void)
@@ -183,7 +185,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_INIT:
 		{
 			CGUIWindow::OnMessage(message);
-		  	if (message.GetParam1() != WINDOW_SLIDESHOW)
+			if (message.GetParam1() != WINDOW_SLIDESHOW)
 			{
 				CSectionLoader::Load("CXIMAGE");
 			}
@@ -191,23 +193,8 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 				m_strDirectory=g_stSettings.m_szDefaultPictures;
 
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+
 			m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);
-			int iControl=CONTROL_LIST;
-
-      if (!ViewByIcon()) iControl=CONTROL_THUMBS;
-			SET_CONTROL_HIDDEN(GetID(), iControl);
-
-      if ( g_stSettings.m_bMyPicturesSortAscending)
-      {
-        CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
-        g_graphicsContext.SendMessage(msg);
-      }
-      else
-      {
-        CGUIMessage msg(GUI_MSG_SELECTED,GetID(), CONTROL_BTNSORTASC);
-        g_graphicsContext.SendMessage(msg);
-      }
-
 			m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
 
 			if (m_iLastControl>-1)
@@ -216,7 +203,8 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			Update(m_strDirectory);
 
 			ShowThumbPanel();
-     if (m_iItemSelected >=0)
+
+			if (m_iItemSelected >=0)
       {
 			  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected)
 			  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iItemSelected)
@@ -250,15 +238,28 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       }
       else if (iControl==CONTROL_BTNSORTBY) // sort by
       {
-        g_stSettings.m_iMyPicturesSortMethod++;
-        if (g_stSettings.m_iMyPicturesSortMethod >=3) g_stSettings.m_iMyPicturesSortMethod=0;
+				if (m_strDirectory.IsEmpty())
+				{
+					g_stSettings.m_iMyPicturesRootSortMethod++;
+					if (g_stSettings.m_iMyPicturesRootSortMethod >=3) g_stSettings.m_iMyPicturesRootSortMethod=0;
+				}
+				else
+				{
+					g_stSettings.m_iMyPicturesSortMethod++;
+					if (g_stSettings.m_iMyPicturesSortMethod >=3) g_stSettings.m_iMyPicturesSortMethod=0;
+				}
+
 				g_settings.Save();
         UpdateButtons();
         OnSort();
       }
       else if (iControl==CONTROL_BTNSORTASC) // sort asc
       {
-        g_stSettings.m_bMyPicturesSortAscending=!g_stSettings.m_bMyPicturesSortAscending;
+				if (m_strDirectory.IsEmpty())
+					g_stSettings.m_bMyPicturesRootSortAscending=!g_stSettings.m_bMyPicturesRootSortAscending;
+				else
+					g_stSettings.m_bMyPicturesSortAscending=!g_stSettings.m_bMyPicturesSortAscending;
+
 				g_settings.Save();
         UpdateButtons();
         OnSort();
@@ -331,7 +332,18 @@ void CGUIWindowPictures::OnSort()
   }
 
   
-  sort(m_vecItems.begin(), m_vecItems.end(), SSortPicturesByName());
+  SSortPicturesByName sortmethod;
+	if (m_strDirectory.IsEmpty())
+	{
+		sortmethod.m_iSortMethod=g_stSettings.m_iMyPicturesRootSortMethod;
+		sortmethod.m_bSortAscending=g_stSettings.m_bMyPicturesRootSortAscending;
+	}
+	else
+	{
+		sortmethod.m_iSortMethod=g_stSettings.m_iMyPicturesSortMethod;
+		sortmethod.m_bSortAscending=g_stSettings.m_bMyPicturesSortAscending;
+	}
+  sort(m_vecItems.begin(), m_vecItems.end(), sortmethod);
 
   for (int i=0; i < (int)m_vecItems.size(); i++)
   {
@@ -410,9 +422,25 @@ void CGUIWindowPictures::UpdateButtons()
 
     ShowThumbPanel();
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyPicturesSortMethod+103);
 
-    if ( g_stSettings.m_bMyPicturesSortAscending)
+		//	Update sort by button
+		if (m_strDirectory.IsEmpty())
+		{
+			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyPicturesRootSortMethod+103);
+		}
+		else
+		{
+			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyPicturesSortMethod+103);
+		}
+
+		//	Update sorting control
+		bool bSortAscending=false;
+		if (m_strDirectory.IsEmpty())
+			bSortAscending=g_stSettings.m_bMyPicturesRootSortAscending;
+		else
+			bSortAscending=g_stSettings.m_bMyPicturesSortAscending;
+
+		if (bSortAscending)
     {
       CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
       g_graphicsContext.SendMessage(msg);

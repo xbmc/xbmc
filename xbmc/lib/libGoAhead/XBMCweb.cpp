@@ -100,13 +100,13 @@ struct SSortWebFilesByName
 		if (rpStart.GetLabel()=="..") return true;
     if (rpEnd.GetLabel()=="..") return false;
 		bool bGreater=true;
-		if (g_stSettings.m_bMyFilesSortAscending) bGreater=false;
+		if (g_stSettings.m_bMyFilesSourceSortAscending) bGreater=false;
     if ( rpStart.m_bIsFolder   == rpEnd.m_bIsFolder)
 		{
 			char szfilename1[1024];
 			char szfilename2[1024];
 
-			switch ( g_stSettings.m_iMyFilesSortMethod ) 
+			switch ( g_stSettings.m_iMyFilesSourceSortMethod ) 
 			{
 				case 0:	//	Sort by Filename
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
@@ -157,7 +157,7 @@ struct SSortWebFilesByName
 			}
 			//return (rpStart.strPath.compare( rpEnd.strPath )<0);
 
-			if (g_stSettings.m_bMyFilesSortAscending)
+			if (g_stSettings.m_bMyFilesSourceSortAscending)
 				return (strcmp(szfilename1,szfilename2)<0);
 			else
 				return (strcmp(szfilename1,szfilename2)>=0);
