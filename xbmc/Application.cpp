@@ -1109,7 +1109,7 @@ void CApplication::Render()
   }
 
 	// check that we haven't passed the end of the file (for queue sheets)
-  if (m_pPlayer)
+  if ((m_pPlayer != NULL) && m_pPlayer->IsPlaying())
   {
 	  __int64 iPTS = m_pPlayer->GetPTS();
 	  int timeinsecs = (int)(iPTS / 10);
