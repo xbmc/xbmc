@@ -28,7 +28,7 @@ protected:
 	void							Update(const CStdString &strDirectory);
 	void							OnShowPicture(const CStdString& strPicture);
 	void							OnSlideShow();
-	void							OnCreateThumbs();
+	bool							OnCreateThumbs();
 	int								GetSelectedItem();
   bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
   void              OnSlideShowRecursive();
