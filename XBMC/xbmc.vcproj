@@ -62,7 +62,6 @@
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x60000"
 				IncludeDebugInfo="TRUE"
-				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoLibWarn="TRUE"
 				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBLAME;LIBMP4;LIBOGGVO;LIBXDAAP"
 				TitleID="0xFACE008"
@@ -118,7 +117,6 @@
 				Name="XboxImageTool"
 				StackSize="65536"
 				IncludeDebugInfo="TRUE"
-				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoLibWarn="TRUE"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
@@ -177,7 +175,6 @@
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x80000"
 				IncludeDebugInfo="TRUE"
-				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoLibWarn="TRUE"
 				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON"
 				TitleID="0xFACE008"
@@ -248,7 +245,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x80000"
-				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBLAME;LIBOGGVO"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
@@ -303,7 +299,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			<Tool
 				Name="XboxImageTool"
 				StackSize="65536"
-				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -364,7 +359,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x80000"
-				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
@@ -420,7 +414,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x60000"
 				IncludeDebugInfo="TRUE"
-				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoLibWarn="TRUE"
 				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP"
 				TitleID="0xFACE008"
@@ -1206,10 +1199,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1843,65 +1836,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\cores\mplayer\xbox_video.cpp">
 				</File>
-				<File
-					RelativePath=".\xbmc\cores\mplayer\YV12toRGB.pxl">
-					<FileConfiguration
-						Name="Debug|Xbox">
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="$(InputFileName)"
-							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
-							Outputs="$(TargetDir)$(InputName).xpu"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile|Xbox">
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="$(InputFileName)"
-							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
-							Outputs="$(TargetDir)$(InputName).xpu"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile_FastCap|Xbox">
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="$(InputFileName)"
-							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
-							Outputs="$(TargetDir)$(InputName).xpu"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Xbox">
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="$(InputFileName)"
-							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
-							Outputs="$(TargetDir)$(InputName).xpu"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release_LTCG|Xbox">
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="$(InputFileName)"
-							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
-							Outputs="$(TargetDir)$(InputName).xpu"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release Xbox  Debugging|Xbox">
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="$(InputFileName)"
-							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
-							Outputs="$(TargetDir)$(InputName).xpu"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug Xbox No Memory Tracking|Xbox">
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="$(InputFileName)"
-							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
-							Outputs="$(TargetDir)$(InputName).xpu"/>
-					</FileConfiguration>
-				</File>
 			</Filter>
 			<Filter
 				Name="sidplayer"
@@ -1916,10 +1850,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
