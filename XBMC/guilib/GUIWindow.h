@@ -55,6 +55,8 @@ public:
 	DWORD					GetPreviousWindowID(void) const;
 	DWORD					GetWidth() { return m_dwWidth; };
 	DWORD					GetHeight() { return m_dwHeight; };
+	DWORD					GetPosX() { return m_dwPosX; };
+	DWORD					GetPosY() { return m_dwPosY; };
 	const CGUIControl*		GetControl(int iControl) const;
 	void					ClearAll();
 	int						GetFocusedControl() const;

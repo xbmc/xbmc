@@ -964,10 +964,16 @@ void	CGUIWindowOSD::ResetAllControls()
 {
   //reset all
 
+	int iResolution  =g_graphicsContext.GetVideoResolution();
+	int iBottom = g_settings.m_ResInfo[iResolution].Overscan.top + g_settings.m_ResInfo[iResolution].Overscan.height;
+
+	// ensure valid calibration
+	if (m_vecPositions[0].y + g_settings.m_ResInfo[iResolution].iOSDYOffset > iBottom)
+		g_settings.m_ResInfo[iResolution].iOSDYOffset = iBottom - m_vecPositions[0].y - 2;
+
   
   bool bOffScreen(false);
-  int iResolution  =g_graphicsContext.GetVideoResolution();
-  int iCalibrationY=g_settings.m_ResInfo[iResolution].iOSDYOffset;
+	int iCalibrationY=g_settings.m_ResInfo[iResolution].iOSDYOffset;
   int iTop = g_settings.m_ResInfo[iResolution].Overscan.top;
   int iMin=0;
   
@@ -976,7 +982,6 @@ void	CGUIWindowOSD::ResetAllControls()
     CPosition pos=m_vecPositions[i];
     pos.pControl->SetPosition(pos.x,pos.y+iCalibrationY);
   }
-  int dummy=10;
   for (int i=0;i < (int)m_vecControls.size(); ++i)
   {
     CGUIControl* pControl= m_vecControls[i];
