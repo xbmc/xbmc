@@ -225,8 +225,10 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 		{
       m_bOSDVisible=false;
 			CGUIWindow::OnMessage(message);
-			g_graphicsContext.Lock();
+      g_graphicsContext.Lock();
+			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 			g_graphicsContext.SetFullScreenVideo( true );
+			g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 			g_graphicsContext.Unlock();
 			if (g_application.m_pPlayer)
 				g_application.m_pPlayer->Update();
@@ -255,6 +257,18 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 void CGUIWindowFullScreen::Render()
 {
 	return;
+}
+
+bool CGUIWindowFullScreen::NeedRenderFullScreen()
+{
+	if (g_application.m_pPlayer) 
+  {
+    if (g_application.m_pPlayer->IsPaused() )return true;
+  }
+  if (m_bShowStatus) return true;
+  if (m_bShowInfo) return true;
+  if (m_bOSDVisible) return true;
+  return false;
 }
 
 void CGUIWindowFullScreen::RenderFullScreen()

@@ -739,6 +739,15 @@ bool CApplication::IsPlayingVideo() const
 	return false;
 }
 
+bool CApplication::NeedRenderFullScreen()
+{
+	if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+	{
+		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
+		return pFSWin->NeedRenderFullScreen();
+	}
+  return false;
+}
 void CApplication::RenderFullScreen()
 {
 //	OutputDebugString("RenderFullScreen ...\n");
