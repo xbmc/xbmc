@@ -43,7 +43,7 @@
 
 #include "fstrcmp.h"
 
-
+#pragma warning( disable : 4244 ) 
 /*
  * Data on one input string being compared.
  */
