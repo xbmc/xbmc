@@ -1601,6 +1601,30 @@
      <id>485</id>
      <value>Radera album</value>
    </string>
+   <string>
+     <id>486</id>
+     <value>Repetera</value>
+   </string>
+   <string>
+     <id>487</id>
+     <value>Repetera en</value>
+   </string>
+   <string>
+     <id>488</id>
+     <value>Repetera mappens playlist</value>
+   </string>
+   <string>
+     <id>489</id>
+     <value>Använd playlist i låtarna</value>
+   </string>
+   <string>
+     <id>490</id>
+     <value>Auto switcha lista och ikoner i låtar</value>
+   </string>
+   <string>
+     <id>491</id>
+     <value>Använd stora ikoner</value>
+   </string>
 
 
  <string><id>10000</id><value>Start</value></string>
