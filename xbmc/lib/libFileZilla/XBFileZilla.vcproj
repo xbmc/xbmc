@@ -20,18 +20,17 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="1"
-				GlobalOptimizations="FALSE"
-				InlineFunctionExpansion="0"
+				Optimization="3"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="2"
-				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories=".,$(XDK)\samples\xbox\common\include,source,modified"
 				PreprocessorDefinitions="WIN32;_XBOX;NDEBUG;NOLAYERS"
 				StringPooling="FALSE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
-				EnableEnhancedInstructionSet="0"
+				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Release/XBFileZilla.pch"
@@ -40,7 +39,7 @@
 				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
-				CompileAs="2"/>
+				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -67,13 +66,7 @@
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories=".,$(XDK)\samples\xbox\common\include,source,modified"
 				PreprocessorDefinitions="WIN32;_XBOX;_DEBUG;NOLAYERS"
-				MinimalRebuild="TRUE"
-				BasicRuntimeChecks="3"
-				SmallerTypeCheck="TRUE"
 				RuntimeLibrary="1"
-				BufferSecurityCheck="TRUE"
-				EnableEnhancedInstructionSet="1"
-				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/XBFileZilla.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -83,7 +76,7 @@
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="3"
-				CompileAs="2"/>
+				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
