@@ -83,6 +83,8 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUI
     }
     else
     {
+      pImage->SetWidth(64);
+      pImage->SetHeight(64);
       int xOff=(64-pImage->GetWidth())/2;
       int yOff=(64-pImage->GetHeight())/2;
       pImage->SetPosition(4+dwPosX+xOff,10+dwPosY+yOff);
