@@ -376,10 +376,10 @@ bool CMPlayer::openfile(const CStdString& strFile)
     iCacheSize=8192;
   }
   
-  // for audio files we dont need a cache
+  // for audio files we use 256kbyte cache
   if (CUtil::IsAudio(strFile) && !CUtil::IsVideo(strFile) )
   {
-    iCacheSize=0;
+    iCacheSize=256;
   }
   if (strFile.Find("dvd://") >=0 )
   {
