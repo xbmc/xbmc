@@ -303,6 +303,9 @@ public:
   VECSHARES					m_vecMyVideoShares;
   VECFILETYPEICONS	m_vecIcons;
 	RESOLUTION_INFO			m_ResInfo[10];
+  int               m_iBrightness;
+  int               m_iContrast;
+  int               m_iGamma;
 protected:
 	void GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue);
 	void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);

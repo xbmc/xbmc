@@ -44,6 +44,15 @@
 #define OSD_NOCACHE 702
 #define OSD_ADJFRAMERATE 703
 
+#define OSD_BRIGHTNESS 704
+#define OSD_BRIGHTNESSLABEL 752
+
+#define OSD_CONTRAST 705
+#define OSD_CONTRASTLABEL 753
+
+#define OSD_GAMMA 706
+#define OSD_GAMMALABEL 754
+
 #define OSD_SUBTITLE_DELAY 800
 #define OSD_SUBTITLE_DELAY_LABEL 850
 #define OSD_SUBTITLE_ONOFF 801
@@ -313,7 +322,15 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 				if (m_bSubMenuOn)						// is sub menu on?
 				{
 					// set the controls values
+          float fBrightNess=(float)g_settings.m_iBrightness;
+          float fContrast=(float)g_settings.m_iContrast;
+          float fGamma=(float)g_settings.m_iGamma;
 					SetSliderValue(0.0f, 100.0f, (float) g_application.m_pPlayer->GetPercentage(), OSD_VIDEOPOS);
+          
+          SetSliderValue(0.0f, 100.0f, (float) fBrightNess, OSD_BRIGHTNESS);
+          SetSliderValue(0.0f, 100.0f, (float) fContrast, OSD_CONTRAST);
+          SetSliderValue(0.0f, 100.0f, (float) fGamma, OSD_GAMMA);
+
 					SetCheckmarkValue(g_stSettings.m_bNonInterleaved, OSD_NONINTERLEAVED);
 					SetCheckmarkValue(g_stSettings.m_bNoCache, OSD_NOCACHE);
 					SetCheckmarkValue(g_stSettings.m_bFrameRateConversions, OSD_ADJFRAMERATE);
@@ -324,7 +341,12 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 					SET_CONTROL_VISIBLE(GetID(), OSD_NOCACHE);
 					SET_CONTROL_VISIBLE(GetID(), OSD_ADJFRAMERATE);
 					SET_CONTROL_VISIBLE(GetID(), OSD_VIDEOPOS_LABEL);
-
+					SET_CONTROL_VISIBLE(GetID(), OSD_BRIGHTNESS);
+					SET_CONTROL_VISIBLE(GetID(), OSD_BRIGHTNESSLABEL);
+					SET_CONTROL_VISIBLE(GetID(), OSD_CONTRAST);
+					SET_CONTROL_VISIBLE(GetID(), OSD_CONTRASTLABEL);
+					SET_CONTROL_VISIBLE(GetID(), OSD_GAMMA);
+					SET_CONTROL_VISIBLE(GetID(), OSD_GAMMALABEL);
 					SET_CONTROL_FOCUS(GetID(), OSD_VIDEOPOS, 0);	// set focus to the first control in our group
 				}
 			}
@@ -464,6 +486,16 @@ void CGUIWindowOSD::ToggleSubMenu(DWORD iButtonID, DWORD iBackID)
 	SET_CONTROL_HIDDEN(GetID(), OSD_NOCACHE);
 	SET_CONTROL_HIDDEN(GetID(), OSD_ADJFRAMERATE);
 	SET_CONTROL_HIDDEN(GetID(), OSD_AVDELAY_LABEL);
+  
+	SET_CONTROL_HIDDEN(GetID(), OSD_BRIGHTNESS);
+	SET_CONTROL_HIDDEN(GetID(), OSD_BRIGHTNESSLABEL);
+  
+	SET_CONTROL_HIDDEN(GetID(), OSD_GAMMA);
+	SET_CONTROL_HIDDEN(GetID(), OSD_GAMMALABEL);
+  
+	SET_CONTROL_HIDDEN(GetID(), OSD_CONTRAST);
+	SET_CONTROL_HIDDEN(GetID(), OSD_CONTRASTLABEL);
+
 	SET_CONTROL_HIDDEN(GetID(), OSD_CREATEBOOKMARK);
 	SET_CONTROL_HIDDEN(GetID(), OSD_BOOKMARKS_LIST);
 	SET_CONTROL_HIDDEN(GetID(), OSD_BOOKMARKS_LIST_LABEL);
@@ -549,6 +581,38 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID)
 			{
 				// Set mplayer's seek position to the percentage requested by the user
 				g_application.m_pPlayer->SeekPercentage(pControl->GetPercentage());
+			}
+		}
+    case OSD_BRIGHTNESS:
+		{
+			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
+			if (pControl)
+			{
+				// Set mplayer's seek position to the percentage requested by the user
+				g_settings.m_iBrightness=pControl->GetPercentage();
+        CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
+			}
+		}
+		break;
+    case OSD_CONTRAST:
+		{
+			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
+			if (pControl)
+			{
+				// Set mplayer's seek position to the percentage requested by the user
+				g_settings.m_iContrast=pControl->GetPercentage();
+        CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
+			}
+		}
+		break;
+    case OSD_GAMMA:
+		{
+			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
+			if (pControl)
+			{
+				// Set mplayer's seek position to the percentage requested by the user
+				g_settings.m_iGamma=pControl->GetPercentage();
+        CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness, g_settings.m_iContrast, g_settings.m_iGamma, true);
 			}
 		}
 		break;

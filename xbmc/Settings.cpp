@@ -12,6 +12,7 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
+  
 
 	g_stSettings.m_bLCDUsed=false;
 	g_stSettings.m_iLCDMode=0;

@@ -110,5 +110,6 @@ public:
   static CStdString GetNextFilename(const char* fn_template, int max);
   static void TakeScreenshot();
 	static void SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate);
+  static void SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, int iGamma, bool bImmediate);
 	static void FlashScreen(bool bImmediate, bool bOn);
 };
