@@ -284,6 +284,7 @@ private:
 	CAlbum		GetAlbumFromDataset();
 	bool		CleanupSongs();
 	bool		CleanupPaths();
+	bool		CleanupThumbs();
 	bool		CleanupAlbums();
 	bool		CleanupArtists();
 	bool		CleanupGenres();

@@ -2448,6 +2448,45 @@ bool CMusicDatabase::CleanupPaths()
 	return false;
 }
 
+bool CMusicDatabase::CleanupThumbs()
+{
+	try
+	{
+		// needs to be done AFTER the songs have been cleaned up.
+		// we can happily delete any thumb that has no reference to a song
+		CStdString strSQL = "select * from thumb where idThumb not in (select distinct idThumb from song)";
+		if (!m_pDS->query(strSQL.c_str())) return false;
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound==0)
+		{
+			m_pDS->close();
+      return true;
+		}
+    // get albums dir
+    CStdString strThumbsDir;
+    strThumbsDir.Format("%s\\thumbs\\",g_stSettings.m_szAlbumDirectory);
+    while (!m_pDS->eof())
+    {
+      CStdString strThumb = m_pDS->fv("strThumb").get_asString();
+      if (strThumb.Left(strThumbsDir.size()) == strThumbsDir)
+      { // only delete cached thumbs
+        ::DeleteFile(strThumb.c_str());
+      }
+      m_pDS->next();
+    }
+    // now we can delete
+    m_pDS->close();
+    strSQL = "delete from thumb where idThumb not in (select distinct idThumb from song)";
+		m_pDS->exec(strSQL.c_str());
+		return true;
+	}
+	catch(...)
+	{
+		CLog::Log(LOGERROR, "Exception in CMusicDatabase::CleanupThumbs() or was aborted");
+	}
+	return false;
+}
+
 bool CMusicDatabase::CleanupArtists()
 {
 	try
@@ -2504,6 +2543,7 @@ bool CMusicDatabase::CleanupAlbumsArtistsGenres(const CStdString &strPathIds)
 	if (!CleanupArtists()) return false;
 	if (!CleanupGenres()) return false;
 	if (!CleanupPaths()) return false;
+  if (!CleanupThumbs()) return false;
 	return true;
 }
 
@@ -2536,7 +2576,7 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress *pDlgProgress)
 	pDlgProgress->SetLine(1, 324);
 	pDlgProgress->SetPercentage(40);
 	pDlgProgress->Progress();
-	if (!CleanupPaths())
+	if (!CleanupPaths() || !CleanupThumbs())
 	{
 		RollbackTransaction();
 		return ERROR_REORG_PATH;
