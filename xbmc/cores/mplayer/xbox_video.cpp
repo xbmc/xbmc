@@ -50,6 +50,7 @@ bool												m_bFlip=false;
 static int									m_iDeviceWidth;
 static int									m_iDeviceHeight;
 bool												m_bFullScreen=false;
+bool												m_bPal60Allowed=true;
 float												m_fScreenCompensationX=1.0f;
 float												m_fScreenCompensationY=1.0f;
 
@@ -86,7 +87,7 @@ void restore_resolution()
 }
 
 //********************************************************************************************************
-void choose_best_resolution()
+void choose_best_resolution(bool bPal60Allowed)
 {
 	if (!g_graphicsContext.IsFullScreenVideo() )
 	{
@@ -105,7 +106,7 @@ void choose_best_resolution()
 	bool bPal60=false;
 	bool bWideScreen=false;
 	if (params.Flags&D3DPRESENTFLAG_WIDESCREEN) bWideScreen=true;
-	if ( (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz) && !bWideScreen )
+	if (bPal60Allowed&& (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz) && !bWideScreen )
 	{
 		bPal60=true;
 	}
@@ -556,7 +557,7 @@ static void video_flip_page(void)
 	{
 		m_bFullScreen=g_graphicsContext.IsFullScreenVideo();
 		g_graphicsContext.Lock();
-		if (m_bFullScreen) choose_best_resolution();
+		if (m_bFullScreen) choose_best_resolution(m_bPal60Allowed);
 		else restore_resolution();
 		g_graphicsContext.Unlock();
 	}
@@ -634,6 +635,16 @@ static unsigned int put_image(mp_image_t *mpi)
 */
 static unsigned int video_config(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format)
 {
+	char strFourCC[12];
+	char strVideoCodec[256];
+	float fps;
+	unsigned int iWidth,iHeight;
+	long tooearly, toolate;
+	mplayer_GetVideoInfo(strFourCC,strVideoCodec, &fps, &iWidth,&iHeight, &tooearly, &toolate);
+	if (fps ==25.0f)
+	{
+		m_bPal60Allowed=false;
+	}
 	OutputDebugString("video_config\n");
   fs = options & 0x01;
   image_format	 =  format;
@@ -643,7 +654,7 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
   d_image_height = d_height;
 
 	m_bFullScreen=g_graphicsContext.IsFullScreenVideo();
-	choose_best_resolution();
+	choose_best_resolution(m_bPal60Allowed);
 
 	aspect_save_orig(image_width,image_height);
   aspect_save_prescale(d_image_width,d_image_height);
