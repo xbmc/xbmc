@@ -26,13 +26,10 @@
     <id>5</id>
     <value>Einstellungen</value>
   </string>
-  <string>
-    <id>6</id>
-    <value>XBOX Media Center 1.0.0</value>
-  </string>
+
   <string>
     <id>7</id>
-    <value>Explorer</value>
+    <value>Eigene Dateien</value>
   </string>
   <string>
     <id>8</id>
@@ -198,27 +195,27 @@
   </string>   
   <string>
     <id>120</id>
-    <value>Kopieren best.</value>
+    <value>Kopieren</value>
   </string>   
   <string>
     <id>121</id>
-    <value>Verschieben best.</value>
+    <value>Verschieben</value>
   </string>   
   <string>
     <id>122</id>
-    <value>Löschen best.</value>
+    <value>Löschen</value>
   </string>   
   <string>
     <id>123</id>
-    <value>Wirklich kopieren?</value>
+    <value>Datei kopieren?</value>
   </string>   
   <string>
     <id>124</id>
-    <value>Wirklich verschieben ?</value>
+    <value>Datei verschieben?</value>
   </string>   
   <string>
     <id>125</id>
-    <value>Wirklich löschen?</value>
+    <value>Datei löschen?</value>
   </string>  
   <string>
     <id>126</id>
@@ -266,7 +263,7 @@
   </string>  
   <string>
     <id>137</id>
-    <value>Suchen</value>
+    <value>Internetsuche</value>
   </string>  
   <string>
     <id>138</id>
@@ -382,7 +379,7 @@
   </string> 
   <string>
     <id>166</id>
-    <value>Darstellung:</value>
+    <value>Darstellung</value>
   </string> 
   <string>
     <id>167</id>
@@ -394,7 +391,7 @@
   </string> 
   <string>
     <id>169</id>
-    <value>Auflösung:</value>
+    <value>Auflösung</value>
   </string> 
   <string>
     <id>170</id>
@@ -498,7 +495,7 @@
   </string> 
   <string>
     <id>195</id>
-    <value>Keinen IMDB Eintrag gefunden!</value>
+    <value>Keinen Datenbankeintrag gefunden!</value>
   </string> 
   <string>
     <id>196</id>
@@ -506,7 +503,7 @@
   </string> 
   <string>
     <id>197</id>
-    <value>IMDB Info abfragen</value>
+    <value>Datenbank durchsuchend..</value>
   </string> 
   <string>
     <id>198</id>
@@ -538,7 +535,7 @@
   </string> 
   <string>
     <id>205</id>
-    <value>Abstimmung:</value>
+    <value>Votum:</value>
   </string> 
   <string>
     <id>206</id>
@@ -602,7 +599,7 @@
   </string> 
   <string>
     <id>221</id>
-    <value>Netzwerk ist nicht verbunden</value>
+    <value>Netzwerk: Verbindung nicht möglich</value>
   </string> 
   <string>
     <id>222</id>
@@ -634,7 +631,7 @@
   </string> 
   <string>
     <id>229</id>
-    <value>HD Abschaltzeit (min)</value>
+    <value>Festplatten Abschaltzeit</value>
   </string> 
   <string>
     <id>230</id>
@@ -718,7 +715,7 @@
   </string>
   <string>
     <id>251</id>
-    <value>Wähle Ziel-Ordner</value>
+    <value>Wähle einen Ziel-Ordner</value>
   </string>
   <string>
     <id>252</id>
@@ -750,7 +747,7 @@
   </string>
   <string>
     <id>259</id>
-    <value>Öffne</value>
+    <value>Initialisiere</value>
   </string>
   <string>
     <id>260</id>
@@ -770,7 +767,7 @@
   </string>
   <string>
     <id>264</id>
-    <value>Aufnehmen</value>
+    <value>Aufnahme</value>
   </string>
   <string>
     <id>265</id>
@@ -862,7 +859,7 @@
   </string>
   <string>
     <id>287</id>
-    <value>Untertitel</value>
+    <value>Untertitelmenü</value>
   </string>
   <string>
     <id>288</id>
@@ -1182,7 +1179,7 @@
   </string>   
   <string>
     <id>368</id>
-    <value>IMDB</value>
+    <value>Internetsuche</value>
   </string>   
   <string>
     <id>369</id>
@@ -1346,7 +1343,7 @@
   </string>      
   <string>
     <id>410</id>
-    <value>Öffne Weather.com</value>
+    <value>Initialisiere Weather.com</value>
   </string>       
   <string>
     <id>411</id>
@@ -1430,7 +1427,7 @@
   </string>  
   <string>
     <id>431</id>
-    <value>kein Speicher</value>
+    <value>kein Cache</value>
   </string>  
   <string>
     <id>432</id>
@@ -1442,7 +1439,7 @@
   </string>  
   <string>
     <id>434</id>
-    <value>den Film?</value>
+    <value>Film löschen?</value>
   </string> 
   <string>
     <id>435</id>
@@ -1678,7 +1675,7 @@
   </string>
   <string>
     <id>492</id>
-    <value>Untertitel vergrößern</value>
+    <value>Untertitel</value>
   </string>
   <string>
     <id>493</id>
@@ -1893,7 +1890,7 @@
 	</string>
 	<string>
 		<id>712</id>
-		<value>Invalid port specified. Value must be between 1 and 65535.</value>
+		<value>Ungültiger Port wurde festgelegt. Der Wert muss zwischen 1 und 65535 liegen.</value>
 	</string>
 	<string>
 		<id>713</id>
@@ -1901,7 +1898,7 @@
 	</string>	
 	<string>
 		<id>714</id>
-		<value>XLink Kai</value>
+		<value>XLink KAI</value>
 	</string>	
 	<string>
 		<id>715</id>
@@ -1949,7 +1946,7 @@
 	</string>
 	<string>
 		<id>726</id>
-		<value>Änderungen nicht gespeichert. Weiter ohne speichern?</value>
+		<value>Änderungen nicht gespeichert.Fortfahren?</value>
 	</string>
 	<string>
 		<id>727</id>
@@ -1969,7 +1966,7 @@
 	</string>	
 	<string>
 		<id>731</id>
-		<value>Time Server Host</value>
+		<value>Zeit Server Host</value>
 	</string>
 	<string>
 		<id>732</id>
@@ -1981,20 +1978,20 @@
 	</string>
 	<string>
 		<id>734</id>
-		<value>Nicht möglich</value>
+		<value>ungesetzt</value>
 	</string>
 
 	<string>
 		<id>735</id>
-		<value>Zeichentabelle:</value>
+		<value>Symbol</value>
 	</string>	
 	<string>
 		<id>736</id>
-		<value>Stil:</value>
+		<value>Stil</value>
 	</string>	
 	<string>
 		<id>737</id>
-		<value>Farbe:</value>
+		<value>Farbe</value>
 	</string>
 	<string>
 		<id>738</id>
@@ -2032,14 +2029,42 @@
 		<id>746</id>
 		<value>Wechsle zu Dateienansicht</value>
 	</string>
+	<string>
+		<id>747</id>
+		<value>Nicht genug Speicher um das Bilder zu laden</value>
+	</string>
+         <string> 
+                   <id>748</id> 
+                   <value>Pfad ändern</value> 
+           </string> 
+           <string> 
+                   <id>749</id> 
+                   <value>Freigabe hinzufügen</value> 
+           </string> 
+           <string> 
+                   <id>750</id> 
+                   <value>Sind sie sicher?</value> 
+           </string> 
+           <string> 
+                   <id>751</id> 
+                   <value>Freigabe löschen</value> 
+           </string> 
+           <string> 
+                   <id>752</id> 
+                   <value>FreigabePfad ändern</value> 
+           </string> 
+           <string> 
+                   <id>753</id> 
+                   <value>FreigabeName ändern</value> 
+           </string> 
 
   <string>	
     <id>998</id>
-    <value>XLink KAI</value>
+    <value>Online spielen</value>
   </string>
   <string>
     <id>999</id>
-    <value>Online Spielen</value>
+    <value>Online spielen</value>
   </string> 
   <string>
     <id>10000</id>
