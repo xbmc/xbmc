@@ -26,7 +26,6 @@
 CGUIWindowMusicInfo::CGUIWindowMusicInfo(void)
 :CGUIDialog(0)
 {
-	m_pTexture=NULL;
 }
 
 CGUIWindowMusicInfo::~CGUIWindowMusicInfo(void)
@@ -51,11 +50,6 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_DEINIT:
 		{
 			m_pAlbum=NULL;
-			if (m_pTexture)
-			{
-				m_pTexture->Release();
-				m_pTexture=NULL;
-			}
 			g_application.EnableOverlay();
 		}
 		break;
@@ -64,7 +58,6 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
     {
 			CGUIWindow::OnMessage(message);
 			g_application.DisableOverlay();
-			m_pTexture=NULL;
 			m_bViewReview=true;
 			m_bRefresh=false;
 			Refresh();
@@ -188,31 +181,11 @@ void CGUIWindowMusicInfo::SetLabel(int iControl, const CStdString& strLabel)
 void  CGUIWindowMusicInfo::Render()
 {
 	CGUIDialog::Render();
-  if (!m_pTexture) return;
-
-	const CGUIControl* pControl=GetControl(CONTROL_IMAGE);
-  if (pControl)
-  {
-	  float x=(float)pControl->GetXPosition();
-	  float y=(float)pControl->GetYPosition();
-	  DWORD width=pControl->GetWidth();
-	  DWORD height=pControl->GetHeight();
-	  g_graphicsContext.Correct(x,y);
-
-	  CPicture picture;
-	  picture.RenderImage(m_pTexture,(int)x,(int)y,width,height,m_iTextureWidth,m_iTextureHeight);
-  }
 }
 
 
 void CGUIWindowMusicInfo::Refresh()
 {
-	if (m_pTexture)
-	{
-		m_pTexture->Release();
-		m_pTexture=NULL;
-	}
-
 	CStdString strThumb;
 	CStdString strImage=m_pAlbum->GetImageURL();
 	CUtil::GetAlbumThumb(m_pAlbum->GetTitle()+m_pAlbum->GetAlbumPath(),strThumb);
@@ -224,13 +197,17 @@ void CGUIWindowMusicInfo::Refresh()
 		http.Download(strImage,strThumb);
 	}
 
-	if (CUtil::FileExists(strThumb) )
+	if (!CUtil::FileExists(strThumb) )
 	{
-		CPicture picture;
-		m_pTexture=picture.Load(strThumb);
-		m_iTextureWidth=picture.GetWidth();
-		m_iTextureHeight=picture.GetWidth();
+    strThumb.Empty();
 	}
+  const CGUIControl* pControl=GetControl(CONTROL_IMAGE);
+  if (pControl)
+  {
+    CGUIImage* pImageControl=(CGUIImage*)pControl;
+    pImageControl->SetKeepAspectRatio(true);
+    pImageControl->SetFileName(strThumb);
+  }
 	Update();
 }
 
