@@ -89,11 +89,8 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 		//printf("send failed\n");
 		
 		char strError[128];
-		sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-		//g_dialog.SetCaption(0,"Send failed");
-		//g_dialog.SetMessage(0,m_strHostName.c_str());
-		//g_dialog.SetMessage(1,strError);
-		//g_dialog.DoModal();
+		sprintf(strError,"send failed error:%i %i\n", GetLastError(), WSAGetLastError());
+    OutputDebugString(strError);
 
 		m_socket.reset();
 		return false;
@@ -108,11 +105,8 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 		{
 			//printf("receive failed\n");
 			char strError[128];			
-			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-			//g_dialog.SetCaption(0,"Recv failed");
-			//g_dialog.SetMessage(0,m_strHostName.c_str());
-			//g_dialog.SetMessage(1,strError);
-			//g_dialog.DoModal();
+			sprintf(strError,"recv error:%i %i", GetLastError(), WSAGetLastError());
+      OutputDebugString(strError);
 			m_socket.reset();
 		}
 		lReadTotal+=lenRead;
@@ -140,6 +134,7 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 
 		if (pResult)
 		{
+      OutputDebugString("Redirected\n");
 			m_socket.reset();
 			
 			char* pNewLocation=strstr(pszBuffer,"Location: ");
@@ -151,17 +146,24 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 
 				strURL = pNewLocation;
 				delete [] pszBuffer;
+        
+        if (strstr(pNewLocation,"http:") ==NULL && strstr(pNewLocation,"HTTP:") ==NULL)
+        {
+          char szNewLocation[1024];
+          sprintf(szNewLocation,"http://%s:%i%s", m_strHostName.c_str(),m_iPort,pNewLocation);
+          strURL=szNewLocation;
+        }
+        OutputDebugString("to:");
+        OutputDebugString(strURL.c_str());
+        OutputDebugString("\n");
 				return Get(strURL, strHTML);
 			}
 
 			
 			char strError[128];
-			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-			//g_dialog.SetCaption(0,"redirect failed");
-			//g_dialog.SetMessage(0,m_strHostName.c_str());
-			//g_dialog.SetMessage(1,strError);
-			//g_dialog.DoModal();
-			delete [] pszBuffer;
+			sprintf(strError,"redirect error:%i %i\n", GetLastError(), WSAGetLastError());
+			OutputDebugString(strError);
+      delete [] pszBuffer;
 			return false;
 		}
 
@@ -576,7 +578,14 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 				pNewLocation += strlen("Location: ");
 				char* pEndLocation=strstr(pNewLocation,"\r\n");
 				*pEndLocation=0;
-				bool bResult=Download(pNewLocation, strFileName);
+        string strURL=pNewLocation;
+        if (strstr(pNewLocation,"http:") ==NULL && strstr(pNewLocation,"HTTP:") ==NULL)
+        {
+          char szNewLocation[1024];
+          sprintf(szNewLocation,"http://%s:%i%s", m_strHostName.c_str(),m_iPort,pNewLocation);
+          strURL=szNewLocation;
+        }
+				bool bResult=Download(strURL.c_str(), strFileName);
 				delete[] pszBuffer;
 				return bResult;
 			}
