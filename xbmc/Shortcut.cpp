@@ -65,21 +65,34 @@ bool CShortcut::Create(const CStdString& szPath)
 
 bool CShortcut::Save(const CStdString& strFileName)
 {
-  if (g_stSettings.m_szShortcutDirectory[0] == 0) return false;
+	if (g_stSettings.m_szShortcutDirectory[0] == 0) return false;
 
+	//	Make shortcut filename fatx compatible
 	CStdString strShort=strFileName;
 	CUtil::ShortenFileName(strShort);
 	CUtil::RemoveIllegalChars(strShort);
-  CStdString strTotalPath=g_stSettings.m_szShortcutDirectory;
-  strTotalPath+="\\";
-  strTotalPath+=strShort;
-  strTotalPath+=".cut";
+
+	CStdString strTotalPath;
+	strTotalPath.Format("%s\\%s.cut", g_stSettings.m_szShortcutDirectory, strShort.c_str());
+
+	//	Remove old file
 	::DeleteFile(strTotalPath.c_str());
-  FILE* fd=fopen(strTotalPath.c_str(), "w");
-  if (!fd) return false;
-  fprintf(fd,"<shortcut>\r\n");
-  fprintf(fd,"  <path>%s</path>\r\n",m_strPath.c_str());
-  fprintf(fd,"</shortcut>\r\n");
-  fclose(fd);
-  return true;
+
+	//	Create shortcut document:
+	//	<shortcut>
+	//	  <path>F:\App\default.xbe</path>
+	//	</shortcut>
+	TiXmlDocument xmlDoc;
+	TiXmlElement xmlRootElement("shortcut");
+	TiXmlNode *pRootNode = xmlDoc.InsertEndChild(xmlRootElement);
+	if (!pRootNode) return false;
+
+	TiXmlElement newElement("path");
+	TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
+	if (!pNewNode) return false;
+
+	TiXmlText value(m_strPath);
+	pNewNode->InsertEndChild(value);
+
+	return xmlDoc.SaveFile(strTotalPath);
 }
