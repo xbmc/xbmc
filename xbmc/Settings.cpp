@@ -176,8 +176,6 @@ CSettings::CSettings(void)
 	g_stSettings.m_bDetectAsIso=false;
 	g_stSettings.dwFileVersion =CONFIG_VERSION;
 	g_stSettings.m_iMyProgramsViewAsIcons=1;
-	g_stSettings.m_iMyVideoPlaylistViewAsIcons=1;
-	g_stSettings.m_bMyVideoPlaylistRepeat=true;
 	g_stSettings.m_bMyProgramsSortAscending=true;
 	strcpy(g_stSettings.szDashboard,"C:\\xboxdash.xbe");
 	strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"");
@@ -215,6 +213,10 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyMusicGenresRootSortAscending=true;
 	g_stSettings.m_bMyMusicGenresSortAscending=true;
 
+	g_stSettings.m_iMyMusicPlaylistViewAsIcons=1;
+	g_stSettings.m_bMyMusicPlaylistRepeat=true;
+	g_stSettings.m_bMyMusicPlaylistShuffle=false;
+
 	g_stSettings.m_bMyVideoSortAscending=true;
 	g_stSettings.m_bMyVideoRootSortAscending=true;
 
@@ -228,6 +230,10 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyVideoYearRootSortAscending=true;
 
 	g_stSettings.m_bMyVideoTitleSortAscending=true;
+
+	g_stSettings.m_iMyVideoPlaylistViewAsIcons=1;
+	g_stSettings.m_bMyVideoPlaylistRepeat=true;
+	g_stSettings.m_bMyVideoPlaylistShuffle=false;
 
 	g_stSettings.m_bMyFilesSourceViewAsIcons=false;
 	g_stSettings.m_bMyFilesSourceRootViewAsIcons=true;
@@ -937,6 +943,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		if (pChild)
 		{
 			GetInteger(pChild, "playlistrooticons", g_stSettings.m_iMyMusicPlaylistViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+			GetBoolean(pChild, "repeat", g_stSettings.m_bMyMusicPlaylistRepeat);
+			GetBoolean(pChild, "shuffle", g_stSettings.m_bMyMusicPlaylistShuffle);
+			
 		}
 		GetInteger(pElement, "startwindow",g_stSettings.m_iMyMusicStartWindow,WINDOW_MUSIC_FILES,WINDOW_MUSIC_FILES,WINDOW_MUSIC_TOP100);//501; view songs
 		GetBoolean(pElement, "songinfoinvis",g_stSettings.m_bMyMusicSongInfoInVis);
@@ -972,6 +981,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 
 		GetInteger(pElement, "videoplaylistviewicons", g_stSettings.m_iMyVideoPlaylistViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
 		GetBoolean(pElement, "videoplaylistrepeat",g_stSettings.m_bMyVideoPlaylistRepeat);
+		GetBoolean(pElement, "videoplaylistshuffle",g_stSettings.m_bMyVideoPlaylistShuffle);
 		GetInteger(pElement, "videoviewicons", g_stSettings.m_iMyVideoViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
 		GetInteger(pElement, "videorooticons", g_stSettings.m_iMyVideoRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
 		GetInteger(pElement, "videosortmethod",g_stSettings.m_iMyVideoSortMethod,0,0,2);
@@ -1181,6 +1191,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
 		if (!pChild) return false;
 		SetInteger(pChild, "playlistrooticons", g_stSettings.m_iMyMusicPlaylistViewAsIcons);
+		SetBoolean(pChild, "repeat", g_stSettings.m_bMyMusicPlaylistRepeat);
+		SetBoolean(pChild, "shuffle", g_stSettings.m_bMyMusicPlaylistShuffle);
 	}
 
 	SetInteger(pNode, "startwindow",g_stSettings.m_iMyMusicStartWindow);
@@ -1206,6 +1218,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 
 	SetInteger(pNode, "videoplaylistviewicons", g_stSettings.m_iMyVideoPlaylistViewAsIcons);
 	SetBoolean(pNode, "videoplaylistrepeat", g_stSettings.m_bMyVideoPlaylistRepeat);
+	SetBoolean(pNode, "videoplaylistshuffle", g_stSettings.m_bMyVideoPlaylistShuffle);
 	SetInteger(pNode, "videoviewicons", g_stSettings.m_iMyVideoViewAsIcons);
 	SetInteger(pNode, "videorooticons", g_stSettings.m_iMyVideoRootViewAsIcons);
 	SetInteger(pNode, "videosortmethod",g_stSettings.m_iMyVideoSortMethod);

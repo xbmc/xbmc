@@ -936,9 +936,11 @@ void CApplication::StartServices()
 	m_DetectDVDType.Create( false);
 
 	CLog::Log(LOGNOTICE, "initializing playlistplayer");
-	g_playlistPlayer.Repeat(PLAYLIST_MUSIC, g_guiSettings.GetBool("MyMusic.Repeat"));
+	g_playlistPlayer.Repeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat);
+	g_playlistPlayer.ShufflePlay(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
 	g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("MyMusic.Repeat"));
 	g_playlistPlayer.Repeat(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistRepeat);
+	g_playlistPlayer.ShufflePlay(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistShuffle);
 	g_playlistPlayer.Repeat(PLAYLIST_VIDEO_TEMP, false);
 
 	CLCDFactory factory;

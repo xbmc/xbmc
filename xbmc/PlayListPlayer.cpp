@@ -5,14 +5,18 @@
 #include "util.h"
 #include "GUIUserMessages.h"
 
-#define PLAYLIST_MUSIC_REPEAT						0x01
-#define PLAYLIST_MUSIC_REPEAT_ONE				0x02
-#define PLAYLIST_MUSIC_TEMP_REPEAT			0x04
-#define PLAYLIST_MUSIC_TEMP_REPEAT_ONE	0x08
-#define PLAYLIST_VIDEO_REPEAT						0x10
-#define PLAYLIST_VIDEO_REPEAT_ONE				0x20
-#define PLAYLIST_VIDEO_TEMP_REPEAT			0x40
-#define PLAYLIST_VIDEO_TEMP_REPEAT_ONE	0x80
+#define PLAYLIST_MUSIC_REPEAT						0x001
+#define PLAYLIST_MUSIC_REPEAT_ONE				0x002
+#define PLAYLIST_MUSIC_TEMP_REPEAT			0x004
+#define PLAYLIST_MUSIC_TEMP_REPEAT_ONE	0x008
+#define PLAYLIST_VIDEO_REPEAT						0x010
+#define PLAYLIST_VIDEO_REPEAT_ONE				0x020
+#define PLAYLIST_VIDEO_TEMP_REPEAT			0x040
+#define PLAYLIST_VIDEO_TEMP_REPEAT_ONE	0x080
+#define PLAYLIST_MUSIC_SHUFFLE					0x100
+#define PLAYLIST_MUSIC_TEMP_SHUFFLE			0x200
+#define PLAYLIST_VIDEO_SHUFFLE					0x400
+#define PLAYLIST_VIDEO_TEMP_SHUFFLE			0x800
 
 using namespace PLAYLIST;
 
@@ -24,7 +28,7 @@ CPlayListPlayer::CPlayListPlayer(void)
 	m_bChanged=false;
 	m_iEntriesNotFound=0;
 	m_iCurrentPlayList=PLAYLIST_NONE;
-	m_iRepeatOptions=0;
+	m_iOptions=0;
 }
 
 CPlayListPlayer::~CPlayListPlayer(void)
@@ -66,8 +70,16 @@ void CPlayListPlayer::PlayNext(bool bAutoPlay)
 	if (playlist.size() <= 0) return;
 	int iSong=m_iCurrentSong;
 
-	if (!RepeatedOne(m_iCurrentPlayList))
-		iSong++;
+	if (ShuffledPlay(m_iCurrentPlayList))
+	{
+		while (iSong==m_iCurrentSong)
+			iSong=NextShuffleItem();
+	}
+	else
+	{
+		if (!RepeatedOne(m_iCurrentPlayList))
+			iSong++;
+	}
 
 	if (iSong >= playlist.size() )
   {
@@ -104,8 +116,16 @@ void CPlayListPlayer::PlayPrevious()
 	if (playlist.size() <= 0) return;
 	int iSong=m_iCurrentSong;
 
-	if (!RepeatedOne(m_iCurrentPlayList))
-		iSong--;
+	if (ShuffledPlay(m_iCurrentPlayList))
+	{
+		while (iSong==m_iCurrentSong)
+			iSong=NextShuffleItem();
+	}
+	else
+	{
+		if (!RepeatedOne(m_iCurrentPlayList))
+			iSong--;
+	}
 
 	if (iSong < 0)
 		iSong=playlist.size()-1;
@@ -288,9 +308,9 @@ void CPlayListPlayer::Repeat(int iPlaylist, bool bYesNo)
 		return;
 
 	if (bYesNo)
-		m_iRepeatOptions|=iOption;
+		m_iOptions|=iOption;
 	else
-		m_iRepeatOptions&=~iOption;
+		m_iOptions&=~iOption;
 }
 
 /// \brief Returns \e true if iPlaylist is repeated
@@ -300,19 +320,19 @@ bool CPlayListPlayer::Repeated(int iPlaylist)
 	switch (iPlaylist)
 	{
 	case PLAYLIST_MUSIC:
-		if ((m_iRepeatOptions & PLAYLIST_MUSIC_REPEAT))
+		if ((m_iOptions & PLAYLIST_MUSIC_REPEAT))
 				return true;
 		break;
 	case PLAYLIST_MUSIC_TEMP:
-		if ((m_iRepeatOptions & PLAYLIST_MUSIC_TEMP_REPEAT))
+		if ((m_iOptions & PLAYLIST_MUSIC_TEMP_REPEAT))
 				return true;
 		break;
 	case PLAYLIST_VIDEO:
-		if ((m_iRepeatOptions & PLAYLIST_VIDEO_REPEAT))
+		if ((m_iOptions & PLAYLIST_VIDEO_REPEAT))
 				return true;
 		break;
 	case PLAYLIST_VIDEO_TEMP:
-		if ((m_iRepeatOptions & PLAYLIST_VIDEO_TEMP_REPEAT))
+		if ((m_iOptions & PLAYLIST_VIDEO_TEMP_REPEAT))
 				return true;
 		break;
 	default:
@@ -350,9 +370,9 @@ void CPlayListPlayer::RepeatOne(int iPlaylist, bool bYesNo)
 		return;
 
 	if (bYesNo)
-		m_iRepeatOptions|=iOption;
+		m_iOptions|=iOption;
 	else
-		m_iRepeatOptions&=~iOption;
+		m_iOptions&=~iOption;
 }
 
 /// \brief Returns \e true if iPlaylist repeats one song 
@@ -362,19 +382,19 @@ bool CPlayListPlayer::RepeatedOne(int iPlaylist)
 	switch (iPlaylist)
 	{
 	case PLAYLIST_MUSIC:
-		if ((m_iRepeatOptions & PLAYLIST_MUSIC_REPEAT_ONE))
+		if ((m_iOptions & PLAYLIST_MUSIC_REPEAT_ONE))
 				return true;
 		break;
 	case PLAYLIST_MUSIC_TEMP:
-		if ((m_iRepeatOptions & PLAYLIST_MUSIC_TEMP_REPEAT_ONE))
+		if ((m_iOptions & PLAYLIST_MUSIC_TEMP_REPEAT_ONE))
 				return true;
 		break;
 	case PLAYLIST_VIDEO:
-		if ((m_iRepeatOptions & PLAYLIST_VIDEO_REPEAT_ONE))
+		if ((m_iOptions & PLAYLIST_VIDEO_REPEAT_ONE))
 				return true;
 		break;
 	case PLAYLIST_VIDEO_TEMP:
-		if ((m_iRepeatOptions & PLAYLIST_VIDEO_TEMP_REPEAT_ONE))
+		if ((m_iOptions & PLAYLIST_VIDEO_TEMP_REPEAT_ONE))
 				return true;
 		break;
 	default:
@@ -382,4 +402,77 @@ bool CPlayListPlayer::RepeatedOne(int iPlaylist)
 	}
 
 	return false;
+}
+
+/// \brief Shuffle play the current playlist
+///	\param bYesNo To Enable shuffle play, set to \e true
+void CPlayListPlayer::ShufflePlay(int iPlaylist, bool bYesNo)
+{
+	int iOption=-1;
+	switch (iPlaylist)
+	{
+	case PLAYLIST_MUSIC:
+		iOption=PLAYLIST_MUSIC_SHUFFLE;
+		break;
+	case PLAYLIST_MUSIC_TEMP:
+		iOption=PLAYLIST_MUSIC_TEMP_SHUFFLE;
+		break;
+	case PLAYLIST_VIDEO:
+		iOption=PLAYLIST_VIDEO_SHUFFLE;
+		break;
+	case PLAYLIST_VIDEO_TEMP:
+		iOption=PLAYLIST_VIDEO_TEMP_SHUFFLE;
+		break;
+	default:
+		break;
+	}
+
+	if (iOption<0)
+		return;
+
+	if (bYesNo)
+		m_iOptions|=iOption;
+	else
+		m_iOptions&=~iOption;
+}
+
+/// \brief Shuffle play the current playlist
+///	\param bYesNo To Enable shuffle play, set to \e true
+bool CPlayListPlayer::ShuffledPlay(int iPlaylist)
+{
+	switch (iPlaylist)
+	{
+	case PLAYLIST_MUSIC:
+		if ((m_iOptions & PLAYLIST_MUSIC_SHUFFLE))
+				return true;
+		break;
+	case PLAYLIST_MUSIC_TEMP:
+		if ((m_iOptions & PLAYLIST_MUSIC_TEMP_SHUFFLE))
+				return true;
+		break;
+	case PLAYLIST_VIDEO:
+		if ((m_iOptions & PLAYLIST_VIDEO_SHUFFLE))
+				return true;
+		break;
+	case PLAYLIST_VIDEO_TEMP:
+		if ((m_iOptions & PLAYLIST_VIDEO_TEMP_SHUFFLE))
+				return true;
+		break;
+	default:
+		break;
+	}
+
+	return false;
+}
+
+int CPlayListPlayer::NextShuffleItem()
+{
+	srand( timeGetTime() );
+
+	CPlayList& playlist=GetPlaylist(GetCurrentPlaylist());
+	int nItemCount = playlist.size();
+	if (nItemCount<=0)
+		return -1;
+
+	return rand() % nItemCount;
 }
