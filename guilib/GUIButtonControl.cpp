@@ -104,6 +104,13 @@ bool CGUIButtonControl::OnMessage(CGUIMessage& message)
   return false;
 }
 
+void CGUIButtonControl::PreAllocResources()
+{
+	CGUIControl::PreAllocResources();
+	m_imgFocus.PreAllocResources();
+	m_imgNoFocus.PreAllocResources();
+}
+
 void CGUIButtonControl::AllocResources()
 {
   CGUIControl::AllocResources();

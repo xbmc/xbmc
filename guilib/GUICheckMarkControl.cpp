@@ -97,6 +97,13 @@ bool CGUICheckMarkControl::OnMessage(CGUIMessage& message)
   return false;
 }
 
+void CGUICheckMarkControl::PreAllocResources()
+{
+	CGUIControl::PreAllocResources();
+	m_imgCheckMark.PreAllocResources();
+	m_imgCheckMarkNoFocus.PreAllocResources();
+}
+
 void CGUICheckMarkControl::AllocResources()
 {
   CGUIControl::AllocResources();

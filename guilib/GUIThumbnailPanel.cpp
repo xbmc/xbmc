@@ -375,6 +375,15 @@ bool CGUIThumbnailPanel::OnMessage(CGUIMessage& message)
 
 }
 
+void CGUIThumbnailPanel::PreAllocResources()
+{
+	if (!m_pFont) return;
+	CGUIControl::PreAllocResources();
+	m_upDown.PreAllocResources();
+	m_imgFolder.PreAllocResources();
+	m_imgFolderFocus.PreAllocResources();
+}
+
 void CGUIThumbnailPanel::AllocResources()
 {
   if (!m_pFont) return;
