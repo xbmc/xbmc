@@ -20,7 +20,7 @@ public:
 	void					Update(bool bPauseDrawing) { m_bPauseDrawing = bPauseDrawing; if (!m_bChanging && m_pRenderer) m_pRenderer->Update(); };
 	void					RenderUpdate() { if (!m_bChanging && m_pRenderer) m_pRenderer->RenderUpdate(); };
 	void					CheckScreenSaver() { if (!m_bChanging && m_pRenderer) m_pRenderer->CheckScreenSaver(); };
-	LPDIRECT3DSURFACE8 GetOverlay();
+	void					SetupScreenshot();
 
 	// Functions called from mplayer
 inline void         WaitForFlip();
