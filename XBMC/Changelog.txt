@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 08-10-2004 fixed: my music songs, list/thumb control was not focused after a search
   - 08-10-2004 added: <showfreemem> tag to XboxMediaCenter.xml to help track memory issues
                       No need to update XBoxMediaCenter.xml unless you want this feature.
   - 07-10-2004 fixed: Spin controls showed range unnecessarily.
