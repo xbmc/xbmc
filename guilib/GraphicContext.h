@@ -102,9 +102,7 @@ public:
 	void									EnablePreviewWindow(bool bEnable);
 	void									ScalePosToScreenResolution(DWORD& x, DWORD&  y);
 	void									ScaleRectToScreenResolution(DWORD& left, DWORD&  top, DWORD& right, DWORD& bottom);
-  void                  SetOSDOn(bool bOnOff);
 protected:
-  bool                    m_bOSDOn;
 	CRITICAL_SECTION			  m_critSection;
   IMsgSenderCallback*     m_pCallback;
   LPDIRECT3DDEVICE8       m_pd3dDevice;

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "guispincontrol.h"
 #include "guifontmanager.h"
 

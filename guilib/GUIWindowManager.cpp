@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "guiwindowmanager.h"
 
 CGUIWindowManager     m_gWindowManager;

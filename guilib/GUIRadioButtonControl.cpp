@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "guiradiobuttoncontrol.h"
 
 CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, const CStdString& strRadioFocus,const CStdString& strRadioNoFocus)
