@@ -50,270 +50,301 @@ CGUIListControl::~CGUIListControl(void)
 
 void CGUIListControl::Render()
 {
-	if (!m_pFont) return;
-	if (!IsVisible()) return;
-	CGUIControl::Render();
-	CStdStringW labelUnicode;
-	CStdStringW labelUnicode2;
-	int iPosY=m_iPosY;
+  if (!m_pFont)     return;
+  if (!IsVisible()) return;
 
-	for (int i=0; i < m_iItemsPerPage; i++)
-	{
-		int iPosX=m_iPosX;
-		if (i+m_iOffset < (int)m_vecItems.size() )
-		{
-			// render item
-			CGUIListItem *pItem=m_vecItems[i+m_iOffset];
-			if (i == m_iCursorY && HasFocus() && m_iSelect== CONTROL_LIST)
-			{
-			// render focused line
-				m_imgButton.SetFocus(true);
-			}
-			else
-			{
-			// render no-focused line
-				m_imgButton.SetFocus(false);
-			}
+  CGUIControl::Render();
 
-			m_imgButton.SetPosition(m_iPosX, iPosY);	
-			m_imgButton.Render();
-      
-			// render the icon
-			if (pItem->HasThumbnail())
-			{
-				CStdString strThumb = pItem->GetThumbnailImage();
-				if (strThumb.Right(4) == ".tbn" || strThumb.Right(10) == "folder.jpg" || strThumb.Find("\\imdb\\imdb"))
-				{	// copy the thumb -> icon
-					pItem->SetIconImage(pItem->GetThumbnailImage());
-				}
-			}
-			if (pItem->HasIcon() )
-      {
-				// show icon
-				CGUIImage* pImage=pItem->GetIcon();
-				if (!pImage)
-				{
-					pImage=new CGUIImage(0,0,0,0,m_iImageWidth,m_iImageHeight,pItem->GetIconImage(),0x0);
-					pImage->SetKeepAspectRatio(true);
-					pImage->AllocResources();
-					pItem->SetIcon(pImage);
-				}
+  CStdStringW labelUnicode;
+  CStdStringW labelUnicode2;
 
-				pImage->SetWidth(m_iImageWidth);
-				pImage->SetHeight(m_iImageHeight);
-				// center vertically
-				pImage->SetPosition(iPosX+8, iPosY+(m_iItemHeight-m_iImageHeight)/2);
-				pImage->Render();
-      }
-			iPosX+=(m_iImageWidth+10);
-
-			// render the text
-			DWORD dwColor=m_dwTextColor;
-			if (pItem->IsSelected())
-			{
-				dwColor=m_dwSelectedColor;
-			}
-      
-			iPosX +=m_iTextOffsetX;
-			bool bSelected(false);
-			if (i == m_iCursorY && HasFocus() && m_iSelect== CONTROL_LIST)
-			{
-				bSelected=true;
-			}
-
-			CStdString strLabel2=pItem->GetLabel2();
-      
-			DWORD dMaxWidth=(m_dwWidth-m_iImageWidth-16);
-			if ( strLabel2.size() > 0 && m_pFont2)
-			{
-				g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
-				if ( m_iTextOffsetY == m_iTextOffsetY2 ) 
-				{
-					float fTextHeight,fTextWidth;
-					m_pFont2->GetTextExtent( labelUnicode2.c_str(), &fTextWidth,&fTextHeight);
-					dMaxWidth -= (DWORD)(fTextWidth+20);
-				}
-  		}
-
-			g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel(), labelUnicode);
-			float fPosY = (float)iPosY + m_iTextOffsetY;
-			if (m_dwTextAlign & XBFONT_CENTER_Y)
-			{
-				float fTextHeight,fTextWidth;
-				m_pFont->GetTextExtent( labelUnicode.c_str(), &fTextWidth,&fTextHeight);
-				fPosY = (float)iPosY + (m_iItemHeight-fTextHeight)/2;
-			}
-			RenderText((float)iPosX, fPosY, (FLOAT)dMaxWidth, dwColor, (WCHAR*) labelUnicode.c_str(), bSelected);
-      
-			if (strLabel2.size()>0 && m_pFont2)
-			{
-				dwColor=m_dwTextColor2;
-				if (pItem->IsSelected())
-				{
-					dwColor=m_dwSelectedColor2;
-				}
-				if (!m_iTextOffsetX2)
-					iPosX=m_iPosX+m_dwWidth-16;
-				else
-					iPosX=m_iPosX+m_iTextOffsetX2;
-
-				float fPosY = (float)iPosY + m_iTextOffsetY2;
-				if (m_dwTextAlign & XBFONT_CENTER_Y)
-				{
-					float fTextHeight,fTextWidth;
-					m_pFont->GetTextExtent( labelUnicode.c_str(), &fTextWidth,&fTextHeight);
-					fPosY = (float)iPosY + (m_iItemHeight-fTextHeight)/2;
-				}
-				m_pFont2->DrawText((float)iPosX, fPosY,dwColor,labelUnicode2.c_str(),XBFONT_RIGHT); 
-      }	
-			iPosY += (DWORD)(m_iItemHeight+m_iSpaceBetweenItems);
-    }
-	}
-
-  //free memory not used on screen at the moment
+  // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
   if (m_iOffset < 30000)
   {
-    for (int i=0; i < m_iOffset;++i)
+    for (int i=0; i < m_iOffset; ++i)
     {
-      CGUIListItem *pItem=m_vecItems[i];
+      CGUIListItem *pItem = m_vecItems[i];
       if (pItem)
       {
         pItem->FreeMemory();
       }
     }
   }
-  for (int i=m_iOffset+m_iItemsPerPage; i < (int)m_vecItems.size(); ++i) 
+  for (int i = m_iOffset + m_iItemsPerPage; i < (int)m_vecItems.size(); ++i) 
   {
-    CGUIListItem *pItem=m_vecItems[i];
+    CGUIListItem *pItem = m_vecItems[i];
     if (pItem)
     {
       pItem->FreeMemory();
     }
   }
 
-	if (m_bUpDownVisible)
-	{
-		m_upDown.SetValue(GetPage());
-		m_upDown.Render();
-	}
+  // Loop through the list 3 times
+  // 1. Render buttons & icons
+  // 2. Render all text for font m_pFont
+  // 3. Render all text for font m_pFont2
+  // This is slightly faster than looping once through the list, render item, render m_pFont, render m_pFont2, render item, render m_pFont... etc
+  // Text-rendering is generally slow and batching between Begin() End() makes it a bit faster. (XPR fonts)
+  //Render buttons and icons
+  int iPosY = m_iPosY;
+  for (int i = 0; i < m_iItemsPerPage; i++)
+  {
+    int iPosX = m_iPosX;
+    if (i + m_iOffset < (int)m_vecItems.size())
+    {
+      CGUIListItem *pItem = m_vecItems[i+m_iOffset];
+      // focused line
+      m_imgButton.SetFocus(i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
+      m_imgButton.SetPosition(m_iPosX, iPosY);  
+      m_imgButton.Render();
+      
+      // render the icon
+      if (!pItem->HasIcon() && pItem->HasThumbnail())
+      {
+        CStdString strThumb = pItem->GetThumbnailImage();
+        if (strThumb.Right(4) == ".tbn" || strThumb.Right(10) == "folder.jpg" || strThumb.Find("\\imdb\\imdb"))
+        { // copy the thumb -> icon
+          pItem->SetIconImage(pItem->GetThumbnailImage());
+        }
+      }
+      if (pItem->HasIcon() )
+      {
+        // show icon
+        CGUIImage* pImage = pItem->GetIcon();
+        if (!pImage)
+        {
+          pImage=new CGUIImage(0, 0, 0, 0, m_iImageWidth, m_iImageHeight, pItem->GetIconImage(), 0x0);
+          pImage->SetKeepAspectRatio(true);
+          pImage->AllocResources();
+          pItem->SetIcon(pImage);
+        }
+
+        pImage->SetWidth(m_iImageWidth);
+        pImage->SetHeight(m_iImageHeight);
+        // center vertically
+        pImage->SetPosition(iPosX + 8, iPosY + (m_iItemHeight - m_iImageHeight)/2);
+        pImage->Render();
+      }
+      iPosY += m_iItemHeight + m_iSpaceBetweenItems;
+    }
+  }
+
+  //--------------------------------------------------------
+  //Batch together all textrendering for m_pFont
+  iPosY = m_iPosY;
+  m_pFont->Begin();
+  for (int i = 0; i < m_iItemsPerPage; i++)
+  {
+    int iPosX = m_iPosX;
+    if (i + m_iOffset < (int)m_vecItems.size() )
+    {
+      CGUIListItem *pItem    = m_vecItems[i+m_iOffset];
+      CStdString   strLabel2 = pItem->GetLabel2();
+      iPosX += m_iImageWidth + m_iTextOffsetX + 10;
+
+      DWORD dwColor = m_dwTextColor;
+      if (pItem->IsSelected())
+      {
+        dwColor = m_dwSelectedColor;
+      }
+      
+      bool bSelected(i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
+     
+      DWORD dMaxWidth = (m_dwWidth - m_iImageWidth - 16);
+      if ( strLabel2.size() > 0 && m_pFont2)
+      {
+        g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
+        if ( m_iTextOffsetY == m_iTextOffsetY2 ) 
+        {
+          float fTextHeight = 0;
+          float fTextWidth  = 0;
+          m_pFont2->GetTextExtent( labelUnicode2.c_str(), &fTextWidth, &fTextHeight);
+          dMaxWidth -= (DWORD)(fTextWidth + 20);
+        }
+      }
+
+      g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel(), labelUnicode);
+      float fPosY = (float)iPosY + m_iTextOffsetY;
+      if (m_dwTextAlign & XBFONT_CENTER_Y)
+      {
+        float fTextHeight = 0;
+        float fTextWidth  = 0;
+        m_pFont->GetTextExtent( labelUnicode.c_str(), &fTextWidth,&fTextHeight);
+        fPosY = (float)iPosY + (m_iItemHeight - fTextHeight)/2;
+      }
+      RenderText((float)iPosX, fPosY, (float)dMaxWidth, dwColor, (WCHAR*)labelUnicode.c_str(), bSelected);
+      iPosY += m_iItemHeight + m_iSpaceBetweenItems;
+    }
+  }
+  m_pFont->End();
+
+  //------------------------------------------
+  //Batch together all textrendering for m_pFont2
+  iPosY = m_iPosY;
+  m_pFont2->Begin();
+  for (int i = 0; i < m_iItemsPerPage; i++)
+  {
+    int iPosX = m_iPosX;
+    if (i + m_iOffset < (int)m_vecItems.size())
+    {
+      CGUIListItem *pItem    = m_vecItems[i+m_iOffset];
+      CStdString   strLabel2 = pItem->GetLabel2();
+
+      iPosX += m_iImageWidth + m_iTextOffsetX + 10;
+      if (strLabel2.size() > 0 && m_pFont2)
+      {
+        g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
+        DWORD dwColor = m_dwTextColor2;
+        if (pItem->IsSelected())
+        {
+          dwColor = m_dwSelectedColor2;
+        }
+        if (!m_iTextOffsetX2)
+          iPosX = m_iPosX + m_dwWidth - 16;
+        else
+          iPosX = m_iPosX + m_iTextOffsetX2;
+
+        float fPosY = (float)iPosY + m_iTextOffsetY2;
+        if (m_dwTextAlign & XBFONT_CENTER_Y)
+        {
+          float fTextHeight = 0;
+          float fTextWidth  = 0;
+          m_pFont->GetTextExtent(labelUnicode.c_str(), &fTextWidth, &fTextHeight);
+          fPosY = (float)iPosY + (m_iItemHeight - fTextHeight)/2;
+        }
+        m_pFont2->DrawText((float)iPosX, fPosY, dwColor, labelUnicode2.c_str(), XBFONT_RIGHT); 
+      }
+      iPosY += m_iItemHeight + m_iSpaceBetweenItems;
+    }
+  }
+  m_pFont2->End();
+
+  if (m_bUpDownVisible)
+  {
+    m_upDown.SetValue(GetPage());
+    m_upDown.Render();
+  }
 }
 
 void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD dwTextColor, WCHAR* wszText,bool bScroll )
 {
-	if (!m_pFont)
-		return;
-	static int scroll_pos = 0;
-	static int iScrollX=0;
-	static int iLastItem=-1;
-	static int iFrames=0;
-	static int iStartFrame=0;
+  if (!m_pFont)
+    return;
 
-  float fTextHeight,fTextWidth;
-  m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
+  static int scroll_pos  = 0;
+  static int iScrollX    = 0;
+  static int iLastItem   = -1;
+  static int iFrames     = 0;
+  static int iStartFrame = 0;
 
-	float fPosCX=fPosX;
-	float fPosCY=fPosY;
-	g_graphicsContext.Correct(fPosCX, fPosCY);
-	if (fPosCX <0) fPosCX=0.0f;
-	if (fPosCY <0) fPosCY=0.0f;
-	if (fPosCY >g_graphicsContext.GetHeight()) fPosCY=(float)g_graphicsContext.GetHeight();
-	float fHeight=60.0f;
-	if (fHeight+fPosCY >= g_graphicsContext.GetHeight() )
-		fHeight = g_graphicsContext.GetHeight() - fPosCY -1;
-	if (fHeight <= 0) return ;
+  float fTextHeight = 0;
+  float fTextWidth  = 0;
+  m_pFont->GetTextExtent(wszText, &fTextWidth,&fTextHeight);
 
-	float fwidth=fMaxWidth-5.0f;
+  float fPosCX = fPosX;
+  float fPosCY = fPosY;
+  g_graphicsContext.Correct(fPosCX, fPosCY);
 
-	D3DVIEWPORT8 newviewport,oldviewport;
-	g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
-	newviewport.X      = (DWORD)fPosCX;
-	newviewport.Y			 = (DWORD)fPosCY;
-	newviewport.Width  = (DWORD)(fwidth);
-	newviewport.Height = (DWORD)(fHeight);
-	newviewport.MinZ   = 0.0f;
-	newviewport.MaxZ   = 1.0f;
-	g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
+  if (fPosCX < 0) fPosCX = 0.0f;
+  if (fPosCY < 0) fPosCY = 0.0f;
+  if (fPosCY > g_graphicsContext.GetHeight()) fPosCY = (float)g_graphicsContext.GetHeight();
+  float fHeight = 60.0f;
+  if (fHeight + fPosCY >= g_graphicsContext.GetHeight() )
+    fHeight = g_graphicsContext.GetHeight() - fPosCY -1;
+  if (fHeight <= 0) return ;
+
+  float fwidth = fMaxWidth - 5.0f;
+
+  D3DVIEWPORT8 newviewport,oldviewport;
+  g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
+  newviewport.X      = (DWORD)fPosCX;
+  newviewport.Y      = (DWORD)fPosCY;
+  newviewport.Width  = (DWORD)(fwidth);
+  newviewport.Height = (DWORD)(fHeight);
+  newviewport.MinZ   = 0.0f;
+  newviewport.MaxZ   = 1.0f;
 
   if (!bScroll)
   {
-    m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
-	g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+    m_pFont->DrawTextWidth(fPosX, fPosY, dwTextColor, wszText, fMaxWidth);
     return;
   }
   else
   {
-	  if (fTextWidth <= fMaxWidth)
-	  {	// don't need to scroll
-		m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
-		g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
-		iLastItem = -1; // reset scroller
-		return;
-	  }
+    if (fTextWidth <= fMaxWidth)
+    { // don't need to scroll
+      m_pFont->DrawTextWidth(fPosX, fPosY, dwTextColor, wszText, fMaxWidth);
+      iLastItem = -1; // reset scroller
+      return;
+    }
     // scroll
-    int iItem=m_iCursorY+m_iOffset;
+    int iItem = m_iCursorY + m_iOffset;
     WCHAR wszOrgText[1024];
     wcscpy(wszOrgText, wszText);
-		wcscat(wszOrgText, L" ");
+    wcscat(wszOrgText, L" ");
     wcscat(wszOrgText, m_strSuffix.c_str());
-    m_pFont->GetTextExtent( wszOrgText, &fTextWidth,&fTextHeight);
+    m_pFont->GetTextExtent(wszOrgText, &fTextWidth, &fTextHeight);
 
     if (fTextWidth > fMaxWidth)
     {
-				//fMaxWidth+=50.0f;
+        m_pFont->End(); // need to deinit the font before setting viewport
+        g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
+        //fMaxWidth+=50.0f;
         WCHAR szText[1024];
-				if (iLastItem != iItem)
-				{
-					scroll_pos=0;
-					iLastItem=iItem;
-					iStartFrame=0;
-					iScrollX=1;
-				}
+        if (iLastItem != iItem)
+        {
+          scroll_pos  = 0;
+          iLastItem   = iItem;
+          iStartFrame = 0;
+          iScrollX    = 1;
+        }
         if (iStartFrame > 25)
-				{
-						WCHAR wTmp[3];
-						if (scroll_pos >= (int)wcslen(wszOrgText) )
-							wTmp[0]=L' ';
-						else
-							wTmp[0]=wszOrgText[scroll_pos];
-						wTmp[1]=0;
-            float fWidth,fHeight;
-						m_pFont->GetTextExtent(wTmp,&fWidth,&fHeight);
-						if ( iScrollX >= fWidth)
-						{
-							++scroll_pos;
-							if (scroll_pos > (int)wcslen(wszOrgText) )
-								scroll_pos = 0;
-							iFrames=0;
-							iScrollX=1;
-						}
-						else iScrollX++;
-					
-						int ipos=0;
-						for (int i=0; i < (int)wcslen(wszOrgText); i++)
-						{
-							if (i+scroll_pos < (int)wcslen(wszOrgText))
-								szText[i]=wszOrgText[i+scroll_pos];
-							else
-							{
-								if (ipos==0) szText[i]=L' ';
-								else szText[i]=wszOrgText[ipos-1];
-								ipos++;
-							}
-							szText[i+1]=0;
-						}
-						if (fPosY >=0.0)
-              m_pFont->DrawTextWidth(fPosX-iScrollX,fPosY,dwTextColor,szText,fMaxWidth);
-						
-					}
-					else
-					{
-						iStartFrame++;
-						if (fPosY >=0.0)
-              m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
-					}
+        {
+          WCHAR wTmp[3];
+          if (scroll_pos >= (int)wcslen(wszOrgText) )
+            wTmp[0] = L' ';
+          else
+            wTmp[0] = wszOrgText[scroll_pos];
+          wTmp[1] = 0;
+          float fHeight = 0;
+          float fWidth  = 0;
+          m_pFont->GetTextExtent(wTmp, &fWidth, &fHeight);
+          if (iScrollX >= fWidth)
+          {
+            ++scroll_pos;
+            if (scroll_pos > (int)wcslen(wszOrgText))
+              scroll_pos = 0;
+            iFrames  = 0;
+            iScrollX = 1;
+          }
+          else iScrollX++;
+        
+          int ipos = 0;
+          for (int i = 0; i < (int)wcslen(wszOrgText); i++)
+          {
+            if (i + scroll_pos < (int)wcslen(wszOrgText))
+              szText[i] = wszOrgText[i + scroll_pos];
+            else
+            {
+              if (ipos == 0) szText[i] = L' ';
+              else szText[i] = wszOrgText[ipos-1];
+              ipos++;
+            }
+            szText[i+1] = 0;
+          }
+          if (fPosY >= 0.0)
+            m_pFont->DrawTextWidth(fPosX - iScrollX, fPosY, dwTextColor, szText, fMaxWidth);
+        }
+        else
+        {
+          iStartFrame++;
+          if (fPosY >= 0.0)
+            m_pFont->DrawTextWidth(fPosX, fPosY, dwTextColor, wszText, fMaxWidth);
+        }
+        g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+        m_pFont->Begin(); // resume fontbatching
     }
   }
-	g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
 }
 
 void CGUIListControl::OnAction(const CAction &action)
