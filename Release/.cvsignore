@@ -1,3 +1,7 @@
+*.bat
+*.rsp
+*.xpu
+*.pch
 *.obj
 *.idb
 *.pdb
