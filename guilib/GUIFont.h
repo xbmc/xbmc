@@ -46,6 +46,7 @@ protected:
   CStdString m_strFontName;
   static WCHAR* m_pwzBuffer;
   static INT m_nBufferSize;
+	float m_iMaxCharWidth;
 };
 
 #endif

@@ -35,6 +35,8 @@ CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX
 	m_pbBuffer	= NULL;
 	m_pbColors	= NULL;
 	ControlType = GUICONTROL_RSS;
+	m_fTextHeight;
+	m_fTextWidth;
 }
 
 CGUIRSSControl::~CGUIRSSControl(void)
@@ -69,6 +71,9 @@ void CGUIRSSControl::OnFeedUpdate(CStdString& aFeed, LPBYTE aColorArray)
 	m_pwzBuffer	= new WCHAR[nStringLength];
 	swprintf(m_pwzText,L"%S", aFeed.c_str() );
 
+	if (m_pFont) m_pFont->GetTextExtent( m_pwzText, &m_fTextWidth, &m_fTextHeight);
+	m_iTextLenght = (int)wcslen(m_pwzText);
+
 	m_pbColors	= aColorArray;
 	m_pbBuffer	= new BYTE[nStringLength];
 }
@@ -78,9 +83,6 @@ void CGUIRSSControl::RenderText()
 	float fPosX = (float) m_dwPosX;
 	float fPosY = (float) m_dwPosY;
 	float fMaxWidth = (float)m_dwWidth;
-
-	float fTextHeight,fTextWidth;
-	m_pFont->GetTextExtent( m_pwzText, &fTextWidth, &fTextHeight);
 
 	float fPosCX=fPosX;
 	float fPosCY=fPosY;
@@ -126,18 +128,17 @@ void CGUIRSSControl::RenderText()
 	g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
 
 	// if size of text is bigger than can be drawn onscreen
-    if (fTextWidth > fMaxWidth)
-    {
+	if (m_fTextWidth > fMaxWidth)
+	{
 		fMaxWidth+=50.0f;
 
 		// if start frame is greater than 25? (why?)
 		if (m_iStartFrame > 25)
 		{
 			WCHAR wTmp[3];
-			int iTextLenght = (int)wcslen(m_pwzText);
 
 			// if scroll char index is bigger or equal to the text length
-			if (m_iCharIndex >= iTextLenght )
+			if (m_iCharIndex >= m_iTextLenght )
 			{
 				// use a space character
 				wTmp[0]=L' ';
@@ -159,7 +160,7 @@ void CGUIRSSControl::RenderText()
 				++m_iCharIndex;
 
 				// if we've reached the end of the text
-				if (m_iCharIndex > iTextLenght )
+				if (m_iCharIndex > m_iTextLenght )
 				{
 					// start from the begning
 					m_iCharIndex = 0;
@@ -177,9 +178,9 @@ void CGUIRSSControl::RenderText()
 			int ipos=0;
 			// truncate the scroll text starting from the character index and wrap
 			// the text.
-			for (int i=0; i < iTextLenght; i++)
+			for (int i=0; i < m_iTextLenght; i++)
 			{
-				if (i+m_iCharIndex < iTextLenght)
+				if (i+m_iCharIndex < m_iTextLenght)
 				{
 					m_pwzBuffer[i]=m_pwzText[i+m_iCharIndex];
 					m_pbBuffer[i]=m_pbColors[i+m_iCharIndex];

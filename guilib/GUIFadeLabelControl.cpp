@@ -97,8 +97,8 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
 
 bool CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD dwTextColor, WCHAR* wszText,bool bScroll )
 {
-	bool			 bResult=false;
-  float fTextHeight,fTextWidth;
+	bool bResult = false;
+  float fTextHeight, fTextWidth;
   m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
 
 	float fPosCX=fPosX;
@@ -107,12 +107,14 @@ bool CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,
 	if (fPosCX <0) fPosCX=0.0f;
 	if (fPosCY <0) fPosCY=0.0f;
 	if (fPosCY >g_graphicsContext.GetHeight()) fPosCY=(float)g_graphicsContext.GetHeight();
+
 	D3DVIEWPORT8 newviewport,oldviewport;
 	g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
 	float fHeight=60;
 	if (fHeight+fPosCY >= g_graphicsContext.GetHeight() )
 		fHeight = g_graphicsContext.GetHeight() - fPosCY -1;
 	if (fHeight <= 0) return true;
+
 	newviewport.X      = (DWORD)fPosCX;
 	newviewport.Y			 = (DWORD)fPosCY;
 	newviewport.Width  = (DWORD)(fMaxWidth-5.0f);
@@ -122,64 +124,66 @@ bool CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,
 	g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
 
 
-    // scroll
-    WCHAR wszOrgText[1024];
-    wcscpy(wszOrgText, wszText);
-    do{
-			m_pFont->GetTextExtent( wszOrgText, &fTextWidth,&fTextHeight);
-			wcscat(wszOrgText, L" ");
-		} while ( fTextWidth < fMaxWidth);
-				fMaxWidth+=50.0f;
-        WCHAR szText[1024];
-				
-        if (iStartFrame > 25)
-				{
-						WCHAR wTmp[3];
-						if (scroll_pos >= (int)wcslen(wszOrgText) )
-							wTmp[0]=L' ';
-						else
-							wTmp[0]=wszOrgText[scroll_pos];
-						wTmp[1]=0;
-            float fWidth,fHeight;
-						m_pFont->GetTextExtent(wTmp,&fWidth,&fHeight);
-						if ( iScrollX >= fWidth)
-						{
-							++scroll_pos;
-							if (scroll_pos > (int)wcslen(wszText) )
-							{
-								scroll_pos = 0;
-							bResult=true;
-							g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+	// scroll
+	WCHAR wszOrgText[1024];
+	wcscpy(wszOrgText, wszText);
+	do{
+		m_pFont->GetTextExtent( wszOrgText, &fTextWidth,&fTextHeight);
+		wcscat(wszOrgText, L" ");
+	} while ( fTextWidth < fMaxWidth);
 
-							return true;
-							}
-							iFrames=0;
-							iScrollX=1;
-						}
-						else iScrollX++;
-					
-						int ipos=0;
-						for (int i=0; i < (int)wcslen(wszOrgText); i++)
-						{
-							if (i+scroll_pos < (int)wcslen(wszOrgText))
-								szText[i]=wszOrgText[i+scroll_pos];
-							else
-							{
-								szText[i]=L' ';
-								ipos++;
-							}
-							szText[i+1]=0;
-						}
-						if (fPosY >=0.0)
-              m_pFont->DrawTextWidth(fPosX-iScrollX,fPosY,m_dwTextColor,szText,fMaxWidth);
-						
-					}
-					else
-					{
-						iStartFrame++;
-						if (fPosY >=0.0)
-              m_pFont->DrawTextWidth(fPosX,fPosY,m_dwTextColor,wszText,fMaxWidth);
-					}
+	fMaxWidth+=50.0f;
+	WCHAR szText[1024];
+
+	if (iStartFrame > 25)
+	{
+		WCHAR wTmp[3];
+		if (scroll_pos >= (int)wcslen(wszOrgText) )
+			wTmp[0]=L' ';
+		else
+			wTmp[0]=wszOrgText[scroll_pos];
+		wTmp[1]=0;
+		float fWidth,fHeight;
+		m_pFont->GetTextExtent(wTmp,&fWidth,&fHeight);
+		if ( iScrollX >= fWidth)
+		{
+			++scroll_pos;
+			if (scroll_pos > (int)wcslen(wszText) )
+			{
+				scroll_pos = 0;
+			bResult=true;
+			g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+
+			return true;
+			}
+			iFrames=0;
+			iScrollX=1;
+		}
+		else iScrollX++;
+
+		int ipos=0;
+		int iTextLength = (int)wcslen(wszOrgText);
+		for (int i=0; i < iTextLength; i++)
+		{
+			if (i+scroll_pos < iTextLength)
+				szText[i]=wszOrgText[i+scroll_pos];
+			else
+			{
+				szText[i]=L' ';
+				ipos++;
+			}
+			szText[i+1]=0;
+		}
+		if (fPosY >=0.0)
+			m_pFont->DrawTextWidth(fPosX-iScrollX,fPosY,m_dwTextColor,szText,fMaxWidth);
+		
+	}
+	else
+	{
+		iStartFrame++;
+		if (fPosY >=0.0)
+			m_pFont->DrawTextWidth(fPosX,fPosY,m_dwTextColor,wszText,fMaxWidth);
+	}
   
 	g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
 	return bResult;
