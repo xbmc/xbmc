@@ -440,7 +440,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 			if (CStdString(CUtil::GetFileName(pItem1->m_strPath)).Equals("VIDEO_TS.IFO"))
 			{
 				bDVDFolder = true;
-				m_vecItems.Add(pItem1);
+				m_vecItems.Add(new CFileItem(*pItem1));
 				m_vecItems.Remove(i); //Make sure this is not included in the comeing search as it would have been deleted.
 				break;
 			}
@@ -542,11 +542,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 			}
 			if (bAdd)
 			{
-				m_vecItems.Add(pItem1);
-			}
-			else
-			{
-				delete pItem1;
+				m_vecItems.Add(new CFileItem(*pItem1));
 			}
 		}
 	}
