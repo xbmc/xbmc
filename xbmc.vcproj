@@ -1070,10 +1070,10 @@
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1728,10 +1728,10 @@
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -1868,107 +1868,6 @@
 				<File
 					RelativePath=".\xbmc\lib\libGoAhead\XBMCweb.h">
 				</File>
-				<Filter
-					Name="libPython"
-					Filter="">
-					<File
-						RelativePath=".\xbmc\lib\libPython\XBPython.cpp">
-					</File>
-					<File
-						RelativePath=".\xbmc\lib\libPython\XBPython.h">
-					</File>
-					<File
-						RelativePath=".\xbmc\lib\libPython\XBPyThread.cpp">
-					</File>
-					<File
-						RelativePath=".\xbmc\lib\libPython\XBPyThread.h">
-					</File>
-					<Filter
-						Name="xbmcmodule"
-						Filter="">
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\control.cpp">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\control.h">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\controlbutton.cpp">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\controlfadelabel.cpp">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\controlimage.cpp">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\controllabel.cpp">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\dialog.cpp">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\GUIPythonWindow.cpp">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\GUIPythonWindow.h">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\keyboard.cpp">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\keyboard.h">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\player.cpp">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\player.h">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\playlist.cpp">
-							<FileConfiguration
-								Name="Debug|Xbox">
-								<Tool
-									Name="VCCLCompilerTool"
-									ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Xbox">
-								<Tool
-									Name="VCCLCompilerTool"
-									ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug Xbox No Memory Tracking|Xbox">
-								<Tool
-									Name="VCCLCompilerTool"
-									ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-							</FileConfiguration>
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\playlist.h">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\pyutil.cpp">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\pyutil.h">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\window.cpp">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\window.h">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\xbmcguimodule.cpp">
-						</File>
-						<File
-							RelativePath=".\xbmc\lib\libPython\xbmcmodule\xbmcmodule.cpp">
-						</File>
-					</Filter>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="sqlite"
@@ -2000,6 +1899,107 @@
 				<File
 					RelativePath=".\xbmc\lib\sqlLite\stringhelper.h">
 				</File>
+			</Filter>
+			<Filter
+				Name="libPython"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\lib\libPython\XBPython.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libPython\XBPython.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libPython\XBPyThread.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libPython\XBPyThread.h">
+				</File>
+				<Filter
+					Name="xbmcmodule"
+					Filter="">
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\control.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\control.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\controlbutton.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\controlfadelabel.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\controlimage.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\controllabel.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\dialog.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\GUIPythonWindow.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\GUIPythonWindow.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\keyboard.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\keyboard.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\player.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\player.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\playlist.cpp">
+						<FileConfiguration
+							Name="Debug|Xbox">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Xbox">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug Xbox No Memory Tracking|Xbox">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\playlist.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\pyutil.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\pyutil.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\window.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\window.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\xbmcguimodule.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\xbmcmodule.cpp">
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
