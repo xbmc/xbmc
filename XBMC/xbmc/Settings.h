@@ -311,6 +311,7 @@ public:
 		char			m_szWeatherFSpeed[2];	//WEATHER
 		int				m_iWeatherRefresh;		//WEATHER
 		char			m_szExternalDVDPlayer[128];
+		char			m_szExternalCDDAPlayer[128];
 		bool      m_bNoCache;
 		int       m_iSmallStepBackSeconds;
 		int       m_iSmallStepBackTries;
