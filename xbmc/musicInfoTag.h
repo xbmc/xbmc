@@ -27,6 +27,7 @@ namespace MUSIC_INFO
 		int								GetTrackNumber() const;
 		int								GetDuration() const;
 		void							GetReleaseDate(SYSTEMTIME& dateTime) const;
+		CStdString				GetYear() const;
 
 		void 							SetURL(const CStdString& strURL) ;
 		void 							SetTitle(const CStdString& strTitle) ;
@@ -41,6 +42,8 @@ namespace MUSIC_INFO
 		void							SetSong(const CSong& song);
 
 		virtual void			Serialize(CArchive& ar);
+
+		void							Clear();
 	protected:
 		CStdString	m_strURL;
 		CStdString	m_strTitle;
