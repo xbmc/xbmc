@@ -174,21 +174,18 @@ BOOL XB_Init(void)
 		if (md_mode & DMODE_SURROUND)
 		{
 			OutputChans = 4;
-			if (XC_AUDIO_FLAGS_BASIC(flags) != XC_AUDIO_FLAGS_SURROUND)
-				DirectSoundOverrideSpeakerConfig(DSSPEAKER_SURROUND);
+			DirectSoundOverrideSpeakerConfig(DSSPEAKER_SURROUND);
 		}
 		else
 		{
 			OutputChans = 2;
-			if (XC_AUDIO_FLAGS_BASIC(flags) != XC_AUDIO_FLAGS_STEREO)
-				DirectSoundOverrideSpeakerConfig(DSSPEAKER_STEREO);
+			DirectSoundOverrideSpeakerConfig(DSSPEAKER_STEREO);
 		}
 	}
 	else
 	{
 		OutputChans = 2;
-		if (XC_AUDIO_FLAGS_BASIC(flags) != XC_AUDIO_FLAGS_MONO)
-			DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
+		DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
 	}
 
 	ReverseStereo = (md_mode & DMODE_REVERSE) ? TRUE : FALSE;
@@ -824,6 +821,8 @@ ULONG XB_VoiceGetFrequency(UBYTE voice)
 
 void XB_VoiceSetPanning(UBYTE voice, ULONG pan)
 {
+	if (VoiceInfo[voice].chanpan != pan && pan == PAN_SURROUND)
+		XB_Log("Chan %02d surround pan", voice);
 	VoiceInfo[voice].chanpan = pan;
 }
 
@@ -851,12 +850,8 @@ void XB_VoicePlay(UBYTE voice,SWORD handle,ULONG start,ULONG size,ULONG reppos,U
 	{
 		VoiceInfo[voice].setpos = start * fmt.nBlockAlign;
 		VoiceInfo[voice].kick = true; // kick it in case the buffer ends before the offset can be reset
-
-		XB_Log("chn: %02d; s3m offset: %05d", voice, start);
 		return;
 	}
-
-	XB_Log("chn: %02d; New instrument %02d", voice, handle);
 
 	// check to see if the current buffer is playing
 	if (CheckBufStatus(&VoiceInfo[voice], i))
