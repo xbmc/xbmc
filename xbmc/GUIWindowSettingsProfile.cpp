@@ -101,7 +101,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
       LoadList();
       
 	    if (m_iLastControl>-1)
-				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+				SET_CONTROL_FOCUS(m_iLastControl, 0);
 
 			return true;
 		}

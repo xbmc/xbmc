@@ -286,7 +286,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 void CGUIWindowVideoFiles::UpdateButtons()
 {
 	CGUIWindowVideoBase::UpdateButtons();
-	SET_CONTROL_LABEL(GetID(), CONTROL_STACK,g_stSettings.m_iMyVideoVideoStack + 14000);
+	SET_CONTROL_LABEL(CONTROL_STACK,g_stSettings.m_iMyVideoVideoStack + 14000);
 }
 
 void CGUIWindowVideoFiles::FormatItemLabels()
@@ -346,7 +346,7 @@ void CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 
 		int iControl = CONTROL_LIST;
 		if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
-		SET_CONTROL_FOCUS(GetID(), iControl, 0);
+		SET_CONTROL_FOCUS(iControl, 0);
 	}
 }
 
@@ -550,10 +550,10 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
 	{
 		if ( ViewByIcon() ) {	
-			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+			SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
 		}
 		else {
-			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+			SET_CONTROL_FOCUS(CONTROL_LIST, 0);
 		}
 	}
 
@@ -564,8 +564,8 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 		GetDirectoryHistoryString(pItem, strHistory);
 		if (strHistory==strSelectedItem)
 		{
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,i);
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,i);
+			CONTROL_SELECT_ITEM(CONTROL_LIST,i);
+			CONTROL_SELECT_ITEM(CONTROL_THUMBS,i);
 			break;
 		}
 	}
@@ -758,8 +758,8 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
       // no video file in this folder?
       // then just lookup IMDB info and show it
       ShowIMDB(strMovie,strFolder, strFolder, false);
-      CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iSelectedItem);
-      CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iSelectedItem);
+      CONTROL_SELECT_ITEM(CONTROL_LIST,iSelectedItem);
+      CONTROL_SELECT_ITEM(CONTROL_THUMBS,iSelectedItem);
       return;
     }
  }
@@ -768,8 +768,8 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
 
  
  ShowIMDB(strMovie,strFile, strFolder, bFolder);
-CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iSelectedItem);
-CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iSelectedItem);
+CONTROL_SELECT_ITEM(CONTROL_LIST,iSelectedItem);
+CONTROL_SELECT_ITEM(CONTROL_THUMBS,iSelectedItem);
 }
 
 void CGUIWindowVideoFiles::Render()

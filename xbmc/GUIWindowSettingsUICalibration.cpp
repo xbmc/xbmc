@@ -58,7 +58,7 @@ bool CGUIWindowSettingsUICalibration::OnMessage(CGUIMessage& message)
 
 			if (m_iLastControl>-1)
 			{
-				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+				SET_CONTROL_FOCUS(m_iLastControl, 0);
 			}
 
 			return true;
@@ -94,7 +94,7 @@ void CGUIWindowSettingsUICalibration::Render()
 	// Set the label
 	CStdString strOffset;
 	strOffset.Format("%i,%i", g_guiSettings.GetInt("UIOffset.X"), g_guiSettings.GetInt("UIOffset.Y"));
-	SET_CONTROL_LABEL(GetID(), CONTROL_LABEL,	strOffset);
+	SET_CONTROL_LABEL(CONTROL_LABEL,	strOffset);
 	// And render
 	CGUIWindow::Render();
 }

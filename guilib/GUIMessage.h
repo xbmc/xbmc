@@ -50,41 +50,20 @@ using namespace std;
 	\ingroup winmsg
 	\brief 
 	*/
-#define CONTROL_SELECT(dwSenderId, dwControlID) \
+#define CONTROL_SELECT(dwControlID) \
 { \
-	CGUIMessage msg(GUI_MSG_SELECTED, dwSenderId, dwControlID); \
-	g_graphicsContext.SendMessage(msg); \
+	CGUIMessage msg(GUI_MSG_SELECTED, GetID(), dwControlID); \
+	OnMessage(msg); \
 }
 
 /*!
 	\ingroup winmsg
 	\brief 
 	*/
-#define CONTROL_DESELECT(dwSenderId, dwControlID) \
+#define CONTROL_DESELECT(dwControlID) \
 { \
-	CGUIMessage msg(GUI_MSG_DESELECTED, dwSenderId, dwControlID); \
-	g_graphicsContext.SendMessage(msg); \
-}
-
-
-/*!
-	\ingroup winmsg
-	\brief 
-	*/
-#define CONTROL_ENABLE(dwSenderId, dwControlID) \
-{ \
-	CGUIMessage msg(GUI_MSG_ENABLED, dwSenderId, dwControlID); \
-	g_graphicsContext.SendMessage(msg); \
-}
-
-/*!
-	\ingroup winmsg
-	\brief 
-	*/
-#define CONTROL_DISABLE(dwSenderId, dwControlID) \
-{ \
-	CGUIMessage msg(GUI_MSG_DISABLED, dwSenderId, dwControlID); \
-	g_graphicsContext.SendMessage(msg); \
+	CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), dwControlID); \
+	OnMessage(msg); \
 }
 
 
@@ -92,10 +71,20 @@ using namespace std;
 	\ingroup winmsg
 	\brief 
 	*/
-#define CONTROL_ENABLE_ON_CONDITION(dwSenderId, dwControlID, bCondition) \
+#define CONTROL_ENABLE(dwControlID) \
 { \
-	CGUIMessage msg(bCondition ? GUI_MSG_ENABLED:GUI_MSG_DISABLED, dwSenderId, dwControlID); \
-	g_graphicsContext.SendMessage(msg); \
+	CGUIMessage msg(GUI_MSG_ENABLED, GetID(), dwControlID); \
+	OnMessage(msg); \
+}
+
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
+#define CONTROL_DISABLE(dwControlID) \
+{ \
+	CGUIMessage msg(GUI_MSG_DISABLED, GetID(), dwControlID); \
+	OnMessage(msg); \
 }
 
 
@@ -103,57 +92,68 @@ using namespace std;
 	\ingroup winmsg
 	\brief 
 	*/
-#define CONTROL_SELECT_ITEM(dwSenderId, dwControlID,iItem) \
+#define CONTROL_ENABLE_ON_CONDITION(dwControlID, bCondition) \
 { \
-	CGUIMessage msg(GUI_MSG_ITEM_SELECT, dwSenderId, dwControlID,iItem); \
-	g_graphicsContext.SendMessage(msg); \
+	CGUIMessage msg(bCondition ? GUI_MSG_ENABLED:GUI_MSG_DISABLED, GetID(), dwControlID); \
+	OnMessage(msg); \
+}
+
+
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
+#define CONTROL_SELECT_ITEM(dwControlID,iItem) \
+{ \
+	CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), dwControlID,iItem); \
+	OnMessage(msg); \
 }
 
 /*!
 	\ingroup winmsg
 	\brief 
 	*/
-#define SET_CONTROL_LABEL(dwSenderId, dwControlID,label) \
+#define SET_CONTROL_LABEL(dwControlID,label) \
 { \
-	CGUIMessage msg(GUI_MSG_LABEL_SET, dwSenderId, dwControlID); \
+	CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), dwControlID); \
 	msg.SetLabel(label); \
-	g_graphicsContext.SendMessage(msg); \
+	OnMessage(msg); \
 }
 
 /*!
 	\ingroup winmsg
 	\brief 
 	*/
-#define SET_CONTROL_HIDDEN(dwSenderId, dwControlID) \
+#define SET_CONTROL_HIDDEN(dwControlID) \
 { \
-	CGUIMessage msg(GUI_MSG_HIDDEN, dwSenderId, dwControlID); \
-	g_graphicsContext.SendMessage(msg); \
+	CGUIMessage msg(GUI_MSG_HIDDEN, GetID(), dwControlID); \
+	OnMessage(msg); \
 }
 
 /*!
 	\ingroup winmsg
 	\brief 
 	*/
-#define SET_CONTROL_FOCUS(dwSenderId, dwControlID, dwParam) \
+#define SET_CONTROL_FOCUS(dwControlID, dwParam) \
 { \
-	CGUIMessage msg(GUI_MSG_SETFOCUS, dwSenderId, dwControlID, dwParam); \
-	g_graphicsContext.SendMessage(msg); \
+	CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), dwControlID, dwParam); \
+	OnMessage(msg); \
 }
 
 /*!
 	\ingroup winmsg
 	\brief 
 	*/
-#define SET_CONTROL_VISIBLE(dwSenderId, dwControlID) \
+#define SET_CONTROL_VISIBLE(dwControlID) \
 { \
-	CGUIMessage msg(GUI_MSG_VISIBLE, dwSenderId, dwControlID); \
-	g_graphicsContext.SendMessage(msg); \
+	CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), dwControlID); \
+	OnMessage(msg); \
 }
 
 #define SET_CONTROL_SELECTED(dwSenderId, dwControlID, bSelect) \
 { \
 	CGUIMessage msg(bSelect?GUI_MSG_SELECTED:GUI_MSG_DESELECTED, dwSenderId, dwControlID); \
-	g_graphicsContext.SendMessage(msg); \
+	OnMessage(msg); \
 }
 
 #define BIND_CONTROL(i,c,pv) \
@@ -163,7 +163,7 @@ using namespace std;
 
 /*!
 	\ingroup winmsg
-	\brief 
+	\brief Click message sent from controls to windows.
 	*/
 #define SEND_CLICK_MESSAGE(dwID, dwParentID, dwAction) \
 { \

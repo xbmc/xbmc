@@ -84,14 +84,14 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 	case GUI_MSG_CLICKED:
 		{
 			unsigned int iControl=message.GetSenderId();
-			if (iControl >= CONTROL_START_BUTTONS && iControl < CONTROL_START_BUTTONS + m_vecSections.size())
+/*			if (iControl >= CONTROL_START_BUTTONS && iControl < CONTROL_START_BUTTONS + m_vecSections.size())
 			{
 				// change the setting...
 				m_iSection = iControl-CONTROL_START_BUTTONS;
 				CheckNetworkSettings();
 				CreateSettings();
 				return true;
-			}
+			}*/
 			for (unsigned int i=0; i<m_vecSettings.size(); i++)
 			{
 				if (m_vecSettings[i]->GetID() == iControl)
@@ -111,6 +111,14 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 				//	Reset spin controls to the current selected skin & language
 				if (pSkinControl) FillInSkins(pSkinControl->GetSetting());
 				if (pLanguageControl) FillInLanguages(pLanguageControl->GetSetting());
+			}
+			unsigned int iControl=message.GetControlId();
+			if (iControl >= CONTROL_START_BUTTONS && iControl < CONTROL_START_BUTTONS + m_vecSections.size())
+			{
+				// change the setting...
+				m_iSection = iControl-CONTROL_START_BUTTONS;
+				CheckNetworkSettings();
+				CreateSettings();
 			}
 		}
 		break;
@@ -153,7 +161,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 			g_application.LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
 
 			m_gWindowManager.ActivateWindow(iWindowID);
-			SET_CONTROL_FOCUS(GetID(), iCtrlID, msg.GetParam2());
+			SET_CONTROL_FOCUS(iCtrlID, msg.GetParam2());
 		}
 		break;
 	case GUI_MSG_WINDOW_INIT:
@@ -172,7 +180,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 
 			if (iFocusControl>-1)
 			{
-				SET_CONTROL_FOCUS(GetID(), iFocusControl, 0);
+				SET_CONTROL_FOCUS(iFocusControl, 0);
 			}
 
 			return true;
@@ -225,7 +233,7 @@ void CGUIWindowSettingsCategory::SetupControls()
 	CSettingsGroup *pSettingsGroup = g_guiSettings.GetGroup(m_iScreen);
 	if (!pSettingsGroup) return;
 	// update the screen string
-	SET_CONTROL_LABEL(GetID(), CONTROL_SETTINGS_LABEL, pSettingsGroup->GetLabelID());
+	SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, pSettingsGroup->GetLabelID());
 	// get the categories we need
 	pSettingsGroup->GetCategories(m_vecSections);
 	// run through and create our buttons...
@@ -924,7 +932,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 			g_application.LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
 			m_gWindowManager.ActivateWindow(GetID());
 		}
-		SET_CONTROL_FOCUS(GetID(), iControlID, newRes);	// not sure if that will work....
+		SET_CONTROL_FOCUS(iControlID, newRes);	// not sure if that will work....
 	}
 	else if (strSetting == "LookAndFeel.Language")
 	{	// new language choosen...

@@ -52,12 +52,12 @@ void CGUIDialogKeyboard::OnInitWindow()
 	// set heading
 	if (!m_strHeading.IsEmpty())
 	{
-		SET_CONTROL_LABEL(GetID(), CTL_LABEL_HEADING, m_strHeading);
-		SET_CONTROL_VISIBLE(GetID(), CTL_LABEL_HEADING);
+		SET_CONTROL_LABEL(CTL_LABEL_HEADING, m_strHeading);
+		SET_CONTROL_VISIBLE(CTL_LABEL_HEADING);
 	}
 	else
 	{
-		SET_CONTROL_HIDDEN(GetID(), CTL_LABEL_HEADING);
+		SET_CONTROL_HIDDEN(CTL_LABEL_HEADING);
 	}
 }
 

@@ -128,7 +128,6 @@ struct SSortFilesByName
 	int m_iSortMethod;
 };
 
-
 CGUIWindowFileManager::CGUIWindowFileManager(void)
 :CGUIWindow(0)
 {
@@ -216,7 +215,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 				{
 					int iItem = GetSelectedItem(i);
 					Update(i, "");
-					CONTROL_SELECT_ITEM(GetID(), CONTROL_LEFT_LIST+i, iItem)
+					CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST+i, iItem)
 				}
 			}
 		}
@@ -229,7 +228,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 				{
 					int iItem = GetSelectedItem(i);
 					Update(i, "");
-					CONTROL_SELECT_ITEM(GetID(), CONTROL_LEFT_LIST+i, iItem)
+					CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST+i, iItem)
 				}
 			}
 		}
@@ -271,7 +270,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 			{
 				int iItem = GetSelectedItem(i);
 				Update(i, m_strDirectory[i]);
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LEFT_LIST+i, iItem)
+				CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST+i, iItem)
 			}
 
 			return true;
@@ -400,9 +399,9 @@ void CGUIWindowFileManager::UpdateButtons()
 	// update our current directory labels
 	CStdString strDir;
   CURL(m_strDirectory[0]).GetURLWithoutUserDetails(strDir);
-	SET_CONTROL_LABEL(GetID(), CONTROL_CURRENTDIRLABEL_LEFT,strDir);
+	SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_LEFT,strDir);
   CURL(m_strDirectory[1]).GetURLWithoutUserDetails(strDir);
-	SET_CONTROL_LABEL(GetID(), CONTROL_CURRENTDIRLABEL_RIGHT,strDir);
+	SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_RIGHT,strDir);
 
 	// update the number of items in each list
 	for (int i=0; i<2; i++)
@@ -416,7 +415,7 @@ void CGUIWindowFileManager::UpdateButtons()
 			if (pItem->GetLabel()=="..") iItems--;
 		}
 		swprintf(wszText,L"%i %s", iItems,szText);
-		SET_CONTROL_LABEL(GetID(), CONTROL_NUMFILES_LEFT+i, wszText);
+		SET_CONTROL_LABEL(CONTROL_NUMFILES_LEFT+i, wszText);
 	}
 }
 
@@ -473,7 +472,7 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 		GetDirectoryHistoryString(pItem, strHistory);
 		if (strHistory==strSelectedItem)
 		{
-			CONTROL_SELECT_ITEM(GetID(), iList+CONTROL_LEFT_LIST, i);
+			CONTROL_SELECT_ITEM(iList+CONTROL_LEFT_LIST, i);
 			break;
 		}
 	}
@@ -557,7 +556,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
 			int iList = GetFocusedList();
 			int iItem = GetSelectedItem(iList);
 			Update(iList, "");
-			CONTROL_SELECT_ITEM(GetID(), iList+CONTROL_LEFT_LIST, iItem)
+			CONTROL_SELECT_ITEM(iList+CONTROL_LEFT_LIST, iItem)
 			return false;
 		}
 	}
@@ -1079,7 +1078,7 @@ void CGUIWindowFileManager::Refresh(int iList)
 	while (nSel>(int)m_vecItems[iList].size())
 		nSel--;
 
-	CONTROL_SELECT_ITEM(GetID(), iList+CONTROL_LEFT_LIST, nSel);
+	CONTROL_SELECT_ITEM(iList+CONTROL_LEFT_LIST, nSel);
 }
 
 
@@ -1098,7 +1097,7 @@ void CGUIWindowFileManager::Refresh()
 	while (nSel>(int)m_vecItems[iList].size())
 		nSel--;
 
-	CONTROL_SELECT_ITEM(GetID(), iList+CONTROL_LEFT_LIST, nSel);
+	CONTROL_SELECT_ITEM(iList+CONTROL_LEFT_LIST, nSel);
 }
 
 int CGUIWindowFileManager::GetSelectedItem(int iControl)

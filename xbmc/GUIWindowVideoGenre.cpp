@@ -244,7 +244,7 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
       pItem->m_bIsShareOrDrive=false;
 			m_vecItems.push_back(pItem);
     }
-    SET_CONTROL_LABEL(GetID(), LABEL_GENRE,"");
+    SET_CONTROL_LABEL(LABEL_GENRE,"");
   }
   else
   {
@@ -275,7 +275,7 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 			pItem->m_stTime.wYear= movie.m_iYear;
 			m_vecItems.push_back(pItem);
 		}
-		SET_CONTROL_LABEL(GetID(), LABEL_GENRE,m_strDirectory);
+		SET_CONTROL_LABEL(LABEL_GENRE,m_strDirectory);
   }
 	CUtil::SetThumbs(m_vecItems);
   SetIMDBThumbs(m_vecItems);
@@ -303,10 +303,10 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
 	{
 		if ( ViewByIcon() ) {	
-			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+			SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
 		}
 		else {
-			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+			SET_CONTROL_FOCUS(CONTROL_LIST, 0);
 		}
 	}
 
@@ -315,8 +315,8 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 		CFileItem* pItem=m_vecItems[i];
 		if (pItem->m_strPath==strSelectedItem)
 		{
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,i);
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,i);
+			CONTROL_SELECT_ITEM(CONTROL_LIST,i);
+			CONTROL_SELECT_ITEM(CONTROL_THUMBS,i);
 			break;
 		}
 	}
