@@ -309,9 +309,12 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("-speed");
     strTmp.Format("%f", m_fSpeed);
     m_vecOptions.push_back(strTmp);
-    m_vecOptions.push_back("-fps");
-    strTmp.Format("%f", m_fFPS);
-    m_vecOptions.push_back(strTmp);
+
+    //This shouldn't be set as then the speed adjustment will be applied to this new fps, and not original.
+    //Video will play way to fast, while audio will play correctly, so mplayer will constantly need to adjust.
+    //m_vecOptions.push_back("-fps");
+    //strTmp.Format("%f", m_fFPS);
+    //m_vecOptions.push_back(strTmp);
 
     // set subtitle fps
     m_vecOptions.push_back("-subfps");
