@@ -97,8 +97,8 @@ public:
 	virtual void            GetVideoAspectRatio(float& fAR);
 	virtual void            AudioOffset(bool bPlus=true);
 	virtual void            SwitchToNextAudioLanguage();
-	virtual void            UpdateSubtitlePosition();
-	virtual void            RenderSubtitles();
+//	virtual void            UpdateSubtitlePosition();
+//	virtual void            RenderSubtitles();
 	virtual bool            CanRecord() ;
 	virtual bool            IsRecording();
 	virtual bool            Record(bool bOnOff) ;
