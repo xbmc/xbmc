@@ -28,6 +28,7 @@
 #include "GUISelectButtonControl.h"
 #include "SkinInfo.h"
 #include "../xbmc/application.h"
+#include "../xbmc/xbox/XKUtils.h"
 //#include "../xbmc/util.h"
 
 #include<string>
@@ -452,9 +453,35 @@ void CGUIWindow::Render()
 
 void CGUIWindow::OnAction(const CAction &action)
 {
+	static bool PowerButtonDown = false;
+	static DWORD PowerButtonCode;
+	static DWORD MarkTime;
+
 	if (action.wID == ACTION_TAKE_SCREENSHOT)
 	{
 		CUtil::TakeScreenshot();
+	}
+	else if (action.wID == ACTION_POWERDOWN)
+	{
+		// Hold button for 3 secs to power down
+		if (!PowerButtonDown)
+		{
+			MarkTime = GetTickCount();
+			PowerButtonDown = true;
+			PowerButtonCode = action.m_dwButtonCode;
+		}
+	}
+	if (PowerButtonDown)
+	{
+		if (g_application.IsButtonDown(PowerButtonCode))
+		{
+			if (GetTickCount() >= MarkTime + 3000)
+			{
+				XKUtils::XBOXPowerOff();
+			}
+		}
+		else
+			PowerButtonDown = false;
 	}
 
   ivecControls i;

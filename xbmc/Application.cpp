@@ -1275,10 +1275,27 @@ void CApplication::FrameMove()
 			break;
 		}
 	}
-
-
 }
 
+bool CApplication::IsButtonDown(DWORD code)
+{
+	if (code >= KEY_BUTTON_A && code <= KEY_BUTTON_RIGHT_TRIGGER)
+	{
+		// analogue
+		return (m_DefaultGamepad.bAnalogButtons[code - KEY_BUTTON_A + XINPUT_GAMEPAD_A] > XINPUT_GAMEPAD_MAX_CROSSTALK);
+	}
+	else if (code >= KEY_BUTTON_DPAD_UP && code <= KEY_BUTTON_RIGHT_THUMB_BUTTON)
+	{
+		// digital
+		return (m_DefaultGamepad.wButtons & (1 << (code - KEY_BUTTON_DPAD_UP))) != 0;
+	}
+	else
+	{
+		// remote
+		return m_DefaultIR_Remote.wButtons == code;
+	}
+	return false;
+}
 
 void CApplication::Stop()
 {
