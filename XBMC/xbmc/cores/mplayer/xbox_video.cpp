@@ -89,6 +89,15 @@ void restore_resolution()
 //********************************************************************************************************
 void choose_best_resolution(bool bPal60Allowed)
 {
+	if (!g_stSettings.m_bAllowVideoSwitching)
+	{
+		m_iDeviceWidth  = g_graphicsContext.GetWidth();
+		m_iDeviceHeight = g_graphicsContext.GetHeight();
+		m_fScreenCompensationX=1.0f;
+		m_fScreenCompensationY=1.0f;
+		return;
+	}
+
 	if (!g_graphicsContext.IsFullScreenVideo() )
 	{
 		m_iDeviceWidth  = g_graphicsContext.GetWidth();

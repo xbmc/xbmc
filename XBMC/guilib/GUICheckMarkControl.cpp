@@ -47,7 +47,7 @@ void CGUICheckMarkControl::Render()
     }
     else
     {
-      m_pFont->DrawText((float)dwTextPosX, (float)m_dwPosY, m_dwTextColor, m_strLabel.c_str());
+      m_pFont->DrawText((float)dwTextPosX, (float)m_dwPosY, m_dwDisabledColor, m_strLabel.c_str());
     }
   }
   if (m_bSelected)

@@ -136,6 +136,7 @@ public:
 		bool			m_bSoften;
 		bool			m_bZoom;
 		bool			m_bStretch;
+		bool			m_bAllowVideoSwitching;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

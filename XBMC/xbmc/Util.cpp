@@ -1011,7 +1011,6 @@ void CUtil::ConvertPathToUrl( const CStdString& strPath, const CStdString& strPr
 
 void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 {
-#if 0
 	if ( !CDetectDVDMedia::IsDiscInDrive() ) {
 		strIcon="defaultDVDEmpty.png";
 		return;
@@ -1042,8 +1041,6 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 		strIcon="defaultCDDA.png";
 		return;
 	}
-#endif
-	strIcon="defaultDVDEmpty.png";
 }
 
 void CUtil::RemoveTempFiles()
