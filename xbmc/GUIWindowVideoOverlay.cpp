@@ -13,6 +13,8 @@
 #define CONTROL_PAUSE_LOGO  4
 #define CONTROL_INFO			  5
 #define CONTROL_BIG_PLAYTIME 6
+#define CONTROL_FF_LOGO  7
+#define CONTROL_RW_LOGO  8
 
 
 CGUIWindowVideoOverlay::CGUIWindowVideoOverlay()
@@ -45,27 +47,46 @@ void CGUIWindowVideoOverlay::Render()
   int hh = (int)(lPTS / 36000) % 100;
   int mm = (int)((lPTS / 600) % 60);
   int ss = (int)((lPTS /  10) % 60);
-  //int f1 = lPTS % 10;
+  int iSpeed=g_application.GetPlaySpeed();
+  if (hh==0 && mm==0 && ss<5)
+  {
+    if (iSpeed < 1)
+    {
+      iSpeed=1;
+      g_application.SetPlaySpeed(iSpeed);
+    }
+  }
+
 	
-	char szTime[32];
+	char szTime[128];
 	if (hh>=1)
 		sprintf(szTime,"%02.2i:%02.2i:%02.2i",hh,mm,ss);
 	else
 		sprintf(szTime,"%02.2i:%02.2i",mm,ss);
-	{
-		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_PLAYTIME); 
-		msg.SetLabel(szTime); 
-		OnMessage(msg); 
-	}
 	{
 		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_BIG_PLAYTIME); 
 		msg.SetLabel(szTime); 
 		OnMessage(msg); 
 	}
 
+  if (iSpeed !=1)
+  {
+    char szTmp[32];
+    sprintf(szTmp,"(%ix)", iSpeed);
+    strcat(szTime,szTmp);
+  }
+  {
+		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_PLAYTIME); 
+		msg.SetLabel(szTime); 
+		OnMessage(msg); 
+	}
+
+	HideControl(CONTROL_PLAY_LOGO); 
+  HideControl(CONTROL_PAUSE_LOGO); 
+  HideControl( CONTROL_FF_LOGO); 
+  HideControl( CONTROL_RW_LOGO); 
 	if (g_application.m_pPlayer->IsPaused() )
 	{
-		  HideControl(CONTROL_PLAY_LOGO); 
       ShowControl( CONTROL_PAUSE_LOGO); 
 	}
 	else
@@ -73,18 +94,15 @@ void CGUIWindowVideoOverlay::Render()
     int iSpeed = g_application.GetPlaySpeed();
     if (iSpeed > 1)
     {
-		  HideControl(CONTROL_PLAY_LOGO); 
-      HideControl(CONTROL_PAUSE_LOGO); 
+      ShowControl( CONTROL_FF_LOGO); 
     }
     else if (iSpeed < 0)
     {
-		  HideControl(CONTROL_PLAY_LOGO); 
-      HideControl(CONTROL_PAUSE_LOGO); 
+      ShowControl( CONTROL_RW_LOGO); 
     }
     else
     {
 		  ShowControl( CONTROL_PLAY_LOGO); 
-      HideControl(CONTROL_PAUSE_LOGO); 
     }
 	}
 	CGUIWindow::Render();
