@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-08-2004 fixed: mp4 tagreader could leave open files
   - 09-08-2004 fixed: album info since allmusic.com changed layout again
   - 09-08-2004 changed: Threshold for analog sticks (caused problems with mouse)
   - 09-08-2004 fixed: XBMS autodiscovery bug that prevented you from going up to the root directory
