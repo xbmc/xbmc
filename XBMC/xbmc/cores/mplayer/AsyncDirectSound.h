@@ -48,6 +48,8 @@ extern void UnRegisterAudioCallback();
 #define DSMIXBINTYPE_OGG 4
 #define DSMIXBINTYPE_CUSTOM 5
 #define DSMIXBINTYPE_STEREOALL 6
+#define DSMIXBINTYPE_STEREOLEFT 7
+#define DSMIXBINTYPE_STEREORIGHT 8
 
 class CASyncDirectSound : public IDirectSoundRenderer
 {
@@ -80,6 +82,7 @@ public:
 	virtual int			SetPlaySpeed(int iSpeed);
 	virtual void    WaitCompletion();
 	virtual void		DoWork();
+	virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
   bool          GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, DWORD* dwChannelMask, int Type, int Channels);
 
 private:
@@ -121,6 +124,7 @@ private:
   // 48kHz Resampler stuff
 	bool					m_bResampleAudio;		// Are we resampling?
 	Cssrc		m_Resampler;			// The Resampler class that does all the work
+	int m_iCurrentAudioStream;			//The Variable tracking LEFT/RIGHT/STEREO
 };
 
 #endif // !defined(AFX_ASYNCAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)
