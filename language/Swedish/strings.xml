@@ -1665,6 +1665,36 @@
  <value>Nerladdning av album info misslyckades</value>
  </string>
 
+	<string>
+		<id>501</id>
+		<value>Letar efter album namn...</value>
+	</string>
+	<string>
+		<id>502</id>
+		<value>Öppna</value>
+	</string>
+	<string>
+		<id>503</id>
+		<value>Upptagen</value>
+	</string>
+	<string>
+		<id>504</id>
+		<value>Tom</value>
+	</string>
+	<string>
+		<id>505</id>
+		<value>Ladder mediainfo från filer...</value>
+	</string>
+
+	<string>
+		<id>998</id>
+		<value>XLink KAI</value>
+	</string>
+	<string>
+		<id>999</id>
+		<value>Online Spel</value>
+	</string> 
+
 
  <string><id>10000</id><value>Start</value></string>
  <string><id>10001</id><value>Mina Program</value></string>
