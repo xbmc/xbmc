@@ -361,6 +361,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bDisplayRemoteCodes=false;
 	g_stSettings.m_bResampleMusicAudio=false;
 	g_stSettings.m_bResampleVideoAudio=false;
+	g_stSettings.m_bPCMPassthrough=false;
 	g_stSettings.m_iOSDTimeout = 5;		// OSD Timeout, default to 5 seconds
 	g_stSettings.m_bHDRemoteplaySpinDownAudio = false;
 	g_stSettings.m_bHDRemoteplaySpinDownVideo = false;
@@ -1333,6 +1334,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetBoolean(pElement, "HQmusicaudio", g_stSettings.m_bResampleMusicAudio);
 		//DON'T ALLOW AUDIO RESAMPLING FOR VIDEO AT ALL. ALLWAYS LET IT BE DISBLED
 		//GetBoolean(pElement, "HQvideoaudio", g_stSettings.m_bResampleVideoAudio);
+		GetBoolean(pElement, "PCMpassthrough", g_stSettings.m_bPCMPassthrough);
 		GetInteger(pElement, "volumelevel", g_stSettings.m_nVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
 	}
 
@@ -1761,6 +1763,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetBoolean(pNode, "HQmusicaudio", g_stSettings.m_bResampleMusicAudio);
 	SetBoolean(pNode, "HQvideoaudio", g_stSettings.m_bResampleVideoAudio);
 	SetInteger(pNode, "volumelevel", g_stSettings.m_nVolumeLevel);
+	SetBoolean(pNode, "PCMpassthrough", g_stSettings.m_bPCMPassthrough);
 
 	TiXmlElement postprocNode("PostProcessing");
 	pNode = pRoot->InsertEndChild(postprocNode);
