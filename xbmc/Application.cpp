@@ -189,7 +189,7 @@ HRESULT CApplication::Initialize()
 	CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szIMDBDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
-	string strDir=g_stSettings.m_szAlbumDirectory;
+	string strDir=strPath;
 	CreateDirectory((strDir+"\\playlists").c_str(),NULL);
 	CreateDirectory((strDir+"\\thumbs").c_str(),NULL); // contains the album thumbs
 	CreateDirectory((strDir+"\\cddb").c_str(),NULL);
