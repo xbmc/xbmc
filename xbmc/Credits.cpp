@@ -52,10 +52,10 @@ CreditLine_t Credits[] = {
 
 	// Devs
 	{  50,  22,  11500,  16500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Developers" },
-	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Bobbin007" },
+	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Frodo" },
 	{  50,  45,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Butcher" },
 	{  50,  55,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Forza" },
-	{  50,  65,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Frodo" },
+	{  50,  65,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Bobbin007" },
 	
 	{  50,  35,   8200,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"JCMarshall" },
 	{  50,  45,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"jwnmulder" },
