@@ -786,7 +786,7 @@ void CApplication::CheckScreenSaver()
 
 	if (!m_bInactive)
 	{
-		if (IsPlayingVideo())	// are we playing a movie?
+		if (IsPlayingVideo() && !m_pPlayer->IsPaused())	// are we playing a movie?
 		{
 			m_bInactive=false;
 		}
@@ -830,7 +830,7 @@ void CApplication::CheckScreenSaver()
 						Ramp.blue[i]=(int)((float)m_OldRamp.blue[i]*fade);
 					}
 					Sleep(5);
-					m_pd3dDevice->SetGammaRamp(0, &Ramp);
+					m_pd3dDevice->SetGammaRamp(D3DSGR_IMMEDIATE, &Ramp);	// use immediate to get a smooth fade
 				}
 			}
 		}
