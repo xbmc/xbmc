@@ -144,8 +144,7 @@ void CSettings::Load()
 
 	// load xml file...
 	CStdString strXMLFile;
-	CUtil::GetHomePath(strXMLFile);
-	strXMLFile+="\\XboxMediaCenter.xml";
+	strXMLFile+="Q:\\XboxMediaCenter.xml";
 
 	TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) 
@@ -391,7 +390,7 @@ bool CSettings::GetBoolean(const TiXmlElement* pRootElement, const CStdString& s
 	if ( CUtil::cmpnocase(szString,"enabled")==0 ||
 			 CUtil::cmpnocase(szString,"yes")==0 ||
 			 CUtil::cmpnocase(szString,"on")==0 ||
-			 CUtil::cmpnocase(szString,"true") ) return true;
+			 CUtil::cmpnocase(szString,"true")==0 ) return true;
 
 	return false;
 }

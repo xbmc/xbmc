@@ -62,9 +62,6 @@ HRESULT CApplication::Create()
 	CUtil::GetHomePath(strPath);
 	
   CIoSupport helper;
-  helper.Remap("C:,Harddisk0\\Partition2");
-  helper.Remap("E:,Harddisk0\\Partition1");
-  helper.Remount("D:","Cdrom0");
 	
 	{
 		CHAR szDevicePath[1024];
@@ -81,6 +78,9 @@ HRESULT CApplication::Create()
 	strSkinPath+=CStdString("\\skin");
 
 	g_settings.Load();
+	helper.Remap("C:,Harddisk0\\Partition2");
+	helper.Remap("E:,Harddisk0\\Partition1");
+	helper.Remount("D:","Cdrom0");
 
 	if ( g_stSettings.m_bUseFDrive )
 	{
