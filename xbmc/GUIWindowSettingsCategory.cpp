@@ -1281,10 +1281,10 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 	{
 		CHDDirectory directory;	
 		VECFILEITEMS items;
-		CStdString strPath = "Q:\\mplayer\\font\\";
+		CStdString strPath = "Q:\\system\\players\\mplayer\\font\\";
 	  if(g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
     {
-      strPath = "Q:\\system\\players\\mplayer\\font\\";
+      strPath = "Q:\\mplayer\\font\\";
     }
 		directory.GetDirectory(strPath,items);
 		for (int i=0; i < (int)items.size(); ++i)
