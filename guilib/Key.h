@@ -117,6 +117,10 @@
 #define ACTION_MUSIC_REWIND         78
 #define ACTION_MUSIC_PLAY           79
 
+#define ACTION_DELETE_ITEM          80
+#define ACTION_COPY_ITEM            81
+#define ACTION_MOVE_ITEM            82
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID								-1
 #define WINDOW_HOME										0

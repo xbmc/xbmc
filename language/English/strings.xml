@@ -1389,5 +1389,17 @@
   <string>
     <id>431</id>
     <value>7. No Cache</value>
+  </string>  
+  <string>
+    <id>432</id>
+    <value>Delete movie from database</value>
+  </string>  
+  <string>
+    <id>433</id>
+    <value>Are you sure to remove</value>
+  </string>  
+  <string>
+    <id>434</id>
+    <value>the movie?</value>
   </string> 
 </strings>
