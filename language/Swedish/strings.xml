@@ -515,24 +515,30 @@
   <string><id>751</id><value>Ta bort utdelning</value></string>
   <string><id>752</id><value>Ändra sökväg till utdelning</value></string>
   <string><id>753</id><value>Ändra utdelnings namn</value></string>
+  <string><id>754</id><value>Lägg till program länk</value></string>
+  <string><id>755</id><value>Ändra program sökväg</value></string>
+  <string><id>756</id><value>Ändra program namn</value></string>
+  <string><id>757</id><value>Ändra sökvägs djup</value></string>
+  <string><id>758</id><value>Radera program länk</value></string>  
+  <string><id>759</id><value>Vy: Stor Lista</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Online Spel</value></string>
   <string><id>1000</id><value>Förhandstitt av skärmsläckare</value></string>
   <string><id>1396</id><value>Drifting</value></string>
   <string><id>1397</id><value>and</value></string>
   <string><id>1398</id><value>Nollgradigt</value></string>
-  <string><id>1399</id><value>N/A</value></string>
-  <string><id>1400</id><value>N/A</value></string>
-  <string><id>1401</id><value>N/A</value></string>
-  <string><id>1402</id><value>N/A</value></string>
-  <string><id>1403</id><value>N/A</value></string>
-  <string><id>1404</id><value>N/A</value></string>
-  <string><id>1405</id><value>N/A</value></string>
-  <string><id>1406</id><value>N/A</value></string>
-  <string><id>1407</id><value>N/A</value></string>
-  <string><id>1408</id><value>N/A</value></string>
-  <string><id>1409</id><value>N/A</value></string>
-  <string><id>1410</id><value>N/A</value></string>
+  <string><id>1399</id><value>Sent</value></string>
+  <string><id>1400</id><value>Isolerade</value></string>
+  <string><id>1401</id><value>Åskoväder</value></string>
+  <string><id>1402</id><value>Åska</value></string>
+  <string><id>1403</id><value>Sol</value></string>
+  <string><id>1404</id><value>Tunga</value></string>
+  <string><id>1405</id><value>i</value></string>
+  <string><id>1406</id><value></value></string>
+  <string><id>1407</id><value>närområdet</value></string>
+  <string><id>1408</id><value>Is</value></string>
+  <string><id>1409</id><value>Kristaller</value></string>
+  <string><id>1410</id><value>Lungt</value></string>
   <string><id>10000</id><value>Start</value></string>
   <string><id>10001</id><value>Mina Program</value></string>
   <string><id>10002</id><value>Mina Bilder</value></string>
@@ -865,7 +871,7 @@
   <string><id>15060</id><value>Meddelande här</value></string>
   <string><id>15061</id><value>Du är inbjuden att spela %s.</value></string>
   <string><id>15062</id><value>Använd alternativ mplayer katalog</value></string>
-  <string><id>15100</id><value>Nav</value></string>
+  <string><id>15100</id><value>Bibliotek</value></string>
   <string><id>15101</id><value>Databas</value></string>
   <string><id>15102</id><value>* Alla album</value></string>
   <string><id>15103</id><value>* Alla artister</value></string>
