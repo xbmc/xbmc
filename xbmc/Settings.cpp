@@ -17,6 +17,7 @@ CSettings::CSettings(void)
   g_stSettings.m_iPPHorizontal=0;
   g_stSettings.m_iPPVertical=0;
   g_stSettings.m_bFrameRateConversions=false;
+  g_stSettings.m_bUseDigitalOutput=false;
 
   strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
   g_stSettings.m_iSubtitleHeight=28;
@@ -756,6 +757,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetString(pElement, "visualisation", g_stSettings.szDefaultVisualisation, g_stSettings.szDefaultVisualisation);
 		GetBoolean(pElement, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
     GetFloat(pElement, "volumeamp", g_stSettings.m_fVolumeAmplification);
+
+    GetBoolean(pElement, "UseDigitalOutput", g_stSettings.m_bUseDigitalOutput);
 	}
 
   // post processing
@@ -953,6 +956,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetString(pNode, "visualisation", g_stSettings.szDefaultVisualisation);
   SetBoolean(pNode, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
   SetFloat(pNode, "volumeamp", g_stSettings.m_fVolumeAmplification);
+  SetBoolean(pNode, "UseDigitalOutput", g_stSettings.m_bUseDigitalOutput);
 
 	TiXmlElement postprocNode("PostProcessing");
 	pNode = pRoot->InsertEndChild(postprocNode);
