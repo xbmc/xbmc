@@ -121,7 +121,8 @@ CSettings::CSettings(void)
 
 	g_stSettings.m_bAllowVideoSwitching=true;
 	strcpy(g_stSettings.m_szWeatherArea, "UKXX0085");	//default WEATHER to London for no good reason
-	strcpy(g_stSettings.m_szWeatherFormat, "m");		//default WEATHER units to metric
+	strcpy(g_stSettings.m_szWeatherFTemp, "C");			//default WEATHER temp units 
+	strcpy(g_stSettings.m_szWeatherFSpeed, "K");		//default WEATHER speed units
 }
 
 CSettings::~CSettings(void)
@@ -292,7 +293,16 @@ bool CSettings::Load()
 	if (pWeatherElement)
 	{
 		GetString(pWeatherElement, "areacode", g_stSettings.m_szWeatherArea, "UKXX0085");
-		GetString(pWeatherElement, "format", g_stSettings.m_szWeatherFormat, "m");
+		GetString(pWeatherElement, "unitT", g_stSettings.m_szWeatherFTemp, "C");
+		//do some validation
+		if(g_stSettings.m_szWeatherFTemp[0] != 'F' && g_stSettings.m_szWeatherFTemp[0] != 'C')
+			g_stSettings.m_szWeatherFTemp[0] = 'C';
+
+		GetString(pWeatherElement, "unitS", g_stSettings.m_szWeatherFSpeed, "K");
+		if(g_stSettings.m_szWeatherFSpeed[0] != 'M' && g_stSettings.m_szWeatherFSpeed[0] != 'K')
+			g_stSettings.m_szWeatherFSpeed[0] = 'K';
+
+		GetInteger(pWeatherElement, "refresh", g_stSettings.m_iWeatherRefresh,1,1,60);
 	}
 
   return true;
