@@ -60,7 +60,8 @@ public:
 protected:
 	void ParseAHREF(const char* ahref, string& strURL, string& strTitle);
 	void ParseGenres(const char* ahref, string& strURL, string& strTitle);
-	CHTTP m_http;
+	void RemoveAllAfter(char* szMovie,const char* szSearch);
+  CHTTP m_http;
 };
 
 #endif // !defined(AFX_IMDB1_H__562A722A_CD2A_4B4A_8A67_32DE8088A7D3__INCLUDED_)

@@ -55,12 +55,18 @@ bool CIMDB::FindMovie(const string &strMovie,IMDB_MOVIELIST& movielist)
 	strcpy(szBuffer,strHTML.c_str());
 	
 	/*
+	<b>Exact Matches</b> (11 matches, by popularity)
+    </p>
+    <p>
+    <table>
+    <tr><td valign="top" align="right">1.&#160;</td><td valign="top" width="100%"><a href="/title/tt0313443/">Out of Time (2003/I)</a></td></tr>
+	///old way
 	<H2><A NAME="mov">Movies</A></H2>
 	<OL><LI><A HREF="/Title?0167261">Lord of the Rings: The Two Towers, The (2002)</A><BR>...aka <I>Two Towers, The (2002) (USA: short title)</I>
 	</LI>
 	*/
 
-	char *pStartOfMovieList=strstr(szBuffer,"<H2><A NAME=\"mov\">Movies</A></H2>");
+	char *pStartOfMovieList=strstr(szBuffer," Matches</b>");
 	if (!pStartOfMovieList)
 	{
 		char* pMovieTitle	 = strstr(szBuffer,"\"title\">");
@@ -93,8 +99,8 @@ bool CIMDB::FindMovie(const string &strMovie,IMDB_MOVIELIST& movielist)
 		return false;
 	}
 
-	pStartOfMovieList+=strlen("<H2><A NAME=\"mov\">Movies</A></H2>");
-	char *pEndOfMovieList=strstr(pStartOfMovieList,"</OL>");
+	pStartOfMovieList+=strlen("<table>");
+	char *pEndOfMovieList=strstr(pStartOfMovieList,"</table>");
 	if (!pEndOfMovieList)
 	{
 		pEndOfMovieList=pStartOfMovieList+strlen(pStartOfMovieList);
@@ -108,15 +114,17 @@ bool CIMDB::FindMovie(const string &strMovie,IMDB_MOVIELIST& movielist)
 	*pEndOfMovieList=0;
 	while(1)
 	{
-		char* pAHREF=strstr(pStartOfMovieList,"<A HREF=");
+		char* pAHREF=strstr(pStartOfMovieList,"<a href=");
 		if (pAHREF)
 		{
+            //<a href="/title/tt0313443/">Out of Time (2003/I)</a>
+    		//old way
 			//<A HREF="/Title?0167261">Lord of the Rings: The Two Towers, The (2002)</A>
-			char* pendAHREF=strstr(pStartOfMovieList,"</A>");
+			char* pendAHREF=strstr(pStartOfMovieList,"</a>");
 			if (pendAHREF)
 			{
 				*pendAHREF	=0;
-				pAHREF+=strlen("<A HREF=.");
+				pAHREF+=strlen("<a href=.");
 				// get url
 				char *pURL=strstr(pAHREF,">");
 				if (pURL)
@@ -520,6 +528,12 @@ bool CIMDBMovie::Load(const string& strFileName)
 }
 
 
+void CIMDB::RemoveAllAfter(char* szMovie,const char* szSearch)
+{
+  char* pPtr=strstr(szMovie,szSearch);
+  if (pPtr) *pPtr=0;
+}
+
 void CIMDB::GetURL(const string &strMovie, string& strURL)
 {
 	char szURL[1024];
@@ -579,6 +593,37 @@ void CIMDB::GetURL(const string &strMovie, string& strURL)
       }
 	
 	}
+
+  CStdString strTmp=szMovie;
+  strTmp.ToLower();
+  strTmp.Trim();
+  strcpy(szMovie,strTmp.c_str());
+
+  RemoveAllAfter(szMovie,"divx");
+  RemoveAllAfter(szMovie,"xvid");
+  RemoveAllAfter(szMovie,"dvd");
+  RemoveAllAfter(szMovie,"svcd");
+  RemoveAllAfter(szMovie,"ac3");
+  RemoveAllAfter(szMovie,"ogg");
+  RemoveAllAfter(szMovie,"ogm");
+  
+
+  // remove anything after 4 digits 
+  int iNr=0;
+  for (int i=0; i < (int)strlen(szMovie);++i)
+  {
+    if (szMovie[i]>='0' && szMovie[i] <= '9')
+    {
+      iNr++;
+      if (iNr==4)
+      {
+        szMovie[i+1]=0;
+        break;
+      }
+    }
+    else iNr=0;
+  }
+
 	string strHTML;
 	sprintf(szURL,"http://us.imdb.com/Tsearch?title=%s", szMovie);
 	strURL = szURL;
