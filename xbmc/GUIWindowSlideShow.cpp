@@ -368,7 +368,7 @@ bool CGUIWindowSlideShow::RenderMethod1()
 	int x,y,width,height;
 	GetOutputRect(m_dwWidthCurrent, m_dwHeightCurrent, x, y, width, height);
 
-	int iStep= width/g_stSettings.m_iSlideShowTransistionFrames;
+	int iStep= width/g_stSettings.m_iSlideShowTransistionTime*20;
 	if (!iStep) iStep=1;
 	int iExpandWidth=m_dwFrameCounter*iStep;
 	if (iExpandWidth >= width)
@@ -388,7 +388,7 @@ bool CGUIWindowSlideShow::RenderMethod2()
 	int x,y,width,height;
 	GetOutputRect(m_dwWidthCurrent, m_dwHeightCurrent, x, y, width, height);
 
-	int iStep= width/g_stSettings.m_iSlideShowTransistionFrames;
+	int iStep= width/g_stSettings.m_iSlideShowTransistionTime*20;
 	if (!iStep) iStep=1;
 	int iPosX = m_dwFrameCounter*iStep - (int)width;
 	if (iPosX >=x)
@@ -408,7 +408,7 @@ bool CGUIWindowSlideShow::RenderMethod3()
 	int x,y,width,height;
 	GetOutputRect(m_dwWidthCurrent, m_dwHeightCurrent, x, y, width, height);
 
-	int iStep= width/g_stSettings.m_iSlideShowTransistionFrames;
+	int iStep= width/g_stSettings.m_iSlideShowTransistionTime*20;
 	if (!iStep) iStep=1;
 	int posx = x + width - m_dwFrameCounter*iStep ;
 	if (posx <=x )
@@ -428,7 +428,7 @@ bool CGUIWindowSlideShow::RenderMethod4()
 	int x,y,width,height;
 	GetOutputRect(m_dwWidthCurrent, m_dwHeightCurrent, x, y, width, height);
  
-	int iStep= height/g_stSettings.m_iSlideShowTransistionFrames;
+	int iStep= height/g_stSettings.m_iSlideShowTransistionTime*20;
 	if (!iStep) iStep=1;
 	int posy = m_dwFrameCounter*iStep - height;
 	if (posy >= y)
@@ -448,7 +448,7 @@ bool CGUIWindowSlideShow::RenderMethod5()
 	int x,y,width,height;
 	GetOutputRect(m_dwWidthCurrent, m_dwHeightCurrent, x, y, width, height);
 
-	int iStep= height/g_stSettings.m_iSlideShowTransistionFrames;
+	int iStep= height/g_stSettings.m_iSlideShowTransistionTime*20;
 	if (!iStep) iStep=1;
 	int posy = y+height-m_dwFrameCounter*iStep ;
 	if (posy <=y)
@@ -469,7 +469,7 @@ bool CGUIWindowSlideShow::RenderMethod6()
 	int x,y,width,height;
 	GetOutputRect(m_dwWidthCurrent, m_dwHeightCurrent, x, y, width, height);
   
-	int iStep= height/g_stSettings.m_iSlideShowTransistionFrames;
+	int iStep= height/g_stSettings.m_iSlideShowTransistionTime*20;
 	if (!iStep) iStep=1;
 	int newheight=m_dwFrameCounter*iStep;
 	if (newheight >= height)
@@ -489,7 +489,7 @@ bool CGUIWindowSlideShow::RenderMethod7()
 	int x,y,width,height;
 	GetOutputRect(m_dwWidthCurrent, m_dwHeightCurrent, x, y, width, height);
   
-	int iStep= width/g_stSettings.m_iSlideShowTransistionFrames;
+	int iStep= width/g_stSettings.m_iSlideShowTransistionTime*20;
 	if (!iStep) iStep=1;
 	int newwidth=m_dwFrameCounter*iStep;
 	if (newwidth >=width)
@@ -513,7 +513,7 @@ bool CGUIWindowSlideShow::RenderMethod8()
 	int x,y,width,height;
 	GetOutputRect(m_dwWidthCurrent, m_dwHeightCurrent, x, y, width, height);
 	  
-	int iStep= height/g_stSettings.m_iSlideShowTransistionFrames;
+	int iStep= height/g_stSettings.m_iSlideShowTransistionTime*20;
 	if (!iStep) iStep=1;
 	int newheight=m_dwFrameCounter*iStep;
 	if (newheight >=height)
@@ -535,8 +535,8 @@ bool CGUIWindowSlideShow::RenderMethod9()
 	bool bResult(false);
 	int x,y,width,height;
 	GetOutputRect(m_dwWidthCurrent, m_dwHeightCurrent, x, y, width, height);
-	int iStepX= width/g_stSettings.m_iSlideShowTransistionFrames;
-	int iStepY= height/g_stSettings.m_iSlideShowTransistionFrames;
+	int iStepX= width/g_stSettings.m_iSlideShowTransistionTime*20;
+	int iStepY= height/g_stSettings.m_iSlideShowTransistionTime*20;
 	if (!iStepX) iStepX=1;
 	if (!iStepY) iStepY=1;
 	int newheight=m_dwFrameCounter*iStepY;
