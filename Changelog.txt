@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 27-10-2004 updated: German language file
+  - 27-10-2004 updated: Italian language file (Thnx to kotix)
+  - 27-10-2004 updated: German (Austrian) language file (Thnx to CEOMR)
   - 27-10-2004 fixed: Filemanager defaults to sort ascending by filename.
   - 27-10-2004 fixed: Thumb aspect ratios now default to the pixel ratio standards (rather than the video settings pixel ratio), making skinning more predictable.
   - 27-10-2004 added: In slideshow/pictures viewing, thumbnails are automatically generated as each picture is displayed.
