@@ -127,7 +127,16 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 
 		case GUI_MSG_WINDOW_INIT:
 		{
+			// check whether we've come back here from a window during which time we've actually
+			// stopped playing music
+			if (message.GetParam1() == WINDOW_INVALID && !g_application.IsPlayingAudio())
+			{	// why are we here if nothing is playing???
+				m_gWindowManager.PreviousWindow();
+				return true;
+			}
+
 			CGUIWindow::OnMessage(message);
+
 			CSingleLock lock(m_critSection);
 			if (m_pVisualisation)
 			{
