@@ -57,5 +57,8 @@ protected:
 	int m_iStartFrame;
 	int m_iScrollX;
 	int m_iLeadingSpaces;
+	int m_iTextLenght;
+	float m_fTextHeight;
+	float m_fTextWidth;
 };
 #endif

@@ -7,6 +7,7 @@ INT		CGUIFont::m_nBufferSize	= 0;
 
 CGUIFont::CGUIFont(void)
 {
+	m_iMaxCharWidth = 0;
 }
 
 CGUIFont::~CGUIFont(void)
@@ -37,6 +38,12 @@ bool CGUIFont::Load(const CStdString& strFontName,const CStdString& strFilename)
 	{
     CLog::Log("failed to load Load font:%s path:%s", m_strFontName.c_str(), strPath.c_str());
 	}
+	else
+	{
+		float fTextHeight;
+		GetTextExtent( L"W", &m_iMaxCharWidth,&fTextHeight);
+	}
+		
 	return bResult;
 }
 
@@ -79,11 +86,25 @@ void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 		return;
 	}
 
-  while (fTextWidth >= fMaxWidth)
-  {
-    wszText[ wcslen(wszText)-1 ] = 0;
-    GetTextExtent( wszText, &fTextWidth,&fTextHeight);
-  }
+	int iMinCharsLeft;
+	int iStrLength = wcslen(wszText);
+	while (fTextWidth >= fMaxWidth)
+	{
+		iMinCharsLeft = (int)((fTextWidth - fMaxWidth) / m_iMaxCharWidth);
+		if (iMinCharsLeft > 5)
+		{
+			// at least 5 chars are left, strip al remaining characters instead
+			// of doing it one by one.
+			iStrLength -= iMinCharsLeft;
+			wszText[iStrLength] = 0;
+			GetTextExtent(wszText, &fTextWidth, &fTextHeight);
+		}
+		else
+		{
+			wszText[--iStrLength] = 0;
+			GetTextExtent(wszText, &fTextWidth, &fTextHeight);
+		}
+	}
 
   CXBFont::DrawTextEx( fOriginX, fOriginY, dwColor, wszText, wcslen( wszText ),0, 0.0f);	
 }
@@ -117,10 +138,23 @@ void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256
 		return;
 	}
 
+	int iMinCharsLeft;
 	while (fTextWidth >= fMaxWidth)
 	{
-		m_pwzBuffer[ wcslen(m_pwzBuffer)-1 ] = 0;
-		GetTextExtent( m_pwzBuffer, &fTextWidth,&fTextHeight);
+		iMinCharsLeft = (int)((fTextWidth - fMaxWidth) / m_iMaxCharWidth);
+		if (iMinCharsLeft > 5)
+		{
+			// at least 5 chars are left, strip al remaining characters instead
+			// of doing it one by one.
+			nStringLength -= iMinCharsLeft;
+			m_pwzBuffer[ nStringLength ] = 0;
+			GetTextExtent( m_pwzBuffer, &fTextWidth,&fTextHeight);
+		}
+		else
+		{
+			m_pwzBuffer[ --nStringLength ] = 0;
+			GetTextExtent( m_pwzBuffer, &fTextWidth,&fTextHeight);
+		}
 	}
 
 	CXBFont::DrawColourText( fOriginX, fOriginY, pdw256ColorPalette, m_pwzBuffer, pbColours, wcslen( m_pwzBuffer ),0, 0.0f);	
