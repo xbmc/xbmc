@@ -158,7 +158,7 @@ void CGUIFontTTF::GetTextExtent( const WCHAR* strText, FLOAT* pWidth,
 
 		wcsncpy(buf, strText+i, j - i);
 		buf[j-i] = L'\0';
-		m_pTrueTypeFont->GetTextExtent(strText, -1, &width);
+		m_pTrueTypeFont->GetTextExtent(buf, -1, &width);
 		if (width > *pWidth)
 			*pWidth = (float) width;
 		*pHeight += lineHeight;

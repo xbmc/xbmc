@@ -36,7 +36,7 @@ private:
 	void				ShowOSD();
 	void				HideOSD();
 	void				RenderTTFSubtitles();
-
+	void				SeekPercentage(int iPercent);
 	bool				m_bShowTime;
 	bool				m_bShowCodecInfo;
 	bool				m_bShowViewModeInfo;
