@@ -231,7 +231,11 @@ namespace PYXBMC
 		}
 
 		PyGUIUnlock();
-		if (self->bIsPythonWindow) delete self->pWindow;
+		if (self->bIsPythonWindow)
+		{
+			m_gWindowManager.Remove(self->pWindow->GetID());
+			delete self->pWindow;
+		}
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
