@@ -304,6 +304,7 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 
 bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 {
+	CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
     m_vecGroups.erase(m_vecGroups.begin(),m_vecGroups.end());
 	TiXmlDocument xmlDoc;
 	// Find appropriate skin folder + resolution to load from
