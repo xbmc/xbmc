@@ -1029,7 +1029,6 @@ void CUtil::GetAlbumThumb(const CStdString& strAlbumName, const CStdString& strF
   {
     str = strAlbumName + strFileName;
   }
-
   GetAlbumFolderThumb(str, strThumb, bTempDir);
 }
 
@@ -1326,7 +1325,7 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
     {
       CFile file;
       // then cache folder.jpg to xbox HD
-      if (g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs") && (file.Exists(strFolderImage)))
+      if ((g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs") || item.IsDVD()) && file.Exists(strFolderImage))
       {
         if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(), NULL, NULL))
         {
