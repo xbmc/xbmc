@@ -1,6 +1,7 @@
 #pragma once
 #include "guiwindow.h"
 #include "FileItem.h"
+#include "GUIDialogProgress.h"
 
 class CGUIWindowPrograms :
   public CGUIWindow
@@ -13,14 +14,14 @@ public:
   virtual void    OnKey(const CKey& key);
 protected:
   
-  
+	void						OnScan(VECFILEITEMS& items, int& iTotalAppsFound)  ;
   void            Update(const CStdString& strDirectory);
   void            LoadDirectory(const CStdString& strDirectory);
   void            OnClick(int iItem);
   void            OnSort();
   void            UpdateButtons();
   void            Clear();
-  
+	CGUIDialogProgress*	m_dlgProgress;  
   vector <CFileItem*> m_vecItems;
   CStdString          m_strDirectory;
   
