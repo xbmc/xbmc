@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 21-03-2005 fixed: Audio stream settings caused problems on saving video info if the audio stream was  stereo.  Plus, the stereo/left/right setting was not saved on a per-video basis.  Caused no audio on playback after the Audio options from the OSD had been accessed last time the video was played.
+  - 21-03-2005 added: Options in settings.xml to adjust the max A/V and subs delays.
   - 21-03-2005 changed: Autorun priority runs: DVD->(S)VCD->PICTURE disc->Video->Music->Pictures.
   - 21-03-2005 fixed: [ 1165273 ] Resume Play doesn't work on stacked items.
   - 21-03-2005 fixed: Only the first item in a stacked video appeared in the database views.

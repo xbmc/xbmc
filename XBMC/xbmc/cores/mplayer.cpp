@@ -633,6 +633,9 @@ void update_cache_dialog(const char* tmp)
   }
   g_graphicsContext.Unlock();
 }
+
+extern void xbox_audio_switch_channel(int iAudioStream, bool bAudioOnAllSpeakers); //lowlevel audio
+
 bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
   int iRet = -1;
@@ -977,7 +980,11 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
         SetSubtitleVisible(true);
     }
     SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
-
+    if (g_stSettings.m_currentVideoSettings.m_AudioStream < -1)
+    { // check + fix up the stereo/left/right setting
+      bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL) && g_guiSettings.GetBool("Audio.OutputToAllSpeakers");
+      xbox_audio_switch_channel(-1 - g_stSettings.m_currentVideoSettings.m_AudioStream, bAudioOnAllSpeakers);
+    }
     bIsVideo = HasVideo();
     bIsAudio = HasAudio();
     int iNewCacheSize = GetCacheSize(bFileOnHD, bFileOnISO, bFileOnUDF, bFileOnInternet, bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
