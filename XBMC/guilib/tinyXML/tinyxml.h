@@ -1,3 +1,8 @@
+/*!
+	\file tinyxml.h
+	\brief 
+	*/
+
 /*
 www.sourceforge.net/projects/tinyxml
 Original code (2.0 and earlier )copyright (c) 2000-2002 Lee Thomason (www.grinninglizard.com)
@@ -70,7 +75,9 @@ class TiXmlText;
 class TiXmlDeclaration;
 
 
-/** TiXmlBase is a base class for every class in TinyXml.
+/*!
+    \ingroup tinyxml
+      TiXmlBase is a base class for every class in TinyXml.
 	It does little except to establish that TinyXml classes
 	can be printed and provide some utility functions.
 
@@ -226,7 +233,9 @@ private:
 };
 
 
-/** The parent class for everything in the Document Object Model.
+/*!
+    \ingroup tinyxml
+    The parent class for everything in the Document Object Model.
 	(Except for attributes, which are contained in elements.)
 	Nodes have siblings, a parent, and children. A node can be
 	in a document, or stand on its own. The type of a TiXmlNode
@@ -487,7 +496,9 @@ protected:
 };
 
 
-/** An attribute is a name-value pair. Elements have an arbitrary
+/*!
+    \ingroup tinyxml
+    An attribute is a name-value pair. Elements have an arbitrary
 	number of attributes, each with a unique name.
 
 	@note The attributes are not TiXmlNodes, since they are not
@@ -573,7 +584,9 @@ private:
 };
 
 
-/*	A class used to manage a group of attributes.
+/*!
+    \ingroup tinyxml
+	A class used to manage a group of attributes.
 	It is only used internally, both by the ELEMENT and the DECLARATION.
 	
 	The set can be changed transparent to the Element and Declaration
@@ -603,7 +616,9 @@ private:
 };
 
 
-/** The element is a container class. It has a value, the element name,
+/*!
+    \ingroup tinyxml
+    The element is a container class. It has a value, the element name,
 	and can contain other elements, text, comments, and unknowns.
 	Elements also contain an arbitrary number of attributes.
 */
@@ -709,7 +724,9 @@ private:
 };
 
 
-/**	An XML comment.
+/*!
+    \ingroup tinyxml
+	An XML comment.
 */
 class TiXmlComment : public TiXmlNode
 {
@@ -736,7 +753,9 @@ protected:
 };
 
 
-/** XML text. Contained in an element.
+/*!
+    \ingroup tinyxml
+   XML text. Contained in an element.
 */
 class TiXmlText : public TiXmlNode
 {
@@ -777,7 +796,9 @@ protected :
 };
 
 
-/** In correct XML the declaration is the first entry in the file.
+/*!
+    \ingroup tinyxml
+    In correct XML the declaration is the first entry in the file.
 	@verbatim
 		<?xml version="1.0" standalone="yes"?>
 	@endverbatim
@@ -848,7 +869,9 @@ private:
 };
 
 
-/** Any tag that tinyXml doesn't recognize is save as an
+/*!
+    \ingroup tinyxml
+    Any tag that tinyXml doesn't recognize is save as an
 	unknown. It is a tag of text, but should not be modified.
 	It will be written back to the XML, unchanged, when the file
 	is saved.
@@ -877,7 +900,9 @@ protected:
 };
 
 
-/** Always the top level node. A document binds together all the
+/*!
+    \ingroup tinyxml
+    Always the top level node. A document binds together all the
 	XML pieces. It can be saved, loaded, and printed to the screen.
 	The 'value' of a document node is the xml file name.
 */

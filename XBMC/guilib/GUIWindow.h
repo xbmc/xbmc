@@ -1,3 +1,8 @@
+/*!
+	\file GUIWindow.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GUIWINDOW_H
 #define GUILIB_GUIWINDOW_H
 
@@ -10,6 +15,10 @@ using namespace std;
 #include "guicontrol.h" 
 
 
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
 class CGUIWindow
 {
 public:

@@ -1,3 +1,8 @@
+/*!
+	\file GraphicContext.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GRAPHICCONTEXT_H
 #define GUILIB_GRAPHICCONTEXT_H
 
@@ -10,6 +15,10 @@
 
 using namespace std;
 
+/*!
+	\ingroup graphics
+	\brief 
+	*/
 enum RESOLUTION {
 	INVALID = -1,
 	HDTV_1080i = 0,
@@ -24,6 +33,10 @@ enum RESOLUTION {
 	PAL60_16x9 = 9
 };
 
+/*!
+	\ingroup graphics
+	\brief 
+	*/
 struct OVERSCAN {
 	int left;
 	int top;
@@ -31,6 +44,10 @@ struct OVERSCAN {
 	int height;
 };
 
+/*!
+	\ingroup graphics
+	\brief 
+	*/
 struct RESOLUTION_INFO	{
 	OVERSCAN Overscan;
 	int iWidth;
@@ -41,6 +58,10 @@ struct RESOLUTION_INFO	{
 	char strMode[11];
 };
 
+/*!
+	\ingroup graphics
+	\brief 
+	*/
 class CGraphicContext
 {
 public:

@@ -1,3 +1,8 @@
+/*!
+	\file LocalizeStrings.h
+	\brief 
+	*/
+
 #ifndef GUILIB_LOCALIZESTRINGS_H
 #define GUILIB_LOCALIZESTRINGS_H
 #pragma once
@@ -7,6 +12,10 @@
 #include <map>
 using namespace std;
 
+/*!
+	\ingroup strings
+	\brief 
+	*/
 class CLocalizeStrings
 {
 public:
@@ -19,5 +28,9 @@ protected:
   typedef map<DWORD,wstring>::const_iterator ivecStrings;
 };
 
+/*!
+	\ingroup strings
+	\brief 
+	*/
 extern CLocalizeStrings g_localizeStrings;
 #endif

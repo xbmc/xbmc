@@ -1,6 +1,15 @@
+/*!
+	\file GUIDialog.h
+	\brief 
+	*/
+
 #pragma once
 #include "guiwindow.h"
 
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
 class CGUIDialog :
 	public CGUIWindow
 {

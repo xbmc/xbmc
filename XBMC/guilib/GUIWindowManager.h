@@ -1,3 +1,8 @@
+/*!
+	\file GUIWindowManager.h
+	\brief 
+	*/
+
 #ifndef GUILIB_CGUIWindowManager_H
 #define GUILIB_CGUIWindowManager_H
 
@@ -8,6 +13,10 @@
 #include "IWindowManagerCallback.h"
 #include "IMsgTargetCallback.h"
 
+/*!
+	\ingroup winman
+	\brief 
+	*/
 class CGUIWindowManager:public IMsgSenderCallback
 {
 public:
@@ -43,5 +52,9 @@ private:
 	vector <IMsgTargetCallback*>	m_vecMsgTargets;
 };
 
+/*!
+	\ingroup winman
+	\brief 
+	*/
 extern  CGUIWindowManager     m_gWindowManager;
 #endif

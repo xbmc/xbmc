@@ -48,6 +48,8 @@ CGUIWindowMusicBase::~CGUIWindowMusicBase ()
 
 }
 
+/// \brief Handle actions on window.
+/// \param action Action that can be reacted on.
 void CGUIWindowMusicBase::OnAction(const CAction& action)
 {
 	if (action.wID==ACTION_PARENT_DIR)
@@ -74,6 +76,44 @@ void CGUIWindowMusicBase::OnAction(const CAction& action)
 	CGUIWindow::OnAction(action);
 }
 
+/*!
+	\brief Handle messages on window.
+	\param message GUI Message that can be reacted on.
+	\return if a message can't be processed, return false
+
+	On these messages this class reacts.\n
+	When retrieving...
+		- #GUI_MSG_PLAYBACK_ENDED\n 
+			...and...
+		- #GUI_MSG_PLAYBACK_STOPPED\n
+			...it deselects the current playing item in list/thumb control, 
+			if we are in a temporary playlist or in playlistwindow
+		- #GUI_MSG_PLAYLIST_PLAY_NEXT_PREV\n
+			...the next playing item is set in list/thumb control
+		- #GUI_MSG_DVDDRIVE_EJECTED_CD\n
+			...it will look, if m_strDirectory contains a path from a DVD share.
+			If it is, Update() is called with a empty directory.
+		- #GUI_MSG_DVDDRIVE_CHANGED_CD\n
+			...and m_strDirectory is empty, Update is called to renew icons after 
+			disc is changed.
+		- #GUI_MSG_WINDOW_DEINIT\n
+			...the last focused control is saved to m_iLastControl.
+		- #GUI_MSG_WINDOW_INIT\n
+			...the musicdatabase is opend and the music extensions and shares are set.
+			The last focused control is set.
+		- #GUI_MSG_CLICKED\n
+			... the base class reacts on the following controls:\n
+				Buttons:\n
+				- #CONTROL_BTNVIEWASICONS - switch between list, thumb and with large items
+				- #CONTROL_BTNTYPE - switch between music windows
+				- #CONTROL_BTNSEARCH - Search for items\n
+				Other Controls:
+				- #CONTROL_LIST and #CONTROL_THUMB\n
+					Have the following actions in message them clicking on them.
+					- #ACTION_QUEUE_ITEM - add selected item to playlist
+					- #ACTION_SHOW_INFO - retrieve album info from the internet
+					- #ACTION_SELECT_ITEM - Item has been selected. Overwrite OnClick() to react on it
+	*/
 bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
@@ -254,6 +294,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
+/// \brief Remove items from list/thumb control and \c m_vecItems.
 void CGUIWindowMusicBase::ClearFileItems()
 {
   CGUIMessage msg1(GUI_MSG_LABEL_RESET,GetID(),CONTROL_LIST,0,0,NULL);
@@ -265,7 +306,8 @@ void CGUIWindowMusicBase::ClearFileItems()
 	CFileItemList itemlist(m_vecItems); // will clean up everything
 }
 
-
+/// \brief Updates list/thumb control
+/// Sets item labels (text and thumbs), sorts items and adds them to the control
 void CGUIWindowMusicBase::UpdateListControl()
 {
   CGUIMessage msg1(GUI_MSG_LABEL_RESET,GetID(),CONTROL_LIST,0,0,NULL);
@@ -299,6 +341,7 @@ void CGUIWindowMusicBase::UpdateListControl()
 	}
 }
 
+/// \brief Returns the selected list/thumb control item
 int CGUIWindowMusicBase::GetSelectedItem()
 {
 	int iControl;
@@ -317,6 +360,8 @@ int CGUIWindowMusicBase::GetSelectedItem()
 	return iItem;
 }
 
+/// \brief Set window to a specific directory
+/// \param strDirectory The directory to be displayed in list/thumb control
 void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 {
 	// get selected item
@@ -405,6 +450,7 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 
 }
 
+/// \brief Call to go to parent folder
 void CGUIWindowMusicBase::GoParentFolder()
 {
 	if (m_vecItems.size()==0) return;
@@ -419,6 +465,11 @@ void CGUIWindowMusicBase::GoParentFolder()
 	}
 }
 
+/// \brief Tests if a network/removeable share is available
+/// \param strPath Root share to go into
+/// \param iDriveType If share is remote, dvd or hd. See: CShare
+/// \return If drive is available return true 
+/// \todo Handle not connected to a remote share
 bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveType )
 {
 	if ( iDriveType==SHARE_TYPE_DVD ) 
@@ -465,6 +516,7 @@ bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
 	return true;
 }
 
+/// \brief Retrieves music info for albums from allmusic.com and displays them in CGUIWindowMusicInfo
 void CGUIWindowMusicBase::OnInfo(int iItem)
 {
 	int iSelectedItem=GetSelectedItem();
@@ -655,11 +707,14 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 	}
 }
 
+/// \brief Can be overwritten to implement an own tag filling function.
+/// \param items File items to fill
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items)
 {
 
 }
 
+/// \brief Retrieve tag information for \c m_vecItems
 void CGUIWindowMusicBase::RetrieveMusicInfo()
 {
 	DWORD dwTick=timeGetTime();
@@ -672,6 +727,8 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
 	OutputDebugString(strTmp.c_str());
 }
 
+/// \brief Add selected list/thumb control item to playlist and start playing
+/// \param iItem Selected Item
 void CGUIWindowMusicBase::OnQueueItem(int iItem)
 {
 	// add item 2 playlist
@@ -688,6 +745,8 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
 	}
 }
 
+/// \brief Add file or folder and its subfolders to playlist
+/// \param pItem The file item to add 
 void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem) 
 {
 	if (pItem->m_bIsFolder)
@@ -719,6 +778,11 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
 	}
 }
 
+/// \brief Search the files of a directory \e strDir for a search string \e strSearch in the CMusicInfoTag of the file and return the found \e items
+/// \param strDir directory to search 
+/// \param strSearch The search string 
+/// \param items Items Found
+/// \return Returns false if search is canceled
 bool CGUIWindowMusicBase::DoSearch(const CStdString strDir,const CStdString& strSearch,VECFILEITEMS& items)
 {
   if (m_dlgProgress) 
@@ -839,6 +903,7 @@ bool CGUIWindowMusicBase::DoSearch(const CStdString strDir,const CStdString& str
 	return !bCancel;
 }
 
+/// \brief Search the current directory for a string got from the virtual keyboard
 void CGUIWindowMusicBase::OnSearch()
 {
 	CStdString strSearch;
@@ -891,7 +956,8 @@ void CGUIWindowMusicBase::OnSearch()
 	}
 }
 
-//	strInput will be set as defaultstring in keyboard
+/// \brief Display virtual keyboard
+///	\param strInput Set as defaultstring in keyboard and retrieves the input from keyboard
 bool CGUIWindowMusicBase::GetKeyboard(CStdString& strInput)
 {
 	CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(WINDOW_VIRTUAL_KEYBOARD);
@@ -911,6 +977,8 @@ bool CGUIWindowMusicBase::GetKeyboard(CStdString& strInput)
 	return false;
 }
 
+/// \brief Is thumb or list control visible
+/// \return Returns true, if thumb control is visible
 bool CGUIWindowMusicBase::ViewByIcon()
 {
   if ( m_strDirectory.IsEmpty() )
@@ -924,6 +992,8 @@ bool CGUIWindowMusicBase::ViewByIcon()
   return false;
 }
 
+/// \brief Is thumb control in large icons mode
+/// \return Returns true, if thumb control is in large icons mode
 bool CGUIWindowMusicBase::ViewByLargeIcon()
 {
   if ( m_strDirectory.IsEmpty() )
@@ -937,6 +1007,7 @@ bool CGUIWindowMusicBase::ViewByLargeIcon()
   return false;
 }
 
+/// \brief Switch thumb control between large and normal icons
 void CGUIWindowMusicBase::ShowThumbPanel()
 {
   int iItem=GetSelectedItem(); 
@@ -969,6 +1040,9 @@ void CGUIWindowMusicBase::ShowThumbPanel()
   }
 }
 
+/// \brief Can be overwritten to build an own history string for \c m_history
+/// \param pItem Item to build the history string from
+/// \param strHistoryString History string build as return value
 void CGUIWindowMusicBase::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)
 {
 	strHistoryString=pItem->m_strPath;

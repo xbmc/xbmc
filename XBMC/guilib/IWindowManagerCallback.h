@@ -1,5 +1,14 @@
+/*!
+	\file IWindowManagerCallback.h
+	\brief 
+	*/
+
 #pragma once
 
+/*!
+	\ingroup winman
+	\brief 
+	*/
 class IWindowManagerCallback
 {
 public:

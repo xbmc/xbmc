@@ -1,3 +1,8 @@
+/*!
+	\file GUIFontManager.h
+	\brief 
+	*/
+
 #ifndef GUILIB_FONTMANAGER_H
 #define GUILIB_FONTMANAGER_H
 
@@ -11,6 +16,10 @@
 #include "stdstring.h"
 using namespace std;
 
+/*!
+	\ingroup textures
+	\brief 
+	*/
 class GUIFontManager
 {
 public:
@@ -24,5 +33,9 @@ protected:
   vector<CGUIFont*> m_vecFonts;
 };
 
+/*!
+	\ingroup textures
+	\brief 
+	*/
 extern GUIFontManager g_fontManager;
 #endif

@@ -1,3 +1,8 @@
+/*!
+	\file GUICheckMarkControl.h
+	\brief 
+	*/
+
 #ifndef CGUILIB_GUICHECKMARK_CONTROL_H
 #define CGUILIB_GUICHECKMARK_CONTROL_H
 
@@ -10,6 +15,10 @@
 #include "stdstring.h"
 using namespace std;
 
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUICheckMarkControl: public CGUIControl
 {
 public:

@@ -1,3 +1,7 @@
+/*!
+  \file MusicDatabase.h
+	\brief
+	*/
 #pragma once
 #include "lib/sqlLite/sqlitedataset.h"
 #include "StdString.h"
@@ -7,6 +11,11 @@
 #include "MusicDatabaseReorg.h"
 using namespace std;
 
+/*!
+	\ingroup music
+	\brief Class to store and read song information from CMusicDatabase
+	\sa CAlbum, CMusicDatabase
+	*/
 class CSong
 {
 public:
@@ -25,6 +34,11 @@ public:
 	int iTimedPlayed;
 };
 
+/*!
+	\ingroup music
+	\brief Class to store and read album information from CMusicDatabase
+	\sa CSong, CMusicDatabase
+	*/
 class CAlbum
 {
 public:
@@ -40,15 +54,74 @@ public:
 	int		 iYear;
 };
 
+/*!
+	\ingroup music
+	\brief A vector of CSong objects, used for CMusicDatabase
+	\sa CMusicDatabase
+	*/
 typedef vector<CSong>  VECSONGS;
+
+/*!
+	\ingroup music
+	\brief A map of CSong objects, used for CMusicDatabase
+	\sa IMAPSONGS, CMusicDatabase
+	*/
 typedef map<CStdString,CSong>  MAPSONGS;
+
+/*!
+	\ingroup music
+	\brief The MAPSONGS iterator
+	\sa MAPSONGS, CMusicDatabase
+	*/
 typedef map<CStdString,CSong>::iterator  IMAPSONGS;
+
+/*!
+	\ingroup music
+	\brief A vector of CStdString objects, used for CMusicDatabase
+	*/
 typedef vector<CStdString> VECARTISTS;
+
+/*!
+	\ingroup music
+	\brief A vector of CStdString objects, used for CMusicDatabase
+	\sa CMusicDatabase
+	*/
 typedef vector<CStdString> VECGENRES;
+
+/*!
+	\ingroup music
+	\brief A vector of CAlbum objects, used for CMusicDatabase
+	\sa CMusicDatabase
+	*/
 typedef vector<CAlbum> VECALBUMS;
+
+/*!
+	\ingroup music
+	\brief A set of CStdString objects, used for CMusicDatabase
+	\sa ISETPATHES, CMusicDatabase
+	*/
 typedef set<CStdString> SETPATHES;
+
+/*!
+	\ingroup music
+	\brief The SETPATHES iterator
+	\sa SETPATHES, CMusicDatabase
+	*/
 typedef set<CStdString>::iterator ISETPATHES;
 
+/*!
+	\ingroup music
+	\brief Class to store and read tag information
+
+	CMusicDatabase can be used to read and store
+	tag information for faster access. It is based on
+	sqlite (http://www.sqlite.org).
+
+	Here is the database layout:
+  \image html musicdatabase.png
+
+	\sa CAlbum, CSong, VECSONGS, MAPSONGS, VECARTISTS, VECALBUMS, VECGENRES
+	*/
 class CMusicDatabase
 {
 	friend class CMusicDatabaseReorg;
