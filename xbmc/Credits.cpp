@@ -104,7 +104,7 @@ struct CreditLine_t
 	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"HulleBulle" },
 	{  50,  45,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"MrX" },
 	{  50,  55,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-XBMC" },
-	{  50,  65,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD" },
+	{  50,  65,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD (ASP Interface Site Upload)" },
 
 	// Special Thanks
 	{  50,  22,   9500,   8000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Special Thanks to" },
@@ -137,6 +137,14 @@ struct CreditLine_t
 	{  50,  55,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"god for pizza, beer and women" },
 	{  50,  65,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Douglas Adams for making me smile each summer" },
 	{  50,  75,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"hitchhikers guide to the galaxy" },
+
+    // joke section [XC]-Ice
+	{  50,  22,   9500,   8000,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   36, L"[XC]-Ice" },
+  {  50,  35,    500,   7500,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Special thanks to:" },
+	{  50,  45,    100,   7400,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Heineken for getting me VERY drunk when coding" },
+	{  50,  55,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"and Pepsi for curing my hangovers" },
+	{  50,  65,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"my dad for paying for the ADSL line" },
+	{  50,  75,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"my school for giving me a laptop for free" },
 
 
   // blank line as a pause
