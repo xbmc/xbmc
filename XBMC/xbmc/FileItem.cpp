@@ -590,16 +590,26 @@ void CFileItem::SetThumb()
   //  No thumb for parent folder items
   if (GetLabel() == "..") return ;
 
-
   if (IsXBE() && m_bIsFolder) return ;  // case where we have multiple paths with XBE
-  if (!IsRemote())
+
+  /*
+  does any what is this section of code is for?
+
+  it doesnt work when the path is an iso9660:// path
+  you get an error that the texture manager cannot open the file
+  somewhere m_strPath gets concatenated to the skin media directory
+  
+  example:
+  ERROR Texture manager unable to load file: Q:\skin\Project Mayhem\media\iso9660://somedir/somefile.tbn
+  */
+  if (!IsRemote() && !IsISO9660())
   {
     CStdString strFile;
     CUtil::ReplaceExtension(m_strPath, ".tbn", strFile);
     if (CUtil::FileExists(strFile))
     {
       SetThumbnailImage(strFile);
-      return ;
+      return;
     }
   }
 
@@ -642,6 +652,7 @@ void CFileItem::SetThumb()
         CFile file;
         if ( file.Cache(strThumb.c_str(), strCachedThumbnail.c_str(), NULL, NULL))
         {
+          CLog::Log(LOGDEBUG,"  Cached thumb: %s",strCachedThumbnail.c_str());
           // cache ok, then use it
           SetThumbnailImage(strCachedThumbnail);
           bGotIcon = true;
