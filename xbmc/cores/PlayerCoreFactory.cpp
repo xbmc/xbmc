@@ -5,6 +5,7 @@
 #include "cddaplayer.h"
 #include "modplayer.h"
 #include "SidPlayer.h"
+//#include "VLC.h"
 
 CPlayerCoreFactory::CPlayerCoreFactory()
 {
@@ -17,6 +18,7 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore,IPlayerCallb
 {
 	CStdString strCoreLower=strCore;
 	strCoreLower.ToLower();
+	//if (strCoreLower=="vlc") return new CVLC(callback);
 	if (strCoreLower=="mplayer") return new CMPlayer(callback);
 	if (strCoreLower=="cdda") return new CDDAPlayer(callback);
 	if (strCoreLower=="mod") return new ModPlayer(callback);

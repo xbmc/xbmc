@@ -24,7 +24,7 @@ class CEncoderWav : public CEncoder
 public:
 	CEncoderWav();
 	~CEncoderWav();
-	bool               Init(const char* strFile);
+	bool               Init(const char* strFile, int iInChannels, int iInRate, int iInBits);
 	int                Encode(int nNumBytesRead, BYTE* pbtStream);
 	bool               Close();
 	void               AddTag(int key,const char* value);
@@ -32,10 +32,6 @@ public:
 private:
 	bool               WriteWavHeader();
 
-	HANDLE             m_hFile;
-	int                m_iChannels;
-	int                m_iSampleRate;
-	int                m_iBitsPerSample;
 	int                m_iBytesWritten;
 };
 
