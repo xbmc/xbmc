@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-08-2004 fixed: Fixed stupid comparison operators in Settings->My Programs
   - 13-08-2004 fixed: crash inbetween songs when using Xaraoke vis
   - 13-08-2004 fixed: subtitles were resizing when zooming/stretching the video
   - 13-08-2004 fixed: VP4/5/6 dlls should work again
