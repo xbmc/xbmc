@@ -52,6 +52,7 @@ EXPORTS
 	mplayer_ToFFRW @ 50 ;
 	mplayer_getCurrentTime @ 51 ;
 	mplayer_showosd @ 52 ;
-    mplayer_getAudioStreamInfo @ 53
-    mplayer_getSubtitleStreamInfo @ 54
-    mplayer_get_current_module @ 55
+	mplayer_getAudioStreamInfo @ 53 ;
+	mplayer_getSubtitleStreamInfo @ 54 ;
+ 	mplayer_get_current_module @ 55 ;
+ 	mplayer_setcache_backbuffer @ 56 ;
