@@ -174,15 +174,16 @@ void CGUIWindowManager::RefreshWindow()
 	pWindow->OnMessage(msg);
 }
 
-void CGUIWindowManager::ActivateWindow(int iWindowID)
+void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
 {
-  // first check existence of the window we wish to activate.
-  CGUIWindow *pNewWindow = GetWindow(iWindowID);
-  if (!pNewWindow)
-  { // nothing to see here - move along
-    CLog::Log(LOGERROR, "Unable to locate window with id %d.  Check skin files", iWindowID - WINDOW_HOME);
-    return;
-  }
+	// first check existence of the window we wish to activate.
+	CGUIWindow *pNewWindow = GetWindow(iWindowID);
+	if (!pNewWindow)
+	{ // nothing to see here - move along
+		CLog::Log(LOGERROR, "Unable to locate window with id %d.  Check skin files", iWindowID - WINDOW_HOME);
+		return;
+	}
+
 	// deactivate any window
 	int iPrevActiveWindow = m_iActiveWindow;
 	if (m_iActiveWindow >=0)
@@ -200,13 +201,17 @@ void CGUIWindowManager::ActivateWindow(int iWindowID)
 
 		if (pWindow->HasID(iWindowID)) 
 		{
+			CLog::Log(LOGINFO,"Activating Window ID: %i",iWindowID);
 			m_iActiveWindow = i;
 			
 			// Check to see that this window is not our previous window
 			if (iPrevActiveWindow==-1 || m_vecWindows[iPrevActiveWindow]->GetPreviousWindowID() == iWindowID)
 			{
-				// we are going to the lsat window - don't update it's previous window id
+				// we are going to the last window - don't update it's previous window id
 				CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID, iWindowID);
+
+				// append the destination path
+				if (strPath.size() > 0) msg.SetStringParam(strPath);
 				pWindow->OnMessage(msg);
 			}
 			else
@@ -215,21 +220,26 @@ void CGUIWindowManager::ActivateWindow(int iWindowID)
 				{
 					// we are going to the same window - leave previous window ID as is
 					CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,pWindow->GetPreviousWindowID(), iWindowID);
+
+					// do we need to append a destination path if the window is the same?
+					if (strPath.size() > 0) msg.SetStringParam(strPath);
 					pWindow->OnMessage(msg);
 				}
 				else
 				{
 					// we are going to a new window - put our current window into it's previous window ID
 					CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,m_vecWindows[iPrevActiveWindow]->GetID(), iWindowID);
+
+					// append the destination path
+					if (strPath.size() > 0) msg.SetStringParam(strPath);
 					pWindow->OnMessage(msg);
 				}
 			}
-
 			return;
 		}
 	}
-  // we should never, ever get here.
-  CLog::Log(LOGERROR, "ActivateWindow() failed trying to activate window %d", iWindowID - WINDOW_HOME);
+	// we should never, ever get here.
+	CLog::Log(LOGERROR, "ActivateWindow() failed trying to activate window %d", iWindowID - WINDOW_HOME);
 }
 
 void CGUIWindowManager::OnAction(const CAction &action)

@@ -2799,7 +2799,8 @@ bool CUtil::IsUsingTTFSubtitles()
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
 {
-	if (strncmp(execString.c_str(), "XBMC.", 5) == 0)
+	//if (strncmp(execString.c_str(), "XBMC.", 5) == 0)
+	if (execString.Left(5).Equals("XBMC."))
 		return true;
 
 	return false;
@@ -2824,49 +2825,86 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
 	CStdString execute, parameter;
 	SplitExecFunction(execString, execute, parameter);
 
-	if ((execute == "Reboot") || (execute == "Restart"))  //Will reboot the xbox, aka cold reboot
+	if (execute.Equals("Reboot") || execute.Equals("Restart"))  //Will reboot the xbox, aka cold reboot
 	{
 		g_applicationMessenger.Restart();
 	}
-	else if (execute == "ShutDown")
+	else if (execute.Equals("ShutDown"))
 	{
 		g_applicationMessenger.Shutdown();
 	}
-	else if (execute == "Dashboard")
+	else if (execute.Equals("Dashboard"))
 	{
 		RunXBE(g_stSettings.szDashboard);
 	}
-  else if (execute == "RestartApp")
+	else if (execute.Equals("RestartApp"))
 	{
 		g_applicationMessenger.RestartApp();
 	}
-	else if (execute == "Credits")
+	else if (execute.Equals("Credits"))
 	{
 		RunCredits();
 	}
-	else if (execute == "Reset") //Will reset the xbox, aka soft reset
+	else if (execute.Equals("Reset")) //Will reset the xbox, aka soft reset
 	{
 		g_applicationMessenger.Reset();
 	}
-	else if (execute == "ActivateWindow")
-	{	// get the parameter
-		int iWindow = WINDOW_HOME + atoi(parameter.c_str());
-		// check what type of window we have (it could be a dialog)
-		CGUIWindow *pWindow = m_gWindowManager.GetWindow(iWindow);
-		if (pWindow && pWindow->IsDialog())
-		{	// Dialog
-			CGUIDialog *pDialog = (CGUIDialog *)pWindow;
-			if (!pDialog->IsRunning())
-				pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+	else if (execute.Equals("ActivateWindow"))
+	{
+		// get the parameters
+		CStdString strWindow;
+		CStdString strPath;
+
+		// split the parameter on first comma
+		int iPos = parameter.Find(",");
+		if (iPos == 0)
+		{
+			// error condition missing path
+			// XMBC.ActivateWindow(1,)
+			CLog::Log(LOGERROR,"ActivateWindow called with invalid parameter: %s",parameter.c_str());
 			return;
 		}
-		m_gWindowManager.ActivateWindow(iWindow);
+		else if (iPos < 0)
+		{
+			// no path parameter
+			// XBMC.ActivateWindow(5001)
+			strWindow = parameter;
+		}
+		else
+		{
+			// path parameter included
+			// XBMC.ActivateWindow(5001,F:\Music\)
+			strWindow = parameter.Left(iPos);
+			strPath = parameter.Mid(iPos+1);
+		}
+		
+		// confirm the window destination is actually a number
+		// before switching
+		if (CUtil::IsNaturalNumber(strWindow))
+		{
+			int iWindow = WINDOW_HOME + atoi(parameter.c_str());
+			// check what type of window we have (it could be a dialog)
+			CGUIWindow *pWindow = m_gWindowManager.GetWindow(iWindow);
+			if (pWindow && pWindow->IsDialog())
+			{
+				// Dialog, dont pass path!
+				CGUIDialog *pDialog = (CGUIDialog *)pWindow;
+				if (!pDialog->IsRunning())
+					pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+				return;
+			}
+			m_gWindowManager.ActivateWindow(iWindow, strPath);
+		}
+		else
+		{
+			CLog::Log(LOGERROR,"ActivateWindow called with invalid destination window: %s",strWindow.c_str());
+		}
 	}
-	else if (execute == "RunScript")
+	else if (execute.Equals("RunScript"))
 	{
 		g_pythonParser.evalFile(parameter.c_str());
 	}
-	else if (execute == "RunXBE")
+	else if (execute.Equals("RunXBE"))
 	{
 		CUtil::RunXBE(parameter.c_str());
 	}
@@ -2881,4 +2919,50 @@ void usleep(int t)
   // Where possible, Alertable should be set to FALSE and WaitMode should be set to KernelMode,
   // in order to reduce driver complexity. The principal exception to this is when the wait is a long term wait.
   KeDelayExecutionThread(KernelMode, false, &li);
+}
+
+int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName)
+{
+	bIsBookmarkName = false;
+	for (int i=0; i<(int)vecShares.size(); ++i)
+	{
+		CShare share = vecShares.at(i);
+
+		// does it match a bookmark name?
+		if (strPath.Equals(share.strName))
+		{
+			bIsBookmarkName = true;
+			return i;
+		}
+
+		// does it match a subdir off a bookmark path?
+		// add trailing slash so as not to match a substring
+		// ie, Q:\Scripts123 matching Q:\Scripts
+		CStdString strDest = strPath;
+		if (!HasSlashAtEnd(strDest))
+		{
+			if (IsHD(strDest))
+				strDest += "\\";
+			else
+				strDest += "/";
+		}
+		int iLenPath = strDest.size();
+
+		CStdString strShare = share.strPath;
+		if (!HasSlashAtEnd(strShare))
+		{
+			if (IsHD(strShare))
+				strShare += "\\";
+			else
+				strShare += "/";
+		}
+		int iLenShare = strShare.size();
+
+		//CLog::Log(LOGDEBUG,"Destination = [%s], Bookmark = [%s]",strDest.c_str(),strShare.c_str());
+		if (iLenPath >= iLenShare)
+		{
+			if (strDest.Left(iLenShare).Equals(strShare)) return i;
+		}
+	}
+	return -1;
 }
