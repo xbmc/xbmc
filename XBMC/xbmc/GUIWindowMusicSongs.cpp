@@ -294,14 +294,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 			}
  			else if (iControl==CONTROL_BTNSCAN)
 			{
-				if (OnScan(m_vecItems))
-					m_database.CommitTransaction();
-				else
-					m_database.RollbackTransaction();
-
-				//	Keep database in transaction mode to increase speed
-				m_database.BeginTransaction();
-				
+				OnScan(m_vecItems);
 			}
 			else if (iControl==CONTROL_BTNREC)
 			{
