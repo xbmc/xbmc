@@ -140,9 +140,10 @@ public:
 	static char GetDirectorySeperator(const CStdString& strFile);
 
 	static bool IsNaturalNumber(const CStdString& str);
-  static bool IsNaturalNumber(const CStdStringW& str);
+	static bool IsNaturalNumber(const CStdStringW& str);
 	static bool IsUsingTTFSubtitles();
 	static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
+	static int GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName);
 
 private:
 	static bool m_bNetworkUp;

@@ -29,7 +29,7 @@ public:
 	void            AddModeless(CGUIWindow* pWindow);
 	void			Remove(DWORD dwID);
 	void			RemoveModeless(DWORD dwID);
-	void            ActivateWindow(int iWindowID);
+	void            ActivateWindow(int iWindowID, const CStdString& strPath = "");
 	void			PreviousWindow();
 	void			RefreshWindow();
 	void            OnAction(const CAction &action);
@@ -38,7 +38,7 @@ public:
 	void			Process();
 	void			SetCallback(IWindowManagerCallback& callback);
 	void			DeInitialize();
-	void           RouteToWindow(CGUIWindow* pWindow);
+	void			RouteToWindow(CGUIWindow* pWindow);
 	void            UnRoute(DWORD dwID);
 	int             GetTopMostRoutedWindowID() const;
 	void			SendThreadMessage(CGUIMessage& message);
