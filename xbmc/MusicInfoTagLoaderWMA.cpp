@@ -203,10 +203,9 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 				DWORD		qwValue;
 				WORD		wValue;
 				BYTE*		pValue;
+
 				if (iFrameType==WMT_TYPE_STRING)
-				{
 					pwszValue=(LPWSTR)(pData.get()+iOffset);
-				}
 				else if (iFrameType==WMT_TYPE_BINARY)
 					pValue=(BYTE*)(pData.get()+iOffset);	//	Raw data
 				else if (iFrameType==WMT_TYPE_BOOL)
