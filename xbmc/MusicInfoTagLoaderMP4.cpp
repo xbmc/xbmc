@@ -184,6 +184,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 			delete e;
 		}
 
+		file.Close();
 		return bResult;
 	}
 	catch(...)
