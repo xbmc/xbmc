@@ -628,7 +628,7 @@ void CFileItem::SetThumb()
   // If it is on the DVD and is an XBE, let's grab get the thumbnail again
   if (!CUtil::FileExists(strCachedThumbnail) || (item.IsXBE() && item.IsDVD()) )
   {
-    if (IsRemote() && !g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs")) return ;
+    if (IsRemote() && !IsDVD() && !g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs")) return ;
     // get the path for the  thumbnail
     CUtil::GetThumbnail( item.m_strPath, strThumb);
     // local cached thumb does not exists
@@ -788,7 +788,7 @@ void CFileItem::SetMusicThumb()
       }
       else
       {
-        if (IsRemote() && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs")) return ;
+        if (IsRemote() && !IsDVD() && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs")) return ;
         //  create cached thumb, if a .tbn file is found
         //  on a remote share
         if (CUtil::FileExists(strThumb))
@@ -836,70 +836,95 @@ void CFileItem::SetMusicThumb()
   {
     CStdString strFolderThumb;
 
-    //  Lookup permanent thumbs on HD, if a
-    //  thumb for this folder exists
-    CUtil::GetAlbumFolderThumb(strPath, strFolderThumb);
-    if (!CUtil::FileExists(strFolderThumb))
+    // Lookup permanent thumbs on HD, if a thumb for this folder exists
+    // First try using album name + path
+    // Then try using a folder thumb
+
+    // look for a permanent thumb (Q:\albums\thumbs)
+    CUtil::GetAlbumThumb(strAlbum, strPath, strFolderThumb);
+    if (CUtil::FileExists(strFolderThumb))
     {
-      //  No, lookup saved temp thumbs on HD, if a previously
-      //  cached thumb for this folder exists...
-      CUtil::GetAlbumFolderThumb(strPath, strFolderThumb, true);
-      if (!CUtil::FileExists(strFolderThumb))
+      //  found it, we are finished.
+      SetIconImage(strFolderThumb);
+      SetThumbnailImage(strFolderThumb);
+    }
+    else
+    {
+      // look for a temporary thumb (Q:\albums\thumbs\temp)
+      CUtil::GetAlbumThumb(strAlbum, strPath, strFolderThumb, true);
+      if (CUtil::FileExists(strFolderThumb) )
       {
-        if (IsRemote() && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs")) return ;
-        if (m_bIsFolder)
+        //  found it
+        SetIconImage(strFolderThumb);
+        SetThumbnailImage(strFolderThumb);
+      }
+      // else try the old code!
+      else
+      {
+        CUtil::GetAlbumFolderThumb(strPath, strFolderThumb);
+        if (!CUtil::FileExists(strFolderThumb))
         {
-          CStdString strFolderTbn = strPath;
-          strFolderTbn += ".tbn";
-          CUtil::AddFileToFolder(m_strPath, "folder.jpg", strThumb);
+          //  No, lookup saved temp thumbs on HD, if a previously
+          //  cached thumb for this folder exists...
+          CUtil::GetAlbumFolderThumb(strPath, strFolderThumb, true);
+          if (!CUtil::FileExists(strFolderThumb))
+          {
+            if (IsRemote() && !IsDVD() && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs")) return ;
+            if (m_bIsFolder)
+            {
+              CStdString strFolderTbn = strPath;
+              strFolderTbn += ".tbn";
+              CUtil::AddFileToFolder(m_strPath, "folder.jpg", strThumb);
 
-          //  ...no, check for a folder.jpg
-          if (CUtil::ThumbExists(strThumb, true))
-          {
-            //  found, save a thumb for this folder
-            //  to the temp thumb dir.
-            CPicture pic;
-            if (!pic.CreateAlbumThumbnail(strThumb, strPath))
-            {
-              //  save temp thumb failed,
-              //  no thumb available
-              strFolderThumb.Empty();
+              //  ...no, check for a folder.jpg
+              if (CUtil::ThumbExists(strThumb, true))
+              {
+                //  found, save a thumb for this folder
+                //  to the temp thumb dir.
+                CPicture pic;
+                if (!pic.CreateAlbumThumbnail(strThumb, strPath))
+                {
+                  //  save temp thumb failed,
+                  //  no thumb available
+                  strFolderThumb.Empty();
+                }
+              } //  ...or maybe we have a "foldername".tbn
+              else if (CUtil::ThumbExists(strFolderTbn, true))
+              {
+                //  found, save a thumb for this folder
+                //  to the temp thumb dir.
+                CPicture pic;
+                if (!pic.CreateAlbumThumbnail(strFolderTbn, strPath))
+                {
+                  //  save temp thumb failed,
+                  //  no thumb available
+                  strFolderThumb.Empty();
+                }
+              }
+              else
+              {
+                //  no thumb exists, do we have a directory
+                //  from album window, use music.jpg as icon
+                if (!strAlbum.IsEmpty())
+                {
+                  SetIconImage("Music.jpg");
+                  SetThumbnailImage("Music.jpg");
+                }
+
+                strFolderThumb.Empty();
+              }
             }
-          } //  ...or maybe we have a "foldername".tbn
-          else if (CUtil::ThumbExists(strFolderTbn, true))
-          {
-            //  found, save a thumb for this folder
-            //  to the temp thumb dir.
-            CPicture pic;
-            if (!pic.CreateAlbumThumbnail(strFolderTbn, strPath))
+            else
             {
-              //  save temp thumb failed,
-              //  no thumb available
+              //  No thumb found for file
               strFolderThumb.Empty();
             }
           }
-          else
-          {
-            //  no thumb exists, do we have a directory
-            //  from album window, use music.jpg as icon
-            if (!strAlbum.IsEmpty())
-            {
-              SetIconImage("Music.jpg");
-              SetThumbnailImage("Music.jpg");
-            }
-
-            strFolderThumb.Empty();
-          }
-        }
-        else
-        {
-          //  No thumb found for file
-          strFolderThumb.Empty();
         }
       }
-    } //  if (pItem->m_bIsFolder && strThumb.IsEmpty() && pItem->GetLabel()!="..")
+    }
 
-
+    // this gets the folder icon!
     //  Have we found a folder thumb
     if (!strFolderThumb.IsEmpty())
     {
