@@ -77,20 +77,21 @@ CApplication::CApplication(void)
 :m_ctrDpad(220,220)
 ,m_ctrIR(220,220)
 {
-	m_iPlaySpeed=1;
-	m_strCurrentFile="";
-	m_bSpinDown=false;
-	m_bOverlayEnabled=true;
-	m_pWebServer=NULL;
-	m_pFileZilla=NULL;
-	m_pPlayer=NULL;
+	m_iPlaySpeed       = 1;
+	m_strCurrentFile   = "";
+	m_bSpinDown        = false;
+  m_bNetworkSpinDown = false;
+	m_dwSpinDownTime   = timeGetTime();		
+	m_bOverlayEnabled  = true;
+	m_pWebServer       = NULL;
+	m_pFileZilla       = NULL;
+	m_pPlayer          = NULL;
 	XSetProcessQuantumLength(5); //default=20msec
 	XSetFileCacheSize (256*1024);//default=64kb
-	m_dwSpinDownTime=timeGetTime();		
-	m_bInactive = false;			// CB: SCREENSAVER PATCH
+	m_bInactive   = false;			// CB: SCREENSAVER PATCH
 	m_bScreenSave = false;			// CB: SCREENSAVER PATCH
-	m_dwSaverTick=timeGetTime();	// CB: SCREENSAVER PATCH
-	m_dwSkinTime = 0;
+	m_dwSaverTick = timeGetTime();	// CB: SCREENSAVER PATCH
+	m_dwSkinTime  = 0;
 }	
 
 CApplication::~CApplication(void)
@@ -699,6 +700,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiSettingsLCD);					// window id = 29
 	m_gWindowManager.Add(&m_guiSettingsUserInterface);			// window id = 30
 	m_gWindowManager.Add(&m_guiSettingsAudio);					    // window id = 31
+  m_gWindowManager.Add(&m_guiSettingsSytem);            // window id = 32
 
 	m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
 	m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
@@ -858,6 +860,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiScriptsInfo.Load("DialogScriptInfo.xml");
 	m_guiSettingsGeneral.Load("SettingsGeneral.xml");
 	m_guiSettingsPrograms.Load("SettingsPrograms.xml");
+	m_guiSettingsSytem.Load("SettingsSystem.xml");
 	m_guiDialogYesNo.Load("dialogYesNo.xml");
 	m_guiDialogProgress.Load("dialogProgress.xml");
 	m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
@@ -1077,7 +1080,11 @@ void CApplication::OnKey(CKey& key)
 		key.GetButtonCode() != KEY_BUTTON_RIGHT_THUMB_STICK)
 	{
 		// reset harddisk spindown timer
-		m_bSpinDown=false;
+		m_bSpinDown        = false;
+    m_bNetworkSpinDown = false;
+
+
+
 		ResetScreenSaver();
 		if (ResetScreenSaverWindow()) return;
 	}
@@ -1799,32 +1806,7 @@ void CApplication::OnPlayBackEnded()
 
 void CApplication::OnPlayBackStarted()
 {
-	//spin down harddisk when the current file being played is not on local harddrive and 
-	//duration is more then spindown timeoutsetting or duration is unknown (streams)
-	
-	//disabled because immediate spindown is annoying when you want to play a few seconds
-	//from a few different videos, or when you want to bring up the OSD immediately after
-	//playback starts (which is probably the most common time to use the OSD)
-
-//	if ( 
-//		!CUtil::IsHD(m_strCurrentFile) && 
-//		(
-//		(m_pPlayer->GetTotalTime() <= 0) || 
-//		(m_pPlayer->GetTotalTime() > g_stSettings.m_iHDSpinDownTime*60)
-//		)
-//		)
-//	{
-//		m_bSpinDown      = true;
-//		m_dwSpinDownTime = 0;
-//	}
-//	else 
-//	{
-//		//reset spindowntime
-		m_dwSpinDownTime = timeGetTime();
-//	}
-//
-//	
-
+  CheckNetworkHDSpinDown(true);
 }
 
 void CApplication::EnableOverlay()
@@ -2074,94 +2056,99 @@ void CApplication::CheckShutdown()
 
 	return;
 }
-void CApplication::SpinHD()
+
+void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
 {
-	// is harddisk spindown enabled?
-	if (!g_stSettings.m_iHDSpinDownTime) return;// dont do HD spindown
+  if (!g_stSettings.m_bHDRemoteplaySpinDownAudio && !g_stSettings.m_bHDRemoteplaySpinDownVideo) return;
+  if (m_gWindowManager.IsRouted()) return;
 
-	//yes. Can we do a spindown right now?
-	if (!m_bSpinDown)
+  if ((!m_bNetworkSpinDown) || playbackStarted)
+  {
+      int iDuration = 0;
+      if (IsPlayingAudio()) {
+        //try to get duration from current tag because mplayer doesn't calculate vbr mp3 correctly
+        iDuration = m_tagCurrentSong.GetDuration();
+      }
+      if (iDuration < 0) {
+        iDuration = m_pPlayer->GetTotalTime();
+      }
+      //spin down harddisk when the current file being played is not on local harddrive and 
+      //duration is more then spindown timeoutsetting or duration is unknown (streams)
+      if (
+        !CUtil::IsHD(m_strCurrentFile) &&
+        (
+          (g_stSettings.m_bHDRemoteplaySpinDownVideo && IsPlayingVideo()) ||
+          (g_stSettings.m_bHDRemoteplaySpinDownAudio && IsPlayingAudio())
+        ) &&
+        (
+          (iDuration <= 0) || 
+          (iDuration > g_stSettings.m_iHDRemoteplaySpinDownMinDuration*60)
+        )
+      )
+      {
+        m_bNetworkSpinDown = true;
+        if (!playbackStarted) 
+        { //if we got here not because of a playback start check what screen we are in
+	        // get the current active window 
+	        int iWin = m_gWindowManager.GetActiveWindow();
+          if (iWin==WINDOW_FULLSCREEN_VIDEO)
+          {
+            // check if OSD is visible, if so don't do immediate spindown
+            CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
+            m_bNetworkSpinDown = !pFSWin->OSDVisible();
+          }
+        }
+        if (m_bNetworkSpinDown) {
+          //do the spindown right now + delayseconds
+          m_dwSpinDownTime = timeGetTime();
+        }
+	    }
+  }
+  if (m_bNetworkSpinDown)
 	{
-		// no. Check if we're still playing
-		if (!m_pPlayer)  
+    // check the elapsed time
+    DWORD dwTimeSpan=timeGetTime() - m_dwSpinDownTime;
+		if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_stSettings.m_iHDRemoteplaySpinDownTime*1000UL))  )
 		{
-			//not playing anymore, then spindown should b possible
-			m_bSpinDown=true;
-			m_dwSpinDownTime=timeGetTime();
-		}
-		else 
-		{
-			if (!m_pPlayer->IsPlaying()) 
-			{
-				//not playing anymore, then spindown should b possible
-				m_bSpinDown=true;
-				m_dwSpinDownTime=timeGetTime();
-			}
-			else
-			{
-				// playing a file, is it from HD
-				if ( !CUtil::IsHD(m_strCurrentFile) )
-				{
-					// no, then spindown should b possible
-					m_bSpinDown=true;
-					m_dwSpinDownTime=timeGetTime();
-				}
-			}
-		}
+      // time has elapsed, spin it down
+      CIoSupport::SpindownHarddisk();
+      //stop checking until a key is pressed.
+      m_dwSpinDownTime   = 0;
+      m_bNetworkSpinDown = true;
+    }
 	}
+}
 
-	// spin down HD after 3 mins of inactivity
-	//spindown enabled?
-	if (m_bSpinDown)
+void CApplication::CheckHDSpindown()
+{
+  if (!g_stSettings.m_iHDSpinDownTime) return;
+  if (m_gWindowManager.IsRouted()) return;
+
+  if (!m_bSpinDown && 
+    (
+      !IsPlaying() || 
+      (IsPlaying() && !CUtil::IsHD(m_strCurrentFile))
+    )
+  ) {
+    m_bSpinDown        = true;
+    m_bNetworkSpinDown = false; // let networkspindown override normal spindown
+    m_dwSpinDownTime = timeGetTime();
+  }
+
+  //Can we do a spindown right now?
+  if (m_bSpinDown)
 	{
-		// yes, then check the elapsed time
-		DWORD dwTimeSpan=timeGetTime() - m_dwSpinDownTime;
-		if ( m_dwSpinDownTime==0 || (dwTimeSpan >= ((DWORD)g_stSettings.m_iHDSpinDownTime*60UL*1000UL))  )
+    // yes, then check the elapsed time
+    DWORD dwTimeSpan=timeGetTime() - m_dwSpinDownTime;
+		if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_stSettings.m_iHDSpinDownTime*60UL*1000UL))  )
 		{
-			// time has elapsed, spin it down
-			m_dwSpinDownTime=timeGetTime();
-			CIoSupport helper;
-			helper.SpindownHarddisk();
-		}
+      // time has elapsed, spin it down
+      CIoSupport::SpindownHarddisk();
+      //stop checking until a key is pressed.
+      m_dwSpinDownTime = 0;
+      m_bSpinDown      = true;
+    }
 	}
-
-	// clean up player core if its inactive >= 10 sec.
-	// actually no don't, just clean it up when it's stopped
-	//	if (m_pPlayer)
-	//	{
-	//    // not playing anymore?
-	//		if (!m_pPlayer->IsPlaying() )
-	//		{
-	//      // inactive > 10sec?
-	//			bool bTimeOut=(long)(timeGetTime() - m_dwIdleTime) >= 10L*1000L ;
-	//			
-	//      // music stopped.
-	//			if (m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
-	//			{
-	//				int nPlaylist=g_playlistPlayer.GetCurrentPlaylist();
-	//				if ((nPlaylist==PLAYLIST_MUSIC || nPlaylist==PLAYLIST_MUSIC_TEMP) || bTimeOut)
-	//				{
-	//					if (g_playlistPlayer.GetPlaylist( nPlaylist ).size() ==0 || bTimeOut)
-	//					{
-	//						m_gWindowManager.PreviousWindow();
-	//					}
-	//				}
-	//			}
-	//
-	//      // yes
-	//			if ( bTimeOut )
-	//			{
-	//        // then clean up
-	//				delete m_pPlayer;
-	//				m_pPlayer=NULL;
-	//			}
-	//		}
-	//		else
-	//		{
-	//      //still playing, reset cleanup timer
-	//			m_dwIdleTime=timeGetTime();
-	//		}
-	//	}
 }
 
 void CApplication::ResetAllControls()
@@ -2269,7 +2256,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
 		}
 		break;
 	}
-
 	return true;
 }
 
@@ -2296,7 +2282,8 @@ void CApplication::Process()
 	m_pythonParser.Process();
 
 	// check if we need 2 spin down the harddisk
-	SpinHD();
+  CheckNetworkHDSpinDown();
+  if (!m_bNetworkSpinDown) CheckHDSpindown();
 
 	// check if we need to activate the screensaver (if enabled)
 	if (g_stSettings.m_iScreenSaverMode) CheckScreenSaver();

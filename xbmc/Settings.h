@@ -240,6 +240,10 @@ public:
 
 		bool			m_bAutoShufflePlaylist;
 		int			  m_iHDSpinDownTime;
+    bool      m_bHDRemoteplaySpinDownAudio;
+    bool      m_bHDRemoteplaySpinDownVideo;
+    int       m_iHDRemoteplaySpinDownTime; //seconds
+    int       m_iHDRemoteplaySpinDownMinDuration; //minutes
 		DWORD     m_minFilter ;
 		DWORD     m_maxFilter ;
 		bool			m_bAutorunDVD;

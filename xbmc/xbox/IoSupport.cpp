@@ -626,13 +626,13 @@ VOID CIoSupport::SpindownHarddisk()
   //Get status of the command
   status = IdexReadPortUchar(IDE_STATUS_REGISTER);
   int i = 0;
-  while ( (i < 20) && ((status & IDE_STATUS_DRIVE_BUSY) == IDE_STATUS_DRIVE_BUSY) ) {
+  while ( (i < 2000) && ((status & IDE_STATUS_DRIVE_BUSY) == IDE_STATUS_DRIVE_BUSY) ) {
     //wait for drive to process the command
-    Sleep(1);
     status = IdexReadPortUchar(IDE_STATUS_REGISTER); 
     i++;
   };
-  if ( (i < 20) && (!(status & IDE_STATUS_DRIVE_ERROR)) ) {
+  //if it's busy or not responding as we expected don't tell it to standby
+  if ( (i < 2000) && (!(status & IDE_STATUS_DRIVE_ERROR)) ) {
     iPowerCode = IdexReadPortUchar(IDE_SECTOR_COUNT_REGISTER);
     if (iPowerCode != IDE_POWERSTATE_STANDBY) {
       IdexWritePortUchar(IDE_DEVICE_SELECT_REGISTER, 0xA0 );
