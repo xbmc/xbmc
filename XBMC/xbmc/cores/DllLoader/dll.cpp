@@ -13,13 +13,22 @@
 
 #include "../../utils/log.h"
 
+#define DEFAULT_DLLPATH "Q:\\mplayer\\codecs"
+
+#define MODULE_HANDLES_START     0xf3f30120
+#define MODULE_HANDLE_kernel32  0xf3f30120			//kernel32.dll magic number
+#define MODULE_HANDLE_user32    0xf3f30130			//USER32.dll magic number
+#define MODULE_HANDLE_ddraw     0xf3f30140			//ddraw.dll magic number
+#define MODULE_HANDLE_wininet   0xf3f30150			//WININET.dll magic number
+#define MODULE_HANDLE_advapi32  0xf3f30160			//ADVAPI32.dll magic number
+#define MODULE_HANDLE_ws2_32    0xf3f30170			//WS2_32.dll magic number// winsock2
+#define MODULE_HANDLES_END       0xf3f30170
+
+#define MODULE_HANDLE_IS_DLLFILE(h) (!((HMODULE)h >= (HMODULE)MODULE_HANDLES_START && \
+                                       (HMODULE)h <= (HMODULE)MODULE_HANDLES_END))
+
 using namespace std;
 Exp2Dll *Head = 0;
-
-//hack to Free pe image, global variable.
-DllLoader * wmaDMOdll;
-DllLoader * wmvDMOdll;
-DllLoader * wmsDMOdll;
 
 void* fs_seg = NULL;
 vector<DllLoader *> m_vecDlls;
@@ -52,9 +61,61 @@ struct DllTrackInfo
 };
 
 int ResolveName(char*, char*, void **);
+extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
+extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
 
 std::list<DllTrackInfo> TrackedDlls;
 typedef std::list<DllTrackInfo>::iterator TrackedDllsIter;
+
+// temporarily hack to free all mplayer dll's
+// not used currently, but it can be uncommented if mplayer is not freeing
+// all dll's it has used (this could be possible, but I didn't noticed it yet).
+// basicly it removes all dll's which have the name 'mplayer' in it. After that
+// all reference to this dll are deleted from the tracked dll lists
+void tracker_free_mplayer_dlls()
+{/*
+  char strDllName[MAX_PATH + 2];
+  
+  // find mplayer dll's first
+  vector<DllLoader *>::iterator it = m_vecDlls.begin();
+  while (it != m_vecDlls.end())
+  {
+    if (MODULE_HANDLE_IS_DLLFILE(*it))
+    {
+      DllLoader* pDll = (DllLoader*)*it;
+      
+      strcpy(strDllName, pDll->GetDLLName());
+      
+      // lower
+      for (unsigned int i = 0; i < strlen(strDllName); i++)
+      {
+        strDllName[i] = tolower(strDllName[i]);
+      }
+      // ony take the dll's which have mplayer in it, for ex. (q:\\mplayer\\wmamod.dll)
+      if (strstr(strDllName, "mplayer") != NULL)
+      {
+        // remove it from the dll list first
+        it = m_vecDlls.erase(it);
+              
+        // free this library until refcount == 1
+        while(dllFreeLibrary((HMODULE)*it) < 1);
+        
+        // time to remove all references from all tracked dll's now
+        for (TrackedDllsIter itt = TrackedDlls.begin(); itt != TrackedDlls.end(); ++itt)
+	      {
+	        std::list<HMODULE>::iterator p = itt->DllList.begin();
+	        while (p != itt->DllList.end())
+	        {
+	          if (pDll == (DllLoader*)*p) p = itt->DllList.erase(p);
+	          else p++;
+	        }
+	      } 
+      }
+      else it++;
+    }
+    else it++;
+  }*/
+}
 
 inline std::map<unsigned,AllocLenCaller>* get_track_list(unsigned addr)
 {
@@ -87,7 +148,7 @@ extern "C" void* __cdecl track_malloc(size_t s)
 	__asm mov eax,[ebp+4]
 	__asm mov loc,eax
 
-		std::map<unsigned,AllocLenCaller>* pList = get_track_list(loc);
+	std::map<unsigned,AllocLenCaller>* pList = get_track_list(loc);
 
 	void* p = malloc(s);
 	if (pList)
@@ -106,7 +167,7 @@ extern "C" void* __cdecl track_calloc(size_t n, size_t s)
 	__asm mov eax,[ebp+4]
 	__asm mov loc,eax
 
-		std::map<unsigned,AllocLenCaller>* pList = get_track_list(loc);
+	std::map<unsigned,AllocLenCaller>* pList = get_track_list(loc);
 
 	void* p = calloc(n, s);
 	if (pList)
@@ -121,23 +182,22 @@ extern "C" void* __cdecl track_calloc(size_t n, size_t s)
 
 extern "C" void* __cdecl track_realloc(void* p, size_t s)
 {
-	unsigned loc;
-	__asm mov eax,[ebp+4]
-	__asm mov loc,eax
+  unsigned loc;
+  __asm mov eax,[ebp+4]
+  __asm mov loc,eax
 
-		std::map<unsigned,AllocLenCaller>* pList = get_track_list(loc);
+  std::map<unsigned,AllocLenCaller>* pList = get_track_list(loc);
 
-	void* q = realloc(p, s);
-	if (pList)
-	{
-		if (p != q)
-			pList->erase((unsigned)p);
-		AllocLenCaller temp;
-		temp.size=s;
-		temp.calleraddr=loc;
-		(*pList)[(unsigned)q] = temp;
-	}
-	return q;
+  void* q = realloc(p, s);
+  if (pList)
+  {
+    if (p != q) pList->erase((unsigned)p);
+    AllocLenCaller temp;
+    temp.size=s;
+    temp.calleraddr=loc;
+    (*pList)[(unsigned)q] = temp;
+  }
+  return q;
 }
 
 extern "C" void __cdecl track_free(void* p)
@@ -146,37 +206,50 @@ extern "C" void __cdecl track_free(void* p)
 	__asm mov eax,[ebp+4]
 	__asm mov loc,eax
 
-		std::map<unsigned,AllocLenCaller>* pList = get_track_list(loc);
+  std::map<unsigned,AllocLenCaller>* pList = get_track_list(loc);
 
-	if (pList)
-		pList->erase((unsigned)p);
+	if (!pList || pList->erase((unsigned)p) < 1)
+	{
+    // unable to delete the pointer from one of the trackers, but track_free is called!!
+    // This will happen when memory is freed by another dll then the one which allocated the memory.
+    // We, have to search every map for this memory pointer.
+    // Yes, it's slow todo, but if we are freeing already freed pointers when unloading a dll
+    // xbmc will crash. 
+    std::map<unsigned,AllocLenCaller>* pList;
+    
+    for (TrackedDllsIter it = TrackedDlls.begin(); it != TrackedDlls.end(); ++it)
+    {
+      pList = &it->AllocList;
+      // try to free the pointer from this list, and break if success
+      if (pList->erase((unsigned)p) > 0) break;
+    }
+	}
 	
-		free(p);
+  free(p);
 }
 
 extern "C"	char* __cdecl track_strdup( const char* str)
 {
-	unsigned loc;
-	__asm mov eax,[ebp+4]
-	__asm mov loc,eax
+  unsigned loc;
+  __asm mov eax,[ebp+4]
+  __asm mov loc,eax
 
-		std::map<unsigned,AllocLenCaller>* pList = get_track_list(loc);
+  std::map<unsigned,AllocLenCaller>* pList = get_track_list(loc);
 
-    char* pdup;
-    pdup = strdup(str);
+  char* pdup;
+  pdup = strdup(str);
 
-    if (pdup && pList)
-	{
-		AllocLenCaller temp;
-		temp.size=0;
-		temp.calleraddr=loc;
-		(*pList)[(unsigned)pdup] = temp;
-	}
+  if (pdup && pList)
+  {
+    AllocLenCaller temp;
+    temp.size=0;
+    temp.calleraddr=loc;
+    (*pList)[(unsigned)pdup] = temp;
+  }
 
-    return pdup;
+  return pdup;
 }
 
-extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
 extern "C" HMODULE __stdcall track_LoadLibraryA(LPCSTR file) 
 {
   unsigned loc;
@@ -190,7 +263,6 @@ extern "C" HMODULE __stdcall track_LoadLibraryA(LPCSTR file)
   return handle;
 }
 
-extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
 extern "C" BOOL __stdcall track_FreeLibrary(HINSTANCE hLibModule)
 {
   unsigned loc;
@@ -690,7 +762,6 @@ DllLoader::~DllLoader()
 	 delete entry;
 	 }
 	 Head=NULL;*/
-
 	for (TrackedDllsIter it = TrackedDlls.begin(); it != TrackedDlls.end(); ++it)
 	{
 		if (it->pDll == this)
@@ -729,9 +800,16 @@ DllLoader::~DllLoader()
 			  CLog::DebugLog("%s: Detected %d unloaded dll's", Dll, it->DllList.size());
 				for (std::list<HMODULE>::iterator p = it->DllList.begin(); p != it->DllList.end(); ++p)
 				{
-				  DllLoader* pDll = (DllLoader*)*p;
-				  if (strlen(pDll->GetDLLName()) > 0) CLog::DebugLog("  : %s", pDll->GetDLLName());
-				    
+				  DllLoader* pDll = (DllLoader*)*p; 
+				  if (pDll != (DllLoader*)MODULE_HANDLE_kernel32 &&
+              pDll != (DllLoader*)MODULE_HANDLE_user32 &&
+              pDll != (DllLoader*)MODULE_HANDLE_ddraw &&
+              pDll != (DllLoader*)MODULE_HANDLE_wininet &&
+              pDll != (DllLoader*)MODULE_HANDLE_advapi32 &&
+              pDll != (DllLoader*)MODULE_HANDLE_ws2_32)
+          {
+            if (strlen(pDll->GetDLLName()) > 0) CLog::DebugLog("  : %s", pDll->GetDLLName());
+				  }
         }
 				for (std::list<HMODULE>::iterator p = it->DllList.begin(); p != it->DllList.end(); ++p)
 				{
@@ -743,7 +821,7 @@ DllLoader::~DllLoader()
 			break;
 		}
 	}
-
+  
 	ImportDirTable = 0;
 	delete [] Dll;
 
@@ -753,7 +831,7 @@ DllLoader::~DllLoader()
 	AllocatedFunctionList.clear();
 }
 
-char * DllLoader::GetDLLName()
+char* DllLoader::GetDLLName()
 {
   return Dll ? Dll : "";
 }
@@ -858,14 +936,6 @@ Exp2Dll::~Exp2Dll()
 	}
 }           
 
-#define DEFAULT_DLLPATH "Q:\\mplayer\\codecs"
-#define MODULE_HANDLE_kernel32  0xf3f30120			//kernel32.dll magic number
-#define MODULE_HANDLE_user32    0xf3f30130			//USER32.dll magic number
-#define MODULE_HANDLE_ddraw     0xf3f30140			//ddraw.dll magic number
-#define MODULE_HANDLE_wininet   0xf3f30150			//WININET.dll magic number
-#define MODULE_HANDLE_advapi32  0xf3f30160			//ADVAPI32.dll magic number
-#define MODULE_HANDLE_ws2_32    0xf3f30170			  //WS2_32.dll magic number// winsock2
-
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file) 
 {
   // we skip to the last backslash
@@ -916,11 +986,6 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file)
 	}
 	
 	dllhandle->ResolveImports();
-	
-	//log bad guys who do not call Freelibrary 
-	if (strcmp(llibname, "wmadmod.dll") == 0) wmaDMOdll = dllhandle;
-	if (strcmp(llibname, "wmvdmod.dll") == 0) wmvDMOdll = dllhandle;
-	if (strcmp(llibname, "wmsdmod.dll") == 0) wmsDMOdll = dllhandle;
 	
 	// only execute DllMain if no EntryPoint is found
 	if (!dllhandle->EntryAddress)
