@@ -907,14 +907,14 @@ bool CApplication::PlayFile(const CStdString& strFile)
 			m_bSpinDown=false;
 		}
 	}
+	m_dwIdleTime=timeGetTime();
 	return bResult;
 }
 
 void CApplication::OnPlayBackEnded()
 {
-	m_dwSpinDownTime=timeGetTime();
-	if (!m_pPlayer) return;
-	g_playlistPlayer.PlayNext();
+	CGUIMessage msg( GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL );
+	m_gWindowManager.SendThreadMessage( msg );
 }
 
 void CApplication::OnPlayBackStarted()
@@ -988,6 +988,22 @@ void CApplication::SpinHD()
 			helper.SpindownHarddisk();
 		}
 	}
+
+	if (m_pPlayer)
+	{
+		if (!m_pPlayer->IsPlaying() )
+		{
+			if ( (long)(timeGetTime() - m_dwIdleTime) >= 10L*1000L )
+			{
+				delete m_pPlayer;
+				m_pPlayer=NULL;
+			}
+		}
+		else
+		{
+			m_dwIdleTime=timeGetTime();
+		}
+	}
 }
 
 void CApplication::ResetAllControls()
@@ -1008,6 +1024,16 @@ bool CApplication::OnMessage(CGUIMessage& message)
 					CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
 					m_gWindowManager.SendMessage( msg );
 				}
+		}
+
+		case GUI_MSG_PLAYBACK_ENDED:
+		{
+			m_dwSpinDownTime=timeGetTime();
+			m_dwIdleTime=timeGetTime();
+			if (m_pPlayer) 
+			{
+				g_playlistPlayer.PlayNext();
+			}
 		}
 		break;
 	}

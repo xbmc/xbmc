@@ -67,28 +67,26 @@ CMPlayer::CMPlayer(IPlayerCallback& callback)
 :IPlayer(callback)
 {
 	m_pDLL=NULL;
-	m_bIsPlaying=NULL;
+	m_bIsPlaying=false;
 	m_bPaused=false;
 }
 
 CMPlayer::~CMPlayer()
 {
+	StopThread();
 	Unload();
 }
 
 bool CMPlayer::openfile(const CStdString& strFile)
 {
-	m_dwTime=timeGetTime();
-
-	m_iPTS=0;
-	m_bPaused=false;
 	closefile();
-	m_bStopPlaying=false;
-	m_bIsPlaying=true;
+
+	m_iPTS			= 0;
+	m_bPaused	  = false;
+	m_bIsPlaying= true;
 
 	if (!m_pDLL)
 	{
-		OutputDebugString("cmplayer::openfile() load dll\n");
 		m_pDLL = new DllLoader("Q:\\mplayer\\mplayer.dll");
 		if( !m_pDLL->Parse() )
 		{
@@ -97,87 +95,77 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			m_pDLL=NULL;
 			return false;
 		}
-		OutputDebugString("cmplayer::openfile() resolve imports\n");
 		if( !m_pDLL->ResolveImports()  )
 		{
 			OutputDebugString("cmplayer::openfile() resolve imports failed\n");
 		}
-
-		OutputDebugString("cmplayer::openfile() load functions\n");
 		mplayer_load_dll(*m_pDLL);
+	}
+	int argc=8;
+	char szChannels[12];
+	sprintf(szChannels,"%i", g_stSettings.m_iChannels);
+	char *argv[] = {"xbmc.xbe", "-channels",szChannels,"-autoq", "6", "-vf", "pp", "1.avi",NULL};
+	mplayer_init(argc,argv);
 
-		int argc=8;
-		char szChannels[12];
-		sprintf(szChannels,"%i", g_stSettings.m_iChannels);
-		char *argv[] = {"xbmc.xbe", "-channels",szChannels,"-autoq", "6", "-vf", "pp", "1.avi",NULL};
-		mplayer_init(argc,argv);
-		
-		mplayer_setcache_size(1024);
-		if (CUtil::IsAudio(strFile) )
-		{
-			mplayer_setcache_size(0);
-		}
-		
-		int iRet=mplayer_open_file(strFile.c_str());
-		if (iRet < 0)
-		{
-			OutputDebugString("cmplayer::openfile() openfile failed\n");
-			closefile();
-			return false;
-		}
 	
-		// if AC3 pass Thru is enabled
-		bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
-		if (CUtil::IsAudio(strFile)) bSupportsSPDIFOut=false;
-		if (g_stSettings.m_iChannels==6 && bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru )
+	mplayer_setcache_size(1024);
+	if (CUtil::IsAudio(strFile) )
+	{
+		mplayer_setcache_size(0);
+	}
+	
+	int iRet=mplayer_open_file(strFile.c_str());
+	if (iRet < 0)
+	{
+		OutputDebugString("cmplayer::openfile() openfile failed\n");
+		closefile();
+		return false;
+	}
+
+	// if AC3 pass Thru is enabled
+	bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
+	if (CUtil::IsAudio(strFile)) bSupportsSPDIFOut=false;
+	if (bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru )
+	{
+		CStdString strAudioInfo;
+		GetAudioInfo( strAudioInfo);
+		// and the movie has an AC3 audio stream
+		if ( strAudioInfo.Find("AC3") >=0)
 		{
-			CStdString strAudioInfo;
-			GetAudioInfo( strAudioInfo);
-			// and the movie has an AC3 audio stream
-			if ( strAudioInfo.Find("AC3") >=0)
+			//then close file and 
+			//reopen it, but now enable the AC3 pass thru audio filter
+			mplayer_close_file();
+			int argc=10;
+			char *argv[] = {"xbmc.xbe", "-channels","2", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+			mplayer_init(argc,argv);
+			mplayer_setcache_size(1024);
+			if (CUtil::IsAudio(strFile) )
 			{
-				//then close file and 
-				//reopen it, but now enable the AC3 pass thru audio filter
-				mplayer_close_file();
-				argc=10;
-				char *argv[] = {"xbmc.xbe", "-channels","2", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
-				mplayer_init(argc,argv);
-				mplayer_setcache_size(1024);
-				if (CUtil::IsAudio(strFile) )
-				{
-					mplayer_setcache_size(0);
-				}
-				int iRet=mplayer_open_file(strFile.c_str());
-				if (iRet < 0)
-				{
-					OutputDebugString("cmplayer::openfile() openfile failed\n");
-					closefile();
-					return false;
-				}
+				mplayer_setcache_size(0);
+			}
+			int iRet=mplayer_open_file(strFile.c_str());
+			if (iRet < 0)
+			{
+				OutputDebugString("cmplayer::openfile() openfile failed\n");
+				closefile();
+				return false;
 			}
 		}
+	}
+	
+	m_bIsPlaying=true;
+	if ( ThreadHandle() == NULL)
+	{
 		Create();
 	}
-	m_dwTime=timeGetTime();
-
 	
-	m_dwTime=timeGetTime();
-	m_startEvent.Set();
 	return true;
 }
 
 bool CMPlayer::closefile()
 {
-	if (m_bIsPlaying && m_pDLL)
-	{
-		OutputDebugString("cmplayer::openfile() closefile\n");
-		m_bStopPlaying=true;
-		while (m_bIsPlaying)
-		{
-			Sleep(10);
-		}
-		OutputDebugString("cmplayer::openfile() closefile done\n");
-	}
+	m_bIsPlaying=false;
+	StopThread();
 	return true;
 }
 
@@ -197,78 +185,44 @@ void CMPlayer::OnExit()
 
 void CMPlayer::Process()
 {
-	while (!m_bStop)
+	if (m_pDLL && m_bIsPlaying)
 	{
-		m_dwTime=timeGetTime();
-		bool bGotStartEvent=m_startEvent.WaitMSec(6000);
-		if (!m_bIsPlaying && !bGotStartEvent && timeGetTime() - m_dwTime > 5000)
+		m_callback.OnPlayBackStarted();
+		do 
 		{
-			// unload the dll if we didnt play anything for > 5 sec
-			if (m_pDLL)
+			if (!m_bPaused)
 			{
-				OutputDebugString("cmplayer::process() timeout closefile\n");
-				mplayer_close_file();		
-				OutputDebugString("cmplayer::process() timeout delete dll\n");
-				delete m_pDLL;
-				OutputDebugString("cmplayer::process() timeout release all\n");
-				dllReleaseAll( );
-				m_pDLL=NULL;
-			}
-//			SetThreadPriority( GetCurrentThread(),THREAD_PRIORITY_NORMAL);
-			return;
-		}
-
-		if (m_pDLL && bGotStartEvent )
-		{
-			//SetThreadPriority( GetCurrentThread(),THREAD_PRIORITY_HIGHEST);
-			m_startEvent.Reset();
-			if (m_bIsPlaying) 
-			{
-				m_callback.OnPlayBackStarted();
-				do 
+				int iRet=mplayer_process();
+				if (iRet < 0)
 				{
-					if (!m_bPaused)
-					{
-						int iRet=mplayer_process();
-						if (iRet < 0)
-						{
-							m_bIsPlaying=false;
-						}
-						
-						__int64 iPTS=mplayer_get_pts();
-						if (iPTS)
-						{
-							m_iPTS=iPTS;
-						}
-					}
-					else 
-					{
-						Sleep(100);
-					}
-				} while (!m_bStopPlaying && m_bIsPlaying && !m_bStop);
-				OutputDebugString("cmplayer::process() end playing\n");
-				mplayer_close_file();
-				m_bIsPlaying=false;
-				if (!m_bStopPlaying && !m_bStop)
+					m_bIsPlaying=false;
+				}
+				
+				__int64 iPTS=mplayer_get_pts();
+				if (iPTS)
 				{
-					m_callback.OnPlayBackEnded();
+					m_iPTS=iPTS;
 				}
 			}
-		}
+			else 
+			{
+				Sleep(100);
+			}
+		} while (m_bIsPlaying);
+		mplayer_close_file();
+	}
+	m_bIsPlaying=false;
+	if (!m_bStop)
+	{
+		m_callback.OnPlayBackEnded();
 	}
 }
 
 void CMPlayer::Unload()
 {
-	OutputDebugString("cmplayer::process() unload() stopthread\n");
-	StopThread();
 	if (m_pDLL)
 	{
-		OutputDebugString("cmplayer::process() unload() closefile\n");
-		mplayer_close_file();		
-		OutputDebugString("cmplayer::process() unload() delete dll\n");
 		delete m_pDLL;
-		OutputDebugString("cmplayer::process() unload() release all\n");
 		dllReleaseAll( );
 		m_pDLL=NULL;
 	}
@@ -398,6 +352,11 @@ void CMPlayer::GetAudioInfo( CStdString& strAudioInfo)
 	long lSampleRate;
 	int	 iChannels;
 	BOOL bVBR;
+	if (!m_bIsPlaying)
+	{
+		strAudioInfo="";
+		return;
+	}
 	mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
 	float fSampleRate=((float)lSampleRate) / 1000.0f;
 	if (bVBR)
@@ -422,6 +381,11 @@ void CMPlayer::GetVideoInfo( CStdString& strVideoInfo)
 	unsigned int   iHeight;
 	long  lFrames2Early;
 	long  lFrames2Late;
+	if (!m_bIsPlaying)
+	{
+		strVideoInfo="";
+		return;
+	}
 	mplayer_GetVideoInfo(strFourCC,strVideoCodec, &fFPS, &iWidth,&iHeight, &lFrames2Early, &lFrames2Late);
 	strVideoInfo.Format("video:%s fps:%02.2f %ix%i early/late:%i/%i", 
 											strFourCC,fFPS,iWidth,iHeight,lFrames2Early,lFrames2Late);
@@ -435,6 +399,11 @@ void CMPlayer::GetGeneralInfo( CStdString& strVideoInfo)
 	int iCacheFilled;
 	float fTotalCorrection;
 	float fAVDelay;
+	if (!m_bIsPlaying)
+	{
+		strVideoInfo="";
+		return;
+	}
 	mplayer_GetGeneralInfo(&lFramesDropped, &iQuality, &iCacheFilled, &fTotalCorrection, &fAVDelay);
 	strVideoInfo.Format("dropped:%i Q:%i cache:%i ct:%2.2f av:%2.2f", 
 												lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, fAVDelay);
