@@ -27,7 +27,10 @@
     <id>7</id>
     <value>Files</value>
   </string>
-  
+  <string>
+    <id>8</id>
+    <value>Meteo</value>
+  </string>
   <string>
     <id>11</id>
     <value>Lunedi'</value>
@@ -842,11 +845,11 @@
   </string>
   <string>
     <id>285</id>
-    <value>Filtro deinterlace</value>
+    <value>Filtro Deinterlacciante</value>
   </string>
   <string>
     <id>286</id>
-    <value>Filtro postprocessing</value>
+    <value>Filtro Postprocessing</value>
   </string>
   <string>
     <id>287</id>
@@ -920,4 +923,340 @@
     <id>305</id>
     <value>On/Off</value>
   </string>
+  <string>
+    <id>306</id>
+    <value>Non-Interlacciato</value>
+  </string>
+  <string>
+    <id>307</id>
+    <value>Auto</value>
+  </string>
+  <string>
+    <id>308</id>
+    <value>Filtro verticale deblocking</value>
+  </string>
+  <string>
+    <id>309</id>
+    <value>Filtro orizzontale deblocking</value>
+  </string>
+  <string>
+    <id>310</id>
+    <value>Luce/Contrasto Automatico</value>
+  </string>
+  <string>
+    <id>311</id>
+    <value>Dering</value>
+  </string>
+  <string>
+    <id>312</id>
+    <value>(0=auto)</value>
+  </string>
+  <string>
+    <id>313</id>
+    <value>Riorganizza database</value>
+  </string>
+  <string>
+    <id>314</id>
+    <value>Preparazione...</value>
+  </string>
+  <string>
+    <id>315</id>
+    <value>Errore nel Database</value>
+  </string>
+  <string>
+    <id>316</id>
+    <value>Ricerca delle Canzoni in corso...</value>
+  </string>
+  <string>
+    <id>317</id>
+    <value>Riorganizzazione eseguita con successo</value>
+  </string>
+  <string>
+    <id>318</id>
+    <value>Marking deleted songs</value>
+  </string>
+  <string>
+    <id>319</id>
+    <value>Errore nella riorganizzazione delle Canzoni</value>
+  </string>
+  <string>
+    <id>320</id>
+    <value>Ricerca degli Artisti in corso...</value>
+  </string>
+  <string>
+    <id>321</id>
+    <value>Errore nella riorganizzazione Artisti</value>
+  </string>
+  <string>
+    <id>322</id>
+    <value>Ricerca Generi Musicali in corso...</value>
+  </string>
+  <string>
+    <id>323</id>
+    <value>Errore nella riorganizzazione dei Generi Musicali</value>
+  </string>
+  <string>
+    <id>324</id>
+    <value>Ricerca delle Pathes in corso...</value>
+  </string>
+  <string>
+    <id>325</id>
+    <value>Errore nella riorganizzazione delle Pathes</value>
+  </string>
+  <string>
+    <id>326</id>
+    <value>Ricerca degli Album in corso...</value>
+  </string>
+  <string>
+    <id>327</id>
+    <value>Errore durante la riorganizzazione degli Album</value>
+  </string>
+  <string>
+    <id>328</id>
+    <value>Salvo le modifche...</value>
+  </string>
+  <string>
+    <id>329</id>
+    <value>Errore nella scrittura delle modifiche</value>
+  </string>
+  <string>
+    <id>330</id>
+    <value>Potrebbe richiedere diversi minuti...</value>
+  </string>
+  <string>
+    <id>331</id>
+    <value>Compressione database...</value>
+  </string>
+  <string>
+    <id>332</id>
+    <value>Errore durante la compressione del database</value>
+  </string>
+  <string>
+    <id>333</id>
+    <value>Vuoi riorganizzare il databese musicale?</value>
+  </string>
+  <string>
+    <id>334</id>
+    <value>Riorganizza il database musicale</value>
+  </string>
+  <string>
+    <id>335</id>
+    <value>Avvia</value>
+  </string>
+  <string>
+    <id>336</id>
+    <value>Adj. Framerate</value>
+  </string>
+  <string>
+    <id>337</id>
+    <value>Audio Output:</value>
+  </string>
+  <string>
+    <id>338</id>
+    <value>Analogico</value>
+  </string>
+  <string>
+    <id>339</id>
+    <value>Digitale</value>
+  </string>
+  <string>
+    <id>340</id>
+    <value>Artisti Vari</value>
+  </string>
+  <string>
+    <id>341</id>
+    <value>Avvia DVD</value>
+  </string>
+  <string>
+    <id>342</id>
+    <value>Video</value>
+  </string>
+  <string>
+    <id>343</id>
+    <value>Adatta Framerate</value>
+  </string>
+  <string>
+    <id>344</id>
+    <value>Attori</value>
+  </string>
+  <string>
+    <id>345</id>
+    <value>Anno</value>
+  </string>
+  <string>
+    <id>346</id>
+    <value>Stack</value>
+  </string>
+  <string>
+    <id>347</id>
+    <value>Unstack</value>
+  </string>
+  <string>
+    <id>348</id>
+    <value>Flatten Directory Hierarchy</value>
+  </string>
+  <string>
+    <id>349</id>
+    <value>Visualizza solo default.xbe</value>
+  </string>
+  <string>
+    <id>350</id>
+    <value>Programmi</value>
+  </string>
+  <string>
+    <id>351</id>
+    <value>Off</value>
+  </string>
+  <string>
+    <id>352</id>
+    <value>Dim</value>
+  </string>
+  <string>
+    <id>353</id>
+    <value>Nero</value>
+  </string>
+  <string>
+    <id>354</id>
+    <value>Matrix Trails</value>
+  </string>
+  <string>
+    <id>355</id>
+    <value>Screensaver Idle Timeout</value>
+  </string>
+  <string>
+    <id>356</id>
+    <value>Screensaver Mode</value>
+  </string>
+  <string>
+    <id>357</id>
+    <value>Shutdown Idle Timeout</value>
+  </string>
+  <string>
+    <id>358</id>
+    <value>Tutti gli album</value>
+  </string>
+  <string>
+    <id>359</id>
+    <value>Album Recenti</value>
+  </string>
+  <string>
+    <id>360</id>
+    <value>Screensaver</value>
+  </string>
+  <string>
+    <id>361</id>
+    <value>R. SlideShow</value>
+  </string>   
+  <string>
+    <id>362</id>
+    <value>Livello Fade Screensaver (%)</value>
+  </string>
+  <string>
+    <id>363</id>
+    <value>Ordina per File</value>
+  </string>   
+  <string>
+    <id>364</id>
+    <value>DD/DTS Passthrough Multicanale</value>
+  </string>   
+  <string>
+    <id>365</id>
+    <value>Ordina per Nome</value>
+  </string>   
+  <string>
+    <id>366</id>
+    <value>Ordina per Anno</value>
+  </string>   
+  <string>
+    <id>367</id>
+    <value>Ordina per Importanza</value>
+  </string>   
+  <string>
+    <id>368</id>
+    <value>IMDB</value>
+  </string>   
+  <string>
+    <id>369</id>
+    <value>Titolo</value>
+  </string>
+  <string>
+    <id>401</id>
+    <value>Temp</value>
+  </string>   
+  <string>
+    <id>402</id>
+    <value>Percepiti</value>
+  </string> 
+  <string>
+    <id>403</id>
+    <value>Indice UV</value>
+  </string>
+  <string>
+    <id>404</id>
+    <value>Vento</value>
+  </string>   
+  <string>
+    <id>405</id>
+    <value>Dew Point</value>
+  </string> 
+  <string>
+    <id>406</id>
+    <value>Umidità</value>
+  </string> 
+  <string>
+    <id>407</id>
+    <value>Da</value>
+  </string>
+  <string>
+    <id>408</id>
+    <value>vel.</value>
+  </string>      
+  <string>
+    <id>410</id>
+    <value>Collegamento a Weather.com</value>
+  </string>       
+  <string>
+    <id>411</id>
+    <value>Scarico le Previsioni meteo per:</value>
+  </string> 
+  <string>
+    <id>412</id>
+    <value>Impossibile scaricare le informazioni meteo</value>
+  </string>    
+  <string>
+    <id>413</id>
+    <value>Manuale</value>
+  </string>    
+  <string>
+    <id>414</id>
+    <value>Nessuna review per questo album</value>
+  </string>    
+  <string>
+    <id>415</id>
+    <value>Downloading thumbnail...</value>
+  </string> 
+  <string>
+    <id>416</id>
+    <value>Non Disponibile</value>
+  </string> 
+  <string>
+    <id>417</id>
+    <value>Icone grandi</value>
+  </string>
+  <string>
+    <id>418</id>
+    <value>I miei Video/Generi</value>
+  </string> 
+  <string>
+    <id>419</id>
+    <value>I miei Video/Attori</value>
+  </string> 
+  <string>
+    <id>420</id>
+    <value>I miei Video/Anno</value>
+  </string> 
+  <string>
+    <id>421</id>
+    <value>I miei Video/Titolo</value>
+  </string> 
 </strings>

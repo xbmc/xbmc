@@ -493,13 +493,12 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 				}
 				else
 				{
-					CStdString strFolderjpg;
-					CUtil::AddFileToFolder(strPath, "folder.jpg", strFolderjpg);
-					if(CUtil::ThumbExists(strFolderjpg,true))
-					{
+          CStdString strThumb;
+          if ( CUtil::GetFolderThumb(strPath, strThumb) )
+          {
 						//	show albums folder jpeg
 						CPicture picture;
-						m_pTexture=picture.Load(strFolderjpg);
+						m_pTexture=picture.Load(strThumb);
 					  m_iTextureWidth=picture.GetWidth();
 					  m_iTextureHeight=picture.GetHeight();
 					  if (m_pTexture)
