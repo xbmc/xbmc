@@ -978,12 +978,21 @@ HRESULT CApplication::Initialize()
     m_guiDialogOK.DoModal(g_stSettings.m_iStartupWindow);
   }
 
+  // if the user shutoff the xbox during music scan
+  // restore the settings
+  if (g_stSettings.m_bMyMusicIsScanning)
+  {
+    CLog::Log(LOGWARNING,"System rebooted during music scan! ... restoring UseTags and FindRemoteThumbs");
+    RestoreMusicScanSettings();
+  }
+
   CLog::Log(LOGNOTICE, "initialize done");
   if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NOTV)
   {
     // jump to my music when we're in NO tv mode
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
   }
+
   m_bInitializing = false;
   return S_OK;
 }
@@ -3556,4 +3565,26 @@ bool CApplication::SwitchToFullScreen()
 const CStdString& CApplication::GetCurrentPlayer()
 {
   return m_strCurrentPlayer;
+}
+
+// when a scan is initiated, save current settings
+// and enable tag reading and remote thums
+void CApplication::SaveMusicScanSettings()
+{
+  CLog::Log(LOGINFO,"Music scan has started ... enabling Tag Reading, and Remote Thumbs");
+  g_stSettings.m_bMyMusicIsScanning = true;
+  g_stSettings.m_bMyMusicOldUseTags = g_guiSettings.GetBool("MyMusic.UseTags");
+  g_stSettings.m_bMyMusicOldFindThumbs = g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs");
+  g_settings.Save();
+  
+  g_guiSettings.SetBool("MyMusic.UseTags", true);
+  g_guiSettings.SetBool("MusicLibrary.FindRemoteThumbs", true);
+}
+
+void CApplication::RestoreMusicScanSettings()
+{
+  g_guiSettings.SetBool("MyMusic.UseTags", g_stSettings.m_bMyMusicOldUseTags);
+  g_guiSettings.SetBool("MusicLibrary.FindRemoteThumbs", g_stSettings.m_bMyMusicOldFindThumbs);
+  g_stSettings.m_bMyMusicIsScanning = false;
+  g_settings.Save();
 }
