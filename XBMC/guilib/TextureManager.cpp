@@ -3,6 +3,7 @@
 #include "animatedgif.h"
 #include "../xbmc/utils/log.h"
 #include <xgraphics.h>
+#include "PackedTexture.h"
 
 extern "C" void dllprintf( const char *format, ... );
 
@@ -16,21 +17,21 @@ CTexture::CTexture()
 	m_iWidth=m_iHeight=0;
   m_iLoops=0;
 	m_pPalette = NULL;
-	m_bCached = false;
+	m_bPacked = false;
 }
 
-CTexture::CTexture(LPDIRECT3DTEXTURE8 pTexture,int iWidth, int iHeight, bool Cached, int iDelay, LPDIRECT3DPALETTE8 pPalette)
+CTexture::CTexture(LPDIRECT3DTEXTURE8 pTexture,int iWidth, int iHeight, bool bPacked, int iDelay, LPDIRECT3DPALETTE8 pPalette)
 {
   m_iLoops=0;
   m_iReferenceCount=0;
   m_pTexture=pTexture;
-  m_iDelay=iDelay;
+  m_iDelay=2*iDelay;
 	m_iWidth=iWidth;
 	m_iHeight=iHeight;
 	m_pPalette = pPalette;
-	if (m_pPalette && !Cached)
+	if (m_pPalette)
 		m_pPalette->AddRef();
-	m_bCached = Cached;
+	m_bPacked = bPacked;
 }
 
 CTexture::~CTexture()
@@ -42,11 +43,12 @@ void CTexture::FreeTexture()
 {
 	if (m_pTexture)
 	{
-		if (m_bCached)
+		if (m_bPacked)
 		{
 			m_pTexture->BlockUntilNotBusy();
 			void* Data = (void*)(*(DWORD*)(((char*)m_pTexture) + sizeof(D3DTexture)));
-			D3D_FreeContiguousMemory(Data);
+			if (Data)
+				D3D_FreeContiguousMemory(Data);
 			delete [] m_pTexture;
 		}
 		else
@@ -55,8 +57,13 @@ void CTexture::FreeTexture()
 	}
 	if (m_pPalette)
 	{
-		if (m_bCached)
-			delete m_pPalette;
+		if (m_bPacked)
+		{
+			if ((m_pPalette->Common & D3DCOMMON_REFCOUNT_MASK) > 1)
+				m_pPalette->Release();
+			else
+				delete m_pPalette;
+		}
 		else
 			m_pPalette->Release();
 	}
@@ -243,6 +250,7 @@ void CTextureMap::Flush()
 //------------------------------------------------------------------------------
 CGUITextureManager::CGUITextureManager(void)
 {
+	D3DXSetDXT3DXT5(TRUE);
 }
 
 CGUITextureManager::~CGUITextureManager(void)
@@ -296,86 +304,6 @@ int RoundPow2(int s)
 	return 1 << (int)(f+0.999f);
 }
 
-static HRESULT LoadCachedTexture(LPDIRECT3DDEVICE8 pDevice, const char* szFilename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8* ppTexture, LPDIRECT3DPALETTE8* ppPalette)
-{
-	*ppTexture = NULL; *ppPalette = NULL;
-
-	HANDLE hFile = CreateFile(szFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-	if (hFile == INVALID_HANDLE_VALUE)
-		return E_FAIL;
-
-	XPR_HEADER XPRHeader;
-	DWORD n;
-	if (!ReadFile(hFile, &XPRHeader, sizeof(XPR_HEADER), &n, NULL) || n < sizeof(XPR_HEADER))
-	{
-		CloseHandle(hFile);
-		return E_INVALIDARG;
-	}
-
-	if (XPRHeader.dwMagic != XPR_MAGIC_VALUE)
-	{
-		CloseHandle(hFile);
-		return E_INVALIDARG;
-	}
-
-	DWORD ResHeaderSize = XPRHeader.dwHeaderSize - sizeof(XPR_HEADER);
-	D3DTexture* pTex = (D3DTexture*)(new char[sizeof(D3DTexture) + sizeof(DWORD)]);
-	D3DPalette* pPal = 0;
-	if (ResHeaderSize >= sizeof(D3DTexture) + sizeof(D3DPalette) + 4)
-		pPal = new D3DPalette;
-
-	DWORD ResDataSize = XPRHeader.dwTotalSize - XPRHeader.dwHeaderSize;
-	void* ResData = D3D_AllocContiguousMemory(ResDataSize, 4096);
-	if (!ResData)
-		goto CacheLoadError;
-
-	if (!ReadFile(hFile, pTex, sizeof(D3DTexture), &n, NULL) || n != sizeof(D3DTexture))
-		goto CacheLoadError;
-	if (pPal)
-	{
-		if (!ReadFile(hFile, pPal, sizeof(D3DTexture), &n, NULL) || n != sizeof(D3DTexture))
-			goto CacheLoadError;
-	}
-	WORD RealSize[2];
-	if (!ReadFile(hFile, RealSize, 4, &n, 0) || n != 4)
-		goto CacheLoadError;
-
-	if (!ReadFile(hFile, ResData, ResDataSize, &n, NULL) || n != ResDataSize)
-		goto CacheLoadError;
-	
-	CloseHandle(hFile);
-	hFile = INVALID_HANDLE_VALUE;
-
-	if ((pTex->Common & D3DCOMMON_TYPE_MASK) != D3DCOMMON_TYPE_TEXTURE)
-		goto CacheLoadError;
-
-	*ppTexture = (LPDIRECT3DTEXTURE8)pTex;
-	(*ppTexture)->Register(ResData);
-	*(DWORD*)(pTex + 1) = (DWORD)ResData;
-	if (pPal)
-	{
-		*ppPalette = (LPDIRECT3DPALETTE8)pPal;
-		(*ppPalette)->Register(ResData);
-	}
-
-	pInfo->Width = RealSize[0];
-	pInfo->Height = RealSize[1];
-	pInfo->Depth = 0;
-	pInfo->MipLevels = 1;
-	D3DSURFACE_DESC desc;
-	(*ppTexture)->GetLevelDesc(0, &desc);
-	pInfo->Format = desc.Format;
-
-	return S_OK;
-
-CacheLoadError:
-	delete [] pTex;
-	if (pPal) delete pPal;
-	if (ResData) D3D_FreeContiguousMemory(ResData);
-	if (hFile != INVALID_HANDLE_VALUE) CloseHandle(hFile);
-	return E_FAIL;
-}
-
 int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 {
   // first check of texture exists...
@@ -402,98 +330,126 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 	LARGE_INTEGER start;
 	QueryPerformanceCounter(&start);
 
+	CStdString strPackedPath(strPath);
+	strPackedPath += ".xpr";
+	bool bPacked = (GetFileAttributes(strPackedPath) != -1);
+
+	D3DXIMAGE_INFO info;
+
   if (strPath.Right(4).ToLower()==".gif")
   {
- 
-  	CAnimatedGifSet		AnimatedGifSet;
-    int iImages=AnimatedGifSet.LoadGIF(strPath.c_str());
-		if (iImages==0)
+		CTextureMap* pMap;
+
+		if (bPacked)
 		{
-      CStdString strText=strPath;
-      strText.MakeLower();
-      // dont release skin textures, they are reloaded each time
-      if (strstr(strPath.c_str(),"q:\\skin") ) 
-      {
-        CLog::Log("Texture manager unable to find file:%s",strPath.c_str());
-      }
-			return 0;
-		}
-    int iWidth = AnimatedGifSet.FrameWidth;
-		int iHeight= AnimatedGifSet.FrameHeight;
-
-		g_graphicsContext.Get3DDevice()->CreatePalette(D3DPALETTE_256, &pPal);
-		PALETTEENTRY* pal;
-		pPal->Lock((D3DCOLOR**)&pal, 0);
-
-		memcpy(pal, AnimatedGifSet.m_vecimg[0]->Palette, sizeof(PALETTEENTRY)*256);
-		for (int i = 0; i < 256; i++)
-			pal[i].peFlags = 0xff; // alpha
-		if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
-			pal[AnimatedGifSet.m_vecimg[0]->Transparent].peFlags = 0;
-
-		pPal->Unlock();
-
-		CTextureMap* pMap = new CTextureMap(strTextureName);
-	  for (int iImage=0; iImage < iImages; iImage++)
-    {
-			int w = RoundPow2(iWidth);
-			int h = RoundPow2(iHeight);
-			if (g_graphicsContext.Get3DDevice()->CreateTexture(w, h, 1, 0, D3DFMT_P8, 0, &pTexture) == D3D_OK) 
+			LPDIRECT3DTEXTURE8* pTextures;
+			int nLoops = 0;
+			int* Delay;
+			int nImages = LoadPackedAnim(g_graphicsContext.Get3DDevice(), strPackedPath.c_str(), &info, &pTextures, &pPal, nLoops, &Delay);
+			if (!nImages)
 			{
-				D3DLOCKED_RECT lr;
-				CAnimatedGif* pImage=AnimatedGifSet.m_vecimg[iImage];
-				RECT rc = { 0, 0, pImage->Width, pImage->Height };
-				if ( D3D_OK == pTexture->LockRect( 0, &lr, &rc, 0 ))
+				CStdString strText = strPackedPath;
+				strText.MakeLower();
+				if (strstr(strText.c_str(),"q:\\skin") ) 
 				{
-					POINT pt = { 0, 0 };
-					XGSwizzleRect(pImage->Raster, pImage->BytesPerRow, &rc, lr.pBits, w, h, &pt, 1);
-
-					pTexture->UnlockRect( 0 );
-
-					CTexture* pclsTexture = new CTexture(pTexture,iWidth,iHeight, false, 100, pPal);
-					pclsTexture->SetDelay(pImage->Delay);
-					pclsTexture->SetLoops(AnimatedGifSet.nLoops);
-					
-					pMap->Add(pclsTexture);
+					CLog::Log("Texture manager unable to load file:%s",strPackedPath.c_str());
 				}
+				return NULL;
 			}
 
-    } // of for (int iImage=0; iImage < iImages; iImage++)
+			pMap = new CTextureMap(strTextureName);
+			for (int iImage=0; iImage < nImages; ++iImage)
+			{
+				CTexture* pclsTexture = new CTexture(pTextures[iImage],info.Width, info.Height, true, Delay[iImage], pPal);
+				pclsTexture->SetLoops(nLoops);
+				pMap->Add(pclsTexture);
+			}
 
-		pPal->Release();
+			delete [] pTextures;
+			delete [] Delay;
+			pPal->Release();
+		}
+		else
+		{
+			CAnimatedGifSet		AnimatedGifSet;
+			int iImages=AnimatedGifSet.LoadGIF(strPath.c_str());
+			if (iImages==0)
+			{
+				CStdString strText=strPath;
+				strText.MakeLower();
+				if (strstr(strPath.c_str(),"q:\\skin") ) 
+				{
+					CLog::Log("Texture manager unable to find file:%s",strPath.c_str());
+				}
+				return 0;
+			}
+			int iWidth = AnimatedGifSet.FrameWidth;
+			int iHeight= AnimatedGifSet.FrameHeight;
+
+			g_graphicsContext.Get3DDevice()->CreatePalette(D3DPALETTE_256, &pPal);
+			PALETTEENTRY* pal;
+			pPal->Lock((D3DCOLOR**)&pal, 0);
+
+			memcpy(pal, AnimatedGifSet.m_vecimg[0]->Palette, sizeof(PALETTEENTRY)*256);
+			for (int i = 0; i < 256; i++)
+				pal[i].peFlags = 0xff; // alpha
+			if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
+				pal[AnimatedGifSet.m_vecimg[0]->Transparent].peFlags = 0;
+
+			pPal->Unlock();
+
+			pMap = new CTextureMap(strTextureName);
+			for (int iImage=0; iImage < iImages; iImage++)
+			{
+				int w = RoundPow2(iWidth);
+				int h = RoundPow2(iHeight);
+				if (g_graphicsContext.Get3DDevice()->CreateTexture(w, h, 1, 0, D3DFMT_P8, 0, &pTexture) == D3D_OK) 
+				{
+					D3DLOCKED_RECT lr;
+					CAnimatedGif* pImage=AnimatedGifSet.m_vecimg[iImage];
+					RECT rc = { 0, 0, pImage->Width, pImage->Height };
+					if ( D3D_OK == pTexture->LockRect( 0, &lr, &rc, 0 ))
+					{
+						POINT pt = { 0, 0 };
+						XGSwizzleRect(pImage->Raster, pImage->BytesPerRow, &rc, lr.pBits, w, h, &pt, 1);
+
+						pTexture->UnlockRect( 0 );
+
+						CTexture* pclsTexture = new CTexture(pTexture,iWidth,iHeight, false, 100, pPal);
+						pclsTexture->SetDelay(pImage->Delay);
+						pclsTexture->SetLoops(AnimatedGifSet.nLoops);
+
+						pMap->Add(pclsTexture);
+					}
+				}
+			} // of for (int iImage=0; iImage < iImages; iImage++)
+
+			pPal->Release();
+		}
 
 		LARGE_INTEGER end, freq;
 		QueryPerformanceCounter(&end);
 		QueryPerformanceFrequency(&freq);
 		char temp[200];
-		sprintf(temp, "Load %s: %.1fms\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
+		sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, bPacked ? " (packed)" : "");
 		OutputDebugString(temp);
 
     m_vecTextures.push_back(pMap);
     return pMap->size();
   } // of if (strPath.Right(4).ToLower()==".gif")
 
-	D3DXSetDXT3DXT5(TRUE);
-
-	D3DXIMAGE_INFO info;
-
-	bool Cached = false;
-	CStdString strCachePath(strPath);
-	strCachePath += ".xpr";
-	if (GetFileAttributes(strCachePath) != -1)
+	if (bPacked)
 	{
-		if (FAILED(LoadCachedTexture(g_graphicsContext.Get3DDevice(), strCachePath.c_str(), &info, &pTexture, &pPal)))
+		if (FAILED(LoadPackedTexture(g_graphicsContext.Get3DDevice(), strPackedPath.c_str(), &info, &pTexture, &pPal)))
 		{
-			CStdString strText = strCachePath;
+			CStdString strText = strPackedPath;
 			strText.MakeLower();
-			// dont release skin textures, they are reloaded each time
 			if (strstr(strText.c_str(),"q:\\skin") ) 
 			{
-				CLog::Log("Texture manager unable to load file:%s",strCachePath.c_str());
+				CLog::Log("Texture manager unable to load file:%s",strPackedPath.c_str());
 			}
 			return NULL;
 		}
-		Cached = true;
 	}
 	else
 	{
@@ -505,7 +461,6 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 			{
 				CStdString strText = strPath;
 				strText.MakeLower();
-				// dont release skin textures, they are reloaded each time
 				if (strstr(strText.c_str(),"q:\\skin") ) 
 				{
 					CLog::Log("Texture manager unable to load file:%s",strPath.c_str());
@@ -522,7 +477,6 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 			{
 				CStdString strText = strPath;
 				strText.MakeLower();
-				// dont release skin textures, they are reloaded each time
 				if (strstr(strText.c_str(),"q:\\skin") ) 
 				{
 					CLog::Log("Texture manager unable to load file:%s",strPath.c_str());
@@ -536,16 +490,18 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 	QueryPerformanceCounter(&end);
 	QueryPerformanceFrequency(&freq);
 	char temp[200];
-	sprintf(temp, "Load %s: %.1fms %s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, Cached ? "(cached)" : "");
+	sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, bPacked ? " (packed)" : "");
 	OutputDebugString(temp);
 
 	//CStdString strLog;
 	//strLog.Format("%s %ix%i\n", strTextureName.c_str(),info.Width,info.Height);
 	//OutputDebugString(strLog.c_str());
   CTextureMap* pMap = new CTextureMap(strTextureName);
-	CTexture* pclsTexture = new CTexture(pTexture,info.Width,info.Height, Cached, 100, pPal);
+	CTexture* pclsTexture = new CTexture(pTexture,info.Width,info.Height, bPacked, 100, pPal);
   pMap->Add(pclsTexture);
   m_vecTextures.push_back(pMap);
+	if (pPal)
+		pPal->Release();
 #else
   LPDIRECT3DTEXTURE8 pTexture;
   CStdString strPath=g_graphicsContext.GetMediaDir();
