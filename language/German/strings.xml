@@ -878,7 +878,7 @@
   <string><id>15100</id><value>Nav</value></string>
   <string><id>15101</id><value>Datenbank</value></string>
   <string><id>15102</id><value>* Alle Alben</value></string>
-  <string><id>15103</id><value>* Alle Künstler</value></string>
-  <string><id>15104</id><value>* Alle Lieder</value></string>
+  <string><id>15103</id><value>* Alle Interpreten</value></string>
+  <string><id>15104</id><value>* Alle Titel</value></string>
   <string><id>15105</id><value>* Alle Genre</value></string>
 </strings>
