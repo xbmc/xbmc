@@ -1,5 +1,5 @@
 #pragma once
-#include "GUIWindowVideo.h"
+#include "GUIWindowVideoFiles.h"
 #include <map>
 #include <set>
 

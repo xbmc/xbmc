@@ -305,71 +305,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 				}
 				else if (iAction==ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
 				{
-					bool bDeselect = SelectItem(list, iItem);
-					if (m_strDirectory[list] == "")
-					{
-						OnBookmarksPopupMenu(list, iItem);
-						return true;
-					}
-					// popup the context menu
-					CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-					if (pMenu)
-					{
-						// clean any buttons not needed
-						pMenu->ClearButtons();
-						// add the needed buttons
-						pMenu->AddButton(188);	// SelectAll
-						pMenu->AddButton(118);	// Rename
-						pMenu->AddButton(117);	// Delete
-						pMenu->AddButton(115);	// Copy
-						pMenu->AddButton(116);	// Move
-						pMenu->AddButton(119);	// New Folder
-						pMenu->EnableButton(1, true);
-						pMenu->EnableButton(2, CanRename(list));
-						pMenu->EnableButton(3, CanDelete(list));
-						pMenu->EnableButton(4, CanCopy(list));
-						pMenu->EnableButton(5, CanMove(list));
-						pMenu->EnableButton(6, CanNewFolder(list));
-						// get the position we need...
-						int iPosX=200;
-						int iPosY=100;
-						CGUIListControl *pList = (CGUIListControl *)GetControl(list+CONTROL_LEFT_LIST);
-						if (pList)
-						{
-							iPosX = pList->GetXPosition()+(pList->GetWidth()-pMenu->GetWidth())/2;
-							iPosY = pList->GetYPosition()+(pList->GetHeight()-pMenu->GetHeight())/2;
-						}
-						// ok, now figure out if it should be above or below this point...
-						pMenu->SetPosition(iPosX,iPosY);
-						pMenu->DoModal(GetID());
-						switch (pMenu->GetButton())
-						{
-						case 1:
-							OnSelectAll(list);
-							break;
-						case 2:
-							OnRename(list);
-							break;
-						case 3:
-							OnDelete(list);
-							break;
-						case 4:
-							OnCopy(list);
-							break;
-						case 5:
-							OnMove(list);
-							break;
-						case 6:
-							OnNewFolder(list);
-							break;
-						default:
-							if (bDeselect)
-							{	// deselect item as we didn't do anything
-								m_vecItems[list][iItem]->Select(false);
-							}
-							break;
-						}
-					}
+					OnPopupMenu(list, iItem);
         }
       }
     }
@@ -1248,8 +1184,33 @@ int CGUIWindowFileManager::GetFocusedList() const
 	return GetFocusedControl()-CONTROL_LEFT_LIST;
 }
 
-void CGUIWindowFileManager::OnBookmarksPopupMenu(int list, int item)
+void CGUIWindowFileManager::OnPopupMenu(int list, int item)
 {
+	bool bDeselect = SelectItem(list, item);
+	// calculate the position for our menu
+	int iPosX=200;
+	int iPosY=100;
+	CGUIListControl *pList = (CGUIListControl *)GetControl(list+CONTROL_LEFT_LIST);
+	if (pList)
+	{
+		iPosX = pList->GetXPosition()+pList->GetWidth()/2;
+		iPosY = pList->GetYPosition()+pList->GetHeight()/2;
+	}	
+	if (m_strDirectory[list] == "")
+	{
+		// and do the popup menu
+		if (CGUIDialogContextMenu::BookmarksMenu("files", m_vecItems[list][item]->GetLabel(), m_vecItems[list][item]->m_strPath, iPosX, iPosY))
+		{
+			m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
+			if (m_strDirectory[1-list] == "")
+				Refresh();
+			else
+				Refresh(list);
+			return;
+		}
+		m_vecItems[list][item]->Select(false);
+		return;
+	}
 	// popup the context menu
 	CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
 	if (pMenu)
@@ -1257,102 +1218,49 @@ void CGUIWindowFileManager::OnBookmarksPopupMenu(int list, int item)
 		// clean any buttons not needed
 		pMenu->ClearButtons();
 		// add the needed buttons
+		pMenu->AddButton(188);	// SelectAll
 		pMenu->AddButton(118);	// Rename
-		pMenu->AddButton(748);	// Edit Path
 		pMenu->AddButton(117);	// Delete
-		pMenu->AddButton(749);	// Add Share
-		// get the position we need...
-		int iPosX=200;
-		int iPosY=100;
-		CGUIListControl *pList = (CGUIListControl *)GetControl(list+CONTROL_LEFT_LIST);
-		if (pList)
-		{
-			iPosX = pList->GetXPosition()+(pList->GetWidth()-pMenu->GetWidth())/2;
-			iPosY = pList->GetYPosition()+(pList->GetHeight()-pMenu->GetHeight())/2;
-		}
-
-		// ok, now figure out if it should be above or below this point...
-		pMenu->SetPosition(iPosX,iPosY);
+		pMenu->AddButton(115);	// Copy
+		pMenu->AddButton(116);	// Move
+		pMenu->AddButton(119);	// New Folder
+		pMenu->EnableButton(1, true);
+		pMenu->EnableButton(2, CanRename(list));
+		pMenu->EnableButton(3, CanDelete(list));
+		pMenu->EnableButton(4, CanCopy(list));
+		pMenu->EnableButton(5, CanMove(list));
+		pMenu->EnableButton(6, CanNewFolder(list));
+		// position it correctly
+		pMenu->SetPosition(iPosX-pMenu->GetWidth()/2, iPosY-pMenu->GetHeight()/2);
 		pMenu->DoModal(GetID());
 		switch (pMenu->GetButton())
 		{
 		case 1:
-			{
-				CStdString strNewLabel = m_vecItems[list][item]->GetLabel();
-				CStdString strHeading = g_localizeStrings.Get(753);
-				if (CGUIDialogKeyboard::ShowAndGetInput(strNewLabel, strHeading, false))
-				{
-					g_settings.UpdateBookmark("files", m_vecItems[list][item]->GetLabel(), strNewLabel, m_vecItems[list][item]->m_strPath);
-					m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
-					if (m_strDirectory[1-list] == "")
-						Refresh();
-					else
-						Refresh(list);
-					return;
-				}
-			}
+			OnSelectAll(list);
 			break;
 		case 2:
-			{
-				CStdString strNewPath = m_vecItems[list][item]->m_strPath;
-				CStdString strHeading = g_localizeStrings.Get(752);
-				if (CGUIDialogKeyboard::ShowAndGetInput(strNewPath, strHeading, false))
-				{
-					g_settings.UpdateBookmark("files", m_vecItems[list][item]->GetLabel(), m_vecItems[list][item]->GetLabel(), strNewPath);
-					m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
-					if (m_strDirectory[1-list] == "")
-						Refresh();
-					else
-						Refresh(list);
-					return;
-				}
-			}
+			OnRename(list);
 			break;
 		case 3:
-			{
-				// prompt user
-				CGUIDialogYesNo *pDlg = (CGUIDialogYesNo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-				if (pDlg)
-				{
-					pDlg->SetHeading(751);
-					pDlg->SetLine(1,750);
-					pDlg->DoModal(GetID());
-					if (pDlg->IsConfirmed())
-					{
-						// delete this share
-						g_settings.DeleteBookmark("files", m_vecItems[list][item]->GetLabel(), m_vecItems[list][item]->m_strPath);
-						if (m_strDirectory[1-list] == "")
-							Refresh();
-						else
-							Refresh(list);
-						return;
-					}
-				}
-			}
+			OnDelete(list);
 			break;
 		case 4:
-			{	// Add new share
-				CStdString strNewPath;
-				CStdString strHeading = g_localizeStrings.Get(752);	// Share Path
-				if (CGUIDialogKeyboard::ShowAndGetInput(strNewPath, strHeading, false))
-				{	// got a valid path
-					CStdString strNewName;
-					strHeading = g_localizeStrings.Get(753);	// Share Name
-					if (CGUIDialogKeyboard::ShowAndGetInput(strNewName, strHeading, false))
-					{
-						g_settings.AddBookmark("files", strNewName, strNewPath);
-						if (m_strDirectory[1-list] == "")
-							Refresh();
-						else
-							Refresh(list);
-						return;
-					}
-				}
+			OnCopy(list);
+			break;
+		case 5:
+			OnMove(list);
+			break;
+		case 6:
+			OnNewFolder(list);
+			break;
+		default:
+			if (bDeselect)
+			{	// deselect item as we didn't do anything
+				m_vecItems[list][item]->Select(false);
 			}
 			break;
 		}
 	}
-	m_vecItems[list][item]->Select(false);
 }
 
 // Highlights the item in the list under the cursor

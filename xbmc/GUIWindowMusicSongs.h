@@ -15,6 +15,7 @@ protected:
   virtual	void				UpdateButtons();
 	virtual void				OnFileItemFormatLabel(CFileItem* pItem);
   virtual void				OnClick(int iItem);
+ 	virtual void				OnPopupMenu(int iItem);
 	virtual void				DoSort(VECFILEITEMS& items);
 	virtual	void				DoSearch(const CStdString& strSearch,VECFILEITEMS& items);
 	virtual	void				OnSearchItemFound(const CFileItem* pItem);

@@ -1534,3 +1534,30 @@ void CGUIWindowMusicSongs::FilterItems(VECFILEITEMS &items)
 		items.push_back(pItem);
 	}
 }
+
+void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
+{
+	// mark the item
+	m_vecItems[iItem]->Select(true);
+	// calculate our position
+	int iPosX=200;
+	int iPosY=100;
+	const CGUIControl *pList = GetControl(CONTROL_LIST);
+	if (pList)
+	{
+		iPosX = pList->GetXPosition()+pList->GetWidth()/2;
+		iPosY = pList->GetYPosition()+pList->GetHeight()/2;
+	}	
+	if ( m_strDirectory.IsEmpty() )
+	{
+		// and do the popup menu
+		if (CGUIDialogContextMenu::BookmarksMenu("music", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, iPosX, iPosY))
+		{
+			m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
+			Update(m_strDirectory);
+			return;
+		}
+		m_vecItems[iItem]->Select(false);
+		return;
+	}
+}

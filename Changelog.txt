@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 30-10-2004 fixed: Thumbs aspect ratio in list controls
+  - 30-10-2004 added: Support for the context menu for editting bookmarks in My Videos, My Pictures, My Music
+  - 30-10-2004 changed: Rearranged a lot of the My Videos code into a base class
   - 29-10-2004 added: [ 990760 ] My Programs now displays shares in panel (same as other sections)
   - 28-10-2004 updated: Oct 24th compiled mplayer.dll
   - 28-10-2004 changed: removed .nfo from XboxMediaCenter.xml default <videoextensions> and added .rar|.001

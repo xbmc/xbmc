@@ -62,6 +62,11 @@ protected:
 		*/
   virtual void							OnClick(int iItem)=0;
  	/*!
+		\brief Will be called when an popup context menu has been asked for
+		\param iItem List/thumb control item that has been clicked on
+		*/
+	virtual void							OnPopupMenu(int iItem) {OnInfo(iItem);};
+ 	/*!
 		\brief Will be called for every item to set the label and thumbs
 		\param pItem Item to be formated
 		*/

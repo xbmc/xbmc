@@ -18,6 +18,8 @@ public:
 	DWORD						GetWidth();
 	DWORD						GetHeight();
 
+	static bool			BookmarksMenu(const CStdString &strType, const CStdString &strLabel, const CStdString &strPath, int iPosX, int iPosY);
+
 protected:
 	virtual void		OnInitWindow();
 
