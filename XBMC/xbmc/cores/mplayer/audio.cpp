@@ -7,6 +7,7 @@
 #include "Ac97DirectSound.h"
 #include "IAudioCallback.h"
 #include "../../settings.h"
+#include "mplayer.h"
 IDirectSoundRenderer* m_pAudioDecoder=NULL;
 
 static IAudioCallback* m_pAudioCallback=NULL;
@@ -70,9 +71,22 @@ void UnRegisterAudioCallback()
 // return: 1=success 0=fail
 static int audio_init(int rate,int channels,int format,int flags)
 {
+		char strFourCC[10];
+		char strAudioCodec[128];
+		long lBitRate;
+		long lSampleRate;
+		int	 iChannels;
+		BOOL bVBR;
+		bool bAC3File=false;
+		mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
+		if (strstr(strAudioCodec,"AC3"))
+		{
+			bAC3File=true;
+		}
+
 		pao_data=GetAOData();
 		bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
-		if (bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru && channels==6)
+		if (bAC3File && bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru && channels==6)
 		{
 			// ac3 passthru
 			m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,audio_out_format_bits(format));
