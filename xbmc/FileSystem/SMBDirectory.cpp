@@ -172,7 +172,6 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 					FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 		        
 					vecCacheItems.push_back(pItem);
-
 					if (IsAllowed(dirEnt->name)) items.push_back(new CFileItem(*pItem));
 				}
 			}
