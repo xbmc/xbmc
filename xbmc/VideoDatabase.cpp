@@ -592,10 +592,10 @@ void CVideoDatabase::GetGenres(VECMOVIEGENRES& genres)
     genres.erase(genres.begin(), genres.end());
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    m_pDS->query("select * from genre order by strGenre");
+    m_pDS->query("select * from genre join genrelinkmovie on genre.idGenre = genrelinkmovie.idGenre");
     while (!m_pDS->eof())
     {
-      genres.push_back( m_pDS->fv("strGenre").get_asString() );
+      genres.push_back( m_pDS->fv("genre.strGenre").get_asString() );
       m_pDS->next();
     }
     m_pDS->close();
@@ -614,10 +614,10 @@ void CVideoDatabase::GetActors(VECMOVIEACTORS& actors)
     actors.erase(actors.begin(), actors.end());
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    m_pDS->query("select * from actors");
+    m_pDS->query("select * from actors join actorlinkmovie on actors.idActor = actorlinkmovie.idActor");
     while (!m_pDS->eof())
     {
-      actors.push_back( m_pDS->fv("strActor").get_asString() );
+      actors.push_back( m_pDS->fv("actors.strActor").get_asString() );
       m_pDS->next();
     }
     m_pDS->close();

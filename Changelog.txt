@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-04-2005 fixed: List/thumb controls couldn't move right off the spincontrol.
+  - 05-04-2005 fixed: Search for home dir checks for keymap.xml as well as the skin folder.
+  - 05-04-2005 fixed: Video Genre/Actors now show only those that are associated with a valid movie.
+  - 05-04-2005 changed: Video views now use the CGUIViewControl to handle the views.
   - 05-04-2005 fixed: problems with alphanumeric sorting (numbers came after characters)
   - 05-04-2005 fixed: IMDb problem (memory overflow with huge numbers of returned movies).
   - 05-04-2005 changed: Nav view now uses alphanumeric sorting.

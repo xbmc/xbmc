@@ -1437,7 +1437,8 @@ void CFileItemList::FilterCueItems()
                 for (unsigned int i = 0; i < extensions.size(); i++)
                 {
                   CUtil::ReplaceExtension(pItem->m_strPath, extensions[i], strMediaFile);
-                  if (HasFileNoCase(strMediaFile))
+                  CFileItem item(strMediaFile, false);
+                  if (!strMediaFile.Equals(pItem->m_strPath) && HasFileNoCase(strMediaFile))
                   {
                     bFoundMediaFile = true;
                     break;

@@ -3,6 +3,7 @@
 #include "FileSystem/VirtualDirectory.h"
 #include "FileSystem/DirectoryHistory.h"
 #include "VideoDatabase.h"
+#include "GUIViewControl.h"
 
 class CGUIWindowVideoBase : public CGUIWindow
 {
@@ -12,16 +13,15 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void OnAction(const CAction &action);
   virtual void Render();
-
+  virtual void OnWindowLoaded();
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
 protected:
   virtual void SetIMDBThumbs(CFileItemList& items) {};
-  void UpdateThumbPanel();
+//  void UpdateThumbPanel();
   // overrideable stuff for the different window classes
-  virtual bool ViewByLargeIcon() = 0;
-  virtual bool ViewByIcon() = 0;
-  virtual void SetViewMode(int iMode) = 0;
+  virtual void LoadViewMode() = 0;
+  virtual void SaveViewMode() = 0;
   virtual int SortMethod() = 0;
   virtual bool SortAscending() = 0;
   virtual void SortItems(CFileItemList& items) = 0;
@@ -38,7 +38,6 @@ protected:
   void GoParentFolder();
   virtual void OnInfo(int iItem);
   virtual void OnScan() {};
-  int GetSelectedItem();
   void DisplayEmptyDatabaseMessage(bool bDisplay);
 
   bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
@@ -59,4 +58,7 @@ protected:
   int m_iLastControl;
   bool m_bDisplayEmptyDatabaseMessage;
   CStdString m_strParentPath; ///< Parent path to handle going up a dir
+  int m_iViewAsIcons;
+  int m_iViewAsIconsRoot;
+  CGUIViewControl m_viewControl;  ///< Handles our various views
 };
