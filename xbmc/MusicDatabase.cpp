@@ -453,19 +453,16 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
 	m_albumCache.erase(m_albumCache.begin(), m_albumCache.end());
 }
 
-long CMusicDatabase::AddGenre(const CStdString& strGenre1)
+long CMusicDatabase::AddGenre(const CStdString& strGenre)
 {
 	CStdString strSQL;
 	try
 	{
-		CStdString strGenre=strGenre1;
-		RemoveInvalidChars(strGenre);
-
 		if (NULL==m_pDB.get()) return -1;
 		if (NULL==m_pDS.get()) return -1;
 		map <CStdString, CGenreCache>::const_iterator it;
 
-		it=m_genreCache.find(strGenre1);
+		it=m_genreCache.find(strGenre);
 		if (it!=m_genreCache.end())
 			return it->second.idGenre;
 
@@ -479,7 +476,7 @@ long CMusicDatabase::AddGenre(const CStdString& strGenre1)
 
 			CGenreCache genre;
 			genre.idGenre = sqlite_last_insert_rowid(m_pDB->getHandle());
-			genre.strGenre = strGenre1;
+			genre.strGenre = strGenre;
 			m_genreCache.insert(pair<CStdString, CGenreCache>(genre.strGenre, genre));
 			return genre.idGenre;
 		}
@@ -487,7 +484,7 @@ long CMusicDatabase::AddGenre(const CStdString& strGenre1)
 		{
 			CGenreCache genre;
 			genre.idGenre = m_pDS->fv("idGenre").get_asLong();
-			genre.strGenre = strGenre1;
+			genre.strGenre = strGenre;
 			m_genreCache.insert(pair<CStdString, CGenreCache>(genre.strGenre, genre));
 			return genre.idGenre;
 		}

@@ -309,7 +309,7 @@ void CGUIWindowVideoGenre::UpdateButtons()
 	g_graphicsContext.SendMessage(msg);
 
 	//	Add labels to the window selection
-	CStdString strItem=g_localizeStrings.Get(342);	//	Movies
+	CStdString strItem=g_localizeStrings.Get(744);	//	Files
 	CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_BTNTYPE);
 	msg2.SetLabel(strItem);
 	g_graphicsContext.SendMessage(msg2);
@@ -514,6 +514,8 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
   {
     VECMOVIEGENRES genres;
     m_database.GetGenres( genres);
+ 		// Display an error message if the database doesn't contain any genres
+		DisplayEmptyDatabaseMessage(genres.empty());
     for (int i=0; i < (int)genres.size(); ++i)
     {
 			CFileItem *pItem = new CFileItem(genres[i]);
@@ -595,12 +597,6 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 			break;
 		}
 	}
-}
-
-//****************************************************************************************************************************
-void CGUIWindowVideoGenre::Render()
-{
-	CGUIWindow::Render();
 }
 
 //****************************************************************************************************************************
