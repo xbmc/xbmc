@@ -240,13 +240,13 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 //		}
 //	}
 //	else
-//	{
+	{
 		if (m_pd3dParams->FullScreen_PresentationInterval != D3DPRESENT_INTERVAL_IMMEDIATE)
 		{
 			m_pd3dParams->FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 			NeedReset = true;
 		}
-//	}
+	}
 	if (NeedZ != m_pd3dParams->EnableAutoDepthStencil)
 	{
 		m_pd3dParams->EnableAutoDepthStencil = NeedZ;
