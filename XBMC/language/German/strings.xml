@@ -378,19 +378,19 @@
   </string> 
   <string>
     <id>166</id>
-    <value>Darstellung:</value>
+    <value>Darstellung</value>
   </string> 
   <string>
     <id>167</id>
-    <value>FTP server:</value>
+    <value>FTP server</value>
   </string> 
   <string>
     <id>168</id>
-    <value>Zeit Server:</value>
+    <value>Zeit Server</value>
   </string> 
   <string>
     <id>169</id>
-    <value>Auflösung:</value>
+    <value>Auflösung</value>
   </string> 
   <string>
     <id>170</id>
@@ -450,7 +450,7 @@
   </string> 
   <string>
     <id>184</id>
-    <value>Aktualisieren</value>
+    <value>Aktualis.</value>
   </string> 
   <string>
     <id>185</id>
@@ -522,11 +522,11 @@
   </string> 
   <string>
     <id>202</id>
-    <value>Kurzbeschreibung:</value>
+    <value>Beschreibung:</value>
   </string> 
   <string>
     <id>203</id>
-    <value>Handlungsauszug:</value>
+    <value>Handlung:</value>
   </string> 
   <string>
     <id>204</id>
@@ -662,11 +662,11 @@
   </string> 
   <string>
     <id>237</id>
-    <value>Verkleinerung:</value>
+    <value>Verkleinerung</value>
   </string> 
   <string>
     <id>238</id>
-    <value>Vergrößerung:</value>
+    <value>Vergrößerung</value>
   </string>
   <string>
     <id>240</id>
@@ -762,7 +762,7 @@
   </string>
   <string>
     <id>263</id>
-    <value>HTTP Server:</value>
+    <value>HTTP Server</value>
   </string>
   <string>
     <id>264</id>
@@ -938,11 +938,11 @@
   </string>
   <string>
     <id>308</id>
-    <value>Vertikaler Deblocking-Filter</value>
+    <value>Vertikal-Deblocking</value>
   </string>
   <string>
     <id>309</id>
-    <value>Horizontaler Deblocking-Filter</value>
+    <value>Horizontal-Deblocking</value>
   </string>
   <string>
     <id>310</id>
@@ -1054,7 +1054,7 @@
   </string>
   <string>
     <id>337</id>
-    <value>Audio Ausgabe:</value>
+    <value>Audio Ausgabe</value>
   </string>
   <string>
     <id>338</id>
@@ -1114,7 +1114,7 @@
   </string>
   <string>
     <id>352</id>
-    <value>Verdunkelung</value>
+    <value>Dimmen</value>
   </string>
   <string>
     <id>353</id>
@@ -1154,7 +1154,7 @@
   </string>   
   <string>
     <id>362</id>
-    <value>Bildschirmschoner-FadeLevel</value>
+    <value>Bildschirmschoner-Dimmstufe</value>
   </string>
   <string>
     <id>363</id>
@@ -1506,27 +1506,27 @@
   </string> 
   <string>
     <id>451</id>
-    <value>Reihe 1:</value>
+    <value>Reihe 1</value>
   </string> 
   <string>
     <id>452</id>
-    <value>Reihe 2:</value>
+    <value>Reihe 2</value>
   </string> 
   <string>
     <id>453</id>
-    <value>Reihe 3:</value>
+    <value>Reihe 3</value>
   </string> 
   <string>
     <id>454</id>
-    <value>Reihe 4:</value>
+    <value>Reihe 4</value>
   </string> 
   <string>
     <id>455</id>
-    <value>Reihen:</value>
+    <value>Reihen</value>
   </string> 
   <string>
     <id>456</id>
-    <value>Modus:</value>
+    <value>Modus</value>
   </string> 
   <string>
     <id>457</id>
@@ -1646,11 +1646,11 @@
   </string>
   <string>
     <id>486</id>
-    <value>Wiederholen</value>
+    <value>Titel wiederh.</value>
   </string>
   <string>
     <id>487</id>
-    <value>Wiederhole</value>
+    <value>Alle wiederh.</value>
   </string>
   <string>
     <id>488</id>
@@ -1670,7 +1670,7 @@
   </string>
   <string>
     <id>492</id>
-    <value>Untertitel vergrößern</value>
+    <value>Untertitel-Zoom</value>
   </string>
   <string>
     <id>493</id>
@@ -1678,7 +1678,7 @@
   </string>
   <string>
     <id>494</id>
-    <value>Audio Übersteuerungsreserve (dB)</value>
+    <value>Übersteuerungsreserve (dB)</value>
   </string>
   <string>
     <id>495</id>
@@ -1734,4 +1734,8 @@
 <string><id>12600</id><value>Wetter</value></string>
 <string><id>12900</id><value>Bildschirmschoner</value></string>
 <string><id>12901</id><value>Vollbild OSD</value></string>
-</strings>
+ 
+<string>
+		<id>497</id>
+		<value>Medien-Dateiendungen verstecken</value>
+	</string> </strings>
