@@ -235,6 +235,7 @@ public:
 	char			m_szWeatherFTemp[2];	//WEATHER
 	char			m_szWeatherFSpeed[2];	//WEATHER
 	int				m_iWeatherRefresh;		//WEATHER
+	char			m_szExternalDVDPlayer[128];
 
   };
 
