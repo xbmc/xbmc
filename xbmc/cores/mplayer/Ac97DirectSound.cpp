@@ -49,11 +49,10 @@ void CAc97DirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bAC3DTS)
+CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample)
 {
 	m_pCallback=pCallback;
 	m_dwPacketSize		 = 1152 * (uiBitsPerSample/8) * iChannels;
-	m_bAC3DTS			= bAC3DTS;
 	m_bPause           = false;
 	m_bIsAllocated     = false;
 	m_pDSound          = NULL;
@@ -109,8 +108,8 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
   for (DWORD dwX=0; dwX < m_dwNumPackets ; dwX++)
     m_pbSampleData[dwX] = (BYTE*)XPhysicalAlloc( m_dwPacketSize, MAXULONG_PTR,0,PAGE_READWRITE|PAGE_NOCACHE);
 	
-//	bool bEnableSPDIFOut=true;
-	hr=m_pDigitalOutput->SetMode(m_bAC3DTS ? DSAC97_MODE_ENCODED : DSAC97_MODE_PCM);
+	bool bAC3DTS=true;
+	hr=m_pDigitalOutput->SetMode(bAC3DTS ? DSAC97_MODE_ENCODED : DSAC97_MODE_PCM);
 	m_bIsAllocated   = true;
 }
 
@@ -283,16 +282,10 @@ DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
 
 			memcpy(xmpAudio.pvBuffer,&data[iBytesCopied],iSize);
 
-			// For some reason we can only use one output (digital or analogue) at a time
-			// this may be due to the way that Process() effects the buffer??
-			if (g_stSettings.m_bUseDigitalOutput)
-			{
-				hr=m_pDigitalOutput->Process( &xmpAudio, NULL );
-			}
-			else if (!m_bAC3DTS)	// No analogue output for AC3/DTS but it's OK for PCM (stereo tracks)
-			{
-			  hr=m_pAnalogOutput->Process( &xmpAudio, NULL );
-			}
+			// no need to do analogue out - analogue should be disabled as we're
+			// passing non-PCM streams only using AC97
+			hr=m_pDigitalOutput->Process( &xmpAudio, NULL );
+			//  hr=m_pAnalogOutput->Process( &xmpAudio, NULL );
 
 			iBytesCopied+=iSize;
 			len -=iSize;

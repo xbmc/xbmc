@@ -34,6 +34,9 @@ public:
     bool         GetAC3PassTru();
     void         SetAC3PassTru(bool bOnOff);
 
+	bool		 GetResample() const;
+	void		 SetResample(bool bOnOff) {m_bResample = bOnOff;};
+
     const string GetChannelMapping() const;
     void         SetChannelMapping(const string& strMapping);
     void         SetSpeed(float fSpeed);
@@ -43,6 +46,7 @@ public:
     void         GetOptions(int& argc, char* argv[]);
 
     private:
+	  bool	m_bResample;
       bool    m_bNoCache;
       float   m_fSpeed;
       float   m_fFPS;
