@@ -245,10 +245,10 @@ bool CHTTP::Connect()
 		// connect to site directly
 		if(inet_addr(m_strHostName.c_str())==INADDR_NONE)
 		{
-			CStdString strIpAddress="";
+			CStdString strIpAddress;
 			CDNSNameCache::Lookup(m_strHostName,strIpAddress);
 			service.sin_addr.s_addr = inet_addr(strIpAddress.c_str());
-			if (strIpAddress=="")
+			if (service.sin_addr.s_addr == INADDR_NONE)
 			{
 				if (strcmp(m_strHostName.c_str(),"ia.imdb.com")==0)
 					service.sin_addr.s_addr = inet_addr("193.108.152.15");
@@ -262,6 +262,11 @@ bool CHTTP::Connect()
 					service.sin_addr.s_addr = inet_addr("64.152.70.67");
 				else if (strcmp(m_strHostName.c_str(),"xoap.weather.com")==0)
 					service.sin_addr.s_addr = inet_addr("63.111.24.34");
+				else
+				{
+					WSASetLastError(WSAHOST_NOT_FOUND);
+					return false;
+				}
 			}
 		}
 		else
