@@ -2067,6 +2067,30 @@
  <id>747</id>
  <value>Det finns för lite minne för att ladda bilden</value>
  </string>
+  <string>
+ <id>748</id>
+ <value>Ändra sökväg</value>
+ </string>
+ <string>
+ <id>749</id>
+ <value>Lägg till utdelning</value>
+ </string>
+ <string>
+ <id>750</id>
+ <value>Är du säker?</value>
+ </string>
+ <string>
+ <id>751</id>
+ <value>Ta bort utdelning</value>
+ </string>
+ <string>
+ <id>752</id>
+ <value>Ändra sökväg till utdelning</value>
+ </string>
+ <string>
+ <id>753</id>
+ <value>Ändra utdelnings namn</value>
+ </string>
 
  <string>
  <id>998</id>
