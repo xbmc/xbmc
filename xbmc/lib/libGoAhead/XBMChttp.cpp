@@ -395,10 +395,7 @@ void AddItemToPlayList(const CFileItem* pItem, int playList)
 		IDirectory *pDirectory = factory.Create(strDirectory);
 		bool bResult=pDirectory->GetDirectory(strDirectory,items);
 		for (int i=0; i < items.Size(); ++i)
-		{
 			AddItemToPlayList(items[i], playList);
-			delete items[i];
-		}
 	}
 	else
 	{
