@@ -26,6 +26,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				EnableEnhancedInstructionSet="1"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -282,34 +283,22 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath=".\xbmc\albumdatabase.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\AlbumDirectory.cpp">
-			</File>
-			<File
 				RelativePath=".\xbmc\Application.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\artistdatabase.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\ArtistDirectory.cpp">
-			</File>
-			<File
 				RelativePath=".\xbmc\Crc32.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\DetectDVDType.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\DetectDVDType.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\DNSNameCache.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileItem.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\genredatabase.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GenreDirectory.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogOK.cpp">
@@ -376,6 +365,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowVideoOverlay.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\MusicDatabase.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\musicInfoTag.cpp">
@@ -612,6 +604,12 @@
 				RelativePath=".\xbmc\FileSystem\cddb.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\cdioSupport.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\cdioSupport.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\Directory.cpp">
 			</File>
 			<File
@@ -826,12 +824,6 @@
 			Name="utils"
 			Filter="">
 			<File
-				RelativePath=".\xbmc\utils\Database.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\Database.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\DelayController.cpp">
 			</File>
 			<File
@@ -884,6 +876,12 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicSong.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\Mutex.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\Mutex.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\Sntp.cpp">

@@ -45,6 +45,7 @@ public:
 	void		Close() ;
 	void		AddSong(const CSong& song);
 	long		AddAlbumInfo(const CAlbum& album);
+	bool		GetAlbumInfo(const string& strAlbum, CAlbum& album);
 	bool		GetSong(const string& strTitle, CSong& song);
 	bool		GetSongByFileName(const string& strFileName, CSong& song);
 	bool		GetSongsByArtist(const string strArtist, VECSONGS& songs);
