@@ -81,7 +81,7 @@ protected:
 					bool							FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumInfo& album);
 					void							ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh);
 					void							ClearFileItems();
-					void							Update(const CStdString &strDirectory);
+	virtual void							Update(const CStdString &strDirectory);
 					void							UpdateListControl();
 					void							AddItemToPlayList(const CFileItem* pItem) ;
 					int								GetSelectedItem();
