@@ -15,7 +15,7 @@ struct CSettings::stSettings g_stSettings;
 CSettings::CSettings(void)
 {
   
-
+  g_stSettings.m_iLCDModChip=MODCHIP_SMARTXX;
 	g_stSettings.m_bLCDUsed=false;
 	g_stSettings.m_iLCDMode=0;
   g_stSettings.m_iLCDColumns=20;
@@ -808,6 +808,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "lcdrow2",g_stSettings.m_iLCDAdress[1],0x40,0,0x400);
     GetInteger(pElement, "lcdrow3",g_stSettings.m_iLCDAdress[2],0x14,0,0x400);
     GetInteger(pElement, "lcdrow4",g_stSettings.m_iLCDAdress[3],0x54,0,0x400);
+    GetInteger(pElement, "lcdchip",g_stSettings.m_iLCDModChip,0,0,1);
   }
 
   // cache settings
@@ -1096,6 +1097,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetInteger(pNode, "lcdrow2",g_stSettings.m_iLCDAdress[1]);
   SetInteger(pNode, "lcdrow3",g_stSettings.m_iLCDAdress[2]);
   SetInteger(pNode, "lcdrow4",g_stSettings.m_iLCDAdress[3]);
+  SetInteger(pNode, "lcdchip",g_stSettings.m_iLCDModChip);
 
   // myprograms settings
 	TiXmlElement programsNode("myprograms");

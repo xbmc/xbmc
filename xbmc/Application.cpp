@@ -16,6 +16,7 @@
 #include "url.h"
 #include "autorun.h"
 #include "ActionManager.h"
+#include "utils/LCDFactory.h"
 #include "cores/ModPlayer.h"
 #include "cores/mplayer/ASyncDirectSound.h"
 #include "GUIButtonControl.h"
@@ -390,7 +391,9 @@ HRESULT CApplication::Initialize()
     }
   }
   CLog::Log("initialize done");	
-  g_lcd.Initialize();
+  CLCDFactory factory;
+  g_lcd=factory.Create();
+  g_lcd->Initialize();
   CUtil::InitGamma();
 	return S_OK;
 }
@@ -908,18 +911,18 @@ void CApplication::UpdateLCD()
       else
         strIcon.Format("\5");
       strLine.Format("%s %s%s", strIcon.c_str(), strTime.c_str(), strTotalTime.c_str());
-      g_lcd.SetLine(0,strLine);
+      g_lcd->SetLine(0,strLine);
 
       strLine=CUtil::GetFileName(m_strCurrentFile);
       int iLine=1;
       if (m_tagCurrentMovie.m_strTitle!="") strLine=m_tagCurrentMovie.m_strTitle;
-      g_lcd.SetLine(iLine++,strLine);
+      g_lcd->SetLine(iLine++,strLine);
 
-      if (iLine<4 && m_tagCurrentMovie.m_strGenre!="") g_lcd.SetLine(iLine++,m_tagCurrentMovie.m_strGenre);
+      if (iLine<4 && m_tagCurrentMovie.m_strGenre!="") g_lcd->SetLine(iLine++,m_tagCurrentMovie.m_strGenre);
       if (iLine<4 && m_tagCurrentMovie.m_iYear>1900) 
       {
         strLine.Format("%i", m_tagCurrentMovie.m_iYear);
-        g_lcd.SetLine(iLine++,strLine);
+        g_lcd->SetLine(iLine++,strLine);
       }
       if (iLine < 4)
       {
@@ -927,10 +930,10 @@ void CApplication::UpdateLCD()
         GlobalMemoryStatus(&stat);
         DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
         strTime.Format("Freemem:%i meg", dwMegFree);
-        g_lcd.SetLine(iLine++,strTime);
+        g_lcd->SetLine(iLine++,strTime);
 
       }
-      while (iLine < 4) g_lcd.SetLine(iLine++,"");
+      while (iLine < 4) g_lcd->SetLine(iLine++,"");
 
     }
     else if (IsPlayingAudio())
@@ -972,27 +975,27 @@ void CApplication::UpdateLCD()
           CUtil::SecondsToHMSString(iDuration, strDuration);
           strLine.Format("%s %s/%s", strIcon.c_str(), strTime.c_str(),strDuration.c_str());
         }
-        g_lcd.SetLine(0,strLine);
+        g_lcd->SetLine(0,strLine);
         strLine=m_tagCurrentSong.GetTitle();
         if (strLine=="") strLine=CUtil::GetFileName(m_strCurrentFile);
-        if (iLine < 4 && strLine!="") g_lcd.SetLine(iLine++,strLine);
+        if (iLine < 4 && strLine!="") g_lcd->SetLine(iLine++,strLine);
         strLine=m_tagCurrentSong.GetArtist();
-        if (iLine < 4 && strLine!="") g_lcd.SetLine(iLine++,strLine);
+        if (iLine < 4 && strLine!="") g_lcd->SetLine(iLine++,strLine);
         SYSTEMTIME systemtime;
         m_tagCurrentSong.GetReleaseDate(systemtime);
         if (iLine < 4 && systemtime.wYear>=1900)
         {
           strLine.Format("%i", systemtime.wYear);
-          g_lcd.SetLine(iLine++,strLine);
+          g_lcd->SetLine(iLine++,strLine);
         }
-        while (iLine < 4) g_lcd.SetLine(iLine++,"");
+        while (iLine < 4) g_lcd->SetLine(iLine++,"");
       }
       else
       {
-        g_lcd.SetLine(0,strLine);
-        g_lcd.SetLine(1,CUtil::GetFileName(m_strCurrentFile));
-        g_lcd.SetLine(2,"");
-        g_lcd.SetLine(3,"");
+        g_lcd->SetLine(0,strLine);
+        g_lcd->SetLine(1,CUtil::GetFileName(m_strCurrentFile));
+        g_lcd->SetLine(2,"");
+        g_lcd->SetLine(3,"");
       }
     }
     else
@@ -1003,19 +1006,19 @@ void CApplication::UpdateLCD()
         // line 1: time/date
         // line 2: free memory (megs)
         // line 3: GUI resolution
-        g_lcd.SetLine(0,"XBMC running...");
+        g_lcd->SetLine(0,"XBMC running...");
         SYSTEMTIME time;
 	      GetLocalTime(&time);
         strTime.Format("%02.2i:%02.2i:%02.2i %02.2i-%02.2i-%02.2i", time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
-        g_lcd.SetLine(1,strTime);
+        g_lcd->SetLine(1,strTime);
 	      MEMORYSTATUS stat;
 	      GlobalMemoryStatus(&stat);
 		    DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
         strTime.Format("Freemem:%i meg", dwMegFree);
-        g_lcd.SetLine(2,strTime);
+        g_lcd->SetLine(2,strTime);
 		    int  iResolution=g_graphicsContext.GetVideoResolution();
 		    strTime.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
-        g_lcd.SetLine(3,strTime);
+        g_lcd->SetLine(3,strTime);
       }
       if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV)
       {
@@ -1032,7 +1035,7 @@ void CApplication::UpdateLCD()
           wstring wstrLine;
           wstrLine=g_localizeStrings.Get(10000+iWin);
           CUtil::Unicode2Ansi(wstrLine,strLine);
-          g_lcd.SetLine(0,strLine);
+          g_lcd->SetLine(0,strLine);
 
           int iControl=pWindow->GetFocusedControl();
           CGUIControl* pControl=(CGUIControl* )pWindow->GetControl(iControl);
@@ -1040,36 +1043,36 @@ void CApplication::UpdateLCD()
           {
             CGUIButtonControl* pButton=dynamic_cast<CGUIButtonControl*>(pControl);
             if (pButton)
-              g_lcd.SetLine(1,pButton->GetLabel());
+              g_lcd->SetLine(1,pButton->GetLabel());
             CGUISpinControl* pSpinControl=dynamic_cast<CGUISpinControl*>(pControl);
             if (pSpinControl)
             {
               strTmp.Format("%i/%i", 1+pSpinControl->GetValue(), pSpinControl->GetMaximum());
-              g_lcd.SetLine(1,strTmp);
+              g_lcd->SetLine(1,strTmp);
             }
             CGUIListControl* pListControl=dynamic_cast<CGUIListControl*>(pControl);
             if (pListControl)
             {
               pListControl->GetSelectedItem(strTmp);
-              g_lcd.SetLine(1,strTmp);
+              g_lcd->SetLine(1,strTmp);
             }
             CGUIThumbnailPanel* pThumbControl=dynamic_cast<CGUIThumbnailPanel*>(pControl);
             if (pThumbControl)
             {
               pThumbControl->GetSelectedItem(strTmp);
-              g_lcd.SetLine(1,strTmp);
+              g_lcd->SetLine(1,strTmp);
             }
           }
-          else g_lcd.SetLine(1," ");
+          else g_lcd->SetLine(1," ");
           SYSTEMTIME time;
 	        GetLocalTime(&time);
           strLine.Format("%02.2i:%02.2i:%02.2i %02.2i-%02.2i-%02.2i", time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
-          g_lcd.SetLine(2,strLine);
+          g_lcd->SetLine(2,strLine);
 	        MEMORYSTATUS stat;
 	        GlobalMemoryStatus(&stat);
 		      DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
           strLine.Format("Freemem:%i meg", dwMegFree);
-          g_lcd.SetLine(3,strLine);
+          g_lcd->SetLine(3,strLine);
 
         }
       }
@@ -1258,7 +1261,7 @@ void CApplication::Stop()
 		  m_pPlayer=NULL;
 	  }
 
-    //g_lcd.StopThread();
+    //g_lcd->StopThread();
     CLog::Log("stop python");
 	  g_applicationMessenger.Cleanup();
 	  m_pythonParser.FreeResources();
@@ -1267,7 +1270,7 @@ void CApplication::Stop()
 	  m_DetectDVDType.StopThread();
 
     CLog::Log("stop LCD");
-    g_lcd.Stop();
+    g_lcd->Stop();
     
 
     CLog::Log("stop time server");
