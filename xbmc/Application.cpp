@@ -696,7 +696,10 @@ HRESULT CApplication::Initialize()
 	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, g_stSettings.m_maxFilter );
 
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
-	CLog::Log(LOGNOTICE, "load default skin:[%s]",g_stSettings.szDefaultSkin);
+
+  StartServices();
+
+  CLog::Log(LOGNOTICE, "load default skin:[%s]",g_stSettings.szDefaultSkin);
 	LoadSkin(g_stSettings.szDefaultSkin);
 
 	CLog::Log(LOGINFO, "initializing skin");
@@ -798,7 +801,6 @@ HRESULT CApplication::Initialize()
 
 	CLog::Log(LOGNOTICE, "initialize done");
 	CUtil::InitGamma();
-  StartServices();
 	if (g_stSettings.m_bLCDUsed)
 	{
 		if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV)
