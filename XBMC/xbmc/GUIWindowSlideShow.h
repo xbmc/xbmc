@@ -151,6 +151,7 @@ private:
   void				Rotate();
   void				Zoom(int iZoom);
 	void				Move(float fX, float fY);
+	void				Shuffle();
 
 	int					m_iCurrentSlide;
 	int					m_iNextSlide;

@@ -783,6 +783,19 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 		{
 			if (wID)	// check to see if list control has an action ID, remote can cause 0 based events
 			{
+				// first check if it's a stereo track that we can change between stereo, left and right
+				if (g_application.m_pPlayer->GetAudioStreamCount() == 1)
+				{
+					CGUIListControl *pList = (CGUIListControl *)GetControl(OSD_AUDIOSTREAM_LIST);
+					if (pList->GetNumItems() == 3)
+					{	// we're in the case we want - call the code to switch channels etc.
+						// update the screen setting...
+						g_stSettings.m_iAudioStream = pList->GetSelectedItem();
+						PopulateAudioStreams();
+						// call monkeyh1's code here...
+						return;
+					}
+				}
 				CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),OSD_AUDIOSTREAM_LIST,0,0,NULL);
 				OnMessage(msg);
 				// only change the audio stream if a different one has been asked for
@@ -973,6 +986,40 @@ void CGUIWindowOSD::PopulateAudioStreams()
 	CStdString strLabel = g_localizeStrings.Get(460).c_str();					// "Audio Stream"
 	CStdString strActiveLabel = (WCHAR*)g_localizeStrings.Get(461).c_str();		// "[active]"
 	
+	// check if we have a single, stereo stream, and if so, allow us to split into
+	// left, right or both
+	if (iValue == 1)
+	{
+		CStdString strAudioInfo;
+		g_application.m_pPlayer->GetAudioInfo(strAudioInfo);
+		int iNumChannels = atoi(strAudioInfo.Right(strAudioInfo.size()-strAudioInfo.Find("chns:")-5).c_str());
+		CStdString strAudioCodec = strAudioInfo.Mid(7,strAudioInfo.Find(") VBR")-5);
+		bool bDTS = strstr(strAudioCodec.c_str(),"DTS")!=0;
+		bool bAC3 = strstr(strAudioCodec.c_str(),"AC3")!=0;
+		if (iNumChannels == 2 && !(bDTS || bAC3))
+		{	// ok, enable these options
+			if (g_stSettings.m_iAudioStream == -1)
+			{	// default to stereo stream
+				g_stSettings.m_iAudioStream = 0;
+			}
+			for (int i=0; i<3; i++)
+			{
+				CStdString strLabel = g_localizeStrings.Get(13320+i);
+				if (i == g_stSettings.m_iAudioStream)
+					strLabel += " " + strActiveLabel;
+
+				CGUIListItem* pItem = new CGUIListItem();
+				pItem->SetLabel(strLabel);
+				CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),OSD_AUDIOSTREAM_LIST,0,0,(void*)pItem);
+				OnMessage(msg);
+			}
+			// set the current active audio stream as the selected item in the list control
+			CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_AUDIOSTREAM_LIST,g_stSettings.m_iAudioStream,0,NULL);
+			OnMessage(msgSet);
+			return;
+		}
+	}
+
 	// cycle through each audio stream and add it to our list control
 	for (int i=0; i < iValue; ++i)
 	{

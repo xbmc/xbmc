@@ -10,6 +10,7 @@ public:
 	CPicture(void);
 	virtual ~CPicture(void);
 	IDirect3DTexture8*	Load(const CStdString& strFilename, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth=128, int iMaxHeight=128, bool bCreateThumb = false);
+	CxImage*						LoadImage(const CStdString& strFilename, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth=128, int iMaxHeight=128);
 
   bool                CreateThumbFromImage(const CStdString &strFileName, const CStdString& strThumbnailImage, CxImage& image, int iMaxWidth, int iMaxHeight, bool bWrongFormat = false);
   bool                CreateThumnail(const CStdString& strFileName);
@@ -21,6 +22,7 @@ public:
 	DWORD								GetHeight() const;
 	void								RenderImage(IDirect3DTexture8* pTexture, float x, float y, float width, float height, int iTextureWidth, int iTextureHeight, int iTextureLeft=0, int iTextureTop=0, DWORD dwAlpha=0xFF);
 
+	void								CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs);
 protected:
 	IDirect3DTexture8*	LoadNative(const CStdString& strFilename);
 	bool								DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, int nMaxWidth, int nMaxHeight, bool bCacheFile=true);
