@@ -2236,6 +2236,7 @@ bool CMusicDatabase::CleanupAlbumsFromPaths(const CStdString &strPathIds)
 			// delete directory thumb
 			CUtil::GetAlbumFolderThumb(m_pDS->fv("path.strPath").get_asString(), strThumb);
 			::DeleteFile(strThumb);
+ 			m_pDS->next();
 		}
     m_pDS->close();
 		strAlbumIds.TrimRight(",");
