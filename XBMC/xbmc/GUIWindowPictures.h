@@ -21,6 +21,7 @@ public:
 
 protected:
 	void							GoParentFolder();
+	void							GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items);
   void							OnClick(int iItem);
   void							OnSort();
   void							UpdateButtons();
@@ -36,6 +37,7 @@ protected:
   void              ShowThumbPanel();
   bool              ViewByLargeIcon();
 	void              GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
+	void							SetHistoryForPath(const CStdString& strDirectory);
 
   void              AddDir(CGUIWindowSlideShow *pSlideShow,const CStdString& strPath);
 	CVirtualDirectory		m_rootDir;

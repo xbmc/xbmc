@@ -177,8 +177,12 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 				return false;
 			}
 
+			bool bFirstTime=false;
 			if (m_strDirectory=="?")
+			{
+				bFirstTime=true;
 				m_strDirectory=g_stSettings.m_szDefaultMusic;
+			}
 
 			if (CUtil::IsCDDA(m_strDirectory) || CUtil::IsDVD(m_strDirectory) || CUtil::IsISO9660(m_strDirectory))
 			{
@@ -203,6 +207,13 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 			}
 
 			CGUIWindowMusicBase::OnMessage(message);
+
+			if (bFirstTime)
+			{
+				//	Set directory history for default path
+				SetHistoryForPath(m_strDirectory);
+				bFirstTime=false;
+			}
 
 			return true;
 		}
@@ -1115,13 +1126,7 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
 
 		Update(strParentPath);
 
-		//	Build the directory history for the item
-		while (CUtil::GetParentPath(strPath, strParentPath))
-		{
-			m_history.Set(strPath, strParentPath);
-			strPath=strParentPath;
-		}
-		m_history.Set(strPath, "");
+		SetHistoryForPath(strParentPath);
 
 		strPath=pSelItem->m_strPath;
 		CURL url(strPath);
@@ -1295,5 +1300,41 @@ void CGUIWindowMusicSongs::GetDirectoryHistoryString(const CFileItem* pItem, CSt
 
 		if (CUtil::HasSlashAtEnd(strHistoryString))
 			strHistoryString.Delete(strHistoryString.size()-1);
+	}
+}
+
+void CGUIWindowMusicSongs::SetHistoryForPath(const CStdString& strDirectory)
+{
+	if (!strDirectory.IsEmpty())
+	{
+		//	Build the directory history for default path
+		CStdString strPath, strParentPath;
+		strPath=strDirectory;
+		VECFILEITEMS items;
+		CFileItemList itemlist(items);
+		GetDirectory("", items);
+
+		while (CUtil::GetParentPath(strPath, strParentPath))
+		{
+			bool bSet=false;
+			for (int i=0; i<(int)items.size(); ++i)
+			{
+				CFileItem* pItem=items[i];
+				while (CUtil::HasSlashAtEnd(pItem->m_strPath))
+					pItem->m_strPath.Delete(pItem->m_strPath.size()-1);
+				if (pItem->m_strPath==strPath)
+				{
+					CStdString strHistory;
+					GetDirectoryHistoryString(pItem, strHistory);
+					m_history.Set(strHistory, "");
+					return;
+				}
+			}
+
+			m_history.Set(strPath, strParentPath);
+			strPath=strParentPath;
+			while (CUtil::HasSlashAtEnd(strPath))
+				strPath.Delete(strPath.size()-1);
+		}
 	}
 }
