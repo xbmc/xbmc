@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 24-09-2004 added: Album info + Year now shown on the LCD during music playback (based on SF 935576)
   - 24-09-2004 fixed: [ 1034040 ] Pressing x while calibrating screen causes blackscreen
   - 24-09-2004 fixed: Spin controls don't remember which arrow was focused
   - 24-09-2004 fixed: CDDA Player was using too much processor - added Sleep()
