@@ -19,8 +19,10 @@ public:
   CUtil(void);
   virtual ~CUtil(void);
   static char* GetExtension(const CStdString& strFileName);
+  static void  RemoveExtension(CFileItem* pItem);
+  static void  RemoveExtensions(VECFILEITEMS &items);
   static char* GetFileName(const CStdString& strFileNameAndPath);
-	static bool  IsHD(const CStdString& strFileName);
+  static bool  IsHD(const CStdString& strFileName);
   static bool  IsXBE(const CStdString& strFileName);
   static bool  IsDefaultXBE(const CStdString& strFileName);
   static bool  IsShortCut(const CStdString& strFileName);
