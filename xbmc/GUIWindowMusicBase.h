@@ -86,6 +86,7 @@ protected:
 					void							UpdateListControl();
 					void							AddItemToPlayList(const CFileItem* pItem) ;
 					int								GetSelectedItem();
+          void							SetSelectedItem(int index);
 					void							OnSearch();
 	virtual	void							OnSearchItemFound(const CFileItem* pItem);
 	virtual void							DoSearch(const CStdString& strSearch,VECFILEITEMS& items);

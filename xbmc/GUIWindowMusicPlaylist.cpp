@@ -174,15 +174,57 @@ void CGUIWindowMusicPlayList::OnAction(const CAction &action)
 		//	Playlist has no parent dirs
 		return;
 	}
-
 	if (action.wID==ACTION_SHOW_PLAYLIST)
 	{
 		m_gWindowManager.PreviousWindow();
 		return;
 	}
+  if (action.wID == ACTION_MOVE_ITEM_UP)
+  {
+    MoveCurrentPlayListItem(ACTION_MOVE_ITEM_UP);
+  }
+  if (action.wID == ACTION_MOVE_ITEM_DOWN)
+  {
+    MoveCurrentPlayListItem(ACTION_MOVE_ITEM_DOWN);
+  }
 
 	CGUIWindowMusicBase::OnAction(action);
 }
+
+void CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iAction)
+{
+    int iFocusedControl = GetFocusedControl();
+    if (iFocusedControl==CONTROL_THUMBS || iFocusedControl==CONTROL_LIST)
+    {
+      int iSelected = GetSelectedItem();
+      int iNew      = iSelected;
+      if (iAction == ACTION_MOVE_ITEM_UP) {
+        iNew--;
+      }
+      else {
+        iNew++;
+      }
+      //	The current playing or target song can't be moved
+      if (
+        (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC) && 
+        (g_application.IsPlayingAudio()) && 
+        (
+          (g_playlistPlayer.GetCurrentSong() == iSelected) ||
+          (g_playlistPlayer.GetCurrentSong() == iNew)
+         )
+      ) {
+        return;
+      }
+      CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+      if (playlist.Swap(iSelected, iNew))
+      {
+        Update(m_strDirectory);
+        SetSelectedItem(iNew);
+        return;
+      }
+    }
+}
+
 
 void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items)
 {

@@ -26,6 +26,7 @@ protected:
 					void				ClearPlayList();
 					void				ShufflePlayList();
 					void				RemovePlayListItem(int iItem);
+          void				MoveCurrentPlayListItem(int iAction); // up or down
 
 					SETPATHES		m_Pathes;
 					MAPSONGS		m_songsMap;
