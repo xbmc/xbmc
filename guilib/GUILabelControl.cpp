@@ -60,7 +60,11 @@ void CGUILabelControl::Render()
 				}
 			}
 	
-			m_pFont->DrawText((float)m_iPosX, (float)m_iPosY,m_dwTextColor,strLabelUnicode.c_str(),m_dwTextAlign, (float)m_dwWidth);
+			float fPosX = (float)m_iPosX;
+			if (m_dwTextAlign & XBFONT_CENTER_X)
+				fPosX += (float)m_dwWidth/2;
+
+			m_pFont->DrawText(fPosX, (float)m_iPosY,m_dwTextColor,strLabelUnicode.c_str(),m_dwTextAlign, (float)m_dwWidth);
 		}
 	}
 }
