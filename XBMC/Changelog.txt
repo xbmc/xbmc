@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 06-12-2004 fixed: my pictures, recursive slideshow was played unsorted
   - 06-12-2004 fixed: my videos, items where added unsorted to the playlist
   - 05-12-2004 updated: Romanian language file (Thnx to bompy)
   - 05-12-2004 updated: German (Austrian) language file (Thnx to CEOMR)

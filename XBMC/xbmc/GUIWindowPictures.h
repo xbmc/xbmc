@@ -38,8 +38,12 @@ protected:
   void              OnSlideShowRecursive(const CStdString& strPicture);
   void              OnSlideShowRecursive();
   bool              ViewByIcon();
-  void              ShowThumbPanel();
   bool              ViewByLargeIcon();
+	void							SetViewMode(int iMode);
+	int								SortMethod();
+	bool							SortAscending();
+	void							SortItems(VECFILEITEMS& items);
+  void              UpdateThumbPanel();
 	void              GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
 	void							SetHistoryForPath(const CStdString& strDirectory);
 	bool							DoCreateFolderThumbs(CStdString &strFolder, int *iTotalItems, int *iCurrentItem, bool bRecurse);
