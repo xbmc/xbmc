@@ -20,6 +20,7 @@ public:
 	void						Add(const CStdString& strLabel);
 	int							GetSelectedLabel() const;
 	void						SetHeading(const wstring& strLine);
+	void						SetHeading(const string& strLine);
 	void						SetHeading(int iString);
 protected:
 	int							m_iSelected;
