@@ -233,7 +233,7 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 }
 
 //------------------------------------------------------------------------------------------------------------------
-bool CHTTP::Download(const string &strURL, const string &strFileName)
+bool CHTTP::Download(const string &strURL, const string &strFileName, LPDWORD pdwSize)
 {
 	CLog::Log(LOGINFO, "Download: %s->%s",strURL.c_str(),strFileName.c_str());
 
@@ -266,6 +266,11 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 		WriteFile(hFile, strData.data(), strData.size(), &n, 0);
 	}
 	CloseHandle(hFile);
+
+	if (pdwSize!=NULL)
+	{
+		*pdwSize = strData.size();
+	}
 
 	return true;
 }
