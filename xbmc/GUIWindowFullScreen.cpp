@@ -165,19 +165,19 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
     break;
 
 		case ACTION_STEP_BACK:
-      SeekPercentage(g_application.m_pPlayer->GetPercentage()-2);
+      Seek(false, false);
 		break;
 
 		case ACTION_STEP_FORWARD:
-			SeekPercentage(g_application.m_pPlayer->GetPercentage()+2);
+			Seek(true, false);
 		break;
 
 		case ACTION_BIG_STEP_BACK:
-			SeekPercentage(g_application.m_pPlayer->GetPercentage()-10);
+			Seek(false, true);
 		break;
 
 		case ACTION_BIG_STEP_FORWARD:
-			SeekPercentage(g_application.m_pPlayer->GetPercentage()+10);
+			Seek(true, true);
 		break;
 
 		case ACTION_SHOW_MPLAYER_OSD:
@@ -962,10 +962,8 @@ void CGUIWindowFullScreen::Update()
 
 }
 
-void CGUIWindowFullScreen::SeekPercentage(int iPercent)
+void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
 {
-	if (iPercent<0) iPercent=0;
-	if (iPercent>100) iPercent=100;
 	// Unpause mplayer if necessary
 	bool bNeedsPause(false);
 	if (g_application.m_pPlayer->IsPaused())
@@ -973,7 +971,7 @@ void CGUIWindowFullScreen::SeekPercentage(int iPercent)
 		g_application.m_pPlayer->Pause();
 		bNeedsPause = true;
 	}
-	g_application.m_pPlayer->SeekPercentage(iPercent);
+	g_application.m_pPlayer->Seek(bPlus, bLargeStep);
 	// And repause it
 	if (bNeedsPause)
 	{
