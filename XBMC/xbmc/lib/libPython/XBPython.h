@@ -72,4 +72,4 @@ private:
 	CRITICAL_SECTION	m_critSection;
 };
 
-extern XBPython m_pythonParser;
+extern XBPython g_pythonParser;

@@ -22,7 +22,7 @@ namespace WEBS_SPYCE
 			PyThreadState_Clear(spyThreadState);
 			PyThreadState_Delete(spyThreadState);
 			PyEval_ReleaseLock();
-			m_pythonParser.Finalize();
+			g_pythonParser.Finalize();
 		}
 	}
 
@@ -31,10 +31,10 @@ namespace WEBS_SPYCE
 		// initialize python first
 		if(!spyInitialized)
 		{
-			m_pythonParser.Initialize();
+			g_pythonParser.Initialize();
 
 			PyEval_AcquireLock();
-			PyInterpreterState * mainInterpreterState = m_pythonParser.getMainThreadState()->interp;
+			PyInterpreterState * mainInterpreterState = g_pythonParser.getMainThreadState()->interp;
 			spyThreadState = PyThreadState_New(mainInterpreterState);
 			PyThreadState_Swap(spyThreadState);
 
@@ -59,7 +59,7 @@ namespace WEBS_SPYCE
 			{
 				PyThreadState_Clear(spyThreadState);
 				PyThreadState_Delete(spyThreadState);
-				m_pythonParser.Finalize();
+				g_pythonParser.Finalize();
 				return -1;		
 			}
 			

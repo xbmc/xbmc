@@ -11,7 +11,7 @@
 		* anymore
 		*/
 
-XBPython m_pythonParser;
+XBPython g_pythonParser;
 
 XBPython::XBPython()
 {
