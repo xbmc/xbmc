@@ -10,6 +10,10 @@
 		int dwPosY;					\
 		int dwWidth;				\
 		int dwHeight;				\
+		int iControlUp;			\
+		int iControlDown;		\
+		int iControlLeft;		\
+		int iControlRight;	\
 		CGUIControl* pGUIControl;
 
 #ifdef __cplusplus
@@ -35,6 +39,16 @@ namespace PYXBMC
 		DWORD strColorKey;
 	} ControlImage;
 
+	typedef struct {
+    PyObject_HEAD_XBMC_CONTROL
+		string strFont;
+		wstring strText;
+		string strTextureFocus;
+		string strTextureNoFocus;
+		DWORD dwTextColor;
+		DWORD dwDisabledColor;
+	} ControlButton;
+
 	extern void Control_Dealloc(Control* self);
 
 	extern PyMethodDef Control_methods[];
@@ -42,6 +56,7 @@ namespace PYXBMC
 	extern PyTypeObject Control_Type;
 	extern PyTypeObject ControlLabel_Type;
 	extern PyTypeObject ControlImage_Type;
+	extern PyTypeObject ControlButton_Type;
 }
 
 #ifdef __cplusplus

@@ -7,4 +7,4 @@ dialog = xbmcgui.Dialog()
 selected = dialog.select('select a song to play, no directory!!!', list)
 filename = list[selected]
 
-xbmc.mediaplay(dir + filename)
+xbmc.Player().play(dir + filename)

@@ -12,10 +12,6 @@ using namespace std;
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
 
-/*****************************************************************
- * start of window methods and python objects
- *****************************************************************/
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -29,27 +25,52 @@ namespace PYXBMC
 		self = (Window*)type->tp_alloc(type, 0);
 		if (!self) return NULL;
 
-		// window id's 3000 - 3100 are reserved for python
-		// get first window id that is not in use
-		int id = 3000;
-		// if window 3099 is in use it means python can't create more windows
-		if (m_gWindowManager.GetWindow(3099))
+		self->iWindowId = -1;
+
+		if (!PyArg_ParseTuple(args, "|i", &self->iWindowId)) return NULL;
+
+		if (self->iWindowId != -1)
 		{
-			PyErr_SetString((PyObject*)self, "maximum number of windows reached");
-			return NULL;
+			// user specified window id, use this one if it exists
+			// It is not possible to capture key presses or button presses
+			self->pWindow = m_gWindowManager.GetWindow(self->iWindowId);
+			if (!self->pWindow)
+			{
+				PyErr_SetString((PyObject*)self, "Window id does not exist");
+				self->ob_type->tp_free((PyObject*)self);
+				return NULL;
+			}
+			self->iOldWindowId = 0;
+			self->bModal = false;
+			self->iCurrentControlId = 3000;
+			self->bIsPythonWindow = false;
 		}
-		while(id < 3100 && m_gWindowManager.GetWindow(id) != NULL) id++;
-		self->iWindowId = id;
-		self->iOldWindowId = 0;
-		self->bIsCreatedByPython = true;
-		self->bModal = false;
-		self->pWindow = new CGUIPythonWindow(id);
+		else
+		{
+			// window id's 3000 - 3100 are reserved for python
+			// get first window id that is not in use
+			int id = 3000;
+			// if window 3099 is in use it means python can't create more windows
+			if (m_gWindowManager.GetWindow(3099))
+			{
+				PyErr_SetString((PyObject*)self, "maximum number of windows reached");
+				self->ob_type->tp_free((PyObject*)self);
+				return NULL;
+			}
+			while(id < 3100 && m_gWindowManager.GetWindow(id) != NULL) id++;
+			self->iWindowId = id;
+			self->iOldWindowId = 0;
+			self->bModal = false;
+			self->bIsPythonWindow = true;
+			self->pWindow = new CGUIPythonWindow(id);
 
-		self->pWindow->SetActionCallback((PyObject*)self);
+			if (self->bIsPythonWindow)
+				((CGUIPythonWindow*)self->pWindow)->SetCallbackWindow((PyObject*)self);
 
-		g_graphicsContext.Lock();
-		m_gWindowManager.Add(self->pWindow);
-		g_graphicsContext.Unlock();
+			g_graphicsContext.Lock();
+			m_gWindowManager.Add(self->pWindow);
+			g_graphicsContext.Unlock();
+		}
 
 		return (PyObject*)self;
 	}
@@ -57,24 +78,28 @@ namespace PYXBMC
 	void Window_Dealloc(Window* self)
 	{
 		g_graphicsContext.Lock();
-		// first change to an existing window
-		if (ACTIVE_WINDOW == self->iWindowId)
+		if (self->bIsPythonWindow)
 		{
-			if(m_gWindowManager.GetWindow(self->iOldWindowId))
+			// first change to an existing window
+			if (ACTIVE_WINDOW == self->iWindowId)
 			{
-				m_gWindowManager.ActivateWindow(self->iOldWindowId);
+				if(m_gWindowManager.GetWindow(self->iOldWindowId))
+				{
+					m_gWindowManager.ActivateWindow(self->iOldWindowId);
+				}
+				// old window does not exist anymore, switch to home
+				else m_gWindowManager.ActivateWindow(0);
 			}
-			// old window does not exist anymore, switch to home
-			else m_gWindowManager.ActivateWindow(0);
 		}
 
 		// free all recources in use by controls
-		vector<Control*>::iterator it = self->vecControls.begin();
+		std::vector<Control*>::iterator it = self->vecControls.begin();
 		while (it != self->vecControls.end())
 		{
 			Control* pControl = *it;
 
 			// initialize control to zero
+			self->pWindow->Remove(pControl->iControlId);
 			pControl->pGUIControl->FreeResources();
 			delete pControl->pGUIControl;
 			pControl->pGUIControl = NULL;
@@ -86,7 +111,7 @@ namespace PYXBMC
 		}
 
 		g_graphicsContext.Unlock();
-
+		if (self->bIsPythonWindow) delete self->pWindow;
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
@@ -138,7 +163,8 @@ namespace PYXBMC
 	PyObject* Window_Close(Window *self, PyObject *args)
 	{
 		self->bModal = false;
-		self->pWindow->PulseActionEvent();
+		if (self->bIsPythonWindow)
+			((CGUIPythonWindow*)self->pWindow)->PulseActionEvent();
 
 		g_graphicsContext.Lock();
 		m_gWindowManager.ActivateWindow(self->iOldWindowId);
@@ -164,20 +190,22 @@ namespace PYXBMC
 
 	PyObject* Window_DoModal(Window *self, PyObject *args)
 	{
-		self->bModal = true;
-
-		if(self->iWindowId != ACTIVE_WINDOW) Window_Show(self, NULL);
-
-		while(self->bModal)
+		if (self->bIsPythonWindow)
 		{
-			Py_BEGIN_ALLOW_THREADS
-			self->pWindow->WaitForActionEvent(INFINITE);
-			Py_END_ALLOW_THREADS
+			self->bModal = true;
 
-			// only call Py_MakePendingCalls from a python thread
-			Py_MakePendingCalls();
+			if(self->iWindowId != ACTIVE_WINDOW) Window_Show(self, NULL);
+
+			while(self->bModal)
+			{
+				Py_BEGIN_ALLOW_THREADS
+				((CGUIPythonWindow*)self->pWindow)->WaitForActionEvent(INFINITE);
+				Py_END_ALLOW_THREADS
+
+				// only call Py_MakePendingCalls from a python thread
+				Py_MakePendingCalls();
+			}
 		}
-		
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
@@ -216,6 +244,20 @@ namespace PYXBMC
 					pControlLabel->strFont, pControlLabel->strText, pControlLabel->dwTextColor, 0, false);
 		}
 
+		// Control Button
+		else if (!strcmp(pControl->ob_type->tp_name, ControlButton_Type.tp_name))
+		{
+			ControlButton* pControlButton = (ControlButton*)pControl;
+			pControl->pGUIControl = new CGUIButtonControl(pControl->iParentId, pControl->iControlId,
+					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
+					pControlButton->strTextureFocus, pControlButton->strTextureNoFocus);
+
+			CGUIButtonControl* pGuiButtonControl = (CGUIButtonControl*)pControl->pGUIControl;
+
+			pGuiButtonControl->SetLabel(pControlButton->strFont, pControlButton->strText, pControlButton->dwTextColor);
+			pGuiButtonControl->SetDisabledColor(pControlButton->dwDisabledColor);
+		}
+
 		// Image
 		else if (!strcmp(pControl->ob_type->tp_name, ControlImage_Type.tp_name))
 		{
@@ -230,8 +272,45 @@ namespace PYXBMC
 		self->vecControls.push_back(pControl);
 		pControl->pGUIControl->AllocResources();
 
+		// set default navigation for control
+		pControl->iControlUp = pControl->iControlId;
+		pControl->iControlDown = pControl->iControlId;
+		pControl->iControlLeft = pControl->iControlId;
+		pControl->iControlRight = pControl->iControlId;
+
+		pControl->pGUIControl->SetNavigation(pControl->iControlUp,
+				pControl->iControlDown,	pControl->iControlLeft, pControl->iControlRight);
+
 		g_graphicsContext.Lock();
 		pWindow->Add(pControl->pGUIControl);
+		g_graphicsContext.Unlock();
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	PyObject* Window_SetFocus(Window *self, PyObject *args)
+	{ 
+		CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+		if (!pWindow) return NULL;
+
+		Control* pControl;
+		if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
+		// type checking, object should be of type Control
+		if(strcmp(((PyObject*)pControl)->ob_type->tp_base->tp_name, Control_Type.tp_name))
+		{
+			PyErr_SetString((PyObject*)self, "Object should be of type Control");
+			return NULL;
+		}
+
+		if(!pWindow->GetControl(pControl->iControlId))
+		{
+			PyErr_SetString((PyObject*)self, "Control does not exist in window");
+			return NULL;
+		}
+
+		g_graphicsContext.Lock();
+		pWindow->OnMessage(CGUIMessage(GUI_MSG_SETFOCUS,pControl->iParentId, pControl->iControlId));
 		g_graphicsContext.Unlock();
 
 		Py_INCREF(Py_None);
@@ -282,10 +361,18 @@ namespace PYXBMC
 		Py_DECREF(pControl);
 		g_graphicsContext.Unlock();
 
-
-
 		Py_INCREF(Py_None);
 		return Py_None;
+	}
+
+	PyObject* Window_GetHeight(Window *self, PyObject *args)
+	{
+		return PyLong_FromLong(g_graphicsContext.GetHeight());
+	}
+
+	PyObject* Window_GetWidth(Window *self, PyObject *args)
+	{ 
+		return PyLong_FromLong(g_graphicsContext.GetWidth());
 	}
 
 	PyMethodDef Window_methods[] = {
@@ -296,6 +383,9 @@ namespace PYXBMC
 		{"close", (PyCFunction)Window_Close, METH_VARARGS, ""},
 		{"addControl", (PyCFunction)Window_AddControl, METH_VARARGS, ""},
 		{"removeControl", (PyCFunction)Window_RemoveControl, METH_VARARGS, ""},
+		{"setFocus", (PyCFunction)Window_SetFocus, METH_VARARGS, ""},
+		{"getHeight", (PyCFunction)Window_GetHeight, METH_VARARGS, ""},
+		{"getWidth", (PyCFunction)Window_GetWidth, METH_VARARGS, ""},
 		{NULL, NULL, 0, NULL}
 	};
 
