@@ -25,16 +25,16 @@ void CLangCodeExpander::LoadStandardCodes(void)
 {
   try
   {
-    if(!g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
-    {
+//    if(!g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
+ //   {
       LoadCodes("Q:\\system\\players\\mplayer\\ISO639-1.xml", m_mapISO639_1);
       LoadCodes("Q:\\system\\players\\mplayer\\ISO639-2.xml", m_mapISO639_2);
-    }
+/*    }
     else
     {
       LoadCodes("Q:\\mplayer\\ISO639-1.xml", m_mapISO639_1);
       LoadCodes("Q:\\mplayer\\ISO639-2.xml", m_mapISO639_2);
-    }
+    }*/
   }
   catch(...)
   {
