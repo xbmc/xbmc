@@ -187,6 +187,10 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	}
 	m_wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
 
+	xbox_Ac3encoder_active = false;
+	if ( (dsmb.dwMixBinCount>2) && ((XGetAudioFlags()&(DSSPEAKER_ENABLE_AC3|DSSPEAKER_ENABLE_DTS)) != 0 ) )
+		xbox_Ac3encoder_active = true;
+
 	DSSTREAMDESC dssd; 
 	memset(&dssd,0,sizeof(dssd));
 
@@ -472,7 +476,10 @@ DWORD CASyncDirectSound::GetBytesInBuffer()
 //***********************************************************************************************
 FLOAT CASyncDirectSound::GetDelay()
 {
-	return 0.0;
+	if (xbox_Ac3encoder_active)
+		return 0.049;			//(Ac3 encoder 29ms)+(receiver 20ms)
+	else
+		return 0.008;			//PCM output 8ms
 }
 
 //***********************************************************************************************
