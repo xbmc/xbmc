@@ -229,6 +229,10 @@ public:
 	bool		m_bScreenSave;	// CB: SCREENSAVER PATCH
 	DWORD		m_dwSaverTick;	// CB: SCREENSAVER PATCH
 	DWORD		m_dwSkinTime;
+
+	char		m_CurrDAAPHost[64];
+	void		*m_DAAPPtr;
+	int			m_DAAPDBID;
 	void		*m_DAAPSong;
 	UINT64		m_DAAPSongSize;
 
