@@ -1,4 +1,4 @@
-<!-- German (AUSTRIAN) language for XBMC -->
+<!-- German (AUSTRIA) language for XBMC -->
 <!--     Translation done by CEOMR       --> 
 
 <strings>
@@ -2364,6 +2364,30 @@
    <string><id>13314</id>
 <value>Musik OSD Einblendzeit</value>
 </string>
+   <string><id>13315</id>
+<value>Miniaturansichten erstellen</value>
+</string> 
+     <string><id>13316</id>
+<value>Rekursive Miniaturansichten</value>
+</string> 
+     <string><id>13317</id>
+<value>Diaschau</value>
+</string> 
+     <string><id>13318</id>
+<value>Rekursive Diaschau</value>
+</string> 
+     <string><id>13319</id>
+<value>Zufällige Diaschau</value>
+</string> 
+     <string><id>13320</id>
+<value>Stereo</value>
+</string> 
+     <string><id>13321</id>
+<value>nur links</value>
+</string> 
+     <string><id>13322</id>
+<value>nur rechts</value>
+</string>
    <string><id>14000</id>
 <value>Verknüpfen: AUS</value>
 </string> 
@@ -2372,6 +2396,21 @@
 </string> 
    <string><id>14002</id>
 <value>Verknüpfen: Komplex</value>
+</string> 
+    <string><id>14003</id>
+<value>Wiedergabeliste wird heruntergeladen...</value>
+</string> 
+     <string><id>14004</id>
+<value>Streams werden heruntergeladen...</value>
+</string> 
+     <string><id>14005</id>
+<value>Streams werden verarbeitet...</value>
+</string> 
+     <string><id>14006</id>
+<value>Fehler beim Erhalt der Streams</value>
+</string> 
+     <string><id>14007</id>
+<value>Fehler beim Erhalt der Wiedergabeliste</value>
 </string> 
 
 
