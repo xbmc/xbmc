@@ -245,3 +245,4 @@ void CGUIButtonControl::OnMouseClick(DWORD dwButton)
 		OnAction(action);
 	}
 }
+

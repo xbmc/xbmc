@@ -170,8 +170,16 @@ void CGUIFontTTF::DrawTrueType(LONG nPosX, LONG nPosY, WCHAR* text, int len)
 		return;
 /*	do not grab buffer per draw basis.
 	if (!m_pSurface)
+		g_graphicsContext.Get3DDevice()->GetBackBuffer(0,D3DBACKBUFFER_TYPE_MONO, &m_pSurface);
 		D3DDevice::GetBackBuffer(0,D3DBACKBUFFER_TYPE_MONO, &m_pSurface);
 */	
 	// draw to back buffer
 	m_pTrueTypeFont->TextOut(m_pSurface, text, len, nPosX, nPosY);
+
+	// release back buffer
+/*	if (m_pSurface)
+	{
+		m_pSurface->Release();
+		m_pSurface = NULL;
+	}*/
 }

@@ -247,6 +247,9 @@
 				RelativePath=".\GUIButtonControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIButtonScroller.cpp">
+			</File>
+			<File
 				RelativePath=".\GUICheckMarkControl.cpp">
 			</File>
 			<File
@@ -409,6 +412,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIButtonControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIButtonScroller.h">
 			</File>
 			<File
 				RelativePath=".\GUICallback.h">

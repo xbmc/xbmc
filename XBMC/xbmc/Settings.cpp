@@ -594,6 +594,9 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 	strcpy( g_stSettings.m_szAlternateSubtitleDirectory, strDir.c_str() );
 
 
+	// Home page button scroller
+	LoadHomeButtons(pRootElement);
+
 	// parse my programs bookmarks...
 	CStdString strDefault;
 	GetShares(pRootElement,"myprograms",m_vecMyProgramsBookmarks,strDefault);
@@ -1384,7 +1387,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetFloat(pElement,"CdgAVDelay",g_stSettings.m_fCdgAVDelay,0.8f,-3.0f,3.0f);
 	}
 
-  LoadCalibration(pRootElement, strSettingsFile);
+	LoadCalibration(pRootElement, strSettingsFile);
 
 	return true;
 }
@@ -2074,5 +2077,123 @@ bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName
 	{
 		pNode->ToElement()->InsertEndChild(bookmark);
 	}
+	return xbmcXml.SaveFile();
+}
+
+void CSettings::LoadHomeButtons(TiXmlElement* pRootElement)
+{
+	TiXmlElement *pElement = pRootElement->FirstChildElement("homebuttons");
+	if (pElement)
+	{
+		TiXmlElement *pChild = pElement->FirstChildElement("button");
+		while (pChild)
+		{
+			char temp[1024];
+			int iIcon;
+			GetString(pChild, "execute", temp, "");
+			GetInteger(pChild, "icon", iIcon, ICON_TYPE_NONE, ICON_TYPE_NONE, ICON_TYPE_SETTINGS);
+			char temp2[1024];
+			GetString(pChild, "label", temp2, "");
+			CButtonScrollerSettings::CButton *pButton = NULL;
+			if ((temp2[0]>='A')&&(temp2[0]<='z'))
+			{
+				WCHAR wszLabel[1024];
+				swprintf(wszLabel,L"%S",temp2);
+				pButton = new CButtonScrollerSettings::CButton(wszLabel, temp, iIcon);
+			}
+			else
+			{
+				DWORD dwLabelID=atol(temp2);
+				pButton = new CButtonScrollerSettings::CButton(dwLabelID, temp, iIcon);
+			}
+			if (pButton->m_strExecute.size()>0)
+				g_settings.m_buttonSettings.m_vecButtons.push_back(pButton);
+			pChild=pChild->NextSiblingElement();
+		}
+		GetInteger(pElement, "default", g_settings.m_buttonSettings.m_iDefaultButton, 0, 0, (int)g_settings.m_buttonSettings.m_vecButtons.size());
+	}
+	if (g_settings.m_buttonSettings.m_vecButtons.size() == 0)
+	{	// fill in the defaults
+		CButtonScrollerSettings::CButton *button1 = new CButtonScrollerSettings::CButton(0, "XBMC.ActivateWindow(1)", ICON_TYPE_PROGRAMS);
+		CButtonScrollerSettings::CButton *button2 = new CButtonScrollerSettings::CButton(7, "XBMC.ActivateWindow(3)", ICON_TYPE_FILES);
+		CButtonScrollerSettings::CButton *button3 = new CButtonScrollerSettings::CButton(1, "XBMC.ActivateWindow(2)", ICON_TYPE_PICTURES);
+		CButtonScrollerSettings::CButton *button4 = new CButtonScrollerSettings::CButton(2, "XBMC.ActivateWindow(501)", ICON_TYPE_MUSIC);
+		CButtonScrollerSettings::CButton *button5 = new CButtonScrollerSettings::CButton(3, "XBMC.ActivateWindow(6)", ICON_TYPE_VIDEOS);
+		CButtonScrollerSettings::CButton *button6 = new CButtonScrollerSettings::CButton(8, "XBMC.ActivateWindow(2600)", ICON_TYPE_WEATHER);
+		CButtonScrollerSettings::CButton *button7 = new CButtonScrollerSettings::CButton(5, "XBMC.ActivateWindow(4)", ICON_TYPE_SETTINGS);
+		g_settings.m_buttonSettings.m_vecButtons.push_back(button1);
+		g_settings.m_buttonSettings.m_vecButtons.push_back(button2);
+		g_settings.m_buttonSettings.m_vecButtons.push_back(button3);
+		g_settings.m_buttonSettings.m_vecButtons.push_back(button4);
+		g_settings.m_buttonSettings.m_vecButtons.push_back(button5);
+		g_settings.m_buttonSettings.m_vecButtons.push_back(button6);
+		g_settings.m_buttonSettings.m_vecButtons.push_back(button7);
+		g_settings.m_buttonSettings.m_iDefaultButton = 0;
+	}
+}
+
+bool CSettings::SaveHomeButtons()
+{
+	// Load the xml file...
+	if (!LoadXml()) return false;
+
+	// Find the <homebuttons> tag.
+	TiXmlElement *pRootElement = xbmcXml.RootElement();
+	TiXmlNode *pNode = pRootElement->FirstChild("homebuttons");
+	TiXmlNode *pIt = NULL;
+
+	// if we've found the <homebutton> tag
+	if (pNode)
+	{	// delete it
+		pRootElement->RemoveChild(pNode);
+	}
+	
+	// readd it
+	TiXmlElement xmlHomeButtons("homebuttons");
+	pRootElement->InsertEndChild(xmlHomeButtons);
+	pNode = pRootElement->FirstChild("homebuttons");
+	if (!pNode) return false;
+	// now add them all from our settings information
+	for (unsigned int i=0; i<g_settings.m_buttonSettings.m_vecButtons.size(); i++)
+	{
+		// create a new <button> entry
+		CStdString strLabel;
+		if (g_settings.m_buttonSettings.m_vecButtons[i]->m_dwLabel == -1)
+			strLabel = g_settings.m_buttonSettings.m_vecButtons[i]->m_strLabel;
+		else
+			strLabel.Format("%i", g_settings.m_buttonSettings.m_vecButtons[i]->m_dwLabel);
+		TiXmlText xmlLabel(strLabel);
+		TiXmlText xmlExecute(g_settings.m_buttonSettings.m_vecButtons[i]->m_strExecute);
+		CStdString strIcon;
+		strIcon.Format("%i", g_settings.m_buttonSettings.m_vecButtons[i]->m_iIcon);
+		TiXmlText xmlIcon(strIcon);
+		TiXmlElement eLabel("label");
+		TiXmlElement eExecute("execute");
+		TiXmlElement eIcon("icon");
+
+		eLabel.InsertEndChild(xmlLabel);
+		eExecute.InsertEndChild(xmlExecute);
+		eIcon.InsertEndChild(xmlIcon);
+
+		TiXmlElement button("button");
+		button.InsertEndChild(eLabel);
+		button.InsertEndChild(eExecute);
+		button.InsertEndChild(eIcon);
+
+		pNode->InsertEndChild(button);
+	}
+	// now save the default button...
+	pIt = pNode->FirstChild("default");
+	if (pIt)
+	{	// delete it
+		pNode->RemoveChild(pIt);
+	}
+	CStdString strDefault;
+	strDefault.Format("%i", g_settings.m_buttonSettings.m_iDefaultButton);
+	TiXmlText xmlDefault(strDefault);
+	TiXmlElement eDefault("default");
+	eDefault.InsertEndChild(xmlDefault);
+	pNode->InsertEndChild(eDefault);
+
 	return xbmcXml.SaveFile();
 }

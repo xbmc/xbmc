@@ -156,6 +156,7 @@ public:
 
 	static bool IsNaturalNumber(const CStdString& str);
 	static bool IsUsingTTFSubtitles();
+	static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
 
 private:
 	static bool m_bNetworkUp;

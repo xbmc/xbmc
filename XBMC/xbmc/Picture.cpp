@@ -168,9 +168,6 @@ IDirect3DTexture8* CPicture::LoadNative(const CStdString& strFileName)
 
   try
   {
-		CGUIImage *newImage = new CGUIImage(WINDOW_SLIDESHOW, 100, 0, 0, 720, 576, strFileName);
-		newImage->AllocResources();
-		return newImage->m_vecTextures[0];
 		IDirect3DTexture8 *pTexture = NULL;
 		if (g_graphicsContext.Get3DDevice()->CreateTexture(1024, 1024, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
 		{
