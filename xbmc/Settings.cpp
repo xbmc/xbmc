@@ -306,25 +306,26 @@ void CSettings::Save() const
 	}
 }
 
-bool CSettings::Load()
+bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration)
 {
 	// load settings file...
+  bXboxMediacenter=bSettings=bCalibration=false;
   CLog::Log("loading T:\\settings.xml");
 	if (!LoadSettings("T:\\settings.xml"))
 	{
     CLog::Log("Unable to load T:\\settings.xml, creating new T:\\settings.xml with default values");
     Save();
-    return Load();
+    bSettings=LoadSettings("T:\\settings.xml");
 	}
 	// load calibration file...
   CLog::Log("loading T:\\calibration.xml");
-	if (!LoadCalibration("T:\\calibration.xml"))
+	bCalibration=LoadCalibration("T:\\calibration.xml");
+  if (!bCalibration)
 	{
 		CLog::Log("Unable to load T:\\calibration.xml");
 	}
 
 	// load xml file...
-
   CLog::Log("loading Q:\\XboxMediaCenter.xml");
 	CStdString strXMLFile = "Q:\\XboxMediaCenter.xml";
 	TiXmlDocument xmlDoc;
@@ -475,6 +476,7 @@ bool CSettings::Load()
 	if (strDefault.size())
 		strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());	
 
+  bXboxMediacenter=true;
   return true;
 }
 
