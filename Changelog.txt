@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 28-02-2005 added: More DirectX exports for screensavers, thanks to SiW + MrC
   - 28-02-2005 fixed: Kai window showed incorrect image in Friends view.
   - 28-02-2005 fixed: Possible crash bug when dialog in Fullscreen video is closed.
   - 28-02-2005 fixed: 100k or so memleak in Settings screens.
