@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 25-11-2004 added: XLink Kai tabbed view.
+  - 26-11-2004 added: XLink Kai tabbed view.
   - 25-11-2004 added: XLink Kai network reachable checking.
   - 25-11-2004 changed: Fade in from dimmed and black screensaver
   - 25-11-2004 fixed: Screen only partially filled on HDTV
