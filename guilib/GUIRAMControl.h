@@ -44,7 +44,7 @@ public:
 	};
 
 	CGUIRAMControl(DWORD dwParentID, DWORD dwControlId,
-		DWORD dwPosX, DWORD dwPosY,	DWORD dwWidth, DWORD dwHeight, 
+		int iPosX, int iPosY,	DWORD dwWidth, DWORD dwHeight, 
 		const CStdString& strFontName, const CStdString& strFont2Name,
 		D3DCOLOR dwTitleColor, D3DCOLOR dwNormalColor, D3DCOLOR dwSelectedColor,
 		DWORD dwTextOffsetX, DWORD dwTextOffsetY);

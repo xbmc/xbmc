@@ -22,7 +22,7 @@ using namespace std;
 class CGUIFadeLabelControl :  public CGUIControl
 {
 public:
-  CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, DWORD dwTextColor,DWORD dwTextAlign);
+  CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, DWORD dwTextColor,DWORD dwTextAlign);
   virtual ~CGUIFadeLabelControl(void);
   virtual void Render();
   virtual bool CanFocus() const;

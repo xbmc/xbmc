@@ -22,7 +22,7 @@ using namespace std;
 class CGUICheckMarkControl: public CGUIControl
 {
 public:
-  CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark, const CStdString& strTextureCheckMarkNF,DWORD dwCheckWidth, DWORD dwCheckHeight,DWORD dwAlign=XBFONT_RIGHT);
+  CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark, const CStdString& strTextureCheckMarkNF,DWORD dwCheckWidth, DWORD dwCheckHeight,DWORD dwAlign=XBFONT_RIGHT);
   virtual ~CGUICheckMarkControl(void);
   virtual void Render();
   virtual void OnAction(const CAction &action) ;
@@ -47,6 +47,7 @@ public:
   bool              GetSelected() const;
   void              SetShadow(bool bOnOff);
   bool              GetShadow() const;
+  void				OnMouseClick(DWORD dwButton);
 protected:
   CGUIImage     m_imgCheckMark;
   CGUIImage     m_imgCheckMarkNoFocus;

@@ -27,7 +27,7 @@ using namespace std;
 class CGUIListControlEx : public CGUIControl
 {
 public:
-  CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, 
+  CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, 
                   const CStdString& strFontName, 
                   DWORD dwSpinWidth,DWORD dwSpinHeight,
                   const CStdString& strUp, const CStdString& strDown, 
@@ -38,7 +38,9 @@ public:
 				  DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY);
   virtual ~CGUIListControlEx(void);
   virtual void 					Render();
-  virtual void 					OnAction(const CAction &action) ;
+  virtual void 					OnAction(const CAction &action);
+  virtual void 					OnMouseOver();
+  virtual void 					OnMouseClick(DWORD dwButton);
   virtual bool 					OnMessage(CGUIMessage& message);
 
 	virtual void PreAllocResources();
@@ -65,8 +67,8 @@ public:
 	const	CStdString&			GetTexutureUpFocusName() const { return m_upDown.GetTexutureUpFocusName(); };
 	const	CStdString&			GetTexutureDownFocusName() const { return m_upDown.GetTexutureDownFocusName(); };
 	DWORD									GetSpinTextColor() const { return m_upDown.GetTextColor();};
-	DWORD									GetSpinX() const { return m_upDown.GetXPosition();};
-	DWORD									GetSpinY() const { return m_upDown.GetYPosition();};
+	int										GetSpinX() const { return m_upDown.GetXPosition();};
+	int										GetSpinY() const { return m_upDown.GetYPosition();};
 	DWORD									GetSpace() const { return m_iSpaceBetweenItems;};
 	DWORD									GetItemHeight() const { return m_iItemHeight;	};
 	DWORD									GetImageWidth() const { return m_iImageWidth;};
@@ -79,10 +81,10 @@ public:
 	const CStdString			GetButtonNoFocusName() const { return m_imgButton.GetTexutureNoFocusName();};
 protected:
    
-  void         					OnRight();
-  void         					OnLeft();
-  void         					OnDown();
-  void         					OnUp();
+  virtual void         			OnRight();
+  virtual void         			OnLeft();
+  virtual void         			OnDown();
+  virtual void         			OnUp();
   void         					OnPageUp();
   void         					OnPageDown();
 	int										m_iSpaceBetweenItems;

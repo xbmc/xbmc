@@ -138,11 +138,16 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res)
 		if (CUtil::FileExists(strPath))
 			return strPath;
 	}
-	// that failed - drop to the default resolution
-	if (*res == PAL_4x3 || *res == NTSC_4x3 || *res == HDTV_480p_4x3)
-		*res = m_DefaultResolution;
-	else
+	// that failed - drop to the default widescreen resolution if where in a widemode
+	if (*res == PAL_16x9 || *res == NTSC_16x9 || *res == HDTV_480p_16x9 || *res == HDTV_720p)
+	{
 		*res = m_DefaultResolutionWide;
+		strPath.Format("%s%s\\%s", m_strBaseDir.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
+		if (CUtil::FileExists(strPath))
+			return strPath;
+	}
+	// that failed - drop to the default resolution
+	*res = m_DefaultResolution;
 	strPath.Format("%s%s\\%s", m_strBaseDir.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
 	// check if we don't have any subdirectories
 	if (*res == INVALID) *res = PAL_4x3;

@@ -9,6 +9,7 @@
 
 #include "gui3d.h"
 #include "key.h"
+#include "common/mouse.h"
 #include "guimessage.h"
 #include "graphiccontext.h"
 
@@ -21,10 +22,26 @@ class CGUIControl
 {
 public:
   CGUIControl();
-  CGUIControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight);
+  CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight);
   virtual ~CGUIControl(void);
   virtual void  Render();
   virtual void  OnAction(const CAction &action) ;
+  // Common actions to make the code easier to read (no ugly switch statements in derived controls)
+  virtual void  OnUp();
+  virtual void  OnDown();
+  virtual void  OnLeft();
+  virtual void  OnRight();
+
+  /// \brief Called when the mouse is over the control.  Default implementation selects the control.
+  virtual void  OnMouseOver();
+  /// \brief Called when the mouse is dragging over the control.  Default implementation does nothing.
+  virtual void  OnMouseDrag() {};
+  /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
+  virtual void  OnMouseClick(DWORD dwButton) {};
+  /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
+  virtual void  OnMouseDoubleClick(DWORD dwButton) {};
+  /// \brief Called when the mouse wheel has moved whilst over the control.  Default implementation does nothing
+  virtual void	OnMouseWheel() {};
   virtual bool  OnMessage(CGUIMessage& message);
   DWORD         GetID(void) const; 
   DWORD         GetParentID(void) const; 
@@ -36,20 +53,22 @@ public:
 	virtual bool  IsVisible() const;
 	virtual bool  IsDisabled() const;
   virtual bool  IsSelected() const;
-  virtual void  SetPosition(DWORD dwPosX, DWORD dwPosY);
+  virtual void  SetPosition(int iPosX, int iPosY);
   virtual void  SetAlpha(DWORD dwAlpha);
 	virtual void  SetColourDiffuse(D3DCOLOR colour);
 	virtual DWORD GetColourDiffuse() const { return m_colDiffuse;};
-  DWORD         GetXPosition() const;
-  DWORD         GetYPosition() const;
+  virtual int GetXPosition() const;
+  virtual int GetYPosition() const;
   virtual DWORD GetWidth() const;
   virtual DWORD GetHeight() const;
+  /// \brief Used to test whether the pointer location (fPosX, fPosY) is inside the control.  For mouse events.
+  virtual bool	HitTest(int iPosX, int iPosY) const;
   void          SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
   void          SetFocus(bool bOnOff);
   void          SetWidth(int iWidth);
   void          SetHeight(int iHeight);
   void          SetVisible(bool bVisible);
-	void					EnableCalibration(bool bOnOff);
+	virtual void			EnableCalibration(bool bOnOff);
 	bool					CalibrationEnabled() const;
 
 	enum GUICONTROLTYPES { 
@@ -74,6 +93,7 @@ public:
 		GUICONTROL_THUMBNAIL,
 		GUICONTROL_TOGGLEBUTTON,
 		GUICONTROL_VIDEO,
+		GUICONTROL_MOVE
 	};
 	GUICONTROLTYPES GetControlType() { return ControlType; }
 
@@ -83,8 +103,8 @@ protected:
   DWORD              m_dwControlRight;
   DWORD              m_dwControlUp;
   DWORD              m_dwControlDown;
-  DWORD              m_dwPosX;
-  DWORD              m_dwPosY;
+  int				 m_iPosX;
+  int                m_iPosY;
   DWORD              m_dwHeight;
   DWORD              m_dwWidth;
   D3DCOLOR           m_colDiffuse;

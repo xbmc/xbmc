@@ -23,7 +23,7 @@ class CGUIButtonControl : public CGUIControl
 {
 public:
   CGUIButtonControl(DWORD dwParentID, DWORD dwControlId,
-	  DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight,
+	  int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
 	  const CStdString& strTextureFocus,const CStdString& strTextureNoFocus,
 	  DWORD dwTextXOffset, DWORD dwTextYOffset);
 
@@ -31,11 +31,12 @@ public:
   
   virtual void Render();
   virtual void OnAction(const CAction &action) ;
+  virtual void OnMouseClick(DWORD dwButton);
   virtual bool OnMessage(CGUIMessage& message);
 	virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
-  virtual void SetPosition(DWORD dwPosX, DWORD dwPosY);
+  virtual void SetPosition(int iPosX, int iPosY);
   virtual void SetAlpha(DWORD dwAlpha);
   virtual void SetColourDiffuse(D3DCOLOR colour);
   virtual void SetDisabledColor(D3DCOLOR color);

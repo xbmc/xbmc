@@ -73,7 +73,7 @@ class CGUISelectButtonControl : public CGUIButtonControl
 {
 public:
   CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId, 
-													DWORD dwPosX, DWORD dwPosY, 
+													int iPosX, int iPosY, 
 													DWORD dwWidth, DWORD dwHeight, 
 													const CStdString& strButtonFocus, const CStdString& strButton,
 													DWORD dwTextOffsetX,
@@ -84,7 +84,12 @@ public:
   virtual ~CGUISelectButtonControl(void);
   virtual void						Render();
   virtual void						OnAction(const CAction &action) ;
+  virtual void						OnLeft();
+  virtual void						OnRight();
   virtual bool						OnMessage(CGUIMessage& message);
+  virtual void						OnMouseOver();
+  virtual void						OnMouseClick(DWORD dwButton);
+  virtual void						OnMouseWheel();
 
 	virtual void PreAllocResources();
   virtual void						AllocResources();
@@ -114,6 +119,8 @@ protected:
 	int											m_iStartFrame;
 	bool										m_bLeftSelected;
 	bool										m_bRightSelected;
+	bool										m_bMovedLeft;
+	bool										m_bMovedRight;
 	DWORD										m_dwTicks;
 };
 #endif

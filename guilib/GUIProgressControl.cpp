@@ -3,12 +3,12 @@
 #include "guifontmanager.h"
 
 
-CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, CStdString& strBackGroundTexture,CStdString& strLeftTexture,CStdString& strMidTexture,CStdString& strRightTexture)
-:CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
-,m_guiBackground(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight,strBackGroundTexture)
-,m_guiLeft(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight,strLeftTexture)
-,m_guiMid(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight,strMidTexture)
-,m_guiRight(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight,strRightTexture)
+CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, CStdString& strBackGroundTexture,CStdString& strLeftTexture,CStdString& strMidTexture,CStdString& strRightTexture)
+:CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
+,m_guiBackground(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight,strBackGroundTexture)
+,m_guiLeft(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight,strLeftTexture)
+,m_guiMid(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight,strMidTexture)
+,m_guiRight(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight,strRightTexture)
 {
 	m_iPercent=0;
 	ControlType = GUICONTROL_PROGRESS;

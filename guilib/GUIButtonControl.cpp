@@ -4,10 +4,10 @@
 #include "guiWindowManager.h"
 #include "ActionManager.h"
 
-CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, DWORD dwTextXOffset, DWORD dwTextYOffset)
-:CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
-,m_imgFocus(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight, strTextureFocus)
-,m_imgNoFocus(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight, strTextureNoFocus)
+CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, DWORD dwTextXOffset, DWORD dwTextYOffset)
+:CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
+,m_imgFocus(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight, strTextureFocus)
+,m_imgNoFocus(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight, strTextureNoFocus)
 {
   m_bSelected=false;
   m_dwFrameCounter = 0;
@@ -63,11 +63,11 @@ void CGUIButtonControl::Render()
 	{
 		if (IsDisabled() )
 		{
-			m_pFont->DrawText( (float)m_dwPosX+m_dwTextOffsetX, (float)m_dwPosY+m_dwTextOffsetY,m_dwDisabledColor,m_strLabel.c_str());
+			m_pFont->DrawText( (float)m_iPosX+m_dwTextOffsetX, (float)m_iPosY+m_dwTextOffsetY,m_dwDisabledColor,m_strLabel.c_str());
 		}
 		else
 		{
-			m_pFont->DrawText( (float)m_dwPosX+m_dwTextOffsetX, (float)m_dwPosY+m_dwTextOffsetY,m_dwTextColor,m_strLabel.c_str());
+			m_pFont->DrawText( (float)m_iPosX+m_dwTextOffsetX, (float)m_iPosY+m_dwTextOffsetY,m_dwTextColor,m_strLabel.c_str());
 		}
 	}
 
@@ -87,8 +87,7 @@ void CGUIButtonControl::OnAction(const CAction &action)
 
 		// button selected.
 		// send a message
-		CGUIMessage message(GUI_MSG_CLICKED,GetID(), GetParentID() );
-		g_graphicsContext.SendMessage(message);
+		SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
 
 		if (m_lHyperLinkWindowID != WINDOW_INVALID)
 		{
@@ -171,11 +170,11 @@ void  CGUIButtonControl::Update()
   m_imgNoFocus.SetHeight(m_dwHeight);
 }
 
-void CGUIButtonControl::SetPosition(DWORD dwPosX, DWORD dwPosY)
+void CGUIButtonControl::SetPosition(int iPosX, int iPosY)
 {
-  CGUIControl::SetPosition(dwPosX, dwPosY);
-  m_imgFocus.SetPosition(dwPosX, dwPosY);
-  m_imgNoFocus.SetPosition(dwPosX, dwPosY);
+  CGUIControl::SetPosition(iPosX, iPosY);
+  m_imgFocus.SetPosition(iPosX, iPosY);
+  m_imgNoFocus.SetPosition(iPosX, iPosY);
 }
 void CGUIButtonControl::SetAlpha(DWORD dwAlpha)
 {
@@ -202,3 +201,12 @@ void CGUIButtonControl::SetScriptAction(const CStdString& strScriptAction)
 	m_strScriptAction = strScriptAction;
 }
 
+void CGUIButtonControl::OnMouseClick(DWORD dwButton)
+{
+	if (dwButton == MOUSE_LEFT_BUTTON)
+	{
+		CAction action;
+		action.wID = ACTION_SELECT_ITEM;
+		OnAction(action);
+	}
+}

@@ -18,13 +18,13 @@ public:
 	public:
 		RenderContext()
 		{
-			m_dwPositionX = m_dwPositionY = 0;
+			m_iPositionX = m_iPositionY = 0;
 			m_bFocused = false;
 		};
 		virtual ~RenderContext(){};
 
-		DWORD m_dwPositionX;
-		DWORD m_dwPositionY;
+		int m_iPositionX;
+		int m_iPositionY;
 		bool  m_bFocused;
 	};
 	
