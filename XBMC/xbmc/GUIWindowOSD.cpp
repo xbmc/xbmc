@@ -374,18 +374,13 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 
 			if (iControl == OSD_SKIPBWD)
 			{
-				int iPercent=g_application.m_pPlayer->GetPercentage();	// Find out where we are at the moment
-				if (iPercent>=10)
-					g_application.m_pPlayer->SeekPercentage(iPercent-10);	// provided we're at 10% or greater, go back 10%
-				else
-					g_application.m_pPlayer->SeekPercentage(0);				// otherwise go back to the start
+				g_application.m_pPlayer->Seek(false, true);
 				ToggleButton(OSD_SKIPBWD, false);		// pop the button back to it's up state
 			}
 
 			if (iControl == OSD_SKIPFWD)
 			{
-				int iPercent=g_application.m_pPlayer->GetPercentage();	// Find out where we are at the moment
-				if (iPercent+10<=100) g_application.m_pPlayer->SeekPercentage(iPercent+10);	// provided we're at 90% or less, go forward 10%
+				g_application.m_pPlayer->Seek(true, true);
 				ToggleButton(OSD_SKIPFWD, false);		// pop the button back to it's up state
 			}
 
