@@ -143,21 +143,54 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 		{
 			// started playing another song...
 			int nCurrentPlaylist=message.GetParam1();
-      const CPlayList::CPlayListItem* item = (const CPlayList::CPlayListItem*)message.GetLPVOID();
 			if ((nCurrentPlaylist==PLAYLIST_MUSIC_TEMP && m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_strDirectory) > -1 )
 					|| (GetID()==WINDOW_MUSIC_PLAYLIST && nCurrentPlaylist==PLAYLIST_MUSIC))
 			{
-				for (int i=0; i < (int)m_vecItems.size(); ++i)
+				int nCurrentItem=LOWORD(message.GetParam2());
+				int nPreviousItem=(int)HIWORD(message.GetParam2());
+
+				int nFolderCount=CUtil::GetFolderCount(m_vecItems);
+				//if (nFolderCount>0)
+				//	nFolderCount++;
+				//for (int i=0; i < (int)m_vecItems.size(); ++i)
+				//{
+				//	CFileItem* pItem=m_vecItems[i];
+				//	if (pItem && pItem->m_bIsFolder)
+				//	{
+				//		nFolderCount++;
+				//	}
+				//	else
+				//		break;
+				//}
+
+				//	is the previous item in this directory
+				for (int i=nFolderCount, n=0; i<(int)m_vecItems.size(); i++)
 				{
 					CFileItem* pItem=m_vecItems[i];
-					if (pItem )
-					{
-            if (pItem->m_strPath == item->GetFileName())
-						  pItem->Select(true);
-            else
-						  pItem->Select(false);
-          }
+
+					if (pItem)
+						pItem->Select(false);
 				}
+
+				if (nFolderCount+nCurrentItem<(int)m_vecItems.size())
+				{
+					for (int i=nFolderCount, n=0; i<(int)m_vecItems.size(); i++)
+					{
+						CFileItem* pItem=m_vecItems[i];
+
+						if (pItem)
+						{
+							if (!CUtil::IsPlayList(pItem->m_strPath) && !CUtil::IsNFO(pItem->m_strPath))
+								n++;
+							if ((n-1)==nCurrentItem)
+							{
+								pItem->Select(true);
+								break;
+							}
+						}
+					}	//	for (int i=nFolderCount, n=0; i<(int)m_vecItems.size(); i++)
+				}
+
 			}
 		}
 		break;
@@ -424,25 +457,17 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 		}
 	}
 
-	CStdString strFileName;
+	int iCurrentPlaylistSong=-1;
 	//	Search current playlist item
 	if ((m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_strDirectory) > -1 && g_application.IsPlayingAudio() 
 			&& g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC_TEMP) 
 			|| (GetID()==WINDOW_MUSIC_PLAYLIST && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC && g_application.IsPlayingAudio()) )
 	{
-		int iCurrentSong=g_playlistPlayer.GetCurrentSong();
-    if (iCurrentSong>=0)
-    {
-		  CPlayList& playlist=g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
-      if (iCurrentSong < playlist.size())
-      {
-		    const CPlayList::CPlayListItem& item=playlist[iCurrentSong];
-		    strFileName = item.GetFileName();
-			}
-		}
+		iCurrentPlaylistSong=g_playlistPlayer.GetCurrentSong();
 	}
 
-	bool bSelectedFound=false;
+	bool bSelectedFound=false, bCurrentSongFound=false;
+	int iSongInDirectory=-1;
 	for (int i=0; i < (int)m_vecItems.size(); ++i)
 	{
 		CFileItem* pItem=m_vecItems[i];
@@ -461,9 +486,15 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 		}
 
 		//	synchronize playlist with current directory
-		if (!strFileName.IsEmpty() && pItem->m_strPath == strFileName)
+		if (!bCurrentSongFound && iCurrentPlaylistSong>-1)
 		{
-			pItem->Select(true);
+			if (!pItem->m_bIsFolder && !CUtil::IsPlayList(pItem->m_strPath) && !CUtil::IsNFO(pItem->m_strPath))
+				iSongInDirectory++;
+			if (iSongInDirectory==iCurrentPlaylistSong)
+			{
+				pItem->Select(true);
+				bCurrentSongFound=true;
+			}
 		}
 
 	}
