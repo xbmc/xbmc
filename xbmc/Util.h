@@ -34,6 +34,7 @@ public:
   static int   cmpnocase(const char* str1,const char* str2);
   static bool  GetParentPath(const CStdString& strPath, CStdString& strParent);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
+	static void RunXBE(const char* szPath, char* szParameters=NULL);
   static void LaunchXbe(char* szPath, char* szXbe, char* szParameters);
   static bool FileExists(const CStdString& strFileName);
   static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);

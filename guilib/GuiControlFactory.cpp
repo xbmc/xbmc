@@ -190,7 +190,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	CStdString 	strImage,strImageFocus;
 	int			iTextureWidth=80;
 	bool		bHasPath=false;
-	CStdString	strScriptAction="";
+	CStdString	strExecuteAction="";
 	CStdString	strRSSUrl="";
 	CStdString  strTitle="";
 
@@ -270,7 +270,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwAlign				= ((CGUIButtonControl*)pReference)->GetTextAlign();
 			dwDisabledColor		= ((CGUIButtonControl*)pReference)->GetDisabledColor() ;
 			iHyperLink			= ((CGUIButtonControl*)pReference)->GetHyperLink();
-			strScriptAction		= ((CGUIButtonControl*)pReference)->GetScriptAction();
+			strExecuteAction		= ((CGUIButtonControl*)pReference)->GetExecuteAction();
 			lTextOffsetX		= ((CGUIButtonControl*)pReference)->GetTextOffsetX();
 			lTextOffsetY		= ((CGUIButtonControl*)pReference)->GetTextOffsetY();
 		}
@@ -557,7 +557,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	// windows are referenced from WINDOW_HOME
 	if (iHyperLink != WINDOW_INVALID) iHyperLink += WINDOW_HOME;
 
-	GetString(pControlNode,"script", strScriptAction);
+	GetString(pControlNode,"script", strExecuteAction);	// left in for backwards compatibility.
+	GetString(pControlNode,"execute", strExecuteAction);
 	GetHex(pControlNode,"disabledcolor",dwDisabledColor);
 	GetPath(pControlNode,"textureDownFocus",strTextureDownFocus);
 	GetPath(pControlNode,"textureUpFocus",strTextureUpFocus);
@@ -768,14 +769,14 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		CGUIButtonControl* pControl = new CGUIButtonControl(
 					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,
 					strTextureFocus,strTextureNoFocus,
-					lTextOffsetX,lTextOffsetY,dwAlign);
+					lTextOffsetX,lTextOffsetY,(dwAlign|dwAlignY));
 
 		pControl->SetLabel(strFont,strLabel,dwTextColor);
 		pControl->SetDisabledColor(dwDisabledColor);
 		pControl->SetNavigation(up,down,left,right);
 		pControl->SetColourDiffuse(dwColorDiffuse);
 		pControl->SetHyperLink(iHyperLink);
-		pControl->SetScriptAction(strScriptAction);
+		pControl->SetExecuteAction(strExecuteAction);
 		pControl->SetVisible(bVisible);
 		return pControl;
 	}

@@ -12,8 +12,8 @@
 
 #define VOLUME_BAR_DISPLAY_TIME 1000L
 
-#define POPUP_VOLUME_SLIDER     1
-#define POPUP_VOLUME_LEVEL_TEXT 2
+#define POPUP_VOLUME_SLIDER     401
+#define POPUP_VOLUME_LEVEL_TEXT 402
 
 CGUIDialogVolumeBar::CGUIDialogVolumeBar(void)
 :CGUIDialog(0)
@@ -90,11 +90,6 @@ void CGUIDialogVolumeBar::ResetTimer()
 
 void CGUIDialogVolumeBar::Render()
 {
-	if (timeGetTime() - m_dwTimer > VOLUME_BAR_DISPLAY_TIME)	// 1 second display should be enough
-	{
-		Close();
-		return;
-	}
 	// set the level on our slider
 	int iValue = g_application.GetVolume();
 	CGUISliderControl *pSlider = (CGUISliderControl*)GetControl(POPUP_VOLUME_SLIDER);
@@ -107,4 +102,10 @@ void CGUIDialogVolumeBar::Render()
 	OnMessage(msg);
 	// and render the controls
 	CGUIDialog::Render();
+	// now check if we should exit
+	if (timeGetTime() - m_dwTimer > VOLUME_BAR_DISPLAY_TIME)
+	{
+		Close();
+		return;
+	}
 }

@@ -743,7 +743,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiDialogKeyboard);						// window id = 103
 	m_gWindowManager.Add(&m_guiDialogVolumeBar);					// window id = 104
 	m_gWindowManager.Add(&m_guiDialogSubMenu);						// window id = 105
-	m_gWindowManager.Add(&m_guiDialogContextMenu);				// window id = 106
+//	m_gWindowManager.Add(&m_guiDialogContextMenu);				// window id = 106
 	m_gWindowManager.Add(&m_guiMyMusicPlayList);					// window id = 500
 	m_gWindowManager.Add(&m_guiMyMusicSongs);							// window id = 501
 	m_gWindowManager.Add(&m_guiMyMusicAlbum);							// window id = 502
@@ -1009,7 +1009,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogProgress.Load("dialogProgress.xml");
 	m_guiDialogVolumeBar.Load("dialogVolumeBar.xml");
 	m_guiDialogSubMenu.Load("dialogSubMenu.xml");
-	m_guiDialogContextMenu.Load("dialogContextMenu.xml");
+//	m_guiDialogContextMenu.Load("dialogContextMenu.xml");
 	m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
 	m_guiMyMusicSongs.Load("mymusicsongs.xml");
 	m_guiMyMusicAlbum.Load("mymusicalbum.xml");
@@ -2529,6 +2529,28 @@ bool CApplication::OnMessage(CGUIMessage& message)
 			SwitchToFullScreen();
 		}
 		break;
+	case GUI_MSG_EXECUTE:
+		{	// user has asked for something to be executed
+			if (CUtil::IsPythonScript(message.GetStringParam()))
+			{	// a python script
+				g_pythonParser.evalFile(message.GetStringParam().c_str());
+			}
+			else if (CUtil::IsXBE(message.GetStringParam()))
+			{	// an XBE
+				CUtil::RunXBE(message.GetStringParam().c_str());
+			}
+			else if (CUtil::IsAudio(message.GetStringParam()) || CUtil::IsVideo(message.GetStringParam()))
+			{	// an audio or video file
+				CFileItem item(message.GetStringParam());
+				item.m_strPath = message.GetStringParam();
+				PlayFile(item);
+				if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+				{
+					g_graphicsContext.SetFullScreenVideo(true);
+					m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+				}
+			}
+		}
 	}
 	return true;
 }
