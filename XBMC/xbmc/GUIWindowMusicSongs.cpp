@@ -394,6 +394,7 @@ void CGUIWindowMusicSongs::OnScan()
 	m_dlgProgress->SetLine(1,"");
 	m_dlgProgress->SetLine(2,strStrippedPath );
 	m_dlgProgress->StartModal(GetID());
+	m_dlgProgress->Progress();
 
 	// Preload section for ID3 cover art reading
 	CSectionLoader::Load("CXIMAGE");
@@ -965,7 +966,16 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 		}
 	}
 
-  // for every file found, but skip folder
+	bool bShowProgress=false;
+	bool bProgressVisible=false;
+
+	//	When loading a directory not in database show a progress dialog
+	if (songsMap.size()==0 && !m_bScan && !m_gWindowManager.IsRouted())
+		bShowProgress=true;
+
+	DWORD dwTick=timeGetTime();
+
+	// for every file found, but skip folder
   for (int i=0; i < (int)items.size(); ++i)
 	{
     g_application.ResetScreenSaver();
@@ -973,8 +983,49 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 		CStdString strExtension;
 		CUtil::GetExtension(pItem->m_strPath,strExtension);
 
-		if (m_bScan)
-			m_dlgProgress->ProgressKeys();
+		//	Should we init a progress dialog
+		if (bShowProgress && !bProgressVisible)
+		{
+			DWORD dwElapsed = timeGetTime() - dwTick;
+
+			//	if tag loading took more then 1.5 secs. till now
+			//	show the progress dialog 
+			if (dwElapsed>1500)
+			{
+				if (m_dlgProgress) 
+				{
+					CURL url(m_strDirectory);
+					CStdString strStrippedPath;
+					url.GetURLWithoutUserDetails(strStrippedPath);
+					m_dlgProgress->SetHeading(189);
+					m_dlgProgress->SetLine(0, 505);
+					m_dlgProgress->SetLine(1,"");
+					m_dlgProgress->SetLine(2,strStrippedPath );
+					m_dlgProgress->StartModal(GetID());
+					m_dlgProgress->ShowProgressBar(true);
+					m_dlgProgress->SetPercentage((i*100)/items.size());
+					m_dlgProgress->Progress();
+					bProgressVisible=true;
+				}
+			}
+		}		
+
+		if (bProgressVisible && (i%10)==0 && i>0)
+		{
+			m_dlgProgress->SetPercentage((i*100)/items.size());
+			m_dlgProgress->Progress();
+		}
+
+		//	Progress key presses from controller or remote
+		if (bProgressVisible || m_bScan)
+			if (m_dlgProgress) m_dlgProgress->ProgressKeys();
+
+		//	Canceled by the user, finish
+		if (bProgressVisible && m_dlgProgress->IsCanceled())
+		{
+			if (m_dlgProgress) m_dlgProgress->Close();
+			return;
+		}
 
     // dont try reading id3tags for folders or playlists
 		if (!pItem->m_bIsFolder && !CUtil::IsPlayList(pItem->m_strPath) )
@@ -1045,6 +1096,12 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 				g_musicDatabase.AddSong(song,false);
 			}
 		}//if (!pItem->m_bIsFolder)
+	}
+
+	if (bShowProgress)
+	{
+		if (m_dlgProgress) m_dlgProgress->Close();
+		return;
 	}
 }
 
