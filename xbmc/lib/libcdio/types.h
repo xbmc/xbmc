@@ -46,8 +46,6 @@ extern "C" {
   typedef u_int16_t uint16_t;
   typedef u_int32_t uint32_t;
   typedef u_int64_t uint64_t;
-#elif defined(_XBOX)
-# include "inttypes.h"
 #else
   /* warning ISO/IEC 9899:1999 <stdint.h> was missing and even <inttypes.h> */
   /* fixme */
@@ -108,11 +106,11 @@ extern "C" {
     {
       false = 0,
       true = 1
-    } _Bool;
+    } _cdio_Bool;
   
 #  define false   false
 #  define true    true
-#  define bool _Bool
+#  define bool _cdio_Bool
 # endif
 #endif
   
@@ -132,7 +130,7 @@ extern "C" {
 #define GNUC_UNUSED                             \
   __attribute__((unused))
 #define GNUC_PACKED                             \
-  __attribute__((packed))
+  //__attribute__((packed))
 #else   /* !__GNUC__ */
 #define GNUC_PRINTF( format_idx, arg_idx )
 #define GNUC_SCANF( format_idx, arg_idx )
@@ -156,7 +154,7 @@ extern "C" {
 # define PRAGMA_BEGIN_PACKED
 # define PRAGMA_END_PACKED
 #endif
-  
+
   /*
    * user directed static branch prediction gcc 2.96+
    */
@@ -184,11 +182,19 @@ extern "C" {
     
     @see lba_t
   */
+#ifdef _XBOX
+  #pragma pack(1)
+#else
   PRAGMA_BEGIN_PACKED
+#endif
   struct msf_rec {
     uint8_t m, s, f;
   } GNUC_PACKED;
+#ifdef _XBOX
+  #pragma pack()
+#else
   PRAGMA_END_PACKED
+#endif
   
   typedef struct msf_rec msf_t;
 

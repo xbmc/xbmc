@@ -33,7 +33,7 @@
 #ifndef __CDIO_XA_H__
 #define __CDIO_XA_H__
 
-#include <cdio/types.h>
+#include <types.h>
 
 #define ISO_XA_MARKER_STRING    "CD-XA001"
 #define ISO_XA_MARKER_OFFSET    1024

@@ -2,7 +2,7 @@
     $Id$
 
     Copyright (C) 2000, Herbert Valerio Riedel <hvr@gnu.org>
-    Copyright (C) 2003, Rocky Bernstein <rocky@panix.com>
+    Copyright (C) 2003, 2004 Rocky Bernstein <rocky@panix.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ typedef void (*cdio_log_handler_t) (cdio_log_level_t level,
 cdio_log_handler_t cdio_log_set_handler (cdio_log_handler_t new_handler);
 
 /**
- * Handle an message with the given log level
+ * Handle an message with the given log level.
  *
  * @see cdio_debug
  * @see cdio_info
