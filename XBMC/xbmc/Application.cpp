@@ -186,10 +186,17 @@ HRESULT CApplication::Initialize()
   {
 		strcpy(g_stSettings.m_szMusicRecordingDirectory,"Q:\\recordings");		
   }
+
 	CreateDirectory(g_stSettings.szThumbnailsDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szMusicRecordingDirectory,NULL);
+
+  CLog::Log("thumbnails folder:%s", g_stSettings.szThumbnailsDirectory);
+  CLog::Log("shortcuts folder:%s", g_stSettings.m_szShortcutDirectory);
+  CLog::Log("albums folder:%s", g_stSettings.m_szAlbumDirectory);
+  CLog::Log("recording folder:%s", g_stSettings.m_szMusicRecordingDirectory);
+
 
 	string strAlbumDir=g_stSettings.m_szAlbumDirectory;
 	CreateDirectory((strAlbumDir+"\\playlists").c_str(),NULL);
@@ -201,11 +208,13 @@ HRESULT CApplication::Initialize()
 	CreateDirectory("Q:\\language",NULL);
 	CreateDirectory("Q:\\visualisations",NULL);
 
-  if ( strlen(g_stSettings.m_szAlternateSubtitleDirectory) )
+  if (g_stSettings.m_szAlternateSubtitleDirectory[0]==0)
   {
-    CreateDirectory(g_stSettings.m_szAlternateSubtitleDirectory,NULL);
+    strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"Q:\\subtitles");
   }
-
+  CLog::Log("subtitle folder:%s", g_stSettings.m_szAlternateSubtitleDirectory);
+  CreateDirectory(g_stSettings.m_szAlternateSubtitleDirectory,NULL);
+  
   // initialize network
   CLog::Log("initialize network ip:[%s] netmask:[%s] gateway:[%s] nameserver:[%s]",
                     g_stSettings.m_strLocalIPAdres,
