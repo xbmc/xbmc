@@ -1,0 +1,45 @@
+
+#include "FileFactory.h"
+#include "../url.h"
+#include "FileISO.h"
+#include "FileRelax.h"
+#include "FileHD.h"
+#include "FileSMB.h"
+#include "FileXBMSP.h"
+using namespace XFILE;
+
+CFileFactory::CFileFactory()
+{
+
+}
+
+CFileFactory::~CFileFactory()
+{
+
+}
+IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
+{
+	CURL url(strFileName);
+	CStdString strProtocol=url.GetProtocol();
+	if (strProtocol=="iso9660")
+	{
+		return (IFile*)new CFileISO();
+	}
+	
+	if (strProtocol=="xns")
+	{
+		return (IFile*)new CFileRelax();
+	}
+
+	if (strProtocol=="smb")
+	{
+		return (IFile*)new CFileSMB();
+	}
+
+	if (strProtocol=="xbms")
+	{
+		return (IFile*)new CFileXBMSP();
+	}
+
+  return (IFile*)new CFileHD();
+}
