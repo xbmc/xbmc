@@ -799,6 +799,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			if (!options.GetAC3PassTru())
 			{
 				// if DMO filter is used we need 2 remap the audio speaker layout (MS does things differently)
+				// FL, FR, C, LFE, SL, SR
 				if( strstr(strAudioCodec,"DMO") && (iChannels==6) )
 				{
 					options.SetChannels(6);
@@ -806,6 +807,15 @@ bool CMPlayer::openfile(const CStdString& strFile)
 					bNeed2Restart=true;
 					CLog::Log("  --restart cause speaker mapping needs fixing");
 				}	
+				// has a different channel mapping.. C, FL, FR, SL, SR, LFE
+				if ( strstr(strAudioCodec, "AAC") && (iChannels==6) )
+				{
+					options.SetChannels(6);
+					options.SetChannelMapping("channels=6:6:0:4:1:0:2:1:3:2:4:3:5:5");
+					bNeed2Restart=true;
+					CLog::Log("  --restart cause speaker mapping needs fixing");		
+				}
+
 
 				// if xbox only got stereo output, then limit number of channels to 2
 				// same if xbox got digital output, but we're listening to the analog output
