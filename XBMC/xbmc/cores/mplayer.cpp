@@ -1152,7 +1152,16 @@ void CMPlayer::Process()
 			xbox_audio_wait_completion();
 		}
 		_SubtitleExtension.Empty();
-		mplayer_close_file();
+
+    try
+    {
+      mplayer_close_file();
+    }
+    catch(...)
+    {
+      CLog::Log(LOGERROR, "mplayer generated exception in mplayer_close_file");
+    }
+
 	}
 	m_bIsPlaying=false;
 	if (!m_bStop)
@@ -1167,8 +1176,16 @@ void CMPlayer::Unload()
 	{
 		// if m_pDLL is not NULL we asume mplayer_open_file has already been called
 		// and thus we can call mplayer_close_file now.
-		mplayer_close_file();
-		delete m_pDLL;
+    try
+    {
+		  mplayer_close_file();
+    }
+    catch(...)
+    {
+      CLog::Log(LOGERROR, "mplayer generated exception in mplayer_close_file");
+    }
+
+    delete m_pDLL;
 		dllReleaseAll( );
 		m_pDLL=NULL;
 	}
