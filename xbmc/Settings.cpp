@@ -140,18 +140,10 @@ CSettings::CSettings(void)
   g_stSettings.m_bMyVideoActorStack = false;
   g_stSettings.m_bMyVideoGenreStack = false;
   g_stSettings.m_bMyVideoYearStack = false;
-
-  // default to fuzzy stacking, to stay consistent with older versions
   g_stSettings.m_iMyVideoVideoStack = STACK_NONE;
 
-  strcpy(g_stSettings.m_szMyVideoStackTokens, "cd|part");
-  strcpy(g_stSettings.m_szMyVideoStackSeparators, "- _.");
-
-  StringUtils::SplitString(g_stSettings.m_szMyVideoStackTokens, "|", g_settings.m_szMyVideoStackTokensArray);
-  g_settings.m_szMyVideoStackSeparatorsString = g_stSettings.m_szMyVideoStackSeparators;
-
-  for (int i = 0; i < (int)g_settings.m_szMyVideoStackTokensArray.size(); i++)
-    g_settings.m_szMyVideoStackTokensArray[i].MakeLower();
+  g_settings.m_MyVideoStackRegExps.push_back("[ -.]*part[ .]*([0-9])*");
+  g_settings.m_MyVideoStackRegExps.push_back("[ -.]*cd[ .]*([0-9])*");
 
   g_stSettings.m_bMyVideoCleanTitles = false;
   strcpy(g_stSettings.m_szMyVideoCleanTokens, "divx|xvid|3ivx|ac3|ac351|dts|mp3|wma|m4a|mp4|aac|ogg|scr|ts|sharereactor|dvd|dvdrip");
@@ -418,6 +410,24 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   GetString(pRootElement, "musicextensions", g_stSettings.m_szMyMusicExtensions, ".ac3|.aac|.strm|.pls|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
   GetString(pRootElement, "videoextensions", g_stSettings.m_szMyVideoExtensions, ".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
+
+  // stacking regexps
+  TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("videostacking");
+  if (pVideoStacking)
+  {
+    g_settings.m_MyVideoStackRegExps.clear();
+    TiXmlNode* pStackRegExp = pVideoStacking->FirstChild("regexp");
+    while (pStackRegExp)
+    {
+      if (pStackRegExp->FirstChild())
+      {
+        CStdString regExp = pStackRegExp->FirstChild()->Value();
+        regExp.MakeLower();
+        g_settings.m_MyVideoStackRegExps.push_back(regExp);
+      }
+      pStackRegExp = pStackRegExp->NextSibling("regexp");
+    }
+  }
 
   GetInteger(pRootElement, "startwindow", g_stSettings.m_iStartupWindow, 0, 0, INT_MAX);
   g_stSettings.m_iStartupWindow += WINDOW_HOME; // windows referenced from WINDOW_HOME
@@ -1038,14 +1048,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetBoolean(pElement, "stackgenre", g_stSettings.m_bMyVideoGenreStack);
     GetBoolean(pElement, "stackactor", g_stSettings.m_bMyVideoActorStack);
     GetBoolean(pElement, "stackyear", g_stSettings.m_bMyVideoYearStack);
-    GetString(pElement, "stacktokens", g_stSettings.m_szMyVideoStackTokens, g_stSettings.m_szMyVideoStackTokens);
-    GetString(pElement, "stackseparators", g_stSettings.m_szMyVideoStackSeparators, g_stSettings.m_szMyVideoStackSeparators);
-
-    StringUtils::SplitString(g_stSettings.m_szMyVideoStackTokens, "|", g_settings.m_szMyVideoStackTokensArray);
-    g_settings.m_szMyVideoStackSeparatorsString = g_stSettings.m_szMyVideoStackSeparators;
-
-    for (int i = 0; i < (int)g_settings.m_szMyVideoStackTokensArray.size(); i++)
-      g_settings.m_szMyVideoStackTokensArray[i].MakeLower();
 
     GetBoolean(pElement, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
     GetString(pElement, "cleantokens", g_stSettings.m_szMyVideoCleanTokens, g_stSettings.m_szMyVideoCleanTokens);
@@ -1322,8 +1324,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   SetBoolean(pNode, "stackgenre", g_stSettings.m_bMyVideoGenreStack);
   SetBoolean(pNode, "stackactor", g_stSettings.m_bMyVideoActorStack);
   SetBoolean(pNode, "stackyear", g_stSettings.m_bMyVideoYearStack);
-  SetString(pNode, "stacktokens", g_stSettings.m_szMyVideoStackTokens);
-  SetString(pNode, "stackseparators", g_stSettings.m_szMyVideoStackSeparators);
 
   SetBoolean(pNode, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
   SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);

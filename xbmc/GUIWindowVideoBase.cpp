@@ -37,7 +37,7 @@ struct SSortVideoListByName
 {
   bool operator()(CStdString& strItem1, CStdString& strItem2)
   {
-    return strcmp(strItem1.c_str(), strItem2.c_str()) < 0;
+    return StringUtils::AlphaNumericCompare(strItem1.c_str(), strItem2.c_str());
   }
 };
 
@@ -1068,11 +1068,10 @@ void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath, vector<
     return;
   }
   CStdString fileTitle;
-  CStdString volumePrefix;
-  int volumeNumber;
+  CStdString volumeNumber;
   if (g_stSettings.m_iMyVideoVideoStack == STACK_SIMPLE)
   {
-    if (!CUtil::GetVolumeFromFileName(strFileName, fileTitle, volumePrefix, volumeNumber))
+    if (!CUtil::GetVolumeFromFileName(strFileName, fileTitle, volumeNumber))
     {
       // nothing to stack...
       movies.push_back(strFilePath);
@@ -1107,11 +1106,10 @@ void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath, vector<
       {
         // simple stacking
         CStdString fileTitle2;
-        CStdString volumePrefix2;
-        int volumeNumber2;
-        if (CUtil::GetVolumeFromFileName(fileNameTemp, fileTitle2, volumePrefix2, volumeNumber2))
+        CStdString volumeNumber2;
+        if (CUtil::GetVolumeFromFileName(fileNameTemp, fileTitle2, volumeNumber2))
         {
-          if (fileTitle.Equals(fileTitle2) && volumePrefix.Equals(volumePrefix2))
+          if (fileTitle.Equals(fileTitle2))
           {
             stackFile = true;
           }

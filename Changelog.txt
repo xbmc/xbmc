@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 30-03-2005 changed: Stacking now uses Regular Expressions for finding where to stack.  They're specified in XBoxMediaCenter.xml.  Most people probably don't need to change the defaults.
+  - 30-03-2005 changed: Sorting in Video views is a little more intelligent.  Sorts numbers separately (eg Disk 1... Disk 10) are sorted correctly).
+  - 30-03-2005 fixed: Correctly retrieve movie title + movie writing credits from IMDb.
   - 29-03-2005 fixed: duplicate album entries in My Music Nav window for Various Artists albums when no artist filter is applied
   - 29-03-2005 fixed: Videodatabase wasn't retrieving boolean values from database correctly (ex. FrameRateAdjustment wherent being restored)
   - 29-03-2005 fixed: Incorrect options given to mplayer when framerateadjustement was enabled. Could have been cause of problems with autosync and subtitles.

@@ -37,17 +37,17 @@ BOOL CDetailsDialog::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// set window title
-	SetWindowText(m_strTitle + " - Details");
+	SetWindowText(GetString("Title") + " - Details");
 	OutputDebugString(m_strXML);
 	// find the data in the xml string
 	CString strValue;
-	strValue += GetString("Tagline");
-	strValue += GetString("Director");
-	strValue += GetString("Year");
-	strValue += GetString("Genre");
-	strValue += GetString("RunTime");
-	strValue += GetString("Outline");
-	strValue += GetString("Plot");
+	strValue += FormatField("Tagline");
+	strValue += FormatField("Director");
+	strValue += FormatField("Year");
+	strValue += FormatField("Genre");
+	strValue += FormatField("RunTime");
+	strValue += FormatField("Outline");
+	strValue += FormatField("Plot");
 	// cast is a special case
 	int start = m_strXML.Find("<cast>") + 6;
 	int end = m_strXML.Find("</cast>", start);
@@ -55,12 +55,12 @@ BOOL CDetailsDialog::OnInitDialog()
 	strCast.Replace("\n", "\r\n\t");
 	strValue += "Cast:\t" + strCast + "\r\n\r\n";
 	// continue as before
-	strValue += GetString("Rating");
-	strValue += GetString("Votes");
-	strValue += GetString("MPAA");
-	strValue += GetString("Credits");
-	strValue += GetString("Thumb");
-	strValue += GetString("Top250");
+	strValue += FormatField("Rating");
+	strValue += FormatField("Votes");
+	strValue += FormatField("MPAA");
+	strValue += FormatField("Credits");
+	strValue += FormatField("Thumb");
+	strValue += FormatField("Top250");
 	GetDlgItem(IDC_DETAILS)->SetWindowText(strValue);
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -75,8 +75,12 @@ CString CDetailsDialog::GetString(const CString &strField)
 	int start = m_strXML.Find(strFind) + strFind.GetLength();
 	strFind.Format("</%s>", field);
 	int end = m_strXML.Find(strFind, start);
-	CString strValue = m_strXML.Mid(start, end-start);
-	return strField + ":\t" + strValue + "\r\n\r\n";
+	return m_strXML.Mid(start, end-start);
+}
+
+CString CDetailsDialog::FormatField(const CString &strField)
+{
+  return strField + ":\t" + GetString(strField) + "\r\n\r\n";
 }
 
 void CDetailsDialog::OnShowWindow(BOOL bShow, UINT nStatus)
