@@ -10,10 +10,12 @@ CTexture::CTexture()
   m_pTexture=NULL;
   m_iDelay=100;
 	m_iWidth=m_iHeight=0;
+  m_iLoops=0;//repeat forever
 }
 
 CTexture::CTexture(LPDIRECT3DTEXTURE8 pTexture,int iWidth, int iHeight, int iDelay)
 {
+  m_iLoops=0;//repeat forever
   m_iReferenceCount=0;
   m_pTexture=pTexture;
   m_iDelay=iDelay;
@@ -33,6 +35,16 @@ void CTexture::Dump() const
   CStdString strLog;
   strLog.Format("refcount:%i\n:", m_iReferenceCount);
   OutputDebugString(strLog.c_str());
+}
+
+void CTexture::SetLoops(int iLoops)
+{
+  m_iLoops=iLoops;
+}
+
+int CTexture::GetLoops() const
+{
+  return m_iLoops;
 }
 
 void CTexture::SetDelay(int iDelay)
@@ -164,6 +176,13 @@ bool CTextureMap::Release(int iPicture)
   return pTexture->Release();
 }
 
+int CTextureMap::GetLoops(int iPicture) const
+{
+  if (iPicture < 0 || iPicture >= (int)m_vecTexures.size()) return 0;
+  CTexture* pTexture = m_vecTexures[iPicture];
+  return pTexture->GetLoops();
+}
+
 int CTextureMap::GetDelay(int iPicture) const
 {
   if (iPicture < 0 || iPicture >= (int)m_vecTexures.size()) return 100;
@@ -213,6 +232,18 @@ LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureNa
   return NULL;
 }
 
+int CGUITextureManager::GetLoops(const CStdString& strTextureName, int iPicture) const
+{
+  for (int i=0; i < (int)m_vecTextures.size(); ++i)
+  {
+    CTextureMap *pMap=m_vecTextures[i];
+    if (pMap->GetName() == strTextureName)
+    {
+      return  pMap->GetLoops(iPicture);
+    }
+  }
+  return 0;
+}
 int CGUITextureManager::GetDelay(const CStdString& strTextureName, int iPicture) const
 {
   for (int i=0; i < (int)m_vecTextures.size(); ++i)
@@ -300,6 +331,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 	      } // of if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
         CTexture* pclsTexture = new CTexture(pTexture,iWidth,iHeight);
         pclsTexture->SetDelay(pImage->Delay);
+        pclsTexture->SetLoops(pImage->nLoops);
 
         pMap->Add(pclsTexture);
 		  } // of if (g_graphicsContext.Get3DDevice()->CreateTexture

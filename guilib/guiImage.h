@@ -51,6 +51,7 @@ protected:
   int                     m_iTextureHeight;
   int                     m_iBitmap;
   DWORD                   m_dwItems;
+  int                     m_iCurrentLoop;
 	int										  m_iCurrentImage;
 	DWORD										m_dwFrameCounter;
   bool                    m_bKeepAspectRatio;
