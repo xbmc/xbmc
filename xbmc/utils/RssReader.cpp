@@ -56,21 +56,18 @@ void CRssReader::Process()
 	{
 		// remove CDATA sections from our buffer (timyXML is not able to parse these)
 		CStdString strCDATAElement;
-		CStdString strTemp;
 		int iStart = strXML.Find("<![CDATA[");
 		int iEnd = 0;
 		while (iStart > 0)
 		{
-			// get CDATA contents
-			iEnd = strXML.Find("]]>", iStart) - iStart + 3;
-			strCDATAElement = strXML.substr(iStart, iEnd);
+			// get CDATA end position
+			iEnd = strXML.Find("]]>", iStart) + 3;
 
-			// remove "<![CDATA[" and "]]>"
-			strTemp = strCDATAElement.erase(iEnd - 3, 3); // remove "]]>"
-			strCDATAElement = strTemp.erase(0, 9); // remove "<![CDATA["
+			// get data in CDATA section
+			strCDATAElement = strXML.substr(iStart + 9, iEnd - iStart - 12);
 
 			// replace CDATA section with new string
-			strXML = strXML.erase(iStart, iEnd).insert(iStart, strCDATAElement);
+			strXML = strXML.erase(iStart, iEnd - iStart).insert(iStart, strCDATAElement);
 
 			iStart = strXML.Find("<![CDATA[");
 		}
@@ -126,8 +123,33 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode)
 			if (strName.Equals("title"))
 			{
 				CStdString title = childNode->FirstChild()->Value();		
+
+				// convert strings like "&#237;" 
+				CStdString strValue;
+				int iStart = title.Find("&#");
+				int iEnd = 0;
+				while (iStart > 0)
+				{
+					// get string end
+					iEnd = title.Find(";", iStart);
+
+					// convert
+					long lValue;
+					if (title[iStart + 2] != 'x') //decimal
+						lValue = strtol(title.substr(iStart + 2, iEnd - iStart - 2).c_str(), NULL, 10);
+					else //hex
+						lValue = strtol(title.substr(iStart + 3, iEnd - iStart - 3).c_str(), NULL, 16);
+
+					strValue = (char)(lValue & 0xFF);
+
+					// replace value with new character
+					title = title.erase(iStart, iEnd).insert(iStart, strValue);
+
+					iStart =title.Find("&#");
+				}
+
 				AddString(title, RSS_COLOR_HEADLINE);
-				title = " - ";		
+				title = " - ";
 				AddString(title, RSS_COLOR_BODY);
 			}
 /*
