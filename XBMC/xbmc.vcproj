@@ -423,6 +423,9 @@
 				RelativePath=".\xbmc\Application.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\Credits.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\stdafx.cpp">
 			</File>
 			<File
@@ -764,6 +767,9 @@
 				RelativePath=".\xbmc\Crc32.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\Credits.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\utils\CriticalSection.h">
 			</File>
 			<File
@@ -1031,10 +1037,10 @@
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1649,10 +1655,10 @@
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
