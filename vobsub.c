@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <malloc.h>
 
 #include "config.h"
 #include "version.h"
@@ -188,7 +189,7 @@ static int
 rar_getc(rar_stream_t *stream)
 {
     if (stream->file)
-	return getc(stream->file);
+		return fgetc(stream->file);
     if (rar_eof(stream))
 	return EOF;
     return stream->data[stream->pos++];
@@ -220,7 +221,7 @@ typedef FILE rar_stream_t;
 #define rar_eof		feof
 #define rar_tell	ftell
 #define rar_seek	fseek
-#define rar_getc	getc
+#define rar_getc	fgetc
 #define rar_read	fread
 #endif
 
@@ -481,11 +482,26 @@ mpeg_run(mpeg_t *mpeg)
  * Packet queue
  **********************************************************************/
 
+#ifdef XBMC_VOBSUB
+
+extern long pf_seek(unsigned long pf, long offset);
+extern unsigned long pf_write(unsigned long pf, void* data, unsigned long size);
+extern unsigned long pf_read(unsigned long pf, void* data, unsigned long size);
+extern unsigned long pf_open(int id);
+extern void pf_close(unsigned long pf);
+extern void pf_reserve(unsigned long pf, unsigned long size);
+
+#endif
+
 typedef struct {
     unsigned int pts100;
     off_t filepos;
     unsigned int size;
     unsigned char *data;
+
+#ifdef XBMC_VOBSUB
+	unsigned long offset;
+#endif
 } packet_t;
 
 typedef struct {
@@ -494,6 +510,13 @@ typedef struct {
     unsigned int packets_reserve;
     unsigned int packets_size;
     unsigned int current_index;
+
+#ifdef XBMC_VOBSUB
+	unsigned long pf;
+	unsigned long pf_used;
+	unsigned long mapped_base;
+	char* mapped_buf;
+#endif
 } packet_queue_t;
 
 static void
@@ -503,6 +526,10 @@ packet_construct(packet_t *pkt)
     pkt->filepos = 0;
     pkt->size = 0;
     pkt->data = NULL;
+
+#ifdef XBMC_VOBSUB
+	pkt->offset = -1;
+#endif
 }
 
 static void
@@ -520,16 +547,31 @@ packet_queue_construct(packet_queue_t *queue)
     queue->packets_reserve = 0;
     queue->packets_size = 0;
     queue->current_index = 0;
+
+#ifdef XBMC_VOBSUB
+	queue->pf = -1;
+	queue->pf_used = 0;
+	queue->mapped_buf = NULL;
+#endif
 }
 
 static void
 packet_queue_destroy(packet_queue_t *queue)
 {
+#ifdef XBMC_VOBSUB
+	if (queue->pf != -1)
+		pf_close(queue->pf);
+	if (queue->mapped_buf)
+		free(queue->mapped_buf);
+	if (queue->packets)
+		free(queue->packets);
+#else
     if (queue->packets) {
 	while (queue->packets_size--)
 	    packet_destroy(queue->packets + queue->packets_size);
 	free(queue->packets);
     }
+#endif
     return;
 }
 
@@ -590,6 +632,106 @@ packet_queue_insert(packet_queue_t *queue)
     pkts[1].filepos = pkts[0].filepos;
     return 0;
 }
+
+#ifdef XBMC_VOBSUB
+
+static void packet_queue_pageout(packet_queue_t *queue, int id)
+{
+	unsigned total = 0, pos = 0;
+	int i;
+	char* buf;
+
+	if (queue->pf == -1)
+		queue->pf = pf_open(id);
+
+	for (i = 0; i < queue->packets_size; ++i)
+	{
+		if (queue->packets[i].data)
+			total += queue->packets[i].size;
+	}
+	pf_reserve(queue->pf, queue->pf_used + total);
+
+	total = (total + 511) & ~511;
+	if (queue->pf_used)
+		total += 512;
+	buf = malloc(total);
+	if (queue->pf_used)
+	{
+		pf_seek(queue->pf, queue->pf_used & ~511);
+		pos = queue->pf_used & 511;
+		pf_read(queue->pf, buf, 512);
+		pf_seek(queue->pf, queue->pf_used & ~511);
+	}
+
+	for (i = 0; i < queue->packets_size; ++i)
+	{
+		if (queue->packets[i].data)
+		{
+			queue->packets[i].offset = queue->pf_used;
+			memcpy(buf + pos, queue->packets[i].data, queue->packets[i].size);
+			pos += queue->packets[i].size;
+			queue->pf_used += queue->packets[i].size;
+			free(queue->packets[i].data);
+			queue->packets[i].data = NULL;
+		}
+	}
+	if (pos)
+	{
+		pf_write(queue->pf, buf, (pos + 511) & ~511);
+	}
+	free(buf);
+
+	unsigned long fd = pf_open(id + 256);
+	if (fd != -1)
+	{
+		pf_reserve(fd, sizeof(packet_t) * queue->packets_size + sizeof(queue->packets_size));
+		pf_write(fd, &queue->packets_size, sizeof(queue->packets_size));
+		pf_write(fd, queue->packets, sizeof(packet_t) * queue->packets_size);
+		pf_close(fd);
+	}
+}
+
+#define BLOCKSIZE (65536)
+static void packet_queue_getpacket(packet_queue_t *queue)
+{
+	packet_t* pkt = &queue->packets[queue->current_index];
+	if (pkt->size)
+	{
+		if (!queue->mapped_buf)
+		{
+			queue->mapped_buf = malloc(BLOCKSIZE);
+			queue->mapped_base = queue->pf_used;
+		}
+
+		if ((pkt->offset >= queue->mapped_base) &&
+			(pkt->offset + pkt->size <= queue->mapped_base + BLOCKSIZE))
+		{
+			// already paged in
+			pkt->data = queue->mapped_buf + (pkt->offset - queue->mapped_base);
+		}
+		else
+		{
+			if ((pkt->offset >= queue->mapped_base + (BLOCKSIZE / 2)) && (pkt->offset + pkt->size <= queue->mapped_base + (BLOCKSIZE * 3 / 2)))
+			{
+				// get from disk - next block
+				memcpy(queue->mapped_buf, queue->mapped_buf + (BLOCKSIZE / 2), (BLOCKSIZE / 2));
+				pf_read(queue->pf, queue->mapped_buf + (BLOCKSIZE / 2), (BLOCKSIZE / 2));
+				queue->mapped_base += (BLOCKSIZE / 2);
+				pkt->data = queue->mapped_buf + (pkt->offset - queue->mapped_base);
+			}
+			else
+			{
+				// get from disk - flush block
+				queue->mapped_base = pkt->offset & ~(BLOCKSIZE / 2 - 1);
+				pf_seek(queue->pf, queue->mapped_base);
+				pf_read(queue->pf, queue->mapped_buf, BLOCKSIZE);
+				pkt->data = queue->mapped_buf + (pkt->offset - queue->mapped_base);
+			}
+		}
+	}
+}
+
+#endif
 
 /**********************************************************************
  * Vobsub
@@ -936,46 +1078,44 @@ vobsub_parse_forced_subs(vobsub_t *vob, const char *line)
 }
 
 static int
-vobsub_parse_one_line(vobsub_t *vob, rar_stream_t *fd)
+vobsub_parse_one_line(vobsub_t *vob, rar_stream_t *fd, char** line, size_t* line_reserve)
 {
     ssize_t line_size;
     int res = -1;
     do {
-	size_t line_reserve = 0;
-	char *line = NULL;
-	line_size = getline(&line, &line_reserve, fd);
+		line_size = getline(line, line_reserve, fd);
 	if (line_size < 0) {
 	    if (line)
 		free(line);
 	    break;
 	}
-	if (*line == 0 || *line == '\r' || *line == '\n' || *line == '#')
+		if (**line == 0 || **line == '\r' || **line == '\n' || **line == '#')
 	    continue;
-	else if (strncmp("langidx:", line, 8) == 0)
-	    res = vobsub_set_lang(line);
-	else if (strncmp("delay:", line, 6) == 0)
-	    res = vobsub_parse_delay(vob, line);
-	else if (strncmp("id:", line, 3) == 0)
-	    res = vobsub_parse_id(vob, line + 3);
-	else if (strncmp("palette:", line, 8) == 0)
-	    res = vobsub_parse_palette(vob, line + 8);
-	else if (strncmp("size:", line, 5) == 0)
-	    res = vobsub_parse_size(vob, line + 5);
-	else if (strncmp("org:", line, 4) == 0)
-	    res = vobsub_parse_origin(vob, line + 4);
-	else if (strncmp("timestamp:", line, 10) == 0)
-	    res = vobsub_parse_timestamp(vob, line + 10);
-	else if (strncmp("custom colors:", line, 14) == 0)
+		else if (strncmp("langidx:", *line, 8) == 0)
+			res = vobsub_set_lang(*line);
+		else if (strncmp("delay:", *line, 6) == 0)
+			res = vobsub_parse_delay(vob, *line);
+		else if (strncmp("id:", *line, 3) == 0)
+			res = vobsub_parse_id(vob, *line + 3);
+		else if (strncmp("palette:", *line, 8) == 0)
+			res = vobsub_parse_palette(vob, *line + 8);
+		else if (strncmp("size:", *line, 5) == 0)
+			res = vobsub_parse_size(vob, *line + 5);
+		else if (strncmp("org:", *line, 4) == 0)
+			res = vobsub_parse_origin(vob, *line + 4);
+		else if (strncmp("timestamp:", *line, 10) == 0)
+			res = vobsub_parse_timestamp(vob, *line + 10);
+		else if (strncmp("custom colors:", *line, 14) == 0)
 	    //custom colors: ON/OFF, tridx: XXXX, colors: XXXXXX, XXXXXX, XXXXXX,XXXXXX
-	    res = vobsub_parse_cuspal(vob, line) + vobsub_parse_tridx(line) + vobsub_parse_custom(vob, line);
-	else if (strncmp("forced subs:", line, 12) == 0)
-		res = vobsub_parse_forced_subs(vob, line + 12);
+			res = vobsub_parse_cuspal(vob, *line) + vobsub_parse_tridx(*line) + vobsub_parse_custom(vob, *line);
+		else if (strncmp("forced subs:", *line, 12) == 0)
+			res = vobsub_parse_forced_subs(vob, *line + 12);
 	else {
-	    mp_msg(MSGT_VOBSUB,MSGL_V, "vobsub: ignoring %s", line);
+			mp_msg(MSGT_VOBSUB,MSGL_V, "vobsub: ignoring %s", *line);
 	    continue;
 	}
 	if (res < 0)
-	    mp_msg(MSGT_VOBSUB,MSGL_ERR,  "ERROR in %s", line);
+			mp_msg(MSGT_VOBSUB,MSGL_ERR,  "ERROR in %s", *line);
 	break;
     } while (1);
     return res;
@@ -1092,9 +1232,20 @@ vobsub_open(const char *const name,const char *const ifo,const int force,void** 
 		  return NULL;
 		}
 	    } else {
-		while (vobsub_parse_one_line(vob, fd) >= 0)
-		    /* NOOP */ ;
+				int n = 0, i = 0;
+				size_t line_reserve = 0;
+				char *line = NULL;
+				while (vobsub_parse_one_line(vob, fd, &line, &line_reserve) >= 0)
+				{
+					if (++i == 1000)
+					{
+						printf("parseidx: %d", ++n);
+						i = 0;
+					}
+				}
 		rar_close(fd);
+				if (line)
+					free(line);
 	    }
 	    /* if no palette in .idx then use custom colors */
 	    if ((vob->custom == 0)&&(vob->have_palette!=1))
@@ -1102,6 +1253,34 @@ vobsub_open(const char *const name,const char *const ifo,const int force,void** 
 	    if (spu && vob->orig_frame_width && vob->orig_frame_height)
 	      *spu = spudec_new_scaled_vobsub(vob->palette, vob->cuspal, vob->custom, vob->orig_frame_width, vob->orig_frame_height);
 
+#ifdef XBMC_VOBSUB
+			{
+				int i;
+				// check for reload of cached data
+				for (i = 0; i < vob->spu_streams_size; ++i)
+				{
+					int fp;
+					char fname[42] = "Z:\\vobsub_queue_hdr";
+					sprintf(fname + 19, "%d", i);
+					if ((fp = _open(fname, _O_RDONLY | _O_BINARY)) != -1)
+					{
+						packet_queue_t *queue = vob->spu_streams + i;
+						_read(fp, &queue->packets_size, sizeof(queue->packets_size));
+						queue->packets = realloc(queue->packets, sizeof(packet_t) * queue->packets_size);
+						queue->packets_reserve = queue->packets_size;
+						_read(fp, queue->packets, sizeof(packet_t) * queue->packets_size);
+						_close(fp);
+						queue->pf = pf_open(i);
+						queue->pf_used = queue->packets[queue->packets_size].offset + queue->packets[queue->packets_size].size;
+						queue->current_index = 0;
+					}
+					else
+						break;
+				}
+				if (i)
+					return vob;
+			}
+#endif
 	    /* read the indexed mpeg_stream */
 	    strcpy(buf, name);
 	    strcat(buf, ".sub");
@@ -1116,6 +1295,10 @@ vobsub_open(const char *const name,const char *const ifo,const int force,void** 
 		return NULL;
 	      }
 	    } else {
+#ifdef XBMC_VOBSUB
+				unsigned last_sid = 0xffffffff;
+#endif
+				int n = 0, i = 0;
 		long last_pts_diff = 0;
 		while (!mpeg_eof(mpg)) {
 		    off_t pos = mpeg_tell(mpg);
@@ -1124,9 +1307,23 @@ vobsub_open(const char *const name,const char *const ifo,const int force,void** 
 			    mp_msg(MSGT_VOBSUB,MSGL_ERR,"VobSub: mpeg_run error\n");
 			break;
 		    }
+#ifdef XBOX_VOBSUB
+					if (++i == 1000)
+					{
+						printf("parsesub: %d", ++n);
+						i = 0;
+					}
+#endif
 		    if (mpg->packet_size) {
 			if ((mpg->aid & 0xe0) == 0x20) {
 			    unsigned int sid = mpg->aid & 0x1f;
+#ifdef XBMC_VOBSUB
+							if (last_sid != 0xffffffff && last_sid != sid)
+							{
+								packet_queue_pageout(vob->spu_streams + last_sid, last_sid);
+							}
+							last_sid = sid;
+#endif
 			    if (vobsub_ensure_spu_stream(vob, sid) >= 0)  {
 				packet_queue_t *queue = vob->spu_streams + sid;
 				/* get the packet to fill */
@@ -1166,6 +1363,7 @@ vobsub_open(const char *const name,const char *const ifo,const int force,void** 
 		vob->spu_streams_current = vob->spu_streams_size;
 		while (vob->spu_streams_current-- > 0)
 		    vob->spu_streams[vob->spu_streams_current].current_index = 0;
+				packet_queue_pageout(vob->spu_streams + last_sid, last_sid);
 		mpeg_free(mpg);
 	    }
 	    free(buf);
@@ -1179,6 +1377,7 @@ vobsub_close(void *this)
 {
     vobsub_t *vob = (vobsub_t *)this;
     if (vob->spu_streams) {
+		printf("free queues: %d", vob->spu_streams_size);
 	while (vob->spu_streams_size--)
 	    packet_queue_destroy(vob->spu_streams + vob->spu_streams_size);
 	free(vob->spu_streams);
@@ -1238,6 +1437,9 @@ vobsub_get_packet(void *vobhandle, float pts,void** data, int* timestamp) {
       packet_t *pkt = queue->packets + queue->current_index;
       if (pkt->pts100 != UINT_MAX)
       if (pkt->pts100 <= pts100) {
+#ifdef XBMC_VOBSUB
+					packet_queue_getpacket(queue);
+#endif
 	++queue->current_index;
 	*data = pkt->data;
 	*timestamp = pkt->pts100;
@@ -1258,6 +1460,9 @@ vobsub_get_next_packet(void *vobhandle, void** data, int* timestamp)
     packet_queue_t *queue = vob->spu_streams + vobsub_id;
     if (queue->current_index < queue->packets_size) {
       packet_t *pkt = queue->packets + queue->current_index;
+#ifdef XBMC_VOBSUB
+			packet_queue_getpacket(queue);
+#endif
       ++queue->current_index;
       *data = pkt->data;
       *timestamp = pkt->pts100;
