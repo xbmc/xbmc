@@ -26,22 +26,22 @@
 class CDelayController
 {
 public:
-	CDelayController( DWORD dwMoveDelay, DWORD dwRepeatDelay );
+	CDelayController(DWORD dwMoveDelay, DWORD dwRepeatDelay );
 	WORD		DpadInput( WORD wDpad,bool bLeftTrigger,bool bRightTrigger  );
 	WORD		IRInput( WORD wIR );
-	WORD    DIRInput( WORD wDir );
-
 	WORD		StickInput( int x, int y );
-	WORD    DirInput( WORD wDir );
+
+	WORD        DirInput( WORD wDir );
 	void		SetDelays( DWORD dwMoveDelay, DWORD dwRepeatDelay );
 
 protected:
-	WORD				m_wLastDir;
-	DWORD				m_dwTimer;
-	int					m_iCount;
-	DWORD				m_dwMoveDelay;
-	DWORD				m_dwRepeatDelay;
-  DWORD       m_dwLastTime;
+	WORD		m_wLastDir;
+	bool		m_bRepeat;
+	DWORD		m_dwRepeatDelay;
+	DWORD		m_dwRepeatDelayOrig;
+	DWORD       m_dwMoveDelay;
+	DWORD       m_dwLastTime;
+	DWORD		m_dwLastRepeat;
 };
 
 
