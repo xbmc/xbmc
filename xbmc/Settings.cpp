@@ -15,6 +15,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_iMyMusicArtistSortMethod=0;	//	Name
 	g_stSettings.m_iMyMusicGenresSortMethod=0;	//	Name
 	g_stSettings.m_iMyMusicSongsSortMethod=5;	//	Title
+  g_stSettings.m_iMyMusicSortMethod=0;
 	g_stSettings.m_bAudioOnAllSpeakers=false;
 	g_stSettings.m_iChannels=2;
 	g_stSettings.m_bUseID3=true;
@@ -610,7 +611,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		}
 		GetBoolean(pElement, "playlistviewicons", g_stSettings.m_bMyMusicPlaylistViewAsIcons);
 		GetBoolean(pElement, "top100viewicons", g_stSettings.m_bMyMusicTop100ViewAsIcons);
-		GetInteger(pElement, "sortmethod",g_stSettings.m_iMyMusicSortMethod);
+		GetInteger(pElement, "sortmethodgeneral",g_stSettings.m_iMyMusicSortMethod);
 		GetInteger(pElement, "trackssortmethod",g_stSettings.m_iMyMusicTracksSortMethod);
 		GetBoolean(pElement, "sortascending", g_stSettings.m_bMyMusicSortAscending);
 		GetInteger(pElement, "viewmethod",g_stSettings.m_iMyMusicViewMethod);
@@ -773,7 +774,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "playlistviewicons", g_stSettings.m_bMyMusicPlaylistViewAsIcons);
 	SetBoolean(pNode, "top100viewicons", g_stSettings.m_bMyMusicTop100ViewAsIcons);
 
-	SetInteger(pNode, "sortmethod",g_stSettings.m_iMyMusicSortMethod);
+	SetInteger(pNode, "sortmethodgeneral",g_stSettings.m_iMyMusicSortMethod);
 	SetInteger(pNode, "trackssortmethod",g_stSettings.m_iMyMusicTracksSortMethod);
 	SetBoolean(pNode, "sortascending", g_stSettings.m_bMyMusicSortAscending);
 	SetInteger(pNode, "viewmethod",g_stSettings.m_iMyMusicViewMethod);
