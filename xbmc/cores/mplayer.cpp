@@ -165,8 +165,8 @@ void CMPlayer::Process()
 					}
 				} while (!m_bStopPlaying && m_bIsPlaying && !m_bStop);
 				OutputDebugString("cmplayer::process() end playing\n");
-				m_bIsPlaying=false;
 				mplayer_close_file();
+				m_bIsPlaying=false;
 				if (!m_bStopPlaying && !m_bStop)
 				{
 					m_callback.OnPlayBackEnded();
