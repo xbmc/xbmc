@@ -74,6 +74,7 @@ extern void xbox_video_CheckScreenSaver();	// Screensaver check
 int m_iAudioStreamIDX=-1;
 CMPlayer::Options::Options()
 {
+    m_bNoCache=false;
     m_iChannels=0;
     m_bAC3PassTru=false;
     m_strChannelMapping="";
@@ -90,6 +91,17 @@ float CMPlayer::Options::GetFPS() const
 {
   return m_fFPS;
 }
+
+bool CMPlayer::Options::GetNoCache() const
+{
+  return m_bNoCache;
+}
+void CMPlayer::Options::SetNoCache(bool bOnOff) 
+{
+  m_bNoCache=bOnOff;
+}
+
+
 void  CMPlayer::Options::SetSpeed(float fSpeed)
 {
   m_fSpeed=fSpeed;
@@ -169,6 +181,10 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   // enable direct rendering (mplayer directly draws on xbmc's overlay texture)
   m_vecOptions.push_back("-dr");    
 
+  if (m_bNoCache)
+  {
+    m_vecOptions.push_back("-nocache");    
+  }
   //limit A-V sync correction in order to get smoother playback.
   //defaults to 0.01 but for high quality videos 0.0001 results in 
   // much smoother playback but slow reaction time to fix A-V desynchronization
@@ -413,7 +429,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
   if (CUtil::IsVideo(strFile))
   {
     options.SetNonInterleaved(g_stSettings.m_bNonInterleaved);
+
   }
+  options.SetNoCache(g_stSettings.m_bNoCache);
 
   // shoutcast is always stereo
   if (CUtil::IsShoutCast(strFile) ) 
@@ -437,7 +455,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
   
   //CLog::Log("  open 1st time");
 	mplayer_init(argc,argv);
-  mplayer_setcache_size(iCacheSize);
+  if (!g_stSettings.m_bNoCache) mplayer_setcache_size(iCacheSize);
 	int iRet=mplayer_open_file(strFile.c_str());
 	if (iRet < 0)
 	{
@@ -585,7 +603,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
       options.GetOptions(argc,argv);
 			load();
 			mplayer_init(argc,argv);
-      mplayer_setcache_size(iCacheSize);
+      if (!g_stSettings.m_bNoCache) mplayer_setcache_size(iCacheSize);
 			iRet=mplayer_open_file(strFile.c_str());
 			if (iRet < 0)
 			{
@@ -606,7 +624,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
   // make sure the cache is set to at least 1 meg
   if (HasVideo() && iCacheSize==256)
   {
-    mplayer_setcache_size(1024);
+    if (!g_stSettings.m_bNoCache) mplayer_setcache_size(1024);
   }
 	
 	return true;

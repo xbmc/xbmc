@@ -1080,7 +1080,7 @@
   </string>
   <string>
     <id>343</id>
-    <value>7. Adjust Framerate</value>
+    <value>8. Adjust Framerate</value>
   </string>
   <string>
     <id>344</id>
@@ -1301,5 +1301,9 @@
   <string>
     <id>430</id>
     <value>Sort by DVD#</value>
+  </string>  
+  <string>
+    <id>431</id>
+    <value>7. No Cache</value>
   </string> 
 </strings>

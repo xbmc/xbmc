@@ -31,6 +31,7 @@ CSettings::CSettings(void)
   g_stSettings.m_bPostProcessing=true;
   g_stSettings.m_bDeInterlace=false;
   g_stSettings.m_bNonInterleaved=false;
+  g_stSettings.m_bNoCache=false;
 	g_stSettings.m_bAudioOnAllSpeakers=false;
 	g_stSettings.m_bUseID3=true;
 	g_stSettings.m_bDD_DTSMultiChannelPassThrough=false;

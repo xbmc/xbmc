@@ -19,6 +19,9 @@ public:
     bool         GetNonInterleaved() const;
     void         SetNonInterleaved(bool bOnOff) ;
 
+    bool         GetNoCache() const;
+    void         SetNoCache(bool bOnOff) ;
+
     float        GetVolumeAmplification() const;
     void         SetVolumeAmplification(float fDB) ;
 
@@ -40,6 +43,7 @@ public:
     void         GetOptions(int& argc, char* argv[]);
 
     private:
+      bool    m_bNoCache;
       float   m_fSpeed;
       float   m_fFPS;
       int     m_iChannels;
