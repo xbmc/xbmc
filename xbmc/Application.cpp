@@ -89,7 +89,6 @@ CApplication::CApplication(void)
 ,m_ctrIR(220,220)
 {
 	m_iPlaySpeed       = 1;
-	m_strCurrentFile   = "";
 	m_bSpinDown        = false;
   m_bNetworkSpinDown = false;
 	m_dwSpinDownTime   = timeGetTime();		
@@ -894,7 +893,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	{
 		CLog::Log(LOGINFO, " stop playing...");
 		m_pPlayer->closefile();
-		m_strCurrentFile="";
+		m_itemCurrentFile.Clear();
 		delete m_pPlayer;
 		m_pPlayer=NULL;
 	}
@@ -1025,6 +1024,16 @@ void CApplication::Render()
     m_pPlayer->DoAudioWork();
   }
 
+	// check that we haven't passed the end of the file (for queue sheets)
+  if (m_pPlayer)
+  {
+	  __int64 iPTS = m_pPlayer->GetPTS();
+	  int timeinsecs = (int)(iPTS / 10);
+	  if (m_itemCurrentFile.m_lEndOffset && m_itemCurrentFile.m_lEndOffset/75 < timeinsecs)
+	  {	// time to stop the file...
+		  OnPlayBackEnded();
+	  }
+  }
 	// dont show GUI when playing full screen video
 	if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 	{
@@ -1380,7 +1389,7 @@ void CApplication::UpdateLCD()
 			strLine.Format("%s %s%s", strIcon.c_str(), strTime.c_str(), strTotalTime.c_str());
 			g_lcd->SetLine(0,strLine);
 
-			strLine=CUtil::GetTitleFromPath(m_strCurrentFile);
+			strLine=CUtil::GetTitleFromPath(m_itemCurrentFile.m_strPath);
 			int iLine=1;
 			if (m_tagCurrentMovie.m_strTitle!="") strLine=m_tagCurrentMovie.m_strTitle;
 			g_lcd->SetLine(iLine++,strLine);
@@ -1410,7 +1419,7 @@ void CApplication::UpdateLCD()
 			// line 1: song title
 			// line 2: artist
 			// line 3: release date
-			__int64 lPTS=g_application.m_pPlayer->GetPTS();
+			__int64 lPTS=g_application.m_pPlayer->GetPTS() - (m_itemCurrentFile.m_lStartOffset*10)/75;
 			int hh = (int)(lPTS / 36000) % 100;
 			int mm = (int)((lPTS / 600) % 60);
 			int ss = (int)((lPTS /  10) % 60);
@@ -1433,9 +1442,9 @@ void CApplication::UpdateLCD()
 			strLine.Format("%s %s", strIcon.c_str(), strTime.c_str());
 
 			int iLine=1;
-			if (m_tagCurrentSong.Loaded())
+			if (m_itemCurrentFile.m_musicInfoTag.Loaded())
 			{
-				int iDuration=m_tagCurrentSong.GetDuration();
+				int iDuration=m_itemCurrentFile.m_musicInfoTag.GetDuration();
 				if (iDuration>0)
 				{
 					CStdString strDuration;
@@ -1443,13 +1452,13 @@ void CApplication::UpdateLCD()
 					strLine.Format("%s %s/%s", strIcon.c_str(), strTime.c_str(),strDuration.c_str());
 				}
 				g_lcd->SetLine(0,strLine);
-				strLine=m_tagCurrentSong.GetTitle();
-				if (strLine=="") strLine=CUtil::GetTitleFromPath(m_strCurrentFile);
+				strLine=m_itemCurrentFile.m_musicInfoTag.GetTitle();
+				if (strLine=="") strLine=CUtil::GetTitleFromPath(m_itemCurrentFile.m_strPath);
 				if (iLine < 4 && strLine!="") g_lcd->SetLine(iLine++,strLine);
-				strLine=m_tagCurrentSong.GetArtist();
+				strLine=m_itemCurrentFile.m_musicInfoTag.GetArtist();
 				if (iLine < 4 && strLine!="") g_lcd->SetLine(iLine++,strLine);
 				SYSTEMTIME systemtime;
-				m_tagCurrentSong.GetReleaseDate(systemtime);
+				m_itemCurrentFile.m_musicInfoTag.GetReleaseDate(systemtime);
 				if (iLine < 4 && systemtime.wYear>=1900)
 				{
 					strLine.Format("%i", systemtime.wYear);
@@ -1460,7 +1469,7 @@ void CApplication::UpdateLCD()
 			else
 			{
 				g_lcd->SetLine(0,strLine);
-				g_lcd->SetLine(1,CUtil::GetTitleFromPath(m_strCurrentFile));
+				g_lcd->SetLine(1,CUtil::GetTitleFromPath(m_itemCurrentFile.m_strPath));
 				g_lcd->SetLine(2,"");
 				g_lcd->SetLine(3,"");
 			}
@@ -1832,17 +1841,18 @@ void CApplication::Stop()
 	}
 }
 
-bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
+bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 {
+	CStdString strFile = item.m_strPath;
 	CStdString strExtension;
 	CUtil::GetExtension(strFile,strExtension);
 	strExtension.ToLower();
 	if (strExtension==".m3u") return false;
 	if (strExtension==".b4s") return false;
+	if (strExtension==".cue") return false;
 
 	float AVDelay = 0;
 
-	m_tagCurrentSong.SetLoaded(false);
 	m_tagCurrentMovie.Reset();
 	m_iPlaySpeed=1;
 	if (!bRestart)
@@ -1862,9 +1872,8 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 	{
 		AVDelay = m_pPlayer->GetAVDelay();
 	}
-	m_strCurrentFile=strFile;
 
-	CURL url(m_strCurrentFile);
+	CURL url(item.m_strPath);
 	CStdString strNewPlayer = "mplayer";
 	if ( url.GetProtocol() == "cdda")
 	{
@@ -1878,17 +1887,39 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 	{
 		strNewPlayer = "sid";
 	}
+	// Check if we are moving from one cue sheet item to the next
+	// need:
+	// 1.  player to exist
+	// 2.  current play time > endtime of current song.
+	// 3.  next item's startoffset>0
+	// 4.  next item start offset == current items end offset
+	// 5.  current and next item based on same media file.
+	if (m_pPlayer && (m_pPlayer->GetPTS() > m_itemCurrentFile.m_lEndOffset*10/75))
+	{
+		if (item.m_lStartOffset > 0 && item.m_lStartOffset == m_itemCurrentFile.m_lEndOffset &&
+			item.m_strPath == m_itemCurrentFile.m_strPath && m_pPlayer)
+		{	// this is the next cue sheet item, so we don't have to restart the player
+			// just update our display etc.
+			m_itemCurrentFile=item;
+			m_guiMusicOverlay.SetCurrentFile(m_itemCurrentFile);
+			m_guiWindowVideoOverlay.SetCurrentFile(m_itemCurrentFile.m_strPath);
+
+			m_dwIdleTime=timeGetTime();
+			return true;
+		}
+	}
 	// We should restart the player, unless the previous and next tracks are using the cdda player
 	// (allows gapless cdda playback)
 	if (m_pPlayer && !(m_strCurrentPlayer == strNewPlayer && m_strCurrentPlayer == "cdda"))
 	{
-		if (1||m_strCurrentPlayer != strNewPlayer || !CUtil::IsAudio(m_strCurrentFile) )
+		if (1||m_strCurrentPlayer != strNewPlayer || !CUtil::IsAudio(m_itemCurrentFile.m_strPath) )
 		{
 			delete m_pPlayer;
 			m_pPlayer=NULL;
 		}
 	}
 
+	m_itemCurrentFile=item;
 	m_strCurrentPlayer=strNewPlayer;
 	if (!m_pPlayer)
 	{
@@ -1896,12 +1927,11 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 		m_pPlayer = factory.CreatePlayer(strNewPlayer,*this);
 	}
 
-	bool bResult=m_pPlayer->openfile(m_strCurrentFile);
+	bool bResult=m_pPlayer->openfile(m_itemCurrentFile.m_strPath, m_itemCurrentFile.m_lStartOffset/75);	// TODO: Change so SeekTime() supports fractions of a second
 	if (bResult) 
 	{
-		m_guiMusicOverlay.SetCurrentFile(m_strCurrentFile);
-		m_guiWindowVideoOverlay.SetCurrentFile(m_strCurrentFile);
-
+		m_guiMusicOverlay.SetCurrentFile(m_itemCurrentFile);
+		m_guiWindowVideoOverlay.SetCurrentFile(m_itemCurrentFile.m_strPath);
 
 		m_dwIdleTime=timeGetTime();
 
@@ -2227,7 +2257,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
       int iDuration = 0;
       if (IsPlayingAudio()) {
         //try to get duration from current tag because mplayer doesn't calculate vbr mp3 correctly
-        iDuration = m_tagCurrentSong.GetDuration();
+        iDuration = m_itemCurrentFile.m_musicInfoTag.GetDuration();
       }
       if (iDuration < 0) {
         iDuration = m_pPlayer->GetTotalTime();
@@ -2235,7 +2265,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
       //spin down harddisk when the current file being played is not on local harddrive and 
       //duration is more then spindown timeoutsetting or duration is unknown (streams)
       if (
-        !CUtil::IsHD(m_strCurrentFile) &&
+        !CUtil::IsHD(m_itemCurrentFile.m_strPath) &&
         (
           (g_stSettings.m_bHDRemoteplaySpinDownVideo && IsPlayingVideo()) ||
           (g_stSettings.m_bHDRemoteplaySpinDownAudio && IsPlayingAudio())
@@ -2288,7 +2318,7 @@ void CApplication::CheckHDSpindown()
   if (!m_bSpinDown && 
     (
       !IsPlaying() || 
-      (IsPlaying() && !CUtil::IsHD(m_strCurrentFile))
+      (IsPlaying() && !CUtil::IsHD(m_itemCurrentFile.m_strPath))
     )
   ) {
     m_bSpinDown        = true;
@@ -2337,9 +2367,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
 	case GUI_MSG_PLAYBACK_ENDED:
 		{
 			m_dwIdleTime=timeGetTime();
-			CStdString strFile=m_strCurrentFile;
+			CStdString strFile=m_itemCurrentFile.m_strPath;
 
-			m_strCurrentFile="";
 			if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED) 
 			{
 				if (CUtil::IsVideo(strFile) && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO_TEMP)
@@ -2355,6 +2384,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 					{
 						delete m_pPlayer;
 						m_pPlayer = 0;
+						m_itemCurrentFile.Clear();
 					}
 				}
 				else
@@ -2372,6 +2402,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 						{
 							delete m_pPlayer;
 							m_pPlayer = 0;
+							m_itemCurrentFile.Clear();
 						}
 					}
 				}
@@ -2380,6 +2411,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 			{
 				if (m_pPlayer)
 				{
+					m_itemCurrentFile.Clear();
 					delete m_pPlayer;
 					m_pPlayer = 0;
 				}
@@ -2475,7 +2507,7 @@ void CApplication::Restart(bool bSamePosition)
 	if (false==bSamePosition)
 	{
 		// no, then just reopen the file and start at the beginning
-		PlayFile(m_strCurrentFile,true);
+		PlayFile(m_itemCurrentFile,true);
 		return;
 	}
 
@@ -2483,7 +2515,7 @@ void CApplication::Restart(bool bSamePosition)
 	int iPercentage=m_pPlayer->GetPercentage();
 
 	// reopen the file
-	if (  PlayFile(m_strCurrentFile,true) )
+	if (  PlayFile(m_itemCurrentFile,true) )
 	{
 		// and seek to the position
 		m_pPlayer->SeekPercentage(iPercentage);
@@ -2492,7 +2524,7 @@ void CApplication::Restart(bool bSamePosition)
 
 const CStdString& CApplication::CurrentFile()
 {
-	return m_strCurrentFile;
+	return m_itemCurrentFile.m_strPath;
 }
 
 void CApplication::SetVolume(int iPercent)
@@ -2556,7 +2588,7 @@ int CApplication::GetPlaySpeed() const
 }
 void CApplication::SetCurrentSong(const CMusicInfoTag& tag)
 {
-	m_tagCurrentSong=tag;
+	m_itemCurrentFile.m_musicInfoTag=tag;
 }
 void CApplication::SetCurrentMovie(const CIMDBMovie& tag)
 {

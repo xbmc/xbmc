@@ -15,7 +15,7 @@ public:
 	virtual ~IPlayer(){};
 	virtual void		RegisterAudioCallback(IAudioCallback* pCallback)=0;
 	virtual void		UnRegisterAudioCallback()=0;
-	virtual bool		openfile(const CStdString& strFile){return false;};
+	virtual bool		openfile(const CStdString& strFile, int iStartTime){return false;};
 	virtual bool		closefile(){return true;};
 	virtual bool		IsPlaying() const {return false;} ;
 	virtual void		Pause()=0;

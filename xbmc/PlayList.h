@@ -1,9 +1,12 @@
 #pragma once
 
 #include "StdString.h"
+#include "musicInfoTag.h"
+
 #include <vector>
 
 using namespace std;
+using namespace MUSIC_INFO;
 
 namespace PLAYLIST
 {
@@ -14,7 +17,8 @@ namespace PLAYLIST
 		{
 			public:
 				CPlayListItem();
-				CPlayListItem(const CStdString& strDescription, const CStdString& strFileName, long lDuration=0);
+				CPlayListItem(const CStdString& strDescription, const CStdString& strFileName, long lDuration=0, long lStartOffset=0, long lEndOffset=0);
+
 				virtual ~CPlayListItem();
 
 				void							SetFileName(const CStdString& strFileName);
@@ -26,10 +30,22 @@ namespace PLAYLIST
 				void						  SetDuration(long lDuration);
 				long							GetDuration() const;
 
+				void						  SetStartOffset(long lStartOffset);
+				long							GetStartOffset() const;
+
+				void						  SetEndOffset(long lEndOffset);
+				long							GetEndOffset() const;
+
+				void						SetMusicTag(const CMusicInfoTag &tag);
+				CMusicInfoTag				GetMusicTag() const;
+
 			protected:
 				CStdString m_strFilename;
 				CStdString m_strDescription;
 				long			 m_lDuration;
+				long			m_lStartOffset;
+				long			m_lEndOffset;
+				CMusicInfoTag	m_musicInfoTag;
 		};
 		CPlayList(void);
 		virtual ~CPlayList(void);

@@ -197,9 +197,9 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 				{
 					if ( g_stSettings.m_bAutorunVCD ) 
 					{
-						CStdString strFileName;
-						strFileName.Format("%s%cAVSEQ01.DAT",pItem->m_strPath.c_str(),szSlash);
-						g_application.PlayFile( strFileName );
+						CFileItem item = *pItem;
+						item.m_strPath.Format("%s%cAVSEQ01.DAT",pItem->m_strPath.c_str(),szSlash);
+						g_application.PlayFile( item );
 						bPlaying=true;
 						break;
 					}
@@ -208,9 +208,9 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 				{
 					if ( g_stSettings.m_bAutorunVCD ) 
 					{
-						CStdString strFileName;
-						strFileName.Format("%s%cAVSEQ01.MPG",pItem->m_strPath.c_str(),szSlash);
-						g_application.PlayFile( strFileName );
+						CFileItem item = *pItem;
+						item.m_strPath.Format("%s%cAVSEQ01.MPG",pItem->m_strPath.c_str(),szSlash);
+						g_application.PlayFile( item );
 						bPlaying=true;
 						break;
 					}
@@ -235,7 +235,7 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 			if ( CUtil::IsVideo( pItem->m_strPath ) && g_stSettings.m_bAutorunVideo)
 			{
 				bPlaying=true;
-				g_application.PlayFile( pItem->m_strPath );
+				g_application.PlayFile( *pItem );
 				break;
 			}
 

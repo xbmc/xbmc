@@ -7,13 +7,17 @@ using namespace PLAYLIST;
 
 CPlayList::CPlayListItem::CPlayListItem() : m_lDuration(0)
 {
+	m_lStartOffset = 0;
+	m_lEndOffset = 0;
 }
 
-CPlayList::CPlayListItem::CPlayListItem(const CStdString& strDescription, const CStdString& strFileName, long lDuration)
+CPlayList::CPlayListItem::CPlayListItem(const CStdString& strDescription, const CStdString& strFileName, long lDuration, long lStartOffset, long lEndOffset)
 {
 	m_strDescription = strDescription;
 	m_strFilename		 = strFileName;
 	m_lDuration			 = lDuration;
+	m_lStartOffset		 = lStartOffset;
+	m_lEndOffset		 = lEndOffset;
 }
 
 CPlayList::CPlayListItem::~CPlayListItem()
@@ -50,6 +54,36 @@ void CPlayList::CPlayListItem::SetDuration(long lDuration)
 long CPlayList::CPlayListItem::GetDuration() const
 {
 	return m_lDuration;
+}
+
+void CPlayList::CPlayListItem::SetStartOffset(long lStartOffset)
+{
+	m_lStartOffset=lStartOffset;
+}
+
+long CPlayList::CPlayListItem::GetStartOffset() const
+{
+	return m_lStartOffset;
+}
+
+void CPlayList::CPlayListItem::SetEndOffset(long lEndOffset)
+{
+	m_lEndOffset=lEndOffset;
+}
+
+long CPlayList::CPlayListItem::GetEndOffset() const
+{
+	return m_lEndOffset;
+}
+
+void CPlayList::CPlayListItem::SetMusicTag(const CMusicInfoTag &tag)
+{
+	m_musicInfoTag=tag;
+}
+
+CMusicInfoTag CPlayList::CPlayListItem::GetMusicTag() const
+{
+	return m_musicInfoTag;
 }
 
 CPlayList::CPlayList(void)
