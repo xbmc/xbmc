@@ -465,15 +465,19 @@ void CGUIWindowMusicSongs::OnScan()
 	// enable scan mode in OnRetrieveMusicInfo()
 	m_bScan=true;
 
-	if (bOKtoScan && DoScan(m_vecItems))
+	if (bOKtoScan)
 	{
-		bool bCommit = true;
 		if (m_bUpdateAll)
 		{
 			m_dlgProgress->SetLine(2,700);
 			m_dlgProgress->Progress();
-			bCommit = g_musicDatabase.CleanupAlbumsArtistsGenres(strPaths);
+			bOKtoScan = g_musicDatabase.CleanupAlbumsArtistsGenres(strPaths);
 		}
+
+		bool bCommit = false;
+		if (bOKtoScan)
+			bCommit = DoScan(m_vecItems);
+
 		if (bCommit)
 		{
 			g_musicDatabase.CommitTransaction();
