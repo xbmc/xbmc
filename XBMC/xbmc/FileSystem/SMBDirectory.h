@@ -1,16 +1,20 @@
 #pragma once
-#include "directory.h"
+#include "idirectory.h"
 #include "FileSmb.h"
 using namespace XFILE;
 using namespace DIRECTORY;
 namespace DIRECTORY
 {
-  class CSMBDirectory : public CDirectory
+  class CSMBDirectory : public IDirectory
   {
   public:
     CSMBDirectory(void);
     virtual ~CSMBDirectory(void);
-    virtual bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
+    virtual bool GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
+    virtual bool Create(const char* strPath);
+    virtual bool Exists(const char* strPath);
+    virtual bool Remove(const char* strPath);
+    
 	private:
   };
 }

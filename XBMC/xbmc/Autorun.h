@@ -28,7 +28,7 @@ namespace MEDIA_DETECT
 		void				RunXboxCd();
 		void				RunCdda();
 		void				RunISOMedia();
-		bool				RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot);
+		bool				RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot);
 
 		bool				m_bEnable;
 	};

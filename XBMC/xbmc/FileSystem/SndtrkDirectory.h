@@ -25,7 +25,7 @@ namespace DIRECTORY
 {
 
   class CSndtrkDirectory :
-    public CDirectory
+    public IDirectory
   {
   public:
     CSndtrkDirectory(void);
