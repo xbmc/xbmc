@@ -172,7 +172,7 @@ public:
 	bool		GetSong(const CStdString& strTitle, CSong& song);
 	bool		GetSongByFileName(const CStdString& strFileName, CSong& song);
 	bool		GetSongsByPath(const CStdString& strPath, VECSONGS& songs);
-	bool		GetSongsByPath(const CStdString& strPath, MAPSONGS& songs);
+	bool		GetSongsByPath(const CStdString& strPath, MAPSONGS& songs, bool bAppendToMap=false);
 	bool		GetSongsByArtist(const CStdString strArtist, VECSONGS& songs);
 	bool		GetSongsByAlbum(const CStdString& strAlbum, const CStdString& strPath, VECSONGS& songs);
 	bool		GetSongsByGenre(const CStdString& strGenre, VECSONGS& songs);
@@ -192,6 +192,7 @@ public:
 	bool		GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs);
 	bool		GetAlbumByPath(const CStdString& strPath, CAlbum& album);
 	bool		GetAlbumsByPath(const CStdString& strPath, VECALBUMS& albums);
+	bool		GetAlbumsByArtist(const CStdString& strArtist, VECALBUMS& albums);
 	bool		FindAlbumsByName(const CStdString& strSearch, VECALBUMS& albums);
 	bool		FindSongsByName(const CStdString& strSearch, VECSONGS& songs);
 	bool		FindSongsByNameAndArtist(const CStdString& strSearch, VECSONGS& songs);

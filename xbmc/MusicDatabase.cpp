@@ -1150,11 +1150,12 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, VECSONGS& songs)
 	return false;
 }
 
-bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, MAPSONGS& songs)
+bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, MAPSONGS& songs, bool bAppendToMap)
 {
 	try
 	{
-		songs.erase(songs.begin(),songs.end());
+		if (!bAppendToMap)
+			songs.erase(songs.begin(),songs.end());
 		CStdString strPath=strPath1;
 		//	musicdatabase always stores directories 
 		//	without a slash at the end 
@@ -1383,6 +1384,44 @@ bool CMusicDatabase::GetAlbumsByPath(const CStdString& strPath1, VECALBUMS& albu
 	catch(...)
 	{
     CLog::Log("CMusicDatabase:GetAlbumsByPath() for %s failed", strPath1.c_str());
+	}
+
+	return false;
+}
+
+bool CMusicDatabase::GetAlbumsByArtist(const CStdString& strArtist1, VECALBUMS& albums)
+{
+	try
+	{
+		CStdString strArtist=strArtist1;
+		albums.erase(albums.begin(), albums.end());
+		RemoveInvalidChars(strArtist);
+
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+		CStdString strSQL;
+		//strSQL.Format("select album.*, artist.* from album,artist,path,song where album.idArtist=artist.idArtist and album.idPath=path.idPath and artist.strArtist='%s'", strArtist);
+		strSQL.Format("select distinct album.*, artist.*, path.* from song,album,artist,path where song.idArtist=(select artist.idArtist from artist where artist.strArtist like '%s') and song.idAlbum=album.idAlbum and album.idArtist=artist.idArtist and album.idPath=path.idPath", strArtist );
+		if (!m_pDS->query(strSQL.c_str())) return false;
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound== 0) return false;
+
+		while (!m_pDS->eof()) 
+		{
+			CAlbum album;
+			album.strAlbum  = m_pDS->fv("album.strAlbum").get_asString();
+			album.strArtist = m_pDS->fv("artist.strArtist").get_asString();
+			album.strPath   = m_pDS->fv("path.strPath").get_asString();
+			albums.push_back(album);
+			m_pDS->next();
+		}
+
+		m_pDS->close();	//	cleanup recordset data
+		return true;
+	}
+	catch(...)
+	{
+    CLog::Log("CMusicDatabase:GetAlbumsByArtist() for %s failed", strArtist1.c_str());
 	}
 
 	return false;

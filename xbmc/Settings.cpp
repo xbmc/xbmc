@@ -265,7 +265,9 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyMusicAlbumShowRecent=false;
 
 	g_stSettings.m_bMyMusicArtistsRootSortAscending=true;
-	g_stSettings.m_bMyMusicArtistsSortAscending=true;
+	g_stSettings.m_bMyMusicArtistsAlbumsSortAscending=true;
+	g_stSettings.m_bMyMusicArtistsAllSongsSortAscending=true;
+	g_stSettings.m_bMyMusicArtistsAlbumSongsSortAscending=true;
 
 	g_stSettings.m_bMyMusicGenresRootSortAscending=true;
 	g_stSettings.m_bMyMusicGenresSortAscending=true;
@@ -986,11 +988,16 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		pChild = pElement->FirstChildElement("artist");
 		if (pChild)
 		{
-			GetInteger(pChild, "artistviewicons", g_stSettings.m_iMyMusicArtistsViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+			GetInteger(pChild, "artistsongsviewicons", g_stSettings.m_iMyMusicArtistsSongsViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+			GetInteger(pChild, "artistalbumsviewicons", g_stSettings.m_iMyMusicArtistsAlbumsViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
 			GetInteger(pChild, "artistrooticons", g_stSettings.m_iMyMusicArtistsRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-			GetInteger(pChild, "artistsortmethod",g_stSettings.m_iMyMusicArtistsSortMethod,4,5,5); //title
+			GetInteger(pChild, "artistallsongssortmethod",g_stSettings.m_iMyMusicArtistsAllSongsSortMethod,4,5,5); //title
 			GetInteger(pChild, "artistsortmethodroot",g_stSettings.m_iMyMusicArtistsRootSortMethod,0,0,0); //Only name (??)
-			GetBoolean(pChild, "artistsortascending",g_stSettings.m_bMyMusicArtistsSortAscending);
+			GetInteger(pChild, "artistalbumsortmethod",g_stSettings.m_iMyMusicArtistsAlbumsSortMethod,7,6,7);
+			GetInteger(pChild, "artistalbumsongssortmethod",g_stSettings.m_iMyMusicArtistsAlbumsSongsSortMethod,3,3,5);
+			GetBoolean(pChild, "artistsortalbumsascending",g_stSettings.m_bMyMusicArtistsAlbumsSortAscending);
+			GetBoolean(pChild, "artistsortallsongsascending",g_stSettings.m_bMyMusicArtistsAllSongsSortAscending);
+			GetBoolean(pChild, "artistsortalbumsongsascending",g_stSettings.m_bMyMusicArtistsAlbumSongsSortAscending);
 			GetBoolean(pChild, "artistsortascendingroot",g_stSettings.m_bMyMusicArtistsRootSortAscending);
 		}
 		pChild = pElement->FirstChildElement("genre");
@@ -1335,11 +1342,16 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 		TiXmlElement childNode("artist");
 		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
 		if (!pChild) return false;
-		SetInteger(pChild, "artistviewicons", g_stSettings.m_iMyMusicArtistsViewAsIcons);
+		SetInteger(pChild, "artistsongsviewicons", g_stSettings.m_iMyMusicArtistsSongsViewAsIcons);
+		SetInteger(pChild, "artistalbumsviewicons", g_stSettings.m_iMyMusicArtistsAlbumsViewAsIcons);
 		SetInteger(pChild, "artistrooticons", g_stSettings.m_iMyMusicArtistsRootViewAsIcons);
-		SetInteger(pChild, "artistsortmethod",g_stSettings.m_iMyMusicArtistsSortMethod);
+		SetInteger(pChild, "artistallsongssortmethod",g_stSettings.m_iMyMusicArtistsAllSongsSortMethod);
 		SetInteger(pChild, "artistsortmethodroot",g_stSettings.m_iMyMusicArtistsRootSortMethod);
-		SetBoolean(pChild, "artistsortascending",g_stSettings.m_bMyMusicArtistsSortAscending);
+		SetInteger(pChild, "artistalbumsortmethod",g_stSettings.m_iMyMusicArtistsAlbumsSortMethod);
+		SetInteger(pChild, "artistalbumsongssortmethod",g_stSettings.m_iMyMusicArtistsAlbumsSongsSortMethod);
+		SetBoolean(pChild, "artistsortalbumsascending",g_stSettings.m_bMyMusicArtistsAlbumsSortAscending);
+		SetBoolean(pChild, "artistsortallsongsascending",g_stSettings.m_bMyMusicArtistsAllSongsSortAscending);
+		SetBoolean(pChild, "artistsortalbumsongsascending",g_stSettings.m_bMyMusicArtistsAlbumSongsSortAscending);
 		SetBoolean(pChild, "artistsortascendingroot",g_stSettings.m_bMyMusicArtistsRootSortAscending);
 	}
 	{
