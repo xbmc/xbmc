@@ -104,9 +104,9 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 			rs.bottom = image_height ;
 			
 			rd.left   = g_stSettings.m_iMoviesOffsetX1;
-			rd.right  = iScreenWidth;
+			rd.right  = rd.left+iScreenWidth;
 			rd.top    = g_stSettings.m_iMoviesOffsetY1;
-			rd.bottom = iScreenHeight;
+			rd.bottom = rd.top+iScreenHeight;
 			return 0;
 		}
 
@@ -117,6 +117,11 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 			float fAR = ( (float)image_width ) / (  (float)image_height );
 			float fNewWidth  = (float)( iScreenWidth);
 			float fNewHeight = fNewWidth/fAR;
+			if ( image_height > image_width)
+			{
+				float fNewHeight=(float)iScreenHeight - (float)iSubTitleHeight;
+				fNewWidth = fNewHeight*fAR;
+			}
 
 			rs.left		= 0;
 			rs.top    = 0;
@@ -282,7 +287,7 @@ static void video_flip_page(void)
 	if ( g_graphicsContext.IsFullScreenVideo())
 	{
 		g_graphicsContext.Lock();
-		g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0xff202020, 1.0f, 0L );
+		g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 	  g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
 		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, FALSE, 0x00010001  );
 		g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
