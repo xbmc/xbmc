@@ -339,7 +339,7 @@ void AppendXPRImage(const D3DXIMAGE_INFO& info, LPDIRECT3DSURFACE8 pSrcSurf, XB_
 
 void AppendXPRImageLink(int iLinkedImage)
 {
-	memcpy(&XPRFile.Texture[XPRFile.nImages], &XPRFile.Texture[iLinkedImage], sizeof(XPRFile_t::Texture_t));
+	memcpy(&XPRFile.Texture[XPRFile.nImages].D3DTex, &XPRFile.Texture[iLinkedImage].D3DTex, sizeof(D3DTexture));
 	++XPRFile.nImages;
 }
 
@@ -744,7 +744,7 @@ void ConvertAnims(const char* Dir, const char* Filename, double MaxMSE)
 					UncompressedSize += Width * Height;
 					CAnimatedGif* pGif = Anim.m_vecimg[i];
 
-					if (XPRFile.nImages)
+					if (nImages > 1)
 						XPRFile.Texture[i].RealSize = pGif->Delay;
 
 					// generate sha1 hash
