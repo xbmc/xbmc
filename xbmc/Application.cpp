@@ -31,7 +31,7 @@
 	#pragma comment (lib, "xbmc/lib/libcdio/libcdiod.lib" )
 	#pragma comment (lib, "xbmc/lib/libshout/libshoutd.lib" )
 	#pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
-	#pragma comment (lib,"xbmc/lib/mikxbox/mikxboxd.lib")
+	#pragma comment (lib,"xbmc/lib/mikxbox/mikxboxd.lib")  // SECTIONNAME=MOD_RW,MOD_RX
 #else
 //  #pragma comment (lib,"lib/filezilla/xbfilezilla.lib")
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")          

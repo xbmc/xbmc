@@ -658,6 +658,7 @@ BOOL IT_Load(BOOL curious)
 		q->volume     = s.volume;
 		q->globvol    = s.globvol;
 		q->seekpos    = s.sampoffset;
+		q->c5frq = s.c5spd;
 
 		/* Convert speed to XM linear finetune */
 		if(of.flags&UF_LINEAR)

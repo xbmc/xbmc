@@ -849,6 +849,7 @@ static int DoPTEffectB(UWORD tick, UWORD flags, MP_CONTROL *a, MODULE *mod, SWOR
 		mod->sngpos=dat;
 		mod->posjmp=2;
 		mod->patpos=0;
+		OutputDebugString("Looped!\n");
 	}
 
 	return 0;
@@ -888,6 +889,7 @@ static int DoPTEffectD(UWORD tick, UWORD flags, MP_CONTROL *a, MODULE *mod, SWOR
 								&& !(flags&UF_NOWRAP)))) {
 					mod->sngpos=0;
 					mod->posjmp=2;
+					OutputDebugString("Looped!\n");
 				} else
 					mod->posjmp=3;
 			}
@@ -2994,6 +2996,8 @@ static void Mod_Player_Init_internal(MODULE* mod)
 		mod->control[t].main.chanvol=mod->chanvol[t];
 		mod->control[t].main.panning=mod->panning[t];
 	}
+
+	OutputDebugString("Start\n");
 	
 	mod->sngtime=0;
 	mod->sngremainder=0;
@@ -3022,8 +3026,8 @@ BOOL Mod_Player_Init(MODULE* mod)
 {
 	mod->extspd=1;
 	mod->panflag=1;
-	mod->wrap=1; //modified wrapping as a default value.
-	mod->loop=1;
+	mod->wrap=0; //modified wrapping as a default value.
+	mod->loop=0; // no looping
 	mod->fadeout=0;
 
 	mod->relspd=0;
@@ -3109,9 +3113,16 @@ MIKMODAPI void Mod_Player_Start(MODULE *mod)
 
 void Mod_Player_Stop_internal(void)
 {
-	if (md_sfxchn) MikMod_DisableOutput_internal();
+#ifdef _XBOX
+	if (pf) pf->forbid=1;
+	MikMod_DisableOutput_internal();
+	pf=NULL;
+#else
+	if (md_sfxchn) 
+		MikMod_DisableOutput_internal();
 	if (pf) pf->forbid=1;
 	pf=NULL;
+#endif
 }
 
 MIKMODAPI void Mod_Player_Stop(void)
@@ -3397,6 +3408,10 @@ MIKMODAPI void Mod_Player_TogglePause(void)
 	MUTEX_LOCK(vars);
 	if (pf)
 		pf->forbid=1-pf->forbid;
+#ifdef _XBOX
+	if (md_driver == &drv_xbox)
+		md_driver->Pause();
+#endif
 	MUTEX_UNLOCK(vars);
 }
 

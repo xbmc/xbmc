@@ -4,7 +4,7 @@
 #include "../utils/thread.h"
 #include "../utils/event.h"
 #include "../lib/mikxbox/mikmod.h"
-#include "../lib/mikxbox/mikwin.h"
+#include "../lib/mikxbox/mikxbox.h"
 
 class ModPlayer : public IPlayer, public CThread
 {
