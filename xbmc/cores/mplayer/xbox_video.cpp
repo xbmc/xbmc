@@ -1091,6 +1091,7 @@ void xbox_video_render()
 	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_YV12VERTEX );
 	g_graphicsContext.Get3DDevice()->SetPixelShader( m_hPixelShader );
 	// Render the image
+	g_graphicsContext.Get3DDevice()->SetScreenSpaceOffset(-0.5f, -0.5f); // fix texel align
 	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.top );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.left/2.0f, (float)rs.top/2.0f );
@@ -1112,6 +1113,7 @@ void xbox_video_render()
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.left/2.0f, (float)rs.bottom/2.0f );
 	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.bottom, 0, 1.0f );
 	g_graphicsContext.Get3DDevice()->End();
+	g_graphicsContext.Get3DDevice()->SetScreenSpaceOffset(0, 0);
 
 	g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
 	g_graphicsContext.Get3DDevice()->SetTexture(1, NULL);
