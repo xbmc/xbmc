@@ -49,8 +49,6 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
 		unsigned long ulHostIp;
 		memcpy(&ulHostIp, &(pDns->aina[0].s_addr), 4);
 
-		
-					
 		strIpAdres.Format("%d.%d.%d.%d",(ulHostIp & 0xFF),(ulHostIp & 0xFF00) >> 8,(ulHostIp & 0xFF0000) >> 16,(ulHostIp & 0xFF000000) >> 24 );
 
 		CDNSName dnsName;
@@ -62,9 +60,13 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
 		WSACloseEvent(hEvent);
 		return true;
 	}
-  CLog::Log("DNS lookup for %s failed (no nameserver configured?)", strHostName.c_str());
-	if( pDns )
+	if (pDns)
+	{
+		CLog::Log("DNS lookup for %s failed: %u", strHostName.c_str(), pDns->iStatus);
 		XNetDnsRelease(pDns);
+	}
+	else
+		CLog::Log("DNS lookup for %s failed: %u", strHostName.c_str(), err);
 	WSACloseEvent(hEvent);
 	return false;
 }
