@@ -257,12 +257,6 @@ __int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
 
 	if (!m_bOpened) return -1;
 
-	//Fix for broken seeking when we are at position 0
-	if (m_filePos == 0)
-	{
-		char cBuf[1];
-		Read(cBuf,1);
-	}
 	switch(iWhence) 
 	{
 		case SEEK_SET:
@@ -307,6 +301,13 @@ __int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
 	}
 	else if (newpos > m_filePos)
 	{
+		//Fix for broken seeking when we are at position 0 when using -dvd-device
+		if (m_filePos == 0)
+		{
+			char cBuf[1];
+			Read(cBuf,1);
+		}
+		if (newpos == m_filePos) return m_filePos; 
 		if (cc_xstream_client_file_forward(m_connection, m_handle, (size_t)(newpos - m_filePos), 0) ==CC_XSTREAM_CLIENT_OK)
 		{
 			m_filePos = newpos;
