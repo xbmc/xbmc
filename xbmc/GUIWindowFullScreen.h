@@ -28,8 +28,6 @@ public:
   void ChangetheSpeed(DWORD action);
   virtual void OnExecute(int iAction, const IOSDOption* option);
   bool m_bOSDVisible;
-  bool m_bSmoothFFwdRewd;
-  bool m_bDiscreteFFwdRewd;
 
 private:
   void Update();
