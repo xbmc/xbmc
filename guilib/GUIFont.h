@@ -19,8 +19,8 @@ public:
   void DrawShadowText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                         const WCHAR* strText, DWORD dwFlags=0,
                         FLOAT fMaxPixelWidth =0.0,
-                        int iShadowWidth=2, 
-                        int iShadowHeight=2,
+                        int iShadowWidth=5, 
+                        int iShadowHeight=5,
                         DWORD dwShadowColor=0xff000000);
   void DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                               const WCHAR* strText,float fMaxWidth);
