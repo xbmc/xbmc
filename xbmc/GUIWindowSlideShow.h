@@ -73,7 +73,8 @@ private:
 	CStdString						 			m_strCurrentSlide;
   bool                    m_bPause;
   int                     m_iZoomFactor;
-  int                     m_iPosX,m_iPosY;
+  int                     m_iZoomLeft,m_iZoomTop;
+  int					  m_iZoomWidth, m_iZoomHeight;
   int                     m_iRotate;
 
 	vector<CStdString>		 m_vecSlides;
