@@ -174,13 +174,14 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_DEINIT:
       Clear();
 			m_slideShow.Reset();
-			CSectionLoader::Load("CXIMAGE");
+			CSectionLoader::Unload("CXIMAGE");
+			g_application.EnableOverlay();
     break;
 
     case GUI_MSG_WINDOW_INIT:
 		{
 			CGUIWindow::OnMessage(message);
-			CSectionLoader::Unload("CXIMAGE");
+			CSectionLoader::Load("CXIMAGE");
 			if (m_strDirectory=="?")
 				m_strDirectory=g_stSettings.m_szDefaultPictures;
 
