@@ -439,6 +439,7 @@
   <string><id>506</id><value>Verzeichnisnamen verwenden</value></string>
   <string><id>507</id><value>n. Verw. ord.</value></string>
   <string><id>508</id><value>Verknüpfungen und Durchsuchen deaktivieren</value></string>
+  <string><id>509</id><value>Miniaturansichten zwischenspeichern</value></string>
   <string><id>600</id><value>CD Rippen</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -632,6 +633,8 @@
   <string><id>13203</id><value>Profil '%s' erfolgreich geladen</value></string>
   <string><id>13204</id><value>Zuletzt geladenes Profil:</value></string>
   <string><id>13205</id><value>Unbekannt</value></string>
+  <string><id>13206</id><value>Überschreiben</value></string> 
+  <string><id>13207</id><value>Profil '%s' überschreiben?</value></string>
   <string><id>13299</id><value>- Temperatur:</value></string>
   <string><id>13300</id><value>- Geschwindigkeit:</value></string>
   <string><id>13301</id><value>Automatische Temperaturkontrolle</value></string>
@@ -688,9 +691,11 @@
   <string><id>13352</id><value>Ordner Durchsuchen</value></string>
   <string><id>13353</id><value>Suche anhalten</value></string>
   <string><id>13354</id><value>Wiedergabe</value></string> 
-  <string><id>13355</id><value>Pixel Shader</value></string> 
-  <string><id>13356</id><value>YUY2 Overlays</value></string> 
-  <string><id>13357</id><value>Kombination aus Overlays/Shader</value></string>
+  <string><id>13355</id><value>Pixel Shader (niedrige Qualität)</value></string> 
+  <string><id>13356</id><value>YUY2 Overlay</value></string> 
+  <string><id>13357</id><value>Kombination aus Overlay/Shader</value></string>
+  <string><id>13358</id><value>Pixel Shader (hohe Qualität)</value></string>
+  <string><id>13359</id><value>Pixel Shader (mittlere Qualität)</value></string>
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln einfach</value></string>
   <string><id>14002</id><value>Koppeln unpräz.</value></string>
@@ -812,5 +817,6 @@
   <string><id>15058</id><value>Host</value></string> 
   <string><id>15059</id><value>Einladung angenommen!</value></string> 
   <string><id>15060</id><value>Nachricht:</value></string> 
-  <string><id>15061</id><value>Einladung bei %s mitzuspielen.</value></string> 
+  <string><id>15061</id><value>Einladung bei %s mitzuspielen.</value></string>
+  <string><id>15062</id><value>Alternativen MediaPlayer verwenden</value></string>
 </strings>
