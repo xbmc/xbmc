@@ -3,6 +3,7 @@
 using namespace std;
 #ifdef _XBOX
 #include <xtl.h>
+#include <malloc.h>
 #else
 #include <windows.h>
 #endif
@@ -1312,7 +1313,7 @@ inline void ssupr(CT* pT, size_t nLen)
 //  vsprintf/vswprintf or _vsnprintf/_vsnwprintf equivalents.  In standard
 //  builds we can't use _vsnprintf/_vsnwsprintf because they're MS extensions.
 // -----------------------------------------------------------------------------
-#if defined(SS_ANSI) || !defined(_MSC_VER)
+//#if defined(SS_ANSI) || !defined(_MSC_VER)
 
     // Borland's headers put some ANSI "C" functions in the 'std' namespace. 
     // Promote them to the global namespace so we can use them here.
@@ -1369,7 +1370,7 @@ inline void ssupr(CT* pT, size_t nLen)
     #endif
 
 	}
-#else
+//#else
 	inline int	ssnprintf(PSTR pA, size_t nCount, PCSTR pFmtA, va_list vl)
 	{ 
 		return _vsnprintf(pA, nCount, pFmtA, vl);
@@ -1378,7 +1379,7 @@ inline void ssupr(CT* pT, size_t nLen)
 	{
 		return _vsnwprintf(pW, nCount, pFmtW, vl);
 	}
-#endif
+//#endif
 
 
 
@@ -2628,7 +2629,7 @@ public:
 	}
 
 	#define MAX_FMT_TRIES		5	 // #of times we try 
-	#define FMT_BLOCK_SIZE		2048 // # of bytes to increment per try
+	#define FMT_BLOCK_SIZE		512  // # of bytes to increment per try
 	#define BUFSIZE_1ST	256
 	#define BUFSIZE_2ND 512
 	#define STD_BUF_SIZE		16384
@@ -2638,11 +2639,11 @@ public:
 	void AppendFormatV(const CT* szFmt, va_list argList)
 	{
 		CT szBuf[STD_BUF_SIZE];
-	#ifdef SS_ANSI
-		int nLen = ssvsprintf(szBuf, STD_BUF_SIZE-1, szFmt, argList);
-	#else
+//	#ifdef SS_ANSI
+//		int nLen = ssvsprintf(szBuf, STD_BUF_SIZE-1, szFmt, argList);
+//	#else
 		int nLen = ssnprintf(szBuf, STD_BUF_SIZE-1, szFmt, argList);
-	#endif
+//	#endif
 		if ( 0 < nLen )
 			this->append(szBuf, nLen);
 	}
@@ -2666,14 +2667,16 @@ public:
 
 	void FormatV(const CT* szFormat, va_list argList)
 	{
-	#ifdef SS_ANSI
+		// this is nasty and buffer overuns if the string is too long
+//	#ifdef SS_ANSI
+//
+//		int nLen	= sslen(szFormat) + STD_BUF_SIZE;
+//		ssvsprintf(GetBuffer(nLen), nLen-1, szFormat, argList);
+//		ReleaseBuffer();
+//
+//	#else
 
-		int nLen	= sslen(szFormat) + STD_BUF_SIZE;
-		ssvsprintf(GetBuffer(nLen), nLen-1, szFormat, argList);
-		ReleaseBuffer();
-
-	#else
-
+		// use safe version
 		CT* pBuf			= NULL;
 		int nChars			= 1;
 		int nUsed			= 0;
@@ -2700,7 +2703,7 @@ public:
 
 		this->assign(pBuf, nActual);
 
-	#endif
+//	#endif
 	}
 	
 
