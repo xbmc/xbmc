@@ -47,6 +47,8 @@ public:
 					          FLOAT* pHeight, BOOL bFirstLineOnly=FALSE) = 0;
 
   FLOAT GetTextWidth( const WCHAR* strText );
+  virtual void Begin() {};
+  virtual void End() {};
 
 protected:
   virtual void DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,

@@ -26,6 +26,7 @@ void CGUIFont::DrawShadowText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                               int iShadowHeight,
                               DWORD dwShadowColor)
 {
+  Begin();
 	float nw=0.0f,nh=0.0f;
 	g_graphicsContext.Correct(fOriginX, fOriginY);
 
@@ -38,13 +39,13 @@ void CGUIFont::DrawShadowText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 	}
 
 	DrawTextImpl( fOriginX, fOriginY, dwColor, strText, wcslen( strText ), dwFlags);	
+  End();
 }
 
 
 void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                               const WCHAR* strText,float fMaxWidth)
 {
-
 	float nh=0.0f;
 	g_graphicsContext.Correct(fOriginX, fOriginY);
 
