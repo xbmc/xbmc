@@ -1251,6 +1251,26 @@
     <value>Fair</value>
   </string>
   <string>
+  <id>396</id> 
+  <value>Select Location</value> 
+  </string>
+  <string>
+  <id>397</id> 
+  <value>Refresh Time</value> 
+  </string>
+  <string>
+  <id>398</id> 
+  <value>Temperature Units</value> 
+  </string>
+  <string>
+  <id>399</id> 
+  <value>Speed Units</value> 
+  </string>
+  <string>
+  <id>400</id> 
+  <value>Weather</value> 
+  </string>
+  <string>
     <id>401</id>
     <value>Temp</value>
   </string>   

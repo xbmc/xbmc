@@ -491,6 +491,12 @@
 				RelativePath=".\xbmc\GUIWindowSettingsUICalibration.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsWeather.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsWeather.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSlideShow.cpp">
 			</File>
 			<File
