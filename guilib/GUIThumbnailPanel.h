@@ -27,7 +27,7 @@ class CGUIThumbnailPanel :
   public CGUIControl
 {
 public:
-  CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, 
+  CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, 
                     const CStdString& strFontName, 
                     const CStdString& strImageIcon,
                     const CStdString& strImageIconFocus,
@@ -62,8 +62,8 @@ public:
 	const	CStdString&			GetTexutureUpFocusName() const { return m_upDown.GetTexutureUpFocusName(); };
 	const	CStdString&			GetTexutureDownFocusName() const { return m_upDown.GetTexutureDownFocusName(); };
 	DWORD									GetSpinTextColor() const { return m_upDown.GetTextColor();};
-	DWORD									GetSpinX() const { return m_upDown.GetXPosition();};
-	DWORD									GetSpinY() const { return m_upDown.GetYPosition();};
+	int										GetSpinX() const { return m_upDown.GetXPosition();};
+	int										GetSpinY() const { return m_upDown.GetYPosition();};
 	DWORD									GetTextureWidth() const { return m_iTextureWidth;};
 	DWORD									GetTextureHeight() const { return m_iTextureHeight;};
 	const CStdString			GetFocusName() const { return m_imgFolderFocus.GetFileName();};
@@ -97,15 +97,24 @@ public:
   const wstring&				GetSuffix() const { return m_strSuffix;};
   void                  SetThumbDimensionsLow(int iXpos, int iYpos,int iWidth, int iHeight) { m_iThumbXPosLow=iXpos;m_iThumbYPosLow=iYpos;m_iThumbWidthLow=iWidth;m_iThumbHeightLow=iHeight;};
   void                  SetThumbDimensionsBig(int iXpos, int iYpos,int iWidth, int iHeight) { m_iThumbXPosBig=iXpos;m_iThumbYPosBig=iYpos;m_iThumbWidthBig=iWidth;m_iThumbHeightBig=iHeight;};
+  virtual void 					OnMouseOver();
+  virtual void 					OnMouseClick(DWORD dwButton);
+  virtual void 					OnMouseDoubleClick(DWORD dwButton);
+  virtual void					OnMouseWheel();
+  void							ScrollDown();
+  void							ScrollUp();
+  virtual bool					HitTest(int iPosX, int iPosY) const;
+  bool							SelectItemFromPoint(int iPosX, int iPosY);
+  void							GetOffsetFromPage();
 
 protected:
   void                  Calculate();
-	void				          RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUIListItem* pItem);
+	void				          RenderItem(bool bFocus,int iPosX, int iPosY, CGUIListItem* pItem);
   void                  RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText,bool bScroll );
-  void                  OnRight();
-  void                  OnLeft();
-  void                  OnDown();
-  void                  OnUp();
+  virtual void          OnRight();
+  virtual void          OnLeft();
+  virtual void          OnDown();
+  virtual void          OnUp();
   void                  OnPageUp();
   void                  OnPageDown();
   bool                  ValidItem(int iX, int iY);

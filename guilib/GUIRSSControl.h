@@ -24,7 +24,7 @@ using namespace std;
 class CGUIRSSControl : public CGUIControl, public IRssObserver
 {
 public:
-	CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strUrl);
+	CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strUrl);
 	virtual ~CGUIRSSControl(void);
   
 	virtual void		Render();

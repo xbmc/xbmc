@@ -48,26 +48,26 @@ void CGUIListExItem::OnPaint(CGUIItem::RenderContext* pContext)
 	CGUIListExItem::RenderContext* pDC = (CGUIListExItem::RenderContext*)pContext;
 	if (pDC)
 	{
-		DWORD dwPosX = pDC->m_dwPositionX;
-		DWORD dwPosY = pDC->m_dwPositionY;
+		int iPosX = pDC->m_iPositionX;
+		int iPosY = pDC->m_iPositionY;
 
 		if (pDC->m_pButton)
 		{
 			// render control
 			pDC->m_pButton->SetFocus(pDC->m_bFocused);
-			pDC->m_pButton->SetPosition(dwPosX, dwPosY);	
+			pDC->m_pButton->SetPosition(iPosX, iPosY);	
 			pDC->m_pButton->Render();
-			dwPosX += 8;
+			iPosX += 8;
 		}
 
 		if (m_pIcon)
 		{
 			// render the icon
-			m_pIcon->SetPosition(dwPosX, dwPosY+5);
+			m_pIcon->SetPosition(iPosX, iPosY+5);
 			m_pIcon->Render();
 		}
 
-		dwPosX += 20;
+		iPosX += 20;
 
 		if (pDC->m_pFont)
 		{
@@ -76,7 +76,7 @@ void CGUIListExItem::OnPaint(CGUIItem::RenderContext* pContext)
 
 			WCHAR wszText[1024];
 			swprintf(wszText,L"%S", m_strName.c_str() );
-			RenderText((FLOAT)dwPosX, (FLOAT)dwPosY+2, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, wszText, pDC->m_pFont);
+			RenderText((FLOAT)iPosX, (FLOAT)iPosY+2, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, wszText, pDC->m_pFont);
 		}
 	}
 }

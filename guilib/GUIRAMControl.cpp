@@ -16,11 +16,11 @@ extern CApplication g_application;
 #define BUTTON_Y_SPACING			12
 
 CGUIRAMControl::CGUIRAMControl(DWORD dwParentID, DWORD dwControlId, 
-							   DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight,
+							   int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
 							   const CStdString& strFontName, const CStdString& strFont2Name,
 							   D3DCOLOR dwTitleColor, D3DCOLOR dwNormalColor, D3DCOLOR dwSelectedColor,
 							   DWORD dwTextOffsetX, DWORD dwTextOffsetY)
-:CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
+:CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
 {
 	m_dwTitleColor		= dwTitleColor;
 	m_dwTextColor		= dwNormalColor; 
@@ -72,10 +72,10 @@ void CGUIRAMControl::Render()
 		m_pMonitor->Create(this);
 	}
 
-	DWORD dwImageX;
+	int iImageX;
 	
 	// current images
-	dwImageX = m_dwPosX + m_dwWidth + m_dwThumbnailSpaceX - CONTROL_POSX_ADJUSTMENT;
+	iImageX = m_iPosX + m_dwWidth + m_dwThumbnailSpaceX - CONTROL_POSX_ADJUSTMENT;
 
 	for(int i=RECENT_MOVIES-1; i>=0; i--)
 	{
@@ -85,7 +85,7 @@ void CGUIRAMControl::Render()
 	
 		if (movie.bValid && movie.pImage)
 		{
-			dwImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;
+			iImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;
 
 			movie.nAlpha += bIsNewTitleAvailable ? -4:4;
 			
@@ -109,7 +109,7 @@ void CGUIRAMControl::Render()
 			if (movie.pImage)
 			{
 				movie.pImage->SetAlpha((DWORD)movie.nAlpha);
-				movie.pImage->SetPosition(dwImageX,m_dwPosY);
+				movie.pImage->SetPosition(iImageX,m_iPosY);
 				movie.pImage->Render();		
 			}
 		}
@@ -121,7 +121,7 @@ void CGUIRAMControl::Render()
 	}
 
 	// new images
-	dwImageX = m_dwPosX + m_dwWidth + m_dwThumbnailSpaceX - CONTROL_POSX_ADJUSTMENT;
+	iImageX = m_iPosX + m_dwWidth + m_dwThumbnailSpaceX - CONTROL_POSX_ADJUSTMENT;
 
 	for(int i=RECENT_MOVIES-1; i>=0; i--)
 	{
@@ -129,7 +129,7 @@ void CGUIRAMControl::Render()
 
 		if (movie.bValid && movie.pImage)
 		{
-			dwImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;	
+			iImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;	
 
 			movie.nAlpha+=4;
 
@@ -139,18 +139,18 @@ void CGUIRAMControl::Render()
 			}
 
 			movie.pImage->SetAlpha((DWORD)movie.nAlpha);
-			movie.pImage->SetPosition(dwImageX,m_dwPosY);
+			movie.pImage->SetPosition(iImageX,m_iPosY);
 			movie.pImage->Render();		
 		}
 		else if (m_current[i].bValid)
 		{
-			dwImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;	
+			iImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;	
 		}
 	}
 
 	WCHAR wszText[256];
-	FLOAT fTextX = (FLOAT) m_dwPosX + m_dwWidth;
-	FLOAT fTextY = (FLOAT) m_dwPosY + m_dwThumbnailHeight + m_dwThumbnailSpaceY;
+	FLOAT fTextX = (FLOAT) m_iPosX + m_dwWidth;
+	FLOAT fTextY = (FLOAT) m_iPosY + m_dwThumbnailHeight + m_dwThumbnailSpaceY;
 
 	if (m_pFont)
 	{
@@ -163,7 +163,7 @@ void CGUIRAMControl::Render()
 		fTextY += m_fFontHeight + (FLOAT) m_dwTextSpaceY;
 	}
 
-	DWORD dwTextX = m_dwPosX + m_dwWidth;
+	int iTextX = m_iPosX + m_dwWidth;
 
 	for(int i=0; i<RECENT_MOVIES; i++)
 	{			
@@ -176,13 +176,13 @@ void CGUIRAMControl::Render()
 			swprintf(wszText, L"%S", movie.strTitle.c_str() );
 			m_pFont2->GetTextExtent(wszText, &fTextWidth, &fTextHeight);
 			
-			INT iButtonWidth = (INT) (fTextWidth+BUTTON_WIDTH_ADJUSTMENT);
-			INT iButtonHeight= (INT) (fTextHeight+BUTTON_HEIGHT_ADJUSTMENT);
+			int iButtonWidth = (int) (fTextWidth+BUTTON_WIDTH_ADJUSTMENT);
+			int iButtonHeight= (int) (fTextHeight+BUTTON_HEIGHT_ADJUSTMENT);
 			bool itemHasFocus = (i==m_iSelection) && HasFocus();
 
 			pButton->SetText(movie.strTitle);
 			pButton->SetTextColor(itemHasFocus?m_dwTextSelectColor:m_dwTextColor);
-			pButton->SetPosition(dwTextX-(DWORD)iButtonWidth,(DWORD)fTextY),
+			pButton->SetPosition(iTextX-iButtonWidth,(int)fTextY),
 			pButton->SetWidth(iButtonWidth);
 			pButton->SetHeight(iButtonHeight);
 			pButton->SetFocus(itemHasFocus);

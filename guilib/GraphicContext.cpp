@@ -2,6 +2,7 @@
 #include "graphiccontext.h"
 #include "../xbmc/utils/log.h"
 #include "../xbmc/Settings.h"
+#include "common/mouse.h"
 
 #define WIDE_SCREEN_COMPENSATIONY (FLOAT)1.2
 #define WIDE_SCREEN_COMPENSATIONX (FLOAT)0.85
@@ -64,6 +65,12 @@ void CGraphicContext::Correct(float& fCoordinateX, float& fCoordinateY)  const
 {
 	fCoordinateX  += (float)m_iScreenOffsetX;
 	fCoordinateY  += (float)m_iScreenOffsetY;
+}
+
+void CGraphicContext::Correct(int& iCoordinateX, int& iCoordinateY)  const
+{
+	iCoordinateX  += m_iScreenOffsetX;
+	iCoordinateY  += m_iScreenOffsetY;
 }
 
 void CGraphicContext::Scale(float& fCoordinateX, float& fCoordinateY, float& fWidth, float& fHeight) const
@@ -280,6 +287,10 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 	{
 		m_pd3dDevice->Reset(m_pd3dParams);
 	}
+	if ((m_pResInfo[m_Resolution].iWidth != m_pResInfo[res].iWidth) || (m_pResInfo[m_Resolution].iHeight != m_pResInfo[res].iHeight))
+	{	// set the mouse resolution
+		g_Mouse.SetResolution(m_pResInfo[res].iWidth, m_pResInfo[res].iHeight, 1, 1);
+	}
   if (m_pd3dDevice)
   {
 	    m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
@@ -366,8 +377,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 		case HDTV_1080i:
 			m_pResInfo[res].Overscan.left = 0;
 			m_pResInfo[res].Overscan.top = 0;
-			m_pResInfo[res].Overscan.width = 1920;
-			m_pResInfo[res].Overscan.height = 1080;
+			m_pResInfo[res].Overscan.right = 1920;
+			m_pResInfo[res].Overscan.bottom = 1080;
 			m_pResInfo[res].iSubtitles = 1080;
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 1920;
@@ -379,8 +390,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 		case HDTV_720p:
 			m_pResInfo[res].Overscan.left = 0;
 			m_pResInfo[res].Overscan.top = 0;
-			m_pResInfo[res].Overscan.width = 1280;
-			m_pResInfo[res].Overscan.height = 720;
+			m_pResInfo[res].Overscan.right = 1280;
+			m_pResInfo[res].Overscan.bottom = 720;
 			m_pResInfo[res].iSubtitles = 720;
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 1280;
@@ -392,8 +403,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 		case HDTV_480p_4x3:
 			m_pResInfo[res].Overscan.left = 0;
 			m_pResInfo[res].Overscan.top = 0;
-			m_pResInfo[res].Overscan.width = 720;
-			m_pResInfo[res].Overscan.height = 480;
+			m_pResInfo[res].Overscan.right = 720;
+			m_pResInfo[res].Overscan.bottom = 480;
 			m_pResInfo[res].iSubtitles = 480;
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
@@ -405,8 +416,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 		case HDTV_480p_16x9:
 			m_pResInfo[res].Overscan.left = 0;
 			m_pResInfo[res].Overscan.top = 0;
-			m_pResInfo[res].Overscan.width = 720;
-			m_pResInfo[res].Overscan.height = 480;
+			m_pResInfo[res].Overscan.right = 720;
+			m_pResInfo[res].Overscan.bottom = 480;
 			m_pResInfo[res].iSubtitles = 480;
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
@@ -418,8 +429,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 		case NTSC_4x3:
 			m_pResInfo[res].Overscan.left = 0;
 			m_pResInfo[res].Overscan.top = 0;
-			m_pResInfo[res].Overscan.width = 720;
-			m_pResInfo[res].Overscan.height = 480;
+			m_pResInfo[res].Overscan.right = 720;
+			m_pResInfo[res].Overscan.bottom = 480;
 			m_pResInfo[res].iSubtitles = 480;
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
@@ -431,8 +442,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 		case NTSC_16x9:
 			m_pResInfo[res].Overscan.left = 0;
 			m_pResInfo[res].Overscan.top = 0;
-			m_pResInfo[res].Overscan.width = 720;
-			m_pResInfo[res].Overscan.height = 480;
+			m_pResInfo[res].Overscan.right = 720;
+			m_pResInfo[res].Overscan.bottom = 480;
 			m_pResInfo[res].iSubtitles = 480;
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
@@ -444,8 +455,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 		case PAL_4x3:
 			m_pResInfo[res].Overscan.left = 0;
 			m_pResInfo[res].Overscan.top = 0;
-			m_pResInfo[res].Overscan.width = 720;
-			m_pResInfo[res].Overscan.height = 576;
+			m_pResInfo[res].Overscan.right = 720;
+			m_pResInfo[res].Overscan.bottom = 576;
 			m_pResInfo[res].iSubtitles = 576;
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
@@ -457,8 +468,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 		case PAL_16x9:
 			m_pResInfo[res].Overscan.left = 0;
 			m_pResInfo[res].Overscan.top = 0;
-			m_pResInfo[res].Overscan.width = 720;
-			m_pResInfo[res].Overscan.height = 576;
+			m_pResInfo[res].Overscan.right = 720;
+			m_pResInfo[res].Overscan.bottom = 576;
 			m_pResInfo[res].iSubtitles = 576;
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
@@ -470,8 +481,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 		case PAL60_4x3:
 			m_pResInfo[res].Overscan.left = 0;
 			m_pResInfo[res].Overscan.top = 0;
-			m_pResInfo[res].Overscan.width = 720;
-			m_pResInfo[res].Overscan.height = 480;
+			m_pResInfo[res].Overscan.right = 720;
+			m_pResInfo[res].Overscan.bottom = 480;
 			m_pResInfo[res].iSubtitles = 480;
 			m_pResInfo[res].iOSDYOffset = -75;
 			m_pResInfo[res].iWidth = 720;
@@ -483,8 +494,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 		case PAL60_16x9:
 			m_pResInfo[res].Overscan.left = 0;
 			m_pResInfo[res].Overscan.top = 0;
-			m_pResInfo[res].Overscan.width = 720;
-			m_pResInfo[res].Overscan.height = 480;
+			m_pResInfo[res].Overscan.right = 720;
+			m_pResInfo[res].Overscan.bottom = 480;
 			m_pResInfo[res].iSubtitles = 480;
 			m_pResInfo[res].iOSDYOffset = -75;
 			m_pResInfo[res].iWidth = 720;

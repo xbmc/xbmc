@@ -4,12 +4,12 @@
 
 #define SPIN_BUTTON_DOWN 0
 #define SPIN_BUTTON_UP   1
-CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType, DWORD dwAlign)
-        :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight)
-        ,m_imgspinUp(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight,strUp)
-        ,m_imgspinDown(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight,strDown)
-        ,m_imgspinUpFocus(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight,strUpFocus)
-        ,m_imgspinDownFocus(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight,strDownFocus)
+CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType, DWORD dwAlign)
+        :CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
+        ,m_imgspinUp(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight,strUp)
+        ,m_imgspinDown(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight,strDown)
+        ,m_imgspinUpFocus(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight,strUpFocus)
+        ,m_imgspinDownFocus(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight,strDownFocus)
 {
 	m_fMaxTextWidth = 0;
 	m_bReverse=false;
@@ -159,70 +159,49 @@ void CGUISpinControl::OnAction(const CAction &action)
           PageDown();
       return;
     }
-    if (action.wID == ACTION_MOVE_LEFT)
-    {
-        if (m_iSelect==SPIN_BUTTON_UP)
-        {
-            if (m_bReverse)
-            {
-                if (CanMoveUp() )
-								{
-                    m_iSelect=SPIN_BUTTON_DOWN;
-										return;
-								}
-            }
-            else
-            {
-                if (CanMoveDown() )
-								{
-                    m_iSelect=SPIN_BUTTON_DOWN;
-										return;
-								}
-            }
-        }
-    }
-    if (action.wID == ACTION_MOVE_RIGHT)
-    {
-        if (m_iSelect==SPIN_BUTTON_DOWN)
-        {
-            if (m_bReverse)
-            {
-                if (CanMoveDown() )
-								{
-                    m_iSelect=SPIN_BUTTON_UP;
-										return;
-								}
-            }
-            else
-            {
-                if (CanMoveUp() )
-								{
-                    m_iSelect=SPIN_BUTTON_UP;
-										return;
-								}
-            }
-        }
-    }
     if (action.wID == ACTION_SELECT_ITEM)
     {
         if (m_iSelect==SPIN_BUTTON_UP)
         {
-            if (m_bReverse)
-                MoveDown();
-            else
-                MoveUp();
+            MoveUp();
             return;
         }
         if (m_iSelect==SPIN_BUTTON_DOWN)
         {
-            if (m_bReverse)
-                MoveUp();
-            else
-                MoveDown();
+            MoveDown();
             return;
         }
     }
     CGUIControl::OnAction(action);
+}
+
+void CGUISpinControl::OnLeft()
+{
+    if (m_iSelect==SPIN_BUTTON_UP)
+    {
+		if (CanMoveDown())
+		{	// select the down button
+            m_iSelect=SPIN_BUTTON_DOWN;
+		}
+    }
+	else
+	{	// base class
+		CGUIControl::OnLeft();
+	}
+}
+void CGUISpinControl::OnRight()
+{
+	if (m_iSelect==SPIN_BUTTON_DOWN)
+    {
+        if (CanMoveUp())
+        {	// select the up button
+            m_iSelect=SPIN_BUTTON_UP;
+		}
+	}
+	else
+	{	// base class
+		CGUIControl::OnRight();
+	}
 }
 
 void CGUISpinControl::Clear()
@@ -313,7 +292,7 @@ void CGUISpinControl::AllocResources()
     m_imgspinDownFocus.AllocResources();
 
     m_pFont=g_fontManager.GetFont(m_strFont);
-    SetPosition(m_dwPosX, m_dwPosY);
+    SetPosition(m_iPosX, m_iPosY);
 
 	if (m_dwBuddyControlID)	// do we have an associated label control?
 	{
@@ -375,7 +354,7 @@ void CGUISpinControl::Render()
 		}
 	}
 
-    DWORD dwPosX=m_dwPosX;
+    int iPosX=m_iPosX;
     WCHAR wszText[1024];
 
     if (m_iType == SPIN_CONTROL_TYPE_INT)
@@ -399,68 +378,44 @@ void CGUISpinControl::Render()
         else swprintf(wszText,L"?%i?",m_iValue);
         
     }
-
+	// Calculate the size of our text (for use in HitTest)
+	float fTextWidth, fTextHeight;
+	if (m_pFont)
+		m_pFont->GetTextExtent( wszText, &fTextWidth, &fTextHeight);
+	// Position the arrows
 	if (m_fMaxTextWidth>0)
 	{
-		m_imgspinUpFocus.SetPosition((DWORD)m_fMaxTextWidth + 5+dwPosX+ m_imgspinDown.GetWidth(), m_dwPosY);
-		m_imgspinUp.SetPosition((DWORD)m_fMaxTextWidth + 5+dwPosX+ m_imgspinDown.GetWidth(), m_dwPosY);
-		m_imgspinDownFocus.SetPosition((DWORD)m_fMaxTextWidth + 5+dwPosX, m_dwPosY);
-		m_imgspinDown.SetPosition((DWORD)m_fMaxTextWidth + 5+dwPosX, m_dwPosY);
+		m_imgspinUpFocus.SetPosition((int)m_fMaxTextWidth + 5+iPosX+ m_imgspinDown.GetWidth(), m_iPosY);
+		m_imgspinUp.SetPosition((int)m_fMaxTextWidth + 5+iPosX+ m_imgspinDown.GetWidth(), m_iPosY);
+		m_imgspinDownFocus.SetPosition((int)m_fMaxTextWidth + 5+iPosX, m_iPosY);
+		m_imgspinDown.SetPosition((int)m_fMaxTextWidth + 5+iPosX, m_iPosY);
 	}
     else if (( m_dwAlign== XBFONT_LEFT) && (m_pFont))
     {
-        float fTextHeight,fTextWidth;
-		m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
-            
-		m_imgspinUpFocus.SetPosition((DWORD)fTextWidth + 5+dwPosX+ m_imgspinDown.GetWidth(), m_dwPosY);
-		m_imgspinUp.SetPosition((DWORD)fTextWidth + 5+dwPosX+ m_imgspinDown.GetWidth(), m_dwPosY);
-		m_imgspinDownFocus.SetPosition((DWORD)fTextWidth + 5+dwPosX, m_dwPosY);
-		m_imgspinDown.SetPosition((DWORD)fTextWidth + 5+dwPosX, m_dwPosY);
+		m_imgspinUpFocus.SetPosition((int)fTextWidth + 5+iPosX+ m_imgspinDown.GetWidth(), m_iPosY);
+		m_imgspinUp.SetPosition((int)fTextWidth + 5+iPosX+ m_imgspinDown.GetWidth(), m_iPosY);
+		m_imgspinDownFocus.SetPosition((int)fTextWidth + 5+iPosX, m_iPosY);
+		m_imgspinDown.SetPosition((int)fTextWidth + 5+iPosX, m_iPosY);
     }
 
-    if (m_iSelect==SPIN_BUTTON_UP)
+    if (m_iSelect==SPIN_BUTTON_UP && !CanMoveUp())
     {
-        if (m_bReverse)
-        {
-            if ( !CanMoveDown() )
-                m_iSelect=SPIN_BUTTON_DOWN;
-        }
-        else
-        {
-            if ( !CanMoveUp() )
-                m_iSelect=SPIN_BUTTON_DOWN;
-        }
+		m_iSelect=SPIN_BUTTON_DOWN;
     }
 
-    if (m_iSelect==SPIN_BUTTON_DOWN)
+    if (m_iSelect==SPIN_BUTTON_DOWN && !CanMoveDown())
     {
-        if (m_bReverse)
-        {
-            if ( !CanMoveUp() )
-                m_iSelect=SPIN_BUTTON_UP;
-        }
-        else
-        {
-            if ( !CanMoveDown() )
-                m_iSelect=SPIN_BUTTON_UP;
-        }
+        m_iSelect=SPIN_BUTTON_UP;
     }
 
     if ( HasFocus() )
     {
-        bool bShow=CanMoveUp();
-        if (m_bReverse)
-            bShow = CanMoveDown();
-
-        if (m_iSelect==SPIN_BUTTON_UP && bShow )
+        if (m_iSelect==SPIN_BUTTON_UP && CanMoveUp())
             m_imgspinUpFocus.Render();
         else
             m_imgspinUp.Render();
 
-        bShow=CanMoveDown();
-        if (m_bReverse)
-            bShow = CanMoveUp();
-        if (m_iSelect==SPIN_BUTTON_DOWN && bShow)
+        if (m_iSelect==SPIN_BUTTON_DOWN && CanMoveDown())
             m_imgspinDownFocus.Render();
         else
             m_imgspinDown.Render();
@@ -474,22 +429,18 @@ void CGUISpinControl::Render()
     if (m_pFont)
     {
 		float fPosY;
-
 		if (m_dwAlignY==XBFONT_CENTER_Y)
 		{
-			float fWidth,fHeight;
-			m_pFont->GetTextExtent( wszText, &fWidth,&fHeight);
-			fHeight/=2.0f;
 			fPosY = ((float)m_dwHeight)/2.0f;
-			fPosY-=fHeight;
-			fPosY+=(float)m_dwPosY;
+			fPosY-= fTextHeight/2.0f;
+			fPosY+=(float)m_iPosY;
 		}
 		else
 		{
-			fPosY=(float)(m_dwPosY+m_lTextOffsetY);
+			fPosY=(float)(m_iPosY+m_lTextOffsetY);
 		}
 
-		float fPosX = (float)(m_dwPosX+m_lTextOffsetX) -3;
+		float fPosX = (float)(m_iPosX+m_lTextOffsetX) -3;
         if ( HasFocus() )
 		{
             m_pFont->DrawText(fPosX, fPosY, m_dwTextColor,wszText,m_dwAlign);
@@ -498,8 +449,12 @@ void CGUISpinControl::Render()
 		{
 			m_pFont->DrawText(fPosX, fPosY, m_dwDisabledColor,wszText,m_dwAlign);
 		}
+		// set our hit rectangle for MouseOver events
+		if (m_dwAlign & XBFONT_LEFT)
+			m_rectHit.SetRect((int)fPosX, (int)fPosY, (int) fTextWidth, (int) fTextHeight);
+		else
+			m_rectHit.SetRect((int)(fPosX-fTextWidth), (int)fPosY, (int) fTextWidth, (int) fTextHeight);
     }
-
 }
 
 void CGUISpinControl::SetRange(int iStart, int iEnd)
@@ -560,15 +515,15 @@ const WCHAR* CGUISpinControl::GetLabel() const
     return strLabel.c_str();
 }
 
-void CGUISpinControl::SetPosition(DWORD dwPosX, DWORD dwPosY)
+void CGUISpinControl::SetPosition(int iPosX, int iPosY)
 {
-    CGUIControl::SetPosition(dwPosX, dwPosY);
+    CGUIControl::SetPosition(iPosX, iPosY);
 
-    m_imgspinDownFocus.SetPosition(dwPosX, dwPosY);
-    m_imgspinDown.SetPosition(dwPosX, dwPosY);
+    m_imgspinDownFocus.SetPosition(iPosX, iPosY);
+    m_imgspinDown.SetPosition(iPosX, iPosY);
 
-    m_imgspinUp.SetPosition(m_dwPosX + m_imgspinDown.GetWidth(),m_dwPosY);
-    m_imgspinUpFocus.SetPosition(m_dwPosX + m_imgspinDownFocus.GetWidth(),m_dwPosY);
+    m_imgspinUp.SetPosition(m_iPosX + m_imgspinDown.GetWidth(),m_iPosY);
+    m_imgspinUpFocus.SetPosition(m_iPosX + m_imgspinDownFocus.GetWidth(),m_iPosY);
 
 }
 
@@ -583,8 +538,11 @@ void CGUISpinControl::SetFocus(bool bOnOff)
     m_iSelect=SPIN_BUTTON_DOWN;
 }
 
-bool CGUISpinControl::CanMoveUp()
+bool CGUISpinControl::CanMoveUp(bool bTestReverse)
 {
+	// test for reverse...
+	if (bTestReverse && m_bReverse) return CanMoveDown(false);
+
     switch (m_iType)
     {
     case SPIN_CONTROL_TYPE_INT:
@@ -614,8 +572,10 @@ bool CGUISpinControl::CanMoveUp()
     return false;
 }
 
-bool CGUISpinControl::CanMoveDown()
+bool CGUISpinControl::CanMoveDown(bool bTestReverse)
 {
+	// test for reverse...
+	if (bTestReverse && m_bReverse) return CanMoveUp(false);
     switch (m_iType)
     {
     case SPIN_CONTROL_TYPE_INT:
@@ -671,7 +631,6 @@ void CGUISpinControl::PageUp()
 
 }
 
-
 void CGUISpinControl::PageDown()
 {
     switch (m_iType)
@@ -694,12 +653,16 @@ void CGUISpinControl::PageDown()
             return;
         }
         break;
-
     }
 }
 
-void CGUISpinControl::MoveUp()
+void CGUISpinControl::MoveUp(bool bTestReverse)
 {
+	if (bTestReverse && m_bReverse)
+	{	// actually should move down.
+		MoveDown(false);
+		return;
+	}
     switch (m_iType)
     {
       case SPIN_CONTROL_TYPE_INT:
@@ -734,8 +697,13 @@ void CGUISpinControl::MoveUp()
     }
 }
 
-void CGUISpinControl::MoveDown()
+void CGUISpinControl::MoveDown(bool bTestReverse)
 {
+	if (bTestReverse && m_bReverse)
+	{	// actually should move up.
+		MoveUp(false);
+		return;
+	}
     switch (m_iType)
     {
     case SPIN_CONTROL_TYPE_INT:
@@ -839,4 +807,59 @@ void CGUISpinControl::SetBuddyControlID(DWORD dwBuddyControlID)
 {
 	m_dwBuddyControlID = dwBuddyControlID;
 	return;
+}
+
+bool CGUISpinControl::HitTest(int iPosX, int iPosY) const
+{
+	if (m_imgspinUpFocus.HitTest(iPosX, iPosY) || m_imgspinDownFocus.HitTest(iPosX, iPosY))
+		return true;
+	// check if we have the text bit selected...
+	return m_rectHit.PtInRect(iPosX, iPosY);
+}
+
+void CGUISpinControl::OnMouseOver()
+{
+	if (m_imgspinUpFocus.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+	{
+		if (CanMoveUp()) CGUIControl::OnMouseOver();
+		m_iSelect = SPIN_BUTTON_UP;
+	}
+	else if (m_imgspinDownFocus.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+	{
+		if (CanMoveDown()) CGUIControl::OnMouseOver();
+		m_iSelect = SPIN_BUTTON_DOWN;
+	}
+	else
+	{
+		CGUIControl::OnMouseOver();
+		m_iSelect = SPIN_BUTTON_UP;
+	}
+}
+
+void CGUISpinControl::OnMouseClick(DWORD dwButton)
+{	// only left button handled
+	if (dwButton != MOUSE_LEFT_BUTTON) return;
+	if (m_imgspinUpFocus.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+	{
+		MoveUp();
+	}
+	if (m_imgspinDownFocus.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+	{
+		MoveDown();
+	}
+}
+
+void CGUISpinControl::OnMouseWheel()
+{
+	for (int i=0; i<abs(g_Mouse.cWheel); i++)
+	{
+		if (g_Mouse.cWheel > 0)
+		{
+			MoveUp();
+		}
+		else
+		{
+			MoveDown();
+		}
+	}
 }
