@@ -69,25 +69,25 @@
   <string><id>137</id><value>Sök</value></string>
   <string><id>138</id><value>System Information</value></string>
   <string><id>139</id><value>Temperaturer</value></string>
-  <string><id>140</id><value>CPU</value></string>
-  <string><id>141</id><value>GPU</value></string>
-  <string><id>142</id><value>Tid</value></string>
+  <string><id>140</id><value>CPU:</value></string>
+  <string><id>141</id><value>GPU:</value></string>
+  <string><id>142</id><value>Tid:</value></string>
   <string><id>143</id><value>Nuvarande</value></string>
-  <string><id>144</id><value>Bygge/Version</value></string>
-  <string><id>145</id><value>Nätverk</value></string>
-  <string><id>146</id><value>Typ</value></string>
+  <string><id>144</id><value>Version:</value></string>
+  <string><id>145</id><value>Nätverk:</value></string>
+  <string><id>146</id><value>Typ:</value></string>
   <string><id>147</id><value>Statiskt</value></string>
   <string><id>148</id><value>DHCP</value></string>
   <string><id>149</id><value>MAC</value></string>
   <string><id>150</id><value>IP</value></string>
-  <string><id>151</id><value>Status</value></string>
+  <string><id>151</id><value>Status:</value></string>
   <string><id>152</id><value>Halv duplex</value></string>
   <string><id>153</id><value>Full duplex</value></string>
-  <string><id>154</id><value>Utrymme</value></string>
-  <string><id>155</id><value>Disk</value></string>
+  <string><id>154</id><value>Utrymme:</value></string>
+  <string><id>155</id><value>Disk:</value></string>
   <string><id>156</id><value>Ledigt</value></string>
-  <string><id>157</id><value>Video</value></string>
-  <string><id>158</id><value>Ledigt minne</value></string>
+  <string><id>157</id><value>Video:</value></string>
+  <string><id>158</id><value>Ledigt minne:</value></string>
   <string><id>159</id><value>Inget nätverk</value></string>
   <string><id>160</id><value>Ledigt</value></string>
   <string><id>161</id><value>Ej tillgänglig</value></string>
@@ -616,7 +616,7 @@
   <string><id>13203</id><value>Profile '%s' laddades ok!</value></string>
   <string><id>13204</id><value>Senast laddade profil</value></string>
   <string><id>13205</id><value>Okänd</value></string>
-  <string><id>13300</id><value>Fläktfart</value></string>
+  <string><id>13300</id><value>Fläktfart:</value></string>
   <string><id>13301</id><value>Automatisk temp. kontroll</value></string>
   <string><id>13302</id><value>Fläktfart</value></string>
   <string><id>13303</id><value>Skal Fonter</value></string>
