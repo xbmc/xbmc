@@ -282,6 +282,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res)
 		}
 		if (m_pd3dDevice)
     {
+      Sleep(500);
 			m_pd3dDevice->Reset(m_pd3dParams);
     }
   }
