@@ -588,18 +588,58 @@ VOID CIoSupport::IdexWritePortUchar(USHORT port, UCHAR data)
 	}
 }
 
+UCHAR CIoSupport::IdexReadPortUchar(USHORT port) 
+{
+  UCHAR rval;
+  _asm 
+  { 
+    mov dx,   port 
+    in  al,   dx 
+    mov rval, al 
+  }
+  return rval;
+}
+
 VOID CIoSupport::SpindownHarddisk()
 {
 #ifdef _XBOX
-	#define IDE_DEVICE_SELECT_REGISTER	0x01F6
-	#define IDE_COMMAND_REGISTER		0x01F7
-	#define IDE_COMMAND_STANDBY			0xE0
+  #define IDE_ERROR_REGISTER          0x01F1
+  #define IDE_SECTOR_COUNT_REGISTER   0x01F2
+  #define IDE_DEVICE_SELECT_REGISTER  0x01F6
+  #define IDE_COMMAND_REGISTER        0x01F7
+  #define IDE_STATUS_REGISTER         IDE_COMMAND_REGISTER
+  #define IDE_COMMAND_POWERMODE1      0xE5
+  #define IDE_STATUS_DRIVE_BUSY       0x80
+  #define IDE_STATUS_DRIVE_READY      0x40
+  #define IDE_STATUS_DRIVE_ERROR      0x01
+  #define IDE_COMMAND_STANDBY         0xE0
+  #define IDE_POWERSTATE_ACTIVE       0xFF
+  #define IDE_POWERSTATE_STANDBY      0x00 // 0x80=idle
 
-	Sleep(2000);
-	KIRQL oldIrql = KeRaiseIrqlToDpcLevel();
-	IdexWritePortUchar(IDE_DEVICE_SELECT_REGISTER, 0xA0 );
-	IdexWritePortUchar(IDE_COMMAND_REGISTER, IDE_COMMAND_STANDBY);
-	KeLowerIrql(oldIrql);
+  int  status;
+  int  iPowerCode = IDE_POWERSTATE_ACTIVE; //assume active mode
+  //Sleep(2000);
+  KIRQL oldIrql = KeRaiseIrqlToDpcLevel();
+  IdexWritePortUchar(IDE_DEVICE_SELECT_REGISTER, 0xA0 );
+  //Ask drive for powerstate
+  IdexWritePortUchar(IDE_COMMAND_REGISTER, IDE_COMMAND_POWERMODE1);
+  //Get status of the command
+  status = IdexReadPortUchar(IDE_STATUS_REGISTER);
+  int i = 0;
+  while ( (i < 20) && ((status & IDE_STATUS_DRIVE_BUSY) == IDE_STATUS_DRIVE_BUSY) ) {
+    //wait for drive to process the command
+    Sleep(1);
+    status = IdexReadPortUchar(IDE_STATUS_REGISTER); 
+    i++;
+  };
+  if ( (i < 20) && (!(status & IDE_STATUS_DRIVE_ERROR)) ) {
+    iPowerCode = IdexReadPortUchar(IDE_SECTOR_COUNT_REGISTER);
+    if (iPowerCode != IDE_POWERSTATE_STANDBY) {
+      IdexWritePortUchar(IDE_DEVICE_SELECT_REGISTER, 0xA0 );
+      IdexWritePortUchar(IDE_COMMAND_REGISTER, IDE_COMMAND_STANDBY);
+    }
+  }
+  KeLowerIrql(oldIrql);
 #endif
 }
 
