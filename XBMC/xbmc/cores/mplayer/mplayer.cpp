@@ -18,7 +18,7 @@ void						(__cdecl* pVODrawText)(int dxs,int dys,void (*draw_alpha)(int x0,int y
 void						(__cdecl* pAspectSaveScreenres)(int scrw, int scrh);
 void						(__cdecl* pAspectSavePrescale)(int scrw, int scrh);
 void						(__cdecl* pAspectSaveOrig)(int scrw, int scrh);
-void						(__cdecl* pAspect)(int*, int*, int);
+void						(__cdecl* pAspect)(unsigned int*, unsigned int*, int);
 void						(__cdecl* pVODrawAlphayv12)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
 void						(__cdecl* pVODrawAlphayuy2)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
 void						(__cdecl* pVODrawAlphargb24)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
@@ -28,9 +28,21 @@ void						(__cdecl* pVODrawAlphargb16)(int w,int h, unsigned char* src, unsigned
 __int64					(__cdecl* pGetPTS)();
 BOOL						(__cdecl* pHasVideo)();
 BOOL						(__cdecl* pHasAudio)();
+void						(__cdecl* pyv12toyuy2)(const unsigned char *ysrc, const unsigned char *usrc, const unsigned char *vsrc, unsigned char *dst,unsigned int width, unsigned int height,int lumStride, int chromStride, int dstStride);
+int							(__cdecl* pImageOutput)(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst, unsigned int dst_stride,int csp,int interlaced);
+void						(__cdecl* pInitColorConversions)();
 
 extern "C" 
 {
+	void init_color_conversions()
+	{
+		pInitColorConversions();
+	}
+	int image_output(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst, unsigned int dst_stride,int csp,int interlaced)
+	{
+		return pImageOutput(image, width,height,edged_width, dst, dst_stride,csp,interlaced);
+	}
+
 
 	BOOL		mplayer_HasVideo()
 	{
@@ -42,6 +54,10 @@ extern "C"
 		return pHasAudio();
 	}
 
+	void yv12toyuy2(const unsigned char *ysrc, const unsigned char *usrc, const unsigned char *vsrc, unsigned char *dst,unsigned int width, unsigned int height,int lumStride, int chromStride, int dstStride)
+	{
+		pyv12toyuy2(ysrc, usrc, vsrc, dst,width, height,lumStride, chromStride, dstStride);
+	}
 
 	void mplayer_put_key(int code)
 	{
@@ -110,7 +126,7 @@ extern "C"
 	{
 		pAspectSaveOrig(orgw,orgh);
 	}
-	void aspect(int *srcw, int *srch, int zoom)
+	void aspect(unsigned int *srcw, unsigned int *srch, int zoom)
 	{
 		pAspect(srcw,srch,zoom);
 	}
@@ -179,7 +195,7 @@ void mplayer_load_dll(DllLoader& dll)
 	pAspectSaveOrig=(void (__cdecl*)(int scrw, int scrh))pProc;
 
 	dll.ResolveExport("aspect", &pProc);
-	pAspect=(void (__cdecl*)(int*,int*, int ))pProc;
+	pAspect=(void (__cdecl*)(unsigned int*,unsigned int*, int ))pProc;
 
 	dll.ResolveExport("vo_draw_alpha_yv12", &pProc);
 	pVODrawAlphayv12=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
@@ -208,8 +224,17 @@ void mplayer_load_dll(DllLoader& dll)
 	dll.ResolveExport("mplayer_HasAudio", &pProc);
 	pHasAudio=(BOOL (__cdecl*)())pProc;
 
-	
+	dll.ResolveExport("yv12toyuy2_C", &pProc);
+	pyv12toyuy2= (void (__cdecl*)(const unsigned char *ysrc, const unsigned char *usrc, const unsigned char *vsrc, unsigned char *dst,unsigned int width, unsigned int height,int lumStride, int chromStride, int dstStride))pProc;
+
+	dll.ResolveExport("image_output", &pProc);
+	pImageOutput=(int (__cdecl*)(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst, unsigned int dst_stride,int csp,int interlaced))pProc;
+
+	dll.ResolveExport("init_color_conversions", &pProc);
+	pInitColorConversions=(void(__cdecl*)())pProc;
+
 	pSetVideoFunctions(&video_functions);
 	pSetAudioFunctions(&audio_functions);
+	init_color_conversions();
 }
 };

@@ -159,6 +159,12 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
 void CGUIWindow::AllocResources()
 {
+	RECT rc;
+	rc.top    = 0;
+	rc.left   = 0;
+	rc.right	= 0;
+	rc.bottom = 0;
+	g_graphicsContext.SetViewWindow(rc);
 
   ivecControls i;
   for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
