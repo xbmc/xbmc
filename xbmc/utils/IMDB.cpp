@@ -126,7 +126,7 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 			if (pendAHREF)
 			{
 				char* pYear=pendAHREF+4;
-				char* pendYear = strstr(pYear, ")<");
+				char* pendYear = strstr(pYear, "<");
 				*pendAHREF	=0;
 				pAHREF+=strlen("<a href=.");
 				// get url
