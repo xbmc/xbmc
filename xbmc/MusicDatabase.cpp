@@ -298,6 +298,7 @@ void CMusicDatabase::AddSong(const CSong& song1, bool bCheck)
 		if (m_iSongsBeforeCommit++ > NUM_SONGS_BEFORE_COMMIT)
 		{
 			CommitTransaction();
+			BeginTransaction();
 		}
 	}
 	catch(...)
@@ -1492,7 +1493,7 @@ bool CMusicDatabase::CommitTransaction()
     CLog::Log(LOGERROR, "musicdatabase:committransaction failed");
 		return false;
 	}
-	m_iSongsBeforeCommit = 0;
+	m_iSongsBeforeCommit=0;
 	return true;
 }
 
