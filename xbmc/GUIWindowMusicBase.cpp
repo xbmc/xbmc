@@ -155,6 +155,8 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			CSectionLoader::Load("LIBID3");
 
 			m_database.Open();
+			//	Keep database in transaction mode to increase speed
+			m_database.BeginTransaction();
 
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
 
@@ -845,18 +847,10 @@ bool CGUIWindowMusicBase::DoSearch(const CStdString strDir,const CStdString& str
 
 void CGUIWindowMusicBase::OnSearch()
 {
-	CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(1000);
-	pKeyboard->Reset();
-	WCHAR wsFile[1024];
-	wcscpy(wsFile,L"");
-	pKeyboard->SetText(wsFile);
-	pKeyboard->DoModal(GetID());
-	if (!pKeyboard->IsConfirmed()) return;
-	
 	CStdString strSearch;
-	const WCHAR* pSearchString=pKeyboard->GetText();
-	CUtil::Unicode2Ansi(pSearchString,strSearch);
-	
+	if ( GetKeyboard(strSearch) )
+		return;
+
 	strSearch.ToLower();
 	m_dlgProgress->SetHeading(194);
 	
@@ -897,4 +891,24 @@ void CGUIWindowMusicBase::OnSearch()
 		dlg->SetLine( 2, L"" );
 		dlg->DoModal( GetID() );
 	}
+}
+
+//	strInput will be set as defaultstring in keyboard
+bool CGUIWindowMusicBase::GetKeyboard(CStdString& strInput)
+{
+	CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(1000);
+	pKeyboard->Reset();
+	WCHAR wsString[1024];
+  swprintf( wsString,L"%S", strInput.c_str() );
+	pKeyboard->SetText(wsString);
+	pKeyboard->DoModal(m_gWindowManager.GetActiveWindow());
+	if (pKeyboard->IsConfirmed())
+	{
+		const WCHAR* pSearchString=pKeyboard->GetText();
+		CUtil::Unicode2Ansi(pSearchString,strInput);
+	}
+	else
+		return false;
+
+	return true;
 }

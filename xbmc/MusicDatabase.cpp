@@ -779,3 +779,27 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, VECSONGS& songs)
 
 	return true;
 }
+
+void CMusicDatabase::BeginTransaction()
+{
+	if (NULL!=m_pDB.get())
+		m_pDB->start_transaction();
+}
+
+void CMusicDatabase::CommitTransaction()
+{
+	if (NULL!=m_pDB.get())
+		m_pDB->commit_transaction();
+}
+
+void CMusicDatabase::RollbackTransaction()
+{
+	if (NULL!=m_pDB.get())
+		m_pDB->rollback_transaction();
+}
+
+bool CMusicDatabase::InTransaction()
+{
+	if (NULL!=m_pDB.get()) return false;
+	return m_pDB->in_transaction();
+}

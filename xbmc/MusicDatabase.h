@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include "MusicDatabaseReorg.h"
+#include "FileSystem/cddb.h"
 using namespace std;
 
 class CSong
@@ -66,6 +67,10 @@ public:
 	void    Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
 	bool		GetTop100(VECSONGS& songs);
 	bool		IncrTop100CounterByFileName(const CStdString& strFileName1);
+	void		BeginTransaction();
+	void		CommitTransaction();
+	void		RollbackTransaction();
+	bool		InTransaction();
 protected:
   auto_ptr<SqliteDatabase> m_pDB;
 	auto_ptr<Dataset>				 m_pDS;
