@@ -47,10 +47,14 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_DEINIT:
 		{
 			if (m_pVisualisation)
+			{
+				m_pVisualisation->Stop();
 				delete m_pVisualisation;
+			}
 			m_pVisualisation=NULL;
 			if (g_application.m_pPlayer)
 				g_application.m_pPlayer->UnRegisterAudioCallback();
+			m_bInitialized=false;
 		}
 		break;
 
@@ -61,11 +65,13 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 			CStdString strVisz;
 			strVisz.Format("Q:\\visualisations\\%s", g_stSettings.szDefaultVisualisation);
 			m_pVisualisation=factory.LoadVisualisation(strVisz.c_str());
-			if (!m_pVisualisation) return;
-			m_pVisualisation->Create();
-			OnInitialize(2, 44100, 16);
-			if (g_application.m_pPlayer)
-				g_application.m_pPlayer->RegisterAudioCallback(this);
+			if (m_pVisualisation) 
+			{
+				m_pVisualisation->Create();
+				OnInitialize(2, 44100, 16);
+				if (g_application.m_pPlayer)
+					g_application.m_pPlayer->RegisterAudioCallback(this);
+			}
 		}
 	}
 	return CGUIWindow::OnMessage(message);
