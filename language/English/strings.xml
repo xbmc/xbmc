@@ -1606,6 +1606,30 @@
     <id>485</id>
     <value>Delete album</value>
   </string>
+  <string>
+    <id>486</id>
+    <value>Repeat</value>
+  </string>
+  <string>
+    <id>487</id>
+    <value>Repeat One</value>
+  </string>
+  <string>
+    <id>488</id>
+    <value>Repeat folder playlist</value>
+  </string>
+  <string>
+    <id>489</id>
+    <value>Use playlist in songs</value>
+  </string>
+  <string>
+    <id>490</id>
+    <value>Auto switch list and icons in songs</value>
+  </string>
+  <string>
+    <id>491</id>
+    <value>Use big icons</value>
+  </string>
 
 <string><id>10000</id><value>Home</value></string>
 <string><id>10001</id><value>My Programs</value></string>

@@ -146,7 +146,10 @@ CGUIWindowMusicSongs::CGUIWindowMusicSongs(void)
 {
 	m_strDirectory="?";
 	m_bScan=false;
+	m_iViewAsIcons=-1;
+	m_iViewAsIconsRoot=-1;
 }
+
 CGUIWindowMusicSongs::~CGUIWindowMusicSongs(void)
 {
 
@@ -186,8 +189,11 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 					m_strDirectory.Empty();
 			}
 
-			m_iViewAsIcons=g_stSettings.m_iMyMusicSongsViewAsIcons;
-			m_iViewAsIconsRoot=g_stSettings.m_iMyMusicSongsRootViewAsIcons;
+			if (m_iViewAsIcons==-1 && m_iViewAsIconsRoot==-1)
+			{
+				m_iViewAsIcons=g_stSettings.m_iMyMusicSongsViewAsIcons;
+				m_iViewAsIconsRoot=g_stSettings.m_iMyMusicSongsRootViewAsIcons;
+			}
 
 			CGUIWindowMusicBase::OnMessage(message);
 
@@ -728,6 +734,7 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 				return;
 		}
 		Update(strPath);
+		AutoSwitchControlThumbList();
 	}
 	else
 	{
@@ -737,39 +744,46 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 		}
 		else
 		{
-			//play and add current directory to temporary playlist
-			int nFolderCount=0;
-			g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC_TEMP ).Clear();
-			g_playlistPlayer.Reset();
-			int iNoSongs=0;
-			for ( int i = 0; i < (int) m_vecItems.size(); i++ ) 
+			if (g_stSettings.m_bMyMusicSongsUsePlaylist)
 			{
-				CFileItem* pItem = m_vecItems[i];
-				if ( pItem->m_bIsFolder ) 
+				//play and add current directory to temporary playlist
+				int nFolderCount=0;
+				g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC_TEMP ).Clear();
+				g_playlistPlayer.Reset();
+				int iNoSongs=0;
+				for ( int i = 0; i < (int) m_vecItems.size(); i++ ) 
 				{
-					nFolderCount++;
-					continue;
+					CFileItem* pItem = m_vecItems[i];
+					if ( pItem->m_bIsFolder ) 
+					{
+						nFolderCount++;
+						continue;
+					}
+					if (!CUtil::IsPlayList(pItem->m_strPath))
+					{
+						CPlayList::CPlayListItem playlistItem ;
+						playlistItem.SetFileName(pItem->m_strPath);
+						playlistItem.SetDescription(pItem->GetLabel());
+						playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+						g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
+					}
+					else if (i<=iItem)
+						iNoSongs++;
 				}
-        if (!CUtil::IsPlayList(pItem->m_strPath))
-        {
-				  CPlayList::CPlayListItem playlistItem ;
-				  playlistItem.SetFileName(pItem->m_strPath);
-				  playlistItem.SetDescription(pItem->GetLabel());
-				  playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
-				  g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
-        }
-				else if (i<=iItem)
-					iNoSongs++;
+
+				//	Save current window and directory to know where the selected item was
+				m_nTempPlayListWindow=GetID();
+				m_strTempPlayListDirectory=m_strDirectory;
+				if (CUtil::HasSlashAtEnd(m_strTempPlayListDirectory))
+					m_strTempPlayListDirectory.Delete(m_strTempPlayListDirectory.size()-1);
+
+				g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
+				g_playlistPlayer.Play(iItem-nFolderCount-iNoSongs);
 			}
-
-			//	Save current window and directory to know where the selected item was
-			m_nTempPlayListWindow=GetID();
-			m_strTempPlayListDirectory=m_strDirectory;
-			if (CUtil::HasSlashAtEnd(m_strTempPlayListDirectory))
-				m_strTempPlayListDirectory.Delete(m_strTempPlayListDirectory.size()-1);
-
-			g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
-			g_playlistPlayer.Play(iItem-nFolderCount-iNoSongs);
+			else
+			{
+				g_application.PlayFile(strPath);
+			}
 		}
 	}
 }
@@ -1119,6 +1133,51 @@ void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch,VECFILEITEMS& it
 			CFileItem* pItem=new CFileItem(song);
 			pItem->SetLabel("[" + strSong + "] " + song.strTitle + " - " + song.strArtist + " - " + song.strAlbum);
 			items.push_back(pItem);
+		}
+	}
+}
+
+void CGUIWindowMusicSongs::AutoSwitchControlThumbList()
+{
+	if (!m_strDirectory.IsEmpty() && g_stSettings.m_bMyMusicSongsAutoSwitchThumbsList)
+	{
+		if (CUtil::GetFolderCount(m_vecItems)==m_vecItems.size())
+		{
+			bool bAlbums=false;
+			for (int i=0; i<(int)m_vecItems.size(); i++)
+			{
+				CFileItem* pItem=m_vecItems[i];
+				if (pItem->GetThumbnailImage()!="defaultFolderBig.jpg" && pItem->GetThumbnailImage()!="defaultFolderBackBig.jpg")
+				{
+					bAlbums=true;
+					break;
+				}
+			}
+			if (bAlbums)
+			{
+				if (g_stSettings.m_bMyMusicSongsAutoSwitchBigThumbs)
+					m_iViewAsIcons=VIEW_AS_LARGEICONS;
+				else
+					m_iViewAsIcons=VIEW_AS_ICONS;
+
+				ShowThumbPanel();
+				UpdateButtons();
+				SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+			}
+			else
+			{
+				m_iViewAsIcons=VIEW_AS_LIST;
+				ShowThumbPanel();
+				UpdateButtons();
+				SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+			}
+		}
+		else
+		{
+			m_iViewAsIcons=VIEW_AS_LIST;
+			ShowThumbPanel();
+			UpdateButtons();
+			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
 		}
 	}
 }
