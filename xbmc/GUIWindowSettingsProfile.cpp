@@ -4,7 +4,6 @@
 #include "Profile.h"
 #include "Settings.h"
 #include "../guilib/GUIListItem.h"
-#include "keyboard/virtualkeyboard.h"
 #include "util.h"
 #include "application.h"
 
@@ -208,23 +207,21 @@ void CGUIWindowSettingsProfile::LoadList()
 
 bool CGUIWindowSettingsProfile::GetKeyboard(CStdString& strInput)
 {
-	CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(WINDOW_VIRTUAL_KEYBOARD);
-  if (!pKeyboard) return false;
-	pKeyboard->Reset();
-	WCHAR wsString[1024];
-  swprintf( wsString,L"%S", strInput.c_str() );
-	pKeyboard->SetText(wsString);
+	CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+	if (!pKeyboard) return false;
+	// setup keyboard
+	pKeyboard->CenterWindow();
+	pKeyboard->SetText(strInput);
 	pKeyboard->DoModal(m_gWindowManager.GetActiveWindow());
-	if (pKeyboard->IsConfirmed())
-	{
-		const WCHAR* pSearchString=pKeyboard->GetText();
-		CUtil::Unicode2Ansi(pSearchString,strInput);
+	pKeyboard->Close();	
+
+	if (pKeyboard->IsDirty())
+	{	// have text - update this.
+		strInput = pKeyboard->GetText();
 		if (strInput.IsEmpty())
 			return false;
-
 		return true;
 	}
-
 	return false;
 }
 
