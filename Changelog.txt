@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-03-2005 changed: Removed GetPTS and unified what m_pPlayer->GetTime returns. It now always returns time in milliseconds.
   - 11-03-2005 fixed: dialogs sometimes didn't popup via ActivateWindow() in <execute> tags.
   - 11-03-2005 fixed: ButtonMenu wasn't rendered if no label control was present.
   - 11-03-2005 fixed: mplayer wasn't freed after a playlist had ended.

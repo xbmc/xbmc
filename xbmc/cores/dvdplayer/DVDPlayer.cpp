@@ -539,11 +539,6 @@ bool CDVDPlayer::IsPaused() const
 	return (m_iSpeed == 0);
 }
 
-__int64	CDVDPlayer::GetPTS()
-{
-	return (GetTime() * 10); // kind of a hack, need to remove getpts everywhere in xbmc and replace it with Gettime()
-}
-
 bool CDVDPlayer::HasVideo()
 {
 	if (m_pInputStream)
@@ -863,8 +858,7 @@ __int64 CDVDPlayer::GetTime()
     return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime(); // we should take our buffers into account
   }
   
-  return (m_clock.GetClock() / DVD_TIME_BASE);
-	return 0;		
+  return (m_clock.GetClock() / (DVD_TIME_BASE/1000));
 }
 
 int CDVDPlayer::GetTotalTime()

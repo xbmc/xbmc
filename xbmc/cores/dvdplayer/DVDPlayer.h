@@ -53,7 +53,6 @@ public:
   virtual bool		HasAudio();
   virtual void		ToggleOSD() { }; // empty
   virtual void		SwitchToNextLanguage();
-  virtual __int64	GetPTS();
   virtual void		ToggleSubtitles();
   virtual void		ToggleFrameDrop();
   virtual void		SubtitleOffset(bool bPlus=true);
