@@ -79,6 +79,7 @@ private:
   DWORD m_dwNumPackets;
   PBYTE m_pbSampleData[64];
   DWORD* m_adwStatus;
+  DWORD m_dwTotalBytesAdded;
   bool m_bPause;
   bool m_bMute;
   bool m_bIsAllocated;

@@ -227,7 +227,7 @@ void audio_uninit(int immed)
 // stop playing and empty buffers (for seeking/pause)
 static void audio_reset()
 {
-  //  m_pAudioDecoder->Stop();
+  m_pAudioDecoder->Stop();
 }
 
 //******************************************************************************************
