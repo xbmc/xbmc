@@ -42,7 +42,8 @@ namespace XFILE
 	  virtual void					Close()=0;
 	  virtual __int64			  GetPosition()=0;
 	  virtual __int64			  GetLength()=0;
-	  virtual bool          CanSeek() {return true;}
+	  virtual bool          CanSeek() { return true; }
+	  virtual char          GetDirectorySeperator() { return '\\'; }
 	  
 	  virtual bool          Delete(const char* strFileName) { return false; }
     virtual bool          Rename(const char* strFileName, const char* strNewFileName) { return false; }
