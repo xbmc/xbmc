@@ -204,14 +204,16 @@ HRESULT CApplication::Initialize()
   }
 
   // initialize network
-  CLog::Log("initialize network ip:%s netmask:%s gateway:%s",
+  CLog::Log("initialize network ip:[%s] netmask:[%s] gateway:[%s] nameserver:[%s]",
                     g_stSettings.m_strLocalIPAdres,
                     g_stSettings.m_strLocalNetmask,
-                    g_stSettings.m_strGateway );
+                    g_stSettings.m_strGateway,
+                    g_stSettings.m_strNameServer);
 
   if ( CUtil::InitializeNetwork(g_stSettings.m_strLocalIPAdres,
                             g_stSettings.m_strLocalNetmask,
-                            g_stSettings.m_strGateway ) )
+                            g_stSettings.m_strGateway,
+                            g_stSettings.m_strNameServer) )
   {
       CLog::Log("start timeserver thread");
 			m_sntpClient.Create(); 
