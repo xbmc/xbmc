@@ -195,3 +195,36 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	smb.PurgeEx(CURL(strPath));
 	return true;
 }
+
+bool CSMBDirectory::Create(const char* strPath)
+{
+  smb.Init();
+  smb.Lock();
+  int result = smbc_mkdir(strPath, 0);
+  smb.Unlock();
+  return (result == 0 || EEXIST == result);
+}
+
+bool CSMBDirectory::Remove(const char* strPath)
+{
+  smb.Init();
+  smb.Lock();
+  int result = smbc_rmdir(strPath);
+  smb.Unlock();
+  return (result == 0);
+}
+
+bool CSMBDirectory::Exists(const char* strPath)
+{
+  smb.Init();
+  smb.Lock();
+
+  SMB_STRUCT_STAT info;
+  if (smbc_stat(strPath, &info) == 0)
+  {
+    smb.Unlock();
+    return false;
+  }
+  smb.Unlock();
+  return (info.st_mode & S_IFDIR) ? true : false;
+}

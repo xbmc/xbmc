@@ -6,7 +6,7 @@ using namespace DIRECTORY;
 namespace DIRECTORY
 {
   class CISO9660Directory :
-    public CDirectory
+    public IDirectory
   {
   public:
     CISO9660Directory(void);

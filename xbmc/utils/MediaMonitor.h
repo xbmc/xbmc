@@ -73,7 +73,7 @@ private:
 	void Process();
 	void InitializeObserver();
 	void Scan(bool bUpdateAllMovies=false);
-	void Scan(DIRECTORY::CDirectory& directory, CStdString& aPath, MOVIELIST& movies);
+	void Scan(DIRECTORY::IDirectory& directory, CStdString& aPath, MOVIELIST& movies);
 	void GetSharedMovies(VECSHARES& vecShares, MOVIELIST& movies);
 	void FilterDuplicates(MOVIELIST& movies);
 

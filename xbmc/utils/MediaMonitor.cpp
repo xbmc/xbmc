@@ -450,7 +450,7 @@ void CMediaMonitor::InitializeObserver()
 }
 
 
-void CMediaMonitor::Scan(DIRECTORY::CDirectory& directory, CStdString& aPath, MOVIELIST& movies)
+void CMediaMonitor::Scan(DIRECTORY::IDirectory& directory, CStdString& aPath, MOVIELIST& movies)
 {
 	// dispatch any pending commands first before scanning this directory!
 	DispatchNextCommand();

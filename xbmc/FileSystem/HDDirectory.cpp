@@ -18,8 +18,7 @@ CHDDirectory::~CHDDirectory(void)
 {
 }
 
-
-bool  CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
+bool CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 {
 	WIN32_FIND_DATA wfd;
 
@@ -93,4 +92,27 @@ bool  CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
   g_directoryCache.SetDirectory(strPath,vecCacheItems);
 
   return true;
+}
+
+bool CHDDirectory::Create(const char* strPath)
+{
+  return ::CreateDirectory(strPath, NULL) ? true : false;
+}
+
+bool CHDDirectory::Remove(const char* strPath)
+{
+  return ::RemoveDirectory(strPath) ? true : false;
+}
+
+bool CHDDirectory::Exists(const char* strPath)
+{
+	WIN32_FIND_DATA	findData;
+	DWORD dwFileAttributes;
+	
+  HANDLE file = FindFirstFile(strPath, &findData);
+	dwFileAttributes = findData.dwFileAttributes;
+	FindClose(file);
+	
+	if (dwFileAttributes == FILE_ATTRIBUTE_DIRECTORY) return true;
+	return false;
 }

@@ -37,13 +37,17 @@ namespace XFILE
 	  unsigned int	Read(void* lpBuf, __int64 uiBufSize);
 		int						Write(const void* lpBuf, __int64 uiBufSize);
 	  bool					Open(const char* strFileName, bool bBinary=true);
+	  bool          Cache(const char* strFileName, const char* szDest, XFILE::IFileCallback* pCallback, void* pContext);
 	  bool					Exists(const char* strFileName);
-		int		Stat(const char* strFileName, struct __stat64* buffer);
-		bool					Cache(const char* strFileName, const char* szDest, XFILE::IFileCallback* pCallback, void* pContext);
+		int           Stat(const char* strFileName, struct __stat64* buffer);
 	  bool					ReadString(char *szLine, int iLineLength);
 	  __int64			  Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
 	  void					Close();
-	  	
+	  
+    bool          OpenForWrite(const char* strFileName, bool bBinary=true);
+    static bool   Delete(const char* strFileName);
+    static bool   Rename(const char* strFileName, const char* strNewFileName);
+	  
 	  __int64			  GetPosition();
 	  __int64			  GetLength();
   	

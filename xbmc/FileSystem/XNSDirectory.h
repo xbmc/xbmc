@@ -5,7 +5,7 @@ using namespace DIRECTORY;
 namespace DIRECTORY
 {
   class CXNSDirectory :
-    public CDirectory
+    public IDirectory
   {
   public:
     CXNSDirectory(void);

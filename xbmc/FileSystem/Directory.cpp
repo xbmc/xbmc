@@ -5,49 +5,54 @@
 
 using namespace DIRECTORY;
 
-CDirectory::CDirectory(void)
-{
-	m_strFileMask="";
-}
-
-CDirectory::~CDirectory(void)
+CDirectory::CDirectory()
 {
 }
 
-/*!
-	\brief Test a file for an extension specified with SetMask().
-	\param strFile File to test
-	\return Returns \e true, if file is allowed.
-	*/
-bool	CDirectory::IsAllowed(const CStdString& strFile)
+CDirectory::~CDirectory()
 {
-	CStdString strExtension;
-	if ( !m_strFileMask.size() ) return true;
-	if ( !strFile.size() ) return true;
-
-	CUtil::GetExtension(strFile,strExtension);
-	// if (!strExtension.size()) return true;
-	if (!strExtension.size()) return false;
-  CUtil::Lower(strExtension);
-	if ( m_strFileMask.Find(strExtension.c_str() )>=0 )
-	{
-		return true;
-	}
-	return false;
 }
 
-/*!
-	\brief Set a mask of extensions for the files in the directory.
-	\param strMask Mask of file extensions that are allowed.
-
-	The mask has to look like the following: \n
-	\verbatim
-	.m4a|.flac|.aac|
-	\endverbatim
-	So only *.m4a, *.flac, *.aac files will be retrieved with GetDirectory().
-	*/
-void  CDirectory::SetMask(const CStdString& strMask)
+bool CDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 {
-	m_strFileMask=strMask;
-  CUtil::Lower(m_strFileMask);
+  bool bSucces;
+  IDirectory* pDirectory = CFactoryDirectory().Create(strPath);
+  if (!pDirectory) return false;
+  
+  bSucces = pDirectory->GetDirectory(strPath, items);
+  delete pDirectory;
+  return bSucces;
+}
+
+bool CDirectory::Create(const char* strPath)
+{
+  bool bResult;
+  IDirectory* pDirectory = CFactoryDirectory().Create(strPath);
+  if (!pDirectory) return false;
+  
+  bResult = pDirectory->Create(strPath);
+  delete pDirectory;
+  return bResult;
+}
+
+bool CDirectory::Exists(const char* strPath)
+{
+  bool bResult;
+  IDirectory* pDirectory = CFactoryDirectory().Create(strPath);
+  if (!pDirectory) return false;
+  
+  bResult = pDirectory->Exists(strPath);
+  delete pDirectory;
+  return bResult;
+}
+
+bool CDirectory::Remove(const char* strPath)
+{
+  bool bResult;
+  IDirectory* pDirectory = CFactoryDirectory().Create(strPath);
+  if (!pDirectory) return false;
+  
+  bResult = pDirectory->Remove(strPath);
+  delete pDirectory;
+  return bResult;
 }
