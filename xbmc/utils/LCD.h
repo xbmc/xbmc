@@ -1,15 +1,19 @@
 #pragma once
 #include "stdstring.h"
+#include "thread.h"
+#include "../utils/event.h"
 using namespace std;
 
-class CLCD
+class CLCD : public CThread
 {
 public:
   CLCD();
   virtual ~CLCD(void);
   static void Initialize();
   static void SetLine(int iLine, const CStdString& strLine);
+
 protected:
+	virtual void		Process();
   void    DisplayProgressBar(unsigned char percent, unsigned char charcnt);
   void    DisplayClearChars(unsigned char startpos , unsigned char line, unsigned char lenght) ;
   void    DisplayWriteString(char *pointer) ;
@@ -24,6 +28,9 @@ protected:
   unsigned int m_iRow3adr ;
   unsigned int m_iRow4adr ;
   unsigned int m_iActualpos;				// actual cursor possition
+  bool         m_bUpdate[4];
+  CStdString   m_strLine[4];
+  CEvent       m_event;
 
 };
 extern CLCD g_lcd;

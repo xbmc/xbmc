@@ -935,12 +935,15 @@ void CApplication::Stop()
 		m_pPlayer=NULL;
 	}
 
+  //g_lcd.StopThread();
   CLog::Log("stop python");
 	g_applicationMessenger.Cleanup();
 	m_pythonParser.FreeResources();
   
   CLog::Log("stop dvd detect media");
 	m_DetectDVDType.StopThread();
+
+  //g_lcd.StopThread();
   
   CLog::Log("stop time server");
 	m_sntpClient.StopThread();
