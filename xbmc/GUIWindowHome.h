@@ -8,6 +8,7 @@ public:
   CGUIWindowHome(void);
   virtual ~CGUIWindowHome(void);
   virtual bool    OnMessage(CGUIMessage& message);
+  virtual void	  OnAction(const CAction &action);
   virtual void    Render();
 
 protected:

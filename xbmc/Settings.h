@@ -69,8 +69,8 @@ public:
 	  bool			m_bMyProgramsFlatten;
 	  bool			m_bMyProgramsDefaultXBE;
 		
-    char	    szThumbnailsDirectory[1024];
-    char      szDashboard[1024];
+    char      szThumbnailsDirectory[1024];
+	char      szDashboard[1024];
     int       m_iStartupWindow;
     
 
@@ -90,6 +90,7 @@ public:
 		char      m_szMyVideoExtensions[256];
     char      m_szShortcutDirectory[256];
 		char      m_szAlbumDirectory[256];
+		char	  m_szScreenshotsDirectory[256];
 
 	  bool			m_bMyFilesSourceViewAsIcons;
 	  bool			m_bMyFilesSourceRootViewAsIcons;

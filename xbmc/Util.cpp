@@ -2054,3 +2054,67 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 		}
   }
 }
+
+CStdString CUtil::GetNextFilename(const char* fn_template, int max)
+{	
+	// Open the file.	
+	char szName[1024];
+
+	INT i;
+
+	WIN32_FIND_DATA wfd;
+	HANDLE hFind;	
+
+	if (NULL != strstr(fn_template, "%d"))
+	{
+		for(i = 0; i <= max; i++)
+		{
+			wsprintf(szName, fn_template, i);
+			
+			memset(&wfd, 0, sizeof(wfd));
+			if ((hFind = FindFirstFile(szName, &wfd)) != INVALID_HANDLE_VALUE)		
+				FindClose(hFind);
+			else
+			{
+				// FindFirstFile didn't find the file 'szName', return it
+				return szName;
+			}		
+		}
+	}
+
+	return ""; // no fn generated
+}
+
+
+void CUtil::TakeScreenshot()
+{
+	LPDIRECT3DSURFACE8 lpSurface = NULL;
+	char fn[1024];
+	CStdString strDir = g_stSettings.m_szScreenshotsDirectory;
+
+	if (strlen(g_stSettings.m_szScreenshotsDirectory))
+	{		
+		sprintf(fn, "%s\\screenshot%%d.bmp", strDir.c_str());
+		strcpy(fn, CUtil::GetNextFilename(fn, 30).c_str());
+
+		if (strlen(fn))
+		{
+			if (SUCCEEDED(g_pd3dDevice->GetBackBuffer(-1, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+			{
+				if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
+				{
+					CLog::Log("Failed to Generate Screenshot");
+				}	
+				else
+				{
+					CLog::Log("Screen shot saved as %s", fn);
+				}
+				lpSurface->Release();
+			}	
+		}
+		else
+		{
+			CLog::Log("Too many screen shots or invalid folder");
+		}
+	}	
+ }

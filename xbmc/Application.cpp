@@ -191,12 +191,16 @@ HRESULT CApplication::Initialize()
   {
 		strcpy(g_stSettings.m_szAlbumDirectory,"Q:\\albums");		
   }
-	if (g_stSettings.m_szMusicRecordingDirectory[0]==0)
+  if (g_stSettings.m_szMusicRecordingDirectory[0]==0)
   {
 		strcpy(g_stSettings.m_szMusicRecordingDirectory,"Q:\\recordings");		
   }
+  if (g_stSettings.m_szScreenshotsDirectory[0]==0)
+  {
+	  strcpy(g_stSettings.m_szScreenshotsDirectory, "Q:\\screenshots");
+  }
 
-	CreateDirectory(g_stSettings.szThumbnailsDirectory,NULL);
+  CreateDirectory(g_stSettings.szThumbnailsDirectory,NULL);
   CStdString strThumbIMDB=g_stSettings.szThumbnailsDirectory;
   strThumbIMDB+="\\imdb";
   CreateDirectory(strThumbIMDB.c_str(),NULL);
@@ -204,12 +208,13 @@ HRESULT CApplication::Initialize()
 	CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szMusicRecordingDirectory,NULL);
+	CreateDirectory(g_stSettings.m_szScreenshotsDirectory, NULL);
 
   CLog::Log("  thumbnails folder:%s", g_stSettings.szThumbnailsDirectory);
   CLog::Log("  shortcuts folder:%s", g_stSettings.m_szShortcutDirectory);
   CLog::Log("  albums folder:%s", g_stSettings.m_szAlbumDirectory);
   CLog::Log("  recording folder:%s", g_stSettings.m_szMusicRecordingDirectory);
-
+  CLog::Log("  screenshots folder:%s", g_stSettings.m_szScreenshotsDirectory);
 
 	string strAlbumDir=g_stSettings.m_szAlbumDirectory;
 	CreateDirectory((strAlbumDir+"\\playlists").c_str(),NULL);

@@ -389,6 +389,7 @@ bool CSettings::Load()
   GetString(pRootElement, "dvdplayer", g_stSettings.m_szExternalDVDPlayer,"");
 
   CStdString strDir;
+
   strDir=g_stSettings.m_szShortcutDirectory;
   ConvertHomeVar(strDir);
   strcpy( g_stSettings.m_szShortcutDirectory, strDir.c_str() );
@@ -405,6 +406,7 @@ bool CSettings::Load()
   strDir=g_stSettings.m_szMusicRecordingDirectory;
   ConvertHomeVar(strDir);
   strcpy( g_stSettings.m_szMusicRecordingDirectory, strDir.c_str() );
+  
 
   if (g_stSettings.m_szShortcutDirectory[0])
   {
