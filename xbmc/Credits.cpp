@@ -419,7 +419,10 @@ static HRESULT InitLogo()
 
 	D3DXMATRIX matView, matProj;
 	// Set view matrix
-	vEye = D3DXVECTOR3(0.0f, 40.0f, -200.0f);
+	if (g_graphicsContext.IsWidescreen())
+		vEye = D3DXVECTOR3(0.0f, 32.0f, -160.0f);
+	else
+		vEye = D3DXVECTOR3(0.0f, 40.0f, -200.0f);
 	D3DXVECTOR3 vAt(0.0f, 0.0f, 0.f);
 	D3DXVECTOR3 vRight(1, 0, 0);
 	D3DXVECTOR3 vUp(0.0f, 1.0f, 0.0f);
@@ -431,7 +434,10 @@ static HRESULT InitLogo()
 	D3DXMatrixLookAtLH(&matView, &vEye, &vAt, &vUp);
 
 	// setup projection matrix
-	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI/4, float(g_graphicsContext.GetWidth()) / g_graphicsContext.GetHeight(), 0.1f, 1000.f);
+	if (g_graphicsContext.IsWidescreen())
+		D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI/4, 16.0f / 9.0f, 0.1f, 1000.f);
+	else
+		D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI/4, 4.0f / 3.0f, 0.1f, 1000.f);
 
 	D3DXMatrixMultiply(&matVP, &matView, &matProj);
 
