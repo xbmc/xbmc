@@ -126,7 +126,8 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
-    if (!reg.RegComp(regexps[i].c_str()))
+    CStdString strRegExp = regexps[i];
+    if (!reg.RegComp(strRegExp.c_str()))
     { // invalid regexp - complain in logs
       CLog::Log(LOGERROR, "Invalid RegExp: %s.  Check XBoxMediaCenter.xml", regexps[i].c_str());
       continue;
