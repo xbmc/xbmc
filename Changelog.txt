@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-02-2005 added: High quality pixel shader YV12->RGB method :)  Known issues with switching to/from GUI
   - 03-02-2005 changed: delay when changing resolution in settings (easier resolution selection)
   - 03-02-2005 fixed: sometimes unreadable discs will be detected as audio cd's
   - 03-02-2005 fixed: [ 1095048 Part 2 ] Icon for folder displayed using XBE's icon (also fixed some stupidities).
