@@ -5,6 +5,7 @@
 #include "StdAfx.h"
 #include "MediaMonitor.h"
 #include "graphicContext.h"
+#include "Log.h"
 #include "../Picture.h"
 #include "../Util.h"
 #include "../Settings.h"
@@ -43,6 +44,8 @@ void CMediaMonitor::Create(IMediaObserver* aObserver)
 
 void CMediaMonitor::Process() 
 {
+	InitializeObserver();
+
 	VECSHARES& vecShares = g_settings.m_vecMyVideoShares;
 
 	DIRECTORY::CVirtualDirectory directory;
@@ -69,13 +72,12 @@ void CMediaMonitor::Process()
 	sort(m_movies.begin(), m_movies.end(), CMediaMonitor::SortMoviesByDateAndTime );
 
 	// select the 3 newest files (remove similar filenames from consideration):
-	int iNewestMovie = max(0, m_movies.size()-1);
-	int i = iNewestMovie;
+	int i = m_movies.size()-1;
 
-	int selections[3];
+	int selections[RECENT_MOVIES];
 	int sel = 0;
     
-	while ((i>0) && (sel<3))
+	while ((i>=0) && (sel<RECENT_MOVIES))
 	{
 		Movie aMovie = m_movies.at(i);
 
@@ -130,6 +132,50 @@ void CMediaMonitor::Process()
 }
 
 
+void CMediaMonitor::InitializeObserver()
+{
+	m_database.Open();
+
+	long lzMovieId[RECENT_MOVIES];
+
+	int count = m_database.GetRecentMovies(lzMovieId,RECENT_MOVIES);
+
+	for(int i=0;i<count;i++)
+	{
+		VECMOVIESFILES paths;
+		m_database.GetFiles(lzMovieId[i],paths);
+
+		if (paths.size()>0)
+		{
+			CStdString filePath = paths[0];
+			CStdString strImagePath;
+
+			CIMDBMovie details;  
+			if (GetMovieInfo(filePath, details))
+			{
+ 				if (!details.m_strPictureURL.IsEmpty())
+				{
+					GetMovieArt(details.m_strIMDBNumber,details.m_strPictureURL,strImagePath);
+				}
+			}
+			else
+			{
+				details.m_strTitle = CUtil::GetFileName(filePath);
+			}
+
+			if (m_pObserver)
+			{
+				g_graphicsContext.Lock();
+				m_pObserver->OnMediaUpdate(i, filePath, details.m_strTitle, strImagePath);
+				g_graphicsContext.Unlock();
+			}
+		}
+	}
+
+	m_database.Close();
+}
+
+
 bool CMediaMonitor::GetMovieInfo(CStdString& strFilepath, CIMDBMovie& aMovieRecord)
 {
 	bool bInfo = false;
@@ -147,6 +193,10 @@ bool CMediaMonitor::GetMovieInfo(CStdString& strFilepath, CIMDBMovie& aMovieReco
 
 		// Clean up filename in an attempt to get an idea of the movie name
 		parse_Clean(strName);
+
+		CStdString debug;
+		debug.Format("New filepath: %s\nQuerying: %s",strFilepath.c_str(),strName.c_str());
+		CLog::Log(debug);
 
 		if (imdb.FindMovie(strName, results) ) 
 		{
@@ -333,7 +383,7 @@ int CMediaMonitor::parse_GetLength(char* szText, int start)
 			}
 		}
 
-		if (nCapital>nHalfWord)
+		if (nCapital>=nHalfWord)
 		{
 			break;
 		}
