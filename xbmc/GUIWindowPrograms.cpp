@@ -86,7 +86,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 			// otherwise, is this the first time accessing this window?
 			else if (m_Directory.m_strPath=="?")
 			{
-				strDestination = g_stSettings.m_szDefaultPrograms;
+				m_Directory.m_strPath = strDestination = g_stSettings.m_szDefaultPrograms;
 				CLog::Log(LOGINFO,"Attempting to default to: %s",strDestination.c_str());
 			}
 			// try to open the destination path

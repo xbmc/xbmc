@@ -200,7 +200,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 			// is this the first time the window is opened?
 			if (m_Directory.m_strPath=="?" && strDestination.IsEmpty())
 			{
-				strDestination = g_stSettings.m_szDefaultMusic;
+				m_Directory.m_strPath = strDestination = g_stSettings.m_szDefaultMusic;
 				CLog::Log(LOGINFO,"Attempting to default to: %s",strDestination.c_str());
 			}
 
