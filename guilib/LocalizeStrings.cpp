@@ -72,15 +72,18 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
       {
         const TiXmlNode *pChildID = pChild->FirstChild("id");
         const TiXmlNode *pChildText = pChild->FirstChild("value");
-        DWORD dwID = atoi(pChildID->FirstChild()->Value());
-        ivecStrings i;
-        i = m_vecStrings.find(dwID);
-        if (i == m_vecStrings.end())
+        if (pChildID->FirstChild() && pChildText->FirstChild())
         {
-          WCHAR wszText[1024];
-          swprintf(wszText, L"%S", pChildText->FirstChild()->Value() );
-          wstring strText = wszText;
-          m_vecStrings[dwID] = strText;
+          DWORD dwID = atoi(pChildID->FirstChild()->Value());
+          ivecStrings i;
+          i = m_vecStrings.find(dwID);
+          if (i == m_vecStrings.end())
+          {
+            WCHAR wszText[1024];
+            swprintf(wszText, L"%S", pChildText->FirstChild()->Value() );
+            wstring strText = wszText;
+            m_vecStrings[dwID] = strText;
+          }
         }
       }
       pChild = pChild->NextSibling();
