@@ -969,6 +969,7 @@ static void video_flip_page(void)
 //		dstride=rectLocked.Pitch;
 //		image  =(unsigned char*)rectLocked.pBits;
 //	}
+	g_graphicsContext.Lock();
 	D3DLOCKED_RECT rectLocked2;
 	if ( D3D_OK == m_pSubtitleTexture[m_iBackBuffer]->LockRect(0,&rectLocked2,NULL,0L))
 	{
@@ -981,6 +982,7 @@ static void video_flip_page(void)
 		ClearSubtitleRegion(m_iBackBuffer);
 		m_bRenderGUI=true;
 	}
+	g_graphicsContext.Unlock();
 
 	m_bFlipped=true;
 
@@ -1096,7 +1098,7 @@ void xbox_video_update(bool bPauseDrawing)
 //			g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[1-m_iBackBuffer], &rs, &rd, TRUE, 0x00010001  );
 //			g_graphicsContext.Unlock();
 //		}
-		if (m_TextureBuffer[0])
+		if (m_TextureBuffer[m_iRenderBuffer])
 		{
 			g_graphicsContext.Lock();
 			RenderVideo();
@@ -1109,7 +1111,7 @@ void xbox_video_update(bool bPauseDrawing)
 
 void xbox_video_render_update()
 {
-	if (m_pVideoVB && m_TextureBuffer[0])
+	if (m_pVideoVB && m_TextureBuffer[m_iRenderBuffer])
 	{
 		g_graphicsContext.Lock();
 		RenderVideo();
