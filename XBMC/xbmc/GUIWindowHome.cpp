@@ -49,7 +49,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       int iControl=message.GetControlId();
       m_iLastControl=iControl;
-      if (iControl>=2 && iControl <=8)
+      if (iControl>=2 && iControl <=9)
       {
         // make controls 101-120 invisible...
         for (int i=102; i < 120; i++)
