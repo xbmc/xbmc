@@ -260,8 +260,10 @@ void CGUIImage::FreeResources()
   }
 
   m_vecTextures.erase(m_vecTextures.begin(),m_vecTextures.end());
-	m_iCurrentImage=0;
-  m_iCurrentLoop=0;
+	m_iCurrentImage = 0;
+  m_iCurrentLoop  = 0;
+	m_iImageWidth   = 0;
+	m_iImageHeight  = 0;
 }
 
 
@@ -507,4 +509,11 @@ int CGUIImage::GetRenderWidth() const
 int CGUIImage::GetRenderHeight() const
 {
   return m_iRenderHeight;
+}
+
+void CGUIImage::SetFileName(const CStdString& strFileName)
+{
+  FreeResources();
+  m_strFileName = strFileName;
+  AllocResources();
 }
