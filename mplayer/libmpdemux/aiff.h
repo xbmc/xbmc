@@ -3,7 +3,7 @@
     based on the Apple specification documented at 
     http://developer.apple.com/documentation/QuickTime/INMAC/SOUND/imsoundmgr.36.htm
     
-    Copyright (c) 2004, Jake Luck <xbmc@10k.org>
+    Copyright (c) 2004, Jake Luck <xbmcjake@10k.org>
     All rights reserved.
     BSD License
     http://www.opensource.org/licenses/bsd-license.php
@@ -48,3 +48,4 @@ off_t   endpos_aiff_pcm(AIFF_HEADER *h);
 int     samplerate_aiff_pcm(unsigned char *sr);
 
 #endif
+

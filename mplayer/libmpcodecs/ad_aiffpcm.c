@@ -1,10 +1,10 @@
 /*
-	AIFF Audio Decoder
-	
-	Copyright (c) 2004, Jake Luck <xbmc@10k.org>
-	All rights reserved.
-	BSD License
-	http://www.opensource.org/licenses/bsd-license.php
+    AIFF Audio Decoder
+    
+    Copyright (c) 2004, Jake Luck <xbmcjake@10k.org>
+    All rights reserved.
+    BSD License
+    http://www.opensource.org/licenses/bsd-license.php
 */
 
 #include <stdio.h>
@@ -16,11 +16,11 @@
 
 static ad_info_t info = 
 {
-	"Uncompressed AIFF PCM audio decoder",
-	"aiffpcm",
-	"Jake Luck",
-	"",
-	""
+    "Uncompressed AIFF PCM audio decoder",
+    "aiffpcm",
+    "Jake Luck",
+    "",
+    ""
 };
 
 LIBAD_EXTERN(aiffpcm)
@@ -31,19 +31,19 @@ static int aiff_decode_factor;
     
 static int preinit(sh_audio_t *sh)
 {
-  	return 1;
+    return 1;
 }
 
 static int init(sh_audio_t *sh)
 {
-	AIFF_FORMCHUNK			*f;
-	AIFF_COMMONCHUNK		*c;
-	AIFF_SOUNDDATACHUNK		*s;
-	int		                n;
-	
-	f = &(sh->ah->f);
-	c = &(sh->ah->c);
-	s = &(sh->ah->s);
+    AIFF_FORMCHUNK          *f;
+    AIFF_COMMONCHUNK        *c;
+    AIFF_SOUNDDATACHUNK     *s;
+    int                     n;
+    
+    f = &(sh->ah->f);
+    c = &(sh->ah->c);
+    s = &(sh->ah->s);
 
     switch (c->cSampleSize)
     {
@@ -58,9 +58,9 @@ static int init(sh_audio_t *sh)
     }
     
     sh->samplerate = samplerate_aiff_pcm(c->cSampleRate);
-  	sh->samplesize = c->cSampleSize >> 3;  	
-  	sh->channels = c->cNumChannels;
-  	sh->i_bps = sh->samplesize * sh->samplerate * sh->channels ;
+    sh->samplesize = c->cSampleSize >> 3;   
+    sh->channels = c->cNumChannels;
+    sh->i_bps = sh->samplesize * sh->samplerate * sh->channels ;
   
     aiff_decode_factor = sh->samplesize * sh->channels - 1;
         
@@ -69,12 +69,12 @@ static int init(sh_audio_t *sh)
 
 static void uninit(sh_audio_t *sh)
 {
-	return;
+    return;
 }
 
 static int control(sh_audio_t *sh, int cmd, void* arg, ...)
 {
-	return CONTROL_UNKNOWN;
+    return CONTROL_UNKNOWN;
 }
 
 static int decode_audio(sh_audio_t *sh, unsigned char *buf, int minlen, int maxlen)
