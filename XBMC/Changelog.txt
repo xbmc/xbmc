@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 19-09-2004 fixed: thumb aspectratio in musicinfo screen 
   - 19-09-2004 fixed: previously set password was lost after enabling the webserver
   - 19-09-2004 fixed: webserver could only be enabled if you set the password
   - 19-09-2004 fixed: [ 1006147 ] music playback: SELECT, PAUSE & SELECT -> XBMC crashes
