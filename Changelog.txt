@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-10-2004 fixed: [ 1035046 ] Get full album review from allmusic.com (Thx to kraqh3d)
   - 09-10-2004 changed: removed string with id 6 from all languages except english
   - 09-10-2004 changed: Portuguese language file (Thnx to w00zy)
   - 09-10-2004 changed: Norwegian language file (Thnx to x-halez)
