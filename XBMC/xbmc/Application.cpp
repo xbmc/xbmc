@@ -759,6 +759,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiSettingsNetworkWeb);          // window id = 39
 	m_gWindowManager.Add(&m_guiSettingsNetworkFTP);          // window id = 40
 	m_gWindowManager.Add(&m_guiSettingsNetworkTime);          // window id = 41
+	m_gWindowManager.Add(&m_guiSettingsCdg);						//window id =42
 
 	m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
 	m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
@@ -1080,6 +1081,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiMyBuddies.Load( "mybuddies.xml");
 	m_guiSettingsCDRipper.Load("SettingsCDRipper.xml");
 	m_guiPointer.Load("Pointer.xml");
+	m_guiSettingsCdg.Load("SettingsCdg.xml");
 	
 	// Load the user windows
 	LoadUserWindows(strSkinPath);
@@ -2175,6 +2177,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 			return true;
 		}
 	}
+	//We have to stop parsing a cdg before mplayer is deallocated
+	m_CdgParser.Stop();
 	// We should restart the player, unless the previous and next tracks are using the cdda player
 	// (allows gapless cdda playback)
 	if (m_pPlayer && !(m_strCurrentPlayer == strNewPlayer && (m_strCurrentPlayer == "cdda" || m_strCurrentPlayer == "dvdplayer")))
@@ -2199,6 +2203,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 	{
 		m_guiMusicOverlay.SetCurrentFile(m_itemCurrentFile);
 		m_guiWindowVideoOverlay.SetCurrentFile(m_itemCurrentFile.m_strPath);
+
+		if(CUtil::IsAudio(m_itemCurrentFile.m_strPath) && g_stSettings.m_bIsCdgEnabled)
+			m_CdgParser.Start(m_itemCurrentFile.m_strPath);
 
 		m_dwIdleTime=timeGetTime();
 
@@ -2278,6 +2285,7 @@ void CApplication::StopPlaying()
 			m_gWindowManager.PreviousWindow();
 		m_pPlayer->closefile();
 	}
+	m_CdgParser.Free();
 	CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
 	m_gWindowManager.SendMessage(msg);
 }

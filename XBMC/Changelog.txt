@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 06-11-2004 changed: CD+G support updated (Thnx to stcogolin)
   - 06-11-2004 moved: Random slideshow button to My Pictures (from settings)
   - 06-11-2004 fixed: default resolution tags in skin.xml are now case-insensitive
   - 06-11-2004 changed: default IP addresses if none are set.
