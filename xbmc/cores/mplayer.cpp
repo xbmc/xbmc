@@ -813,11 +813,20 @@ bool CMPlayer::openfile(const CStdString& strFile)
 					bNeed2Restart=true;
 					CLog::Log("  --restart cause speaker mapping needs fixing");
 				}	
-				// has a different channel mapping.. C, FL, FR, SL, SR, LFE
-				if ( strstr(strAudioCodec, "AAC") && (iChannels==6) )
+				// AAC has a different channel mapping.. C, FL, FR, SL, SR, LFE
+				if ( strstr(strAudioCodec, "AAC") && (iChannels==6))
 				{
-					options.SetChannels(6);
-					options.SetChannelMapping("channels=6:6:0:4:1:0:2:1:3:2:4:3:5:5");
+					if(g_stSettings.m_bUseDigitalOutput)
+					{
+						options.SetChannels(6);
+						options.SetChannelMapping("channels=6:6:0:4:1:0:2:1:3:2:4:3:5:5");
+					}
+					else
+					{
+						options.SetChannels(0);
+						options.SetChannelMapping("channels=6:2:0:0:0:1:1:0:2:1:3:0:4:1:5:0:5:1");
+					}
+					
 					bNeed2Restart=true;
 					CLog::Log("  --restart cause speaker mapping needs fixing");		
 				}
