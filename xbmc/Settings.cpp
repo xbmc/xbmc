@@ -1261,10 +1261,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetBoolean(pElement, "hideparentdiritem", g_stSettings.m_bHideParentDirItems);
 
 		GetString(pElement, "ipassignment", g_stSettings.m_strIPAssignment, "dash");
-		GetString(pElement, "ipadres", g_stSettings.m_strLocalIPAdres, "192.168.0.1");
+		GetString(pElement, "ipadres", g_stSettings.m_strLocalIPAdres, "192.168.0.3");
 		GetString(pElement, "netmask", g_stSettings.m_strLocalNetmask, "255.255.255.0");
-		GetString(pElement, "defaultgateway", g_stSettings.m_strGateway, "192.168.0.254");
-		GetString(pElement, "nameserver", g_stSettings.m_strNameServer, "192.168.0.1");
+		GetString(pElement, "defaultgateway", g_stSettings.m_strGateway, "192.168.0.1");
+		GetString(pElement, "nameserver", g_stSettings.m_strNameServer, "0.0.0.0");
 
 		GetBoolean(pElement, "httpproxyenabled", g_stSettings.m_bHTTPProxyEnabled);
 		GetString(pElement, "httpproxyhost", g_stSettings.m_szHTTPProxy, "");

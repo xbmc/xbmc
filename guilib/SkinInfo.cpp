@@ -40,6 +40,7 @@ void CSkinInfo::Load(CStdString& strSkinDir)
 			if (pChild)
 			{	// found the defaultresolution tag
 				CStdString strDefaultDir = pChild->FirstChild()->Value();
+				strDefaultDir = strDefaultDir.ToLower();
 				if (strDefaultDir == "pal") m_DefaultResolution = PAL_4x3;
 				else if (strDefaultDir == "pal16x9") m_DefaultResolution = PAL_16x9;
 				else if (strDefaultDir == "ntsc") m_DefaultResolution = NTSC_4x3;
@@ -53,6 +54,7 @@ void CSkinInfo::Load(CStdString& strSkinDir)
 			if (pChild)
 			{	// found the defaultresolution tag
 				CStdString strDefaultDir = pChild->FirstChild()->Value();
+				strDefaultDir = strDefaultDir.ToLower();
 				if (strDefaultDir == "pal") m_DefaultResolutionWide = PAL_4x3;
 				else if (strDefaultDir == "pal16x9") m_DefaultResolutionWide = PAL_16x9;
 				else if (strDefaultDir == "ntsc") m_DefaultResolutionWide = NTSC_4x3;
