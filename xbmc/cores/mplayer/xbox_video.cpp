@@ -69,17 +69,14 @@ static directx_fourcc_caps g_ddpf[] =
     {"YV12 ",IMGFMT_YV12 ,DIRECT3D8CAPS},
 };
 
-static float fScreenModePixelRatio[9] = 
+static float fScreenModePixelRatio[6] = 
 {
 		1.0f,							// 0 = invalid resolution. Does not exists
 		1.0f,							// 1 = 1920x1280
 		1.0f,							// 2 = 1280x720
-		1.0f,							// 3 = 640x480 NTSC
-		10.0f/11.0f,					// 4 = 720x480 NTSC
-		1.0f,							// 5 = 640x480 PAL  (PAL60)
-		10.0f/11.0f,					// 6 = 720x480 PAL  (PAL60)
-		6.0f/5.0f,						// 7 = 640x576 PAL  (PAL50) (Not 100% sure on this one)
-		59.0f/54.0f						// 8 = 720x576 PAL  (PAL50)
+		72.0f/79.0f,					// 3 = 720x480 NTSC
+		72.0f/79.0f,					// 4 = 720x480 PAL  (PAL60)
+		128.0f/117.0f					// 5 = 720x576 PAL  (PAL50)
 };
 
 #define NUM_FORMATS (sizeof(g_ddpf) / sizeof(g_ddpf[0]))
@@ -102,14 +99,6 @@ void restore_resolution()
 	}
 }
 
-unsigned int get_resolution_width(int iRes)
-{
-	int iWidth[9] = { 0, 1920, 1280, 640, 720, 640, 720, 640, 720 };
-	int iOffsetX1 = g_stSettings.m_rectMovieCalibration[iRes].left;
-	int iOffsetX2 = g_stSettings.m_rectMovieCalibration[iRes].right;
-	return iWidth[iRes]+iOffsetX2-iOffsetX1;
-}
-
 //********************************************************************************************************
 void choose_best_resolution(float fps)
 {
@@ -119,66 +108,87 @@ void choose_best_resolution(float fps)
 	DWORD dwStandard = XGetVideoStandard();
 	DWORD dwFlags	   = XGetVideoFlags();
 
-
 	bool bUsingPAL		= (dwStandard==XC_VIDEO_STANDARD_PAL_I);		// current video standard:PAL or NTSC 
-	bool bCanDoWidescreen = (dwFlags & XC_VIDEO_FLAGS_WIDESCREEN);		// can widescreen be enabled?
+	bool bCanDoWidescreen = (dwFlags & XC_VIDEO_FLAGS_WIDESCREEN)!=0;	// can widescreen be enabled?
 
 	// Work out if the framerate suits PAL50 or PAL60
-	bool bPal60SuitsFrameRate = true;
-	if (floor(50.0f/fps)==50.0f/fps)
-		bPal60SuitsFrameRate = false;
-
-	// Work out if framesize suits 4:3 or 16:9
-	bool bShouldUseWidescreen = false;
-	if (bCanDoWidescreen && ((float)d_image_width/d_image_height > 4.0f/3.0f))
-	{
-		bShouldUseWidescreen = true;
-	}
-
 	bool bPal60=false;
-	bool bUsingWidescreen=false;
-	if (params.Flags&D3DPRESENTFLAG_WIDESCREEN) bUsingWidescreen=true;  // WIDESCREEN 16:9 ?
-	if (bUsingPAL && bPal60SuitsFrameRate && g_stSettings.m_bAllowPAL60 && (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz) && !bUsingWidescreen )
+	if (bUsingPAL && g_stSettings.m_bAllowPAL60 && (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz))
 	{
 		// yes we're in PAL
 		// yes PAL60 is allowed
 		// yes dashboard PAL60 settings is enabled
-		// yep, we're using 4:3 (pal60 doesnt work in widescreen 16:9) <- CHECK THIS!!
-		bPal60=true;
+		// Calculate the framerate difference from a divisor of 120fps and 100fps
+		// (twice 60fps and 50fps to allow for 2:3 IVTC pulldown)
+		float fFrameDifference60 = abs(120.0f/fps-floor(120.0f/fps+0.5f));
+		float fFrameDifference50 = abs(100.0f/fps-floor(100.0f/fps+0.5f));
+		// Make a decision based on the framerate difference
+		if (fFrameDifference60 < fFrameDifference50)
+			bPal60=true;
+	}
+
+	// Work out if framesize suits 4:3 or 16:9
+	// Uses the frame aspect ratio of 8/(3*sqrt(3)) which is the optimal point
+	// where the percentage of black bars to screen area in 4:3 and 16:9 is equal
+	bool bShouldUseWidescreen = false;
+	if (bCanDoWidescreen && ((float)d_image_width/d_image_height > 8.0f/(3.0f*sqrt(3.0f))))
+	{
+		bShouldUseWidescreen = true;
 	}
 
 	// if video switching is not allowed then use current resolution (with pal 60 if needed)
+	// PERHAPS ALSO SUPPORT WIDESCREEN SWITCHING HERE??
 	// if we're not in fullscreen mode then use current resolution 
 	// if we're calibrating the video  then use current resolution 
 	if  ( (!g_stSettings.m_bAllowVideoSwitching) ||
 		    (! ( g_graphicsContext.IsFullScreenVideo()|| g_graphicsContext.IsCalibrating())  )
 			)
 	{
-		if (bPal60)
+		// Check to see if we are using a PAL screen capable of PAL60
+		if (bUsingPAL && params.BackBufferHeight<=576)
 		{
-			params.BackBufferHeight = 480;			// PAL60 must have 480 lines
-			params.FullScreen_RefreshRateInHz=60;
+			if (bPal60)
+			{
+				params.BackBufferHeight = 480;			// PAL60 must have 480 lines
+				params.FullScreen_RefreshRateInHz=60;
+			}
+			else
+			{
+				params.BackBufferHeight = 576;			// PAL50 must have 576 lines
+				params.FullScreen_RefreshRateInHz=50;
+			}
 		}
-		else
+		// turn on/off widescreen flag as necessary for modes that are not 720p or 1080i
+		if (params.BackBufferHeight<=576)
 		{
-			params.BackBufferHeight = 576;			// PAL50 must have 576 lines
-			params.FullScreen_RefreshRateInHz=50;
+/*			if (bShouldUseWidescreen)
+			{
+				params.Flags |= D3DPRESENTFLAG_WIDESCREEN;
+				m_bWidescreen = true;
+			}
+			else // (!bShouldUseWidescreen)
+			{
+				params.Flags &= ~D3DPRESENTFLAG_WIDESCREEN;
+				m_bWidescreen = false;
+			}*/
+			m_bWidescreen = (params.Flags&D3DPRESENTFLAG_WIDESCREEN)!=0;
 		}
-		if (params.FullScreen_RefreshRateInHz != orgparams.FullScreen_RefreshRateInHz)
+		// Now check if our parameters have changed, and if so, update our screen to the
+		// new mode
+		if (params.FullScreen_RefreshRateInHz != orgparams.FullScreen_RefreshRateInHz ||
+			params.Flags != orgparams.Flags)
 		{
 			g_graphicsContext.Get3DDevice()->Reset(&params);
 		}
-
+		// Update our member variables with the new parameters
 		m_iDeviceWidth  = params.BackBufferWidth;
 		m_iDeviceHeight = params.BackBufferHeight;
-
 		m_iResolution=CUtil::GetResolution( m_iDeviceWidth, m_iDeviceHeight, bUsingPAL, bPal60);
-		m_bWidescreen = bUsingWidescreen;
 		g_graphicsContext.SetVideoResolution(m_iResolution);
 		return;
 	}
 
-	if ( (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i) && bUsingWidescreen )
+	if (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i)
 	{
 		//1920x1080 16:9
 		if (bUsingPAL)
@@ -203,7 +213,7 @@ void choose_best_resolution(float fps)
 		}
 	}
 
-	if ( (dwFlags&XC_VIDEO_FLAGS_HDTV_720p) && bUsingWidescreen )
+	if (dwFlags&XC_VIDEO_FLAGS_HDTV_720p)
 	{
 		//1280x720 16:9
 		if (bUsingPAL)
@@ -235,11 +245,6 @@ void choose_best_resolution(float fps)
 			params.FullScreen_RefreshRateInHz=60;
 			params.BackBufferWidth = 720;
 			params.BackBufferHeight = 480;
-			if (image_width <= get_resolution_width(5))
-			{
-				params.BackBufferWidth = 640;
-				params.BackBufferHeight = 480;
-			}
 			if (dwFlags&XC_VIDEO_FLAGS_HDTV_480p) params.Flags = D3DPRESENTFLAG_PROGRESSIVE;	// 480p
 		}
 		else				// PAL50
@@ -247,22 +252,12 @@ void choose_best_resolution(float fps)
 			params.FullScreen_RefreshRateInHz=50;
 			params.BackBufferWidth = 720;
 			params.BackBufferHeight = 576;
-			if (image_width <= get_resolution_width(7))
-			{
-				params.BackBufferWidth = 640;
-				params.BackBufferHeight = 576;
-			}
 		}
 	}
 	else	// using NTSC
 	{
 		params.BackBufferWidth =720;
 		params.BackBufferHeight=480;
-		if (image_width <= get_resolution_width(3))
-		{
-			params.BackBufferWidth =640;
-			params.BackBufferHeight=480;
-		}		
 		if (dwFlags&XC_VIDEO_FLAGS_HDTV_480p) params.Flags = D3DPRESENTFLAG_PROGRESSIVE;
 	}
 	// turn on/off widescreen flag as necessary
@@ -290,7 +285,6 @@ void choose_best_resolution(float fps)
 
 	m_iResolution=CUtil::GetResolution( m_iDeviceWidth, m_iDeviceHeight, bUsingPAL, bPal60);
 	g_graphicsContext.SetVideoResolution(m_iResolution);
-
 }
 
 
@@ -373,8 +367,8 @@ static float GetSourcePixelRatio(int iSourceWidth, int iSourceHeight, int iOutpu
   // horizontal resolution of the default NTSC or PAL frame sizes
 
   // The following are the defined standard ratios for PAL and NTSC pixels
-  float fPALPixelRatio = 59.0f/54.0f;
-  float fNTSCPixelRatio = 10.0f/11.0f;
+  float fPALPixelRatio = 128.0f/117.0f;
+  float fNTSCPixelRatio = 72.0f/79.0f;
 
   // Calculate the correction needed for anamorphic sources
   float fNon4by3Correction = (float)fOutputFrameRatio/(4.0f/3.0f);
@@ -444,10 +438,10 @@ static unsigned int Directx_ManageDisplay()
 				// zoom / panscan the movie so that it fills the entire screen
 				// and keeps the Aspect ratio
 
-				// calculate AR compensation (see http://www.mir.com/DMG/aspect.html)
+				// calculate AR compensation (see http://www.iki.fi/znark/video/conversion)
 
 				float fScreenPixelRatio = fScreenModePixelRatio[m_iResolution];
-				if (m_bWidescreen && ((m_iResolution >= 3) || (m_iResolution <= 8)))
+				if (m_bWidescreen && (m_iResolution >= 3) && (m_iResolution <= 5))
 				      fScreenPixelRatio *= 4.0f/3.0f;
 
 				// Calculate frame ratio based on source frame size and pixel ratio (Added by JM)
@@ -504,7 +498,7 @@ static unsigned int Directx_ManageDisplay()
 		// and keep the aspect ratio (introduces with black bars)
 
 		float fScreenPixelRatio = fScreenModePixelRatio[m_iResolution];
-		if (m_bWidescreen && ((m_iResolution >= 3) || (m_iResolution <= 8)))
+		if (m_bWidescreen && (m_iResolution >= 3) && (m_iResolution <= 5))
 		      fScreenPixelRatio *= 4.0f/3.0f;
 		
 	        // Calculate frame ratio based on source frame size and pixel ratio (Added by JM)
@@ -759,11 +753,14 @@ void xbox_video_getRect(RECT& SrcRect, RECT& DestRect)
 	DestRect=rd;
 }
 
-float xbox_video_getAR()
+void xbox_video_getAR(float& fAR, bool& bWidescreen)
 {
 	float fOutputPixelRatio = fScreenModePixelRatio[m_iResolution];
+	if (m_bWidescreen && (m_iResolution>=3) && (m_iResolution<=5))
+		fOutputPixelRatio *= 4.0f/3.0f;
 	float fOutputFrameRatio = ((float)(rd.right-rd.left)) / ((float)(rd.bottom-rd.top));
-	return fOutputFrameRatio*fOutputPixelRatio;
+	fAR = fOutputFrameRatio*fOutputPixelRatio;
+	bWidescreen = m_bWidescreen;
 }
 
 void xbox_video_update()
