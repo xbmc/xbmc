@@ -187,46 +187,59 @@ void  CGUIWindowVideoInfo::Render()
 
 void CGUIWindowVideoInfo::Refresh()
 {
-  OutputDebugString("Refresh\n");
-	if (m_pTexture)
-	{
-		m_pTexture->Release();
-		m_pTexture=NULL;
-	}
-
-	CStdString strThumb;
-	CStdString strImage=m_pMovie->m_strPictureURL;
-  if (strImage.size() >0)
+  try
   {
-	  CUtil::GetThumbnail(m_pMovie->m_strSearchString,strThumb);
-	  if (!CUtil::FileExists(strThumb) )
+    OutputDebugString("Refresh\n");
+	  if (m_pTexture)
 	  {
-		  CHTTP http;
-		  CStdString strExtension;
-		  CUtil::GetExtension(strImage,strExtension);
-		  CStdString strTemp="T:\\temp";
-		  strTemp+=strExtension;
-		  http.Download(strImage, strTemp);
-  		
-		  CPicture picture;
-		  picture.Convert(strTemp,strThumb);
-
+		  m_pTexture->Release();
+		  m_pTexture=NULL;
 	  }
-	  CUtil::GetThumbnail(m_pMovie->m_strSearchString,strThumb);
-  }
-  CStdString strAlbum;
-	CUtil::GetIMDBInfo(m_pMovie->m_strSearchString,strAlbum);
-	m_pMovie->Save(strAlbum);
 
-	if (strThumb.size() > 0 && CUtil::FileExists(strThumb) )
-	{
-		CPicture picture;
-		m_pTexture=picture.Load(strThumb);
-		m_iTextureWidth=picture.GetWidth();
-		m_iTextureHeight=picture.GetWidth();
-		
-	}
-  OutputDebugString("update\n");
-	Update();
-  OutputDebugString("updated\n");
+	  CStdString strThumb;
+	  CStdString strImage=m_pMovie->m_strPictureURL;
+    if (strImage.size() >0)
+    {
+	    CUtil::GetThumbnail(m_pMovie->m_strSearchString,strThumb);
+	    if (!CUtil::FileExists(strThumb) )
+	    {
+		    CHTTP http;
+		    CStdString strExtension;
+		    CUtil::GetExtension(strImage,strExtension);
+		    CStdString strTemp="T:\\temp";
+		    strTemp+=strExtension;
+		    http.Download(strImage, strTemp);
+
+        try
+        {
+		      CPicture picture;
+		      picture.Convert(strTemp,strThumb);
+        }
+        catch(...)
+        {
+          OutputDebugString("...");
+          ::DeleteFile(strThumb.c_str());
+        }
+	    }
+	    CUtil::GetThumbnail(m_pMovie->m_strSearchString,strThumb);
+    }
+    CStdString strAlbum;
+	  CUtil::GetIMDBInfo(m_pMovie->m_strSearchString,strAlbum);
+	  m_pMovie->Save(strAlbum);
+
+	  if (strThumb.size() > 0 && CUtil::FileExists(strThumb) )
+	  {
+		  CPicture picture;
+		  m_pTexture=picture.Load(strThumb);
+		  m_iTextureWidth=picture.GetWidth();
+		  m_iTextureHeight=picture.GetWidth();
+  		
+	  }
+    OutputDebugString("update\n");
+	  Update();
+    OutputDebugString("updated\n");
+  }
+  catch(...)
+  {
+  }
 }
