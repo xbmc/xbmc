@@ -6,7 +6,8 @@ You'll need the following to build XBMC
 - XDK 5778 or higher
 - XBMC sources offcourse 
   You can download the latest snapshot of XBMC here: 
-  http://xbmc.sourceforge.net/xbmc.tar.gz  
+  http://xbmc.sourceforge.net/xbmc.tar.gz  or 
+  use CVS to get the sources. Look here: http://sourceforge.net/cvs/?group_id=87054
 
 Next 
   - Install Visual Studio.NET
@@ -19,8 +20,15 @@ Building
 -----------------
 Start Visual Studio.NET and open the xbmc.sln solution file
 Next build the solution with Build->Build Solution (Ctrl+Shift+B)
-Then when all is build, its time to install XBMC on your xbox!
+NOTE:  Dont worry about the following warnings which appear at the end of the build. 
+They are normal and can be ignored
+  Creating Xbox Image...
+  IMAGEBLD : warning IM1029: library XONLINE is unapproved
+  IMAGEBLD : warning IM1030: this image may not be accepted for certification
+  Copying files to the Xbox...
 
+
+Then when all is build, its time to install XBMC on your xbox!
 (You can also use the build.bat file to make a build of xbmc)
 
 
