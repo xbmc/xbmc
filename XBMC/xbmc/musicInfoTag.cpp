@@ -83,6 +83,8 @@ void CMusicInfoTag::GetReleaseDate(SYSTEMTIME& dateTime)
 void CMusicInfoTag::SetTitle(const CStdString& strTitle) 
 {
 	m_strTitle=strTitle;
+	m_strTitle.TrimLeft(" ");
+	m_strTitle.TrimRight(" ");
 }
 
 void CMusicInfoTag::SetURL(const CStdString& strURL) 
@@ -93,16 +95,22 @@ void CMusicInfoTag::SetURL(const CStdString& strURL)
 void CMusicInfoTag::SetArtist(const CStdString& strArtist) 
 {
 	m_strArtist=strArtist;
+	m_strArtist.TrimLeft(" ");
+	m_strArtist.TrimRight(" ");
 }
 
 void CMusicInfoTag::SetAlbum(const CStdString& strAlbum) 
 {
 	m_strAlbum=strAlbum;
+	m_strAlbum.TrimLeft(" ");
+	m_strAlbum.TrimRight(" ");
 }
 
 void CMusicInfoTag::SetGenre(const CStdString& strGenre)
 {
 	m_strGenre=strGenre;
+	m_strGenre.TrimLeft(" ");
+	m_strGenre.TrimRight(" ");
 }
 
 void CMusicInfoTag::SetReleaseDate(SYSTEMTIME& dateTime)
@@ -166,19 +174,19 @@ void CMusicInfoTag::Save(const CStdString& strFileName)
 
 void CMusicInfoTag::SetAlbum(const CAlbum& album)
 {
-	m_strArtist=album.strArtist;
-	m_strAlbum=album.strAlbum;
+	SetArtist(album.strArtist);
+	SetAlbum(album.strAlbum);
 	m_strURL=album.strPath;
 	m_bLoaded=true;
 }
 
 void CMusicInfoTag::SetSong(const CSong& song)
 {
-	m_strTitle=song.strTitle;
-	m_strGenre=song.strGenre;
+	SetTitle(song.strTitle);
+	SetGenre(song.strGenre);
+	SetArtist(song.strArtist);
+	SetAlbum(song.strAlbum);
 	m_strURL=song.strFileName;
-	m_strArtist=song.strArtist;
-	m_strAlbum=song.strAlbum;
 	SYSTEMTIME stTime;
 	stTime.wYear=song.iYear;
 	SetReleaseDate(stTime);
