@@ -151,7 +151,7 @@ void CX3LCD::DisplayOut(unsigned char data, unsigned char command)
 	{							
 		// if it's not the init command, do second nibble
 		//outbut lower nibble
-		outb(DISP_O_DAT, data << 4);		// set Data low nibble
+		outb(DISP_O_DAT, (data << 4) & 0xF0);		// set Data low nibble
 		outb(DISP_O_CMD, cmd);				// set RS if needed
 		outb(DISP_O_CMD, DISPCON_E | cmd);	// set E
 		outb(DISP_O_CMD, cmd);				// reset E

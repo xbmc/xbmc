@@ -459,9 +459,9 @@ void CGUIWindowFileManager::UpdateButtons()
 */
 	// update our current directory labels
 	CStdString strDir;
-	CUtil::GetFileAndProtocol(m_strDirectory[0],strDir);
+  CURL(m_strDirectory[0]).GetURLWithoutUserDetails(strDir);
 	SET_CONTROL_LABEL(GetID(), CONTROL_CURRENTDIRLABEL_LEFT,strDir);
-	CUtil::GetFileAndProtocol(m_strDirectory[1],strDir);
+  CURL(m_strDirectory[1]).GetURLWithoutUserDetails(strDir);
 	SET_CONTROL_LABEL(GetID(), CONTROL_CURRENTDIRLABEL_RIGHT,strDir);
 
 	// update the number of items in each list
@@ -667,8 +667,8 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
 {
 	CStdString strShortSourceFile;
 	CStdString strShortDestFile;
-	CUtil::GetFileAndProtocol(strFile, strShortSourceFile);
-	CUtil::GetFileAndProtocol(strDestFile, strShortDestFile);
+  CURL(strFile).GetURLWithoutUserDetails(strShortSourceFile);
+  CURL(strDestFile).GetURLWithoutUserDetails(strShortDestFile);
   switch (iAction)
   {
     case ACTION_COPY:
