@@ -28,6 +28,7 @@ public:
 	const CStdString& GetProtocol() const;
 	const CStdString& GetFileType() const;
   void							GetURL(CStdString& strURL) const;
+  void              GetURLPath(CStdString& strPath) const;
 	void							GetURLWithoutUserDetails(CStdString& strURL) const;
 	void							GetURLWithoutFilename(CStdString& strURL) const;
 	CURL& operator= (const CURL& source);

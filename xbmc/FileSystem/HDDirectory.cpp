@@ -106,13 +106,7 @@ bool CHDDirectory::Remove(const char* strPath)
 
 bool CHDDirectory::Exists(const char* strPath)
 {
-	WIN32_FIND_DATA	findData;
-	DWORD dwFileAttributes;
-	
-  HANDLE file = FindFirstFile(strPath, &findData);
-	dwFileAttributes = findData.dwFileAttributes;
-	FindClose(file);
-	
-	if (dwFileAttributes == FILE_ATTRIBUTE_DIRECTORY) return true;
+	DWORD attributes = GetFileAttributes(strPath);
+	if (FILE_ATTRIBUTE_DIRECTORY == attributes) return true;
 	return false;
 }
