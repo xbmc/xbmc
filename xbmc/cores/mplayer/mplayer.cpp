@@ -4,6 +4,11 @@
 #include "../DllLoader/dll.h"
 #include "mplayer.h"
 
+#include <vector>
+#include "../../utils/log.h"
+extern void* fs_seg;
+extern vector<DllLoader *> m_vecDlls;
+
 //deal wma, and wmv dlls in openfile, and closefile functions
 extern DllLoader * wmaDMOdll;
 extern DllLoader * wmvDMOdll;
@@ -264,6 +269,22 @@ extern "C"
 		if (wmsDMOdll) 
 			dllFreeLibrary( (HINSTANCE)wmsDMOdll );
 		wmsDMOdll = NULL;
+
+		// Unload unfreed dll's
+		for (int i = m_vecDlls.size()-1; i >= 0; i--)
+		{
+			DllLoader * dll = m_vecDlls[i];			
+			CLog::Log(LOGDEBUG,"Freeing Unfreed DLL: %s handle: 0x%x", dll->GetDLLName(), dll);
+			dllFreeLibrary((HINSTANCE)dll);
+		}
+
+		// Free allocated memory for FS segment
+		if (fs_seg != NULL) {
+			CLog::Log(LOGDEBUG,"Freeing FS segment @ 0x%x", fs_seg);
+			free(fs_seg);
+			fs_seg = NULL;
+		}
+
 		return hr;
 	}
 

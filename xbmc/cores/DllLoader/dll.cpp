@@ -5,6 +5,7 @@
 #include <memory>
 #include <map>
 #include <list>
+#include <vector>
 
 #include <string.h>
 #include "dll.h"
@@ -19,6 +20,9 @@ Exp2Dll *Head = 0;
 DllLoader * wmaDMOdll;
 DllLoader * wmvDMOdll;
 DllLoader * wmsDMOdll;
+
+void* fs_seg = NULL;
+vector<DllLoader *> m_vecDlls;
 
 // Allocation tracking for vis modules that leak
 struct DllTrackInfo {
@@ -108,7 +112,7 @@ std::list<unsigned long*> AllocatedFunctionList;
 int iDllDummyOutputCall = 0;
 extern "C" void dll_dummy_output(char* dllname, char* funcname)
 {
-	CLog::Log(LOGERROR, "%s: Unresolved function called (%s), Count number %d", dllname, funcname, ++iDllDummyOutputCall);
+	CLog::Log(LOGERROR,"%s: Unresolved function called (%s), Count number %d", dllname, funcname, ++iDllDummyOutputCall);
 }
 
 // this piece of asm code only calls dll_dummy_output(s, s) and will return NULL
@@ -190,11 +194,11 @@ void DllLoader::PrintImportLookupTable(unsigned long ImportLookupTable_RVA)
 		if( *Table & 0x80000000)
 		{
 			// Process Ordinal...
-			printf("            Ordinal: %01X\n", *Table & 0x7fffffff);
+			CLog::Log(LOGDEBUG,"            Ordinal: %01X\n", *Table & 0x7fffffff);
 		}
 		else
 		{
-			printf("            Don't process Hint/Name Table yet...\n");
+			CLog::Log(LOGDEBUG,"            Don't process Hint/Name Table yet...\n");
 		}
 		Table++;
 	}
@@ -217,13 +221,13 @@ void DllLoader::PrintImportTable(ImportDirTable_t *ImportDirTable)
 
 		Sctn = RVA2Section(Imp->Name_RVA);
 		Name = SectionData[Sctn] + (Imp->Name_RVA - SectionHeader[Sctn].VirtualAddress);
-		printf("    %s:\n", Name);
-		printf("        ImportAddressTable:     %04X\n", Imp->ImportAddressTable_RVA);
-		printf("        ImportLookupTable:      %04X\n", Imp->ImportLookupTable_RVA);
-		printf("        TimeStamp:              %01X\n", Imp->TimeStamp);
-		printf("        Forwarder Chain:        %01X\n", Imp->ForwarderChain);
+		CLog::Log(LOGDEBUG,"    %s:\n", Name);
+		CLog::Log(LOGDEBUG,"        ImportAddressTable:     %04X\n", Imp->ImportAddressTable_RVA);
+		CLog::Log(LOGDEBUG,"        ImportLookupTable:      %04X\n", Imp->ImportLookupTable_RVA);
+		CLog::Log(LOGDEBUG,"        TimeStamp:              %01X\n", Imp->TimeStamp);
+		CLog::Log(LOGDEBUG,"        Forwarder Chain:        %01X\n", Imp->ForwarderChain);
 		PrintImportLookupTable(Imp->ImportLookupTable_RVA);                   
-		printf("\n");
+		CLog::Log(LOGDEBUG,"\n");
 		Imp++;
 	}
 	if( !HavePrinted )
@@ -525,8 +529,23 @@ DllLoader::DllLoader(const char *_dll, bool track)
 {
 	ImportDirTable = 0;        
 	Dll = new char[strlen(_dll)+1];
+	refcount = 1;
 	strcpy(Dll, _dll);
 	Exports = 0;
+
+	// Initialize FS segment, important for quicktime dll's
+	if (fs_seg == NULL)
+	{
+		CLog::Log(LOGDEBUG,"Initializing FS_SEG..");
+		fs_seg = malloc(0x1000);
+		RtlZeroMemory(fs_seg, 0x1000);
+		__asm {
+			mov eax, fs_seg;
+			mov fs:[18h], eax;
+			xor eax, eax
+		}
+		CLog::Log(LOGDEBUG,"FS segment @ 0x%x", fs_seg);
+	}
 
 	if (track)
 	{
@@ -584,6 +603,25 @@ DllLoader::~DllLoader()
 	std::list<unsigned long*>::iterator unIt = AllocatedFunctionList.begin();
 	while (unIt != AllocatedFunctionList.end()) { delete(*unIt); unIt++;	}
 	AllocatedFunctionList.clear();
+}
+
+char * DllLoader::GetDLLName()
+{
+	if (Dll)
+		return Dll;
+	return "";
+}
+
+int DllLoader::IncrRef()
+{
+	refcount++;
+	return refcount;
+}
+
+int DllLoader::DecrRef()
+{
+	refcount--;
+	return refcount;
 }
 
 int DllLoader::Parse()
@@ -675,28 +713,70 @@ Exp2Dll::~Exp2Dll()
 }           
 
 #define DEFAULT_DLLPATH "Q:\\mplayer\\codecs"
-#define MODULE_HANDLE_kernel32 0xf3f30120			//kernel32.dll magic number
+#define MODULE_HANDLE_kernel32  0xf3f30120			//kernel32.dll magic number
+#define MODULE_HANDLE_user32    0xf3f30130			//USER32.dll magic number
+#define MODULE_HANDLE_ddraw     0xf3f30140			//ddraw.dll magic number
+#define MODULE_HANDLE_wininet   0xf3f30150			//WININET.dll magic number
+#define MODULE_HANDLE_advapi32  0xf3f30160			//ADVAPI32.dll magic number
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR libname) 
 {
+    // we skip to the last backslash
+    // this is effectively eliminating weird characters in
+    // the text output windows
+
+    char* lastbc = strrchr(libname, '\\');
+    if (lastbc)
+    {
+		lastbc++;
+		libname = lastbc;
+	}
+
+	CLog::Log(LOGDEBUG,"LoadLibraryA('%s')", libname);
 
 	if (strcmp(libname, "kernel32.dll") == 0 || strcmp(libname, "kernel32") == 0 ||
 		strcmp(libname, "KERNEL32.DLL") == 0 || strcmp(libname, "KERNEL32") == 0 )
 		return (HMODULE)MODULE_HANDLE_kernel32;
+
+	if (strcmp(libname, "user32.dll") == 0 || strcmp(libname, "user32") == 0 ||
+		strcmp(libname, "USER32.DLL") == 0 || strcmp(libname, "USER32") == 0 )
+		return (HMODULE)MODULE_HANDLE_user32;
+
+	if (strcmp(libname, "ddraw.dll") == 0 || strcmp(libname, "ddraw") == 0 ||
+		strcmp(libname, "ddraw.DLL") == 0 || strcmp(libname, "DDRAW") == 0 )
+		return (HMODULE)MODULE_HANDLE_ddraw;
+
+	if (strcmp(libname, "wininet.dll") == 0 || strcmp(libname, "wininet") == 0 ||
+		strcmp(libname, "WININET.DLL") == 0 || strcmp(libname, "WININET") == 0 )
+		return (HMODULE)MODULE_HANDLE_wininet;
+
+	if (strcmp(libname, "advapi32.dll") == 0 || strcmp(libname, "advapi32") == 0 ||
+		strcmp(libname, "ADVAPI32.DLL") == 0 || strcmp(libname, "ADVAPI32") == 0 )
+		return (HMODULE)MODULE_HANDLE_advapi32;
 
 	char plibname[MAX_PATH+1];
 	if (strlen(libname) > 1 && libname[1] == ':')
 		sprintf(plibname, "%s", (char *)libname);
 	else
 		sprintf(plibname, "%s\\%s", DEFAULT_DLLPATH ,(char *)libname);
+	
+	// Check m_vecDlls vector if dll is already loaded and return its handle
+	for (unsigned int i=0; i<m_vecDlls.size(); i++)
+	{
+		DllLoader * dll = m_vecDlls[i];
+		if (strncmp(plibname, dll->GetDLLName(), strlen(plibname))==0) {
+			CLog::Log(LOGDEBUG,"%s already loaded -> 0x%x", dll->GetDLLName(), dll);
+			dll->IncrRef();
+			return (HMODULE) dll;
+		}
+	}
+
 	DllLoader * dllhandle = new DllLoader(plibname);
 
 	int hr = dllhandle->Parse();
 	if ( hr == 0 ) 
 	{
-		char szBuf[128];
-		sprintf(szBuf,"Failed to open %s\\%s, check codecs.conf and file existence.\n",DEFAULT_DLLPATH, libname);
-		OutputDebugString(szBuf);	
+		CLog::Log(LOGERROR,"Failed to open %s\\%s, check codecs.conf and file existence.\n",DEFAULT_DLLPATH, libname);
 		delete dllhandle;
 		return NULL;
 	}
@@ -712,11 +792,72 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR libname)
 		wmsDMOdll = dllhandle;
 
 
-	void * address = NULL;
-	dllhandle->ResolveExport("DllMain", &address);
-	if (address) dllhandle->EntryAddress = (unsigned long)address;
+	
+	// only execute DllMain if no EntryPoint is found
+	if (!dllhandle->EntryAddress) {	
+		void * address = NULL;
+		dllhandle->ResolveExport("DllMain", &address);
+		if (address) dllhandle->EntryAddress = (unsigned long)address;
+	} else {
+		CLog::Log(LOGDEBUG,"Executing EntryPoint at: 0x%x - Dll: %s", dllhandle->EntryAddress, libname);
+	}
+		
+	// patch some unwanted calls in memory
+	if (strstr(libname,"QuickTime.qts") && dllhandle)
+	{
+		int i;
+		DWORD dispatch_addr;
+		DWORD imagebase_addr;
+		DWORD dispatch_rva;
+		
+		dllhandle->ResolveExport("theQuickTimeDispatcher", (void **)&dispatch_addr);
+		imagebase_addr = (DWORD)dllhandle->hModule;
+		CLog::Log(LOGDEBUG,"Virtual Address of theQuickTimeDispatcher = 0x%x", dispatch_addr);
+		CLog::Log(LOGDEBUG,"ImageBase of %s = 0x%x", libname, imagebase_addr);
+
+		dispatch_rva = dispatch_addr-imagebase_addr;
+
+		CLog::Log(LOGDEBUG,"Relative Virtual Address of theQuickTimeDispatcher = %p", dispatch_rva);
+
+	    DWORD base = imagebase_addr;
+		if (dispatch_rva == 0x124C30)
+	    {
+			CLog::Log(LOGINFO,"QuickTime5 DLLs found\n");
+	        for (i=0;i<5;i++)   ((BYTE*)base+0x19e842)[i]=0x90; // make_new_region ?
+	        for (i=0;i<28;i++)  ((BYTE*)base+0x19e86d)[i]=0x90; // call__call_CreateCompatibleDC ?
+			for (i=0;i<5;i++)   ((BYTE*)base+0x19e898)[i]=0x90; // jmp_to_call_loadbitmap ?
+	        for (i=0;i<9;i++)   ((BYTE*)base+0x19e8ac)[i]=0x90; // call__calls_OLE_shit ?
+	        for (i=0;i<106;i++) ((BYTE*)base+0x261B10)[i]=0x90; // disable threads
+	    }
+		else if (dispatch_rva == 0x13B330)
+	    {
+			CLog::Log(LOGINFO,"QuickTime6 DLLs found\n");
+			for (i=0;i<5;i++)  ((BYTE*)base+0x2730CC)[i]=0x90; // make_new_region
+			for (i=0;i<28;i++) ((BYTE*)base+0x2730f7)[i]=0x90; // call__call_CreateCompatibleDC
+			for (i=0;i<5;i++)  ((BYTE*)base+0x273122)[i]=0x90; // jmp_to_call_loadbitmap
+			for (i=0;i<9;i++)  ((BYTE*)base+0x273131)[i]=0x90; // call__calls_OLE_shit
+			for (i=0;i<96;i++) ((BYTE*)base+0x2AC852)[i]=0x90; // disable threads
+	    }
+		else if (dispatch_rva == 0x13C3E0)
+	    {
+			CLog::Log(LOGINFO,"QuickTime6.3 DLLs found\n");			
+			for (i=0;i<5;i++)  ((BYTE*)base+0x268F6C)[i]=0x90; // make_new_region
+			for (i=0;i<28;i++) ((BYTE*)base+0x268F97)[i]=0x90; // call__call_CreateCompatibleDC
+			for (i=0;i<5;i++)  ((BYTE*)base+0x268FC2)[i]=0x90; // jmp_to_call_loadbitmap
+			for (i=0;i<9;i++)  ((BYTE*)base+0x268FD1)[i]=0x90; // call__calls_OLE_shit
+			for (i=0;i<96;i++) ((BYTE*)base+0x2B4722)[i]=0x90; // disable threads
+	    }
+		else
+	    {
+			CLog::Log(LOGERROR,"Unsupported QuickTime version");
+			//return 0;
+	    }
+
+		CLog::Log(LOGINFO,"QuickTime.qts patched!!!\n");	
+	}
+
 	EntryFunc * initdll = (EntryFunc *)dllhandle->EntryAddress;
-	(*initdll)((HINSTANCE) dllhandle->hModule, 1 ,0);	//call "DllMian" with DLL_PROCESS_ATTACH
+	(*initdll)((HINSTANCE) dllhandle, 1 ,0);	//call "DllMain" with DLL_PROCESS_ATTACH
 
 	//#define DLL_PROCESS_ATTACH   1    
 	//#define DLL_THREAD_ATTACH    2    
@@ -724,18 +865,39 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR libname)
 	//#define DLL_PROCESS_DETACH   0    
 	//#define DLL_PROCESS_VERIFIER 4   
 
+	CLog::Log(LOGDEBUG,"LoadLibrary('%s') returning: 0x%x", libname, dllhandle);
+
+	// Add dll to m_vecDlls
+	m_vecDlls.push_back(dllhandle);
 	return (HMODULE) dllhandle;
 }
 
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
-{
-	if ( hLibModule == (HMODULE)MODULE_HANDLE_kernel32 )
+{	
+	CLog::Log(LOGDEBUG,"FreeLibrary(0x%x)", hLibModule);
+	if (hLibModule == (HMODULE)MODULE_HANDLE_kernel32 ||
+		hLibModule == (HMODULE)MODULE_HANDLE_user32 ||
+		hLibModule == (HMODULE)MODULE_HANDLE_ddraw ||
+		hLibModule == (HMODULE)MODULE_HANDLE_wininet ||
+		hLibModule == (HMODULE)MODULE_HANDLE_advapi32)
 		return 1;
 
 	DllLoader * dllhandle = (DllLoader *)hLibModule;
+	if (dllhandle->DecrRef() > 0) {
+		CLog::Log(LOGDEBUG,"Cannot FreeLibrary(%s), refcount > 0", dllhandle->GetDLLName());
+		return 0;
+	}
 
 	EntryFunc * initdll = (EntryFunc *)dllhandle->EntryAddress;
-	(*initdll)( (HINSTANCE) dllhandle->hModule, 0 ,0);	//call "DllMian" with DLL_PROCESS_DETACH
+	(*initdll)( (HINSTANCE) dllhandle->hModule, 0 ,0);	//call "DllMain" with DLL_PROCESS_DETACH
+
+	//Remove dll from m_vecDlls
+	for (vector<DllLoader*>::iterator iDll = m_vecDlls.begin(); iDll != m_vecDlls.end(); ++iDll) {
+		if ((*iDll) == dllhandle) {
+			m_vecDlls.erase(iDll);
+			break;
+		}
+	}
 
 	if ( dllhandle )
 		delete dllhandle;
@@ -744,35 +906,99 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 
 extern "C" FARPROC __stdcall dllGetProcAddress( HMODULE hModule, LPCSTR function )
 {
-	void * address = NULL;
+	void * address = NULL;	
 	if ( hModule == (HMODULE)MODULE_HANDLE_kernel32 )
 	{
 		if ( ResolveName("kernel32.dll", (char *)function, &address)||
-			ResolveName("KERNEL32.DLL", (char *)function, &address) )
+			ResolveName("KERNEL32.DLL", (char *)function, &address) ) {
+			CLog::Log(LOGDEBUG,"KERNEL32!GetProcAddress(0x%x, '%s') => 0x%x", hModule, function, address);
 			return (FARPROC) address;
-		else
+		} else {
+			CLog::Log(LOGDEBUG,"KERNEL32!GetProcAddress(0x%x, '%s') => 0x%x", hModule, function, NULL);
 			return (FARPROC) NULL;
+		}
+	}
+
+	if ( hModule == (HMODULE)MODULE_HANDLE_user32 )
+	{
+		if ( ResolveName("user32.dll", (char *)function, &address)||
+			ResolveName("USER32.DLL", (char *)function, &address) ) {
+			CLog::Log(LOGDEBUG,"KERNEL32!GetProcAddress(0x%x, '%s') => 0x%x", hModule, function, address);
+			return (FARPROC) address;
+		} else {
+			CLog::Log(LOGDEBUG,"KERNEL32!GetProcAddress(0x%x, '%s') => 0x%x", hModule, function, NULL);
+			return (FARPROC) NULL;
+		}
+	}
+
+	if ( hModule == (HMODULE)MODULE_HANDLE_ddraw )
+	{
+		if ( ResolveName("ddraw.dll", (char *)function, &address)||
+			ResolveName("DDRAW.DLL", (char *)function, &address) ) {
+			CLog::Log(LOGDEBUG,"KERNEL32!GetProcAddress(0x%x, '%s') => 0x%x", hModule, function, address);
+			return (FARPROC) address;
+		} else {
+			CLog::Log(LOGDEBUG,"KERNEL32!GetProcAddress(0x%x, '%s') => 0x%x", hModule, function, NULL);
+			return (FARPROC) NULL;
+		}
+	}
+
+	if ( hModule == (HMODULE)MODULE_HANDLE_wininet )
+	{
+		if ( ResolveName("wininet.dll", (char *)function, &address)||
+			ResolveName("WININET.DLL", (char *)function, &address) ) {
+			CLog::Log(LOGDEBUG,"KERNEL32!GetProcAddress (0x%x, '%s') => 0x%x", hModule, function, address);
+			return (FARPROC) address;
+		} else {
+			CLog::Log(LOGDEBUG,"KERNEL32!GetProcAddress(0x%x, '%s') => 0x%x", hModule, function, NULL);
+			return (FARPROC) NULL;
+		}
+	}
+
+	if ( hModule == (HMODULE)MODULE_HANDLE_advapi32 )
+	{
+		if ( ResolveName("advapi32.dll", (char *)function, &address)||
+			ResolveName("ADVAPI32.DLL", (char *)function, &address) ) {
+			CLog::Log(LOGDEBUG,"KERNEL32!GetProcAddress (0x%x, '%s') => 0x%x", hModule, function, address);
+			return (FARPROC) address;
+		} else {
+			CLog::Log(LOGDEBUG,"KERNEL32!GetProcAddress(0x%x, '%s') => 0x%x", hModule, function, NULL);
+			return (FARPROC) NULL;
+		}
 	}
 
 	DllLoader * dllhandle = (DllLoader *)hModule;
 	dllhandle->ResolveExport((char *)function, &address);
+	CLog::Log(LOGDEBUG,"KERNEL32!GetProcAddress(0x%x, '%s') => 0x%x", hModule, function, address);
 	return (FARPROC) address;
 }
 
 extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename, DWORD nSize)
 {
+	DWORD result = 0;
 	if (NULL == hModule)
 	{
-		// for now, only return full path
-		strncpy(lpFilename, "q:\\mplayer\\codecs", nSize);
-		return 17; //strlen lpFilename
+		strncpy(lpFilename, "xbmc.xbe", nSize);
+		CLog::Log(LOGDEBUG,"GetModuleFileNameA(0x%x, 0x%x, %d) => '%s'\n",
+			hModule, lpFilename, nSize, lpFilename);
+		return 1;
 	}
-	OutputDebugString("kernel32.dll incomplete function GetModuleFileNameA called\n");	//warning
+
+	// Lookup dll handle in m_vecDlls
+	for (unsigned int i=0; i<m_vecDlls.size(); i++)
+	{
+		DllLoader * dll = m_vecDlls[i];
+		if (hModule == (HMODULE) dll) {
+			strncpy(lpFilename, dll->GetDLLName(), nSize);
+			return 1;
+		}
+	}
+
 	return NULL;
 }
 
 extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
-{
+{	
 	/*
 	If the file name extension is omitted, the default library extension .dll is appended.
 	The file name string can include a trailing point character (.) to indicate that the module name has no extension.
@@ -785,11 +1011,55 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
 
 	if(strrchr(strModuleName, '.') == 0) strcat(strModuleName, ".dll");
 
-	if (stricmp(strModuleName, "kernel32.dll") == 0) return (HMODULE)MODULE_HANDLE_kernel32;
+	if (stricmp(strModuleName, "kernel32.dll") == 0) {
+		CLog::Log(LOGDEBUG,"KERNEL32!GetModuleHandleA('%s') => 0x%x", lpModuleName, MODULE_HANDLE_kernel32);
+		return (HMODULE)MODULE_HANDLE_kernel32;
+	}
+	if (stricmp(strModuleName, "user32.dll") == 0) {
+		CLog::Log(LOGDEBUG,"KERNEL32!GetModuleHandleA('%s') => 0x%x", lpModuleName, MODULE_HANDLE_user32);
+		return (HMODULE)MODULE_HANDLE_user32;
+	}
 
-	// need to find other handles too, return NULL for now
-	OutputDebugString("kernel32.dll incomplete function GetModuleHandleA called\n");	//warning
+	if (stricmp(strModuleName, "ddraw.dll") == 0) {
+		CLog::Log(LOGDEBUG,"KERNEL32!GetModuleHandleA('%s') => 0x%x", lpModuleName, MODULE_HANDLE_ddraw);
+		return (HMODULE)MODULE_HANDLE_ddraw;
+	}
+	if (stricmp(strModuleName, "wininet.dll") == 0) {
+		CLog::Log(LOGDEBUG,"KERNEL32!GetModuleHandleA('%s') => 0x%x", lpModuleName, MODULE_HANDLE_wininet);
+		return (HMODULE)MODULE_HANDLE_wininet;
+	}
+	if (stricmp(strModuleName, "advapi32.dll") == 0) {
+		CLog::Log(LOGDEBUG,"KERNEL32!GetModuleHandleA('%s') => 0x%x", lpModuleName, MODULE_HANDLE_advapi32);
+		return (HMODULE)MODULE_HANDLE_advapi32;
+	}
+
 	delete []strModuleName;
+
+	CLog::Log(LOGDEBUG,"GetModuleHandleA(%s) .. looking up", lpModuleName);
+
+	// Lookup module handle for lpModuleName
+	for (unsigned int i=0; i<m_vecDlls.size(); i++)
+	{
+		DllLoader * dll = m_vecDlls[i];
+		char *lastbc;
+		char *dllname;
+		
+		dllname = dll->GetDLLName();
+
+		 //get filename only
+		lastbc = strrchr(dllname, '\\');
+		if (lastbc)
+		{
+			lastbc++;
+			dllname = lastbc;
+		}
+
+		if(strncmp(lpModuleName, dllname, lstrlen(lpModuleName))==0) {
+			CLog::Log(LOGDEBUG,"GetModuleHandleA(%s) => 0x%x", lpModuleName, dll);
+			return (HMODULE)dll;
+		}
+	}
+	
 	return NULL;
 }
 
