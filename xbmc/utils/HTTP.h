@@ -31,9 +31,8 @@ public:
 	bool 		Post(const string& strURL, const string& strPostData, string& strHTML);
 	void 		SetCookie(const string& strCookie);
 	bool 		Get(string& strURL, string& strHTML);
-	bool 		Download(const string &strURL, const string &strFileName);
+	bool 		Download(const string &strURL, const string &strFileName, LPDWORD pdwSize = NULL);
 	bool		GetHeader(CStdString strName, CStdString& strValue) const;
-	int			GetBytesRecvCount() { return m_RecvBytes; };
 	
 	string m_redirectedURL;
 
