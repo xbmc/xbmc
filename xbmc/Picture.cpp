@@ -128,15 +128,23 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
 		m_dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
     }
 
-    if (bResize)
-    {
-		image.Resample(m_dwWidth,m_dwHeight, QUALITY);
+  if (bResize)
+  {
+		if (!image.Resample(m_dwWidth,m_dwHeight, QUALITY))
+		{
+			CLog::Log(LOGERROR, "PICTURE::Load: Unable to resample picture: %s\n", strCachedFile.c_str());
+			return NULL;
+		}
 	}
 
 	m_dwWidth=image.GetWidth();
 	m_dwHeight=image.GetHeight();
 
-	image.Flip();
+	if (!image.Flip())
+	{
+		CLog::Log(LOGERROR, "PICTURE::Load: Unable to flip picture: %s\n", strCachedFile.c_str());
+		return NULL;
+	}
 	if (bRGB)
 		pTexture=GetTexture(image);
 	else
