@@ -39,7 +39,7 @@
 #define ACTION_SELECT_ITEM						 7
 #define ACTION_HIGHLIGHT_ITEM					 8
 #define ACTION_PARENT_DIR							 9
-#define ACTION_PARENT_MENU						10
+#define ACTION_PREVIOUS_MENU						10
 #define ACTION_SHOW_INFO							11
 
 #define ACTION_PAUSE									12
@@ -90,6 +90,7 @@
 #define ACTION_AUDIO_NEXT_LANGUAGE		56
 
 // Window ID defines to make the code a bit more readable
+#define WINDOW_INVALID				-1
 #define WINDOW_HOME					0
 #define WINDOW_PROGRAMS				1
 #define WINDOW_PICTURES				2
@@ -101,7 +102,7 @@
 #define WINDOW_SETTINGS_SCREEN		9
 #define WINDOW_UI_CALIBRATION		10
 #define WINDOW_MOVIE_CALIBRATION	11
-#define WINDOW_SLIDESHOW			2007
+#define WINDOW_SETTINGS_SLIDESHOW	12
 #define WINDOW_SETTINGS_FILTER		13
 #define WINDOW_SETTINGS_MUSIC		14
 #define WINDOW_SCRIPTS				20
@@ -114,6 +115,7 @@
 #define WINDOW_VIDEO_INFO			2003
 #define WINDOW_FULLSCREEN_VIDEO		2005
 #define WINDOW_VISUALISATION		2006
+#define WINDOW_SLIDESHOW			2007
 
 struct CAction {
 	WORD wID;

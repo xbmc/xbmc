@@ -105,31 +105,16 @@ CGUIWindowPictures::~CGUIWindowPictures(void)
 
 void CGUIWindowPictures::OnAction(const CAction &action)
 {
-	if (m_slideShow.IsPlaying())
+	if (action.wID == ACTION_PARENT_DIR)
 	{
-		// Get a new action, as we're using a different window now
-		CAction newAction;
-		g_buttonTranslator.ReGetAction(WINDOW_SLIDESHOW, newAction);
-		m_slideShow.OnAction(newAction);
-		if (!m_slideShow.IsPlaying())
-		{
-			g_application.EnableOverlay();
-		}
+		GoParentFolder();
 		return;
 	}
-	else
+	if (action.wID == ACTION_PREVIOUS_MENU)
 	{
-		if (action.wID == ACTION_PARENT_DIR)
-		{
-			GoParentFolder();
-			return;
-		}
-		if (action.wID == ACTION_PARENT_MENU)
-		{
-			m_gWindowManager.ActivateWindow(WINDOW_HOME); // back 2 home
-			return;
-		}
-    }
+		m_gWindowManager.PreviousWindow();
+		return;
+	}
 	CGUIWindow::OnAction(action);
 }
 
@@ -172,16 +157,20 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 		}
 		break;
     case GUI_MSG_WINDOW_DEINIT:
-      Clear();
-			m_slideShow.Reset();
-			CSectionLoader::Unload("CXIMAGE");
-			g_application.EnableOverlay();
+	      Clear();
+		  	if (message.GetParam1() != WINDOW_SLIDESHOW)
+			{
+				CSectionLoader::Unload("CXIMAGE");
+			}
     break;
 
     case GUI_MSG_WINDOW_INIT:
 		{
 			CGUIWindow::OnMessage(message);
-			CSectionLoader::Load("CXIMAGE");
+		  	if (message.GetParam1() != WINDOW_SLIDESHOW)
+			{
+				CSectionLoader::Load("CXIMAGE");
+			}
 			if (m_strDirectory=="?")
 				m_strDirectory=g_stSettings.m_szDefaultPictures;
 
@@ -516,32 +505,38 @@ bool CGUIWindowPictures::HaveDiscOrConnection( CStdString& strPath, int iDriveTy
 
 void CGUIWindowPictures::OnShowPicture(const CStdString& strPicture)
 {
-	g_application.DisableOverlay();
-  m_slideShow.Reset();
+	CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+	if (!pSlideShow)
+		return;
+	pSlideShow->Reset();
   for (int i=0; i < (int)m_vecItems.size();++i)
   {
     CFileItem* pItem=m_vecItems[i];
     if (!pItem->m_bIsFolder)
     {
-      m_slideShow.Add(pItem->m_strPath);
+		pSlideShow->Add(pItem->m_strPath);
     }
   }
-  m_slideShow.Select(strPicture);
+	pSlideShow->Select(strPicture);
+	m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
 void CGUIWindowPictures::OnSlideShow()
 {
-	g_application.DisableOverlay();
-	m_slideShow.Reset();
+	CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+	if (!pSlideShow)
+		return;
+	pSlideShow->Reset();
   for (int i=0; i < (int)m_vecItems.size();++i)
   {
     CFileItem* pItem=m_vecItems[i];
     if (!pItem->m_bIsFolder)
     {
-      m_slideShow.Add(pItem->m_strPath);
+		pSlideShow->Add(pItem->m_strPath);
     }
   }
-  m_slideShow.StartSlideShow();
+	pSlideShow->StartSlideShow();
+	m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
 void CGUIWindowPictures::OnCreateThumbs()
@@ -574,7 +569,6 @@ void CGUIWindowPictures::OnCreateThumbs()
 void CGUIWindowPictures::Render()
 {
 	CGUIWindow::Render();
-	m_slideShow.Render();
 }
 
 

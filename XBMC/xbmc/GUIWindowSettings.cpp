@@ -13,9 +13,9 @@ CGUIWindowSettings::~CGUIWindowSettings(void)
 
 void CGUIWindowSettings::OnAction(const CAction &action)
 {
-	if (action.wID == ACTION_PARENT_MENU)
+	if (action.wID == ACTION_PREVIOUS_MENU)
     {
-		m_gWindowManager.ActivateWindow(WINDOW_HOME); // back 2 home
+		m_gWindowManager.PreviousWindow();
 		return;
     }
 	CGUIWindow::OnAction(action);

@@ -17,6 +17,8 @@ public:
   void            Add(CGUIWindow* pWindow);
 	void						Remove(DWORD dwID);
   void            ActivateWindow(int iWindowID);
+  void			  PreviousWindow();
+  void			  RefreshWindow();
   void            OnAction(const CAction &action);
   void            Render();
 	CGUIWindow*     GetWindow(DWORD dwID);

@@ -30,9 +30,9 @@ void CGUIWindowSettingsUICalibration::OnAction(const CAction &action)
 	int iXOff = g_stSettings.m_iUIOffsetX;
 	int iYOff = g_stSettings.m_iUIOffsetY;
 
-	if (action.wID == ACTION_PARENT_MENU)
+	if (action.wID == ACTION_PREVIOUS_MENU)
     {
-		m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_SCREEN); // back 2 home
+		m_gWindowManager.PreviousWindow();
 		return;
     }
 	if (m_iSpeed>10) m_iSpeed=10; // Speed limit for accellerated cursors

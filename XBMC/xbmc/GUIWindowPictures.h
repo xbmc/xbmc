@@ -3,7 +3,6 @@
 #include "filesystem/VirtualDirectory.h"
 #include "filesystem/DirectoryHistory.h"
 #include "FileItem.h"
-#include "SlideShow.h"
 #include "GUIDialogProgress.h"
 
 #include "stdstring.h"
@@ -33,7 +32,6 @@ protected:
 	int								GetSelectedItem();
   bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
 
-	CSlideShow					m_slideShow;
 	CVirtualDirectory		m_rootDir;
   VECFILEITEMS				m_vecItems;
 	CStdString					m_strDirectory;
