@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 23-03-2005 fixed: ".." item was always hidden in DVD folders.
   - 22-03-2005 fixed: [ 1095213 ] Error handleing of xboxmediacenter.xml.
   - 22-03-2005 added: VideoPlayer.Cover infoimage to the infomanager.
   - 22-03-2005 fixed: Harddisk spin up when fast fowarding (or display of any control in full screen video).
