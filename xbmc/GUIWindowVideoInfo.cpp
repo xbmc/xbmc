@@ -179,9 +179,24 @@ void  CGUIWindowVideoInfo::Render()
 	DWORD width=pControl->GetWidth();
 	DWORD height=pControl->GetHeight();
 	g_graphicsContext.Correct(x,y);
+
+  DWORD dwWidth=m_iTextureWidth;
+  DWORD dwHeight=m_iTextureHeight;
+  float fAspect= ((float)dwWidth) / ((float)dwHeight);
+  if (dwWidth > width )
+  {
+    dwWidth  = width;
+    dwHeight = (DWORD)( ( (float)height) / fAspect);
+  }
+
+  if (dwHeight > height )
+  {
+    dwHeight = height;
+    dwWidth  = (DWORD)(  fAspect * ( (float)height) );
+  }
 	
 	CPicture picture;
-	picture.RenderImage(m_pTexture,(int)x,(int)y,width,height,m_iTextureWidth,m_iTextureHeight);
+	picture.RenderImage(m_pTexture,(int)x,(int)y,dwWidth,dwHeight,m_iTextureWidth,m_iTextureHeight);
 }
 
 
@@ -232,7 +247,7 @@ void CGUIWindowVideoInfo::Refresh()
 		  CPicture picture;
 		  m_pTexture=picture.Load(strThumb);
 		  m_iTextureWidth=picture.GetWidth();
-		  m_iTextureHeight=picture.GetWidth();
+      m_iTextureHeight=picture.GetHeight();
   		
 	  }
     OutputDebugString("update\n");

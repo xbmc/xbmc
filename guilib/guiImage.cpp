@@ -17,6 +17,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dw
   m_dwItems=1;
 	m_iCurrentImage=0;
 	m_dwFrameCounter=0;
+  m_bKeepAspectRatio=false;
 }
 
 
@@ -221,8 +222,30 @@ void CGUIImage::Update()
   if (m_dwHeight==0) 
     m_dwHeight=m_iTextureHeight;
 
+  if (m_bKeepAspectRatio && m_iTextureWidth && m_iTextureHeight)
+  {
+    DWORD dwWidth =m_iTextureWidth;
+    DWORD dwHeight=m_iTextureHeight;
+    float fAspect= ((float)dwWidth) / ((float)dwHeight);
+    if (dwWidth > m_dwWidth )
+    {
+      dwWidth  = m_dwWidth;
+      dwHeight = (DWORD)( ( (float)m_dwHeight) / fAspect);
+    }
+
+    if (dwHeight > m_dwHeight )
+    {
+      dwHeight = m_dwHeight;
+      dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
+    }
+    m_dwWidth=dwWidth;
+    m_dwHeight=dwHeight;
+  }
+
   float nw =(float)m_dwWidth;
   float nh=(float)m_dwHeight;
+
+
 
 	if (CalibrationEnabled())
 	{
@@ -301,4 +324,13 @@ int	CGUIImage::GetTextureWidth() const
 int CGUIImage::GetTextureHeight() const
 {
 	return m_iTextureHeight;
+}
+
+void CGUIImage::SetKeepAspectRatio(bool bOnOff)
+{
+  m_bKeepAspectRatio=bOnOff;
+}
+bool CGUIImage::GetKeepAspectRatio() const
+{
+  return m_bKeepAspectRatio;
 }

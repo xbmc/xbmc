@@ -31,6 +31,8 @@ public:
 
 	const CStdString& GetFileName() const {return m_strFileName;};
 	DWORD						  GetColorKey() const {return m_dwColorKey;};
+  void              SetKeepAspectRatio(bool bOnOff);
+  bool              GetKeepAspectRatio() const;
 protected:
   virtual void       Update();
 	void							 Process();
@@ -51,6 +53,7 @@ protected:
   DWORD                   m_dwItems;
 	int										  m_iCurrentImage;
 	DWORD										m_dwFrameCounter;
+  bool                    m_bKeepAspectRatio;
   vector <LPDIRECT3DTEXTURE8> m_vecTextures;
 };
 #endif
