@@ -55,6 +55,7 @@ CFileItem::CFileItem(const CStdString& strLabel)
 	memset(&m_stTime,0,sizeof(m_stTime));
 	m_iDriveType = SHARE_TYPE_UNKNOWN;
 	m_iprogramCount = 0;
+	m_idepth = 1;
 	m_lStartOffset = 0;
 	m_lEndOffset = 0;
 }

@@ -40,6 +40,7 @@ public:
   CStdString    m_strDVDLabel;
 	CMusicInfoTag m_musicInfoTag;
   int			m_iprogramCount;
+	int			m_idepth;
 	long		m_lStartOffset;
 	long		m_lEndOffset;
 };

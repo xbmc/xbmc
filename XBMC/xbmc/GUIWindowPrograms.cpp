@@ -307,7 +307,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 
 			if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
 			{
-				if (strFileName != "." && strFileName != ".." && !bFlattenDir)
+				if ( strFileName != "." && strFileName != ".." && !bFlattenDir)
 				{
 					CFileItem *pItem = new CFileItem(strFileName);
 					pItem->m_strPath=strFile;
@@ -342,7 +342,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 						CUtil::RemoveIllegalChars(strDescription);
 					}
 
-					if (!bFlattenDir)
+					if (!bFlattenDir || CUtil::IsDVD(strFile))
 					{
 						CFileItem *pItem = new CFileItem(strDescription);
 						pItem->m_strPath=strFile;
@@ -414,6 +414,7 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 			pItem->m_strPath=sharePath;
 			pItem->m_bIsShareOrDrive=false;
 			pItem->m_bIsFolder=true;
+			pItem->m_idepth=share.m_iDepthSize;
 			CUtil::Tokenize(sharePath, vecShares, ",");
 			CStdString strThumb;
 			for (int j=0; j < (int)vecShares.size(); j++)    // use the first folder image that we find
@@ -487,7 +488,6 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 				m_vecItems.push_back(pItem);
 			}
 			m_strParentPath = strParentPath;
-//		}
 	}
 
 	m_iLastControl=GetFocusedControl();
@@ -556,6 +556,7 @@ void CGUIWindowPrograms::OnClick(int iItem)
 		if (m_strDirectory=="")
 			m_shareDirectory=pItem->m_strPath;
 		m_strDirectory=pItem->m_strPath;
+		m_iDepth=pItem->m_idepth;
 		Update(m_strDirectory);
 	}
 	else
