@@ -498,7 +498,6 @@ void SqliteDataset::next(void) {
       fill_fields();
 }
 
-
 bool SqliteDataset::seek(int pos) {
   if (ds_state == dsSelect) {
     Dataset::seek(pos);
@@ -508,10 +507,13 @@ bool SqliteDataset::seek(int pos) {
   return false;
 }
 
-
-
 long SqliteDataset::nextid(const char *seq_name) {
   if (handle()) return db->nextid(seq_name);
   else return DB_UNEXPECTED_RESULT;
+}
+
+void SqliteDataset::interrupt()
+{
+  sqlite3_interrupt(handle());
 }
 
