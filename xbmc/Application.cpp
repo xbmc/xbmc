@@ -14,7 +14,7 @@
 #ifdef _DEBUG
 //	#pragma comment (lib,"lib/filezilla/xbfilezillad.lib") // SECTIONNAME=FILEZILL
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
-	#pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
+	//#pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
 	#pragma comment (lib,"xbmc/lib/cximage/ImageLibd.lib")   // SECTIONNAME=CXIMAGE
 	#pragma comment (lib,"xbmc/lib/libID3/i3dlibd.lib")			 // SECTIONNAME=LIBID3
 	#pragma comment (lib,"xbmc/lib/libCDRip/cdripd.lib")		 // SECTIONNAME=LIBCDRIP
@@ -28,7 +28,7 @@
 #else
 //  #pragma comment (lib,"lib/filezilla/xbfilezilla.lib")
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")          
-  #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")           
+  //#pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")           
 	#pragma comment (lib,"xbmc/lib/cximage/ImageLib.lib")
 	#pragma comment (lib,"xbmc/lib/libID3/i3dlib.lib")					
 	#pragma comment (lib,"xbmc/lib/libCDRip/cdrip.lib")						
@@ -68,53 +68,47 @@ CApplication::~CApplication(void)
 HRESULT CApplication::Create()
 {
 	CIoSupport helper;
+	CStdString strPath;
+	char szDevicePath[1024];
 
-	helper.Remap("C:,Harddisk0\\Partition2");
-	helper.Remap("E:,Harddisk0\\Partition1");
-	helper.Remount("D:","Cdrom0");
+	// map Q to home drive of xbe to load the config file
+	CUtil::GetHomePath(strPath);
+	helper.GetPartition(strPath, szDevicePath);
+	strcat(szDevicePath,&strPath.c_str()[2]);
+
+	helper.Mount("Q:","Harddisk0\\Partition2");
+	helper.Unmount("Q:");
+	helper.Mount("Q:", szDevicePath);	
 
 	// Transfer the resolution information to our graphics context
 	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
 	m_bSettingsLoaded=g_settings.Load();
+	
+	helper.Remap("C:,Harddisk0\\Partition2");
+	helper.Remap("E:,Harddisk0\\Partition1");
+	helper.Remount("D:","Cdrom0");
 
-	if ( g_stSettings.m_bUseFDrive )
-	{
-		helper.Remap("F:,Harddisk0\\Partition6");
-	}
-	if ( g_stSettings.m_bUseGDrive )
-	{
-		helper.Remap("G:,Harddisk0\\Partition7"); // used for the LBA-48 hack allowing >120 gig
-	}
+	if (g_stSettings.m_bUseFDrive) helper.Remap("F:,Harddisk0\\Partition6");
 
+	// used for the LBA-48 hack allowing >120 gig
+	if (g_stSettings.m_bUseGDrive) helper.Remap("G:,Harddisk0\\Partition7");
+	
 	// check settings to see if another home dir is defined.
 	// if there is, we check if it's a xbmc dir and map to it Q:
-
-	CStdString strPath;
-	if (strlen(g_stSettings.szHomeDir) < 1)
-	{
-		CUtil::GetHomePath(strPath);
-	}
-	else
+	if (strlen(g_stSettings.szHomeDir) > 1)
 	{
 		// home dir is defined in xboxmediacenter.xml
-		strPath = g_stSettings.szHomeDir;
-		strPath.TrimRight("\\");
+		CStdString strHomePath = g_stSettings.szHomeDir;
+		strHomePath.TrimRight("\\");
 
-		if(access(strPath + "\\skin", 0))
+		if(!access(strHomePath + "\\skin", 0))
 		{
-			// strPath + skin does not exist, maybe the user made a typo
-			CUtil::GetHomePath(strPath);
+			helper.GetPartition(strHomePath, szDevicePath);
+			strcat(szDevicePath, &strHomePath.c_str()[2]);
+
+			helper.Unmount("Q:");
+			helper.Mount("Q:", szDevicePath);	
 		}
-	}
-
-	{
-		CHAR szDevicePath[1024];
-		helper.Mount("Q:","Harddisk0\\Partition2");
-
-		helper.GetPartition(strPath.c_str(),szDevicePath);
-		strcat(szDevicePath,&strPath.c_str()[2]);
-		helper.Unmount("Q:");
-		helper.Mount("Q:",szDevicePath);	
 	}
 
 	CStdString strLanguagePath;
@@ -247,9 +241,11 @@ HRESULT CApplication::Initialize()
 
   if (!m_bSettingsLoaded)
   {
+		CStdString test;
+		CUtil::GetHomePath(test);
     m_guiDialogOK.SetHeading(279);
-    m_guiDialogOK.SetLine(0,280);
-    m_guiDialogOK.SetLine(1,281);
+    m_guiDialogOK.SetLine(0,test);
+    m_guiDialogOK.SetLine(1,test);
     m_guiDialogOK.SetLine(2,L"");
     m_guiDialogOK.DoModal(g_stSettings.m_iStartupWindow);
   }

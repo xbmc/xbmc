@@ -176,10 +176,7 @@ bool CSettings::Load()
 	}
 
 	// load xml file...
-	CStdString strXMLFile;
-	CUtil::GetHomePath(strXMLFile);
-	strXMLFile+="\\XboxMediaCenter.xml";
-
+	CStdString strXMLFile = "Q:\\XboxMediaCenter.xml";
 	TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) 
 	{
