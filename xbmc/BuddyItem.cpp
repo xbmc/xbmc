@@ -176,20 +176,23 @@ void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
 				m_pInviteIcon->Render();
 			}
 		}
-		else if (m_nStatus==0 && m_pIdleIcon) // idle
+		else if (m_bIsOnline)
 		{
-			m_pIdleIcon->SetPosition(iInviteIconPosX,iPingPosY);
-			m_pIdleIcon->Render();
-		}
-		else if (m_nStatus==1 && m_pBusyIcon) // joining
-		{
-			m_pBusyIcon->SetPosition(iInviteIconPosX,iPingPosY);
-			m_pBusyIcon->Render();
-		}
-		else if (m_nStatus>1 && m_pHostIcon)  // hosting
-		{
-			m_pHostIcon->SetPosition(iInviteIconPosX,iPingPosY);
-			m_pHostIcon->Render();
+			if (m_nStatus==0 && m_pIdleIcon) // idle
+			{
+				m_pIdleIcon->SetPosition(iInviteIconPosX,iPingPosY);
+				m_pIdleIcon->Render();
+			}
+			else if (m_nStatus==1 && m_pBusyIcon) // joining
+			{
+				m_pBusyIcon->SetPosition(iInviteIconPosX,iPingPosY);
+				m_pBusyIcon->Render();
+			}
+			else if (m_nStatus>1 && m_pHostIcon)  // hosting
+			{
+				m_pHostIcon->SetPosition(iInviteIconPosX,iPingPosY);
+				m_pHostIcon->Render();
+			}
 		}
 
 		if (m_pPingIcon && m_dwPing>0 && m_dwPing<=PING_MAX_LATENCY )
