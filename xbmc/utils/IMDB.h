@@ -40,6 +40,7 @@ class CIMDBMovie
 		CStdString m_strVotes;
 		CStdString m_strCast;
 		CStdString m_strSearchString;
+		CStdString m_strRuntime;
     CStdString m_strFile;
     CStdString m_strPath;
     CStdString m_strDVDLabel;

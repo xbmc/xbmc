@@ -532,6 +532,10 @@
 		<value>Rating:</value>
 	</string>
 	<string>
+		<id>2050</id>
+		<value>Runtime:</value>
+	</string>
+	<string>
 		<id>205</id>
 		<value>Votes:</value>
 	</string>
