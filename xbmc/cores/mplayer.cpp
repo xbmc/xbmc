@@ -246,7 +246,9 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 	{
 		m_vecOptions.push_back("-noidx");    
 	}
-
+	
+	//Enable mplayer's internal highly accurate sleeping.
+	m_vecOptions.push_back("-softsleep");    
 
 	//limit A-V sync correction in order to get smoother playback.
 	//defaults to 0.01 but for high quality videos 0.0001 results in 
