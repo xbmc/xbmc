@@ -330,6 +330,7 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
 			m_vecItems.erase(it);
 			break;
 		}
+		
 		++it;
 		iCount++;
 	}
@@ -480,7 +481,8 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 		{
 			if (strArtist)
 			{
-				int iTrack=tag.GetTrackNumber();
+				//int iTrack=tag.GetTrackNumber();
+				int iTrack = (int)m_lPlayListSeq;
 				if (iTrack>0)
 					str.Format("%02.2i. %s - %s",iTrack, tag.GetArtist().c_str(), tag.GetTitle().c_str());
 				else 
@@ -488,7 +490,8 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 			}
 			else
 			{
-				int iTrack=tag.GetTrackNumber();
+				//int iTrack=tag.GetTrackNumber();
+				int iTrack = (int)m_lPlayListSeq;
 				if (iTrack>0)
 					str.Format("%02.2i. %s ",iTrack, tag.GetTitle().c_str());
 				else 
@@ -518,6 +521,14 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 				CUtil::SecondsToHMSString(nDuration, str);
 				pItem->SetLabel2(str);
 			}
+		}
+		else
+		{
+			// No music info and it's not CDDA so we'll just show the filename
+			CStdString str;
+			str = CUtil::GetFileName(pItem->m_strPath);
+			str.Format("%02.2i. %s ", m_lPlayListSeq, str);
+			pItem->SetLabel(str);
 		}
 	}
 	//	set thumbs and default icons
