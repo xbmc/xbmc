@@ -12,6 +12,7 @@
 #include "playlistplayer.h"
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
+#include "cores/mplayer/xbox_video.h"
 
 #include <stdio.h>
 
@@ -309,7 +310,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		{	// toggle the aspect ratio mode (only if the info is onscreen)
 		  if (m_bShowViewModeInfo)
 		    {
-					SetViewMode(++g_stSettings.m_currentVideoSettings.m_ViewMode);
+					g_renderManager.SetViewMode(++g_stSettings.m_currentVideoSettings.m_ViewMode);
 		    }
 		  m_bShowViewModeInfo = true;
 		  m_dwShowViewModeTimeout = timeGetTime();
@@ -408,7 +409,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			m_bShowViewModeInfo = false;
 
 			// set the correct view mode
-			SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+			g_renderManager.SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
 
 			if (CUtil::IsUsingTTFSubtitles())
 			{
@@ -959,107 +960,6 @@ void CGUIWindowFullScreen::ChangetheSpeed(DWORD action)
 void CGUIWindowFullScreen::Update()
 {
 
-}
-
-void CGUIWindowFullScreen::SetViewMode(int iViewMode)
-{
-	if (iViewMode<VIEW_MODE_NORMAL || iViewMode>VIEW_MODE_CUSTOM) iViewMode=VIEW_MODE_NORMAL;
-	g_stSettings.m_currentVideoSettings.m_ViewMode = iViewMode;
-
-	if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL)
-	{	// normal mode...
-		g_stSettings.m_fPixelRatio = 1.0;
-		g_stSettings.m_fZoomAmount = 1.0;
-		return;
-	}
-	if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_CUSTOM)
-	{
-		g_stSettings.m_fZoomAmount = g_stSettings.m_currentVideoSettings.m_CustomZoomAmount;
-		g_stSettings.m_fPixelRatio = g_stSettings.m_currentVideoSettings.m_CustomPixelRatio;
-		return;
-	}
-	
-	// get our calibrated full screen resolution
-	RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
-	float fOffsetX1 = (float)g_settings.m_ResInfo[iRes].Overscan.left;
-	float fOffsetY1 = (float)g_settings.m_ResInfo[iRes].Overscan.top;
-	float fScreenWidth = (float)(g_settings.m_ResInfo[iRes].Overscan.right-g_settings.m_ResInfo[iRes].Overscan.left);
-	float fScreenHeight = (float)(g_settings.m_ResInfo[iRes].Overscan.bottom-g_settings.m_ResInfo[iRes].Overscan.top);
-	// and the source frame ratio
-	float fSourceFrameRatio;
-	g_application.m_pPlayer->GetVideoAspectRatio(fSourceFrameRatio);
-
-	if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ZOOM)
-	{	// zoom image so no black bars
-		g_stSettings.m_fPixelRatio = 1.0;
-		// calculate the desired output ratio
-		float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fPixelRatio / g_settings.m_ResInfo[iRes].fPixelRatio; 
-		// now calculate the correct zoom amount.  First zoom to full height.
-		float fNewHeight = fScreenHeight;
-		float fNewWidth = fNewHeight*fOutputFrameRatio;
-		g_stSettings.m_fZoomAmount = fNewWidth/fScreenWidth;
-		if (fNewWidth < fScreenWidth)
-		{	// zoom to full width
-			fNewWidth = fScreenWidth;
-			fNewHeight = fNewWidth/fOutputFrameRatio;
-			g_stSettings.m_fZoomAmount = fNewHeight/fScreenHeight;
-		}
-	}
-	else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_4x3)
-	{	// stretch image to 4:3 ratio
-		g_stSettings.m_fZoomAmount = 1.0;
-		if (iRes == PAL_4x3 || iRes == PAL60_4x3 || iRes == NTSC_4x3 || iRes == HDTV_480p_4x3)
-		{	// stretch to the limits of the 4:3 screen.
-			// incorrect behaviour, but it's what the users want, so...
-			g_stSettings.m_fPixelRatio = (fScreenWidth/fScreenHeight)*g_settings.m_ResInfo[iRes].fPixelRatio/fSourceFrameRatio;
-		}
-		else
-		{
-			// now we need to set g_stSettings.m_fPixelRatio so that 
-			// fOutputFrameRatio = 4:3.
-			g_stSettings.m_fPixelRatio = (4.0f/3.0f)/fSourceFrameRatio;
-		}
-	}
-	else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_14x9)
-	{	// stretch image to 14:9 ratio
-		g_stSettings.m_fZoomAmount = 1.0;
-		// now we need to set g_stSettings.m_fPixelRatio so that 
-		// fOutputFrameRatio = 14:9.
-		g_stSettings.m_fPixelRatio = (14.0f/9.0f)/fSourceFrameRatio;
-	}
-	else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9)
-	{	// stretch image to 16:9 ratio
-		g_stSettings.m_fZoomAmount = 1.0;
-		if (iRes == PAL_4x3 || iRes == PAL60_4x3 || iRes == NTSC_4x3 || iRes == HDTV_480p_4x3)
-		{	// now we need to set g_stSettings.m_fPixelRatio so that 
-			// fOutputFrameRatio = 16:9.
-			g_stSettings.m_fPixelRatio = (16.0f/9.0f)/fSourceFrameRatio;
-		}
-		else
-		{	// stretch to the limits of the 16:9 screen.
-			// incorrect behaviour, but it's what the users want, so...
-			g_stSettings.m_fPixelRatio = (fScreenWidth/fScreenHeight)*g_settings.m_ResInfo[iRes].fPixelRatio/fSourceFrameRatio;
-		}
-	}
-	else// if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ORIGINAL)
-	{	// zoom image so that the height is the original size
-		g_stSettings.m_fPixelRatio = 1.0;
-		// get the size of the media file
-		RECT srcRect, destRect;
-		g_application.m_pPlayer->GetVideoRect(srcRect, destRect);
-		// calculate the desired output ratio
-		float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fPixelRatio / g_settings.m_ResInfo[iRes].fPixelRatio; 
-		// now calculate the correct zoom amount.  First zoom to full width.
-		float fNewWidth = fScreenWidth;
-		float fNewHeight = fNewWidth/fOutputFrameRatio;
-		if (fNewHeight > fScreenHeight)
-		{	// zoom to full height
-			fNewHeight = fScreenHeight;
-			fNewWidth = fNewHeight*fOutputFrameRatio;
-		}
-		// now work out the zoom amount so that no zoom is done
-		g_stSettings.m_fZoomAmount = (srcRect.bottom-srcRect.top)/fNewHeight;
-	}
 }
 
 void CGUIWindowFullScreen::SeekPercentage(int iPercent)
