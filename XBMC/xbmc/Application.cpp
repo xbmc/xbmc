@@ -349,6 +349,13 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   CLog::Log("  load skin from:%s",strSkinPath.c_str());	
 
+
+  if ( IsPlaying() )
+  {
+    CLog::Log(" stop playing...");
+    m_pPlayer->closefile();
+  }
+
   CLog::Log("  delete old skin...");
 	m_guiWindowVideoOverlay.FreeResources();
 	m_guiWindowVideoOverlay.ClearAll();
@@ -360,6 +367,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	g_TextureManager.Cleanup();
 
 	g_fontManager.Clear();
+  
+  CLog::Log("  load fonts for skin...");
   g_graphicsContext.SetMediaDir(strSkinPath);
   g_fontManager.LoadFonts(strSkinPath+string("\\font.xml")) ;
 
