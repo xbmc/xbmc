@@ -28,7 +28,7 @@ public:
 	CGUIConsoleControl(DWORD dwParentID, DWORD dwControlId,
 		int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, 
 		const CStdString& strFontName,
-		D3DCOLOR dwNormalColor, D3DCOLOR dwActionColor, D3DCOLOR dwSpecialColor);
+		D3DCOLOR dwPenColor1, D3DCOLOR dwPenColor2, D3DCOLOR dwPenColor3, D3DCOLOR dwPenColor4);
 
 	virtual ~CGUIConsoleControl(void);
   
@@ -39,18 +39,20 @@ public:
 	virtual void AllocResources();
 	virtual void FreeResources();
 
-	DWORD	GetActionColor()	const { return m_dwActionColor;};
-	DWORD	GetNormalColor()	const { return m_dwNormalColor;};
-	DWORD	GetSpecialColor()	const { return m_dwSpecialColor;};
+	DWORD	GetPenColor(INT nPaletteIndex)
+	{
+		return nPaletteIndex<(INT)m_palette.size() ? m_palette[nPaletteIndex] : 0xFF808080;
+	};
 
 	LPCSTR	GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
 
 	void	Clear();
-	void	Write(CStdString& aString, DWORD aColour);
+	void	Write(CStdString& aString, INT nPaletteIndex = 0);
 
 protected:
 
 	void	AddLine(CStdString& aString, DWORD aColour);
+	void	WriteString(CStdString& aString, DWORD aColour);
 
 protected:
 
@@ -63,16 +65,14 @@ protected:
 	typedef vector<Line> LINEVECTOR;
 	LINEVECTOR		m_lines;
 
+	typedef vector<D3DCOLOR> PALETTE;
+	PALETTE			m_palette;
+
 	INT				m_nMaxLines;
 	DWORD			m_dwLineCounter;
 	DWORD			m_dwFrameCounter;
 
 	FLOAT			m_fFontHeight;
-
-	D3DCOLOR		m_dwNormalColor;
-	D3DCOLOR		m_dwActionColor;
-	D3DCOLOR		m_dwSpecialColor;
-
 	CGUIFont*		m_pFont;
 };
 #endif

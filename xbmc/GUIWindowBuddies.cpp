@@ -16,6 +16,11 @@
 #include <algorithm>
 #include "utils/log.h"
 
+#define KAI_CONSOLE_PEN_NORMAL	0	
+#define KAI_CONSOLE_PEN_ACTION	1
+#define KAI_CONSOLE_PEN_SYSTEM	2
+#define KAI_CONSOLE_PEN_PRIVATE	3
+
 #define CONTROL_BTNMODE			3012				// Games Button
 #define CONTROL_BTNJOIN			3013				// Join Button
 #define CONTROL_BTNSPEEX		3016				// Speex Button
@@ -707,6 +712,14 @@ void CGUIWindowBuddies::Render()
 			UpdateFriends();
 			break;
 		}
+		case State::Chat:
+		{
+			CStdString currentVector = m_pKaiClient->GetCurrentVector();
+			INT arenaDelimiter = currentVector.ReverseFind('/')+1;
+			arenaName = currentVector.Mid(arenaDelimiter);
+			SET_CONTROL_LABEL(GetID(),  CONTROL_LABELUPDATED, arenaName);
+			break;
+		}
 		case State::Arenas:
 		{
 			CStdString currentVector = m_pKaiClient->GetCurrentVector();
@@ -915,7 +928,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_LABELPLAYERCNT);
 
 			SET_CONTROL_LABEL(GetID(),  CONTROL_LABELBUDDYWIN,  "Friends");
-			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNMODE,		"Games");	
+			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNMODE,		"View: Friends");	
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNJOIN,		"Join");	
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNSPEEX,		"Voice");	
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNINVITE,		"Invite");	
@@ -947,7 +960,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_LABELPLAYERCNT);
 
 			SET_CONTROL_LABEL(GetID(),  CONTROL_LABELBUDDYWIN,  "Games");
-			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNMODE,		"Arenas");	
+			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNMODE,		"View: Games");	
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNPLAY,		"Enter");
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNADD,			"Add");
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNHOST,		"Host");	
@@ -980,7 +993,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_LABELPLAYERCNT);
 
 			SET_CONTROL_LABEL(GetID(),  CONTROL_LABELBUDDYWIN,  "Arenas");
-			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNMODE,		"Chat");
+			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNMODE,		"View: Arenas");
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNPLAY,		"Play");
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNADD,			"Add");
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNHOST,		"Host");	
@@ -1012,7 +1025,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_LABELPLAYERCNT);
 
 			SET_CONTROL_LABEL(GetID(),  CONTROL_LABELBUDDYWIN,  "Chat");
-			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNMODE,		"Friends");	
+			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNMODE,		"View: Chat");	
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNKEYBOARD,	"Keyboard");	
 			break;
 		}
@@ -1588,9 +1601,8 @@ void CGUIWindowBuddies::OnJoinsChat(CStdString& aOpponent)
 	if (m_pConsole)
 	{
 		CStdString strMessage;
-		DWORD dwColour = 0xFFFF00FF;
 		strMessage.Format("%s joins chat.",aOpponent);
-		m_pConsole->Write(strMessage, dwColour);
+		m_pConsole->Write(strMessage, KAI_CONSOLE_PEN_ACTION);
 	}
 }
 
@@ -1599,16 +1611,16 @@ void CGUIWindowBuddies::OnChat(CStdString& aVector, CStdString& aOpponent, CStdS
 	if (m_pConsole)
 	{
 		CStdString strMessage;
-		DWORD dwColour = 0xFFFFFFFF;
+		DWORD dwColour = KAI_CONSOLE_PEN_NORMAL;
 
 		if (aOpponent.CompareNoCase("Kai Orbital Mesh")==0)
 		{
-			dwColour = 0xFFFFFF00;
+			dwColour = KAI_CONSOLE_PEN_SYSTEM;
 			strMessage = aMessage;
 		}
 		else
 		{
-			dwColour = bPrivate ? 0xFFFF0000 : dwColour;
+			dwColour = bPrivate ? KAI_CONSOLE_PEN_PRIVATE : dwColour;
 			strMessage.Format("%s: %s",aOpponent,aMessage);
 		}
 
@@ -1620,7 +1632,7 @@ void CGUIWindowBuddies::OnLeavesChat(CStdString& aOpponent)
 	if (m_pConsole)
 	{
 		CStdString strMessage;
-		DWORD dwColour = 0xFFFF00FF;
+		DWORD dwColour = KAI_CONSOLE_PEN_ACTION;
 		strMessage.Format("%s leaves chat.",aOpponent);
 		m_pConsole->Write(strMessage, dwColour);
 	}
