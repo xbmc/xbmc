@@ -186,34 +186,48 @@ INT CXBApplicationEx::Run()
         //-----------------------------------------
         // Animate and render a frame
         //-----------------------------------------
-
+#ifndef _DEBUG
         try
         {
+#endif
           Process();
+
+#ifndef _DEBUG
         }
         catch(...)
         {
           CLog::Log(LOGERROR, "exception in CApplication::Process()");
         }
+#endif
         // Frame move the scene
+#ifndef _DEBUG
         try
         {
+#endif
           FrameMove();
+
+#ifndef _DEBUG
         }
         catch(...)
         {
           CLog::Log(LOGERROR, "exception in CApplication::FrameMove()");
         }
+#endif
 
         // Render the scene
+#ifndef _DEBUG
         try
         {
+#endif
           Render();
+
+#ifndef _DEBUG
         }
         catch(...)
         {
           CLog::Log(LOGERROR, "exception in CApplication::Render()");
         }
+#endif
     }
     CLog::Log(LOGNOTICE, "application stopped..." );
     return 0;
