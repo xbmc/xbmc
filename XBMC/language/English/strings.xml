@@ -577,11 +577,11 @@
 	</string>
 	<string>
 		<id>216</id>
-		<value>Zoom</value>
+		<value>Zoom Amount</value>
 	</string>
 	<string>
 		<id>217</id>
-		<value>Stretch</value>
+		<value>Pixel Ratio</value>
 	</string>
 	<string>
 		<id>218</id>
