@@ -326,9 +326,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		else if (strType=="console")
 		{
 			strFont				= ((CGUIConsoleControl*)pReference)->GetFontName();
-			dwTextColor			= ((CGUIConsoleControl*)pReference)->GetNormalColor();
-			dwTextColor3		= ((CGUIConsoleControl*)pReference)->GetActionColor();
-			dwSelectedColor		= ((CGUIConsoleControl*)pReference)->GetSpecialColor();
+			dwTextColor			= ((CGUIConsoleControl*)pReference)->GetPenColor(0);
+			dwTextColor2		= ((CGUIConsoleControl*)pReference)->GetPenColor(1);
+			dwTextColor3		= ((CGUIConsoleControl*)pReference)->GetPenColor(2);
+			dwSelectedColor		= ((CGUIConsoleControl*)pReference)->GetPenColor(3);
 		}
 		else if (strType=="button")
 		{
@@ -892,7 +893,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	{
 		CGUIConsoleControl* pControl = new CGUIConsoleControl(
 					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,
-					strFont,dwTextColor3,dwTextColor,dwSelectedColor);
+					strFont,dwTextColor,dwTextColor2,dwTextColor3,dwSelectedColor);
 		pControl->SetColourDiffuse(dwColorDiffuse);
 		pControl->SetVisible(bVisible);
 	    pControl->SetNavigation(up,down,left,right);

@@ -11,13 +11,15 @@
 CGUIConsoleControl::CGUIConsoleControl(DWORD dwParentID, DWORD dwControlId, 
 							   int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
 							   const CStdString& strFontName,
-							   D3DCOLOR dwNormalColor, D3DCOLOR dwActionColor, D3DCOLOR dwSpecialColor)
+							   D3DCOLOR dwPenColor1, D3DCOLOR dwPenColor2, D3DCOLOR dwPenColor3, D3DCOLOR dwPenColor4)
 :CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
 {
-	m_dwNormalColor		= dwNormalColor;
-	m_dwActionColor		= dwActionColor; 
-	m_dwSpecialColor	= dwSpecialColor;
-	m_pFont				= g_fontManager.GetFont(strFontName);
+	m_palette.push_back(dwPenColor1);
+	m_palette.push_back(dwPenColor2); 
+	m_palette.push_back(dwPenColor3);
+	m_palette.push_back(dwPenColor4);
+
+	m_pFont = g_fontManager.GetFont(strFontName);
 
 	FLOAT fTextW;
 	if (m_pFont)
@@ -121,7 +123,12 @@ void CGUIConsoleControl::Clear()
 	}
 }
 
-void CGUIConsoleControl::Write(CStdString& aString, DWORD aColour)
+void CGUIConsoleControl::Write(CStdString& aString, INT nPaletteIndex)
+{
+	WriteString(aString, GetPenColor(nPaletteIndex) );
+}
+
+void CGUIConsoleControl::WriteString(CStdString& aString, DWORD aColour)
 {
 	CStdString	strLine;
 	CStdStringW	strLineW;
