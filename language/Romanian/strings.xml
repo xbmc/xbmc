@@ -25,7 +25,7 @@
 	</string>
 	<string>
 		<id>6</id>
-		<value>XBOX Media Center CVS build</value>
+		<value>XBOX Media Center 1.0.0</value>
 	</string>
 	<string>
 		<id>7</id>
@@ -161,7 +161,7 @@
 	</string>
 	<string>
 		<id>112</id>
-		<value>OPRIT</value>
+		<value>PAUZA</value>
 	</string>
 	<string>
 		<id>113</id>
@@ -349,7 +349,7 @@
 	</string>
 	<string>
 		<id>159</id>
-		<value>No link</value>
+		<value>Nu exista link</value>
 	</string>
 	<string>
 		<id>160</id>
@@ -1504,6 +1504,10 @@
 		<value>Coloane</value>
 	</string>
 	<string>
+		<id>4501</id>
+		<value>Tip LCD</value>
+	</string>
+	<string>
 		<id>451</id>
 		<value>Adresa liniei 1:</value>
 	</string>
@@ -1525,7 +1529,7 @@
 	</string>
 	<string>
 		<id>456</id>
-		<value>Mod:</value>
+		<value>Mod</value>
 	</string>
 	<string>
 		<id>457</id>
@@ -1719,15 +1723,236 @@
 		<id>504</id>
 		<value>Gol</value>
 	</string>
-	
+	<string>
+		<id>505</id>
+		<value>Loading media info from files...</value>
+	</string>
+
+		<string>
+		<id>506</id>
+		<value>Pt descriere foloseste numele directorului</value>
+	</string> 
+      <string> 	 
+            <id>507</id> 	 
+            <value>Sorteaza dupa: Folosire</value> 	 
+      </string>
+      <string>
+		<id>508</id>
+		<value>Nu folosi Scurtaturi sau Scanare</value>
+	</string>
+	<string>
+		<id>600</id>
+		<value>Rip CD</value>
+	</string>
+	<string>
+		<id>601</id>
+		<value>Media</value>
+	</string>
+	<string>
+		<id>602</id>
+		<value>Standard</value>
+	</string>
+	<string>
+		<id>603</id>
+		<value>Extrem</value>
+	</string>
+	<string>
+		<id>604</id>
+		<value>Constant Bit Rate</value>
+	</string>
+	<string>
+		<id>605</id>
+		<value>Se copiaza...</value>
+	</string>
+	<string>
+		<id>606</id>
+		<value>Pista numarul:</value>
+	</string>
+	<string>
+		<id>607</id>
+		<value>La:</value>
+	</string>
+	<string>
+		<id>608</id>
+		<value>Nu se poate copia CD sau Pista</value>
+	</string>
+	<string>
+		<id>609</id>
+		<value>CDDARipPath nu este setat in XboxMediaCenter.xml</value>
+	</string>
+	<string>
+		<id>620</id>
+		<value>Copiere CD</value>
+	</string>
+	<string>
+		<id>621</id>
+		<value>Encoder</value>
+	</string>
+	<string>
+		<id>622</id>
+		<value>Calitate</value>
+	</string>
+	<string>
+		<id>623</id>
+		<value>Bit Rate</value>
+	</string>
+	<string>
+		<id>624</id>
+		<value>Include numar pista</value>
+	</string>
+	<string>
+		<id>625</id>
+		<value>Toate cantecele lui</value>
+	</string>
+	<string>
+		<id>629</id>
+		<value>Mod vizualizare</value>
+	</string>
+	<string>
+		<id>630</id>
+		<value>Normal</value>
+	</string>
+	<string>
+		<id>631</id>
+		<value>Zoom</value>
+	</string>
+	<string>
+		<id>632</id>
+		<value>Stretch 4:3</value>
+	</string>
+	<string>
+		<id>633</id>
+		<value>Stretch 14:9</value>
+	</string>
+	<string>
+		<id>634</id>
+		<value>Stretch 16:9</value>
+	</string>
+	<string>
+		<id>635</id>
+		<value>Original</value>
+	</string>
+	<string>
+		<id>636</id>
+		<value>Personal</value>
+	</string>
+	<string>
+		<id>700</id>
+		<value>Stergere baza de date</value>
+	</string>
+	<string>
+		<id>701</id>
+		<value>Stergere muzica veche din baza de date</value>
+	</string>
+	<string>
+		<id>702</id>
+		<value>Acest director a fost scanat mai devereme.</value>
+	</string>
+	<string>
+		<id>703</id>
+		<value>Selecteaza YES pt actualizarea directorului selectat.</value>
+	</string>
+	<string>
+		<id>704</id>
+		<value>Selecteaza NO pt adaugare cantece noi.</value>
+	</string>
+	<string>
+		<id>705</id>
+		<value>Network</value>
+	</string>
+	<string>
+		<id>706</id>
+		<value>HTTP Proxy Host:</value>
+	</string>
+	<string>
+		<id>707</id>
+		<value>HTTP Proxy Port:</value>
+	</string>
+	<string>
+		<id>708</id>
+		<value>Activare HTTP Proxy</value>
+	</string>
+	<string>
+		<id>709</id>
+		<value>XTag XLink Kai:</value>
+	</string>
+	<string>
+		<id>710</id>
+		<value>Parola XLink Kai:</value>
+	</string>
+	<string>
+		<id>711</id>
+		<value>Setari Protocol Internet (IP)</value>
+	</string>
+	<string>
+		<id>712</id>
+		<value>Portul sepcificat este invalid. Selectati o valoare cuprinsa intre 1 si 65535.</value>
+	</string>
+	<string>
+		<id>713</id>
+		<value>Setari HTTP Proxy</value>
+	</string>	
+	<string>
+		<id>714</id>
+		<value>Setari XLink Kai</value>
+	</string>	
+	<string>
+		<id>715</id>
+		<value>Atribuire:</value>
+	</string>	
+	<string>
+		<id>716</id>
+		<value>Automatic (DHCP)</value>
+	</string>	
+	<string>
+		<id>717</id>
+		<value>Manual (Static)</value>
+	</string>	
+	<string>
+		<id>718</id>
+		<value>Implicit (Dashboard)</value>
+	</string>	
+	<string>
+		<id>719</id>
+		<value>Adresa IP:</value>
+	</string>	
+	<string>
+		<id>720</id>
+		<value>Netmask:</value>
+	</string>	
+	<string>
+		<id>721</id>
+		<value>Gateway Implicit:</value>
+	</string>	
+	<string>
+		<id>722</id>
+		<value>Server DNS:</value>
+	</string>
+	<string>
+		<id>723</id>
+		<value>Salvare setari si reset XBox</value>
+	</string>
+	<string>
+		<id>724</id>
+		<value>Adresa selectata este invalida. Valoarea trebuie sa fie gen: AAA.BBB.CCC.DDD</value>
+	</string>
+	<string>
+		<id>725</id>
+		<value>cu numere cuprinse intre 0 si 255.</value>
+	</string>
+	<string>
+		<id>726</id>
+		<value>Schmbarile nu au fost salvate. Continuati?</value>
+	</string>
+	<string>
+		<id>998</id>
+		<value>XLink Kai</value>
+	</string>
 	<string>
 		<id>999</id>
 		<value>Jocuri Online</value>
 	</string> 
-	<string>
-		<id>998</id>
-		<value>XLink KAI</value>
-	</string>
+	
 	<string>
 		<id>10000</id>
 		<value>Acasa</value>
@@ -1924,4 +2149,22 @@
 		<id>12901</id>
 		<value>Afisare OSD pe tot ecranul</value>
 	</string>
+  <string><id>13000</id><value>Sistem</value></string>
+  <string><id>13001</id><value>Immediate HD Spindown</value></string>
+  <string><id>13002</id><value>Numai Video</value></string>
+  <string><id>13003</id><value>- Intarziat</value></string>
+  <string><id>13004</id><value>- Durata Minima fisier</value></string>
+  <string><id>13100</id><value>Filtru Flicker</value></string>
+  <string><id>13200</id><value>Profile</value></string>
+  <string><id>13201</id><value>Stergere profil '%s'?</value></string>
+  <string><id>13202</id><value>Salveaza configuratia curenta ca profil...</value></string>
+  <string><id>13203</id><value>Profilul '%s' a fost incarcat cu succes</value></string>
+  <string><id>13204</id><value>Ultimul profil incarcat:</value></string>
+  <string><id>13205</id><value>Necunoscut</value></string>
+  <string><id>13300</id><value>Fanspeed:</value></string>
+  <string><id>13301</id><value>Control temperatura automatic</value></string>
+  <string><id>13302</id><value>Control Fanspeed</value></string>
+  
+  <string><id>13303</id><value>Fonturi Skin:</value></string>
+  <string><id>13304</id><value>Set de caractere flip:</value></string>
 </strings>
