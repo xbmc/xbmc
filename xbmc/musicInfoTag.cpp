@@ -14,11 +14,29 @@ CMusicInfoTag::CMusicInfoTag(void)
 	memset(&m_dwReleaseDate,0,sizeof(m_dwReleaseDate) );
 }
 
+CMusicInfoTag::CMusicInfoTag(const CMusicInfoTag& tag)
+{
+	*this = tag;
+}
 CMusicInfoTag::~CMusicInfoTag()
 {
 }
 
+const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
+{
+	if (this==&tag) return *this;
 
+	m_strURL=tag.m_strURL;
+	m_strArtist=tag.m_strArtist;
+	m_strAlbum=tag.m_strAlbum;
+	m_strGenre=tag.m_strGenre;
+	m_strTitle=tag.m_strTitle;
+	m_iDuration=tag.m_iDuration;
+	m_iTrack=tag.m_iTrack;
+	m_bLoaded=tag.m_bLoaded;
+	memcpy(&m_dwReleaseDate,&tag.m_dwReleaseDate,sizeof(m_dwReleaseDate) );
+	return *this;
+}
 int CMusicInfoTag::GetTrackNumber() const
 {
 	return m_iTrack;
