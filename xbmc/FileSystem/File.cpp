@@ -76,14 +76,15 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 		// 128k is optimal for xbox
 		int iBufferSize=128*1024;
 
-		//	WORKAROUND: Protocol is xbms? Must use a smaller buffer
+		//	WORKAROUND: 
+		//	Protocol is xbms? Must use a smaller buffer
 		//	else nothing will be cached and the file is
 		//	filled with garbage. :(
 		CURL url(strFileName);
 		CStdString strProtocol=url.GetProtocol();
 		strProtocol.ToLower();
 		if (strProtocol=="xbms" )
-			iBufferSize=120*1024; //16384; 
+			iBufferSize=120*1024; 
 
 		// ouch, auto_ptr doesn't work for arrays!
 		//auto_ptr<char> buffer ( new char[16384]);
