@@ -531,7 +531,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
 
       // get albums from the database
       VECALBUMS albums;
-      bool bTest = bTest = g_musicDatabase.GetAlbumsNav(albums, m_strGenre, m_strArtist);
+      bool bTest = g_musicDatabase.GetAlbumsNav(albums, m_strGenre, m_strArtist);
 
       // Display an error message if the database doesn't contain any albums
       DisplayEmptyDatabaseMessage(albums.empty());

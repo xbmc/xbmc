@@ -17,8 +17,8 @@
 #include "GUIFontManager.h"
 
 #define CONTROL_BTNVIEWASICONS  2
-#define CONTROL_BTNTYPE      6
-#define CONTROL_BTNSEARCH     8
+#define CONTROL_BTNTYPE         6
+#define CONTROL_BTNSEARCH       8
 
 #define CONTROL_LIST        50
 #define CONTROL_THUMBS      51
@@ -1170,6 +1170,8 @@ void CGUIWindowMusicBase::UpdateButtons()
   msg2.SetLabel(strItem);
   g_graphicsContext.SendMessage(msg2);
 
+  /*
+  // REMOVED ALUBMS, ARTISTS, AND GENRE VIEWS
   strItem = g_localizeStrings.Get(132); // Album
   msg2.SetLabel(strItem);
   g_graphicsContext.SendMessage(msg2);
@@ -1185,9 +1187,13 @@ void CGUIWindowMusicBase::UpdateButtons()
   strItem = g_localizeStrings.Get(271); // Top 100
   msg2.SetLabel(strItem);
   g_graphicsContext.SendMessage(msg2);
+  */
 
-  // new nav window
-  strItem = g_localizeStrings.Get(15100); // Navigation Window
+  strItem = g_localizeStrings.Get(15100); // Library
+  msg2.SetLabel(strItem);
+  g_graphicsContext.SendMessage(msg2);
+
+  strItem = g_localizeStrings.Get(271); // Top 100
   msg2.SetLabel(strItem);
   g_graphicsContext.SendMessage(msg2);
 

@@ -926,13 +926,17 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiDialogButtonMenu);         // window id = 111
   m_gWindowManager.Add(&m_guiDialogMusicScan);          // window id = 112
   m_gWindowManager.Add(&m_guiDialogPlayerControls);     // window id = 113
+
   m_gWindowManager.Add(&m_guiMyMusicPlayList);          // window id = 500
   m_gWindowManager.Add(&m_guiMyMusicSongs);             // window id = 501
-  m_gWindowManager.Add(&m_guiMyMusicAlbum);             // window id = 502
-  m_gWindowManager.Add(&m_guiMyMusicArtists);           // window id = 503
-  m_gWindowManager.Add(&m_guiMyMusicGenres);            // window id = 504
-  m_gWindowManager.Add(&m_guiMyMusicTop100);            // window id = 505
-  m_gWindowManager.Add(&m_guiMyMusicNav);               // window id = 506
+  //m_gWindowManager.Add(&m_guiMyMusicAlbum);             // window id = 502
+  //m_gWindowManager.Add(&m_guiMyMusicArtists);           // window id = 503
+  //m_gWindowManager.Add(&m_guiMyMusicGenres);            // window id = 504
+  //m_gWindowManager.Add(&m_guiMyMusicTop100);            // window id = 505
+  //m_gWindowManager.Add(&m_guiMyMusicNav);               // window id = 506
+  m_gWindowManager.Add(&m_guiMyMusicNav);               // window id = 502
+  m_gWindowManager.Add(&m_guiMyMusicTop100);            // window id = 503
+
   //m_gWindowManager.Add(&m_keyboard);                    // window id = 1000
   m_gWindowManager.Add(&m_guiDialogSelect);             // window id = 2000
   m_gWindowManager.Add(&m_guiMusicInfo);                // window id = 2001
@@ -1289,11 +1293,11 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiDialogPlayerControls.Load("PlayerControls.xml");
   m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
   m_guiMyMusicSongs.Load("mymusicsongs.xml");
-  m_guiMyMusicAlbum.Load("mymusicalbum.xml");
-  m_guiMyMusicArtists.Load("mymusicartists.xml");
-  m_guiMyMusicGenres.Load("mymusicgenres.xml");
-  m_guiMyMusicTop100.Load("mymusictop100.xml");
   m_guiMyMusicNav.Load("mymusicnav.xml");
+  m_guiMyMusicTop100.Load("mymusictop100.xml");
+//  m_guiMyMusicAlbum.Load("mymusicalbum.xml");
+//  m_guiMyMusicArtists.Load("mymusicartists.xml");
+//  m_guiMyMusicGenres.Load("mymusicgenres.xml"); 
   m_guiDialogSelect.Load("dialogSelect.xml");
   m_guiDialogOK.Load("dialogOK.xml");
   m_guiDialogFileStacking.Load("dialogFileStacking.xml");

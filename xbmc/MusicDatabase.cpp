@@ -998,6 +998,7 @@ bool CMusicDatabase::GetSong(const CStdString& strTitle1, CSong& song)
   return false;
 }
 
+/*
 bool CMusicDatabase::GetSongsByArtist(const CStdString strArtist1, VECSONGS& songs)
 {
   try
@@ -1038,6 +1039,7 @@ bool CMusicDatabase::GetSongsByArtist(const CStdString strArtist1, VECSONGS& son
 
   return false;
 }
+*/
 
 bool CMusicDatabase::GetSongsByAlbum(const CStdString& strAlbum1, const CStdString& strPath1, VECSONGS& songs)
 {
@@ -1081,6 +1083,7 @@ bool CMusicDatabase::GetSongsByAlbum(const CStdString& strAlbum1, const CStdStri
   return false;
 }
 
+/*
 bool CMusicDatabase::GetArtists(VECARTISTS& artists)
 {
   try
@@ -1119,6 +1122,7 @@ bool CMusicDatabase::GetArtists(VECARTISTS& artists)
 
   return false;
 }
+*/
 
 bool CMusicDatabase::GetArtistsByName(const CStdString& strArtist1, VECARTISTS& artists)
 {
@@ -1161,6 +1165,7 @@ bool CMusicDatabase::GetArtistsByName(const CStdString& strArtist1, VECARTISTS& 
   return false;
 }
 
+/*
 bool CMusicDatabase::GetAlbums(VECALBUMS& albums)
 {
   try
@@ -1193,7 +1198,9 @@ bool CMusicDatabase::GetAlbums(VECALBUMS& albums)
 
   return false;
 }
+*/
 
+/*
 bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
 {
   try
@@ -1226,7 +1233,9 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
 
   return false;
 }
+*/
 
+/*
 bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums)
 {
   try
@@ -1255,6 +1264,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums)
 
   return false;
 }
+*/
 
 long CMusicDatabase::AddAlbumInfo(const CAlbum& album1, const VECSONGS& songs)
 {
@@ -1375,6 +1385,7 @@ bool CMusicDatabase::AddAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs)
   return false;
 }
 
+/*
 bool CMusicDatabase::GetSongsByGenre(const CStdString& strGenre, VECSONGS& songs)
 {
   try
@@ -1413,7 +1424,9 @@ bool CMusicDatabase::GetSongsByGenre(const CStdString& strGenre, VECSONGS& songs
 
   return false;
 }
+*/
 
+/*
 bool CMusicDatabase::GetGenres(VECGENRES& genres)
 {
   try
@@ -1447,6 +1460,7 @@ bool CMusicDatabase::GetGenres(VECGENRES& genres)
 
   return false;
 }
+*/
 
 bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum1, const CStdString& strPath1, CAlbum& album, VECSONGS& songs)
 {
@@ -1752,6 +1766,8 @@ void CMusicDatabase::EmptyCache()
   m_thumbCache.erase(m_thumbCache.begin(), m_thumbCache.end());
 }
 
+/*
+// UNUSED
 bool CMusicDatabase::GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs)
 {
   try
@@ -1803,7 +1819,9 @@ bool CMusicDatabase::GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs)
 
   return false;
 }
+*/
 
+/*
 bool CMusicDatabase::GetAlbumByPath(const CStdString& strPath1, CAlbum& album)
 {
   try
@@ -1839,6 +1857,7 @@ bool CMusicDatabase::GetAlbumByPath(const CStdString& strPath1, CAlbum& album)
 
   return false;
 }
+*/
 
 bool CMusicDatabase::GetAlbumsByPath(const CStdString& strPath1, VECALBUMS& albums)
 {
@@ -1881,6 +1900,7 @@ bool CMusicDatabase::GetAlbumsByPath(const CStdString& strPath1, VECALBUMS& albu
   return false;
 }
 
+/*
 bool CMusicDatabase::GetAlbumsByArtist(const CStdString& strArtist1, VECALBUMS& albums)
 {
   try
@@ -1919,6 +1939,7 @@ bool CMusicDatabase::GetAlbumsByArtist(const CStdString& strArtist1, VECALBUMS& 
 
   return false;
 }
+*/
 
 bool CMusicDatabase::FindSongsByName(const CStdString& strSearch1, VECSONGS& songs)
 {
@@ -2457,8 +2478,8 @@ bool CMusicDatabase::CleanupThumbs()
       m_pDS->next();
     }
     // clear the thumb cache
-    CUtil::ThumbCacheClear();
-    g_directoryCache.ClearMusicThumbCache();
+    //CUtil::ThumbCacheClear();
+    //g_directoryCache.ClearMusicThumbCache();
     // now we can delete
     m_pDS->close();
     strSQL = "delete from thumb where idThumb not in (select distinct idThumb from song)";
