@@ -8,6 +8,7 @@
 #include "../filesystem/fileshoutcast.h"
 #include "EMUkernel32.h"
 #include "dlgcache.h"
+#include "../FileSystem/FileSmb.h"
 
 #define KEY_ENTER 13
 #define KEY_TAB 9
@@ -427,6 +428,7 @@ CMPlayer::~CMPlayer()
 		delete entry;
 	}	//fix winnt and xbox critical data mismatch issue.
 	free_registry();	//free memory take by registry structures
+	smb.Purge(); // close any open smb sessions
 }
 bool CMPlayer::load()
 {

@@ -26,6 +26,7 @@ public:
 	CSMB();
 	~CSMB();
 	void Init();
+	void Purge();
 	void Lock();
 	void Unlock();
 private:
