@@ -25,8 +25,8 @@ using namespace XFILE;
 
 //*********************************************************************************************
 CFileHD::CFileHD()
+:m_hFile(INVALID_HANDLE_VALUE)
 {
-	m_hFile=INVALID_HANDLE_VALUE;
 }
 
 //*********************************************************************************************
@@ -37,12 +37,12 @@ CFileHD::~CFileHD()
 //*********************************************************************************************
 bool CFileHD::Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary)
 {
-	m_hFile=CreateFile(strFileName,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,0,NULL);
-	if (m_hFile==INVALID_HANDLE_VALUE) return false;
+	m_hFile.attach( CreateFile(strFileName,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,0,NULL));
+	if ( !m_hFile.isValid() ) return false;
 
 	m_i64FilePos=0;
 	LARGE_INTEGER i64Size;
-	GetFileSizeEx(m_hFile, &i64Size);
+	GetFileSizeEx((HANDLE)m_hFile, &i64Size);
 	m_i64FileLength=i64Size.QuadPart;
 	Seek(0,SEEK_SET);
 
@@ -51,12 +51,12 @@ bool CFileHD::Open(const char* strUserName, const char* strPassword,const char* 
 //*********************************************************************************************
 bool CFileHD::OpenForWrite(const char* strFileName)
 {
-	m_hFile=CreateFile(strFileName,GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
-	if (m_hFile==INVALID_HANDLE_VALUE) return false;
+	m_hFile.attach(CreateFile(strFileName,GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL));
+	if (!m_hFile.isValid()) return false;
 
 	m_i64FilePos=0;
 	LARGE_INTEGER i64Size;
-	GetFileSizeEx(m_hFile, &i64Size);
+	GetFileSizeEx((HANDLE)m_hFile, &i64Size);
 	m_i64FileLength=i64Size.QuadPart;
 	Seek(0,SEEK_SET);
 
@@ -66,9 +66,9 @@ bool CFileHD::OpenForWrite(const char* strFileName)
 //*********************************************************************************************
 unsigned int CFileHD::Read(void *lpBuf, offset_t uiBufSize)
 {
-	if (INVALID_HANDLE_VALUE==m_hFile) return 0;
+	if (!m_hFile.isValid()) return 0;
 	DWORD nBytesRead;
-	if ( ReadFile(m_hFile,lpBuf,(DWORD)uiBufSize,&nBytesRead,NULL) )
+	if ( ReadFile((HANDLE)m_hFile,lpBuf,(DWORD)uiBufSize,&nBytesRead,NULL) )
 	{
 			m_i64FilePos+=nBytesRead;
 			return nBytesRead;
@@ -79,9 +79,9 @@ unsigned int CFileHD::Read(void *lpBuf, offset_t uiBufSize)
 //*********************************************************************************************
 unsigned int CFileHD::Write(void *lpBuf, offset_t uiBufSize)
 {
-	if (INVALID_HANDLE_VALUE==m_hFile) return 0;
+	if (!m_hFile.isValid()) return 0;
 	DWORD nBytesWriten;
-	if ( WriteFile(m_hFile,lpBuf,(DWORD)uiBufSize,&nBytesWriten,NULL) )
+	if ( WriteFile((HANDLE)m_hFile,lpBuf,(DWORD)uiBufSize,&nBytesWriten,NULL) )
 	{
 			return nBytesWriten;
 	}
@@ -91,9 +91,7 @@ unsigned int CFileHD::Write(void *lpBuf, offset_t uiBufSize)
 //*********************************************************************************************
 void CFileHD::Close()
 {
-	if (m_hFile!=INVALID_HANDLE_VALUE)
-		CloseHandle(m_hFile);
-	m_hFile=INVALID_HANDLE_VALUE;
+	m_hFile.reset();
 }
 
 //*********************************************************************************************
@@ -104,15 +102,15 @@ offset_t CFileHD::Seek(offset_t iFilePosition, int iWhence)
 	switch (iWhence)
 	{
 		case SEEK_SET:
-			SetFilePointerEx(m_hFile, lPos,&lNewPos,FILE_BEGIN);
+			SetFilePointerEx((HANDLE)m_hFile, lPos,&lNewPos,FILE_BEGIN);
 		break;
 
 		case SEEK_CUR:
-			SetFilePointerEx(m_hFile, lPos,&lNewPos,FILE_CURRENT);
+			SetFilePointerEx((HANDLE)m_hFile, lPos,&lNewPos,FILE_CURRENT);
 		break;
 
 		case SEEK_END:
-			SetFilePointerEx(m_hFile, lPos,&lNewPos,FILE_END);
+			SetFilePointerEx((HANDLE)m_hFile, lPos,&lNewPos,FILE_END);
 		break;
 	}
 	m_i64FilePos=lNewPos.QuadPart;
@@ -123,7 +121,7 @@ offset_t CFileHD::Seek(offset_t iFilePosition, int iWhence)
 offset_t CFileHD::GetLength()
 {
 	LARGE_INTEGER i64Size;
-	GetFileSizeEx(m_hFile, &i64Size);
+	GetFileSizeEx((HANDLE)m_hFile, &i64Size);
 	return i64Size.QuadPart;
 
 //	return m_i64FileLength;
@@ -140,7 +138,7 @@ offset_t CFileHD::GetPosition()
 bool CFileHD::ReadString(char *szLine, int iLineLength)
 {
 	szLine[0]=0;
-	if (m_hFile==INVALID_HANDLE_VALUE) return false;
+	if (!m_hFile.isValid()) return false;
 	offset_t iFilePos=GetPosition();
 
 	int iBytesRead=Read( (unsigned char*)szLine, iLineLength);
@@ -198,8 +196,8 @@ bool CFileHD::ReadString(char *szLine, int iLineLength)
 
 int CFileHD::Write(const void* lpBuf, offset_t uiBufSize)
 {
-	if (m_hFile==INVALID_HANDLE_VALUE) return -1;
+	if (!m_hFile.isValid()) return -1;
 	DWORD dwNumberOfBytesWritten=0;
-	WriteFile(m_hFile, lpBuf, (DWORD)uiBufSize,&dwNumberOfBytesWritten,NULL);
+	WriteFile((HANDLE)m_hFile, lpBuf, (DWORD)uiBufSize,&dwNumberOfBytesWritten,NULL);
 	return (int)dwNumberOfBytesWritten;
 }

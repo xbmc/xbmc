@@ -10,7 +10,8 @@
 #endif // _MSC_VER > 1000
 
 #include "IFile.h"
-
+#include "../autoptrhandle.h"
+using namespace AUTOPTR;
 using namespace XFILE;
 
 namespace XFILE
@@ -32,9 +33,9 @@ namespace XFILE
 		bool						OpenForWrite(const char* strFileName);
 		unsigned int				Write(void *lpBuf, offset_t uiBufSize);
 	protected:
-		HANDLE				m_hFile;
-		offset_t			m_i64FileLength;
-		offset_t		  m_i64FilePos;
+		CAutoPtrHandle	m_hFile;
+		offset_t				m_i64FileLength;
+		offset_t				m_i64FilePos;
 	};
 
 };

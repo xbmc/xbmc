@@ -12,8 +12,10 @@
 #include "sectionLoader.h"
 #include "application.h"
 #include "filesystem/HDDirectory.h" 
+#include "autoptrhandle.h"
 #include <algorithm>
 
+using namespace AUTOPTR;
 using namespace DIRECTORY;
 #define CONTROL_BTNVIEWAS     2
 #define CONTROL_BTNSCAN		    3
@@ -211,7 +213,6 @@ void CGUIWindowPrograms::OnKey(const CKey& key)
 void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
 {
 	WIN32_FIND_DATA wfd;
-	HANDLE hFind;
   bool   bRecurseSubDirs(true);
 	memset(&wfd,0,sizeof(wfd));
 	CStdString strRootDir=strDirectory;
@@ -227,8 +228,8 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
   strSearchMask+="*.*";
 
   FILETIME localTime;
-  hFind = FindFirstFile(strSearchMask.c_str(),&wfd);
-	if (hFind==NULL)
+  CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(),&wfd));
+	if (!hFind.isValid())
 		return ;
 	do
 	{
@@ -284,7 +285,6 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
     }
   } while (FindNextFile(hFind, &wfd));
 
-	FindClose( hFind );	  
 
 	CUtil::SetThumbs(m_vecItems);
 	CUtil::FillInDefaultIcons(m_vecItems);

@@ -2,6 +2,8 @@
 #include "../url.h"
 #include "../util.h"
 #include "../xbox/iosupport.h"
+#include "../autoptrhandle.h"
+using namespace AUTOPTR;
 CHDDirectory::CHDDirectory(void)
 {
 }
@@ -14,7 +16,6 @@ CHDDirectory::~CHDDirectory(void)
 bool  CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 {
 	WIN32_FIND_DATA wfd;
-	HANDLE hFind;
 	
 	CStdString strRoot=strPath;
 	CURL url(strPath);
@@ -32,8 +33,8 @@ bool  CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
   strSearchMask+="*.*";
 
   FILETIME localTime;
-  hFind = FindFirstFile(strSearchMask.c_str(),&wfd);
-	if (hFind==INVALID_HANDLE_VALUE)
+  CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(),&wfd));
+	if (!hFind.isValid())
 		return false;
 	do
 	{
@@ -70,8 +71,7 @@ bool  CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 				}
       }
     }
-  } while (FindNextFile(hFind, &wfd));
+  } while (FindNextFile((HANDLE)hFind, &wfd));
 
-	FindClose( hFind );	  
   return true;
 }

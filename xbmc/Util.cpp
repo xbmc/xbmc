@@ -12,6 +12,8 @@
 #include "lib/cximage/ximage.h"
 #include "filesystem/file.h"
 #include "DetectDVDType.h"
+#include "autoptrhandle.h"
+using namespace AUTOPTR;
 
 using namespace XFILE;
 char g_szTitleIP[32];
@@ -765,36 +767,36 @@ bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDesc
 DWORD CUtil::GetXbeID( const CStdString& strFilePath)
 {
 	DWORD dwReturn = 0;
-	HANDLE hFile;
+	
 	DWORD dwCertificateLocation;
 	DWORD dwLoadAddress;
 	DWORD dwRead;
 //	WCHAR wcTitle[41];
 	
-  hFile = CreateFile( strFilePath.c_str(), 
+  CAutoPtrHandle  hFile( CreateFile( strFilePath.c_str(), 
 						GENERIC_READ, 
 						FILE_SHARE_READ, 
 						NULL,
 						OPEN_EXISTING,
 						FILE_ATTRIBUTE_NORMAL,
-						NULL );
-	if ( hFile != INVALID_HANDLE_VALUE )
+						NULL ));
+	if ( hFile.isValid() )
 	{
-		if ( SetFilePointer(	hFile,  0x104, NULL, FILE_BEGIN ) == 0x104 )
+		if ( SetFilePointer(	(HANDLE)hFile,  0x104, NULL, FILE_BEGIN ) == 0x104 )
 		{
-			if ( ReadFile( hFile, &dwLoadAddress, 4, &dwRead, NULL ) )
+			if ( ReadFile( (HANDLE)hFile, &dwLoadAddress, 4, &dwRead, NULL ) )
 			{
-				if ( SetFilePointer(	hFile,  0x118, NULL, FILE_BEGIN ) == 0x118 )
+				if ( SetFilePointer(	(HANDLE)hFile,  0x118, NULL, FILE_BEGIN ) == 0x118 )
 				{
-					if ( ReadFile( hFile, &dwCertificateLocation, 4, &dwRead, NULL ) )
+					if ( ReadFile( (HANDLE)hFile, &dwCertificateLocation, 4, &dwRead, NULL ) )
 					{
 						dwCertificateLocation -= dwLoadAddress;
 						// Add offset into file
 						dwCertificateLocation += 8;
-						if ( SetFilePointer(	hFile,  dwCertificateLocation, NULL, FILE_BEGIN ) == dwCertificateLocation )
+						if ( SetFilePointer(	(HANDLE)hFile,  dwCertificateLocation, NULL, FILE_BEGIN ) == dwCertificateLocation )
 						{
 							dwReturn = 0;
-							ReadFile( hFile, &dwReturn, sizeof(DWORD), &dwRead, NULL );
+							ReadFile( (HANDLE)hFile, &dwReturn, sizeof(DWORD), &dwRead, NULL );
 							if ( dwRead != sizeof(DWORD) )
 							{
 								dwReturn = 0;
@@ -805,7 +807,6 @@ DWORD CUtil::GetXbeID( const CStdString& strFilePath)
 				}
 			}
 		}
-		CloseHandle(hFile);
 	}
 	return dwReturn;
 }
@@ -1048,10 +1049,10 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 void CUtil::RemoveTempFiles()
 {
 	WIN32_FIND_DATA wfd;
-	HANDLE hFind;
+	
 	memset(&wfd,0,sizeof(wfd));
-	hFind = FindFirstFile("Q:\\albums\\*.tmp",&wfd);
-	if (hFind==INVALID_HANDLE_VALUE)
+	CAutoPtrFind hFind( FindFirstFile("Q:\\albums\\*.tmp",&wfd));
+	if (!hFind.isValid())
 		return ;
 	do
 	{
@@ -1062,7 +1063,6 @@ void CUtil::RemoveTempFiles()
 			DeleteFile(strFile.c_str());
 		}
 	} while (FindNextFile(hFind, &wfd));
-	FindClose( hFind );	  
 }
 
 bool CUtil::IsHD(const CStdString& strFileName)

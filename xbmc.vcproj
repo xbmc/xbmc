@@ -946,6 +946,12 @@
 			Name="utils"
 			Filter="">
 			<File
+				RelativePath=".\xbmc\AutoPtrHandle.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\AutoPtrHandle.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\utils\CriticalSection.cpp">
 			</File>
 			<File
