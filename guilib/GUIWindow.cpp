@@ -1089,5 +1089,6 @@ void CGUIWindow::ResetAllControls()
   {
     CGUIControl* pControl= m_vecControls[i];
 		pControl->SetWidth( pControl->GetWidth() );
+    pControl->Update();
 	}
 }

@@ -79,6 +79,7 @@ public:
 	bool					CalibrationEnabled() const;
   void SetGroup(int iGroup);
   int GetGroup(void) const;
+  virtual void  Update() {};
 
 	enum GUICONTROLTYPES { 
 		GUICONTROL_UNKNOWN,
@@ -116,7 +117,6 @@ public:
 	GUICONTROLTYPES GetControlType() const { return ControlType; }
 
 protected:
-  virtual void       Update() {};
   DWORD              m_dwControlLeft;
   DWORD              m_dwControlRight;
   DWORD              m_dwControlUp;
