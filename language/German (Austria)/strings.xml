@@ -41,7 +41,7 @@
   <string><id>107</id><value>Ja</value></string>
   <string><id>108</id><value>Diaschau</value></string>
   <string><id>109</id><value>Miniaturansicht</value></string>
-  <string><id>110</id><value>Miniaturansicht wird erstellt.</value></string>
+  <string><id>110</id><value>Miniaturansicht wird erstellt...</value></string>
   <string><id>111</id><value>Verknüpfungen</value></string> 
   <string><id>112</id><value>ANGEHALTEN</value></string>
   <string><id>113</id><value>Daten: Quelle</value></string>
@@ -71,8 +71,8 @@
   <string><id>137</id><value>Suchen..</value></string>
   <string><id>138</id><value>Systeminformationen</value></string>
   <string><id>139</id><value>Temperatur:</value></string>
-  <string><id>140</id><value>CPU:</value></string>
-  <string><id>141</id><value>GPU:</value></string>
+  <string><id>140</id><value>- CPU:</value></string>
+  <string><id>141</id><value>- GPU:</value></string>
   <string><id>142</id><value>Zeit:</value></string>
   <string><id>143</id><value>Lokal:</value></string>
   <string><id>144</id><value>Version:</value></string>
@@ -301,29 +301,29 @@
   <string><id>368</id><value>Internetsuche</value></string> 
   <string><id>369</id><value>Titel</value></string>
   <string><id>370</id><value>Gewitter</value></string>
-  <string><id>371</id><value>teilweise</value></string>
-  <string><id>372</id><value>weitgehend</value></string>
-  <string><id>373</id><value>sonnig</value></string>
-  <string><id>374</id><value>wolkig</value></string>
-  <string><id>375</id><value>Schnee</value></string>
+  <string><id>371</id><value>Vereinzelt</value></string>
+  <string><id>372</id><value>Größtenteils</value></string>
+  <string><id>373</id><value>Sonne</value></string>
+  <string><id>374</id><value>Wolken</value></string>
+  <string><id>375</id><value>Schnee(fall)</value></string>
   <string><id>376</id><value>Regen</value></string>
-  <string><id>377</id><value>leichter</value></string>
-  <string><id>378</id><value>vormittags</value></string>
-  <string><id>379</id><value>nachmittags</value></string>
-  <string><id>380</id><value>Schauer</value></string>
-  <string><id>381</id><value>wenige</value></string>
-  <string><id>382</id><value>vereinzelt</value></string>
+  <string><id>377</id><value>Leichter</value></string>
+  <string><id>378</id><value>Vormittags</value></string>
+  <string><id>379</id><value>Nachmittags</value></string>
+  <string><id>380</id><value>Regenschauer</value></string>
+  <string><id>381</id><value>Wenige</value></string>
+  <string><id>382</id><value>Vereinzelt</value></string>
   <string><id>383</id><value>Wind</value></string>
-  <string><id>384</id><value>starker</value></string>
-  <string><id>385</id><value>schön</value></string>
-  <string><id>386</id><value>klar</value></string>
+  <string><id>384</id><value>Starker</value></string>
+  <string><id>385</id><value>Heiter</value></string>
+  <string><id>386</id><value>Klar</value></string>
   <string><id>387</id><value>Wolken</value></string>
-  <string><id>388</id><value>N/A</value></string>
-  <string><id>389</id><value>N/A</value></string>
-  <string><id>390</id><value>N/A</value></string>
-  <string><id>391</id><value>N/A</value></string>
-  <string><id>392</id><value>N/A</value></string>
-  <string><id>393</id><value>N/A</value></string>
+  <string><id>388</id><value>Morgens</value></string>
+  <string><id>389</id><value>Schauer</value></string>
+  <string><id>390</id><value>Schneegestöber</value></string>
+  <string><id>391</id><value>niedrig</value></string>
+  <string><id>392</id><value>mittel</value></string>
+  <string><id>393</id><value>hoch</value></string>
   <string><id>394</id><value>N/A</value></string>
   <string><id>395</id><value>N/A</value></string>
   <string><id>396</id><value>Ortsauswahl</value></string>
@@ -337,7 +337,7 @@
   <string><id>404</id><value>Wind</value></string> 
   <string><id>405</id><value>Taupunkt</value></string>
   <string><id>406</id><value>Feuchtigkeit</value></string>
-  <string><id>407</id><value>-</value></string>
+  <string><id>407</id><value>von</value></string>
   <string><id>408</id><value>mit</value></string>    
   <string><id>410</id><value>Wettervorhersage</value></string>     
   <string><id>411</id><value>Wetterinformationen werden geladen für:</value></string>
@@ -636,7 +636,7 @@
   <string><id>13206</id><value>Überschreiben</value></string> 
   <string><id>13207</id><value>Profil '%s' überschreiben?</value></string>
   <string><id>13299</id><value>- Temperatur:</value></string>
-  <string><id>13300</id><value>- Geschwindigkeit:</value></string>
+  <string><id>13300</id><value>- Lüftergeschwindigkeit:</value></string>
   <string><id>13301</id><value>Automatische Temperaturkontrolle</value></string>
   <string><id>13302</id><value>Manuelle Lüftereinstellung</value></string>
   <string><id>13303</id><value>- Schriftart</value></string>
@@ -696,6 +696,7 @@
   <string><id>13357</id><value>Kombination aus Overlay/Shader</value></string>
   <string><id>13358</id><value>Pixel Shader (hohe Qualität)</value></string>
   <string><id>13359</id><value>Pixel Shader (mittlere Qualität)</value></string>
+
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln einfach</value></string>
   <string><id>14002</id><value>Koppeln unpräz.</value></string>
@@ -720,7 +721,7 @@
   <string><id>14021</id><value>- Ortskennzahl 3</value></string>
   <string><id>14022</id><value>Datenbank</value></string>
   <string><id>14023</id><value>Kein TV</value></string>
-  <string><id>14024</id><value>Stadt oder US Postleitzahl eingeben:</value></string>
+  <string><id>14024</id><value>Stadt oder Adresse z.B.[AUXX0008] eingeben:</value></string>
   <string><id>14025</id><value>Video/Audio/DVD Cache - Festplatte</value></string>
   <string><id>14026</id><value>Video Cache  - DVD Laufwerk</value></string>
   <string><id>14027</id><value>Video Cache  - lokales Netzwerk</value></string>
@@ -756,6 +757,7 @@
   <string><id>14059</id><value>Miniaturansichten von Freigaben berücksichtigen</value></string>
   <string><id>14060</id><value>Daten Cache  - Internet</value></string>
   <string><id>14061</id><value>Automatisch</value></string>
+  <string><id>14062</id><value>Benutzername eingeben</value></string>
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Es besteht keine Verbindung mit XLink,</value></string> 
   <string><id>15002</id><value>soll XBMC versuchen mit XLink zu verbinden?</value></string> 

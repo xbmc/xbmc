@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.601. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.602. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -317,12 +317,12 @@
   <string><id>385</id><value>Frisk</value></string>
   <string><id>386</id><value>Klart</value></string>
   <string><id>387</id><value>Skyer</value></string>
-  <string><id>388</id><value>Ikke tilgjengelig</value></string>
-  <string><id>389</id><value>Ikke tilgjengelig</value></string>
-  <string><id>390</id><value>Ikke tilgjengelig</value></string>
-  <string><id>391</id><value>Ikke tilgjengelig</value></string>
-  <string><id>392</id><value>Ikke tilgjengelig</value></string>
-  <string><id>393</id><value>Ikke tilgjengelig</value></string>
+  <string><id>388</id><value>Tidlig</value></string>
+  <string><id>389</id><value>Byge</value></string>
+  <string><id>390</id><value>Snøbyger</value></string>
+  <string><id>391</id><value>Lav</value></string>
+  <string><id>392</id><value>Middels</value></string>
+  <string><id>393</id><value>Høy</value></string>
   <string><id>394</id><value>Ikke tilgjengelig</value></string>
   <string><id>395</id><value>Ikke tilgjengelig</value></string>
   <string><id>396</id><value>Velg plass</value></string>
@@ -756,6 +756,7 @@
   <string><id>14059</id><value>Se etter miniatyrbilder i nettverksmapper</value></string>
   <string><id>14060</id><value>Ukjent type cache - internett</value></string>
   <string><id>14061</id><value>Auto</value></string>
+  <string><id>14062</id><value>Skriv inn brukernavn for</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Tjenesten er ikke tilkoblet, vil du forsøke</value></string>
