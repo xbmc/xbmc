@@ -25,8 +25,16 @@ bool CSectionLoader::IsLoaded(const CStdString& strSection)
 
 bool CSectionLoader::Load(const CStdString& strSection)
 {
-  if (CSectionLoader::IsLoaded(strSection)) return true;
-
+	for (int i=0; i < (int)g_sectionLoader.m_vecLoadedSections.size(); ++i)
+  {
+    CSection& section=g_sectionLoader.m_vecLoadedSections[i];
+    if (section.m_strSectionName==strSection) 
+		{
+			section.m_lReferenceCount++;
+			return true;
+		}
+  }
+  
 	CStdString strLog;
   if ( NULL==XLoadSection(strSection.c_str() ) )
   {
