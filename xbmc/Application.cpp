@@ -36,6 +36,7 @@
 #include "LangCodeExpander.h"
 #include "lib/libGoAhead/xbmchttp.h"
 #include "utils/GUIInfoManager.h"
+#include "PlaylistFactory.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -1610,7 +1611,7 @@ void CApplication::OnKey(CKey& key)
 		{
 			//check for key received over HttpApi first
 			action.wID = 0;
-			if (pXbmcHttp)
+			if (m_pWebServer && pXbmcHttp)
 			{																	CKey keyHttp(pXbmcHttp->GetKey());	
 				if (keyHttp.GetButtonCode()!=KEY_INVALID)
 					action.wID = (WORD) keyHttp.GetButtonCode();	//Nad
@@ -2009,7 +2010,7 @@ void CApplication::FrameMove()
 		m_gWindowManager.OnAction(action);
 	}
 	// process the buttons received via the HttpApi
-	if (pXbmcHttp)
+	if (m_pWebServer && pXbmcHttp)
 	{
 		CKey keyHttp(pXbmcHttp->GetKey());
 		if (keyHttp.GetButtonCode()!=KEY_INVALID)
@@ -2326,10 +2327,85 @@ void CApplication::Stop()
 	}
 }
 
+bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
+{
+  if (!item.IsPlayList())
+  {
+    //not a playlist, just play the file
+    return g_application.PlayFile(item);
+  }
+  if (iPlaylist == PLAYLIST_NONE)
+  {
+		CLog::Log(LOGERROR, "CApplication::PlayMedia called to play playlist %s but no idea which playlist to use.", item.m_strPath.c_str());
+    return false;
+  }
+  //playlist
+	CPlayListFactory factory;
+  auto_ptr<CPlayList> pPlayList (factory.Create(item.m_strPath));
+	if ( NULL == pPlayList.get()) return false;
+  // load it
+	if (!pPlayList->Load(item.m_strPath)) return false;
+  
+  CPlayList& playlist=(*pPlayList);
+
+	//	no songs in playlist just return
+	if (playlist.size() == 0)	return false;
+
+  // how many songs are in the new playlist
+  if (playlist.size() == 1)
+  {
+    // just 1 song? then play it (no need to have a playlist of 1 song)
+    CPlayList::CPlayListItem item=playlist[0];
+    return g_application.PlayFile(CFileItem(item));
+  }
+
+  // clear current playlist
+	g_playlistPlayer.GetPlaylist(iPlaylist).Clear();
+
+	//	if autoshuffle playlist on load option is enabled
+  //  then shuffle the playlist
+  // (dont do this for shoutcast .pls files)
+	if (playlist.size())
+	{
+		const CPlayList::CPlayListItem& playListItem=playlist[0];
+		if (!playListItem.IsShoutCast() && g_guiSettings.GetBool("MusicLibrary.ShufflePlaylistsOnLoad"))
+			pPlayList->Shuffle();
+	}
+
+  // add each item of the playlist to the playlistplayer
+	for (int i=0; i < (int)pPlayList->size(); ++i)
+	{
+		const CPlayList::CPlayListItem& playListItem=playlist[i];
+		CStdString strLabel=playListItem.GetDescription();
+		if (strLabel.size()==0) 
+			strLabel=CUtil::GetTitleFromPath(playListItem.GetFileName());
+
+		CPlayList::CPlayListItem playlistItem;
+		playlistItem.SetDescription(playListItem.GetDescription());
+		playlistItem.SetDuration(playListItem.GetDuration());
+		playlistItem.SetFileName(playListItem.GetFileName());
+		g_playlistPlayer.GetPlaylist( iPlaylist ).Add(playlistItem);
+	}
+
+  // if we got a playlist
+	if (g_playlistPlayer.GetPlaylist( iPlaylist ).size() )
+	{
+    // then get 1st song
+		CPlayList& playlist=g_playlistPlayer.GetPlaylist( iPlaylist );
+		const CPlayList::CPlayListItem& item=playlist[0];
+
+    // and start playing it
+		g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
+		g_playlistPlayer.Reset();
+		g_playlistPlayer.Play(0);
+    return true;
+  }
+  return false;
+}
+
 bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 {
 	if (item.IsPlayList()) return false;
-
 	float AVDelay = 0;
 
 	m_tagCurrentMovie.Reset();

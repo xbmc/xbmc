@@ -85,6 +85,7 @@
 #include "GUIWindowSettingsProfile.h"
 #include "CdgParser.h"
 #include "utils/Splash.h"
+#include "PlaylistPlayer.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;
@@ -123,6 +124,7 @@ public:
 	virtual bool			OnMessage(CGUIMessage& message);
 	virtual	void			OnPlayBackEnded();
 	virtual	void			OnPlayBackStarted();
+  bool          PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC_TEMP);
 	bool					PlayFile(const CFileItem& item,bool bRestart=false);
 	void					StopPlaying();
 	void					Restart(bool bSamePosition=true);
