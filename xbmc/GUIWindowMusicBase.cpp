@@ -680,7 +680,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
 	}
 	else
 	{
-		if (CUtil::IsAudio(pItem->m_strPath) && !CUtil::IsPlayList(pItem->m_strPath))
+    if (!CUtil::IsNFO(pItem->m_strPath) && CUtil::IsAudio(pItem->m_strPath) && !CUtil::IsPlayList(pItem->m_strPath))
 		{
 			CPlayList::CPlayListItem playlistItem ;
 			playlistItem.SetFileName(pItem->m_strPath);

@@ -645,28 +645,36 @@ void CMPlayer::Process()
 	if (m_pDLL && m_bIsPlaying)
 	{
 		m_callback.OnPlayBackStarted();
-		do 
-		{
-			if (!m_bPaused)
-			{
-				int iRet=mplayer_process();
-				if (iRet < 0)
-				{
-					m_bIsPlaying=false;
-				}
-				
-				__int64 iPTS=mplayer_get_pts();
-				if (iPTS)
-				{
-					m_iPTS=iPTS;
-				}
-			}
-			else 
-			{
-				xbox_video_CheckScreenSaver();		// Check for screen saver
-				Sleep(100);
-			}
-		} while (m_bIsPlaying && !m_bStop);
+
+    try
+    {
+		  do 
+		  {
+			  if (!m_bPaused)
+			  {
+				  int iRet=mplayer_process();
+				  if (iRet < 0)
+				  {
+					  m_bIsPlaying=false;
+				  }
+  				
+				  __int64 iPTS=mplayer_get_pts();
+				  if (iPTS)
+				  {
+					  m_iPTS=iPTS;
+				  }
+			  }
+			  else 
+			  {
+				  xbox_video_CheckScreenSaver();		// Check for screen saver
+				  Sleep(100);
+			  }
+		  } while (m_bIsPlaying && !m_bStop);
+    }
+    catch(...)
+    {
+        OutputDebugString("mplayer generated exception!\n");
+    }
 		mplayer_close_file();
 	}
 	m_bIsPlaying=false;
