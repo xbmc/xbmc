@@ -292,13 +292,13 @@ void CWebServer::SetPassword(char_t* strPassword)
   if (strPassword && strlen(strPassword) > 0)
   {  
     // create group
-    umAddGroup(WEBSERVER_UM_GROUP, PRIV_READ | PRIV_WRITE | PRIV_ADMIN, AM_DIGEST, false, false);
+    umAddGroup(WEBSERVER_UM_GROUP, PRIV_READ | PRIV_WRITE | PRIV_ADMIN, AM_BASIC, false, false);
     
     // greate user
     umAddUser("xbox", strPassword, WEBSERVER_UM_GROUP, false, false);
     
     // create access limit
-    umAddAccessLimit("/", AM_DIGEST, 0, WEBSERVER_UM_GROUP);
+    umAddAccessLimit("/", AM_BASIC, 0, WEBSERVER_UM_GROUP);
   }
 
   // save new information in database
