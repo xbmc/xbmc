@@ -4,23 +4,23 @@
 <strings>
   <string>
     <id>0</id>
-    <value>Moje Programy</value>
+    <value>Moje programy</value>
   </string>
   <string>
     <id>1</id>
-    <value>Moje Obrazy</value>
+    <value>Moje obrazy</value>
   </string>
   <string>
     <id>2</id>
-    <value>Moja Muzyka</value>
+    <value>Moja muzyka</value>
   </string>
   <string>
     <id>3</id>
-    <value>Moje Filmy</value>
+    <value>Moje filmy</value>
   </string>
   <string>
     <id>4</id>
-    <value>TV Guide</value>
+    <value>Przewodnik TV</value>
   </string>
   <string>
     <id>5</id>
@@ -28,7 +28,7 @@
   </string>
   <string>
     <id>7</id>
-    <value>Moje Pliki</value>
+    <value>Moje pliki</value>
   </string>
   <string>
     <id>11</id>
@@ -111,11 +111,11 @@
   </string>  
   <string>
     <id>100</id>
-    <value>Pokazuj ikony</value>
+    <value>Ikony</value>
   </string>  
   <string>
     <id>101</id>
-    <value>Pokazuj liste</value>
+    <value>Lista</value>
   </string>  
   <string>
     <id>102</id>
@@ -123,15 +123,15 @@
   </string>  
   <string>
     <id>103</id>
-    <value>Sortuj nazwami</value>
+    <value>Sortuj wedlug nazw</value>
   </string> 
   <string>
     <id>104</id>
-    <value>Sortuj datami</value>
+    <value>Sortuj wedlug dat</value>
   </string>    
   <string>
     <id>105</id>
-    <value>Sortuj rozmiarami plikow</value>
+    <value>Sortuj wedlug rozmiarow</value>
   </string>      
   <string>
     <id>106</id>
@@ -143,15 +143,15 @@
   </string>   
   <string>
     <id>108</id>
-    <value>SlideShow</value>
+    <value>Slajdy</value>
   </string>   
   <string>
     <id>109</id>
-    <value>Stworz miniaturki</value>
+    <value>Utworz miniaturki</value>
   </string>   
   <string>
     <id>110</id>
-    <value>Stworz miniaturki</value>
+    <value>Utworz miniaturki</value>
   </string>   
   <string>
     <id>111</id>
@@ -163,11 +163,11 @@
   </string>   
   <string>
     <id>113</id>
-    <value>Moje Pliki : Zrodlo</value>
+    <value>Moje pliki : Zrodlo</value>
   </string>   
   <string>
     <id>114</id>
-    <value>Moje Pliki : Przeznaczenie</value>
+    <value>Moje pliki : Katalog docelowy</value>
   </string>   
   <string>
     <id>115</id>
@@ -203,15 +203,15 @@
   </string>   
   <string>
     <id>123</id>
-    <value>Czy kopiowac te pliki?</value>
+    <value>Skopiowac te pliki?</value>
   </string>   
   <string>
     <id>124</id>
-    <value>Czy przeniesc te pliki?</value>
+    <value>Przeniesc te pliki?</value>
   </string>   
   <string>
     <id>125</id>
-    <value>Czy skasowac te pliki?</value>
+    <value>Skasowac te pliki?</value>
   </string>  
   <string>
     <id>126</id>
@@ -219,7 +219,7 @@
   </string>  
   <string>
     <id>127</id>
-    <value>Objekty</value>
+    <value>Objektow</value>
   </string>  
   <string>
     <id>128</id>
@@ -227,11 +227,11 @@
   </string> 
   <string>
     <id>129</id>
-    <value>Slideshow</value>
+    <value>Slajdy</value>
   </string> 
   <string>
     <id>130</id>
-    <value>Informacje</value>
+    <value>System info</value>
   </string>  
   <string>
     <id>131</id>
@@ -247,7 +247,7 @@
   </string>  
   <string>
     <id>134</id>
-    <value>Wyswietl piosenki</value>
+    <value>Pokaz utwory</value>
   </string>  
   <string>
     <id>135</id>
@@ -263,7 +263,7 @@
   </string>  
   <string>
     <id>138</id>
-    <value>INFORMACJE O SYSTEMIE</value>
+    <value>Informacje systemowe</value>
   </string>  
   <string>
     <id>139</id>
@@ -283,11 +283,11 @@
   </string> 
   <string>
     <id>143</id>
-    <value>Aktualny:</value>
+    <value>Obecny:</value>
   </string> 
   <string>
     <id>144</id>
-    <value>Wersja:</value>
+    <value>Build:</value>
   </string> 
   <string>
     <id>145</id>
@@ -319,11 +319,11 @@
   </string> 
   <string>
     <id>152</id>
-    <value>Pol duplex</value>
+    <value>Half duplex</value>
   </string> 
   <string>
     <id>153</id>
-    <value>Pelny duplex</value>
+    <value>Full duplex</value>
   </string> 
   <string>
     <id>154</id>
@@ -335,11 +335,11 @@
   </string> 
   <string>
     <id>156</id>
-    <value>Wolnych</value>
+    <value>Wolne</value>
   </string> 
   <string>
     <id>157</id>
-    <value>Video</value>
+    <value>Obraz</value>
   </string> 
   <string>
     <id>158</id>
@@ -355,11 +355,11 @@
   </string> 
   <string>
     <id>161</id>
-    <value>Niedostepne</value>
+    <value>Niedostepny</value>
   </string> 
   <string>
     <id>162</id>
-    <value>Tacka Otwarta</value>
+    <value>Tacka napedu otwarta</value>
   </string> 
   <string>
     <id>163</id>
@@ -371,7 +371,7 @@
   </string> 
   <string>
     <id>165</id>
-    <value>Dysk w napedzie</value>
+    <value>Jest dysk</value>
   </string> 
   <string>
     <id>166</id>
@@ -379,11 +379,11 @@
   </string> 
   <string>
     <id>167</id>
-    <value>FTP server:</value>
+    <value>Serwer FTP:</value>
   </string> 
   <string>
     <id>168</id>
-    <value>Time server:</value>
+    <value>Serwer czasu:</value>
   </string> 
   <string>
     <id>169</id>
@@ -399,51 +399,51 @@
   </string> 
   <string>
     <id>172</id>
-    <value>Date of Release:</value>
+    <value>Data wydania:</value>
   </string> 
   <string>
     <id>173</id>
-    <value>Rating:</value>
+    <value>Ocena:</value>
   </string> 
   <string>
     <id>174</id>
-    <value>Genre:</value>
+    <value>Gatunek:</value>
   </string> 
   <string>
     <id>175</id>
-    <value>Tones:</value>
+    <value>Tony:</value>
   </string> 
   <string>
     <id>176</id>
-    <value>Styles:</value>
+    <value>Style:</value>
   </string> 
   <string>
     <id>177</id>
-    <value>Review:</value>
+    <value>Przeglad:</value>
   </string> 
   <string>
     <id>178</id>
-    <value>Sciezek:</value>
+    <value>Sciezki:</value>
   </string> 
   <string>
     <id>179</id>
-    <value>Song</value>
+    <value>Utwor</value>
   </string> 
   <string>
     <id>180</id>
-    <value>Duration</value>
+    <value>Czas trwania</value>
   </string> 
   <string>
     <id>181</id>
-    <value>Select album</value>
+    <value>Wybierz album</value>
   </string> 
   <string>
     <id>182</id>
-    <value>Tracks</value>
+    <value>Sciezki</value>
   </string> 
   <string>
     <id>183</id>
-    <value>Review</value>
+    <value>Przeglad</value>
   </string> 
   <string>
     <id>184</id>
@@ -451,7 +451,7 @@
   </string> 
   <string>
     <id>185</id>
-    <value>Searching album</value>
+    <value>Wyszukuje album</value>
   </string> 
   <string>
     <id>186</id>
@@ -459,7 +459,7 @@
   </string>  
   <string>
     <id>187</id>
-    <value>No albums found!</value>
+    <value>Nie znalazlem albumow!</value>
   </string>  
   <string>
     <id>188</id>
@@ -467,7 +467,7 @@
   </string>  
   <string>
     <id>189</id>
-    <value>Scanning media info</value>
+    <value>Wyszukuje informacje</value>
   </string>  
   <string>
     <id>190</id>
@@ -475,7 +475,7 @@
   </string>  
   <string>
     <id>191</id>
-    <value>Shuffle</value>
+    <value>Losowo</value>
   </string>  
   <string>
     <id>192</id>
@@ -491,19 +491,19 @@
   </string> 
   <string>
     <id>195</id>
-    <value>No IMDB info found!</value>
+    <value>Nie odnaleziono informacji IMDB!</value>
   </string> 
   <string>
     <id>196</id>
-    <value>Select movie:</value>
+    <value>Wybierz film:</value>
   </string> 
   <string>
     <id>197</id>
-    <value>Querying IMDB info</value>
+    <value>Odczytuje informacje IMDB</value>
   </string> 
   <string>
     <id>198</id>
-    <value>Loading Movie details</value>
+    <value>Wczytuje...</value>
   </string> 
   <string>
     <id>199</id>
@@ -511,7 +511,7 @@
   </string> 
   <string>
     <id>200</id>
-    <value>Credits</value>
+    <value>Podziekowania</value>
   </string> 
   <string>
     <id>201</id>
@@ -519,7 +519,7 @@
   </string> 
   <string>
     <id>202</id>
-    <value>Tag line</value>
+    <value>Linia Tag</value>
   </string> 
   <string>
     <id>203</id>
@@ -527,15 +527,15 @@
   </string> 
   <string>
     <id>204</id>
-    <value>Rating</value>
+    <value>Ocena</value>
   </string> 
   <string>
     <id>205</id>
-    <value>Votes</value>
+    <value>Glosy</value>
   </string> 
   <string>
     <id>206</id>
-    <value>Cast</value>
+    <value>Obsada</value>
   </string> 
   <string>
     <id>207</id>
@@ -547,19 +547,19 @@
   </string> 
   <string>
     <id>209</id>
-    <value>Nastepny</value>
+    <value>Dalej</value>
   </string> 
   <string>
     <id>210</id>
-    <value>Poprzedni</value>
+    <value>Wroc</value>
   </string> 
   <string>
     <id>211</id>
-    <value>Szukam programow</value>
+    <value>Wyszukuje programy</value>
   </string> 
   <string>
     <id>212</id>
-    <value>programy zostaly odnalezione</value>
+    <value>znaleziono programy</value>
   </string> 
   <string>
     <id>213</id>
@@ -591,7 +591,7 @@
   </string> 
   <string>
     <id>220</id>
-    <value>Remote Share</value>
+    <value>Zdalny dostep</value>
   </string> 
   <string>
     <id>221</id>
@@ -611,11 +611,11 @@
   </string> 
   <string>
     <id>225</id>
-    <value>Czas wyswietlania</value>
+    <value>Czas trwania</value>
   </string> 
   <string>
     <id>226</id>
-    <value>W³¹cz PAL60</value>
+    <value>Wlacz PAL60</value>
   </string> 
   <string>
     <id>227</id>
@@ -623,11 +623,11 @@
   </string> 
   <string>
     <id>228</id>
-    <value>Zmieszaj Playliste po wczytaniu</value>
+    <value>Mieszaj Playliste po wczytaniu</value>
   </string> 
   <string>
     <id>229</id>
-    <value>Wylaczenie dysku HDD (min)</value>
+    <value>Wylacz HDD po (min)</value>
   </string> 
   <string>
     <id>230</id>
@@ -635,19 +635,19 @@
   </string> 
   <string>
     <id>231</id>
-    <value>Brak</value>
+    <value>Zaden</value>
   </string> 
   <string>
     <id>232</id>
-    <value>Point</value>
+    <value>Punktowy</value>
   </string> 
   <string>
     <id>233</id>
-    <value>Linear</value>
+    <value>Liniowy</value>
   </string> 
   <string>
     <id>234</id>
-    <value>Anisotropic</value>
+    <value>Anizotropowy</value>
   </string> 
   <string>
     <id>235</id>
@@ -667,31 +667,31 @@
   </string>
   <string>
     <id>240</id>
-    <value>Autouruchamianie DVD-Video</value>
+    <value>Automatycznie odtwarzaj DVD-Video</value>
   </string>
   <string>
     <id>241</id>
-    <value>Autouruchamianie VCD/SVCD</value>
+    <value>Automatycznie odtwarzaj VCD/SVCD</value>
   </string>
   <string>
     <id>242</id>
-    <value>Autouruchamianie AudioCD</value>
+    <value>Automatycznie odtwarzaj Audio-CD</value>
   </string>
   <string>
     <id>243</id>
-    <value>Autouruchamianie Gier</value>
+    <value>Automatycznie odtwarzaj Gry XboX</value>
   </string>
   <string>
     <id>244</id>
-    <value>Autouruchamianie Filmow</value>
+    <value>Automatycznie odtwarzaj Video</value>
   </string>
   <string>
     <id>245</id>
-    <value>Autouruchamianie Muzyki</value>
+    <value>Automatycznie odtwarzaj Muzyke</value>
   </string>
   <string>
     <id>246</id>
-    <value>Autouruchamianie Obrazkow</value>
+    <value>Automatycznie odtwarzaj Obrazy</value>
   </string>
   <string>
     <id>247</id>
@@ -707,7 +707,7 @@
   </string>
   <string>
     <id>250</id>
-    <value>Wizualizacja</value>
+    <value>Wisualizacja</value>
   </string>
   <string>
     <id>251</id>
@@ -731,7 +731,7 @@
   </string>
   <string>
     <id>256</id>
-    <value>Poszukuje informacji CDDB</value>
+    <value>Odczytuje informacje z CDDB</value>
   </string>
   <string>
     <id>257</id>
@@ -751,19 +751,19 @@
   </string>
   <string>
     <id>261</id>
-    <value>Czekam na uruchomienie....</value>
+    <value>Czekam na start....</value>
   </string>
   <string>
     <id>262</id>
-    <value>Wyjscie dla skryptow</value>
+    <value>Wyjscie Skryptow</value>
   </string>
   <string>
     <id>263</id>
-    <value>HTTP server:</value>
+    <value>Serwer HTTP:</value>
   </string>
   <string>
     <id>264</id>
-    <value>Nagrywam</value>
+    <value>Nagrywaj</value>
   </string>
   <string>
     <id>265</id>
@@ -771,23 +771,23 @@
   </string>
   <string>
     <id>266</id>
-    <value>Sortuj Siezkami</value>
+    <value>Sortuj wedlug sciezek</value>
   </string>
   <string>
     <id>267</id>
-    <value>Sortuj Czasem odtw.</value>
+    <value>Sortuj wedlug czaseu</value>
   </string>
   <string>
     <id>268</id>
-    <value>Sortuj Tytulami</value>
+    <value>Sortuj wedlug tytulu</value>
   </string>
   <string>
     <id>269</id>
-    <value>Sortuj Artystami</value>
+    <value>Sortuj wedlug artysty</value>
   </string>
   <string>
     <id>270</id>
-    <value>Sortuj Albumami</value>
+    <value>Sortuj wedlug albumu</value>
   </string>
   <string>
     <id>271</id>
@@ -795,11 +795,11 @@
   </string>
   <string>
     <id>272</id>
-    <value>Top Left Overscan Compensation</value>
+    <value>Gorny lewy rog ekranu</value>
   </string>
   <string>
     <id>273</id>
-    <value>Bottom Right Overscan Compensation</value>
+    <value>Dolny prawy rog ekranu</value>
   </string>
   <string>
     <id>274</id>
@@ -807,38 +807,39 @@
   </string>
   <string>
     <id>275</id>
-    <value>Ustawianie Pixel Ratio</value>
+    <value>Ustawienia Pixel Ratio</value>
   </string>
   <string>
     <id>276</id>
-    <value>Poruszaj strzalka aby zmieniuc wartosc overscanu</value>
+    <value>Poruszaj strzalka aby zmienic pozycje rogow ekranu</value>
   </string>
   <string>
     <id>277</id>
-    <value>Przesun pasek aby zmienic pozycje napisow</value>
+    <value>Przesun linie aby zmienic pozycje napisow</value>
   </string>
   <string>
     <id>278</id>
-    <value>Zmien prostokat tak aby otrzymac idealny kwadrat</value>
+    <value>Zmien prostokat w idealny kwadrat</value>
   </string>
   <string>
     <id>279</id>
-    <value>Nie moge zaladowac ustawien</value>
+    <value>Nie moge wczytac ustawien</value>
   </string>
   <string>
     <id>280</id>
-    <value>Uzywam standardowych fallbacks</value>
+    <value>uzywam standardowych przejsc</value>
   </string>
   <string>
     <id>281</id>
     <value>Prosze sprawdzic pliki .xml</value>
   </string>
+  <string>
     <id>282</id>
     <value>znalazlem %i</value>
   </string>
   <string>
     <id>283</id>
-    <value>Wyniki szukania</value>
+    <value>Rezultaty wyszukiwania</value>
   </string>
   <string>
     <id>284</id>
@@ -882,15 +883,15 @@
   </string>
   <string>
     <id>294</id>
-    <value>1. Create bookmark</value>
+    <value>1. Utworz zakladke</value>
   </string>
   <string>
     <id>295</id>
-    <value>2. Cycle bookmarks</value>
+    <value>2. Przewin zakladki</value>
   </string>
   <string>
     <id>296</id>
-    <value>3. Clear bookmarks</value>
+    <value>3. Wyczysc zakladki</value>
   </string>
   <string>
     <id>297</id>
@@ -898,7 +899,7 @@
   </string>
   <string>
     <id>298</id>
-    <value>5. Slider</value>
+    <value>5. Przewijanie</value>
   </string>
   <string>
     <id>300</id>
@@ -922,7 +923,7 @@
   </string>
   <string>
     <id>305</id>
-    <value>3. Wl./Wyl.</value>
+    <value>3. Wl/wyl</value>
   </string>
   <string>
     <id>306</id>
@@ -954,7 +955,7 @@
   </string>
   <string>
     <id>313</id>
-    <value>Reorganize database</value>
+    <value>Reorganizuj baze danych</value>
   </string>
   <string>
     <id>314</id>
@@ -966,51 +967,51 @@
   </string>
   <string>
     <id>316</id>
-    <value>Szukam piosenek...</value>
+    <value>Przeszukuje utwory...</value>
   </string>
   <string>
     <id>317</id>
-    <value>Reorganization successfull</value>
+    <value>Reorganizacja zakonczona</value>
   </string>
   <string>
     <id>318</id>
-    <value>Zaznaczam usuniete piosenki</value>
+    <value>Oznaczam skasowane utwory</value>
   </string>
   <string>
     <id>319</id>
-    <value>Error reorganizing songs</value>
+    <value>Blad przy reorganizacji utworow</value>
   </string>
   <string>
     <id>320</id>
-    <value>Szukam artystow...</value>
+    <value>Wyszukuje artystow...</value>
   </string>
   <string>
     <id>321</id>
-    <value>Error reorganizing artists</value>
+    <value>Blad przy reorganizacji artystow</value>
   </string>
   <string>
     <id>322</id>
-    <value>Szukam gatunkow...</value>
+    <value>Wyszukuje gatunki...</value>
   </string>
   <string>
     <id>323</id>
-    <value>Error reorganizing genres</value>
+    <value>Blad przy reorganizacji gatunkow</value>
   </string>
   <string>
     <id>324</id>
-    <value>Szukam sciezek...</value>
+    <value>Wyszukuje sciezki...</value>
   </string>
   <string>
     <id>325</id>
-    <value>Error reorganizing pathes</value>
+    <value>Blad przy reorganizacji sciezek</value>
   </string>
   <string>
     <id>326</id>
-    <value>Szukam albumow...</value>
+    <value>Wyszukuje ablumy...</value>
   </string>
   <string>
     <id>327</id>
-    <value>Error reorganizing albums</value>
+    <value>Blad przy reorganizacji albumow</value>
   </string>
   <string>
     <id>328</id>
@@ -1018,11 +1019,11 @@
   </string>
   <string>
     <id>329</id>
-    <value>Wystapil blad przy zapisywaniu zmian</value>
+    <value>Blad podczas zapisu zmian</value>
   </string>
   <string>
     <id>330</id>
-    <value>To moze zajac chwilke...</value>
+    <value>To zajmie chwilke...</value>
   </string>
   <string>
     <id>331</id>
@@ -1034,11 +1035,11 @@
   </string>
   <string>
     <id>333</id>
-    <value>Do you want to reorganize my music database?</value>
+    <value>Czy chcesz zreorganizowac baze danych muzyki?</value>
   </string>
   <string>
     <id>334</id>
-    <value>Reorganize my music database</value>
+    <value>Reorganiuj baze danych mojej muzyki</value>
   </string>
   <string>
     <id>335</id>
@@ -1046,6 +1047,22 @@
   </string>
   <string>
     <id>336</id>
-    <value>Ustaw ilosc klatek</value>
+    <value>Ustaw liczbe klatek</value>
+  </string>
+  <string>
+    <id>337</id>
+    <value>Wyjscie Audio:</value>
+  </string>
+  <string>
+    <id>338</id>
+    <value>Analogowe</value>
+  </string>
+  <string>
+    <id>339</id>
+    <value>Cyfrowe</value>
+  </string>
+  <string>
+    <id>340</id>
+    <value>Rozni artysci</value>
   </string>
 </strings>
