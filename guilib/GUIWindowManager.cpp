@@ -35,16 +35,16 @@ void CGUIWindowManager::SendMessage(CGUIMessage& message)
     }
   }
 
-  //	Send the message to all active modeless windows ..
-	for (int i=0; i < (int) m_vecModelessWindows.size(); i++)
-	{
+  //  Send the message to all active modeless windows ..
+  for (int i=0; i < (int) m_vecModelessWindows.size(); i++)
+  {
     CGUIWindow* pWindow = m_vecModelessWindows[i];
 
-		if (pWindow)
-		{
-			pWindow->OnMessage( message );
-		}
-	}
+    if (pWindow)
+    {
+      pWindow->OnMessage( message );
+    }
+  }
 
   // Have we routed windows...
   if (m_vecModalWindows.size() > 0)
@@ -417,10 +417,10 @@ bool CGUIWindowManager::IsRouted() const
 
 bool CGUIWindowManager::IsModelessAvailable() const
 {
-	if (m_vecModelessWindows.size()>0)
-		return true;
+  if (m_vecModelessWindows.size()>0)
+    return true;
 
-	return false;
+  return false;
 }
 
 /// \brief Get the ID of the top most routed window
