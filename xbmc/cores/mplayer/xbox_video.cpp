@@ -76,9 +76,14 @@ unsigned int CXBoxRenderManager::Configure(unsigned int width, unsigned int heig
 {
 	m_iSourceWidth = width;
 	m_iSourceHeight = height;
+  unsigned int result = 0;
 	if (!m_bChanging && m_pRenderer)
-		return m_pRenderer->Configure(width, height, d_width, d_height, options, title, format);
-	return 0;
+  {
+		result = m_pRenderer->Configure(width, height, d_width, d_height, options, title, format);
+    Update(false);
+    m_bIsStarted = true;
+  }
+	return result;
 }
 inline unsigned int CXBoxRenderManager::GetImage(mp_image_t *mpi)
 {
@@ -128,7 +133,6 @@ void CXBoxRenderManager::Update(bool bPauseDrawing)
   if (!m_bChanging && m_pRenderer)
   {
     m_pRenderer->Update(bPauseDrawing);
-    m_bIsStarted = true;
   }
 }
 
