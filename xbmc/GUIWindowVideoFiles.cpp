@@ -952,46 +952,52 @@ bool CGUIWindowVideoFiles::DoScan(VECFILEITEMS& items)
 
   OnRetrieveVideoInfo(items);
 
+	bool bCancel=false;
 	if (m_dlgProgress)
   {
     m_dlgProgress->SetLine(2,strStrippedPath );
-	  if (m_dlgProgress->IsCanceled()) return false;
+	  if (m_dlgProgress->IsCanceled())
+		{
+			bCancel=true;
+		}
   }
 	
-	bool bCancel=false;
-	for (int i=0; i < (int)items.size(); ++i)
-	{
-		CFileItem *pItem= items[i];
-    if (m_dlgProgress)
-    {
-		  if (m_dlgProgress->IsCanceled()) 
+  if (!bCancel)
+  {
+	  for (int i=0; i < (int)items.size(); ++i)
+	  {
+		  CFileItem *pItem= items[i];
+      if (m_dlgProgress)
+      {
+		    if (m_dlgProgress->IsCanceled()) 
+		    {
+			    bCancel=true;
+			    break;
+		    }
+      }
+		  if ( pItem->m_bIsFolder)
 		  {
-			  bCancel=true;
-			  break;
+			  if (pItem->GetLabel() != "..")
+			  {
+				  // load subfolder
+				  CStdString strDir=m_strDirectory;
+				  m_strDirectory=pItem->m_strPath;
+				  VECFILEITEMS subDirItems;
+				  CFileItemList itemlist(subDirItems);
+				  m_rootDir.GetDirectory(pItem->m_strPath,subDirItems);
+				  if (m_dlgProgress)
+					  m_dlgProgress->Close();
+				  if (!DoScan(subDirItems))
+				  {
+					  bCancel=true;
+				  }
+  				
+				  m_strDirectory=strDir;
+				  if (bCancel) break;
+			  }
 		  }
-    }
-		if ( pItem->m_bIsFolder)
-		{
-			if (pItem->GetLabel() != "..")
-			{
-				// load subfolder
-				CStdString strDir=m_strDirectory;
-				m_strDirectory=pItem->m_strPath;
-				VECFILEITEMS subDirItems;
-				CFileItemList itemlist(subDirItems);
-				m_rootDir.GetDirectory(pItem->m_strPath,subDirItems);
-				if (m_dlgProgress)
-					m_dlgProgress->Close();
-				if (!DoScan(subDirItems))
-				{
-					bCancel=true;
-				}
-				
-				m_strDirectory=strDir;
-				if (bCancel) break;
-			}
-		}
-	}
+	  }
+  }
 	
 	if (m_dlgProgress) m_dlgProgress->Close();
 	return !bCancel;
