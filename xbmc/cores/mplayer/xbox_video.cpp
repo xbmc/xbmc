@@ -132,9 +132,9 @@ void choose_best_resolution(float fps)
 	int iGUIResolution=g_stSettings.m_GUIResolution;
 	if (  (g_settings.m_ResInfo[iGUIResolution].dwFlags&D3DPRESENTFLAG_WIDESCREEN)==0)
 	{
-		// NO, then if 'Choose Best Resolution' option is disabled
+		// NO, then if 'Auto Widescreen Switching' option is disabled
 		// we dont wanna switch between 4:3 / 16:9 depending on the movie
-		if (!g_stSettings.m_bAllowVideoSwitching)
+		if (!g_stSettings.m_bAutoWidescreenSwitching)
 		{
 			bCanDoWidescreen =false;
 		}
@@ -165,10 +165,10 @@ void choose_best_resolution(float fps)
 		bWidescreen = true;
 	}
 
-	// if video switching is not allowed then use current resolution (with pal 60 if needed)
+	// if we always upsample video to the GUI resolution then use it (with pal 60 if needed)
 	// if we're not in fullscreen mode then use current resolution 
 	// if we're calibrating the video  then use current resolution 
-	if  ( (!g_stSettings.m_bAllowVideoSwitching) ||
+	if  ( g_stSettings.m_bUpsampleVideo ||
 		(! ( g_graphicsContext.IsFullScreenVideo()|| g_graphicsContext.IsCalibrating())  )
 		)
 	{
@@ -176,7 +176,6 @@ void choose_best_resolution(float fps)
 		// Check to see if we are using a PAL screen capable of PAL60
 		if (bUsingPAL)
 		{
-			// FIXME - Fix for autochange of widescreen once GUI option is implemented
 			bWidescreen = (g_settings.m_ResInfo[m_iResolution].dwFlags&D3DPRESENTFLAG_WIDESCREEN)!=0;
 			if (bPal60)
 			{
@@ -194,7 +193,7 @@ void choose_best_resolution(float fps)
 			}
 		}
 		// Change our screen resolution
-    Sleep(1000);
+		Sleep(1000);
 		g_graphicsContext.SetVideoResolution(m_iResolution);
 		return;
 	}
@@ -225,17 +224,17 @@ void choose_best_resolution(float fps)
 	{
 		// Check if the picture warrants HDTV mode
 		// And if HDTV modes (1080i and 720p) are available
-		if ((image_height>540) && (dwFlags&XC_VIDEO_FLAGS_HDTV_720p))
-		{ //image suits 720p if it's available
-			m_iResolution = HDTV_720p;
-		}
-		else if ((image_height>480 || image_width>720) && (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i))                  //1080i is available
-		{ // image suits 1080i (540p) if it is available
+		if ((image_height>720 || image_width>1280) && (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i))
+		{ //image suits 1080i if it's available
 			m_iResolution = HDTV_1080i;
 		}
-		else if ((image_height>480 || image_width>720) && (dwFlags&XC_VIDEO_FLAGS_HDTV_720p))
-		{ // image suits 1080i or 720p and obviously 1080i is unavailable
+		else if ((image_height>480 || image_width>720) && (dwFlags&XC_VIDEO_FLAGS_HDTV_720p))                  //1080i is available
+		{ // image suits 720p if it is available
 			m_iResolution = HDTV_720p;
+		}
+		else if ((image_height>480 || image_width>720) && (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i))
+		{ // image suits 720p and obviously 720p is unavailable
+			m_iResolution = HDTV_1080i;
 		}
 		else  // either picture does not warrant HDTV, or HDTV modes are unavailable
 		{

@@ -1596,6 +1596,18 @@
     <id>492</id>
     <value>Enlarge Subtitles</value>
   </string>
+  <string>
+    <id>493</id>
+    <value>Advanced Options (Experts Only!)</value>
+  </string>
+  <string>
+    <id>494</id>
+    <value>Overall Audio Headroom (dB)</value>
+  </string>
+  <string>
+    <id>495</id>
+    <value>Upsample videos to GUI resolution</value>
+  </string>
 
 <string><id>10000</id><value>Home</value></string>
 <string><id>10001</id><value>My Programs</value></string>

@@ -288,7 +288,8 @@ CSettings::CSettings(void)
 	g_stSettings.m_bZoom=false;
 	g_stSettings.m_bStretch=false;
 
-	g_stSettings.m_bAllowVideoSwitching=true;
+	g_stSettings.m_bAutoWidescreenSwitching=false;
+	g_stSettings.m_bUpsampleVideo=true;
 	strcpy(g_stSettings.m_szWeatherArea[0], "UKXX0085");	//default WEATHER 1 to London for no good reason
 	strcpy(g_stSettings.m_szWeatherArea[1], "NLXX0002");	//default WEATHER 2 to Amsterdam for no good reason
 	strcpy(g_stSettings.m_szWeatherArea[2], "CAXX0343");	//default WEATHER 3 to Ottawa for no good reason
@@ -1074,7 +1075,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "framerateconversion", g_stSettings.m_bFrameRateConversions);
 		GetBoolean(pElement, "zoom", g_stSettings.m_bZoom);
 		GetBoolean(pElement, "stretch", g_stSettings.m_bStretch);
-		GetBoolean(pElement, "allowswitching", g_stSettings.m_bAllowVideoSwitching);
+		GetBoolean(pElement, "allowswitching", g_stSettings.m_bAutoWidescreenSwitching);
+		GetBoolean(pElement, "upsamplevideo", g_stSettings.m_bUpsampleVideo);
 		GetBoolean(pElement, "allowpal60", g_stSettings.m_bAllowPAL60);
 		GetInteger(pElement, "minfilter", (int &)g_stSettings.m_minFilter, D3DTEXF_LINEAR, D3DTEXF_LINEAR,D3DTEXF_GAUSSIANCUBIC);
 		GetInteger(pElement, "maxfilter", (int &)g_stSettings.m_maxFilter, D3DTEXF_LINEAR, D3DTEXF_LINEAR,D3DTEXF_GAUSSIANCUBIC);
@@ -1091,7 +1093,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetString(pElement, "visualisation", g_stSettings.szDefaultVisualisation, g_stSettings.szDefaultVisualisation);
 		GetBoolean(pElement, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
 		GetFloat(pElement, "volumeamp", g_stSettings.m_fVolumeAmplification,0.0f,-200.0f,60.0f);
-
+		GetFloat(pElement, "headroom", g_stSettings.m_fVolumeHeadroom,6.0f,0.0f,12.0f);
 		GetBoolean(pElement, "UseDigitalOutput", g_stSettings.m_bUseDigitalOutput);
 		GetBoolean(pElement, "HQmusicaudio", g_stSettings.m_bResampleMusicAudio);
 		GetBoolean(pElement, "HQvideoaudio", g_stSettings.m_bResampleVideoAudio);
@@ -1392,7 +1394,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "framerateconversion", g_stSettings.m_bFrameRateConversions);
 	SetBoolean(pNode, "zoom", g_stSettings.m_bZoom);
 	SetBoolean(pNode, "stretch", g_stSettings.m_bStretch);
-	SetBoolean(pNode, "allowswitching", g_stSettings.m_bAllowVideoSwitching);
+	SetBoolean(pNode, "allowswitching", g_stSettings.m_bAutoWidescreenSwitching);
+	SetBoolean(pNode, "upsamplevideo", g_stSettings.m_bUpsampleVideo);
 	SetBoolean(pNode, "allowpal60", g_stSettings.m_bAllowPAL60);
 	SetInteger(pNode, "minfilter", g_stSettings.m_minFilter);
 	SetInteger(pNode, "maxfilter", g_stSettings.m_maxFilter);
@@ -1409,6 +1412,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetString(pNode, "visualisation", g_stSettings.szDefaultVisualisation);
 	SetBoolean(pNode, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
 	SetFloat(pNode, "volumeamp", g_stSettings.m_fVolumeAmplification);
+	SetFloat(pNode, "headroom", g_stSettings.m_fVolumeHeadroom);
 	SetBoolean(pNode, "UseDigitalOutput", g_stSettings.m_bUseDigitalOutput);
 	SetBoolean(pNode, "HQmusicaudio", g_stSettings.m_bResampleMusicAudio);
 	SetBoolean(pNode, "HQvideoaudio", g_stSettings.m_bResampleVideoAudio);
