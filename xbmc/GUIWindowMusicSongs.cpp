@@ -204,8 +204,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
 			CGUIWindowMusicBase::OnMessage(message);
 
-			AutoSwitchControlThumbList();
-
 			return true;
 		}
 		break;
@@ -752,7 +750,6 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 				return;
 		}
 		Update(strPath);
-		AutoSwitchControlThumbList();
 	}
 	else
 	{
@@ -958,6 +955,16 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
   // get all information for all files in current directory from database 
   g_musicDatabase.GetSongsByPath(m_strDirectory,songsMap);
 
+	if (!m_bScan)
+	{
+		// Nothing in database and id3 tags disabled; dont load tags from cdda files
+		if ((songsMap.size()==0 && !g_stSettings.m_bUseID3) || CUtil::IsCDDA(m_strDirectory))
+		{
+			g_application.ResetScreenSaver();
+			return;
+		}
+	}
+
   // for every file found, but skip folder
   for (int i=0; i < (int)items.size(); ++i)
 	{
@@ -977,56 +984,53 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 			CMusicInfoTag& tag=pItem->m_musicInfoTag;
 			if (!tag.Loaded() )
 			{
-        // no, then we gonna load it. But dont load tags from cdda files
-				if (strExtension!=".cdda" )
+        // no, then we gonna load it.
+        // first search for file in our list of the current directory
+				CSong song;
+        bool bFound(false);
+				IMAPSONGS it=songsMap.find(pItem->m_strPath);
+				if (it!=songsMap.end())
 				{
-          // first search for file in our list of the current directory
-					CSong song;
-          bool bFound(false);
-					IMAPSONGS it=songsMap.find(pItem->m_strPath);
-					if (it!=songsMap.end())
-					{
-						song=it->second;
-						bFound=true;
-					}
-          if (!bFound && !m_bScan)
+					song=it->second;
+					bFound=true;
+				}
+        if (!bFound && !m_bScan)
+        {
+          // try finding it in the database
+          CStdString strPathName;
+          CStdString strFileName;
+          CUtil::Split(pItem->m_strPath, strPathName, strFileName);
+          if (strPathName != m_strDirectory)
           {
-            // try finding it in the database
-            CStdString strPathName;
-            CStdString strFileName;
-            CUtil::Split(pItem->m_strPath, strPathName, strFileName);
-            if (strPathName != m_strDirectory)
+            if ( g_musicDatabase.GetSongByFileName(pItem->m_strPath, song) )
             {
-              if ( g_musicDatabase.GetSongByFileName(pItem->m_strPath, song) )
-              {
-                bFound=true;
-              }
+              bFound=true;
             }
           }
-					if ( !bFound )
+        }
+				if ( !bFound )
+				{
+          // if id3 tag scanning is turned on OR we're scanning the directory
+          // then parse id3tag from file
+					if (g_stSettings.m_bUseID3 || m_bScan)
 					{
-            // if id3 tag scanning is turned on OR we're scanning the directory
-            // then parse id3tag from file
-						if (g_stSettings.m_bUseID3 || m_bScan)
-						{
-              // get correct tag parser
-							CMusicInfoTagLoaderFactory factory;
-							auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
-							if (NULL != pLoader.get())
-							{						
-                 // get id3tag
-								if ( pLoader->Load(pItem->m_strPath,tag))
-								{
-									bNewFile=true;
-								}
+            // get correct tag parser
+						CMusicInfoTagLoaderFactory factory;
+						auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+						if (NULL != pLoader.get())
+						{						
+                // get id3tag
+							if ( pLoader->Load(pItem->m_strPath,tag))
+							{
+								bNewFile=true;
 							}
 						}
 					}
-					else // of if ( !bFound )
-					{
-						tag.SetSong(song);
-					}
-				}//if (strExtension!=".cdda" )
+				}
+				else // of if ( !bFound )
+				{
+					tag.SetSong(song);
+				}
 			}//if (!tag.Loaded() )
 			else if (m_bScan)
 			{
@@ -1074,15 +1078,6 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
 			{
 				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST, i);
 				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, i);
-				const CGUIControl* pControl=GetControl(CONTROL_LIST);
-				if (pControl->IsVisible())
-				{
-					SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
-				}
-				else
-				{
-					SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
-				}
 				break;
 			}
 		}
@@ -1109,15 +1104,6 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
 			{
 				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST, i);
 				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, i);
-				const CGUIControl* pControl=GetControl(CONTROL_LIST);
-				if (pControl->IsVisible())
-				{
-					SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
-				}
-				else
-				{
-					SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
-				}
 				break;
 			}
 		}
@@ -1205,14 +1191,8 @@ void CGUIWindowMusicSongs::AutoSwitchControlThumbList()
 	}
 }
 
-void CGUIWindowMusicSongs::OnAction(const CAction& action)
+void CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
 {
-	if (action.wID==ACTION_PARENT_DIR)
-	{
-		CGUIWindowMusicBase::OnAction(action);
-		AutoSwitchControlThumbList();
-		return;
-	}
-
-	CGUIWindowMusicBase::OnAction(action);
+	CGUIWindowMusicBase::Update(strDirectory);
+	AutoSwitchControlThumbList();
 }
