@@ -38,6 +38,7 @@ namespace PLAYLIST
 		void 								Add(const CPlayListItem& item);
 		const CStdString&		GetName() const;
 		void								Remove(const CStdString& strFileName);
+		void								Remove(int position);
 		void 								Clear();
 		virtual void 				Shuffle();
 		int									size() const;

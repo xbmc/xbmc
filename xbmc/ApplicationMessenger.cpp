@@ -85,15 +85,22 @@ void CApplicationMessenger::ProcessMessages()
 
 				case TMSG_MEDIA_PLAY:
 				{
+					// restore to previous window if needed
+					if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
+							m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+							m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+						m_gWindowManager.PreviousWindow();
+
+					//g_application.StopPlaying();
+					// play file
 					g_application.PlayFile(pMsg->strParam);
+
 					if (g_application.IsPlayingVideo())
 					{
-						if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
-							m_gWindowManager.PreviousWindow();
-
+						// playing a video, switch to fullscreen
 						g_TextureManager.Flush();
-						g_graphicsContext.SetFullScreenVideo(true);
-						m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+						//g_graphicsContext.SetFullScreenVideo(true);
+						//m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
 					}
 				}
 				break;
@@ -124,12 +131,16 @@ void CApplicationMessenger::ProcessMessages()
 
 				case TMSG_MEDIA_STOP:
 				{
-					if (g_application.m_pPlayer) g_application.m_pPlayer->closefile();
-					
-					if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-					{
+					// restore to previous window if needed
+					if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
+							m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+							m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
 						m_gWindowManager.PreviousWindow();
-					}
+
+					// stop playing file
+					g_application.StopPlaying();
+					//g_application.DisableOverlay();
+					//if (g_application.m_pPlayer) g_application.StopPlaying();
 				}
 				break;
 
