@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 21-03-2005 changed: Autorun priority runs: DVD->(S)VCD->PICTURE disc->Video->Music->Pictures.
   - 21-03-2005 fixed: [ 1165273 ] Resume Play doesn't work on stacked items.
   - 21-03-2005 fixed: Only the first item in a stacked video appeared in the database views.
   - 21-03-2005 removed: Fuzzy stacking.
