@@ -7,6 +7,7 @@
 #include "IMDB.h"
 #include "../util.h"
 #include "log.h"
+#include "localizestrings.h"
 #include "HTMLUtil.h"
 using namespace HTML;
 #pragma warning (disable:4018)
@@ -173,18 +174,20 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 	CStdString strHTML;
 	CStdString strURL = url.m_strURL;
 
+	CStdString strLocNotAvail=g_localizeStrings.Get(416);	// Not available
+
 	movieDetails.m_strTitle=url.m_strTitle;
-	movieDetails.m_strDirector="Not available.";
-	movieDetails.m_strWritingCredits="Not available.";
-	movieDetails.m_strGenre="Not available.";
-	movieDetails.m_strTagLine="Not available.";
-	movieDetails.m_strPlotOutline="Not available.";
-	movieDetails.m_strPlot="Not available.";
+	movieDetails.m_strDirector=strLocNotAvail;
+	movieDetails.m_strWritingCredits=strLocNotAvail;
+	movieDetails.m_strGenre=strLocNotAvail;
+	movieDetails.m_strTagLine=strLocNotAvail;
+	movieDetails.m_strPlotOutline=strLocNotAvail;
+	movieDetails.m_strPlot=strLocNotAvail;
 	movieDetails.m_strPictureURL="";
 	movieDetails.m_iYear=0;
 	movieDetails.m_fRating=0.0;
-	movieDetails.m_strVotes="Not available.";
-	movieDetails.m_strCast="Not available.";
+	movieDetails.m_strVotes=strLocNotAvail;
+	movieDetails.m_strCast=strLocNotAvail;
 	movieDetails.m_iTop250=0;
 
 	if (!m_http.Get(strURL,strHTML))
@@ -209,7 +212,7 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 	char* pPlotOutline=strstr(szBuffer,"Plot Outline:</b>");	
 	char* pPlotSummary=strstr(szBuffer,"Plot Summary:</b>");	
 	char* pPlot=strstr(szBuffer,"<a href=\"plotsummary");
-	char* pImage=strstr(szBuffer,"<img alt=\"cover\" align=\"left\" src=\"");
+	char* pImage=strstr(szBuffer,"<img border=\"0\" alt=\"cover\" src=\"");
 	char* pRating=strstr(szBuffer,"User Rating:</b>");
 	char* pCast=strstr(szBuffer,"first billed only: </b></td></tr>");
 	char* pCred=strstr(szBuffer,"redited cast:"); // Complete credited cast or Credited cast
@@ -358,7 +361,7 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 
 	if (pImage)
 	{
-		pImage += strlen("<img alt=\"cover\" align=\"left\" src=\"");
+		pImage += strlen("<img border=\"0\" alt=\"cover\" src=\"");
 		char *pEnd = strstr(pImage,"\"");
 		if (pEnd) *pEnd=0;
 		movieDetails.m_strPictureURL=pImage;
