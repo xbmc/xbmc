@@ -32,23 +32,25 @@
 #include <vector>
 using namespace std;
 
-class CApplication :
-  public CXBApplicationEx
+class CApplication : public CXBApplicationEx, public IPlayerCallback
 {
 public:
   CApplication(void);
   virtual ~CApplication(void);
-  virtual HRESULT Initialize();
-  virtual void		FrameMove();
-  virtual void		Render();
-	virtual HRESULT Create();
+  virtual HRESULT 			Initialize();
+  virtual void					FrameMove();
+  virtual void					Render();
+	virtual HRESULT 			Create();
 
-	void						Stop();
-	void						LoadSkin(const CStdString& strSkin);
-	void						ExecuteScript(const CStdString& strScript);
-	void						ProcessScripts();
-	
+	void									Stop();
+	void									LoadSkin(const CStdString& strSkin);
+	void									ExecuteScript(const CStdString& strScript);
+	void									ProcessScripts();
+
+	virtual	void					OnPlayBackEnded();
+	virtual	void					OnPlayBackStarted();
 	bool									PlayFile(const CStdString& strFile);
+
   CGUIWindowHome        m_guiHome;
   CGUIWindowPrograms    m_guiPrograms;
 	CGUIWindowPictures		m_guiPictures;

@@ -76,7 +76,7 @@ void CGUIListControl::Render()
 				CGUIImage* pImage=pItem->GetIcon();
 				if (!pImage)
 				{
-					pImage=new CGUIImage(0,0,0,0,m_iImageWidth,m_iImageHeight,pItem->GetIconImage(),0xffffffff);
+					pImage=new CGUIImage(0,0,0,0,m_iImageWidth,m_iImageHeight,pItem->GetIconImage(),0x0);
 					pImage->AllocResources();
 					pItem->SetIcon(pImage);
 					

@@ -104,3 +104,18 @@ const CStdString&	CPlayList::GetName() const
 {
 	return m_strPlayListName;
 }
+
+void CPlayList::Remove(const CStdString& strFileName)
+{
+	ivecItems it;
+	it=m_vecItems.begin();
+	while (it != m_vecItems.end() )
+	{
+		CPlayListItem& item = *it;
+		if (item.GetFileName() == strFileName)
+		{
+			it=m_vecItems.erase(it);
+		}
+		else ++it;
+	}
+}

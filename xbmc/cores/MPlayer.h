@@ -9,7 +9,7 @@
 class CMPlayer : public IPlayer, public CThread
 {
 public:
-	CMPlayer();
+	CMPlayer(IPlayerCallback& callback);
 	virtual ~CMPlayer();
 	virtual bool	openfile(const CStdString& strFile);
 	virtual bool  closefile();

@@ -37,6 +37,7 @@
 				AdditionalDependencies="xapilibd.lib d3dx8d.lib d3d8d.lib xgraphicsd.lib dsoundd.lib xboxkrnl.lib xonlined.lib "
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
@@ -57,7 +58,7 @@
 				StackSize="0x40000"
 				IncludeDebugInfo="TRUE"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;LIBID3"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;LIBID3;PYTHON"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -187,7 +188,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="2"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -216,7 +217,7 @@
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x40000"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;LIBID3"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;LIBID3;PYTHON"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -353,6 +354,9 @@
 				RelativePath=".\xbmc\GUIWindowVideo.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowVideoInfo.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\musicInfoTag.cpp">
 			</File>
 			<File
@@ -378,6 +382,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\PlayListM3U.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\PlayListPlayer.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\PlayListPLS.cpp">
@@ -490,6 +497,9 @@
 				RelativePath=".\xbmc\GUIWindowVideo.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GuiWindowVideoInfo.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\ImusicInfoTagLoader.h">
 			</File>
 			<File
@@ -512,6 +522,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\PlayListM3U.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\PlayListPlayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\PlayListPLS.h">
@@ -551,10 +564,28 @@
 			Name="filesystem"
 			Filter="">
 			<File
+				RelativePath=".\xbmc\FileSystem\CDDADirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\CDDADirectory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\cddb.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\cddb.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\Directory.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\Directory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\DirectoryHistory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\DirectoryHistory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\FactoryDirectory.cpp">
@@ -771,6 +802,12 @@
 				RelativePath=".\xbmc\utils\DelayController.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\Event.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\Event.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\utils\HTMLTable.cpp">
 			</File>
 			<File
@@ -787,6 +824,12 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\HTTP.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\IMDB.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\IMDB.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.cpp">
@@ -818,6 +861,113 @@
 			<File
 				RelativePath=".\xbmc\utils\Thread.h">
 			</File>
+		</Filter>
+		<Filter
+			Name="cores"
+			Filter="">
+			<File
+				RelativePath=".\xbmc\cores\EMUkernel32.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\EMUmsvcrt.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\EMUws32.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\exports.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\exports2.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\exports3.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\exports4.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\IPlayer.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\mplayer.cpp">
+				<FileConfiguration
+					Name="Debug|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile_FastCap|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_LTCG|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\MPlayer.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\PlayerCoreFactory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\PlayerCoreFactory.h">
+			</File>
+			<Filter
+				Name="mplayer"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\cores\mplayer\AsyncDirectSound.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\AsyncDirectSound.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\audio.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\audio.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\IAudioCallback.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\IAudioCallback.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\keycodes.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\mplayer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\xbox_video.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\xbox_video.h">
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

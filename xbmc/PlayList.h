@@ -33,10 +33,11 @@ namespace PLAYLIST
 		};
 		CPlayList(void);
 		virtual ~CPlayList(void);
-		virtual bool 				Load(const CStdString& strFileName)=0;
-		virtual void 				Save(const CStdString& strFileName) const=0  ;
+		virtual bool 				Load(const CStdString& strFileName){return false;};
+		virtual void 				Save(const CStdString& strFileName) const  {};
 		void 								Add(const CPlayListItem& item);
 		const CStdString&		GetName() const;
+		void								Remove(const CStdString& strFileName);
 		void 								Clear();
 		void 								Shuffle();
 		int									size() const;
@@ -45,6 +46,6 @@ namespace PLAYLIST
 	protected:
 		CStdString		m_strPlayListName;
 		vector <CPlayListItem> m_vecItems;
-		vector <CPlayListItem>::iterator ivecItems;
+		typedef vector <CPlayListItem>::iterator ivecItems;
 	};
 };

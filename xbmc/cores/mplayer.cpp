@@ -2,11 +2,13 @@
 
 extern "C" void dllReleaseAll( );
 
-CMPlayer::CMPlayer()
+CMPlayer::CMPlayer(IPlayerCallback& callback)
+:IPlayer(callback)
 {
 	m_pDLL=NULL;
 	m_bIsPlaying=NULL;
 }
+
 CMPlayer::~CMPlayer()
 {
 	Unload();
@@ -105,6 +107,7 @@ void CMPlayer::Process()
 			m_startEvent.Reset();
 			if (m_bIsPlaying) 
 			{
+				m_callback.OnPlayBackStarted();
 				do 
 				{
 					int iRet=mplayer_process();
@@ -115,6 +118,10 @@ void CMPlayer::Process()
 				} while (!m_bStopPlaying && m_bIsPlaying && !m_bStop);
 				m_bIsPlaying=false;
 				mplayer_close_file();
+				if (!m_bStopPlaying && !m_bStop)
+				{
+					m_callback.OnPlayBackEnded();
+				}
 			}
 		}
 	}
