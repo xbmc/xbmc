@@ -123,7 +123,7 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 	strHTMLLow.MakeLower();
 	
 	//	Extract Cover URL
-	int iStartOfCover=strHTMLLow.Find("photo/image text");
+	int iStartOfCover=strHTMLLow.Find("image.allmusic.com");
 	if (iStartOfCover>=0)
 	{
 		iStartOfCover=strHTMLLow.ReverseFind("<img", iStartOfCover);
