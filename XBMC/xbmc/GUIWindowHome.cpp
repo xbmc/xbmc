@@ -105,7 +105,20 @@ void CGUIWindowHome::OnClickDashboard(CGUIMessage& aMessage)
 
 void CGUIWindowHome::OnClickReboot(CGUIMessage& aMessage)
 {
-  g_applicationMessenger.Reset();
+	CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+	if (dlgYesNo)
+	{
+		dlgYesNo->SetHeading(13307);
+		dlgYesNo->SetLine(0, 13308);
+		dlgYesNo->SetLine(1, 13309);
+		dlgYesNo->SetLine(2, "");
+		dlgYesNo->DoModal(GetID());
+
+    if(dlgYesNo->IsConfirmed())
+      g_applicationMessenger.Restart();
+    else
+      g_applicationMessenger.Reset();
+  }
 }
 
 void CGUIWindowHome::OnClickCredits(CGUIMessage& aMessage)
