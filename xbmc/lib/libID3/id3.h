@@ -1,3 +1,4 @@
+#pragma once
 /* $Id$
  *
  * id3lib: a software library for creating and manipulating id3v1/v2 tags

@@ -1,3 +1,4 @@
+#pragma once
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 2002 Thijmen Klok
 

@@ -10,6 +10,9 @@
 #include "musicdatabase.h"
 #include "filesystem/CDDADirectory.h"
 #include "url.h"
+#include "lib/libID3/tag.h"
+#include "lib/libID3/misc_support.h"
+
 using namespace MUSIC_INFO;
 
 #define CONTROL_LOGO_PIC    1
@@ -96,7 +99,6 @@ void CGUIWindowMusicOverlay::Render()
 
 void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 {
-	SYSTEMTIME dateTime;
 	auto_ptr<char>pYear  (ID3_GetYear( &id3tag  ));
 	auto_ptr<char>pTitle (ID3_GetTitle( &id3tag ));
 	auto_ptr<char>pArtist(ID3_GetArtist( &id3tag));

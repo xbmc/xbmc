@@ -792,6 +792,12 @@
 				RelativePath=".\xbmc\FileSystem\FileRelax.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\FileShoutcast.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileShoutcast.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\FileSmb.cpp">
 			</File>
 			<File
@@ -826,6 +832,12 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\ISO9660Directory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\ShoutcastRipFile.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\ShoutcastRipFile.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\SMBDirectory.cpp">
