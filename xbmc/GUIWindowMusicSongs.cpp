@@ -438,13 +438,14 @@ bool CGUIWindowMusicSongs::OnScan(VECFILEITEMS& items)
 
 void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
 {
-	g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Clear();
 	CPlayListFactory factory;
 	auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
 	if ( NULL != pPlayList.get())
 	{
-		pPlayList->Load(strPlayList);
+		if (!pPlayList->Load(strPlayList))
+			return;
 
+		g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Clear();
 		//	Do not autoshuffle shoutcast playlists
 		CStdString strFileName;
 		if ((*pPlayList).size())
