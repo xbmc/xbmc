@@ -44,11 +44,10 @@ void CGUIDialogGamepad::OnAction(const CAction &action)
         default                         :   return;                 break;
         }
         
-        wchar_t* strHiddenInput = new wchar_t[wcslen(m_strUserInput)];
-        wcscpy(strHiddenInput, m_strUserInput);
-        for (int i = 0; i < (int)wcslen(m_strUserInput); i++)
+        CStdStringW strHiddenInput(m_strUserInput);
+        for (int i = 0; i < (int)strHiddenInput.size(); i++)
         {
-            strHiddenInput[i] = (char)m_cHideInputChar;
+          strHiddenInput[i] = m_cHideInputChar;
         }
         SetLine(2, strHiddenInput);
         return;
