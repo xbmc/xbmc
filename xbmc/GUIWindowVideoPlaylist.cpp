@@ -492,9 +492,9 @@ void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
 
 	CStdString strFileName;
 	//	Search current playlist item
-	if ((m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_strDirectory) > -1 && g_application.IsPlayingAudio() 
+	if ((m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_strDirectory) > -1 && g_application.IsPlayingVideo() 
 			&& g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO_TEMP) 
-			|| (GetID()==WINDOW_MUSIC_PLAYLIST && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO && g_application.IsPlayingAudio()) )
+			|| (GetID()==WINDOW_VIDEO_PLAYLIST && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO && g_application.IsPlayingVideo()) )
 	{
 		int iCurrentSong=g_playlistPlayer.GetCurrentSong();
     if (iCurrentSong>=0)
