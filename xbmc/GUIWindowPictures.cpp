@@ -97,6 +97,7 @@ CGUIWindowPictures::CGUIWindowPictures(void)
 :CGUIWindow(0)
 {
 	m_strDirectory="?";
+  m_iItemSelected=-1;
 }
 
 CGUIWindowPictures::~CGUIWindowPictures(void)
@@ -200,6 +201,11 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
 			m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
 			Update(m_strDirectory);
+      if (m_iItemSelected >=0)
+      {
+			  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected)
+			  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iItemSelected)
+      }
 			return true;
 		}
     break;
@@ -455,6 +461,7 @@ void CGUIWindowPictures::OnClick(int iItem)
   CStdString strPath=pItem->m_strPath;
 	if (pItem->m_bIsFolder)
 	{
+    m_iItemSelected=-1;
 		if ( pItem->m_bIsShareOrDrive ) {
 			if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
 				return;
@@ -464,6 +471,7 @@ void CGUIWindowPictures::OnClick(int iItem)
 	else
 	{
 		// show picture
+    m_iItemSelected=GetSelectedItem();
 		OnShowPicture(strPath);
 	}
 }
