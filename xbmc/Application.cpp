@@ -1363,7 +1363,10 @@ void CApplication::OnKey(CKey& key)
 	// Check for global volume control
 	if (action.wID == ACTION_VOLUME_UP || action.wID == ACTION_VOLUME_DOWN)
 	{	// increase or decrease the volume
-		g_stSettings.m_nVolumeLevel += (int)(action.fAmount1*100);
+		if (action.wID == ACTION_VOLUME_UP)
+			g_stSettings.m_nVolumeLevel += (int)(action.fAmount1*100);
+		else
+			g_stSettings.m_nVolumeLevel -= (int)(action.fAmount1*100);
 		if (g_stSettings.m_nVolumeLevel > VOLUME_MAXIMUM) g_stSettings.m_nVolumeLevel = VOLUME_MAXIMUM;
 		if (g_stSettings.m_nVolumeLevel < VOLUME_MINIMUM) g_stSettings.m_nVolumeLevel = VOLUME_MINIMUM;
 		// tell our hardware to update the volume level...
@@ -1675,7 +1678,7 @@ void CApplication::FrameMove()
 	if (pGamepad->fY2 < -STICK_THRESHOLD && pGamepad->fX2 < -pGamepad->fY2 && -pGamepad->fX2 < -pGamepad->fY2)
 	{
 		bGotKey=true;
-		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_DOWN,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_DOWN,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,-pGamepad->fY2);
 		OnKey(key);   
 	}
 	if (pGamepad->fX2 > STICK_THRESHOLD && pGamepad->fY2 < pGamepad->fX2 && -pGamepad->fY2 < pGamepad->fX2)
@@ -1687,7 +1690,7 @@ void CApplication::FrameMove()
 	if (pGamepad->fX2 < -STICK_THRESHOLD && pGamepad->fY2 < -pGamepad->fX2 && -pGamepad->fY2 < -pGamepad->fX2)
 	{
 		bGotKey=true;
-		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_LEFT,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_LEFT,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,-pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);   
 	}
 	if ( wDir & DC_LEFTTRIGGER)
