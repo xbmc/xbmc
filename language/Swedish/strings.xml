@@ -2015,6 +2015,11 @@
  <id>734</id>
  <value>Inget lösenord</value>
  </string>
+  <string>
+ <id>735</id>
+ <value>Charset</value>
+ </string> 
+
 
  <string>
  <id>998</id>
