@@ -3369,7 +3369,7 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
 	char* pExec = strchr(execString.c_str(), '.');
 	CStdString execute(++pExec);
 
-	if (execute == "Reboot")
+	if ((execute == "Reboot") || (execute == "Restart"))  //Will reboot the xbox, aka cold reboot
 	{
 		g_applicationMessenger.Restart();
 	}
@@ -3381,12 +3381,16 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
 	{
 		RunXBE(g_stSettings.szDashboard);
 	}
+  else if (execute == "RestartApp")
+	{
+		g_applicationMessenger.RestartApp();
+	}
 	else if (execute == "Credits")
 	{
 		RunCredits();
 	}
-	else if (execute == "Restart")
+	else if (execute == "Reset") //Will reset the xbox, aka soft reset
 	{
-		g_applicationMessenger.Restart();
+		g_applicationMessenger.Reset();
 	}
 }
