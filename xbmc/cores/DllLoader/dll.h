@@ -28,7 +28,7 @@ protected:
 	int		LoadExports();
 	
 public:
-    DllLoader(char *dll);
+    DllLoader(const char *dll, bool track = false);
     ~DllLoader();
 
     int     Parse(void);
