@@ -38,7 +38,10 @@
 #include "GUIDialogFileStacking.h"
 #include "GUIDialogVolumeBar.h"
 #include "GUIDialogKaiToast.h"
+#include "GUIDialogPasswordNumeric.h"
+#include "GUIDialogPasswordGamepad.h"
 #include "GUIDialogSubMenu.h"
+#include "GUIDialogButtonBar.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowSettingsUICalibration.h"
@@ -104,7 +107,7 @@ public:
   void StartTimeServer();
   void StopTimeServer();
   void StartLEDControl(bool switchoff = false);
-  
+
 	void					Stop();
 	void					RestartApp();
 	void					LoadSkin(const CStdString& strSkin);
@@ -158,6 +161,8 @@ public:
 	CGUIDialogOK										m_guiDialogOK;
 	CGUIDialogVolumeBar							m_guiDialogVolumeBar;
 	CGUIDialogKaiToast							m_guiDialogKaiToast;
+	CGUIDialogPasswordNumeric					m_guiDialogPasswordNumeric;
+	CGUIDialogPasswordGamepad					m_guiDialogPasswordGamepad;
 	CGUIDialogSubMenu								m_guiDialogSubMenu;
 	CGUIDialogContextMenu						m_guiDialogContextMenu;
 	CGUIWindowFileManager						m_guiFileManager;
@@ -220,6 +225,7 @@ public:
 	UINT64		m_DAAPSongSize;
 	void		*m_DAAPArtistPtr;
 	CCdgParser	m_CdgParser;
+  int         m_iMasterCodeRetriesRemaining;
 
 protected:
   CStdString							m_strCurrentPlayer;

@@ -43,6 +43,9 @@ public:
 	int			m_idepth;
 	long		m_lStartOffset;
 	long		m_lEndOffset;
+  int           m_iLockMode;
+  CStdString    m_strLockCode;
+  int           m_iBadPwdCount;
 };
 
 /*!

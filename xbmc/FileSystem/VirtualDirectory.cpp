@@ -95,6 +95,9 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 		pItem->m_strPath=share.strPath;
 		CStdString strPathUpper=share.strPath;
 		strPathUpper.ToUpper();
+    pItem->m_iLockMode=share.m_iLockMode;
+    pItem->m_strLockCode=share.m_strLockCode;
+    pItem->m_iBadPwdCount=share.m_iBadPwdCount;
 
 		CStdString strIcon;
 			//	We have the real DVD-ROM, set icon on disktype
@@ -112,6 +115,9 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 				strIcon="defaultCDDA.png";
 		else 
 			strIcon="defaultHardDisk.png";
+
+    if (share.m_iLockMode > 0)
+      strIcon="defaultLocked.png";
 
 		pItem->SetIconImage(strIcon);
 		pItem->m_bIsShareOrDrive=true;

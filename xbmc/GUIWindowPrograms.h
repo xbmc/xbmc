@@ -23,6 +23,7 @@ protected:
 	void				LoadDirectory(const CStdString& strDirectory, int depth);
 	void				OnClick(int iItem);
 	void				OnSort();
+  bool       	HaveBookmarkPermissions(CFileItem* pItem, const CStdString &strType);
 	void				UpdateButtons();
 	void				Clear();
 	void				DeleteThumbs(VECFILEITEMS& items);

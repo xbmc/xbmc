@@ -221,7 +221,6 @@ void CGUIWindowSettingsCategory::SetupControls()
 	// setup our control groups...
 	m_vecGroups.clear();
 	m_vecGroups.push_back(-1);
-	m_vecGroups.push_back(-1);
 	// get a list of different sections
 	CSettingsGroup *pSettingsGroup = g_guiSettings.GetGroup(m_iScreen);
 	if (!pSettingsGroup) return;
@@ -237,7 +236,7 @@ void CGUIWindowSettingsCategory::SetupControls()
 		pButton->SetID(CONTROL_START_BUTTONS + i);
 		pButton->SetGroup(CONTROL_GROUP_BUTTONS);
 		pButton->SetPosition(pButtonArea->GetXPosition(), pButtonArea->GetYPosition() + i*pControlGap->GetHeight());
-		pButton->SetNavigation(CONTROL_START_BUTTONS+(int)i-1, CONTROL_START_BUTTONS+i+1, CONTROL_START_CONTROL+i, CONTROL_START_CONTROL+i);
+		pButton->SetNavigation(CONTROL_START_BUTTONS+(int)i-1, CONTROL_START_BUTTONS+i+1, CONTROL_START_CONTROL, CONTROL_START_CONTROL);
 		pButton->SetVisible(true);
 		Add(pButton);
 	}
@@ -256,6 +255,9 @@ void CGUIWindowSettingsCategory::SetupControls()
 void CGUIWindowSettingsCategory::CreateSettings()
 {
 	FreeSettingsControls();
+	// add the control group
+	m_vecGroups.push_back(-1);
+
 	const CGUIControl *pControlArea = GetControl(CONTROL_AREA);
 	const CGUIControl *pControlGap = GetControl(CONTROL_GAP);
 	if (!pControlArea || !pControlGap)
@@ -610,21 +612,21 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 			CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
 			pControl->SetEnabled(g_guiSettings.GetBool("PostProcessing.VerticalDeBlocking") &&
 														g_guiSettings.GetBool("PostProcessing.Enable") &&
-														g_guiSettings.GetBool("PostProcessing.Auto"));
+														!g_guiSettings.GetBool("PostProcessing.Auto"));
 		}
 		else if (strSetting == "PostProcessing.HorizontalDeBlockLevel")
 		{
 			CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
 			pControl->SetEnabled(g_guiSettings.GetBool("PostProcessing.HorizontalDeBlocking") &&
 														g_guiSettings.GetBool("PostProcessing.Enable") &&
-														g_guiSettings.GetBool("PostProcessing.Auto"));
+														!g_guiSettings.GetBool("PostProcessing.Auto"));
 		}
 		else if (strSetting == "PostProcessing.VerticalDeBlocking" || strSetting == "PostProcessing.HorizontalDeBlocking" ||
 							strSetting == "PostProcessing.AutoBrightnessContrastLevels" || strSetting == "PostProcessing.DeRing")
 		{
 			CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
 			pControl->SetEnabled(g_guiSettings.GetBool("PostProcessing.Enable") &&
-														g_guiSettings.GetBool("PostProcessing.Auto"));
+														!g_guiSettings.GetBool("PostProcessing.Auto"));
 		}
 		else if (strSetting == "PostProcessing.Auto")
 		{
@@ -977,7 +979,6 @@ void CGUIWindowSettingsCategory::FreeControls()
 		Remove(CONTROL_START_BUTTONS+i);
 		if (pControl)
 		{
-			CLog::DebugLog("Deleting control %i", CONTROL_START_BUTTONS+i);
 			delete pControl;
 		}
 	}
@@ -987,13 +988,15 @@ void CGUIWindowSettingsCategory::FreeControls()
 
 void CGUIWindowSettingsCategory::FreeSettingsControls()
 {
+	// remove the settings group
+	if (m_vecGroups.size()>1)
+		m_vecGroups.erase(m_vecGroups.begin()+1);
 	for (unsigned int i=0; i<m_vecSettings.size(); i++)
 	{
 		CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_CONTROL+i);
 		Remove(CONTROL_START_CONTROL+i);
 		if (pControl)
 		{
-			CLog::DebugLog("Deleting control %i", CONTROL_START_CONTROL+i);
 			delete pControl;
 		}
 		delete m_vecSettings[i];
