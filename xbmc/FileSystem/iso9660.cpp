@@ -685,10 +685,10 @@ long iso9660::ReadFile(int fd, byte *pBuffer, long lSize)
 	if( m_bUseMode2 )
 		sectorSize = MODE2_DATA_SIZE;
 	
-	while (lSize > 0)
+  while (lSize > 0 && m_dwFilePos <= m_dwFileSize)
 	{
 		m_dwCurrentBlock  = (DWORD) (m_dwFilePos/sectorSize);
-		INT64 iOffsetInBuffer= m_dwFilePos - (sectorSize*m_dwCurrentBlock);
+		__int64 iOffsetInBuffer= m_dwFilePos - (sectorSize*m_dwCurrentBlock);
 		m_dwCurrentBlock += m_dwStartBlock;
 
 		//char szBuf[256];
@@ -718,7 +718,7 @@ long iso9660::ReadFile(int fd, byte *pBuffer, long lSize)
 		}
 		else 
 		{
-			//DBG("EOF");
+			printf("EOF");
 			break;
 		}
 	}
@@ -726,9 +726,9 @@ long iso9660::ReadFile(int fd, byte *pBuffer, long lSize)
 	return iBytesRead;
 }
 //************************************************************************************
-INT64 iso9660::Seek(int fd, INT64 lOffset, int whence)
+__int64 iso9660::Seek(int fd, __int64 lOffset, int whence)
 {
-	INT64 dwFilePos=m_dwFilePos;
+	__int64 dwFilePos=m_dwFilePos;
 	switch(whence)  
 	{
 		case SEEK_SET:
@@ -758,12 +758,12 @@ INT64 iso9660::Seek(int fd, INT64 lOffset, int whence)
 
 
 //************************************************************************************
-INT64 iso9660::GetFileSize()
+__int64 iso9660::GetFileSize()
 {
 	return m_dwFileSize;
 }
 //************************************************************************************
-INT64 iso9660::GetFilePosition()
+__int64 iso9660::GetFilePosition()
 {
 	return m_dwFilePos;
 }
