@@ -1,6 +1,6 @@
 #pragma once
 
-//#define NEW_FILEMANAGER
+#define NEW_FILEMANAGER
 
 #include <xtl.h>
 #include <xgraphics.h>

@@ -3,8 +3,9 @@
 #include "guifontmanager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
-#define SPIN_BUTTON_DOWN 0
-#define SPIN_BUTTON_UP   1
+#define SPIN_BUTTON_DOWN 1
+#define SPIN_BUTTON_UP   2
+
 CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType, DWORD dwAlign)
         :CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
         ,m_imgspinUp(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight,strUp)
@@ -225,9 +226,10 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
 
     if (CGUIControl::OnMessage(message) )
     {
-        if (!HasFocus())
-            m_iSelect=SPIN_BUTTON_DOWN;
-        else
+ //       if (!HasFocus())
+//            m_iSelect=SPIN_BUTTON_DOWN;
+//        else
+					if (HasFocus() && message.GetParam1() == SPIN_BUTTON_UP || message.GetParam1() == SPIN_BUTTON_DOWN)
             m_iSelect = message.GetParam1() == SPIN_BUTTON_UP ? SPIN_BUTTON_UP : SPIN_BUTTON_DOWN;
         return true;
     }
