@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 21-12-2004 updated: Polish language file (Thnx to napek)
+  - 21-12-2004 updated: Dutch language file (Thnx to joepmeloenx)
+  - 21-12-2004 updated: Spanish language file (Thnx to elotrolado)
+  - 21-12-2004 updated: Norwegian language file (Thnx to vnmartinsen)
   - 21-12-2004 fixed: thumbnailcache broken
   - 21-12-2004 fixed: music scanning and reading from database broken (database has to be rescanned)
   - 21-12-2004 fixed: incorrect imdb plot due to imdb url changes.
