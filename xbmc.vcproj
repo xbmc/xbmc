@@ -462,6 +462,9 @@
 				RelativePath=".\xbmc\guiwindowsettingsmusic.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsPrograms.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSettingsScreen.cpp">
 			</File>
 			<File
@@ -489,10 +492,16 @@
 				RelativePath=".\xbmc\GUIWindowVideo.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowVideoActors.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowVideoInfo.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowVideoOverlay.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowVideoYear.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowVisualisation.cpp">
@@ -698,6 +707,9 @@
 				RelativePath=".\xbmc\GUIWindowSettingsGeneral.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsPrograms.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSettingsScreen.h">
 			</File>
 			<File
@@ -719,6 +731,9 @@
 				RelativePath=".\xbmc\GUIWindowVideo.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowVideoActors.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowVideoGenre.cpp">
 			</File>
 			<File
@@ -729,6 +744,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GuiWindowVideoOverlay.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowVideoYear.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\ImusicInfoTagLoader.h">
