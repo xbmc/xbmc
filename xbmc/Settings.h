@@ -215,7 +215,8 @@ public:
 		bool			m_bSoften;
 		bool			m_bZoom;
 		bool			m_bStretch;
-		bool			m_bAllowVideoSwitching;
+		bool			m_bAutoWidescreenSwitching;
+		bool			m_bUpsampleVideo;
 		bool			m_bAllowPAL60;
 
 		bool			m_bAutoShufflePlaylist;
@@ -247,6 +248,7 @@ public:
 		int       m_iSubtitleHeight;
 		int       m_iEnlargeSubtitlePercent;
 		float     m_fVolumeAmplification;
+		float     m_fVolumeHeadroom;
 		bool      m_bNonInterleaved;
 		bool      m_bPPAuto;
 		bool      m_bPPVertical;
