@@ -1708,18 +1708,27 @@
 		<value>Looking for album names...</value>
 	</string>
 	<string>
-
+		<id>502</id>
+		<value>Open</value>
+	</string>
+	<string>
+		<id>503</id>
+		<value>Busy</value>
+	</string>
+	<string>
+		<id>504</id>
+		<value>Empty</value>
+	</string>
+	
+	<string>
 		<id>999</id>
 		<value>Online Gaming</value>
-
 	</string> 
 	<string>
-		
 		<id>998</id>
-		
 		<value>XLink KAI</value>
-	
 	</string>
+	
 	<string>
 		<id>10000</id>
 		<value>Home</value>
