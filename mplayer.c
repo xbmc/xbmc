@@ -1490,7 +1490,7 @@ if(!use_stdin && !slave_mode){
     if(filename) mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_Playing, filename);
 
     //==================== Open VOB-Sub ============================
-    if (strstr(filename,".mp3") || strstr(filename,".ogg") || strstr(filename,".flac") || strstr(filename,"shout:") )
+	if (strstr(filename,".mp3") || strstr(filename,".ogg") || strstr(filename,".flac") || strstr(filename,"shout:") || strstr(filename, "dvd://") )
     {
         if (strstr(filename,".mp3")  || strstr(filename,"shout:") )
             file_format=DEMUXER_TYPE_AUDIO;
