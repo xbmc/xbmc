@@ -170,8 +170,8 @@ void CGUIWindowMusicOverlay::Render()
 			m_iFrames = STEPS;
 			m_iFrameIncrement = 0;
 		}
-		//if the timeout has expired, start moving down
-		else if (timeGetTime() > m_dwTimeout)
+		//if a timeout was set and it has expired, start moving down
+		else if (g_stSettings.m_iOSDTimeout > 0 && timeGetTime() > m_dwTimeout)
 		{
 			m_dwTimeout = 0;
 			m_iFrames = STEPS;
