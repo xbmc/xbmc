@@ -12,6 +12,7 @@
 #include "IFile.h"
 #include "iso9660.h"
 #include "../xbox/iosupport.h"
+#include "ringbuffer.h"
 
 
 using namespace XFILE;
@@ -34,6 +35,7 @@ namespace XFILE
 		iso9660*			m_pIsoReader;
 		offset_t		  m_i64FilePos;
 		static int		m_iReferences;
+		CRingBuffer   m_cache;
 	};
 };
 

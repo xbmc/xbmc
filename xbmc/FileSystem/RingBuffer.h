@@ -160,6 +160,11 @@
 			return bResult;
 		}
 
+		int Size()
+		{
+			return m_nBufSize;
+		}
+
 		///////////////////////////////////////////////////////////////////
 		// Method: Destroy
 		// Purpose: Cleans up ring buffer by freeing memory and resetting
@@ -314,6 +319,38 @@
 					bResult =TRUE;
 				}
 			}
+			::LeaveCriticalSection(&m_critSection );
+			return bResult;
+		}
+
+		BOOL PeakBinary( char * pBuf, int nBufLen )
+		{
+			::EnterCriticalSection(&m_critSection );
+			BOOL bResult = FALSE;
+			int iPrevReadPtr=m_iReadPtr;
+			{
+				if( nBufLen <= GetMaxReadSize() )
+				{
+					// easy case, no wrapping
+					if( m_iReadPtr + nBufLen <= m_nBufSize )
+					{
+						CopyMemory( pBuf, &m_pBuf[m_iReadPtr], nBufLen );
+						m_iReadPtr += nBufLen;
+					}
+					else // harder case, buffer wraps
+					{
+						int iFirstChunkSize = m_nBufSize - m_iReadPtr;
+						int iSecondChunkSize = nBufLen - iFirstChunkSize;
+
+						CopyMemory( pBuf, &m_pBuf[m_iReadPtr], iFirstChunkSize );
+						CopyMemory( &pBuf[iFirstChunkSize], &m_pBuf[0], iSecondChunkSize );
+
+						m_iReadPtr = iSecondChunkSize;
+					}
+					bResult =TRUE;
+				}
+			}
+			m_iReadPtr=iPrevReadPtr;
 			::LeaveCriticalSection(&m_critSection );
 			return bResult;
 		}
