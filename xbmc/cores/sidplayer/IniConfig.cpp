@@ -16,6 +16,9 @@
  ***************************************************************************/
 /***************************************************************************
  *  $Log$
+ *  Revision 1.2  2004/03/09 02:20:52  butcheruk
+ *  Stereo sid support
+ *
  *  Revision 1.1  2004/03/09 00:18:23  butcheruk
  *  Sid playback support
  *
@@ -105,7 +108,7 @@ void IniConfig::clear ()
     console_s.junctionRight = '+';
 
     audio_s.frequency = SID2_DEFAULT_SAMPLING_FREQ;
-    audio_s.playback  = sid2_mono;
+    audio_s.playback  = sid2_stereo;
     audio_s.precision = SID2_DEFAULT_PRECISION;
 
     emulation_s.clockSpeed    = SID2_CLOCK_CORRECT;
