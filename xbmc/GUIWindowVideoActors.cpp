@@ -48,13 +48,13 @@ struct SSortVideoActorByName
 		if (rpStart.GetLabel()=="..") return true;
 		if (rpEnd.GetLabel()=="..") return false;
 		bool bGreater=true;
-		if (g_stSettings.m_bMyVideoActorSortAscending) bGreater=false;
+		if (m_bSortAscending) bGreater=false;
     if ( rpStart.m_bIsFolder   == rpEnd.m_bIsFolder)
 		{
 			char szfilename1[1024];
 			char szfilename2[1024];
 
-			switch ( g_stSettings.m_iMyVideoActorSortMethod ) 
+			switch ( m_iSortMethod ) 
 			{
 				case 0:	//	Sort by Filename
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
@@ -86,7 +86,7 @@ struct SSortVideoActorByName
 				szfilename2[i]=tolower((unsigned char)szfilename2[i]);
 			//return (rpStart.strPath.compare( rpEnd.strPath )<0);
 
-			if (g_stSettings.m_bMyVideoActorSortAscending)
+			if (m_bSortAscending)
 				return (strcmp(szfilename1,szfilename2)<0);
 			else
 				return (strcmp(szfilename1,szfilename2)>=0);
@@ -94,6 +94,9 @@ struct SSortVideoActorByName
     if (!rpStart.m_bIsFolder) return false;
 		return true;
 	}
+
+	bool m_bSortAscending;
+	int m_iSortMethod;
 };
 
 //****************************************************************************************************************************
@@ -215,18 +218,23 @@ bool CGUIWindowVideoActors::OnMessage(CGUIMessage& message)
       {
         if (m_strDirectory.size())
         {
-        g_stSettings.m_iMyVideoActorSortMethod++;
-        if (g_stSettings.m_iMyVideoActorSortMethod>=3) g_stSettings.m_iMyVideoActorSortMethod=0;
-				g_settings.Save();
+					g_stSettings.m_iMyVideoActorSortMethod++;
+					if (g_stSettings.m_iMyVideoActorSortMethod>=3) g_stSettings.m_iMyVideoActorSortMethod=0;
+					g_settings.Save();
         }
         UpdateButtons();
         OnSort();
       }
       else if (iControl==CONTROL_BTNSORTASC) // sort asc
       {
-        g_stSettings.m_bMyVideoActorSortAscending=!g_stSettings.m_bMyVideoActorSortAscending;
+				if (m_strDirectory.IsEmpty())
+					g_stSettings.m_bMyVideoActorRootSortAscending=!g_stSettings.m_bMyVideoActorRootSortAscending;
+				else
+					g_stSettings.m_bMyVideoActorSortAscending=!g_stSettings.m_bMyVideoActorSortAscending;
+
 				g_settings.Save();
-        UpdateButtons();
+        
+				UpdateButtons();
         OnSort();
       }
       else if (iControl==CONTROL_PLAY_DVD)
@@ -375,9 +383,24 @@ void CGUIWindowVideoActors::UpdateButtons()
 
     ShowThumbPanel();
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyVideoActorSortMethod+365);
 
-    if ( g_stSettings.m_bMyVideoActorSortAscending)
+		if (m_strDirectory.IsEmpty())
+		{
+			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyVideoActorRootSortMethod+365);
+		}
+		else
+		{
+			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyVideoActorSortMethod+365);
+		}
+
+		//	Update sorting control
+		bool bSortAscending=false;
+		if (m_strDirectory.IsEmpty())
+			bSortAscending=g_stSettings.m_bMyVideoActorRootSortAscending;
+		else
+			bSortAscending=g_stSettings.m_bMyVideoActorSortAscending;
+
+		if (bSortAscending)
     {
       CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
       g_graphicsContext.SendMessage(msg);
@@ -445,10 +468,20 @@ void CGUIWindowVideoActors::OnSort()
     }
   }
 
-  
-  sort(m_vecItems.begin(), m_vecItems.end(), SSortVideoActorByName());
+	SSortVideoActorByName sortmethod;
+	if (m_strDirectory.IsEmpty())
+	{
+		sortmethod.m_iSortMethod=g_stSettings.m_iMyVideoActorRootSortMethod;
+		sortmethod.m_bSortAscending=g_stSettings.m_bMyVideoActorRootSortAscending;
+	}
+	else
+	{
+		sortmethod.m_iSortMethod=g_stSettings.m_iMyVideoActorSortMethod;
+		sortmethod.m_bSortAscending=g_stSettings.m_bMyVideoActorSortAscending;
+	}
+  sort(m_vecItems.begin(), m_vecItems.end(), sortmethod);
 
-  for (int i=0; i < (int)m_vecItems.size(); i++)
+	for (int i=0; i < (int)m_vecItems.size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
     CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),CONTROL_LIST,0,0,(void*)pItem);
