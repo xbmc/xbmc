@@ -22,6 +22,9 @@ using namespace std;
 #define LCD_MODE_TYPE_LCD 0   
 #define LCD_MODE_TYPE_VFD 1   
 
+#define MODCHIP_SMARTXX   0
+#define MODCHIP_XENIUM    1
+
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1
 #define CACHE_VOB   2
@@ -300,6 +303,7 @@ public:
   int       m_iLCDBrightness;
 	bool			m_bDisplayRemoteCodes;	// Remote code debug info
 	bool			m_bResample;			// mplayer resampling to 48kHz
+  int       m_iLCDModChip;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

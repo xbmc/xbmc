@@ -1037,10 +1037,10 @@
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1396,12 +1396,6 @@
 				RelativePath=".\xbmc\utils\IMDB.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\utils\lcd.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\LCD.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\log.cpp">
 			</File>
 			<File
@@ -1425,6 +1419,37 @@
 			<File
 				RelativePath=".\xbmc\utils\Thread.cpp">
 			</File>
+			<Filter
+				Name="LCD"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\utils\LCD.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\LCDFactory.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\LCDFactory.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\smartXX\smartxxlcd.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\smartXX\smartxxLCD.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libXenium\Xenium.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libXenium\Xenium.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libXenium\XeniumLCD.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libXenium\XeniumLCD.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="cores"
@@ -1661,10 +1686,10 @@
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -1870,6 +1895,9 @@
 				Name="libGoAhead"
 				Filter="">
 				<File
+					RelativePath=".\xbmc\lib\libGoAhead\includes.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\lib\libGoAhead\SpyceModule.cpp">
 				</File>
 				<File
@@ -1882,19 +1910,16 @@
 					RelativePath=".\xbmc\lib\libGoAhead\WebServer.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\lib\libGoAhead\XBMCweb.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libGoAhead\XBMCweb.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libGoAhead\includes.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\lib\libGoAhead\XBMCConfiguration.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\lib\libGoAhead\XBMCConfiguration.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\XBMCweb.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\XBMCweb.h">
 				</File>
 			</Filter>
 			<Filter
