@@ -6,8 +6,10 @@
 #include "../xbox/iosupport.h"
 #include "../autoptrhandle.h"
 #include "directorycache.h"
+#include "iso9660.h"
 
 using namespace AUTOPTR;
+
 CHDDirectory::CHDDirectory(void)
 {
 }
@@ -30,13 +32,16 @@ bool  CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	memset(&wfd,0,sizeof(wfd));
 	if (!CUtil::HasSlashAtEnd(strPath) )
 		strRoot+="\\";
-/*
-	if ( CUtil::IsDVD(strRoot) )
+
+	if (CUtil::IsDVD(strRoot) && m_isoReader.IsScanned())
   {
-    CIoSupport helper;
-    helper.Remount("D:","Cdrom0");
+		//	Reset iso reader and remount or
+		//	we can't access the dvd-rom
+		m_isoReader.Reset();
+		CIoSupport helper;
+		helper.Remount("D:","Cdrom0");
   }
-*/
+
   CStdString strSearchMask=strRoot;
   strSearchMask+="*.*";
 

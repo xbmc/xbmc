@@ -176,7 +176,7 @@ void CDetectDVDMedia::DetectMediaType()
 	m_pCdInfo->GetDataTrackCount() );
 
 	//	Detect ISO9660(mode1/mode2), CDDA filesystem or UDF
-	if (m_pCdInfo->IsISOUDF(1) || m_pCdInfo->IsISOHFS(1) || m_pCdInfo->IsIso9660(1) || m_pCdInfo->IsIso9660Interactive(1))
+	if (m_pCdInfo->IsISOHFS(1) || m_pCdInfo->IsIso9660(1) || m_pCdInfo->IsIso9660Interactive(1))
   {
 		strNewUrl = "iso9660://";
     m_isoReader.Scan();
@@ -192,6 +192,19 @@ void CDetectDVDMedia::DetectMediaType()
 		}
 		else
 			strNewUrl = "D:\\";
+	}
+
+	if (m_pCdInfo->IsISOUDF(1))
+	{
+		if (g_stSettings.m_bDetectAsIso)
+		{
+			strNewUrl = "iso9660://";
+			m_isoReader.Scan();
+		}
+		else
+		{
+			strNewUrl = "D:\\";
+		}
 	}
 
 	CLog::Log("Using protocol %s", strNewUrl.c_str());
