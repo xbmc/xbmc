@@ -57,7 +57,6 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 	m_fFPS=0;
 	m_fFrameCounter=0.0f;
 	m_dwFPSTime=timeGetTime();
-	m_iSpeed=1;
 
   // audio
   //  - language
@@ -197,7 +196,6 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 
 		case ACTION_STOP:
     {
-        m_iSpeed=1;
 			g_application.m_pPlayer->closefile();
 			// Switch back to the previous window (GUI)
 			m_gWindowManager.PreviousWindow();
@@ -227,13 +225,12 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		case ACTION_PLAY:
 			if (g_application.m_pPlayer)
       {
-       if (g_application.m_pPlayer->IsPaused())
-				 g_application.m_pPlayer->Pause();
-			  else if (m_iSpeed != 1)
-			  {
-          m_iSpeed = 1;
-				  g_application.m_pPlayer->ToFFRW(m_iSpeed);
-			  }
+        if (g_application.m_pPlayer->IsPaused())
+				  g_application.m_pPlayer->Pause();
+        else
+        {
+          g_application.SetPlaySpeed(1);
+        }
       }
 		break;
 		case ACTION_REWIND:
@@ -316,7 +313,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 		{
       m_bLastRender=false;
       m_bOSDVisible=false;
-      m_iSpeed=1;
+      
 			CGUIWindow::OnMessage(message);
       g_graphicsContext.Lock();
 			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
@@ -339,7 +336,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			// Pause so that we make sure that our fullscreen renderer has finished...
 			Sleep(100);
       m_bOSDVisible=false;
-      m_iSpeed=1;
+      
       m_iCurrentBookmark=0;
       HideOSD();
 		}
@@ -365,7 +362,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowStatus) return true;
   if (m_bShowInfo) return true;
   if (m_bOSDVisible) return true;
-  if (m_iSpeed != 1) return true;
+  if (g_application.GetPlaySpeed() != 1) return true;
   if (m_bLastRender)
   {
     m_bLastRender=false;
@@ -545,7 +542,8 @@ void CGUIWindowFullScreen::RenderFullScreen()
     OnMessage(msg);
   }	
 
-	if(m_iSpeed)
+  int iSpeed=g_application.GetPlaySpeed();
+	if(iSpeed!=1)
 	{
 		SET_CONTROL_HIDDEN(GetID(),IMG_2X);
 		SET_CONTROL_HIDDEN(GetID(),IMG_4X);
@@ -553,23 +551,23 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		SET_CONTROL_HIDDEN(GetID(),IMG_16X);
 		SET_CONTROL_HIDDEN(GetID(),IMG_32X);
 		bRenderGUI=true;
-		if(m_iSpeed == 2 || m_iSpeed == -2)
+		if(iSpeed == 2 || iSpeed == -2)
 		{
 			SET_CONTROL_VISIBLE(GetID(),IMG_2X);
 		}
-		else if(m_iSpeed == 4 || m_iSpeed == -4)
+		else if(iSpeed == 4 || iSpeed == -4)
 		{
 			SET_CONTROL_VISIBLE(GetID(),IMG_4X);
 		}
-		else if(m_iSpeed == 8 || m_iSpeed == -8)
+		else if(iSpeed == 8 || iSpeed == -8)
 		{
 			SET_CONTROL_VISIBLE(GetID(),IMG_8X);
 		}
-		else if(m_iSpeed == 16 || m_iSpeed == -16)
+		else if(iSpeed == 16 || iSpeed == -16)
 		{
 			SET_CONTROL_VISIBLE(GetID(),IMG_16X);
 		}
-		else if(m_iSpeed == 32 || m_iSpeed == -32)
+		else if(iSpeed == 32 || iSpeed == -32)
 		{
 			SET_CONTROL_VISIBLE(GetID(),IMG_32X);
 		}
@@ -593,7 +591,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
   if ( bRenderGUI)
   {
-	if (g_application.m_pPlayer->IsPaused() || m_iSpeed != 1)
+	if (g_application.m_pPlayer->IsPaused() || iSpeed != 1)
 	{
 	  SET_CONTROL_HIDDEN(GetID(),LABEL_ROW1);
       SET_CONTROL_HIDDEN(GetID(),LABEL_ROW2);
@@ -873,27 +871,21 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
 }
 void CGUIWindowFullScreen::ChangetheSpeed(DWORD action)
 {
-	if (action == ACTION_REWIND && m_iSpeed == 1) // Enables Rewinding
-		m_iSpeed *=-2;
-	else if (action == ACTION_REWIND && m_iSpeed > 1) //goes down a notch if you're FFing
-		m_iSpeed /=2;
-	else if (action == ACTION_FORWARD && m_iSpeed < 1) //goes up a notch if you're RWing
-		m_iSpeed /= 2;
+  int iSpeed=g_application.GetPlaySpeed();
+	if (action == ACTION_REWIND && iSpeed == 1) // Enables Rewinding
+		iSpeed *=-2;
+	else if (action == ACTION_REWIND && iSpeed > 1) //goes down a notch if you're FFing
+		iSpeed /=2;
+	else if (action == ACTION_FORWARD && iSpeed < 1) //goes up a notch if you're RWing
+		iSpeed /= 2;
 	else 
-		m_iSpeed *= 2;
+		iSpeed *= 2;
 
-	if (action == ACTION_FORWARD && m_iSpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
-		m_iSpeed = 1;
-	if (m_iSpeed > 32 || m_iSpeed < -32)
-		m_iSpeed = 1;
-	g_application.m_pPlayer->ToFFRW(m_iSpeed);
-  if (m_pAudioDecoder)
-  {
-    if (m_iSpeed==1)
-      m_pAudioDecoder->SetCurrentVolume(m_pAudioDecoder->GetMaximumVolume());
-    else
-      m_pAudioDecoder->SetCurrentVolume(m_pAudioDecoder->GetMinimumVolume());
-  }
+	if (action == ACTION_FORWARD && iSpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
+		iSpeed = 1;
+	if (iSpeed > 32 || iSpeed < -32)
+		iSpeed = 1;
+  g_application.SetPlaySpeed(iSpeed);
 }	
 
 void CGUIWindowFullScreen::Update()
