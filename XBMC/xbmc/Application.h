@@ -13,6 +13,7 @@
 #include "GUIWindowPictures.h"
 #include "GUIWindowMyFiles.h"
 #include "GUIWindowVideo.h"
+#include "GUIWindowVideoGenre.h"
 #include "GUIWindowSettings.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
@@ -125,6 +126,7 @@ public:
 	CGUIWindowMusicGenres						m_guiMyMusicGenres;
 	CGUIWindowMusicTop100						m_guiMyMusicTop100;
   CGUIWindowSettingsSubtitles     m_guiSettingsSubtitles;
+  CGUIWindowVideoGenre            m_guiVideoGenre;
   CXBVirtualKeyboard   						m_keyboard;
 	CSNTPClient											m_sntpClient;
 	CDetectDVDMedia									m_DetectDVDType;
