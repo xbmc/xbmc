@@ -51,6 +51,12 @@
 
 #define CONTROL_KAI_CONSOLE		3074				// Text Chat console
 #define CONTROL_KAI_TEXTEDIT	3075				// Text Edit control
+#define CONTROL_KAI_TEXTEDAREA	3076				// Text Edit Area
+
+#define CONTROL_KAI_TAB_FRIENDS 3080				// Friends tab button
+#define CONTROL_KAI_TAB_GAMES	3081				// Games tab button
+#define CONTROL_KAI_TAB_ARENA	3082				// Arena tab button
+#define CONTROL_KAI_TAB_CHAT	3083				// Chat tab button
 
 #define SET_CONTROL_DISABLED(dwSenderId, dwControlID) \
 { \
@@ -148,17 +154,22 @@ CGUIWindowBuddies::CGUIWindowBuddies(void)
 	m_arena.SetSortingAlgorithm(CGUIWindowBuddies::SortArena);
 	m_games.SetSortingAlgorithm(CGUIWindowBuddies::SortGames);
 
-	ON_CLICK_MESSAGE(CONTROL_BTNMODE,	CGUIWindowBuddies, OnClickModeButton);
-	ON_CLICK_MESSAGE(CONTROL_BTNADD,	CGUIWindowBuddies, OnClickAddButton);
-	ON_CLICK_MESSAGE(CONTROL_BTNREMOVE,	CGUIWindowBuddies, OnClickRemoveButton);
-	ON_CLICK_MESSAGE(CONTROL_BTNSPEEX,	CGUIWindowBuddies, OnClickSpeexButton);
-	ON_CLICK_MESSAGE(CONTROL_BTNINVITE,	CGUIWindowBuddies, OnClickInviteButton);
-	ON_CLICK_MESSAGE(CONTROL_BTNJOIN,	CGUIWindowBuddies, OnClickJoinButton);
-	ON_CLICK_MESSAGE(CONTROL_BTNPLAY,	CGUIWindowBuddies, OnClickPlayButton);
-	ON_CLICK_MESSAGE(CONTROL_BTNHOST,	CGUIWindowBuddies, OnClickHostButton);
-	ON_CLICK_MESSAGE(CONTROL_BTNKEYBOARD,CGUIWindowBuddies,OnClickKeyboardButton);
-	ON_CLICK_MESSAGE(CONTROL_LISTEX,	CGUIWindowBuddies, OnClickListItem);
-	ON_SELECTED_MESSAGE(CONTROL_LISTEX,	CGUIWindowBuddies, OnSelectListItem);
+	ON_CLICK_MESSAGE(CONTROL_BTNMODE,			CGUIWindowBuddies, OnClickModeButton);
+	ON_CLICK_MESSAGE(CONTROL_BTNADD,			CGUIWindowBuddies, OnClickAddButton);
+	ON_CLICK_MESSAGE(CONTROL_BTNREMOVE,			CGUIWindowBuddies, OnClickRemoveButton);
+	ON_CLICK_MESSAGE(CONTROL_BTNSPEEX,			CGUIWindowBuddies, OnClickSpeexButton);
+	ON_CLICK_MESSAGE(CONTROL_BTNINVITE,			CGUIWindowBuddies, OnClickInviteButton);
+	ON_CLICK_MESSAGE(CONTROL_BTNJOIN,			CGUIWindowBuddies, OnClickJoinButton);
+	ON_CLICK_MESSAGE(CONTROL_BTNPLAY,			CGUIWindowBuddies, OnClickPlayButton);
+	ON_CLICK_MESSAGE(CONTROL_BTNHOST,			CGUIWindowBuddies, OnClickHostButton);
+	ON_CLICK_MESSAGE(CONTROL_BTNKEYBOARD,		CGUIWindowBuddies, OnClickKeyboardButton);
+	ON_CLICK_MESSAGE(CONTROL_LISTEX,			CGUIWindowBuddies, OnClickListItem);
+	ON_CLICK_MESSAGE(CONTROL_KAI_TAB_FRIENDS,	CGUIWindowBuddies, OnClickTabFriends);
+	ON_CLICK_MESSAGE(CONTROL_KAI_TAB_GAMES,		CGUIWindowBuddies, OnClickTabGames);
+	ON_CLICK_MESSAGE(CONTROL_KAI_TAB_ARENA,		CGUIWindowBuddies, OnClickTabArena);
+	ON_CLICK_MESSAGE(CONTROL_KAI_TAB_CHAT,		CGUIWindowBuddies, OnClickTabChat);
+
+	ON_SELECTED_MESSAGE(CONTROL_LISTEX,			CGUIWindowBuddies, OnSelectListItem);
 }
 
 CGUIWindowBuddies::~CGUIWindowBuddies(void)
@@ -202,6 +213,15 @@ void CGUIWindowBuddies::OnInitWindow()
 									"buddyitem-keyboard.png");
 
 		CArenaItem::SetIcons(12,12, "arenaitem-private.png");
+
+		for(int nTabButtonId = CONTROL_KAI_TAB_FRIENDS; nTabButtonId<= CONTROL_KAI_TAB_CHAT; nTabButtonId++)
+		{
+			CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(nTabButtonId));
+			if (pButton)
+			{
+				pButton->SetTabButton();
+			}
+		}
 
 		ChangeState(State::Buddies);
 
@@ -510,11 +530,42 @@ void CGUIWindowBuddies::OnClickListItem(CGUIMessage& aMessage)
 	}
 }
 
+void CGUIWindowBuddies::SelectTab(int nTabId)
+{
+	for(int nTabButtonId = CONTROL_KAI_TAB_FRIENDS; nTabButtonId<= CONTROL_KAI_TAB_CHAT; nTabButtonId++)
+	{
+		CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(nTabButtonId));
+		if (pButton)
+		{
+			pButton->SetSelected( nTabId == nTabButtonId );
+			pButton->SetAlpha( nTabId == nTabButtonId ? 255 : 179 );
+		}
+	}
+}
+
+void CGUIWindowBuddies::OnClickTabFriends(CGUIMessage& aMessage)
+{
+	ChangeState(State::Buddies);
+}
+
+void CGUIWindowBuddies::OnClickTabGames(CGUIMessage& aMessage)
+{
+	ChangeState(State::Games);
+}
+
+void CGUIWindowBuddies::OnClickTabArena(CGUIMessage& aMessage)
+{
+	ChangeState(State::Arenas);
+}
+
+void CGUIWindowBuddies::OnClickTabChat(CGUIMessage& aMessage)
+{
+	ChangeState(State::Chat);
+}
+
 void CGUIWindowBuddies::OnSelectListItem(CGUIMessage& aMessage)
 {
 }
-
-
 
 CGUIImage* CGUIWindowBuddies::GetCurrentAvatar()
 {
@@ -525,8 +576,6 @@ CGUIImage* CGUIWindowBuddies::GetCurrentAvatar()
 		// a item is selected, and his avatar is different to the one we last showed
 		if (pItem->m_pAvatar != m_pCurrentAvatar)
 		{
-//			OutputDebugString("Changing avatar\r\n");
-
 			// if we actually last showed an avatar free up its resources
 			if (m_pCurrentAvatar)
 			{
@@ -552,8 +601,6 @@ CGUIImage* CGUIWindowBuddies::GetCurrentAvatar()
 					m_pCurrentAvatar->SetHeight((int)h);
 				}
 			}
-
-//			OutputDebugString("Avatar changed.\r\n");
 		}
 	}
 	else
@@ -561,10 +608,8 @@ CGUIImage* CGUIWindowBuddies::GetCurrentAvatar()
 		// no item is selected so free up the current avatar if we have one
 		if (m_pCurrentAvatar)
 		{
-//			OutputDebugString("Deallocating current avatar.\r\n");
 			m_pCurrentAvatar->FreeResources();
 			m_pCurrentAvatar = NULL;
-//			OutputDebugString("Avatar dellocated.\r\n");
 		}
 	}
 
@@ -892,24 +937,17 @@ void CGUIWindowBuddies::ChangeState()
 		case State::Buddies:
 		{
 			ChangeState(State::Games);
+			
 			break;
 		}
 		case State::Games:
 		{
 			ChangeState(State::Arenas);
-
-			if (m_pKaiClient->GetCurrentVector().IsEmpty())
-			{
-				CStdString aRootVector = KAI_SYSTEM_ROOT;
-				CStdString strPassword = "";
-				m_pKaiClient->EnterVector(aRootVector,strPassword);
-			}
 			break;
 		}
 		case State::Arenas:
 		{
 			ChangeState(State::Chat);
-			m_pKaiClient->JoinTextChat();
 			break;
 		}
 		case State::Chat:
@@ -947,6 +985,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNINVITE);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNREMOVE);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_CONSOLE);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_TEXTEDAREA);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_TEXTEDIT);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNPLAY);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNADD);
@@ -960,6 +999,8 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNSPEEX,		"Voice");	
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNINVITE,		"Invite");	
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNREMOVE,		"Remove");
+
+			SelectTab(CONTROL_KAI_TAB_FRIENDS);
 			break;
 		}
 
@@ -979,6 +1020,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNREMOVE);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNKEYBOARD);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_CONSOLE);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_TEXTEDAREA);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_TEXTEDIT);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_LISTEX);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNMODE);
@@ -993,7 +1035,9 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNADD,			"Add");
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNHOST,		"Host");	
 			SET_CONTROL_DISABLED(GetID(), CONTROL_BTNADD);	
-			SET_CONTROL_DISABLED(GetID(), CONTROL_BTNHOST);	
+			SET_CONTROL_DISABLED(GetID(), CONTROL_BTNHOST);
+
+			SelectTab(CONTROL_KAI_TAB_GAMES);
 			break;
 		}
 
@@ -1013,6 +1057,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNREMOVE);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNKEYBOARD);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_CONSOLE);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_TEXTEDAREA);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_TEXTEDIT);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_LISTEX);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNMODE);
@@ -1027,7 +1072,17 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNADD,			"Add");
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNHOST,		"Host");	
 			SET_CONTROL_DISABLED(GetID(), CONTROL_BTNADD);	
-			SET_CONTROL_ENABLED(GetID(), CONTROL_BTNHOST);	
+			SET_CONTROL_ENABLED(GetID(), CONTROL_BTNHOST);
+
+			SelectTab(CONTROL_KAI_TAB_ARENA);
+
+			if (m_pKaiClient->GetCurrentVector().IsEmpty())
+			{
+				CStdString aRootVector = KAI_SYSTEM_ROOT;
+				CStdString strPassword = "";
+				m_pKaiClient->EnterVector(aRootVector,strPassword);
+			}
+
 			break;
 		}
 
@@ -1041,6 +1096,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_IMAGEBUDDYICON2);
 
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_KAI_CONSOLE);
+			SET_CONTROL_VISIBLE(GetID(),CONTROL_KAI_TEXTEDAREA);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_KAI_TEXTEDIT);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNMODE);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNKEYBOARD);
@@ -1056,7 +1112,12 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 
 			SET_CONTROL_LABEL(GetID(),  CONTROL_LABELBUDDYWIN,  "Chat");
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNMODE,		"View: Chat");	
-			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNKEYBOARD,	"Keyboard");	
+			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNKEYBOARD,	"Keyboard");
+
+			SelectTab(CONTROL_KAI_TAB_CHAT);
+
+			m_pKaiClient->JoinTextChat();
+
 			break;
 		}
 	}
