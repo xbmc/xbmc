@@ -351,6 +351,32 @@ void CGUIWindowFileManager::OnSort(int iList)
 			else
 				pItem->SetLabel2("");
 		}
+
+		//	Set free space on disc
+		if (pItem->m_bIsShareOrDrive)
+		{
+			if (CUtil::IsHD(pItem->m_strPath))
+			{
+				ULARGE_INTEGER ulBytesFree;
+				if (GetDiskFreeSpaceEx(pItem->m_strPath.c_str(), &ulBytesFree, NULL, NULL))
+				{
+					CStdString strShareSize;
+					CUtil::GetFileSize(ulBytesFree.QuadPart, strShareSize);
+					pItem->SetLabel2(strShareSize);
+				}
+			}
+			else if (CUtil::IsDVD(pItem->m_strPath) && CDetectDVDMedia::IsDiscInDrive())
+			{
+				ULARGE_INTEGER ulBytesTotal;
+				if (GetDiskFreeSpaceEx(pItem->m_strPath.c_str(), NULL, &ulBytesTotal, NULL))
+				{
+					CStdString strShareSize;
+					CUtil::GetFileSize(ulBytesTotal.QuadPart, strShareSize);
+					pItem->SetLabel2(strShareSize);
+				}
+			}
+		} // if (pItem->m_bIsShareOrDrive)
+
 	}
 
 	sort(m_vecItems[iList].begin(), m_vecItems[iList].end(), sortmethod);
