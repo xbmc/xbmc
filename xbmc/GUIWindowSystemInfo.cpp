@@ -215,6 +215,18 @@ void  CGUIWindowSystemInfo::GetValues()
 		{
 			SET_CONTROL_LABEL(GetID(), 13,wszHD);
 		}
+		if (GetDiskFreeSpaceEx( "G:\\", NULL, NULL, &lTotalFreeBytes))
+		{
+			swprintf(wszHD, L"%s G: %u Mb ", pszDrive,lTotalFreeBytes.QuadPart/1048576); //To make it MB
+			wcscat(wszHD,pszFree);
+		} 
+		else {
+			swprintf(wszHD, L"%s G: ",pszDrive);
+			wcscat(wszHD,pszUnavailable);
+		}
+		{
+			SET_CONTROL_LABEL(GetID(), 17,wszHD);
+		}
 	}
 	{
 
