@@ -221,37 +221,37 @@ void CApplicationMessenger::MediaPlay(string filename)
 {
 		ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
 		tMsg.strParam = filename;
-		SendMessage(tMsg);
+		SendMessage(tMsg, true);
 }
 
 void CApplicationMessenger::MediaStop()
 {
 		ThreadMessage tMsg = {TMSG_MEDIA_STOP};
-		SendMessage(tMsg);
+		SendMessage(tMsg, true);
 }
 
 void CApplicationMessenger::MediaPause()
 {
 		ThreadMessage tMsg = {TMSG_MEDIA_PAUSE};
-		SendMessage(tMsg);
+		SendMessage(tMsg, true);
 }
 
 void CApplicationMessenger::PlayListPlayerPlay(int iSong)
 {
 		ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, iSong};
-		SendMessage(tMsg);
+		SendMessage(tMsg, true);
 }
 
 void CApplicationMessenger::PlayListPlayerNext()
 {
 		ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_NEXT};
-		SendMessage(tMsg);
+		SendMessage(tMsg, true);
 }
 
 void CApplicationMessenger::PlayListPlayerPrevious()
 {
 		ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PREV};
-		SendMessage(tMsg);
+		SendMessage(tMsg, true);
 }
 
 void CApplicationMessenger::PictureShow(string filename)
