@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-08-2004 fixed: libmp4 debug assertion
   - 04-08-2004 fixed: New Textures.xpr
   - 04-08-2004 fixed:  New virtual keyboard added to Profile Renaming.
   - 04-08-2004 changed: keymap.xml now maps mplayer OSD toggle to SELECT on the remote
