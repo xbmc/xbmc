@@ -1010,7 +1010,7 @@ static void video_flip_page(void)
 		if (g_application.NeedRenderFullScreen())
 			g_application.RenderFullScreen();
 
-	  g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
+//	  g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
 		g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 	}
 	g_graphicsContext.Unlock();
