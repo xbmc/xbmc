@@ -695,6 +695,8 @@ void CGUIWindowOSD::SetCheckmarkValue(BOOL bValue, DWORD iControlID)
 	}
 }
 
+extern void  xbox_audio_switch_channel(int iAudioStream, bool bAudioOnAllSpeakers); //lowlevel audio
+
 void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 {
 	const CStdString& strMovie=g_application.CurrentFile();
@@ -793,7 +795,9 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 						g_stSettings.m_iAudioStream = pList->GetSelectedItem();
 						PopulateAudioStreams();
 						// call monkeyh1's code here...
-						return;
+						bool bAudioOnAllSpeakers = g_stSettings.m_bUseDigitalOutput && g_stSettings.m_bAudioOnAllSpeakers;
+						xbox_audio_switch_channel(g_stSettings.m_iAudioStream, bAudioOnAllSpeakers);
+						break;
 					}
 				}
 				CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),OSD_AUDIOSTREAM_LIST,0,0,NULL);

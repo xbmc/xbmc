@@ -67,6 +67,7 @@ public:
 	virtual int			SetPlaySpeed(int iSpeed)=0;
 	virtual void    WaitCompletion()=0;
 	virtual void		DoWork() {}
+	virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)=0;
 
 private:
 };
