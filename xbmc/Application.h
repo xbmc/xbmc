@@ -50,9 +50,9 @@
 #include "GUIWindowSlideshow.h"
 #include "GUIWindowMusicPlaylist.h"
 #include "GUIWindowMusicSongs.h"
-#include "GUIWindowMusicAlbum.h"
-#include "GUIWindowMusicArtists.h"
-#include "GUIWindowMusicGenres.h"
+//#include "GUIWindowMusicAlbum.h"
+//#include "GUIWindowMusicArtists.h"
+//#include "GUIWindowMusicGenres.h"
 #include "GUIWindowMusicTop100.h"
 #include "GUIWindowMusicNav.h"
 #include "GUIWindowBuddies.h"   //BUDDIES
@@ -188,11 +188,11 @@ public:
   CGUIWindowMusicPlayList m_guiMyMusicPlayList;
   CGUIWindowVideoPlaylist m_guiMyVideoPlayList;
   CGUIWindowMusicSongs m_guiMyMusicSongs;
-  CGUIWindowMusicAlbum m_guiMyMusicAlbum;
-  CGUIWindowMusicArtists m_guiMyMusicArtists;
-  CGUIWindowMusicGenres m_guiMyMusicGenres;
-  CGUIWindowMusicTop100 m_guiMyMusicTop100;
   CGUIWindowMusicNav m_guiMyMusicNav;
+  CGUIWindowMusicTop100 m_guiMyMusicTop100;
+//  CGUIWindowMusicAlbum m_guiMyMusicAlbum;
+//  CGUIWindowMusicArtists m_guiMyMusicArtists;
+//  CGUIWindowMusicGenres m_guiMyMusicGenres;
   CGUIWindowScreensaver m_guiWindowScreensaver;
   CGUIWindowVideoGenre m_guiVideoGenre;
   CGUIWindowVideoActors m_guiVideoActors;
