@@ -29,9 +29,10 @@ namespace PYXBMC
 
 	PyObject* Dialog_OK(PyObject *self, PyObject *args)
 	{
-		const DWORD dWindow = 2002;
+		const DWORD dWindow = WINDOW_DIALOG_OK;
 		char *cLine[4];
 		CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(dWindow);
+		if (PyWindowIsNull(pDialog)) return NULL;
 
 		for (int i = 0; i < 4; i++)	cLine[i] = NULL;
 		// get lines, last 2 lines are optional.
@@ -58,9 +59,10 @@ namespace PYXBMC
 
 	PyObject* Dialog_YesNo(PyObject *self, PyObject *args)
 	{
-		const DWORD dWindow = 100;
+		const DWORD dWindow = WINDOW_DIALOG_YES_NO;
 		char *cLine[4];
 		CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(dWindow);
+		if (PyWindowIsNull(pDialog)) return NULL;
 
 		for (int i = 0; i < 4; i++)	cLine[i] = NULL;
 		// get lines, last 2 lines are optional.
@@ -87,7 +89,7 @@ namespace PYXBMC
 
 	PyObject* Dialog_Select(PyObject *self, PyObject *args)
 	{
-		const DWORD dWindow = 2000;
+		const DWORD dWindow = WINDOW_DIALOG_SELECT;
 		char *cHeader;
 		PyObject *list = NULL;
 			
@@ -95,6 +97,8 @@ namespace PYXBMC
 		if (!PyList_Check(list)) return NULL;
 
 		CGUIDialogSelect* pDialog= (CGUIDialogSelect*)m_gWindowManager.GetWindow(dWindow);
+		if (PyWindowIsNull(pDialog)) return NULL;
+
 		pDialog->Reset();
 		pDialog->SetHeading(cHeader);
 
@@ -136,6 +140,7 @@ namespace PYXBMC
 		if (!PyArg_ParseTuple(args, "s|sss", &cLine[0], &cLine[1], &cLine[2], &cLine[3]))	return NULL;
 
 		CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+		if (PyWindowIsNull(pDialog)) return NULL;
 
 		// convert char strings to wchar strings and set the header + line 1, 2 and 3 for dialog
 		mbsrtowcs(line, &cLine[0], 128, NULL);
@@ -171,6 +176,7 @@ namespace PYXBMC
 		if (!PyArg_ParseTuple(args, "i", &percentage))	return NULL;
 
 		CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+		if (PyWindowIsNull(pDialog)) return NULL;
 
 		g_graphicsContext.Lock();
 		if (percentage >= 0 && percentage <= 100)
@@ -195,6 +201,7 @@ namespace PYXBMC
 	{
 		bool canceled = false;
 		CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+		if (PyWindowIsNull(pDialog)) return NULL;
 
 		g_graphicsContext.Lock();
 		canceled = pDialog->IsCanceled();
@@ -209,6 +216,7 @@ namespace PYXBMC
 	PyObject* Dialog_ProgressClose(PyObject *self, PyObject *args)
 	{
 		CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+		if (PyWindowIsNull(pDialog)) return NULL;
 
 		g_graphicsContext.Lock();
 		pDialog->Close();

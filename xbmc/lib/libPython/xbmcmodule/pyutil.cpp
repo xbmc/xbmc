@@ -58,7 +58,7 @@ namespace PYXBMC
 	 * - 1 tried to load xml, but it failed
 	 * - 2 xml loaded
 	 */
-	const char* GetDefaultImage(char* cControlType, char* cTextureType, char* cDefault)
+	const char* PyGetDefaultImage(char* cControlType, char* cTextureType, char* cDefault)
 	{
 		if (iPyLoadedSkinReferences == 0)
 		{
@@ -98,5 +98,15 @@ namespace PYXBMC
 			}
 		}
 		return cDefault;
+	}
+
+	bool PyWindowIsNull(void* pWindow)
+	{
+		if (pWindow == NULL)
+		{
+			PyErr_SetString(PyExc_RuntimeError, "Error: Window is NULL, this is not possible :-)");
+			return true;
+		}
+		return false;
 	}
 }
