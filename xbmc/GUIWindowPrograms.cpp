@@ -2,6 +2,7 @@
 #include "localizestrings.h"
 #include "GUIWindowManager.h"
 #include "util.h"
+#include "url.h"
 #include "Xbox\IoSupport.h"
 #include "Xbox\Undocumented.h"
 #include "crc32.h"
@@ -727,6 +728,11 @@ void CGUIWindowPrograms::UpdateButtons()
 
 void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 {
+	// remove username + password from m_strDirectory for display in Dialog
+	CURL url(m_strDirectory);
+	CStdString strStrippedPath;
+	url.GetURLWithoutUserDetails(strStrippedPath);
+
     const WCHAR* pszText=(WCHAR*)g_localizeStrings.Get(212).c_str();
     WCHAR wzTotal[128];
     swprintf(wzTotal,L"%i %s",iTotalAppsFound, pszText );
@@ -735,7 +741,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
         m_dlgProgress->SetHeading(211);
         m_dlgProgress->SetLine(0,wzTotal);
         m_dlgProgress->SetLine(1,"");
-        m_dlgProgress->SetLine(2,m_strDirectory );
+        m_dlgProgress->SetLine(2,strStrippedPath );
         m_dlgProgress->StartModal(GetID());
         m_dlgProgress->Progress();
     }
@@ -804,7 +810,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
                 if (m_dlgProgress)
                 {
                     m_dlgProgress->SetLine(0, wzTotal);
-                    m_dlgProgress->SetLine(1,strDescription);
+                    m_dlgProgress->SetLine(1,strStrippedPath);
                     m_dlgProgress->Progress();
                 }
                // CStdString strIcon;
