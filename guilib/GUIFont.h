@@ -22,6 +22,7 @@ class CGUIFont
 {
 public:
   CGUIFont(const CStdString& strFontName);
+  virtual ~CGUIFont();
 
   CStdString& GetFontName();
 
