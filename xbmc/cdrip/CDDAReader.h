@@ -7,6 +7,7 @@
 
 #include "..\utils\thread.h"
 #include "../lib/libcdio/cdio.h"
+#include "../filesystem/file.h"
 
 struct RipBuffer{
 	int iRipError;
@@ -21,7 +22,7 @@ public:
 	CCDDAReader();
 	virtual ~CCDDAReader();
 	int         GetData(BYTE** stream, long& lBytes);
-	bool        Init(int iTrack);
+	bool        Init(const char* strFileName);
 	bool        DeInit();
 	int					GetPercent();
 protected:
@@ -39,11 +40,7 @@ protected:
 
 	bool				m_iInitialized;
 
-	CdIo_t*			m_pCdIo;
-
-	lsn_t				m_lsnStart;
-	lsn_t				m_lsnEnd;
-	lsn_t				m_lsnCurrent;
+	CFile				m_fileCdda;
 };
 
 #endif // _CCDDAREADER_H
