@@ -30,8 +30,8 @@ using namespace std;
 #define CACHE_VOB   2
 
 #define CDDARIP_ENCODER_LAME     0
-#define CDDARIP_ENCODER_WAV      1
-#define CDDARIP_ENCODER_VORBIS   2
+#define CDDARIP_ENCODER_VORBIS   1
+#define CDDARIP_ENCODER_WAV      2
 
 #define CDDARIP_QUALITY_CBR      0
 #define CDDARIP_QUALITY_MEDIUM   1

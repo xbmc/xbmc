@@ -64,7 +64,7 @@
 				IncludeDebugInfo="TRUE"
 				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBLAME;LIBMP4"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBLAME;LIBMP4;LIBOGGVO"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center Debug"/>
@@ -249,7 +249,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x80000"
 				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBLAME"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBLAME;LIBOGGVO"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"
@@ -2204,10 +2204,19 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			Name="cdrip"
 			Filter="">
 			<File
+				RelativePath=".\xbmc\cdrip\CDDAReader.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cdrip\CDDAReader.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\cdrip\CDDARipper.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\cdrip\CDDARipper.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cdrip\Encoder.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\cdrip\Encoder.h">
@@ -2217,6 +2226,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\cdrip\EncoderLame.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cdrip\EncoderVorbis.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cdrip\EncoderVorbis.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\cdrip\EncoderWav.cpp">
