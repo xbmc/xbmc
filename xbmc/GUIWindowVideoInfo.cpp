@@ -65,6 +65,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
     {
+      m_bRefresh=false;
 			CGUIWindow::OnMessage(message);
 			g_application.DisableOverlay();
 			m_pTexture=NULL;
@@ -87,7 +88,15 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 					CUtil::GetThumbnail(strImage,strThumb);
 					DeleteFile(strThumb.c_str());
 				}
-				Refresh();
+				CStdString strIMDBInfo;
+        CUtil::GetIMDBInfo(m_pMovie->m_strSearchString,strIMDBInfo);
+        if (CUtil::FileExists(strIMDBInfo) )
+	      {
+          DeleteFile(strIMDBInfo.c_str());
+        }
+        m_bRefresh=true;
+        Close();
+        return true;
 			}
 
 			if (iControl==CONTROL_BTN_TRACKS)
@@ -271,4 +280,8 @@ void CGUIWindowVideoInfo::Refresh()
   catch(...)
   {
   }
+}
+bool CGUIWindowVideoInfo::NeedRefresh() const
+{
+  return m_bRefresh;
 }
