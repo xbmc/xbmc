@@ -29,7 +29,7 @@
 #include "../../settings.h"
 
 
-#define VOLUME_MIN		-6000
+#define VOLUME_MIN		DSBVOLUME_MIN
 #define VOLUME_MAX		DSBVOLUME_MAX
 
 
@@ -203,12 +203,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	}
 
 	m_nCurrentVolume = GetMaximumVolume();
-#ifdef FADE_IN
-	m_lFadeVolume = 0;
-#else
-	m_lFadeVolume = m_nCurrentVolume;
-#endif
-	m_pStream->SetVolume( m_lFadeVolume + VOLUME_MIN);
+	m_pStream->SetVolume( m_nCurrentVolume );
 
 	m_pStream->SetHeadroom(0);
 	m_pStream->Flush();
@@ -305,13 +300,13 @@ HRESULT CASyncDirectSound::Stop()
 //***********************************************************************************************
 LONG CASyncDirectSound::GetMinimumVolume() const
 {
-	return 0;
+	return VOLUME_MIN;
 }
 
 //***********************************************************************************************
 LONG CASyncDirectSound::GetMaximumVolume() const
 {
-	return 6000;
+	return VOLUME_MAX;
 }
 
 //***********************************************************************************************
@@ -325,7 +320,7 @@ HRESULT CASyncDirectSound::SetCurrentVolume(LONG nVolume)
 {
 	if (!m_bIsAllocated) return -1;
 	m_nCurrentVolume = nVolume;
-	return m_pStream->SetVolume( nVolume + VOLUME_MIN);
+	return m_pStream->SetVolume( m_nCurrentVolume );
 }
 
 //***********************************************************************************************
