@@ -47,6 +47,26 @@ void CASyncDirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 {
 	buffered_bytes -=m_dwPacketSize;
 	if (buffered_bytes<0) buffered_bytes=0;
+
+	if (dwStatus == XMEDIAPACKET_STATUS_SUCCESS && m_VisBuffer)
+	{
+		if (m_VisBytes + m_dwPacketSize <= m_VisMaxBytes)
+		{
+			memcpy(m_VisBuffer + m_VisBytes, pPacketContext, m_dwPacketSize);
+			m_VisBytes += m_dwPacketSize;
+		}
+		else
+			CLog::DebugLog("Vis buffer overflow");
+	}
+}
+
+void CASyncDirectSound::DoWork()
+{
+	if (m_VisBytes && m_pCallback)
+	{
+		m_pCallback->OnAudioData(m_VisBuffer, m_VisBytes);
+		m_VisBytes = 0;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -106,7 +126,6 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 		m_uiSamplesPerSec = uiSamplesPerSec;
 		m_uiBitsPerSample = uiBitsPerSample;
 	}
-	ZeroMemory(m_pbSampleData,sizeof(m_pbSampleData));
 	m_bFirstPackets    = true;
 	m_iCalcDelay       = CALC_DELAY_START;
 	m_fCurDelay        = (FLOAT)0.001;
@@ -133,10 +152,13 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	// if iNumBuffers is set, use this many buffers instead of the usual number (used for CDDAPlayer)
 	if (iNumBuffers)
 		m_dwNumPackets = (DWORD)iNumBuffers;
+	else if (!mplayer_HasVideo())
+		m_dwNumPackets=64*iChannels;
 	else
 		m_dwNumPackets=8*iChannels;
 
 	m_adwStatus    = new DWORD[ m_dwNumPackets ];
+	m_pbSampleData = new PBYTE[ m_dwNumPackets ];
 
 	// Create DirectSound
 	HRESULT hr;
@@ -238,16 +260,12 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 
 	XMEDIAINFO info;
 	m_pStream->GetInfo(&info);
-	int fSize;
-	if (!iNumBuffers && !mplayer_HasVideo())
-		fSize = 16384 / info.dwInputSize; // fixes stuttering wav/wma
-	else
-		fSize = 1024 / info.dwInputSize;
+	int fSize = 1024 / info.dwInputSize;
 	fSize *= info.dwInputSize;
 	m_dwPacketSize=(int)fSize;
 
 	// XphysicalAlloc has page (4k) granularity, so allocate all the buffers in one chunk to avoid wasting 3k per buffer
-	m_pbSampleData[0] = (BYTE*)XPhysicalAlloc(m_dwPacketSize * m_dwNumPackets, MAXULONG_PTR,0,PAGE_READWRITE|PAGE_NOCACHE);
+	m_pbSampleData[0] = (BYTE*)XPhysicalAlloc(m_dwPacketSize * m_dwNumPackets, MAXULONG_PTR,0,PAGE_READWRITE|PAGE_WRITECOMBINE);
 	for (DWORD dwX=1; dwX < m_dwNumPackets ; dwX++)
 		m_pbSampleData[dwX] = m_pbSampleData[dwX-1] + m_dwPacketSize;
 
@@ -260,13 +278,23 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	for (DWORD i=0; i<dsmb.dwMixBinCount;i++)
 		m_pDSound->SetMixBinHeadroom(i, 0);
 
-	m_pStream->Flush();
-
 	m_bIsAllocated   = true;
 	if (m_pCallback)
 	{
-		m_pCallback->OnInitialize(iChannels, m_uiSamplesPerSec, m_uiBitsPerSample);
+		if (m_bResampleAudio)
+		{
+			pCallback->OnInitialize(iChannels, 48000, 16);
+			m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = iChannels * 96000 / 20);
+		}
+		else
+		{
+			m_pCallback->OnInitialize(iChannels, m_uiSamplesPerSec, m_uiBitsPerSample);
+			m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = iChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) / 20);
+		}
 	}
+	else
+		m_VisBuffer = 0;
+	m_VisBytes = 0;
 	if (m_bResampleAudio)
 	{
 		m_Resampler.InitConverter(uiSamplesPerSec, uiBitsPerSample, iChannels, 48000, 16, m_dwPacketSize);
@@ -300,10 +328,17 @@ HRESULT CASyncDirectSound::Deinitialize()
 	}
 	m_pDSound =NULL;
 
-	if (m_pbSampleData[0])
-		XPhysicalFree(m_pbSampleData[0]);
-	for (DWORD dwX=0; dwX < m_dwNumPackets ; dwX++)
-		m_pbSampleData[dwX]=NULL;
+	if (m_VisBuffer)
+		free(m_VisBuffer);
+	m_VisBuffer = NULL;
+
+	if (m_pbSampleData)
+	{
+		if (m_pbSampleData[0])
+			XPhysicalFree(m_pbSampleData[0]);
+		delete [] m_pbSampleData;
+	}
+	m_pbSampleData = NULL;
 
 	if ( m_adwStatus )
 		delete [] m_adwStatus;
@@ -352,6 +387,7 @@ HRESULT CASyncDirectSound::Stop()
 	{
 		m_adwStatus[ i ] = XMEDIAPACKET_STATUS_SUCCESS;
 	}
+	m_VisBytes = 0;
 
 	m_bFirstPackets=true;
 	return S_OK;
@@ -392,7 +428,7 @@ bool CASyncDirectSound::FindFreePacket( DWORD &dwIndex )
 	for( DWORD i = 0; i < m_dwNumPackets; i++ )
 	{
 		// If we find a non-pending packet, return it
-		if( m_adwStatus[ i ] != XMEDIAPACKET_STATUS_PENDING )
+		if( m_adwStatus[ i ] != XMEDIAPACKET_STATUS_PENDING)
 		{
 			dwIndex  = i;
 			return true;
@@ -451,12 +487,7 @@ DWORD CASyncDirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
 					xmpAudio.pdwStatus        = &m_adwStatus[ dwIndex ];
 					xmpAudio.pdwCompletedSize = NULL;
 					xmpAudio.prtTimestamp     = NULL;
-					xmpAudio.pContext         = NULL;
-					// Pass audio to the callback functions for visualization
-					if (m_pCallback)
-					{
-						m_pCallback->OnAudioData(m_pbSampleData[dwIndex],m_dwPacketSize);
-					}
+					xmpAudio.pContext         = m_pbSampleData[dwIndex];
 					// Process the audio
 					if (DS_OK != m_pStream->Process( &xmpAudio, NULL ))
 					{
@@ -523,13 +554,13 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 			xmpAudio.pdwStatus        = &m_adwStatus[ dwIndex ];
 			xmpAudio.pdwCompletedSize = NULL;
 			xmpAudio.prtTimestamp     = NULL;
-			xmpAudio.pContext         = NULL;
+			xmpAudio.pContext         = m_pbSampleData[dwIndex];
 
 			memcpy(xmpAudio.pvBuffer,&data[iBytesCopied],iSize/m_iAudioSkip);
-			if (m_pCallback)
-			{
-				m_pCallback->OnAudioData(&data[iBytesCopied],iSize/m_iAudioSkip);
-			}
+//			if (m_pCallback)
+//			{
+//				m_pCallback->OnAudioData(&data[iBytesCopied],iSize/m_iAudioSkip);
+//			}
 			if (DS_OK != m_pStream->Process( &xmpAudio, NULL ))
 			{
 				return iBytesCopied;
@@ -636,9 +667,17 @@ void CASyncDirectSound::RegisterAudioCallback(IAudioCallback *pCallback)
 	if (!m_pCallback)
 	{
 		if (m_bResampleAudio)
+		{
 			pCallback->OnInitialize(m_wfx.nChannels, 48000, 16);
+			m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = m_wfx.nChannels * 96000 / 20);
+			m_VisBytes = 0;
+		}
 		else
+		{
 			pCallback->OnInitialize(m_wfx.nChannels, m_wfx.nSamplesPerSec, m_wfx.wBitsPerSample );
+			m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = m_wfx.nChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) / 20);
+			m_VisBytes = 0;
+		}
 	}
 	m_pCallback=pCallback;
 }
@@ -646,6 +685,8 @@ void CASyncDirectSound::RegisterAudioCallback(IAudioCallback *pCallback)
 void CASyncDirectSound::UnRegisterAudioCallback()
 {
 	m_pCallback=NULL;
+	free(m_VisBuffer);
+	m_VisBuffer = NULL;
 }
 
 void CASyncDirectSound::WaitCompletion()
