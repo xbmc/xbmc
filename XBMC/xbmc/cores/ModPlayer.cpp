@@ -200,9 +200,6 @@ void ModPlayer::ToggleFrameDrop()
 }
 
 
-void ModPlayer::SetVolume(bool bPlus)
-{
-}
 
 void ModPlayer::SetContrast(bool bPlus)
 {
