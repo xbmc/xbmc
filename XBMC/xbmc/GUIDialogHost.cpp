@@ -88,7 +88,7 @@ bool CGUIDialogHost::OnMessage(CGUIMessage& message)
 
 				case CTL_BUTTON_PASSWORD:
 				{
-					CStdString strCaption = "Enter a password for your arena.";
+					CStdString strCaption = g_localizeStrings.Get(15047); // Enter a password for your arena.
 					if (!CGUIDialogKeyboard::ShowAndGetInput(m_strPassword, strCaption, true))
 						break;
 
@@ -105,7 +105,7 @@ bool CGUIDialogHost::OnMessage(CGUIMessage& message)
 
 				case CTL_BUTTON_DESCRIPTION:
 				{
-					CStdString strCaption = "Enter a description for your arena.";
+					CStdString strCaption = g_localizeStrings.Get(15048); // Enter a description for your arena.
 					if (!CGUIDialogKeyboard::ShowAndGetInput(m_strDescription, strCaption, false))
 						break;
 
