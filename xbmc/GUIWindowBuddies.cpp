@@ -1176,6 +1176,20 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			break;
 		}
 	}
+
+	const CGUIControl* pListExControl=GetControl(CONTROL_LISTEX);
+	if (!pListExControl)
+	{	//	Should not happend, just to be sure ;)
+		SET_CONTROL_FOCUS(CONTROL_BTNMODE, 0);
+		return;
+	}
+
+	//	The last focused control may not be visible anymore
+	//	set the focus to the mode button to prevent a stack overflow
+	if (GetFocusedControl()!=CONTROL_LISTEX || !pListExControl->IsVisible())
+	{
+		SET_CONTROL_FOCUS(CONTROL_BTNMODE, 0);
+	}
 }
 
 void CGUIWindowBuddies::Enter(CArenaItem& aArena)
