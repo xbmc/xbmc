@@ -60,11 +60,13 @@ play_tree_t*
 m_config_parse_mp_command_line(m_config_t *config, int argc, char **argv)
 {
   int i,j,start_title=-1,end_title=-1;
-  int tmp = 0;
   char *opt,*splitpos=NULL;
   char entbuf[10];
   int no_more_opts = 0;
   play_tree_t *last_parent, *last_entry = NULL, *root;
+#ifdef MACOSX_FINDER_SUPPORT
+  extern play_tree_t *macosx_finder_args(m_config_t *, int , char **);
+#endif
 
 #ifdef MP_DEBUG
   assert(config != NULL);
@@ -74,6 +76,12 @@ m_config_parse_mp_command_line(m_config_t *config, int argc, char **argv)
 
   config->mode = M_COMMAND_LINE;
   mode = GLOBAL;
+#ifdef MACOSX_FINDER_SUPPORT
+  root=macosx_finder_args(config, argc, argv);
+  if(root) 
+  	return root;
+#endif
+
   last_parent = root = play_tree_new();
   /* in order to work recursion detection properly in parse_config_file */
   ++recursion_depth;
@@ -121,6 +129,7 @@ m_config_parse_mp_command_line(m_config_t *config, int argc, char **argv)
 			
     if ((no_more_opts == 0) && (*opt == '-') && (*(opt+1) != 0)) /* option */
       {
+	int tmp = 0;
 	/* remove trailing '-' */
 	opt++;
 

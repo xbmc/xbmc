@@ -17,7 +17,7 @@
 #include "sub.h"
 
 #ifdef HAVE_NEW_GUI
-#include "../Gui/interface.h"
+#include "Gui/interface.h"
 #endif
 
 #include <GL/gl.h>
@@ -31,6 +31,7 @@
 #endif
 #include <errno.h>
 
+#include "gl_common.h"
 #ifdef GL_WIN32
     #include "w32_common.h"
 #else
@@ -42,10 +43,8 @@
 //#undef NDEBUG
 
 #undef TEXTUREFORMAT_ALWAYS
-#undef TEXTUREFORMAT_ALWAYS_S
 #ifdef SYS_DARWIN
-#define TEXTUREFORMAT_ALWAYS GL_RGB8
-#define TEXTUREFORMAT_ALWAYS_S "GL_RGB8"
+#define TEXTUREFORMAT_ALWAYS GL_RGBA8
 #endif
 
 static vo_info_t info = 
@@ -71,15 +70,18 @@ static unsigned char *ImageData=NULL;
 
 //static int texture_id=1;
 
-#ifndef GL_WIN32
-    static GLXContext wsGLXContext;
+#ifdef GL_WIN32
+    static int gl_vinfo = 0;
+    static HGLRC gl_context = 0;
+#else
+    static XVisualInfo *gl_vinfo = NULL;
+    static GLXContext gl_context = 0;
 #endif
 
 static uint32_t image_width;
 static uint32_t image_height;
 static uint32_t image_format;
 static uint32_t image_bpp;
-static int      image_mode;
 static uint32_t image_bytes;
 
 static int int_pause;
@@ -88,15 +90,11 @@ static uint32_t texture_width;
 static uint32_t texture_height;
 static int texnumx, texnumy, raw_line_len;
 static GLfloat texpercx, texpercy;
-static struct TexSquare * texgrid;
+static struct TexSquare * texgrid = NULL;
 static GLint    gl_internal_format;
-static char *   gl_internal_format_s;
 static int      rgb_sz, r_sz, g_sz, b_sz, a_sz;
 static GLint    gl_bitmap_format;
-static char *   gl_bitmap_format_s;
 static GLint    gl_bitmap_type;
-static char *   gl_bitmap_type_s;
-static int      gl_alignment;
 static int      isGL12 = GL_FALSE;
 
 static int      gl_bilinear=1;
@@ -129,6 +127,56 @@ static void CalcFlatPoint(int x,int y,GLfloat *px,GLfloat *py)
   if(*py>1.0) *py=1.0;
 }
 
+static GLint getInternalFormat()
+{
+#ifdef GL_WIN32
+  PIXELFORMATDESCRIPTOR pfd;
+  int pf = GetPixelFormat(vo_hdc);
+  if (!DescribePixelFormat(vo_hdc, pf, sizeof pfd, &pfd)) {
+    r_sz = g_sz = b_sz = a_sz = 0;
+  } else {
+    r_sz = pfd.cRedBits;
+    g_sz = pfd.cGreenBits;
+    b_sz = pfd.cBlueBits;
+    a_sz = pfd.cAlphaBits;
+  }
+#else
+  if (glXGetConfig(mDisplay, gl_vinfo, GLX_RED_SIZE, &r_sz) != 0) r_sz = 0;
+  if (glXGetConfig(mDisplay, gl_vinfo, GLX_GREEN_SIZE, &g_sz) != 0) g_sz = 0;
+  if (glXGetConfig(mDisplay, gl_vinfo, GLX_BLUE_SIZE, &b_sz) != 0) b_sz = 0;
+  if (glXGetConfig(mDisplay, gl_vinfo, GLX_ALPHA_SIZE, &a_sz) != 0) a_sz = 0;
+#endif
+
+  rgb_sz=r_sz+g_sz+b_sz;
+  if(rgb_sz<=0) rgb_sz=24;
+
+#ifdef TEXTUREFORMAT_ALWAYS
+  return TEXTUREFORMAT_ALWAYS;
+#else
+  if(r_sz==3 && g_sz==3 && b_sz==2 && a_sz==0)
+	  return GL_R3_G3_B2;
+  if(r_sz==4 && g_sz==4 && b_sz==4 && a_sz==0)
+	  return GL_RGB4;
+  if(r_sz==5 && g_sz==5 && b_sz==5 && a_sz==0)
+	  return GL_RGB5;
+  if(r_sz==8 && g_sz==8 && b_sz==8 && a_sz==0)
+	  return GL_RGB8;
+  if(r_sz==10 && g_sz==10 && b_sz==10 && a_sz==0)
+	  return GL_RGB10;
+  if(r_sz==2 && g_sz==2 && b_sz==2 && a_sz==2)
+	  return GL_RGBA2;
+  if(r_sz==4 && g_sz==4 && b_sz==4 && a_sz==4)
+	  return GL_RGBA4;
+  if(r_sz==5 && g_sz==5 && b_sz==5 && a_sz==1)
+	  return GL_RGB5_A1;
+  if(r_sz==8 && g_sz==8 && b_sz==8 && a_sz==8)
+	  return GL_RGBA8;
+  if(r_sz==10 && g_sz==10 && b_sz==10 && a_sz==2)
+	  return GL_RGB10_A2;
+#endif
+  return GL_RGB;
+}
+
 static int initTextures()
 {
   struct TexSquare *tsq=0;
@@ -148,6 +196,7 @@ static int initTextures()
   { s*=2; e_y++; }
   texture_height=s;
 
+  gl_internal_format = getInternalFormat();
 
   /* Test the max texture size */
   do
@@ -212,6 +261,8 @@ static int initTextures()
   if (texpercy > 1.0)
     texpercy = 1.0;
 
+  if (texgrid)
+    free(texgrid);
   texgrid = (struct TexSquare *)
     calloc (texnumx * texnumy, sizeof (struct TexSquare));
 
@@ -578,9 +629,6 @@ static void draw_alpha_null(int x0,int y0, int w,int h, unsigned char* src, unsi
 #ifdef GL_WIN32
 
 static int config_w32(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uint32_t flags, char *title, uint32_t format) {
-    PIXELFORMATDESCRIPTOR pfd;
-    int pf;
-
     o_dwidth = d_width;
     o_dheight = d_height;
     vo_fs = flags & VOFLAG_FULLSCREEN;
@@ -595,16 +643,6 @@ static int config_w32(uint32_t width, uint32_t height, uint32_t d_width, uint32_
 
     if (vo_fs)
 	aspect(&d_width, &d_height, A_ZOOM);
-
-    pf = GetPixelFormat(vo_hdc);
-    if (!DescribePixelFormat(vo_hdc, pf, sizeof pfd, &pfd)) {
-	r_sz = g_sz = b_sz = a_sz = 0;
-    } else {
-	r_sz = pfd.cRedBits;
-	g_sz = pfd.cGreenBits;
-	b_sz = pfd.cBlueBits;
-	a_sz = pfd.cAlphaBits;
-    }
 
     return 0;
 }
@@ -668,6 +706,8 @@ static int choose_glx_visual(Display *dpy, int scr, XVisualInfo *res_vi)
 }
 
 static int config_glx(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uint32_t flags, char *title, uint32_t format) {
+  if ( vo_window == None ) 
+  {
 	XSizeHints hint;
 	XVisualInfo *vinfo, vinfo_buf;
 	XEvent xev;
@@ -690,8 +730,6 @@ static int config_glx(uint32_t width, uint32_t height, uint32_t d_width, uint32_
     return -1;
   }
 
-  if ( vo_window == None ) 
-   {
     vo_fs = VO_FALSE;
     vo_window = vo_x11_create_smooth_window(mDisplay, RootWindow(mDisplay,mScreen), 
 		                            vinfo->visual, hint.x, hint.y, hint.width, hint.height, vinfo->depth, vo_x11_create_colormap(vinfo));
@@ -716,81 +754,29 @@ static int config_glx(uint32_t width, uint32_t height, uint32_t d_width, uint32_
 		XNextEvent(mDisplay, &xev);
 	}
 	while (xev.type != MapNotify || xev.xmap.event != vo_window);
-   }
-   else {
-   	vo_x11_sizehint( hint.x, hint.y, hint.width, hint.height,0 );
-   	// for changing from fullscreen to fullscreen we do fullscreen to
-   	// window and back to fullscreen, so that vo_x11_fullscreen saves
-   	// the correct size for _this_ video (and doesn't take the values from
-   	// the previous one)
-   	if (vo_fs)
-   	 vo_x11_fullscreen ();
-   	XMoveResizeWindow( mDisplay,vo_window,hint.x,hint.y,hint.width,hint.height );
-   }
-
-  // these would normally be set by the event handler, but here we have to
-  // do it manually
-  vo_dwidth = d_width;
-  vo_dheight = d_height;
-
-  if (flags & VOFLAG_FULLSCREEN)
-   vo_x11_fullscreen();
 
   vo_x11_classhint( mDisplay,vo_window,"gl2" );
   vo_hidecursor(mDisplay,vo_window);
   
-  if ( vo_config_count ) glXDestroyContext( mDisplay,wsGLXContext );
-
-  wsGLXContext=glXCreateContext( mDisplay,vinfo,NULL,True );
-
-        glXMakeCurrent( mDisplay,vo_window,wsGLXContext );
-
 	XSync(mDisplay, False);
 
 	//XSelectInput(mDisplay, vo_window, StructureNotifyMask); // !!!!
         vo_x11_selectinput_witherr(mDisplay, vo_window, StructureNotifyMask | KeyPressMask | PointerMotionMask
 		 | ButtonPressMask | ButtonReleaseMask | ExposureMask
         );
-
-  if(glXGetConfig(mDisplay,vinfo,GLX_RED_SIZE, &r_sz)!=0) 
-	  r_sz=0;
-  if(glXGetConfig(mDisplay,vinfo,GLX_GREEN_SIZE, &g_sz)!=0) 
-	  g_sz=0;
-  if(glXGetConfig(mDisplay,vinfo,GLX_BLUE_SIZE, &b_sz)!=0) 
-	  b_sz=0;
-  if(glXGetConfig(mDisplay,vinfo,GLX_ALPHA_SIZE, &a_sz)!=0) 
-	  a_sz=0;
+  }
+  vo_x11_nofs_sizepos(0, 0, d_width, d_height);
+  if (vo_fs ^ (flags & VOFLAG_FULLSCREEN))
+    vo_x11_fullscreen();
 
         return 0;
 }
 
 #ifdef HAVE_NEW_GUI
 static int config_glx_gui(uint32_t d_width, uint32_t d_height) {
-  XWindowAttributes xw_attr;
-  XVisualInfo *vinfo, vinfo_template;
-  int tmp;
   vo_dwidth = d_width;
   vo_dheight = d_height;
   guiGetEvent( guiSetShVideo,0 ); // the GUI will set up / resize the window
-  XGetWindowAttributes(mDisplay, vo_window, &xw_attr);
-  vinfo_template.visualid=XVisualIDFromVisual(xw_attr.visual);
-  vinfo = XGetVisualInfo(mDisplay, VisualIDMask, &vinfo_template, &tmp);
-
-  if ( vo_config_count ) glXDestroyContext( mDisplay,wsGLXContext );
-  wsGLXContext = glXCreateContext( mDisplay,vinfo,NULL,True );
-  if (wsGLXContext == NULL) {
-    mp_msg(MSGT_VO, MSGL_FATAL, "[gl2] Could not create GLX context!\n");
-    XFree(vinfo);
-    return -1;
-  }
-  glXMakeCurrent( mDisplay,vo_window,wsGLXContext );
-  XSync(mDisplay, False);
-
-  if (glXGetConfig(mDisplay,vinfo,GLX_RED_SIZE, &r_sz) != 0) r_sz = 0;
-  if (glXGetConfig(mDisplay,vinfo,GLX_GREEN_SIZE, &g_sz) != 0) g_sz = 0;
-  if (glXGetConfig(mDisplay,vinfo,GLX_BLUE_SIZE, &b_sz) != 0) b_sz = 0;
-  if (glXGetConfig(mDisplay,vinfo,GLX_ALPHA_SIZE, &a_sz) != 0) a_sz = 0;
-  XFree(vinfo);
   return 0;
 }
 #endif
@@ -817,37 +803,29 @@ static int initGl(uint32_t d_width, uint32_t d_height)
 
   /**
    * may give a little speed up for a kinda burst read ..
+   * Also, the default of 4 will break some files.
    */
-  if( (image_width*image_bpp)%8 == 0 )
-  	gl_alignment=8;
-  else if( (image_width*image_bpp)%4 == 0 )
-  	gl_alignment=4;
-  else if( (image_width*image_bpp)%2 == 0 )
-  	gl_alignment=2;
-  else
-  	gl_alignment=1;
-
-  glPixelStorei (GL_UNPACK_ALIGNMENT, gl_alignment); 
+  glAdjustAlignment(image_width*image_bytes);
 
   glEnable (GL_TEXTURE_2D);
 
   gl_set_antialias(0);
   gl_set_bilinear(1);
   
-  drawTextureDisplay ();
-
-  free (ImageData);
-  ImageData = NULL;
-
-  mp_msg(MSGT_VO, MSGL_V, "[gl2] Using image_bpp=%d, image_bytes=%d, isBGR=%d, \n\tgl_bitmap_format=%s, gl_bitmap_type=%s, \n\tgl_alignment=%d, rgb_size=%d (%d,%d,%d), a_sz=%d, \n\tgl_internal_format=%s\n",
-  	image_bpp, image_bytes, image_mode==MODE_BGR, 
-        gl_bitmap_format_s, gl_bitmap_type_s, gl_alignment,
-	rgb_sz, r_sz, g_sz, b_sz, a_sz, gl_internal_format_s);
+  mp_msg(MSGT_VO, MSGL_V, "[gl2] Using image_bpp=%d, image_bytes=%d, \n\tgl_bitmap_format=%s, gl_bitmap_type=%s, \n\trgb_size=%d (%d,%d,%d), a_sz=%d, \n\tgl_internal_format=%s\n",
+        image_bpp, image_bytes, 
+        glValName(gl_bitmap_format), glValName(gl_bitmap_type),
+        rgb_sz, r_sz, g_sz, b_sz, a_sz, glValName(gl_internal_format));
 
   resize(&d_width, &d_height);
 
   glClearColor( 0.0f,0.0f,0.0f,0.0f );
   glClear( GL_COLOR_BUFFER_BIT );
+
+  drawTextureDisplay ();
+
+  free (ImageData);
+  ImageData = NULL;
 
   return 0;
 }
@@ -872,7 +850,7 @@ config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uin
 
 	aspect(&d_width,&d_height,A_NOZOOM);
 
-#ifdef HAVE_NEW_GUI
+#if defined(HAVE_NEW_GUI) && !defined(GL_WIN32)
 	if (use_gui) {
 	  if (config_glx_gui(d_width, d_height) == -1)
 	    return -1;
@@ -885,6 +863,8 @@ config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uin
 #endif
 	    return -1;
 	
+  setGlWindow(&gl_vinfo, &gl_context, vo_window);
+
   glVersion = glGetString(GL_VERSION);
 
   mp_msg(MSGT_VO, MSGL_V, "[gl2] OpenGL Driver Information:\n");
@@ -906,59 +886,7 @@ config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uin
 	mp_msg(MSGT_VO, MSGL_INFO, "[gl2] You have OpenGL < 1.2 drivers, BAD (16bpp and BGR may be damaged!)\n");
   }
 
-  rgb_sz=r_sz+g_sz+b_sz;
-  if(rgb_sz<=0) rgb_sz=24;
-
-  if(r_sz==3 && g_sz==3 && b_sz==2 && a_sz==0) {
-	  gl_internal_format=GL_R3_G3_B2;
-	  gl_internal_format_s="GL_R3_G3_B2";
-  } else if(r_sz==4 && g_sz==4 && b_sz==4 && a_sz==0) {
-	  gl_internal_format=GL_RGB4;
-	  gl_internal_format_s="GL_RGB4";
-  } else if(r_sz==5 && g_sz==5 && b_sz==5 && a_sz==0) {
-	  gl_internal_format=GL_RGB5;
-	  gl_internal_format_s="GL_RGB5";
-  } else if(r_sz==8 && g_sz==8 && b_sz==8 && a_sz==0) {
-	  gl_internal_format=GL_RGB8;
-	  gl_internal_format_s="GL_RGB8";
-  } else if(r_sz==10 && g_sz==10 && b_sz==10 && a_sz==0) {
-	  gl_internal_format=GL_RGB10;
-	  gl_internal_format_s="GL_RGB10";
-  } else if(r_sz==2 && g_sz==2 && b_sz==2 && a_sz==2) {
-	  gl_internal_format=GL_RGBA2;
-	  gl_internal_format_s="GL_RGBA2";
-  } else if(r_sz==4 && g_sz==4 && b_sz==4 && a_sz==4) {
-	  gl_internal_format=GL_RGBA4;
-	  gl_internal_format_s="GL_RGBA4";
-  } else if(r_sz==5 && g_sz==5 && b_sz==5 && a_sz==1) {
-	  gl_internal_format=GL_RGB5_A1;
-	  gl_internal_format_s="GL_RGB5_A1";
-  } else if(r_sz==8 && g_sz==8 && b_sz==8 && a_sz==8) {
-	  gl_internal_format=GL_RGBA8;
-	  gl_internal_format_s="GL_RGBA8";
-  } else if(r_sz==10 && g_sz==10 && b_sz==10 && a_sz==2) {
-	  gl_internal_format=GL_RGB10_A2;
-	  gl_internal_format_s="GL_RGB10_A2";
-  } else {
-	  gl_internal_format=GL_RGB;
-	  gl_internal_format_s="GL_RGB";
-  }
-
-#ifdef TEXTUREFORMAT_ALWAYS
-  gl_internal_format=TEXTUREFORMAT_ALWAYS;
-  gl_internal_format_s=TEXTUREFORMAT_ALWAYS_S;
-#endif
-
-  if (IMGFMT_IS_BGR(format))
-  {
-    image_mode=MODE_BGR;
-    image_bpp=IMGFMT_BGR_DEPTH(format);
-  }
-  else
-  {
-    image_mode=MODE_RGB;
-    image_bpp=IMGFMT_RGB_DEPTH(format);
-  }
+  glFindFormat(format, &image_bpp, NULL, &gl_bitmap_format, &gl_bitmap_type);
 
   image_bytes=(image_bpp+7)/8;
 
@@ -967,64 +895,20 @@ config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uin
   switch(image_bpp)
   {
   	case 15:
-  	case 16:	
-                        if(image_mode!=MODE_BGR)
-			{
-			        gl_bitmap_format   = GL_RGB;
-			        gl_bitmap_format_s ="GL_RGB";
-				gl_bitmap_type     = GL_UNSIGNED_SHORT_5_6_5;
-				gl_bitmap_type_s   ="GL_UNSIGNED_SHORT_5_6_5";
-			} else {
-			        gl_bitmap_format   = GL_BGR;
-			        gl_bitmap_format_s ="GL_BGR";
-				gl_bitmap_type     = GL_UNSIGNED_SHORT_5_6_5;
-				gl_bitmap_type_s   ="GL_UNSIGNED_SHORT_5_6_5";
-			}
-
-			if (image_bpp==15)
 			     draw_alpha_fnc=draw_alpha_15;
-			else
+			break;
+  	case 16:	
 			     draw_alpha_fnc=draw_alpha_16;
-
 			break;
   	case 24:	
-                        if(image_mode!=MODE_BGR)
-			{
-				/* RGB888 */
-				gl_bitmap_format   = GL_RGB;
-				gl_bitmap_format_s ="GL_RGB";
-			} else {
-				/* BGR888 */
-				gl_bitmap_format   = GL_BGR;
-				gl_bitmap_format_s ="GL_BGR";
-			}
-			gl_bitmap_type   = GL_UNSIGNED_BYTE;
-			gl_bitmap_type_s ="GL_UNSIGNED_BYTE";
-
 			draw_alpha_fnc=draw_alpha_24; break;
-			break;
   	case 32:	
-			/* RGBA8888 */
-			gl_bitmap_format   = GL_BGRA;
-			gl_bitmap_format_s ="GL_BGRA";
-
-                        if(image_mode!=MODE_BGR)
-			{
-				gl_bitmap_type   = GL_UNSIGNED_INT_8_8_8_8_REV;
-				gl_bitmap_type_s ="GL_UNSIGNED_INT_8_8_8_8_REV";
-			} else {
-				gl_bitmap_type   = GL_UNSIGNED_INT_8_8_8_8;
-				gl_bitmap_type_s ="GL_UNSIGNED_INT_8_8_8_8";
-			}
-
 			draw_alpha_fnc=draw_alpha_32; break;
-			break;
   }
 
   if (initGl(d_width, d_height) == -1)
       return -1;
 #ifndef GL_WIN32
-      saver_off(mDisplay);
       if (vo_ontop) vo_x11_setlayer(mDisplay,vo_window, vo_ontop);
 #endif
 
@@ -1177,6 +1061,11 @@ static void
 uninit(void)
 {
   if ( !vo_config_count ) return;
+  releaseGlContext(&gl_vinfo, &gl_context);
+  if (texgrid) {
+    free(texgrid);
+    texgrid = NULL;
+  }
 #ifdef GL_WIN32
   vo_w32_uninit();
 #else
@@ -1214,10 +1103,12 @@ static uint32_t control(uint32_t request, void *data, ...)
   case VOCTRL_FULLSCREEN:
 #ifdef GL_WIN32
     vo_w32_fullscreen();
-    initGl(vo_dwidth, vo_dheight);
 #else
     vo_x11_fullscreen();
 #endif 
+    if (setGlWindow(&gl_vinfo, &gl_context, vo_window) == SET_WINDOW_REINIT)
+      initGl(vo_dwidth, vo_dheight);
+    resize(&vo_dwidth, &vo_dheight);
     return VO_TRUE;
 #ifndef GL_WIN32
   case VOCTRL_SET_EQUALIZER:

@@ -258,6 +258,35 @@ void rv10_encode_picture_header(MpegEncContext *s, int picture_number)
     put_bits(&s->pb, 3, 0);	/* ignored */
 }
 
+void rv20_encode_picture_header(MpegEncContext *s, int picture_number){
+    put_bits(&s->pb, 2, s->pict_type); //I 0 vs. 1 ?
+    put_bits(&s->pb, 1, 0);	/* unknown bit */
+    put_bits(&s->pb, 5, s->qscale);
+        
+    put_bits(&s->pb, 8, picture_number&0xFF); //FIXME wrong, but correct is not known
+    s->mb_x= s->mb_y= 0;
+    ff_h263_encode_mba(s);
+    
+    put_bits(&s->pb, 1, s->no_rounding);
+    
+    assert(s->f_code == 1);
+    assert(s->unrestricted_mv == 1);
+//    assert(s->h263_aic== (s->pict_type == I_TYPE));
+    assert(s->alt_inter_vlc == 0);
+    assert(s->umvplus == 0);
+    assert(s->modified_quant==1);
+    assert(s->loop_filter==1);
+
+    s->h263_aic= s->pict_type == I_TYPE;
+    if(s->h263_aic){
+        s->y_dc_scale_table= 
+        s->c_dc_scale_table= ff_aic_dc_scale_table;
+    }else{
+        s->y_dc_scale_table=
+        s->c_dc_scale_table= ff_mpeg1_dc_scale_table;
+    }
+}
+
 static int get_num(GetBitContext *gb)
 {
     int n, n1;
@@ -276,9 +305,8 @@ static int get_num(GetBitContext *gb)
 /* read RV 1.0 compatible frame header */
 static int rv10_decode_picture_header(MpegEncContext *s)
 {
-    int mb_count, pb_frame, marker, full_frame, unk;
+    int mb_count, pb_frame, marker, unk, mb_xy;
     
-    full_frame= s->avctx->slice_count==1;
 //printf("ff:%d\n", full_frame);
     marker = get_bits(&s->gb, 1);
 
@@ -321,7 +349,9 @@ static int rv10_decode_picture_header(MpegEncContext *s)
     }
     /* if multiple packets per frame are sent, the position at which
        to display the macro blocks is coded here */
-    if ((!full_frame) || show_bits(&s->gb, 12)==0) {
+
+    mb_xy= s->mb_x + s->mb_y*s->mb_width;
+    if(show_bits(&s->gb, 12)==0 || (mb_xy && mb_xy < s->mb_num)){
         s->mb_x = get_bits(&s->gb, 6);	/* mb_x */
         s->mb_y = get_bits(&s->gb, 6);	/* mb_y */
         mb_count = get_bits(&s->gb, 12);
@@ -341,6 +371,22 @@ static int rv10_decode_picture_header(MpegEncContext *s)
 static int rv20_decode_picture_header(MpegEncContext *s)
 {
     int seq, mb_pos, i;
+    
+#if 0
+    GetBitContext gb= s->gb;
+    for(i=0; i<64; i++){
+        av_log(s->avctx, AV_LOG_DEBUG, "%d", get_bits1(&gb));
+        if(i%4==3) av_log(s->avctx, AV_LOG_DEBUG, " ");
+    }
+    av_log(s->avctx, AV_LOG_DEBUG, "\n");
+#endif
+#if 0
+    for(i=0; i<s->avctx->extradata_size; i++){
+        av_log(s->avctx, AV_LOG_DEBUG, "%2X ", ((uint8_t*)s->avctx->extradata)[i]);
+        if(i%4==3) av_log(s->avctx, AV_LOG_DEBUG, " ");
+    }
+    av_log(s->avctx, AV_LOG_DEBUG, "\n");
+#endif
     
     if(s->avctx->sub_id == 0x30202002 || s->avctx->sub_id == 0x30203002){
         if (get_bits(&s->gb, 3)){
@@ -383,15 +429,23 @@ static int rv20_decode_picture_header(MpegEncContext *s)
     }
         
     if(s->avctx->has_b_frames){
+        int f=9;
+        int v= s->avctx->extradata_size >= 4 ? ((uint8_t*)s->avctx->extradata)[1] : 0;
+
         if (get_bits(&s->gb, 1)){
-//            av_log(s->avctx, AV_LOG_ERROR, "unknown bit3 set\n");
+            av_log(s->avctx, AV_LOG_ERROR, "unknown bit3 set\n");
 //            return -1;
         }
-        seq= get_bits(&s->gb, 15);
-        if (s->avctx->sub_id == 0x20201002 && get_bits(&s->gb, 1)){
-            av_log(s->avctx, AV_LOG_ERROR, "unknown bit4 set\n");
-//            return -1;
+        seq= get_bits(&s->gb, 14)<<1;
+
+        if(v>1){
+            f= get_bits(&s->gb, av_log2(v-1)+1);
         }
+        
+        if(s->avctx->debug & FF_DEBUG_PICT_INFO){
+            av_log(s->avctx, AV_LOG_DEBUG, "F %d\n", f);
+        }
+
         mb_pos= get_bits(&s->gb, av_log2(s->mb_num-1)+1);
         s->mb_x= mb_pos % s->mb_width;
         s->mb_y= mb_pos / s->mb_width;
@@ -482,6 +536,7 @@ static int rv10_decode_init(AVCodecContext *avctx)
     case 0x20001000:
     case 0x20100001:
     case 0x20101001:
+    case 0x20103001:
         s->low_delay=1;
         break;
     case 0x20200002:
@@ -494,7 +549,11 @@ static int rv10_decode_init(AVCodecContext *avctx)
     default:
         av_log(s->avctx, AV_LOG_ERROR, "unknown header %X\n", avctx->sub_id);
     }
-//printf("ver:%X\n", avctx->sub_id);
+    
+    if(avctx->debug & FF_DEBUG_PICT_INFO){
+        av_log(avctx, AV_LOG_DEBUG, "ver:%X ver0:%X\n", avctx->sub_id, avctx->extradata_size >= 4 ? ((uint32_t*)avctx->extradata)[0] : -1);
+    }
+    
     if (MPV_common_init(s) < 0)
         return -1;
 
@@ -504,10 +563,10 @@ static int rv10_decode_init(AVCodecContext *avctx)
     if (!done) {
         init_vlc(&rv_dc_lum, DC_VLC_BITS, 256, 
                  rv_lum_bits, 1, 1,
-                 rv_lum_code, 2, 2);
+                 rv_lum_code, 2, 2, 1);
         init_vlc(&rv_dc_chrom, DC_VLC_BITS, 256, 
                  rv_chrom_bits, 1, 1,
-                 rv_chrom_code, 2, 2);
+                 rv_chrom_code, 2, 2, 1);
         done = 1;
     }
     
@@ -676,8 +735,8 @@ static int rv10_decode_frame(AVCodecContext *avctx,
             *pict= *(AVFrame*)&s->last_picture;
             ff_print_debug_info(s, pict);
         }
-        
-        *data_size = sizeof(AVFrame);
+        if(s->last_picture_ptr || s->low_delay)
+            *data_size = sizeof(AVFrame);
     }
 
     return buf_size;
@@ -704,6 +763,7 @@ AVCodec rv20_decoder = {
     NULL,
     rv10_decode_end,
     rv10_decode_frame,
-    CODEC_CAP_DR1
+    CODEC_CAP_DR1,
+    .flush= ff_mpeg_flush,
 };
 

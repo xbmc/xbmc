@@ -1,7 +1,7 @@
 // Translated by: Fabio Olimpieri <fabio.olimpieri@tin.it>
 // Updated by: Roberto Togni <see AUTHORS for email address>
 
-// Updated to help_mp-en.h v1.121
+// Updated to help_mp-en.h v1.123
 
 // ========================= MPlayer help ===========================
 
@@ -51,7 +51,8 @@ static char help_text[]=
 
 // mplayer.c:
 
-#define MSGTR_Exiting "\nIn uscita... (%s)\n"
+#define MSGTR_Exiting "\nIn uscita...\n"
+#define MSGTR_ExitingHow "\nIn uscita... (%s)\n"
 #define MSGTR_Exit_quit "Uscita"
 #define MSGTR_Exit_eof "Fine del file"
 #define MSGTR_Exit_error "Errore fatale"
@@ -59,24 +60,18 @@ static char help_text[]=
 #define MSGTR_NoHomeDir "Impossibile trovare la HOME directory\n"
 #define MSGTR_GetpathProblem "Problema in get_path(\"config\")\n"
 #define MSGTR_CreatingCfgFile "Creo il file di configurazione: %s\n"
-#define MSGTR_InvalidVOdriver "Nome del diver video di output non valido: %s\nUsa '-vo help' per avere una lista dei driver video disponibili.\n"
 #define MSGTR_InvalidAOdriver "Nome del diver audio di output non valido: %s\nUsa '-ao help' per avere una lista dei driver audio disponibili.\n"
 #define MSGTR_CopyCodecsConf "(copia/collega etc/codecs.conf (dall\'albero dei sorgenti di MPlayer) a ~/.mplayer/codecs.conf)\n"
 #define MSGTR_BuiltinCodecsConf "Utilizzo la versione interna predefinita di codecs.conf\n"
 #define MSGTR_CantLoadFont "Impossibile caricare i font: %s\n"
 #define MSGTR_CantLoadSub "Impossibile caricare i sottotitoli: %s\n"
-#define MSGTR_ErrorDVDkey "Errore di elaborazione della chiave del DVD.\n"
-#define MSGTR_CmdlineDVDkey "La chiave del DVD richiesta nella riga di comando è immagazzinata per il descrambling.\n"
-#define MSGTR_DVDauthOk "La sequenza di autorizzazione del DVD sembra essere corretta.\n"
 #define MSGTR_DumpSelectedStreamMissing "dump: FATAL: manca il flusso selezionato!\n"
 #define MSGTR_CantOpenDumpfile "Impossibile aprire il file di dump!!!\n"
 #define MSGTR_CoreDumped "core dumped :)\n"
 #define MSGTR_FPSnotspecified "FPS non specificato (o non valido) nell\'intestazione! Usa l\'opzione -fps!\n"
 #define MSGTR_TryForceAudioFmtStr "Cerco di forzare l\'uso della famiglia dei driver dei codec audio %d...\n"
-#define MSGTR_CantFindAfmtFallback "Impossibile trovare i codec audio per la famiglia dei driver richiesta, torno agli altri driver.\n"
 #define MSGTR_CantFindAudioCodec "Impossibile trovare il codec per il formato audio 0x%X!\n"
 #define MSGTR_RTFMCodecs "Leggi DOCS/it/codecs.html!\n"
-#define MSGTR_CouldntInitAudioCodec "Impossibile inizializzare il codec audio! -> nessun suono\n"
 #define MSGTR_TryForceVideoFmtStr "Cerco di forzare l\'uso della famiglia dei driver dei codec video %d...\n"
 #define MSGTR_CantFindVideoCodec "Impossibile trovare il codec per il formato video 0x%X!\n"
 #define MSGTR_VOincompCodec "Mi dispiace, il dispositivo di video_out selezionato è incompatibile con questo codec.\n"
@@ -105,9 +100,8 @@ static char help_text[]=
 #define MSGTR_Playing "In riproduzione %s\n"
 #define MSGTR_NoSound "Audio: nessun suono!!!\n"
 #define MSGTR_FPSforced "FPS forzato a %5.3f  (ftime: %5.3f)\n"
-#define MSGTR_CompiledWithRuntimeDetection "Complato con riconoscimento run time della cpu - attenzione, non è il metodo ideale! Per avere le migliori prestazioni, ricompila Mplayer con --disable-runtime-cpudetection\n"
+#define MSGTR_CompiledWithRuntimeDetection "Complato con riconoscimento run time della cpu - attenzione, non è il metodo ideale! Per avere le migliori prestazioni, ricompila MPlayer con --disable-runtime-cpudetection\n"
 #define MSGTR_CompiledWithCPUExtensions "Compilato per CPU x86 con estensioni:"
-#define MSGTR_AvailableVideoOutputPlugins "Plugin di output video disponibili:\n"
 #define MSGTR_AvailableVideoOutputDrivers "Driver di output video disponibili:\n"
 #define MSGTR_AvailableAudioOutputDrivers "Driver di output audio disponibili:\n"
 #define MSGTR_AvailableAudioCodecs "Codec audio disponibili:\n"
@@ -118,12 +112,9 @@ static char help_text[]=
 #define MSGTR_UsingRTCTiming "Sto utilizzando la temporizzazione hardware RTC di Linux (%ldHz)\n"
 #define MSGTR_CannotReadVideoProperties "Video: impossibile leggere le proprietà\n"
 #define MSGTR_NoStreamFound "Nessun flusso trovato\n"
-#define MSGTR_InitializingAudioCodec "Inizializzazione codec audio...\n"
 #define MSGTR_ErrorInitializingVODevice "Errore aprendo/inizializzando il dispositivo di output video (-vo) selezionato!\n"
 #define MSGTR_ForcedVideoCodec "Codec video forzato: %s\n"
 #define MSGTR_ForcedAudioCodec "Codec audio forzato: %s\n"
-#define MSGTR_AODescription_AOAuthor "AO: Descrizione: %s\nAO: Autore: %s\n"
-#define MSGTR_AOComment "AO: Commento: %s\n"
 #define MSGTR_Video_NoVideo "Video: no video!!!\n"
 #define MSGTR_NotInitializeVOPorVO "\nFATAL: Impossibile inizializzare i filtri video (-vf) o l'output video (-vo)!\n"
 #define MSGTR_Paused "\n  =====  PAUSA  =====\r"
@@ -152,11 +143,9 @@ static char help_text[]=
 #define MSGTR_UsingPass3ControllFile "Sto usando il file di controllo pass3: %s\n"
 #define MSGTR_MissingFilename "\nNome file mancante!\n\n"
 #define MSGTR_CannotOpenFile_Device "Impossibile aprire il file/dispositivo\n"
-#define MSGTR_ErrorDVDAuth "Errore nell'autenticazione DVD...\n"
 #define MSGTR_CannotOpenDemuxer "Impossibile aprire il demuxer\n"
 #define MSGTR_NoAudioEncoderSelected "\nNessun encoder audio (-oac) selezionato! Selezionane uno o usa -nosound. Usa -oac help!\n"
 #define MSGTR_NoVideoEncoderSelected "\nNessun encoder video (-ovc) selezionato! Selezionane uno, usa -ovc help!\n"
-#define MSGTR_InitializingAudioCodec "Inizializzazione codec audio...\n"
 #define MSGTR_CannotOpenOutputFile "Impossibile aprire il file di output '%s'\n"
 #define MSGTR_EncoderOpenFailed "Errore nell'apertura dell'encoder\n"
 #define MSGTR_ForcingOutputFourcc "Forza il fourcc in uscita a %x [%.4s]\n"
@@ -355,7 +344,8 @@ static char help_text[]=
 // x11_common.c
 #define MSGTR_EwmhFullscreenStateFailed "\nX11: Impossibile inviare l'evento schermo pieno EWMH!\n"
 
-#define MSGTR_NeedAfVolume "Mixer: questo driver audio richiede \"-af volume\" per regolare il volume.\n"
+#define MSGTR_InsertingAfVolume "[Mixer] Nessun mixer hardware, filtro volume inserito automaticamente.\n"
+#define MSGTR_NoVolume "[Mixer] Nessuna regolazione di volume disponibile.\n"
 
 // ====================== GUI messages/buttons ========================
 
@@ -373,8 +363,7 @@ static char help_text[]=
 #define MSGTR_SkinBrowser "Gestore Skin"
 #define MSGTR_Network "Flusso dati dalla rete..."
 #define MSGTR_Preferences "Preferenze"
-#define MSGTR_OSSPreferences "Configurazione driver OSS"
-#define MSGTR_SDLPreferences "Configurazione driver SDL"
+#define MSGTR_AudioPreferences "Configurazione driver audio"
 #define MSGTR_NoMediaOpened "nessun media aperto"
 #define MSGTR_VCDTrack "Traccia VCD %d"
 #define MSGTR_NoChapter "nessun capitolo"
@@ -417,7 +406,6 @@ static char help_text[]=
 #define MSGTR_SKIN_FONT_FontImageNotFound "file delle immagini dei font non trovato\n"
 #define MSGTR_SKIN_FONT_NonExistentFontID "identificatore del font inesistente (%s)\n"
 #define MSGTR_SKIN_UnknownParameter "parametro sconosciuto  (%s)\n"
-#define MSGTR_SKINBROWSER_NotEnoughMemory "[skinbrowser] memoria insufficiente.\n"
 #define MSGTR_SKIN_SKINCFG_SkinNotFound "Skin non trovata (%s).\n"
 #define MSGTR_SKIN_SKINCFG_SkinCfgReadError "Errore nella lettura del file di configurazione della skin (%s).\n"
 #define MSGTR_SKIN_LABEL "Skins:"
@@ -494,6 +482,7 @@ static char help_text[]=
 // --- preferences
 #define MSGTR_PREFERENCES_Misc "Varie"
 #define MSGTR_PREFERENCES_None "Nessuno"
+#define MSGTR_PREFERENCES_DriverDefault "Driver predefinito"
 #define MSGTR_PREFERENCES_AvailableDrivers "Driver disponibili:"
 #define MSGTR_PREFERENCES_DoNotPlaySound "Non riprodurre l'audio"
 #define MSGTR_PREFERENCES_NormalizeSound "Normalizza l'audio"
@@ -537,9 +526,9 @@ static char help_text[]=
 #define MSGTR_PREFERENCES_FRAME_CodecDemuxer "Codec e demuxer"
 #define MSGTR_PREFERENCES_FRAME_Cache "Cache"
 #define MSGTR_PREFERENCES_FRAME_Misc "Varie"
-#define MSGTR_PREFERENCES_OSS_Device "Dispositivo:"
-#define MSGTR_PREFERENCES_OSS_Mixer "Mixer:"
-#define MSGTR_PREFERENCES_SDL_Driver "Driver:"
+#define MSGTR_PREFERENCES_Audio_Device "Dispositivo:"
+#define MSGTR_PREFERENCES_Audio_Mixer "Mixer:"
+#define MSGTR_PREFERENCES_Audio_MixerChannel "Canale mixer:"
 #define MSGTR_PREFERENCES_Message "Ricorda che devi riavviare la riproduzione affinché alcune opzioni abbiano effetto!"
 #define MSGTR_PREFERENCES_DXR3_VENC "Video encoder:"
 #define MSGTR_PREFERENCES_DXR3_LAVC "Usa LAVC (FFmpeg)"

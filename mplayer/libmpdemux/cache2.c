@@ -209,8 +209,13 @@ cache_vars_t* cache_init(int size,int sector){
 #else
   cache_vars_t* s=malloc(sizeof(cache_vars_t));
 #endif
+  if(s==NULL) return NULL;
+  
   memset(s,0,sizeof(cache_vars_t));
   num=size/sector;
+  if(num < 16){
+     num = 16;
+  }//32kb min_size
   s->buffer_size=num*sector;
   s->sector_size=sector;
 #ifndef WIN32
@@ -218,13 +223,23 @@ cache_vars_t* cache_init(int size,int sector){
 #else
   s->buffer=malloc(s->buffer_size);
 #endif
+
+  if(s->buffer == NULL){
+#ifndef WIN32
+    shmem_free(s,sizeof(cache_vars_t));
+#else
+    free(s);
+#endif
+    return NULL;
+  }
+
   s->fill_limit=8*sector;
 #ifdef _XBOX
   s->back_size = (size / 100) * cache_back_buffer;
 #else
   s->back_size=size/2;
 #endif
-  s->prefill=size/20; // default: 5%
+
   return s;
 }
 
@@ -266,12 +281,22 @@ int stream_enable_cache(stream_t *stream,int size,int min,int prefill){
     return 1;
   }
 
-  if(size<32*1024) size=32*1024; // 32kb min
   s=cache_init(size,ss);
+  if(s == NULL) return 0;
   stream->cache_data=s;
   s->stream=stream; // callback
-  s->prefill=size*prefill;
-  stream->cache_pid =0;
+  s->prefill=prefill;
+
+
+  //make sure that we won't wait from cache_fill
+  //more data than it is alowed to fill
+  if (s->prefill > s->buffer_size - s->fill_limit ){
+     s->prefill = s->buffer_size - s->fill_limit;
+  }
+  if (min > s->buffer_size - s->fill_limit) {
+     min = s->buffer_size - s->fill_limit;
+  }
+  
 #ifndef WIN32  
   if((stream->cache_pid=fork())){
 #else
@@ -280,21 +305,18 @@ int stream_enable_cache(stream_t *stream,int size,int min,int prefill){
     stream_t* stream2=malloc(sizeof(stream_t));
     memcpy(stream2,s->stream,sizeof(stream_t));
     s->stream=stream2;
-		s->m_bRunning=1;
-		s->m_bStopped=0;
+	s->m_bRunning=1;
+	s->m_bStopped=0;
     stream->cache_pid = CreateThread(NULL,0,ThreadProc,s,0,&threadId);
 #endif
     // wait until cache is filled at least prefill_init %
-    mp_msg(MSGT_CACHE,MSGL_V,"CACHE_PRE_INIT: %d [%d] %d  pre:%d  eof:%d  \n",s->min_filepos,s->read_filepos,s->max_filepos,min,s->eof);
-    float fPreviousPercent=-1.0;
-		while(s->read_filepos<s->min_filepos || s->max_filepos-s->read_filepos<min)
-		{
-			float fPercent=100.0*(float)(s->max_filepos-s->read_filepos)/(float)(s->buffer_size);
-			if (fPercent!=fPreviousPercent)
-			{
-				fPreviousPercent=fPercent;
-				mp_msg(MSGT_CACHE,MSGL_STATUS,"Cache fill: %5.2f%% (%d bytes)\n",fPercent,s->max_filepos-s->read_filepos);
-    }
+    mp_msg(MSGT_CACHE,MSGL_V,"CACHE_PRE_INIT: %d [%d] %d  pre:%d  eof:%d  \n",
+	s->min_filepos,s->read_filepos,s->max_filepos,min,s->eof);
+    while(s->read_filepos<s->min_filepos || s->max_filepos-s->read_filepos<min){
+      	mp_msg(MSGT_CACHE,MSGL_STATUS,"\rCache fill: %5.2f%% (%d bytes)    ",
+	    100.0*(float)(s->max_filepos-s->read_filepos)/(float)(s->buffer_size),
+	    s->max_filepos-s->read_filepos
+	    );
 			if(s->eof) 
 			{
 				printf("stream_enable_cache() eof detected\n");
@@ -314,8 +336,6 @@ int stream_enable_cache(stream_t *stream,int size,int min,int prefill){
 		return 0;
 	}
 #endif
-		float fPercent=100.0*(float)(s->max_filepos-s->read_filepos)/(float)(s->buffer_size);
-		mp_msg(MSGT_CACHE,MSGL_STATUS,"Cache filled: %5.2f%% (%d bytes) starting...\n",fPercent,s->max_filepos-s->read_filepos);
 
 	return 1; // parent exits
   }
@@ -327,7 +347,7 @@ static DWORD WINAPI ThreadProc(void*s){
   
 // cache thread mainloop:
   signal(SIGTERM,exit_sighandler); // kill
-	cache_vars_t* pCacheVars=(cache_vars_t*)s;
+  cache_vars_t* pCacheVars=(cache_vars_t*)s;
   SetThreadPriority( GetCurrentThread(),THREAD_PRIORITY_ABOVE_NORMAL);
 #ifdef _XBOX
   while( pCacheVars->m_bRunning && !xbmc_cancel)

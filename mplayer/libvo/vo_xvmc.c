@@ -31,7 +31,7 @@
 #include "aspect.h"
 
 #ifdef HAVE_NEW_GUI
-#include "../Gui/interface.h"
+#include "Gui/interface.h"
 #endif
 
 //no chanse xinerama to be suported in near future
@@ -189,7 +189,6 @@ static void deallocate_xvimage()
    }
    XFree(xvimage);
 
-   XFlush( mDisplay );
    XSync(mDisplay, False);
    return;
 }
@@ -208,8 +207,8 @@ int attrib_count,i;
    if(keycolor_handling == AUTO_COLORKEY){
    //XV_AUTOPING_COLORKEY doesn't work for XvMC yet(NVidia 43.63)
       attributes = XvQueryPortAttributes(mDisplay, xv_port, &attrib_count);
-      if(attributes!=NULL)
-         for (i = 0; i < attrib_count; i++)
+      if(attributes!=NULL){
+         for (i = 0; i < attrib_count; i++){
             if (!strcmp(attributes[i].name, "XV_AUTOPAINT_COLORKEY"))
             {
                xv_atom = XInternAtom(mDisplay, "XV_AUTOPAINT_COLORKEY", False);
@@ -221,7 +220,9 @@ int attrib_count,i;
                }
                break;
             }
+	 }
          XFree(attributes);
+      }
    }
 
    xv_atom = XInternAtom(mDisplay, "XV_COLORKEY",False);
@@ -762,7 +763,6 @@ found_subpic:
 
       if ( vo_gc != None ) XFreeGC( mDisplay,vo_gc );
       vo_gc = XCreateGC(mDisplay, vo_window, GCForeground, &xgcv);
-      XFlush(mDisplay);
       XSync(mDisplay, False);
 #ifdef HAVE_XF86VM
       if ( vm )
@@ -794,7 +794,6 @@ found_subpic:
 
    if (vo_ontop) vo_x11_setlayer(mDisplay, vo_window, vo_ontop);
 
-   saver_off(mDisplay);  // turning off screen saver
 //end vo_xv
 
    /* store image dimesions for displaying */
@@ -1208,7 +1207,6 @@ static void uninit(void){
    if( verbose > 3 ) printf("vo_xvmc: uninit called\n");
    xvmc_free();
  //from vo_xv
-   saver_on(mDisplay);
    vo_vm_close(mDisplay);
    vo_x11_uninit();
 }

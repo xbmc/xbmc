@@ -141,7 +141,7 @@
 #include "spuenc.h"
 #include "sub.h"
 #ifdef HAVE_NEW_GUI
-#include "../Gui/interface.h"
+#include "Gui/interface.h"
 #endif
 #ifdef HAVE_X11
 #include "x11_common.h"
@@ -634,7 +634,6 @@ static uint32_t config(uint32_t width, uint32_t height, uint32_t d_width, uint32
 			XSetStandardProperties(mDisplay, vo_window, "DXR3 Overlay", "DXR3 Overlay", None, NULL, 0, &hint);
 			XSetWMNormalHints(mDisplay, vo_window, &hint);
 			XMapWindow(mDisplay, vo_window);
-			XFlush(mDisplay);
 			XSync(mDisplay, False);
 		}
 		

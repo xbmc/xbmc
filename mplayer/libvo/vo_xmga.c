@@ -38,13 +38,13 @@
 #include "aspect.h"
 
 #ifdef SHOW_TIME
-#include "../osdep/timer.h"
+#include "osdep/timer.h"
 static unsigned int timer = 0;
 static unsigned int timerd = 0;
 #endif
 
 #ifdef HAVE_NEW_GUI
-#include "../Gui/interface.h"
+#include "Gui/interface.h"
 #endif
 
 static vo_info_t info = {
@@ -165,7 +165,7 @@ static uint32_t config(uint32_t width, uint32_t height, uint32_t d_width,
                    vo_depthonscreen);
             return -1;
     }
-    mp_msg(MSGT_VO, MSGL_INFO, "Using colorkey: %x\n", colorkey);
+    mp_msg(MSGT_VO, MSGL_V, "Using colorkey: %x\n", colorkey);
 
     inited = 1;
 
@@ -272,12 +272,9 @@ static uint32_t config(uint32_t width, uint32_t height, uint32_t d_width,
 
     set_window();               // set up mga_vid_config.dest_width etc
 
-    saver_off(mDisplay);
-
     if (vo_ontop)
         vo_x11_setlayer(mDisplay, vo_window, vo_ontop);
 
-    XFlush(mDisplay);
     XSync(mDisplay, False);
 
     ioctl(f, MGA_VID_ON, 0);
@@ -292,6 +289,5 @@ static void uninit(void)
     if (!inited)
         return;                 // no window?
     inited = 0;
-    saver_on(mDisplay);
     vo_x11_uninit();            // destroy the window
 }

@@ -26,6 +26,12 @@
  */
 void av_register_all(void)
 {
+    static int inited = 0;
+    
+    if (inited != 0)
+        return;
+    inited = 1;
+
     avcodec_init();
     avcodec_register_all();
 
@@ -34,6 +40,7 @@ void av_register_all(void)
 #ifdef CONFIG_ENCODERS
     crc_init();
     img_init();
+    img2_init();
 #endif //CONFIG_ENCODERS
     raw_init();
     mp3_init();
@@ -95,22 +102,33 @@ void av_register_all(void)
     dv1394_init();
 #endif
 
+#ifdef CONFIG_DC1394
+    dc1394_init();
+#endif
+
     nut_init();
     matroska_init();
+    sol_init();
+    ea_init();
+    nsvdec_init();
 
 #ifdef CONFIG_ENCODERS
     /* image formats */
+#if 0
     av_register_image_format(&pnm_image_format);
     av_register_image_format(&pbm_image_format);
     av_register_image_format(&pgm_image_format);
     av_register_image_format(&ppm_image_format);
     av_register_image_format(&pam_image_format);
     av_register_image_format(&pgmyuv_image_format);
+#endif
     av_register_image_format(&yuv_image_format);
+#if 0
 #ifdef CONFIG_ZLIB
     av_register_image_format(&png_image_format);
 #endif
     av_register_image_format(&jpeg_image_format);
+#endif
     av_register_image_format(&gif_image_format);
     av_register_image_format(&sgi_image_format);
 #endif //CONFIG_ENCODERS

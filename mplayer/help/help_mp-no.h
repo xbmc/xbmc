@@ -49,7 +49,8 @@ static char help_text[]=
 
 // mplayer.c:
 
-#define MSGTR_Exiting "\nAvslutter... (%s)\n"
+#define MSGTR_Exiting "\nAvslutter...\n"
+#define MSGTR_ExitingHow "\nAvslutter... (%s)\n"
 #define MSGTR_Exit_quit "Avslutt"
 #define MSGTR_Exit_eof "Slutt på filen"
 #define MSGTR_Exit_error "Fatal feil"
@@ -57,22 +58,16 @@ static char help_text[]=
 #define MSGTR_NoHomeDir "Kan ikke finne HOME katalog\n"
 #define MSGTR_GetpathProblem "get_path(\"config\") problem\n"
 #define MSGTR_CreatingCfgFile "Oppretter konfigurasjonsfil: %s\n"
-#define MSGTR_InvalidVOdriver "Ugyldig video-ut drivernavn: %s\nBruk '-vo help' for en liste over mulige video-drivere.\n"
 #define MSGTR_InvalidAOdriver "Ugyldig lyd-ut drivernavn: %s\nBruk '-ao help' for en liste over mulige lyd-ut drivere.\n"
 #define MSGTR_CopyCodecsConf "(kopier eller link etc/codecs.conf (fra MPlayer kildekode) til ~/.mplayer/codecs.conf)\n"
 #define MSGTR_CantLoadFont "Kan ikke laste skrifttype: %s\n"
 #define MSGTR_CantLoadSub "Kan ikke laste undertitler: %s\n"
-#define MSGTR_ErrorDVDkey "Feil under bearbeiding av DVD KEY.\n"
-#define MSGTR_CmdlineDVDkey "Etter spurte DVD kommandolinje nøkkel er lagret for descrambling.\n"
-#define MSGTR_DVDauthOk "DVD auth sekvense ser ut til å være OK.\n"
 #define MSGTR_DumpSelectedStreamMissing "dump: FATALT: valgte stream mangler!\n"
 #define MSGTR_CantOpenDumpfile "Kan ikke åpne dump fil!!!\n"
 #define MSGTR_CoreDumped "core dumpet :)\n"
 #define MSGTR_FPSnotspecified "FPS ikke spesifisert (eller ugyldig) i headeren! Bruk -fps valget!\n"
 #define MSGTR_TryForceAudioFmt "Prøver å tvinge lyd-codec driver familie %d...\n"
-#define MSGTR_CantFindAfmtFallback "Kan ikke finne lyd-codec for tvunget driver familie, faller tilbake til andre drivere.\n"
 #define MSGTR_CantFindAudioCodec "Kan ikke finne codec for lydformat 0x%X!\n"
-#define MSGTR_CouldntInitAudioCodec "Greide ikke å initialisere lyd-codec! -> nosound\n"
 #define MSGTR_TryForceVideoFmt "Prøver å tvingte video-codec driver familie %d...\n"
 #define MSGTR_CantFindVideoCodec "Kan ikke finne codec for videoformat 0x%X!\n"
 #define MSGTR_VOincompCodec "Desverre, valgt video_out enhet er inkompatibel med denne codec'en.\n"
@@ -87,9 +82,9 @@ static char help_text[]=
 "!!! Mulige årsaker, problemer, løsninger: \n"\
 "- Vanligste problem: ødelagte _lyd_ drivere, eller lyddrivere med feil. \n"\
 "  Prøv: -ao sdl eller bruk ALSA 0.5/oss emuleringen i ALSA 0.9. Les også\n"\
-"  DOCS/HTML/en/devices.html#audio-dev for flere tips!\n"\
+"  DOCS/HTML/en/audio.html for flere tips!\n"\
 "- Treg video output. Prøv en annen -vo driver (for liste: -vo help) eller\n"\
-"  prøv med -framedrop! Les DOCS/HTML/en/devices.html#video-dev for flere tips\n"\
+"  prøv med -framedrop! Les DOCS/HTML/en/video.html for flere tips\n"\
 "- Treg CPU. ikke forsøk å spille av store dvd/divx filer på en treg CPU!\n"\
 "  forsøk -hardframedrop\n"\
 "- Feil på filen. forsøk forskjellige kombinasjoner av disse:\n"\
@@ -218,7 +213,6 @@ static char help_text[]=
 #define MSGTR_SKIN_FONT_FontImageNotFound "skrifttype image fil ikke funnet\n"
 #define MSGTR_SKIN_FONT_NonExistentFontID "ikke-ekstisterende skrifttype identifikasjon (%s)\n"
 #define MSGTR_SKIN_UnknownParameter "ukjent parameter (%s)\n"
-#define MSGTR_SKINBROWSER_NotEnoughMemory "[skinbrowser] ikke nok minne.\n"
 #define MSGTR_SKIN_SKINCFG_SkinNotFound "Skin ikke funnet (%s).\n"
 #define MSGTR_SKIN_SKINCFG_SkinCfgReadError "Skin konfigurasjonfil lesefeil (%s).\n"
 #define MSGTR_SKIN_LABEL "Skins:"

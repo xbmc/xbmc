@@ -32,7 +32,7 @@ static char help_text[]=
 " -fs              afiºare pe tot ecranul (sau -vm, -zoom, detalii în pagina man)\n"
 " -x <x> -y <y>    alege rezoluþia (folosit pentru -vm sau -zoom)\n"
 " -sub <fiºier>    specificã fiºierul cu subtitrãri folosit\n"
-                   (vezi ºi -subfps, -subdelay)\n"
+"                  (vezi ºi -subfps, -subdelay)\n"
 " -playlist <fiº>  specificã playlist-ul\n"
 " -vid x -aid y    alege pista video (x) ºi audio (y)\n"
 " -fps x -srate y  schimbã rata video (x fps) ºi audio (y Hz)\n"
@@ -59,7 +59,8 @@ static char help_text[]=
 // ========================= MPlayer messages ===========================
 
 // mplayer.c:
-#define MSGTR_Exiting "\nIeºire... (%s)\n"
+#define MSGTR_Exiting "\nIeºire...\n"
+#define MSGTR_ExitingHow "\nIeºire... (%s)\n"
 #define MSGTR_Exit_quit "Ieºire"
 #define MSGTR_Exit_eof "Sfârºit fiºier"
 #define MSGTR_Exit_error "Eroare fatalã"
@@ -67,22 +68,16 @@ static char help_text[]=
 #define MSGTR_NoHomeDir "Nu gãsesc directorul HOME.\n"
 #define MSGTR_GetpathProblem "get_path(\"config\") problem\n"
 #define MSGTR_CreatingCfgFile "Creez fiºierul de configurare: %s\n"
-#define MSGTR_InvalidVOdriver "Numele driverului de ieºire video e greºit: %s\n"
 	"Încearcã '-vo help' pentru o listã cu driveri video disponibili.\n"
-#define MSGTR_InvalidAOdriver "Numele driverului de ieºire audio e greºit: %s\n"
+#define MSGTR_InvalidAOdriver "Numele driverului de ieºire audio e greºit: %s\n"\
 	"Foloseºte '-ao help' pentru lista cu driveri audio disponibili.\n"
 #define MSGTR_BuiltinCodecsConf "Folosesc 'codecs.conf' built-in.\n"
 #define MSGTR_CantLoadFont "Nu pot încãrca fontul: %s\n"
 #define MSGTR_CantLoadSub "Nu pot încãrca subtitrarea: %s\n"
-#define MSGTR_ErrorDVDkey "Eroare la prelucrarea cheii DVD.\n"
-#define MSGTR_CmdlineDVDkey "Cheia DVD cerutã e folositã pentru decodare.\n"
-#define MSGTR_DVDauthOk "Secvenþa de autenticare DVD pare sã fie în regulã.\n"
 #define MSGTR_FPSnotspecified "FPS (nr. de cadre pe secundã) nu e specificat în header sau e greºit; foloseºte opþiunea '-fps'.\n"
 #define MSGTR_TryForceAudioFmtStr "Forþez familia de codec audio %s...\n"
-#define MSGTR_CantFindAfmtFallback "Nu gãsesc un codec audio pentru familia de drivere forþatã, încerc alte drivere.\n"
 #define MSGTR_CantFindAudioCodec "Nu gãsesc codec pentru formatul audio 0x%X.\n"
 #define MSGTR_RTFMCodecs "Citeºte DOCS/HTML/en/codecs.html!\n" //lang
-#define MSGTR_CouldntInitAudioCodec "Nu pot iniþializa codec-ul audio -> nu am sunet.\n"
 #define MSGTR_TryForceVideoFmtStr "Forþez familia de codecuri video %s...\n"
 #define MSGTR_CantFindVideoCodec "Nu gãsesc codec potrivit pentru ieºirea '-vo' aleasã ºi formatul video 0x%X.\n"
 #define MSGTR_VOincompCodec "Dispozitivul de ieºire video ales e incompatibil cu acest codec.\n"
@@ -109,7 +104,7 @@ static char help_text[]=
 "  - Încearcã '-cache 8192'.\n"\
 "- Foloseºti -cache pentru fiºiere AVI neinterleaved?\n"\
 "  - Încearcã '-nocache'.\n"\
-"Citeºte DOCS/HTML/en/devices.html pentru idei de reglare/accelerare.\n"\ //lang
+"Citeºte DOCS/HTML/en/video.html pentru idei de reglare/accelerare.\n"\
 "Dacã tot nu reuºeºti, citeºte DOCS/HTML/en/bugreports.html.\n\n" //lang
 
 #define MSGTR_NoGui "MPlayer a fost compilat FÃRÃ suport pentru GUI.\n"
@@ -117,7 +112,6 @@ static char help_text[]=
 #define MSGTR_Playing "Rulez %s.\n"
 #define MSGTR_NoSound "Audio: fãrã sunet\n"
 #define MSGTR_FPSforced "FPS forþat la %5.3f  (ftime: %5.3f).\n"
-#define MSGTR_AvailableVideoOutputPlugins "Plugin-uri de ieºire video disponibile:\n"
 #define MSGTR_AvailableVideoOutputDrivers "Plugin-uri de ieºire video disponibile:\n"
 #define MSGTR_AvailableAudioOutputDrivers "Plugin-uri de ieºire audio disponibile:\n"
 #define MSGTR_AvailableAudioCodecs "Codec-uri audio disponibile:\n"
@@ -126,13 +120,9 @@ static char help_text[]=
 #define MSGTR_UsingRTCTiming "Using Linux hardware RTC timing (%ldHz).\n"
 #define MSGTR_CannotReadVideoProperties "Video: Nu pot citi proprietãþile.\n"
 #define MSGTR_NoStreamFound "Nu am gãsit nici un canal.\n"
-#define MSGTR_InitializingAudioCodec "Iniþializez codecul audio...\n"
-#define MSGTR_ErrorInitializingVODevice
-"Eroare la activarea ieºirii video (-vo) aleasã.\n"
+#define MSGTR_ErrorInitializingVODevice "Eroare la activarea ieºirii video (-vo) aleasã.\n"
 #define MSGTR_ForcedVideoCodec "Codec video forþat: %s\n"
 #define MSGTR_ForcedAudioCodec "Codec audio forþat: %s\n"
-#define MSGTR_AODescription_AOAuthor "AO: Descriere: %s\nAO: Autor: %s\n"
-#define MSGTR_AOComment "AO: Comentariu: %s\n"
 #define MSGTR_Video_NoVideo "Video: nu existã video\n"
 #define MSGTR_NotInitializeVOPorVO "\nFATAL: Nu pot iniþializa filtrele video (-vf) sau ieºirea video (-vo).\n"
 #define MSGTR_Paused "\n  =====  PAUZÃ  =====\r" // no more than 23 characters (status line for audio files)
@@ -150,11 +140,9 @@ static char help_text[]=
 #define MSGTR_UsingPass3ControllFile "Folosesc fiºierul de control pass3: %s\n"
 #define MSGTR_MissingFilename "\nLipseºte numele fiºierului.\n\n"
 #define MSGTR_CannotOpenFile_Device "Nu pot deschide fiºierul/dispozitivul.\n"
-#define MSGTR_ErrorDVDAuth "Eroare la autenticarea DVD.\n"
 #define MSGTR_CannotOpenDemuxer "Nu pot deschide demultiplexorul.\n"
 #define MSGTR_NoAudioEncoderSelected "\nNu e ales nici un encoder audio (-oac). Alege unul (vezi '-oac help') sau foloseºte '-nosound'.\n"
 #define MSGTR_NoVideoEncoderSelected "\nNu e ales nici un encoder video (-ovc). Alege te rog unul (vezi '-ovc help').\n"
-#define MSGTR_InitializingAudioCodec "Pornesc codecul audio...\n"
 #define MSGTR_CannotOpenOutputFile "Nu pot deschide fiºierul de ieºire '%s'.\n"
 #define MSGTR_EncoderOpenFailed "Nu pot deschide encoderul.\n"
 #define MSGTR_ForcingOutputFourcc "Forþez ieºirea fourcc la %x [%.4s]\n"
@@ -202,7 +190,7 @@ static char help_text[]=
 " padding=<0-2>\n"\
 "                0: de loc\n"\
 "                1: tot\n"\
-"                2: ajusteazã\n"\ // dunno
+"                2: ajusteazã\n"\
 "\n"\
 " fast          Activeazã codare rapidã pentru urmãtoarele preseturi VBR,\n"\
 "               la calitate puþin redusã ºi bitrate-uri crescute.\n"\
@@ -327,8 +315,6 @@ static char help_text[]=
 #define MSGTR_SkinBrowser "Alegere Skin-uri"
 #define MSGTR_Network "Streaming în reþea..."
 #define MSGTR_Preferences "Preferinþe"
-#define MSGTR_OSSPreferences "Configurare driver OSS"
-#define MSGTR_SDLPreferences "Configurare driver SDL"
 #define MSGTR_NoMediaOpened "Nu e deschis nici un fiºier."
 #define MSGTR_VCDTrack "Pista VCD %d"
 #define MSGTR_NoChapter "Nici un capitol"
@@ -467,16 +453,13 @@ static char help_text[]=
 #define MSGTR_PREFERENCES_FRAME_CodecDemuxer "Codec & demuxer"
 #define MSGTR_PREFERENCES_FRAME_Cache "Cache"
 #define MSGTR_PREFERENCES_FRAME_Misc "Altele"
-#define MSGTR_PREFERENCES_OSS_Device "Dispozitiv:"
-#define MSGTR_PREFERENCES_OSS_Mixer "Mixer:"
-#define MSGTR_PREFERENCES_SDL_Driver "Driver:"
 #define MSGTR_PREFERENCES_Message "Nu uita cã rularea trebuie repornitã pentru ca unele opþiuni sã-ºi facã efectul!"
 #define MSGTR_PREFERENCES_DXR3_VENC "Encoder video:"
 #define MSGTR_PREFERENCES_DXR3_LAVC "Foloseºte LAVC (FFmpeg)"
 #define MSGTR_PREFERENCES_DXR3_FAME "Foloseºte FAME"
 #define MSGTR_PREFERENCES_FontEncoding1 "Unicode"
 
-/* lang
+// lang 
 #define MSGTR_PREFERENCES_FontEncoding2 "Limbi vest-europene (ISO-8859-1)"
 #define MSGTR_PREFERENCES_FontEncoding3 "Limbi vest-europene cu Euro (ISO-8859-15)"
 #define MSGTR_PREFERENCES_FontEncoding4 "Limbi central-europene sau slavice (ISO-8859-2)"

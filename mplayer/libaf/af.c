@@ -23,6 +23,12 @@ extern af_info_t af_info_pan;
 extern af_info_t af_info_surround;
 extern af_info_t af_info_sub;
 extern af_info_t af_info_export;
+extern af_info_t af_info_volnorm;
+extern af_info_t af_info_extrastereo;
+extern af_info_t af_info_lavcresample;
+extern af_info_t af_info_sweep;
+extern af_info_t af_info_hrtf;
+extern af_info_t af_info_ladspa;
 
 static af_info_t* filter_list[]={ 
    &af_info_dummy,
@@ -39,6 +45,16 @@ static af_info_t* filter_list[]={
    &af_info_sub,
 #ifdef HAVE_SYS_MMAN_H
    &af_info_export,
+#endif
+   &af_info_volnorm,
+   &af_info_extrastereo,
+#ifdef USE_LIBAVCODEC
+   &af_info_lavcresample,
+#endif
+   &af_info_sweep,
+   &af_info_hrtf,
+#ifdef HAVE_LADSPA
+   &af_info_ladspa,
 #endif
    NULL 
 };
@@ -608,5 +624,17 @@ int af_control_any_rev (af_stream_t* s, int cmd, void* arg) {
     filt = filt->prev;
   }
   return (res == AF_OK);
+}
+
+void af_help (void) {
+  int i = 0;
+  af_msg(AF_MSG_INFO, "Available audio filters:\n");
+  while (filter_list[i]) {
+    if (filter_list[i]->comment && filter_list[i]->comment[0])
+      af_msg(AF_MSG_INFO, "  %-15s: %s (%s)\n", filter_list[i]->name, filter_list[i]->info, filter_list[i]->comment);
+    else
+      af_msg(AF_MSG_INFO, "  %-15s: %s\n", filter_list[i]->name, filter_list[i]->info);
+    i++;
+  }
 }
 

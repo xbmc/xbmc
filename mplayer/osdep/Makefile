@@ -4,6 +4,7 @@ include ../config.mak
 LIBNAME = libosdep.a
 
 SRCS= shmem.c strsep.c strl.c vsscanf.c scandir.c gettimeofday.c fseeko.c \
+      swab.c
       # timer.c
 
 ifeq ($(TARGET_ARCH_X86),yes)
@@ -14,6 +15,9 @@ endif
 
 getch = getch2.c
 timer = timer-lx.c
+ifeq ($(MACOSX_FINDER_SUPPORT),yes)
+SRCS += macosx_finder_args.c
+endif
 ifeq ($(TARGET_OS),Darwin)
 timer = timer-darwin.c
 endif

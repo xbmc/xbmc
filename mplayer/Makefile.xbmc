@@ -9,7 +9,7 @@ LIB_NAME = mplayer_.lib
 
 LIB_PATH = xbmcsys/lib
 
-OBJECTS  = mplayer.o mp_msg.o cpudetect.o codec-cfg.o spudec.o playtree.o playtreeparser.o asxparser.o vobsub.o subreader.o sub_cc.o find_sub.o m_config.o m_option.o parser-cfg.o m_struct.o unrarlib.o mixer.o parser-mpcmd.o libvo/libvo.a libao2/libao2.a libmpcodecs/libmpcodecs.a mp3lib/libMP3.a liba52/liba52.a libmpeg2/libmpeg2.a libaf/libaf.a libmpdemux/libmpdemux.a input/libinput.a postproc/libswscale.a osdep/libosdep.a libavformat/libavformat.a libavcodec/libavcodec.a libfaad2/libfaad2.a libmpdvdkit2/libmpdvdkit.a loader/driver.o loader/vfl.o loader/afl.o loader/dshow/libDS_Filter.a loader/dmo/libDMO_Filter.a
+OBJECTS  = mplayer.o mp_msg.o cpudetect.o codec-cfg.o spudec.o playtree.o playtreeparser.o asxparser.o vobsub.o subreader.o sub_cc.o find_sub.o m_config.o m_option.o parser-cfg.o m_struct.o unrarlib.o mixer.o parser-mpcmd.o edl.o libvo/libvo.a libao2/libao2.a libmpcodecs/libmpcodecs.a mp3lib/libMP3.a liba52/liba52.a libmpeg2/libmpeg2.a libaf/libaf.a libmpdemux/libmpdemux.a input/libinput.a postproc/libswscale.a osdep/libosdep.a libavformat/libavformat.a libavcodec/libavcodec.a libfaad2/libfaad2.a libmpdvdkit2/libmpdvdkit.a loader/driver.o loader/vfl.o loader/afl.o loader/dshow/libDS_Filter.a loader/dmo/libDMO_Filter.a
 OBJECTS += xbmcsys/xbmc_vobsub/xbmc.o
 LIBS     = -Lxbmcsys/lib xbmcsys/xbmc_vobsub/xbmc_vobsub.lib -lws2_32 -lwinmm
 
@@ -46,19 +46,28 @@ ifneq ($(FRIBIDI_LIB),)
 	OBJECTS += $(LIB_PATH)/libfribidi.a
 endif
 
-ifneq ($(ARCH_LIB),)
-	#not entirely sure if this only covers libiconv
-	
-	#dont link with libiconv if we dont link with freetype
-	ifneq ($(FREETYPE_LIB),)
-		NAMES += ICONV
-		OBJECTS += $(LIB_PATH)/libiconv.a
-	endif
-endif
-
 ifneq ($(FREETYPE_LIB),)
 	NAMES += FREETYPE
-	OBJECTS += $(LIB_PATH)/libfreetype.a	
+	OBJECTS += $(LIB_PATH)/libfreetype.a
+endif
+
+ifneq ($(ARCH_LIB),)
+	NAMES += ICONV
+	OBJECTS += $(LIB_PATH)/libiconv.a
+endif
+
+ifneq ($(LIVE_LIBS),)
+	NAMES += LIVE
+	OBJECTS += live/liveMedia/libliveMedia.a
+	OBJECTS += live/groupsock/libgroupsock.a
+	OBJECTS += live/UsageEnvironment/libUsageEnvironment.a
+	OBJECTS += live/BasicUsageEnvironment/libBasicUsageEnvironment.a
+	LIBS    += -lstdc++
+endif
+
+ifneq ($(MUSEPACK_LIB),)
+	NAMES += MUSEPACK
+	OBJECTS += $(LIB_PATH)/libmusepack.a
 endif
 
 # targets

@@ -8,6 +8,7 @@
 
 
 
+#ifdef ARCH_X86
 #ifdef HAVE_MMX
 static int diff_y_mmx(unsigned char *a, unsigned char *b, int s)
 {
@@ -146,6 +147,7 @@ static int licomb_y_mmx(unsigned char *a, unsigned char *b, int s)
 		);
 	return ret;
 }
+#endif
 #endif
 
 #define ABS(a) (((a)^((a)>>31))-((a)>>31))
@@ -418,8 +420,11 @@ static void compute_breaks(struct pullup_context *c, struct pullup_field *f0)
 	struct pullup_field *f2 = f1->next;
 	struct pullup_field *f3 = f2->next;
 	int l, max_l=0, max_r=0;
+	//struct pullup_field *ff;
+	//for (i=0, ff=c->first; ff != f0; i++, ff=ff->next);
 
 	if (f0->flags & F_HAVE_BREAKS) return;
+	//printf("\n%d: ", i);
 	f0->flags |= F_HAVE_BREAKS;
 
 	/* Special case when fields are 100% identical */
@@ -438,6 +443,7 @@ static void compute_breaks(struct pullup_context *c, struct pullup_field *f0)
 		if (-l > max_r) max_r = -l;
 	}
 	/* Don't get tripped up when differences are mostly quant error */
+	//printf("%d %d\n", max_l, max_r);
 	if (max_l + max_r < 128) return;
 	if (max_l > 4*max_r) f1->breaks |= BREAK_LEFT;
 	if (max_r > 4*max_l) f2->breaks |= BREAK_RIGHT;
@@ -476,15 +482,19 @@ static int decide_frame_length(struct pullup_context *c)
 	struct pullup_field *f1 = f0->next;
 	struct pullup_field *f2 = f1->next;
 	struct pullup_field *f3 = f2->next;
+	int l;
 	
 	if (queue_length(c->first, c->last) < 6) return 0;
 	foo(c);
 
 	if (f0->affinity == -1) return 1;
 
-	switch (find_first_break(f0, 3)) {
+	l = find_first_break(f0, 3);
+	if (l == 1 && c->strict_breaks < 0) l = 0;
+	
+	switch (l) {
 	case 1:
-		if (!c->strict_breaks && f0->affinity == 1 && f1->affinity == -1)
+		if (c->strict_breaks > 0 && f0->affinity == 1 && f1->affinity == -1)
 			return 2;
 		else return 1;
 	case 2:
@@ -674,11 +684,13 @@ void pullup_init_context(struct pullup_context *c)
 	case PULLUP_FMT_Y:
 		c->diff = diff_y;
 		c->comb = licomb_y;
+#ifdef ARCH_X86
 #ifdef HAVE_MMX
 		if (c->cpu & PULLUP_CPU_MMX) {
 			c->diff = diff_y_mmx;
 			c->comb = licomb_y_mmx;
 		}
+#endif
 #endif
 		/* c->comb = qpcomb_y; */
 		break;

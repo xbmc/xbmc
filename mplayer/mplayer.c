@@ -100,6 +100,11 @@ int oggsub_count = 0;
 #define exit_player_with_rc(a, b) \
 	{ printf("exit_player_with_rc: %s", a); return b; }
 
+//dummy function
+void init_color_conversions()
+{
+}
+
 #endif //!_XBOX
 
 int slave_mode=0;
@@ -121,10 +126,6 @@ int quiet=0;
 #ifdef HAS_DVBIN_SUPPORT
 #include "libmpdemux/dvbin.h"
 static int last_dvb_step = 1;
-#endif
-
-#ifdef HAVE_MATROSKA
-#include "libmpdemux/matroska.h"
 #endif
 
 //**************************************************************************//
@@ -188,7 +189,10 @@ static int max_framesize=0;
 #include "libmpdemux/stream.h"
 #include "libmpdemux/demuxer.h"
 #include "libmpdemux/stheader.h"
-#include "libmpdemux/parse_es.h"
+//#include "parse_es.h"
+#ifdef HAVE_MATROSKA
+#include "libmpdemux/matroska.h"
+#endif
 
 #include "libmpcodecs/dec_audio.h"
 #include "libmpcodecs/dec_video.h"
@@ -255,8 +259,8 @@ int abs_seek_pos=0;
 // codecs:
 char **audio_codec_list=NULL; // override audio codec
 char **video_codec_list=NULL; // override video codec
-char **audio_fm_list=NULL;    // override audio codec family
-char **video_fm_list=NULL;    // override video codec family
+char **audio_fm_list=NULL;    // override audio codec family 
+char **video_fm_list=NULL;    // override video codec family 
 
 // streaming:
 int audio_id=-1;
@@ -277,6 +281,9 @@ static aoldpts=0;
        int stream_cache_size=-1;
 #ifdef USE_STREAM_CACHE
 extern int cache_fill_status;
+
+float stream_cache_min_percent=20.0;
+float stream_cache_prefill_percent=5.0;
 #else
 #define cache_fill_status 0
 #endif
@@ -330,6 +337,14 @@ int set_of_sub_size = 0;
 int set_of_sub_pos = -1;
 float sub_last_pts = -303;
 #endif
+int global_sub_size = 0; // this encompasses all subtitle sources
+int global_sub_pos = -1; // this encompasses all subtitle sources
+#define SUB_SOURCE_SUBS 0
+#define SUB_SOURCE_VOBSUB 1
+#define SUB_SOURCE_DEMUX 2
+#define SUB_SOURCES 3
+int global_sub_indices[SUB_SOURCES];
+int global_sub_quiet_osd_hack = 0;
 
 static stream_t* stream=NULL;
 static demuxer_t *demuxer=NULL;
@@ -338,12 +353,11 @@ static sh_video_t *sh_video=NULL;
 
 char* current_module=NULL; // for debugging
 
-// also modified by Gui/mplayer/gtk/eq.c:
-int vo_gamma_gamma = 1000;
-int vo_gamma_brightness = 1000;
-int vo_gamma_contrast = 1000;
-int vo_gamma_saturation = 1000;
-int vo_gamma_hue = 1000;
+extern int vo_gamma_gamma;
+extern int vo_gamma_brightness;
+extern int vo_gamma_contrast;
+extern int vo_gamma_saturation;
+extern int vo_gamma_hue;
 
 // ---
 
@@ -369,13 +383,14 @@ static char* rtc_device;
 #endif
 
 #ifdef USE_EDL
-struct edl_record edl_records[ MAX_EDL_ENTRIES ];
-int num_edl_records = 0;
-FILE* edl_fd = NULL;
-edl_record_ptr next_edl_record = NULL;
-static char* edl_filename = NULL;
-static char* edl_output_filename = NULL;
-short edl_decision = 0;
+edl_record_ptr edl_records = NULL; ///< EDL entries memory area
+edl_record_ptr next_edl_record = NULL; ///< only for traversing edl_records
+int edl_memory_slots = 0; ///< number of EDL entries (1 for skip + 2 for each mute)
+int edl_operations = 0; ///< number of EDL operations, skip + mute
+short user_muted = 0; ///< Stores whether User wanted muted mode.
+short edl_muted  = 0; ///< Stores whether EDL is currently in muted mode.
+short edl_decision = 0; ///< 1 when an EDL operation has been made
+FILE* edl_fd = NULL; ///< fd to write to when in -edlout mode
 #endif
 
 static unsigned int inited_flags=0;
@@ -413,7 +428,7 @@ static void uninit_player(unsigned int mask){
     vf_menu=NULL;
 #endif
   }
-
+ 
   if(mask&INITED_DEMUXER){
     inited_flags&=~INITED_DEMUXER;
     current_module="free_demuxer";
@@ -481,15 +496,14 @@ static void uninit_player(unsigned int mask){
     current_module="uninit_input";
     mp_input_uninit();
   }
-  
+
+#ifdef _XBOX
   free_osd_list();		//fix 4 x 6548bytes memory leak 
   codecs_uninit_free(); 	//fix 70Kbytes codecs mem leak
   m_config_free(mconfig);	//fix 1250 counts of small memory block leaks
   if(vo_font) free_font_desc(vo_font);	//free font memory  	
   vo_font = NULL;
-  if(videobuffer) free(videobuffer);
-  videobuffer = NULL;
-
+#endif
   current_module=NULL;
 }
 
@@ -505,9 +519,22 @@ static void exit_player_with_rc(char* how, int rc){
   vo_uninit();	// close the X11 connection (if any opened)
 #endif
 
+#ifdef HAVE_FREETYPE
+  current_module="uninit_font";
+  if (vo_font) free_font_desc(vo_font);
+  vo_font = NULL;
+  done_freetype();
+#endif
+
   current_module="exit_player";
 
-  if(how) mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_Exiting,mp_gettext(how));
+// free mplayer config
+  free(mconfig);
+
+#ifdef USE_EDL
+  if(edl_records != NULL) free(edl_records); // free mem allocated for EDL
+#endif
+  if(how) mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_ExitingHow,mp_gettext(how));
   mp_msg(MSGT_CPLAYER,MSGL_DBG2,"max framesize was %d bytes\n",max_framesize);
 
 #ifndef _XBOX //NO exit
@@ -523,11 +550,36 @@ void exit_player(char* how){
   //exit_player_with_rc(how, 1);
 }
 
+#ifndef __MINGW32__
+static void child_sighandler(int x){  
+  pid_t pid;
+  while((pid=waitpid(-1,NULL,WNOHANG)) > 0);
+}
+#endif
+
+#ifdef CRASH_DEBUG
+static char *prog_path;
+static int crash_debug = 0;
+#endif
+
 static void exit_sighandler(int x){
   static int sig_count=0;
+#ifdef CRASH_DEBUG
+  if (!crash_debug || x != SIGTRAP)
+#endif
   ++sig_count;
-  if(sig_count==5 || (inited_flags==0 && sig_count>1)) exit(1);
-  if(sig_count>5){
+  if(inited_flags==0 && sig_count>1) exit(1);
+  if(sig_count==5)
+    {
+      /* We're crashing bad and can't uninit cleanly :( 
+       * by popular request, we make one last (dirty) 
+       * effort to restore the user's 
+       * terminal. */
+      getch2_disable();
+      exit(1);
+    }
+  if(sig_count==6) exit(1);
+  if(sig_count>6){
     // can't stop :(
 #ifndef __MINGW32__
     kill(getpid(),SIGKILL);
@@ -536,7 +588,7 @@ static void exit_sighandler(int x){
   mp_msg(MSGT_CPLAYER,MSGL_FATAL,"\n" MSGTR_IntBySignal,x,
       current_module?current_module:mp_gettext("unknown")
   );
-  if(sig_count==1)
+  if(sig_count<=1)
   switch(x){
   case SIGINT:
   case SIGQUIT:
@@ -554,6 +606,26 @@ static void exit_sighandler(int x){
       mp_msg(MSGT_CPLAYER,MSGL_FATAL,MSGTR_Exit_SIGSEGV_SIGFPE);
   default:
       mp_msg(MSGT_CPLAYER,MSGL_FATAL,MSGTR_Exit_SIGCRASH);
+#ifdef CRASH_DEBUG
+      if (crash_debug) {
+        int gdb_pid;
+        char spid[20];
+        snprintf(spid, 19, "%i", getpid());
+        spid[19] = 0;
+        mp_msg(MSGT_CPLAYER, MSGL_INFO, "Forking...\n");
+        gdb_pid = fork();
+        mp_msg(MSGT_CPLAYER, MSGL_INFO, "Forked...\n");
+        if (gdb_pid == 0) { // We are the child
+          if (execlp("gdb", "gdb", prog_path, spid, NULL) == -1)
+            mp_msg(MSGT_CPLAYER, MSGL_ERR, "Couldn't start gdb\n");
+        } else if (gdb_pid < 0) 
+          mp_msg(MSGT_CPLAYER, MSGL_ERR, "Couldn't fork\n");
+        else {
+          waitpid(gdb_pid, NULL, 0);
+        }
+        if (x == SIGTRAP) return;
+      }
+#endif  
   }
   exit_player(NULL);
 }
@@ -564,6 +636,8 @@ extern void mp_input_register_options(m_config_t* cfg);
 
 #include "mixer.h"
 mixer_t mixer;
+/// step size of mixer changes
+int volstep = 3;
 
 #include "cfg-mplayer.h"
 
@@ -572,7 +646,7 @@ void parse_cfgfiles( m_config_t* conf )
 char *conffile;
 int conffile_fd;
 if (m_config_parse_config_file(conf, MPLAYER_CONFDIR "/mplayer.conf") < 0)
-  exit(1);
+  exit_player(NULL);
 if ((conffile = get_path("")) == NULL) {
   mp_msg(MSGT_CPLAYER,MSGL_WARN,MSGTR_NoHomeDir);
 } else {
@@ -591,7 +665,7 @@ if ((conffile = get_path("")) == NULL) {
       close(conffile_fd);
     }
     if (m_config_parse_config_file(conf, conffile) < 0)
-      exit(1);
+      exit_player(NULL);
     free(conffile);
   }
 }
@@ -605,10 +679,10 @@ void load_per_file_config (m_config_t* conf, const char *const file)
     char *name;
 
     sprintf (cfg, "%s.conf", file);
-
+    
     if (!stat (cfg, &st))
     {
-	mp_msg(MSGT_CPLAYER,MSGL_INFO,"Loading config '%s'\n", cfg);
+	mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_LoadingConfig, cfg);
 	m_config_parse_config_file (conf, cfg);
 	return;
     }
@@ -622,7 +696,7 @@ void load_per_file_config (m_config_t* conf, const char *const file)
     {
 	if (!stat (confpath, &st))
 	{
-	    mp_msg(MSGT_CPLAYER,MSGL_INFO,"Loading config '%s'\n", confpath);
+	    mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_LoadingConfig, confpath);
 	    m_config_parse_config_file (conf, confpath);
 	}
 
@@ -635,16 +709,16 @@ void load_per_file_config (m_config_t* conf, const char *const file)
 // The function return a new value for eof.
 static int libmpdemux_was_interrupted(int eof) {
   mp_cmd_t* cmd;
-  if((cmd = mp_input_get_cmd(0,0)) != NULL) {
+  if((cmd = mp_input_get_cmd(0,0,0)) != NULL) {
        switch(cmd->id) {
        case MP_CMD_QUIT:
-	 exit_player_with_rc(MSGTR_Exit_quit, 0);
+	 exit_player_with_rc(MSGTR_Exit_quit, (cmd->nargs > 0)? cmd->args[0].v.i : 0);
        case MP_CMD_PLAY_TREE_STEP: {
 	 eof = (cmd->args[0].v.i > 0) ? PT_NEXT_ENTRY : PT_PREV_ENTRY;
        } break;
        case MP_CMD_PLAY_TREE_UP_STEP: {
 	 eof = (cmd->args[0].v.i > 0) ? PT_UP_NEXT : PT_UP_PREV;
-       } break;
+       } break;	  
        case MP_CMD_PLAY_ALT_SRC_STEP: {
 	 eof = (cmd->args[0].v.i > 0) ?  PT_NEXT_SRC : PT_PREV_SRC;
        } break;
@@ -654,7 +728,8 @@ static int libmpdemux_was_interrupted(int eof) {
   return eof;
 }
 
-#define mp_basename(s) (strrchr(s,'/')==NULL?(char*)s:(strrchr(s,'/')+1))
+#define mp_basename2(s) (strrchr(s,'/')==NULL?(char*)s:(strrchr(s,'/')+1))
+#define mp_basename(s) (strrchr(s,'\\')==NULL?(mp_basename2(s)):(strrchr(s,'\\')+1))
 
 int playtree_add_playlist(play_tree_t* entry)
 {
@@ -669,7 +744,7 @@ int playtree_add_playlist(play_tree_t* entry)
   } else
 #endif
   {
-  if(!entry) {
+  if(!entry) {      
     entry = playtree_iter->tree;
     if(play_tree_iter_step(playtree_iter,1,0) != PLAY_TREE_ITER_ENTRY) {
         return PT_NEXT_ENTRY;
@@ -687,13 +762,45 @@ int playtree_add_playlist(play_tree_t* entry)
   entry = playtree_iter->tree;
   if(play_tree_iter_step(playtree_iter,1,0) != PLAY_TREE_ITER_ENTRY) {
     return PT_NEXT_ENTRY;
-  }
+  }      
   play_tree_remove(entry,1,1);
   }
   return PT_NEXT_SRC;
 }
 
 static int play_tree_step = 1;
+
+int sub_source()
+{
+    int source = -1;
+    int top = -1;
+    int i;
+    for (i = 0; i < SUB_SOURCES; i++) {
+        int j = global_sub_indices[i];
+        if ((j >= 0) && (j > top) && (global_sub_pos >= j)) {
+            source = i;
+            top = j;
+        }
+    }
+    return source;
+}
+
+#ifdef _XBOX
+int sub_sourceof(int subindex)
+{
+    int source = -1;
+    int top = -1;
+    int i;
+    for (i = 0; i < SUB_SOURCES; i++) {
+        int j = global_sub_indices[i];
+        if ((j >= 0) && (j > top) && (subindex >= j)) {
+            source = i;
+            top = j;
+        }
+    }
+    return source;
+}
+#endif
 
 #ifdef USE_SUB
 
@@ -704,26 +811,24 @@ void add_subtitles(char *filename, float fps, int silent)
     sub_data *subd;
 
     if (filename == NULL) {
-	subd = (sub_data*)malloc(sizeof(sub_data));
-	subd->filename = strdup("none");
-	subd->subtitles = NULL;
-	subd->sub_uses_time = 1;
-	subd->sub_num = 0;
-	subd->sub_errs = 0;
-	set_of_subtitles[set_of_sub_size] = subd;
-	++set_of_sub_size;
 	return;
     }
 
     subd = sub_read_file(filename, fps);
-    if(!subd && !silent)
+    if(!subd && !silent) 
         mp_msg(MSGT_CPLAYER, MSGL_ERR, MSGTR_CantLoadSub, filename);
     if (subd == NULL || set_of_sub_size >= MAX_SUBTITLE_FILES) return;
     set_of_subtitles[set_of_sub_size] = subd;
+    if (identify)
+    {
+      mp_msg(MSGT_GLOBAL, MSGL_INFO, "ID_FILE_SUB_ID=%d\n", set_of_sub_size);
+      mp_msg(MSGT_GLOBAL, MSGL_INFO, "ID_FILE_SUB_FILENAME=%s\n", filename);
+    }
     ++set_of_sub_size;
-    printf("SUB: added subtitle file (%d): %s\n", set_of_sub_size, filename);
+    mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_AddedSubtitleFile, set_of_sub_size, filename);
 }
 
+// FIXME: if/when the GUI calls this, global sub numbering gets (potentially) broken.
 void update_set_of_subtitles()
     // subdata was changed, set_of_sub... have to be updated.
 {
@@ -747,14 +852,160 @@ void update_set_of_subtitles()
 
 /*
  * In Mac OS X the SDL-lib is built upon Cocoa. The easiest way to
- * make it all work is to use the builtin SDL-bootstrap code, which
+ * make it all work is to use the builtin SDL-bootstrap code, which 
  * will be done automatically by replacing our main() if we include SDL.h.
  */
 #if defined(SYS_DARWIN) && defined(HAVE_SDL)
 #include <SDL.h>
 #endif
 
+/**
+ * \brief append a formatted string
+ * \param buf buffer to print into
+ * \param pos position of terminating 0 in buf
+ * \param len maximum number of characters in buf, not including terminating 0
+ * \param format printf format string
+ */
+static void saddf(char *buf, unsigned *pos, int len, const char *format, ...)
+{
+  va_list va;
+  va_start(va, format);
+  *pos += vsnprintf(&buf[*pos], len - *pos, format, va);
+  va_end(va);
+  if (*pos >= len ) {
+    buf[len] = 0;
+    *pos = len;
+  }
+}
 
+/**
+ * \brief print the status line
+ * \param a_pos audio position
+ * \param a_v A-V desynchronization
+ * \param corr amount out A-V synchronization
+ */
+static void print_status(float a_pos, float a_v, float corr)
+{
+  int width;
+  char *line;
+  unsigned pos = 0;
+  get_screen_size();
+  if (screen_width > 0)
+    width = screen_width;
+  else
+  width = 80;
+#ifdef WIN32
+  // windows command line is broken (MinGW's rxvt works though, but we
+  // should not depend on that).
+  width--;
+#endif
+  line = malloc(width + 1); // one additional for terminating null
+  
+  // Audio time
+  if (sh_audio) {
+    saddf(line, &pos, width, "A:%6.1f ", a_pos);
+    if (!sh_video) {
+      // convert time to HH:MM:SS.F format
+      long tenths = 10 * a_pos;
+      int f1 = tenths % 10;
+      int ss = (tenths /  10) % 60;
+      int mm = (tenths / 600) % 60;
+      int hh = (tenths / 36000) % 100;
+      saddf(line, &pos, width, "(");
+      if (hh > 0)
+        saddf(line, &pos, width, "%2d:", hh);
+      if (hh > 0 || mm > 0)
+        saddf(line, &pos, width, "%02d:", mm);
+      saddf(line, &pos, width, "%02d.", ss);
+      saddf(line, &pos, width, "%1d", f1);
+      saddf(line, &pos, width, ") ");
+    }
+  }
+
+  // Video time
+  if (sh_video)
+    saddf(line, &pos, width, "V:%6.1f ", sh_video->pts);
+
+  // A-V sync
+  if (sh_audio && sh_video)
+    saddf(line, &pos, width, "A-V:%7.3f ct:%7.3f ", a_v, corr);
+
+  // Video stats
+  if (sh_video)
+    saddf(line, &pos, width, "%3d/%3d ",
+      (int)sh_video->num_frames,
+      (int)sh_video->num_frames_decoded);
+
+  // CPU usage
+  if (sh_video) {
+    if (sh_video->timer > 0.5)
+      saddf(line, &pos, width, "%2d%% %2d%% %4.1f%% ",
+        (int)(100.0*video_time_usage*playback_speed/(double)sh_video->timer),
+        (int)(100.0*vout_time_usage*playback_speed/(double)sh_video->timer),
+        (100.0*audio_time_usage*playback_speed/(double)sh_video->timer));
+    else
+      saddf(line, &pos, width, "??%% ??%% ??,?%% ");
+  } else if (sh_audio) {
+    if (sh_audio->delay > 0.5)
+      saddf(line, &pos, width, "%4.1f%% ",
+        100.0*audio_time_usage/(double)sh_audio->delay);
+    else
+      saddf(line, &pos, width, "??,?%% ");
+  }
+
+  // VO stats
+  if (sh_video) 
+    saddf(line, &pos, width, "%d %d ", drop_frame_cnt, output_quality);
+
+#ifdef USE_STREAM_CACHE
+  // cache stats
+  if (stream_cache_size > 0)
+    saddf(line, &pos, width, "%d%% ", cache_fill_status);
+#endif
+
+  // other
+  if (playback_speed != 1)
+    saddf(line, &pos, width, "%4.2fx ", playback_speed);
+
+  // end
+  memset(&line[pos], ' ', width - pos);
+  line[width] = 0;
+  mp_msg(MSGT_AVSYNC, MSGL_STATUS, "%s\r", line);
+  free(line);
+}
+
+/**
+ * \brief build a chain of audio filters that converts the input format
+ * to the ao's format, taking into account the current playback_speed.
+ * \param sh_audio describes the requested input format of the chain.
+ * \param ao_data describes the requested output format of the chain.
+ */
+static int build_afilter_chain(sh_audio_t *sh_audio, ao_data_t *ao_data)
+{
+  int new_srate;
+  int result;
+  if (!sh_audio)
+  {
+    mixer.afilter = NULL;
+    return 0;
+  }
+  new_srate = sh_audio->samplerate * playback_speed;
+  if (new_srate != ao_data->samplerate) {
+    // limits are taken from libaf/af_resample.c
+    if (new_srate < 8000)
+      new_srate = 8000;
+    if (new_srate > 192000)
+      new_srate = 192000;
+    playback_speed = (float)new_srate / (float)sh_audio->samplerate;
+  }
+  result =  init_audio_filters(sh_audio, new_srate,
+           sh_audio->channels, sh_audio->sample_format, sh_audio->samplesize,
+           ao_data->samplerate, ao_data->channels, ao_data->format,
+           audio_out_format_bits(ao_data->format) / 8, /* ao_data.bps, */
+           ao_data->outburst * 4, ao_data->buffersize);
+  mixer.afilter = sh_audio->afilter;
+  return result;
+}
 #ifdef _XBOX
 int main(int argc,char* argv[]){
 	//main function to satisfy DllMain
@@ -765,6 +1016,7 @@ int main(int argc,char* argv[]){
 #endif
 
 
+char * mem_ptr;
 
 static demux_stream_t *d_audio=NULL;
 static demux_stream_t *d_video=NULL;
@@ -780,6 +1032,7 @@ int osd_function=OSD_PLAY;
 int osd_last_pts=-303;
 int osd_show_av_delay = 0;
 int osd_show_text = 0;
+int osd_show_speed = 0;
 int osd_show_sub_delay = 0;
 int osd_show_sub_pos = 0;
 int osd_show_sub_visibility = 0;
@@ -789,6 +1042,7 @@ int osd_show_sub_changed = 0;
 int osd_show_percentage = 0;
 int osd_show_tv_channel = 25;
 int osd_show_ontop = 0;
+int osd_show_rootwin = 0;
 int osd_show_framedropping = 0;
 
 int rtc_fd=-1;
@@ -1008,12 +1262,12 @@ int mplayer_init(int argc, char* argv[])
     blit_frame=0;
 #endif //!_XBOX
 
-  srand((int) time(NULL));
+  srand((int) time(NULL)); 
 
   mp_msg_init();
   mp_msg_set_level(MSGL_STATUS);
 
-  mp_msg(MSGT_CPLAYER,MSGL_INFO, "MPlayer " VERSION " (C) 2000-2004 MPlayer Team\n\n");
+  mp_msg(MSGT_CPLAYER,MSGL_INFO, "MPlayer " VERSION " (C) 2000-2004 MPlayer Team\n");
   /* Test for cpu capabilities (and corresponding OS support) for optimizing */
   GetCpuCaps(&gCpuCaps);
 #ifdef ARCH_X86
@@ -1102,12 +1356,12 @@ int mplayer_init(int argc, char* argv[])
 
     playtree = m_config_parse_mp_command_line(mconfig, argc, argv);
     if(playtree == NULL)
-      exit(1);
+      exit_player(NULL);
 
     playtree = play_tree_cleanup(playtree);
     if(playtree) {
       playtree_iter = play_tree_iter_new(playtree,mconfig);
-      if(playtree_iter) {
+      if(playtree_iter) {  
 	if(play_tree_iter_step(playtree_iter,0,0) != PLAY_TREE_ITER_ENTRY) {
 	  play_tree_iter_free(playtree_iter);
 	  playtree_iter = NULL;
@@ -1115,7 +1369,7 @@ int mplayer_init(int argc, char* argv[])
 	filename = play_tree_iter_get_file(playtree_iter,1);
       }
     }
-
+	
 #ifndef HAVE_NEW_GUI
     if(use_gui){
       mp_msg(MSGT_CPLAYER,MSGL_WARN,MSGTR_NoGui);
@@ -1132,13 +1386,13 @@ int mplayer_init(int argc, char* argv[])
       // Remove Playtree and Playtree-Iter from memory as its not used by gui
       play_tree_iter_free(playtree_iter);
       playtree_iter=NULL;
-
+      
       if (getcwd(cwd, PATH_MAX) != (char *)NULL)
       {
 	  strcat(cwd, "/");
           // Prefix relative paths with current working directory
           play_tree_add_bpf(playtree, cwd);
-      }
+      }      
       // Import initital playtree into gui
       import_initial_playtree_into_gui(playtree, mconfig, enqueue);
     }
@@ -1147,27 +1401,26 @@ int mplayer_init(int argc, char* argv[])
 
     if(video_driver_list && strcmp(video_driver_list[0],"help")==0){
       list_video_out();
-      exit(0);
+      exit_player_with_rc(NULL, 0);
     }
 
     if(audio_driver_list && strcmp(audio_driver_list[0],"help")==0){
       list_audio_out();
-      exit(0);
+      exit_player_with_rc(NULL, 0);
     }
 
 // check codec.conf
 if(!codecs_file || !parse_codec_cfg(codecs_file)){
-  char * codecsconf_file = get_path("codecs.conf");	
-  if(!parse_codec_cfg(codecsconf_file)){
-	if(!parse_codec_cfg(MPLAYER_CONFDIR "/codecs.conf")){
+  if(!parse_codec_cfg(mem_ptr=get_path("codecs.conf"))){
+    if(!parse_codec_cfg(MPLAYER_CONFDIR "/codecs.conf")){
       if(!parse_codec_cfg(NULL)){
 	mp_msg(MSGT_CPLAYER,MSGL_HINT,MSGTR_CopyCodecsConf);
-	exit(0);
+        exit_player_with_rc(NULL, 0);
       }
-      mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_BuiltinCodecsConf);
+      mp_msg(MSGT_CPLAYER,MSGL_V,MSGTR_BuiltinCodecsConf);
     }
   }
-  free(codecsconf_file);
+  free( mem_ptr ); // release the buffer created by get_path()
 }
 
 #if 0
@@ -1175,149 +1428,99 @@ if(!codecs_file || !parse_codec_cfg(codecs_file)){
 	int i;
 	video_codec=video_codec_list[0];
 	for(i=0;video_codec_list[i];i++)
-	    printf("vc#%d: '%s'\n",i,video_codec_list[i]);
+	    mp_msg(MSGT_FIXME,MSGL_FIXME,"vc#%d: '%s'\n",i,video_codec_list[i]);
     }
 #endif
     if(audio_codec_list && strcmp(audio_codec_list[0],"help")==0){
       mp_msg(MSGT_CPLAYER, MSGL_INFO, MSGTR_AvailableAudioCodecs);
       list_codecs(1);
-      printf("\n");
-      exit(0);
+      mp_msg(MSGT_FIXME, MSGL_FIXME, "\n");
+      exit_player_with_rc(NULL, 0);
     }
     if(video_codec_list && strcmp(video_codec_list[0],"help")==0){
       mp_msg(MSGT_CPLAYER, MSGL_INFO, MSGTR_AvailableVideoCodecs);
       list_codecs(0);
-      printf("\n");
-      exit(0);
+      mp_msg(MSGT_FIXME, MSGL_FIXME, "\n");
+      exit_player_with_rc(NULL, 0);
     }
     if(video_fm_list && strcmp(video_fm_list[0],"help")==0){
       vfm_help();
-      printf("\n");
-      exit(0);
+      mp_msg(MSGT_FIXME, MSGL_FIXME, "\n");
+      exit_player_with_rc(NULL, 0);
     }
     if(audio_fm_list && strcmp(audio_fm_list[0],"help")==0){
       afm_help();
+      mp_msg(MSGT_FIXME, MSGL_FIXME, "\n");
+      exit_player_with_rc(NULL, 0);
+    }
+    if(af_cfg.list && strcmp(af_cfg.list[0],"help")==0){
+      af_help();
       printf("\n");
-      exit(0);
+      exit_player_with_rc(NULL, 0);
     }
 #ifdef HAVE_X11
     if(vo_fstype_list && strcmp(vo_fstype_list[0],"help")==0){
       fstype_help();
-      printf("\n");
-      exit(0);
+      mp_msg(MSGT_FIXME, MSGL_FIXME, "\n");
+      exit_player_with_rc(NULL, 0);
     }
 #endif
 
 #ifdef USE_EDL
- {
-   FILE* fd;
-   char line[ 100 ];
-   float start, stop, duration;
-   int action;
-   int next_edl_array_index = 0;
-   int lineCount = 0;
-   next_edl_record = edl_records;
-   if( edl_filename ) {
-     if( ( fd = fopen( edl_filename, "r" ) ) == NULL ) {
-       printf( "Error opening EDL file [%s]!\n", edl_filename );
-       next_edl_record->next = NULL;
-     } else {
-       while( fgets( line, 99, fd ) != NULL ) {
-	 lineCount++;
-	 if( ( sscanf( line, "%f %f %d", &start, &stop, &action ) ) == 0 ) {
-	   printf( "Invalid EDL line: [%s]\n", line );
-	 } else {
-	   if( next_edl_array_index > 0 ) {
-	     edl_records[ next_edl_array_index-1 ].next = &edl_records[ next_edl_array_index ];
-	     if( start <= edl_records[ next_edl_array_index-1 ].stop_sec ) {
-	       printf( "Invalid EDL line [%d]: [%s]\n", lineCount, line );
-	       printf( "Last stop position was [%f]; next start is [%f]. Entries must be in chronological order and cannot overlap. Discarding EDL entry.\n", edl_records[ next_edl_array_index-1 ].stop_sec, start );
-	       continue;
-	     }
-	   }
-	   if( stop <= start ) {
-	     printf( "Invalid EDL line [%d]: [%s]\n", lineCount, line );
-	     printf( "Stop time must follow start time. Discarding EDL entry.\n" );
-	     continue;
-	   }
-	   edl_records[ next_edl_array_index ].action = action;
-	   if( action == EDL_MUTE ) {
-	     edl_records[ next_edl_array_index ].length_sec = 0;
-	     edl_records[ next_edl_array_index ].start_sec = start;
-	     edl_records[ next_edl_array_index ].stop_sec = start;
-	     next_edl_array_index++;
-	     if( next_edl_array_index >= MAX_EDL_ENTRIES-1 ) {
-	       break;
-	     }
-	     edl_records[ next_edl_array_index-1 ].next = &edl_records[ next_edl_array_index ];
-	     edl_records[ next_edl_array_index ].action = EDL_MUTE;
-	     edl_records[ next_edl_array_index ].length_sec = 0;
-	     edl_records[ next_edl_array_index ].start_sec = stop;
-	     edl_records[ next_edl_array_index ].stop_sec = stop;
-	   } else {
-	     edl_records[ next_edl_array_index ].length_sec = stop - start;
-	     edl_records[ next_edl_array_index ].start_sec = start;
-	     edl_records[ next_edl_array_index ].stop_sec = stop;
-	   }
-	   next_edl_array_index++;
-	   if( next_edl_array_index >= MAX_EDL_ENTRIES-1 ) {
-	     break;
-	   }
-	 }
-       }
-       if( next_edl_array_index > 0 ) {
-	 edl_records[ next_edl_array_index-1 ].next = &edl_records[ next_edl_array_index ];
-       }
-       edl_records[ next_edl_array_index ].start_sec = -1;
-       edl_records[ next_edl_array_index ].next = NULL;
-       num_edl_records = ( next_edl_array_index );
-     }
-     fclose( fd );
-   } else {
-     next_edl_record->next = NULL;
-   }
-   if( edl_output_filename ) {
-     if( edl_filename ) {
-       printf( "Sorry; EDL mode and EDL output mode are mutually exclusive! Disabling all EDL functions.\n" );
-       edl_output_filename = NULL;
-       edl_filename = NULL;
-       next_edl_record->next = NULL;
-     } else {
-       if( ( edl_fd = fopen( edl_output_filename, "w" ) ) == NULL ) {
-	 printf( "Error opening file [%s] for writing!\n", edl_output_filename );
-	 edl_output_filename = NULL;
-	 next_edl_record->next = NULL;
-       }
-     }
-   }
-#ifdef DEBUG_EDL
- {
-   printf( "EDL Records:\n" );
-   if( next_edl_record->next != NULL ) {
-     while( next_edl_record->next != NULL ) {
-       printf( "EDL: start [%f], stop [%f], action [%d]\n", next_edl_record->start_sec, next_edl_record->stop_sec, next_edl_record->action );
-       next_edl_record = next_edl_record->next;
-     }
-     next_edl_record = edl_records;
-   }
- }
-#endif
- }
+if (edl_check_mode() == EDL_ERROR && edl_filename)
+{
+    mp_msg(MSGT_CPLAYER, MSGL_ERR, MSGTR_EdlCantUseBothModes);
+    exit_player(NULL);
+} else if (edl_filename)
+{
+    edl_memory_slots = edl_count_entries();
+    if (edl_memory_slots > 0)
+    {
+        edl_records = calloc(edl_memory_slots, sizeof(struct edl_record));
+        if (edl_records == NULL)
+        {
+            mp_msg(MSGT_CPLAYER, MSGL_FATAL, MSGTR_EdlOutOfMem);
+            exit_player(NULL);	    
+        } else
+        {
+            if ((edl_operations = edl_parse_file(edl_records)) > 0)
+            {
+                mp_msg(MSGT_CPLAYER, MSGL_INFO, MSGTR_EdlRecordsNo,
+                       edl_operations);
+            } else
+            {
+
+                mp_msg(MSGT_CPLAYER, MSGL_INFO, MSGTR_EdlQueueEmpty);
+            }
+        }
+    }
+
+    next_edl_record = edl_records;
+
+} else if (edl_output_filename)
+{
+    if ((edl_fd = fopen(edl_output_filename, "w")) == NULL)
+    {
+        mp_msg(MSGT_CPLAYER, MSGL_ERR, MSGTR_EdlCantOpenForWrite,
+               edl_output_filename);
+        exit_player(NULL);
+    }
+}
 #endif
 
     if(!filename){
       if(!use_gui){
 	// no file/vcd/dvd -> show HELP:
 	mp_msg(MSGT_CPLAYER, MSGL_INFO, help_text);
-	exit(0);
+        exit_player_with_rc(NULL, 0);
       } else gui_no_filename=1;
     }
 
     // Many users forget to include command line in bugreports...
     if(verbose>0){
-      mp_msg(MSGT_CPLAYER, MSGL_INFO, "CommandLine:");
-      for(i=1;i<argc;i++)printf(" '%s'",argv[i]);
-      printf("\n");
+      mp_msg(MSGT_CPLAYER, MSGL_INFO, MSGTR_CommandLine);
+      for(i=1;i<argc;i++)mp_msg(MSGT_FIXME, MSGL_FIXME," '%s'",argv[i]);
+      mp_msg(MSGT_FIXME, MSGL_FIXME, "\n");
     }
 
     mp_msg_set_level(verbose+MSGL_STATUS);
@@ -1338,9 +1541,8 @@ if(!codecs_file || !parse_codec_cfg(codecs_file)){
        if(!vo_font) mp_msg(MSGT_CPLAYER,MSGL_ERR,MSGTR_CantLoadFont,font_name);
   } else {
       // try default:
-       char * fontdesc_file=get_path("font/font.desc");
-       vo_font=read_font_desc(fontdesc_file,font_factor,verbose>1);
-       free(fontdesc_file);
+       vo_font=read_font_desc( mem_ptr=get_path("font/font.desc"),font_factor,verbose>1);
+       free(mem_ptr); // release the buffer created by get_path()
        if(!vo_font)
        vo_font=read_font_desc(MPLAYER_DATADIR "/font/font.desc",font_factor,verbose>1);
   }
@@ -1355,23 +1557,23 @@ if(!codecs_file || !parse_codec_cfg(codecs_file)){
   {
     // seteuid(0); /* Can't hurt to try to get root here */
     if ((rtc_fd = open(rtc_device ? rtc_device : "/dev/rtc", O_RDONLY)) < 0)
-	mp_msg(MSGT_CPLAYER, MSGL_WARN, "Failed to open %s: %s (it should be readable by the user.)\n",
+	mp_msg(MSGT_CPLAYER, MSGL_WARN, MSGTR_RTCDeviceNotOpenable,
 	    rtc_device ? rtc_device : "/dev/rtc", strerror(errno));
      else {
 	unsigned long irqp = 1024; /* 512 seemed OK. 128 is jerky. */
 
 	if (ioctl(rtc_fd, RTC_IRQP_SET, irqp) < 0) {
-    	    mp_msg(MSGT_CPLAYER, MSGL_WARN, "Linux RTC init error in ioctl (rtc_irqp_set %lu): %s\n", irqp, strerror(errno));
-	    mp_msg(MSGT_CPLAYER, MSGL_HINT, "Try adding \"echo %lu > /proc/sys/dev/rtc/max-user-freq\" to your system startup scripts.\n", irqp);
+    	    mp_msg(MSGT_CPLAYER, MSGL_WARN, MSGTR_LinuxRTCInitErrorIrqpSet, irqp, strerror(errno));
+    	    mp_msg(MSGT_CPLAYER, MSGL_HINT, MSGTR_IncreaseRTCMaxUserFreq, irqp);
    	    close (rtc_fd);
     	    rtc_fd = -1;
 	} else if (ioctl(rtc_fd, RTC_PIE_ON, 0) < 0) {
 	    /* variable only by the root */
-    	    mp_msg(MSGT_CPLAYER, MSGL_ERR, "Linux RTC init error in ioctl (rtc_pie_on): %s\n", strerror(errno));
+    	    mp_msg(MSGT_CPLAYER, MSGL_ERR, MSGTR_LinuxRTCInitErrorPieOn, strerror(errno));
     	    close (rtc_fd);
 	    rtc_fd = -1;
 	} else
-	    mp_msg(MSGT_CPLAYER, MSGL_INFO, MSGTR_UsingRTCTiming, irqp);
+	    mp_msg(MSGT_CPLAYER, MSGL_V, MSGTR_UsingRTCTiming, irqp);
     }
   }
 #ifdef HAVE_NEW_GUI
@@ -1381,7 +1583,8 @@ if(!codecs_file || !parse_codec_cfg(codecs_file)){
 #endif
     if(rtc_fd<0)
 #endif
-    mp_msg(MSGT_CPLAYER, MSGL_INFO, "Using %s timing\n",softsleep?"software":"usleep()");
+      mp_msg(MSGT_CPLAYER, MSGL_V, "Using %s timing\n",
+	     softsleep?"software":timer_name);
 
 #ifdef USE_TERMCAP
   if ( !use_gui ) load_termcap(NULL); // load key-codes
@@ -1392,7 +1595,7 @@ if(!codecs_file || !parse_codec_cfg(codecs_file)){
 // Init input system
 current_module = "init_input";
 mp_input_init();
-#ifndef HAVE_NO_POSIX_SELECT
+#if 0
 make_pipe(&keyb_fifo_get,&keyb_fifo_put);
 
 if(keyb_fifo_get > 0)
@@ -1419,26 +1622,32 @@ current_module = NULL;
 #ifdef HAVE_MENU
  if(use_menu) {
    if(menu_cfg && menu_init(menu_cfg))
-     mp_msg(MSGT_CPLAYER,MSGL_INFO,"Menu inited: %s\n", menu_cfg);
+     mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_MenuInitialized, menu_cfg);
    else {
      menu_cfg = get_path("menu.conf");
      if(menu_init(menu_cfg))
-       mp_msg(MSGT_CPLAYER,MSGL_INFO,"Menu inited: %s\n", menu_cfg);
+       mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_MenuInitialized, menu_cfg);
      else {
        if(menu_init(MPLAYER_CONFDIR "/menu.conf"))
-         mp_msg(MSGT_CPLAYER,MSGL_INFO,"Menu inited: %s\n", MPLAYER_CONFDIR"/menu.conf");
+         mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_MenuInitialized, MPLAYER_CONFDIR"/menu.conf");
        else {
-         mp_msg(MSGT_CPLAYER,MSGL_INFO,"Menu init failed\n");
+         mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_MenuInitFailed);
          use_menu = 0;
        }
      }
-     free(menu_cfg);
    }
  }
 #endif
-
+  
+  /// Catch signals
+#ifndef __MINGW32__
+  signal(SIGCHLD,child_sighandler);
+#endif
 
 #ifndef _XBOX
+#ifdef CRASH_DEBUG
+  prog_path = argv[0];
+#endif
   //========= Catch terminate signals: ================
   // terminate requests:
   signal(SIGTERM,exit_sighandler); // kill
@@ -1454,6 +1663,10 @@ current_module = NULL;
   signal(SIGILL,exit_sighandler);  // illegal instruction
   signal(SIGFPE,exit_sighandler);  // floating point exc.
   signal(SIGABRT,exit_sighandler); // abort()
+#ifdef CRASH_DEBUG
+  if (crash_debug)
+    signal(SIGTRAP,exit_sighandler);
+#endif
 #endif
 #endif //!_XBOX
 
@@ -1495,13 +1708,18 @@ int mplayer_open_file(char* pszFilename)
 
 play_next_file:
 
+  // init global sub numbers
+  global_sub_size = 0;
+  { int i; for (i = 0; i < SUB_SOURCES; i++) global_sub_indices[i] = -1; }
+  global_sub_quiet_osd_hack = 1;
+
   if (filename) load_per_file_config (mconfig, filename);
 
 // We must enable getch2 here to be able to interrupt network connection
 // or cache filling
 if(!noconsolecontrols && !slave_mode){
   if(inited_flags&INITED_GETCH2)
-    mp_msg(MSGT_CPLAYER,MSGL_WARN,"WARNING: getch2_init called twice!\n");
+    mp_msg(MSGT_CPLAYER,MSGL_WARN,MSGTR_Getch2InitializedTwice);
   else
     getch2_enable();  // prepare stdin for hotkeys...
   inited_flags|=INITED_GETCH2;
@@ -1515,12 +1733,12 @@ if(!noconsolecontrols && !slave_mode){
       guiGetEvent( guiSetDefaults,0 );
       while ( guiIntfStruct.Playing != 1 )
        {
-        mp_cmd_t* cmd;
+        mp_cmd_t* cmd;                                                                                   
 	usec_sleep(20000);
 	guiEventHandling();
 	guiGetEvent( guiReDraw,NULL );
-	if ( (cmd = mp_input_get_cmd(0,0)) != NULL) guiGetEvent( guiIEvent,(char *)cmd->id );
-       }
+	if ( (cmd = mp_input_get_cmd(0,0,0)) != NULL) guiGetEvent( guiIEvent,(char *)cmd->id );
+       } 
       guiGetEvent( guiSetParameters,NULL );
       if ( guiIntfStruct.StreamType == STREAMTYPE_STREAM )
        {
@@ -1542,12 +1760,11 @@ if(!noconsolecontrols && !slave_mode){
 	    filename = play_tree_iter_get_file(playtree_iter,1);
 	   }
          }
-       }
+       } 
     }
 #endif
 //---------------------------------------------------------------------------
 
-    mp_msg(MSGT_CPLAYER,MSGL_INFO,"\n");
     if(filename) mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_Playing, filename);
 
 #ifdef _XBOX
@@ -1562,10 +1779,10 @@ if(xbmc_cancel) {
 #ifdef _XBOX
 if (strstr(filename,".mp3") || strstr(filename,".ogg") || strstr(filename,".flac") || strstr(filename,"shout:") || strstr(filename, "dvd://") )
 {
-     if (strstr(filename,".mp3")  || strstr(filename,"shout:") )
-            file_format=DEMUXER_TYPE_AUDIO;
-     printf("do not search for subs\n");
-     sub_auto=0;
+       if (strstr(filename,".mp3")  || strstr(filename,"shout:") )
+              file_format=DEMUXER_TYPE_AUDIO;
+       printf("do not search for subs\n");
+       sub_auto=0;
 }
 else
 {
@@ -1585,21 +1802,22 @@ else
       strcpy(buf, "Z:\\subtitle");	//buf should be >= strlen("Z:\\subtitle")
       printf("auto open %s", buf);
 #else
-      char *buf = malloc((strlen(filename)-3) * sizeof(char));	
+      char *buf = malloc((strlen(filename)-3) * sizeof(char));
       memset(buf,0,strlen(filename)-3); // make sure string is terminated
-      strncpy(buf, filename, strlen(filename)-4);
+      strncpy(buf, filename, strlen(filename)-4); 
 #endif
       vo_vobsub=vobsub_open(buf,spudec_ifo,0,&vo_spudec);
       free(buf);
     }
     if(vo_vobsub){
-#ifndef _XBOX //We still want to support both
-      sub_auto=0; // don't do autosub for textsubs if vobsub found
-#endif
       inited_flags|=INITED_VOBSUB;
       vobsub_set_from_lang(vo_vobsub, dvdsub_lang);
       // check if vobsub requested only to display forced subtitles
       forced_subs_only=vobsub_get_forced_subs_flag(vo_vobsub);
+
+      // setup global sub numbering
+      global_sub_indices[SUB_SOURCE_VOBSUB] = global_sub_size; // the global # of the first vobsub.
+      global_sub_size += vobsub_get_indexes_count(vo_vobsub);
     }
 #ifdef _XBOX
 }
@@ -1657,7 +1875,7 @@ if(stream_dump_type==5){
   FILE *f;
   current_module="dumpstream";
   if(stream->type==STREAMTYPE_STREAM && stream->fd<0){
-    mp_msg(MSGT_CPLAYER,MSGL_FATAL,"Cannot dump this stream - no 'fd' available\n");
+    mp_msg(MSGT_CPLAYER,MSGL_FATAL,MSGTR_DumpstreamFdUnavailable);
     exit_player(MSGTR_Exit_error);
   }
   stream_reset(stream);
@@ -1689,6 +1907,9 @@ if(stream->type==STREAMTYPE_DVD){
   current_module="dvd lang->id";
   if(audio_id==-1) audio_id=dvd_aid_from_lang(stream,audio_lang);
   if(dvdsub_lang && dvdsub_id==-1) dvdsub_id=dvd_sid_from_lang(stream,dvdsub_lang);
+  // setup global sub numbering
+  global_sub_indices[SUB_SOURCE_DEMUX] = global_sub_size; // the global # of the first demux-specific sub.
+  global_sub_size += dvd_number_of_subs(stream);
   current_module=NULL;
 }
 #endif
@@ -1710,7 +1931,7 @@ goto_enable_cache:
 #endif
 if(stream_cache_size>0){
   current_module="enable_cache";
-  if(!stream_enable_cache(stream,stream_cache_size*1024,stream_cache_size*1024/5,stream_cache_size*1024/20))
+  if(!stream_enable_cache(stream,stream_cache_size*1024,stream_cache_size*1024*(stream_cache_min_percent / 100.0),stream_cache_size*1024*(stream_cache_prefill_percent / 100.0)))
   #ifdef _XBOX
     if((eof = libmpdemux_was_interrupted(PT_NEXT_ENTRY))) return -1;
   #else
@@ -1720,7 +1941,7 @@ if(stream_cache_size>0){
 
 #ifdef _XBOX
 char* cExt = strrchr(filename, '.');
-if (strstr(filename,"shout:") || (cExt != NULL && (strstr(cExt,".mp3")||strstr(cExt,".MP3")||strstr(cExt,".Mp3")||strstr(cExt,".mP3")) ))
+if (strstr(filename,"shout:") || (cExt != NULL && strstr(cExt,".mp3")))
 {
   printf("open as audio stream\n");
   file_format=DEMUXER_TYPE_AUDIO;
@@ -1742,16 +1963,16 @@ demuxer=demux_open(stream,file_format,audio_id,video_id,dvdsub_id,filename);
 // HACK to get MOV Reference Files working
 
 if (demuxer && demuxer->type==DEMUXER_TYPE_PLAYLIST)
-{
+{ 
   unsigned char* playlist_entry;
   play_tree_t *list = NULL, *entry = NULL;
 
   current_module="handle_demux_playlist";
   while (ds_get_packet(demuxer->video,&playlist_entry)>0)
-  {
+  {	 
     char *temp, *bname;
-
-    mp_msg(MSGT_CPLAYER,MSGL_V,"Adding file %s to element entry\n",playlist_entry);
+    
+    mp_msg(MSGT_CPLAYER,MSGL_V,"Adding file %s to element entry.\n",playlist_entry);
 
     bname=mp_basename(playlist_entry);
     if ((strlen(bname)>10) && !strncmp(bname,"qt",2) && !strncmp(bname+3,"gateQT",6))
@@ -1761,7 +1982,7 @@ if (demuxer && demuxer->type==DEMUXER_TYPE_PLAYLIST)
         continue;
 
     entry = play_tree_new();
-
+    
     if (filename && !strcmp(mp_basename(playlist_entry),playlist_entry)) // add reference path of current file
     {
       temp=malloc((strlen(filename)-strlen(mp_basename(filename))+strlen(playlist_entry)+1)*sizeof(char));
@@ -1771,13 +1992,13 @@ if (demuxer && demuxer->type==DEMUXER_TYPE_PLAYLIST)
 	temp[strlen(filename)-strlen(mp_basename(filename))]='\0';
 	strcat(temp, playlist_entry);
 	play_tree_add_file(entry,temp);
-	mp_msg(MSGT_CPLAYER,MSGL_V,"Resolving reference to %s\n",temp);
+	mp_msg(MSGT_CPLAYER,MSGL_V,"Resolving reference to %s.\n",temp);
 	free(temp);
       }
     }
     else
       play_tree_add_file(entry,playlist_entry);
-
+    
     if(!list)
       list = entry;
     else
@@ -1799,7 +2020,7 @@ if (demuxer && demuxer->type==DEMUXER_TYPE_PLAYLIST)
   }
 }
 
-if(!demuxer)
+if(!demuxer) 
 {
 #if 0
   play_tree_t* entry;
@@ -1814,7 +2035,7 @@ if(!demuxer)
     // don't try to parse raw media as playlist, it's unlikely
     goto goto_next_file;
   }
-  mp_msg(MSGT_CPLAYER,MSGL_INFO,"Falling back on trying to parse playlist %s...\n",filename);
+  mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_FallingBackOnPlaylist,filename);
   stream_reset(stream);
   stream_seek(stream,stream->start_pos);
   entry = parse_playtree(stream,0);
@@ -1828,6 +2049,21 @@ if(!demuxer)
 #endif
 }
 inited_flags|=INITED_DEMUXER;
+
+#ifdef HAVE_MATROSKA
+if (demuxer->type==DEMUXER_TYPE_MATROSKA) {
+  // setup global sub numbering
+  global_sub_indices[SUB_SOURCE_DEMUX] = global_sub_size; // the global # of the first demux-specific sub.
+  global_sub_size += demux_mkv_num_subs(demuxer);
+}
+#endif
+#ifdef HAVE_OGGVORBIS
+if (demuxer->type==DEMUXER_TYPE_OGG) {
+  // setup global sub numbering
+  global_sub_indices[SUB_SOURCE_DEMUX] = global_sub_size; // the global # of the first demux-specific sub.
+  global_sub_size += demux_ogg_num_subs(demuxer);
+}
+#endif
 
 current_module="demux_open2";
 
@@ -1848,7 +2084,7 @@ if((stream_dump_type)&&(stream_dump_type<4)){
   case 2: ds=d_video;break;
   case 3: ds=d_dvdsub;break;
   }
-  if(!ds){
+  if(!ds){        
       mp_msg(MSGT_CPLAYER,MSGL_FATAL,MSGTR_DumpSelectedStreamMissing);
       exit_player(MSGTR_Exit_error);
   }
@@ -1923,7 +2159,7 @@ if(!sh_video && !sh_audio){
 			dir = DVB_CHANNEL_HIGHER;
 		else
 			dir = DVB_CHANNEL_LOWER;
-
+			
 		if(dvb_step_channel(priv, dir))
 		{
 	  		uninit_player(INITED_ALL-(INITED_STREAM|INITED_INPUT));
@@ -1954,8 +2190,11 @@ if(xbmc_cancel) {
 #ifdef _XBOX //Allways allocate sub spudec, nomatter if something is specified
 if(vo_spudec==NULL && sh_video){
 #else
-if(d_dvdsub->id >= 0 && vo_spudec==NULL && sh_video){
+if(vo_spudec==NULL && sh_video &&
+     (stream->type==STREAMTYPE_DVD || demuxer->type==DEMUXER_TYPE_MATROSKA ||
+      d_dvdsub->id >= 0)){
 #endif
+
 if (spudec_ifo) {
   unsigned int palette[16], width, height;
   current_module="spudec_init_vobsub";
@@ -2014,49 +2253,80 @@ if(sh_video) {
 // check .sub
   current_module="read_subtitles_file";
   if(sub_name){
-    for (i = 0; sub_name[i] != NULL; ++i)
-        add_subtitles (sub_name[i], sh_video->fps, 0);
-  }
+    for (i = 0; sub_name[i] != NULL; ++i) 
+        add_subtitles (sub_name[i], sh_video->fps, 0); 
+  } 
   if(sub_auto) { // auto load sub file ...
     char *psub = get_path( "sub/" );
     char **tmp = sub_filenames((psub ? psub : ""), filename);
     char **tmp2 = tmp;
-    while (tmp && *tmp2)
+    free(psub); // release the buffer created by get_path() above
+    while (*tmp2)
         add_subtitles (*tmp2++, sh_video->fps, 0);
-    tmp2 = tmp;
-    while (tmp && *tmp2)
-        free(*tmp2++);
-    if(tmp) free(tmp);
-    free(psub);
+    free(tmp);
 #ifndef _XBOX
     if (set_of_sub_size == 0)
-        add_subtitles (get_path("default.sub"), sh_video->fps, 1);
+    {
+        add_subtitles (mem_ptr=get_path("default.sub"), sh_video->fps, 1);
+    free(mem_ptr); // release the buffer created by get_path()
+    }
     if (set_of_sub_size > 0)
         add_subtitles (NULL, sh_video->fps, 1);
 #endif
   }
-#ifdef _XBOX
-  if (set_of_sub_size > 0 && !vo_vobsub && !(demuxer && demuxer->sub && demuxer->sub->id>=0) ) {
-      //osd_show_sub_changed = sh_video->fps;
-      subdata = set_of_subtitles[set_of_sub_pos=0];
-#else
   if (set_of_sub_size > 0)  {
-      //osd_show_sub_changed = sh_video->fps;
-      subdata = set_of_subtitles[set_of_sub_pos=0];
-
-      if(stream_dump_type==3) list_sub_file(subdata);
-      if(stream_dump_type==4) dump_mpsub(subdata, sh_video->fps);
-      if(stream_dump_type==6) dump_srt(subdata, sh_video->fps);
-      if(stream_dump_type==7) dump_microdvd(subdata, sh_video->fps);
-      if(stream_dump_type==8) dump_jacosub(subdata, sh_video->fps);
-      if(stream_dump_type==9) dump_sami(subdata, sh_video->fps);
-#endif //!_XBOX
+      // setup global sub numbering
+      global_sub_indices[SUB_SOURCE_SUBS] = global_sub_size; // the global # of the first sub.
+      global_sub_size += set_of_sub_size;
   }
 }
 #endif
 
+if (global_sub_size) {
+  // find the best sub to use
+  if (vobsub_id >= 0) {
+    // if user asks for a vobsub id, use that first.
+    global_sub_pos = global_sub_indices[SUB_SOURCE_VOBSUB] + vobsub_id;
+  } else if (dvdsub_id >= 0 && global_sub_indices[SUB_SOURCE_DEMUX] >= 0) {
+    // if user asks for a dvd sub id, use that next.
+    global_sub_pos = global_sub_indices[SUB_SOURCE_DEMUX] + dvdsub_id;
+#ifdef _XBOX
+  } else if (global_sub_indices[SUB_SOURCE_DEMUX] >= 0) { 
+    //First select internal subs
+    global_sub_pos = global_sub_indices[SUB_SOURCE_DEMUX];
+  } else if (global_sub_indices[SUB_SOURCE_VOBSUB] >= 0) { 
+    //Second select vobsubs subs
+    global_sub_pos = global_sub_indices[SUB_SOURCE_VOBSUB];
+  } else  if (global_sub_indices[SUB_SOURCE_SUBS] >= 0) { 
+    //Third select text subs
+    global_sub_pos = global_sub_indices[SUB_SOURCE_SUBS];
+#else
+  } else if (global_sub_indices[SUB_SOURCE_SUBS] >= 0) {
+    // if there are text subs to use, use those.  (autosubs come last here)
+    global_sub_pos = global_sub_indices[SUB_SOURCE_SUBS];
+/*
+  } else if (global_sub_indices[SUB_SOURCE_DEMUX] >= 0) {
+    // if nothing else works, get subs from the demuxer.
+    global_sub_pos = global_sub_indices[SUB_SOURCE_DEMUX];
+*/
+#endif
+  } else {
+    // nothing worth doing automatically.
+    global_sub_pos = -1;
+  }
+
+  // rather than duplicate code, use the SUB_SELECT handler to init the right one.
+#ifndef _XBOX //command changed to use the subspecified directly
+  global_sub_pos--;
+#endif
+  mp_input_queue_cmd(mp_input_parse_cmd("sub_select"));
+}
+
 //================== Init AUDIO (codec) ==========================
 #ifdef _XBOX
+printf("Global Subsize: %d - VOBSUB: %d, DEMUX: %d, SUBS: %d", global_sub_size, global_sub_indices[SUB_SOURCE_VOBSUB], global_sub_indices[SUB_SOURCE_DEMUX], global_sub_indices[SUB_SOURCE_SUBS]);
+printf("Global Subpos : %d", global_sub_pos);
+
 if(xbmc_cancel) {
 	printf("mplayer: user canceled startup");
 	return -1;
@@ -2140,7 +2410,7 @@ if(use_menu) {
   char* vf_arg[] = { "_oldargs_", menu_root, NULL };
   vf_menu = vf_open_plugin(libmenu_vfs,sh_video->vfilter,"menu",vf_arg);
   if(!vf_menu) {
-    mp_msg(MSGT_CPLAYER,MSGL_ERR,"Can't open libmenu video filter with root menu %s\n",menu_root);
+    mp_msg(MSGT_CPLAYER,MSGL_ERR,MSGTR_CantOpenLibmenuFilterWithThisRootMenu,menu_root);
     use_menu = 0;
   }
 }
@@ -2174,26 +2444,13 @@ if(auto_quality>0){
     output_quality=get_video_quality_max(sh_video);
     if(auto_quality>output_quality) auto_quality=output_quality;
     else output_quality=auto_quality;
-    mp_msg(MSGT_CPLAYER,MSGL_V,"AutoQ: setting quality to %d\n",output_quality);
+    mp_msg(MSGT_CPLAYER,MSGL_V,"AutoQ: setting quality to %d.\n",output_quality);
     set_video_quality(sh_video,output_quality);
 }
 
 // ========== Init display (sh_video->disp_w*sh_video->disp_h/out_fmt) ============
 
 current_module="init_vo";
-    if (sh_video)
-    {
-        if (vo_gamma_gamma != 1000)
-          set_video_colors (sh_video, "gamma", vo_gamma_gamma);
-	if (vo_gamma_brightness != 1000)
-	    set_video_colors(sh_video, "brightness", vo_gamma_brightness);
-	if (vo_gamma_contrast != 1000)
-	    set_video_colors(sh_video, "contrast", vo_gamma_contrast);
-	if (vo_gamma_saturation != 1000)
-	    set_video_colors(sh_video, "saturation", vo_gamma_saturation);
-	if (vo_gamma_hue != 1000)
-	    set_video_colors(sh_video, "hue", vo_gamma_hue);
-    }
 
    if(vo_flags & 0x08 && vo_spudec)
       spudec_set_hw_spu(vo_spudec,video_out);
@@ -2276,7 +2533,7 @@ if(sh_audio){
 	// output:
 	&ao_data.samplerate, &ao_data.channels, &ao_data.format,
 	audio_out_format_bits(ao_data.format)/8)){
-      mp_msg(MSGT_CPLAYER,MSGL_ERR,"Error at audio filter chain pre-init!\n");
+      mp_msg(MSGT_CPLAYER,MSGL_ERR,MSGTR_AudioFilterChainPreinitError);
   } else {
     mp_msg(MSGT_CPLAYER,MSGL_INFO,"AF_pre: %dHz %dch %s\n",
       ao_data.samplerate, ao_data.channels,
@@ -2301,20 +2558,15 @@ if(sh_audio){
       ao_data.samplerate, ao_data.channels,
       audio_out_format_name(ao_data.format),
       audio_out_format_bits(ao_data.format)/8 );
-    mp_msg(MSGT_CPLAYER,MSGL_V,MSGTR_AODescription_AOAuthor,
+    mp_msg(MSGT_CPLAYER,MSGL_V,"AO: Description: %s\nAO: Author: %s\n",
       audio_out->info->name, audio_out->info->author);
     if(strlen(audio_out->info->comment) > 0)
-      mp_msg(MSGT_CPLAYER,MSGL_V,MSGTR_AOComment, audio_out->info->comment);
+      mp_msg(MSGT_CPLAYER,MSGL_V,"AO: Comment: %s\n", audio_out->info->comment);
     // init audio filters:
 #if 1
     current_module="af_init";
-    if(!init_audio_filters(sh_audio,
-        (int)(sh_audio->samplerate*playback_speed),
-	sh_audio->channels, sh_audio->sample_format, sh_audio->samplesize,
-	ao_data.samplerate, ao_data.channels, ao_data.format,
-	audio_out_format_bits(ao_data.format)/8, /* ao_data.bps, */
-	ao_data.outburst*4, ao_data.buffersize)){
-      mp_msg(MSGT_CPLAYER,MSGL_ERR,"Couldn't find matching filter / ao format!\n");
+    if(!build_afilter_chain(sh_audio, &ao_data)) {
+      mp_msg(MSGT_CPLAYER,MSGL_ERR,MSGTR_NoMatchingFilter);
 //      mp_msg(MSGT_CPLAYER,MSGL_ERR,"Couldn't find matching filter / ao format! -> NOSOUND\n");
 //      uninit_player(INITED_ACODEC|INITED_AO); // close codec & ao
 //      sh_audio=d_audio->sh=NULL; // -> nosound
@@ -2322,8 +2574,7 @@ if(sh_audio){
 #endif
   }
   mixer.audio_out = audio_out;
-  mixer.afilter = sh_audio ? sh_audio->afilter : NULL;
-  mixer.volstep = 3;
+  mixer.volstep = volstep;
 }
 
 current_module="av_init";
@@ -2333,14 +2584,14 @@ if(sh_audio) sh_audio->delay=-audio_delay;
 
 if(!sh_audio){
   mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_NoSound);
-  mp_msg(MSGT_CPLAYER,MSGL_V,"Freeing %d unused audio chunks\n",d_audio->packs);
+  mp_msg(MSGT_CPLAYER,MSGL_V,"Freeing %d unused audio chunks.\n",d_audio->packs);
   ds_free_packs(d_audio); // free buffered chunks
   d_audio->id=-2;         // do not read audio chunks
   //uninit_player(INITED_AO); // close device
 }
 if(!sh_video){
    mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_Video_NoVideo);
-   mp_msg(MSGT_CPLAYER,MSGL_V,"Freeing %d unused video chunks\n",d_video->packs);
+   mp_msg(MSGT_CPLAYER,MSGL_V,"Freeing %d unused video chunks.\n",d_video->packs);
    ds_free_packs(d_video);
    d_video->id=-2;
    //if(!fixed_vo) uninit_player(INITED_VO);
@@ -2433,16 +2684,17 @@ while(sh_audio){
   int playsize;
 
   current_module="play_audio";
-
+  
   ao_data.pts=((sh_video?sh_video->timer:0)+sh_audio->delay)*90000.0;
   playsize=audio_out->get_space();
-
+  
   // handle audio-only case:
-  if(!playsize && !sh_video) {  // buffer is full, do not block here!!!
+  if(playsize < ao_data.outburst &&
+      !sh_video) {  // buffer is full, do not block here!!!
     usec_sleep(10000); // Wait a tick before retry
     continue;
   }
-
+  
   if(playsize>MAX_OUTBURST) playsize=MAX_OUTBURST; // we shouldn't exceed it!
 
   // Fill buffer if needed:
@@ -2458,7 +2710,7 @@ while(sh_audio){
   tt = t*0.000001f; audio_time_usage+=tt;
   if(playsize>sh_audio->a_out_buffer_len) playsize=sh_audio->a_out_buffer_len;
 
-  // play audio:
+  // play audio:  
   current_module="play_audio";
   playsize=audio_out->play(sh_audio->a_out_buffer,playsize,0);
 
@@ -2474,51 +2726,15 @@ while(sh_audio){
 
 if(!sh_video) {
   // handle audio-only case:
-  #ifdef _XBOX
+#ifdef _XBOX
   aoldpts= 10 * sh_audio->delay-audio_out->get_delay();
-  #endif
+#else
   if(!quiet) {
-      //
-      // convert time to HH:MM:SS.F format
-      //
-      long tenths = 10 * sh_audio->delay-audio_out->get_delay();
-      int hh = (tenths / 36000) % 100;
-      int mm = (tenths / 600) % 60;
-      int ss = (tenths /  10) % 60;
-      int f1 = tenths % 10;
-      char hhmmssf[16]; // only really need 11, but just in case...
-      #ifdef _XBOX
-      aoldpts=tenths;
-      #endif
-      sprintf( hhmmssf, "%2d:%2d:%2d.%1d", hh, mm, ss, f1);
-      if (0 == hh) {
-        hhmmssf[1] = ' ';
-        hhmmssf[2] = ' ';
-      }
-      // uncomment the next three lines to show leading zero ten-hours
-      // else if (' ' == hhmmssf[0]) {
-      //   hhmmssf[0] = '0';
-      // }
-      if ((0 == hh) && (0 == mm)) {
-        hhmmssf[4] = ' ';
-        hhmmssf[5] = ' ';
-      }
-      else if ((' ' == hhmmssf[3]) && (' ' != hhmmssf[2])) {
-        hhmmssf[3] = '0';
-      }
-      if ((' ' == hhmmssf[6]) && (' ' != hhmmssf[5])) {
-        hhmmssf[6] = '0';
-      }
-#ifndef _XBOX //prevents spam :)
-             mp_msg(MSGT_AVSYNC,MSGL_STATUS,"A:  %s %4.1f%% %d%%   \r"
-		    ,hhmmssf
-		    ,(sh_audio->delay>0.5)?100.0*audio_time_usage/(double)sh_audio->delay:0
-		    ,cache_fill_status
-		    );
-#endif
+    float a_pos = sh_audio->delay - audio_out->get_delay() * playback_speed;
+    print_status(a_pos, 0, 0);
   }
+#endif
   if(d_audio->eof) eof = PT_NEXT_ENTRY;
-
 } else {
 
 /*========================== PLAY VIDEO ============================*/
@@ -2549,7 +2765,7 @@ if(!sh_video) {
 	    float d=delay-sh_audio->delay;
 	    // we should avoid dropping to many frames in sequence unless we
 	    // are too late. and we allow 100ms A-V delay here:
-	    if(d<-dropped_frames*frame_time-0.100){
+	    if(d<-dropped_frames*frame_time-0.100 && osd_function != OSD_PAUSE){
 		drop_frame=frame_dropping;
 		++drop_frame_cnt;
 		++dropped_frames;
@@ -2589,7 +2805,7 @@ if(!sh_video) {
 
 
 // ==========================================================================
-
+    
 //    current_module="draw_osd";
 //    if(vo_config_count) video_out->draw_osd();
 
@@ -2622,11 +2838,11 @@ if(!sh_video) {
 
       time_frame=0;	// don't sleep!
       blit_frame=0;	// don't display!
-
+      
     } else {
 
       // It's time to sleep...
-
+      
       frame_time_remaining=0;
       time_frame-=GetRelativeTime(); // reset timer
 
@@ -2665,7 +2881,7 @@ if(!sh_video) {
           // NOSOUND:
           if( (time_frame<-3*frame_time || time_frame>3*frame_time) || benchmark)
 	      time_frame=0;
-
+	  
       }
 
 //      if(verbose>1)printf("sleep: %5.3f  a:%6.3f  v:%6.3f  \n",time_frame,sh_audio->timer,sh_video->timer);
@@ -2673,7 +2889,7 @@ if(!sh_video) {
       aq_sleep_time+=time_frame;
 
     }	// !drop_frame
-
+    
 //============================== SLEEP: ===================================
 
 time_frame/=playback_speed;
@@ -2688,15 +2904,15 @@ if(time_frame>0.001 && !(vo_flags&256)){
         while (time_frame > 0.000) {
 	    unsigned long rtc_ts;
 	    if (read (rtc_fd, &rtc_ts, sizeof(rtc_ts)) <= 0)
-		    mp_msg(MSGT_CPLAYER, MSGL_ERR, "Linux RTC read error: %s\n", strerror(errno));
+		    mp_msg(MSGT_CPLAYER, MSGL_ERR, MSGTR_LinuxRTCReadError, strerror(errno));
     	    time_frame-=GetRelativeTime();
 	}
     } else
 #endif
     {
-	// -------- USLEEP + SOFTSLEEP -----------
+	// -------- TIMER + SOFTSLEEP -----------
 	float min=softsleep?0.021:0.005;
-	current_module="sleep_usleep";
+	current_module="sleep_timer";
         while(time_frame>min){
           if(time_frame<=0.020)
              usec_sleep(0); // sleeps 1 clock tick (10ms)!
@@ -2706,7 +2922,7 @@ if(time_frame>0.001 && !(vo_flags&256)){
         }
 	if(softsleep){
 	    current_module="sleep_soft";
-	    if(time_frame<0) mp_msg(MSGT_AVSYNC, MSGL_WARN, "Warning! Softsleep underflow!\n");
+	    if(time_frame<0) mp_msg(MSGT_AVSYNC, MSGL_WARN, MSGTR_SoftsleepUnderflow);
 	    while(time_frame>0) time_frame-=GetRelativeTime(); // burn the CPU
 	}
     }
@@ -2793,9 +3009,9 @@ if(time_frame>0.001 && !(vo_flags&256)){
         a_pts=samples*(float)sh_audio->audio.dwScale/(float)sh_audio->audio.dwRate;
 	delay_corrected=1;
 	a_pts-=(sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps;
-	#ifdef _XBOX
-	aoldpts=a_pts;
-	#endif
+    #ifdef _XBOX
+    aoldpts=a_pts;
+    #endif
     } else
 #endif
     {
@@ -2806,12 +3022,12 @@ if(time_frame>0.001 && !(vo_flags&256)){
       #endif
       if(!delay_corrected) if(a_pts) delay_corrected=1;
 #if 0
-      printf("\n#X# pts=%5.3f ds_pts=%5.3f buff=%5.3f total=%5.3f\n",
+      mp_msg(MSGT_FIXME, MSGL_FIXME, "\n#X# pts=%5.3f ds_pts=%5.3f buff=%5.3f total=%5.3f\n",
           a_pts,
 	  ds_tell_pts(d_audio)/(float)sh_audio->i_bps,
 	  -sh_audio->a_in_buffer_len/(float)sh_audio->i_bps,
 	  a_pts+(ds_tell_pts(d_audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps);
-#endif
+#endif	  
       a_pts+=(ds_tell_pts(d_audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps;
       #ifdef _XBOX
       aoldpts=a_pts;
@@ -2845,35 +3061,16 @@ if(time_frame>0.001 && !(vo_flags&256)){
 		fFPS=0.0f;
 	}
 #else
-        if(!quiet) mp_msg(MSGT_AVSYNC,MSGL_STATUS,"A:%6.1f V:%6.1f A-V:%7.3f ct:%7.3f  %3d/%3d  %2d%% %2d%% %4.1f%% %d %d %d%%\r",
-	  a_pts-audio_delay-delay,v_pts,AV_delay,c_total,
-          (int)sh_video->num_frames,(int)sh_video->num_frames_decoded,
-          (sh_video->timer>0.5)?(int)(100.0*video_time_usage*playback_speed/(double)sh_video->timer):0,
-          (sh_video->timer>0.5)?(int)(100.0*vout_time_usage*playback_speed/(double)sh_video->timer):0,
-          (sh_video->timer>0.5)?(100.0*audio_time_usage*playback_speed/(double)sh_video->timer):0
-          ,drop_frame_cnt
-	  ,output_quality
-	  ,cache_fill_status
-        );
-        fflush(stdout);
+        if(!quiet)
+          print_status(a_pts - audio_delay - delay, AV_delay, c_total);
 #endif //!_XBOX
       }
-
+    
   } else {
     // No audio:
 #ifndef _XBOX
     if(!quiet)
-      mp_msg(MSGT_AVSYNC,MSGL_STATUS,"V:%6.1f  %3d  %2d%% %2d%% %4.1f%% %d %d %d%%\r",sh_video->pts,
-        (int)sh_video->num_frames,
-        (sh_video->timer>0.5)?(int)(100.0*video_time_usage/(double)sh_video->timer):0,
-        (sh_video->timer>0.5)?(int)(100.0*vout_time_usage/(double)sh_video->timer):0,
-        (sh_video->timer>0.5)?(100.0*audio_time_usage/(double)sh_video->timer):0
-          ,drop_frame_cnt
-	  ,output_quality
-	  ,cache_fill_status
-        );
-
-      fflush(stdout);
+      print_status(0, 0, 0);
 #endif
   }
 
@@ -2929,7 +3126,7 @@ if(auto_quality>0){
       if (audio_out && sh_audio)
          audio_out->pause();	// pause audio, keep data if possible
 
-      while( (cmd = mp_input_get_cmd(20,1)) == NULL) {
+      while( (cmd = mp_input_get_cmd(20,1,1)) == NULL) {
 	     if(sh_video && video_out && vo_config_count) video_out->check_events();
 #ifdef HAVE_NEW_GUI
              if(use_gui){
@@ -2944,7 +3141,10 @@ if(auto_quality>0){
 #endif
              usec_sleep(20000);
          }
+      if (cmd && cmd->id == MP_CMD_PAUSE) {
+      cmd = mp_input_get_cmd(0,1,0);
       mp_cmd_free(cmd);
+      }
          osd_function=OSD_PLAY;
       if (audio_out && sh_audio)
         audio_out->resume();	// resume audio
@@ -2952,7 +3152,7 @@ if(auto_quality>0){
         video_out->control(VOCTRL_RESUME, NULL);	// resume video
       (void)GetRelativeTime();	// keep TF around FT in next cycle
 #ifdef HAVE_NEW_GUI
-      if (use_gui)
+      if (use_gui) 
        {
         if ( guiIntfStruct.Playing == guiSetStop ) goto goto_next_file;
         guiGetEvent( guiCEvent,(char *)guiSetPlay );
@@ -2978,29 +3178,26 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 //================= EDL =========================================
 
 #ifdef USE_EDL
- if( next_edl_record->next ) { // Are we (still?) doing EDL?
+ if( next_edl_record ) { // Are we (still?) doing EDL?
   if ( !sh_video ) {
-    mp_msg( MSGT_CPLAYER, MSGL_ERR, "Cannot use edit list without video. EDL disabled.\n" );
-    next_edl_record->next = NULL;
+    mp_msg( MSGT_CPLAYER, MSGL_ERR, MSGTR_EdlNOsh_video );
+    free(edl_records);
+    next_edl_record = NULL; 
+    edl_records = NULL;
   } else {
    if( sh_video->pts >= next_edl_record->start_sec ) {
      if( next_edl_record->action == EDL_SKIP ) {
        osd_function = OSD_FFW;
        abs_seek_pos = 0;
        rel_seek_secs = next_edl_record->length_sec;
-#ifdef DEBUG_EDL
-       printf( "\nEDL_SKIP: start [%f], stop [%f], length [%f]\n", next_edl_record->start_sec, next_edl_record->stop_sec, next_edl_record->length_sec );
-#endif
+       mp_msg(MSGT_CPLAYER, MSGL_DBG4, "EDL_SKIP: start [%f], stop [%f], length [%f]\n", next_edl_record->start_sec, next_edl_record->stop_sec, next_edl_record->length_sec );
        edl_decision = 1;
-       next_edl_record = next_edl_record->next;
      } else if( next_edl_record->action == EDL_MUTE ) {
-       mixer_mute(&mixer);
-#ifdef DEBUG_EDL
-       printf( "\nEDL_MUTE: [%f]\n", next_edl_record->start_sec );
-#endif
-       edl_decision = 1;
-       next_edl_record = next_edl_record->next;
+       edl_muted = !edl_muted;
+       if ((user_muted | edl_muted) != mixer.muted) mixer_mute(&mixer);
+       mp_msg(MSGT_CPLAYER, MSGL_DBG4, "EDL_MUTE: [%f]\n", next_edl_record->start_sec );
      }
+     next_edl_record=next_edl_record->next;
    }
   }
  }
@@ -3013,7 +3210,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 {
   mp_cmd_t* cmd;
   int brk_cmd = 0;
-  while( !brk_cmd && (cmd = mp_input_get_cmd(0,0)) != NULL) {
+  while( !brk_cmd && (cmd = mp_input_get_cmd(0,0,0)) != NULL) {
     switch(cmd->id) {
     case MP_CMD_SEEK : {
       int v,abs;
@@ -3046,18 +3243,47 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
       }
       break;
 #endif
+    case MP_CMD_SWITCH_RATIO : {
+      if (cmd->nargs == 0)
+	movie_aspect = (float) sh_video->disp_w / sh_video->disp_h;
+      else
+	movie_aspect = cmd->args[0].v.f;
+      mpcodecs_config_vo (sh_video, sh_video->disp_w, sh_video->disp_h, 0);
+    } break;
     case MP_CMD_AUDIO_DELAY : {
       float v = cmd->args[0].v.f;
       audio_delay += v;
       osd_show_av_delay = 9;
       if(sh_audio) sh_audio->delay+= v;
     } break;
+    case MP_CMD_SPEED_INCR : {
+      float v = cmd->args[0].v.f;
+      playback_speed += v;
+      if (sh_video)
+      osd_show_speed = sh_video->fps;
+      build_afilter_chain(sh_audio, &ao_data);
+    } break;
+    case MP_CMD_SPEED_MULT : {
+      float v = cmd->args[0].v.f;
+      playback_speed *= v;
+      if (sh_video)
+      osd_show_speed = sh_video->fps;
+      build_afilter_chain(sh_audio, &ao_data);
+    } break;
+    case MP_CMD_SPEED_SET : {
+      float v = cmd->args[0].v.f;
+      playback_speed = v;
+      if (sh_video)
+      osd_show_speed = sh_video->fps;
+      build_afilter_chain(sh_audio, &ao_data);
+    } break;
+    case MP_CMD_FRAME_STEP :
     case MP_CMD_PAUSE : {
-      osd_function=OSD_PAUSE;
+      cmd->pausing = 1;
       brk_cmd = 1;
     } break;
     case MP_CMD_QUIT : {
-      exit_player_with_rc(MSGTR_Exit_quit, 0);
+      exit_player_with_rc(MSGTR_Exit_quit, (cmd->nargs > 0)? cmd->args[0].v.i : 0);
     }
     case MP_CMD_GRAB_FRAMES : {
       grab_frames=2;
@@ -3080,7 +3306,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
      {
       if(!force && playtree_iter) {
 	play_tree_iter_t* i = play_tree_iter_new_copy(playtree_iter);
-
+	
 	if(play_tree_iter_step(i,n,0) == PLAY_TREE_ITER_ENTRY)
 	  eof = (n > 0) ? PT_NEXT_ENTRY : PT_PREV_ENTRY;
 	play_tree_iter_free(i);
@@ -3160,7 +3386,11 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 
 		// start change for absolute volume value
 		int abs = (cmd->nargs > 1) ? cmd->args[1].v.i : 0;
-
+		
+#ifdef USE_EDL
+      if (edl_muted) break;
+      user_muted = 0;
+#endif
 		if( abs )
 		{
 			mixer_setvolume(&mixer, (float)v, (float)v );
@@ -3170,7 +3400,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
       else
 	mixer_decvolume(&mixer);
 		}
-
+	  
 #ifdef USE_OSD
       if(osd_level && sh_video){
         float vol;
@@ -3183,6 +3413,10 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 #endif
     } break;
     case MP_CMD_MUTE:
+#ifdef USE_EDL
+      user_muted = !user_muted;
+      if ((edl_muted | user_muted) != mixer.muted)
+#endif
       mixer_mute(&mixer);
       break;
     case MP_CMD_LOADFILE : {
@@ -3209,7 +3443,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 	play_tree_free_list(playtree->child,1);
 	play_tree_set_child(playtree,e);
 	play_tree_iter_step(playtree_iter,0,0);
-	eof = PT_NEXT_SRC;
+	eof = PT_NEXT_SRC;	
       }
       brk_cmd = 1;
     } break;
@@ -3246,10 +3480,10 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
     } break;
     case MP_CMD_BRIGHTNESS :  {
       int v = cmd->args[0].v.i, abs = cmd->args[1].v.i;
-
+      
       if (!sh_video)
 	break;
-
+      
       if (vo_gamma_brightness == 1000)
       {
 	vo_gamma_brightness = 0;
@@ -3281,13 +3515,13 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 
       if (!sh_video)
 	break;
-
+      
       if (vo_gamma_contrast == 1000)
       {
 	vo_gamma_contrast = 0;
 	get_video_colors(sh_video, "contrast", &vo_gamma_contrast);
       }
-
+     
       if (abs)
         vo_gamma_contrast = v;
       else
@@ -3313,7 +3547,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 
       if (!sh_video)
 	break;
-
+      
       if (vo_gamma_saturation == 1000)
       {
 	vo_gamma_saturation = 0;
@@ -3345,13 +3579,13 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 
       if (!sh_video)
 	break;
-
+      
       if (vo_gamma_hue == 1000)
       {
 	vo_gamma_hue = 0;
 	get_video_colors(sh_video, "hue", &vo_gamma_hue);
       }
-
+     
       if (abs)
         vo_gamma_hue = v;
       else
@@ -3430,7 +3664,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 #endif
 	}
       }
-    }
+    } 
 #ifdef HAS_DVBIN_SUPPORT
 	if((stream->type == STREAMTYPE_DVB) && stream->priv)
 	{
@@ -3439,14 +3673,14 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 	  {
 		int dir;
 		int v = cmd->args[0].v.i;
-
-		last_dvb_step = v;
+	    
+		last_dvb_step = v;	
 		if(v > 0)
 			dir = DVB_CHANNEL_HIGHER;
 		else
 			dir = DVB_CHANNEL_LOWER;
-
-
+			
+			
 		if(dvb_step_channel(priv, dir))
 		{
 	  		uninit_player(INITED_ALL-(INITED_STREAM|INITED_INPUT));
@@ -3455,7 +3689,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 		}
 	  }
 	}
-#endif
+#endif	
     break;
     case MP_CMD_TV_SET_CHANNEL :  {
       if (file_format == DEMUXER_TYPE_TV) {
@@ -3468,8 +3702,8 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 #endif
       }
     } break;
-#ifdef HAS_DVBIN_SUPPORT
-  case MP_CMD_DVB_SET_CHANNEL:
+#ifdef HAS_DVBIN_SUPPORT	
+  case MP_CMD_DVB_SET_CHANNEL:  
   {
 	if((stream->type == STREAMTYPE_DVB) && stream->priv)
 	{
@@ -3490,7 +3724,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 	  }
 	}
   }
-#endif
+#endif	
     case MP_CMD_TV_LAST_CHANNEL :  {
       if (file_format == DEMUXER_TYPE_TV) {
 	tv_last_channel((tvi_handle_t*)(demuxer->priv));
@@ -3511,6 +3745,9 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 	tv_step_chanlist((tvi_handle_t*)(demuxer->priv));
     } break;
 #endif
+    case MP_CMD_SWITCH_VSYNC:  {
+      vo_vsync = ( cmd->nargs > 0 )? cmd->args[0].v.i : !vo_vsync;
+    } break;
     case MP_CMD_VO_FULLSCREEN:
     {
 #ifdef HAVE_NEW_GUI
@@ -3525,6 +3762,17 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
        video_out->control(VOCTRL_ONTOP, 0);
 #ifdef USE_OSD
        osd_show_ontop=10;
+       vo_osd_changed(OSDTYPE_SUBTITLE);
+#endif
+     }
+
+    } break;
+    case MP_CMD_VO_ROOTWIN:
+    {
+     if(video_out && vo_config_count) {
+       video_out->control(VOCTRL_ROOTWIN, 0);
+#ifdef USE_OSD
+       osd_show_rootwin=10;
        vo_osd_changed(OSDTYPE_SUBTITLE);
 #endif
      }
@@ -3547,12 +3795,12 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 	  vo_osd_progbar_type=OSD_PANSCAN;
 	  vo_osd_progbar_value=vo_panscan*256;
 	  vo_osd_changed(OSDTYPE_PROGBAR);
+        }
 #ifdef HAVE_FREETYPE
-	  if (subtitle_autoscale == 2 || subtitle_autoscale == 3)
+	if (sh_video && (subtitle_autoscale == 2 || subtitle_autoscale == 3))
 	    // force scaling font to movie width or diagonal
 	    force_load_font = 1;
 #endif
-        }
 #endif
        }
     } break;
@@ -3562,7 +3810,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
       if (sh_video) {
         int v;
 	v = cmd->args[0].v.i;
-
+    
 	sub_pos+=v;
 	if(sub_pos >100) sub_pos=100;
 	if(sub_pos <0) sub_pos=0;
@@ -3598,37 +3846,110 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 	{
 #ifdef USE_SUB
 	if (sh_video) {
-		mp_msg(MSGT_GLOBAL,MSGL_INFO,"ANS_SUB_VISIBILITY=%ld\n", sub_visibility);
+		mp_msg(MSGT_GLOBAL,MSGL_INFO,MSGTR_AnsSubVisibility, sub_visibility);
 	}
 #endif
 	} break;
-    case MP_CMD_VOBSUB_LANG:
-    if (vo_vobsub)
-    {
-	int new_id = vobsub_id + 1;
-	if (vobsub_id < 0)
-	    new_id = 0;
-	if ((unsigned int) new_id >= vobsub_get_indexes_count(vo_vobsub))
-	    new_id = -1;
-        if(new_id != vobsub_id)
-	    osd_show_vobsub_changed = 9;
-	vobsub_id = new_id;
-    }
-#ifdef USE_SUB
-    else if (set_of_sub_size > 0){ //change subtitle file
-        set_of_sub_pos = (set_of_sub_pos + 1) % set_of_sub_size;
-        subdata = set_of_subtitles[set_of_sub_pos];
-        osd_show_sub_changed = sh_video->fps;
-        vo_sub = NULL;
-        vo_osd_changed(OSDTYPE_SUBTITLE);
-    }
+    case MP_CMD_SUB_SELECT:
+      if (global_sub_size) {
+        int source = -1;
+#ifndef _XBOX //We want the subtitle we specify ourself, not the next one
+        global_sub_pos++;
 #endif
-        break;
+        if (global_sub_pos >= global_sub_size)
+          global_sub_pos = -1;
+        if (global_sub_pos >= 0)
+          source = sub_source();
+
+        mp_msg(MSGT_CPLAYER, MSGL_DBG3, "subtitles: %d subs, (v@%d s@%d d@%d), @%d, source @%d\n",
+          global_sub_size, global_sub_indices[SUB_SOURCE_VOBSUB],
+          global_sub_indices[SUB_SOURCE_SUBS], global_sub_indices[SUB_SOURCE_DEMUX],
+          global_sub_pos, source);
+
+#ifdef USE_SUB
+        set_of_sub_pos = -1;
+        subdata = NULL;
+        vo_sub = NULL;
+#endif
+        vobsub_id = -1;
+        dvdsub_id = -1;
+        if (d_dvdsub) d_dvdsub->id = -1;
+
+        // be careful!
+        // if sub_changed is till on but subdata's been reset, bad things happen.
+        osd_show_vobsub_changed = 0;
+        osd_show_sub_changed = 0;
+
+        if (source == SUB_SOURCE_VOBSUB) {
+          vobsub_id = global_sub_pos - global_sub_indices[SUB_SOURCE_VOBSUB];
+          if (!global_sub_quiet_osd_hack) osd_show_vobsub_changed = sh_video->fps;
+#ifdef USE_SUB
+        } else if (source == SUB_SOURCE_SUBS) {
+          set_of_sub_pos = global_sub_pos - global_sub_indices[SUB_SOURCE_SUBS];
+          subdata = set_of_subtitles[set_of_sub_pos];
+          if (!global_sub_quiet_osd_hack) osd_show_sub_changed = sh_video->fps;
+          vo_osd_changed(OSDTYPE_SUBTITLE); 
+#ifndef _XBOX
+          // FIXME: is this the correct place for these?
+          if(stream_dump_type==3) list_sub_file(subdata);
+          if(stream_dump_type==4) dump_mpsub(subdata, sh_video->fps);
+          if(stream_dump_type==6) dump_srt(subdata, sh_video->fps);
+          if(stream_dump_type==7) dump_microdvd(subdata, sh_video->fps);
+          if(stream_dump_type==8) dump_jacosub(subdata, sh_video->fps);
+          if(stream_dump_type==9) dump_sami(subdata, sh_video->fps);
+#endif //!_XBOX
+#endif
+        } else if (source == SUB_SOURCE_DEMUX) {
+          dvdsub_id = global_sub_pos - global_sub_indices[SUB_SOURCE_DEMUX];
+          if (d_dvdsub) {
+#ifdef USE_DVDREAD
+            if (vo_spudec && stream->type == STREAMTYPE_DVD) {
+              d_dvdsub->id = dvdsub_id;
+              spudec_reset(vo_spudec);
+            }
+#endif
+#ifdef HAVE_OGGVORBIS
+            if (demuxer->type == DEMUXER_TYPE_OGG)
+              d_dvdsub->id = demux_ogg_sub_id(demuxer, dvdsub_id);
+#endif
+#ifdef HAVE_MATROSKA
+            if (demuxer->type == DEMUXER_TYPE_MATROSKA) {
+              d_dvdsub->id = demux_mkv_change_subs(demuxer, dvdsub_id);
+              if (d_dvdsub->id >= 0 && ((mkv_sh_sub_t *)d_dvdsub->sh)->type == 'v') {
+                mkv_sh_sub_t *mkv_sh_sub = (mkv_sh_sub_t *)d_dvdsub->sh;
+                if (vo_spudec != NULL)
+                  spudec_free(vo_spudec);
+                vo_spudec =
+                  spudec_new_scaled_vobsub(mkv_sh_sub->palette, mkv_sh_sub->colors,
+                  mkv_sh_sub->custom_colors,
+                  mkv_sh_sub->width,
+                  mkv_sh_sub->height);
+                if (!forced_subs_only)
+                  forced_subs_only = mkv_sh_sub->forced_subs_only;
+                if (vo_spudec) {
+                  spudec_set_forced_subs_only(vo_spudec, forced_subs_only);
+                  inited_flags |= INITED_SPUDEC;
+                }
+              }
+            }
+#endif
+          }
+          if (!global_sub_quiet_osd_hack) osd_show_vobsub_changed = sh_video->fps;
+        } else { // off
+          if (!global_sub_quiet_osd_hack) osd_show_vobsub_changed = sh_video->fps;
+#ifdef USE_SUB
+          vo_osd_changed(OSDTYPE_SUBTITLE); 
+#endif
+        }
+        // it's annoying and dumb to show osd saying "off" at every subless file...
+        global_sub_quiet_osd_hack = 0;
+      }
+      break;
     case MP_CMD_SUB_FORCED_ONLY:
       if (vo_spudec) {
 	forced_subs_only = forced_subs_only ? 0 : ~0; // toggle state
 	spudec_set_forced_subs_only(vo_spudec,forced_subs_only);
-      }
+      }    
       break;
     case MP_CMD_SCREENSHOT :
       if(vo_config_count) video_out->control(VOCTRL_SCREENSHOT, NULL);
@@ -3636,18 +3957,26 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
     case MP_CMD_VF_CHANGE_RECTANGLE:
 	set_rectangle(sh_video, cmd->args[0].v.i, cmd->args[1].v.i);
 	break;
-
+	
     case MP_CMD_GET_TIME_LENGTH : {
-	mp_msg(MSGT_GLOBAL,MSGL_INFO,"ANS_LENGTH=%ld\n", demuxer_get_time_length(demuxer));
+	mp_msg(MSGT_GLOBAL,MSGL_INFO,MSGTR_AnsLength, demuxer_get_time_length(demuxer));
     } break;
 
 	case MP_CMD_GET_VO_FULLSCREEN : {
 	if(video_out && vo_config_count)
-		mp_msg(MSGT_GLOBAL,MSGL_INFO,"ANS_VO_FULLSCREEN=%ld\n", vo_fs);
+		mp_msg(MSGT_GLOBAL,MSGL_INFO,MSGTR_AnsVoFullscreen, vo_fs);
 	} break;
-
+    
     case MP_CMD_GET_PERCENT_POS : {
-	mp_msg(MSGT_GLOBAL,MSGL_INFO,"ANS_PERCENT_POSITION=%ld\n", demuxer_get_percent_pos(demuxer));
+	mp_msg(MSGT_GLOBAL,MSGL_INFO,MSGTR_AnsPercentPos, demuxer_get_percent_pos(demuxer));
+    } break;
+    case MP_CMD_RUN : {
+#ifndef __MINGW32__
+        if(!fork()) {
+          execl("/bin/sh","sh","-c",cmd->args[0].v.s,NULL);
+          exit(0);
+        }
+#endif
     } break;
 
 #ifdef USE_DVDNAV
@@ -3659,7 +3988,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
       if (stream->type != STREAMTYPE_DVDNAV) break;
 
       if (!dvdnav_event) {
-        printf("DVDNAV Event NULL?!\n");
+        mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_DvdnavNullEvent);
         break;
       }
 
@@ -3673,7 +4002,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
       case DVDNAV_HIGHLIGHT: {
           dvdnav_highlight_event_t *hevent = (dvdnav_highlight_event_t*)(dvdnav_event->details);
           if (!hevent) {
-                printf("DVDNAV Event: Highlight event broken\n");
+                mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_DvdnavHighlightEventBroken);
                 break;
           }
 
@@ -3685,7 +4014,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
                      hevent->sx,hevent->sy,
                      hevent->ex,hevent->ey,
                      hevent->pts, d_video->pts);
-                printf("DVDNAV Event: %s\n",dvd_nav_text);
+                mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_DvdnavEvent,dvd_nav_text);
                 //osd_show_dvd_nav_delay = 60;
 
                 osd_show_dvd_nav_highlight=1;
@@ -3696,14 +4025,14 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
           }
           else {
                   osd_show_dvd_nav_highlight=0;
-                  printf("DVDNAV Event: Highlight Hide\n");
+                  mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_DvdnavHighlightHide);
           }
         break;
         }
       case DVDNAV_STILL_FRAME: {
           dvdnav_still_event_t *still_event = (dvdnav_still_event_t*)(dvdnav_event->details);
 
-          printf( "######################################## DVDNAV Event: Still Frame: %d sec(s)\n", still_event->length );
+          mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_DvdnavStillFrame, still_event->length );
           while (dvdnav_stream_sleeping(dvdnav_priv)) {
             usec_sleep(1000); /* 1ms */
           }
@@ -3711,18 +4040,18 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
         break;
         }
       case DVDNAV_STOP: {
-          printf( "DVDNAV Event: Nav Stop\n" );
+          mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_DvdnavNavStop );
         break;
         }
       case DVDNAV_NOP: {
-        printf("DVDNAV Event: Nav NOP\n");
+        mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_DvdnavNavNOP);
         break;
         }
       case DVDNAV_SPU_STREAM_CHANGE: {
 #if DVDNAVVERSION > 012
         dvdnav_spu_stream_change_event_t *stream_change = (dvdnav_spu_stream_change_event_t*)(dvdnav_event->details);
 
-        printf("DVDNAV Event: Nav SPU Stream Change: phys: %d/%d/%d logical: %d\n",
+        mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_DvdnavNavSpuStreamChangeVerbose,
                 stream_change->physical_wide,
                 stream_change->physical_letterbox,
                 stream_change->physical_pan_scan,
@@ -3738,7 +4067,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 #else
         dvdnav_stream_change_event_t *stream_change = (dvdnav_stream_change_event_t*)(dvdnav_event->details);
 
-        printf("DVDNAV Event: Nav SPU Stream Change: phys: %d logical: %d\n",
+        mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_DvdnavNavSpuStreamChange,
                 stream_change->physical,
                 stream_change->logical);
 
@@ -3760,7 +4089,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
         dvdnav_stream_change_event_t *stream_change = (dvdnav_stream_change_event_t*)(dvdnav_event->details);
 #endif
 
-        printf("DVDNAV Event: Nav Audio Stream Change: phys: %d logical: %d\n",
+        mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_DvdnavNavAudioStreamChange,
                 stream_change->physical,
                 stream_change->logical);
 
@@ -3777,14 +4106,14 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
         break;
       }
       case DVDNAV_VTS_CHANGE: {
-        printf("DVDNAV Event: Nav VTS Change\n");
+        mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_DvdnavNavVTSChange);
         break;
         }
       case DVDNAV_CELL_CHANGE: {
         dvdnav_cell_change_event_t *cell_change = (dvdnav_cell_change_event_t*)(dvdnav_event->details);
         cell_playback_t * cell_playback = cell_change->new_cell;
 
-        printf("DVDNAV Event: Nav Cell Change\n");
+        mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_DvdnavNavCellChange);
         osd_show_dvd_nav_highlight=0; /* screen changed, disable menu */
         /*
         printf("new still time: %d\n",cell_playback->still_time);
@@ -3807,14 +4136,14 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
       case DVDNAV_SPU_CLUT_CHANGE: {
         uint32_t * new_clut = (uint32_t *)(dvdnav_event->details);
 
-        printf("DVDNAV Event: Nav SPU CLUT Change\n");
+        mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_DvdnavNavSpuClutChange);
         // send new palette to SPU decoder
         if (vo_spudec) spudec_update_palette(vo_spudec,new_clut);
 
         break;
         }
       case DVDNAV_SEEK_DONE: {
-        printf("DVDNAV Event: Nav Seek Done\n");
+        mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_DvdnavNavSeekDone);
         break;
         }
       }
@@ -3844,7 +4173,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
           dvdnav_right_button_select(dvdnav_priv->dvdnav);
           break;
         case MP_CMD_DVDNAV_MENU:
-          printf("Menu call\n");
+          mp_msg(MSGT_FIXME, MSGL_FIXME, MSGTR_MenuCall);
           dvdnav_menu_call(dvdnav_priv->dvdnav,DVD_MENU_Root);
           break;
         case MP_CMD_DVDNAV_SELECT:
@@ -3865,13 +4194,15 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
       mp_msg(MSGT_CPLAYER, MSGL_V, "Received unknown cmd %s\n",cmd->name);
     }
     }
+    if (cmd->pausing)
+      osd_function = OSD_PAUSE;
     mp_cmd_free(cmd);
   }
 }
 
   if (seek_to_sec) {
     int a,b; float d;
-
+    
     if (sscanf(seek_to_sec, "%d:%d:%f", &a,&b,&d)==3)
 	rel_seek_secs += 3600*a +60*b +d ;
     else if (sscanf(seek_to_sec, "%d:%f", &a, &d)==2)
@@ -3881,7 +4212,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 
      seek_to_sec = NULL;
   }
-
+  
   /* Looping. */
   if(eof==1 && loop_times>=0) {
     int l = loop_times;
@@ -3915,9 +4246,9 @@ if(rel_seek_secs || abs_seek_pos){
 	if(verbose>0){
 	    float a_pts=d_audio->pts;
             a_pts+=(ds_tell_pts(d_audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps;
-            #ifdef _XBOX
-            aoldpts=a_pts;
-            #endif
+			#ifdef _XBOX
+			aoldpts=a_pts;
+			#endif
 	    mp_msg(MSGT_AVSYNC,MSGL_V,"SEEK: A: %5.3f  V: %5.3f  A-V: %5.3f   \n",a_pts,d_video->pts,a_pts-d_video->pts);
 	}
         mp_msg(MSGT_AVSYNC,MSGL_STATUS,"A:%6.1f  V:%6.1f  A-V:%7.3f  ct: ?   \r",d_audio->pts,d_video->pts,0.0f);
@@ -3929,14 +4260,14 @@ if(rel_seek_secs || abs_seek_pos){
 
       if(sh_video){
 	 current_module="seek_video_reset";
-#ifdef _XBOX
-        // do not call resync_video_stream when ffwd'ing, this causes problems :)
-        if (playback_speed != orgplayback_speed)
-#endif
+       #ifdef _XBOX
+         // do not call resync_video_stream when ffwd'ing, this causes problems :)
+         if (playback_speed != orgplayback_speed)
+       #endif
          resync_video_stream(sh_video);
          if(vo_config_count) video_out->control(VOCTRL_RESET,NULL);
       }
-
+      
       if(sh_audio){
         current_module="seek_audio_reset";
         audio_out->reset(); // stop audio, throwing away buffered data
@@ -3949,28 +4280,10 @@ if(rel_seek_secs || abs_seek_pos){
 #else
 	  if( 1 ) { // Let the compiler optimize this out
 #endif
-#ifdef _XBOX
-      //if demuxer->filepos == 0, we use an alternate way to calculate progressbar
-      //else use mplayer's way
-      int len;
-      if (!demuxer->filepos)
-        len = demuxer_get_time_length(demuxer);
-      else
-        len = ((demuxer->movi_end-demuxer->movi_start)>>8);
-#else
-	  int len=((demuxer->movi_end-demuxer->movi_start)>>8);
-#endif
-	  if (len>0 && sh_video){
+	  if (sh_video) {
 	    osd_visible=sh_video->fps; // 1 sec
 	    vo_osd_progbar_type=0;
-#ifdef _XBOX
-        if (!demuxer->filepos)
-		  vo_osd_progbar_value=demuxer_get_percent_pos(demuxer)*256/100;
-		else
-		  vo_osd_progbar_value=(demuxer->filepos-demuxer->movi_start)/len;
-#else
-	    vo_osd_progbar_value=(demuxer->filepos-demuxer->movi_start)/len;
-#endif
+	    vo_osd_progbar_value=demuxer_get_percent_pos(demuxer) * 256 / 100;
 	    vo_osd_changed(OSDTYPE_PROGBAR);
 	  }
 	}
@@ -3989,20 +4302,28 @@ if(rel_seek_secs || abs_seek_pos){
       }
   }
 #ifdef USE_EDL
-      {
-	int x;
-	if( !edl_decision ) {
-	  for( x = 0; x < num_edl_records; x++ ) { // FIXME: do binary search
-	    // Find first EDL entry where start follows current time
-	    if( edl_records[ x ].start_sec >= sh_video->pts && edl_records[ x ].action != EDL_MUTE ) {
-	      next_edl_record = &edl_records[ x ];
-	      break;
-	    }
-	  }
-	} else {
-	  edl_decision = 0;
-	}
-      }
+/*
+ * We saw a seek, have to rewind the EDL operations stack
+ * and find the next EDL action to take care of.
+ */
+
+edl_muted = 0;
+next_edl_record = edl_records;
+
+while (next_edl_record)
+{
+    /* Trying to remember if we need to mute/unmute first;
+     * prior EDL implementation lacks this.
+     */
+  
+    if (next_edl_record->start_sec >= sh_video->pts)
+        break;
+
+    if (next_edl_record->action == EDL_MUTE) edl_muted = !edl_muted;
+    next_edl_record = next_edl_record->next;
+
+}
+if ((user_muted | edl_muted) != mixer.muted) mixer_mute(&mixer);
 #endif
   rel_seek_secs=0;
   abs_seek_pos=0;
@@ -4043,173 +4364,215 @@ if(rel_seek_secs || abs_seek_pos){
 
 //================= Update OSD ====================
 #ifdef USE_OSD
-  if(osd_level>=1 && sh_video){
-      int pts=sh_video->pts;
-      char osd_text_tmp[64];
-      if(pts==osd_last_pts-1) ++pts; else osd_last_pts=pts;
-      vo_osd_text=osd_text_buffer;
+      if(osd_level>=1 && sh_video){
+        int pts=sh_video->pts;
+        char osd_text_tmp[64];
+        if(pts==osd_last_pts-1) ++pts; else osd_last_pts=pts;
+        vo_osd_text=osd_text_buffer;
 #ifdef USE_DVDNAV
-      if (osd_show_dvd_nav_delay) {
+        if (osd_show_dvd_nav_delay) {
           snprintf(osd_text_tmp, 63, "DVDNAV: %s", dvd_nav_text);
           osd_show_dvd_nav_delay--;
-      } else
+        } else
 #endif
 #ifdef USE_TV
-      if (osd_show_tv_channel && tv_channel_list) {
-	  snprintf(osd_text_tmp, 63, "Channel: %s", tv_channel_current->name);
-	  osd_show_tv_channel--;
-      } else
+          if (osd_show_tv_channel && tv_channel_list) {
+            snprintf(osd_text_tmp, 63, "Channel: %s", tv_channel_current->name);
+            osd_show_tv_channel--;
+          } else
 #endif
-      if (osd_show_text) {
-	  snprintf(osd_text_tmp, 63, "%s", osd_show_text_buffer);
-	  osd_show_text--;
-      } else
-      if (osd_show_sub_visibility) {
-	  snprintf(osd_text_tmp, 63, "Subtitles: %sabled", sub_visibility?"en":"dis");
-	  osd_show_sub_visibility--;
-      } else
-      if (osd_show_vobsub_changed) {
-	  const char *language = "none";
-	  if (vo_vobsub && vobsub_id >= 0)
-	      language = vobsub_get_id(vo_vobsub, (unsigned int) vobsub_id);
-	  snprintf(osd_text_tmp, 63, "Subtitles: (%d) %s", vobsub_id, language ? language : "unknown");
-	  osd_show_vobsub_changed--;
-      } else
+            if (osd_show_text) {
+              snprintf(osd_text_tmp, 63, "%s", osd_show_text_buffer);
+              osd_show_text--;
+            } else
+              if (osd_show_sub_visibility) {
+                snprintf(osd_text_tmp, 63, "Subtitles: %sabled", sub_visibility?"en":"dis");
+                osd_show_sub_visibility--;
+              } else
+                if (osd_show_vobsub_changed) {
+                  if (vo_vobsub && vobsub_id >= 0) {
+                    const char *language = "none";
+                    language = vobsub_get_id(vo_vobsub, (unsigned int) vobsub_id);
+                    snprintf(osd_text_tmp, 63, "Subtitles: (%d) %s", vobsub_id, language ? language : "unknown");
+                  }
+#ifdef HAVE_OGGVORBIS
+                  if (d_dvdsub && demuxer->type == DEMUXER_TYPE_OGG) {
+                    if (dvdsub_id < 0)
+                      snprintf(osd_text_tmp, 63, "Subtitles: (off)");
+                    else {
+                      char *lang = demux_ogg_sub_lang(demuxer, dvdsub_id);
+                      if (!lang) lang = "unknown";
+                      snprintf(osd_text_tmp, 63, "Subtitles: (%d) %s", dvdsub_id, lang);
+                    }
+                  }
+#endif
+#ifdef USE_DVDREAD
+                  if (vo_spudec && (demuxer->type != DEMUXER_TYPE_MATROSKA)) {
+                    char lang[5] = "none";
+                    int code = 0;
+                    if (dvdsub_id >= 0) code = dvd_lang_from_sid(stream, dvdsub_id);
+                    if (code) {
+                      lang[0] = code >> 8;
+                      lang[1] = code;
+                      lang[2] = 0;
+                    }
+                    snprintf(osd_text_tmp, 63, "Subtitles: (%d) %s", dvdsub_id, lang);
+                  }
+#endif
+#ifdef HAVE_MATROSKA
+                  if (demuxer->type == DEMUXER_TYPE_MATROSKA) {
+                    char lang[10] = "unknown";
+                    if (dvdsub_id >= 0) {
+                      demux_mkv_get_sub_lang(demuxer, dvdsub_id, lang, 9);
+                      lang[9] = 0;
+                    } else
+                      strcpy(lang, "off");
+                    snprintf(osd_text_tmp, 63, "Subtitles: (%d) %s", dvdsub_id, lang);
+                  }
+#endif
+                  osd_show_vobsub_changed--;
+                } else
 #ifdef USE_SUB
-      if (osd_show_sub_changed) {
-	  char *tmp2;
-          tmp = subdata->filename;
-	  if ((tmp2 = strrchr(tmp, '/'))) {
-	      tmp = tmp2+1;
-	  }
-	  snprintf(osd_text_tmp, 63, "Sub: (%d) %s%s",
-                                  set_of_sub_pos + 1,
-                                  strlen(tmp) < 20 ? "" : "...",
-                                  strlen(tmp) < 20 ? tmp : tmp+strlen(tmp)-19);
-	  osd_show_sub_changed--;
-      } else
+                  if (osd_show_sub_changed) {
+                    char *tmp2;
+                    tmp = subdata->filename;
+                    if ((tmp2 = strrchr(tmp, '/'))) {
+                      tmp = tmp2+1;
+                    }
+                    snprintf(osd_text_tmp, 63, "Sub: (%d) %s%s", 
+                      set_of_sub_pos + 1,
+                      strlen(tmp) < 20 ? "" : "...",
+                      strlen(tmp) < 20 ? tmp : tmp+strlen(tmp)-19);
+                    osd_show_sub_changed--;
+                  } else
 #endif
-      if (osd_show_sub_delay) {
-	  snprintf(osd_text_tmp, 63, "Sub delay: %d ms", ROUND(sub_delay*1000));
-	  osd_show_sub_delay--;
-      } else
-      if (osd_show_sub_pos) {
-         snprintf(osd_text_tmp, 63, "Sub position: %d/100", sub_pos);
-         osd_show_sub_pos--;
-      } else
-      if (osd_show_sub_alignment) {
-         snprintf(osd_text_tmp, 63, "Sub alignment: %s",
-	    (sub_alignment == 2 ? "bottom" :
-	    (sub_alignment == 1 ? "center" : "top")));
-         osd_show_sub_alignment--;
-      } else
-      if (osd_show_av_delay) {
-	  snprintf(osd_text_tmp, 63, "A-V delay: %d ms", ROUND(audio_delay*1000));
-	  osd_show_av_delay--;
-      } else if (osd_show_ontop) {
-	  snprintf(osd_text_tmp, 63, "Stay on top: %sabled", vo_ontop?"en":"dis");
-	  osd_show_ontop--;
-      } else if (osd_show_framedropping) {
-	  snprintf(osd_text_tmp, 63, "Framedropping: %s",
-	     (frame_dropping == 1 ? "on" :
-	     (frame_dropping == 2 ? "hard"  : "off")));
-	  osd_show_framedropping--;
-      } else if(osd_level>=2) {
-          int len = demuxer_get_time_length(demuxer);
-          int percentage = -1;
-          char percentage_text[10];
-          if (osd_show_percentage) {
-            percentage = demuxer_get_percent_pos(demuxer);
-            osd_show_percentage--;
-          }
-          if (percentage >= 0)
-            snprintf(percentage_text, 9, " (%d%%)", percentage);
-	  else
-	    percentage_text[0] = 0;
-          if (osd_level == 3)
-            snprintf(osd_text_tmp, 63, "%c %02d:%02d:%02d / %02d:%02d:%02d%s",osd_function,pts/3600,(pts/60)%60,pts%60,len/3600,(len/60)%60,len%60,percentage_text);
-          else
-            snprintf(osd_text_tmp, 63, "%c %02d:%02d:%02d%s",osd_function,pts/3600,(pts/60)%60,pts%60,percentage_text);
-      } else osd_text_tmp[0]=0;
+                    if (osd_show_sub_delay) {
+                      snprintf(osd_text_tmp, 63, "Sub delay: %d ms", ROUND(sub_delay*1000));
+                      osd_show_sub_delay--;
+                    } else
+                      if (osd_show_sub_pos) {
+                        snprintf(osd_text_tmp, 63, "Sub position: %d/100", sub_pos);
+                        osd_show_sub_pos--;
+                      } else
+                        if (osd_show_sub_alignment) {
+                          snprintf(osd_text_tmp, 63, "Sub alignment: %s",
+                            (sub_alignment == 2 ? "bottom" :
+                          (sub_alignment == 1 ? "center" : "top")));
+                          osd_show_sub_alignment--;
+                        } else
+                          if (osd_show_av_delay) {
+                            snprintf(osd_text_tmp, 63, "A-V delay: %d ms", ROUND(audio_delay*1000));
+                            osd_show_av_delay--;
+                          } else if (osd_show_speed) {
+                            snprintf(osd_text_tmp, 63, "Speed: x %6.2f", playback_speed);
+                            osd_show_speed--;
+                          } else if (osd_show_ontop) {
+                            snprintf(osd_text_tmp, 63, "Stay on top: %sabled", vo_ontop?"en":"dis");
+                            osd_show_ontop--;
+                          } else if (osd_show_rootwin) {
+                            snprintf(osd_text_tmp, 63, "Rootwin: %sabled", vo_rootwin?"en":"dis");
+                            osd_show_rootwin--;
+                          } else if (osd_show_framedropping) {
+                            snprintf(osd_text_tmp, 63, "Framedropping: %s",
+                              (frame_dropping == 1 ? "on" :
+                            (frame_dropping == 2 ? "hard"  : "off")));
+                            osd_show_framedropping--;
+                          } else if(osd_level>=2) {
+                            int len = demuxer_get_time_length(demuxer);
+                            int percentage = -1;
+                            char percentage_text[10];
+                            if (osd_show_percentage) {
+                              percentage = demuxer_get_percent_pos(demuxer);
+                              osd_show_percentage--;
+                            }
+                            if (percentage >= 0)
+                              snprintf(percentage_text, 9, " (%d%%)", percentage);
+                            else
+                              percentage_text[0] = 0;
+                            if (osd_level == 3) 
+                              snprintf(osd_text_tmp, 63, "%c %02d:%02d:%02d / %02d:%02d:%02d%s",osd_function,pts/3600,(pts/60)%60,pts%60,len/3600,(len/60)%60,len%60,percentage_text);
+                            else
+                              snprintf(osd_text_tmp, 63, "%c %02d:%02d:%02d%s",osd_function,pts/3600,(pts/60)%60,pts%60,percentage_text);
+                          } else osd_text_tmp[0]=0;
 
-      if(strcmp(vo_osd_text, osd_text_tmp)) {
-	      strncpy(vo_osd_text, osd_text_tmp, 63);
-	      vo_osd_changed(OSDTYPE_OSD);
+                          if(strcmp(vo_osd_text, osd_text_tmp)) {
+                            strncpy(vo_osd_text, osd_text_tmp, 63);
+                            vo_osd_changed(OSDTYPE_OSD);
+                          }
+      } else {
+        if(vo_osd_text) {
+          vo_osd_text=NULL;
+          vo_osd_changed(OSDTYPE_OSD);
+        }
       }
-  } else {
-      if(vo_osd_text) {
-      vo_osd_text=NULL;
-	  vo_osd_changed(OSDTYPE_OSD);
-      }
-  }
-//  for(i=1;i<=11;i++) osd_text_buffer[10+i]=i;osd_text_buffer[10+i]=0;
-//  vo_osd_text=osd_text_buffer;
+      //  for(i=1;i<=11;i++) osd_text_buffer[10+i]=i;osd_text_buffer[10+i]=0;
+      //  vo_osd_text=osd_text_buffer;
 #endif
 
 #ifdef USE_SUB
-  // find sub
-  if(subdata && sh_video->pts>0){
-      float pts=sh_video->pts;
-      if(sub_fps==0) sub_fps=sh_video->fps;
-      current_module="find_sub";
-      if (pts > sub_last_pts || pts < sub_last_pts-1.0 ) {
-         find_sub(subdata, (pts+sub_delay) *
-				 (subdata->sub_uses_time ? 100. : sub_fps));
-	 // FIXME! frame counter...
-         sub_last_pts = pts;
+      // find sub
+      if(subdata && sh_video->pts>0){
+        float pts=sh_video->pts;
+        if(sub_fps==0) sub_fps=sh_video->fps;
+        current_module="find_sub";
+        if (pts > sub_last_pts || pts < sub_last_pts-1.0 ) {
+          find_sub(subdata, (pts+sub_delay) * 
+            (subdata->sub_uses_time ? 100. : sub_fps)); 
+          // FIXME! frame counter...
+          sub_last_pts = pts;
+        }
+        current_module=NULL;
       }
-      current_module=NULL;
-  }
 #endif
 
 #ifdef HAVE_X11
-if (stop_xscreensaver && sh_video) {
-  current_module="stop_xscreensaver";
-  xscreensaver_heartbeat();
-  current_module=NULL;
-}
+      if (stop_xscreensaver && sh_video) {
+        current_module="stop_xscreensaver";
+        xscreensaver_heartbeat();
+        current_module=NULL;
+      }
 #endif
 
-  // DVD sub:
-if(vo_config_count && vo_spudec) {
-  unsigned char* packet=NULL;
-  int len,timestamp;
-  current_module="spudec";
-  spudec_heartbeat(vo_spudec,90000*sh_video->timer);
-    // Get a sub packet from the dvd or a vobsub and make a timestamp relative to sh_video->timer
-  while(1) {
-    // Vobsub
-    len = 0;
-    if(vo_vobsub) {
-      if(sh_video->pts+sub_delay>=0) {
-	// The + next_frame_time is there because we'll display the sub at the next frame
-	len = vobsub_get_packet(vo_vobsub,sh_video->pts+sub_delay+next_frame_time,(void**)&packet,&timestamp);
-	if(len > 0) {
-	  timestamp -= (sh_video->pts + sub_delay - sh_video->timer)*90000;
-	  mp_dbg(MSGT_CPLAYER,MSGL_V,"\rVOB sub: len=%d v_pts=%5.3f v_timer=%5.3f sub=%5.3f ts=%d \n",len,sh_video->pts,sh_video->timer,timestamp / 90000.0,timestamp);
-	}
-      }
-    } else {
-      // DVD sub
-      len = ds_get_packet_sub(d_dvdsub,(unsigned char**)&packet);
-      if(len > 0) {
-	float x = d_dvdsub->pts - sh_video->pts;
-	if (x < -10 || x > 10) // prevent missing subs on pts reset
-	  timestamp = 90000*(sh_video->timer + d_dvdsub->pts + sub_delay - sh_video->pts);
-	else timestamp = 90000*(sh_video->timer + sub_delay);
-	mp_dbg(MSGT_CPLAYER,MSGL_V,"\rDVD sub: len=%d  v_pts=%5.3f  s_pts=%5.3f  ts=%d \n",len,sh_video->pts,d_dvdsub->pts,timestamp);
-      }
-    }
-      if(len<=0 || !packet) break;
-      if(timestamp < 0) timestamp = 0;
-      else spudec_assemble(vo_spudec,packet,len,timestamp);
-  }
+      // DVD sub:
+      if(vo_config_count && vo_spudec) {
+        unsigned char* packet=NULL;
+        int len,timestamp;
+        current_module="spudec";
+        spudec_heartbeat(vo_spudec,90000*sh_video->timer);
+        // Get a sub packet from the dvd or a vobsub and make a timestamp relative to sh_video->timer
+        while(1) {
+          // Vobsub
+          len = 0;
+          if(vo_vobsub) {
+            if(sh_video->pts+sub_delay>=0) {
+              // The + next_frame_time is there because we'll display the sub at the next frame
+              len = vobsub_get_packet(vo_vobsub,sh_video->pts+sub_delay+next_frame_time,(void**)&packet,&timestamp);
+              if(len > 0) {
+                timestamp -= (sh_video->pts + sub_delay - sh_video->timer)*90000;
+                mp_dbg(MSGT_CPLAYER,MSGL_V,"\rVOB sub: len=%d v_pts=%5.3f v_timer=%5.3f sub=%5.3f ts=%d \n",len,sh_video->pts,sh_video->timer,timestamp / 90000.0,timestamp);
+              }
+            }
+          } else {
+            // DVD sub
+            len = ds_get_packet_sub(d_dvdsub,(unsigned char**)&packet);
+            if(len > 0) {
+              float x = d_dvdsub->pts - sh_video->pts;
+              if (x < -10 || x > 10) // prevent missing subs on pts reset
+                timestamp = 90000*(sh_video->timer + d_dvdsub->pts + sub_delay - sh_video->pts);
+              else timestamp = 90000*(sh_video->timer + sub_delay);
+              mp_dbg(MSGT_CPLAYER,MSGL_V,"\rDVD sub: len=%d  v_pts=%5.3f  s_pts=%5.3f  ts=%d \n",len,sh_video->pts,d_dvdsub->pts,timestamp);
+            }
+          }
+          if(len<=0 || !packet) break;
+          if(timestamp < 0) timestamp = 0;
+          else spudec_assemble(vo_spudec,packet,len,timestamp);
+        }
 
-  /* detect wether the sub has changed or not */
-  if(spudec_changed(vo_spudec))
-    vo_osd_changed(OSDTYPE_SPU);
-  current_module=NULL;
-}
+        /* detect wether the sub has changed or not */
+        if(spudec_changed(vo_spudec))
+          vo_osd_changed(OSDTYPE_SPU);
+        current_module=NULL;
+      }
 
 } // while(!eof)
 
@@ -4233,6 +4596,7 @@ goto_next_file:  // don't jump here after ao/vo/getch initialization!
 
 mp_msg(MSGT_CPLAYER,MSGL_INFO,"\n");
 
+#ifndef _XBOX
 
 if(benchmark){
   double tot=video_time_usage+vout_time_usage+audio_time_usage;
@@ -4257,9 +4621,9 @@ if(benchmark){
 	100*drop_frame_cnt/total_frame_cnt,
 	total_frame_cnt,
 	(total_time_usage>0.5)?(total_frame_cnt/total_time_usage):0);
-
+  
 }
-
+#endif //!_XBOX
 
 #ifdef _XBOX
 printf(" unint_player\n");
@@ -4271,8 +4635,8 @@ uninit_player(INITED_ALL-(INITED_GUI+(fixed_vo?INITED_VO:0)));
 uninit_player(INITED_ALL-(INITED_GUI+INITED_INPUT+(fixed_vo?INITED_VO:0)));
 #endif
 
-#ifdef USE_SUB
-  if ( set_of_sub_size > 0 )
+#ifdef USE_SUB  
+  if ( set_of_sub_size > 0 ) 
    {
     current_module="sub_free";
     for (i = 0; i < set_of_sub_size; ++i)
@@ -4321,13 +4685,13 @@ while(playtree_iter != NULL) {
 }
 #endif //!_XBOX
 #ifdef HAVE_NEW_GUI
- if( use_gui && !playtree_iter )
+ if( use_gui && !playtree_iter ) 
   {
 #ifdef USE_DVDREAD
-   if ( !guiIntfStruct.DiskChanged )
+   if ( !guiIntfStruct.DiskChanged ) 
 #endif
    mplEnd();
-  }
+  }	
 #endif
 
 if(use_gui || playtree_iter != NULL){
@@ -4355,24 +4719,6 @@ exit_player_with_rc(MSGTR_Exit_eof, 0);
 
 return 1;
 }
-
-#ifdef _XBOX
-subtitle* mplayer_getCurrentSubtitle()
-{
-	return vo_sub;
-}
-
-int mplayer_isTextSubLoaded()
-{
-	xbmc_subtitle *sub; //because XBMC need know which subtitle is text format for render by XBMC
-    
-	sub = &xbmc_subtitles[xbmc_sub_current];    
- 	if (sub->type == XBMC_SUBTYPE_VOBSUB)
-    		return FALSE;
-	else
-		return TRUE;
-}
-#endif
 
 #ifdef _XBOX
 void mplayer_GetAudioInfo(char* strFourCC,char* strAudioCodec, long* bitrate, long* samplerate, int* channels, int* bVBR)
@@ -4475,78 +4821,19 @@ int mplayer_getPercentage()
 
 int mplayer_getSubtitleCount()
 {
-	xbmc_update_subs();
-	return xbmc_sub_count;
+	return global_sub_size;
 }
+
 int mplayer_getSubtitle()
 {
-	if(!xbmc_sub_count)
-		xbmc_update_subs();
-	return xbmc_sub_current;
+	return global_sub_pos;
+
 }
+
 void mplayer_setSubtitle(int iSubtitle)
 {
-	if(!xbmc_sub_count)
-		xbmc_update_subs();
-
-	if(iSubtitle > xbmc_sub_count) return;
-	xbmc_sub_current = iSubtitle;
-	xbmc_subtitle* sub = &xbmc_subtitles[iSubtitle];
-
-	//Turn off any other subtitles
-	dvdsub_id=-1; //Dvd subs
-	oggsub_id = -1; //Ogg subs
-	vobsub_id = -1; //Vobsubs
-
-  #ifdef USE_SUB
-    set_of_sub_pos = -1;
-	  subdata = NULL;
-	  vo_sub = NULL;
-  #endif
-  
-	if(demuxer->sub)
-		demuxer->sub->id=-1;
-
-	if(sub->type == XBMC_SUBTYPE_DVDSUB)
-	{
-		printf("changed dvdsubid to %i from %i\n",sub->id,dvdsub_id );
-		dvdsub_id = sub->id;
-
-		//Need a better way of changing subs
-		demuxer->sub->id=dvdsub_id;
-	}
-	else if(sub->type == XBMC_SUBTYPE_VOBSUB)
-	{
-		printf("changed vobsubid to %i from %i\n", sub->id,vobsub_id);
-		vobsub_id = sub->id;
-	}
-	else if(sub->type == XBMC_SUBTYPE_OGGSUB)
-	{
-		printf("changed oggsubid to %d from %d\n", iSubtitle, oggsub_id);
-		oggsub_id=iSubtitle;
-		demuxer->sub->id = sub->id;
-	}
-	else if(sub->type == XBMC_SUBTYPE_MKVSUB)
-	{
-		printf("changed matroska sub to %d from %d\n", sub->id, demuxer->sub->id);
-		demuxer->sub->id = sub->id;
-	}
-#ifdef USE_SUB
-	else if(sub->type == XBMC_SUBTYPE_STANDARD )
-	{
-    printf("changed subtitleto %i/%i\n", set_of_sub_pos,set_of_sub_size );
-		//change subtitle file
-    set_of_sub_pos = sub->id ;
-    subdata = set_of_subtitles[set_of_sub_pos];
-	}
-#endif
-
-  if (vo_spudec) spudec_reset(vo_spudec);
-
-  snprintf(osd_show_text_buffer, 63, "Subtitles: (%d) %s", iSubtitle, sub->name ? sub->name : "unknown");
-  osd_show_text = sh_video->fps;
-  vo_sub = NULL;
-  vo_osd_changed(OSDTYPE_SUBTITLE);
+  global_sub_pos = iSubtitle;
+  mp_input_queue_cmd(mp_input_parse_cmd("sub_select"));
 }
 
 void mplayer_showSubtitle(int bOnOff)
@@ -4826,44 +5113,110 @@ int mplayer_getAudioStreamInfo(int iStream, stream_language_t* stream_info)
 	}
 	return -1;
 }
-//
-//int mplayer_getSubtitleName(int iStream, char* sName)
-//{
-//	if(stream->type == STREAMTYPE_DVD)
-//	{
-//		dvd_priv_t *d=stream->priv;
-//		char lang[3];
-//		lang[2]=0;
-//		lang[1]=(d->language&255);
-//		lang[0]=(d->language>>8);
-//		strupr(lang);
-//		sprintf(sName, "ID:%s", lang);
-//		return 1;
-//	}
-//	else if(demuxer->type == DEMUXER_TYPE_OGG)
-//	{
-//		vo_sub->
-//	}
-//
-//
-//
-//}
 
-char* mplayer_getSubtitleInfo(int iStream, xbmc_subtitle* sub)
+char* mplayer_getSubtitleInfo(int subindex, xbmc_subtitle* sub)
 {
-	if(!xbmc_sub_count)
-		xbmc_update_subs();
+  if(subindex<0 || subindex >= global_sub_size) return NULL;
 
-	if(iStream >= xbmc_sub_count) return NULL;
+  int source = sub_sourceof(subindex);
+  int intind = subindex - global_sub_indices[source];
+
+  if(source == SUB_SOURCE_SUBS)
+  {
+    if(intind >= 0 && intind < set_of_sub_size)
+      get_lang_ext(set_of_subtitles[intind]->filename,sub->name);
+    else
+      sub->name[0] = 0;
+    sub->id = subindex;
+    sub->type = XBMC_SUBTYPE_STANDARD;
+    sub->invalid = 0;
+  } 
+  else if(source == SUB_SOURCE_VOBSUB && vo_vobsub)
+  {
+    char* subname;
+
+    sub->type = XBMC_SUBTYPE_VOBSUB;
+    sub->id = subindex;
+
+    //Make sure the vobsub is valid
+    if(subname = vobsub_get_id(vo_vobsub,intind))
+    {
+        sub->invalid = 0;
+        strcpy(sub->name , subname);
+    }
+    else
+    {
+      sub->invalid = 1;
+    }
+  }
+  else if(source == SUB_SOURCE_DEMUX && demuxer && stream)
+  {
+	  if(stream->type == STREAMTYPE_DVD)
+	  {
+      int lang = dvd_lang_from_sid(stream, intind);
+      sub->id = subindex;
+      sub->type = XBMC_SUBTYPE_DVDSUB;
+
+      sub->name[2]=0;
+			sub->name[1]=(lang&255);
+			sub->name[0]=(lang>>8);
+      sub->invalid = !(demuxer->s_streams[intind]);
+	  }    
+	  else if(demuxer->type == DEMUXER_TYPE_MATROSKA)
+	  {
+      char* subname;
+
+      sub->id = subindex;
+      sub->type = XBMC_SUBTYPE_MKVSUB;
+      sub->invalid = 0;
+      demux_mkv_get_sub_lang(demuxer, intind, sub->name, MAX_XBMC_NAME);
+      sub->name[MAX_XBMC_NAME-1] = 0;
+  	}
+    else if(demuxer->type == DEMUXER_TYPE_OGG)
+    {
+      char* subname;
+
+      sub->id = subindex;
+      sub->type = XBMC_SUBTYPE_OGGSUB;
+      sub->invalid = 0;
+
+      if(subname = demux_ogg_sub_lang(demuxer, intind))
+        strcpy(sub->name, subname);
+      else
+        sub->name[0] = 0;
+    }
+    else
+    {
+      sub->id = subindex;
+      sub->type = XBMC_SUBTYPE_STANDARD;
+      sub->invalid = 0;
+      sub->name[0] = 0;
+    }
+  }
   
-  sub->id = xbmc_subtitles[iStream].id;
-  sub->invalid = xbmc_subtitles[iStream].invalid;
-  strncpy(sub->name, xbmc_subtitles[iStream].name, MAX_XBMC_NAME);
-  sub->type = xbmc_subtitles[iStream].type;
-  sub->desc = xbmc_subtitles[iStream].desc;
+
 
   return sub->name;
 }
+
+#ifdef _XBOX
+subtitle* mplayer_getCurrentSubtitle()
+{
+	return vo_sub;
+}
+
+int mplayer_isTextSubLoaded()
+{
+  //because XBMC need know which subtitle is text format for render by XBMC
+  //this isn't completly correct, as mkv can contain vobsubs too
+  int source = sub_sourceof(global_sub_pos);
+ 	if (source != SUB_SOURCE_VOBSUB && source >= 0)
+    return TRUE;
+	else
+		return FALSE;
+}
+#endif
+
 
 void mplayer_SetAudioStream(int iStream)
 {
@@ -4880,120 +5233,4 @@ void mplayer_SetAudioStream(int iStream)
 
 }
 
-void get_lang_ext(char *filename, char *lang)			// Jimmy
-{
-	int i,l;
-	int p1 = 0;
-	int p2 = 0;
-	char ch;
-	
-	strcpy(lang,"");
-	l = strlen(filename);
-	for(i=0; i<l; i++)
-	{
-		ch = filename[i];
-		if (ch == '.')
-		{
-			p2 = p1;
-			p1 = i;		
-		}
-	}
-
-	if (p2)
-		p2++;	
-	l = p1 - p2;
-	if ((p1 > 0) && (p2 > 0) && (l < MAX_XBMC_NAME))
-	{
-		strncpy(lang,filename+p2,l);
-		lang[l] = 0;
-	}	
-}
-
-
-void xbmc_update_subs()
-{
-	xbmc_sub_count=0;
-	memset(xbmc_subtitles, 0, sizeof(xbmc_subtitle)*32);
-	if(!stream || !demuxer) return;
-	if(stream->type == STREAMTYPE_DVD)
-	{
-		printf("Building sub database for DVD");
-		dvd_priv_t *d=stream->priv;
-		int i;
-		for(i=0;i<d->nr_of_subtitles;i++)
-		{
-			char name[2];
-
-			name[2]=0;
-			name[1]=(d->subtitles[i].language&255);
-			name[0]=(d->subtitles[i].language>>8);
-			xbmc_addsub(d->subtitles[i].id, name, XBMC_SUBTYPE_DVDSUB, !(demuxer->s_streams[i]));
-		}
-
-		for(i=0;i<32;i++) //Make sure we get any streams not in the header
-		{
-			if(demuxer->s_streams[i] && xbmc_num_from_sid(i, XBMC_SUBTYPE_DVDSUB)==-1)
-			{
-				xbmc_addsub(i, NULL, XBMC_SUBTYPE_DVDSUB,0);
-			}
-		}
-
-		if(demuxer->sub)
-			if(demuxer->sub->id>=0)
-				xbmc_sub_current = xbmc_num_from_sid(demuxer->sub->id, XBMC_SUBTYPE_DVDSUB); //Set currently playing
-
-	}
-
-	if(demuxer->type == DEMUXER_TYPE_OGG) //Needs some modification to add name support
-	{
-		printf("Building sub database for OGM");
-		int i;
-		for(i=0;i<oggsub_count;i++)
-		{
-			xbmc_addsub(oggsub_ids[i], NULL, XBMC_SUBTYPE_OGGSUB,0);
-		}
-		if(demuxer->sub && demuxer->sub->id>=0)
-			xbmc_sub_current = xbmc_num_from_sid(demuxer->sub->id, XBMC_SUBTYPE_OGGSUB); //Set currently playing
-	}
-
-	if(demuxer->type == DEMUXER_TYPE_MATROSKA)
-	{
-		printf("Building sub database for MKV");
-		xbmc_mkv_updatesubs(demuxer->priv);
-		if(demuxer->sub && demuxer->sub->id>=0)
-			xbmc_sub_current = xbmc_num_from_sid(demuxer->sub->id, XBMC_SUBTYPE_MKVSUB); //Set currently playing
-	}
-
-	if (vo_vobsub) // Vobsubs
-    {
-		printf("Building sub database for VOBSUBS");
-		int i,c;
-		c = vobsub_get_indexes_count(vo_vobsub);
-		for(i=0;i<c;i++)
-		{
-			char* name = vobsub_get_id(vo_vobsub,i);
-			if(name) //Only add vobsubs that really exists
-				xbmc_addsub(i, name, XBMC_SUBTYPE_VOBSUB, 0);
-		}
-		if(vobsub_id >= 0)
-			xbmc_sub_current = xbmc_num_from_sid(vobsub_id, XBMC_SUBTYPE_VOBSUB);
-	}
-
-#ifdef USE_SUB
-	char lang_ext[MAX_XBMC_NAME];  // Jimmy
-	//update_set_of_subtitles(); //Shouldn't be needed
-	if(set_of_sub_size > 0) //Standard sub files
-	{
-		int i;
-		for(i=0;i<set_of_sub_size;i++)
-		{
-			get_lang_ext(set_of_subtitles[i]->filename,lang_ext);	// 2004-10-12, Jimmy			
-			xbmc_addsub(i, lang_ext, XBMC_SUBTYPE_STANDARD, 0);
-		}
-		if(set_of_sub_pos >= 0)
-      xbmc_sub_current = xbmc_num_from_sid(set_of_sub_pos, XBMC_SUBTYPE_STANDARD);       	
-	}
-#endif
-}
 #endif //!_XBOX
-

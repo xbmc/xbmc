@@ -34,8 +34,6 @@
 extern "C" {
 #endif
 
-#include "common.h"
-
 #include "syntax.h"
 
 #define NOISE_OFFSET 90

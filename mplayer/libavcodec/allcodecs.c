@@ -52,14 +52,19 @@ void avcodec_register_all(void)
 #ifdef CONFIG_FAAC
     register_avcodec(&faac_encoder);
 #endif
+#ifdef CONFIG_XVID
+    register_avcodec(&xvid_encoder);
+#endif
     register_avcodec(&mpeg1video_encoder);
 //    register_avcodec(&h264_encoder);
 #ifdef CONFIG_RISKY
     register_avcodec(&mpeg2video_encoder);
+    register_avcodec(&h261_encoder);
     register_avcodec(&h263_encoder);
     register_avcodec(&h263p_encoder);
     register_avcodec(&flv_encoder);
     register_avcodec(&rv10_encoder);
+    register_avcodec(&rv20_encoder);
     register_avcodec(&mpeg4_encoder);
     register_avcodec(&msmpeg4v1_encoder);
     register_avcodec(&msmpeg4v2_encoder);
@@ -70,12 +75,24 @@ void avcodec_register_all(void)
 #endif
     register_avcodec(&mjpeg_encoder);
     register_avcodec(&ljpeg_encoder);
+#ifdef CONFIG_ZLIB
+    register_avcodec(&png_encoder);
+#endif
+    register_avcodec(&ppm_encoder);
+    register_avcodec(&pgm_encoder);
+    register_avcodec(&pgmyuv_encoder);
+    register_avcodec(&pbm_encoder);
+    register_avcodec(&pam_encoder);
     register_avcodec(&huffyuv_encoder);
+    register_avcodec(&ffvhuff_encoder);
     register_avcodec(&asv1_encoder);
     register_avcodec(&asv2_encoder);
     register_avcodec(&ffv1_encoder);
+    register_avcodec(&snow_encoder);
     register_avcodec(&zlib_encoder);
     register_avcodec(&dvvideo_encoder);
+    register_avcodec(&sonic_encoder);
+    register_avcodec(&sonic_ls_encoder);
 #endif /* CONFIG_ENCODERS */
     register_avcodec(&rawvideo_encoder);
     register_avcodec(&rawvideo_decoder);
@@ -100,6 +117,11 @@ void avcodec_register_all(void)
     register_avcodec(&wmav1_decoder);
     register_avcodec(&wmav2_decoder);
     register_avcodec(&indeo3_decoder);
+    register_avcodec(&tscc_decoder);
+    register_avcodec(&ulti_decoder);
+    register_avcodec(&qdraw_decoder);
+    register_avcodec(&xl_decoder);
+    register_avcodec(&qpeg_decoder);
 #ifdef CONFIG_FAAD
     register_avcodec(&aac_decoder);
     register_avcodec(&mpeg4aac_decoder);
@@ -115,12 +137,17 @@ void avcodec_register_all(void)
     register_avcodec(&mjpeg_decoder);
     register_avcodec(&mjpegb_decoder);
     register_avcodec(&sp5x_decoder);
+#ifdef CONFIG_ZLIB
+    register_avcodec(&png_decoder);
+#endif
     register_avcodec(&mp2_decoder);
     register_avcodec(&mp3_decoder);
     register_avcodec(&mace3_decoder);
     register_avcodec(&mace6_decoder);
     register_avcodec(&huffyuv_decoder);
+    register_avcodec(&ffvhuff_decoder);
     register_avcodec(&ffv1_decoder);
+    register_avcodec(&snow_decoder);
     register_avcodec(&cyuv_decoder);
     register_avcodec(&h264_decoder);
     register_avcodec(&vp3_decoder);
@@ -148,6 +175,7 @@ void avcodec_register_all(void)
     register_avcodec(&vmdaudio_decoder);
     register_avcodec(&mszh_decoder);
     register_avcodec(&zlib_decoder);
+    register_avcodec(&sonic_decoder);
 #ifdef CONFIG_AC3
     register_avcodec(&ac3_decoder);
 #endif
@@ -159,6 +187,7 @@ void avcodec_register_all(void)
     register_avcodec(&roq_dpcm_decoder);
     register_avcodec(&interplay_dpcm_decoder);
     register_avcodec(&xan_dpcm_decoder);
+    register_avcodec(&sol_dpcm_decoder);
     register_avcodec(&qtrle_decoder);
     register_avcodec(&flac_decoder);
 #endif /* CONFIG_DECODERS */
@@ -211,6 +240,7 @@ PCM_CODEC(CODEC_ID_ADPCM_XA, adpcm_xa);
 PCM_CODEC(CODEC_ID_ADPCM_ADX, adpcm_adx);
 PCM_CODEC(CODEC_ID_ADPCM_EA, adpcm_ea);
 PCM_CODEC(CODEC_ID_ADPCM_G726, adpcm_g726);
+PCM_CODEC(CODEC_ID_ADPCM_CT, adpcm_ct);
 
 #undef PCM_CODEC
 
@@ -220,6 +250,8 @@ PCM_CODEC(CODEC_ID_ADPCM_G726, adpcm_g726);
     av_register_codec_parser(&h261_parser);
     av_register_codec_parser(&h263_parser);
     av_register_codec_parser(&h264_parser);
+    av_register_codec_parser(&mjpeg_parser);
+    av_register_codec_parser(&pnm_parser);
 
     av_register_codec_parser(&mpegaudio_parser);
 #ifdef CONFIG_AC3

@@ -1,3 +1,2 @@
-*.depend
-*.o
-*.a
+Makefile.*
+.depend

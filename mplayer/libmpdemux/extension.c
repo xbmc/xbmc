@@ -36,7 +36,6 @@ static struct {
         { "y4m", DEMUXER_TYPE_Y4M },
         { "mp3", DEMUXER_TYPE_AUDIO },
         { "wav", DEMUXER_TYPE_AUDIO },
-        { "aif", DEMUXER_TYPE_AUDIO },
         { "flac", DEMUXER_TYPE_AUDIO },
         { "fla", DEMUXER_TYPE_AUDIO },
         { "ogg", DEMUXER_TYPE_OGG },
@@ -51,7 +50,12 @@ static struct {
         { "midi", DEMUXER_TYPE_XMMS },
         { "vqf", DEMUXER_TYPE_XMMS },
         { "nsv", DEMUXER_TYPE_NSV },
-        { "nsa", DEMUXER_TYPE_NSV }
+        { "nsa", DEMUXER_TYPE_NSV },
+	      { "nut", DEMUXER_TYPE_LAVF }
+#ifdef _XBOX
+	     ,{ "dvr-ms", DEMUXER_TYPE_LAVF }
+         ,{ "aif", DEMUXER_TYPE_AUDIO },
+#endif
 };
 
 int demuxer_type_by_filename(char* filename){

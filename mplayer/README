@@ -1,4 +1,4 @@
-Welcome to MPlayer, the Unix movie player. MPlayer can play most standard video
+Welcome to MPlayer, The Movie Player. MPlayer can play most standard video
 formats out of the box and almost all others with the help of external codecs.
 MPlayer currently works best from the command line, but visual feedback for
 many functions is available from its onscreen status display (OSD), which is
@@ -25,8 +25,8 @@ Requirements:
 
 
 Before you start...
-Unless you know what are you doing, consult DOCS/HTML/en/devices.html#video-dev
-to see which driver to use with your video card to get the best quality and
+Unless you know what are you doing, consult DOCS/HTML/en/video.html to see
+which driver to use with your video card to get the best quality and
 performance. Most cards require special drivers not included with XFree86 to
 drive their 2-D video acceleration features like YUV and scaling.
 
@@ -36,7 +36,7 @@ A quick and incomplete list of recommendations:
 - 3dfx Voodoo3/Banshee: Get XFree86 4.2.0+ for Xv or use the tdfxfb driver.
 - nVidia cards: Get the X11 driver from www.nvidia.com for Xv support.
 - NeoMagic cards: Get an Xv capable driver from our homepage as described in
-  DOCS/HTML/en/devices.html#video-dev.
+  DOCS/HTML/en/video.html.
 
 Without accelerated video even an 800MHz P3 may be too slow to play DVDs.
 
@@ -51,12 +51,10 @@ from the download section of our homepage at
 
   http://www.mplayerhq.hu/homepage/dload.html
 
-A set of fonts is necessary for the OSD and subtitles, the GUI needs at least
-one skin and codec packages add support for some more video and audio formats.
-MPlayer does not come with any of these by default, you have to download and
-install them separately. A wide range of codec packages can be downloaded at
-
-  http://www.mplayerhq.hu/MPlayer/releases/codecs/
+A set of fonts is necessary for the OSD and subtitles unless you are using
+TrueType fonts, the GUI needs at least one skin and codec packages add support
+for some more video and audio formats. MPlayer does not come with any of these
+by default, you have to download and install them separately.
 
 You can also get MPlayer via anonymous CVS. Issue the following commands to get
 the latest sources:
@@ -72,9 +70,9 @@ created. You can later update your sources by saying
 from within that directory.
 
 
-___________________________________
-STEP1: Installing FFmpeg libavcodec
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+_______________________________________________
+STEP1: Installing FFmpeg libavcodec/libavformat
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you are using an official (pre)release or a CVS snapshot, skip this step,
 since official releases include libavcodec. CVS sources do not include
@@ -82,8 +80,8 @@ libavcodec. To verify if you do have libavcodec or not, check if a subdirectory
 named 'libavcodec' exists in the MPlayer source tree.
 
 The FFmpeg project provides libavcodec, a very portable codec collection (among
-the supported formats is MPEG4/DivX) with excellent quality and speed, that is
-the preferred MPEG4/DivX codec of MPlayer. You have to get libavcodec directly
+the supported formats is MPEG-4/DivX) with excellent quality and speed, that is
+the preferred MPEG-4/DivX codec of MPlayer. You have to get libavcodec directly
 from the FFmpeg CVS server.
 
 To get the FFmpeg sources, use the following commands in a suitable directory
@@ -95,6 +93,11 @@ cvs -z3 -d:pserver:anonymous@mplayerhq.hu:/cvsroot/ffmpeg co ffmpeg/libavcodec
 When asked for a password, you can just hit enter. A directory named 'ffmpeg'
 with a subdirectory named 'libavcodec' inside will be created. Copy (symbolic
 linking does NOT suffice) this subdirectory into the MPlayer source tree.
+
+FFmpeg also contains libavformat, a library to decode container formats that
+can optionally be used to extend MPlayer's container format support. Get it
+from FFmpeg CVS by the same steps outlined above for libavcodec, just
+substitute libavcodec by libavformat everywhere.
 
 
 _______________________________
@@ -168,6 +171,20 @@ NOTE: If you run Debian you can configure, compile and build a proper Debian
 
   fakeroot debian/rules binary
 
+If you want to pass custom options to configure, you can set up the
+DEB_BUILD_OPTIONS environment variable. For instance, if you want GUI
+and OSD menu support you would use:
+
+  DEB_BUILD_OPTIONS="--enable-gui --enable-menu" fakeroot debian/rules binary
+
+You can also pass some variables to the Makefile. For example, if you want
+to compile with gcc 3.4 even if it's not the default compiler:
+
+  CC=gcc-3.4 DEB_BUILD_OPTIONS="--enable-gui" fakeroot debian/rules binary
+
+To clean up the source tree run the following command:
+
+  fakeroot debian/rules clean
 
 ____________________________________________
 STEP5: Installing the onscreen display fonts

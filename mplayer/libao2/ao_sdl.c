@@ -14,8 +14,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../config.h"
-#include "../mp_msg.h"
+#include "config.h"
+#include "mp_msg.h"
+#include "help_mp.h"
 
 #include "audio_out.h"
 #include "audio_out_internal.h"
@@ -23,7 +24,7 @@
 #include <SDL.h>
 #include "osdep/timer.h"
 
-#include "../libvo/fastmemcpy.h"
+#include "libvo/fastmemcpy.h"
 
 static ao_info_t info = 
 {
@@ -36,7 +37,7 @@ static ao_info_t info =
 LIBAO_EXTERN(sdl)
 
 // turn this on if you want to use the slower SDL_MixAudio
-#define USE_SDL_INTERNAL_MIXER 1
+#undef USE_SDL_INTERNAL_MIXER
 
 // Samplesize used by the SDLlib AudioSpec struct
 #ifdef WIN32
@@ -45,68 +46,78 @@ LIBAO_EXTERN(sdl)
 #define SAMPLESIZE 1024
 #endif
 
-// General purpose Ring-buffering routines
+#define CHUNK_SIZE 4096
+#define NUM_CHUNKS 8
+// This type of ring buffer may never fill up completely, at least
+// one byte must always be unused.
+// For performance reasons (alignment etc.) one whole chunk always stays
+// empty, not only one byte.
+#define BUFFSIZE ((NUM_CHUNKS + 1) * CHUNK_SIZE)
 
-#define BUFFSIZE 4096
-#define NUM_BUFS 8
+static unsigned char *buffer;
 
-static unsigned char *buffer[NUM_BUFS];
-
-static unsigned int buf_read=0;
-static unsigned int buf_write=0;
-static unsigned int buf_read_pos=0;
-static unsigned int buf_write_pos=0;
+// may only be modified by SDL's playback thread or while it is stopped
+static volatile int read_pos;
+// may only be modified by mplayer's thread
+static volatile int write_pos;
 #ifdef USE_SDL_INTERNAL_MIXER
 static unsigned char volume=SDL_MIX_MAXVOLUME;
 #endif
-static int full_buffers=0;
-static int buffered_bytes=0;
 
+// may only be called by mplayer's thread
+// return value may change between immediately following two calls,
+// and the real number of free bytes might be larger!
+static int buf_free() {
+  int free = read_pos - write_pos - CHUNK_SIZE;
+  if (free < 0) free += BUFFSIZE;
+  return free;
+}
+
+// may only be called by SDL's playback thread
+// return value may change between immediately following two calls,
+// and the real number of buffered bytes might be larger!
+static int buf_used() {
+  int used = write_pos - read_pos;
+  if (used < 0) used += BUFFSIZE;
+  return used;
+}
 
 static int write_buffer(unsigned char* data,int len){
-  int len2=0;
-  int x;
-  while(len>0){
-    if(full_buffers==NUM_BUFS) break;
-    x=BUFFSIZE-buf_write_pos;
-    if(x>len) x=len;
-    memcpy(buffer[buf_write]+buf_write_pos,data+len2,x);
-    if (buf_write_pos==0)
-	++full_buffers;
-    len2+=x; len-=x;
-    buffered_bytes+=x; buf_write_pos+=x;
-    if(buf_write_pos>=BUFFSIZE){
-       // block is full, find next!
-       buf_write=(buf_write+1)%NUM_BUFS;
-       buf_write_pos=0;
-    }
+  int first_len = BUFFSIZE - write_pos;
+  int free = buf_free();
+  if (len > free) len = free;
+  if (first_len > len) first_len = len;
+  // till end of buffer
+  memcpy (&buffer[write_pos], data, first_len);
+  if (len > first_len) { // we have to wrap around
+    // remaining part from beginning of buffer
+    memcpy (buffer, &data[first_len], len - first_len);
   }
-  return len2;
+  write_pos = (write_pos + len) % BUFFSIZE;
+  return len;
 }
 
 static int read_buffer(unsigned char* data,int len){
-  int len2=0;
-  int x;
-  while(len>0){
-    if(buffered_bytes==0) break; // no more data buffered!
-    x=BUFFSIZE-buf_read_pos;
-    if(x>len) x=len;
-    if (x>buffered_bytes) x=buffered_bytes;
+  int first_len = BUFFSIZE - read_pos;
+  int buffered = buf_used();
+  if (len > buffered) len = buffered;
+  if (first_len > len) first_len = len;
+  // till end of buffer
 #ifdef USE_SDL_INTERNAL_MIXER
-    SDL_MixAudio(data+len2,buffer[buf_read]+buf_read_pos,x,volume);
+  SDL_MixAudio (data, &buffer[read_pos], first_len, volume);
 #else
-    memcpy(data+len2,buffer[buf_read]+buf_read_pos,x);
+  memcpy (data, &buffer[read_pos], first_len);
 #endif
-    len2+=x; len-=x;
-    buffered_bytes-=x; buf_read_pos+=x;
-    if(buf_read_pos>=BUFFSIZE){
-       // block is empty, find next!
-       buf_read=(buf_read+1)%NUM_BUFS;
-       --full_buffers;
-       buf_read_pos=0;
-    }
+  if (len > first_len) { // we have to wrap around
+    // remaining part from beginning of buffer
+#ifdef USE_SDL_INTERNAL_MIXER
+    SDL_MixAudio (&data[first_len], buffer, len - first_len, volume);
+#else
+    memcpy (&data[first_len], buffer, len - first_len);
+#endif
   }
-  return len2;
+  read_pos = (read_pos + len) % BUFFSIZE;
+  return len;
 }
 
 // end ring buffer stuff
@@ -167,15 +178,14 @@ static int init(int rate,int channels,int format,int flags){
 	/* SDL Audio Specifications */
 	SDL_AudioSpec aspec, obtained;
 	
-	int i;
 	/* Allocate ring-buffer memory */
-	for(i=0;i<NUM_BUFS;i++) buffer[i]=(unsigned char *) malloc(BUFFSIZE);
+	buffer = (unsigned char *) malloc(BUFFSIZE);
 
-	mp_msg(MSGT_AO,MSGL_INFO,"SDL: Samplerate: %iHz Channels: %s Format %s\n", rate, (channels > 1) ? "Stereo" : "Mono", audio_out_format_name(format));
+	mp_msg(MSGT_AO,MSGL_INFO,MSGTR_AO_SDL_INFO, rate, (channels > 1) ? "Stereo" : "Mono", audio_out_format_name(format));
 
 	if(ao_subdevice) {
 		setenv("SDL_AUDIODRIVER", ao_subdevice, 1);
-		mp_msg(MSGT_AO,MSGL_INFO,"SDL: using %s audio driver\n", ao_subdevice);
+		mp_msg(MSGT_AO,MSGL_INFO,MSGTR_AO_SDL_DriverInfo, ao_subdevice);
 	}
 
 	ao_data.channels=channels;
@@ -209,7 +219,7 @@ static int init(int rate,int channels,int format,int flags){
 	    default:
                 aspec.format = AUDIO_S16LSB;
                 ao_data.format = AFMT_S16_LE;
-                mp_msg(MSGT_AO,MSGL_WARN,"SDL: Unsupported audio format: 0x%x.\n", format);
+                mp_msg(MSGT_AO,MSGL_WARN,MSGTR_AO_SDL_UnsupportedAudioFmt, format);
 	}
 
 	/* The desired audio frequency in samples-per-second. */
@@ -230,13 +240,13 @@ void callback(void *userdata, Uint8 *stream, int len); userdata is the pointer s
 
 	/* initialize the SDL Audio system */
         if (SDL_Init (SDL_INIT_AUDIO/*|SDL_INIT_NOPARACHUTE*/)) {
-                mp_msg(MSGT_AO,MSGL_ERR,"SDL: Initializing of SDL Audio failed: %s.\n", SDL_GetError());
+                mp_msg(MSGT_AO,MSGL_ERR,MSGTR_AO_SDL_CantInit, SDL_GetError());
                 return 0;
         }
 
 	/* Open the audio device and start playing sound! */
 	if(SDL_OpenAudio(&aspec, &obtained) < 0) {
-        	mp_msg(MSGT_AO,MSGL_ERR,"SDL: Unable to open audio: %s\n", SDL_GetError());
+        	mp_msg(MSGT_AO,MSGL_ERR,MSGTR_AO_SDL_CantOpenAudio, SDL_GetError());
         	return(0);
 	} 
 
@@ -264,13 +274,15 @@ void callback(void *userdata, Uint8 *stream, int len); userdata is the pointer s
 		ao_data.format = AFMT_U16_BE;
 	    break;
 	    default:
-                mp_msg(MSGT_AO,MSGL_WARN,"SDL: Unsupported SDL audio format: 0x%x.\n", obtained.format);
+                mp_msg(MSGT_AO,MSGL_WARN,MSGTR_AO_SDL_UnsupportedAudioFmt, obtained.format);
                 return 0;
 	}
 
 	mp_msg(MSGT_AO,MSGL_V,"SDL: buf size = %d\n",obtained.size);
 	ao_data.buffersize=obtained.size;
+	ao_data.outburst = CHUNK_SIZE;
 	
+	reset();
 	/* unsilence audio, if callback is ready */
 	SDL_PauseAudio(0);
 
@@ -280,7 +292,8 @@ void callback(void *userdata, Uint8 *stream, int len); userdata is the pointer s
 // close audio device
 static void uninit(int immed){
 	mp_msg(MSGT_AO,MSGL_V,"SDL: Audio Subsystem shutting down!\n");
-	while(buffered_bytes > 0)
+	if (!immed)
+	while(buf_free() < BUFFSIZE - CHUNK_SIZE)
 		usec_sleep(50000);
 	SDL_CloseAudio();
 	SDL_QuitSubSystem(SDL_INIT_AUDIO);
@@ -291,15 +304,11 @@ static void reset(){
 
 	//printf("SDL: reset called!\n");	
 
+	SDL_PauseAudio(1);
 	/* Reset ring-buffer state */
-	buf_read=0;
-	buf_write=0;
-	buf_read_pos=0;
-	buf_write_pos=0;
-
-	full_buffers=0;
-	buffered_bytes=0;
-
+	read_pos = 0;
+	write_pos = 0;
+	SDL_PauseAudio(0);
 }
 
 // stop playing, keep buffers (for pause)
@@ -321,7 +330,7 @@ static void audio_resume()
 
 // return: how many bytes can be played without blocking
 static int get_space(){
-    return NUM_BUFS*BUFFSIZE - buffered_bytes;
+    return buf_free();
 }
 
 // plays 'len' bytes of 'data'
@@ -347,7 +356,8 @@ static int play(void* data,int len,int flags){
 
 // return: delay in seconds between first and last sample in buffer
 static float get_delay(){
-    return (float)(buffered_bytes + ao_data.buffersize)/(float)ao_data.bps;
+    int buffered = BUFFSIZE - CHUNK_SIZE - buf_free(); // could be less
+    return (float)(buffered + ao_data.buffersize)/(float)ao_data.bps;
 }
 
 

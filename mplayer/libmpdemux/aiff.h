@@ -48,4 +48,3 @@ off_t   endpos_aiff_pcm(AIFF_HEADER *h);
 int     samplerate_aiff_pcm(unsigned char *sr);
 
 #endif
-

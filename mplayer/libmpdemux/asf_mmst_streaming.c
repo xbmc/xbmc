@@ -22,7 +22,7 @@
 #include <winsock2.h>
 #endif
 
-#ifndef USE_SETLOCAL
+#ifndef USE_SETLOCALE
 #undef USE_ICONV
 #endif
 
@@ -42,6 +42,7 @@
 #include "network.h"
 
 #define BUF_SIZE 102400
+#define HDR_BUF_SIZE 8192
 
 typedef struct 
 {
@@ -252,6 +253,11 @@ static int get_header (int s, uint8_t *header, streaming_ctrl_t *streaming_ctrl)
 
 //      printf ("asf header packet detected, len=%d\n", packet_len);
 
+      if (packet_len < 0 || packet_len > HDR_BUF_SIZE - header_len) {
+        mp_msg(MSGT_NETWORK, MSGL_FATAL, "Invalid header size, giving up\n");
+        return 0;
+      }
+
       if (!get_data (s, &header[header_len], packet_len)) {
 	printf ("header data read failed\n");
 	return 0;
@@ -286,6 +292,12 @@ static int get_header (int s, uint8_t *header, streaming_ctrl_t *streaming_ctrl)
       packet_len = get_32 ((unsigned char*)&packet_len, 0) + 4;
       
 //      printf ("command packet detected, len=%d\n", packet_len);
+
+      if (packet_len < 0 || packet_len > BUF_SIZE) {
+        mp_msg(MSGT_NETWORK, MSGL_FATAL,
+                "Invalid rtsp packet size, giving up\n");
+        return 0;
+      }
       
       if (!get_data (s, data, packet_len)) {
 	printf ("command data read failed\n");
@@ -397,6 +409,12 @@ static int get_media_packet (int s, int padding, streaming_ctrl_t *stream_ctrl) 
 
 //    printf ("asf media packet detected, len=%d\n", packet_len);
 
+    if (packet_len < 0 || packet_len > BUF_SIZE) {
+      mp_msg(MSGT_NETWORK, MSGL_FATAL,
+              "Invalid rtsp packet size, giving up\n");
+      return 0;
+    }
+      
     if (!get_data (s, data, packet_len)) {
       printf ("media data read failed\n");
       return 0;
@@ -415,6 +433,12 @@ static int get_media_packet (int s, int padding, streaming_ctrl_t *stream_ctrl) 
     }
 
     packet_len = get_32 ((unsigned char*)&packet_len, 0) + 4;
+
+    if (packet_len < 0 || packet_len > BUF_SIZE) {
+      mp_msg(MSGT_NETWORK, MSGL_FATAL,
+              "Invalid rtsp packet size, giving up\n");
+      return 0;
+    }
 
     if (!get_data (s, data, packet_len)) {
       printf ("command data read failed\n");
@@ -500,7 +524,7 @@ int asf_mmst_streaming_start(stream_t *stream)
 {
   char                 str[1024];
   char                 data[BUF_SIZE];
-  uint8_t              asf_header[8192];
+  uint8_t              asf_header[HDR_BUF_SIZE];
   int                  asf_header_len;
   int                  len, i, packet_length;
   char                *path, *unescpath;
@@ -527,7 +551,9 @@ int asf_mmst_streaming_start(stream_t *stream)
   path=unescpath;
   
 
-  url1->port=1755;
+  if( url1->port==0 ) {
+	url1->port=1755;
+  }
   s = connect2Server( url1->hostname, url1->port, 1);
   if( s<0 ) {
 	  free(path);

@@ -1,6 +1,6 @@
 /*
  * attributes.h
- * Copyright (C) 2000-2002 Michel Lespinasse <walken@zoy.org>
+ * Copyright (C) 2000-2003 Michel Lespinasse <walken@zoy.org>
  * Copyright (C) 1999-2000 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
  *
  * This file is part of mpeg2dec, a free MPEG-2 video stream decoder.
@@ -25,7 +25,7 @@
 #ifdef ATTRIBUTE_ALIGNED_MAX
 #define ATTR_ALIGN(align) __attribute__ ((__aligned__ ((ATTRIBUTE_ALIGNED_MAX < align) ? ATTRIBUTE_ALIGNED_MAX : align)))
 #else
-#define ATTR_ALIGN(align)
+#define ATTR_ALIGN(align) __attribute__ ((__aligned__ ((16 < align) ? 16 : align)))
 #endif
 
 #ifdef HAVE_BUILTIN_EXPECT

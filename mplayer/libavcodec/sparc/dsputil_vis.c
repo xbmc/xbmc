@@ -3986,21 +3986,6 @@ static void MC_avg_no_round_xy_8_vis (uint8_t * dest, const uint8_t * _ref,
 
 /* End of no rounding code */
 
-void get_pixels_vis(uint8_t *restrict dest, const uint8_t *_ref, int stride)
-{
-  int i;
-  uint8_t *ref = (uint8_t*)_ref;
-  ref = vis_alignaddr(ref);
-
-  for (i = 0; i < 8; i++)
-    {
-      vis_ld64(ref[0], TMP0);
-      vis_st64(TMP0, dest[0]);
-      dest += 8;
-      ref += stride;
-    }
-}
-
 static sigjmp_buf jmpbuf;
 static volatile sig_atomic_t canjump = 0;
  
@@ -4010,7 +3995,7 @@ static void sigill_handler (int sig)
         signal (sig, SIG_DFL);
         raise (sig);
     }
-                                                                                
+
     canjump = 0;
     siglongjmp (jmpbuf, 1);
 }
@@ -4032,23 +4017,23 @@ static int vis_level ()
  
     /* pdist %f0, %f0, %f0 */
     __asm__ __volatile__(".word\t0x81b007c0");
-                                                                                
+
     canjump = 0;
     accel |= ACCEL_SPARC_VIS;
-                                                                                
+
     if (sigsetjmp (jmpbuf, 1)) {
         signal (SIGILL, SIG_DFL);
         return accel;
     }
-                                                                                
+
     canjump = 1;
-                                                                                
+
     /* edge8n %g0, %g0, %g0 */
     __asm__ __volatile__(".word\t0x81b00020");
-                                                                                
+
     canjump = 0;
     accel |= ACCEL_SPARC_VIS2;
-                                                                                
+
     signal (SIGILL, SIG_DFL);
 
     return accel;
@@ -4061,7 +4046,6 @@ void dsputil_init_vis(DSPContext* c, AVCodecContext *avctx)
   int accel = vis_level ();
 
   if (accel & ACCEL_SPARC_VIS) {
-      c->get_pixels = get_pixels_vis;
       c->put_pixels_tab[0][0] = MC_put_o_16_vis;
       c->put_pixels_tab[0][1] = MC_put_x_16_vis;
       c->put_pixels_tab[0][2] = MC_put_y_16_vis;

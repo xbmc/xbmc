@@ -118,6 +118,7 @@ static void c_longcount_tsc(long long* z)
 	 "movl %%edx, 4(%%ebx)\n\t"
 	 "popl %%ebx\n\t"
 	 ::"a"(z)
+	 :"edx"
 	);
 }
 static unsigned int c_localcount_notsc()
@@ -863,7 +864,7 @@ static void* WINAPI expWaitForMultipleObjects(int count, const void** objects,
     
     for (i = 0; i < count; i++)
     {
-	object = objects[i];
+	object = (void *)objects[i];
 	ret = expWaitForSingleObject(object, duration);
 	if (WaitAll)
 	    dbgprintf("WaitAll flag not yet supported...\n");
@@ -1943,7 +1944,7 @@ static DWORD WINAPI expRegQueryInfoKeyA( HKEY hkey, LPSTR class, LPDWORD class_l
                                          LPDWORD values, LPDWORD max_value, LPDWORD max_data,
                                          LPDWORD security, FILETIME *modif )
 {
-    return;
+    return ERROR_SUCCESS;
 }
 
 /*
@@ -3645,7 +3646,7 @@ static DWORD WINAPI expGetFullPathNameA
     if (strrchr(lpFileName, '\\'))
 	lpFilePart = strrchr(lpFileName, '\\');
     else
-	lpFilePart = lpFileName;
+	lpFilePart = (LPTSTR)lpFileName;
 #endif
     strcpy(lpBuffer, lpFileName);
 //    strncpy(lpBuffer, lpFileName, rindex(lpFileName, '\\')-lpFileName);
@@ -4315,10 +4316,15 @@ static void exp_ftol(void)
 	);
 }
 
-#warning check for _CIpow
-static double exp_CIpow(double x, double y)
+#define FPU_DOUBLES(var1,var2) double var1,var2; \
+  __asm__ __volatile__( "fstpl %0;fwait" : "=m" (var2) : ); \
+  __asm__ __volatile__( "fstpl %0;fwait" : "=m" (var1) : )
+
+static double exp_CIpow(void)
 {
-    /*printf("Pow %f  %f    0x%Lx  0x%Lx  => %f\n", x, y, *((int64_t*)&x), *((int64_t*)&y), pow(x, y));*/
+    FPU_DOUBLES(x,y);
+
+    dbgprintf("_CIpow(%lf, %lf)\n", x, y);
     return pow(x, y);
 }
 
@@ -4694,6 +4700,31 @@ static WIN_BOOL WINAPI expGetOpenFileNameA(/*LPOPENFILENAMEA*/ void* lpfn)
     return 1;
 }
 
+static double expfloor(double x)
+{
+    dbgprintf("floor(%lf)\n", x);
+    return floor(x);
+}
+
+#define FPU_DOUBLE(var) double var; \
+  __asm__ __volatile__( "fstpl %0;fwait" : "=m" (var) : )
+
+static double exp_CIcos(void)
+{
+    FPU_DOUBLE(x);
+
+    dbgprintf("_CIcos(%lf)\n", x);
+    return cos(x);
+}
+
+static double exp_CIsin(void)
+{
+    FPU_DOUBLE(x);
+
+    dbgprintf("_CIsin(%lf)\n", x);
+    return sin(x);
+}
+
 struct exports
 {
     char name[64];
@@ -4903,6 +4934,8 @@ struct exports exp_msvcrt[]={
     FF(cos, -1)
     FF(_ftol,-1)
     FF(_CIpow,-1)
+    FF(_CIcos,-1)
+    FF(_CIsin,-1)
     FF(ldexp,-1)
     FF(frexp,-1)
     FF(sprintf,-1)
@@ -4911,6 +4944,7 @@ struct exports exp_msvcrt[]={
     FF(fprintf,-1)
     FF(printf,-1)
     FF(getenv,-1)
+    FF(floor,-1)
 #ifdef MPLAYER
     FF(_EH_prolog,-1)
 #endif
@@ -5203,7 +5237,7 @@ void* LookupExternal(const char* library, int ordinal)
     }
     //    printf("%x %x\n", &unk_exp1, &unk_exp2);
 
-    printf("External func %s:%d\n", library, ordinal);
+    dbgprintf("External func %s:%d\n", library, ordinal);
 
     for(i=0; i<sizeof(libraries)/sizeof(struct libs); i++)
     {
@@ -5220,7 +5254,7 @@ void* LookupExternal(const char* library, int ordinal)
 
 #ifndef LOADLIB_TRY_NATIVE
   /* hack for truespeech and vssh264*/
-  if (!strcmp(library, "tsd32.dll") || !strcmp(library,"vssh264dec.dll") || !strcmp(library,"LCMW2.dll"))
+  if (!strcmp(library, "tsd32.dll") || !strcmp(library,"vssh264dec.dll") || !strcmp(library,"LCMW2.dll") || !strcmp(library,"VDODEC32.dll"))
 #endif
     /* ok, this is a hack, and a big memory leak. should be fixed. - alex */
     {

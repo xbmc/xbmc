@@ -62,8 +62,8 @@ extern "C" {
 #define DRMCH_MONO          1
 #define DRMCH_STEREO        2
 #define DRMCH_SBR_MONO      3
-#define DRMCH_SBR_LC_STEREO 4
-#define DRMCH_SBR_STEREO    5
+#define DRMCH_SBR_STEREO    4
+#define DRMCH_SBR_PS_STEREO 5
 
 
 /* First object type that has ER */
@@ -112,10 +112,12 @@ int8_t GASpecificConfig(bitfile *ld, mp4AudioSpecificConfig *mp4ASC,
 
 uint8_t adts_frame(adts_header *adts, bitfile *ld);
 void get_adif_header(adif_header *adif, bitfile *ld);
-void raw_data_block(faacDecHandle hDecoder, faacDecFrameInfo *hInfo,
+void raw_data_block(NeAACDecHandle hDecoder, NeAACDecFrameInfo *hInfo,
                     bitfile *ld, program_config *pce, drc_info *drc);
-uint8_t reordered_spectral_data(faacDecHandle hDecoder, ic_stream *ics, bitfile *ld,
+uint8_t reordered_spectral_data(NeAACDecHandle hDecoder, ic_stream *ics, bitfile *ld,
                                 int16_t *spectral_data);
+void aac_scalable_main_element(NeAACDecHandle hDecoder, NeAACDecFrameInfo *hInfo,
+                               bitfile *ld, program_config *pce, drc_info *drc);
 
 
 #ifdef __cplusplus

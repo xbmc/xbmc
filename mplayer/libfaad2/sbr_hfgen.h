@@ -34,7 +34,7 @@
 extern "C" {
 #endif
 
-void hf_generation(sbr_info *sbr, qmf_t Xlow[MAX_NTSRHFG][32],
+void hf_generation(sbr_info *sbr, qmf_t Xlow[MAX_NTSRHFG][64],
                    qmf_t Xhigh[MAX_NTSRHFG][64]
 #ifdef SBR_LOW_POWER
                    ,real_t *deg

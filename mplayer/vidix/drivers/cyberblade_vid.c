@@ -143,7 +143,12 @@ unsigned int vixGetVersion(void)
 
 static unsigned short cyberblade_card_ids[] =
 {
-	DEVICE_TRIDENT_CYBERBLADE_I1
+	DEVICE_TRIDENT_CYBERBLADE_I7,
+	DEVICE_TRIDENT_CYBERBLADE_I7D,
+	DEVICE_TRIDENT_CYBERBLADE_I1,
+	DEVICE_TRIDENT_CYBERBLADE_I12,
+	DEVICE_TRIDENT_CYBERBLADE_I13,
+	DEVICE_TRIDENT_CYBERBLADE_XPAI1
 };
 
 
@@ -252,6 +257,7 @@ static int is_supported_fourcc(uint32_t fourcc)
 	{
 		case IMGFMT_YUY2:
 		case IMGFMT_YV12:
+		case IMGFMT_I420:
 		case IMGFMT_YVU9:
 		case IMGFMT_BGR16:
 			return 1;
@@ -407,6 +413,7 @@ int vixConfigPlayback(vidix_playback_t *info)
 			layout=0x0; /* packed */
 			break;
 		case IMGFMT_YV12:
+		case IMGFMT_I420:
 			y_pitch = (src_w+15) & ~15;
 			uv_pitch = ((src_w/2)+7) & ~7;
 			YOffs=info->offset.y = 0;
@@ -506,16 +513,13 @@ int vixConfigPlayback(vidix_playback_t *info)
 			HWinStart=(TVHTotal-HDisp)&15;
 			HWinStart|=(HTotal-HDisp)&15;
 			HWinStart+=(TVHTotal-TVHSyncStart)-49;
- 
-			VWinStart=(TVVTotal-VDisp)/2-1;
-			VWinStart-=(1-((TVVTotal-VDisp)&1))+4;
 		}
 		else
 		{
 			LOGWRITE("[cyberblade] Using Standard CRTC\n");
 			HWinStart=(HTotal-HSync)+15;
-			VWinStart=(VTotal-VSync)-8;
 		}
+                VWinStart=(VTotal-VSync)-8;
 
 		printf("[cyberblade] HTotal: 0x%x, HSStart: 0x%x\n",HTotal,HSync); 
 		printf("  VTotal: 0x%x, VStart: 0x%x\n",VTotal,VSync);

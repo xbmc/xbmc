@@ -31,9 +31,7 @@ static int init(sh_audio_t *sh_audio)
        switch (sh_audio->samplesize) {
          case 1: sh_audio->sample_format=AFMT_U8; break;
          case 2: sh_audio->sample_format=AFMT_S16_LE; break;
-         case 3: sh_audio->sample_format=AFMT_AF_FLAGS | AF_FORMAT_I |
-                   AF_FORMAT_LE | AF_FORMAT_SI;
-           break;
+         case 3: sh_audio->sample_format=AFMT_S24_LE; break;
          case 4: sh_audio->sample_format=AFMT_S32_LE; break;
        }
        break;
@@ -58,6 +56,10 @@ static int init(sh_audio_t *sh_audio)
        sh_audio->ds->ss_div= sh_audio->samplesize;
        sh_audio->ds->ss_mul= sh_audio->samplesize * sh_audio->channels;
 #endif
+       break;
+    case 0x32336c66: // 'fl32', bigendian float32
+       sh_audio->sample_format=AFMT_AF_FLAGS | AF_FORMAT_BE | AF_FORMAT_F;
+       sh_audio->samplesize=4;
        break;
     default: if(sh_audio->samplesize!=2) sh_audio->sample_format=AFMT_U8;
   }

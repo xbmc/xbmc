@@ -50,7 +50,8 @@ static char help_text[]=
 // ========================= MPlayer messages ===========================
 // mplayer.c:
 
-#define MSGTR_Exiting "\nKonèím... (%s)\n"
+#define MSGTR_Exiting "\nKonèím...\n"
+#define MSGTR_ExitingHow "\nKonèím... (%s)\n"
 #define MSGTR_Exit_quit "Koniec"
 #define MSGTR_Exit_eof "Koniec súboru"
 #define MSGTR_Exit_error "Záva¾ná chyba"
@@ -58,23 +59,17 @@ static char help_text[]=
 #define MSGTR_NoHomeDir "Nemô¾em najs» domáci (HOME) adresár\n"
 #define MSGTR_GetpathProblem "get_path(\"config\") problém\n"
 #define MSGTR_CreatingCfgFile "Vytváram konfiguraèný súbor: %s\n"
-#define MSGTR_InvalidVOdriver "Neplatné meno výstupného videoovládaèa: %s\nPou¾ite '-vo help' pre zoznam dostupných ovládaèov.\n"
 #define MSGTR_InvalidAOdriver "Neplatné meno výstupného audioovládaèa: %s\nPou¾ite '-ao help' pre zoznam dostupných ovládaèov.\n"
 #define MSGTR_CopyCodecsConf "(copy/ln etc/codecs.conf (zo zdrojových kódov MPlayeru) do ~/.mplayer/codecs.conf)\n"
 #define MSGTR_BuiltinCodecsConf "Pou¾ívam vstavané defaultne codecs.conf\n"
 #define MSGTR_CantLoadFont "Nemô¾em naèíta» font: %s\n"
 #define MSGTR_CantLoadSub "Nemô¾em naèíta» titulky: %s\n"
-#define MSGTR_ErrorDVDkey "Chyba pri spracovaní kµúèa DVD.\n"
-#define MSGTR_CmdlineDVDkey "DVD kµúè po¾adovaný na príkazovom riadku je uschovaný pre rozkódovanie.\n"
-#define MSGTR_DVDauthOk "DVD sekvencia overenia autenticity vypadá v poriadku.\n"
 #define MSGTR_DumpSelectedStreamMissing "dump: FATAL: po¾adovaný prúd chýba!\n"
 #define MSGTR_CantOpenDumpfile "Nejde otvori» súbor pre dump!!!\n"
 #define MSGTR_CoreDumped "jadro vypísané :)\n"
 #define MSGTR_FPSnotspecified "V hlavièke súboru nie je udané (alebo je zlé) FPS! Pou¾ite voµbu -fps!\n"
 #define MSGTR_TryForceAudioFmtStr "Pokú¹am sa vynúti» rodinu audiokodeku %s...\n"
-#define MSGTR_CantFindAfmtFallback "Nemô¾em nájs» audio kodek pre po¾adovanú rodinu, pou¾ijem ostatné.\n"
 #define MSGTR_CantFindAudioCodec "Nemô¾em nájs» kodek pre audio formát 0x%X!\n"
-#define MSGTR_CouldntInitAudioCodec "Nejde inicializova» audio kodek! -> bez zvuku\n"
 #define MSGTR_TryForceVideoFmtStr "Pokú¹am se vnúti» rodinu videokodeku %s...\n"
 #define MSGTR_CantFindVideoCodec "Nemô¾em najs» kodek pre video formát 0x%X!\n"
 #define MSGTR_VOincompCodec "®iaµ, vybrané video_out zariadenie je nekompatibilné s týmto kodekom.\n"
@@ -88,9 +83,9 @@ static char help_text[]=
 "         ***********************************************************\n"\
 "!!! Mo¾né príèiny, problémy a rie¹enia:\n"\
 "- Nejèastej¹ie: nesprávny/chybný _zvukový_ ovládaè. Rie¹enie: skúste -ao sdl al. pou¾ite\n"\
-"  ALSA 0.5 alebo oss emuláciu z ALSA 0.9. viac tipov sa dozviete v DOCS/HTML/en/devices.html#audio-dev!\n"\
+"  ALSA 0.5 alebo oss emuláciu z ALSA 0.9. viac tipov sa dozviete v DOCS/HTML/en/audio.html!\n"\
 "- Pomalý video výstup. Skúste iný -vo ovládaè (pre zoznam: -vo help) alebo skúste\n"\
-"  s voµbou -framedrop!  Tipy pre ladenie/zrýchlenie videa sú v DOCS/HTML/en/devices.html#video-dev\n"\
+"  s voµbou -framedrop!  Tipy pre ladenie/zrýchlenie videa sú v DOCS/HTML/en/video.html\n"\
 "- Pomalý cpu. Neskú¹ajte prehráva» veµké dvd/divx na pomalom cpu! Skúste -hardframedrop\n"\
 "- Po¹kodený súbor. Skúste rôzne kombinácie týchto volieb: -nobps  -ni  -mc 0  -forceidx\n"\
 "- Pomalé médium (NFS/SMB, DVD, VCD...). Skúste -cache 8192.\n"\
@@ -104,7 +99,6 @@ static char help_text[]=
 #define MSGTR_FPSforced "FPS vnútené na hodnotu %5.3f  (ftime: %5.3f)\n"
 #define MSGTR_CompiledWithRuntimeDetection "Skompilovné s RUNTIME CPU Detection - varovanie, nie je to optimálne! Na získanie max. výkonu, rekompilujte mplayer zo zdrojakov s --disable-runtime-cpudetection\n"
 #define MSGTR_CompiledWithCPUExtensions "Skompilované pre x86 CPU s roz¹íreniami:"
-#define MSGTR_AvailableVideoOutputPlugins "Dostupné video výstupné pluginy:\n"
 #define MSGTR_AvailableVideoOutputDrivers "Dostupné video výstupné ovládaèe:\n"
 #define MSGTR_AvailableAudioOutputDrivers "Dostupné audio výstupné ovládaèe:\n"
 #define MSGTR_AvailableAudioCodecs "Dostupné audio kodeky:\n"
@@ -115,12 +109,9 @@ static char help_text[]=
 #define MSGTR_UsingRTCTiming "Pou¾ívam Linuxové hardvérové RTC èasovanie (%ldHz)\n"
 #define MSGTR_CannotReadVideoProperties "Video: nemô¾em èíta» vlastnosti\n"
 #define MSGTR_NoStreamFound "Nenájdený prúd\n"
-#define MSGTR_InitializingAudioCodec "Initializujem audio kodek...\n"
 #define MSGTR_ErrorInitializingVODevice "Chyba pri otváraní/inicializácii vybraných video_out (-vo) zariadení!\n"
 #define MSGTR_ForcedVideoCodec "Vnútený video kodek: %s\n"
 #define MSGTR_ForcedAudioCodec "Vnútený video kodek: %s\n"
-#define MSGTR_AODescription_AOAuthor "AO: Popis: %s\nAO: Autor: %s\n"
-#define MSGTR_AOComment "AO: Komentár: %s\n"
 #define MSGTR_Video_NoVideo "Video: ¾iadne video!!!\n"
 #define MSGTR_NotInitializeVOPorVO "\nFATAL: Nemô¾em inicializova» video filtre (-vf) alebo video výstup (-vo)!\n"
 #define MSGTR_Paused "\n  =====  PAUZA  =====\r"
@@ -149,11 +140,9 @@ static char help_text[]=
 #define MSGTR_UsingPass3ControllFile "Pou¾ívam pass3 ovládací súbor: %s\n"
 #define MSGTR_MissingFilename "\nChýbajúce meno súboru!\n\n"
 #define MSGTR_CannotOpenFile_Device "Nemô¾em otvori» súbor/zariadenie\n"
-#define MSGTR_ErrorDVDAuth "Chyba v DVD auth...\n"
 #define MSGTR_CannotOpenDemuxer "Nemô¾em otvori» demuxer\n"
 #define MSGTR_NoAudioEncoderSelected "\nNevybraný encoder (-oac)! Vyberte jeden alebo -nosound. Pou¾itie -oac help!\n"
 #define MSGTR_NoVideoEncoderSelected "\nNevybraný encoder (-ovc)! Vyberte jeden, pou¾itie -ovc help!\n"
-#define MSGTR_InitializingAudioCodec "Inicializujem audio kodek...\n"
 #define MSGTR_CannotOpenOutputFile "Nemô¾em otvori» súbor '%s'\n"
 #define MSGTR_EncoderOpenFailed "Zlyhal to open the encoder\n"
 #define MSGTR_ForcingOutputFourcc "Vnucujem výstupný formát (fourcc) na %x [%.4s]\n"
@@ -357,8 +346,6 @@ static char help_text[]=
 #define MSGTR_SkinBrowser "Prehliadaè tém"
 #define MSGTR_Network "Sie»ové prehrávanie (streaming)..."
 #define MSGTR_Preferences "Preferencie"
-#define MSGTR_OSSPreferences "konfigurácia OSS ovládaèa"
-#define MSGTR_SDLPreferences "konfigurácia SDL ovládaèa"
 #define MSGTR_NoMediaOpened "¾iadne médium otvorené"
 #define MSGTR_VCDTrack "VCD stopa %d"
 #define MSGTR_NoChapter "¾iadna kapitola"
@@ -402,7 +389,6 @@ static char help_text[]=
 #define MSGTR_SKIN_FONT_FontImageNotFound "súbor obrazov fontu nenájdený\n"
 #define MSGTR_SKIN_FONT_NonExistentFontID "neexistujúci identifikátor fontu (%s)\n"
 #define MSGTR_SKIN_UnknownParameter "neznámy parameter (%s)\n"
-#define MSGTR_SKINBROWSER_NotEnoughMemory "[prehliadaè tém] nedostatok pamäte.\n"
 #define MSGTR_SKIN_SKINCFG_SkinNotFound "Skin nenájdený (%s).\n"
 #define MSGTR_SKIN_SKINCFG_SkinCfgReadError "Chyba pri èítaní konfiguraèného súboru tém (%s).\n"
 #define MSGTR_SKIN_LABEL "Témy:"
@@ -524,9 +510,6 @@ static char help_text[]=
 #define MSGTR_PREFERENCES_FRAME_CodecDemuxer "Kódek & demuxer"
 #define MSGTR_PREFERENCES_FRAME_Cache "Vyrovnávacia pamä»"
 #define MSGTR_PREFERENCES_FRAME_Misc "Rôzne"
-#define MSGTR_PREFERENCES_OSS_Device "Zariadenie:"
-#define MSGTR_PREFERENCES_OSS_Mixer "Mixer:"
-#define MSGTR_PREFERENCES_SDL_Driver "Ovládaè:"
 #define MSGTR_PREFERENCES_Message "Prosím pamätajte, nietoré voµby potrebujú re¹tart prehrávania!"
 #define MSGTR_PREFERENCES_DXR3_VENC "Video kóder:"
 #define MSGTR_PREFERENCES_DXR3_LAVC "Pou¾i» LAVC (FFmpeg)"

@@ -47,25 +47,21 @@ int asf_mmst_streaming_start( stream_t *stream );
 
 int
 asf_streaming_start( stream_t *stream, int *demuxer_type) {
-	char proto_s[10];
-	int protolen, fd = -1;
-	
-	strncpy( proto_s, stream->streaming_ctrl->url->protocol, 10 );
-    protolen=strlen(proto_s);
+    char *proto = stream->streaming_ctrl->url->protocol;
+    int fd = -1;
 
     // Is protocol even valid mms,mmsu,mmst,http,http_proxy?
-    if (!(
-        (protolen==4 && (!strcasecmp( proto_s, "mmst") || !strcasecmp (proto_s,"mmsu") ||
-        !strcasecmp( proto_s, "http"))) ||
-        (protolen==3 && !strcasecmp(proto_s,"mms")) ||
-        (protolen==10 && !strcasecmp(proto_s,"http_proxy"))
-        )) {
-        mp_msg(MSGT_NETWORK,MSGL_ERR,"Unknown protocol: %s\n", proto_s );
+    if (!(!strncasecmp(proto, "mmst", 4) || !strncasecmp(proto, "mmsu", 4) ||
+	!strncasecmp(proto, "http_proxy", 10) || !strncasecmp(proto, "mms", 3) ||
+	!strncasecmp(proto, "http", 4)))
+    {
+        mp_msg(MSGT_NETWORK,MSGL_ERR,"Unknown protocol: %s\n", proto );
         return -1;
     }
 
     // Is protocol mms or mmsu?
-    if ( protolen==3 || (protolen==4 &&  !strcasecmp( proto_s, "mmsu")) ) {
+    if (!strncasecmp(proto, "mmsu", 4) || !strncasecmp(proto, "mms", 3))
+    {
 		mp_msg(MSGT_NETWORK,MSGL_V,"Trying ASF/UDP...\n");
 		//fd = asf_mmsu_streaming_start( stream );
 		if( fd>-1 ) return fd; //mmsu support is not implemented yet - using this code
@@ -74,7 +70,8 @@ asf_streaming_start( stream_t *stream, int *demuxer_type) {
 	}
 
     //Is protocol mms or mmst?
-    if (protolen==3 ||  (protolen==4 && !strcasecmp( proto_s, "mmst")) ) {
+    if (!strncasecmp(proto, "mmst", 4) || !strncasecmp(proto, "mms", 3))
+    {
 		mp_msg(MSGT_NETWORK,MSGL_V,"Trying ASF/TCP...\n");
 		fd = asf_mmst_streaming_start( stream );
 		if( fd>-1 ) return fd;
@@ -83,7 +80,9 @@ asf_streaming_start( stream_t *stream, int *demuxer_type) {
 	}
 
     //Is protocol http, http_proxy, or mms? 
-    if  (protolen==10 || protolen==3 || (protolen==4 && !strcasecmp(proto_s,"http")) ) {
+    if (!strncasecmp(proto, "http_proxy", 10) || !strncasecmp(proto, "http", 4) ||
+	!strncasecmp(proto, "mms", 3))
+    {
 		mp_msg(MSGT_NETWORK,MSGL_V,"Trying ASF/HTTP...\n");
 		fd = asf_http_streaming_start( stream, demuxer_type );
 		if( fd>-1 ) return fd;
@@ -428,7 +427,11 @@ asf_http_streaming_type(char *content_type, char *features, HTTP_header_t *http_
 	if( 	!strcasecmp(content_type, "application/octet-stream") ||
 		!strcasecmp(content_type, "application/vnd.ms.wms-hdr.asfv1") ||        // New in Corona, first request
 		!strcasecmp(content_type, "application/x-mms-framed") ||                // New in Corana, second request
+#ifdef _XBOX
+        ( !strcasecmp(content_type, "video/x-ms-asf") && ( ! http_hdr || ! http_hdr->body_size ) ) ) {               //if got header size, skip it
+#else
 		!strcasecmp(content_type, "video/x-ms-asf")) {               
+#endif
 
 		if( strstr(features, "broadcast") ) {
 			mp_msg(MSGT_NETWORK,MSGL_V,"=====> ASF Live stream\n");

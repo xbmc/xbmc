@@ -40,6 +40,8 @@ typedef struct {
     int data_pos; /* position of the data after the header */
     int nb_packets;
     int old_format;
+    int current_stream;
+    int remaining_len;
 } RMContext;
 
 #ifdef CONFIG_ENCODERS
@@ -228,7 +230,10 @@ static void rv10_write_header(AVFormatContext *ctx,
         } else {
             /* video codec info */
             put_be32(s,34); /* size */
-            put_tag(s,"VIDORV10");
+            if(stream->enc->codec_id == CODEC_ID_RV10)
+                put_tag(s,"VIDORV10");
+            else
+                put_tag(s,"VIDORV20");
             put_be16(s, stream->enc->width);
             put_be16(s, stream->enc->height);
             put_be16(s, (int) stream->frame_rate); /* frames per seconds ? */
@@ -239,7 +244,10 @@ static void rv10_write_header(AVFormatContext *ctx,
             /* Seems to be the codec version: only use basic H263. The next
                versions seems to add a diffential DC coding as in
                MPEG... nothing new under the sun */
-            put_be32(s,0x10000000); 
+            if(stream->enc->codec_id == CODEC_ID_RV10)
+                put_be32(s,0x10000000); 
+            else
+                put_be32(s,0x20103001); 
             //put_be32(s,0x10003000); 
         }
     }
@@ -315,7 +323,7 @@ static int rm_write_header(AVFormatContext *s)
             stream->total_frames = stream->nb_packets;
             break;
         default:
-            av_abort();
+            return -1;
         }
     }
 
@@ -371,13 +379,13 @@ static int rm_write_video(AVFormatContext *s, const uint8_t *buf, int size, int 
     } else {
         put_byte(pb, 0x01); 
     }
-    put_be16(pb, 0x4000 | (size)); /* total frame size */
-    put_be16(pb, 0x4000 | (size));              /* offset from the start or the end */
+    put_be16(pb, 0x4000 + (size)); /* total frame size */
+    put_be16(pb, 0x4000 + (size));              /* offset from the start or the end */
 #else
     /* full frame */
     write_packet_header(s, size + 6);
     put_byte(pb, 0xc0); 
-    put_be16(pb, 0x4000 | size); /* total frame size */
+    put_be16(pb, 0x4000 + size); /* total frame size */
     put_be16(pb, 0x4000 + packet_number * 126); /* position in stream */
 #endif
     put_byte(pb, stream->nb_frames & 0xff); 
@@ -627,44 +635,53 @@ static int rm_read_header(AVFormatContext *s, AVFormatParameters *ap)
             get_str8(pb, buf, sizeof(buf)); /* mimetype */
             codec_data_size = get_be32(pb);
             codec_pos = url_ftell(pb);
+            st->codec.codec_type = CODEC_TYPE_DATA;
+            av_set_pts_info(st, 64, 1, 1000);
 
             v = get_be32(pb);
             if (v == MKTAG(0xfd, 'a', 'r', '.')) {
                 /* ra type header */
                 rm_read_audio_stream_info(s, st, 0);
             } else {
+                int fps, fps2;
                 if (get_le32(pb) != MKTAG('V', 'I', 'D', 'O')) {
                 fail1:
                     av_log(&st->codec, AV_LOG_ERROR, "Unsupported video codec\n");
-                    goto fail;
+                    goto skip;
                 }
                 st->codec.codec_tag = get_le32(pb);
-                if (st->codec.codec_tag != MKTAG('R', 'V', '1', '0'))
+//                av_log(NULL, AV_LOG_DEBUG, "%X %X\n", st->codec.codec_tag, MKTAG('R', 'V', '2', '0'));
+                if (   st->codec.codec_tag != MKTAG('R', 'V', '1', '0')
+                    && st->codec.codec_tag != MKTAG('R', 'V', '2', '0'))
                     goto fail1;
                 st->codec.width = get_be16(pb);
                 st->codec.height = get_be16(pb);
                 st->codec.frame_rate_base= 1;
-                st->codec.frame_rate = get_be16(pb) * st->codec.frame_rate_base;
+                fps= get_be16(pb);
                 st->codec.codec_type = CODEC_TYPE_VIDEO;
                 get_be32(pb);
+                fps2= get_be16(pb);
                 get_be16(pb);
-                get_be32(pb);
-                get_be16(pb);
+                
+                st->codec.extradata_size= codec_data_size - (url_ftell(pb) - codec_pos);
+                st->codec.extradata= av_malloc(st->codec.extradata_size);
+                get_buffer(pb, st->codec.extradata, st->codec.extradata_size);
+                
+//                av_log(NULL, AV_LOG_DEBUG, "fps= %d fps2= %d\n", fps, fps2);
+                st->codec.frame_rate = fps * st->codec.frame_rate_base;
                 /* modification of h263 codec version (!) */
-                h263_hack_version = get_be32(pb);
-                switch(h263_hack_version) {
-                case 0x10000000:
-                case 0x10003000:
-                case 0x10003001:
-                    st->codec.sub_id = h263_hack_version;
+#ifdef WORDS_BIGENDIAN
+                h263_hack_version = ((uint32_t*)st->codec.extradata)[1];
+#else
+                h263_hack_version = bswap_32(((uint32_t*)st->codec.extradata)[1]);
+#endif
+                st->codec.sub_id = h263_hack_version;
+                if((h263_hack_version>>28)==1)
                     st->codec.codec_id = CODEC_ID_RV10;
-                    break;
-                default:
-                    /* not handled */
-                    st->codec.codec_id = CODEC_ID_NONE;
-                    break;
-                }
+                else
+                    st->codec.codec_id = CODEC_ID_RV20;
             }
+skip:
             /* skip codec info */
             size = url_ftell(pb) - codec_pos;
             url_fskip(pb, codec_data_size - size);
@@ -709,12 +726,60 @@ static int get_num(ByteIOContext *pb, int *len)
 /* multiple of 20 bytes for ra144 (ugly) */
 #define RAW_PACKET_SIZE 1000
 
+static int sync(AVFormatContext *s, int64_t *timestamp, int *flags, int *stream_index, int64_t *pos){
+    RMContext *rm = s->priv_data;
+    ByteIOContext *pb = &s->pb;
+    int len, num, res, i;
+    AVStream *st;
+
+    while(!url_feof(pb)){
+        *pos= url_ftell(pb);
+        if(rm->remaining_len > 0){
+            num= rm->current_stream;
+            len= rm->remaining_len;
+            *timestamp = AV_NOPTS_VALUE;
+            *flags= 0;
+        }else{
+            if(get_byte(pb))
+                continue;
+            if(get_byte(pb))
+                continue;
+            len = get_be16(pb);
+            if (len < 12)
+                continue;
+            num = get_be16(pb);
+            *timestamp = get_be32(pb);
+            res= get_byte(pb); /* reserved */
+            *flags = get_byte(pb); /* flags */
+
+            
+            len -= 12;
+        }
+        for(i=0;i<s->nb_streams;i++) {
+            st = s->streams[i];
+            if (num == st->id)
+                break;
+        }
+        if (i == s->nb_streams) {
+            /* skip packet if unknown number */
+            url_fskip(pb, len);
+            rm->remaining_len -= len;
+            continue;
+        }
+        *stream_index= i;
+        
+        return len;
+    }
+    return -1;
+}
+
 static int rm_read_packet(AVFormatContext *s, AVPacket *pkt)
 {
     RMContext *rm = s->priv_data;
     ByteIOContext *pb = &s->pb;
     AVStream *st;
-    int len, num, timestamp, i, tmp, j;
+    int i, len, tmp, j;
+    int64_t timestamp, pos;
     uint8_t *ptr;
     int flags;
 
@@ -731,65 +796,60 @@ static int rm_read_packet(AVFormatContext *s, AVPacket *pkt)
         pkt->size = len;
         st = s->streams[0];
     } else {
-    redo:
-        if (rm->nb_packets == 0)
+        int seq=1;
+
+        len=sync(s, &timestamp, &flags, &i, &pos);
+        if(len<0)
             return AVERROR_IO;
-        get_be16(pb);
-        len = get_be16(pb);
-        if (len < 12)
-            return AVERROR_IO;
-        num = get_be16(pb);
-        timestamp = get_be32(pb);
-        get_byte(pb); /* reserved */
-        flags = get_byte(pb); /* flags */
-        rm->nb_packets--;
-        len -= 12;
-        
-        st = NULL;
-        for(i=0;i<s->nb_streams;i++) {
-            st = s->streams[i];
-            if (num == st->id)
-                break;
-        }
-        if (i == s->nb_streams) {
-            /* skip packet if unknown number */
-            url_fskip(pb, len);
-            goto redo;
-        }
-        
+        st = s->streams[i];
+
         if (st->codec.codec_type == CODEC_TYPE_VIDEO) {
-            int full_frame, h, pic_num;
-            
-            h= get_byte(pb);
-            if ((h & 0xc0) == 0xc0) {
-                int len2, pos;
-                full_frame = 1;
-                len2= get_num(pb, &len);
+            int h, pic_num, len2, pos;
+
+            h= get_byte(pb); len--;
+            if(!(h & 0x40)){
+                seq = get_byte(pb); len--;
+            }
+
+            if((h & 0xc0) == 0x40){
+                len2= pos= 0;
+            }else{
+                len2 = get_num(pb, &len);
                 pos = get_num(pb, &len);
-                //printf("pos:%d\n",len);
-                len -= 2;
-            } else {
-                int seq, frame_size, pos;
-                full_frame = 0;
-                seq = get_byte(pb);
-                frame_size = get_num(pb, &len);
-                pos = get_num(pb, &len);
-                //printf("seq:%d, size:%d, pos:%d\n",seq,frame_size,pos);
-                len -= 3;
             }
             /* picture number */
-            pic_num= get_byte(pb);
-            
-            //XXX/FIXME/HACK, demuxer should be fixed to send complete frames ...
-            if(st->codec.slice_offset==NULL) 
-                st->codec.slice_offset= (int*)av_malloc(sizeof(int));
-            st->codec.slice_count= full_frame; 
-            st->codec.slice_offset[0]= 0;
+            pic_num= get_byte(pb); len--;
+            rm->remaining_len= len;
+            rm->current_stream= st->id;
+
+//            av_log(NULL, AV_LOG_DEBUG, "%X len:%d pos:%d len2:%d pic_num:%d\n",h, len, pos, len2, pic_num);
+            if(len2 && len2<len)
+                len=len2;
+            rm->remaining_len-= len;
         }
         
         av_new_packet(pkt, len);
         pkt->stream_index = i;
         get_buffer(pb, pkt->data, len);
+
+#if 0
+        if (st->codec.codec_type == CODEC_TYPE_VIDEO) {
+            if(st->codec.codec_id == CODEC_ID_RV20){
+                int seq= 128*(pkt->data[2]&0x7F) + (pkt->data[3]>>1);
+                av_log(NULL, AV_LOG_DEBUG, "%d %Ld %d\n", timestamp, timestamp*512LL/25, seq);
+
+                seq |= (timestamp&~0x3FFF);
+                if(seq - timestamp >  0x2000) seq -= 0x4000;
+                if(seq - timestamp < -0x2000) seq += 0x4000;
+            }
+        }
+#endif
+        pkt->pts= timestamp;
+        if(flags&2){
+            pkt->flags |= PKT_FLAG_KEY;
+            if((seq&0x7F) == 1)
+                av_add_index_entry(st, pos, timestamp, 0, AVINDEX_KEYFRAME);
+        }
     }
 
     /* for AC3, needs to swap bytes */
@@ -825,6 +885,49 @@ static int rm_probe(AVProbeData *p)
         return 0;
 }
 
+static int64_t rm_read_dts(AVFormatContext *s, int stream_index, 
+                               int64_t *ppos, int64_t pos_limit)
+{
+    RMContext *rm = s->priv_data;
+    int64_t pos, dts;
+    int stream_index2, flags, len, h;
+
+    pos = *ppos;
+    
+    if(rm->old_format)
+        return AV_NOPTS_VALUE;
+
+    url_fseek(&s->pb, pos, SEEK_SET);
+    rm->remaining_len=0;
+    for(;;){
+        int seq=1;
+        AVStream *st;
+
+        len=sync(s, &dts, &flags, &stream_index2, &pos);
+        if(len<0)
+            return AV_NOPTS_VALUE;
+
+        st = s->streams[stream_index2];
+        if (st->codec.codec_type == CODEC_TYPE_VIDEO) {
+            h= get_byte(&s->pb); len--;
+            if(!(h & 0x40)){
+                seq = get_byte(&s->pb); len--;
+            }
+        }
+            
+        if((flags&2) && (seq&0x7F) == 1){
+//            av_log(s, AV_LOG_DEBUG, "%d %d-%d %Ld %d\n", flags, stream_index2, stream_index, dts, seq);
+            av_add_index_entry(st, pos, dts, 0, AVINDEX_KEYFRAME);
+            if(stream_index2 == stream_index)
+                break;
+        }
+
+        url_fskip(&s->pb, len);
+    }
+    *ppos = pos;
+    return dts;
+}
+
 static AVInputFormat rm_iformat = {
     "rm",
     "rm format",
@@ -833,6 +936,8 @@ static AVInputFormat rm_iformat = {
     rm_read_header,
     rm_read_packet,
     rm_read_close,
+    NULL,
+    rm_read_dts,
 };
 
 #ifdef CONFIG_ENCODERS

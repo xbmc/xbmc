@@ -150,6 +150,7 @@ static int ffm_write_header(AVFormatContext *s)
         fst = av_mallocz(sizeof(FFMStream));
         if (!fst)
             goto fail;
+        av_set_pts_info(st, 64, 1, 1000000);
         st->priv_data = fst;
 
         codec = &st->codec;
@@ -189,7 +190,7 @@ static int ffm_write_header(AVFormatContext *s)
             put_le16(pb, codec->frame_size);
             break;
         default:
-            av_abort();
+            return -1;
         }
         /* hack to have real time */
         if (ffm_nopts)
@@ -207,8 +208,7 @@ static int ffm_write_header(AVFormatContext *s)
     /* init packet mux */
     ffm->packet_ptr = ffm->packet;
     ffm->packet_end = ffm->packet + ffm->packet_size - FFM_HEADER_SIZE;
-    if (ffm->packet_end < ffm->packet)
-        av_abort();
+    assert(ffm->packet_end >= ffm->packet);
     ffm->frame_offset = 0;
     ffm->pts = 0;
     ffm->first_packet = 1;
@@ -278,8 +278,6 @@ static int ffm_write_trailer(AVFormatContext *s)
         put_flush_packet(pb);
     }
 
-    for(i=0;i<s->nb_streams;i++)
-        av_freep(&s->streams[i]->priv_data);
     return 0;
 }
 #endif //CONFIG_ENCODERS
@@ -339,7 +337,7 @@ static int ffm_read_data(AVFormatContext *s,
             get_buffer(pb, ffm->packet, ffm->packet_size - FFM_HEADER_SIZE);
             ffm->packet_end = ffm->packet + (ffm->packet_size - FFM_HEADER_SIZE - fill_size);
             if (ffm->packet_end < ffm->packet)
-                av_abort();
+                return -1;
             /* if first packet or resynchronization packet, we must
                handle it specifically */
             if (ffm->first_packet || (frame_offset & 0x8000)) {
@@ -354,7 +352,7 @@ static int ffm_read_data(AVFormatContext *s,
                 }
                 ffm->first_packet = 0;
                 if ((frame_offset & 0x7ffff) < FFM_HEADER_SIZE)
-                    av_abort();
+                    return -1;
                 ffm->packet_ptr = ffm->packet + (frame_offset & 0x7fff) - FFM_HEADER_SIZE;
                 if (!first)
                     break;
@@ -629,7 +627,7 @@ static int64_t get_pts(AVFormatContext *s, offset_t pos)
 /* seek to a given time in the file. The file read pointer is
    positionned at or before pts. XXX: the following code is quite
    approximative */
-static int ffm_seek(AVFormatContext *s, int64_t wanted_pts)
+static int ffm_seek(AVFormatContext *s, int stream_index, int64_t wanted_pts, int flags)
 {
     FFMContext *ffm = s->priv_data;
     offset_t pos_min, pos_max, pos;
@@ -664,7 +662,7 @@ static int ffm_seek(AVFormatContext *s, int64_t wanted_pts)
             pos_min = pos + FFM_PACKET_SIZE;
         }
     }
-    pos = pos_min;
+    pos = (flags & AVSEEK_FLAG_BACKWARD) ? pos_min : pos_max;
     if (pos > 0)
         pos -= FFM_PACKET_SIZE;
  found:

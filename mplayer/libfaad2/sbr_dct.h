@@ -34,11 +34,14 @@
 extern "C" {
 #endif
 
+void dct4_kernel(real_t * in_real, real_t * in_imag, real_t * out_real, real_t * out_imag);
+
 void DCT3_32_unscaled(real_t *y, real_t *x);
-void DCT2_64_unscaled(real_t *y, real_t *x);
-void DST2_64_unscaled(real_t *y, real_t *x);
-void DCT4_64(real_t *y, real_t *x);
-void DCT4_64_kernel(real_t *y, real_t *t2);
+void DCT4_32(real_t *y, real_t *x);
+void DST4_32(real_t *y, real_t *x);
+void DCT2_32_unscaled(real_t *y, real_t *x);
+void DCT4_16(real_t *y, real_t *x);
+void DCT2_16_unscaled(real_t *y, real_t *x);
 
 
 #ifdef __cplusplus

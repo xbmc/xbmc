@@ -4,8 +4,9 @@
 #include <sys/ioctl.h>
 #include <inttypes.h>
 #include <dxr2ioctl.h>
-#include "../config.h"
+#include "config.h"
 #include "mp_msg.h"
+#include "help_mp.h"
 #include "bswap.h"
 
 #include "audio_out.h"
@@ -50,7 +51,7 @@ static int control(int cmd,void *arg){
       if(v.arg != volume) {
 	volume = v.arg;
 	if( ioctl(dxr2_fd,DXR2_IOC_SET_AUDIO_VOLUME,&v) < 0) {
-	  mp_msg(MSGT_AO,MSGL_ERR,"DXR2 : Setting volume to %d failed\n",volume);
+	  mp_msg(MSGT_AO,MSGL_ERR,MSGTR_AO_DXR2_SetVolFailed,volume);
 	  return CONTROL_ERROR;
 	}
       }
@@ -110,7 +111,7 @@ static int init(int rate,int channels,int format,int flags){
 		break;
 #endif
 	default:
-		mp_msg(MSGT_AO,MSGL_ERR,"[AO] dxr2: %d Hz not supported, try \"-aop list=resample\"\n",rate);
+		mp_msg(MSGT_AO,MSGL_ERR,MSGTR_AO_DXR2_UnsupSamplerate,rate);
 		return 0;
 	}
 

@@ -211,7 +211,7 @@ static void sdp_parse_fmtp(AVCodecContext *codec, const char *p)
             if (!strcmp(attr, "config")) {
                 /* decode the hexa encoded parameter */
                 len = hex_to_data(NULL, value);
-                codec->extradata = av_mallocz(len);
+                codec->extradata = av_mallocz(len + FF_INPUT_BUFFER_PADDING_SIZE);
                 if (!codec->extradata)
                     goto fail;
                 codec->extradata_size = len;
@@ -339,7 +339,7 @@ static void sdp_parse_line(AVFormatContext *s, SDPParseState *s1,
             rtsp_st = st->priv_data;
             
             /* XXX: may need to add full url resolution */
-            url_split(proto, sizeof(proto), NULL, 0, NULL, NULL, 0, p);
+            url_split(proto, sizeof(proto), NULL, 0, NULL, 0, NULL, NULL, 0, p);
             if (proto[0] == '\0') {
                 /* relative control URL */
                 pstrcat(rtsp_st->control_url, sizeof(rtsp_st->control_url), "/");
@@ -723,7 +723,7 @@ static int rtsp_read_header(AVFormatContext *s,
     AVStream *st;
 
     /* extract hostname and port */
-    url_split(NULL, 0,
+    url_split(NULL, 0, NULL, 0,
               host, sizeof(host), &port, path, sizeof(path), s->filename);
     if (port < 0)
         port = RTSP_DEFAULT_PORT;
@@ -1111,7 +1111,7 @@ static int rtsp_read_pause(AVFormatContext *s)
 }
 
 static int rtsp_read_seek(AVFormatContext *s, int stream_index, 
-                          int64_t timestamp)
+                          int64_t timestamp, int flags)
 {
     RTSPState *rt = s->priv_data;
     

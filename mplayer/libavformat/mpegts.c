@@ -431,6 +431,7 @@ static void pmt_cb(void *opaque, const uint8_t *section, int section_len)
         case STREAM_TYPE_VIDEO_H264:
         case STREAM_TYPE_AUDIO_AAC:
         case STREAM_TYPE_AUDIO_AC3:
+        case STREAM_TYPE_AUDIO_DTS:
             add_pes_stream(ts, pid, stream_type);
             break;
         default:
@@ -752,6 +753,10 @@ static void mpegts_push_data(void *opaque,
                         case STREAM_TYPE_AUDIO_AC3:
                             codec_type = CODEC_TYPE_AUDIO;
                             codec_id = CODEC_ID_AC3;
+                            break;
+                        case STREAM_TYPE_AUDIO_DTS:
+                            codec_type = CODEC_TYPE_AUDIO;
+                            codec_id = CODEC_ID_DTS;
                             break;
                         default:
                             if (code >= 0x1c0 && code <= 0x1df) {
@@ -1326,12 +1331,12 @@ static int64_t mpegts_get_pcr(AVFormatContext *s, int stream_index,
     return timestamp;
 }
 
-static int read_seek(AVFormatContext *s, int stream_index, int64_t target_ts){
+static int read_seek(AVFormatContext *s, int stream_index, int64_t target_ts, int flags){
     MpegTSContext *ts = s->priv_data;
     uint8_t buf[TS_PACKET_SIZE];
     int64_t pos;
 
-    if(av_seek_frame_binary(s, stream_index, target_ts) < 0)
+    if(av_seek_frame_binary(s, stream_index, target_ts, flags) < 0)
         return -1;
 
     pos= url_ftell(&s->pb);

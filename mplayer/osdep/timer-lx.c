@@ -1,10 +1,20 @@
 // Precise timer routines for LINUX  (C) LGB & A'rpi/ASTRAL
 
 #include <unistd.h>
+#ifdef __BEOS__
+#define usleep(t) snooze(t)
+#endif
 #include <stdlib.h>
 #include <time.h>
 #include <sys/time.h>
 #include "../config.h"
+
+const char *timer_name =
+#ifdef HAVE_NANOSLEEP
+  "nanosleep()";
+#else
+  "usleep()";
+#endif
 
 int usec_sleep(int usec_delay)
 {
@@ -17,7 +27,6 @@ int usec_sleep(int usec_delay)
     return usleep(usec_delay);
 #endif
 }
-
 
 // Returns current time in microseconds
 unsigned int GetTimer(){

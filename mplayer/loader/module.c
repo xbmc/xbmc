@@ -422,6 +422,17 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 	if (!wm)
 	    printf("Win32 LoadLibrary failed to load: %s\n", checked);
 
+	if (strstr(libname,"vp31vfw.dll") && wm)
+	{
+	    int i;
+
+	  // sse hack moved from patch dll into runtime patching
+          if (PE_FindExportedFunction(wm, "DriverProc", TRUE)==(void*)0x10001000) {
+	    fprintf(stderr, "VP3 DLL found\n");
+	    for (i=0;i<18;i++) ((char*)0x10004bd6)[i]=0x90;
+	  }
+	}
+
         // remove a few divs in the VP codecs that make trouble
         if (strstr(libname,"vp5vfw.dll") && wm)
         {
@@ -456,6 +467,20 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
             for (i=0;i<6;i++) ((char*)0x1000839e)[i]=0x90;
           } else {
             fprintf(stderr, "Unsupported VP6 version\n");
+            return 0;
+          }
+        }
+
+        // Windows Media Video 9 Advanced
+        if (strstr(libname,"wmvadvd.dll") && wm)
+        {
+          // The codec calls IsRectEmpty with coords 0,0,0,0 => result is 0
+          // but it really wants the rectangle to be not empty
+          if (PE_FindExportedFunction(wm, "CreateInstance", TRUE)==(void*)0x08c4b812) {
+            // Dll version is 10.0.0.3645
+            *((char*)0x08c48b0f)=0xeb; // Jump always, ignoring IsRectEmpty result
+          } else {
+            fprintf(stderr, "Unsupported WMVA version\n");
             return 0;
           }
         }
@@ -608,6 +633,10 @@ FARPROC WINAPI GetProcAddress( HMODULE hModule, LPCSTR function )
 
 #ifdef DEBUG_QTX_API
 
+/* 
+http://lists.apple.com/archives/quicktime-api/2003/Jan/msg00278.html
+*/
+
 struct ComponentParameters {
     unsigned char                   flags;                      /* call modifiers: sync/async, deferred, immed, etc */
     unsigned char                   paramSize;                  /* size in bytes of actual parameters passed to this call */
@@ -617,6 +646,7 @@ struct ComponentParameters {
 typedef struct ComponentParameters      ComponentParameters;
 
 static char* component_func(int what){
+if (what < 0) // Range 0: Standard Component Calls
 switch(what){
 case -1: return "kComponentOpenSelect";
 case -2: return "kComponentCloseSelect";
@@ -626,23 +656,39 @@ case -5: return "kComponentRegisterSelect";
 case -6: return "kComponentTargetSelect";
 case -7: return "kComponentUnregisterSelect";
 }
-return "???";
-}
 
-static char* component_func_type(int type,int what){
-if(type==1) switch(what){
+if (what >= 0 && what <= 0xff) // Range 1: Generic codecs
+switch(what & 0xff){
 case 0: return "kImageCodecGetCodecInfoSelect";
 case 1: return "kImageCodecGetCompressionTimeSelect";
+case 2: return "kImageCodecGetMaxCompressionSizeSelect";
+case 3: return "kImageCodecPreCompressSelect";
+case 4: return "kImageCodecBandCompressSelect";
 case 5: return "kImageCodecPreDecompressSelect";
 case 6: return "kImageCodecBandDecompressSelect";
-case 0x12: return "kImageCodecDisposeMemorySelect";
+case 7: return "kImageCodecBusySelect";
+// finish this list from the above URL
 case 0x10: return "kImageCodecIsImageDescriptionEquivalentSelect";
+case 0x12: return "kImageCodecDisposeMemorySelect";
 case 0x14: return "kImageCodecNewImageBufferMemorySelect";
 case 0x28: return "kImageCodecRequestGammaLevelSelect";
 }
-return "???";
+
+//if (what >= 0x100 && what <= 0x1ff) // Range 2: Specific to QT Photo JPEG codecs
+
+if (what >= 0x200 && what <= 0x2ff) // Range 3: Base Decompressor
+switch(what & 0xff){
+case 0: return "Preflight";
+case 1: return "Initialize";
+case 2: return "BeginBand";
+case 3: return "DrawBand";
+case 4: return "EndBand";
+case 5: return "QueueStarting";
+case 6: return "QueueStopping";
 }
 
+return "???";
+}
 
 static int c_level=0;
 
@@ -650,10 +696,7 @@ static int dump_component(char* name,int type,void* _orig, ComponentParameters *
     int ( *orig)(ComponentParameters *params, void** glob) = _orig;
     int ret,i;
 
-    if(params->what<0)
-	fprintf(stderr,"%*sComponentCall: %s  flags=0x%X  size=%d  what=%d %s\n",3*c_level,"",name,params->flags, params->paramSize, params->what, component_func(params->what));
-    else
-	fprintf(stderr,"%*sComponentCall: %s  flags=0x%X  size=%d  what=0x%X %s\n",3*c_level,"",name,params->flags, params->paramSize, params->what, component_func_type(type,params->what));
+    fprintf(stderr,"%*sComponentCall: %s  flags=0x%X  size=%d  what=0x%X %s\n",3*c_level,"",name,params->flags, params->paramSize, params->what, component_func(params->what));
 
     for(i=0;i<params->paramSize/4;i++)
 	fprintf(stderr,"%*s param[%d] = 0x%X\n",3*c_level,"",i,params->params[i]);
@@ -1002,7 +1045,7 @@ FARPROC MODULE_GetProcAddress(
 	fprintf(stderr,"theQuickTimeDispatcher catched -> %p\n",retproc);
       report_entry = report_func;
       report_ret   = report_func_ret;
-      wrapper_target=retproc;
+      wrapper_target=(void(*)(void))retproc;
       retproc=(FARPROC)wrapper;
     }
 

@@ -15,7 +15,7 @@
 
 //#include "font_load.h"
 #include "img_format.h"
-//#include "../vidix/vidix.h"
+//#include "vidix/vidix.h"
 
 #define VO_EVENT_EXPOSE 1
 #define VO_EVENT_RESIZE 2
@@ -56,6 +56,7 @@
 #define VOCTRL_START_SLICE 21
 
 #define VOCTRL_ONTOP 25
+#define VOCTRL_ROOTWIN 26
 
 // Vo can be used by xover
 #define VOCTRL_XOVERLAY_SUPPORT 22
@@ -199,6 +200,7 @@ extern float vo_panscan;
 extern int vo_adapter_num;
 extern int vo_refresh_rate;
 extern int vo_keepaspect;
+extern int vo_rootwin;
 
 extern int vo_gamma_brightness;
 extern int vo_gamma_saturation;

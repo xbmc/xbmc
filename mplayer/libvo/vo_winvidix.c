@@ -17,14 +17,14 @@
 #include "video_out_internal.h"
 
 #include <windows.h>
-#include "../osdep/keycodes.h"
-#include "../input/input.h"
+#include "osdep/keycodes.h"
+#include "input/input.h"
 
 #include "aspect.h"
 #include "mp_msg.h"
 
 #include "vosub_vidix.h"
-#include "../vidix/vidixlib.h"
+#include "vidix/vidixlib.h"
 
 extern void mplayer_put_key(int code);
 
@@ -205,10 +205,10 @@ static uint32_t config(uint32_t width, uint32_t height, uint32_t d_width,uint32_
     wc.hIcon =ExtractIcon(hInstance,"mplayer.exe",0);
 //LoadIcon(NULL,IDI_APPLICATION);
     wc.hbrBackground = CreateSolidBrush(RGB(255,0,255));
-    wc.lpszClassName = "Mplayer - Movieplayer for Linux";
+    wc.lpszClassName = "MPlayer - The Movie Player";
     wc.lpszMenuName = NULL;
     RegisterClass(&wc);
-    hWnd = CreateWindow("MPlayer - Movieplayer for Linux",
+    hWnd = CreateWindow("MPlayer - The Movie Player",
                         title,
                         WS_OVERLAPPEDWINDOW| WS_SIZEBOX,
                         rd.left,              

@@ -19,6 +19,16 @@
 #ifndef SWSCALE_INTERNAL_H
 #define SWSCALE_INTERNAL_H
 
+#ifdef HAVE_ALTIVEC_H
+#include <altivec.h>
+#endif
+
+#ifdef CONFIG_DARWIN
+#define AVV(x...) (x)
+#else
+#define AVV(x...) {x}
+#endif
+
 #include "../mp_msg.h"
 
 #define MSG_WARN(args...) mp_msg(MSGT_SWS,MSGL_WARN, ##args )
@@ -50,6 +60,7 @@ typedef struct SwsContext{
 	int chrIntHSubSample, chrIntVSubSample;
 	int chrDstHSubSample, chrDstVSubSample;
 	int vChrDrop;
+	double param[2];
 
 	int16_t **lumPixBuf;
 	int16_t **chrPixBuf;

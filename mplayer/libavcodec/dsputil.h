@@ -42,10 +42,17 @@ void ff_jpeg_fdct_islow (DCTELEM *data);
 void ff_fdct248_islow (DCTELEM *data);
 
 void j_rev_dct (DCTELEM *data);
+void j_rev_dct4 (DCTELEM *data);
+void j_rev_dct2 (DCTELEM *data);
+void j_rev_dct1 (DCTELEM *data);
 
 void ff_fdct_mmx(DCTELEM *block);
 void ff_fdct_mmx2(DCTELEM *block);
 void ff_fdct_sse2(DCTELEM *block);
+
+void ff_h264_idct_add_c(uint8_t *dst, DCTELEM *block, int stride);
+void ff_h264_lowres_idct_add_c(uint8_t *dst, int stride, DCTELEM *block);
+void ff_h264_lowres_idct_put_c(uint8_t *dst, int stride, DCTELEM *block);
 
 /* encoding scans */
 extern const uint8_t ff_alternate_horizontal_scan[64];
@@ -163,12 +170,16 @@ typedef struct DSPContext {
     me_cmp_func vsad[5];
     me_cmp_func vsse[5];
     me_cmp_func nsse[5];
+    me_cmp_func w53[5];
+    me_cmp_func w97[5];
+    me_cmp_func dct_max[5];
 
     me_cmp_func me_pre_cmp[5];
     me_cmp_func me_cmp[5];
     me_cmp_func me_sub_cmp[5];
     me_cmp_func mb_cmp[5];
     me_cmp_func ildct_cmp[5]; //only width 16 used
+    me_cmp_func frame_skip_cmp[5]; //only width 8 used
 
     /**
      * Halfpel motion compensation with rounding (a+b+1)>>1.
@@ -325,7 +336,8 @@ typedef struct DSPContext {
      */
     void (*vp3_idct)(int16_t *input_data, int16_t *dequant_matrix,
         int coeff_count, DCTELEM *output_samples);
-
+ 
+    void (*h264_idct_add)(uint8_t *dst, DCTELEM *block, int stride);
 } DSPContext;
 
 void dsputil_static_init(void);
@@ -351,6 +363,29 @@ static inline uint32_t no_rnd_avg32(uint32_t a, uint32_t b)
     return (a & b) + (((a ^ b) & ~BYTE_VEC32(0x01)) >> 1);
 }
 
+static inline int get_penalty_factor(int lambda, int lambda2, int type){
+    switch(type&0xFF){
+    default:
+    case FF_CMP_SAD:
+        return lambda>>FF_LAMBDA_SHIFT;
+    case FF_CMP_DCT:
+        return (3*lambda)>>(FF_LAMBDA_SHIFT+1);
+    case FF_CMP_W53:
+        return (4*lambda)>>(FF_LAMBDA_SHIFT);
+    case FF_CMP_W97:
+        return (2*lambda)>>(FF_LAMBDA_SHIFT);
+    case FF_CMP_SATD:
+        return (2*lambda)>>FF_LAMBDA_SHIFT;
+    case FF_CMP_RD:
+    case FF_CMP_PSNR:
+    case FF_CMP_SSE:
+    case FF_CMP_NSSE:
+        return lambda2>>FF_LAMBDA_SHIFT;
+    case FF_CMP_BIT:
+        return 1;
+    }
+}
+
 /**
  * Empty mmx state.
  * this must be called between any dsp function and float/double code.
@@ -373,6 +408,7 @@ int mm_support(void);
 #define MM_MMXEXT 0x0002 /* SSE integer functions or AMD MMX ext */
 #define MM_SSE    0x0008 /* SSE functions */
 #define MM_SSE2   0x0010 /* PIV SSE2 functions */
+#define MM_3DNOWEXT  0x0020 /* AMD 3DNowExt */
 
 extern int mm_flags;
 
@@ -393,6 +429,7 @@ static inline void emms(void)
 }
 
 #define __align8 __attribute__ ((aligned (8)))
+#define STRIDE_ALIGN 8
 
 void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx);
 void dsputil_init_pix_mmx(DSPContext* c, AVCodecContext *avctx);
@@ -402,6 +439,7 @@ void dsputil_init_pix_mmx(DSPContext* c, AVCodecContext *avctx);
 /* This is to use 4 bytes read to the IDCT pointers for some 'zero'
    line optimizations */
 #define __align8 __attribute__ ((aligned (4)))
+#define STRIDE_ALIGN 4
 
 void dsputil_init_armv4l(DSPContext* c, AVCodecContext *avctx);
 
@@ -409,6 +447,7 @@ void dsputil_init_armv4l(DSPContext* c, AVCodecContext *avctx);
 
 /* SPARC/VIS IDCT needs 8-byte aligned DCT blocks */
 #define __align8 __attribute__ ((aligned (8)))
+#define STRIDE_ALIGN 8
 
 void dsputil_init_mlib(DSPContext* c, AVCodecContext *avctx);
 
@@ -416,11 +455,13 @@ void dsputil_init_mlib(DSPContext* c, AVCodecContext *avctx);
 
 /* SPARC/VIS IDCT needs 8-byte aligned DCT blocks */
 #define __align8 __attribute__ ((aligned (8)))
+#define STRIDE_ALIGN 8
 void dsputil_init_vis(DSPContext* c, AVCodecContext *avctx);
 
 #elif defined(ARCH_ALPHA)
 
 #define __align8 __attribute__ ((aligned (8)))
+#define STRIDE_ALIGN 8
 
 void dsputil_init_alpha(DSPContext* c, AVCodecContext *avctx);
 
@@ -437,24 +478,28 @@ extern int mm_flags;
 #endif
 
 #define __align8 __attribute__ ((aligned (16)))
+#define STRIDE_ALIGN 16
 
 void dsputil_init_ppc(DSPContext* c, AVCodecContext *avctx);
 
 #elif defined(HAVE_MMI)
 
 #define __align8 __attribute__ ((aligned (16)))
+#define STRIDE_ALIGN 16
 
 void dsputil_init_mmi(DSPContext* c, AVCodecContext *avctx);
 
 #elif defined(ARCH_SH4)
 
 #define __align8 __attribute__ ((aligned (8)))
+#define STRIDE_ALIGN 8
 
 void dsputil_init_sh4(DSPContext* c, AVCodecContext *avctx);
 
 #else
 
-#define __align8
+#define __align8 __attribute__ ((aligned (8)))
+#define STRIDE_ALIGN 8
 
 #endif
 
@@ -558,11 +603,20 @@ static int name16(void /*MpegEncContext*/ *s, uint8_t *dst, uint8_t *src, int st
 /* XXX: add ISOC specific test to avoid specific BSD testing. */
 /* better than nothing implementation. */
 /* btw, rintf() is existing on fbsd too -- alex */
-static inline long int lrintf(float x)
+static always_inline long int lrintf(float x)
 {
 #ifdef CONFIG_WIN32
+#  ifdef ARCH_X86
+    int32_t i;
+    asm volatile(
+        "fistpl %0\n\t"
+        : "=m" (i) : "t" (x) : "st"
+    );
+    return i;
+#  else
     /* XXX: incorrect, but make it compile */
-    return (int)(x);
+    return (int)(x + (x < 0 ? -0.5 : 0.5));
+#  endif
 #else
     return (int)(rint(x));
 #endif

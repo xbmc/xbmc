@@ -43,6 +43,10 @@ chmod +x configure && ./configure \
 --enable-xvid \
 --enable-directx \
 --enable-win32waveout \
+--enable-internal-faad \
+--disable-tga \
+--disable-pnm \
+--disable-md5sum \
 --with-codecsdir='Q:\\mplayer\\codecs' \
 --with-reallibdir='Q:\\mplayer\\codecs' \
 --with-fribidi-config=$PWD/xbmcsys/fribidi/fribidi-config \

@@ -34,7 +34,7 @@
 #include "mp_msg.h"
 
 #ifdef HAVE_NEW_GUI
-#include "../Gui/interface.h"
+#include "Gui/interface.h"
 #endif
 
 
@@ -256,7 +256,7 @@ static uint32_t config(uint32_t width, uint32_t height, uint32_t d_width,
       mp_msg(MSGT_VO, MSGL_ERR, "Sorry, this (%d) color depth is not supported\n",
 	     vo_depthonscreen);
     }
-  mp_msg(MSGT_VO, MSGL_INFO, "Using colorkey: %x\n", colorkey);
+  mp_msg(MSGT_VO, MSGL_V, "Using colorkey: %x\n", colorkey);
 
   aspect(&d_width, &d_height, A_NOZOOM);
 
@@ -347,12 +347,9 @@ static uint32_t config(uint32_t width, uint32_t height, uint32_t d_width,
 
   set_window(1);
 
-  XFlush(mDisplay);
   XSync(mDisplay, False);
 
   panscan_calc();
-
-  saver_off(mDisplay); /* turning off screen saver */
 
   return(0);
 }
@@ -404,7 +401,6 @@ static void uninit(void)
   if(!vo_config_count) return;
   if(sub_vo) sub_vo->uninit();
   sub_vo = NULL;
-  saver_on(mDisplay); /* screen saver back on */
   vo_x11_uninit();
   // Restore our callbacks
   video_out_xover.draw_frame = draw_frame;
