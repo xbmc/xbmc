@@ -138,7 +138,7 @@ protected:
 		char* buffer;
 	};
 
-	static const char*	SkipWhiteSpace( const char* );
+	static const char*	SkipWhiteSpace( const char*, TiXmlDocument* );
 	inline static bool	IsWhiteSpace( int c )		{ return ( isspace( c ) || c == '\n' || c == '\r' ); }
 
 	virtual void StreamOut (TIXML_OSTREAM *) const = 0;
@@ -161,7 +161,8 @@ protected:
 									TIXML_STRING* text,			// the CStdString read
 									bool ignoreWhiteSpace,		// whether to keep the white space
 									const char* endTag,			// what ends this text
-									bool ignoreCase );			// whether to ignore case in the end tag
+									bool ignoreCase,			// whether to ignore case in the end tag
+									TiXmlDocument* document);
 	virtual const char* Parse( const char* p ) = 0;
 
 	// If an entity has been found, transform it into a character.
@@ -980,6 +981,8 @@ public:
 		*/
 	const int GetErrorId()	const				{ return errorId; }
 
+	const int GetLineNo() const  { return LineNo; }
+
 	/// If you have handled the error, it can be reset with this call.
 	void ClearError()						{ m_bError = false; errorId = 0; errorDesc = ""; }
 
@@ -1016,6 +1019,8 @@ private:
 	bool partialFirst;
 	/*XBTVGuide End*/
 
+	friend TiXmlBase;
+	int LineNo;
 };
 
 #endif
