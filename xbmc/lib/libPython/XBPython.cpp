@@ -23,11 +23,56 @@ XBPython::XBPython()
 	InitializeCriticalSection(&m_critSection);
 	m_hEvent = CreateEvent(NULL, false, false, "pythonEvent");
 	dThreadId = GetCurrentThreadId();
+	vecPlayerCallbackList.clear();
 }
 
 void XBPython::SendMessage(CGUIMessage& message)
 {
 	evalFile(message.GetStringParam().c_str());
+}
+
+// message all registered callbacks that we stopted playing
+void XBPython::OnPlayBackEnded()
+{
+	if (!bInitialized) return;
+
+	PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
+	while (it != vecPlayerCallbackList.end())
+	{
+		((IPlayerCallback*)(*it))->OnPlayBackEnded();
+		it++;
+	}
+}
+
+// message all registered callbacks that we started playing
+void XBPython::OnPlayBackStarted()
+{
+	if (!bInitialized) return;
+
+	PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
+	while (it != vecPlayerCallbackList.end())
+	{
+		((IPlayerCallback*)(*it))->OnPlayBackStarted();
+		it++;
+	}
+}
+
+void XBPython::RegisterPythonPlayerCallBack(IPlayerCallback* pCallback)
+{
+	vecPlayerCallbackList.push_back(pCallback);
+}
+
+void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
+{
+	PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
+	while (it != vecPlayerCallbackList.end())
+	{
+		if (*it == pCallback)
+		{
+			it = vecPlayerCallbackList.erase(it);
+		}
+		else it++;
+	}
 }
 
 /**

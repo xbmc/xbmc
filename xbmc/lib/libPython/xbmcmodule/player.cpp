@@ -1,12 +1,18 @@
 #include "stdafx.h"
 #include "..\..\..\applicationmessenger.h"
+#include "..\..\..\application.h"
 #include "..\..\..\playlistplayer.h"
 #include "..\..\..\util.h"
 #include "player.h"
 #include "pyplaylist.h"
 #include "pyutil.h"
+#include "infotagvideo.h"
+#include "infotagmusic.h"
 
 using namespace std;
+
+// player callback class
+
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -27,12 +33,16 @@ namespace PYXBMC
 		if (!self) return NULL;
 
 		self->iPlayList = PLAYLIST_MUSIC;
+		self->pPlayer = new CPythonPlayer();
+		self->pPlayer->SetCallback((PyObject*)self);
 
 		return (PyObject*)self;
 	}
 
 	void Player_Dealloc(Player* self)
 	{
+		if (self->pPlayer) delete self->pPlayer;
+		self->pPlayer = NULL;
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
@@ -84,6 +94,7 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	// Player_Stop
 	PyDoc_STRVAR(stop__doc__,
 		"stop() -- Stop playing.");
 
@@ -95,6 +106,7 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	// Player_Pause
 	PyDoc_STRVAR(pause__doc__,
 		"pause() -- Pause playing.");
 
@@ -106,6 +118,7 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	// Player_PlayNext
 	PyDoc_STRVAR(playnext__doc__,
 		"playnext() -- Play next item in playlist.");
 
@@ -117,6 +130,7 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	// Player_PlayPrevious
 	PyDoc_STRVAR(playprevious__doc__,
 		"playprevious() -- Play previous item in playlist.");
 
@@ -128,12 +142,126 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	// Player_OnPlayBackStarted
+	PyDoc_STRVAR(onPlayBackStarted__doc__,
+		"onPlayBackStarted() -- onPlayBackStarted method.\n"
+		"\n"
+		"Will be called when xbmc starts playing a file");
+
+	PyObject* Player_OnPlayBackStarted(PyObject *self, PyObject *args)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	// Player_OnPlayBackEnded
+	PyDoc_STRVAR(onPlayBackEnded__doc__,
+		"onPlayBackEnded() -- onPlayBackEnded method.\n"
+		"\n"
+		"Will be called when xbmc stops playing a file");
+
+	PyObject* Player_OnPlayBackEnded(PyObject *self, PyObject *args)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	// Player_IsPlaying
+	PyDoc_STRVAR(isPlaying__doc__,
+		"isPlayingAudio() -- returns True is xbmc is playing a file.");
+
+	PyObject* Player_IsPlaying(PyObject *self, PyObject *args)
+	{
+		return Py_BuildValue("b", g_application.IsPlaying());
+	}
+
+	// Player_IsPlayingAudio
+	PyDoc_STRVAR(isPlayingAudio__doc__,
+		"isPlayingAudio() -- returns True is xbmc is playing an audio file.");
+
+	PyObject* Player_IsPlayingAudio(PyObject *self, PyObject *args)
+	{
+		return Py_BuildValue("b", g_application.IsPlayingAudio());
+	}
+	
+	// Player_IsPlayingVideo
+	PyDoc_STRVAR(isPlayingVideo__doc__,
+		"isPlayingVideo() -- returns True if xbmc is playing a video.");
+
+	PyObject* Player_IsPlayingVideo(PyObject *self, PyObject *args)
+	{
+		return Py_BuildValue("b", g_application.IsPlayingVideo());
+	}
+
+	// Player_GetPlayingFile
+	PyDoc_STRVAR(getPlayingFile__doc__,
+		"getPlayingFile() -- returns the current playing file as a string.\n"
+		"\n"
+		"Throws: Exception, if player is not playing a file.\n"
+		"");
+
+	PyObject* Player_GetPlayingFile(PyObject *self, PyObject *args)
+	{
+		if (!g_application.IsPlaying())
+		{
+			PyErr_SetString(PyExc_Exception, "XBMC is not playing any file");
+			return NULL;
+		}
+		return Py_BuildValue("s", g_application.CurrentFile().c_str());
+	}
+
+	// Player_GetVideoInfoTag
+	PyDoc_STRVAR(getVideoInfoTag__doc__,
+		"getVideoInfoTag() -- returns the VideoInfoTag of the current playing Movie.\n"
+		"\n"
+		"Throws: Exception, if player is not playing a file or current file is not a movie file.\n"
+		"\n"
+		"Note, this doesn't work yet, it's not tested\n"
+		"");
+
+	PyObject* Player_GetVideoInfoTag(PyObject *self, PyObject *args)
+	{
+		if (!g_application.IsPlayingVideo())
+		{
+			PyErr_SetString(PyExc_Exception, "XBMC is not playing any videofile");
+			return NULL;
+		}
+
+		return (PyObject*)InfoTagVideo_FromCIMDBMovie(*g_application.GetCurrentMovie());
+	}
+
+	// Player_GetMusicInfoTag
+	PyDoc_STRVAR(getMusicInfoTag__doc__,
+		"getMusicInfoTag() -- returns the MusicInfoTag of the current playing 'Song'.\n"
+		"\n"
+		"Throws: Exception, if player is not playing a file or current file is not a music file.\n"
+		"");
+
+	PyObject* Player_GetMusicInfoTag(PyObject *self, PyObject *args)
+	{
+		if (g_application.IsPlayingVideo() || !g_application.IsPlayingAudio())
+		{
+			PyErr_SetString(PyExc_Exception, "XBMC is not playing any music file");
+			return NULL;
+		}
+
+		return (PyObject*)InfoTagMusic_FromCMusicInfoTag(*g_application.GetCurrentSong());
+	}
+
 	PyMethodDef Player_methods[] = {
 		{"play", (PyCFunction)Player_Play, METH_VARARGS, play__doc__},
 		{"stop", (PyCFunction)Player_Stop, METH_VARARGS, stop__doc__},
 		{"pause", (PyCFunction)Player_Pause, METH_VARARGS, pause__doc__},
 		{"playnext", (PyCFunction)Player_PlayNext, METH_VARARGS, playnext__doc__},
 		{"playprevious", (PyCFunction)Player_PlayPrevious, METH_VARARGS, playprevious__doc__},
+		{"onPlayBackStarted", (PyCFunction)Player_OnPlayBackStarted, METH_VARARGS, onPlayBackStarted__doc__},
+		{"onPlayBackEnded", (PyCFunction)Player_OnPlayBackEnded, METH_VARARGS, onPlayBackEnded__doc__},
+		{"isPlaying", (PyCFunction)Player_IsPlaying, METH_VARARGS, isPlaying__doc__},
+		{"isPlayingAudio", (PyCFunction)Player_IsPlayingAudio, METH_VARARGS, isPlayingAudio__doc__},
+		{"isPlayingVideo", (PyCFunction)Player_IsPlayingVideo, METH_VARARGS, isPlayingVideo__doc__},
+		{"getPlayingFile", (PyCFunction)Player_GetPlayingFile, METH_VARARGS, getPlayingFile__doc__},		
+		{"getMusicInfoTag", (PyCFunction)Player_GetMusicInfoTag, METH_VARARGS, getMusicInfoTag__doc__},
+		{"getVideoInfoTag", (PyCFunction)Player_GetVideoInfoTag, METH_VARARGS, getVideoInfoTag__doc__},
 		{NULL, NULL, 0, NULL}
 	};
 

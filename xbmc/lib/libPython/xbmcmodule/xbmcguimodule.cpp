@@ -123,9 +123,10 @@ namespace PYXBMC
 
 		// constants
 		PyModule_AddStringConstant(pXbmcGuiModule, "__author__",		PY_XBMC_AUTHOR);
-		PyModule_AddStringConstant(pXbmcGuiModule, "__date__",			"12 April 2004");
-		PyModule_AddStringConstant(pXbmcGuiModule, "__version__",		"1.0");
+		PyModule_AddStringConstant(pXbmcGuiModule, "__date__",			"18 August 2004");
+		PyModule_AddStringConstant(pXbmcGuiModule, "__version__",		"1.1");
 		PyModule_AddStringConstant(pXbmcGuiModule, "__credits__",		PY_XBMC_CREDITS);
+		PyModule_AddStringConstant(pXbmcGuiModule, "__platform__",	PY_XBMC_PLATFORM);
 	}
 }
 
