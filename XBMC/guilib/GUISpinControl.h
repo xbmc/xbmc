@@ -46,6 +46,7 @@ public:
   virtual void SetDisabledColor(D3DCOLOR color);
   DWORD							GetDisabledColor() const { return m_dwDisabledColor;};
   void					AddLabel(const wstring& strLabel, int  iValue);
+  void					AddLabel(CStdString aLabel, int iValue);
   const WCHAR*	GetLabel() const;
   virtual void	SetFocus(bool bOnOff);
 	void					SetReverse(bool bOnOff);
@@ -65,7 +66,9 @@ public:
   float             GetFloatInterval() const;
   bool              GetShowRange() const;
   void              SetShowRange(bool bOnoff) ;
-  void		SetBuddyControlID(DWORD dwBuddyControlID);
+void		SetBuddyControlID(DWORD dwBuddyControlID);
+void				SetNonProportional(bool bOnOff);
+  void				Clear();
 protected:
   void      PageUp();
   void      PageDown();
@@ -99,6 +102,6 @@ protected:
   int       m_iTypedPos;
   DWORD		m_dwBuddyControlID;
   bool		m_bBuddyDisabled;
-
+  float		m_fMaxTextWidth;
 };
 #endif
