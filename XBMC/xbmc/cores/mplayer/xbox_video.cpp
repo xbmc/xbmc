@@ -141,6 +141,7 @@ void choose_best_resolution(float fps)
 		    (! ( g_graphicsContext.IsFullScreenVideo()|| g_graphicsContext.IsCalibrating())  )
 			)
 	{
+		m_iResolution = iOldResolution;
 		// Check to see if we are using a PAL screen capable of PAL60
 		if (bUsingPAL)
 		{
