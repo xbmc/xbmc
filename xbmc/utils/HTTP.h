@@ -33,6 +33,7 @@ public:
 	void 		SetCookie(const string& strCookie);
 	bool 		Get(string& strURL, string& strHTML);
 	bool 		Download(const string &strURL, const string &strFileName);
+	void		SetHTTPVer(unsigned int iVer);
 protected:
 	bool   BreakURL(const string& strURL, string& strHostName, int& iPort, string& Page);
 	bool	 Send(unsigned char* pBuffer, int iLen);
@@ -44,6 +45,7 @@ protected:
 	
 	string m_strHostName;
 	int    m_iPort;
+	int			m_iHTTPver;
 private:
 	string m_strCookie;
 };

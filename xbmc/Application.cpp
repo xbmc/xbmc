@@ -447,20 +447,25 @@ void CApplication::Render()
 void CApplication::OnKey(CKey& key)
 {
 	CAction action;
-	m_bInactive=false;		// reset the inactive flag as a key has been pressed
-	if (m_bScreenSave)		// Screen saver is active
-	{
-		m_bScreenSave = false;	// Reset the screensaver active flag
+  if (key.GetButtonCode() != KEY_BUTTON_LEFT_THUMB_STICK &&
+      key.GetButtonCode() != KEY_BUTTON_RIGHT_THUMB_STICK)
+  {
+	  m_bInactive=false;		// reset the inactive flag as a key has been pressed
+  
+	  if (m_bScreenSave)		// Screen saver is active
+	  {
+		  m_bScreenSave = false;	// Reset the screensaver active flag
 
-		if (g_stSettings.m_iScreenSaverMode == 3)	// Matrix Trails
-		{
-			m_gWindowManager.PreviousWindow();
-		}
-		else										// Fade to dim or black
-		{
-			m_pd3dDevice->SetGammaRamp(0, &m_OldRamp);	// put the old gamma ramp back in place
-		}
-	}
+		  if (g_stSettings.m_iScreenSaverMode == 3)	// Matrix Trails
+		  {
+			  m_gWindowManager.PreviousWindow();
+		  }
+		  else										// Fade to dim or black
+		  {
+			  m_pd3dDevice->SetGammaRamp(0, &m_OldRamp);	// put the old gamma ramp back in place
+		  }
+	  }
+  }
 	// get the current window to send to
 	int iWin = m_gWindowManager.GetActiveWindow();
   g_buttonTranslator.GetAction(iWin, key, action);
