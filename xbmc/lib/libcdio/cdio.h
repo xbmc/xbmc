@@ -2,7 +2,7 @@
     $Id$
 
     Copyright (C) 2001 Herbert Valerio Riedel <hvr@gnu.org>
-    Copyright (C) 2003 Rocky Bernstein <rocky@panix.com>
+    Copyright (C) 2003, 2004 Rocky Bernstein <rocky@panix.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,16 +19,18 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-/* Public CD Input and Control Interface . */
+/** \file cdio.h 
+ *  \brief  The top-level header for libcdio: the CD Input and Control library.
+ */
 
 
 #ifndef __CDIO_H__
 #define __CDIO_H__
 
-/* Application Interface or Protocol version number. If the public
-   interface changes, we increase this number.
+/** Application Interface or Protocol version number. If the public
+ *  interface changes, we increase this number.
  */
-#define CDIO_API_VERSION 1
+#define CDIO_API_VERSION 2
 
 #include "version.h"
 
@@ -42,116 +44,311 @@
 #include "types.h"
 #include "sector.h"
 
-/* Flags specifying the category of device to open or is opened. */
-#define CDIO_SRC_IS_DISK_IMAGE_MASK 0x0001
-#define CDIO_SRC_IS_DEVICE_MASK     0x0002
-#define CDIO_SRC_IS_SCSI_MASK       0x0004
+/**! Flags specifying the category of device to open or is opened. */
+
+#define CDIO_SRC_IS_DISK_IMAGE_MASK 0x0001 /**< Read source is a CD image. */
+#define CDIO_SRC_IS_DEVICE_MASK     0x0002 /**< Read source is a CD device. */
+#define CDIO_SRC_IS_SCSI_MASK       0x0004 /**< Read source SCSI device. */
 #define CDIO_SRC_IS_NATIVE_MASK     0x0008
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-  /* opaque structure */
+/*! Size of fields returned by an INQUIRY command */
+#define CDIO_MMC_HW_VENDOR_LEN    8 /**< length of vendor field */
+#define CDIO_MMC_HW_MODEL_LEN    16 /**< length of model field */
+#define CDIO_MMC_HW_REVISION_LEN  4 /**< length of revision field */
+
+  /*! Structure to return data given by the INQUIRY command  */
+  typedef struct cdio_hwinfo 
+  {
+    char psz_vendor  [CDIO_MMC_HW_VENDOR_LEN+1];
+    char psz_model   [CDIO_MMC_HW_MODEL_LEN+1];
+    char psz_revision[CDIO_MMC_HW_REVISION_LEN+1];
+  } cdio_hwinfo_t;
+
+  /** This is an opaque structure for the CD object. */
   typedef struct _CdIo CdIo; 
 
-  /* The below enumerations may be used to tag a specific driver
-     that is opened or is desired to be opened. Note that this is
-     different than what is available on a given host. 
+  /** This is an opaque structure for the CDTEXT object. */
+  typedef struct cdtext cdtext_t;
 
-     Order is a little significant since the order is used in scans.
-     We have to start with UNKNOWN and devices should come before
-     disk-image readers. By putting something towards the top (a lower
-     enumeration number), in an iterative scan we prefer that to something
-     with a higher enumeration number.
-
-     NOTE: IF YOU MODIFY ENUM MAKE SURE INITIALIZATION IN CDIO.C AGREES.
-     
-  */
+  /** The driver_id_t enumerations may be used to tag a specific driver
+   * that is opened or is desired to be opened. Note that this is
+   * different than what is available on a given host.
+   *
+   * Order is a little significant since the order is used in scans.
+   * We have to start with DRIVER_UNKNOWN and devices should come before
+   * disk-image readers. By putting something towards the top (a lower
+   * enumeration number), in an iterative scan we prefer that to
+   * something with a higher enumeration number.
+   *
+   * NOTE: IF YOU MODIFY ENUM MAKE SURE INITIALIZATION IN CDIO.C AGREES.
+   *     
+   */
   typedef enum  {
     DRIVER_UNKNOWN, 
-    DRIVER_BSDI, 
-    DRIVER_FREEBSD, 
-    DRIVER_LINUX,
-    DRIVER_SOLARIS, 
-    DRIVER_WIN32,
-    DRIVER_XBOX,
-    DRIVER_BINCUE, /* Prefer bincue over nrg when both exist */
-    DRIVER_NRG,    
-    DRIVER_DEVICE  /* Is really a set of the above; should come last */
+    DRIVER_BSDI,    /**< BSDI driver */
+    DRIVER_FREEBSD, /**< FreeBSD driver */
+    DRIVER_LINUX,   /**< GNU/Linux Driver */
+    DRIVER_SOLARIS, /**< Sun Solaris Driver */
+    DRIVER_OSX,     /**< Apple OSX Driver */
+    DRIVER_WIN32,   /**< Microsoft Windows Driver */
+    DRIVER_CDRDAO,  /**< cdrdao format CD image. This is listed
+		         before BINCUE, to make the code prefer cdrdao
+		         over BINCUE when both exist. */
+    DRIVER_BINCUE,  /**< CDRWIN BIN/CUE format CD image. This is
+		         listed before NRG, to make the code prefer
+		         BINCUE over NRG when both exist. */
+    DRIVER_NRG,     /**< Nero NRG format CD image. */
+    DRIVER_DEVICE   /**< Is really a set of the above; should come last */
   } driver_id_t;
 
-  /* Make sure what's listed below is the last one above. Since we have
-     a bogus (but useful) 0th entry above we don't have to add one below.
-   */
+  /** There will generally be only one hardware for a given
+     build/platform from the list above. You can use the variable
+     below to determine which you've got. If the build doesn't make an
+     hardware driver, then the value will be DRIVER_UNKNOWN.
+  */
+  extern const driver_id_t cdio_os_driver;
+  
+
+/** Make sure what's listed for CDIO_MIN_DRIVER is the last
+    enumeration in driver_id_t. Since we have a bogus (but useful) 0th
+    entry above we don't have to add one.
+*/
 #define CDIO_MIN_DRIVER        DRIVER_BSDI
 #define CDIO_MIN_DEVICE_DRIVER CDIO_MIN_DRIVER
 #define CDIO_MAX_DRIVER        DRIVER_NRG
-#define CDIO_MAX_DEVICE_DRIVER DRIVER_XBOX
+#define CDIO_MAX_DEVICE_DRIVER DRIVER_WIN32
 
   typedef enum  {
-    TRACK_FORMAT_AUDIO,   /* Audio track, e.g. CD-DA */
-    TRACK_FORMAT_CDI,     /* CD-i. How this is different from DATA below? */
-    TRACK_FORMAT_XA,      /* Mode2 of some sort */
-    TRACK_FORMAT_DATA,    /* Mode1 of some sort */
-    TRACK_FORMAT_PSX,     /* Playstation CD. Like audio but only 2336 bytes
-			     of user data.
+    TRACK_FORMAT_AUDIO,   /**< Audio track, e.g. CD-DA */
+    TRACK_FORMAT_CDI,     /**< CD-i. How this is different from DATA below? */
+    TRACK_FORMAT_XA,      /**< Mode2 of some sort */
+    TRACK_FORMAT_DATA,    /**< Mode1 of some sort */
+    TRACK_FORMAT_PSX,     /**< Playstation CD. Like audio but only 2336 bytes
+			   *   of user data.
 			   */
-    TRACK_FORMAT_ERROR    /* Dunno what is or some other error. */
+    TRACK_FORMAT_ERROR    /**< Dunno what is, or some other error. */
   } track_format_t;
 
-  /* Printable tags for above enumeration.  */
+  extern const char *discmode2str[];
+  
+  /*! Printable tags for track_format_t enumeration.  */
   extern const char *track_format2str[6];
   
   /*!
     Eject media in CD drive if there is a routine to do so. 
-    Return 0 if success and 1 for failure, and 2 if no routine.
-    If the CD is ejected *obj is freed and obj set to NULL.
+
+    @param cd_obj the CD object to be acted upon.
+    @return 0 if success and 1 for failure, and 2 if no routine.
+    If the CD is ejected *cd_obj is freed and cd_obj set to NULL.
   */
-  int cdio_eject_media (CdIo **obj);
+  int cdio_eject_media (CdIo **cd_obj);
 
   /*!
-    Free any resources associated with obj.
+    Free any resources associated with cd_obj. Call this when done using cd_obj
+    and using CD reading/control operations.
+
+    @param cd_obj the CD object to eliminated.
    */
-  void cdio_destroy (CdIo *obj);
+  void cdio_destroy (CdIo *p_cdio);
 
   /*!
-    Return the value associatied with key. NULL is returned if obj is NULL
+    Free device list returned by cdio_get_devices or
+    cdio_get_devices_with_cap.
+    
+    @param device_list list returned by cdio_get_devices or
+    cdio_get_devices_with_cap
+
+    @see cdio_get_devices, cdio_get_devices_with_cap
+
+  */
+  void cdio_free_device_list (char * device_list[]);
+
+  /*!
+    Get the value associatied with key. 
+
+    @param cd_obj the CD object queried
+    @param key the key to retrieve
+    @return the value associatd with "key" or NULL if cd_obj is NULL
     or "key" does not exist.
   */
-  const char * cdio_get_arg (const CdIo *obj,  const char key[]);
+  const char * cdio_get_arg (const CdIo *cd_obj,  const char key[]);
+
+  /*! 
+    Get cdtext information for a CdIo object.
+
+    @param cd_obj the CD object that may contain CD-TEXT information.
+    @return the CD-TEXT object or NULL if obj is NULL
+    or CD-TEXT information does not exist.
+
+    If i_track is 0 or CDIO_CDROM_LEADOUT_TRACK the track returned
+    is the information assocated with the CD. 
+  */
+  const cdtext_t *cdio_get_cdtext (CdIo *cd_obj, track_t i_track);
 
   /*!
-    Return a string containing the default CD device if none is specified.
-    if CdIo is NULL (we haven't initialized a specific device driver), 
+    Get an array of device names in search_devices that have at
+    least the capabilities listed by cap.  If search_devices is NULL,
+    then we'll search all possible CD drives.  
+    
+    If "any" is set false then every capability listed in the extended
+    portion of capabilities (i.e. not the basic filesystem) must be
+    satisified. If "any" is set true, then if any of the capabilities
+    matches, we call that a success.
+
+    To find a CD-drive of any type, use the mask CDIO_FS_MATCH_ALL.
+
+    @return the array of device names or NULL if we couldn't get a
+    default device.  It is also possible to return a non NULL but
+    after dereferencing the the value is NULL. This also means nothing
+    was found.
+  */
+  char ** cdio_get_devices_with_cap (char* ppsz_search_devices[],
+				     cdio_fs_anal_t capabilities, bool any);
+
+  /*!
+    Like cdio_get_devices_with_cap but we return the driver we found
+    as well. This is because often one wants to search for kind of drive
+    and then *open* it afterwards. Giving the driver back facilitates this,
+    and speeds things up for libcdio as well.
+  */
+  char ** cdio_get_devices_with_cap_ret (/*out*/ char* ppsz_search_devices[],
+					 cdio_fs_anal_t capabilities, bool any,
+					 /*out*/ driver_id_t *p_driver_id);
+
+  /*! Return an array of device names. If you want a specific
+    devices for a driver, give that device. If you want hardware
+    devices, give DRIVER_DEVICE and if you want all possible devices,
+    image drivers and hardware drivers give DRIVER_UNKNOWN.
+    
+    NULL is returned if we couldn't return a list of devices.
+
+    In some situations of drivers or OS's we can't find a CD device if
+    there is no media in it and it is possible for this routine to return
+    NULL even though there may be a hardware CD-ROM.
+  */
+  char ** cdio_get_devices (driver_id_t driver_id);
+
+  /*! Like cdio_get_devices, but we may change the p_driver_id if we
+      were given DRIVER_DEVICE or DRIVER_UNKNOWN. This is because
+      often one wants to get a drive name and then *open* it
+      afterwards. Giving the driver back facilitates this, and speeds
+      things up for libcdio as well.
+   */
+    
+  char ** cdio_get_devices_ret (/*in/out*/ driver_id_t *p_driver_id);
+
+  /*!
+    Get the default CD device.
+    if cd_obj is NULL (we haven't initialized a specific device driver), 
     then find a suitable one and return the default device for that.
     
-    NULL is returned if we couldn't get a default device.
+    @param cd_obj the CD object queried
+    @return a string containing the default CD device or NULL is
+    if we couldn't get a default device.
+
+    In some situations of drivers or OS's we can't find a CD device if
+    there is no media in it and it is possible for this routine to return
+    NULL even though there may be a hardware CD-ROM.
   */
-  char * cdio_get_default_device (const CdIo *obj);
+  char * cdio_get_default_device (const CdIo *p_cdio);
 
   /*!
-    Return a string containing the name of the driver in use.
-    if CdIo is NULL (we haven't initialized a specific device driver), 
-    then return NULL.
-  */
-  const char * cdio_get_driver_name (const CdIo *obj);
+    Get the what kind of device we've got.
 
-  /*!
-    Return the number of the first track. 
-    CDIO_INVALID_TRACK is returned on error.
+    @param cd_obj the CD object queried
+    @return a list of device capabilities.
+
+    In some situations of drivers or OS's we can't find a CD device if
+    there is no media in it and it is possible for this routine to return
+    NULL even though there may be a hardware CD-ROM.
   */
-  track_t cdio_get_first_track_num(const CdIo *obj);
+  void cdio_get_drive_cap (const CdIo *p_cdio,
+			   cdio_drive_read_cap_t  *p_read_cap,
+			   cdio_drive_write_cap_t *p_write_cap,
+			   cdio_drive_misc_cap_t  *p_misc_cap);
   
   /*!
-    Return a string containing the default CD device if none is specified.
+    Get the drive capabilities for a specified device.
+
+    @return a list of device capabilities.
+
+    In some situations of drivers or OS's we can't find a CD device if
+    there is no media in it and it is possible for this routine to return
+    NULL even though there may be a hardware CD-ROM.
   */
-  track_t cdio_get_num_tracks (const CdIo *obj);
+  void cdio_get_drive_cap_dev (const char *device,
+			       cdio_drive_read_cap_t  *p_read_cap,
+			       cdio_drive_write_cap_t *p_write_cap,
+			       cdio_drive_misc_cap_t  *p_misc_cap);
+
+  /*! 
+    Get the CD-ROM hardware info via a SCSI MMC INQUIRY command.
+    False is returned if we had an error getting the information.
+  */
+  bool cdio_get_hwinfo ( const CdIo *p_cdio, 
+			 /* out*/ cdio_hwinfo_t *p_hw_info );
+
+
+  /*!
+    Get the media catalog number (MCN) from the CD.
+
+    @return the media catalog number r NULL if there is none or we
+    don't have the ability to get it.
+
+    Note: string is malloc'd so caller has to free() the returned
+    string when done with it.
+
+  */
+  char * cdio_get_mcn (const CdIo *p_cdio);
+
+  /*!
+    Get a string containing the name of the driver in use.
+
+    @return a string with driver name or NULL if CdIo is NULL (we
+    haven't initialized a specific device.
+  */
+  const char * cdio_get_driver_name (const CdIo *p_cdio);
+
+  /*!
+    Get the driver id. 
+    if CdIo is NULL (we haven't initialized a specific device driver), 
+    then return DRIVER_UNKNOWN.
+
+    @return the driver id..
+  */
+  driver_id_t cdio_get_driver_id (const CdIo *p_cdio);
+
+  /*!
+    Get the number of the first track. 
+
+    @return the track number or CDIO_INVALID_TRACK 
+    on error.
+  */
+  track_t cdio_get_first_track_num(const CdIo *p_cdio);
+  
+  /*! 
+    Get disc mode - the kind of CD (CD-DA, CD-ROM mode 1, CD-MIXED, etc.
+    that we've got. The notion of "CD" is extended a little to include
+    DVD's.
+  */
+  discmode_t cdio_get_discmode (CdIo *p_cdio);
+
+  /*!
+    Get the number of tracks on the CD.
+
+    @return the number of tracks, or CDIO_INVALID_TRACK if there is
+    an error.
+  */
+  track_t cdio_get_num_tracks (const CdIo *p_cdio);
   
   /*!  
-    Get format of track. 
+    Get the format (audio, mode2, mode1) of track. 
   */
-  track_format_t cdio_get_track_format(const CdIo *obj, track_t track_num);
+  track_format_t cdio_get_track_format(const CdIo *p_cdio, track_t i_track);
   
   /*!
     Return true if we have XA data (green, mode2 form1) or
@@ -161,206 +358,607 @@ extern "C" {
     
     FIXME: there's gotta be a better design for this and get_track_format?
   */
-  bool cdio_get_track_green(const CdIo *obj, track_t track_num);
+  bool cdio_get_track_green(const CdIo *p_cdio, track_t i_track);
     
   /*!  
-    Return the starting LBA for track number
-    track_num in obj.  Tracks numbers start at 1.
+    Get the starting LBA for track number
+    i_track in cd_obj.  Track numbers usually start at something 
+    greater than 0, usually 1.
+
     The "leadout" track is specified either by
-    using track_num LEADOUT_TRACK or the total tracks+1.
-    CDIO_INVALID_LBA is returned on error.
+    using i_track CDIO_CDROM_LEADOUT_TRACK or the total tracks+1.
+
+    @param cd_obj object to get information from
+    @param i_track  the track number we want the LSN for
+    @return the starting LBA or CDIO_INVALID_LBA on error.
   */
-  lba_t cdio_get_track_lba(const CdIo *obj, track_t track_num);
-  
-  /*!  
-    Return the starting LSN for track number
-    track_num in obj.  Tracks numbers start at 1.
-    The "leadout" track is specified either by
-    using track_num LEADOUT_TRACK or the total tracks+1.
-    CDIO_INVALID_LBA is returned on error.
-  */
-  lsn_t cdio_get_track_lsn(const CdIo *obj, track_t track_num);
+  lba_t cdio_get_track_lba(const CdIo *cd_obj, track_t i_track);
   
   /*!  
     Return the starting MSF (minutes/secs/frames) for track number
-    track_num in obj.  Track numbers start at 1.
+    i_track in cd_obj.  Track numbers usually start at something 
+    greater than 0, usually 1.
+
     The "leadout" track is specified either by
-    using track_num LEADOUT_TRACK or the total tracks+1.
-    False is returned if there is no track entry.
+    using i_track CDIO_CDROM_LEADOUT_TRACK or the total tracks+1.
+
+    @param obj object to get information from
+    @param i_track  the track number we want the LSN for
+    @return the starting LSN or CDIO_INVALID_LSN on error.
   */
-  bool cdio_get_track_msf(const CdIo *obj, track_t track_num, 
+  lsn_t cdio_get_track_lsn(const CdIo *cd_obj, track_t i_track);
+  
+  /*!  
+    Return the starting MSF (minutes/secs/frames) for track number
+    i_track in cd_obj.  Track numbers usually start at something 
+    greater than 0, usually 1.
+
+    The "leadout" track is specified either by
+    using i_track CDIO_CDROM_LEADOUT_TRACK or the total tracks+1.
+    
+    @return true if things worked or false if there is no track entry.
+  */
+  bool cdio_get_track_msf(const CdIo *cd_obj, track_t i_track, 
 			  /*out*/ msf_t *msf);
   
   /*!  
-    Return the number of sectors between this track an the next.  This
+    Get the number of sectors between this track an the next.  This
     includes any pregap sectors before the start of the next track.
-    Tracks start at 1.
-    0 is returned if there is an error.
+    Track numbers usually start at something 
+    greater than 0, usually 1.
+
+    @return the number of sectors or 0 if there is an error.
   */
-  unsigned int cdio_get_track_sec_count(const CdIo *obj, track_t track_num);
+  unsigned int cdio_get_track_sec_count(const CdIo *cd_obj, track_t i_track);
 
   /*!
-    lseek - reposition read/write file offset
-    Returns (off_t) -1 on error. 
+    Reposition read offset
     Similar to (if not the same as) libc's lseek()
+
+    @param cd_obj object to get information from
+    @param offset amount to seek
+    @param whence  like corresponding parameter in libc's lseek, e.g. 
+                   SEEK_SET or SEEK_END.
+    @return (off_t) -1 on error. 
   */
-  off_t cdio_lseek(CdIo *obj, off_t offset, int whence);
+  off_t cdio_lseek(const CdIo *cd_obj, off_t offset, int whence);
     
   /*!
     Reads into buf the next size bytes.
-    Returns -1 on error. 
     Similar to (if not the same as) libc's read()
+
+    @return (ssize_t) -1 on error. 
   */
-  ssize_t cdio_read(CdIo *obj, void *buf, size_t size);
+  ssize_t cdio_read(const CdIo *cd_obj, void *buf, size_t size);
     
   /*!
-   Reads a audio sector from cd device into data starting
-   from lsn. Returns 0 if no error. 
- */
-  int cdio_read_audio_sector (CdIo *obj, void *buf, lsn_t lsn);
+    Read an audio sector
+
+    @param cd_obj object to read from
+    @param buf place to read data into
+    @param lsn sector to read
+
+    @return 0 if no error, nonzero otherwise.
+  */
+  int cdio_read_audio_sector (const CdIo *cd_obj, void *buf, lsn_t lsn);
 
   /*!
    Reads a single mode1 sector from cd device into data starting
    from lsn. Returns 0 if no error. 
- */
+  */
   int cdio_read_yellow_sector (CdIo *obj, void *buf, lsn_t lsn, bool mode1);
 
   /*!
-   Reads a single mode2 sector from cd device into data starting
-   from lsn. Returns 0 if no error. 
- */
-  int cdio_read_mode2_sector (CdIo *obj, void *buf, lsn_t lsn, bool mode2raw);
+    Reads audio sectors
+
+    @param cd_obj object to read from
+    @param buf place to read data into
+    @param lsn sector to read
+    @param i_sectors number of sectors to read
+
+    @return 0 if no error, nonzero otherwise.
+  */
+  int cdio_read_audio_sectors (const CdIo *cd_obj, void *buf, lsn_t lsn,
+			       unsigned int i_sectors);
 
   /*!
-    Reads nblocks of mode2 sectors from cd device into data starting
-    from lsn.
-    Returns 0 if no error. 
-  */
-  int cdio_read_mode2_sectors (CdIo *obj, void *buf, lsn_t lsn, bool mode2raw, 
-			       unsigned int num_sectors);
-  
-  /*!
-    Set the arg "key" with "value" in the source device.
-  */
-  int cdio_set_arg (CdIo *obj, const char key[], const char value[]);
-  
-  /*!
-    Return the size of the CD in logical block address (LBA) units.
-  */
-  uint32_t cdio_stat_size (CdIo *obj);
+    Reads a mode1 sector
 
+    @param cd_obj object to read from
+    @param buf place to read data into
+    @param lsn sector to read
+    @param b_form2 true for reading mode1 form2 sectors or false for 
+    mode1 form1 sectors.
+
+    @return 0 if no error, nonzero otherwise.
+  */
+  int cdio_read_mode1_sector (const CdIo *cd_obj, void *buf, lsn_t lsn, 
+			      bool b_form2);
+  
+  /*!
+    Reads mode1 sectors
+
+    @param cd_obj object to read from
+    @param buf place to read data into
+    @param lsn sector to read
+    @param b_form2 true for reading mode1 form2 sectors or false for 
+    mode1 form1 sectors.
+    @param i_sectors number of sectors to read
+
+    @return 0 if no error, nonzero otherwise.
+  */
+  int cdio_read_mode1_sectors (const CdIo *cd_obj, void *buf, lsn_t lsn, 
+			       bool b_form2, unsigned int i_sectors);
+  
+  /*!
+    Reads a mode1 sector
+
+    @param cd_obj object to read from
+    @param buf place to read data into
+    @param lsn sector to read
+    @param b_form2 true for reading mode1 form2 sectors or false for 
+    mode1 form1 sectors.
+
+    @return 0 if no error, nonzero otherwise.
+  */
+  int cdio_read_mode2_sector (const CdIo *cd_obj, void *buf, lsn_t lsn, 
+			      bool b_form2);
+  
+  /*!
+    Reads mode2 sectors
+
+    @param cd_obj object to read from
+    @param buf place to read data into
+    @param lsn sector to read
+    @param b_form2 true for reading mode1 form2 sectors or false for 
+    mode1 form1 sectors.
+    @param i_sectors number of sectors to read
+
+    @return 0 if no error, nonzero otherwise.
+  */
+  int cdio_read_mode2_sectors (const CdIo *cd_obj, void *buf, lsn_t lsn, 
+			       bool b_form2, unsigned int i_sectors);
+  
+  /*!
+    Set the arg "key" with "value" in "obj".
+
+    @param cd_obj the CD object to set
+    @param key the key to set
+    @param value the value to assocaiate with key
+    @return 0 if no error was found, and nonzero otherwise.
+  */
+  int cdio_set_arg (CdIo *cd_obj, const char key[], const char value[]);
+  
+  /*!
+    Get the size of the CD in logical block address (LBA) units.
+
+    @param cd_obj the CD object queried
+    @return the size
+  */
+  uint32_t cdio_stat_size (const CdIo *cd_obj);
+  
   /*!
     Initialize CD Reading and control routines. Should be called first.
-   */
+  */
   bool cdio_init(void);
-
+  
   /* True if xxx driver is available. where xxx=linux, solaris, nrg, ...
    */
+
+  /*! True if BSDI driver is available. */
   bool cdio_have_bsdi    (void);
+
+  /*! True if FreeBSD driver is available. */
   bool cdio_have_freebsd (void);
+
+  /*! True if GNU/Linux driver is available. */
   bool cdio_have_linux   (void);
+
+  /*! True if Sun Solaris driver is available. */
   bool cdio_have_solaris (void);
+
+  /*! True if Apple OSX driver is available. */
+  bool cdio_have_osx     (void);
+
+  /*! True if Microsoft Windows driver is available. */
   bool cdio_have_win32   (void);
-  bool cdio_have_xbox    (void);
+
+  /*! True if Nero driver is available. */
   bool cdio_have_nrg     (void);
+
+  /*! True if BIN/CUE driver is available. */
   bool cdio_have_bincue  (void);
 
-  /* Like above but uses the enumeration instead. */
+  /*! True if cdrdao CDRDAO driver is available. */
+  bool cdio_have_cdrdao  (void);
+
+  /*! Like cdio_have_xxx but uses an enumeration instead. */
   bool cdio_have_driver (driver_id_t driver_id);
   
-  /* Return a string decribing driver_id. */
+  /*! 
+    Get a string decribing driver_id. 
+
+    @param driver_id the driver you want the description for
+    @return a sring of driver description
+  */
   const char *cdio_driver_describe (driver_id_t driver_id);
   
   /*! Sets up to read from place specified by source_name and
-     driver_id This should be called before using any other routine,
-     except cdio_init. This will call cdio_init, if that hasn't been
-     done previously.  to call one of the specific routines below. 
+     driver_id. This or cdio_open_* should be called before using any
+     other routine, except cdio_init. This will call cdio_init, if
+     that hasn't been done previously.  to call one of the specific
+     cdio_open_xxx routines.
 
-     NULL is returned on error.
+     @return the cdio object or NULL on error or no device.
   */
   CdIo * cdio_open (const char *source_name, driver_id_t driver_id);
 
-  /*! cdrao BIN/CUE CD disk-image routines. Source is the .bin file
+  /*! Sets up to read from place specified by source_name, driver_id
+     and access mode. This or cdio_open should be called before using
+     any other routine, except cdio_init. This will call cdio_init, if
+     that hasn't been done previously.  to call one of the specific
+     cdio_open_xxx routines.
 
-     NULL is returned on error.
+     @return the cdio object or NULL on error or no device.
+  */
+  CdIo * cdio_open_am (const char *psz_source_name, 
+		       driver_id_t driver_id, const char *psz_access_mode);
+
+  /*! Set up BIN/CUE CD disk-image for reading. Source is the .bin or 
+      .cue file
+
+     @return the cdio object or NULL on error or no device.
    */
-  CdIo * cdio_open_bincue (const char *bin_name);
+  CdIo * cdio_open_bincue (const char *psz_cue_name);
   
+  /*! Set up BIN/CUE CD disk-image for reading. Source is the .bin or 
+      .cue file
+
+     @return the cdio object or NULL on error or no device..
+   */
+  CdIo * cdio_open_am_bincue (const char *psz_cue_name, 
+			      const char *psz_access_mode);
+  
+  /*! Set up cdrdao CD disk-image for reading. Source is the .toc file
+
+     @return the cdio object or NULL on error or no device.
+   */
+  CdIo * cdio_open_cdrdao (const char *psz_toc_name);
+  
+  /*! Set up cdrdao CD disk-image for reading. Source is the .toc file
+
+     @return the cdio object or NULL on error or no device..
+   */
+  CdIo * cdio_open_am_cdrdao (const char *psz_toc_name, 
+			      const char *psz_access_mode);
+  
+  /*! Return a string containing the default CUE file that would
+      be used when none is specified.
+
+     @return the cdio object or NULL on error or no device.
+   */
   char * cdio_get_default_device_bincue(void);
 
-  /*! CD routines. Source is the some sort of device.
+  char **cdio_get_devices_bincue(void);
 
-     NULL is returned on error.
+  /*! Return a string containing the default CUE file that would
+      be used when none is specified.
+
+     NULL is returned on error or there is no device.
+   */
+  char * cdio_get_default_device_cdrdao(void);
+
+  char **cdio_get_devices_cdrdao(void);
+
+  /*! Set up CD-ROM for reading. The device_name is
+      the some sort of device name.
+
+     @return the cdio object for subsequent operations. 
+     NULL on error or there is no driver for a some sort of hardware CD-ROM.
    */
   CdIo * cdio_open_cd (const char *device_name);
 
-  /*! cdrao BIN/CUE CD disk-image routines. Source is the .cue file
+  /*! Set up CD-ROM for reading. The device_name is
+      the some sort of device name.
 
-     NULL is returned on error.
+     @return the cdio object for subsequent operations. 
+     NULL on error or there is no driver for a some sort of hardware CD-ROM.
+   */
+  CdIo * cdio_open_am_cd (const char *psz_device,
+			  const char *psz_access_mode);
+
+  /*! CDRWIN BIN/CUE CD disc-image routines. Source is the .cue file
+
+     @return the cdio object for subsequent operations. 
+     NULL on error.
    */
   CdIo * cdio_open_cue (const char *cue_name);
 
-  /*! BSDI CD-reading routines. 
-     NULL is returned on error.
-  */
-  CdIo * cdio_open_bsdi (const char *source_name);
+  /*! Set up CD-ROM for reading using the BSDI driver. The device_name is
+      the some sort of device name.
+
+     @return the cdio object for subsequent operations. 
+     NULL on error or there is no BSDI driver.
+
+     @see cdio_open
+   */
+  CdIo * cdio_open_bsdi (const char *psz_source_name);
   
+  /*! Set up CD-ROM for reading using the BSDI driver. The device_name is
+      the some sort of device name.
+
+     @return the cdio object for subsequent operations. 
+     NULL on error or there is no BSDI driver.
+
+     @see cdio_open
+   */
+  CdIo * cdio_open_am_bsdi (const char *psz_source_name,
+			    const char *psz_access_mode);
+  
+  /*! Return a string containing the default device name that the 
+      BSDI driver would use when none is specified.
+
+     @return the cdio object for subsequent operations. 
+     NULL on error or there is no BSDI driver.
+
+     @see cdio_open_cd, cdio_open
+   */
   char * cdio_get_default_device_bsdi(void);
 
-  /*! BSDI CD-reading routines. 
-     NULL is returned on error.
-  */
-  CdIo * cdio_open_freebsd (const char *source_name);
+  /*! Return a list of all of the CD-ROM devices that the BSDI driver
+      can find.
+
+      In some situations of drivers or OS's we can't find a CD device if
+      there is no media in it and it is possible for this routine to return
+      NULL even though there may be a hardware CD-ROM.
+   */
+  char **cdio_get_devices_bsdi(void);
   
+  /*! Set up CD-ROM for reading using the FreeBSD driver. The device_name is
+      the some sort of device name.
+
+     NULL is returned on error or there is no FreeBSD driver.
+
+     @see cdio_open_cd, cdio_open
+   */
+  CdIo * cdio_open_freebsd (const char *paz_source_name);
+  
+  /*! Set up CD-ROM for reading using the FreeBSD driver. The device_name is
+      the some sort of device name.
+
+     NULL is returned on error or there is no FreeBSD driver.
+
+     @see cdio_open_cd, cdio_open
+   */
+  CdIo * cdio_open_am_freebsd (const char *psz_source_name,
+			       const char *psz_access_mode);
+  
+  /*! Return a string containing the default device name that the 
+      FreeBSD driver would use when none is specified.
+
+     NULL is returned on error or there is no CD-ROM device.
+   */
   char * cdio_get_default_device_freebsd(void);
 
-  /*! Linux CD-reading routines. 
-     NULL is returned on error.
+  /*! Return a list of all of the CD-ROM devices that the FreeBSD driver
+      can find.
+   */
+  char **cdio_get_devices_freebsd(void);
+  
+  /*! Set up CD-ROM for reading using the GNU/Linux driver. The device_name is
+      the some sort of device name.
+
+     @return the cdio object for subsequent operations. 
+     NULL on error or there is no GNU/Linux driver.
+
+     In some situations of drivers or OS's we can't find a CD device if
+     there is no media in it and it is possible for this routine to return
+     NULL even though there may be a hardware CD-ROM.
    */
   CdIo * cdio_open_linux (const char *source_name);
 
+  /*! Set up CD-ROM for reading using the GNU/Linux driver. The
+      device_name is the some sort of device name.
+
+     @return the cdio object for subsequent operations. 
+     NULL on error or there is no GNU/Linux driver.
+   */
+  CdIo * cdio_open_am_linux (const char *source_name,
+			     const char *access_mode);
+
+  /*! Return a string containing the default device name that the 
+      GNU/Linux driver would use when none is specified. A scan is made
+      for CD-ROM drives with CDs in them.
+
+     NULL is returned on error or there is no CD-ROM device.
+
+     In some situations of drivers or OS's we can't find a CD device if
+     there is no media in it and it is possible for this routine to return
+     NULL even though there may be a hardware CD-ROM.
+
+     @see cdio_open_cd, cdio_open
+   */
   char * cdio_get_default_device_linux(void);
+
+  /*! Return a list of all of the CD-ROM devices that the GNU/Linux driver
+      can find.
+   */
+  char **cdio_get_devices_linux(void);
   
-  /*! Solaris CD-reading routines. 
-     NULL is returned on error.
+  /*! Set up CD-ROM for reading using the Sun Solaris driver. The
+      device_name is the some sort of device name.
+
+     @return the cdio object for subsequent operations. 
+     NULL on error or there is no Solaris driver.
    */
   CdIo * cdio_open_solaris (const char *source_name);
   
+  /*! Set up CD-ROM for reading using the Sun Solaris driver. The
+      device_name is the some sort of device name.
+
+     @return the cdio object for subsequent operations. 
+     NULL on error or there is no Solaris driver.
+   */
+  CdIo * cdio_open_am_solaris (const char *psz_source_name, 
+			       const char *psz_access_mode);
+  
+  /*! Return a string containing the default device name that the 
+      Solaris driver would use when none is specified. A scan is made
+      for CD-ROM drives with CDs in them.
+
+     NULL is returned on error or there is no CD-ROM device.
+
+     In some situations of drivers or OS's we can't find a CD device if
+     there is no media in it and it is possible for this routine to return
+     NULL even though there may be a hardware CD-ROM.
+
+     @see cdio_open_cd, cdio_open
+   */
   char * cdio_get_default_device_solaris(void);
   
-  /*! Win32 CD-reading routines. 
-     NULL is returned on error.
+  /*! Return a list of all of the CD-ROM devices that the Solaris driver
+      can find.
+   */
+  char **cdio_get_devices_solaris(void);
+  
+  /*! Set up CD-ROM for reading using the Apple OSX driver. The
+      device_name is the some sort of device name.
+
+     NULL is returned on error or there is no OSX driver.
+
+     In some situations of drivers or OS's we can't find a CD device if
+     there is no media in it and it is possible for this routine to return
+     NULL even though there may be a hardware CD-ROM.
+
+     @see cdio_open_cd, cdio_open
+   */
+  CdIo * cdio_open_osx (const char *psz_source_name);
+
+  /*! Set up CD-ROM for reading using the Apple OSX driver. The
+      device_name is the some sort of device name.
+
+     NULL is returned on error or there is no OSX driver.
+
+     @see cdio_open_cd, cdio_open
+   */
+  CdIo * cdio_open_am_osx (const char *psz_source_name,
+			   const char *psz_access_mode);
+
+  /*! Return a string containing the default device name that the 
+      OSX driver would use when none is specified. A scan is made
+      for CD-ROM drives with CDs in them.
+
+     In some situations of drivers or OS's we can't find a CD device if
+     there is no media in it and it is possible for this routine to return
+     NULL even though there may be a hardware CD-ROM.
+   */
+  char * cdio_get_default_device_osx(void);
+  
+  /*! Return a list of all of the CD-ROM devices that the OSX driver
+      can find.
+   */
+  char **cdio_get_devices_osx(void);
+  
+  /*! Set up CD-ROM for reading using the Microsoft Windows driver. The
+      device_name is the some sort of device name.
+
+     In some situations of drivers or OS's we can't find a CD device if
+     there is no media in it and it is possible for this routine to return
+     NULL even though there may be a hardware CD-ROM.
    */
   CdIo * cdio_open_win32 (const char *source_name);
   
+  /*! Set up CD-ROM for reading using the Microsoft Windows driver. The
+      device_name is the some sort of device name.
+
+     NULL is returned on error or there is no Microsof Windows driver.
+   */
+  CdIo * cdio_open_am_win32 (const char *psz_source_name,
+			     const char *psz_access_mode);
+  
+  /*! Return a string containing the default device name that the 
+      Win32 driver would use when none is specified. A scan is made
+      for CD-ROM drives with CDs in them.
+
+     In some situations of drivers or OS's we can't find a CD device if
+     there is no media in it and it is possible for this routine to return
+     NULL even though there may be a hardware CD-ROM.
+
+     @see cdio_open_cd, cdio_open
+   */
   char * cdio_get_default_device_win32(void);
 
-  /*! xbox CD-reading routines. 
-     NULL is returned on error.
-   */
-  CdIo * cdio_open_xbox (const char *source_name);
+  char **cdio_get_devices_win32(void);
   
-  char * cdio_get_default_device_xbox(void);
+  /*! Set up CD-ROM for reading using the Nero driver. The
+      device_name is the some sort of device name.
 
-  /*! Nero CD disk-image routines. 
-     NULL is returned on error.
+     @return true on success; NULL on error or there is no Nero driver. 
    */
   CdIo * cdio_open_nrg (const char *source_name);
   
+  /*! Set up CD-ROM for reading using the Nero driver. The
+      device_name is the some sort of device name.
+
+     @return true on success; NULL on error or there is no Nero driver. 
+   */
+  CdIo * cdio_open_am_nrg (const char *psz_source_name,
+			   const char *psz_access_mode);
+  
+  /*! Return a string containing the default device name that the 
+      NRG driver would use when none is specified. A scan is made
+      for NRG disk images in the current directory..
+
+     NULL is returned on error or there is no CD-ROM device.
+   */
   char * cdio_get_default_device_nrg(void);
 
-  /*! Return corresponding BIN file if cue_name is a cue file or NULL
-    if not a CUE file.
-  */
-  char *cdio_is_cuefile(const char *cue_name);
-  
-  /*! Return corresponding CUE file if bin_name is a fin file or NULL
-    if not a BIN file. NOTE: when we handle TOC something will have to 
-    change here....
+  char **cdio_get_devices_nrg(void);
+
+  /*! 
+
+    Determine if bin_name is the bin file part of  a CDRWIN CD disk image.
+
+    @param bin_name location of presumed CDRWIN bin image file.
+    @return the corresponding CUE file if bin_name is a BIN file or
+    NULL if not a BIN file.
   */
   char *cdio_is_binfile(const char *bin_name);
   
-  /*! Return true if source name is a device.
+  /*! 
+    Determine if cue_name is the cue sheet for a CDRWIN CD disk image.
+
+    @return corresponding BIN file if cue_name is a CDRWIN cue file or
+    NULL if not a CUE file.
+  */
+  char *cdio_is_cuefile(const char *cue_name);
+  
+  /*! 
+    Determine if psg_nrg is a Nero CD disk image.
+
+    @param psz_nrg location of presumed NRG image file.
+    @return true if psz_nrg is a Nero NRG image or false
+    if not a NRG image.
+  */
+  bool cdio_is_nrg(const char *psz_nrg);
+  
+  /*! 
+    Determine if psg_toc is a TOC file for a cdrdao CD disk image.
+
+    @param psz_toc location of presumed TOC image file.
+    @return true if toc_name is a cdrdao TOC file or false
+    if not a TOC file.
+  */
+  bool cdio_is_tocfile(const char *psz_toc);
+  
+  /*! 
+    Determine if source_name refers to a real hardware CD-ROM.
+
+    @param source_name location name of object
+    @param driver_id   driver for reading object. Use DRIVER_UNKNOWN if you
+    don't know what driver to use.
+    @return true if source_name is a device; If false is returned we
+    could have a CD disk image. 
   */
   bool cdio_is_device(const char *source_name, driver_id_t driver_id);
   

@@ -21,9 +21,13 @@
 #ifndef __CDIO_UTIL_H__
 #define __CDIO_UTIL_H__
 
-#include <stdlib.h>
+/*!
+   \file util.h 
+   \brief Miscellaneous utility functions. 
 
-#include "types.h"
+   Warning: this will probably get removed/replaced by using glib.h
+*/
+#include <stdlib.h>
 
 #undef  MAX
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
@@ -88,13 +92,14 @@ _cdio_strlenv(char **str_array);
 char **
 _cdio_strsplit(const char str[], char delim);
 
+#ifndef _WIN32
 static inline const char *
 _cdio_bool_str (bool b)
 {
   return b ? "yes" : "no";
 }
+#endif
 
-/* BCD */
 #ifdef __cplusplus
 extern "C" {
 #endif

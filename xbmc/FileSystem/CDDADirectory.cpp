@@ -154,6 +154,8 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 		}
 	} // if (pCdInfo->HasCDDBInfo() && g_stSettings.m_bUseCDDB)
 
+	// Get info for track zero, as we may have and need CD-Text Album info
+	cdtext_t discCDText = pCdInfo->GetDiscCDTextInformation();
 
 	//	Generate fileitems
 	for ( int i = 0; i < nTracks; i++ )
@@ -178,6 +180,8 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 		pItem->m_musicInfoTag.SetTrackNumber(i+1);
 		pItem->m_musicInfoTag.SetDuration( ( pCdInfo->GetTrackInformation( i+1 ).nMins * 60 ) 
 			+ pCdInfo->GetTrackInformation( i+1 ).nSecs );
+
+		trackinfo ti = pCdInfo->GetTrackInformation( i+1 );
 
 		//	Fill the fileitems music tag with cddb information, if available
 		CStdString strTitle=cddb.getTrackTitle(i+1);
@@ -207,9 +211,35 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 
 			pItem->m_musicInfoTag.SetLoaded(true);
 		}
+		else
+		{
+			// Fill the fileitems music tag with CD-Text information, if available
+			CStdString strTitle=ti.cdtext.field[CDTEXT_TITLE];
+			if (strTitle.size() > 0)
+			{
+				//	Title
+				pItem->m_musicInfoTag.SetTitle(strTitle);
+
+				//	Artist: Use track artist or disc artist
+				CStdString strArtist=ti.cdtext.field[CDTEXT_PERFORMER];
+				if (strArtist.IsEmpty())
+					strArtist=discCDText.field[CDTEXT_PERFORMER];
+				pItem->m_musicInfoTag.SetArtist(strArtist);
+
+				// Album
+				CStdString strAlbum;
+				strAlbum=discCDText.field[CDTEXT_TITLE];
+				pItem->m_musicInfoTag.SetAlbum(strAlbum);
+			
+				//	Genre
+				CStdString strGenre=ti.cdtext.field[CDTEXT_GENRE];
+				pItem->m_musicInfoTag.SetGenre( strGenre );
+
+				pItem->m_musicInfoTag.SetLoaded(true);
+			}
+		}
 
 		items.push_back(pItem);
 	}
-	
 	return true;
 }
