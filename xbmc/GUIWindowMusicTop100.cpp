@@ -74,7 +74,6 @@ bool CGUIWindowMusicTop100::OnMessage(CGUIMessage& message)
 
 				g_stSettings.m_iMyMusicTop100ViewAsIcons=m_iViewAsIconsRoot;
 				g_settings.Save();
-				SET_CONTROL_FOCUS(GetID(), CONTROL_BTNVIEWASICONS);
 				return true;
 			}
 		}
