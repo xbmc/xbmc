@@ -625,6 +625,8 @@
   <string><id>13203</id><value>Profile '%s' laddades ok!</value></string>
   <string><id>13204</id><value>Senast laddade profil</value></string>
   <string><id>13205</id><value>Okänd</value></string>
+  <string><id>13206</id><value>Skrivöver</value></string>
+  <string><id>13207</id><value>Skrivöver profil '%s'?</value></string>
   <string><id>13299</id><value>Mål Temperatur</value></string>
   <string><id>13300</id><value>Fläktfart:</value></string>
   <string><id>13301</id><value>Automatisk temp. kontroll</value></string>
