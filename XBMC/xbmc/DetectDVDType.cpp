@@ -66,7 +66,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 				case DRIVE_OPEN:
 				{
 					m_DriveState = DRIVE_OPEN;
-					SetNewDVDShareUrl( "D:\\" ,false);
+					SetNewDVDShareUrl( "D:\\" ,false,"(open)");
 					//	Send Message to GUI that disc been ejected
 					CGUIMessage msg( GUI_MSG_DVDDRIVE_EJECTED_CD, 0, 0, 0, 0, NULL );
 					waitLock.Leave();
@@ -76,8 +76,10 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 				break;
 				
 				case DRIVE_NOT_READY:
+        {
 					// drive is not ready (closing, opening)
-					m_DriveState = DRIVE_NOT_READY;
+					SetNewDVDShareUrl( "D:\\" ,false,"(busy)");
+          m_DriveState = DRIVE_NOT_READY;
 					//	DVD-ROM in undefined state
 					//	better delete old CD Information
 					if ( m_pCdInfo != NULL ) 
@@ -86,9 +88,12 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 						m_pCdInfo = NULL;
 					}
 					waitLock.Leave();
+					CGUIMessage msg( GUI_MSG_DVDDRIVE_CHANGED_CD, 0, 0, 0, 0, NULL );
+					m_gWindowManager.SendThreadMessage( msg );
 					Sleep(6000);
 					return;
-				break;
+        }
+        break;
 				
 				case DRIVE_READY:
 					// drive is ready
@@ -99,7 +104,8 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 					{
 						// nothing in there...
 						m_DriveState = DRIVE_CLOSED_NO_MEDIA;
-						//	Send Message to GUI that disc has changed
+						SetNewDVDShareUrl( "D:\\" ,false,"(empty)");
+            //	Send Message to GUI that disc has changed
 						CGUIMessage msg( GUI_MSG_DVDDRIVE_CHANGED_CD, 0, 0, 0, 0, NULL );
 						waitLock.Leave();
 						m_gWindowManager.SendThreadMessage( msg );
@@ -183,13 +189,18 @@ void CDetectDVDMedia::DetectMediaType()
 	sprintf( buf, "Using protocol %s\n", strNewUrl.c_str() );
 	OutputDebugString( buf );
 
-	SetNewDVDShareUrl( strNewUrl ,bCDDA);
+  sprintf( buf, "disc label:%s\n", m_pCdInfo->GetDiscLabel().c_str() );
+	OutputDebugString( buf );
+
+  SetNewDVDShareUrl( strNewUrl ,bCDDA, m_pCdInfo->GetDiscLabel());
 }
 
-void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA ) 
+void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA, const CStdString& strDiscLabel ) 
 {
 	CStdString strDescription="DVD";
 	if (bCDDA) strDescription="CD";
+  
+  if (strDiscLabel!="") strDescription=strDiscLabel;
 
 	//	Set new URL for every share group
 	//	My Music
