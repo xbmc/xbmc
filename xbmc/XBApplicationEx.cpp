@@ -59,7 +59,8 @@ CXBApplicationEx::CXBApplicationEx()
     m_d3dpp.BackBufferHeight       = 576;
     m_d3dpp.BackBufferFormat       = D3DFMT_LIN_A8R8G8B8;
     m_d3dpp.BackBufferCount        = 1;
-    m_d3dpp.EnableAutoDepthStencil = FALSE;
+    m_d3dpp.EnableAutoDepthStencil = TRUE;
+	  m_d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
     m_d3dpp.SwapEffect             = D3DSWAPEFFECT_DISCARD ;
 		m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 

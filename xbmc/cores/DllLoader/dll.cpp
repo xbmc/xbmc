@@ -16,6 +16,8 @@ extern "C" int dummy_Kernel32Unresolved(void);
 extern "C" int dummy_User32Unresolved(void);
 extern "C" int dummy_OLE32Unresolved(void);
 extern "C" int dummy_MSVCRTUnresolved(void);
+extern "C" int dummy_MSVCR71Unresolved(void);
+extern "C" int dummy_DX8Unresolved(void);
 static int ResolveName(char *Name, char* Function, void **Fixup);
 
 //hack to Free pe image, global variable.
@@ -296,6 +298,10 @@ int DllLoader::ResolveImports(void)
 						  *Addr = (unsigned long) dummy_OLE32Unresolved;
             else if (strstr(Name,"MSVCRT")  || strstr(Name,"msvcrt") )
 						  *Addr = (unsigned long) dummy_MSVCRTUnresolved;
+            else if (strstr(Name,"MSVCR71")  || strstr(Name,"msvcr71") )
+						  *Addr = (unsigned long) dummy_MSVCR71Unresolved;
+            else if (strstr(Name,"xbox_dx8")  || strstr(Name,"XBOX_DX8") )
+						  *Addr = (unsigned long) dummy_DX8Unresolved;
             else
 						  *Addr = (unsigned long) dummy_Unresolved;
 						bResult=0;
@@ -749,6 +755,32 @@ extern "C" int dummy_MSVCRTUnresolved(void) {
 		__asm { mov eax, [ebp+4] }
 		__asm { mov rtn_addr, eax }
     sprintf(szBuf,"ole32:unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
+		OutputDebugString(szBuf);
+		return 1;
+}
+
+
+//dummy functions used to catch unresolved function calls
+extern "C" int dummy_MSVCR71Unresolved(void) {
+		static int Count = 0;
+		DWORD rtn_addr;
+		char szBuf[128];
+		__asm { mov eax, [ebp+4] }
+		__asm { mov rtn_addr, eax }
+    sprintf(szBuf,"msvcr71.dll:unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
+		OutputDebugString(szBuf);
+		return 1;
+}
+
+
+//dummy functions used to catch unresolved function calls
+extern "C" int dummy_DX8Unresolved(void) {
+		static int Count = 0;
+		DWORD rtn_addr;
+		char szBuf[128];
+		__asm { mov eax, [ebp+4] }
+		__asm { mov rtn_addr, eax }
+    sprintf(szBuf,"xbox_dx8.dll:unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
 		OutputDebugString(szBuf);
 		return 1;
 }
