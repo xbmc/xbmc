@@ -276,6 +276,9 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFI
 		CStdString strFileName = item.GetFileName();
 		CStdString strPath,strFName;
 		CUtil::Split( strFileName, strPath, strFName);
+    if(CUtil::HasSlashAtEnd(strFileName))
+      strFileName.Delete(strFileName.size());
+
 		m_Pathes.insert(strPath);
 		
 		CFileItem *pItem = new CFileItem(item);

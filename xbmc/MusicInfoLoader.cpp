@@ -100,7 +100,7 @@ void CMusicInfoLoader::LoadItem(CFileItem* pItem)
 		return;
 
 	CStdString strFileName, strPath;
-	CUtil::Split(pItem->m_strPath, strPath, strFileName);
+	CUtil::GetDirectory(pItem->m_strPath, strPath);
 
 	//	First query cached items
 	it=m_mapFileItems.find(pItem->m_strPath);
