@@ -725,6 +725,7 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
  CFileItem*						pItem=m_vecItems[iItem];
  CStdString           strFile=pItem->m_strPath;
  CStdString           strMovie=pItem->GetLabel();
+ if (pItem->m_bIsFolder && strMovie == "..") return;
  if (pItem->m_bIsFolder)
  {
     // IMDB is done on a folder, find first file in folder

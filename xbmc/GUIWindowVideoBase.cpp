@@ -960,6 +960,12 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 	// turn off the now playing button if nothing is playing
 /*	if (!g_application.IsPlayingVideo())
 		pMenu->EnableButton(3, false);*/
+  bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
+  if (bIsGotoParent)
+  {
+		pMenu->EnableButton(1, false);
+		pMenu->EnableButton(2, false);
+  }
 	// turn off the query info button if we aren't in files view
 	if (GetID() != WINDOW_VIDEOS)
 		pMenu->EnableButton(4, false);
