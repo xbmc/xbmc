@@ -206,7 +206,16 @@ void CGUIWindowSlideShow::Render()
 					{
 						// get next picture
 						m_pTextureCurrent=GetNextSlide(m_dwWidthCurrent,m_dwHeightCurrent, m_strCurrentSlide);
-//						m_pTextureCurrent->GetSurfaceLevel(0, &m_pSurfaceCurrent);
+
+						if (m_pTextureCurrent==NULL && m_pTextureBackGround != NULL)
+						{	// failed to low possibly due to memory constraint
+							// delete the previous pic and try again...
+							CLog::Log(LOGERROR, "SLIDESHOW: Out of memory (possibly). Deleting current picture and trying again");
+							m_pTextureBackGround->Release();
+							m_pTextureBackGround = NULL;
+							m_iCurrentSlide--;
+							m_pTextureCurrent=GetNextSlide(m_dwWidthCurrent,m_dwHeightCurrent, m_strCurrentSlide);
+						}
 						m_dwFrameCounter=0;
 						int iNewMethod;
 						do
