@@ -2335,6 +2335,15 @@ void CApplication::SetPlaySpeed(int iSpeed)
 {
 	if (!IsPlayingAudio() && !IsPlayingVideo()) return;
 	if (m_iPlaySpeed==iSpeed) return;
+  if (m_pPlayer->IsPaused()) {
+    if (
+      ((m_iPlaySpeed > 1) && (iSpeed > m_iPlaySpeed)) ||
+      ((m_iPlaySpeed < -1) && (iSpeed < m_iPlaySpeed))
+    ) {
+      iSpeed = m_iPlaySpeed; // from pause to ff/rw, do previous ff/rw speed
+    }
+    m_pPlayer->Pause();
+  }
 	m_iPlaySpeed=iSpeed;
 
 	//__int64 iTime;
