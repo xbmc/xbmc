@@ -70,7 +70,6 @@ HRESULT CApplication::Create()
 	
 	{
 		CHAR szDevicePath[1024];
-		helper.Unmount("Q:");
 		helper.Mount("Q:","Harddisk0\\Partition2");
 
 		helper.GetPartition(strPath.c_str(),szDevicePath);
@@ -392,7 +391,7 @@ void CApplication::OnKey(CKey& key)
 			return;
 		}
 	}
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	else //if (IsPlayingAudio() )
 	{
 		if ( key.GetButtonCode() == KEY_BUTTON_X  || key.GetButtonCode() == KEY_REMOTE_MENU)
@@ -401,7 +400,7 @@ void CApplication::OnKey(CKey& key)
 			return;
 		}
 	}
-#endif
+//#endif
 	m_gWindowManager.OnKey(key);   
 }
 
