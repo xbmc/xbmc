@@ -483,11 +483,12 @@ unsigned int Directx_ManageDisplay()
 	}
 
 	// Correct for HDTV_1080i -> 540p
-	if (iRes == HDTV_1080i)
-	{
-		fOffsetY1/=2;
-		iScreenHeight/=2;
-	}
+	// don't think we need this if we're not using overlays
+//	if (iRes == HDTV_1080i)
+//	{
+//		fOffsetY1/=2;
+//		iScreenHeight/=2;
+//	}
 
 	// this function is pretty expensive now as it has to take a lock on the VB
 	// need to check if it's really neccessary
