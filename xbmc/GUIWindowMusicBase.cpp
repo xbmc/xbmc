@@ -552,15 +552,72 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 		CUtil::Split(pItem->m_strPath, strPath, strFileName);
 	}
 
+	//	Try to find an album name for this item.
+	//	Only save to database, if album name is found there.
+	bool bSaveDb=false;
 	CStdString strLabel=pItem->GetLabel();
-	if ( pItem->m_musicInfoTag.Loaded() )
+
+	if (pItem->m_bIsFolder)
 	{
-		CStdString strAlbum=pItem->m_musicInfoTag.GetAlbum();
-		if (	strAlbum.size() )
+		//	if a folder has an album set,
+		//	we can be sure that it is in database
+		CAlbum album;
+		if (pItem->m_musicInfoTag.Loaded())
 		{
-			strLabel=strAlbum;
+			CStdString strAlbum=pItem->m_musicInfoTag.GetAlbum();
+			if (strAlbum.size())
+			{
+				strLabel=strAlbum;
+				bSaveDb=true;
+			}
+		}
+		else if (m_database.GetAlbumByPath(pItem->m_strPath, album))
+		{	//	Normal folder, query database for album name
+			if (album.strAlbum.size())
+			{
+				strLabel=album.strAlbum;
+				bSaveDb=true;
+			}
+		}
+		else
+		{
+			//	No album name found for folder. Look into
+			//	the directory, but don't save to database
+			VECFILEITEMS items;
+			m_rootDir.GetDirectory(pItem->m_strPath, items);
+			OnRetrieveMusicInfo(items);
+
+			//	Get first album name found in directory
+			for (int i=0; i<(int)items.size(); i++)
+			{
+				CFileItem* pItem=items[i];
+				if (pItem->m_musicInfoTag.Loaded())
+				{
+					if (pItem->m_musicInfoTag.GetAlbum().size())
+					{
+						strLabel=pItem->m_musicInfoTag.GetAlbum();
+						break;
+					}
+				}
+			}
 		}
 	}
+	else if (pItem->m_musicInfoTag.Loaded())
+	{	//	Handle files
+		CAlbum album;
+		CStdString strAlbum=pItem->m_musicInfoTag.GetAlbum();
+		//	Is album in database?
+		if (m_database.GetAlbumByPath(strPath, album))
+		{
+			//	yes, save query results to database
+			strLabel=album.strAlbum;
+			bSaveDb=true;
+		}
+		else
+			//	no, don't save
+			strLabel=strAlbum;
+	}
+
 
 	// check cache
 	CAlbum albuminfo;
@@ -660,7 +717,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 				// set path, needed to store album in database
 				album.SetAlbumPath(strPath);
 
-				if (!CUtil::IsCDDA(strPath))
+				if (bSaveDb)
 				{
 					CAlbum albuminfo;
 					albuminfo.strAlbum  = album.GetTitle();

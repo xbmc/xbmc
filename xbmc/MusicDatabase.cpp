@@ -1205,3 +1205,36 @@ bool CMusicDatabase::GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs)
 
 	return false;
 }
+
+bool CMusicDatabase::GetAlbumByPath(const CStdString& strPath1, CAlbum& album)
+{
+	try
+	{
+		CStdString strPath=strPath1;
+		//	musicdatabase always stores directories 
+		//	without a slash at the end 
+		if (CUtil::HasSlashAtEnd(strPath))
+			strPath.Delete(strPath.size()-1);
+		RemoveInvalidChars(strPath);
+
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+		CStdString strSQL;
+		strSQL.Format("select * from album,artist,path where album.idArtist=artist.idArtist and album.idPath=path.idPath and path.strPath='%s'", strPath );
+		if (!m_pDS->query(strSQL.c_str())) return false;
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound== 0) return false;
+
+		album.strAlbum  = m_pDS->fv("album.strAlbum").get_asString();
+		album.strArtist = m_pDS->fv("artist.strArtist").get_asString();
+		album.strPath   = m_pDS->fv("path.strPath").get_asString();
+
+		return true;
+	}
+	catch(...)
+	{
+    CLog::Log("CMusicDatabase:GetAlbumByPath() for %s failed", strPath1.c_str());
+	}
+
+	return false;
+}
