@@ -927,11 +927,6 @@ void CApplication::Render()
 		if ( g_graphicsContext.IsFullScreenVideo() ) 
 		{
 			g_graphicsContext.Lock();
-			// set soften on/off
-			m_pd3dDevice->SetSoftDisplayFilter(g_stSettings.m_bSoften);
-			// set the flicker filter - Changed by JM to improve subtitle flicker (using 1)
-			// HDTV modes may not need this, though.
-			m_pd3dDevice->SetFlickerFilter(g_stSettings.m_bSoften ? 5 : 1);
 			g_graphicsContext.Unlock();
 
 			if (m_pPlayer)
@@ -968,10 +963,8 @@ void CApplication::Render()
 
 	g_graphicsContext.Lock();
 
-	// draw GUI (always enable soften filter when displaying the UI)
+	// draw GUI
 	m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
-	m_pd3dDevice->SetSoftDisplayFilter(true);
-	m_pd3dDevice->SetFlickerFilter(5);
 
 	// render current window/dialog
 	m_gWindowManager.Render();
