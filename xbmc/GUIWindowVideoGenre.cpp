@@ -31,7 +31,7 @@
 #define CONTROL_BTNVIEWASICONS		 2
 #define CONTROL_BTNSORTBY					 3
 #define CONTROL_BTNSORTASC				 4
-#define CONTROL_ACTORS             5
+#define CONTROL_BTNTYPE            5
 #define CONTROL_PLAY_DVD           6
 #define CONTROL_STACK              7
 #define CONTROL_LIST							10
@@ -170,8 +170,6 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
 		{
-      g_stSettings.m_iVideoStartWindow=GetID();
-      g_settings.Save();
 			CGUIWindow::OnMessage(message);
       m_database.Open();
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -255,9 +253,34 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
 					OnClick(iItem);
 				}
       }
-      else if (iControl==CONTROL_ACTORS)
+      else if (iControl==CONTROL_BTNTYPE)
       {
-        m_gWindowManager.ActivateWindow(WINDOW_VIDEO_ACTOR);
+				CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(),CONTROL_BTNTYPE);
+				m_gWindowManager.SendMessage(msg);
+
+				int nSelected=msg.GetParam1();
+				int nNewWindow=WINDOW_VIDEOS;
+				switch (nSelected)
+				{
+				case 0:	//	Movies
+					nNewWindow=WINDOW_VIDEOS;
+					break;
+				case 1:	//	Genre
+					nNewWindow=WINDOW_VIDEO_GENRE;
+					break;
+				case 2:	//	Actors
+					nNewWindow=WINDOW_VIDEO_ACTOR;
+					break;
+				case 3:	//	Year
+					nNewWindow=WINDOW_VIDEO_YEAR;
+					break;
+				case 4:	//	Titel
+					nNewWindow=WINDOW_VIDEO_TITLE;
+					break;
+				}
+				g_stSettings.m_iVideoStartWindow=nNewWindow;
+				g_settings.Save();
+				m_gWindowManager.ActivateWindow(nNewWindow);
         return true;
       }
     }
@@ -268,6 +291,35 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
 //****************************************************************************************************************************
 void CGUIWindowVideoGenre::UpdateButtons()
 {
+	//	Remove labels from the window selection
+	CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_BTNTYPE);
+	g_graphicsContext.SendMessage(msg);
+
+	//	Add labels to the window selection
+	CStdString strItem=g_localizeStrings.Get(342);	//	Movies
+	CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_BTNTYPE);
+	msg2.SetLabel(strItem);
+	g_graphicsContext.SendMessage(msg2);
+
+	strItem=g_localizeStrings.Get(135);	//	Genre
+	msg2.SetLabel(strItem);
+	g_graphicsContext.SendMessage(msg2);
+
+	strItem=g_localizeStrings.Get(344);	//	Actors
+	msg2.SetLabel(strItem);
+	g_graphicsContext.SendMessage(msg2);
+
+	strItem=g_localizeStrings.Get(345);	//	Year
+	msg2.SetLabel(strItem);
+	g_graphicsContext.SendMessage(msg2);
+
+	strItem=g_localizeStrings.Get(369);	//	Titel
+	msg2.SetLabel(strItem);
+	g_graphicsContext.SendMessage(msg2);
+
+	//	Select the current window as default item 
+	CONTROL_SELECT_ITEM(GetID(), CONTROL_BTNTYPE, 1);
+
 
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);

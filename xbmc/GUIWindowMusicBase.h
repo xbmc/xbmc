@@ -71,7 +71,7 @@ protected:
  	/*!
 		\brief Overwrite to update your gui buttons (visible, enable,...)
 		*/
-	virtual	void							UpdateButtons()=0;
+	virtual	void							UpdateButtons();
 	virtual	void							OnQueueItem(int iItem);
 	virtual void							OnRetrieveMusicInfo(VECFILEITEMS& items);
 					void							GoParentFolder();

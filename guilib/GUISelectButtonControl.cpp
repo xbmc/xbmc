@@ -21,6 +21,7 @@ CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwContr
 {
 	m_bShowSelect=false;
 	m_iCurrentItem=-1;
+	m_iDefaultItem=-1;
 	m_iStartFrame=0;
 	m_bLeftSelected=false;
 	m_bRightSelected=false;
@@ -35,12 +36,7 @@ void CGUISelectButtonControl::Render()
 	if (!IsVisible() ) return;
 
 	//	Are we in selection mode
-	if (!m_bShowSelect)
-	{
-		//	No, render a normal button
-		CGUIButtonControl::Render();
-	}
-	else
+	if (m_bShowSelect)
 	{
 		//	Yes, render the select control
 
@@ -48,12 +44,14 @@ void CGUISelectButtonControl::Render()
 
 		m_imgBackground.Render();
 
+		D3DCOLOR dwTextColor=m_dwTextColor;
 		//	User has moved left...
 		if(m_bLeftSelected)
 		{
+			dwTextColor=m_dwDisabledColor;
 			//	...render focused arrow
 			m_iStartFrame++;
-			if(m_iStartFrame>=20)
+			if(m_iStartFrame>=10)
 			{
 				m_iStartFrame=0;
 				m_bLeftSelected=false;
@@ -70,9 +68,10 @@ void CGUISelectButtonControl::Render()
 		//	User has moved right...
 		if(m_bRightSelected)
 		{
+			dwTextColor=m_dwDisabledColor;
 			//	...render focused arrow
 			m_iStartFrame++;
-			if(m_iStartFrame>=20)
+			if(m_iStartFrame>=10)
 			{
 				m_iStartFrame=0;
 				m_bRightSelected=false;
@@ -85,10 +84,14 @@ void CGUISelectButtonControl::Render()
 			m_imgRight.Render();
 		}
 
-
 		//	Render text if a current item is available
 		if (m_iCurrentItem>=0 && m_pFont)
-			m_pFont->DrawText((float)m_dwPosX+16+15, (float)2+m_dwPosY, m_dwTextColor, m_vecItems[m_iCurrentItem].c_str());
+			m_pFont->DrawText((float)m_dwPosX+m_imgLeft.GetWidth()+15, (float)2+m_dwPosY, dwTextColor, m_vecItems[m_iCurrentItem].c_str());
+	}	//	if (m_bShowSelect)
+	else
+	{
+		//	No, render a normal button
+		CGUIButtonControl::Render();
 	}
 
 }
@@ -99,12 +102,18 @@ bool CGUISelectButtonControl::OnMessage(CGUIMessage& message)
 	{
 		if (message.GetMessage() == GUI_MSG_LABEL_ADD)
 		{
+			if (m_vecItems.size()<=0)
+			{
+				m_iCurrentItem=0;
+				m_iDefaultItem=0;
+			}
 			m_vecItems.push_back(message.GetLabel());
 		}
 		else if (message.GetMessage() == GUI_MSG_LABEL_RESET)
 		{
 			m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
 			m_iCurrentItem=-1;
+			m_iDefaultItem=-1;
 		}
 		else if (message.GetMessage()==GUI_MSG_ITEM_SELECTED)
 		{
@@ -112,7 +121,7 @@ bool CGUISelectButtonControl::OnMessage(CGUIMessage& message)
 		}
 		else if (message.GetMessage()==GUI_MSG_ITEM_SELECT)
 		{
-			m_iCurrentItem=message.GetParam1();
+			m_iDefaultItem=m_iCurrentItem=message.GetParam1();
 		}
 	}
 
@@ -146,11 +155,12 @@ void CGUISelectButtonControl::OnAction(const CAction &action)
 		{
 			//	Set for visual feedback
 			m_bLeftSelected=true;
+			m_iStartFrame=0;
 			//	Switch to previous item
 			if (m_vecItems.size()>0)
 			{
 				m_iCurrentItem--;
-				if (m_iCurrentItem<0)
+				if (m_iCurrentItem<0) 
 					m_iCurrentItem=m_vecItems.size()-1;
 			}
 			return;
@@ -159,11 +169,12 @@ void CGUISelectButtonControl::OnAction(const CAction &action)
 		{
 			//	Set for visual feedback
 			m_bRightSelected=true;
+			m_iStartFrame=0;
 			//	Switch to next item
 			if (m_vecItems.size()>0)
 			{
 				m_iCurrentItem++;
-				if (m_iCurrentItem>=(int)m_vecItems.size())
+				if (m_iCurrentItem>=(int)m_vecItems.size()) 
 					m_iCurrentItem=0;
 			}
 			return;
@@ -172,6 +183,7 @@ void CGUISelectButtonControl::OnAction(const CAction &action)
 		{
 			//	Disable selection mode when moving up or down
 			m_bShowSelect=false;
+			m_iCurrentItem=m_iDefaultItem;
 		}
 
 		CGUIButtonControl::OnAction(action);
