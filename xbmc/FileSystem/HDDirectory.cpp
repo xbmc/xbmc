@@ -32,7 +32,7 @@ bool  CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	memset(&wfd,0,sizeof(wfd));
 	if (!CUtil::HasSlashAtEnd(strPath) )
 		strRoot+="\\";
-
+	strRoot.Replace("/", "\\");
 	if (CUtil::IsDVD(strRoot) && m_isoReader.IsScanned())
   {
 		//	Reset iso reader and remount or
