@@ -56,3 +56,4 @@ EXPORTS
 	mplayer_getSubtitleStreamInfo @ 54 ;
  	mplayer_get_current_module @ 55 ;
  	mplayer_setcache_backbuffer @ 56 ;
+	exit_player @ 57 ;
