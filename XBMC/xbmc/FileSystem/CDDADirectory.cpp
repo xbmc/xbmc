@@ -95,9 +95,15 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 				int i=1;
 				while (1)
 				{
-					string strTitle=cddb.getInexactTitle(i++) ;
+					CStdString strTitle=cddb.getInexactTitle(i);
 					if (strTitle =="") break;
+
+					CStdString strArtist=cddb.getInexactArtist(i);
+					if (!strArtist.IsEmpty())
+						strTitle+=" - " + strArtist;
+
 					pDlgSelect->Add(strTitle);
+					i++;
 				}
 				pDlgSelect->DoModal(m_gWindowManager.GetActiveWindow());
 
