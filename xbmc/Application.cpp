@@ -1375,16 +1375,23 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 	  m_dwIdleTime=timeGetTime();
 
     // if file happens to contain video stream
-    if ( IsPlayingVideo())
+    if (IsPlayingVideo())
     {
-      // and we're not in fullscreen video mode yet
-      if (m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-      {
-        // then switch to fullscreen video mode
-        g_TextureManager.Flush();
-		    g_graphicsContext.SetFullScreenVideo(true);
-		    m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-      }
+			if (!m_gWindowManager.IsRouted())
+			{
+				// and we're not in fullscreen video mode yet
+				if (m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+				{
+					// then switch to fullscreen video mode
+					g_TextureManager.Flush();
+					g_graphicsContext.SetFullScreenVideo(true);
+					m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+				}
+			}
+			else
+			{
+				g_graphicsContext.SetFullScreenVideo(false);
+			}
       
     }
   }
@@ -1801,11 +1808,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
 					}
 					else
 					{
-						CMusicDatabase db;
-						if (db.Open())
+						if (g_musicDatabase.Open())
 						{
-							db.IncrTop100CounterByFileName(pItem->GetFileName());
-							db.Close();
+							g_musicDatabase.IncrTop100CounterByFileName(pItem->GetFileName());
+							g_musicDatabase.Close();
 						}
 					}
 				}

@@ -388,11 +388,10 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 		//	Look if we have this file in database...
 		bool bFound=false;
 		CSong song;
-		CMusicDatabase dbs;
-		if (dbs.Open())
+		if (g_musicDatabase.Open())
 		{
-			bFound=dbs.GetSongByFileName(strFile, song);
-			dbs.Close();
+			bFound=g_musicDatabase.GetSongByFileName(strFile, song);
+			g_musicDatabase.Close();
 		}
 		if (!bFound && g_stSettings.m_bUseID3)
 		{

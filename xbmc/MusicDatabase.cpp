@@ -26,13 +26,18 @@ void CSong::Clear()
 	iYear=0;
 }
 
+CMusicDatabase	g_musicDatabase;
+
 CMusicDatabase::CMusicDatabase(void)
 {
 	m_bOpen=false;
+	m_iRefCount=0;
 }
 
 CMusicDatabase::~CMusicDatabase(void)
 {
+	m_iRefCount=1;
+	Close();
 	EmptyCache();
 }
 
@@ -55,7 +60,11 @@ void CMusicDatabase::RemoveInvalidChars(CStdString& strTxt)
 
 bool CMusicDatabase::Open()
 {
-	Close();
+	if (IsOpen())
+	{
+		m_iRefCount++;
+		return true;
+	}
 
 	// test id dbs already exists, if not we need 2 create the tables
 	bool bDatabaseExists=false;
@@ -94,6 +103,7 @@ bool CMusicDatabase::Open()
 	m_pDS->exec("PRAGMA count_changes='OFF'\n");
 //	m_pDS->exec("PRAGMA temp_store='MEMORY'\n");
 	m_bOpen=true;
+	m_iRefCount++;
 	return true;
 }
 
@@ -104,11 +114,21 @@ bool CMusicDatabase::IsOpen()
 
 void CMusicDatabase::Close()
 {
+	if (!m_bOpen)
+		return;
+
+	if (m_iRefCount>1)
+	{
+		m_iRefCount--;
+		return;
+	}
+
+	m_iRefCount--;
+	m_bOpen=false;
 	if (NULL==m_pDB.get() ) return;
 	m_pDB->disconnect();
 	m_pDB.reset();
-	m_bOpen=false;
-	EmptyCache();
+	//EmptyCache();
 }
 
 bool CMusicDatabase::CreateTables()
