@@ -111,6 +111,7 @@
 #define ACTION_OSD_SHOW_SELECT      73
 #define ACTION_OSD_SHOW_VALUE_PLUS  74
 #define ACTION_OSD_SHOW_VALUE_MIN   75
+#define ACTION_SMALL_STEP_BACK      76
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID								-1

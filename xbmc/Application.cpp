@@ -399,8 +399,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 void CApplication::Render()
 {
-  static iBlinkRecord=0;
-	
 	// dont show GUI when playing full screen video
 	if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 	{
@@ -432,6 +430,7 @@ void CApplication::Render()
 		}
 	}
 
+  // enable/disable video overlay window 
   if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO && !m_bScreenSave)
 	{
 		g_graphicsContext.EnablePreviewWindow(true);
@@ -442,23 +441,27 @@ void CApplication::Render()
 	}
 
 	g_graphicsContext.Lock();
+
 	// draw GUI (always enable soften filter when displaying the UI)
   m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 	m_pd3dDevice->SetSoftDisplayFilter(true);
 	m_pd3dDevice->SetFlickerFilter(5);
 
+  // render current window/dialog
   m_gWindowManager.Render();
 
 	// check if we're playing a file
 	if (  m_bOverlayEnabled )
 	{
-		// yes, then render the music overlay window
+    // if we're playing a movie
 		if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
 		{
+      // then show video overlay window
 			m_guiWindowVideoOverlay.Render();
 		}
 		else if ( IsPlayingAudio() ) 
 		{
+      // audio show audio overlay window
 			m_guiMusicOverlay.Render();
 		}
 	}
@@ -466,6 +469,7 @@ void CApplication::Render()
   
 
 	{
+    // free memory if we got les then 10megs free ram
 	  MEMORYSTATUS stat;
 	  GlobalMemoryStatus(&stat);
 		DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
@@ -473,10 +477,13 @@ void CApplication::Render()
 		{
 			g_TextureManager.Flush();
 		}
+
+    // if we're recording an audio stream then show blinking REC
 		if (IsPlayingAudio())
 		{
 			if (m_pPlayer->IsRecording() )
 			{
+        static iBlinkRecord=0;
 				CGUIFont* pFont=g_fontManager.GetFont("font13");
 				if (pFont)
 				{
@@ -488,7 +495,9 @@ void CApplication::Render()
 				}
 			}
 		}
+
 #ifdef _DEBUG		
+    // in debug mode, show freememory
 		CStdStringW wszText;
 		wszText.Format(L"FreeMem %i/%iMB",stat.dwAvailPhys  /(1024*1024),
 																					  stat.dwTotalPhys  /(1024*1024)  );
@@ -502,7 +511,6 @@ void CApplication::Render()
 
   }
   // Present the backbuffer contents to the display
-
 	m_pd3dDevice->BlockUntilVerticalBlank();      
 	m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 	g_graphicsContext.Unlock();
@@ -512,12 +520,18 @@ void CApplication::Render()
 void CApplication::OnKey(CKey& key)
 {
 	CAction action;
+
+  // a key has been pressed. 
+  // Reset the screensaver timer
+  // but not for the analog thumbsticks
   if (key.GetButtonCode() != KEY_BUTTON_LEFT_THUMB_STICK &&
       key.GetButtonCode() != KEY_BUTTON_RIGHT_THUMB_STICK)
   {
+    // reset harddisk spindown timer
+		m_dwSpinDownTime=timeGetTime();
+
     ResetScreenSaver();
 	  m_bInactive=false;		// reset the inactive flag as a key has been pressed
-  
 	  if (m_bScreenSave)		// Screen saver is active
 	  {
 		  m_bScreenSave = false;	// Reset the screensaver active flag
@@ -533,61 +547,76 @@ void CApplication::OnKey(CKey& key)
 	  }
     ResetScreenSaver();
   }
-	// get the current window to send to
+
+	// get the current active window 
 	int iWin = m_gWindowManager.GetActiveWindow();
   if (iWin==WINDOW_FULLSCREEN_VIDEO)
   {
+    // current active window is full screen video.
+    // check if OSD is visible
     CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
     if ( pFSWin->OSDVisible() )
     {
+      // yes then use OSD section of keymap.xml to map key->action
       g_buttonTranslator.GetAction(WINDOW_OSD, key, action);
     }
     else 
     {
+      // no then use the fullscreen window section of keymap.xml to map key->action
       g_buttonTranslator.GetAction(iWin, key, action);
     }
   }
   else 
   {
+    // current active window isnt the fullscreen window
+    // just use corresponding section from keymap.xml
+    // to map key->action
     g_buttonTranslator.GetAction(iWin, key, action);
   }
 
-	// now translate our key into an action id (Transfer into button translator!!)
+	// special case for switching between GUI & fullscreen mode. (only if we're playing a movie)
 	if ( IsPlayingVideo() )
 	{
+    // dont allow switching between GUI & fullscreen mode if a dialog is onscreen
     if ( !m_gWindowManager.IsRouted())
     {
+      // if user wants 2 show fullscreen window
 		  if (action.wID == ACTION_SHOW_GUI && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
 		  {
-			  // switch to fullscreen mode
-			  OutputDebugString("Flushing Texture Manager\n");
+			  // then switch to fullscreen mode
 			  g_TextureManager.Flush();
-			  OutputDebugString("Switching to FullScreen\n");
 			  m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-			  OutputDebugString("Now in Fullscreen mode\n");
 			  return;
 		  }
     }
 	}
 	else 
 	{
+    // special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
 		if (IsPlayingAudio() )
 		{
+      // if user wants 2 show visualisation window
 			if (action.wID == ACTION_SHOW_GUI && m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
 			{
+        // dont allow switching between GUI & visualisation mode if a dialog is onscreen
         if ( !m_gWindowManager.IsRouted())
         {
+          // then switch to visualisation
 				  m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
         }
 				return;
 			}
 		}
 	}
+
+  // in normal case
+  // just pass the action to the current window and let it handle it
 	m_gWindowManager.OnAction(action);
 
 	/* handle extra global presses */
   if (iWin != WINDOW_FULLSCREEN_VIDEO)
   {
+    // stop : stops playing current audio song
     if (action.wID == ACTION_STOP)
 	  {
       if ( IsPlayingAudio() && !IsPlayingVideo())
@@ -597,14 +626,20 @@ void CApplication::OnKey(CKey& key)
 		  CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
 		  m_gWindowManager.SendThreadMessage( msg );
 	  }  
+
+    // pause : pauses current audio song
 	  if (action.wID == ACTION_PAUSE)
 	  {
 		  if (m_pPlayer) m_pPlayer->Pause();
 	  }
+
+    // previous : play previous song from playlist
 	  if (action.wID == ACTION_PREV_ITEM)
 	  {
 		  g_playlistPlayer.PlayPrevious();
 	  }
+
+    // next : play next song from playlist
 	  if (action.wID == ACTION_NEXT_ITEM)
 	  {
 		  g_playlistPlayer.PlayNext();
@@ -614,6 +649,7 @@ void CApplication::OnKey(CKey& key)
 
 void CApplication::FrameMove()
 {
+  // read raw input from controller & remote control
 	ReadInput();
 	XBIR_REMOTE* pRemote	= &m_DefaultIR_Remote;
 	XBGAMEPAD*  pGamepad	= &m_DefaultGamepad;
@@ -625,11 +661,13 @@ void CApplication::FrameMove()
 	BYTE bLeftTrigger = pGamepad->bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER];
 	BYTE bRightTrigger = pGamepad->bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER];
 	
+  // pass them through the delay
 	WORD wDir = m_ctrDpad.DpadInput(wDpad,0!=bLeftTrigger,0!=bRightTrigger);
 	wRemotes=m_ctrIR.IRInput(wRemotes);
 
 	bool bGotKey=false;
 
+  // map all controller & remote actions to their keys
 	if (pGamepad->fX1 || pGamepad->fY1)
 	{
 		bGotKey=true;
@@ -750,11 +788,6 @@ void CApplication::FrameMove()
 		}
 	}
 
-	if (bGotKey) 
-	{
-		m_dwSpinDownTime=timeGetTime();
-	}
-
 
 }
 
@@ -845,12 +878,14 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 		}
 	
 	  m_dwIdleTime=timeGetTime();
+
+    // if file happens to contain video stream
     if ( IsPlayingVideo())
     {
-      OutputDebugString("VIDEO!!!\n");
+      // and we're not in fullscreen video mode yet
       if (m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
       {
-        OutputDebugString("SET FULLSCREEN!!!\n");
+        // then switch to fullscreen video mode
         g_TextureManager.Flush();
 		    g_graphicsContext.SetFullScreenVideo(true);
 		    m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
@@ -862,7 +897,7 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 
 void CApplication::OnPlayBackEnded()
 {
-  
+  //playback ended
   OutputDebugString("Playback has finished\n");
 	CGUIMessage msg( GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL );
 	m_gWindowManager.SendThreadMessage( msg );
@@ -911,15 +946,12 @@ bool CApplication::NeedRenderFullScreen()
 }
 void CApplication::RenderFullScreen()
 {
-//	OutputDebugString("RenderFullScreen ...\n");
 	if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 	{
-//		OutputDebugString("Actually doing RenderFullScreen\n");
 		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
     if (!pFSWin) return ;
 		pFSWin->RenderFullScreen();
 	}
-//	OutputDebugString("RenderFullScreen Done\n");
 }
 
 void CApplication::ResetScreenSaver()
@@ -1064,18 +1096,25 @@ void CApplication::CheckShutdown()
 }
 void CApplication::SpinHD()
 {
+  // is harddisk spindown enabled?
 	if (!g_stSettings.m_iHDSpinDownTime) return;// dont do HD spindown
+
+  //yes. Can we do a spindown right now?
 	if (!m_bSpinDown)
 	{
+    // no. Check if we're still playing
 		if (!m_pPlayer)  
 		{
+      //not playing anymore, then spindown should b possible
 			m_bSpinDown=true;
 		}
 		else if (!m_pPlayer->IsPlaying()) 
 		{
+      //not playing anymore, then spindown should b possible
 			m_bSpinDown=true;
 		}
 
+    // if spindown is enabled now, then reset the timer.
 		if (m_bSpinDown) 
 		{
 			m_dwSpinDownTime=timeGetTime();
@@ -1083,10 +1122,13 @@ void CApplication::SpinHD()
 	}
 
 	// spin down HD after 3 mins of inactivity
+  //spindown enabled?
 	if (m_bSpinDown)
 	{
+    // yes, then check the elapsed time
 		if ( (long)(timeGetTime() - m_dwSpinDownTime) >= ((long)g_stSettings.m_iHDSpinDownTime*60L*1000L) )
 		{
+      // time has elapsed, spin it down
 			m_dwSpinDownTime=timeGetTime();
 			CIoSupport helper;
 			helper.SpindownHarddisk();
@@ -1096,10 +1138,13 @@ void CApplication::SpinHD()
 	// clean up player core if its inactive >= 10 sec.
 	if (m_pPlayer)
 	{
+    // not playing anymore?
 		if (!m_pPlayer->IsPlaying() )
 		{
+      // inactive > 10sec?
 			bool bTimeOut=(long)(timeGetTime() - m_dwIdleTime) >= 10L*1000L ;
-			// music stopped.
+			
+      // music stopped.
 			if (m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
 			{
 				if (g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size() ==0 || bTimeOut)
@@ -1108,14 +1153,17 @@ void CApplication::SpinHD()
 				}
 			}
 
+      // yes
 			if ( bTimeOut )
 			{
+        // then clean up
 				delete m_pPlayer;
 				m_pPlayer=NULL;
 			}
 		}
 		else
 		{
+      //still playing, reset cleanup timer
 			m_dwIdleTime=timeGetTime();
 		}
 	}
@@ -1126,6 +1174,7 @@ void CApplication::ResetAllControls()
 	m_guiMusicOverlay.ResetAllControls();
 	m_guiWindowVideoOverlay.ResetAllControls();
 }
+
 bool CApplication::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
@@ -1201,38 +1250,57 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
 void CApplication::Process()
 {
+  // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
 	m_Autorun.HandleAutorun();
 
+  // dispatch the messages generated by python or other threads to the current window
 	m_gWindowManager.DispatchThreadMessages();
 
   // process messages which have to be send to the gui
 	// (this can only be done after m_gWindowManager.Render())
 	g_applicationMessenger.ProcessWindowMessages();
+
 	// process any Python scripts
 	m_pythonParser.Process();
 
+  // check if we need 2 spin down the harddisk
 	SpinHD();
+
+  // check if we need to activate the screensaver (if enabled)
 	if (g_stSettings.m_iScreenSaverMode) CheckScreenSaver();
+
+  // check if we need to shutdown (if enabled)
 	if (g_stSettings.m_iShutdownTime) CheckShutdown();
+
 	// process messages, even if a movie is playing
 	g_applicationMessenger.ProcessMessages();
 
 }
 void CApplication::Restart(bool bSamePosition)
 {
-  if ( !IsPlayingVideo() && !IsPlayingAudio()) return;
+  // this function gets called when the user changes a setting (like noninterleaved)
+  // and which means we gotta close & reopen the current playing file
   
+  // first check if we're playing a file
+  if ( !IsPlayingVideo() && !IsPlayingAudio()) return;
+
+  // do we want to return to the current position in the file
   if (false==bSamePosition)
   {
+    // no, then just reopen the file and start at the beginning
     PlayFile(m_strCurrentFile,true);
     return;
   }
+
+  // else get current position
   int iPercentage=m_pPlayer->GetPercentage();
+  
+  // reopen the file
   if (  PlayFile(m_strCurrentFile,true) )
   {
+    // and seek to the position
     m_pPlayer->SeekPercentage(iPercentage);
   }
-
 }
 
 const CStdString& CApplication::CurrentFile()

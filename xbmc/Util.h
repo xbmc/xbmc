@@ -1,5 +1,4 @@
 #pragma once
-#include <xtl.h>
 #include "stdstring.h"
 #include "fileitem.h"
 #include <map>
@@ -92,4 +91,5 @@ public:
 	static bool ThumbCached(const CStdString& strFileName);
 	static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
 	static void ThumbCacheClear();
+  static void PlayDVD();
 };

@@ -160,10 +160,7 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 				{
 					if ( g_stSettings.m_bAutorunDVD ) 
 					{
-						g_TextureManager.Flush();
-						g_graphicsContext.SetFullScreenVideo(true);
-						m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-            g_application.PlayFile( "dvd://1" );
+            CUtil::PlayDVD();
 						bPlaying=true;
 						break;
 					}
@@ -174,9 +171,6 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 					{
 						CStdString strFileName;
 						strFileName.Format("%s%cAVSEQ01.DAT",pItem->m_strPath.c_str(),szSlash);
-						g_TextureManager.Flush();
-						g_graphicsContext.SetFullScreenVideo(true);
-						m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
 						g_application.PlayFile( strFileName );
 						bPlaying=true;
 						break;
@@ -188,9 +182,6 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 					{
 						CStdString strFileName;
 						strFileName.Format("%s%cAVSEQ01.MPG",pItem->m_strPath.c_str(),szSlash);
-						g_TextureManager.Flush();
-						g_graphicsContext.SetFullScreenVideo(true);
-						m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
 						g_application.PlayFile( strFileName );
 						bPlaying=true;
 						break;
@@ -211,9 +202,6 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 			if ( bRoot && CUtil::IsVideo( pItem->m_strPath ) && g_stSettings.m_bAutorunVideo)
 			{
 				bPlaying=true;
-				g_TextureManager.Flush();
-				g_graphicsContext.SetFullScreenVideo(true);
-				m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
 				g_application.PlayFile( pItem->m_strPath );
 				break;
 			}

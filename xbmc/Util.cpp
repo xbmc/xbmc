@@ -16,6 +16,7 @@
 #include "autoptrhandle.h"
 #include "playlistfactory.h"
 #include "ThumbnailCache.h"
+#include "application.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
@@ -1483,4 +1484,11 @@ void CUtil::ThumbCacheClear()
 bool CUtil::ThumbCached(const CStdString& strFileName)
 {
 	return CThumbnailCache::GetThumbnailCache()->IsCached(strFileName);
+}
+
+void CUtil::PlayDVD()
+{
+  CIoSupport helper;
+  helper.Remount("D:","Cdrom0");
+  g_application.PlayFile("dvd://1");
 }
