@@ -1,4 +1,5 @@
 #include "application.h"
+#include "utils/lcd.h"
 #include "xbox\iosupport.h"
 #include "xbox/xkutils.h"
 #include "utils/log.h"
@@ -346,6 +347,8 @@ HRESULT CApplication::Initialize()
   }
 
   CLog::Log("initialize done");	
+  g_lcd.Initialize();
+  g_lcd.SetLine(0,"XBMC running...");
 	return S_OK;
 }
 
