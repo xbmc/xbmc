@@ -517,9 +517,9 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 			pItem->m_bIsShareOrDrive=false;
 			pItem->m_bIsFolder=true;
 			pItem->m_idepth=share.m_iDepthSize;
-      pItem->m_iLockMode=share.m_iLockMode;
-      pItem->m_strLockCode=share.m_strLockCode;
-      pItem->m_iBadPwdCount=share.m_iBadPwdCount;
+			pItem->m_iLockMode=share.m_iLockMode;
+			pItem->m_strLockCode=share.m_strLockCode;
+			pItem->m_iBadPwdCount=share.m_iBadPwdCount;
 			CUtil::Tokenize(sharePath, vecShares, ",");
 			CStdString strThumb;
 			for (int j=0; j < (int)vecShares.size(); j++)    // use the first folder image that we find
@@ -597,47 +597,51 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 
 	m_iLastControl=GetFocusedControl();
 
-	for (int j=0; j < (int)vecPaths.size(); j++)
-	{
-		if (CUtil::IsXBE(vecPaths[j]))					// we've found a single XBE in the path vector
-		{
-			CStdString strDescription;
-			if ( (m_database.GetFile(vecPaths[j],m_vecItems) < 0) && CUtil::FileExists(vecPaths[j]))
-			{
-				if (!CUtil::GetXBEDescription(vecPaths[j], strDescription))
-				{
-					CUtil::GetDirectoryName(vecPaths[j], strDescription);
-					CUtil::ShortenFileName(strDescription);
-					CUtil::RemoveIllegalChars(strDescription);
-				}
 
-				if (CUtil::IsDVD(vecPaths[j]))
+	if (m_strDirectory!="")
+	{
+		for (int j=0; j < (int)vecPaths.size(); j++)
+		{
+			if (CUtil::IsXBE(vecPaths[j]))					// we've found a single XBE in the path vector
+			{
+				CStdString strDescription;
+				if ( (m_database.GetFile(vecPaths[j],m_vecItems) < 0) && CUtil::FileExists(vecPaths[j]))
 				{
-					WIN32_FILE_ATTRIBUTE_DATA FileAttributeData;
-					FILETIME localTime;
-					CFileItem *pItem = new CFileItem(strDescription);
-					pItem->m_strPath=vecPaths[j];
-					pItem->m_bIsFolder=false;
-					GetFileAttributesEx(pItem->m_strPath, GetFileExInfoStandard, &FileAttributeData);
-					FileTimeToLocalFileTime(&FileAttributeData.ftLastWriteTime,&localTime);
-					FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-					pItem->m_dwSize=FileAttributeData.nFileSizeLow;
-					m_vecItems.push_back(pItem);
-				}
-				else
-				{                                                                                                                                                                                                                                                                                                                                                                                    
-					m_database.AddProgram(vecPaths[j], strDescription, m_strBookmarkName);
-					m_database.GetFile(vecPaths[j],m_vecItems);
+					if (!CUtil::GetXBEDescription(vecPaths[j], strDescription))
+					{
+						CUtil::GetDirectoryName(vecPaths[j], strDescription);
+						CUtil::ShortenFileName(strDescription);
+						CUtil::RemoveIllegalChars(strDescription);
+					}
+
+					if (CUtil::IsDVD(vecPaths[j]))
+					{
+						WIN32_FILE_ATTRIBUTE_DATA FileAttributeData;
+						FILETIME localTime;
+						CFileItem *pItem = new CFileItem(strDescription);
+						pItem->m_strPath=vecPaths[j];
+						pItem->m_bIsFolder=false;
+						GetFileAttributesEx(pItem->m_strPath, GetFileExInfoStandard, &FileAttributeData);
+						FileTimeToLocalFileTime(&FileAttributeData.ftLastWriteTime,&localTime);
+						FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+						pItem->m_dwSize=FileAttributeData.nFileSizeLow;
+						m_vecItems.push_back(pItem);
+					}
+					else
+					{                                                                                                                                                                                                                                                                                                                                                                                    
+						m_database.AddProgram(vecPaths[j], strDescription, m_strBookmarkName);
+						m_database.GetFile(vecPaths[j],m_vecItems);
+					}
 				}
 			}
-		}
-		else
-		{
-			LoadDirectory(vecPaths[j], idepth);
-			if (m_strBookmarkName=="shortcuts")
-				bOnlyDefaultXBE=false;			// let's do this so that we don't only grab default.xbe from database when getting shortcuts
-			if (bFlattenDir)
-				m_database.GetProgramsByPath(vecPaths[j], m_vecItems, idepth, bOnlyDefaultXBE);
+			else
+			{
+				LoadDirectory(vecPaths[j], idepth);
+				if (m_strBookmarkName=="shortcuts")
+					bOnlyDefaultXBE=false;			// let's do this so that we don't only grab default.xbe from database when getting shortcuts
+				if (bFlattenDir)
+					m_database.GetProgramsByPath(vecPaths[j], m_vecItems, idepth, bOnlyDefaultXBE);
+			}
 		}
 	}
 
