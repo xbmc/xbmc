@@ -117,7 +117,7 @@ public:
 	Value is unknown or unspecified.
 	*/
     int        m_iLockMode;
-	CStdString m_strLockCode;	///< Input code for Lock UI to verify, can be chosen freely.
+	CStdStringW m_strLockCode;	///< Input code for Lock UI to verify, can be chosen freely.
     int        m_iBadPwdCount; ///< Number of wrong passwords user has entered since share was last unlocked
 };
 /*!
@@ -402,6 +402,7 @@ public:
 
    	int       m_iMasterLockMaxRetry; // maximum # of password retries a user gets for all locked shares
 		int       m_iMasterLockStartupLock; // prompts user for szMasterLockCode on startup if true
+		int       m_iMasterLockMode; // determines the type of master lock UI to present to the user, if any
    	char      szMasterLockCode[128]; // password to check for on startup
   	int       m_iMasterLockEnableShutdown; // allows XBMC Master Lock to shut off XBOX if true
    	int       m_iMasterLockProtectShares; // prompts for mastercode when editing shares with context menu if true

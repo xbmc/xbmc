@@ -11,6 +11,7 @@
 #include "cuedocument.h"
 #include "AutoSwitch.h"
 #include "crc32.h"
+#include "GUIPassword.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNSORTBY					3
@@ -912,7 +913,7 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 	{
 		if ( pItem->m_bIsShareOrDrive ) 
 		{
-      if ( !HaveBookmarkPermissions( pItem, "music" ) )
+      if ( !CGUIPassword::IsItemUnlocked( pItem, "music" ) )
         return;
 
 			if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )

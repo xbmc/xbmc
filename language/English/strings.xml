@@ -600,6 +600,14 @@
   <string><id>12345</id><value>Access Denied</value></string>
   <string><id>12346</id><value>Password retry limit exceeded.</value></string>
   <string><id>12347</id><value>The XBOX will now shut off.</value></string>
+  <string><id>12348</id><value>Item Locked</value></string>
+  <string><id>12349</id><value>Remember Master Code until next boot?</value></string>
+  <string><id>12350</id><value>(Opening any item in Settings will</value></string>
+  <string><id>12351</id><value>automatically re-enable Master Lock.)</value></string>
+  <string><id>12352</id><value>Enter Master Code button combo and </value></string>
+  <string><id>12353</id><value>Reactivate Share Lock</value></string>
+  <string><id>12354</id><value>Override folder locks until next boot?</value></string>
+  <string><id>12355</id><value>automatically re-enable folder locks.)</value></string>
   <string><id>12600</id><value>My Weather</value></string>
   <string><id>12900</id><value>Screensaver</value></string>
   <string><id>12901</id><value>Fullscreen OSD</value></string>
