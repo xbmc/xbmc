@@ -101,7 +101,9 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
 		Palette=(COLOR*)((char*)pbmi+sizeof(GUIBITMAPINFOHEADER));
 	}
 
+#ifndef _XBOX // Not needed as already fixed to power of two
 	BytesPerRow += (ALIGN-Width%ALIGN) % ALIGN;	// Align BytesPerRow
+#endif
 	
 	Raster = new char [BytesPerRow*Height];
 
@@ -386,6 +388,11 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 				NextImage->Transparency= (gifgce.PackedFields&0x1c)>1 ? 1 : 0;
 				NextImage->Delay       = gifgce.Delay*10;
 			}
+
+			if (NextImage->Transparent != -1)
+				memset(NextImage->Raster, NextImage->Transparent, NextImage->BytesPerRow * NextImage->Height);
+			else
+				memset(NextImage->Raster, giflsd.Background, NextImage->BytesPerRow * NextImage->Height);
 		
 			if (LocalColorMap)		// Read Color Map (if descriptor says so)
 				fread((char*)NextImage->Palette,1,sizeof(COLOR)*(1<<NextImage->BPP),fd);
