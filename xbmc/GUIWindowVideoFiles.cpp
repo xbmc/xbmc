@@ -586,6 +586,11 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
   }
 	else
 	{
+		//	Reset Playlistplayer, we may have played something
+		//	from another playlist. New playback started now may 
+		//	not use the playlistplayer.
+		g_playlistPlayer.Reset();
+		g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
     // Set selected item
 	  m_iItemSelected=GetSelectedItem();
     CStdString strFileName=pItem->m_strPath;
