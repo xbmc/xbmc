@@ -2466,11 +2466,18 @@ void CUtil::Stat64ToStat(struct _stat *result, struct __stat64 *stat)
 	result->st_uid = stat->st_uid;
 	result->st_gid = stat->st_gid;
 	result->st_rdev = stat->st_rdev;
-	result->st_size = (_off_t)stat->st_size;
+	if(stat->st_size <= LONG_MAX)
+    result->st_size = (_off_t)stat->st_size;
+  else
+  {
+    result->st_size = 0;
+    CLog::Log(LOGWARNING,"WARNING: File is larger than 32bit stat can handle, file size will be reported as 0 bytes");
+  }
 	result->st_atime = (time_t)stat->st_atime;
 	result->st_mtime = (time_t)stat->st_mtime;
 	result->st_ctime = (time_t)stat->st_ctime;
 }
+ 
 
 // around 50% faster than memcpy
 // only worthwhile if the destination buffer is not likely to be read back immediately
