@@ -881,7 +881,7 @@
 	</string>
 	<string>
 		<id>290</id>
-		<value>Volume Amplification (dB)</value>
+		<value>Volume Amplification</value>
 	</string>
 	<string>
 		<id>291</id>
@@ -1693,7 +1693,7 @@
 	</string>
 	<string>
 		<id>494</id>
-		<value>Overall Audio Headroom (dB)</value>
+		<value>Overall Audio Headroom</value>
 	</string>
 	<string>
 		<id>495</id>
