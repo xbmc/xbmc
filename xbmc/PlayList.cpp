@@ -1,4 +1,5 @@
 #include "playlist.h"
+#include "util.h"
 
 using namespace PLAYLIST;
 
@@ -118,4 +119,36 @@ void CPlayList::Remove(const CStdString& strFileName)
 		}
 		else ++it;
 	}
+}
+int CPlayList::RemoveDVDItems()
+{
+	vector <CStdString> vecFilenames;
+
+	//	Collect playlist items from DVD share
+	ivecItems it;
+	it=m_vecItems.begin();
+	while (it != m_vecItems.end() )
+	{
+		CPlayListItem& item = *it;
+		if ( CUtil::IsCDDA( item.GetFileName() ) || CUtil::IsISO9660( item.GetFileName() ) || CUtil::IsDVD( item.GetFileName() ) )
+		{
+			vecFilenames.push_back( item.GetFileName() );
+		}
+		it++;
+	}
+
+	//	Delete them from playlist
+	int nFileCount = vecFilenames.size();
+	if ( nFileCount ) {
+		vector <CStdString>::iterator it;
+		it=vecFilenames.begin();
+		while (it != vecFilenames.end() )
+		{
+			CStdString& strFilename = *it;
+			Remove( strFilename );
+			it++;
+		}
+		vecFilenames.erase( vecFilenames.begin(), vecFilenames.end() );
+	}
+	return nFileCount;
 }

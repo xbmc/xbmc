@@ -1,7 +1,7 @@
 #pragma once
 
 #include "tinyxml/tinyxml.h"
-#define CONFIG_VERSION 0x0005
+#define CONFIG_VERSION 0x0007
 
 #include <xtl.h>
 #include "stdstring.h"
@@ -140,6 +140,13 @@ public:
 		int			  m_iHDSpinDownTime;
 		DWORD     m_minFilter ;
 		DWORD     m_maxFilter ;
+		bool			m_bAutorunDVD;
+		bool			m_bAutorunVCD;
+		bool			m_bAutorunCdda;
+		bool			m_bAutorunXbox;
+		bool			m_bAutorunMusic;
+		bool			m_bAutorunVideo;
+		bool			m_bAutorunPictures;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

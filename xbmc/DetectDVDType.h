@@ -13,12 +13,8 @@
 #include "utils/Mutex.h"
 #include "filesystem/cdiosupport.h"
 #include "utils/thread.h"
-#include "guimessage.h"
+#include "GuiUserMessages.h"
 #include "guiwindowmanager.h"
-
-#define GUI_MSG_DVDDRIVE_EJECTED_CD	GUI_MSG_USER + 1
-#define GUI_MSG_DVDDRIVE_CHANGED_CD	GUI_MSG_USER + 2
-
 
 using namespace XISO9660;
 
@@ -28,34 +24,36 @@ public:
 	CDetectDVDMedia();
 	virtual ~CDetectDVDMedia();
 
-	virtual void		OnStartup();
-	virtual void		OnExit();
-	virtual void		Process();
+	virtual void			OnStartup();
+	virtual void			OnExit();
+	virtual void			Process();
 
-	static void WaitMediaReady();
-	static bool	IsDiscInDrive();
+	static void				WaitMediaReady();
+	static bool				IsDiscInDrive();
 
-	static CCdInfo* GetCdInfo();
+	static CCdInfo*		GetCdInfo();
 
 protected:
-	void UpdateDvdrom();
-	DWORD GetTrayState();
+	void							UpdateDvdrom();
+	DWORD							GetTrayState();
 	
-	void DetectMediaType();
-	void SetNewDVDShareUrl( CStdString strNewUrl );
-
+	void							DetectMediaType();
+	void							SetNewDVDShareUrl( CStdString strNewUrl );
 
 private:
 	CIoSupport				m_helper;
 	
-	static CMutex m_muReadingMedia;
+	static CMutex			m_muReadingMedia;
 
-	static CStdString	m_DVDUrl;
-	static int m_DriveState;
+	static int				m_DriveState;
 
-	static CCdInfo* m_pCdInfo;
+	static CCdInfo*		m_pCdInfo;
 
-	DWORD m_dwTrayState;
-	DWORD m_dwTrayCount;
-	DWORD m_dwLastTrayState;
+	bool							m_bStartup;
+	bool							m_bAutorun;
+	DWORD							m_dwTrayState;
+	DWORD							m_dwTrayCount;
+	DWORD							m_dwLastTrayState;
+public:
+	static CEvent			m_evAutorun;
 };

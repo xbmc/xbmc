@@ -2,17 +2,21 @@
 #include "Filesystem/cdiosupport.h"
 #include "xbox/undocumented.h"
 #include "Settings.h"
+#include "playlistplayer.h"
 
 using namespace XISO9660;
 
 CMutex CDetectDVDMedia::m_muReadingMedia;
+CEvent CDetectDVDMedia::m_evAutorun;
 int CDetectDVDMedia::m_DriveState = DRIVE_CLOSED_NO_MEDIA;
 CCdInfo* CDetectDVDMedia::m_pCdInfo = NULL;
 
 CDetectDVDMedia::CDetectDVDMedia()
 {
+	m_bAutorun = false;
 	m_bStop = false;
 	m_dwLastTrayState=0;
+	m_bStartup = true;		//	Do not autorun on startup
 }
 
 CDetectDVDMedia::~CDetectDVDMedia()
@@ -29,6 +33,7 @@ void CDetectDVDMedia::Process()
 {
 	while ( !m_bStop ) {
 		UpdateDvdrom();
+		m_bStartup = false;
 	}
 }
 
@@ -54,18 +59,21 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 			case DRIVE_OPEN:
 				{
 				m_DriveState = DRIVE_OPEN;
-				if ( m_pCdInfo != NULL ) {
-					delete m_pCdInfo;
-					m_pCdInfo = NULL;
-				}
 				//	Send Message to GUI that disc been ejected
 				CGUIMessage msg( GUI_MSG_DVDDRIVE_EJECTED_CD, 0, 0, 0, 0, NULL );
-				m_gWindowManager.SendMessage( msg );
+				m_gWindowManager.SendThreadMessage( msg );
+
 				}
 				break;
 			case DRIVE_NOT_READY:
 				// drive is not ready (closing, opening)
 				m_DriveState = DRIVE_NOT_READY;
+				//	DVD-ROM in undefined state
+				//	better delete old CD Information
+				if ( m_pCdInfo != NULL ) {
+					delete m_pCdInfo;
+					m_pCdInfo = NULL;
+				}
 				Sleep(6000);
 				break;
 			case DRIVE_READY:
@@ -78,7 +86,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 				m_DriveState = DRIVE_CLOSED_NO_MEDIA;
 				//	Send Message to GUI that disc has changed
 				CGUIMessage msg( GUI_MSG_DVDDRIVE_CHANGED_CD, 0, 0, 0, 0, NULL );
-				m_gWindowManager.SendMessage( msg );
+				m_gWindowManager.SendThreadMessage( msg );
 				}
 				break;
 			case DRIVE_CLOSED_MEDIA_PRESENT:
@@ -90,16 +98,24 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 					//	Detect ISO9660(mode1/mode2) or CDDA filesystem
 					DetectMediaType();
 					CGUIMessage msg( GUI_MSG_DVDDRIVE_CHANGED_CD, 0, 0, 0, 0, (void*) m_pCdInfo );
-					m_gWindowManager.SendMessage( msg );
+					m_gWindowManager.SendThreadMessage( msg );
+					//	Tell the application object that a new Cd is inserted
+					//	So autorun can be started.
+					if ( !m_bStartup )
+						m_bAutorun = true;
 				}
 				break;
 		}
-
-	} while ( dwCurrentState != DRIVE_CLOSED_NO_MEDIA && dwCurrentState != DRIVE_READY && dwCurrentState != DRIVE_OPEN );
+	} while ( m_DriveState != DRIVE_OPEN && m_DriveState != DRIVE_CLOSED_NO_MEDIA && m_DriveState != DRIVE_CLOSED_MEDIA_PRESENT  );
 
 	//	We have finished media detection
 	//	Signal for WaitMediaReady()
 	m_muReadingMedia.Release();
+
+	if ( m_bAutorun ) {
+		m_evAutorun.Set();
+		m_bAutorun = false;
+	}
 }
 
 //	Generates the drive url, (like iso9660://)
@@ -232,13 +248,12 @@ void CDetectDVDMedia::WaitMediaReady()
 bool CDetectDVDMedia::IsDiscInDrive()
 {
 	m_muReadingMedia.Wait();
+	bool bResult = true;
 	if ( m_DriveState != DRIVE_CLOSED_MEDIA_PRESENT ) {
-		m_muReadingMedia.Release();
-		return false;
+		bResult = false;
 	}
-
 	m_muReadingMedia.Release();
-	return true;
+	return bResult;
 }
 
 //	Static function

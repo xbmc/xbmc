@@ -282,12 +282,12 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 	if( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
 	{
 		const RECT& rv = g_graphicsContext.GetViewWindow();
-		iScreenWidth = rv.right-rv.left;
-		iScreenHeight= rv.bottom-rv.top;
-		fOffsetX1    = rv.left;
-		fOffsetY1    = rv.top;
-		fOffsetX2    = 0;
-		fOffsetY2    = 0;
+		iScreenWidth = (float)rv.right-rv.left;
+		iScreenHeight= (float)rv.bottom-rv.top;
+		fOffsetX1    = (float)rv.left;
+		fOffsetY1    = (float)rv.top;
+		fOffsetX2    = 0.0f;
+		fOffsetY2    = 0.0f;
 	}
 	//if( g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() )
   {

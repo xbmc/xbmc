@@ -294,6 +294,9 @@
 				RelativePath=".\xbmc\Application.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\Autorun.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\Crc32.cpp">
 			</File>
 			<File
@@ -479,6 +482,9 @@
 				RelativePath=".\xbmc\ArtistDirectory.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\Autorun.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\Crc32.h">
 			</File>
 			<File
@@ -507,6 +513,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogYesNo.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GuiUserMessages.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowHome.h">

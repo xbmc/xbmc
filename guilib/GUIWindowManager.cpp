@@ -4,6 +4,7 @@ CGUIWindowManager     m_gWindowManager;
 
 CGUIWindowManager::CGUIWindowManager(void)
 {
+	InitializeCriticalSection(&m_critSection);
 	m_pCallback=NULL;
   m_pRouteWindow=NULL;
   m_iActiveWindow=-1;
@@ -12,10 +13,18 @@ CGUIWindowManager::CGUIWindowManager(void)
 
 CGUIWindowManager::~CGUIWindowManager(void)
 {
+	DeleteCriticalSection(&m_critSection);
 }
 
 void CGUIWindowManager::SendMessage(CGUIMessage& message)
 {
+	for (int i=0; i < (int) m_vecMsgTargets.size(); i++)
+	{
+		IMsgTargetCallback* pMsgTarget = m_vecMsgTargets[i];
+		if (pMsgTarget)
+			pMsgTarget->OnMessage( message );
+	}
+
   if (m_pRouteWindow)
   {
     m_pRouteWindow->OnMessage(message);
@@ -24,7 +33,6 @@ void CGUIWindowManager::SendMessage(CGUIMessage& message)
   if (m_iActiveWindow < 0) return;
   CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
   pWindow->OnMessage(message);
-  
 }
 
 void CGUIWindowManager::Add(CGUIWindow* pWindow)
@@ -121,6 +129,8 @@ void CGUIWindowManager::DeInitialize()
 		pWindow->ClearAll();
   }
 	m_pRouteWindow=NULL;
+
+	m_vecMsgTargets.erase( m_vecMsgTargets.begin(), m_vecMsgTargets.end() );
 }
 
 void CGUIWindowManager::RouteToWindow(DWORD dwID)
@@ -131,4 +141,36 @@ void CGUIWindowManager::RouteToWindow(DWORD dwID)
 void CGUIWindowManager::UnRoute()
 {
   m_pRouteWindow=NULL;
+}
+void CGUIWindowManager::SendThreadMessage(CGUIMessage& message)
+{
+	::EnterCriticalSection(&m_critSection );
+	CGUIMessage* msg = new CGUIMessage(message);
+	m_vecThreadMessages.push_back( msg );
+
+	::LeaveCriticalSection(&m_critSection );
+}
+
+void CGUIWindowManager::DispatchThreadMessages()
+{
+	::EnterCriticalSection(&m_critSection );
+
+	if ( m_vecThreadMessages.size() > 0 ) 
+	{
+		for (int i=0; i < (int) m_vecThreadMessages.size(); i++ ) 
+		{
+			CGUIMessage* pMsg = m_vecThreadMessages[i];
+			SendMessage( *pMsg );
+			delete pMsg;
+		}
+
+		m_vecThreadMessages.erase( m_vecThreadMessages.begin(), m_vecThreadMessages.end() );
+	}
+
+	::LeaveCriticalSection(&m_critSection );
+}
+
+void CGUIWindowManager::AddMsgTarget( IMsgTargetCallback* pMsgTarget )
+{
+	m_vecMsgTargets.push_back( pMsgTarget );
 }

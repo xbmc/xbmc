@@ -6,6 +6,7 @@
 #include "guiwindow.h"
 #include "IMsgSenderCallback.h"
 #include "IWindowManagerCallback.h"
+#include "IMsgTargetCallback.h"
 
 class CGUIWindowManager:public IMsgSenderCallback
 {
@@ -23,12 +24,17 @@ public:
 	void						DeInitialize();
   void            RouteToWindow(DWORD dwID);
   void            UnRoute();
+	void						SendThreadMessage(CGUIMessage& message);
+	void						DispatchThreadMessages();
+	void						AddMsgTarget( IMsgTargetCallback* pMsgTarget );
 private:
-  vector <CGUIWindow*>		m_vecWindows;
-  int											m_iActiveWindow;
-	IWindowManagerCallback* m_pCallback;
-  CGUIWindow*             m_pRouteWindow;
-
+  vector <CGUIWindow*>					m_vecWindows;
+  int														m_iActiveWindow;
+	IWindowManagerCallback*				m_pCallback;
+  CGUIWindow*										m_pRouteWindow;
+	vector <CGUIMessage*>					m_vecThreadMessages;
+	CRITICAL_SECTION							m_critSection;
+	vector <IMsgTargetCallback*>	m_vecMsgTargets;
 };
 
 extern  CGUIWindowManager     m_gWindowManager;

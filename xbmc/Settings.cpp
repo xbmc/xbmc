@@ -10,6 +10,14 @@ struct CSettings::stSettings g_stSettings;
 CSettings::CSettings(void)
 {
 	memset(g_stSettings.m_rectMovieCalibration,0, sizeof(g_stSettings.m_rectMovieCalibration));
+	g_stSettings.m_bAutorunPictures=true;
+	g_stSettings.m_bAutorunMusic=true;
+	g_stSettings.m_bAutorunVideo=true;
+	g_stSettings.m_bAutorunDVD=true;
+	g_stSettings.m_bAutorunVCD=true;
+	g_stSettings.m_bAutorunCdda=true;
+	g_stSettings.m_bAutorunXbox=true;
+
 	g_stSettings.m_minFilter=D3DTEXF_LINEAR;
 	g_stSettings.m_maxFilter=D3DTEXF_LINEAR;
 	g_stSettings.m_iSoften=1;
