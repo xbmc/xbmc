@@ -340,7 +340,15 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
 		hr = E_FAIL;
 	}
 
-	free(m_PreLoadBuffer[m_LoadIdx]);
+	try
+	{
+		free(m_PreLoadBuffer[m_LoadIdx]);
+	}
+	catch(...)
+	{
+		CLog::Log(LOGERROR, "Error freeing preload buffer.");
+	}
+
 	m_PreLoadBuffer[m_LoadIdx] = 0;
 	m_CurFileHeader[m_LoadIdx] = m_FileHeaders.end();
 
