@@ -364,6 +364,7 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 		char *pEnd = strstr(pImage,"\"");
 		if (pEnd) *pEnd=0;
 		movieDetails.m_strPictureURL=pImage;
+		movieDetails.m_strPictureURL.Replace('\r',(char)0);
 	}
 
 	if (pPlot)
