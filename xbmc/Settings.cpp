@@ -535,6 +535,8 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 						share.m_iDriveType=SHARE_TYPE_VIRTUAL_DVD;
 						share.strPath="D:\\";
 					}
+					else if (strPath.Left(11) =="SOUNDTRACK:")
+						share.m_iDriveType=SHARE_TYPE_LOCAL;
 					else if (CUtil::IsISO9660(share.strPath))
 						share.m_iDriveType=SHARE_TYPE_VIRTUAL_DVD;
 					else if (CUtil::IsDVD(share.strPath))
