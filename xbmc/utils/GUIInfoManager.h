@@ -42,6 +42,8 @@ public:
 	CStdString GetVideoLabel(const CStdString &strItem);
 	wstring GetFreeSpace(const CStdString &strDrive);
 	CStdString GetCurrentPlayTime();
+	CStdString GetVersion();
+	CStdString GetBuild();
 
 protected:
 
