@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 12-08-2004 changed: My Programs database layout changed again.  Changed database name so no need to remove existing database first
+  - 12-08-2004 added: My Programs path tag can now contain direct link to XBE (Ex: <path>E:\apps\,C:\retailxboxdash.xbe</path>
+  - 12-08-2004 fixed: Default tag in My Programs no longer needs to be the same as the path tag for the bookmark
+  - 12-08-2004 fixed: Improved My Programs speed in displaying bookmarks and cleaned up some code
   - 11-08-2004 fixed: small bug in resizing algorithm of videos meant zoom (using START) sometimes
                       did not zoom correctly (particularly when the movie ratio is 4:3)
   - 11-08-2004 added: .cue sheet support for gapless playback of media files.  Make sure the
