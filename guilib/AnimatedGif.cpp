@@ -291,7 +291,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 				case 0xF9:			// Graphic Control Extension
         {
 					fread((char*)&gifgce,1,sizeof(gifgce),fd);
-//          dllprintf("got Graphic Control Extension:%i/%i fields:%x",gifgce.BlockSize,sizeof(gifgce),gifgce.PackedFields);
+          dllprintf("got Graphic Control Extension:%i/%i fields:%x",gifgce.BlockSize,sizeof(gifgce),gifgce.PackedFields);
 					GraphicExtensionFound++;
 					getbyte(fd); // Block Terminator (always 0)
         }
