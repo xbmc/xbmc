@@ -99,6 +99,7 @@ protected:
   int							GetPage();
 	int										m_iSpaceBetweenItems;
   int                   m_iOffset;
+	float									m_fSmoothScrollOffset;
   int                   m_iItemsPerPage;
   int                   m_iItemHeight;
   int                   m_iSelect;

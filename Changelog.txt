@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 06-09-2004 changed: Behaviour of triggers in Fullscreen video
+  - 06-09-2004 changed: Behaviour of triggers in lists/thumbs (now analog - see keymap.xml)
+  - 06-09-2004 fixed: FFWD/REWD when using passthrough caused audio to not be muted
+  - 06-09-2004 changed: Volume level of centre channel in output to all speakers
+  - 06-09-2004 fixed: SF bug 1018396: Mouse over on home buttons doesn't change background
+  - 06-09-2004 added: <align> and <aligny> tags to radiobuttons and selectbuttons
   - 06-09-2004 changed: iTunes DAAP performance tweaks
   - 06-09-2004 changed: reset instead of powercycle after saving network settings
   - 06-09-2004 fixed: Issue with vertical alignment of text on controls (with references.xml)

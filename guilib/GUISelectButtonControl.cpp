@@ -11,13 +11,14 @@ CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwContr
 																								 const CStdString& strButton,
 																								 DWORD dwTextOffsetX,
 																								 DWORD dwTextOffsetY,
+																								 DWORD dwTextAlign,
 																								 const CStdString& strSelectBackground,
 																								 const CStdString& strSelectArrowLeft,
 																								 const CStdString& strSelectArrowLeftFocus,
 																								 const CStdString& strSelectArrowRight,
 																								 const CStdString& strSelectArrowRightFocus
 																								 )
-:CGUIButtonControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight, strButtonFocus, strButton, dwTextOffsetX, dwTextOffsetY)
+:CGUIButtonControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight, strButtonFocus, strButton, dwTextOffsetX, dwTextOffsetY, dwTextAlign)
 ,m_imgBackground(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight,strSelectBackground)
 ,m_imgLeft(dwParentID, dwControlId, iPosX, iPosY, 16, 16,strSelectArrowLeft)
 ,m_imgLeftFocus(dwParentID, dwControlId, iPosX, iPosY, 16, 16,strSelectArrowLeftFocus)
@@ -106,9 +107,11 @@ void CGUISelectButtonControl::Render()
 				float fTextWidth,fTextHeight;
 				m_pFont->GetTextExtent( m_vecItems[m_iCurrentItem].c_str(), &fTextWidth, &fTextHeight );		
 				DWORD dwOffsetX = (m_imgBackground.GetWidth()-(DWORD)fTextWidth)/2;
-
+				float fPosY = (float)m_iPosY+m_dwTextOffsetY;
+				if (m_dwTextAlignment & XBFONT_CENTER_Y)
+					fPosY = (float)m_iPosY+m_imgBackground.GetHeight()/2;
 				m_pFont->DrawText(	(float)m_iPosX+dwOffsetX,
-					(float)m_iPosY+m_dwTextOffsetY, dwTextColor, m_vecItems[m_iCurrentItem].c_str());
+					fPosY, dwTextColor, m_vecItems[m_iCurrentItem].c_str(), m_dwTextAlignment);
 			}
 		}
 

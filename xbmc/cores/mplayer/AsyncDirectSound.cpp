@@ -196,10 +196,14 @@ bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, 
 		    {DSMIXBIN_FRONT_RIGHT,0},
 		    {DSMIXBIN_BACK_LEFT,0},
 		    {DSMIXBIN_BACK_RIGHT,0},
-		    {DSMIXBIN_LOW_FREQUENCY,0}, //Make sure we double sound out to the other channels. 
-        {DSMIXBIN_LOW_FREQUENCY,0},
-        {DSMIXBIN_FRONT_CENTER,0}, //Do we really want it in the center speaker.. doesn't seem right.
-        {DSMIXBIN_FRONT_CENTER,0}
+				// left and right both to center and LFE, but attenuate each 3dB first
+				// so they're the same level.
+				// attenuate the center another 3dB so that it is a total 6dB lower
+				// so that stereo effect is not lost.
+		    {DSMIXBIN_LOW_FREQUENCY,-301},
+        {DSMIXBIN_LOW_FREQUENCY,-301},
+        {DSMIXBIN_FRONT_CENTER,-602},
+        {DSMIXBIN_FRONT_CENTER,-602}
       };
       memcpy(dsmbvp, &dsm, sizeof(DSMIXBINVOLUMEPAIR)*(*MixBinCount));
       *dwChannelMask = SPEAKER_FRONT_LEFT|SPEAKER_FRONT_RIGHT|SPEAKER_FRONT_CENTER|SPEAKER_LOW_FREQUENCY|SPEAKER_BACK_LEFT|SPEAKER_BACK_RIGHT;

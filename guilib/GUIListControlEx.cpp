@@ -111,6 +111,43 @@ void CGUIListControlEx::OnAction(const CAction &action)
 			OnPageDown();
 		break;
 
+		// smooth scrolling (for analog controls)
+		case ACTION_SCROLL_UP:
+		{
+			m_fSmoothScrollOffset+=action.fAmount1*action.fAmount1;
+			while (m_fSmoothScrollOffset>0.4)
+			{
+				m_fSmoothScrollOffset-=0.4f;
+				if (m_iOffset>0 && m_iCursorY<=m_iItemsPerPage/2)
+				{
+					m_iOffset--;
+				}
+				else if (m_iCursorY>0)
+				{
+					m_iCursorY--;
+				}
+			}
+		}
+		break;
+		case ACTION_SCROLL_DOWN:
+		{
+			CGUIList::GUILISTITEMS& list = m_pList->Lock();
+			m_fSmoothScrollOffset+=action.fAmount1*action.fAmount1;
+			while (m_fSmoothScrollOffset>0.4)
+			{
+				m_fSmoothScrollOffset-=0.4f;
+				if (m_iOffset + m_iItemsPerPage < (int)list.size() && m_iCursorY>=m_iItemsPerPage/2)
+				{
+					m_iOffset++;
+				}
+				else if (m_iCursorY<m_iItemsPerPage-1)
+				{
+					m_iCursorY++;
+				}
+			}
+		}
+		break;
+
 		case ACTION_SELECT_ITEM:
 		{
 			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
