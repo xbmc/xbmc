@@ -41,7 +41,8 @@ void CGUIImage::Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight
 
   float x=(float)dwPosX;
   float y=(float)dwPosY;
-  
+
+#if ALLOW_TEXTURE_COMPRESSION
 	if (0==m_iImageWidth|| 0==m_iImageHeight)
 	{
 		D3DSURFACE_DESC desc;
@@ -62,6 +63,23 @@ void CGUIImage::Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight
     if (m_iTextureWidth > (int)g_graphicsContext.GetWidth() )
         m_iTextureWidth = (int)g_graphicsContext.GetWidth();
   }
+#else
+  if (0==m_iTextureWidth|| 0==m_iTextureWidth)
+  {
+    D3DSURFACE_DESC desc;
+    m_vecTextures[m_iCurrentImage]->GetLevelDesc(0,&desc);
+
+	  m_iTextureWidth  = (DWORD) desc.Width/m_dwItems;
+	  m_iTextureHeight = (DWORD) desc.Height;
+
+    if (m_iTextureHeight > (int)g_graphicsContext.GetHeight() )
+        m_iTextureHeight = (int)g_graphicsContext.GetHeight();
+
+    if (m_iTextureWidth > (int)g_graphicsContext.GetWidth() )
+        m_iTextureWidth = (int)g_graphicsContext.GetWidth();
+  }
+#endif
+
   if (dwWidth && m_dwItems>1)
   {
     m_iTextureWidth=m_dwWidth;
@@ -81,25 +99,7 @@ void CGUIImage::Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight
 	{
 		g_graphicsContext.Correct(x, y);
 	}
-	
-//  int iXOffset=m_iBitmap*m_dwWidth;
-
-//  vertex[0].p = D3DXVECTOR4( x - 0.5f,	y - 0.5f,		0, 0 );
-//  vertex[0].tu = (float)iXOffset;
-//  vertex[0].tv = 0;
-//
-//  vertex[1].p = D3DXVECTOR4( x+nw - 0.5f,	y - 0.5f,		0, 0 );
-//  vertex[1].tu = (float)iXOffset+m_iTextureWidth;
-//  vertex[1].tv = 0;
-//
-//  vertex[2].p = D3DXVECTOR4( x+nw - 0.5f,	y+nh - 0.5f,	0, 0 );
-//  vertex[2].tu = (float)iXOffset+m_iTextureWidth;
-//  vertex[2].tv = (float)m_iTextureHeight;
-//
-//  vertex[3].p = D3DXVECTOR4( x - 0.5f,	y+nh - 0.5f,	0, 0 );
-//  vertex[3].tu = (float)iXOffset;
-//  vertex[3].tv = (float)m_iTextureHeight;
-
+#if ALLOW_TEXTURE_COMPRESSION
 	float uoffs = float(m_iBitmap * m_dwWidth) / float(m_iImageWidth);
 	float u = float(m_iTextureWidth) / float(m_iImageWidth);
 	float v = float(m_iTextureHeight) / float(m_iImageHeight);
@@ -119,6 +119,26 @@ void CGUIImage::Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight
 	vertex[3].p = D3DXVECTOR4( x - 0.5f,	y+nh - 0.5f,	0, 0 );
 	vertex[3].tu = uoffs;
 	vertex[3].tv = v;
+#else
+  int iXOffset=m_iBitmap*m_dwWidth;
+
+  vertex[0].p = D3DXVECTOR4( x - 0.5f,	y - 0.5f,		0, 0 );
+  vertex[0].tu = (float)iXOffset;
+  vertex[0].tv = 0;
+
+  vertex[1].p = D3DXVECTOR4( x+nw - 0.5f,	y - 0.5f,		0, 0 );
+  vertex[1].tu = (float)iXOffset+m_iTextureWidth;
+  vertex[1].tv = 0;
+
+  vertex[2].p = D3DXVECTOR4( x+nw - 0.5f,	y+nh - 0.5f,	0, 0 );
+  vertex[2].tu = (float)iXOffset+m_iTextureWidth;
+  vertex[2].tv = (float)m_iTextureHeight;
+
+  vertex[3].p = D3DXVECTOR4( x - 0.5f,	y+nh - 0.5f,	0, 0 );
+  vertex[3].tu = (float)iXOffset;
+  vertex[3].tv = (float)m_iTextureHeight;
+#endif
+
 
  
   vertex[0].col = m_colDiffuse;
@@ -142,7 +162,9 @@ void CGUIImage::Render()
 	Process();
 
 	// Set state to render the image
-	g_graphicsContext.Get3DDevice()->SetPalette( 0, m_pPalette);
+#if ALLOW_TEXTURE_COMPRESSION
+  g_graphicsContext.Get3DDevice()->SetPalette( 0, m_pPalette);
+#endif
 	g_graphicsContext.Get3DDevice()->SetTexture( 0, m_vecTextures[m_iCurrentImage] );
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
@@ -234,7 +256,7 @@ void CGUIImage::Update()
 
   float x=(float)m_dwPosX;
   float y=(float)m_dwPosY;
-
+#if ALLOW_TEXTURE_COMPRESSION
 	if (0==m_iImageWidth|| 0==m_iImageHeight)
 	{
 		D3DSURFACE_DESC desc;
@@ -255,6 +277,22 @@ void CGUIImage::Update()
     if (m_iTextureWidth > (int)g_graphicsContext.GetWidth() )
         m_iTextureWidth = (int)g_graphicsContext.GetWidth();
   }
+#else
+  D3DSURFACE_DESC desc;
+  m_vecTextures[m_iCurrentImage]->GetLevelDesc(0,&desc);
+
+  if (0==m_iTextureWidth|| 0==m_iTextureHeight)
+  {
+	  m_iTextureWidth  = (DWORD) desc.Width/m_dwItems;
+	  m_iTextureHeight = (DWORD) desc.Height;
+
+    if (m_iTextureHeight > (int)g_graphicsContext.GetHeight() )
+        m_iTextureHeight = (int)g_graphicsContext.GetHeight();
+
+    if (m_iTextureWidth > (int)g_graphicsContext.GetWidth() )
+        m_iTextureWidth = (int)g_graphicsContext.GetWidth();
+  }
+#endif
   if (m_dwWidth && m_dwItems>1)
   {
     m_iTextureWidth=m_dwWidth;
@@ -304,24 +342,7 @@ void CGUIImage::Update()
 	{
 		g_graphicsContext.Correct(x, y);
 	}
-//  int iXOffset=m_iBitmap*m_dwWidth;
-//
-//  vertex[0].p = D3DXVECTOR4( x - 0.5f,	y - 0.5f,		0, 0 );
-//  vertex[0].tu = (float)iXOffset;
-//  vertex[0].tv = 0;
-//
-//  vertex[1].p = D3DXVECTOR4( x+nw - 0.5f,	y - 0.5f,		0, 0 );
-//  vertex[1].tu = (float)iXOffset+m_iTextureWidth;
-//  vertex[1].tv = 0;
-//
-//  vertex[2].p = D3DXVECTOR4( x+nw - 0.5f,	y+nh - 0.5f,	0, 0 );
-//  vertex[2].tu = (float)iXOffset+m_iTextureWidth;
-//  vertex[2].tv = (float)m_iTextureHeight;
-//
-//  vertex[3].p = D3DXVECTOR4( x - 0.5f,	y+nh - 0.5f,	0, 0 );
-//  vertex[3].tu = (float)iXOffset;
-//  vertex[3].tv = (float)m_iTextureHeight;
-
+#if ALLOW_TEXTURE_COMPRESSION
 	float uoffs = float(m_iBitmap * m_dwWidth) / float(m_iImageWidth);
 	float u = float(m_iTextureWidth) / float(m_iImageWidth);
 	float v = float(m_iTextureHeight) / float(m_iImageHeight);
@@ -342,6 +363,26 @@ void CGUIImage::Update()
 	vertex[3].tu = uoffs;
 	vertex[3].tv = v;
 
+
+#else
+  int iXOffset=m_iBitmap*m_dwWidth;
+
+  vertex[0].p = D3DXVECTOR4( x - 0.5f,	y - 0.5f,		0, 0 );
+  vertex[0].tu = (float)iXOffset;
+  vertex[0].tv = 0;
+
+  vertex[1].p = D3DXVECTOR4( x+nw - 0.5f,	y - 0.5f,		0, 0 );
+  vertex[1].tu = (float)iXOffset+m_iTextureWidth;
+  vertex[1].tv = 0;
+
+  vertex[2].p = D3DXVECTOR4( x+nw - 0.5f,	y+nh - 0.5f,	0, 0 );
+  vertex[2].tu = (float)iXOffset+m_iTextureWidth;
+  vertex[2].tv = (float)m_iTextureHeight;
+
+  vertex[3].p = D3DXVECTOR4( x - 0.5f,	y+nh - 0.5f,	0, 0 );
+  vertex[3].tu = (float)iXOffset;
+  vertex[3].tv = (float)m_iTextureHeight;
+#endif
  
   vertex[0].col = m_colDiffuse;
 	vertex[1].col = m_colDiffuse;
