@@ -72,51 +72,29 @@ void CASyncDirectSound::DoWork()
 
 bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, DWORD* dwChannelMask, int Type, int Channels)
 {
-  //5 Channel, skip LFE
-  //4 Channel, skip LFE and Center
-  //3 Channel, only left right center
-  Channels = Channels > 6 ? 6 : Channels;
+  //3, 5, >6 channel are invalid XBOX wav formats thus can not be processed at this stage
+  
   *MixBinCount = Channels;
 
-  if (Channels == 5 || Channels == 6) //Handle 5 and 6 channels.
+  if (Channels == 6) //Handle 6 channels.
   {
-    if (Channels == 6)
       *dwChannelMask = SPEAKER_FRONT_LEFT|SPEAKER_FRONT_RIGHT|SPEAKER_FRONT_CENTER|SPEAKER_LOW_FREQUENCY|SPEAKER_BACK_LEFT|SPEAKER_BACK_RIGHT;
-    else if (Channels == 5)
-      *dwChannelMask = SPEAKER_FRONT_LEFT|SPEAKER_FRONT_RIGHT|SPEAKER_FRONT_CENTER|SPEAKER_BACK_LEFT|SPEAKER_BACK_RIGHT;
-
     
     switch (Type)
     {
       case DSMIXBINTYPE_DMO: //FL, FR, C, LFE, SL, SR
       {
-        if (Channels == 6)
+        DSMIXBINVOLUMEPAIR dsm[6] =
         {
-          DSMIXBINVOLUMEPAIR dsm[6] =	     
-          { 
-            {DSMIXBIN_FRONT_LEFT ,0},
-		        {DSMIXBIN_FRONT_RIGHT,0},
-		        {DSMIXBIN_FRONT_CENTER,0},
-		        {DSMIXBIN_LOW_FREQUENCY,0}, 
-            {DSMIXBIN_BACK_LEFT,0},
-		        {DSMIXBIN_BACK_RIGHT,0}
-          };
-          memcpy(dsmbvp, &dsm, sizeof(DSMIXBINVOLUMEPAIR)*(*MixBinCount));
-          return true;
-        } 
-        else if (Channels == 5) 
-        {
-          DSMIXBINVOLUMEPAIR dsm[5] =	     
-          { 
-            {DSMIXBIN_FRONT_LEFT ,0},
-		        {DSMIXBIN_FRONT_RIGHT,0},
-		        {DSMIXBIN_FRONT_CENTER,0},
-            {DSMIXBIN_BACK_LEFT,0},
-		        {DSMIXBIN_BACK_RIGHT,0}
-          };
-          memcpy(dsmbvp, &dsm, sizeof(DSMIXBINVOLUMEPAIR)*(*MixBinCount));
-          return true;
-        }
+          {DSMIXBIN_FRONT_LEFT ,0},
+          {DSMIXBIN_FRONT_RIGHT,0},
+          {DSMIXBIN_FRONT_CENTER,0},
+          {DSMIXBIN_LOW_FREQUENCY,0},
+          {DSMIXBIN_BACK_LEFT,0},
+          {DSMIXBIN_BACK_RIGHT,0}
+        };
+        memcpy(dsmbvp, &dsm, sizeof(DSMIXBINVOLUMEPAIR)*(*MixBinCount));
+        return true;
       }
       case DSMIXBINTYPE_AAC: //C, FL, FR, SL, SR, LFE
       {
@@ -124,10 +102,10 @@ bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, 
         { 
           {DSMIXBIN_FRONT_CENTER,0},
           {DSMIXBIN_FRONT_LEFT ,0},
-		      {DSMIXBIN_FRONT_RIGHT,0},
+          {DSMIXBIN_FRONT_RIGHT,0},
           {DSMIXBIN_BACK_LEFT,0},
-		      {DSMIXBIN_BACK_RIGHT,0},
-		      {DSMIXBIN_LOW_FREQUENCY,0} 
+          {DSMIXBIN_BACK_RIGHT,0},
+          {DSMIXBIN_LOW_FREQUENCY,0} 
         };
         memcpy(dsmbvp, &dsm, sizeof(DSMIXBINVOLUMEPAIR)*(*MixBinCount));
         return true;
@@ -138,10 +116,10 @@ bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, 
         { 
           {DSMIXBIN_FRONT_LEFT ,0},
           {DSMIXBIN_FRONT_CENTER,0},
-		      {DSMIXBIN_FRONT_RIGHT,0},
+          {DSMIXBIN_FRONT_RIGHT,0},
           {DSMIXBIN_BACK_LEFT,0},
-		      {DSMIXBIN_BACK_RIGHT,0},
-		      {DSMIXBIN_LOW_FREQUENCY,0} 
+          {DSMIXBIN_BACK_RIGHT,0},
+          {DSMIXBIN_LOW_FREQUENCY,0} 
         };
         memcpy(dsmbvp, &dsm, sizeof(DSMIXBINVOLUMEPAIR)*(*MixBinCount));
         return true;
@@ -151,11 +129,11 @@ bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, 
         DSMIXBINVOLUMEPAIR dsm[6] =	     
         { 
           {DSMIXBIN_FRONT_LEFT ,0},
-		      {DSMIXBIN_FRONT_RIGHT,0},
-		      {DSMIXBIN_BACK_LEFT,0},
-		      {DSMIXBIN_BACK_RIGHT,0},
-		      {DSMIXBIN_FRONT_CENTER,0},
-		      {DSMIXBIN_LOW_FREQUENCY,0} 
+          {DSMIXBIN_FRONT_RIGHT,0},
+          {DSMIXBIN_BACK_LEFT,0},
+          {DSMIXBIN_BACK_RIGHT,0},
+          {DSMIXBIN_FRONT_CENTER,0},
+          {DSMIXBIN_LOW_FREQUENCY,0} 
         };
         memcpy(dsmbvp, &dsm, sizeof(DSMIXBINVOLUMEPAIR)*(*MixBinCount));
         return true;
@@ -173,18 +151,6 @@ bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, 
     *dwChannelMask = SPEAKER_FRONT_LEFT|SPEAKER_FRONT_RIGHT|SPEAKER_BACK_LEFT|SPEAKER_BACK_RIGHT;
     return true;
   }
-  else if (Channels == 3) // 3 Stereo. No idea what order this should be
-  {
-    DSMIXBINVOLUMEPAIR dsm[3] =	     
-    { 
-      {DSMIXBIN_FRONT_LEFT ,0},
-		  {DSMIXBIN_FRONT_RIGHT,0},
-		  {DSMIXBIN_FRONT_CENTER,0},
-    };
-    memcpy(dsmbvp, &dsm, sizeof(DSMIXBINVOLUMEPAIR)*(*MixBinCount));
-    *dwChannelMask = SPEAKER_FRONT_LEFT|SPEAKER_FRONT_RIGHT|SPEAKER_FRONT_CENTER;
-    return true;
-  }
   else if (Channels == 2)
   {
     if ( Type == DSMIXBINTYPE_STEREOALL )
@@ -193,14 +159,14 @@ bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, 
       DSMIXBINVOLUMEPAIR dsm[8] =	     
       { 
         {DSMIXBIN_FRONT_LEFT ,0},
-		    {DSMIXBIN_FRONT_RIGHT,0},
-		    {DSMIXBIN_BACK_LEFT,0},
-		    {DSMIXBIN_BACK_RIGHT,0},
+        {DSMIXBIN_FRONT_RIGHT,0},
+        {DSMIXBIN_BACK_LEFT,0},
+        {DSMIXBIN_BACK_RIGHT,0},
 				// left and right both to center and LFE, but attenuate each 3dB first
 				// so they're the same level.
 				// attenuate the center another 3dB so that it is a total 6dB lower
 				// so that stereo effect is not lost.
-		    {DSMIXBIN_LOW_FREQUENCY,-301},
+        {DSMIXBIN_LOW_FREQUENCY,-301},
         {DSMIXBIN_LOW_FREQUENCY,-301},
         {DSMIXBIN_FRONT_CENTER,-602},
         {DSMIXBIN_FRONT_CENTER,-602}
@@ -208,7 +174,43 @@ bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, 
       memcpy(dsmbvp, &dsm, sizeof(DSMIXBINVOLUMEPAIR)*(*MixBinCount));
       *dwChannelMask = SPEAKER_FRONT_LEFT|SPEAKER_FRONT_RIGHT|SPEAKER_FRONT_CENTER|SPEAKER_LOW_FREQUENCY|SPEAKER_BACK_LEFT|SPEAKER_BACK_RIGHT;
     }
-    else
+    else if (Type == DSMIXBINTYPE_STEREOLEFT)
+	{
+      *MixBinCount = 8;
+      DSMIXBINVOLUMEPAIR dsm[8] =	     
+      { 
+		// left route to 4 channels
+        {DSMIXBIN_FRONT_LEFT ,0},
+        {DSMIXBIN_FXSEND_13,-6000},
+        {DSMIXBIN_FRONT_RIGHT ,0},
+        {DSMIXBIN_FXSEND_13,-6000},
+        {DSMIXBIN_BACK_LEFT,0},
+        {DSMIXBIN_FXSEND_13,-6000},
+        {DSMIXBIN_BACK_RIGHT,0},
+        {DSMIXBIN_FXSEND_13,-6000}
+      };
+      memcpy(dsmbvp, &dsm, sizeof(DSMIXBINVOLUMEPAIR)*(*MixBinCount));
+      *dwChannelMask = SPEAKER_FRONT_LEFT|SPEAKER_FRONT_RIGHT|SPEAKER_BACK_LEFT|SPEAKER_BACK_RIGHT;
+	}
+	else if (Type == DSMIXBINTYPE_STEREORIGHT)
+	{
+      *MixBinCount = 8;
+      DSMIXBINVOLUMEPAIR dsm[8] =	     
+      { 
+		// right route to 4 channels
+        {DSMIXBIN_FXSEND_13,-6000},
+        {DSMIXBIN_FRONT_LEFT ,0},
+        {DSMIXBIN_FXSEND_13,-6000},
+        {DSMIXBIN_FRONT_RIGHT ,0},
+        {DSMIXBIN_FXSEND_13,-6000},
+        {DSMIXBIN_BACK_LEFT,0},
+        {DSMIXBIN_FXSEND_13,-6000},
+        {DSMIXBIN_BACK_RIGHT,0},
+      };
+      memcpy(dsmbvp, &dsm, sizeof(DSMIXBINVOLUMEPAIR)*(*MixBinCount));
+      *dwChannelMask = SPEAKER_FRONT_LEFT|SPEAKER_FRONT_RIGHT|SPEAKER_BACK_LEFT|SPEAKER_BACK_RIGHT;
+	}
+	else
     {
       DSMIXBINVOLUMEPAIR dsm[2] =	{ DSMIXBINVOLUMEPAIRS_DEFAULT_STEREO };
       memcpy(dsmbvp, &dsm, sizeof(DSMIXBINVOLUMEPAIR)*(*MixBinCount));
@@ -224,6 +226,7 @@ bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, 
     *dwChannelMask = SPEAKER_FRONT_LEFT;
     return true;
   }
+  CLog::Log(LOGERROR, "Invalid Mixbin channels specified, get MixBins failed");
   return false;
 }
 //////////////////////////////////////////////////////////////////////
@@ -277,6 +280,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	m_adwStatus        = NULL;
 	m_pStream          = NULL;
 	m_adwStatus        = NULL;
+	m_iCurrentAudioStream = 0;	
 	if (m_bResampleAudio)
 	{
 		m_uiSamplesPerSec = 48000;
@@ -851,4 +855,49 @@ void CASyncDirectSound::WaitCompletion()
 		Sleep(10);
 		m_pStream->GetStatus(&status);
 	}	while (status & DSSTREAMSTATUS_PLAYING);
+}
+
+void CASyncDirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
+{
+	if(m_iCurrentAudioStream == iAudioStream)
+		return;
+	if (!m_pStream)
+		return;
+
+	DSMIXBINS dsmb;
+	DWORD dwCMask;
+	DSMIXBINVOLUMEPAIR dsmbvp8[8];
+	int iMixBinCount;
+
+	switch( iAudioStream ) {
+		case 0:				//Normal
+		  if ( bAudioOnAllSpeakers )
+			GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STEREOALL, 2);
+		  else
+			GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STANDARD, 2);
+			break;
+		case 1:				//Left only
+            GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STEREOLEFT, 2);
+			break;
+		case 2:				//Right only
+            GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STEREORIGHT, 2);
+			break;
+		default:			//Undefined
+			CLog::Log(LOGERROR, "Invalid Mixbin type specified, reverting to standard");
+			return;
+	}
+	
+	m_wfxex.dwChannelMask = dwCMask;
+	dsmb.dwMixBinCount       = iMixBinCount;
+    dsmb.lpMixBinVolumePairs = dsmbvp8;
+
+    m_pStream->SetFormat((LPCWAVEFORMATEX)&m_wfxex);
+	m_pStream->SetMixBins(&dsmb);
+	m_pStream->SetVolume( m_nCurrentVolume );
+  	// Set the headroom of the stream to 0 (to allow the maximum volume)
+	m_pStream->SetHeadroom(0);
+	// Set the default mixbins headroom to appropriate level as set in the settings file (to allow the maximum volume)
+	for (DWORD i=0; i<dsmb.dwMixBinCount;i++)
+		m_pDSound->SetMixBinHeadroom(i, DWORD(g_stSettings.m_fVolumeHeadroom/6.0f));
+    m_iCurrentAudioStream = iAudioStream;
 }

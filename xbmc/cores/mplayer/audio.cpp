@@ -316,3 +316,10 @@ void xbox_audio_do_work()
 		return;
 	m_pAudioDecoder->DoWork();
 }
+
+void xbox_audio_switch_channel(int iAudioStream, bool bAudioOnAllSpeakers)
+{
+	if(!m_pAudioDecoder)
+		return;
+	m_pAudioDecoder->SwitchChannels(iAudioStream, bAudioOnAllSpeakers);
+}
