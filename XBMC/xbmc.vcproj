@@ -366,6 +366,12 @@
 				RelativePath=".\xbmc\GUIWindowSettingsMovieCalibration.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsMusic.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\guiwindowsettingsmusic.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSettingsScreen.cpp">
 			</File>
 			<File

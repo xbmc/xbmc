@@ -214,6 +214,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiSettingsMovieCalibration);	// window id = 11
 	m_gWindowManager.Add(&m_guiSettingsSlideShow);				// window id = 12
 	m_gWindowManager.Add(&m_guiSettingsFilter);						// window id = 13
+	m_gWindowManager.Add(&m_guiSettingsMusic);						// window id = 14
 	m_gWindowManager.Add(&m_guiScripts);									// window id = 20
 
   m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
@@ -288,6 +289,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiWindowFullScreen.Load( strSkinPath+"\\videoFullScreen.xml" );
 	m_guiScripts.Load( strSkinPath+"\\myscripts.xml");
 	m_guiWindowVisualisation.Load( strSkinPath+"\\musicVisualisation.xml");
+	m_guiSettingsMusic.Load( strSkinPath+"\\SettingsMusic.xml");
 }
 
 

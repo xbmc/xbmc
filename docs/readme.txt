@@ -26,11 +26,12 @@ lets say you're installing XBMC on e:\apps\xbmc then:
 
 release/default.xbe	-> 	e:\apps\xbmc\default.xbe
 XboxMediaCenter.xml	->	e:\apps\xbmc\XboxMediaCenter.xml
-mplayer/		->	e:\apps\xbmc\mplayer	(copy all files & subdirs)
-skin/			->	e:\apps\xbmc\skin	(copy all files & subdirs)
-language/               ->      e:\apps\xbmc\language	(copy all files & subdirs)
-xbmc/keyboard/media	->	e:\apps\xbmc\media	(copy all files & subdirs)
-scripts/		->	e:\apps\xbmc\scripts	(unpack the .rar file)
-python			->	e:\apps\xbmc\python  	(unpack the .rar file)
+mplayer/		->	e:\apps\xbmc\mplayer		(copy all files & subdirs)
+skin/			->	e:\apps\xbmc\skin		(copy all files & subdirs)
+language/               ->      e:\apps\xbmc\language		(copy all files & subdirs)
+xbmc/keyboard/media	->	e:\apps\xbmc\media		(copy all files & subdirs)
+visualisations    	->	e:\apps\xbmc\visualisations	(copy all files & subdirs)
+scripts/		->	e:\apps\xbmc\scripts		(unpack the .rar file)
+python			->	e:\apps\xbmc\python  		(unpack the .rar file)
 
 !!! please not that you unpack the .rar files in scripts/ and python/ !!!
