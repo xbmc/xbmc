@@ -3,6 +3,7 @@
 #include "thread.h"
 #include "../utils/event.h"
 using namespace std;
+#define MAX_ROWS 20
 
 class CLCD : public CThread
 {
@@ -30,9 +31,10 @@ protected:
   unsigned int m_iRow3adr ;
   unsigned int m_iRow4adr ;
   unsigned int m_iActualpos;				// actual cursor possition
-  bool         m_bUpdate[4];
-  CStdString   m_strLine[4];
-  int          m_iPos[4];
+  bool         m_bUpdate[MAX_ROWS];
+  CStdString   m_strLine[MAX_ROWS];
+  int          m_iPos[MAX_ROWS];
+  DWORD        m_dwSleep[MAX_ROWS];
   CEvent       m_event;
 
 };

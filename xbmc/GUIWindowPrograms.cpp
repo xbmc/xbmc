@@ -285,7 +285,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
                         CStdString strSubSearchMask="";
                         strSubSearchMask=strFile;
                         strSubSearchMask+="\\";
-                        bOnlyDefaultXBE ? strSubSearchMask+="default.xbe" : strSubSearchMask+="*.xbe";
+                        bOnlyDefaultXBE ? strSubSearchMask+="default.xbe" : strSubSearchMask+="*.*";
                         CAutoPtrFind subhFind ( FindFirstFile(strSubSearchMask.c_str(), &subwfd)) ;
                         if (subhFind.isValid())
                         {
@@ -297,18 +297,33 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
                                     CStdString strSubFile=strFile;
                                     strSubFile+="\\";
                                     strSubFile+=subwfd.cFileName;
-									if (!CUtil::GetXBEDescription(strSubFile, strSubDescription)) {
-										CUtil::GetDirectoryName(strSubFile, strSubDescription);
-										CUtil::ShortenFileName(strSubDescription);
-										CUtil::RemoveIllegalChars(strSubDescription);
+									if (CUtil::IsXBE(strSubFile))
+									{
+										if (!CUtil::GetXBEDescription(strSubFile, strSubDescription)) 
+										{
+											CUtil::GetDirectoryName(strSubFile, strSubDescription);
+											CUtil::ShortenFileName(strSubDescription);
+											CUtil::RemoveIllegalChars(strSubDescription);
+										}
+										CFileItem *pItem = new CFileItem(strSubDescription);
+										pItem->m_strPath=strSubFile;
+										pItem->m_bIsFolder=false;
+										pItem->m_dwSize=subwfd.nFileSizeLow;
+										FileTimeToLocalFileTime(&subwfd.ftLastWriteTime,&localTime);
+										FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+										m_vecItems.push_back(pItem);
 									}
-                                    CFileItem *pItem = new CFileItem(strSubDescription);
-                                    pItem->m_strPath=strSubFile;
-                                    pItem->m_bIsFolder=false;
-                                    pItem->m_dwSize=subwfd.nFileSizeLow;
-                                    FileTimeToLocalFileTime(&subwfd.ftLastWriteTime,&localTime);
-                                    FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-                                    m_vecItems.push_back(pItem);
+
+									else if (CUtil::IsShortCut(strSubFile)) 
+									{
+										CFileItem *pItem = new CFileItem(strSubDescription);
+										pItem->m_strPath=strSubFile;
+										pItem->m_bIsFolder=false;
+										pItem->m_dwSize=subwfd.nFileSizeLow;
+										FileTimeToLocalFileTime(&subwfd.ftLastWriteTime,&localTime);
+										FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+										m_vecItems.push_back(pItem);
+									}
                                 }
                             }
                             while (FindNextFile(subhFind, &subwfd));
