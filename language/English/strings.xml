@@ -730,6 +730,22 @@
   <string><id>13356</id><value>Hardware Overlays</value></string>
   <string><id>13357</id><value>High Quality Pixel Shader</value></string>
   <string><id>13360</id><value>Generate Thumbs</value></string>
+  <string><id>13361</id><value>Enable Voice</value></string>
+  <string><id>13362</id><value>Voice Mask</value></string>
+  <string><id>13363</id><value>- Enable Spectrum Energy Weight</value></string>
+  <string><id>13364</id><value>-- Spectrum Energy Weight Value</value></string>
+  <string><id>13365</id><value>- Enable Pitch Scaling</value></string>
+  <string><id>13366</id><value>-- Pitch Scaling Value</value></string>
+  <string><id>13367</id><value>- Enable Whisper Factor</value></string>
+  <string><id>13368</id><value>-- Whisper Factor Value</value></string>
+  <string><id>13369</id><value>- Enable Robotic Factor</value></string>
+  <string><id>13370</id><value>-- Robotic Factor Value</value></string>
+  <string><id>13371</id><value>- Port 0 Voice</value></string>
+  <string><id>13372</id><value>- Port 1 Voice</value></string>
+  <string><id>13373</id><value>- Port 2 Voice</value></string>
+  <string><id>13374</id><value>- Port 3 Voice</value></string>
+  <string><id>13375</id><value>Enable Device</value></string>
+  <string><id>13376</id><value>Volume(%)</value></string>
 
   <string><id>14000</id><value>Stacking: Off</value></string>
   <string><id>14001</id><value>Stacking: Simple</value></string>

@@ -602,3 +602,38 @@ void	CCdgParser::FreeReader()
 	if(m_pReader)
 		SAFE_DELETE(m_pReader);
 }
+// Karaoke patch (114097) ...
+bool	CCdgParser::AllocVoice()
+{
+	if(!m_pVoiceManager)
+		m_pVoiceManager = new CCdgVoiceManager;
+	if(!m_pVoiceManager)	return false;
+	return true;
+}
+bool	CCdgParser::StartVoice(CDG_VOICE_MANAGER_CONFIG* pConfig)
+{
+	CSingleLock lock(m_CritSection);
+	if(!AllocVoice())	return false;
+	if(m_pVoiceManager)
+		m_pVoiceManager->Initialize(pConfig);
+	return true;
+}
+void	CCdgParser::StopVoice()
+{
+	CSingleLock lock(m_CritSection);
+	if(m_pVoiceManager)
+		m_pVoiceManager->Shutdown();
+}
+void	CCdgParser::	FreeVoice()
+{
+	CSingleLock	lock(m_CritSection);
+	if(m_pVoiceManager)
+		SAFE_DELETE(m_pVoiceManager);
+}
+void	CCdgParser::	ProcessVoice()
+{
+	CSingleLock	lock(m_CritSection);
+	if(m_pVoiceManager)
+		m_pVoiceManager->ProcessVoice();
+}
+// ... Karaoke patch (114097)
