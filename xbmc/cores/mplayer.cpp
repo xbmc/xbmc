@@ -446,6 +446,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
   bFileIsDVDImage = CUtil::IsDVDImage(strFile);
   bFileIsDVDIfoFile = CUtil::IsDVDFile(strFile, false, true);
 
+  CLog::DebugLog("file:%s IsDVDImage:%i IsDVDIfoFile:%i", strFile.c_str(),bFileIsDVDImage ,bFileIsDVDIfoFile);
   if (strFile.Find("dvd://") >=0 || bFileIsDVDImage || bFileIsDVDIfoFile)
   {
     bIsDVD=true;
@@ -522,10 +523,12 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	}
 	else if(bFileIsDVDIfoFile)
 	{
-		CStdString strTmp;
-		CUtil::GetPath(strFile,strTmp);
-		options.SetDVDDevice(strTmp);
-		CLog::Log(" dvddevice: %s", strTmp.c_str());
+		CStdString strPath,strFName;
+    CUtil::Split(strFile,strPath,strFName);
+    if (CUtil::HasSlashAtEnd(strPath)) strPath=strPath.Left(strPath.size()-1);
+
+		options.SetDVDDevice(strPath);
+		CLog::Log(" dvddevice: %s", strPath.c_str());
 	}	
     options.GetOptions(argc,argv);
     
