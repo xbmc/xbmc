@@ -1,5 +1,6 @@
 #pragma once
 #include "Visualisation.h"
+#include "Xaraoke/XaraokeVisualisation.h"
 #include "StdString.h"
 class CVisualisationFactory
 {

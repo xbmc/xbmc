@@ -45,5 +45,8 @@ CVisualisation* CVisualisationFactory::LoadVisualisation(const CStdString& strVi
 	pGetModule(pVisz);
   
   // and pass it to a new instance of CVisualisation() which will hanle the visualisation
-	return new CVisualisation(pVisz,pDLL, strName);
+  if(strName == "Xaraoke")
+		return (CVisualisation*) new CXaraokeVisualisation(pVisz,pDLL, strName);
+	else
+		return new CVisualisation(pVisz,pDLL, strName);
 }
