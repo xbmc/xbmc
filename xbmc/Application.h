@@ -213,6 +213,7 @@ public:
 
 protected:
   void                    UpdateLCD();
+	void										FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
   bool                    m_bXboxMediacenterLoaded,m_bSettingsLoaded,m_bCalibrationLoaded;;
   CIMDBMovie              m_tagCurrentMovie;
   CMusicInfoTag           m_tagCurrentSong;

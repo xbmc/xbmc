@@ -685,8 +685,9 @@ bool TiXmlDocument::LoadFile( const char* filename )
 		{
 			sprintf(szTmp,"XMLReader:file %s is length:0?\n");
 			OutputDebugString(szTmp);
-
 			CloseHandle(file);
+
+			XMLSetError( TIXML_ERROR_OPENING_FILE );
 			return false;
 		}
 
@@ -700,6 +701,7 @@ bool TiXmlDocument::LoadFile( const char* filename )
 		{	
 			sprintf(szTmp,"XMLReader:unable to load file:%s length:%i\n", filename,length);
 			OutputDebugString(szTmp);
+			XMLSetError( TIXML_ERROR_OUT_OF_MEMORY );
 			return false;
 		}
 		memset(&data[0],0,length+1);
@@ -709,6 +711,7 @@ bool TiXmlDocument::LoadFile( const char* filename )
 			sprintf(szTmp,"XMLReader:ReadFile %s returned:%i %i\n",result,GetLastError());
 			OutputDebugString(szTmp);
 			delete [] data;
+			XMLSetError( TIXML_ERROR_OPENING_FILE );
 			return false;
 		}
 
@@ -716,21 +719,17 @@ bool TiXmlDocument::LoadFile( const char* filename )
 		data[length]=0;
 		Parse( data );
 		delete [] data;
-		if (  !IsError() )
+		if (!IsError())
 		{
 			return true;
 		}
-		sprintf(szTmp,"XMLReader:Parse %s returned and error\n");
+		sprintf(szTmp,"XMLReader:Parse %s returned an error\n");
 		OutputDebugString(szTmp);
-
 	}
 	else
 	{
-		//sprintf(szTmp,"XMLReader:unable to open file:%s :%i\n", filename,GetLastError() );
-		//OutputDebugString(szTmp);
-
+		XMLSetError( TIXML_ERROR_OPENING_FILE );
 	}
-	XMLSetError( TIXML_ERROR_OPENING_FILE );
 	return false;
 }
 

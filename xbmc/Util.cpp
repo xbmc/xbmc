@@ -407,7 +407,7 @@ bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSub
   {
     CLog::Log("setting up network...");
     int iCount=0;
-    while (CUtil::SetUpNetwork( false, networkinfo )!=0 && iCount < 100)
+    while (CUtil::SetUpNetwork( false, networkinfo )==1 && iCount < 100)
     {
       Sleep(50);
       iCount++;
@@ -423,17 +423,17 @@ bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSub
     // Bypass security so that we may connect to 'untrusted' hosts
     xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
     // create more memory for networking
-    xnsp.cfgPrivatePoolSizeInPages = 64; // == 256kb, default = 12 (48kb)
-    xnsp.cfgEnetReceiveQueueLength = 16; // == 32kb, default = 8 (16kb)
-    xnsp.cfgIpFragMaxSimultaneous = 16; // default = 4
-    xnsp.cfgIpFragMaxPacketDiv256 = 32; // == 8kb, default = 8 (2kb)
-    xnsp.cfgSockMaxSockets = 64; // default = 64
-    xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
-    xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
+		xnsp.cfgPrivatePoolSizeInPages = 64; // == 256kb, default = 12 (48kb)
+		xnsp.cfgEnetReceiveQueueLength = 16; // == 32kb, default = 8 (16kb)
+		xnsp.cfgIpFragMaxSimultaneous = 16; // default = 4
+		xnsp.cfgIpFragMaxPacketDiv256 = 32; // == 8kb, default = 8 (2kb)
+		xnsp.cfgSockMaxSockets = 64; // default = 64
+		xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
+		xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
     INT err = XNetStartup(&xnsp);
   }
 
-  CLog::Log("get local ip adres:");
+  CLog::Log("get local ip address:");
   XNADDR xna;
   DWORD dwState;
   do
@@ -1823,7 +1823,7 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
     char  azIPAdd[256];
     memset( azIPAdd,0,256);
     XNetInAddrToString(xna.ina,azIPAdd,32);
-    CLog::Log("ip adres:%s",azIPAdd);
+    CLog::Log("ip address:%s",azIPAdd);
   }
 
   // if local address is specified 
@@ -1937,13 +1937,13 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
       // Bypass security so that we may connect to 'untrusted' hosts
       xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
     // create more memory for networking
-      xnsp.cfgPrivatePoolSizeInPages = 128; // == 256kb, default = 12 (48kb)
-      xnsp.cfgEnetReceiveQueueLength = 64; // == 128kb, default = 8 (16kb)
-      xnsp.cfgIpFragMaxSimultaneous = 64; // default = 4
-      xnsp.cfgIpFragMaxPacketDiv256 = 64; // == 8kb, default = 8 (2kb)
-      xnsp.cfgSockMaxSockets = 64; // default = 64
-      xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
-      xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
+			xnsp.cfgPrivatePoolSizeInPages = 64; // == 256kb, default = 12 (48kb)
+			xnsp.cfgEnetReceiveQueueLength = 16; // == 32kb, default = 8 (16kb)
+			xnsp.cfgIpFragMaxSimultaneous = 16; // default = 4
+			xnsp.cfgIpFragMaxPacketDiv256 = 32; // == 8kb, default = 8 (2kb)
+			xnsp.cfgSockMaxSockets = 64; // default = 64
+			xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
+			xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
       CLog::Log("requesting local ip adres");
       int err = XNetStartup(&xnsp);
       mode = 100;
@@ -1968,13 +1968,13 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
       // Bypass security so that we may connect to 'untrusted' hosts
       xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
  
-      xnsp.cfgPrivatePoolSizeInPages = 128; // == 256kb, default = 12 (48kb)
-      xnsp.cfgEnetReceiveQueueLength = 64; // == 32kb, default = 8 (16kb)
-      xnsp.cfgIpFragMaxSimultaneous = 64; // default = 4
-      xnsp.cfgIpFragMaxPacketDiv256 = 64; // == 8kb, default = 8 (2kb)
-      xnsp.cfgSockMaxSockets = 64; // default = 64
-      xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
-      xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
+			xnsp.cfgPrivatePoolSizeInPages = 64; // == 256kb, default = 12 (48kb)
+			xnsp.cfgEnetReceiveQueueLength = 16; // == 32kb, default = 8 (16kb)
+			xnsp.cfgIpFragMaxSimultaneous = 16; // default = 4
+			xnsp.cfgIpFragMaxPacketDiv256 = 32; // == 8kb, default = 8 (2kb)
+			xnsp.cfgSockMaxSockets = 64; // default = 64
+			xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
+			xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
 
       XNetSaveConfigParams(params);
       CLog::Log("requesting DHCP");
@@ -2024,6 +2024,7 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
       XNetInAddrToString(sAddress.ina,azIPAdd,sizeof(azIPAdd));
       //strcpy(NetworkStatus,azIPAdd);
       //strcpy( NetworkStatusInternal, NetworkStatus );
+			if (sAddress.ina.S_un.S_addr != 0)
       {
         DWORD temp = XNetGetEthernetLinkStatus();
         if(  temp & XNET_ETHERNET_LINK_ACTIVE )
@@ -2099,14 +2100,11 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
           sprintf(temp_str,"  IP: %s",azIPAdd);         
           CLog::Log(temp_str);
         }
-        if( !strstr(azIPAdd,"0.0.0.0"))
-        {
-          ftploop = 0;
-          mode ++;
-          Sleep(1000);
-          return 0;
-        }
+        ftploop = 0;
+        mode ++;
+        return 0;
       }
+			return 2;
     }
 
     Sleep(50); 
