@@ -166,17 +166,17 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 	string strURL = url.m_strURL;
 
 	movieDetails.m_strTitle=url.m_strTitle;
-	movieDetails.m_strDirector=" ";
-	movieDetails.m_strWritingCredits=" ";
-	movieDetails.m_strGenre=" ";
-	movieDetails.m_strTagLine=" ";
-	movieDetails.m_strPlotOutline=" ";
-	movieDetails.m_strPlot=" ";
+	movieDetails.m_strDirector="Not available.";
+	movieDetails.m_strWritingCredits="Not available.";
+	movieDetails.m_strGenre="Not available.";
+	movieDetails.m_strTagLine="Not available.";
+	movieDetails.m_strPlotOutline="Not available.";
+	movieDetails.m_strPlot="Not available.";
 	movieDetails.m_strPictureURL="";
 	movieDetails.m_iYear=0;
 	movieDetails.m_fRating=0.0;
-	movieDetails.m_strVotes="";
-	movieDetails.m_strCast="";
+	movieDetails.m_strVotes="Not available.";
+	movieDetails.m_strCast="Not available.";
 	movieDetails.m_iTop250=0;
 
 	if (!m_http.Get(strURL,strHTML))
@@ -193,7 +193,7 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 	char* pTagLine=strstr(szBuffer,"Tagline:</b>");	
 	char* pPlotOutline=strstr(szBuffer,"Plot Outline:</b>");	
 	char* pPlotSummary=strstr(szBuffer,"Plot Summary:</b>");	
-	char* pPlot=strstr(szBuffer,"<a href=\"/Plot?");	
+	char* pPlot=strstr(szBuffer,"<a href=\"plotsummary");
 	char* pImage=strstr(szBuffer,"<img alt=\"cover\" align=\"left\" src=\"");
 	char* pRating=strstr(szBuffer,"User Rating:</b>");
 	char* pCast=strstr(szBuffer,"first billed only: </b></td></tr>");
@@ -351,11 +351,7 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 
 	if (pPlot)
 	{
-		pPlot+=strlen("<a href=\"");	
-		char *pEnd=strstr(pPlot,"\">");
-		if (pEnd) *pEnd=0;
-		string strPlotURL="http://us.imdb.com";
-		strPlotURL+=pPlot;
+		string strPlotURL= url.m_strURL + "plotsummary";
 		string strPlotHTML;
 		if ( m_http.Get(strPlotURL,strPlotHTML))
 		{
