@@ -99,6 +99,7 @@ private:
   DWORD m_dwNumPackets;
   PBYTE* m_pbSampleData;
   DWORD* m_adwStatus;
+  LARGE_INTEGER m_LastPacketCompletedAt;
   bool m_bPause;
   bool m_bIsPlaying;
   bool m_bIsAllocated;
@@ -112,10 +113,11 @@ private:
   FLOAT m_fCurDelay;
   int m_iCalcDelay;
   WAVEFORMATEXTENSIBLE m_wfxex;
-  LONGLONG m_dwTicksPerSec;
+  LONGLONG m_TicksPerSec;
   int m_iAudioSkip;
-  unsigned int m_uiSamplesPerSec ;
+  unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;
+  unsigned int m_uiChannels;
   bool xbox_Ac3encoder_active;
 
   // 48kHz Resampler stuff
