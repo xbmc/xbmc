@@ -48,7 +48,7 @@ void CGUILabelControl::Render()
 
 		if (IsDisabled())
 		{
-			m_pFont->DrawText((float)m_iPosX, (float)m_iPosY,m_dwDisabledColor,m_strLabel.c_str(),m_dwTextAlign,(float)m_dwWidth);
+			m_pFont->DrawText((float)m_iPosX, (float)m_iPosY,m_dwDisabledColor,strLabelUnicode.c_str(),m_dwTextAlign,(float)m_dwWidth);
 		}
 		else
 		{
