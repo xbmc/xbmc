@@ -354,21 +354,26 @@ void CGUIWindowManager::DeInitialize()
 /// \param pWindow Window to route to
 void CGUIWindowManager::RouteToWindow(CGUIWindow* pWindow)
 {
+	//	Just to be sure: Unroute this window, 
+	//	#we may have routed to it before
+	UnRoute(pWindow->GetID());
+
 	m_vecModalWindows.push_back(pWindow);
+
 }
 
 /// \brief Unroute window
 /// \param dwID ID of the window routed
 void CGUIWindowManager::UnRoute(DWORD dwID)
 {
-	vector<CGUIWindow*>::reverse_iterator it = m_vecModalWindows.rbegin();
-	while (it != m_vecModalWindows.rend())
+	vector<CGUIWindow*>::iterator it = m_vecModalWindows.begin();
+	while (it != m_vecModalWindows.end())
 	{
 		CGUIWindow* pWindow = *it;
 		if(pWindow->GetID() == dwID)
 		{
-			m_vecModalWindows.erase((++it).base());
-			it = m_vecModalWindows.rend();
+			m_vecModalWindows.erase(it);
+			it = m_vecModalWindows.end();
 		}
 		else it++;
 	}
