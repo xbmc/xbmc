@@ -868,7 +868,8 @@ void CUtil::Lower(CStdString& strText)
 {
   char szText[1024];
   strcpy(szText, strText.c_str());
-  for (int i=0; i < (int)strText.size();++i)
+  //for multi-byte language, the strText.size() is not correct
+  for (int i=0; i < strlen(szText);++i)
     szText[i]=tolower(szText[i]);
   strText=szText;
 };
