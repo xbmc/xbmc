@@ -720,11 +720,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiHome);											// window id = 0
 	m_gWindowManager.Add(&m_guiPrograms);									// window id = 1
 	m_gWindowManager.Add(&m_guiPictures);									// window id = 2
-#ifdef NEW_FILEMANAGER
 	m_gWindowManager.Add(&m_guiFileManager);							// window id = 3
-#else
-	m_gWindowManager.Add(&m_guiMyFiles);									// window id = 3
-#endif
 	m_gWindowManager.Add(&m_guiMyVideo);									// window id = 6
 	m_gWindowManager.Add(&m_guiSettings);									// window id = 4
 	m_gWindowManager.Add(&m_guiSystemInfo);								// window id = 7
@@ -1016,11 +1012,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 	m_guiPrograms.Load( "myprograms.xml");
 	m_guiPictures.Load( "mypics.xml");
-#ifdef NEW_FILEMANAGER
 	m_guiFileManager.Load( "filemanager.xml");
-#else
-	m_guiMyFiles.Load( "myfiles.xml");
-#endif
 	m_guiMyVideo.Load("myvideo.xml");
 	m_guiVideoGenre.Load("myvideogenre.xml");
 	m_guiVideoActors.Load("myvideoactors.xml");
