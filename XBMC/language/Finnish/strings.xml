@@ -1,6 +1,6 @@
 <!-- Finnish - language resource  -->
-<!-- Finnish Translation 2004-6-7 by Nanite1000 -->
-<!-- Based on CVS revision 2004-6-7 YYYY-MM-DD -->
+<!-- Finnish Translation 2004-7-7 by Nanite1000 -->
+<!-- Based on CVS revision 2004-7-7 YYYY-MM-DD -->
 <!-- For comments PM me in xboxmediacenter forum or IRC: nanite1k @ #xbmc on efnet-->
 <!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta -->
 <!-- Not all weather strings are tranlated, cant get it to look correct/too long -->
@@ -1728,7 +1728,67 @@
     <id>505</id>
     <value>Haetaan median tiedot tiedostoista...</value>
   </string>
-	
+  <string>
+    <id>600</id>
+    <value>Rippaa CD</value>
+  </string>
+  <string>
+    <id>601</id>
+    <value>Medium</value>
+  </string>
+  <string>
+    <id>602</id>
+    <value>Standardi</value>
+  </string>
+  <string>
+    <id>603</id>
+    <value>Extreme</value>
+  </string>
+  <string>
+    <id>604</id>
+    <value>Vakio Bit Rate</value>
+  </string>
+  <string>
+    <id>605</id>
+    <value>Ripataan...</value>
+  </string>
+  <string>
+    <id>606</id>
+    <value>Raita:</value>
+  </string>
+  <string>
+    <id>607</id>
+    <value>Kohde:</value>
+  </string>
+  <string>
+    <id>608</id>
+    <value>CD:tä tai raitaa ei pystytty rippaamaan</value>
+  </string>
+  <string>
+    <id>609</id>
+    <value>XboxMediaCenter.xml tiedostosta puuttuu CDDARipPath määritys.</value>
+  </string>
+  <string>
+    <id>620</id>
+    <value>CD Rippaus</value>
+  </string>
+  <string>
+    <id>621</id>
+    <value>Encooderi</value>
+  </string>
+  <string>
+    <id>622</id>
+    <value>Laatu</value>
+  </string>
+  <string>
+    <id>623</id>
+    <value>Bit Rate</value>
+  </string>
+  <string>
+    <id>624</id>
+    <value>Sisällytä Raidan numero</value>
+  </string>
+
   <string>
     <id>998</id>
     <value>XLink KAI</value>
@@ -1787,5 +1847,12 @@
 <string><id>12600</id><value>Saatila</value></string>
 <string><id>12900</id><value>Naytonsaastaja</value></string>
 <string><id>12901</id><value>Kokoruudun valikko</value></string>
+
+<string><id>13000</id><value>Järjestelmä</value></string>
+<string><id>13001</id><value>Välitön HD sammutus:</value></string>
+<string><id>13002</id><value>Vain Videoille</value></string>
+<string><id>13003</id><value>- Viive:</value></string>
+<string><id>13004</id><value>- Pienin videon kestoaika:</value></string>
+
 </strings>
 
