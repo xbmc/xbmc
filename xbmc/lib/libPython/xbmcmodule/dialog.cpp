@@ -179,7 +179,7 @@ namespace PYXBMC
 	}
 
 	PyDoc_STRVAR(update__doc__,
-		"ureate(int value) -- Update's the progress dialog.\n"
+		"update(int value) -- Update's the progress dialog.\n"
 		"\n"
 		"value       : int from 0 - 100\n"
 		"\n"
