@@ -286,6 +286,7 @@ WORD    CDelayController::DIRInput( WORD wDir )
 			// key is pressed
 			wResult = wDir;
 			m_dwTimer = GetTickCount()+m_dwRepeatDelay;
+      m_dwLastTime= GetTickCount();
 		}
 		else
 		{
@@ -296,12 +297,19 @@ WORD    CDelayController::DIRInput( WORD wDir )
 	}
 	else
 	{
+    long lTicks=GetTickCount() - m_dwLastTime;
+    if ( m_iCount > 0 && (lTicks>m_dwMoveDelay ) )
+    {
+      m_iCount=0;
+      m_wLastDir=0;
+    }
 		// key pressed is the same as last time
 		if ( m_iCount > 10 )
 		{
 			if ( wDir >= DC_UP )
 			{
 				wResult = wDir;
+        m_dwLastTime= GetTickCount();
 			}
 			else
 			{
@@ -318,10 +326,12 @@ WORD    CDelayController::DIRInput( WORD wDir )
 					wResult = wDir;
 					m_iCount++;
 					m_dwTimer = GetTickCount()+m_dwMoveDelay;
+          m_dwLastTime= GetTickCount();
 				}
 				else
 				{
 					wResult = DC_SKIP;
+          m_dwLastTime= GetTickCount();
 				}
 			}
 			else
