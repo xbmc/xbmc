@@ -146,8 +146,12 @@ private:
 	struct iso_directories *paths;	
 	struct iso_directories *lastpath;
 public:
-	struct iso_dirtree *dirtree;
-	struct iso9660info info;
+	int						alignmentadjust;  // since we sometimes need out-of-alignemt data, we might need to read more than just the data we need
+	int						Cached_Sector;
+	char					*Cache;
+
+	struct iso_dirtree		*dirtree;
+	struct iso9660info		info;
 	iso9660( char *filename );
 	~iso9660(  );
 
@@ -159,7 +163,7 @@ public:
 	DWORD GetFileSize(HANDLE hFile,LPDWORD lpFileSizeHigh  );
 
 	HANDLE OpenFile( char* filename, DWORD location );
-	int  ReadFile( void * pBuffer, int * piSize, DWORD *totalread );
+	int  ReadFile( char * pBuffer, int * piSize, DWORD *totalread );
 	void CloseFile( HANDLE );
 	struct iso_dirtree *ReadRecursiveDirFromSector( DWORD sector, char * );
 	struct iso_dirtree *FindFolder( char *Folder );
