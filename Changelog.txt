@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-
+  - 15-12-2004 fixed: modeless dialogs are not rendered when modal dialog is shown
   - 15-12-2004 changed: skin version to 1.22
   - 15-12-2004 added: Scan for music info in the background, diabled by default, to enable use settings
   - 15-12-2004 updated: SQLite to version 3.0.8, File Format changed, all databases have to be recreated
