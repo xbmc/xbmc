@@ -311,19 +311,22 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
       {
         m_pOverlayPicture = CDVDCodecUtils::AllocatePicture(pPicture->iWidth, pPicture->iHeight);
       }
-      
+
       // copy picture to overlay
-      CDVDCodecUtils::CopyPicture(m_pOverlayPicture, pPicture);
+      YUVOverlay overlay = m_dvdVideo.LockYUVOverlay();
+      CDVDCodecUtils::CopyPictureToOverlay(&overlay, pPicture);
       
       // display subtitle, if bForced is true, it's a menu overlay and we should crop it
-      m_overlay.RenderI420(m_pOverlayPicture, pOverlayPicture, pOverlayPicture->bForced);
-      
-      m_dvdVideo.DrawSlice(m_pOverlayPicture->data, m_pOverlayPicture->iLineSize, m_pOverlayPicture->iWidth, m_pOverlayPicture->iHeight, 0, 0);
+      m_overlay.RenderYUV(&overlay, pOverlayPicture, pOverlayPicture->bForced);
+
+      m_dvdVideo.UnlockYUVOverlay();
     }
     else
     {
       // no data to overlay, just display
-      m_dvdVideo.DrawSlice(pPicture->data, pPicture->iLineSize, pPicture->iWidth, pPicture->iHeight, 0, 0);
+      YUVOverlay overlay = m_dvdVideo.LockYUVOverlay();
+      CDVDCodecUtils::CopyPictureToOverlay(&overlay, pPicture);
+      m_dvdVideo.UnlockYUVOverlay();
     }
 
     // remove subtitle so we can render the next one if needed
