@@ -217,8 +217,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       DWORD dwLabelID=atol(pControlNode->FirstChild("label")->FirstChild()->Value());
       strLabel=g_localizeStrings.Get(dwLabelID);
       strFont=pControlNode->FirstChild("font")->FirstChild()->Value();
+      DWORD dwAlign=XBFONT_LEFT;
+      pNode=pControlNode->FirstChild("align");
+      if (pNode)
+      {
+        CStdString strAlign=pControlNode->FirstChild("align")->FirstChild()->Value();      
+        if (strAlign=="right") dwAlign=XBFONT_RIGHT;
+      }
 
-      CGUICheckMarkControl* pControl = new CGUICheckMarkControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureCheckMark,dwCheckWidth,dwCheckHeight);
+      CGUICheckMarkControl* pControl = new CGUICheckMarkControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureCheckMark,dwCheckWidth,dwCheckHeight,dwAlign);
       pControl->SetLabel(strFont,strLabel,dwTextColor);
       pControl->SetDisabledColor(dwDisabledColor);
       pControl->SetNavigation(up,down,left,right);
@@ -279,8 +286,17 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       else if ( strSubType=="float") iType=SPIN_CONTROL_TYPE_FLOAT;
       else iType=SPIN_CONTROL_TYPE_TEXT;
 
+			DWORD dwAlign=XBFONT_RIGHT;
+      pNode=pControlNode->FirstChild("align" );
+      if (pNode)
+			{
+				CStdString strAlign=pNode->FirstChild()->Value();
+				strAlign.ToLower();
+				if (strAlign=="left") dwAlign=XBFONT_LEFT;
+				if (strAlign=="center") dwAlign=XBFONT_CENTER_X;
+			}
 
-      CGUISpinControl* pControl = new CGUISpinControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strUp,strDown,strUpFocus,strDownFocus,strFont,dwTextColor,iType);
+      CGUISpinControl* pControl = new CGUISpinControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strUp,strDown,strUpFocus,strDownFocus,strFont,dwTextColor,iType,dwAlign);
       pControl->SetNavigation(up,down,left,right);
       pControl->SetColourDiffuse(dwColorDiffuse);
       pControl->SetVisible(bVisible);

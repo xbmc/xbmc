@@ -18,7 +18,7 @@ using namespace std;
 class CGUISpinControl :  public CGUIControl
 {
 public:  
-  CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType);
+  CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType,DWORD dwAlign=XBFONT_RIGHT);
   virtual ~CGUISpinControl(void);
   virtual void Render();
   virtual void OnKey(const CKey& key) ;
@@ -33,8 +33,8 @@ public:
   void SetFloatValue(float fValue);
   int  GetValue() const;
   float GetFloatValue() const;
-  void AddLabel(const CStdString& strLabel);
-  const CStdString GetLabel() const;
+  void AddLabel(const WCHAR* strLabel);
+  const WCHAR* GetLabel() const;
   virtual void SetFocus(bool bOnOff);
 protected:
   int       m_iStart;
@@ -45,7 +45,7 @@ protected:
   float     m_fValue;
   int       m_iType;
   int       m_iSelect;
-  vector<string> m_vecLabels;
+  vector<wstring> m_vecLabels;
 	CGUIImage m_imgspinUp;
 	CGUIImage m_imgspinDown;
 	CGUIImage m_imgspinUpFocus;
@@ -53,5 +53,6 @@ protected:
   CStdString    m_strFont;
   CGUIFont* m_pFont;
   DWORD     m_dwTextColor;
+	DWORD			m_dwAlign;
 };
 #endif

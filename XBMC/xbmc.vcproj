@@ -317,6 +317,12 @@
 				RelativePath=".\xbmc\GUIWindowSettings.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsGeneral.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSystemInfo.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowVideo.cpp">
 			</File>
 			<File
@@ -407,6 +413,12 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettings.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsGeneral.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSystemInfo.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowVideo.h">
