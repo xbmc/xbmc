@@ -32,6 +32,8 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
     strcpy(m_szTyped,"");
 m_dwBuddyControlID = 0;
 	m_bBuddyDisabled = false;
+	m_dwTextOffsetX = 0;
+	m_dwTextOffsetY = 0;
 }
 
 void CGUISpinControl::SetNonProportional(bool bOnOff)
@@ -465,12 +467,17 @@ void CGUISpinControl::Render()
         fHeight/=2.0f;
         float fPosY = ((float)m_dwHeight)/2.0f;
         fPosY-=fHeight;
-        fPosY+=(float)m_dwPosY;
+        fPosY+=(float)(m_dwPosY+m_dwTextOffsetY);
 
+		float fPosX = (float)(m_dwPosX+m_dwTextOffsetX) -3;
         if ( HasFocus() )
-                m_pFont->DrawText((float)m_dwPosX-3, (float)fPosY,m_dwTextColor,wszText,m_dwAlign);
-	else
-		m_pFont->DrawText((float)m_dwPosX-3, (float)fPosY,m_dwDisabledColor,wszText,m_dwAlign);
+		{
+            m_pFont->DrawText(fPosX, fPosY, m_dwTextColor,wszText,m_dwAlign);
+		}
+		else
+		{
+			m_pFont->DrawText(fPosX, fPosY, m_dwDisabledColor,wszText,m_dwAlign);
+		}
     }
 
 
