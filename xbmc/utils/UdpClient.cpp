@@ -115,6 +115,8 @@ bool CUdpClient::Send(SOCKADDR_IN aAddress, LPBYTE pMessage, DWORD dwSize)
 
 void CUdpClient::Process() 
 {
+	Sleep(2000);
+
 	CLog::Log(LOGINFO, "UDPCLIENT: Listening.");	
 
 	SOCKADDR_IN remoteAddress;

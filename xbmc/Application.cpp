@@ -770,6 +770,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiDialogVolumeBar);					// window id = 104
 	m_gWindowManager.Add(&m_guiDialogSubMenu);						// window id = 105
 	m_gWindowManager.Add(&m_guiDialogContextMenu);				// window id = 106
+	m_gWindowManager.Add(&m_guiDialogKaiToast);					// window id = 107
 	m_gWindowManager.Add(&m_guiMyMusicPlayList);					// window id = 500
 	m_gWindowManager.Add(&m_guiMyMusicSongs);							// window id = 501
 	m_gWindowManager.Add(&m_guiMyMusicAlbum);							// window id = 502
@@ -981,6 +982,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   m_guiDialogVolumeBar.FreeResources();
   m_guiDialogVolumeBar.ClearAll();
+  m_guiDialogKaiToast.FreeResources();
+  m_guiDialogKaiToast.ClearAll();
 
 	m_guiPointer.FreeResources();
 	m_guiPointer.ClearAll();
@@ -1036,6 +1039,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogYesNo.Load("dialogYesNo.xml");
 	m_guiDialogProgress.Load("dialogProgress.xml");
 	m_guiDialogVolumeBar.Load("dialogVolumeBar.xml");
+	m_guiDialogKaiToast.Load("dialogKaiToast.xml");
 	m_guiDialogSubMenu.Load("dialogSubMenu.xml");
 	m_guiDialogContextMenu.Load("dialogContextMenu.xml");
 	m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
@@ -1101,7 +1105,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiPointer.AllocResources();
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
-  m_guiDialogVolumeBar.AllocResources();
+	m_guiDialogVolumeBar.AllocResources();
+	m_guiDialogKaiToast.AllocResources();
 	m_gWindowManager.AddMsgTarget(this);
 	m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
 	m_gWindowManager.SetCallback(*this);
@@ -1546,6 +1551,17 @@ void CApplication::OnKey(CKey& key)
 			m_guiDialogVolumeBar.DoModal(m_gWindowManager.GetActiveWindow());
 	}
 }
+
+void CApplication::SetKaiNotification(CStdString& aCaption, CStdString& aDescription)
+{
+	// show toast notification
+	if (!m_guiDialogKaiToast.IsRunning() && g_stSettings.m_bOnlineNotifications)
+	{
+		m_guiDialogKaiToast.SetNotification(aCaption,aDescription);
+		m_guiDialogKaiToast.DoModal(m_gWindowManager.GetActiveWindow());
+	}
+}
+
 void CApplication::UpdateLCD()
 {
 	static lTickCount=0;
@@ -1816,7 +1832,7 @@ void CApplication::UpdateLCD()
 
 void CApplication::FrameMove()
 {
-	CKaiClient::GetInstance()->ProcessVoice();
+	CKaiClient::GetInstance()->DoWork();
 
 	// reset the fullscreen analog options if needed
 	m_guiWindowFullScreen.m_bSmoothFFwdRewd = false;
@@ -2110,8 +2126,9 @@ void CApplication::Stop()
 		CLog::Log(LOGNOTICE, "unload skin");
 		m_guiMusicOverlay.FreeResources();
 		m_guiWindowVideoOverlay.FreeResources();
-    m_guiPointer.FreeResources();
-    m_guiDialogVolumeBar.FreeResources();
+		m_guiPointer.FreeResources();
+		m_guiDialogVolumeBar.FreeResources();
+		m_guiDialogKaiToast.FreeResources();
 		g_fontManager.Clear();
 		m_gWindowManager.DeInitialize();
 		g_TextureManager.Cleanup();
@@ -2630,7 +2647,8 @@ void CApplication::ResetAllControls()
 {
 	m_guiMusicOverlay.ResetAllControls();
 	m_guiWindowVideoOverlay.ResetAllControls();
-  m_guiDialogVolumeBar.ResetAllControls();
+	m_guiDialogVolumeBar.ResetAllControls();
+	m_guiDialogKaiToast.ResetAllControls();
 }
 
 bool CApplication::OnMessage(CGUIMessage& message)

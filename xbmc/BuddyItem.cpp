@@ -90,7 +90,7 @@ void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
 	CKaiItem::OnPaint(pContext);
 
 	CGUIListExItem::RenderContext* pDC = (CGUIListExItem::RenderContext*)pContext;
-
+	
 	if (pDC && m_pPingIcon && m_pHeadsetIcon && m_pTalkingIcon && m_pInviteIcon)
 	{
 		int iEndButtonPosX = pDC->m_iPositionX + pDC->m_pButton->GetWidth();
@@ -147,7 +147,7 @@ void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
 			}
 		}
 		// if buddy's client is detached from engine and syslink activity
-		else if (m_bBusy && m_nStatus==1)
+		else if (m_nStatus==1)
 		{
 			m_pBusyIcon->SetPosition(iInviteIconPosX,iPingPosY);
 			m_pBusyIcon->Render();

@@ -527,9 +527,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowSettingsPrograms.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\GUIWindowSettingsScreenCalibration.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\GUIWindowSettingsScreensaver.cpp">
 				</File>
 				<File
@@ -798,6 +795,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogInvite.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogKaiToast.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogKeyboard.cpp">
 				</File>
 				<File
@@ -1028,6 +1028,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogInvite.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIDialogKaiToast.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogKeyboard.h">
@@ -1625,6 +1628,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 		<Filter
 			Name="VirtualKeyboard"
 			Filter="">
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsScreenCalibration.cpp">
+			</File>
 			<File
 				RelativePath=".\xbmc\keyboard\virtualkeyboard.cpp">
 			</File>
