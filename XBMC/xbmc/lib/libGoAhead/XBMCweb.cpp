@@ -7,15 +7,14 @@
 /******************************** Description *********************************/
 
 /*
- *	This module provides the links between the web server and XBox Media Player
+ *	This module provides the links between the web server and XBox Media Center
  */
 
 /********************************* Includes ***********************************/
 
 #pragma once
 
-#include "WebServer.h"
-#include "xbmcWeb.h"
+#include "xbmcweb.h"
 #include "..\..\Application.h"
 #include "..\..\util.h"
 #include "..\..\playlistplayer.h"
@@ -86,27 +85,6 @@
 #define XBMC_CMD_MUSIC				T("music")
 #define XBMC_CMD_PICTURE			T("picture")
 #define XBMC_CMD_APPLICATION	T("application")
-
-#define WEB_MUSIC_BOOKMARK		T("music_bookmark")
-#define WEB_PICTURE_BOOKMARK	T("picture_bookmark")
-#define WEB_VIDEO_BOOKMARK		T("video_bookmark")
-#define WEB_FILE_BOOKMARK			T("file_bookmark")
-#define WEB_PROGRAM_BOOKMARK	T("program_bookmark")
-
-#define WEB_SAVEBOOKMARK		T("savebookmark")
-#define WEB_ADDBOOKMARK			T("addbookmark")
-
-#define WEB_GETBOOKMARK		T("getbookmark")
-#define WEB_GETOPTION			T("getoption")
-
-#define WEB_OPTION				T("option")
-#define WEB_LOAD					T("load")
-#define WEB_SAVE					T("save")
-#define WEB_COUNT					T("count")
-#define WEB_EDIT					T("edit")
-
-#define WEB_NAME					T("name")
-#define WEB_PATH					T("path")
 
 struct SSortWebFilesByName
 {
@@ -188,7 +166,6 @@ CXbmcWeb::CXbmcWeb()
 {
 	navigatorState = 0;
 	directory = NULL;
-	xbmcCfgLoaded = false;
 	strCurrentMediaFile = "";
 }
 
@@ -375,12 +352,14 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
 			//get shares and extensions
 			if (!strcmp(parameter, WEB_VIDEOS))
 			{
+				g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
 				strDirectory = g_stSettings.m_szDefaultVideos;
 				shares = &g_settings.m_vecMyVideoShares;
 				directory->SetMask(g_stSettings.m_szMyVideoExtensions);
 			}
 			else if (!strcmp(parameter, WEB_MUSIC))
 			{
+				g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
 				strDirectory = g_stSettings.m_szDefaultMusic;
 				shares = &g_settings.m_vecMyMusicShares;
 				directory->SetMask(g_stSettings.m_szMyMusicExtensions);
@@ -708,398 +687,40 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 	return 0;
 }
 
-/* Configurtion for XBMC (xml files and xbmc settings) */
-int CXbmcWeb::xbmcConfiguration( int eid, webs_t wp, int argc, char_t **argv)
-{
-/*
-	char xboxmediacenter[][32] = {
-			"skin", "ipadres", "netmask",	"defaultgateway",	"nameserver", "CDDBIpAdres",
-			"CDDBEnabled", "httpproxy", "httpproxyport", "timeserver", "dashboard", "startwindow",
-			"pictureextensions", "musicextensions", "videoextensions", "thumbnails", "shortcuts", "imdb",
-			"albums", ""};
-  
-
-	//char tvguide[][32] = {"visible", "autoprocess",	"" };
-
-	//char extensions[][32] = {"music", "videos", "pictures",	"" };
-
-	char_t	*command;
-
-	command = websGetVar(wp, WEB_COMMAND, NULL); 
-
-	//get command 
-	if (!command) {
-		if (ejArgs(argc, argv, T("%s"), &command) < 1) {
-			websError(wp, 400, T("Insufficient args\n"));
-			return -1;
-		}
-	}
-
-	if(!strcmp(command, WEB_LOAD))
-	{
-		/* Load configuration *
-		if (!xbmcCfgLoaded)
-		{
-			if (!xbmcCfg.LoadFile("Q:\\XboxMediaCenter.xml"))
-			{
-				return -1;
-			}
-			xbmcCfgLoaded = true;
-		}
-	}
-
-	else if (!strcmp(command, WEB_COUNT))
-	{
-		char_t	*type;
-
-		type = websGetVar(wp, XBMC_TYPE, NULL);
-
-		//get type
-		if (!type)
-		{
-			if (ejArgs(argc, argv, T("%s %s"), &command, &type) < 2)
-			{
-				websError(wp, 400, T("Insufficient args\n"));
-				return -1;
-			}
-		}
-		//count types
-		if (xbmcCfgLoaded)
-		{
-			/* return number of *
-			TiXmlElement *pRootElement = xbmcCfg.RootElement();
-			TiXmlNode *pNode = NULL;
-			TiXmlNode *pIt = NULL;
-			int count = 0;
-			char buffer[10];
-
-			if (!strcmp(type, WEB_MUSIC_BOOKMARK))
-			{
-				/* music bookmarks *
-				pNode = pRootElement->FirstChild("music");
-				while(pIt = pNode->IterateChildren("bookmark", pIt))	count++;
-				ejSetResult( eid, itoa(count, buffer, 10));
-			}
-			else if (!strcmp(type, WEB_PICTURE_BOOKMARK))
-			{
-				/* picture bookmarks *
-				pNode = pRootElement->FirstChild("pictures");
-				while(pIt = pNode->IterateChildren("bookmark", pIt))	count++;
-				ejSetResult( eid, itoa(count, buffer, 10));
-			}
-			else if (!strcmp(type, WEB_VIDEO_BOOKMARK))
-			{
-				/* video bookmarks *
-				pNode = pRootElement->FirstChild("video");
-				while(pIt = pNode->IterateChildren("bookmark", pIt))	count++;
-				ejSetResult( eid, itoa(count, buffer, 10));
-			}
-			else if (!strcmp(type, WEB_FILE_BOOKMARK))
-			{
-				/* file bookmarks *
-				pNode = pRootElement->FirstChild("files");
-				while(pIt = pNode->IterateChildren("bookmark", pIt))	count++;
-				ejSetResult( eid, itoa(count, buffer, 10));
-			}
-			else if (!strcmp(type, WEB_PROGRAM_BOOKMARK))
-			{
-				/* program bookmarks *
-				pNode = pRootElement->FirstChild("myprograms");
-				while(pIt = pNode->IterateChildren("bookmark", pIt))	count++;
-				ejSetResult( eid, itoa(count, buffer, 10));
-				return 0;
-			}
-			else if (!strcmp(type, WEB_OPTION))
-			{
-				int total = 0;
-				while (xboxmediacenter[total][0] != 0) total++;
-				ejSetResult(eid, itoa(total, buffer, 10));
-			}
-		}
-	}
-
-	else if (!strcmp(command, WEB_GETBOOKMARK))
-	{
-		char_t	*parameter, *type, *id;
-
-		parameter = websGetVar(wp, WEB_PARAMETER, NULL);
-		type = websGetVar(wp, XBMC_TYPE, NULL);
-		id = websGetVar(wp, XBMC_ID, NULL);
-
-		if (!type || !parameter || !id)
-		{
-			if (ejArgs(argc, argv, T("%s %s %s %s"), &command, &type, &parameter, &id) < 4) {
-				websError(wp, 400, T("Insufficient args\n"));
-				return -1;
-			}
-		}
-
-		if (xbmcCfgLoaded)
-		{
-			/* Return bookmark of *
-			TiXmlElement *pRootElement = xbmcCfg.RootElement();
-			TiXmlNode *pNode = NULL;
-			TiXmlNode *pIt = NULL;
-
-			if (!strcmp(type, WEB_MUSIC_BOOKMARK)) {
-				/* music bookmarks *
-				pNode = pRootElement->FirstChild("music");
-			} else if (!strcmp(type, WEB_PICTURE_BOOKMARK)) {
-				/* picture bookmarks *
-				pNode = pRootElement->FirstChild("pictures");
-			} else if (!strcmp(type, WEB_VIDEO_BOOKMARK)) {
-				/* video bookmarks *
-				pNode = pRootElement->FirstChild("video");
-			} else if (!strcmp(type, WEB_PROGRAM_BOOKMARK)) {
-				/* apps bookmarks *
-				pNode = pRootElement->FirstChild("myprograms");
-			} else if (!strcmp(type, WEB_FILE_BOOKMARK)) {
-				/* apps bookmarks *
-				pNode = pRootElement->FirstChild("files");
-			}
-
-			int nr = atoi(id);
-			if (pNode)
-				for (int i = 0; i < nr; i++) pIt = pNode->IterateChildren("bookmark", pIt);
-			if (pIt)
-			{
-				if (!strcmp(parameter, WEB_NAME))
-				{
-					if (pIt->FirstChild("name"))
-					{
-						ejSetResult( eid, (char*)pIt->FirstChild("name")->FirstChild()->Value());
-					}
-				}
-				if (!strcmp(parameter, WEB_PATH))
-				{
-					if (pIt->FirstChild("path"))
-					{
-						ejSetResult( eid, (char*)pIt->FirstChild("path")->FirstChild()->Value());
-					}
-				}
-			}
-		}
-	}
-
-	if (!strcmp(command, WEB_GETOPTION))
-	{
-		char_t	*parameter;
-
-		parameter = websGetVar(wp, WEB_PARAMETER, NULL);
-
-		if (!parameter)
-		{
-			if (ejArgs(argc, argv, T("%s %s"), &command, &parameter) < 2) {
-				websError(wp, 400, T("Insufficient args\n"));
-				return -1;
-			}
-		}
-		if (xbmcCfgLoaded)
-		{
-			TiXmlElement *pRootElement = xbmcCfg.RootElement();
-			TiXmlElement *pElement = NULL;
-			char *it = NULL;
-
-			TiXmlNode *pNode = NULL;
-
-			int i = 0;
-			while(xboxmediacenter[i][0] != 0)
-			{
-				if (!strcmp(parameter, xboxmediacenter[i]))
-				{
-					pElement = pRootElement->FirstChildElement(xboxmediacenter[i]);
-					if (pElement)
-					{
-						it = (char*)pElement->FirstChild()->Value();
-						if (it)	ejSetResult(eid, it);
-					}
-					return 0;
-				}
-				i++;
-			}
-			return 0;
-		}
-	}
-	else if (!strcmp(command, WEB_ADDBOOKMARK))
-	{
-
-		char_t	*type, *name, *path, *position;
-
-		name = websGetVar(wp, WEB_NAME, NULL);
-		path = websGetVar(wp, WEB_PATH, NULL);
-		type = websGetVar(wp, XBMC_TYPE, NULL);
-		position = websGetVar(wp, "position", NULL); 
-
-		if (!type || !name || !path)
-		{
-
-			if (ejArgs(argc, argv, T("%s %s %s %s %s"), &command, &type, &name, &path, &position) < 4) {
-				websError(wp, 400, T("Insufficient args\n use: function(command, type, name, path, [postion])"));
-				return -1;
-			}
-		}
-		if (xbmcCfgLoaded)
-		{
-			TiXmlElement *pRootElement = xbmcCfg.RootElement();
-			TiXmlNode *pNode = NULL;
-			TiXmlNode *pIt = NULL;
-
-			if (!strcmp(type, WEB_MUSIC_BOOKMARK)) {
-				/* music bookmarks *
-				pNode = pRootElement->FirstChild("music");
-			} else if (!strcmp(type, WEB_PICTURE_BOOKMARK)) {
-				/* picture bookmarks *
-				pNode = pRootElement->FirstChild("pictures");
-			} else if (!strcmp(type, WEB_VIDEO_BOOKMARK)) {
-				/* video bookmarks *
-				pNode = pRootElement->FirstChild("video");
-			} else if (!strcmp(type, WEB_PROGRAM_BOOKMARK)) {
-				/* apps bookmarks *
-				pNode = pRootElement->FirstChild("myprograms");
-			} else if (!strcmp(type, WEB_FILE_BOOKMARK)) {
-				/* apps bookmarks *
-				pNode = pRootElement->FirstChild("files");
-			}
-
-			//newElement
-			TiXmlText xmlName(name);
-			TiXmlText xmlPath(path);
-			TiXmlElement eName("name");
-			TiXmlElement ePath("path");
-			eName.InsertEndChild(xmlName);
-			ePath.InsertEndChild(xmlPath);
-
-			TiXmlElement bookmark("bookmark");
-			bookmark.InsertEndChild(eName);
-			bookmark.InsertEndChild(ePath);
-
-			//if postion == NULL add bookmark at end of the other bookmarks
-			if (position)
-			{
-				//isert after postion 'position'
-				int nr = atoi(position);
-				if (pNode)
-					for (int i = 0; i < nr; i++) pIt = pNode->IterateChildren("bookmark", pIt);
-				if (pIt) pNode->ToElement()->InsertAfterChild(pIt, bookmark);
-			}
-			else
-			{
-				pNode->ToElement()->InsertEndChild(bookmark);
-			}
-		}
-	}
-	else if (!strcmp(command, WEB_SAVEBOOKMARK))
-	{
-
-		char_t	*type, *name, *path, *position;
-
-		name = websGetVar(wp, WEB_NAME, NULL);
-		path = websGetVar(wp, WEB_PATH, NULL);
-		type = websGetVar(wp, XBMC_TYPE, NULL);
-		position = websGetVar(wp, "postition", NULL); 
-
-		if (!type || !name || !path || !position)
-		{
-
-			if (ejArgs(argc, argv, T("%s %s %s %s %s"), &command, &type, &name, &path, &position) < 5) {
-				websError(wp, 400, T("Insufficient args\n use: function(command, type, name, path, postion)"));
-				return -1;
-			}
-		}
-		if (xbmcCfgLoaded)
-		{
-			TiXmlElement *pRootElement = xbmcCfg.RootElement();
-			TiXmlNode *pNode = NULL;
-			TiXmlNode *pIt = NULL;
-
-			if (!strcmp(type, WEB_MUSIC_BOOKMARK)) {
-				/* music bookmarks *
-				pNode = pRootElement->FirstChild("music");
-			} else if (!strcmp(type, WEB_PICTURE_BOOKMARK)) {
-				/* picture bookmarks *
-				pNode = pRootElement->FirstChild("pictures");
-			} else if (!strcmp(type, WEB_VIDEO_BOOKMARK)) {
-				/* video bookmarks *
-				pNode = pRootElement->FirstChild("video");
-			} else if (!strcmp(type, WEB_PROGRAM_BOOKMARK)) {
-				/* apps bookmarks *
-				pNode = pRootElement->FirstChild("myprograms");
-			} else if (!strcmp(type, WEB_FILE_BOOKMARK)) {
-				/* apps bookmarks *
-				pNode = pRootElement->FirstChild("files");
-			}
-
-			int nr = atoi(position);
-			if (pNode)
-				for (int i = 0; i < nr; i++) pIt = pNode->IterateChildren("bookmark", pIt);
-			if (pIt)
-			{
-				pIt->FirstChild("name")->FirstChild()->SetValue(name);
-				pIt->FirstChild("path")->FirstChild()->SetValue(path);
-			}
-		}
-	}
-	else if (!strcmp(command, WEB_SAVE) && xbmcCfgLoaded)
-	{
-		char_t	*filename;
-
-		filename = websGetVar(wp, WEB_NAME, NULL);
-
-		if (!filename)
-		{
-
-			if (ejArgs(argc, argv, T("%s %s"), &command, &filename) < 2) {
-				websError(wp, 400, T("Insufficient args\n use: function(command, filename)"));
-				return -1;
-			}
-		}
-		/* Save configuration to file *
-		if (filename)	xbmcCfg.SaveFile(filename);
-	}
-	else if (!strcmp(command, WEB_EDIT) && xbmcCfgLoaded)
-	{
-		char_t	*id, *type;
-
-		id = websGetVar(wp, XBMC_ID, NULL);
-		type = websGetVar(wp, XBMC_TYPE, NULL);
-
-		if (!type)
-		{
-			if (ejArgs(argc, argv, T("%s %s %s"), &command, &type, &id) < 2)
-			{
-				websError(wp, 400, T("Insufficient args\n"));
-				return -1;
-			}
-		}
-		if (!strcmp(type, WEB_OPTION))
-		{
-			int i = 0;
-			char_t *option;
-			TiXmlElement *pRootElement = xbmcCfg.RootElement();
-			TiXmlElement *pElement = NULL;
-			while(xboxmediacenter[i][0] != 0)
-			{
-				if (option = websGetVar(wp, xboxmediacenter[i], NULL))
-				{
-					pElement = pRootElement->FirstChildElement(xboxmediacenter[i]);
-					if (pElement)
-					{
-						pElement->FirstChild()->SetValue(option);
-					}
-				}
-				i++;
-			}
-		}
-	}*/
-	// return the number of characters written
-	return 0;
-}
-
 
 /* Play */
 int CXbmcWeb::xbmcPlayerPlay( int eid, webs_t wp, char_t *parameter)
 {
-	g_applicationMessenger.MediaPlay(strCurrentMediaFile);
+	if (strCurrentMediaFile.size() > 0)
+	{
+		g_applicationMessenger.MediaPlay(strCurrentMediaFile);
+	}
+	else
+	{
+		g_applicationMessenger.PlayListPlayerPlay(0);
+	}
+	return 0;
+}
+
+/*
+ * Play next file in active playlist
+ * Active playlist = MUSIC or VIDEOS
+ */
+int CXbmcWeb::xbmcPlayerNext( int eid, webs_t wp, char_t *parameter)
+{
+	OutputDebugString("next");
+	g_applicationMessenger.PlayListPlayerNext();
+	return 0;
+}
+
+/*
+ * Play previous file in active playlist
+ * Active playlist = MUSIC or VIDEOS
+ */
+int CXbmcWeb::xbmcPlayerPrevious( int eid, webs_t wp, char_t *parameter)
+{
+	OutputDebugString("previous");
+	g_applicationMessenger.PlayListPlayerPrevious();
 	return 0;
 }
 
@@ -1113,18 +734,21 @@ int CXbmcWeb::xbmcSubtitles( int eid, webs_t wp, char_t *parameter)
 /* Parse an XBMC command */
 int CXbmcWeb::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter)
 {
-	if (!strcmp(command, "play"))						return xbmcPlayerPlay(eid, wp, parameter);
-	else if (!strcmp(command, "stop"))			g_applicationMessenger.MediaStop();
-	else if (!strcmp(command, "pause"))			g_applicationMessenger.MediaPause();
-	else if (!strcmp(command, "shutdown"))	g_applicationMessenger.Shutdown();
-	else if (!strcmp(command, "restart"))		g_applicationMessenger.Restart();
-	else if (!strcmp(command, "exit"))			g_applicationMessenger.RebootToDashBoard();
-	else if (!strcmp(command, "show_time"))	return 0;
-	else if (!strcmp(command, "remote"))		return xbmcRemoteControl(eid, wp, parameter);			// remote control functions
-	else if (!strcmp(command, "navigate"))	return xbmcNavigate(eid, wp, parameter);	// Navigate to a particular interface
-	else if (!strcmp(command, "catalog"))		return xbmcCatalog(eid, wp, parameter);	// interface to teh media catalog
-	else if (!strcmp(command, "ff"))				return 0;	// Fast forward through media
-	else if (!strcmp(command, "rw"))				return 0;	// Rewind through media
+	if (!strcmp(command, "play"))								return xbmcPlayerPlay(eid, wp, parameter);
+	else if (!strcmp(command, "stop"))					g_applicationMessenger.MediaStop();
+	else if (!strcmp(command, "pause"))					g_applicationMessenger.MediaPause();
+	else if (!strcmp(command, "shutdown"))			g_applicationMessenger.Shutdown();
+	else if (!strcmp(command, "restart"))				g_applicationMessenger.Restart();
+	else if (!strcmp(command, "exit"))					g_applicationMessenger.RebootToDashBoard();
+	else if (!strcmp(command, "show_time"))			return 0;
+	else if (!strcmp(command, "remote"))				return xbmcRemoteControl(eid, wp, parameter);			// remote control functions
+	else if (!strcmp(command, "navigate"))			return xbmcNavigate(eid, wp, parameter);	// Navigate to a particular interface
+	else if (!strcmp(command, "catalog"))				return xbmcCatalog(eid, wp, parameter);	// interface to teh media catalog
+
+	else if (!strcmp(command, "ff"))						return 0;
+	else if (!strcmp(command, "rw"))						return 0;
+	else if (!strcmp(command, "next"))					return xbmcPlayerNext(eid, wp, parameter);
+	else if (!strcmp(command, "previous"))			return xbmcPlayerPrevious(eid, wp, parameter);
 	return 0;
 }
 
