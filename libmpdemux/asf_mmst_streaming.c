@@ -113,7 +113,7 @@ static void send_command (int s, int command, uint32_t switches,
 	
 #else//_XBOX
 
-  struct command_t  cmd;
+  command_t  cmd;
   int        len8;
 
   len8 = (length + 7) / 8;
