@@ -25,7 +25,9 @@ public:
 	virtual void			OnContactPing(CStdString& aFriend, CStdString& aVector, CStdString& aPing);
 	virtual void			OnContactRemove(CStdString& aFriend);
 	virtual void			OnEnterArena(CStdString& aVector);
-	virtual void			OnNewArena(CStdString& aVector);
+	virtual void			OnEnterArenaFailed(CStdString& aVector, CStdString& aReason);
+	virtual void			OnNewArena( CStdString& aVector, CStdString& aDescription,
+										int nPlayers, int nPlayerLimit, int bPrivate );
 	virtual void			OnOpponentEnter(CStdString& aOpponent);
 	virtual void			OnOpponentPing(CStdString& aOpponent, CStdString& aPing);
 	virtual void			OnOpponentLeave(CStdString& aOpponent);
