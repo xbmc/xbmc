@@ -33,4 +33,5 @@ private:
   COSDMenu        m_osdMenu;
   bool            m_bOSDVisible;
   CCriticalSection m_section;
+  bool            m_bLastRender;
 };
