@@ -329,12 +329,23 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 					share.strName=szName;
 					share.strPath=szPath;
 					share.m_iBufferSize=0;
-					if ( CUtil::IsDVD( share.strPath ) )
+					CStdString strPath=share.strPath;
+					strPath.ToUpper();
+					if (strPath.Left(4)=="UDF:")
+					{
+						share.m_iDriveType=SHARE_TYPE_VIRTUAL_DVD;
+						share.strPath="D:\\";
+					}
+					else if (CUtil::IsISO9660(share.strPath))
+						share.m_iDriveType=SHARE_TYPE_VIRTUAL_DVD;
+					else if (CUtil::IsDVD(share.strPath))
 						share.m_iDriveType = SHARE_TYPE_DVD;
-					else if ( CUtil::IsRemote( share.strPath ) )
+					else if (CUtil::IsRemote(share.strPath))
 						share.m_iDriveType = SHARE_TYPE_REMOTE;
-					else 
+					else if (CUtil::IsHD(share.strPath))
 						share.m_iDriveType = SHARE_TYPE_LOCAL;
+					else
+						share.m_iDriveType = SHARE_TYPE_UNKNOWN;
 
           
           if (pCacheNode)

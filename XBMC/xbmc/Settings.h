@@ -9,10 +9,11 @@
 #include <vector>
 using namespace std;
 
-#define SHARE_TYPE_UNKNOWN	0
-#define SHARE_TYPE_DVD		1
-#define SHARE_TYPE_REMOTE	2
-#define SHARE_TYPE_LOCAL	3
+#define SHARE_TYPE_UNKNOWN			0
+#define SHARE_TYPE_LOCAL				1
+#define SHARE_TYPE_DVD					2
+#define SHARE_TYPE_VIRTUAL_DVD	3
+#define SHARE_TYPE_REMOTE				4
 
 class CShare
 {
