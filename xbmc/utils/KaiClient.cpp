@@ -110,6 +110,14 @@ void CKaiClient::SetObserver(IBuddyObserver* aObserver)
 		Discover();
 	}
 }
+void CKaiClient::RemoveObserver()
+{
+	if (observer)
+	{
+		observer = NULL;
+		Disconnect();
+	}
+}
 
 void CKaiClient::EnterVector(CStdString& aVector)
 {	
@@ -187,6 +195,17 @@ void CKaiClient::Discover()
 	Broadcast(KAI_SYSTEM_PORT, strInitiateDiscoveryMessage);
 	//Send("192.168.1.2", KAI_SYSTEM_PORT, strInitiateDiscoveryMessage);
 }
+
+void CKaiClient::Disconnect()
+{	
+	CStdString strDisconnectionMessage = "KAI_CLIENT_DISCONNECT;";
+
+	client_state = State::Disconnecting;
+
+	//	Send(server_addr, strDisconnectionMessage);
+	Broadcast(KAI_SYSTEM_PORT, strDisconnectionMessage);
+}
+
 
 void CKaiClient::Attach(SOCKADDR_IN& aAddress)
 {	
