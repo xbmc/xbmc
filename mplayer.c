@@ -2426,6 +2426,9 @@ if(!sh_video) {
       int ss = (tenths /  10) % 60;
       int f1 = tenths % 10;
       char hhmmssf[16]; // only really need 11, but just in case...
+      #ifdef _XBOX
+      aoldpts=tenths;
+      #endif
       sprintf( hhmmssf, "%2d:%2d:%2d.%1d", hh, mm, ss, f1);
       if (0 == hh) {
         hhmmssf[1] = ' ';
@@ -2727,11 +2730,17 @@ if(time_frame>0.001 && !(vo_flags&256)){
         a_pts=samples*(float)sh_audio->audio.dwScale/(float)sh_audio->audio.dwRate;
 	delay_corrected=1;
 	a_pts-=(sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps;
+	#ifdef _XBOX
+	aoldpts=a_pts;
+	#endif
     } else
 #endif
     {
       // PTS = (last timestamp) + (bytes after last timestamp)/(bytes per sec)
       a_pts=d_audio->pts;
+      #ifdef _XBOX
+      aoldpts=a_pts;
+      #endif
       if(!delay_corrected) if(a_pts) delay_corrected=1;
 #if 0
       printf("\n#X# pts=%5.3f ds_pts=%5.3f buff=%5.3f total=%5.3f\n",
@@ -2741,6 +2750,9 @@ if(time_frame>0.001 && !(vo_flags&256)){
 	  a_pts+(ds_tell_pts(d_audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps);
 #endif
       a_pts+=(ds_tell_pts(d_audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps;
+      #ifdef _XBOX
+      aoldpts=a_pts;
+      #endif
     }
     v_pts=sh_video ? sh_video->pts : d_video->pts;
 
@@ -3840,6 +3852,9 @@ if(rel_seek_secs || abs_seek_pos){
 	if(verbose>0){
 	    float a_pts=d_audio->pts;
             a_pts+=(ds_tell_pts(d_audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps;
+            #ifdef _XBOX
+            aoldpts=a_pts;
+            #endif
 	    mp_msg(MSGT_AVSYNC,MSGL_V,"SEEK: A: %5.3f  V: %5.3f  A-V: %5.3f   \n",a_pts,d_video->pts,a_pts-d_video->pts);
 	}
         mp_msg(MSGT_AVSYNC,MSGL_STATUS,"A:%6.1f  V:%6.1f  A-V:%7.3f  ct: ?   \r",d_audio->pts,d_video->pts,0.0f);
