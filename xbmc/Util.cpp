@@ -307,216 +307,64 @@ void CUtil::GetTitleIP(CStdString& ip)
 	ip = g_szTitleIP;
 }
 
-bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway)
+bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer)
 {
-  // see http://www.gamespp.com/xboxprogramming/settingUpTcpIp.html for details
 
-	if (!IsEthernetConnected())
+  if (!IsEthernetConnected())
   {
-    CLog::Log("  network cable not connected!");
-		return false;
+    CLog::Log("network cable unplugged");
+    return false;
   }
 
+  struct network_info networkinfo ;
+  memset(&networkinfo ,0,sizeof(networkinfo ));
+  bool bSetup(false);
   if (CUtil::cmpnocase(szLocalAddress,"dhcp")==0 )
   {
-    XNetStartupParams sXNetStartup;
-    WSADATA sWSAData;
-    DWORD vReturn;
-    WORD vVersionRequested;
-    bool isGateway;
-    int vError;
-    XNADDR sAddress;
-    char NETWORK_STATUS[256];
-    // use DHCP
-    CLog::Log("use DHCP to find new ip adres");
+    bSetup=true;
+    CLog::Log("use DHCP");
+    networkinfo.DHCP=true;
+  }
+  else if (szLocalAddress[0] && szLocalSubnet[0] && szLocalGateway[0] && szNameServer[0])
+  {
+    bSetup=true;
+    CLog::Log("use static ip");
+    networkinfo.DHCP=false;
+    strcpy(networkinfo.ip,szLocalAddress);
+    strcpy(networkinfo.subnet,szLocalSubnet);
+    strcpy(networkinfo.gateway,szLocalGateway);
+    strcpy(networkinfo.DNS1,szNameServer);
+  }
 
-    CLog::Log("  initialise net");
-    int socketloop=1;
-	  // Start up NET
-	  memset(&sXNetStartup, 0, sizeof(sXNetStartup));
-	  sXNetStartup.cfgSizeOfStruct = sizeof(XNetStartupParams);
-	  sXNetStartup.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
-	  vError = XNetStartup(&sXNetStartup);
-	  vVersionRequested = MAKEWORD( 2, 2 );
-
-	  if( WSAStartup( vVersionRequested, &sWSAData ) != 0 ) 
-	  {
-      CLog::Log("wsastartup failed");
-		  return false;
-	  }
-
-	  // If we didn't get version 2.2, return!
-	  if ( LOBYTE( sWSAData.wVersion ) != 2 || HIBYTE( sWSAData.wVersion ) != 2 ) 
-	  {
-		  WSACleanup( );
-		  CLog::Log("wsastartup didnt return version 2.2");
-	  }
-
-    CLog::Log("  setting up network");
-	  while( socketloop )
-	  {
-		  //Setting up network
-		  isGateway = false;
-		  vReturn = XNetGetTitleXnAddr(&sAddress);
-
-		  if( vReturn && XNET_GET_XNADDR_GATEWAY ) 
-		  {
-			  isGateway = true;
-			  vReturn ^= XNET_GET_XNADDR_GATEWAY;
-			  //Gateway Present
-		  } 
-
-		  socketloop = 1;
-
-		  switch( vReturn ) 
-		  {
-		    case XNET_GET_XNADDR_DHCP:
-		    {
-          CLog::Log("  XNET_GET_XNADDR_DHCP\r\n");
-		    } break;
-		    case XNET_GET_XNADDR_DNS: 
-		    {
-			    CLog::Log("  XNET_GET_XNADDR_DNS\r\n");
-		    } break;
-		    case XNET_GET_XNADDR_ETHERNET: 
-		    {
-			    CLog::Log("  XNET_GET_XNADDR_ETHERNET\r\n");
-		    } break;
-		    case XNET_GET_XNADDR_NONE: 
-		    {
-			    CLog::Log("  XNET_GET_XNADDR_NONE\r\n");
-		    } break;
-		    case XNET_GET_XNADDR_ONLINE: 
-		    {
-			    CLog::Log("  XNET_GET_XNADDR_ONLINE\r\n");
-		    } break;
-		    case XNET_GET_XNADDR_PENDING: 
-		    {
-			    CLog::Log("  XNET_GET_XNADDR_PENDING\r\n");
-		    } break;
-		    case XNET_GET_XNADDR_STATIC:
-		    {
-			    CLog::Log("  XNET_GET_XNADDR_STATIC\r\n");
-		    } break;
-		    default : 
-		    {
-			    CLog::Log("  Unknown Return Code\r\n");
-		    } break;
-		  } 
-
-		  if( vReturn != XNET_GET_XNADDR_NONE ) 
-		  {
-			  char azIPAdd[256];
-			  //char azMessage[256];
-
-			  memset(azIPAdd,0,sizeof(azIPAdd));
-
-			  XNetInAddrToString(sAddress.ina,azIPAdd,sizeof(azIPAdd));
-			  strcpy(NETWORK_STATUS,azIPAdd);
-
-			  if( !strstr(azIPAdd,"0.0.0.0"))
-			  socketloop = 0;
-		  }
-
-		  Sleep(50); 
-	  }
-    CLog::Log("done");
+  if (bSetup)
+  {
+    CLog::Log("setting up network...");
+    int iCount=0;
+    while (CUtil::SetUpNetwork( false, networkinfo )!=0 && iCount < 100)
+    {
+      Sleep(50);
+      iCount++;
+    }
   }
   else
   {
-	  // if local address is specified
-	  if ( (szLocalAddress[0]!=0) && ( szLocalSubnet[0]!=0) && (szLocalGateway[0]!=0)  )
-	  {
-		  // Thanks and credits to Team Evox & Avalaunch for the description of the  XNetConfigParams structure.
-      CLog::Log("set ipadres:%s", szLocalAddress);
-      CLog::Log("set netmask:%s", szLocalSubnet);
-      CLog::Log("set gateway:%s", szLocalGateway);
-      TXNetConfigParams configParams;   
-		  XNetLoadConfigParams( (LPBYTE) &configParams );
+    CLog::Log("init network");
+    XNetStartupParams xnsp;
+    memset(&xnsp, 0, sizeof(xnsp));
+    xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
 
-		  BOOL bXboxVersion2 = (configParams.V2_Tag == 0x58425632 );	// "XBV2"
-		  BOOL bDirty = false;
-
-		  if (bXboxVersion2)
-		  {
-			  if (configParams.V2_IP != inet_addr(szLocalAddress))
-			  {
-				  configParams.V2_IP = inet_addr(szLocalAddress);
-				  bDirty = true;
-			  }
-		  }
-		  else
-		  {
-			  if (configParams.V1_IP != inet_addr(szLocalAddress))
-			  {
-				  configParams.V1_IP = inet_addr(szLocalAddress);
-				  bDirty = true;
-			  }
-		  }
-
-		  if (bXboxVersion2)
-		  {
-			  if (configParams.V2_Subnetmask != inet_addr(szLocalSubnet))
-			  {
-				  configParams.V2_Subnetmask = inet_addr(szLocalSubnet);
-				  bDirty = true;
-			  }
-		  }
-		  else
-		  {
-			  if (configParams.V1_Subnetmask != inet_addr(szLocalSubnet))
-			  {
-				  configParams.V1_Subnetmask = inet_addr(szLocalSubnet);
-				  bDirty = true;
-			  }
-		  }
-
-		  if (bXboxVersion2)
-		  {
-			  if (configParams.V2_Defaultgateway != inet_addr(szLocalGateway))
-			  {
-				  configParams.V2_Defaultgateway = inet_addr(szLocalGateway);
-				  bDirty = true;
-			  }
-		  }
-		  else
-		  {
-			  if (configParams.V1_Defaultgateway != inet_addr(szLocalGateway))
-			  {
-				  configParams.V1_Defaultgateway = inet_addr(szLocalGateway);
-				  bDirty = true;
-			  }
-		  }
-
-		  if (configParams.Flag != (0x04|0x08) )
-		  {
-			  configParams.Flag = 0x04 | 0x08;
-			  bDirty = true;
-		  }
-
-		  if (bDirty)
-		  {
-			  XNetSaveConfigParams( (LPBYTE) &configParams );
-		  }
-      CLog::Log(" done");
-	  }
+    // Bypass security so that we may connect to 'untrusted' hosts
+    xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
+    // create more memory for networking
+    xnsp.cfgPrivatePoolSizeInPages = 64; // == 256kb, default = 12 (48kb)
+    xnsp.cfgEnetReceiveQueueLength = 16; // == 32kb, default = 8 (16kb)
+    xnsp.cfgIpFragMaxSimultaneous = 16; // default = 4
+    xnsp.cfgIpFragMaxPacketDiv256 = 32; // == 8kb, default = 8 (2kb)
+    xnsp.cfgSockMaxSockets = 64; // default = 64
+    xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
+    xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
+    INT err = XNetStartup(&xnsp);
   }
-
-	XNetStartupParams xnsp;
-	memset(&xnsp, 0, sizeof(xnsp));
-	xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
-
-	// Bypass security so that we may connect to 'untrusted' hosts
-	xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
-  // create more memory for networking
-  xnsp.cfgPrivatePoolSizeInPages = 64; // == 256kb, default = 12 (48kb)
-  xnsp.cfgEnetReceiveQueueLength = 16; // == 32kb, default = 8 (16kb)
-  xnsp.cfgIpFragMaxSimultaneous = 16; // default = 4
-  xnsp.cfgIpFragMaxPacketDiv256 = 32; // == 8kb, default = 8 (2kb)
-  xnsp.cfgSockMaxSockets = 64; // default = 64
-  xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
-  xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
-	INT err = XNetStartup(&xnsp);
 
   CLog::Log("get local ip adres:");
 	XNADDR xna;
@@ -531,7 +379,7 @@ bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSub
 
   CLog::Log("ip adres:%s",g_szTitleIP);
 	WSADATA WsaData;
-	err = WSAStartup( MAKEWORD(2,2), &WsaData );
+	int err = WSAStartup( MAKEWORD(2,2), &WsaData );
 	return ( err == NO_ERROR );
 }
 
@@ -1587,3 +1435,327 @@ void CUtil::PlayDVD()
   helper.Remount("D:","Cdrom0");
   g_application.PlayFile("dvd://1");
 }
+
+DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
+{
+  static unsigned char params[512]; 
+  static DWORD				vReturn;
+  static XNADDR				sAddress;
+	char temp_str[64];
+	static char mode = 0;
+	XNADDR xna;
+	DWORD dwState;
+
+	if( resetmode )
+	{
+		resetmode = 0;
+		mode = 0;
+	}
+
+	if( !XNetGetEthernetLinkStatus() )
+	{
+		return 1;
+	}
+
+	if( mode == 100 )
+	{
+    CLog::Log("  pending...");
+		dwState = XNetGetTitleXnAddr(&xna);
+		if(dwState==XNET_GET_XNADDR_PENDING)
+			return 1;
+		mode = 5;
+		char	azIPAdd[256];
+		memset( azIPAdd,0,256);
+		XNetInAddrToString(xna.ina,azIPAdd,32);
+    CLog::Log("ip adres:%s",azIPAdd);
+	}
+
+	// if local address is specified 
+	if( mode == 0 )
+	{
+		if ( !networkinfo.DHCP )
+		{
+			TXNetConfigParams configParams;   
+
+			XNetLoadConfigParams( (LPBYTE) &configParams );
+			BOOL bXboxVersion2 = (configParams.V2_Tag == 0x58425632 );	// "XBV2"
+			BOOL bDirty = FALSE;
+
+			if (bXboxVersion2)
+			{
+				if (configParams.V2_IP != inet_addr(networkinfo.ip))
+				{
+					configParams.V2_IP = inet_addr(networkinfo.ip);
+					bDirty = TRUE;
+				}
+			}
+			else
+			{
+				if (configParams.V1_IP != inet_addr(networkinfo.ip))
+				{
+					configParams.V1_IP = inet_addr(networkinfo.ip);
+					bDirty = TRUE;
+				}
+			}
+
+			if (bXboxVersion2)
+			{
+				if (configParams.V2_Subnetmask != inet_addr(networkinfo.subnet))
+				{
+					configParams.V2_Subnetmask = inet_addr(networkinfo.subnet);
+					bDirty = TRUE;
+				}
+			}
+			else
+			{
+				if (configParams.V1_Subnetmask != inet_addr(networkinfo.subnet))
+				{
+					configParams.V1_Subnetmask = inet_addr(networkinfo.subnet);
+					bDirty = TRUE;
+				}
+			}
+
+			if (bXboxVersion2)
+			{
+				if (configParams.V2_Defaultgateway != inet_addr(networkinfo.gateway))
+				{
+					configParams.V2_Defaultgateway = inet_addr(networkinfo.gateway);
+					bDirty = TRUE;
+				}
+			}
+			else
+			{
+				if (configParams.V1_Defaultgateway != inet_addr(networkinfo.gateway))
+				{
+					configParams.V1_Defaultgateway = inet_addr(networkinfo.gateway);
+					bDirty = TRUE;
+				}
+			}
+
+			if (bXboxVersion2)
+			{
+				if (configParams.V2_DNS1 != inet_addr(networkinfo.DNS1))
+				{
+					configParams.V2_DNS1 = inet_addr(networkinfo.DNS1);
+					bDirty = TRUE;
+				}
+			}
+			else
+			{
+				if (configParams.V1_DNS1 != inet_addr(networkinfo.DNS1))
+				{
+					configParams.V1_DNS1 = inet_addr(networkinfo.DNS1);
+					bDirty = TRUE;
+				}
+			}
+
+			if (bXboxVersion2)
+			{
+				if (configParams.V2_DNS2 != inet_addr(networkinfo.DNS2))
+				{
+					configParams.V2_DNS2 = inet_addr(networkinfo.DNS2);
+					bDirty = TRUE;
+				}
+			}
+			else
+			{
+				if (configParams.V1_DNS2 != inet_addr(networkinfo.DNS2))
+				{
+					configParams.V1_DNS2 = inet_addr(networkinfo.DNS2);
+					bDirty = TRUE;
+				}
+			}
+
+			if (configParams.Flag != (0x04|0x08) )
+			{
+				configParams.Flag = 0x04 | 0x08;
+				bDirty = TRUE;
+			}
+
+			XNetSaveConfigParams( (LPBYTE) &configParams );
+
+			XNetStartupParams xnsp;
+			memset(&xnsp, 0, sizeof(xnsp));
+			xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
+
+			// Bypass security so that we may connect to 'untrusted' hosts
+			xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
+		// create more memory for networking
+			xnsp.cfgPrivatePoolSizeInPages = 128; // == 256kb, default = 12 (48kb)
+			xnsp.cfgEnetReceiveQueueLength = 64; // == 128kb, default = 8 (16kb)
+			xnsp.cfgIpFragMaxSimultaneous = 64; // default = 4
+			xnsp.cfgIpFragMaxPacketDiv256 = 64; // == 8kb, default = 8 (2kb)
+			xnsp.cfgSockMaxSockets = 64; // default = 64
+			xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
+			xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
+      CLog::Log("requesting local ip adres");
+			int err = XNetStartup(&xnsp);
+		  mode = 100;
+			return 1;
+		}
+		else
+		{
+	    /**     Set DHCP-flags from a known DHCP mode  (maybe some day we will fix this)  **/
+			XNetLoadConfigParams(params);
+			memset( params, 0, (sizeof(IN_ADDR) * 5) + 20 );
+			params[40]=33;	params[41]=223;	params[42]=196;	params[43]=67;	params[44]=6;	
+			params[45]=145;	params[46]=157;	params[47]=118;	params[48]=182;	params[49]=239;	
+			params[50]=68;	params[51]=197;	params[52]=133;	params[53]=150;	params[54]=118;	
+			params[55]=211;	params[56]=38;	params[57]=87;	params[58]=222;	params[59]=119;		
+			params[64]=0;	params[72]=0;	params[73]=0;	params[74]=0;	params[75]=0;
+			params[340]=160; 		params[341]=93;				params[342]=131;			params[343]=191;			params[344]=46;	
+
+			XNetStartupParams xnsp;
+	
+			memset(&xnsp, 0, sizeof(xnsp));
+			xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
+			// Bypass security so that we may connect to 'untrusted' hosts
+			xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
+ 
+			xnsp.cfgPrivatePoolSizeInPages = 128; // == 256kb, default = 12 (48kb)
+			xnsp.cfgEnetReceiveQueueLength = 64; // == 32kb, default = 8 (16kb)
+			xnsp.cfgIpFragMaxSimultaneous = 64; // default = 4
+			xnsp.cfgIpFragMaxPacketDiv256 = 64; // == 8kb, default = 8 (2kb)
+			xnsp.cfgSockMaxSockets = 64; // default = 64
+			xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
+			xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
+
+			XNetSaveConfigParams(params);
+      CLog::Log("requesting DHCP");
+			int err = XNetStartup(&xnsp);
+			mode = 5;
+		}
+
+
+	}
+
+	char g_szTitleIP[32];
+
+	WSADATA WsaData;
+	int err;
+
+	char ftploop;
+	if( mode == 5 )
+	{
+		XNADDR xna;
+		DWORD dwState;
+		
+		dwState = XNetGetTitleXnAddr(&xna);
+
+		if( dwState==XNET_GET_XNADDR_PENDING) 
+			return 1;
+
+		XNetInAddrToString(xna.ina,g_szTitleIP,32);
+		err = WSAStartup( MAKEWORD(2,2), &WsaData );
+		ftploop = 1;
+		mode ++;
+	}
+
+	if( mode == 6 )
+	{
+		vReturn = XNetGetTitleXnAddr(&sAddress);
+
+
+		ftploop = 1;
+
+		if( vReturn != XNET_GET_XNADDR_PENDING ) 
+		{
+			char	azIPAdd[256];
+			//char	azMessage[256];
+
+			memset(azIPAdd,0,sizeof(azIPAdd));
+
+			XNetInAddrToString(sAddress.ina,azIPAdd,sizeof(azIPAdd));
+			//strcpy(NetworkStatus,azIPAdd);
+			//strcpy( NetworkStatusInternal, NetworkStatus );
+			{
+				DWORD temp = XNetGetEthernetLinkStatus();
+				if(  temp & XNET_ETHERNET_LINK_ACTIVE )
+				{
+
+					if ( temp & XNET_ETHERNET_LINK_FULL_DUPLEX )
+					{
+            // full duplex
+            CLog::Log("  full duplex");
+					}
+
+					if ( temp & XNET_ETHERNET_LINK_HALF_DUPLEX )
+					{
+						// half duplex
+            CLog::Log("  half duplex");
+					}
+
+					if ( temp & XNET_ETHERNET_LINK_100MBPS )
+					{
+            CLog::Log("  100 mbps");
+					}
+
+					if ( temp & XNET_ETHERNET_LINK_10MBPS )
+					{
+            CLog::Log("  10bmps");
+					}
+
+					if ( vReturn &  XNET_GET_XNADDR_STATIC )
+					{
+            CLog::Log("  static ip");							
+					}
+
+					if ( vReturn &  XNET_GET_XNADDR_DHCP )
+					{
+            CLog::Log("  Dynamic IP");
+					}
+
+					if ( vReturn & XNET_GET_XNADDR_DNS )
+					{
+            CLog::Log("  DNS");
+					}
+
+					if ( vReturn & XNET_GET_XNADDR_ETHERNET )
+					{
+						CLog::Log("  ethernet");
+					}
+
+					if ( vReturn & XNET_GET_XNADDR_NONE )
+					{
+						CLog::Log("  none");
+					}
+
+					if ( vReturn & XNET_GET_XNADDR_ONLINE )
+					{
+						CLog::Log("  online");
+					}
+
+					if ( vReturn & XNET_GET_XNADDR_PENDING )
+					{
+						CLog::Log("  pending");
+					}
+
+					if ( vReturn & XNET_GET_XNADDR_TROUBLESHOOT )
+					{
+						CLog::Log("  error");
+					}
+
+					if ( vReturn & XNET_GET_XNADDR_PPPOE )
+					{
+						CLog::Log("  ppoe");
+					}
+
+					sprintf(temp_str,"  IP: %s",azIPAdd);					
+          CLog::Log(temp_str);
+				}
+				if( !strstr(azIPAdd,"0.0.0.0"))
+				{
+					ftploop = 0;
+					mode ++;
+					Sleep(1000);
+					return 0;
+				}
+			}
+		}
+
+		Sleep(50); 
+		return 1;
+	}
+	return 1;
+}
+

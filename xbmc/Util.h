@@ -2,6 +2,15 @@
 #include "stdstring.h"
 #include "fileitem.h"
 #include <map>
+struct network_info
+{
+	char ip[32];
+	char gateway[32];
+	char subnet[32];
+	char DNS1[32];
+	char DNS2[32];
+	char DHCP;
+};
 
 using namespace std;
 class CUtil
@@ -24,7 +33,7 @@ public:
   static void GetFileSize(__int64 dwFileSize, CStdString& strFileSize);
   static void GetDate(SYSTEMTIME stTime, CStdString& strDateTime);
 	static void GetHomePath(CStdString& strPath);
-  static bool InitializeNetwork(const char* szLocalAdres, const char* szLocalSubnet, const char* szLocalGateway);
+  static bool InitializeNetwork(const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer);
   static bool IsEthernetConnected();
 	static void GetTitleIP(CStdString& ip);
   static void ConvertTimeTToFileTime(__int64 sec, long nsec, FILETIME &ftTime);
@@ -92,4 +101,6 @@ public:
 	static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
 	static void ThumbCacheClear();
   static void PlayDVD();
+  static DWORD SetUpNetwork( bool resetmode, struct network_info& networkinfo );
+
 };
