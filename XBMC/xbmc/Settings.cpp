@@ -24,7 +24,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bUseFDrive=true;
 	g_stSettings.m_bUseGDrive=false;
 	strcpy(g_stSettings.szDefaultLanguage,"english");
-	strcpy(g_stSettings.szDefaultVisualisation,"goom.dll");
+	strcpy(g_stSettings.szDefaultVisualisation,"goom.vis");
 	g_stSettings.m_minFilter=D3DTEXF_LINEAR;
 	g_stSettings.m_maxFilter=D3DTEXF_LINEAR;
 	g_stSettings.m_iSoften=1;
