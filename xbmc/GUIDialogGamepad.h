@@ -21,11 +21,11 @@ public:
 	int							m_iRetries;
     bool          m_bUserInputCleanup;
 	  bool					m_bHideInputChars;
- 	static bool					ShowAndGetInput(CStdStringW& aTextString, const CStdStringW &strHeading, bool bHideUserInput);
+ 	static bool					ShowAndGetInput(CStdStringW& aTextString, const CStdStringW &dlgHeading, bool bHideUserInput);
 	static bool					ShowAndGetNewPassword(CStdStringW& strNewPassword);
-  static int          ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& strHeading, const CStdStringW& strLine0, const CStdStringW& strLine1, const CStdStringW& strLine2);
-  static int          ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& strHeading, int iRetries);
-	static bool					ShowAndVerifyInput(CStdStringW& strPassword, const CStdStringW& strHeading, const CStdStringW& strLine0, const CStdStringW& strLine1, const CStdStringW& strLine2, bool bGetUserInput, bool bHideInputChars);
+  static int          ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& dlgHeading, const CStdStringW& dlgLine0, const CStdStringW& dlgLine1, const CStdStringW& dlgLine2);
+  static int          ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& dlgHeading, int iRetries);
+	static bool					ShowAndVerifyInput(CStdStringW& strPassword, const CStdStringW& dlgHeading, const CStdStringW& dlgLine0, const CStdStringW& dlgLine1, const CStdStringW& dlgLine2, bool bGetUserInput, bool bHideInputChars);
 protected:
 	virtual void OnAction(const CAction &action);
 	bool m_bConfirmed;

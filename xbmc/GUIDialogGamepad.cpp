@@ -9,11 +9,11 @@ CGUIDialogGamepad::CGUIDialogGamepad(void)
 :CGUIDialog(0)
 {
 	m_bConfirmed=false;
-    m_bCanceled=false;
-    CStdStringW m_strUserInput = L"";
-    CStdStringW m_strPassword = L"";
-    int m_iRetries = 0;
-    m_bUserInputCleanup = true;
+  m_bCanceled=false;
+  CStdStringW m_strUserInput = L"";
+  CStdStringW m_strPassword = L"";
+  int m_iRetries = 0;
+  m_bUserInputCleanup = true;
 }
 
 CGUIDialogGamepad::~CGUIDialogGamepad(void)
@@ -22,7 +22,6 @@ CGUIDialogGamepad::~CGUIDialogGamepad(void)
 
 void CGUIDialogGamepad::OnAction(const CAction &action)
 {
-    	
     if  ((action.m_dwButtonCode >= KEY_BUTTON_A && 
                 action.m_dwButtonCode <= KEY_BUTTON_RIGHT_TRIGGER) || 
                 (action.m_dwButtonCode >= KEY_BUTTON_DPAD_UP && 
@@ -55,14 +54,14 @@ void CGUIDialogGamepad::OnAction(const CAction &action)
         return;
     }
     else if (action.m_dwButtonCode == KEY_BUTTON_BACK || action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU || action.wID == ACTION_PARENT_DIR)
-	{
+		{
         m_bConfirmed=false;
         m_bCanceled=true;
         m_strUserInput=L"";
-    m_bHideInputChars = true;
+		    m_bHideInputChars = true;
         Close();
         return;
-	}
+		}
     else if  (action.m_dwButtonCode == KEY_BUTTON_START)
     {
         m_bConfirmed=false;
@@ -149,11 +148,11 @@ bool CGUIDialogGamepad::OnMessage(CGUIMessage& message)
 // \param dlgHeading String shown on dialog title. Converts to localized string if contains a positive integer.
 // \param bHideUserInput Masks user input as asterisks if set as true.  Currently not yet implemented.
 // \return true if successful display and user input. false if unsucessful display, no user input, or canceled editing.
-bool CGUIDialogGamepad::ShowAndGetInput(CStdStringW& aTextString, const CStdStringW &strHeading, bool bHideUserInput)
+bool CGUIDialogGamepad::ShowAndGetInput(CStdStringW& aTextString, const CStdStringW &dlgHeading, bool bHideUserInput)
 {  
   // Prompt user for input
   CStdStringW strUserInput = L"";
-  if (ShowAndVerifyInput(strUserInput, strHeading, aTextString, L"", L"", true, bHideUserInput))
+  if (ShowAndVerifyInput(strUserInput, dlgHeading, aTextString, L"", L"", true, bHideUserInput))
   {
     // user entry was blank
     return false;
@@ -205,14 +204,14 @@ bool CGUIDialogGamepad::ShowAndGetNewPassword(CStdStringW& strNewPassword)
 // \param dlgLine1 String shown on dialog line 1. Converts to localized string if contains a positive integer.
 // \param dlgLine2 String shown on dialog line 2. Converts to localized string if contains a positive integer.
 // \return 0 if successful display and user input. 1 if unsucessful input. -1 if no user input or canceled editing.
-int CGUIDialogGamepad::ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& strHeading, 
-                                           const CStdStringW& strLine0, const CStdStringW& strLine1, 
-                                           const CStdStringW& strLine2)
+int CGUIDialogGamepad::ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& dlgHeading, 
+                                           const CStdStringW& dlgLine0, const CStdStringW& dlgLine1, 
+                                           const CStdStringW& dlgLine2)
 {
   // make a copy of strPassword to prevent from overwriting it later
   CStdStringW strPassTemp = strPassword;
 
-  if (ShowAndVerifyInput(strPassTemp, strHeading, strLine0, strLine1, strLine2, true, true))
+  if (ShowAndVerifyInput(strPassTemp, dlgHeading, dlgLine0, dlgLine1, dlgLine2, true, true))
   {
     // user entered correct password
     return 0;
@@ -231,7 +230,7 @@ int CGUIDialogGamepad::ShowAndVerifyPassword(CStdStringW& strPassword, const CSt
 // \param dlgHeading String shown on dialog title. Converts to localized string if contains a positive integer.
 // \param iRetries If greater than 0, shows "Incorrect password, %d retries left" on dialog line 2, else line 2 is blank.
 // \return 0 if successful display and user input. 1 if unsucessful input. -1 if no user input or canceled editing.
-int CGUIDialogGamepad::ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& strHeading, int iRetries)
+int CGUIDialogGamepad::ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& dlgHeading, int iRetries)
 {
   CStdStringW strLine2 = L"";
   if (0 < iRetries)
@@ -239,7 +238,7 @@ int CGUIDialogGamepad::ShowAndVerifyPassword(CStdStringW& strPassword, const CSt
     // Show a string telling user they have iRetries retries left
     strLine2.Format(L"%s %i %s", g_localizeStrings.Get(12342).c_str(), iRetries, g_localizeStrings.Get(12343).c_str());
   }
-  return ShowAndVerifyPassword(strPassword, strHeading, "12330", "12331", strLine2);
+  return ShowAndVerifyPassword(strPassword, dlgHeading, "12330", "12331", strLine2);
 }
 
 // \brief Show gamepad keypad and verify user input against strToVerify.
@@ -251,9 +250,9 @@ int CGUIDialogGamepad::ShowAndVerifyPassword(CStdStringW& strPassword, const CSt
 // \param bGetUserInput If set as true and return=true, strToVerify is overwritten with user input string.
 // \param bHideInputChars Masks user input as asterisks if set as true.  Currently not yet implemented.
 // \return true if successful display and user input. false if unsucessful display, no user input, or canceled editing.
-bool CGUIDialogGamepad::ShowAndVerifyInput(CStdStringW& strToVerify, const CStdStringW& strHeading, 
-                                           const CStdStringW& strLine0, const CStdStringW& strLine1, 
-                                           const CStdStringW& strLine2, bool bGetUserInput, bool bHideInputChars)
+bool CGUIDialogGamepad::ShowAndVerifyInput(CStdStringW& strToVerify, const CStdStringW& dlgHeading, 
+                                           const CStdStringW& dlgLine0, const CStdStringW& dlgLine1, 
+                                           const CStdStringW& dlgLine2, bool bGetUserInput, bool bHideInputChars)
 {
   // Prompt user for password input
   CGUIDialogGamepad *pDialog = (CGUIDialogGamepad *)m_gWindowManager.GetWindow(WINDOW_DIALOG_GAMEPAD);
@@ -262,25 +261,25 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(CStdStringW& strToVerify, const CStdS
   pDialog->m_bHideInputChars = bHideInputChars;
 
   // HACK: This won't work if the label specified is actually a positive numeric value, but that's very unlikely
-  if (!CUtil::IsNaturalNumber(strHeading))
-    pDialog->SetHeading( strHeading );
+  if (!CUtil::IsNaturalNumber(dlgHeading))
+    pDialog->SetHeading( dlgHeading );
   else
-    pDialog->SetHeading( _wtoi(strHeading) );
+    pDialog->SetHeading( _wtoi(dlgHeading.c_str()) );
 
-  if (!CUtil::IsNaturalNumber(strLine0))
-    pDialog->SetLine( 0, strLine0 );
+  if (!CUtil::IsNaturalNumber(dlgLine0))
+    pDialog->SetLine( 0, dlgLine0 );
   else
-    pDialog->SetLine( 0, _wtoi(strLine0.c_str()) );
+    pDialog->SetLine( 0, _wtoi(dlgLine0.c_str()) );
 
-  if (!CUtil::IsNaturalNumber(strLine1))
-    pDialog->SetLine( 1, strLine1 );
+  if (!CUtil::IsNaturalNumber(dlgLine1))
+    pDialog->SetLine( 1, dlgLine1 );
   else
-    pDialog->SetLine( 1, _wtoi(strLine1.c_str()) );
+    pDialog->SetLine( 1, _wtoi(dlgLine1.c_str()) );
 
-  if (!CUtil::IsNaturalNumber(strLine2))
-    pDialog->SetLine( 2, strLine2 );
+  if (!CUtil::IsNaturalNumber(dlgLine2))
+    pDialog->SetLine( 2, dlgLine2 );
   else
-    pDialog->SetLine( 2, _wtoi(strLine2.c_str()) );
+    pDialog->SetLine( 2, _wtoi(dlgLine2.c_str()) );
 
   pDialog->DoModal(m_gWindowManager.GetActiveWindow());
 

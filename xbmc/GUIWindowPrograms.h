@@ -11,6 +11,7 @@ public:
 	CGUIWindowPrograms(void);
 	virtual ~CGUIWindowPrograms(void);
 	virtual bool		OnMessage(CGUIMessage& message);
+ 	virtual bool		OnPopupMenu(int iItem);
 	virtual void		Render();
 	virtual void		OnAction(const CAction &action);
 protected:

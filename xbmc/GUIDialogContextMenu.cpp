@@ -12,6 +12,7 @@
 #include "localizeStrings.h"
 #include "application.h"
 #include "GUIPassword.h"
+#include "util.h"
 
 #define BACKGROUND_IMAGE 999
 #define BACKGROUND_BOTTOM 998
@@ -174,13 +175,14 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
   {
+    bool bMyProgramsMenu = ("myprograms"==strType);
     // clean any buttons not needed
     pMenu->ClearButtons();
     // add the needed buttons
     pMenu->AddButton(118);	// 1: Rename
     pMenu->AddButton(748);	// 2: Edit Path
     pMenu->AddButton(117);	// 3: Delete
-    pMenu->AddButton(749);	// 4: Add Share
+    pMenu->AddButton(bMyProgramsMenu ? 754 : 749);	// 4: Add Program Link / Add Share
     // This if statement should always be the *last* one to add buttons
     // Only show share lock stuff if masterlock isn't disabled
     if (LOCK_MODE_EVERYONE != g_stSettings.m_iMasterLockMode)
@@ -208,7 +210,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
         if (!CheckMasterCode(iLockMode)) return false;
         // rename share
         CStdString strNewLabel = strLabel;
-        CStdString strHeading = g_localizeStrings.Get(753);
+        CStdString strHeading = g_localizeStrings.Get(bMyProgramsMenu ? 756 : 753);
         if (CGUIDialogKeyboard::ShowAndGetInput(strNewLabel, strHeading, false))
         {
           g_settings.UpdateBookmark(strType, strLabel, "name", strNewLabel);
@@ -221,9 +223,22 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
         if (!CheckMasterCode(iLockMode)) return false;
         // edit path
         CStdString strNewPath = strPath;
-        CStdString strHeading = g_localizeStrings.Get(752);
+        CStdString strHeading = g_localizeStrings.Get(bMyProgramsMenu ? 755 : 752);
         if (CGUIDialogKeyboard::ShowAndGetInput(strNewPath, strHeading, false))
         {
+          if (bMyProgramsMenu)
+          { // get a path depth
+            CStdString strNewDepth = "";
+            strHeading = g_localizeStrings.Get(757);
+            if (!(CGUIDialogKeyboard::ShowAndGetInput(strNewDepth, strHeading, false)))
+              return false;
+            if (!(CUtil::IsNaturalNumber(strNewDepth) && 0 < atoi(strNewDepth.c_str()) && 10 > atoi(strNewDepth.c_str())))
+            {
+              CGUIDialogOK::ShowAndGetInput("257","759","760","");
+              return false;
+            }
+            g_settings.UpdateBookmark(strType, strLabel, "depth", strNewDepth);
+          }
           g_settings.UpdateBookmark(strType, strLabel, "path", strNewPath);
           return true;
         }
@@ -233,36 +248,35 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
       {
         if (!CheckMasterCode(iLockMode)) return false;
         // prompt user if they want to really delete the bookmark
-        CGUIDialogYesNo *pDlg = (CGUIDialogYesNo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-        if (pDlg)
-        {
-          pDlg->SetHeading(751);
-          pDlg->SetLine(0, "");
-          pDlg->SetLine(1,750);
-          pDlg->SetLine(2, "");
-          pDlg->DoModal(m_gWindowManager.GetActiveWindow());
-          if (pDlg->IsConfirmed())
+        if (CGUIDialogYesNo::ShowAndGetInput(bMyProgramsMenu ? "758" : "751", "", "750", ""))
           {
             // delete this share
             g_settings.DeleteBookmark(strType, strLabel, strPath);
             return true;
           }
         }
-      }
       break;
     case 4:	 // 4: Add Share
       {
         if (!CheckMasterCode(iLockMode)) return false;
         // Add new share
         CStdString strNewPath;
-        CStdString strHeading = g_localizeStrings.Get(752);	// Share Path
+        CStdString strHeading = g_localizeStrings.Get(bMyProgramsMenu ? 755 : 752);
         if (CGUIDialogKeyboard::ShowAndGetInput(strNewPath, strHeading, false))
         {	// got a valid path
+          CStdString strNewDepth = "";
+          if (bMyProgramsMenu)
+          { // get a path depth
+          CStdString strHeading = g_localizeStrings.Get(757);
+          if (!(CGUIDialogKeyboard::ShowAndGetInput(strNewDepth, strHeading, false)))
+            return false;
+          }
           CStdString strNewName;
-          strHeading = g_localizeStrings.Get(753);	// Share Name
+          CStdString strHeading = g_localizeStrings.Get(bMyProgramsMenu ? 756 : 753);
           if (CGUIDialogKeyboard::ShowAndGetInput(strNewName, strHeading, false))
           {
-            g_settings.AddBookmark(strType, strNewName, strNewPath);
+            // got a valid name, save the bookmark
+            g_settings.AddBookmark(strType, strNewName, strNewPath, atoi(strNewDepth.c_str()));
             return true;
           }
         }
@@ -290,99 +304,33 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
             // set the correct position
             pMenu->SetPosition(iPosX-pMenu->GetWidth()/2, iPosY-pMenu->GetHeight()/2);
             pMenu->DoModal(m_gWindowManager.GetActiveWindow());
+
+            char strLockMode[33];  // holds 32 places plus sign character
+            itoa(pMenu->GetButton(), strLockMode, 10);
+            CStdStringW strNewPassword = L"";
             switch (pMenu->GetButton())
             {
             case 1:	// 1: Numeric Password
-              {
-                CStdStringW strNewPassword = L"";
                 if (!CGUIDialogNumeric::ShowAndGetNewPassword(strNewPassword))
-                  // password entry or re-entry failed
                   return false;
-
-                // password re-entry succeeded
-                g_settings.UpdateBookmark(strType, strLabel, "lockmode", "1");
-                g_settings.UpdateBookmark(strType, strLabel, "lockcode", strNewPassword);
-                g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", "0");
-                return true;
-              }
               break;
-            case 2:	// 2: XBOX gamepad button combo
-              {
-                // Prompt user for password input
-                CStdString strNewPassword = "";
-                CGUIDialogGamepad *pDialog = (CGUIDialogGamepad *)m_gWindowManager.GetWindow(WINDOW_DIALOG_GAMEPAD);
-                pDialog->m_strPassword = "";  // starting out with blank password
-                pDialog->SetHeading( 12340 );
-                pDialog->SetLine( 0, 12330 );
-                pDialog->SetLine( 1, 12331 );
-                pDialog->SetLine( 2, L"" );
-                pDialog->m_bUserInputCleanup = false;
-                pDialog->DoModal(m_gWindowManager.GetActiveWindow());
-
-                if (pDialog->IsConfirmed() && !pDialog->IsCanceled())
-                {
-                  // user entered a blank password
+            case 2:	// 2: Gamepad Password
+              if (!CGUIDialogGamepad::ShowAndGetNewPassword(strNewPassword))
                   return false;
-                }
-                else if (!pDialog->IsConfirmed() && pDialog->IsCanceled())
-                {
-                  // user canceled out
+              break;
+            case 3:	// 3: Fulltext Password
+              if (!CGUIDialogKeyboard::ShowAndGetNewPassword(strNewPassword))
                   return false;
+              break;
+            default: // Not supported, abort
+                return false;
+              break;
                 }
-                // Prompt again for password input, this time sending previous input as the password to verify
-                strNewPassword = pDialog->m_strUserInput;
-                pDialog->m_strPassword = strNewPassword;
-                pDialog->m_strUserInput = "";
-                pDialog->SetHeading( 12341 );
-                pDialog->SetLine( 0, 12330 );
-                pDialog->SetLine( 1, 12331 );
-                pDialog->SetLine( 2, L"" );
-                pDialog->DoModal(m_gWindowManager.GetActiveWindow());
-
-                if (pDialog->IsConfirmed() && !pDialog->IsCanceled())
-                {
-                  // password re-entry succeeded
-                  g_settings.UpdateBookmark(strType, strLabel, "lockmode", "2");
+            // password entry and re-entry succeeded, write out the lock data
+            g_settings.UpdateBookmark(strType, strLabel, "lockmode", strLockMode);
                   g_settings.UpdateBookmark(strType, strLabel, "lockcode", strNewPassword);
                   g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", "0");
                   return true;
-                }
-                return false;
-              }
-              break;
-            case 3:	// 3: Full-text Password
-              {
-                // Prompt user for password input
-                CStdString strNewPassword = "";
-                CStdString strTextInput = "";
-                bool bCanceled = false;
-                bool bConfirmed = false;
-                CStdString strHeading = g_localizeStrings.Get(12340);
-                bCanceled = !CGUIDialogKeyboard::ShowAndGetInput(strNewPassword, strHeading, false);
-
-                if (bCanceled || "" == strNewPassword)
-                {
-                  // user canceled out or entered a blank password
-                  return false;
-                }
-
-                // Re-enter password input
-                strHeading = g_localizeStrings.Get(12341);
-                bCanceled = !CGUIDialogKeyboard::ShowAndGetInput(strTextInput, strHeading, false);
-                bConfirmed = (!bCanceled && (strTextInput == strNewPassword));
-
-                if (bConfirmed && !bCanceled)
-                {
-                  // password re-entry succeeded
-                  g_settings.UpdateBookmark(strType, strLabel, "lockmode", "3");
-                  g_settings.UpdateBookmark(strType, strLabel, "lockcode", strNewPassword);
-                  g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", "0");
-                  return true;
-                }
-                return false;
-              }
-              break;
-            }
           }
         }
         else if (LOCK_MODE_EVERYONE < iLockMode && bMaxRetryExceeded)  // 5: Reset Share Lock

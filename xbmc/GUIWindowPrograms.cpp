@@ -22,6 +22,7 @@
 #include <algorithm>
 #include "AutoSwitch.h"
 #include "GUIPassword.h"
+#include "GUIDialogContextMenu.h"
 
 using namespace AUTOPTR;
 using namespace DIRECTORY;
@@ -251,6 +252,26 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 					int iItem=msg.GetParam1();
 					OnClick(iItem);
 				}
+        else if (ACTION_CONTEXT_MENU==iAction)
+        {
+          CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
+					g_graphicsContext.SendMessage(msg);
+          int iItem=msg.GetParam1();
+          if (OnPopupMenu(iItem))
+          { // update bookmark buttons
+            int iStartID=100;
+            for (int i=0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
+            {
+              CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
+              SET_CONTROL_VISIBLE(i+iStartID);
+              SET_CONTROL_LABEL(i+iStartID,share.strName);
+            }
+            // erase the button following the last updated button
+            // incase the user just deleted a bookmark
+            SET_CONTROL_HIDDEN((int)g_settings.m_vecMyProgramsBookmarks.size()+iStartID);
+            SET_CONTROL_LABEL((int)g_settings.m_vecMyProgramsBookmarks.size()+iStartID,"");
+          }
+        }
 			}
 			else if (iControl >= 100 && iControl <= 110)
 			{
@@ -259,6 +280,12 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				if (iShare < (int)g_settings.m_vecMyProgramsBookmarks.size())
 				{
 					CShare share = g_settings.m_vecMyProgramsBookmarks[iControl-100];
+          // do nothing if the bookmark is locked, and update the panel with new bookmark settings
+          if ( !CGUIPassword::IsItemUnlocked( &share, "myprograms" ) )
+          {
+            UpdateDir("");
+            return false;
+          }
 					m_shareDirectory=share.strPath;    // since m_strDirectory can change, we always want something that won't.
 					m_strDirectory=share.strPath;
 					m_strBookmarkName=share.strName;
@@ -270,6 +297,37 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 	}
 
 	return CGUIWindow::OnMessage(message);
+}
+
+bool CGUIWindowPrograms::OnPopupMenu(int iItem)
+{
+	// calculate our position
+	int iPosX=200;
+	int iPosY=100;
+	const CGUIControl *pList = GetControl(CONTROL_LIST);
+	if (pList)
+	{
+		iPosX = pList->GetXPosition()+pList->GetWidth()/2;
+		iPosY = pList->GetYPosition()+pList->GetHeight()/2;
+	}	
+	if ( m_strDirectory.IsEmpty() )
+	{
+		// mark the item
+		m_vecItems[iItem]->Select(true);
+		
+		bool bMaxRetryExceeded=false;
+		if (g_stSettings.m_iMasterLockMaxRetry!=0)
+			bMaxRetryExceeded=!(m_vecItems[iItem]->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry);
+		
+		// and do the popup menu
+		if (CGUIDialogContextMenu::BookmarksMenu("myprograms", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, bMaxRetryExceeded, iPosX, iPosY))
+		{
+			Update("");
+			return true;
+		}
+		m_vecItems[iItem]->Select(false);
+	}
+  return false;
 }
 
 void CGUIWindowPrograms::Render()
@@ -460,6 +518,9 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 			pItem->m_bIsShareOrDrive=false;
 			pItem->m_bIsFolder=true;
 			pItem->m_idepth=share.m_iDepthSize;
+      pItem->m_iLockMode=share.m_iLockMode;
+      pItem->m_strLockCode=share.m_strLockCode;
+      pItem->m_iBadPwdCount=share.m_iBadPwdCount;
 			CUtil::Tokenize(sharePath, vecShares, ",");
 			CStdString strThumb;
 			for (int j=0; j < (int)vecShares.size(); j++)    // use the first folder image that we find
@@ -612,11 +673,9 @@ void CGUIWindowPrograms::OnClick(int iItem)
 	CFileItem* pItem=m_vecItems[iItem];
 	if (pItem->m_bIsFolder)
 	{
-        
-/* LOCKSBUG: I get link errors when enabling this
-    if ( !HaveBookmarkPermissions( pItem, "programs" ) )
+    // do nothing if the bookmark is locked
+    if ( !CGUIPassword::IsItemUnlocked( pItem, "myprograms" ) )
       return;
-*/
 
 		if (m_strDirectory=="")
 			m_shareDirectory=pItem->m_strPath;
@@ -1082,6 +1141,7 @@ void CGUIWindowPrograms::ShowThumbPanel()
 /// \brief Call to go to parent folder
 void CGUIWindowPrograms::GoParentFolder()
 {
-	CStdString strPath=m_strParentPath;
-	Update(strPath);
+	//CStdString strPath=m_strParentPath;
+  m_strDirectory=m_strParentPath;
+	Update(m_strDirectory);
 }
