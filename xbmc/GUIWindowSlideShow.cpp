@@ -234,8 +234,18 @@ void CGUIWindowSlideShow::Render()
 	RECT source;
 	source.left=m_iZoomLeft;
 	source.top=m_iZoomTop;
-	source.right=source.left + m_iZoomWidth;
-	source.bottom=source.top + m_iZoomHeight;
+	// Overlays don't like being more than 2047 pixels source file in 1 dimension
+	// this will need to be changed if the max image size is increased or decreased
+	// perhaps we can implement "viewing based on resolution" for zooming?
+	// ie Zoom will reload the file if necessary?
+	if (m_iZoomWidth > 2047)
+		source.right=source.left + 2047;
+	else
+		source.right=source.left + m_iZoomWidth;
+	if (m_iZoomHeight > 2047)
+		source.bottom=source.top + 2047;
+	else
+		source.bottom=source.top + m_iZoomHeight;
 	RECT dest;
 	dest.left=x;
 	dest.top=y;
@@ -706,11 +716,21 @@ void CGUIWindowSlideShow::RenderPause()
 
 void CGUIWindowSlideShow::DoRotate()
 {
-	if (m_pSurfaceBackGround) m_pSurfaceBackGround->Release();
-	if (m_pTextureBackGround) m_pTextureBackGround->Release();
+	if (m_pSurfaceBackGround)
+	{
+		m_pSurfaceBackGround->Release();
+		m_pSurfaceBackGround = NULL;
+	}
+	if (m_pTextureBackGround)
+	{
+		m_pTextureBackGround->Release();
+		m_pTextureBackGround = NULL;
+	}
 	CPicture picture;
+	g_graphicsContext.Get3DDevice()->EnableOverlay(false);
 	m_pTextureBackGround=picture.Load(m_strBackgroundSlide, m_iRotate,MAX_PICTURE_WIDTH,MAX_PICTURE_HEIGHT, false);
 	m_pTextureBackGround->GetSurfaceLevel(0, &m_pSurfaceBackGround);
+	g_graphicsContext.Get3DDevice()->EnableOverlay(true);
 	m_dwWidthBackGround=picture.GetWidth();
 	m_dwHeightBackGround=picture.GetHeight();
 	m_iZoomFactor=1;
