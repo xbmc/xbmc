@@ -20,6 +20,7 @@ public:
   virtual void OnAction(const CAction &action);
   virtual void OnMouse();
   virtual void Render();
+  virtual void OnWindowLoaded();
   void RenderFullScreen();
   bool NeedRenderFullScreen();
   bool OSDVisible() const;

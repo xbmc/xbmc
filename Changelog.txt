@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 22-03-2005 fixed: Harddisk spin up when fast fowarding (or display of any control in full screen video).
   - 22-03-2005 fixed: The settings table in the video database needs clearing out for audio stream problems.
   - 21-03-2005 changed: dvd thumbs are no longer considered remote so they are cached regardless of the FindRemoteThumbs setting 
   - 21-03-2005 fixed: correct album thumbs are displayed when multiple albums are in the same directory (be sure to enable ID3 tag reading before scanning)
