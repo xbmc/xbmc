@@ -404,7 +404,6 @@ void CGUIWindowPrograms::OnClick(int iItem)
 
 
 		m_gWindowManager.DeInitialize();
-		CSectionLoader::UnloadAll();
 
 		g_application.Stop();
     if (strlen(szParameters))
