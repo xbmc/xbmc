@@ -33,7 +33,7 @@
 #include "XBVideoConfig.h"
 #include "GUIStandardWindow.h"
 #include "utils/LED.h"
-
+#include "LangCodeExpander.h"
 
 
 // uncomment this if you want to use release libs in the debug build.
