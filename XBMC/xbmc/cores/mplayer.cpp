@@ -100,11 +100,6 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		if( !m_pDLL->ResolveImports()  )
 		{
 			OutputDebugString("cmplayer::openfile() resolve imports failed\n");
-#ifndef _DEBUG
-			delete m_pDLL;
-			m_pDLL=false;
-			return false;
-#endif
 		}
 
 		OutputDebugString("cmplayer::openfile() load functions\n");

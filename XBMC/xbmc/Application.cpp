@@ -7,7 +7,7 @@
 #include "stdstring.h"
 #include "cores/playercorefactory.h"
 #include "playlistplayer.h"
-
+#include "musicdatabase.h"
 using namespace PLAYLIST;
 
 #ifdef _DEBUG
@@ -21,7 +21,7 @@ using namespace PLAYLIST;
 	#pragma comment (lib,"xbmc/lib/sqlLite/libSQLited.lib")    
 	#pragma comment (lib,"guilib/debug/guiLib.lib")				   // -
 	#pragma comment (lib,"xbmc/cores/dllLoader/debug/dllloader.lib")				   // -
-	#pragma comment (lib, "xbmc/lib/libcdio/libcdiod.lib" )
+//	#pragma comment (lib, "xbmc/lib/libcdio/libcdiod.lib" )
 #else
 //  #pragma comment (lib,"lib/filezilla/xbfilezilla.lib")
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")          
@@ -33,7 +33,7 @@ using namespace PLAYLIST;
 	#pragma comment (lib,"xbmc/lib/sqlLite/libSQLite.lib")    
 	#pragma comment (lib,"guiLib/release/guiLib.lib")
 	#pragma comment (lib,"xbmc/cores/dllLoader/release/dllloader.lib")				   // -
-	#pragma comment (lib, "xbmc/lib/libcdio/libcdio.lib" )
+	//#pragma comment (lib, "xbmc/lib/libcdio/libcdio.lib" )
 #endif
 
 
@@ -73,6 +73,7 @@ HRESULT CApplication::Create()
 		helper.Unmount("Q:");
 		helper.Mount("Q:",szDevicePath);	
 	}
+
 
 	string strSkinPath=strPath;
 	strSkinPath+=CStdString("\\skin");
@@ -220,8 +221,9 @@ HRESULT CApplication::Initialize()
 	m_guiWindowVideoOverlay.AllocResources();
 	m_guiWindowFullScreen.AllocResources();
 	CUtil::RemoveTempFiles();
+	
 	//	Start Thread for DVD Mediatype detection
-	m_DetectDVDType.Create( true );
+	//m_DetectDVDType.Create( false);
 
 	return S_OK;
 }
@@ -642,7 +644,8 @@ void CApplication::Stop()
 		delete m_pPlayer;
 		m_pPlayer=NULL;
 	}
-	m_DetectDVDType.StopThread();
+
+	//m_DetectDVDType.StopThread();
 	m_sntpClient.StopThread();
 	m_guiMusicOverlay.FreeResources();
 	m_guiWindowVideoOverlay.FreeResources();

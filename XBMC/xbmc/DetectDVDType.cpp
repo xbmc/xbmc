@@ -223,14 +223,17 @@ DWORD CDetectDVDMedia::GetTrayState()
 //	Wait for drive, to finish media detection.
 void CDetectDVDMedia::WaitMediaReady()
 {
+#if 0
 	m_muReadingMedia.Wait();
 	m_muReadingMedia.Release();
+#endif
 }
 
 //	Static function
 //	Whether a disc is in drive
 bool CDetectDVDMedia::IsDiscInDrive()
 {
+#if 0
 	m_muReadingMedia.Wait();
 	if ( m_DriveState != DRIVE_CLOSED_MEDIA_PRESENT ) {
 		m_muReadingMedia.Release();
@@ -238,6 +241,7 @@ bool CDetectDVDMedia::IsDiscInDrive()
 	}
 
 	m_muReadingMedia.Release();
+#endif
 	return true;
 }
 
