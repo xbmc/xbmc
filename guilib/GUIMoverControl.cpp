@@ -18,7 +18,7 @@ CGUIMoverControl::CGUIMoverControl(DWORD dwParentID, DWORD dwControlId, int iPos
 	m_fAnalogSpeed = 2.0f;	// TODO: implement correct analog speed
 	m_fAcceleration = 0.2f;	// TODO: implement correct computation of acceleration
 	m_fMaxSpeed = 10.0;		// TODO: implement correct computation of maxspeed
-	ControlType = GUICONTROL_MOVE;
+	ControlType = GUICONTROL_MOVER;
 	SetLimits(0,0,720,576);	// defaults
 	SetLocation(0,0,false);		// defaults
 }

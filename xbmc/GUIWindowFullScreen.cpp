@@ -44,6 +44,12 @@
 #define IMG_16X       20
 #define IMG_32X       21
 
+#define IMG_2Xr	      117
+#define IMG_4Xr		  118
+#define IMG_8Xr		  119
+#define IMG_16Xr	  120
+#define IMG_32Xr      121
+
 #define LABEL_CURRENT_TIME 22
 
 #define STATUS_NO_INFO 0
@@ -623,51 +629,65 @@ void CGUIWindowFullScreen::RenderFullScreen()
     OnMessage(msg);
   }	
 
+    // check if we have bidirectional controls and set controlIds
+    bool bRewIcons = (GetControl(IMG_2Xr)!=NULL);
+
   int iSpeed=g_application.GetPlaySpeed();
+	// hide all speed indicators first
+		SET_CONTROL_HIDDEN(GetID(),IMG_2X);
+		SET_CONTROL_HIDDEN(GetID(),IMG_4X);
+		SET_CONTROL_HIDDEN(GetID(),IMG_8X);
+		SET_CONTROL_HIDDEN(GetID(),IMG_16X);
+		SET_CONTROL_HIDDEN(GetID(),IMG_32X);
+
+    if(bRewIcons)
+		{
+	    SET_CONTROL_HIDDEN(GetID(),IMG_2Xr);
+	    SET_CONTROL_HIDDEN(GetID(),IMG_4Xr);
+	    SET_CONTROL_HIDDEN(GetID(),IMG_8Xr);
+	    SET_CONTROL_HIDDEN(GetID(),IMG_16Xr);
+	    SET_CONTROL_HIDDEN(GetID(),IMG_32Xr);
+		}
+
 	if(iSpeed!=1)
-	{
-		SET_CONTROL_HIDDEN(GetID(),IMG_2X);
-		SET_CONTROL_HIDDEN(GetID(),IMG_4X);
-		SET_CONTROL_HIDDEN(GetID(),IMG_8X);
-		SET_CONTROL_HIDDEN(GetID(),IMG_16X);
-		SET_CONTROL_HIDDEN(GetID(),IMG_32X);
+		{
 		bRenderGUI=true;
-		if(iSpeed == 2 || iSpeed == -2)
+        switch(iSpeed)
 		{
-			SET_CONTROL_VISIBLE(GetID(),IMG_2X);
-		}
-		else if(iSpeed == 4 || iSpeed == -4)
-		{
-			SET_CONTROL_VISIBLE(GetID(),IMG_4X);
-		}
-		else if(iSpeed == 8 || iSpeed == -8)
-		{
+            case 2:
+		        SET_CONTROL_VISIBLE(GetID(),IMG_2X);
+                break;
+            case -2:
+                SET_CONTROL_VISIBLE(GetID(),bRewIcons?IMG_2Xr:IMG_2X);
+                break;
+            case 4:
+			    SET_CONTROL_VISIBLE(GetID(),IMG_4X);
+                break;
+            case -4:
+                SET_CONTROL_VISIBLE(GetID(),bRewIcons?IMG_4Xr:IMG_4X);
+                break;
+            case 8:
 			SET_CONTROL_VISIBLE(GetID(),IMG_8X);
-		}
-		else if(iSpeed == 16 || iSpeed == -16)
-		{
+                break;
+            case -8:
+                SET_CONTROL_VISIBLE(GetID(),bRewIcons?IMG_8Xr:IMG_8X);
+                break;
+            case 16:
 			SET_CONTROL_VISIBLE(GetID(),IMG_16X);
-		}
-		else if(iSpeed == 32 || iSpeed == -32)
-		{
+                break;
+            case -16:
+                SET_CONTROL_VISIBLE(GetID(),bRewIcons?IMG_16Xr:IMG_16X);
+                break;
+            case 32:
 			SET_CONTROL_VISIBLE(GetID(),IMG_32X);
+                break;
+            case -32:
+                SET_CONTROL_VISIBLE(GetID(),bRewIcons?IMG_32Xr:IMG_32X);
+                break;
+            default:
+            	// do nothing, leave them all invisible
+                break;
 		}
-		else
-		{
-			SET_CONTROL_HIDDEN(GetID(),IMG_2X);
-			SET_CONTROL_HIDDEN(GetID(),IMG_4X);
-			SET_CONTROL_HIDDEN(GetID(),IMG_8X);
-			SET_CONTROL_HIDDEN(GetID(),IMG_16X);
-			SET_CONTROL_HIDDEN(GetID(),IMG_32X);
-		}
-	}
-	else
-	{
-		SET_CONTROL_HIDDEN(GetID(),IMG_2X);
-		SET_CONTROL_HIDDEN(GetID(),IMG_4X);
-		SET_CONTROL_HIDDEN(GetID(),IMG_8X);
-		SET_CONTROL_HIDDEN(GetID(),IMG_16X);
-		SET_CONTROL_HIDDEN(GetID(),IMG_32X);
 	}
 
 	// Render current time if requested
