@@ -16,6 +16,11 @@
 #define BTN_OSD_AUDIO 14
 #define BTN_OSD_SUBTITLE 15
 
+#define MENU_ACTION_AVDELAY       1 
+#define MENU_ACTION_SEEK          2
+#define MENU_ACTION_SUBTITLEDELAY 3
+#define MENU_ACTION_SUBTITLEONOFF 4
+
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 :CGUIWindow(0)
 {
@@ -43,8 +48,8 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   //  - language
   
   COSDSubMenu videoMenu(291,100,100);
-  COSDOptionFloatRange optionAVDelay(297,-10.0f,10.0f,0.01f,0.0f);
-  COSDOptionIntRange   optionPercentage(298,0,100,1,0);
+  COSDOptionFloatRange optionAVDelay(MENU_ACTION_AVDELAY,297,-10.0f,10.0f,0.01f,0.0f);
+  COSDOptionIntRange   optionPercentage(MENU_ACTION_SEEK,298,0,100,1,0);
   videoMenu.AddOption(&optionAVDelay);
   videoMenu.AddOption(&optionPercentage);
   
@@ -52,8 +57,8 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   COSDSubMenu audioMenu(292,100,100);
 
   COSDSubMenu SubtitleMenu(293,100,100);
-  COSDOptionFloatRange optionSubtitleDelay(303,-10.0f,10.0f,0.01f,0.0f);
-  COSDOptionBoolean    optionEnable(305);
+  COSDOptionFloatRange optionSubtitleDelay(MENU_ACTION_SUBTITLEDELAY,303,-10.0f,10.0f,0.01f,0.0f);
+  COSDOptionBoolean    optionEnable(MENU_ACTION_SUBTITLEONOFF,305);
 
   SubtitleMenu.AddOption(&optionSubtitleDelay);
   SubtitleMenu.AddOption(&optionEnable);
@@ -82,7 +87,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		  break;
 
 		  default:
-        m_osdMenu.OnAction(action);
+        m_osdMenu.OnAction(*this,action);
         SET_CONTROL_FOCUS(GetID(), m_osdMenu.GetSelectedMenu()+BTN_OSD_VIDEO); 
 		  break;
     }
@@ -359,4 +364,8 @@ void CGUIWindowFullScreen::ShowOSD()
 bool CGUIWindowFullScreen::OSDVisible() const
 {
   return m_bOSDVisible;
+}
+
+void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
+{
 }

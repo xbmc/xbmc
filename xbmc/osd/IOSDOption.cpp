@@ -1,4 +1,5 @@
 #include ".\iosdoption.h"
+#include ".\iexecutor.h"
 using namespace OSD;
 IOSDOption::IOSDOption()
 {

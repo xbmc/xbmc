@@ -1377,6 +1377,9 @@
 			Name="osd"
 			Filter="">
 			<File
+				RelativePath=".\xbmc\osd\IExecutor.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\osd\IOSDOption.cpp">
 			</File>
 			<File

@@ -2,9 +2,11 @@
 #include "guiwindow.h"
 #include "guiwindowmanager.h"
 #include "osd/osdmenu.h"
+#include "osd/iexecutor.h"
 using namespace OSD;
 class CGUIWindowFullScreen :
-  public CGUIWindow
+  public CGUIWindow,
+  public IExecutor
 {
 public:
   CGUIWindowFullScreen(void);
@@ -14,7 +16,8 @@ public:
 	virtual void		Render();
 	void				    RenderFullScreen();
   bool            OSDVisible() const;
-
+  
+   virtual void   OnExecute(int iAction, const IOSDOption* option);
 private:
   void            ShowOSD();
   void            HideOSD();

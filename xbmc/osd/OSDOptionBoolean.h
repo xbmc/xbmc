@@ -1,14 +1,15 @@
 #pragma once
 #include "iosdoption.h"
-#include "GUIImage.h"
+#include "IExecutor.h" 
+#include "GUICheckMarkControl.h"
 namespace OSD
 {
 	class COSDOptionBoolean :
 		public IOSDOption
 	{
 	public:
-		COSDOptionBoolean(int iHeading);
-		COSDOptionBoolean(int iHeading,bool bValue);
+		COSDOptionBoolean(int iAction,int iHeading);
+		COSDOptionBoolean(int iAction,int iHeading,bool bValue);
 		COSDOptionBoolean(const COSDOptionBoolean& option);
 		const OSD::COSDOptionBoolean& operator = (const COSDOptionBoolean& option);
 
@@ -16,9 +17,10 @@ namespace OSD
 		virtual ~COSDOptionBoolean(void);
 		virtual IOSDOption* Clone() const;
 		virtual void Draw(int x, int y, bool bFocus=false, bool bSelected=false);
-		virtual bool OnAction(const CAction& action);
+		virtual bool OnAction(IExecutor& executor, const CAction& action);
 	private:
-		bool	      m_bValue;
-    CGUIImage   m_image;
+    int                    m_iAction;
+		bool	                 m_bValue;
+    CGUICheckMarkControl   m_image;
 	};
 };
