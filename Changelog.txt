@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 30-09-2004 fixed: [ 1026946 ] Back did not work in My Programs when Flattening was off
   - 28-09-2004 added: new tag to XBoxMediaCenter.xml to allow the controller deadzone to be adjusted
   - 28-09-2004 fixed: Volume bar was offscreen in PAL60 modes
   - 27-09-2004 updated: German language file
