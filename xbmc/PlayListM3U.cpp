@@ -49,8 +49,14 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 	CUtil::RemoveCRLF(strLine);
 	if (strLine != M3U_START_MARKER)
 	{
-		file.Close();
-		return false;
+    CStdString strFileName=szLine;
+    CUtil::RemoveCRLF(strFileName);
+    if (strFileName.size()>1)
+    {
+      CUtil::GetQualifiedFilename(strBasePath,strFileName);
+      CPlayListItem newItem(strFileName, strFileName, 0);
+      Add(newItem);
+    }
 	}
 
 	while (file.ReadString(szLine,1024 ) )
@@ -75,9 +81,12 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 				{
 					CStdString strFileName=szLine;
 					CUtil::RemoveCRLF(strFileName);
-					CUtil::GetQualifiedFilename(strBasePath,strFileName);
-					CPlayListItem newItem(strInfo,strFileName,lDuration);
-					Add(newItem);
+          if (strFileName.size()>1)
+          {
+					  CUtil::GetQualifiedFilename(strBasePath,strFileName);
+					  CPlayListItem newItem(strInfo,strFileName,lDuration);
+					  Add(newItem);
+          }
 				}
 				else
 				{
@@ -90,9 +99,12 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 		{
 			CStdString strFileName=szLine;
 			CUtil::RemoveCRLF(strFileName);
-			CUtil::GetQualifiedFilename(strBasePath,strFileName);
-			CPlayListItem newItem(strFileName, strFileName, 0);
-			Add(newItem);
+      if (strFileName.size()>1)
+      {
+			  CUtil::GetQualifiedFilename(strBasePath,strFileName);
+			  CPlayListItem newItem(strFileName, strFileName, 0);
+			  Add(newItem);
+      }
 		}
 	}
 
