@@ -35,6 +35,7 @@ public:
 	virtual void		GetAudioInfo( CStdString& strAudioInfo)=0;
 	virtual void		GetVideoInfo( CStdString& strVideoInfo)=0;
 	virtual void		GetGeneralInfo( CStdString& strVideoInfo)=0;
+	virtual void    Update()=0;
 protected:
 	IPlayerCallback& m_callback;
 };

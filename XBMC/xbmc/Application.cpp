@@ -347,7 +347,7 @@ void CApplication::Render()
 
 void CApplication::OnKey(CKey& key)
 {
-	if (g_application.IsPlayingVideo() )
+	if ( IsPlayingVideo() )
 	{
 		if ( key.GetButtonCode() == KEY_BUTTON_X  || key.GetButtonCode() == KEY_REMOTE_MENU)
 		{
@@ -358,7 +358,8 @@ void CApplication::OnKey(CKey& key)
 			m_pd3dDevice->BlockUntilVerticalBlank();      
 			Sleep(50);
 			m_pd3dDevice->BlockUntilVerticalBlank();      
-
+			Sleep(200);
+			m_pPlayer->Update();
 			return;
 		}
 		if (g_graphicsContext.IsFullScreenVideo())

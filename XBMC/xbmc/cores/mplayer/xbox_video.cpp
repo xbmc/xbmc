@@ -69,6 +69,7 @@ static directx_fourcc_caps g_ddpf[] =
 };
 #define NUM_FORMATS (sizeof(g_ddpf) / sizeof(g_ddpf[0]))
 
+static void video_flip_page(void);
 
 //********************************************************************************************************
 void restore_resolution()
@@ -86,7 +87,7 @@ void restore_resolution()
 
 //********************************************************************************************************
 void choose_best_resolution(bool bPal60Allowed)
-{ 
+{
   D3DPRESENT_PARAMETERS params, orgparams;
 	g_application.GetD3DParameters(params);
 	g_application.GetD3DParameters(orgparams);
@@ -581,6 +582,42 @@ static void video_flip_page(void)
 	}
 }
 
+
+void xbox_video_update()
+{
+	bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
+	if ( m_bFullScreen != bFullScreen )
+	{
+		m_bFullScreen= bFullScreen;
+		g_graphicsContext.Lock();
+		if (m_bFullScreen) 
+		{
+			choose_best_resolution(m_bPal60Allowed);
+		}
+		else 
+		{
+			restore_resolution();
+		}
+		g_graphicsContext.Unlock();
+	}
+	Directx_ManageDisplay(d_image_width,d_image_height);
+	if ( g_graphicsContext.IsFullScreenVideo() )
+	{
+		g_graphicsContext.Lock();
+		g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+		g_application.RenderFullScreen();
+	  g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
+		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, TRUE, 0x00010001  );
+		g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
+		g_graphicsContext.Unlock();
+	}
+	else
+	{
+		g_graphicsContext.Lock();
+		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, TRUE, 0x00010001  );
+		g_graphicsContext.Unlock();
+	}
+}
 /********************************************************************************************************
   draw_frame(): this is the older interface, this displays only complete
 	frames, and can do only packed format (YUY2, RGB/BGR).
