@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 12-02-2005 fixed: Rebuilt image libs - seems to cure TIFF loading issues.
   - 10-02-2005 updated: Korean language file (Thnx to akoakoako)
   - 10-02-2005 fixed: Weather localization.
   - 10-02-2005 fixed: [ 1119893 ] XLink Kai window freezes after chatting then pressing left
