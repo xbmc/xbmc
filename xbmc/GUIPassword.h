@@ -2,6 +2,7 @@
 #include "guidialog.h"
 #include "guiwindow.h"
 #include "FileItem.h"
+#include "settings.h"
 
 class CGUIPassword :
 	public CGUIDialog
@@ -17,6 +18,7 @@ public:
 	int							m_iRetries;
 	bool						m_bUserInputCleanup;
 	static bool     IsItemUnlocked(CFileItem* pItem, const CStdString &strType);
+	static bool     IsItemUnlocked(CShare* pItem, const CStdString &strType);
   static bool     IsMasterLockUnlocked(bool bPromptUser);
   static void            UpdateMasterLockRetryCount(bool bResetCount);
 protected:

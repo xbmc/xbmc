@@ -8,6 +8,7 @@
 #include "../util.h"
 #include "log.h"
 #include "localizestrings.h"
+#include "../settings.h"
 #include "HTMLUtil.h"
 using namespace HTML;
 #pragma warning (disable:4018)
@@ -607,7 +608,7 @@ void CIMDB::RemoveAllAfter(char* szMovie,const char* szSearch)
 
 void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL)
 {
-	char szURL[1024];
+//	char szURL[1024];
 	char szMovie[1024];
 	CIMDBUrl url;
 	bool bSkip=false;
@@ -704,7 +705,7 @@ void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL)
 	RemoveAllAfter(szMovie,"+limited+");
 	RemoveAllAfter(szMovie,"+rerip+");
   
-	CStdString strHTML;
-	sprintf(szURL,"http://us.imdb.com/Tsearch?title=%s", szMovie);
-	strURL = szURL;
+//	sprintf(szURL,"http://us.imdb.com/Tsearch?title=%s", szMovie);
+//	strURL = szURL;
+	strURL.Format("http://%s/Tsearch?title=%s", g_stSettings.m_szIMDBurl, szMovie);
 }

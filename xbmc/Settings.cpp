@@ -194,6 +194,7 @@ CSettings::CSettings(void)
 	strcpy( g_stSettings.m_szDefaultFiles, "");
 	strcpy( g_stSettings.m_szDefaultVideos, "");
 	strcpy( g_stSettings.m_szCDDBIpAdres,"");
+	strcpy( g_stSettings.m_szIMDBurl,"");
 	strcpy (g_stSettings.m_szMusicRecordingDirectory,"");
 
 	g_stSettings.m_bMyMusicSongInfoInVis=true;
@@ -392,8 +393,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 	if (g_stSettings.m_szCDDBIpAdres == "194.97.4.18")
 		GetString(pRootElement, "CDDBIpAddress", g_stSettings.m_szCDDBIpAdres,"194.97.4.18");
 	//g_stSettings.m_bUseCDDB=GetBoolean(pRootElement, "CDDBEnabled");
-
-
+	GetString(pRootElement, "IMDBAddress", g_stSettings.m_szIMDBurl,"akas.imdb.com");
 
 	GetString(pRootElement, "thumbnails",g_stSettings.szThumbnailsDirectory,"");
 	GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory,"");
@@ -1453,7 +1453,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strO
 	if (!LoadXml()) return false;
 
 	VECSHARES *pShares = NULL;
-	if (strType == "programs") pShares = &m_vecMyProgramsBookmarks;
+	if (strType == "myprograms") pShares = &m_vecMyProgramsBookmarks;
 	if (strType == "files") pShares = &m_vecMyFilesShares;
 	if (strType == "music") pShares = &m_vecMyMusicShares;
 	if (strType == "video") pShares = &m_vecMyVideoShares;
@@ -1469,6 +1469,8 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strO
        	(*it).strName = strUpdateText;
      	else if ("path" == strUpdateElement)
        	(*it).strPath = strUpdateText;
+      else if ("depth" == strUpdateElement)
+       	(*it).m_iDepthSize = atoi(strUpdateText);
      	else if ("lockmode" == strUpdateElement)
        	(*it).m_iLockMode = atoi(strUpdateText);
      	else if ("lockcode" == strUpdateElement)
@@ -1521,6 +1523,7 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString &strN
 	if (!LoadXml()) return false;
 
 	VECSHARES *pShares = NULL;
+  if (strType == "myprograms") pShares = &m_vecMyProgramsBookmarks;
 	if (strType == "files") pShares = &m_vecMyFilesShares;
 	if (strType == "music") pShares = &m_vecMyMusicShares;
 	if (strType == "video") pShares = &m_vecMyVideoShares;
@@ -1569,9 +1572,15 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString &strN
 
 bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath)
 {
+  return AddBookmark(strType, strName, strPath, 0);
+}
+
+bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath, const int iDepth)
+{
 	if (!LoadXml()) return false;
 
 	VECSHARES *pShares = NULL;
+  if (strType == "myprograms") pShares = &m_vecMyProgramsBookmarks;
 	if (strType == "files") pShares = &m_vecMyFilesShares;
 	if (strType == "music") pShares = &m_vecMyMusicShares;
 	if (strType == "video") pShares = &m_vecMyVideoShares;
@@ -1583,8 +1592,14 @@ bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName
 	share.strName=strName;
 	share.strPath=strPath;
 	share.m_iBufferSize=0;
-	share.m_iDepthSize=1;
-	CStdString strPath1=share.strPath;
+  share.m_iDepthSize=1;
+  bool bSaveDepth = false;
+  if (iDepth > 0)
+  {
+	  share.m_iDepthSize=iDepth;
+    bSaveDepth = true;
+  }
+ 	CStdString strPath1=share.strPath;
 	strPath1.ToUpper();
 	if (strPath1.Left(4)=="UDF:")
 	{
@@ -1603,6 +1618,10 @@ bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName
 		share.m_iDriveType = SHARE_TYPE_LOCAL;
 	else
 		share.m_iDriveType = SHARE_TYPE_UNKNOWN;
+  // Initialize the lock settings to unlocked state
+  share.m_iLockMode = 0;
+  share.m_strLockCode = "";
+  share.m_iBadPwdCount = 0;
 
 	pShares->push_back(share);
 
@@ -1615,14 +1634,22 @@ bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName
 	// create a new Element
 	TiXmlText xmlName(strName);
 	TiXmlText xmlPath(strPath);
+	CStdString strDepth;
+	strDepth.Format("%i", share.m_iDepthSize);
+	TiXmlText xmlDepth(strDepth);
 	TiXmlElement eName("name");
 	TiXmlElement ePath("path");
+  TiXmlElement eDepth("depth");
 	eName.InsertEndChild(xmlName);
 	ePath.InsertEndChild(xmlPath);
+  if (bSaveDepth)
+	  eDepth.InsertEndChild(xmlDepth);
 
 	TiXmlElement bookmark("bookmark");
 	bookmark.InsertEndChild(eName);
 	bookmark.InsertEndChild(ePath);
+  if (bSaveDepth)
+	  bookmark.InsertEndChild(eDepth);
 
 	if (pNode)
 	{
