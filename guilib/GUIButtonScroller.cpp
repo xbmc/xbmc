@@ -394,8 +394,13 @@ void CGUIButtonScroller::OnUp()
 {
 	if (m_bHorizontal)
 		CGUIControl::OnUp();
-	else if (!m_bWrapAround && m_iOffset + m_iCurrentSlot == 0 && m_dwControlUp != GetID())
-    CGUIControl::OnUp();  // not wrapping around, and we're up the top + our next control is different
+	else if (!m_bWrapAround && m_iOffset + m_iCurrentSlot == 0)
+  {
+    if (m_dwControlUp != GetID())
+      CGUIControl::OnUp();  // not wrapping around, and we're up the top + our next control is different
+    else
+      SetActiveButton((int)m_vecButtons.size() - 1);   // move to the last button in the list
+  }
   else
 		DoUp();
 }
@@ -404,8 +409,13 @@ void CGUIButtonScroller::OnDown()
 {
 	if (m_bHorizontal)
 		CGUIControl::OnDown();
-  else if (!m_bWrapAround && m_iOffset + m_iCurrentSlot == m_vecButtons.size()-1 && m_dwControlDown != GetID())
-    CGUIControl::OnDown();  // not wrapping around, and we're down the bottom + our next control is different
+  else if (!m_bWrapAround && m_iOffset + m_iCurrentSlot == m_vecButtons.size()-1)
+  {
+    if (m_dwControlUp != GetID())
+      CGUIControl::OnDown();  // not wrapping around, and we're down the bottom + our next control is different
+    else
+      SetActiveButton(0);   // move to the first button in the list
+  }
 	else
 		DoDown();
 }
