@@ -26,9 +26,6 @@ protected:
 	void OnClickOnlineGaming(CGUIMessage& aMessage);
 	void UpdateButtonScroller();
 
-	VOID GetDate(WCHAR* szDate, LPSYSTEMTIME pTime);
-	VOID GetTime(WCHAR* szTime, LPSYSTEMTIME pTime);
-
 	IDirect3DTexture8* m_pTexture;
 	int m_iLastControl;
 	int m_iLastMenuOption;

@@ -13,7 +13,7 @@
 #include "Credits.h"
 #include "GUIButtonScroller.h"
 #include "GUIConditionalButtonControl.h"
-//#include "GUIDialogContextMenu.h"
+#include "utils/GUIInfoManager.h"
 
 #define CONTROL_BTN_SHUTDOWN		10
 #define CONTROL_BTN_DASHBOARD		11
@@ -174,19 +174,9 @@ void CGUIWindowHome::OnAction(const CAction &action)
 
 void CGUIWindowHome::Render()
 {
-  WCHAR szText[128];
+	SET_CONTROL_LABEL(200,g_infoManager.GetDate());
+	SET_CONTROL_LABEL(201,g_infoManager.GetTime());
 
-  SYSTEMTIME time;
-	GetLocalTime(&time);
-
-  GetDate(szText,&time);
-	
-	SET_CONTROL_LABEL(200,szText);
-	SET_CONTROL_LABEL(201,szText);
-
-	GetTime(szText,&time);
-
-	SET_CONTROL_LABEL(201,szText);
 	// set controls 121->160 invisible (these are the focus + nofocus buttons for the button scroller)
 	for (int i=121; i<160; i++)
 	{
@@ -194,74 +184,6 @@ void CGUIWindowHome::Render()
 		if (pControl) pControl->SetVisible(false);
 	}
   CGUIWindow::Render();
-}
-
-
-VOID CGUIWindowHome::GetDate(WCHAR* wszDate, LPSYSTEMTIME pTime)
-{
-	if (!pTime) return;
-	if (!wszDate) return;
-	const WCHAR* day;
-	switch (pTime->wDayOfWeek)
-	{
-    case 1 :	day = g_localizeStrings.Get(11).c_str();	break;
-		case 2 :	day = g_localizeStrings.Get(12).c_str();	break;
-		case 3 :	day = g_localizeStrings.Get(13).c_str();	break;
-		case 4 :	day = g_localizeStrings.Get(14).c_str();	break;
-		case 5 :	day = g_localizeStrings.Get(15).c_str();	break;
-		case 6 :	day = g_localizeStrings.Get(16).c_str();	break;
-		default:	day = g_localizeStrings.Get(17).c_str();	break;
-	}
-
-	const WCHAR* month;
-	switch (pTime->wMonth)
-	{
-		case 1 :	month= g_localizeStrings.Get(21).c_str();	break;
-		case 2 :	month= g_localizeStrings.Get(22).c_str();	break;
-		case 3 :	month= g_localizeStrings.Get(23).c_str();	break;
-		case 4 :	month= g_localizeStrings.Get(24).c_str();	break;
-		case 5 :	month= g_localizeStrings.Get(25).c_str();	break;
-		case 6 :	month= g_localizeStrings.Get(26).c_str();	break;
-		case 7 :	month= g_localizeStrings.Get(27).c_str();	break;
-		case 8 :	month= g_localizeStrings.Get(28).c_str();	break;
-		case 9 :	month= g_localizeStrings.Get(29).c_str();	break;
-		case 10:	month= g_localizeStrings.Get(30).c_str();	break;
-		case 11:	month= g_localizeStrings.Get(31).c_str();	break;
-		default:	month= g_localizeStrings.Get(32).c_str();	break;
-	}
-
-	if (day && month)
-	{
-		if (g_guiSettings.GetBool("LookAndFeel.SwapMonthAndDay"))
-			swprintf(wszDate,L"%s, %d %s", day, pTime->wDay, month);
-		else
-			swprintf(wszDate,L"%s, %s %d", day, month, pTime->wDay);
-	}
-	else
-		swprintf(wszDate,L"no date");
-}
-
-VOID CGUIWindowHome::GetTime(WCHAR* szTime, LPSYSTEMTIME pTime)
-{
-	if (!szTime) return;
-	if (!pTime) return;
-	INT iHour = pTime->wHour;
-
-	if (g_guiSettings.GetBool("LookAndFeel.Clock12Hour"))
-	{
-		if (iHour>11)
-		{
-			iHour-=(12*(iHour>12));
-			swprintf(szTime,L"%2d:%02d PM", iHour, pTime->wMinute);
-		}
-		else
-		{
-			iHour+=(12*(iHour<1));
-			swprintf(szTime,L"%2d:%02d AM", iHour, pTime->wMinute);
-		}
-	}
-	else
-		swprintf(szTime,L"%02d:%02d", iHour, pTime->wMinute);
 }
 
 void CGUIWindowHome::UpdateButtonScroller()

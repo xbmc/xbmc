@@ -8,7 +8,7 @@
 #include "util.h"
 #include "GUILabelControl.h"
 #include "GUICheckMarkControl.h"
-#include "GUIWindowWeather.h"
+#include "utils/Weather.h"
 #include "MusicDatabase.h"
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
@@ -745,7 +745,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 		{
 			strSearch.Replace(" ", "+");
 			CStdString strResult = ((CSettingString *)pSettingControl->GetSetting())->GetData();
-			if (CGUIWindowWeather::GetSearchResults(strSearch, strResult))
+			if (g_weatherManager.GetSearchResults(strSearch, strResult))
 				((CSettingString *)pSettingControl->GetSetting())->SetData(strResult);
 		}
 	}
