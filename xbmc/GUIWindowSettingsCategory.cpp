@@ -660,7 +660,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 														g_guiSettings.GetBool("PostProcessing.Enable") &&
 														!g_guiSettings.GetBool("PostProcessing.Auto"));
 		}
-		else if (strSetting == "PostProcessing.VerticalDeBlocking" || strSetting == "PostProcessing.HorizontalDeBlocking" ||
+		else if (strSetting == "Filters.NoiseLevel")
+		{
+			CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
+			pControl->SetEnabled(g_guiSettings.GetBool("Filters.Noise"));
+		}
+    else if (strSetting == "PostProcessing.VerticalDeBlocking" || strSetting == "PostProcessing.HorizontalDeBlocking" ||
 							strSetting == "PostProcessing.AutoBrightnessContrastLevels" || strSetting == "PostProcessing.DeRing")
 		{
 			CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());

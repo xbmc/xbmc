@@ -396,6 +396,8 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 		m_vecOptions.push_back("-noflip-hebrew");
 	}
 
+  //Setup any video filter we want, ie postprocessing, noise...
+  strTmp.Empty(); 
 	if ( g_guiSettings.GetBool("PostProcessing.Enable") )
 	{
 		if (g_guiSettings.GetBool("PostProcessing.Auto") && !g_guiSettings.GetBool("PostProcessing.DeInterlace"))
@@ -403,16 +405,13 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 			// enable auto quality &postprocessing 
 			m_vecOptions.push_back("-autoq");
 			m_vecOptions.push_back("100");
-			m_vecOptions.push_back("-vop");
-			m_vecOptions.push_back("pp");      
+      strTmp = "pp";
 		}
 		else
 		{
 			// manual postprocessing
-			CStdString strOpt;
-			strTmp = "pp=";
+			CStdString strOpt;      
 			bool bAddComma(false);
-			m_vecOptions.push_back("-vop");
 			if ( g_guiSettings.GetBool("PostProcessing.DeInterlace") )
 			{
 				// add deinterlace filter
@@ -425,10 +424,9 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 			{
 				// add dering filter
 				if (bAddComma) strTmp +="/";
-				if (g_guiSettings.GetInt("PostProcessing.VerticalDeBlockLevel")>0) strOpt.Format("vb:%i",g_guiSettings.GetInt("PostProcessing.VerticalDeBlockLevel"));
-				else strOpt="dr";
+        strOpt="dr";
 				bAddComma=true;
-				strTmp += strOpt;
+				strTmp += "dr";
 			}
 			if (g_guiSettings.GetBool("PostProcessing.VerticalDeBlocking"))
 			{
@@ -446,7 +444,6 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 				if (g_guiSettings.GetInt("PostProcessing.HorizontalDeBlockLevel")>0) strOpt.Format("hb:%i",g_guiSettings.GetInt("PostProcessing.HorizontalDeBlockLevel"));
 				else strOpt="hb:a";
 				bAddComma=true;
-
 				strTmp += strOpt;
 			}
 			if (g_guiSettings.GetBool("PostProcessing.AutoBrightnessContrastLevels"))
@@ -457,9 +454,29 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 				bAddComma=true;
 				strTmp += strOpt;
 			}
-			m_vecOptions.push_back(strTmp);
+      //Only enable post processing if something is selected
+      if(strTmp.size() > 0)
+        strTmp.Insert(0, "pp=");        
 		}
 	}
+
+  if( g_guiSettings.GetBool("Filters.Noise") )
+  {
+    CStdString strOpt;
+    if(strTmp.size() > 0)
+      strTmp += ",";
+    
+    strOpt.Format("noise=%dta:%dta", g_guiSettings.GetInt("Filters.NoiseLevel"), g_guiSettings.GetInt("Filters.NoiseLevel"));
+    strTmp += strOpt;
+  }
+
+  //Check if we wanted any video filters
+  if(strTmp.size() > 0)
+  {
+	  m_vecOptions.push_back("-vf");
+    m_vecOptions.push_back(strTmp);
+  }
+
 
 	if (m_fVolumeAmplification > 0.1f || m_fVolumeAmplification < -0.1f)
 	{
@@ -1412,8 +1429,7 @@ void      CMPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
   {
     if(!g_LangCodeExpander.Lookup(strStreamName, sub.name))
     {
-      strStreamName = "UNKNOWN:";
-		  strStreamName += sub.name;
+		  strStreamName = sub.name;
     }
 	}
 	else
