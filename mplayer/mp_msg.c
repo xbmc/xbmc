@@ -1,8 +1,3 @@
-#ifdef _XBOX
-//disable fflush for now to allow <mplayerdebug>true</mplayerdebug> in xbmc
-//we can remove this later!
-#define fflush(x) {}
-#endif
 
 //#define MSG_USE_COLORS
 
@@ -26,6 +21,13 @@ extern void gtkMessageBox( int type,char * str );
 extern int use_gui;
 #endif
 #include "mp_msg.h"
+
+
+#ifdef _XBOX
+//disable fflush for now to allow <mplayerdebug>true</mplayerdebug> in xbmc
+//we can remove this later!
+#define fflush(x) {};
+#endif
 
 /* maximum message length of mp_msg */
 #define MSGSIZE_MAX 3072
