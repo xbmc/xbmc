@@ -234,6 +234,7 @@ public:
 		char      szDefaultVisualisation[256];
 		bool		  m_bUseFDrive;
 		bool		  m_bUseGDrive;
+		bool			m_bUsePCDVDROM;
 		bool			m_bDetectAsIso;
 		bool			m_bAudioOnAllSpeakers;
 		int				m_iChannels;

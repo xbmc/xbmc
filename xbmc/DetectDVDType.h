@@ -48,6 +48,9 @@ namespace MEDIA_DETECT
 		static CCriticalSection	m_muReadingMedia;
 
 		static int				m_DriveState;
+		static time_t			m_LastPoll;
+		static CDetectDVDMedia* m_pInstance;
+
 
 		static CCdInfo*		m_pCdInfo;
 

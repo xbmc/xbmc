@@ -14,6 +14,8 @@ CCriticalSection CDetectDVDMedia::m_muReadingMedia;
 CEvent					 CDetectDVDMedia::m_evAutorun;
 int							 CDetectDVDMedia::m_DriveState = DRIVE_CLOSED_NO_MEDIA;
 CCdInfo*				 CDetectDVDMedia::m_pCdInfo = NULL;
+time_t	CDetectDVDMedia::m_LastPoll = 0;
+CDetectDVDMedia* CDetectDVDMedia::m_pInstance = NULL;
 
 CDetectDVDMedia::CDetectDVDMedia()
 {
@@ -21,6 +23,7 @@ CDetectDVDMedia::CDetectDVDMedia()
 	m_bStop = false;
 	m_dwLastTrayState=0;
 	m_bStartup = true;		//	Do not autorun on startup
+	m_pInstance = this;
 }
 
 CDetectDVDMedia::~CDetectDVDMedia()
@@ -35,7 +38,12 @@ void CDetectDVDMedia::OnStartup()
 
 void CDetectDVDMedia::Process() 
 {
-	while ( !m_bStop ) 
+	if (g_stSettings.m_bUsePCDVDROM)
+	{
+		m_DriveState = DRIVE_CLOSED_MEDIA_PRESENT;
+	}
+
+	while (( !m_bStop ) && (!g_stSettings.m_bUsePCDVDROM)) 
 	{
 		Sleep(500);
 		UpdateDvdrom();
@@ -350,6 +358,26 @@ bool CDetectDVDMedia::IsDiscInDrive()
 	if ( m_DriveState != DRIVE_CLOSED_MEDIA_PRESENT ) {
 		bResult = false;
 	}
+
+	if (g_stSettings.m_bUsePCDVDROM)
+	{
+		// allow the application to poll once every five seconds
+		if ((clock()-m_LastPoll)>5000)
+		{
+			CLog::Log("Polling PC-DVDROM...");
+
+			CIoSupport helper;
+			if (helper.Remount("D:","Cdrom0")==S_OK)
+			{
+				if (m_pInstance)
+				{
+					m_pInstance->DetectMediaType();
+				}
+			}
+			m_LastPoll = clock();
+		}
+	}
+
 	return bResult;
 }
 
