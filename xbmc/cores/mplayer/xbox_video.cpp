@@ -35,6 +35,7 @@
 
 #include "PixelShaderRenderer.h"
 #include "OverlayRenderer.h"
+#include "ComboRenderer.h"
 
 static void video_flip_page(void);
 void video_uninit(void);
@@ -119,10 +120,13 @@ unsigned int CXBoxRenderManager::PreInit(const char *arg)
 	{
 		if (!m_pRenderer)
 		{	// no renderer
-			if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS ||
-				  g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS_FAST)
+			if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS)
 			{
 				m_pRenderer = new COverlayRenderer(g_graphicsContext.Get3DDevice());
+			}
+			else if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_COMBO)
+			{
+				m_pRenderer = new CComboRenderer(g_graphicsContext.Get3DDevice());
 			}
 			else
 				m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
