@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+  - 11-10-2004 fixed: My Programs, "&" symbol in path causes problems with shortcuts [sf bug #1043578] 
   - 11-10-2004 changed: Portuguese (Brazil) language file (Thnx to wellingtontu)
   - 11-10-2004 fixed: my programs, exception when no default path is set
   - 10-10-2004 fixed: Various network settings didn't exit properly when BACK was pressed
