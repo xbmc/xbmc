@@ -514,6 +514,23 @@ int CGUIWindow::GetFocusControl()
   }
   return -1;
 }
+
+void CGUIWindow::SelectPreviousControl()
+{
+  int i=GetFocusControl()+1;
+  while (1)
+  {
+    if ( i < 0 || i >= (int)m_vecControls.size() )
+    {
+      i=(int)m_vecControls.size();
+    }
+    if (m_vecControls[i]->CanFocus()) break;
+    else i--;
+  }
+  CGUIMessage msgSetFocus(GUI_MSG_SETFOCUS,GetID(),m_vecControls[i]->GetID() );
+  g_graphicsContext.SendMessage(msgSetFocus);
+}
+
 void CGUIWindow::SelectNextControl()
 {
   int i=GetFocusControl()+1;

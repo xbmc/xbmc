@@ -32,6 +32,7 @@ public:
 	void								Remove(DWORD dwId);
   int             		GetFocusControl();
   void            		SelectNextControl();
+	void                SelectPreviousControl();
   DWORD           		GetID(void) const;
 	void								SetID(DWORD dwID);
 	DWORD								GetPreviousWindowID(void) const;
