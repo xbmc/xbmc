@@ -68,19 +68,11 @@ static int										m_iOSDBuffer;
 static bool										m_SubsOnOSD;
 
 // YV12 decoder textures
-static D3DTexture             m_YTexture[NUM_BUFFERS];
-static D3DTexture             m_UTexture[NUM_BUFFERS];
-static D3DTexture             m_VTexture[NUM_BUFFERS];
-static D3DTexture             m_RGBTexture[NUM_BUFFERS];
-static void*                  m_YUVTextureBuffer[NUM_BUFFERS];
-static void*                  m_RGBTextureBuffer[NUM_BUFFERS];
+static LPDIRECT3DTEXTURE8     m_YTexture[NUM_BUFFERS];
+static LPDIRECT3DTEXTURE8     m_UTexture[NUM_BUFFERS];
+static LPDIRECT3DTEXTURE8     m_VTexture[NUM_BUFFERS];
+static LPDIRECT3DTEXTURE8     m_RGBTexture[NUM_BUFFERS];
 static DWORD                  m_hPixelShader = 0;
-static int                    ytexture_pitch;
-static int                    uvtexture_pitch;
-static int										ytexture_height; // aligned heights
-static int										uvtexture_height;
-static int                    rgbtexture_pitch;
-static int										rgbtexture_height; // aligned heights
 static int                    m_iYUVDecodeBuffer;
 static int                    m_iRGBRenderBuffer;
 static int                    m_iRGBDecodeBuffer;
@@ -268,43 +260,41 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 {
 	g_graphicsContext.Lock();
 
-	// Calculate texture pitches - must have a stride that is a multiple of 64 bytes
-	ytexture_pitch = (image_width + 63) & ~63;
-	uvtexture_pitch = (image_width/2 + 63) & ~63;
-	rgbtexture_pitch = (image_width*4 + 63) & ~63;
-
-	int yw = (image_width + 1) & ~1; // make sure it's even
-	int uvw = (image_width/2 + 1) & ~1; // make sure it's even
-	ytexture_height = (image_height + 1) & ~1; // make sure it's even
-	uvtexture_height = (image_height/2 + 1) & ~1; // make sure it's even
-	rgbtexture_height = ytexture_height;
-
 	for (int i = 0; i < NUM_BUFFERS; ++i)
 	{
-		// Create texture buffers
-		if (m_YUVTextureBuffer[i])
-			XPhysicalFree(m_YUVTextureBuffer[i]);
-		m_YUVTextureBuffer[i] = (BYTE*)XPhysicalAlloc(ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height*2, MAXULONG_PTR, 128, PAGE_READWRITE | PAGE_WRITECOMBINE);
+		// setup textures as linear luminance only textures, the pixel shader handles translation to RGB
+		if (m_YTexture[i])
+			m_YTexture[i]->Release();
+		g_graphicsContext.Get3DDevice()->CreateTexture(image_width, image_height, 1, 0, D3DFMT_LIN_L8, 0, &m_YTexture[i]);
+		if (m_UTexture[i])
+			m_UTexture[i]->Release();
+		g_graphicsContext.Get3DDevice()->CreateTexture(image_width/2, image_height/2, 1, 0, D3DFMT_LIN_L8, 0, &m_UTexture[i]);
+		if (m_VTexture[i])
+			m_VTexture[i]->Release();
+		g_graphicsContext.Get3DDevice()->CreateTexture(image_width/2, image_height/2, 1, 0, D3DFMT_LIN_L8, 0, &m_VTexture[i]);
 
-		if (m_RGBTextureBuffer[i])
-			XPhysicalFree(m_RGBTextureBuffer[i]);
-		m_RGBTextureBuffer[i] = (BYTE*)XPhysicalAlloc(rgbtexture_pitch*rgbtexture_height, MAXULONG_PTR, 128, PAGE_READWRITE | PAGE_WRITECOMBINE);
+		// RGB conversion buffer
+		if (m_RGBTexture[i])
+			m_RGBTexture[i]->Release();
+		g_graphicsContext.Get3DDevice()->CreateTexture(image_width, image_height, 1, 0, D3DFMT_LIN_X8R8G8B8, 0, &m_RGBTexture[i]);
 
 		// blank the textures (just in case)
-		fast_memset(m_YUVTextureBuffer[i], 0, ytexture_pitch*ytexture_height);
-		fast_memset((char*)m_YUVTextureBuffer[i] + ytexture_pitch*ytexture_height, 128, uvtexture_pitch*uvtexture_height*2);
-		fast_memset(m_RGBTextureBuffer[i], 0, rgbtexture_pitch*rgbtexture_height);
+		D3DLOCKED_RECT lr;
+		m_YTexture[i]->LockRect(0, &lr, NULL, 0);
+		fast_memset(lr.pBits, 0, lr.Pitch*image_height);
+		m_YTexture[i]->UnlockRect(0);
 
-		// setup textures as linear luminance only textures, the pixel shader handles translation to RGB
-		// YV12 is Y plane then V plane then U plane, U and V are half as wide and high
-		XGSetTextureHeader(yw, ytexture_height, 1, 0, D3DFMT_LIN_L8, 0, &m_YTexture[i], 0, ytexture_pitch);
-		XGSetTextureHeader(uvw, uvtexture_height, 1, 0, D3DFMT_LIN_L8, 0, &m_UTexture[i], ytexture_pitch*ytexture_height, uvtexture_pitch);
-		XGSetTextureHeader(uvw, uvtexture_height, 1, 0, D3DFMT_LIN_L8, 0, &m_VTexture[i], ytexture_pitch*ytexture_height+uvtexture_pitch*uvtexture_height, uvtexture_pitch);
-		XGSetTextureHeader(yw, rgbtexture_height, 1, 0, D3DFMT_LIN_X8R8G8B8, 0, &m_RGBTexture[i], 0, rgbtexture_pitch);
-		m_YTexture[i].Register(m_YUVTextureBuffer[i]);
-		m_UTexture[i].Register(m_YUVTextureBuffer[i]);
-		m_VTexture[i].Register(m_YUVTextureBuffer[i]);
-		m_RGBTexture[i].Register(m_RGBTextureBuffer[i]);
+		m_UTexture[i]->LockRect(0, &lr, NULL, 0);
+		fast_memset(lr.pBits, 128, lr.Pitch*(image_height/2));
+		m_UTexture[i]->UnlockRect(0);
+
+		m_VTexture[i]->LockRect(0, &lr, NULL, 0);
+		fast_memset(lr.pBits, 128, lr.Pitch*(image_height/2));
+		m_VTexture[i]->UnlockRect(0);
+
+		m_RGBTexture[i]->LockRect(0, &lr, NULL, 0);
+		fast_memset(lr.pBits, 0, lr.Pitch*image_height);
+		m_RGBTexture[i]->UnlockRect(0);
 	}
 
 	// Create osd textures
@@ -588,10 +578,15 @@ static void video_uninit(void)
 
 	for (int i=0; i < NUM_BUFFERS; i++)
 	{
-		if (m_YUVTextureBuffer[i]) XPhysicalFree(m_YUVTextureBuffer[i]);
-		m_YUVTextureBuffer[i] = NULL;
-		if (m_RGBTextureBuffer[i]) XPhysicalFree(m_RGBTextureBuffer[i]);
-		m_RGBTextureBuffer[i] = NULL;
+		if (m_YTexture[i])
+			m_YTexture[i]->Release();
+		if (m_UTexture[i])
+			m_UTexture[i]->Release();
+		if (m_VTexture[i])
+			m_VTexture[i]->Release();
+
+		if (m_RGBTexture[i])
+			m_RGBTexture[i]->Release();
 	}
 	// subtitle and osd stuff
 	for (int i = 0; i < 2; ++i)
@@ -635,21 +630,18 @@ static unsigned int video_preinit(const char *arg)
 
 static void YV12ToRGB()
 {
-	if (!m_YUVTextureBuffer[m_iYUVDecodeBuffer]) return;
-	if (!m_RGBTextureBuffer[m_iRGBDecodeBuffer]) return;
-
-	while (m_RGBTexture[m_iRGBDecodeBuffer].IsBusy()) Sleep(1);
+	while (m_RGBTexture[m_iRGBDecodeBuffer]->IsBusy()) Sleep(1);
 
 	g_graphicsContext.Lock();
 
 	LPDIRECT3DSURFACE8 pOldRT, pNewRT;
-	m_RGBTexture[m_iRGBDecodeBuffer].GetSurfaceLevel(0, &pNewRT);
+	m_RGBTexture[m_iRGBDecodeBuffer]->GetSurfaceLevel(0, &pNewRT);
 	g_graphicsContext.Get3DDevice()->GetRenderTarget(&pOldRT);
 	g_graphicsContext.Get3DDevice()->SetRenderTarget(pNewRT, NULL);
 
-	g_graphicsContext.Get3DDevice()->SetTexture( 0, &m_YTexture[m_iYUVDecodeBuffer]);
-	g_graphicsContext.Get3DDevice()->SetTexture( 1, &m_UTexture[m_iYUVDecodeBuffer]);
-	g_graphicsContext.Get3DDevice()->SetTexture( 2, &m_VTexture[m_iYUVDecodeBuffer]);
+	g_graphicsContext.Get3DDevice()->SetTexture( 0, m_YTexture[m_iYUVDecodeBuffer]);
+	g_graphicsContext.Get3DDevice()->SetTexture( 1, m_UTexture[m_iYUVDecodeBuffer]);
+	g_graphicsContext.Get3DDevice()->SetTexture( 2, m_VTexture[m_iYUVDecodeBuffer]);
 	for (int i = 0; i < 3; ++i)
 	{
 		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
@@ -668,7 +660,13 @@ static void YV12ToRGB()
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ZERO );
 	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_YV12VERTEX );
+
 	// Render the image
+	float w = float(image_width / 2);
+	float h = float(image_height / 2);
+
+	g_graphicsContext.Get3DDevice()->SetScreenSpaceOffset(-0.5f, -0.5f); // fix texel align
+
 	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, 0 );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, 0 );
@@ -676,18 +674,18 @@ static void YV12ToRGB()
 	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, 0, 0, 0, 0 );
 
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)image_width, 0 );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)image_width*0.5f, 0 );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)image_width*0.5f, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, w, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, w, 0 );
 	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)image_width, 0, 0, 0 );
 
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)image_width, (float)image_height );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)image_width*0.5f, (float)image_height*0.5f );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)image_width*0.5f, (float)image_height*0.5f );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, w, h );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, w, h );
 	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)image_width, (float)image_height, 0, 0 );
 
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, (float)image_height );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, (float)image_height*0.5f );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, 0, (float)image_height*0.5f );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, h );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, 0, h );
 	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, 0, (float)image_height, 0, 0 );
 	g_graphicsContext.Get3DDevice()->End();
 
@@ -699,6 +697,8 @@ static void YV12ToRGB()
 	pOldRT->Release();
 	pNewRT->Release();
 
+	g_graphicsContext.Get3DDevice()->SetScreenSpaceOffset(0, 0);
+
 	++m_iRGBDecodeBuffer %= NUM_BUFFERS;
 
 	g_graphicsContext.Unlock();
@@ -709,41 +709,50 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
   BYTE *s;
   BYTE *d;
   DWORD i=0;
-  int   iBottom=y+h;
+  int iBottom=y+h;
   int iOrgY=y;
   int iOrgH=h;
 
-	while (m_YTexture[m_iYUVDecodeBuffer].IsBusy()) Sleep(1);
-	while (m_UTexture[m_iYUVDecodeBuffer].IsBusy()) Sleep(1);
-	while (m_VTexture[m_iYUVDecodeBuffer].IsBusy()) Sleep(1);
+	while (m_YTexture[m_iYUVDecodeBuffer]->IsBusy()) Sleep(1);
+	while (m_UTexture[m_iYUVDecodeBuffer]->IsBusy()) Sleep(1);
+	while (m_VTexture[m_iYUVDecodeBuffer]->IsBusy()) Sleep(1);
+
+	D3DLOCKED_RECT lr;
 
   // copy Y
-  d=(BYTE*)m_YUVTextureBuffer[m_iYUVDecodeBuffer]+ytexture_pitch*y+x;                
+	m_YTexture[m_iYUVDecodeBuffer]->LockRect(0, &lr, NULL, 0);
+  d=(BYTE*)lr.pBits + lr.Pitch*y + x;
   s=src[0];                           
   for(i=0;i<(DWORD)h;i++){
-    fast_memcpy(d,s,w);                  
+    memcpy(d,s,w);                  
     s+=stride[0];                  
-    d+=ytexture_pitch;
+    d+=lr.Pitch;
   }
+	m_YTexture[m_iYUVDecodeBuffer]->UnlockRect(0);
     
 	w/=2;h/=2;x/=2;y/=2;
 	
 	// copy U
-  d=(BYTE*)m_YUVTextureBuffer[m_iYUVDecodeBuffer] + ytexture_pitch*ytexture_height+ uvtexture_pitch*y+x;
+	m_UTexture[m_iYUVDecodeBuffer]->LockRect(0, &lr, NULL, 0);
+  d=(BYTE*)lr.pBits + lr.Pitch*y + x;
   s=src[1];
   for(i=0;i<(DWORD)h;i++){
-    fast_memcpy(d,s,w);
+    memcpy(d,s,w);
     s+=stride[1];
-    d+=uvtexture_pitch;
+    d+=lr.Pitch;
   }
+	m_UTexture[m_iYUVDecodeBuffer]->UnlockRect(0);
+
 	// copy V
-  d=(BYTE*)m_YUVTextureBuffer[m_iYUVDecodeBuffer] + ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height+ uvtexture_pitch*y+x;
+	m_VTexture[m_iYUVDecodeBuffer]->LockRect(0, &lr, NULL, 0);
+  d=(BYTE*)lr.pBits + lr.Pitch*y + x;
   s=src[2];
   for(i=0;i<(DWORD)h;i++){
-    fast_memcpy(d,s,w);
+    memcpy(d,s,w);
     s+=stride[2];
-    d+=uvtexture_pitch;
+    d+=lr.Pitch;
   }
+	m_VTexture[m_iYUVDecodeBuffer]->UnlockRect(0);
 
   if (iBottom+1>=(int)image_height)
   {
@@ -884,8 +893,7 @@ void xbox_video_render_osd()
 void xbox_video_render()
 {
   if (m_iRGBRenderBuffer<0 || m_iRGBRenderBuffer >= NUM_BUFFERS) return;
-	if (!m_RGBTextureBuffer[m_iRGBRenderBuffer]) return;
-  g_graphicsContext.Get3DDevice()->SetTexture( 0, &m_RGBTexture[m_iRGBRenderBuffer]);
+  g_graphicsContext.Get3DDevice()->SetTexture( 0, m_RGBTexture[m_iRGBRenderBuffer]);
 
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
@@ -932,17 +940,16 @@ static void video_flip_page(void)
 {
   if (m_bPauseDrawing) return;
   
-	int nextbuf = (m_iRGBRenderBuffer+1) % NUM_BUFFERS;
 	if (m_bFlip<=0)
   {
     return;
   }
 	m_bFlip--;
-  m_iRGBRenderBuffer = nextbuf;
+  ++m_iRGBRenderBuffer %= NUM_BUFFERS;
 //	m_pSubtitleYTexture[m_iBackBuffer]->UnlockRect(0);
 //	m_pSubtitleATexture[m_iBackBuffer]->UnlockRect(0);
 //	m_iBackBuffer = 1-m_iBackBuffer;
-  
+
 	Directx_ManageDisplay();
 
 	g_graphicsContext.Lock();
@@ -1024,18 +1031,15 @@ void xbox_video_render_update()
 {
   if (m_iRGBRenderBuffer < 0 || m_iRGBRenderBuffer >=NUM_BUFFERS) return;
   bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
-	if (m_RGBTextureBuffer[m_iRGBRenderBuffer])
-	{
-		g_graphicsContext.Lock();
-		xbox_video_render();
-//    if ( bFullScreen )
-//    {
-//		  xbox_video_update_subtitle_position();
-//		  xbox_video_render_subtitles();
-//    }
+	g_graphicsContext.Lock();
+	xbox_video_render();
+//	if ( bFullScreen )
+//	{
+//		xbox_video_update_subtitle_position();
+//		xbox_video_render_subtitles();
+//	}
 
-		g_graphicsContext.Unlock();
-	}
+	g_graphicsContext.Unlock();
 }
 
 
@@ -1079,49 +1083,42 @@ static unsigned int put_image(mp_image_t *mpi)
   DWORD w = mpi->w;
   DWORD h = mpi->h;
 
-	while (m_YTexture[m_iYUVDecodeBuffer].IsBusy()) Sleep(1);
-	while (m_UTexture[m_iYUVDecodeBuffer].IsBusy()) Sleep(1);
-	while (m_VTexture[m_iYUVDecodeBuffer].IsBusy()) Sleep(1);
+	while (m_YTexture[m_iYUVDecodeBuffer]->IsBusy()) Sleep(1);
+	while (m_UTexture[m_iYUVDecodeBuffer]->IsBusy()) Sleep(1);
+	while (m_VTexture[m_iYUVDecodeBuffer]->IsBusy()) Sleep(1);
 
 	if (mpi->flags&MP_IMGFLAG_PLANAR)
 	{
-    // copy Y
-    byte* image=(byte*)m_YUVTextureBuffer[m_iYUVDecodeBuffer];
-    DWORD dstride=ytexture_pitch;
-    d=image+dstride*y+x;
+		D3DLOCKED_RECT lr;
+
+		m_YTexture[m_iYUVDecodeBuffer]->LockRect(0, &lr, NULL, 0);
+		d=(BYTE*)lr.pBits + lr.Pitch*y + x;
     s=mpi->planes[0];
     for(i=0;i<h;i++)
     {
       fast_memcpy(d,s,w);
       s+=mpi->stride[0];
-      d+=dstride;
+      d+=lr.Pitch;
     }
-    //w/=4;h/=4;x/=4;y/=4;
-    w/=2;
-    h/=2;
-    x/=2;
-    y/=2;
+
+    w/=2;h/=2;x/=2;y/=2;
     
-    // copy V
-    //d=image+dstride*image_height + dstride*y/4+x;
-    dstride=uvtexture_pitch;
-    d=(BYTE*)m_YUVTextureBuffer[m_iYUVDecodeBuffer] + ytexture_pitch*ytexture_height + dstride*y+x;
+		m_UTexture[m_iYUVDecodeBuffer]->LockRect(0, &lr, NULL, 0);
+		d=(BYTE*)lr.pBits + lr.Pitch*y + x;
     s=mpi->planes[1];
     for(i=0;i<h;i++){
       fast_memcpy(d,s,w);
       s+=mpi->stride[1];
-      d+=dstride;
+      d+=lr.Pitch;
     }
 
-
-    // copy U
-    //d=image+dstride*image_height + dstride*image_height/16 + dstride/4*y+x;
-    d=(BYTE*)m_YUVTextureBuffer[m_iYUVDecodeBuffer] + ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height + dstride*y+x;
+		m_VTexture[m_iYUVDecodeBuffer]->LockRect(0, &lr, NULL, 0);
+		d=(BYTE*)lr.pBits + lr.Pitch*y + x;
     s=mpi->planes[2];
     for(i=0;i<h;i++){
       fast_memcpy(d,s,w);
       s+=mpi->stride[2];
-      d+=dstride;
+      d+=lr.Pitch;
     }
 	}
 	else
