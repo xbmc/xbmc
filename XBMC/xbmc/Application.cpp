@@ -248,7 +248,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   Pal = g_graphicsContext.GetVideoResolution() == PAL_4x3;
 
 	if (HaveGamepad)
-		FEH_TextOut(pFont, (Pal ? 16 : 12) | 0x18000, L"Press start to reboot");
+		FEH_TextOut(pFont, (Pal ? 16 : 12) | 0x18000, L"Press any button to reboot");
 
 	// Boot up the network for FTP
 	bool NetworkUp = false;
@@ -484,8 +484,14 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 		{
 			Sleep(50);
 			ReadInput();
-			if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
+			if (m_DefaultGamepad.wPressedButtons || m_DefaultIR_Remote.wButtons)
 				XKUtils::XBOXPowerCycle();
+
+			for (int i = 0; i < 8; ++i)
+			{
+				if (m_DefaultGamepad.bPressedAnalogButtons[i])
+					XKUtils::XBOXPowerCycle();
+			}
 		}
 	}
 	else
