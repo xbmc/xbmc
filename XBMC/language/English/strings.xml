@@ -835,7 +835,7 @@
   <string><id>15059</id><value>Invite accepted!</value></string>
   <string><id>15060</id><value>Message Here</value></string>
   <string><id>15061</id><value>You're invited to play %s.</value></string>
-  <string><id>15062</id><value>Use alternate mplayer core</value></string>
+  <string><id>15062</id><value>Use alternate mplayer location</value></string>
   <string><id>15100</id><value>Nav</value></string>
   <string><id>15101</id><value>Database</value></string>
   <string><id>15102</id><value>* All Albums</value></string>
