@@ -708,17 +708,15 @@
   <string><id>14022</id><value>Bibliotek</value></string>
   <string><id>14023</id><value>Ingen TV</value></string>
   <string><id>14024</id><value>Skriv in största närmaste stad</value></string>
-  <string><id>14025</id><value>Video Cache  - Hårddisk</value></string>
-  <string><id>14026</id><value>          - DVDRom</value></string>
-  <string><id>14027</id><value>          - Lokalt nätverk</value></string>
-  <string><id>14028</id><value>          - Internet</value></string>
-  <string><id>14029</id><value>Ljud Cache   - Hårddisk</value></string>
-  <string><id>14030</id><value>          - DVDRom</value></string>
-  <string><id>14031</id><value>          - Lokalt nätverk</value></string>
-  <string><id>14032</id><value>          - Internet</value></string>
-  <string><id>14033</id><value>DVD Cache    - Hårddisk</value></string>
-  <string><id>14034</id><value>          - DVDRom</value></string>
-  <string><id>14035</id><value>          - Lokalt nätverk</value></string>
+  <string><id>14025</id><value>Video/Audio/DVD Cache - Hårddisk</value></string>
+  <string><id>14026</id><value>Video Cache - DVDRom</value></string>
+  <string><id>14027</id><value>- Lokalt Nätverk</value></string>
+  <string><id>14028</id><value>- Internet</value></string>
+  <string><id>14030</id><value>Audio Cache - DVDRom</value></string>
+  <string><id>14031</id><value>- Lokalt Nätverk</value></string>
+  <string><id>14032</id><value>- Internet</value></string>
+  <string><id>14034</id><value>DVD Cache - DVDRom</value></string>
+  <string><id>14035</id><value>- Lokalt Nätverk</value></string>
   <string><id>14036</id><value>Servrar</value></string>
   <string><id>14037</id><value>Look and Feel</value></string>
   <string><id>14038</id><value>Nätverks inställningar ändrade</value></string>
@@ -742,6 +740,7 @@
   <string><id>14056</id><value>Stoppa scan</value></string>
   <string><id>14057</id><value>Inte möjligt medans du scannar för mediainfo</value></string>
   <string><id>14058</id><value>Lägg till extra fillmbrus</value></string>
+  <string><id>14059</id><value>Leta efter thumbnails i delade mappar på datorn</value></string>
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Tjänsten är inte kontaktbar, vill du försöka</value></string>
   <string><id>15002</id><value>återupprätta anslutningen med XboxMediaCenter?</value></string>
