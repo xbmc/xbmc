@@ -29,7 +29,16 @@ int CXbmcConfiguration::Load()
 {
 	if (!xbmcCfgLoaded)
 	{
-		if (!xbmcCfg.LoadFile("Q:\\XboxMediaCenter.xml")) return -1;
+		// note, we don't use 'Q:\\' here since 'Q:\\' is always mapped to our xbmc home dir
+		// and when using xbmc as dash our configfile has to be loaded from 'c:\\'
+		CStdString strPath;
+		char szXBEFileName[1024];
+		CIoSupport helper;
+		helper.GetXbePath(szXBEFileName);
+		strrchr(szXBEFileName,'\\')[0] = 0;
+		strPath.Format("%s\\%s", szXBEFileName, "XboxMediaCenter.xml");
+
+		if (!xbmcCfg.LoadFile(strPath)) return -1;
 		xbmcCfgLoaded = true;
 	}
 	return 0;
