@@ -246,7 +246,6 @@ bool CGUIWindowWeather::Download(const CStdString& strWeatherFile)
 	strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=%c&dayf=4&prod=xoap&par=%s&key=%s",
 				g_stSettings.m_szWeatherArea[m_iCurWeather], c_units, PARTNER_ID, PARTNER_KEY);
 
-	m_httpGrabber.SetHTTPVer(0);	//set to HTTP/1.0 to download nicely
 	return m_httpGrabber.Download(strURL, strWeatherFile);
 }
 
@@ -266,6 +265,8 @@ bool CGUIWindowWeather::LoadWeather(const CStdString& strWeatherFile)
 		return false;
 
 	TiXmlElement *pRootElement = xmlDoc.RootElement();
+	if (!pRootElement)
+		return false;
 
 	//if root element is 'error' display the error message
 	if(strcmp(pRootElement->Value(), "error") == 0)
