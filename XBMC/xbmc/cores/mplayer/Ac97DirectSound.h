@@ -65,6 +65,7 @@ public:
 	static void CALLBACK StaticStreamCallback(LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus);
 	void						StreamCallback(LPVOID pPacketContext, DWORD dwStatus);
 	virtual int			SetPlaySpeed(int iSpeed);
+	virtual void    WaitCompletion();
 
 private:
 	IAudioCallback* m_pCallback;

@@ -346,4 +346,14 @@ void CAc97DirectSound::UnRegisterAudioCallback()
 	m_pCallback=NULL;
 }
 
-
+void CAc97DirectSound::WaitCompletion()
+{
+	if (!m_pDigitalOutput)
+		return;
+	m_pDigitalOutput->Discontinuity();
+	DWORD status;
+	do {
+		Sleep(10);
+		m_pDigitalOutput->GetStatus(&status);
+	}	while (status & DSSTREAMSTATUS_PLAYING);
+}
