@@ -106,6 +106,7 @@ public:
 	void									Stop();
 	void									LoadSkin(const CStdString& strSkin);
 	void									DelayLoadSkin();
+	void									CancelDelayLoadSkin();
   const CStdString&     CurrentFile();
 	virtual bool					OnMessage(CGUIMessage& message);
 	virtual	void					OnPlayBackEnded();

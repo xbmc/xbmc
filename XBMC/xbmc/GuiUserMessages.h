@@ -27,3 +27,5 @@
 //						 HIWORD Position of the previous playlistitem
 //	lpVoid = Current Playlistitem
 #define GUI_MSG_PLAYLIST_PLAY_NEXT_PREV	GUI_MSG_USER + 7
+
+#define GUI_MSG_LOAD_SKIN	GUI_MSG_USER + 8
