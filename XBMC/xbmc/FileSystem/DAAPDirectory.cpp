@@ -44,8 +44,7 @@ CDAAPDirectory::CDAAPDirectory(void)
 CDAAPDirectory::~CDAAPDirectory(void)
 {
 	//if (m_thisClient) DAAP_Client_Release(m_thisClient);
-
-	free_artists();
+	//free_artists();
 
 	m_thisHost = NULL;
 	m_thisClient = NULL;
@@ -60,9 +59,13 @@ void  CDAAPDirectory::CloseDAAP(void)
 	if (g_application.m_DAAPPtr)
 	{
 		CSectionLoader::Load("LIBXDAAP");
+		if (g_application.m_DAAPArtistPtr) m_artisthead = (artistPTR *) g_application.m_DAAPArtistPtr;
+		free_artists();
 		m_thisClient = (DAAP_SClient *) g_application.m_DAAPPtr;
 		DAAP_Client_Release(m_thisClient);
 		m_thisClient = NULL;
+		g_application.m_DAAPPtr = NULL;
+		g_application.m_DAAPArtistPtr = NULL;
 		CSectionLoader::Unload("LIBXDAAP");
 	}
 	g_application.m_DAAPPtr = NULL;
@@ -125,6 +128,8 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &item
 	// if we have at least one database we should show it's contents
 	if (m_thisHost->nDatabases)
 	{
+		if (g_application.m_DAAPArtistPtr) m_artisthead = (artistPTR *) g_application.m_DAAPArtistPtr;
+
 		// Get the songs from the database if we haven't already
 		if (!m_artisthead)
 		{

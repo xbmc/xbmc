@@ -262,6 +262,7 @@ public:
 	int			m_DAAPDBID;
 	void		*m_DAAPSong;
 	UINT64		m_DAAPSongSize;
+	void		*m_DAAPArtistPtr;
 
 protected:
   void                    UpdateLCD();
