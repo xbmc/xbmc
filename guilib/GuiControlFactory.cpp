@@ -131,6 +131,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	CStdString 	strImage,strImageFocus;
 	int				 	iTextureWidth=80;
 	bool				bHasPath=false;
+	CStdString	strScriptAction="";
 	
 	// get defaults from reference control
 	if (pReference)
@@ -163,6 +164,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextColor			 = ((CGUIButtonControl*)pReference)->GetTextColor();
 			dwDisabledColor  = ((CGUIButtonControl*)pReference)->GetDisabledColor() ;
 			iHyperLink			 = ((CGUIButtonControl*)pReference)->GetHyperLink();
+			strScriptAction	 = ((CGUIButtonControl*)pReference)->GetScriptAction();
 		}
 		if (strType=="togglebutton")
 		{
@@ -320,6 +322,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetString(pControlNode,"font", strFont);
 	GetAlignment(pControlNode,"align", dwAlign);
 	GetInt(pControlNode,"hyperlink",iHyperLink);
+	GetString(pControlNode,"script", strScriptAction);
 	GetHex(pControlNode,"disabledcolor",dwDisabledColor);
 	GetString(pControlNode,"textureFocus",strTextureFocus);
 	GetString(pControlNode,"textureNoFocus",strTextureNoFocus);
@@ -436,6 +439,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       pControl->SetNavigation(up,down,left,right);
       pControl->SetColourDiffuse(dwColorDiffuse);
 			pControl->SetHyperLink(iHyperLink);
+			pControl->SetScriptAction(strScriptAction);
       pControl->SetVisible(bVisible);
       return pControl;
   }

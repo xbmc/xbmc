@@ -1,5 +1,6 @@
 #include "XBPython.h"
 #include "..\..\sectionLoader.h"
+#include "ActionManager.h"
 
 	 /* PY_RW stay's loaded as longs as m_pPythonParser != NULL.
 	  * When someone runs a script for the first time both sections PYTHON and PY_RW
@@ -20,6 +21,12 @@ XBPython::XBPython()
 	InitializeCriticalSection(&m_critSection);
 	m_hEvent = CreateEvent(NULL, false, false, "pythonEvent");
 	dThreadId = GetCurrentThreadId();
+	g_actionManager.SetScriptActionCallback(this);
+}
+
+void XBPython::SendMessage(CGUIMessage& message)
+{
+	evalFile(message.GetStringParam().c_str());
 }
 
 void XBPython::Initialize()

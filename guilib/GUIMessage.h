@@ -112,8 +112,12 @@ public:
 	void						SetLabel(const string& wstrLabel);
 	void						SetLabel(int iString);
 	const wstring&	GetLabel() const;
+	void						SetStringParam(const string& strParam);
+	const string&	GetStringParam() const;
+
 private:
 	wstring 				m_strLabel;
+	string 				m_strParam;
   DWORD 					m_dwSenderID;
   DWORD 					m_dwControlID;
   DWORD 					m_dwMessage;

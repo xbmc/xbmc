@@ -1,7 +1,7 @@
 #include "guibuttoncontrol.h"
 #include "guifontmanager.h"
 #include "guiWindowManager.h"
-
+#include "ActionManager.h"
 
 CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
@@ -66,6 +66,13 @@ void CGUIButtonControl::OnAction(const CAction &action)
 	CGUIControl::OnAction(action);
 	if (action.wID == ACTION_SELECT_ITEM)
 	{
+		if (m_strScriptAction.length() > 0)
+		{
+			CGUIMessage message(GUI_MSG_CLICKED,GetID(), GetParentID());
+			message.SetStringParam(m_strScriptAction);
+			g_actionManager.CallScriptAction(message);
+		}
+
 		if (m_lHyperLinkWindowID >=0)
 		{
 			m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
@@ -164,3 +171,9 @@ void CGUIButtonControl::SetHyperLink(long dwWindowID)
 {
   m_lHyperLinkWindowID=dwWindowID;
 }
+
+void CGUIButtonControl::SetScriptAction(const CStdString& strScriptAction)
+{
+	m_strScriptAction = strScriptAction;
+}
+

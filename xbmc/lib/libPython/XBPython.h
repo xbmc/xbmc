@@ -8,6 +8,7 @@
 #include <xtl.h>
 #include <vector>
 #include "XBPyThread.h"
+#include "IMsgSenderCallback.h"
 
 extern "C" {
 	extern void initxbmc(void);
@@ -25,10 +26,11 @@ typedef struct {
 
 typedef std::vector<PyElem> PyList;
 
-class XBPython
+class XBPython : public IMsgSenderCallback
 {
 public:
 	      XBPython();
+	virtual void SendMessage(CGUIMessage& message);
 	void	Initialize();
 	void	Finalize();
 	void	FreeResources();
