@@ -1,5 +1,5 @@
 <!-- German (AUSTRIA) language for XBMC -->
-<!--     Translation done by CEOMR      --> 
+<!--     Translation done by CEOMR      -->
 <strings>
   <string><id>0</id><value>Programme</value></string>
   <string><id>1</id><value>Eigene Bilder</value></string>
@@ -41,7 +41,7 @@
   <string><id>108</id><value>Diaschau</value></string>
   <string><id>109</id><value>Miniaturansicht</value></string>
   <string><id>110</id><value>Miniaturansicht wird erstellt.</value></string>
-  <string><id>111</id><value>Verknüpfungen</value></string>
+  <string><id>111</id><value>Verknüpfungen</value></string> 
   <string><id>112</id><value>ANGEHALTEN</value></string>
   <string><id>113</id><value>Daten: Quelle</value></string>
   <string><id>114</id><value>Daten: Ziel</value></string>
@@ -121,7 +121,7 @@
   <string><id>188</id><value>Alle auswählen</value></string>
   <string><id>189</id><value>Auslesen von Informationen</value></string>
   <string><id>190</id><value>Speichern</value></string>
-  <string><id>191</id><value>Zufallsgenerator</value></string>
+  <string><id>191</id><value>Wdgb zufällig</value></string>
   <string><id>192</id><value>Löschen</value></string>
   <string><id>193</id><value>Durchsuchen</value></string>
   <string><id>194</id><value>Durchsuche Datenbank..</value></string>
@@ -161,7 +161,7 @@
   <string><id>227</id><value>CDDB aktivieren</value></string>
   <string><id>228</id><value>Zufälliges Abspielen der Wiedergabeliste</value></string>
   <string><id>229</id><value>HDD ausschalten nach</value></string>
-  <string><id>230</id><value>Filter</value></string>
+  <string><id>230</id><value>Video Filter</value></string>
   <string><id>231</id><value>Keine</value></string>
   <string><id>232</id><value>Punkt</value></string>
   <string><id>233</id><value>Linear</value></string>
@@ -170,21 +170,21 @@
   <string><id>236</id><value>Gaussian Cubic</value></string>
   <string><id>237</id><value>Verkleinerung:</value></string>
   <string><id>238</id><value>Vergrößerung:</value></string>
-  <string><id>240</id><value>Autostart einer DVD</value></string>
-  <string><id>241</id><value>Autostart einer VCD/SVCD</value></string>
-  <string><id>242</id><value>Autostart einer Audio-CD</value></string>
-  <string><id>243</id><value>Autostart eines XBOX Spiels</value></string>
-  <string><id>244</id><value>Autostart einer Videodatei</value></string>
-  <string><id>245</id><value>Autostart einer Musikdatei</value></string>
-  <string><id>246</id><value>Autostart einer Bilddatei</value></string>
+  <string><id>240</id><value>DVD</value></string>
+  <string><id>241</id><value>VCD/SVCD</value></string>
+  <string><id>242</id><value>Audio CD</value></string>
+  <string><id>243</id><value>XBOX Spiel von CD/DVD</value></string>
+  <string><id>244</id><value>Videodatei von CD/DVD</value></string>
+  <string><id>245</id><value>Musikdatei von CD/DVD</value></string>
+  <string><id>246</id><value>Bilddatei von CD/DVD</value></string>
   <string><id>247</id><value>Python Skripte</value></string>
   <string><id>248</id><value>Sprache</value></string>
   <string><id>249</id><value>Eigene Musik</value></string>
   <string><id>250</id><value>Visualisierung</value></string>
   <string><id>251</id><value>Ziel Ordner wählen</value></string>
-  <string><id>252</id><value>Ausgabe an alle Lautsprecher</value></string>
+  <string><id>252</id><value>- Ausgabe an alle Lautsprecher</value></string>
   <string><id>253</id><value>Anzahl der Kanäle</value></string>
-  <string><id>254</id><value>Dolby Digital Stereo</value></string>
+  <string><id>254</id><value>- Dolby Digital Stereo</value></string>
   <string><id>255</id><value>CDDB</value></string>
   <string><id>256</id><value>Suche in FreeDB nach CDDB Infos</value></string>
   <string><id>257</id><value>Fehler</value></string>
@@ -193,7 +193,7 @@
   <string><id>260</id><value>Shoutcast</value></string>
   <string><id>261</id><value>Warte auf Start...</value></string>
   <string><id>262</id><value>Skript Ausgabe</value></string>
-  <string><id>263</id><value>HTTP Server aktivieren</value></string>
+  <string><id>263</id><value>Web Server aktivieren</value></string>
   <string><id>264</id><value>Aufnahme</value></string>
   <string><id>265</id><value>Aufnahme Stop</value></string>
   <string><id>266</id><value>n. Track ord.</value></string>
@@ -216,11 +216,11 @@
   <string><id>283</id><value>Resultate:</value></string>
   <string><id>284</id><value>Durchsuchen ohne Erfolg.</value></string>
   <string><id>285</id><value>Deinterlace Filter</value></string>
-  <string><id>286</id><value>Post Processing Filter</value></string>
+  <string><id>286</id><value>Postprocessing Filter</value></string>
   <string><id>287</id><value>Untertitel</value></string>
-  <string><id>288</id><value>Schrift</value></string>
-  <string><id>289</id><value>Größe</value></string>
-  <string><id>290</id><value>Lautstärke (dB)</value></string>
+  <string><id>288</id><value>Schriftart</value></string>
+  <string><id>289</id><value>- Größe</value></string>
+  <string><id>290</id><value>Lautstärke</value></string>
   <string><id>291</id><value>Video</value></string>
   <string><id>292</id><value>Audio</value></string>
   <string><id>293</id><value>Untertitel</value></string>
@@ -236,11 +236,11 @@
   <string><id>304</id><value>Sprache</value></string>
   <string><id>305</id><value>Ein/Aus</value></string>
   <string><id>306</id><value>paralleles Audio/Video</value></string>
-  <string><id>307</id><value>- Automatisch</value></string>
-  <string><id>308</id><value>Vertikaler Deblocking-Filter</value></string>
-  <string><id>309</id><value>Horizontaler Deblocking-Filter</value></string>
-  <string><id>310</id><value>Auto Helligkeit/Kontrast</value></string>
-  <string><id>311</id><value>Dering</value></string>
+  <string><id>307</id><value>- Automatisches Postprocessing</value></string>
+  <string><id>308</id><value>- Vertikaler Deblocking Filter</value></string>
+  <string><id>309</id><value>- Horizontaler Deblocking Filter</value></string>
+  <string><id>310</id><value>- Auto Helligkeit/Kontrast</value></string>
+  <string><id>311</id><value>- Dering</value></string>
   <string><id>312</id><value>(0=auto)</value></string>
   <string><id>313</id><value>Musik Datenbank reorganisieren</value></string>
   <string><id>314</id><value>Daten werden eingelesen...</value></string>
@@ -286,18 +286,18 @@
   <string><id>354</id><value>MatrixSchleifen</value></string>
   <string><id>355</id><value>- Wartezeit</value></string>
   <string><id>356</id><value>Bildschirmschoner</value></string>
-  <string><id>357</id><value>XBOX Ausschalten nach Leerlauf von</value></string>
+  <string><id>357</id><value>XBOX ausschalten nach Leerlauf von</value></string>
   <string><id>358</id><value>Alle Alben</value></string>
   <string><id>359</id><value>Favoriten</value></string>
   <string><id>360</id><value>Bildschirm</value></string>
-  <string><id>361</id><value>rekurs. Diaschau</value></string>
+  <string><id>361</id><value>rekurs. Diaschau</value></string> 
   <string><id>362</id><value>- Dimmerungsstärke</value></string>
-  <string><id>363</id><value>n. Datei ord.</value></string>
-  <string><id>364</id><value>DD/DTS Mehrkanal</value></string>
-  <string><id>365</id><value>n. Namen ord.</value></string>
-  <string><id>366</id><value>n. Jahr ord.</value></string>
-  <string><id>367</id><value>n. Quote ord.</value></string>
-  <string><id>368</id><value>Internetsuche</value></string>
+  <string><id>363</id><value>n. Datei ord.</value></string> 
+  <string><id>364</id><value>- DD/DTS Mehrkanal</value></string> 
+  <string><id>365</id><value>n. Namen ord.</value></string> 
+  <string><id>366</id><value>n. Jahr ord.</value></string> 
+  <string><id>367</id><value>n. Quote ord.</value></string> 
+  <string><id>368</id><value>Internetsuche</value></string> 
   <string><id>369</id><value>Titel</value></string>
   <string><id>370</id><value>Gewitter</value></string>
   <string><id>371</id><value>teilweise</value></string>
@@ -330,19 +330,19 @@
   <string><id>398</id><value>Temperatureinheit</value></string>
   <string><id>399</id><value>Windstärkeeinheit</value></string>
   <string><id>400</id><value>Wetter</value></string>
-  <string><id>401</id><value>Temperatur</value></string>
+  <string><id>401</id><value>Temperatur</value></string> 
   <string><id>402</id><value>Subjektiv</value></string>
   <string><id>403</id><value>UV Wert</value></string>
-  <string><id>404</id><value>Wind</value></string>
+  <string><id>404</id><value>Wind</value></string> 
   <string><id>405</id><value>Taupunkt</value></string>
   <string><id>406</id><value>Feuchtigkeit</value></string>
   <string><id>407</id><value>-</value></string>
-  <string><id>408</id><value>mit</value></string>
-  <string><id>410</id><value>Wettervorhersage</value></string>
+  <string><id>408</id><value>mit</value></string>    
+  <string><id>410</id><value>Wettervorhersage</value></string>     
   <string><id>411</id><value>Wetterinformationen werden geladen für:</value></string>
-  <string><id>412</id><value>Wetterinformationen nicht erhältlich!</value></string>
-  <string><id>413</id><value>Titeleingabe</value></string>
-  <string><id>414</id><value>Keine Vorschau für dieses Album!</value></string>
+  <string><id>412</id><value>Wetterinformationen nicht erhältlich!</value></string>  
+  <string><id>413</id><value>Titeleingabe</value></string>  
+  <string><id>414</id><value>Keine Vorschau für dieses Album!</value></string>  
   <string><id>415</id><value>Lade Abbild...</value></string>
   <string><id>416</id><value>Nicht verfügbar!</value></string>
   <string><id>417</id><value>Große Symbole</value></string>
@@ -378,13 +378,13 @@
   <string><id>447</id><value>Autostart</value></string>
   <string><id>448</id><value>LCD</value></string>
   <string><id>449</id><value>Aktivieren</value></string>
-  <string><id>450</id><value>Spalten</value></string>
+  <string><id>450</id><value>- Spalten</value></string>
   <string><id>4501</id><value>LCD Typ</value></string>
-  <string><id>451</id><value>Reihe 1</value></string>
-  <string><id>452</id><value>Reihe 2</value></string>
-  <string><id>453</id><value>Reihe 3</value></string>
-  <string><id>454</id><value>Reihe 4</value></string>
-  <string><id>455</id><value>Reihen</value></string>
+  <string><id>451</id><value>- Reihe 1</value></string>
+  <string><id>452</id><value>- Reihe 2</value></string>
+  <string><id>453</id><value>- Reihe 3</value></string>
+  <string><id>454</id><value>- Reihe 4</value></string>
+  <string><id>455</id><value>- Reihen</value></string>
   <string><id>456</id><value>Modus</value></string>
   <string><id>457</id><value>Ansicht ändern</value></string>
   <string><id>458</id><value>B/Markierung</value></string>
@@ -392,9 +392,9 @@
   <string><id>460</id><value>Audiospur</value></string>
   <string><id>461</id><value>[aktiv]</value></string>
   <string><id>462</id><value>Untertitel</value></string>
-  <string><id>463</id><value>Hintergrundlicht</value></string>
+  <string><id>463</id><value>- Hintergrundlicht</value></string>
   <string><id>464</id><value>Helligkeit</value></string>
-  <string><id>465</id><value>Kontrast</value></string>
+  <string><id>465</id><value>- Kontrast</value></string>
   <string><id>466</id><value>Gamma</value></string>
   <string><id>467</id><value>Typ:</value></string>
   <string><id>468</id><value>Bewege die Leiste um die OSD Einstellung zu ändern.</value></string>
@@ -423,7 +423,7 @@
   <string><id>491</id><value>- große Symbole verwenden</value></string>
   <string><id>492</id><value>VobUntertitel vergrößern um</value></string>
   <string><id>493</id><value>Erweiterte Optionen [nur für Experten]:</value></string>
-  <string><id>494</id><value>Übersteuerungsreserve (dB)</value></string>
+  <string><id>494</id><value>Übersteuerungsreserve</value></string>
   <string><id>495</id><value>VideoAbtastrate erhöhen auf GUI Auflösung</value></string>
   <string><id>496</id><value>Kalibrierung</value></string>
   <string><id>497</id><value>Dateityp Erweiterungen ausblenden</value></string>
@@ -470,44 +470,44 @@
   <string><id>705</id><value>Netzwerk</value></string>
   <string><id>706</id><value>- HTTP Proxy Host</value></string>
   <string><id>707</id><value>- HTTP Proxy Port</value></string>
-  <string><id>708</id><value>HTTP Proxy aktivieren</value></string>
+  <string><id>708</id><value>HTTP Proxy verwenden</value></string>
   <string><id>709</id><value>XLink Kai XTag</value></string>
   <string><id>710</id><value>XLink Kai Password</value></string>
   <string><id>711</id><value>Internet Protokoll (IP)</value></string>
   <string><id>712</id><value>Ungültiger Port wurde festgelegt. Der Wert muss zwischen 1 und 65535 liegen.</value></string>
-  <string><id>713</id><value>HTTP Proxy</value></string>
-  <string><id>714</id><value>XLink KAI</value></string>
-  <string><id>715</id><value>Zuweisung</value></string>
-  <string><id>716</id><value>Automatisch (DHCP)</value></string>
-  <string><id>717</id><value>Manuell (Statisch)</value></string>
-  <string><id>718</id><value>Standard (Dashboard)</value></string>
-  <string><id>719</id><value>IP Addresse</value></string>
-  <string><id>720</id><value>Netzmaske</value></string>
-  <string><id>721</id><value>Standard Gateway</value></string>
-  <string><id>722</id><value>DNS Server</value></string>
+  <string><id>713</id><value>HTTP Proxy</value></string>	
+  <string><id>714</id><value>XLink KAI</value></string>	
+  <string><id>715</id><value>Zuweisung</value></string>	
+  <string><id>716</id><value>Automatisch (DHCP)</value></string>	
+  <string><id>717</id><value>Manuell (Statisch)</value></string>	
+  <string><id>718</id><value>Standard (Dashboard)</value></string>	
+  <string><id>719</id><value>- IP Addresse</value></string>	
+  <string><id>720</id><value>- Netzmaske</value></string>	
+  <string><id>721</id><value>- Standard Gateway</value></string>	
+  <string><id>722</id><value>- DNS Server</value></string>
   <string><id>723</id><value>Sichern &amp; Neustarten</value></string>
   <string><id>724</id><value>Ungültige Addresse angegeben. Werte müssen AAA.BBB.CCC.DDD sein.</value></string>
   <string><id>725</id><value>mit Zahlen zwischen 0 und 255.</value></string>
   <string><id>726</id><value>Änderungen nicht gespeichert. Fortfahren?</value></string>
-  <string><id>727</id><value>Web Server</value></string>
-  <string><id>728</id><value>FTP Server</value></string>
-  <string><id>729</id><value>Internet Zeit</value></string>
-  <string><id>730</id><value>- Web Server Port</value></string>
+  <string><id>727</id><value>Web Server</value></string>	
+  <string><id>728</id><value>FTP Server</value></string>	
+  <string><id>729</id><value>Internet Zeit</value></string>	
+  <string><id>730</id><value>- Web Server Port</value></string>	
   <string><id>731</id><value>- Zeit Server Host</value></string>
   <string><id>732</id><value>Sichern &amp; Übernehmen</value></string>
   <string><id>733</id><value>- Web Server Passwort</value></string>
   <string><id>734</id><value>ungesetzt</value></string>
-  <string><id>735</id><value>Zeichentabelle</value></string>
-  <string><id>736</id><value>Stil</value></string>
-  <string><id>737</id><value>Farbe</value></string>
-  <string><id>738</id><value>Normal</value></string>
-  <string><id>739</id><value>Fett</value></string>
-  <string><id>740</id><value>Kursiv</value></string>
-  <string><id>741</id><value>Fett Kursiv</value></string>
-  <string><id>742</id><value>Weiß</value></string>
+  <string><id>735</id><value>- Zeichentabelle</value></string>	
+  <string><id>736</id><value>- Stil</value></string>	
+  <string><id>737</id><value>- Farbe</value></string>
+  <string><id>738</id><value>Normal</value></string>	
+  <string><id>739</id><value>Fett</value></string>	
+  <string><id>740</id><value>Kursiv</value></string>	
+  <string><id>741</id><value>Fett Kursiv</value></string>	
+  <string><id>742</id><value>Weiß</value></string>	
   <string><id>743</id><value>Gelb</value></string>
-  <string><id>744</id><value>Dateien</value></string>
-  <string><id>745</id><value>Keine Informationen für diese Ansicht!</value></string>
+  <string><id>744</id><value>Dateien</value></string>		
+  <string><id>745</id><value>Keine Informationen für diese Ansicht!</value></string>		
   <string><id>746</id><value>Bitte wieder zur Ansicht "Dateien" wechseln.</value></string>
   <string><id>747</id><value>Nicht genügend Speicher um das Bilder zu laden!</value></string>
   <string><id>748</id><value>Pfad ändern</value></string>
@@ -583,83 +583,102 @@
   <string><id>13300</id><value>- Geschwindigkeit:</value></string>
   <string><id>13301</id><value>Automatische Temperaturkontrolle</value></string>
   <string><id>13302</id><value>Manuelle Lüftereinstellung</value></string>
-  <string><id>13303</id><value>Schriftart</value></string>
+  <string><id>13303</id><value>- Schriftart</value></string>
   <string><id>13304</id><value>links-/rechtsläufige Zeichenfolgen ermöglichen</value></string>
   <string><id>13305</id><value>RSS Feed [Newsflash] aktivieren</value></string>
-  <string><id>13306</id><value>Link zu übergeordnetem Verzeichnis ausblenden</value></string> 
-  <string><id>13307</id><value>Titelnummern ausblenden</value></string> 
+  <string><id>13306</id><value>Link zu übergeordnetem Verzeichnis ausblenden</value></string>
+  <string><id>13307</id><value>Titelnummern ausblenden</value></string>
   <string><id>13308</id><value>Drücke - JA - um die XBOX neu zu starten</value></string>
   <string><id>13309</id><value>Drücke - NEIN - um nur XBMC neu zu laden</value></string>
-  <string><id>13310</id><value>- Übergang streckend</value></string> 
-  <string><id>13311</id><value>- Übergang gleitend</value></string> 
-  <string><id>13312</id><value>Ränderreduktion</value></string> 
+  <string><id>13310</id><value>- Übergang streckend</value></string>
+  <string><id>13311</id><value>- Übergang gleitend</value></string>
+  <string><id>13312</id><value>Ränderreduktion</value></string>
   <string><id>13313</id><value>XBOX MediaCenter Neustart</value></string>
   <string><id>13314</id><value>OSD Einblendzeit</value></string>
-  <string><id>13315</id><value>Miniaturansicht erst.</value></string> 
-  <string><id>13316</id><value>rekurs. Miniaturansicht</value></string> 
-  <string><id>13317</id><value>Diaschau</value></string> 
-  <string><id>13318</id><value>rekurs. Diaschau</value></string> 
-  <string><id>13319</id><value>Zufallsgenerator</value></string> 
-  <string><id>13320</id><value>Ausgabe Stereo</value></string> 
-  <string><id>13321</id><value>Ausgabe nur links</value></string> 
+  <string><id>13315</id><value>Miniaturansicht erst.</value></string>
+  <string><id>13316</id><value>rekurs. Miniaturansicht</value></string>
+  <string><id>13317</id><value>Diaschau</value></string>
+  <string><id>13318</id><value>rekurs. Diaschau</value></string>
+  <string><id>13319</id><value>Zufallsauswahl</value></string>
+  <string><id>13320</id><value>Ausgabe Stereo</value></string>
+  <string><id>13321</id><value>Ausgabe nur links</value></string>
   <string><id>13322</id><value>Ausgabe nur rechts</value></string>
-  <string><id>13323</id><value>Aktiviere CD+G</value></string> 
-  <string><id>13324</id><value>Hintergrund Transparenz</value></string> 
-  <string><id>13325</id><value>Vordergrund Transparenz</value></string> 
-  <string><id>13326</id><value>A/V Verzögerung</value></string> 
-  <string><id>13327</id><value>Karaoke</value></string> 
-  <string><id>13328</id><value>%s nicht gefunden.</value></string> 
-  <string><id>13329</id><value>Fehler beim Öffnen von %s</value></string> 
-  <string><id>13330</id><value>Laden von %s nicht möglich</value></string> 
-  <string><id>13331</id><value>Fehler: Nicht genügend Speicher.</value></string> 
-  <string><id>13332</id><value>Nach oben</value></string> 
-  <string><id>13333</id><value>Nach unten</value></string> 
-  <string><id>13334</id><value>Beschriftung ändern</value></string> 
-  <string><id>13335</id><value>Als Standard setzen</value></string> 
+  <string><id>13323</id><value>Aktiviere CD+G</value></string>
+  <string><id>13324</id><value>Hintergrund Transparenz</value></string>
+  <string><id>13325</id><value>Vordergrund Transparenz</value></string>
+  <string><id>13326</id><value>A/V Verzögerung</value></string>
+  <string><id>13327</id><value>Karaoke</value></string>
+  <string><id>13328</id><value>%s nicht gefunden.</value></string>
+  <string><id>13329</id><value>Fehler beim Öffnen von %s</value></string>
+  <string><id>13330</id><value>Laden von %s nicht möglich</value></string>
+  <string><id>13331</id><value>Fehler: Nicht genügend Speicher.</value></string>
+  <string><id>13332</id><value>Nach oben</value></string>
+  <string><id>13333</id><value>Nach unten</value></string>
+  <string><id>13334</id><value>Beschriftung ändern</value></string>
+  <string><id>13335</id><value>Als Standard setzen</value></string>
   <string><id>13336</id><value>Eintrag entfernen</value></string>
-  <string><id>13337</id><value>2 Kanal Pulse Code Modulation</value></string>
-  <string><id>14000</id><value>Koppeln deakt.</value></string> 
-  <string><id>14001</id><value>Koppeln einfach</value></string> 
-  <string><id>14002</id><value>Koppeln unpräz.</value></string> 
-  <string><id>14003</id><value>Wiedergabeliste wird heruntergeladen...</value></string> 
-  <string><id>14004</id><value>Streams werden heruntergeladen...</value></string> 
-  <string><id>14005</id><value>Streams werden verarbeitet...</value></string> 
-  <string><id>14006</id><value>Fehler beim Erhalt der Streams</value></string> 
+  <string><id>13337</id><value>- 2 Kanal Pulse Code Modulation</value></string>
+  <string><id>13338</id><value>LED</value></string> 
+  <string><id>13339</id><value>LED Farbe</value></string> 
+  <string><id>13340</id><value>Aktuelle Farbe beibehalten</value></string> 
+  <string><id>13341</id><value>Grün</value></string> 
+  <string><id>13342</id><value>Orange</value></string> 
+  <string><id>13343</id><value>Rot</value></string> 
+  <string><id>13344</id><value>Zyklus</value></string> 
+  <string><id>13345</id><value>LED ausschalten während Wiedergabe</value></string> 
+  <string><id>14000</id><value>Koppeln deakt.</value></string>
+  <string><id>14001</id><value>Koppeln einfach</value></string>
+  <string><id>14002</id><value>Koppeln unpräz.</value></string>
+  <string><id>14003</id><value>Wiedergabeliste wird heruntergeladen...</value></string>
+  <string><id>14004</id><value>Streams werden heruntergeladen...</value></string>
+  <string><id>14005</id><value>Streams werden verarbeitet...</value></string>
+  <string><id>14006</id><value>Fehler beim Erhalt der Streams</value></string>
   <string><id>14007</id><value>Fehler beim Erhalt der Wiedergabeliste</value></string>
-  <string><id>14008</id><value>Kai Benachrichtigung aktivieren</value></string> 
+  <string><id>14008</id><value>Kai Benachrichtigung aktivieren</value></string>
   <string><id>14009</id><value>Spieleverzeichnis</value></string>
-  <string><id>14010</id><value>Ansichtenänderung</value></string> 
-  <string><id>14011</id><value>Automatische Ansicht > aktivieren</value></string> 
-  <string><id>14012</id><value>Große Symbole verwenden</value></string> 
-  <string><id>14013</id><value>></value></string> 
-  <string><id>14014</id><value>Prozentanteil:</value></string> 
-  <string><id>14015</id><value>Miniaturansicht wenn keine Dateien vorhanden</value></string> 
-  <string><id>14016</id><value>Listenansicht wenn keine Ordner vorhanden</value></string> 
-  <string><id>14017</id><value>Miniaturansicht bei %Anteil von  Miniaturbildern</value></string> 
-  <string><id>14018</id><value>Ansicht</value></string> 
-  <string><id>14019</id><value>Ortskennzahl [1]</value></string> 
-  <string><id>14020</id><value>Ortskennzahl [2]</value></string> 
-  <string><id>14021</id><value>Ortskennzahl [3]</value></string> 
-  <string><id>14022</id><value>Datenbank</value></string> 
-  <string><id>14023</id><value>Kein TV</value></string> 
-  <string><id>14024</id><value>Stadt oder US Postleitzahl eingeben</value></string> 
-  <string><id>14025</id><value>Video von Festplatte</value></string> 
-  <string><id>14026</id><value>Video von DVD Laufwerk</value></string> 
-  <string><id>14027</id><value>Video über lokales Netzwerk</value></string> 
-  <string><id>14028</id><value>Video aus dem Internet</value></string> 
-  <string><id>14029</id><value>Audio von Festplatte</value></string> 
-  <string><id>14030</id><value>Audio von DVD Laufwerk</value></string> 
-  <string><id>14031</id><value>Audio über lokales Netzwerk</value></string> 
-  <string><id>14032</id><value>Audio aus dem Internet</value></string> 
-  <string><id>14033</id><value>DVD von Festplatte</value></string> 
-  <string><id>14034</id><value>DVD von DVD Laufwerk</value></string> 
-  <string><id>14035</id><value>DVD über lokales Netzwerk</value></string> 
-  <string><id>14036</id><value>Server</value></string> 
-  <string><id>14037</id><value>Darstellung</value></string> 
-  <string><id>14038</id><value>Netzwerkeinstellungen wurden geändert!</value></string> 
-  <string><id>14039</id><value>Um die Änderungen wirksam zu machen,</value></string> 
-  <string><id>14040</id><value>müssen sie die XBOX neu starten. NEUSTART?</value></string> 
-  <string><id>14041</id><value>Nachbearbeitung</value></string> 
+  <string><id>14010</id><value>Ansichtenänderung</value></string>
+  <string><id>14011</id><value>Automatische Ansichtsänderung aktivieren</value></string>
+  <string><id>14012</id><value>- Große Symbole verwenden</value></string>
+  <string><id>14013</id><value>- Verfahrensweise</value></string>
+  <string><id>14014</id><value>- Prozentanteil</value></string>
+  <string><id>14015</id><value>ohne Dateien -> Miniaturansicht</value></string>
+  <string><id>14016</id><value>ohne Ordner -> Listenansicht</value></string>
+  <string><id>14017</id><value>Anteil der Symbole</value></string>
+  <string><id>14018</id><value>Ansicht</value></string>
+  <string><id>14019</id><value>- Ortskennzahl 1</value></string>
+  <string><id>14020</id><value>- Ortskennzahl 2</value></string>
+  <string><id>14021</id><value>- Ortskennzahl 3</value></string>
+  <string><id>14022</id><value>Datenbank</value></string>
+  <string><id>14023</id><value>Kein TV</value></string>
+  <string><id>14024</id><value>Stadt oder US Postleitzahl eingeben</value></string>
+  <string><id>14025</id><value>Video von Festplatte</value></string>
+  <string><id>14026</id><value>Video von DVD Laufwerk</value></string>
+  <string><id>14027</id><value>Video über lokales Netzwerk</value></string>
+  <string><id>14028</id><value>Video aus dem Internet</value></string>
+  <string><id>14029</id><value>Audio von Festplatte</value></string>
+  <string><id>14030</id><value>Audio von DVD Laufwerk</value></string>
+  <string><id>14031</id><value>Audio über lokales Netzwerk</value></string>
+  <string><id>14032</id><value>Audio aus dem Internet</value></string>
+  <string><id>14033</id><value>DVD von Festplatte</value></string>
+  <string><id>14034</id><value>DVD von DVD Laufwerk</value></string>
+  <string><id>14035</id><value>DVD über lokales Netzwerk</value></string>
+  <string><id>14036</id><value>Server</value></string>
+  <string><id>14037</id><value>Darstellung</value></string>
+  <string><id>14038</id><value>Netzwerkeinstellungen wurden geändert!</value></string>
+  <string><id>14039</id><value>Um die Änderungen wirksam zu machen,</value></string>
+  <string><id>14040</id><value>müssen sie die XBOX neu starten. NEUSTART?</value></string>
+  <string><id>14041</id><value>Nachbearbeitung</value></string>
   <string><id>14042</id><value>Engine IP Addresse</value></string>
-  <string><id>14043</id><value>- Ausschalten während Wiedergabe</value></string>
+  <string><id>14043</id><value>- ausschalten während Wiedergabe</value></string>
+  <string><id>14044</id><value>%i min</value></string>
+  <string><id>14045</id><value>%i sek</value></string>
+  <string><id>14046</id><value>%i ms</value></string>
+  <string><id>14047</id><value>%i %%</value></string>
+  <string><id>14048</id><value>%i kbps</value></string>
+  <string><id>14049</id><value>%i kb</value></string>
+  <string><id>14050</id><value>%i.0 dB</value></string>
+  <string><id>14051</id><value>12 Stundenformat anzeigen</value></string>
+  <string><id>14052</id><value>Europäische Datumsanzeige</value></string>
+  <string><id>14053</id><value>GUI Filter</value></string>
+  <string><id>14054</id><value>Internetsuche aktivieren</value></string>
 </strings>
