@@ -21,6 +21,8 @@ public:
 
   void utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest);
 
+  void stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest);
+
   void ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap = false);
 
   vector<CStdString> getCharsetLabels();
@@ -39,6 +41,7 @@ private:
   iconv_t					m_iconvStringCharsetToFontCharset;
   iconv_t					m_iconvSubtitleCharsetToFontCharset;
   iconv_t					m_iconvUtf8ToStringCharset;
+  iconv_t					m_iconvStringCharsetToUtf8;
   iconv_t					m_iconvUcs2CharsetToStringCharset;
 
   FriBidiCharSet			m_stringFribidiCharset;

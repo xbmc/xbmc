@@ -3,6 +3,8 @@
 #include "playlistm3u.h"
 #include "filesystem/file.h"
 #include "util.h"
+#include "utils/CharsetConverter.h"
+
 using namespace PLAYLIST;
 using namespace XFILE;
 
@@ -30,10 +32,17 @@ CPlayListM3U::~CPlayListM3U(void)
 
 bool CPlayListM3U::Load(const CStdString& strFileName)
 {
+	char		szLine[4096];
+	CStdString	strLine;
+	CStdString	strInfo = "";
+	long		lDuration = 0;
 	CStdString strBasePath;
+
 	Clear();
-	m_strPlayListName=CUtil::GetFileName(strFileName);
+
+	m_strPlayListName = CUtil::GetFileName(strFileName);
 	CUtil::GetParentPath(strFileName,strBasePath);
+
 	CFile file;
 	if (!file.Open(strFileName,false) ) 
 	{
@@ -41,83 +50,58 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 		return false;
 	}
 
-	char szLine[4096];
-	if ( !file.ReadString(szLine, 1024 ) )
+	while (file.ReadString(szLine,1024))
 	{
-		file.Close();
-		return false;
-	}
-	CStdString strLine=szLine;
-	CUtil::RemoveCRLF(strLine);
-	if (strLine != M3U_START_MARKER)
-	{
-    CStdString strFileName=szLine;
-    CUtil::RemoveCRLF(strFileName);
-    if (strFileName.size()>1)
-    {
-      CUtil::GetQualifiedFilename(strBasePath,strFileName);
-      CPlayListItem newItem(strFileName, strFileName, 0);
-      CStdString strDescription;
-      strDescription=CUtil::GetFileName(strFileName);
-      newItem.SetDescription(strDescription);
-      Add(newItem);
-    }
-	}
-
-	while (file.ReadString(szLine,1024 ) )
-	{
-		strLine=szLine;
+		strLine = szLine;
 		CUtil::RemoveCRLF(strLine);
+
 		if (strLine.Left( (int)strlen(M3U_INFO_MARKER) ) == M3U_INFO_MARKER)
 		{
 			// start of info 
-			int iColon=(int)strLine.find(":");
-			int iComma=(int)strLine.find(",");
+			int iColon = (int)strLine.find(":");
+			int iComma = (int)strLine.find(",");
 			if (iColon >=0 && iComma >= 0 && iComma > iColon)
 			{
+				// Read the info and duration
 				iColon++;
-				CStdString strLength=strLine.Mid(iColon, iComma-iColon);
+				CStdString strLength = strLine.Mid(iColon, iComma-iColon);
+				lDuration = atoi(strLength.c_str());
 				iComma++;
-				CStdString strInfo=strLine.Right((int)strLine.size()-iComma);
-				long lDuration=atoi(strLength.c_str());
-				//lDuration*=1000;
+				strInfo = strLine.Right((int)strLine.size()-iComma);
 
-				if (file.ReadString(szLine,1024 ) )
-				{
-					CStdString strFileName=szLine;
-					CUtil::RemoveCRLF(strFileName);
-          if (strFileName.size()>1)
-          {
-					  CUtil::GetQualifiedFilename(strBasePath,strFileName);
-					  CPlayListItem newItem(strInfo,strFileName,lDuration);
-            if (strInfo.size()==0)
-            {
-              strInfo=CUtil::GetFileName(strFileName);
-              newItem.SetDescription(strInfo);
-            }
-					  Add(newItem);
-          }
-				}
-				else
-				{
-					// eof
-					break;
-				}
 			}
 		}
-		else
+		else if (strLine != M3U_START_MARKER)
 		{
-			CStdString strFileName=szLine;
-			CUtil::RemoveCRLF(strFileName);
-      if (strFileName.size()>1)
-      {
-			  CUtil::GetQualifiedFilename(strBasePath,strFileName);
-			  CPlayListItem newItem(strFileName, strFileName, 0);
-        CStdString strDescription;
-        strDescription=CUtil::GetFileName(strFileName);
-        newItem.SetDescription(strDescription);
-			  Add(newItem);
-      }
+			CStdString strFileName = strLine;
+
+			if (strFileName.length() > 0)
+			{
+				// If no info was read from from the extended tag information, use the file name
+				if (strInfo.length() == 0)
+				{
+					strInfo = CUtil::GetFileName(strFileName);
+				}
+
+				// If this is a samba base path we need to translate the file name to UTF-8 since
+				// this is a samba requirement
+				if (CUtil::IsSmb(strBasePath))
+				{
+					CStdString strFileNameUtf8;
+					g_charsetConverter.stringCharsetToUtf8(strFileName, strFileNameUtf8);
+					strFileName = strFileNameUtf8;
+				}
+
+				// Get the full path file name and add it to the the play list
+				CUtil::GetQualifiedFilename(strBasePath, strFileName);
+				CPlayListItem newItem(strInfo, strFileName, lDuration);
+				Add(newItem);
+
+				// Reset the values just in case there part of the file have the extended marker
+				// and part don't
+				strInfo = "";
+				lDuration = 0;
+			}
 		}
 	}
 
