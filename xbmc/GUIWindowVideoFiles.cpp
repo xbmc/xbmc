@@ -440,7 +440,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
       {
         bDVDFolder = true;
         m_vecItems.Add(new CFileItem(*pItem1));
-        m_vecItems.Remove(i); //Make sure this is not included in the comeing search as it would have been deleted.
+        items.Remove(i); //Make sure this is not included in the comeing search as it would have been deleted.
         break;
       }
     }
