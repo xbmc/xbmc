@@ -71,6 +71,7 @@ public:
 	void						StreamCallback(LPVOID pPacketContext, DWORD dwStatus);
 	virtual int			SetPlaySpeed(int iSpeed);
 	virtual void    WaitCompletion();
+	virtual void		DoWork();
 
 private:
 	IAudioCallback* m_pCallback;
@@ -87,12 +88,15 @@ private:
 	DWORD									m_dwPacketSize;
 	bool									m_AudioEOF;
 	DWORD									m_dwNumPackets;
-	PBYTE									m_pbSampleData[150];
+	PBYTE*								m_pbSampleData;
 	DWORD*								m_adwStatus;
 	bool									m_bPause;
 	bool									m_bIsPlaying;
 	bool									m_bIsAllocated;
 	bool									m_bFirstPackets;
+	PBYTE									m_VisBuffer;
+	DWORD									m_VisBytes;
+	DWORD									m_VisMaxBytes;
 	
 	LONGLONG       				m_startTime;
 	LONGLONG       				m_delay;
