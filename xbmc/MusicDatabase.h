@@ -4,7 +4,6 @@
 #include <vector>
 #include <memory>
 #include "MusicDatabaseReorg.h"
-#include "FileSystem/cddb.h"
 using namespace std;
 
 class CSong
