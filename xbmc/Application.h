@@ -23,7 +23,7 @@
 #include "GUIWindowSettingsPrograms.h"
 #include "GUIWindowPictures.h"
 #include "GUIWindowFileManager.h"
-#include "GUIWindowVideo.h"
+#include "GUIWindowVideoFiles.h"
 #include "GUIWindowVideoGenre.h"
 #include "GUIWindowVideoActors.h"
 #include "GUIWindowVideoYear.h"
@@ -182,7 +182,7 @@ public:
 	CGUIDialogSubMenu								m_guiDialogSubMenu;
 	CGUIDialogContextMenu						m_guiDialogContextMenu;
 	CGUIWindowFileManager						m_guiFileManager;
-	CGUIWindowVideo									m_guiMyVideo;
+	CGUIWindowVideoFiles						m_guiMyVideo;
 	CGUIWindowSettings							m_guiSettings;
 	CGUIWindowSystemInfo						m_guiSystemInfo;
 	CGUIWindowSettingsGeneral				m_guiSettingsGeneral;

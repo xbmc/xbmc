@@ -116,18 +116,7 @@ CGUIWindowVideoActors::~CGUIWindowVideoActors()
 //****************************************************************************************************************************
 void CGUIWindowVideoActors::OnAction(const CAction &action)
 {
-  	if (action.wID == ACTION_PARENT_DIR)
-	{
-		GoParentFolder();
-		return;
-	}
-
- 	if (action.wID == ACTION_PREVIOUS_MENU)
-	{
-		m_gWindowManager.ActivateWindow(WINDOW_HOME);
-		return;
-	}
-	CGUIWindow::OnAction(action);
+	CGUIWindowVideoBase::OnAction(action);
 }
 
 //****************************************************************************************************************************
@@ -136,90 +125,22 @@ bool CGUIWindowVideoActors::OnMessage(CGUIMessage& message)
   switch ( message.GetMessage() )
   {
 		case GUI_MSG_DVDDRIVE_EJECTED_CD:
-		{
-			if ( !m_strDirectory.IsEmpty() ) {
-				if ( CUtil::IsCDDA( m_strDirectory ) || CUtil::IsDVD( m_strDirectory ) || CUtil::IsISO9660( m_strDirectory ) ) {
-					//	Disc has changed and we are inside a DVD Drive share, get out of here :)
-					m_strDirectory = "";
-					Update( m_strDirectory );
-				}
-			}
-			else {
-				int iItem = GetSelectedItem();
-				Update( m_strDirectory );
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
-			}
-		}
-		break;
-
 		case GUI_MSG_DVDDRIVE_CHANGED_CD:
-		{
-			if ( m_strDirectory.IsEmpty() ) {
-				int iItem = GetSelectedItem();
-				Update( m_strDirectory );
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
-			}
-		}
-		break;
 		case GUI_MSG_WINDOW_DEINIT:
-			m_iLastControl=GetFocusedControl();
-			m_iItemSelected=GetSelectedItem();
-			Clear();
-      m_database.Close();
-		break;
-
     case GUI_MSG_WINDOW_INIT:
-		{
-			CGUIWindow::OnMessage(message);
-      m_database.Open();
-			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-			m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
-			m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
-
-			if (m_iLastControl>-1)
-				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
-
-			Update(m_strDirectory);
-
-      ShowThumbPanel();
-      if (m_iItemSelected >=0)
-      {
-			  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected)
-			  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iItemSelected)
-      }
-			return true;
-		}
+			return CGUIWindowVideoBase::OnMessage(message);
 		break;
 
     case GUI_MSG_CLICKED:
     {
       int iControl=message.GetSenderId();
-      if (iControl==CONTROL_BTNVIEWASICONS)
-      {
-        bool bLargeIcons(false);
-		    if ( m_strDirectory.IsEmpty() )
-        {
-		      g_stSettings.m_iMyVideoActorRootViewAsIcons++;
-          if (g_stSettings.m_iMyVideoActorRootViewAsIcons > VIEW_AS_LARGEICONS) g_stSettings.m_iMyVideoActorRootViewAsIcons=VIEW_AS_LIST;
-        }
-		    else
-        {
-		      g_stSettings.m_iMyVideoActorViewAsIcons++;
-          if (g_stSettings.m_iMyVideoActorViewAsIcons > VIEW_AS_LARGEICONS) g_stSettings.m_iMyVideoActorViewAsIcons=VIEW_AS_LIST;
-        }
-        ShowThumbPanel();
-
-				g_settings.Save();
-        UpdateButtons();
-      }
-      else if (iControl==CONTROL_BTNSORTBY) // sort by
+      if (iControl==CONTROL_BTNSORTBY) // sort by
       {
         if (m_strDirectory.size())
         {
 					g_stSettings.m_iMyVideoActorSortMethod++;
-					if (g_stSettings.m_iMyVideoActorSortMethod>=3) g_stSettings.m_iMyVideoActorSortMethod=0;
+					if (g_stSettings.m_iMyVideoActorSortMethod>=3)
+						g_stSettings.m_iMyVideoActorSortMethod=0;
 					g_settings.Save();
         }
         UpdateButtons();
@@ -237,216 +158,16 @@ bool CGUIWindowVideoActors::OnMessage(CGUIMessage& message)
 				UpdateButtons();
         OnSort();
       }
-      else if (iControl==CONTROL_PLAY_DVD)
-      {
-          // play movie...
-        CUtil::PlayDVD();
-      }
-      else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
-      {
-         // get selected item
-        CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
-        g_graphicsContext.SendMessage(msg);         
-        int iItem=msg.GetParam1();
-        int iAction=message.GetParam1();
-        if (iAction == ACTION_SHOW_INFO || iAction == ACTION_MOUSE_MIDDLE_CLICK) 
-        {
-          if (m_strDirectory!="")
-					  OnInfo(iItem);
-        }
-        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
-				{
-					OnClick(iItem);
-				}
-      }
-      else if (iControl==CONTROL_BTNTYPE)
-      {
-				CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(),CONTROL_BTNTYPE);
-				m_gWindowManager.SendMessage(msg);
-
-				int nSelected=msg.GetParam1();
-				int nNewWindow=WINDOW_VIDEOS;
-				switch (nSelected)
-				{
-				case 0:	//	Movies
-					nNewWindow=WINDOW_VIDEOS;
-					break;
-				case 1:	//	Genre
-					nNewWindow=WINDOW_VIDEO_GENRE;
-					break;
-				case 2:	//	Actors
-					nNewWindow=WINDOW_VIDEO_ACTOR;
-					break;
-				case 3:	//	Year
-					nNewWindow=WINDOW_VIDEO_YEAR;
-					break;
-				case 4:	//	Titel
-					nNewWindow=WINDOW_VIDEO_TITLE;
-					break;
-				}
-
-				if (nNewWindow!=GetID())
-				{
-					g_stSettings.m_iVideoStartWindow=nNewWindow;
-					g_settings.Save();
-					m_gWindowManager.ActivateWindow(nNewWindow);
-					SET_CONTROL_FOCUS(nNewWindow, CONTROL_BTNTYPE, 0);
-				}
-
-        return true;
-      }
-			else if (iControl==CONTROL_IMDB)
-			{
-				OnManualIMDB();
-			}
+      else
+ 				return CGUIWindowVideoBase::OnMessage(message);
     }
 	}
   return CGUIWindow::OnMessage(message);
 }
 
 //****************************************************************************************************************************
-void CGUIWindowVideoActors::UpdateButtons()
+void CGUIWindowVideoActors::FormatItemLabels()
 {
-	//	Remove labels from the window selection
-	CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_BTNTYPE);
-	g_graphicsContext.SendMessage(msg);
-
-	//	Add labels to the window selection
-	CStdString strItem=g_localizeStrings.Get(744);	//	Files
-	CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_BTNTYPE);
-	msg2.SetLabel(strItem);
-	g_graphicsContext.SendMessage(msg2);
-
-	strItem=g_localizeStrings.Get(135);	//	Genre
-	msg2.SetLabel(strItem);
-	g_graphicsContext.SendMessage(msg2);
-
-	strItem=g_localizeStrings.Get(344);	//	Actors
-	msg2.SetLabel(strItem);
-	g_graphicsContext.SendMessage(msg2);
-
-	strItem=g_localizeStrings.Get(345);	//	Year
-	msg2.SetLabel(strItem);
-	g_graphicsContext.SendMessage(msg2);
-
-	strItem=g_localizeStrings.Get(369);	//	Titel
-	msg2.SetLabel(strItem);
-	g_graphicsContext.SendMessage(msg2);
-
-	//	Select the current window as default item 
-	CONTROL_SELECT_ITEM(GetID(), CONTROL_BTNTYPE, 2);
-
-
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
-	bool bViewIcon = false;
-  int iString;
-	if ( m_strDirectory.IsEmpty() ) 
-  {
-		switch (g_stSettings.m_iMyVideoActorRootViewAsIcons)
-    {
-      case VIEW_AS_LIST:
-        iString=101; // view as icons
-      break;
-      
-      case VIEW_AS_ICONS:
-        iString=100;  // view as large icons
-        bViewIcon=true;
-      break;
-      case VIEW_AS_LARGEICONS:
-        iString=417; // view as list
-        bViewIcon=true;
-      break;
-    }
-	}
-	else 
-  {
-		switch (g_stSettings.m_iMyVideoActorViewAsIcons)
-    {
-      case VIEW_AS_LIST:
-        iString=101; // view as icons
-      break;
-      
-      case VIEW_AS_ICONS:
-        iString=100;  // view as large icons
-        bViewIcon=true;
-      break;
-      case VIEW_AS_LARGEICONS:
-        iString=417; // view as list
-        bViewIcon=true;
-      break;
-    }		
-	}
-   if (bViewIcon) 
-    {
-      SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
-    }
-    else
-    {
-      SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
-    }
-
-    ShowThumbPanel();
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
-
-		if (m_strDirectory.IsEmpty())
-		{
-			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyVideoActorRootSortMethod+365);
-		}
-		else
-		{
-			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyVideoActorSortMethod+365);
-		}
-
-		//	Update sorting control
-		bool bSortAscending=false;
-		if (m_strDirectory.IsEmpty())
-			bSortAscending=g_stSettings.m_bMyVideoActorRootSortAscending;
-		else
-			bSortAscending=g_stSettings.m_bMyVideoActorSortAscending;
-
-		if (bSortAscending)
-    {
-      CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
-      g_graphicsContext.SendMessage(msg);
-    }
-    else
-    {
-      CGUIMessage msg(GUI_MSG_SELECTED,GetID(), CONTROL_BTNSORTASC);
-      g_graphicsContext.SendMessage(msg);
-    }
-
-    int iItems=m_vecItems.size();
-    if (iItems)
-    {
-      CFileItem* pItem=m_vecItems[0];
-      if (pItem->GetLabel()=="..") iItems--;
-    }
-    WCHAR wszText[20];
-    const WCHAR* szText=g_localizeStrings.Get(127).c_str();
-    swprintf(wszText,L"%i %s", iItems,szText);
-		SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
-
-}
-
-//****************************************************************************************************************************
-void CGUIWindowVideoActors::Clear()
-{
-	CFileItemList itemlist(m_vecItems); // will clean up everything
-}
-
-//****************************************************************************************************************************
-void CGUIWindowVideoActors::OnSort()
-{
- CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_LIST,0,0,NULL);
-  g_graphicsContext.SendMessage(msg);         
-
-  
-  CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
-  g_graphicsContext.SendMessage(msg2);         
-
-  
-  
   for (int i=0; i < (int)m_vecItems.size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
@@ -472,7 +193,10 @@ void CGUIWindowVideoActors::OnSort()
         pItem->SetLabel2("");
     }
   }
+}
 
+void CGUIWindowVideoActors::SortItems()
+{
 	SSortVideoActorByName sortmethod;
 	if (m_strDirectory.IsEmpty())
 	{
@@ -485,15 +209,6 @@ void CGUIWindowVideoActors::OnSort()
 		sortmethod.m_bSortAscending=g_stSettings.m_bMyVideoActorSortAscending;
 	}
   sort(m_vecItems.begin(), m_vecItems.end(), sortmethod);
-
-	for (int i=0; i < (int)m_vecItems.size(); i++)
-  {
-    CFileItem* pItem=m_vecItems[i];
-    CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),CONTROL_LIST,0,0,(void*)pItem);
-    g_graphicsContext.SendMessage(msg);    
-    CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_THUMBS,0,0,(void*)pItem);
-    g_graphicsContext.SendMessage(msg2);         
-  }
 }
 
 //****************************************************************************************************************************
@@ -664,38 +379,8 @@ void CGUIWindowVideoActors::OnClick(int iItem)
 void CGUIWindowVideoActors::OnInfo(int iItem)
 {
   if ( m_strDirectory.IsEmpty() ) return;
-  CFileItem* pItem=m_vecItems[iItem];
-	
-  VECMOVIESFILES movies;
-  m_database.GetFiles(atol(pItem->m_strPath),movies);
-	if (movies.size() <=0) return;
-  CStdString strFilePath=movies[0];
-  CStdString strFile=CUtil::GetFileName(strFilePath);
-  ShowIMDB(strFile,strFilePath, "" ,false);
+	CGUIWindowVideoBase::OnInfo(iItem);
 }
-
-
-int CGUIWindowVideoActors::GetSelectedItem()
-{
-	int iControl;
-	bool bViewIcon = false;
-	if ( ViewByIcon() ) 
-	{
-		iControl=CONTROL_THUMBS;
-	}
-	else
-		iControl=CONTROL_LIST;
-
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
-  g_graphicsContext.SendMessage(msg);         
-  int iItem=msg.GetParam1();
-	return iItem;
-}
-
-void CGUIWindowVideoActors::SetIMDBThumbs(VECFILEITEMS& items)
-{
-}
-
 
 bool CGUIWindowVideoActors::ViewByIcon()
 {
@@ -720,4 +405,28 @@ bool CGUIWindowVideoActors::ViewByLargeIcon()
     if (g_stSettings.m_iMyVideoActorViewAsIcons== VIEW_AS_LARGEICONS) return true;
   }
   return false;
+}
+
+void CGUIWindowVideoActors::SetViewMode(int iViewMode)
+{
+  if ( m_strDirectory.IsEmpty() )
+    g_stSettings.m_iMyVideoActorRootViewAsIcons = iViewMode;
+  else
+    g_stSettings.m_iMyVideoActorViewAsIcons = iViewMode;
+}
+
+int CGUIWindowVideoActors::SortMethod()
+{
+	if (m_strDirectory.IsEmpty())
+		return g_stSettings.m_iMyVideoActorRootSortMethod+365;
+	else
+		return g_stSettings.m_iMyVideoActorSortMethod+365;
+}
+
+bool CGUIWindowVideoActors::SortAscending()
+{
+	if (m_strDirectory.IsEmpty())
+		return g_stSettings.m_bMyVideoActorRootSortAscending;
+	else
+		return g_stSettings.m_bMyVideoActorSortAscending;
 }

@@ -23,6 +23,7 @@ protected:
 	void							GoParentFolder();
 	void							GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items);
   void							OnClick(int iItem);
+	void							OnPopupMenu(int iItem);
   void							OnSort();
   void							UpdateButtons();
   void							Clear();
