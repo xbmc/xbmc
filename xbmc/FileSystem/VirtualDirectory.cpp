@@ -93,11 +93,15 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 		CFileItem* pItem = new CFileItem(share.strName);
 		pItem->m_bIsFolder=true;
 		pItem->m_strPath=share.strPath;
+		CStdString strPathUpper=share.strPath;
+		strPathUpper.ToUpper();
 
 		CStdString strIcon;
 			//	We have the real DVD-ROM, set icon on disktype
 		if (share.m_iDriveType==SHARE_TYPE_DVD)
 			CUtil::GetDVDDriveIcon( pItem->m_strPath, strIcon );
+		else if (strPathUpper.Left(11) =="SOUNDTRACK:")
+			strIcon="defaultHardDisk.png";
 		else if (CUtil::IsRemote(pItem->m_strPath))
 			strIcon="defaultNetwork.png";	
 		else if (CUtil::IsISO9660(pItem->m_strPath))
