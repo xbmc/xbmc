@@ -7,12 +7,13 @@
 #define GUILIB_GUIRAMControl_H
 
 #pragma once
-#include "gui3d.h"
-#include "guicontrol.h"
-#include "guimessage.h"
-#include "guifont.h"
-#include "guiimage.h"
-#include "stdstring.h"
+#include "gui3D.h"
+#include "guiControl.h"
+#include "guiMessage.h"
+#include "guiFont.h"
+#include "guiButtonControl.h"
+#include "guiImage.h"
+#include "stdString.h"
 #include "..\XBMC\Utils\MediaMonitor.h"
 
 #include <vector>
@@ -46,9 +47,14 @@ public:
 	virtual ~CGUIRAMControl(void);
   
 	virtual void		Render();
+	virtual void 		OnAction(const CAction &action);
 
 	virtual void OnMediaUpdate(	INT nIndex, CStdString& strFilepath,
 								CStdString& strTitle, CStdString& strImagePath);
+
+	virtual void PreAllocResources();
+	virtual void AllocResources();
+	virtual void FreeResources();
 
 	DWORD				GetTitleTextColor() const { return m_dwTitleColor;};
 	DWORD				GetNormalTextColor() const { return m_dwTextColor;};
@@ -57,9 +63,11 @@ public:
 
 protected:
 
-	CMediaMonitor*	m_pMonitor;
-	Movie			m_current[RECENT_MOVIES];
-	Movie			m_new[RECENT_MOVIES];
+	CMediaMonitor*		m_pMonitor;
+	Movie				m_current[RECENT_MOVIES];
+	Movie				m_new[RECENT_MOVIES];
+	CGUIButtonControl*  m_pTextButton[RECENT_MOVIES];
+	INT					m_iSelection;
 
 	FLOAT			m_fFontHeight;
 	FLOAT			m_fFont2Height;
