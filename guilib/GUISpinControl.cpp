@@ -178,13 +178,17 @@ void CGUISpinControl::OnAction(const CAction &action)
 
 void CGUISpinControl::OnLeft()
 {
-    if (m_iSelect==SPIN_BUTTON_UP)
-    {
+	if (m_iSelect==SPIN_BUTTON_UP)
+	{
 		if (CanMoveDown())
 		{	// select the down button
-            m_iSelect=SPIN_BUTTON_DOWN;
+			m_iSelect=SPIN_BUTTON_DOWN;
 		}
-    }
+		else
+		{
+			CGUIControl::OnLeft();
+		}
+	}
 	else
 	{	// base class
 		CGUIControl::OnLeft();
@@ -193,10 +197,14 @@ void CGUISpinControl::OnLeft()
 void CGUISpinControl::OnRight()
 {
 	if (m_iSelect==SPIN_BUTTON_DOWN)
-    {
-        if (CanMoveUp())
-        {	// select the up button
-            m_iSelect=SPIN_BUTTON_UP;
+	{
+		if (CanMoveUp())
+		{	// select the up button
+			m_iSelect=SPIN_BUTTON_UP;
+		}
+		else
+		{
+			CGUIControl::OnRight();
 		}
 	}
 	else
