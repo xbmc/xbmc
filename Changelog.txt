@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-04-2005 fixed: problems with alphanumeric sorting (numbers came after characters)
+  - 05-04-2005 fixed: IMDb problem (memory overflow with huge numbers of returned movies).
+  - 05-04-2005 changed: Nav view now uses alphanumeric sorting.
   - 04-04-2005 fixed: re-scanning music dirs and music thumbnail caching
   - 04-04-2005 fixed: Scissors clipping crash in FullscreenVideo->GUI switch.
   - 04-04-2005 changed: DVD/Video off DVD/LAN cache defaults to 4Mb.
