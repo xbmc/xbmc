@@ -4999,6 +4999,10 @@ void mplayer_ToFFRW(int iSpeed)
   //For video
   if (iSpeed == 1)
   {
+      //Make sure we get rid of the big delay that might have gone by in pause
+      //fixes autosync problems in pause
+      GetRelativeTime(); 
+
       ffrw_startpts=0;
       ffrw_starttime=0;
       ffrw_sstepframes = 0;

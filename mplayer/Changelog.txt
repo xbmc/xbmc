@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 03-03-2005 fixed: using autosync cuaeses propblems when resuming from pause. (needs xbmc to call mplayer_ToFFRW(1))
   - 03-03-2005 fixed: using autosync=30(or any value !=0) would cause invalid behaviour on short movies
   - 03-03-2005 changed: use same fix for real as mplayerhq, needs somewhat less mem
   - 27-02-2005 fixed: flac playback with large headers (new attempt at fixing flac completely.)
