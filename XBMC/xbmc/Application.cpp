@@ -777,7 +777,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiMyMusicArtists);						// window id = 503
 	m_gWindowManager.Add(&m_guiMyMusicGenres);						// window id = 504
 	m_gWindowManager.Add(&m_guiMyMusicTop100);						// window id = 505
-	m_gWindowManager.Add(&m_keyboard);										// window id = 1000
+//	m_gWindowManager.Add(&m_keyboard);										// window id = 1000
 	m_gWindowManager.Add(&m_guiDialogSelect);							// window id = 2000
 	m_gWindowManager.Add(&m_guiMusicInfo);								// window id = 2001
 	m_gWindowManager.Add(&m_guiDialogOK);									// window id = 2002
@@ -797,8 +797,8 @@ HRESULT CApplication::Initialize()
 	CKaiClient::GetInstance()->SetObserver(&m_guiMyBuddies);
 
 	/* window id's 3000 - 3100 are reserved for python */
-	CLog::Log(LOGINFO, "initializing virtual keyboard");
-	m_keyboard.Initialize();
+	//CLog::Log(LOGINFO, "initializing virtual keyboard");
+	//m_keyboard.Initialize();
 
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
 	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);
