@@ -1,7 +1,9 @@
 #pragma once
 #include "StdString.h"
-#include "guidialog.h"
+#include "guiDialog.h"
 #include <queue>
+
+class CGUIImage;
 
 class CGUIDialogKaiToast: public CGUIDialog
 {
@@ -13,9 +15,11 @@ public:
 	{
 		CStdString	caption;
 		CStdString	description;
+		CGUIImage*	image;
 	};
 
 	void QueueNotification(CStdString& aCaption, CStdString& aDescription);
+	void QueueNotification(CGUIImage* aImage, CStdString& aCaption, CStdString& aDescription);
 	bool DoWork();
 
 	virtual bool    OnMessage(CGUIMessage& message);
@@ -24,7 +28,14 @@ public:
 	void			ResetTimer();
 
 protected:
-	DWORD	m_dwTimer;
+
+	DWORD		m_dwTimer;
+	CGUIImage*	m_pIcon;
+
+	INT m_iIconPosX;
+	INT m_iIconPosY;
+	DWORD m_dwIconWidth;
+	DWORD m_dwIconHeight;
 
 	typedef std::queue<Notification> TOASTQUEUE;
 	TOASTQUEUE m_notifications;
