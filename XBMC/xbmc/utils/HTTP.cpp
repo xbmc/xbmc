@@ -279,7 +279,7 @@ bool CHTTP::Connect()
 	while (connect((SOCKET)m_socket,(sockaddr*) &service,sizeof(struct sockaddr)) == SOCKET_ERROR)
 	{
 		int e = WSAGetLastError();
-		if ((e != WSAETIMEDOUT && e != WSAEADDRINUSE) || ++nTries >= 3) // retry up to 3 times on timeout / addr in use
+		if ((e != WSAETIMEDOUT && e != WSAEADDRINUSE) || ++nTries > 3) // retry up to 3 times on timeout / addr in use
 		{
 			Close();
 			return false;
