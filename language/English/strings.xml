@@ -1736,6 +1736,10 @@
             <id>507</id> 	 
             <value>Sort by: Usage</value> 	 
       </string>
+      <string>
+		<id>508</id>
+		<value>Do not use Shortcuts or Scan</value>
+	</string>
 	<string>
 		<id>600</id>
 		<value>Rip CD</value>

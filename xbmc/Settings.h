@@ -128,6 +128,7 @@ public:
 		bool			m_bMyProgramsFlatten;
 		bool			m_bMyProgramsDefaultXBE;
 		bool			m_bMyProgramsDirectoryName;
+		bool			m_bMyProgramsNoShortcuts;
 
 		char      szThumbnailsDirectory[1024];
 		char      szDashboard[1024];
