@@ -65,6 +65,8 @@ void CGUIButtonControl::Render()
 	{
 		float fPosX = (float)m_iPosX+m_dwTextOffsetX;
 		float fPosY = (float)m_iPosY+m_dwTextOffsetY;
+		if (m_dwTextAlignment & XBFONT_RIGHT)
+			fPosX = (float)m_iPosX + m_dwWidth - m_dwTextOffsetX;
 		if (m_dwTextAlignment & XBFONT_CENTER_X)
 			fPosX = (float)m_iPosX + m_dwWidth/2;
 		if (m_dwTextAlignment & XBFONT_CENTER_Y)
