@@ -206,9 +206,6 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
             CFileItem *pItem = new CFileItem(strFileName);
             pItem->m_strPath=strFile;
             pItem->m_bIsFolder=true;
-						CStdString strThumb=pItem->m_strPath;
-						strThumb+=".tbn";
-						pItem->SetThumbnailImage(strThumb);
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
             FileTimeToSystemTime(&localTime, &pItem->m_stTime);
   		
@@ -221,28 +218,12 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
         if (CUtil::IsXBE(strFileName))
         {
           CStdString strDescription;
-					if ( CUtil::GetXBEDescription(strFile,strDescription))
-          {
-            if ( !CUtil::IsDVD(strFile) )
-            {
-              CShortcut cut;
-              cut.m_strPath=strFile;
-              cut.Save(strDescription);
-            }
-          }
+					CUtil::GetXBEDescription(strFile,strDescription);
           CFileItem *pItem = new CFileItem(strDescription);
           pItem->m_strPath=strFile;
           pItem->m_bIsFolder=false;
           pItem->m_dwSize=wfd.nFileSizeLow;
-					CStdString strThumb;
-					if (!CUtil::GetXBEIcon(pItem->m_strPath.c_str(), strThumb))
-          {
-						pItem->SetThumbnailImage("defaultProgramIcon.png");
-          }
-					else
-					{
-						pItem->SetThumbnailImage(strThumb);
-					}
+
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
           FileTimeToSystemTime(&localTime, &pItem->m_stTime);
           m_vecItems.push_back(pItem);      
@@ -255,14 +236,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
           pItem->m_strPath=strFile;
           pItem->m_bIsFolder=false;
           pItem->m_dwSize=wfd.nFileSizeLow;
-					CStdString strThumb=pItem->m_strPath;
-					CUtil::GetThumbnail(pItem->m_strPath,strThumb);
-					pItem->SetThumbnailImage(strThumb);
 
-          if (!CUtil::FileExists(strThumb))
-          {
-						pItem->SetThumbnailImage("defaultShortCutIcon.png");
-          }
 
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
           FileTimeToSystemTime(&localTime, &pItem->m_stTime);
@@ -273,6 +247,9 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
   } while (FindNextFile(hFind, &wfd));
 
 	FindClose( hFind );	  
+
+	CUtil::SetThumbs(m_vecItems);
+	CUtil::FillInDefaultIcons(m_vecItems);
 }
 
 void CGUIWindowPrograms::Clear()
@@ -515,12 +492,6 @@ void CGUIWindowPrograms::OnSort()
   for (int i=0; i < (int)m_vecItems.size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
-		pItem->SetIconImage("defaultFolder.png");
-		if (!CUtil::FileExists(pItem->GetThumbnailImage()) )
-		{
-			pItem->SetThumbnailImage("defaultFolderBig.png");
-		}
-
     CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),CONTROL_LIST,0,0,(void*)pItem);
     g_graphicsContext.SendMessage(msg);    
     CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_THUMBS,0,0,(void*)pItem);
