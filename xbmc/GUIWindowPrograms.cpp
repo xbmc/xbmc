@@ -29,7 +29,7 @@ CGUIWindowPrograms::CGUIWindowPrograms(void)
         :CGUIWindow(0)
 {
     m_strDirectory="?";
-
+		m_iLastControl=-1;
 }
 
 CGUIWindowPrograms::~CGUIWindowPrograms(void)
@@ -40,9 +40,12 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
     switch ( message.GetMessage() )
     {
     case GUI_MSG_WINDOW_DEINIT:
-
-        Clear();
-        break;
+		{
+			m_iLastControl=GetFocusedControl();
+			m_iSelectedItem=GetSelectedItem();
+			Clear();
+		}
+    break;
 
     case GUI_MSG_WINDOW_INIT:
         {
@@ -70,10 +73,13 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
             Update(m_strDirectory);
 
-            if (g_stSettings.m_iMyProgramsSelectedItem >=0)
+						if (m_iLastControl>-1)
+							SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+
+            if (m_iSelectedItem>-1)
             {
-                CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,g_stSettings.m_iMyProgramsSelectedItem);
-                CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,g_stSettings.m_iMyProgramsSelectedItem);
+                CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iSelectedItem);
+                CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iSelectedItem);
             }
             return true;
         }

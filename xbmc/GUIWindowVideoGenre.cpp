@@ -103,6 +103,7 @@ CGUIWindowVideoGenre::CGUIWindowVideoGenre()
 {
 	m_strDirectory="";
   m_iItemSelected=-1;
+	m_iLastControl=-1;
 }
 
 //****************************************************************************************************************************
@@ -161,6 +162,8 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
 		}
 		break;
 		case GUI_MSG_WINDOW_DEINIT:
+			m_iLastControl=GetFocusedControl();
+			m_iItemSelected=GetSelectedItem();
 			Clear();
       m_database.Close();
 		break;
@@ -174,6 +177,10 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 			m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
 			m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
+
+			if (m_iLastControl>-1)
+				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+
 			Update(m_strDirectory);
 
       ShowThumbPanel();
@@ -464,11 +471,16 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 
   strSelectedItem=m_history.Get(m_strDirectory);	
 
-	if ( ViewByIcon() ) {	
-		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
-	}
-	else {
-		SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+	m_iLastControl=GetFocusedControl();
+
+	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
+	{
+		if ( ViewByIcon() ) {	
+			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+		}
+		else {
+			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+		}
 	}
 
   for (int i=0; i < (int)m_vecItems.size(); ++i)
