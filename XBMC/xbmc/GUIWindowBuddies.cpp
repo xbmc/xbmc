@@ -640,7 +640,10 @@ bool CGUIWindowBuddies::OnMessage(CGUIMessage &message)
 
 			if (m_pMe)
 			{
-				m_pMe->m_pAvatar->FreeResources();
+        if (m_pMe->m_pAvatar)
+        {
+				  m_pMe->m_pAvatar->FreeResources();
+        }
 				delete m_pMe;
 				m_pMe=NULL;
 			}

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 30-01-2005 fixed: crash when leaving kai window
   - 30-01-2005 fixed: [ 1107267 ] CRC32::Compute needs to be case insensitive (All thumbs need to be recreated)
   - 30-01-2005 added: file manager, show free disk space for hdd and total size for DVD
   - 29-01-2005 fixed: 1080i aspect ratio in ComboRenderer
