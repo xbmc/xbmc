@@ -29,6 +29,9 @@ Project Mayhem WebServer V1.1
  
 = Changelog =====================
  
+ 2004/12/09: jmarshall
+    - fixed Saving of XBoxMediaCenter.xml when XBMC is used as dash (thanks to BombrMan)
+
  2004/10/24: pyRAnHa
     - added "Clear Playlist" option
 
