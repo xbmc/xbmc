@@ -170,7 +170,14 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
 			m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);
 			int iControl=CONTROL_LIST;
-      if (!g_stSettings.m_bMyPicturesViewAsIcons) iControl=CONTROL_THUMBS;
+
+			bool bViewAsIcon=false;
+			if ( m_strDirectory.IsEmpty() )
+				bViewAsIcon = g_stSettings.m_bMyPicturesRootViewAsIcons;
+			else
+				bViewAsIcon = g_stSettings.m_bMyPicturesViewAsIcons;
+
+      if (!bViewAsIcon) iControl=CONTROL_THUMBS;
 			SET_CONTROL_HIDDEN(GetID(), iControl);
 
       if ( g_stSettings.m_bMyPicturesSortAscending)
@@ -197,8 +204,12 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 				//CGUIDialog* pDialog=(CGUIDialog*)m_gWindowManager.GetWindow(100);
 				//pDialog->DoModal(GetID());
 
-        g_stSettings.m_bMyPicturesViewAsIcons=!g_stSettings.m_bMyPicturesViewAsIcons;
-				g_settings.Save();
+		  if ( m_strDirectory.IsEmpty() )
+	        g_stSettings.m_bMyPicturesRootViewAsIcons=!g_stSettings.m_bMyPicturesRootViewAsIcons;
+		  else
+			g_stSettings.m_bMyPicturesViewAsIcons=!g_stSettings.m_bMyPicturesViewAsIcons;
+
+		g_settings.Save();
 				
         UpdateButtons();
       }
@@ -303,19 +314,25 @@ void CGUIWindowPictures::Clear()
 void CGUIWindowPictures::UpdateButtons()
 {
 
-    if (g_stSettings.m_bMyPicturesViewAsIcons) 
+	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
+	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
+	bool bViewAsIcon=false;
+	if ( m_strDirectory.IsEmpty() )
+		bViewAsIcon = g_stSettings.m_bMyPicturesRootViewAsIcons;
+	else
+		bViewAsIcon = g_stSettings.m_bMyPicturesViewAsIcons;
+
+    if (bViewAsIcon) 
     {
-			SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
 			SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
     }
     else
     {
-			SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 			SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
     }
 
     int iString=101;
-    if (!g_stSettings.m_bMyPicturesViewAsIcons) 
+    if (!bViewAsIcon) 
     {
       iString=100;
     }
@@ -399,6 +416,19 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
   UpdateButtons();
 
 	strSelectedItem=m_history.Get(m_strDirectory);	
+	bool bViewAsIcon = false;
+	if ( m_strDirectory.IsEmpty() )
+		bViewAsIcon = g_stSettings.m_bMyPicturesRootViewAsIcons;
+	else
+		bViewAsIcon = g_stSettings.m_bMyPicturesViewAsIcons;
+
+	if ( bViewAsIcon ) {	
+		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);
+	}
+	else {
+		SET_CONTROL_FOCUS(GetID(), CONTROL_LIST);
+	}
+
 	for (int i=0; i < (int)m_vecItems.size(); ++i)
 	{
 		CFileItem* pItem=m_vecItems[i];
@@ -548,11 +578,15 @@ void CGUIWindowPictures::Render()
 int CGUIWindowPictures::GetSelectedItem()
 {
 	int iControl;
-	if ( g_stSettings.m_bMyPicturesViewAsIcons) 
-	{
-		iControl=CONTROL_THUMBS;
-	}
+	bool bViewAsIcon=false;
+	if ( m_strDirectory.IsEmpty() )
+		bViewAsIcon = g_stSettings.m_bMyPicturesRootViewAsIcons;
 	else
+		bViewAsIcon = g_stSettings.m_bMyPicturesViewAsIcons;
+
+    if (bViewAsIcon) 
+		iControl=CONTROL_THUMBS;
+    else
 		iControl=CONTROL_LIST;
 
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);

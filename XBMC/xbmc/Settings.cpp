@@ -30,6 +30,7 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_szHTTPProxy,"");
   strcpy(g_stSettings.szDefaultSkin,"MediaCenter");
 	g_stSettings.m_bMyPicturesViewAsIcons=false;
+	g_stSettings.m_bMyPicturesRootViewAsIcons=true;
 	g_stSettings.m_bMyPicturesSortAscending=true;
 	g_stSettings.m_bMyPicturesSortMethod=0;
 
@@ -48,8 +49,25 @@ CSettings::CSettings(void)
 	strcpy( g_stSettings.m_szCDDBIpAdres,"");
 	g_stSettings.m_bUseCDDB=false;
 	g_stSettings.m_iMyMusicViewMethod=2;//view songs
+	g_stSettings.m_bMyMusicSongsRootViewAsIcons= true; //thumbs
+	g_stSettings.m_bMyMusicSongsViewAsIcons = false;
+	g_stSettings.m_bMyMusicAlbumRootViewAsIcons= true;
+	g_stSettings.m_bMyMusicAlbumViewAsIcons = false;
+	g_stSettings.m_bMyMusicArtistRootViewAsIcons = false;
+	g_stSettings.m_bMyMusicArtistViewAsIcons = false;
+	g_stSettings.m_bMyMusicGenresRootViewAsIcons = false;
+	g_stSettings.m_bMyMusicGenresViewAsIcons = false;
+	g_stSettings.m_bMyMusicPlaylistViewAsIcons = false;
 	g_stSettings.m_bMyMusicSortAscending=true;
+
+	g_stSettings.m_bMyVideoViewAsIcons=false;
+	g_stSettings.m_bMyVideoRootViewAsIcons=true;
 	g_stSettings.m_bMyVideoSortAscending=true;
+	g_stSettings.m_bMyFilesSourceViewAsIcons=false;
+	g_stSettings.m_bMyFilesSourceRootViewAsIcons=true;
+	g_stSettings.m_bMyFilesDestViewAsIcons=false;
+	g_stSettings.m_bMyFilesDestRootViewAsIcons=true;
+
 	g_stSettings.m_bMyFilesSortAscending=true;
 	g_stSettings.m_iUIOffsetX=0;
 	g_stSettings.m_iUIOffsetY=0;
