@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.175. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.176. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -884,5 +884,6 @@
   <string><id>15103</id><value>* Alle artister</value></string>
   <string><id>15104</id><value>* Alle sanger</value></string>
   <string><id>15105</id><value>* Alle sjangre</value></string>
+  <string><id>15106</id><value>Husk valgt fil ved videre navigasjon</value></string>
 </strings>
 

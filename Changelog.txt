@@ -5,6 +5,13 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-03-2005 updated: Finnish language file (Thnx to jutski)
+  - 15-03-2004 updated: Polish language file (Thnx to napek)
+  - 15-03-2005 updated: Norwegian language file (Thnx to vnm)
+  - 15-03-2005 updated: Chinese (Traditional) language file (Thnx to jonsonchen)
+  - 15-03-2004 updated: Dutch language file (Thnx to tijmengozer)
+  - 15-03-2005 updated: Italian language file (Thnx to kotix)
+  - 15-03-2005 updated: German (Austrian) language file (Thnx to CEOMR)
   - 14-03-2005 fixed: filelist is updated correctly after removing items from playlists
   - 13-03-2005 fixed: crash in my videos
   - 13-03-2005 added: Cache dialog shows progressbar when caching.
