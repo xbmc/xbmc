@@ -280,6 +280,12 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 					share.strName=szName;
 					share.strPath=szPath;
 					share.m_iBufferSize=0;
+					if ( CUtil::IsDVD( share.strPath ) )
+						share.m_iDriveType = SHARE_TYPE_DVD;
+					else if ( CUtil::IsRemote( share.strPath ) )
+						share.m_iDriveType = SHARE_TYPE_REMOTE;
+					else 
+						share.m_iDriveType = SHARE_TYPE_LOCAL;
 
           
           if (pCacheNode)
