@@ -5,6 +5,7 @@
 #include "../lib/libCDRip/cdripxlib.h"
 #include "../settings.h"
 #include "../xbox/iosupport.h"
+#include "../application.h"
 #include "cddb.h"
 
 using namespace CDDB;
@@ -22,7 +23,7 @@ CCDDADirectory::~CCDDADirectory(void)
 
 bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 {
-	
+	if (!g_application.m_DetectDVDType.IsDiscInDrive()) return false;
 	{
 		Xcddb cddb;
 		CStdString strDir;
