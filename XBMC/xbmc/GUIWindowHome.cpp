@@ -117,7 +117,7 @@ void CGUIWindowHome::OnClickReboot(CGUIMessage& aMessage)
     if(dlgYesNo->IsConfirmed())
       g_applicationMessenger.Restart();
     else
-      g_applicationMessenger.Reset();
+      g_applicationMessenger.RestartApp();
   }
 }
 
