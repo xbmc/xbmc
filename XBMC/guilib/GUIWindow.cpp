@@ -3,6 +3,21 @@
 #include "tinyxml/tinyxml.h"
 #include "../xbmc/utils/log.h"
 #include "GUIControlFactory.h"
+#include "guibuttoncontrol.h"
+#include "guiRadiobuttoncontrol.h"
+#include "guiSpinControl.h"
+#include "guiListControl.h"
+#include "guiImage.h"
+#include "GUILabelControl.h"
+#include "GUIFadeLabelControl.h"
+#include "GUICheckMarkControl.h"
+#include "GUIThumbnailPanel.h"
+#include "GUIMButtonControl.h"
+#include "GUIToggleButtonControl.h" 
+#include "GUITextBox.h" 
+#include "guiVideoControl.h"
+#include "GUIProgressControl.h"
+#include "GUISliderControl.h"
 
 #include<string>
 using namespace std;
@@ -23,11 +38,87 @@ CGUIWindow::~CGUIWindow(void)
 bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOLS& controls)
 {
 	// load references.xml
-	controls.erase(controls.begin(), controls.end());
+	controls.clear();
 	TiXmlDocument xmlDoc;
 	int iPos = strFileName.ReverseFind('\\');
 	CStdString strReferenceFile=strFileName.Left(iPos);
 	strReferenceFile += "\\references.xml";
+
+	// this takes ages and happens about 20 times per skin load.
+	// caching the data speeds up skin loading by a factor of 2. :)
+	static CStdString LastFilename = "";
+	static VECREFERENCECONTOLS ControlsCache;
+	if (LastFilename == strReferenceFile)
+	{
+		for (IVECREFERENCECONTOLS it = ControlsCache.begin(); it != ControlsCache.end(); ++it)
+		{
+			stReferenceControl stControl;
+			strcpy(stControl.m_szType,it->m_szType);
+			if (!strcmp(it->m_szType,"label"))
+			{
+				stControl.m_pControl = new CGUILabelControl(*((CGUILabelControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"videowindow"))
+			{
+				stControl.m_pControl = new CGUIVideoControl(*((CGUIVideoControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"fadelabel"))
+			{
+				stControl.m_pControl = new CGUIFadeLabelControl(*((CGUIFadeLabelControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"button"))
+			{
+				stControl.m_pControl = new CGUIButtonControl(*((CGUIButtonControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"togglebutton"))
+			{
+				stControl.m_pControl = new CGUIToggleButtonControl(*((CGUIToggleButtonControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"buttonM"))
+			{
+				stControl.m_pControl = new CGUIMButtonControl(*((CGUIMButtonControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"checkmark"))
+			{
+				stControl.m_pControl = new CGUICheckMarkControl(*((CGUICheckMarkControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"radiobutton"))
+			{
+				stControl.m_pControl = new CGUIRadioButtonControl(*((CGUIRadioButtonControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"spincontrol"))
+			{
+				stControl.m_pControl = new CGUISpinControl(*((CGUISpinControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"slider"))
+			{
+				stControl.m_pControl= new CGUISliderControl(*((CGUISliderControl*)it->m_pControl));
+			} 
+			else if (!strcmp(it->m_szType,"progress"))
+			{
+				stControl.m_pControl= new CGUIProgressControl(*((CGUIProgressControl*)it->m_pControl));
+			} 
+			else if (!strcmp(it->m_szType,"image"))
+			{
+				stControl.m_pControl = new CGUIImage(*((CGUIImage*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"listcontrol"))
+			{
+				stControl.m_pControl = new CGUIListControl(*((CGUIListControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"textbox"))
+			{
+				stControl.m_pControl = new CGUITextBox(*((CGUITextBox*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"thumbnailpanel"))
+			{
+				stControl.m_pControl = new CGUIThumbnailPanel(*((CGUIThumbnailPanel*)it->m_pControl));
+			}
+			controls.push_back(stControl);
+		}
+		return true;
+	}
+
 	if ( !xmlDoc.LoadFile(strReferenceFile.c_str()) )
 	{
     CLog::Log("unable to load:%s", strReferenceFile.c_str());
@@ -62,12 +153,82 @@ bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOL
 		}
 		pControl=pControl->NextSibling();
 	}
+
+	LastFilename = strReferenceFile;
+	ControlsCache.clear();
+	for (IVECREFERENCECONTOLS it = controls.begin(); it != controls.end(); ++it)
+	{
+		stReferenceControl stControl;
+		strcpy(stControl.m_szType,it->m_szType);
+		if (!strcmp(it->m_szType,"label"))
+		{
+			stControl.m_pControl = new CGUILabelControl(*((CGUILabelControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"videowindow"))
+		{
+			stControl.m_pControl = new CGUIVideoControl(*((CGUIVideoControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"fadelabel"))
+		{
+			stControl.m_pControl = new CGUIFadeLabelControl(*((CGUIFadeLabelControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"button"))
+		{
+			stControl.m_pControl = new CGUIButtonControl(*((CGUIButtonControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"togglebutton"))
+		{
+			stControl.m_pControl = new CGUIToggleButtonControl(*((CGUIToggleButtonControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"buttonM"))
+		{
+			stControl.m_pControl = new CGUIMButtonControl(*((CGUIMButtonControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"checkmark"))
+		{
+			stControl.m_pControl = new CGUICheckMarkControl(*((CGUICheckMarkControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"radiobutton"))
+		{
+			stControl.m_pControl = new CGUIRadioButtonControl(*((CGUIRadioButtonControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"spincontrol"))
+		{
+			stControl.m_pControl = new CGUISpinControl(*((CGUISpinControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"slider"))
+		{
+			stControl.m_pControl= new CGUISliderControl(*((CGUISliderControl*)it->m_pControl));
+		} 
+		else if (!strcmp(it->m_szType,"progress"))
+		{
+			stControl.m_pControl= new CGUIProgressControl(*((CGUIProgressControl*)it->m_pControl));
+		} 
+		else if (!strcmp(it->m_szType,"image"))
+		{
+			stControl.m_pControl = new CGUIImage(*((CGUIImage*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"listcontrol"))
+		{
+			stControl.m_pControl = new CGUIListControl(*((CGUIListControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"textbox"))
+		{
+			stControl.m_pControl = new CGUITextBox(*((CGUITextBox*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"thumbnailpanel"))
+		{
+			stControl.m_pControl = new CGUIThumbnailPanel(*((CGUIThumbnailPanel*)it->m_pControl));
+		}
+		ControlsCache.push_back(stControl);
+	}
+
 	return true;
 }
 
 bool CGUIWindow::Load(const CStdString& strFileName)
 {
-  TiXmlDocument xmlDoc;
+	TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile(strFileName.c_str()) )
   {
     CLog::Log("unable to load:%s", strFileName.c_str());
@@ -140,7 +301,7 @@ bool CGUIWindow::Load(const CStdString& strFileName)
 	for (int i=0; i < (int)referencecontrols.size();++i)
 	{
 		struct stReferenceControl stControl=referencecontrols[i];
-		delete stControl.m_pControl ;
+		delete stControl.m_pControl;
 	}
   return true;
 }
