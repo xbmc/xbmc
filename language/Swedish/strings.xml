@@ -723,8 +723,8 @@
   <string><id>13356</id><value>Hårdvaru Overlay</value></string>
   <string><id>13357</id><value>Pixel Shader med hög kvalitet</value></string>
   <string><id>13360</id><value>Generera Thumbnails</value></string>
-  <string><id>13361</id><value>Enable Voice</value></string>
-  <string><id>13362</id><value>Voice Mask</value></string>
+  <string><id>13361</id><value>Aktivera Röst</value></string>
+  <string><id>13362</id><value>Röst Mask</value></string>
   <string><id>13363</id><value>- Aktivera spectrum energi tyngd</value></string>
   <string><id>13364</id><value>-- Spectrum energi tyngd värde</value></string>
   <string><id>13365</id><value>- Aktivera pitch scaling</value></string>
