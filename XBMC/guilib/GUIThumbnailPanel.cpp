@@ -227,8 +227,10 @@ void CGUIThumbnailPanel::Render()
 				m_iCursorX = iPos % m_iColumns;
 			}
 			// Update the page counter
-			int iPage = m_iOffset/(m_iRows*m_iColumns);
-			m_upDown.SetValue(iPage+1);
+			int iPage = m_iOffset/(m_iRows*m_iColumns)+1;
+			if (m_iOffset + m_iRows*m_iColumns == (int)m_vecItems.size())
+				iPage++;
+			m_upDown.SetValue(iPage);
 		}
 	}
 	if (m_bScrollUp)
@@ -744,11 +746,10 @@ void CGUIThumbnailPanel::GetOffsetFromPage()
     m_iOffset=(m_upDown.GetValue()-1)*m_iColumns*m_iRows;
 	// make sure we have a full screen on the last page.
 	int iRows = (m_vecItems.size()-m_iOffset)/m_iColumns+1;
-	while (iRows < m_iRows)
+	while (iRows < m_iRows && m_iOffset > 0)
 	{
 		iRows++;
 		m_iOffset-=m_iColumns;
-//		m_iCursorY++;
 	}
 	while  (m_iCursorX > 0 && m_iOffset + m_iCursorY*m_iColumns+m_iCursorX >= (int) m_vecItems.size() )
 	{
@@ -960,7 +961,7 @@ void CGUIThumbnailPanel::ScrollDown()
 			m_iCursorX = iPos % m_iColumns;
 		}
 		int iPage = m_iOffset/(m_iRows*m_iColumns)+1;
-		if (m_iOffset+m_iRows*m_iColumns > (int)m_vecItems.size())
+		if (m_iOffset+m_iRows*m_iColumns == (int)m_vecItems.size())
 			iPage++;	// last page
 		m_upDown.SetValue(iPage);
 	}
