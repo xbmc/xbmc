@@ -154,9 +154,9 @@ public:
 	int									FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile );
 	bool								FindClose( HANDLE szLocalFolder );
 	DWORD								SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh,  DWORD dwMoveMethod  );
-	INT64								GetFileSize();
-	INT64								GetFilePosition();
-	INT64								Seek(int fd, INT64 lOffset, int whence);
+	__int64							GetFileSize();
+	__int64							GetFilePosition();
+	__int64							Seek(int fd, __int64 lOffset, int whence);
 	HANDLE							OpenFile( const char* filename );
 	long								ReadFile(int fd, byte *pBuffer, long lSize);
 	void								CloseFile();
@@ -191,9 +191,9 @@ protected:
 
 	DWORD				m_dwStartBlock;
 	DWORD				m_dwCurrentBlock;				// Current being read Block
-	INT64				m_dwFilePos;
+	__int64			m_dwFilePos;
 	BYTE*       m_pBuffer;
-	DWORD				m_dwFileSize;
+	__int64			m_dwFileSize;
 
 
 };
