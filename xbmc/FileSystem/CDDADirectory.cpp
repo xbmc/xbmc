@@ -4,7 +4,6 @@
 #include "../url.h"
 #include "../util.h"
 #include "../sectionloader.h"
-#include "../lib/libCDRip/cdripxlib.h"
 #include "../settings.h"
 #include "../xbox/iosupport.h"
 #include "../application.h"
