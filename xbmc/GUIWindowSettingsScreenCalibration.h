@@ -12,6 +12,8 @@ public:
   virtual bool    OnMessage(CGUIMessage& message);
   virtual void    OnAction(const CAction &action);
   virtual void    Render();
+  virtual void    AllocResources();
+  virtual void    FreeResources();
 
 protected:
 	UINT				m_iCurRes;

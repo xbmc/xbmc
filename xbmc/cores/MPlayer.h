@@ -41,6 +41,7 @@ public:
     void         SetFPS(float fFPS);
     float        GetFPS() const; 
     void         GetOptions(int& argc, char* argv[]);
+	void		SetDVDDevice(const string & strDevice);
 
     private:
 	  bool	m_bResampleAudio;
@@ -53,6 +54,7 @@ public:
       float   m_fVolumeAmplification;
       bool    m_bNonInterleaved;
       string  m_strChannelMapping;
+	  string  m_strDvdDevice;
       vector<string> m_vecOptions;
 
   };
@@ -109,6 +111,7 @@ public:
   virtual void    ShowOSD(bool bOnoff);
 protected:
   int GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool bFileOnInternet,bool bFileOnLAN, bool bIsVideo, bool bIsAudio, bool bIsDVD);
+  CStdString GetDVDArgument(const CStdString& strFile);
   bool                load();
 	virtual void				OnStartup();
 	virtual void				OnExit();

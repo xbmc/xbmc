@@ -50,6 +50,9 @@ public:
 	static bool IsPicture(const CStdString& strLine) ;
 	static bool IsAudio(const CStdString& strLine) ;
 	static bool IsVideo(const CStdString& strLine) ;
+	static bool IsDVDImage(const CStdString& strLine) ;
+	static bool IsDVDFile(const CStdString& strFile, bool bVobs = true, bool bIfos = true);
+	static int GetDVDIfoTitle(const CStdString& strPathFile);
 	static void URLEncode(CStdString& strURLData);
 	static bool LoadString(string &strTxt, FILE *fd);
 	static int  LoadString(CStdString &strTxt, byte* pBuffer);

@@ -87,6 +87,17 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 {
 }
 
+void CGUIWindowFullScreen::AllocResources()
+{
+  CGUIWindow::AllocResources();
+  g_application.m_guiWindowOSD.AllocResources();
+}
+
+void CGUIWindowFullScreen::FreeResources()
+{
+  g_application.m_guiWindowOSD.FreeResources();
+  CGUIWindow::FreeResources();
+}
 
 void CGUIWindowFullScreen::OnAction(const CAction &action)
 {
@@ -245,9 +256,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 
 		case ACTION_STOP:
     {
-			g_application.m_pPlayer->closefile();
-			// Switch back to the previous window (GUI)
-			m_gWindowManager.PreviousWindow();
+      g_application.StopPlaying();
     }
 		break;
 
