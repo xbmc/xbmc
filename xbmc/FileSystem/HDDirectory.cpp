@@ -5,6 +5,8 @@
 #include "../util.h"
 #include "../xbox/iosupport.h"
 #include "../autoptrhandle.h"
+#include "directorycache.h"
+
 using namespace AUTOPTR;
 CHDDirectory::CHDDirectory(void)
 {
@@ -18,7 +20,8 @@ CHDDirectory::~CHDDirectory(void)
 bool  CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 {
 	WIN32_FIND_DATA wfd;
-	
+
+  g_directoryCache.ClearDirectory(strPath);
 	CStdString strRoot=strPath;
 	CURL url(strPath);
 
@@ -75,6 +78,7 @@ bool  CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
       }
     }
   } while (FindNextFile((HANDLE)hFind, &wfd));
+  g_directoryCache.SetDirectory(strPath,items);
 
   return true;
 }

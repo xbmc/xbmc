@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include "DirectoryCache.h"
 #include "../autoptrhandle.h"
 using namespace AUTOPTR;
 using namespace XFILE;
@@ -141,6 +142,13 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 //*********************************************************************************************
 bool CFile::Open(const char* strFileName, bool bBinary)
 {
+  bool bPathInCache;
+  if (!g_directoryCache.FileExists(strFileName,bPathInCache) )
+  {
+    if (bPathInCache) 
+      return false;
+  }
+
 	CFileFactory factory;
 	m_pFile=factory.CreateLoader(strFileName);
 	if (!m_pFile) return false;
@@ -152,6 +160,12 @@ bool CFile::Open(const char* strFileName, bool bBinary)
 
 bool CFile::Exists(const char* strFileName)
 {
+  bool bPathInCache;
+  if (g_directoryCache.FileExists(strFileName,bPathInCache) )
+    return true;
+  if (bPathInCache) 
+    return false;
+
 	CFileFactory factory;
 	m_pFile=factory.CreateLoader(strFileName);
 	if (!m_pFile) return false;

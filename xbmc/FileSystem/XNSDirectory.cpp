@@ -6,6 +6,8 @@
 #include "../url.h"
 #include "../util.h"
 #include "../autoptrhandle.h"
+#include "directorycache.h"
+
 using namespace AUTOPTR;
 
 CXNSDirectory::CXNSDirectory(void)
@@ -24,6 +26,7 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	int iport					 = 1400;
 	if (url.HasPort()) iport=url.GetPort();
 
+  g_directoryCache.ClearDirectory(strPath);
 	CStdString strHostName;
 	if ( !CDNSNameCache::Lookup(url.GetHostName(), strHostName) )
 	{
@@ -206,5 +209,7 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 		pChild=pChild->NextSibling();
 	}
 
+  
+  g_directoryCache.SetDirectory(strPath,items);
 	return true;
 }

@@ -28,7 +28,7 @@
 				BufferSecurityCheck="TRUE"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="3"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
