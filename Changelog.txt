@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-03-2005 added: my music nav window now supports files with tagged with multipe artists and genres
+  - 04-03-2005 changed: my music nav window artists, albums, and song titles sort without "the " prefix
   - 04-03-2005 fixed: my music, no thumbs for songs in database views when coverart is loaded from tags
   - 04-03-2005 fixed: thumb cache in musicdatabase is not cleared after scanning
   - 04-03-2005 added: wma tag loader, support for multiple artists and genres
