@@ -264,6 +264,11 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 			else
 				ToggleButton(OSD_FFWD, false);		// pop the button back to it's up state
 
+			//	Set a dummy time value if the osd is used in screen calibration
+			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), OSD_TIMEINFO);
+			msg.SetLabel("00:00:00/10:00:00");
+			OnMessage(msg);
+
       FOCUS_CONTROL(GetID(), OSD_PLAY, 0);	// set focus to play button by default when window is shown
 
 			return true;
