@@ -481,7 +481,7 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, VECFILEITE
 
 }
 
-void CProgramDatabase::GetProgramsByPath(const CStdString& strPath, VECFILEITEMS& programs, bool bOnlyDefaultXBE)
+void CProgramDatabase::GetProgramsByPath(const CStdString& strPath, VECFILEITEMS& programs, int iDepth, bool bOnlyDefaultXBE)
 {
 	try {	
 		VECPROGRAMPATHS todelete;
@@ -516,9 +516,11 @@ void CProgramDatabase::GetProgramsByPath(const CStdString& strPath, VECFILEITEMS
 			CStdString strPath,strFile,strPathandFile;
 			strPath=m_pDS->fv("path.strPath").get_asString();
 			strFile=m_pDS->fv("files.strFilename").get_asString();
+			int depth = StringUtils::FindNumber(strPath, "/")-StringUtils::FindNumber(strPath1, "/");
 			strPathandFile=strPath+strFile;
 			strPathandFile.Replace("/","\\");
-			if (CUtil::FileExists(strPathandFile))
+			// check if we are at the appropriate depth... strPath1 + depth number of dirs is allowed.
+			if (depth<=iDepth && CUtil::FileExists(strPathandFile))
 			{
 				CFileItem *pItem = new CFileItem(m_pDS->fv("files.xbedescription").get_asString());
 				pItem->m_iprogramCount=m_pDS->fv("files.iTimesPlayed").get_asLong();

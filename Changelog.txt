@@ -5,7 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-
+  - 12-10-2004 changed: System used to determine a single artist compilation (with contributing artists).
+  - 12-10-2004 changed: Multiple artists/genres are detected using " / " instead of "/" (Have fun AC/DC fans :)
+  - 12-10-2004 added: On scan, we commit to the database every 500 songs, instead of only at the end.
+  - 12-10-2004 changed: Replaced "Stack" with IMDb on all video views except Files.
+  - 12-10-2004 fixed: My Programs database uses depth info when retrieving programs for shares.
+			Fixes problem with a share of E:\Games with depth 1 and a share of E:\Games\Emulators 			with depth 1.  (the emulators would show up in the first share even though they were at depth 2)
   - 12-10-2004 changed: German (Austrian) language file (Thnx to CEOMR)
   - 11-10-2004 fixed: My Programs, "&" symbol in path causes problems with shortcuts [sf bug #1043578] 
   - 11-10-2004 changed: Portuguese (Brazil) language file (Thnx to wellingtontu)

@@ -128,7 +128,7 @@ int COggTag::parseTagEntry(CStdString& strTagEntry)
 
 	if ( strTagType == "artist" ) {
 		if (m_strArtist.length())
-			m_strArtist += "/" + strTagValue;
+			m_strArtist += " / " + strTagValue;
 		else
 			m_strArtist = strTagValue;
 	}
@@ -151,7 +151,7 @@ int COggTag::parseTagEntry(CStdString& strTagEntry)
 
 	if ( strTagType == "genre" ) {
 		if (m_strGenre.length())
-			m_strGenre += "/" + strTagValue;
+			m_strGenre += " / " + strTagValue;
 		else
 			m_strGenre = strTagValue;
 	}

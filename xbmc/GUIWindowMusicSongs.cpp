@@ -912,7 +912,7 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 			if (strArtist)
 			{
 				int iTrack=tag.GetTrackNumber();
-				if (iTrack>0)
+				if (iTrack>0 && g_stSettings.m_bMyMusicShowTrackNumber)
 					str.Format("%02.2i. %s - %s",iTrack, tag.GetArtist().c_str(), tag.GetTitle().c_str());
 				else 
 					str.Format("%s - %s", tag.GetArtist().c_str(), tag.GetTitle().c_str());

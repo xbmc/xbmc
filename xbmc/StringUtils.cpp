@@ -63,3 +63,16 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
   }
   return numFound;
 }
+
+// returns the number of occurences of strFind in strInput.
+int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFind)
+{
+	int pos = strInput.Find(strFind,0);
+	int numfound = 0;
+	while (pos>0)
+	{
+		numfound++;
+		pos=strInput.Find(strFind,pos+1);
+	}
+	return numfound;
+}

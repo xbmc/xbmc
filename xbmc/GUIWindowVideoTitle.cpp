@@ -35,6 +35,7 @@
 #define CONTROL_BTNTYPE            5
 #define CONTROL_PLAY_DVD           6
 #define CONTROL_STACK              7
+#define CONTROL_IMDB							 9
 #define CONTROL_LIST							10
 #define CONTROL_THUMBS						11
 #define CONTROL_LABELFILES        12
@@ -360,7 +361,11 @@ bool CGUIWindowVideoTitle::OnMessage(CGUIMessage& message)
 
         return true;
       }
-    }
+			else if (iControl==CONTROL_IMDB)
+			{
+				OnManualIMDB();
+			}
+		}
 	}
   return CGUIWindow::OnMessage(message);
 }

@@ -222,7 +222,7 @@ public:
 		bool			m_bMyMusicRepeat;
 		bool			m_bMyMusicSongInfoInVis;
     bool      m_bMyMusicSongThumbInVis;
-
+		bool			m_bMyMusicShowTrackNumber;
 		int 			m_iMyVideoViewAsIcons;
 		int 			m_iMyVideoRootViewAsIcons;
 		int				m_iMyVideoSortMethod;

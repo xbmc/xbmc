@@ -479,7 +479,7 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 			if (m_strBookmarkName=="shortcuts")
 				bOnlyDefaultXBE=false;			// let's do this so that we don't only grab default.xbe from database when getting shortcuts
 			if (bFlattenDir)
-				m_database.GetProgramsByPath(vecPaths[j],m_vecItems,bOnlyDefaultXBE);
+				m_database.GetProgramsByPath(vecPaths[j], m_vecItems, idepth, bOnlyDefaultXBE);
 		}
 	}
 

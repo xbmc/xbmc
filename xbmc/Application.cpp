@@ -2003,12 +2003,7 @@ void CApplication::Stop()
 bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 {
 	CStdString strFile = item.m_strPath;
-	CStdString strExtension;
-	CUtil::GetExtension(strFile,strExtension);
-	strExtension.ToLower();
-	if (strExtension==".m3u") return false;
-	if (strExtension==".b4s") return false;
-	if (strExtension==".cue") return false;
+	if (CUtil::IsPlayList(strFile)) return false;
 
 	float AVDelay = 0;
 

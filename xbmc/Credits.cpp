@@ -67,54 +67,58 @@ struct CreditLine_t
 CreditLine_t Credits[] =
 {
   // Intro  fadein 32 rows, on 80 rows, fadeout 16 rows
-	{  50,  25,      0,   9600, 3840, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   78, L"XBOX" },
-	{  50,  45,      0,   9600, 3840, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   78, L"MEDIA" },
-	{  50,  65,      0,   9600, 3840, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   78, L"CENTER" },
+  {  50,  25,      0,   9600, 3840, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   78, L"XBOX" },
+  {  50,  45,      0,   9600, 3840, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   78, L"MEDIA" },
+  {  50,  65,      0,   9600, 3840, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   78, L"CENTER" },
 
   // Lead dev  fadein 2 rows, on 110 rows, fadeout 16 rows
-	{  50,  22,  15360,  13200,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Project Founders" },
-	{  50,  29,      0,  13200,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"and" },
-	{  50,  34,      0,  13200,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Lead Developers" },
-	{  50,  47,    720,  12480,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Frodo" },
-	{  50,  57,      0,  12480,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"RUNTiME" },
-	{  50,  67,      0,  12480,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"d7o3g4q" },
+  {  50,  22,  15360,  13200,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Project Founders" },
+  {  50,  29,      0,  13200,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"and" },
+  {  50,  34,      0,  13200,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Lead Developers" },
+  {  50,  47,    720,  12480,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Frodo" },
+  {  50,  57,      0,  12480,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"RUNTiME" },
+  {  50,  67,      0,  12480,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"d7o3g4q" },
 
   // Devs  flash 0.5 rows, on 63 rows, crossfade 3.5 rows
   {  50,  22,  14640,  13380,   60, 1920, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Developers" },
   {  50,  35,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Butcher" },
   {  50,  45,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Forza" },
   {  50,  55,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Bobbin007" },
-	{  50,  65,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"elupus" },
+  {  50,  65,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"elupus" },
   {  50,  75,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"J Marshall" },
   //  crossfade 3.5, on 45, fadeout 16
   {  50,  35,   7620,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"jwnmulder" },
   {  50,  45,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"monkeyhappy" },
   {  50,  55,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Tslayer" },
   {  50,  65,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"yuvalt" },
+  {  50,  75,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Charly" },
+  {  50,  85,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Guybrush" },
 
   // Project management flash 0.5, on 63, crossfade 3.5
-	{  50,  18,   7740,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Project Management" },
-	{  50,  28,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Gamester17" },
+  {  50,  18,   7740,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Project Management" },
+  {  50,  28,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Gamester17" },
+  {  50,  38,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Hullebulle aka Nuendo" },
+  {  50,  48,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"pike" },
 
-	{  50,  40,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Tech Support Mods" },
-	{  50,  50,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Hullebulle aka Nuendo" },
-	{  50,  60,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Pike" },
-	{  50,  70,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"DDay" },
-	{  50,  80,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Poing" },
+  {  50,  60,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Tech Support Mods" },
+  {  50,  70,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"DDay" },
+  {  50,  80,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Poing" },
 
   // Testers crossfade 3.5, on 45, fadeout 16
   {  50,  22,   7620,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Testers" },
-	{  50,  35,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"MrMario64" },
-	{  50,  45,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Obstler" },
-	{  50,  55,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Shadow_Mx" },
-	{  50,  65,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL" },
-	{  50,  75,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"[XC]D-Ice" },
+  {  50,  35,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Shadow_Mx" },
+  {  50,  45,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL" },
+  {  50,  55,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"[XC]D-Ice" },
+  {  50,  65,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Chokeman" },
+  {  50,  75,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Wabid" },
+  {  50,  85,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Blackwolf" },
 
   // Patches  flash 0.5, on 63, crossfade 3.5
   {  50,  22,   7740,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Exceptional Patches" },
   {  50,  35,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Q-Silver" },
   {  50,  45,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"WiSo" },
   {  50,  55,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Tilmann" },
+  {  50,  65,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"kraqh3d" },
 
   // Stream server  crossfade 3.5, on 60 crossfade 3
   {  50,  22,   7620,   7200,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Stream Server" },
@@ -123,38 +127,45 @@ CreditLine_t Credits[] =
   {  50,  55,      0,   7200,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Pope-X" },
 
   // Website Hosts  crossfade 3, on 61, crossfade 3
-	{  50,  22,   7680,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Website Hosting" },
-	{  50,  35,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"HulleBulle aka Nuendo" },
-	{  50,  45,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"MrX" },
-	{  50,  55,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-XBMC" },
-	{  50,  65,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL (ASP Site Upload)" },
-	{  50,  75,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Sourceforge.net" },
+  {  50,  22,   7680,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Website Hosting" },
+  {  50,  35,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"HulleBulle aka Nuendo" },
+  {  50,  45,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"MrX" },
+  {  50,  55,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-XBMC" },
+  {  50,  65,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL (ASP Site Upload)" },
+  {  50,  75,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Sourceforge.net" },
 
   // Sponsors crossfade 3, on 61, crossfade 3
-	{  50,  22,   7680,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Sponsors" },
-	{  50,  35,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-Xecuter" },
-	{  50,  45,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-SmartXX" },
-	{  50,  55,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-OzXodus" },
+  {  50,  22,   7680,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Sponsors" },
+  {  50,  35,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-Xecuter" },
+  {  50,  45,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-SmartXX" },
+  {  50,  55,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-OzXodus" },
 
   // Current Skin crossfade 3, on 61, crossfade 3
-	{  50,  22,   7680,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"$SKINTITLE" },
-	{  50,  35,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL }, // skin names go in these 5
-	{  50,  45,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
-	{  50,  55,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
-	{  50,  65,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
-	{  50,  75,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
+  {  50,  22,   7680,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"$SKINTITLE" },
+  {  50,  35,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL }, // skin names go in these 5
+  {  50,  45,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
+  {  50,  55,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
+  {  50,  65,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
+  {  50,  75,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
 
-  // Special Thanks crossfade 3, on 46, fadeout 16
-	{  50,  22,   7680,   5520,  360, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Special Thanks to" },
-	{  50,  35,      0,   5520,  360, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Avalaunch (for help with some code)" },
-	{  50,  43,      0,   5520,  360, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Complex" },
-	{  50,  51,      0,   5520,  360, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team EvoX" },
-	{  50,  59,      0,   5520,  360, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Xbox-scene.com" },
-	{  50,  67,      0,   5520,  360, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"bestplayer.de" },
-	{  50,  75,      0,   5520,  360, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"modplug (credits music)" },
+  // Special Thanks crossfade 3, on 46, crossfade 3
+  {  50,  22,   7680,   5520,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Special Thanks to" },
+  {  50,  35,      0,   5520,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Avalaunch (for help with some code)" },
+  {  50,  43,      0,   5520,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Complex" },
+  {  50,  51,      0,   5520,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team EvoX" },
+  {  50,  59,      0,   5520,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Xbox-scene.com" },
+  {  50,  67,      0,   5520,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"bestplayer.de" },
+  {  50,  75,      0,   5520,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"modplug (credits music)" },
+
+  // Visualizations crossfade 3, on 61, fadeout 16
+  {  50,  22,   7680,   7320,  360,  1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Visualizations by" },
+  {  50,  35,      0,   7320,  360,  1920, EFF_IN_RIGHT   |EFF_OUT_LEFT   ,   20, L"nmrs" },
+  {  50,  45,      0,   7320,  360,  1920, EFF_IN_LEFT   |EFF_OUT_RIGHT   ,   20, L"questor/fused" },
+  {  50,  55,      0,   7320,  360,  1920, EFF_IN_RIGHT   |EFF_OUT_LEFT   ,   20, L"Dinomight" },
+  {  50,  65,      0,   7320,  360,  1920, EFF_IN_LEFT   |EFF_OUT_RIGHT   ,   20, L"mynci" },
 
 	// empty block, can be used for more credits if needed
-	{   0,   0,   7800,  15360,    0,    0, EFF_IN_APPEAR |EFF_OUT_APPEAR ,   20, NULL },
+  {   0,   0,   7800,  15360,    0,    0, EFF_IN_APPEAR |EFF_OUT_APPEAR ,   20, NULL },
 
   // All stuff after this just scrolls
 
@@ -163,41 +174,35 @@ CreditLine_t Credits[] =
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"MPlayer" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"FFmpeg" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"XVID" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"libmpeg2" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"libvorbis" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"libmad" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"xiph" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"MikMod" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Matroska" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"CxImage" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"libCDIO" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"LZO" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Sidplay2" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Goom" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"MXM" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"XBFileZilla" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"GoAhead Webserver" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Samba" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Python" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"libid3" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"FriBiDi" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"libmpeg2" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"libvorbis" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"libmad" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"xiph" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"MikMod" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Matroska" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"CxImage" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"libCDIO" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"LZO" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Sidplay2" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Goom" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"MXM" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"XBFileZilla" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"GoAhead Webserver" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Samba" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Python" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"libid3" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"FriBiDi" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"libdca" },
 
   // JOKE section;-)
 
   // section Frodo
-	{  50,  50,   7040,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Frodo" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to my dear friends" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Gandalf, Legolas, Gimli, Aragorn, Boromir" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Merry, Pippin and ofcourse Samwise" },
-
-  // section mario64
-  {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Mario64" },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to:" },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"The coyote for never" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"catching the road runner" },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"The pizza delivery guy" },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Amstel & Heineken" },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Rob Hubbard for his great sid tunes" },
+  {  50,  50,   7040,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Frodo" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to my dear friends" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Gandalf, Legolas, Gimli, Aragorn, Boromir" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Merry, Pippin and ofcourse Samwise" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and..." },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Team-XBMC wishes Frodo good luck with his future projects!" },
 
   // section dday
   {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"DDay" },
@@ -205,8 +210,8 @@ CreditLine_t Credits[] =
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Frodo for not kicking in my skull" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"God for pizza, beer and women" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Douglas Adams for making me smile" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"each summer when reading" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Hitchhikers Guide To The Galaxy" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"each summer when reading" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Hitchhikers Guide To The Galaxy" },
 
   // section [XC]D-Ice
   {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"[XC]D-Ice" },
@@ -225,85 +230,85 @@ CreditLine_t Credits[] =
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"My little computer room" },
 
   // section Obstler
-	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Obstler" },
+  {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Obstler" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanks to XTender for forgetting" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"to protect their PROM and thereby" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"kickstarting the homebrew mod scene..." },
-	{  50,  50,   1600,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to Goesser for inspiring 42! ;)" },
+  {  50,  50,   1600,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to Goesser for inspiring 42! ;)" },
 
   // section gamestr17
   {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Gamester17" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to everyone on the" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"XBMC/XBMP-Team," },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"XBMC/XBMP-Team," },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and users who don't complain" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Real men don't make backups," },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"but they cry often" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"but they cry often" },
 
   // section pike
   {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Pike" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Microsoft for the XBOX," },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"which we have turned into" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"the best Mediaplayer!" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"which we have turned into" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"the best Mediaplayer!" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Trance & other uplifting music" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for making my days more enjoyable!" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for making my days more enjoyable!" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"And remember - best things in life are free" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"(Sex) and ofcourse XBMC!" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"(Sex) and ofcourse XBMC!" },
 
   // section forza
-	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Forza" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanks to everyone on the XBMC team" },
+  {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Forza" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanks to everyone on the XBMC team" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and to MS for making the" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"XBox so good to hack :)" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to Enzo & Dino" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for the glory that is Ferrari." },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Forza Ferrari!" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"XBox so good to hack :)" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to Enzo & Dino" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for the glory that is Ferrari." },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Forza Ferrari!" },
 
-	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Bobbin007" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanks to" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Mr. Lucas for the Arts," },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Pott's beer for there great plopp bottles," },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"My girlfriend," },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Lidl for selling the greatest" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"frozen salami pizza ever" },
+  {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Bobbin007" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanks to" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Mr. Lucas for the Arts," },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Pott's beer for there great plopp bottles," },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"My girlfriend," },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Lidl for selling the greatest" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"frozen salami pizza ever" },
 
-	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"J Marshall" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanks to Frodo,RUNTiME and d7o3g4q" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for starting it all" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"My beautiful wife Keren" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for supporting me while I spend" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"all my free time coding" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and playing with my toys" },
+  {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"J Marshall" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanks to Frodo,RUNTiME and d7o3g4q" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for starting it all" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"My beautiful wife Keren" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for supporting me while I spend" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"all my free time coding" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and playing with my toys" },
 
-	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"RUNTiME" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"I asked for my own scroll-text" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and all I got was this crappy slot" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"on the ass-end of the credits!" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanks to duo, frodo and Team Complex" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for their patience and support;" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"my fiancee for putting up with" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"the long hours and Gamester" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for keeping it all together." },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Shouts to Team Evox, X-Link, AVA" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and any other sod who reckons" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"they deserve greeting... " },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"except Butcher (j/k)..." },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"now please go away so we can get some sleep!" },
+  {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"RUNTiME" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"I asked for my own scroll-text" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and all I got was this crappy slot" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"on the ass-end of the credits!" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanks to duo, frodo and Team Complex" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for their patience and support;" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"my fiancee for putting up with" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"the long hours and Gamester" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for keeping it all together." },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Shouts to Team Evox, X-Link, AVA" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and any other sod who reckons" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"they deserve greeting... " },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"except Butcher (j/k)..." },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"now please go away so we can get some sleep!" },
 
-	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Tslayer" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to everybody involved" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"with XBMC, especially Frodo." },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Without this amazing program," },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"I would never have bought an XBOX" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and would never have had a chance" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"to become part of this amazing team." },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanks all!" },
+  {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Tslayer" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to everybody involved" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"with XBMC, especially Frodo." },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Without this amazing program," },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"I would never have bought an XBOX" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and would never have had a chance" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"to become part of this amazing team." },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanks all!" },
 
-	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"elupus" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanx to everybody on the XBMC team," },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"with special thanx to frodo for giving me" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"cvs access and in that something else" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"to do instead of sleeping at nights." },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanx a bunch!" },
+  {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"elupus" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanx to everybody on the XBMC team," },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"with special thanx to frodo for giving me" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"cvs access and in that something else" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"to do instead of sleeping at nights." },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanx a bunch!" },
 
 	// can duplicate the lines below as many times as required for more credits
 //	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"" },
@@ -333,21 +338,21 @@ static DWORD s_dwVertexDecl[] =
 	D3DVSD_END()
 };
 
-static IDirect3DVertexBuffer8*	pVBuffer;									// vertex and index buffers
-static IDirect3DIndexBuffer8*		pIBuffer;
-static DWORD										s_dwVShader, s_dwPShader;	// shaders
-static IDirect3DCubeTexture8*		pSpecEnvMap;							// texture for specular environment map
-static IDirect3DTexture8*				pFrontTex;								// specular environment map front surface base
-static IDirect3DTexture8*				pNormalMap;								// the bump map
-static DWORD										NumFaces, NumVerts;
-static D3DXMATRIX								matWorld, matVP, matWVP;	// world, view-proj, world-view-proj matrices
-static D3DXVECTOR3							vEye;											// camera
-static D3DXVECTOR4							ambient(0.1f, 0.1f, 0.1f, 0);
-static D3DXVECTOR4							colour(1.0f, 1.0f, 1.0f, 0);
-static char*										ResourceHeader;
-static void*										ResourceData;
-static int											SkinOffset;
-static map<int, CGUIFont*>			Fonts;
+static IDirect3DVertexBuffer8*	pVBuffer;			// vertex and index buffers
+static IDirect3DIndexBuffer8*	pIBuffer;
+static DWORD			s_dwVShader, s_dwPShader;	// shaders
+static IDirect3DCubeTexture8*	pSpecEnvMap;			// texture for specular environment map
+static IDirect3DTexture8*	pFrontTex;			// specular environment map front surface base
+static IDirect3DTexture8*	pNormalMap;			// the bump map
+static DWORD			NumFaces, NumVerts;
+static D3DXMATRIX		matWorld, matVP, matWVP;	// world, view-proj, world-view-proj matrices
+static D3DXVECTOR3		vEye;				// camera
+static D3DXVECTOR4		ambient(0.1f, 0.1f, 0.1f, 0);
+static D3DXVECTOR4		colour(1.0f, 1.0f, 1.0f, 0);
+static char*			ResourceHeader;
+static void*			ResourceData;
+static int			SkinOffset;
+static map<int, CGUIFont*>	Fonts;
 
 static HRESULT InitLogo()
 {
@@ -635,7 +640,7 @@ static void RenderCredits(const list<CreditLine_t*>& ActiveList, DWORD& Gamma, D
 	D3DDevice::GetRenderState(D3DRS_ALPHABLENDENABLE, &m_dwSavedState[0]);
 	D3DDevice::GetRenderState(D3DRS_SRCBLEND,         &m_dwSavedState[1]);
 	D3DDevice::GetRenderState(D3DRS_DESTBLEND,        &m_dwSavedState[2]);
-	D3DDevice::GetRenderState(D3DRS_ZENABLE,					&m_dwSavedState[3]);
+	D3DDevice::GetRenderState(D3DRS_ZENABLE,          &m_dwSavedState[3]);
 	D3DDevice::GetRenderState(D3DRS_STENCILENABLE,    &m_dwSavedState[4]);
 	D3DDevice::GetTextureStageState(0, D3DTSS_MINFILTER, &m_dwSavedState[5]);
 	D3DDevice::GetTextureStageState(0, D3DTSS_MAGFILTER, &m_dwSavedState[6]);
@@ -646,7 +651,7 @@ static void RenderCredits(const list<CreditLine_t*>& ActiveList, DWORD& Gamma, D
 	D3DDevice::SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	D3DDevice::SetRenderState(D3DRS_SRCBLEND,         D3DBLEND_SRCALPHA);
 	D3DDevice::SetRenderState(D3DRS_DESTBLEND,        D3DBLEND_INVSRCALPHA);
-	D3DDevice::SetRenderState(D3DRS_ZENABLE,					D3DZB_FALSE);
+	D3DDevice::SetRenderState(D3DRS_ZENABLE,          D3DZB_FALSE);
 	D3DDevice::SetRenderState(D3DRS_STENCILENABLE,    FALSE);
 	D3DDevice::SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR);
 	D3DDevice::SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR);
