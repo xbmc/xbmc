@@ -29,6 +29,9 @@ Project Mayhem WebServer V1.1
  
 = Changelog =====================
  
+ 2004/12/10: jmarshall
+    - fixed: [ 1080520 ] web interface: unqueing doesn't work - thanks to re.solve + BombrMan
+
  2004/12/09: jmarshall
     - fixed Saving of XBoxMediaCenter.xml when XBMC is used as dash (thanks to BombrMan)
 
