@@ -349,13 +349,16 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 	if (m_bOSDVisible)
 	{
 		//if (timeGetTime()-m_dwOSDTimeOut > 5000)
-		if ( (timeGetTime() - m_dwOSDTimeOut) > (g_stSettings.m_iOSDTimeout * 1000))
+		if (g_stSettings.m_iOSDTimeout)
 		{
-			CSingleLock lock(m_section);
-			CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
-			g_application.m_guiWindowOSD.OnMessage(msg);	// Send a de-init msg to the OSD
-			m_bOSDVisible=false;
-			return g_application.m_guiWindowOSD.OnMessage(message);	// route messages to OSD window
+			if ( (timeGetTime() - m_dwOSDTimeOut) > (DWORD)(g_stSettings.m_iOSDTimeout * 1000))
+			{
+				CSingleLock lock(m_section);
+				CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
+				g_application.m_guiWindowOSD.OnMessage(msg);	// Send a de-init msg to the OSD
+				m_bOSDVisible=false;
+				return g_application.m_guiWindowOSD.OnMessage(message);	// route messages to OSD window
+			}
 		}
 
 		switch (message.GetMessage())
@@ -490,8 +493,8 @@ void CGUIWindowFullScreen::RenderFullScreen()
  
 	if (m_bShowStatus)
 	{
-		if ( (timeGetTime() - m_dwTimeStatusShowTime) > (g_stSettings.m_iOSDTimeout * 1000))
-		//if ( (timeGetTime() - m_dwTimeStatusShowTime) >=5000)
+		//if ( (timeGetTime() - m_dwTimeStatusShowTime) > (g_stSettings.m_iOSDTimeout * 1000))
+		if ( (timeGetTime() - m_dwTimeStatusShowTime) >=5000)
 		{
 			m_bShowStatus=false;
 			return;
