@@ -195,9 +195,7 @@ void CGUIWindowMusicInfo::Refresh()
 		CHTTP http;
 		http.Download(strImage,strThumb);
 	}
-	CStdString strAlbum;
-	CUtil::GetAlbumInfo(m_pAlbum->GetTitle(),strAlbum);
-	m_pAlbum->Save(strAlbum);
+
 
 	if (CUtil::FileExists(strThumb) )
 	{

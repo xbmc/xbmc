@@ -59,7 +59,7 @@ protected:
   SqliteDatabase* m_pDB;
 	Dataset*				m_pDS;
 	bool						CreateTables();
-	long						AddAlbum(const string& strAlbum);
+	long						AddAlbum(const string& strAlbum, long lArtistId);
 	long						AddGenre(const string& strGenre);
 	long						AddArtist(const string& strArtist);
 	void						RemoveInvalidChars(string& strTxt);
