@@ -514,22 +514,13 @@ void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
 		}
 	}
 
-	CStdString strFileName;
+	int iCurrentSong=-1;
 	//	Search current playlist item
 	if ((m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_strDirectory) > -1 && g_application.IsPlayingVideo() 
 			&& g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO_TEMP) 
 			|| (GetID()==WINDOW_VIDEO_PLAYLIST && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO && g_application.IsPlayingVideo()) )
 	{
-		int iCurrentSong=g_playlistPlayer.GetCurrentSong();
-    if (iCurrentSong>=0)
-    {
-		  CPlayList& playlist=g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
-      if (iCurrentSong < playlist.size())
-      {
-		    const CPlayList::CPlayListItem& item=playlist[iCurrentSong];
-		    strFileName = item.GetFileName();
-			}
-		}
+		iCurrentSong=g_playlistPlayer.GetCurrentSong();
 	}
 
 	bool bSelectedFound=false;
@@ -551,7 +542,7 @@ void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
 		}
 
 		//	synchronize playlist with current directory
-		if (!strFileName.IsEmpty() && pItem->m_strPath == strFileName)
+		if (i==iCurrentSong)
 		{
 			pItem->Select(true);
 		}
@@ -583,9 +574,24 @@ void CGUIWindowVideoPlaylist::OnQueueItem(int iItem)
 
 void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
 {
-	const CFileItem* pItem=m_vecItems[iItem];
-	CStdString strFileName=pItem->m_strPath;
-	g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).Remove(strFileName);
+	//	The current playing song can't be removed
+	if (g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO && g_application.IsPlayingVideo()
+			&& g_playlistPlayer.GetCurrentSong()==iItem)
+			return;
+
+	g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).Remove(iItem);
+
+	//	Correct the current playing song in playlistplayer
+	if (g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO && g_application.IsPlayingVideo())
+	{
+		int iCurrentSong=g_playlistPlayer.GetCurrentSong();
+		if (iItem<=iCurrentSong)
+		{
+			iCurrentSong--;
+			g_playlistPlayer.SetCurrentSong(iCurrentSong);
+		}
+	}
+
 	int iCount=0;
 	ivecItems it=m_vecItems.begin();
 	while (it!=m_vecItems.end())
@@ -598,10 +604,19 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
 		++it;
 		iCount++;
 	}
+
 	UpdateListControl();
 	UpdateButtons();
-	CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-	CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+
+	if (m_vecItems.size()<=0)
+	{
+		SET_CONTROL_FOCUS(GetID(), CONTROL_BTNVIEWASICONS, 0);
+	}
+	else
+	{
+		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem-1)
+		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem-1)
+	}
 }
 
 void CGUIWindowVideoPlaylist::ShufflePlayList()
