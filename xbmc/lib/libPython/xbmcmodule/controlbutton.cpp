@@ -38,8 +38,8 @@ namespace PYXBMC
 		self->dwDisabledColor = 0x60ffffff;
 
 		// if texture is supplied use it, else get default ones
-		self->strTextureFocus = cTextureFocus ? cTextureFocus : GetDefaultImage("button", "textureFocus", "button-focus.png");		
-		self->strTextureNoFocus = cTextureNoFocus ? cTextureNoFocus : GetDefaultImage("button", "textureNoFocus", "button-nofocus.jpg");	
+		self->strTextureFocus = cTextureFocus ? cTextureFocus : PyGetDefaultImage("button", "textureFocus", "button-focus.png");		
+		self->strTextureNoFocus = cTextureNoFocus ? cTextureNoFocus : PyGetDefaultImage("button", "textureNoFocus", "button-nofocus.jpg");	
 
 		return (PyObject*)self;
 	}

@@ -53,10 +53,10 @@ namespace PYXBMC
 		}
 		else
 		{
-			// window id's 3000 - 3100 are reserved for python
+			// window id's 13000 - 13100 are reserved for python
 			// get first window id that is not in use
 			int id = WINDOW_PYTHON_START;
-			// if window 3099 is in use it means python can't create more windows
+			// if window 13099 is in use it means python can't create more windows
 			PyGUILock();
 			if (m_gWindowManager.GetWindow(WINDOW_PYTHON_END))
 			{
@@ -429,7 +429,7 @@ namespace PYXBMC
 	PyObject* Window_SetFocus(Window *self, PyObject *args)
 	{ 
 		CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
-		if (!pWindow) return NULL;
+		if (PyWindowIsNull(pWindow)) return NULL;
 
 		Control* pControl;
 		if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
@@ -462,7 +462,7 @@ namespace PYXBMC
 	PyObject* Window_RemoveControl(Window *self, PyObject *args)
 	{ 
 		CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
-		if (!pWindow) return NULL;
+		if (PyWindowIsNull(pWindow)) return NULL;
 
 		Control* pControl;
 		if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
