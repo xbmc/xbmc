@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 12-30-2005 changed: <label> tag is tested using IsNaturalNumber() rather than testing for alphabetical first character now.  Allows non-alphabetical labels.
   - 12-30-2005 fixed: Black small movie window if video is paused before switching to GUI.
   - 12-30-2005 changed: Freed up unused memory in HQ pixel shader render method when in GUI mode.
   - 11-30-2005 changed: moved decision of what seeking to do into player and added workaround for files wich mplayer can't determin current percentage for.
