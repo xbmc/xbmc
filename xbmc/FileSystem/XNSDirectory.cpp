@@ -79,7 +79,7 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	}
 	
 	// allocate sufficient memory for the document
-	char* lpszXml = new char[catalogueSize+1];
+	char* lpszXml = new char[catalogueSize+10];
 	
 	// start pulling it down from the server
 	int bytesRead=0;
@@ -101,8 +101,8 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	
 	// Start at the very beginning a very good place to start!
 	TiXmlDocument xmlDoc;
-	
-  if ( !xmlDoc.Parse( lpszXml ) ) 
+  xmlDoc.Parse( lpszXml );
+	if ( xmlDoc.IsError() ) 
 	{
 		delete [] lpszXml;
 		return false;
