@@ -53,9 +53,8 @@ public:
 	DWORD									GetSpinTextColor() const { return m_upDown.GetTextColor();};
 	DWORD									GetSpinX() const { return m_upDown.GetXPosition();};
 	DWORD									GetSpinY() const { return m_upDown.GetYPosition();};
-
-protected:
 	void				 SetText(const wstring &strText);
+protected:
   void         OnRight();
   void         OnLeft();
   void         OnDown();
