@@ -185,8 +185,8 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 					m_strDirectory.Empty();
 			}
 
-			m_bViewAsIcons=g_stSettings.m_bMyMusicAlbumViewAsIcons;
-			m_bViewAsIconsRoot=g_stSettings.m_bMyMusicAlbumRootViewAsIcons;
+			m_bViewAsIcons=g_stSettings.m_bMyMusicSongsViewAsIcons;
+			m_bViewAsIconsRoot=g_stSettings.m_bMyMusicSongsRootViewAsIcons;
 
 			Update(m_strDirectory);
 			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_nSelectedItem);
@@ -294,7 +294,11 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 			}
  			else if (iControl==CONTROL_BTNSCAN)
 			{
-				OnScan(m_vecItems);
+				m_database.BeginTransaction();
+				if (OnScan(m_vecItems))
+					m_database.CommitTransaction();
+				else
+					m_database.RollbackTransaction();
 			}
 			else if (iControl==CONTROL_BTNREC)
 			{
