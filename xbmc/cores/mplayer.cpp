@@ -269,13 +269,11 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("-rawaudio");
     m_vecOptions.push_back("on:format=" + m_strHexRawAudioFormat); //0x2000
   }
-  //m_vecOptions.push_back("-verbose");
-  //m_vecOptions.push_back("1");
-  if (g_stSettings.m_mplayerDebug)
-  {
-    m_vecOptions.push_back("-verbose");
-    m_vecOptions.push_back("1");
-  }
+
+  if (CLog::GetLevel() == LOGDEBUG)
+    m_vecOptions.push_back("-v");
+  else
+    m_vecOptions.push_back("-quiet");
 
   if (m_bNoCache)
   {
