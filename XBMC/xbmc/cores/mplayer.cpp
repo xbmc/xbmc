@@ -71,6 +71,8 @@
 #define DVDLANGCODE(x) ((int)(x[1]|(x[0]<<8)))
 
 void xbox_audio_wait_completion();
+void audio_pause();
+void audio_resume();
 
 extern "C" void free_registry(void);
 extern void xbox_video_wait();
@@ -855,6 +857,8 @@ void CMPlayer::Process()
 						xbox_video_CheckScreenSaver();		// Check for screen saver
 						Sleep(100);
 					}
+					else
+						Sleep(10);
 				}
 			} while (m_bIsPlaying && !m_bStop);
 		}
@@ -885,7 +889,18 @@ void CMPlayer::Unload()
 
 void  CMPlayer::Pause()
 {
-	m_bPaused=!m_bPaused;
+	if (!m_bPaused)
+	{
+		m_bPaused=true;
+		if (!HasVideo())
+			audio_pause();
+	}
+	else
+	{
+		m_bPaused=false;
+		if (!HasVideo())
+			audio_resume();
+	}
 }
 
 bool CMPlayer::IsPaused() const
