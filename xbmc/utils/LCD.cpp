@@ -1,11 +1,11 @@
 #include "lcd.h"
+#include "../GUISettings.h"
 
 void ILCD::StringToLCDCharSet(CStdString& strText)
 {
 
 	//0 = HD44780, 1=KS0073
-	unsigned char cLCDContr = 0; //get param from the application_config
-
+  unsigned int iLCDContr = g_guiSettings.GetInt("LCD.Type") == LCD_TYPE_LCD_KS0073 ? 1 : 0;
 		//the timeline is using blocks
 		//a block is used at address 0xA0, smallBlocks at address 0xAC-0xAF
 
@@ -55,7 +55,7 @@ void ILCD::StringToLCDCharSet(CStdString& strText)
 	for (int i=0; i < iSize; ++i)
 	{
 		cLCD = strText.at(i);
-		cLCD = LCD[cLCDContr][cLCD];
+		cLCD = LCD[iLCDContr][cLCD];
 		strText.SetAt(i, cLCD);
 	}
 }
