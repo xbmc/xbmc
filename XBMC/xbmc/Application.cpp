@@ -630,7 +630,7 @@ void CApplication::Render()
 			}
 		}
 
-//#ifdef _DEBUG		
+#ifdef _DEBUG		
     // in debug mode, show freememory
 		CStdStringW wszText;
 		wszText.Format(L"FreeMem %i/%iMB",stat.dwAvailPhys  /(1024*1024),
@@ -641,7 +641,7 @@ void CApplication::Render()
     {
 	    pFont->DrawText( 60, 40, 0xffffffff, wszText);
     }
-//#endif
+#endif
 
   }
   // Present the backbuffer contents to the display
