@@ -166,7 +166,7 @@ void  CDirectoryCache::ClearCache(set<CStdString>& dirs)
   while (i != g_directoryCache.m_vecCache.end() )
   {
     CDir& dir=*i;
-		if (dirs.find(dir.m_strPath)==dirs.end() && dirs.find(dir.m_strPath)==dirs.end())
+		if (dirs.find(dir.m_strPath)!=dirs.end())
     {
 			{
 				CFileItemList itemlist(dir.m_Items); // will clean up everything
