@@ -28,10 +28,10 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
   if( newPos < 0 )
   {
 	  results.push_back(input);
-	  return 0;
+	  return 1;
   }
 
-  int numFound = 0;
+  int numFound = 1;
 
   while( newPos > iPos )
   {

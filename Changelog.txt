@@ -5,7 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-    14-08-2004 fixed: Bookmark buttons would disappear when re-entering My Programs
+  - 15-08-2004 fixed: Mouse is set to inactive on startup (default focused button should work correctly now)
+  - 15-08-2004 changed: Video zoom options increased.
+  - 14-08-2004 fixed: Bookmark buttons would disappear when re-entering My Programs
   - 13-08-2004 fixed: Fixed stupid comparison operators in Settings->My Programs
   - 13-08-2004 fixed: crash inbetween songs when using Xaraoke vis
   - 13-08-2004 fixed: subtitles were resizing when zooming/stretching the video

@@ -42,6 +42,14 @@ using namespace std;
 #define VOLUME_MINIMUM -6000	// -60dB
 #define VOLUME_MAXIMUM 0		// 0dB
 
+#define VIEW_MODE_NORMAL		0
+#define VIEW_MODE_ZOOM			1
+#define VIEW_MODE_STRETCH_4x3	2
+#define VIEW_MODE_STRETCH_14x9	3
+#define VIEW_MODE_STRETCH_16x9	4
+#define VIEW_MODE_ORIGINAL		5
+#define VIEW_MODE_CUSTOM		6
+
 /*!
 \ingroup windows
 \brief Represents a share.
@@ -262,8 +270,11 @@ public:
     int       m_iFlickerFilterUI; // 0..5
 		bool			m_bSoftenVideo;
 		bool			m_bSoftenUI;
-		float			m_fZoomAmount;
-		float			m_fUserPixelRatio;
+		int				m_iViewMode;			// current view mode
+		float			m_fZoomAmount;			// current zoom amount
+		float			m_fPixelRatio;			// current pixel ratio
+		float			m_fCustomZoomAmount;	// custom setting zoom amount
+		float			m_fCustomPixelRatio;	// custom setting pixel ratio
 		bool			m_bAutoWidescreenSwitching;
 		bool			m_bUpsampleVideo;
 		bool			m_bAllowPAL60;

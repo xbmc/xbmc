@@ -10,6 +10,7 @@ CMouse::CMouse()
 	m_dwExclusiveWindowID = WINDOW_INVALID;
 	m_dwExclusiveControlID = WINDOW_INVALID;
 	m_dwState = MOUSE_STATE_NORMAL;
+	m_bActive = false;
 }
 
 CMouse::~CMouse()
@@ -92,6 +93,7 @@ void CMouse::Update()
 		iPosY += (int)((float)cMickeyY*m_fSpeedY); if (iPosY < 0) iPosY = 0; if (iPosY > m_iMaxY) iPosY = m_iMaxY;
 		cWheel = m_CurrentState.DebugMouse.cWheel;
 		// reset our activation timer
+		m_bActive=true;
 		dwLastActiveTime = timeGetTime();
 	}
 	else
@@ -99,6 +101,8 @@ void CMouse::Update()
 		cMickeyX = 0;
 		cMickeyY = 0;
 		cWheel = 0;
+		// check how long we've been inactive
+		if (timeGetTime() - dwLastActiveTime > MOUSE_ACTIVE_LENGTH) m_bActive=false;
 	}
 	// Fill in the public members
 	bDown[MOUSE_LEFT_BUTTON] = (m_CurrentState.DebugMouse.bButtons & XINPUT_DEBUG_MOUSE_LEFT_BUTTON)!=0;
@@ -165,13 +169,13 @@ void CMouse::SetResolution(int iXmax, int iYmax, float fXspeed, float fYspeed)
 // IsActive - returns true if we have been active in the last MOUSE_ACTIVE_LENGTH period
 bool CMouse::IsActive() const
 {
-	return (timeGetTime() - dwLastActiveTime < MOUSE_ACTIVE_LENGTH);
+	return m_bActive;
 }
 
 // turns off mouse activation
 void CMouse::SetInactive()
 {
-	dwLastActiveTime = timeGetTime() - MOUSE_ACTIVE_LENGTH;
+	m_bActive = false;
 }
 
 bool CMouse::HasMoved() const
