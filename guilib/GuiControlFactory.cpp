@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "guicontrolfactory.h"
 #include "localizestrings.h"
 #include "guibuttoncontrol.h"

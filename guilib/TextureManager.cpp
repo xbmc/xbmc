@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "texturemanager.h"
 #include "graphiccontext.h"
 #include "animatedgif.h"

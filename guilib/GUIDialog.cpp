@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "guidialog.h"
 #include "guimessage.h"
 #include "guiwindowmanager.h"

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "guiCheckMarkControl.h"
 #include "guifontmanager.h"
 

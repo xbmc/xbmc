@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "guifadelabelcontrol.h"
 #include "guifontmanager.h"
 

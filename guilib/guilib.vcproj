@@ -28,7 +28,7 @@
 				BufferSecurityCheck="TRUE"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -127,11 +127,12 @@
 				OptimizeForProcessor="2"
 				PreprocessorDefinitions="NDEBUG;_XBOX;_LIB"
 				StringPooling="FALSE"
+				MinimalRebuild="FALSE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -321,6 +322,9 @@
 			</File>
 			<File
 				RelativePath=".\PackedTexture.cpp">
+			</File>
+			<File
+				RelativePath=".\stdafx.cpp">
 			</File>
 			<File
 				RelativePath=".\TextureBundle.cpp">

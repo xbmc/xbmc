@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "guilistitem.h"
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)

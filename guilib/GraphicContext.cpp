@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "graphiccontext.h"
 #include "../xbmc/utils/log.h"
 
@@ -8,7 +9,6 @@ CGraphicContext g_graphicsContext;
 
 CGraphicContext::CGraphicContext(void)
 {
-  m_bOSDOn=false;
 	InitializeCriticalSection(&m_critSection);
   m_iScreenWidth=720;
   m_iScreenHeight=576;
@@ -30,10 +30,7 @@ CGraphicContext::~CGraphicContext(void)
 	DeleteCriticalSection(&m_critSection);
 }
 
-void CGraphicContext::SetOSDOn(bool bOnOff)
-{
-  m_bOSDOn=bOnOff;
-}
+
 void CGraphicContext::SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice)
 {
 	m_pd3dDevice=p3dDevice;

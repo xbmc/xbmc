@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "guiselectbuttoncontrol.h"
 #include "guifontmanager.h"
 #include "guiwindowmanager.h"
