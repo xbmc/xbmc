@@ -1,4 +1,4 @@
-/*
+/* 
  * dtsdec.c : free DTS Coherent Acoustics stream decoder.
  * Copyright (C) 2004 Benjamin Zores <ben@geexbox.org>
  *
@@ -23,15 +23,17 @@
 #undef HAVE_AV_CONFIG_H
 #endif
 
+#include "..\osdep\myhook.h"
 #include "avcodec.h"
 #include <dts.h>
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <malloc.h>
 
 #define INBUF_SIZE 4096
-#define BUFFER_SIZE 4096
+#define BUFFER_SIZE 8192
 #define HEADER_SIZE 14
 
 #ifdef LIBDTS_FIXED
@@ -63,7 +65,7 @@ convert2s16_2 (sample_t * _f, int16_t * s16)
     {
       s16[2*i] = convert (f[i]);
       s16[2*i+1] = convert (f[i+256]);
-    }
+    }  
 }
 
 void
@@ -87,13 +89,13 @@ convert2s16_5 (sample_t * _f, int16_t * s16)
   int i;
   int32_t * f = (int32_t *) _f;
 
-  for (i = 0; i < 256; i++)
+  for (i = 0; i < 256; i++)		
     {
-      s16[5*i] = convert (f[i]);
-      s16[5*i+1] = convert (f[i+256]);
-      s16[5*i+2] = convert (f[i+512]);
-      s16[5*i+3] = convert (f[i+768]);
-      s16[5*i+4] = convert (f[i+1024]);
+      s16[5*i] = convert (f[i+256]);
+      s16[5*i+1] = convert (f[i+512]);
+      s16[5*i+2] = convert (f[i+768]);
+      s16[5*i+3] = convert (f[i+1024]);
+      s16[5*i+4] = convert (f[i]);
     }
 }
 
@@ -105,83 +107,137 @@ convert2s16_multi (sample_t * _f, int16_t * s16, int flags)
 
   switch (flags)
     {
-    case DTS_MONO:
+    case DTS_MONO:			//MON 2
       for (i = 0; i < 256; i++)
         {
-          s16[5*i] = s16[5*i+1] = s16[5*i+2] = s16[5*i+3] = 0;
+          s16[2*i] = s16[2*i+1] = convert (f[i]);
+        }
+      break;
+    case DTS_CHANNEL:			//L R 2
+    case DTS_STEREO:
+    case DTS_STEREO_TOTAL:
+      convert2s16_2 (_f, s16);
+      break;
+    case DTS_STEREO_SUMDIFF:		//L+R L-R 2
+      for (i = 0; i < 256; i++)
+        {
+          s16[2*i] = convert (f[i])/2 + convert (f[i+256])/2;
+          s16[2*i+1] = convert (f[i])/2 - convert (f[i+256])/2;
+        }        
+      break;      
+    case DTS_3F:			//C L R 5
+      for (i = 0; i < 256; i++)
+        {
+          s16[5*i] = convert (f[i+256]);
+          s16[5*i+1] = convert (f[i+512]);
+          s16[5*i+2] = s16[5*i+3] = 0;
           s16[5*i+4] = convert (f[i]);
         }
       break;
-    case DTS_CHANNEL:
-    case DTS_STEREO:
-    case DTS_DOLBY:
-      convert2s16_2 (_f, s16);
-      break;
-    case DTS_3F:
+    case DTS_2F1R:			//L R S 4
       for (i = 0; i < 256; i++)
         {
-          s16[5*i] = convert (f[i]);
-          s16[5*i+1] = convert (f[i+512]);
-          s16[5*i+2] = s16[5*i+3] = 0;
-          s16[5*i+4] = convert (f[i+256]);
+          s16[4*i] = convert (f[i]);
+          s16[4*i+1] = convert (f[i+256]);
+          s16[4*i+2] = s16[4*i+3] = convert (f[i+512]);
         }
       break;
-    case DTS_2F2R:
+    case DTS_3F1R:			//C L R S 5
+      for (i = 0; i < 256; i++)
+        {
+          s16[5*i] = convert (f[i]+256);
+          s16[5*i+1] = convert (f[i+512]);
+          s16[5*i+2] = s16[5*i+3] = convert (f[i+768]);
+          s16[5*i+4] = convert (f[i]);
+        }
+      break;                 
+    case DTS_2F2R:			//L R SL SR 4
       convert2s16_4 (_f, s16);
       break;
-    case DTS_3F2R:
+    case DTS_3F2R:			//C L R SL SR 5
       convert2s16_5 (_f, s16);
       break;
-    case DTS_MONO | DTS_LFE:
+    case DTS_MONO | DTS_LFE:		//MON LFE 6
       for (i = 0; i < 256; i++)
         {
           s16[6*i] = s16[6*i+1] = s16[6*i+2] = s16[6*i+3] = 0;
-          s16[6*i+4] = convert (f[i+256]);
-          s16[6*i+5] = convert (f[i]);
+          s16[6*i+4] = convert (f[i]);
+          s16[6*i+5] = convert (f[i+256]);
         }
       break;
     case DTS_CHANNEL | DTS_LFE:
     case DTS_STEREO | DTS_LFE:
-    case DTS_DOLBY | DTS_LFE:
+    case DTS_STEREO_TOTAL | DTS_LFE:	//L R LFE 6
+      for (i = 0; i < 256; i++)
+        {
+          s16[6*i] = convert (f[i]);
+          s16[6*i+1] = convert (f[i+256]);
+          s16[6*i+2] = s16[6*i+3] = s16[6*i+4] = 0;
+          s16[6*i+5] = convert (f[i+512]);
+        }
+      break;
+    case DTS_STEREO_SUMDIFF | DTS_LFE:	//L+R L-R LFE 6
+      for (i = 0; i < 256; i++)
+        {
+          s16[6*i] = convert (f[i])/2 + convert (f[i+256])/2;
+          s16[6*i+1] = convert (f[i])/2 - convert (f[i+256])/2;
+          s16[6*i+2] = s16[6*i+3] = s16[6*i+4] = 0;
+          s16[6*i+5] = convert (f[i+512]);
+        }
+      break;          
+    case DTS_3F | DTS_LFE:	//C L R LFE 6
       for (i = 0; i < 256; i++)
         {
           s16[6*i] = convert (f[i+256]);
           s16[6*i+1] = convert (f[i+512]);
-          s16[6*i+2] = s16[6*i+3] = s16[6*i+4] = 0;
-          s16[6*i+5] = convert (f[i]);
+          s16[6*i+2] = s16[6*i+3] = 0;
+          s16[6*i+4] = convert (f[i]);
+          s16[6*i+5] = convert (f[i+768]);
         }
       break;
-    case DTS_3F | DTS_LFE:
+    case DTS_2F1R | DTS_LFE:	//L R S LFE 6
+      for (i = 0; i < 256; i++)
+        {
+          s16[6*i] = convert (f[i]);
+          s16[6*i+1] = convert (f[i+256]);
+          s16[6*i+2] = s16[6*i+3] = convert (f[i+512]);
+          s16[6*i+4] = 0;
+          s16[6*i+5] = convert (f[i+768]);
+        }
+      break;            
+    case DTS_3F1R | DTS_LFE:	//C L R S LFE 6
       for (i = 0; i < 256; i++)
         {
           s16[6*i] = convert (f[i+256]);
-          s16[6*i+1] = convert (f[i+768]);
-          s16[6*i+2] = s16[6*i+3] = 0;
-          s16[6*i+4] = convert (f[i+512]);
-          s16[6*i+5] = convert (f[i]);
+          s16[6*i+1] = convert (f[i+512]);
+          s16[6*i+2] = s16[6*i+3] = convert (f[i+768]);
+          s16[6*i+4] = convert (f[i]);
+          s16[6*i+5] = convert (f[i+1024]);
+        }
+      break;      
+    case DTS_2F2R | DTS_LFE:	//L R SL SR LFE 6
+      for (i = 0; i < 256; i++)
+        {
+          s16[6*i] = convert (f[i]);
+          s16[6*i+1] = convert (f[i+256]);
+          s16[6*i+2] = convert (f[i+512]);
+          s16[6*i+3] = convert (f[i+768]);
+          s16[6*i+4] = 0;
+          s16[6*i+5] = convert (f[i+1024]);
         }
       break;
-    case DTS_2F2R | DTS_LFE:
+    case DTS_3F2R | DTS_LFE:	//C L R SL SR LFE 6
       for (i = 0; i < 256; i++)
         {
           s16[6*i] = convert (f[i+256]);
           s16[6*i+1] = convert (f[i+512]);
           s16[6*i+2] = convert (f[i+768]);
           s16[6*i+3] = convert (f[i+1024]);
-          s16[6*i+4] = 0;
-          s16[6*i+5] = convert (f[i]);
+          s16[6*i+4] = convert (f[i]);
+          s16[6*i+5] = convert (f[i+1280]); 
+          
         }
-      break;
-    case DTS_3F2R | DTS_LFE:
-      for (i = 0; i < 256; i++)
-        {
-          s16[6*i] = convert (f[i+256]);
-          s16[6*i+1] = convert (f[i+768]);
-          s16[6*i+2] = convert (f[i+1024]);
-          s16[6*i+3] = convert (f[i+1280]);
-          s16[6*i+4] = convert (f[i+512]);
-          s16[6*i+5] = convert (f[i]);
-        }
+//   	printf("samples %8x %8x %8x %8x %8x %8x", f[0], f[256], f[512], f[768], f[1024], f[1280] );
       break;
     }
 }
@@ -189,14 +245,12 @@ convert2s16_multi (sample_t * _f, int16_t * s16, int flags)
 static int
 channels_multi (int flags)
 {
+  static int dts_channels[11] = {2, 2, 2, 2, 2, 5, 4, 5, 4, 5, 6}; 
+  
   if (flags & DTS_LFE)
     return 6;
-  else if (flags & 1)	/* center channel */
-    return 5;
-  else if ((flags & DTS_CHANNEL_MASK) == DTS_2F2R)
-    return 4;
-  else
-    return 2;
+  else 
+    return dts_channels[flags & DTS_CHANNEL_MASK];
 }
 
 static int
@@ -217,6 +271,8 @@ dts_decode_frame (AVCodecContext *avctx, void *data, int *data_size,
   int bit_rate;
   int len;
   dts_state_t *state = avctx->priv_data;
+  int finished;
+  finished = 0;
 
   while (1)
     {
@@ -244,14 +300,15 @@ dts_decode_frame (AVCodecContext *avctx, void *data, int *data_size,
                   continue;
                 }
               bufpos = buf + length;
+              finished += length;
             }
           else
             {
               level_t level;
               sample_t bias;
               int i;
-
-              flags = 2; /* ???????????? */
+              
+//              flags = 2; /* ????????????  */ force 2 CH dts code removed, libdts now has correct bias in new libdts.a 
               level = CONVERT_LEVEL;
               bias = CONVERT_BIAS;
 
@@ -277,7 +334,10 @@ dts_decode_frame (AVCodecContext *avctx, void *data, int *data_size,
                 }
               bufptr = buf;
               bufpos = buf + HEADER_SIZE;
-              continue;
+              if (finished < 8192 )
+              	continue;
+              else
+                return finished;
             error:
               av_log (NULL, AV_LOG_ERROR, "error\n");
               bufptr = buf;
