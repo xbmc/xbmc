@@ -3,29 +3,46 @@ Building XBMC:
 
 You'll need the following to build XBMC
 - Visual Studio.NET 2003
-- XDK 5669 or higher
-- XBMC sources offcourse
+- XDK 5778 or higher
+- XBMC sources offcourse 
+  You can download the latest snapshot of XBMC here: 
+  http://xbmc.sourceforge.net/xbmc.tar.gz  
 
+Next 
+  - Install Visual Studio.NET
+  - Install XDK 5778 (or higher)
+  - use winrar or a similar program to uncompress xbmc.tar.gz into a folder
+
+Building
+-----------------
 Start Visual Studio.NET and open the xbmc.sln solution file
 Look @ the toolbar. There should b a dropdown box called 'Solution Configurations'
 It shows this when you hover over it with the mouse. In it it says either
-'Debug Xbox' or 'Release Xbox'.
-If doesnt say 'Release Xbox' then change it!
+'Debug ' or 'Release'. If doesnt say 'Release' then change it so it says Release!
 
-Next build the solution with Build->Build Solution
+Next build the solution with Build->Build Solution (Ctrl+Shift+B)
 Then when all is build, its time to install XBMC on your xbox!
 
+(You can also use the build.bat file to make a build of xbmc)
 
 
 Installing XBMC:
 -----------------
 
-After building XBMC copy the following files & directories to your xbox
+edit xboxmediacenter.xml and fill in all the details for your installation
 
-lets say you're installing XBMC on e:\apps\xbmc then:
+After editting xboxmediacenter.xml you need to copy the following files & folder to your xbox
+lets say you're installing XBMC on your xbox in the folder e:\apps\xbmc then:
 
-release/default.xbe ->  e:\apps\xbmc\default.xbe
+1.create e:\apps\xbmc on your xbox
+2. copy following files from pc->xbox
+
+   PC                       XBOX
+-------------------------------------------------------------------------------   
 XboxMediaCenter.xml ->  e:\apps\xbmc\XboxMediaCenter.xml
+keymap.xml          ->  e:\apps\xbmc\keymap.xml
+FileZilla Server.xml->  e:\apps\xbmc\FileZilla Server.xml
+release/default.xbe ->  e:\apps\xbmc\default.xbe
 mplayer/            ->  e:\apps\xbmc\mplayer        (copy all files & subdirs)
 skin/               ->  e:\apps\xbmc\skin           (copy all files & subdirs)
 language/           ->  e:\apps\xbmc\language       (copy all files & subdirs)
@@ -37,3 +54,5 @@ python              ->  e:\apps\xbmc\python         (unpack the .rar file)
 web                 -> e:\apps\xbmc\web             (unpack the .rar file)
 
 !!! please not that you unpack the .rar files in scripts/ python/ and web/ !!!
+
+
