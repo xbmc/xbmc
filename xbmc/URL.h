@@ -18,6 +18,7 @@ public:
 	bool							HasPort() const;
 	int								GetPort() const;
 	const CStdString& GetHostName() const;
+	const CStdString& GetDomain() const;
 	const CStdString& GetUserName() const;
 	const CStdString& GetPassWord() const;
 	const CStdString& GetFileName() const;
@@ -29,6 +30,7 @@ public:
 protected:
 	int				 m_iPort;
 	CStdString m_strHostName;
+	CStdString m_strDomain;
 	CStdString m_strUserName;
 	CStdString m_strPassword;
 	CStdString m_strFileName;
