@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-03-2005 fixed: Animated Gifs only show the first frame
   - 16-03-2005 fixed: GUIWindowManager now correctly dispatches messages to modeless windows
   - 16-03-2005 added: mute support for the media center extender remote
   - 15-03-2005 fixed: my music nav window showing false items due to allmusic.com lookups
