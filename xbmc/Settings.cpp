@@ -9,7 +9,7 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
-
+  g_stSettings.m_iMyProgramsSelectedItem=0;
   g_stSettings.m_iAudioStream=0;
   g_stSettings.m_bPPAuto=true;
   g_stSettings.m_bPPVertical=false;
@@ -785,6 +785,16 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	  GetInteger(pElement, "PPVerticalVal",g_stSettings.m_iPPVertical);
   }
 
+  // my programs
+  pElement = pRootElement->FirstChildElement("myprograms");
+  if (pElement)
+  {
+	  GetBoolean(pElement, "viewicons", g_stSettings.m_bMyProgramsViewAsIcons);
+	  GetBoolean(pElement, "sortascending", g_stSettings.m_bMyProgramsSortAscending);
+	  GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramsFlatten);
+	  GetInteger(pElement, "sortmethod", g_stSettings.m_iMyProgramsSortMethod);
+    GetInteger(pElement, "selecteditem",g_stSettings.m_iMyProgramsSelectedItem);
+  }
 	return true;
 }
 
@@ -803,6 +813,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetInteger(pNode, "sortmethod", g_stSettings.m_iMyProgramsSortMethod);
 	SetBoolean(pNode, "sortascending", g_stSettings.m_bMyProgramsSortAscending);
 	SetBoolean(pNode, "flatten", g_stSettings.m_bMyProgramsFlatten);
+  SetInteger(pNode, "selecteditem",g_stSettings.m_iMyProgramsSelectedItem);
+
 	// mypictures settings
 	TiXmlElement picturesNode("mypictures");
 	pNode = pRoot->InsertEndChild(picturesNode);
@@ -985,6 +997,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetInteger(pNode, "PPHorizontalVal",g_stSettings.m_iPPHorizontal);
 	SetInteger(pNode, "PPVerticalVal",g_stSettings.m_iPPVertical);
 
+
+  
 	// save the file
 	return xmlDoc.SaveFile(strSettingsFile);
 }

@@ -375,6 +375,12 @@
 				RelativePath=".\xbmc\FileItem.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIDialogFileStacking.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIDialogFileStacking.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIDialogOK.cpp">
 			</File>
 			<File

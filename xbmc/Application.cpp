@@ -226,6 +226,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiWindowFullScreen);					// window id = 2005
 	m_gWindowManager.Add(&m_guiWindowVisualisation);			// window id = 2006
 	m_gWindowManager.Add(&m_guiWindowSlideshow);					// window id = 2007
+	m_gWindowManager.Add(&m_guiDialogFileStacking);				// window id = 2008
 
 	/* window id's 3000 - 3100 are reserved for python */
   	
@@ -294,6 +295,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiMyMusicTop100.Load( strSkinPath+"\\mymusictop100.xml" );
 	m_guiDialogSelect.Load( strSkinPath+"\\dialogSelect.xml" );  
 	m_guiDialogOK.Load( strSkinPath+"\\dialogOK.xml" );  
+	m_guiDialogFileStacking.Load( strSkinPath+"\\dialogFileStacking.xml" );  
 	m_guiVideoInfo.Load( strSkinPath+"\\DialogVideoInfo.xml" );  
 	m_guiMusicOverlay.Load( strSkinPath+"\\musicOverlay.xml" );  
 	m_guiSettingsScreen.Load( strSkinPath+"\\settingsScreen.xml" );

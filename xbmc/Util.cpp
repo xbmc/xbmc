@@ -1033,7 +1033,7 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
             bGotIcon=true;
 					}
 				}
-        if (!bGotIcon)
+        if (!bGotIcon && pItem->GetLabel() != "..")
         {
           CStdString strFolderImage;
           AddFileToFolder(pItem->m_strPath, "folder.jpg", strFolderImage);

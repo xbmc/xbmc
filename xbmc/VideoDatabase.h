@@ -9,6 +9,7 @@ using namespace std;
 typedef vector<CStdString> VECMOVIEACTORS;
 typedef vector<CStdString> VECMOVIEGENRES;
 typedef vector<CIMDBMovie> VECMOVIES;
+typedef vector<CStdString> VECMOVIESFILES;
 
 class CVideoDatabase
 {
@@ -25,7 +26,7 @@ public:
   bool    HasSubtitle(const CStdString& strFilenameAndPath);
   void    DeleteMovieInfo(const CStdString& strFileNameAndPath);
 
-  // todo:
+  void		GetFiles(long lMovieId, VECMOVIESFILES& movies);
   void    GetMovieInfo(const CStdString& strFilenameAndPath,CIMDBMovie& details);
   void    SetMovieInfo(const CStdString& strFilenameAndPath,CIMDBMovie& details);
   void    GetMoviesByGenre(CStdString& strGenre, VECMOVIES& movies);

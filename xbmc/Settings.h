@@ -201,7 +201,7 @@ public:
 		bool			m_bMyVideoGenreRootViewAsIcons;
 	  int				m_iMyVideoGenreSortMethod;
 	  bool			m_bMyVideoGenreSortAscending;
-
+    int       m_iMyProgramsSelectedItem;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

@@ -1,12 +1,7 @@
 // Todo: 
 //  - directory history
-//  - if user selects movie, then do file stacking...
 //  - if movie does not exists when play movie is called then show dialog asking to insert the correct CD
 //  - show if movie has subs
-//  - oninfo() -> just show imdb info...
-//  - sort by:
-//     - name
-//     - date (should sort on year)
 
 #include "guiwindowVideoGenre.h"
 #include "settings.h"
@@ -26,7 +21,7 @@
 #include "nfofile.h"
 #include "filesystem/file.h"
 #include "xbox/iosupport.h"
-
+#include "GUIDialogFileStacking.h"
 #define CONTROL_BTNVIEWASICONS		 2
 #define CONTROL_BTNSORTBY					 3
 #define CONTROL_BTNSORTASC				 4
@@ -460,15 +455,49 @@ void CGUIWindowVideoGenre::OnClick(int iItem)
 		}
     Update(strPath);
   }
-  else if (CUtil::IsVideo(pItem->m_strPath))
+  else
 	{
-    // Set selected item
-	  m_iItemSelected=GetSelectedItem();
-	  
-		// play movie...
-		g_TextureManager.Flush();
-		g_graphicsContext.SetFullScreenVideo(true);
-		m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-		g_application.PlayFile(strPath);
+    int iSelectedFile=1;
+		VECMOVIESFILES movies;
+    m_database.GetFiles(atol(pItem->m_strPath),movies);
+		if (movies.size() <=0) return;
+    if (movies.size() >1)
+    {
+      CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(2008);
+		  dlg->SetNumberOfFiles(movies.size());
+		  dlg->DoModal(GetID());
+		  iSelectedFile = dlg->GetSelectedFile();
+      if (iSelectedFile < 1) return;
+    }
+		CStdString strFileName=movies[iSelectedFile-1];
+		if (CUtil::IsVideo(strFileName))
+		{
+			// play movie...
+			g_TextureManager.Flush();
+			g_graphicsContext.SetFullScreenVideo(true);
+			m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+			g_application.PlayFile(strFileName);
+		}
 	}
+}
+
+void CGUIWindowVideoGenre::OnInfo(int iItem)
+{
+  CFileItem* pItem=m_vecItems[iItem];
+  if (pItem->m_bIsFolder) return;
+	
+  VECMOVIESFILES movies;
+  m_database.GetFiles(atol(pItem->m_strPath),movies);
+	if (movies.size() <=0) return;
+  CStdString strFile=movies[0];
+  if (m_database.HasMovieInfo(strFile) )
+  {
+      CIMDBMovie movieDetails;
+      m_database.GetMovieInfo(strFile,movieDetails);
+      CGUIWindowVideoInfo* pDlgInfo= (CGUIWindowVideoInfo*)m_gWindowManager.GetWindow(2003);
+	    pDlgInfo->SetMovie(movieDetails);
+	    pDlgInfo->DoModal(GetID());
+      if ( !pDlgInfo->NeedRefresh() ) return;
+      m_database.DeleteMovieInfo(strFile);
+  }
 }

@@ -22,6 +22,7 @@ protected:
   void            UpdateButtons();
   void            Clear();
 	void						DeleteThumbs(VECFILEITEMS& items);
+  int             GetSelectedItem();
 	CGUIDialogProgress*	m_dlgProgress;  
   VECFILEITEMS				 m_vecItems;
   CStdString          m_strDirectory;
