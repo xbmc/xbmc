@@ -2567,4 +2567,13 @@
    <string><id>14039</id><value>XBMC behöver startas om för att slutföra din</value></string>
    <string><id>14040</id><value>nätverksinställng. Vill du starta om nu?</value></string>
    <string><id>14041</id><value>Post Processing</value></string>
+   <string><id>14042</id><value>Kai engine IP address</value></string>
+   <string><id>14043</id><value>- Stäng av medans spelning</value></string>
+   <string><id>14044</id><value>%i min</value></string>
+   <string><id>14045</id><value>%i sek</value></string>
+   <string><id>14046</id><value>%i ms</value></string>
+   <string><id>14047</id><value>%i %%</value></string>
+   <string><id>14048</id><value>%i kbps</value></string>
+   <string><id>14049</id><value>%i kb</value></string>
+   <string><id>14050</id><value>%i.0 dB</value></string>
 </strings>
