@@ -256,6 +256,7 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 	}
 	else
 	{
+		//	parse image if no review available
 		iStartOfTable=strHTMLLow.Find("artist&nbsp;");
 		if (iStartOfTable>= 0)
 		{
