@@ -307,6 +307,11 @@ static HRESULT InitLogo()
 	// Load header data (includes shaders)
 	DWORD Size = XPRHeader.dwHeaderSize - sizeof(XPR_HEADER);
 	ResourceHeader = (char*)malloc(Size);
+	if (!ResourceHeader)
+	{
+		CloseHandle(hFile);
+		return E_FAIL;
+	}
 	ZeroMemory(ResourceHeader, Size);
 	if (!ReadFile(hFile, ResourceHeader, Size, &n, 0) || n < Size)
 	{
@@ -326,6 +331,11 @@ static HRESULT InitLogo()
 	// load resource data
 	Size = XPRHeader.dwTotalSize - XPRHeader.dwHeaderSize;
 	DWORD* PackedData = (DWORD*)malloc(Size);
+	if (!PackedData)
+	{
+		CloseHandle(hFile);
+		return E_FAIL;
+	}
 	if (!ReadFile(hFile, PackedData, Size, &n, 0) || n < Size)
 	{
 		free(PackedData);
@@ -335,6 +345,11 @@ static HRESULT InitLogo()
 	CloseHandle(hFile);
 
 	ResourceData = XPhysicalAlloc(*PackedData, MAXULONG_PTR, 128, PAGE_READWRITE);
+	if (!ResourceData)
+	{
+		free(PackedData);
+		return E_FAIL;
+	}
 
 	if (lzo_init() != LZO_E_OK)
 	{
