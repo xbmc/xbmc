@@ -351,6 +351,63 @@
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
 		</Configuration>
+		<Configuration
+			Name="Debug Xbox No Memory Tracking|Xbox"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml"
+				PreprocessorDefinitions="_DEBUG;_XBOX;_DEBUG_NOMEM_TRACK;ID3LIB_LINKOPTION=1"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				SmallerTypeCheck="TRUE"
+				RuntimeLibrary="1"
+				BufferSecurityCheck="TRUE"
+				EnableEnhancedInstructionSet="1"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="xapilibd.lib d3dx8d.lib d3d8d.lib xgraphicsd.lib dsoundd.lib xboxkrnl.lib xonlined.lib "
+				OutputFile="$(OutDir)/$(ProjectName).exe"
+				LinkIncremental="2"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
+				SubSystem="2"
+				OptimizeForWindows98="1"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="XboxDeploymentTool"
+				RemotePath="xe:\XBMC\xbmcd.xbe"/>
+			<Tool
+				Name="XboxImageTool"
+				FileName="$(TargetDir)default.xbe"
+				StackSize="0x60000"
+				IncludeDebugInfo="TRUE"
+				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
+				NoLibWarn="TRUE"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP"
+				TitleID="0xFACE008"
+				MediaTypes="0x80000007"
+				TitleName="Xbox Media Center"/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -968,10 +1025,10 @@
 				RelativePath=".\xbmc\cores\ModPlayer.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1434,6 +1491,12 @@
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug Xbox No Memory Tracking|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\PlayerCoreFactory.cpp">
@@ -1500,6 +1563,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release Xbox  Debugging|Xbox">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="$(InputFileName)"
+							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
+							Outputs="$(TargetDir)$(InputName).xpu"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug Xbox No Memory Tracking|Xbox">
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="$(InputFileName)"
@@ -1595,6 +1666,12 @@
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Xbox">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug Xbox No Memory Tracking|Xbox">
 							<Tool
 								Name="VCCLCompilerTool"
 								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
