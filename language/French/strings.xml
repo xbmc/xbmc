@@ -445,7 +445,7 @@
 	</string>
 	<string>
 		<id>184</id>
-		<value>Raffraichir</value>
+		<value>Rafraîchir</value>
 	</string>
 	<string>
 		<id>185</id>
@@ -933,11 +933,11 @@
 	</string>
 	<string>
 		<id>308</id>
-		<value>filtre vertical de dégagement</value>
+		<value>filtre vertical</value>
 	</string>
 	<string>
 		<id>309</id>
-		<value>filtre horizontal de dégagement</value>
+		<value>filtre horizontal</value>
 	</string>
 	<string>
 		<id>310</id>
@@ -1117,7 +1117,7 @@
 	</string>
 	<string>
 		<id>354</id>
-		<value>Trainées (Matrix)</value>
+		<value>Matrix</value>
 	</string>
 	<string>
 		<id>355</id>
@@ -1365,7 +1365,7 @@
 	</string>
 	<string>
 		<id>417</id>
-		<value>Voir : grandes icônes</value>
+		<value>Voir : Affiches</value>
 	</string>
 	<string>
 		<id>418</id>
@@ -1665,7 +1665,7 @@
 	</string>
 	<string>
 		<id>492</id>
-		<value>Agrandir les sous-titres</value>
+		<value>Taille sous-titres</value>
 	</string>
     <string>
         <id>493</id>
