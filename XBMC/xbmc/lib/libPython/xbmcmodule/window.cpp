@@ -250,7 +250,7 @@ namespace PYXBMC
 		PyGUIUnlock();
 
 		// Control Label
-		if (ControlLabel_CheckExact(pControl))
+		if (ControlLabel_Check(pControl))
 		{
 			ControlLabel* pControlLabel = (ControlLabel*)pControl;
 			pControl->pGUIControl = new CGUILabelControl(pControl->iParentId, pControl->iControlId,
@@ -259,7 +259,7 @@ namespace PYXBMC
 		}
 
 		// Control Fade Label
-		else if (ControlFadeLabel_CheckExact(pControl))
+		else if (ControlFadeLabel_Check(pControl))
 		{
 			ControlFadeLabel* pControlFadeLabel = (ControlFadeLabel*)pControl;
 			pControl->pGUIControl = new CGUIFadeLabelControl(pControl->iParentId, pControl->iControlId,
@@ -271,7 +271,7 @@ namespace PYXBMC
 		}
 
 		// Control TextBox
-		else if (ControlTextBox_CheckExact(pControl))
+		else if (ControlTextBox_Check(pControl))
 		{
 			ControlTextBox* pControlTextBox = (ControlTextBox*)pControl;
 
@@ -293,7 +293,7 @@ namespace PYXBMC
 		}
 
 		// Control Button
-		else if (ControlButton_CheckExact(pControl))
+		else if (ControlButton_Check(pControl))
 		{
 			ControlButton* pControlButton = (ControlButton*)pControl;
 			pControl->pGUIControl = new CGUIButtonControl(pControl->iParentId, pControl->iControlId,
@@ -307,7 +307,7 @@ namespace PYXBMC
 		}
 
 		// Image
-		else if (ControlImage_CheckExact(pControl))
+		else if (ControlImage_Check(pControl))
 		{
 			ControlImage* pControlImage = (ControlImage*)pControl;
 			pControl->pGUIControl = new CGUIImage(pControl->iParentId, pControl->iControlId,
@@ -316,7 +316,7 @@ namespace PYXBMC
 		}
 
 		// Control List
-		else if (ControlList_CheckExact(pControl))
+		else if (ControlList_Check(pControl))
 		{
 			ControlList* pControlList = (ControlList*)pControl;
 			pControl->pGUIControl = new CGUIListControl(pControl->iParentId, pControl->iControlId,
@@ -337,6 +337,13 @@ namespace PYXBMC
 			pControlList->pControlSpin->pGUIControl;// = (CGUIControl*) c->GetSpinControl();
 			pControlList->pControlSpin->iControlId = pControl->iControlId;
 			pControlList->pControlSpin->iParentId = pControl->iParentId;
+		}
+
+		//unknown control type to add, should not happen
+		else
+		{
+			PyErr_SetString((PyObject*)self, "Object is a Control, but can't be added to a window");
+			return NULL;
 		}
 
 		Py_INCREF(pControl);
