@@ -263,7 +263,7 @@ CSettings::CSettings(void)
 
 	g_stSettings.m_nVolumeLevel = 0;
 	g_stSettings.m_iLogLevel = LOGNOTICE;
-
+	g_stSettings.m_bUnhandledExceptionToFatalError = false;
 	g_stSettings.m_bShowFreeMem=false;
 
   m_iLastLoadedProfileIndex = -1;
@@ -323,6 +323,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 	}
 
 	GetInteger(pRootElement, "loglevel", g_stSettings.m_iLogLevel, LOGWARNING, LOGDEBUG, LOGNONE);
+	GetBoolean(pRootElement, "haltonfatalerrors", g_stSettings.m_bUnhandledExceptionToFatalError);
 	GetBoolean(pRootElement, "showfreemem", g_stSettings.m_bShowFreeMem);
 
 	TiXmlElement* pFileTypeIcons =pRootElement->FirstChildElement("filetypeicons");

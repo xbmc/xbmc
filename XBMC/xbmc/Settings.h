@@ -278,6 +278,7 @@ public:
 		int			  m_iLogLevel;
 		bool			m_bDisplayRemoteCodes;
 		bool			m_bShowFreeMem;
+    bool      m_bUnhandledExceptionToFatalError;
 
 		char			m_szDefaultPrograms[128];
 		char			m_szDefaultMusic[128];
