@@ -1241,7 +1241,7 @@ bool CMusicDatabase::GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs)
 		if (NULL==m_pDB.get()) return false;
 		if (NULL==m_pDS.get()) return false;
 
-		CStdString strWhere="path.strPath in ( ";
+		CStdString strSQL("select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and path.strPath in ( ");
 		for (ISETPATHES it=pathes.begin(); it!=pathes.end(); it++)
 		{
 			CStdString strPath=*it;
@@ -1253,13 +1253,11 @@ bool CMusicDatabase::GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs)
 
 			CStdString strPart;
 			strPart.Format("'%s', ", strPath);
-			strWhere+=strPart;
+			strSQL+=strPart;
 		}
-		strWhere.TrimRight( ", " );
-		strWhere+=" )";
+		strSQL.TrimRight( ", " );
+		strSQL+=" )";
 
-		CStdString strSQL;
-		strSQL.Format("select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and %s", strWhere);
 		if (!m_pDS->query(strSQL.c_str())) return false;
 		int iRowsFound = m_pDS->num_rows();
 		if (iRowsFound== 0) return false;
