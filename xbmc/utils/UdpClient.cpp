@@ -42,6 +42,11 @@ bool CUdpClient::Create(void)
 	return true;
 }
 
+void CUdpClient::OnStartup()
+{
+	SetPriority( THREAD_PRIORITY_LOWEST );
+}
+
 bool CUdpClient::Broadcast(int aPort, CStdString& aMessage)
 {
 	EnterCriticalSection(&critical_section);
