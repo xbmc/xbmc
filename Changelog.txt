@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-01-2005 changed: Removed TITLE mapping to playlist view in My Music and My Videos - it's on the context menu anyway.
   - 07-01-2005 changed: cdrip encoders moved into dll's, this should result in a smaller executable
                         and a bit faster cd ripping (don't forget to copy the new system folder!)
   - 07-01-2005 fixed: music playlist, all cue items show the tag info of the first file 
