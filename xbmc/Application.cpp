@@ -110,14 +110,14 @@ HRESULT CApplication::Create()
 
 	if (g_stSettings.m_bUseFDrive) 
   {
-    CLog::Log(" map drive F:");
+    CLog::Log("  map drive F:");
     helper.Remap("F:,Harddisk0\\Partition6");
   }
 
 	// used for the LBA-48 hack allowing >120 gig
 	if (g_stSettings.m_bUseGDrive) 
   {
-    CLog::Log(" map drive G:");
+    CLog::Log("  map drive G:");
     helper.Remap("G:,Harddisk0\\Partition7");
   }
 	
@@ -192,10 +192,10 @@ HRESULT CApplication::Initialize()
 	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szMusicRecordingDirectory,NULL);
 
-  CLog::Log("thumbnails folder:%s", g_stSettings.szThumbnailsDirectory);
-  CLog::Log("shortcuts folder:%s", g_stSettings.m_szShortcutDirectory);
-  CLog::Log("albums folder:%s", g_stSettings.m_szAlbumDirectory);
-  CLog::Log("recording folder:%s", g_stSettings.m_szMusicRecordingDirectory);
+  CLog::Log("  thumbnails folder:%s", g_stSettings.szThumbnailsDirectory);
+  CLog::Log("  shortcuts folder:%s", g_stSettings.m_szShortcutDirectory);
+  CLog::Log("  albums folder:%s", g_stSettings.m_szAlbumDirectory);
+  CLog::Log("  recording folder:%s", g_stSettings.m_szMusicRecordingDirectory);
 
 
 	string strAlbumDir=g_stSettings.m_szAlbumDirectory;
@@ -212,7 +212,7 @@ HRESULT CApplication::Initialize()
   {
     strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"Q:\\subtitles");
   }
-  CLog::Log("subtitle folder:%s", g_stSettings.m_szAlternateSubtitleDirectory);
+  CLog::Log("  subtitle folder:%s", g_stSettings.m_szAlternateSubtitleDirectory);
   CreateDirectory(g_stSettings.m_szAlternateSubtitleDirectory,NULL);
   
   // initialize network
@@ -339,9 +339,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	string strSkinPath = "Q:\\skin\\";
 	strSkinPath+=strSkin;
 
-  CLog::Log("load skin from:%s",strSkinPath.c_str());	
+  CLog::Log("  load skin from:%s",strSkinPath.c_str());	
 
-  CLog::Log("delete old skin...");
+  CLog::Log("  delete old skin...");
 	m_guiWindowVideoOverlay.FreeResources();
 	m_guiWindowVideoOverlay.ClearAll();
 	
@@ -355,7 +355,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_graphicsContext.SetMediaDir(strSkinPath);
   g_fontManager.LoadFonts(strSkinPath+string("\\font.xml")) ;
 
-  CLog::Log("load new skin...");
+  CLog::Log("  load new skin...");
   m_guiHome.Load( strSkinPath+"\\home.xml" );  
   m_guiPrograms.Load( strSkinPath+"\\myprograms.xml" );  
 	m_guiPictures.Load( strSkinPath+"\\mypics.xml" );  
@@ -400,14 +400,14 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiWindowScreensaver.SetID(WINDOW_SCREENSAVER);		// CB: Matrix Screensaver - saves us having to have our own XML file
 	m_guiMyWeather.Load( strSkinPath+"\\myweather.xml");	//WEATHER
 
-  CLog::Log("initialize new skin...");
+  CLog::Log("  initialize new skin...");
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
 	m_gWindowManager.AddMsgTarget(this);
 	m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
 	m_gWindowManager.SetCallback(*this);
   m_gWindowManager.Initialize();
-  CLog::Log("skin loaded...");
+  CLog::Log("  skin loaded...");
 }
 
 

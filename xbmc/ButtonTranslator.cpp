@@ -39,7 +39,7 @@ void CButtonTranslator::Load()
 	{
 		buttonMap map;
 		TiXmlNode* pAction =pWindow->FirstChild("action");
-		OutputDebugString("GLOBAL:\n");
+		//OutputDebugString("GLOBAL:\n");
 		while (pAction)
 		{
 			TiXmlNode* pNode=pAction->FirstChild("id");
@@ -66,9 +66,9 @@ void CButtonTranslator::Load()
 		if (pID) wWindowID = (WORD)atol(pID->FirstChild()->Value());
 		if (wWindowID>=0)
 		{
-			char szTmp[128];
-			sprintf(szTmp,"WINDOW:%i\n", wWindowID);
-			OutputDebugString(szTmp);
+			//char szTmp[128];
+			//sprintf(szTmp,"WINDOW:%i\n", wWindowID);
+			//OutputDebugString(szTmp);
 			TiXmlNode* pAction =pWindow->FirstChild("action");
 			while (pAction)
 			{
@@ -216,9 +216,9 @@ void CButtonTranslator::MapAction(WORD wAction, TiXmlNode *pNode, buttonMap &map
 			buttonMap::iterator it = map.find(wButtonCode);
 			if (it == map.end() || (*it).second != wAction)
 			{
-				char szTmp[128];
-				sprintf(szTmp,"  action:%i button:%i\n", wAction,wButtonCode);
-				OutputDebugString(szTmp);
+				//char szTmp[128];
+				//sprintf(szTmp,"  action:%i button:%i\n", wAction,wButtonCode);
+				//OutputDebugString(szTmp);
 				map.insert(pair<WORD, WORD>(wButtonCode,wAction));
 			}
 		}
