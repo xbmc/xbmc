@@ -4388,44 +4388,6 @@ int mplayer_getSubtitleCount()
 	//if(!xbmc_sub_count)
 		xbmc_update_subs();
 	return xbmc_sub_count;
-	
-
-//	if(!stream || !demuxer) return 0;
-//
-//	if(demuxer->type == DEMUXER_TYPE_OGG)
-//	{
-//	  return oggsub_count;
-//	}
-//
-//    if (vo_vobsub)
-//    {
-//        return vobsub_get_indexes_count(vo_vobsub);
-//    }
-//    if (vo_spudec)
-//    {
-//		if(stream->type == STREAMTYPE_DVD)
-//		{
-//			dvd_priv_t *d=stream->priv;
-//			return d->nr_of_subtitles;
-//		}
-//		else
-//		{
-//			int i, c=0;
-//			for (i=0; i < 32; i++)
-//			{
-//				if ( demuxer->s_streams[i])
-//					c++;
-//			}
-//			return c;
-//		}
-//	}    
-//
-//
-//#ifdef USE_SUB
-//    return set_of_sub_size;
-//#else
-//    return 0;
-//#endif
 }
 int mplayer_getSubtitle()
 {
@@ -4433,39 +4395,6 @@ int mplayer_getSubtitle()
 		xbmc_update_subs();
 	return xbmc_sub_current;
 
-//	if(!demuxer || !stream) return -1;
-//
-//	if(demuxer->type == DEMUXER_TYPE_OGG)
-//	{
-//		return oggsub_id;	
-//	}
-//
-//    if (vo_vobsub)
-//        return vobsub_id;
-//    
-//    if (vo_spudec)
-//	{
-//		if(stream->type == STREAMTYPE_DVD && demuxer->sub)
-//		{
-//			dvd_priv_t *d=stream->priv;
-//			int i, c=0;
-//			for (i=0; i < 32; i++)
-//			{
-//				if(d->subtitles[i].id == demuxer->sub->id)
-//					return c;
-//				c++;
-//			}
-//			return -1;
-//		}
-//		return -1;
-//	}
-//
-//
-//#ifdef USE_SUB
-//    return set_of_sub_pos;
-//#else
-//    return 0;
-//#endif
 }
 void mplayer_setSubtitle(int iSubtitle)
 {
@@ -4520,6 +4449,13 @@ void mplayer_setSubtitle(int iSubtitle)
 #endif
 
 	}
+	else if(sub->type == XBMC_SUBTYPE_MKVSUB)
+	{
+		printf("changed matroska sub to %d from %d\n", sub->id, demuxer->sub->id);
+		demuxer->sub->id = sub->id;
+		vo_sub = NULL;
+        vo_osd_changed(OSDTYPE_SUBTITLE);
+	}
 #ifdef USE_SUB
 	else if(sub->type == XBMC_SUBTYPE_STANDARD )
 	{
@@ -4544,70 +4480,7 @@ void mplayer_setSubtitle(int iSubtitle)
 
 	}
 #endif
-//
-//	if (demuxer->type == DEMUXER_TYPE_OGG)
-//	{
-//		oggsub_id=iSubtitle;
-//		demuxer->sub->id = oggsub_ids[oggsub_id];
-//		vo_sub = NULL;
-//        vo_osd_changed(OSDTYPE_SUBTITLE);
-//	}
-//    else if (vo_vobsub)
-//    {
-//		iSubtitle  = mplayer_getSubtitleStreamInfo(iSubtitle, NULL);
-//        vobsub_id =iSubtitle;
-//        if (vobsub_id < 0)
-//            vobsub_id = 0;
-//        if ((unsigned int) vobsub_id >= vobsub_get_indexes_count(vo_vobsub))
-//            vobsub_id = -1;
-//        osd_show_vobsub_changed = 9;
-//        printf("changed vobsubid to %i/%i\n", vobsub_id,vobsub_get_indexes_count(vo_vobsub) );
-//    }
-//    else if (vo_spudec)
-//    {
-//		if(stream->type == STREAMTYPE_DVD && d_dvdsub)
-//		{
-//			dvd_priv_t *d=stream->priv;
-//			dvdsub_id = d->subtitles[iSubtitle].id;
-//			mp_msg(MSGT_INPUT,MSGL_DBG2,"d_dvdsub->id change: was %d is now %d\n", d_dvdsub->id,dvdsub_id);
-//			//Need a better way of changing subs
-//			d_dvdsub->id=dvdsub_id;
-//			spudec_reset(vo_spudec);
-//		}
-//		else //Other streams
-//		{
-//			int i, c=0;
-//			for (i=0; i < 32; i++)
-//			{
-//				if ( demuxer->s_streams[i])
-//				{
-//					if(c==iSubtitle)
-//					{
-//						mp_msg(MSGT_INPUT,MSGL_DBG2,"d_dvdsub->id change: was %d is now %d\n", d_dvdsub->id,i);
-//						//Need a better way of changing subs
-//						d_dvdsub->id=dvdsub_id=i;
-//						spudec_reset(vo_spudec);
-//					}
-//					i++;
-//				}
-//			}
-//			
-//
-//		}
-//    }
-//#ifdef USE_SUB
-//    else if (set_of_sub_size > 0)
-//    { //change subtitle file
-//        set_of_sub_pos = iSubtitle;
-//        if (iSubtitle >=set_of_sub_size) iSubtitle=set_of_sub_size-1;
-//        if (iSubtitle <0) iSubtitle=0;
-//        subdata = set_of_subtitles[set_of_sub_pos];
-//        osd_show_sub_changed = sh_video->fps;
-//        vo_sub = NULL;
-//        vo_osd_changed(OSDTYPE_SUBTITLE);
-//        printf("changed subtitleto %i/%i\n", set_of_sub_pos,set_of_sub_size );
-//    }
-//#endif
+
 }
 
 void mplayer_showSubtitle(int bOnOff)
@@ -4906,6 +4779,12 @@ int mplayer_getSubtitleStreamInfo(int iStream, stream_language_t* stream_info)
 			stream_info->type=0;
 			stream_info->channels=0;
 		}
+		if(sub->type == XBMC_SUBTYPE_MKVSUB)
+		{
+			stream_info->language=sub->name[1]|(sub->name[0]<<8);
+			stream_info->type=0;
+			stream_info->channels=0;
+		}
 
 	}
 	return sub->id;
@@ -4986,6 +4865,8 @@ mplayer_SetAudioStream(int iStream)
 
 }
 
+
+
 void xbmc_update_subs()
 {
 	xbmc_sub_count=0;
@@ -4998,23 +4879,19 @@ void xbmc_update_subs()
 		int i;
 		for(i=0;i<d->nr_of_subtitles;i++)
 		{
-			xbmc_subtitles[xbmc_sub_count].id = d->subtitles[i].id;
-			xbmc_subtitles[xbmc_sub_count].type = XBMC_SUBTYPE_DVDSUB;
-			xbmc_subtitles[xbmc_sub_count].name[2]=0;
-			xbmc_subtitles[xbmc_sub_count].name[1]=(d->subtitles[i].language&255);
-			xbmc_subtitles[xbmc_sub_count].name[0]=(d->subtitles[i].language>>8);
-			xbmc_subtitles[xbmc_sub_count].invalid = !(demuxer->s_streams[i]);
-			xbmc_sub_count++;
+			char name[2];
 
+			name[2]=0;
+			name[1]=(d->subtitles[i].language&255);
+			name[0]=(d->subtitles[i].language>>8);
+			xbmc_addsub(d->subtitles[i].id, name, XBMC_SUBTYPE_DVDSUB, !(demuxer->s_streams[i]));
 		}
 		
 		for(i=0;i<32;i++) //Make sure we get any streams not in the header
 		{
 			if(demuxer->s_streams[i] && xbmc_num_from_sid(i, XBMC_SUBTYPE_DVDSUB)==-1)
 			{
-				xbmc_subtitles[xbmc_sub_count].id = i;
-				xbmc_subtitles[xbmc_sub_count].type = XBMC_SUBTYPE_DVDSUB;
-				xbmc_sub_count++;
+				xbmc_addsub(i, NULL, XBMC_SUBTYPE_DVDSUB,0);
 			}
 		}
 
@@ -5030,14 +4907,17 @@ void xbmc_update_subs()
 		int i;
 		for(i=0;i<oggsub_count;i++)
 		{
-			xbmc_subtitles[xbmc_sub_count].id = oggsub_ids[i];
-			xbmc_subtitles[xbmc_sub_count].type = XBMC_SUBTYPE_OGGSUB;
-			xbmc_sub_count++;
+			xbmc_addsub(oggsub_ids[i], NULL, XBMC_SUBTYPE_OGGSUB,0);
 		}
 		if(oggsub_id >= 0)
 			xbmc_sub_current = oggsub_id;
 	}
 
+	if(demuxer->type == DEMUXER_TYPE_MATROSKA)
+	{
+		printf("Building sub database for MKV");
+		xbmc_update_matroskasubs(demuxer->priv);
+	}
 
 	if (vo_vobsub) // Vobsubs
     {
@@ -5046,10 +4926,10 @@ void xbmc_update_subs()
 		c = vobsub_get_indexes_count(vo_vobsub);
 		for(i=0;i<c;i++)
 		{
-			xbmc_subtitles[xbmc_sub_count].id = i;
-			xbmc_subtitles[xbmc_sub_count].type = XBMC_SUBTYPE_VOBSUB;
-			strncpy(xbmc_subtitles[xbmc_sub_count].name, vobsub_get_id(vo_vobsub,i),2);
-			xbmc_sub_count++;			
+			char name[2];
+			strncpy(name, vobsub_get_id(vo_vobsub,i),2);
+			xbmc_addsub(i, name, XBMC_SUBTYPE_VOBSUB, 0);
+
 		}
 		if(vobsub_id >= 0)
 			xbmc_sub_current = xbmc_num_from_sid(vobsub_id, XBMC_SUBTYPE_VOBSUB);
@@ -5062,9 +4942,7 @@ void xbmc_update_subs()
 		int i;
 		for(i=0;i<set_of_sub_size;i++)
 		{
-			xbmc_subtitles[xbmc_sub_count].id = i;
-			xbmc_subtitles[xbmc_sub_count].type = XBMC_SUBTYPE_STANDARD;
-			xbmc_sub_count++;						
+			xbmc_addsub(i, NULL, XBMC_SUBTYPE_STANDARD, 0);
 		}
 		if(set_of_sub_pos >= 0)
 			xbmc_sub_current = set_of_sub_pos;
@@ -5074,6 +4952,3 @@ void xbmc_update_subs()
 
 
 }
-
-
-

@@ -20,6 +20,7 @@
 #include "matroska.h"
 #include "bswap.h"
 
+#include "../xbmc.h"
 #include "../subreader.h"
 #include "../libvo/sub.h"
 
@@ -219,6 +220,17 @@ typedef struct __attribute__((__packed__))
 extern char *dvdsub_lang;
 extern char *audio_lang;
 
+void xbmc_update_matroskasubs(void *mkvdemuxer)
+{
+  mkv_demuxer_t *d = (mkv_demuxer_t*)mkvdemuxer;
+  int i, id;
+  for (i=0, id=0; i < d->num_tracks; i++)
+    if (d->tracks[i] != NULL && d->tracks[i]->type == MATROSKA_TRACK_SUBTITLE)
+	{
+		id++;
+		xbmc_addsub(id, d->tracks[i]->language, XBMC_SUBTYPE_MKVSUB, 0);
+	}
+}
 
 static mkv_track_t *
 demux_mkv_find_track_by_num (mkv_demuxer_t *d, int n, int type)
