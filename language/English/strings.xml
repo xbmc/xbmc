@@ -2306,6 +2306,7 @@
   <string><id>13334</id><value>Edit Label</value></string>
   <string><id>13335</id><value>Make Default</value></string>
   <string><id>13336</id><value>Remove Button</value></string>
+  <string><id>13337</id><value>2 Channel PCM passthrough</value></string>
   <string><id>14000</id><value>Stacking: Off</value></string>
   <string><id>14001</id><value>Stacking: Simple</value></string>
   <string><id>14002</id><value>Stacking: Fuzzy</value></string>
