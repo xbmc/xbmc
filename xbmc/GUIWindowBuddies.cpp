@@ -1594,7 +1594,7 @@ void CGUIWindowBuddies::OnJoinsChat(CStdString& aOpponent)
 	}
 }
 
-void CGUIWindowBuddies::OnChat(CStdString& aVector, CStdString& aOpponent, CStdString& aMessage)
+void CGUIWindowBuddies::OnChat(CStdString& aVector, CStdString& aOpponent, CStdString& aMessage, bool bPrivate)
 {
 	if (m_pConsole)
 	{
@@ -1608,13 +1608,13 @@ void CGUIWindowBuddies::OnChat(CStdString& aVector, CStdString& aOpponent, CStdS
 		}
 		else
 		{
+			dwColour = bPrivate ? 0xFFFF0000 : dwColour;
 			strMessage.Format("%s: %s",aOpponent,aMessage);
 		}
 
 		m_pConsole->Write(strMessage, dwColour);
 	}
 }
-
 void CGUIWindowBuddies::OnLeavesChat(CStdString& aOpponent)
 {
 	if (m_pConsole)

@@ -46,7 +46,7 @@ class IBuddyObserver
 		virtual void OnUpdateOpponent(CStdString& aOpponent, CStdString& aAvatarURL)=0;
 		virtual void OnUpdateHostingStatus(BOOL bHosting)=0;
 		virtual void OnJoinsChat(CStdString& aOpponent)=0;
-		virtual void OnChat(CStdString& aVector, CStdString& aOpponent, CStdString& aMessage)=0;
+		virtual void OnChat(CStdString& aVector, CStdString& aOpponent, CStdString& aMessage, bool bPrivate)=0;
 		virtual void OnLeavesChat(CStdString& aOpponent)=0;
 };
 
