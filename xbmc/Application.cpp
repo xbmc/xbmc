@@ -252,6 +252,8 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiMusicInfo);								// window id = 2001
 	m_gWindowManager.Add(&m_guiDialogOK);									// window id = 2002
 	m_gWindowManager.Add(&m_guiVideoInfo);								// window id = 2003
+	m_gWindowManager.Add(&m_guiScriptsInfo);							// window id = 2004
+
 	m_gWindowManager.Add(&m_guiWindowVisualisation);			// window id = 2006
 
 	/* window id's 3000 - 3100 are reserved for python */
@@ -302,6 +304,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettings.Load( strSkinPath+"\\settings.xml" );  
 	m_guiSystemInfo.Load( strSkinPath+"\\SettingsSystemInfo.xml" );  
 	m_guiMusicInfo.Load( strSkinPath+"\\DialogAlbumInfo.xml" );  
+	m_guiScriptsInfo.Load( strSkinPath+"\\DialogScriptInfo.xml" ); 
 	m_guiSettingsGeneral.Load( strSkinPath+"\\SettingsGeneral.xml" );  
 	m_guiDialogYesNo.Load( strSkinPath+"\\dialogYesNo.xml" );  
 	m_guiDialogProgress.Load( strSkinPath+"\\dialogProgress.xml" );  
@@ -464,11 +467,11 @@ void CApplication::OnKey(CKey& key)
 	// handle extra global presses (FIXME)
 	if (action.wID == ACTION_PAUSE)
 	{
-		m_pPlayer->Pause();
+		if(m_pPlayer) m_pPlayer->Pause();
 	}
 	if (action.wID == ACTION_STOP)
 	{
-		m_pPlayer->closefile();
+		if(m_pPlayer) m_pPlayer->closefile();
 	}
 	if (action.wID == ACTION_PREV_ITEM)
 	{

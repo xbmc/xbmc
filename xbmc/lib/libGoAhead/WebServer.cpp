@@ -377,6 +377,7 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 		while (FindNextFile(hFind, &FindFileData));
 		FindClose(hFind);
 		websWrite(wp, "%s", "</body></html>\n");
+		websDone(wp, 200);
 		return 1;
 	}
 	return 0;
