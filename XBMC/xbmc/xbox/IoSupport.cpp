@@ -127,7 +127,7 @@ CIoSupport::CIoSupport()
 	m_rawXferBuffer = NULL;
 	if( m_gmXferBuffer )
 		m_rawXferBuffer = GlobalLock(m_gmXferBuffer);
-	
+	/*
 	if (!m_partitionTable)
 	{
 		m_partitionTable= (PARTITION_TABLE*)malloc(sizeof(PARTITION_TABLE));
@@ -138,7 +138,7 @@ CIoSupport::CIoSupport()
 			for (int i=1; i <=6;++i )
 				m_partitionTable->pt_entries[i].pe_flags =PE_PARTFLAGS_IN_USE;
 		}
-	}
+	}*/
 }
 
 CIoSupport::CIoSupport(CIoSupport& other)
@@ -674,11 +674,11 @@ bool CIoSupport::DriveExists(const char* szDrive)
 		{
 			int iPartition=driveMapping[i].iPartition;
 			if (iPartition<0) return true;
-			if ( m_partitionTable->pt_entries[iPartition].pe_flags & PE_PARTFLAGS_IN_USE)
-			{
+			//if ( m_partitionTable->pt_entries[iPartition].pe_flags & PE_PARTFLAGS_IN_USE)
+			//{
 				return true;
-			}
-			return false;
+			//}
+			//return false;
 		}
 	}
 	return false;
@@ -691,11 +691,11 @@ bool CIoSupport::PartitionExists(const char* szPartition)
 		{
 			int iPartition=driveMapping[i].iPartition;
 			if (iPartition<0) return true;
-			if ( m_partitionTable->pt_entries[iPartition].pe_flags & PE_PARTFLAGS_IN_USE)
-			{
+			//if ( m_partitionTable->pt_entries[iPartition].pe_flags & PE_PARTFLAGS_IN_USE)
+			//{
 				return true;
-			}
-			return false;
+			//}
+			//return false;
 		}
 	}
 	return false;

@@ -156,6 +156,7 @@ public:
 		char      szDefaultVisualisation[256];
 		bool		  m_bUseFDrive;
 		bool		  m_bUseGDrive;
+		bool			m_bAudioOnAllSpeakers;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 #include "AsyncDirectSound.h"
+#include "../../settings.h"
 
 
 #define VOLUME_MIN		-6000
@@ -67,7 +68,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 {
 	OutputDebugString("CASyncDirectSound() ctor\n");
 	m_pCallback=pCallback;
-	if(0/*!g_playerSettings.bAudioOnAllSpeakers*/ ) 
+	if(!g_stSettings.m_bAudioOnAllSpeakers ) 
 	{
 		if (iChannels == 1)
 			DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
@@ -162,7 +163,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	dsmb.dwMixBinCount			 = 6;
 	dsmb.lpMixBinVolumePairs = dsmbvp6;
 
-	if (0/*!g_playerSettings.bAudioOnAllSpeakers*/)
+	if (!g_stSettings.m_bAudioOnAllSpeakers)
 	{
 		switch (iChannels)
 		{
