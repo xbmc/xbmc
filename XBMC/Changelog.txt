@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 18-03-2005 fixed: Play action in My Music Nav does not interfere with unpausing, or returning playback speed to 1
+  - 18-03-2005 added: When music is paused, the play button will unpause
   - 18-03-2005 fixed: AddItemToPlayList crashing in XBMChttp.cpp and XBMCweb.cpp following changes to FileItem.cpp
   - 18-03-2005 added: checkmarkexample.py & listitemexample.py sample python scripts to xbmc\scripts - thanks to gimblefoot
   - 18-03-2005 added: [ 1163487 ] Expose more CGUIListItem methods to python xbmcgui.ListItem, setLabel2() - set the second label on the list item, getLabel2() - get the second label from the list item, setThumbnailImage() - set the thumbnail image for the list item, setIconImage() - set the icon image for the list item, keyword parameters support for ListItem constructor. - thanks to gimblefoot

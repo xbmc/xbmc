@@ -1745,7 +1745,6 @@ void CApplication::OnKey(CKey& key)
         // if we do a FF/RW in my music then map PLAY action togo back to normal speed
         if (action.wID == ACTION_MUSIC_PLAY)
         {
-
           if (m_iPlaySpeed != 1)
           {
             SetPlaySpeed(1);
@@ -1779,6 +1778,13 @@ void CApplication::OnKey(CKey& key)
           }
         }
       }
+      // allow play to unpause
+      else
+      {
+        if (action.wID == ACTION_MUSIC_PLAY)
+          m_pPlayer->Pause();
+      }
+
     }
   }
 
