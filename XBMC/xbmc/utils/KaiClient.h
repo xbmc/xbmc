@@ -51,7 +51,6 @@ public:
 	static CKaiClient* GetInstance();
 	virtual ~CKaiClient(void);
 
-	void Initialize();
 	void SetObserver(IBuddyObserver* aObserver);
 	void RemoveObserver();
 	void EnterVector(CStdString& aVector, CStdString& aPassword);
@@ -90,6 +89,9 @@ protected:
 	virtual void OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, 
 		LPBYTE pMessage, DWORD dwMessageLength);
 
+	void VoiceChatStart();
+	void VoiceChatStop();
+
 private:
 	CKaiClient(void);
 
@@ -108,7 +110,6 @@ private:
 	BOOL m_bHosting;
 
 	// KAI Speex support
-	BOOL				m_bSpeex;
     LPDIRECTSOUND8		m_pDSound;
 	CMediaPacketQueue*	m_pEgress;
     CXBStopWatch		m_VoiceTimer;
