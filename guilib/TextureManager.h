@@ -18,6 +18,7 @@ class CTexture
     int                 GetDelay() const;
     int                 GetRef() const;
     void                Dump() const;
+		void                Flush();
   protected:
     LPDIRECT3DTEXTURE8  m_pTexture;
     int                 m_iReferenceCount;
@@ -40,6 +41,7 @@ class CTextureMap
     bool                Release(int iPicture=0);
     int                 IsEmpty() const;
     void                Dump() const;
+		void							  Flush();
   protected:  
     CStdString          m_strTextureName;
     vector<CTexture*>   m_vecTexures;
@@ -58,7 +60,7 @@ public:
   void               ReleaseTexture(const CStdString& strTextureName, int iPicture=0);
   void               Cleanup();
   void               Dump() const;
-  
+  void							 Flush();
 protected:
   vector<CTextureMap*> m_vecTextures;
   typedef   vector<CTextureMap*>::iterator ivecTextures;

@@ -35,6 +35,15 @@ void CTexture::Dump() const
   OutputDebugString(strLog.c_str());
 }
 
+void CTexture::Flush()
+{
+	if (!m_iReferenceCount)
+	{
+	m_pTexture->Release();
+	m_pTexture=NULL;
+	}
+}
+
 bool CTexture::Release()
 {
   if (!m_pTexture) return true;
@@ -43,12 +52,13 @@ bool CTexture::Release()
   {
     m_iReferenceCount--;
   }
-  if (!m_iReferenceCount)
+
+/*  if (!m_iReferenceCount)
   {
     m_pTexture->Release();
     m_pTexture=NULL;
     return true;
-  }
+  }*/
   return false;
 }
 
@@ -160,6 +170,13 @@ LPDIRECT3DTEXTURE8 CTextureMap::GetTexture(int iPicture,int& iWidth, int& iHeigh
   return pTexture->GetTexture(iWidth,iHeight);
 }
 
+void CTextureMap::Flush()
+{
+	for (int i=0; i < (int)m_vecTexures.size(); ++i)
+	{
+		m_vecTexures[i]->Flush();
+	}
+}
 
 //------------------------------------------------------------------------------
 CGUITextureManager::CGUITextureManager(void)
@@ -309,6 +326,7 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
     if (pMap->GetName()==strTextureName)
     {
       pMap->Release(iPicture);
+			/*
       if (pMap->IsEmpty() )
       {
         delete pMap;
@@ -317,7 +335,8 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
       else
       {
         ++i;
-      }
+      }*/
+			++i;
     }
     else 
     {
@@ -352,4 +371,24 @@ void CGUITextureManager::Dump() const
     OutputDebugString(strLog.c_str());
     pMap->Dump();
   }
+}
+
+void CGUITextureManager::Flush()
+{
+	ivecTextures i;
+	i = m_vecTextures.begin();
+	while (i != m_vecTextures.end())
+	{
+		CTextureMap* pMap=*i;
+		pMap->Flush();
+		if (pMap->IsEmpty() )
+		{
+			delete pMap;
+			i=m_vecTextures.erase(i);
+		}
+		else 
+		{
+			++i;
+		}
+	}
 }
