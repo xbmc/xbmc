@@ -11,7 +11,7 @@
 #include "guidialog.h"
 #include "sectionLoader.h"
 #include "application.h"
-#include "filesystem/HDDirectory.h"
+#include "filesystem/HDDirectory.h" 
 #include <algorithm>
 
 using namespace DIRECTORY;

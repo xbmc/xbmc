@@ -917,8 +917,25 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
 				if ( !CUtil::IsDVD(pItem->m_strPath) )
         {
 					CStdString strDescription;
-					if ( CUtil::GetXBEDescription(pItem->m_strPath,strDescription))
+					if (! CUtil::GetXBEDescription(pItem->m_strPath,strDescription))
           {
+						CStdString strFName=CUtil::GetFileName(pItem->m_strPath);
+						strDescription=pItem->m_strPath.Left(pItem->m_strPath.size()-strFName.size());
+						if (CUtil::HasSlashAtEnd(strDescription) )
+						{
+							strDescription=strDescription.Left(strDescription.size()-1);
+						}
+						int iPos=strDescription.ReverseFind("\\");
+						if (iPos < 0)
+							iPos=strDescription.ReverseFind("/");
+						if (iPos >=0)
+						{
+							strDescription=strDescription.Right(strDescription.size()-iPos);
+						}
+						else strDescription=strFName;
+					}
+					if (strDescription.size())
+					{
 						CShortcut cut;
 						cut.m_strPath=pItem->m_strPath;
 						cut.Save(strDescription);
