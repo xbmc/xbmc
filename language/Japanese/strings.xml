@@ -5,6 +5,7 @@
   <string><id>3</id><value>動画</value></string>
   <string><id>4</id><value>テレビ欄</value></string>
   <string><id>5</id><value>設定</value></string>
+  <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>俺のファイル</value></string>
   <string><id>8</id><value>天気</value></string>
   <string><id>11</id><value>月曜</value></string>

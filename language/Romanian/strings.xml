@@ -5,6 +5,7 @@
   <string><id>3</id><value>Filme</value></string>
   <string><id>4</id><value>Ghid TV</value></string>
   <string><id>5</id><value>Configurare</value></string>
+  <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Fisiere</value></string>
   <string><id>8</id><value>Vremea</value></string>
   <string><id>11</id><value>Luni</value></string>

@@ -16,6 +16,7 @@
   <string><id>3</id><value>Videot</value></string>
   <string><id>4</id><value>TV Opas</value></string>
   <string><id>5</id><value>Asetukset</value></string>
+  <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Tiedostohallinta</value></string>
   <string><id>8</id><value>S‰‰tila</value></string>
   <string><id>11</id><value>Maanantai</value></string>
