@@ -1112,7 +1112,7 @@ void CGUIWindowBuddies::OnContactSpeexRing(CStdString& aFriend)
 		{
 			pBuddy->m_bRingIndicator = FALSE;
 
-			CStdString note = "has initated voice chat";
+			CStdString note = "has initiated voice chat";
 			g_application.SetKaiNotification(aFriend,note);
 		}
 	}
