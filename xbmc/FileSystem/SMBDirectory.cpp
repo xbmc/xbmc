@@ -14,6 +14,7 @@
 #include "smbdirectory.h"
 #include "../settings.h"
 #include "../util.h"
+#include "../utils/log.h"
 #include "../sectionLoader.h"
 #include "../url.h"
 #include "../applicationmessenger.h"
