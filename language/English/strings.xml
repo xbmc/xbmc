@@ -2277,4 +2277,7 @@
   <string><id>13305</id><value>Enable RSS Feeds</value></string>
   <string><id>13306</id><value>Hide Parent Folder Items</value></string>
   <string><id>13307</id><value>Hide Track Numbers</value></string>
+  <string><id>13307</id><value>Reset/Reboot</value></string>
+  <string><id>13308</id><value>Do you wish to do a hard reboot</value></string>
+  <string><id>13309</id><value>instead of a reset?</value></string>
 </strings>
