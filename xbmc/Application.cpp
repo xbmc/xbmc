@@ -1541,8 +1541,9 @@ void CApplication::CheckScreenSaver()
 	D3DGAMMARAMP Ramp;
 	FLOAT fFadeLevel;
 
-  if ( m_gWindowManager.IsRouted()) return;
-  if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV) return;
+	if ( m_gWindowManager.IsRouted()) return;
+	if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV) return;
+
 	if (!m_bInactive)
 	{
 		if (IsPlayingVideo() && !m_pPlayer->IsPaused())	// are we playing a movie and is it paused?
@@ -1562,11 +1563,11 @@ void CApplication::CheckScreenSaver()
 		}
 		else				
 		{
-      // we can display a screensaver
+			// we can display a screensaver
 			m_bInactive=true;
 		}
 
-    // if we can display a screensaver, then start screensaver timer
+		// if we can display a screensaver, then start screensaver timer
 		if (m_bInactive) 
 		{
 			m_dwSaverTick=timeGetTime();	// Start the timer going ...
@@ -1574,13 +1575,13 @@ void CApplication::CheckScreenSaver()
 	}
 	else
 	{
-    // Check we're not already in screensaver mode
+		// Check we're not already in screensaver mode
 		if (!m_bScreenSave)	
 		{
-      // no, then check the timer if screensaver should pop up
+			// no, then check the timer if screensaver should pop up
 			if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_stSettings.m_iScreenSaverTime*60*1000L) )
 			{
-        //yes, show the screensaver
+				//yes, show the screensaver
 				m_bScreenSave = true;
 				m_dwSaverTick=timeGetTime();		// Save the current time for the shutdown timeout
 
@@ -1600,15 +1601,15 @@ void CApplication::CheckScreenSaver()
 
 					case SCREENSAVER_MATRIX:
 						{
-              if (!IsPlayingVideo())
-              {
-							  m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
-                return;
-              }
-              else 
-              {
-                fFadeLevel = (FLOAT) g_stSettings.m_iScreenSaverFadeLevel / 100; // 0.07f;
-              }
+							if (!IsPlayingVideo())
+							{
+								m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
+								return;
+							}
+							else 
+							{
+								fFadeLevel = (FLOAT) g_stSettings.m_iScreenSaverFadeLevel / 100; // 0.07f;
+							}
 						}
 						break;
 				}
@@ -1635,16 +1636,6 @@ void CApplication::CheckScreenSaver()
 
 void CApplication::CheckShutdown()
 {
-  // dont shutdown if we're playing a file
-  if (m_pPlayer)
-  {
-    if (m_pPlayer->IsPlaying())
-    {
-      m_dwSaverTick=timeGetTime();
-      return;
-    }
-  }
-
 	// Note: if the the screensaver is switched on, the shutdown timeout is
 	// counted from when the screensaver activates.
 	if (!m_bInactive)
@@ -1669,10 +1660,18 @@ void CApplication::CheckShutdown()
 	}
 	else
 	{
+		
 		if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_stSettings.m_iShutdownTime*60*1000L) )
 		{
-			g_application.Stop();		// Stop ourselves
-			XKUtils::XBOXPowerOff();	// Turn off the box
+			if (!m_pPlayer->IsPlaying())	// make sure we're not playing something
+			{
+				g_application.Stop();		// Stop ourselves
+				XKUtils::XBOXPowerOff();	// Turn off the box
+			}
+			else							// we are playing, so reset the timer
+			{
+				m_dwSaverTick=timeGetTime();
+			}
 		}
 	}
 
