@@ -639,7 +639,7 @@ VOID CIoSupport::GetXbePath(char* szDest)
   memset(szPartition,0,sizeof(szPartition));
 	strncpy(szDevicePath,
 		    &pImageFileName->Buffer[8],
-		    pImageFileName->Length - 7 );	//get xbepath (without \Device\ prefix)
+		    pImageFileName->Length - 8 );	//get xbepath (without \Device\ prefix)
 	
 
 	strcpy(szHomeDrive, helper.GetDrive(szDevicePath).c_str());	//get driveletter of xbepath
