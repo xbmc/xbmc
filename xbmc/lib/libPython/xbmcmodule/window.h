@@ -1,5 +1,6 @@
 #include "..\python.h"
-#include "GUIWindow.h"
+#include "GUIPythonWindow.h"
+
 #include "control.h"
 #include <vector>
 #pragma once
@@ -16,7 +17,8 @@ namespace PYXBMC
 		int iOldWindowId;
 		int iCurrentControlId;
 		bool bIsCreatedByPython;
-		CGUIWindow* pWindow;
+		bool bModal;
+		CGUIPythonWindow* pWindow;
 		std::vector<Control*> vecControls;
 	} Window;
 

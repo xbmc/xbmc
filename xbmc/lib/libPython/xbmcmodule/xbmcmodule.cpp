@@ -1,6 +1,5 @@
 #include "..\..\..\application.h"
 #include "..\python.h"
-#include "control.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -13,10 +12,6 @@ extern "C" {
 
 namespace PYXBMC
 {
-	extern PyTypeObject Window_Type;
-	extern PyTypeObject DialogType;
-	extern PyTypeObject DialogProgressType;
-
 /*****************************************************************
  * start of xbmc methods
  *****************************************************************/
@@ -119,10 +114,7 @@ namespace PYXBMC
 		{NULL, NULL, 0, NULL}
 	};
 
-	// define c functions to be used in python here
-	PyMethodDef xbmcGuiMethods[] = {
-		{NULL, NULL, 0, NULL}
-	};
+
 
 /*****************************************************************
  * end of methods and python objects
@@ -137,37 +129,6 @@ namespace PYXBMC
 
 		pXbmcModule = Py_InitModule("xbmc", xbmcMethods);
 		if (pXbmcModule == NULL) return;
-
-		// init xbmc gui modules
-		PyObject* pXbmcGuiModule;
-
-		DialogType.tp_new = PyType_GenericNew;
-		DialogProgressType.tp_new = PyType_GenericNew;
-
-		if (PyType_Ready(&Window_Type) < 0 ||
-				PyType_Ready(&Control_Type) < 0 ||
-				PyType_Ready(&ControlLabel_Type) < 0 ||
-				PyType_Ready(&ControlImage_Type) < 0 ||
-				PyType_Ready(&DialogType) < 0 ||
-				PyType_Ready(&DialogProgressType) < 0)
-			return;
-
-		Py_INCREF(&Window_Type);
-		Py_INCREF(&Control_Type);
-		Py_INCREF(&ControlLabel_Type);
-		Py_INCREF(&ControlImage_Type);
-		Py_INCREF(&DialogType);
-		Py_INCREF(&DialogProgressType);
-
-		pXbmcGuiModule = Py_InitModule("xbmcgui", xbmcGuiMethods);
-		if (pXbmcGuiModule == NULL) return;
-
-    PyModule_AddObject(pXbmcGuiModule, "Window", (PyObject*)&Window_Type);
-		//PyModule_AddObject(pXbmcGuiModule, "Control", (PyObject*)&Control_Type);
-		PyModule_AddObject(pXbmcGuiModule, "ControlLabel", (PyObject*)&ControlLabel_Type);
-		PyModule_AddObject(pXbmcGuiModule, "ControlImage", (PyObject*)&	ControlImage_Type);
-		PyModule_AddObject(pXbmcGuiModule, "Dialog", (PyObject*)&DialogType);
-		PyModule_AddObject(pXbmcGuiModule, "DialogProgress", (PyObject *)&DialogProgressType);
 	}
 }
 
