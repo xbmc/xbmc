@@ -261,7 +261,6 @@ void CGUIWindowMusicPlayList::ShufflePlayList()
 	}
 
 	Update(m_strDirectory);
-	SET_CONTROL_FOCUS(GetID(), CONTROL_BTNSHUFFLE);
 }
 
 void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)

@@ -62,5 +62,5 @@ protected:
 	static int								m_nTempPlayListWindow;
 	static CStdString					m_strTempPlayListDirectory;
 	int												m_nSelectedItem;
-	int												m_nFocusedControl;
+	int												m_iLastControl;
 };

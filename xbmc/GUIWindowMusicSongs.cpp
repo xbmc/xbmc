@@ -294,7 +294,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 				if (strDirectory!=m_strDirectory)
 				{
 					Update(strDirectory);
-					SET_CONTROL_FOCUS(GetID(), CONTROL_BTNPLAYLISTS);
 				}
 			}
  			else if (iControl==CONTROL_BTNSCAN)
