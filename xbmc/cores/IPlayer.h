@@ -53,6 +53,7 @@ public:
   virtual float   GetAVDelay(){return 0.0f;};
   virtual void    SetSubTittleDelay(float fValue=0.0f){};
   virtual float   GetSubTitleDelay(){return 0.0f;};
+  virtual int     GetAudioStreamCount(){return 1;};
 protected:
 	IPlayerCallback& m_callback;
 };

@@ -22,6 +22,9 @@ public:
     float        GetVolumeAmplification() const;
     void         SetVolumeAmplification(float fDB) ;
 
+    int          GetAudioStream() const;
+    void         SetAudioStream(int iStream);
+
     int          GetChannels() const;
     void         SetChannels(int iChannels);
 
@@ -40,6 +43,7 @@ public:
       float   m_fSpeed;
       float   m_fFPS;
       int     m_iChannels;
+      int     m_iAudioStream;
       bool    m_bAC3PassTru;
       float   m_fVolumeAmplification;
       bool    m_bNonInterleaved;
@@ -91,6 +95,7 @@ public:
   virtual float   GetAVDelay();
   virtual void    SetSubTittleDelay(float fValue=0.0f);
   virtual float   GetSubTitleDelay();
+  virtual int     GetAudioStreamCount();
 protected:
   bool                load();
 	virtual void				OnStartup();

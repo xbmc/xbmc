@@ -78,7 +78,7 @@ public:
 
 	virtual	void					OnPlayBackEnded();
 	virtual	void					OnPlayBackStarted();
-	bool									PlayFile(const CStdString& strFile);
+	bool									PlayFile(const CStdString& strFile,bool bRestart=false);
   void                  Restart(bool bSamePosition=true);
 	void									EnableOverlay();
 	void									DisableOverlay();

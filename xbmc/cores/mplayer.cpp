@@ -76,6 +76,7 @@ CMPlayer::Options::Options()
     m_fVolumeAmplification=0.0f;
     m_bNonInterleaved=false;
     m_fSpeed=1.0f;
+    m_iAudioStream=0;
 }
 void  CMPlayer::Options::SetFPS(float fFPS)
 {
@@ -101,6 +102,16 @@ bool CMPlayer::Options::GetNonInterleaved() const
 void CMPlayer::Options::SetNonInterleaved(bool bOnOff)
 {
   m_bNonInterleaved=bOnOff;
+}
+
+
+int CMPlayer::Options::GetAudioStream() const
+{
+  return m_iAudioStream;
+}
+void CMPlayer::Options::SetAudioStream(int iStream)
+{
+  m_iAudioStream=iStream;
 }
 
 float CMPlayer::Options::GetVolumeAmplification() const
@@ -182,6 +193,13 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     strTmp.Format("%f", m_fFPS);
     m_vecOptions.push_back(strTmp);
 
+  }
+
+  if ( m_iAudioStream >0)
+  {
+    m_vecOptions.push_back("-aid");
+    strTmp.Format("%i", 1+m_iAudioStream);
+    m_vecOptions.push_back(strTmp);
   }
 
   if ( m_iChannels) 
@@ -405,6 +423,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
     options.SetChannels(0);
   }
 
+  options.SetAudioStream(g_stSettings.m_iAudioStream);
   options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
   options.GetOptions(argc,argv);
   
@@ -926,6 +945,11 @@ void    CMPlayer::SetSubTittleDelay(float fValue)
 float   CMPlayer::GetSubTitleDelay()
 {
   return mplayer_getSubtitleDelay();
+}
+
+int     CMPlayer::GetAudioStreamCount()
+{
+  return mplayer_getAudioStreamCount();
 }
 
 
