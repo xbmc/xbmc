@@ -9,6 +9,7 @@ COSDSubMenu::COSDSubMenu()
 	m_iCurrentOption=0;
 	m_iXPos=0;
 	m_iYPos=0;
+  m_bOptionSelected=false;
 }
 
 COSDSubMenu::COSDSubMenu(int iHeading,int iXpos, int iYpos)
@@ -17,6 +18,7 @@ COSDSubMenu::COSDSubMenu(int iHeading,int iXpos, int iYpos)
 	m_iCurrentOption=0;
 	m_iXPos=iXpos;
 	m_iYPos=iYpos;
+  m_bOptionSelected=false;
 }
 
 COSDSubMenu::COSDSubMenu(const COSDSubMenu& submenu)
@@ -56,6 +58,7 @@ const COSDSubMenu& COSDSubMenu::operator = (const COSDSubMenu& submenu)
 	m_iXPos=submenu.m_iXPos;
 	m_iYPos=submenu.m_iYPos;
   m_iHeading=submenu.m_iHeading;
+  m_bOptionSelected=submenu.m_bOptionSelected;
 	return *this;
 }
 
@@ -90,7 +93,16 @@ bool COSDSubMenu::OnAction(const CAction& action)
 	IOSDOption* pOption=m_vecOptions[m_iCurrentOption];
 
 	
-	if (pOption->OnAction(action)) return true;
+	if ( m_bOptionSelected)
+  {
+    if (pOption->OnAction(action)) return true;
+  }
+	if (action.wID==ACTION_SELECT_ITEM)
+  {
+    m_bOptionSelected=!m_bOptionSelected;
+		return true;
+  }
+  
 
 	if (action.wID==ACTION_MOVE_UP)
 	{
