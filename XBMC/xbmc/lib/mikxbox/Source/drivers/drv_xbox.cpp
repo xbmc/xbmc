@@ -420,6 +420,8 @@ void XB_Update(void)
 					doramp = true;
 				}
 				// this voice has no active buffer so don't bother updating
+				VoiceInfo[i].active = false;
+				--ActiveChans;
 				continue;
 			}
 
@@ -591,6 +593,10 @@ void XB_Update(void)
 	{
 		XB_Log("Overshoot: %4dus (q=%2d; p=%d)", (int)((LastUpdate.QuadPart - CurrentPos) / 733), q, Proc);
 	}
+
+	static int LastChans = 0;
+	if (ActiveChans != LastChans)
+		XB_Log("%02d:%02d: Active Chans: %03d", pf->positions[pf->sngpos], pf->patpos, LastChans = ActiveChans);
 
 	LeaveCriticalSection(&DSCS);
 }
@@ -821,8 +827,6 @@ ULONG XB_VoiceGetFrequency(UBYTE voice)
 
 void XB_VoiceSetPanning(UBYTE voice, ULONG pan)
 {
-	if (VoiceInfo[voice].chanpan != pan && pan == PAN_SURROUND)
-		XB_Log("Chan %02d surround pan", voice);
 	VoiceInfo[voice].chanpan = pan;
 }
 
