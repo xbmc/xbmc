@@ -34,7 +34,7 @@ __int64					(__cdecl* pGetPTS)();
 BOOL						(__cdecl* pHasVideo)();
 BOOL						(__cdecl* pHasAudio)();
 void						(__cdecl* pyv12toyuy2)(const unsigned char *ysrc, const unsigned char *usrc, const unsigned char *vsrc, unsigned char *dst,unsigned int width, unsigned int height,int lumStride, int chromStride, int dstStride);
-int							(__cdecl* pImageOutput)(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst, unsigned int dst_stride,int csp,int interlaced);
+int							(__cdecl* pImageOutput)(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst[4], unsigned int dst_stride[4],int csp,int interlaced);
 void						(__cdecl* pInitColorConversions)();
 void						(__cdecl* pSetCacheSize)(int);
 void						(__cdecl* pGetAudioInfo)(char* strFourCC,char* strAudioCodec, long* bitrate, long* samplerate, int* channels, int* bVBR);
@@ -67,7 +67,7 @@ extern "C"
 	{
 		pInitColorConversions();
 	}
-	int image_output(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst, unsigned int dst_stride,int csp,int interlaced)
+	int image_output(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst[4], unsigned int dst_stride[4],int csp,int interlaced)
 	{
 		return pImageOutput(image, width,height,edged_width, dst, dst_stride,csp,interlaced);
 	}
@@ -270,7 +270,7 @@ extern "C"
 		pyv12toyuy2= (void (__cdecl*)(const unsigned char *ysrc, const unsigned char *usrc, const unsigned char *vsrc, unsigned char *dst,unsigned int width, unsigned int height,int lumStride, int chromStride, int dstStride))pProc;
 
 		dll.ResolveExport("image_output", &pProc);
-		pImageOutput=(int (__cdecl*)(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst, unsigned int dst_stride,int csp,int interlaced))pProc;
+		pImageOutput=(int (__cdecl*)(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst[4], unsigned int dst_stride[4],int csp,int interlaced))pProc;
 
 		dll.ResolveExport("init_color_conversions", &pProc);
 		pInitColorConversions=(void(__cdecl*)())pProc;

@@ -48,6 +48,7 @@ public:
 	virtual bool		IsRecording();
 	virtual bool		Record(bool bOnOff) ;
 protected:
+  bool                load();
 	virtual void				OnStartup();
 	virtual void				OnExit();
 	virtual void				Process();

@@ -623,13 +623,25 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 	img.y=src[0];
 	img.u=src[1];
 	img.v=src[2];
+  unsigned char *dst[4];
+  dst[0]=image+dstride*y+2*x;
+  dst[1]=dst[0];
+  dst[2]=dst[0];
+  dst[3]=dst[0];
+
+  unsigned int dststride[4];
+  dststride[0]=dstride;
+  dststride[1]=dststride[0];
+  dststride[2]=dststride[0];
+  dststride[3]=dststride[0];
+
 	while (w % 16) w++;
 	image_output( &img,									// image
 								 w,										// width
 								 h,										// height
 								 stride[0],						// edged_width=stride of Y plane
-								 image+dstride*y+2*x,         
-								 dstride>>1,							//	dst stride
+								 dst,         
+								 dststride,							//	dst stride
 								 XVID_CSP_YUY2 ,0);
 
 	if (y+h+16 >= (int)image_height) m_bFlip=true;
@@ -765,12 +777,25 @@ static unsigned int video_draw_frame(unsigned char *src[])
 	img.y=src[0];
 	img.u=src[1];
 	img.v=src[2];
+  
+  unsigned char *dst[4];
+  dst[0]=image;
+  dst[1]=dst[0];
+  dst[2]=dst[0];
+  dst[3]=dst[0];
+
+  unsigned int dststride[4];
+  dststride[0]=dstride;
+  dststride[1]=dststride[0];
+  dststride[2]=dststride[0];
+  dststride[3]=dststride[0];
+
 	image_output( &img,									// image
 								 image_width,					// width
 								 image_height,				// height
 								 image_width,					// edged_width=stride of Y plane
-								 image,         
-								 dstride>>1,							//	dst stride
+								 dst,         
+								 dststride,							//	dst stride
 								 XVID_CSP_YUY2 ,0);
 
 	//yv12toyuy2(src[0],src[1],src[2],image,image_width,image_height,image_width,image_width>>1,dstride);
@@ -792,13 +817,27 @@ static unsigned int put_image(mp_image_t *mpi)
 	img.y=mpi->planes[0];
 	img.u=mpi->planes[1];
 	img.v=mpi->planes[2];
+
+  
+  unsigned char *dst[4];
+  dst[0]=image+dstride*y+2*x;
+  dst[1]=dst[0];
+  dst[2]=dst[0];
+  dst[3]=dst[0];
 	
+  
+  unsigned int dststride[4];
+  dststride[0]=dstride;
+  dststride[1]=dststride[0];
+  dststride[2]=dststride[0];
+  dststride[3]=dststride[0];
+
 	image_output( &img,							// image
 								 w,								// width
 								 h,								// height
 								 mpi->stride[0],	// edged_width=stride of Y plane
-								 image+dstride*y+2*x,         						
-								 dstride>>1,			//	dst stride
+								 dst,         						
+								 dststride,			//	dst stride
 								 XVID_CSP_YUY2 ,0);
 
 	//yv12toyuy2(src[0],src[1],src[2],image,image_width,image_height,image_width,image_width>>1,dstride);
