@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-12-2004 updated: German language file
   - 16-12-2004 updated: Spanish language file (Thnx to elotrolado)
   - 16-12-2004 updated: Norwegian language file (Thnx to vnmartinsen)
   - 16-12-2004 updated: Korean language file (Thnx to mania12)
