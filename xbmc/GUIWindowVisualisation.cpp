@@ -79,6 +79,9 @@ void CGUIWindowVisualisation::OnAction(const CAction &action)
 			break;
 
 		case ACTION_SHOW_GUI:
+			//send the action to the overlay so we can reset
+			//the bool m_bShowInfoAlways
+			g_application.m_guiMusicOverlay.OnAction(action);
 			m_gWindowManager.PreviousWindow();
 			break;
 	}
