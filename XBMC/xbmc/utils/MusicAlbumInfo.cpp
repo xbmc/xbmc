@@ -329,3 +329,18 @@ bool CMusicAlbumInfo::Loaded() const
 {
 	return m_bLoaded;
 }
+
+void  CMusicAlbumInfo::Set(CAlbum& album)
+{
+	m_strArtist				= album.strArtist;
+	m_strTitle				= album.strAlbum;
+	m_strDateOfRelease.Format("%i",album.iYear);
+	m_strGenre				= album.strGenre;
+	m_strTones				= album.strTones;
+	m_strStyles				= album.strStyles;
+	m_strReview				= album.strReview;
+	m_strImageURL			= album.strImage;
+	m_iRating					= album.iRating;
+	m_strTitle2				= "";
+	m_bLoaded					= true;
+}

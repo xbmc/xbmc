@@ -44,7 +44,8 @@ CApplication::CApplication(void)
 		m_bOverlayEnabled=true;
 		m_pPhytonParser=NULL;
 		m_pPlayer=NULL;
-		XSetProcessQuantumLength(5);
+		XSetProcessQuantumLength(5); //default=20msec
+		XSetFileCacheSize (256*1024);//default=64kb
 }	
 
 CApplication::~CApplication(void)

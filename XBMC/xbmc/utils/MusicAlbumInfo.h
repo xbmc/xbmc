@@ -1,6 +1,7 @@
 #pragma once
 #include "stdstring.h"
 #include "musicsong.h"
+#include "../musicdatabase.h"
 #include <vector>
 using namespace std;
 
@@ -17,7 +18,7 @@ namespace MUSIC_GRABBER
 		bool							Load(CStdString& strFileName);
 		bool							Loaded() const;
 		void							SetLoaded(bool bOnOff);
-
+		void							Set(CAlbum& album);
 		const CStdString& GetArtist() const;
 		const CStdString& GetTitle() const;
 		const CStdString& GetTitle2() const;
