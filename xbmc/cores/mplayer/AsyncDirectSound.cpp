@@ -53,7 +53,7 @@ void CASyncDirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 	{
 		if (m_VisBytes + m_dwPacketSize <= m_VisMaxBytes)
 		{
-			fast_memcpy(m_VisBuffer + m_VisBytes, pPacketContext, m_dwPacketSize);
+			memcpy(m_VisBuffer + m_VisBytes, pPacketContext, m_dwPacketSize);
 			m_VisBytes += m_dwPacketSize;
 		}
 		else
