@@ -1,12 +1,12 @@
 #pragma once
-#include "guiwindow.h"
-#include "guiwindowmanager.h"
+#include "GUIWindow.h"
 #include "osd/osdmenu.h"
 #include "osd/iexecutor.h"
 #include "utils/CriticalSection.h"
 #include "../guilib/GUIFontTTF.h"
 
 using namespace OSD;
+
 class CGUIWindowFullScreen :
   public CGUIWindow,
   public IExecutor

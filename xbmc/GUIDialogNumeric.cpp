@@ -1,8 +1,5 @@
-
 #include "stdafx.h"
-#include "guidialogNumeric.h"
-#include "guiWindowManager.h"
-#include "localizeStrings.h"
+#include "GUIDialogNumeric.h"
 #include "util.h"
 
 CGUIDialogNumeric::CGUIDialogNumeric(void)

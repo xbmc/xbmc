@@ -1,22 +1,5 @@
 #pragma once
-
-#include <xtl.h>
-#include <xgraphics.h>
-#include <stdio.h>
-#include <vector>
-#include <memory>
-#include <stdlib.h>
 #include "xbapplicationex.h"
-#include "applicationmessenger.h"
-#include "GUIWindowManager.h"
-#include "guiwindow.h"
-#include "GUIMessage.h"
-#include "GUIButtonControl.h"
-#include "GUIImage.h"
-#include "GUIFontManager.h"
-#include "SkinInfo.h"
-#include "key.h"
-#include "utils/imdb.h"
 
 #include "GUIWindowHome.h"
 #include "GUIWindowPrograms.h"
@@ -70,24 +53,18 @@
 #include "GUIWindowBuddies.h"		//BUDDIES
 #include "GUIWindowWeather.h"		//WEATHER
 #include "GUIWindowPointer.h"		// Mouse pointer
-#include "LocalizeStrings.h"
+#include "GUIWindowSettingsProfile.h"
 #include "utils/sntp.h"
 #include "utils/delaycontroller.h"
-#include "lib/libPython/XBPython.h"
 #include "lib/libGoAhead/webserver.h"
 #include "lib/libfilezilla/xbfilezilla.h"
 #include "cores/IPlayer.h"
 #include "DetectDVDType.h"
 #include "Autorun.h"
-#include "IMsgTargetCallback.h"
-#include "ButtonTranslator.h"
-#include "musicInfoTag.h"
-#include "GUIWindowSettingsProfile.h"
 #include "CdgParser.h"
 #include "utils/Splash.h"
 #include "PlaylistPlayer.h"
 
-using namespace std;
 using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
 

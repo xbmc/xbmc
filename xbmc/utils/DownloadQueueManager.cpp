@@ -1,7 +1,6 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "DownloadQueueManager.h"
-#include "Log.h"
 
 // Global instance of the download manager
 CDownloadQueueManager g_DownloadManager;

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "guiWindowPointer.h"
+#include "GUIWindowPointer.h"
 
 #define ID_POINTER 10
 

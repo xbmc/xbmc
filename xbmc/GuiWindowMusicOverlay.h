@@ -1,11 +1,9 @@
 #pragma once
-#include "guiwindow.h"
-#include "FileItem.h"
-#include "stdstring.h"
-#include <vector>
-using namespace std;
+#include "GUIWindow.h"
+#include "MusicInfoTag.h"
 
-class ID3_Tag;
+using namespace MUSIC_INFO;
+
 class CGUIWindowMusicOverlay: 	public CGUIWindow
 {
 public:

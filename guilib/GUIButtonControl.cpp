@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "guibuttoncontrol.h"
-#include "guifontmanager.h"
-#include "guiWindowManager.h"
-#include "guiDialog.h"
+#include "GUIButtonControl.h"
+#include "GUIFontManager.h"
+#include "GUIWindowManager.h"
+#include "GUIDialog.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
 CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, DWORD dwTextXOffset, DWORD dwTextYOffset, DWORD dwAlign)

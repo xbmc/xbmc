@@ -1,17 +1,9 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "virtualdirectory.h"
 #include "FactoryDirectory.h"
-#include "../settings.h"
-#include "file.h"
 #include "../util.h"
-#include "../DetectDVDType.h"
-#include "../GUIDialogOK.h"
-#include "guiwindowmanager.h"
 #include "directorycache.h"
-
-using namespace DIRECTORY;
-using namespace XFILE;
 
 CVirtualDirectory::CVirtualDirectory(void)
 {
@@ -53,12 +45,6 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 			share.strPath == strPath3.Left( share.strPath.size() ) ||
 			strPath.Mid(1,1) == ":" )
 		{
-/*
-			//	Check if cd is detected already before
-			//	reading the directory.
-			if ( share.m_iDriveType == SHARE_TYPE_DVD )
-				CDetectDVDMedia::WaitMediaReady();
-*/
 			CFactoryDirectory factory;
 			CStdString path;
 

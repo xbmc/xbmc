@@ -7,10 +7,7 @@
 #define GUILIB_GUIListEx_H
 
 #pragma once
-#include "guiItem.h"
-#include <vector>
-#include "stdstring.h"
-using namespace std;
+#include "GUIItem.h"
 
 class CGUIList
 {

@@ -7,15 +7,8 @@
 #define GUILIB_GUIConsoleControl_H
 
 #pragma once
-#include "gui3D.h"
-#include "guiControl.h"
-#include "guiMessage.h"
-#include "guiFont.h"
-#include "stdString.h"
 
-#include <vector>
-
-using namespace std;
+#include "GUIControl.h"
 
 /*!
 	\ingroup controls

@@ -1,5 +1,5 @@
 #pragma once
-#include <xtl.h>
+
 namespace AUTOPTR
 {
 	class CAutoPtrHandle

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "guifontxpr.h"
-#include "../xbmc/utils/log.h"
+#include "graphiccontext.h"
 
 WCHAR*	CGUIFont::m_pwzBuffer	= NULL;
 INT		CGUIFont::m_nBufferSize	= 0;

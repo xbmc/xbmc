@@ -1,16 +1,8 @@
-
 #include "stdafx.h"
-#include "guipassword.h"
-#include "settings.h"
-#include "guiWindowManager.h"
-#include "localizeStrings.h"
-#include "application.h"
-#include "GUIDialogOK.h"
+#include "GUIPassword.h"
+#include "Application.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
-#include "GUIDialogKeyboard.h"
-#include "GUIDialogOK.h"
-#include "GUIDialogYesNo.h"
 #include "xbox/xkutils.h"
 
 CGUIPassword::CGUIPassword(void)

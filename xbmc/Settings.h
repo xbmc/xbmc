@@ -1,17 +1,11 @@
 #pragma once
 
-#include "tinyxml/tinyxml.h"
 #define CONFIG_VERSION 0x000F
 
-#include <xtl.h>
-#include "GUISettings.h"
-#include "stdstring.h"
-#include "StringUtils.h"
-#include "GraphicContext.h"
 #include "Profile.h"
 #include "settings/VideoSettings.h"
-#include <vector>
-using namespace std;
+#include "../xbmc/StringUtils.h"
+#include "GUISettings.h"
 
 #define SHARE_TYPE_UNKNOWN			0
 #define SHARE_TYPE_LOCAL				1

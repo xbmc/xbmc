@@ -1,8 +1,5 @@
 #pragma once
 
-#include <map>
-#include "StdString.h"
-
 class CAutoTexBuffer;
 
 class CTextureBundle

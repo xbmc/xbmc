@@ -2,10 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "StdAfx.h"
+#include "../stdafx.h"
 #include "MediaMonitor.h"
-#include "graphicContext.h"
-#include "Log.h"
 #include "../Picture.h"
 #include "../Util.h"
 #include "../FileSystem/VirtualDirectory.h"

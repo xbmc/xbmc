@@ -1,11 +1,9 @@
-#include "stdafx.h"
+#include "../../stdafx.h"
 #include "audio.h"
 #include "video.h"
 #include "../DllLoader/dll.h"
 #include "mplayer.h"
 
-#include <vector>
-#include "../../utils/log.h"
 extern void* fs_seg;
 
 extern void audio_uninit(int);

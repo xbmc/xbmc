@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "GUIMovercontrol.h"
-#include "guiWindowManager.h"
+#include "GUIMoverControl.h"
+#include "GUIWindowManager.h"
 #include "ActionManager.h"
 
 // time to reset accelerated cursors (digital movement)

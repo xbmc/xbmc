@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "guiRSSControl.h"
-#include "guifontmanager.h"
-#include "guiWindowManager.h"
+#include "GUIRSSControl.h"
+#include "GUIWindowManager.h"
+#include "GUIFontManager.h"
 #include "..\xbmc\Application.h"
 #include "..\xbmc\settings.h"
 

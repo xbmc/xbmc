@@ -20,11 +20,7 @@ to maintain a single distribution point for the source code.
 
 #ifndef __SNTP_H__
 #define __SNTP_H__
-#ifdef _XBOX
-#include <xtl.h>
-#else
-#include <windows.h>
-#endif
+
 #include "thread.h"
 ///////////////////////////////// Classes //////////////////////////////
 

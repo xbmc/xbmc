@@ -1,15 +1,8 @@
 #pragma once
 
-#include "guiwindow.h"
-#include "guiwindowmanager.h"
-#include "graphiccontext.h"
+#include "GUIWindow.h"
 #include "screensavers/ScreenSaver.h"
-#include "key.h"
-#include "utils/CriticalSection.h"
-
-#include <vector>
-#include "stdstring.h"
-using namespace std;
+#include "Utils/CriticalSection.h"
 
 #define SCREENSAVER_FADE   1
 #define SCREENSAVER_BLACK  2

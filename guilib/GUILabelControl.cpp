@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "guilabelcontrol.h"
-#include "guifontmanager.h"
+#include "GUILabelControl.h"
+#include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
 CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont,const wstring& strLabel, DWORD dwTextColor, DWORD dwDisabledColor, DWORD dwTextAlign, bool bHasPath)

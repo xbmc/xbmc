@@ -17,20 +17,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#include "stdafx.h"
+#include "../../stdafx.h"
 #include "xbox_video.h"
 #include "video.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
 
 #include "video.h"
 #include "mplayer.h"
-#include "GraphicContext.h"
-#include "../../settings.h"
 #include "../../application.h"
 #include "../../util.h"
-#include "../../utils/log.h"
 #include "../../XBVideoConfig.h"
 
 #include "PixelShaderRenderer.h"

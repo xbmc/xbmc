@@ -1,11 +1,10 @@
 
 #include "stdafx.h"
 #include "GUIButtonScroller.h"
-#include "guifont.h"
+#include "GUIFontManager.h"
 #include "LocalizeStrings.h"
-#include "../xbmc/utils/CharsetConverter.h"
 #include "GUIWindowManager.h"
-#include "../xbmc/utils/log.h"
+#include "../xbmc/utils/CharsetConverter.h"
 
 #define SCROLL_SPEED 6.0f
 

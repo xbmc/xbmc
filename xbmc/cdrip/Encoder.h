@@ -9,9 +9,6 @@
 #define ENC_TRACK   16
 #define ENC_GENRE   17
 
-#include <xtl.h>
-#include "stdstring.h"
-
 #define WRITEBUFFER_SIZE 131072 // 128k buffer
 
 class CEncoder

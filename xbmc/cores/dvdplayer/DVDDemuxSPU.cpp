@@ -2,10 +2,9 @@
  * - add the autocrop idea from vlc
  */
 
-#include "stdafx.h" 
+#include "../../stdafx.h"
 #include "DVDDemuxSPU.h"
 #include "..\..\util.h"
-#include "..\..\utils\log.h"
 #include "DVDPlayerDLL.h"
 #include "DVDClock.h"
 

@@ -10,8 +10,6 @@
 #include "GUISpinControl.h"
 #include "GUIButtonControl.h"
 
-using namespace std;
-
 /*!
 	\ingroup controls
 	\brief 

@@ -10,9 +10,7 @@
 
 #pragma once
 
-#include <xtl.h>
 #include "../xbox/iosupport.h"
-#include "stdstring.h"
 
 #include "../lib/libcdio/inttypes.h"
 #include "../lib/libcdio/types.h"

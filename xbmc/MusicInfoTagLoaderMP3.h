@@ -1,18 +1,11 @@
 #pragma once
 
 #include "musicinfotag.h"
-#include "stdstring.h"
 #include "IMusicInfoTagLoader.h"
-
-#include "filesystem/file.h"
 
 #include "lib/libID3/id3.h"
 #include "lib/libID3/tag.h"
-#include "lib/libID3/utils.h"
-#include "lib/libID3/misc_support.h"
 #include "lib/libID3/readers.h"
-#include "lib/libID3/io_helpers.h"
-#include "lib/libID3/globals.h"
 #include "XIStreamReader.h"
 
 using namespace MUSIC_INFO;

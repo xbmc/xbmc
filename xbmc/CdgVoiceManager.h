@@ -1,7 +1,6 @@
 #ifndef CDGVOICEMANAGER_H
 #define CDGVOICEMANAGER_H
 
-#include <xtl.h>
 #include <xvoice.h>
 #include "utils/singlelock.h"
 

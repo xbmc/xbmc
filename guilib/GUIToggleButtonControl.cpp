@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "GUIToggleButtonControl.h"
-#include "guifontmanager.h"
-#include "guiWindowManager.h"
-#include "guiDialog.h"
+#include "GUIFontManager.h"
+#include "GUIWindowManager.h"
+#include "GUIDialog.h"
+#include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
 CGUIToggleButtonControl::CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, const CStdString& strAltTextureFocus,const CStdString& strAltTextureNoFocus)

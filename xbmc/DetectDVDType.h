@@ -7,15 +7,8 @@
 //
 
 #pragma once
-#include <xtl.h>
 #include "xbox/iosupport.h"
-#include "StdString.h"
-#include "utils/criticalsection.h"
-#include "utils/singlelock.h"
 #include "filesystem/cdiosupport.h"
-#include "utils/thread.h"
-#include "GuiUserMessages.h"
-#include "guiwindowmanager.h"
 
 namespace MEDIA_DETECT 
 {

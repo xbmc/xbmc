@@ -1,20 +1,11 @@
-
 #include "stdafx.h"
-#include "Application.h"
-#include "GUIUserMessages.h"
 #include "GUIWindowBuddies.h"
-#include "settings.h"
-#include "guiWindowManager.h"
+#include "Application.h"
 #include "GUIDialogInvite.h"
 #include "GUIDialogHost.h"
-#include "GUIDialogProgress.h"
-#include "GUIDialogYesNo.h"
 #include "GUIConsoleControl.h"
-#include "localizestrings.h"
-#include "util.h"
-#include "Xbox/Undocumented.h"
-#include <algorithm>
-#include "utils/log.h"
+#include "Util.h"
+#include "xbox/undocumented.h"
 #include "programdatabase.h"
 
 #define KAI_CONSOLE_PEN_NORMAL	0	

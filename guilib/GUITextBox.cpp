@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "guitextbox.h"
-#include "guifontmanager.h"
+#include "GUITextBox.h"
+#include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
 #define CONTROL_LIST		0

@@ -1,7 +1,5 @@
 #include "stdafx.h"
-#include "localizestrings.h"
-#include "tinyxml/tinyxml.h"
-#include "../xbmc/utils/log.h"
+#include "LocalizeStrings.h"
 
 CLocalizeStrings g_localizeStrings;
 extern CStdString g_LoadErrorStr;

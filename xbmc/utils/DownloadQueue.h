@@ -1,8 +1,4 @@
 #pragma once
-#include "StdString.h"
-#include "Thread.h"
-#include <queue>
-#include <vector>
 
 struct TICKET
 {

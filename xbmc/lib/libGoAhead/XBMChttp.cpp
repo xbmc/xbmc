@@ -17,16 +17,15 @@
 #pragma once
 
 
+#include "../../stdafx.h"
 #include "WebServer.h"
 #include "XbmcHttp.h"
 #include "..\..\PlayListFactory.h"
 #include "..\..\Application.h"
 #include "..\..\util.h"
 #include "..\..\playlistplayer.h"
-#include "..\..\url.h" 
 #include "..\..\filesystem\HDDirectory.h" 
 #include "..\..\filesystem\CDDADirectory.h"
-#include "..\..\guilib\key.h"
 #include "..\..\videodatabase.h"
 
 
@@ -280,80 +279,31 @@ int displayDir(webs_t wp, char *dir) {
 }
 void SetCurrentMediaItem(CFileItem& newItem)
 {
-
 	//	No audio file, we are finished here
 	if (!newItem.IsAudio() )
 		return;
 
 	//	Get a reference to the item's tag
 	CMusicInfoTag& tag=newItem.m_musicInfoTag;
-	CURL url(newItem.m_strPath);
-	//	if the file is a cdda track, ...
-	if (url.GetProtocol()=="cdda" )
+	//	we have a audio file.
+	//	Look if we have this file in database...
+	bool bFound=false;
+	if (g_musicDatabase.Open())
 	{
-		VECFILEITEMS items;
-		CCDDADirectory dir;
-		//	... use the directory of the cd to 
-		//	get its cddb information...
-		if (dir.GetDirectory("D:",items))
-		{
-			for (int i=0; i < (int)items.size(); ++i)
-			{
-				CFileItem* pItem=items[i];
-				if (pItem->m_strPath==newItem.m_strPath)
-				{
-					//	...and find current track to use
-					//	cddb information for display.
-					newItem=*pItem;
-				}
-				delete pItem;
-			}
-		}
-	}
-	else
-	{
-		//	we have a audio file.
-		//	Look if we have this file in database...
-		bool bFound=false;
 		CSong song;
-		if (g_musicDatabase.Open())
-		{
-			bFound=g_musicDatabase.GetSongByFileName(newItem.m_strPath, song);
-			g_musicDatabase.Close();
-		}
-		if (!bFound && g_guiSettings.GetBool("MyMusic.UseTags"))
-		{
-			//	...no, try to load the tag of the file.
-			CMusicInfoTagLoaderFactory factory;
-			IMusicInfoTagLoader* pLoader = factory.CreateLoader(newItem.m_strPath);
-			//	Do we have a tag loader for this file type?
-			if (pLoader != NULL)
-			{
-				// yes, load its tag
-				if ( !pLoader->Load(newItem.m_strPath,tag))
-				{
-					//	Failed!
-					tag.SetLoaded(false);
-					//	just to be sure :-)
-				}
-			}
-			delete pLoader;
-		}
-		else
-		{
-			//	...yes, this file is found in database
-			//	fill the tag of our fileitem
-			SYSTEMTIME systime;
-			systime.wYear=song.iYear;
-			tag.SetReleaseDate(systime);
-			tag.SetTrackNumber(song.iTrack);
-			tag.SetAlbum(song.strAlbum);
-			tag.SetArtist(song.strArtist);
-			tag.SetGenre(song.strGenre);
-			tag.SetTitle(song.strTitle);
-			tag.SetDuration(song.iDuration);
-			tag.SetLoaded(true);
-		}
+		bFound=g_musicDatabase.GetSongByFileName(newItem.m_strPath, song);
+		tag.SetSong(song);
+		g_musicDatabase.Close();
+	}
+
+	if (!bFound && g_guiSettings.GetBool("MyMusic.UseTags"))
+	{
+		//	...no, try to load the tag of the file.
+		CMusicInfoTagLoaderFactory factory;
+		auto_ptr<IMusicInfoTagLoader> pLoader(factory.CreateLoader(newItem.m_strPath));
+		//	Do we have a tag loader for this file type?
+		if (pLoader.get() != NULL)
+			pLoader->Load(newItem.m_strPath,tag);
 	}
 
 	//	If we have tag information, ...

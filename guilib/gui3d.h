@@ -10,7 +10,6 @@
 #define ALLOW_TEXTURE_COMPRESSION 
 
 #ifdef _XBOX
-  #include <xtl.h>  
 #ifdef ALLOW_TEXTURE_COMPRESSION
 	#define GUI_D3D_FMT D3DFMT_A8R8G8B8
 #else

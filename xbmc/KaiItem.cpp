@@ -1,11 +1,9 @@
 
 #include "stdafx.h"
-#include "Settings.h"
 #include "KaiItem.h"
 #include "Utils/KaiClient.h"
 #include "Utils/Http.h"
 #include "Util.h"
-#include "Crc32.h"
 #include "Picture.h"
 
 CKaiItem::CKaiItem(CStdString& strLabel) : CGUIListExItem(strLabel)

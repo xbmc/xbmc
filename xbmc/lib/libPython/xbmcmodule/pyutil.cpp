@@ -1,9 +1,6 @@
-#include "stdafx.h"
+#include "../../../stdafx.h"
 #include "pyutil.h"
 #include <wchar.h>
-#include "stdstring.h"
-#include "graphiccontext.h"
-#include "..\..\..\..\guilib\tinyXML\tinyxml.h"
 #include "skininfo.h"
 
 static int iPyGUILockRef = 0;

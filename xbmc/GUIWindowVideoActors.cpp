@@ -4,25 +4,11 @@
 //  - show if movie has subs
 
 #include "stdafx.h"
-#include "guiwindowVideoActors.h"
-#include "settings.h"
-#include "guiWindowManager.h"
-#include "localizestrings.h"
-#include "texturemanager.h"
-#include "util.h"
-#include "url.h"
-#include "utils/imdb.h"
-#include "GUIDialogOK.h"
-#include "GUIDialogprogress.h"
-#include "GUIDialogSelect.h" 
+#include "GUIWindowVideoActors.h"
+#include "Util.h"
 #include "GUIWindowVideoInfo.h" 
 #include "application.h" 
-#include <algorithm>
-#include "DetectDVDType.h"
 #include "nfofile.h"
-#include "filesystem/file.h"
-#include "xbox/iosupport.h"
-#include "playlistplayer.h"
 #include "GUIPassword.h"
 
 #define VIEW_AS_LIST           0

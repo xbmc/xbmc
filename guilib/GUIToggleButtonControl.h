@@ -7,13 +7,8 @@
 #define GUILIB_GUITOGGLEBUTTONCONTROL_H
 
 #pragma once
-#include "gui3d.h"
-#include "guicontrol.h"
-#include "guimessage.h"
-#include "guifont.h"
-#include "guiimage.h"
-#include "stdstring.h"
-using namespace std;
+
+#include "GUIImage.h"
 
 /*!
 	\ingroup controls

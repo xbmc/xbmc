@@ -2,13 +2,8 @@
 #include "GUIWindowVideoBase.h"
 #include "filesystem/VirtualDirectory.h"
 #include "filesystem/DirectoryHistory.h"
-#include "FileItem.h"
-#include "GUIDialogProgress.h"
 #include "videodatabase.h"
 
-#include "stdstring.h"
-#include <vector>
-using namespace std;
 using namespace DIRECTORY;
 
 class CGUIWindowVideoYear : 	public CGUIWindowVideoBase

@@ -1,4 +1,3 @@
-#include "../stdafx.h"
 /*
  * XBoxMediaPlayer
  * Copyright (c) 2002 d7o3g4q and RUNTiME
@@ -23,14 +22,13 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#include "../stdafx.h"
 #include "IoSupport.h"
 #ifdef _XBOX
 #include "Undocumented.h"
 #else
 #include "ntddcdrm.h"
 #endif
-#include "stdstring.h"
-#include "../settings.h"
 
 #ifdef _XBOX
 #define CTLCODE(DeviceType, Function, Method, Access) ( ((DeviceType) << 16) | ((Access) << 14) | ((Function) << 2) | (Method)  ) 

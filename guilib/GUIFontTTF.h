@@ -7,16 +7,10 @@
 #define CGUILIB_GUIFONTTTF_H
 #pragma once
 
-#include "gui3d.h"
-#include <string>
-#include "graphiccontext.h"
-#include "stdstring.h"
 #include "common/xbfont.h"
-#include "guifont.h"
+#include "GUIFont.h"
 #include <xfont.h>
 #include <hash_map>
-
-using namespace std;
 
 /*!
 	\ingroup textures

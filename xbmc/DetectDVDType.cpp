@@ -4,10 +4,6 @@
 #include "Filesystem/cdiosupport.h"
 #include "Filesystem/iso9660.h"
 #include "xbox/undocumented.h"
-#include "Settings.h"
-#include "playlistplayer.h"
-#include "utils/log.h"
-#include "localizeStrings.h"
 
 using namespace MEDIA_DETECT;
 

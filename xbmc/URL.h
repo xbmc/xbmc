@@ -1,13 +1,5 @@
 #pragma once
-#ifdef _XBOX
-	#include <xtl.h>
-#else
-	#include <windows.h>
-#endif
 
-#include <string>
-#include "stdstring.h"
-using namespace std;
 class CURL
 {
 public:

@@ -1,14 +1,8 @@
 #pragma once
 
-#include "guiwindow.h"
-#include "guiwindowmanager.h"
-#include "graphiccontext.h"
-#include "key.h"
-#include "guiimage.h"
-#include "utils/thread.h"
-#include <vector>
-#include "stdstring.h"
-using namespace std;
+#include "GUIWindow.h"
+#include "GUIImage.h"
+#include "Utils/Thread.h"
 
 enum DISPLAY_EFFECT { EFFECT_NONE=0, EFFECT_FLOAT, EFFECT_ZOOM, EFFECT_RANDOM, EFFECT_NO_TIMEOUT };
 enum TRANSISTION_EFFECT { TRANSISTION_NONE=0, FADEIN_FADEOUT, CROSSFADE, TRANSISTION_ZOOM, TRANSISTION_ROTATE };

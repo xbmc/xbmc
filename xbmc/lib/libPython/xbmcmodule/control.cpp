@@ -1,8 +1,6 @@
-#include "stdafx.h"
+#include "../../../stdafx.h"
 #include "control.h"
 #include "pyutil.h"
-
-using namespace std;
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")

@@ -456,7 +456,7 @@
   <string><id>623</id><value>Bitrate</value></string>
   <string><id>624</id><value>Titelnummer einbeziehen</value></string>
   <string><id>625</id><value>Alle Titel von</value></string>
-  <string><id>629</id><value>View Mode</value></string>
+  <string><id>629</id><value>Ansicht</value></string>
   <string><id>630</id><value>Normal</value></string>
   <string><id>631</id><value>Zoom</value></string>
   <string><id>632</id><value>Stretch 4:3</value></string>
@@ -747,6 +747,11 @@
   <string><id>13374</id><value>- Anschluss 3</value></string> 
   <string><id>13375</id><value>Modul aktivieren</value></string> 
   <string><id>13376</id><value>Lautstärke(%)</value></string> 
+  <string><id>13377</id><value>Standard Ansicht</value></string> 
+  <string><id>13378</id><value>Standard Helligkeit</value></string> 
+  <string><id>13379</id><value>Standard Kontrast</value></string> 
+  <string><id>13380</id><value>Standard Gamma</value></string> 
+  <string><id>13381</id><value>Video fortsetzen</value></string> 
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln einfach</value></string>
   <string><id>14002</id><value>Koppeln unpräz.</value></string>
@@ -879,4 +884,5 @@
   <string><id>15103</id><value>* Alle Künstler</value></string> 
   <string><id>15104</id><value>* Alle Lieder</value></string> 
   <string><id>15105</id><value>* Alle Genres</value></string> 
+
 </strings>

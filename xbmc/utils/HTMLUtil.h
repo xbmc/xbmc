@@ -1,6 +1,5 @@
 #pragma once
 
-#include "stdstring.h"
 namespace HTML
 {
 	class CHTMLUtil

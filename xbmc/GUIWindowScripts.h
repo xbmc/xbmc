@@ -1,12 +1,9 @@
 #pragma once
-#include "guiwindow.h"
-#include "filesystem/VirtualDirectory.h"
-#include "filesystem/DirectoryHistory.h"
+#include "GUIWindow.h"
+#include "FileSystem/VirtualDirectory.h"
+#include "FileSystem/DirectoryHistory.h"
 #include "FileItem.h"
 
-#include "stdstring.h"
-#include <vector>
-using namespace std;
 using namespace DIRECTORY;
 
 class CGUIWindowScripts : 	public CGUIWindow

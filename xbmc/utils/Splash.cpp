@@ -1,7 +1,6 @@
 
 #include "stdafx.h"
 #include "Splash.h"
-#include "log.h"
 #include "guiImage.h"
 #include "..\util.h"
 

@@ -1,14 +1,6 @@
 #pragma once
 
 #include "guiwindow.h"
-#include "guiwindowmanager.h"
-#include "graphiccontext.h"
-#include "key.h"
-#include "guilistitem.h"
-
-#include <vector>
-#include "stdstring.h"
-using namespace std;
 
 class CGUIWindowOSD : public CGUIWindow
 {

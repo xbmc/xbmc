@@ -1,14 +1,9 @@
 
 #include "stdafx.h"
-#include "guiWindowManager.h"
-#include "guiDialogKeyboard.h"
-#include "guiLabelControl.h"
-#include "guiButtonControl.h"
-#include "localizeStrings.h"
-#include "settings.h"
-#include "util.h"
-#include <vector>
-using namespace std;
+#include "GUIDialogKeyboard.h"
+#include "GUILabelControl.h"
+#include "GUIButtonControl.h"
+#include "Util.h"
 
 // TODO: Add support for symbols.
 

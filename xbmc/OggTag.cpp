@@ -1,8 +1,6 @@
 
 #include "stdafx.h"
-#include "xtl.h"
 #include "oggtag.h"
-#include "../xbmc/utils/CharsetConverter.h"
 
 using namespace MUSIC_INFO;
 

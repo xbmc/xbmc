@@ -2,11 +2,8 @@
 #include "MusicInfoLoader.h"
 #include "musicdatabase.h"
 #include "musicInfoTagLoaderFactory.h"
-#include "Filesystem/directory.h"
 #include "Filesystem/DirectoryCache.h"
 #include "Util.h"
-#include "GUISettings.h"
-#include "utils/Log.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;
@@ -104,33 +101,9 @@ void CMusicInfoLoader::LoadItem(CFileItem* pItem)
 
 	//	First query cached items
 	it=m_mapFileItems.find(pItem->m_strPath);
-	if (it!=m_mapFileItems.end()&& it->second->m_musicInfoTag.Loaded())
+	if (it!=m_mapFileItems.end()&& it->second->m_musicInfoTag.Loaded() && CUtil::CompareSystemTime(&it->second->m_stTime, &pItem->m_stTime)==0)
 	{
 		pItem->m_musicInfoTag=it->second->m_musicInfoTag;
-	}
-	else if (pItem->IsCDDA())
-	{
-		//	We have cdda item...
-		VECFILEITEMS  items;
-		CDirectory dir;
-		//	... use the directory of the cd to 
-		//	get its cddb information...
-		if (dir.GetDirectory("cdda://local",items))
-		{
-			for (int i=0; i < (int)items.size(); ++i)
-			{
-				CFileItem* pCDDAItem=items[i];
-				if (pCDDAItem->m_strPath==pItem->m_strPath)
-				{
-					//	...and find current track to use
-					//	cddb information for display.
-					pItem->m_musicInfoTag=pCDDAItem->m_musicInfoTag;
-				}
-			}
-		}
-		{
-			CFileItemList itemlist(items);	//	cleanup everything
-		}
 	}
 	else
 	{

@@ -1,12 +1,7 @@
 #pragma once
 
-#include "StdString.h"
 #include "musicInfoTag.h"
-#include "fileitem.h"
 
-#include <vector>
-
-using namespace std;
 using namespace MUSIC_INFO;
 
 namespace PLAYLIST

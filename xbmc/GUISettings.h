@@ -1,16 +1,11 @@
 #pragma once
 
-#include "tinyxml/tinyxml.h"
 #define CONFIG_VERSION 0x000F
 
-#include <xtl.h>
-#include "stdstring.h"
-#include "StringUtils.h"
-#include "GraphicContext.h"
 #include "Profile.h"
-#include <map>
-
-using namespace std;
+#include "tinyxml/tinyxml.h"
+#include <vector>
+#include "GraphicContext.h"
 
 // Render Methods
 #define RENDER_LQ_RGB_SHADER			0

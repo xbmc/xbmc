@@ -2,7 +2,6 @@
 #define KEYBOARD_H
 
 #define DEBUG_KEYBOARD
-#include <xtl.h>
 #include <xkbd.h>
 
 class CKeyboard

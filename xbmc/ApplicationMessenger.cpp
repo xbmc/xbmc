@@ -6,6 +6,7 @@
 #include "texturemanager.h"
 #include "playlistplayer.h"
 #include "util.h"
+#include "lib/libPython/XBPython.h"
 
 CApplicationMessenger g_applicationMessenger;
 

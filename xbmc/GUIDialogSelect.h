@@ -1,11 +1,6 @@
 #pragma once
 #include "GUIDialog.h"
-#include "guiwindowmanager.h"
 #include "guilistitem.h"
-#include "stdstring.h"
-#include <vector>
-#include <string>
-using namespace std;
 
 class CGUIDialogSelect :
   public CGUIDialog

@@ -3,14 +3,8 @@
 #include "autorun.h"
 #include "application.h"
 #include "DetectDVDType.h"
-#include "sectionloader.h"
 #include "util.h"
-#include "GUISettings.h"
 #include "playlistplayer.h"
-#include "texturemanager.h"
-#include "GuiUserMessages.h"
-#include "guiwindowmanager.h"
-#include "stdstring.h"
 
 using namespace PLAYLIST;
 using namespace MEDIA_DETECT;

@@ -1,24 +1,20 @@
 
-#include "stdafx.h"
 // FileShoutcast.cpp: implementation of the CFileShoutcast class.
 //
 //////////////////////////////////////////////////////////////////////
 
+#include "../stdafx.h"
 #include "FileShoutcast.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-#include "../settings.h"
 #include "../lib/libshout/types.h"
 #include "../lib/libshout/rip_manager.h"
 #include "../lib/libshout/util.h"
 #include "../lib/libshout/filelib.h"
-#include "../GUIDialogProgress.h"
 #include "../application.h"
-#include "guiwindowmanager.h"
 #include "ringbuffer.h"
-//#include <dialog.h>
 #include "ShoutcastRipFile.h"
 #include "../MusicInfoTagLoaderMP3.h"
 #include "../utils/GUIInfoManager.h"

@@ -1,7 +1,5 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "EncoderLame.h"
-#include "..\utils\log.h"
-#include "..\settings.h"
 #include "..\cores\DllLoader\Dll.h"
 #include "EncoderDLL.h"
 

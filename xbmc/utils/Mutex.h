@@ -3,7 +3,6 @@
 //	by Bobbin007 in 2003
 
 #pragma once
-#include <xtl.h>
 
 class CMutex 
 {

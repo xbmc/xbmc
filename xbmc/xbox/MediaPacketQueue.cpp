@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "MediaPacketQueue.h"
 
 CMediaPacketQueue::CMediaPacketQueue(CStdString& aName)

@@ -7,7 +7,6 @@
 #define GUILIB_MESSAGE_H
 
 #pragma once
-#include "gui3d.h"
 
 #define GUI_MSG_WINDOW_INIT     1   // initialize window
 #define GUI_MSG_WINDOW_DEINIT   2   // deinit window
@@ -43,8 +42,6 @@
 #define GUI_MSG_EXECUTE				20		// user has clicked on a button with <execute> tag
 
 #define GUI_MSG_USER         1000
-#include <string>
-using namespace std;
 
 /*!
 	\ingroup winmsg

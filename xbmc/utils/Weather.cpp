@@ -1,15 +1,7 @@
 
 #include "stdafx.h"
 #include "Weather.h"
-#include "../settings.h"
-#include "localizestrings.h"
 #include "../util.h"
-#include <algorithm>
-#include "log.h"
-
-#include "../GUIDialogSelect.h"
-#include "../GUIDialogProgress.h"
-#include "GUIWindowManager.h"
 
 #define SPEED_KMH 0
 #define SPEED_MPH 1
@@ -318,7 +310,7 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
 		if(strcmp(iTmpStr, "N/A") == 0)
 			sprintf(m_szCurrentIcon, "Q:\\weather\\128x128\\na.png");
 		else
-			sprintf(m_szCurrentIcon, "Q:\\weather\\128x128\\%s.png", iTmpStr);
+			sprintf(m_szCurrentIcon, "Q:\\weather\\128x128\\%s.gif", iTmpStr);
 
 		GetString(pElement, "t", m_szCurrentConditions, "");			//current condition
 		LocalizeOverview(m_szCurrentConditions);

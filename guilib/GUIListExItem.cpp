@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "GUIListExItem.h"
-#include "guifontmanager.h"
-#include "../xbmc/utils/log.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
 CGUIListExItem::CGUIListExItem(CStdString& aItemName) : CGUIItem(aItemName)

@@ -1,9 +1,7 @@
 #pragma once
-#include "stdstring.h"
 #include "../../utils/thread.h"
-#include "../../utils/event.h"
 #include "../../utils/lcd.h"
-using namespace std;
+
 #define MAX_ROWS 20
 
 /*

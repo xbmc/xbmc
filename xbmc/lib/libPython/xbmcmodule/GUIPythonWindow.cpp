@@ -1,6 +1,5 @@
-#include "stdafx.h"
+#include "../../../stdafx.h"
 #include "GUIPythonWindow.h"
-#include "graphiccontext.h"
 #include "pyutil.h"
 #include "..\..\..\application.h"
 #include "window.h"

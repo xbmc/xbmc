@@ -1,9 +1,5 @@
 #pragma once
 
-#include <xtl.h>
-#include "xbox/undocumented.h"
-#include "settings.h"
-
 class XBVideoConfig
 {
 public:

@@ -1,8 +1,5 @@
 #pragma once
 #include "lib/cximage/ximage.h"
-#include "graphiccontext.h"
-#include "stdstring.h"
-using namespace std;
 
 class CPicture
 {

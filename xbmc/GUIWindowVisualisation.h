@@ -1,15 +1,12 @@
 #pragma once
-#include "guiwindow.h"
-#include "guiwindowmanager.h"
+
+#include "GUIWindow.h"
 #include "visualizations/Visualisation.h"
 #include "cores/IAudioCallback.h"
-#include "utils/CriticalSection.h"
 
 #define AUDIO_BUFFER_SIZE 512	// MUST BE A POWER OF 2!!!
 #define MAX_AUDIO_BUFFERS 16
 
-#include <list>
-using namespace std;
 class CAudioBuffer
 {
 public:

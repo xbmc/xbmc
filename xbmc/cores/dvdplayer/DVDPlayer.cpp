@@ -11,7 +11,7 @@
  * - fix aspect ratio's (currently we get the wrong information from libmpeg2)
  */
  
-#include "stdafx.h"
+#include "../../stdafx.h"
 #include "DVDPlayer.h"
 #include "DVDPlayerDLL.h"
 
@@ -29,9 +29,6 @@
 #include "DVDCodecs\DVDCodecUtils.h"
 
 #include "..\..\util.h"
-#include "..\..\utils\log.h"
-#include "..\..\settings.h"
-#include "..\..\url.h"
 
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 

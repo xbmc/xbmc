@@ -1,10 +1,6 @@
 #pragma once
-#include "stdstring.h"
 #include "HTTP.h"
-#include "../tinyxml/tinyxml.h"
 #include "thread.h"
-
-using namespace std;
 
 #define WEATHER_LABEL_LOCATION			10
 #define WEATHER_IMAGE_CURRENT_ICON	21

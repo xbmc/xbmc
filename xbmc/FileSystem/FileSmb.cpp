@@ -1,16 +1,9 @@
-
-#include "stdafx.h"
 // FileSmb.cpp: implementation of the CFileSMB class.
-
 //
-
 //////////////////////////////////////////////////////////////////////
 
+#include "../stdafx.h"
 #include "FileSmb.h"
-#include "../sectionloader.h"
-#include "../settings.h"
-#include "../utils/log.h"
-using namespace XFILE;
 
 void xb_smbc_log(const char* msg)
 {

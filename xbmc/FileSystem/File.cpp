@@ -1,5 +1,3 @@
-
-#include "stdafx.h"
 /*
  * XBoxMediaPlayer
  * Copyright (c) 2002 Frodo
@@ -19,17 +17,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+
+#include "../stdafx.h"
 #include "File.h"
-#include "../utils/log.h"
 #include "filefactory.h"
-#include "../url.h"
 #include "../application.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
 #include "DirectoryCache.h"
-#include "../autoptrhandle.h"
-using namespace AUTOPTR;
 using namespace XFILE;
 
 //////////////////////////////////////////////////////////////////////

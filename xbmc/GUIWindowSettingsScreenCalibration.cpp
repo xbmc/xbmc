@@ -1,12 +1,10 @@
 
 #include "stdafx.h"
 #include "GUIWindowSettingsScreenCalibration.h"
-#include "settings.h"
-#include "stdstring.h"
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
-#include "application.h"
-#include "util.h"
+#include "Application.h"
+#include "Util.h"
 
 #define CONTROL_LABEL_ROW1		2
 #define CONTROL_LABEL_ROW2		3

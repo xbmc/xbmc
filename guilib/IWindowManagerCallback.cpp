@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "iwindowmanagercallback.h"
+#include "IWindowManagerCallback.h"
 
 IWindowManagerCallback::IWindowManagerCallback(void)
 {

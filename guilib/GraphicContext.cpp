@@ -1,9 +1,7 @@
 #include "stdafx.h"
-#include "graphiccontext.h"
-#include "../xbmc/utils/log.h"
+#include "GraphicContext.h"
 #include "../xbmc/Settings.h"
 #include "../xbmc/XBVideoConfig.h"
-#include "common/mouse.h"
 
 #define WIDE_SCREEN_COMPENSATIONY (FLOAT)1.2
 #define WIDE_SCREEN_COMPENSATIONX (FLOAT)0.85

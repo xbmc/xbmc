@@ -1,8 +1,6 @@
-
 #include "stdafx.h"
 #include "GUIDialogSelect.h"
-#include "localizestrings.h"
-#include "application.h"
+#include "Application.h"
 
 #define CONTROL_HEADING	      4
 #define CONTROL_LIST          3

@@ -3,15 +3,9 @@
 #include "settings.h"
 #include "application.h"
 #include "util.h"
-#include "utils/log.h"
-#include "localizestrings.h"
-#include "stdstring.h"
-#include "GraphicContext.h"
 #include "GUIWindowMusicBase.h"
 #include "utils/FanController.h"
 #include "LangCodeExpander.h"
-
-using namespace std;
 
 class CSettings g_settings;
 struct CSettings::stSettings g_stSettings;

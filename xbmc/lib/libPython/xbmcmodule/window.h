@@ -2,7 +2,6 @@
 #include "GUIPythonWindow.h"
 #include "GUIPythonWindowDialog.h"
 #include "control.h"
-#include <vector>
 
 #pragma once
 

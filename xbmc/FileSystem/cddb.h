@@ -1,14 +1,11 @@
 
 #pragma once
-#include "stdstring.h"
 #include "../util.h"
-#include <map>
 #include <sstream>
 #include <iostream>
 #include <strstream>
 #include "../DetectDVDType.h"
-#include "../autoptrhandle.h"
-using namespace AUTOPTR;
+
 namespace CDDB
 {
 
@@ -36,7 +33,6 @@ namespace CDDB
 
 	#define CDDB_PORT 8880
 
-	using namespace std;
 	using namespace MEDIA_DETECT;
 
 

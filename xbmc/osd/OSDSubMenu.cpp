@@ -1,10 +1,10 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include ".\osdsubmenu.h"
-#include "localizestrings.h"
-#include "guifont.h"
 #include "guifontmanager.h"
+
 using namespace OSD;
+
 COSDSubMenu::COSDSubMenu()
 {		
   m_iHeading=0;

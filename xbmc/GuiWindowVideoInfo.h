@@ -1,9 +1,6 @@
 #pragma once
 #include "GUIDialog.h"
-#include "guiwindowmanager.h"
 #include "utils/imdb.h"
-
-#include "stdstring.h"
 
 class CGUIWindowVideoInfo :
   public CGUIDialog

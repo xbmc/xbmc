@@ -1,9 +1,7 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "DownloadQueue.h"
-#include "GraphicContext.h"
 #include "Http.h"
-#include "Log.h"
 #include "../Util.h"
 
 WORD CDownloadQueue::m_wNextQueueId = 0;

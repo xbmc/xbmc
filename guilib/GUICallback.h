@@ -17,20 +17,20 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <class Cookie>
-class Event
+class GUIEvent
 {
 public:
 
-    typedef void (Event::*MethodPtr)(Cookie);
+    typedef void (GUIEvent::*MethodPtr)(Cookie);
 
-    Event()
+    GUIEvent()
     {
         m_pInstance	= NULL;
 		m_pMethod	= NULL;
     }
 
     // Assign an EventHandler (EventHandler's are derived from Event)
-    operator=(Event<Cookie> &aEvent)
+    operator=(GUIEvent<Cookie> &aEvent)
     {
         if (&aEvent)
 		{
@@ -39,7 +39,7 @@ public:
 		}
         else
 		{
-			Event();
+			GUIEvent();
 		}
 
         return 0;
@@ -65,20 +65,20 @@ public:
 		}
     }
 protected:
-	Event*		m_pInstance;
+	GUIEvent*		m_pInstance;
 	MethodPtr	m_pMethod;
 };
 
 
 template <class Class, class Cookie>
-class EventHandler : public Event<Cookie>
+class GUIEventHandler : public GUIEvent<Cookie>
 {
 public:
     typedef void (Class::*MethodPtr)(Cookie);
 
-    EventHandler(Class* pInstance, MethodPtr aMethodPtr)
+    GUIEventHandler(Class* pInstance, MethodPtr aMethodPtr)
     {
-		m_pInstance = (Event<Cookie>*) ((LPVOID) pInstance);
+		m_pInstance = (GUIEvent<Cookie>*) ((LPVOID) pInstance);
 		// Its dirty but it works!
 		memcpy(&m_pMethod, &aMethodPtr, sizeof(m_pMethod));
     }

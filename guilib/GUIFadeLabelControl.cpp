@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "guifadelabelcontrol.h"
-#include "guifontmanager.h"
+#include "GUIFadeLabelControl.h"
+#include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
 CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, DWORD dwTextColor, DWORD dwTextAlign)

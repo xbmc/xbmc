@@ -1,6 +1,5 @@
 #pragma once
 #include "ScreenSaver.h"
-#include "StdString.h"
 
 class CScreenSaverFactory
 {

@@ -1,10 +1,8 @@
 #include "stdafx.h"
-#include "guiConsoleControl.h"
-#include "guifontmanager.h"
-#include "guiWindowManager.h"
-#include "..\xbmc\Util.h"
-#include "..\xbmc\Utils\Log.h"
-#include "..\xbmc\utils\CharsetConverter.h"
+#include "GUIConsoleControl.h"
+#include "GUIfontmanager.h"
+#include "GUIWindowManager.h"
+#include "../xbmc/utils/CharsetConverter.h"
 
 #define CONSOLE_LINE_SPACING 1.0f
 

@@ -1,10 +1,5 @@
 #pragma once
 
-#include <xtl.h>
-#include "stdstring.h"
-#include <vector>
-using namespace std;
-
 class CSectionLoader
 {
 public:
