@@ -130,6 +130,7 @@ void CGUIWindowVideoOverlay::Render()
       dbs.Close();
 			if (bMovieInfoFound)
 			{
+        g_application.SetCurrentMovie(movieDetails);
 				// title
 				if ( movieDetails.m_strTitle.size() > 0)
 				{

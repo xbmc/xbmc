@@ -492,6 +492,27 @@ bool CIMDB::Download(const CStdString &strURL, const CStdString &strFileName)
 	return true;
 }
 
+void CIMDBMovie::Reset()
+{
+  m_strDirector="";
+	m_strWritingCredits="";
+	m_strGenre="";
+	m_strTagLine="";
+	m_strPlotOutline="";
+	m_strPlot="";
+	m_strPictureURL="";
+	m_strTitle="";
+	m_strVotes="";
+	m_strCast="";
+	m_strSearchString="";
+  m_strFile="";
+  m_strPath="";
+  m_strDVDLabel="";
+  m_strIMDBNumber="";
+	m_iTop250=0;
+	m_iYear=0;
+	m_fRating=0.0f;
+}
 void CIMDBMovie::Save(const CStdString &strFileName)
 {
 }
