@@ -477,10 +477,10 @@ static DWORD NumUpdates = 0;
 static DWORD LastUpdate = 0;
 #endif // _DEBUG
 
-__int64	SidPlayer::GetPTS()
+__int64	SidPlayer::GetTime()
 {
 	if (!m_bIsPlaying) return 0;
-	return m_PTS;
+	return m_PTS*100;
 }
 
 bool SidPlayer::HasVideo()

@@ -323,7 +323,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 				g_application.m_pPlayer->Pause();
 				bNeedPause = true;
 			}
- 			int orgpos=(int)g_application.m_pPlayer->GetTime();
+ 			int orgpos=(int)(g_application.m_pPlayer->GetTime()/1000);
 			int triesleft=g_stSettings.m_iSmallStepBackTries;
       int jumpsize = g_stSettings.m_iSmallStepBackSeconds; // secs
       int setpos=(orgpos > jumpsize) ? orgpos-jumpsize : 0; // First jump = 2*jumpsize
@@ -333,7 +333,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 				setpos = (setpos > jumpsize) ? setpos-jumpsize : 0;
  				g_application.m_pPlayer->SeekTime(setpos*1000);
  				Sleep(g_stSettings.m_iSmallStepBackDelay); // delay to let mplayer finish its seek (in ms)
- 				newpos = (int)g_application.m_pPlayer->GetTime();
+ 				newpos = (int)(g_application.m_pPlayer->GetTime()/1000);
  			} while ( (newpos>orgpos-jumpsize) && (setpos>0) && (--triesleft>0));
 			// repause player if needed
 			if (bNeedPause) g_application.m_pPlayer->Pause();

@@ -1177,14 +1177,6 @@ bool CMPlayer::IsPaused() const
 	return m_bPaused;
 }
 
-
-__int64	CMPlayer::GetPTS()
-{
-	if (!m_pDLL) return 0;
-	if (!m_bIsPlaying) return 0;
-	return m_iPTS;
-}
-
 bool CMPlayer::HasVideo()
 {
 	return (mplayer_HasVideo()==TRUE);
@@ -1583,11 +1575,15 @@ void CMPlayer::SeekTime(__int64 iTime)
 	}
 }
 
+//Time in milleseconds
 __int64 CMPlayer::GetTime()
 {
   if (m_bIsPlaying) 
   {
-	  return mplayer_getCurrentTime();
+    if(HasVideo()) //As mplayer has the audio counter 10 times to big. Should be fixed
+      return 1000*mplayer_getCurrentTime();
+    else
+      return 100*m_iPTS;
   }
   return 0;
 }

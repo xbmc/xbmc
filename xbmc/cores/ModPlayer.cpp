@@ -162,10 +162,10 @@ static DWORD NumUpdates = 0;
 static DWORD LastUpdate = 0;
 #endif // _DEBUG
 
-__int64	ModPlayer::GetPTS()
+__int64	ModPlayer::GetTime()
 {
 	if (!m_bIsPlaying) return 0;
-	return mikxboxGetPTS() / 100;
+	return mikxboxGetPTS();
 }
 
 bool ModPlayer::HasVideo()
