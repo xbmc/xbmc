@@ -14,6 +14,7 @@ public:
 	CURL(const CStdString& strURL);
 	virtual ~CURL(void);
   void							SetFileName(const CStdString& strFileName);
+	void							SetHostName(const CStdString& strHostName);
 	bool							HasPort() const;
 	int								GetPort() const;
 	const CStdString& GetHostName() const;

@@ -119,6 +119,11 @@ void CURL::SetFileName(const CStdString& strFileName)
   m_strFileName=strFileName;
 }
 
+void CURL::SetHostName(const CStdString& strHostName)
+{
+  m_strHostName=strHostName;
+}
+
 bool  CURL::HasPort() const
 {
 	return (m_iPort!=0);
