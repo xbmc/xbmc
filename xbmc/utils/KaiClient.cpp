@@ -63,7 +63,7 @@ void CKaiClient::Initialize()
 
 	CLog::Log(LOGNOTICE, "KAICLIENT: Loading sound effects image...");
 	LPDSEFFECTIMAGEDESC pdsImageDesc;
-	XAudioDownloadEffectsImage( "dsstdfx.bin", &dsImageLoc, XAUDIO_DOWNLOADFX_XBESECTION, &pdsImageDesc );
+	XAudioDownloadEffectsImage( "dsstdfx", &dsImageLoc, XAUDIO_DOWNLOADFX_XBESECTION, &pdsImageDesc );
 
 	// Configure the voice manager.
 	VOICE_MANAGER_CONFIG VoiceConfig;
