@@ -278,15 +278,15 @@ m_option_type_t m_option_type_float = {
 
 ///////////// Position
 #undef VAL
-#define VAL(x) (*(__int64*)(x))
+#define VAL(x) (*(off_t*)(x))
 
 static int parse_position(m_option_t* opt,char *name, char *param, void* dst, int src) {
-  __int64 tmp_off;
+  off_t tmp_off;
   char dummy;
 
   if (param == NULL)
     return M_OPT_MISSING_PARAM;
-  if (sscanf(param, sizeof(__int64) == sizeof(int) ?
+  if (sscanf(param, sizeof(off_t) == sizeof(int) ?
 	     "%d%c" : "%lld%c", &tmp_off, &dummy) != 1) {
     mp_msg(MSGT_CFGPARSER, MSGL_ERR, "The %s option must be an integer: %s\n",opt->name,param);
     return M_OPT_INVALID;
@@ -295,20 +295,20 @@ static int parse_position(m_option_t* opt,char *name, char *param, void* dst, in
   if (opt->flags & M_OPT_MIN)
     if (tmp_off < opt->min) {
       mp_msg(MSGT_CFGPARSER, MSGL_ERR,
-	     (sizeof(__int64) == sizeof(int) ?
+	     (sizeof(off_t) == sizeof(int) ?
 	      "The %s option must be >= %d: %s\n" :
 	      "The %s option must be >= %lld: %s\n"),
-	     name, (__int64) opt->min, param);
+	     name, (off_t) opt->min, param);
       return M_OPT_OUT_OF_RANGE;
     }
 
   if (opt->flags & M_OPT_MAX)
     if (tmp_off > opt->max) {
       mp_msg(MSGT_CFGPARSER, MSGL_ERR,
-	     (sizeof(__int64) == sizeof(int) ?
+	     (sizeof(off_t) == sizeof(int) ?
 	      "The %s option must be <= %d: %s\n" :
 	      "The %s option must be <= %lld: %s\n"),
-	     name, (__int64) opt->max, param);
+	     name, (off_t) opt->max, param);
       return M_OPT_OUT_OF_RANGE;
     }
 
@@ -318,13 +318,13 @@ static int parse_position(m_option_t* opt,char *name, char *param, void* dst, in
 }
 
 static char* print_position(m_option_t* opt,  void* val) {
-  return dup_printf(sizeof(__int64) == sizeof(int) ?  "%d" : "%lld",VAL(val));
+  return dup_printf(sizeof(off_t) == sizeof(int) ?  "%d" : "%lld",VAL(val));
 }
 
 m_option_type_t m_option_type_position = {
   "Position",
-  "Integer (__int64)",
-  sizeof(__int64),
+  "Integer (off_t)",
+  sizeof(off_t),
   0,
   parse_position,
   print_position,
