@@ -516,8 +516,8 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
     (D3D_OK == m_pOSDATexture[iOSDBuffer]->LockRect(0, &lra, &rc, 0))
   ) {
     //clear the textures
-    fast_memset(lr.pBits, 0, lr.Pitch*image_height);
-    fast_memset(lra.pBits, 0, lra.Pitch*image_height);
+    fast_memset(lr.pBits, 0, lr.Pitch*m_iOSDTextureHeight);
+    fast_memset(lra.pBits, 0, lra.Pitch*m_iOSDTextureHeight);
     //draw the osd/subs
     vo_draw_alpha_xbox(w,h,src,srca,stride, (BYTE*)lr.pBits, (BYTE*)lra.pBits, lr.Pitch);
   }
@@ -564,7 +564,7 @@ void video_uninit(void)
 		if (m_YTexture[i])
 			m_YTexture[i]->Release();
 		m_YTexture[i] = NULL;
-		if (m_UTexture[i])
+ 		if (m_UTexture[i])
 			m_UTexture[i]->Release();
 		m_UTexture[i] = NULL;
 		if (m_VTexture[i])

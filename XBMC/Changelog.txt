@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 20-10-2004 fixed: Flashing green bar in video
   - 20-10-2004 added: USB Keyboard support (see keymap.xml for mapping)
   - 20-10-2004 added: New Filemanager
   - 20-10-2004 added: New setting to disable the display of tracknumbers in My Music
