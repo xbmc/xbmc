@@ -20,6 +20,7 @@ public:
   CStdString    m_strPath;						// complete path to item
   bool          m_bIsFolder;					// is item a folder or a file
   bool          m_bIsShareOrDrive;		// is this a root share/drive
+  int			m_iDriveType;			// if it is a root share/drive which type. Types see CShare
   SYSTEMTIME    m_stTime;							// file creation date & time
   DWORD         m_dwSize;							// file size (0 for folders)
 	CMusicInfoTag m_musicInfoTag;
