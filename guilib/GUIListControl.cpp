@@ -53,80 +53,83 @@ void CGUIListControl::Render()
   if (!IsVisible()) return;
   CGUIControl::Render();
   CStdStringW labelUnicode;
+  CStdStringW labelUnicode2;
   int iPosY=m_iPosY;
 	
   for (int i=0; i < m_iItemsPerPage; i++)
   {
-		int iPosX=m_iPosX;
+	int iPosX=m_iPosX;
     if (i+m_iOffset < (int)m_vecItems.size() )
     {
       // render item
       CGUIListItem *pItem=m_vecItems[i+m_iOffset];
       if (i == m_iCursorY && HasFocus() && m_iSelect== CONTROL_LIST)
-			{
-				// render focused line
+	  {
+		// render focused line
         m_imgButton.SetFocus(true);
-			}
-			else
-			{
-				// render no-focused line
+	  }
+	  else
+	  {
+		// render no-focused line
         m_imgButton.SetFocus(false);
-			}
+	  }
+
       m_imgButton.SetPosition(m_iPosX, iPosY);	
       m_imgButton.Render();
       
-			// render the icon
-			if (pItem->HasIcon() )
+	  // render the icon
+	  if (pItem->HasIcon() )
       {
         // show icon
-				CGUIImage* pImage=pItem->GetIcon();
-				if (!pImage)
-				{
-					pImage=new CGUIImage(0,0,0,0,m_iImageWidth,m_iImageHeight,pItem->GetIconImage(),0x0);
-					pImage->AllocResources();
-					pItem->SetIcon(pImage);
-					
-				}
-				pImage->SetWidth(m_iImageWidth);
-				pImage->SetHeight(m_iImageHeight);
-				// center vertically
-				pImage->SetPosition(iPosX+8, iPosY+(m_iItemHeight-m_iImageHeight)/2);
-				pImage->Render();
-      }
-			iPosX+=(m_iImageWidth+10);
+		CGUIImage* pImage=pItem->GetIcon();
+		if (!pImage)
+		{
+			pImage=new CGUIImage(0,0,0,0,m_iImageWidth,m_iImageHeight,pItem->GetIconImage(),0x0);
+			pImage->AllocResources();
+			pItem->SetIcon(pImage);
+			
+		}
 
-			// render the text
+		pImage->SetWidth(m_iImageWidth);
+		pImage->SetHeight(m_iImageHeight);
+		// center vertically
+		pImage->SetPosition(iPosX+8, iPosY+(m_iItemHeight-m_iImageHeight)/2);
+		pImage->Render();
+      }
+	  iPosX+=(m_iImageWidth+10);
+
+	  // render the text
       DWORD dwColor=m_dwTextColor;
-			if (pItem->IsSelected())
-			{
+	  if (pItem->IsSelected())
+	  {
         dwColor=m_dwSelectedColor;
-			}
+	  }
       
-			iPosX +=m_iTextOffsetX;
+	  iPosX +=m_iTextOffsetX;
       bool bSelected(false);
       if (i == m_iCursorY && HasFocus() && m_iSelect== CONTROL_LIST)
-			{
+	  {
         bSelected=true;
-			}
+	  }
 
-			CStdString strLabel2=pItem->GetLabel2();
+	  CStdString strLabel2=pItem->GetLabel2();
       
-			DWORD dMaxWidth=(m_dwWidth-m_iImageWidth-16);
-			if ( strLabel2.size() > 0 && m_pFont2)
-			{
-				if ( m_iTextOffsetY == m_iTextOffsetY2 ) 
-				{
-					float fTextHeight,fTextWidth;
+	  DWORD dMaxWidth=(m_dwWidth-m_iImageWidth-16);
+	  if ( strLabel2.size() > 0 && m_pFont2)
+	  {
+		g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
+		if ( m_iTextOffsetY == m_iTextOffsetY2 ) 
+		{
+			float fTextHeight,fTextWidth;
+			m_pFont2->GetTextExtent( labelUnicode2.c_str(), &fTextWidth,&fTextHeight);
+			dMaxWidth -= (DWORD)(fTextWidth+20);
+		}
+  	  }
 
-					g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode);
-
-					m_pFont2->GetTextExtent( labelUnicode.c_str(), &fTextWidth,&fTextHeight);
-					dMaxWidth -= (DWORD)(fTextWidth+20);
-				}
-			}
-
-			g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel(), labelUnicode);
-			RenderText((float)iPosX, (float)iPosY+2+m_iTextOffsetY, (FLOAT)dMaxWidth, dwColor, (WCHAR*) labelUnicode.c_str(), bSelected);
+	  g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel(), labelUnicode);
+	  float fTextHeight,fTextWidth;
+	  m_pFont->GetTextExtent( labelUnicode.c_str(), &fTextWidth,&fTextHeight);
+	  RenderText((float)iPosX, (float)iPosY+((m_iItemHeight-fTextHeight)/2), (FLOAT)dMaxWidth, dwColor, (WCHAR*) labelUnicode.c_str(), bSelected);
       
       if (strLabel2.size()>0 && m_pFont2)
       {
@@ -140,9 +143,7 @@ void CGUIListControl::Render()
 		else
 			iPosX=m_iPosX+m_iTextOffsetX2;
 
-		CStdStringW labelUnicode;
-		g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode);
-		m_pFont2->DrawText((float)iPosX, (float)iPosY+2+m_iTextOffsetY2,dwColor,labelUnicode.c_str(),XBFONT_RIGHT); 
+		m_pFont2->DrawText((float)iPosX, (float)iPosY+((m_iItemHeight-fTextHeight)/2),dwColor,labelUnicode2.c_str(),XBFONT_RIGHT); 
       }	
       iPosY += (DWORD)(m_iItemHeight+m_iSpaceBetweenItems);
     }
@@ -215,7 +216,7 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD
 
     if (fTextWidth > fMaxWidth)
     {
-				fMaxWidth+=50.0f;
+				//fMaxWidth+=50.0f;
         WCHAR szText[1024];
 				if (iLastItem != iItem)
 				{
