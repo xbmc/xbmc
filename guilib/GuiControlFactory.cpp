@@ -252,15 +252,17 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		}
 		if (strType=="togglebutton")
 		{
-			strTextureAltFocus  = ((CGUIToggleButtonControl*)pReference)->GetTexutureAltFocusName();
-			strTextureAltNoFocus= ((CGUIToggleButtonControl*)pReference)->GetTexutureAltNoFocusName();
+			strTextureAltFocus		= ((CGUIToggleButtonControl*)pReference)->GetTexutureAltFocusName();
+			strTextureAltNoFocus	= ((CGUIToggleButtonControl*)pReference)->GetTexutureAltNoFocusName();
 			strTextureFocus			= ((CGUIToggleButtonControl*)pReference)->GetTexutureFocusName();
 			strTextureNoFocus		= ((CGUIToggleButtonControl*)pReference)->GetTexutureNoFocusName();
-			strFont							= ((CGUIToggleButtonControl*)pReference)->GetFontName();
-			strLabel						= ((CGUIToggleButtonControl*)pReference)->GetLabel();
-			dwTextColor					= ((CGUIToggleButtonControl*)pReference)->GetTextColor();
+			strFont					= ((CGUIToggleButtonControl*)pReference)->GetFontName();
+			strLabel				= ((CGUIToggleButtonControl*)pReference)->GetLabel();
+			dwTextColor				= ((CGUIToggleButtonControl*)pReference)->GetTextColor();
 			dwDisabledColor			= ((CGUIToggleButtonControl*)pReference)->GetDisabledColor() ;
-			iHyperLink					= ((CGUIToggleButtonControl*)pReference)->GetHyperLink();
+			iHyperLink				= ((CGUIToggleButtonControl*)pReference)->GetHyperLink();
+			dwTextOffsetX			= ((CGUIToggleButtonControl*)pReference)->GetTextOffsetX();
+			dwTextOffsetY			= ((CGUIToggleButtonControl*)pReference)->GetTextOffsetY();
 		}
 		if (strType=="buttonM")
 		{
@@ -696,6 +698,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       pControl->SetColourDiffuse(dwColorDiffuse);
 			pControl->SetHyperLink(iHyperLink);
       pControl->SetVisible(bVisible);
+	  pControl->SetTextOffsetX(dwTextOffsetX);
+	  pControl->SetTextOffsetY(dwTextOffsetY);
       return pControl;
   }
 
