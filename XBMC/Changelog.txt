@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 27-11-2004 fixed: some memory leaks in the database code.
   - 27-11-2004 Added: GUIConditionalButton
   - 27-11-2004 added: albuminfo, songs from allmusic.com are saved to database
   - 26-11-2004 added: Use left and right trigger to change between Kai views.
