@@ -143,3 +143,10 @@ bool CFile::ReadString(char *szLine, int iLineLength)
 	if (m_pFile) return m_pFile->ReadString(szLine,iLineLength);
 	return false;
 }
+
+int CFile::Write(const void* lpBuf, offset_t uiBufSize) 
+{
+	if (m_pFile) 
+		return m_pFile->Write(lpBuf,uiBufSize);
+	return -1;
+}

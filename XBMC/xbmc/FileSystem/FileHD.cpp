@@ -188,3 +188,12 @@ bool CFileHD::ReadString(char *szLine, int iLineLength)
 	}
 	return false;
 }
+
+
+int CFileHD::Write(const void* lpBuf, offset_t uiBufSize)
+{
+	if (m_hFile==INVALID_HANDLE_VALUE) return -1;
+	DWORD dwNumberOfBytesWritten=0;
+	WriteFile(m_hFile, lpBuf, uiBufSize,&dwNumberOfBytesWritten,NULL);
+	return (int)dwNumberOfBytesWritten;
+}

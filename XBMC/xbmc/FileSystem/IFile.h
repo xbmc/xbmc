@@ -30,6 +30,7 @@ namespace XFILE
 	  virtual ~IFile();
 	  virtual bool					Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport,bool bBinary=true)=0;
 	  virtual unsigned int	Read(void* lpBuf, offset_t uiBufSize)=0;
+		virtual int						Write(const void* lpBuf, offset_t uiBufSize) {return -1;};
 	  virtual bool					ReadString(char *szLine, int iLineLength)=0;
 	  virtual offset_t			Seek(offset_t iFilePosition, int iWhence=SEEK_SET)=0;
 	  virtual void					Close()=0;

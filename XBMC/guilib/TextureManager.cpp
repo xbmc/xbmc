@@ -289,9 +289,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 		OutputDebugString("\n");
 		return NULL;
 	}
-	CStdString strLog;
-	strLog.Format("%s %ix%i\n", strTextureName.c_str(),info.Width,info.Height);
-	OutputDebugString(strLog.c_str());
+	//CStdString strLog;
+	//strLog.Format("%s %ix%i\n", strTextureName.c_str(),info.Width,info.Height);
+	//OutputDebugString(strLog.c_str());
   CTextureMap* pMap = new CTextureMap(strTextureName);
 	CTexture* pclsTexture = new CTexture(pTexture,info.Width,info.Height);
   pMap->Add(pclsTexture);

@@ -24,6 +24,7 @@ namespace XFILE
 		virtual offset_t			GetLength();
 		virtual bool					Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary=true);
 		virtual unsigned int	Read(void* lpBuf, offset_t uiBufSize);
+		virtual int						Write(const void* lpBuf, offset_t uiBufSize);
 		virtual bool					ReadString(char *szLine, int iLineLength);
 		virtual offset_t			Seek(offset_t iFilePosition, int iWhence=SEEK_SET);
 		virtual void					Close();
