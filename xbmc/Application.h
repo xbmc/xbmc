@@ -143,6 +143,9 @@ public:
 	void				  CheckShutdown();
 	void					SetCurrentSong(const CMusicInfoTag& tag);
 	void					SetCurrentMovie(const CIMDBMovie& tag);
+	CMusicInfoTag* GetCurrentSong();
+	CIMDBMovie*		GetCurrentMovie();
+
 	void					ResetAllControls();
 	virtual void			Process();
 	void					ResetScreenSaver();

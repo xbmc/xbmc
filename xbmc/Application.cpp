@@ -1969,6 +1969,11 @@ void CApplication::OnPlayBackEnded()
 {
 	//playback ended
 	m_iPlaySpeed=1;
+
+	// informs python script currently running playback has started
+	// (does nothing if python is not loaded)
+	g_pythonParser.OnPlayBackEnded();
+
 	OutputDebugString("Playback has finished\n");
 	CGUIMessage msg( GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL );
 	m_gWindowManager.SendThreadMessage( msg );
@@ -1976,6 +1981,10 @@ void CApplication::OnPlayBackEnded()
 
 void CApplication::OnPlayBackStarted()
 {
+	// informs python script currently running playback has started
+	// (does nothing if python is not loaded)
+	g_pythonParser.OnPlayBackStarted();
+
   CheckNetworkHDSpinDown(true);
 }
 
@@ -2594,6 +2603,24 @@ void CApplication::SetCurrentSong(const CMusicInfoTag& tag)
 void CApplication::SetCurrentMovie(const CIMDBMovie& tag)
 {
 	m_tagCurrentMovie=tag;
+}
+
+// using InterlockedExchangePointer so the python library doesn't have to worry
+// about threads
+CMusicInfoTag* CApplication::GetCurrentSong()
+{
+	CMusicInfoTag* pointer;
+	InterlockedExchangePointer(&pointer, &m_itemCurrentFile.m_musicInfoTag);
+	return pointer;
+}
+
+// using InterlockedExchangePointer so the python library doesn't have to worry
+// about threads
+CIMDBMovie* CApplication::GetCurrentMovie()
+{
+	CIMDBMovie* pointer;
+	InterlockedExchangePointer(&pointer, &m_tagCurrentMovie);
+	return pointer;
 }
 
 // SwitchToFullScreen() returns true if a switch is made, else returns false
