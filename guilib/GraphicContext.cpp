@@ -2,6 +2,7 @@
 #include "graphiccontext.h"
 #include "../xbmc/utils/log.h"
 #include "../xbmc/Settings.h"
+#include "../xbmc/XBVideoConfig.h"
 #include "common/mouse.h"
 
 #define WIDE_SCREEN_COMPENSATIONY (FLOAT)1.2
@@ -159,12 +160,10 @@ void CGraphicContext::SetCalibrating(bool bOnOff)
 
 bool CGraphicContext::IsValidResolution(RESOLUTION res)
 {
-	DWORD dwStandard=XGetVideoStandard();
-	DWORD dwFlags=XGetVideoFlags();
-	bool bCanDoWidescreen = (dwFlags & XC_VIDEO_FLAGS_WIDESCREEN)!=0;
-	if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
+	bool bCanDoWidescreen = g_videoConfig.HasWidescreen();
+	if (g_videoConfig.HasPAL())
 	{
-		bool bCanDoPAL60 = (dwFlags & XC_VIDEO_FLAGS_PAL_60Hz)!=0;
+		bool bCanDoPAL60 = g_videoConfig.HasPAL60();
 		if (res == PAL_4x3) return true;
 		if (res == PAL_16x9 && bCanDoWidescreen) return true;
 		if (res == PAL60_4x3 && bCanDoPAL60) return true;
@@ -174,25 +173,23 @@ bool CGraphicContext::IsValidResolution(RESOLUTION res)
 	{
 		if (res == NTSC_4x3) return true;
 		if (res == NTSC_16x9 && bCanDoWidescreen) return true;
-		if (res == HDTV_480p_4x3 && (dwFlags&XC_VIDEO_FLAGS_HDTV_480p)) return true;
-		if (res == HDTV_480p_16x9 && (dwFlags&XC_VIDEO_FLAGS_HDTV_480p) && bCanDoWidescreen) return true;
-		if (res == HDTV_720p && (dwFlags&XC_VIDEO_FLAGS_HDTV_720p)) return true;
-		if (res == HDTV_1080i && (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i)) return true;
+		if (res == HDTV_480p_4x3 && g_videoConfig.Has480p()) return true;
+		if (res == HDTV_480p_16x9 && g_videoConfig.Has480p() && bCanDoWidescreen) return true;
+		if (res == HDTV_720p && g_videoConfig.Has720p()) return true;
+		if (res == HDTV_1080i && g_videoConfig.Has1080i()) return true;
 	}
 	return false;
 }
 
 void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllowPAL60)
 {
-	DWORD dwStandard=XGetVideoStandard();
-	DWORD dwFlags=XGetVideoFlags();
-	bool bCanDoWidescreen = (dwFlags & XC_VIDEO_FLAGS_WIDESCREEN)!=0;
+	bool bCanDoWidescreen = g_videoConfig.HasWidescreen();
 	res.clear();
-	if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
+	if (g_videoConfig.HasPAL())
 	{
 		res.push_back(PAL_4x3);
 		if (bCanDoWidescreen) res.push_back(PAL_16x9);
-		if (bAllowPAL60 && (dwFlags & XC_VIDEO_FLAGS_PAL_60Hz))
+		if (bAllowPAL60 && g_videoConfig.HasPAL60())
 		{
 			res.push_back(PAL60_4x3);
 			if (bCanDoWidescreen) res.push_back(PAL60_16x9);
@@ -202,14 +199,14 @@ void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllow
 	{
 		res.push_back(NTSC_4x3);
 		if (bCanDoWidescreen) res.push_back(NTSC_16x9);
-		if (dwFlags & XC_VIDEO_FLAGS_HDTV_480p)
+		if (g_videoConfig.Has480p())
 		{
 			res.push_back(HDTV_480p_4x3);
 			if (bCanDoWidescreen) res.push_back(HDTV_480p_16x9);
 		}
-		if (dwFlags & XC_VIDEO_FLAGS_HDTV_720p)
+		if (g_videoConfig.Has720p())
 			res.push_back(HDTV_720p);
-		if (dwFlags & XC_VIDEO_FLAGS_HDTV_1080i)
+		if (g_videoConfig.Has1080i())
 			res.push_back(HDTV_1080i);
 	}
 }
@@ -226,7 +223,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 {
 	if (!IsValidResolution(res))
 	{	// Choose a failsafe resolution that we can actually display
-		if (XGetVideoStandard()==XC_VIDEO_STANDARD_PAL_I)
+		if (g_videoConfig.HasPAL())
 			res = PAL_4x3;
 		else
 			res = NTSC_4x3;

@@ -124,6 +124,10 @@ public:
   bool SaveSettingsToProfile(int index);
   void DeleteProfile(int index);
 
+	bool UpdateBookmark(const CStdString &strType, const CStdString &strOldName, const CStdString &strName, const CStdString &strPath);
+	bool DeleteBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
+	bool AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
+
 	struct stSettings
 	{
 	public:
@@ -455,6 +459,11 @@ protected:
  	bool LoadProfiles(const TiXmlElement* pRootElement, const CStdString& strSettingsFile);
   bool SaveProfiles(TiXmlNode* pRootElement) const;
 
+	bool LoadXml();
+	void CloseXml();
+
+	TiXmlDocument	xbmcXml;	// for editing the xml file from within XBMC
+	bool					xbmcXmlLoaded;
 };
 
 extern class CSettings g_settings;

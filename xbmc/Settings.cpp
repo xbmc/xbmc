@@ -368,6 +368,8 @@ CSettings::CSettings(void)
 	g_stSettings.m_bEnableRSS=true;
 
   m_iLastLoadedProfileIndex = -1;
+
+	xbmcXmlLoaded = false;
 }
 
 CSettings::~CSettings(void)
@@ -1801,4 +1803,186 @@ bool CSettings::SaveProfiles(TiXmlNode* pRootElement) const
   return true;
 }
 
+bool CSettings::LoadXml()
+{
+	// load xml file - we use the xbe path in case we were loaded as dash
+	if (!xbmcXmlLoaded)
+	{
+		CStdString strPath;
+		char szXBEFileName[1024];
+		CIoSupport helper;
+		helper.GetXbePath(szXBEFileName);
+		strrchr(szXBEFileName,'\\')[0] = 0;
+		strPath.Format("%s\\%s", szXBEFileName, "XboxMediaCenter.xml");
+		if ( !xbmcXml.LoadFile( strPath.c_str() ) )
+		{
+			return false;
+		}
+		xbmcXmlLoaded = true;
+	}
+	return true;
+}
 
+bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strOldName, const CStdString &strName, const CStdString &strPath)
+{
+	if (!LoadXml()) return false;
+
+	VECSHARES *pShares = NULL;
+	if (strType == "files") pShares = &m_vecMyFilesShares;
+	if (strType == "music") pShares = &m_vecMyFilesShares;
+	if (strType == "videos") pShares = &m_vecMyFilesShares;
+	if (strType == "pictures") pShares = &m_vecMyFilesShares;
+
+	if (!pShares) return false;
+
+	for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
+	{
+		if ((*it).strName == strOldName)
+		{
+			(*it).strName = strName;
+			(*it).strPath = strPath;
+		}
+	}
+	// Return bookmark of
+	TiXmlElement *pRootElement = xbmcXml.RootElement();
+	TiXmlNode *pNode = NULL;
+	TiXmlNode *pIt = NULL;
+
+	pNode = pRootElement->FirstChild(strType);
+
+	// if valid bookmark, find child at pos (id)
+	if (pNode)
+	{
+		pIt = pNode->FirstChild("bookmark");
+		while (pIt)
+		{
+			TiXmlNode *pChild = pIt->FirstChild("name");
+			if (pChild && pChild->FirstChild()->Value() == strOldName)
+			{
+				pChild->FirstChild()->SetValue(strName);
+				pChild = pIt->FirstChild("path");
+				if (pChild)
+					pIt->FirstChild("path")->FirstChild()->SetValue(strPath);
+				break;
+			}
+			else
+				pIt = pIt->NextSibling("bookmark");
+		}
+	}
+	return xbmcXml.SaveFile();
+}
+
+bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath)
+{
+	if (!LoadXml()) return false;
+
+	VECSHARES *pShares = NULL;
+	if (strType == "files") pShares = &m_vecMyFilesShares;
+	if (strType == "music") pShares = &m_vecMyFilesShares;
+	if (strType == "videos") pShares = &m_vecMyFilesShares;
+	if (strType == "pictures") pShares = &m_vecMyFilesShares;
+
+	if (!pShares) return false;
+
+	for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
+	{
+		if ((*it).strName == strName && (*it).strPath == strPath)
+		{
+			pShares->erase(it);
+			break;
+		}
+	}
+	// Return bookmark of
+	TiXmlElement *pRootElement = xbmcXml.RootElement();
+	TiXmlNode *pNode = NULL;
+	TiXmlNode *pIt = NULL;
+
+	pNode = pRootElement->FirstChild(strType);
+
+	// if valid bookmark, find child at pos (id)
+	if (pNode)
+	{
+		pIt = pNode->FirstChild("bookmark");
+		while (pIt)
+		{
+			TiXmlNode *pChild = pIt->FirstChild("name");
+			if (pChild && pChild->FirstChild()->Value() == strName)
+			{
+				pChild->FirstChild()->SetValue(strName);
+				pChild = pIt->FirstChild("path");
+				if (pChild && pChild->FirstChild()->Value() == strPath)
+				{
+					pNode->RemoveChild(pIt);
+					break;
+				}
+			}
+			else
+				pIt = pIt->NextSibling("bookmark");
+		}
+	}
+	return xbmcXml.SaveFile();
+}
+
+bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath)
+{
+	if (!LoadXml()) return false;
+
+	VECSHARES *pShares = NULL;
+	if (strType == "files") pShares = &m_vecMyFilesShares;
+	if (strType == "music") pShares = &m_vecMyFilesShares;
+	if (strType == "videos") pShares = &m_vecMyFilesShares;
+	if (strType == "pictures") pShares = &m_vecMyFilesShares;
+
+	if (!pShares) return false;
+
+	CShare share;
+	share.strName=strName;
+	share.strPath=strPath;
+	share.m_iBufferSize=0;
+	share.m_iDepthSize=1;
+	CStdString strPath1=share.strPath;
+	strPath1.ToUpper();
+	if (strPath1.Left(4)=="UDF:")
+	{
+		share.m_iDriveType=SHARE_TYPE_VIRTUAL_DVD;
+		share.strPath="D:\\";
+	}
+	else if (strPath1.Left(11) =="SOUNDTRACK:")
+		share.m_iDriveType=SHARE_TYPE_LOCAL;
+	else if (CUtil::IsISO9660(share.strPath))
+		share.m_iDriveType=SHARE_TYPE_VIRTUAL_DVD;
+	else if (CUtil::IsDVD(share.strPath))
+		share.m_iDriveType = SHARE_TYPE_DVD;
+	else if (CUtil::IsRemote(share.strPath))
+		share.m_iDriveType = SHARE_TYPE_REMOTE;
+	else if (CUtil::IsHD(share.strPath))
+		share.m_iDriveType = SHARE_TYPE_LOCAL;
+	else
+		share.m_iDriveType = SHARE_TYPE_UNKNOWN;
+
+	pShares->push_back(share);
+
+	// Add to the xml file
+	TiXmlElement *pRootElement = xbmcXml.RootElement();
+	TiXmlNode *pNode = NULL;
+
+	pNode = pRootElement->FirstChild(strType);
+
+	// create a new Element
+	TiXmlText xmlName(strName);
+	TiXmlText xmlPath(strPath);
+	TiXmlElement eName("name");
+	TiXmlElement ePath("path");
+	eName.InsertEndChild(xmlName);
+	ePath.InsertEndChild(xmlPath);
+
+	TiXmlElement bookmark("bookmark");
+	bookmark.InsertEndChild(eName);
+	bookmark.InsertEndChild(ePath);
+
+	if (pNode)
+	{
+		pNode->ToElement()->InsertEndChild(bookmark);
+	}
+	return xbmcXml.SaveFile();
+}

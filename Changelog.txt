@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-10-2004 added: Initial Symbols support to the virtual keyboard.
+  - 04-10-2004 fixed: List/Thumbs page indicator didn't show total # of pages.
+  - 04-10-2004 fixed: XBMC wouldn't run if AVAlaunch or X3 bios etc. set the EEPROM mode to PAL60
+                       - XBMC detects this and launchs in NTSC mode, as without full PAL support
+                         that's all you get.  Change the eeprom setting back to PAL_I if you want PAL.
+  - 04-10-2004 fixed: List control - up/down arrow didn't work as expected.
   - 03-10-2004 fixed: fanspeed was being restored on exit when no fanoptions enabled.
   - 02-10-2004 fixed: FileTimetoSystemTime debug assertion fail
   - 02-10-2004 fixed: truncation of chinese charactor long file name in joilet format
