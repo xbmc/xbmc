@@ -42,11 +42,16 @@ bool CIMDB::LoadDLL()
 {
 	CStdString strDll = "Q:\\system\\HTMLScraper.dll";
 	m_pDll = new DllLoader(strDll.c_str(), true);
-	if ( !m_pDll || !m_pDll->Parse() )
+	if (!m_pDll)
+  {
+		CLog::Log(LOGERROR, "IMDB: Unable to load dll %s",strDll.c_str());
+    return false;
+  }
+  if (!m_pDll->Parse())
 	{
 		// failed,
 		CLog::Log(LOGERROR, "IMDB: Unable to load dll %s",strDll.c_str());
-		if (m_pDll) delete m_pDll;
+		delete m_pDll;
 		m_pDll = NULL;
 		return false;
 	}
@@ -69,8 +74,11 @@ bool CIMDB::LoadDLL()
 bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 {
 	// load our dll if need be
-	if (!m_pDll && !LoadDLL())
-		return false;
+  if (!m_pDll)
+  {
+    if (!LoadDLL())
+      return false;
+  }
 
 	CIMDBUrl url;
 	movielist.clear();

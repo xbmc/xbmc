@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 03-03-2005 added: Cached thumb location is now stored in the database.  Music database SHOULD auto-update when you first access My Music.
   - 03-03-2005 removed: old mplayer use.  We now only use the system/players/mplayer directory.
   - 03-03-2005 fixed: music overlay sometimes shows no default thumb, eg. when starting a http stream with python
   - 03-03-2005 changed: GUIButtonControl and GUIToggleButtonControl send their click message before executing a action or a hyperlink

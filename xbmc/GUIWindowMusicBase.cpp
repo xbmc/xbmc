@@ -464,8 +464,8 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 	
 	UpdateListControl();
 	UpdateButtons();
-
-	strSelectedItem=m_history.Get(m_Directory.m_strPath);
+  
+  strSelectedItem=m_history.Get(m_Directory.m_strPath);
 
 	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
 	{
@@ -524,7 +524,6 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 		}
 
 	}
-
 }
 
 /// \brief Call to go to parent folder
