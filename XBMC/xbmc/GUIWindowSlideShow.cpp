@@ -20,7 +20,9 @@ CGUIWindowSlideShow::CGUIWindowSlideShow(void)
 :CGUIWindow(0)
 {
   m_pTextureBackGround=NULL;
+  m_pSurfaceBackGround=NULL;
   m_pTextureCurrent=NULL;
+  m_pSurfaceCurrent=NULL;
   Reset();
   srand( timeGetTime() );
 
@@ -42,29 +44,39 @@ bool CGUIWindowSlideShow::IsPlaying() const
 void CGUIWindowSlideShow::Reset()
 {
 	m_bShowInfo=false;
-  m_bSlideShow=false;
-  m_bPause=false;
+	m_bSlideShow=false;
+	m_bPause=false;
  
-  m_iRotate=0;
-  m_iZoomFactor=1;
-  m_iPosX=0;
-  m_iPosY=0;
-  m_dwFrameCounter=0;
+	m_iRotate=0;
+	m_iZoomFactor=1;
+	m_iPosX=0;
+	m_iPosY=0;
+	m_dwFrameCounter=0;
 	m_iCurrentSlide=-1;
 	m_strBackgroundSlide="";
 	m_strCurrentSlide="";
 	m_lSlideTime=0;
+	if (m_pSurfaceBackGround)
+	{
+		m_pSurfaceBackGround->Release();
+		m_pSurfaceBackGround=NULL;
+	}
 	if (m_pTextureBackGround)
 	{
 		m_pTextureBackGround->Release();
 		m_pTextureBackGround=NULL;
 	}
-  if (m_pTextureCurrent)
-  {
+	if (m_pSurfaceCurrent)
+	{
+		m_pSurfaceCurrent->Release();
+		m_pSurfaceCurrent=NULL;
+	}
+	if (m_pTextureCurrent)
+	{
 		m_pTextureCurrent->Release();
 		m_pTextureCurrent=NULL;
-  }
-  m_vecSlides.erase(m_vecSlides.begin(),m_vecSlides.end());
+	}
+	m_vecSlides.erase(m_vecSlides.begin(),m_vecSlides.end());
 }
 
 void CGUIWindowSlideShow::Add(const CStdString& strPicture)
@@ -83,15 +95,15 @@ IDirect3DTexture8* CGUIWindowSlideShow::GetNextSlide(DWORD& dwWidth, DWORD& dwHe
 	{
 		m_iCurrentSlide=0;
 	}
-  m_iRotate=0;
-  m_iZoomFactor=1;
-  m_iPosX=0;
-  m_iPosY=0;
+	m_iRotate=0;
+	m_iZoomFactor=1;
+	m_iPosX=0;
+	m_iPosY=0;
 
 	strSlide=m_vecSlides[m_iCurrentSlide];
 	CPicture picture;
 
-	IDirect3DTexture8* pTexture=picture.Load(strSlide,0,MAX_PICTURE_WIDTH,MAX_PICTURE_HEIGHT);
+	IDirect3DTexture8* pTexture=picture.Load(strSlide,0,MAX_PICTURE_WIDTH,MAX_PICTURE_HEIGHT, false);
 	dwWidth=picture.GetWidth();
 	dwHeight=picture.GetHeight();
 	return pTexture;
@@ -106,15 +118,15 @@ IDirect3DTexture8* CGUIWindowSlideShow::GetPreviousSlide(DWORD& dwWidth, DWORD& 
 	{
 		m_iCurrentSlide=m_vecSlides.size()-1;
 	}
-  m_iRotate=0;
-  m_iZoomFactor=1;
-  m_iPosX=0;
-  m_iPosY=0;
+	m_iRotate=0;
+	m_iZoomFactor=1;
+	m_iPosX=0;
+	m_iPosY=0;
 
 	strSlide=m_vecSlides[m_iCurrentSlide];
 	CPicture picture;
 
-	IDirect3DTexture8* pTexture=picture.Load(strSlide,0,MAX_PICTURE_WIDTH,MAX_PICTURE_HEIGHT);
+	IDirect3DTexture8* pTexture=picture.Load(strSlide,0,MAX_PICTURE_WIDTH,MAX_PICTURE_HEIGHT, false);
 	dwWidth=picture.GetWidth();
 	dwHeight=picture.GetHeight();
 	return pTexture;
@@ -123,21 +135,22 @@ IDirect3DTexture8* CGUIWindowSlideShow::GetPreviousSlide(DWORD& dwWidth, DWORD& 
 
 void  CGUIWindowSlideShow::ShowNext()
 {
-  if (m_bSlideShow) return;
-  if (m_pTextureBackGround)
-    m_pTextureBackGround->Release();
+	if (m_bSlideShow) return;
+	if (m_pSurfaceBackGround) m_pSurfaceBackGround->Release();
+	if (m_pTextureBackGround) m_pTextureBackGround->Release();
 
 	m_pTextureBackGround=GetNextSlide(m_dwWidthBackGround,m_dwHeightBackGround, m_strBackgroundSlide);
-	
+	m_pTextureBackGround->GetSurfaceLevel(0,&m_pSurfaceBackGround);
 }
 
 void  CGUIWindowSlideShow::ShowPrevious()
 {
-  if (m_bSlideShow) return;
-  if (m_pTextureBackGround)
-    m_pTextureBackGround->Release();
+	if (m_bSlideShow) return;
+	if (m_pSurfaceBackGround) m_pSurfaceBackGround->Release();
+	if (m_pTextureBackGround) m_pTextureBackGround->Release();
 
-  m_pTextureBackGround=GetPreviousSlide(m_dwWidthBackGround,m_dwHeightBackGround, m_strBackgroundSlide);
+	m_pTextureBackGround=GetPreviousSlide(m_dwWidthBackGround,m_dwHeightBackGround, m_strBackgroundSlide);
+	m_pTextureBackGround->GetSurfaceLevel(0,&m_pSurfaceBackGround);
 }
 
 
@@ -167,61 +180,68 @@ void  CGUIWindowSlideShow::StartSlideShow()
 
 void CGUIWindowSlideShow::Render()
 {
-  m_dwFrameCounter++;
-  int iSlides= m_vecSlides.size();
-  if (!iSlides) return;
+	m_dwFrameCounter++;
+	int iSlides= m_vecSlides.size();
+	if (!iSlides) return;
 
-  if (m_bSlideShow || !m_pTextureBackGround) 
-  {
+	if (m_bSlideShow || !m_pTextureBackGround) 
+	{
 
-    if (iSlides > 1 || m_pTextureBackGround==NULL)
-    {
-      if (m_pTextureCurrent==NULL)
-      {
-	      DWORD dwTimeElapsed = timeGetTime() - m_lSlideTime;
-				if (dwTimeElapsed >= (DWORD)g_stSettings.m_iSlideShowStayTime || 
-            m_pTextureBackGround==NULL)
-	      {
-          if (!m_bPause|| m_pTextureBackGround==NULL)
-          {
-		        // get next picture
-					  m_pTextureCurrent=GetNextSlide(m_dwWidthCurrent,m_dwHeightCurrent, m_strCurrentSlide);
-            m_dwFrameCounter=0;
-            int iNewMethod;
-            do
-            {
-              iNewMethod=rand() % MAX_RENDER_METHODS;
-            } while ( iNewMethod==m_iTransistionMethod);
-            m_iTransistionMethod=iNewMethod;
-          }
-	      }
-      }
-    }
+		if (iSlides > 1 || m_pTextureBackGround==NULL)
+		{
+			if (m_pTextureCurrent==NULL)
+			{
+				DWORD dwTimeElapsed = timeGetTime() - m_lSlideTime;
+				if (dwTimeElapsed >= (DWORD)g_stSettings.m_iSlideShowStayTime || m_pTextureBackGround==NULL)
+				{
+					if (!m_bPause|| m_pTextureBackGround==NULL)
+					{
+						// get next picture
+						m_pTextureCurrent=GetNextSlide(m_dwWidthCurrent,m_dwHeightCurrent, m_strCurrentSlide);
+						m_pTextureCurrent->GetSurfaceLevel(0, &m_pSurfaceCurrent);
+						m_dwFrameCounter=0;
+						int iNewMethod;
+						do
+						{
+							iNewMethod=rand() % MAX_RENDER_METHODS;
+						} while ( iNewMethod==m_iTransistionMethod);
+						m_iTransistionMethod=iNewMethod;
+					}
+				}
+			}
+		}
 
-		// render background
+		// swap our buffers over
 		if (!m_pTextureBackGround) 
 		{
 			if (!m_pTextureCurrent) return;
 			m_pTextureBackGround=m_pTextureCurrent;
+			m_pSurfaceBackGround=m_pSurfaceCurrent;
 			m_dwWidthBackGround=m_dwWidthCurrent;
 			m_dwHeightBackGround=m_dwHeightCurrent;
 			m_strBackgroundSlide=m_strCurrentSlide;
 			m_pTextureCurrent=NULL;
+			m_pSurfaceCurrent=NULL;
 			m_lSlideTime=timeGetTime();
 		}
 	}
 
-	g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x0, 1.0f, 0L );
+	// render the background overlay
+	g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 
 	int x,y,width,height;
 	GetOutputRect(m_dwWidthBackGround, m_dwHeightBackGround, x, y, width, height);
-	CPicture picture;
-	picture.RenderImage(m_pTextureBackGround,
-											x+m_iPosX,                 
-											y+m_iPosY,
-											width*m_iZoomFactor, height*m_iZoomFactor,
-											m_dwWidthBackGround,
-											m_dwHeightBackGround);
+	RECT source;
+	source.left=0;
+	source.top=0;
+	source.right=m_dwWidthBackGround;
+	source.bottom=m_dwHeightBackGround;
+	RECT dest;
+	dest.left=x+m_iPosX;
+	dest.top=y+m_iPosY;
+	dest.right=dest.left+width*m_iZoomFactor;
+	dest.bottom=dest.top+height*m_iZoomFactor;
+	g_graphicsContext.Get3DDevice()->UpdateOverlay(m_pSurfaceBackGround, &source, &dest, true, 0x00010001);
 
 	if (m_pTextureCurrent) 
 	{
@@ -261,16 +281,23 @@ void CGUIWindowSlideShow::Render()
 		if (bResult)
 		{
 			if (!m_pTextureCurrent) return;
+			if (m_pSurfaceBackGround)
+			{
+				m_pSurfaceBackGround->Release();
+				m_pSurfaceBackGround=NULL;
+			}
 			if (m_pTextureBackGround)
 			{
 				m_pTextureBackGround->Release();
 				m_pTextureBackGround=NULL;
 			}
 			m_pTextureBackGround=m_pTextureCurrent;
+			m_pSurfaceBackGround=m_pSurfaceCurrent;
 			m_dwWidthBackGround=m_dwWidthCurrent;
 			m_dwHeightBackGround=m_dwHeightCurrent;
 			m_strBackgroundSlide=m_strCurrentSlide;
-			m_pTextureCurrent=NULL;  
+			m_pTextureCurrent=NULL; 
+			m_pSurfaceCurrent=NULL;
 			m_lSlideTime=timeGetTime();
 		}
 	}
@@ -342,7 +369,7 @@ bool CGUIWindowSlideShow::RenderMethod1()
 		bResult=true;
 	}
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent, x, y, iExpandWidth, height, m_dwWidthCurrent, m_dwHeightCurrent);
+	picture.RenderImage(m_pTextureCurrent, x, y, iExpandWidth, height, m_dwWidthCurrent, m_dwHeightCurrent, false);
 	return bResult;
 }
 
@@ -362,7 +389,7 @@ bool CGUIWindowSlideShow::RenderMethod2()
 		bResult=true;
 	}
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent, iPosX, y, width, height, m_dwWidthCurrent, m_dwHeightCurrent);
+	picture.RenderImage(m_pTextureCurrent, iPosX, y, width, height, m_dwWidthCurrent, m_dwHeightCurrent, false);
 	return bResult;
 }
 
@@ -382,7 +409,7 @@ bool CGUIWindowSlideShow::RenderMethod3()
 		bResult=true;
 	}
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent,posx,y,width,height,m_dwWidthCurrent,m_dwHeightCurrent);
+	picture.RenderImage(m_pTextureCurrent,posx,y,width,height,m_dwWidthCurrent,m_dwHeightCurrent,false);
 	return bResult;
 }
 
@@ -402,7 +429,7 @@ bool CGUIWindowSlideShow::RenderMethod4()
 		bResult=true;
 	}
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent,x,posy,width,height,m_dwWidthCurrent,m_dwHeightCurrent);
+	picture.RenderImage(m_pTextureCurrent,x,posy,width,height,m_dwWidthCurrent,m_dwHeightCurrent,false);
 	return bResult;
 }
 
@@ -422,7 +449,7 @@ bool CGUIWindowSlideShow::RenderMethod5()
 		bResult=true;
 	}
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent,x,posy,width,height,m_dwWidthCurrent,m_dwHeightCurrent);
+	picture.RenderImage(m_pTextureCurrent,x,posy,width,height,m_dwWidthCurrent,m_dwHeightCurrent,false);
 	return bResult;
 }
 
@@ -443,7 +470,7 @@ bool CGUIWindowSlideShow::RenderMethod6()
 		bResult=true;
 	}
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent,x,y,width,newheight,m_dwWidthCurrent,m_dwHeightCurrent);
+	picture.RenderImage(m_pTextureCurrent,x,y,width,newheight,m_dwWidthCurrent,m_dwHeightCurrent,false);
 	return bResult;
 }
 
@@ -466,7 +493,7 @@ bool CGUIWindowSlideShow::RenderMethod7()
 	//right align the texture
 	int posx=x + width-newwidth;
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent,posx,y,newwidth,height,m_dwWidthCurrent,m_dwHeightCurrent);
+	picture.RenderImage(m_pTextureCurrent,posx,y,newwidth,height,m_dwWidthCurrent,m_dwHeightCurrent,false);
 	return bResult;
 }
 
@@ -490,7 +517,7 @@ bool CGUIWindowSlideShow::RenderMethod8()
 	//bottom align the texture
 	int posy=y + height-newheight;
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent,x,posy,width,newheight,m_dwWidthCurrent,m_dwHeightCurrent);
+	picture.RenderImage(m_pTextureCurrent,x,posy,width,newheight,m_dwWidthCurrent,m_dwHeightCurrent,false);
 	return bResult;
 }
 
@@ -521,7 +548,7 @@ bool CGUIWindowSlideShow::RenderMethod9()
 	int posx = x + (width - newwidth)/2;
 	int posy = y + (height - newheight)/2;
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent,posx,posy,newwidth,newheight,m_dwWidthCurrent, m_dwHeightCurrent);													// posy in texture
+	picture.RenderImage(m_pTextureCurrent,posx,posy,newwidth,newheight,m_dwWidthCurrent, m_dwHeightCurrent,false);
 	return bResult;
 }
 
@@ -636,6 +663,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 				CSectionLoader::Unload("CXIMAGE");
 			}
 			g_application.EnableOverlay();
+			g_graphicsContext.Get3DDevice()->EnableOverlay(FALSE);
 		}
 		break;
 
@@ -647,6 +675,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 				CSectionLoader::Load("CXIMAGE");
 			}
 			g_application.DisableOverlay();
+			g_graphicsContext.Get3DDevice()->EnableOverlay(TRUE);
 			return true;
 		}
 	}
@@ -671,16 +700,15 @@ void CGUIWindowSlideShow::RenderPause()
 
 void CGUIWindowSlideShow::DoRotate()
 {
-  if(m_pTextureBackGround)
-  {
-    m_pTextureBackGround->Release();
-  }
-  CPicture picture;
-  m_pTextureBackGround=picture.Load(m_strBackgroundSlide, m_iRotate,MAX_PICTURE_WIDTH,MAX_PICTURE_HEIGHT);
-  m_dwWidthBackGround=picture.GetWidth();
-  m_dwHeightBackGround=picture.GetHeight();
-  m_iZoomFactor=1;
-  m_iPosX=m_iPosY=0;
+	if (m_pSurfaceBackGround) m_pSurfaceBackGround->Release();
+	if (m_pTextureBackGround) m_pTextureBackGround->Release();
+	CPicture picture;
+	m_pTextureBackGround=picture.Load(m_strBackgroundSlide, m_iRotate,MAX_PICTURE_WIDTH,MAX_PICTURE_HEIGHT, false);
+	m_pTextureBackGround->GetSurfaceLevel(0, &m_pSurfaceBackGround);
+	m_dwWidthBackGround=picture.GetWidth();
+	m_dwHeightBackGround=picture.GetHeight();
+	m_iZoomFactor=1;
+	m_iPosX=m_iPosY=0;
 	m_lSlideTime=timeGetTime();
 }
 

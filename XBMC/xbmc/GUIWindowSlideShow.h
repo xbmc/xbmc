@@ -55,12 +55,15 @@ private:
 	DWORD										m_lSlideTime;
 
 	IDirect3DTexture8* 			m_pTextureBackGround;
+	IDirect3DSurface8*			m_pSurfaceBackGround;
 	DWORD							 			m_dwWidthBackGround;
 	DWORD							 			m_dwHeightBackGround;
 
 	IDirect3DTexture8* 			m_pTextureCurrent;
+	IDirect3DSurface8*			m_pSurfaceCurrent;
 	DWORD							 			m_dwWidthCurrent;
 	DWORD							 			m_dwHeightCurrent;
+
   DWORD              			m_dwFrameCounter;
   int								 			m_iCurrentSlide;
   int                			m_iTransistionMethod;

@@ -505,6 +505,7 @@ HRESULT CXBFont::Begin()
         D3DDevice::SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
         D3DDevice::SetRenderState( D3DRS_SRCBLEND,         D3DBLEND_SRCALPHA );
         D3DDevice::SetRenderState( D3DRS_DESTBLEND,        D3DBLEND_INVSRCALPHA );
+		D3DDevice::SetRenderState( D3DRS_YUVENABLE, FALSE);
         D3DDevice::SetRenderState( D3DRS_ALPHATESTENABLE,  TRUE );
         D3DDevice::SetRenderState( D3DRS_ALPHAREF,         0x08 );
         D3DDevice::SetRenderState( D3DRS_ALPHAFUNC,        D3DCMP_GREATEREQUAL );
@@ -712,6 +713,7 @@ HRESULT CXBFont::End()
         D3DDevice::SetRenderState( D3DRS_ALPHABLENDENABLE, m_dwSavedState[0] );
         D3DDevice::SetRenderState( D3DRS_SRCBLEND,         m_dwSavedState[1] );
         D3DDevice::SetRenderState( D3DRS_DESTBLEND,        m_dwSavedState[2] );
+		D3DDevice::SetRenderState( D3DRS_YUVENABLE, FALSE);
         D3DDevice::SetRenderState( D3DRS_ALPHATESTENABLE,  m_dwSavedState[3] );
         D3DDevice::SetRenderState( D3DRS_ALPHAREF,         m_dwSavedState[4] );
         D3DDevice::SetRenderState( D3DRS_ALPHAFUNC,        m_dwSavedState[5] );
