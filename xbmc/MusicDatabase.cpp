@@ -20,7 +20,7 @@
 #include "filesystem/FactoryDirectory.h"
 #include "application.h"
 
-#define MUSIC_DATABASE_VERSION 1.0f
+#define MUSIC_DATABASE_VERSION 1.1f
 
 using namespace XFILE;
 using namespace CDDB;
@@ -267,6 +267,8 @@ bool CMusicDatabase::CreateTables()
 		m_pDS->exec("CREATE INDEX idxPath ON path(strPath)");
     CLog::Log(LOGINFO, "create song index");
 		m_pDS->exec("CREATE INDEX idxSong ON song(strTitle)");
+    CLog::Log(LOGINFO, "create thumb index");
+		m_pDS->exec("CREATE INDEX idxThumb ON thumb(strThumb)");
 		//m_pDS->exec("CREATE INDEX idxSong ON song(dwFileNameCRC)");
 
 		//	Trigger
@@ -555,6 +557,13 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
 				//	album and path is known
 				CUtil::GetAlbumThumb(album.strAlbum, album.strPath, strCoverArt);
 				::MoveFileEx(strTempCoverArt, strCoverArt, MOVEFILE_REPLACE_EXISTING);
+
+				//	Update database entry in thumb table
+				RemoveInvalidChars(strCoverArt);
+				RemoveInvalidChars(strTempCoverArt);
+				strSQL.Format("UPDATE thumb SET strThumb='%s' where strThumb='%s'", strCoverArt.c_str(), strTempCoverArt.c_str());
+				m_pDS->exec(strSQL.c_str());
+
 			}
 		}
 		m_albumCache.erase(m_albumCache.begin(), m_albumCache.end());
@@ -3826,6 +3835,20 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
 		  strVersion.Format("UPDATE version SET idVersion=%f\n", fVersion);
 		  m_pDS->exec(strVersion.c_str());
 	  }
+    if (fVersion < 1.1f)
+    {
+      // version 0.5 to 1.0 upgrade - we need to add the thumbs table + run SetMusicThumbs()
+      // on all elements and then produce a new songs table
+      CLog::Log(LOGINFO, "Attempting update from version %f to %f", fVersion, MUSIC_DATABASE_VERSION);
+			CLog::Log(LOGINFO, "create thumb index");
+			m_pDS->exec("CREATE INDEX idxThumb ON thumb(strThumb)");
+      CLog::Log(LOGINFO, "create thumb index successfull");
+		  fVersion = MUSIC_DATABASE_VERSION;
+      CStdString strVersion;
+		  strVersion.Format("UPDATE version SET idVersion=%f\n", fVersion);
+		  m_pDS->exec(strVersion.c_str());
+      CLog::Log(LOGINFO, "Update to version %f successfull", MUSIC_DATABASE_VERSION);
+		}
   }
   catch(...)
   {
