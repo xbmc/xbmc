@@ -11,12 +11,6 @@ Global key mappings while in the menus:
   back to previous menu                         controller: back            remote    : menu
   back to parent directory                      controller: B               remote    : back
         
-Keymappings while playing music:
-  switch between Visualisation/menu:		controller: X               remote    : display
-  previous/next song                            controller: ?               remote    : skip- and skip+
-  pause song                                    controller: ?               remote    : pause
-  stop song                                     controller: start           remote    : stop
-          
 Keymappings while playing video:
   switch between fullscreen video/menu:         controller: X               remote:   : display
   in fullscreen mode:
@@ -26,8 +20,8 @@ Keymappings while playing video:
     step backward -1 min                        controller: DPAD left       remote    : left    
     step forward  +10 min                       controller: DPAD up         remote    : up
     step backward -10 min                       controller: DPAD down       remote    : down
-    small step back (-8 seconds)                controller: back            remote    : select
-    toggle zoom/stretch/normal                  controller: start           remote    : back
+    small step back (-8 seconds)                controller: back            remote    : back
+    toggle zoom/stretch/normal                  controller: start           remote    : select
     bring up OSD                                controller: Y               remote    : menu
     toggle mplayer OSD display (playtime)       controller: white           remote    : ?
     toggle subtitles on/off                     controller: ? (use OSD)     remote    : title
@@ -37,8 +31,19 @@ Keymappings while in the video OSD:
    navigation                                   controller: use DPAD        remote    : up/down/left/right arrows
    toggle a setting                             controller: A               remote    : select
    decrease/increase values                     controller: L/R trigger     remote    : skip- and skip+
-   exit OSD                                     controller: Y OR back       remote    : menu OR back
+   exit OSD                                     controller: Y OR back       remote    : menu
   
+Keymappings in My Music:
+  switch between Visualisation/menu:		controller: X               remote    : display
+  previous/next song                            controller: ?               remote    : skip- and skip+
+  select/play a file:                           controller: A               remote    : select 
+  pause song                                    controller: ?               remote    : pause
+  stop song                                     controller: start           remote    : stop
+  in Songs/Album/Artist/Genre/Top100 views:
+    toggle between playlist and file list       controller: black           remote    : title
+    add item to playlist                        controller: Y               remote    : 0
+
+
 My Pictures when viewing a slideshow or picture:
   move when in zoom mode                        controller: use DPAD        remote    : use up/down/left/right or thumbstick left
   prev/next picture                             controller: L/R trigger     remote    : skip- and skip+
@@ -48,8 +53,11 @@ My Pictures when viewing a slideshow or picture:
   zoom in                                       controller: A               remote    : 0-9
    
 My Files:
-  switch between source/destination window      controller: black           remote    : display
-  (de)select files/directory                    controller: y               remote    : play
+  switch between source/destination window      controller: black           remote    : select
+  (de)select files/directory                    controller: Y               remote    : play
+  delete item                                   controller: X               remote    : 0
+  copy item                                     controller: white           remote    : ?
+  move item                                     controller: start           remote    : ?
    
 My Music menu:
   switch between files & playlist               controller: black           remote    : menu
