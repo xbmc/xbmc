@@ -1,5 +1,4 @@
-	<!-- Version: 1.8 (2004-12-11) updated by vnm !-->
-	<!-- x-halez: TODO: Should sort out naming convention 'song' vs. 'track' ('sang' vs. 'spor' really, since it's Norwegian) !-->
+	<!-- Based on version 1.145 of the English xml. Last updated by vnmartinsen !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -31,14 +30,11 @@
   <string><id>32</id><value>Desember</value></string>
   <string><id>98</id><value>Visning: Auto</value></string>
   <string><id>99</id><value>Visning: Auto stor</value></string>
-<!-- x-halez: Changed the verb a bit: 'Showing: Icons'. !-->
   <string><id>100</id><value>Viser: Ikoner</value></string>
   <string><id>101</id><value>Viser: Liste</value></string>
   <string><id>102</id><value>Skann katalogsti</value></string>
-<!-- x-halez: Since this is actually what is shown, and not what you get if you press the button, I changed from a verb to a noun: 'Sorting: Name' !-->
   <string><id>103</id><value>Sortering: Navn</value></string>
   <string><id>104</id><value>Sortering: Dato</value></string>
-<!-- x-halez: Cut down the length of the last word to fit the button !-->
   <string><id>105</id><value>Sortering: Størr.</value></string>
   <string><id>106</id><value>Nei</value></string>
   <string><id>107</id><value>Ja</value></string>
@@ -100,7 +96,6 @@
   <string><id>163</id><value>Leser</value></string>
   <string><id>164</id><value>Ingen disk</value></string>
   <string><id>165</id><value>Disk tilstede</value></string>
-<!-- vnm: Changed back to original. People using XBMC know what i skin is !-->
   <string><id>166</id><value>Skin</value></string>
   <string><id>167</id><value>FTP-tjener</value></string>
   <string><id>168</id><value>Tidssynkronisering over internett</value></string>
@@ -160,7 +155,6 @@
   <string><id>221</id><value>Ingen nettverkstilkobling</value></string>
   <string><id>222</id><value>Avbryt</value></string>
   <string><id>223</id><value>Automatisk skifting til widescreen</value></string>
-<!-- x-halez: TODO: Either 224 and 225 are mixed up in the English strings.xml, or some weird skinbug is present in Mayhem (dunno date right now). I'll leave it according to the original strings.xml for now. !-->
   <string><id>224</id><value>Hastighet</value></string>
   <string><id>225</id><value>Tid mellom overgang</value></string>
   <string><id>226</id><value>Bruk PAL60</value></string>
@@ -281,7 +275,6 @@
   <string><id>343</id><value>Justér bildehastighet</value></string>
   <string><id>344</id><value>Skuespillere</value></string>
   <string><id>345</id><value>År</value></string>
-<!-- x-halez: Changed the whole meaning of the button from a verb form to a status thingy: 'Stacking: Off'. You might argue that a button should say a verb, it's generally considere good practice, but since the two topmost buttons (listview & sort by thingies) are organized the way they are, my change seems feasible. The ultimate reason for the change is that there is really no good Norwegian translation for this...  !-->
   <string><id>346</id><value>Stabling: Av</value></string>
   <string><id>347</id><value>Stabling: På</value></string>
   <string><id>348</id><value>Flate ut kataloghierarki</value></string>
@@ -303,7 +296,6 @@
   <string><id>364</id><value>- Forsterker med Dolby Digital</value></string>
   <string><id>365</id><value>Sortering: Navn</value></string>
   <string><id>366</id><value>Sortering: År</value></string>
-<!-- x-halez: Tough one, 'karak.' may seem more appropriate, but not in PAL/NTSC 4:3 & 480p. !-->
   <string><id>367</id><value>Sortering: Kar.</value></string>
   <string><id>368</id><value>IMDB</value></string>
   <string><id>369</id><value>Tittel</value></string>
@@ -353,7 +345,6 @@
   <string><id>414</id><value>Ingen anmeldelse av dette albumet</value></string>
   <string><id>415</id><value>Laster ned miniatyrbilde...</value></string>
   <string><id>416</id><value>Ikke tilgengelig</value></string>
-<!-- x-halez: Tough one, dunno what's the best solution really, ended up with this one. !-->
   <string><id>417</id><value>Viser: St. ikoner</value></string>
   <string><id>418</id><value>Filmer/Sjangre</value></string>
   <string><id>419</id><value>Filmer/Skuespillere</value></string>
@@ -432,7 +423,6 @@
   <string><id>491</id><value>- Bruke store ikoner</value></string>
   <string><id>492</id><value>Forstørr undertekster</value></string>
   <string><id>493</id><value>Avanserte instillinger (Kun eksperter!)</value></string>
-<!-- x-halez: Headroom is a widely used term among audiophiles, also in Norwegian. !-->
   <string><id>494</id><value>Gjennomsnittlig headroom (dB)</value></string>
   <string><id>495</id><value>Øk filmoppløsning til grensesnittets oppløsning</value></string>
   <string><id>496</id><value>Kalibrering</value></string>
@@ -574,6 +564,43 @@
   <string><id>12006</id><value>Lydvisualisering</value></string>
   <string><id>12007</id><value>Bilder/bildevisning</value></string>
   <string><id>12008</id><value>Filstablingsdialog</value></string>
+  <string><id>12310</id><value>0</value></string>
+  <string><id>12311</id><value>1</value></string>
+  <string><id>12312</id><value>2</value></string>
+  <string><id>12313</id><value>3</value></string>
+  <string><id>12314</id><value>4</value></string>
+  <string><id>12315</id><value>5</value></string>
+  <string><id>12316</id><value>6</value></string>
+  <string><id>12317</id><value>7</value></string>
+  <string><id>12318</id><value>8</value></string>
+  <string><id>12319</id><value>9</value></string>
+  <string><id>12320</id><value>c</value></string>
+  <string><id>12321</id><value>ok</value></string>
+  <string><id>12322</id><value>*</value></string>
+  <string><id>12324</id><value>XBMC Masterlås</value></string>
+  <string><id>12325</id><value>Mappe låst</value></string>
+  <string><id>12326</id><value>Skriv inn passord</value></string>
+  <string><id>12327</id><value>Skriv inn masterkode og trykk enter,</value></string>
+  <string><id>12328</id><value>Skriv inn kode og trykk enter,</value></string> 
+  <string><id>12329</id><value>eller trykk C for å avbryte</value></string>
+  <string><id>12330</id><value>Skriv inn XBOX knappekombinasjon og </value></string>
+  <string><id>12331</id><value>trykk Start, eller Back for å avbryte</value></string>
+  <string><id>12332</id><value>Lås mappe</value></string>
+  <string><id>12333</id><value>Lås opp mappe</value></string>
+  <string><id>12334</id><value>Nullstill delingslås</value></string>
+  <string><id>12335</id><value>Fjern delingslås</value></string>
+  <string><id>12336</id><value>Velg hvilken type lås som skal benyttes:</value></string>
+  <string><id>12337</id><value>Nummerisk passord</value></string>
+  <string><id>12338</id><value>Spill-kontroll knappekombinasjon</value></string>
+  <string><id>12339</id><value>Fulltekst-password</value></string>
+  <string><id>12340</id><value>Skriv inn nytt passord</value></string>
+  <string><id>12341</id><value>Skriv det nye passordet om igjen</value></string>
+  <string><id>12342</id><value>Feil passord,</value></string>
+  <string><id>12343</id><value>forsøk igjen </value></string>
+  <string><id>12344</id><value>Passordene samsvarer ikke.</value></string>
+  <string><id>12345</id><value>Tilgang nektet</value></string>
+  <string><id>12346</id><value>Grense for antall forsøk er nådd.</value></string>
+  <string><id>12347</id><value>XBOX'en skrur seg nå av.</value></string>
   <string><id>12600</id><value>Været</value></string>
   <string><id>12900</id><value>Skjermbeskytter</value></string>
   <string><id>12901</id><value>Fullskjerm OSD</value></string>
@@ -638,6 +665,15 @@
   <string><id>13343</id><value>Rød</value></string>
   <string><id>13344</id><value>Varier</value></string>
   <string><id>13345</id><value>Skru av LED ved avspilling</value></string>
+  <string><id>13346</id><value>Filminformasjon</value></string>
+  <string><id>13347</id><value>Sett i kø</value></string>
+  <string><id>13348</id><value>Søk IMDb...</value></string>
+  <string><id>13349</id><value>Finn info for alle filer</value></string>
+  <string><id>13350</id><value>Nå spiller...</value></string>
+  <string><id>13351</id><value>Albuminformasjon</value></string>
+  <string><id>13352</id><value>Skann mappe til database</value></string>
+  <string><id>13353</id><value>Stopp skanning</value></string>
+
   <string><id>14000</id><value>Stabling: Av</value></string>
   <string><id>14001</id><value>Stabling: Enkel</value></string>
   <string><id>14002</id><value>Stabling: Fuzzy</value></string>
@@ -693,4 +729,7 @@
   <string><id>14052</id><value>Bytt om måned og dag i startbildet</value></string>
   <string><id>14053</id><value>GUI-filtere</value></string>
   <string><id>14054</id><value>Aktivér internett-søk</value></string>
+  <string><id>14055</id><value>Bruk bakgrunnsskanning</value></string>
+  <string><id>14056</id><value>Stopp skanning</value></string>
+  <string><id>14057</id><value>Ikke mulig når det skannes etter mediainformasjon</value></string>
 </strings>
