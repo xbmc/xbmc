@@ -96,7 +96,7 @@ CreditLine_t Credits[] =
   {  50,  28,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Gamester17" },
 
   {  50,  40,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Tech Support Mods" },
-  {  50,  50,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Hullebulle" },
+  {  50,  50,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Hullebulle aka Nuendo" },
   {  50,  60,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Pike" },
   {  50,  70,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"DDay" },
   {  50,  80,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Poing" },
@@ -123,7 +123,7 @@ CreditLine_t Credits[] =
 
   // Website Hosts  flash 0.5, on 62.5, crossfade 3.5
   {  50,  22,   5760,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Website Hosting" },
-  {  50,  35,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"HulleBulle" },
+  {  50,  35,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"HulleBulle aka Nuendo" },
   {  50,  45,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"MrX" },
   {  50,  55,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Team-XBMC" },
   {  50,  65,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL (ASP Site Upload)" },
@@ -145,7 +145,7 @@ CreditLine_t Credits[] =
 
   // Special Thanks crossfade 34, on 60, fadeout 4
   {  50,  22,   7680,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Special Thanks to" },
-  {  50,  35,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Avalaunch (who helped us with some troubling code)" },
+  {  50,  35,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Avalaunch (for help with some code)" },
   {  50,  45,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Complex" },
   {  50,  55,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team EvoX" },
   {  50,  65,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Xbox-scene.com" },
@@ -246,7 +246,7 @@ CreditLine_t Credits[] =
   // section forza
 	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Forza" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanks to everyone on the XBMC team" },
-    {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and to MS for making the" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and to MS for making the" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"XBox so good to hack :)" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to Enzo & Dino" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for the glory that is Ferrari." },
@@ -260,6 +260,21 @@ CreditLine_t Credits[] =
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Lidl for selling the greatest" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"frozen salami pizza ever" },
 
+	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"RUNTiME" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"I asked for my own scroll-text" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and all I got was this crappy slot" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"on the ass-end of the credits!" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanks to duo, frodo and Team Complex" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for their patience and support;" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"my fiancee for putting up with" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"the long hours and Gamester" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for keeping it all together." },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Shouts to Team Evox, X-Link, AVA" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and any other sod who reckons" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"they deserve greeting..." },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"except Butcher (j/k)..." },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"now please go away so we can get some sleep!" },
+
 	// can duplicate the lines below as many times as required for more credits
 //	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"" },
 //	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"" },
@@ -267,6 +282,7 @@ CreditLine_t Credits[] =
 	// Leave this as is - it tells the music to fade
   {   0,   0,  10000,   5000,    0,    0, EFF_IN_APPEAR |EFF_OUT_APPEAR ,   20, NULL },
 };
+
 
 #define NUM_CREDITS (sizeof(Credits) / sizeof(Credits[0]))
 
@@ -739,6 +755,12 @@ static void RenderCredits(const list<CreditLine_t*>& ActiveList, DWORD& Gamma, D
 				w *= Scale;
 				h *= Scale;
 
+				if (Scale > 0.5f)
+				{
+					if (w > g_graphicsContext.GetWidth() * 0.45f)
+						w = g_graphicsContext.GetWidth() * 0.45f;
+				}
+
 				D3DDevice::SetTexture(0, pCredit->pTex);
 				D3DDevice::SetRenderState(D3DRS_TEXTUREFACTOR, alpha << 24);
 
@@ -1148,6 +1170,19 @@ unsigned __stdcall CreditsMusicThread(void* pParam)
 			{
 				mikxboxSetMusicVolume(--MusicVol);
 			}
+//			else
+//			{
+//				// check for end of pattern at position 12
+//				if (pModule->sngpos == 12 &&
+//						pModule->patpos == pModule->numrow-1 &&
+//						!pModule->vbtick)
+//				{
+//					// jump back to posiiton 9
+//					pModule->patpos = 0;
+//					pModule->posjmp = 2;
+//					pModule->sngpos = 9;
+//				}
+//			}
 		}
 
 		if (!s_bStopPlaying)
