@@ -88,4 +88,5 @@ public:
   static bool IsNFO(const CStdString& strFile);
   static void GetPath(const CStdString& strFileName, CStdString& strPath);
 	static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
+	static int  GetFolderCount(VECFILEITEMS &items);
 };

@@ -647,22 +647,30 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
   //    -the artist id is looked up and or added
   //    -the path id is lookup and or added
 
-	CStdString strItem;
   
-  // get all information for all files in current directory from database 
-  VECSONGS songsList;
-  m_database.GetSongsByPath(m_strDirectory,songsList);
+	int nFolderCount=CUtil::GetFolderCount(items);
+	// Skip items with folders only
+	if (nFolderCount == (int)items.size())
+		return;
 
-  // for every file found
-  for (int i=0; i < (int)items.size(); ++i)
+	int nFileCount=(int)items.size()-nFolderCount;
+
+	CStdString strItem;
+  MAPSONGS songsMap;
+  // get all information for all files in current directory from database 
+  m_database.GetSongsByPath(m_strDirectory,songsMap);
+
+	int j=1;
+  // for every file found, but skip folder
+  for (int i=nFolderCount; i < (int)items.size(); ++i)
 	{
 		CFileItem* pItem=items[i];
 		CStdString strExtension;
 		CUtil::GetExtension(pItem->m_strPath,strExtension);
 
-		if (bScan)
+		if (bScan && !pItem->m_bIsFolder)
 		{
-			strItem.Format("%i/%i", i+1, items.size());
+			strItem.Format("%i/%i", j++, nFileCount);
 			if (m_dlgProgress) 
       {
         m_dlgProgress->SetLine(0,strItem);
@@ -671,6 +679,8 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
 			  if (m_dlgProgress->IsCanceled()) return;
       }
 		}
+
+
     // dont try reading id3tags for folders or playlists
 		if (!pItem->m_bIsFolder && !CUtil::IsPlayList(pItem->m_strPath) )
 		{
@@ -685,15 +695,12 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
           // first search for file in our list of the current directory
 					CSong song;
           bool bFound(false);
-          for (int x=0; x < (int)songsList.size(); ++x)
-          {
-            if (songsList[x].strFileName == pItem->m_strPath)
-            {
-              song=songsList[x];
-              bFound=true;
-              break;
-            }
-          }
+					IMAPSONGS it=songsMap.find(pItem->m_strPath);
+					if (it!=songsMap.end())
+					{
+						song=it->second;
+						bFound=true;
+					}
           if (!bFound && !bScan)
           {
             // try finding it in the database
@@ -741,16 +748,8 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
 			}//if (!tag.Loaded() )
 			else if (bScan)
 			{
-				bool bFound=false;
-				for (int x=0; x < (int)songsList.size(); ++x)
-				{
-					if (songsList[x].strFileName == pItem->m_strPath)
-					{
-						bFound=true;
-						break;
-					}
-				}
-				if (!bFound)
+				IMAPSONGS it=songsMap.find(pItem->m_strPath);
+				if (it==songsMap.end())
 					bNewFile=true;
 			}
 
