@@ -102,16 +102,15 @@ void XBPython::FreeResources()
 		PyList::iterator it = vecPyList.begin();
 		while (it != vecPyList.end())
 		{
-			it->pyThread->stop();
-
+			//it->pyThread->stop();
 			// seems the current way can't kill all running scripts
 			// need some other way to do it. For now we don't wait to long
 
 			// wait 1 sec, should be enough for slow scripts :-)
-			if(!it->pyThread->WaitForThreadExit(1000))
-			{
+			//if(!it->pyThread->WaitForThreadExit(1000))
+			//{
 				// thread did not end, just kill it
-			}
+			//}
 
 			delete it->pyThread;
 			it = vecPyList.erase(it);
