@@ -263,7 +263,7 @@
   </string>  
   <string>
     <id>137</id>
-    <value>Internetsuche</value>
+    <value>Suchen..</value>
   </string>  
   <string>
     <id>138</id>
@@ -367,7 +367,7 @@
   </string> 
   <string>
     <id>163</id>
-    <value>einlesen..</value>
+    <value>Einlesen..</value>
   </string> 
   <string>
     <id>164</id>
@@ -383,11 +383,11 @@
   </string> 
   <string>
     <id>167</id>
-    <value>FTP server:</value>
+    <value>FTP server aktivieren</value>
   </string> 
   <string>
     <id>168</id>
-    <value>Zeit Server:</value>
+    <value>Mit Zeit Server abgleichen</value>
   </string> 
   <string>
     <id>169</id>
@@ -627,7 +627,7 @@
   </string> 
   <string>
     <id>228</id>
-    <value>Zufällige Wiedergabeliste</value>
+    <value>Wiedergabeliste: Zufällige Wiedergabe</value>
   </string> 
   <string>
     <id>229</id>
@@ -723,7 +723,7 @@
   </string>
   <string>
     <id>253</id>
-    <value>Nummer der Kanäle</value>
+    <value>Anzahl der Kanäle</value>
   </string>
   <string>
     <id>254</id>
@@ -763,7 +763,7 @@
   </string>
   <string>
     <id>263</id>
-    <value>HTTP Server:</value>
+    <value>HTTP Server aktivieren</value>
   </string>
   <string>
     <id>264</id>
@@ -847,7 +847,7 @@
   </string>
   <string>
     <id>284</id>
-    <value>Nicht gefunden</value>
+    <value>Keine</value>
   </string>
   <string>
     <id>285</id>
@@ -935,7 +935,7 @@
   </string>
   <string>
     <id>307</id>
-    <value>Auto</value>
+    <value>- Automatisch</value>
   </string>
   <string>
     <id>308</id>
@@ -971,7 +971,7 @@
   </string>
   <string>
     <id>316</id>
-    <value>Durchsuche Lieder...</value>
+    <value>Durchsuche Titel...</value>
   </string>
   <string>
     <id>317</id>
@@ -1047,7 +1047,7 @@
   </string>
   <string>
     <id>335</id>
-    <value>Start</value>
+    <value>- OK -</value>
   </string>
   <string>
     <id>336</id>
@@ -1055,7 +1055,7 @@
   </string>
   <string>
     <id>337</id>
-    <value>Audio Ausgabe:</value>
+    <value>Audio Ausgabe</value>
   </string>
   <string>
     <id>338</id>
@@ -1151,7 +1151,7 @@
   </string>
   <string>
     <id>361</id>
-    <value>allg. Diaschau</value>
+    <value>rekurs. Diaschau</value>
   </string>   
   <string>
     <id>362</id>
@@ -1367,7 +1367,7 @@
   </string> 
   <string>
     <id>416</id>
-    <value>Nicht erreichbar</value>
+    <value>Nicht verfügbar</value>
   </string> 
   <string>
     <id>417</id>
@@ -1399,7 +1399,7 @@
   </string> 
   <string>
     <id>424</id>
-    <value>Start</value>
+    <value>- OK -</value>
   </string> 
   <string>
     <id>425</id>
@@ -1595,7 +1595,7 @@
   </string>
   <string>
     <id>472</id>
-    <value>OSD Leerlauf</value>
+    <value>OSD ausblenden nach</value>
   </string>
   <string>
     <id>473</id>
@@ -1611,11 +1611,11 @@
   </string>
   <string>
     <id>476</id>
-    <value>Musik & Video</value>
+    <value>Musik &amp; Video</value>
   </string>
   <string>
     <id>477</id>
-    <value>Wiedergabeliste unladbar</value>
+    <value>Wiedergabeliste konnte nicht geladen werden.</value>
   </string>
   <string>
     <id>478</id>
@@ -1659,11 +1659,11 @@
   </string>
   <string>
     <id>488</id>
-    <value>Wiedergabeliste wiederholen</value>
+    <value>Inhalt eines Ordners wiederholen</value>
   </string>
   <string>
     <id>489</id>
-    <value>Wiedergabeliste verwenden</value>
+    <value>Automatisch nächstes Lied spielen</value>
   </string>
   <string>
     <id>490</id>
@@ -1671,7 +1671,7 @@
   </string>
   <string>
     <id>491</id>
-    <value>große Symbole verwenden</value>
+    <value>- große Symbole verwenden</value>
   </string>
   <string>
     <id>492</id>
@@ -1807,256 +1807,255 @@
   <id>625</id> 
   <value>Alle Titel von</value> 
   </string>
-
-	<string>
-		<id>629</id>
-		<value>View Mode</value>
-	</string>
-	<string>
+  <string>
+    <id>629</id>
+    <value>View Mode</value>
+  </string>
+  <string>
 		<id>630</id>
 		<value>Normal</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>631</id>
 		<value>Zoom</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>632</id>
 		<value>Stretch 4:3</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>633</id>
 		<value>Stretch 14:9</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>634</id>
 		<value>Stretch 16:9</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>635</id>
 		<value>Original Größe</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>636</id>
 		<value>Benutzerdefiniert</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>700</id>
 		<value>Datenbank säubern</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>701</id>
 		<value>Lösche alte Musikdaten</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>702</id>
 		<value>Pfad wurde bereits durchsucht</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>703</id>
-		<value>Drücke Yes um alle Titel in diesem Pfad zu updaten</value>
-	</string>
-	<string>
+		<value>Drücke JA - alle Titel neu einlesen</value>
+  </string>
+  <string>
 		<id>704</id>
-		<value>Drücke No um nur neue Titel hinzuzufügen</value>
-	</string>
-	<string>
+		<value>Drücke NEIN - um nur neue Titel hinzuzufügen</value>
+  </string>
+  <string>
 		<id>705</id>
 		<value>Netzwerk</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>706</id>
 		<value>HTTP Proxy Host</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>707</id>
 		<value>HTTP Proxy Port</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>708</id>
 		<value>Aktiviere HTTP Proxy</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>709</id>
 		<value>XLink Kai XTag</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>710</id>
 		<value>XLink Kai Password</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>711</id>
 		<value>Internet Protokoll (IP)</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>712</id>
 		<value>Ungültiger Port wurde festgelegt. Der Wert muss zwischen 1 und 65535 liegen.</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>713</id>
 		<value>HTTP Proxy</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>714</id>
 		<value>XLink KAI</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>715</id>
 		<value>Zuweisung</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>716</id>
 		<value>Automatisch (DHCP)</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>717</id>
 		<value>Manuell (Statisch)</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>718</id>
 		<value>Standard (Dashboard)</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>719</id>
 		<value>IP Addresse</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>720</id>
 		<value>Netzmaske</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>721</id>
 		<value>Standard Gateway</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>722</id>
 		<value>DNS Server</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>723</id>
 		<value>Sichern &amp; Neustarten</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>724</id>
 		<value>Ungültige Addresse angegeben. Werte müssen AAA.BBB.CCC.DDD sein</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>725</id>
 		<value>mit Zahlen zwischen 0 und 255.</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>726</id>
 		<value>Änderungen nicht gespeichert.Fortfahren?</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>727</id>
 		<value>Web Server</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>728</id>
 		<value>FTP Server</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>729</id>
 		<value>Internet Zeit</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>730</id>
 		<value>Web Server Port</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>731</id>
 		<value>Zeit Server Host</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>732</id>
 		<value>Sichern &amp; Annehmen</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>733</id>
 		<value>Web Server Passwort</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>734</id>
 		<value>ungesetzt</value>
-	</string>
+  </string>
 
-	<string>
+  <string>
 		<id>735</id>
 		<value>Symbol</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>736</id>
 		<value>Stil</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>737</id>
 		<value>Farbe</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>738</id>
 		<value>Normal</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>739</id>
 		<value>Fett</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>740</id>
 		<value>Kursiv</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>741</id>
 		<value>Fett Kursiv</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>742</id>
 		<value>Weiß</value>
-	</string>	
-	<string>
+  </string>	
+  <string>
 		<id>743</id>
 		<value>Gelb</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>744</id>
 		<value>Dateien</value>
-	</string>		
-	<string>
+  </string>		
+  <string>
 		<id>745</id>
 		<value>Keine Informationen für diese Ansicht</value>
-	</string>		
-	<string>
+  </string>		
+  <string>
 		<id>746</id>
 		<value>Wechsle zu Dateienansicht</value>
-	</string>
-	<string>
+  </string>
+  <string>
 		<id>747</id>
 		<value>Nicht genug Speicher um das Bilder zu laden</value>
-	</string>
-         <string> 
+  </string>
+  <string> 
                    <id>748</id> 
                    <value>Pfad ändern</value> 
-           </string> 
-           <string> 
+  </string> 
+  <string> 
                    <id>749</id> 
                    <value>Freigabe hinzufügen</value> 
-           </string> 
-           <string> 
+  </string> 
+  <string> 
                    <id>750</id> 
                    <value>Sind sie sicher?</value> 
-           </string> 
-           <string> 
+  </string> 
+  <string> 
                    <id>751</id> 
                    <value>Freigabe löschen</value> 
-           </string> 
-           <string> 
+  </string> 
+  <string> 
                    <id>752</id> 
-                   <value>FreigabePfad ändern</value> 
-           </string> 
-           <string> 
+                   <value>Freigabe: Pfad ändern</value> 
+  </string> 
+  <string> 
                    <id>753</id> 
-                   <value>FreigabeName ändern</value> 
-           </string> 
+                   <value>Freigabe: Name ändern</value> 
+  </string> 
 
   <string>	
     <id>998</id>
