@@ -52,14 +52,6 @@
 
 #define LABEL_CURRENT_TIME 22
 
-#define STATUS_NO_INFO 0
-#define STATUS_CODEC_INFO 1
-#define STATUS_SIZE_INFO 2
-
-#define VIEW_MODE_NORMAL	0
-#define VIEW_MODE_ZOOM		1
-#define VIEW_MODE_STRETCH	2
-
 extern IDirectSoundRenderer* m_pAudioDecoder;
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 :CGUIWindow(0)
@@ -67,14 +59,14 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 	m_strTimeStamp[0]=0;
 	m_iTimeCodePosition=0;
 	m_bShowTime=false;
-	m_iShowInfo=STATUS_NO_INFO;
-	m_dwShowInfoTimeout=0;
+	m_bShowCodecInfo=false;
+	m_bShowViewModeInfo=false;
+	m_dwShowViewModeTimeout=0;
 	m_bShowCurrentTime=false;
 	m_dwTimeCodeTimeout=0;
 	m_fFPS=0;
 	m_fFrameCounter=0.0f;
 	m_dwFPSTime=timeGetTime();
-	m_iViewMode = VIEW_MODE_NORMAL;
   // audio
   //  - language
   //  - volume
@@ -228,9 +220,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 
 		case ACTION_SHOW_CODEC:
 		{
-			m_iShowInfo++;
-			if (m_iShowInfo > STATUS_SIZE_INFO) m_iShowInfo = STATUS_NO_INFO;
-			m_dwShowInfoTimeout = timeGetTime();
+		  m_bShowCodecInfo = !m_bShowCodecInfo;
 		}
 		break;
 
@@ -312,54 +302,13 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		break;
 
 		case ACTION_ASPECT_RATIO:
-		{	// toggle the aspect ratio mode
-			m_iViewMode++;
-			m_iShowInfo = STATUS_SIZE_INFO;
-			m_dwShowInfoTimeout = timeGetTime();
-			if (m_iViewMode > VIEW_MODE_STRETCH) m_iViewMode = VIEW_MODE_NORMAL;
-			if (m_iViewMode == VIEW_MODE_NORMAL)
-			{	// normal mode...
-				g_stSettings.m_fUserPixelRatio = 1.0;
-				g_stSettings.m_fZoomAmount = 1.0;
-			}
-			else if (m_iViewMode == VIEW_MODE_ZOOM)
-			{	// zoom image so no black bars
-				g_stSettings.m_fUserPixelRatio = 1.0;
-				// get our calibrated full screen resolution
-				RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
-				float fOffsetX1 = (float)g_settings.m_ResInfo[iRes].Overscan.left;
-				float fOffsetY1 = (float)g_settings.m_ResInfo[iRes].Overscan.top;
-				float fScreenWidth = (float)(g_settings.m_ResInfo[iRes].Overscan.right-g_settings.m_ResInfo[iRes].Overscan.left);
-				float fScreenHeight = (float)(g_settings.m_ResInfo[iRes].Overscan.bottom-g_settings.m_ResInfo[iRes].Overscan.top);
-				float fSourceFrameRatio;
-				g_application.m_pPlayer->GetVideoAspectRatio(fSourceFrameRatio);
-				float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fUserPixelRatio / g_settings.m_ResInfo[iRes].fPixelRatio; 
-				// now calculate the correct zoom amount.  First zoom to full height.
-				float fNewHeight = fScreenHeight;
-				float fNewWidth = fNewHeight*fOutputFrameRatio;
-				g_stSettings.m_fZoomAmount = fNewWidth/fScreenWidth;
-				if (fNewWidth < fScreenWidth)
-				{	// zoom to full width
-					fNewWidth = fScreenWidth;
-					fNewHeight = fNewWidth/fOutputFrameRatio;
-					g_stSettings.m_fZoomAmount = fNewHeight/fScreenHeight;
-				}
-			}
-			else // if (m_iViewMode == VIEW_MODE_STRETCH)
-			{	// stretch image to boundaries
-				g_stSettings.m_fZoomAmount = 1.0;
-				// get our calibrated full screen resolution
-				RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
-				float fOffsetX1 = (float)g_settings.m_ResInfo[iRes].Overscan.left;
-				float fOffsetY1 = (float)g_settings.m_ResInfo[iRes].Overscan.top;
-				float fScreenWidth = (float)(g_settings.m_ResInfo[iRes].Overscan.right-g_settings.m_ResInfo[iRes].Overscan.left);
-				float fScreenHeight = (float)(g_settings.m_ResInfo[iRes].Overscan.bottom-g_settings.m_ResInfo[iRes].Overscan.top);
-				float fSourceFrameRatio;
-				g_application.m_pPlayer->GetVideoAspectRatio(fSourceFrameRatio);
-				// now we need to set g_stSettings.m_fUserPixelRatio so that 
-				// fOutputFrameRatio = fScreenWidth/fScreenHeight.
-				g_stSettings.m_fUserPixelRatio = (fScreenWidth/fScreenHeight)/fSourceFrameRatio*g_settings.m_ResInfo[iRes].fPixelRatio;
-			}
+		{	// toggle the aspect ratio mode (only if the info is onscreen)
+		  if (m_bShowViewModeInfo)
+		    {
+			SetViewMode(++g_stSettings.m_iViewMode);
+		    }
+		  m_bShowViewModeInfo = true;
+		  m_dwShowViewModeTimeout = timeGetTime();
 		}
 		break;
  		case ACTION_SMALL_STEP_BACK:
@@ -433,7 +382,10 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 				g_application.m_pPlayer->Update();
       HideOSD();
       m_iCurrentBookmark=0;
-			m_iViewMode = VIEW_MODE_NORMAL;					// reset viewmode
+      m_bShowCodecInfo = false;
+      m_bShowViewModeInfo = false;
+			// set the correct view mode
+			SetViewMode(g_stSettings.m_iViewMode);
 			return true;
 		}
 		case GUI_MSG_WINDOW_DEINIT:
@@ -509,7 +461,8 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
     m_dwTimeCodeTimeout=timeGetTime();
   }
   if (m_bShowTime) return true;
-  if (m_iShowInfo) return true;
+  if (m_bShowCodecInfo) return true;
+  if (m_bShowViewModeInfo) return true;
   if (m_bShowCurrentTime) return true;
   if (g_application.m_guiDialogVolumeBar.IsRunning()) return true; // volume bar is onscreen
   if (m_bOSDVisible) return true;
@@ -553,12 +506,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
  
 	//------------------------
-	if (m_iShowInfo != STATUS_NO_INFO)
-	{	// timeout??
-		if (timeGetTime() - m_dwShowInfoTimeout > 2500)
-			m_iShowInfo = STATUS_NO_INFO;
-	}
-	if (m_iShowInfo == STATUS_CODEC_INFO) 
+	if (m_bShowCodecInfo) 
 	{
 		bRenderGUI=true;
 		// show audio codec info
@@ -586,10 +534,26 @@ void CGUIWindowFullScreen::RenderFullScreen()
 			OnMessage(msg);
 		}
 	}
-	else if (m_iShowInfo == STATUS_SIZE_INFO)
+	//----------------------
+	// ViewMode Information
+	//----------------------
+	if (m_bShowViewModeInfo && timeGetTime() - m_dwShowViewModeTimeout > 2500)
 	{
-		// check if we've timed out...
-	    bRenderGUI=true;
+		m_bShowViewModeInfo = false;
+	}
+	if (m_bShowViewModeInfo)
+	{
+		bRenderGUI=true;
+		{
+			// get the "View Mode" string
+			CStdString strTitle = g_localizeStrings.Get(629);
+			CStdString strMode = g_localizeStrings.Get(630 + g_stSettings.m_iViewMode);
+			CStdString strInfo;
+			strInfo.Format("%s : %s",strTitle.c_str(), strMode.c_str());
+			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
+			msg.SetLabel(strInfo); 
+			OnMessage(msg);
+		}
 		// show sizing information
 		RECT SrcRect, DestRect;
 		float fAR;
@@ -599,8 +563,8 @@ void CGUIWindowFullScreen::RenderFullScreen()
 			CStdString strSizing;
 			strSizing.Format("Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)", 
 												SrcRect.right,SrcRect.bottom,
-												DestRect.right,DestRect.bottom, g_stSettings.m_fZoomAmount, fAR*g_stSettings.m_fUserPixelRatio, g_stSettings.m_fUserPixelRatio);
-			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
+												DestRect.right,DestRect.bottom, g_stSettings.m_fZoomAmount, fAR*g_stSettings.m_fPixelRatio, g_stSettings.m_fPixelRatio);
+			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2); 
 			msg.SetLabel(strSizing);
 			OnMessage(msg);
 		}
@@ -617,13 +581,8 @@ void CGUIWindowFullScreen::RenderFullScreen()
 			CStdString strFilter;
 			strFilter.Format("  |  Flicker Filter: %i", g_stSettings.m_iFlickerFilterVideo);
 			strStatus += strFilter;
-			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2); 
-			msg.SetLabel(strStatus); 
-			OnMessage(msg);
-		}
-		{
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3); 
-			msg.SetLabel(""); 
+			msg.SetLabel(strStatus); 
 			OnMessage(msg);
 		}
 	}
@@ -791,7 +750,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       SET_CONTROL_HIDDEN(GetID(),LABEL_ROW3);
       SET_CONTROL_HIDDEN(GetID(),BLUE_BAR);
 	}
-    else if (m_iShowInfo)
+    else if (m_bShowCodecInfo || m_bShowViewModeInfo)
     {
       SET_CONTROL_VISIBLE(GetID(),LABEL_ROW1);
       SET_CONTROL_VISIBLE(GetID(),LABEL_ROW2);
@@ -898,4 +857,90 @@ void CGUIWindowFullScreen::ChangetheSpeed(DWORD action)
 void CGUIWindowFullScreen::Update()
 {
 
+}
+
+void CGUIWindowFullScreen::SetViewMode(int iViewMode)
+{
+	if (iViewMode<VIEW_MODE_NORMAL || iViewMode>VIEW_MODE_CUSTOM) iViewMode=VIEW_MODE_NORMAL;
+	g_stSettings.m_iViewMode = iViewMode;
+
+	if (g_stSettings.m_iViewMode == VIEW_MODE_NORMAL)
+	{	// normal mode...
+		g_stSettings.m_fPixelRatio = 1.0;
+		g_stSettings.m_fZoomAmount = 1.0;
+		return;
+	}
+	if (g_stSettings.m_iViewMode == VIEW_MODE_CUSTOM)
+	{
+		g_stSettings.m_fZoomAmount = g_stSettings.m_fCustomZoomAmount;
+		g_stSettings.m_fPixelRatio = g_stSettings.m_fCustomPixelRatio;
+		return;
+	}
+	
+	// get our calibrated full screen resolution
+	RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
+	float fOffsetX1 = (float)g_settings.m_ResInfo[iRes].Overscan.left;
+	float fOffsetY1 = (float)g_settings.m_ResInfo[iRes].Overscan.top;
+	float fScreenWidth = (float)(g_settings.m_ResInfo[iRes].Overscan.right-g_settings.m_ResInfo[iRes].Overscan.left);
+	float fScreenHeight = (float)(g_settings.m_ResInfo[iRes].Overscan.bottom-g_settings.m_ResInfo[iRes].Overscan.top);
+	// and the source frame ratio
+	float fSourceFrameRatio;
+	g_application.m_pPlayer->GetVideoAspectRatio(fSourceFrameRatio);
+
+	if (g_stSettings.m_iViewMode == VIEW_MODE_ZOOM)
+	{	// zoom image so no black bars
+		g_stSettings.m_fPixelRatio = 1.0;
+		// calculate the desired output ratio
+		float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fPixelRatio / g_settings.m_ResInfo[iRes].fPixelRatio; 
+		// now calculate the correct zoom amount.  First zoom to full height.
+		float fNewHeight = fScreenHeight;
+		float fNewWidth = fNewHeight*fOutputFrameRatio;
+		g_stSettings.m_fZoomAmount = fNewWidth/fScreenWidth;
+		if (fNewWidth < fScreenWidth)
+		{	// zoom to full width
+			fNewWidth = fScreenWidth;
+			fNewHeight = fNewWidth/fOutputFrameRatio;
+			g_stSettings.m_fZoomAmount = fNewHeight/fScreenHeight;
+		}
+	}
+	else if (g_stSettings.m_iViewMode == VIEW_MODE_STRETCH_4x3)
+	{	// stretch image to 4:3 ratio
+		g_stSettings.m_fZoomAmount = 1.0;
+		// now we need to set g_stSettings.m_fPixelRatio so that 
+		// fOutputFrameRatio = 4:3.
+		g_stSettings.m_fPixelRatio = (4.0f/3.0f)/fSourceFrameRatio;
+	}
+	else if (g_stSettings.m_iViewMode == VIEW_MODE_STRETCH_14x9)
+	{	// stretch image to 14:9 ratio
+		g_stSettings.m_fZoomAmount = 1.0;
+		// now we need to set g_stSettings.m_fPixelRatio so that 
+		// fOutputFrameRatio = 14:9.
+		g_stSettings.m_fPixelRatio = (14.0f/9.0f)/fSourceFrameRatio;
+	}
+	else if (g_stSettings.m_iViewMode == VIEW_MODE_STRETCH_16x9)
+	{	// stretch image to 16:9 ratio
+		g_stSettings.m_fZoomAmount = 1.0;
+		// now we need to set g_stSettings.m_fPixelRatio so that 
+		// fOutputFrameRatio = 16:9.
+		g_stSettings.m_fPixelRatio = (16.0f/9.0f)/fSourceFrameRatio;
+	}
+	else// if (g_stSettings.m_iViewMode == VIEW_MODE_ORIGINAL)
+	{	// zoom image so that the height is the original size
+		g_stSettings.m_fPixelRatio = 1.0;
+		// get the size of the media file
+		RECT srcRect, destRect;
+		g_application.m_pPlayer->GetVideoRect(srcRect, destRect);
+		// calculate the desired output ratio
+		float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fPixelRatio / g_settings.m_ResInfo[iRes].fPixelRatio; 
+		// now calculate the correct zoom amount.  First zoom to full width.
+		float fNewWidth = fScreenWidth;
+		float fNewHeight = fNewWidth/fOutputFrameRatio;
+		if (fNewHeight > fScreenHeight)
+		{	// zoom to full height
+			fNewHeight = fScreenHeight;
+			fNewWidth = fNewHeight*fOutputFrameRatio;
+		}
+		// now work out the zoom amount so that no zoom is done
+		g_stSettings.m_fZoomAmount = (srcRect.bottom-srcRect.top)/fNewHeight;
+	}
 }

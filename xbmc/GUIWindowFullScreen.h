@@ -25,27 +25,27 @@ public:
   void						ChangetheSpeed(DWORD action);
   virtual void    OnExecute(int iAction, const IOSDOption* option);
   bool            m_bOSDVisible;
+  void			  SetViewMode(int iViewMode);
 
 private:
-  void            Update();
-  void            ShowOSD();
-  void            HideOSD();
+	void				Update();
+	void				ShowOSD();
+	void				HideOSD();
 
-  bool						m_bShowTime;
-	int							m_iShowInfo;
-	DWORD						m_dwShowInfoTimeout;
-	bool						m_bShowCurrentTime;
-	DWORD						m_dwTimeCodeTimeout;
-	DWORD						m_dwFPSTime;
-	float						m_fFrameCounter;
-	FLOAT						m_fFPS;
-  COSDMenu        m_osdMenu;
-  //bool            m_bOSDVisible;
-  CCriticalSection m_section;
-  bool            m_bLastRender;
-	int							m_strTimeStamp[5];
-	int							m_iTimeCodePosition;
-  int             m_iCurrentBookmark;
-  DWORD           m_dwOSDTimeOut;
-  int				m_iViewMode;
+	bool				m_bShowTime;
+	bool				m_bShowCodecInfo;
+	bool				m_bShowViewModeInfo;
+	DWORD				m_dwShowViewModeTimeout;
+	bool				m_bShowCurrentTime;
+	DWORD				m_dwTimeCodeTimeout;
+	DWORD				m_dwFPSTime;
+	float				m_fFrameCounter;
+	FLOAT				m_fFPS;
+	COSDMenu			m_osdMenu;
+	CCriticalSection	m_section;
+	bool				m_bLastRender;
+	int					m_strTimeStamp[5];
+	int					m_iTimeCodePosition;
+	int					m_iCurrentBookmark;
+	DWORD				m_dwOSDTimeOut;
 };

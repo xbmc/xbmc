@@ -1804,7 +1804,39 @@
 		<id>625</id>
 		<value>All songs of</value>
 	</string>
-
+	<string>
+		<id>629</id>
+		<value>View Mode</value>
+	</string>
+	<string>
+		<id>630</id>
+		<value>Normal</value>
+	</string>
+	<string>
+		<id>631</id>
+		<value>Zoom</value>
+	</string>
+	<string>
+		<id>632</id>
+		<value>Stretch 4:3</value>
+	</string>
+	<string>
+		<id>633</id>
+		<value>Stretch 14:9</value>
+	</string>
+	<string>
+		<id>634</id>
+		<value>Stretch 16:9</value>
+	</string>
+	<string>
+		<id>635</id>
+		<value>Original Size</value>
+	</string>
+	<string>
+		<id>636</id>
+		<value>Custom</value>
+	</string>
+	<!-- please leave up to 639 free to add more options here -->
 	
 	<string>
 		<id>998</id>
