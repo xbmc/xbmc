@@ -387,7 +387,7 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
 	}
 
 	auto_aptr<BYTE> pPicture(new BYTE[nBufSize]);
-	memcpy(pPicture.get(), pBuffer, nBufSize);
+	fast_memcpy(pPicture.get(), pBuffer, nBufSize);
 	
 	if (!m_bSectionLoaded)
 	{

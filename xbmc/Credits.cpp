@@ -13,6 +13,7 @@
 #include "utils/Log.h"
 #include "lib/liblzo/LZO1X.H"
 #include "SkinInfo.h"
+#include "util.h"
 
 // Transition effects for text, must specific exactly one in and one out effect
 enum CRED_EFFECTS
@@ -397,7 +398,7 @@ static HRESULT InitLogo()
 
 	pIBuffer = (LPDIRECT3DINDEXBUFFER8)(ResourceHeader + credits_XBMCIBuffer_OFFSET);
 	WORD* IdxBuf = new WORD[NumFaces * 3]; // needs to be in cached memory
-	memcpy(IdxBuf, (char*)ResourceData + pIBuffer->Data, NumFaces * 3 * sizeof(WORD));
+	fast_memcpy(IdxBuf, (char*)ResourceData + pIBuffer->Data, NumFaces * 3 * sizeof(WORD));
 	pIBuffer->Data = (DWORD)IdxBuf;
 
 	pNormalMap = (LPDIRECT3DTEXTURE8)(ResourceHeader + credits_NormMap_OFFSET);
