@@ -126,7 +126,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 					smb.Unlock();
 
 					bIsDir = (info.st_mode & S_IFDIR) ? true : false;
-					lTimeDate = info.st_ctime;
+					lTimeDate = info.st_mtime;
 					iSize = info.st_size;
 				}
 				
