@@ -111,6 +111,7 @@ RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS
     p3dParams->BackBufferWidth            = mode.Width;
     p3dParams->BackBufferHeight           = mode.Height;
     p3dParams->FullScreen_RefreshRateInHz = mode.RefreshRate;
+    p3dParams->Flags                      = mode.Flags;
     if ((bHasPal) && ((mode.Height != 576) || (mode.RefreshRate != 50))) {
       continue;
     }
@@ -124,14 +125,14 @@ RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS
   }
 
   if (HasPAL()){
-    if (HasWidescreen()) {
+    if (HasWidescreen() && (p3dParams->Flags & D3DPRESENTFLAG_WIDESCREEN)) {
       return PAL_16x9;
     }
     else {
       return PAL_4x3;
     }
   }
-  if (HasWidescreen()) {
+  if (HasWidescreen() && (p3dParams->Flags & D3DPRESENTFLAG_WIDESCREEN)) {
     return NTSC_16x9;
   }
   else {
