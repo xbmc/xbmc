@@ -69,7 +69,7 @@ void CPlayListPlayer::PlayNext(bool bAutoPlay)
   if (playlist.size() <= 0) return ;
   int iSong = m_iCurrentSong;
 
-  if (ShuffledPlay(m_iCurrentPlayList))
+  if (ShuffledPlay(m_iCurrentPlayList) && playlist.size() > 1)
   {
     while (iSong == m_iCurrentSong)
       iSong = NextShuffleItem();

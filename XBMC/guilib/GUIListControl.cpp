@@ -45,7 +45,8 @@ CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
 }
 
 CGUIListControl::~CGUIListControl(void)
-{}
+{
+}
 
 void CGUIListControl::Render()
 {
@@ -591,13 +592,10 @@ void CGUIListControl::OnRight()
 {
   if (m_iSelect == CONTROL_LIST)
   { // Only move to up/down control if we have move than 1 page
-    if (m_bUpDownVisible)
-    {
-      if (m_upDown.GetMaximum() > 1)
-      { // Move to updown control
-        m_iSelect = CONTROL_UPDOWN;
-        m_upDown.SetFocus(true);
-      }
+    if (m_bUpDownVisible && m_upDown.GetMaximum() > 1)
+    { // Move to updown control
+      m_iSelect = CONTROL_UPDOWN;
+      m_upDown.SetFocus(true);
     }
     else
     {
@@ -882,4 +880,10 @@ bool CGUIListControl::CanFocus() const
   //  return false;
 
   return CGUIControl::CanFocus();
+}
+
+void CGUIListControl::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight)
+{
+  CGUIControl::SetNavigation(dwUp, dwDown, dwLeft, dwRight);
+  m_upDown.SetNavigation(0, 0, 0, dwRight);
 }

@@ -39,6 +39,7 @@ public:
   virtual void OnMouseDoubleClick(DWORD dwButton);
   virtual void OnMouseWheel();
   virtual bool OnMessage(CGUIMessage& message);
+  virtual void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
   virtual bool HitTest(int iPosX, int iPosY) const;
 
   virtual bool CanFocus() const;

@@ -1060,3 +1060,9 @@ bool CGUIThumbnailPanel::CanFocus() const
 
   return CGUIControl::CanFocus();
 }
+
+void CGUIThumbnailPanel::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight)
+{
+  CGUIControl::SetNavigation(dwUp, dwDown, dwLeft, dwRight);
+  m_upDown.SetNavigation(0, 0, 0, dwRight);
+}
