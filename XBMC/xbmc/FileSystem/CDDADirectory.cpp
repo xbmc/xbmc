@@ -30,7 +30,7 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 		Xcddb cddb;
 		CStdString strDir;
 		strDir.Format("%s\\cddb", g_stSettings.m_szAlbumDirectory);
-		cddb.setCDDBIpAdress(g_stSettings.m_szCDDBIpAdres);
+//		cddb.setCDDBIpAdress(g_stSettings.m_szCDDBIpAdres);
 		cddb.setCacheDir(strDir);
 		bool b_cddb_names_ok(false);
 		CGUIDialogProgress* pDialogProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
