@@ -116,6 +116,11 @@ void CGUIWindowPictures::OnKey(const CKey& key)
   {
     if (key.IsButton())
     {
+			if ( key.GetButtonCode() == KEY_BUTTON_B )
+			{
+				GoParentFolder();
+				return;
+			}
       if ( key.GetButtonCode() == KEY_BUTTON_BACK  || key.GetButtonCode() == KEY_REMOTE_BACK)
       {
         m_gWindowManager.ActivateWindow(0); // back 2 home
@@ -477,4 +482,19 @@ int CGUIWindowPictures::GetSelectedItem()
   g_graphicsContext.SendMessage(msg);         
   int iItem=msg.GetParam1();
 	return iItem;
+}
+
+
+void CGUIWindowPictures::GoParentFolder()
+{
+	if (m_vecItems.size()==0) return;
+	CFileItem* pItem=m_vecItems[0];
+	if (pItem->m_bIsFolder)
+	{
+		if (pItem->GetLabel()=="..")
+		{
+			CStdString strPath=pItem->m_strPath;
+			Update(strPath);
+		}
+	}
 }

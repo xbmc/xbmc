@@ -6,7 +6,8 @@ general key mappings:
   up/down/left/right														controller: use DPAD				remote    : use up/down/left/right
 	selecting stuff:															controller: A button 				remote    : select 
 	back to previous menu													controller: back		 				remote    : back
-			
+	goto previous folder													controller: B
+				
 Keymappings when playing audio songs:
 	stop song																			controller: ?								remote    : stop
 	next/previous song														controller: ?								remote    : skip- and skip+
@@ -19,7 +20,7 @@ Keymappings when playing movies:
 	stop     																			controller: ?								remote    : stop
 					
 My Pictures when viewing a slideshow or picture:
-  move when in zoom mode												controller: DPAD						remote		: use up/down/left/right
+  move when in zoom mode												controller: DPAD						remote		: use up/down/left/right or thumbstick left
   next/prev picture															controller: DPAD L/R				remote		: use left/right
   show file info																controller: black						remote    : info
   pause/continue																controller: start						remote    : pause

@@ -93,7 +93,18 @@ bool CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,
   float fTextHeight,fTextWidth;
   m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
 
-	g_graphicsContext.SetViewPort(fPosX,fPosY,fMaxWidth-5.0f,60.0f);
+	D3DVIEWPORT8 newviewport,oldviewport;
+	g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
+	float fHeight=60;
+	if (fHeight+fPosY >= g_graphicsContext.GetHeight() )
+		fHeight = g_graphicsContext.GetHeight() - fPosY -1;
+	newviewport.X      = (DWORD)fPosX;
+	newviewport.Y			 = (DWORD)fPosY;
+	newviewport.Width  = (DWORD)(fMaxWidth-5.0f);
+	newviewport.Height = (DWORD)(fHeight);
+	newviewport.MinZ   = 0.0f;
+	newviewport.MaxZ   = 1.0f;
+	g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
 
 
     // scroll
@@ -123,7 +134,8 @@ bool CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,
 							{
 								scroll_pos = 0;
 							bResult=true;
-							g_graphicsContext.RestoreViewPort();
+							g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+
 							return true;
 							}
 							iFrames=0;
@@ -154,6 +166,6 @@ bool CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,
               m_pFont->DrawTextWidth(fPosX,fPosY,m_dwTextColor,wszText,fMaxWidth);
 					}
   
-	g_graphicsContext.RestoreViewPort();
+	g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
 	return bResult;
 }

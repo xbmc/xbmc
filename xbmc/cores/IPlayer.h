@@ -21,7 +21,6 @@ public:
 	virtual __int64	GetPTS() =0;
 	virtual bool		HasVideo()=0;
 	virtual bool		HasAudio()=0;
-	virtual void		VideoWindowChanged()=0;
 protected:
 	IPlayerCallback& m_callback;
 };

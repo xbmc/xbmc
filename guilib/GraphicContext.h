@@ -24,7 +24,8 @@ public:
   const CStdString&     GetMediaDir() const;
   void									SetMediaDir(const CStdString& strMediaDir);
 	bool									IsWidescreen() const;
-	void									Correct(FLOAT& fCoordinateX, FLOAT& fCoordinateY, FLOAT& fCoordinateX2, FLOAT& fCoordinateY2) const;
+	void									Correct(float& fCoordinateX, float& fCoordinateY) const;	
+	void									Scale(float& fCoordinateX, float& fCoordinateY, float& fWidth, float& fHeight) const;
 	void									SetViewPort(float fx, float fy , float fwidth, float fheight);
 	void									RestoreViewPort();
 	const RECT&						GetViewWindow() const;

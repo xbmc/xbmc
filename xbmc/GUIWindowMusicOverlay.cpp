@@ -18,6 +18,7 @@ using namespace MUSIC_INFO;
 #define CONTROL_PLAY_LOGO   3
 #define CONTROL_PAUSE_LOGO  4
 #define CONTROL_INFO			  5
+#define CONTROL_BIG_PLAYTIME 6
 
 CGUIWindowMusicOverlay::CGUIWindowMusicOverlay()
 :CGUIWindow(0)
@@ -56,6 +57,11 @@ void CGUIWindowMusicOverlay::Render()
 	sprintf(szTime,"%02.2i:%02.2i",mm,ss);
 	{
 		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_PLAYTIME); 
+		msg.SetLabel(szTime); 
+		OnMessage(msg); 
+	}
+	{
+		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_BIG_PLAYTIME); 
 		msg.SetLabel(szTime); 
 		OnMessage(msg); 
 	}

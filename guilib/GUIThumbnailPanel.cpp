@@ -420,6 +420,15 @@ void CGUIThumbnailPanel::OnUp()
   CKey key(true,KEY_BUTTON_DPAD_UP);
   if (m_iSelect==CONTROL_LIST) 
   {
+		if (m_bScrollUp)
+		{
+			m_iScrollCounter=0;
+			m_bScrollUp=false;
+			m_iOffset -= m_iColumns;
+			int iPage = m_iOffset/(m_iRows*m_iColumns);
+			m_upDown.SetValue(iPage+1);
+		}
+
     if (m_iCursorY > 0) 
     {
       m_iCursorY--; 
@@ -450,6 +459,14 @@ void CGUIThumbnailPanel::OnDown()
   CKey key(true,KEY_BUTTON_DPAD_DOWN);
   if (m_iSelect==CONTROL_LIST) 
   {
+		if (m_bScrollDown)
+		{
+			m_bScrollDown=false;
+			m_iOffset+=m_iColumns;
+			int iPage = m_iOffset/(m_iRows*m_iColumns);
+			m_upDown.SetValue(iPage+1);
+		}
+
     if (m_iCursorY+1==m_iRows)
     {
       m_iOffset+= m_iColumns;

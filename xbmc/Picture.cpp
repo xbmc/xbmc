@@ -69,11 +69,22 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
 			
 			return NULL;
 		}
-		m_dwWidth=image.GetWidth();
-		m_dwHeight=image.GetHeight();
+		m_dwWidth  = image.GetWidth();
+		m_dwHeight = image.GetHeight();
 	  
     bool bResize=false;
     float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
+		if ( g_graphicsContext.IsWidescreen() )
+		{
+			// adjust for widescreen...
+			// widescreen = 33% wider so make height also 33% taller?
+			float fHeight = (float)m_dwHeight;
+			fHeight *= 1.33333f;
+			m_dwHeight=(int)fHeight;
+    
+			fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
+      bResize = true;
+		}
 		
 		if (m_dwWidth > (DWORD)g_graphicsContext.GetWidth() )
     {
@@ -296,7 +307,8 @@ void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, 
 	float fy=(float)y;
 	float fwidth=(float)width;
 	float fheight=(float)height;
-	g_graphicsContext.Correct(fx,fy,fwidth,fheight);
+	g_graphicsContext.Correct(fx,fy);
+	
 
   vertex[0].p = D3DXVECTOR4( fx - 0.5f,	fy - 0.5f,		0, 0 );
   vertex[0].tu = (float)xOff;

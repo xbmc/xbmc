@@ -218,6 +218,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.SetCallback(*this);
 	m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
 	m_guiMusicOverlay.AllocResources();
+	m_guiWindowVideoOverlay.AllocResources();
 	m_guiWindowFullScreen.AllocResources();
   return S_OK;
 }
@@ -231,6 +232,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	strSkinPath+="\\skin\\";
 	strSkinPath+=strSkin;
 
+	m_guiWindowVideoOverlay.FreeResources();
 	m_guiMusicOverlay.FreeResources();
 	m_guiWindowFullScreen.FreeResources();
 	m_gWindowManager.DeInitialize();
@@ -259,6 +261,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettingsScreen.Load( strSkinPath+"\\settingsScreen.xml" );
   m_guiSettingsUICalibration.Load( strSkinPath+"\\settingsUICalibration.xml" );
 	m_guiSettingsMovieCalibration.Load( strSkinPath+"\\settingsMovieCalibration.xml" );
+	m_guiWindowVideoOverlay.Load( strSkinPath+"\\videoOverlay.xml" );
 }
 
 
@@ -294,10 +297,13 @@ void CApplication::Render()
   m_gWindowManager.Render();
 
 	// check if we're playing a file
-	if ( IsPlayingAudio() && m_bOverlayEnabled )
+	if (  m_bOverlayEnabled )
 	{
 		// yes, then render the music overlay window
-		m_guiMusicOverlay.Render();
+		if ( IsPlayingVideo() )
+			m_guiWindowVideoOverlay.Render();
+		else if ( IsPlayingAudio() ) 
+			m_guiMusicOverlay.Render();
 	}
 
   {
@@ -333,6 +339,10 @@ void CApplication::OnKey(CKey& key)
 			g_graphicsContext.Lock();
 			g_graphicsContext.SetFullScreenVideo( !g_graphicsContext.IsFullScreenVideo() );
 			g_graphicsContext.Unlock();
+			m_pd3dDevice->BlockUntilVerticalBlank();      
+			Sleep(50);
+			m_pd3dDevice->BlockUntilVerticalBlank();      
+
 			return;
 		}
 		if (g_graphicsContext.IsFullScreenVideo())
@@ -631,6 +641,7 @@ void CApplication::Stop()
 	}
 	m_sntpClient.StopThread();
 	m_guiMusicOverlay.FreeResources();
+	m_guiWindowVideoOverlay.FreeResources();
 	g_fontManager.Clear();
 	m_gWindowManager.DeInitialize();
 	g_TextureManager.Cleanup();
@@ -683,7 +694,11 @@ bool CApplication::PlayFile(const CStdString& strFile)
 		m_pPlayer = factory.CreatePlayer("mplayer",*this);
 	}
 	bool bResult=m_pPlayer->openfile(strFile);
-	if (bResult) m_guiMusicOverlay.SetCurrentFile(strFile);
+	if (bResult) 
+	{
+		m_guiMusicOverlay.SetCurrentFile(strFile);
+		m_guiWindowVideoOverlay.SetCurrentFile(strFile);
+	}
 	return bResult;
 }
 
@@ -724,11 +739,6 @@ bool CApplication::IsPlayingVideo() const
 	return false;
 }
 
-void	CApplication::ResetVideoWindow()
-{
-	if (!m_pPlayer) return;
-	m_pPlayer->VideoWindowChanged();
-}
 
 void CApplication::GetD3DParameters(D3DPRESENT_PARAMETERS& params)
 {
