@@ -26,6 +26,26 @@ CKaiItem::~CKaiItem(void)
 	}
 }
 
+void CKaiItem::AllocResources()
+{
+  CGUIListExItem::AllocResources();
+
+  if (m_pAvatar)
+  {
+    m_pAvatar->AllocResources();
+  }
+}
+
+void CKaiItem::FreeResources()
+{
+  CGUIListExItem::FreeResources();
+
+  if (m_pAvatar)
+  {
+    m_pAvatar->FreeResources();
+  }
+}
+
 void CKaiItem::SetAvatar(CStdString& aAvatarUrl)
 {
 //	OutputDebugString("Setting Kai avatar\r\n");

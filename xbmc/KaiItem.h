@@ -7,6 +7,8 @@ class CKaiItem : public CGUIListExItem, public IDownloadQueueObserver
 public:
 	CKaiItem(CStdString& strLabel);
 	virtual ~CKaiItem(void);
+  virtual void AllocResources();
+  virtual void FreeResources();
 
 	void SetAvatar(CStdString& aUrl);
 

@@ -29,6 +29,26 @@ void CGUIListExItem::SetIcon(CGUIImage* pImage)
   m_pIcon = pImage;
 }
 
+void CGUIListExItem::AllocResources()
+{
+  CGUIItem::AllocResources();
+
+  if (m_pIcon)
+  {
+    m_pIcon->AllocResources();
+  }
+}
+
+void CGUIListExItem::FreeResources()
+{
+  CGUIItem::FreeResources();
+
+  if (m_pIcon)
+  {
+    m_pIcon->FreeResources();
+  }
+}
+
 void CGUIListExItem::SetIcon(INT aWidth, INT aHeight, const CStdString& aTexture)
 {
   if (m_pIcon)
