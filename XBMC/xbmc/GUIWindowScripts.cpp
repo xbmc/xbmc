@@ -40,7 +40,7 @@ struct SSortScriptsByName
 			char szfilename1[1024];
 			char szfilename2[1024];
 
-			switch ( g_stSettings.m_bScriptsSortMethod ) 
+			switch ( g_stSettings.m_iScriptsSortMethod ) 
 			{
 				case 0:	//	Sort by Filename
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
@@ -192,8 +192,8 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
       }
       else if (iControl==CONTROL_BTNSORTBY) // sort by
       {
-        g_stSettings.m_bScriptsSortMethod++;
-        if (g_stSettings.m_bScriptsSortMethod >=3) g_stSettings.m_bScriptsSortMethod=0;
+        g_stSettings.m_iScriptsSortMethod++;
+        if (g_stSettings.m_iScriptsSortMethod >=3) g_stSettings.m_iScriptsSortMethod=0;
 				g_settings.Save();
         UpdateButtons();
         OnSort();
@@ -250,7 +250,7 @@ void CGUIWindowScripts::UpdateButtons()
     iString=100;
   }
 	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
-	SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_bScriptsSortMethod+103);
+	SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iScriptsSortMethod+103);
 
   if ( g_stSettings.m_bScriptsSortAscending)
   {
@@ -292,7 +292,7 @@ void CGUIWindowScripts::OnSort()
   for (int i=0; i < (int)m_vecItems.size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
-    if (g_stSettings.m_bScriptsSortMethod==0||g_stSettings.m_bScriptsSortMethod==2)
+    if (g_stSettings.m_iScriptsSortMethod==0||g_stSettings.m_iScriptsSortMethod==2)
     {
 			if (pItem->m_bIsFolder) pItem->SetLabel2("");
       else 

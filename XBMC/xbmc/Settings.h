@@ -54,7 +54,7 @@ public:
 	  unsigned long dwFileVersion;
     char	    szDefaultSkin[1024];
   
-	  int				m_bMyProgramsSortMethod;
+	  int				m_iMyProgramsSortMethod;
 	  bool			m_bMyProgramsSortAscending;
 	  bool			m_bMyProgramsViewAsIcons;
 	  bool			m_bMyProgramsFlatten;
@@ -72,7 +72,7 @@ public:
 
 	  bool			m_bMyPicturesViewAsIcons;
 	  bool			m_bMyPicturesRootViewAsIcons;
-	  int				m_bMyPicturesSortMethod;
+	  int				m_iMyPicturesSortMethod;
 	  bool			m_bMyPicturesSortAscending;
 
 		char      m_szMyPicturesExtensions[256];
@@ -86,7 +86,7 @@ public:
 	  bool			m_bMyFilesSourceRootViewAsIcons;
 	  bool			m_bMyFilesDestViewAsIcons;
 	  bool			m_bMyFilesDestRootViewAsIcons;
-	  int				m_bMyFilesSortMethod;
+	  int				m_iMyFilesSortMethod;
 	  bool			m_bMyFilesSortAscending;
 
 		//bool			m_bMyMusicViewAsIcons;
@@ -100,23 +100,23 @@ public:
 		bool			m_bMyMusicGenresViewAsIcons;
 		bool			m_bMyMusicPlaylistViewAsIcons;
 		bool			m_bMyMusicTop100ViewAsIcons;
-		int				m_bMyMusicSortMethod;
-	  int				m_bMyMusicSortAlbumsMethod;
-	  int				m_bMyMusicSortTracksMethod;
-	  int				m_bMyMusicSortArtistsMethod;
-	  int				m_bMyMusicSortGenresMethod;
-	  int				m_bMyMusicSortSongsMethod;
+		int				m_iMyMusicSortMethod;
+	  int				m_iMyMusicAlbumSortMethod;
+	  int				m_iMyMusicTracksSortMethod;
+	  int				m_iMyMusicArtistSortMethod;
+	  int				m_iMyMusicGenresSortMethod;
+	  int				m_iMyMusicSongsSortMethod;
 	  bool			m_bMyMusicSortAscending;
 		int				m_iMyMusicViewMethod;
 
 		bool			m_bMyVideoViewAsIcons;
 		bool			m_bMyVideoRootViewAsIcons;
-	  int				m_bMyVideoSortMethod;
+	  int				m_iMyVideoSortMethod;
 	  bool			m_bMyVideoSortAscending;
 
 		bool			m_bScriptsViewAsIcons;
 		bool			m_bScriptsRootViewAsIcons;
-	  int				m_bScriptsSortMethod;
+	  int				m_iScriptsSortMethod;
 	  bool			m_bScriptsSortAscending;
 
 		int				m_iMoveDelayIR;
@@ -143,7 +143,6 @@ public:
 		int				m_iUIOffsetX;
 		int				m_iUIOffsetY;
 		bool			m_bSoften;
-		int				m_iSoften;
 		bool			m_bZoom;
 		bool			m_bStretch;
 		bool			m_bAllowVideoSwitching;
@@ -180,11 +179,22 @@ public:
   VECFILETYPEICONS	m_vecIcons;
 	RESOLUTION_INFO			m_ResInfo[10];
 protected:
-	bool GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName);
-	int	 GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName);
+	void GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue);
+	void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue);
+	void GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue); 
 	void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue);
 	void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault);
 	void ConvertHomeVar(CStdString& strText);
+	// functions for writing xml files
+	void SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const;
+	void SetInteger(TiXmlNode* pRootNode, const CStdString& strTagName, int iValue) const;
+	void SetFloat(TiXmlNode* pRootNode, const CStdString& strTagName, float fValue) const;
+	void SetBoolean(TiXmlNode* pRootNode, const CStdString& strTagName, bool bValue) const;
+	bool LoadCalibration(const CStdString& strCalibrationFile);
+	bool SaveCalibration(const CStdString& strCalibrationFile) const;
+
+	bool LoadSettings(const CStdString& strSettingsFile);
+	bool SaveSettings(const CStdString& strSettingsFile) const;
 };
 
 extern class CSettings g_settings;
