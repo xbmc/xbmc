@@ -342,7 +342,8 @@ bool CMPlayer::load()
 }
 bool CMPlayer::openfile(const CStdString& strFile)
 {
-	closefile();
+  char szTmp[128];
+  closefile();
 
   // setup the cache size mplayer uses
   int iCacheSize=1024;
@@ -357,12 +358,18 @@ bool CMPlayer::openfile(const CStdString& strFile)
   {
     iCacheSize=0;
   }
+  if (strFile.Find("dvd://") >=0 )
+  {
+    iCacheSize=16384;
+  }
 
   // for shoutcast, use cache of 256 kbyte
   if ( CUtil::IsShoutCast(strFile) ) 
   {
     iCacheSize=256;
   }
+  sprintf(szTmp,"set cache size to %i kbyte\n",iCacheSize);
+  OutputDebugString(szTmp);
   
   // cache (remote) subtitles to HD
 	CUtil::CacheSubtitles(strFile);
@@ -519,6 +526,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
       options.GetOptions(argc,argv);
 			load();
 			mplayer_init(argc,argv);
+
       mplayer_setcache_size(iCacheSize);
 
 			iRet=mplayer_open_file(strFile.c_str());
@@ -784,7 +792,7 @@ void CMPlayer::GetGeneralInfo( CStdString& strVideoInfo)
 		return;
 	}
 	mplayer_GetGeneralInfo(&lFramesDropped, &iQuality, &iCacheFilled, &fTotalCorrection, &fAVDelay);
-	strVideoInfo.Format("dropped:%i Q:%i cache:%i ct:%2.2f av:%2.2f", 
+	strVideoInfo.Format("dropped:%i Q:%i cache:%i%% ct:%2.2f av:%2.2f", 
 												lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, fAVDelay);
 }
 
