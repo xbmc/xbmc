@@ -197,7 +197,7 @@ void  CGUIWindowSystemInfo::GetValues()
 		const WCHAR *pszUnavailable=g_localizeStrings.Get(161).c_str();
 		if (GetDiskFreeSpaceEx( "C:\\", NULL, NULL, &lTotalFreeBytes))
 		{
-			swprintf(wszHD, L"%s C: %u Mb", pszDrive,lTotalFreeBytes.QuadPart/1048576); //To make it MB
+			swprintf(wszHD, L"%s C: %u Mb ", pszDrive,lTotalFreeBytes.QuadPart/1048576); //To make it MB
 			wcscat(wszHD,pszFree);
 		} 
 		else {
