@@ -69,9 +69,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
 		file.Close();
 		return false;
 	}
-	CStdString strFilename="";
-	CStdString strInfo="";
-	CStdString strDuration="";
+
 	while (file.ReadString(szLine,sizeof(szLine) ) )
 	{
 		strLine=szLine;
@@ -83,49 +81,41 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
 			iPosEqual++;
 			CStdString strValue=strLine.Right(strLine.size()-iPosEqual);
 			strLeft.ToLower();
-			if (strLeft.Left( (int)strlen("FILE") ) == "file")
-			{	
-				strFilename=strValue;
+
+			if (strLeft == "numberofentries")
+			{
+				m_vecItems.reserve(atoi(strValue.c_str()));
 			}
-			if (strLeft.Left( (int)strlen("Title") ) == "title")
+			else if (strLeft.Left(4) == "file")
 			{	
-				strInfo=strValue;
+				int idx = atoi(strLeft.c_str() + 4);
+				m_vecItems.resize(idx);
+				if (m_vecItems[idx-1].GetDescription().empty())
+					m_vecItems[idx-1].SetDescription(CUtil::GetFileName(strValue));
+				if (bShoutCast)
+					strValue.Replace("http:","shout:");
+				CUtil::GetQualifiedFilename(strBasePath,strValue);
+				m_vecItems[idx-1].SetFileName(strValue);
 			}
-      else 
-      {
-        strInfo=CUtil::GetFileName(strFilename);
-      }
-			if (strLeft.Left( (int)strlen("Length") ) == "length")
+			else if (strLeft.Left(5) == "title")
 			{	
-				strDuration=strValue;
+				int idx = atoi(strLeft.c_str() + 5);
+				m_vecItems.resize(idx);
+				m_vecItems[idx-1].SetDescription(strValue);
 			}
-			if (strLeft=="playlistname")
+			else if (strLeft.Left(6) == "length")
+			{	
+				int idx = atoi(strLeft.c_str() + 6);
+				m_vecItems.resize(idx);
+				m_vecItems[idx-1].SetDuration(atol(strValue.c_str()));
+			}
+			else if (strLeft=="playlistname")
 			{
 				m_strPlayListName=strValue;
-			}
-
-			if (strInfo.size() && strFilename.size()) 
-			{
-				long lDuration;
-				if (strDuration.size() && strDuration != "-1")
-				{
-					lDuration=atol(strDuration.c_str());
-					lDuration*=1000;
-				}
-				else
-					lDuration = -1;
-				if (bShoutCast) strFilename.Replace("http:","shout:");
-				CUtil::GetQualifiedFilename(strBasePath,strFilename);
-				CPlayListItem newItem(strInfo,strFilename,lDuration);
-				Add(newItem);
-				strFilename="";
-				strInfo="";
-				strDuration="";
 			}
 		}		
 	}
 	file.Close();
-
 
 	return true;
 }
