@@ -25,6 +25,7 @@ CXeniumLCD::CXeniumLCD()
   m_iRow3adr = 0x14;
   m_iRow4adr = 0x54;
   m_iBackLight=32;
+  m_iLCDContrast=50;
 }
 
 //*************************************************************************************************************
@@ -50,6 +51,7 @@ void CXeniumLCD::SetBackLight(int iLight)
 }
 void CXeniumLCD::SetContrast(int iContrast)
 {
+	m_xenium.SetContrast(iContrast/4);
 }
 
 //*************************************************************************************************************
@@ -171,13 +173,14 @@ void CXeniumLCD::DisplayInit()
   m_xenium.HideCursor();
   m_xenium.ScrollOff();
   m_xenium.WrapOff();
-  m_xenium.SetContrast(12);
+  SetContrast(m_iLCDContrast);
 }
 
 //************************************************************************************************************************
 void CXeniumLCD::Process()
 {
   int iOldLight=-1;  
+  int iOldContrast=-1;
 
   m_iColumns = g_guiSettings.GetInt("LCD.Columns");
   m_iRows    = g_guiSettings.GetInt("LCD.Rows");
@@ -186,6 +189,7 @@ void CXeniumLCD::Process()
   m_iRow3adr = g_guiSettings.GetInt("LCD.Row3Address");
   m_iRow4adr = g_guiSettings.GetInt("LCD.Row4Address");
   m_iBackLight= g_guiSettings.GetInt("LCD.BackLight");
+  m_iLCDContrast = g_guiSettings.GetInt("LCD.Contrast");
   if (m_iRows >= MAX_ROWS) m_iRows=MAX_ROWS-1;
 
   DisplayInit();
@@ -197,6 +201,12 @@ void CXeniumLCD::Process()
       // backlight setting changed
       iOldLight=m_iBackLight;
       DisplaySetBacklight(m_iBackLight);
+    }
+	  if (m_iLCDContrast != iOldContrast)
+    {
+      // contrast setting changed
+      iOldContrast=m_iLCDContrast;
+      SetContrast(m_iLCDContrast);
     }
 	  DisplayBuildCustomChars();
 	  for (int iLine=0; iLine < (int)m_iRows; ++iLine)
