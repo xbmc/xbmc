@@ -524,6 +524,7 @@
   <string><id>756</id><value>Programnamen bearbeiten</value></string>
   <string><id>757</id><value>Pfadtiefe bearbeiten</value></string>
   <string><id>758</id><value>Programmlink entfernen</value></string>  
+  <string><id>759</id><value>Große Liste</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Online spielen</value></string>
   <string><id>1000</id><value>Vorschau</value></string>
@@ -531,18 +532,18 @@
   <string><id>1396</id><value>rutschig</value></string>
   <string><id>1397</id><value>und</value></string>
   <string><id>1398</id><value>frierend</value></string>
-  <string><id>1399</id><value>N/A</value></string>
-  <string><id>1400</id><value>N/A</value></string>
-  <string><id>1401</id><value>N/A</value></string>
-  <string><id>1402</id><value>N/A</value></string>
-  <string><id>1403</id><value>N/A</value></string>
-  <string><id>1404</id><value>N/A</value></string>
-  <string><id>1405</id><value>N/A</value></string>
-  <string><id>1406</id><value>N/A</value></string>
-  <string><id>1407</id><value>N/A</value></string>
-  <string><id>1408</id><value>N/A</value></string>
-  <string><id>1409</id><value>N/A</value></string>
-  <string><id>1410</id><value>N/A</value></string>
+  <string><id>1399</id><value>spät</value></string>
+  <string><id>1400</id><value>vereinzelt</value></string>
+  <string><id>1401</id><value>Gewitterschauer</value></string>
+  <string><id>1402</id><value>Donner</value></string>
+  <string><id>1403</id><value>Sonne</value></string>
+  <string><id>1404</id><value>heftig</value></string>
+  <string><id>1405</id><value>in</value></string>
+  <string><id>1406</id><value>der</value></string>
+  <string><id>1407</id><value>Umgebung</value></string>
+  <string><id>1408</id><value>Eis</value></string>
+  <string><id>1409</id><value>Kristall</value></string>
+  <string><id>1410</id><value>windstill</value></string>
 
   <string><id>10000</id><value>Hauptmenü</value></string>
   <string><id>10001</id><value>Programme</value></string>
@@ -880,10 +881,11 @@
   <string><id>15060</id><value>Nachricht hier</value></string>
   <string><id>15061</id><value>Du bist eingeladen %s zu spielen.</value></string>
   <string><id>15062</id><value>Alternativen MPlayer benutzen</value></string>
-  <string><id>15100</id><value>Nav</value></string>
+  <string><id>15100</id><value>Bibliothek</value></string>
   <string><id>15101</id><value>Datenbank</value></string>
   <string><id>15102</id><value>* Alle Alben</value></string>
   <string><id>15103</id><value>* Alle Interpreten</value></string>
   <string><id>15104</id><value>* Alle Titel</value></string>
   <string><id>15105</id><value>* Alle Genre</value></string>
+  <string><id>15106</id><value>Ausgewählte Dateien beim forwärts navigieren merken</value></string>
 </strings>
