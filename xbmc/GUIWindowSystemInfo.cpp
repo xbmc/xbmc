@@ -142,7 +142,6 @@ void CGUIWindowSystemInfo::GetValues()
   {
     XNADDR net_stat;
     WCHAR wzmac_addr[32];
-    WCHAR wzIP[32];
     const WCHAR *psztext = g_localizeStrings.Get(146).c_str();
     const WCHAR *psztype;
     if (XNetGetTitleXnAddr(&net_stat) & XNET_GET_XNADDR_DHCP)
@@ -160,11 +159,8 @@ void CGUIWindowSystemInfo::GetValues()
 
       SET_CONTROL_LABEL(7, wzmac_addr);
     }
-    {
-      const WCHAR* pszIP = g_localizeStrings.Get(150).c_str();
-      swprintf(wzIP, L"%s: %s", pszIP, g_infoManager.GetLabel("Network.IPAddress").c_str());
-      SET_CONTROL_LABEL(8, wzIP);
-    }
+
+    SET_CONTROL_LABEL(8, g_infoManager.GetLabel("Network.IPAddress"));
 
     {
       const WCHAR* pszHalf = g_localizeStrings.Get(152).c_str();
