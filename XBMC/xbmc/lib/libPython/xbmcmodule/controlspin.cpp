@@ -81,10 +81,10 @@ namespace PYXBMC
 
 		if (cColor) sscanf(cColor, "%x", &self->dwColor);
 
-		g_graphicsContext.Lock();
+		PyGUILock();
 		//if (self->pGUIControl) 
 			//((CGUISpinControl*)self->pGUIControl)->SetColor(self->dwDColor);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -105,12 +105,12 @@ namespace PYXBMC
 		self->strTextureUpFocus = cLine[2];
 		self->strTextureDownFocus = cLine[3];
 		/*
-		g_graphicsContext.Lock();
+		PyGUILock();
 		if (self->pGUIControl) 
 		{
       CGUISpinControl* pControl = (CGUISpinControl*)self->pGUIControl;
 			pControl->se
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 		*/
 		Py_INCREF(Py_None);
 		return Py_None;
