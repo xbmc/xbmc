@@ -90,11 +90,15 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
       wstring strLabel = message.GetLabel();
 			m_vecLabels.push_back(strLabel);
     }
-
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
     {
-			m_vecLabels.erase(m_vecLabels.begin(),m_vecLabels.end());
+			m_vecLabels.erase(m_vecLabels.begin(), m_vecLabels.end());
     }
+		if (message.GetMessage() == GUI_MSG_LABEL_SET)
+		{
+			m_vecLabels.erase(m_vecLabels.begin(), m_vecLabels.end());
+			m_vecLabels.push_back(message.GetLabel());
+		}
   }
   return CGUIControl::OnMessage(message);
 }
@@ -137,7 +141,7 @@ bool CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,
 		wcscat(wszOrgText, L" ");
 	} while ( fTextWidth < fMaxWidth);
 
-	fMaxWidth+=50.0f;
+//	fMaxWidth+=50.0f;
 	WCHAR szText[1024];
 
 	if (iStartFrame > 25)
