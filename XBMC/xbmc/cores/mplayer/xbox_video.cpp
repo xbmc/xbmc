@@ -850,8 +850,6 @@ void xbox_video_render_subtitles(bool bUseBackBuffer)
 {
 	int iTexture = bUseBackBuffer ? m_iBackBuffer : 1-m_iBackBuffer;
   
-  CStdString strTmp;strTmp.Format("subtitle:%i (%i)\n",iTexture,bUseBackBuffer);
-  OutputDebugString(strTmp.c_str());
 	if (!m_pSubtitleTexture[iTexture])
 		return;
 
@@ -1037,7 +1035,7 @@ void xbox_video_getAR(float& fAR)
 //********************************************************************************************************
 void xbox_video_render_update()
 {
-  if (m_iRenderBuffer < 0 | m_iRenderBuffer >=NUM_BUFFERS) return;
+  if (m_iRenderBuffer < 0 || m_iRenderBuffer >=NUM_BUFFERS) return;
   bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
 	if (m_pVideoVB && m_TextureBuffer[m_iRenderBuffer])
 	{

@@ -239,7 +239,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
     case GUI_MSG_SETFOCUS:
     case GUI_MSG_LOSTFOCUS:
     {
-      if (message.GetSenderId() != WINDOW_OSD) return true;
+      if (message.GetControlId() == 13) return true;
     }
     break;
 
