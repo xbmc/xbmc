@@ -183,6 +183,7 @@ public:
     char      m_szSubtitleFont[40];
     int       m_iSubtitleHeight;
     float     m_fVolumeAmplification;
+    bool      m_bNonInterleaved;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

@@ -73,6 +73,15 @@ CMPlayer::Options::Options()
     m_bAC3PassTru=false;
     m_strChannelMapping="";
     m_fVolumeAmplification=0.0f;
+    m_bNonInterleaved=false;
+}
+bool CMPlayer::Options::GetNonInterleaved() const
+{
+  return m_bNonInterleaved;
+}
+void CMPlayer::Options::SetNonInterleaved(bool bOnOff)
+{
+  m_bNonInterleaved=bOnOff;
 }
 
 float CMPlayer::Options::GetVolumeAmplification() const
@@ -155,6 +164,11 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     strTmp.Format("volume=%2.2f:0",m_fVolumeAmplification);
     m_vecOptions.push_back("-af");
     m_vecOptions.push_back(strTmp);
+  }
+
+  if (m_bNonInterleaved)
+  {
+    m_vecOptions.push_back("-ni");
   }
 
   m_vecOptions.push_back("1.avi");
@@ -241,6 +255,11 @@ bool CMPlayer::openfile(const CStdString& strFile)
   char *argv[30];
   int argc=8;
   Options options;
+  if (CUtil::IsVideo(strFile))
+  {
+    options.SetNonInterleaved(g_stSettings.m_bNonInterleaved);
+  }
+
   if (CUtil::IsShoutCast(strFile) ) 
     options.SetChannels(2);
   else
@@ -759,3 +778,5 @@ float   CMPlayer::GetSubTitleDelay()
 {
   return mplayer_getSubtitleDelay();
 }
+
+
