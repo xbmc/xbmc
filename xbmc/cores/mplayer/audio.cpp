@@ -29,14 +29,14 @@ extern "C" int mplayer_getVolume()
     float fWidth = (fVolumeMax-fVolumeMin);
     float fCurr  = m_pAudioDecoder->GetCurrentVolume() - fVolumeMin;
     float fPercent=(fCurr/fWidth)*100.0f;
-    return (int)fPercent;
+    return (int)(fPercent+0.5);
   }
   else
   {
     float fWidth = (fVolumeMin-fVolumeMax);
     float fCurr  = m_pAudioDecoder->GetCurrentVolume() - fVolumeMax;
     float fPercent=(fCurr/fWidth)*100.0f;
-    return (int)fPercent;
+    return (int)(fPercent+0.5);
   }
 }
 
