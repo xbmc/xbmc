@@ -21,7 +21,10 @@ CFileItem::CFileItem(const CStdString& strLabel)
 :CGUIListItem(strLabel)
 {
   m_dwSize=0;
+  m_bIsFolder=false;
+  m_bIsShareOrDrive=false;
 	memset(&m_stTime,0,sizeof(m_stTime));
+  m_iDriveType = SHARE_TYPE_UNKNOWN;
 }
 
 CFileItem::~CFileItem(void)
