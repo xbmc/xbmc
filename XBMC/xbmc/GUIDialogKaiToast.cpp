@@ -160,13 +160,13 @@ void CGUIDialogKaiToast::Render()
 	{
 		if (m_pIcon)
 		{
-			SET_CONTROL_HIDDEN(GetID(),POPUP_ICON);
+			SET_CONTROL_HIDDEN(POPUP_ICON);
 			CGUIDialog::Render();
 			m_pIcon->Render(m_iIconPosX+m_iPosX, m_iIconPosY+m_iPosY, m_dwIconWidth, m_dwIconHeight);
 		}
 		else
 		{
-			SET_CONTROL_VISIBLE(GetID(),POPUP_ICON);
+			SET_CONTROL_VISIBLE(POPUP_ICON);
 			CGUIDialog::Render();
 		}
 

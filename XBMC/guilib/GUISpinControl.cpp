@@ -583,11 +583,13 @@ void CGUISpinControl::SetVisible(bool bVisible)
 	{
 		if (bVisible)
 		{
-			SET_CONTROL_VISIBLE(GetParentID(), m_dwBuddyControlID);
+			CGUIMessage msg(GUI_MSG_VISIBLE, GetParentID(), m_dwBuddyControlID);
+			g_graphicsContext.SendMessage(msg);
 		}
 		else
 		{
-			SET_CONTROL_HIDDEN(GetParentID(), m_dwBuddyControlID);
+			CGUIMessage msg(GUI_MSG_HIDDEN, GetParentID(), m_dwBuddyControlID);
+			g_graphicsContext.SendMessage(msg);
 		}
 	}
 }

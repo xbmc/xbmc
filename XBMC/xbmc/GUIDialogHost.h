@@ -10,7 +10,7 @@ public:
 	virtual ~CGUIDialogHost(void);
 	virtual bool	OnMessage(CGUIMessage& message);
 
-	void			Update() const;
+	void			Update();
 	bool			IsOK() const;
 	bool			IsPrivate() const;
 	void			GetConfiguration(CStdString& aPassword, CStdString& aDescription, INT& aPlayerLimit);

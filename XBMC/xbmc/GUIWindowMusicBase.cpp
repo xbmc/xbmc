@@ -220,8 +220,8 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			{
 				int iItem = GetSelectedItem();
 				Update(m_strDirectory);
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+				CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
+				CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			}
 		}
 		break;
@@ -232,8 +232,8 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			{
 				int iItem = GetSelectedItem();
 				Update(m_strDirectory);
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+				CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
+				CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			}
 		}
 		break;
@@ -265,7 +265,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
 			if (m_iLastControl>-1)
 			{
-				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+				SET_CONTROL_FOCUS(m_iLastControl, 0);
 			}
 
 			Update(m_strDirectory);
@@ -309,7 +309,10 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 				g_stSettings.m_iMyMusicStartWindow=nWindow;
 				g_settings.Save();
 				m_gWindowManager.ActivateWindow(g_stSettings.m_iMyMusicStartWindow);
-				SET_CONTROL_FOCUS(g_stSettings.m_iMyMusicStartWindow, CONTROL_BTNTYPE, 0);
+
+				CGUIMessage msg2(GUI_MSG_SETFOCUS, g_stSettings.m_iMyMusicStartWindow, CONTROL_BTNTYPE);
+				g_graphicsContext.SendMessage(msg2);
+
 				return true;
 			}
 			else if (iControl==CONTROL_BTNSEARCH)
@@ -431,8 +434,8 @@ int CGUIWindowMusicBase::GetSelectedItem()
 
 void CGUIWindowMusicBase::SetSelectedItem(int index)
 {
-  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,   index);
-  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, index);
+  CONTROL_SELECT_ITEM(CONTROL_LIST,   index);
+  CONTROL_SELECT_ITEM(CONTROL_THUMBS, index);
 }
 /// \brief Set window to a specific directory
 /// \param strDirectory The directory to be displayed in list/thumb control
@@ -470,11 +473,11 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 	{
 		if (ViewByIcon())
 		{
-			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+			SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
 		}
 		else
 		{
-			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+			SET_CONTROL_FOCUS(CONTROL_LIST, 0);
 		}
 	}
 	ShowThumbPanel();
@@ -504,8 +507,8 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 			GetDirectoryHistoryString(pItem, strHistory);
 			if (strHistory==strSelectedItem)
 			{
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,i);
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,i);
+				CONTROL_SELECT_ITEM(CONTROL_LIST,i);
+				CONTROL_SELECT_ITEM(CONTROL_THUMBS,i);
 				bSelectedFound=true;
 			}
 		}
@@ -569,8 +572,8 @@ bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
 			//	was selected while disc change
 			int iItem = GetSelectedItem();
 			Update( m_strDirectory );
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+			CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
+			CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			return false;
 		}
 	}
@@ -1054,8 +1057,8 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 	{
 		int iSelectedItem=GetSelectedItem();
 		Update(m_strDirectory);
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iSelectedItem);
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iSelectedItem);
+		CONTROL_SELECT_ITEM(CONTROL_LIST,iSelectedItem);
+		CONTROL_SELECT_ITEM(CONTROL_THUMBS,iSelectedItem);
 	}
 
 	if (m_dlgProgress)
@@ -1092,8 +1095,8 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
 	AddItemToPlayList(pItem);
 
 	//move to next item
-	CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem+1);
-	CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem+1);
+	CONTROL_SELECT_ITEM(CONTROL_LIST,iItem+1);
+	CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem+1);
 	if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() && !g_application.IsPlayingAudio() )
 	{
 		g_playlistPlayer.Reset();
@@ -1284,8 +1287,8 @@ void CGUIWindowMusicBase::ShowThumbPanel()
   }
   if (iItem>-1)
   {
-    CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem);
-    CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem);
+    CONTROL_SELECT_ITEM(CONTROL_LIST,iItem);
+    CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem);
   }
 }
 
@@ -1331,7 +1334,7 @@ void CGUIWindowMusicBase::UpdateButtons()
 	g_graphicsContext.SendMessage(msg2);
 
 	//	Select the current window as default item
-	CONTROL_SELECT_ITEM(GetID(), CONTROL_BTNTYPE, g_stSettings.m_iMyMusicStartWindow-WINDOW_MUSIC_FILES);
+	CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, g_stSettings.m_iMyMusicStartWindow-WINDOW_MUSIC_FILES);
 }
 
 ///	\brief React on the selected search item

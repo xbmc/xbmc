@@ -81,7 +81,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 			// make controls 100-110 invisible...
 			for (int i=100; i < 110; i++)
 			{		
-				SET_CONTROL_HIDDEN(GetID(), i);
+				SET_CONTROL_HIDDEN(i);
 			}
 
 			if (m_iViewAsIcons==-1)
@@ -91,11 +91,11 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
 			if (g_guiSettings.GetBool("MyPrograms.NoShortcuts"))				// let's hide Scan button
 			{
-				SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNSCAN);
+				SET_CONTROL_HIDDEN(CONTROL_BTNSCAN);
 			}
 			else
 			{
-				SET_CONTROL_VISIBLE(GetID(), CONTROL_BTNSCAN);
+				SET_CONTROL_VISIBLE(CONTROL_BTNSCAN);
 			}
 
 
@@ -107,20 +107,20 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 			{
 				CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
 
-				SET_CONTROL_VISIBLE(GetID(), i+iStartID);
-				SET_CONTROL_LABEL(GetID(), i+iStartID,share.strName);				
+				SET_CONTROL_VISIBLE(i+iStartID);
+				SET_CONTROL_LABEL(i+iStartID,share.strName);				
 			}
 
 
 			UpdateDir(m_strDirectory);
 
 			if (m_iLastControl>-1)
-				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+				SET_CONTROL_FOCUS(m_iLastControl, 0);
 
 			if (m_iSelectedItem>-1)
 			{
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iSelectedItem);
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iSelectedItem);
+				CONTROL_SELECT_ITEM(CONTROL_LIST,m_iSelectedItem);
+				CONTROL_SELECT_ITEM(CONTROL_THUMBS,m_iSelectedItem);
 			}
 			ShowThumbPanel();
 			return true;
@@ -423,7 +423,7 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 
 		int iControl = CONTROL_LIST;
 		if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
-		SET_CONTROL_FOCUS(GetID(), iControl, 0);
+		SET_CONTROL_FOCUS(iControl, 0);
 	}
 }
 
@@ -576,10 +576,10 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
 	{
 		if ( ViewByIcon() ) {	
-			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+			SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
 		}
 		else {
-			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+			SET_CONTROL_FOCUS(CONTROL_LIST, 0);
 		}
 	}
 	ShowThumbPanel();
@@ -937,8 +937,8 @@ bool CGUIWindowPrograms::HaveBookmarkPermissions(CFileItem* pItem, const CStdStr
 
 void CGUIWindowPrograms::UpdateButtons()
 {
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
+	SET_CONTROL_HIDDEN(CONTROL_LIST);
+	SET_CONTROL_HIDDEN(CONTROL_THUMBS);
 	bool bViewIcon = false;
 	int iString;
 
@@ -960,22 +960,22 @@ void CGUIWindowPrograms::UpdateButtons()
 
 	if (bViewIcon) 
 	{
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
+		SET_CONTROL_VISIBLE(CONTROL_THUMBS);
 	}
 	else
 	{
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
+		SET_CONTROL_VISIBLE(CONTROL_LIST);
 	}
 
-	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWAS,iString);
+	SET_CONTROL_LABEL(CONTROL_BTNVIEWAS,iString);
 
 	if (g_stSettings.m_iMyProgramsSortMethod==3)
 	{
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTMETHOD, 507);  //Times Played
+		SET_CONTROL_LABEL(CONTROL_BTNSORTMETHOD, 507);  //Times Played
 	}
 	else
 	{
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTMETHOD,g_stSettings.m_iMyProgramsSortMethod+103);
+		SET_CONTROL_LABEL(CONTROL_BTNSORTMETHOD,g_stSettings.m_iMyProgramsSortMethod+103);
 	}
 
 	if ( g_stSettings.m_bMyProgramsSortAscending)
@@ -1000,7 +1000,7 @@ void CGUIWindowPrograms::UpdateButtons()
 	const WCHAR* szText=g_localizeStrings.Get(127).c_str();
 	swprintf(wszText,L"%i %s", iItems,szText);
 
-	SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
+	SET_CONTROL_LABEL(CONTROL_LABELFILES,wszText);
 
 
 }
@@ -1164,8 +1164,8 @@ void CGUIWindowPrograms::ShowThumbPanel()
 	}
 	if (iItem>-1)
 	{
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem);
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem);
+		CONTROL_SELECT_ITEM(CONTROL_LIST,iItem);
+		CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem);
 	}
 }
 

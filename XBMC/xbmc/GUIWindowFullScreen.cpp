@@ -518,8 +518,9 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowCodecInfo) return true;
   if (m_bShowViewModeInfo) return true;
   if (m_bShowCurrentTime) return true;
-  if (g_application.m_guiDialogVolumeBar.IsRunning()) return true; // volume bar is onscreen
-  if (g_application.m_guiDialogKaiToast.IsRunning()) return true; // kai toast is onscreen
+	if (m_gWindowManager.IsRouted()) return true;
+//  if (g_application.m_guiDialogVolumeBar.IsRunning()) return true; // volume bar is onscreen
+//  if (g_application.m_guiDialogKaiToast.IsRunning()) return true; // kai toast is onscreen
   if (m_bOSDVisible) return true;
   if (g_Mouse.IsActive()) return true;
   if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
@@ -559,12 +560,12 @@ void CGUIWindowFullScreen::RenderFullScreen()
   bool bRenderGUI(false);
 	if (g_application.m_pPlayer->IsPaused() )
   {
-    SET_CONTROL_VISIBLE(GetID(),IMG_PAUSE);  
+    SET_CONTROL_VISIBLE(IMG_PAUSE);  
     bRenderGUI=true;
   }
   else
   {
-    SET_CONTROL_HIDDEN(GetID(),IMG_PAUSE);  
+    SET_CONTROL_HIDDEN(IMG_PAUSE);  
   }
  
 	//------------------------
@@ -649,6 +650,9 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		}
 	}
 
+	if (m_gWindowManager.IsRouted())
+		m_gWindowManager.Render();
+/*
   // Check if we need to render the popup volume bar...
   if (g_application.m_guiDialogVolumeBar.IsRunning())
   {
@@ -659,7 +663,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
   {
 	  g_application.m_guiDialogKaiToast.Render();
   }
-
+*/
   if (m_bOSDVisible)
   {
 	  // tell the OSD window to draw itself
@@ -670,7 +674,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
     return;
   }
 
-    RenderTTFSubtitles();
+	RenderTTFSubtitles();
 
 	if (m_bShowTime && m_iTimeCodePosition != 0)
 	{
@@ -680,8 +684,8 @@ void CGUIWindowFullScreen::RenderFullScreen()
 			m_iTimeCodePosition = 0;
 			return;
 		}
-	  bRenderGUI=true;
-    char displaytime[32] = "??:??/??:??:?? [??:??:??]";
+		bRenderGUI=true;
+		char displaytime[32] = "??:??/??:??:?? [??:??:??]";
 		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
 		for(int count = 0; count < m_iTimeCodePosition; count++)
 		{
@@ -699,146 +703,146 @@ void CGUIWindowFullScreen::RenderFullScreen()
 			sprintf(&displaytime[5], "/%2.2d:%2.2d:%2.2d", ihour,imin,isec);
 		}
     else 
-    {
+		{
 			sprintf(&displaytime[5], "/00:00:00");
-    }
-    __int64 iCurrentTime=g_application.m_pPlayer->GetTime();
-    if(iCurrentTime != 0)
+		}
+		__int64 iCurrentTime=g_application.m_pPlayer->GetTime();
+		if(iCurrentTime != 0)
 		{
 			__int64 ihour = iCurrentTime / (__int64)3600;
 			__int64 imin  = (iCurrentTime-ihour*3600) / 60;
 			__int64 isec = (iCurrentTime-ihour*3600) % 60;
 			sprintf(&displaytime[14], " [%2.2d:%2.2d:%2.2d]", (int)ihour,(int)imin,(int)isec);
-    }
-    else
-    {
-      sprintf(&displaytime[14], " [??:??:??]");
-    }
-		msg.SetLabel(displaytime); 
-    OnMessage(msg);
-  }	
-
-    // check if we have bidirectional controls and set controlIds
-    bool bRewIcons = (GetControl(IMG_2Xr)!=NULL);
-
-  int iSpeed=g_application.GetPlaySpeed();
-	// hide all speed indicators first
-		SET_CONTROL_HIDDEN(GetID(),IMG_2X);
-		SET_CONTROL_HIDDEN(GetID(),IMG_4X);
-		SET_CONTROL_HIDDEN(GetID(),IMG_8X);
-		SET_CONTROL_HIDDEN(GetID(),IMG_16X);
-		SET_CONTROL_HIDDEN(GetID(),IMG_32X);
-
-    if(bRewIcons)
-		{
-	    SET_CONTROL_HIDDEN(GetID(),IMG_2Xr);
-	    SET_CONTROL_HIDDEN(GetID(),IMG_4Xr);
-	    SET_CONTROL_HIDDEN(GetID(),IMG_8Xr);
-	    SET_CONTROL_HIDDEN(GetID(),IMG_16Xr);
-	    SET_CONTROL_HIDDEN(GetID(),IMG_32Xr);
 		}
+		else
+		{
+			sprintf(&displaytime[14], " [??:??:??]");
+		}
+		msg.SetLabel(displaytime); 
+		OnMessage(msg);
+	}	
+
+	// check if we have bidirectional controls and set controlIds
+	bool bRewIcons = (GetControl(IMG_2Xr)!=NULL);
+
+	int iSpeed=g_application.GetPlaySpeed();
+	// hide all speed indicators first
+	SET_CONTROL_HIDDEN(IMG_2X);
+	SET_CONTROL_HIDDEN(IMG_4X);
+	SET_CONTROL_HIDDEN(IMG_8X);
+	SET_CONTROL_HIDDEN(IMG_16X);
+	SET_CONTROL_HIDDEN(IMG_32X);
+
+	if(bRewIcons)
+	{
+		SET_CONTROL_HIDDEN(IMG_2Xr);
+		SET_CONTROL_HIDDEN(IMG_4Xr);
+		SET_CONTROL_HIDDEN(IMG_8Xr);
+		SET_CONTROL_HIDDEN(IMG_16Xr);
+		SET_CONTROL_HIDDEN(IMG_32Xr);
+	}
 
 	if(iSpeed!=1)
-		{
+	{
 		bRenderGUI=true;
-        switch(iSpeed)
+		switch(iSpeed)
 		{
-            case 2:
-		        SET_CONTROL_VISIBLE(GetID(),IMG_2X);
-                break;
-            case -2:
-                SET_CONTROL_VISIBLE(GetID(),bRewIcons?IMG_2Xr:IMG_2X);
-                break;
-            case 4:
-			    SET_CONTROL_VISIBLE(GetID(),IMG_4X);
-                break;
-            case -4:
-                SET_CONTROL_VISIBLE(GetID(),bRewIcons?IMG_4Xr:IMG_4X);
-                break;
-            case 8:
-			SET_CONTROL_VISIBLE(GetID(),IMG_8X);
-                break;
-            case -8:
-                SET_CONTROL_VISIBLE(GetID(),bRewIcons?IMG_8Xr:IMG_8X);
-                break;
-            case 16:
-			SET_CONTROL_VISIBLE(GetID(),IMG_16X);
-                break;
-            case -16:
-                SET_CONTROL_VISIBLE(GetID(),bRewIcons?IMG_16Xr:IMG_16X);
-                break;
-            case 32:
-			SET_CONTROL_VISIBLE(GetID(),IMG_32X);
-                break;
-            case -32:
-                SET_CONTROL_VISIBLE(GetID(),bRewIcons?IMG_32Xr:IMG_32X);
-                break;
-            default:
-            	// do nothing, leave them all invisible
-                break;
+			case 2:
+				SET_CONTROL_VISIBLE(IMG_2X);
+				break;
+			case -2:
+				SET_CONTROL_VISIBLE(bRewIcons ? IMG_2Xr : IMG_2X);
+				break;
+			case 4:
+				SET_CONTROL_VISIBLE(IMG_4X);
+				break;
+			case -4:
+				SET_CONTROL_VISIBLE(bRewIcons ? IMG_4Xr : IMG_4X);
+				break;
+			case 8:
+				SET_CONTROL_VISIBLE(IMG_8X);
+				break;
+			case -8:
+				SET_CONTROL_VISIBLE(bRewIcons ? IMG_8Xr : IMG_8X);
+				break;
+			case 16:
+				SET_CONTROL_VISIBLE(IMG_16X);
+				break;
+			case -16:
+				SET_CONTROL_VISIBLE(bRewIcons ? IMG_16Xr : IMG_16X);
+				break;
+			case 32:
+				SET_CONTROL_VISIBLE(IMG_32X);
+				break;
+			case -32:
+				SET_CONTROL_VISIBLE(bRewIcons ? IMG_32Xr : IMG_32X);
+				break;
+			default:
+				// do nothing, leave them all invisible
+				break;
 		}
 	}
 
 	// Render current time if requested
 	if (m_bShowCurrentTime)
 	{
-    CStdString strTime;
+		CStdString strTime;
 		bRenderGUI =true;
-		SET_CONTROL_VISIBLE(GetID(),LABEL_CURRENT_TIME);
-    __int64 lPTS=10*g_application.m_pPlayer->GetTime();
-    int hh = (int)(lPTS / 36000) % 100;
-    int mm = (int)((lPTS / 600) % 60);
-    int ss = (int)((lPTS /  10) % 60);
-    
-	  if (hh>=1)
-		  strTime.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
-	  else
-		  strTime.Format("%02.2i:%02.2i",mm,ss);
+		SET_CONTROL_VISIBLE(LABEL_CURRENT_TIME);
+		__int64 lPTS=10*g_application.m_pPlayer->GetTime();
+		int hh = (int)(lPTS / 36000) % 100;
+		int mm = (int)((lPTS / 600) % 60);
+		int ss = (int)((lPTS /  10) % 60);
+	  
+		if (hh>=1)
+			strTime.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
+		else
+			strTime.Format("%02.2i:%02.2i",mm,ss);
 		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_CURRENT_TIME); 
 		msg.SetLabel(strTime); 
 		OnMessage(msg); 
-    if ( (timeGetTime() - m_dwTimeCodeTimeout) >=2500)
+		if ( (timeGetTime() - m_dwTimeCodeTimeout) >=2500)
 		{
-      m_bShowCurrentTime = false;
+			m_bShowCurrentTime = false;
 		}
 	}
 	else
 	{
-		SET_CONTROL_HIDDEN(GetID(),LABEL_CURRENT_TIME);
+		SET_CONTROL_HIDDEN(LABEL_CURRENT_TIME);
 	}
 
-  if ( bRenderGUI)
-  {
-	if (g_application.m_pPlayer->IsPaused() || iSpeed != 1)
+	if ( bRenderGUI)
 	{
-	  SET_CONTROL_HIDDEN(GetID(),LABEL_ROW1);
-      SET_CONTROL_HIDDEN(GetID(),LABEL_ROW2);
-      SET_CONTROL_HIDDEN(GetID(),LABEL_ROW3);
-      SET_CONTROL_HIDDEN(GetID(),BLUE_BAR);
+		if (g_application.m_pPlayer->IsPaused() || iSpeed != 1)
+		{
+			SET_CONTROL_HIDDEN(LABEL_ROW1);
+			SET_CONTROL_HIDDEN(LABEL_ROW2);
+			SET_CONTROL_HIDDEN(LABEL_ROW3);
+			SET_CONTROL_HIDDEN(BLUE_BAR);
+		}
+		else if (m_bShowCodecInfo || m_bShowViewModeInfo)
+		{
+			SET_CONTROL_VISIBLE(LABEL_ROW1);
+			SET_CONTROL_VISIBLE(LABEL_ROW2);
+			SET_CONTROL_VISIBLE(LABEL_ROW3);
+			SET_CONTROL_VISIBLE(BLUE_BAR);
+		}
+		else if (m_bShowTime)
+		{
+			SET_CONTROL_VISIBLE(LABEL_ROW1);
+			SET_CONTROL_HIDDEN(LABEL_ROW2);
+			SET_CONTROL_HIDDEN(LABEL_ROW3);
+			SET_CONTROL_VISIBLE(BLUE_BAR);
+		}
+		else
+		{
+			SET_CONTROL_HIDDEN(LABEL_ROW1);
+			SET_CONTROL_HIDDEN(LABEL_ROW2);
+			SET_CONTROL_HIDDEN(LABEL_ROW3);
+			SET_CONTROL_HIDDEN(BLUE_BAR);
+		}
+		CGUIWindow::Render();
 	}
-    else if (m_bShowCodecInfo || m_bShowViewModeInfo)
-    {
-      SET_CONTROL_VISIBLE(GetID(),LABEL_ROW1);
-      SET_CONTROL_VISIBLE(GetID(),LABEL_ROW2);
-      SET_CONTROL_VISIBLE(GetID(),LABEL_ROW3);
-      SET_CONTROL_VISIBLE(GetID(),BLUE_BAR);
-    }
-    else if (m_bShowTime)
-	{
-		SET_CONTROL_VISIBLE(GetID(),LABEL_ROW1);
-		SET_CONTROL_HIDDEN(GetID(),LABEL_ROW2);
-		SET_CONTROL_HIDDEN(GetID(),LABEL_ROW3);
-		SET_CONTROL_VISIBLE(GetID(),BLUE_BAR);
-    }
-    else
-    {
-      SET_CONTROL_HIDDEN(GetID(),LABEL_ROW1);
-      SET_CONTROL_HIDDEN(GetID(),LABEL_ROW2);
-      SET_CONTROL_HIDDEN(GetID(),LABEL_ROW3);
-      SET_CONTROL_HIDDEN(GetID(),BLUE_BAR);
-    }
-	  CGUIWindow::Render();
-  }
 	// and lastly render the mouse pointer...
 	if (g_Mouse.IsActive()) g_application.m_guiPointer.Render();
 }
@@ -890,16 +894,16 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
 
 void CGUIWindowFullScreen::HideOSD()
 {
-  CSingleLock lock(m_section);      
+	CSingleLock lock(m_section);      
 	m_osdMenu.Clear();
-  SET_CONTROL_HIDDEN(GetID(),BTN_OSD_VIDEO);
-  SET_CONTROL_HIDDEN(GetID(),BTN_OSD_AUDIO);
-  SET_CONTROL_HIDDEN(GetID(),BTN_OSD_SUBTITLE);
+	SET_CONTROL_HIDDEN(BTN_OSD_VIDEO);
+	SET_CONTROL_HIDDEN(BTN_OSD_AUDIO);
+	SET_CONTROL_HIDDEN(BTN_OSD_SUBTITLE);
 
-  SET_CONTROL_VISIBLE(GetID(),LABEL_ROW1);
-  SET_CONTROL_VISIBLE(GetID(),LABEL_ROW2);
-  SET_CONTROL_VISIBLE(GetID(),LABEL_ROW3);
-  SET_CONTROL_VISIBLE(GetID(),BLUE_BAR);
+	SET_CONTROL_VISIBLE(LABEL_ROW1);
+	SET_CONTROL_VISIBLE(LABEL_ROW2);
+	SET_CONTROL_VISIBLE(LABEL_ROW3);
+	SET_CONTROL_VISIBLE(BLUE_BAR);
 }
 
 void CGUIWindowFullScreen::ShowOSD()

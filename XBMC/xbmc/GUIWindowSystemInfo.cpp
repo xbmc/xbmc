@@ -76,14 +76,23 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 			m_dwlastTime=0;
 
 			//Get the version from the dll in a seperate thread.
+
 			m_wszMPlayerVersion[0] = 0;			
+
 			HANDLE hThread = CreateThread(NULL, 0,
+
 								GetMPlayerVersionW,		// thread function 
+
 								&m_wszMPlayerVersion,	// argument to thread function 
+
 								0, NULL);
 
+
+
 			if (hThread != NULL) 
+
 				CloseHandle( hThread );
+
 		}
 		break;
 	}
@@ -131,13 +140,13 @@ void  CGUIWindowSystemInfo::GetValues()
 		const WCHAR *psztext=g_localizeStrings.Get(140).c_str();
 		swprintf(wszText,L"%s %s", psztext,CPUText);
 
-		SET_CONTROL_LABEL(GetID(), 2,wszText);
+		SET_CONTROL_LABEL(2,wszText);
 	}
 	{
 		const WCHAR *psztext=g_localizeStrings.Get(141).c_str();
 		swprintf(wszText,L"%s %s", psztext,GPUText);
 
-		SET_CONTROL_LABEL(GetID(), 3,wszText);
+		SET_CONTROL_LABEL(3,wszText);
 	}
 
 	// time build:
@@ -148,7 +157,7 @@ void  CGUIWindowSystemInfo::GetValues()
 		mbstowcs(wszDate, __DATE__, sizeof(wszDate));
 		swprintf(wszText,L"%s %s (%s)\n%s", psztext,pszbuild,wszDate,m_wszMPlayerVersion);
 
-		SET_CONTROL_LABEL(GetID(), 5,wszText);
+		SET_CONTROL_LABEL(5,wszText);
 	}
 
 	// time current
@@ -170,7 +179,7 @@ void  CGUIWindowSystemInfo::GetValues()
 		else
 			swprintf(wszTime,L"%s %d:%02d:%02d %d-%d-%d",pszCurrent,time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
 
-		SET_CONTROL_LABEL(GetID(), 4,wszTime);
+		SET_CONTROL_LABEL(4,wszTime);
 	}
 
 	{
@@ -185,20 +194,20 @@ void  CGUIWindowSystemInfo::GetValues()
 			psztype=g_localizeStrings.Get(147).c_str();
 		{
 			swprintf(wszText,L"%s %s", psztext,psztype);
-			SET_CONTROL_LABEL(GetID(), 6,wszText);
+			SET_CONTROL_LABEL(6,wszText);
 		}
 
 		{
 			psztext=g_localizeStrings.Get(149).c_str();
 			swprintf(wzmac_addr,L"%s: %02X:%02X:%02X:%02X:%02X:%02X",psztext,net_stat.abEnet[0],net_stat.abEnet[1],net_stat.abEnet[2],net_stat.abEnet[3],net_stat.abEnet[4],net_stat.abEnet[5]);
 
-			SET_CONTROL_LABEL(GetID(), 7,wzmac_addr);
+			SET_CONTROL_LABEL(7,wzmac_addr);
 		}
 		{
 
 			const WCHAR* pszIP=g_localizeStrings.Get(150).c_str();
 			swprintf(wzIP,L"%s: %S",pszIP,g_szTitleIP);
-			SET_CONTROL_LABEL(GetID(), 8,wzIP);
+			SET_CONTROL_LABEL(8,wzIP);
 		}
 
 		{
@@ -223,7 +232,7 @@ void  CGUIWindowSystemInfo::GetValues()
 			else
 				wcscat(linkstatus,pszNoLink);
 
-			SET_CONTROL_LABEL(GetID(), 9,linkstatus);
+			SET_CONTROL_LABEL(9,linkstatus);
 		}
 	}
 
@@ -245,7 +254,7 @@ void  CGUIWindowSystemInfo::GetValues()
 			wcscat(wszHD,pszUnavailable);
 		}
 		{
-			SET_CONTROL_LABEL(GetID(), 10,wszHD);
+			SET_CONTROL_LABEL(10,wszHD);
 		}
 		if (GetDiskFreeSpaceEx( "E:\\", NULL, NULL, &lTotalFreeBytes))
 		{
@@ -257,7 +266,7 @@ void  CGUIWindowSystemInfo::GetValues()
 			wcscat(wszHD,pszUnavailable);
 		}
 		{
-			SET_CONTROL_LABEL(GetID(), 12,wszHD);
+			SET_CONTROL_LABEL(12,wszHD);
 		}
 		if (GetDiskFreeSpaceEx( "F:\\", NULL, NULL, &lTotalFreeBytes))
 		{
@@ -269,7 +278,7 @@ void  CGUIWindowSystemInfo::GetValues()
 			wcscat(wszHD,pszUnavailable);
 		}
 		{
-			SET_CONTROL_LABEL(GetID(), 13,wszHD);
+			SET_CONTROL_LABEL(13,wszHD);
 		}
 		if (GetDiskFreeSpaceEx( "G:\\", NULL, NULL, &lTotalFreeBytes))
 		{
@@ -281,7 +290,7 @@ void  CGUIWindowSystemInfo::GetValues()
 			wcscat(wszHD,pszUnavailable);
 		}
 		{
-			SET_CONTROL_LABEL(GetID(), 17,wszHD);
+			SET_CONTROL_LABEL(17,wszHD);
 		}
 	}
 	{
@@ -308,7 +317,7 @@ void  CGUIWindowSystemInfo::GetValues()
 		}
 		WCHAR wszStatus[128];
 		swprintf(wszStatus,L"%s %s", wsztraystate,pszStatus);
-		SET_CONTROL_LABEL(GetID(), 11,wszStatus);
+		SET_CONTROL_LABEL(11,wszStatus);
 	}
 	{
 
@@ -318,7 +327,7 @@ void  CGUIWindowSystemInfo::GetValues()
 			g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight, 
 			g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,
 			m_fFPS);
-		SET_CONTROL_LABEL(GetID(), 14,wszText);
+		SET_CONTROL_LABEL(14,wszText);
 	}
 
 	{
@@ -328,7 +337,7 @@ void  CGUIWindowSystemInfo::GetValues()
 		GlobalMemoryStatus(&stat);
 		swprintf(wszText,L"%s %i/%iMB",pszFreeMem,stat.dwAvailPhys  /(1024*1024),
 			stat.dwTotalPhys  /(1024*1024)  );
-		SET_CONTROL_LABEL(GetID(), 15,wszText);
+		SET_CONTROL_LABEL(15,wszText);
 	}
 
   //fanspeed
@@ -336,6 +345,6 @@ void  CGUIWindowSystemInfo::GetValues()
     CStdString strItem;
     CStdString lbl = g_localizeStrings.Get(13300);
     strItem.Format("%s %i%%", lbl.c_str(), fanSpeed * 2);
-		SET_CONTROL_LABEL(GetID(), 16, strItem);
+		SET_CONTROL_LABEL(16, strItem);
   }
 }

@@ -128,8 +128,8 @@ void CGUIWindowMusicInfo::Update()
 
 	if (m_bViewReview)
 	{
-			SET_CONTROL_LABEL(GetID(), CONTROL_TEXTAREA,m_pAlbum->GetReview());
-			SET_CONTROL_LABEL(GetID(), CONTROL_BTN_TRACKS,182);
+			SET_CONTROL_LABEL(CONTROL_TEXTAREA,m_pAlbum->GetReview());
+			SET_CONTROL_LABEL(CONTROL_BTN_TRACKS,182);
 	}
 	else
 	{
@@ -144,7 +144,7 @@ void CGUIWindowMusicInfo::Update()
 			strLine+=strTmp;
 		};
 
-		SET_CONTROL_LABEL(GetID(), CONTROL_TEXTAREA,strLine);
+		SET_CONTROL_LABEL(CONTROL_TEXTAREA,strLine);
 
 		for (int i=0; i < m_pAlbum->GetNumberOfSongs();++i)
 		{
@@ -159,7 +159,7 @@ void CGUIWindowMusicInfo::Update()
 			g_graphicsContext.SendMessage(msg3);
 		}
 
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTN_TRACKS,183);
+		SET_CONTROL_LABEL(CONTROL_BTN_TRACKS,183);
 
 	}
 

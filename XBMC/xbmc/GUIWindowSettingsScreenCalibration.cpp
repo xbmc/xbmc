@@ -114,11 +114,11 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 			{	// don't allow resolution switching if we are playing a video
 				m_iCurRes = 0;
 				m_Res.push_back(g_graphicsContext.GetVideoResolution());
-				SET_CONTROL_VISIBLE(GetID(), CONTROL_VIDEO);
+				SET_CONTROL_VISIBLE(CONTROL_VIDEO);
 			}
 			else
 			{
-				SET_CONTROL_HIDDEN(GetID(), CONTROL_VIDEO);
+				SET_CONTROL_HIDDEN(CONTROL_VIDEO);
 				g_graphicsContext.GetAllowedResolutions(m_Res, true);
 				// find our starting resolution
 				for (UINT i=0; i<m_Res.size(); i++)
@@ -168,21 +168,21 @@ void CGUIWindowSettingsScreenCalibration::EnableControl(int iControl)
 	// get the current control
 	if (iControl == CONTROL_OSD)
 	{
-		SET_CONTROL_HIDDEN(GetID(), CONTROL_TOP_LEFT);
-		SET_CONTROL_HIDDEN(GetID(), CONTROL_BOTTOM_RIGHT);
-		SET_CONTROL_HIDDEN(GetID(), CONTROL_SUBTITLES);
-		SET_CONTROL_HIDDEN(GetID(), CONTROL_PIXEL_RATIO);
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_OSD);
-		SET_CONTROL_FOCUS(GetID(), CONTROL_OSD,0);
+		SET_CONTROL_HIDDEN(CONTROL_TOP_LEFT);
+		SET_CONTROL_HIDDEN(CONTROL_BOTTOM_RIGHT);
+		SET_CONTROL_HIDDEN(CONTROL_SUBTITLES);
+		SET_CONTROL_HIDDEN(CONTROL_PIXEL_RATIO);
+		SET_CONTROL_VISIBLE(CONTROL_OSD);
+		SET_CONTROL_FOCUS(CONTROL_OSD,0);
 	}
 	else
 	{
-		SET_CONTROL_HIDDEN(GetID(), CONTROL_OSD);
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_TOP_LEFT);
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_BOTTOM_RIGHT);
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_SUBTITLES);
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_PIXEL_RATIO);
-		SET_CONTROL_FOCUS(GetID(), iControl,0);
+		SET_CONTROL_HIDDEN(CONTROL_OSD);
+		SET_CONTROL_VISIBLE(CONTROL_TOP_LEFT);
+		SET_CONTROL_VISIBLE(CONTROL_BOTTOM_RIGHT);
+		SET_CONTROL_VISIBLE(CONTROL_SUBTITLES);
+		SET_CONTROL_VISIBLE(CONTROL_PIXEL_RATIO);
+		SET_CONTROL_FOCUS(iControl,0);
 		// set the controls positions
 	}
 }
@@ -190,7 +190,7 @@ void CGUIWindowSettingsScreenCalibration::EnableControl(int iControl)
 void CGUIWindowSettingsScreenCalibration::ResetControls()
 {
 	// disable the video control, so that our other controls take mouse clicks etc.
-	CONTROL_DISABLE(GetID(), CONTROL_VIDEO);
+	CONTROL_DISABLE(CONTROL_VIDEO);
 	// disable the UI calibration for our controls
 	// and set their limits
 	// also, set them to invisible if they don't have focus
@@ -274,7 +274,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 								(g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight-pControl->GetHeight())/2);
 			CUtil::Unicode2Ansi(g_localizeStrings.Get(275).c_str(),strMode);
 			strStatus.Format("%s (%5.3f)",strMode,g_settings.m_ResInfo[m_Res[m_iCurRes]].fPixelRatio);
-			SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	278);
+			SET_CONTROL_LABEL(CONTROL_LABEL_ROW2,	278);
 		}
 	}
 	else
@@ -290,7 +290,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 					g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top  = pControl->GetYLocation();
 					CUtil::Unicode2Ansi(g_localizeStrings.Get(272).c_str(),strMode);
 					strStatus.Format("%s (%i,%i)",strMode,pControl->GetXLocation(),pControl->GetYLocation());
-					SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	276);
+					SET_CONTROL_LABEL(CONTROL_LABEL_ROW2,	276);
 				}
 				break;
 
@@ -303,7 +303,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 					CStdString strMode;
 					CUtil::Unicode2Ansi(g_localizeStrings.Get(273).c_str(),strMode);
 					strStatus.Format("%s (%i,%i)",strMode,iXOff1,iYOff1);
-					SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	276);
+					SET_CONTROL_LABEL(CONTROL_LABEL_ROW2,	276);
 				}
 				break;
 
@@ -312,7 +312,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 					g_settings.m_ResInfo[m_Res[m_iCurRes]].iSubtitles = pControl->GetYLocation();
 					CUtil::Unicode2Ansi(g_localizeStrings.Get(274).c_str(),strMode);
 					strStatus.Format("%s (%i)",strMode,pControl->GetYLocation());
-					SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	277);
+					SET_CONTROL_LABEL(CONTROL_LABEL_ROW2,	277);
 				}
 				break;
 				
@@ -321,7 +321,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 					g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset = pControl->GetYLocation() - g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight;
 					CUtil::Unicode2Ansi(g_localizeStrings.Get(479).c_str(),strMode);
 					strStatus.Format("%s (%i, Offset=%i)",strMode,pControl->GetYLocation(),g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
-					SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	468);
+					SET_CONTROL_LABEL(CONTROL_LABEL_ROW2,	468);
 					g_application.m_guiWindowOSD.SetPosition(0,g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
 				}
 				break;
@@ -331,7 +331,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 	// set the label control correctly
 	CStdString strText;
 	strText.Format("%s | %s",g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode,strStatus.c_str());
-	SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW1,  strText);
+	SET_CONTROL_LABEL(CONTROL_LABEL_ROW1,  strText);
 }
 
 void CGUIWindowSettingsScreenCalibration::Render()
@@ -343,8 +343,8 @@ void CGUIWindowSettingsScreenCalibration::Render()
 	}
 	else
 	{
-		SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW1,	"");
-		SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	"");
+		SET_CONTROL_LABEL(CONTROL_LABEL_ROW1,	"");
+		SET_CONTROL_LABEL(CONTROL_LABEL_ROW2,	"");
 	}
 	CGUIWindow::Render();
 

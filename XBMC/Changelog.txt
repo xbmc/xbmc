@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-12-2004 fixed: Rendering of dialogs in Full Screen Video.
+  - 13-12-2004 changed: Settings menus: Categories change on focus, rather than on click.
+  - 13-12-2004 changed: GUIMessages to controls have changed - all messages from windows to controls on that window
+                        use OnMessage() rather than g_graphicsContext.SendMessage().  This should stop the clashes
+                        between controls with common ids on different windows.
   - 13-12-2004 fixed: 12 hour LCD related crash
   - 13-12-2004 fixed: Vis crash + keymap.xml (white button) problem
   - 12-12-2004 added: dialogButtonMenu.xml - currently used as a shutdown menu.  id is 111.  Assigned to Right Thumb Button.

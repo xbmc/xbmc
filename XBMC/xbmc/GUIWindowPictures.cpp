@@ -167,8 +167,8 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			else {
 				int iItem = GetSelectedItem();
 				Update( m_strDirectory );
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+				CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
+				CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			}
 		}
 		break;
@@ -177,8 +177,8 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			if ( m_strDirectory.IsEmpty() ) {
 				int iItem = GetSelectedItem();
 				Update( m_strDirectory );
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+				CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
+				CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			}
 		}
 		break;
@@ -214,7 +214,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			}
 
 			if (m_iLastControl>-1)
-				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+				SET_CONTROL_FOCUS(m_iLastControl, 0);
 
 			if (m_iViewAsIcons==-1 && m_iViewAsIconsRoot==-1)
 			{
@@ -228,8 +228,8 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
 			if (m_iItemSelected >=0)
       {
-			  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected)
-			  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iItemSelected)
+			  CONTROL_SELECT_ITEM(CONTROL_LIST,m_iItemSelected)
+			  CONTROL_SELECT_ITEM(CONTROL_THUMBS,m_iItemSelected)
       }
 
 			return true;
@@ -375,8 +375,8 @@ void CGUIWindowPictures::Clear()
 
 void CGUIWindowPictures::UpdateButtons()
 {
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
+	SET_CONTROL_HIDDEN(CONTROL_THUMBS);
+	SET_CONTROL_HIDDEN(CONTROL_LIST);
 
 	int iString = 101;	// view as list
 	if (ViewByIcon())
@@ -384,18 +384,18 @@ void CGUIWindowPictures::UpdateButtons()
 	if (ViewByLargeIcon())
 		iString = 417;		// view as large icon
 
-	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
+	SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS,iString);
 	UpdateThumbPanel();
 
 	if (ViewByIcon()) 
 	{
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
-		SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
+		SET_CONTROL_VISIBLE(CONTROL_THUMBS);
+		SET_CONTROL_HIDDEN(CONTROL_LIST);
 	}
 	else
 	{
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
-		SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
+		SET_CONTROL_VISIBLE(CONTROL_LIST);
+		SET_CONTROL_HIDDEN(CONTROL_THUMBS);
 	}
 
 	if (g_guiSettings.GetBool("Slideshow.Shuffle"))
@@ -410,10 +410,10 @@ void CGUIWindowPictures::UpdateButtons()
 	}
 
   UpdateThumbPanel();
-	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
+	SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS,iString);
 
 	//	Update sort by button
-	SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,SortMethod());
+	SET_CONTROL_LABEL(CONTROL_BTNSORTBY,SortMethod());
 
 	//	Update sorting control
 	if (SortAscending())
@@ -438,7 +438,7 @@ void CGUIWindowPictures::UpdateButtons()
   swprintf(wszText,L"%i %s", iItems,szText);
 
 	
-	SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
+	SET_CONTROL_LABEL(CONTROL_LABELFILES,wszText);
 }
 
 void CGUIWindowPictures::Update(const CStdString &strDirectory)
@@ -453,7 +453,7 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 
 		int iControl = CONTROL_LIST;
 		if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
-		SET_CONTROL_FOCUS(GetID(), iControl, 0);
+		SET_CONTROL_FOCUS(iControl, 0);
 	}
 }
 
@@ -491,10 +491,10 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 	{
 		if ( ViewByIcon() ) 
 		{	
-			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+			SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
 		}
 		else {
-			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+			SET_CONTROL_FOCUS(CONTROL_LIST, 0);
 		}
 	}
 	UpdateThumbPanel();
@@ -506,8 +506,8 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 		GetDirectoryHistoryString(pItem, strHistory);
 		if (strHistory==strSelectedItem)
 		{
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,i);
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,i);
+			CONTROL_SELECT_ITEM(CONTROL_LIST,i);
+			CONTROL_SELECT_ITEM(CONTROL_THUMBS,i);
 			break;
 		}
 	}
@@ -554,8 +554,8 @@ bool CGUIWindowPictures::HaveDiscOrConnection( CStdString& strPath, int iDriveTy
       }
 			int iItem = GetSelectedItem();
 			Update( m_strDirectory );
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+			CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
+			CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			return false;
 		}
 	}
@@ -1032,8 +1032,8 @@ void CGUIWindowPictures::UpdateThumbPanel()
 
   //if (iItem>-1)
   //{
-  //  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem);
-  //  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem);
+  //  CONTROL_SELECT_ITEM(CONTROL_LIST,iItem);
+  //  CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem);
   //}
 }
 

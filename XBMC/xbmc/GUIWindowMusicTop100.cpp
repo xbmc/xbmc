@@ -118,8 +118,8 @@ void CGUIWindowMusicTop100::UpdateButtons()
 {
 	CGUIWindowMusicBase::UpdateButtons();
 
-	CONTROL_DISABLE(GetID(), CONTROL_BTNSORTBY);
-	CONTROL_DISABLE(GetID(), CONTROL_BTNSORTASC);
+	CONTROL_DISABLE(CONTROL_BTNSORTBY);
+	CONTROL_DISABLE(CONTROL_BTNSORTASC);
 
 	//	Update listcontrol and view by icon/list button
 	const CGUIControl* pControl=GetControl(CONTROL_THUMBS);
@@ -130,7 +130,7 @@ void CGUIWindowMusicTop100::UpdateButtons()
 		  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_LIST,0,0,NULL);
 		  g_graphicsContext.SendMessage(msg);
 		  int iItem=msg.GetParam1();
-		  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem);
+		  CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem);
 	  }
   }
 	pControl=GetControl(CONTROL_LIST);
@@ -141,12 +141,12 @@ void CGUIWindowMusicTop100::UpdateButtons()
 		  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_THUMBS,0,0,NULL);
 		  g_graphicsContext.SendMessage(msg);
 		  int iItem=msg.GetParam1();
-		  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem);
+		  CONTROL_SELECT_ITEM(CONTROL_LIST,iItem);
 	  }
   }
 
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
+	SET_CONTROL_HIDDEN(CONTROL_LIST);
+	SET_CONTROL_HIDDEN(CONTROL_THUMBS);
 
 	bool bViewIcon = false;
   int iString;
@@ -164,14 +164,14 @@ void CGUIWindowMusicTop100::UpdateButtons()
 
 	if (bViewIcon) 
   {
-    SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
+    SET_CONTROL_VISIBLE(CONTROL_THUMBS);
   }
   else
   {
-    SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
+    SET_CONTROL_VISIBLE(CONTROL_LIST);
   }
 
-	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
+	SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS,iString);
 
 	//	Update object count label
 	int iItems=m_vecItems.size();
@@ -184,7 +184,7 @@ void CGUIWindowMusicTop100::UpdateButtons()
   const WCHAR* szText=g_localizeStrings.Get(127).c_str();
   swprintf(wszText,L"%i %s", iItems,szText);
 
-	SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
+	SET_CONTROL_LABEL(CONTROL_LABELFILES,wszText);
 }
 
 void CGUIWindowMusicTop100::OnClick(int iItem)
@@ -282,16 +282,16 @@ void CGUIWindowMusicTop100::OnSearchItemFound(const CFileItem* pSelItem)
 		CFileItem* pItem=m_vecItems[i];
 		if (pItem->m_strPath==pSelItem->m_strPath)
 		{
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST, i);
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, i);
+			CONTROL_SELECT_ITEM(CONTROL_LIST, i);
+			CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
 			const CGUIControl* pControl=GetControl(CONTROL_LIST);
 			if (pControl->IsVisible())
 			{
-				SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+				SET_CONTROL_FOCUS(CONTROL_LIST, 0);
 			}
 			else
 			{
-				SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+				SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
 			}
 			break;
 		}

@@ -37,15 +37,15 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
 			// enable the CD's
 			for (int i=1;  i <= m_iNumberOfFiles; ++i)
 			{
-				CONTROL_ENABLE(GetID(),i);
-				SET_CONTROL_VISIBLE(GetID(),i);
+				CONTROL_ENABLE(i);
+				SET_CONTROL_VISIBLE(i);
 			}
 
 			// disable CD's we dont use
 			for (int i=m_iNumberOfFiles+1;  i <= 40; ++i)
 			{
-				SET_CONTROL_HIDDEN(GetID(), i);
-				CONTROL_DISABLE(GetID(), i);
+				SET_CONTROL_HIDDEN(i);
+				CONTROL_DISABLE(i);
 			}
 			return true;
 		}
