@@ -129,8 +129,7 @@ public:
 	/// \brief Image initializer (allocates space for raster and palette):
 	void					Init (int iWidth, int iHeight, int iBPP, int iLoops=0);
 
-	inline char&	Pixel (const int& x, const int& y)
-		{return Raster[y*BytesPerRow+x];}
+	inline char&	Pixel (int x, int y) {return Raster[y*BytesPerRow+x];}
 
 #ifndef _XBOX
 	// Windows GDI Specific function to paint the image on a DC:

@@ -2,6 +2,7 @@
 #include "graphiccontext.h"
 #include "animatedgif.h"
 #include "../xbmc/utils/log.h"
+#include <xgraphics.h>
 
 extern "C" void dllprintf( const char *format, ... );
 
@@ -14,9 +15,10 @@ CTexture::CTexture()
   m_iDelay=100;
 	m_iWidth=m_iHeight=0;
   m_iLoops=0;
+	m_pPalette = NULL;
 }
 
-CTexture::CTexture(LPDIRECT3DTEXTURE8 pTexture,int iWidth, int iHeight, int iDelay)
+CTexture::CTexture(LPDIRECT3DTEXTURE8 pTexture,int iWidth, int iHeight, int iDelay, LPDIRECT3DPALETTE8 pPalette)
 {
   m_iLoops=0;
   m_iReferenceCount=0;
@@ -24,10 +26,16 @@ CTexture::CTexture(LPDIRECT3DTEXTURE8 pTexture,int iWidth, int iHeight, int iDel
   m_iDelay=iDelay;
 	m_iWidth=iWidth;
 	m_iHeight=iHeight;
+	m_pPalette = pPalette;
+	if (m_pPalette)
+		m_pPalette->AddRef();
 }
 
 CTexture::~CTexture()
 {
+	if (m_pPalette)
+		m_pPalette->Release();
+	m_pPalette=NULL;
   if (m_pTexture)
     m_pTexture->Release();
   m_pTexture=NULL;
@@ -100,12 +108,13 @@ int CTexture::GetRef() const
 }
 
 
-LPDIRECT3DTEXTURE8 CTexture::GetTexture(int& iWidth, int& iHeight)
+LPDIRECT3DTEXTURE8 CTexture::GetTexture(int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal)
 {
   if (!m_pTexture) return NULL;
   m_iReferenceCount++;
 	iWidth=m_iWidth;
 	iHeight=m_iHeight;
+	pPal = m_pPalette;
   return m_pTexture;
 }
 
@@ -197,12 +206,12 @@ int CTextureMap::GetDelay(int iPicture) const
 }
 
 
-LPDIRECT3DTEXTURE8 CTextureMap::GetTexture(int iPicture,int& iWidth, int& iHeight)
+LPDIRECT3DTEXTURE8 CTextureMap::GetTexture(int iPicture,int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal)
 {
   if (iPicture < 0 || iPicture >= (int)m_vecTexures.size()) return NULL;
   
   CTexture* pTexture = m_vecTexures[iPicture];
-  return pTexture->GetTexture(iWidth,iHeight);
+  return pTexture->GetTexture(iWidth,iHeight,pPal);
 }
 
 void CTextureMap::Flush()
@@ -224,7 +233,7 @@ CGUITextureManager::~CGUITextureManager(void)
 }
 
 
-LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureName,int iItem, int& iWidth, int& iHeight)
+LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureName,int iItem, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal)
 {
 //  CLog::Log(" refcount++ for  GetTexture(%s)\n", strTextureName.c_str());
   for (int i=0; i < (int)m_vecTextures.size(); ++i)
@@ -232,7 +241,7 @@ LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureNa
     CTextureMap *pMap=m_vecTextures[i];
     if (pMap->GetName() == strTextureName)
     {
-      return  pMap->GetTexture(iItem, iWidth,iHeight);
+      return  pMap->GetTexture(iItem, iWidth,iHeight,pPal);
     }
   }
   return NULL;
@@ -263,10 +272,10 @@ int CGUITextureManager::GetDelay(const CStdString& strTextureName, int iPicture)
   return 100;
 }
 
-static int RoundPow2(int s)
+int RoundPow2(int s)
 {
 	float f = log((float)s)/log(2.f);
-	return 1 << (int)ceil(f);
+	return 1 << (int)(f+0.999f);
 }
 
 int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
@@ -290,6 +299,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
   //OutputDebugString(strPath.c_str());
   //OutputDebugString("\n");
 
+	LARGE_INTEGER start;
+	QueryPerformanceCounter(&start);
+
   if (strPath.Right(4).ToLower()==".gif")
   {
  
@@ -309,68 +321,55 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
     int iWidth = AnimatedGifSet.FrameWidth;
 		int iHeight= AnimatedGifSet.FrameHeight;
 
-    CTextureMap* pMap = new CTextureMap(strTextureName);
+		IDirect3DPalette8* pPal;
+		g_graphicsContext.Get3DDevice()->CreatePalette(D3DPALETTE_256, &pPal);
+		PALETTEENTRY* pal;
+		pPal->Lock((D3DCOLOR**)&pal, 0);
+
+		memcpy(pal, AnimatedGifSet.m_vecimg[0]->Palette, sizeof(PALETTEENTRY)*256);
+		for (int i = 0; i < 256; i++)
+			pal[i].peFlags = 0xff; // alpha
+		if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
+			pal[AnimatedGifSet.m_vecimg[0]->Transparent].peFlags = 0;
+
+		pPal->Unlock();
+
+		CTextureMap* pMap = new CTextureMap(strTextureName);
 	  for (int iImage=0; iImage < iImages; iImage++)
     {
-			LPDIRECT3DSURFACE8 pTempSurf;
-      if (g_graphicsContext.Get3DDevice()->CreateImageSurface(iWidth, 
-																															iHeight, 
-																															D3DFMT_LIN_A8R8G8B8,
-																															&pTempSurf) == D3D_OK) 
-		  {
-        CAnimatedGif* pImage=AnimatedGifSet.m_vecimg[iImage];
-        //dllprintf("%s loops:%i", strTextureName.c_str(),AnimatedGifSet.nLoops);
-        D3DLOCKED_RECT lr;
-	      if ( D3D_OK == pTempSurf->LockRect( &lr, NULL, 0 ))
-	      {
-		      DWORD strideScreen=lr.Pitch;
-		      for (DWORD y=0; y <(DWORD)pImage->Height; y++)
-		      {
-			      BYTE *pDest = (BYTE*)lr.pBits + strideScreen*y;
-			      for (DWORD x=0;x <(DWORD)pImage->Width; x++)
-			      {
-				      byte byAlpha=0xff;
-				      byte iPaletteColor=(byte)pImage->Pixel( x, y);
-              if (pImage->Transparency)
-              {
-                int iTransparentColor=pImage->Transparent;
-                if (iTransparentColor<0) iTransparentColor=0;
-				        if (iPaletteColor==iTransparentColor)
-				        {
-					        byAlpha=0x0;
-				        }
-              }
-				      COLOR& Color= pImage->Palette[iPaletteColor];
-      				
-				      *pDest++ = Color.b;
-				      *pDest++ = Color.g;
-				      *pDest++ = Color.r;
-              *pDest++ = byAlpha;
-			      } // of for (DWORD x=0; x < (DWORD)pImage->Width; x++)
-		      } // of for (DWORD y=0; y < (DWORD)pImage->Height; y++)
-		      pTempSurf->UnlockRect( );
-	      } // of if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
-
-				// compress texture
-				if (g_graphicsContext.Get3DDevice()->CreateTexture(RoundPow2(iWidth), RoundPow2(iHeight), 1, 0, D3DFMT_DXT1, 0, &pTexture) == D3D_OK) 
+			int w = RoundPow2(iWidth);
+			int h = RoundPow2(iHeight);
+			if (g_graphicsContext.Get3DDevice()->CreateTexture(w, h, 1, 0, D3DFMT_P8, 0, &pTexture) == D3D_OK) 
+			{
+				D3DLOCKED_RECT lr;
+				CAnimatedGif* pImage=AnimatedGifSet.m_vecimg[iImage];
+				RECT rc = { 0, 0, pImage->Width, pImage->Height };
+				if ( D3D_OK == pTexture->LockRect( 0, &lr, &rc, 0 ))
 				{
-					LPDIRECT3DSURFACE8 pDstSurf;
-					pTexture->GetSurfaceLevel(0, &pDstSurf);
-					if (!FAILED(D3DXLoadSurfaceFromSurface(pDstSurf, NULL, NULL, pTempSurf, NULL, NULL, D3DX_FILTER_NONE, 0)))
-					{
-						CTexture* pclsTexture = new CTexture(pTexture,iWidth,iHeight);
-						pclsTexture->SetDelay(pImage->Delay);
-						pclsTexture->SetLoops(AnimatedGifSet.nLoops);
+					POINT pt = { 0, 0 };
+					XGSwizzleRect(pImage->Raster, pImage->BytesPerRow, &rc, lr.pBits, w, h, &pt, 1);
 
-						pMap->Add(pclsTexture);
-					}
-					else
-						pTexture->Release();
-					pDstSurf->Release();
+					pTexture->UnlockRect( 0 );
+
+					CTexture* pclsTexture = new CTexture(pTexture,iWidth,iHeight, 100, pPal);
+					pclsTexture->SetDelay(pImage->Delay);
+					pclsTexture->SetLoops(AnimatedGifSet.nLoops);
+					
+					pMap->Add(pclsTexture);
 				}
-				pTempSurf->Release();
-		  } // of if (g_graphicsContext.Get3DDevice()->CreateTexture
+			}
+
     } // of for (int iImage=0; iImage < iImages; iImage++)
+
+		pPal->Release();
+
+		LARGE_INTEGER end, freq;
+		QueryPerformanceCounter(&end);
+		QueryPerformanceFrequency(&freq);
+		char temp[200];
+		sprintf(temp, "Load %s: %.1fms\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
+		OutputDebugString(temp);
+
     m_vecTextures.push_back(pMap);
     return pMap->size();
   } // of if (strPath.Right(4).ToLower()==".gif")
@@ -413,6 +412,13 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 			return NULL;
 		}
 	}
+
+	LARGE_INTEGER end, freq;
+	QueryPerformanceCounter(&end);
+	QueryPerformanceFrequency(&freq);
+	char temp[200];
+	sprintf(temp, "Load %s: %.1fms\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
+	OutputDebugString(temp);
 
 	//CStdString strLog;
 	//strLog.Format("%s %ix%i\n", strTextureName.c_str(),info.Width,info.Height);
