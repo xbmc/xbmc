@@ -10,15 +10,17 @@
 
 #ifdef _DEBUG
 //	#pragma comment (lib,"lib/filezilla/xbfilezillad.lib") // SECTIONNAME=FILEZILL
-	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")         // SECTIONNAME=LIBXBMS
-	#pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")           // SECTIONNAME=LIBSMB
-	#pragma comment (lib,"xbmc/lib/cximage/ImageLibd.lib")        // SECTIONNAME=CXIMAGE
+	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
+	#pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
+	#pragma comment (lib,"xbmc/lib/cximage/ImageLibd.lib")   // SECTIONNAME=CXIMAGE
+	#pragma comment (lib,"xbmc/lib/libID3/i3dlibd.lib")			 // SECTIONNAME=LIBID3
 	#pragma comment (lib,"guilib\\debug\\guiLib.lib")
 #else
 //  #pragma comment (lib,"lib/filezilla/xbfilezilla.lib")
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")          
   #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")           
 	#pragma comment (lib,"xbmc/lib/cximage/ImageLib.lib")
+	#pragma comment (lib,"xbmc/lib/libID3/i3dlib.lib")					
 	#pragma comment (lib,"guiLib\\release\\guiLib.lib")
 #endif
 

@@ -484,13 +484,15 @@ int LZWDecoder (char * bufIn, char * bufOut,
 		// - Table Suffices contain the raw codes to be output
 		while (OutCode >= FirstEntry) 
 		{
-			if (OutIndex > 4096) return 0;
+			if (OutIndex > 4096) 
+				return 0;
 			OutStack[OutIndex++] = Suffix[OutCode];	// Add suffix to Output Stack
 			OutCode = Prefix[OutCode];							// Loop with preffix
 		}
 
 		// NOW OutCode IS A RAW CODE, ADD IT TO OUTPUT STACK.
-		if (OutIndex > 4096) return 0;
+		if (OutIndex > 4096) 
+			return 0;
 		OutStack[OutIndex++] = (unsigned char) OutCode;
 
 		// ADD NEW ENTRY TO TABLE (PrevCode + OutCode)
@@ -502,13 +504,17 @@ int LZWDecoder (char * bufIn, char * bufOut,
 			NextEntry++;
 
 			// Prevent Translation table overflow:
-			if (NextEntry>=4096) return 0;
+			if (NextEntry>=4096) 
+				return 0;
       
 			// INCREASE CodeSize IF NextEntry IS INVALID WITH CURRENT CodeSize
 			if (NextEntry >= (1<<CodeSize)) 
 			{
 				if (CodeSize < 12) CodeSize++;
-				else {}				// Do nothing. Maybe next is Clear Code.
+				else 
+				{
+					;
+				}				// Do nothing. Maybe next is Clear Code.
 			}
 		}
 

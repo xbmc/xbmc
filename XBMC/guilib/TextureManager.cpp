@@ -239,13 +239,13 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 	      if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
 	      {
 		      DWORD strideScreen=lr.Pitch;
-		      for (DWORD y=0; y < (DWORD)pImage->Height; y++)
+		      for (DWORD y=0; y <(DWORD)pImage->Height; y++)
 		      {
 			      BYTE *pDest = (BYTE*)lr.pBits + strideScreen*y;
-			      for (DWORD x=0; x < (DWORD)pImage->Width; x++)
+			      for (DWORD x=0;x <(DWORD)pImage->Width; x++)
 			      {
 				      byte byAlpha=0xff;
-				      int iPaletteColor=pImage->Pixel( x, y);
+				      byte iPaletteColor=(byte)pImage->Pixel( x, y);
               if (pImage->Transparency)
               {
                 int iTransparentColor=pImage->Transparent;

@@ -13,6 +13,11 @@ namespace MUSIC_GRABBER
 		CMusicAlbumInfo(void);
 		CMusicAlbumInfo(const CStdString& strAlbumInfo, const CStdString& strAlbumURL);
 		virtual ~CMusicAlbumInfo(void);
+		void							Save(CStdString& strFileName);
+		bool							Load(CStdString& strFileName);
+		bool							Loaded() const;
+		void							SetLoaded(bool bOnOff);
+
 		const CStdString& GetArtist() const;
 		const CStdString& GetTitle() const;
 		const CStdString& GetTitle2() const;
@@ -40,6 +45,7 @@ namespace MUSIC_GRABBER
 		CStdString	  m_strImageURL;
 		CStdString    m_strAlbumURL;
 		int						m_iRating;
+		bool					m_bLoaded;
 		vector<CMusicSong> m_vecSongs;
 	};
 };

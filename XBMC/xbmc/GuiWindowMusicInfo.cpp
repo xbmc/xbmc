@@ -188,12 +188,15 @@ void CGUIWindowMusicInfo::Refresh()
 
 	CStdString strThumb;
 	CStdString strImage=m_pAlbum->GetImageURL();
+	CUtil::GetAlbumThumb(m_pAlbum->GetTitle(),strThumb);
 	if (!CUtil::FileExists(strThumb) )
 	{
-		CUtil::GetThumbnail(strImage,strThumb);
 		CHTTP http;
 		http.Download(strImage,strThumb);
 	}
+	CStdString strAlbum;
+	CUtil::GetAlbumCacheName(m_pAlbum->GetTitle(),strAlbum);
+	m_pAlbum->Save(strAlbum);
 
 	if (CUtil::FileExists(strThumb) )
 	{
