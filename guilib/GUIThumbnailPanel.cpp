@@ -62,6 +62,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
   m_iThumbHeight=64;
   m_iThumbXPos=8;
   m_iThumbYPos=8;
+	m_upDown.SetShowRange(true);	// show the range by default
 	ControlType = GUICONTROL_THUMBNAIL;
 }
 
