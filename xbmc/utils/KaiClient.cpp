@@ -204,7 +204,7 @@ void CKaiClient::Host(CStdString& aPassword, int aPlayerLimit, CStdString& aDesc
 	if (client_state==State::Authenticated)
 	{
 		CStdString strHostMessage;
-		strHostMessage.Format("KAI_CLIENT_CREATE_VECTOR;%s;%d;%s;",aPassword,aPlayerLimit,aDescription);
+		strHostMessage.Format("KAI_CLIENT_CREATE_VECTOR;%d;%s;%s;",aPlayerLimit,aDescription,aPassword);
 		Send(server_addr, strHostMessage);
 	}
 }
