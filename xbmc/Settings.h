@@ -104,6 +104,7 @@ public:
 	  bool			m_bMyMusicAlbumSortAscending;
 	  int				m_iMyMusicAlbumSortMethod;
 	  int				m_iMyMusicAlbumRootSortMethod;
+		bool			m_bMyMusicAlbumShowRecent;
 		bool			m_bMyMusicArtistsRootViewAsIcons;
 		bool			m_bMyMusicArtistsViewAsIcons;
 	  bool			m_bMyMusicArtistsRootSortAscending;

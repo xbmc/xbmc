@@ -4,10 +4,9 @@
 #include ".\http.h"
 #include "../util.h"
 
-
-
 using namespace MUSIC_GRABBER;
 using namespace HTML;
+
 CMusicAlbumInfo::CMusicAlbumInfo(void)
 {
 	m_strArtist="";
@@ -25,8 +24,8 @@ CMusicAlbumInfo::CMusicAlbumInfo(void)
 
 CMusicAlbumInfo::~CMusicAlbumInfo(void)
 {
-}
 
+}
 
 CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbumInfo, const CStdString& strAlbumURL)
 {
@@ -47,6 +46,7 @@ const CStdString& CMusicAlbumInfo::GetAlbumURL() const
 {
 	return m_strAlbumURL;
 }
+
 const CStdString& CMusicAlbumInfo::GetArtist() const
 {
 	return m_strArtist;
@@ -67,12 +67,10 @@ const CStdString& CMusicAlbumInfo::GetTitle2() const
 	return m_strTitle2;
 }
 
-
 const CStdString& CMusicAlbumInfo::GetDateOfRelease() const
 {
 	return m_strDateOfRelease;
 }
-
 
 const CStdString& CMusicAlbumInfo::GetGenre() const
 {
@@ -268,8 +266,6 @@ bool CMusicAlbumInfo::Load()
 	return Parse(strHTML);
 }
 
-
-
 void CMusicAlbumInfo::Save(CStdString& strFileName)
 {
 	
@@ -331,6 +327,7 @@ void CMusicAlbumInfo::SetLoaded(bool bOnOff)
 {
 	m_bLoaded=bOnOff;
 }
+
 bool CMusicAlbumInfo::Loaded() const
 {
 	return m_bLoaded;
@@ -349,4 +346,14 @@ void  CMusicAlbumInfo::Set(CAlbum& album)
 	m_iRating					= album.iRating;
 	m_strTitle2				= "";
 	m_bLoaded					= true;
+}
+
+void CMusicAlbumInfo::SetAlbumPath(const CStdString& strAlbumPath)
+{
+	m_strAlbumPath=strAlbumPath;
+}
+
+const CStdString& CMusicAlbumInfo::GetAlbumPath()
+{
+	return m_strAlbumPath;
 }
