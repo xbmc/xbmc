@@ -39,26 +39,13 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 		{
 			CLog::Log(LOGERROR, "Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
 			delete e;
+			file.Close();
 			return false;
 		}
 		
 		char* pBuffer=NULL;
 		u_int16_t nTrackNum=0;
 		u_int16_t nTrackCount=0;
-
-		try
-		{
-			if (file.GetMetadataGenre(&pBuffer))
-			{
-				tag.SetGenre(pBuffer);
-				delete pBuffer;
-			}
-		}
-		catch(MP4Error* e)
-		{
-			CLog::Log(LOGERROR, "Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
-			delete e;
-		}
 
 		try
 		{
@@ -75,7 +62,22 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 			CLog::Log(LOGERROR, "Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
 			delete e;
 			tag.SetLoaded(false);
+			file.Close();
 			return false;
+		}
+
+		try
+		{
+			if (file.GetMetadataGenre(&pBuffer))
+			{
+				tag.SetGenre(pBuffer);
+				delete pBuffer;
+			}
+		}
+		catch(MP4Error* e)
+		{
+			CLog::Log(LOGERROR, "Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
+			delete e;
 		}
 
 		try
