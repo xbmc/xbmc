@@ -18,6 +18,7 @@ CGUIControl::CGUIControl()
   m_dwControlRight=0;
   m_dwControlUp=0;
   m_dwControlDown=0;
+	ControlType = GUICONTROL_UNKNOWN;
 }
 
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight)
@@ -38,6 +39,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWOR
   m_dwControlRight=0;
   m_dwControlUp=0;
   m_dwControlDown=0;
+	ControlType = GUICONTROL_UNKNOWN;
 }
 
 

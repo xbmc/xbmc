@@ -50,6 +50,7 @@ CGUIRAMControl::CGUIRAMControl(DWORD dwParentID, DWORD dwControlId,
 
 	m_iSelection = 0;
 	m_dwCounter = 0;
+	ControlType = GUICONTROL_RAM;
 }
 
 CGUIRAMControl::~CGUIRAMControl(void)

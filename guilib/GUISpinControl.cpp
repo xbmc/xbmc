@@ -35,6 +35,7 @@ m_dwBuddyControlID = 0;
 	m_bBuddyDisabled = false;
 	m_dwTextOffsetX = 0;
 	m_dwTextOffsetY = 0;
+	ControlType = GUICONTROL_SPIN;
 }
 
 void CGUISpinControl::SetNonProportional(bool bOnOff)
