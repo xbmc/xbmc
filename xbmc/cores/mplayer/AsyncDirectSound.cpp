@@ -477,9 +477,9 @@ DWORD CASyncDirectSound::GetBytesInBuffer()
 FLOAT CASyncDirectSound::GetDelay()
 {
 	if (xbox_Ac3encoder_active)
-		return 0.049;			//(Ac3 encoder 29ms)+(receiver 20ms)
+		return 0.049f;			//(Ac3 encoder 29ms)+(receiver 20ms)
 	else
-		return 0.008;			//PCM output 8ms
+		return 0.008f;			//PCM output 8ms
 }
 
 //***********************************************************************************************
