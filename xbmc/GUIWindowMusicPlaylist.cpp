@@ -151,8 +151,8 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 			}
 			else if (iControl==CONTROL_BTNREPEAT)
 			{
-				g_stSettings.m_bMyMusicPlaylistRepeat=!g_stSettings.m_bMyMusicPlaylistRepeat;
-				g_playlistPlayer.Repeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat);
+				g_guiSettings.ToggleBool("MyMusic.Repeat");
+				g_playlistPlayer.Repeat(PLAYLIST_MUSIC, g_guiSettings.GetBool("MyMusic.Repeat"));
 			}
 			else if (iControl==CONTROL_BTNREPEATONE)
 			{
@@ -522,7 +522,7 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 			{
 				//int iTrack=tag.GetTrackNumber();
 				int iTrack = (int)m_lPlayListSeq;
-				if (iTrack>0 && !g_stSettings.m_bMyMusicHideTrackNumber)
+				if (iTrack>0 && !g_guiSettings.GetBool("MusicLists.HideTrackNumber"))
 					str.Format("%02.2i. %s - %s",iTrack, tag.GetArtist().c_str(), tag.GetTitle().c_str());
 				else 
 					str.Format("%s - %s", tag.GetArtist().c_str(), tag.GetTitle().c_str());
@@ -531,7 +531,7 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 			{
 				//int iTrack=tag.GetTrackNumber();
 				int iTrack = (int)m_lPlayListSeq;
-				if (iTrack>0 && !g_stSettings.m_bMyMusicHideTrackNumber)
+				if (iTrack>0 && !g_guiSettings.GetBool("MusicLists.HideTrackNumber"))
 					str.Format("%02.2i. %s ",iTrack, tag.GetTitle().c_str());
 				else 
 					str.Format("%s", tag.GetTitle().c_str());
@@ -720,7 +720,7 @@ void CGUIWindowMusicPlayList::LoadItem(CFileItem* pItem)
 		}
 
 		//	Nothing found, load tag from file
-		if (g_stSettings.m_bUseID3 && !pItem->m_musicInfoTag.Loaded())
+		if (g_guiSettings.GetBool("MyMusic.UseTags") && !pItem->m_musicInfoTag.Loaded())
 		{
 			// get correct tag parser
 			CMusicInfoTagLoaderFactory factory;

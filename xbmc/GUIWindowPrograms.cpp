@@ -20,6 +20,7 @@
 #include "GUIThumbnailPanel.h"
 #include "utils/log.h"
 #include <algorithm>
+#include "AutoSwitch.h"
 
 using namespace AUTOPTR;
 using namespace DIRECTORY;
@@ -42,6 +43,7 @@ CGUIWindowPrograms::CGUIWindowPrograms(void)
 {
 	m_strDirectory="?";
 	m_iLastControl=-1;
+	m_iViewAsIcons=-1;
 }
 
 
@@ -72,7 +74,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				m_shareDirectory=g_stSettings.m_szDefaultPrograms;
 				m_iDepth=1;
 				m_strBookmarkName="default";
-				if (g_stSettings.m_bMyProgramsNoShortcuts && g_stSettings.m_szShortcutDirectory[0])	// let's remove shortcuts from vector
+				if (g_guiSettings.GetBool("Programs.NoShortcuts") && g_stSettings.m_szShortcutDirectory[0])	// let's remove shortcuts from vector
 					g_settings.m_vecMyProgramsBookmarks.erase(g_settings.m_vecMyProgramsBookmarks.begin());
 			}
 
@@ -82,8 +84,12 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				SET_CONTROL_HIDDEN(GetID(), i);
 			}
 
+			if (m_iViewAsIcons==-1)
+			{
+				m_iViewAsIcons=g_stSettings.m_iMyProgramsViewAsIcons;
+			}
 
-			if (g_stSettings.m_bMyProgramsNoShortcuts)				// let's hide Scan button
+			if (g_guiSettings.GetBool("Programs.NoShortcuts"))				// let's hide Scan button
 			{
 				SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNSCAN);
 			}
@@ -106,7 +112,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 			}
 
 
-			Update(m_strDirectory);
+			UpdateDir(m_strDirectory);
 
 			if (m_iLastControl>-1)
 				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
@@ -131,8 +137,9 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 			if (iControl==CONTROL_BTNVIEWAS)
 			{
 				bool bLargeIcons(false);
-				g_stSettings.m_iMyProgramsViewAsIcons++;
-				if (g_stSettings.m_iMyProgramsViewAsIcons > VIEW_AS_LARGEICONS) g_stSettings.m_iMyProgramsViewAsIcons=VIEW_AS_LIST;
+				m_iViewAsIcons++;
+				if (m_iViewAsIcons > VIEW_AS_LARGEICONS) m_iViewAsIcons=VIEW_AS_LIST;
+				g_stSettings.m_iMyProgramsViewAsIcons = m_iViewAsIcons;
 				g_settings.Save();
 
 				ShowThumbPanel();
@@ -292,9 +299,9 @@ void CGUIWindowPrograms::OnAction(const CAction &action)
 void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idepth)
 {
 	WIN32_FIND_DATA wfd;
-	bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
-	bool bFlattenDir=g_stSettings.m_bMyProgramsFlatten;
-	bool bUseDirectoryName=g_stSettings.m_bMyProgramsDirectoryName;
+	bool bOnlyDefaultXBE=g_guiSettings.GetBool("Programs.DefaultXBEOnly");
+	bool bFlattenDir=g_guiSettings.GetBool("Programs.Flatten");
+	bool bUseDirectoryName=g_guiSettings.GetBool("Programs.UseDirectoryName");
 
 	memset(&wfd,0,sizeof(wfd));
 	CStdString strRootDir=strDirectory;
@@ -406,8 +413,25 @@ void CGUIWindowPrograms::Clear()
 
 void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 {
-	bool bFlattenDir=g_stSettings.m_bMyProgramsFlatten;
-	bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
+	UpdateDir(strDirectory);
+	if (g_guiSettings.GetBool("Programs.UseAutoSwitching"))
+	{
+		m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
+
+		ShowThumbPanel();
+		UpdateButtons();
+
+		int iControl = CONTROL_LIST;
+		if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
+		SET_CONTROL_FOCUS(GetID(), iControl, 0);
+	}
+}
+
+
+void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
+{
+	bool bFlattenDir=g_guiSettings.GetBool("Programs.Flatten");
+	bool bOnlyDefaultXBE=g_guiSettings.GetBool("Programs.DefaultXBEOnly");
 	bool bParentPath(false);
 	bool bPastBookMark(true);
 	CStdString strParentPath;
@@ -451,7 +475,7 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 
 	CUtil::Tokenize(strDir, vecPaths, ",");			
 
-	if (!g_stSettings.m_bMyProgramsNoShortcuts)
+	if (!g_guiSettings.GetBool("Programs.NoShortcuts"))
 	{
 		if (CUtil::HasSlashAtEnd(strShortCutsDir))
 			strShortCutsDir.Delete(strShortCutsDir.size()-1);
@@ -494,7 +518,7 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 
 	if (strDirectory!="")
 	{
-			if (!g_stSettings.m_bHideParentDirItems)
+			if (!g_guiSettings.GetBool("Programs.HideParentDirItems"))
 			{
 				CFileItem *pItem = new CFileItem("..");
 				pItem->m_strPath=strParentPath;
@@ -542,7 +566,7 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 
 	CUtil::ClearCache();
 	CUtil::SetThumbs(m_vecItems);
-	if (g_stSettings.m_bHideExtensions)
+	if (g_guiSettings.GetBool("Programs.HideExtensions"))
 		CUtil::RemoveExtensions(m_vecItems);
 	CUtil::FillInDefaultIcons(m_vecItems);
 
@@ -580,7 +604,7 @@ void CGUIWindowPrograms::OnClick(int iItem)
 		// launch xbe...
 		char szPath[1024];
 		char szParameters[1024];
-		if (g_stSettings.m_bMyProgramsFlatten)
+		if (g_guiSettings.GetBool("Programs.Flatten"))
 			m_database.IncTimesPlayed(pItem->m_strPath);
 		m_database.Close();
 		memset(szParameters,0,sizeof(szParameters));
@@ -806,7 +830,7 @@ void CGUIWindowPrograms::UpdateButtons()
 	bool bViewIcon = false;
 	int iString;
 
-	switch (g_stSettings.m_iMyProgramsViewAsIcons)
+	switch (m_iViewAsIcons)
 	{
 	case VIEW_AS_LIST:
 		iString=101; // view as list
@@ -886,7 +910,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 		m_dlgProgress->SetLine(2,strStrippedPath);
 		m_dlgProgress->Progress();
 	}
-	//bool   bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
+	//bool   bOnlyDefaultXBE=g_guiSettings.GetBool("Programs.DefaultXBEOnly");
 	bool bScanSubDirs=true;
 	bool bFound=false;
 	DeleteThumbs(items);
@@ -1003,13 +1027,13 @@ int CGUIWindowPrograms::GetSelectedItem()
 
 bool CGUIWindowPrograms::ViewByIcon()
 {
-	if (g_stSettings.m_iMyProgramsViewAsIcons != VIEW_AS_LIST) return true;
+	if (m_iViewAsIcons != VIEW_AS_LIST) return true;
 	return false;
 }
 
 bool CGUIWindowPrograms::ViewByLargeIcon()
 {
-	if (g_stSettings.m_iMyProgramsViewAsIcons== VIEW_AS_LARGEICONS) return true;
+	if (m_iViewAsIcons== VIEW_AS_LARGEICONS) return true;
 	return false;
 }
 
@@ -1038,15 +1062,4 @@ void CGUIWindowPrograms::GoParentFolder()
 {
 	CStdString strPath=m_strParentPath;
 	Update(strPath);
-	/*
-	if (m_vecItems.size()==0) return;
-	CFileItem* pItem=m_vecItems[0];
-	if (pItem->m_bIsFolder)
-	{
-		if (pItem->GetLabel()=="..")
-		{
-			CStdString strPath=pItem->m_strPath;
-			Update(strPath);
-		}
-	}*/
 }

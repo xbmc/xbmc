@@ -349,9 +349,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 	if (m_bOSDVisible)
 	{
 		//if (timeGetTime()-m_dwOSDTimeOut > 5000)
-		if (g_stSettings.m_iOSDTimeout)
+		if (g_guiSettings.GetInt("MyVideos.OSDTimeout"))
 		{
-			if ( (timeGetTime() - m_dwOSDTimeOut) > (DWORD)(g_stSettings.m_iOSDTimeout * 1000))
+			if ( (timeGetTime() - m_dwOSDTimeOut) > (DWORD)(g_guiSettings.GetInt("MyVideos.OSDTimeout") * 1000))
 			{
 				CSingleLock lock(m_section);
 				CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
@@ -414,8 +414,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
 				m_subtitleFont = new CGUIFontTTF("__subtitle__");
 				CStdString fontPath = "Q:\\Media\\Fonts\\";
-				fontPath += g_stSettings.m_szSubtitleFont;
-				if (!m_subtitleFont->Load(fontPath, g_stSettings.m_iSubtitleHeight, g_stSettings.m_iSubtitleTTFStyle))
+				fontPath += g_guiSettings.GetString("Subtitles.Font");
+				if (!m_subtitleFont->Load(fontPath, g_guiSettings.GetInt("Subtitles.Height"), g_guiSettings.GetInt("Subtitles.Style")))
 				{
 					delete m_subtitleFont;
 					m_subtitleFont = NULL;
@@ -450,7 +450,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
 			g_graphicsContext.Lock();
 			g_graphicsContext.SetFullScreenVideo(false);
-			g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
+			g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
 			g_graphicsContext.Unlock();
       
 			m_iCurrentBookmark=0;
@@ -635,13 +635,13 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		{
 			CStdString strStatus;
 			strStatus.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
-			if (g_stSettings.m_bSoftenVideo)
+			if (g_guiSettings.GetInt("Filter.Soften"))
 				strStatus += "  |  Soften";
 			else
 				strStatus += "  |  No Soften";
 
 			CStdString strFilter;
-			strFilter.Format("  |  Flicker Filter: %i", g_stSettings.m_iFlickerFilterVideo);
+			strFilter.Format("  |  Flicker Filter: %i", g_guiSettings.GetInt("Filters.Flicker"));
 			strStatus += strFilter;
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3); 
 			msg.SetLabel(strStatus); 
@@ -877,13 +877,13 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
 			float x = (float) (g_settings.m_ResInfo[m_iResolution].iWidth) / 2;
 			float y = (float) g_settings.m_ResInfo[m_iResolution].iSubtitles - h;
 
-			float outlinewidth = (float)g_stSettings.m_iSubtitleHeight/8;
+			float outlinewidth = (float)g_guiSettings.GetInt("Subtitles.Height")/8;
 
 			m_subtitleFont->DrawText(x-outlinewidth, y, 0, subtitleText.c_str(), XBFONT_CENTER_X);
 			m_subtitleFont->DrawText(x+outlinewidth, y, 0, subtitleText.c_str(), XBFONT_CENTER_X);
 			m_subtitleFont->DrawText(x, y+outlinewidth, 0, subtitleText.c_str(), XBFONT_CENTER_X);
 			m_subtitleFont->DrawText(x, y-outlinewidth, 0, subtitleText.c_str(), XBFONT_CENTER_X);
-			m_subtitleFont->DrawText(x, y, g_stSettings.m_iSubtitleTTFColor, subtitleText.c_str(), XBFONT_CENTER_X);
+			m_subtitleFont->DrawText(x, y, g_guiSettings.GetInt("Subtitles.Color")==SUBTITLE_COLOR_YELLOW ? 0xFFFF00 : 0xFFFFFF, subtitleText.c_str(), XBFONT_CENTER_X);
 		}
 	}
 }

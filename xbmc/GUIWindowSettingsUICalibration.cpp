@@ -52,7 +52,7 @@ bool CGUIWindowSettingsUICalibration::OnMessage(CGUIMessage& message)
 			{
 				pControl->EnableCalibration(false);
 				pControl->SetLimits(-100,-100,100,100);
-				pControl->SetLocation(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
+				pControl->SetLocation(g_guiSettings.GetInt("UIOffset.X"), g_guiSettings.GetInt("UIOffset.Y"));
 				pControl->SetFocus(true);
 			}
 
@@ -81,19 +81,19 @@ void CGUIWindowSettingsUICalibration::Render()
 	CGUIMoverControl *pControl = (CGUIMoverControl *)GetControl(CONTROL_MOVER);
 	if (pControl)
 	{
-		if (g_stSettings.m_iUIOffsetX != pControl->GetXLocation() ||
-			g_stSettings.m_iUIOffsetY != pControl->GetYLocation())
+		if (g_guiSettings.GetInt("UIOffset.X") != pControl->GetXLocation() ||
+			g_guiSettings.GetInt("UIOffset.Y") != pControl->GetYLocation())
 		{
-			g_stSettings.m_iUIOffsetX=pControl->GetXLocation();
-			g_stSettings.m_iUIOffsetY=pControl->GetYLocation();
-			g_graphicsContext.SetOffset(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
+			g_guiSettings.SetInt("UIOffset.X", pControl->GetXLocation());
+			g_guiSettings.SetInt("UIOffset.Y", pControl->GetYLocation());
+			g_graphicsContext.SetOffset(g_guiSettings.GetInt("UIOffset.X"), g_guiSettings.GetInt("UIOffset.Y"));
 			ResetAllControls();
 			g_application.ResetAllControls();
 		}
 	}
 	// Set the label
 	CStdString strOffset;
-	strOffset.Format("%i,%i", g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
+	strOffset.Format("%i,%i", g_guiSettings.GetInt("UIOffset.X"), g_guiSettings.GetInt("UIOffset.Y"));
 	SET_CONTROL_LABEL(GetID(), CONTROL_LABEL,	strOffset);
 	// And render
 	CGUIWindow::Render();

@@ -135,11 +135,11 @@ void CGUIWindowManager::PreviousWindow()
 	{
 		CGUIWindow* pWindow = m_vecWindows[i];
 
-		if (pWindow->GetID() == iPrevActiveWindowID) 
+		if (pWindow->HasID(iPrevActiveWindowID)) 
 		{
 			CLog::DebugLog("CGUIWindowManager::PreviousWindow: Activating");
 			m_iActiveWindow = i;
-			CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
+			CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID, iPrevActiveWindowID);
 			pWindow->OnMessage(msg);
 			return;
 		}
@@ -187,21 +187,23 @@ void CGUIWindowManager::ActivateWindow(int iWindowID)
 	{
 		CGUIWindow* pWindow = m_vecWindows[i];
 
-		if (pWindow->GetID() == iWindowID) 
+		if (pWindow->HasID(iWindowID)) 
 		{
 			m_iActiveWindow = i;
 			
 			// Check to see that this window is not our previous window
-			if (m_vecWindows[iPrevActiveWindow]->GetPreviousWindowID() == iWindowID)
+			if (iPrevActiveWindow==-1 || m_vecWindows[iPrevActiveWindow]->GetPreviousWindowID() == iWindowID)
 			{
 				// we are going to the lsat window - don't update it's previous window id
-				CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
+				CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID, iWindowID);
 				pWindow->OnMessage(msg);
 			}
 			else
 			{
 				// we are going to a new window - put our current window into it's previous window ID
-				CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,m_vecWindows[iPrevActiveWindow]->GetID());
+				CGUIWindow *pWindowTest = m_vecWindows[iPrevActiveWindow];
+				DWORD dwID = pWindowTest->GetID();
+				CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,m_vecWindows[iPrevActiveWindow]->GetID(), iWindowID);
 				pWindow->OnMessage(msg);
 			}
 
@@ -285,7 +287,7 @@ CGUIWindow*  CGUIWindowManager::GetWindow(DWORD dwID)
 		CGUIWindow* pWindow=m_vecWindows[i];
 		if (pWindow)
 		{
-			if (pWindow->GetID() == dwID) 
+			if (pWindow->HasID(dwID)) 
 			{
 				return pWindow;
 			}

@@ -10,13 +10,13 @@ public:
 	CGUIDialogKeyboard(void);
 	virtual ~CGUIDialogKeyboard(void);
 
-	void SetHeading(CStdString& strHeading) {m_strHeading = strHeading;} ;
+	void SetHeading(const CStdString& strHeading) {m_strHeading = strHeading;} ;
 	void SetText(CStdString& aTextString);
 	CStdString GetText() const {return m_strEdit;};
 	bool IsDirty() { return m_bDirty; };
 
 	static bool ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult);
-	static bool ShowAndGetInput(CStdString& aTextString, CStdString &strHeading, bool allowEmptyResult);
+	static bool ShowAndGetInput(CStdString& aTextString, const CStdString &strHeading, bool allowEmptyResult);
 
 	virtual void	Close();
 

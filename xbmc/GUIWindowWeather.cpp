@@ -9,6 +9,14 @@
 #include "util.h"
 #include <algorithm>
 #include "utils/log.h"
+#include "GUIDialogSelect.h"
+
+#define SPEED_KMH 0
+#define SPEED_MPH 1
+#define SPEED_MPS 2
+
+#define DEGREES_C 0
+#define DEGREES_F 1
 
 #define CONTROL_BTNREFRESH		2
 #define CONTROL_SELECTLOCATION	3
@@ -54,22 +62,22 @@ FIXME'S
 int ConvertSpeed(int curSpeed)
 {
 	//we might not need to convert at all
-	if((g_stSettings.m_szWeatherFTemp[0] == 'C' && g_stSettings.m_szWeatherFSpeed[0] == 'K') ||
-		(g_stSettings.m_szWeatherFTemp[0] == 'F' && g_stSettings.m_szWeatherFSpeed[0] == 'M'))
+	if((g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_C && g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_KMH) ||
+		(g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_F && g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_MPH) )
 		return curSpeed;
 
-	//got through that so if temp is C, speed must be M or S
-	if(g_stSettings.m_szWeatherFTemp[0] == 'C')
+	//got through that so if temp is C, speed must be MPH or m/s
+	if(g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_C)
 	{
-		if (g_stSettings.m_szWeatherFSpeed[0] == 'S')
-			return (int)(curSpeed * (1000.0/3600.0) + 0.5);		//mps
+		if (g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_MPS)
+			return (int)(curSpeed * (1000.0/3600.0) + 0.5);		//m/s
 		else
 			return (int)(curSpeed / (8.0/5.0));		//mph
 	}
 	else
 	{
-		if (g_stSettings.m_szWeatherFSpeed[0] == 'S')
-			return (int)(curSpeed * (8.0/5.0) * (1000.0/3600.0) + 0.5);		//mps
+		if (g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_MPS)
+			return (int)(curSpeed * (8.0/5.0) * (1000.0/3600.0) + 0.5);		//m/s
 		else
 			return (int)(curSpeed * (8.0/5.0));		//kph
 	}
@@ -139,7 +147,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
 					m_dfForcast[i].pImage = (CGUIImage*)GetControl(CONTROL_IMAGED0IMG+(i*10));
 				UpdateButtons();
 
-				m_lRefreshTime = timeGetTime() - (g_stSettings.m_iWeatherRefresh*60000) + 2000; //refresh in 2 seconds
+				m_lRefreshTime = timeGetTime() - (g_guiSettings.GetInt("Weather.RefreshTime")*60000) + 2000; //refresh in 2 seconds
 			LoadLocalizedToken();
 		break;
 
@@ -155,7 +163,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
 				CGUISpinControl *pTempSpin = (CGUISpinControl*)GetControl(iControl);
 				m_iCurWeather = pTempSpin->GetValue();
 
-				m_lRefreshTime = timeGetTime() - (g_stSettings.m_iWeatherRefresh*60000) + 2000; //refresh in 2 seconds
+				m_lRefreshTime = timeGetTime() - (g_guiSettings.GetInt("Weather.RefreshTime")*60000) + 2000; //refresh in 2 seconds
 			}
 		}
 		break;
@@ -224,7 +232,9 @@ void CGUIWindowWeather::UpdateButtons()
 		}
 		else
 		{
-			msg2.SetLabel(g_stSettings.m_szWeatherArea[i]);
+			CStdString strSetting;
+			strSetting.Format("Weather.AreaCode%i", i+1);
+			msg2.SetLabel(g_guiSettings.GetString(strSetting));
 		}
 		g_graphicsContext.SendMessage(msg2);
 	}
@@ -237,7 +247,7 @@ void CGUIWindowWeather::UpdateButtons()
 void CGUIWindowWeather::Render()
 {
 	DWORD dwTimeElapsed = timeGetTime() - m_lRefreshTime;
-	if(dwTimeElapsed >= (DWORD)(g_stSettings.m_iWeatherRefresh * 60000))
+	if(dwTimeElapsed >= (DWORD)(g_guiSettings.GetInt("Weather.RefreshTime") * 60000))
 		RefreshMe(true);	//do an autoUpdate refresh
 
 	CGUIWindow::Render();
@@ -248,14 +258,16 @@ bool CGUIWindowWeather::Download(const CStdString& strWeatherFile)
 	CHTTP				httpUtil;
 	CStdString			strURL;
 	
-	char c_units = g_stSettings.m_szWeatherFTemp[0];	//convert from temp units to metric/standard
-	if(c_units == 'F')	//we'll convert the speed later depending on what thats set to
+	char c_units; //convert from temp units to metric/standard
+	if (g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_F)	//we'll convert the speed later depending on what thats set to
 		c_units = 's';
 	else
 		c_units = 'm';
 
+	CStdString strSetting;
+	strSetting.Format("Weather.AreaCode%i", m_iCurWeather+1);
 	strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=%c&dayf=4&prod=xoap&par=%s&key=%s",
-				g_stSettings.m_szWeatherArea[m_iCurWeather], c_units, PARTNER_ID, PARTNER_KEY);
+				g_guiSettings.GetString(strSetting), c_units, PARTNER_ID, PARTNER_KEY);
 
 	return httpUtil.Download(strURL, strWeatherFile);
 }
@@ -296,12 +308,15 @@ bool CGUIWindowWeather::LoadWeather(const CStdString& strWeatherFile)
 		return true;	//we got a message so do display a second in refreshme()
 	}
 
-	// units (C or F and mph or km/h or m/s) 
-	strcpy(szUnitTemp, g_stSettings.m_szWeatherFTemp);
+	// units (C or F and mph or km/h or m/s)
+	if (g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_C)
+		strcpy(szUnitTemp, "C");
+	else
+		strcpy(szUnitTemp, "F");
 
-	if(g_stSettings.m_szWeatherFSpeed[0] == 'M')
+	if(g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_MPH)
 		strcpy(szUnitSpeed, "mph");
-	else if(g_stSettings.m_szWeatherFSpeed[0] == 'K')
+	else if(g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_KMH)
 		strcpy(szUnitSpeed, "km/h");
 	else
 		strcpy(szUnitSpeed, "m/s");
@@ -459,7 +474,9 @@ void CGUIWindowWeather::RefreshMe(bool autoUpdate)
 	{
 		pDlgProgress->SetHeading(410);							//"Accessing Weather.com"
 		pDlgProgress->SetLine(0, 411);							//"Getting Weather For:"
-		pDlgProgress->SetLine(1, g_stSettings.m_szWeatherArea[m_iCurWeather]);	//Area code
+		CStdString strSetting;
+		strSetting.Format("Weather.AreaCode%i", m_iCurWeather+1);
+		pDlgProgress->SetLine(1, g_guiSettings.GetString(strSetting));	//Area code
 		if(strlen(m_szLocation[m_iCurWeather]) > 1)							//got the location string yet?
 			pDlgProgress->SetLine(2, m_szLocation[m_iCurWeather]);
 		else
@@ -618,4 +635,117 @@ void CGUIWindowWeather::LocalizeOverview(char *szStr)
 	LocalizeOverviewToken(szToken);								//localize
 	strcpy(loc+strlen(loc), szToken);							//add it to the end of loc
 	strcpy(szStr, loc);											//copy loc over the original input string
+}
+
+bool CGUIWindowWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResult)
+{
+	// Check to see if the user entered a weather.com code
+	if (strSearch.size() == 8)
+	{
+		strResult = "";
+		int i = 0;
+		for (i = 0; i < 4; ++i)
+		{
+			strResult += toupper(strSearch[i]);
+			if (!isalpha(strSearch[i]))
+				break;
+		}
+		if (i == 4)
+		{
+			for ( ; i < 8; ++i)
+			{
+				strResult += strSearch[i];
+				if (!isdigit(strSearch[i]))
+					break;
+			}
+			if (i == 8)
+			{
+				return true; // match
+			}
+		}
+		// no match, wipe string
+		strResult = "";
+	}
+
+	CGUIDialogSelect	*pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+	CGUIDialogProgress	*pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+
+	//do the download
+	CHTTP httpUtil;
+	CStdString strURL;
+//  CStdString strResultsFile = "Z:\\searchresults.xml";
+	CStdString strXML;
+
+	if(pDlgProgress)
+	{
+		pDlgProgress->SetHeading(410);							//"Accessing Weather.com"
+		pDlgProgress->SetLine(0, 194);							//"Searching"
+		pDlgProgress->SetLine(1, strSearch);
+		pDlgProgress->SetLine(2, "");
+		pDlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+		pDlgProgress->Progress();
+	}	
+
+	strURL.Format("http://xoap.weather.com/search/search?where=%s", strSearch);
+
+	if(!httpUtil.Get(strURL, strXML))
+	{
+		if(pDlgProgress) pDlgProgress->Close();
+		return false;
+	}
+
+	//some select dialog init stuff
+	if(!pDlgSelect)
+	{
+		if(pDlgProgress) pDlgProgress->Close();
+		return false;
+	}
+
+	pDlgSelect->SetHeading(396);	//"Select Location"
+	pDlgSelect->Reset();
+
+///////////////////////////////
+// load the xml file
+///////////////////////////////
+	TiXmlDocument xmlDoc;
+	xmlDoc.Parse(strXML.c_str());
+	if (xmlDoc.Error())
+		return false;
+
+	TiXmlElement *pRootElement = xmlDoc.RootElement();
+	TiXmlElement *pElement = pRootElement->FirstChildElement("loc");
+	CStdString strItemTmp;
+	while(pElement)
+	{
+		strItemTmp.Format("%s - %s", pElement->Attribute("id"), pElement->FirstChild()->Value());
+		pDlgSelect->Add(strItemTmp);
+		pElement = pElement->NextSiblingElement("loc");
+	}
+
+	if(pDlgProgress) pDlgProgress->Close();
+
+	pDlgSelect->EnableButton(TRUE);
+	pDlgSelect->SetButtonLabel(222);	//'Cancel' button returns to weather settings
+	pDlgSelect->DoModal(m_gWindowManager.GetActiveWindow());
+
+	if(pDlgSelect->GetSelectedLabel() < 0)
+	{
+		if(pDlgSelect->IsButtonPressed())
+		{
+			pDlgSelect->Close();	//close the select dialog and return to weather settings
+			return true;
+		}
+	}
+
+	//copy the selected code into the settings
+	if(pDlgSelect->GetSelectedLabel() >= 0)
+	{
+		CStdString areacode;
+		areacode=pDlgSelect->GetSelectedLabelText();
+		strResult=areacode.substr(0, areacode.Find("-") - 1);
+	}
+
+	if(pDlgProgress) pDlgProgress->Close();
+
+	return true;
 }

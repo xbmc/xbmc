@@ -118,7 +118,7 @@ void  CGUIWindowSystemInfo::GetValues()
 	WCHAR CPUText[32];
 	WCHAR GPUText[32];
 	WCHAR wszText[1024];
-  if(g_stSettings.m_szWeatherFTemp[0] == 'F') {
+  if(g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/) {
     swprintf(CPUText, L"%2.2f%cF", ((9.0 / 5.0) * cputemp) + 32.0, 176);	
     swprintf(GPUText, L"%2.2f%cF", ((9.0 / 5.0) * mbtemp) + 32.0,  176);	
   }
@@ -300,11 +300,10 @@ void  CGUIWindowSystemInfo::GetValues()
 	{
 
 		WCHAR wszText[128];
-		int  iResolution=g_stSettings.m_GUIResolution;
 		swprintf(wszText,L"%ix%i %S %02.2f Hz.", 
-			g_settings.m_ResInfo[iResolution].iWidth, 
-			g_settings.m_ResInfo[iResolution].iHeight, 
-			g_settings.m_ResInfo[iResolution].strMode,
+			g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth, 
+			g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight, 
+			g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,
 			m_fFPS);
 		SET_CONTROL_LABEL(GetID(), 14,wszText);
 	}

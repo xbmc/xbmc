@@ -9,6 +9,7 @@
 #include "util.h"
 #include "utils/log.h"
 #include "autoptrhandle.h"
+#include "GUIDialogYesNo.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogSelect.h"
@@ -2645,6 +2646,44 @@ void CMusicDatabase::DeleteCDDBInfo()
 	}
 }
 
+void CMusicDatabase::Clean()
+{
+	CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+	if (dlgYesNo)
+	{
+		dlgYesNo->SetHeading(313);
+		dlgYesNo->SetLine(0, 333);
+		dlgYesNo->SetLine(1, "");
+		dlgYesNo->SetLine(2, "");
+		dlgYesNo->DoModal(m_gWindowManager.GetActiveWindow());
+
+		if (dlgYesNo->IsConfirmed())
+		{
+			CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+			if (dlgProgress)
+			{
+				dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+
+				int iReturnString=g_musicDatabase.Cleanup(dlgProgress);
+				g_musicDatabase.Close();
+
+				if (iReturnString != ERROR_OK)
+				{
+					CGUIDialogOK* dlgOK=(CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+					if (dlgOK)
+					{
+						dlgOK->SetHeading(313);
+						dlgOK->SetLine(0, iReturnString);
+						dlgOK->SetLine(1, "");
+						dlgOK->SetLine(2, "");
+						dlgOK->DoModal(m_gWindowManager.GetActiveWindow());
+					}
+				}
+				dlgProgress->Close();
+			}
+		}
+	}
+}
 /*
 void CMusicDatabaseReorg::DeleteSingleAlbum()
 {

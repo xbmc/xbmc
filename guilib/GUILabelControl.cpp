@@ -71,6 +71,11 @@ bool CGUILabelControl::CanFocus() const
   return false;
 }
 
+void CGUILabelControl::SetLabel(const wstring &strLabel)
+{
+	m_strLabel = strLabel;
+}
+
 void CGUILabelControl::SetText(CStdString aLabel)
 {
   WCHAR wszText[1024];

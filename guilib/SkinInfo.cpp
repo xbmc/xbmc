@@ -127,7 +127,7 @@ bool CSkinInfo::Check(CStdString& strSkinDir)
 CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res)
 {
 	// first try and load from the current resolution's directory
-	*res = g_stSettings.m_GUIResolution;
+	*res = g_guiSettings.m_LookAndFeelResolution;
 	CStdString strPath;
 	strPath.Format("%s%s\\%s", m_strBaseDir.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
 	if (CUtil::FileExists(strPath))

@@ -32,6 +32,7 @@ public:
 	DWORD							GetDisabledColor() const { return m_dwDisabledColor;}
 	const char*				GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; }
 	const wstring			GetLabel() const { return m_strLabel; }
+	void							SetLabel(const wstring &strLabel);
 	void	SetText(CStdString aLabel);
 	void	ShowCursor(bool bShow = true);
 	void	SetCursorPos(int iPos);

@@ -181,7 +181,7 @@ CGUIWindowBuddies::~CGUIWindowBuddies(void)
 
 void CGUIWindowBuddies::OnInitWindow()
 {
-	SET_CONTROL_LABEL(GetID(),  CONTROL_LABELUSERNAME,  g_stSettings.szOnlineUsername);
+	SET_CONTROL_LABEL(GetID(),  CONTROL_LABELUSERNAME, g_guiSettings.GetString("XLinkKai.UserName"));
 	SET_CONTROL_LABEL(GetID(),  CONTROL_LABELUPDATED,   "");
 	SET_CONTROL_LABEL(GetID(),  CONTROL_LABELBUDDYNAME, "");
 	SET_CONTROL_LABEL(GetID(),  CONTROL_LABELBUDDYSTAT, "");
@@ -262,7 +262,7 @@ void CGUIWindowBuddies::OnInitWindow()
 
 		if (m_pMe==NULL)
 		{
-			CStdString strXtag = g_stSettings.szOnlineUsername;
+			CStdString strXtag = g_guiSettings.GetString("XLinkKai.UserName");
 			m_pMe = new CBuddyItem(strXtag);
 				
 			if (!m_pMe->m_pAvatar)
@@ -1417,7 +1417,7 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
 	CStdString strGame;
 	CArenaItem::GetTier(CArenaItem::Game, aVector, strGame);
 
-	if (g_stSettings.szOnlineGamesDir[0]!=0)
+	if (!g_guiSettings.GetString("XLinkKai.GamesDir").IsEmpty())
 	{
 		// Get TitleId from current vector
 		DWORD dwTitleId = m_titles[strGame];
@@ -1468,7 +1468,7 @@ bool CGUIWindowBuddies::GetGamePathFromTitleId(DWORD aTitleId, CStdString& aGame
 
 	// Search for XBE in within GamesDir subfolders matching same TitleId.
 	CStdString strSearchMask;
-	strSearchMask.Format("%s\\*.*",g_stSettings.szOnlineGamesDir);
+	strSearchMask.Format("%s\\*.*",g_guiSettings.GetString("XLinkKai.GamesDir"));
 	HANDLE hFind = FindFirstFile(strSearchMask.c_str(),&wfd);
 
 	aGamePath = "";
@@ -1483,7 +1483,7 @@ bool CGUIWindowBuddies::GetGamePathFromTitleId(DWORD aTitleId, CStdString& aGame
 				{
 					// Calculate the path of the game's xbe
 					CStdString strGamePath;
-					strGamePath.Format("%s\\%s\\default.xbe",g_stSettings.szOnlineGamesDir,(CHAR*)wfd.cFileName);
+					strGamePath.Format("%s\\%s\\default.xbe",g_guiSettings.GetString("XLinkKai.GamesDir").c_str(),(CHAR*)wfd.cFileName);
 
 					// If the XBE actually exists
 					if (CUtil::FileExists(strGamePath))

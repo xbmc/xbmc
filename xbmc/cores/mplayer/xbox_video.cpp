@@ -120,7 +120,7 @@ void choose_best_resolution(float fps)
 
 	// Work out if the framerate suits PAL50 or PAL60
 	bool bPal60=false;
-	if (bUsingPAL && g_stSettings.m_bAllowPAL60 && g_videoConfig.HasPAL60())
+	if (bUsingPAL && g_guiSettings.GetBool("MyVideos.PAL60Switching") && g_videoConfig.HasPAL60())
 	{
 		// yes we're in PAL
 		// yes PAL60 is allowed
@@ -138,7 +138,7 @@ void choose_best_resolution(float fps)
 	// Uses the frame aspect ratio of 8/(3*sqrt(3)) (=1.53960) which is the optimal point
 	// where the percentage of black bars to screen area in 4:3 and 16:9 is equal
 	bool bWidescreen = false;
-	if (g_stSettings.m_bAutoWidescreenSwitching)
+	if (g_guiSettings.GetBool("MyVideos.WidescreenSwitching"))
 	{	// allowed to switch
 		if (bCanDoWidescreen && (float)d_image_width/d_image_height > 8.0f/(3.0f*sqrt(3.0f)))
 			bWidescreen = true;
@@ -153,7 +153,7 @@ void choose_best_resolution(float fps)
 	// if we always upsample video to the GUI resolution then use it (with pal 60 if needed)
 	// if we're not in fullscreen mode then use current resolution 
 	// if we're calibrating the video  then use current resolution 
-	if  ( g_stSettings.m_bUpsampleVideo ||
+	if  ( g_guiSettings.GetBool("UseGUIResolution") ||
 		(! ( g_graphicsContext.IsFullScreenVideo()|| g_graphicsContext.IsCalibrating())  )
 		)
 	{
@@ -556,7 +556,7 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
   //use temporary rect for calculation to avoid messing with module-rect while other functions might be using it.
   DRAWRECT osdRect;
   // scale to fit screen
-  float EnlargeFactor = 1.0f + (g_stSettings.m_iEnlargeSubtitlePercent / 100.0f);
+  float EnlargeFactor = 1.0f + (g_guiSettings.GetInt("Subtitles.EnlargePercentage") / 100.0f);
 
   const RECT& rv = g_graphicsContext.GetViewWindow();
   RESOLUTION res = GetResolution();
@@ -912,10 +912,10 @@ void Setup_Y8A8Render()
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
 
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MAGFILTER,  g_stSettings.m_maxFilter );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MINFILTER,  g_stSettings.m_minFilter );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_MAGFILTER,  g_stSettings.m_maxFilter );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_MINFILTER,  g_stSettings.m_minFilter );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MAGFILTER,  D3DTEXF_LINEAR/*g_stSettings.m_maxFilter*/  );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MINFILTER,  D3DTEXF_LINEAR/*g_stSettings.m_minFilter*/  );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_MAGFILTER,  D3DTEXF_LINEAR/*g_stSettings.m_maxFilter*/  );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_MINFILTER,  D3DTEXF_LINEAR/*g_stSettings.m_minFilter*/  );
 
 
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE,      FALSE );
@@ -1009,10 +1009,10 @@ void xbox_video_render_osd()
   
 
 	// Set texture filters
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MAGFILTER,  g_stSettings.m_maxFilter );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MINFILTER,  g_stSettings.m_minFilter );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_MAGFILTER,  g_stSettings.m_maxFilter );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_MINFILTER,  g_stSettings.m_minFilter );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MAGFILTER,  D3DTEXF_LINEAR/*g_stSettings.m_maxFilter*/  );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MINFILTER,  D3DTEXF_LINEAR/*g_stSettings.m_minFilter*/  );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_MAGFILTER,  D3DTEXF_LINEAR/*g_stSettings.m_maxFilter*/  );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_MINFILTER,  D3DTEXF_LINEAR/*g_stSettings.m_minFilter*/  );
 
 	// clip the output if we are not in FSV so that zoomed subs don't go all over the GUI
 	if( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
@@ -1067,8 +1067,8 @@ void xbox_video_render()
 	{
 		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
 		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
-		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MAGFILTER,  g_stSettings.m_maxFilter );
-		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MINFILTER,  g_stSettings.m_minFilter );
+		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MAGFILTER,  D3DTEXF_LINEAR/*g_stSettings.m_maxFilter*/  );
+		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MINFILTER,  D3DTEXF_LINEAR/*g_stSettings.m_minFilter*/  );
 	}
 
 	// set scissors if we are not in fullscreen video
@@ -1264,7 +1264,7 @@ void xbox_video_update(bool bPauseDrawing)
 	{
 		bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
 		g_graphicsContext.Lock();
-		g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution:g_stSettings.m_GUIResolution);
+		g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution:g_guiSettings.m_LookAndFeelResolution);
 		g_graphicsContext.Unlock();
 		Directx_ManageDisplay();
 		xbox_video_render_update();

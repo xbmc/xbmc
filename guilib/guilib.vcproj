@@ -346,6 +346,9 @@
 				RelativePath=".\GUISpinControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUISpinControlEx.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIStandardWindow.cpp">
 			</File>
 			<File
@@ -523,6 +526,9 @@
 			</File>
 			<File
 				RelativePath=".\GUISpinControl.h">
+			</File>
+			<File
+				RelativePath=".\GUISpinControlEx.h">
 			</File>
 			<File
 				RelativePath=".\GUIStandardWindow.h">

@@ -142,7 +142,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath)
 		g_charsetConverter.utf8ToStringCharset(strFilename,strTempFilename);
 		strFilename = strTempFilename;
 	}
-	if (g_stSettings.m_bHideExtensions)
+	if (g_guiSettings.GetBool("FileLists.HideExtensions"))
 	{
 		RemoveExtension(strFilename);
 		return strFilename;
@@ -744,7 +744,7 @@ void CUtil::GetTitleIP(CStdString& ip)
   ip = g_szTitleIP;
 }
 
-bool CUtil::InitializeNetwork(const char* szAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer)
+bool CUtil::InitializeNetwork(int iAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer)
 {
   if (!IsEthernetConnected())
   {
@@ -755,13 +755,13 @@ bool CUtil::InitializeNetwork(const char* szAssignment, const char* szLocalAddre
   struct network_info networkinfo ;
   memset(&networkinfo ,0,sizeof(networkinfo ));
   bool bSetup(false);
-  if (CUtil::cmpnocase(szAssignment, "dhcp")==0 )
+  if (iAssignment == NETWORK_DHCP)
   {
     bSetup=true;
     CLog::Log(LOGNOTICE, "use DHCP");
     networkinfo.DHCP=true;
   }
-  else if (CUtil::cmpnocase(szAssignment, "static")==0)
+  else if (iAssignment == NETWORK_STATIC)
   {
     bSetup=true;
     CLog::Log(LOGNOTICE, "use static ip");
@@ -887,6 +887,7 @@ void CUtil::Unicode2Ansi(const wstring& wstrText,CStdString& strName)
     strName += pstr[i*2];
   }
 }
+
 bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 {
   if (strFile.size()==0) return false;
@@ -1436,118 +1437,117 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
 
   CStdString strThumb;
   CStdString strExtension;
-  bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
+  bool bOnlyDefaultXBE=g_guiSettings.GetBool("Programs.DefaultXBEOnly");
   if (!pItem->m_bIsFolder)
   {
-    if (CUtil::IsPlayList(pItem->m_strPath) )
-    {
-      // playlist
-      pItem->SetIconImage("defaultPlaylist.png");
+    CStdString strExtension;
+    CUtil::GetExtension(pItem->m_strPath,strExtension);
 
-		GetExtension(pItem->m_strPath, strExtension);
-		if ( CUtil::cmpnocase(strExtension.c_str(),".strm") !=0) 
+    for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
+    {
+      CFileTypeIcon& icon=g_settings.m_vecIcons[i];
+
+      if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
+      {
+        pItem->SetIconImage(icon.m_strIcon);
+        break;
+      }
+    }
+  }
+  if (pItem->GetIconImage()=="")
+  {
+		if (!pItem->m_bIsFolder)
 		{
-			//	Save playlists to playlist directroy
-			CStdString strDir;
-			CStdString strFileName;
-			strFileName=CUtil::GetFileName(pItem->m_strPath);
-			strDir.Format("%s\\playlists\\%s",g_stSettings.m_szAlbumDirectory,strFileName.c_str());
-			if (strDir!=pItem->m_strPath)
+			if (CUtil::IsPlayList(pItem->m_strPath) )
 			{
-				CPlayListFactory factory;
-				auto_ptr<CPlayList> pPlayList (factory.Create(pItem->m_strPath));
-				if (pPlayList.get()!=NULL)
+				// playlist
+				pItem->SetIconImage("defaultPlaylist.png");
+
+			GetExtension(pItem->m_strPath, strExtension);
+			if ( CUtil::cmpnocase(strExtension.c_str(),".strm") !=0) 
+			{
+				//	Save playlists to playlist directroy
+				CStdString strDir;
+				CStdString strFileName;
+				strFileName=CUtil::GetFileName(pItem->m_strPath);
+				strDir.Format("%s\\playlists\\%s",g_stSettings.m_szAlbumDirectory,strFileName.c_str());
+				if (strDir!=pItem->m_strPath)
 				{
-					if (pPlayList->Load(pItem->m_strPath) && pPlayList->size()>0)
+					CPlayListFactory factory;
+					auto_ptr<CPlayList> pPlayList (factory.Create(pItem->m_strPath));
+					if (pPlayList.get()!=NULL)
 					{
-						const CPlayList::CPlayListItem& item=(*pPlayList.get())[0];
-						CURL url(item.GetFileName());
-						if (!(url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") &&
-								!(url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") &&
-								!(url.GetProtocol() =="mms" || url.GetProtocol()=="MMS")  &&
-								!(url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") && 
-								!(url.GetProtocol() =="ftp" || url.GetProtocol()=="FTP") && 
-								!(url.GetProtocol() =="udp" || url.GetProtocol()=="UDP") && 
-								!(url.GetProtocol() =="rtsp" || url.GetProtocol()=="RTSP"))
+						if (pPlayList->Load(pItem->m_strPath) && pPlayList->size()>0)
 						{
-							pPlayList->Save(strDir);
+							const CPlayList::CPlayListItem& item=(*pPlayList.get())[0];
+							CURL url(item.GetFileName());
+							if (!(url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") &&
+									!(url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") &&
+									!(url.GetProtocol() =="mms" || url.GetProtocol()=="MMS")  &&
+									!(url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") && 
+									!(url.GetProtocol() =="ftp" || url.GetProtocol()=="FTP") && 
+									!(url.GetProtocol() =="udp" || url.GetProtocol()=="UDP") && 
+									!(url.GetProtocol() =="rtsp" || url.GetProtocol()=="RTSP"))
+							{
+								pPlayList->Save(strDir);
+							}
 						}
 					}
 				}
 			}
+			}
+			else if (CUtil::IsPicture(pItem->m_strPath) )
+			{
+				// picture
+				pItem->SetIconImage("defaultPicture.png");
+			}
+			else if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
+			{
+				// xbe
+				pItem->SetIconImage("defaultProgram.png");
+			}
+			else if ( CUtil::IsAudio(pItem->m_strPath) )
+			{
+				// audio
+				pItem->SetIconImage("defaultAudio.png");
+			}
+			else if (CUtil::IsVideo(pItem->m_strPath) )
+			{
+				// video
+				pItem->SetIconImage("defaultVideo.png");
+			}
+			else if (CUtil::IsShortCut(pItem->m_strPath) )
+			{
+				// shortcut
+				CStdString strDescription;
+				CStdString strFName;
+				strFName=CUtil::GetFileName(pItem->m_strPath);
+
+				int iPos=strFName.ReverseFind(".");
+				strDescription=strFName.Left(iPos);
+				pItem->SetLabel(strDescription);
+				pItem->SetIconImage("defaultShortcut.png");
+			}
+			//else
+			//{
+			//	// default icon for unknown file type
+			//	pItem->SetIconImage("defaultUnknown.png");
+			//}
 		}
-    }
-    else if (CUtil::IsPicture(pItem->m_strPath) )
-    {
-      // picture
-      pItem->SetIconImage("defaultPicture.png");
-    }
-    else if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
-    {
-      // xbe
-      pItem->SetIconImage("defaultProgram.png");
-    }
-		else if ( CUtil::IsAudio(pItem->m_strPath) )
-    {
-      // audio
-      pItem->SetIconImage("defaultAudio.png");
-    }
-    else if (CUtil::IsVideo(pItem->m_strPath) )
-    {
-      // video
-      pItem->SetIconImage("defaultVideo.png");
-    }
-    else if (CUtil::IsShortCut(pItem->m_strPath) )
-    {
-      // shortcut
-      CStdString strDescription;
-      CStdString strFName;
-      strFName=CUtil::GetFileName(pItem->m_strPath);
+		else
+		{
+			if (pItem->GetLabel()=="..")
+			{
+				pItem->SetIconImage("defaultFolderBack.png");
+			}
+			else
+			{
+				pItem->SetIconImage("defaultFolder.png");
+			}
+		}
+	}
 
-      int iPos=strFName.ReverseFind(".");
-      strDescription=strFName.Left(iPos);
-      pItem->SetLabel(strDescription);
-      pItem->SetIconImage("defaultShortcut.png");
-    }
-		//else
-		//{
-		//	// default icon for unknown file type
-		//	pItem->SetIconImage("defaultUnknown.png");
-		//}
-  }
-  else
-  {
-    if (pItem->GetLabel()=="..")
-    {
-      pItem->SetIconImage("defaultFolderBack.png");
-    }
-  }
-
-  if (pItem->GetIconImage()=="")
-  {
-    if (pItem->m_bIsFolder)
-    {
-      pItem->SetIconImage("defaultFolder.png");
-    }
-    if (!pItem->m_bIsFolder)
-    {
-      CStdString strExtension;
-      CUtil::GetExtension(pItem->m_strPath,strExtension);
-
-      for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
-      {
-        CFileTypeIcon& icon=g_settings.m_vecIcons[i];
-
-        if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
-        {
-          pItem->SetIconImage(icon.m_strIcon);
-          break;
-        }
-      }
-    }
-  }
-
-  if (pItem->GetThumbnailImage()=="")
+	if (pItem->GetThumbnailImage()=="")
   {
     if (pItem->GetIconImage()!="")
     {
@@ -1573,7 +1573,7 @@ void CUtil::CreateShortcuts(VECFILEITEMS &items)
 
 void CUtil::CreateShortcut(CFileItem* pItem)
 {
-	bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
+	bool bOnlyDefaultXBE=g_guiSettings.GetBool("Programs.DefaultXBEOnly");
 	if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
 	{
 		// xbe
@@ -2119,14 +2119,14 @@ void CUtil::SecondsToHMSString(long lSeconds, CStdString& strHMS)
 }
 void CUtil::PrepareSubtitleFonts()
 {
-  if (strlen(g_stSettings.m_szSubtitleFont)==0) return;
-  if (g_stSettings.m_iSubtitleHeight==0) return;
+  if (g_guiSettings.GetString("Subtitles.Font").size()==0) return;
+  if (g_guiSettings.GetInt("Subtitles.Height")==0) return;
 
   CStdString strPath,strHomePath,strSearchMask;
   strHomePath = "Q:";
   strPath.Format("%s\\mplayer\\font\\%s\\%i\\",
           strHomePath.c_str(),
-          g_stSettings.m_szSubtitleFont,g_stSettings.m_iSubtitleHeight);
+          g_guiSettings.GetString("Subtitles.Font").c_str(),g_guiSettings.GetInt("Subtitles.Height"));
 
   strSearchMask=strPath+"*.*";
   WIN32_FIND_DATA wfd;
@@ -2833,7 +2833,7 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 						//	no thumb exists, do we have a directory
 						//	from album window, use music.jpg as icon
 						if (!strAlbum.IsEmpty())
-							pItem->SetIconImage("music.jpg");
+							pItem->SetIconImage("MyMusic.jpg");
 
 						strFolderThumb.Empty();
 					}
@@ -3388,7 +3388,7 @@ bool CUtil::IsNaturalNumber(const CStdString& str)
 
 bool CUtil::IsUsingTTFSubtitles()
 {
-  char* ext = strrchr(g_stSettings.m_szSubtitleFont, '.');
+  char* ext = strrchr(g_guiSettings.GetString("Subtitles.Font").c_str(), '.');
 	if (ext && stricmp(ext, ".ttf") == 0)
 		return true;
 	else
@@ -3460,4 +3460,44 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
 	{
 		CUtil::RunXBE(parameter.c_str());
 	}
+}
+
+bool CUtil::IsDefaultThumb(const CStdString& strThumb)
+{
+	if (strThumb.Equals("DefaultPlaylist.png")) return true;
+	if (strThumb.Equals("DefaultPlaylistBig.png")) return true;
+	if (strThumb.Equals("DefaultProgram.png")) return true;
+	if (strThumb.Equals("DefaultProgramBig.png")) return true;
+	if (strThumb.Equals("DefaultShortcut.png")) return true;
+	if (strThumb.Equals("DefaultShortcutBig.png")) return true;
+	if (strThumb.Equals("defaultAudio.png")) return true;
+	if (strThumb.Equals("defaultAudioBig.png")) return true;
+	if (strThumb.Equals("defaultCdda.png")) return true;
+	if (strThumb.Equals("defaultCddaBig.png")) return true;
+	if (strThumb.Equals("defaultDVDEmpty.png")) return true;
+	if (strThumb.Equals("defaultDVDEmptyBig.png")) return true;
+	if (strThumb.Equals("defaultDVDRom.png")) return true;
+	if (strThumb.Equals("defaultDVDRomBig.png")) return true;
+	if (strThumb.Equals("defaultFolder.png")) return true;
+	if (strThumb.Equals("defaultFolderBack.png")) return true;
+	if (strThumb.Equals("defaultFolderBackBig.png")) return true;
+	if (strThumb.Equals("defaultFolderBig.png")) return true;
+	if (strThumb.Equals("defaultHardDisk.png")) return true;
+	if (strThumb.Equals("defaultHardDiskBig.png")) return true;
+	if (strThumb.Equals("defaultNetwork.png")) return true;
+	if (strThumb.Equals("defaultNetworkBig.png")) return true;
+	if (strThumb.Equals("defaultPicture.png")) return true;
+	if (strThumb.Equals("defaultPictureBig.png")) return true;
+	if (strThumb.Equals("defaultVCD.png")) return true;
+	if (strThumb.Equals("defaultVCDBig.png")) return true;
+	if (strThumb.Equals("defaultVideo.png")) return true;
+	if (strThumb.Equals("defaultVideoBig.png")) return true;
+	if (strThumb.Equals("defaultXBOXDVD.png")) return true;
+	if (strThumb.Equals("defaultXBOXDVDBig.png")) return true;
+	// check the default icons
+	for (unsigned int i=0; i < g_settings.m_vecIcons.size(); ++i)
+  {
+		if (strThumb.Equals(g_settings.m_vecIcons[i].m_strIcon)) return true;
+  }
+	return false;
 }

@@ -28,6 +28,7 @@ public:
 	virtual bool			OnMessage(CGUIMessage& message);
 	virtual void			OnAction(const CAction &action);
 	virtual void			Render();
+	static bool				GetSearchResults(const CStdString &strSearch, CStdString &strResult);
 
 protected:
 	void					UpdateButtons();

@@ -248,7 +248,7 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
   }
   else
   {
-		if (!g_stSettings.m_bHideParentDirItems)
+		if (!g_guiSettings.GetBool("VideoLists.HideParentDirItems"))
 		{
 			CFileItem *pItem = new CFileItem("..");
 			pItem->m_strPath="";

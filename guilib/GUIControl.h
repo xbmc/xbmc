@@ -70,12 +70,12 @@ public:
   DWORD         GetControlIdLeft() const { return m_dwControlLeft;};
   DWORD         GetControlIdRight() const { return m_dwControlRight;};
   void          SetFocus(bool bOnOff);
-  void          SetWidth(int iWidth);
-  void          SetHeight(int iHeight);
-  void          SetVisible(bool bVisible);
-  void			SetSelected(bool bSelected);
-	void					SetEnabled(bool bEnable);
-	virtual void			EnableCalibration(bool bOnOff);
+  virtual void  SetWidth(int iWidth);
+  virtual void	SetHeight(int iHeight);
+  virtual void	SetVisible(bool bVisible);
+  void					SetSelected(bool bSelected);
+	virtual void	SetEnabled(bool bEnable);
+	virtual void	EnableCalibration(bool bOnOff);
 	bool					CalibrationEnabled() const;
   void SetGroup(int iGroup);
   int GetGroup(void) const;
@@ -99,6 +99,7 @@ public:
 		GUICONTROL_SLIDER,
 		GUICONTROL_SPINBUTTON,
 		GUICONTROL_SPIN,
+		GUICONTROL_SPINEX,
 		GUICONTROL_TEXTBOX,
 		GUICONTROL_THUMBNAIL,
 		GUICONTROL_TOGGLEBUTTON,
