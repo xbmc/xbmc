@@ -106,7 +106,15 @@
   <string>
     <id>32</id>
     <value>December</value>
-  </string>  
+  </string> 
+ <string>
+ <id>98</id>
+ <value>Vy: Auto</value>
+ </string>
+ <string>
+ <id>99</id>
+ <value>Vy: Auto stor</value>
+ </string>
   <string>
     <id>100</id>
     <value>Visa ikoner</value>
@@ -527,6 +535,11 @@
     <id>204</id>
     <value>Betyg</value>
   </string> 
+  <string>
+ <id>2050</id>
+ <value>Speltid:</value>
+ </string>
+
   <string>
     <id>205</id>
     <value>Röster</value>
@@ -2500,12 +2513,10 @@
 <id>14000</id>
 <value>Stacking: Av</value>
 </string>
-
    <string>
 <id>14001</id>
 <value>Stacking: Enkel</value>
 </string>
-
    <string>
 <id>14002</id>
 <value>Stacking: Luddig</value>
@@ -2532,4 +2543,36 @@
 </string>
   <string><id>14008</id><value>Aktivera Kai medelande</value></string>
   <string><id>14009</id><value>Spel mapp</value></string>
+   <string><id>14010</id><value>Autoväxla val</value></string>
+   <string><id>14011</id><value>Aktivera autoväxling</value></string>
+   <string><id>14012</id><value>Använd stora ikoner</value></string>
+   <string><id>14013</id><value>Metod:</value></string>
+   <string><id>14014</id><value>Procent:</value></string>
+   <string><id>14015</id><value>Thumbpanel om inga filer</value></string>
+   <string><id>14016</id><value>Listpanel om inga mappar</value></string>
+   <string><id>14017</id><value>Procent av tumnaglar</value></string>
+   <string><id>14018</id><value>Vy val</value></string>
+   <string><id>14019</id><value>Områdeskod 1</value></string>
+   <string><id>14020</id><value>Områdeskod 2</value></string>
+   <string><id>14021</id><value>Områdeskod 3</value></string>
+   <string><id>14022</id><value>Bibliotek</value></string>
+   <string><id>14023</id><value>Ingen TV</value></string>
+   <string><id>14024</id><value>Skriv in största närmaste stad</value></string>
+   <string><id>14025</id><value>Video från hårddisk</value></string>
+   <string><id>14026</id><value>Video från DVDRom</value></string>
+   <string><id>14027</id><value>Video från Lokalt Nätverk</value></string>
+   <string><id>14028</id><value>Video från Internet</value></string>
+   <string><id>14029</id><value>Audio från hårddisk</value></string>
+   <string><id>14030</id><value>Audio från DVDRom</value></string>
+   <string><id>14031</id><value>Audio från Lokalt Nätverk</value></string>
+   <string><id>14032</id><value>Audio från Internet</value></string>
+   <string><id>14033</id><value>DVD från hårddisk</value></string>
+   <string><id>14034</id><value>DVD från DVDRom</value></string>
+   <string><id>14035</id><value>DVD från Lokalt Nätverk</value></string>
+   <string><id>14036</id><value>Servrar</value></string>
+   <string><id>14037</id><value>Look and Feel</value></string>
+   <string><id>14038</id><value>Nätverks inställningar ändrade</value></string>
+   <string><id>14039</id><value>XBMC behöver startas om för att slutföra din</value></string>
+   <string><id>14040</id><value>nätverksinställng. Vill du starta om nu?</value></string>
+   <string><id>14041</id><value>Post Processing</value></string>
 </strings>
