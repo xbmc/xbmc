@@ -16,6 +16,7 @@ CSettings::CSettings(void)
   g_stSettings.m_bPPdering=false;
   g_stSettings.m_iPPHorizontal=0;
   g_stSettings.m_iPPVertical=0;
+  g_stSettings.m_bFrameRateConversions=false;
 
   strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
   g_stSettings.m_iSubtitleHeight=28;
@@ -732,6 +733,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetInteger(pElement, "uioffsetx",g_stSettings.m_iUIOffsetX);
 		GetInteger(pElement, "uioffsety",g_stSettings.m_iUIOffsetY);
 		GetBoolean(pElement, "soften", g_stSettings.m_bSoften);
+    GetBoolean(pElement, "framerateconversion", g_stSettings.m_bFrameRateConversions);
 		GetBoolean(pElement, "zoom", g_stSettings.m_bZoom);
 		GetBoolean(pElement, "stretch", g_stSettings.m_bStretch);
 		GetBoolean(pElement, "allowswitching", g_stSettings.m_bAllowVideoSwitching);
@@ -929,6 +931,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetInteger(pNode, "uioffsetx",g_stSettings.m_iUIOffsetX);
 	SetInteger(pNode, "uioffsety",g_stSettings.m_iUIOffsetY);
 	SetBoolean(pNode, "soften", g_stSettings.m_bSoften);
+  SetBoolean(pNode, "framerateconversion", g_stSettings.m_bFrameRateConversions);
 	SetBoolean(pNode, "zoom", g_stSettings.m_bZoom);
 	SetBoolean(pNode, "stretch", g_stSettings.m_bStretch);
 	SetBoolean(pNode, "allowswitching", g_stSettings.m_bAllowVideoSwitching);

@@ -191,6 +191,7 @@ public:
     int       m_iPPHorizontal;
     int       m_iPPVertical;
     bool      m_bPPdering;
+    bool      m_bFrameRateConversions;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
