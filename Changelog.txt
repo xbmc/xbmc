@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 18-08-2004 added: more python objects and functions to control xbmc
   - 17-08-2004 added: Romanian Language file by bompy
   - 17-08-2004 updated: Polish Language file by NaPeK 
   - 17-08-2004 updated: small changes to the skin
