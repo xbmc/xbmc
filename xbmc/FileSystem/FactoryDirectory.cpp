@@ -10,6 +10,7 @@
 #include "RTVDirectory.h"
 #include "SndtrkDirectory.h"
 #include "DAAPDirectory.h"
+#include "shoutcastdirectory.h"
 #include "../url.h"
 
 CFactoryDirectory::CFactoryDirectory(void)
@@ -64,6 +65,10 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 	if (strProtocol=="daap")
 	{
 		return (IDirectory*)new CDAAPDirectory();
+	}
+	if (strProtocol=="shout")
+	{
+		return (IDirectory*)new CShoutcastDirectory();
 	}
 
   return (IDirectory*)new CHDDirectory();

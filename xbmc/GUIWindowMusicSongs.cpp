@@ -712,6 +712,16 @@ void CGUIWindowMusicSongs::UpdateButtons()
 		CONTROL_DISABLE(GetID(), CONTROL_BTNRIP);
 	}
 
+	// Disable scan button if shoutcast
+	if (m_strDirectory.IsEmpty() || CUtil::IsShoutCast(m_strDirectory))
+	{
+		CONTROL_DISABLE(GetID(), CONTROL_BTNSCAN);
+	}
+	else
+	{
+		CONTROL_ENABLE(GetID(), CONTROL_BTNSCAN);
+	}
+
 	//	Update sorting control
 	bool bSortAscending=false;
 	if (m_strDirectory.IsEmpty())
@@ -956,8 +966,11 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 
 	if (nMyMusicSortMethod==0||nMyMusicSortMethod==2||nMyMusicSortMethod==8)
 	{
-		if (pItem->m_bIsFolder) 
-			pItem->SetLabel2("");
+		if (pItem->m_bIsFolder)
+		{
+			if (!CUtil::IsShoutCast(pItem->m_strPath))
+			  pItem->SetLabel2("");
+		}
 		else 
 		{
 			if (pItem->m_dwSize > 0) 
@@ -991,13 +1004,13 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 	}
 	else
 	{
-		if (pItem->m_stTime.wYear)
+		if (pItem->m_stTime.wYear && (!CUtil::IsShoutCast(pItem->m_strPath)))
 		{
 			CStdString strDateTime;
 			CUtil::GetDate(pItem->m_stTime, strDateTime);
 			pItem->SetLabel2(strDateTime);
 		}
-		else
+		else if (!CUtil::IsShoutCast(pItem->m_strPath))
 			pItem->SetLabel2("");
 	}
 
@@ -1133,8 +1146,8 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 			return;
 		}
 
-    // dont try reading id3tags for folders or playlists
-		if (!pItem->m_bIsFolder && !CUtil::IsPlayList(pItem->m_strPath) )
+    // dont try reading id3tags for folders, playlists or shoutcast streams
+		if (!pItem->m_bIsFolder && !CUtil::IsPlayList(pItem->m_strPath) && !CUtil::IsShoutCast(pItem->m_strPath) )
 		{
       // is tag for this file already loaded?
 			bool bNewFile=false;
