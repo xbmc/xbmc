@@ -77,16 +77,15 @@ static int audio_init(int rate,int channels,int format,int flags)
 		long lSampleRate;
 		int	 iChannels;
 		BOOL bVBR;
-		bool bAC3File=false;
+		bool bAC3PassThru=false;
 		mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
-		if (strstr(strAudioCodec,"AC3"))
+		if (strstr(strAudioCodec,"SPDIF"))
 		{
-			bAC3File=true;
+			bAC3PassThru=true;
 		}
 
 		pao_data=GetAOData();
-		bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
-		if (bAC3File && bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru && channels==2)
+		if (bAC3PassThru)
 		{
 			// ac3 passthru
 			m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,2,rate,audio_out_format_bits(format));

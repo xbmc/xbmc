@@ -284,7 +284,7 @@ DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
 			memcpy(xmpAudio.pvBuffer,&data[iBytesCopied],iSize);
 
 			hr=m_pDigitalOutput->Process( &xmpAudio, NULL );
-			hr=m_pAnalogOutput->Process( &xmpAudio, NULL );
+			//hr=m_pAnalogOutput->Process( &xmpAudio, NULL );
 
 			iBytesCopied+=iSize;
 			len -=iSize;
