@@ -1,4 +1,5 @@
 #include "fileitem.h"
+#include "settings.h"
 
 
 CFileItem::CFileItem(const CFileItem& item)
@@ -12,6 +13,7 @@ CFileItem::CFileItem(void)
   m_bIsFolder=false;
   m_bIsShareOrDrive=false;
 	memset(&m_stTime,0,sizeof(m_stTime));
+  m_iDriveType = SHARE_TYPE_UNKNOWN;
 }
 
 
@@ -40,6 +42,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
 
 	m_strPath=item.m_strPath;
 	m_bIsFolder=item.m_bIsFolder;
+	m_iDriveType=item.m_iDriveType;
 	m_bIsShareOrDrive=item.m_bIsShareOrDrive;
 	memcpy(&m_stTime,&item.m_stTime,sizeof(SYSTEMTIME));
 	m_dwSize=item.m_dwSize;
