@@ -8,34 +8,17 @@
  * See the file "license.txt" for usage and redistribution license requirements
  */
 
-//#pragma comment(linker, "/merge:WEB_TEXT=LIBHTTP")
-//#pragma comment(linker, "/merge:WEB_DATA=LIBHTTP")
-//#pragma comment(linker, "/merge:WEB_BSS=LIBHTTP")
-//#pragma comment(linker, "/merge:WEB_RD=LIBHTTP")
-//#pragma comment(linker, "/section:LIBHTTP,RWE")
+#pragma comment(linker, "/merge:WEB_TEXT=LIBHTTP")
+#pragma comment(linker, "/merge:WEB_DATA=LIBHTTP")
+#pragma comment(linker, "/merge:WEB_BSS=LIBHTTP")
+#pragma comment(linker, "/merge:WEB_RD=LIBHTTP")
+#pragma comment(linker, "/section:LIBHTTP,RWE")
 
 #pragma once
 
-#ifndef WEBS
-#define WEBS
-#endif
-#ifndef UEMF
-#define UEMF
-#endif
-#ifndef DIGEST_ACCESS_SUPPORT
-#define DIGEST_ACCESS_SUPPORT
-#endif
-#ifndef DEV
-#define DEV
-#endif
-#ifndef WIN
-#define WIN
-#endif
-#ifndef USER_MANAGEMENT_SUPPORT
-#define USER_MANAGEMENT_SUPPORT
-#endif
-
+#include "defines.h"
 #define SOCK_DFT_SVC_TIME	20
+#define SPYCE_SUPPORT
 
 #ifdef __cplusplus
 extern "C" {

@@ -1041,10 +1041,10 @@ extern int 		socketWaitForEvent(socket_t *sp, int events, int *errCode);
 extern void 	socketRegisterInterest(socket_t *sp, int handlerMask);
 extern int 		socketGetInput(int sid, char *buf, int toRead, int *errCode);
 
-extern char_t	*strlower(char_t *string);
-extern char_t	*strupper(char_t *string);
+extern char_t	*webs_strlower(char_t *string);
+extern char_t	*webs_strupper(char_t *string);
 
-extern char_t	*stritoa(int n, char_t *string, int width);
+extern char_t	*webs_stritoa(int n, char_t *string, int width);
 
 extern sym_fd_t	symOpen(int hash_size);
 extern void		symClose(sym_fd_t sd);

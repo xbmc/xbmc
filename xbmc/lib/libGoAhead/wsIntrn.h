@@ -240,6 +240,13 @@ extern int				websPort;			/* Port number */
 
 extern int		 websAspOpen();
 extern void		 websAspClose();
+
+extern int		 websSpyOpen();
+extern void		 websSpyClose();
+extern void		 setSpyOpenCallback(int (*)());
+extern void		 setSpyCloseCallback(void (*)());
+extern void		 setSpyRequestCallback(int (*)(webs_t wp, char_t *lpath));
+
 extern void		 websFormOpen();
 extern void		 websFormClose();
 extern int		 websAspWrite(int ejid, webs_t wp, int argc, char_t **argv);

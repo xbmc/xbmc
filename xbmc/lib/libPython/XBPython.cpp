@@ -30,6 +30,8 @@ XBPython::XBPython()
 			"		xbmc.output(data)\n"
 			"	def flush(self):\n"
 			"		xbmc.output(\".\")\n"
+			"	def close(self):\n"
+			"		xbmc.output('.')\n"
 			"\n"
 			"import sys\n"
 			"sys.stdout = xbmcout()\n"
