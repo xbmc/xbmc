@@ -1,4 +1,5 @@
 #include "log.h"
+#include <share.h>
 
 static CLog g_logger;
 
@@ -23,12 +24,13 @@ void CLog::Close()
     fd=NULL;
   }
 }
+
 void CLog::Log(const char *format, ... )
 {
 	va_list va;
 
 	if (!fd)
-		fd=fopen("Q:\\xbmc.log","a+");
+		fd=_fsopen("Q:\\xbmc.log","a+",_SH_DENYWR);
 	if (!fd)
 		return;
 
