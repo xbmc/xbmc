@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 26-10-2004 fixed: Autoshutdown now checks for FTP activity (SF Bug #1051210)
   - 26-10-2004 added: Kai password is displayed using *'s in the GUI.
   - 26-10-2004 fixed: Hide File extension and Parent Dir Items clash in General Settings
   - 26-10-2004 added: SF patch [ 1048648 ] Fix MP3 Parser due to change in multi-genre handling - thanks kraqh3d!
