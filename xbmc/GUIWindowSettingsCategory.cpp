@@ -59,6 +59,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
 	m_iScreen = 0;
 	// set the network settings so that we don't reset them unnecessarily
 	m_iNetworkAssignment = -1;
+	m_strErrorMessage = L"";
 }
 
 CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
@@ -914,6 +915,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 		CStdString strSkinPath = "Q:\\skin\\" + strSkin;
 		if (g_SkinInfo.Check(strSkinPath))
 		{
+			m_strErrorMessage.Empty();
 			pControl->SetSpinTextColor(pControl->GetButtonTextColor());
 			if (strSkin != "CVS" && strSkin != g_guiSettings.GetString("LookAndFeel.Skin"))
 			{
@@ -928,6 +930,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 		}
 		else
 		{
+			m_strErrorMessage.Format(L"Incompatible skin. We require skins of version %0.2f or higher", g_SkinInfo.GetMinVersion());
 			m_strNewSkin.Empty();
 			g_application.CancelDelayLoadSkin();
 			pControl->SetSpinTextColor(pControl->GetDisabledColor());
@@ -1092,6 +1095,17 @@ void CGUIWindowSettingsCategory::Render()
 	{
 		pButton->SetFocus(false);
 		pButton->SetAlpha(0xFF);
+	}
+	// render the error message if necessary
+	if (m_strErrorMessage.size())
+	{
+		CGUIFont *pFont = g_fontManager.GetFont("font13");
+		if (pFont)
+		{
+			float fPosY = g_graphicsContext.GetHeight()*0.8f;
+			float fPosX = g_graphicsContext.GetWidth()*0.5f;
+			pFont->DrawText(fPosX, fPosY, 0xFFFFFFFF, m_strErrorMessage.c_str(), XBFONT_CENTER_X);
+		}
 	}
 }
 

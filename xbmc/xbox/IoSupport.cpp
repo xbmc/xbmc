@@ -724,3 +724,58 @@ bool CIoSupport::PartitionExists(const char* szPartition)
 	}
 	return false;
 }
+
+// stolen from DVD2XBOX :P
+bool CIoSupport::IsDrivePresent( const char* cDrive )
+{
+	bool bReturn = false;
+	ULARGE_INTEGER uFree1, uTotal1, uTotal2;
+
+	CIoSupport		io;
+	WIN32_FIND_DATA wfd; 
+	HANDLE hFind;
+	char path[5];
+
+	strcpy(path,cDrive);
+	strcat(path,"\\*");
+
+	bool bMapped = false;
+	for (int i=0; i<NUM_OF_DRIVES; i++)
+	{
+		if (driveMapping[i].szDriveLetter == cDrive[0])
+		{
+			char temp[32];
+			sprintf(temp, "%s,%s", cDrive, driveMapping[i].szDevice);
+			Remap(temp);
+			bMapped = true;
+		}
+	}
+
+	if (!bMapped)
+		return false;
+
+	hFind = FindFirstFile( path, &wfd );
+		
+	if( INVALID_HANDLE_VALUE != hFind)
+	{
+		bReturn = true;
+		FindClose( hFind );
+	}
+	else if ( GetDiskFreeSpaceEx( cDrive, &uFree1, &uTotal1, &uTotal2 ) ) 
+	{
+		bReturn = true;
+	}
+	else
+	{
+		// Should do a final check....  
+		char szVolume[256];
+		char szFileSys[32];
+		DWORD dwVolSer, dwMaxCompLen, dwFileSysFlags;
+		if ( GetVolumeInformation( cDrive, szVolume, 255, &dwVolSer, &dwMaxCompLen, &dwFileSysFlags, szFileSys, 32 ) )
+		{
+			bReturn = true;
+		}
+	}
+	Unmount(cDrive);
+	return bReturn;
+}

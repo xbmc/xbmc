@@ -124,6 +124,7 @@ public:
 	
   static HRESULT Shutdown();
 	static VOID		 SpindownHarddisk();
+	bool					IsDrivePresent( const char* cDrive );
 
 protected:
 	static VOID			IdexWritePortUchar(USHORT port, UCHAR data);
