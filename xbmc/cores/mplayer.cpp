@@ -583,7 +583,15 @@ bool CMPlayer::load()
 	Unload();
 	if (!m_pDLL)
 	{
-		m_pDLL = new DllLoader("Q:\\mplayer\\mplayer.dll",true);
+		if(g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
+    {
+      m_pDLL = new DllLoader("Q:\\system\\players\\mplayer\\mplayer.dll",true);
+    }
+    else
+    {
+      m_pDLL = new DllLoader("Q:\\mplayer\\mplayer.dll",true);
+    }
+
 		if( !m_pDLL->Parse() )
 		{
 			CLog::Log(LOGERROR, "cmplayer::load() parse failed");

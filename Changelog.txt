@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 01-02-2005 added: mplayer support for new system\players directory structure, enable Alternate mplayer core in settings to use it.
+                      Requires new compiled mplayer.dll, old dll's still needs to be in old mplayer dir.
   - 01-02-2005 fixed: [ 1113362 ] Selecting "All songs" in Artist view takes awfully long time
   - 01-02-2005 fixed: Slow music search
   - 01-02-2005 fixed: [ 1095048 ] If no DVD is in the drive, do not use cached thumbnail.
