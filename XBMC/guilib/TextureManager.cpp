@@ -302,7 +302,11 @@ static HRESULT LoadCachedTexture(LPDIRECT3DDEVICE8 pDevice, const char* szFilena
 
 	XPR_HEADER XPRHeader;
 	DWORD n;
-	ReadFile(hFile, &XPRHeader, sizeof(XPR_HEADER), &n, NULL);
+	if (!ReadFile(hFile, &XPRHeader, sizeof(XPR_HEADER), &n, NULL) || n < sizeof(XPR_HEADER))
+	{
+		CloseHandle(hFile);
+		return E_INVALIDARG;
+	}
 
 	if (XPRHeader.dwMagic != XPR_MAGIC_VALUE)
 	{
@@ -311,14 +315,44 @@ static HRESULT LoadCachedTexture(LPDIRECT3DDEVICE8 pDevice, const char* szFilena
 	}
 
 	DWORD ResHeaderSize = XPRHeader.dwHeaderSize - sizeof(XPR_HEADER);
-	char* ResHeader = new char[ResHeaderSize];
+	char* ResHeader = new char[sizeof(D3DTexture) + sizeof(DWORD)];
+	if (!ResHeader)
+	{
+		CloseHandle(hFile);
+		return E_FAIL;
+	}
 	DWORD ResDataSize = XPRHeader.dwTotalSize - XPRHeader.dwHeaderSize;
 	void* ResData = D3D_AllocContiguousMemory(ResDataSize, 4096);
+	if (!ResData)
+	{
+		delete [] ResHeader;
+		CloseHandle(hFile);
+		return E_FAIL;
+	}
 
-	ReadFile(hFile, ResHeader, ResHeaderSize, &n, NULL);
-	ReadFile(hFile, ResData, ResDataSize, &n, NULL);
+	if (!ReadFile(hFile, ResHeader, sizeof(D3DTexture) + sizeof(DWORD), &n, NULL) || n != sizeof(D3DTexture) + sizeof(DWORD))
+	{
+		delete [] ResHeader;
+		D3D_FreeContiguousMemory(ResData);
+		CloseHandle(hFile);
+		return E_FAIL;
+	}
+	SetFilePointer(hFile, ResHeaderSize - (sizeof(D3DTexture) + sizeof(DWORD)), NULL, FILE_CURRENT);
+	if (!ReadFile(hFile, ResData, ResDataSize, &n, NULL) || n != ResDataSize)
+	{
+		delete [] ResHeader;
+		D3D_FreeContiguousMemory(ResData);
+		CloseHandle(hFile);
+		return E_FAIL;
+	}
 	WORD RealSize[2];
-	ReadFile(hFile, RealSize, 4, &n, 0);
+	if (!ReadFile(hFile, RealSize, 4, &n, 0) || n != 4)
+	{
+		delete [] ResHeader;
+		D3D_FreeContiguousMemory(ResData);
+		CloseHandle(hFile);
+		return E_FAIL;
+	}
 	
 	CloseHandle(hFile);
 
@@ -445,6 +479,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 	bool Cached = false;
 	int n = strPath.find_last_of('.');
 	CStdString strCachePath(strPath.Left(n));
+
 	strCachePath += ".xpr";
 	if (GetFileAttributes(strCachePath) != -1)
 	{
