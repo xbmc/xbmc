@@ -241,7 +241,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   {
     if(plItemUrl.GetProtocol().length()==0 ) //Filename is local or not qualified
     {
-      if (!( isalpha(strFilename.c_str()[0]) && strFilename.c_str()[1] == ':')) //Filename not fully qualified
+      if (!( strFilename.c_str()[1] == ':')) //Filename not fully qualified
       {
         if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\') 
         {
