@@ -949,8 +949,11 @@ bool CMPlayer::Record(bool bOnOff)
 void CMPlayer::SeekPercentage(int iPercent)
 {
   mplayer_setPercentage( iPercent);
-  SwitchToThread();
-  xbox_video_wait();
+  if (HasVideo())
+  {
+    SwitchToThread();
+    xbox_video_wait();
+  }
 }
 
 int CMPlayer::GetPercentage()
@@ -987,8 +990,11 @@ int     CMPlayer::GetAudioStreamCount()
 void CMPlayer::SeekTime(int iTime)
 {
   mplayer_setTime( iTime);
-  SwitchToThread();
-  xbox_video_wait();
+  if (HasVideo())
+  {
+    SwitchToThread();
+    xbox_video_wait();
+  }
 }
 
 __int64 CMPlayer::GetTime()

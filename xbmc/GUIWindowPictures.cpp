@@ -528,6 +528,9 @@ void CGUIWindowPictures::OnShowPicture(const CStdString& strPicture)
 	CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
 	if (!pSlideShow)
 		return;
+  if (g_application.IsPlayingVideo())
+    g_application.StopPlaying();
+
 	pSlideShow->Reset();
   for (int i=0; i < (int)m_vecItems.size();++i)
   {
@@ -567,6 +570,9 @@ void  CGUIWindowPictures::OnSlideShowRecursive()
 	if (!pSlideShow)
 		return;
 	
+  if (g_application.IsPlayingVideo())
+    g_application.StopPlaying();
+
   pSlideShow->Reset();
   AddDir(pSlideShow,m_strDirectory);
   pSlideShow->StartSlideShow();
@@ -578,6 +584,9 @@ void CGUIWindowPictures::OnSlideShow()
 	CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
 	if (!pSlideShow)
 		return;
+  if (g_application.IsPlayingVideo())
+      g_application.StopPlaying();
+
 	pSlideShow->Reset();
   for (int i=0; i < (int)m_vecItems.size();++i)
   {
