@@ -131,7 +131,8 @@ public:
   virtual void          Process();
   void                  ResetScreenSaver();
   int                   GetPlaySpeed() const;  
-  void                  SetPlaySpeed(int iSpeed);  
+  void                  SetPlaySpeed(int iSpeed);
+	bool									IsButtonDown(DWORD code);
 
 	CGUIWindowHome									m_guiHome;
   CGUIWindowPrograms							m_guiPrograms;
