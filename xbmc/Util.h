@@ -92,6 +92,7 @@ public:
 	static void ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl );
 	static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
 	static void RemoveTempFiles();
+	static void DeleteTDATA();
 
 	// Added by JM to determine possible type of file from framesize
 	static bool IsNTSC_VCD(int iWidth, int iHeight);

@@ -67,6 +67,8 @@ public:
 	virtual void			FreeResources();
 	virtual void			ResetAllControls();
 	static void		        FlushReferenceCache();
+	virtual bool	IsDialog() {return false;};
+
 protected:
   virtual void        OnWindowLoaded();
   virtual void			OnInitWindow();

@@ -37,6 +37,8 @@
 #include "GUIDialogSelect.h"
 #include "GUIDialogFileStacking.h"
 #include "GUIDialogVolumeBar.h"
+#include "GUIDialogSubMenu.h"
+#include "GUIDialogContextMenu.h"
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowSettingsLCD.h"
 #include "GUIWindowSettingsGeneral.h"
@@ -167,7 +169,9 @@ public:
 	CGUIDialogYesNo									m_guiDialogYesNo;
 	CGUIDialogProgress							m_guiDialogProgress;
 	CGUIDialogOK										m_guiDialogOK;
-	CGUIDialogVolumeBar									m_guiDialogVolumeBar;
+	CGUIDialogVolumeBar							m_guiDialogVolumeBar;
+	CGUIDialogSubMenu								m_guiDialogSubMenu;
+	CGUIDialogContextMenu						m_guiDialogContextMenu;
 	CGUIWindowMyFiles								m_guiMyFiles;
 	CGUIWindowVideo									m_guiMyVideo;
 	CGUIWindowSettings							m_guiSettings;

@@ -44,6 +44,7 @@ public:
   virtual void	OnMouseWheel() {};
   virtual bool  OnMessage(CGUIMessage& message);
   DWORD         GetID(void) const; 
+	void					SetID(DWORD dwID) { m_dwControlID = dwID; };
   DWORD         GetParentID(void) const; 
   bool          HasFocus(void) const;
 	virtual void  PreAllocResources() {}
