@@ -272,57 +272,6 @@ IDirect3DTexture8* CPicture::GetTexture( CxImage& image  )
 	return pTexture;
 }
 
-IDirect3DTexture8* CPicture::GetYUY2Texture( CxImage& image  )
-{
-	IDirect3DTexture8* pTexture=NULL;
-	if (g_graphicsContext.Get3DDevice()->CreateTexture( image.GetWidth(),
-																											image.GetHeight(),
-																											1, // levels
-																											0, //usage
-																											D3DFMT_YUY2 ,
-																											0,
-																											&pTexture) != D3D_OK)
-	{
-		return NULL;
-	}
-	if (!pTexture)
-	{
-		return NULL;
-	}
-
-	DWORD dwHeight=image.GetHeight();
-	DWORD dwWidth =image.GetWidth();
-
-	D3DLOCKED_RECT lr;
-	if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
-	{
-		// translate RGB->YUV2
-		DWORD strideScreen=lr.Pitch;
-		for (DWORD y=0; y < dwHeight; y++)
-		{
-			BYTE *pDest = (BYTE*)lr.pBits + strideScreen*y;
-			for (DWORD x=0; x < (dwWidth>>1); x++)
-			{
-				RGBQUAD rgb1=image.GetPixelColor( (x<<1), y);
-				RGBQUAD yuv1=image.RGBtoYUV(rgb1);
-				RGBQUAD rgb2=image.GetPixelColor((x<<1)+1,y);
-				RGBQUAD yuv2=image.RGBtoYUV(rgb2);
-				BYTE Y0 = yuv1.rgbRed;
-				BYTE U = (yuv1.rgbGreen+yuv2.rgbGreen)>>1;
-				BYTE Y1 = yuv2.rgbRed;
-				BYTE V = (yuv1.rgbBlue+yuv2.rgbBlue)>>1;
-
-				*pDest++ = Y0;
-				*pDest++ = U;
-				*pDest++ = Y1;
-				*pDest++ = V;
-			}
-		}
-		pTexture->UnlockRect( 0 );
-	}
-	return pTexture;
-}
-
 bool CPicture::CreateAlbumThumbnail(const CStdString& strFileName, const CStdString& strAlbum)
 {
   CStdString strThumbnail;
