@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-
+  - 16-10-2004 fixed: viz doesnt close when ejecting a iso or udf cd while playing
   - 16-10-2004 fixed: [ 1040328 ] viz doesnt close when music stops
   - 15-10-2004 changed: Romanian language file (Thnx to bompy)
   - 15-10-2004 fixed: [ 1046845 ] Subtitles show a vertical bar
