@@ -323,7 +323,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiWindowVisualisation);			// window id = 2006
 	m_gWindowManager.Add(&m_guiWindowSlideshow);					// window id = 2007
 	m_gWindowManager.Add(&m_guiDialogFileStacking);				// window id = 2008
-
+	m_gWindowManager.Add(&m_guiWindowOSD);						// window id = 2901
 	m_gWindowManager.Add(&m_guiWindowScreensaver);				// window id = 2900 Screensaver
 	m_gWindowManager.Add(&m_guiMyWeather);						    // window id = 2600 WEATHER
 	m_gWindowManager.Add(&m_guiSettingsWeather);				  // window id = 17 WEATHER SETTINGS
@@ -392,6 +392,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   CLog::Log("  delete old skin...");
 	m_guiWindowVideoOverlay.FreeResources();
 	m_guiWindowVideoOverlay.ClearAll();
+
+	m_guiWindowOSD.FreeResources();
 	
 	m_guiMusicOverlay.FreeResources();
 	m_guiMusicOverlay.ClearAll();
@@ -462,6 +464,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiWindowSlideshow.Load( strSkinPath+"\\slideshow.xml");
 	m_guiSettingsSubtitles.Load( strSkinPath+"\\SettingsScreenSubtitles.xml");
 	m_guiWindowScreensaver.SetID(WINDOW_SCREENSAVER);		// CB: Matrix Screensaver - saves us having to have our own XML file
+	m_guiWindowOSD.Load( strSkinPath+"\\videoOSD.xml" );
 	m_guiMyWeather.Load( strSkinPath+"\\myweather.xml");	//WEATHER
 	m_guiSettingsWeather.Load(strSkinPath+"\\SettingsWeather.xml");	//WEATHER SETTINGS
 	CGUIWindow::FlushReferenceCache(); // flush the cache so it doesn't use memory all the time
@@ -469,6 +472,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   CLog::Log("  initialize new skin...");
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
+	m_guiWindowOSD.AllocResources();
 	m_gWindowManager.AddMsgTarget(this);
 	m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
 	m_gWindowManager.SetCallback(*this);
@@ -1175,6 +1179,7 @@ void CApplication::Stop()
   CLog::Log("unload skin");
 	m_guiMusicOverlay.FreeResources();
 	m_guiWindowVideoOverlay.FreeResources();
+	m_guiWindowOSD.FreeResources();
 	g_fontManager.Clear();
 	m_gWindowManager.DeInitialize();
 	g_TextureManager.Cleanup();

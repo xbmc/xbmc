@@ -21,6 +21,8 @@ public:
   void						ChangetheTimeCode(DWORD remote);  
   void						ChangetheSpeed(DWORD action);
   virtual void    OnExecute(int iAction, const IOSDOption* option);
+  bool            m_bOSDVisible;
+
 private:
   void            Update();
   void            ShowOSD();
@@ -36,7 +38,7 @@ private:
 	float						m_fFrameCounter;
 	FLOAT						m_fFPS;
   COSDMenu        m_osdMenu;
-  bool            m_bOSDVisible;
+  //bool            m_bOSDVisible;
   CCriticalSection m_section;
   bool            m_bLastRender;
 	int							m_strTimeStamp[5];

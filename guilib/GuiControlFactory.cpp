@@ -116,7 +116,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	int					iType=SPIN_CONTROL_TYPE_TEXT;
 	bool				bReverse=false;
   bool        bShadow;
-	CStdString	strTextureBg, strLeft,strRight,strMid;
+	CStdString	strTextureBg, strLeft,strRight,strMid,strMidFocus;
 	CStdString	strLeftFocus, strRightFocus;
 	CStdString	strTexture;
 	DWORD 			dwColorKey=0xffffffff;
@@ -391,6 +391,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetString(pControlNode,"textureRadioFocus",strTextureRadioFocus);
 	GetString(pControlNode,"textureRadioNoFocus",strTextureRadioNoFocus);
 
+	GetString(pControlNode,"textureSliderBar", strTextureBg);
+	GetString(pControlNode,"textureSliderNib", strMid);
+	GetString(pControlNode,"textureSliderNibFocus", strMidFocus);
+
 	if (GetString(pControlNode,"subtype",strSubType))
 	{
 		strSubType.ToLower();
@@ -558,8 +562,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   if (strType=="slider")
   {
 			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
-      CGUISliderControl* pControl= new CGUISliderControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureBg,strMid);
+	  
+      CGUISliderControl* pControl= new CGUISliderControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,strTextureBg,strMid,strMidFocus,iType);
       pControl->SetVisible(bVisible);
+	  pControl->SetNavigation(up,down,left,right);
       return pControl;
   } 
   if (strType=="progress")

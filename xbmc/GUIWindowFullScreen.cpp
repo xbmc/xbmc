@@ -3,10 +3,10 @@
 #include "settings.h"
 #include "application.h"
 #include "util.h"
-#include "osd/OSDOptionFloatRange.h"
-#include "osd/OSDOptionIntRange.h"
-#include "osd/OSDOptionBoolean.h"
-#include "osd/OSDOptionButton.h"
+//#include "osd/OSDOptionFloatRange.h"
+//#include "osd/OSDOptionIntRange.h"
+//#include "osd/OSDOptionBoolean.h"
+//#include "osd/OSDOptionButton.h"
 #include "cores/mplayer/mplayer.h"
 #include "utils/singlelock.h"
 #include "videodatabase.h"
@@ -89,7 +89,20 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 
 void CGUIWindowFullScreen::OnAction(const CAction &action)
 {
-  
+	if (m_bOSDVisible)
+	{
+		if (action.wID == ACTION_SHOW_OSD)	// hide the OSD
+		{
+			CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
+			OnMessage(msg);	// Send a de-init msg to the OSD
+			m_bOSDVisible=!m_bOSDVisible;
+			return;
+		}
+
+		g_application.m_guiWindowOSD.OnAction(action);	// route keys to OSD window
+		return;
+	}
+    
 	switch (action.wID)
 	{
     // previous : play previous song from playlist
@@ -190,12 +203,14 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
       g_application.m_pPlayer->ToggleOSD();
     break;
 
-		case ACTION_SHOW_OSD:
+		case ACTION_SHOW_OSD:	// Show the OSD
     {	
       //g_application.m_pPlayer->ToggleOSD();
       m_bOSDVisible=!m_bOSDVisible;
-      if (m_bOSDVisible) ShowOSD();
-      else HideOSD();
+	  CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,0,0,NULL);
+	  OnMessage(msg);	// Send an init msg to the OSD
+      //if (m_bOSDVisible) ShowOSD();
+      //else HideOSD();
     }
     break;
 			
@@ -295,6 +310,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 			ChangetheTimeCode(REMOTE_9);
 		break;
 
+		/*
     case ACTION_OSD_SHOW_LEFT:
     case ACTION_OSD_SHOW_RIGHT:
     case ACTION_OSD_SHOW_UP:
@@ -310,6 +326,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
       return;
     }
     break;
+	*/
 
  		case ACTION_SMALL_STEP_BACK:
      {
@@ -333,7 +350,12 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
-{
+{	
+	if (m_bOSDVisible)
+	{
+		return g_application.m_guiWindowOSD.OnMessage(message);	// route messages to OSD window
+	}
+
 	switch (message.GetMessage())
 	{
 		case GUI_MSG_WINDOW_INIT:
@@ -522,16 +544,22 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
   if (m_bOSDVisible)
   {
-    CGUIWindow::Render();
+    //CGUIWindow::Render();
     CSingleLock lock(m_section);      
 
+	/*
     if (g_application.m_pPlayer)
     {
       int iValue=g_application.m_pPlayer->GetPercentage();
       m_osdMenu.SetValue(MENU_ACTION_SEEK,iValue);
     }
-	  m_osdMenu.Draw();
-    SET_CONTROL_FOCUS(GetID(), m_osdMenu.GetSelectedMenu()+BTN_OSD_VIDEO, 0);
+
+	m_osdMenu.Draw();
+	SET_CONTROL_FOCUS(GetID(), m_osdMenu.GetSelectedMenu()+BTN_OSD_VIDEO, 0);
+	*/
+
+	// tell the OSD window to draw itself
+	g_application.m_guiWindowOSD.Render();
     return;
   }
     
@@ -706,6 +734,7 @@ void CGUIWindowFullScreen::HideOSD()
 
 void CGUIWindowFullScreen::ShowOSD()
 {
+	/*
   CSingleLock lock(m_section);      
 	m_osdMenu.Clear();
   COSDSubMenu videoMenu(291,100,100);
@@ -774,6 +803,7 @@ void CGUIWindowFullScreen::ShowOSD()
   SET_CONTROL_HIDDEN(GetID(),LABEL_ROW3);
   SET_CONTROL_HIDDEN(GetID(),BLUE_BAR);
   Update();
+  */
 }
 
 bool CGUIWindowFullScreen::OSDVisible() const
@@ -783,6 +813,7 @@ bool CGUIWindowFullScreen::OSDVisible() const
 
 void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
 {
+	/*
   switch (iAction)
   {
     case MENU_ACTION_SEEK:
@@ -919,6 +950,7 @@ void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
     break;
 
   }
+  */
 }
 void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
 {
@@ -971,6 +1003,7 @@ void CGUIWindowFullScreen::ChangetheSpeed(DWORD action)
 
 void CGUIWindowFullScreen::Update()
 {
+	/*
   VECBOOKMARKS bookmarks;
   const CStdString& strMovie=g_application.CurrentFile();
   CVideoDatabase dbs;
@@ -981,4 +1014,5 @@ void CGUIWindowFullScreen::Update()
   CStdString strValue;
   strValue.Format("%i/%i", 1+m_iCurrentBookmark,bookmarks.size());
   m_osdMenu.SetLabel(MENU_ACTION_NEXT_BOOKMARK,strValue);
+  */
 }
