@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-12-2004 fixed: LCD time and date obey the GUI settings.
+  - 11-12-2004 added: XBMC.ActivateWindow() can now activate dialogs.
+  - 11-12-2004 changed: various strings to make them more obvious.
+  - 11-12-2004 fixed: Various settings issues (subtitles etc.)
   - 10-12-2004 fixed: [ 1080520 ] web interface: unqueing doesn't work - thanks to re.solve + BombrMan
   - 10-12-2004 updated: German (Austrian) language file (Thnx to CEOMR)
   - 10-12-2004 updated: Italian language file (Thnx to kotix)
