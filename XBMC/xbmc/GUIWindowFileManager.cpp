@@ -490,17 +490,14 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 	for (int i=0; i<(int)m_vecItems[iList].size(); i++)
 	{
 		CFileItem *pItem = m_vecItems[iList][i];
-		if (!pItem->HasThumbnail())
+		CStdString strExtension;
+		CUtil::GetExtension(pItem->m_strPath, strExtension);
+		if (strExtension == ".tbn")
 		{
-			CStdString strExtension;
-			CUtil::GetExtension(pItem->m_strPath, strExtension);
-			if (strExtension == ".tbn")
-			{
-				pItem->SetIconImage(pItem->m_strPath);
-			}
+			CUtil::SetThumb(pItem);
 		}
 	}
-	CUtil::SetThumbs(m_vecItems[iList]);
+//	CUtil::SetThumbs(m_vecItems[iList]);
 	CUtil::FillInDefaultIcons(m_vecItems[iList]);
 
 

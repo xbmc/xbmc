@@ -366,6 +366,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_iLogLevel = LOGNOTICE;
 
 	g_stSettings.m_bEnableRSS=true;
+	g_stSettings.m_bShowFreeMem=false;
 
   m_iLastLoadedProfileIndex = -1;
 
@@ -432,6 +433,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 	}
 
 	GetInteger(pRootElement, "loglevel", g_stSettings.m_iLogLevel, LOGWARNING, LOGDEBUG, LOGNONE);
+	GetBoolean(pRootElement, "showfreemem", g_stSettings.m_bShowFreeMem);
 
 	TiXmlElement* pFileTypeIcons =pRootElement->FirstChildElement("filetypeicons");
 	TiXmlNode* pFileType=pFileTypeIcons->FirstChild();
