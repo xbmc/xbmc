@@ -45,6 +45,11 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
+	PyDoc_STRVAR(addLabel__doc__,
+		"addLabel(string label) -- Add a label to this control for scrolling.\n"
+		"\n"
+		"label     : string or unicode string");
+
 	PyObject* ControlFadeLabel_AddLabel(ControlFadeLabel *self, PyObject *args)
 	{
 		PyObject *pObjectText;
@@ -65,6 +70,9 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(reset__doc__,
+		"reset() -- Reset's the fade label.\n");
+
 	PyObject* ControlFadeLabel_Reset(ControlFadeLabel *self, PyObject *args)
 	{
 		ControlFadeLabel *pControl = (ControlFadeLabel*)self;
@@ -80,10 +88,19 @@ namespace PYXBMC
 	}
 
 	PyMethodDef ControlFadeLabel_methods[] = {
-		{"addLabel", (PyCFunction)ControlFadeLabel_AddLabel, METH_VARARGS, ""},
-		{"reset", (PyCFunction)ControlFadeLabel_Reset, METH_VARARGS, ""},
+		{"addLabel", (PyCFunction)ControlFadeLabel_AddLabel, METH_VARARGS, addLabel__doc__},
+		{"reset", (PyCFunction)ControlFadeLabel_Reset, METH_VARARGS, reset__doc__},
 		{NULL, NULL, 0, NULL}
 	};
+
+	PyDoc_STRVAR(controlFadeLabel__doc__,
+		"ControlFadeLabel class.\n"
+		"Control that scroll's lables"
+		"\n"
+		"ControlFadeLabel(int x, int y, int width, int height[, font, textColor])\n"
+		"\n"
+		"font      : string fontname (example, 'font13' / 'font14')\n"
+		"textColor : hexString (example, '0xFFFF3300')");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
@@ -113,7 +130,7 @@ namespace PYXBMC
 			0,                         /*tp_setattro*/
 			0,                         /*tp_as_buffer*/
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			"ControlFadeLabel Objects",/* tp_doc */
+			controlFadeLabel__doc__,   /* tp_doc */
 			0,		                     /* tp_traverse */
 			0,		                     /* tp_clear */
 			0,		                     /* tp_richcompare */

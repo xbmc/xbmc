@@ -53,6 +53,11 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
+	PyDoc_STRVAR(setText__doc__,
+		"SetText(string text) -- Set's the text for this textbox.\n"
+		"\n"
+		"label     : string or unicode string");
+
 	PyObject* ControlTextBox_SetText(ControlTextBox *self, PyObject *args)
 	{
 		PyObject *pObjectText;
@@ -74,6 +79,9 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(reset__doc__,
+		"reset() -- Clear's the text box.\n");
+
 	PyObject* ControlTextBox_Reset(ControlTextBox *self, PyObject *args)
 	{
 		// create message
@@ -89,6 +97,13 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(getSpinControl__doc__,
+		"getSpinControl() -- returns the associated ControlSpin."
+		"\n"
+		"- Not working completely yet -\n"
+		"After adding this textbox to a window it is not possible to change\n"
+		"the settings of this spin control.");
+
 	PyObject* ControlTextBox_GetSpinControl(ControlTextBox *self, PyObject *args)
 	{
 		Py_INCREF(self->pControlSpin);
@@ -96,11 +111,19 @@ namespace PYXBMC
 	}
 
 	PyMethodDef ControlTextBox_methods[] = {
-		{"setText", (PyCFunction)ControlTextBox_SetText, METH_VARARGS, ""},
-		{"reset", (PyCFunction)ControlTextBox_Reset, METH_VARARGS, ""},
-		{"getSpinControl", (PyCFunction)ControlTextBox_GetSpinControl, METH_VARARGS, ""},
+		{"setText", (PyCFunction)ControlTextBox_SetText, METH_VARARGS, setText__doc__},
+		{"reset", (PyCFunction)ControlTextBox_Reset, METH_VARARGS, reset__doc__},
+		{"getSpinControl", (PyCFunction)ControlTextBox_GetSpinControl, METH_VARARGS, getSpinControl__doc__},
 		{NULL, NULL, 0, NULL}
 	};
+
+	PyDoc_STRVAR(controlTextBox__doc__,
+		"ControlTextBox class.\n"
+		"\n"
+		"ControlTextBox(int x, int y, int width, int height[, font, textColor])\n"
+		"\n"
+		"font      : string fontname (example, 'font13' / 'font14')\n"
+		"textColor : hexString (example, '0xFFFF3300')");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
@@ -130,7 +153,7 @@ namespace PYXBMC
 			0,                         /*tp_setattro*/
 			0,                         /*tp_as_buffer*/
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			"ControlTextBox Objects",  /* tp_doc */
+			controlTextBox__doc__,     /* tp_doc */
 			0,		                     /* tp_traverse */
 			0,		                     /* tp_clear */
 			0,		                     /* tp_richcompare */
