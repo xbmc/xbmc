@@ -40,11 +40,11 @@ void CGUIFont::DrawShadowText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 	float nw=0.0f,nh=0.0f;
 	g_graphicsContext.Correct(fOriginX, fOriginY);
 
-	for (int x=0; x < iShadowWidth; x++)
+	for (int x=-iShadowWidth; x < iShadowWidth; x++)
   {
-    for (int y=0; y < iShadowHeight; y++)
+    for (int y=-iShadowHeight; y < iShadowHeight; y++)
     {
-			CXBFont::DrawTextEx( fOriginX, fOriginY, dwColor, strText, wcslen( strText ));	
+			CXBFont::DrawTextEx( (float)x+fOriginX, (float)y+fOriginY, dwShadowColor, strText, wcslen( strText ));	
     }
   }
 	CXBFont::DrawTextEx( fOriginX, fOriginY, dwColor, strText, wcslen( strText ));	

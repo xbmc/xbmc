@@ -60,8 +60,8 @@ void COSDOptionBoolean::Draw(int x, int y, bool bFocus,bool bSelected)
     pFont13->DrawShadowText( (float)x,(float)y, dwColor,
                               strHeading.c_str(), 0,
                               0, 
-                              5, 
-                              5,
+                              2, 
+                              2,
                               0xFF020202);
   }
 

@@ -71,8 +71,8 @@ void COSDOptionIntRange::Draw(int x, int y, bool bFocus,bool bSelected)
     pFont13->DrawShadowText( (float)x,(float)y, dwColor,
                               strHeading.c_str(), 0,
                               0, 
-                              5, 
-                              5,
+                              2, 
+                              2,
                               0xFF020202);
     WCHAR strValue[128];
     if (m_bPercent)
@@ -86,8 +86,8 @@ void COSDOptionIntRange::Draw(int x, int y, bool bFocus,bool bSelected)
     pFont13->DrawShadowText( (float)x+150,(float)y, dwColor,
                               strValue, 0,
                               0, 
-                              5, 
-                              5,
+                              2, 
+                              2,
                               0xFF020202);
   }
 
