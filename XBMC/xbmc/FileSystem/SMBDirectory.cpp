@@ -34,11 +34,10 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 {
 	// We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
 	VECFILEITEMS vecCacheItems;
-  g_directoryCache.ClearDirectory(strPath);
+    g_directoryCache.ClearDirectory(strPath);
 
     // note, samba uses UTF8 strings internal,
 	// that's why we have to convert strings and wstrings to UTF8.
-	char strUtfPath[1024];
 	size_t strLen;
 
 	//Separate roots for the authentication and the containing items to allow browsing to work correctly
@@ -60,13 +59,8 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	}
 		
 	smb.Init();
-
-	// convert from string to UTF8
-	strLen = convert_string(CH_DOS, CH_UTF8, strAuth, strAuth.length(), strUtfPath, 1024, false);
-	strUtfPath[strLen] = 0;
-
 	smb.Lock();
-	int fd = smbc_opendir(strUtfPath);
+	int fd = smbc_opendir(strAuth);
 	smb.Unlock();
 
 	if (fd < 0)
@@ -101,9 +95,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	{
 		struct smbc_dirent* dirEnt;
 		wchar_t wStrFile[1024]; // buffer for converting strings
-		char strUtfFile[1024]; // buffer for converting strings
 		CStdString strFile;
-		CStdString strFullName;
 
 		smb.Lock();
 		dirEnt = smbc_readdir(fd);
@@ -134,13 +126,10 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 						dirEnt->smbc_type != SMBC_SERVER)
 				{
 					struct __stat64 info;
-					strFullName = strAuth + strFile; //Make sure we use the authenticated path wich contains any default username
-					// convert from string to UTF8
-					strLen = convert_string(CH_DOS, CH_UTF8, strFullName, strFullName.length(), strUtfFile, 1024, false);
-					strUtfFile[strLen] = 0;
+					CStdString strFullName = strAuth + dirEnt->name; //Make sure we use the authenticated path wich contains any default username
 
 					smb.Lock();
-					smbc_stat(strUtfFile, &info);
+					smbc_stat(strFullName, &info);
 					smb.Unlock();
 
 					bIsDir = (info.st_mode & S_IFDIR) ? true : false;
@@ -174,7 +163,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 								pItem->m_strPath = "smb://";
 						}
 					}
-					pItem->m_strPath += strFile;
+					pItem->m_strPath += dirEnt->name;
 					if(!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
 					pItem->m_bIsFolder = true;
 					FileTimeToSystemTime(&localTime, &pItem->m_stTime);  
@@ -184,14 +173,14 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 				else
 				{
 					CFileItem *pItem = new CFileItem(strFile);
-					pItem->m_strPath = strRoot + strFile;
+					pItem->m_strPath = strRoot + dirEnt->name;
 					pItem->m_bIsFolder = false;
 					pItem->m_dwSize = iSize;
 					FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 		        
 					vecCacheItems.push_back(pItem);
 
-					if (IsAllowed(strFile)) items.push_back(new CFileItem(*pItem));
+					if (IsAllowed(dirEnt->name)) items.push_back(new CFileItem(*pItem));
 				}
 			}
 			smb.Lock();
