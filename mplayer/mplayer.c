@@ -1565,12 +1565,15 @@ else
         mp_msg(MSGT_CPLAYER,MSGL_ERR,MSGTR_CantLoadSub,vobsub_name);
     }else if(sub_auto && filename && (strlen(filename)>=5)){
       /* try to autodetect vobsub from movie filename ::atmos */
-      char *buf = malloc((strlen(filename)-3) * sizeof(char));
-      memset(buf,0,strlen(filename)-3); // make sure string is terminated
+      
 #ifdef _XBOX
-      strcpy(buf, "Z:\\subtitle");
+      char *buf = malloc((strlen("Z:\\subtitle")+1) * sizeof(char));	
+      memset(buf,0,strlen("Z:\\subtitle")+1); // make sure string is terminated
+      strcpy(buf, "Z:\\subtitle");	//buf should be >= strlen("Z:\\subtitle")
       printf("auto open %s", buf);
 #else
+      char *buf = malloc((strlen(filename)-3) * sizeof(char));	
+      memset(buf,0,strlen(filename)-3); // make sure string is terminated
       strncpy(buf, filename, strlen(filename)-4);
 #endif
       vo_vobsub=vobsub_open(buf,spudec_ifo,0,&vo_spudec);
