@@ -126,11 +126,15 @@ void CXBoxRenderManager::Update(bool bPauseDrawing)
 {
   m_bPauseDrawing = bPauseDrawing;
   if (!m_bChanging && m_pRenderer)
+  {
     m_pRenderer->Update(bPauseDrawing);
+    m_bIsStarted = true;
+  }
 }
 
 unsigned int CXBoxRenderManager::PreInit(const char *arg)
 {
+  m_bIsStarted = false;
   m_bPauseDrawing=false;
 	if (!m_bChanging)
 	{

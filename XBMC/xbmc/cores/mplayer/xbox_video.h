@@ -38,7 +38,7 @@ inline void				  DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,unsi
 inline int					GetOSDWidth() { if (!m_bChanging && m_pRenderer) return m_pRenderer->GetNormalDisplayWidth(); else return 0;};
 inline int					GetOSDHeight() { if (!m_bChanging && m_pRenderer) return m_pRenderer->GetNormalDisplayHeight(); else return 0; };
 inline bool					Paused() { return m_bPauseDrawing; };
-
+inline bool         IsStarted() {return m_bIsStarted;}
 	CXBoxRenderer *m_pRenderer;
 protected:
 	float					m_fSourceFrameRatio;	// the frame aspect ratio of the source (corrected for pixel ratio)
@@ -47,6 +47,7 @@ protected:
 	bool					m_bPauseDrawing;			// true if we should pause rendering
 
 	bool					m_bChanging;					// true when we are changing renderers
+  bool          m_bIsStarted;
 };
 
 extern CXBoxRenderManager g_renderManager;

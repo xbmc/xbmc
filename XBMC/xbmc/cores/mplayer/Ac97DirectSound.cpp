@@ -52,14 +52,12 @@ void CAc97DirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool  bAC3DTS, bool bResample, bool bDelayFirstAudioPacket)
+CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool  bAC3DTS, bool bResample)
 {
 	m_pCallback=pCallback;
 	m_bAc3DTS = bAC3DTS;
 
-  m_bFirstPacketDone       = false;
-  m_bDelayFirstAudioPacket = bDelayFirstAudioPacket;
-	m_bResampleAudio         = false;
+	m_bResampleAudio = false;
 	if (bResample && g_guiSettings.GetBool("AudioOutput.HighQualityResampling") && uiSamplesPerSec != 48000)
 		m_bResampleAudio = true;
 
@@ -311,17 +309,6 @@ DWORD CAc97DirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
 //***********************************************************************************************
 DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
 {
-  //Don't accept first packet recieved from mplayer since
-  //video modes(video_config) is set after this is recieved.
-  //video_config takes longer than this sample will last
-  //and such will make the renderer run out of data
-  //mplayer should sync this up by itself quickly.
-  if(!m_bFirstPacketDone)
-  {
-    m_bFirstPacketDone=true;
-    if(m_bDelayFirstAudioPacket) return 0;
-  }
-
 	if (m_bResampleAudio)
 		return AddPacketsResample(data, len);
 
