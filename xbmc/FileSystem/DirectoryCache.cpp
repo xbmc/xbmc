@@ -54,6 +54,8 @@ void  CDirectoryCache::SetDirectory(const CStdString& strPath1,const VECFILEITEM
   g_directoryCache.ClearDirectory(strPath);
   CDir dir;
   dir.m_strPath=strPath;
+	dir.m_Items.reserve(items.size());
+
   for (int i=0; i < (int) items.size(); ++i)
   {
     CFileItem* pItem = items[i];
