@@ -1,8 +1,22 @@
 #include "..\python.h"
 #include "GUIControl.h"
 #include <vector>
+#include "listitem.h"
 
 #pragma once
+
+// python type checking
+#define Control_Check(op) PyObject_TypeCheck(op, &Control_Type)
+#define Control_CheckExact(op) ((op)->ob_type == &Control_Type)
+
+#define ControlButton_CheckExact(op) ((op)->ob_type == &ControlButton_Type)
+#define ControlList_CheckExact(op) ((op)->ob_type == &ControlList_Type)
+#define Control_CheckExact(op) ((op)->ob_type == &Control_Type)
+#define ControlSpin_CheckExact(op) ((op)->ob_type == &ControlSpin_Type)
+#define ControlLabel_CheckExact(op) ((op)->ob_type == &ControlLabel_Type)
+#define ControlFadeLabel_CheckExact(op) ((op)->ob_type == &ControlFadeLabel_Type)
+#define ControlTextBox_CheckExact(op) ((op)->ob_type == &ControlTextBox_Type)
+#define ControlImage_CheckExact(op) ((op)->ob_type == &ControlImage_Type)
 
 #define PyObject_HEAD_XBMC_CONTROL		\
     PyObject_HEAD				\
@@ -76,25 +90,19 @@ namespace PYXBMC
 
 	typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-		std::vector<string> vecItems;
+		std::vector<PYXBMC::ListItem*> vecItems;
 		string strFont;
-
-		DWORD dwSpinWidth;
-		DWORD dwSpinHeight;
-
-    string strTextureUp;
-		string strTextureDown;
-		string strTextureUpFocus;
-		string strTextureDownFocus;
-
-		DWORD dwSpinColor;
-		DWORD dwSpinX;
-		DWORD dwSpinY;
+		ControlSpin* pControlSpin;
 
 		DWORD dwTextColor;
 		DWORD dwSelectedColor;
-		string strButton;
-		string strButtonFocus;
+		string strTextureButton;
+		string strTextureButtonFocus;
+
+		DWORD dwImageHeight;
+		DWORD dwImageWidth;
+		DWORD dwItemHeight;
+		DWORD dwSpace;
 	} ControlList;
 
 	extern void Control_Dealloc(Control* self);

@@ -17,76 +17,224 @@ extern "C" {
 
 namespace PYXBMC
 {
+	extern PyObject* ControlSpin_New(void);
+
+
 	PyObject* ControlList_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	{
 		ControlList *self;
-		//char* cTextureFocus = NULL;
-		//char* cTextureNoFocus = NULL;
-
-		//PyObject* pObjectText;
+		char *cFont = NULL;
+		char *cTextColor = NULL;
+		char *cTextureButton = NULL;
+		char *cTextureButtonFocus = NULL;
 		
 		self = (ControlList*)type->tp_alloc(type, 0);
 		if (!self) return NULL;
 		
-		if (!PyArg_ParseTuple(args, "llll", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight)) return NULL;
-		//if (!PyGetUnicodeString(self->strText, pObjectText, 5)) return NULL;
+		// create a python spin control
+		self->pControlSpin = (ControlSpin*)ControlSpin_New();
+		if (!self->pControlSpin) return NULL;
 
-		// SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor)
-		self->strFont = "font13";
-		self->dwSpinWidth = 16;
-		self->dwSpinHeight = 16;
+		if (!PyArg_ParseTuple(args, "llll|ss", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
+			&cFont, &cTextColor, &cTextureButton, &cTextureButtonFocus)) return NULL;
 
-    self->strTextureUp = "scroll-up.png";
-		self->strTextureDown = "scroll-down.png";
-		self->strTextureUpFocus = "scroll-up-focus.png";
-		self->strTextureDownFocus = "scroll-down-focus.png";
+		// set default values if needed
+		self->strFont = cFont ? cFont : "font13";
 
-		self->dwSpinColor = 0xFFB2D4F5;
-		self->dwSpinX = 640;
-		self->dwSpinY = 425;
+		if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
+		else self->dwTextColor = 0xe0f0f0f0;//0xffffffff;
 
-		self->dwTextColor = 0xFFFFFFFF;
-		self->dwSelectedColor = 0xFFF8BC70;
-		self->strButton = "list-nofocus.png";
-		self->strButtonFocus = "list-nofocus.png";
+		self->dwSelectedColor = 0xffffffff;//0xFFF8BC70;
 
+		self->strTextureButton = cTextureButton ? cTextureButton : "list-nofocus.png";		
+		self->strTextureButtonFocus = cTextureButtonFocus ? cTextureButtonFocus : "list-focus.png";	
 
-		//self->dwTextColor = 0xffffffff;
-		//self->dwDisabledColor = 0x60ffffff;
+		self->dwImageHeight = 10;
+		self->dwImageWidth = 10;
+		self->dwItemHeight = 27;
+		self->dwSpace = 2;
 
-		//self->strTextureFocus = cTextureFocus ? cTextureFocus : "button-focus.png";		
-		//self->strTextureNoFocus = cTextureNoFocus ? cTextureNoFocus : "button-nofocus.jpg";	
+		// default values for spin control
+		self->pControlSpin->dwPosX = self->dwPosX + self->dwWidth - 35;
+		self->pControlSpin->dwPosY = self->dwPosY + self->dwHeight - 15;
 
-		/*
-
-		<spinWidth>16</spinWidth>
-		<spinHeight>16</spinHeight>
-		<spinPosX>640</spinPosX>
-		<spinPosY>425</spinPosY>
-		<spinColor>FFB2D4F5</spinColor>
-		<textureUp>scroll-up.png</textureUp>
-		<textureDown>scroll-down.png</textureDown>
-		<textureUpFocus>scroll-up-focus.png</textureUpFocus>
-		<textureDownFocus>scroll-down-focus.png</textureDownFocus>
-		<textureFocus>list-focus.png</textureFocus>
-		<textureNoFocus>list-nofocus.png</textureNoFocus>
-		<textureHeight>27</textureHeight>
-		<image>defaultFolderBig.png</image>
-		<font>font14</font>
-		<selectedColor>FFF8BC70</selectedColor>
-		<textcolor>FFFFFFFF</textcolor>
-		<colordiffuse>ffffffff</colordiffuse>
-		<suffix>|</suffix>
-		*/
 		return (PyObject*)self;
 	}
 
 	void ControlList_Dealloc(ControlList* self)
 	{
+		// delete spincontrol
+		Py_DECREF(self->pControlSpin);
+
+		// delete all ListItem from vector
+		vector<ListItem*>::iterator it = self->vecItems.begin();
+		while (it != self->vecItems.end())
+		{
+      ListItem* pListItem = *it;
+			Py_DECREF(pListItem);
+			++it;
+		}
+		self->vecItems.clear();
+
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
+	/*
+	 * ControlList_AddItem
+	 * (string label) / (ListItem)
+	 * ListItem is added to vector
+	 * For a string we create a new ListItem and add it to the vector
+	 */
+	PyObject* ControlList_AddItem(ControlList *self, PyObject *args)
+	{
+		PyObject *pObject;
+		wstring strText;
+		
+		ListItem* pListItem = NULL;
+
+		if (!PyArg_ParseTuple(args, "O", &pObject))	return NULL;
+		if (ListItem_CheckExact(pObject))
+		{
+			// object is a listitem
+			pListItem = (ListItem*)pObject;
+			Py_INCREF(pListItem);
+		}
+		else
+		{
+			// object is probably a text item
+			if (!PyGetUnicodeString(strText, pObject, 1)) return NULL;
+			// object is a unicode string now, create a new ListItem
+			pListItem = ListItem_FromString(strText);
+		}
+
+		// add item to objects vector
+		self->vecItems.push_back(pListItem);
+
+		// create message
+		CGUIMessage msg(GUI_MSG_LABEL_ADD, self->iParentId, self->iControlId);
+		msg.SetLPVOID(pListItem->item);
+
+		// send message
+		PyGUILock();
+		if (self->pGUIControl) self->pGUIControl->OnMessage(msg);
+		PyGUIUnlock();
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	PyObject* ControlList_Reset(ControlList *self, PyObject *args)
+	{
+		// create message
+		ControlList *pControl = (ControlList*)self;
+		CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
+
+		// send message
+		PyGUILock();
+		if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
+		PyGUIUnlock();
+
+		// delete all items from vector
+		// delete all ListItem from vector
+		vector<ListItem*>::iterator it = self->vecItems.begin();
+		while (it != self->vecItems.end())
+		{
+      ListItem* pListItem = *it;
+			Py_DECREF(pListItem);
+			++it;
+		}
+		self->vecItems.clear();
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	PyObject* ControlList_GetSpinControl(ControlTextBox *self, PyObject *args)
+	{
+		Py_INCREF(self->pControlSpin);
+		return (PyObject*)self->pControlSpin;
+	}
+
+	PyObject* ControlList_SetImageDimensions(ControlList *self, PyObject *args)
+	{
+		if (!PyArg_ParseTuple(args, "ll", &self->dwImageWidth, &self->dwImageHeight)) return NULL;
+
+		PyGUILock();
+		CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
+		pListControl->SetImageDimensions(self->dwImageWidth, self->dwImageHeight);
+		PyGUIUnlock();
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	PyObject* ControlList_SetItemHeight(ControlList *self, PyObject *args)
+	{
+		if (!PyArg_ParseTuple(args, "l", &self->dwItemHeight)) return NULL;
+
+		PyGUILock();
+		CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
+		pListControl->SetItemHeight(self->dwItemHeight);
+		PyGUIUnlock();
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	PyObject* ControlList_SetSpace(ControlList *self, PyObject *args)
+	{
+		if (!PyArg_ParseTuple(args, "l", &self->dwSpace)) return NULL;
+
+		PyGUILock();
+		CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
+		pListControl->SetSpace(self->dwSpace);
+		PyGUIUnlock();
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+				
+	PyObject* ControlList_GetSelectedPosition(ControlList *self, PyObject *args)
+	{
+		// create message
+		ControlList *pControl = (ControlList*)self;
+		CGUIMessage msg(GUI_MSG_ITEM_SELECTED, pControl->iParentId, pControl->iControlId);
+
+		// send message
+		PyGUILock();
+		if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
+		PyGUIUnlock();
+
+		return Py_BuildValue("l", msg.GetParam1());
+	}
+
+	PyObject* ControlList_GetSelectedItem(ControlList *self, PyObject *args)
+	{
+		// create message
+		ControlList *pControl = (ControlList*)self;
+		CGUIMessage msg(GUI_MSG_ITEM_SELECTED, pControl->iParentId, pControl->iControlId);
+
+		// send message
+		PyGUILock();
+		if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
+		PyGUIUnlock();
+
+		// iterate through itemvector
+		ListItem* pListItem = self->vecItems[msg.GetParam1()];
+		Py_INCREF(pListItem);
+
+		return (PyObject*)pListItem;
+	}
+			
 	PyMethodDef ControlList_methods[] = {
+		{"addItem", (PyCFunction)ControlList_AddItem, METH_VARARGS, ""},
+		{"reset", (PyCFunction)ControlList_Reset, METH_VARARGS, ""},
+		{"getSpinControl", (PyCFunction)ControlList_GetSpinControl, METH_VARARGS, ""},
+		{"getSelectedPosition", (PyCFunction)ControlList_GetSelectedPosition, METH_VARARGS, ""},
+		{"getSelectedItem", (PyCFunction)ControlList_GetSelectedItem, METH_VARARGS, ""},
+		{"setImageDimensions", (PyCFunction)ControlList_SetImageDimensions, METH_VARARGS, ""},
+		{"setItemHeight", (PyCFunction)ControlList_SetItemHeight, METH_VARARGS, ""},
+		{"setSpace", (PyCFunction)ControlList_SetSpace, METH_VARARGS, ""},
 		{NULL, NULL, 0, NULL}
 	};
 

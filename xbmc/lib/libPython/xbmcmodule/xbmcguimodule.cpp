@@ -50,6 +50,7 @@ namespace PYXBMC
 		DialogProgressType.tp_new = PyType_GenericNew;
 
 		if (PyType_Ready(&Window_Type) < 0 ||
+				PyType_Ready(&ListItem_Type) < 0 ||
 				PyType_Ready(&Control_Type) < 0 ||
 				PyType_Ready(&ControlSpin_Type) < 0 ||
 				PyType_Ready(&ControlLabel_Type) < 0 ||
@@ -63,6 +64,7 @@ namespace PYXBMC
 			return;
 
 		Py_INCREF(&Window_Type);
+		Py_INCREF(&ListItem_Type);
 		Py_INCREF(&Control_Type);
 		Py_INCREF(&ControlSpin_Type);
 		Py_INCREF(&ControlLabel_Type);
@@ -78,6 +80,7 @@ namespace PYXBMC
 		if (pXbmcGuiModule == NULL) return;
 
     PyModule_AddObject(pXbmcGuiModule, "Window", (PyObject*)&Window_Type);
+		PyModule_AddObject(pXbmcGuiModule, "ListItem", (PyObject*)&ListItem_Type);
 		//PyModule_AddObject(pXbmcGuiModule, "Control", (PyObject*)&Control_Type);
 		//PyModule_AddObject(pXbmcGuiModule, "ControlSpin", (PyObject*)&ControlSpin_Type);
 		PyModule_AddObject(pXbmcGuiModule, "ControlLabel", (PyObject*)&ControlLabel_Type);

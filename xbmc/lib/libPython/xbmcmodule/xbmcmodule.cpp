@@ -28,7 +28,7 @@ namespace PYXBMC
 		char *s_line;
 		if (!PyArg_ParseTuple(args, "s:xb_output", &s_line))	return NULL;
 
-		OutputDebugString(s_line);
+		// OutputDebugString(s_line);
 		CLog::Log(s_line);
 
 		ThreadMessage tMsg = {TMSG_WRITE_SCRIPT_OUTPUT};
