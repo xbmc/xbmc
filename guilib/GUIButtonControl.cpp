@@ -12,6 +12,8 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iP
 {
 	m_bSelected			= false;
 	m_bTabButton		= false;
+	m_dwFocusCounter	= 0;
+	m_dwFlickerCounter	= 0;
 	m_dwFrameCounter	= 0;
 	m_strLabel			= L""; 
 	m_dwTextColor		= 0xFFFFFFFF; 
@@ -40,6 +42,8 @@ void CGUIButtonControl::Render()
 		return;
 	}
 
+	m_dwFrameCounter++;
+
 	if (m_bTabButton)
 	{
 		m_imgFocus.SetVisible(m_bSelected);
@@ -47,7 +51,7 @@ void CGUIButtonControl::Render()
 	}
 	else if (HasFocus())
 	{
-		DWORD dwAlphaCounter = m_dwFrameCounter+2;
+		DWORD dwAlphaCounter = m_dwFocusCounter+2;
 		DWORD dwAlphaChannel;
 		if ((dwAlphaCounter%128) >= 64)
 			dwAlphaChannel = dwAlphaCounter%64;
@@ -59,7 +63,7 @@ void CGUIButtonControl::Render()
 		m_imgFocus.SetAlpha(dwAlphaChannel);
 		m_imgFocus.SetVisible(true);
 		m_imgNoFocus.SetVisible(false);
-		m_dwFrameCounter++;
+		m_dwFocusCounter++;
 	}
 	else 
 	{
@@ -70,7 +74,11 @@ void CGUIButtonControl::Render()
 	m_imgFocus.Render();
 	m_imgNoFocus.Render();  
 
-	if (m_strLabel.size() > 0 && m_pFont)
+	// if we're flickering then we may not need to render text
+	bool bRenderText   = (m_dwFlickerCounter>0) ? (m_dwFrameCounter % 60 > 30) : true;
+	m_dwFlickerCounter = (m_dwFlickerCounter>0) ? (m_dwFlickerCounter-1) : 0;
+
+	if (m_strLabel.size() > 0 && m_pFont && bRenderText)
 	{
 		float fPosX = (float)m_iPosX + m_dwTextOffsetX;
 		float fPosY = (float)m_iPosY + m_dwTextOffsetY;
@@ -153,7 +161,7 @@ void CGUIButtonControl::PreAllocResources()
 void CGUIButtonControl::AllocResources()
 {
 	CGUIControl::AllocResources();
-	m_dwFrameCounter = 0;
+	m_dwFocusCounter = 0;
 	m_imgFocus.AllocResources();
 	m_imgNoFocus.AllocResources();
 	m_dwWidth = m_imgFocus.GetWidth();
@@ -250,3 +258,7 @@ void CGUIButtonControl::OnMouseClick(DWORD dwButton)
 	}
 }
 
+void CGUIButtonControl::Flicker(bool bFlicker)
+{
+	m_dwFlickerCounter = bFlicker ? 240 : 0; 
+}

@@ -544,6 +544,14 @@ void CGUIWindowBuddies::SelectTab(int nTabId)
 		}
 	}
 }
+void CGUIWindowBuddies::FlickerTab(int nTabId)
+{
+	CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(nTabId));
+	if (pButton)
+	{
+		pButton->Flicker();
+	}
+}
 
 void CGUIWindowBuddies::OnClickTabFriends(CGUIMessage& aMessage)
 {
@@ -792,6 +800,7 @@ void CGUIWindowBuddies::Render()
 			break;
 		}
 		case State::Games:
+		case State::Arenas:
 		{
 			UpdateArena();
 			break;
@@ -1141,9 +1150,6 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNKEYBOARD,	"Keyboard");
 
 			SelectTab(CONTROL_KAI_TAB_CHAT);
-
-			m_pKaiClient->JoinTextChat();
-
 			break;
 		}
 	}
@@ -1587,6 +1593,11 @@ void CGUIWindowBuddies::OnNewArena(	CStdString& aVector, CStdString& aDescriptio
 	}
 
 	m_arena.Release();
+
+	if (m_pKaiClient)
+	{
+		m_pKaiClient->JoinTextChat();
+	}
 }
 
 void CGUIWindowBuddies::OnUpdateArena(	CStdString& aVector, int nPlayers )
@@ -1754,6 +1765,13 @@ void CGUIWindowBuddies::OnChat(CStdString& aVector, CStdString& aOpponent, CStdS
 		}
 		else
 		{
+			// if a player has written a message and we're not in the chat window
+			if (window_state!=State::Chat)
+			{
+				// alert us by flashing the tab briefly
+				FlickerTab(CONTROL_KAI_TAB_CHAT);
+			}
+
 			dwColour = bPrivate ? KAI_CONSOLE_PEN_PRIVATE : dwColour;
 			strMessage.Format("%s: %s",aOpponent,aMessage);
 		}

@@ -97,6 +97,7 @@ protected:
 	void	Enter(CArenaItem& aArena);
 	void	Play(CStdString& aVector);
 	void	SelectTab(int nTabId);
+	void	FlickerTab(int nTabId);
 
 	static bool	SortFriends(CGUIItem* pStart, CGUIItem* pEnd);
 	static bool	SortGames(CGUIItem* pStart, CGUIItem* pEnd);
