@@ -24,6 +24,7 @@
 
 #include "IoSupport.h"
 #include "Undocumented.h"
+#include "stdstring.h"
 
 #define CTLCODE(DeviceType, Function, Method, Access) ( ((DeviceType) << 16) | ((Access) << 14) | ((Function) << 2) | (Method)  ) 
 #define FSCTL_DISMOUNT_VOLUME  CTLCODE( FILE_DEVICE_FILE_SYSTEM, 0x08, METHOD_BUFFERED, FILE_ANY_ACCESS )
@@ -284,7 +285,12 @@ string CIoSupport::GetDrive(const string &szPartition)
 	static string strDrive="E:";
 	for (int i=0; i < NUM_OF_DRIVES; i++)
 	{
-		if ( !strcmp(driveMapping[i].szDevice,szPartition.c_str()))
+		CStdString strMap=driveMapping[i].szDevice;
+		CStdString strSearch=szPartition;
+		CStdString strSearchLeft=strSearch.Left( strMap.size() );
+		strMap.ToLower();
+		strSearchLeft.ToLower();
+		if ( strMap == strSearchLeft )
 		{
 			char szDrive[3];
 			szDrive[0]=driveMapping[i].szDriveLetter;
@@ -514,23 +520,30 @@ VOID CIoSupport::GetXbePath(char* szDest)
 	char szDevicePath[1024+1];
 	char szHomeDrive[3];
 	char szPartition[50];
-
   memset(szDevicePath,0,sizeof(szDevicePath));
   memset(szHomeDrive,0,sizeof(szHomeDrive));
   memset(szPartition,0,sizeof(szPartition));
 	strncpy(szDevicePath,
 		    &pImageFileName->Buffer[8],
 		    pImageFileName->Length - 7 );	//get xbepath (without \Device\ prefix)
+	OutputDebugString("home:");OutputDebugString(szDevicePath);OutputDebugString("\n");
 
 	strcpy(szHomeDrive, helper.GetDrive(szDevicePath).c_str());	//get driveletter of xbepath
 	if (szHomeDrive[0])
 	{
+		OutputDebugString("homedrive:");OutputDebugString(szHomeDrive);OutputDebugString("\n");
+
 		helper.GetPartition(szHomeDrive,szPartition);		//get patition (ie: Hardisk0\Partition1)
-        strcpy(szDest, szHomeDrive);						//copy drive letter
-		strncat(szDest,										//concat the path
+		OutputDebugString("partition:");OutputDebugString(szPartition);OutputDebugString("\n");
+    strcpy(szDest, szHomeDrive);						//copy drive letter
+		strcat(szDest, ":");										//copy drive letter
+		strncat(szDest,													//concat the path
 			    &szDevicePath[strlen(szPartition)],
 			    strlen(szDevicePath) - strlen(szPartition));		
-	} else {
+	} 
+	else 
+	{
+		OutputDebugString("cant get xbe path\n");
 		szDest[0]=0;	//somehow we cant get the xbepath :(
 	}
 }

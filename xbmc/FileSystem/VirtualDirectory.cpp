@@ -55,7 +55,6 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 		CShare& share=m_vecShares[i];
 		CFileItem* pItem = new CFileItem(share.strName);
 		pItem->m_bIsFolder=true;
-    pItem->m_bIsShareOrDrive=false;
 		pItem->m_strPath=share.strPath;
 
 		CStdString strIcon;
@@ -67,6 +66,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 			strIcon="defaultHardDisk.png";
 
 		pItem->SetIconImage(strIcon);
+		pItem->m_bIsShareOrDrive=true;
 		CStdString strBig;
 		int iPos=strIcon.Find(".");
 		strBig=strIcon.Left(iPos);
@@ -96,7 +96,7 @@ void  CVirtualDirectory::CacheThumbs(VECFILEITEMS &items)
   for (int i=0; i < (int)items.size(); ++i)
   {
     CFileItem* pItem=items[i];
-		
+		pItem->m_bIsShareOrDrive=false;
 		if (pItem->m_bIsFolder)
 		{
 			pItem->SetIconImage("icon-folder.png");

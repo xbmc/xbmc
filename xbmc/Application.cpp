@@ -36,17 +36,22 @@ CApplication::~CApplication(void)
 
 HRESULT CApplication::Initialize()
 {
-
+	CStdString strPath;
+	CUtil::GetHomePath(strPath);
+	OutputDebugString("homepath:");
+	OutputDebugString(strPath.c_str());
+	OutputDebugString("\n");
+	
   CIoSupport helper;
   helper.Remap("C:,Harddisk0\\Partition2");
   helper.Remap("E:,Harddisk0\\Partition1");
   helper.Remap("F:,Harddisk0\\Partition6");
 
 
-	CStdString strPath;
-	CUtil::GetHomePath(strPath);
+
 	string strSkinPath=strPath;
 	strSkinPath+=CStdString("\\skin");
+	
   g_localizeStrings.Load(strSkinPath+string("\\strings.xml") );
 
 	g_settings.Load();
@@ -63,7 +68,7 @@ HRESULT CApplication::Initialize()
     strcat(g_stSettings.m_szShortcutDirectory,"\\shortcuts");
   }
 
-
+	
   // initialize network
   if (g_stSettings.m_strLocalIPAdres[0]!=0 &&
       g_stSettings.m_strLocalNetmask[0]!=0 &&

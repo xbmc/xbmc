@@ -22,6 +22,9 @@ bool CGUIWindow::Load(const CStdString& strFileName)
   TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile(strFileName.c_str()) )
   {
+		OutputDebugString("Unable to load window:");
+		OutputDebugString(strFileName.c_str());
+		OutputDebugString("\n");
     return false;
   }
   TiXmlElement* pRootElement =xmlDoc.RootElement();
@@ -166,7 +169,7 @@ void CGUIWindow::AllocResources()
     CGUIControl* pControl= *i;
     pControl->AllocResources();
   }
-  g_TextureManager.Dump();
+  //g_TextureManager.Dump();
 }
 
 void CGUIWindow::FreeResources()
@@ -180,7 +183,7 @@ void CGUIWindow::FreeResources()
     CGUIControl* pControl= *i;
     pControl->FreeResources();
   }
-  g_TextureManager.Dump();
+  //g_TextureManager.Dump();
 }
 
 void CGUIWindow::Add(CGUIControl* pControl)

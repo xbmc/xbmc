@@ -62,15 +62,24 @@ void CSettings::Load()
 	FILE* systemSettings = fopen("T:\\system.bin","rb");
 	if (systemSettings!=NULL)
 	{
+		OutputDebugString("found system.bin\n");
 		fread(&settings,sizeof(settings),1,systemSettings);
 		fclose(systemSettings);
 		if (settings.dwFileVersion==CONFIG_VERSION) 
     {
-
+			OutputDebugString("version is ok\n");
 		  FILE* systemSettings = fopen("T:\\system.bin","rb");
 		  fread(&g_stSettings,sizeof(g_stSettings),1,systemSettings);
 		  fclose(systemSettings);
     }
+		else
+		{
+			OutputDebugString("version is wrong\n");
+		}
+	}
+	else
+	{
+		OutputDebugString("settings not found\n");
 	}
 
 	// load xml file...
@@ -79,7 +88,13 @@ void CSettings::Load()
 	strXMLFile+="\\XboxMediaCenter.xml";
 
 	TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) return;
+  if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) 
+	{
+		OutputDebugString("unable to load:");
+		OutputDebugString(strXMLFile.c_str());
+		OutputDebugString("\n");
+		return;
+	}
 
 	TiXmlElement* pRootElement =xmlDoc.RootElement();
   CStdString strValue=pRootElement->Value();
@@ -219,7 +234,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
           }
 
           
-          OutputDebugString("\n");
+          
 					ConvertHomeVar(share.strPath);
 
 					items.push_back(share);
