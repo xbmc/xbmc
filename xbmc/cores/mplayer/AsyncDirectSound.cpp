@@ -262,7 +262,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	XMEDIAINFO info;
 	m_pStream->GetInfo(&info);
   //align m_dwPacketSize to dwInputSize
-  int fSize = (info.dwMaxLookahead * iChannels * (uiBitsPerSample/8)) / info.dwInputSize;
+  int fSize = (768 * iChannels * (uiBitsPerSample/8)) / info.dwInputSize;
 	fSize *= info.dwInputSize;
 	m_dwPacketSize=(int)fSize;
 
