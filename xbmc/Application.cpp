@@ -1893,7 +1893,7 @@ void CApplication::FrameMove()
 	{
 		if (!m_guiDialogKaiToast.IsRunning())
 		{
-			m_guiDialogKaiToast.DoModal(m_gWindowManager.GetActiveWindow());
+			m_guiDialogKaiToast.Show(m_gWindowManager.GetActiveWindow());
 		}
 	}
 
