@@ -65,7 +65,7 @@ extern XBIR_REMOTE g_IR_Remote[4];
 // Name: XBInput_CreateIR_Remotes()
 // Desc: Creates the ir remote devices
 //-----------------------------------------------------------------------------
-HRESULT XBInput_CreateIR_Remotes( XBIR_REMOTE** ppIR_Remote = NULL );
+HRESULT XBInput_CreateIR_Remotes( );
 
 //-----------------------------------------------------------------------------
 // Name: XBInput_GetInput()

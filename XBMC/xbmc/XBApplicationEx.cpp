@@ -122,7 +122,7 @@ HRESULT CXBApplicationEx::Create()
 // XBMP 6.0 - START
     // Create the IR Remote devices
     OUTPUT_DEBUG_STRING( "XBAppEx: Creating remote devices...\n" );
-    if( FAILED( hr = XBInput_CreateIR_Remotes( &m_IR_Remote ) ) )
+    if( FAILED( hr = XBInput_CreateIR_Remotes( ) ) )
     {
         OUTPUT_DEBUG_STRING( "XBAppEx: Call to CreateIRRemotes() failed!\n" );
         return hr;
