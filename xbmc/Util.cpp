@@ -1285,6 +1285,9 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
 	char * sub_exts[] = {  ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx",".ifo", NULL};
 	int iPos=0;
   bool bFoundSubs=false;
+  CURL url(strMovie);
+  if (url.GetProtocol() == "http") return;
+  if (url.GetProtocol() == "shout") return;
   // check alternate subtitle directory
   if (strlen(g_stSettings.m_szAlternateSubtitleDirectory)==0) return;
   WIN32_FIND_DATA wfd;
