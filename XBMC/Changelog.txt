@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 14-09-2004 changed: all settings windows remember the last selected control until going back to the prev menu
   - 13-09-2004 changed: renamed a few language folders
   - 13-09-2004 added: Portuguese (brazil) language file (Thx to wellingtontu)
   - 13-09-2004 added: German (Austria) language file (Thx to CEOMR)
