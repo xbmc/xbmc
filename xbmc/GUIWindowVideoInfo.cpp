@@ -11,24 +11,26 @@
 #include "videodatabase.h"
 #include "filesystem/directorycache.h"
 
-#define	CONTROL_TITLE					20
+#define	CONTROL_TITLE				20
 #define	CONTROL_DIRECTOR			21
 #define	CONTROL_CREDITS 			22
-#define	CONTROL_GENRE					23
-#define	CONTROL_YEAR					24
+#define	CONTROL_GENRE				23
+#define	CONTROL_YEAR				24
 #define	CONTROL_TAGLINE 			25
-#define	CONTROL_PLOTOUTLINE		26
+#define	CONTROL_PLOTOUTLINE			26
 #define	CONTROL_RATING				27
 #define	CONTROL_VOTES 				28
-#define	CONTROL_VOTES 				28
-#define	CONTROL_CAST	 				29
+#define	CONTROL_CAST	 			29
+#define CONTROL_RATING_AND_VOTES		30
+#define CONTROL_RUNTIME				31
 
-#define CONTROL_IMAGE		 			3
+
+#define CONTROL_IMAGE				3
 #define CONTROL_TEXTAREA 			4
 
-#define CONTROL_BTN_TRACKS		5
-#define CONTROL_BTN_REFRESH		6
-#define CONTROL_DISC          7
+#define CONTROL_BTN_TRACKS			5
+#define CONTROL_BTN_REFRESH			6
+#define CONTROL_DISC          			7
 
 CGUIWindowVideoInfo::CGUIWindowVideoInfo(void)
 :CGUIDialog(0)
@@ -230,13 +232,23 @@ void CGUIWindowVideoInfo::Update()
 	SetLabel(CONTROL_YEAR, strYear );
 
 	CStdString strRating;
-	strRating.Format("%04.2f", m_pMovie->m_fRating);
+	strRating.Format("%03.1f", m_pMovie->m_fRating);
 	SetLabel(CONTROL_RATING, strRating );
 
-  
 	strTmp=m_pMovie->m_strVotes; strTmp.Trim();
 	SetLabel(CONTROL_VOTES, strTmp.c_str() );
 	//SetLabel(CONTROL_CAST, m_pMovie->m_strCast );
+
+	CStdString strRating_And_Votes;
+	if (strRating.Equals("0.0")) {strRating_And_Votes=m_pMovie->m_strVotes;} else
+	// if rating is 0 there are no votes so display not available message already set in Votes string
+	{
+	strRating_And_Votes.Format("%s (%s votes)", strRating, strTmp);
+	SetLabel(CONTROL_RATING_AND_VOTES, strRating_And_Votes);
+	}
+
+        strTmp=m_pMovie->m_strRuntime; strTmp.Trim();
+        SetLabel(CONTROL_RUNTIME,  strTmp.c_str() );
 
 	if (m_bViewReview)
 	{
