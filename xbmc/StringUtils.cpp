@@ -88,32 +88,37 @@ bool StringUtils::AlphaNumericCompare(const char *left, const char *right)
   while (*l != 0 && *r != 0)
   {
     // check if we have a numerical value
-    ld = l;
-    lnum = 0;
-    while (*ld >= '0' && *ld <= '9')
+    if (*l >= '0' && *l <= '9' && *r >= '0' && *r <= '9')
     {
-      lnum *= 10;
-      lnum += *ld++;
-    }
-    rd = r;
-    rnum = 0;
-    while (*rd >= '0' && *rd <= '9')
-    {
-      rnum *= 10;
-      rnum += *rd++;
-    }
-    // do we have numbers?
-    if (lnum != rnum)
-    { // yes - and they're different!
-      return lnum < rnum;
+      ld = l;
+      lnum = 0;
+      while (*ld >= '0' && *ld <= '9')
+      {
+        lnum *= 10;
+        lnum += *ld++ - '0';
+      }
+      rd = r;
+      rnum = 0;
+      while (*rd >= '0' && *rd <= '9')
+      {
+        rnum *= 10;
+        rnum += *rd++ - '0';
+      }
+      // do we have numbers?
+      if (lnum != rnum)
+      { // yes - and they're different!
+        return lnum < rnum;
+      }
+      l = ld;
+      r = rd;
+      continue;
     }
     // ok, do a normal comparison.  Add special case stuff (eg '(' characters)) in here later
     if (*l != *r)
     {
       return *l < *r;
     }
-    l = ld + 1;
-    r = rd + 1;
+    l++; r++;
   }
   return false; // files are the same
 }
