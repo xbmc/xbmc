@@ -715,7 +715,7 @@ void add_subtitles(char *filename, float fps, int silent)
 	return;
     }
 
-    subd = sub_read_file(strdup(filename), fps);
+    subd = sub_read_file(filename, fps);
     if(!subd && !silent)
         mp_msg(MSGT_CPLAYER, MSGL_ERR, MSGTR_CantLoadSub, filename);
     if (subd == NULL || set_of_sub_size >= MAX_SUBTITLE_FILES) return;
