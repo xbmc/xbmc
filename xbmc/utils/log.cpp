@@ -15,6 +15,14 @@ static char tmp[16384];
 
 FILE* CLog::fd = NULL;
 
+void CLog::Close()
+{
+  if (fd)
+  {
+    fclose(fd);
+    fd=NULL;
+  }
+}
 void CLog::Log(const char *format, ... )
 {
 	va_list va;

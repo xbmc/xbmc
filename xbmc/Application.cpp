@@ -148,6 +148,7 @@ HRESULT CApplication::Create()
 			helper.Mount("Q:", szDevicePath);	
       ::DeleteFile("Q:\\xbmc.old.log");
       ::MoveFile("Q:\\xbmc.log","Q:\\xbmc.old.log");
+      CLog::Close();
       CLog::Log("Q is mapped to:%s",szDevicePath);
 		}
 	}
