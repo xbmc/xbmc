@@ -1,1928 +1,483 @@
 <strings>
-	<string>
-		<id>0</id>
-		<value>我的桯式</value>
-	</string>
-	<string>
-		<id>1</id>
-		<value>我的圖片</value>
-	</string>
-	<string>
-		<id>2</id>
-		<value>我的音樂</value>
-	</string>
-	<string>
-		<id>3</id>
-		<value>我的視訊</value>
-	</string>
-	<string>
-		<id>4</id>
-		<value>電視指南</value>
-	</string>
-	<string>
-		<id>5</id>
-		<value>設定</value>
-	</string>
-	<string>
-		<id>7</id>
-		<value>我的檔案</value>
-	</string>
-	<string>
-		<id>8</id>
-		<value>天氣情況</value>
-	</string>
-	<string>
-		<id>11</id>
-		<value>星期一</value>
-	</string>
-	<string>
-		<id>12</id>
-		<value>星期二</value>
-	</string>
-	<string>
-		<id>13</id>
-		<value>星期三</value>
-	</string>
-	<string>
-		<id>14</id>
-		<value>星期四</value>
-	</string>
-	<string>
-		<id>15</id>
-		<value>星期五</value>
-	</string>
-	<string>
-		<id>16</id>
-		<value>星期六</value>
-	</string>
-	<string>
-		<id>17</id>
-		<value>星期日</value>
-	</string>
-	<string>
-		<id>21</id>
-		<value>一月</value>
-	</string>
-	<string>
-		<id>22</id>
-		<value>二月</value>
-	</string>
-	<string>
-		<id>23</id>
-		<value>三月</value>
-	</string>
-	<string>
-		<id>24</id>
-		<value>四月</value>
-	</string>
-	<string>
-		<id>25</id>
-		<value>五月</value>
-	</string>
-	<string>
-		<id>26</id>
-		<value>六月</value>
-	</string>
-	<string>
-		<id>27</id>
-		<value>七月</value>
-	</string>
-	<string>
-		<id>28</id>
-		<value>八月</value>
-	</string>
-	<string>
-		<id>29</id>
-		<value>九月</value>
-	</string>
-	<string>
-		<id>30</id>
-		<value>十月</value>
-	</string>
-	<string>
-		<id>31</id>
-		<value>十一月</value>
-	</string>
-	<string>
-		<id>32</id>
-		<value>十二月</value>
-	</string>
-	<string>
-		<id>100</id>
-		<value>檢視: 圖示</value>
-	</string>
-	<string>
-		<id>101</id>
-		<value>檢視: 清單</value>
-	</string>
-	<string>
-		<id>102</id>
-		<value>掃瞄</value>
-	</string>
-	<string>
-		<id>103</id>
-		<value>排列圖示: 依名稱</value>
-	</string>
-	<string>
-		<id>104</id>
-		<value>排列圖示: 依日期</value>
-	</string>
-	<string>
-		<id>105</id>
-		<value>排列圖示: 依大小</value>
-	</string>
-	<string>
-		<id>106</id>
-		<value>否</value>
-	</string>
-	<string>
-		<id>107</id>
-		<value>是</value>
-	</string>
-	<string>
-		<id>108</id>
-		<value>幻燈節目</value>
-	</string>
-	<string>
-		<id>109</id>
-		<value>Create Thumbs</value>
-	</string>
-	<string>
-		<id>110</id>
-		<value>Create Thumbnails</value>
-	</string>
-	<string>
-		<id>111</id>
-		<value>捷徑</value>
-	</string>
-	<string>
-		<id>112</id>
-		<value>暫停</value>
-	</string>
-	<string>
-		<id>113</id>
-		<value>我的檔案 : 源文件</value>
-	</string>
-	<string>
-		<id>114</id>
-		<value>我的檔案 : 目的地</value>
-	</string>
-	<string>
-		<id>115</id>
-		<value>複製</value>
-	</string>
-	<string>
-		<id>116</id>
-		<value>移動</value>
-	</string>
-	<string>
-		<id>117</id>
-		<value>刪除</value>
-	</string>
-	<string>
-		<id>118</id>
-		<value>重新命名</value>
-	</string>
-	<string>
-		<id>119</id>
-		<value>新增資料夾</value>
-	</string>
-	<string>
-		<id>120</id>
-		<value>確認檔案複製</value>
-	</string>
-	<string>
-		<id>121</id>
-		<value>確認檔案移動</value>
-	</string>
-	<string>
-		<id>122</id>
-		<value>確認檔案刪除</value>
-	</string>
-	<string>
-		<id>123</id>
-		<value>你要複製這些檔案嗎?</value>
-	</string>
-	<string>
-		<id>124</id>
-		<value>你要移動這些檔案嗎?</value>
-	</string>
-	<string>
-		<id>125</id>
-		<value>你要刪除這些檔案嗎?</value>
-	</string>
-	<string>
-		<id>126</id>
-		<value>狀態</value>
-	</string>
-	<string>
-		<id>127</id>
-		<value>Objects</value>
-	</string>
-	<string>
-		<id>128</id>
-		<value>一般</value>
-	</string>
-	<string>
-		<id>129</id>
-		<value>幻燈節目</value>
-	</string>
-	<string>
-		<id>130</id>
-		<value>系統信息</value>
-	</string>
-	<string>
-		<id>131</id>
-		<value>螢幕</value>
-	</string>
-	<string>
-		<id>132</id>
-		<value>專輯</value>
-	</string>
-	<string>
-		<id>133</id>
-		<value>歌手</value>
-	</string>
-	<string>
-		<id>134</id>
-		<value>歌曲</value>
-	</string>
-	<string>
-		<id>135</id>
-		<value>風格</value>
-	</string>
-	<string>
-		<id>136</id>
-		<value>播放列表</value>
-	</string>
-	<string>
-		<id>137</id>
-		<value>搜尋</value>
-	</string>
-	<string>
-		<id>138</id>
-		<value>系統信息</value>
-	</string>
-	<string>
-		<id>139</id>
-		<value>溫度:</value>
-	</string>
-	<string>
-		<id>140</id>
-		<value>CPU:</value>
-	</string>
-	<string>
-		<id>141</id>
-		<value>GPU:</value>
-	</string>
-	<string>
-		<id>142</id>
-		<value>時間:</value>
-	</string>
-	<string>
-		<id>143</id>
-		<value>Current:</value>
-	</string>
-	<string>
-		<id>144</id>
-		<value>版本:</value>
-	</string>
-	<string>
-		<id>145</id>
-		<value>網絡:</value>
-	</string>
-	<string>
-		<id>146</id>
-		<value>Type:</value>
-	</string>
-	<string>
-		<id>147</id>
-		<value>Static</value>
-	</string>
-	<string>
-		<id>148</id>
-		<value>DHCP</value>
-	</string>
-	<string>
-		<id>149</id>
-		<value>MAC</value>
-	</string>
-	<string>
-		<id>150</id>
-		<value>IP</value>
-	</string>
-	<string>
-		<id>151</id>
-		<value>Link: </value>
-	</string>
-	<string>
-		<id>152</id>
-		<value>Half duplex</value>
-	</string>
-	<string>
-		<id>153</id>
-		<value>Full duplex</value>
-	</string>
-	<string>
-		<id>154</id>
-		<value>Storage</value>
-	</string>
-	<string>
-		<id>155</id>
-		<value>Drive</value>
-	</string>
-	<string>
-		<id>156</id>
-		<value>Free</value>
-	</string>
-	<string>
-		<id>157</id>
-		<value>視訊</value>
-	</string>
-	<string>
-		<id>158</id>
-		<value>剩餘空間</value>
-	</string>
-	<string>
-		<id>159</id>
-		<value>No link</value>
-	</string>
-	<string>
-		<id>160</id>
-		<value>Free</value>
-	</string>
-	<string>
-		<id>161</id>
-		<value>Unavailable</value>
-	</string>
-	<string>
-		<id>162</id>
-		<value>托盤開啟</value>
-	</string>
-	<string>
-		<id>163</id>
-		<value>讀取中</value>
-	</string>
-	<string>
-		<id>164</id>
-		<value>沒有光碟</value>
-	</string>
-	<string>
-		<id>165</id>
-		<value>Disc Present</value>
-	</string>
-	<string>
-		<id>166</id>
-		<value>面版</value>
-	</string>
-	<string>
-		<id>167</id>
-		<value>FTP伺服器</value>
-	</string>
-	<string>
-		<id>168</id>
-		<value>Synchronize Time</value>
-	</string>
-	<string>
-		<id>169</id>
-		<value>Resolution</value>
-	</string>
-	<string>
-		<id>170</id>
-		<value>專輯:</value>
-	</string>
-	<string>
-		<id>171</id>
-		<value>歌手:</value>
-	</string>
-	<string>
-		<id>172</id>
-		<value>Date of Release:</value>
-	</string>
-	<string>
-		<id>173</id>
-		<value>Rating:</value>
-	</string>
-	<string>
-		<id>174</id>
-		<value>Genre:</value>
-	</string>
-	<string>
-		<id>175</id>
-		<value>Tones:</value>
-	</string>
-	<string>
-		<id>176</id>
-		<value>Styles:</value>
-	</string>
-	<string>
-		<id>177</id>
-		<value>Review:</value>
-	</string>
-	<string>
-		<id>178</id>
-		<value>Tracks:</value>
-	</string>
-	<string>
-		<id>179</id>
-		<value>歌曲</value>
-	</string>
-	<string>
-		<id>180</id>
-		<value>Duration</value>
-	</string>
-	<string>
-		<id>181</id>
-		<value>選擇專輯</value>
-	</string>
-	<string>
-		<id>182</id>
-		<value>音軌</value>
-	</string>
-	<string>
-		<id>183</id>
-		<value>預覽</value>
-	</string>
-	<string>
-		<id>184</id>
-		<value>重新整理</value>
-	</string>
-	<string>
-		<id>185</id>
-		<value>正在搜尋專輯</value>
-	</string>
-	<string>
-		<id>186</id>
-		<value>確定</value>
-	</string>
-	<string>
-		<id>187</id>
-		<value>找不到任何專輯!</value>
-	</string>
-	<string>
-		<id>188</id>
-		<value>全選</value>
-	</string>
-	<string>
-		<id>189</id>
-		<value>正在掃瞄媒體資訊</value>
-	</string>
-	<string>
-		<id>190</id>
-		<value>儲存</value>
-	</string>
-	<string>
-		<id>191</id>
-		<value>Shuffle</value>
-	</string>
-	<string>
-		<id>192</id>
-		<value>清空</value>
-	</string>
-	<string>
-		<id>193</id>
-		<value>掃瞄</value>
-	</string>
-	<string>
-		<id>194</id>
-		<value>搜尋中...</value>
-	</string>
-	<string>
-		<id>195</id>
-		<value>找不到任何IMDB資訊!</value>
-	</string>
-	<string>
-		<id>196</id>
-		<value>選擇影片:</value>
-	</string>
-	<string>
-		<id>197</id>
-		<value>正在查詢IMDB資訊</value>
-	</string>
-	<string>
-		<id>198</id>
-		<value>正在讀取影片細節</value>
-	</string>
-	<string>
-		<id>199</id>
-		<value>導演:</value>
-	</string>
-	<string>
-		<id>200</id>
-		<value>編輯:</value>
-	</string>
-	<string>
-		<id>201</id>
-		<value>年份:</value>
-	</string>
-	<string>
-		<id>202</id>
-		<value>Tagline:</value>
-	</string>
-	<string>
-		<id>203</id>
-		<value>劇情大意:</value>
-	</string>
-	<string>
-		<id>204</id>
-		<value>排名:</value>
-	</string>
-	<string>
-		<id>205</id>
-		<value>投票:</value>
-	</string>
-	<string>
-		<id>206</id>
-		<value>Cast</value>
-	</string>
-	<string>
-		<id>207</id>
-		<value>劇情</value>
-	</string>
-	<string>
-		<id>208</id>
-		<value>播放</value>
-	</string>
-	<string>
-		<id>209</id>
-		<value>下一個</value>
-	</string>
-	<string>
-		<id>210</id>
-		<value>上一個</value>
-	</string>
-	<string>
-		<id>211</id>
-		<value>正在找尋程式</value>
-	</string>
-	<string>
-		<id>212</id>
-		<value>發現程式</value>
-	</string>
-	<string>
-		<id>213</id>
-		<value>UI Calibration</value>
-	</string>
-	<string>
-		<id>214</id>
-		<value>Screen Calibration</value>
-	</string>
-	<string>
-		<id>215</id>
-		<value>Soften</value>
-	</string>
-	<string>
-		<id>216</id>
-		<value>Zoom</value>
-	</string>
-	<string>
-		<id>217</id>
-		<value>Stretch</value>
-	</string>
-	<string>
-		<id>218</id>
-		<value>DVD光碟機</value>
-	</string>
-	<string>
-		<id>219</id>
-		<value>請放入光碟</value>
-	</string>
-	<string>
-		<id>220</id>
-		<value>Remote Share</value>
-	</string>
-	<string>
-		<id>221</id>
-		<value>Network is not connected</value>
-	</string>
-	<string>
-		<id>222</id>
-		<value>取消</value>
-	</string>
-	<string>
-		<id>223</id>
-		<value>Auto widescreen switching</value>
-	</string>
-	<string>
-		<id>224</id>
-		<value>速度</value>
-	</string>
-	<string>
-		<id>225</id>
-		<value>Transition time</value>
-	</string>
-	<string>
-		<id>226</id>
-		<value>Enable PAL60</value>
-	</string>
-	<string>
-		<id>227</id>
-		<value>Enable CDDB</value>
-	</string>
-	<string>
-		<id>228</id>
-		<value>Shuffle Playlist on load</value>
-	</string>
-	<string>
-		<id>229</id>
-		<value>HD Spindown time (mins)</value>
-	</string>
-	<string>
-		<id>230</id>
-		<value>Filters</value>
-	</string>
-	<string>
-		<id>231</id>
-		<value>None</value>
-	</string>
-	<string>
-		<id>232</id>
-		<value>Point</value>
-	</string>
-	<string>
-		<id>233</id>
-		<value>Linear</value>
-	</string>
-	<string>
-		<id>234</id>
-		<value>Anisotropic</value>
-	</string>
-	<string>
-		<id>235</id>
-		<value>Quincunx</value>
-	</string>
-	<string>
-		<id>236</id>
-		<value>Gaussian Cubic</value>
-	</string>
-	<string>
-		<id>237</id>
-		<value>Minification</value>
-	</string>
-	<string>
-		<id>238</id>
-		<value>Magnification</value>
-	</string>
-	<string>
-		<id>240</id>
-		<value>自動運行DVD影片</value>
-	</string>
-	<string>
-		<id>241</id>
-		<value>自動運行VCD/SVCD</value>
-	</string>
-	<string>
-		<id>242</id>
-		<value>自動運行音效CD</value>
-	</string>
-	<string>
-		<id>243</id>
-		<value>自動運行XBOX遊戲</value>
-	</string>
-	<string>
-		<id>244</id>
-		<value>自動運行影片</value>
-	</string>
-	<string>
-		<id>245</id>
-		<value>自動運行音樂</value>
-	</string>
-	<string>
-		<id>246</id>
-		<value>自動運行圖片</value>
-	</string>
-	<string>
-		<id>247</id>
-		<value>Scripts</value>
-	</string>
-	<string>
-		<id>248</id>
-		<value>語言</value>
-	</string>
-	<string>
-		<id>249</id>
-		<value>音樂</value>
-	</string>
-	<string>
-		<id>250</id>
-		<value>Visualisation</value>
-	</string>
-	<string>
-		<id>251</id>
-		<value>Select destination directory</value>
-	</string>
-	<string>
-		<id>252</id>
-		<value>Output to all speakers</value>
-	</string>
-	<string>
-		<id>253</id>
-		<value>Number of channels</value>
-	</string>
-	<string>
-		<id>254</id>
-		<value>DD Stereo Passthrough</value>
-	</string>
-	<string>
-		<id>255</id>
-		<value>CDDB</value>
-	</string>
-	<string>
-		<id>256</id>
-		<value>Querying freedb for CDDB info</value>
-	</string>
-	<string>
-		<id>257</id>
-		<value>錯誤</value>
-	</string>
-	<string>
-		<id>258</id>
-		<value>Enable ID3 tags</value>
-	</string>
-	<string>
-		<id>259</id>
-		<value>Opening</value>
-	</string>
-	<string>
-		<id>260</id>
-		<value>Shoutcast</value>
-	</string>
-	<string>
-		<id>261</id>
-		<value>Waiting for start....</value>
-	</string>
-	<string>
-		<id>262</id>
-		<value>Scripts Output</value>
-	</string>
-	<string>
-		<id>263</id>
-		<value>HTTP 伺服器</value>
-	</string>
-	<string>
-		<id>264</id>
-		<value>錄製</value>
-	</string>
-	<string>
-		<id>265</id>
-		<value>停止錄製</value>
-	</string>
-	<string>
-		<id>266</id>
-		<value>排列圖示: 曲目</value>
-	</string>
-	<string>
-		<id>267</id>
-		<value>排列圖示: 時間</value>
-	</string>
-	<string>
-		<id>268</id>
-		<value>排列圖示: 標題</value>
-	</string>
-	<string>
-		<id>269</id>
-		<value>排列圖示: 歌手</value>
-	</string>
-	<string>
-		<id>270</id>
-		<value>排列圖示: 標輯</value>
-	</string>
-	<string>
-		<id>271</id>
-		<value>頭100個排名</value>
-	</string>
-	<string>
-		<id>272</id>
-		<value>Top Left Overscan Compensation</value>
-	</string>
-	<string>
-		<id>273</id>
-		<value>Bottom Right Overscan Compensation</value>
-	</string>
-	<string>
-		<id>274</id>
-		<value>Subtitles Position</value>
-	</string>
-	<string>
-		<id>275</id>
-		<value>Pixel Ratio Adjustment</value>
-	</string>
-	<string>
-		<id>276</id>
-		<value>Move the arrow to change the amount of overscan</value>
-	</string>
-	<string>
-		<id>277</id>
-		<value>Move the bar to change the subtitles position</value>
-	</string>
-	<string>
-		<id>278</id>
-		<value>Change the rectangle so that it is perfectly square</value>
-	</string>
-	<string>
-		<id>279</id>
-		<value>Unable to load settings</value>
-	</string>
-	<string>
-		<id>280</id>
-		<value>using default fallbacks</value>
-	</string>
-	<string>
-		<id>281</id>
-		<value>請檢查 .xml檔案</value>
-	</string>
-	<string>
-		<id>282</id>
-		<value>found %i items</value>
-	</string>
-	<string>
-		<id>283</id>
-		<value>Search Results</value>
-	</string>
-	<string>
-		<id>284</id>
-		<value>No results found</value>
-	</string>
-	<string>
-		<id>285</id>
-		<value>Deinterlace filter</value>
-	</string>
-	<string>
-		<id>286</id>
-		<value>Postprocessing filter</value>
-	</string>
-	<string>
-		<id>287</id>
-		<value>SRT字幕</value>
-	</string>
-	<string>
-		<id>288</id>
-		<value>字型</value>
-	</string>
-	<string>
-		<id>289</id>
-		<value>大小</value>
-	</string>
-	<string>
-		<id>290</id>
-		<value>Volume amplification (dB)</value>
-	</string>
-	<string>
-		<id>291</id>
-		<value>視訊</value>
-	</string>
-	<string>
-		<id>292</id>
-		<value>音效</value>
-	</string>
-	<string>
-		<id>293</id>
-		<value>字幕</value>
-	</string>
-	<string>
-		<id>294</id>
-		<value>建立書籤</value>
-	</string>
-	<string>
-		<id>295</id>
-		<value>Cycle bookmarks</value>
-	</string>
-	<string>
-		<id>296</id>
-		<value>清空書籤</value>
-	</string>
-	<string>
-		<id>297</id>
-		<value>AVDelay</value>
-	</string>
-	<string>
-		<id>298</id>
-		<value>Slider</value>
-	</string>
-	<string>
-		<id>300</id>
-		<value>1. 語言</value>
-	</string>
-	<string>
-		<id>301</id>
-		<value>2. 音效大小</value>
-	</string>
-	<string>
-		<id>302</id>
-		<value>3. Stream</value>
-	</string>
-	<string>
-		<id>303</id>
-		<value>延遲</value>
-	</string>
-	<string>
-		<id>304</id>
-		<value>語言</value>
-	</string>
-	<string>
-		<id>305</id>
-		<value>Enabled</value>
-	</string>
-	<string>
-		<id>306</id>
-		<value>Non-Interleaved</value>
-	</string>
-	<string>
-		<id>307</id>
-		<value>Auto</value>
-	</string>
-	<string>
-		<id>308</id>
-		<value>vertical deblocking filter</value>
-	</string>
-	<string>
-		<id>309</id>
-		<value>horizontal deblocking filter</value>
-	</string>
-	<string>
-		<id>310</id>
-		<value>Auto brightness/contrast</value>
-	</string>
-	<string>
-		<id>311</id>
-		<value>Dering</value>
-	</string>
-	<string>
-		<id>312</id>
-		<value>(0=auto)</value>
-	</string>
-	<string>
-		<id>313</id>
-		<value>Reorganize database</value>
-	</string>
-	<string>
-		<id>314</id>
-		<value>Preparing...</value>
-	</string>
-	<string>
-		<id>315</id>
-		<value>Database error</value>
-	</string>
-	<string>
-		<id>316</id>
-		<value>Searching songs...</value>
-	</string>
-	<string>
-		<id>317</id>
-		<value>Reorganization successfull</value>
-	</string>
-	<string>
-		<id>318</id>
-		<value>Marking deleted songs</value>
-	</string>
-	<string>
-		<id>319</id>
-		<value>Error reorganizing songs</value>
-	</string>
-	<string>
-		<id>320</id>
-		<value>Searching artists...</value>
-	</string>
-	<string>
-		<id>321</id>
-		<value>Error reorganizing artists</value>
-	</string>
-	<string>
-		<id>322</id>
-		<value>Searching genres...</value>
-	</string>
-	<string>
-		<id>323</id>
-		<value>Error reorganizing genres</value>
-	</string>
-	<string>
-		<id>324</id>
-		<value>Searching pathes...</value>
-	</string>
-	<string>
-		<id>325</id>
-		<value>Error reorganizing pathes</value>
-	</string>
-	<string>
-		<id>326</id>
-		<value>Searching albums...</value>
-	</string>
-	<string>
-		<id>327</id>
-		<value>Error reorganizing albums</value>
-	</string>
-	<string>
-		<id>328</id>
-		<value>Writing changes...</value>
-	</string>
-	<string>
-		<id>329</id>
-		<value>Error writing changes</value>
-	</string>
-	<string>
-		<id>330</id>
-		<value>This may take some time...</value>
-	</string>
-	<string>
-		<id>331</id>
-		<value>Compressing database...</value>
-	</string>
-	<string>
-		<id>332</id>
-		<value>Error compressing database</value>
-	</string>
-	<string>
-		<id>333</id>
-		<value>Do you want to reorganize my music database?</value>
-	</string>
-	<string>
-		<id>334</id>
-		<value>Reorganize my music database</value>
-	</string>
-	<string>
-		<id>335</id>
-		<value>開始</value>
-	</string>
-	<string>
-		<id>336</id>
-		<value>Adjust Framerate</value>
-	</string>
-	<string>
-		<id>337</id>
-		<value>音效輸出</value>
-	</string>
-	<string>
-		<id>338</id>
-		<value>Analog</value>
-	</string>
-	<string>
-		<id>339</id>
-		<value>數碼</value>
-	</string>
-	<string>
-		<id>340</id>
-		<value>Various Artists</value>
-	</string>
-	<string>
-		<id>341</id>
-		<value>播放DVD</value>
-	</string>
-	<string>
-		<id>342</id>
-		<value>影片</value>
-	</string>
-	<string>
-		<id>343</id>
-		<value>Adjust Framerate</value>
-	</string>
-	<string>
-		<id>344</id>
-		<value>Actors</value>
-	</string>
-	<string>
-		<id>345</id>
-		<value>Year</value>
-	</string>
-	<string>
-		<id>346</id>
-		<value>Stack</value>
-	</string>
-	<string>
-		<id>347</id>
-		<value>Unstack</value>
-	</string>
-	<string>
-		<id>348</id>
-		<value>Flatten Directory Hierarchy</value>
-	</string>
-	<string>
-		<id>349</id>
-		<value>只顯示Default.xbe</value>
-	</string>
-	<string>
-		<id>350</id>
-		<value>程式</value>
-	</string>
-	<string>
-		<id>351</id>
-		<value>Off</value>
-	</string>
-	<string>
-		<id>352</id>
-		<value>Dim</value>
-	</string>
-	<string>
-		<id>353</id>
-		<value>Black</value>
-	</string>
-	<string>
-		<id>354</id>
-		<value>Matrix Trails</value>
-	</string>
-	<string>
-		<id>355</id>
-		<value>Screensaver Idle Timeout</value>
-	</string>
-	<string>
-		<id>356</id>
-		<value>Screensaver Mode</value>
-	</string>
-	<string>
-		<id>357</id>
-		<value>Shutdown Idle Timeout</value>
-	</string>
-	<string>
-		<id>358</id>
-		<value>All albums</value>
-	</string>
-	<string>
-		<id>359</id>
-		<value>Recent albums</value>
-	</string>
-	<string>
-		<id>360</id>
-		<value>Screensaver</value>
-	</string>
-	<string>
-		<id>361</id>
-		<value>R. SlideShow</value>
-	</string>
-	<string>
-		<id>362</id>
-		<value>Screensaver Fade Level (%)</value>
-	</string>
-	<string>
-		<id>363</id>
-		<value>Sort by: File</value>
-	</string>
-	<string>
-		<id>364</id>
-		<value>DD/DTS Multichannel Passthrough</value>
-	</string>
-	<string>
-		<id>365</id>
-		<value>Sort by: Name</value>
-	</string>
-	<string>
-		<id>366</id>
-		<value>Sort by: Year</value>
-	</string>
-	<string>
-		<id>367</id>
-		<value>Sort by: Rating</value>
-	</string>
-	<string>
-		<id>368</id>
-		<value>IMDB</value>
-	</string>
-	<string>
-		<id>369</id>
-		<value>Title</value>
-	</string>
-	<string>
-		<id>370</id>
-		<value>T-Storms</value>
-	</string>
-	<string>
-		<id>371</id>
-		<value>Partly</value>
-	</string>
-	<string>
-		<id>372</id>
-		<value>Mostly</value>
-	</string>
-	<string>
-		<id>373</id>
-		<value>Sunny</value>
-	</string>
-	<string>
-		<id>374</id>
-		<value>Cloudy</value>
-	</string>
-	<string>
-		<id>375</id>
-		<value>Snow</value>
-	</string>
-	<string>
-		<id>376</id>
-		<value>Rain</value>
-	</string>
-	<string>
-		<id>377</id>
-		<value>Light</value>
-	</string>
-	<string>
-		<id>378</id>
-		<value>AM</value>
-	</string>
-	<string>
-		<id>379</id>
-		<value>PM</value>
-	</string>
-	<string>
-		<id>380</id>
-		<value>Showers</value>
-	</string>
-	<string>
-		<id>381</id>
-		<value>Few</value>
-	</string>
-	<string>
-		<id>382</id>
-		<value>Scattered</value>
-	</string>
-	<string>
-		<id>383</id>
-		<value>Wind</value>
-	</string>
-	<string>
-		<id>384</id>
-		<value>Strong</value>
-	</string>
-	<string>
-		<id>385</id>
-		<value>Fair</value>
-	</string>
-	<string>
-		<id>386</id>
-		<value>Clear</value>
-	</string>
-	<string>
-		<id>387</id>
-		<value>Clouds</value>
-	</string>
-	<string>
-		<id>388</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>389</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>390</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>391</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>392</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>393</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>394</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>395</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>396</id>
-		<value>Select Location</value>
-	</string>
-	<string>
-		<id>397</id>
-		<value>Refresh Time</value>
-	</string>
-	<string>
-		<id>398</id>
-		<value>Temperature Units</value>
-	</string>
-	<string>
-		<id>399</id>
-		<value>Speed Units</value>
-	</string>
-	<string>
-		<id>400</id>
-		<value>Weather</value>
-	</string>
-	<string>
-		<id>401</id>
-		<value>Temp</value>
-	</string>
-	<string>
-		<id>402</id>
-		<value>Feels Like</value>
-	</string>
-	<string>
-		<id>403</id>
-		<value>UV Index</value>
-	</string>
-	<string>
-		<id>404</id>
-		<value>Wind</value>
-	</string>
-	<string>
-		<id>405</id>
-		<value>Dew Point</value>
-	</string>
-	<string>
-		<id>406</id>
-		<value>Humidity</value>
-	</string>
-	<string>
-		<id>407</id>
-		<value>From</value>
-	</string>
-	<string>
-		<id>408</id>
-		<value>at</value>
-	</string>
-	<string>
-		<id>410</id>
-		<value>Accessing Weather.com</value>
-	</string>
-	<string>
-		<id>411</id>
-		<value>Getting Weather For:</value>
-	</string>
-	<string>
-		<id>412</id>
-		<value>Unable to get weather data</value>
-	</string>
-	<string>
-		<id>413</id>
-		<value>Manual</value>
-	</string>
-	<string>
-		<id>414</id>
-		<value>No review for this album</value>
-	</string>
-	<string>
-		<id>415</id>
-		<value>Downloading thumbnail...</value>
-	</string>
-	<string>
-		<id>416</id>
-		<value>Not available</value>
-	</string>
-	<string>
-		<id>417</id>
-		<value>View: Big Icons</value>
-	</string>
-	<string>
-		<id>418</id>
-		<value>My Videos/Genres</value>
-	</string>
-	<string>
-		<id>419</id>
-		<value>My Videos/Actors</value>
-	</string>
-	<string>
-		<id>420</id>
-		<value>My Videos/Years</value>
-	</string>
-	<string>
-		<id>421</id>
-		<value>My Videos/Title</value>
-	</string>
-	<string>
-		<id>422</id>
-		<value>Delete albuminfo</value>
-	</string>
-	<string>
-		<id>423</id>
-		<value>Delete CDDB info</value>
-	</string>
-	<string>
-		<id>424</id>
-		<value>Select</value>
-	</string>
-	<string>
-		<id>425</id>
-		<value>No albuminfo found.</value>
-	</string>
-	<string>
-		<id>426</id>
-		<value>No CDDB info found.</value>
-	</string>
-	<string>
-		<id>427</id>
-		<value>Disc:</value>
-	</string>
-	<string>
-		<id>428</id>
-		<value>Insert correct CD/DVD</value>
-	</string>
-	<string>
-		<id>429</id>
-		<value>Please insert the following CD/DVD</value>
-	</string>
-	<string>
-		<id>430</id>
-		<value>排列圖示: DVD#</value>
-	</string>
-	<string>
-		<id>431</id>
-		<value>No Cache</value>
-	</string>
-	<string>
-		<id>432</id>
-		<value>Delete movie from database</value>
-	</string>
-	<string>
-		<id>433</id>
-		<value>你確定要移除</value>
-	</string>
-	<string>
-		<id>434</id>
-		<value>這個影片嗎?</value>
-	</string>
-	<string>
-		<id>435</id>
-		<value>Track</value>
-	</string>
-	<string>
-		<id>436</id>
-		<value>Year:</value>
-	</string>
-	<string>
-		<id>437</id>
-		<value>Duration:</value>
-	</string>
-	<string>
-		<id>438</id>
-		<value>正在開啟檔案</value>
-	</string>
-	<string>
-		<id>439</id>
-		<value>緩衝</value>
-	</string>
-	<string>
-		<id>440</id>
-		<value>硬碟</value>
-	</string>
-	<string>
-		<id>441</id>
-		<value>UDF</value>
-	</string>
-	<string>
-		<id>442</id>
-		<value>LAN</value>
-	</string>
-	<string>
-		<id>443</id>
-		<value>Internet</value>
-	</string>
-	<string>
-		<id>444</id>
-		<value>視訊</value>
-	</string>
-	<string>
-		<id>445</id>
-		<value>音效</value>
-	</string>
-	<string>
-		<id>446</id>
-		<value>DVD</value>
-	</string>
-	<string>
-		<id>447</id>
-		<value>自動播放</value>
-	</string>
-	<string>
-		<id>448</id>
-		<value>LCD</value>
-	</string>
-	<string>
-		<id>449</id>
-		<value>Enabled</value>
-	</string>
-	<string>
-		<id>450</id>
-		<value>Columns</value>
-	</string>
-	<string>
-		<id>451</id>
-		<value>Row 1 adress</value>
-	</string>
-	<string>
-		<id>452</id>
-		<value>Row 2 adress</value>
-	</string>
-	<string>
-		<id>453</id>
-		<value>Row 3 adress</value>
-	</string>
-	<string>
-		<id>454</id>
-		<value>Row 4 adress</value>
-	</string>
-	<string>
-		<id>455</id>
-		<value>Rows</value>
-	</string>
-	<string>
-		<id>456</id>
-		<value>Mode</value>
-	</string>
-	<string>
-		<id>457</id>
-		<value>Switch view</value>
-	</string>
-	<string>
-		<id>458</id>
-		<value>B/Mark</value>
-	</string>
-	<string>
-		<id>459</id>
-		<value>Subs</value>
-	</string>
-	<string>
-		<id>460</id>
-		<value>Audio Stream</value>
-	</string>
-	<string>
-		<id>461</id>
-		<value>[active]</value>
-	</string>
-	<string>
-		<id>462</id>
-		<value>字幕</value>
-	</string>
-	<string>
-		<id>463</id>
-		<value>Backlight</value>
-	</string>
-	<string>
-		<id>464</id>
-		<value>Brightness</value>
-	</string>
-	<string>
-		<id>465</id>
-		<value>Contrast</value>
-	</string>
-	<string>
-		<id>466</id>
-		<value>Gamma</value>
-	</string>
-	<string>
-		<id>467</id>
-		<value>Type</value>
-	</string>
-	<string>
-		<id>468</id>
-		<value>Move the bar to change the osd position</value>
-	</string>
-	<string>
-		<id>469</id>
-		<value>OSD Position</value>
-	</string>
-	<string>
-		<id>470</id>
-		<value>Credits</value>
-	</string>
-	<string>
-		<id>471</id>
-		<value>Modchip</value>
-	</string>
-	<string>
-		<id>472</id>
-		<value>OSD Timeout</value>
-	</string>
-	<string>
-		<id>473</id>
-		<value>High Quality Resampling</value>
-	</string>
-	<string>
-		<id>474</id>
-		<value>關閉</value>
-	</string>
-	<string>
-		<id>475</id>
-		<value>Music Only</value>
-	</string>
-	<string>
-		<id>476</id>
-		<value>Music &amp; Video</value>
-	</string>
-	<string>
-		<id>477</id>
-		<value>Unable to load playlist</value>
-	</string>
-	<string>
-		<id>478</id>
-		<value>OSD</value>
-	</string>
-	<string>
-		<id>479</id>
-		<value>面版及語言</value>
-	</string>
-	<string>
-		<id>480</id>
-		<value>User Interface</value>
-	</string>
-	<string>
-		<id>481</id>
-		<value>聲音設定</value>
-	</string>
-	<string>
-		<id>482</id>
-		<value>關於XBMC</value>
-	</string>
-	<string>
-		<id>483</id>
-		<value>專輯</value>
-	</string>
-	<string>
-		<id>484</id>
-		<value>歌手</value>
-	</string>
-	<string>
-		<id>485</id>
-		<value>刪除專輯</value>
-	</string>
-	<string>
-		<id>486</id>
-		<value>重複</value>
-	</string>
-	<string>
-		<id>487</id>
-		<value>重複一次</value>
-	</string>
-	<string>
-		<id>488</id>
-		<value>重複這個資料夾</value>
-	</string>
-	<string>
-		<id>489</id>
-		<value>Use playlist in songs</value>
-	</string>
-	<string>
-		<id>490</id>
-		<value>Auto switch list and icons in songs</value>
-	</string>
-	<string>
-		<id>491</id>
-		<value>使用大圖示</value>
-	</string>
-	<string>
-		<id>492</id>
-		<value>擴大字幕</value>
-	</string>
-	<string>
-		<id>493</id>
-		<value>Advanced Options (Experts Only!)</value>
-	</string>
-	<string>
-		<id>494</id>
-		<value>Overall Audio Headroom (dB)</value>
-	</string>
-	<string>
-		<id>495</id>
-		<value>Upsample videos to GUI resolution</value>
-	</string>
-	<string>
-		<id>496</id>
-		<value>Calibration</value>
-	</string>
-	<string>
-		<id>497</id>
-		<value>Hide Media Extensions</value>
-	</string>
-	<string>
-		<id>498</id>
-		<value>排列圖示: 依類型</value>
-	</string>
-	<string>
-		<id>499</id>
-		<value>不能連結www.allmusic.com</value>
-	</string>
-	<string>
-		<id>500</id>
-		<value>下載專輯資料失敗</value>
-	</string>
-	<string>
-		<id>501</id>
-		<value>Looking for album names...</value>
-	</string>
-	<string>
-		<id>502</id>
-		<value>Open</value>
-	</string>
-	<string>
-		<id>503</id>
-		<value>Busy</value>
-	</string>
-	<string>
-		<id>504</id>
-		<value>Empty</value>
-	</string>
-	<string>
-		<id>505</id>
-		<value>正在從檔案中讀取媒體資料</value>
-	</string>
-	
-	<string>
-		<id>998</id>
-		<value>XLink KAI</value>
-	</string>
-	<string>
-		<id>999</id>
-		<value>Online Gaming</value>
-	</string> 
-	
-	<string>
-		<id>10000</id>
-		<value>Home</value>
-	</string>
-	<string>
-		<id>10001</id>
-		<value>我的程式</value>
-	</string>
-	<string>
-		<id>10002</id>
-		<value>我的圖片</value>
-	</string>
-	<string>
-		<id>10003</id>
-		<value>我的檔案</value>
-	</string>
-	<string>
-		<id>10004</id>
-		<value>設定</value>
-	</string>
-	<string>
-		<id>10005</id>
-		<value>我的音樂</value>
-	</string>
-	<string>
-		<id>10006</id>
-		<value>我的視訊</value>
-	</string>
-	<string>
-		<id>10007</id>
-		<value>系統信息</value>
-	</string>
-	<string>
-		<id>10008</id>
-		<value>Settings-&gt;General</value>
-	</string>
-	<string>
-		<id>10009</id>
-		<value>Settings-&gt;Screen</value>
-	</string>
-	<string>
-		<id>10010</id>
-		<value>Settings-&gt;Screen-&gt;UI Calibration</value>
-	</string>
-	<string>
-		<id>10011</id>
-		<value>Settings-&gt;Screen-&gt;Screen Calibration</value>
-	</string>
-	<string>
-		<id>10012</id>
-		<value>Settings-&gt;SlideShow</value>
-	</string>
-	<string>
-		<id>10013</id>
-		<value>Settings-&gt;Screen-&gt;Filters</value>
-	</string>
-	<string>
-		<id>10014</id>
-		<value>Settings-&gt;Music</value>
-	</string>
-	<string>
-		<id>10015</id>
-		<value>Settings-&gt;Screen-&gt;Subtitles</value>
-	</string>
-	<string>
-		<id>10016</id>
-		<value>Settings-&gt;Screen-&gt;Screensaver</value>
-	</string>
-	<string>
-		<id>10017</id>
-		<value>Settings-&gt;Weather</value>
-	</string>
-	<string>
-		<id>10020</id>
-		<value>Settings-&gt;Scripts</value>
-	</string>
-	<string>
-		<id>10021</id>
-		<value>My Videos/genre</value>
-	</string>
-	<string>
-		<id>10022</id>
-		<value>My Videos/actor</value>
-	</string>
-	<string>
-		<id>10023</id>
-		<value>My Videos/year</value>
-	</string>
-	<string>
-		<id>10024</id>
-		<value>Settings-&gt;Programs</value>
-	</string>
-	<string>
-		<id>10025</id>
-		<value>My Videos/title</value>
-	</string>
-	<string>
-		<id>10026</id>
-		<value>Settings-&gt;General-&gt;Cache</value>
-	</string>
-	<string>
-		<id>10027</id>
-		<value>Settings-&gt;General-&gt;Autorun</value>
-	</string>
-	<string>
-		<id>10028</id>
-		<value>My Videos/playlist</value>
-	</string>
-	<string>
-		<id>10029</id>
-		<value>Settings-&gt;General-&gt;LCD</value>
-	</string>
-	<string>
-		<id>10100</id>
-		<value>Yes/no dialog</value>
-	</string>
-	<string>
-		<id>10101</id>
-		<value>Progress dialog</value>
-	</string>
-	<string>
-		<id>10500</id>
-		<value>My Music/playlist</value>
-	</string>
-	<string>
-		<id>10501</id>
-		<value>My Music/files</value>
-	</string>
-	<string>
-		<id>10502</id>
-		<value>My Music/albums</value>
-	</string>
-	<string>
-		<id>10503</id>
-		<value>My Music/artists</value>
-	</string>
-	<string>
-		<id>10504</id>
-		<value>My Music/genres</value>
-	</string>
-	<string>
-		<id>10505</id>
-		<value>My Music/top100</value>
-	</string>
-	<string>
-		<id>11000</id>
-		<value>keyboard</value>
-	</string>
-	<string>
-		<id>12000</id>
-		<value>Select dialog</value>
-	</string>
-	<string>
-		<id>12001</id>
-		<value>My Music/info</value>
-	</string>
-	<string>
-		<id>12002</id>
-		<value>Dialog OK</value>
-	</string>
-	<string>
-		<id>12003</id>
-		<value>My Videos/Info</value>
-	</string>
-	<string>
-		<id>12004</id>
-		<value>My Scripts/Info</value>
-	</string>
-	<string>
-		<id>12005</id>
-		<value>Fullscreen video</value>
-	</string>
-	<string>
-		<id>12006</id>
-		<value>Audio visisalisation</value>
-	</string>
-	<string>
-		<id>12007</id>
-		<value>My Picture/slideshow</value>
-	</string>
-	<string>
-		<id>12008</id>
-		<value>Filestacking dialog</value>
-	</string>
-	<string>
-		<id>12600</id>
-		<value>我的天氣</value>
-	</string>
-	<string>
-		<id>12900</id>
-		<value>螢幕保護</value>
-	</string>
-	<string>
-		<id>12901</id>
-		<value>Fullscreen OSD</value>
-	</string>
+  <string><id>0</id><value>我的桯式</value></string>
+  <string><id>1</id><value>我的圖片</value></string>
+  <string><id>2</id><value>我的音樂</value></string>
+  <string><id>3</id><value>我的視訊</value></string>
+  <string><id>4</id><value>電視指南</value></string>
+  <string><id>5</id><value>設定</value></string>
+  <string><id>7</id><value>我的檔案</value></string>
+  <string><id>8</id><value>天氣情況</value></string>
+  <string><id>11</id><value>星期一</value></string>
+  <string><id>12</id><value>星期二</value></string>
+  <string><id>13</id><value>星期三</value></string>
+  <string><id>14</id><value>星期四</value></string>
+  <string><id>15</id><value>星期五</value></string>
+  <string><id>16</id><value>星期六</value></string>
+  <string><id>17</id><value>星期日</value></string>
+  <string><id>21</id><value>一月</value></string>
+  <string><id>22</id><value>二月</value></string>
+  <string><id>23</id><value>三月</value></string>
+  <string><id>24</id><value>四月</value></string>
+  <string><id>25</id><value>五月</value></string>
+  <string><id>26</id><value>六月</value></string>
+  <string><id>27</id><value>七月</value></string>
+  <string><id>28</id><value>八月</value></string>
+  <string><id>29</id><value>九月</value></string>
+  <string><id>30</id><value>十月</value></string>
+  <string><id>31</id><value>十一月</value></string>
+  <string><id>32</id><value>十二月</value></string>
+  <string><id>100</id><value>檢視: 圖示</value></string>
+  <string><id>101</id><value>檢視: 清單</value></string>
+  <string><id>102</id><value>掃瞄</value></string>
+  <string><id>103</id><value>排列圖示: 依名稱</value></string>
+  <string><id>104</id><value>排列圖示: 依日期</value></string>
+  <string><id>105</id><value>排列圖示: 依大小</value></string>
+  <string><id>106</id><value>否</value></string>
+  <string><id>107</id><value>是</value></string>
+  <string><id>108</id><value>幻燈節目</value></string>
+  <string><id>109</id><value>Create Thumbs</value></string>
+  <string><id>110</id><value>Create Thumbnails</value></string>
+  <string><id>111</id><value>捷徑</value></string>
+  <string><id>112</id><value>暫停</value></string>
+  <string><id>113</id><value>我的檔案 : 源文件</value></string>
+  <string><id>114</id><value>我的檔案 : 目的地</value></string>
+  <string><id>115</id><value>複製</value></string>
+  <string><id>116</id><value>移動</value></string>
+  <string><id>117</id><value>刪除</value></string>
+  <string><id>118</id><value>重新命名</value></string>
+  <string><id>119</id><value>新增資料夾</value></string>
+  <string><id>120</id><value>確認檔案複製</value></string>
+  <string><id>121</id><value>確認檔案移動</value></string>
+  <string><id>122</id><value>確認檔案刪除</value></string>
+  <string><id>123</id><value>你要複製這些檔案嗎?</value></string>
+  <string><id>124</id><value>你要移動這些檔案嗎?</value></string>
+  <string><id>125</id><value>你要刪除這些檔案嗎?</value></string>
+  <string><id>126</id><value>狀態</value></string>
+  <string><id>127</id><value>Objects</value></string>
+  <string><id>128</id><value>一般</value></string>
+  <string><id>129</id><value>幻燈節目</value></string>
+  <string><id>130</id><value>系統信息</value></string>
+  <string><id>131</id><value>螢幕</value></string>
+  <string><id>132</id><value>專輯</value></string>
+  <string><id>133</id><value>歌手</value></string>
+  <string><id>134</id><value>歌曲</value></string>
+  <string><id>135</id><value>風格</value></string>
+  <string><id>136</id><value>播放列表</value></string>
+  <string><id>137</id><value>搜尋</value></string>
+  <string><id>138</id><value>系統信息</value></string>
+  <string><id>139</id><value>溫度:</value></string>
+  <string><id>140</id><value>CPU:</value></string>
+  <string><id>141</id><value>GPU:</value></string>
+  <string><id>142</id><value>時間:</value></string>
+  <string><id>143</id><value>Current:</value></string>
+  <string><id>144</id><value>版本:</value></string>
+  <string><id>145</id><value>網絡:</value></string>
+  <string><id>146</id><value>Type:</value></string>
+  <string><id>147</id><value>Static</value></string>
+  <string><id>148</id><value>DHCP</value></string>
+  <string><id>149</id><value>MAC</value></string>
+  <string><id>150</id><value>IP</value></string>
+  <string><id>151</id><value>Link: </value></string>
+  <string><id>152</id><value>Half duplex</value></string>
+  <string><id>153</id><value>Full duplex</value></string>
+  <string><id>154</id><value>Storage</value></string>
+  <string><id>155</id><value>Drive</value></string>
+  <string><id>156</id><value>Free</value></string>
+  <string><id>157</id><value>視訊</value></string>
+  <string><id>158</id><value>剩餘空間</value></string>
+  <string><id>159</id><value>No link</value></string>
+  <string><id>160</id><value>Free</value></string>
+  <string><id>161</id><value>Unavailable</value></string>
+  <string><id>162</id><value>托盤開啟</value></string>
+  <string><id>163</id><value>讀取中</value></string>
+  <string><id>164</id><value>沒有光碟</value></string>
+  <string><id>165</id><value>Disc Present</value></string>
+  <string><id>166</id><value>面版</value></string>
+  <string><id>167</id><value>FTP伺服器</value></string>
+  <string><id>168</id><value>Synchronize Time</value></string>
+  <string><id>169</id><value>Resolution</value></string>
+  <string><id>170</id><value>專輯:</value></string>
+  <string><id>171</id><value>歌手:</value></string>
+  <string><id>172</id><value>Date of Release:</value></string>
+  <string><id>173</id><value>Rating:</value></string>
+  <string><id>174</id><value>Genre:</value></string>
+  <string><id>175</id><value>Tones:</value></string>
+  <string><id>176</id><value>Styles:</value></string>
+  <string><id>177</id><value>Review:</value></string>
+  <string><id>178</id><value>Tracks:</value></string>
+  <string><id>179</id><value>歌曲</value></string>
+  <string><id>180</id><value>Duration</value></string>
+  <string><id>181</id><value>選擇專輯</value></string>
+  <string><id>182</id><value>音軌</value></string>
+  <string><id>183</id><value>預覽</value></string>
+  <string><id>184</id><value>重新整理</value></string>
+  <string><id>185</id><value>正在搜尋專輯</value></string>
+  <string><id>186</id><value>確定</value></string>
+  <string><id>187</id><value>找不到任何專輯!</value></string>
+  <string><id>188</id><value>全選</value></string>
+  <string><id>189</id><value>正在掃瞄媒體資訊</value></string>
+  <string><id>190</id><value>儲存</value></string>
+  <string><id>191</id><value>Shuffle</value></string>
+  <string><id>192</id><value>清空</value></string>
+  <string><id>193</id><value>掃瞄</value></string>
+  <string><id>194</id><value>搜尋中...</value></string>
+  <string><id>195</id><value>找不到任何IMDB資訊!</value></string>
+  <string><id>196</id><value>選擇影片:</value></string>
+  <string><id>197</id><value>正在查詢IMDB資訊</value></string>
+  <string><id>198</id><value>正在讀取影片細節</value></string>
+  <string><id>199</id><value>導演:</value></string>
+  <string><id>200</id><value>編輯:</value></string>
+  <string><id>201</id><value>年份:</value></string>
+  <string><id>202</id><value>Tagline:</value></string>
+  <string><id>203</id><value>劇情大意:</value></string>
+  <string><id>204</id><value>排名:</value></string>
+  <string><id>205</id><value>投票:</value></string>
+  <string><id>206</id><value>Cast</value></string>
+  <string><id>207</id><value>劇情</value></string>
+  <string><id>208</id><value>播放</value></string>
+  <string><id>209</id><value>下一個</value></string>
+  <string><id>210</id><value>上一個</value></string>
+  <string><id>211</id><value>正在找尋程式</value></string>
+  <string><id>212</id><value>發現程式</value></string>
+  <string><id>213</id><value>UI Calibration</value></string>
+  <string><id>214</id><value>Screen Calibration</value></string>
+  <string><id>215</id><value>Soften</value></string>
+  <string><id>216</id><value>Zoom</value></string>
+  <string><id>217</id><value>Stretch</value></string>
+  <string><id>218</id><value>DVD光碟機</value></string>
+  <string><id>219</id><value>請放入光碟</value></string>
+  <string><id>220</id><value>Remote Share</value></string>
+  <string><id>221</id><value>Network is not connected</value></string>
+  <string><id>222</id><value>取消</value></string>
+  <string><id>223</id><value>Auto widescreen switching</value></string>
+  <string><id>224</id><value>速度</value></string>
+  <string><id>225</id><value>Transition time</value></string>
+  <string><id>226</id><value>Enable PAL60</value></string>
+  <string><id>227</id><value>Enable CDDB</value></string>
+  <string><id>228</id><value>Shuffle Playlist on load</value></string>
+  <string><id>229</id><value>HD Spindown time (mins)</value></string>
+  <string><id>230</id><value>Filters</value></string>
+  <string><id>231</id><value>None</value></string>
+  <string><id>232</id><value>Point</value></string>
+  <string><id>233</id><value>Linear</value></string>
+  <string><id>234</id><value>Anisotropic</value></string>
+  <string><id>235</id><value>Quincunx</value></string>
+  <string><id>236</id><value>Gaussian Cubic</value></string>
+  <string><id>237</id><value>Minification</value></string>
+  <string><id>238</id><value>Magnification</value></string>
+  <string><id>240</id><value>自動運行DVD影片</value></string>
+  <string><id>241</id><value>自動運行VCD/SVCD</value></string>
+  <string><id>242</id><value>自動運行音效CD</value></string>
+  <string><id>243</id><value>自動運行XBOX遊戲</value></string>
+  <string><id>244</id><value>自動運行影片</value></string>
+  <string><id>245</id><value>自動運行音樂</value></string>
+  <string><id>246</id><value>自動運行圖片</value></string>
+  <string><id>247</id><value>Scripts</value></string>
+  <string><id>248</id><value>語言</value></string>
+  <string><id>249</id><value>音樂</value></string>
+  <string><id>250</id><value>Visualisation</value></string>
+  <string><id>251</id><value>Select destination directory</value></string>
+  <string><id>252</id><value>Output to all speakers</value></string>
+  <string><id>253</id><value>Number of channels</value></string>
+  <string><id>254</id><value>DD Stereo Passthrough</value></string>
+  <string><id>255</id><value>CDDB</value></string>
+  <string><id>256</id><value>Querying freedb for CDDB info</value></string>
+  <string><id>257</id><value>錯誤</value></string>
+  <string><id>258</id><value>Enable ID3 tags</value></string>
+  <string><id>259</id><value>Opening</value></string>
+  <string><id>260</id><value>Shoutcast</value></string>
+  <string><id>261</id><value>Waiting for start....</value></string>
+  <string><id>262</id><value>Scripts Output</value></string>
+  <string><id>263</id><value>HTTP 伺服器</value></string>
+  <string><id>264</id><value>錄製</value></string>
+  <string><id>265</id><value>停止錄製</value></string>
+  <string><id>266</id><value>排列圖示: 曲目</value></string>
+  <string><id>267</id><value>排列圖示: 時間</value></string>
+  <string><id>268</id><value>排列圖示: 標題</value></string>
+  <string><id>269</id><value>排列圖示: 歌手</value></string>
+  <string><id>270</id><value>排列圖示: 標輯</value></string>
+  <string><id>271</id><value>頭100個排名</value></string>
+  <string><id>272</id><value>Top Left Overscan Compensation</value></string>
+  <string><id>273</id><value>Bottom Right Overscan Compensation</value></string>
+  <string><id>274</id><value>Subtitles Position</value></string>
+  <string><id>275</id><value>Pixel Ratio Adjustment</value></string>
+  <string><id>276</id><value>Move the arrow to change the amount of overscan</value></string>
+  <string><id>277</id><value>Move the bar to change the subtitles position</value></string>
+  <string><id>278</id><value>Change the rectangle so that it is perfectly square</value></string>
+  <string><id>279</id><value>Unable to load settings</value></string>
+  <string><id>280</id><value>using default fallbacks</value></string>
+  <string><id>281</id><value>請檢查 .xml檔案</value></string>
+  <string><id>282</id><value>found %i items</value></string>
+  <string><id>283</id><value>Search Results</value></string>
+  <string><id>284</id><value>No results found</value></string>
+  <string><id>285</id><value>Deinterlace filter</value></string>
+  <string><id>286</id><value>Postprocessing filter</value></string>
+  <string><id>287</id><value>SRT字幕</value></string>
+  <string><id>288</id><value>字型</value></string>
+  <string><id>289</id><value>大小</value></string>
+  <string><id>290</id><value>Volume amplification (dB)</value></string>
+  <string><id>291</id><value>視訊</value></string>
+  <string><id>292</id><value>音效</value></string>
+  <string><id>293</id><value>字幕</value></string>
+  <string><id>294</id><value>建立書籤</value></string>
+  <string><id>295</id><value>Cycle bookmarks</value></string>
+  <string><id>296</id><value>清空書籤</value></string>
+  <string><id>297</id><value>AVDelay</value></string>
+  <string><id>298</id><value>Slider</value></string>
+  <string><id>300</id><value>1. 語言</value></string>
+  <string><id>301</id><value>2. 音效大小</value></string>
+  <string><id>302</id><value>3. Stream</value></string>
+  <string><id>303</id><value>延遲</value></string>
+  <string><id>304</id><value>語言</value></string>
+  <string><id>305</id><value>Enabled</value></string>
+  <string><id>306</id><value>Non-Interleaved</value></string>
+  <string><id>307</id><value>Auto</value></string>
+  <string><id>308</id><value>vertical deblocking filter</value></string>
+  <string><id>309</id><value>horizontal deblocking filter</value></string>
+  <string><id>310</id><value>Auto brightness/contrast</value></string>
+  <string><id>311</id><value>Dering</value></string>
+  <string><id>312</id><value>(0=auto)</value></string>
+  <string><id>313</id><value>Reorganize database</value></string>
+  <string><id>314</id><value>Preparing...</value></string>
+  <string><id>315</id><value>Database error</value></string>
+  <string><id>316</id><value>Searching songs...</value></string>
+  <string><id>317</id><value>Reorganization successfull</value></string>
+  <string><id>318</id><value>Marking deleted songs</value></string>
+  <string><id>319</id><value>Error reorganizing songs</value></string>
+  <string><id>320</id><value>Searching artists...</value></string>
+  <string><id>321</id><value>Error reorganizing artists</value></string>
+  <string><id>322</id><value>Searching genres...</value></string>
+  <string><id>323</id><value>Error reorganizing genres</value></string>
+  <string><id>324</id><value>Searching pathes...</value></string>
+  <string><id>325</id><value>Error reorganizing pathes</value></string>
+  <string><id>326</id><value>Searching albums...</value></string>
+  <string><id>327</id><value>Error reorganizing albums</value></string>
+  <string><id>328</id><value>Writing changes...</value></string>
+  <string><id>329</id><value>Error writing changes</value></string>
+  <string><id>330</id><value>This may take some time...</value></string>
+  <string><id>331</id><value>Compressing database...</value></string>
+  <string><id>332</id><value>Error compressing database</value></string>
+  <string><id>333</id><value>Do you want to reorganize my music database?</value></string>
+  <string><id>334</id><value>Reorganize my music database</value></string>
+  <string><id>335</id><value>開始</value></string>
+  <string><id>336</id><value>Adjust Framerate</value></string>
+  <string><id>337</id><value>音效輸出</value></string>
+  <string><id>338</id><value>Analog</value></string>
+  <string><id>339</id><value>數碼</value></string>
+  <string><id>340</id><value>Various Artists</value></string>
+  <string><id>341</id><value>播放DVD</value></string>
+  <string><id>342</id><value>影片</value></string>
+  <string><id>343</id><value>Adjust Framerate</value></string>
+  <string><id>344</id><value>Actors</value></string>
+  <string><id>345</id><value>Year</value></string>
+  <string><id>346</id><value>Stack</value></string>
+  <string><id>347</id><value>Unstack</value></string>
+  <string><id>348</id><value>Flatten Directory Hierarchy</value></string>
+  <string><id>349</id><value>只顯示Default.xbe</value></string>
+  <string><id>350</id><value>程式</value></string>
+  <string><id>351</id><value>Off</value></string>
+  <string><id>352</id><value>Dim</value></string>
+  <string><id>353</id><value>Black</value></string>
+  <string><id>354</id><value>Matrix Trails</value></string>
+  <string><id>355</id><value>Screensaver Idle Timeout</value></string>
+  <string><id>356</id><value>Screensaver Mode</value></string>
+  <string><id>357</id><value>Shutdown Idle Timeout</value></string>
+  <string><id>358</id><value>All albums</value></string>
+  <string><id>359</id><value>Recent albums</value></string>
+  <string><id>360</id><value>Screensaver</value></string>
+  <string><id>361</id><value>R. SlideShow</value></string>
+  <string><id>362</id><value>Screensaver Fade Level (%)</value></string>
+  <string><id>363</id><value>Sort by: File</value></string>
+  <string><id>364</id><value>DD/DTS Multichannel Passthrough</value></string>
+  <string><id>365</id><value>Sort by: Name</value></string>
+  <string><id>366</id><value>Sort by: Year</value></string>
+  <string><id>367</id><value>Sort by: Rating</value></string>
+  <string><id>368</id><value>IMDB</value></string>
+  <string><id>369</id><value>Title</value></string>
+  <string><id>370</id><value>T-Storms</value></string>
+  <string><id>371</id><value>Partly</value></string>
+  <string><id>372</id><value>Mostly</value></string>
+  <string><id>373</id><value>Sunny</value></string>
+  <string><id>374</id><value>Cloudy</value></string>
+  <string><id>375</id><value>Snow</value></string>
+  <string><id>376</id><value>Rain</value></string>
+  <string><id>377</id><value>Light</value></string>
+  <string><id>378</id><value>AM</value></string>
+  <string><id>379</id><value>PM</value></string>
+  <string><id>380</id><value>Showers</value></string>
+  <string><id>381</id><value>Few</value></string>
+  <string><id>382</id><value>Scattered</value></string>
+  <string><id>383</id><value>Wind</value></string>
+  <string><id>384</id><value>Strong</value></string>
+  <string><id>385</id><value>Fair</value></string>
+  <string><id>386</id><value>Clear</value></string>
+  <string><id>387</id><value>Clouds</value></string>
+  <string><id>388</id><value>N/A</value></string>
+  <string><id>389</id><value>N/A</value></string>
+  <string><id>390</id><value>N/A</value></string>
+  <string><id>391</id><value>N/A</value></string>
+  <string><id>392</id><value>N/A</value></string>
+  <string><id>393</id><value>N/A</value></string>
+  <string><id>394</id><value>N/A</value></string>
+  <string><id>395</id><value>N/A</value></string>
+  <string><id>396</id><value>Select Location</value></string>
+  <string><id>397</id><value>Refresh Time</value></string>
+  <string><id>398</id><value>Temperature Units</value></string>
+  <string><id>399</id><value>Speed Units</value></string>
+  <string><id>400</id><value>Weather</value></string>
+  <string><id>401</id><value>Temp</value></string>
+  <string><id>402</id><value>Feels Like</value></string>
+  <string><id>403</id><value>UV Index</value></string>
+  <string><id>404</id><value>Wind</value></string>
+  <string><id>405</id><value>Dew Point</value></string>
+  <string><id>406</id><value>Humidity</value></string>
+  <string><id>407</id><value>From</value></string>
+  <string><id>408</id><value>at</value></string>
+  <string><id>410</id><value>Accessing Weather.com</value></string>
+  <string><id>411</id><value>Getting Weather For:</value></string>
+  <string><id>412</id><value>Unable to get weather data</value></string>
+  <string><id>413</id><value>Manual</value></string>
+  <string><id>414</id><value>No review for this album</value></string>
+  <string><id>415</id><value>Downloading thumbnail...</value></string>
+  <string><id>416</id><value>Not available</value></string>
+  <string><id>417</id><value>View: Big Icons</value></string>
+  <string><id>418</id><value>My Videos/Genres</value></string>
+  <string><id>419</id><value>My Videos/Actors</value></string>
+  <string><id>420</id><value>My Videos/Years</value></string>
+  <string><id>421</id><value>My Videos/Title</value></string>
+  <string><id>422</id><value>Delete albuminfo</value></string>
+  <string><id>423</id><value>Delete CDDB info</value></string>
+  <string><id>424</id><value>Select</value></string>
+  <string><id>425</id><value>No albuminfo found.</value></string>
+  <string><id>426</id><value>No CDDB info found.</value></string>
+  <string><id>427</id><value>Disc:</value></string>
+  <string><id>428</id><value>Insert correct CD/DVD</value></string>
+  <string><id>429</id><value>Please insert the following CD/DVD</value></string>
+  <string><id>430</id><value>排列圖示: DVD#</value></string>
+  <string><id>431</id><value>No Cache</value></string>
+  <string><id>432</id><value>Delete movie from database</value></string>
+  <string><id>433</id><value>你確定要移除</value></string>
+  <string><id>434</id><value>這個影片嗎?</value></string>
+  <string><id>435</id><value>Track</value></string>
+  <string><id>436</id><value>Year:</value></string>
+  <string><id>437</id><value>Duration:</value></string>
+  <string><id>438</id><value>正在開啟檔案</value></string>
+  <string><id>439</id><value>緩衝</value></string>
+  <string><id>440</id><value>硬碟</value></string>
+  <string><id>441</id><value>UDF</value></string>
+  <string><id>442</id><value>LAN</value></string>
+  <string><id>443</id><value>Internet</value></string>
+  <string><id>444</id><value>視訊</value></string>
+  <string><id>445</id><value>音效</value></string>
+  <string><id>446</id><value>DVD</value></string>
+  <string><id>447</id><value>自動播放</value></string>
+  <string><id>448</id><value>LCD</value></string>
+  <string><id>449</id><value>Enabled</value></string>
+  <string><id>450</id><value>Columns</value></string>
+  <string><id>451</id><value>Row 1 adress</value></string>
+  <string><id>452</id><value>Row 2 adress</value></string>
+  <string><id>453</id><value>Row 3 adress</value></string>
+  <string><id>454</id><value>Row 4 adress</value></string>
+  <string><id>455</id><value>Rows</value></string>
+  <string><id>456</id><value>Mode</value></string>
+  <string><id>457</id><value>Switch view</value></string>
+  <string><id>458</id><value>B/Mark</value></string>
+  <string><id>459</id><value>Subs</value></string>
+  <string><id>460</id><value>Audio Stream</value></string>
+  <string><id>461</id><value>[active]</value></string>
+  <string><id>462</id><value>字幕</value></string>
+  <string><id>463</id><value>Backlight</value></string>
+  <string><id>464</id><value>Brightness</value></string>
+  <string><id>465</id><value>Contrast</value></string>
+  <string><id>466</id><value>Gamma</value></string>
+  <string><id>467</id><value>Type</value></string>
+  <string><id>468</id><value>Move the bar to change the osd position</value></string>
+  <string><id>469</id><value>OSD Position</value></string>
+  <string><id>470</id><value>Credits</value></string>
+  <string><id>471</id><value>Modchip</value></string>
+  <string><id>472</id><value>OSD Timeout</value></string>
+  <string><id>473</id><value>High Quality Resampling</value></string>
+  <string><id>474</id><value>關閉</value></string>
+  <string><id>475</id><value>Music Only</value></string>
+  <string><id>476</id><value>Music &amp; Video</value></string>
+  <string><id>477</id><value>Unable to load playlist</value></string>
+  <string><id>478</id><value>OSD</value></string>
+  <string><id>479</id><value>面版及語言</value></string>
+  <string><id>480</id><value>User Interface</value></string>
+  <string><id>481</id><value>聲音設定</value></string>
+  <string><id>482</id><value>關於XBMC</value></string>
+  <string><id>483</id><value>專輯</value></string>
+  <string><id>484</id><value>歌手</value></string>
+  <string><id>485</id><value>刪除專輯</value></string>
+  <string><id>486</id><value>重複</value></string>
+  <string><id>487</id><value>重複一次</value></string>
+  <string><id>488</id><value>重複這個資料夾</value></string>
+  <string><id>489</id><value>Use playlist in songs</value></string>
+  <string><id>490</id><value>Auto switch list and icons in songs</value></string>
+  <string><id>491</id><value>使用大圖示</value></string>
+  <string><id>492</id><value>擴大字幕</value></string>
+  <string><id>493</id><value>Advanced Options (Experts Only!)</value></string>
+  <string><id>494</id><value>Overall Audio Headroom (dB)</value></string>
+  <string><id>495</id><value>Upsample videos to GUI resolution</value></string>
+  <string><id>496</id><value>Calibration</value></string>
+  <string><id>497</id><value>Hide Media Extensions</value></string>
+  <string><id>498</id><value>排列圖示: 依類型</value></string>
+  <string><id>499</id><value>不能連結www.allmusic.com</value></string>
+  <string><id>500</id><value>下載專輯資料失敗</value></string>
+  <string><id>501</id><value>Looking for album names...</value></string>
+  <string><id>502</id><value>Open</value></string>
+  <string><id>503</id><value>Busy</value></string>
+  <string><id>504</id><value>Empty</value></string>
+  <string><id>505</id><value>正在從檔案中讀取媒體資料</value></string>
+  <string><id>998</id><value>XLink KAI</value></string>
+  <string><id>999</id><value>Online Gaming</value></string>
+  <string><id>10000</id><value>Home</value></string>
+  <string><id>10001</id><value>我的程式</value></string>
+  <string><id>10002</id><value>我的圖片</value></string>
+  <string><id>10003</id><value>我的檔案</value></string>
+  <string><id>10004</id><value>設定</value></string>
+  <string><id>10005</id><value>我的音樂</value></string>
+  <string><id>10006</id><value>我的視訊</value></string>
+  <string><id>10007</id><value>系統信息</value></string>
+  <string><id>10008</id><value>Settings-&gt;General</value></string>
+  <string><id>10009</id><value>Settings-&gt;Screen</value></string>
+  <string><id>10010</id><value>Settings-&gt;Screen-&gt;UI Calibration</value></string>
+  <string><id>10011</id><value>Settings-&gt;Screen-&gt;Screen Calibration</value></string>
+  <string><id>10012</id><value>Settings-&gt;SlideShow</value></string>
+  <string><id>10013</id><value>Settings-&gt;Screen-&gt;Filters</value></string>
+  <string><id>10014</id><value>Settings-&gt;Music</value></string>
+  <string><id>10015</id><value>Settings-&gt;Screen-&gt;Subtitles</value></string>
+  <string><id>10016</id><value>Settings-&gt;Screen-&gt;Screensaver</value></string>
+  <string><id>10017</id><value>Settings-&gt;Weather</value></string>
+  <string><id>10020</id><value>Settings-&gt;Scripts</value></string>
+  <string><id>10021</id><value>My Videos/genre</value></string>
+  <string><id>10022</id><value>My Videos/actor</value></string>
+  <string><id>10023</id><value>My Videos/year</value></string>
+  <string><id>10024</id><value>Settings-&gt;Programs</value></string>
+  <string><id>10025</id><value>My Videos/title</value></string>
+  <string><id>10026</id><value>Settings-&gt;General-&gt;Cache</value></string>
+  <string><id>10027</id><value>Settings-&gt;General-&gt;Autorun</value></string>
+  <string><id>10028</id><value>My Videos/playlist</value></string>
+  <string><id>10029</id><value>Settings-&gt;General-&gt;LCD</value></string>
+  <string><id>10100</id><value>Yes/no dialog</value></string>
+  <string><id>10101</id><value>Progress dialog</value></string>
+  <string><id>10500</id><value>My Music/playlist</value></string>
+  <string><id>10501</id><value>My Music/files</value></string>
+  <string><id>10502</id><value>My Music/albums</value></string>
+  <string><id>10503</id><value>My Music/artists</value></string>
+  <string><id>10504</id><value>My Music/genres</value></string>
+  <string><id>10505</id><value>My Music/top100</value></string>
+  <string><id>11000</id><value>keyboard</value></string>
+  <string><id>12000</id><value>Select dialog</value></string>
+  <string><id>12001</id><value>My Music/info</value></string>
+  <string><id>12002</id><value>Dialog OK</value></string>
+  <string><id>12003</id><value>My Videos/Info</value></string>
+  <string><id>12004</id><value>My Scripts/Info</value></string>
+  <string><id>12005</id><value>Fullscreen video</value></string>
+  <string><id>12006</id><value>Audio visisalisation</value></string>
+  <string><id>12007</id><value>My Picture/slideshow</value></string>
+  <string><id>12008</id><value>Filestacking dialog</value></string>
+  <string><id>12600</id><value>我的天氣</value></string>
+  <string><id>12900</id><value>螢幕保護</value></string>
+  <string><id>12901</id><value>Fullscreen OSD</value></string>
 </strings>
