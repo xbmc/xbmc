@@ -80,6 +80,7 @@ void CGUIWindowMusicOverlay::Render()
 		CGUIMessage msg2(GUI_MSG_HIDDEN, GetID(), CONTROL_PAUSE_LOGO); 
 		OnMessage(msg2); 
 	}
+	CGUIWindow::Render();
 
 	if (m_pTexture)
 	{
@@ -92,7 +93,6 @@ void CGUIWindowMusicOverlay::Render()
 		CPicture picture;
 		picture.RenderImage(m_pTexture,iXPos,iYPos,iWidth,iHeight,m_iTextureWidth,m_iTextureHeight);
 	}
-	CGUIWindow::Render();
 }
 
 
