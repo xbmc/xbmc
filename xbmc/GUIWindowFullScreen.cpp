@@ -803,6 +803,10 @@ void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
       float fPercentage =bookmarks[m_iCurrentBookmark];
       g_application.m_pPlayer->SeekPercentage( (int)fPercentage );
       m_iCurrentBookmark++;
+      if (m_iCurrentBookmark >= (int)bookmarks.size())
+      {
+        m_iCurrentBookmark =0;
+      }
       Update();
     }
     break;
