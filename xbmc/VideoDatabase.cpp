@@ -310,6 +310,42 @@ long CVideoDatabase::GetMovie(const CStdString& strFilenameAndPath)
   return lMovieId;
 }
 
+int CVideoDatabase::GetRecentMovies(long* pMovieIdArray, int nSize)
+{
+	int count = 0;
+
+	try
+	{
+		if (NULL==m_pDB.get())
+		{
+			return -1;
+		}
+
+		if (NULL==m_pDS.get())
+		{
+			return -1;
+		}
+  
+		CStdString strSQL;
+		strSQL.Format("select * from movie order by idMovie desc limit %d",nSize); 
+		if (m_pDS->query(strSQL.c_str()))
+		{
+			while ((!m_pDS->eof()) && (count<nSize))
+			{
+				pMovieIdArray[count++] = m_pDS->fv("idMovie").get_asLong() ;			
+				m_pDS->next();
+			}
+		}
+	}
+	catch(...)
+	{
+		CLog::Log("CVideoDatabase::GetRecentMovies failed.");
+	}
+
+	return count;
+}
+
+
 //********************************************************************************************************************************
 long CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath, const CStdString& strcdLabel, bool bHassubtitles)
 {
