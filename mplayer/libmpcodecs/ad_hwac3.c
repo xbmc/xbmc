@@ -128,9 +128,11 @@ static int preinit(sh_audio_t *sh)
   /* Dolby AC3 audio: */
   sh->audio_out_minsize = 128 * 32 * 2 * 2; // DTS seems to need more than AC3
   sh->audio_in_minsize = 8192;
+#ifndef _XBOX //Moved to init, to allow gracefull failure
   sh->channels = 2;
   sh->samplesize = 2;
   sh->sample_format = AFMT_AC3;
+#endif
   return 1;
 }
 
@@ -148,6 +150,13 @@ static int init(sh_audio_t *sh_audio)
     mp_msg(MSGT_DECAUDIO, MSGL_ERR, "AC3/DTS sync failed\n");
     return 0;
   }
+
+#ifdef _XBOX
+  sh_audio->channels = 2;
+  sh_audio->samplesize = 2;
+  sh_audio->sample_format = AFMT_AC3;
+#endif
+
   return 1;
 }
 
