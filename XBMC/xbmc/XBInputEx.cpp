@@ -137,7 +137,7 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
 								g_prevPacketNumber[i]=g_InputStatesEx[i].dwPacketNumber;
 								
 								DWORD dwTimeLast= timeGetTime() - dwLastTime;
-								if (dwTimeLast < 40)
+								if (dwTimeLast < 80)
 								{/*
 									char szTmp[129];
 									sprintf(szTmp,"pkt:%i cnt:%i region:%i wbuttons:%i :%i\n",
