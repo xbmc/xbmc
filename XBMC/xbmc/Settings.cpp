@@ -12,6 +12,8 @@ using namespace std;
 class CSettings g_settings;
 struct CSettings::stSettings g_stSettings;
 
+extern CStdString g_LoadErrorStr;
+
 CSettings::CSettings(void)
 {
 
@@ -337,7 +339,8 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 	{
 		CLog::Log("Unable to load T:\\settings.xml, creating new T:\\settings.xml with default values");
 		Save();
-		bSettings=LoadSettings("T:\\settings.xml");
+		if (!(bSettings=LoadSettings("T:\\settings.xml")))
+			return false;
 	}
 	// load calibration file...
 	CLog::Log("loading T:\\calibration.xml");
@@ -353,7 +356,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 	TiXmlDocument xmlDoc;
 	if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) 
 	{
-		CLog::Log("unable to load:%s (xml file is invalid)",strXMLFile.c_str());
+		g_LoadErrorStr.Format("%s: %s", strXMLFile.c_str(), xmlDoc.GetErrorDesc());
 		return false;
 	}
 
@@ -361,7 +364,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 	CStdString strValue=pRootElement->Value();
 	if ( strValue != "xboxmediacenter") 
 	{
-		CLog::Log("%s doesnt start with <xboxmediacenter>",strXMLFile.c_str());
+		g_LoadErrorStr.Format("%s doesn't start with <xboxmediacenter>",strXMLFile.c_str());
 		return false;
 	}
 
@@ -741,13 +744,13 @@ bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
 	TiXmlDocument xmlDoc;
 	if (!xmlDoc.LoadFile(strCalibrationFile))
 	{
-		CLog::Log("Unable to load:%s",strCalibrationFile.c_str());
+		g_LoadErrorStr.Format("%s: %s", strCalibrationFile.c_str(), xmlDoc.GetErrorDesc());
 		return false;
 	}
 	TiXmlElement *pRootElement = xmlDoc.RootElement();
 	if (CUtil::cmpnocase(pRootElement->Value(),"calibration")!=0)
 	{
-		CLog::Log("%s doesnt start with <calibration>");
+		g_LoadErrorStr.Format("%s doesn't start with <calibration>", strCalibrationFile.c_str());
 		return false;
 	}
 	TiXmlElement *pResolution = pRootElement->FirstChildElement("resolution");
@@ -825,13 +828,13 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	TiXmlDocument xmlDoc;
 	if (!xmlDoc.LoadFile(strSettingsFile))
 	{
-		CLog::Log("Unable to load:%s",strSettingsFile.c_str());
+		g_LoadErrorStr.Format("%s: %s", strSettingsFile.c_str(), xmlDoc.GetErrorDesc());
 		return false;
 	}
 	TiXmlElement *pRootElement = xmlDoc.RootElement();
 	if (CUtil::cmpnocase(pRootElement->Value(),"settings")!=0)
 	{
-		CLog::Log("%s doesnt contain <settings>",strSettingsFile.c_str());
+		g_LoadErrorStr.Format("%s doesn't contain <settings>",strSettingsFile.c_str());
 		return false;
 	}
 
