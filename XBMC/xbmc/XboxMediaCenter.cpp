@@ -12,12 +12,26 @@
 // bugs: 
 //      - delay controller (remote & gewoon)
 //
+// algemeen:
+//			- SNTP
+//			-	ftp server
+//      - thumbnails : centreren in folder indien thumb <64x64
+//      - file info box
+//      - show if movie contains a subtitle
+//      - show if mp3  contains id3 tag info
+//      - show picture dimensions in thumbnail view
+//
 // guilib:
 //		  - alpha text voor thumbnail
 //      - screen calibration offsets
 //  		- 4:3/16:9 aspect ratio
 //  		- radio button: radio is vierkant ipv een rondje?
 //			- skinnable key mapping for controls
+//
+// My Pictures:
+//      - use thumbsticks voor zoom en move
+//      - FF/RW l/r trigger   : speed/slow down slideshow time
+//      - show selected image in file browser
 //
 // my music:
 //		  - show track, filename, time in listview
@@ -26,11 +40,13 @@
 //			- m3u playlists (save/load)
 //			- play window:
 //					- show current playtime, kbps, stereo/mono, samplerate (khz), total duration, id3 tag info			
+//			- shoutcast
+//		  - cddb
 //
 // my videos:
 //		  - control panel like in xbmp
 //		  - back 7 sec, forward 30 sec buttons
-//		  -
+//		  - imdb
 //
 // settings:
 //			- general:
@@ -44,20 +60,6 @@
 //					- screen calibration offsets
 //					- video params: 16:9 / 4:3  pal/ntsc  resolution
 //
-//
-// algemeen:
-//			- SNTP
-//			-	ftp server
-//      - thumbnails : centreren in folder indien thumb <64x64
-//      - file info box
-//      - show if movie contains a subtitle
-//      - show if mp3  contains id3 tag info
-//      - show picture dimensions in thumbnail view
-//
-// My Pictures:
-//      - use thumbsticks voor zoom en move
-//      - FF/RW l/r trigger   : speed/slow down slideshow time
-//      - show selected image in file browser
 //
 
 #include "stdafx.h"
