@@ -19,7 +19,9 @@
 #define CONTROL_BTNSORTASC			4
 
 #define CONTROL_LABELFILES        	12
-#define CONTROL_ARTIST_NAME			15
+#define CONTROL_FILTER				15
+
+#define CONTROL_BTNSHUFFLE			21
 
 #define CONTROL_LIST				50
 #define CONTROL_THUMBS				51
@@ -50,6 +52,10 @@ struct SSortMusicNav
 
 	   	if (rpStart.m_bIsFolder == rpEnd.m_bIsFolder)
 		{
+			CStdString strStart;
+			CStdString strEnd;
+			CStdString strTemp;
+
 			char szfilename1[1024];
 			char szfilename2[1024];
 
@@ -100,18 +106,63 @@ struct SSortMusicNav
 				break;
 
 				case 5:	//	Sort by Title
- 					strcpy(szfilename1, rpStart.m_musicInfoTag.GetTitle());
-					strcpy(szfilename2, rpEnd.m_musicInfoTag.GetTitle());
+					// remove "the" for sorting
+					strStart = rpStart.m_musicInfoTag.GetTitle();
+					strEnd = rpEnd.m_musicInfoTag.GetTitle();
+					if (strStart.Left(4).Equals("The "))
+					{
+						strTemp = strStart.Left(4);
+						strStart.TrimLeft(strTemp);
+					}
+					if (strEnd.Left(4).Equals("The "))
+					{
+						strTemp = strEnd.Left(4);
+						strEnd.TrimLeft(strTemp);
+					} 
+ 					strcpy(szfilename1, strStart.c_str());
+					strcpy(szfilename2, strEnd.c_str());
+					//strcpy(szfilename1, rpStart.m_musicInfoTag.GetTitle());
+					//strcpy(szfilename2, rpEnd.m_musicInfoTag.GetTitle());
 				break;
 
 				case 6:	//	Sort by Artist
- 					strcpy(szfilename1, rpStart.m_musicInfoTag.GetArtist());
-					strcpy(szfilename2, rpEnd.m_musicInfoTag.GetArtist());
+					// remove "the" for sorting
+					strStart = rpStart.m_musicInfoTag.GetArtist();
+					strEnd = rpEnd.m_musicInfoTag.GetArtist();
+					if (strStart.Left(4).Equals("The "))
+					{
+						strTemp = strStart.Left(4);
+						strStart.TrimLeft(strTemp);
+					}
+					if (strEnd.Left(4).Equals("The "))
+					{
+						strTemp = strEnd.Left(4);
+						strEnd.TrimLeft(strTemp);
+					} 
+ 					strcpy(szfilename1, strStart.c_str());
+					strcpy(szfilename2, strEnd.c_str());
+ 					//strcpy(szfilename1, rpStart.m_musicInfoTag.GetArtist());
+					//strcpy(szfilename2, rpEnd.m_musicInfoTag.GetArtist());
 				break;
 
 				case 7:	//	Sort by Album
- 					strcpy(szfilename1, rpStart.m_musicInfoTag.GetAlbum());
-					strcpy(szfilename2, rpEnd.m_musicInfoTag.GetAlbum());
+					// remove "the" for sorting
+					strStart = rpStart.m_musicInfoTag.GetAlbum();
+					strEnd = rpEnd.m_musicInfoTag.GetAlbum();
+					if (strStart.Left(4).Equals("The "))
+					{
+						strTemp = strStart.Left(4);
+						strStart.TrimLeft(strTemp);
+					}
+					if (strEnd.Left(4).Equals("The "))
+					{
+						strTemp = strEnd.Left(4);
+						strEnd.TrimLeft(strTemp);
+					} 
+ 					strcpy(szfilename1, strStart.c_str());
+					strcpy(szfilename2, strEnd.c_str());
+ 					//strcpy(szfilename1, rpStart.m_musicInfoTag.GetAlbum());
+					//strcpy(szfilename2, rpEnd.m_musicInfoTag.GetAlbum());
 				break;
 
 				default: //	Sort by Filename by default
@@ -161,15 +212,15 @@ CGUIWindowMusicNav::~CGUIWindowMusicNav(void)
 
 bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 {
-  switch ( message.GetMessage() )
-  {
+	switch (message.GetMessage())
+	{
 		case GUI_MSG_WINDOW_INIT:
 		{
-			m_iViewAsIcons=g_stSettings.m_iMyMusicNavRootViewAsIcons;
-			m_iViewAsIconsRoot=g_stSettings.m_iMyMusicNavRootViewAsIcons;
-
-			CGUIWindowMusicBase::OnMessage(message);
-			return true;
+			if (m_iViewAsIcons==-1 && m_iViewAsIconsRoot==-1)
+			{
+				m_iViewAsIcons=g_stSettings.m_iMyMusicNavRootViewAsIcons;
+				m_iViewAsIconsRoot=g_stSettings.m_iMyMusicNavRootViewAsIcons;
+			}
 		}
 		break;
 
@@ -181,7 +232,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 		case GUI_MSG_CLICKED:
 		{
 			int iControl=message.GetSenderId();
-
  			if (iControl==CONTROL_BTNSORTBY) // sort by
 			{
 				if (m_iState==SHOW_ROOT||m_iState==SHOW_GENRES||m_iState==SHOW_ARTISTS)
@@ -248,21 +298,31 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 						break;
 					}
 				}
+				return true;
 			}
 			else if (iControl==CONTROL_BTNVIEWASICONS)
 			{
+				// ViewAs is an odd case where you want to call the base
+				// class first
+				CGUIWindowMusicBase::OnMessage(message);
 
+				/*
 				if (m_iState==SHOW_ROOT)
 				{
+					CLog::Log(LOGDEBUG,"Root view = %i",m_iViewAsIconsRoot);
 					m_iViewAsIconsRoot++;
 					if (m_iViewAsIconsRoot > VIEW_AS_LARGEICONS) m_iViewAsIconsRoot=VIEW_AS_LIST;
+					CLog::Log(LOGDEBUG,"  Changed = %i",m_iViewAsIconsRoot);
 				}
 				else
 				{
+					CLog::Log(LOGDEBUG,"Normal view = %i",m_iViewAsIcons);
 					m_iViewAsIcons++;
 					if (m_iViewAsIcons > VIEW_AS_LARGEICONS) m_iViewAsIcons=VIEW_AS_LIST;
+					CLog::Log(LOGDEBUG,"    Changed = %i",m_iViewAsIcons);
 				}
-					
+				*/
+
 				if (m_iState==SHOW_ROOT)
 					g_stSettings.m_iMyMusicNavRootViewAsIcons=m_iViewAsIconsRoot;
 				else if (m_iState==SHOW_GENRES)
@@ -275,6 +335,13 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 					g_stSettings.m_iMyMusicNavSongsViewAsIcons=m_iViewAsIcons;
 
 				g_settings.Save();
+
+				/*
+				UpdateButtons();
+				ShowThumbPanel();
+				*/
+
+				return true;
 			}
 			else if (iControl==CONTROL_BTNSORTASC) // sort asc
 			{
@@ -289,8 +356,21 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 				else if (m_iState==SHOW_SONGS)
 					g_stSettings.m_bMyMusicNavSongsSortAscending=!g_stSettings.m_bMyMusicNavSongsSortAscending;
 				g_settings.Save();
+
 				UpdateButtons();
 				UpdateListControl();
+
+				return true;
+			}
+			else if (iControl==CONTROL_BTNSHUFFLE) // shuffle?
+			{
+				// inverse current playlist shuffle state but do not save!
+				g_stSettings.m_bMyMusicPlaylistShuffle=!g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC_TEMP);
+				g_playlistPlayer.ShufflePlay(PLAYLIST_MUSIC_TEMP, g_stSettings.m_bMyMusicPlaylistShuffle);
+
+				UpdateButtons();
+
+				return true;
 			}
 			else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
 			{
@@ -305,22 +385,42 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 					// and cleared!
 
 					// root is not allowed
-					if (m_iState==SHOW_ROOT) return true;
+					if (m_iState==SHOW_ROOT)
+						return true;
 
 					const CFileItem* pItem=m_vecItems[iItem];
+					// if its a folder, build a temp playlist
 					if (pItem->m_bIsFolder)
 					{
 						// skip ".."
-						if (pItem->GetLabel() == "..") return true;
+						if (pItem->GetLabel() == "..")
+							return true;
 					
+						// clear current temp playlist
 						g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Clear();
 						g_playlistPlayer.Reset();
 
+						// recursively add items to temp playlist
 						AddItemToTempPlayList(pItem);
 
+						// play!
 						g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
-						g_playlistPlayer.Play(0);
+						if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC_TEMP))
+						{
+							// if shuffled dont start on first song
+							g_playlistPlayer.SetCurrentSong(0);
+							g_playlistPlayer.PlayNext();
+						}
+						else
+							g_playlistPlayer.Play(0);
 					}
+					// otherwise just play the song
+					else
+					{
+						OnClick(iItem);
+					}
+					// ACTION_MUSIC_PLAY is not in the base class
+					return true;
 				}
 			}
 		}
@@ -343,6 +443,8 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 	{
 		case SHOW_ROOT:
 		{
+			m_iViewAsIconsRoot=g_stSettings.m_iMyMusicNavRootViewAsIcons;
+
 			// we're at the zero point
 			// add the initial items to the fileitems
 			vector<CStdString> vecRoot;
@@ -383,7 +485,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 
 			if (bTest)
 			{
-				// add "* All Genres"
+				// add "All Genres"
 				CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15105));
 				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
@@ -427,7 +529,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 
 			if (bTest)
 			{
-				// add "* All Artists"
+				// add "All Artists"
 				CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15103));
 				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
@@ -464,14 +566,14 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 
 			//	get albums from the database
 			VECALBUMS albums;
-			bool bTest = g_musicDatabase.GetAlbumsNav(albums,m_strGenre,m_strArtist);
+			bool bTest = bTest = g_musicDatabase.GetAlbumsNav(albums,m_strGenre,m_strArtist);
 
 			// Display an error message if the database doesn't contain any albums
 			DisplayEmptyDatabaseMessage(albums.empty());
-
+			
 			if (bTest)
 			{
-				// add "* All Albums"
+				// add "All Albums"
 				CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15102));
 				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
@@ -513,7 +615,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 
 			if (bTest)
 			{
-				// add "* All Songs"
+				// add "All Songs"
 				CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15104));
 				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
@@ -637,7 +739,7 @@ void CGUIWindowMusicNav::UpdateButtons()
 
 	SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS,iString);
 
-	//	Update object count label
+	// Update object count
 	int iItems=m_vecItems.size();
 	if (iItems)
 	{
@@ -657,15 +759,14 @@ void CGUIWindowMusicNav::UpdateButtons()
 	}
 	else if (m_iState==SHOW_ALBUMS)
 	{
-		SET_CONTROL_LABEL(CONTROL_BTNSORTBY,g_stSettings.m_iMyMusicNavAlbumsSortMethod+266-3);
+		SET_CONTROL_LABEL(CONTROL_BTNSORTBY,g_stSettings.m_iMyMusicNavAlbumsSortMethod+263);
 	}
 	else if (m_iState==SHOW_SONGS)
 	{
-		SET_CONTROL_LABEL(CONTROL_BTNSORTBY,g_stSettings.m_iMyMusicNavSongsSortMethod+266-3);
+		SET_CONTROL_LABEL(CONTROL_BTNSORTBY,g_stSettings.m_iMyMusicNavSongsSortMethod+263);
 	}
 
-	// Update current label
-	// Start with Genre
+	// make the filter label
 	CStdString strLabel = m_strGenre;
 
 	// Append Artist
@@ -680,7 +781,13 @@ void CGUIWindowMusicNav::UpdateButtons()
 	if (!m_strAlbum.IsEmpty())
 		strLabel += m_strAlbum;
 
-	SET_CONTROL_LABEL(CONTROL_ARTIST_NAME, strLabel);
+	SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
+
+	// Mark the shuffle button
+	if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC_TEMP))
+	{
+		CONTROL_SELECT(CONTROL_BTNSHUFFLE);
+	}
 }
 
 void CGUIWindowMusicNav::OnClick(int iItem)
@@ -700,10 +807,9 @@ void CGUIWindowMusicNav::OnClick(int iItem)
 		if (pItem->GetLabel()=="..")
 		{
 			// go back a directory
-			CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::OnClick, PATH Before = %i",m_iPath);
 			GoParentFolder();
-			CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::OnClick,  PATH After = %i",m_iPath);
-			// GoParentFolder() calls Update, so just return;
+
+			// GoParentFolder() calls Update(), so just return
 			return;
 		}
 		else
