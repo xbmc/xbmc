@@ -11,19 +11,6 @@ CCriticalSection CDirectoryCache::m_cs;
 
 CDirectoryCache::CDirectoryCache(void)
 {
-  //	thumbnails directories
-  CStdString strThumb=g_stSettings.szThumbnailsDirectory;
-	m_thumbDirs.insert(strThumb);
-  strThumb+="\\imdb";
-	m_thumbDirs.insert(strThumb);
-
-	//	music thumbnails directories
-  strThumb=g_stSettings.m_szAlbumDirectory;
-  strThumb+="\\thumbs";
-	m_musicThumbDirs.insert(strThumb);
-  strThumb+="\\temp";
-	m_musicThumbDirs.insert(strThumb);
-
 	m_iThumbCacheRefCount=0;
 	m_iMusicThumbCacheRefCount=0;
 }
@@ -186,7 +173,8 @@ void  CDirectoryCache::ClearCache(set<CStdString>& dirs)
 			}
 			g_directoryCache.m_vecCache.erase(i);
     }
-
+		else
+			i++;
   }
 }
 
@@ -209,8 +197,18 @@ void  CDirectoryCache::InitThumbCache()
 		g_directoryCache.m_iThumbCacheRefCount++;
 		return;
 	}
-
 	g_directoryCache.m_iThumbCacheRefCount++;
+
+	//	Init video, pictures cache directories
+	if (g_directoryCache.m_thumbDirs.size()==0)
+	{
+		//	thumbnails directories
+		CStdString strThumb=g_stSettings.szThumbnailsDirectory;
+		g_directoryCache.m_thumbDirs.insert(strThumb);
+		strThumb+="\\imdb";
+		g_directoryCache.m_thumbDirs.insert(strThumb);
+	}
+
 	InitCache(g_directoryCache.m_thumbDirs);
 }
 
@@ -237,8 +235,19 @@ void  CDirectoryCache::InitMusicThumbCache()
 		g_directoryCache.m_iMusicThumbCacheRefCount++;
 		return;
 	}
+	g_directoryCache.m_iMusicThumbCacheRefCount++;
 
-	g_directoryCache.m_iThumbCacheRefCount++;
+	//	Init music cache directories
+	if (g_directoryCache.m_musicThumbDirs.size()==0)
+	{
+		//	music thumbnails directories
+		CStdString strThumb=g_stSettings.m_szAlbumDirectory;
+		strThumb+="\\thumbs";
+		g_directoryCache.m_musicThumbDirs.insert(strThumb);
+		strThumb+="\\temp";
+		g_directoryCache.m_musicThumbDirs.insert(strThumb);
+	}
+
 	InitCache(g_directoryCache.m_musicThumbDirs);
 }
 
