@@ -48,7 +48,7 @@ bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)
 
 void CGUIWindowMusicOverlay::SetPosition(int iControl, int iStep, int iSteps,int iOrgPos)
 {
-  int iScreenHeight=g_graphicsContext.GetHeight();
+  int iScreenHeight=10+g_graphicsContext.GetHeight();
   float fDiff=(float)iScreenHeight-(float)iOrgPos;
   float fPos = fDiff / ((float)iSteps);
   fPos *= -((float)iStep);
