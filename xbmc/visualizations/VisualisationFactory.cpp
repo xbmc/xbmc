@@ -12,7 +12,7 @@ extern "C" void __declspec(dllexport) get_module(struct Visualisation* pVisz);
 
 CVisualisation* CVisualisationFactory::LoadVisualisation(const CStdString& strVisz) const
 {
-	DllLoader* pDLL = new DllLoader(const_cast<char*> (strVisz.c_str()) );
+	DllLoader* pDLL = new DllLoader(strVisz.c_str(), true);
 	if( !pDLL->Parse() )
 	{
 		delete pDLL;
