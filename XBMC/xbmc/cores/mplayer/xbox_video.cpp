@@ -98,6 +98,7 @@ void choose_best_resolution(float fps)
   bool bPal60=false;
   if (bUsingPAL && g_stSettings.m_bAllowPAL60 && (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz))
   {
+#if 0
     // yes we're in PAL
     // yes PAL60 is allowed
     // yes dashboard PAL60 settings is enabled
@@ -108,6 +109,8 @@ void choose_best_resolution(float fps)
     // Make a decision based on the framerate difference
     if (fFrameDifference60 < fFrameDifference50)
       bPal60=true;
+#endif
+    if (fps >=29.0) bPal60=true;
   }
 
   // Work out if framesize suits 4:3 or 16:9
