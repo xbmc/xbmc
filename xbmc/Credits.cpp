@@ -1040,7 +1040,8 @@ void RunCredits()
 
 			D3DDevice::SetRenderTarget(pOldRT, pOldZS);
 			pOldRT->Release();
-			pOldZS->Release();
+			if (pOldZS)
+				pOldZS->Release();
 			pRenderSurf->Release();
 
 			D3DDevice::Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
