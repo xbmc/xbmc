@@ -87,7 +87,7 @@ bool CGUIDialogHost::OnMessage(CGUIMessage& message)
 				case CTL_BUTTON_PASSWORD:
 				{
 					CStdString strCaption = "Enter a password for your arena.";
-					if (!CGUIDialogKeyboard::ShowAndGetInput(m_strPassword, strCaption, false))
+					if (!CGUIDialogKeyboard::ShowAndGetInput(m_strPassword, strCaption, true))
 						break;
 
 					Update();
