@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-03-2005 changed: max. 10 exceptions in a row instead of endless logging of exceptions
   - 07-03-2005 fixed: Screen ratios were not computed correctly on start of playback when file had already been played once.
   - 07-03-2005 fixed: "View: ..." settings are not applied when <default> path is empty
   - 07-03-2005 updated: German language file

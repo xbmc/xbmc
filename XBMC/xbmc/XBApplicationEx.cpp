@@ -140,6 +140,11 @@ INT CXBApplicationEx::Run()
     qwElapsedTime.QuadPart    = 0;
     qwElapsedAppTime.QuadPart = 0;
 
+    BYTE processExceptionCount   = 0;
+    BYTE frameMoveExceptionCount = 0;
+    BYTE renderExceptionCount    = 0;
+    
+    const BYTE MAX_EXCEPTION_COUNT = 10;
 
     // Run the game loop, animating and rendering frames
     while (!m_bStop)
@@ -191,12 +196,21 @@ INT CXBApplicationEx::Run()
         {
 #endif
           Process();
+          //reset exception count
+          processExceptionCount = 0;
 
 #ifndef _DEBUG
         }
         catch(...)
         {
           CLog::Log(LOGERROR, "exception in CApplication::Process()");
+          processExceptionCount++;
+          //MAX_EXCEPTION_COUNT exceptions in a row? -> bail out
+          if (processExceptionCount > MAX_EXCEPTION_COUNT)
+          {
+            CLog::Log(LOGERROR, "CApplication::Process(), too many exceptions");
+            throw;
+          }
         }
 #endif
         // Frame move the scene
@@ -205,12 +219,21 @@ INT CXBApplicationEx::Run()
         {
 #endif
           FrameMove();
+          //reset exception count
+          frameMoveExceptionCount = 0;
 
 #ifndef _DEBUG
         }
         catch(...)
         {
           CLog::Log(LOGERROR, "exception in CApplication::FrameMove()");
+          frameMoveExceptionCount++;
+          //MAX_EXCEPTION_COUNT exceptions in a row? -> bail out
+          if (frameMoveExceptionCount > MAX_EXCEPTION_COUNT)
+          {
+            CLog::Log(LOGERROR, "CApplication::FrameMove(), too many exceptions");
+            throw;
+          }
         }
 #endif
 
@@ -220,12 +243,21 @@ INT CXBApplicationEx::Run()
         {
 #endif
           Render();
+          //reset exception count
+          renderExceptionCount = 0;
 
 #ifndef _DEBUG
         }
         catch(...)
         {
           CLog::Log(LOGERROR, "exception in CApplication::Render()");
+          renderExceptionCount++;
+          //MAX_EXCEPTION_COUNT exceptions in a row? -> bail out
+          if (renderExceptionCount > MAX_EXCEPTION_COUNT)
+          {
+            CLog::Log(LOGERROR, "CApplication::Render(), too many exceptions");
+            throw;
+          }
         }
 #endif
     }
