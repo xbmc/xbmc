@@ -190,7 +190,7 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
 	strcpy(g_stSettings.m_szFlipBiDiCharset, ""); 
 	g_stSettings.m_iEnlargeSubtitlePercent = 0;
-	g_stSettings.m_bPostProcessing=true;
+	g_stSettings.m_bPostProcessing=false;
 	g_stSettings.m_bDeInterlace=false;
 	g_stSettings.m_bNonInterleaved=false;
 	g_stSettings.m_bNoCache=false;
