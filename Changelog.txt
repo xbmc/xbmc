@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 21-02-2005 fixed: iTunes sharing caused crash if no connection (or iTunes sharing) was available.
   - 21-02-2005 added: More weather localization thanks to Kotix.  Busy is also localized (string 503).
   - 21-02-2005 added: Writing files returns false if unable to do so.  Means that moving files will only
                       allow the source file to be deleted if the copy was successful - thanks to modplug.

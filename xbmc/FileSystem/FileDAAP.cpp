@@ -139,7 +139,7 @@ bool CFileDAAP::Open(const CURL& url, bool bBinary)
 		// If no host object returned then the connection failed
 		if (!m_thisHost) return false;		// tidy ups?
 
-		if (DAAP_ClientHost_Connect(m_thisHost) < 0) return false;		// tidy ups?
+		if ((int)DAAP_ClientHost_Connect(m_thisHost) < 0) return false;		// tidy ups?
 	}
 
 	/*
