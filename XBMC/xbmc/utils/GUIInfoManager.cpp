@@ -55,7 +55,13 @@ wstring CGUIInfoManager::GetLabel(const CStdString &strInfo)
   else if (strTest == "system.fanspeed")
     return GetSystemHeatInfo("fan");
   else if (strTest == "network.ipaddress")
-    strLabel = g_szTitleIP;
+  {
+    const WCHAR* pszIP = g_localizeStrings.Get(150).c_str();
+    WCHAR wzIP[32];
+    swprintf(wzIP, L"%s: %S", pszIP, g_szTitleIP);
+    wstring strReturn = wzIP;
+    return strReturn;
+  }
   // convert our CStdString to a wstring (which the label expects!)
   WCHAR szLabel[256];
   swprintf(szLabel, L"%S", strLabel.c_str() );
