@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 02-10-2004 changed: my music, albums whose first artist is the same is and album of this artist now
+  - 02-10-2004 changed: my music, scanning now deletes the old scanned data first before rescanning
+  - 02-10-2004 fixed: my music, sorting in artist window was wrong
+  - 02-10-2004 fixed: musicdatabase, artists/genres with a ' in the name where not saved correct
   - 01-10-2004 fixed: [ 987004 ] Cancel doesn't work from remote when streaming
   - 01-10-2004 fixed: Remote control not functioning properly when XBMC is loaded
   - 30-09-2004 fixed: [ 1013492 ] vobsubs display incorrectly, but work in mplayer 1.0pre5
