@@ -303,6 +303,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bResampleMusicAudio=false;
 	g_stSettings.m_bResampleVideoAudio=false;
 	g_stSettings.m_iOSDTimeout = 5;		// OSD Timeout, default to 5 seconds
+	g_stSettings.m_mplayerDebug=false;
 }
 
 CSettings::~CSettings(void)
@@ -440,6 +441,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 	GetBoolean(pRootElement, "displayremotecodes", g_stSettings.m_bDisplayRemoteCodes);
 
 	GetString(pRootElement, "dvdplayer", g_stSettings.m_szExternalDVDPlayer,"");
+	GetBoolean(pRootElement, "mplayerdebug", g_stSettings.m_mplayerDebug);
 
 	CStdString strDir;
 
