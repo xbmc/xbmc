@@ -138,7 +138,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	CStdString  strTextureFocus,strTextureNoFocus,strTextureUpFocus,strTextureDownFocus;
 	CStdString	strTextureAltFocus,strTextureAltNoFocus;
 	DWORD		dwDisabledColor=0xffffffff;;
-	int			iHyperLink=-1;
+	int			iHyperLink=WINDOW_INVALID;
 	DWORD		dwItems;
 	CStdString  strUp,strDown;
 	CStdString  strUpFocus,strDownFocus;
@@ -536,6 +536,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetAlignment(pControlNode,"align", dwAlign);
 	GetAlignmentY(pControlNode,"alignY", dwAlignY);
 	GetInt(pControlNode,"hyperlink",iHyperLink);
+	// windows are referenced from WINDOW_HOME
+	if (iHyperLink != WINDOW_INVALID) iHyperLink += WINDOW_HOME;
+
 	GetString(pControlNode,"script", strScriptAction);
 	GetHex(pControlNode,"disabledcolor",dwDisabledColor);
 	GetPath(pControlNode,"textureDownFocus",strTextureDownFocus);
