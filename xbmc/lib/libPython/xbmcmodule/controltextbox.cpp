@@ -67,9 +67,9 @@ namespace PYXBMC
 		msg.SetLabel(strText);
 
 		// send message
-		g_graphicsContext.Lock();
+		PyGUILock();
 		if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -82,9 +82,9 @@ namespace PYXBMC
 		CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
 
 		// send message
-		g_graphicsContext.Lock();
+		PyGUILock();
 		if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;

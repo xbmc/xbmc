@@ -4,6 +4,7 @@
 #include "..\..\..\util.h"
 #include "player.h"
 #include "playlist.h"
+#include "pyutil.h"
 
 using namespace std;
 

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "control.h"
+#include "pyutil.h"
 
 using namespace std;
 
@@ -57,9 +58,9 @@ namespace PYXBMC
 		bool visible;
 		if (!PyArg_ParseTuple(args, "b", &visible)) return NULL;
 
-		g_graphicsContext.Lock();
+		PyGUILock();
 		if (self->pGUIControl) 	self->pGUIControl->SetVisible(visible);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -69,9 +70,9 @@ namespace PYXBMC
 	{
 		if (!PyArg_ParseTuple(args, "ll", &self->dwPosX, &self->dwPosY)) return NULL;
 
-		g_graphicsContext.Lock();
+		PyGUILock();
 		if (self->pGUIControl) self->pGUIControl->SetPosition(self->dwPosX, self->dwPosY);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -81,9 +82,9 @@ namespace PYXBMC
 	{
 		if (!PyArg_ParseTuple(args, "l", &self->dwWidth)) return NULL;
 
-		g_graphicsContext.Lock();
+		PyGUILock();
 		if (self->pGUIControl) self->pGUIControl->SetWidth(self->dwWidth);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -93,9 +94,9 @@ namespace PYXBMC
 	{
 		if (!PyArg_ParseTuple(args, "l", &self->dwHeight)) return NULL;
 
-		g_graphicsContext.Lock();
+		PyGUILock();
 		if (self->pGUIControl) self->pGUIControl->SetHeight(self->dwHeight);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -130,10 +131,10 @@ namespace PYXBMC
 		self->iControlLeft = pLeftControl->iControlId;
 		self->iControlRight = pRightControl->iControlId;
 
-		g_graphicsContext.Lock();
+		PyGUILock();
 		if (self->pGUIControl) self->pGUIControl->SetNavigation(
 				self->iControlUp,self->iControlDown,self->iControlLeft,self->iControlRight);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -156,10 +157,10 @@ namespace PYXBMC
 		}
 
 		self->iControlUp = pControl->iControlId;
-		g_graphicsContext.Lock();
+		PyGUILock();
 		if (self->pGUIControl) self->pGUIControl->SetNavigation(
 				self->iControlUp,self->iControlDown,self->iControlLeft,self->iControlRight);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -182,10 +183,10 @@ namespace PYXBMC
 		}
 
 		self->iControlDown = pControl->iControlId;
-		g_graphicsContext.Lock();
+		PyGUILock();
 		if (self->pGUIControl) self->pGUIControl->SetNavigation(
 				self->iControlUp,self->iControlDown,self->iControlLeft,self->iControlRight);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -208,10 +209,10 @@ namespace PYXBMC
 		}
 
 		self->iControlLeft = pControl->iControlId;
-		g_graphicsContext.Lock();
+		PyGUILock();
 		if (self->pGUIControl) self->pGUIControl->SetNavigation(
 				self->iControlUp,self->iControlDown,self->iControlLeft,self->iControlRight);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -234,10 +235,10 @@ namespace PYXBMC
 		}
 
 		self->iControlRight = pControl->iControlId;
-		g_graphicsContext.Lock();
+		PyGUILock();
 		if (self->pGUIControl) self->pGUIControl->SetNavigation(
 				self->iControlUp,self->iControlDown,self->iControlLeft,self->iControlRight);
-		g_graphicsContext.Unlock();
+		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
