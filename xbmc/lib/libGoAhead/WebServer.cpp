@@ -18,6 +18,13 @@
 #include "SpyceModule.h"
 #endif
 
+#include "xbmcweb.h"
+#include "xbmcconfiguration.h"
+
+static CXbmcWeb* pXbmcWeb;
+static CXbmcConfiguration* pXbmcWebConfig;
+
+
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
 #pragma bss_seg("WEB_BSS")
@@ -63,6 +70,7 @@ CWebServer::CWebServer()
 	 *	Change configuration here
 	 */
 	pXbmcWeb = new CXbmcWeb();
+	pXbmcWebConfig = new CXbmcConfiguration();
 	m_password = T("");				/* Security password */
 	m_port = 80;					/* Server port */
 
@@ -74,6 +82,7 @@ CWebServer::~CWebServer()
 {
 	CloseHandle(m_hEvent);
 	if (pXbmcWeb != NULL) delete pXbmcWeb;
+	if (pXbmcWebConfig != NULL) delete pXbmcWebConfig;
 }
 
 DWORD CWebServer::SuspendThread()
@@ -174,6 +183,7 @@ int CWebServer::initWebs()
 		setSpyCloseCallback(WEBS_SPYCE::spyceClose);
 		setSpyRequestCallback(WEBS_SPYCE::spyceRequest);
 	#endif
+
 	/*
 	 *	Define the local Ip address, host name, default home page and the 
 	 *	root web directory.
@@ -211,9 +221,6 @@ int CWebServer::initWebs()
 	 */
 	websAspDefine(T("aspTest"), aspTest);
 	websFormDefine(T("formTest"), formTest);
-	
-	websAspDefine(T("xbmcCommand"), XbmcWebsAspCommand);
-	websAspDefine(T("xbmcCfg"), XbmcWebsAspConfiguration);
 	websFormDefine(T("xbmcForm"), XbmcWebsForm);
 
 	/*
@@ -224,6 +231,16 @@ int CWebServer::initWebs()
 		formDefineUserMgmt();
 	#endif
 
+	// asp command for xbmc Configuration
+	websAspDefine(T("xbmcCfgBookmarkSize"), XbmcWebsAspConfigBookmarkSize);
+	websAspDefine(T("xbmcCfgGetBookmark"), XbmcWebsAspConfigGetBookmark);
+	websAspDefine(T("xbmcCfgAddBookmark"), XbmcWebsAspConfigAddBookmark);
+	websAspDefine(T("xbmcCfgSaveBookmark"), XbmcWebsAspConfigSaveBookmark);
+	websAspDefine(T("xbmcCfgRemoveBookmark"), XbmcWebsAspConfigRemoveBookmark);
+	websAspDefine(T("xbmcCfgSaveConfiguration"), XbmcWebsAspConfigSaveConfiguration);
+	websAspDefine(T("xbmcCfgGetOption"), XbmcWebsAspConfigGetOption);
+	websAspDefine(T("xbmcCfgSetOption"), XbmcWebsAspConfigSetOption);
+
 	/*
 	 *	Create a handler for the default home page
 	 */
@@ -232,6 +249,7 @@ int CWebServer::initWebs()
 	/* 
 	 *	Set the socket service timeout to the default
 	 */
+
 	m_sockServiceTime = SOCK_DFT_SVC_TIME;				
 
 	return 0;
@@ -728,23 +746,29 @@ void formTest(webs_t wp, char_t *path, char_t *query)
 #pragma bss_seg()
 #pragma const_seg()
 
-int  XbmcWebsAspCommand(int eid, webs_t wp, int argc, char_t **argv)
+int XbmcWebsAspCommand(int eid, webs_t wp, int argc, char_t **argv)
 {
 	if (!pXbmcWeb) return -1;
 	return pXbmcWeb->xbmcCommand(eid, wp, argc, argv);
 }
 
-int  XbmcWebsAspConfiguration( int eid, webs_t wp, int argc, char_t **argv)
-{
-	if (!pXbmcWeb) return -1;
-	return pXbmcWeb->xbmcConfiguration(eid, wp, argc, argv);
-}
-
-void  XbmcWebsForm(webs_t wp, char_t *path, char_t *query)
+void XbmcWebsForm(webs_t wp, char_t *path, char_t *query)
 {
 	if (!pXbmcWeb) return;
 	return pXbmcWeb->xbmcForm(wp, path, query);
 }
+
+/*
+ * wrappers for xbmcConfig
+ */
+int XbmcWebsAspConfigBookmarkSize(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->BookmarkSize(eid, wp, argc, argv) : -1; }
+int XbmcWebsAspConfigGetBookmark( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetBookmark(eid, wp, argc, argv) : -1; }
+int XbmcWebsAspConfigAddBookmark( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->AddBookmark(eid, wp, argc, argv) : -1; }
+int XbmcWebsAspConfigSaveBookmark( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveBookmark(eid, wp, argc, argv) : -1; }
+int XbmcWebsAspConfigRemoveBookmark( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->RemoveBookmark(eid, wp, argc, argv) : -1; }
+int XbmcWebsAspConfigSaveConfiguration( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveConfiguration(eid, wp, argc, argv) : -1; }
+int XbmcWebsAspConfigGetOption( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetOption(eid, wp, argc, argv) : -1; }
+int XbmcWebsAspConfigSetOption( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SetOption(eid, wp, argc, argv) : -1; }
 
 #if defined(__cplusplus)
 }
