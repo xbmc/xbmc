@@ -40,7 +40,7 @@ namespace MEDIA_DETECT
 		DWORD							GetTrayState();
 		
 		void							DetectMediaType();
-		void							SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA);
+		void							SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA, const CStdString& strDiscLabel );
 
 	private:
 		CIoSupport				m_helper;
