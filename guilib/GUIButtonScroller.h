@@ -99,4 +99,5 @@ private:
   int									m_iTextOffsetX;
   int									m_iTextOffsetY;
 	DWORD								m_dwTextAlignment;
+	int									m_iSlowScrollCount;
 };
