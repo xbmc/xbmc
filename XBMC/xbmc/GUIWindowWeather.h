@@ -38,6 +38,9 @@ protected:
 	void					RefreshMe(bool autoUpdate);
 	void					SplitLongString(char *szString, int splitStart, int splitEnd);
 	void					LocalizeDay(char *szDay);
+	void					LocalizeOverview(char *szStr);
+	void					LocalizeOverviewToken(char *szStr);
+
 
 	CHTTP					m_httpGrabber;
 	char					m_szLocation[256];

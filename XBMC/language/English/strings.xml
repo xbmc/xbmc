@@ -1187,6 +1187,70 @@
     <value>Title</value>
   </string>
   <string>
+    <id>370</id>
+    <value>T-Storms</value>
+  </string>
+  <string>
+    <id>371</id>
+    <value>Partly</value>
+  </string>
+  <string>
+    <id>372</id>
+    <value>Mostly</value>
+  </string>
+  <string>
+    <id>373</id>
+    <value>Sunny</value>
+  </string>
+  <string>
+    <id>374</id>
+    <value>Cloudy</value>
+  </string>
+  <string>
+    <id>375</id>
+    <value>Snow</value>
+  </string>
+  <string>
+    <id>376</id>
+    <value>Rain</value>
+  </string>
+  <string>
+    <id>377</id>
+    <value>Light</value>
+  </string>
+  <string>
+    <id>378</id>
+    <value>AM</value>
+  </string>
+  <string>
+    <id>379</id>
+    <value>PM</value>
+  </string>
+  <string>
+    <id>380</id>
+    <value>Showers</value>
+  </string>
+  <string>
+    <id>381</id>
+    <value>Few</value>
+  </string>
+  <string>
+    <id>382</id>
+    <value>Scattered</value>
+  </string>
+  <string>
+    <id>383</id>
+    <value>Wind</value>
+  </string>
+  <string>
+    <id>384</id>
+    <value>Strong</value>
+  </string>
+  <string>
+    <id>385</id>
+    <value>Fair</value>
+  </string>
+  <string>
     <id>401</id>
     <value>Temp</value>
   </string>   
