@@ -101,7 +101,7 @@ bool CFileRelax::Open(const CURL& url, bool bBinary)
 //	if (strFileName[0]=='/')
 //		sprintf(cmd,"OPEN,%s",&strFileName[1]);
 //	else
-		sprintf(cmd,"OPEN,%s",url.GetFileName());
+		sprintf(cmd,"OPEN,%s",url.GetFileName().c_str());
 	if (!Send((unsigned char*)cmd,strlen(cmd) ) )
 	{
 		m_socket.reset();
