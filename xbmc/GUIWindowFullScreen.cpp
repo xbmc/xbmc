@@ -42,6 +42,7 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 	m_fFPS=0;
 	m_fFrameCounter=0.0f;
 	m_dwFPSTime=timeGetTime();
+	m_iSpeed=1;
 
   // audio
   //  - language
@@ -227,8 +228,25 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		case ACTION_AUDIO_NEXT_LANGUAGE:
 			//g_application.m_pPlayer->AudioOffset(false);
 		break;
+		case ACTION_PLAY:
+			if (g_application.m_pPlayer && g_application.m_pPlayer->IsPaused())
+				g_application.m_pPlayer->Pause();
+			else if (m_iSpeed != 1)
+			{
+				m_iSpeed = 1;
+				g_application.m_pPlayer->ToFFRW(m_iSpeed);
+			}
+			else ;
+
+		break;
+		case ACTION_REWIND:
+			ChangetheSpeed(ACTION_REWIND);
+		break;
+		case ACTION_FORWARD:
+			ChangetheSpeed(ACTION_FORWARD);
+		break;
 		case REMOTE_0:
-			CGUIWindowFullScreen::ChangetheTimeCode(REMOTE_0);
+			ChangetheTimeCode(REMOTE_0);
 		break;
 		case REMOTE_1:
 			ChangetheTimeCode(REMOTE_1);
@@ -686,3 +704,18 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
 		}
 	}
 }
+void CGUIWindowFullScreen::ChangetheSpeed(DWORD action)
+{
+	if (action == ACTION_REWIND && m_iSpeed == 1) // Enables Rewinding
+		m_iSpeed *=-4;
+	else if (action == ACTION_REWIND && m_iSpeed > 1) //goes down a notch if you're FFing
+		m_iSpeed /=4;
+	else if (action == ACTION_FORWARD && m_iSpeed < 1) //goes up a notch if you're RWing
+		m_iSpeed /= 4;
+	else 
+		m_iSpeed *= 4;
+
+	if (action == ACTION_FORWARD && m_iSpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
+		m_iSpeed = 1;
+	g_application.m_pPlayer->ToFFRW(m_iSpeed);
+}	

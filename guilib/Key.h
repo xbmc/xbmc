@@ -99,6 +99,7 @@
 #define REMOTE_7						65
 #define REMOTE_8						66
 #define REMOTE_9						67
+#define ACTION_PLAY						68
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID								-1
