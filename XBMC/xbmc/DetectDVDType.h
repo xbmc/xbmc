@@ -10,7 +10,8 @@
 #include <xtl.h>
 #include "xbox/iosupport.h"
 #include "StdString.h"
-#include "utils/Mutex.h"
+#include "utils/criticalsection.h"
+#include "utils/singlelock.h"
 #include "filesystem/cdiosupport.h"
 #include "utils/thread.h"
 #include "GuiUserMessages.h"
@@ -43,7 +44,7 @@ protected:
 private:
 	CIoSupport				m_helper;
 	
-	static CMutex			m_muReadingMedia;
+	static CCriticalSection	m_muReadingMedia;
 
 	static int				m_DriveState;
 

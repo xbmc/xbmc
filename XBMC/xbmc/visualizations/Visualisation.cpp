@@ -8,15 +8,18 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CVisualisation::CVisualisation(struct Visualisation* pVisz)
-{
-	m_pVisz=pVisz;
+CVisualisation::CVisualisation(struct Visualisation* pVisz,DllLoader* pLoader)
+:m_pLoader(pLoader)
+,m_pVisz(pVisz)
+{	
 }
 
 CVisualisation::~CVisualisation()
 {
 	delete m_pVisz;
 	m_pVisz=NULL;
+	delete m_pLoader;
+	m_pLoader=NULL;
 }
 
 void CVisualisation::Create()

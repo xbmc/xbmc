@@ -238,12 +238,7 @@ HRESULT CApplication::Initialize()
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
 	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);
 
-	m_gWindowManager.AddMsgTarget(this);
-	m_gWindowManager.SetCallback(*this);
 	m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
-	m_guiMusicOverlay.AllocResources();
-	m_guiWindowVideoOverlay.AllocResources();
-	m_guiWindowFullScreen.AllocResources();
 	CUtil::RemoveTempFiles();
 
 	//	Start Thread for DVD Mediatype detection
@@ -262,8 +257,14 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	strSkinPath+=strSkin;
 
 	m_guiWindowVideoOverlay.FreeResources();
+	m_guiWindowVideoOverlay.ClearAll();
+	
 	m_guiMusicOverlay.FreeResources();
+	m_guiMusicOverlay.ClearAll();
+	
 	m_guiWindowFullScreen.FreeResources();
+	m_guiWindowFullScreen.ClearAll();
+
 	m_gWindowManager.DeInitialize();
 	g_TextureManager.Cleanup();
 
@@ -297,6 +298,13 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiScripts.Load( strSkinPath+"\\myscripts.xml");
 	m_guiWindowVisualisation.Load( strSkinPath+"\\musicVisualisation.xml");
 	m_guiSettingsMusic.Load( strSkinPath+"\\SettingsMusic.xml");
+
+	m_guiMusicOverlay.AllocResources();
+	m_guiWindowVideoOverlay.AllocResources();
+	m_guiWindowFullScreen.AllocResources();
+	m_gWindowManager.AddMsgTarget(this);
+	m_gWindowManager.SetCallback(*this);
+
 }
 
 

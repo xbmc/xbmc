@@ -13,17 +13,40 @@ CMutex::CMutex( char* pName )
 CMutex::~CMutex()
 {
 	CloseHandle(m_hMutex);
+	m_hMutex=NULL;
 }
 
-void CMutex::Wait()
+bool CMutex::Wait()
 {
-	if (m_hMutex) WaitForSingleObject(m_hMutex,INFINITE);
+	if (m_hMutex) 
+	{
+		if (WAIT_OBJECT_0==WaitForSingleObject(m_hMutex,INFINITE)) return true;
+	}
+	return false;
 }
 
 void CMutex::Release()
 {
-	if (m_hMutex) ReleaseMutex(m_hMutex);
+	if (m_hMutex) 
+	{
+		ReleaseMutex(m_hMutex);
+	}
 }
+
+CMutexWait::CMutexWait(CMutex& mutex) 
+:m_mutex(mutex)
+{ 
+	m_bLocked=m_mutex.Wait();
+}
+
+CMutexWait::~CMutexWait()
+{ 
+	if (m_bLocked)
+	{
+		m_mutex.Release();
+	}
+}
+
 
 HANDLE CMutex::GetHandle()
 {

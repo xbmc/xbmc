@@ -3,7 +3,6 @@
 //	by Bobbin007 in 2003
 
 #pragma once
-
 #include <xtl.h>
 
 class CMutex 
@@ -17,9 +16,19 @@ public:
 
 	void Release();
 
-	void Wait();
+	bool Wait();
 	void WaitMSec(DWORD dwMillSeconds);
 
 protected:
 	HANDLE	m_hMutex;
+};
+
+class CMutexWait
+{
+public:
+	CMutexWait(CMutex& mutex);
+	virtual ~CMutexWait();
+private:
+	CMutex& m_mutex;
+	bool    m_bLocked;
 };

@@ -46,6 +46,26 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 	{
 		case GUI_MSG_WINDOW_DEINIT:
 		{
+			CSingleLock lock(m_critSection);
+			if (g_application.m_pPlayer)
+				g_application.m_pPlayer->UnRegisterAudioCallback();
+			if (m_pVisualisation)
+			{
+				OutputDebugString("Visualisation::Stop()\n");
+				m_pVisualisation->Stop();
+				
+				OutputDebugString("delete Visualisation()\n");
+				delete m_pVisualisation;
+			}
+			m_pVisualisation=NULL;
+			m_bInitialized=false;
+		}
+		break;
+
+		case GUI_MSG_WINDOW_INIT:
+		{
+			CGUIWindow::OnMessage(message);
+			CSingleLock lock(m_critSection);
 			if (m_pVisualisation)
 			{
 				m_pVisualisation->Stop();
@@ -54,22 +74,18 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 			m_pVisualisation=NULL;
 			if (g_application.m_pPlayer)
 				g_application.m_pPlayer->UnRegisterAudioCallback();
-			m_bInitialized=false;
-		}
-		break;
 
-		case GUI_MSG_WINDOW_INIT:
-		{
-			CGUIWindow::OnMessage(message);
+
 			m_bInitialized=false;
 			CVisualisationFactory factory;
 			CStdString strVisz;
+			OutputDebugString("Load Visualisation\n");
 			strVisz.Format("Q:\\visualisations\\%s", g_stSettings.szDefaultVisualisation);
 			m_pVisualisation=factory.LoadVisualisation(strVisz.c_str());
 			if (m_pVisualisation) 
 			{
+				OutputDebugString("Visualisation::Create()\n");
 				m_pVisualisation->Create();
-				//OnInitialize(2, 44100, 16);
 				if (g_application.m_pPlayer)
 					g_application.m_pPlayer->RegisterAudioCallback(this);
 			}
@@ -81,16 +97,11 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 
 void CGUIWindowVisualisation::Render()
 {
+	CSingleLock lock(m_critSection);
 	if (m_pVisualisation)
 	{
 		if (m_bInitialized)
 		{
-			/*
-			short pAudioData[1152*2*4];
-			for (int i=0; i < 1152*2*4; ++i)
-				pAudioData[i]=(rand()%16384)-8192;
-			OnAudioData((byte*)pAudioData, 1152*2*4);
-			*/
 			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
 			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
 			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
@@ -101,7 +112,14 @@ void CGUIWindowVisualisation::Render()
 			g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
 			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
 			g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
-			m_pVisualisation->Render();
+			try
+			{
+				m_pVisualisation->Render();
+			}
+			catch(...)
+			{
+				OutputDebugString("ohoh\n");
+			}
 			return;
 		}
 	}
@@ -111,6 +129,7 @@ void CGUIWindowVisualisation::Render()
 
 void CGUIWindowVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample)
 {
+	CSingleLock lock(m_critSection);
 	if (!m_pVisualisation) 
 		return;
 
@@ -122,6 +141,7 @@ void CGUIWindowVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, in
 	// Clear our audio buffers
 	ClearBuffers();
 	// Start the visualisation (this loads settings etc.)
+	OutputDebugString("Visualisation::Start()\n");
 	m_pVisualisation->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample);
 	// Create new audio buffers
 	CreateBuffers();
@@ -132,6 +152,7 @@ void CGUIWindowVisualisation::OnAudioData(const unsigned char* pAudioData, int i
 	if (!m_pVisualisation) 
 		return;
 	if (!m_bInitialized) return;
+	CSingleLock lock(m_critSection);
 	VIS_INFO info;
 	m_pVisualisation->GetInfo(&info);
 
@@ -139,7 +160,6 @@ void CGUIWindowVisualisation::OnAudioData(const unsigned char* pAudioData, int i
 	const short *sAudioData = (const short *)pAudioData;
 	iAudioDataLength/=2;
 
-	CSingleLock lock(m_critSection);
 
 	// Save our audio data in the buffers
 	for (int i=0; i < iAudioDataLength; i++)
@@ -181,6 +201,8 @@ void CGUIWindowVisualisation::OnAudioData(const unsigned char* pAudioData, int i
 
 void CGUIWindowVisualisation::CreateBuffers()
 {
+	CSingleLock lock(m_critSection);
+
 	// Get the number of buffers from the current vis
 	VIS_INFO info;
 	m_pVisualisation->GetInfo(&info);
@@ -206,4 +228,5 @@ void CGUIWindowVisualisation::CreateBuffers()
 
 void CGUIWindowVisualisation::ClearBuffers()
 {
+	CSingleLock lock(m_critSection);
 }
