@@ -173,6 +173,7 @@ bool CMPlayer::closefile()
 {
 	m_bIsPlaying=false;
 	StopThread();
+	
 	return true;
 }
 
