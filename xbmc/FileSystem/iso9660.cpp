@@ -219,7 +219,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 				{
 					bContinue=true;
 					temp_text = GetThinText((WCHAR*)(isodir.FileName), isodir.Len_Fi );
-					temp_text.resize(isodir.Len_Fi/2);
+//					temp_text.resize(isodir.Len_Fi);
 				}
 
 				if (!m_info.joliet && isodir.FileName[0]>=0x20 )
@@ -303,8 +303,9 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 				if ( m_info.joliet )
 				{
 					bContinue=true;
+					isodir.FileName[isodir.Len_Fi]=isodir.FileName[isodir.Len_Fi+1]=0;	//put terminator by its length
 					temp_text = GetThinText((WCHAR*)(isodir.FileName), isodir.Len_Fi );
-					temp_text.resize(isodir.Len_Fi/2);
+//					temp_text.resize(isodir.Len_Fi);
 				}
 				if (!m_info.joliet && isodir.FileName[0]>=0x20 )
 				{
@@ -314,9 +315,9 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 				if (bContinue)
 				{
 
-					int semipos = temp_text.find(";",0);
-					if (semipos >= 0)
- 						temp_text.erase(semipos,temp_text.length()-semipos);
+//					int semipos = temp_text.find(";",0);	//the directory is not seperate by ";",but by its length 
+//					if (semipos >= 0)
+// 						temp_text.erase(semipos,temp_text.length()-semipos);
 
 					pFile_Pointer->next = (struct iso_dirtree *)malloc(sizeof(struct iso_dirtree));
           if (!pFile_Pointer->next)
