@@ -2207,7 +2207,7 @@ void CUtil::SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, in
   CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, bImmediate);
 }
 
-#define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x))
+#define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f))
 // Valid ranges:
 //  brightness -1 -> 1
 //  contrast    0 -> 2
