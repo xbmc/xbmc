@@ -577,15 +577,30 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 	m_dlgProgress->StartModal(GetID());
 	m_dlgProgress->Progress();
 
+	bool bScanSubDirs=true;
 	bool bFound=false;
 	CUtil::SetThumbs(items);
-	bool bOpen=true;	
+	bool bOpen=true;
+	// first check all files
 	for (int i=0; i < (int)items.size(); ++i)
 	{
 		CFileItem *pItem= items[i];
-		if ( pItem->m_bIsFolder)
+		if (! pItem->m_bIsFolder)
 		{
-			if (!bFound && pItem->GetLabel() != "..")
+			if (CUtil::IsXBE(pItem->m_strPath) )
+			{
+				bScanSubDirs=false;
+				break;
+			}
+		}
+	}
+	
+	for (int i=0; i < (int)items.size(); ++i)
+	{
+		CFileItem *pItem= items[i];
+		if (pItem->m_bIsFolder)
+		{
+			if (bScanSubDirs && !bFound && pItem->GetLabel() != "..")
 			{
 				// load subfolder
 				CStdString strDir=m_strDirectory;
