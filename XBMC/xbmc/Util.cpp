@@ -170,17 +170,14 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 //*********************************************************************************************
 void CUtil::LaunchXbe(char* szPath, char* szXbe, char* szParameters)
 {
-	OutputDebugString("Mounting ");
-	OutputDebugString(szPath);
-	OutputDebugString(" as D:\n");
+  CLog::Log("launch xbe:%s %s", szPath,szXbe);
+  CLog::Log(" mount %s as D:", szPath);
 
 	CIoSupport helper;
 	helper.Unmount("D:");
 	helper.Mount("D:",szPath);
 
-	OutputDebugString("Launching ");
-	OutputDebugString( (szXbe!=NULL) ? szXbe:"default title" );
-	OutputDebugString("\n");				
+  CLog::Log("launch xbe:%s", szXbe);
 
 	if (szParameters==NULL)
 	{
