@@ -79,78 +79,78 @@ void CGUIImage::Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
 
 void CGUIImage::Render()
 {
-	if (!m_bVisible)
-	{
-		m_bWasVisible = false;
-		return;
-	}
-	if (!m_vecTextures.size())
-		return ;
-	
-	Process();
+  if (!m_bVisible)
+  {
+    m_bWasVisible = false;
+    return;
+  }
+  if (!m_vecTextures.size())
+    return ;
+  
+  Process();
   if (m_bInvalidated) UpdateVB();
 
-	// Set state to render the image
+  LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
+  // Set state to render the image
 #ifdef ALLOW_TEXTURE_COMPRESSION
-  g_graphicsContext.Get3DDevice()->SetPalette( 0, m_pPalette);
+  p3DDevice->SetPalette( 0, m_pPalette);
 #endif
-	g_graphicsContext.Get3DDevice()->SetTexture( 0, m_vecTextures[m_iCurrentImage] );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAKILL, D3DTALPHAKILL_ENABLE );
+  p3DDevice->SetTexture( 0, m_vecTextures[m_iCurrentImage] );
+  p3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
+  p3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+  p3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+  p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
+  p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+  p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+  p3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
+  p3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
 
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE,      FALSE );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE,    FALSE );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE,     D3DFILL_SOLID );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_CULLMODE,     D3DCULL_CCW );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_YUVENABLE, FALSE);
-	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_VERTEX );
-	// Render the image
- 	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
+  p3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE,  TRUE );
+  p3DDevice->SetRenderState( D3DRS_ALPHAREF,         0 );
+  p3DDevice->SetRenderState( D3DRS_ALPHAFUNC,        D3DCMP_GREATEREQUAL );
+  p3DDevice->SetRenderState( D3DRS_ZENABLE,      FALSE );
+  p3DDevice->SetRenderState( D3DRS_FOGENABLE,    FALSE );
+  p3DDevice->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
+  p3DDevice->SetRenderState( D3DRS_FILLMODE,     D3DFILL_SOLID );
+  p3DDevice->SetRenderState( D3DRS_CULLMODE,     D3DCULL_CCW );
+  p3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+  p3DDevice->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
+  p3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+  p3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE);
+  p3DDevice->SetVertexShader( FVF_VERTEX );
+  // Render the image
+  p3DDevice->Begin(D3DPT_QUADLIST);
 
-  g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs, 0.0f );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs, 0.0f );
   D3DCOLOR color = m_colDiffuse;
-	if (m_dwAlpha[0] != 0xFF) color = (m_dwAlpha[0] << 24) | (m_colDiffuse & 0x00FFFFFF);
-  g_graphicsContext.Get3DDevice()->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_fX - 0.5f, m_fY - 0.5f, 0.0f, 0.0f );
+  if (m_dwAlpha[0] != 0xFF) color = (m_dwAlpha[0] << 24) | (m_colDiffuse & 0x00FFFFFF);
+  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, m_fX - 0.5f, m_fY - 0.5f, 0.0f, 0.0f );
 
- 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs + m_fU, 0.0f );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs + m_fU, 0.0f );
   color = m_colDiffuse;
-	if (m_dwAlpha[1] != 0xFF) color = (m_dwAlpha[1] << 24) | (m_colDiffuse & 0x00FFFFFF);
-  g_graphicsContext.Get3DDevice()->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_fX + m_fNW - 0.5f, m_fY - 0.5f, 0.0f, 0.0f );
+  if (m_dwAlpha[1] != 0xFF) color = (m_dwAlpha[1] << 24) | (m_colDiffuse & 0x00FFFFFF);
+  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, m_fX + m_fNW - 0.5f, m_fY - 0.5f, 0.0f, 0.0f );
 
- 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs + m_fU, m_fV );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs + m_fU, m_fV );
   color = m_colDiffuse;
-	if (m_dwAlpha[2] != 0xFF) color = (m_dwAlpha[2] << 24) | (m_colDiffuse & 0x00FFFFFF);
-  g_graphicsContext.Get3DDevice()->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
-  g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_fX + m_fNW - 0.5f, m_fY + m_fNH - 0.5f, 0.0f, 0.0f );
+  if (m_dwAlpha[2] != 0xFF) color = (m_dwAlpha[2] << 24) | (m_colDiffuse & 0x00FFFFFF);
+  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, m_fX + m_fNW - 0.5f, m_fY + m_fNH - 0.5f, 0.0f, 0.0f );
 
- 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs, m_fV );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs, m_fV );
   color = m_colDiffuse;
-	if (m_dwAlpha[3] != 0xFF) color = (m_dwAlpha[3] << 24) | (m_colDiffuse & 0x00FFFFFF);
-  g_graphicsContext.Get3DDevice()->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_fX - 0.5f, m_fY + m_fNH - 0.5f, 0.0f, 0.0f );
+  if (m_dwAlpha[3] != 0xFF) color = (m_dwAlpha[3] << 24) | (m_colDiffuse & 0x00FFFFFF);
+  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, m_fX - 0.5f, m_fY + m_fNH - 0.5f, 0.0f, 0.0f );
 
-	g_graphicsContext.Get3DDevice()->End();
+  p3DDevice->End();
 
-	// unset the texture and palette or the texture caching crashes because the runtime still has a reference
-	g_graphicsContext.Get3DDevice()->SetTexture( 0, NULL);
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAKILL, D3DTALPHAKILL_DISABLE );
+  // unset the texture and palette or the texture caching crashes because the runtime still has a reference
+  p3DDevice->SetTexture( 0, NULL);
 #ifdef ALLOW_TEXTURE_COMPRESSION
-	g_graphicsContext.Get3DDevice()->SetPalette( 0, NULL);
+  p3DDevice->SetPalette( 0, NULL);
 #endif
   CGUIControl::Render();
 }

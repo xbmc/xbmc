@@ -132,7 +132,7 @@ void CGraphicContext::SetViewWindow(const RECT&	rc)
 		  d3dRC.x2=rc.right;
 		  d3dRC.y1=rc.top;
 		  d3dRC.y2=rc.bottom;
-		  Get3DDevice()->Clear( 1, &d3dRC, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+		  Get3DDevice()->Clear( 1, &d3dRC, D3DCLEAR_TARGET, 0x00010001, 1.0f, 0L );
 	  }
   }
 }
@@ -264,7 +264,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 	}
 	else
 	{
-		if (m_pd3dParams->FullScreen_PresentationInterval != D3DPRESENT_INTERVAL_ONE_OR_IMMEDIATE)
+    if (m_pd3dParams->FullScreen_PresentationInterval != D3DPRESENT_INTERVAL_ONE_OR_IMMEDIATE)
 		{
 			m_pd3dParams->FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE_OR_IMMEDIATE;
 			NeedReset = true;
@@ -530,6 +530,19 @@ float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
 	if (iRes == HDTV_480p_16x9 || iRes == NTSC_16x9 || iRes == PAL60_16x9) return 4320.0f/4739.0f*4.0f/3.0f;
   if (iRes == PAL_16x9) return 128.0f/117.0f*4.0f/3.0f;
   return 128.0f/117.0f;
+}
+
+void CGraphicContext::Clear()
+{
+  //Not trying to clear the zbuffer when there is none is 7 fps faster (pal resolution)
+  if ((!m_pd3dParams) || (m_pd3dParams->EnableAutoDepthStencil == TRUE))
+  {
+	  m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
+  }
+  else
+  {
+	  m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0x00010001, 1.0f, 0L );
+  }
 }
 
 void CGraphicContext::CaptureStateBlock()
