@@ -62,8 +62,8 @@ void CTexture::Flush()
 {
 	if (!m_iReferenceCount)
 	{
-	m_pTexture->Release();
-	m_pTexture=NULL;
+	  m_pTexture->Release();
+	  m_pTexture=NULL;
 	}
 }
 
@@ -71,17 +71,17 @@ bool CTexture::Release()
 {
   if (!m_pTexture) return true;
   if (!m_iReferenceCount)  return true;
-  if (m_iReferenceCount)
+  if (m_iReferenceCount>0)
   {
     m_iReferenceCount--;
   }
 
-/*  if (!m_iReferenceCount)
+  if (!m_iReferenceCount)
   {
     m_pTexture->Release();
     m_pTexture=NULL;
     return true;
-  }*/
+  }
   return false;
 }
 
@@ -372,7 +372,7 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
     if (pMap->GetName()==strTextureName)
     {
       pMap->Release(iPicture);
-			/*
+
       if (pMap->IsEmpty() )
       {
         delete pMap;
@@ -381,8 +381,8 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
       else
       {
         ++i;
-      }*/
-			++i;
+      }
+			//++i;
     }
     else 
     {
