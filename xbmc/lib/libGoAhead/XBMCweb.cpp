@@ -16,8 +16,11 @@
 
 #include "xbmcweb.h"
 #include "..\..\Application.h"
+
 #include "..\..\util.h"
 #include "..\..\playlistplayer.h"
+#include "..\..\url.h"
+#include "..\..\filesystem\CDDADirectory.h"
 
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
@@ -67,7 +70,8 @@
 #define WEB_PICTURES	T("pictures")
 #define WEB_PROGRAMS	T("programs")
 #define WEB_FILES			T("files")
-#define WEB_PLAYLIST	T("playlist")
+#define WEB_MUSICPLAYLIST	T("musicplaylist")
+#define WEB_VIDEOPLAYLIST	T("videoplaylist")
 
 #define XBMC_CAT_NAME			T("name")
 #define XBMC_CAT_SELECT		T("select")
@@ -166,7 +170,6 @@ CXbmcWeb::CXbmcWeb()
 {
 	navigatorState = 0;
 	directory = NULL;
-	strCurrentMediaFile = "";
 }
 
 CXbmcWeb::~CXbmcWeb()
@@ -183,17 +186,6 @@ void CXbmcWeb::SetCurrentDir(const char* newDir)
 {
 	strcpy(currentDir, newDir);
 }
-
-int CXbmcWeb::GetCurrentItem()
-{
-	return currentItem;
-}
-
-void CXbmcWeb::SetCurrentItem(int item)
-{
-	currentItem = item;
-}
-
 DWORD CXbmcWeb::GetNavigatorState()
 {
 	return navigatorState;
@@ -312,13 +304,16 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
 		WEB_PICTURES, WEB_NAV_PICTURES,
 		WEB_PROGRAMS, WEB_NAV_PROGRAMS,
 		WEB_FILES, WEB_NAV_FILES,
-		//WEB_PLAYLIST, WEB_NAV_PLAYLIST,
+		WEB_MUSICPLAYLIST, WEB_NAV_MUSICPLAYLIST,
+		WEB_VIDEOPLAYLIST, WEB_NAV_VIDEOPLAYLIST,
 		"", -1};
 
-	if (!stricmp(WEB_PLAYLIST, parameter))
+	// are we navigating to a music or video playlist?
+	if (!stricmp(WEB_MUSICPLAYLIST, parameter) || !stricmp(WEB_VIDEOPLAYLIST, parameter))
 	{
-		//we are navigating to a playlist
-		SetNavigatorState(WEB_NAV_PLAYLIST);
+		// set navigator state
+		if (!stricmp(WEB_MUSICPLAYLIST, parameter)) SetNavigatorState(WEB_NAV_MUSICPLAYLIST);
+		else SetNavigatorState(WEB_NAV_VIDEOPLAYLIST);
 		catalogItemCounter = 0;
 
 		//delete old directory
@@ -326,6 +321,9 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
 			delete directory;
 			directory = NULL;
 		}
+		webDirItems.clear();
+
+		return 0;
 	}
 
 	int cmd = 0;
@@ -342,7 +340,9 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
 				delete directory;
 				directory = NULL;
 			}
-			
+
+			webDirItems.clear();
+						
 			//make a new directory and set the nessecary shares
 			directory = new CVirtualDirectory();
 
@@ -396,6 +396,37 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
 	return 0;
 }
 
+int CXbmcWeb::xbmcNavigatorState( int eid, webs_t wp, char_t *parameter)
+{
+	int cnt = 0;
+	int cmd = 0;
+	xbmcNavigationHandlerType	xbmcNavigator[ ] = {
+		WEB_VIDEOS, WEB_NAV_VIDEOS,
+		WEB_MUSIC, WEB_NAV_MUSIC,
+		WEB_PICTURES, WEB_NAV_PICTURES,
+		WEB_PROGRAMS, WEB_NAV_PROGRAMS,
+		WEB_FILES, WEB_NAV_FILES,
+		WEB_MUSICPLAYLIST, WEB_NAV_MUSICPLAYLIST,
+		WEB_VIDEOPLAYLIST, WEB_NAV_VIDEOPLAYLIST,
+		"", -1};
+
+	// look through the xbmcCommandStructure
+	while( xbmcNavigator[cmd].xbmcAppStateCode != -1)
+	{
+		// if we have a match
+		if(xbmcNavigator[cmd].xbmcAppStateCode == navigatorState)
+		{
+			if( eid != NO_EID) {
+				ejSetResult( eid, xbmcNavigator[cmd].xbmcNavigateParameter);
+			} else {
+				cnt = websWrite(wp, xbmcNavigator[cmd].xbmcNavigateParameter);
+			}
+		}
+		cmd++;
+	}
+	return cnt;
+}
+
 int catalogNumber( char_t *parameter)
 {
 	int itemNumber = 0;
@@ -416,7 +447,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 	int cnt = 0;
 	char buffer[XML_MAX_INNERTEXT_SIZE];
 
-	// by default teh answer to any question is 0
+	// by default the answer to any question is 0
 	if( eid != NO_EID) {
 		ejSetResult( eid, "0");
 	}
@@ -427,21 +458,38 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 			(state == WEB_NAV_MUSIC) ||
 			(state == WEB_NAV_PICTURES) ||
 			(state == WEB_NAV_PROGRAMS) ||
-			(state == WEB_NAV_FILES))
+			(state == WEB_NAV_FILES) ||
+			(state == WEB_NAV_MUSICPLAYLIST) ||
+			(state == WEB_NAV_VIDEOPLAYLIST))
 	{
 		CHAR *output = "error";
 
-		iItemCount = webDirItems.size();
+		// get total items in current state
+		if (navigatorState == WEB_NAV_MUSICPLAYLIST)
+			iItemCount = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size();
+		else if (navigatorState == WEB_NAV_VIDEOPLAYLIST)
+			iItemCount = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size();
+		else iItemCount = webDirItems.size();
 
 		// have we requested a catalog item name?
 		if( strstr( parameter, XBMC_CAT_NAME) != NULL)
 		{
 			selectionNumber = catalogNumber( parameter);
-			if (navigatorState == WEB_NAV_PLAYLIST)
+			if (navigatorState == WEB_NAV_MUSICPLAYLIST)
 			{
+				// we want to know the name from an item in the music playlist
 				if (selectionNumber <= g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size())
 				{
 					strcpy(buffer, g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[selectionNumber].GetDescription());
+					output = buffer;
+				}
+			}
+			else if (navigatorState == WEB_NAV_VIDEOPLAYLIST)
+			{
+				// we want to know the name from an item in the video playlist
+				if (selectionNumber <= g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO ).size())
+				{
+					strcpy(buffer, g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO )[selectionNumber].GetDescription());
 					output = buffer;
 				}
 			}
@@ -461,11 +509,17 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 		}
 
 		// have we requested a catalog item type?
-		if( strstr( parameter, XBMC_CAT_TYPE) != NULL) {
-
+		if( strstr( parameter, XBMC_CAT_TYPE) != NULL)
+		{
 			selectionNumber = catalogNumber( parameter);
-			if (navigatorState == WEB_NAV_PLAYLIST)
+			if (navigatorState == WEB_NAV_MUSICPLAYLIST)
 			{
+				// we have a music type 
+				output = XBMC_CMD_MUSIC;
+			}
+			else if (navigatorState == WEB_NAV_VIDEOPLAYLIST)
+			{
+				// we have a video type 
 				output = XBMC_CMD_MUSIC;
 			}
 			else
@@ -507,9 +561,15 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 		// have we requested the number of catalog items?
 		if( stricmp( parameter, XBMC_CAT_ITEMS) == 0) {
 			int items;
-			if (navigatorState == WEB_NAV_PLAYLIST)
+			if (navigatorState == WEB_NAV_MUSICPLAYLIST)
 			{
+				// we want to know how much music files are in the music playlist
 				items = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
+			}
+			else if (navigatorState == WEB_NAV_VIDEOPLAYLIST)
+			{
+				// we want to know how much video files are in the video playlist
+				items = g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO ).size();
 			}
 			else
 			{
@@ -528,10 +588,18 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 		if( stricmp( parameter, XBMC_CAT_FIRST) == 0) {
 			catalogItemCounter = 0;
 			CStdString name;
-			if (navigatorState == WEB_NAV_PLAYLIST)
+			if (navigatorState == WEB_NAV_MUSICPLAYLIST)
 			{
+				// we want the first music item form the music playlist
 				if(catalogItemCounter < g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size()) {
 					name = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[catalogItemCounter].GetDescription();
+				}
+			}
+			else if (navigatorState == WEB_NAV_VIDEOPLAYLIST)
+			{
+				// we want the first video item form the video playlist
+				if(catalogItemCounter < g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO ).size()) {
+					name = g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO )[catalogItemCounter].GetDescription();
 				}
 			}
 			else
@@ -553,12 +621,24 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 		if( stricmp( parameter, XBMC_CAT_NEXT) == 0) {
 			// are there items left to see
 			CStdString name;
-			if (navigatorState == WEB_NAV_PLAYLIST)
+			if (navigatorState == WEB_NAV_MUSICPLAYLIST || navigatorState == WEB_NAV_VIDEOPLAYLIST)
 			{
-				if((catalogItemCounter + 1) < g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size())
+				if(navigatorState == WEB_NAV_MUSICPLAYLIST && (catalogItemCounter + 1) < g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size())
 				{
+					// we want the next item in the music playlist
 					++catalogItemCounter;
 					name = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[catalogItemCounter].GetDescription();
+					if( eid != NO_EID) {
+						ejSetResult( eid, (char_t *)name.c_str());
+					} else {
+						cnt = websWrite(wp, (char_t *)name.c_str());
+					}
+				}
+				else if(navigatorState == WEB_NAV_VIDEOPLAYLIST && (catalogItemCounter + 1) < g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO ).size())
+				{
+					// we want the next item in the video playlist
+					++catalogItemCounter;
+					name = g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO )[catalogItemCounter].GetDescription();
 					if( eid != NO_EID) {
 						ejSetResult( eid, (char_t *)name.c_str());
 					} else {
@@ -598,32 +678,56 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 		}
 
 		// have we selected a catalog item name?
-		if(( strstr( parameter, XBMC_CAT_SELECT) != NULL) ||
-			  ( strstr( parameter, XBMC_CAT_QUE) != NULL))
+		if (( strstr( parameter, XBMC_CAT_SELECT) != NULL) ||
+				( strstr( parameter, XBMC_CAT_UNQUE) != NULL) ||
+				( strstr( parameter, XBMC_CAT_QUE) != NULL))
 		{
 			selectionNumber = catalogNumber( parameter);
 			if( selectionNumber <= iItemCount)
 			{
-				if(strstr( parameter, XBMC_CAT_QUE) != NULL)
+				CStdString strAction = parameter;
+				strAction = strAction.substr(0, strAction.find(','));
+				if (strAction == XBMC_CAT_QUE)
 				{
 					// attempt to enque the selected directory or file
-
 					CFileItem *itm = webDirItems[selectionNumber];
 					AddItemToPlayList(itm);
 					g_playlistPlayer.HasChanged();
 				}
-				else if (strstr( parameter, XBMC_CAT_UNQUE) != NULL)
+				else if (strAction == XBMC_CAT_UNQUE)
 				{
+					// get xbmc's playlist using our navigator state
+					int iPlaylist;
+					if (navigatorState == WEB_NAV_MUSICPLAYLIST) iPlaylist = PLAYLIST_MUSIC;
+					else iPlaylist = PLAYLIST_VIDEO;
+
 					// attemt to unque item from playlist.
-					//g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[selectionNumber].GetFileName());
+					g_playlistPlayer.GetPlaylist(iPlaylist).Remove(catalogNumber(parameter));
 				}
 				else
 				{
-					CFileItem *itm = webDirItems[selectionNumber];
+					CFileItem *itm;
+					if (navigatorState == WEB_NAV_MUSICPLAYLIST)
+					{
+						CPlayList::CPlayListItem plItem = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC)[selectionNumber];
+						itm = new CFileItem(plItem.GetDescription());
+						itm->m_strPath = plItem.GetFileName();
+						itm->m_bIsFolder = false;
+					}
+					else if (navigatorState == WEB_NAV_VIDEOPLAYLIST)
+					{
+						CPlayList::CPlayListItem plItem = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO)[selectionNumber];
+						itm = new CFileItem(plItem.GetDescription());
+						itm->m_strPath = plItem.GetFileName();
+						itm->m_bIsFolder = false;
+					}
+					else itm = webDirItems[selectionNumber];
+
 					if (!itm) return 0;
 
-					if (itm->m_bIsFolder) // enter the directory
+					if (itm->m_bIsFolder)		
 					{
+						// enter the directory
 						CStdString strDirectory = itm->m_strPath;
 						CStdString strParentPath;
 						webDirItems.clear();
@@ -663,12 +767,13 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 					else
 					{
 						//no directory, execute file
-						SetCurrentItem(selectionNumber);
-						CFileItem *itm = webDirItems[selectionNumber];
 						if (GetNavigatorState() == WEB_NAV_VIDEOS ||
-								GetNavigatorState() == WEB_NAV_MUSIC)
+								GetNavigatorState() == WEB_NAV_MUSIC ||
+								GetNavigatorState() == WEB_NAV_MUSICPLAYLIST ||
+								GetNavigatorState() == WEB_NAV_VIDEOPLAYLIST)
 						{
-							strCurrentMediaFile = itm->m_strPath;
+							SetCurrentMediaItem(*itm);
+							g_applicationMessenger.MediaStop();
 							g_applicationMessenger.MediaPlay(itm->m_strPath);
 						}
 						else
@@ -679,6 +784,10 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 							}
 						}
 					}
+					// delete temporary CFileItem used for playlists
+					if (navigatorState == WEB_NAV_MUSICPLAYLIST ||
+							navigatorState == WEB_NAV_VIDEOPLAYLIST)
+						delete itm;
 				}
 			}
 			return 0;
@@ -691,12 +800,13 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 /* Play */
 int CXbmcWeb::xbmcPlayerPlay( int eid, webs_t wp, char_t *parameter)
 {
-	if (strCurrentMediaFile.size() > 0)
+	if (currentMediaItem.m_strPath.size() > 0)
 	{
-		g_applicationMessenger.MediaPlay(strCurrentMediaFile);
+		g_applicationMessenger.MediaPlay(currentMediaItem.m_strPath);
 	}
 	else
 	{
+		// we haven't played an item through the webinterface yet. Try playing the current playlist
 		g_applicationMessenger.PlayListPlayerPlay(0);
 	}
 	return 0;
@@ -706,9 +816,13 @@ int CXbmcWeb::xbmcPlayerPlay( int eid, webs_t wp, char_t *parameter)
  * Play next file in active playlist
  * Active playlist = MUSIC or VIDEOS
  */
-int CXbmcWeb::xbmcPlayerNext( int eid, webs_t wp, char_t *parameter)
+int CXbmcWeb::xbmcPlayerNext(int eid, webs_t wp, char_t *parameter)
 {
-	OutputDebugString("next");
+	// get the playlist we want for the current navigator state
+	int currentPlayList = (navigatorState == WEB_NAV_MUSICPLAYLIST) ? PLAYLIST_MUSIC : PLAYLIST_VIDEO;
+	// activate needed playlist
+	g_playlistPlayer.SetCurrentPlaylist(currentPlayList);
+
 	g_applicationMessenger.PlayListPlayerNext();
 	return 0;
 }
@@ -717,9 +831,13 @@ int CXbmcWeb::xbmcPlayerNext( int eid, webs_t wp, char_t *parameter)
  * Play previous file in active playlist
  * Active playlist = MUSIC or VIDEOS
  */
-int CXbmcWeb::xbmcPlayerPrevious( int eid, webs_t wp, char_t *parameter)
+int CXbmcWeb::xbmcPlayerPrevious(int eid, webs_t wp, char_t *parameter)
 {
-	OutputDebugString("previous");
+	// get the playlist we want for the current navigator state
+	int currentPlayList = (navigatorState == WEB_NAV_MUSICPLAYLIST) ? PLAYLIST_MUSIC : PLAYLIST_VIDEO;
+	// activate playlist
+	g_playlistPlayer.SetCurrentPlaylist(currentPlayList);
+
 	g_applicationMessenger.PlayListPlayerPrevious();
 	return 0;
 }
@@ -743,11 +861,14 @@ int CXbmcWeb::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *p
 	else if (!strcmp(command, "show_time"))			return 0;
 	else if (!strcmp(command, "remote"))				return xbmcRemoteControl(eid, wp, parameter);			// remote control functions
 	else if (!strcmp(command, "navigate"))			return xbmcNavigate(eid, wp, parameter);	// Navigate to a particular interface
+	else if (!strcmp(command, "navigatorstate"))return xbmcNavigatorState(eid, wp, parameter);
 	else if (!strcmp(command, "catalog"))				return xbmcCatalog(eid, wp, parameter);	// interface to teh media catalog
 
 	else if (!strcmp(command, "ff"))						return 0;
 	else if (!strcmp(command, "rw"))						return 0;
 	else if (!strcmp(command, "next"))					return xbmcPlayerNext(eid, wp, parameter);
+	else if (!strcmp(command, "previous"))			return xbmcPlayerPrevious(eid, wp, parameter);
+
 	else if (!strcmp(command, "previous"))			return xbmcPlayerPrevious(eid, wp, parameter);
 	return 0;
 }
@@ -759,10 +880,12 @@ int CXbmcWeb::xbmcCommand( int eid, webs_t wp, int argc, char_t **argv)
 {
 	char_t	*command, *parameter;
 
-	if (ejArgs(argc, argv, T("%s %s"), &command, &parameter) < 2) {
-		websError(wp, 400, T("Insufficient args\n"));
+	int parameters = ejArgs(argc, argv, T("%s %s"), &command, &parameter);
+	if (parameters < 1) {
+		websError(wp, 500, T("Insufficient args\n"));
 		return -1;
 	}
+	else if (parameters < 2) parameter = "";
 
 	return xbmcProcessCommand( eid, wp, command, parameter);
 }
@@ -794,4 +917,172 @@ void CXbmcWeb::xbmcForm(webs_t wp, char_t *path, char_t *query)
 		return;
 	}
 	websDone(wp, 200);
+}
+
+void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
+{
+	currentMediaItem = newItem;
+
+	//	No audio file, we are finished here
+	if (!CUtil::IsAudio(newItem.m_strPath) )
+		return;
+
+	//	Get a reference to the item's tag
+	CMusicInfoTag& tag=newItem.m_musicInfoTag;
+
+	CURL url(newItem.m_strPath);
+	//	if the file is a cdda track, ...
+	if (url.GetProtocol()=="cdda" )
+	{
+		VECFILEITEMS items;
+		CCDDADirectory dir;
+		//	... use the directory of the cd to 
+		//	get its cddb information...
+		if (dir.GetDirectory("D:",items))
+		{
+			for (int i=0; i < (int)items.size(); ++i)
+			{
+				CFileItem* pItem=items[i];
+				if (pItem->m_strPath==newItem.m_strPath)
+				{
+					//	...and find current track to use
+					//	cddb information for display.
+					newItem=*pItem;
+				}
+				delete pItem;
+			}
+		}
+	}
+	else
+	{
+		//	we have a audio file.
+		//	Look if we have this file in database...
+		bool bFound=false;
+		CSong song;
+		CMusicDatabase dbs;
+		if (dbs.Open())
+		{
+			bFound=dbs.GetSongByFileName(newItem.m_strPath, song);
+			dbs.Close();
+		}
+		if (!bFound && g_stSettings.m_bUseID3)
+		{
+			//	...no, try to load the tag of the file.
+			CMusicInfoTagLoaderFactory factory;
+			IMusicInfoTagLoader* pLoader = factory.CreateLoader(newItem.m_strPath);
+			//	Do we have a tag loader for this file type?
+			if (pLoader != NULL)
+			{
+				// yes, load its tag
+				if ( !pLoader->Load(newItem.m_strPath,tag))
+				{
+					//	Failed!
+					tag.SetLoaded(false);
+					//	just to be sure :-)
+				}
+			}
+			delete pLoader;
+		}
+		else
+		{
+			//	...yes, this file is found in database
+			//	fill the tag of our fileitem
+			SYSTEMTIME systime;
+			systime.wYear=song.iYear;
+			tag.SetReleaseDate(systime);
+			tag.SetTrackNumber(song.iTrack);
+			tag.SetAlbum(song.strAlbum);
+			tag.SetArtist(song.strArtist);
+			tag.SetGenre(song.strGenre);
+			tag.SetTitle(song.strTitle);
+			tag.SetDuration(song.iDuration);
+			tag.SetLoaded(true);
+		}
+	}
+
+	//	If we have tag information, ...
+	if (tag.Loaded())
+	{
+		g_application.SetCurrentSong(tag);
+	}
+		/*
+		//	display only, if we have a title
+		if (tag.GetTitle().size())
+		{
+			//if (tag.GetArtist().size())
+
+			//if (tag.GetAlbum().size())
+
+			int iTrack = tag.GetTrackNumber();
+			if (iTrack >= 1)
+			{
+				//	Tracknumber
+				CStdString strText=g_localizeStrings.Get(435);	//	"Track"
+				if (strText.GetAt(strText.size()-1) != ' ')
+					strText+=" ";
+				CStdString strTrack;
+				strTrack.Format(strText+"%i", iTrack);
+				
+			}
+
+			SYSTEMTIME systemtime;
+			tag.GetReleaseDate(systemtime);
+			int iYear=systemtime.wYear;
+			if (iYear >=1900)
+			{
+				//	Year
+				CStdString strText=g_localizeStrings.Get(436);	//	"Year:"
+				if (strText.GetAt(strText.size()-1) != ' ')
+					strText+=" ";
+				CStdString strYear;
+				strYear.Format(strText+"%i", iYear);
+			}
+
+			if (tag.GetDuration() > 0)
+			{
+				//	Duration
+				CStdString strDuration, strTime;
+
+				CStdString strText=g_localizeStrings.Get(437);
+				if (strText.GetAt(strText.size()-1) != ' ')
+					strText+=" ";
+
+				CUtil::SecondsToHMSString(tag.GetDuration(), strTime);
+
+				strDuration=strText+strTime;		
+			}
+		}
+	}	//	if (tag.Loaded())
+	else 
+	{
+		//	If we have a cdda track without cddb information,...
+		if (url.GetProtocol()=="cdda" )
+		{
+			//	we have the tracknumber...
+			int iTrack=tag.GetTrackNumber();
+			if (iTrack >=1)
+			{
+				CStdString strText=g_localizeStrings.Get(435);	//	"Track"
+				if (strText.GetAt(strText.size()-1) != ' ')
+					strText+=" ";
+				CStdString strTrack;
+				strTrack.Format(strText+"%i", iTrack);
+			}
+
+			//	...and its duration for display.
+			if (tag.GetDuration() > 0)
+			{
+				CStdString strDuration, strTime;
+
+				CStdString strText=g_localizeStrings.Get(437);
+				if (strText.GetAt(strText.size()-1) != ' ')
+					strText+=" ";
+
+				CUtil::SecondsToHMSString(tag.GetDuration(), strTime);
+
+				strDuration=strText+strTime;
+			}
+		}	
+	}
+	*/
 }

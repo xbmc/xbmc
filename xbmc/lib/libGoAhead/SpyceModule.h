@@ -1,6 +1,5 @@
-#include "defines.h"
-#include "webs.h"
-#include "..\libPython\python.h"
+#include "includes.h"
+#include "../libPython/XBPython.h"
 
 #ifdef __cplusplus
 extern "C" {
