@@ -47,6 +47,7 @@ static UINT64 strtouint64(const char *s)
 
 CFileXBMSP::CFileXBMSP()
 {
+	CSectionLoader::Load("LIBXBMS");
 	m_fileSize=0;
 	m_bOpened=false;
 }
@@ -54,6 +55,7 @@ CFileXBMSP::CFileXBMSP()
 CFileXBMSP::~CFileXBMSP()
 {
 	Close();
+	CSectionLoader::Unload("LIBXBMS");
 }
 
 //*********************************************************************************************
@@ -62,7 +64,7 @@ bool CFileXBMSP::Open(const char* strUserName, const char* strPassword,const cha
 	char *fn = NULL, *tmp1, *tmp2, *info;
 
 	if (m_bOpened) Close();
-  CSectionLoader::Load("LIBXBMS");
+  
 	m_bOpened=false;
 	m_fileSize=0;
 	m_filePos=0;
@@ -183,7 +185,6 @@ void CFileXBMSP::Close()
 	}
 	m_bOpened=false;
 	m_fileSize=0;
-	CSectionLoader::Unload("LIBXBMS");
 }
 
 //*********************************************************************************************

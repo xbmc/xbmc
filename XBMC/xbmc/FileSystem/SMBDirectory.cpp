@@ -10,10 +10,12 @@ static char szPassWd[256];
 
 CSMBDirectory::CSMBDirectory(void)
 {
+	CSectionLoader::Load("LIBSMB");
 } 
 
 CSMBDirectory::~CSMBDirectory(void)
 {
+	CSectionLoader::Unload("LIBSMB");
 }
 
 
@@ -53,7 +55,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 		strRoot+="/";
 
 	{
-		CSectionLoader::Load("LIBSMB");
+		
 	  
 		
 		{
@@ -135,7 +137,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
   		}
 
 		}
-		CSectionLoader::Unload("LIBSMB");
+		
 	}
 	return bResult;
 }

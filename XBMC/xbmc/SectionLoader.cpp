@@ -25,26 +25,28 @@ bool CSectionLoader::IsLoaded(const CStdString& strSection)
 
 bool CSectionLoader::Load(const CStdString& strSection)
 {
+	CStdString strLog;
 	for (int i=0; i < (int)g_sectionLoader.m_vecLoadedSections.size(); ++i)
   {
     CSection& section=g_sectionLoader.m_vecLoadedSections[i];
     if (section.m_strSectionName==strSection) 
 		{
 			section.m_lReferenceCount++;
+			strLog.Format("SECTION:LoadSection(%s) count:%i\n", strSection.c_str(),section.m_lReferenceCount);
+			OutputDebugString(strLog);
 			return true;
 		}
   }
   
-	CStdString strLog;
   if ( NULL==XLoadSection(strSection.c_str() ) )
   {
-		strLog.Format("Section %s load failed!!\n", strSection.c_str());
+		strLog.Format("SECTION:LoadSection(%s) load failed!!\n", strSection.c_str());
     OutputDebugString(strLog.c_str() );
     return false;
   }
 	HANDLE hHandle=XGetSectionHandle(strSection.c_str());
 
-	strLog.Format("Section %s loaded size:%i\n", strSection.c_str(),XGetSectionSize(hHandle) );
+	strLog.Format("SECTION:Section %s loaded count:1 size:%i\n", strSection.c_str(),XGetSectionSize(hHandle) );
   OutputDebugString(strLog.c_str() );
 	
   CSection newSection;
@@ -58,9 +60,6 @@ void CSectionLoader::Unload(const CStdString& strSection)
 {
   if (!CSectionLoader::IsLoaded(strSection)) return ;
 
-  
-
-
   ivecLoadedSections i;
   i = g_sectionLoader.m_vecLoadedSections.begin();
   while (i != g_sectionLoader.m_vecLoadedSections.end())
@@ -68,13 +67,16 @@ void CSectionLoader::Unload(const CStdString& strSection)
     CSection& section=*i;
     if (section.m_strSectionName==strSection)
     {
+			CStdString strLog;
+			strLog.Format("SECTION:FreeSection(%s) count:%i\n", strSection.c_str(),section.m_lReferenceCount);
+			OutputDebugString(strLog);
       section.m_lReferenceCount--;
       if ( 0 == section.m_lReferenceCount)
       {
+
+				strLog.Format("SECTION:FreeSection(%s) deleted\n", strSection.c_str());
+				OutputDebugString(strLog);
         g_sectionLoader.m_vecLoadedSections.erase(i);
-        OutputDebugString("FreeSection:");
-        OutputDebugString(strSection.c_str());
-        OutputDebugString("\n");
         XFreeSection(strSection.c_str());
 
         return;
@@ -93,7 +95,7 @@ void CSectionLoader::UnloadAll()
   {
     CSection& section=*i;
     //g_sectionLoader.m_vecLoadedSections.erase(i);
-    OutputDebugString("FreeSection:");
+    OutputDebugString("SECTION:UnloadAll:");
 		OutputDebugString(section.m_strSectionName.c_str());
     OutputDebugString("\n");
     XFreeSection(section.m_strSectionName.c_str());

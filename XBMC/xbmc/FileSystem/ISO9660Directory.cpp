@@ -8,10 +8,12 @@ using namespace XISO9660;
 
 CISO9660Directory::CISO9660Directory(void)
 {
+	CSectionLoader::Load("ISO9660");
 }
 
 CISO9660Directory::~CISO9660Directory(void)
 {
+	CSectionLoader::Unload("ISO9660");
 }
 
 bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
@@ -26,7 +28,7 @@ bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &it
   CURL url(strPath);
   
 	
-  CSectionLoader::Load("ISO9660");
+  
   {
 	  CIoSupport cdrom;
 	  CISO9660 iso(cdrom);
@@ -86,6 +88,6 @@ bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &it
       }  
     }
   }
-	CSectionLoader::Unload("ISO9660");
+	
   return true;
 }
