@@ -4,6 +4,7 @@
 #include "guiWindowManager.h"
 #include "..\xbmc\Application.h"
 #include "..\xbmc\Utils\Log.h"
+#include "..\xbmc\Util.h"
 #include "..\xbmc\PlayListPlayer.h"
 
 extern CApplication g_application;
@@ -75,8 +76,14 @@ void CGUIRAMControl::Render()
 			dwImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;
 
 			movie.nAlpha += bIsNewImageAvailable ? -4:4;
+			
+			int nLowWatermark = 64;
+			if (bIsNewImageAvailable && !m_new[i].pImage)
+			{
+				nLowWatermark = 1;
+			}
 
-			if (movie.nAlpha<64)
+			if (movie.nAlpha<nLowWatermark)
 			{
 				movie.pImage->FreeResources();
 				m_current[i] = m_new[i];
@@ -87,11 +94,14 @@ void CGUIRAMControl::Render()
 				movie.nAlpha = 255;
 			}
 			
-			movie.pImage->SetAlpha((DWORD)movie.nAlpha);
-			movie.pImage->SetPosition(dwImageX,m_dwPosY);
-			movie.pImage->Render();		
+			if (movie.pImage)
+			{
+				movie.pImage->SetAlpha((DWORD)movie.nAlpha);
+				movie.pImage->SetPosition(dwImageX,m_dwPosY);
+				movie.pImage->Render();		
+			}
 		}
-		else
+		else if (bIsNewImageAvailable)
 		{
 			m_current[i] = m_new[i];
 			m_new[i].bValid = false;
@@ -141,49 +151,33 @@ void CGUIRAMControl::Render()
 
 		fTextY += m_fFontHeight + (FLOAT) m_dwTextSpaceY;
 	}
-/*
-	if (m_pFont2)
-	{
-		for(int i=0; i<RECENT_MOVIES; i++)
-		{			
-			Movie& movie = m_new[i].bValid ? m_new[i] : m_current[i];
-			if(movie.bValid)
-			{
-				swprintf(wszText, L"%S", movie.strTitle.c_str() );
-				m_pFont2->DrawText(	fTextX, fTextY, m_dwTextColor, wszText, XBFONT_RIGHT);
-				fTextY += m_fFont2Height + (FLOAT) m_dwTextSpaceY;
-			}
+
+	DWORD dwTextX = m_dwPosX + m_dwWidth;
+
+	for(int i=0; i<RECENT_MOVIES; i++)
+	{			
+		CGUIButtonControl* pButton = m_pTextButton[i];
+		Movie& movie = m_new[i].bValid ? m_new[i] : m_current[i];
+
+		if(movie.bValid)
+		{
+			FLOAT fTextWidth,fTextHeight;
+			swprintf(wszText, L"%S", movie.strTitle.c_str() );
+			m_pFont2->GetTextExtent(wszText, &fTextWidth, &fTextHeight);
+			
+			INT iButtonWidth = (INT) (fTextWidth+BUTTON_WIDTH_ADJUSTMENT);
+			INT iButtonHeight= (INT) (fTextHeight+BUTTON_HEIGHT_ADJUSTMENT);
+
+			pButton->SetText(movie.strTitle);
+			pButton->SetPosition(dwTextX-(DWORD)iButtonWidth,(DWORD)fTextY),
+			pButton->SetWidth(iButtonWidth);
+			pButton->SetHeight(iButtonHeight);
+			pButton->SetFocus( (i==m_iSelection) && HasFocus() );
+			pButton->Render();
+
+			fTextY += m_fFont2Height + (FLOAT) m_dwTextSpaceY;
 		}
-	}
-*/
-
-		DWORD dwTextX = m_dwPosX + m_dwWidth;
-
-		for(int i=0; i<RECENT_MOVIES; i++)
-		{			
-			CGUIButtonControl* pButton = m_pTextButton[i];
-			Movie& movie = m_new[i].bValid ? m_new[i] : m_current[i];
-
-			if(movie.bValid)
-			{
-				FLOAT fTextWidth,fTextHeight;
-				swprintf(wszText, L"%S", movie.strTitle.c_str() );
-				m_pFont2->GetTextExtent(wszText, &fTextWidth, &fTextHeight);
-				
-				INT iButtonWidth = (INT) (fTextWidth+BUTTON_WIDTH_ADJUSTMENT);
-				INT iButtonHeight= (INT) (fTextHeight+BUTTON_HEIGHT_ADJUSTMENT);
-
-				pButton->SetText(movie.strTitle);
-				pButton->SetPosition(dwTextX-(DWORD)iButtonWidth,(DWORD)fTextY),
-				pButton->SetWidth(iButtonWidth);
-				pButton->SetHeight(iButtonHeight);
-				pButton->SetFocus( (i==m_iSelection) && HasFocus() );
-				pButton->Render();
-
-				fTextY += m_fFont2Height + (FLOAT) m_dwTextSpaceY;
-			}
-		}
-	
+	}	
 }
 
 
@@ -223,11 +217,39 @@ void CGUIRAMControl::OnAction(const CAction &action)
 			break;
 		}
 
+		case ACTION_SHOW_INFO:
+		{
+			CLog::Log("Show info start");
+			UpdateTitle(m_current[m_iSelection].strFilepath, m_iSelection);
+			CLog::Log("Show info complete");
+		}
+
 		default:
 		{
 			CGUIControl::OnAction(action);
 			break;
 		}
+	}
+}
+
+void CGUIRAMControl::UpdateTitle(CStdString& strFilepath, INT nIndex)
+{
+	CGUIDialogKeyboard& dialog = *((CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD));
+	
+	CStdString strFilename = CUtil::GetFileName(strFilepath);
+
+	dialog.CenterWindow();
+	dialog.SetText(strFilename);
+	dialog.DoModal(m_dwParentID);
+	dialog.Close();	
+
+	if (dialog.IsDirty())
+	{
+		CMediaMonitor::Command command = {
+			CMediaMonitor::CommandType::Update, 
+			dialog.GetText(), strFilepath, nIndex };
+
+		m_pMonitor->QueueCommand(command);
 	}
 }
 
@@ -237,7 +259,8 @@ void CGUIRAMControl::OnMediaUpdate(	INT nIndex, CStdString& strFilepath,
 	CLog::Log( "OnMediaUpdate: " );
 	CLog::Log( strFilepath.c_str() );
 	
-	if (m_current[nIndex].strFilepath.Equals(strFilepath))
+	if ( (m_current[nIndex].strFilepath.Equals(strFilepath)) &&
+		(m_current[nIndex].strTitle.Equals(strTitle)) )
 	{
 		CLog::Log( "OnMediaUpdate complete." );
 		return;		
