@@ -34,6 +34,7 @@ namespace MEDIA_DETECT
 		static bool				IsDiscInDrive();
 
 		static CCdInfo*		GetCdInfo();
+		static CEvent			m_evAutorun;
 
 	protected:
 		void							UpdateDvdrom();
@@ -41,6 +42,7 @@ namespace MEDIA_DETECT
 		
 		void							DetectMediaType();
 		void							SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA, const CStdString& strDiscLabel );
+		void							SetShareName(CStdString& strShareName, CStdString& strStatus);
 
 	private:
 		CIoSupport				m_helper;
@@ -51,7 +53,6 @@ namespace MEDIA_DETECT
 		static time_t			m_LastPoll;
 		static CDetectDVDMedia* m_pInstance;
 
-
 		static CCdInfo*		m_pCdInfo;
 
 		bool							m_bStartup;
@@ -59,7 +60,6 @@ namespace MEDIA_DETECT
 		DWORD							m_dwTrayState;
 		DWORD							m_dwTrayCount;
 		DWORD							m_dwLastTrayState;
-	public:
-		static CEvent			m_evAutorun;
+		
 	};
 }

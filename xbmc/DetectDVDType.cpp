@@ -7,6 +7,7 @@
 #include "Settings.h"
 #include "playlistplayer.h"
 #include "utils/log.h"
+#include "localizeStrings.h"
 
 using namespace MEDIA_DETECT;
 
@@ -79,7 +80,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 				{
           m_isoReader.Reset();
 					m_DriveState = DRIVE_OPEN;
-					SetNewDVDShareUrl( "D:\\" ,false,"DVD-ROM (Open)");
+					SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(502));
 					//	Send Message to GUI that disc been ejected
 					CGUIMessage msg( GUI_MSG_DVDDRIVE_EJECTED_CD, 0, 0, 0, 0, NULL );
 					waitLock.Leave();
@@ -93,7 +94,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         {
 					// drive is not ready (closing, opening)
           m_isoReader.Reset();
-					SetNewDVDShareUrl( "D:\\" ,false,"DVD-ROM (Busy)");
+					SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(503));
           m_DriveState = DRIVE_NOT_READY;
 					//	DVD-ROM in undefined state
 					//	better delete old CD Information
@@ -120,7 +121,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 						// nothing in there...
             m_isoReader.Reset();
 						m_DriveState = DRIVE_CLOSED_NO_MEDIA;
-						SetNewDVDShareUrl( "D:\\" ,false,"DVD-ROM (Empty)");
+						SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(504));
             //	Send Message to GUI that disc has changed
 						CGUIMessage msg( GUI_MSG_DVDDRIVE_CHANGED_CD, 0, 0, 0, 0, NULL );
 						waitLock.Leave();
@@ -227,20 +228,16 @@ void CDetectDVDMedia::DetectMediaType()
 		CLog::Log("Filesystem is not supported");
 	}
 
-  CStdString strLabel="DVD-ROM";
-	CStdString strDiscLabel;
+  CStdString strLabel="";
 	if (bCDDA)
 	{
-		strDiscLabel="Audio-CD";
+		strLabel="Audio-CD";
 	}
 	else
 	{
-		strDiscLabel=m_pCdInfo->GetDiscLabel();
-		strDiscLabel.TrimRight(" ");
+		strLabel=m_pCdInfo->GetDiscLabel();
+		strLabel.TrimRight(" ");
 	}
-
-	if (!strDiscLabel.IsEmpty())
-		strLabel.Format("DVD-ROM (%s)",strDiscLabel);
 
   SetNewDVDShareUrl( strNewUrl ,bCDDA, strLabel);
 }
@@ -259,7 +256,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
 		if ( g_settings.m_vecMyMusicShares[i].m_iDriveType == SHARE_TYPE_DVD )
 		{
 			g_settings.m_vecMyMusicShares[i].strPath = strNewUrl;
-			g_settings.m_vecMyMusicShares[i].strName = strDescription;
+			SetShareName(g_settings.m_vecMyMusicShares[i].strName, strDescription);
 		}
 	}
 
@@ -269,7 +266,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
 		if ( g_settings.m_vecMyPictureShares[i].m_iDriveType == SHARE_TYPE_DVD )
 		{
 			g_settings.m_vecMyPictureShares[i].strPath = strNewUrl;
-			g_settings.m_vecMyPictureShares[i].strName = strDescription;
+			SetShareName(g_settings.m_vecMyPictureShares[i].strName, strDescription);
 		}
 	}
 
@@ -279,7 +276,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
 		if ( g_settings.m_vecMyFilesShares[i].m_iDriveType == SHARE_TYPE_DVD )
 		{
 			g_settings.m_vecMyFilesShares[i].strPath = strNewUrl;
-			g_settings.m_vecMyFilesShares[i].strName = strDescription;
+			SetShareName(g_settings.m_vecMyFilesShares[i].strName, strDescription);
 		}
 	}
 
@@ -289,7 +286,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
 		if ( g_settings.m_vecMyVideoShares[i].m_iDriveType == SHARE_TYPE_DVD )
 		{
 			g_settings.m_vecMyVideoShares[i].strPath = strNewUrl;
-			g_settings.m_vecMyVideoShares[i].strName = strDescription;
+			SetShareName(g_settings.m_vecMyVideoShares[i].strName, strDescription);
 		}
 	}
 }
@@ -391,4 +388,15 @@ CCdInfo* CDetectDVDMedia::GetCdInfo()
 	CSingleLock waitLock(m_muReadingMedia);
 	CCdInfo* pCdInfo = m_pCdInfo;
 	return pCdInfo;
+}
+
+// add status to sharename -> share (status)
+void CDetectDVDMedia::SetShareName(CStdString& strShareName, CStdString& strStatus)
+{
+	// find last '(' if it's there and remove it. Needed so user can define
+	// his own dvd share name in xboxmediacenter.xml
+	CStdString strTemp = strShareName;
+	int iPos = strTemp.ReverseFind('(') - 1;
+	if (iPos > 0) strTemp.erase(iPos, strTemp.size());
+	strShareName.Format("%s (%s)", strTemp.c_str(), strStatus.c_str());
 }
