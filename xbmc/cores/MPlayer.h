@@ -35,6 +35,7 @@ public:
 	virtual void		GetAudioInfo( CStdString& strAudioInfo);
 	virtual void		GetVideoInfo( CStdString& strVideoInfo);
 	virtual void		GetGeneralInfo( CStdString& strVideoInfo);
+	virtual void    Update();
 protected:
 	virtual void		OnStartup();
 	virtual void		OnExit();

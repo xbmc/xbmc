@@ -525,7 +525,6 @@ void CGUIWindowPictures::OnSlideShow()
 
 void CGUIWindowPictures::OnCreateThumbs()
 {
-  CPicture picture;
 	m_dlgProgress->SetHeading(110);
 	m_dlgProgress->StartModal(GetID());
   for (int i=0; i < (int)m_vecItems.size();++i)
@@ -543,6 +542,7 @@ void CGUIWindowPictures::OnCreateThumbs()
 			m_dlgProgress->SetLine(2, L"");
 			m_dlgProgress->Progress();
 			if ( m_dlgProgress->IsCanceled() ) break;
+			CPicture picture;
       picture.CreateThumnail(pItem->m_strPath);
     }
   }

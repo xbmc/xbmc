@@ -410,3 +410,9 @@ void CMPlayer::GetGeneralInfo( CStdString& strVideoInfo)
 	strVideoInfo.Format("dropped:%i Q:%i cache:%i ct:%2.2f av:%2.2f", 
 												lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, fAVDelay);
 }
+
+extern void xbox_video_update();
+void CMPlayer::Update()
+{
+	xbox_video_update();
+}
