@@ -70,8 +70,19 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 			m_bViewAsIconsRoot=g_stSettings.m_bMyMusicPlaylistViewAsIcons;
 
 			Update(m_strDirectory);
+
 			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_nSelectedItem);
 			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_nSelectedItem);
+
+			if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC)
+			{
+				int iSong=g_playlistPlayer.GetCurrentSong();
+				if (iSong >= 0 && iSong<=(int)m_vecItems.size())
+				{
+					CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iSong);
+					CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iSong);
+				}
+			}
 			return true;
 		}
 		break;
