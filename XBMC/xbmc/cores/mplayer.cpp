@@ -9,6 +9,7 @@
 #include "EMUkernel32.h"
 #include "dlgcache.h"
 #include "../FileSystem/FileSmb.h"
+#include "../FileSystem/File.h"
 
 #define KEY_ENTER 13
 #define KEY_TAB 9
@@ -615,6 +616,27 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			CLog::Log(" dvddevice: %s", strPath.c_str());
 		}	
 
+		CFile* pFile = new CFile();
+		__int64 len = 0;
+		if (pFile->Open(strFile.c_str(), true))
+		{
+			len = pFile->GetLength();
+		}
+		delete pFile;
+
+		if (len > 0x7fffffff)
+		{
+			CStdString strExtension;
+			CUtil::GetExtension(strFile,strExtension);
+			strExtension.MakeLower();
+			if (strExtension == ".avi")
+			{
+				// fixes large opendml avis - mplayer can't handle big indices
+				options.SetNoIdx(true);
+				CLog::Log("Trying to play a large avi file. Setting -noidx");
+			}
+		}
+
 		if (CUtil::IsRAR(strFile))
 		{
 			options.SetNoIdx(true);
@@ -696,7 +718,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
 				}
 			}
 			// check if the codec is AC3 or DTS
-			if (strstr(strAudioCodec,"AC3")==NULL)
+			bool bDTS = false;
+			if (strstr(strAudioCodec,"AC3")==NULL &&
+				!(bDTS = !(strstr(strAudioCodec,"DTS")==NULL)))
 			{
 				// no make sure AC3 passthru is off (used below)
 				options.SetAC3PassTru(false);
@@ -708,39 +732,52 @@ bool CMPlayer::openfile(const CStdString& strFile)
 				// DTS files are reported as AC3 in mplayer as at 30/4/2004
 				// This may be changed at a later date, so it'll pay to keep an eye
 				// on things.
-				if (lSampleRate!=48000 && g_stSettings.m_bUseDigitalOutput && bSupportsDTSOut)
-				{	// Could be DTS - lets restart to see
-					options.SetAC3PassTru(true);
-					options.SetChannels(6);
-					CLog::Log("  --------------- restart to test for DTS ---------------");
-					mplayer_close_file();
-					options.GetOptions(argc,argv);
-					load();
-					mplayer_init(argc,argv);
-					mplayer_setcache_size(iCacheSize);
-					if(bFileIsDVDImage || bFileIsDVDIfoFile)
-						iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
-					else
-						iRet=mplayer_open_file(strFile.c_str());
-					if (iRet <= 0)
+				if (bDTS || (lSampleRate!=48000 && g_stSettings.m_bUseDigitalOutput && bSupportsDTSOut))
+				{
+					if (bDTS)
 					{
-            throw iRet;
-					}
-					// OK, now check what we've got now...
-					long lNewSampleRate;
-					int iNewChannels;
-					mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lNewSampleRate, &iNewChannels, &bVBR);
-					if (lNewSampleRate==48000)
-					{	// yep - was DTS after all!
-						options.SetAC3PassTru(true);
-						//options.SetChannels(2);
-						bNeed2Restart=false;
+						if (lSampleRate==48000 && g_stSettings.m_bUseDigitalOutput && bSupportsDTSOut)
+						{
+							// DTS, woohoo, change to passthrough mode
+							options.SetAC3PassTru(true);
+							bNeed2Restart=true;
+						}
 					}
 					else
-					{	// nope - must be non-48kHz AC3 or something else...
-						options.SetAC3PassTru(false);
-						iChannels = iNewChannels;
-						bNeed2Restart=true;
+					{
+						// Could be DTS - lets restart to see
+						options.SetAC3PassTru(true);
+						options.SetChannels(6);
+						CLog::Log("  --------------- restart to test for DTS ---------------");
+						mplayer_close_file();
+						options.GetOptions(argc,argv);
+						load();
+						mplayer_init(argc,argv);
+						mplayer_setcache_size(iCacheSize);
+						if(bFileIsDVDImage || bFileIsDVDIfoFile)
+							iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
+						else
+							iRet=mplayer_open_file(strFile.c_str());
+						if (iRet <= 0)
+						{
+							throw iRet;
+						}
+						// OK, now check what we've got now...
+						long lNewSampleRate;
+						int iNewChannels;
+						mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lNewSampleRate, &iNewChannels, &bVBR);
+						if (lNewSampleRate==48000)
+						{	// yep - was DTS after all!
+							options.SetAC3PassTru(true);
+							//options.SetChannels(2);
+							bNeed2Restart=false;
+						}
+						else
+						{	// nope - must be non-48kHz AC3 or something else...
+							options.SetAC3PassTru(false);
+							iChannels = iNewChannels;
+							bNeed2Restart=true;
+						}
 					}
 				}
 				else if (lSampleRate==48000 && g_stSettings.m_bUseDigitalOutput && bSupportsAC3Out)
