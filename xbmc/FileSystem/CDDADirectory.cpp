@@ -156,6 +156,8 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 					pItem->m_bIsFolder=false;
 					pItem->m_strPath=strPath;
 					items.push_back(pItem);
+					pItem->m_musicInfoTag.SetDuration( ( pCdInfo->GetTrackInformation( i+1 ).nMins * 60 ) 
+						+ pCdInfo->GetTrackInformation( i+1 ).nSecs );
 				}
 			}
 		}//if (nTracks>0)
