@@ -74,12 +74,12 @@ void CGUIWindowMusicTop100::OnAction(const CAction &action)
 	CGUIWindowMusicBase::OnAction(action);
 }
 
-void CGUIWindowMusicTop100::GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items)
+void CGUIWindowMusicTop100::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-	if (items.size() )
+	if (items.Size() )
 	{
 		// cleanup items;
-		CFileItemList itemlist(items);
+		items.Clear();
 	}
 
 	VECSONGS songs;
@@ -101,7 +101,7 @@ void CGUIWindowMusicTop100::GetDirectory(const CStdString &strDirectory, VECFILE
 		pFileItem->m_musicInfoTag.SetTitle(song.strTitle);
 		pFileItem->m_musicInfoTag.SetTrackNumber(song.iTrack);
 		pFileItem->m_musicInfoTag.SetLoaded(true);
-		items.push_back(pFileItem);
+		items.Add(pFileItem);
 	}
 }
 
@@ -159,7 +159,7 @@ void CGUIWindowMusicTop100::UpdateButtons()
 	SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS,iString);
 
 	//	Update object count label
-	int iItems=m_vecItems.size();
+	int iItems=m_vecItems.Size();
 	if (iItems)
 	{
 		CFileItem* pItem=m_vecItems[0];
@@ -174,7 +174,7 @@ void CGUIWindowMusicTop100::UpdateButtons()
 
 void CGUIWindowMusicTop100::OnClick(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
 	CFileItem* pItem=m_vecItems[iItem];
 
 	//	done a search?
@@ -187,7 +187,7 @@ void CGUIWindowMusicTop100::OnClick(int iItem)
 	g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC_TEMP ).Clear();
 	g_playlistPlayer.Reset();
 
-	for ( int i = 0; i < (int) m_vecItems.size(); i++ ) 
+	for ( int i = 0; i < (int) m_vecItems.Size(); i++ ) 
 	{
 		CFileItem* pItem = m_vecItems[i];
 
@@ -223,14 +223,14 @@ void CGUIWindowMusicTop100::OnFileItemFormatLabel(CFileItem* pItem)
 		pItem->SetIconImage(pItem->GetThumbnailImage());
 }
 
-void CGUIWindowMusicTop100::DoSort(VECFILEITEMS& items)
+void CGUIWindowMusicTop100::DoSort(CFileItemList& items)
 {
 
 }
 
 void CGUIWindowMusicTop100::OnSearchItemFound(const CFileItem* pSelItem)
 {
-	for (int i=0; i<(int)m_vecItems.size(); i++)
+	for (int i=0; i<(int)m_vecItems.Size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[i];
 		if (pItem->m_strPath==pSelItem->m_strPath)
@@ -254,9 +254,9 @@ void CGUIWindowMusicTop100::OnSearchItemFound(const CFileItem* pSelItem)
 /// \brief Search for a song or a artist with search string \e strSearch in the musicdatabase and return the found \e items
 /// \param strSearch The search string 
 /// \param items Items Found
-void CGUIWindowMusicTop100::DoSearch(const CStdString& strSearch,VECFILEITEMS& items)
+void CGUIWindowMusicTop100::DoSearch(const CStdString& strSearch,CFileItemList& items)
 {
-	for (int i=0; i<(int)m_vecItems.size(); i++)
+	for (int i=0; i<(int)m_vecItems.Size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[i];
 		CMusicInfoTag& tag=pItem->m_musicInfoTag;
@@ -273,7 +273,7 @@ void CGUIWindowMusicTop100::DoSearch(const CStdString& strSearch,VECFILEITEMS& i
 			CStdString strSong=g_localizeStrings.Get(179);	//	Song
 			CFileItem* pNewItem=new CFileItem(*pItem);
 			pNewItem->SetLabel("[" + strSong + "] " + tag.GetTitle() + " - " + tag.GetArtist());
-			items.push_back(pNewItem);
+			items.Add(pNewItem);
 		}
 	}
 }

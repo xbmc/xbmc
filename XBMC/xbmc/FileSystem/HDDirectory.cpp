@@ -14,11 +14,11 @@ CHDDirectory::~CHDDirectory(void)
 {
 }
 
-bool CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
+bool CHDDirectory::GetDirectory(const CStdString& strPath,CFileItemList &items)
 {
 	WIN32_FIND_DATA wfd;
 
-	VECFILEITEMS vecCacheItems;
+	CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strPath);
 
 	CStdString strRoot=strPath;
@@ -60,8 +60,8 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
           FileTimeToSystemTime(&localTime, &pItem->m_stTime);
   	
-					vecCacheItems.push_back(pItem);
-          items.push_back(new CFileItem(*pItem));   
+					vecCacheItems.Add(pItem);
+          items.Add(new CFileItem(*pItem));   
         }
       }
       else
@@ -76,11 +76,11 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 				FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 				if ( IsAllowed( wfd.cFileName) )
 				{
-					vecCacheItems.push_back(pItem);
-					items.push_back(new CFileItem(*pItem));
+					vecCacheItems.Add(pItem);
+					items.Add(new CFileItem(*pItem));
 				}
 				else
- 					vecCacheItems.push_back(pItem);
+ 					vecCacheItems.Add(pItem);
      }
     }
   } while (FindNextFile((HANDLE)hFind, &wfd));

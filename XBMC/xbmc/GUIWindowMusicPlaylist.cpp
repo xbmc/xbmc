@@ -51,7 +51,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 			//	global playlist changed outside playlist window
 			Update("");
 
-			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.size()<=0)
+			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.Size()<=0)
 			{
 				m_iLastControl=CONTROL_BTNVIEWASICONS;
 				SET_CONTROL_FOCUS(m_iLastControl, 0);
@@ -81,7 +81,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 				CONTROL_SELECT(CONTROL_BTNSHUFFLE);
 			}
 
-			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.size()<=0)
+			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.Size()<=0)
 			{
 				m_iLastControl=CONTROL_BTNVIEWASICONS;
 				SET_CONTROL_FOCUS(m_iLastControl, 0);
@@ -90,7 +90,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 			if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC)
 			{
 				int iSong=g_playlistPlayer.GetCurrentSong();
-				if (iSong >= 0 && iSong<=(int)m_vecItems.size())
+				if (iSong >= 0 && iSong<=m_vecItems.Size())
 				{
 					CONTROL_SELECT_ITEM(CONTROL_LIST,iSong);
 					CONTROL_SELECT_ITEM(CONTROL_THUMBS,iSong);
@@ -108,7 +108,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 			if (m_tagloader.IsLoading())
 				m_tagloader.StopThread();
 
-			for (int i=0; i<(int)m_vecItems.size(); ++i)
+			for (int i=0; i<(int)m_vecItems.Size(); ++i)
 			{
 				CFileItem* pItem=m_vecItems[i];
 				pItem->FreeIcons();
@@ -261,9 +261,9 @@ void CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iAction)
     }
 }
 
-void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items)
+void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-	if (items.size()) 
+	if (items.Size()) 
 	{
 		ClearFileItems();
 	}
@@ -275,7 +275,7 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFI
 		iCurrentSong=g_playlistPlayer.GetCurrentSong();
 
 	CStdString strPath,strFileName;
-	m_vecItems.reserve(playlist.size());
+	m_vecItems.Reserve(playlist.size());
 
 	for (int i=0; i < playlist.size(); ++i)
 	{
@@ -303,12 +303,12 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFI
 			else
 				item.SetLabel2("");
 		}
-		items.push_back(&item);
+		items.Add(&item);
 	}
 
 	//	Set default icons first,
 	//	the tagloader will load the thumbs later
-	CUtil::FillInDefaultIcons(m_vecItems);
+	m_vecItems.FillInDefaultIcons();
 }
 
 void CGUIWindowMusicPlayList::SavePlayList()
@@ -324,7 +324,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
 		strPath += strNewFileName;
 		strPath+=".m3u";
 		CPlayListM3U playlist;
-		for (int i=0; i < (int)m_vecItems.size(); ++i)
+		for (int i=0; i < (int)m_vecItems.Size(); ++i)
 		{
 			CFileItem* pItem = m_vecItems[i];
 			CPlayList::CPlayListItem newItem;
@@ -402,24 +402,12 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
 		}
 	}
 
-	int iCount=0;
-	ivecItems it=m_vecItems.begin();
-	while (it!=m_vecItems.end())
-	{
-		if (iCount==iItem)
-		{
-			m_vecItems.erase(it);
-			break;
-		}
-		
-		++it;
-		iCount++;
-	}
+	m_vecItems.Remove(iItem);
 
 	UpdateListControl();
 	UpdateButtons();
 
-	if (m_vecItems.size()<=0)
+	if (m_vecItems.Size()<=0)
 	{
 		SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 	}
@@ -433,7 +421,7 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
 void CGUIWindowMusicPlayList::UpdateButtons()
 {
 	//	Update playlist buttons
-	if (m_vecItems.size() )
+	if (m_vecItems.Size() )
 	{
 		CONTROL_ENABLE(CONTROL_BTNSHUFFLE);
 		CONTROL_ENABLE(CONTROL_BTNSAVE);
@@ -516,7 +504,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 	SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS,iString);
 
 	//	Update object count label
-	int iItems=m_vecItems.size();
+	int iItems=m_vecItems.Size();
 	if (iItems)
 	{
 		CFileItem* pItem=m_vecItems[0];
@@ -531,7 +519,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 
 void CGUIWindowMusicPlayList::OnClick(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= m_vecItems.Size() ) return;
 	CFileItem* pItem=m_vecItems[iItem];
 	CStdString strPath=pItem->m_strPath;
 	g_playlistPlayer.SetCurrentPlaylist( PLAYLIST_MUSIC );
@@ -541,7 +529,7 @@ void CGUIWindowMusicPlayList::OnClick(int iItem)
 
 void CGUIWindowMusicPlayList::OnQueueItem(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= m_vecItems.Size() ) return;
 	RemovePlayListItem(iItem);
 }
 
@@ -549,7 +537,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 {
 	//	FIXME: get the position of the item in the playlist
 	int iTrack=0;
-	for (int i=0; i<(int)m_vecItems.size(); ++i)
+	for (int i=0; i<m_vecItems.Size(); ++i)
 	{
 		if (pItem==m_vecItems[i])
 		{
@@ -611,5 +599,5 @@ void CGUIWindowMusicPlayList::ClearFileItems()
   CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
   g_graphicsContext.SendMessage(msg2);
 
-  m_vecItems.clear();
+  m_vecItems.Clear();
 }

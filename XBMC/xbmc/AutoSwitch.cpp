@@ -22,7 +22,7 @@ CAutoSwitch::~CAutoSwitch(void)
 
 /// \brief Generic function to add a layer of transparency to the calling window
 /// \param vecItems Vector of FileItems passed from the calling window
-int CAutoSwitch::GetView(VECFILEITEMS &vecItems)
+int CAutoSwitch::GetView(CFileItemList &vecItems)
 {
 	int iViewAs = VIEW_AS_LIST;
 	int iSortMethod = -1;
@@ -106,14 +106,14 @@ int CAutoSwitch::GetView(VECFILEITEMS &vecItems)
 /// \brief Auto Switch method based on the current directory \e containing ALL folders and \e atleast one non-default thumb
 /// \param bBigThumbs Use Big Thumbs?
 /// \param vecItems Vector of FileItems
-int CAutoSwitch::ByFolders(bool bBigThumbs, VECFILEITEMS& vecItems)
+int CAutoSwitch::ByFolders(bool bBigThumbs, CFileItemList& vecItems)
 {
 	// is the list all folders?
-	if (CUtil::GetFolderCount(vecItems) == vecItems.size())
+	if (vecItems.GetFolderCount() == vecItems.Size())
 	{
 		// test for non-default thumbs
 		bool bThumbs = false;
-		for (int i=0; i<(int)vecItems.size(); i++)
+		for (int i=0; i<vecItems.Size(); i++)
 		{
 			CFileItem* pItem = vecItems[i];
 			if (!pItem->HasDefaultThumb())
@@ -143,7 +143,7 @@ int CAutoSwitch::ByFolders(bool bBigThumbs, VECFILEITEMS& vecItems)
 /// \brief Auto Switch method based on the current directory \e not containing ALL files and \e atleast one non-default thumb
 /// \param bBigThumbs Use Big Thumbs?
 /// \param vecItems Vector of FileItems
-int CAutoSwitch::ByFiles(bool bBigThumbs, bool bHideParentDirItems, VECFILEITEMS& vecItems)
+int CAutoSwitch::ByFiles(bool bBigThumbs, bool bHideParentDirItems, CFileItemList& vecItems)
 {
 	bool bThumbs = false;
 	int iCompare = 0;
@@ -155,10 +155,10 @@ int CAutoSwitch::ByFiles(bool bBigThumbs, bool bHideParentDirItems, VECFILEITEMS
 	}
 
 	// confirm the list is not just files and folderback
-	if (CUtil::GetFolderCount(vecItems) > iCompare)
+	if (vecItems.GetFolderCount() > iCompare)
 	{
 		// test to see if there are thumbs other than the defaults
-		for (int i=0; i<(int)vecItems.size(); i++)
+		for (int i=0; i<vecItems.Size(); i++)
 		{
 			CFileItem* pItem = vecItems[i];
 			if (!pItem->HasDefaultThumb())
@@ -191,17 +191,17 @@ int CAutoSwitch::ByFiles(bool bBigThumbs, bool bHideParentDirItems, VECFILEITEMS
 /// \param bBigThumbs Use Big Thumbs?
 /// \param iPercent Percent of non-default thumbs to autoswitch on
 /// \param vecItems Vector of FileItems
-int CAutoSwitch::ByThumbPercent(bool bBigThumbs, bool bHideParentDirItems, int iPercent, VECFILEITEMS& vecItems)
+int CAutoSwitch::ByThumbPercent(bool bBigThumbs, bool bHideParentDirItems, int iPercent, CFileItemList& vecItems)
 {
 	bool bThumbs = false;
 	int iNonDefault = 0;
-	int iNumItems = (int)vecItems.size();
+	int iNumItems = vecItems.Size();
 	if (!bHideParentDirItems)
 	{
 		iNumItems--;
 	}
 
-	for (int i=0; i<(int)vecItems.size(); i++)
+	for (int i=0; i<vecItems.Size(); i++)
 	{
 		CFileItem* pItem = vecItems[i];
 		if (!pItem->HasDefaultThumb())

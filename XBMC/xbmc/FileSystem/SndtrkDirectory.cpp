@@ -14,7 +14,7 @@ CSndtrkDirectory::~CSndtrkDirectory(void)
 }
 
 
-bool  CSndtrkDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
+bool  CSndtrkDirectory::GetDirectory(const CStdString& strPath,CFileItemList &items)
 {
 	CStdString strRoot=strPath;
 	if(IsAlone(strRoot))
@@ -41,7 +41,7 @@ bool  CSndtrkDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 					itoa (stData.uSoundtrackId,tmpvar,10);
 					pItem->m_strPath+=tmpvar;
 					pItem->m_bIsFolder=true;
-					items.push_back(pItem);
+					items.Add(pItem);
 				}
 			} while( XFindNextSoundtrack( hSoundtrack, &stData ) );
 		}
@@ -52,7 +52,7 @@ bool  CSndtrkDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 		pItem2->m_strPath="soundtrack://";
 		pItem2->m_bIsFolder=true;
 		pItem2->SetLabel("..");
-		items.push_back(pItem2);
+		items.Add(pItem2);
 //		char *ptr=NULL;
 		char *ptr = strstr(strRoot,"//");
 		ptr+=2;
@@ -88,7 +88,7 @@ bool  CSndtrkDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 			pItem->m_strPath+=tmpvar;
 			pItem->m_strPath+=".wma";
 			pItem->m_bIsFolder=false;
-			items.push_back(pItem);
+			items.Add(pItem);
 			}
 		}
 	}

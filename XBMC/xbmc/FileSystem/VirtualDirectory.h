@@ -14,13 +14,13 @@ namespace DIRECTORY
   public:
     CVirtualDirectory(void);
     virtual ~CVirtualDirectory(void);
-    virtual bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
+    virtual bool  GetDirectory(const CStdString& strPath,CFileItemList &items);
     void          SetShares(VECSHARES& vecShares);
 		bool					IsShare(const CStdString& strPath) const;
 		CStdString		GetDVDDriveUrl();
   
   protected:
-    void          CacheThumbs(VECFILEITEMS &items);
+    void          CacheThumbs(CFileItemList &items);
     VECSHARES*    m_vecShares;
   };
 };

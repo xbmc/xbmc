@@ -50,7 +50,7 @@ protected:
 		\param strDirectory Path to read
 		\param items Fill with items specified in \e strDirectory
 		*/
-	virtual void							GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items)=0;
+	virtual void							GetDirectory(const CStdString &strDirectory, CFileItemList &items)=0;
  	/*!
 		\brief Will be called when an item in list/thumb control has been clicked
 		\param iItem List/thumb control item that has been clicked on
@@ -70,13 +70,13 @@ protected:
 		\brief Will be called to sort items. Provide a sort method.
 		\param items Items to sort
 		*/
-	virtual	void							DoSort(VECFILEITEMS& items)=0;
+	virtual	void							DoSort(CFileItemList& items)=0;
  	/*!
 		\brief Overwrite to update your gui buttons (visible, enable,...)
 		*/
 	virtual	void							UpdateButtons();
 	virtual	void							OnQueueItem(int iItem);
-	virtual void							OnRetrieveMusicInfo(VECFILEITEMS& items);
+	virtual void							OnRetrieveMusicInfo(CFileItemList& items);
 	virtual void							GoParentFolder();
 					void							RetrieveMusicInfo();
 					void							OnInfo(int iItem);
@@ -92,7 +92,7 @@ protected:
 	virtual void							OnScan() {};
 					void							OnSearch();
 	virtual	void							OnSearchItemFound(const CFileItem* pItem);
-	virtual void							DoSearch(const CStdString& strSearch,VECFILEITEMS& items);
+	virtual void							DoSearch(const CStdString& strSearch,CFileItemList& items);
 					bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
 					bool							GetKeyboard(CStdString& strInput);
 	virtual	void							GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
@@ -104,7 +104,7 @@ protected:
 
 	CFileItem									m_Directory;	///< Holds the current direcotry path after calling Update()
 	CVirtualDirectory					m_rootDir;	///< Used to get directories from shares and the shares itself
-  VECFILEITEMS							m_vecItems;	///< Represents the current items listed in the list/thumb control
+  CFileItemList							m_vecItems;	///< Represents the current items listed in the list/thumb control
 	typedef vector <CFileItem*>::iterator ivecItems;	///< CFileItem* vector Iterator
 	CGUIDialogProgress*				m_dlgProgress;	///< Progress dialog
 	CDirectoryHistory					m_history;	///< Previous items selected as string for list/thumb control

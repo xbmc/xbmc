@@ -28,7 +28,7 @@ namespace DIRECTORY
   public:
     CSndtrkDirectory(void);
     virtual ~CSndtrkDirectory(void);
-    virtual bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
+    virtual bool  GetDirectory(const CStdString& strPath,CFileItemList &items);
 	bool IsAlone(const CStdString& strPath);
 	bool FindTrackName(const CStdString& strPath, char* NameOfSong);
   };

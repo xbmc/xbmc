@@ -195,7 +195,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				rootDir.SetMask(".cut");
 				rootDir.GetDirectory(m_Directory.m_strPath,m_vecItems);
 
-				for (int i=0; i < (int)m_vecItems.size(); ++i)
+				for (int i=0; i < (int)m_vecItems.Size(); ++i)
 				{
 					CFileItem* pItem=m_vecItems[i];
 					if (pItem->IsShortCut())
@@ -206,13 +206,13 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
 				// create new ones.
 
-				VECFILEITEMS items;
+				CFileItemList items;
 				{
 					m_Directory.m_strPath="C:";
 					rootDir.SetMask(".xbe");
 					rootDir.GetDirectory("C:\\",items);
 					OnScan(items,iTotalApps);
-					CFileItemList itemlist(items);
+					items.Clear();
 				}
 
 				{
@@ -220,7 +220,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 					rootDir.SetMask(".xbe");
 					rootDir.GetDirectory("E:\\",items);
 					OnScan(items,iTotalApps);
-					CFileItemList itemlist(items);
+					items.Clear();
 				}
 
 				if (g_stSettings.m_bUseFDrive)
@@ -229,7 +229,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 					rootDir.SetMask(".xbe");
 					rootDir.GetDirectory("F:\\",items);
 					OnScan(items,iTotalApps);
-					CFileItemList itemlist(items);
+					items.Clear();
 				}
 				if (g_stSettings.m_bUseGDrive)
 				{
@@ -237,7 +237,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 					rootDir.SetMask(".xbe");
 					rootDir.GetDirectory("G:\\",items);
 					OnScan(items,iTotalApps);
-					CFileItemList itemlist(items);
+					items.Clear();
 				}
 
 
@@ -423,7 +423,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 					pItem->m_bIsFolder=true;
 					FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
 					FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-					m_vecItems.push_back(pItem);
+					m_vecItems.Add(pItem);
 				}
 				else
 				{
@@ -460,7 +460,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 
 						FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
 						FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-						m_vecItems.push_back(pItem);
+						m_vecItems.Add(pItem);
 					}
 					else
 					{
@@ -480,7 +480,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 
 						FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
 						FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-						m_vecItems.push_back(pItem);
+						m_vecItems.Add(pItem);
 					}
 
 					else 
@@ -503,7 +503,7 @@ void CGUIWindowPrograms::ClearFileItems()
 	CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
 	g_graphicsContext.SendMessage(msg2);
 
-	CFileItemList itemlist(m_vecItems); // will clean up everything
+	m_vecItems.Clear();
 }
 
 void CGUIWindowPrograms::Update(const CStdString &strDirectory)
@@ -564,7 +564,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 					}
 				}
 			}
-			m_vecItems.push_back(pItem);
+			m_vecItems.Add(pItem);
 		}
 
 		m_strParentPath = "";
@@ -621,7 +621,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 				pItem->m_strPath=strParentPath;
 				pItem->m_bIsShareOrDrive=false;
 				pItem->m_bIsFolder=true;
-				m_vecItems.push_back(pItem);
+				m_vecItems.Add(pItem);
 			}
 			m_strParentPath = strParentPath;
 	}
@@ -657,7 +657,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 						FileTimeToLocalFileTime(&FileAttributeData.ftLastWriteTime,&localTime);
 						FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 						pItem->m_dwSize=FileAttributeData.nFileSizeLow;
-						m_vecItems.push_back(pItem);
+						m_vecItems.Add(pItem);
 					}
 					else
 					{      
@@ -682,10 +682,10 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 	//		m_database.GetProgramsByBookmark(m_strBookmarkName, m_vecItems, bOnlyDefaultXBE); 
 
 	CUtil::ClearCache();
-	CUtil::SetThumbs(m_vecItems);
+	m_vecItems.SetThumbs();
 	if (g_guiSettings.GetBool("FileLists.HideExtensions"))
-		CUtil::RemoveExtensions(m_vecItems);
-	CUtil::FillInDefaultIcons(m_vecItems);
+		m_vecItems.RemoveExtensions();
+	m_vecItems.FillInDefaultIcons();
 
 	OnSort();
 	UpdateButtons();
@@ -704,7 +704,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 
 void CGUIWindowPrograms::OnClick(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
 	CFileItem* pItem=m_vecItems[iItem];
 	if (pItem->m_bIsFolder)
 	{
@@ -782,7 +782,7 @@ void CGUIWindowPrograms::OnClick(int iItem)
 
 struct SSortProgramsByName
 {
-	bool operator()(CFileItem* pStart, CFileItem* pEnd)
+	static bool Sort(CFileItem* pStart, CFileItem* pEnd)
 	{
 		CFileItem& rpStart=*pStart;
 		CFileItem& rpEnd=*pEnd;
@@ -889,7 +889,7 @@ void CGUIWindowPrograms::OnSort()
 
 
 
-	for (int i=0; i < (int)m_vecItems.size(); i++)
+	for (int i=0; i < (int)m_vecItems.Size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[i];
 		if (g_stSettings.m_iMyProgramsSortMethod==0||g_stSettings.m_iMyProgramsSortMethod==2)
@@ -928,9 +928,9 @@ void CGUIWindowPrograms::OnSort()
 	}
 
 
-	sort(m_vecItems.begin(), m_vecItems.end(), SSortProgramsByName());
+	m_vecItems.Sort(SSortProgramsByName::Sort);
 
-	for (int i=0; i < (int)m_vecItems.size(); i++)
+	for (int i=0; i < (int)m_vecItems.Size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[i];
 		CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),CONTROL_LIST,0,0,(void*)pItem);
@@ -994,7 +994,7 @@ void CGUIWindowPrograms::UpdateButtons()
 		g_graphicsContext.SendMessage(msg);
 	}
 
-	int iItems=m_vecItems.size();
+	int iItems=m_vecItems.Size();
 	if (iItems)
 	{
 		CFileItem* pItem=m_vecItems[0];
@@ -1010,7 +1010,7 @@ void CGUIWindowPrograms::UpdateButtons()
 
 }
 
-void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
+void CGUIWindowPrograms::OnScan(CFileItemList& items, int& iTotalAppsFound)
 {
 	// remove username + password from m_strDirectory for display in Dialog
 	CURL url(m_Directory.m_strPath);
@@ -1036,7 +1036,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 	if ((int)m_Directory.m_strPath.size() != 2) // true for C:, E:, F:, G:
 	{
 		// first check all files
-		for (int i=0; i < (int)items.size(); ++i)
+		for (int i=0; i < (int)items.Size(); ++i)
 		{
 			CFileItem *pItem= items[i];
 			if (! pItem->m_bIsFolder)
@@ -1050,7 +1050,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 		}
 	}
 
-	for (int i=0; i < (int)items.size(); ++i)
+	for (int i=0; i < (int)items.Size(); ++i)
 	{
 		CFileItem *pItem= items[i];
 		if (pItem->m_bIsFolder)
@@ -1062,12 +1062,12 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 				if (pItem->m_strPath != "E:\\UDATA" && pItem->m_strPath !="E:\\TDATA")
 				{
 					m_Directory.m_strPath=pItem->m_strPath;
-					VECFILEITEMS subDirItems;
-					CFileItemList itemlist(subDirItems); // will clean up everything
+					CFileItemList subDirItems;
 					CHDDirectory rootDir;
 					rootDir.SetMask(".xbe");
 					rootDir.GetDirectory(pItem->m_strPath,subDirItems);
 					OnScan(subDirItems,iTotalAppsFound);
+					subDirItems.Clear();
 					m_Directory.m_strPath=strDir;
 				}
 			}
@@ -1102,10 +1102,10 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 	g_directoryCache.Clear();
 }
 
-void CGUIWindowPrograms::DeleteThumbs(VECFILEITEMS& items)
+void CGUIWindowPrograms::DeleteThumbs(CFileItemList& items)
 {
 	CUtil::ClearCache();
-	for (int i=0; i < (int)items.size(); ++i)
+	for (int i=0; i < (int)items.Size(); ++i)
 	{
 		CFileItem *pItem= items[i];
 		if (! pItem->m_bIsFolder)
@@ -1138,7 +1138,7 @@ int CGUIWindowPrograms::GetSelectedItem()
 	CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
 	g_graphicsContext.SendMessage(msg);
 	int iItem=msg.GetParam1();
-	if (iItem >= (int)m_vecItems.size())
+	if (iItem >= (int)m_vecItems.Size())
 		return -1;
 	return iItem;
 }

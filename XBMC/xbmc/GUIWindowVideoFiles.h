@@ -11,7 +11,7 @@ public:
   virtual void    Render();
 
 private:
-  virtual void      SetIMDBThumbs(VECFILEITEMS& items);
+  virtual void      SetIMDBThumbs(CFileItemList& items);
 protected:
   virtual bool      ViewByLargeIcon();
   virtual bool      ViewByIcon();
@@ -20,7 +20,7 @@ protected:
 	virtual bool			SortAscending();
   virtual void			AddFileToDatabase(const CFileItem* pItem);
 	virtual void			FormatItemLabels();
-	virtual void			SortItems(VECFILEITEMS& items);
+	virtual void			SortItems(CFileItemList& items);
   virtual void			UpdateButtons();
 	virtual void			Update(const CStdString &strDirectory);
 	void							UpdateDir(const CStdString &strDirectory);
@@ -30,10 +30,10 @@ protected:
   virtual void			OnInfo(int iItem);
 
 	virtual void			OnScan();
-  bool              DoScan(VECFILEITEMS& items);
-  void              OnRetrieveVideoInfo(VECFILEITEMS& items);
+  bool              DoScan(CFileItemList& items);
+  void              OnRetrieveVideoInfo(CFileItemList& items);
   void              LoadPlayList(const CStdString& strFileName);
-  virtual void			GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items);
+  virtual void			GetDirectory(const CStdString &strDirectory, CFileItemList &items);
 	virtual	void				GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
 	void								SetHistoryForPath(const CStdString& strDirectory);
 

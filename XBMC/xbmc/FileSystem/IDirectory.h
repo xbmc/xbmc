@@ -23,7 +23,7 @@ namespace DIRECTORY
 			\return Returns \e true, if successfull.
 			\sa CFactoryDirectory
 			*/
-    virtual bool GetDirectory(const CStdString& strPath,VECFILEITEMS &items)=0;
+    virtual bool GetDirectory(const CStdString& strPath,CFileItemList &items)=0;
     /*!
 			\brief Create the directory
 			\param strPath Directory to create.

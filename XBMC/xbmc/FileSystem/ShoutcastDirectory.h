@@ -10,10 +10,10 @@ namespace DIRECTORY
   public:
     CShoutcastDirectory(void);
     virtual ~CShoutcastDirectory(void);
-    virtual bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
-            bool  DownloadPlaylists(VECFILEITEMS &items);
-            void  CacheItems(VECFILEITEMS &items);
-            void  LoadCachedItems(VECFILEITEMS &items);
+    virtual bool  GetDirectory(const CStdString& strPath,CFileItemList &items);
+            bool  DownloadPlaylists(CFileItemList &items);
+            void  CacheItems(CFileItemList &items);
+            void  LoadCachedItems(CFileItemList &items);
             bool  IsCacheValid();
   };
 }
