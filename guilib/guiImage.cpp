@@ -335,7 +335,6 @@ void CGUIImage::Update()
     int iResolution=g_stSettings.m_GUIResolution;
     float fSourceFrameRatio = ((float)m_iTextureWidth) / ((float)m_iTextureHeight);
     float fOutputFrameRatio = fSourceFrameRatio / g_settings.m_ResInfo[iResolution].fPixelRatio; 
-    if (iResolution == HDTV_1080i) fOutputFrameRatio *= 2;
 
     // maximize the thumbnails width
     float fNewWidth  = (float)m_dwWidth;
