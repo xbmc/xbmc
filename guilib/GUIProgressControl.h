@@ -27,6 +27,7 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual void SetPosition(int iPosX, int iPosY);
   void SetPercentage(int iPercent);
   int GetPercentage() const;
   const CStdString& GetBackGroundTextureName() const { return m_guiBackground.GetFileName();};
