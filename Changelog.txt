@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-08-2004 fixed:  New virtual keyboard added to Profile Renaming.
+  - 04-08-2004 changed: keymap.xml now maps mplayer OSD toggle to SELECT on the remote
   - 03-08-2004 needed:  Textures.xpr needs repacking!
   - 03-08-2004 changed: Replaced old virtual keyboard with new skinnable one.
   - 03-08-2004 changed: Updated strings 216 and 217 (Zoom and Stretch) to make better sense.
