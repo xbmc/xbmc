@@ -2983,15 +2983,11 @@ void CUtil::TakeScreenshot()
 		if (strlen(fn))
 		{
 			g_graphicsContext.Lock();
-			g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
 			if (g_application.IsPlayingVideo())
 			{
-				LPDIRECT3DSURFACE8 pSurface = g_renderManager.GetOverlay();
-				if (pSurface)
-				{
-					pSurface->Release();
-				}
+				g_renderManager.SetupScreenshot();
 			}
+			g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
 			if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer(-1, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
 			{
 				if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
