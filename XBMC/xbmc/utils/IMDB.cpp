@@ -36,7 +36,9 @@ bool CIMDB::FindMovie(const string &strMovie,IMDB_MOVIELIST& movielist)
 
 	string strURL,strHTML;
 	GetURL(strMovie,strURL);
-	
+  OutputDebugString("Retrieve:");
+  OutputDebugString(strURL.c_str());
+  OutputDebugString("\n");
 	if (!m_http.Get(strURL,strHTML))
 	{
 		OutputDebugString("Unable to retrieve web page: ");
@@ -73,6 +75,11 @@ bool CIMDB::FindMovie(const string &strMovie,IMDB_MOVIELIST& movielist)
 			char *pEnd = strstr(pMovieTitle,"<");
 			if (pEnd) *pEnd=0;
 
+      OutputDebugString("Got movie:");
+      OutputDebugString(pMovieTitle);
+      OutputDebugString("url:" );
+      OutputDebugString(strURL.c_str());
+      OutputDebugString("\n" );
 			url.m_strTitle = pMovieTitle;
 			url.m_strURL   = strURL;
 			movielist.push_back(url);
@@ -535,28 +542,30 @@ void CIMDB::GetURL(const string &strMovie, string& strURL)
 	for (int i=0; i < imax;i++)
 	{
 		char kar=strMovie[i];
-		if (kar =='.') kar = ' ';
-		if (kar ==32) kar = '+';
-		if (kar == '[' || kar=='(' ) bSkip=true;			//skip everthing between () and []
-		else if (kar == ']' || kar==')' ) bSkip=false;
-		else if (!bSkip)
-		{
-      if (ipos > 0)
-      {
-        if (!isalnum(kar)) 
+		if (kar !='.') 
+    {
+      if (kar ==32) kar = '+';
+		  if (kar == '[' || kar=='(' ) bSkip=true;			//skip everthing between () and []
+		  else if (kar == ']' || kar==')' ) bSkip=false;
+		  else if (!bSkip)
+		  {
+        if (ipos > 0)
         {
-          if (szMovie[ipos-1] != '+')
-            kar='+';
-          else 
-            kar='.';
+          if (!isalnum(kar)) 
+          {
+            if (szMovie[ipos-1] != '+')
+              kar='+';
+            else 
+              kar='.';
+          }
         }
-      }
-			if (isalnum(kar) ||kar==' ' || kar=='+')
-			{
-				szMovie[ipos]=kar;
-				szMovie[ipos+1]=0;
-				ipos++;
-			}
+			  if (isalnum(kar) ||kar==' ' || kar=='+')
+			  {
+				  szMovie[ipos]=kar;
+				  szMovie[ipos+1]=0;
+				  ipos++;
+			  }
+        }
 		}
 	}
 	string strHTML;
