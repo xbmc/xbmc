@@ -176,14 +176,14 @@ void CDetectDVDMedia::DetectMediaType()
 	m_pCdInfo->GetDataTrackCount() );
 
 	//	Detect ISO9660(mode1/mode2), CDDA filesystem or UDF
-	if (m_pCdInfo->IsISOHFS(1) || m_pCdInfo->IsIso9660(1) || m_pCdInfo->IsIso9660Interactive(1))
+	if (m_pCdInfo->IsISOUDF(1) || m_pCdInfo->IsISOHFS(1) || m_pCdInfo->IsIso9660(1) || m_pCdInfo->IsIso9660Interactive(1))
   {
 		strNewUrl = "iso9660://";
     m_isoReader.Scan();
   }
 	else
 	{
-		if (m_pCdInfo->IsISOUDF(1) || m_pCdInfo->IsUDF(1) || m_pCdInfo->IsUDFX(1))
+		if (m_pCdInfo->IsUDF(1) || m_pCdInfo->IsUDFX(1))
 			strNewUrl = "D:\\";
 		else if (m_pCdInfo->IsAudio(1))
 		{
