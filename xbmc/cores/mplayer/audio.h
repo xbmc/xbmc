@@ -21,7 +21,7 @@ typedef struct ao_functions_s
 				ao_info_t *info;
         int (*control)(int cmd,void *arg);
         int (*init)(int rate,int channels,int format,int flags);
-        void (*uninit)();
+        void (*uninit)(int);
         void (*reset)();
         int (*get_space)();
         int (*play)(void* data,int len,int flags);
