@@ -1,3 +1,8 @@
+/*!
+	\file GUIListItem.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GUILISTITEM_H
 #define GUILIB_GUILISTITEM_H
 
@@ -8,6 +13,10 @@
 #include "stdstring.h"
 using namespace std;
 
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUIListItem
 {
 public:

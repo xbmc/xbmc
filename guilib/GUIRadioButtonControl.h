@@ -1,6 +1,15 @@
+/*!
+	\file GUIRadioButtonControl.h
+	\brief 
+	*/
+
 #pragma once
 #include "guibuttoncontrol.h"
 
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUIRadioButtonControl :
   public CGUIButtonControl
 {

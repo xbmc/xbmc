@@ -1,3 +1,8 @@
+/*!
+	\file AnimatedGif.h
+	\brief 
+	*/
+
 
 // ****************************************************************************
 //
@@ -42,8 +47,12 @@ using namespace std;
 #pragma pack(1)
 
 struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
-#define ALIGN sizeof(int)							  // Windows GDI expects all int-aligned
+#define ALIGN sizeof(int)							  ///< Windows GDI expects all int-aligned
 
+/*!
+	\ingroup textures
+	\brief 
+	*/
 typedef struct tagGUIRGBQUAD 
 {
         BYTE    rgbBlue;
@@ -52,6 +61,10 @@ typedef struct tagGUIRGBQUAD
         BYTE    rgbReserved;
 } GUIRGBQUAD;
 
+/*!
+	\ingroup textures
+	\brief 
+	*/
 typedef struct tagGUIBITMAPINFOHEADER
 {
         DWORD      biSize;
@@ -67,6 +80,10 @@ typedef struct tagGUIBITMAPINFOHEADER
         DWORD      biClrImportant;
 } GUIBITMAPINFOHEADER;
 
+/*!
+	\ingroup textures
+	\brief 
+	*/
 typedef struct tagBITMAPINFO 
 {
     GUIBITMAPINFOHEADER    bmiHeader;
@@ -78,6 +95,10 @@ typedef struct tagBITMAPINFO
 // * CAnimatedGif                                                                  *
 // *    Storage class for single images                                       *
 // ****************************************************************************
+/*!
+	\ingroup textures
+	\brief Storage class for single images
+	*/
 class CAnimatedGif 
 {
 public:
@@ -85,27 +106,27 @@ public:
 	virtual ~CAnimatedGif();
 
 	// standard members:
-	int						Width, Height;			// Dimensions in pixels
+	int						Width, Height;			///< Dimensions in pixels
 	int						BPP;								// Bits Per Pixel	
-	char*					Raster;							// Bits of Raster Data (Byte Aligned)
-	COLOR*				Palette;						// Color Map
-	int						BytesPerRow;				// Width (in bytes) including alignment!
-	int						Transparent;				// Index of Transparent color (-1 for none)
+	char*					Raster;							///< Bits of Raster Data (Byte Aligned)
+	COLOR*				Palette;						///< Color Map
+	int						BytesPerRow;				///< Width (in bytes) including alignment!
+	int						Transparent;				///< Index of Transparent color (-1 for none)
 
-	// Extra members for animations:	
-  int           nLoops;
-	int						xPos, yPos;					// Relative Position
-	int						Delay;							// Delay after image in 1/1000 seconds.
-	int						Transparency;				// Animation Transparency.
+		// Extra members for animations:
+  int           nLoops;		
+	int						xPos, yPos;					///< Relative Position
+	int						Delay;							///< Delay after image in 1/1000 seconds.
+	int						Transparency;				///< Animation Transparency.
 	// Windows GDI specific:
-	GUIBITMAPINFO*		pbmi;								// BITMAPINFO structure
+	GUIBITMAPINFO*		pbmi;								///< BITMAPINFO structure
 
 	// constructor and destructor:
 
 	// operator= (object copy)
 	CAnimatedGif& operator= (CAnimatedGif& rhs);
 
-	// Image initializer (allocates space for raster and palette):
+	/// \brief Image initializer (allocates space for raster and palette):
 	void					Init (int iWidth, int iHeight, int iBPP, int iLoops=0);
 
 	inline char&	Pixel (const int& x, const int& y)
@@ -122,6 +143,10 @@ public:
 // * CAnimatedGifSet                                                               *
 // *    Storage class for sets of images                                      *
 // ****************************************************************************
+/*!
+	\ingroup textures
+	\brief Storage class for sets of images
+	*/
 class CAnimatedGifSet 
 {
 public:
@@ -130,12 +155,12 @@ public:
 	CAnimatedGifSet();
 	virtual ~CAnimatedGifSet();
 
-	int							FrameWidth, FrameHeight;	// Dimensions of ImageSet in pixels.
+	int							FrameWidth, FrameHeight;	///< Dimensions of ImageSet in pixels.
 	int							nLoops;										// Number of Loops (0 = infinite)
 																						
-	vector<CAnimatedGif*>	m_vecimg;								// Images' Vector.
+	vector<CAnimatedGif*>	m_vecimg;								///< Images' Vector.
 
-	void						AddImage (CAnimatedGif*);			// Append new image to vector (push_back)
+	void						AddImage (CAnimatedGif*);			///< Append new image to vector (push_back)
 
 	int							GetImageCount() const;
 	// File Formats:

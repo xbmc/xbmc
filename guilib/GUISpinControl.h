@@ -1,3 +1,8 @@
+/*!
+	\file GUISpinControl.h
+	\brief 
+	*/
+
 #ifndef GUILIB_SPINCONTROL_H
 #define GUILIB_SPINCONTROL_H
 
@@ -15,6 +20,10 @@ using namespace std;
 #define SPIN_CONTROL_TYPE_FLOAT  2
 #define SPIN_CONTROL_TYPE_TEXT   3
 
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUISpinControl :  public CGUIControl
 {
 public:  

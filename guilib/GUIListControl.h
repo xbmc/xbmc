@@ -1,3 +1,8 @@
+/*!
+	\file GUIListControl.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GUILISTCONTROL_H
 #define GUILIB_GUILISTCONTROL_H
 
@@ -15,6 +20,10 @@
 using namespace std;
 
 
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUIListControl : public CGUIControl
 {
 public:

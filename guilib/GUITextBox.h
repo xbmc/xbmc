@@ -1,3 +1,8 @@
+/*!
+	\file GUITextBox.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GUITEXTBOX_H
 #define GUILIB_GUITEXTBOX_H
 
@@ -15,6 +20,10 @@
 using namespace std;
 
 
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUITextBox : public CGUIControl
 {
 public:

@@ -1,3 +1,8 @@
+/*!
+	\file GUIMessage.h
+	\brief 
+	*/
+
 #ifndef GUILIB_MESSAGE_H
 #define GUILIB_MESSAGE_H
 
@@ -36,12 +41,20 @@
 #include <string>
 using namespace std;
 
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
 #define CONTROL_SELECT(dwSenderId, dwControlID) \
 { \
 	CGUIMessage msg(GUI_MSG_SELECTED, dwSenderId, dwControlID); \
 	g_graphicsContext.SendMessage(msg); \
 }
 
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
 #define CONTROL_DESELECT(dwSenderId, dwControlID) \
 { \
 	CGUIMessage msg(GUI_MSG_DESELECTED, dwSenderId, dwControlID); \
@@ -49,24 +62,40 @@ using namespace std;
 }
 
 
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
 #define CONTROL_ENABLE(dwSenderId, dwControlID) \
 { \
 	CGUIMessage msg(GUI_MSG_ENABLED, dwSenderId, dwControlID); \
 	g_graphicsContext.SendMessage(msg); \
 }
 
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
 #define CONTROL_DISABLE(dwSenderId, dwControlID) \
 { \
 	CGUIMessage msg(GUI_MSG_DISABLED, dwSenderId, dwControlID); \
 	g_graphicsContext.SendMessage(msg); \
 }
 
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
 #define CONTROL_SELECT_ITEM(dwSenderId, dwControlID,iItem) \
 { \
 	CGUIMessage msg(GUI_MSG_ITEM_SELECT, dwSenderId, dwControlID,iItem); \
 	g_graphicsContext.SendMessage(msg); \
 }
 
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
 #define SET_CONTROL_LABEL(dwSenderId, dwControlID,label) \
 { \
 	CGUIMessage msg(GUI_MSG_LABEL_SET, dwSenderId, dwControlID); \
@@ -74,24 +103,40 @@ using namespace std;
 	g_graphicsContext.SendMessage(msg); \
 }
 
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
 #define SET_CONTROL_HIDDEN(dwSenderId, dwControlID) \
 { \
 	CGUIMessage msg(GUI_MSG_HIDDEN, dwSenderId, dwControlID); \
 	g_graphicsContext.SendMessage(msg); \
 }
 
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
 #define SET_CONTROL_FOCUS(dwSenderId, dwControlID, dwParam) \
 { \
 	CGUIMessage msg(GUI_MSG_SETFOCUS, dwSenderId, dwControlID, dwParam); \
 	g_graphicsContext.SendMessage(msg); \
 }
 
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
 #define SET_CONTROL_VISIBLE(dwSenderId, dwControlID) \
 { \
 	CGUIMessage msg(GUI_MSG_VISIBLE, dwSenderId, dwControlID); \
 	g_graphicsContext.SendMessage(msg); \
 }
 
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
 class CGUIMessage
 {
 public:

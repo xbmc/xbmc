@@ -1,3 +1,8 @@
+/*!
+	\file GUILabelControl.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GUILABELCONTROL_H
 #define GUILIB_GUILABELCONTROL_H
 
@@ -9,6 +14,10 @@
 #include "stdstring.h"
 using namespace std;
 
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUILabelControl :
   public CGUIControl
 {

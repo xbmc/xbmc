@@ -1,3 +1,8 @@
+/*!
+	\file guiImage.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GUIIMAGECONTROL_H
 #define GUILIB_GUIIMAGECONTROL_H
 
@@ -9,6 +14,10 @@
 #include <vector>
 using namespace std;
 
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUIImage : public CGUIControl
 {
 public:
