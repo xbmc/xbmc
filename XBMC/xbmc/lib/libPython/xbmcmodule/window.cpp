@@ -256,6 +256,13 @@ namespace PYXBMC
 	{
 		CGUIWindow* pWindow = NULL;
 		Control* pControl;
+
+		// since i've no intention of getting involved in python maintenance, these are
+		// hardcoded offsets for button controls (and controls that use button controls)
+		// ideally they should be dynamically read in as with all the other properties.
+		DWORD dwHardcodedTextOffsetX = 10;
+		DWORD dwHardcodedTextOffsetY = 2;
+
 		if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
 		// type checking, object should be of type Control
 		if(!Control_Check(pControl))
@@ -336,7 +343,8 @@ namespace PYXBMC
 			ControlButton* pControlButton = (ControlButton*)pControl;
 			pControl->pGUIControl = new CGUIButtonControl(pControl->iParentId, pControl->iControlId,
 					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-					pControlButton->strTextureFocus, pControlButton->strTextureNoFocus);
+					pControlButton->strTextureFocus, pControlButton->strTextureNoFocus,
+					dwHardcodedTextOffsetX, dwHardcodedTextOffsetY);
 
 			CGUIButtonControl* pGuiButtonControl = (CGUIButtonControl*)pControl->pGUIControl;
 
@@ -363,7 +371,8 @@ namespace PYXBMC
 					pControlList->pControlSpin->strTextureUp, pControlList->pControlSpin->strTextureDown, pControlList->pControlSpin->strTextureUpFocus,
 					pControlList->pControlSpin->strTextureDownFocus, pControlList->pControlSpin->dwColor, pControlList->pControlSpin->dwPosX,
 					pControlList->pControlSpin->dwPosY, pControlList->strFont,pControlList->dwTextColor,
-					pControlList->dwSelectedColor, pControlList->strTextureButton, pControlList->strTextureButtonFocus);
+					pControlList->dwSelectedColor, pControlList->strTextureButton, pControlList->strTextureButtonFocus,
+					dwHardcodedTextOffsetX, dwHardcodedTextOffsetY);
 
 			CGUIListControl* pListControl = (CGUIListControl*)pControl->pGUIControl;
 			pListControl->SetImageDimensions(pControlList->dwImageWidth, pControlList->dwImageHeight);
