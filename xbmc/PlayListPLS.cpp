@@ -62,7 +62,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
 	{
     CURL url(strLine);
 	CStdString strProtocol = url.GetProtocol();
-    if (strProtocol == "http" || strProtocol == "mms" || strProtocol == "rtp")
+    if (strProtocol == "http" || strProtocol == "mms" || strProtocol == "rtp" || strProtocol == "udp" || strProtocol == "ftp"  || strProtocol == "rtsp")
     {
 		if (bShoutCast && !CUtil::IsAudio(strLine) && !CUtil::IsAudio(strLine))
 		{
@@ -176,7 +176,9 @@ bool CPlayListPLS::LoadFromWeb(CStdString& strURL)
 	}
 
 	// Unknown type
-	return false;
+	CPlayListItem newItem(strURL,strURL,0);
+	Add(newItem);
+	return true;
 }
 
 bool CPlayListPLS::LoadAsxInfo(CStdString& strData)
