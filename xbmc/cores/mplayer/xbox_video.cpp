@@ -805,6 +805,9 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 
   if (iBottom+15>=(int)image_height)
   {
+    __asm {
+      wbinvd
+    }
     ++m_iDecodeBuffer %= NUM_BUFFERS;
     m_bFlip++;
     //char szTmp[128];
@@ -857,8 +860,7 @@ void RenderVideo()
 {
 	if (!m_TextureBuffer[m_iRenderBuffer])
 		return;
-
-	g_graphicsContext.Get3DDevice()->SetTexture( 0, &m_YTexture[m_iRenderBuffer]);
+  g_graphicsContext.Get3DDevice()->SetTexture( 0, &m_YTexture[m_iRenderBuffer]);
 	g_graphicsContext.Get3DDevice()->SetTexture( 1, &m_UTexture[m_iRenderBuffer]);
 	g_graphicsContext.Get3DDevice()->SetTexture( 2, &m_VTexture[m_iRenderBuffer]);
 	for (int i = 0; i < 3; ++i)
@@ -928,7 +930,7 @@ static void video_flip_page(void)
 				xbox_video_render_subtitles(true);
 			}
 
-	    g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
+	    //g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
 			g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 			g_graphicsContext.Unlock();
 			m_bRenderGUI=false;
@@ -1018,7 +1020,7 @@ void xbox_video_getAR(float& fAR)
 //********************************************************************************************************
 void xbox_video_update(bool bPauseDrawing)
 {
-	//  OutputDebugString("Calling xbox_video_update ... ");
+//	OutputDebugString("xbox_video_update()");
 	m_bRenderGUI=true;
 	m_bPauseDrawing = bPauseDrawing;
 	bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
@@ -1042,6 +1044,7 @@ void xbox_video_update(bool bPauseDrawing)
 //********************************************************************************************************
 void xbox_video_render_update()
 {
+//  OutputDebugString("xbox_video_render_update()");
 	if (m_pVideoVB && m_TextureBuffer[m_iRenderBuffer])
 	{
 		g_graphicsContext.Lock();
@@ -1093,6 +1096,12 @@ static unsigned int put_image(mp_image_t *mpi)
 
 	if((mpi->flags&MP_IMGFLAG_DIRECT)||(mpi->flags&MP_IMGFLAG_DRAW_CALLBACK)) 
 	{
+    __asm {
+      wbinvd
+    }
+    //++m_iDecodeBuffer %= NUM_BUFFERS;
+    //m_bFlip++;
+
 		return VO_TRUE;
 	}
   DWORD  i = 0;
@@ -1154,6 +1163,9 @@ static unsigned int put_image(mp_image_t *mpi)
     memcpy( m_TextureBuffer[m_iBackBuffer], mpi->planes[0], image_height * ytexture_pitch);
 	}
 
+  __asm {
+      wbinvd
+    }
   ++m_iDecodeBuffer %= NUM_BUFFERS;
   m_bFlip++;
 
@@ -1218,8 +1230,8 @@ static unsigned int video_control(unsigned int request, void *data, ...)
 		Note: draw_slice is still mandatory, for per-slice rendering!
 		*/
 
-		//return put_image( (mp_image_t*)data );
-		return VO_FALSE;//NOTIMPL;
+		return put_image( (mp_image_t*)data );
+		//return VO_FALSE;//NOTIMPL;
 
 	case VOCTRL_FULLSCREEN:
 		{
