@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-12-2004 fixed: my music albums, music.jpg is not shown when no thumb is available
   - 02-12-2004 updated: Dutch language file (Thnx to joepmeloenx)
   - 02-12-2004 updated: German (Austrian) language file (Thnx to CEOMR)
   - 02-12-2004 updated: German language file
