@@ -938,10 +938,10 @@ int main(int argc, char* argv[])
 	ConvertFiles(NULL, "*.dds", MaxMSE);
 	ConvertAnims(NULL, "*.gif", MaxMSE);
 
-	DWORD attr = GetFileAttributes("pal");
+	DWORD attr = GetFileAttributes("..\\pal\\media");
 	if (attr != -1 && (attr & FILE_ATTRIBUTE_DIRECTORY))
 	{
-		SetCurrentDirectory("pal");
+		SetCurrentDirectory("..\\pal\\media");
 		ConvertFiles("pal", "*.png", MaxMSE);
 		ConvertFiles("pal", "*.bmp", MaxMSE);
 		ConvertFiles("pal", "*.tga", MaxMSE);
