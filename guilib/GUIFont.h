@@ -33,6 +33,8 @@ public:
                         DWORD dwShadowColor=0xff000000);
   void DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                               const WCHAR* strText,float fMaxWidth);
+  void DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
+                              const WCHAR* strText, BYTE* pbColours, float fMaxWidth);
 
   virtual HRESULT DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, 
                     const WCHAR* strText, DWORD dwFlags=0L,
@@ -42,6 +44,8 @@ public:
                     FLOAT fMaxPixelWidth = 0.0f );
 protected:
   CStdString m_strFontName;
+  static WCHAR* m_pwzBuffer;
+  static INT m_nBufferSize;
 };
 
 #endif
