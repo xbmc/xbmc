@@ -50,10 +50,17 @@ bool CShoutcastDirectory::IsCacheValid()
 
 void CShoutcastDirectory::CacheItems(VECFILEITEMS &items)
 {
+	if (items.size()==0)
+		return;
+
   CFile file;
   if (file.OpenForWrite("Z:\\cachedPlaylists.txt"))
   {
-    for (int i=1; i<(int)items.size(); ++i)
+		int i=0;
+		if (items[0]->GetLabel()=="..")
+				i=1;
+
+		for (i; i<(int)items.size(); ++i)
     {
       CFileItem* pItem=items[i];
 
