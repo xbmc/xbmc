@@ -697,11 +697,12 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiSettingsCache);						// window id = 26
 	m_gWindowManager.Add(&m_guiSettingsAutoRun);					// window id = 27
 	m_gWindowManager.Add(&m_guiMyVideoPlayList);					// window id = 28
+	m_gWindowManager.Add(&m_guiSettingsCDRipper);					// window id = 32
 	m_gWindowManager.Add(&m_guiSettingsLCD);					// window id = 29
 	m_gWindowManager.Add(&m_guiSettingsUserInterface);			// window id = 30
 	m_gWindowManager.Add(&m_guiSettingsAudio);					    // window id = 31
   m_gWindowManager.Add(&m_guiSettingsSytem);            // window id = 32
-
+  m_gWindowManager.Add(&m_guiSettingsCDRipper);					// window id = 33
 	m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
 	m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
 	m_gWindowManager.Add(&m_guiMyMusicPlayList);					// window id = 500
@@ -901,6 +902,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogInvite.Load( "dialogInvite.xml" );  
 	m_guiDialogKeyboard.Load( "dialogKeyboard.xml" );  
 	m_guiMyBuddies.Load( "mybuddies.xml");
+	m_guiSettingsCDRipper.Load("SettingsCDRipper.xml");
 
 	CGUIWindow::FlushReferenceCache(); // flush the cache so it doesn't use memory all the time
 

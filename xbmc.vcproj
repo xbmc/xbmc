@@ -469,6 +469,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowSettingsCache.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowSettingsCDRipper.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowSettingsFilter.cpp">
 				</File>
 				<File
