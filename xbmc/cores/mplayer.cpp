@@ -410,7 +410,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
       {
         // PAL. Framerate for pal=25.0fps
         // do frame rate conversions for NTSC movie playback under PAL
-        if (fFPS <= 24.5f || fFPS >= 25.5f)
+        if (fFPS <= 24.5f )
         {
           // 23.978  fps -> 25fps frame rate conversion
           options.SetSpeed(25.0f / fFPS); 
