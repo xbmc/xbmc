@@ -374,13 +374,13 @@ static void CalculateFrameAspectRatio()
 		fSourceFrameRatio = fImageFrameRatio*fPALPixelRatio*fNon4by3Correction;
 }
 
-void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, RECT* displayRect)
+void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount, RECT* displayRect)
 {
   	// scale up image as much as possible
 	// and keep the aspect ratio (introduces with black bars)
 	// calculate the correct output frame ratio (using the users pixel ratio setting
 	// and the output pixel ratio setting)
-	float fOutputFrameRatio = fSourceFrameRatio*g_stSettings.m_fUserPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio; 
+	float fOutputFrameRatio = fSourceFrameRatio*fUserPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio; 
 
 	// maximize the movie width
 	float fNewWidth  = fScreenWidth;
@@ -402,8 +402,8 @@ void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth,
 	// Scale the movie up by set zoom amount (only in fullscreen mode, though)
 	if (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating())
 	{
-		fNewWidth *= g_stSettings.m_fZoomAmount;
-		fNewHeight *= g_stSettings.m_fZoomAmount;
+		fNewWidth *= fZoomAmount;
+		fNewHeight *= fZoomAmount;
 	}
 	// Centre the movie
 	float fPosY = (fScreenHeight - fNewHeight)/2;
@@ -424,7 +424,7 @@ unsigned int Directx_ManageDisplay()
 	float iScreenHeight = (float)(g_settings.m_ResInfo[iRes].Overscan.bottom-g_settings.m_ResInfo[iRes].Overscan.top);
 
 	//we need dimensions of the video how it would be rendered fullscreen in normal view (for subs)
-	CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, &normalFullScreenVideoDisplayRect);
+	CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, 1.0f, 1.0f, &normalFullScreenVideoDisplayRect);
   
 	if( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
 	{
@@ -440,14 +440,14 @@ unsigned int Directx_ManageDisplay()
 	viewportRect.bottom = int(fOffsetY1 + iScreenHeight);
 
 	//we need dimensions of the video how it would be rendered in normal view actual size (for subs)
-	CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, &normalVideoDisplayRect);
+	CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, 1.0f, 1.0f, &normalVideoDisplayRect);
 
 	// source rect
 	rs.left   = 0;
 	rs.top    = 0;
 	rs.right  = image_width;
 	rs.bottom = image_height;
-	CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, &rd);
+	CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, g_stSettings.m_fUserPixelRatio, g_stSettings.m_fZoomAmount, &rd);
 	return 0;
 }
 

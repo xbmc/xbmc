@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-08-2004 fixed: subtitles were resizing when zooming/stretching the video
   - 13-08-2004 fixed: VP4/5/6 dlls should work again
   - 13-08-2004 changed: Scan and Shortcuts are no longer in My Programs by default.  The option to re-enable is in Settings->My Programs.
   - 13-08-2004 added: [ 986344 ] CDG (Karaoke) support patch for MP3
