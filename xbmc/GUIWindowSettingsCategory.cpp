@@ -245,7 +245,6 @@ void CGUIWindowSettingsCategory::SetupControls()
 	m_pOriginalRadioButton->SetVisible(false);
 	m_pOriginalButton->SetVisible(false);
 	m_pOriginalSettingsButton->SetVisible(false);
-	m_iSection = 0;
 	// setup our control groups...
 	m_vecGroups.clear();
 	m_vecGroups.push_back(-1);
@@ -276,6 +275,8 @@ void CGUIWindowSettingsCategory::SetupControls()
 	pControl = (CGUIControl *)GetControl(CONTROL_START_BUTTONS + (int)m_vecSections.size() - 1);
 	pControl->SetNavigation(pControl->GetControlIdUp(), CONTROL_START_BUTTONS,
 													pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+  if (m_iSection < 0 || m_iSection >= (int)m_vecSections.size())
+    m_iSection = 0;
 	CreateSettings();
 	// set focus correctly
 	m_dwDefaultFocusControlID = CONTROL_START_BUTTONS;
@@ -1033,6 +1034,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 		else
 			strScreenSaver = pControl->GetCurrentLabel() + ".xbs";
 		pSettingString->SetData(strScreenSaver);
+	}
+	else if (strSetting == "ScreenSaver.Preview")
+	{
+		g_application.ActivateScreenSaver();
 	}
 	else if (strSetting == "LED.Colour")
 	{	// Alter LED Colour immediately

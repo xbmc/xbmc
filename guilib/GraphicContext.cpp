@@ -27,10 +27,15 @@ CGraphicContext::CGraphicContext(void)
   m_bShowOverlay=true;
 	m_Resolution=INVALID;
 	m_pCallback=NULL;
+	m_stateBlock = 0xffffffff;
 }
-
+ 
 CGraphicContext::~CGraphicContext(void)
 {
+	if (m_stateBlock != 0xffffffff)
+	{
+		Get3DDevice()->DeleteStateBlock(m_stateBlock);
+	}
 	DeleteCriticalSection(&m_critSection);
 }
 
@@ -523,6 +528,28 @@ float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
 	if (iRes == HDTV_1080i || iRes == HDTV_720p) return 1.0f;
 	if (iRes == HDTV_480p_4x3 || iRes == NTSC_4x3 || iRes == PAL60_4x3) return 4320.0f/4739.0f;
 	if (iRes == HDTV_480p_16x9 || iRes == NTSC_16x9 || iRes == PAL60_16x9) return 4320.0f/4739.0f*4.0f/3.0f;
-	if (iRes == PAL_16x9) return 128.0f/117.0f*4.0f/3.0f;
-	return 128.0f/117.0f;
+  if (iRes == PAL_16x9) return 128.0f/117.0f*4.0f/3.0f;
+  return 128.0f/117.0f;
+}
+
+void CGraphicContext::CaptureStateBlock()
+{
+  if (m_stateBlock != 0xffffffff)
+  {
+	  Get3DDevice()->DeleteStateBlock(m_stateBlock);
+  }
+
+  if (D3D_OK != Get3DDevice()->CreateStateBlock(D3DSBT_ALL, &m_stateBlock))
+  {
+	  // Creation failure
+	  m_stateBlock = 0xffffffff;
+  }
+}
+
+void CGraphicContext::ApplyStateBlock()
+{
+  if (m_stateBlock != 0xffffffff)
+  {
+	  Get3DDevice()->ApplyStateBlock(m_stateBlock);
+  }
 }
