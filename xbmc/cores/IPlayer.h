@@ -58,6 +58,7 @@ public:
   virtual __int64 GetTime(){return 0;};
   virtual int	    GetTotalTime(){return 0;};
   virtual void	  ToFFRW(int iSpeed=0){};
+  virtual void    ShowOSD(bool bOnoff){};
 protected:
 	IPlayerCallback& m_callback;
 };
