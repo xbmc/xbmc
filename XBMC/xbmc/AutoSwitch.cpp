@@ -97,7 +97,7 @@ int CAutoSwitch::GetView(VECFILEITEMS &vecItems)
 			break;
 
 		case METHOD_BYFILES:
-			iViewAs = ByFiles(bBigThumbs, vecItems);
+			iViewAs = ByFiles(bBigThumbs, bHideParentFolderItems, vecItems);
 			break;
 
 		case METHOD_BYTHUMBPERCENT:
@@ -149,13 +149,21 @@ int CAutoSwitch::ByFolders(bool bBigThumbs, VECFILEITEMS& vecItems)
 /// \brief Auto Switch method based on the current directory \e not containing ALL files and \e atleast one non-default thumb
 /// \param bBigThumbs Use Big Thumbs?
 /// \param vecItems Vector of FileItems
-int CAutoSwitch::ByFiles(bool bBigThumbs, VECFILEITEMS& vecItems)
+int CAutoSwitch::ByFiles(bool bBigThumbs, bool bHideParentDirItems, VECFILEITEMS& vecItems)
 {
+	bool bThumbs = false;
+	int iCompare = 0;
+
+	// parent directorys are visible, incrememt
+	if (!bHideParentDirItems)
+	{
+		iCompare = 1;
+	}
+
 	// confirm the list is not just files and folderback
-	if (CUtil::GetFolderCount(vecItems) > 1)
+	if (CUtil::GetFolderCount(vecItems) > iCompare)
 	{
 		// test to see if there are thumbs other than the defaults
-		bool bThumbs = false;
 		for (int i=0; i<(int)vecItems.size(); i++)
 		{
 			CFileItem* pItem = vecItems[i];
