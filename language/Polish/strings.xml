@@ -6,19 +6,19 @@
 <strings>
   <string>
     <id>0</id>
-    <value>Moje programy</value>
+    <value>Programy</value>
 </string>
   <string>
     <id>1</id>
-    <value>Moje obrazy</value>
+    <value>Obrazy</value>
 </string>
   <string>
     <id>2</id>
-    <value>Moja muzyka</value>
+    <value>Muzyka</value>
 </string>
   <string>
     <id>3</id>
-    <value>Moje filmy</value>
+    <value>Filmy</value>
 </string>
   <string>
     <id>4</id>
@@ -30,7 +30,7 @@
 </string>
   <string>
     <id>7</id>
-    <value>Moje pliki</value>
+    <value>Pliki</value>
 </string>
   <string>
 	<id>8</id>
@@ -222,7 +222,7 @@
 </string>  
   <string>
     <id>127</id>
-    <value>Objektów</value>
+    <value>Obiektów</value>
 </string>  
   <string>
     <id>128</id>
@@ -450,7 +450,7 @@
 </string> 
   <string>
     <id>184</id>
-    <value>Odœwierz</value>
+    <value>Odœwie¿</value>
 </string> 
   <string>
     <id>185</id>
@@ -1258,7 +1258,7 @@
 </string>
   <string>
   <id>397</id> 
-  <value>Odœwierz czas</value> 
+  <value>Odœwie¿ czas</value> 
 </string>
   <string>
   <id>398</id> 
@@ -2122,4 +2122,36 @@
 <string><id>14007</id><value>Œci¹ganie play listy siê nie powiod³o</value></string>
 <string><id>14008</id><value>W³¹cz zawiadomienia w Kai</value></string>
 <string><id>14009</id><value>Katalog z grami</value></string>
+<string><id>14010</id><value>Opcje automatycznego prze³¹czania</value></string>
+  <string><id>14011</id><value>W³¹czyæ automatyczne prze³¹czanie?</value></string>
+  <string><id>14012</id><value>U¿yj du¿ych ikon</value></string>
+  <string><id>14013</id><value>Metoda:</value></string>
+  <string><id>14014</id><value>Percent:</value></string>
+  <string><id>14015</id><value>Panel miniatur jeœli nie ma plików</value></string>
+  <string><id>14016</id><value>Panel z list¹ jeœli nie ma folderów</value></string>
+  <string><id>14017</id><value>Procent miniatur</value></string>
+  <string><id>14018</id><value>Wyœwietl opcje</value></string>
+  <string><id>14019</id><value>Kod regionu 1</value></string>
+  <string><id>14020</id><value>Kod regionu 2</value></string>
+  <string><id>14021</id><value>Kod regionu 3</value></string>
+  <string><id>14022</id><value>Biblioteka</value></string>
+  <string><id>14023</id><value>Bez TV</value></string>
+  <string><id>14024</id><value>Podaj najbli¿sze du¿e miasto lub kod pocztowy US</value></string>
+  <string><id>14025</id><value>Video z Twardego dysku</value></string>
+  <string><id>14026</id><value>Video z DVDRomu</value></string>
+  <string><id>14027</id><value>Video z Sieci lokalnej</value></string>
+  <string><id>14028</id><value>Video z Internetu</value></string>
+  <string><id>14029</id><value>Audio z Twardego dysku</value></string>
+  <string><id>14030</id><value>Audio z DVDRomu</value></string>
+  <string><id>14031</id><value>Audio z Sieci lokalnej</value></string>
+  <string><id>14032</id><value>Audio z Internetu</value></string>
+  <string><id>14033</id><value>DVD z Twardego dysku</value></string>
+  <string><id>14034</id><value>DVD z DVDRomu</value></string>
+  <string><id>14035</id><value>DVD z Sieci lokalnej</value></string>
+  <string><id>14036</id><value>Serwery</value></string>
+  <string><id>14037</id><value>Patrz i czuj</value></string>
+  <string><id>14038</id><value>Ustawienia sieciowe zmienione</value></string>
+  <string><id>14039</id><value>XBMC wymaga restartu aby zmienic twoje</value></string>
+  <string><id>14040</id><value>ustawienia sieciowe.  Would you like to restart now?</value></string>
+  <string><id>14041</id><value>Post Processing</value></string>
 </strings>
