@@ -1,8 +1,16 @@
 // XboxMediaCenter
 //
-// - zoom/stretch
-// - crash in mplayer
-// - fopen... in dllloader
+// todo for demo 8:
+//		- fopen... in dllloader for subtitles
+//		- .fli files dont work
+//		- startup of video takes couple of seconds, why?
+//		- check bobbin007 autodetect on .it
+//		- iso9660 doesnt work?
+//	  - movies calibration
+//		- memory leak?
+//		- version info on mplayer.dll?
+//		- movie/stretch : change for subtitles
+//		- flickering screen settings?
 //
 // libraries: 
 //			- CDRipX			: doesnt support section loading yet			
@@ -15,7 +23,6 @@
 //
 // general:
 //			- different skins for 4:3 / 16:9
-//			- UI screen calibration    : just use (x,y) offset, no rescaling
 //			- movie screen calibration : scale movie
 //			- python scripts GUI (darki)
 //			- CDDB query : show progress dialogs
@@ -53,7 +60,6 @@
 // my videos:
 //		  - control panel like in xbmp
 //		  - back 7 sec, forward 30 sec buttons
-//		  - imdb
 //			- when playing : show video in leftbottom corner
 //			- bookmarks
 //			- OSD

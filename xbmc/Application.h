@@ -25,6 +25,7 @@
 #include "GUIWindowMusicInfo.h" 
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicOverlay.h"
+#include "GUIWindowFullScreen.h"
 #include "LocalizeStrings.h"
 #include "utils/sntp.h"
 #include "utils/delaycontroller.h"
@@ -57,6 +58,8 @@ public:
 	void									DisableOverlay();
 	bool									IsPlayingAudio() const ;
 	bool									IsPlayingVideo() const ;
+	void									OnKey(CKey& key);
+	void									ResetVideoWindow();
 
   CGUIWindowHome									m_guiHome;
   CGUIWindowPrograms							m_guiPrograms;
@@ -76,6 +79,7 @@ public:
 	CGUIWindowSettingsUICalibration	m_guiSettingsUICalibration;
 	CGUIDialogSelect								m_guiDialogSelect;
 	CGUIWindowMusicOverlay					m_guiMusicOverlay;
+	CGUIWindowFullScreen						m_guiWindowFullScreen;
   CXBVirtualKeyboard   						m_keyboard;
 	CSNTPClient											m_sntpClient;
 	CDelayController								m_ctrDpad;

@@ -15,8 +15,8 @@ CGUIVideoControl::~CGUIVideoControl(void)
 void CGUIVideoControl::Render()
 {
 	RECT rc;
-	rc.top    = m_dwPosX;
-	rc.left   = m_dwPosY;
+	rc.left    = m_dwPosX;
+	rc.top    = m_dwPosY;
 	rc.right	= m_dwPosX+m_dwWidth;
 	rc.bottom = m_dwPosY+m_dwHeight;
 	g_graphicsContext.SetViewWindow(rc);

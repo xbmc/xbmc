@@ -324,6 +324,12 @@
 				RelativePath=".\xbmc\GUIDialogYesNo.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowFullScreen.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowFullScreen.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowHome.cpp">
 			</File>
 			<File
