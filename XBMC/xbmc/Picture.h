@@ -11,6 +11,7 @@ public:
 	virtual ~CPicture(void);
 	IDirect3DTexture8*	Load(const CStdString& strFilename, int iRotate=0, int iMaxWidth=128, int iMaxHeight=128);
   bool                CreateThumnail(const CStdString& strFileName);
+	bool                Convert(const CStdString& strSource,const CStdString& strDest);
 	DWORD								GetWidth() const;
 	DWORD								GetHeight() const;
 	void								RenderImage(IDirect3DTexture8* pTexture, int x, int y, int width, int height, int iTextureWidth, int iTextureHeight, int xOff=0, int yOff=0);

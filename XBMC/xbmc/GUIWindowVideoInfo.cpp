@@ -181,8 +181,17 @@ void CGUIWindowVideoInfo::Refresh()
 	if (!CUtil::FileExists(strThumb) )
 	{
 		CHTTP http;
-		http.Download(strImage, strThumb);
+		CStdString strExtension;
+		CUtil::GetExtension(strImage,strExtension);
+		CStdString strTemp="T:\\temp";
+		strTemp+=strExtension;
+		http.Download(strImage, strTemp);
+		
+		CPicture picture;
+		picture.Convert(strTemp,strThumb);
+
 	}
+	CUtil::GetThumbnail(m_pMovie->m_strSearchString,strThumb);
 	CStdString strAlbum;
 	CUtil::GetIMDBInfo(m_pMovie->m_strSearchString,strAlbum);
 	m_pMovie->Save(strAlbum);
