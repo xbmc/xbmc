@@ -61,6 +61,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 			CStdString strVisz;
 			strVisz.Format("Q:\\visualisations\\%s", g_stSettings.szDefaultVisualisation);
 			m_pVisualisation=factory.LoadVisualisation(strVisz.c_str());
+			if (!m_pVisualisation) return;
 			m_pVisualisation->Create();
 			OnInitialize(2, 44100, 16);
 			if (g_application.m_pPlayer)
