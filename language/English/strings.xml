@@ -322,8 +322,8 @@
   <string><id>391</id><value>Low</value></string>
   <string><id>392</id><value>Medium</value></string>
   <string><id>393</id><value>High</value></string>
-  <string><id>394</id><value>N/A</value></string>
-  <string><id>395</id><value>N/A</value></string>
+  <string><id>394</id><value>Fog</value></string>
+  <string><id>395</id><value>Haze</value></string>
   <string><id>396</id><value>Select Location</value></string>
   <string><id>397</id><value>Refresh Time</value></string>
   <string><id>398</id><value>Temperature Units</value></string>
