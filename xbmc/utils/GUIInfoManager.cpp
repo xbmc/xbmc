@@ -226,9 +226,12 @@ CStdString CGUIInfoManager::GetVideoLabel(const CStdString &strItem)
   else if (strItem == "director") return m_currentMovie.m_strDirector;
   else if (strItem == "year")
   {
-    CStdString strYear;
-    strYear.Format("%i", m_currentMovie.m_iYear);
-    return strYear;
+    if (m_currentMovie.m_iYear > 0)
+    {
+      CStdString strYear;
+      strYear.Format("%i", m_currentMovie.m_iYear);
+      return strYear;
+    }
   }
 	else if (strItem == "time") return GetCurrentPlayTime();
 	else if (strItem == "timeremaining") return GetCurrentPlayTimeRemaining();
@@ -348,7 +351,7 @@ void CGUIInfoManager::SetCurrentSong(const CFileItem &item)
 			if (dir.FindTrackName(m_currentSong.m_strPath,NameOfSong))
 				tag.SetTitle(NameOfSong);
 			else
-				tag.SetTitle( CUtil::GetFileName(m_currentSong.m_strPath) );
+				tag.SetTitle( CUtil::GetTitleFromPath(m_currentSong.m_strPath) );
 		}
 	}	//	if (tag.Loaded())
 	else 
