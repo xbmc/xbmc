@@ -12,7 +12,14 @@
 #include <string>
 #include <vector>
 using namespace std;
-#include "guicontrol.h" 
+#include "guiControl.h" 
+#include "guiCallback.h"
+
+#define ON_CLICK_MESSAGE(i,c,m) \
+{ \
+	EventHandler<c, CGUIMessage&> clickHandler(this, m); \
+	m_mapClickEvents[i] = clickHandler; \
+} \
 
 
 class CPosition
@@ -52,11 +59,17 @@ public:
 	static void         FlushReferenceCache();
 protected:
   virtual void        OnWindowLoaded();
+  virtual void			OnInitWindow();
 	struct stReferenceControl
 	{
 		char				 m_szType[128];
 		CGUIControl* m_pControl;
 	};
+
+	typedef Event<CGUIMessage&> CLICK_EVENT; 
+	typedef map<int, CLICK_EVENT> MAPCONTROLCLICKEVENTS;
+	MAPCONTROLCLICKEVENTS m_mapClickEvents;
+
 	typedef vector<struct stReferenceControl> VECREFERENCECONTOLS;
 	typedef vector<struct stReferenceControl>::iterator IVECREFERENCECONTOLS;
 	bool LoadReference(VECREFERENCECONTOLS& controls);
