@@ -87,7 +87,7 @@ void COSDSubMenu::Draw()
   }
 }
 
-bool COSDSubMenu::OnAction(const CAction& action)
+bool COSDSubMenu::OnAction(IExecutor& executor,const CAction& action)
 {
 	if (m_iCurrentOption >= (int)m_vecOptions.size()) return false; // invalid choice.
 	IOSDOption* pOption=m_vecOptions[m_iCurrentOption];
@@ -95,7 +95,7 @@ bool COSDSubMenu::OnAction(const CAction& action)
 	
 	if ( m_bOptionSelected)
   {
-    if (pOption->OnAction(action)) return true;
+    if (pOption->OnAction(executor,action)) return true;
   }
 	if (action.wID==ACTION_SELECT_ITEM)
   {

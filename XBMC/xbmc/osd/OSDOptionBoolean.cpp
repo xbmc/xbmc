@@ -4,24 +4,27 @@
 #include "localizestrings.h"
 #include "guifont.h"
 #include "guifontmanager.h"
-
 using namespace OSD;
-COSDOptionBoolean::COSDOptionBoolean(int iHeading)
-:m_image(0, 1, 0, 0, 0, 0, "check-box.png",0)
+
+
+COSDOptionBoolean::COSDOptionBoolean(int iAction,int iHeading)
+:m_image(0, 1, 0, 0, 0, 0, "check-box.png","check-boxNF.png",16,16)
 {
 	m_bValue=false;
   m_iHeading=iHeading;
+  m_iAction=iAction;
 }
 
-COSDOptionBoolean::COSDOptionBoolean(int iHeading,bool bValue)
-:m_image(0, 1, 0, 0, 0, 0, "check-box.png",0)
+COSDOptionBoolean::COSDOptionBoolean(int iAction,int iHeading,bool bValue)
+:m_image(0, 1, 0, 0, 0, 0, "check-box.png","check-boxNF.png",16,16)
 {
   iHeading=iHeading;
 	m_bValue=bValue;
+  m_iAction=iAction;
 }
 
 COSDOptionBoolean::COSDOptionBoolean(const COSDOptionBoolean& option)
-:m_image(0, 1, 0, 0, 0, 0, "check-box.png",0)
+:m_image(0, 1, 0, 0, 0, 0, "check-box.png","check-boxNF.png",16,16)
 {
 	*this=option;
 }
@@ -31,6 +34,7 @@ const OSD::COSDOptionBoolean& COSDOptionBoolean::operator = (const COSDOptionBoo
 	if (this==&option) return *this;
 	m_bValue=option.m_bValue;
   m_iHeading=option.m_iHeading;
+  m_iAction=option.m_iAction;
 	return *this;
 }
 
@@ -61,20 +65,22 @@ void COSDOptionBoolean::Draw(int x, int y, bool bFocus,bool bSelected)
                               0xFF020202);
   }
 
-  if (m_bValue && bSelected)
+  if (bSelected)
   {
     m_image.SetPosition(x+200,y);
     m_image.AllocResources();
+    m_image.SetSelected(m_bValue);
     m_image.Render();
     m_image.FreeResources();
   }
 }
 
-bool COSDOptionBoolean::OnAction(const CAction& action)
+bool COSDOptionBoolean::OnAction(IExecutor& executor, const CAction& action)
 {
 	if (action.wID==ACTION_SELECT_ITEM)
 	{
 		m_bValue=!m_bValue;
+    executor.OnExecute(m_iAction,this);
 		return true;
 	}
   return false;

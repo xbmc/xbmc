@@ -20,6 +20,12 @@ __int64 mplayer_get_pts();
 void		mplayer_GetAudioInfo(char* strFourCC,char* strAudioCodec, long* bitrate, long* samplerate, int* channels, int* bVBR);
 void		mplayer_GetVideoInfo(char* strFourCC,char* strVideoCodec, float* fps, unsigned int* iWidth,unsigned int* iHeight, long* tooearly, long* toolate);
 void		mplayer_GetGeneralInfo(long* lFramesDropped, int* iQuality, int* iCacheFilled, float* fTotalCorrection, float* fAVDelay);
+void    mplayer_setAVDelay(float fDelay);
+float   mplayer_getAVDelay();
+void    mplayer_setSubtitleDelay(float fDelay);
+float   mplayer_getSubtitleDelay();
+void    mplayer_setPercentage(int iPercent);
+int     mplayer_getPercentage(float fPercent);
 
 #ifdef __cplusplus
 }
