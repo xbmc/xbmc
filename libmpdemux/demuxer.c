@@ -205,13 +205,13 @@ void free_demuxer(demuxer_t *demuxer){
       demux_close_rtp(demuxer); break;
 #endif
     case DEMUXER_TYPE_SMJPEG:
-      demux_close_smjpeg(demuxer); return;
+      demux_close_smjpeg(demuxer); break;
     case DEMUXER_TYPE_DEMUXERS:
       demux_close_demuxers(demuxer); return;
     case DEMUXER_TYPE_AVI:
     case DEMUXER_TYPE_AVI_NI:
     case DEMUXER_TYPE_AVI_NINI:
-      demux_close_avi(demuxer); return;
+      demux_close_avi(demuxer); break;
 #ifdef HAVE_XMMS
     case DEMUXER_TYPE_XMMS:
       demux_close_xmms(demuxer); break;
@@ -693,10 +693,11 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_AVI){
       if(id==formtypeAVI){
         mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"AVI");
         file_format=DEMUXER_TYPE_AVI;
-      } else {
-        free_demuxer(demuxer);
-        demuxer = NULL;
       }
+    }
+    if (file_format==DEMUXER_TYPE_UNKNOWN) {
+    free_demuxer(demuxer);
+    demuxer = NULL;
     }
   }
 }

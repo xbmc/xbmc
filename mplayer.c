@@ -188,7 +188,7 @@ static int max_framesize=0;
 #include "libmpdemux/stream.h"
 #include "libmpdemux/demuxer.h"
 #include "libmpdemux/stheader.h"
-//#include "parse_es.h"
+#include "libmpdemux/parse_es.h"
 
 #include "libmpcodecs/dec_audio.h"
 #include "libmpcodecs/dec_video.h"
@@ -486,7 +486,9 @@ static void uninit_player(unsigned int mask){
   codecs_uninit_free(); 	//fix 70Kbytes codecs mem leak
   m_config_free(mconfig);	//fix 1250 counts of small memory block leaks
   if(vo_font) free_font_desc(vo_font);	//free font memory  	
-  vo_font = NULL;  
+  vo_font = NULL;
+  if(videobuffer) free(videobuffer);
+  videobuffer = NULL;
 
   current_module=NULL;
 }
@@ -1605,11 +1607,11 @@ else
   stream=NULL;
   demuxer=NULL;
   if (d_audio) {
-    //free_demuxer_stream(d_audio);
+    free_demuxer_stream(d_audio);
     d_audio=NULL;
   }
   if (d_video) {
-    //free_demuxer_stream(d_video);
+    free_demuxer_stream(d_video);
     d_video=NULL;
   }
   sh_audio=NULL;
@@ -1716,7 +1718,7 @@ if(stream_cache_size>0){
 
 #ifdef _XBOX
 char* cExt = strrchr(filename, '.');
-if (strstr(filename,"shout:") || (cExt != NULL && strstr(cExt,".mp3")))
+if (strstr(filename,"shout:") || (cExt != NULL && (strstr(cExt,".mp3")||strstr(cExt,".MP3")||strstr(cExt,".Mp3")||strstr(cExt,".mP3")) ))
 {
   printf("open as audio stream\n");
   file_format=DEMUXER_TYPE_AUDIO;
@@ -2015,10 +2017,12 @@ if(sh_video) {
     char *psub = get_path( "sub/" );
     char **tmp = sub_filenames((psub ? psub : ""), filename);
     char **tmp2 = tmp;
-    while (*tmp2)
+    while (tmp && *tmp2)
         add_subtitles (*tmp2++, sh_video->fps, 0);
-    while (*tmp)
-        free(*tmp++);
+    tmp2 = tmp;
+    while (tmp && *tmp2)
+        free(*tmp2++);
+    if(tmp) free(tmp);
     free(psub);
 #ifndef _XBOX
     if (set_of_sub_size == 0)
