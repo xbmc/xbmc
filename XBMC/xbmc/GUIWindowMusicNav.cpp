@@ -434,7 +434,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
 
 			// get genres from the database
 			VECGENRES genres;	
-			bool bTest = g_musicDatabase.GetGenres(genres);
+			bool bTest = g_musicDatabase.GetGenresNav(genres);
 
 			// Display an error message if the database doesn't contain any genres
 			DisplayEmptyDatabaseMessage(genres.empty());
