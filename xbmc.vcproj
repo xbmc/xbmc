@@ -455,12 +455,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\stdafx.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\StringUtils.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\XBAudioConfig.cpp">
-			</File>
-			<File
 				RelativePath=".\xbmc\XboxMediaCenter.cpp">
 			</File>
 			<Filter
@@ -470,85 +464,13 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowSettings.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\GUIWindowSettingsAudio.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsAutoRun.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsCache.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsCdg.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsCDRipper.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsFilter.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsGeneral.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsLCD.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsMyMusic.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsMyVideo.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsNetwork.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsNetworkFTP.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsNetworkIP.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsNetworkKai.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsNetworkProxy.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsNetworkTime.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsNetworkWeb.cpp">
+					RelativePath=".\xbmc\GUIWindowSettingsCategory.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowSettingsProfile.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\GUIWindowSettingsPrograms.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsScreensaver.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsSkinLanguage.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsSlideShow.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsSubtitles.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsSystem.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\GUIWindowSettingsUICalibration.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsUserInterface.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsWeather.cpp">
 				</File>
 			</Filter>
 			<Filter
@@ -578,13 +500,13 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\GUIWindowMusicSongs.cpp">
 				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowMusicTop100.cpp">
-				</File>
 			</Filter>
 			<Filter
 				Name="GUI Video"
 				Filter="">
+				<File
+					RelativePath=".\xbmc\GUIWindowMusicTop100.cpp">
+				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowVideoActors.cpp">
 				</File>
@@ -685,6 +607,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\Autorun.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\AutoSwitch.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\AutoSwitch.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\ButtonTranslator.cpp">
 				</File>
 				<File
@@ -713,6 +641,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\FileItem.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUISettings.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUISettings.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\KaiClient.cpp">
@@ -748,10 +682,19 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\Settings.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\SettingsControls.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\SettingsControls.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\Shortcut.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\Splash.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\StringUtils.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\ThumbnailCache.cpp">
@@ -767,6 +710,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\XBApplicationEx.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\XBAudioConfig.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\XBInputEx.cpp">
@@ -1135,85 +1081,16 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\GUIWindowSettings.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\GUIWindowSettingsAudio.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsAutoRun.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsCache.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsCdg.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsFilter.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsGeneral.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsLCD.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsMyMusic.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsMyVideo.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsNetwork.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsNetworkFTP.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsNetworkIP.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsNetworkKai.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsNetworkProxy.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsNetworkTime.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsNetworkWeb.h">
+				RelativePath=".\xbmc\GUIWindowSettingsCategory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsProfile.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\GUIWindowSettingsPrograms.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\GUIWindowSettingsScreenCalibration.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\GUIWindowSettingsScreensaver.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsSkinLanguage.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsSlideShow.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsSubtitles.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsSystem.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\GUIWindowSettingsUICalibration.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsUserInterface.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsWeather.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSlideShow.h">
@@ -1324,10 +1201,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">

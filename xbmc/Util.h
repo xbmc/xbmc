@@ -48,7 +48,7 @@ public:
   static void GetFileSize(__int64 dwFileSize, CStdString& strFileSize);
   static void GetDate(SYSTEMTIME stTime, CStdString& strDateTime);
 	static void GetHomePath(CStdString& strPath);
-  static bool InitializeNetwork(const char* szAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer);
+  static bool InitializeNetwork(int iAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer);
   static bool IsEthernetConnected();
 	static void GetTitleIP(CStdString& ip);
   static void ConvertTimeTToFileTime(__int64 sec, long nsec, FILETIME &ftTime);
@@ -56,7 +56,7 @@ public:
 	static void GetExtension(const CStdString& strFile, CStdString& strExtension);
   static void Lower(CStdString& strText);
   static void Unicode2Ansi(const wstring& wstrText,CStdString& strName);
-  static bool HasSlashAtEnd(const CStdString& strFile);
+	static bool HasSlashAtEnd(const CStdString& strFile);
 	static bool IsRemote(const CStdString& strFile);
 	static bool IsDVD(const CStdString& strFile);
 	static bool IsCDDA(const CStdString& strFile);
@@ -157,6 +157,7 @@ public:
 	static bool IsNaturalNumber(const CStdString& str);
 	static bool IsUsingTTFSubtitles();
 	static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
+	static bool IsDefaultThumb(const CStdString& strThumb);
 
 private:
 	static bool m_bNetworkUp;

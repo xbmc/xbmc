@@ -34,7 +34,7 @@ void CVisualisation::Create()
   sprintf(szTmp,"create:%ix%i %s\n", iWidth,iHeight,m_strVisualisationName.c_str());
   OutputDebugString(szTmp);
   m_pVisz->Create (g_graphicsContext.Get3DDevice(),iWidth,iHeight, m_strVisualisationName.c_str());
-  if(g_stSettings.m_bIsCdgEnabled)
+  if(g_guiSettings.GetBool("Karaoke.Enabled"))
 		g_application.m_CdgParser.AllocGraphics();
 }
 
@@ -59,7 +59,7 @@ void CVisualisation::Render()
 {
   // ask visz. to render itself
 	m_pVisz->Render();
-	if(g_stSettings.m_bIsCdgEnabled)
+	if(g_guiSettings.GetBool("Karaoke.Enabled"))
 		g_application.m_CdgParser.Render();
 }
 

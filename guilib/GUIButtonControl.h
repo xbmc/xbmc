@@ -44,6 +44,8 @@ public:
 	void				SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor);
 	void				SetText(const CStdString &aLabel);
 	void				SetText(const wstring & aLabel);
+	void				SetText2(const CStdString &aLabel2);
+	void				SetText2(const wstring & aLabel2);
 	void				SetHyperLink(long dwWindowID);
 	void				SetExecuteAction(const CStdString& strExecuteAction);
 	const CStdString&	GetTexutureFocusName() const { return m_imgFocus.GetFileName(); };
@@ -53,6 +55,7 @@ public:
 	void				SetTextColor(D3DCOLOR dwTextColor) { m_dwTextColor=dwTextColor;};
 	DWORD				GetTextColor() const { return m_dwTextColor;};
 	DWORD				GetTextAlign() const { return m_dwTextAlignment;};
+	void				SetTextAlign(DWORD dwTextAlign) { m_dwTextAlignment = dwTextAlign;};
 	DWORD				GetDisabledColor() const { return m_dwDisabledColor;};
 	const char *		GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
 	const wstring		GetLabel() const { return m_strLabel; };
@@ -73,6 +76,7 @@ protected:
 	DWORD				m_dwTextOffsetY;
 	DWORD				m_dwTextAlignment;
 	wstring				m_strLabel;
+	wstring				m_strLabel2;
 	CGUIFont*			m_pFont;
 	D3DCOLOR			m_dwTextColor;
 	D3DCOLOR			m_dwDisabledColor;

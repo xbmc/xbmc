@@ -33,6 +33,7 @@ protected:
 	virtual void			SortItems();
   virtual void			UpdateButtons();
 	virtual void			Update(const CStdString &strDirectory);
+	void							UpdateDir(const CStdString &strDirectory);
   virtual void			OnClick(int iItem);
 
   virtual void			OnPopupMenu(int iItem);
@@ -44,4 +45,7 @@ protected:
   virtual void			GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items);
 	virtual	void				GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
 	void								SetHistoryForPath(const CStdString& strDirectory);
+
+	int				m_iViewAsIconsRoot;
+	int				m_iViewAsIcons;
 };

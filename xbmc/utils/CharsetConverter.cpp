@@ -66,7 +66,7 @@ CCharsetConverter::CCharsetConverter()
 	m_vecBidiCharsetNames.push_back("CP1256");
 	m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_CP1256);
 
-	reset();
+//	reset();
 }
 
 vector<CStdString> CCharsetConverter::getCharsetLabels()
@@ -124,7 +124,7 @@ void CCharsetConverter::reset(void)
 
 	for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
 	{
-		if (m_vecBidiCharsetNames[i] == g_stSettings.m_szStringCharset)
+		if (m_vecBidiCharsetNames[i] == g_guiSettings.GetString("LookAndFeel.CharSet"))
 		{
 			m_stringFribidiCharset = m_vecBidiCharsets[i];
 		}
@@ -153,7 +153,7 @@ void CCharsetConverter::stringCharsetToFontCharset(const CStdStringA& strSource,
 
 	if (m_iconvStringCharsetToFontCharset == (iconv_t) -1)
 	{
-		m_iconvStringCharsetToFontCharset = iconv_open("UTF-16LE", g_stSettings.m_szStringCharset);
+		m_iconvStringCharsetToFontCharset = iconv_open("UTF-16LE", g_guiSettings.GetString("LookAndFeel.CharSet").c_str());
 	}
 
 	if (m_iconvStringCharsetToFontCharset != (iconv_t) -1)
@@ -173,7 +173,7 @@ void CCharsetConverter::subtitleCharsetToFontCharset(const CStdStringA& strSourc
 
 	if (m_iconvSubtitleCharsetToFontCharset == (iconv_t) -1)
 	{
-		m_iconvSubtitleCharsetToFontCharset = iconv_open("UTF-16LE", g_stSettings.m_szSubtitleCharset);
+		m_iconvSubtitleCharsetToFontCharset = iconv_open("UTF-16LE", g_guiSettings.GetString("Subtitles.CharSet").c_str());
 	}
 
 	if (m_iconvSubtitleCharsetToFontCharset != (iconv_t) -1)
@@ -217,7 +217,7 @@ void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdSt
 {
 	if (m_iconvUtf8ToStringCharset == (iconv_t) -1)
 	{
-		m_iconvUtf8ToStringCharset = iconv_open(g_stSettings.m_szStringCharset, "UTF-8");
+		m_iconvUtf8ToStringCharset = iconv_open(g_guiSettings.GetString("LookAndFeel.CharSet").c_str(), "UTF-8");
 	}
 
 	if (m_iconvUtf8ToStringCharset != (iconv_t) -1)
@@ -241,7 +241,7 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdSt
 {
 	if (m_iconvStringCharsetToUtf8 == (iconv_t) -1)
 	{
-		m_iconvStringCharsetToUtf8 = iconv_open("UTF-8", g_stSettings.m_szStringCharset);
+		m_iconvStringCharsetToUtf8 = iconv_open("UTF-8", g_guiSettings.GetString("LookAndFeel.CharSet").c_str());
 	}
 
 	if (m_iconvStringCharsetToUtf8 != (iconv_t) -1)
@@ -269,7 +269,7 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
 {
 	if (m_iconvUcs2CharsetToStringCharset == (iconv_t) -1)
 	{
-		m_iconvUcs2CharsetToStringCharset = iconv_open(g_stSettings.m_szStringCharset, "UTF-16LE");
+		m_iconvUcs2CharsetToStringCharset = iconv_open(g_guiSettings.GetString("LookAndFeel.CharSet").c_str(), "UTF-16LE");
 	}
 
 	if (m_iconvUcs2CharsetToStringCharset != (iconv_t) -1)

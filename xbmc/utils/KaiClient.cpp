@@ -153,12 +153,12 @@ void CKaiClient::SetObserver(IBuddyObserver* aObserver)
 
 		aObserver->OnInitialise(this);
 
-		if (g_stSettings.szOnlineKaiServer[0]!=0x00)
+		if (g_guiSettings.GetString("XLinkKai.Server").size())
 		{
 			SOCKADDR_IN sockAddr;
 			memset(&sockAddr, 0, sizeof(sockAddr));
 			sockAddr.sin_family = AF_INET;
-			sockAddr.sin_addr.s_addr = inet_addr(g_stSettings.szOnlineKaiServer);
+			sockAddr.sin_addr.s_addr = inet_addr(g_guiSettings.GetString("XLinkKai.Server").c_str());
 			sockAddr.sin_port = htons(KAI_SYSTEM_PORT);				
 			
 			Attach(sockAddr);
@@ -324,12 +324,12 @@ void CKaiClient::Reattach()
 	m_bContactsSettling = TRUE;
 	m_nFriendsOnline = 0;
 
-	if (g_stSettings.szOnlineKaiServer[0]!=0x00)
+	if (g_guiSettings.GetString("XLinkKai.Server").size())
 	{
 		SOCKADDR_IN sockAddr;
 		memset(&sockAddr, 0, sizeof(sockAddr));
 		sockAddr.sin_family = AF_INET;
-		sockAddr.sin_addr.s_addr = inet_addr(g_stSettings.szOnlineKaiServer);
+		sockAddr.sin_addr.s_addr = inet_addr(g_guiSettings.GetString("XLinkKai.Server").c_str());
 		sockAddr.sin_port = htons(KAI_SYSTEM_PORT);				
 		
 		Attach(sockAddr);
@@ -515,11 +515,14 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			if (strcmp(szMessage,"KAI_CLIENT_ENGINE_HERE")==0)
 			{
 				// if no server setting is stored, store engine address provided in response to discover message.
-				if (g_stSettings.szOnlineKaiServer[0]==0x00)
+				if (g_guiSettings.GetString("XLinkKai.Server").IsEmpty())
 				{
 					IN_ADDR server;
 					memcpy(&server, &aRemoteAddress.sin_addr, sizeof(server));
-					XNetInAddrToString(server,g_stSettings.szOnlineKaiServer,32);
+					char strKaiServer[256];
+					strcpy(strKaiServer, g_guiSettings.GetString("XLinkKai.Server").c_str()); 
+					XNetInAddrToString(server,strKaiServer,32);
+					g_guiSettings.SetString("XLinkKai.Server", strKaiServer);
 				}
 
 				Attach(aRemoteAddress);
@@ -547,7 +550,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			else if (strcmp(szMessage,"KAI_CLIENT_NOT_LOGGED_IN")==0)
 			{
 				// has XBMC user set up KAI username and password?
-				if (g_stSettings.szOnlineUsername[0]==0)
+				if (g_guiSettings.GetString("XLinkKai.UserName").IsEmpty())
 				{
 					CStdString strDefaultUsername = strtok(NULL, ";");  
 					CStdString strDefaultPassword = strtok(NULL, ";");  
@@ -555,17 +558,17 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 					// has KAI engine provided us with a default username and password?
 					if (strDefaultUsername.length()>0 && strDefaultPassword.length()>0)
 					{
-						strcpy(g_stSettings.szOnlineUsername,strDefaultUsername.c_str());
-						strcpy(g_stSettings.szOnlinePassword,strDefaultPassword.c_str());
+						g_guiSettings.SetString("XLinkKai.UserName", strDefaultUsername.c_str());
+						g_guiSettings.SetString("XLinkKai.Password", strDefaultPassword.c_str());
 
 						// auto login with KAI credentials
-						Login(g_stSettings.szOnlineUsername, g_stSettings.szOnlinePassword);
+						Login(g_guiSettings.GetString("XLinkKai.UserName"), g_guiSettings.GetString("XLinkKai.Password"));
 					}
 				}
 				else
 				{
 					// auto login with XBMC credentials
-					Login(g_stSettings.szOnlineUsername, g_stSettings.szOnlinePassword);
+					Login(g_guiSettings.GetString("XLinkKai.UserName"), g_guiSettings.GetString("XLinkKai.Password"));
 				}
 			}
 			break;
@@ -580,14 +583,14 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 				CStdString strCaseCorrectedName = strtok(NULL, ";");
 				if (strCaseCorrectedName.length()>0)
 				{
-					sprintf(g_stSettings.szOnlineUsername,strCaseCorrectedName.c_str());
+					g_guiSettings.SetString("XLinkKai.UserName", strCaseCorrectedName.c_str());
 				}
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_AUTHENTICATION_FAILED")==0)
 			{
 				if (observer!=NULL)
 				{
-					CStdString strUsername = g_stSettings.szOnlineUsername;
+					CStdString strUsername = g_guiSettings.GetString("XLinkKai.UserName");
 					observer->OnAuthenticationFailed(strUsername);
 				}
 			}
@@ -725,7 +728,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			{
 				CStdString strVector = strtok(NULL, ";"); 
 
-				bool bInPrivateRoom = strVector.Find(g_stSettings.szOnlineUsername)>0;
+				bool bInPrivateRoom = strVector.Find(g_guiSettings.GetString("XLinkKai.UserName"))>0;
 
 				// check to see if we've left our private room and we're still hosting			
 				if (m_bHosting)

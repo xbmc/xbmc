@@ -303,7 +303,11 @@ void CGUISpinControl::AllocResources()
     m_imgspinDownFocus.AllocResources();
 
     m_pFont=g_fontManager.GetFont(m_strFont);
-    SetPosition(m_iPosX, m_iPosY);
+
+		m_imgspinDownFocus.SetPosition(m_iPosX, m_iPosY);
+    m_imgspinDown.SetPosition(m_iPosX, m_iPosY);
+    m_imgspinUp.SetPosition(m_iPosX + m_imgspinDown.GetWidth(),m_iPosY);
+    m_imgspinUpFocus.SetPosition(m_iPosX + m_imgspinDownFocus.GetWidth(),m_iPosY);
 
 	if (m_dwBuddyControlID)	// do we have an associated label control?
 	{
@@ -474,7 +478,7 @@ void CGUISpinControl::Render()
 		}
 
 		float fPosX = (float)(m_iPosX+m_lTextOffsetX) -3;
-		if ( HasFocus() )
+		if ( !IsDisabled() /*HasFocus()*/ )
 		{
 			m_pFont->DrawText(fPosX, fPosY, m_dwTextColor,strTextUnicode.c_str(),m_dwAlign);
 		}
@@ -515,7 +519,7 @@ void CGUISpinControl::SetFloatValue(float fValue)
 
 int  CGUISpinControl::GetValue() const
 {
-    return m_iValue;
+	return m_iValue;
 }
 
 float CGUISpinControl::GetFloatValue() const
@@ -540,12 +544,14 @@ void CGUISpinControl::AddLabel(CStdString aLabel, int iValue)
  }
 
 
-const WCHAR* CGUISpinControl::GetLabel() const
+const wstring CGUISpinControl::GetLabel() const
 {
-    if (m_iValue >=0 && m_iValue < (int)m_vecLabels.size())
-        return L"";
-    const wstring strLabel=m_vecLabels[ m_iValue];
-    return strLabel.c_str();
+  if (m_iValue >=0 && m_iValue < (int)m_vecLabels.size())
+	{
+		const wstring strLabel=m_vecLabels[ m_iValue];
+		return strLabel;
+	}
+	return L"";
 }
 
 void CGUISpinControl::SetPosition(int iPosX, int iPosY)
@@ -569,6 +575,21 @@ void CGUISpinControl::SetFocus(bool bOnOff)
 {
     CGUIControl::SetFocus(bOnOff);
     m_iSelect=SPIN_BUTTON_DOWN;
+}
+void CGUISpinControl::SetVisible(bool bVisible)
+{
+	CGUIControl::SetVisible(bVisible);
+	if (m_dwBuddyControlID)
+	{
+		if (bVisible)
+		{
+			SET_CONTROL_VISIBLE(GetParentID(), m_dwBuddyControlID);
+		}
+		else
+		{
+			SET_CONTROL_HIDDEN(GetParentID(), m_dwBuddyControlID);
+		}
+	}
 }
 
 bool CGUISpinControl::CanMoveUp(bool bTestReverse)

@@ -117,10 +117,10 @@ void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidt
 	// initialize our transistion effect
 	m_transistionStart.type = transEffect;
 	m_transistionStart.start = 0;
-	m_transistionStart.length = g_stSettings.m_iSlideShowTransistionTime/20;
+	m_transistionStart.length = g_guiSettings.GetInt("Slideshow.TransistionTime")/20;
 	m_transistionEnd.type = transEffect;
-	m_transistionEnd.start = m_transistionStart.length + g_stSettings.m_iSlideShowStayTime/20;
-	m_transistionEnd.length = g_stSettings.m_iSlideShowTransistionTime/20;
+	m_transistionEnd.start = m_transistionStart.length + g_guiSettings.GetInt("Slideshow.StayTime")*50;
+	m_transistionEnd.length = g_guiSettings.GetInt("Slideshow.TransistionTime")/20;
 	m_transistionTemp.type = TRANSISTION_NONE;
 	m_fTransistionAngle = 0;
 	m_fTransistionZoom = 0;
@@ -128,7 +128,7 @@ void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidt
 	m_fZoomAmount = 1;
 	m_fZoomLeft = 0;
 	m_fZoomTop = 0;
-	m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + g_stSettings.m_iSlideShowStayTime/20;
+	m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + g_guiSettings.GetInt("Slideshow.StayTime")*50;
 	// initialize our display effect
 	if (dispEffect == EFFECT_RANDOM)
 		m_displayEffect = (DISPLAY_EFFECT)((rand() % (EFFECT_RANDOM-1)) + 1);
@@ -142,15 +142,15 @@ void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidt
 		// Calculate start and end positions
 		// choose a random direction
 		float angle = (rand() % 1000)/1000.0f*2*(float)M_PI;
-		m_fPosX = cos(angle)*g_stSettings.m_fSlideShowMoveAmount;
-		m_fPosY = sin(angle)*g_stSettings.m_fSlideShowMoveAmount;
+		m_fPosX = cos(angle)*g_guiSettings.GetInt("Slideshow.MoveAmount")/100.0f;
+		m_fPosY = sin(angle)*g_guiSettings.GetInt("Slideshow.MoveAmount")/100.0f;
 		m_fVelocityX = -m_fPosX*2.0f / (float)m_iTotalFrames;
 		m_fVelocityY = -m_fPosY*2.0f / (float)m_iTotalFrames;
 	}
 	else if (m_displayEffect == EFFECT_ZOOM)
 	{
 		m_fPosZ = 1.0f;
-		m_fVelocityZ = g_stSettings.m_fSlideShowZoomAmount/m_iTotalFrames;
+		m_fVelocityZ = (0.01f*g_guiSettings.GetInt("Slideshow.ZoomAmount"))/m_iTotalFrames;
 	}
 
 	m_bIsFinished = false;
@@ -254,33 +254,34 @@ void CSlideShowPic::Process()
 		{
 			m_fPosX += m_fVelocityX;
 			m_fPosY += m_fVelocityY;
-			if (m_fPosX > g_stSettings.m_fSlideShowMoveAmount)
+			float fMoveAmount = 0.01f*g_guiSettings.GetInt("Slideshow.MoveAmount");
+			if (m_fPosX > fMoveAmount)
 			{
-				m_fPosX = g_stSettings.m_fSlideShowMoveAmount;
+				m_fPosX = fMoveAmount;
 				m_fVelocityX = -m_fVelocityX;
 			}
-			if (m_fPosX < -g_stSettings.m_fSlideShowMoveAmount)
+			if (m_fPosX < -fMoveAmount)
 			{
-				m_fPosX = -g_stSettings.m_fSlideShowMoveAmount;
+				m_fPosX = -fMoveAmount;
 				m_fVelocityX = -m_fVelocityX;
 			}
-			if (m_fPosY > g_stSettings.m_fSlideShowMoveAmount)
+			if (m_fPosY > fMoveAmount)
 			{
-				m_fPosY = g_stSettings.m_fSlideShowMoveAmount;
+				m_fPosY = fMoveAmount;
 				m_fVelocityY = -m_fVelocityY;
 			}
-			if (m_fPosY < -g_stSettings.m_fSlideShowMoveAmount)
+			if (m_fPosY < -fMoveAmount)
 			{
-				m_fPosY = -g_stSettings.m_fSlideShowMoveAmount;
+				m_fPosY = -fMoveAmount;
 				m_fVelocityY = -m_fVelocityY;
 			}
 		}
 		else if (m_displayEffect == EFFECT_ZOOM)
 		{
 			m_fPosZ += m_fVelocityZ;
-			if (m_fPosZ > 1.0f + g_stSettings.m_fSlideShowZoomAmount)
+			if (m_fPosZ > 1.0f + 0.01f*g_guiSettings.GetInt("Slideshow.ZoomAmount"))
 			{
-				m_fPosZ = 1.0f + g_stSettings.m_fSlideShowZoomAmount;
+				m_fPosZ = 1.0f + 0.01f*g_guiSettings.GetInt("Slideshow.ZoomAmount");
 				m_fVelocityZ = -m_fVelocityZ;
 			}
 			if (m_fPosZ < 1.0f)
@@ -359,7 +360,7 @@ void CSlideShowPic::Rotate(int iRotate)
 	m_transistionTemp.length = m_transistionStart.length;
 	m_fTransistionAngle = (float)(iRotate-m_fAngle)/(float)m_transistionTemp.length;
 	// reset the timer
-	m_transistionEnd.start = m_iCounter + g_stSettings.m_iSlideShowStayTime/20;
+	m_transistionEnd.start = m_iCounter + g_guiSettings.GetInt("Slideshow.StayTime")*50;
 }
 
 void CSlideShowPic::Zoom(int iZoom)
@@ -371,7 +372,7 @@ void CSlideShowPic::Zoom(int iZoom)
 	m_transistionTemp.length = m_transistionStart.length;
 	m_fTransistionZoom = (float)(iZoom-m_fZoomAmount)/(float)m_transistionTemp.length;
 	// reset the timer
-	m_transistionEnd.start = m_iCounter + g_stSettings.m_iSlideShowStayTime/20;
+	m_transistionEnd.start = m_iCounter + g_guiSettings.GetInt("Slideshow.StayTime")*50;
 	// turn off the render effects until we're back down to normal zoom
 	m_bNoEffect = true;
 }
@@ -381,7 +382,7 @@ void CSlideShowPic::Move(float fDeltaX, float fDeltaY)
 	m_fZoomLeft += fDeltaX;
 	m_fZoomTop += fDeltaY;
 	// reset the timer
-	m_transistionEnd.start = m_iCounter + g_stSettings.m_iSlideShowStayTime/20;
+	m_transistionEnd.start = m_iCounter + g_guiSettings.GetInt("Slideshow.StayTime")*50;
 }
 
 void CSlideShowPic::Render()
@@ -424,7 +425,7 @@ void CSlideShowPic::Render()
 	float fScaleInv = fScreenWidth/m_fHeight;
 
 	bool bFillScreen = false;
-	float fComp = 1 + g_stSettings.m_fSlideShowBlackBarCompensation;
+	float fComp = 1.0f + 0.01f*g_guiSettings.GetInt("Slideshow.BlackBarCompensation");
 	float fScreenRatio = fScreenWidth/fScreenHeight * fPixelRatio;
 	// work out if we should be compensating the zoom to minimize blackbars
 	// we should compute this based on the % of black bars on screen perhaps??
@@ -442,11 +443,11 @@ void CSlideShowPic::Render()
 	float fScale = si*si*(fScaleInv-fScaleNorm)+fScaleNorm;
 	// scale if we need to due to the effect we're using
 	if (m_displayEffect == EFFECT_FLOAT)
-		fScale *= (1.0f + 2*g_stSettings.m_fSlideShowMoveAmount);
+		fScale *= (1.0f + 0.02f*g_guiSettings.GetInt("Slideshow.MoveAmount"));
 	if (m_displayEffect == EFFECT_ZOOM)
 		fScale *= m_fPosZ;
 	// zoom image
-	fScale *= m_fZoomAmount+m_fTransistionZoom;
+	fScale *= m_fZoomAmount;
 
 	// calculate the resultant coordinates
 	for (int i=0; i<4; i++)
@@ -614,8 +615,8 @@ void CSlideShowPic::Render(float *x, float *y, D3DTexture *pTexture, DWORD dwCol
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MAGFILTER,  g_stSettings.m_minFilter );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MINFILTER,  g_stSettings.m_maxFilter );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MAGFILTER,  D3DTEXF_LINEAR/*g_stSettings.m_minFilter*/ );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MINFILTER,  D3DTEXF_LINEAR/*g_stSettings.m_maxFilter*/ );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE,      FALSE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE,    FALSE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
@@ -734,6 +735,9 @@ void  CGUIWindowSlideShow::StartSlideShow()
 
 void CGUIWindowSlideShow::Render()
 {
+	// reset the screensaver if we're in a slideshow
+	if (m_bSlideShow) g_application.ResetScreenSaver();
+
 	int iSlides= m_vecSlides.size();
 	if (!iSlides) return;
 
@@ -776,7 +780,7 @@ void CGUIWindowSlideShow::Render()
 		m_bWaitForNextPic = false;
 		m_bLoadNextPic = false;
 		// load using the background loader
-		m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_vecSlides[m_iCurrentSlide], g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iWidth, g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iHeight);
+		m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_vecSlides[m_iCurrentSlide], g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight);
 	}
 
 	// check if we should discard an already loaded next slide
@@ -795,8 +799,8 @@ void CGUIWindowSlideShow::Render()
 		if (m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1-m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && !m_bWaitForNextPic)
 		{	// reload the image if we need to
 			CLog::DebugLog("Reloading the current image %s", m_vecSlides[m_iCurrentSlide].c_str());
-			int maxWidth = g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iWidth * m_iZoomFactor;
-			int maxHeight = g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iHeight * m_iZoomFactor;
+			int maxWidth = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth * m_iZoomFactor;
+			int maxHeight = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight * m_iZoomFactor;
 			if (maxWidth > MAX_PICTURE_WIDTH) maxWidth = MAX_PICTURE_WIDTH;
 			if (maxHeight > MAX_PICTURE_HEIGHT) maxHeight = MAX_PICTURE_HEIGHT;
 			m_pBackgroundLoader->LoadPic(1-m_iCurrentPic, m_iCurrentSlide, m_vecSlides[m_iCurrentSlide], maxWidth, maxHeight);
@@ -807,7 +811,7 @@ void CGUIWindowSlideShow::Render()
 		if ((m_bSlideShow || m_bLoadNextPic) && m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1-m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && !m_bWaitForNextPic)
 		{	// load the next image
 			CLog::DebugLog("Loading the next image %s", m_vecSlides[m_iNextSlide].c_str());
-			m_pBackgroundLoader->LoadPic(1-m_iCurrentPic, m_iNextSlide, m_vecSlides[m_iNextSlide], g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iWidth, g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iHeight);
+			m_pBackgroundLoader->LoadPic(1-m_iCurrentPic, m_iNextSlide, m_vecSlides[m_iNextSlide], g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight);
 		}
 	}
 
@@ -1019,7 +1023,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 			g_graphicsContext.Get3DDevice()->EnableOverlay(TRUE);
 
 			// shuffle
-			if (g_stSettings.m_bSlideShowShuffle && m_bSlideShow)
+			if (g_guiSettings.GetBool("Slideshow.Shuffle") && m_bSlideShow)
 				Shuffle();
 			return true;
 		}
@@ -1061,8 +1065,8 @@ void CGUIWindowSlideShow::Zoom(int iZoom)
 	if (!m_Image[m_iCurrentPic].DrawNextImage())
 	{
 		// work out our max width and height to see if we need to reload the image
-		int maxWidth = g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iWidth * m_iZoomFactor;
-		int maxHeight = g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iHeight * m_iZoomFactor;
+		int maxWidth = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth * m_iZoomFactor;
+		int maxHeight = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight * m_iZoomFactor;
 		if (maxWidth > MAX_PICTURE_WIDTH) maxWidth = MAX_PICTURE_WIDTH;
 		if (maxHeight > MAX_PICTURE_HEIGHT) maxHeight = MAX_PICTURE_HEIGHT;
 		m_Image[m_iCurrentPic].Zoom(iZoom);

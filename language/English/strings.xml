@@ -577,11 +577,11 @@
 	</string>
 	<string>
 		<id>213</id>
-		<value>UI Calibration</value>
+		<value>Centre User Interface...</value>
 	</string>
 	<string>
 		<id>214</id>
-		<value>Screen Calibration</value>
+		<value>Calibrate Screen...</value>
 	</string>
 	<string>
 		<id>215</id>
@@ -869,7 +869,7 @@
 	</string>
 	<string>
 		<id>287</id>
-		<value>SRT Subtitles</value>
+		<value>Subtitles</value>
 	</string>
 	<string>
 		<id>288</id>
@@ -1669,7 +1669,7 @@
 	</string>
 	<string>
 		<id>488</id>
-		<value>Repeat folder playlist</value>
+		<value>Repeat folders</value>
 	</string>
 	<string>
 		<id>489</id>
@@ -2362,4 +2362,5 @@
   <string><id>14039</id><value>XBMC requires to restart to change your</value></string>
   <string><id>14040</id><value>network setup.  Would you like to restart now?</value></string>
   <string><id>14041</id><value>Post Processing</value></string>
+  <string><id>14042</id><value>Engine IP Address</value></string>
 </strings>

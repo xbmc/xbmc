@@ -64,7 +64,9 @@ public:
 	void								SelectNextControl();
 	void								SelectPreviousControl();
 	void								SetID(DWORD dwID);
-	DWORD								GetID(void) const;
+	virtual DWORD				GetID(void) const;
+	virtual bool				HasID(DWORD dwID) { return (dwID >= m_dwWindowId && dwID < m_dwWindowId + m_dwIDRange); };
+	void								SetIDRange(DWORD dwRange) { m_dwIDRange = dwRange; };
 	DWORD								GetPreviousWindowID(void) const;
 	DWORD								GetWidth() { return m_dwWidth; };
 	DWORD								GetHeight() { return m_dwHeight; };
@@ -106,6 +108,7 @@ protected:
 	vector<CGUIControl*> m_vecControls;
   typedef vector<CGUIControl*>::iterator ivecControls;
   DWORD  m_dwWindowId;
+	DWORD	 m_dwIDRange;
   DWORD  m_dwPreviousWindowId;
   DWORD  m_dwDefaultFocusControlID;
   bool m_bRelativeCoords;
