@@ -1967,6 +1967,48 @@
 	<string>
 		<id>743</id>
 		<value>Zolty</value>
+	</string>
+	<string>
+		<id>744</id>
+		<value>Pliki</value>
+	</string>		
+	<string>
+		<id>745</id>
+		<value>Nie znaleziono informacji</value>
+	</string>		
+	<string>
+		<id>746</id>
+		<value>Przelacz do widoku plikow</value>
+	</string>
+	<string>
+		<id>747</id>
+		<value>Za malo pamieci zeby wyswietlic obrazek</value>
+	</string>
+	<string>
+		<id>748</id>
+		<value>Edytuj sciezke</value>
+	</string>
+	<string>
+		<id>749</id>
+		<value>Dodaj udzial</value>
+	</string>
+	<string>
+		<id>750</id>
+		<value>Czy jestes pewny?</value>
+	</string>
+	<string>
+		<id>751</id>
+		<value>Usun udzial</value>
+	</string>
+	<string>
+		<id>752</id>
+		<value>Edytuj sciezke udzialu</value>
+	</string>
+	<string>
+		<id>753</id>
+		<value>Edytuj nazwe udzialu</value>
+	</string>
+
 
 
 	<string>

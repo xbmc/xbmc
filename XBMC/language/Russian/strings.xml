@@ -1,275 +1,275 @@
 <strings>
 	<string>
 		<id>0</id>
-		<value>Programe</value>
+		<value>Мои программы</value>
 	</string>
 	<string>
 		<id>1</id>
-		<value>Imagini</value>
+		<value>Мои рисунки</value>
 	</string>
 	<string>
 		<id>2</id>
-		<value>Muzica</value>
+		<value>Моя музыка</value>
 	</string>
 	<string>
 		<id>3</id>
-		<value>Filme</value>
+		<value>Моё видео</value>
 	</string>
 	<string>
 		<id>4</id>
-		<value>Ghid TV</value>
+		<value>ТВ Гид</value>
 	</string>
 	<string>
 		<id>5</id>
-		<value>Configurare</value>
+		<value>Настройки</value>
 	</string>
 	<string>
 		<id>6</id>
-		<value>XBOX Media Center 1.0.0</value>
+		<value>XBMC 1.0 Translate by Wadimsten</value>
 	</string>
 	<string>
 		<id>7</id>
-		<value>Fisiere</value>
+		<value>Мои файлы</value>
 	</string>
 	<string>
 		<id>8</id>
-		<value>Vremea</value>
+		<value>Прогноз погоды</value>
 	</string>
 	<string>
 		<id>11</id>
-		<value>Luni</value>
+		<value>Понедельник</value>
 	</string>
 	<string>
 		<id>12</id>
-		<value>Marti</value>
+		<value>Вторник</value>
 	</string>
 	<string>
 		<id>13</id>
-		<value>Miercuri</value>
+		<value>Среда</value>
 	</string>
 	<string>
 		<id>14</id>
-		<value>Joi</value>
+		<value>Четверг</value>
 	</string>
 	<string>
 		<id>15</id>
-		<value>Vineri</value>
+		<value>Пятница</value>
 	</string>
 	<string>
 		<id>16</id>
-		<value>Sambata</value>
+		<value>Суббота</value>
 	</string>
 	<string>
 		<id>17</id>
-		<value>Duminica</value>
+		<value>Воскресенье</value>
 	</string>
 	<string>
 		<id>21</id>
-		<value>Ianuarie</value>
+		<value>Январь</value>
 	</string>
 	<string>
 		<id>22</id>
-		<value>Februarie</value>
+		<value>Февраль</value>
 	</string>
 	<string>
 		<id>23</id>
-		<value>Martie</value>
+		<value>Март</value>
 	</string>
 	<string>
 		<id>24</id>
-		<value>Aprilie</value>
+		<value>Апрель</value>
 	</string>
 	<string>
 		<id>25</id>
-		<value>Mai</value>
+		<value>Май</value>
 	</string>
 	<string>
 		<id>26</id>
-		<value>Iunie</value>
+		<value>Июнь</value>
 	</string>
 	<string>
 		<id>27</id>
-		<value>Iulie</value>
+		<value>Июль</value>
 	</string>
 	<string>
 		<id>28</id>
-		<value>August</value>
+		<value>Август</value>
 	</string>
 	<string>
 		<id>29</id>
-		<value>Septembrie</value>
+		<value>Сентябрь</value>
 	</string>
 	<string>
 		<id>30</id>
-		<value>Octombrie</value>
+		<value>Октябрь</value>
 	</string>
 	<string>
 		<id>31</id>
-		<value>Noiembrie</value>
+		<value>Ноябрь</value>
 	</string>
 	<string>
 		<id>32</id>
-		<value>Decembrie</value>
+		<value>Декабрь</value>
 	</string>
 	<string>
 		<id>100</id>
-		<value>Aranjare: Icoane</value>
+		<value>Вид: Иконки</value>
 	</string>
 	<string>
 		<id>101</id>
-		<value>Aranjare: Lista</value>
+		<value>Вид: Список</value>
 	</string>
 	<string>
 		<id>102</id>
-		<value>Cauta</value>
+		<value>Сканировать</value>
 	</string>
 	<string>
 		<id>103</id>
-		<value>Sortare dupa: Nume</value>
+		<value>Сорт.по Имени</value>
 	</string>
 	<string>
 		<id>104</id>
-		<value>Sortare dupa: Data</value>
+		<value>Сорт.по: Дате</value>
 	</string>
 	<string>
 		<id>105</id>
-		<value>Sortare dupa: Marime</value>
+		<value>Сорт.по: Разм.</value>
 	</string>
 	<string>
 		<id>106</id>
-		<value>Nu</value>
+		<value>Нет</value>
 	</string>
 	<string>
 		<id>107</id>
-		<value>Da</value>
+		<value>Да</value>
 	</string>
 	<string>
 		<id>108</id>
-		<value>Rulare automata</value>
+		<value>Слайдшоу</value>
 	</string>
 	<string>
 		<id>109</id>
-		<value>Bate un cui</value>
+		<value>Создать Thumbs</value>
 	</string>
 	<string>
 		<id>110</id>
-		<value>Bate in cuie</value>
+		<value>Создать Thumbnails</value>
 	</string>
 	<string>
 		<id>111</id>
-		<value>Scurtaturi</value>
+		<value>Ярлыки</value>
 	</string>
 	<string>
 		<id>112</id>
-		<value>PAUZA</value>
+		<value>ПАУЗА</value>
 	</string>
 	<string>
 		<id>113</id>
-		<value>Fisiere : Sursa</value>
+		<value>Мои файлы : Источник</value>
 	</string>
 	<string>
 		<id>114</id>
-		<value>Fisiere : Destinatie</value>
+		<value>Мои файлы : Назначение</value>
 	</string>
 	<string>
 		<id>115</id>
-		<value>Copiaza</value>
+		<value>Копировать</value>
 	</string>
 	<string>
 		<id>116</id>
-		<value>Muta</value>
+		<value>Переместить</value>
 	</string>
 	<string>
 		<id>117</id>
-		<value>Sterge</value>
+		<value>Удалить</value>
 	</string>
 	<string>
 		<id>118</id>
-		<value>Redenumeste</value>
+		<value>Переименовать</value>
 	</string>
 	<string>
 		<id>119</id>
-		<value>Director nou</value>
+		<value>Новая папка</value>
 	</string>
 	<string>
 		<id>120</id>
-		<value>Confirma copierea fisierului</value>
+		<value>Подтверждение копирования</value>
 	</string>
 	<string>
 		<id>121</id>
-		<value>Confirma mutarea fisierului</value>
+		<value>Подтверждение перемещения</value>
 	</string>
 	<string>
 		<id>122</id>
-		<value>Confirma stegerea fisierului</value>
+		<value>Подтверждение удаления</value>
 	</string>
 	<string>
 		<id>123</id>
-		<value>Copiezi aceste fisiere?</value>
+		<value>Копировать файлы?</value>
 	</string>
 	<string>
 		<id>124</id>
-		<value>Muti aceste fisiere?</value>
+		<value>Переместить файлы?</value>
 	</string>
 	<string>
 		<id>125</id>
-		<value>Stergi aceste fisiere?</value>
+		<value>Удалить файлы?</value>
 	</string>
 	<string>
 		<id>126</id>
-		<value>Stare</value>
+		<value>Статус</value>
 	</string>
 	<string>
 		<id>127</id>
-		<value>Obiecte</value>
+		<value>Обьекты</value>
 	</string>
 	<string>
 		<id>128</id>
-		<value>General</value>
+		<value>Главные</value>
 	</string>
 	<string>
 		<id>129</id>
-		<value>Derulare automata</value>
+		<value>Слайдшоу</value>
 	</string>
 	<string>
 		<id>130</id>
-		<value>Informatii de sistem</value>
+		<value>О системе</value>
 	</string>
 	<string>
 		<id>131</id>
-		<value>Ecran</value>
+		<value>Экран</value>
 	</string>
 	<string>
 		<id>132</id>
-		<value>Albume</value>
+		<value>Альбомы</value>
 	</string>
 	<string>
 		<id>133</id>
-		<value>Artisti</value>
+		<value>Артисты</value>
 	</string>
 	<string>
 		<id>134</id>
-		<value>Cantece</value>
+		<value>Песни</value>
 	</string>
 	<string>
 		<id>135</id>
-		<value>Tipuri</value>
+		<value>Жанры</value>
 	</string>
 	<string>
 		<id>136</id>
-		<value>Liste</value>
+		<value>Плэйлисты</value>
 	</string>
 	<string>
 		<id>137</id>
-		<value>Cautare</value>
+		<value>Поиск</value>
 	</string>
 	<string>
 		<id>138</id>
-		<value>Infromatii de sistem</value>
+		<value>Информация о системе</value>
 	</string>
 	<string>
 		<id>139</id>
-		<value>Temperaturi:</value>
+		<value>Температура:</value>
 	</string>
 	<string>
 		<id>140</id>
@@ -281,11 +281,11 @@
 	</string>
 	<string>
 		<id>142</id>
-		<value>Timp:</value>
+		<value>Время:</value>
 	</string>
 	<string>
 		<id>143</id>
-		<value>Actual:</value>
+		<value>Сейчас:</value>
 	</string>
 	<string>
 		<id>144</id>
@@ -293,11 +293,11 @@
 	</string>
 	<string>
 		<id>145</id>
-		<value>Retea:</value>
+		<value>Сеть:</value>
 	</string>
 	<string>
 		<id>146</id>
-		<value>Tip:</value>
+		<value>Тип:</value>
 	</string>
 	<string>
 		<id>147</id>
@@ -313,11 +313,11 @@
 	</string>
 	<string>
 		<id>150</id>
-		<value>IP:</value>
+		<value>IP</value>
 	</string>
 	<string>
 		<id>151</id>
-		<value>Link:</value>
+		<value>Соедиение: </value>
 	</string>
 	<string>
 		<id>152</id>
@@ -329,131 +329,131 @@
 	</string>
 	<string>
 		<id>154</id>
-		<value>Depozit</value>
+		<value>Хранители</value>
 	</string>
 	<string>
 		<id>155</id>
-		<value>Partitia</value>
+		<value>Drive</value>
 	</string>
 	<string>
 		<id>156</id>
-		<value>Liber</value>
+		<value>Свободно</value>
 	</string>
 	<string>
 		<id>157</id>
-		<value>Video</value>
+		<value>Видео</value>
 	</string>
 	<string>
 		<id>158</id>
-		<value>Memorie libera</value>
+		<value>Свободной памяти</value>
 	</string>
 	<string>
 		<id>159</id>
-		<value>Nu exista link</value>
+		<value>Нет соединения</value>
 	</string>
 	<string>
 		<id>160</id>
-		<value>Liber</value>
+		<value>Свободно</value>
 	</string>
 	<string>
 		<id>161</id>
-		<value>Indisponibil</value>
+		<value>Не доступно</value>
 	</string>
 	<string>
 		<id>162</id>
-		<value>Tray deschis</value>
+		<value>Привод открыт</value>
 	</string>
 	<string>
 		<id>163</id>
-		<value>Citesc</value>
+		<value>Чтение</value>
 	</string>
 	<string>
 		<id>164</id>
-		<value>No Disc</value>
+		<value>Диска нет</value>
 	</string>
 	<string>
 		<id>165</id>
-		<value>Disc Prezent</value>
+		<value>Диск представляет</value>
 	</string>
 	<string>
 		<id>166</id>
-		<value>Skin:</value>
+		<value>Скин</value>
 	</string>
 	<string>
 		<id>167</id>
-		<value>FTP server:</value>
+		<value>Включить FTP Server</value>
 	</string>
 	<string>
 		<id>168</id>
-		<value>Sincronizare Timp:</value>
+		<value>Включить синхронизацию времени</value>
 	</string>
 	<string>
 		<id>169</id>
-		<value>Rezolutie:</value>
+		<value>Разрешение</value>
 	</string>
 	<string>
 		<id>170</id>
-		<value>Album:</value>
+		<value>Альбом:</value>
 	</string>
 	<string>
 		<id>171</id>
-		<value>Artist:</value>
+		<value>Артист:</value>
 	</string>
 	<string>
 		<id>172</id>
-		<value>Data of Release-ului:</value>
+		<value>Дата выпуска:</value>
 	</string>
 	<string>
 		<id>173</id>
-		<value>Rating:</value>
+		<value>Рейтинг:</value>
 	</string>
 	<string>
 		<id>174</id>
-		<value>Tip:</value>
+		<value>Жанр:</value>
 	</string>
 	<string>
 		<id>175</id>
-		<value>Tonuri:</value>
+		<value>Tones:</value>
 	</string>
 	<string>
 		<id>176</id>
-		<value>Stiluri:</value>
+		<value>Стилей:</value>
 	</string>
 	<string>
 		<id>177</id>
-		<value>Review:</value>
+		<value>Обзоры:</value>
 	</string>
 	<string>
 		<id>178</id>
-		<value>Piste:</value>
+		<value>Трэков:</value>
 	</string>
 	<string>
 		<id>179</id>
-		<value>Cantec</value>
+		<value>Песня</value>
 	</string>
 	<string>
 		<id>180</id>
-		<value>Durata</value>
+		<value>Длительность</value>
 	</string>
 	<string>
 		<id>181</id>
-		<value>Selecteaza album</value>
+		<value>Выберите альбом</value>
 	</string>
 	<string>
 		<id>182</id>
-		<value>Piste</value>
+		<value>Трэков</value>
 	</string>
 	<string>
 		<id>183</id>
-		<value>Review</value>
+		<value>Обзор</value>
 	</string>
 	<string>
 		<id>184</id>
-		<value>Actualizare</value>
+		<value>Обновить</value>
 	</string>
 	<string>
 		<id>185</id>
-		<value>Caut album</value>
+		<value>Поиск альбома</value>
 	</string>
 	<string>
 		<id>186</id>
@@ -461,63 +461,63 @@
 	</string>
 	<string>
 		<id>187</id>
-		<value>Nici un album gasit!</value>
+		<value>Альбомы не найдены!</value>
 	</string>
 	<string>
 		<id>188</id>
-		<value>Selecteaza tot</value>
+		<value>Выбрать все</value>
 	</string>
 	<string>
 		<id>189</id>
-		<value>Scanez media info</value>
+		<value>Scanning media info</value>
 	</string>
 	<string>
 		<id>190</id>
-		<value>Salveaza</value>
+		<value>Записать</value>
 	</string>
 	<string>
 		<id>191</id>
-		<value>Arbitrar</value>
+		<value>Повтор</value>
 	</string>
 	<string>
 		<id>192</id>
-		<value>Clarifica</value>
+		<value>Очистить</value>
 	</string>
 	<string>
 		<id>193</id>
-		<value>Scaneaza</value>
+		<value>Сканировать</value>
 	</string>
 	<string>
 		<id>194</id>
-		<value>Caut...</value>
+		<value>Поиск...</value>
 	</string>
 	<string>
 		<id>195</id>
-		<value>Nu am gasit IMDB info!</value>
+		<value>IMDB info не найдено!</value>
 	</string>
 	<string>
 		<id>196</id>
-		<value>Selecteaza film:</value>
+		<value>Выберите клип:</value>
 	</string>
 	<string>
 		<id>197</id>
-		<value>Intreb IMDB info</value>
+		<value>Запрос IMDB info</value>
 	</string>
 	<string>
 		<id>198</id>
-		<value>Incarc detalii despre film</value>
+		<value>Загрузка Movie details</value>
 	</string>
 	<string>
 		<id>199</id>
-		<value>Director:</value>
+		<value>Директор:</value>
 	</string>
 	<string>
 		<id>200</id>
-		<value>Autor:</value>
+		<value>Сценарист:</value>
 	</string>
 	<string>
 		<id>201</id>
-		<value>An:</value>
+		<value>Год:</value>
 	</string>
 	<string>
 		<id>202</id>
@@ -533,11 +533,11 @@
 	</string>
 	<string>
 		<id>205</id>
-		<value>Voturi:</value>
+		<value>Votes:</value>
 	</string>
 	<string>
 		<id>206</id>
-		<value>Distributie</value>
+		<value>Cast</value>
 	</string>
 	<string>
 		<id>207</id>
@@ -549,107 +549,107 @@
 	</string>
 	<string>
 		<id>209</id>
-		<value>Urmator</value>
+		<value>Next</value>
 	</string>
 	<string>
 		<id>210</id>
-		<value>Anterior</value>
+		<value>Previous</value>
 	</string>
 	<string>
 		<id>211</id>
-		<value>Cauta aplicatii</value>
+		<value>Поиск приложений</value>
 	</string>
 	<string>
 		<id>212</id>
-		<value>aplicatii gasite</value>
+		<value>Приложения найдены</value>
 	</string>
 	<string>
 		<id>213</id>
-		<value>Calibrare UI</value>
+		<value>UI Калибровка</value>
 	</string>
 	<string>
 		<id>214</id>
-		<value>Calibrare ecran</value>
+		<value>Калибровка экрана</value>
 	</string>
 	<string>
 		<id>215</id>
-		<value>Atenuat</value>
+		<value>Сглаживать</value>
 	</string>
 	<string>
 		<id>216</id>
-		<value>Marit</value>
+		<value>Степень увеличения</value>
 	</string>
 	<string>
 		<id>217</id>
-		<value>Ingustat</value>
+		<value>Pixel Ratio</value>
 	</string>
 	<string>
 		<id>218</id>
-		<value>Partitia DVD</value>
+		<value>DVD Drive</value>
 	</string>
 	<string>
 		<id>219</id>
-		<value>Introdu discul</value>
+		<value>Вставте диск</value>
 	</string>
 	<string>
 		<id>220</id>
-		<value>Remote Share</value>
+		<value>Удаленный ресурс</value>
 	</string>
 	<string>
 		<id>221</id>
-		<value>Nu este conectat la retea</value>
+		<value>Нет подключения к сети</value>
 	</string>
 	<string>
 		<id>222</id>
-		<value>Anuleaza</value>
+		<value>Отменить</value>
 	</string>
 	<string>
 		<id>223</id>
-		<value>Schimbare automata ecran lat</value>
+		<value>Авто переключение на широкий экран</value>
 	</string>
 	<string>
 		<id>224</id>
-		<value>Viteza</value>
+		<value>Скорость</value>
 	</string>
 	<string>
 		<id>225</id>
-		<value>Timp de tranzitie</value>
+		<value>Transition time</value>
 	</string>
 	<string>
 		<id>226</id>
-		<value>Activeaza PAL60</value>
+		<value>Включить PAL60</value>
 	</string>
 	<string>
 		<id>227</id>
-		<value>Activeaza CDDB</value>
+		<value>Включить CDDB</value>
 	</string>
 	<string>
 		<id>228</id>
-		<value>Amesteca lista la pornire</value>
+		<value>Перемешать плэйлист при загрузке</value>
 	</string>
 	<string>
 		<id>229</id>
-		<value>Timpul HD Spindown (minute)</value>
+		<value>Время отключения HDD (мин)</value>
 	</string>
 	<string>
 		<id>230</id>
-		<value>Filtre</value>
+		<value>Фильтры</value>
 	</string>
 	<string>
 		<id>231</id>
-		<value>Nimic</value>
+		<value>Нет</value>
 	</string>
 	<string>
 		<id>232</id>
-		<value>Punct</value>
+		<value>Точка</value>
 	</string>
 	<string>
 		<id>233</id>
-		<value>Liniar</value>
+		<value>Линейный</value>
 	</string>
 	<string>
 		<id>234</id>
-		<value>Anizotropic</value>
+		<value>Анизотрический</value>
 	</string>
 	<string>
 		<id>235</id>
@@ -661,71 +661,71 @@
 	</string>
 	<string>
 		<id>237</id>
-		<value>Deamplificare:</value>
+		<value>Minification</value>
 	</string>
 	<string>
 		<id>238</id>
-		<value>Amplificare:</value>
+		<value>Magnification</value>
 	</string>
 	<string>
 		<id>240</id>
-		<value>Pornire automata DVD-Video</value>
+		<value>Автозапуск DVD-Video</value>
 	</string>
 	<string>
 		<id>241</id>
-		<value>Pornire automata VCD/SVCD</value>
+		<value>Автозапуск VCD/SVCD</value>
 	</string>
 	<string>
 		<id>242</id>
-		<value>Pornire automata CD-Audio</value>
+		<value>Автозапуск Audio-CD</value>
 	</string>
 	<string>
 		<id>243</id>
-		<value>Pornire automata joc XBOX</value>
+		<value>Автозапуск XBOX игр</value>
 	</string>
 	<string>
 		<id>244</id>
-		<value>Pornire automata filme</value>
+		<value>Автозапуск Видео</value>
 	</string>
 	<string>
 		<id>245</id>
-		<value>Pornire automata muzica</value>
+		<value>Автозапуск Музыки</value>
 	</string>
 	<string>
 		<id>246</id>
-		<value>Pornire automata poze</value>
+		<value>Автозапуск Изображений</value>
 	</string>
 	<string>
 		<id>247</id>
-		<value>Scripturi</value>
+		<value>Скрипты</value>
 	</string>
 	<string>
 		<id>248</id>
-		<value>Limba</value>
+		<value>Язык</value>
 	</string>
 	<string>
 		<id>249</id>
-		<value>Muzica</value>
+		<value>Музыка</value>
 	</string>
 	<string>
 		<id>250</id>
-		<value>Vizualizare</value>
+		<value>Визуализация</value>
 	</string>
 	<string>
 		<id>251</id>
-		<value>Selecteaza director destinatie</value>
+		<value>Выберите директорию назначения</value>
 	</string>
 	<string>
 		<id>252</id>
-		<value>Iesire pe toate difuzoarele</value>
+		<value>- Выводить стерео на все колонки</value>
 	</string>
 	<string>
 		<id>253</id>
-		<value>Numarul canalelor</value>
+		<value>Количество каналов</value>
 	</string>
 	<string>
 		<id>254</id>
-		<value>DD Stereo Passthrough</value>
+		<value>- DTS совместимый ресивер</value>
 	</string>
 	<string>
 		<id>255</id>
@@ -733,19 +733,19 @@
 	</string>
 	<string>
 		<id>256</id>
-		<value>Intreb freedb pt CDDB info</value>
+		<value>Querying freedb for CDDB info</value>
 	</string>
 	<string>
 		<id>257</id>
-		<value>Eroare</value>
+		<value>Ошибка</value>
 	</string>
 	<string>
 		<id>258</id>
-		<value>Activeaza ID3 tags</value>
+		<value>Включить ID3 tags</value>
 	</string>
 	<string>
 		<id>259</id>
-		<value>Deschidere</value>
+		<value>Открытие</value>
 	</string>
 	<string>
 		<id>260</id>
@@ -753,43 +753,43 @@
 	</string>
 	<string>
 		<id>261</id>
-		<value>Asteptati startul....</value>
+		<value>Ожидаем старт....</value>
 	</string>
 	<string>
 		<id>262</id>
-		<value>Iesire scripturi</value>
+		<value>Scripts Output</value>
 	</string>
 	<string>
 		<id>263</id>
-		<value>Server HTTP:</value>
+		<value>Включить Web Server</value>
 	</string>
 	<string>
 		<id>264</id>
-		<value>Inregistrare</value>
+		<value>Запись</value>
 	</string>
 	<string>
 		<id>265</id>
-		<value>Opreste inr.</value>
+		<value>Стоп запись.</value>
 	</string>
 	<string>
 		<id>266</id>
-		<value>Sortare dupa: Pista</value>
+		<value>Сорт.по: Track</value>
 	</string>
 	<string>
 		<id>267</id>
-		<value>Sortare dupa: Data</value>
+		<value>Сорт.по: врем.</value>
 	</string>
 	<string>
 		<id>268</id>
-		<value>Sortare dupa: Titlu</value>
+		<value>Сорт.по: Title</value>
 	</string>
 	<string>
 		<id>269</id>
-		<value>Sortare dupa: Artist</value>
+		<value>Сорт.по: Artist</value>
 	</string>
 	<string>
 		<id>270</id>
-		<value>Sortare dupa: Album</value>
+		<value>Сорт.по: Album</value>
 	</string>
 	<string>
 		<id>271</id>
@@ -797,135 +797,135 @@
 	</string>
 	<string>
 		<id>272</id>
-		<value>Compensare Overscan stanga-sus</value>
+		<value>Top Left Overscan Compensation</value>
 	</string>
 	<string>
 		<id>273</id>
-		<value>Compensare Overscan dreapta-jos</value>
+		<value>Bottom Right Overscan Compensation</value>
 	</string>
 	<string>
 		<id>274</id>
-		<value>Pozitie subtitlu</value>
+		<value>Позиция субтитров</value>
 	</string>
 	<string>
 		<id>275</id>
-		<value>Ajustarea ratei pixel</value>
+		<value>Настройка пропорций</value>
 	</string>
 	<string>
 		<id>276</id>
-		<value>Muta sageata pt schimbarea overscan-ului</value>
+		<value>Move the arrow to change the amount of overscan</value>
 	</string>
 	<string>
 		<id>277</id>
-		<value>Muta sageata pt schimbarea pozitiei subtitlului</value>
+		<value>Двигайте полоску для субтитров</value>
 	</string>
 	<string>
 		<id>278</id>
-		<value>Modifica patratul astfel incat sa fie drept</value>
+		<value>Измените до идеального квадрата</value>
 	</string>
 	<string>
 		<id>279</id>
-		<value>Incarcarea configuratiei este imposibila</value>
+		<value>Невозможно загрузить настройки</value>
 	</string>
 	<string>
 		<id>280</id>
-		<value>folosire a fallbacks implicite</value>
+		<value>using default fallbacks</value>
 	</string>
 	<string>
 		<id>281</id>
-		<value>Te rog verifica fisierele .xml</value>
+		<value>Please check the .xml files</value>
 	</string>
 	<string>
 		<id>282</id>
-		<value>%i unitati gasite</value>
+		<value>found %i items</value>
 	</string>
 	<string>
 		<id>283</id>
-		<value>Rezultatele cautarii</value>
+		<value>Результаты поиска</value>
 	</string>
 	<string>
 		<id>284</id>
-		<value>N-am gasit nimic</value>
+		<value>Ничего не найдено</value>
 	</string>
 	<string>
 		<id>285</id>
-		<value>Filtru de deinterlace</value>
+		<value>Deinterlace filter</value>
 	</string>
 	<string>
 		<id>286</id>
-		<value>Filtru de postprocessing</value>
+		<value>Postprocessing filter</value>
 	</string>
 	<string>
 		<id>287</id>
-		<value>Subtitluri SRT</value>
+		<value>SRT Subtitles</value>
 	</string>
 	<string>
 		<id>288</id>
-		<value>Font</value>
+		<value>Шрифт</value>
 	</string>
 	<string>
 		<id>289</id>
-		<value>Marime</value>
+		<value>Размер</value>
 	</string>
 	<string>
 		<id>290</id>
-		<value>Amplificare volum (dB)</value>
+		<value>Volume amplification (dB)</value>
 	</string>
 	<string>
 		<id>291</id>
-		<value>Video</value>
+		<value>Видео</value>
 	</string>
 	<string>
 		<id>292</id>
-		<value>Audio</value>
+		<value>Аудио</value>
 	</string>
 	<string>
 		<id>293</id>
-		<value>Subtitluri</value>
+		<value>Субтитры</value>
 	</string>
 	<string>
 		<id>294</id>
-		<value>Creare semn de carte</value>
+		<value>Зодать закладку</value>
 	</string>
 	<string>
 		<id>295</id>
-		<value>Ciclare semne de carte</value>
+		<value>Cycle bookmarks</value>
 	</string>
 	<string>
 		<id>296</id>
-		<value>Sterger semne de carte</value>
+		<value>Очистить закладку</value>
 	</string>
 	<string>
 		<id>297</id>
-		<value>Intarziere AV</value>
+		<value>AVDelay</value>
 	</string>
 	<string>
 		<id>298</id>
-		<value>Slider</value>
+		<value>Ползунок</value>
 	</string>
 	<string>
 		<id>300</id>
-		<value>1. Limba</value>
+		<value>1. Язык</value>
 	</string>
 	<string>
 		<id>301</id>
-		<value>2. Volum</value>
+		<value>2. Громкость</value>
 	</string>
 	<string>
 		<id>302</id>
-		<value>3. Stream</value>
+		<value>3. Поток</value>
 	</string>
 	<string>
 		<id>303</id>
-		<value>Intarziere</value>
+		<value>Delay</value>
 	</string>
 	<string>
 		<id>304</id>
-		<value>Limba</value>
+		<value>Язык</value>
 	</string>
 	<string>
 		<id>305</id>
-		<value>Activat</value>
+		<value>Включено</value>
 	</string>
 	<string>
 		<id>306</id>
@@ -933,23 +933,23 @@
 	</string>
 	<string>
 		<id>307</id>
-		<value>Automat</value>
+		<value>- Автоматический постпроцессинг</value>
 	</string>
 	<string>
 		<id>308</id>
-		<value>filtru deblocare verticala</value>
+		<value>- vertical deblocking filter</value>
 	</string>
 	<string>
 		<id>309</id>
-		<value>filtru deblocare orizontala</value>
+		<value>- horizontal deblocking filter</value>
 	</string>
 	<string>
 		<id>310</id>
-		<value>Lumina/Contrast automat</value>
+		<value>- Авто Яркость-Контраст</value>
 	</string>
 	<string>
 		<id>311</id>
-		<value>Dering</value>
+		<value>- Dering</value>
 	</string>
 	<string>
 		<id>312</id>
@@ -957,159 +957,159 @@
 	</string>
 	<string>
 		<id>313</id>
-		<value>Reorganizare baza date</value>
+		<value>Очистить базу данных</value>
 	</string>
 	<string>
 		<id>314</id>
-		<value>Preparare...</value>
+		<value>Подготовка...</value>
 	</string>
 	<string>
 		<id>315</id>
-		<value>Eroare in baza de date</value>
+		<value>Ошибка базы данных</value>
 	</string>
 	<string>
 		<id>316</id>
-		<value>Caut muzica...</value>
+		<value>Поиск песен...</value>
 	</string>
 	<string>
 		<id>317</id>
-		<value>Reorganizare cu success</value>
+		<value>Очистка базы данных выполнена</value>
 	</string>
 	<string>
 		<id>318</id>
-		<value>Marcare cantece pt stergere</value>
+		<value>Очистка песен...</value>
 	</string>
 	<string>
 		<id>319</id>
-		<value>Eroare la reorganizarea muzicii</value>
+		<value>Ошибка очистки песен</value>
 	</string>
 	<string>
 		<id>320</id>
-		<value>Caut artisti...</value>
+		<value>Очистка артистов...</value>
 	</string>
 	<string>
 		<id>321</id>
-		<value>Eroare reorganizare dupa artisti</value>
+		<value>Ошибка очистки артистов</value>
 	</string>
 	<string>
 		<id>322</id>
-		<value>Cautare dupa tip...</value>
+		<value>Очистка жанров...</value>
 	</string>
 	<string>
 		<id>323</id>
-		<value>Eroare reorganizare dupa tip</value>
+		<value>Ошибка очистки жанров</value>
 	</string>
 	<string>
 		<id>324</id>
-		<value>Cautare cale...</value>
+		<value>Очистка путей...</value>
 	</string>
 	<string>
 		<id>325</id>
-		<value>Eroare reorganizare dupa cale</value>
+		<value>Ошибка очистки путей</value>
 	</string>
 	<string>
 		<id>326</id>
-		<value>Cautare albume...</value>
+		<value>Очистка альбомов...</value>
 	</string>
 	<string>
 		<id>327</id>
-		<value>Eroare reorganizare dupa album</value>
+		<value>Ошибка очистки альбомов</value>
 	</string>
 	<string>
 		<id>328</id>
-		<value>Salvare...</value>
+		<value>Запись изменений...</value>
 	</string>
 	<string>
 		<id>329</id>
-		<value>Eroare la salvare</value>
+		<value>Ошибка записи изменений</value>
 	</string>
 	<string>
 		<id>330</id>
-		<value>Dureaza putin...</value>
+		<value>Это займет немного времени...</value>
 	</string>
 	<string>
 		<id>331</id>
-		<value>Compresie baza de date...</value>
+		<value>Сжатие базы данных...</value>
 	</string>
 	<string>
 		<id>332</id>
-		<value>Eroare la compresia bazei de date</value>
+		<value>Обишка сжатия базы данных</value>
 	</string>
 	<string>
 		<id>333</id>
-		<value>Vrei sa reorganizezi baza de date cu muzica?</value>
+		<value>Вы хотите очистить музыкальную базу данных?</value>
 	</string>
 	<string>
 		<id>334</id>
-		<value>Reorganizare baza de date cu muzica</value>
+		<value>Очистка музыкальной базы данных</value>
 	</string>
 	<string>
 		<id>335</id>
-		<value>Start</value>
+		<value>Старт</value>
 	</string>
 	<string>
 		<id>336</id>
-		<value>Ajustare Framerate</value>
+		<value>Выставить Framerate</value>
 	</string>
 	<string>
 		<id>337</id>
-		<value>Iesire audio:</value>
+		<value>Аудио выход</value>
 	</string>
 	<string>
 		<id>338</id>
-		<value>Analog</value>
+		<value>Аналог</value>
 	</string>
 	<string>
 		<id>339</id>
-		<value>Digital</value>
+		<value>Цифровой</value>
 	</string>
 	<string>
 		<id>340</id>
-		<value>Various Artists</value>
+		<value>Различные артисты</value>
 	</string>
 	<string>
 		<id>341</id>
-		<value>Play DVD</value>
+		<value>Запуск DVD</value>
 	</string>
 	<string>
 		<id>342</id>
-		<value>File</value>
+		<value>Фильмы</value>
 	</string>
 	<string>
 		<id>343</id>
-		<value>Ajustare Framerate</value>
+		<value>Выставить Framerate</value>
 	</string>
 	<string>
 		<id>344</id>
-		<value>Actori</value>
+		<value>Актеры</value>
 	</string>
 	<string>
 		<id>345</id>
-		<value>An</value>
+		<value>Год</value>
 	</string>
 	<string>
 		<id>346</id>
-		<value>Stiva</value>
+		<value>Склеить</value>
 	</string>
 	<string>
 		<id>347</id>
-		<value>Amestecat</value>
+		<value>Разбить</value>
 	</string>
 	<string>
 		<id>348</id>
-		<value>Flatten Directory Hierarchy</value>
+		<value>Иерархия папок</value>
 	</string>
 	<string>
 		<id>349</id>
-		<value>Arata numai Default.xbe</value>
+		<value>Показывать только Default.xbe</value>
 	</string>
 	<string>
 		<id>350</id>
-		<value>Programe</value>
+		<value>Программы</value>
 	</string>
 	<string>
 		<id>351</id>
-		<value>Oprit</value>
+		<value>Выключить</value>
 	</string>
 	<string>
 		<id>352</id>
@@ -1117,35 +1117,35 @@
 	</string>
 	<string>
 		<id>353</id>
-		<value>Black</value>
+		<value>Чёрный</value>
 	</string>
 	<string>
 		<id>354</id>
-		<value>Matrix Trails</value>
+		<value>Стиль Матрицы</value>
 	</string>
 	<string>
 		<id>355</id>
-		<value>Screensaver Idle Timeout</value>
+		<value>Время до включения хранителя экрана</value>
 	</string>
 	<string>
 		<id>356</id>
-		<value>Tip screensaver</value>
+		<value>Режим храниеля экрана</value>
 	</string>
 	<string>
 		<id>357</id>
-		<value>Timp de asteptare pt shutdown</value>
+		<value>Время до автовыключения</value>
 	</string>
 	<string>
 		<id>358</id>
-		<value>Toate albumele</value>
+		<value>Все альбомы</value>
 	</string>
 	<string>
 		<id>359</id>
-		<value>Albume recente</value>
+		<value>Недавние альбомы</value>
 	</string>
 	<string>
 		<id>360</id>
-		<value>Screensaver</value>
+		<value>Хранитель экрана</value>
 	</string>
 	<string>
 		<id>361</id>
@@ -1153,27 +1153,27 @@
 	</string>
 	<string>
 		<id>362</id>
-		<value>Nivel Fade screensaver (%)</value>
+		<value>Уровень затемнения хранителя экрана (%)</value>
 	</string>
 	<string>
 		<id>363</id>
-		<value>Sortare dupa: Fisier</value>
+		<value>Сорт.по файлам</value>
 	</string>
 	<string>
 		<id>364</id>
-		<value>DD/DTS Multichannel Passthrough</value>
+		<value>- AC3 совместимый ресивер</value>
 	</string>
 	<string>
 		<id>365</id>
-		<value>Sortare dupa: Nume</value>
+		<value>Сорт.по Имени</value>
 	</string>
 	<string>
 		<id>366</id>
-		<value>Sortare dupa: An</value>
+		<value>Сорт.по: Году</value>
 	</string>
 	<string>
 		<id>367</id>
-		<value>Sortare dupa: Rating</value>
+		<value>Сорт.по: Рейт</value>
 	</string>
 	<string>
 		<id>368</id>
@@ -1181,39 +1181,39 @@
 	</string>
 	<string>
 		<id>369</id>
-		<value>Titlu</value>
+		<value>Название</value>
 	</string>
 	<string>
 		<id>370</id>
-		<value>T-Storms</value>
+		<value>Грозовой шторм</value>
 	</string>
 	<string>
 		<id>371</id>
-		<value>Partial</value>
+		<value>Частично</value>
 	</string>
 	<string>
 		<id>372</id>
-		<value>In special</value>
+		<value>Главным образом</value>
 	</string>
 	<string>
 		<id>373</id>
-		<value>Insorit</value>
+		<value>Солнечно</value>
 	</string>
 	<string>
 		<id>374</id>
-		<value>Innourat</value>
+		<value>Облачно</value>
 	</string>
 	<string>
 		<id>375</id>
-		<value>Zapada</value>
+		<value>Снег</value>
 	</string>
 	<string>
 		<id>376</id>
-		<value>Ploaie</value>
+		<value>Дождь</value>
 	</string>
 	<string>
 		<id>377</id>
-		<value>Luminos</value>
+		<value>Светло</value>
 	</string>
 	<string>
 		<id>378</id>
@@ -1225,35 +1225,35 @@
 	</string>
 	<string>
 		<id>380</id>
-		<value>Averse de ploaie</value>
+		<value>Ливни</value>
 	</string>
 	<string>
 		<id>381</id>
-		<value>Putine</value>
+		<value>Немного</value>
 	</string>
 	<string>
 		<id>382</id>
-		<value>Imprastiat</value>
+		<value>Рассеянно</value>
 	</string>
 	<string>
 		<id>383</id>
-		<value>Vant</value>
+		<value>Ветер</value>
 	</string>
 	<string>
 		<id>384</id>
-		<value>Puternic</value>
+		<value>Сильные</value>
 	</string>
 	<string>
 		<id>385</id>
-		<value>Placut</value>
+		<value>Fair</value>
 	</string>
 	<string>
 		<id>386</id>
-		<value>Clar</value>
+		<value>Ясно</value>
 	</string>
 	<string>
 		<id>387</id>
-		<value>Nori</value>
+		<value>Облачно</value>
 	</string>
 	<string>
 		<id>388</id>
@@ -1289,31 +1289,31 @@
 	</string>
 	<string>
 		<id>396</id>
-		<value>Selecteaza Locatia</value>
+		<value>Выберите местоположение</value>
 	</string>
 	<string>
 		<id>397</id>
-		<value>Regleaza Timpul</value>
+		<value>Вермя обновления</value>
 	</string>
 	<string>
 		<id>398</id>
-		<value>Unitatea de temperatura</value>
+		<value>Ед. измерения темп.</value>
 	</string>
 	<string>
 		<id>399</id>
-		<value>Unitatea de viteza</value>
+		<value>Ед. измерения скорости</value>
 	</string>
 	<string>
 		<id>400</id>
-		<value>Vremea</value>
+		<value>Погода</value>
 	</string>
 	<string>
 		<id>401</id>
-		<value>Temp</value>
+		<value>Температура</value>
 	</string>
 	<string>
 		<id>402</id>
-		<value>Simte ca</value>
+		<value>Примерно</value>
 	</string>
 	<string>
 		<id>403</id>
@@ -1321,147 +1321,147 @@
 	</string>
 	<string>
 		<id>404</id>
-		<value>Vant</value>
+		<value>Ветер</value>
 	</string>
 	<string>
 		<id>405</id>
-		<value>Punct de topire</value>
+		<value>Точка росы</value>
 	</string>
 	<string>
 		<id>406</id>
-		<value>Umiditate</value>
+		<value>Влажность</value>
 	</string>
 	<string>
 		<id>407</id>
-		<value>De la</value>
+		<value>От</value>
 	</string>
 	<string>
 		<id>408</id>
-		<value>la</value>
+		<value>at</value>
 	</string>
 	<string>
 		<id>410</id>
-		<value>Accesez Weather.com</value>
+		<value>Подключение к Weather.com</value>
 	</string>
 	<string>
 		<id>411</id>
-		<value>Aflare vreme pt:</value>
+		<value>Получение прогноза для:</value>
 	</string>
 	<string>
 		<id>412</id>
-		<value>Nu se pot afla date despre vreme</value>
+		<value>Невозможно получить прогноз</value>
 	</string>
 	<string>
 		<id>413</id>
-		<value>Manual</value>
+		<value>Вручную</value>
 	</string>
 	<string>
 		<id>414</id>
-		<value>Nici un review pt acest album</value>
+		<value>Нет описания для этого албома</value>
 	</string>
 	<string>
 		<id>415</id>
-		<value>Downloadez thumbnail...</value>
+		<value>Загрузка thumbnail...</value>
 	</string>
 	<string>
 		<id>416</id>
-		<value>Indisponibil</value>
+		<value>Не доступно</value>
 	</string>
 	<string>
 		<id>417</id>
-		<value>Vizualizare: Icoane mari</value>
+		<value>Вид: Крупные иконки</value>
 	</string>
 	<string>
 		<id>418</id>
-		<value>Filme/Tipuri</value>
+		<value>Моё видео/Жанры</value>
 	</string>
 	<string>
 		<id>419</id>
-		<value>Filme/Actori</value>
+		<value>Мой видео/актёры</value>
 	</string>
 	<string>
 		<id>420</id>
-		<value>Filme/Ani</value>
+		<value>Моё видео/Года</value>
 	</string>
 	<string>
 		<id>421</id>
-		<value>Filme/Titluri</value>
+		<value>Моё видео/Названия</value>
 	</string>
 	<string>
 		<id>422</id>
-		<value>Sterge albuminfo</value>
+		<value>Удалить инфо</value>
 	</string>
 	<string>
 		<id>423</id>
-		<value>Sterge CDDB info</value>
+		<value>Удалить CDDB info</value>
 	</string>
 	<string>
 		<id>424</id>
-		<value>Selecteaza</value>
+		<value>Выбор</value>
 	</string>
 	<string>
 		<id>425</id>
-		<value>Nu am gasit albuminfo.</value>
+		<value>Не надйено инфо.</value>
 	</string>
 	<string>
 		<id>426</id>
-		<value>Nu am gasit CDDB info.</value>
+		<value>Не найдено CDDB info.</value>
 	</string>
 	<string>
 		<id>427</id>
-		<value>Disc:</value>
+		<value>Диск:</value>
 	</string>
 	<string>
 		<id>428</id>
-		<value>Introdu CD/DVD-ul corect</value>
+		<value>Вставте правильный CD/DVD</value>
 	</string>
 	<string>
 		<id>429</id>
-		<value>Te rog insereaza CD/DVD-ul urmator</value>
+		<value>Вставте следующий CD/DVD</value>
 	</string>
 	<string>
 		<id>430</id>
-		<value>Sortare dupa: DVD#</value>
+		<value>Сотр.по: DVD#</value>
 	</string>
 	<string>
 		<id>431</id>
-		<value>Fara Cache</value>
+		<value>Без кэша</value>
 	</string>
 	<string>
 		<id>432</id>
-		<value>Sterge film din baza de date</value>
+		<value>Удалить фильмы из базы данных</value>
 	</string>
 	<string>
 		<id>433</id>
-		<value>Esti sigur ca vrei sa stergi</value>
+		<value>Действительно удалить </value>
 	</string>
 	<string>
 		<id>434</id>
-		<value>filmul?</value>
+		<value>фильм?</value>
 	</string>
 	<string>
 		<id>435</id>
-		<value>Pista</value>
+		<value>Трэк</value>
 	</string>
 	<string>
 		<id>436</id>
-		<value>An:</value>
+		<value>Год:</value>
 	</string>
 	<string>
 		<id>437</id>
-		<value>Durata:</value>
+		<value>Длительность:</value>
 	</string>
 	<string>
 		<id>438</id>
-		<value>Se deschide fisierul</value>
+		<value>Открытие файла</value>
 	</string>
 	<string>
 		<id>439</id>
-		<value>Cache</value>
+		<value>Кэш</value>
 	</string>
 	<string>
 		<id>440</id>
-		<value>Harddisk</value>
+		<value>Жесткий диск</value>
 	</string>
 	<string>
 		<id>441</id>
@@ -1473,15 +1473,15 @@
 	</string>
 	<string>
 		<id>443</id>
-		<value>Internet</value>
+		<value>Интернет</value>
 	</string>
 	<string>
 		<id>444</id>
-		<value>video</value>
+		<value>видео</value>
 	</string>
 	<string>
 		<id>445</id>
-		<value>audio</value>
+		<value>аудио</value>
 	</string>
 	<string>
 		<id>446</id>
@@ -1489,7 +1489,7 @@
 	</string>
 	<string>
 		<id>447</id>
-		<value>Autorun</value>
+		<value>Автозапуск</value>
 	</string>
 	<string>
 		<id>448</id>
@@ -1497,43 +1497,43 @@
 	</string>
 	<string>
 		<id>449</id>
-		<value>Activat</value>
+		<value>Включено</value>
 	</string>
 	<string>
 		<id>450</id>
-		<value>Coloane</value>
+		<value>Колонки</value>
 	</string>
 	<string>
 		<id>4501</id>
-		<value>Tip LCD</value>
+		<value>LCD Тип</value>
 	</string>
 	<string>
 		<id>451</id>
-		<value>Adresa liniei 1:</value>
+		<value>Строка 1 adress</value>
 	</string>
 	<string>
 		<id>452</id>
-		<value>Adresa liniei 2:</value>
+		<value>Строка 2 adress</value>
 	</string>
 	<string>
 		<id>453</id>
-		<value>Adresa liniei 3:</value>
+		<value>Строка 3 adress</value>
 	</string>
 	<string>
 		<id>454</id>
-		<value>Adresa liniei 4:</value>
+		<value>Строка 4 adress</value>
 	</string>
 	<string>
 		<id>455</id>
-		<value>Linii:</value>
+		<value>Строки</value>
 	</string>
 	<string>
 		<id>456</id>
-		<value>Mod</value>
+		<value>Режим</value>
 	</string>
 	<string>
 		<id>457</id>
-		<value>Schimba vizualizare</value>
+		<value>Переключить вид</value>
 	</string>
 	<string>
 		<id>458</id>
@@ -1541,55 +1541,55 @@
 	</string>
 	<string>
 		<id>459</id>
-		<value>Subtitluri</value>
+		<value>Subs</value>
 	</string>
 	<string>
 		<id>460</id>
-		<value>Stream Audio</value>
+		<value>Аудио поток</value>
 	</string>
 	<string>
 		<id>461</id>
-		<value>[activ]</value>
+		<value>[запущено]</value>
 	</string>
 	<string>
 		<id>462</id>
-		<value>Subtitlu</value>
+		<value>Субтитры</value>
 	</string>
 	<string>
 		<id>463</id>
-		<value>Backlight</value>
+		<value>Подсветка</value>
 	</string>
 	<string>
 		<id>464</id>
-		<value>Luminozitate</value>
+		<value>Яркость</value>
 	</string>
 	<string>
 		<id>465</id>
-		<value>Contrast</value>
+		<value>Контраст</value>
 	</string>
 	<string>
 		<id>466</id>
-		<value>Gama</value>
+		<value>Гамма</value>
 	</string>
 	<string>
 		<id>467</id>
-		<value>Tip</value>
+		<value>Тип</value>
 	</string>
 	<string>
 		<id>468</id>
-		<value>Muta bara pt a-i schimba pozitia pe ecran</value>
+		<value>Двигайте полоску для смены положения панели</value>
 	</string>
 	<string>
 		<id>469</id>
-		<value>Pozitia OSD-ului</value>
+		<value>OSD Позиция</value>
 	</string>
 	<string>
 		<id>470</id>
-		<value>Credite</value>
+		<value>Создатели</value>
 	</string>
 	<string>
 		<id>471</id>
-		<value>Modchip</value>
+		<value>Модчип</value>
 	</string>
 	<string>
 		<id>472</id>
@@ -1597,23 +1597,23 @@
 	</string>
 	<string>
 		<id>473</id>
-		<value>High Quality Resampling</value>
+		<value>Переделка в высокое качество</value>
 	</string>
 	<string>
 		<id>474</id>
-		<value>Oprit</value>
+		<value>Выключено</value>
 	</string>
 	<string>
 		<id>475</id>
-		<value>Numai Muzica</value>
+		<value>Только музыка</value>
 	</string>
 	<string>
 		<id>476</id>
-		<value>Muzica &amp; Filme</value>
+		<value>Музыка &amp; Видео</value>
 	</string>
 	<string>
 		<id>477</id>
-		<value>Nu se poate incarca lista</value>
+		<value>Невозможно загрузить плэйлист</value>
 	</string>
 	<string>
 		<id>478</id>
@@ -1621,124 +1621,124 @@
 	</string>
 	<string>
 		<id>479</id>
-		<value>Skin si Limba</value>
+		<value>Скины и языки</value>
 	</string>
 	<string>
 		<id>480</id>
-		<value>Interfata</value>
+		<value>Интерфейс пользователя</value>
 	</string>
 	<string>
 		<id>481</id>
-		<value>Configurare Audio</value>
+		<value>Аудио опции</value>
 	</string>
 	<string>
 		<id>482</id>
-		<value>Despre XBMC</value>
+		<value>О XBMC</value>
 	</string>
 	<string>
 		<id>483</id>
-		<value>Album</value>
+		<value>Альбом</value>
 	</string>
 	<string>
 		<id>484</id>
-		<value>Artist</value>
+		<value>Артист</value>
 	</string>
 	<string>
 		<id>485</id>
-		<value>Sterge album</value>
+		<value>Удалить альбом</value>
 	</string>
 	<string>
 		<id>486</id>
-		<value>Repeta</value>
+		<value>Повтор</value>
 	</string>
 	<string>
 		<id>487</id>
-		<value>Repeta o data</value>
+		<value>Повтор один раз</value>
 	</string>
 	<string>
 		<id>488</id>
-		<value>Repeta acest director</value>
+		<value>Повтор папки плэйлиста</value>
 	</string>
 	<string>
 		<id>489</id>
-		<value>Foloseste lista de cantece</value>
+		<value>Использование плэйлиста в песнях</value>
 	</string>
 	<string>
 		<id>490</id>
-		<value>Auto switch list and icons in songs</value>
+		<value>Автопереключение списков и иконок в песнях</value>
 	</string>
 	<string>
 		<id>491</id>
-		<value>Foloseste icoane mari</value>
+		<value>- Исп. большие иконки</value>
 	</string>
 	<string>
 		<id>492</id>
-		<value>Marire subtitluri</value>
+		<value>Увеличить субтитры</value>
 	</string>
 	<string>
 		<id>493</id>
-		<value>Optiuni avansate (Pt experti!)</value>
+		<value>Расширенный опции (Только для экспертов!)</value>
 	</string>
 	<string>
 		<id>494</id>
-		<value>Overall Audio Headroom (dB)</value>
+		<value>Общий уровень аудио (dB)</value>
 	</string>
 	<string>
 		<id>495</id>
-		<value>Reformatare filme la rezoluitia definita</value>
+		<value>Upsample videos to GUI resolution</value>
 	</string>
 	<string>
 		<id>496</id>
-		<value>Calibrare</value>
+		<value>Калибровка</value>
 	</string>
 	<string>
 		<id>497</id>
-		<value>Ascunde extensiile fisierulor</value>
+		<value>Спрятать расширения файлов</value>
 	</string>
 	<string>
 		<id>498</id>
-		<value>Sortare dupa: Tip</value>
+		<value>Сорт.по: Типу</value>
 	</string>
 	<string>
 		<id>499</id>
-		<value>Eroare la conectare cu www.allmusic.com</value>
+		<value>Невозможно соединиться с www.allmusic.com</value>
 	</string>
 	<string>
 		<id>500</id>
-		<value>Downloadare album eronata</value>
+		<value>Неудачная загрузка инфо о Альбоме</value>
 	</string>
 	<string>
 		<id>501</id>
-		<value>Cautare dupa nume de albume...</value>
+		<value>Проверка имен альбомов...</value>
 	</string>
 	<string>
 		<id>502</id>
-		<value>Deschide</value>
+		<value>Открыт</value>
 	</string>
 	<string>
 		<id>503</id>
-		<value>Ocupat</value>
+		<value>Занят</value>
 	</string>
 	<string>
 		<id>504</id>
-		<value>Gol</value>
+		<value>Пуст</value>
 	</string>
 	<string>
 		<id>505</id>
-		<value>Loading media info from files...</value>
+		<value>Зайгрузка медиа инфо из файлов...</value>
 	</string>
 
 		<string>
 		<id>506</id>
-		<value>Pt descriere foloseste numele directorului</value>
+		<value>Использовать имя папки для описания</value>
 	</string> 
       <string> 	 
             <id>507</id> 	 
-            <value>Sorteaza dupa: Folosire</value> 	 
+            <value>Сорт.по: Исп.</value> 	 
       </string>
       <string>
 		<id>508</id>
-		<value>Nu folosi Scurtaturi sau Scanare</value>
+		<value>Не используйте ярыки или сканирование</value>
 	</string>
 	<string>
 		<id>600</id>
@@ -1746,51 +1746,51 @@
 	</string>
 	<string>
 		<id>601</id>
-		<value>Media</value>
+		<value>Средний</value>
 	</string>
 	<string>
 		<id>602</id>
-		<value>Standard</value>
+		<value>Стандартный</value>
 	</string>
 	<string>
 		<id>603</id>
-		<value>Extrem</value>
+		<value>Экстримальный</value>
 	</string>
 	<string>
 		<id>604</id>
-		<value>Constant Bit Rate</value>
+		<value>Постоянный Bit Rate</value>
 	</string>
 	<string>
 		<id>605</id>
-		<value>Se copiaza...</value>
+		<value>Ripping...</value>
 	</string>
 	<string>
 		<id>606</id>
-		<value>Pista numarul:</value>
+		<value>Номер трэка:</value>
 	</string>
 	<string>
 		<id>607</id>
-		<value>La:</value>
+		<value>В:</value>
 	</string>
 	<string>
 		<id>608</id>
-		<value>Nu se poate copia CD sau Pista</value>
+		<value>Rip CD или трэка невозможен</value>
 	</string>
 	<string>
 		<id>609</id>
-		<value>CDDARipPath nu este setat in XboxMediaCenter.xml</value>
+		<value>CDDARipPath is not set in XboxMediaCenter.xml</value>
 	</string>
 	<string>
 		<id>620</id>
-		<value>Copiere CD</value>
+		<value>CD Ripping</value>
 	</string>
 	<string>
 		<id>621</id>
-		<value>Encoder</value>
+		<value>Кодировка</value>
 	</string>
 	<string>
 		<id>622</id>
-		<value>Calitate</value>
+		<value>Качество</value>
 	</string>
 	<string>
 		<id>623</id>
@@ -1798,151 +1798,151 @@
 	</string>
 	<string>
 		<id>624</id>
-		<value>Include numar pista</value>
+		<value>включая номер трэка</value>
 	</string>
 	<string>
 		<id>625</id>
-		<value>Toate cantecele lui</value>
+		<value>Все песни</value>
 	</string>
 	<string>
 		<id>629</id>
-		<value>Mod vizualizare</value>
+		<value>Режим вида</value>
 	</string>
 	<string>
 		<id>630</id>
-		<value>Normal</value>
+		<value>Номарльный</value>
 	</string>
 	<string>
 		<id>631</id>
-		<value>Zoom</value>
+		<value>Увеличенный</value>
 	</string>
 	<string>
 		<id>632</id>
-		<value>Stretch 4:3</value>
+		<value>Растянутый 4:3</value>
 	</string>
 	<string>
 		<id>633</id>
-		<value>Stretch 14:9</value>
+		<value>Растянутый 14:9</value>
 	</string>
 	<string>
 		<id>634</id>
-		<value>Stretch 16:9</value>
+		<value>Растянутый 16:9</value>
 	</string>
 	<string>
 		<id>635</id>
-		<value>Original</value>
+		<value>Оригинальный размер</value>
 	</string>
 	<string>
 		<id>636</id>
-		<value>Personal</value>
+		<value>Особый</value>
 	</string>
 	<string>
 		<id>700</id>
-		<value>Stergere baza de date</value>
+		<value>Очистка базы данных</value>
 	</string>
 	<string>
 		<id>701</id>
-		<value>Stergere muzica veche din baza de date</value>
+		<value>Removing old songs from the Database</value>
 	</string>
 	<string>
 		<id>702</id>
-		<value>Acest director a fost scanat mai devereme.</value>
+		<value>This path has been scanned before.</value>
 	</string>
 	<string>
 		<id>703</id>
-		<value>Selecteaza YES pt actualizarea directorului selectat.</value>
+		<value>Press Yes to update all songs in this path.</value>
 	</string>
 	<string>
 		<id>704</id>
-		<value>Selecteaza NO pt adaugare cantece noi.</value>
+		<value>Press No to just add new songs.</value>
 	</string>
 	<string>
 		<id>705</id>
-		<value>Network</value>
+		<value>Сеть</value>
 	</string>
 	<string>
 		<id>706</id>
-		<value>HTTP Proxy Host:</value>
+		<value>HTTP Proxy Host</value>
 	</string>
 	<string>
 		<id>707</id>
-		<value>HTTP Proxy Port:</value>
+		<value>HTTP Proxy Port</value>
 	</string>
 	<string>
 		<id>708</id>
-		<value>Activare HTTP Proxy</value>
+		<value>Включить HTTP Proxy</value>
 	</string>
 	<string>
 		<id>709</id>
-		<value>XTag XLink Kai:</value>
+		<value>XLink Kai XTag</value>
 	</string>
 	<string>
 		<id>710</id>
-		<value>Parola XLink Kai:</value>
+		<value>XLink Kai Password</value>
 	</string>
 	<string>
 		<id>711</id>
-		<value>Setari Protocol Internet (IP)</value>
+		<value>Internet Protocol (IP)</value>
 	</string>
 	<string>
 		<id>712</id>
-		<value>Portul sepcificat este invalid. Selectati o valoare cuprinsa intre 1 si 65535.</value>
+		<value>Неправильный. Выберите от 1 до 65535.</value>
 	</string>
 	<string>
 		<id>713</id>
-		<value>Setari HTTP Proxy</value>
+		<value>HTTP Proxy</value>
 	</string>	
 	<string>
 		<id>714</id>
-		<value>Setari XLink Kai</value>
+		<value>XLink Kai</value>
 	</string>	
 	<string>
 		<id>715</id>
-		<value>Atribuire:</value>
+		<value>Назначение</value>
 	</string>	
 	<string>
 		<id>716</id>
-		<value>Automatic (DHCP)</value>
+		<value>Автоматически (DHCP)</value>
 	</string>	
 	<string>
 		<id>717</id>
-		<value>Manual (Static)</value>
+		<value>Вручную (Static)</value>
 	</string>	
 	<string>
 		<id>718</id>
-		<value>Implicit (Dashboard)</value>
+		<value>По умолчанию (Dashboard)</value>
 	</string>	
 	<string>
 		<id>719</id>
-		<value>Adresa IP:</value>
+		<value>IP адрес</value>
 	</string>	
 	<string>
 		<id>720</id>
-		<value>Netmask:</value>
+		<value>Маска сети</value>
 	</string>	
 	<string>
 		<id>721</id>
-		<value>Gateway Implicit:</value>
+		<value>Default Gateway</value>
 	</string>	
 	<string>
 		<id>722</id>
-		<value>Server DNS:</value>
+		<value>DNS Server</value>
 	</string>
 	<string>
 		<id>723</id>
-		<value>Salvare setari si reset XBox</value>
+		<value>Записать &amp; Перегрузить</value>
 	</string>
 	<string>
 		<id>724</id>
-		<value>Adresa selectata este invalida. Valoarea trebuie sa fie gen: AAA.BBB.CCC.DDD</value>
+		<value>Неправильный адрес. Введите в виде AAA.BBB.CCC.DDD</value>
 	</string>
 	<string>
 		<id>725</id>
-		<value>cu numere cuprinse intre 0 si 255.</value>
+		<value>с номерами от 0 до 255.</value>
 	</string>
 	<string>
 		<id>726</id>
-		<value>Schmbarile nu au fost salvate. Continuati?</value>
+		<value>Изменения не сохранениы. Продолжить без записи?</value>
 	</string>
 	<string>
 		<id>727</id>
@@ -1954,286 +1954,301 @@
 	</string>	
 	<string>
 		<id>729</id>
-		<value>Timp Internet</value>
+		<value>Internet Time</value>
 	</string>	
 	<string>
 		<id>730</id>
-		<value>Port-ul Web Server-ului</value>
+		<value>Web Server Port</value>
 	</string>	
 	<string>
 		<id>731</id>
-		<value>Host-ul Time Server-ului</value>
+		<value>Time Server Host</value>
 	</string>
 	<string>
 		<id>732</id>
-		<value>Salvare &amp; Apply</value>
+		<value>Сохранить &amp; Применить</value>
 	</string>
 	<string>
 		<id>733</id>
-		<value>Parola Web Server-ului</value>
+		<value>Web Server Пароль</value>
 	</string>
 	<string>
 		<id>734</id>
-		<value>Fara parola</value>
+		<value>Без пароля</value>
 	</string>
 	<string>
 		<id>735</id>
-		<value>Set de caractere:</value>
+		<value>Кодировка:</value>
 	</string>	
 	<string>
 		<id>736</id>
-		<value>Stil:</value>
+		<value>Стиль:</value>
 	</string>	
 	<string>
 		<id>737</id>
-		<value>Culoare:</value>
+		<value>Цвет:</value>
 	</string>
 	<string>
 		<id>738</id>
-		<value>Normal</value>
+		<value>Нормальный</value>
 	</string>	
 	<string>
 		<id>739</id>
-		<value>Ingrosat</value>
+		<value>Жирный</value>
 	</string>	
 	<string>
 		<id>740</id>
-		<value>Italics</value>
+		<value>Наклонный</value>
 	</string>	
 	<string>
 		<id>741</id>
-		<value>Italics Ingrosat</value>
+		<value>Жирный-Наклонный</value>
 	</string>	
 	<string>
 		<id>742</id>
-		<value>Alb</value>
+		<value>Белый</value>
 	</string>	
 	<string>
 		<id>743</id>
-		<value>Galben</value>
+		<value>Желтый</value>
+	</string>
+	<string>
+		<id>744</id>
+		<value>Файлы</value>
 	</string>		
+	<string>
+		<id>745</id>
+		<value>No scanned information for this view</value>
+	</string>		
+	<string>
+		<id>746</id>
+		<value>Switch to the Files view</value>
+	</string>
+	<string>
+		<id>747</id>
+		<value>Not enough available memory to load image</value>
+	</string>
 	<string>
 		<id>998</id>
 		<value>XLink Kai</value>
 	</string>
 	<string>
 		<id>999</id>
-		<value>Jocuri Online</value>
-	</string> 
+		<value>Онлайн игры</value>
+	</string>
 	
 	<string>
 		<id>10000</id>
-		<value>Acasa</value>
+		<value>Домой</value>
 	</string>
 	<string>
 		<id>10001</id>
-		<value>Programe</value>
+		<value>Мои программы</value>
 	</string>
 	<string>
 		<id>10002</id>
-		<value>Imagini</value>
+		<value>Мои рисунки</value>
 	</string>
 	<string>
 		<id>10003</id>
-		<value>Fisiere</value>
+		<value>Мои файлы</value>
 	</string>
 	<string>
 		<id>10004</id>
-		<value>Configurare</value>
+		<value>Настройка</value>
 	</string>
 	<string>
 		<id>10005</id>
-		<value>Muzica</value>
+		<value>Моя музыка</value>
 	</string>
 	<string>
 		<id>10006</id>
-		<value>Filme</value>
+		<value>Моё видео</value>
 	</string>
 	<string>
 		<id>10007</id>
-		<value>Informatii sistem</value>
+		<value>Инфо о системе</value>
 	</string>
 	<string>
 		<id>10008</id>
-		<value>Configurare-&gt;General</value>
+		<value>Настройки-&gt;Главные</value>
 	</string>
 	<string>
 		<id>10009</id>
-		<value>Configurare-&gt;Ecran</value>
+		<value>Настройки-&gt;Экран</value>
 	</string>
 	<string>
 		<id>10010</id>
-		<value>Configurare-&gt;Ecran-&gt;Calibrare interfata</value>
+		<value>Настройки-&gt;Экран-&gt;UI Калибровка</value>
 	</string>
 	<string>
 		<id>10011</id>
-		<value>Configurare-&gt;Ecran-&gt;Calibrare ecran</value>
+		<value>Настройки-&gt;Экран-&gt;Экран Калибровка</value>
 	</string>
 	<string>
 		<id>10012</id>
-		<value>Configurare-&gt;SlideShow</value>
+		<value>Настройки-&gt;Слайдшоу</value>
 	</string>
 	<string>
 		<id>10013</id>
-		<value>Configurare-&gt;Ecran-&gt;Filtre</value>
+		<value>Настройки-&gt;Экран-&gt;Фильтры</value>
 	</string>
 	<string>
 		<id>10014</id>
-		<value>Configurare-&gt;Muzica</value>
+		<value>Настройки-&gt;Музыка</value>
 	</string>
 	<string>
 		<id>10015</id>
-		<value>Configurare-&gt;Ecran-&gt;Subtitluri</value>
+		<value>Настройки-&gt;Экран-&gt;Субтитры</value>
 	</string>
 	<string>
 		<id>10016</id>
-		<value>Configurare-&gt;Ecran-&gt;Screensaver</value>
+		<value>Настройки-&gt;Экран-&gt;Хранитель экрана</value>
 	</string>
 	<string>
 		<id>10017</id>
-		<value>Configurare-&gt;Vreme</value>
+		<value>Настройки-&gt;Прогноз погоды</value>
 	</string>
 	<string>
 		<id>10020</id>
-		<value>Configurare-&gt;Scripturi</value>
+		<value>Настройки-&gt;Скрипты</value>
 	</string>
 	<string>
 		<id>10021</id>
-		<value>Filme/tip</value>
+		<value>Моё видео/жанр</value>
 	</string>
 	<string>
 		<id>10022</id>
-		<value>Filme/actor</value>
+		<value>Моё видео/автор</value>
 	</string>
 	<string>
 		<id>10023</id>
-		<value>Filme/an</value>
+		<value>Моё видео/год</value>
 	</string>
 	<string>
 		<id>10024</id>
-		<value>Configurare-&gt;Programe</value>
+		<value>Настройки-&gt;Программы</value>
 	</string>
 	<string>
 		<id>10025</id>
-		<value>Filme/titlu</value>
+		<value>Моё видео/название</value>
 	</string>
 	<string>
 		<id>10026</id>
-		<value>Configurare-&gt;General-&gt;Cache</value>
+		<value>Настройки-&gt;Главные-&gt;Кэш</value>
 	</string>
 	<string>
 		<id>10027</id>
-		<value>Configurare-&gt;General-&gt;Autorun</value>
+		<value>Настройки-&gt;Главные-&gt;Автозапуск</value>
 	</string>
 	<string>
 		<id>10028</id>
-		<value>Filme/playlist</value>
+		<value>Моё вдиео/плэйлист</value>
 	</string>
 	<string>
 		<id>10029</id>
-		<value>Configurare-&gt;General-&gt;LCD</value>
+		<value>Настройки-&gt;Главные-&gt;LCD</value>
 	</string>
 	<string>
 		<id>10100</id>
-		<value>Da/Nu dialog</value>
+		<value>Да/Нет диалог</value>
 	</string>
 	<string>
 		<id>10101</id>
-		<value>Dialog progres</value>
+		<value>Диалог прогресса</value>
 	</string>
 	<string>
 		<id>10500</id>
-		<value>Muzica/playlist</value>
+		<value>Моя музыка/плэйлист</value>
 	</string>
 	<string>
 		<id>10501</id>
-		<value>Muzica/fisiere</value>
+		<value>Моя музыка/файлы</value>
 	</string>
 	<string>
 		<id>10502</id>
-		<value>Muzica/albume</value>
+		<value>Моя музыка/альбомы</value>
 	</string>
 	<string>
 		<id>10503</id>
-		<value>Muzica/artisti</value>
+		<value>Моя музыка/артисты</value>
 	</string>
 	<string>
 		<id>10504</id>
-		<value>Muzica/tipuri</value>
+		<value>Моя музыка/жанры</value>
 	</string>
 	<string>
 		<id>10505</id>
-		<value>Muzica/top100</value>
+		<value>Моя музыка/top100</value>
 	</string>
 	<string>
 		<id>11000</id>
-		<value>tastatura</value>
+		<value>клавиатура</value>
 	</string>
 	<string>
 		<id>12000</id>
-		<value>Dialog selectare</value>
+		<value>Выбор диалога</value>
 	</string>
 	<string>
 		<id>12001</id>
-		<value>Muzica/info</value>
+		<value>Моя музыка/инфо</value>
 	</string>
 	<string>
 		<id>12002</id>
-		<value>Dialog OK</value>
+		<value>Диалог OK</value>
 	</string>
 	<string>
 		<id>12003</id>
-		<value>Filme/Info</value>
+		<value>Моё видео/Инфо</value>
 	</string>
 	<string>
 		<id>12004</id>
-		<value>Scripturi/Info</value>
+		<value>Мои скрипты/Инфо</value>
 	</string>
 	<string>
 		<id>12005</id>
-		<value>Afisare tot ecranul</value>
+		<value>Полноэкранное видео</value>
 	</string>
 	<string>
 		<id>12006</id>
-		<value>Vizualizare Audio</value>
+		<value>Аудио визуализация</value>
 	</string>
 	<string>
 		<id>12007</id>
-		<value>Imagine/slideshow</value>
+		<value>Мои рисунки/Слайдшоу</value>
 	</string>
 	<string>
 		<id>12008</id>
-		<value>Dialog fisier/stiva</value>
+		<value>Диалог склейки файлов</value>
 	</string>
 	<string>
 		<id>12600</id>
-		<value>Vremea</value>
+		<value>Прогноз погоды</value>
 	</string>
 	<string>
 		<id>12900</id>
-		<value>Screensaver</value>
+		<value>Хранитель экрана</value>
 	</string>
 	<string>
 		<id>12901</id>
-		<value>Afisare OSD pe tot ecranul</value>
+		<value>Полноэкранная OSD</value>
 	</string>
-  <string><id>13000</id><value>Sistem</value></string>
+  <string><id>13000</id><value>Система</value></string>
   <string><id>13001</id><value>Immediate HD Spindown</value></string>
-  <string><id>13002</id><value>Numai Video</value></string>
-  <string><id>13003</id><value>- Intarziere</value></string>
-  <string><id>13004</id><value>- Durata Minima fisier</value></string>
-  <string><id>13100</id><value>Filtru Flicker</value></string>
-  <string><id>13200</id><value>Profile</value></string>
-  <string><id>13201</id><value>Stergere profil '%s'?</value></string>
-  <string><id>13202</id><value>Salveaza configuratia curenta ca profil...</value></string>
-  <string><id>13203</id><value>Profilul '%s' a fost incarcat cu succes</value></string>
-  <string><id>13204</id><value>Ultimul profil incarcat:</value></string>
-  <string><id>13205</id><value>Necunoscut</value></string>
-  <string><id>13300</id><value>Viteza ventilator:</value></string>
-  <string><id>13301</id><value>Control temperatura automatic</value></string>
-  <string><id>13302</id><value>Control viteza ventilator</value></string>
-  
-  <string><id>13303</id><value>Fonturi Skin:</value></string>
-  <string><id>13304</id><value>Activare set de caractere flip bidirectional</value></string>
-  <string><id>13304</id><value>Set de caractere flip:</value></string>
+  <string><id>13002</id><value>Только видео</value></string>
+  <string><id>13003</id><value>- Delay</value></string>
+  <string><id>13004</id><value>- Minimum file duration</value></string>
+  <string><id>13100</id><value>Фильтр мерцания</value></string>
+  <string><id>13200</id><value>Профили</value></string>
+  <string><id>13201</id><value>Удалить профиль '%s'?</value></string>
+  <string><id>13202</id><value>Сохранить настройки как профиль...</value></string>
+  <string><id>13203</id><value>Профиль '%s' загружен</value></string>
+  <string><id>13204</id><value>Последний загруженный профиль:</value></string>
+  <string><id>13205</id><value>Неизвестен</value></string>
+  <string><id>13300</id><value>Скорость вентилятора:</value></string>
+  <string><id>13301</id><value>Auto temperature control</value></string>
+  <string><id>13302</id><value>Контроль скорости вентилятора</value></string>
+  <string><id>13303</id><value>Шрифт скина</value></string>
+  <string><id>13304</id><value>Enable Flipping Bi-Directional Strings</value></string>
+  <string><id>13305</id><value>Включить RSS новости</value></string>
 </strings>

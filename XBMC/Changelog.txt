@@ -5,6 +5,18 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-10-2004 changed: Portuguese language file (Thnx to w00zy)
+  - 09-10-2004 changed: Norwegian language file (Thnx to x-halez)
+  - 09-10-2004 changed: Italian language file (Thnx to kotix)
+  - 09-10-2004 changed: Portuguese (Brazil) language file (Thnx to wellingtontu)
+  - 09-10-2004 changed: Dutch language file (Thnx to joepmeloenx)
+  - 09-10-2004 changed: German (Austrian) language file (Thnx to CEOMR)
+  - 09-10-2004 added: Croatian language file (Thnx to Dane)
+  - 09-10-2004 changed: Turkish language file (Thnx to geminiserver)
+  - 09-10-2004 added: Catalan language file (Thnx to buclabs)
+  - 09-10-2004 changed: Polish language file (Thnx to NaPeK) 
+  - 09-10-2004 changed: Romanian language file (Thnx to bompy)
+  - 09-10-2004 added: Russian language file (thnx to Wadimsten)
   - 09-10-2004 fixed: thumb control doesn't show number of pages
   - 09-10-2004 fixed: music info showed html chars
   - 08-10-2004 fixed: my music songs, list/thumb control was not focused after a search
