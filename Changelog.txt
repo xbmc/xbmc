@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 31-01-2005 updated: German (Austrian) language file (Thnx to CEOMR)
   - 30-01-2005 updated: libcdio to version 0.71
   - 30-01-2005 updated: German language file
   - 30-01-2005 updated: Finnish language file (Thnx to jutski)
