@@ -657,6 +657,12 @@ bool CUtil::IsISO9660(const CStdString& strFile)
   return false;
 }
 
+bool CUtil::IsSmb(const CStdString& strFile)
+{
+  CStdString strLeft = strFile.Left(4);
+  return (strLeft.CompareNoCase("smb:") == 0);
+}
+
 void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
 {
   strDir=strURL;
@@ -2934,30 +2940,34 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 {
 	std::vector<string> strArray;
 
-	string path = strPath;
-	int iSize = strPath.size();
-	if (path.at(iSize-1) == '\\') path.erase(iSize-1, iSize-1); // remove slash at end
+  CURL url(strPath);
+	string path = url.GetFileName().c_str();
+	int iSize = path.size();
+	char cSep = CUtil::GetDirectorySeperator(strPath);
+	if (path.at(iSize - 1) == cSep) path.erase(iSize - 1, iSize - 1); // remove slash at end
+	CStdString strTemp;
 
 	// return true if directory already exist
 	if (CDirectory::Exists(strPath)) return true;
 
 	/* split strPath up into an array
-	 * f:\\music\\album\\ will result in
-	 * f:\\music
-	 * f:\\music\\album
+	 * music\\album\\ will result in
+	 * music
+	 * music\\album
 	 */
-	int i = 2; // 2 to skip f:
+	int i = 0;
 	while(i < iSize)
 	{
-		i = path.find('\\', i + 1);
+		i = path.find(cSep, i + 1);
 		if (i < 0) i = iSize; // get remaining chars
 		strArray.push_back(path.substr(0, i));
 	}
 
 	// create the directories
+	url.GetURLWithoutFilename(strTemp);
 	for(unsigned int i = 0; i < strArray.size(); i++)
 	{
-		CDirectory::Create(strArray[i].c_str());
+		CDirectory::Create(strTemp + strArray[i].c_str());
 	}
 	
   strArray.clear();
@@ -2970,44 +2980,63 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 // check if the filename is a legal FATX one.
 // this means illegal chars will be removed from the string,
 // and the remaining string is stripped back to 42 chars if needed
-CStdString CUtil::MakeLegalFATXFileName(const char* strFile, bool bKeepExtension)
+CStdString CUtil::MakeLegalFileName(const char* strFile, bool bKeepExtension, bool isFATX)
 {
-	if (NULL == strFile) return "";
-	char cIllegalChars[] = "<>=?:;\"*+,/\\|";
-	unsigned int iIllegalCharSize = strlen(cIllegalChars);
-	bool isIllegalChar;
-
+  if (NULL == strFile) return "";
+  char cIllegalChars[] = "<>=?:;\"*+,/\\|";
+  unsigned int iIllegalCharSize = strlen(cIllegalChars);
+  bool isIllegalChar;
 	unsigned int iSize = strlen(strFile);
 	unsigned int iNewStringSize = 0;
 	char* strNewString = new char[iSize + 1];
+  
+  // only copy the legal characters to the new filename
+  for (unsigned int i = 0; i < iSize; i++)
+  {
+	  isIllegalChar = false;
+	  // check for illigal chars
+	  for (unsigned j = 0; j < iIllegalCharSize; j++)
+		  if (strFile[i] == cIllegalChars[j]) isIllegalChar = true;
+	  // FATX only allows chars from 32 till 127
+	  if (isIllegalChar == false &&
+			  strFile[i] > 31 && strFile[i] < 127) strNewString[iNewStringSize++] = strFile[i];
+  }
+  strNewString[iNewStringSize] = '\0';
+	
+  if (isFATX)
+  {
+    // since we can only write to samba shares and hd, we assume this has to be a fatx filename
+    // thus we have to strip it down to 42 chars (samba doesn't have this limitation)
 
-	// only copy the legal characters to the new filename
-	for (unsigned int i = 0; i < iSize; i++)
-	{
-		isIllegalChar = false;
-		// check for illigal chars
-		for (unsigned j = 0; j < iIllegalCharSize; j++)
-			if (strFile[i] == cIllegalChars[j]) isIllegalChar = true;
-		// FATX only allows chars from 32 till 127
-		if (isIllegalChar == false &&
-				strFile[i] > 31 && strFile[i] < 127) strNewString[iNewStringSize++] = strFile[i];
+	  // no need to keep the extension, just strip it down to 42 characters
+	  if (iNewStringSize > 42 && bKeepExtension == false) strNewString[42] = '\0';
+
+	  // we want to keep the extension
+	  else if (iNewStringSize > 42 && bKeepExtension == true)
+	  {
+		  char strExtension[42];
+		  unsigned int iExtensionLenght = iNewStringSize - (strrchr(strNewString, '.') - strNewString);
+		  strcpy(strExtension, (strNewString + iNewStringSize - iExtensionLenght));
+  		
+		  strcpy(strNewString + (42 - iExtensionLenght), strExtension);
+	  }
 	}
-	strNewString[iNewStringSize] = '\0';
+	
+	CStdString result(strNewString);
+  delete[] strNewString;
+	return result;  
+}
 
-	// no need to keep the extension, just strip it down to 42 characters
-	if (iNewStringSize > 42 && bKeepExtension == false) strNewString[42] = '\0';
+void CUtil::AddDirectorySeperator(CStdString& strPath)
+{
+  if (IsSmb(strPath)) strPath += "/";
+  else strPath += "\\"; 
+}
 
-	// we want to keep the extension
-	else if (iNewStringSize > 42 && bKeepExtension == true)
-	{
-		char strExtension[42];
-		unsigned int iExtensionLenght = iNewStringSize - (strrchr(strNewString, '.') - strNewString);
-		strcpy(strExtension, (strNewString + iNewStringSize - iExtensionLenght));
-		
-		strcpy(strNewString + (42 - iExtensionLenght), strExtension);
-	}
-
-	return strNewString;
+char CUtil::GetDirectorySeperator(const CStdString& strPath)
+{
+  if (IsSmb(strPath)) return '/';
+  return '\\'; 
 }
 
 void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPlayListItem &playlistitem)
