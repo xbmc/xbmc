@@ -1035,16 +1035,9 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
 				}
         if (!bGotIcon)
         {
-          CStdString strFolderImage=pItem->m_strPath;
-          
-          if (!CUtil::HasSlashAtEnd(strFolderImage)) 
-          {
-            if (pItem->m_strPath.Find("//")>=0 )
-              strFolderImage+="/";
-            else
-              strFolderImage+="\\";
-          }
-          strFolderImage += "folder.jpg";
+          CStdString strFolderImage;
+          AddFileToFolder(pItem->m_strPath, "folder.jpg", strFolderImage);
+
           if (CUtil::IsRemote(pItem->m_strPath) )
           {
             CUtil::GetThumbnail( strFolderImage,strThumb);
@@ -1053,6 +1046,13 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
 					  {
 						  pItem->SetThumbnailImage(strThumb);
 					  }
+            else
+            {
+              if (CUtil::FileExists(strThumb))
+              {
+                pItem->SetThumbnailImage(strThumb);
+              }
+            }
           }
           else if (CUtil::FileExists(strFolderImage) )
           {
@@ -1347,4 +1347,17 @@ __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)
   n <<=32;
   n += dwLow;
   return n;
+}
+
+void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
+{
+  strResult=strFolder;
+  if (!CUtil::HasSlashAtEnd(strResult)) 
+  {
+    if (strResult.Find("//")>=0 )
+      strResult+="/";
+    else
+      strResult+="\\";
+  }
+  strResult += strFile;
 }
