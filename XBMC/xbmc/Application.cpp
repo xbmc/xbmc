@@ -36,6 +36,9 @@
 	#pragma comment (lib, "xbmc/lib/libshout/libshoutd.lib" )
 	#pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
 	#pragma comment (lib,"xbmc/lib/mikxbox/mikxboxd.lib")  // SECTIONNAME=MOD_RW,MOD_RX
+	#pragma comment (lib,"xbmc/lib/libsidplay/libsidplayd.lib")			// SECTIONNAME=SID_RW,SID_RX
+	#pragma comment (lib,"xbmc/lib/libsidplay/libsidutilsd.lib")		// SECTIONNAME=SID_RW,SID_RX
+	#pragma comment (lib,"xbmc/lib/libsidplay/resid_builderd.lib")	// SECTIONNAME=SID_RW,SID_RX
 #else
 //  #pragma comment (lib,"lib/filezilla/xbfilezilla.lib")
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")          
@@ -52,6 +55,9 @@
 	#pragma comment (lib, "xbmc/lib/libshout/libshout.lib" )
 	#pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
 	#pragma comment (lib,"xbmc/lib/mikxbox/mikxbox.lib")
+	#pragma comment (lib,"xbmc/lib/libsidplay/libsidplay.lib")			// SECTIONNAME=SID_RW,SID_RX
+	#pragma comment (lib,"xbmc/lib/libsidplay/libsidutils.lib")		// SECTIONNAME=SID_RW,SID_RX
+	#pragma comment (lib,"xbmc/lib/libsidplay/resid_builder.lib")	// SECTIONNAME=SID_RW,SID_RX
 #endif
 
 extern IDirectSoundRenderer* m_pAudioDecoder;
@@ -1283,6 +1289,10 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 	else if (ModPlayer::IsSupportedFormat(url.GetFileType()))
 	{
 		strNewPlayer = "mod";
+	}
+	else if (url.GetFileType() == "sid")
+	{
+		strNewPlayer = "sid";
 	}
 	if (m_pPlayer)
 	{
