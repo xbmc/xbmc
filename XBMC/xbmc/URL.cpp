@@ -113,8 +113,8 @@ CURL::CURL(const CStdString& strURL)
 		}
 	}
 
-	int iFileType = m_strFileName.ReverseFind('.');
-	if (iFileType != -1)
+	int iFileType = m_strFileName.ReverseFind('.') + 1;
+	if (iFileType)
 		m_strFileType = m_strFileName.Right(m_strFileName.size()-iFileType);
 }
 
