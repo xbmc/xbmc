@@ -281,6 +281,11 @@ HRESULT CApplication::Initialize()
   {
     CLog::Log("initialize network failed");
   }
+
+	// set filters
+	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, g_stSettings.m_minFilter );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, g_stSettings.m_maxFilter );
+
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
   CLog::Log("load default skin:[%s]",g_stSettings.szDefaultSkin);
 	LoadSkin(g_stSettings.szDefaultSkin);
@@ -625,7 +630,7 @@ void CApplication::Render()
 			}
 		}
 
-#ifdef _DEBUG		
+//#ifdef _DEBUG		
     // in debug mode, show freememory
 		CStdStringW wszText;
 		wszText.Format(L"FreeMem %i/%iMB",stat.dwAvailPhys  /(1024*1024),
@@ -636,7 +641,7 @@ void CApplication::Render()
     {
 	    pFont->DrawText( 60, 40, 0xffffffff, wszText);
     }
-#endif
+//#endif
 
   }
   // Present the backbuffer contents to the display

@@ -888,8 +888,8 @@ void RenderVideo()
 	{
 		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
 		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
-		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MAGFILTER,  D3DTEXF_LINEAR );
-		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MINFILTER,  D3DTEXF_LINEAR );
+		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MAGFILTER,  g_stSettings.m_minFilter );
+		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MINFILTER,  g_stSettings.m_maxFilter );
 	}
 	g_graphicsContext.Get3DDevice()->SetPixelShader(m_hPixelShader);
 
