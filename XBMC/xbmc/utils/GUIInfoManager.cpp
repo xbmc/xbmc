@@ -76,7 +76,7 @@ CStdString CGUIInfoManager::GetImage(const CStdString &strInfo)
 	if (strTest == "weather.conditions")
 		return g_weatherManager.GetCurrentIcon();
 	if (strTest == "musicplayer.cover")
-		return m_currentSong.GetThumbnailImage();
+		return m_currentSong.HasThumbnail() ? m_currentSong.GetThumbnailImage() : "music.jpg";
 	return "";
 }
 
