@@ -32,6 +32,11 @@
 
 // -----------------
 
+// hardcoded offsets for button controls (and controls that use button controls)
+// ideally they should be dynamically read in as with all the other properties.
+#define CONTROL_TEXT_OFFSET_X 10
+#define CONTROL_TEXT_OFFSET_Y 2
+
 #define PyObject_HEAD_XBMC_CONTROL		\
     PyObject_HEAD				\
 		int iControlId;			\
@@ -40,10 +45,10 @@
 		int dwPosY;					\
 		int dwWidth;				\
 		int dwHeight;				\
-		int iControlUp;			\
-		int iControlDown;		\
-		int iControlLeft;		\
-		int iControlRight;	\
+		DWORD iControlUp;			\
+		DWORD iControlDown;		\
+		DWORD iControlLeft;		\
+		DWORD iControlRight;	\
 		CGUIControl* pGUIControl;
 
 #ifdef __cplusplus
@@ -131,6 +136,13 @@ namespace PYXBMC
 	extern PyTypeObject ControlImage_Type;
 	extern PyTypeObject ControlButton_Type;
 	extern PyTypeObject ControlList_Type;
+
+	CGUIControl* ControlLabel_Create(ControlLabel* pControl);
+	CGUIControl* ControlFadeLabel_Create(ControlFadeLabel* pControl);
+	CGUIControl* ControlTextBox_Create(ControlTextBox* pControl);
+	CGUIControl* ControlButton_Create(ControlButton* pControl);
+	CGUIControl* ControlImage_Create(ControlImage* pControl);
+	CGUIControl* ControlList_Create(ControlList* pControl);
 }
 
 #ifdef __cplusplus

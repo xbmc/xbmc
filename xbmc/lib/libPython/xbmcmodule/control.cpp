@@ -120,6 +120,9 @@ namespace PYXBMC
 	PyDoc_STRVAR(setNavigation__doc__,
 		"setNavigation( Control up, Control down, Control left, Control right) -- Set's navigation.\n"
 		"\n"
+		"Throws: TypeError, if one of the supplied arguments is not a Control type\n"
+		"        ReferenceError, if one of the controls is not added to a window\n"
+		"\n"
 		"Same as controlUp(), controlDown(), controlLeft(), controlRight().");
 
 	PyObject* Control_SetNavigation(Control* self, PyObject* args)
@@ -132,17 +135,15 @@ namespace PYXBMC
 		if (!PyArg_ParseTuple(args, "OOOO", &pUpControl, &pDownControl, &pLeftControl, &pRightControl)) return NULL;
 
 		// type checking, objects should be of type Control
-		if(strcmp(((PyObject*)pUpControl)->ob_type->tp_base->tp_name, Control_Type.tp_name) &&
-			strcmp(((PyObject*)pDownControl)->ob_type->tp_base->tp_name, Control_Type.tp_name) &&
-			strcmp(((PyObject*)pLeftControl)->ob_type->tp_base->tp_name, Control_Type.tp_name) &&
-			strcmp(((PyObject*)pRightControl)->ob_type->tp_base->tp_name, Control_Type.tp_name))
+		if(Control_Check(pUpControl) &&	Control_Check(pDownControl) &&
+				Control_Check(pLeftControl) && Control_Check(pRightControl))
 		{
-			PyErr_SetString((PyObject*)self, "Objects should be of type Control");
+			PyErr_SetString(PyExc_TypeError, "Objects should be of type Control");
 			return NULL;
 		}
 		if(self->iControlId == 0)
 		{
-			PyErr_SetString((PyObject*)self, "Control has to be added to a window first");
+			PyErr_SetString(PyExc_ReferenceError, "Control has to be added to a window first");
 			return NULL;
 		}
 
@@ -163,6 +164,9 @@ namespace PYXBMC
 	PyDoc_STRVAR(controlUp__doc__,
 		"controlUp( Control ) -- Set onUp control.\n"
 		"\n"
+		"Throws: TypeError, if the supplied argument is not a Control type\n"
+		"        ReferenceError, if the control is not added to a window\n"
+		"\n"
 		"When this control is active and the user presses up, the supplied Control\n"
 		"will recieve focus.");
 
@@ -173,12 +177,12 @@ namespace PYXBMC
 		// type checking, object should be of type Control
 		if(strcmp(((PyObject*)pControl)->ob_type->tp_base->tp_name, Control_Type.tp_name))
 		{
-			PyErr_SetString((PyObject*)self, "Object should be of type Control");
+			PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
 			return NULL;
 		}
 		if(self->iControlId == 0)
 		{
-			PyErr_SetString((PyObject*)self, "Control has to be added to a window first");
+			PyErr_SetString(PyExc_ReferenceError, "Control has to be added to a window first");
 			return NULL;
 		}
 
@@ -195,6 +199,9 @@ namespace PYXBMC
 	PyDoc_STRVAR(controlDown__doc__,
 		"controlDown( Control ) -- Set onDown control.\n"
 		"\n"
+		"Throws: TypeError, if the supplied argument is not a Control type\n"
+		"        ReferenceError, if the control is not added to a window\n"
+		"\n"
 		"When this control is active and the user presses down, the supplied Control\n"
 		"will recieve focus.");
 
@@ -205,12 +212,12 @@ namespace PYXBMC
 		// type checking, object should be of type Control
 		if(strcmp(((PyObject*)pControl)->ob_type->tp_base->tp_name, Control_Type.tp_name))
 		{
-			PyErr_SetString((PyObject*)self, "Object should be of type Control");
+			PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
 			return NULL;
 		}
 		if(self->iControlId == 0)
 		{
-			PyErr_SetString((PyObject*)self, "Control has to be added to a window first");
+			PyErr_SetString(PyExc_ReferenceError, "Control has to be added to a window first");
 			return NULL;
 		}
 
@@ -227,6 +234,9 @@ namespace PYXBMC
 	PyDoc_STRVAR(controlLeft__doc__,
 		"controlLeft( Control ) -- Set onLeft control.\n"
 		"\n"
+		"Throws: TypeError, if the supplied argument is not a Control type\n"
+		"        ReferenceError, if the control is not added to a window\n"
+		"\n"
 		"When this control is active and the user presses left, the supplied Control\n"
 		"will recieve focus.");
 
@@ -237,12 +247,12 @@ namespace PYXBMC
 		// type checking, object should be of type Control
 		if(strcmp(((PyObject*)pControl)->ob_type->tp_base->tp_name, Control_Type.tp_name))
 		{
-			PyErr_SetString((PyObject*)self, "Object should be of type Control");
+			PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
 			return NULL;
 		}
 		if(self->iControlId == 0)
 		{
-			PyErr_SetString((PyObject*)self, "Control has to be added to a window first");
+			PyErr_SetString(PyExc_ReferenceError, "Control has to be added to a window first");
 			return NULL;
 		}
 
@@ -259,6 +269,9 @@ namespace PYXBMC
 	PyDoc_STRVAR(controlRight__doc__,
 		"controlRight( Control ) -- Set onRight control.\n"
 		"\n"
+		"Throws: TypeError, if the supplied argument is not a Control type\n"
+		"        ReferenceError, if the control is not added to a window\n"
+		"\n"
 		"When this control is active and the user presses right, the supplied Control\n"
 		"will recieve focus.");
 
@@ -269,12 +282,12 @@ namespace PYXBMC
 		// type checking, object should be of type Control
 		if(strcmp(((PyObject*)pControl)->ob_type->tp_base->tp_name, Control_Type.tp_name))
 		{
-			PyErr_SetString((PyObject*)self, "Object should be of type Control");
+			PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
 			return NULL;
 		}
 		if(self->iControlId == 0)
 		{
-			PyErr_SetString((PyObject*)self, "Control has to be added to a window first");
+			PyErr_SetString(PyExc_ReferenceError, "Control has to be added to a window first");
 			return NULL;
 		}
 

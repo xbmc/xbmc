@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "..\python.h"
-#include "GuiLabelControl.h"
+#include "GuiFadeLabelControl.h"
 #include "control.h"
 #include "pyutil.h"
 
@@ -43,6 +43,18 @@ namespace PYXBMC
 		ControlFadeLabel *pControl = (ControlFadeLabel*)self;
 		pControl->vecLabels.clear();
 		self->ob_type->tp_free((PyObject*)self);
+	}
+
+	CGUIControl* ControlFadeLabel_Create(ControlFadeLabel* pControl)
+	{
+		pControl->pGUIControl = new CGUIFadeLabelControl(pControl->iParentId, pControl->iControlId,
+				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
+				pControl->strFont, pControl->dwTextColor, 0);
+
+		CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
+		pControl->pGUIControl->OnMessage(msg);
+
+		return pControl->pGUIControl;
 	}
 
 	PyDoc_STRVAR(addLabel__doc__,
