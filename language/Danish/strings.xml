@@ -1,6 +1,3 @@
-<!-- Danish language for XBMC            -->
-<!-- Based on 2003-06-11 english strings -->
-<!-- Translation done by Jan West        --> 
 <strings>
   <string><id>0</id><value>Programmer</value></string>
   <string><id>1</id><value>Billeder</value></string>
@@ -30,6 +27,8 @@
   <string><id>30</id><value>Oktober</value></string>
   <string><id>31</id><value>November</value></string>
   <string><id>32</id><value>December</value></string>
+  <string><id>98</id><value>Maske: Automatisk</value></string>
+  <string><id>99</id><value>Maske: Automatisk Stor</value></string>
   <string><id>100</id><value>Maske: Ikoner</value></string>
   <string><id>101</id><value>Maske: Liste</value></string>
   <string><id>102</id><value>Gennemsøg</value></string>
@@ -423,6 +422,87 @@
   <string><id>503</id><value>Optaget</value></string>
   <string><id>504</id><value>Tom</value></string>
   <string><id>505</id><value>Henter medie info fra dokumenterne...</value></string>
+  <string><id>506</id><value>Brug mappe navne som beskrivelse</value></string>
+  <string><id>507</id><value>Sorter på: Forbrug</value></string>
+  <string><id>508</id><value>Brug ikke Genveje eller Gennemsøg</value></string>
+  <string><id>600</id><value>Rip CD lyd</value></string>
+  <string><id>601</id><value>Medium</value></string>
+  <string><id>602</id><value>Standard</value></string>
+  <string><id>603</id><value>Ekstrem</value></string>
+  <string><id>604</id><value>Konstat Bit Ratio (CBR)</value></string>
+  <string><id>605</id><value>Ripper...</value></string>
+  <string><id>606</id><value>Spor Number:</value></string>
+  <string><id>607</id><value>Til:</value></string>
+  <string><id>608</id><value>Kunne ikke ripppe CD eller Spor</value></string>
+  <string><id>609</id><value>CDDARipPath er ikke sat i XboxMediaCenter.xml</value></string>
+  <string><id>620</id><value>CD Ripper</value></string>
+  <string><id>621</id><value>Encoder</value></string>
+  <string><id>622</id><value>Kvalitet</value></string>
+  <string><id>623</id><value>Bit Ratio</value></string>
+  <string><id>624</id><value>Inkluder Spor Nummer</value></string>
+  <string><id>625</id><value>Alle sange af</value></string>
+  <string><id>629</id><value>Visnings Tilstand</value></string>
+  <string><id>630</id><value>Normal</value></string>
+  <string><id>631</id><value>Zoom</value></string>
+  <string><id>632</id><value>Stræk 4:3</value></string>
+  <string><id>633</id><value>Stræk 14:9</value></string>
+  <string><id>634</id><value>Stræk 16:9</value></string>
+  <string><id>635</id><value>Original Størrelse</value></string>
+  <string><id>636</id><value>Brugerdefineret</value></string>
+  <string><id>700</id><value>Rydder op i databasen</value></string>
+  <string><id>701</id><value>Fjerner gamle sange fra databasen</value></string>
+  <string><id>702</id><value>Denne sti er tidligere blevet skannet.</value></string>
+  <string><id>703</id><value>Vælg Ja for at opdatere alle sange i denne sti.</value></string>
+  <string><id>704</id><value>Vælg nej for kun at tilføje nye sange.</value></string>
+  <string><id>705</id><value>Netværk</value></string>
+  <string><id>706</id><value>- HTTP Proxy Vært</value></string>
+  <string><id>707</id><value>- HTTP Proxy Port</value></string>
+  <string><id>708</id><value>Aktiver HTTP Proxy</value></string>
+  <string><id>709</id><value>XLink Kai XTag</value></string>
+  <string><id>710</id><value>XLink Kai Adgangskode</value></string>
+  <string><id>711</id><value>Internet Protokol (IP)</value></string>
+  <string><id>712</id><value>Invalid port specified. Value must be between 1 and 65535.</value></string>
+  <string><id>713</id><value>HTTP Proxy</value></string>
+  <string><id>714</id><value>XLink Kai</value></string>
+  <string><id>715</id><value>Tildeling</value></string>
+  <string><id>716</id><value>Automatisk (DHCP)</value></string>
+  <string><id>717</id><value>Manuel (Statisk)</value></string>
+  <string><id>718</id><value>Standard (Dashboard)</value></string>
+  <string><id>719</id><value>- IP Adresse</value></string>
+  <string><id>720</id><value>- Netmaske</value></string>
+  <string><id>721</id><value>- Standard Gateway</value></string>
+  <string><id>722</id><value>- DNS Server</value></string>
+  <string><id>723</id><value>Gem &amp; Genstart</value></string>
+  <string><id>724</id><value>Ugyldig adresse. Værdien skal have formatet AAA.BBB.CCC.DDD</value></string>
+  <string><id>725</id><value>med numre mellem 0 og 255.</value></string>
+  <string><id>726</id><value>Ændringerne er ikke gemt. Vil du forsætte uden at gemme?</value></string>
+  <string><id>727</id><value>Web Server</value></string>
+  <string><id>728</id><value>FTP Server</value></string>
+  <string><id>729</id><value>Internet Tid</value></string>
+  <string><id>730</id><value>- Web Server Port</value></string>
+  <string><id>731</id><value>- Time Server Vært</value></string>
+  <string><id>732</id><value>Gem &amp; Anvend</value></string>
+  <string><id>733</id><value>- Web Server Adgangskode</value></string>
+  <string><id>734</id><value>Ingen Adgangskode</value></string>
+  <string><id>735</id><value>- Tegnsæt</value></string>
+  <string><id>736</id><value>- Tema</value></string>
+  <string><id>737</id><value>- Farve</value></string>
+  <string><id>738</id><value>Normal</value></string>
+  <string><id>739</id><value>Fed</value></string>
+  <string><id>740</id><value>Kursiv</value></string>
+  <string><id>741</id><value>Fed Kursiv</value></string>
+  <string><id>742</id><value>Hvid</value></string>
+  <string><id>743</id><value>Gul</value></string>
+  <string><id>744</id><value>Filer</value></string>
+  <string><id>745</id><value>Ingen skannede informationer i denne visning</value></string>
+  <string><id>746</id><value>Skift til fil visning</value></string>
+  <string><id>747</id><value>Billede kunne ikke hentes</value></string>
+  <string><id>748</id><value>Rediger sti</value></string>
+  <string><id>749</id><value>Tilføj netværksmappe</value></string>
+  <string><id>750</id><value>Er du sikker?</value></string>
+  <string><id>751</id><value>Fjerner netværksmappe</value></string>
+  <string><id>752</id><value>Rediger netværksmappe sti</value></string>
+  <string><id>753</id><value>Rediger netværksmappe navn</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Online spil</value></string>
   <string><id>10000</id><value>Forside</value></string>
@@ -471,7 +551,158 @@
   <string><id>12006</id><value>Lyd fremviser</value></string>
   <string><id>12007</id><value>Billeder/billedserie</value></string>
   <string><id>12008</id><value>Staknings dialog</value></string>
+  <string><id>12324</id><value>XBMC Hoved Lås</value></string>
+  <string><id>12325</id><value>Mappe låst</value></string>
+  <string><id>12326</id><value>Indtast adgangskode</value></string>
+  <string><id>12327</id><value>Indtast Hovedadgangskode og vælg Enter,</value></string>
+  <string><id>12328</id><value>Indtast adgamgslpde og vælg Enter,</value></string> 
+  <string><id>12329</id><value>eller vælg C for at annullere</value></string>
+  <string><id>12330</id><value>Indtast XBOX gamepad knap kombination og </value></string>
+  <string><id>12331</id><value>vælg Start, eller Tilbage for at annullere</value></string>
+  <string><id>12332</id><value>Lås netværksmappe</value></string>
+  <string><id>12333</id><value>Lås netværksmappe op</value></string>
+  <string><id>12334</id><value>Nulstil netværksmappe lås</value></string>
+  <string><id>12335</id><value>Fjern netværksmappe lås</value></string>
+  <string><id>12336</id><value>Vælg type af lås:</value></string>
+  <string><id>12337</id><value>Numerisk adgangskode</value></string>
+  <string><id>12338</id><value>Gamepad knap kombination</value></string>
+  <string><id>12339</id><value>Tekst adgangskode</value></string>
+  <string><id>12340</id><value>Indtast ny adgangskode</value></string>
+  <string><id>12341</id><value>Indtast ny adgangskode igen</value></string>
+  <string><id>12342</id><value>Ugyldig adgangskode,</value></string>
+  <string><id>12343</id><value>forsøg tilbage </value></string>
+  <string><id>12344</id><value>De indtastede adgangskoder matchede ikke.</value></string>
+  <string><id>12345</id><value>Adgang Nægtet</value></string>
+  <string><id>12346</id><value>Du har ikke flere forsøg tilbage.</value></string>
+  <string><id>12347</id><value>XBOX'en slukkes nu.</value></string>
   <string><id>12600</id><value>Vejret</value></string>
   <string><id>12900</id><value>Pauseskærm</value></string>
   <string><id>12901</id><value>Fuldskærms OSD</value></string>
+  <string><id>13000</id><value>System</value></string>
+  <string><id>13001</id><value>Spin harddisken ned med det samme</value></string>
+  <string><id>13002</id><value>Kun Video</value></string>
+  <string><id>13003</id><value>- Forsinkelse</value></string>
+  <string><id>13004</id><value>- Minimum Fil Længde</value></string>
+  <string><id>13005</id><value>Sluk</value></string>
+  <string><id>13006</id><value>Dashboard</value></string>
+  <string><id>13100</id><value>Flimre Filter</value></string>
+  <string><id>13200</id><value>Profiler</value></string>
+  <string><id>13201</id><value>Slet profil '%s'?</value></string>
+  <string><id>13202</id><value>Gem nuværende instillinger som profil...</value></string>
+  <string><id>13203</id><value>Profil '%s' blev indlæst</value></string>
+  <string><id>13204</id><value>Senest indlæste profil:</value></string>
+  <string><id>13205</id><value>Ukendt</value></string>
+  <string><id>13299</id><value>Mål Temperatur</value></string>
+  <string><id>13300</id><value>Blæserhastighed</value></string>
+  <string><id>13301</id><value>Automatisk Temperatur Kontrol</value></string>
+  <string><id>13302</id><value>Gennemtving blæserhastighed</value></string>
+  <string><id>13303</id><value>Tema skrifttype</value></string>
+  <string><id>13304</id><value>Aktiver spejling af Bi-Direktionelle tekster</value></string>
+  <string><id>13305</id><value>Aktiver RSS Feeds</value></string>
+  <string><id>13306</id><value>Skjul indhold fra øvre niveauer</value></string>
+  <string><id>13307</id><value>Skjul spor numre</value></string>
+  <string><id>13308</id><value>Vil du genstarte din xbox</value></string>
+  <string><id>13309</id><value>istedet for kun XBMC?</value></string>
+  <string><id>13310</id><value>Zoom Effekt</value></string>
+  <string><id>13311</id><value>Flyde Effekt</value></string>
+  <string><id>13312</id><value>Sort Bar Reduktion</value></string>
+  <string><id>13313</id><value>Reset/Genstart</value></string>
+  <string><id>13314</id><value>Musik OSD Timeout</value></string>
+  <string><id>13315</id><value>Lav Ikoner</value></string>
+  <string><id>13316</id><value>Rekursive Ikoner</value></string>
+  <string><id>13317</id><value>Vis Billedserie</value></string>
+  <string><id>13318</id><value>Rekursiv Billedserie</value></string>
+  <string><id>13319</id><value>Bland</value></string>
+  <string><id>13320</id><value>Stereo</value></string>
+  <string><id>13321</id><value>Kun Vesntre</value></string>
+  <string><id>13322</id><value>Kun Højre</value></string>
+  <string><id>13323</id><value>Aktiver CD+G</value></string>
+  <string><id>13324</id><value>Baggrund gennemsigtighed</value></string>
+  <string><id>13325</id><value>Forgrund gennemsigtighed</value></string>
+  <string><id>13326</id><value>A/V forsinkelse</value></string>
+  <string><id>13327</id><value>Karaoke</value></string>
+  <string><id>13328</id><value>%s blev ikke fundet.</value></string>
+  <string><id>13329</id><value>Kunne ikke åbne %s</value></string>
+  <string><id>13330</id><value>Kunne ikke hente %s</value></string>
+  <string><id>13331</id><value>Fejl: ikke nok hukommelse.</value></string>
+  <string><id>13332</id><value>Flyt Op</value></string>
+  <string><id>13333</id><value>Flyt Ned</value></string>
+  <string><id>13334</id><value>Rediger Tekst</value></string>
+  <string><id>13335</id><value>Vælg som Standard</value></string>
+  <string><id>13336</id><value>Fjern Knap</value></string>
+  <string><id>13337</id><value>- 2 kanals PCM gennemgang</value></string>
+  <string><id>13338</id><value>Front LED</value></string>
+  <string><id>13339</id><value>Front LED Farve</value></string>
+  <string><id>13340</id><value>Uændret</value></string>
+  <string><id>13341</id><value>Grøn</value></string>
+  <string><id>13342</id><value>Orange</value></string>
+  <string><id>13343</id><value>Rød</value></string>
+  <string><id>13344</id><value>Skiftende</value></string>
+  <string><id>13345</id><value>Sluk LED under Afspilning</value></string>
+  <string><id>13346</id><value>Film Information</value></string>
+  <string><id>13347</id><value>Tilføj til kø</value></string>
+  <string><id>13348</id><value>Søg IMDb...</value></string>
+  <string><id>13349</id><value>Søg Information for alle filer</value></string>
+  <string><id>13350</id><value>Spiller Nu...</value></string>
+  <string><id>13351</id><value>Album Information</value></string>
+  <string><id>13352</id><value>Gennemsøg Mappe til Database</value></string>
+  <string><id>13353</id><value>Stop Gennemsøgning</value></string>
+  <string><id>14000</id><value>Stacking: Deaktiveret</value></string>
+  <string><id>14001</id><value>Stacking: Simpel</value></string>
+  <string><id>14002</id><value>Stacking: Fuzzy</value></string>
+  <string><id>14003</id><value>Henter hitliste fil...</value></string>
+  <string><id>14004</id><value>Henter stream fil...</value></string>
+  <string><id>14005</id><value>Parser stream liste...</value></string>
+  <string><id>14006</id><value>Kunne ikke hente stream listen</value></string>
+  <string><id>14007</id><value>Kunne ikke hente hitlisten</value></string>
+  <string><id>14008</id><value>Aktiver Kai Notifikationer</value></string>
+  <string><id>14009</id><value>Spil Mappe</value></string>
+  <string><id>14010</id><value>Skift automatisk til Ikoner baseret på</value></string>
+  <string><id>14011</id><value>Skift automatisk til Ikon Visning</value></string>
+  <string><id>14012</id><value>- Brug store Ikoner</value></string>
+  <string><id>14013</id><value>- Skift baseret på</value></string>
+  <string><id>14014</id><value>- Procentvis</value></string>
+  <string><id>14015</id><value>Ingen Filer og mindst et Ikon</value></string>
+  <string><id>14016</id><value>Mindst en Fil og et Ikon</value></string>
+  <string><id>14017</id><value>Procent af Ikoner</value></string>
+  <string><id>14018</id><value>Visnings Indstillinger</value></string>
+  <string><id>14019</id><value>Skift Landekode 1</value></string>
+  <string><id>14020</id><value>Skift Landekode 2</value></string>
+  <string><id>14021</id><value>Skift Landekode 3</value></string>
+  <string><id>14022</id><value>Database</value></string>
+  <string><id>14023</id><value>Intet TV</value></string>
+  <string><id>14024</id><value>Indtast den nærmeste storre by eller US postnummer</value></string>
+  <string><id>14025</id><value>Video Cache   - Harddisk</value></string>
+  <string><id>14026</id><value>              - DVDRom</value></string>
+  <string><id>14027</id><value>              - Lokalt Netwærk</value></string>
+  <string><id>14028</id><value>              - Internet</value></string>
+  <string><id>14029</id><value>Lyd Cache     - Harddisk</value></string>
+  <string><id>14030</id><value>              - DVDRom</value></string>
+  <string><id>14031</id><value>              - Lokalt Netwærk</value></string>
+  <string><id>14032</id><value>              - Internet</value></string>
+  <string><id>14033</id><value>DVD Cache     - Harddisk</value></string>
+  <string><id>14034</id><value>              - DVDRom</value></string>
+  <string><id>14035</id><value>              - Lokalt Netwærk</value></string>
+  <string><id>14036</id><value>Servere</value></string>
+  <string><id>14037</id><value>Udseende</value></string>
+  <string><id>14038</id><value>Netwærksindstillinger er ændret</value></string>
+  <string><id>14039</id><value>XBMC kræver en genstart for at ændre</value></string>
+  <string><id>14040</id><value>netværkssetup'et.  Vil du genstarte nu?</value></string>
+  <string><id>14041</id><value>Efter Processering</value></string>
+  <string><id>14042</id><value>Engine IP Adresse</value></string>
+  <string><id>14043</id><value>- Luk ned mens der afspiller</value></string>
+  <string><id>14044</id><value>%i min.</value></string>
+  <string><id>14045</id><value>%i sec.</value></string>
+  <string><id>14046</id><value>%i ms</value></string>
+  <string><id>14047</id><value>%i %%</value></string>
+  <string><id>14048</id><value>%i kbps</value></string>
+  <string><id>14049</id><value>%i kb</value></string>
+  <string><id>14050</id><value>%i.0 dB</value></string>
+  <string><id>14051</id><value>Vis 12-timers ur</value></string>
+  <string><id>14052</id><value>Skift måned og dag på start skærmen</value></string>
+  <string><id>14053</id><value>GUI Filtere</value></string>
+  <string><id>14054</id><value>Aktiver Internet Opslag</value></string>
+  <string><id>14055</id><value>Gennemsøg i baggrunden</value></string>
+  <string><id>14056</id><value>Stop Gennemsøgning</value></string>
+  <string><id>14057</id><value>Ikke muligt mens der gennemsøges for medie info</value></string>
 </strings>
