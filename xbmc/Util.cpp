@@ -116,6 +116,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
 {
   const CStdStringArray &regexps = g_settings.m_MyVideoStackRegExps;
 
+  CStdString strFileNameTemp = strFileName;
   CStdString strFileNameLower = strFileName;
   strFileNameLower.MakeLower();
 
@@ -139,8 +140,10 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
       {
         strVolumeNumber = pReplace;
         free(pReplace);
-        CStdString strFileRight = strFileName.Mid(iFoundToken + iRegLength);
-        RemoveExtension(strFileRight);
+        // remove the extension (if any).  We do this on the base filename, as the regexp
+        // match may include some of the extension (eg the "." in particular).
+        RemoveExtension(strFileNameTemp);
+        CStdString strFileRight = strFileNameTemp.Mid(iFoundToken + iRegLength);
         strFileTitle = strFileName.Left(iFoundToken) + strFileRight;
         return true;
       }
@@ -181,6 +184,8 @@ void CUtil::CleanFileName(CStdString& strFileName)
   CStdString strVolumeNumber;
   if (GetVolumeFromFileName(strFileName, strFileTitle, strVolumeNumber))
     strFileName = strFileTitle;
+  else
+    RemoveExtension(strFileName);
 
   // remove known tokens:      { "divx", "xvid", "3ivx", "ac3", "ac351", "mp3", "wma", "m4a", "mp4", "ogg", "SCR", "TS", "sharereactor" }
   // including any separators: { ' ', '-', '_', '.', '[', ']', '(', ')' }
