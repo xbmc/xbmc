@@ -50,6 +50,7 @@ public:
   static bool IsEthernetConnected();
 	static void GetTitleIP(CStdString& ip);
   static void ConvertTimeTToFileTime(__int64 sec, long nsec, FILETIME &ftTime);
+	static __int64	CompareSystemTime(const SYSTEMTIME *a, const SYSTEMTIME *b);
 	static void ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile);
 	static void GetExtension(const CStdString& strFile, CStdString& strExtension);
   static void Lower(CStdString& strText);
