@@ -146,7 +146,7 @@ bool CVirtualDirectory::IsShare(const CStdString& strPath) const
 		CStdString strShare = share.strPath;
 		strShare.TrimRight("/");
 		strShare.TrimRight("\\");
-		if (share.strPath==strPath) return true;
+		if (strShare==strPathCpy) return true;
 	}
 	return false;
 }

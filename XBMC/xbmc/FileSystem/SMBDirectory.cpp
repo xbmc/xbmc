@@ -36,19 +36,33 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	VECFILEITEMS vecCacheItems;
   g_directoryCache.ClearDirectory(strPath);
 
-	// note, samba uses UTF8 strings internal,
+    // note, samba uses UTF8 strings internal,
 	// that's why we have to convert strings and wstrings to UTF8.
 	char strUtfPath[1024];
 	size_t strLen;
-	CStdString strRoot = strPath;
 
+	//Separate roots for the authentication and the containing items to allow browsing to work correctly
+	CStdString strRoot = strPath, strAuth = strPath;
 	if (!CUtil::HasSlashAtEnd(strPath))
-		strRoot+="/";
+	{
+		strRoot+="/"; 
+		strAuth+="/";
+	}
 
+	{
+		CURL url(strAuth);	//Use deafult credentials if none is specified.
+		if(url.GetUserName().length() == 0 && url.GetHostName().length() > 0) 
+		{
+			url.SetUserName(g_stSettings.m_strSambaDefaultUserName);
+			url.SetPassword(g_stSettings.m_strSambaDefaultPassword);
+			url.GetURL(strAuth);
+		}
+	}
+		
 	smb.Init();
 
 	// convert from string to UTF8
-	strLen = convert_string(CH_DOS, CH_UTF8, strRoot, strRoot.length(), strUtfPath, 1024, false);
+	strLen = convert_string(CH_DOS, CH_UTF8, strAuth, strAuth.length(), strUtfPath, 1024, false);
 	strUtfPath[strLen] = 0;
 
 	smb.Lock();
@@ -120,7 +134,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 						dirEnt->smbc_type != SMBC_SERVER)
 				{
 					struct __stat64 info;
-					strFullName = strRoot + strFile;
+					strFullName = strAuth + strFile; //Make sure we use the authenticated path wich contains any default username
 					// convert from string to UTF8
 					strLen = convert_string(CH_DOS, CH_UTF8, strFullName, strFullName.length(), strUtfFile, 1024, false);
 					strUtfFile[strLen] = 0;
@@ -148,8 +162,8 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 					// needed for network / workgroup browsing
 					// skip if root has already a valid domain and type is not a server
 					if ((strRoot.find(';') == -1) &&
-							(dirEnt->smbc_type == SMBC_SERVER) &&
-							(strRoot.find('@') == -1))
+							(dirEnt->smbc_type == SMBC_SERVER)) 
+							/*&& (strRoot.find('@') == -1))*/ //Removed to allow browsing even if a user is specified
 					{
 						// lenght > 6, which means a workgroup name is specified and we need to
 						// remove it. Domain without user is not allowed
