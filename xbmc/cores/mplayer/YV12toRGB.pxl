@@ -4,6 +4,8 @@ def c0, 0     ,0.172,0.885,0
 def c1, 0.7015,0.357,0    ,0
 ; setup sign multiplier value as constants can't be negative
 def c2, 1,0,1,1 
+; y adjust
+def c3, 0.0625,0.0625,0.0625,0
 
 ; texture read
 tex t0
@@ -16,5 +18,7 @@ tex t2
 xmma_x2 r0,r1,discard, t1_bias,c0, t2_bias,c1
 ; r0 = r0 + r1, with green channel negate
 xmma discard,discard,r0, r0,c2_bx2, r1,c2_bx2
+; r1 = y-yadj
+sub r1, t0,c3
 ; r0 = r0 + y (alpha set from y, a = 1.0)
-add r0, r0,t0
+add r0, r0,r1
