@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 25-09-2004 fixed: [ 1024803 ] Python and Mouse
+  - 25-09-2004 fixed: [ 1011940 ] Pause Movie Hangs
+  - 25-09-2004 fixed: [ 1034416 ] Difficult to read TTF subtitles
   - 25-09-2004 fixed: [ 1033093 ] Movie Plots which contain HTML tags from IMDB
   - 24-09-2004 fixed: [ 1001048 ] Return to Dashboard broke
   - 24-09-2004 fixed: Graphical glitch when scrolling in thumbs view and another dir is brought up
