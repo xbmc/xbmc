@@ -329,8 +329,8 @@ void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
   strThumb="";
   CStdString strFile;
   CUtil::ReplaceExtension(strFileName,".tbn",strFile);
-  if (CUtil::FileExists(strFile))
-  {
+	if (CUtil::FileExists(strFile))
+	{
     strThumb=strFile;
     return;
   }
@@ -1353,7 +1353,19 @@ void CUtil::SetThumb(CFileItem* pItem)
   // if it already has a thumbnail, then return
   if ( pItem->HasThumbnail() ) return;
 
+	
   CStdString strFileName=pItem->m_strPath;
+
+	if (!CUtil::IsRemote(strFileName))
+	{
+		CStdString strFile;
+		CUtil::ReplaceExtension(strFileName, ".tbn", strFile);
+		if (CUtil::FileExists(strFile))
+		{
+			pItem->SetThumbnailImage(strFile);
+			return;
+		}
+	}
 
   // if this is a shortcut, then get the real filename
   if (CUtil::IsShortCut(strFileName))

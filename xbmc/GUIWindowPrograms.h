@@ -5,35 +5,35 @@
 #include "programdatabase.h"
 
 class CGUIWindowPrograms :
-  public CGUIWindow
+	public CGUIWindow
 {
 public:
-  CGUIWindowPrograms(void);
-  virtual ~CGUIWindowPrograms(void);
-  virtual bool    OnMessage(CGUIMessage& message);
-  virtual void    Render();
-  virtual void    OnAction(const CAction &action);
+	CGUIWindowPrograms(void);
+	virtual ~CGUIWindowPrograms(void);
+	virtual bool		OnMessage(CGUIMessage& message);
+	virtual void		Render();
+	virtual void		OnAction(const CAction &action);
 protected:
-  void            ShowThumbPanel();  
-  bool            ViewByLargeIcon();
-  bool            ViewByIcon();
-	void						OnScan(VECFILEITEMS& items, int& iTotalAppsFound)  ;
-  void            Update(const CStdString& strDirectory);
-  void			  LoadDirectory(const CStdString& strDirectory, int depth);
-  void            OnClick(int iItem);
-  void            OnSort();
-  void            UpdateButtons();
-  void            Clear();
-	void						DeleteThumbs(VECFILEITEMS& items);
-  int             GetSelectedItem();
-	void						GoParentFolder();
+	void				ShowThumbPanel();  
+	bool				ViewByLargeIcon();
+	bool				ViewByIcon();
+	void				OnScan(VECFILEITEMS& items, int& iTotalAppsFound)  ;
+	void				Update(const CStdString& strDirectory);
+	void				LoadDirectory(const CStdString& strDirectory, int depth);
+	void				OnClick(int iItem);
+	void				OnSort();
+	void				UpdateButtons();
+	void				Clear();
+	void				DeleteThumbs(VECFILEITEMS& items);
+	int					GetSelectedItem();
+	void				GoParentFolder();
 	CGUIDialogProgress*	m_dlgProgress;  
-  VECFILEITEMS				 m_vecItems;
-  CStdString          m_strDirectory;
-	int				m_iLastControl;
-	int		  		m_iSelectedItem;
-	int				m_iDepth;	
-	CStdString		  m_strBookmarkName;
-	CProgramDatabase      m_database;
-  
+	VECFILEITEMS		m_vecItems;
+	CStdString			m_strDirectory;
+	int					m_iLastControl;
+	int					m_iSelectedItem;
+	int					m_iDepth;	
+	CStdString			m_strBookmarkName;
+	CProgramDatabase	m_database;
+
 };
