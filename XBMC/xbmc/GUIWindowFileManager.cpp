@@ -412,6 +412,8 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 					CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
 					if (pMenu)
 					{
+						// clean any buttons not needed
+						pMenu->ClearButtons();
 						// add the needed buttons
 						pMenu->AddButton(118);	// Rename
 						pMenu->AddButton(117);	// Delete
