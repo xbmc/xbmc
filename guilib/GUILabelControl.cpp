@@ -13,6 +13,7 @@ CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPos
 	m_bHasPath = bHasPath;
   m_dwDisabledColor = dwDisabledColor;
   m_bShowCursor = false;
+  m_iCursorPos = 0;
   m_dwCounter = 0;
 	ControlType = GUICONTROL_LABEL;
 }
@@ -24,6 +25,13 @@ CGUILabelControl::~CGUILabelControl(void)
 void CGUILabelControl::ShowCursor(bool bShow)
 {
 	m_bShowCursor = bShow;
+}
+
+void CGUILabelControl::SetCursorPos(int iPos)
+{
+	if (iPos > (int)m_strLabel.length()) iPos = m_strLabel.length();
+	if (iPos < 0) iPos = 0;
+	m_iCursorPos = iPos;
 }
 
 void CGUILabelControl::Render()
@@ -44,13 +52,13 @@ void CGUILabelControl::Render()
 			CStdStringW label = m_strLabel;
 
 			if (m_bShowCursor)
-			{
-				if (++m_dwCounter % 50 >= 25)
+			{	// show the cursor...
+				if ((++m_dwCounter % 50) > 25)
 				{
-					label+=L"|";
+					label.Insert(m_iCursorPos,L"|");
 				}
 			}
-
+	
 			m_pFont->DrawText((float)m_iPosX, (float)m_iPosY,m_dwTextColor,label.c_str(),m_dwTextAlign, (float)m_dwWidth);
 		}
 	}
