@@ -839,4 +839,10 @@
   <string><id>15060</id><value>Wiadomoœæ</value></string>
   <string><id>15061</id><value>Zosta³eœ zaproszony do gry %s.</value></string>
   <string><id>15062</id><value>U¿yj alternatywnej wersji MPlayer'a</value></string>
+  <string><id>15100</id><value>Nav</value></string>
+  <string><id>15101</id><value>Baza danych</value></string>
+  <string><id>15102</id><value>* Wszystkie Albumy</value></string>
+  <string><id>15103</id><value>* Wszyscy Artyœci</value></string>
+  <string><id>15104</id><value>* Wszystkie Piosenki</value></string>
+  <string><id>15105</id><value>* Wszystkie Gatunki</value></string>
 </strings>
