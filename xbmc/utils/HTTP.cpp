@@ -233,6 +233,7 @@ bool CHTTP::Connect()
 
 	sockaddr_in service;
 	service.sin_family = AF_INET;
+	memset(service.sin_zero, 0, sizeof(service.sin_zero));
 
 	if (m_strProxyServer.size())
 	{
@@ -409,6 +410,8 @@ bool CHTTP::Send(char* pBuffer, int iLen)
 					return false;
 				}
 			}
+			else
+				return false;
 		}
 		iPos+=n;
 		iLen-=n;
@@ -454,6 +457,8 @@ bool CHTTP::Recv(int iLen)
 					return false;
 				}
 			}
+			else
+				return false;
 		}
 		if (!n)
 		{
