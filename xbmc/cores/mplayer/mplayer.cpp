@@ -3,7 +3,7 @@
 #include "audio.h"
 #include "video.h"
 #include "../DllLoader/dll.h"
-
+#include "mplayer.h"
 //deal wma, and wmv dlls in openfile, and closefile functions
 extern DllLoader * wmaDMOdll;
 extern DllLoader * wmvDMOdll;
@@ -59,9 +59,11 @@ int             (__cdecl* pgetSubtitleCount)();
 int             (__cdecl* pgetSubtitleVisible)();
 int             (__cdecl* pgetAudioLanguageCount)();
 int             (__cdecl* pgetAudioLanguage)();
-int             (__cdecl* pgetAudioStream)(int);
+int             (__cdecl* pgetAudioStream)();
 int             (__cdecl* pgetAudioStreamCount)();
-int 			      (__cdecl* pgetTime)();
+int             (__cdecl* pgetAudioStreamInfo)(int iStream, stream_language_t* stream_info);
+int				(__cdecl* pgetSubtitleStreamInfo)(int iStream, stream_language_t* stream_info);
+int 			(__cdecl* pgetTime)();
 __int64         (__cdecl* pgetCurrentTime)();
 void            (__cdecl* pShowOSD)(int);
 
@@ -100,14 +102,19 @@ extern "C"
     return pgetAudioLanguage();
   }
   
-  int mplayer_getAudioStream(int iStream)
+  int mplayer_getAudioStream()
   {
-    return pgetAudioStream(iStream);
+    return pgetAudioStream();
   }
 
   int mplayer_getAudioStreamCount()
   {
     return pgetAudioStreamCount();
+  }
+
+  int mplayer_getAudioStreamInfo(int iStream, stream_language_t* stream_info)
+  {
+	return pgetAudioStreamInfo(iStream, stream_info);
   }
 
   void mplayer_setAudioLanguage(int iAudioLang)
@@ -137,6 +144,11 @@ extern "C"
   int mplayer_SubtitleVisible()
   {
     return pgetSubtitleVisible();
+  }
+
+  int mplayer_getSubtitleStreamInfo(int iStream, stream_language_t* stream_info)
+  {
+	return pgetSubtitleStreamInfo(iStream, stream_info);
   }
 
   void mplayer_setAVDelay(float fDelay)
@@ -436,6 +448,9 @@ extern "C"
 		dll.ResolveExport("mplayer_getSubtitleCount", &pProc);
 		pgetSubtitleCount=(int(__cdecl*)())pProc;
 
+		dll.ResolveExport("mplayer_getSubtitleStreamInfo", &pProc);
+		pgetSubtitleStreamInfo=(int(__cdecl*)(int, stream_language_t*))pProc;
+
 		dll.ResolveExport("mplayer_SubtitleVisible", &pProc);
 		pgetSubtitleVisible=(int(__cdecl*)())pProc;
 
@@ -456,11 +471,13 @@ extern "C"
 		pgetAudioLanguage=(int(__cdecl*)())pProc;
     
 		dll.ResolveExport("mplayer_getAudioStream", &pProc);
-		pgetAudioStream=(int(__cdecl*)(int))pProc;
+		pgetAudioStream=(int(__cdecl*)())pProc;
     
 		dll.ResolveExport("mplayer_getAudioStreamCount", &pProc);
 		pgetAudioStreamCount=(int(__cdecl*)())pProc;
 
+		dll.ResolveExport("mplayer_getAudioStreamInfo", &pProc);
+		pgetAudioStreamInfo=(int(__cdecl*)(int, stream_language_t*))pProc;
 
 		dll.ResolveExport("mplayer_setAudioLanguage", &pProc);
 		psetAudioLanguage=(void(__cdecl*)(int))pProc;

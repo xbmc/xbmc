@@ -49,7 +49,6 @@
 
 #define LABEL_CURRENT_TIME 22
 extern IDirectSoundRenderer* m_pAudioDecoder;
-extern int m_iAudioStreamIDX;
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 :CGUIWindow(0)
 {
