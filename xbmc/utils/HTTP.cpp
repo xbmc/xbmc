@@ -179,6 +179,17 @@ bool CHTTP::ReadData(string& strData)
 	return true;
 }
 
+bool CHTTP::GetHeader(CStdString strName, CStdString& strValue) const
+{
+	map<CStdString,CStdString>::const_iterator iter = m_mapHeaders.find(strName.ToUpper());
+	if (iter == m_mapHeaders.end())
+	{
+		return false;
+	}
+	strValue = iter->second;
+	return true;
+}
+
 //------------------------------------------------------------------------------------------------------------------
 
 bool CHTTP::Get(string& strURL, string& strHTML)
@@ -614,8 +625,12 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 	string strReason(m_RecvBuffer + 13, end);
 	m_strHeaders.assign(end+2, HeaderEnd);
 
-	memmove(m_RecvBuffer, HeaderEnd, 1 + (m_RecvBytes -= (HeaderEnd - m_RecvBuffer)));
+	// Keep the headers string for compatability for now, but also parse
+	// headers into a map
+	ParseHeaders();
 
+	memmove(m_RecvBuffer, HeaderEnd, 1 + (m_RecvBytes -= (HeaderEnd - m_RecvBuffer)));
+	
 	if (status < 100)
 	{
 		CLog::Log(LOGERROR, "Invalid reply from server");
@@ -687,6 +702,63 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 		return status; // error
 	}
 }
+
+void CHTTP::ParseHeaders()
+{
+	string::size_type nStart, nColon, nEnd;
+	string::size_type i;
+
+	nStart = nColon = nEnd = 0;
+	for(i = 0; i < m_strHeaders.length(); i++)
+	{
+		// I am assuming here that all lines between headers are '\r\n' terminated.
+		// I don't know if that is a safe assumption.  In this code, '\r' terminated will 
+		// work fine, but '\n' terminators will fail (headers will not be parsed)
+		switch (m_strHeaders[i])
+		{
+		case ':':
+			nColon = i;
+			break;
+
+		case '\r':
+			// End of the line...parse the header
+			nEnd = i;
+			ParseHeader(nStart, nColon, nEnd);
+			nStart = i + 1;
+
+			// Clear previous data
+			nColon = nEnd = 0;
+			break;
+
+		case '\n':
+			// Extra whitespace...advance the pointer
+			nStart = i + 1;
+			break;
+		}
+	}
+
+	// Call it again for the last entry
+	ParseHeader(nStart, nColon, i);
+}
+
+void CHTTP::ParseHeader(string::size_type start, string::size_type colon, string::size_type end)
+{
+	// If colon or end are 0, bail
+	if (colon == 0 || end == 0)
+	{
+		return;
+	}
+
+	CStdString strName, strValue;
+
+	strName.assign(m_strHeaders.substr(start, colon - start));
+	strValue.assign(m_strHeaders.substr(colon + 2, end - colon - 2));
+
+	// Convert name to upper-case for case insensitive lookups
+	strName.ToUpper();
+	m_mapHeaders[strName] = strValue;
+}
+
 //------------------------------------------------------------------------------------------------------------------
 
 void CHTTP::Close()
