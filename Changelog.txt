@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-02-2005 changed: High quality pixel shader uses less memory.  Drops down to medium quality shader in GUI mode.
+  - 05-02-2005 added: New medium quality Pixel shader.  Uses only 1 pass, and very little memory
   - 04-02-2005 fixed: added font files that was missing in new mplayer directory (thx to Diontae16)
   - 04-02-2005 added: windows media player playlists
   - 04-02-2005 fixed: subtitle/osd crash with high quality pixel shader
