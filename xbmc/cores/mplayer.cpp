@@ -480,7 +480,10 @@ bool CMPlayer::openfile(const CStdString& strFile)
       }
     }
     options.SetAudioStream(m_iAudioStreamIDX);
-    options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
+    if (bIsVideo) 
+    {
+      options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
+    }
     options.GetOptions(argc,argv);
     
     //CLog::Log("  open 1st time");
