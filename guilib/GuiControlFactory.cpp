@@ -622,6 +622,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		CGUIRAMControl* pControl = new CGUIRAMControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strFont,strFont2,dwTextColor3,dwTextColor);
 		pControl->SetColourDiffuse(dwColorDiffuse);
 		pControl->SetVisible(bVisible);
+	    pControl->SetNavigation(up,down,left,right);
 		return pControl;
 	}
   if (strType=="button")
