@@ -510,7 +510,7 @@ void CGUIWindowFullScreen::ShowOSD()
   int iValue=g_application.m_pPlayer->GetPercentage();
   COSDOptionIntRange   optionPercentage(MENU_ACTION_SEEK,298,true,0,100,1,iValue);
   COSDOptionBoolean    optionNonInterleaved(MENU_ACTION_INTERLEAVED,306, g_stSettings.m_bNonInterleaved);
-  COSDOptionBoolean    optionFrameRateConversions(MENU_ACTION_FRAMERATECONVERSIONS, 336, g_stSettings.m_bFrameRateConversions);
+  COSDOptionBoolean    optionFrameRateConversions(MENU_ACTION_FRAMERATECONVERSIONS, 343, g_stSettings.m_bFrameRateConversions);
 
   videoMenu.AddOption(&optionAVDelay);
   videoMenu.AddOption(&optionPercentage);
