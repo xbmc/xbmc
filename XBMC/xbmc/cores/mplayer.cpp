@@ -411,6 +411,8 @@ void CMPlayer::GetGeneralInfo( CStdString& strVideoInfo)
 												lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, fAVDelay);
 }
 
+extern void xbox_audio_registercallback(IAudioCallback* pCallback);
+extern void xbox_audio_unregistercallback();
 extern void xbox_video_getRect(RECT& SrcRect, RECT& DestRect);
 extern void xbox_video_update();
 
@@ -422,4 +424,14 @@ void CMPlayer::Update()
 void CMPlayer::GetVideoRect(RECT& SrcRect, RECT& DestRect)
 {
 	xbox_video_getRect(SrcRect, DestRect);
+}
+
+void CMPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
+{
+	xbox_audio_registercallback(pCallback);
+}
+
+void CMPlayer::UnRegisterAudioCallback()
+{
+	xbox_audio_unregistercallback();
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "stdstring.h"
-
+#include "IAudioCallback.h"
 class IPlayerCallback
 {
 public:
@@ -13,6 +13,8 @@ class IPlayer
 public:
 	IPlayer(IPlayerCallback& callback):m_callback(callback){};
 	virtual ~IPlayer(){};
+	virtual void		RegisterAudioCallback(IAudioCallback* pCallback)=0;
+	virtual void		UnRegisterAudioCallback()=0;
 	virtual bool		openfile(const CStdString& strFile){return false;};
 	virtual bool		closefile(){return true;};
 	virtual bool		IsPlaying() const {return false;} ;

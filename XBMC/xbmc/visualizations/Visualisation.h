@@ -10,6 +10,18 @@
 #endif // _MSC_VER > 1000
 #include <xtl.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+struct VIS_INFO 
+{
+	bool bWantsFreq;
+	int iSyncDelay;
+	//		int iAudioDataLength;
+	//		int iFreqDataLength;
+};
+
 struct Visualisation
 {
 public:
@@ -18,7 +30,12 @@ public:
 	void (__cdecl* AudioData)(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
 	void (__cdecl* Render) ();
 	void (__cdecl* Stop)();
+	void (__cdecl* GetInfo)(VIS_INFO *info);
 };
+
+#ifdef __cplusplus
+};
+#endif
 
 class CVisualisation
 {
@@ -32,6 +49,7 @@ public:
 	void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
 	void Render();
 	void Stop();
+	void GetInfo(VIS_INFO *info);
 private:
 	struct Visualisation* m_pVisz;
 };
