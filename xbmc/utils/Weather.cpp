@@ -200,7 +200,7 @@ void CWeather::GetInteger(const TiXmlElement* pRootElement, const CStdString& st
 	}
 }
 
-void CWeather::LocalizeOverviewToken(char *szToken)
+void CWeather::LocalizeOverviewToken(char *szToken, bool bAppendSpace)
 {
 	CStdString strLocStr="";
 	WCHAR wszText[1024];
@@ -217,7 +217,8 @@ void CWeather::LocalizeOverviewToken(char *szToken)
 	}
 	if(strLocStr == "")
 		strLocStr = szToken;	//if not found, let fallback
-	strLocStr += " "; 
+	if (bAppendSpace)
+    strLocStr += " ";     //append space if applicable
 	strcpy(szToken, strLocStr.GetBuffer(strLocStr.GetLength()));
 }
 
@@ -350,6 +351,7 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
 		{
 			GetInteger(pNestElement, "i", iTmpInt);	
 			GetString(pNestElement, "t", iTmpStr, "");
+      LocalizeOverviewToken(iTmpStr, false);
 			sprintf(m_szCurrentUVIndex, "%i %s", iTmpInt, iTmpStr);
 		}
 
