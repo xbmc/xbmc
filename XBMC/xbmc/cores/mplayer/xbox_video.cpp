@@ -70,12 +70,13 @@ void CXBoxRenderManager::WaitForFlip()
 		m_pRenderer->WaitForFlip();
 }
 
-void CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height)
+unsigned int CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format)
 {
 	m_iSourceWidth = width;
 	m_iSourceHeight = height;
 	if (!m_bChanging && m_pRenderer)
-		m_pRenderer->Configure(width, height, d_width, d_height);
+		return m_pRenderer->Configure(width, height, d_width, d_height, options, title, format);
+	return 0;
 }
 unsigned int CXBoxRenderManager::GetImage(mp_image_t *mpi)
 {
@@ -90,10 +91,10 @@ unsigned int CXBoxRenderManager::PutImage(mp_image_t *mpi)
 	return VO_FALSE;
 }
 
-unsigned int CXBoxRenderManager::DrawFrame()
+unsigned int CXBoxRenderManager::DrawFrame(unsigned char *src[])
 {
 	if (!m_bChanging && m_pRenderer)
-		return m_pRenderer->DrawFrame();
+		return m_pRenderer->DrawFrame(src);
 	return 0;
 }
 
@@ -111,7 +112,7 @@ void CXBoxRenderManager::FlipPage()
 		m_pRenderer->FlipPage();
 }
 
-unsigned int CXBoxRenderManager::PreInit()
+unsigned int CXBoxRenderManager::PreInit(const char *arg)
 {
   m_bPauseDrawing=false;
 	if (!m_bChanging)
@@ -124,7 +125,7 @@ unsigned int CXBoxRenderManager::PreInit()
 				m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
 		}
 		if (m_pRenderer)
-			return m_pRenderer->PreInit();
+			return m_pRenderer->PreInit(arg);
 	}
 	return 0;
 }
@@ -244,7 +245,7 @@ static void video_check_events(void)
 /*init the video system (to support querying for supported formats)*/
 static unsigned int video_preinit(const char *arg)
 {
-	return g_renderManager.PreInit();
+	return g_renderManager.PreInit(arg);
 }
 
 /********************************************************************************************************
@@ -271,7 +272,7 @@ static void video_flip_page(void)
 */
 static unsigned int video_draw_frame(unsigned char *src[])
 {
-	return g_renderManager.DrawFrame();
+	return g_renderManager.DrawFrame(src);
 }
 
 //********************************************************************************************************
@@ -308,9 +309,8 @@ static unsigned int put_image(mp_image_t *mpi)
 static unsigned int video_config(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format)
 {
   OutputDebugString("video_config()\n");
-	g_renderManager.Configure(width, height, d_width, d_height);
+	return g_renderManager.Configure(width, height, d_width, d_height, options, title, format);
   OutputDebugString("video_config() done\n");
-	return 0;
 }
 
 //********************************************************************************************************
