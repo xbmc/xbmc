@@ -11,6 +11,7 @@
 #endif
 
 #include "../settings.h"
+#include "../lib/common/XBNet.h"
 #include "log.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -302,6 +303,13 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 //------------------------------------------------------------------------------------------------------------------
 bool CHTTP::Connect()
 {
+	CXBNetLink* linkChecker = new CXBNetLink();
+	if (!linkChecker->IsActive())
+	{
+		CLog::Log("Link is inactive.\n");
+		return false;
+	}
+
 	sockaddr_in service;
 	service.sin_family = AF_INET;
 
