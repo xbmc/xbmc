@@ -62,5 +62,8 @@ My Files:
   delete item                                   controller: X               remote    : 0
   copy item                                     controller: white           remote    : ?
   move item                                     controller: start           remote    : ?
-      
+
+Profiles:
+  delete profile                                controller: black           remote    : 0      
+  rename profile                                controller: white           remote    : title
 

@@ -487,6 +487,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowSettingsMyVideo.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowSettingsProfile.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowSettingsPrograms.cpp">
 				</File>
 				<File
@@ -722,6 +725,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\Picture.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\Profile.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\RssReader.cpp">
@@ -1035,6 +1041,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\GUIWindowSettingsMyVideo.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsProfile.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSettingsPrograms.h">
 			</File>
 			<File
@@ -1155,10 +1164,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1228,6 +1237,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\PlayListPLS.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\Profile.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\RssReader.h">
@@ -1841,10 +1853,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">

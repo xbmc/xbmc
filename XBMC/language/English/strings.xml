@@ -2004,4 +2004,8 @@
   <string><id>13003</id><value>- Delay</value></string>
   <string><id>13004</id><value>- Minimum file duration</value></string>
   <string><id>13100</id><value>Flicker filter</value></string>
+  <string><id>13200</id><value>Profiles</value></string>
+  <string><id>13201</id><value>Delete profile '%s'?</value></string>
+  <string><id>13202</id><value>Save current settings as profile...</value></string>
+  <string><id>13203</id><value>Profile '%s' loaded successfully</value></string>
 </strings>

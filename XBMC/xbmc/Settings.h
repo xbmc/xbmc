@@ -6,6 +6,7 @@
 #include <xtl.h>
 #include "stdstring.h"
 #include "GraphicContext.h"
+#include "Profile.h"
 #include <vector>
 using namespace std;
 
@@ -85,6 +86,9 @@ typedef vector<CShare> VECSHARES;
 */
 typedef vector<CShare>::iterator IVECSHARES;
 
+typedef vector<CProfile> VECPROFILES;
+typedef vector<CProfile>::iterator IVECPROFILES;
+
 class CFileTypeIcon
 {
 public:
@@ -102,8 +106,11 @@ public:
 	CSettings(void);
 	virtual ~CSettings(void);
 
-	bool	Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration);
+	bool	Load(bool& bXboxMediacenter, bool& bSettings);
 	void	Save() const;
+
+  bool LoadProfile(int index);
+  bool SaveSettingsToProfile(int index);
 
 	struct stSettings
 	{
@@ -387,6 +394,7 @@ public:
 	VECSHARES					m_vecMyMusicShares;
 	VECSHARES					m_vecMyVideoShares;
 	VECFILETYPEICONS	m_vecIcons;
+  VECPROFILES       m_vecProfiles;
 	RESOLUTION_INFO			m_ResInfo[10];
 	int               m_iBrightness;
 	int               m_iContrast;
@@ -403,11 +411,16 @@ protected:
 	void SetInteger(TiXmlNode* pRootNode, const CStdString& strTagName, int iValue) const;
 	void SetFloat(TiXmlNode* pRootNode, const CStdString& strTagName, float fValue) const;
 	void SetBoolean(TiXmlNode* pRootNode, const CStdString& strTagName, bool bValue) const;
-	bool LoadCalibration(const CStdString& strCalibrationFile);
-	bool SaveCalibration(const CStdString& strCalibrationFile) const;
 
-	bool LoadSettings(const CStdString& strSettingsFile);
-	bool SaveSettings(const CStdString& strSettingsFile) const;
+  bool LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile);
+  bool SaveCalibration(TiXmlNode* pRootNode) const;
+
+	bool LoadSettings(const CStdString& strSettingsFile, const bool loadprofiles);
+	bool SaveSettings(const CStdString& strSettingsFile, const bool saveprofiles) const;
+
+ 	bool LoadProfiles(const TiXmlElement* pRootElement, const CStdString& strSettingsFile);
+  bool SaveProfiles(TiXmlNode* pRootElement) const;
+
 };
 
 extern class CSettings g_settings;
