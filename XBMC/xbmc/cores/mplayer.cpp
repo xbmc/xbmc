@@ -107,8 +107,8 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
 
 
-		int argc=2;
-		char *argv[] = {"xbmc.xbe", "1.avi",NULL};
+		int argc=6;
+		char *argv[] = {"xbmc.xbe", "-autoq", "6", "-vf", "pp", "1.avi",NULL};
 		OutputDebugString("cmplayer::openfile() call init\n");
 		mplayer_init(argc,argv);
 		
