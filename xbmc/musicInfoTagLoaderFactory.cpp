@@ -3,6 +3,7 @@
 #include "musicInfoTagLoaderFactory.h"
 #include "MusicInfoTagLoaderMP3.h"
 #include "MusicInfoTagLoaderOgg.h"
+#include "MusicInfoTagLoaderWMA.h"
 #include "util.h"
 
 using namespace MUSIC_INFO;
@@ -27,6 +28,11 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
 	if (strExtension==".ogg")
 	{
 		CMusicInfoTagLoaderOgg *pTagLoader= new CMusicInfoTagLoaderOgg();
+		return (IMusicInfoTagLoader*)pTagLoader;
+	}
+	if (strExtension==".wma")
+	{
+		CMusicInfoTagLoaderWMA *pTagLoader= new CMusicInfoTagLoaderWMA();
 		return (IMusicInfoTagLoader*)pTagLoader;
 	}
 	return NULL;
