@@ -69,7 +69,7 @@
 #ifdef _XBOX
 	#include <sys/utime.h>
 #elif
-	#include <utime.h>
+#include <utime.h>
 #endif
 
 #define SMBC_BASE_FD        10000 /* smallest file descriptor returned */
@@ -132,6 +132,9 @@ struct smbc_dirent
 #ifndef ENOATTR
 # define ENOATTR ENOENT        /* No such attribute */
 #endif
+
+
+
 
 /**@ingroup structure
  * Structure that represents a print job.
@@ -497,8 +500,9 @@ SMBCCTX * smbc_new_context(void);
  */
 int smbc_free_context(SMBCCTX * context, int shutdown_ctx);
 
-// xbox
+#ifdef _XBOX
 int smbc_purge();
+#endif //_XBOX
 
 /**@ingroup misc
  * Initialize a SBMCCTX (a context).
