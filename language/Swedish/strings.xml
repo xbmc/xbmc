@@ -11,7 +11,7 @@
   <string><id>11</id><value>Måndag</value></string>
   <string><id>12</id><value>Tisdag</value></string>
   <string><id>13</id><value>Onsdag</value></string>
-  <string><id>14</id><value>>Torsdag</value></string>
+  <string><id>14</id><value>Torsdag</value></string>
   <string><id>15</id><value>Fredag</value></string>
   <string><id>16</id><value>Lördag</value></string>
   <string><id>17</id><value>Söndag</value></string>
@@ -432,7 +432,7 @@
   <string><id>502</id><value>Öppen</value></string>
   <string><id>503</id><value>Upptagen</value></string>
   <string><id>504</id><value>Tom</value></string>
-  <string><id>505</id><value>Ladder mediainfo från filer...</value></string>
+  <string><id>505</id><value>Laddar mediainfo från filer...</value></string>
   <string><id>506</id><value>Använd mapp namn för beskrivning</value></string>
   <string><id>507</id><value>Användning</value></string>
   <string><id>508</id><value>Använd inte shortcuts eller scan</value></string>
