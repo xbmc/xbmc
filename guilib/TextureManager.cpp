@@ -1,7 +1,7 @@
 #include "texturemanager.h"
 #include "graphiccontext.h"
 #include "animatedgif.h"
-
+extern "C" void dllprintf( const char *format, ... );
 CGUITextureManager g_TextureManager;
 
 CTexture::CTexture()
@@ -10,12 +10,12 @@ CTexture::CTexture()
   m_pTexture=NULL;
   m_iDelay=100;
 	m_iWidth=m_iHeight=0;
-  m_iLoops=0;//repeat forever
+  m_iLoops=0;
 }
 
 CTexture::CTexture(LPDIRECT3DTEXTURE8 pTexture,int iWidth, int iHeight, int iDelay)
 {
-  m_iLoops=0;//repeat forever
+  m_iLoops=0;
   m_iReferenceCount=0;
   m_pTexture=pTexture;
   m_iDelay=iDelay;
@@ -299,6 +299,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 																												  &pTexture) == D3D_OK) 
 		  {
         CAnimatedGif* pImage=AnimatedGifSet.m_vecimg[iImage];
+        //dllprintf("%s loops:%i", strTextureName.c_str(),AnimatedGifSet.nLoops);
         D3DLOCKED_RECT lr;
 	      if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
 	      {
@@ -331,7 +332,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 	      } // of if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
         CTexture* pclsTexture = new CTexture(pTexture,iWidth,iHeight);
         pclsTexture->SetDelay(pImage->Delay);
-        pclsTexture->SetLoops(pImage->nLoops);
+        pclsTexture->SetLoops(AnimatedGifSet.nLoops);
 
         pMap->Add(pclsTexture);
 		  } // of if (g_graphicsContext.Get3DDevice()->CreateTexture

@@ -316,7 +316,7 @@ void CGUIImage::Process()
       }
       else
       {
-        //loop forever
+        // 0 == loop forever
 			  m_iCurrentImage=0;
       }
 		}

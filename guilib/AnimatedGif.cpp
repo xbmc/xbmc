@@ -50,7 +50,7 @@ CAnimatedGif::CAnimatedGif()
 	Raster	=	NULL; 
 	Palette	=	NULL; 
 	pbmi		=	NULL; 
-  nLoops=0;
+  nLoops  = 1; //default=play animation 1 time
 }
 
 CAnimatedGif::~CAnimatedGif() 
@@ -132,7 +132,7 @@ CAnimatedGif& CAnimatedGif::operator = (CAnimatedGif& rhs)
 
 CAnimatedGifSet::CAnimatedGifSet() 
 { 
-		nLoops=0;//0=infinite
+		nLoops=1;//default=play animation 1 time
 }
 
 CAnimatedGifSet::~CAnimatedGifSet() 
@@ -144,7 +144,6 @@ void CAnimatedGifSet::Release()
 {
 	FrameWidth=0;
 	FrameHeight=0;
-	nLoops=0;//0=infinite
 	for (int i=0; i < (int)m_vecimg.size(); ++i)
 	{
 		CAnimatedGif* pImage=m_vecimg[i];
@@ -257,7 +256,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 	// fill some animation data:
 	FrameWidth  = giflsd.ScreenWidth;
 	FrameHeight = giflsd.ScreenHeight;
-	nLoops			= 0;//0=infinite
+	nLoops			= 1;//default=play animation 1 time
 
 	// *3* READ/GENERATE GLOBAL COLOR MAP
 	GlobalColorMap = new COLOR [1<<GlobalBPP];
@@ -291,7 +290,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 				case 0xF9:			// Graphic Control Extension
         {
 					fread((char*)&gifgce,1,sizeof(gifgce),fd);
-          dllprintf("got Graphic Control Extension:%i/%i fields:%x",gifgce.BlockSize,sizeof(gifgce),gifgce.PackedFields);
+          //dllprintf("got Graphic Control Extension:%i/%i fields:%x",gifgce.BlockSize,sizeof(gifgce),gifgce.PackedFields);
 					GraphicExtensionFound++;
 					getbyte(fd); // Block Terminator (always 0)
         }
@@ -315,18 +314,13 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 
 				case 0xFF:			// Application Extension: Ignored
         {
-//          OutputDebugString("got Application Extension\n");
           int nBlockLength = getbyte(fd);
-//          dllprintf("  blocklen:%x/%x",nBlockLength,sizeof(gifnetscape));
           if (nBlockLength==0x0b)
           {
             struct GIFNetscapeTag  tag;
             fread((char*)&tag,1,sizeof(gifnetscape),fd);
-            dllprintf("read netscape tag. sublen:%i res:%i Iterations:%x %s", 
-                    tag.SubBlockLength,tag.reserved,
-                    tag.iIterations,
-                    tag.comment);
             nLoops=tag.iIterations;  
+            if (nLoops) nLoops++;
             int iterm=getbyte(fd); // terminator
           }
           else
