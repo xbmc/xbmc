@@ -302,7 +302,10 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyFilesSourceRootSortAscending=true;
 	g_stSettings.m_bMyFilesDestSortAscending=true;
 	g_stSettings.m_bMyFilesDestRootSortAscending=true;
-	g_stSettings.m_bSoften=false;
+  g_stSettings.m_iFlickerFilterVideo=1;
+	g_stSettings.m_bSoftenVideo=false;
+  g_stSettings.m_iFlickerFilterUI=5;
+	g_stSettings.m_bSoftenUI=true;
 	g_stSettings.m_bZoom=false;
 	g_stSettings.m_bStretch=false;
 
@@ -1140,7 +1143,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetInteger(pElement, "resolution",(int &)g_stSettings.m_GUIResolution,(int)PAL_4x3,(int)HDTV_1080i,(int)PAL60_16x9);
 		GetInteger(pElement, "uioffsetx",g_stSettings.m_iUIOffsetX,0,INT_MIN,INT_MAX);
 		GetInteger(pElement, "uioffsety",g_stSettings.m_iUIOffsetY,0,INT_MIN,INT_MAX);
-		GetBoolean(pElement, "soften", g_stSettings.m_bSoften);
+    GetInteger(pElement, "flickerfiltervideo", g_stSettings.m_iFlickerFilterVideo, 1, 0, 5);
+    GetInteger(pElement, "flickerfilterui", g_stSettings.m_iFlickerFilterUI, 5, 0, 5);
+		GetBoolean(pElement, "softenvideo", g_stSettings.m_bSoftenVideo);
+		GetBoolean(pElement, "softenui", g_stSettings.m_bSoftenUI);
 		GetBoolean(pElement, "framerateconversion", g_stSettings.m_bFrameRateConversions);
 		GetBoolean(pElement, "zoom", g_stSettings.m_bZoom);
 		GetBoolean(pElement, "stretch", g_stSettings.m_bStretch);
@@ -1498,7 +1504,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetInteger(pNode, "resolution", (int)g_stSettings.m_GUIResolution);
 	SetInteger(pNode, "uioffsetx",g_stSettings.m_iUIOffsetX);
 	SetInteger(pNode, "uioffsety",g_stSettings.m_iUIOffsetY);
-	SetBoolean(pNode, "soften", g_stSettings.m_bSoften);
+  SetInteger(pNode, "flickerfiltervideo", g_stSettings.m_iFlickerFilterVideo);
+  SetInteger(pNode, "flickerfilterui", g_stSettings.m_iFlickerFilterUI);
+	SetBoolean(pNode, "softenvideo", g_stSettings.m_bSoftenVideo);
+	SetBoolean(pNode, "softenui", g_stSettings.m_bSoftenUI);
 	SetBoolean(pNode, "framerateconversion", g_stSettings.m_bFrameRateConversions);
 	SetBoolean(pNode, "zoom", g_stSettings.m_bZoom);
 	SetBoolean(pNode, "stretch", g_stSettings.m_bStretch);
