@@ -18,6 +18,7 @@ public:
 
 	static	void GetTier(Tier aTier, CStdString aVector, CStdString& aTierName);
 	static	void SetIcons(INT aWidth, INT aHeight, const CStdString& aHeadsetTexture);
+	static  void FreeIcons();
 
 	CStdString m_strVector;
 	CStdString m_strDescription;

@@ -13,6 +13,7 @@ public:
 							  const CStdString& aInviteTexture, const CStdString& aBusyTexture,
 							  const CStdString& aIdleTexture, const CStdString& aHostTexture,
 							  const CStdString& aKeyboardTexture);
+	static  void FreeIcons();
 
 	CStdString	 GetArena();
 

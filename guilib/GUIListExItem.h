@@ -44,6 +44,7 @@ public:
 	};
 	
 	CGUIListExItem(CStdString& aItemName);
+	virtual ~CGUIListExItem(void);
 	virtual void OnPaint(CGUIItem::RenderContext* pContext);
 	void SetIcon(CGUIImage* pImage);
 	void SetIcon(INT aWidth, INT aHeight, const CStdString& aTexture);

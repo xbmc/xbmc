@@ -29,6 +29,7 @@ public:
 	};
 	
 	CGUIItem(CStdString& aItemName);
+	virtual ~CGUIItem(void);
 	virtual void OnPaint(CGUIItem::RenderContext* pContext)=0;
 	virtual void GetDisplayText(CStdString& aString)
 	{

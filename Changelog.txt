@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 22-01-2005 fixed: memory leak in Kai UI
   - 21-01-2005 fixed: the heading of dialog keyboard was not displayed
   - 21-01-2005 updated: German language file
   - 21-01-2005 changed: XLink window and dialogs are localizable now
