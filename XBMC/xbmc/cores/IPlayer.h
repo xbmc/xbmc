@@ -56,6 +56,7 @@ public:
   virtual int     GetAudioStreamCount(){return 1;};
   virtual void	  SeekTime(int iTime=0){};
   virtual int	  GetTime(){return 0;};
+  virtual void	  ToFFRW(int iSpeed=0){};
 protected:
 	IPlayerCallback& m_callback;
 };
