@@ -304,6 +304,7 @@ public:
 	bool			m_bDisplayRemoteCodes;	// Remote code debug info
 	bool			m_bResample;			// mplayer resampling to 48kHz
   int       m_iLCDModChip;
+  int		m_iOSDTimeout;		// OSD timeout in seconds
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
