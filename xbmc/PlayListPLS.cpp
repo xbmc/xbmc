@@ -174,11 +174,13 @@ bool CPlayListPLS::LoadFromWeb(CStdString& strURL)
 	{
 		return LoadAsxInfo(strData);
 	}
+	if (strContentType == "audio/x-pn-realaudio")
+	{
+		return LoadRAMInfo(strData);
+	}
 
 	// Unknown type
-	CPlayListItem newItem(strURL,strURL,0);
-	Add(newItem);
-	return true;
+	return false;
 }
 
 bool CPlayListPLS::LoadAsxInfo(CStdString& strData)
@@ -243,6 +245,20 @@ bool CPlayListPLS::LoadAsxIniInfo(CStdString& strData)
 		CPlayListItem newItem(strMMS,strMMS,0);
 		Add(newItem);
 	}
+	return true;
+}
+
+bool CPlayListPLS::LoadRAMInfo(CStdString& strData)
+{
+	CLog::Log(LOGINFO, "Parsing RAM");
+	CLog::Log(LOGDEBUG, "%s", strData.c_str());
+	CStdString strMMS;
+
+	strMMS = strData.substr(0, strData.Find('\n'));
+	CLog::Log(LOGINFO, "Adding element %s", strMMS.c_str());
+	CPlayListItem newItem(strMMS,strMMS,0);
+	Add(newItem);
+
 	return true;
 }
 

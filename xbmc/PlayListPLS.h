@@ -16,5 +16,6 @@ namespace PLAYLIST
 		bool			LoadFromWeb(CStdString& strURL);
 		bool			LoadAsxInfo(CStdString& strData);
 		bool			LoadAsxIniInfo(CStdString& strData);
+		bool			LoadRAMInfo(CStdString& strData);
 	};
 };
