@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+  - 28-01-2005 added: [ 1102392 ] XLink, support for multiple games dirs
+                      Use a ; to separate them (example: f:\games;g:\games)
   - 26-01-2005 changed: free a little more memory when leaving kai window
   - 26-01-2005 fixed: my programs, last focused control is not remembered
   - 26-01-2005 changed: Merged audio/video/dvd cachesize settings for harddisk to 1 setting.
