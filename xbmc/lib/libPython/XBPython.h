@@ -8,37 +8,36 @@
 #define XBPYTHON_H_
 
 #include <xtl.h>
+#include <vector>
+
 #include "XBPyThread.h"
 #include "OutputBuffer.h"
-#include <vector>
+#include "messages.h"
+
+using namespace std;
 
 VOID WINAPI PyThreadNotifyProc(BOOL fCreate);
 
-typedef struct PyElem {
+typedef struct {
 	int id;
 	char strFile[1024];
 	XBPyThread *pyThread;
 }PyElem;
 
-//Vector with list of threads used for running scripts
 typedef std::vector<PyElem> PyList;
-
-static PyList pyList;
-
-static OutputBuffer *outputBuffer;
 
 class XBPython
 {
 public:
-	XBPython();
-	virtual ~XBPython();
-	int		evalFile(const char *);
-	int		evalString(const char *);
-	int		scriptsSize();
+	      XBPython();
+	      ~XBPython();
+	int   evalFile(const char *);
+	int   evalString(const char *);
+	int   scriptsSize();
 	bool	isRunning(int scriptId);
-	bool	isStopping(int scriptId);
-	bool	isDone(int scriptId);
-	void	stopScript(int scriptId);
+	bool  isStopping(int scriptId);
+	bool  isDone(int scriptId);
+	void  stopScript(int scriptId);
 
 	// returns NULL if script doesn't exist or if script doesn't have a filename
 	char*	getFileName(int scriptId);
@@ -51,11 +50,16 @@ public:
 	int		getOutputLength();
 	char*	getOutputLine(int nr);
 
-	PyThreadState *getMainThreadState();
+  PyThreadState *getMainThreadState();
+	void setThreadNotification(bool bRegister);
 
+	//Vector with list of threads used for running scripts
+	PyList vecPyList;
+	OutputBuffer *outputBuffer;
 private:
 	int nextid;
 	PyThreadState *mainThreadState;
+	bool bNotificating;
 };	
 
 #endif //XBPYTHON_H_

@@ -10,6 +10,7 @@
 #include "musicdatabase.h"
 #include "url.h"
 #include "autorun.h"
+#include "xbox/xkutils.h"
 using namespace PLAYLIST;
 
 #ifdef _DEBUG
@@ -50,10 +51,12 @@ CApplication::CApplication(void)
 		XSetProcessQuantumLength(5); //default=20msec
 		XSetFileCacheSize (256*1024);//default=64kb
 		m_dwSpinDownTime=timeGetTime();
+		
 }	
 
 CApplication::~CApplication(void)
 {
+	
 }
 
 HRESULT CApplication::Create()
@@ -311,8 +314,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 void CApplication::Render()
 {
 	SpinHD();
-	// process any phyton scripts...
-	ProcessScripts();
 
 	// dont show GUI when playing full screen video
 	if ( IsPlayingVideo() )
@@ -380,7 +381,10 @@ void CApplication::Render()
 	m_pd3dDevice->BlockUntilVerticalBlank();      
 	m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 	g_graphicsContext.Unlock();
-		
+
+	// process any Python scripts and script messages...
+	ProcessThreadMessages();
+	ProcessPythonScripts();
 }
 
 void CApplication::OnKey(CKey& key)
@@ -797,6 +801,7 @@ void CApplication::Stop()
 			{
 				m_pPythonParser->stopScript(iScriptId);
 			}
+			++it;
 		}
 		delete m_pPythonParser;
 		m_pPythonParser=NULL;
@@ -818,7 +823,7 @@ void CApplication::Stop()
 	Destroy();
 }
 
-void CApplication::ExecuteScript(const CStdString& strScript)
+void CApplication::ExecutePythonScript(const CStdString& strScript)
 {
 	 /* PY_RW stay's loaded as longs as m_pPythonParser != NULL.
 	  * When someone runs a script for the first time both sections PYTHON and PY_RW
@@ -829,14 +834,16 @@ void CApplication::ExecuteScript(const CStdString& strScript)
 		*/
 	if(!g_sectionLoader.IsLoaded("PYTHON")) g_sectionLoader.Load("PYTHON");
 	if(!g_sectionLoader.IsLoaded("PY_RW")) g_sectionLoader.Load("PY_RW");
-	if (!m_pPythonParser)	m_pPythonParser=new XBPython();
+
+	if (!m_pPythonParser) m_pPythonParser = new XBPython();
+	m_pPythonParser->setThreadNotification(true);
 
 	//run script..
 	int id=m_pPythonParser->evalFile(strScript.c_str());
 	m_vecScriptIds.push_back(id);
 }
 
-void CApplication::ProcessScripts()
+void CApplication::ProcessPythonScripts()
 {
 	if ( !m_pPythonParser || m_vecScriptIds.size() == 0) return;
 
@@ -849,8 +856,11 @@ void CApplication::ProcessScripts()
 		else ++it;
 	}
 	if ( m_vecScriptIds.size()==0)
-		//no scripts are running, it's safe to unload section PYTHON now
+	{
+		// no scripts are running, it's safe to unload section PYTHON now
+		m_pPythonParser->setThreadNotification(false);
 		g_sectionLoader.Unload("PYTHON");
+	}
 }
 
 int CApplication::ScriptsSize()
@@ -858,7 +868,91 @@ int CApplication::ScriptsSize()
 	return m_vecScriptIds.size();
 }
 
-int CApplication::GetScriptId(int scriptPosition)
+void CApplication::SendThreadMessage(ThreadMessage& message, bool wait)
+{
+	if (wait)	message.hWaitEvent = CreateEvent(NULL, true, false, "threadWaitEvent");
+	else message.hWaitEvent = NULL;
+
+	ThreadMessage* msg = new ThreadMessage();
+	msg->dwMessage = message.dwMessage;
+	msg->dwParam1 = message.dwParam1;
+	msg->dwParam2 = message.dwParam2;
+	msg->hWaitEvent = message.hWaitEvent;
+	msg->lpVoid = message.lpVoid;
+	msg->strParam = message.strParam;
+
+	CSingleLock lock(m_critSection);
+	m_vecThreadMessages.push_back(msg);
+	lock.Leave();
+
+	if (message.hWaitEvent)
+	{
+		WaitForSingleObject(message.hWaitEvent, INFINITE);
+		CloseHandle(message.hWaitEvent);
+	}
+}
+
+void CApplication::ProcessThreadMessages()
+{
+	// process threadmessages
+	CSingleLock lock(m_critSection);
+
+	if (m_vecThreadMessages.size() > 0)
+	{
+		vector<ThreadMessage*>::iterator it = m_vecThreadMessages.begin();
+		while (it != m_vecThreadMessages.end())
+		{
+			ThreadMessage* pMsg = *it;
+			//first remove the message from the queue, else the message could be processed more then once
+			it = m_vecThreadMessages.erase(it);
+
+			switch (pMsg->dwMessage)
+			{
+				case TMSG_DIALOG_DOMODAL: //doModel of window
+				{
+					CGUIDialog* pDialog = (CGUIDialog*)m_gWindowManager.GetWindow(pMsg->dwParam1);
+					pDialog->DoModal(pMsg->dwParam2);
+					break;
+				}
+
+				case TMSG_SHUTDOWN:
+					Stop();
+					XKUtils::XBOXPowerOff();
+					break;
+
+				case TMSG_DASHBOARD:
+					break;
+
+				case TMSG_RESTART:
+					Stop();
+					XKUtils::XBOXPowerCycle();
+					break;
+
+				case TMSG_MEDIA_PLAY:
+					PlayFile(pMsg->strParam);
+					if (IsPlayingVideo())
+					{
+						g_graphicsContext.Lock();
+						g_graphicsContext.SetFullScreenVideo(true);
+						g_graphicsContext.Unlock();
+					}
+					break;
+
+				case TMSG_MEDIA_STOP:
+					if (m_pPlayer) m_pPlayer->closefile();
+					break;
+
+				case TMSG_MEDIA_PAUSE:
+					if (m_pPlayer) m_pPlayer->Pause();
+					break;
+			}
+			if (pMsg->hWaitEvent) PulseEvent(pMsg->hWaitEvent);
+			delete pMsg;
+		}
+	}
+}
+
+int CApplication::GetPythonScriptId(int scriptPosition)
 {
 	return (int)m_vecScriptIds[scriptPosition];
 }

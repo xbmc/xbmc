@@ -2,14 +2,6 @@
 #define XBPYTHREAD_H_
 
 #include "python.h"
-
-/* Restore code and data sections to normal.
-#pragma code_seg()
-#pragma data_seg()
-#pragma bss_seg()
-#pragma const_seg()
-*/
-
 #include "..\..\utils\Thread.h"
 
 class XBPyThread : public CThread  

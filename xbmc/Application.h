@@ -38,12 +38,23 @@
 #include "utils/delaycontroller.h"
 #include "keyboard/virtualkeyboard.h"
 #include "lib/libPython/XBPython.h"
+//#include "lib/libPython/xbox/XBPython.h"
 #include "cores/IPlayer.h"
 #include "DetectDVDType.h"
 #include "Autorun.h"
 #include "IMsgTargetCallback.h"
-
+#include "utils/CriticalSection.h"
 #include <vector>
+
+typedef struct {
+	DWORD dwMessage;
+	DWORD dwParam1;
+  DWORD dwParam2;
+	CStdString strParam;
+	HANDLE hWaitEvent;
+	LPVOID lpVoid;
+}ThreadMessage;
+
 using namespace std;
 
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback
@@ -58,10 +69,12 @@ public:
 
 	void									Stop();
 	void									LoadSkin(const CStdString& strSkin);
-	void									ExecuteScript(const CStdString& strScript);
-	void									ProcessScripts();
+	void									ExecutePythonScript(const CStdString& strScript);
+	void									ProcessPythonScripts();
 	int										ScriptsSize();
-	int										GetScriptId(int scriptPosition); 
+	int										GetPythonScriptId(int scriptPosition); 
+	void									SendThreadMessage(ThreadMessage& msg, bool wait = false);
+	void									ProcessThreadMessages();
 
 	virtual bool					OnMessage(CGUIMessage& message);
 
@@ -118,6 +131,10 @@ protected:
 	vector<int>							m_vecScriptIds;
 	typedef vector<int>::iterator ivecScriptIds;
 	CStdString							m_strCurrentPlayer;
+
+	vector<ThreadMessage*>	m_vecThreadMessages;
+	CCriticalSection				m_critSection;
+	
 };
 
 extern CApplication g_application;

@@ -387,7 +387,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 		int iSize = g_application.ScriptsSize();
 		for (int i=0; i < iSize; i++)
 		{
-			int id = g_application.GetScriptId(i);
+			int id = g_application.GetPythonScriptId(i);
 			if (g_application.m_pPythonParser->isRunning(id))
 			{
 				char* filename = g_application.m_pPythonParser->getFileName(id);
@@ -506,7 +506,7 @@ void CGUIWindowScripts::OnClick(int iItem)
 				}
 			}
 		}
-		g_application.ExecuteScript(strPath);
+		g_application.ExecutePythonScript(strPath);
 	}
 }
 

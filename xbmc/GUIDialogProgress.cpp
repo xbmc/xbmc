@@ -50,7 +50,13 @@ void  CGUIDialogProgress::SetHeading(const wstring& strLine)
 	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
 	msg.SetLabel(strLine);
 	OnMessage(msg);
+}
 
+void  CGUIDialogProgress::SetHeading(const string& strLine)
+{
+	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
+	msg.SetLabel(strLine);
+	OnMessage(msg);
 }
 
 void CGUIDialogProgress::SetLine(int iLine, const wstring& strLine)

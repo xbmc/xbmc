@@ -55,7 +55,13 @@ void  CGUIDialogYesNo::SetHeading(const wstring& strLine)
 	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
 	msg.SetLabel(strLine);
 	OnMessage(msg);
+}
 
+void  CGUIDialogYesNo::SetHeading(const string& strLine)
+{
+	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
+	msg.SetLabel(strLine);
+	OnMessage(msg);
 }
 
 void CGUIDialogYesNo::SetLine(int iLine, const wstring& strLine)
