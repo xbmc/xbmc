@@ -411,6 +411,13 @@ void CApplication::FrameMove()
     {
 		  CKey key(true,KEY_REMOTE_PAUSE);
       m_gWindowManager.OnKey(key);   
+			if (m_pPlayer)
+			{
+				if (m_pPlayer->IsPlaying() )
+				{
+					m_pPlayer->Pause();
+				}
+			}
 		  break;
     }
 		case XINPUT_IR_REMOTE_STOP:

@@ -110,10 +110,17 @@ void CMPlayer::Process()
 				m_callback.OnPlayBackStarted();
 				do 
 				{
-					int iRet=mplayer_process();
-					if (iRet < 0)
+					if (!m_bPaused)
 					{
-						m_bIsPlaying=false;
+						int iRet=mplayer_process();
+						if (iRet < 0)
+						{
+							m_bIsPlaying=false;
+						}
+					}
+					else 
+					{
+						Sleep(100);
 					}
 				} while (!m_bStopPlaying && m_bIsPlaying && !m_bStop);
 				m_bIsPlaying=false;
@@ -137,4 +144,14 @@ void CMPlayer::Unload()
 		dllReleaseAll( );
 		m_pDLL=NULL;
 	}
+}
+
+void  CMPlayer::Pause()
+{
+	m_bPaused=!m_bPaused;
+}
+
+bool CMPlayer::IsPaused() const
+{
+	return m_bPaused;
 }

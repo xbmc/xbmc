@@ -14,12 +14,14 @@ public:
 	virtual bool	openfile(const CStdString& strFile);
 	virtual bool  closefile();
 	virtual bool  IsPlaying() const;
+	virtual void  Pause();
+	virtual bool	IsPaused() const;
 	void					Unload();
 protected:
 	virtual void		OnStartup();
 	virtual void		OnExit();
 	virtual void		Process();
-
+	bool						m_bPaused;
 	bool						m_bIsPlaying;
 	bool						m_bStopPlaying;
 	DllLoader*			m_pDLL;
