@@ -2209,17 +2209,17 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
 		m_dwIdleTime=timeGetTime();
 
-		//if (bRestart)
-		//{
-		//	m_pPlayer->SetAVDelay(AVDelay);
-		//}
+		if (bRestart)
+		{
+			m_pPlayer->SetAVDelay(AVDelay);
+		}
 
-		//// if file happens to contain video stream
-		//if ( IsPlayingVideo())
-		//{
-		//	// then switch to fullscreen video mode if we can
-		//	SwitchToFullScreen();
-		//}
+		// if file happens to contain video stream
+		if ( IsPlayingVideo())
+		{
+			// then switch to fullscreen video mode if we can
+			SwitchToFullScreen();
+		}
 	}
 	return bResult;
 }
