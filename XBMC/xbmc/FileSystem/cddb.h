@@ -1,5 +1,5 @@
 
-
+#pragma once
 #include "stdstring.h"
 #include "../util.h"
 #include <map>
