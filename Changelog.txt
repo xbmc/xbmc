@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-09-2004 changed: TTF font management optimization (skin with TTF consumes less memory than with XPR!)
   - 08-09-2004 changed: Video OSD now autoscales.  Should eliminate the need to calibrate it's position.
   - 08-09-2004 added: support for writing to samba shares
   - 07-09-2004 fixed: progress bar for video OSD now working again (SF Bug #1011943)
