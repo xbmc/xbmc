@@ -4,6 +4,7 @@
 #include <share.h>
 #include "criticalsection.h"
 #include "singlelock.h"
+#include "StdString.h"
 
 static CLog g_logger;
 
