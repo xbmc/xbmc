@@ -144,6 +144,16 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				CStdString strDir=m_strDirectory;
 				m_strDirectory = g_stSettings.m_szShortcutDirectory;
 
+				if (m_dlgProgress)
+				{
+					m_dlgProgress->SetHeading(211);
+					m_dlgProgress->SetLine(0, "");
+					m_dlgProgress->SetLine(1, "");
+					m_dlgProgress->SetLine(2, "");
+					m_dlgProgress->StartModal(GetID());
+					m_dlgProgress->Progress();
+				}
+
 				CHDDirectory rootDir;
 
 				// remove shortcuts...
@@ -199,6 +209,11 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				m_strDirectory=strDir;
 				CUtil::ClearCache();
 				Update(m_strDirectory);
+
+				if (m_dlgProgress)
+				{
+					m_dlgProgress->Close();
+				}
 			}
 			else if (iControl==CONTROL_BTNSORTMETHOD) // sort by
 			{
@@ -861,16 +876,14 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 	CStdString strStrippedPath;
 	url.GetURLWithoutUserDetails(strStrippedPath);
 
-	const WCHAR* pszText=(WCHAR*)g_localizeStrings.Get(212).c_str();
-	WCHAR wzTotal[128];
-	swprintf(wzTotal,L"%i %s",iTotalAppsFound, pszText );
+	CStdString strText=g_localizeStrings.Get(212);
+	CStdString strTotal;
+	strTotal.Format("%i %s", iTotalAppsFound, strText.c_str());
 	if (m_dlgProgress)
 	{
-		m_dlgProgress->SetHeading(211);
-		m_dlgProgress->SetLine(0,wzTotal);
+		m_dlgProgress->SetLine(0,strTotal);
 		m_dlgProgress->SetLine(1,"");
-		m_dlgProgress->SetLine(2,strStrippedPath );
-		m_dlgProgress->StartModal(GetID());
+		m_dlgProgress->SetLine(2,strStrippedPath);
 		m_dlgProgress->Progress();
 	}
 	//bool   bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
@@ -879,7 +892,6 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 	DeleteThumbs(items);
 	//CUtil::SetThumbs(items);
 	CUtil::CreateShortcuts(items);
-	bool bOpen=true;
 	if ((int)m_strDirectory.size() != 2) // true for C:, E:, F:, G:
 	{
 		// first check all files
@@ -914,9 +926,6 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 					CHDDirectory rootDir;
 					rootDir.SetMask(".xbe");
 					rootDir.GetDirectory(pItem->m_strPath,subDirItems);
-					bOpen=false;
-					if (m_dlgProgress)
-						m_dlgProgress->Close();
 					OnScan(subDirItems,iTotalAppsFound);
 					m_strDirectory=strDir;
 				}
@@ -927,18 +936,19 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 			if ( CUtil::IsXBE(pItem->m_strPath) )
 			{
 				bFound=true;
-				CStdString strTotal;
 				iTotalAppsFound++;
 
-				swprintf(wzTotal,L"%i %s",iTotalAppsFound, pszText );
+				CStdString strText=g_localizeStrings.Get(212);
+				strTotal.Format("%i %s", iTotalAppsFound, strText.c_str());
 				CStdString strDescription;
 				CUtil::GetXBEDescription(pItem->m_strPath,strDescription);
 				if (strDescription=="")
 					strDescription=CUtil::GetFileName(pItem->m_strPath);
 				if (m_dlgProgress)
 				{
-					m_dlgProgress->SetLine(0, wzTotal);
-					m_dlgProgress->SetLine(1,strStrippedPath);
+					m_dlgProgress->SetLine(0, strTotal);
+					m_dlgProgress->SetLine(1, "");
+					m_dlgProgress->SetLine(2,strStrippedPath);
 					m_dlgProgress->Progress();
 				}
 				// CStdString strIcon;
@@ -948,8 +958,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 			}
 		}
 	}
-	if (bOpen && m_dlgProgress)
-		m_dlgProgress->Close();
+	g_directoryCache.Clear();
 }
 
 void CGUIWindowPrograms::DeleteThumbs(VECFILEITEMS& items)

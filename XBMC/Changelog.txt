@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 24-11-2004 fixed: my programs, scanning doesn't free its memory
   - 23-11-2004 fixed: kai pop-up killing speex audio while visible.
   - 23-11-2004 added: modeless dialog rendering, kai pop-up less intrusive.
   - 23-11-2004 added: inline text editor control (for Kai text chat and all who want it).
