@@ -206,6 +206,7 @@ static void video_check_events(void)
 
 static unsigned int video_preinit(const char *arg)
 {
+	m_dwVisibleOverlay=0;
 	m_bFlip=false;
 	fs=1;
   return 0;
@@ -233,6 +234,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 static void video_flip_page(void)
 {
 	if (!m_bFlip) return;
+	m_bFlip=false;
 	m_pOverlay[m_dwVisibleOverlay]->UnlockRect(0);			
 
 	if ( g_graphicsContext.IsFullScreenVideo())
@@ -344,7 +346,8 @@ static unsigned int video_control(unsigned int request, void *data, ...)
       return query_format(*((unsigned int*)data));
 
     case VOCTRL_DRAW_IMAGE:
-      return put_image( (mp_image_t*)data );
+//      return put_image( (mp_image_t*)data );
+			return VO_NOTIMPL;
 
     case VOCTRL_FULLSCREEN:
     {
