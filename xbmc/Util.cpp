@@ -1906,6 +1906,19 @@ int CUtil::GetFolderCount(VECFILEITEMS &items)
   return nFolderCount;
 }
 
+int CUtil::GetFileCount(VECFILEITEMS &items)
+{
+  int nFileCount=0;
+  for (int i = 0; i < (int)items.size(); i++) 
+  {
+    CFileItem* pItem = items[i];
+    if (! pItem->m_bIsFolder) 
+      nFileCount++;
+  }
+
+  return nFileCount;
+}
+
 bool CUtil::ThumbExists(const CStdString& strFileName, bool bAddCache)
 {
   return CThumbnailCache::GetThumbnailCache()->ThumbExists(strFileName, bAddCache);
@@ -3014,4 +3027,14 @@ void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPl
 	playlistitem.SetStartOffset(pItem->m_lStartOffset);
 	playlistitem.SetEndOffset(pItem->m_lEndOffset);
 	playlistitem.SetMusicTag(pItem->m_musicInfoTag);
+}
+
+
+bool CUtil::IsNaturalNumber(const CStdString& str)
+{
+	for (int i = 0; i < (int)str.size(); i++)
+	{
+		if ((str[i] < '0') || (str[i] > '9')) return false;
+	}
+	return true;
 }

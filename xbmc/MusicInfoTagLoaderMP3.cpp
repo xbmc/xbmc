@@ -104,7 +104,7 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 
 	if (NULL != pGenre.get())
 	{
-		tag.SetGenre(pGenre.get());
+		tag.SetGenre(ParseMP3Genre(pGenre.get()));
 	}
 	if (NULL != pTitle.get())
 	{
@@ -465,5 +465,111 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 	//	Now song length is (filesize without id3v1/v2 tag)/((bitrate)/(8)) 
 	double d=(double)(nMp3DataSize / ((bitrate*1000) / 8));
 	return (int)d;
+}
 
+CStdString CMusicInfoTagLoaderMP3::ParseMP3Genre (const CStdString& str)
+{
+	CStdString strTemp = str;
+	vector<CStdString> vecGenres;
+
+	while (! strTemp.IsEmpty())
+	{
+		// remove any leading spaces
+		int i = strTemp.find_first_not_of(" ");
+		if (i > 0) strTemp.erase(0,i);
+
+		// pull off the first character
+		char p = strTemp[0];
+
+		// start off looking for (something)
+		if (p == '(')
+		{
+			strTemp.erase(0,1);
+
+			// now look for ((something))
+			p = strTemp[0];
+			if (p == '(')
+			{
+				// remove ((something))
+				i = strTemp.find_first_of("))");
+				strTemp.erase(0,i+2);
+			}
+		}
+
+		// no parens, so we have a start of a string
+		// push chars into temp string until valid terminator found
+		// valid terminators are ( or , or ;
+		else
+		{
+			CStdString t;
+			while ((p != ')') && (p != ',') && (p != ';') && (! strTemp.IsEmpty()))
+			{
+				strTemp.erase(0,1);
+				t.push_back(p);
+				p = strTemp[0];
+			}
+			// loop exits when terminator is found
+			// be sure to remove the terminator
+			strTemp.erase(0,1);
+
+			// remove any trailing space from temp string
+			p = t[(t.size()-1)];
+			while (p == ' ')
+			{
+				t.erase((t.size()-1),1);
+				p = t[(t.size()-1)];
+			}
+
+			// if the temp string is natural number try to convert it to a genre string
+			if (CUtil::IsNaturalNumber(t))
+			{
+				char * pEnd;
+				long l = strtol(t.c_str(),&pEnd,0);
+				if (l < ID3_NR_OF_V1_GENRES)
+				{
+					// convert to genre string
+					t = ID3_v1_genre_description[l];
+				}
+			}
+
+			// convert RX to REMIX as per ID3 V2 spec
+			else if ((t == "RX") || (t == "Rx") || (t == "rX") || (t == "rx"))
+			{
+				t = "REMIX";
+			}
+
+			// convert CR to COVER as per ID3 V2 spec
+			else if ((t == "CR") || (t == "Cr") || (t == "cR") || (t == "cr"))
+			{
+				t = "COVER";
+			}
+
+			// check for duplicates in the genre vector
+			// if no duplicates, push current temp string into vector
+			bool bDuplicate = false;
+			vector<CStdString>::iterator it;
+			for (it = vecGenres.begin(); it < vecGenres.end(); it++)
+			{
+				CStdString strGenre = *it;
+				if (strGenre == t)
+				{
+					bDuplicate = true;
+					it = vecGenres.end();
+				}
+			}
+			if (! bDuplicate) vecGenres.push_back(t);
+		}
+
+	}
+
+	// finally return the / seperated string
+	CStdString strGenre;
+	vector<CStdString>::iterator it;
+	for(it = vecGenres.begin(); it < vecGenres.end(); it++)
+	{
+		CStdString strTemp = *it;
+		strGenre += strTemp + "/";
+	}
+	strGenre.TrimRight("/");
+	return strGenre;
 }

@@ -55,6 +55,10 @@ void CGUIWindowScreensaver::OnMouse()
 
 void CGUIWindowScreensaver::InitMatrix()
 {
+	// calculate the size of the matrix
+	m_iColMax = int (g_graphicsContext.GetWidth() / 16);
+	m_iRowMax = int (g_graphicsContext.GetHeight() / 16);
+
 	int iX, iY;
 	char cLast;
 
@@ -63,10 +67,10 @@ void CGUIWindowScreensaver::InitMatrix()
 	m_bDoEffect = true;
 	m_dwFrameCount=0;
 	
-	for( iX = 0; iX<80; iX++ )
+	for( iX = 0; iX < m_iColMax; iX++ )
 	{
 		cLast = 0;
-		for( iY = 0; iY<60; iY++ )
+		for( iY = 0; iY < m_iRowMax; iY++ )
 		{
 			do
 			{
@@ -94,7 +98,7 @@ void CGUIWindowScreensaver::InitMatrix()
 void CGUIWindowScreensaver::RenderFrame()
 {
 	char chText[2];
-	int iPos, iCol, iX, iY, iColMax, iRowMax;
+	int iPos, iCol, iX, iY; // , iColMax, iRowMax;
 	DWORD dwGreen;
 	DWORD dwLeadColor;
 	CStdStringW wszText;
@@ -116,11 +120,6 @@ void CGUIWindowScreensaver::RenderFrame()
 		dwGreen = 255-iPos;
 	}
 
-	iColMax = int (g_graphicsContext.GetWidth() / 16);
-	iRowMax = int (g_graphicsContext.GetHeight() / 16);
-	if (iColMax > 80) iColMax = 80;
-	if (iRowMax > 60) iRowMax = 60;
-
 	dwGreen |= dwGreen<<8;
 	dwGreen |= dwGreen<<8;
 	dwGreen |= 0xff000000;
@@ -136,7 +135,7 @@ void CGUIWindowScreensaver::RenderFrame()
 	if ( m_bDoEffect )
 	{
 		// Render falling symbols, one per column...
-		for( iCol = 0; iCol<iColMax; iCol++ )
+		for( iCol = 0; iCol < m_iColMax; iCol++ )
 		{
 			m_iMatrixPos[iCol] += m_iMatrixSpeed[iCol];
 
@@ -150,14 +149,14 @@ void CGUIWindowScreensaver::RenderFrame()
 			iPos = m_iMatrixPos[iCol]/8;
 
 			// Draw character only if the pos is visible
-			if ( (iPos >= 0) && (iPos<iRowMax) )
+			if ( (iPos >= 0) && (iPos < m_iRowMax) )
 			{
 				iX = iCol*16;
 				iY = iPos*16;
 				chText[0] = m_mtrxGrid[iCol][iPos];
 				wszText.Format(L"%c", chText[0]);
 				m_pFont->DrawText( (FLOAT)iX, (FLOAT)iY, m_dwColor, wszText );
-				if ( iPos<iRowMax )
+				if ( iPos < m_iRowMax )
 				{
 					iX = iCol*16;
 					iY = (iPos+1)*16;

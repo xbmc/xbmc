@@ -3,6 +3,7 @@
 #include "guifontmanager.h"
 #include "guiWindowManager.h"
 #include "..\xbmc\Application.h"
+#include "..\xbmc\settings.h"
 
 extern CApplication g_application;
 
@@ -46,7 +47,7 @@ CGUIRSSControl::~CGUIRSSControl(void)
 
 void CGUIRSSControl::Render()
 {
-	if ( (!IsVisible()) || g_application.IsPlayingVideo() ) 
+	if ( (!IsVisible()) || g_application.IsPlayingVideo() || !g_stSettings.m_bEnableRSS ) 
 	{
 		return;
 	}
