@@ -33,10 +33,6 @@
 #include "../../utils/log.h"
 #include "../../XBVideoConfig.h"
 
-#define OSD_TEXTURE_HEIGHT 150
-
-#define NUM_BUFFERS (2)
-
 struct DRAWRECT
 {
 	float left;
@@ -44,6 +40,8 @@ struct DRAWRECT
 	float right;
 	float bottom;
 };
+
+#define NUM_BUFFERS           2
 
 static RECT                   rd;                             //rect of our stretched image
 static RECT                   rs;                             //rect of our source image
@@ -61,8 +59,8 @@ static bool                   m_bFlipped;
 static float                  m_fps;
 static __int64                m_lFrameCounter;
 
-static LPDIRECT3DTEXTURE8     m_pOSDYTexture[2];
-static LPDIRECT3DTEXTURE8     m_pOSDATexture[2];
+static LPDIRECT3DTEXTURE8     m_pOSDYTexture[NUM_BUFFERS];
+static LPDIRECT3DTEXTURE8     m_pOSDATexture[NUM_BUFFERS];
 static float									m_OSDWidth;
 static float									m_OSDHeight;
 static DRAWRECT								m_OSDRect;
@@ -70,7 +68,8 @@ static int										m_iOSDBuffer;
 static bool                   m_OSDRendered;
 //static bool										m_SubsOnOSD;
 static int                    m_iOSDTextureWidth;
-static int                    m_iOSDTextureHeight;
+static int                    m_iOSDTextureHeight[NUM_BUFFERS];
+static int                    m_NumOSDBuffers;
 
 // YV12 decoder textures
 static LPDIRECT3DTEXTURE8     m_YTexture[NUM_BUFFERS];
@@ -79,7 +78,9 @@ static LPDIRECT3DTEXTURE8     m_VTexture[NUM_BUFFERS];
 static DWORD                  m_hPixelShader = 0;
 static int                    m_iYUVDecodeBuffer;
 static int                    m_iYUVRenderBuffer;
+static int                    m_NumVideoBuffers;
 static int                    m_bConfigured=false;
+
 typedef struct directx_fourcc_caps
 {
 	char*             img_format_name;      //human readable name
@@ -256,62 +257,92 @@ void choose_best_resolution(float fps)
 }
 
 //********************************************************************************************************
+//Get resolution based on current mode.
+RESOLUTION GetResolution()
+{
+  if (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating())
+  {
+    return m_iResolution;
+  }
+  return g_graphicsContext.GetVideoResolution();
+}
+
+//********************************************************************************************************
+void DeleteOSDTextures(int index)
+{
+  if (m_pOSDYTexture[index]) {
+    m_pOSDYTexture[index]->Release();
+    m_pOSDYTexture[index] = NULL;
+  }
+  if (m_pOSDATexture[index]) {
+    m_pOSDATexture[index]->Release();
+    m_pOSDATexture[index] = NULL;
+  }
+  m_iOSDTextureHeight[index] = 0;
+  CLog::Log(LOGDEBUG, "Deleted OSD textures (%i)", index);
+}
+
+//********************************************************************************************************
+void DeleteVideoTextures(int index)
+{
+  if (m_YTexture[index]) {
+    m_YTexture[index]->Release();
+    m_YTexture[index] = NULL;
+  }
+  if (m_UTexture[index]) {
+    m_UTexture[index]->Release();
+    m_UTexture[index] = NULL;
+  }
+  if (m_VTexture[index]) {
+    m_VTexture[index]->Release();
+    m_VTexture[index] = NULL;
+  }
+  CLog::Log(LOGDEBUG, "Deleted video textures (%i)", index);
+}
+
+//********************************************************************************************************
+void ClearVideoTextures(int index)
+{
+	D3DLOCKED_RECT lr;
+	m_YTexture[index]->LockRect(0, &lr, NULL, 0);
+	fast_memset(lr.pBits, 0, lr.Pitch*image_height);
+	m_YTexture[index]->UnlockRect(0);
+
+	m_UTexture[index]->LockRect(0, &lr, NULL, 0);
+	fast_memset(lr.pBits, 128, lr.Pitch*(image_height/2));
+	m_UTexture[index]->UnlockRect(0);
+
+	m_VTexture[index]->LockRect(0, &lr, NULL, 0);
+	fast_memset(lr.pBits, 128, lr.Pitch*(image_height/2));
+	m_VTexture[index]->UnlockRect(0);
+}
+
+//********************************************************************************************************
 static void Directx_CreateOverlay(unsigned int uiFormat)
 {
 	g_graphicsContext.Lock();
 
-	for (int i = 0; i < NUM_BUFFERS; ++i)
-	{
-		// setup textures as linear luminance only textures, the pixel shader handles interleaving 
-		if (m_YTexture[i])
-			m_YTexture[i]->Release();
-		g_graphicsContext.Get3DDevice()->CreateTexture(image_width, image_height, 1, 0, D3DFMT_LIN_L8, 0, &m_YTexture[i]);
-		if (m_UTexture[i])
-			m_UTexture[i]->Release();
-		g_graphicsContext.Get3DDevice()->CreateTexture(image_width/2, image_height/2, 1, 0, D3DFMT_LIN_L8, 0, &m_UTexture[i]);
-		if (m_VTexture[i])
-			m_VTexture[i]->Release();
-		g_graphicsContext.Get3DDevice()->CreateTexture(image_width/2, image_height/2, 1, 0, D3DFMT_LIN_L8, 0, &m_VTexture[i]);
+  //create 1 video buffer, second will be created in Directx_ManageDisplay if needed.
+  DeleteVideoTextures(0);
+  if (
+    D3D_OK != g_graphicsContext.Get3DDevice()->CreateTexture(image_width, image_height, 1, 0, D3DFMT_LIN_L8, 0, &m_YTexture[0]) ||
+    D3D_OK != g_graphicsContext.Get3DDevice()->CreateTexture(image_width/2, image_height/2, 1, 0, D3DFMT_LIN_L8, 0, &m_UTexture[0])||
+    D3D_OK != g_graphicsContext.Get3DDevice()->CreateTexture(image_width/2, image_height/2, 1, 0, D3DFMT_LIN_L8, 0, &m_VTexture[0])
+  )
+  {
+    CLog::Log(LOGERROR, "Could not create primary video textures");
+    DeleteVideoTextures(0);
+    g_applicationMessenger.MediaStop();
+    return;
+  }
+ 	// blank the textures (just in case)
+  ClearVideoTextures(0);
+  CLog::Log(LOGDEBUG, "Created video textures (0)");
+  m_NumVideoBuffers = 1;
 
-		// RGB conversion buffer
-//		if (m_RGBTexture[i])
-//			m_RGBTexture[i]->Release();
-//		g_graphicsContext.Get3DDevice()->CreateTexture(image_width, image_height, 1, 0, D3DFMT_LIN_X8R8G8B8, 0, &m_RGBTexture[i]);
-
-		// blank the textures (just in case)
-		D3DLOCKED_RECT lr;
-		m_YTexture[i]->LockRect(0, &lr, NULL, 0);
-		fast_memset(lr.pBits, 0, lr.Pitch*image_height);
-		m_YTexture[i]->UnlockRect(0);
-
-		m_UTexture[i]->LockRect(0, &lr, NULL, 0);
-		fast_memset(lr.pBits, 128, lr.Pitch*(image_height/2));
-		m_UTexture[i]->UnlockRect(0);
-
-		m_VTexture[i]->LockRect(0, &lr, NULL, 0);
-		fast_memset(lr.pBits, 128, lr.Pitch*(image_height/2));
-		m_VTexture[i]->UnlockRect(0);
-
-//		m_RGBTexture[i]->LockRect(0, &lr, NULL, 0);
-//		fast_memset(lr.pBits, 0, lr.Pitch*image_height);
-//		m_RGBTexture[i]->UnlockRect(0);
-	}
-
-	RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
-	m_iOSDTextureWidth = g_settings.m_ResInfo[iRes].Overscan.right-g_settings.m_ResInfo[iRes].Overscan.left;
-  m_iOSDTextureHeight = g_settings.m_ResInfo[iRes].Overscan.bottom-g_settings.m_ResInfo[iRes].Overscan.top;
-	// Create osd textures
-	for (int i = 0; i < 2; ++i)
-	{
-		if (m_pOSDYTexture[i])
-			m_pOSDYTexture[i]->Release();
-    g_graphicsContext.Get3DDevice()->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight, 1, 0, D3DFMT_LIN_L8, 0, &m_pOSDYTexture[i]);
-		if (m_pOSDATexture[i])
-			m_pOSDATexture[i]->Release();
-		g_graphicsContext.Get3DDevice()->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight, 1, 0, D3DFMT_LIN_A8, 0, &m_pOSDATexture[i]);
-
-		m_OSDWidth = m_OSDHeight = 0;
-	}
+  m_iOSDTextureWidth  = g_settings.m_ResInfo[m_iResolution].Overscan.right - g_settings.m_ResInfo[m_iResolution].Overscan.left;
+  m_iOSDTextureHeight[0] = 0;
+  m_iOSDTextureHeight[1] = 0;
 
 	//xbox_video_update_subtitle_position();
 
@@ -379,7 +410,7 @@ void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth,
 	// calculate the correct output frame ratio (using the users pixel ratio setting
 	// and the output pixel ratio setting)
 
-	float fOutputFrameRatio = fSourceFrameRatio*fUserPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio; 
+	float fOutputFrameRatio = fSourceFrameRatio*fUserPixelRatio / g_settings.m_ResInfo[GetResolution()].fPixelRatio; 
 
 	// maximize the movie width
 	float fNewWidth  = fScreenWidth;
@@ -415,28 +446,68 @@ void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth,
 //********************************************************************************************************
 unsigned int Directx_ManageDisplay()
 {
-	RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
-	float fOffsetX1 = (float)g_settings.m_ResInfo[iRes].Overscan.left;
-	float fOffsetY1 = (float)g_settings.m_ResInfo[iRes].Overscan.top;
-	float iScreenWidth = (float)(g_settings.m_ResInfo[iRes].Overscan.right-g_settings.m_ResInfo[iRes].Overscan.left);
-	float iScreenHeight = (float)(g_settings.m_ResInfo[iRes].Overscan.bottom-g_settings.m_ResInfo[iRes].Overscan.top);
+  const RECT& rv = g_graphicsContext.GetViewWindow();
+  int   iScreenWidth  = rv.right-rv.left;
+  int   iScreenHeight = rv.bottom-rv.top;
+  float fOffsetX1     = (float)rv.left;
+  float fOffsetY1     = (float)rv.top;
 
-	if( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-	{
-		const RECT& rv = g_graphicsContext.GetViewWindow();
-		iScreenWidth = (float)rv.right-rv.left;
-		iScreenHeight= (float)rv.bottom-rv.top;
-		fOffsetX1    = (float)rv.left;
-		fOffsetY1    = (float)rv.top;
-	}
+  //use 1 buffer in fullscreen mode and 2 buffers in windowed mode
+  bool bBufferCountChange = false;
+  if (g_graphicsContext.IsFullScreenVideo()) {
+    if (m_NumOSDBuffers != 1) {
+      m_NumOSDBuffers    = 1;
+      bBufferCountChange = true;
+    }
+  }
+  else if (m_NumOSDBuffers != 2) {
+    m_NumOSDBuffers    = 2;
+    bBufferCountChange = true;
+  }
+  if (bBufferCountChange) {
+    //OSD
+    m_iOSDBuffer = 0;
+    if (m_NumOSDBuffers == 1) {
+      //delete second osd textures
+      DeleteOSDTextures(1);
+    }
+    // else second textures will be created if needed in draw_alpha
+    m_OSDWidth = m_OSDHeight = 0;
 
-	// source rect
+    //Video
+    int numVideoBuffers = m_NumOSDBuffers;
+    if (numVideoBuffers == 1) {
+      m_NumVideoBuffers  = numVideoBuffers;
+      m_iYUVDecodeBuffer = 0;
+      m_iYUVRenderBuffer = 0;
+      //delete second video textures
+      DeleteVideoTextures(1);
+    }
+    else if ((numVideoBuffers == 2) && (m_YTexture[1] == NULL)) {
+	    // Create second video textures
+      if (
+        D3D_OK != g_graphicsContext.Get3DDevice()->CreateTexture(image_width, image_height, 1, 0, D3DFMT_LIN_L8, 0, &m_YTexture[1]) ||
+        D3D_OK != g_graphicsContext.Get3DDevice()->CreateTexture(image_width/2, image_height/2, 1, 0, D3DFMT_LIN_L8, 0, &m_UTexture[1]) ||
+        D3D_OK != g_graphicsContext.Get3DDevice()->CreateTexture(image_width/2, image_height/2, 1, 0, D3DFMT_LIN_L8, 0, &m_VTexture[1])
+      ) {
+        CLog::Log(LOGERROR, "Could not create secondary video textures");
+        DeleteVideoTextures(1);
+      }
+      else {
+        ClearVideoTextures(1);
+        CLog::Log(LOGDEBUG, "Created video textures (1)");
+        m_NumVideoBuffers  = numVideoBuffers;
+      }
+    }
+  }
+
+  // source rect
 	rs.left   = 0;
 	rs.top    = 0;
 	rs.right  = image_width;
 	rs.bottom = image_height;
 
-	CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, g_stSettings.m_fPixelRatio, g_stSettings.m_fZoomAmount, &rd);
+	CalcNormalDisplayRect(fOffsetX1, fOffsetY1, (float)iScreenWidth, (float)iScreenHeight, g_stSettings.m_fPixelRatio, g_stSettings.m_fZoomAmount, &rd);
 
 	return 0;
 }
@@ -473,41 +544,48 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 
   //use temporary rect for calculation to avoid messing with module-rect while other functions might be using it.
   DRAWRECT osdRect;
-	// scale to fit screen
+  // scale to fit screen
   float EnlargeFactor = 1.0f + (g_stSettings.m_iEnlargeSubtitlePercent / 100.0f);
 
-	if( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-	{
-		const RECT& rv = g_graphicsContext.GetViewWindow();
-		float xscale = EnlargeFactor*(float)(rv.right - rv.left)/m_iOSDTextureWidth;
-		float yscale = xscale * g_settings.m_ResInfo[m_iResolution].fPixelRatio;
-		osdRect.left = (float)rv.left + (float)(rv.right - rv.left - (float)w*xscale)/2.0f;
-		osdRect.right  = m_OSDRect.left + (float)w * xscale;
-		float relbottom = ((float)(g_settings.m_ResInfo[m_iResolution].iSubtitles-g_settings.m_ResInfo[m_iResolution].Overscan.top))/(g_settings.m_ResInfo[m_iResolution].Overscan.bottom - g_settings.m_ResInfo[m_iResolution].Overscan.top);
-		osdRect.bottom = (float)rv.top + (float)(rv.bottom-rv.top)*relbottom;
-		osdRect.top    = osdRect.bottom - (float)h * yscale;
-	}
-	else
-	{
-		float xscale = EnlargeFactor;
-		float yscale = xscale * g_settings.m_ResInfo[m_iResolution].fPixelRatio;
+  const RECT& rv = g_graphicsContext.GetViewWindow();
+  RESOLUTION res = GetResolution();
+  float xscale = EnlargeFactor*(float)(rv.right - rv.left)/(float)(g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left);
+  float yscale = xscale * g_settings.m_ResInfo[res].fPixelRatio;
+  osdRect.left = (float)rv.left + (float)(rv.right - rv.left - (float)w*xscale)/2.0f;
+  osdRect.right  = osdRect.left + (float)w * xscale;
+  float relbottom = ((float)(g_settings.m_ResInfo[res].iSubtitles-g_settings.m_ResInfo[res].Overscan.top))/(g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top);
+  osdRect.bottom = (float)rv.top + (float)(rv.bottom-rv.top)*relbottom;
+  osdRect.top    = osdRect.bottom - (float)h * yscale;
 
-		osdRect.left   = (float)g_settings.m_ResInfo[m_iResolution].Overscan.left + (float)(g_settings.m_ResInfo[m_iResolution].Overscan.right-g_settings.m_ResInfo[m_iResolution].Overscan.left - (float)w*xscale)/2.0f;
-		osdRect.right  = osdRect.left + (float)w * xscale;
-		osdRect.bottom = (float)g_settings.m_ResInfo[m_iResolution].iSubtitles;
-		osdRect.top    = osdRect.bottom - (float)h * yscale;
-	}
+  // clip to buffer
+  if (w > m_iOSDTextureWidth) w = m_iOSDTextureWidth;
+  if (h > g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top) {
+    h = g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top;
+  }
 
-	// clip to buffer
-	if (w > m_iOSDTextureWidth) w = m_iOSDTextureWidth;
-	if (h > m_iOSDTextureHeight) h = m_iOSDTextureHeight;
+  RECT rc = { 0, 0, w, h };
 
-	RECT rc = { 0, 0, w, h };
+  // flip buffers and wait for gpu
+  int iOSDBuffer = ((m_iOSDBuffer + 1) % m_NumOSDBuffers);
+  if (m_pOSDYTexture[iOSDBuffer]) while (m_pOSDYTexture[iOSDBuffer]->IsBusy()) Sleep(1);
+  if (m_pOSDATexture[iOSDBuffer]) while (m_pOSDATexture[iOSDBuffer]->IsBusy()) Sleep(1);
 
-	// flip buffers and wait for gpu
-	int iOSDBuffer = 1-m_iOSDBuffer;
-	while (m_pOSDYTexture[iOSDBuffer]->IsBusy()) Sleep(1);
-	while (m_pOSDATexture[iOSDBuffer]->IsBusy()) Sleep(1);
+  //if new height is heigher than current osd-texture height, recreate the textures with new height.
+  if (h > m_iOSDTextureHeight[iOSDBuffer]) {
+    DeleteOSDTextures(iOSDBuffer);
+    m_iOSDTextureHeight[iOSDBuffer] = h;
+    // Create osd textures for this buffer with new size
+    if (
+      D3D_OK != g_graphicsContext.Get3DDevice()->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_L8, 0, &m_pOSDYTexture[iOSDBuffer]) ||
+      D3D_OK != g_graphicsContext.Get3DDevice()->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_A8, 0, &m_pOSDATexture[iOSDBuffer])
+    ) {
+      CLog::Log(LOGERROR, "Could not create OSD/Sub textures");
+      DeleteOSDTextures(iOSDBuffer);
+    }
+    else {
+      CLog::Log(LOGDEBUG, "Created OSD textures (%i)", iOSDBuffer);
+    }
+  }
 
   // draw textures
   D3DLOCKED_RECT lr, lra;
@@ -516,8 +594,8 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
     (D3D_OK == m_pOSDATexture[iOSDBuffer]->LockRect(0, &lra, &rc, 0))
   ) {
     //clear the textures
-    fast_memset(lr.pBits, 0, lr.Pitch*m_iOSDTextureHeight);
-    fast_memset(lra.pBits, 0, lra.Pitch*m_iOSDTextureHeight);
+    fast_memset(lr.pBits, 0, lr.Pitch*m_iOSDTextureHeight[iOSDBuffer]);
+    fast_memset(lra.pBits, 0, lra.Pitch*m_iOSDTextureHeight[iOSDBuffer]);
     //draw the osd/subs
     vo_draw_alpha_xbox(w,h,src,srca,stride, (BYTE*)lr.pBits, (BYTE*)lra.pBits, lr.Pitch);
   }
@@ -559,18 +637,9 @@ void video_uninit(void)
 {
 	OutputDebugString("video_uninit\n");  
 
-	for (int i=0; i < NUM_BUFFERS; i++)
+	for (int i=0; i < 2; i++)
 	{
-		if (m_YTexture[i])
-			m_YTexture[i]->Release();
-		m_YTexture[i] = NULL;
- 		if (m_UTexture[i])
-			m_UTexture[i]->Release();
-		m_UTexture[i] = NULL;
-		if (m_VTexture[i])
-			m_VTexture[i]->Release();
-		m_VTexture[i] = NULL;
-
+    DeleteVideoTextures(i);
 //		if (m_RGBTexture[i])
 //			m_RGBTexture[i]->Release();
 //		m_RGBTexture[i] = NULL;
@@ -578,10 +647,7 @@ void video_uninit(void)
 	// subtitle and osd stuff
 	for (int i = 0; i < 2; ++i)
 	{
-		if (m_pOSDYTexture[i]) m_pOSDYTexture[i]->Release();
-		m_pOSDYTexture[i]=NULL;
-		if (m_pOSDATexture[i]) m_pOSDATexture[i]->Release();
-		m_pOSDATexture[i]=NULL;
+    DeleteOSDTextures(i);
 	}
 	OutputDebugString("video_uninit done\n");
 }
@@ -597,8 +663,10 @@ static unsigned int video_preinit(const char *arg)
   video_uninit();
 	m_iResolution=PAL_4x3;
 	m_bPauseDrawing=false;
-//	for (int i=0; i<NUM_BUFFERS; i++) iClearSubtitleRegion[i] = 0;
-	m_iOSDBuffer = 0;
+//	for (int i=0; i<m_NumVideoBuffers; i++) iClearSubtitleRegion[i] = 0;
+	m_iOSDBuffer      = 0;
+  m_NumOSDBuffers   = 0;
+  m_NumVideoBuffers = 0;
 //	m_iRGBRenderBuffer = -1;
 //	m_iRGBDecodeBuffer =
 	m_iYUVDecodeBuffer = m_iYUVRenderBuffer = 0;
@@ -715,7 +783,7 @@ static void YV12ToRGB()
 	pOldRT->Release();
 	pNewRT->Release();
 
-	++m_iRGBDecodeBuffer %= NUM_BUFFERS;
+	++m_iRGBDecodeBuffer %= m_NumVideoBuffers;
 
 	for (int i = 0; i < 3; ++i)
 	{
@@ -737,6 +805,10 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 
 	g_graphicsContext.Lock();
 
+  if (!m_YTexture[m_iYUVDecodeBuffer])
+  {
+  	++m_iYUVDecodeBuffer %= m_NumVideoBuffers;
+  }
 	while (m_YTexture[m_iYUVDecodeBuffer]->IsBusy())
 	{
 		if (m_YTexture[m_iYUVDecodeBuffer]->Lock)
@@ -800,7 +872,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
   {
 		// frame finished, output buffer to screen
 		//YV12ToRGB();
-    ++m_iYUVDecodeBuffer %= NUM_BUFFERS;
+    ++m_iYUVDecodeBuffer %= m_NumVideoBuffers;
     m_bFlip++;
   }
 
@@ -964,11 +1036,11 @@ void xbox_video_render_osd()
 
 void xbox_video_render()
 {
-  //if (m_iRGBRenderBuffer<0 || m_iRGBRenderBuffer >= NUM_BUFFERS) return;
-	if (m_iYUVRenderBuffer<0 || m_iYUVRenderBuffer >= NUM_BUFFERS) return;
+  //if (m_iRGBRenderBuffer<0 || m_iRGBRenderBuffer >= m_NumVideoBuffers) return;
+	if (m_iYUVRenderBuffer<0 || m_iYUVRenderBuffer >= m_NumVideoBuffers) return;
 
   //always render the buffer that is not currently being decoded to.
-  m_iYUVRenderBuffer = ((m_iYUVDecodeBuffer + 1) % NUM_BUFFERS);
+  m_iYUVRenderBuffer = ((m_iYUVDecodeBuffer + 1) % m_NumVideoBuffers);
   //g_graphicsContext.Get3DDevice()->SetTexture( 0, m_RGBTexture[m_iRGBRenderBuffer]);
 	g_graphicsContext.Get3DDevice()->SetTexture( 0, m_YTexture[m_iYUVRenderBuffer]);
 	g_graphicsContext.Get3DDevice()->SetTexture( 1, m_UTexture[m_iYUVRenderBuffer]);
@@ -1039,6 +1111,25 @@ void xbox_video_render()
 	g_graphicsContext.Get3DDevice()->SetScissors(0, FALSE, NULL );
 
 	xbox_video_render_osd();
+
+#ifndef _DEBUG
+		if (g_stSettings.m_bShowFreeMem)
+#endif
+    if (g_graphicsContext.IsFullScreenVideo())
+		{
+			// in debug mode, show freememory
+			CStdStringW wszText;
+		  MEMORYSTATUS stat;
+		  GlobalMemoryStatus(&stat);
+			wszText.Format(L"FreeMem %d/%d",stat.dwAvailPhys,
+				stat.dwTotalPhys);
+
+			CGUIFont* pFont=g_fontManager.GetFont("font13");
+			if (pFont)
+			{
+				pFont->DrawText( 60, 40, 0xffffffff, wszText);
+			}
+		}
 }
 //************************************************************************************
 static void video_flip_page(void)
@@ -1050,8 +1141,8 @@ static void video_flip_page(void)
     return;
   }
 	m_bFlip--;
-  //++m_iRGBRenderBuffer %= NUM_BUFFERS;
-	//++m_iYUVRenderBuffer %= NUM_BUFFERS;
+  //++m_iRGBRenderBuffer %= m_NumVideoBuffers;
+	//++m_iYUVRenderBuffer %= m_NumVideoBuffers;
 //	m_pSubtitleYTexture[m_iBackBuffer]->UnlockRect(0);
 //	m_pSubtitleATexture[m_iBackBuffer]->UnlockRect(0);
 //	m_iBackBuffer = 1-m_iBackBuffer;
@@ -1138,8 +1229,8 @@ void xbox_video_getAR(float& fAR)
 //********************************************************************************************************
 void xbox_video_render_update()
 {
-  //if (m_iRGBRenderBuffer < 0 || m_iRGBRenderBuffer >=NUM_BUFFERS) return;
-	if (m_iYUVRenderBuffer < 0 || m_iYUVRenderBuffer >=NUM_BUFFERS) return;
+  //if (m_iRGBRenderBuffer < 0 || m_iRGBRenderBuffer >=m_NumVideoBuffers) return;
+	if (m_iYUVRenderBuffer < 0 || m_iYUVRenderBuffer >=m_NumVideoBuffers) return;
   if (!m_YTexture[0])return;
 
   Directx_ManageDisplay();
@@ -1266,7 +1357,7 @@ static unsigned int put_image(mp_image_t *mpi)
 
 	// frame finished, send buffer to screen
 	//YV12ToRGB();
-	++m_iYUVDecodeBuffer %= NUM_BUFFERS;
+	++m_iYUVDecodeBuffer %= m_NumVideoBuffers;
 	m_bFlip++;
 
 	g_graphicsContext.Unlock();

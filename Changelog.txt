@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 23-10-2004 changed: Using less memory for video playback now
   - 22-10-2004 changed: libcdio updated to 0.70 (Thnx to Mog) 
   - 20-10-2004 added: ssl support to python
   - 20-10-2004 added: python dll loading, this means python can now make use of extension .pyd 

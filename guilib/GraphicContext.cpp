@@ -107,27 +107,43 @@ const RECT&	CGraphicContext::GetViewWindow() const
 }
 void CGraphicContext::SetViewWindow(const RECT&	rc) 
 {
-	m_videoRect.left  = rc.left;
-	m_videoRect.top   = rc.top;
-	m_videoRect.right = rc.right;
-	m_videoRect.bottom= rc.bottom;
-	if (m_videoRect.left < 0) m_videoRect.left = 0;
-	if (m_videoRect.top < 0) m_videoRect.top = 0;
-	if (m_bShowPreviewWindow && !m_bFullScreenVideo)
-	{
-		D3DRECT d3dRC;
-		d3dRC.x1=rc.left;
-		d3dRC.x2=rc.right;
-		d3dRC.y1=rc.top;
-		d3dRC.y2=rc.bottom;
-		Get3DDevice()->Clear( 1, &d3dRC, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-	}
+  if (m_bCalibrating)
+  {
+    SetFullScreenViewWindow(m_Resolution);
+  }
+  else
+  {
+	  m_videoRect.left  = rc.left;
+	  m_videoRect.top   = rc.top;
+	  m_videoRect.right = rc.right;
+	  m_videoRect.bottom= rc.bottom;
+	  if (m_videoRect.left < 0) m_videoRect.left = 0;
+	  if (m_videoRect.top < 0) m_videoRect.top = 0;
+	  if (m_bShowPreviewWindow && !m_bFullScreenVideo)
+	  {
+		  D3DRECT d3dRC;
+		  d3dRC.x1=rc.left;
+		  d3dRC.x2=rc.right;
+		  d3dRC.y1=rc.top;
+		  d3dRC.y2=rc.bottom;
+		  Get3DDevice()->Clear( 1, &d3dRC, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+	  }
+  }
+}
+
+void CGraphicContext::SetFullScreenViewWindow(RESOLUTION &res)
+{
+	m_videoRect.left   = m_pResInfo[res].Overscan.left;
+	m_videoRect.top    = m_pResInfo[res].Overscan.top;
+	m_videoRect.right  = m_pResInfo[res].Overscan.right;
+	m_videoRect.bottom = m_pResInfo[res].Overscan.bottom;
 }
 
 void CGraphicContext::SetFullScreenVideo(bool bOnOff)
 {
 	Lock();
 	m_bFullScreenVideo=bOnOff;
+  SetFullScreenViewWindow(m_Resolution);
 	Unlock();
 }
 
@@ -289,6 +305,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 	}
   if (m_pd3dDevice)
   {
+    SetFullScreenViewWindow(res);
 	    m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 	    m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 	}
