@@ -83,6 +83,7 @@ namespace PYXBMC
 				PyType_Ready(&ControlFadeLabel_Type) < 0 ||
 				PyType_Ready(&ControlTextBox_Type) < 0 ||
 				PyType_Ready(&ControlButton_Type) < 0 ||
+				PyType_Ready(&ControlCheckMark_Type) < 0 ||
 				PyType_Ready(&ControlList_Type) < 0 ||
 				PyType_Ready(&ControlImage_Type) < 0 ||
 				PyType_Ready(&Dialog_Type) < 0 ||
@@ -98,6 +99,7 @@ namespace PYXBMC
 		Py_INCREF(&ControlFadeLabel_Type);
 		Py_INCREF(&ControlTextBox_Type);
 		Py_INCREF(&ControlButton_Type);
+		Py_INCREF(&ControlCheckMark_Type);
 		Py_INCREF(&ControlList_Type);
 		Py_INCREF(&ControlImage_Type);
 		Py_INCREF(&Dialog_Type);
@@ -116,6 +118,7 @@ namespace PYXBMC
 		PyModule_AddObject(pXbmcGuiModule, "ControlFadeLabel", (PyObject*)&ControlFadeLabel_Type);
 		PyModule_AddObject(pXbmcGuiModule, "ControlTextBox", (PyObject*)&ControlTextBox_Type);
 		PyModule_AddObject(pXbmcGuiModule, "ControlButton", (PyObject*)&ControlButton_Type);
+		PyModule_AddObject(pXbmcGuiModule, "ControlCheckMark", (PyObject*)&ControlCheckMark_Type);
 		PyModule_AddObject(pXbmcGuiModule, "ControlList", (PyObject*)&ControlList_Type);
 		PyModule_AddObject(pXbmcGuiModule, "ControlImage", (PyObject*)&	ControlImage_Type);
 		PyModule_AddObject(pXbmcGuiModule, "Dialog", (PyObject *)&Dialog_Type);

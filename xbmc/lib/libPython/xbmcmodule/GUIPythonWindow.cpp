@@ -78,7 +78,8 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
 				{
 					// currently we only accept messages from a button or controllist with a select action
           if ((ControlList_CheckExact(inf->pObject) && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK))||
-							ControlButton_CheckExact(inf->pObject))
+							ControlButton_CheckExact(inf->pObject)||
+                            ControlCheckMark_CheckExact(inf->pObject))
 					{
 						// create a new call and set it in the python queue
 						inf->dwParam = iControl;

@@ -12,6 +12,9 @@
 #define ControlButton_Check(op) PyObject_TypeCheck(op, &ControlButton_Type)
 #define ControlButton_CheckExact(op) ((op)->ob_type == &ControlButton_Type)
 
+#define ControlCheckMark_Check(op) PyObject_TypeCheck(op, &ControlCheckMark_Type)
+#define ControlCheckMark_CheckExact(op) ((op)->ob_type == &ControlCheckMark_Type)
+
 #define ControlList_Check(op) PyObject_TypeCheck(op, &ControlList_Type)
 #define ControlList_CheckExact(op) ((op)->ob_type == &ControlList_Type)
 
@@ -109,6 +112,19 @@ namespace PYXBMC
 
 	typedef struct {
     PyObject_HEAD_XBMC_CONTROL
+		string strFont;
+		wstring strText;
+		string strTextureFocus;
+		string strTextureNoFocus;
+		DWORD dwTextColor;
+		DWORD dwDisabledColor;
+        DWORD dwCheckWidth;
+        DWORD dwCheckHeight;
+        DWORD dwAlign;
+	} ControlCheckMark;
+
+	typedef struct {
+    PyObject_HEAD_XBMC_CONTROL
 		std::vector<PYXBMC::ListItem*> vecItems;
 		string strFont;
 		ControlSpin* pControlSpin;
@@ -135,12 +151,14 @@ namespace PYXBMC
 	extern PyTypeObject ControlTextBox_Type;
 	extern PyTypeObject ControlImage_Type;
 	extern PyTypeObject ControlButton_Type;
+	extern PyTypeObject ControlCheckMark_Type;
 	extern PyTypeObject ControlList_Type;
 
 	CGUIControl* ControlLabel_Create(ControlLabel* pControl);
 	CGUIControl* ControlFadeLabel_Create(ControlFadeLabel* pControl);
 	CGUIControl* ControlTextBox_Create(ControlTextBox* pControl);
 	CGUIControl* ControlButton_Create(ControlButton* pControl);
+	CGUIControl* ControlCheckMark_Create(ControlCheckMark* pControl);
 	CGUIControl* ControlImage_Create(ControlImage* pControl);
 	CGUIControl* ControlList_Create(ControlList* pControl);
 }
