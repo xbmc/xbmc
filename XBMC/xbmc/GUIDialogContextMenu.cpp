@@ -281,7 +281,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
         if (LOCK_MODE_EVERYONE == iLockMode)  // 5: Lock Share
         {
           // prompt user for mastercode when changing lock settings
-          if (!CGUIPassword::IsMasterLockUnlocked(true))
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
             return false;
 
           // popup the context menu
@@ -330,7 +330,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
         else if (LOCK_MODE_EVERYONE < iLockMode && bMaxRetryExceeded)  // 5: Reset Share Lock
         {
           // prompt user for mastercode when changing lock settings
-          if (!CGUIPassword::IsMasterLockUnlocked(true))
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
             return false;
 
           g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", "0");
@@ -339,7 +339,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
         else if (LOCK_MODE_EVERYONE > iLockMode && !bMaxRetryExceeded)  // 5: Remove Share Lock
         {
           // prompt user for mastercode when changing lock settings
-          if (!CGUIPassword::IsMasterLockUnlocked(true))
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
             return false;
 
           if (!CGUIDialogYesNo::ShowAndGetInput(L"", L"12335", L"750", L""))
@@ -380,7 +380,7 @@ bool CGUIDialogContextMenu::CheckMasterCode(int iLockMode)
   if (LOCK_MODE_EVERYONE < iLockMode || 0 != g_stSettings.m_iMasterLockProtectShares)
   {
     // Prompt user for mastercode
-    return CGUIPassword::IsMasterLockUnlocked(true);
+    return g_passwordManager.IsMasterLockUnlocked(true);
   }
   else
   {
