@@ -215,12 +215,14 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 				SET_CONTROL_FOCUS(GetID(), m_iActiveMenuButtonID, 0);	// set focus to last menu button
 				ToggleSubMenu(0, m_iActiveMenu);						// hide the currently active sub-menu
 			}
+      CGUIWindow::OnMessage(message);
 			return true;
 		}
 		break;
 
 		case GUI_MSG_WINDOW_INIT:	// fired when OSD is shown
 		{
+      CGUIWindow::OnMessage(message);
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(false);
 			SET_CONTROL_FOCUS(GetID(), OSD_PLAY, 0);	// set focus to play button by default when window is shown
 			ResetAllControls();							// make sure the controls are positioned relevant to the OSD Y offset
