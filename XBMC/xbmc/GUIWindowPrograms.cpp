@@ -74,21 +74,32 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
             // make controls 100-110 invisible...
             for (int i=100; i < 110; i++)
-            {
-                SET_CONTROL_HIDDEN(GetID(), i);
+            {		
+	                SET_CONTROL_HIDDEN(GetID(), i);
             }
-            // create bookmark buttons
-            int iStartID=100;
 
-            for (i=0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
+
+
+           
+			if (g_stSettings.m_bMyProgramsNoShortcuts)				// let's remove shortcuts from vector
+			{
+				g_settings.m_vecMyProgramsBookmarks.erase(g_settings.m_vecMyProgramsBookmarks.begin());
+				SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNSCAN);
+			}
+
+			int iStartID=100;
+
+            // create bookmark buttons
+
+			for (int i=0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
             {
                 CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
 
-                SET_CONTROL_VISIBLE(GetID(), i+iStartID);
-                SET_CONTROL_LABEL(GetID(), i+iStartID,share.strName);
+				SET_CONTROL_VISIBLE(GetID(), i+iStartID);
+				SET_CONTROL_LABEL(GetID(), i+iStartID,share.strName);				
             }
 
-
+		
             Update(m_strDirectory);
 
 			if (m_iLastControl>-1)
@@ -510,6 +521,7 @@ void CGUIWindowPrograms::OnClick(int iItem)
         char szParameters[1024];
 		if (g_stSettings.m_bMyProgramsFlatten)
 			m_database.IncTimesPlayed(pItem->m_strPath);
+		m_database.Close();
         memset(szParameters,0,sizeof(szParameters));
         strcpy(szPath,pItem->m_strPath.c_str());
 
@@ -753,7 +765,7 @@ void CGUIWindowPrograms::UpdateButtons()
 	  bool bViewIcon = false;
     int iString;
   	
-		switch (g_stSettings.m_iMyProgramsViewAsIcons)
+	switch (g_stSettings.m_iMyProgramsViewAsIcons)
     {
       case VIEW_AS_LIST:
         iString=101; // view as list
