@@ -134,6 +134,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	int				 	iTextureWidth=80;
 	bool				bHasPath=false;
 	CStdString	strScriptAction="";
+  int         iThumbXPos=4;
+  int         iThumbYPos=10;
+  int         iThumbWidth=64;
+  int         iThumbHeight=64;
 	
 	// get defaults from reference control
 	if (pReference)
@@ -312,6 +316,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwSelectedColor = ((CGUIThumbnailPanel*)pReference)->GetSelectedColor();
 			iTextureWidth		= ((CGUIThumbnailPanel*)pReference)->GetTextureWidth();
 			iTextureHeight	= ((CGUIThumbnailPanel*)pReference)->GetTextureHeight();
+      ((CGUIThumbnailPanel*)pReference)->GetThumbDimensions(iThumbXPos, iThumbYPos,iThumbWidth, iThumbHeight);
+      
 		}
 	}
 
@@ -404,6 +410,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetInt(pControlNode,"textureWidth",iTextureWidth);
 	GetInt(pControlNode,"textureHeight",iTextureHeight);
 
+  
+	GetInt(pControlNode,"thumbWidth",iThumbWidth);
+	GetInt(pControlNode,"thumbHeight",iThumbHeight);
+	GetInt(pControlNode,"thumbPosX",iThumbXPos);
+	GetInt(pControlNode,"thumbPosY",iThumbYPos);
 
 	if ( GetString(pControlNode, "label", strTmp))
 	{
@@ -603,6 +614,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       pControl->SetColourDiffuse(dwColorDiffuse);
       pControl->SetVisible(bVisible);
 			pControl->SetTextureDimensions(iTextureWidth,iTextureHeight);
+      pControl->SetThumbDimensions(iThumbXPos, iThumbYPos,iThumbWidth, iThumbHeight);
+
       return pControl;
   }
  
