@@ -572,30 +572,30 @@ void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL)
 				break;
 			}
 		}
-    	char kar=strMovie[i];
-		  if (kar =='.') kar=' ';
-    	if (kar ==32) kar = '+';
-		  if (kar == '[' || kar=='(' ) bSkip=true;			//skip everthing between () and []
-		  else if (kar == ']' || kar==')' ) bSkip=false;
-		  else if (!bSkip)
-		  {
-			  if (ipos > 0)
-			  {
-				  if (!isalnum(kar)) 
-				  {
-					  if (szMovie[ipos-1] != '+')
-					  kar='+';
-					  else 
-					  kar='.';
-				  }
-			  }
-			  if (isalnum(kar) ||kar==' ' || kar=='+')
-			  {
-				  szMovie[ipos]=kar;
-				  szMovie[ipos+1]=0;
-				  ipos++;
-			  }
-		  }
+    char kar=strMovie[i];
+		if (kar =='.') kar=' ';
+    if (kar ==32) kar = '+';
+		if (kar == '[' || kar=='(' ) bSkip=true;			//skip everthing between () and []
+		else if (kar == ']' || kar==')' ) bSkip=false;
+		else if (!bSkip)
+		{
+			if (ipos > 0)
+			{
+				if (!isalnum(kar)) 
+				{
+					if (szMovie[ipos-1] != '+')
+					kar='+';
+					else 
+					kar='.';
+				}
+			}
+			if (isalnum(kar) ||kar==' ' || kar=='+')
+			{
+				szMovie[ipos]=kar;
+				szMovie[ipos+1]=0;
+				ipos++;
+			}
+		}
 	}
 
 	CStdString strTmp=szMovie;

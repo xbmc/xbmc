@@ -15,6 +15,7 @@
 #include "sectionLoader.h"
 #include "application.h"
 #include "filesystem/HDDirectory.h"
+#include "filesystem/directorycache.h"
 #include "autoptrhandle.h"
 #include "GUIThumbnailPanel.h"
 #include <algorithm>
@@ -828,6 +829,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 
 void CGUIWindowPrograms::DeleteThumbs(VECFILEITEMS& items)
 {
+    CUtil::ClearCache();
     for (int i=0; i < (int)items.size(); ++i)
     {
         CFileItem *pItem= items[i];

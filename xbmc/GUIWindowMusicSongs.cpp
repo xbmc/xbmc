@@ -727,11 +727,14 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 					nFolderCount++;
 					continue;
 				}
-				CPlayList::CPlayListItem playlistItem ;
-				playlistItem.SetFileName(pItem->m_strPath);
-				playlistItem.SetDescription(pItem->GetLabel());
-				playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
-				g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
+        if (!CUtil::IsPlayList(pItem->m_strPath))
+        {
+				  CPlayList::CPlayListItem playlistItem ;
+				  playlistItem.SetFileName(pItem->m_strPath);
+				  playlistItem.SetDescription(pItem->GetLabel());
+				  playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+				  g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
+        }
 			}
 
 			//	Save current window and directory to know where the selected item was
