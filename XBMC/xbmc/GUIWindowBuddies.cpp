@@ -311,7 +311,7 @@ CArenaItem* CGUIWindowBuddies::GetArenaSelection()
 
 void CGUIWindowBuddies::OnClickModeButton(CGUIMessage& aMessage)
 {
-	ChangeState();
+	NextView();
 }
 
 void CGUIWindowBuddies::OnClickAddButton(CGUIMessage& aMessage)
@@ -657,6 +657,16 @@ void CGUIWindowBuddies::OnAction(const CAction &action)
 			m_gWindowManager.PreviousWindow();
 			break;
 		}
+		case ACTION_PREV_PICTURE:
+		{
+			PreviousView();
+			break;
+		}
+		case ACTION_NEXT_PICTURE:
+		{
+			NextView();
+			break;
+		}
 		default:
 		{
 			CGUIWindow::OnAction(action);
@@ -930,14 +940,40 @@ void CGUIWindowBuddies::UpdateArena()
 	}
 }
 
-void CGUIWindowBuddies::ChangeState()
+void CGUIWindowBuddies::PreviousView()
 {
 	switch(window_state)
 	{
 		case State::Buddies:
 		{
+			ChangeState(State::Chat);			
+			break;
+		}
+		case State::Games:
+		{
+			ChangeState(State::Buddies);
+			break;
+		}
+		case State::Arenas:
+		{
 			ChangeState(State::Games);
-			
+			break;
+		}
+		case State::Chat:
+		{
+			ChangeState(State::Arenas);
+			break;
+		}
+	}
+}
+
+void CGUIWindowBuddies::NextView()
+{
+	switch(window_state)
+	{
+		case State::Buddies:
+		{
+			ChangeState(State::Games);		
 			break;
 		}
 		case State::Games:
