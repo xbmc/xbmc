@@ -2083,4 +2083,13 @@
   <string><id>13303</id><value>Czcionka skorki</value></string>
   <string><id>13304</id><value>Odwroc znaki</value></string>
   <string><id>13305</id><value>Wlacz wiadomosci RSS</value></string>
+  <string><id>13306</id><value>Ukryj elementy folderu nadrzednego</value></string>
+  <string><id>13307</id><value>Ukryj numery sciezek</value></string>
+  <string><id>13308</id><value>Czy chcesz wykonac pelny reset</value></string>
+  <string><id>13309</id><value>zamiast zwyklego resetu?</value></string>
+  <string><id>13310</id><value>Efekt Zoom</value></string>
+  <string><id>13311</id><value>Efekt Float</value></string>
+  <string><id>13312</id><value>Redukcja czarnego paska</value></string>
+  <string><id>13313</id><value>Reset/Restart</value></string>
+  <string><id>13314</id><value>Czas wyswietlania OSD muzyki</value></string>
 </strings>

@@ -1,5 +1,5 @@
-<!-- Translation date: 10/11/2004 -->
-<!-- Translation Version: v1.107 -->
+<!-- Translation date: 10/29/2004 -->
+<!-- Translation Version: v1.114 -->
 <!-- Language: Portuguese Brazil (pt_BR )-->
 <strings>
   <string>
@@ -1582,7 +1582,7 @@
   </string>
   <string>
     <id>489</id>
-    <value>Utilizar lista de reprodução (playlist) nas músicas</value>
+    <value>Utilizar lista de reprodução (playlist) nas pastas</value>
   </string>
   <string>
     <id>490</id>
@@ -2047,4 +2047,13 @@
 <string><id>13303</id><value>Fonte:</value></string>
 <string><id>13304</id><value>Codificação:</value></string>
 <string><id>13305</id><value>Ativar Notícias RSS</value></string>
+<string><id>13306</id><value>Esconder ítens de pastas relacionadas</value></string>
+<string><id>13307</id><value>Esconder número da pista</value></string>
+<string><id>13308</id><value>Deseja fazer um reinicio forçado?</value></string>
+<string><id>13309</id><value>Ao invés de Reset</value></string>
+<string><id>13310</id><value>Efeito de Zoom</value></string>
+<string><id>13311</id><value>Efeito de Flutuação</value></string>
+<string><id>13312</id><value>Redução de Borda Preta</value></string>
+<string><id>13313</id><value>Resetar/Reiniciar</value></string>
+<string><id>13314</id><value>Intervalo de Parada da Música OSD</value></string>
 </strings>
