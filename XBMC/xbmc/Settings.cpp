@@ -275,7 +275,6 @@ bool CSettings::Load()
 	GetString(pRootElement, "recordings", g_stSettings.m_szMusicRecordingDirectory,"");
 	GetString(pRootElement, "httpproxy", g_stSettings.m_szHTTPProxy,"");
 	
-	GetString(pRootElement, "imdb", g_stSettings.m_szIMDBDirectory,"");
 	GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory,"");
   GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory,"");
 
@@ -299,10 +298,6 @@ bool CSettings::Load()
   ConvertHomeVar(strDir);
   strcpy( g_stSettings.szThumbnailsDirectory, strDir.c_str() );
 
-
-  strDir=g_stSettings.m_szIMDBDirectory;
-  ConvertHomeVar(strDir);
-  strcpy( g_stSettings.m_szIMDBDirectory, strDir.c_str() );
 
   strDir=g_stSettings.m_szAlbumDirectory;
   ConvertHomeVar(strDir);

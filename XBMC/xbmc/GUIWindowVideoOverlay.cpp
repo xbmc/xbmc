@@ -5,6 +5,7 @@
 #include "util.h"
 #include "stdstring.h"
 #include "application.h"
+#include "videodatabase.h"
 #include "utils/imdb.h"
 
 #define CONTROL_PLAYTIME		2
@@ -87,56 +88,59 @@ void CGUIWindowVideoOverlay::Render()
 			CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_INFO); 
 			OnMessage(msg1);
 
-			CStdString strIMDBInfo;
-			CUtil::GetIMDBInfo(strFile,strIMDBInfo);
-			if (CUtil::FileExists(strIMDBInfo) )
+      CVideoDatabase dbs;
+			CIMDBMovie movieDetails;
+      bool bMovieInfoFound(false);
+      dbs.Open();
+      if (dbs.HasMovieInfo(strFile))
+      {
+        dbs.GetMovieInfo(strFile,movieDetails);
+        bMovieInfoFound=true;
+      }
+      dbs.Close();
+			if (bMovieInfoFound)
 			{
-				CIMDBMovie movieDetails;
-				movieDetails.m_strSearchString=strFile;
-				if ( movieDetails.Load(strIMDBInfo))
+				// title
+				if ( movieDetails.m_strTitle.size() > 0)
 				{
-					// title
-					if ( movieDetails.m_strTitle.size() > 0)
-					{
-						CStdString strLabel=movieDetails.m_strTitle;
-						bLoaded=true;
-						CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-						msg1.SetLabel(strLabel );
-						OnMessage(msg1);				
-					}
+					CStdString strLabel=movieDetails.m_strTitle;
+					bLoaded=true;
+					CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+					msg1.SetLabel(strLabel );
+					OnMessage(msg1);				
+				}
 
-					// genre
-					if ( movieDetails.m_strGenre.size() > 0)
-					{
-						const WCHAR* wsGenre=g_localizeStrings.Get(174).c_str();
-						WCHAR wsTmp[1024];
-						swprintf(wsTmp,L"%s %S", wsGenre, movieDetails.m_strGenre.c_str());
-						CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-						msg1.SetLabel(wsTmp );
-						OnMessage(msg1);				
-					}
+				// genre
+				if ( movieDetails.m_strGenre.size() > 0)
+				{
+					const WCHAR* wsGenre=g_localizeStrings.Get(174).c_str();
+					WCHAR wsTmp[1024];
+					swprintf(wsTmp,L"%s %S", wsGenre, movieDetails.m_strGenre.c_str());
+					CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+					msg1.SetLabel(wsTmp );
+					OnMessage(msg1);				
+				}
 
-					// year
-					if ( movieDetails.m_iYear > 1900)
-					{
-						const WCHAR* wsYear=g_localizeStrings.Get(201).c_str();
-						WCHAR wsTmp[1024];
-						swprintf(wsTmp,L"%s: %i", wsYear, movieDetails.m_iYear);
-						CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-						msg1.SetLabel(wsTmp );
-						OnMessage(msg1);				
-					}
+				// year
+				if ( movieDetails.m_iYear > 1900)
+				{
+					const WCHAR* wsYear=g_localizeStrings.Get(201).c_str();
+					WCHAR wsTmp[1024];
+					swprintf(wsTmp,L"%s: %i", wsYear, movieDetails.m_iYear);
+					CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+					msg1.SetLabel(wsTmp );
+					OnMessage(msg1);				
+				}
 
-					// director
-					if ( movieDetails.m_strDirector.size() > 0)
-					{
-						const WCHAR* wsDirector=g_localizeStrings.Get(199).c_str();
-						WCHAR wsTmp[1024];
-						swprintf(wsTmp,L"%s: %S", wsDirector, movieDetails.m_strDirector.c_str() );
-						CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-						msg1.SetLabel(wsTmp );
-						OnMessage(msg1);		
-					}
+				// director
+				if ( movieDetails.m_strDirector.size() > 0)
+				{
+					const WCHAR* wsDirector=g_localizeStrings.Get(199).c_str();
+					WCHAR wsTmp[1024];
+					swprintf(wsTmp,L"%s: %S", wsDirector, movieDetails.m_strDirector.c_str() );
+					CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+					msg1.SetLabel(wsTmp );
+					OnMessage(msg1);		
 				}
 			}
 			if (!bLoaded)

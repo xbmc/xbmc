@@ -82,7 +82,6 @@ public:
 		char      m_szMyMusicExtensions[256];
 		char      m_szMyVideoExtensions[256];
     char      m_szShortcutDirectory[256];
-    char      m_szIMDBDirectory[256];
 		char      m_szAlbumDirectory[256];
 
 	  bool			m_bMyFilesSourceViewAsIcons;
