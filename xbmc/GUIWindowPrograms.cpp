@@ -324,26 +324,15 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
 											    CUtil::ShortenFileName(strSubDescription);
 												CUtil::RemoveIllegalChars(strSubDescription);
 									        }
-									        //CFileItem *pItem = new CFileItem(strSubDescription);
-									        //pItem->m_strPath=strSubFile;
-									        //pItem->m_bIsFolder=false;
-									        //pItem->m_dwSize=subwfd.nFileSizeLow;
-									        //FileTimeToLocalFileTime(&subwfd.ftLastWriteTime,&localTime);
-									        //FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-									        //m_vecItems.push_back(pItem);
 											m_database.AddProgram(strSubFile,strSubDescription,m_bookmarkName);
 									    }
-										else if (CUtil::IsShortCut(strSubFile)) 
-									    {
-											//CFileItem *pItem = new CFileItem(subwfd.cFileName);
-											//pItem->m_strPath=strSubFile;
-										    //pItem->m_bIsFolder=false;
-										    //pItem->m_dwSize=subwfd.nFileSizeLow;
-										    //FileTimeToLocalFileTime(&subwfd.ftLastWriteTime,&localTime);
-										    //FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-										    //m_vecItems.push_back(pItem);
-											m_database.AddProgram(strSubFile,subwfd.cFileName,m_bookmarkName);
-								        }
+										else 
+										{
+											if (CUtil::IsShortCut(strSubFile)) 
+											{
+												m_database.AddProgram(strSubFile,subwfd.cFileName,m_bookmarkName);
+											}
+										}
 									}
                                 } while (FindNextFile(subhFind, &subwfd));
 							}
@@ -356,34 +345,50 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
                 if (bOnlyDefaultXBE ? CUtil::IsDefaultXBE(strFileName) : CUtil::IsXBE(strFileName))
                 {
                     CStdString strDescription;
-					          if (!CUtil::GetXBEDescription(strFile,strDescription)) {
-						          CUtil::GetDirectoryName(strFile, strDescription);
-						          CUtil::ShortenFileName(strDescription);
-						          CUtil::RemoveIllegalChars(strDescription);
-					          }
-                    CFileItem *pItem = new CFileItem(strDescription);
-                    pItem->m_strPath=strFile;
-                    pItem->m_bIsFolder=false;
-                    pItem->m_dwSize=wfd.nFileSizeLow;
+					if (!CUtil::GetXBEDescription(strFile,strDescription)) 
+					{
+						CUtil::GetDirectoryName(strFile, strDescription);
+						CUtil::ShortenFileName(strDescription);
+						CUtil::RemoveIllegalChars(strDescription);
+					}
 
-                    FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
-                    FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-                    m_vecItems.push_back(pItem);
-                    bRecurseSubDirs=false;
+					if (!bFlattenDir)
+					{
+						CFileItem *pItem = new CFileItem(strDescription);
+						pItem->m_strPath=strFile;
+						pItem->m_bIsFolder=false;
+						pItem->m_dwSize=wfd.nFileSizeLow;
+
+						FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
+						FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+						m_vecItems.push_back(pItem);
+						bRecurseSubDirs=false;
+					}
+					else
+					{
+						m_database.AddProgram(strFile,wfd.cFileName,m_bookmarkName);
+					}
+					
                 }
 
                 if ( CUtil::IsShortCut(strFileName) )
                 {
-                    CFileItem *pItem = new CFileItem(wfd.cFileName);
-                    pItem->m_strPath=strFile;
-                    pItem->m_bIsFolder=false;
-                    pItem->m_dwSize=wfd.nFileSizeLow;
+					if (!bFlattenDir)
+					{
+						CFileItem *pItem = new CFileItem(wfd.cFileName);
+						pItem->m_strPath=strFile;
+						pItem->m_bIsFolder=false;
+						pItem->m_dwSize=wfd.nFileSizeLow;
 
-
-                    FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
-                    FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-                    m_vecItems.push_back(pItem);
-                }
+						FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
+						FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+						m_vecItems.push_back(pItem);
+					}
+					else
+					{
+						m_database.AddProgram(strFile,wfd.cFileName,m_bookmarkName);
+					}
+				}
             }
         }
     }
