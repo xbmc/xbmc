@@ -22,6 +22,7 @@
 #include "picture.h"
 #include "filesystem/hddirectory.h"
 #include "filesystem/DirectoryCache.h"
+#include "utils/CharsetConverter.h"
 
 bool CUtil::m_bNetworkUp = false;
 
@@ -135,6 +136,11 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath)
 	// use above to get the filename
 	CStdString strFilename = GetFileName(strFileNameAndPath);
 	// now remove the extension if needed
+	if (IsSmb(strFileNameAndPath)) {
+		CStdString strTempFilename;
+		g_charsetConverter.utf8ToStringCharset(strFilename,strTempFilename);
+		strFilename = strTempFilename;
+	}
 	if (g_stSettings.m_bHideExtensions)
 	{
 		RemoveExtension(strFilename);
