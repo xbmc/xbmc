@@ -225,6 +225,11 @@ bool CUtil::IsEthernetConnected()
 	return true;
 }
 
+void CUtil::GetTitleIP(CStdString& ip)
+{
+	ip = g_szTitleIP;
+}
+
 bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway)
 {
 	if (!IsEthernetConnected())
