@@ -109,6 +109,65 @@ void CBuddyItem::SetIcons(INT aWidth, INT aHeight, const CStdString& aHeadsetTex
 	}
 }
 
+void CBuddyItem::FreeIcons()
+{
+	if (m_pTalkingIcon)
+	{
+		m_pTalkingIcon->FreeResources();
+		delete m_pTalkingIcon;
+		m_pTalkingIcon=NULL;
+	}
+
+	if (m_pHeadsetIcon)
+	{
+		m_pHeadsetIcon->FreeResources();
+		delete m_pHeadsetIcon;
+		m_pHeadsetIcon=NULL;
+	}
+
+	if (m_pPingIcon)
+	{
+		m_pPingIcon->FreeResources();
+		delete m_pPingIcon;
+		m_pPingIcon=NULL;
+	}
+
+	if (m_pInviteIcon)
+	{
+		m_pInviteIcon->FreeResources();
+		delete m_pInviteIcon;
+		m_pInviteIcon=NULL;
+	}
+
+	if (m_pBusyIcon)
+	{
+		m_pBusyIcon->FreeResources();
+		delete m_pBusyIcon;
+		m_pBusyIcon=NULL;
+	}
+	
+	if (m_pIdleIcon)
+	{
+		m_pIdleIcon->FreeResources();
+		delete m_pIdleIcon;
+		m_pIdleIcon=NULL;
+	}
+
+	if (m_pHostIcon)
+	{
+		m_pHostIcon->FreeResources();
+		delete m_pHostIcon;
+		m_pHostIcon=NULL;
+	}
+
+	if (m_pKeyboardIcon)
+	{
+		m_pKeyboardIcon->FreeResources();
+		delete m_pKeyboardIcon;
+		m_pKeyboardIcon=NULL;
+	}
+}
+
 void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
 {
 	CKaiItem::OnPaint(pContext);

@@ -174,6 +174,18 @@ void CGUIWindowBuddies::OnInitWindow()
 	SET_CONTROL_LABEL( CONTROL_LABELBUDDYINVT, "");
 	SET_CONTROL_LABEL( CONTROL_LABELPLAYERCNT, "");
 
+	// set buddy status icons
+	CBuddyItem::SetIcons(12,12,	"buddyitem-headset.png",
+								"buddyitem-chat.png",
+								"buddyitem-ping.png",
+								"buddyitem-invite.png",
+								"buddyitem-play.png",
+								"buddyitem-idle.png",
+								"buddyitem-host.png",
+								"buddyitem-keyboard.png");
+
+	CArenaItem::SetIcons(12,12, "arenaitem-private.png");
+
 	if (window_state==State::Uninitialized)
 	{
 		// bind to the control defined in the xml
@@ -190,18 +202,6 @@ void CGUIWindowBuddies::OnInitWindow()
 		// bind this image to the control defined in the xml, later we'll use this
 		// as a template to determine the size and position of avatars
 		m_pOpponentImage = (CGUIImage*)GetControl(CONTROL_IMAGEOPPONENT);	
-
-		// set buddy status icons
-		CBuddyItem::SetIcons(12,12,	"buddyitem-headset.png",
-									"buddyitem-chat.png",
-									"buddyitem-ping.png",
-									"buddyitem-invite.png",
-									"buddyitem-play.png",
-									"buddyitem-idle.png",
-									"buddyitem-host.png",
-									"buddyitem-keyboard.png");
-
-		CArenaItem::SetIcons(12,12, "arenaitem-private.png");
 
 		for(int nTabButtonId = CONTROL_KAI_TAB_FRIENDS; nTabButtonId<= CONTROL_KAI_TAB_CHAT; nTabButtonId++)
 		{
@@ -626,8 +626,19 @@ CGUIImage* CGUIWindowBuddies::GetCurrentAvatar()
 	return m_pCurrentAvatar;
 }
 
-
-
+bool CGUIWindowBuddies::OnMessage(CGUIMessage &message)
+{
+  switch ( message.GetMessage() )
+  {
+		case GUI_MSG_WINDOW_DEINIT:
+		{
+			CBuddyItem::FreeIcons();
+			CArenaItem::FreeIcons();
+		}
+		break;
+	}
+	return CGUIWindow::OnMessage(message);
+}
 
 
 void CGUIWindowBuddies::OnAction(const CAction &action)
@@ -1568,6 +1579,12 @@ void CGUIWindowBuddies::OnSupportedTitle(DWORD aTitleId, CStdString& aVector)
 
 void CGUIWindowBuddies::OnEnterArena(CStdString& aVector, BOOL bCanHost)
 {
+	if (m_pCurrentAvatar)
+	{
+		m_pCurrentAvatar->FreeResources();
+		m_pCurrentAvatar = NULL;
+	}
+
 	m_arena.Clear();
 	
 	if (m_pConsole)

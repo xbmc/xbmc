@@ -22,11 +22,9 @@ CKaiItem::~CKaiItem(void)
 {
 	if (m_pAvatar)
 	{
-		OutputDebugString("End of life for this Kai's avatar\r\n");
 		m_pAvatar->FreeResources();
 		delete m_pAvatar;
 		m_pAvatar = NULL;
-		OutputDebugString("Bye!!\r\n");
 	}
 }
 
@@ -46,6 +44,11 @@ void CKaiItem::SetAvatar(CStdString& aAvatarUrl)
 
 			DWORD dwAvatarWidth	 = 50;
 			DWORD dwAvatarHeight = 50;
+			if (m_pAvatar)
+			{
+				m_pAvatar->FreeResources();
+				delete m_pAvatar;
+			}
 			m_pAvatar = new CGUIImage(0,0,0,0,dwAvatarWidth,dwAvatarHeight,strAvatarFilePath);
 		}
 		else
@@ -63,6 +66,11 @@ void CKaiItem::UseCachedAvatar()
 	DWORD dwAvatarWidth	 = 50;
 	DWORD dwAvatarHeight = 50;
 
+	if (m_pAvatar)
+	{
+		m_pAvatar->FreeResources();
+		delete m_pAvatar;
+	}
 	m_pAvatar = new CGUIImage(0,0,0,0,dwAvatarWidth,dwAvatarHeight,strAvatarFilePath);
 }
 
@@ -100,6 +108,11 @@ void CKaiItem::OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRx
 
 			DWORD dwAvatarWidth	 = 50;
 			DWORD dwAvatarHeight = 50;
+			if (m_pAvatar)
+			{
+				m_pAvatar->FreeResources();
+				delete m_pAvatar;
+			}
 			m_pAvatar = new CGUIImage(0,0,0,0,dwAvatarWidth,dwAvatarHeight,strAvatarFilePath);
 		}
 		catch(...)
