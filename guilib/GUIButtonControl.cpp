@@ -41,16 +41,19 @@ void CGUIButtonControl::Render()
 
 	  dwAlphaChannel += 192;
     SetAlpha(dwAlphaChannel );
-    m_imgFocus.Render();
+		m_imgFocus.SetVisible(true);
+		m_imgNoFocus.SetVisible(false);
     m_dwFrameCounter++;
-
   }
   else 
   {
 		SetAlpha(0xff);
-    m_imgNoFocus.Render();
+		m_imgFocus.SetVisible(false);
+		m_imgNoFocus.SetVisible(true);
   }
-  
+	// render both so the visibility settings cause the frame counter to resetcorrectly
+	m_imgFocus.Render();
+	m_imgNoFocus.Render();  
 
 	if (m_strLabel.size() > 0 && m_pFont)
 	{
