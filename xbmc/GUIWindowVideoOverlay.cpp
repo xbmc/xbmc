@@ -41,7 +41,7 @@ void CGUIWindowVideoOverlay::Render()
 	if (!g_application.m_pPlayer) return;
 	if (!g_application.m_pPlayer->HasVideo()) return;
 	
-	__int64 lPTS=g_application.m_pPlayer->GetPTS();
+  __int64 lPTS=10*g_application.m_pPlayer->GetTime();
   int hh = (int)(lPTS / 36000) % 100;
   int mm = (int)((lPTS / 600) % 60);
   int ss = (int)((lPTS /  10) % 60);
@@ -65,26 +65,26 @@ void CGUIWindowVideoOverlay::Render()
 
 	if (g_application.m_pPlayer->IsPaused() )
 	{
-		  SET_CONTROL_HIDDEN(GetID(), CONTROL_PLAY_LOGO); 
-      SET_CONTROL_VISIBLE(GetID(), CONTROL_PAUSE_LOGO); 
+		  HideControl(CONTROL_PLAY_LOGO); 
+      ShowControl( CONTROL_PAUSE_LOGO); 
 	}
 	else
 	{
     int iSpeed = g_application.GetPlaySpeed();
     if (iSpeed > 1)
     {
-		  SET_CONTROL_HIDDEN(GetID(), CONTROL_PLAY_LOGO); 
-      SET_CONTROL_HIDDEN(GetID(), CONTROL_PAUSE_LOGO); 
+		  HideControl(CONTROL_PLAY_LOGO); 
+      HideControl(CONTROL_PAUSE_LOGO); 
     }
     else if (iSpeed < 0)
     {
-		  SET_CONTROL_HIDDEN(GetID(), CONTROL_PLAY_LOGO); 
-      SET_CONTROL_HIDDEN(GetID(), CONTROL_PAUSE_LOGO); 
+		  HideControl(CONTROL_PLAY_LOGO); 
+      HideControl(CONTROL_PAUSE_LOGO); 
     }
     else
     {
-		  SET_CONTROL_VISIBLE(GetID(), CONTROL_PLAY_LOGO); 
-      SET_CONTROL_HIDDEN(GetID(), CONTROL_PAUSE_LOGO); 
+		  ShowControl( CONTROL_PLAY_LOGO); 
+      HideControl(CONTROL_PAUSE_LOGO); 
     }
 	}
 	CGUIWindow::Render();
@@ -162,3 +162,16 @@ void CGUIWindowVideoOverlay::Render()
 			}
 		}
 	}
+
+  
+void CGUIWindowVideoOverlay::ShowControl(int iControl)
+{
+  CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), iControl); 
+	OnMessage(msg); 
+}
+
+void CGUIWindowVideoOverlay::HideControl(int iControl)
+{
+  CGUIMessage msg(GUI_MSG_HIDDEN, GetID(), iControl); 
+	OnMessage(msg); 
+}
