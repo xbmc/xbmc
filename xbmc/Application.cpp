@@ -406,6 +406,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_fontManager.LoadFonts(strSkinPath+string("\\font.xml")) ;
 
   CLog::Log("  load new skin...");
+	CreateDirectory((strSkinPath + string("\\media\\cache")).c_str(), 0);
   if (!m_guiHome.Load( strSkinPath+"\\home.xml" ))
   {
     // failed to load home.xml
