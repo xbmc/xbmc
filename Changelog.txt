@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 17-01-2004 added: some more startuplogging
   - 17-01-2004 fixed: Minor blackscreen issues when starting videos in some view modes (NB: Zoom is still not functioning in the overlay modes).
   - 17-01-2004 added: Combination Overlays/Pixel shader method (faster than just overlays, with the same (or better?) quality)
   - 17-01-2004 changed: Minor tweaks to the pixel shader YV12->RGB coefficients.
