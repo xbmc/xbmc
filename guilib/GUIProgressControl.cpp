@@ -15,8 +15,15 @@ CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, in
 }
 
 CGUIProgressControl::~CGUIProgressControl(void)
-{}
+{
+}
 
+void CGUIProgressControl::SetPosition(int iPosX, int iPosY)
+{
+  // everything is positioned based on the background image position
+  CGUIControl::SetPosition(iPosX, iPosY);
+  m_guiBackground.SetPosition(iPosX, iPosY);
+}
 
 void CGUIProgressControl::Render()
 {
@@ -24,8 +31,8 @@ void CGUIProgressControl::Render()
   if (IsDisabled()) return ;
 
   int iHeight = m_guiBackground.GetTextureHeight();
-  m_guiBackground.Render();
   m_guiBackground.SetHeight(iHeight);
+  m_guiBackground.Render();
 
   float fWidth = (float)m_iPercent;
   fWidth /= 100.0f;
