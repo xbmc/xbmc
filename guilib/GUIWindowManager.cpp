@@ -202,6 +202,8 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
 		if (pWindow->HasID(iWindowID)) 
 		{
 			CLog::Log(LOGINFO,"Activating Window ID: %i",iWindowID);
+			if (!strPath.IsEmpty()) CLog::Log(LOGINFO,"  with path parameter: %s",strPath.c_str());
+
 			m_iActiveWindow = i;
 			
 			// Check to see that this window is not our previous window
@@ -211,7 +213,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
 				CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID, iWindowID);
 
 				// append the destination path
-				if (strPath.size() > 0) msg.SetStringParam(strPath);
+				if (!strPath.IsEmpty()) msg.SetStringParam(strPath);
 				pWindow->OnMessage(msg);
 			}
 			else
@@ -222,7 +224,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
 					CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,pWindow->GetPreviousWindowID(), iWindowID);
 
 					// do we need to append a destination path if the window is the same?
-					if (strPath.size() > 0) msg.SetStringParam(strPath);
+					if (!strPath.IsEmpty()) msg.SetStringParam(strPath);
 					pWindow->OnMessage(msg);
 				}
 				else
@@ -231,7 +233,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
 					CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,m_vecWindows[iPrevActiveWindow]->GetID(), iWindowID);
 
 					// append the destination path
-					if (strPath.size() > 0) msg.SetStringParam(strPath);
+					if (!strPath.IsEmpty()) msg.SetStringParam(strPath);
 					pWindow->OnMessage(msg);
 				}
 			}
