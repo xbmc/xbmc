@@ -411,8 +411,15 @@ void CMPlayer::GetGeneralInfo( CStdString& strVideoInfo)
 												lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, fAVDelay);
 }
 
+extern void xbox_video_getRect(RECT& SrcRect, RECT& DestRect);
 extern void xbox_video_update();
+
 void CMPlayer::Update()
 {
 	xbox_video_update();
+}
+
+void CMPlayer::GetVideoRect(RECT& SrcRect, RECT& DestRect)
+{
+	xbox_video_getRect(SrcRect, DestRect);
 }

@@ -1,7 +1,7 @@
 /*
- * XBoxMediaPlayer
+ * XBoxMediaCenter
  * Copyright (c) 2002 Frodo
- * Portions Copyright (c) by the authors of ffmpeg and xvid
+ * Portions Copyright (c) by the authors of ffmpeg / xvid /mplayer
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,34 +95,45 @@ void choose_best_resolution(bool bPal60Allowed)
 	DWORD dwFlags	   = XGetVideoFlags();
 
 
-	bool bUsingPAL		= (dwStandard==XC_VIDEO_STANDARD_PAL_I);
-	bool bUsingPAL60  = (params.FullScreen_RefreshRateInHz==60);
+	bool bUsingPAL		= (dwStandard==XC_VIDEO_STANDARD_PAL_I);		// current video standard:PAL or NTSC 
+	bool bUsingPAL60  = (params.FullScreen_RefreshRateInHz==60);  // PAL60 already used?
 
-	if (!g_stSettings.m_bAllowVideoSwitching)
-	{
-		m_iDeviceWidth  = g_graphicsContext.GetWidth();
-		m_iDeviceHeight = g_graphicsContext.GetHeight();
-		m_iResolution=CUtil::GetResolution( m_iDeviceWidth, m_iDeviceHeight, bUsingPAL, bUsingPAL60);
-		g_graphicsContext.SetVideoResolution(m_iResolution);
-		return;
-	}
 
-	if (! ( g_graphicsContext.IsFullScreenVideo()|| g_graphicsContext.IsCalibrating())  )
-	{
-		m_iDeviceWidth  = g_graphicsContext.GetWidth();
-		m_iDeviceHeight = g_graphicsContext.GetHeight();
-		m_iResolution=CUtil::GetResolution( m_iDeviceWidth, m_iDeviceHeight, bUsingPAL, bUsingPAL60);
-		g_graphicsContext.SetVideoResolution(m_iResolution);
-		return;
-	}
-
-	
 	bool bPal60=false;
 	bool bWideScreen=false;
-	if (params.Flags&D3DPRESENTFLAG_WIDESCREEN) bWideScreen=true;
-	if (bPal60Allowed && (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz) && !bWideScreen )
+	if (params.Flags&D3DPRESENTFLAG_WIDESCREEN) bWideScreen=true;  // WIDESCREEN 16:9 ?
+	if (bUsingPAL && bPal60Allowed && (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz) && !bWideScreen )
 	{
+		// yes we're in PAL
+		// yes PAL60 is allowed
+		// yes dashboard PAL60 settings is enabled
+		// yep, we're using 4:3 (pal60 doesnt work in widescreen 16:9)
 		bPal60=true;
+	}
+
+	// if video switching is not allowed then use current resolution (with pal 60 if needed)
+	// if we're not in fullscreen mode then use current resolution 
+	// if we're calibrating the video  then use current resolution 
+	if  ( (!g_stSettings.m_bAllowVideoSwitching) ||
+		    (! ( g_graphicsContext.IsFullScreenVideo()|| g_graphicsContext.IsCalibrating())  )
+			)
+	{
+		m_iDeviceWidth  = g_graphicsContext.GetWidth();
+		m_iDeviceHeight = g_graphicsContext.GetHeight();
+
+		// PAL 60 only worx with 720x480 & 640x480
+		if (m_iDeviceHeight > 480) bPal60=false;
+		if (bPal60)
+		{
+			params.FullScreen_RefreshRateInHz=60;
+		}
+		if (params.FullScreen_RefreshRateInHz != orgparams.FullScreen_RefreshRateInHz)
+		{
+			g_graphicsContext.Get3DDevice()->Reset(&params);
+		}
+		m_iResolution=CUtil::GetResolution( m_iDeviceWidth, m_iDeviceHeight, bUsingPAL, bPal60);
+		g_graphicsContext.SetVideoResolution(m_iResolution);
+		return;
 	}
 
 	if ( (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i) && bWideScreen )
@@ -186,6 +197,10 @@ void choose_best_resolution(bool bPal60Allowed)
 			params.BackBufferWidth =640;
 			params.BackBufferHeight=480;
 		}
+
+		// PAL60 only worx with 640x480 & 720x480
+		if (params.BackBufferHeight > 480)
+			bPal60=false;
 		if (bPal60)
 		{
 			params.FullScreen_RefreshRateInHz=60;
@@ -205,7 +220,8 @@ void choose_best_resolution(bool bPal60Allowed)
 		}
 	}
 	if (params.BackBufferHeight != orgparams.BackBufferHeight ||
-		  params.BackBufferWidth  != orgparams.BackBufferWidth)
+		  params.BackBufferWidth  != orgparams.BackBufferWidth ||
+			params.FullScreen_RefreshRateInHz !=orgparams.FullScreen_RefreshRateInHz)
 	{
 		g_graphicsContext.Get3DDevice()->Reset(&params);
 	}
@@ -582,6 +598,11 @@ static void video_flip_page(void)
 	}
 }
 
+void xbox_video_getRect(RECT& SrcRect, RECT& DestRect)
+{
+	SrcRect=rs;
+	DestRect=rd;
+}
 
 void xbox_video_update()
 {
