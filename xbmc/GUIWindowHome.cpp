@@ -180,7 +180,12 @@ void CGUIWindowHome::Render()
   for (int i = 121; i < 160; i++)
   {
     CGUIControl *pControl = (CGUIControl *)GetControl(i);
-    if (pControl) pControl->SetVisible(false);
+    if (pControl)
+    {
+      pControl->SetVisible(false);  // make invisible
+      pControl->DynamicResourceAlloc(false);  // turn of dynamic allocation, as we render these in the
+                                              // button scroller class
+    }
   }
   CGUIWindow::Render();
 }
