@@ -1072,9 +1072,13 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 	pElement = pRootElement->FirstChildElement("screen");
 	if (pElement)
 	{
-		GetInteger(pElement, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
-		GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 1.0f, 2.0f);
-		GetFloat(pElement, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio, 1.0f, 0.5f, 2.0f);
+//		GetInteger(pElement, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
+//		GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 1.0f, 2.0f);
+//		GetFloat(pElement, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio, 1.0f, 0.5f, 2.0f);
+		// there is no way to set these settings correctly, so lets default them
+		g_stSettings.m_defaultVideoSettings.m_ViewMode = VIEW_MODE_NORMAL;
+		g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount = 1.0f;
+		g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio = 1.0f;
 	}
 	// audio settings
 	pElement = pRootElement->FirstChildElement("audio");
@@ -1091,7 +1095,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetInteger(pElement, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod,0,0,3);
 		GetBoolean(pElement, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
 	}
-
 	LoadCalibration(pRootElement, strSettingsFile);
 
 	g_guiSettings.LoadXML(pRootElement);
