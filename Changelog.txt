@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 02-04-2005 fixed: vcd's/svcd's autostart doesn't start the video on disc if a stacked video was played before
   - 02-04-2005 fixed: Some stacked files weren't "cleaned up" correctly.
   - 02-04-2005 fixed: Queuing a folder of music to a shuffled playlist doesn't shuffle the first song.
   - 02-04-2005 fixed: Queuing albums from Nav view.
