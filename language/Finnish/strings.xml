@@ -1,6 +1,6 @@
 <!-- Finnish - language resource  -->
-<!-- Finnish Translation 2004-3-7 by Nanite1000 -->
-<!-- Based on CVS revision 2004-3-7 YYYY-MM-DD -->
+<!-- Finnish Translation 2004-3-23 by Nanite1000 -->
+<!-- Based on CVS revision 2004-3-23 YYYY-MM-DD -->
 <!-- For comments PM me in xboxmediacenter forum -->
 <!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta -->
 <!-- Not all weather strings are tranlated, cant get it to look correct/too long -->
@@ -256,7 +256,7 @@
   </string>  
   <string>
     <id>134</id>
-    <value>Kappaleet</value>
+    <value>Tiedostot</value>
   </string>  
   <string>
     <id>135</id>
@@ -344,7 +344,7 @@
   </string> 
   <string>
     <id>156</id>
-    <value>vapaana</value>
+    <value>vapaa</value>
   </string> 
   <string>
     <id>157</id>
@@ -360,7 +360,7 @@
   </string> 
   <string>
     <id>160</id>
-    <value>vapaana</value>
+    <value>vapaa</value>
   </string> 
   <string>
     <id>161</id>
@@ -368,7 +368,7 @@
   </string> 
   <string>
     <id>162</id>
-    <value>DVD luukku auki</value>
+    <value>luukku auki</value>
   </string> 
   <string>
     <id>163</id>
@@ -944,11 +944,11 @@
   </string>
   <string>
     <id>308</id>
-    <value>vertical deblocking -suodatus</value>
+    <value>vertical deblocking-suodatus</value>
   </string>
   <string>
     <id>309</id>
-    <value>horizontal deblocking -suodatus</value>
+    <value>horizontal deblocking-suodat.</value>
   </string>
   <string>
     <id>310</id>
@@ -1080,7 +1080,7 @@
   </string>
   <string>
     <id>342</id>
-    <value>Kaikki</value>
+    <value>Tiedostot</value>
   </string>
   <string>
     <id>343</id>
@@ -1160,7 +1160,7 @@
   </string>   
   <string>
     <id>362</id>
-    <value>Näytönsäästäjän tummuus (%) </value>
+    <value>Näytönsääst. tummuus (%) </value>
   </string>
   <string>
     <id>363</id>
@@ -1360,7 +1360,7 @@
   </string> 
   <string>
     <id>423</id>
-    <value>Poista CD-levy CDDB tietokannasta</value>
+    <value>Poista CD-levy tietokannasta</value>
   </string> 
   <string>
     <id>424</id>
@@ -1540,11 +1540,47 @@
   </string> 
   <string>
     <id>468</id>
-    <value>Siirtämällä palkkia, voit määrittää videovalikon sijainnin</value>
+    <value>Määritä kuvaruutuvalikon sijainti pystysuunnassa</value>
   </string>
   <string>
     <id>469</id>
-    <value>Videovalikon sijainti</value>
+    <value>Kuvaruutuvalikon sijainti</value>
+  </string>
+  <string>
+    <id>470</id>
+    <value>Tekijät</value>
+  </string>
+  <string>
+    <id>471</id>
+    <value>Modipiiri:</value>
+  </string>
+  <string>
+    <id>472</id>
+    <value>Kuvaruutuvalikon näyttöaika</value>
+  </string>
+  <string>
+    <id>473</id>
+    <value>Korkealaatu Resampling</value>
+  </string>
+  <string>
+    <id>474</id>
+    <value>Off</value>
+  </string>
+  <string>
+    <id>475</id>
+    <value>Vain Musiikille</value>
+  </string>
+  <string>
+    <id>476</id>
+    <value>Musiikille & Videolle</value>
+  </string>
+  <string>
+    <id>477</id>
+    <value>Soittolistaa ei voitu ladata</value>
+  </string>
+  <string>
+    <id>478</id>
+    <value>Kuvaruutuvalikko...</value>
   </string>
 <string><id>10000</id><value>Paavalikko</value></string>
 <string><id>10001</id><value>Ohjelmat</value></string>
