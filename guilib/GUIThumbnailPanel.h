@@ -27,7 +27,7 @@ public:
                     const CStdString& strUp, const CStdString& strDown, 
                     const CStdString& strUpFocus, const CStdString& strDownFocus, 
                     DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
-                    const CStdString& strFont, DWORD dwTextColor);
+                    const CStdString& strFont, DWORD dwTextColor,DWORD dwSelectedColor);
   virtual ~CGUIThumbnailPanel(void);
   virtual void Render();
   virtual void OnKey(const CKey& key) ;
@@ -57,6 +57,7 @@ protected:
 	int										m_iScrollCounter;
   wstring               m_strSuffix;
   DWORD                 m_dwTextColor;
+  DWORD                 m_dwSelectedColor;
   CGUIFont*             m_pFont;
   CGUISpinControl       m_upDown;
   CGUIImage             m_imgFolder;

@@ -66,7 +66,7 @@ void CGUIButtonControl::OnKey(const CKey& key)
   CGUIControl::OnKey(key);
   if ( key.IsButton() )
   {
-    if (key.GetButtonCode() == KEY_BUTTON_A)
+    if (key.GetButtonCode() == KEY_BUTTON_A || key.GetButtonCode() == KEY_REMOTE_SELECT)
     {
       if (m_lHyperLinkWindowID >=0)
       {

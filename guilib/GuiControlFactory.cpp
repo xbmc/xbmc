@@ -295,9 +295,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       strUpFocus=pControlNode->FirstChild("textureUpFocus")->FirstChild()->Value();
       strDownFocus=pControlNode->FirstChild("textureDownFocus")->FirstChild()->Value();
       strFont=pControlNode->FirstChild("font")->FirstChild()->Value();
-      D3DCOLOR dwTextColor,dwSpinColor;
+      D3DCOLOR dwTextColor,dwSpinColor, dwSelectedColor;
       sscanf(pControlNode->FirstChild("textcolor" )->FirstChild()->Value(),"%x",&dwTextColor);
       sscanf(pControlNode->FirstChild("spinColor" )->FirstChild()->Value(),"%x",&dwSpinColor);
+      sscanf(pControlNode->FirstChild("selectedColor" )->FirstChild()->Value(),"%x",&dwSelectedColor);
       
       CStdString strImage=pControlNode->FirstChild("image")->FirstChild()->Value();
 
@@ -316,7 +317,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
                                                       strUp,strDown,
                                                       strUpFocus,strDownFocus,
                                                       dwSpinColor,dwSpinPosX,dwSpinPosY,
-                                                      strFont,dwTextColor,
+                                                      strFont,dwTextColor,dwSelectedColor,
                                                       strButton,strButtonFocus);
       pControl->SetNavigation(up,down,left,right);
       pControl->SetColourDiffuse(dwColorDiffuse);
@@ -341,9 +342,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       strUpFocus=pControlNode->FirstChild("textureUpFocus")->FirstChild()->Value();
       strDownFocus=pControlNode->FirstChild("textureDownFocus")->FirstChild()->Value();
       strFont=pControlNode->FirstChild("font")->FirstChild()->Value();
-      D3DCOLOR dwTextColor,dwSpinColor;
+      D3DCOLOR dwTextColor,dwSpinColor,dwSelectedColor;
       sscanf(pControlNode->FirstChild("textcolor" )->FirstChild()->Value(),"%x",&dwTextColor);
       sscanf(pControlNode->FirstChild("spinColor" )->FirstChild()->Value(),"%x",&dwSpinColor);
+      sscanf(pControlNode->FirstChild("selectedColor" )->FirstChild()->Value(),"%x",&dwSelectedColor);
       
       DWORD dwitemWidth=64, dwitemHeight=64;
       sscanf(pControlNode->FirstChild("itemWidth" )->FirstChild()->Value(),"%i",&dwitemWidth);
@@ -366,7 +368,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
                                                       strUp,strDown,
                                                       strUpFocus,strDownFocus,
                                                       dwSpinColor,dwSpinPosX,dwSpinPosY,
-                                                      strFont,dwTextColor);
+                                                      strFont,dwTextColor,dwSelectedColor);
       pControl->SetNavigation(up,down,left,right);
       pControl->SetColourDiffuse(dwColorDiffuse);
       pNode=pControlNode->FirstChild("suffix" );

@@ -34,7 +34,7 @@ void CGUIRadioButtonControl::OnKey(const CKey& key)
   CGUIButtonControl::OnKey(key);
   if ( key.IsButton() )
   {
-    if (key.GetButtonCode() == KEY_BUTTON_A)
+    if (key.GetButtonCode() == KEY_BUTTON_A || key.GetButtonCode() == KEY_REMOTE_SELECT)
     {
       m_bSelected=!m_bSelected;
     }

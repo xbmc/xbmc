@@ -25,7 +25,7 @@ public:
                   const CStdString& strUp, const CStdString& strDown, 
                   const CStdString& strUpFocus, const CStdString& strDownFocus, 
                   DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
-                  const CStdString& strFont, DWORD dwTextColor,
+                  const CStdString& strFont, DWORD dwTextColor,DWORD dwSelectedColor,
                   const CStdString& strButton, const CStdString& strButtonFocus);
   virtual ~CGUIListControl(void);
   virtual void Render();
@@ -49,6 +49,7 @@ protected:
   int                   m_iSelect;
 	int										m_iCursorY;
   DWORD                 m_dwTextColor;
+  DWORD                 m_dwSelectedColor;
   CGUIFont*             m_pFont;
   CGUISpinControl       m_upDown;
   CGUIImage             m_imgFolder;

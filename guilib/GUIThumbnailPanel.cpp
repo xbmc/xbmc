@@ -13,7 +13,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, DWOR
                                  const CStdString& strUp, const CStdString& strDown, 
                                  const CStdString& strUpFocus, const CStdString& strDownFocus, 
                                  DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
-                                 const CStdString& strFont, DWORD dwTextColor)
+                                 const CStdString& strFont, DWORD dwTextColor, DWORD dwSelectedColor)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight)
 ,m_imgFolder(dwParentID, dwControlId, dwPosX, dwPosY, dwitemWidth,dwitemHeight,strImageIcon)
 ,m_imgFolderFocus(dwParentID, dwControlId, dwPosX, dwPosY, dwitemWidth,dwitemHeight,strImageIconFocus)
@@ -22,7 +22,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, DWOR
   m_iItemWidth=dwitemWidth;
   m_iItemHeight=dwitemHeight;
   m_iOffset    = 0; 
-  
+  m_dwSelectedColor=dwSelectedColor;
   m_pFont      = g_fontManager.GetFont(strFontName);
   m_iSelect    = CONTROL_LIST;  
 	m_iCursorY   = 0;
@@ -49,19 +49,21 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUI
   float fTextPosY =dwPosY+ m_imgFolder.GetHeight()-2*fTextHeight;
 	swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
 
+  DWORD dwColor=m_dwTextColor;
+  if (pItem->m_bSelected) dwColor=m_dwSelectedColor;
   if (bFocus && HasFocus()&&m_iSelect==CONTROL_LIST )
   {
     m_imgFolderFocus.SetPosition(dwPosX, dwPosY);
     m_imgFolderFocus.Render();
     
-    RenderText((float)dwPosX,(float)fTextPosY,m_dwTextColor,wszText,true);
+    RenderText((float)dwPosX,(float)fTextPosY,dwColor,wszText,true);
   }
   else
   {
     m_imgFolder.SetPosition(dwPosX, dwPosY);
     m_imgFolder.Render();
     
-    RenderText((float)dwPosX,(float)fTextPosY,m_dwTextColor,wszText,false);
+    RenderText((float)dwPosX,(float)fTextPosY,dwColor,wszText,false);
   
   }
   if (pItem->m_strThumbnailImage != "")
@@ -196,24 +198,29 @@ void CGUIThumbnailPanel::OnKey(const CKey& key)
 
   switch (key.GetButtonCode())
   {
+
+    case KEY_REMOTE_DOWN:
     case KEY_BUTTON_DPAD_DOWN:
     {
       OnDown();
     }
     break;
     
+    case KEY_REMOTE_UP:
     case KEY_BUTTON_DPAD_UP:
     {
       OnUp();
     }
     break;
 
+    case KEY_REMOTE_LEFT:
     case KEY_BUTTON_DPAD_LEFT:
     {
       OnLeft();
     }
     break;
 
+    case KEY_REMOTE_RIGHT:
     case KEY_BUTTON_DPAD_RIGHT:
     {
       OnRight();
@@ -224,7 +231,7 @@ void CGUIThumbnailPanel::OnKey(const CKey& key)
     {
       if (m_iSelect==CONTROL_LIST)
       {
-          CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+          CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(),key.GetButtonCode());
           g_graphicsContext.SendMessage(msg);
       }
       else
