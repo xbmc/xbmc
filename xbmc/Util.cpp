@@ -2130,7 +2130,11 @@ void CUtil::PrepareSubtitleFonts()
   if (g_guiSettings.GetInt("Subtitles.Height")==0) return;
 
   CStdString strPath,strHomePath,strSearchMask;
-  strHomePath = "Q:";
+  if(g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
+    strHomePath = "Q:\\system\\players";
+  else
+    strHomePath = "Q:";
+
   strPath.Format("%s\\mplayer\\font\\%s\\%i\\",
           strHomePath.c_str(),
           g_guiSettings.GetString("Subtitles.Font").c_str(),g_guiSettings.GetInt("Subtitles.Height"));
