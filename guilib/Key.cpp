@@ -79,3 +79,8 @@ float	CKey::GetRightThumbY() const
 {
 	return m_fRightThumbY;
 }
+
+bool CKey::FromKeyboard() const
+{
+	return (m_dwButtonCode>=KEY_VKEY && m_dwButtonCode != KEY_INVALID);
+}

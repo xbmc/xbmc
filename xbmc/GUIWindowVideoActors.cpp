@@ -531,31 +531,34 @@ void CGUIWindowVideoActors::Update(const CStdString &strDirectory)
   }
   else
   {
+		if (!g_stSettings.m_bHideParentDirItems)
+		{
 			CFileItem *pItem = new CFileItem("..");
 			pItem->m_strPath="";
 			pItem->m_bIsFolder=true;
       pItem->m_bIsShareOrDrive=false;
 			m_vecItems.push_back(pItem);
+		}
+		m_strParentPath = "";
+		VECMOVIES movies;
+		m_database.GetMoviesByActor(m_strDirectory, movies);
+		for (int i=0; i < (int)movies.size(); ++i)
+		{
+			CIMDBMovie movie=movies[i];
+			CFileItem *pItem = new CFileItem(movie.m_strTitle);
+			pItem->m_strPath=movie.m_strSearchString;
+			pItem->m_bIsFolder=false;
+			pItem->m_bIsShareOrDrive=false;
 
-      VECMOVIES movies;
-      m_database.GetMoviesByActor(m_strDirectory, movies);
-      for (int i=0; i < (int)movies.size(); ++i)
-      {
-        CIMDBMovie movie=movies[i];
-        CFileItem *pItem = new CFileItem(movie.m_strTitle);
-        pItem->m_strPath=movie.m_strSearchString;
-			  pItem->m_bIsFolder=false;
-        pItem->m_bIsShareOrDrive=false;
-
-        CStdString strThumb;
-        CUtil::GetVideoThumbnail(movie.m_strIMDBNumber,strThumb);
-				if (CUtil::FileExists(strThumb))
-					pItem->SetThumbnailImage(strThumb);
-        pItem->m_fRating     = movie.m_fRating; 
-        pItem->m_stTime.wYear= movie.m_iYear;
-			  m_vecItems.push_back(pItem);
-      }
-      SET_CONTROL_LABEL(GetID(), LABEL_ACTOR,m_strDirectory);
+			CStdString strThumb;
+			CUtil::GetVideoThumbnail(movie.m_strIMDBNumber,strThumb);
+			if (CUtil::FileExists(strThumb))
+				pItem->SetThumbnailImage(strThumb);
+			pItem->m_fRating     = movie.m_fRating; 
+			pItem->m_stTime.wYear= movie.m_iYear;
+			m_vecItems.push_back(pItem);
+		}
+		SET_CONTROL_LABEL(GetID(), LABEL_ACTOR,m_strDirectory);
   }
 	CUtil::SetThumbs(m_vecItems);
   SetIMDBThumbs(m_vecItems);

@@ -763,7 +763,9 @@ int CGUIWindowPictures::GetSelectedItem()
 
 void CGUIWindowPictures::GoParentFolder()
 {
-	if (m_vecItems.size()==0) return;
+	CStdString strPath=m_strParentPath;
+	Update(strPath);
+/*	if (m_vecItems.size()==0) return;
 	CFileItem* pItem=m_vecItems[0];
 	if (pItem->m_bIsFolder)
 	{
@@ -772,7 +774,7 @@ void CGUIWindowPictures::GoParentFolder()
 			CStdString strPath=pItem->m_strPath;
 			Update(strPath);
 		}
-	}
+	}*/
 }
 
 bool CGUIWindowPictures::ViewByIcon()
@@ -922,22 +924,30 @@ void CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, VECFILEITE
 		if ( bParentExists )
 		{
 			// yes
-			CFileItem *pItem = new CFileItem("..");
-			pItem->m_strPath=strParentPath;
-			pItem->m_bIsFolder=true;
-			pItem->m_bIsShareOrDrive=false;
-			items.push_back(pItem);
+			if (!g_stSettings.m_bHideParentDirItems)
+			{
+				CFileItem *pItem = new CFileItem("..");
+				pItem->m_strPath=strParentPath;
+				pItem->m_bIsFolder=true;
+				pItem->m_bIsShareOrDrive=false;
+				items.push_back(pItem);
+			}
+			m_strParentPath = strParentPath;
 		}
 	}
 	else
 	{
 		// yes, this is the root of a share
 		// add parent path to the virtual directory
-		CFileItem *pItem = new CFileItem("..");
-		pItem->m_strPath="";
-		pItem->m_bIsShareOrDrive=false;
-		pItem->m_bIsFolder=true;
-		items.push_back(pItem);
+		if (!g_stSettings.m_bHideParentDirItems)
+		{
+			CFileItem *pItem = new CFileItem("..");
+			pItem->m_strPath="";
+			pItem->m_bIsShareOrDrive=false;
+			pItem->m_bIsFolder=true;
+			items.push_back(pItem);
+		}
+		m_strParentPath = "";
 	}
 	m_rootDir.GetDirectory(strDirectory,items);
 

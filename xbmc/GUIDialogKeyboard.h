@@ -25,6 +25,10 @@ protected:
 	virtual void OnInitWindow();
 	virtual void OnAction(const CAction &action);
 	virtual bool OnMessage(CGUIMessage& message);
+	void OnShift();
+	void OnCursor(int iAmount);
+	void OnSymbols();
+
 private:
 
 	void OnClickButton(int iButtonControl);

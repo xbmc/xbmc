@@ -358,6 +358,9 @@ void CXBApplicationEx::ReadInput()
 		// Read the input from the mouse
 		g_Mouse.Update();
 
+		// Read the input from the keyboard
+		g_Keyboard.Update();
+
 		// Read the input for all connected gampads
         XBInput_GetInput( m_Gamepad );
 
