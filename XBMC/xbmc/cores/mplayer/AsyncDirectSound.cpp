@@ -275,9 +275,9 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 
 	// Set the headroom of the stream to 0 (to allow the maximum volume)
 	m_pStream->SetHeadroom(0);
-	// Set the default mixbins headroom to 0 (to allow the maximum volume)
+	// Set the default mixbins headroom to appropriate level as set in the settings file (to allow the maximum volume)
 	for (DWORD i=0; i<dsmb.dwMixBinCount;i++)
-		m_pDSound->SetMixBinHeadroom(i, 0);
+		m_pDSound->SetMixBinHeadroom(i, DWORD(g_stSettings.m_fVolumeHeadroom/6.0f));
 
 	m_bIsAllocated   = true;
 	if (m_pCallback)
