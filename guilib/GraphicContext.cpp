@@ -275,6 +275,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 			m_pd3dParams->FullScreen_RefreshRateInHz = 0;
 		}
   }
+	Lock();
 	if (NeedReset && m_pd3dDevice)
 	{
 		m_pd3dDevice->Reset(m_pd3dParams);
@@ -293,6 +294,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 		// HDTV modes may not need this, though.
 		m_pd3dDevice->SetFlickerFilter(!m_bFullScreenVideo || g_stSettings.m_bSoften ? 5 : 1);
 	}
+	Unlock();
 	m_Resolution=res;
 }
 
