@@ -107,6 +107,7 @@ protected:
 	CGUIImage								m_imgRightFocus;
 	vector<wstring>					m_vecItems;
 	int											m_iCurrentItem;
+	int											m_iDefaultItem;
 	int											m_iStartFrame;
 	bool										m_bLeftSelected;
 	bool										m_bRightSelected;

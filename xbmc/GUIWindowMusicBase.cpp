@@ -214,41 +214,12 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			m_iLastControl=GetFocusedControl();
       ClearFileItems();
 			CSectionLoader::Unload("LIBID3");
-			
-			//	Remove labels from the window selection
-			//CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_BTNTYPE);
-			//g_graphicsContext.SendMessage(msg);
 		}
 		break;
 
     case GUI_MSG_WINDOW_INIT:
 		{
 			CGUIWindow::OnMessage(message);
-
-			//	Add labels to the window selection
-			//CStdString strItem=g_localizeStrings.Get(134);	//	Songs
-			//CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_BTNTYPE);
-			//msg2.SetLabel(strItem);
-			//g_graphicsContext.SendMessage(msg2);
-
-			//strItem=g_localizeStrings.Get(132);	//	Album
-			//msg2.SetLabel(strItem);
-			//g_graphicsContext.SendMessage(msg2);
-
-			//strItem=g_localizeStrings.Get(133);	//	Artist
-			//msg2.SetLabel(strItem);
-			//g_graphicsContext.SendMessage(msg2);
-
-			//strItem=g_localizeStrings.Get(135);	//	Genre
-			//msg2.SetLabel(strItem);
-			//g_graphicsContext.SendMessage(msg2);
-
-			//strItem=g_localizeStrings.Get(271);	//	Top 100
-			//msg2.SetLabel(strItem);
-			//g_graphicsContext.SendMessage(msg2);
-
-			//	Select the current window as default item 
-			//CONTROL_SELECT_ITEM(GetID(), CONTROL_BTNTYPE, g_stSettings.m_iMyMusicStartWindow-WINDOW_MUSIC_FILES);
 
 			CSectionLoader::Load("LIBID3");
 
@@ -288,26 +259,19 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			}
 			else if (iControl==CONTROL_BTNTYPE)
 			{
-				//CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(),CONTROL_BTNTYPE);
-				//m_gWindowManager.SendMessage(msg);
+				CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(),CONTROL_BTNTYPE);
+				m_gWindowManager.SendMessage(msg);
 
-				//int nWindow=WINDOW_MUSIC_FILES+msg.GetParam1();
+				int nWindow=WINDOW_MUSIC_FILES+msg.GetParam1();
 
-				//if (nWindow==GetID())
-				//	return true;
+				if (nWindow==GetID())
+					return true;
 
-				//g_stSettings.m_iMyMusicStartWindow=nWindow;
-				//g_settings.Save();
-				//m_gWindowManager.ActivateWindow(g_stSettings.m_iMyMusicStartWindow);
-				//SET_CONTROL_FOCUS(g_stSettings.m_iMyMusicStartWindow, CONTROL_BTNTYPE, 0);
-				//return true;
-
-				g_stSettings.m_iMyMusicStartWindow++;
-				if (g_stSettings.m_iMyMusicStartWindow>WINDOW_MUSIC_TOP100) g_stSettings.m_iMyMusicStartWindow=WINDOW_MUSIC_FILES;
+				g_stSettings.m_iMyMusicStartWindow=nWindow;
 				g_settings.Save();
-
 				m_gWindowManager.ActivateWindow(g_stSettings.m_iMyMusicStartWindow);
 				SET_CONTROL_FOCUS(g_stSettings.m_iMyMusicStartWindow, CONTROL_BTNTYPE, 0);
+				return true;
 			}
 			else if (iControl==CONTROL_BTNSEARCH)
 			{
@@ -1095,4 +1059,38 @@ void CGUIWindowMusicBase::GetDirectoryHistoryString(const CFileItem* pItem, CStd
 
 	if (CUtil::HasSlashAtEnd(strHistoryString))
 		strHistoryString.Delete(strHistoryString.size()-1);
+}
+
+void CGUIWindowMusicBase::UpdateButtons()
+{
+	//	Update window selection control
+
+	//	Remove labels from the window selection
+	CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_BTNTYPE);
+	g_graphicsContext.SendMessage(msg);
+
+	//	Add labels to the window selection
+	CStdString strItem=g_localizeStrings.Get(134);	//	Songs
+	CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_BTNTYPE);
+	msg2.SetLabel(strItem);
+	g_graphicsContext.SendMessage(msg2);
+
+	strItem=g_localizeStrings.Get(132);	//	Album
+	msg2.SetLabel(strItem);
+	g_graphicsContext.SendMessage(msg2);
+
+	strItem=g_localizeStrings.Get(133);	//	Artist
+	msg2.SetLabel(strItem);
+	g_graphicsContext.SendMessage(msg2);
+
+	strItem=g_localizeStrings.Get(135);	//	Genre
+	msg2.SetLabel(strItem);
+	g_graphicsContext.SendMessage(msg2);
+
+	strItem=g_localizeStrings.Get(271);	//	Top 100
+	msg2.SetLabel(strItem);
+	g_graphicsContext.SendMessage(msg2);
+
+	//	Select the current window as default item 
+	CONTROL_SELECT_ITEM(GetID(), CONTROL_BTNTYPE, g_stSettings.m_iMyMusicStartWindow-WINDOW_MUSIC_FILES);
 }
