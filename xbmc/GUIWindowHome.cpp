@@ -8,9 +8,11 @@
 #include "settings.h"
 #include "sectionloader.h"
 #include "util.h"
+#include "utils/KaiClient.h"
 #include "application.h"
 #include "Credits.h"
 #include "GUIButtonScroller.h"
+#include "GUIConditionalButtonControl.h"
 //#include "GUIDialogContextMenu.h"
 
 #define CONTROL_BTN_SHUTDOWN		10
@@ -18,6 +20,7 @@
 #define CONTROL_BTN_REBOOT			12
 #define CONTROL_BTN_CREDITS			13
 #define CONTROL_BTN_ONLINE			14
+#define CONTROL_BTN_XLINK_KAI		99
 #define CONTROL_BTN_SCROLLER		300
 
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(0)
@@ -64,6 +67,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 			}
 
 			UpdateButtonScroller();
+
+			ON_POLL_BUTTON_CONDITION(CONTROL_BTN_XLINK_KAI, CGUIWindowHome, OnPollXLinkClient, 50);
 
 			SET_CONTROL_FOCUS(GetID(), iFocusControl, 0);
 			return true;
@@ -414,4 +419,9 @@ void CGUIWindowHome::OnPopupContextMenu()
 		}
 		break;
 	}
+}
+
+bool CGUIWindowHome::OnPollXLinkClient(CGUIConditionalButtonControl* pButton)
+{
+	return CKaiClient::GetInstance()->IsEngineConnected();
 }

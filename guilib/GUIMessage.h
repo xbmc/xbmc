@@ -156,6 +156,11 @@ using namespace std;
 	g_graphicsContext.SendMessage(msg); \
 }
 
+#define BIND_CONTROL(i,c,pv) \
+{ \
+	pv = ((c*)GetControl(i));\
+} \
+
 /*!
 	\ingroup winmsg
 	\brief 

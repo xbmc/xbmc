@@ -2,6 +2,7 @@
 #include "guicontrolfactory.h"
 #include "localizestrings.h"
 #include "guiButtoncontrol.h"
+#include "guiConditionalButtonControl.h"
 #include "guiSpinButtonControl.h"
 #include "guiRadiobuttoncontrol.h"
 #include "guiSpinControl.h"
@@ -354,6 +355,21 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			strExecuteAction		= ((CGUIButtonControl*)pReference)->GetExecuteAction();
 			lTextOffsetX		= ((CGUIButtonControl*)pReference)->GetTextOffsetX();
 			lTextOffsetY		= ((CGUIButtonControl*)pReference)->GetTextOffsetY();
+		}
+		else if (strType=="conditionalbutton")
+		{
+			strTextureFocus		= ((CGUIConditionalButtonControl*)pReference)->GetTexutureFocusName();
+			strTextureNoFocus	= ((CGUIConditionalButtonControl*)pReference)->GetTexutureNoFocusName();
+			strFont				= ((CGUIConditionalButtonControl*)pReference)->GetFontName();
+			strLabel			= ((CGUIConditionalButtonControl*)pReference)->GetLabel();
+			dwTextColor			= ((CGUIConditionalButtonControl*)pReference)->GetTextColor();
+			dwAlign				= ((CGUIConditionalButtonControl*)pReference)->GetTextAlign() & 0x00000003;
+			dwAlignY			= ((CGUIConditionalButtonControl*)pReference)->GetTextAlign() & 0x00000004;
+			dwDisabledColor		= ((CGUIConditionalButtonControl*)pReference)->GetDisabledColor() ;
+			iHyperLink			= ((CGUIConditionalButtonControl*)pReference)->GetHyperLink();
+			strExecuteAction	= ((CGUIConditionalButtonControl*)pReference)->GetExecuteAction();
+			lTextOffsetX		= ((CGUIConditionalButtonControl*)pReference)->GetTextOffsetX();
+			lTextOffsetY		= ((CGUIConditionalButtonControl*)pReference)->GetTextOffsetY();
 		}
 		else if (strType=="spinbutton")
 		{
@@ -921,6 +937,22 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	if (strType=="button")
 	{
 		CGUIButtonControl* pControl = new CGUIButtonControl(
+					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,
+					strTextureFocus,strTextureNoFocus,
+					lTextOffsetX,lTextOffsetY,(dwAlign|dwAlignY));
+
+		pControl->SetLabel(strFont,strLabel,dwTextColor);
+		pControl->SetDisabledColor(dwDisabledColor);
+		pControl->SetNavigation(up,down,left,right);
+		pControl->SetColourDiffuse(dwColorDiffuse);
+		pControl->SetHyperLink(iHyperLink);
+		pControl->SetExecuteAction(strExecuteAction);
+		pControl->SetVisible(bVisible);
+		return pControl;
+	}
+	if (strType=="conditionalbutton")
+	{
+		CGUIConditionalButtonControl* pControl = new CGUIConditionalButtonControl(
 					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,
 					strTextureFocus,strTextureNoFocus,
 					lTextOffsetX,lTextOffsetY,(dwAlign|dwAlignY));
