@@ -3,27 +3,30 @@
 // libraries: 
 //			- CDRipX			: doesnt support section loading yet			
 //			- xbfilezilla : doesnt support section loading yet
-//
-// test:
-//			- my files copy : shortens filenames to 42 chars.
+//			
 // bugs: 
 //			- reboot button blinks 1/2 speed???
 //		  - reboot doesnt work on some biosses
-//			- in debug mode CSMBDirectory gives an stack corruption
+//			- in debug mode CSMBDirectory gives a stack corruption
 //
 // general:
-//			- python scripts GUI
-//			- CDDB query : show dialogs
-//			- keep groups together when sorting (hd, shares,...)
-//			-	ftp server
+//			- different skins for 4:3 / 16:9
+//			- UI screen calibration    : just use (x,y) offset, no rescaling
+//			- movie screen calibration : scale movie
+//			- python scripts GUI (darki)
+//			- CDDB query : show progress dialogs
+//			- keep groups together when sorting (hd, shares, dirs, files, ...)
+//			-	add an ftp server
 //		  - thumbnail: render text with disolving alpha
-//      - screen calibration offsets
-//  		- 4:3/16:9 aspect ratio
 //			- skinnable key mapping for controls
 //			- center text in dialog boxes
 //			- autodetect dvd/iso/cdda
 //		  - goom
 //			- tvguide
+//			- screensaver
+//			- webserver
+//
+// My Programs:
 //
 // My Files:
 //
@@ -31,14 +34,20 @@
 //      - use analog thumbsticks voor zoom en move
 //      - FF/RW l/r trigger   : speed/slow down slideshow time
 //      - show selected image in file browser
+//			- cancel for create thumbs
 //
 // my music:
 //			- shoutcast
-//			- when playing : show album info/playtime/... in leftbottom corner
+//			- overlay 
+//					-show album info, title, artist
+//					-show playtime using large font
+//					-FFT
+//				  -album thumbnail
+//			    - status of FF/RWND
 //			- ff/rwnd
-//			- status of FF/RWND/pause
 //			- cancel search 
 //			- cancel scan.
+//			- speedup artists/albums?
 //
 // my videos:
 //		  - control panel like in xbmp
@@ -50,16 +59,17 @@
 //			- subtitles (positioning also)
 //			- file stacking
 //
-// settings:
+// Settings:
 //			- general:
-//          - restore to default settings
 //					- CDDB on/off?
+//          - restore to default settings
 //			- audio:
 //          - output 2 all speakers
 //			- Slideshow
 //					- specify mypics transition time/slideshow time
 //		  - screen:
-//					- screen calibration offsets
+//					- UI screen calibration offsets
+//					- movies screen calibration 
 //					- filter on/off
 //
 
