@@ -60,9 +60,15 @@ void CGUIWindowMusicOverlay::OnAction(const CAction &action)
 				{
 					//we're not moving, so figure out if we should start moving up or down
 					if (m_iFrames <= 0)
+					{
+						g_stSettings.m_bMyMusicSongInfoInVis=true;
 						m_iFrameIncrement = 1;
+					}
 					else
+					{
+						g_stSettings.m_bMyMusicSongInfoInVis=false;
 						m_iFrameIncrement = -1;
+					}
 				}
 				else
 				{
@@ -136,49 +142,61 @@ void CGUIWindowMusicOverlay::Render()
     SetPosition(CONTROL_PLAYTIME, 50,50,m_iPosOrgPlayTime);
     SetPosition(CONTROL_BIG_PLAYTIME, 50,50,m_iPosOrgBigPlayTime);
     m_iFrames=0;
-	m_iFrameIncrement = 1;
-	m_dwTimeout = 0;
+    m_iFrameIncrement = 1;
+    m_dwTimeout = 0;
   }
   else
   {
-      SetPosition(0, m_iFrames,STEPS,m_iPosOrgRectangle);
-      SetPosition(CONTROL_LOGO_PIC, m_iFrames,STEPS,m_iPosOrgIcon);
-      SetPosition(CONTROL_PLAY_LOGO, m_iFrames,STEPS,m_iPosOrgPlay);
-      SetPosition(CONTROL_PAUSE_LOGO, m_iFrames,STEPS,m_iPosOrgPause);
-      SetPosition(CONTROL_FF_LOGO, m_iFrames,STEPS,m_iPosOrgPause);
-      SetPosition(CONTROL_RW_LOGO, m_iFrames,STEPS,m_iPosOrgPause);
-      SetPosition(CONTROL_INFO, m_iFrames,STEPS,m_iPosOrgInfo);
-      SetPosition(CONTROL_PLAYTIME, m_iFrames,STEPS,m_iPosOrgPlayTime);
-      SetPosition(CONTROL_BIG_PLAYTIME, m_iFrames,STEPS,m_iPosOrgBigPlayTime);
-	  m_iFrames+=m_iFrameIncrement;
-		
-	  if (m_iFrames <= 0)
-	  {
-		//we're just sitting at the bottom
-		m_dwTimeout =  0;
-		m_iFrames = 0;
-		m_iFrameIncrement = 0;
-	  }
-	  else if (m_iFrames >= STEPS)
-	  {
-		//if we just got to the top, start the timer but keep us sitting there until timeout expires
-		if (m_dwTimeout <= 0)
+		SetPosition(0, m_iFrames,STEPS,m_iPosOrgRectangle);
+		SetPosition(CONTROL_LOGO_PIC, m_iFrames,STEPS,m_iPosOrgIcon);
+		SetPosition(CONTROL_PLAY_LOGO, m_iFrames,STEPS,m_iPosOrgPlay);
+		SetPosition(CONTROL_PAUSE_LOGO, m_iFrames,STEPS,m_iPosOrgPause);
+		SetPosition(CONTROL_FF_LOGO, m_iFrames,STEPS,m_iPosOrgPause);
+		SetPosition(CONTROL_RW_LOGO, m_iFrames,STEPS,m_iPosOrgPause);
+		SetPosition(CONTROL_INFO, m_iFrames,STEPS,m_iPosOrgInfo);
+		SetPosition(CONTROL_PLAYTIME, m_iFrames,STEPS,m_iPosOrgPlayTime);
+		SetPosition(CONTROL_BIG_PLAYTIME, m_iFrames,STEPS,m_iPosOrgBigPlayTime);
+		m_iFrames+=m_iFrameIncrement;
+
+		if (!g_stSettings.m_bMyMusicSongInfoInVis && m_iFrames <= 1)
 		{
-			//set timeout to g_stSettings.m_iOSDTimeout seconds in the future
-			//(timeGetTime is in milliseconds, so we multiply by 1000
-			m_dwTimeout =  (g_stSettings.m_iOSDTimeout * 1000) + timeGetTime();
-			m_iFrames = STEPS;
+			m_dwTimeout = 0;
+			m_iFrames = 0;
 			m_iFrameIncrement = 0;
 		}
-		//if a timeout was set and it has expired, start moving down
-		else if (g_stSettings.m_iOSDTimeout > 0 && timeGetTime() > m_dwTimeout)
+		else if (!g_stSettings.m_bMyMusicSongInfoInVis && m_iFrames >= STEPS)
 		{
 			m_dwTimeout = 0;
 			m_iFrames = STEPS;
 			m_iFrameIncrement = -1;
 		}
-	  }
-  }
+		else if (m_iFrames <= 0)
+		{
+			//we're just sitting at the bottom
+			m_dwTimeout =  0;
+			m_iFrames = 0;
+			m_iFrameIncrement = 0;
+		}
+		else if (m_iFrames >= STEPS)
+		{
+			//if we just got to the top, start the timer but keep us sitting there until timeout expires
+			if (m_dwTimeout <= 0)
+			{
+				//set timeout to g_stSettings.m_iOSDTimeout seconds in the future
+				//(timeGetTime is in milliseconds, so we multiply by 1000
+				m_dwTimeout =  (g_stSettings.m_iOSDTimeout * 1000) + timeGetTime();
+				m_iFrames = STEPS;
+				m_iFrameIncrement = 0;
+			}
+			//if a timeout was set and it has expired, start moving down
+			else if (g_stSettings.m_iOSDTimeout > 0 && timeGetTime() > m_dwTimeout)
+			{
+				m_dwTimeout = 0;
+				m_iFrames = STEPS;
+				m_iFrameIncrement = -1;
+			}
+		}
+	}
 	__int64 lPTS=g_application.m_pPlayer->GetPTS();
   int hh = (int)(lPTS / 36000) % 100;
   int mm = (int)((lPTS / 600) % 60);
@@ -602,6 +620,22 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 			//	Hide image that is displayed, if no thumb is available
 			CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
 			OnMessage(msg1);
+		}
+	}
+
+	if (g_stSettings.m_bMyMusicSongInfoInVis && m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
+	{
+		m_dwTimeout = 0;  // reset the timeout
+		
+		if (g_stSettings.m_iOSDTimeout <= 0)	//	Overlay should be shown permanent
+		{
+			// reset to defaults
+			m_iFrames = STEPS;
+			m_iFrameIncrement = 0;
+		}
+		else if (m_iFrames < STEPS)  // check that we're not at the top of the movement
+		{
+			m_iFrameIncrement = 1;  // start moving back up to show the new file info...
 		}
 	}
 }

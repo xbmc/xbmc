@@ -180,6 +180,7 @@ public:
 		int				m_iMyMusicTop100ViewAsIcons;
 		int				m_iMyMusicStartWindow;
 		bool			m_bMyMusicRepeat;
+		bool			m_bMyMusicSongInfoInVis;
 
 		int 			m_iMyVideoViewAsIcons;
 		int 			m_iMyVideoRootViewAsIcons;
