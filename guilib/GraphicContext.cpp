@@ -370,7 +370,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.top = 0;
 			m_pResInfo[res].Overscan.right = 1920;
 			m_pResInfo[res].Overscan.bottom = 1080;
-			m_pResInfo[res].iSubtitles = 1080;
+			m_pResInfo[res].iSubtitles = (int)(0.965*1080);
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 1920;
 			m_pResInfo[res].iHeight = 1080;
@@ -383,7 +383,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.top = 0;
 			m_pResInfo[res].Overscan.right = 1280;
 			m_pResInfo[res].Overscan.bottom = 720;
-			m_pResInfo[res].iSubtitles = 720;
+			m_pResInfo[res].iSubtitles = (int)(0.965*720);
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 1280;
 			m_pResInfo[res].iHeight = 720;
@@ -396,7 +396,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.top = 0;
 			m_pResInfo[res].Overscan.right = 720;
 			m_pResInfo[res].Overscan.bottom = 480;
-			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iSubtitles = (int)(0.9*480);
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
@@ -409,7 +409,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.top = 0;
 			m_pResInfo[res].Overscan.right = 720;
 			m_pResInfo[res].Overscan.bottom = 480;
-			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iSubtitles = (int)(0.965*480);
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
@@ -422,7 +422,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.top = 0;
 			m_pResInfo[res].Overscan.right = 720;
 			m_pResInfo[res].Overscan.bottom = 480;
-			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iSubtitles = (int)(0.9*480);
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
@@ -435,7 +435,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.top = 0;
 			m_pResInfo[res].Overscan.right = 720;
 			m_pResInfo[res].Overscan.bottom = 480;
-			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iSubtitles = (int)(0.965*480);
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
@@ -448,7 +448,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.top = 0;
 			m_pResInfo[res].Overscan.right = 720;
 			m_pResInfo[res].Overscan.bottom = 576;
-			m_pResInfo[res].iSubtitles = 576;
+			m_pResInfo[res].iSubtitles = (int)(0.9*576);
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 576;
@@ -461,7 +461,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.top = 0;
 			m_pResInfo[res].Overscan.right = 720;
 			m_pResInfo[res].Overscan.bottom = 576;
-			m_pResInfo[res].iSubtitles = 576;
+			m_pResInfo[res].iSubtitles = (int)(0.965*576);
 			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 576;
@@ -474,8 +474,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.top = 0;
 			m_pResInfo[res].Overscan.right = 720;
 			m_pResInfo[res].Overscan.bottom = 480;
-			m_pResInfo[res].iSubtitles = 480;
-			m_pResInfo[res].iOSDYOffset = -75;
+			m_pResInfo[res].iSubtitles = (int)(0.9*480);
+			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = 0;
@@ -487,8 +487,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.top = 0;
 			m_pResInfo[res].Overscan.right = 720;
 			m_pResInfo[res].Overscan.bottom = 480;
-			m_pResInfo[res].iSubtitles = 480;
-			m_pResInfo[res].iOSDYOffset = -75;
+			m_pResInfo[res].iSubtitles = (int)(0.965*480);
+			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;

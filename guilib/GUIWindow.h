@@ -70,10 +70,9 @@ public:
 	virtual void			ResetAllControls();
 	static void		        FlushReferenceCache();
 	virtual bool	IsDialog() {return false;};
-	void					SetRelativeCoords(bool bRelativeCoords) { m_bRelativeCoords = bRelativeCoords; };
 
 protected:
-  virtual void        OnWindowLoaded();
+	virtual void        OnWindowLoaded() {};
   virtual void			OnInitWindow();
 	struct stReferenceControl
 	{
@@ -97,8 +96,8 @@ protected:
   DWORD  m_dwWindowId;
   DWORD  m_dwPreviousWindowId;
   DWORD  m_dwDefaultFocusControlID;
-  vector<CPosition> m_vecPositions;
   bool m_bRelativeCoords;
+	bool m_bNeedsScaling;
   DWORD m_iPosX;
   DWORD m_iPosY;
   DWORD	m_dwWidth;

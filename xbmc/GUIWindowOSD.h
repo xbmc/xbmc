@@ -21,7 +21,6 @@ public:
 	virtual void	OnMouse();
 	virtual void	Render();
 	virtual bool	SubMenuVisible();
-	virtual void	ResetAllControls();
 
 	friend class CGUIWindowSettingsScreenCalibration;
 
