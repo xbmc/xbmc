@@ -698,6 +698,9 @@ HRESULT CApplication::Initialize()
 	CStdString strThumbIMDB=g_stSettings.szThumbnailsDirectory;
 	strThumbIMDB+="\\imdb";
 	CreateDirectory(strThumbIMDB.c_str(),NULL);
+	CStdString strThumbKai=g_stSettings.szThumbnailsDirectory;
+	strThumbKai+="\\kai";
+	CreateDirectory(strThumbKai.c_str(),NULL);
 
 	if (!g_stSettings.m_bMyProgramsNoShortcuts)
 		CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);

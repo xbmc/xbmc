@@ -264,11 +264,7 @@ void CGUIWindowBuddies::OnInitWindow()
 			CStdString strXtag = g_stSettings.szOnlineUsername;
 			m_pMe = new CBuddyItem(strXtag);
 				
-			if (m_pMe->IsAvatarCached())
-			{
-				m_pMe->UseCachedAvatar();
-			}
-			else
+			if (!m_pMe->m_pAvatar)
 			{
 				m_pKaiClient->QueryAvatar(strXtag);
 			}
@@ -779,14 +775,7 @@ void CGUIWindowBuddies::Render()
 
 			if (!pBuddy->m_pAvatar)
 			{
-				if (pBuddy->IsAvatarCached())
-				{
-					pBuddy->UseCachedAvatar();
-				}
-				else
-				{
-					m_pKaiClient->QueryAvatar(aName);
-				}
+				m_pKaiClient->QueryAvatar(aName);
 			}
 		}
 	}
@@ -1214,11 +1203,6 @@ void CGUIWindowBuddies::OnContactOffline(CStdString& aFriend)
 		m_friends.Add(pBuddy);
 	}
 
-	if (!pBuddy->m_pAvatar)
-	{
-		pBuddy->UseCachedAvatar();
-	}
-	
 	pBuddy->SetIcon(16,16,"buddyitem-offline.png");
 	pBuddy->m_bIsOnline = false;
 	pBuddy->m_dwPing	= 0;
@@ -1245,11 +1229,6 @@ void CGUIWindowBuddies::OnContactOnline(CStdString& aFriend)
 	}
 
 	pBuddy->m_bIsOnline = true;
-	
-	if (!pBuddy->m_pAvatar)
-	{
-		pBuddy->UseCachedAvatar();
-	}
 	
 	// if last on, then leave speex on
 	if (pBuddy->m_bSpeex)
@@ -1525,13 +1504,16 @@ void CGUIWindowBuddies::OnSupportedTitle(DWORD aTitleId, CStdString& aVector)
 		pArena->m_strVector = aVector;
 		pArena->SetIcon(16,16,"arenaitem-small.png");
 
-		CStdString strSafeVector = aVector;
-		strSafeVector.Replace(" ","%20");
-		strSafeVector.Replace(":","%3A");
+		if (!pArena->m_pAvatar)
+		{
+			CStdString strSafeVector = aVector;
+			strSafeVector.Replace(" ","%20");
+			strSafeVector.Replace(":","%3A");
 
-		CStdString aAvatarUrl;
-		aAvatarUrl.Format("http://www.teamxlink.co.uk/media/avatars/%s.jpg",strSafeVector);
-		pArena->SetAvatar(aAvatarUrl);
+			CStdString aAvatarUrl;
+			aAvatarUrl.Format("http://www.teamxlink.co.uk/media/avatars/%s.jpg",strSafeVector);
+			pArena->SetAvatar(aAvatarUrl);
+		}
 
 		m_games.Add(pArena);
 		m_games.Sort();
@@ -1586,13 +1568,16 @@ void CGUIWindowBuddies::OnNewArena(	CStdString& aVector, CStdString& aDescriptio
 		pArena->m_bIsPrivate = nPassword>0;
 		pArena->SetIcon(16,16,"arenaitem-small.png");
 
-		CStdString strSafeVector = aVector;
-		strSafeVector.Replace(" ","%20");
-		strSafeVector.Replace(":","%3A");
+		if (!pArena->m_pAvatar)
+		{
+			CStdString strSafeVector = aVector;
+			strSafeVector.Replace(" ","%20");
+			strSafeVector.Replace(":","%3A");
 
-		CStdString aAvatarUrl;
-		aAvatarUrl.Format("http://www.teamxlink.co.uk/media/avatars/%s.jpg",strSafeVector);
-		pArena->SetAvatar(aAvatarUrl);
+			CStdString aAvatarUrl;
+			aAvatarUrl.Format("http://www.teamxlink.co.uk/media/avatars/%s.jpg",strSafeVector);
+			pArena->SetAvatar(aAvatarUrl);
+		}
 
 		m_arena.Add(pArena);
 		m_arena.Sort();
