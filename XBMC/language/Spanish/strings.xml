@@ -5,11 +5,11 @@
   </string>
   <string>
     <id>1</id>
-    <value>Fotos</value>
+    <value>Imagenes</value>
   </string>
   <string>
     <id>2</id>
-    <value>MP3</value>
+    <value>Musica</value>
   </string>
   <string>
     <id>3</id>
@@ -34,6 +34,10 @@
   <string>
     <id>8</id>
     <value>El Tiempo</value>
+  </string>  
+  <string>
+    <id>9</id>
+    <value>Digital+</value>
   </string>  
   <string>
     <id>11</id>
@@ -440,7 +444,7 @@
   </string> 
   <string>
     <id>181</id>
-    <value>Seleccionar Album</value>
+    <value>Selecionar Album</value>
   </string> 
   <string>
     <id>182</id>
@@ -524,7 +528,7 @@
   </string> 
   <string>
     <id>202</id>
-    <value>Tagline:</value>
+    <value>Destacable:</value>
   </string> 
   <string>
     <id>203</id>
@@ -632,7 +636,7 @@
   </string> 
   <string>
     <id>229</id>
-    <value>HD Spindown time (mins)</value>
+    <value>Tiempo de apagado del HDD</value>
   </string> 
   <string>
     <id>230</id>
@@ -1092,11 +1096,11 @@
   </string>
   <string>
     <id>346</id>
-    <value>Selecciona</value>
+    <value>Agrupar</value>
   </string>
   <string>
     <id>347</id>
-    <value>Deselecciona</value>
+    <value>Desagrupar</value>
   </string>
   <string>
     <id>348</id>
@@ -1120,7 +1124,7 @@
   </string>
   <string>
     <id>353</id>
-    <value>Black</value>
+    <value>negro</value>
   </string>
   <string>
     <id>354</id>
@@ -1188,7 +1192,7 @@
   </string>
   <string>
     <id>370</id>
-    <value>T-Storms</value>
+    <value>Tormenta</value>
   </string>
   <string>
     <id>371</id>
@@ -1249,6 +1253,46 @@
   <string>
     <id>385</id>
     <value>Aceptable</value>
+  </string>
+  <string>
+		<id>386</id>
+		<value>Despejado</value>
+	</string>
+	<string>
+		<id>387</id>
+		<value>Nubes</value>
+	</string>
+	<string>
+		<id>388</id>
+		<value>N/D</value>
+	</string>
+	<string>
+		<id>389</id>
+		<value>N/D</value>
+	</string>
+	<string>
+		<id>390</id>
+		<value>N/D</value>
+	</string>
+	<string>
+		<id>391</id>
+		<value>N/D</value>
+	</string>
+	<string>
+		<id>392</id>
+		<value>N/D</value>
+	</string>
+	<string>
+		<id>393</id>
+		<value>N/D</value>
+	</string>
+	<string>
+		<id>394</id>
+		<value>N/D</value>
+	</string>
+	<string>
+		<id>395</id>
+		<value>N/D</value>
   </string>
   <string>
   <id>396</id> 
@@ -1465,6 +1509,10 @@
   <string>
     <id>450</id>
     <value>Columnas</value>
+  </string>
+  <string>
+		<id>4501</id>
+		<value>Tipo de LCD</value>
   </string> 
   <string>
     <id>451</id>
@@ -1634,54 +1682,384 @@
     <id>492</id>
     <value>Alargar Subtitulos</value>
   </string>
-  
-<string><id>10000</id><value>Inicio</value></string>
-<string><id>10001</id><value>Mis Programas</value></string>
-<string><id>10002</id><value>Mis Fotos</value></string>
-<string><id>10003</id><value>Mis Archivos</value></string>
-<string><id>10004</id><value>Opciones</value></string>
-<string><id>10005</id><value>Mi Musica</value></string>
-<string><id>10006</id><value>Mis Peliculas</value></string>
-<string><id>10007</id><value>Informacion Sistema</value></string>
-<string><id>10008</id><value>Opciones->General</value></string>
-<string><id>10009</id><value>Opciones->Pantalla</value></string>
-<string><id>10010</id><value>Opciones->Pantalla->Calibracion UI</value></string>
-<string><id>10011</id><value>Opciones->Pantalla->Calibracion</value></string>
-<string><id>10012</id><value>Opciones->SlideShow</value></string>
-<string><id>10013</id><value>Opciones->Pantalla->Filtros</value></string>
-<string><id>10014</id><value>Opciones->Musica</value></string>
-<string><id>10015</id><value>Opciones->Pantalla->Subtitulos</value></string>
-<string><id>10016</id><value>Opciones->Screen->Salvapantallas</value></string>
-<string><id>10017</id><value>Opciones->Tiempo</value></string>
-<string><id>10020</id><value>Opciones->Scripts</value></string>
-<string><id>10021</id><value>Mis Peliculas/genero</value></string>
-<string><id>10022</id><value>Mis Peliculas/actor</value></string>
-<string><id>10023</id><value>Mis Peliculas/ano</value></string>
-<string><id>10024</id><value>Opciones->Programas</value></string>
-<string><id>10025</id><value>Mis Peliculas/titulo</value></string>
-<string><id>10026</id><value>Opciones->General->Cache</value></string>
-<string><id>10027</id><value>Opciones->General->Autorun</value></string>
-<string><id>10028</id><value>Mis Peliculas/lista</value></string>
-<string><id>10029</id><value>Opciones->General->LCD</value></string>
-<string><id>10100</id><value>Si/No dialog</value></string>
-<string><id>10101</id><value>Progreso</value></string>
-<string><id>10500</id><value>Mi Musica/lista</value></string>
-<string><id>10501</id><value>Mi Musica/archivos</value></string>
-<string><id>10502</id><value>Mi Musica/albums</value></string>
-<string><id>10503</id><value>Mi Musica/artistas</value></string>
-<string><id>10504</id><value>Mi Musica/generos</value></string>
-<string><id>10505</id><value>Mi Musica/top100</value></string>
-<string><id>11000</id><value>Teclado</value></string>
-<string><id>12000</id><value>Selecionar dialogo</value></string>
-<string><id>12001</id><value>Mi Musica/info</value></string>
-<string><id>12002</id><value>Dialog OK</value></string>
-<string><id>12003</id><value>Mis Peliculas/Info</value></string>
-<string><id>12004</id><value>Mis Scripts/Info</value></string>
-<string><id>12005</id><value>Pantalla completa</value></string>
-<string><id>12006</id><value>Visualicacion</value></string>
-<string><id>12007</id><value>Mis Fotos/slideshow</value></string>
-<string><id>12008</id><value>Filestacking dialog</value></string>
-<string><id>12600</id><value>Tiempo</value></string>
-<string><id>12900</id><value>Salvapantallas</value></string>
-<string><id>12901</id><value>OSD pantalla completa</value></string>
+  <string>
+    <id>493</id>
+    <value>Opciones Avanzadas (Experts Only!)</value>
+  </string>
+  <string>
+    <id>494</id>
+    <value>Overall Audio Headroom (dB)</value>
+  </string>
+  <string>
+    <id>495</id>
+    <value>Upsample videos to GUI resolution</value>
+  </string>
+	<string>
+		<id>496</id>
+		<value>Calibracion</value>
+	</string>
+	<string>
+		<id>497</id>
+		<value>Esconder extensiones</value>
+	</string>
+	<string>
+		<id>498</id>
+		<value>Por Tipo:</value>
+	</string>
+	<string>
+		<id>499</id>
+		<value>Imposible conectar a to www.allmusic.com</value>
+	</string>
+	<string>
+		<id>500</id>
+		<value>Descarga de informacion fallida</value>
+	</string>
+	<string>
+		<id>501</id>
+		<value>Buscando nombre del album...</value>
+	</string>
+	<string>
+		<id>502</id>
+		<value>Abrir</value>
+	</string>
+	<string>
+		<id>503</id>
+		<value>No disponible</value>
+	</string>
+	<string>
+		<id>504</id>
+		<value>Vacio</value>
+	</string>
+	<string>
+		<id>505</id>
+		<value>Cargando informacion desde archivo...</value>
+	</string>
+		<string>
+		<id>506</id>
+		<value>Usar el nombre del directorio como descripcion</value>
+    </string> 
+      <string> 	 
+            <id>507</id> 	 
+            <value>Ordenar: Uso</value> 	 
+      </string>
+      <string>
+		<id>508</id>
+		<value>No usar accesos directos ni el Scan</value>
+	</string> 
+    <string>
+		<id>600</id>
+		<value>Rip CD</value>
+	</string>
+	<string>
+		<id>601</id>
+		<value>Medio</value>
+	</string>
+	<string>
+		<id>602</id>
+		<value>Estandard</value>
+	</string>
+	<string>
+		<id>603</id>
+		<value>Extremo</value>
+	</string>
+	<string>
+		<id>604</id>
+		<value>Bit Rate Constante</value>
+	</string>
+	<string>
+		<id>605</id>
+		<value>Ripeando...</value>
+	</string>
+	<string>
+		<id>606</id>
+		<value>Numero de pista:</value>
+	</string>
+	<string>
+		<id>607</id>
+		<value>A:</value>
+	</string>
+	<string>
+		<id>608</id>
+		<value>Imposible ripear el CD o pista</value>
+	</string>
+	<string>
+		<id>609</id>
+		<value>Directorio CDDARipPath no esta en XboxMediaCenter.xml</value>
+	</string>
+	<string>
+		<id>620</id>
+		<value>CD Ripping</value>
+	</string>
+	<string>
+		<id>621</id>
+		<value>Codificador</value>
+	</string>
+	<string>
+		<id>622</id>
+		<value>Calidad</value>
+	</string>
+	<string>
+		<id>623</id>
+		<value>Bit Rate</value>
+	</string>
+	<string>
+		<id>624</id>
+		<value>Incluir numero de pista</value>
+	</string>
+	<string>
+		<id>625</id>
+		<value>Todas las canciones</value>
+    </string>
+    <string>
+		<id>629</id>
+		<value>View Mode</value>
+	</string>
+		<string>
+	<id>630</id>
+		<value>Normal</value>
+	</string>
+	<string>
+		<id>631</id>
+		<value>Zoom</value>
+	</string>
+	<string>
+		<id>632</id>
+		<value>Adpatar 4:3</value>
+	</string>
+	<string>
+		<id>633</id>
+		<value>Adaptar 14:9</value>
+	</string>
+	<string>
+		<id>634</id>
+		<value>Adaptar 16:9</value>
+	</string>
+	<string>
+		<id>635</id>
+		<value>Tamano Original</value>
+	</string>
+	<string>
+		<id>636</id>
+		<value>Personalizado</value>
+	</string>
+<string>
+		<id>998</id>
+		<value>XLink KAI</value>
+	</string>
+	<string>
+		<id>999</id>
+		<value>Juego Online</value>
+	</string>
+	
+	<string>
+		<id>10000</id>
+		<value>Home</value>
+	</string>
+	<string>
+		<id>10001</id>
+		<value>Mis Programas</value>
+	</string>
+	<string>
+		<id>10002</id>
+		<value>Mis Imagenes</value>
+	</string>
+	<string>
+		<id>10003</id>
+		<value>Mis Archivos</value>
+	</string>
+	<string>
+		<id>10004</id>
+		<value>Opciones</value>
+	</string>
+	<string>
+		<id>10005</id>
+		<value>Mi Musica</value>
+	</string>
+	<string>
+		<id>10006</id>
+		<value>Mis Videos</value>
+	</string>
+	<string>
+		<id>10007</id>
+		<value>Informacion del sistema</value>
+	</string>
+	<string>
+		<id>10008</id>
+		<value>Opciones-&gt;General</value>
+	</string>
+	<string>
+		<id>10009</id>
+		<value>Opciones-&gt;Pantalla</value>
+	</string>
+	<string>
+		<id>10010</id>
+		<value>Opciones-&gt;Pantalla-&gt;Calibracion UI</value>
+	</string>
+	<string>
+		<id>10011</id>
+		<value>Opciones-&gt;Pantalla-&gt;calibracion de pantalla</value>
+	</string>
+	<string>
+		<id>10012</id>
+		<value>Opciones-&gt;SlideShow</value>
+	</string>
+	<string>
+		<id>10013</id>
+		<value>Opciones-&gt;Pantalla-&gt;Filtros</value>
+	</string>
+	<string>
+		<id>10014</id>
+		<value>Opciones-&gt;Musica</value>
+	</string>
+	<string>
+		<id>10015</id>
+		<value>Opciones-&gt;Pantalla-&gt;Subtitulos</value>
+	</string>
+	<string>
+		<id>10016</id>
+		<value>Opciones-&gt;Pantalla-&gt;Salvapantallas</value>
+	</string>
+	<string>
+		<id>10017</id>
+		<value>Opciones-&gt;El Tiempo</value>
+	</string>
+	<string>
+		<id>10020</id>
+		<value>Opciones-&gt;Scripts</value>
+	</string>
+	<string>
+		<id>10021</id>
+		<value>Mis Videos/genero</value>
+	</string>
+	<string>
+		<id>10022</id>
+		<value>Mis Videos/actores</value>
+	</string>
+	<string>
+		<id>10023</id>
+		<value>Mis Videos/ano</value>
+	</string>
+	<string>
+		<id>10024</id>
+		<value>Opciones-&gt;Programas</value>
+	</string>
+	<string>
+		<id>10025</id>
+		<value>Mis Videos/titulo</value>
+	</string>
+	<string>
+		<id>10026</id>
+		<value>Opciones-&gt;General-&gt;Cache</value>
+	</string>
+	<string>
+		<id>10027</id>
+		<value>Opciones-&gt;General-&gt;Autorun</value>
+	</string>
+	<string>
+		<id>10028</id>
+		<value>Mis Videos/playlist</value>
+	</string>
+	<string>
+		<id>10029</id>
+		<value>Opciones-&gt;General-&gt;LCD</value>
+	</string>
+	<string>
+		<id>10100</id>
+		<value>Si/no dialogo</value>
+	</string>
+	<string>
+		<id>10101</id>
+		<value>Progreso del dialogo</value>
+	</string>
+	<string>
+		<id>10500</id>
+		<value>Mi Musica/playlist</value>
+	</string>
+	<string>
+		<id>10501</id>
+		<value>Mi Musica/archivos</value>
+	</string>
+	<string>
+		<id>10502</id>
+		<value>Mi Musica/albums</value>
+	</string>
+	<string>
+		<id>10503</id>
+		<value>Mi Musica/artistas</value>
+	</string>
+	<string>
+		<id>10504</id>
+		<value>Mi Musica/generos</value>
+	</string>
+	<string>
+		<id>10505</id>
+		<value>Mi Musica/top100</value>
+	</string>
+	<string>
+		<id>11000</id>
+		<value>teclado</value>
+	</string>
+	<string>
+		<id>12000</id>
+		<value>Selecionar dialogo</value>
+	</string>
+	<string>
+		<id>12001</id>
+		<value>Mi Musica/info</value>
+	</string>
+	<string>
+		<id>12002</id>
+		<value>Dialogo OK</value>
+	</string>
+	<string>
+		<id>12003</id>
+		<value>Mis Videos/Info</value>
+	</string>
+	<string>
+		<id>12004</id>
+		<value>Mis Scripts/Info</value>
+	</string>
+	<string>
+		<id>12005</id>
+		<value>Pantalla completa</value>
+	</string>
+	<string>
+		<id>12006</id>
+		<value>Visualicaciones</value>
+	</string>
+	<string>
+		<id>12007</id>
+		<value>Mis Imagenes/slideshow</value>
+	</string>
+	<string>
+		<id>12008</id>
+		<value>Filestacking dialog</value>
+	</string>
+	<string>
+		<id>12600</id>
+		<value>El Tiempo</value>
+	</string>
+	<string>
+		<id>12900</id>
+		<value>Salvapantallas</value>
+	</string>
+	<string>
+		<id>12901</id>
+		<value>OSD pantalla completa</value>
+	</string>
+  <string><id>13000</id><value>Sistema</value></string>
+  <string><id>13001</id><value>Apagado del HDD</value></string>
+  <string><id>13002</id><value>Solo video</value></string>
+  <string><id>13003</id><value>- Retraso</value></string>
+  <string><id>13004</id><value>- Duracion minima del archivo</value></string>
+  <string><id>13100</id><value>Filtro anti-vibracion</value></string>
+  <string><id>13200</id><value>Configuraciones</value></string>
+  <string><id>13201</id><value>Borrar configuraciones '%s'?</value></string>
+  <string><id>13202</id><value>Guardar esta configuracion...</value></string>
+  <string><id>13203</id><value>Configuracion '%s' cargada con exito</value></string>
+  <string><id>13204</id><value>Ultima configuracion cargada:</value></string>
+  <string><id>13205</id><value>Unknown</value></string>
+  <string><id>13300</id><value>Fanspeed:</value></string>
+  <string><id>13301</id><value>Control de temperatura</value></string>
+  <string><id>13302</id><value>Control Fanspeed</value></string>
 </strings>
