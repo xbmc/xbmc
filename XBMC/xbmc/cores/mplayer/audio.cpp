@@ -79,9 +79,8 @@ static int audio_init(int rate,int channels,int format,int flags)
 		BOOL bVBR;
 		bool bAC3PassThru=false;
 		
-		//ugly hacks only for AC3 passthrough AV sync. After mplayer fix this bug, 
-		//this line should be changed
-		int ao_format_bits = ((format==AFMT_AC3)?2:1)*audio_out_format_bits(format); 
+		int ao_format_bits = audio_out_format_bits(format); 
+    if (format==AFMT_AC3) ao_format_bits=16;
 
 		mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
 		if (strstr(strAudioCodec,"SPDIF"))
