@@ -554,7 +554,7 @@ HRESULT CApplication::Create()
 		g_settings.m_ResInfo[iResolution].strMode);
 	CLog::Log(LOGINFO, " GUI screen offset (%i,%i)", g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
 	m_gWindowManager.Initialize();
-	g_actionManager.SetScriptActionCallback(&m_pythonParser);
+	g_actionManager.SetScriptActionCallback(&g_pythonParser);
 	return CXBApplicationEx::Create();
 }
 
@@ -1809,7 +1809,7 @@ void CApplication::Stop()
 		//g_lcd->StopThread();
 		CLog::Log(LOGNOTICE, "stop python");
 		g_applicationMessenger.Cleanup();
-		m_pythonParser.FreeResources();
+		g_pythonParser.FreeResources();
 
 		CLog::Log(LOGNOTICE, "unload skin");
 		m_guiMusicOverlay.FreeResources();
@@ -2442,7 +2442,7 @@ void CApplication::Process()
 	g_applicationMessenger.ProcessWindowMessages();
 
 	// process any Python scripts
-	m_pythonParser.Process();
+	g_pythonParser.Process();
 
 	// check if we need 2 spin down the harddisk
   CheckNetworkHDSpinDown();

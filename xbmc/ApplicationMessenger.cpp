@@ -146,7 +146,7 @@ void CApplicationMessenger::ProcessMessages()
 				break;
 
 				case TMSG_EXECUTE_SCRIPT:
-					m_pythonParser.evalFile(pMsg->strParam.c_str());
+					g_pythonParser.evalFile(pMsg->strParam.c_str());
 				break;
 
 				case TMSG_PLAYLISTPLAYER_PLAY:

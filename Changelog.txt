@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 06-08-2004 added: python unicodedata library to cvs (this means no more idna ecoding errors in scripts)
+  - 06-08-2004 added: python scripts can now be started from my files to
   - 06-08-2004 changed: python uses the new keyboard now
   - 06-08-2004 fixed: possible memory leak in CDDARipper
   - 06-08-2004 added: python: getControl function to get access to xbmc control's

@@ -77,6 +77,14 @@ bool CUtil::IsXBE(const CStdString& strFileName)
    return false;
 }
 
+bool CUtil::IsPythonScript(const CStdString& strFileName)
+{
+   char* pExtension=GetExtension(strFileName);
+   if (!pExtension) return false;
+   if (CUtil::cmpnocase(pExtension,".py")==0) return true;
+   return false;
+}
+
 bool CUtil::IsDefaultXBE(const CStdString& strFileName)
 {
   char* pFileName=GetFileName(strFileName);
