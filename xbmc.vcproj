@@ -348,6 +348,9 @@
 				RelativePath=".\xbmc\GUIWindowPrograms.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowScripts.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSettings.cpp">
 			</File>
 			<File
@@ -537,6 +540,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowPrograms.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowScripts.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettings.h">
