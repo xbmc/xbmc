@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 28-08-2004 changed: removed the need to restart because of audio channel mappings
+  - 28-08-2004 changed: removed the need to restart because of hw ac3/dts output
+  - 28-08-2004 added: proper downmixing of more than 2 channel sources to dolby surround on the stereo output
   - 25-08-2004 updated: polish language file (thanks napek)
   - 25-08-2004 changed: volumebar resources are allocated at startup to avoid hd spinup during movie
   - 25-08-2004 fixed: ac3/dts settings were reset to disabled on application stop

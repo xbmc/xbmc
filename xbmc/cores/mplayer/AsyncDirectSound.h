@@ -42,6 +42,13 @@
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
 
+#define DSMIXBINTYPE_STANDARD 1
+#define DSMIXBINTYPE_DMO 2
+#define DSMIXBINTYPE_AAC 3
+#define DSMIXBINTYPE_OGG 4
+#define DSMIXBINTYPE_CUSTOM 5
+#define DSMIXBINTYPE_STEREOALL 6
+
 class CASyncDirectSound : public IDirectSoundRenderer
 {
 public:
@@ -49,7 +56,7 @@ public:
 	virtual void		RegisterAudioCallback(IAudioCallback* pCallback);
 	virtual DWORD		GetChunkLen();
 	virtual FLOAT		GetDelay();
-	CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers = 0);
+	CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers = 0, char* strAudioCodec = "");
 	virtual ~CASyncDirectSound();
 
 	virtual DWORD 	AddPacketsResample(unsigned char* data, DWORD len);
@@ -73,6 +80,7 @@ public:
 	virtual int			SetPlaySpeed(int iSpeed);
 	virtual void    WaitCompletion();
 	virtual void		DoWork();
+  bool          GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, DWORD* dwChannelMask, int Type, int Channels);
 
 private:
 	IAudioCallback* m_pCallback;
