@@ -4,9 +4,11 @@
 #include "stdstring.h"
 #include "sectionloader.h"
 #include "utils/log.h"
+#include "autoptrhandle.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
+using namespace AUTOPTR;
 
 CMusicInfoTagLoaderWMA::CMusicInfoTagLoaderWMA(void)
 {
@@ -27,18 +29,18 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 		CFile file;
 		if (!file.Open(strFileName.c_str())) return false;
 
-		unsigned char* Tout=new unsigned char[65536];
-		file.Read(Tout, 65536);
+		auto_aptr<unsigned char> Tout(new unsigned char[65536]);
+		file.Read(Tout.get(), 65536);
 		int Offset=0; //Offset debut
 		unsigned int* ToutI;
 
 		//Play time
 		Offset=0;
-		ToutI=(unsigned int*)Tout;
+		ToutI=(unsigned int*)Tout.get();
 		while (!(ToutI[0]==0x75B22630 && ToutI[1]==0x11CF668E && ToutI[2]==0xAA00D9A6 && ToutI[3]==0x6CCE6200) && Offset<=65536-4)
 		{
 			Offset++;
-			ToutI=(unsigned int*)(Tout+Offset);
+			ToutI=(unsigned int*)(Tout.get()+Offset);
 		}
 		if (Offset>65536-4)
 			return false;
@@ -49,16 +51,16 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 
 		//Play time
 		Offset=0;
-		ToutI=(unsigned int*)Tout;
+		ToutI=(unsigned int*)Tout.get();
 		while (!(ToutI[0]==0x8CABDCA1 && ToutI[1]==0x11CFA947 && ToutI[2]==0xC000E48E && ToutI[3]==0x6553200C) && Offset<=65536-4)
 		{
 			Offset++;
-			ToutI=(unsigned int*)(Tout+Offset);
+			ToutI=(unsigned int*)(Tout.get()+Offset);
 		}
 		if (Offset<=65536-4)
 		{
 			Offset+=64;
-			ToutI=(unsigned int*)(Tout+Offset);
+			ToutI=(unsigned int*)(Tout.get()+Offset);
 			float F1=(float)ToutI[1];
 			F1=F1*0x10000*0x10000+ToutI[0];
 			tag.SetDuration((long)((F1/10000)/1000));	//	from milliseconds to seconds
@@ -66,11 +68,11 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 
 		//Description  Title
 		Offset=0;
-		ToutI=(unsigned int*)Tout;
+		ToutI=(unsigned int*)Tout.get();
 		while (!(ToutI[0]==0x75B22633 && ToutI[1]==0x11CF668E && ToutI[2]==0xAA00D9A6 && ToutI[3]==0x6CCE6200) && Offset<=65536-4)
 		{
 			Offset++;
-			ToutI=(unsigned int*)(Tout+Offset);
+			ToutI=(unsigned int*)(Tout.get()+Offset);
 		}
 		if (Offset<=65536-4)
 		{
@@ -86,9 +88,9 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 					Tout[Offset+I2/2]=Tout[Offset+I2];
 
 			//General(ZT("Title"))=wxString((char*)Tout+Offset,wxConvUTF8).c_str();
-			tag.SetTitle(CStdString((char*)Tout+Offset));	// titel
+			tag.SetTitle(CStdString((char*)Tout.get()+Offset));	// titel
 			//General(ZT("Author"))=wxString((char*)Tout+Offset+Taille0/2,wxConvUTF8).c_str();
-			tag.SetArtist(CStdString((char*)Tout+Offset+Taille0/2)); //	author
+			tag.SetArtist(CStdString((char*)Tout.get()+Offset+Taille0/2)); //	author
 			//General(ZT("Copyright"))=wxString((char*)Tout+Offset+(Taille0+Taille1)/2,wxConvUTF8).c_str();
 			//General(ZT("Comments"))=wxString((char*)Tout+Offset+(Taille0+Taille1+Taille2)/2,wxConvUTF8).c_str();
 		}
@@ -142,11 +144,11 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 
 		//Extended
 		Offset=0;
-		ToutI=(unsigned int*)Tout;
+		ToutI=(unsigned int*)Tout.get();
 		while (!(ToutI[0]==0xD2D0A440 && ToutI[1]==0x11D2E307 && ToutI[2]==0xA000F097 && ToutI[3]==0x50A85EC9) && Offset<=65536-4)
 		{
 			Offset++;
-			ToutI=(unsigned int*)(Tout+Offset);
+			ToutI=(unsigned int*)(Tout.get()+Offset);
 		}
 
 		if (Offset<=65536-4)
@@ -161,7 +163,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 				//Conversion Unicode
 				for (int I2=0; I2<TailleNom; I2+=2)
 						Tout[Offset+I2/2]=Tout[Offset+I2];
-				CStdString Nom=(char*)Tout+Offset; // UTF8?
+				CStdString Nom=(char*)Tout.get()+Offset; // UTF8?
 				Offset+=TailleNom;
 				int Type=Tout[Offset]+Tout[Offset+1];
 				Offset+=2;//2 octets du type
@@ -173,10 +175,10 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 				{
 						for (int I3=0; I3<TailleValeur; I3+=2)
 								Tout[Offset+I3/2]=Tout[Offset+I3];
-						Valeur=CStdString((char*)Tout+Offset); // UTF8?
+						Valeur=CStdString((char*)Tout.get()+Offset); // UTF8?
 				}
 				else if (Type==1) //Byte
-						Valeur=CStdString((char*)Tout+Offset); // UTF8?
+						Valeur=CStdString((char*)Tout.get()+Offset); // UTF8?
 				else if (Type==2)//Bool
 						Valeur=(int)Tout[Offset];
 				else if (Type==3)//DWord
