@@ -125,13 +125,17 @@ void choose_best_resolution(float fps)
   }
 
   // Work out if framesize suits 4:3 or 16:9
-  // Uses the frame aspect ratio of 8/(3*sqrt(3)) which is the optimal point
+  // Uses the frame aspect ratio of 8/(3*sqrt(3)) (=1.53960) which is the optimal point
   // where the percentage of black bars to screen area in 4:3 and 16:9 is equal
   bool bWidescreen = false;
   if (bCanDoWidescreen && ((float)d_image_width/d_image_height > 8.0f/(3.0f*sqrt(3.0f))))
   {
     bWidescreen = true;
   }
+  // dont use widescreen on mpeg1 resolutions (always use 4:3)
+  if (d_image_width==352 && d_image_height==240) bWidescreen = false;
+  if (d_image_width==352 && d_image_height==288) bWidescreen = false;
+  if (d_image_width==480 && d_image_height==480) bWidescreen = false;
 
   // if video switching is not allowed then use current resolution (with pal 60 if needed)
   // PERHAPS ALSO SUPPORT WIDESCREEN SWITCHING HERE??
@@ -146,7 +150,7 @@ void choose_best_resolution(float fps)
     if (bUsingPAL)
     {
       // FIXME - Fix for autochange of widescreen once GUI option is implemented
-      bWidescreen = (g_settings.m_ResInfo[m_iResolution].dwFlags&D3DPRESENTFLAG_WIDESCREEN)!=0;
+      //bWidescreen = (g_settings.m_ResInfo[m_iResolution].dwFlags&D3DPRESENTFLAG_WIDESCREEN)!=0;
       if (bPal60)
       {
         if (bWidescreen)
