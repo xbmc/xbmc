@@ -343,8 +343,10 @@ CGUISettings::CGUISettings(void)
 	AddString(3, "LookAndFeel.Language", 248, "english", SPIN_CONTROL_TEXT);
 	AddString(4, "LookAndFeel.Font", 13303, "Default", SPIN_CONTROL_TEXT);
 	AddString(5, "LookAndFeel.CharSet", 735, "ISO-8859-1", SPIN_CONTROL_TEXT);
-	AddBool(6, "LookAndFeel.EnableRSSFeeds", 13305, true);
-	AddString(7, "LookAndFeel.GUICentering", 213, "", BUTTON_CONTROL_STANDARD);
+	AddBool(6, "LookAndFeel.Clock12Hour", 14051, false);
+	AddBool(7, "LookAndFeel.SwapMonthAndDay", 14052, false);
+	AddBool(8, "LookAndFeel.EnableRSSFeeds", 13305, true);
+	AddString(9, "LookAndFeel.GUICentering", 213, "", BUTTON_CONTROL_STANDARD);
 
 	AddCategory(7, "FileLists", 14018);
 	AddBool(1,"FileLists.HideExtensions", 497, false);

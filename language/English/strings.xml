@@ -2371,4 +2371,6 @@
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
+  <string><id>14051</id><value>Show 12 hour clock</value></string>
+  <string><id>14052</id><value>Swap month and day in home screen</value></string>
 </strings>
