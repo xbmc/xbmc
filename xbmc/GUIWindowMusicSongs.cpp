@@ -610,6 +610,7 @@ bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
 				m_rootDir.GetDirectory(pItem->m_strPath,subDirItems);
 				// filter items in the sub dir (for .cue sheet support)
 				FilterItems(subDirItems);
+				DoSort(subDirItems);
 
 				if (!DoScan(subDirItems))
 				{
