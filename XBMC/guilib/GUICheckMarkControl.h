@@ -1,0 +1,36 @@
+#ifndef CGUILIB_GUICHECKMARK_CONTROL_H
+#define CGUILIB_GUICHECKMARK_CONTROL_H
+
+#pragma once
+#include "gui3d.h"
+#include "guicontrol.h"
+#include "guimessage.h"
+#include "guifont.h"
+#include "guiimage.h"
+#include <string>
+using namespace std;
+
+class CGUICheckMarkControl: public CGUIControl
+{
+public:
+  CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const string& strTextureCheckMark,DWORD dwCheckWidth, DWORD dwCheckHeight);
+  virtual ~CGUICheckMarkControl(void);
+  virtual void Render();
+  virtual void OnKey(const CKey& key) ;
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual void AllocResources();
+  virtual void FreeResources();
+  virtual void SetDisabledColor(D3DCOLOR color);
+
+	void SetLabel(const string& strFontName,const wstring& strLabel,D3DCOLOR dwColor);
+	void SetLabel(const string& strFontName,const string& strLabel,D3DCOLOR dwColor);
+
+protected:
+  CGUIImage     m_imgCheckMark;
+  DWORD         m_dwTextColor	;
+  CGUIFont*     m_pFont;
+  wstring       m_strLabel;
+  DWORD         m_dwDisabledColor;
+  
+};
+#endif
