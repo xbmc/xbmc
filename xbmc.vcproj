@@ -1456,9 +1456,6 @@
 			Name="common"
 			Filter="">
 			<File
-				RelativePath=".\xbmc\lib\common\xbNet.cpp">
-			</File>
-			<File
 				RelativePath=".\xbmc\lib\common\xbSockAddr.cpp">
 			</File>
 			<File
@@ -1807,10 +1804,10 @@
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">

@@ -124,6 +124,10 @@ public:
   static void InitGamma();
   static void ClearCache();
 	static void SortFileItemsByName(VECFILEITEMS& items, bool bSortAscending=true);
+	static bool IsNetworkUp() { return m_bNetworkUp; }
+
+private:
+	static bool m_bNetworkUp;
 };
 
 void fast_memcpy(void* d, const void* s, unsigned n);

@@ -11,8 +11,8 @@
 #endif
 
 #include "../settings.h"
-#include "../lib/common/XBNet.h"
 #include "log.h"
+#include "../util.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -48,256 +48,62 @@ CHTTP::~CHTTP()
 
 //------------------------------------------------------------------------------------------------------------------
 
+int CHTTP::FindLength(const string& strHeaders)
+{
+	string::size_type n = strHeaders.find("Content-Length: ");
+	if (n == string::npos)
+	{
+		return -1;
+	}
+	else
+	{
+		return atol(strHeaders.c_str() + n+16);
+	}
+}
+
+//------------------------------------------------------------------------------------------------------------------
+
 bool CHTTP::Get(string& strURL, string& strHTML)
 {
-	string strFile="";
-	m_strHostName="";
-    
-  CLog::Log("Get URL:%s", strURL.c_str());
-	if (!BreakURL(strURL, m_strHostName, m_iPort, strFile))
+  CLog::Log("Get URL: %s", strURL.c_str());
+
+	string strHeaders;
+	strHTML.clear();
+	int status = Open(strURL, "GET", strHeaders, strHTML);
+
+	if (status != 200)
 	{
-    CLog::Log("invalid URL:%s", strURL.c_str());
-		return false;
-	}	
-
-	// seriously, you don't expect this to work first time around do ya? ;-)
-	INT nRetries = 3;
-	while(nRetries>0)
-	{
-		if ( Connect() ) 
-		{
-			break;
-		}
-
-		nRetries--;
-	}
-
-	if (nRetries==0)
-	{
-		CStdString debugMessage;
-		debugMessage.Format( "Unable to connect to: %s", m_strHostName.c_str() );
-		CLog::Log(debugMessage.c_str());
-		return false;
-	}
-
-	// send request...
-	char szGet[1024];
-	char szHTTPHEADER[1024];
-  strcpy(szHTTPHEADER,"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/msword, */*\r\n");
-	strcat(szHTTPHEADER, "Accept-Language: en-us\r\n");
-	strcat(szHTTPHEADER, "Host:");
-	strcat(szHTTPHEADER,m_strHostName.c_str());
-	strcat(szHTTPHEADER, "\r\n");
-	strcat(szHTTPHEADER, "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\r\n");
-	if (m_strCookie.size() )
-	{
-		strcat(szHTTPHEADER,"Cookie: ");
-		strcat(szHTTPHEADER,m_strCookie.c_str());
-		strcat(szHTTPHEADER, "\r\n");
-	}
-	
-	
-	if (m_strProxyServer.size())
-	{
-		sprintf(szGet,"GET %s HTTP/1.1\r\n%s\r\n",strURL.c_str(),szHTTPHEADER);
-	}
-	else
-	{
-		sprintf(szGet,"GET %s HTTP/1.1\r\n%s\r\n",strFile.c_str(),szHTTPHEADER);
-	}
-	//printf("send %s", szGet);
-	if ( !Send(szGet,strlen(szGet) ) )
-	{
-    CLog::Log("send failed error:%i %i\n", GetLastError(), WSAGetLastError());
-    Close();
-		return false;
-	}
-
-	char* pszBuffer = new char[5000];
-	long lReadTotal=0;
-	do
-	{
-		int lenRead;
-		if (!Recv(&pszBuffer[lReadTotal],5000-lReadTotal,lenRead, false))
-		{
-      CLog::Log("recv error:%i %i", GetLastError(), WSAGetLastError());
-      Close();
-			delete [] pszBuffer;
-			return false;
-		}
-		lReadTotal+=lenRead;
-	} while (strstr(pszBuffer,"\r\n\r\n")==NULL);
-
-	/*
-	lReadTotal=0;
-	memset(szBuffer,0,sizeof(szBuffer));
-	FILE *fdt=fopen("E:\\log.txt","r");
-	lReadTotal=fread(szBuffer,1,sizeof(szBuffer),fdt);
-	fclose(fdt);
-*/
-	char* pResult=strstr(pszBuffer,"HTTP/1.0 200");
-	if (!pResult)
-		pResult=strstr(pszBuffer,"HTTP/1.1 200");
-	if (!pResult)
-		pResult=strstr(pszBuffer,"HTTP/1.1 100");
-
-	if (!pResult)
-	{
-		// were we redirected?
-		pResult=strstr(pszBuffer,"HTTP/1.0 302");
-		if (!pResult)
-			pResult=strstr(pszBuffer,"HTTP/1.1 302");
-
-		if (pResult)
-		{
-      OutputDebugString("Redirected\n");
-			Close();
-			
-			char* pNewLocation=strstr(pszBuffer,"Location: ");
-			if (pNewLocation)
-			{
-				pNewLocation += strlen("Location: ");
-				char* pEndLocation=strstr(pNewLocation,"\r\n");
-				*pEndLocation=0;
-
-				strURL = pNewLocation;
-				delete [] pszBuffer;
-        
-        if (strstr(strURL.c_str(),"http:") ==NULL && strstr(strURL.c_str(),"HTTP:") ==NULL)
-        {
-          char szNewLocation[1024];
-          sprintf(szNewLocation,"http://%s:%i%s", m_strHostName.c_str(),m_iPort,strURL.c_str());
-          strURL=szNewLocation;
-        }
-        OutputDebugString("to:");
-        OutputDebugString(strURL.c_str());
-        OutputDebugString("\n");
-				return Get(strURL, strHTML);
-			}
-
-			
-      CLog::Log("redirect error:%i %i\n", GetLastError(), WSAGetLastError());
-			delete [] pszBuffer;
-			return false;
-		}
-
-		//printf("website didn't return 200\n");
-		pszBuffer[lReadTotal]=0;
-    
-		CLog::Log("Website returned an error code:%s",pszBuffer);
-
-		//printf("%s",szBuffer);
 		Close();
-		
-		//pszBuffer[40]=0;
-		//char strError[128];
-		//sprintf(strError,"error:%i %i size:%i", GetLastError(), WSAGetLastError(),lReadTotal);
-		//g_dialog.SetCaption(0,"GET didnt return 200");
-		//g_dialog.SetMessage(0,szBuffer);
-		//g_dialog.SetMessage(1,strError);
-		//g_dialog.DoModal();
-		delete [] pszBuffer;
 		return false;
 	}
 
-	DWORD dwLength;
-	bool bGotLength(false);
-	char* pLength=strstr(pszBuffer,"Content-Length: ");
-	if (!pLength)
-	{
-		//printf("website didn't return content-length\n");
-		dwLength=65535;
-	}
+	bool bGotLength = false;
+	int Length = FindLength(strHeaders);
+	if (Length < 0)
+		Length = 65536;
 	else
-	{
-		pLength += strlen("Content-Length: ");
-		char szLength[10];
-		int ipos=0;
-		while (isdigit(*pLength) )
-		{
-			szLength[ipos++]=*pLength;
-			szLength[ipos]=0;
-			pLength++;
-		}
+		bGotLength = true;
+	Length -= strHTML.size();
 
-		dwLength=atol(szLength);
-		bGotLength=true;
-	}
-	if (dwLength > 0)
+	if (Length > 0)
 	{
-		char* pBody=strstr(pszBuffer,"\r\n\r\n");
-		if (!pBody)
+		char* buf = new char[Length];
+		int iRead;
+		if (!Recv(buf, Length, iRead, true))
 		{
-			//printf("website returned empty document\n");
-      CLog::Log("Website returned empty document\n");
-			Close();
-			
-			//char strError[128];
-			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-			//g_dialog.SetCaption(0,"GET returned empty document");
-			//g_dialog.SetMessage(0,m_strHostName.c_str());
-			//g_dialog.SetMessage(1,strError);
-			//g_dialog.DoModal();
-			delete [] pszBuffer;
-			return false;
-		}
-		pBody+=4;
-		
-		char *pBuffer= new char[dwLength+2];
-		if (!pBuffer)
-		{
-			//printf("failed to allocate space\n");
-			Close();
-				
-			//char strError[128];
-			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-			//g_dialog.SetCaption(0,"out of memory");
-			//g_dialog.SetMessage(0,m_strHostName.c_str());
-			//g_dialog.SetMessage(1,strError);
-			//g_dialog.DoModal();
-			delete [] pszBuffer;
-			return false;
-		}
-		int iPos   =lReadTotal - (pBody-&pszBuffer[0]);
-		int iBytesLeftToRead = dwLength - iPos;
-		
-		memcpy(pBuffer, pBody, iPos);
-		if (iBytesLeftToRead >0)
-		{
-			int iRead;
-			if (!Recv(&pBuffer[iPos], iBytesLeftToRead, iRead, true))
+			if (bGotLength)
 			{
-				if (bGotLength)
-				{
-					//OutputDebugString("Failed to read body\n");
-					//printf("failed to read body\n");
-					delete [] pBuffer;
-					Close();
-					
-					//char strError[128];
-					//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-					//g_dialog.SetCaption(0,"recv() failed");
-					//g_dialog.SetMessage(0,m_strHostName.c_str());
-					//g_dialog.SetMessage(1,strError);
-					//g_dialog.DoModal();
-					delete [] pszBuffer;
-					return false;
-				}
-				else
-				{
-					dwLength=iPos+iRead;
-				}
+				delete [] buf;
+				Close();
+				strHTML.clear();
+				return false;
 			}
 		}
-		pBuffer[dwLength]=0;
-		
-		strHTML = (char*)pBuffer;
-		delete [] pBuffer;
-		delete [] pszBuffer;
+		buf[iRead]=0;
+		strHTML.append(buf, buf+iRead);
+		delete [] buf;
 	}
-	else strHTML="";
 	
-	//printf("%s\n", strHTML.c_str());
 	Close();
 	return true;
 }
@@ -305,20 +111,11 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 //------------------------------------------------------------------------------------------------------------------
 bool CHTTP::Connect()
 {
-	CXBNetLink* linkChecker = new CXBNetLink();
-	if (!linkChecker->IsActive())
-	{
-		CLog::Log("Link is inactive.\n");
+	if (!CUtil::IsNetworkUp())
 		return false;
-	}
 
 	sockaddr_in service;
 	service.sin_family = AF_INET;
-
-
-	//OutputDebugString("Connect:");
-	//OutputDebugString(m_strHostName.c_str());
-	//OutputDebugString("\n");
 
 	if (m_strProxyServer.size())
 	{
@@ -329,14 +126,12 @@ bool CHTTP::Connect()
 	else
 	{
 		// connect to site directly
-		
-
 		if(inet_addr(m_strHostName.c_str())==INADDR_NONE)
 		{
-			CStdString strIpAdres="";
-			CDNSNameCache::Lookup(m_strHostName,strIpAdres);
-			service.sin_addr.s_addr = inet_addr(strIpAdres.c_str());
-			if (strIpAdres=="")
+			CStdString strIpAddress="";
+			CDNSNameCache::Lookup(m_strHostName,strIpAddress);
+			service.sin_addr.s_addr = inet_addr(strIpAddress.c_str());
+			if (strIpAddress=="")
 			{
 				if (strcmp(m_strHostName.c_str(),"ia.imdb.com")==0)
 					service.sin_addr.s_addr = inet_addr("193.108.152.15");
@@ -358,17 +153,11 @@ bool CHTTP::Connect()
 		}
 		service.sin_port = htons(m_iPort);
 	}
-	m_socket.attach( socket(AF_INET,SOCK_STREAM,IPPROTO_TCP));
+	m_socket.attach(socket(AF_INET,SOCK_STREAM,IPPROTO_TCP));
 	
 	// attempt to connection
 	if (connect((SOCKET)m_socket,(sockaddr*) &service,sizeof(struct sockaddr)) == SOCKET_ERROR)
 	{
-		//char strError[128];
-		//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-		//g_dialog.SetCaption(0,"Unable to connect");
-		//g_dialog.SetMessage(0,m_strHostName.c_str());
-		//g_dialog.SetMessage(1,strError);
-		//g_dialog.DoModal();
 		Close();
 		return false;
 	}
@@ -538,6 +327,10 @@ bool CHTTP::Recv(char* pBuffer, int iLen, int& iRead, bool bFill)
 				}
 			}
 		}
+		if (!n)
+		{
+			return false; // graceful close
+		}
 		iRead+=n;
 		iLen-=n;
 
@@ -550,244 +343,58 @@ bool CHTTP::Recv(char* pBuffer, int iLen, int& iRead, bool bFill)
 //------------------------------------------------------------------------------------------------------------------
 bool CHTTP::Download(const string &strURL, const string &strFileName)
 {
-	string strFile="";
-	m_strHostName="";
-	DeleteFile(strFileName.c_str());	
-  CLog::Log("Download:%s->%s",strURL.c_str(),strFileName.c_str());
-	if (!BreakURL(strURL, m_strHostName, m_iPort, strFile))
-	{
-    CLog::Log("invalid url:%s",strURL.c_str());
-		return false;
-	}	
+	CLog::Log("Download: %s->%s",strURL.c_str(),strFileName.c_str());
 
-	// seriously, you don't expect this to work first time around do ya? ;-)
-	INT nRetries = 3;
-	while(nRetries>0)
-	{
-		if ( Connect() ) 
-		{
-			break;
-		}
+	string strHeaders, strData;
+	int status = Open(strURL, "GET", strHeaders, strData);
 
-		nRetries--;
-	}
-
-	if (nRetries==0)
+	if (status != 200)
 	{
-		CStdString debugMessage;
-		debugMessage.Format( "Unable to connect to: %s", m_strHostName.c_str() );
-		CLog::Log(debugMessage.c_str());
-		return false;
-	}
-
-	// send request...
-	char szGet[1024];
-	char szHTTPHEADER[1024];
-  strcpy(szHTTPHEADER,"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/msword, */*\r\n"
-											"Accept-Language: en-us\r\n"
-											"Host:");
-	strcat(szHTTPHEADER,m_strHostName.c_str());
-	strcat(szHTTPHEADER,"\r\n"
-											"User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\r\n");
-	
-	
-	if (m_strProxyServer.size())
-	{
-		sprintf(szGet,"GET %s HTTP/1.%i\r\n%s\r\n",strURL.c_str(),m_iHTTPver,szHTTPHEADER);
-	}
-	else
-	{
-		sprintf(szGet,"GET %s HTTP/1.%i\r\n%s\r\n",strFile.c_str(),m_iHTTPver,szHTTPHEADER);
-	}
-	//printf("send %s", szGet);
-	if ( !Send(szGet,strlen(szGet) ) )
-	{
-		//char strError[128];
-		//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-		//g_dialog.SetCaption(0,"Send failed");
-		//g_dialog.SetMessage(0,m_strHostName.c_str());
-		//g_dialog.SetMessage(1,strError);
-		//g_dialog.DoModal();
-
 		Close();
 		return false;
 	}
 
-	char* pszBuffer = new char[5000];
-	long lReadTotal=0;
-	do
-	{
-		int lenRead;
-		if (!Recv((char*)&pszBuffer[lReadTotal],5000-lReadTotal,lenRead, false))
-		{
-			//char strError[128];
-			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-			//g_dialog.SetCaption(0,"receive failed");
-			//g_dialog.SetMessage(0,m_strHostName.c_str());
-			//g_dialog.SetMessage(1,strError);
-			//g_dialog.DoModal();
+	bool bGotLength = false;
+	int Length = FindLength(strHeaders);
+	if (Length < 0)
+		Length = 65536;
+	else
+		bGotLength = true;
 
-			Close();
-		}
-		lReadTotal+=lenRead;
-	} while (strstr(pszBuffer,"\r\n\r\n")==NULL);
-
-	char* pResult=strstr(pszBuffer,"HTTP/1.0 200");
-	if (!pResult) pResult=strstr(pszBuffer,"HTTP/1.1 200");
-	if (!pResult) pResult=strstr(pszBuffer,"HTTP/1.1 100");
-	if (!pResult)
+	if (Length > 0)
 	{
-		pResult=strstr(pszBuffer,"HTTP/1.0 302");
-		if (pResult)
+		char* buf = new char[Length];
+		memcpy(buf, strData.c_str(), strData.size());
+		int iRead;
+		if (!Recv(buf + strData.size(), Length - strData.size(), iRead, true))
 		{
-			Close();
-			
-			char* pNewLocation=strstr(pszBuffer,"Location: ");
-			if (pNewLocation)
+			if (bGotLength)
 			{
-				pNewLocation += strlen("Location: ");
-				char* pEndLocation=strstr(pNewLocation,"\r\n");
-				*pEndLocation=0;
-        string strURL=pNewLocation;
-        if (strstr(pNewLocation,"http:") ==NULL && strstr(pNewLocation,"HTTP:") ==NULL)
-        {
-          char szNewLocation[1024];
-          sprintf(szNewLocation,"http://%s:%i%s", m_strHostName.c_str(),m_iPort,pNewLocation);
-          strURL=szNewLocation;
-        }
-				bool bResult=Download(strURL.c_str(), strFileName);
-				delete[] pszBuffer;
-				return bResult;
+				delete [] buf;
+				Close();
+				return false;
 			}
-			char strError[128];
-			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-			//g_dialog.SetCaption(0,"relocation failed");
-			//g_dialog.SetMessage(0,m_strHostName.c_str());
-			//g_dialog.SetMessage(1,strError);
-			//g_dialog.DoModal();
-			delete[] pszBuffer;
+		}
+
+		HANDLE hFile = CreateFile(strFileName.c_str(), GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+		if (hFile == INVALID_HANDLE_VALUE)
+		{
+			CLog::Log("Unable to open file %s: %d", strFileName.c_str(), GetLastError());
+			delete [] buf;
+			Close();
 			return false;
 		}
-		OutputDebugString("website didn't return 200\n");
-		pszBuffer[lReadTotal]=0;
-		//printf("%s",pszBuffer);
-		Close();
-		//char strError[128];
-		//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-		//g_dialog.SetCaption(0,"GET didn't return 200");
-		//g_dialog.SetMessage(0,m_strHostName.c_str());
-		//g_dialog.SetMessage(1,strError);
-		//g_dialog.DoModal();
-		delete[] pszBuffer;
-		return false;
-	}
-	DWORD dwLength;
-	bool bGotLength(false);
-	char* pLength=strstr(pszBuffer,"Content-Length: ");
-	if (!pLength)
-	{
-		//printf("website didn't return content-length\n");
-		dwLength=65535;
+		SetFilePointer(hFile, Length, 0, FILE_BEGIN);
+		SetEndOfFile(hFile);
+		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
+		DWORD n;
+		WriteFile(hFile, buf, Length, &n, 0);
+		CloseHandle(hFile);
+		delete [] buf;
 	}
 	else
-	{
-		pLength += strlen("Content-Length: ");
-		char szLength[10];
-		int ipos=0;
-		while (isdigit(*pLength) )
-		{
-			szLength[ipos++]=*pLength;
-			szLength[ipos]=0;
-			pLength++;
-		}
+		DeleteFile(strFileName.c_str());
 
-		dwLength=atol(szLength);
-		bGotLength=true;
-	}
-	if (dwLength > 0)
-	{
-		char* pBody=strstr(pszBuffer,"\r\n\r\n");
-		if (!pBody)
-		{
-			//char strError[128];
-			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-			//g_dialog.SetCaption(0,"empty document");
-			//g_dialog.SetMessage(0,m_strHostName.c_str());
-			//g_dialog.SetMessage(1,strError);
-			//g_dialog.DoModal();
-
-			Close();
-			delete[] pszBuffer;
-			return false;
-		}
-		pBody+=4;
-		
-		char *pBuffer= new char[dwLength+2];
-		if (!pBuffer)
-		{
-			//OutputDebugString("failed to allocate space\n");
-			Close();
-			//char strError[128];
-			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-			//g_dialog.SetCaption(0,"Out of memory");
-			//g_dialog.SetMessage(0,m_strHostName.c_str());
-			//g_dialog.SetMessage(1,strError);
-			//g_dialog.DoModal();
-			delete[] pszBuffer;
-			return false;
-		}
-		int iPos   =lReadTotal - (pBody-&pszBuffer[0]);
-		int iBytesLeftToRead = dwLength - iPos;
-		
-		memcpy(pBuffer, pBody, iPos);
-		if (iBytesLeftToRead >0)
-		{
-			int iRead;
-			if (!Recv(&pBuffer[iPos], iBytesLeftToRead, iRead, true))
-			{
-				if (bGotLength)
-				{
-					//char strError[128];
-					//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-					//g_dialog.SetCaption(0,"Recv failed");
-					//g_dialog.SetMessage(0,m_strHostName.c_str());
-					//g_dialog.SetMessage(1,strError);
-					//g_dialog.DoModal();
-
-					delete [] pBuffer;
-					Close();
-					delete[] pszBuffer;
-					return false;
-				}
-				else
-				{
-					dwLength=iPos+iRead;
-				}
-			}
-		}
-		pBuffer[dwLength]=0;
-		
-		FILE* fd = fopen(strFileName.c_str(),"wb");
-		if (fd==NULL)
-		{
-			//char strError[128];
-			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-			//g_dialog.SetCaption(0,"failed to create file");
-			//g_dialog.SetMessage(0,m_strHostName.c_str());
-			//g_dialog.SetMessage(1,strError);
-			//g_dialog.DoModal();
-
-			delete [] pBuffer;
-			delete[] pszBuffer;
-			return false;
-		}
-		fwrite(pBuffer,1, dwLength, fd);
-		fclose(fd);
-
-		delete [] pBuffer;
-		delete[] pszBuffer;
-	}
-	//printf("%s\n", strHTML.c_str());
 	Close();
 	return true;
 }
@@ -811,345 +418,207 @@ void CHTTP::SetCookie(const string &strCookie)
 //------------------------------------------------------------------------------------------------------------------
 bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTML)
 {
-	string strFile="";
-	m_strHostName="";
   CLog::Log("Post URL:%s", strURL.c_str());
-	if (!BreakURL(strURL, m_strHostName, m_iPort, strFile))
-	{
-    CLog::Log("Invalid url:%s",strURL.c_str());
-		return false;
-	}	
 
-	if ( !Connect() ) 
-	{
-    CLog::Log("Unable to connect to:%s",m_strHostName.c_str());
-		return false;
-	}
-	// send request...
-	char szGet[1024];
-	char szHTTPHEADER[1024];
-	char szLength[128];
-  strcpy(szHTTPHEADER,"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/msword, */*\r\n");
-	strcat(szHTTPHEADER, "Accept-Language: en-us\r\n");
-	strcat(szHTTPHEADER, "Host:");
-	strcat(szHTTPHEADER,m_strHostName.c_str());
-	strcat(szHTTPHEADER, "\r\n");
-	strcat(szHTTPHEADER, "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\r\n");
-	
-	sprintf(szLength, "Content-Length: %i\r\n",strPostData.size());
-	strcat(szHTTPHEADER,szLength);
-	if (m_strCookie.size() )
-	{
-		strcat(szHTTPHEADER,"Cookie: ");
-		strcat(szHTTPHEADER,m_strCookie.c_str());
-		strcat(szHTTPHEADER, "\r\n");
-	}
-	
+	string strHeaders;
+	strHTML = strPostData;
+	int status = Open(strURL, "POST", strHeaders, strHTML);
 
-	strcat(szHTTPHEADER, "\r\n");
-	strcat(szHTTPHEADER,strPostData.c_str());
-	
-	if (m_strProxyServer.size())
+	if (status != 200)
 	{
-		sprintf(szGet,"POST %s HTTP/1.1\r\n%s",strURL.c_str(),szHTTPHEADER);
-	}
-	else
-	{
-		sprintf(szGet,"POST %s HTTP/1.1\r\n%s",strFile.c_str(),szHTTPHEADER);
-	}
-	//printf("send %s", szGet);
-	if ( !Send(szGet,strlen(szGet) ) )
-	{
-		//printf("send failed\n");
-		
-		//char strError[128];
-		//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-		//g_dialog.SetCaption(0,"Send failed");
-		//g_dialog.SetMessage(0,m_strHostName.c_str());
-		//g_dialog.SetMessage(1,strError);
-		//g_dialog.DoModal();
-
 		Close();
 		return false;
 	}
 
-	char* pszBuffer = new char[5000];
-	memset(&pszBuffer[0],0,5000);
-	long lReadTotal=0;
-	do
-	{
-		int lenRead;
-		if (Recv((char*)&pszBuffer[lReadTotal],5000-lReadTotal,lenRead, false))
-		{
-			//printf("receive failed\n");
-			//char strError[128];			
-			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-			//g_dialog.SetCaption(0,"Recv failed");
-			//g_dialog.SetMessage(0,m_strHostName.c_str());
-			//g_dialog.SetMessage(1,strError);
-			//g_dialog.DoModal();
-			Close();
-		}
-		lReadTotal+=lenRead;
-	} while (strstr(pszBuffer,"\r\n\r\n")==NULL && lReadTotal < 1024);
-
-	/*
-	lReadTotal=0;
-	memset(szBuffer,0,sizeof(szBuffer));
-	FILE *fdt=fopen("E:\\log.txt","r");
-	lReadTotal=fread(szBuffer,1,sizeof(szBuffer),fdt);
-	fclose(fdt);
-*/
-	
-	
-	char* pResult=strstr(pszBuffer,"HTTP/1.0 200");
-	if (!pResult)
-		pResult=strstr(pszBuffer,"HTTP/1.1 200");
-	if (!pResult)
-		pResult=strstr(pszBuffer,"HTTP/1.1 100");
-
-	if (!pResult)
-	{
-		/*
-		// were we redirected?
-		pResult=strstr(pszBuffer,"HTTP/1.0 302");
-		if (!pResult)
-			pResult=strstr(pszBuffer,"HTTP/1.1 302");
-
-		if (pResult)
-		{
-			Close();
-			
-			char* pNewLocation=strstr(pszBuffer,"Location: ");
-			if (pNewLocation)
-			{
-				pNewLocation += strlen("Location: ");
-				char* pEndLocation=strstr(pNewLocation,"\r\n");
-				*pEndLocation=0;
-
-				strURL = pNewLocation;
-				return Get(strURL, strHTML);
-			}
-
-			
-			char strError[128];
-			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-			//g_dialog.SetCaption(0,"redirect failed");
-			//g_dialog.SetMessage(0,m_strHostName.c_str());
-			//g_dialog.SetMessage(1,strError);
-			//g_dialog.DoModal();
-			return false;
-		}*/
-
-		OutputDebugString("Website returned an error code: ");
-		OutputDebugString(pszBuffer);
-		OutputDebugString("\n");
-
-		//printf("website didn't return 200\n");
-		pszBuffer[lReadTotal]=0;
-		//printf("%s",pszBuffer);
-		Close();
-		
-		//pszBuffer[40]=0;
-		//char strError[128];
-		//sprintf(strError,"error:%i %i size:%i", GetLastError(), WSAGetLastError(),lReadTotal);
-		//g_dialog.SetCaption(0,"GET didnt return 200");
-		//g_dialog.SetMessage(0,pszBuffer);
-		//g_dialog.SetMessage(1,strError);
-		//g_dialog.DoModal();
-		delete [] pszBuffer;
-		return false;
-	}
-
-	DWORD dwLength;
-	bool bGotLength(false);
-	char* pLength=strstr(pszBuffer,"Content-Length: ");
-	if (!pLength)
-	{
-		//printf("website didn't return content-length\n");
-		dwLength=65535;
-	}
+	bool bGotLength = false;
+	int Length = FindLength(strHeaders);
+	if (Length < 0)
+		Length = 65536;
 	else
-	{
-		pLength += strlen("Content-Length: ");
-		char szLength[10];
-		int ipos=0;
-		while (isdigit(*pLength) )
-		{
-			szLength[ipos++]=*pLength;
-			szLength[ipos]=0;
-			pLength++;
-		}
+		bGotLength = true;
+	Length -= strHTML.size();
 
-		dwLength=atol(szLength);
-		bGotLength=true;
-	}
-	if (dwLength > 0)
+	if (Length > 0)
 	{
-		char* pBody=strstr(pszBuffer,"\r\n\r\n");
-		if (!pBody)
+		char* buf = new char[Length];
+		int iRead;
+		if (!Recv(buf, Length, iRead, true))
 		{
-			//printf("website returned empty document\n");
-      CLog::Log("Website returned empty document\n");
-			Close();
-			
-			//char strError[128];
-			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-			//g_dialog.SetCaption(0,"GET returned empty document");
-			//g_dialog.SetMessage(0,m_strHostName.c_str());
-			//g_dialog.SetMessage(1,strError);
-			//g_dialog.DoModal();
-			delete [] pszBuffer;
-			return false;
-		}
-		pBody+=4;
-		
-		char *pBuffer= new char[dwLength+2];
-		if (!pBuffer)
-		{
-			//printf("failed to allocate space\n");
-			Close();
-				
-			//char strError[128];
-			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-			//g_dialog.SetCaption(0,"out of memory");
-			//g_dialog.SetMessage(0,m_strHostName.c_str());
-			//g_dialog.SetMessage(1,strError);
-			//g_dialog.DoModal();
-			delete [] pszBuffer;
-			return false;
-		}
-		int iPos   =lReadTotal - (pBody-&pszBuffer[0]);
-		int iBytesLeftToRead = dwLength - iPos;
-		
-		memcpy(pBuffer, pBody, iPos);
-		if (iBytesLeftToRead >0)
-		{
-			int iRead;
-			if (!Recv(&pBuffer[iPos], iBytesLeftToRead, iRead, true))
+			if (bGotLength)
 			{
-				if (bGotLength)
-				{
-					//OutputDebugString("Failed to read body\n");
-					//printf("failed to read body\n");
-					delete [] pBuffer;
-					delete [] pszBuffer;
-					Close();
-					
-					//char strError[128];
-					//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-					//g_dialog.SetCaption(0,"recv() failed");
-					//g_dialog.SetMessage(0,m_strHostName.c_str());
-					//g_dialog.SetMessage(1,strError);
-					//g_dialog.DoModal();
-					return false;
-				}
-				else
-				{
-					dwLength=iPos+iRead;
-				}
+				delete [] buf;
+				Close();
+				strHTML.clear();
+				return false;
 			}
 		}
-		pBuffer[dwLength]=0;
-		
-		strHTML = (char*)pBuffer;
-		delete [] pBuffer;
-		delete [] pszBuffer;
+		buf[iRead]=0;
+		strHTML.append(buf, buf+iRead);
+		delete [] buf;
 	}
-	else strHTML="";
-	
-	//printf("%s\n", strHTML.c_str());
+
 	Close();
 	return true;
 }
 //------------------------------------------------------------------------------------------------------------------
 
-bool CHTTP::Open(const string& strURL)
+int CHTTP::Open(const string& strURL, const char* verb, string& strHeaders, string& strData)
 {
 	string strFile="";
 	m_strHostName="";
 	if (!BreakURL(strURL, m_strHostName, m_iPort, strFile))
 	{
-    CLog::Log("Invalid url:%s\n",strURL.c_str());
-		return false;
+    CLog::Log("Invalid url: %s\n",strURL.c_str());
+		return 0;
 	}	
 
-	if ( !Connect() ) 
+	if (!Connect())
 	{
-		//printf("unable to connect\n");
-    CLog::Log("Unable to connect to:%s\n",m_strHostName.c_str());
-		return false;
+		CLog::Log("Unable to connect to %s: %d\n",m_strHostName.c_str(), WSAGetLastError());
+		return 0;
 	}
+
 	// send request...
-	char szGet[1024];
-	char szHTTPHEADER[1024];
-  strcpy(szHTTPHEADER,"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/msword, */*\r\n");
-	strcat(szHTTPHEADER, "Accept-Language: en-us\r\n");
-	strcat(szHTTPHEADER, "Host:");
+	char* szHTTPHEADER = (char*)_alloca(300 + m_strHostName.size() + m_strCookie.size() + strData.size());
+  strcpy(szHTTPHEADER,"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/msword, */*\r\n"
+											"Accept-Language: en-us\r\n"
+											"Host:");
 	strcat(szHTTPHEADER,m_strHostName.c_str());
-	strcat(szHTTPHEADER, "\r\n");
-	strcat(szHTTPHEADER, "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\r\n");
-	if (m_strCookie.size() )
+	strcat(szHTTPHEADER,"\r\n"
+											"User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\r\n");
+	if (m_strCookie.size())
 	{
 		strcat(szHTTPHEADER,"Cookie: ");
 		strcat(szHTTPHEADER,m_strCookie.c_str());
 		strcat(szHTTPHEADER, "\r\n");
 	}
-	
-	
+	if (!strcmp(verb, "POST"))
+	{
+		strcat(szHTTPHEADER, "\r\n");
+		strcat(szHTTPHEADER,strData.c_str());
+	}
+
+	char* szGet;
 	if (m_strProxyServer.size())
 	{
-		sprintf(szGet,"GET %s HTTP/1.1\r\n%s\r\n",strURL.c_str(),szHTTPHEADER);
+		szGet = (char*)_alloca(strlen(szHTTPHEADER) + strURL.size() + 20);
+		sprintf(szGet,"%s %s HTTP/1.1\r\n%s\r\n",verb, strURL.c_str(),szHTTPHEADER);
 	}
 	else
 	{
-		sprintf(szGet,"GET %s HTTP/1.1\r\n%s\r\n",strFile.c_str(),szHTTPHEADER);
+		szGet = (char*)_alloca(strlen(szHTTPHEADER) + strFile.size() + 20);
+		sprintf(szGet,"%s %s HTTP/1.1\r\n%s\r\n",verb, strFile.c_str(),szHTTPHEADER);
 	}
-	//printf("send %s", szGet);
-	if ( !Send(szGet,strlen(szGet) ) )
+
+	if (!Send(szGet,strlen(szGet)))
 	{
-		//printf("send failed\n");
-		
-		//char strError[128];
-		//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-		//g_dialog.SetCaption(0,"Send failed");
-		//g_dialog.SetMessage(0,m_strHostName.c_str());
-		//g_dialog.SetMessage(1,strError);
-		//g_dialog.DoModal();
-
+		CLog::Log("Send failed: %d", WSAGetLastError());
 		Close();
-		return false;
+		return 0;
 	}
 
-	char* pszBuffer = new char[5000];
+	char* pszBuffer = (char*)_alloca(5000), *HeaderEnd;
 	long lReadTotal=0;
 	do
 	{
-		int lenRead;
-		if (!Recv((char*)&pszBuffer[lReadTotal],5000-lReadTotal,lenRead, false))
+		if (lReadTotal >= 5000)
 		{
-			//printf("receive failed\n");
-			//char strError[128];			
-			//sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
-			//g_dialog.SetCaption(0,"Recv failed");
-			//g_dialog.SetMessage(0,m_strHostName.c_str());
-			//g_dialog.SetMessage(1,strError);
-			//g_dialog.DoModal();
+			CLog::Log("Invalid reply from server");
 			Close();
+			return 0;
+		}
+		int lenRead;
+		if (!Recv(&pszBuffer[lReadTotal],5000-lReadTotal,lenRead, false))
+		{
+			CLog::Log("Recv failed: %d", WSAGetLastError());
+			Close();
+			return 0;
 		}
 		lReadTotal+=lenRead;
-	} while (strstr(pszBuffer,"\r\n\r\n")==NULL);
-	char* pResult=strstr(pszBuffer,"HTTP/1.0 200");
-	if (!pResult)
-		pResult=strstr(pszBuffer,"HTTP/1.1 200");
+	} while ((HeaderEnd = strstr(pszBuffer,"\r\n\r\n"))==NULL);
+	HeaderEnd += 4;
 
-
-	delete [] pszBuffer;
-	if (!pResult)
+	// expected return:
+	// HTTP-Version SP Status-Code SP Reason-Phrase CRLF
+	if (strnicmp(pszBuffer, "HTTP/", 5) || pszBuffer[5] != '1' || pszBuffer[6] != '.' || pszBuffer[7] < '0' || pszBuffer[7] > '1')
 	{
-		return false;
+		CLog::Log("Invalid reply from server");
+		Close();
+		return 0; // malformed reply
 	}
-	return true;
+	int status = atoi(pszBuffer + 9);
+	char* end = strchr(pszBuffer + 13, '\r');
+	string strReason(pszBuffer + 13, end);
+	strHeaders.assign(end+2, HeaderEnd);
+
+	if (status < 100)
+	{
+		CLog::Log("Invalid reply from server");
+		Close();
+		return 0; // malformed reply
+	}
+	else if (status < 300)
+	{
+		strData.assign(HeaderEnd, pszBuffer + lReadTotal);
+		return status; // successful
+	}
+	else if (status < 400)
+	{
+		// redirect
+		bool CanHandle = false;
+		switch (status)
+		{
+		case 302:
+			// 302 Found - auto redirect if this is a GET
+			CanHandle = !stricmp(verb, "GET");
+			break;
+		case 303:
+			// 303 See Other - perform GET on the new resource
+			verb = "GET";
+			CanHandle = true;
+			break;
+		case 307:
+			// Temporary Redirect - auto redirect if NOT a GET
+			CanHandle = !!stricmp(verb, "GET");
+			break;
+		}
+
+		Close();
+
+		if (!CanHandle)
+		{
+			CLog::Log("Server returned: %d %s", status, strReason.c_str());
+			return status; // unhandlable
+		}
+
+		const char* pNewLocation = strstr(pszBuffer, "Location:");
+		if (pNewLocation)
+		{
+			pNewLocation += 10;
+			string strURL(pNewLocation, strchr(pNewLocation,'\r'));
+			if (strnicmp(pNewLocation,"http:", 5))
+			{
+				char portstr[8];
+				sprintf(portstr, ":%d", m_iPort);
+				strURL.insert(0, portstr);
+				strURL.insert(0, m_strHostName.c_str());
+				strURL.insert(0, "http://");
+			}
+			return Open(strURL, verb, strHeaders, strData);
+		}
+		else
+		{
+			CLog::Log("Invalid reply from server");
+			Close();
+			return 0; // malformed reply
+		}
+	}
+	else
+	{
+		CLog::Log("Server returned: %d %s", status, strReason.c_str());
+		Close();
+		return status; // error
+	}
 }
 //------------------------------------------------------------------------------------------------------------------
 
