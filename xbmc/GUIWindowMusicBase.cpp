@@ -765,15 +765,17 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
 	{
 		// recursive
 		if (pItem->GetLabel() == "..") return;
-		CStdString strDirectory=pItem->m_strPath;
+		CStdString strDirectory=m_strDirectory;
+		m_strDirectory=pItem->m_strPath;
 		VECFILEITEMS items;
 		CFileItemList itemlist(items);
-		GetDirectory(strDirectory, items);
+		GetDirectory(m_strDirectory, items);
 		DoSort(items);
 		for (int i=0; i < (int) items.size(); ++i)
 		{
 			AddItemToPlayList(items[i]);
 		}
+		m_strDirectory=strDirectory;
 	}
 	else
 	{
