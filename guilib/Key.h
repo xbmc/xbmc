@@ -168,6 +168,10 @@
 #define ACTION_ANALOG_FORWARD			113
 #define ACTION_ANALOG_REWIND			114
 
+#define ACTION_MOVE_ITEM_UP     115  // move item up in playlist
+#define ACTION_MOVE_ITEM_DOWN   116  // move item down in playlist
+
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                 9999
 #define WINDOW_HOME                   10000

@@ -55,6 +55,7 @@ namespace PLAYLIST
 		const CStdString&		GetName() const;
 		void								Remove(const CStdString& strFileName);
 		void								Remove(int position);
+    bool								Swap(int position1, int position2);
 		void 								Clear();
 		virtual void 				Shuffle();
 		int									size() const;

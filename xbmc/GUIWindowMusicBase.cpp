@@ -251,8 +251,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
  
 			if (m_nSelectedItem>-1)
 			{
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_nSelectedItem);
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_nSelectedItem);
+        SetSelectedItem(m_nSelectedItem);
 			}
 			return true;
 		}
@@ -405,6 +404,11 @@ int CGUIWindowMusicBase::GetSelectedItem()
 	return iItem;
 }
 
+void CGUIWindowMusicBase::SetSelectedItem(int index)
+{
+  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,   index);
+  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, index);
+}
 /// \brief Set window to a specific directory
 /// \param strDirectory The directory to be displayed in list/thumb control
 void CGUIWindowMusicBase::Update(const CStdString &strDirectory)

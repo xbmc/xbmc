@@ -212,21 +212,69 @@ void CGUIWindowVideoPlaylist::OnAction(const CAction &action)
 		//	Playlist has no parent dirs
 		return;
 	}
-
   if (action.wID==ACTION_PREVIOUS_MENU)
   {
 		m_gWindowManager.ActivateWindow(WINDOW_HOME);
 		return;
   }
-
 	if (action.wID==ACTION_SHOW_PLAYLIST)
 	{
     OutputDebugString("leave videplaylist!\n");
 		m_gWindowManager.PreviousWindow();
 		return;
 	}
+  if (action.wID == ACTION_MOVE_ITEM_UP)
+  {
+    MoveCurrentPlayListItem(ACTION_MOVE_ITEM_UP);
+    return;
+  }
+  if (action.wID == ACTION_MOVE_ITEM_DOWN)
+  {
+    MoveCurrentPlayListItem(ACTION_MOVE_ITEM_DOWN);
+    return;
+  }
 
 	CGUIWindow::OnAction(action);
+}
+
+void CGUIWindowVideoPlaylist::SetSelectedItem(int index)
+{
+  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,   index);
+  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, index);
+}
+
+void CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iAction)
+{
+  int iFocusedControl = GetFocusedControl();
+  if (iFocusedControl==CONTROL_THUMBS || iFocusedControl==CONTROL_LIST)
+  {
+    int iSelected = GetSelectedItem();
+    int iNew      = iSelected;
+    if (iAction == ACTION_MOVE_ITEM_UP) {
+      iNew--;
+    }
+    else {
+      iNew++;
+    }
+    //	The current playing or target song can't be moved
+    if (
+      (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) && 
+      (g_application.IsPlayingAudio()) && 
+      (
+        (g_playlistPlayer.GetCurrentSong() == iSelected) ||
+        (g_playlistPlayer.GetCurrentSong() == iNew)
+        )
+    ) {
+      return;
+    }
+    CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
+    if (playlist.Swap(iSelected, iNew))
+    {
+      Update(m_strDirectory);
+      SetSelectedItem(iNew);
+      return;
+    }
+  }
 }
 
 void CGUIWindowVideoPlaylist::ClearPlayList()
