@@ -153,8 +153,20 @@ void CKaiClient::SetObserver(IBuddyObserver* aObserver)
 
 		aObserver->OnInitialise(this);
 
-		// Discover location of KAI engine
-		Discover();
+		if (g_stSettings.szOnlineKaiServer[0]!=0x00)
+		{
+			SOCKADDR_IN sockAddr;
+			memset(&sockAddr, 0, sizeof(sockAddr));
+			sockAddr.sin_family = AF_INET;
+			sockAddr.sin_addr.s_addr = inet_addr(g_stSettings.szOnlineKaiServer);
+			sockAddr.sin_port = htons(KAI_SYSTEM_PORT);				
+			
+			Attach(sockAddr);
+		}
+		else
+		{
+			Discover();
+		}
 	}
 }
 void CKaiClient::RemoveObserver()
@@ -289,6 +301,7 @@ CStdString CKaiClient::GetCurrentVector()
 
 void CKaiClient::Discover()
 {	
+	CLog::Log(LOGNOTICE, "KAICLIENT: Discovering Kai engine via UDP broadcast." );
 	client_state = State::Discovering;
 	CStdString strInitiateDiscoveryMessage = "KAI_CLIENT_DISCOVER;";
 	Broadcast(KAI_SYSTEM_PORT, strInitiateDiscoveryMessage);
@@ -301,7 +314,6 @@ void CKaiClient::Detach()
 		CStdString strDisconnectionMessage = "KAI_CLIENT_DETACH;";
 		client_state = State::Disconnected;
 		Send(server_addr, strDisconnectionMessage);
-		Broadcast(KAI_SYSTEM_PORT, strDisconnectionMessage);
 	}
 }
 
@@ -312,10 +324,30 @@ void CKaiClient::Reattach()
 	m_bContactsSettling = TRUE;
 	m_nFriendsOnline = 0;
 
-	Discover();
+	if (g_stSettings.szOnlineKaiServer[0]!=0x00)
+	{
+		SOCKADDR_IN sockAddr;
+		memset(&sockAddr, 0, sizeof(sockAddr));
+		sockAddr.sin_family = AF_INET;
+		sockAddr.sin_addr.s_addr = inet_addr(g_stSettings.szOnlineKaiServer);
+		sockAddr.sin_port = htons(KAI_SYSTEM_PORT);				
+		
+		Attach(sockAddr);
+	}
+	else
+	{
+		Discover();
+	}
 }
 void CKaiClient::Attach(SOCKADDR_IN& aAddress)
 {	
+	char szIP[32];
+	IN_ADDR host;
+	memcpy(&host, &aAddress.sin_addr, sizeof(host));
+	XNetInAddrToString(host,szIP,32);
+
+	CLog::Log(LOGNOTICE, "KAICLIENT: Attach to Kai engine host at %s", szIP);
+
 	client_state = State::Attaching;
 	CStdString strAttachMessage = "KAI_CLIENT_ATTACH;";
 	server_addr = aAddress;
@@ -476,15 +508,20 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 {
 	CHAR* szMessage = strtok( (char*)((LPCSTR)aMessage), ";"); 
 
-//	OutputDebugString(szMessage);
-//	OutputDebugString("\r\n");
-
 	// now depending on state...
 	switch (client_state)
 	{
 		case State::Discovering:
 			if (strcmp(szMessage,"KAI_CLIENT_ENGINE_HERE")==0)
 			{
+				// if no server setting is stored, store engine address provided in response to discover message.
+				if (g_stSettings.szOnlineKaiServer[0]==0x00)
+				{
+					IN_ADDR server;
+					memcpy(&server, &aRemoteAddress.sin_addr, sizeof(server));
+					XNetInAddrToString(server,g_stSettings.szOnlineKaiServer,32);
+				}
+
 				Attach(aRemoteAddress);
 			}
 			break;
@@ -582,9 +619,6 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_ON")==0)
 			{
-				//OutputDebugString(szMessage);
-				//OutputDebugString("\r\n");
-
 				if (observer!=NULL)
 				{
 					CStdString strContactName = strtok(NULL, ";");  			  
@@ -593,9 +627,6 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_OFF")==0)
 			{
-				//OutputDebugString(szMessage);
-				//OutputDebugString("\r\n");
-
 				if (observer!=NULL)
 				{
 					CStdString strContactName = strtok(NULL, ";");  			  
@@ -604,16 +635,10 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_START")==0)
 			{
-				//OutputDebugString(szMessage);
-				//OutputDebugString("\r\n");
-
 				VoiceChatStart();
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX")==0)
 			{
-				//OutputDebugString(szMessage);
-				//OutputDebugString("\r\n");
-
 				CStdString strContactName = strtok(NULL, ";");
 
 				if (m_pDSound)
@@ -645,16 +670,10 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_STOP")==0)
 			{
-				//OutputDebugString(szMessage);
-				//OutputDebugString("\r\n");
-
 				VoiceChatStop();
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_RING")==0)
 			{
-				//OutputDebugString(szMessage);
-				//OutputDebugString("\r\n");
-
 				if (observer!=NULL)
 				{
 					CStdString strContactName = strtok(NULL, ";");  				  
@@ -754,7 +773,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_ARENA_STATUS")==0)
 			{
-				CStdString strMode			= strtok(NULL, ";");
+				CStdString strMode = strtok(NULL, ";");
 				m_bHosting = atoi(strMode.c_str()) >1;
 
 				if (observer!=NULL)
