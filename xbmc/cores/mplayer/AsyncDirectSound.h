@@ -94,6 +94,7 @@ private:
   LONGLONG							m_dwTicksPerSec;
 	int										m_iAudioSkip;
 	unsigned int					m_uiSamplesPerSec ;
+	bool					xbox_Ac3encoder_active;
 };
 
 #endif // !defined(AFX_ASYNCAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)
