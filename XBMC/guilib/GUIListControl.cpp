@@ -313,7 +313,7 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
 				while (m_iOffset+m_iCursorY >= (int)m_vecItems.size()) m_iCursorY--;
 
 				//	moving to the last page
-				if (m_iOffset+m_iItemsPerPage>(int)m_vecItems.size())
+				if (m_iOffset+m_iItemsPerPage>(int)m_vecItems.size() && (int)m_vecItems.size()-1>m_iItemsPerPage)
 				{
 					m_iOffset=m_vecItems.size()-m_iItemsPerPage;
 					m_iCursorY=m_iItemsPerPage-1;
@@ -362,11 +362,10 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
 					m_iCursorY -=m_iItemsPerPage;
 				}
 				//	moving to the last item, make sure the whole page is filled
-				if (message.GetParam1() == (int)m_vecItems.size()-1)
+				if (message.GetParam1() == (int)m_vecItems.size()-1 && (int)m_vecItems.size()-1>m_iItemsPerPage )
 				{
 					m_iOffset=m_vecItems.size()-m_iItemsPerPage;
 					m_iCursorY=m_iItemsPerPage-1;
-
 				}
 				m_upDown.SetValue(iPage);
 			}
