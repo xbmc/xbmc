@@ -707,6 +707,7 @@ void CSNTPClient::OnExit()
 void CSNTPClient::Process()
 {
 	if (!g_stSettings.m_bTimeServerEnabled) return;
+	int nTries = 0;
 	while (!m_bStop && g_stSettings.m_bTimeServerEnabled)
 	{
 		NtpServerResponse response;
@@ -719,9 +720,17 @@ void CSNTPClient::Process()
 
 			CNtpTime newTime(CNtpTime::GetCurrentTime() + response.m_LocalClockOffset);
 			SetClientTime(newTime);
+
+			// only set time once
+			return;
 		}
 
-		for (int i=0; i < 120; i++) 
+		// only try 3 times
+		if (++nTries >= 3)
+			return;
+
+		// couldn't set time, wait 5 mins and have another go
+		for (int i=0; i < 600; i++) 
 		{
 			Sleep(500);
 			if (m_bStop || false==g_stSettings.m_bTimeServerEnabled) break;
