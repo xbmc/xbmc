@@ -87,7 +87,6 @@ bool CHTTP::ReadData(string& strData)
 			++p;
 
 			int len = strtol(num, NULL, 16);
-			CLog::DebugLog("Chunk len: %d", len);
 			if (!len)
 				break; // end of data
 
