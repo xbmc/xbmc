@@ -57,16 +57,20 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 
 	if (fd < 0)
 	{
-		int error;
-		if (errno == ENODEV) error = NT_STATUS_INVALID_COMPUTER_NAME;
-		else error = map_nt_error_from_unix(errno);
+		int nt_error;
+		if (errno == ENODEV) nt_error = NT_STATUS_INVALID_COMPUTER_NAME;
+		else nt_error = map_nt_error_from_unix(errno);
+
+		// write error to logfile
+		CLog::Log("SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
+			strPath.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
 
 		// is we have an 'invalid handle' error we don't display the error
 		// because most of the time this means there is no cdrom in the server's
 		// cdrom drive.
-		if (error != 0xc0000008)
+		if (nt_error != 0xc0000008)
 		{
-			const char* cError = get_friendly_nt_error_msg(error);
+			const char* cError = get_friendly_nt_error_msg(nt_error);
 			
 			CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
 			pDialog->SetHeading(257);
