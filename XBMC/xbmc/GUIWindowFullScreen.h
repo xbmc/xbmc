@@ -29,6 +29,7 @@ private:
   bool						m_bShowTime;
 	bool						m_bShowInfo;
 	bool						m_bShowStatus;
+	bool						m_bShowCurrentTime;
 	DWORD						m_dwTimeStatusShowTime;
 	DWORD						m_dwTimeCodeTimeout;
 	DWORD						m_dwFPSTime;
