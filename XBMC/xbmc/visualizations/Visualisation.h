@@ -10,6 +10,7 @@
 #endif // _MSC_VER > 1000
 #include <xtl.h>
 #include "../cores/DllLoader/dll.h"
+#include "stdstring.h"
 #include <memory>
 using namespace std;
 
@@ -28,8 +29,8 @@ struct VIS_INFO
 struct Visualisation
 {
 public:
-	void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight);
-	void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample);
+	void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szVisualisation);
+	void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
 	void (__cdecl* AudioData)(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
 	void (__cdecl* Render) ();
 	void (__cdecl* Stop)();
@@ -43,12 +44,12 @@ public:
 class CVisualisation
 {
 public:
-	CVisualisation(struct Visualisation* pVisz,DllLoader* pLoader);
+	CVisualisation(struct Visualisation* pVisz,DllLoader* pLoader, const CStdString& strVisualisationName);
 	virtual ~CVisualisation();
 
 	// Things that MUST be supplied by the child classes
 	void Create();
-	void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample);
+	void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName);
 	void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
 	void Render();
 	void Stop();
@@ -56,6 +57,7 @@ public:
 private:
 	auto_ptr<struct Visualisation> m_pVisz;
 	auto_ptr<DllLoader> m_pLoader;
+  CStdString m_strVisualisationName;
 };
 
 
