@@ -5,7 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 06-03-2005 added: infolabel values, MusicPlayer.TimeRemaining and VideoPlayer.TimeRemaining
+  - 08-03-2005 updated: Italian language file (Thnx to kotix)
+  - 08-03-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+  - 08-03-2005 added: infolabel values, MusicPlayer.TimeRemaining and VideoPlayer.TimeRemaining
   - 08-03-2005 fixed: music nav, getting content of the root dirs fails with none english languages
   - 08-03-2005 fixed: Button scroller goes from bottom<->top if wraparound is off and the controlup, controldown tags are set to the button scroller.
   - 07-03-2005 fixed: dvd overlay alignment problem.
