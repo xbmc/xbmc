@@ -178,7 +178,7 @@ void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
 		}
 		else if (m_bIsOnline)
 		{
-			if (m_nStatus==0 && m_pIdleIcon) // idle
+			if (m_nStatus==0 && m_bBusy && m_pIdleIcon) // idle
 			{
 				m_pIdleIcon->SetPosition(iInviteIconPosX,iPingPosY);
 				m_pIdleIcon->Render();
