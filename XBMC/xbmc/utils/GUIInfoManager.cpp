@@ -198,6 +198,28 @@ CStdString CGUIInfoManager::GetMusicLabel(const CStdString &strItem)
 	return "";
 }
 
+CStdString CGUIInfoManager::GetVideoLabel(const CStdString &strItem)
+{
+	if (strItem == "time")
+	{
+		CStdString strTime;
+		__int64 lPTS=10*g_application.m_pPlayer->GetTime();
+		int hh = (int)(lPTS / 36000) % 100;
+		int mm = (int)((lPTS / 600) % 60);
+		int ss = (int)((lPTS /  10) % 60);
+		if (hh >=1)
+		{
+			strTime.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
+		}
+		else
+		{
+			strTime.Format("%02.2i:%02.2i",mm,ss);
+		}
+		return strTime;
+	}
+	return "";
+}
+
 CStdString CGUIInfoManager::GetCurrentPlayTime()
 {
 	CStdString strTime;
