@@ -76,6 +76,12 @@ public:
 	virtual bool		CanRecord() ;
 	virtual bool		IsRecording();
 	virtual bool		Record(bool bOnOff) ;
+  virtual void    SeekPercentage(int iPercent=0);
+  virtual int     GetPercentage();
+  virtual void    SetAVDelay(float fValue=0.0f);
+  virtual float   GetAVDelay();
+  virtual void    SetSubTittleDelay(float fValue=0.0f);
+  virtual float   GetSubTitleDelay();
 protected:
   bool                load();
 	virtual void				OnStartup();

@@ -284,6 +284,9 @@
 				RelativePath=".\GUIRadioButtonControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUISliderControl.cpp">
+			</File>
+			<File
 				RelativePath=".\GUISpinControl.cpp">
 			</File>
 			<File
@@ -380,6 +383,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIRadioButtonControl.h">
+			</File>
+			<File
+				RelativePath=".\GUISliderControl.h">
 			</File>
 			<File
 				RelativePath=".\GUISpinControl.h">

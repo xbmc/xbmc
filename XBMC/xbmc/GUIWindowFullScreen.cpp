@@ -47,25 +47,6 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   //  - delay
   //  - language
   
-  COSDSubMenu videoMenu(291,100,100);
-  COSDOptionFloatRange optionAVDelay(MENU_ACTION_AVDELAY,297,-10.0f,10.0f,0.01f,0.0f);
-  COSDOptionIntRange   optionPercentage(MENU_ACTION_SEEK,298,0,100,1,0);
-  videoMenu.AddOption(&optionAVDelay);
-  videoMenu.AddOption(&optionPercentage);
-  
-
-  COSDSubMenu audioMenu(292,100,100);
-
-  COSDSubMenu SubtitleMenu(293,100,100);
-  COSDOptionFloatRange optionSubtitleDelay(MENU_ACTION_SUBTITLEDELAY,303,-10.0f,10.0f,0.01f,0.0f);
-  COSDOptionBoolean    optionEnable(MENU_ACTION_SUBTITLEONOFF,305);
-
-  SubtitleMenu.AddOption(&optionSubtitleDelay);
-  SubtitleMenu.AddOption(&optionEnable);
-
-  m_osdMenu.AddSubMenu(videoMenu);
-  m_osdMenu.AddSubMenu(audioMenu);
-  m_osdMenu.AddSubMenu(SubtitleMenu);
 }
 
 CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
@@ -339,6 +320,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
 void CGUIWindowFullScreen::HideOSD()
 {
+  m_osdMenu.Clear();
   SET_CONTROL_HIDDEN(GetID(),BTN_OSD_VIDEO);
   SET_CONTROL_HIDDEN(GetID(),BTN_OSD_AUDIO);
   SET_CONTROL_HIDDEN(GetID(),BTN_OSD_SUBTITLE);
@@ -351,6 +333,31 @@ void CGUIWindowFullScreen::HideOSD()
 
 void CGUIWindowFullScreen::ShowOSD()
 {
+  m_osdMenu.Clear();
+  COSDSubMenu videoMenu(291,100,100);
+  float fValue=g_application.m_pPlayer->GetAVDelay();
+  COSDOptionFloatRange optionAVDelay(MENU_ACTION_AVDELAY,297,-10.0f,10.0f,0.01f,fValue);
+
+  int iValue=g_application.m_pPlayer->GetPercentage();
+  COSDOptionIntRange   optionPercentage(MENU_ACTION_SEEK,298,0,100,1,iValue);
+  videoMenu.AddOption(&optionAVDelay);
+  videoMenu.AddOption(&optionPercentage);
+  
+
+  COSDSubMenu audioMenu(292,100,100);
+
+  COSDSubMenu SubtitleMenu(293,100,100);
+  fValue=g_application.m_pPlayer->GetSubTitleDelay();
+  COSDOptionFloatRange optionSubtitleDelay(MENU_ACTION_SUBTITLEDELAY,303,-10.0f,10.0f,0.01f,fValue);
+  COSDOptionBoolean    optionEnable(MENU_ACTION_SUBTITLEONOFF,305);
+
+  SubtitleMenu.AddOption(&optionSubtitleDelay);
+  SubtitleMenu.AddOption(&optionEnable);
+
+  m_osdMenu.AddSubMenu(videoMenu);
+  m_osdMenu.AddSubMenu(audioMenu);
+  m_osdMenu.AddSubMenu(SubtitleMenu);
+
   SET_CONTROL_VISIBLE(GetID(),BTN_OSD_VIDEO);
   SET_CONTROL_VISIBLE(GetID(),BTN_OSD_AUDIO);
   SET_CONTROL_VISIBLE(GetID(),BTN_OSD_SUBTITLE);
@@ -368,4 +375,27 @@ bool CGUIWindowFullScreen::OSDVisible() const
 
 void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
 {
+  switch (iAction)
+  {
+    case MENU_ACTION_SEEK:
+    {
+      const COSDOptionIntRange* intOption = (const COSDOptionIntRange*)option;
+      g_application.m_pPlayer->SeekPercentage(intOption->GetValue());
+    }
+    break;
+
+    case MENU_ACTION_AVDELAY:
+    {
+      const COSDOptionFloatRange* floatOption = (const COSDOptionFloatRange*)option;
+      g_application.m_pPlayer->SetAVDelay(floatOption->GetValue());
+    }
+    break;
+
+    case MENU_ACTION_SUBTITLEDELAY:
+    {
+      const COSDOptionFloatRange* floatOption = (const COSDOptionFloatRange*)option;
+      g_application.m_pPlayer->SetSubTittleDelay(floatOption->GetValue());
+    }
+    break;
+  }
 }

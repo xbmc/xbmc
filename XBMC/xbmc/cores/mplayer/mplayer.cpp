@@ -77,7 +77,7 @@ extern "C"
     psetPercentage(iPercent);
   }
 
-  int mplayer_getPercentage(float fPercent)
+  int mplayer_getPercentage()
   {
     return pgetPercentage();
   }
