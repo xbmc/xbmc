@@ -103,7 +103,7 @@ public:
 		GUICONTROL_MOVER,
 		GUICONTROL_RESIZE
 	};
-	GUICONTROLTYPES GetControlType() { return ControlType; }
+	GUICONTROLTYPES GetControlType() const { return ControlType; }
 
 protected:
   virtual void       Update() {};
