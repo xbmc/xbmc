@@ -341,6 +341,11 @@ public:
     bool m_bMyMusicNavAlbumsSortAscending;
     bool m_bMyMusicNavSongsSortAscending;
 
+    // for scanning
+    bool m_bMyMusicIsScanning;
+    bool m_bMyMusicOldUseTags;
+    bool m_bMyMusicOldFindThumbs;
+
     int m_iSmallStepBackSeconds;
     int m_iSmallStepBackTries;
     int m_iSmallStepBackDelay;

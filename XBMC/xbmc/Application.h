@@ -143,6 +143,9 @@ public:
   double GetTime() const;
   void SeekTime( double dTime = 0.0 );
 
+  void SaveMusicScanSettings();
+  void RestoreMusicScanSettings();
+
   CGUIWindowHome m_guiHome;
   CGUIWindowPrograms m_guiPrograms;
   CGUIWindowSettingsProfile m_guiSettingsProfile;

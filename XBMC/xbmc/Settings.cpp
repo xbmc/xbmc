@@ -276,6 +276,11 @@ CSettings::CSettings(void)
 
   m_iLastLoadedProfileIndex = -1;
 
+  // defaults for scanning
+  g_stSettings.m_bMyMusicIsScanning = false;
+  g_stSettings.m_bMyMusicOldUseTags = true;
+  g_stSettings.m_bMyMusicOldFindThumbs = true;
+
   xbmcXmlLoaded = false;
 }
 
@@ -1009,7 +1014,16 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
       GetInteger(pChild, "playlistrooticons", g_stSettings.m_iMyMusicPlaylistViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
       GetBoolean(pChild, "repeat", g_stSettings.m_bMyMusicPlaylistRepeat);
       GetBoolean(pChild, "shuffle", g_stSettings.m_bMyMusicPlaylistShuffle);
-
+    }
+    // use tags and find thumbs should be enabled when a scan is iniated
+    // these settings will keep track of the previous values and restore them
+    // if the user happened to reboot in the middle of the scan
+    pChild = pElement->FirstChildElement("scanning");
+    if (pChild)
+    {
+      GetBoolean(pChild, "isscanning", g_stSettings.m_bMyMusicIsScanning);
+      GetBoolean(pChild, "oldusetags", g_stSettings.m_bMyMusicOldUseTags);
+      GetBoolean(pChild, "oldfindthumbs", g_stSettings.m_bMyMusicOldFindThumbs);
     }
     GetInteger(pElement, "startwindow", g_stSettings.m_iMyMusicStartWindow, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, WINDOW_MUSIC_NAV); //501; view songs
     GetBoolean(pElement, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
@@ -1284,6 +1298,14 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
     SetInteger(pChild, "playlistrooticons", g_stSettings.m_iMyMusicPlaylistViewAsIcons);
     SetBoolean(pChild, "repeat", g_stSettings.m_bMyMusicPlaylistRepeat);
     SetBoolean(pChild, "shuffle", g_stSettings.m_bMyMusicPlaylistShuffle);
+  }
+  {
+    TiXmlElement childNode("scanning");
+    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
+    if (!pChild) return false;
+    SetBoolean(pChild, "isscanning", g_stSettings.m_bMyMusicIsScanning);
+    SetBoolean(pChild, "oldusetags", g_stSettings.m_bMyMusicOldUseTags);
+    SetBoolean(pChild, "oldfindthumbs", g_stSettings.m_bMyMusicOldFindThumbs);
   }
 
   SetInteger(pNode, "startwindow", g_stSettings.m_iMyMusicStartWindow);
