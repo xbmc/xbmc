@@ -1,0 +1,36 @@
+menu.o: menu.c ../config.h ../libvo/osd.h ../libvo/font_load.h \
+  ../osdep/keycodes.h ../asxparser.h ../libmpdemux/stream.h \
+  ../libmpdemux/mp_msg.h ../mp_msg.h ../libmpdemux/network.h \
+  ../libmpdemux/config.h ../libmpdemux/url.h ../libmpdemux/http.h \
+  ../libmpdvdkit2/dvd_reader.h ../libmpdvdkit2/ifo_types.h \
+  ../libmpdvdkit2/ifo_read.h ../libmpdvdkit2/nav_read.h \
+  ../libmpdvdkit2/nav_types.h ../libmpcodecs/img_format.h \
+  ../libmpcodecs/mp_image.h ../m_option.h ../m_struct.h menu.h
+vf_menu.o: vf_menu.c ../config.h ../mp_msg.h ../libmpcodecs/img_format.h \
+  ../libmpcodecs/mp_image.h ../libmpcodecs/vf.h ../libmpcodecs/mpc_info.h \
+  ../libmpcodecs/vfcap.h ../libvo/fastmemcpy.h ../libvo/video_out.h \
+  ../libvo/img_format.h ../libvo/font_load.h ../input/input.h \
+  ../m_struct.h menu.h
+menu_cmdlist.o: menu_cmdlist.c ../config.h ../libmpcodecs/img_format.h \
+  ../libmpcodecs/mp_image.h ../m_option.h ../m_struct.h ../asxparser.h \
+  menu.h menu_list.h ../libvo/font_load.h ../input/input.h ../version.h
+menu_pt.o: menu_pt.c ../config.h ../libmpcodecs/img_format.h \
+  ../libmpcodecs/mp_image.h ../m_struct.h ../m_option.h menu.h \
+  menu_list.h ../playtree.h ../input/input.h
+menu_list.o: menu_list.c ../config.h ../libmpcodecs/img_format.h \
+  ../libmpcodecs/mp_image.h ../m_struct.h menu.h ../libvo/font_load.h \
+  ../osdep/keycodes.h menu_list.h
+menu_filesel.o: menu_filesel.c ../config.h ../m_struct.h ../m_option.h \
+  ../libmpcodecs/img_format.h ../libmpcodecs/mp_image.h menu.h \
+  menu_list.h ../input/input.h ../osdep/keycodes.h
+menu_txt.o: menu_txt.c ../config.h ../libmpcodecs/img_format.h \
+  ../libmpcodecs/mp_image.h ../m_struct.h ../m_option.h menu.h \
+  ../libvo/font_load.h ../osdep/keycodes.h
+menu_console.o: menu_console.c ../config.h ../libmpcodecs/img_format.h \
+  ../libmpcodecs/mp_image.h ../m_struct.h ../m_option.h menu.h \
+  ../libvo/font_load.h ../osdep/keycodes.h ../input/input.h \
+  ../osdep/timer.h
+menu_param.o: menu_param.c ../config.h ../m_struct.h ../m_option.h \
+  ../m_config.h ../asxparser.h ../libmpcodecs/img_format.h \
+  ../libmpcodecs/mp_image.h menu.h menu_list.h ../input/input.h \
+  ../osdep/keycodes.h
