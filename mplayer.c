@@ -3887,7 +3887,13 @@ if(rel_seek_secs || abs_seek_pos){
 	  if( 1 ) { // Let the compiler optimize this out
 #endif
 #ifdef _XBOX
-      int len = demuxer_get_time_length(demuxer);
+      //if demuxer->filepos == 0, we use an alternate way to calculate progressbar
+      //else use mplayer's way
+      int len;
+      if (!demuxer->filepos)
+        len = demuxer_get_time_length(demuxer);
+      else
+        len = ((demuxer->movi_end-demuxer->movi_start)>>8);
 #else
 	  int len=((demuxer->movi_end-demuxer->movi_start)>>8);
 #endif
@@ -3895,7 +3901,10 @@ if(rel_seek_secs || abs_seek_pos){
 	    osd_visible=sh_video->fps; // 1 sec
 	    vo_osd_progbar_type=0;
 #ifdef _XBOX
-		vo_osd_progbar_value=demuxer_get_percent_pos(demuxer)*256/100;
+        if (!demuxer->filepos)
+		  vo_osd_progbar_value=demuxer_get_percent_pos(demuxer)*256/100;
+		else
+		  vo_osd_progbar_value=(demuxer->filepos-demuxer->movi_start)/len;
 #else
 	    vo_osd_progbar_value=(demuxer->filepos-demuxer->movi_start)/len;
 #endif
@@ -4141,8 +4150,9 @@ if(vo_config_count && vo_spudec) {
 
 } // while(!eof)
 
+#ifndef _XBOX //prevents spam :)
 mp_msg(MSGT_GLOBAL,MSGL_V,"EOF code: %d  \n",eof);
-
+#endif
 }
 
 
@@ -4552,6 +4562,12 @@ void mplayer_setTime(int iTime)
 {
     abs_seek_pos = 1;
     rel_seek_secs = iTime;
+}
+
+void mplayer_setTimeMs(__int64 iTime)
+{
+    abs_seek_pos = 1;
+    rel_seek_secs = iTime/1000.0f;
 }
 
 int mplayer_getTime()

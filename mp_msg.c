@@ -1,3 +1,8 @@
+#ifdef _XBOX
+//disable fflush for now to allow <mplayerdebug>true</mplayerdebug> in xbmc
+//we can remove this later!
+#define fflush(x) {}
+#endif
 
 //#define MSG_USE_COLORS
 
@@ -63,7 +68,7 @@ void mp_msg_c( int x, const char *format, ... ){
 #if 1
     va_list va;
     char tmp[MSGSIZE_MAX];
-    
+
     if((x&255)>mp_msg_levels[x>>8]) return; // do not display
     va_start(va, format);
     vsnprintf(tmp, MSGSIZE_MAX, mp_gettext(format), va);
@@ -104,7 +109,7 @@ void mp_msg_c( int x, const char *format, ... ){
           printf("\033[%d;3%dm***  COLOR TEST %d  ***\n",(c>7),c&7,c);
       flag=0;
     }
-#endif    
+#endif
     {	unsigned char v_colors[10]={9,9,11,14,15,7,6,5,5,5};
 	int c=v_colors[(x & 255)];
 	fprintf(((x & 255) <= MSGL_WARN)?stderr:stdout, "\033[%d;3%dm",(c>7),c&7);
@@ -125,7 +130,7 @@ void mp_msg_c( int x, const char *format, ... ){
       char tmp[16*80];
       vsnprintf( tmp,8*80,format,va ); tmp[8*80-1]=0;
       switch( x&255 ) {
-       case MSGL_FATAL: 
+       case MSGL_FATAL:
               fprintf( stderr,"%s",tmp );
 	      fflush(stderr);
               gtkMessageBox( GTK_MB_FATAL|GTK_MB_SIMPLE,tmp );
