@@ -227,8 +227,6 @@ void CGUIImage::AllocResources()
 	m_dwFrameCounter=0;
 	m_iCurrentImage=0;
   m_iCurrentLoop=0;
-  // Create a vertex buffer for rendering the image
-  g_graphicsContext.Get3DDevice()->CreateVertexBuffer( 4*sizeof(CGUIImage::VERTEX), D3DUSAGE_WRITEONLY, 0L, D3DPOOL_DEFAULT, &m_pVB );
 
   int iImages = g_TextureManager.Load(m_strFileName, m_dwColorKey);
   if (!iImages) return;
@@ -240,7 +238,12 @@ void CGUIImage::AllocResources()
   }
 
   // Set state to render the image
+  // Create a vertex buffer for rendering the image
+  g_graphicsContext.Lock(); //Lock since this can be called based on a keypress while video is running.
+  g_graphicsContext.Get3DDevice()->CreateVertexBuffer( 4*sizeof(CGUIImage::VERTEX), D3DUSAGE_WRITEONLY, 0L, D3DPOOL_DEFAULT, &m_pVB );
   Update();
+  g_graphicsContext.Unlock();
+  
 }
 
 void CGUIImage::FreeResources()
@@ -268,7 +271,10 @@ void CGUIImage::Update()
   if (m_vecTextures.size()==0) return;
 
   CGUIImage::VERTEX* vertex=NULL;
+  
+  g_graphicsContext.Lock(); 
   m_pVB->Lock( 0, 0, (BYTE**)&vertex, 0L );
+  g_graphicsContext.Unlock(); 
 
   float x=(float)m_dwPosX;
   float y=(float)m_dwPosY;
