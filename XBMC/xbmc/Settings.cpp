@@ -1222,7 +1222,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetString(pElement, "kaiusername", g_stSettings.szOnlineUsername, "");
 		GetString(pElement, "kaipassword", g_stSettings.szOnlinePassword, "");
 
-		GetString(pElement, "timeserverhost", g_stSettings.m_strTimeServer, "207.46.248.43");
+		GetString(pElement, "timeserverhost", g_stSettings.m_strTimeServer, "207.46.130.100");
 
 		GetInteger(pElement, "webserverport", g_stSettings.m_iWebServerPort, 80, 0, 65535);
 	}
