@@ -89,6 +89,16 @@
 #define ACTION_AUDIO_DELAY_PLUS				55
 #define ACTION_AUDIO_NEXT_LANGUAGE		56
 #define ACTION_CHANGE_RESOLUTION		57
+#define REMOTE_0						58
+#define REMOTE_1						59
+#define REMOTE_2						60
+#define REMOTE_3						61
+#define REMOTE_4						62
+#define REMOTE_5						63
+#define REMOTE_6						64
+#define REMOTE_7						65
+#define REMOTE_8						66
+#define REMOTE_9						67
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID				-1

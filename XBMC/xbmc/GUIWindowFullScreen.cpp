@@ -8,6 +8,7 @@
 #include "osd/OSDOptionBoolean.h"
 #include "cores/mplayer/mplayer.h"
 #include "utils/singlelock.h"
+#include <stdio.h>
 
 #define BLUE_BAR    0
 #define LABEL_ROW1 10
@@ -32,6 +33,9 @@ extern int m_iAudioStreamIDX;
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 :CGUIWindow(0)
 {
+	timestamp[0]=0;
+	ts_counter=0;
+	m_bShowTime=false;
 	m_bShowInfo=false;
 	m_dwLastTime=0;
 	m_fFPS=0;
@@ -222,6 +226,36 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		case ACTION_AUDIO_NEXT_LANGUAGE:
 			//g_application.m_pPlayer->AudioOffset(false);
 		break;
+		case REMOTE_0:
+			CGUIWindowFullScreen::ChangetheTimeCode(REMOTE_0);
+		break;
+		case REMOTE_1:
+			ChangetheTimeCode(REMOTE_1);
+		break;
+		case REMOTE_2:
+			ChangetheTimeCode(REMOTE_2);
+		break;
+		case REMOTE_3:
+			ChangetheTimeCode(REMOTE_3);
+		break;
+		case REMOTE_4:
+			ChangetheTimeCode(REMOTE_4);
+		break;
+		case REMOTE_5:
+			ChangetheTimeCode(REMOTE_5);
+		break;
+		case REMOTE_6:
+			ChangetheTimeCode(REMOTE_6);
+		break;
+		case REMOTE_7:
+			ChangetheTimeCode(REMOTE_7);
+		break;
+		case REMOTE_8:
+			ChangetheTimeCode(REMOTE_8);
+		break;
+		case REMOTE_9:
+			ChangetheTimeCode(REMOTE_9);
+		break;
 	}
 	CGUIWindow::OnAction(action);
 }
@@ -275,6 +309,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   {
     if (g_application.m_pPlayer->IsPaused() )return true;
   }
+  if (m_bShowTime) return true;
   if (m_bShowStatus) return true;
   if (m_bShowInfo) return true;
   if (m_bOSDVisible) return true;
@@ -408,6 +443,21 @@ void CGUIWindowFullScreen::RenderFullScreen()
 	  m_osdMenu.Draw();
     return;
   }
+    if (m_bShowTime && ts_counter != 0)
+  {
+	  bRenderGUI=true;
+	  char displaytime[12] = "??:??";
+	CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
+	for(int count = 0; count < ts_counter; count++)
+	{
+		if(timestamp[count] == -1)
+			displaytime[count] = ':';
+		else
+			displaytime[count] = (char)timestamp[count]+48;
+    }
+	msg.SetLabel(displaytime); 
+    OnMessage(msg);
+  }		
   if ( bRenderGUI)
   {
     if (m_bShowStatus||m_bShowInfo)
@@ -416,6 +466,13 @@ void CGUIWindowFullScreen::RenderFullScreen()
       SET_CONTROL_VISIBLE(GetID(),LABEL_ROW2);
       SET_CONTROL_VISIBLE(GetID(),LABEL_ROW3);
       SET_CONTROL_VISIBLE(GetID(),BLUE_BAR);
+    }
+    else if (m_bShowTime)
+	{
+		SET_CONTROL_VISIBLE(GetID(),LABEL_ROW1);
+		SET_CONTROL_HIDDEN(GetID(),LABEL_ROW2);
+		SET_CONTROL_HIDDEN(GetID(),LABEL_ROW3);
+		SET_CONTROL_VISIBLE(GetID(),BLUE_BAR);
     }
     else
     {
@@ -580,4 +637,34 @@ void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
       g_application.Restart(true);
     break;
   }
+}
+void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
+{
+	if(remote >=58 && remote <= 67) //Make sure it's only for the remote
+	{
+		m_bShowTime = true;
+		int	itime = remote - 58;
+			if(ts_counter <= 4 && ts_counter != 2)
+			{
+				timestamp[ts_counter++] = itime;
+				if(ts_counter == 2)
+					timestamp[ts_counter++] = -1;
+			}
+            if(ts_counter > 4)
+			{
+				long itotal,ih,im,is=0;                 
+				ih =  (timestamp[0]-0)*10;
+				ih += (timestamp[1]-0);   
+				im =  (timestamp[3]-0)*10;   
+				im += (timestamp[4]-0);   
+				im*=60;
+				ih*=3600; 
+				itotal = ih+im+is;
+				unsigned int temp = g_application.m_pPlayer->GetTime();
+
+        if(itotal < temp)
+					g_application.m_pPlayer->SeekTime(itotal);
+				ts_counter = 0;
+			}
+	}
 }
