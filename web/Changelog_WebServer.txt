@@ -27,7 +27,7 @@ Project Mayhem WebServer V1.1
  - show info of the current playing item
  - add some hidden features ;)
  
- = Changelog =====================
+= Changelog =====================
  
  2004/10/14: pyRAnHa (version 1.1.1, xbmc relase 1.1.0)
     - new queue and unqueue Icons added
