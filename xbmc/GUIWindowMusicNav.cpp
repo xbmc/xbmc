@@ -783,11 +783,14 @@ void CGUIWindowMusicNav::OnClick(int iItem)
 				//	set state to the new directory
 				case SHOW_ROOT:
 				{
-					if (strPath.Equals("Genres"))
+					// genres
+					if (strPath.Equals(CStdString(g_localizeStrings.Get(135))))
 						m_iState = SHOW_GENRES;
-					else if (strPath.Equals("Artists"))
+					// artists
+					else if (strPath.Equals(CStdString(g_localizeStrings.Get(133).c_str())))
 						m_iState = SHOW_ARTISTS;
-					else if (strPath.Equals("Albums"))
+					// albums
+					else if (strPath.Equals(CStdString(g_localizeStrings.Get(132).c_str())))
 						m_iState = SHOW_ALBUMS;
 					else
 						m_iState = SHOW_SONGS;
