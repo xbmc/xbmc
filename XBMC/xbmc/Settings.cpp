@@ -325,6 +325,12 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
 	strcpy(g_stSettings.m_strSambaWinsServer, "");
 	g_stSettings.m_bHideExtensions = false;
+
+	g_stSettings.m_bRipWithTrackNumber = true;
+	g_stSettings.m_iRipEncoder = CDDARIP_ENCODER_LAME;
+	g_stSettings.m_iRipQuality = CDDARIP_QUALITY_CBR;
+	g_stSettings.m_iRipBitRate = 192;
+	strcpy(g_stSettings.m_strRipPath, "");
 }
 
 CSettings::~CSettings(void)
@@ -476,6 +482,8 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 	GetString(pRootElement, "dvdplayer", g_stSettings.m_szExternalDVDPlayer,"");
 	GetString(pRootElement, "cddaplayer", g_stSettings.m_szExternalCDDAPlayer,"");
 	GetBoolean(pRootElement, "mplayerdebug", g_stSettings.m_mplayerDebug);
+
+	GetString(pRootElement, "CDDARipPath", g_stSettings.m_strRipPath, "");
 
 	CStdString strDir;
 
@@ -1164,6 +1172,17 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramsFlatten);
 		GetBoolean(pElement, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
 	}
+
+	// cdda ripper settings
+	pElement = pRootElement->FirstChildElement("cddaripper");
+	if (pElement)
+	{
+		GetBoolean(pElement, "ripwithtracknumber", g_stSettings.m_bRipWithTrackNumber);
+		GetInteger(pElement, "ripencoder", g_stSettings.m_iRipEncoder, CDDARIP_ENCODER_LAME, 0, 9);
+		GetInteger(pElement, "ripquality", g_stSettings.m_iRipQuality, CDDARIP_QUALITY_CBR, 0, 9);
+		GetInteger(pElement, "ripbitrate", g_stSettings.m_iRipBitRate, 192, 64, 512);
+	}
+
 	return true;
 }
 
@@ -1483,7 +1502,14 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetInteger(pNode, "PPHorizontalVal",g_stSettings.m_iPPHorizontal);
 	SetInteger(pNode, "PPVerticalVal",g_stSettings.m_iPPVertical);
 
-
+	// cdda ripper settings
+	TiXmlElement cddaripperNode("cddaripper");
+	pNode = pRoot->InsertEndChild(cddaripperNode);
+	if (!pNode) return false;
+	SetBoolean(pNode, "ripwithtracknumber", g_stSettings.m_bRipWithTrackNumber);
+	SetInteger(pNode, "ripencoder", g_stSettings.m_iRipEncoder);
+	SetInteger(pNode, "ripquality", g_stSettings.m_iRipQuality);
+	SetInteger(pNode, "ripbitrate", g_stSettings.m_iRipBitRate);
 
 	// save the file
 	return xmlDoc.SaveFile(strSettingsFile);

@@ -64,7 +64,7 @@
 				IncludeDebugInfo="TRUE"
 				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBLAME"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center Debug"/>
@@ -249,7 +249,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x80000"
 				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBLAME"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"
@@ -1820,10 +1820,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -2177,6 +2177,31 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\osd\OSDSubMenu.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="cdrip"
+			Filter="">
+			<File
+				RelativePath=".\xbmc\cdrip\CDDARipper.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cdrip\CDDARipper.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cdrip\Encoder.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cdrip\EncoderLame.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cdrip\EncoderLame.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cdrip\EncoderWav.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cdrip\EncoderWav.h">
 			</File>
 		</Filter>
 	</Files>

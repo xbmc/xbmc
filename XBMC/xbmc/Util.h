@@ -132,6 +132,8 @@ public:
 	static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
 	static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
 	static void Stat64ToStat(struct _stat *result, struct __stat64 *stat);
+	static bool CreateDirectoryEx(const CStdString& strPath);
+	static CStdString MakeLegalFATXFileName(const char* strFile, bool bKeepExtension);
 
 private:
 	static bool m_bNetworkUp;
