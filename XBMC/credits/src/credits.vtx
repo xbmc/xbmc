@@ -1,0 +1,43 @@
+xvs.1.1
+
+// c0-3 = wvp matrix
+// c4-7 = world matrix
+// c8 = camera position
+
+def c50, 0.5,0.5,0.5,0.5
+
+// v0 = position
+// v1 = normal
+// v2 = tex co-ords
+// v3 = tangent
+// v4 = binormal
+
+// output position
+m4x4 oPos,v0,c0
+
+// calc eye vector
+dp3 r0.x,  v0, c4
+dp3 r0.y,  v0, c5
+dp3 r0.zw, v0, c6
+add r6, -r0, c8
+
+// normal map co-ords in oT0
+mov oT0,v2
+
+// tangent space basis in (oT1-3).xyz
+dp3 oT1.x, v3, c4
+dp3 oT1.y, v4, c4
+dp3 oT1.z, v1, c4
+
+dp3 oT2.x, v3, c5
+dp3 oT2.y, v4, c5
+dp3 oT2.z, v1, c5
+
+dp3 oT3.x, v3, c6
+dp3 oT3.y, v4, c6
+dp3 oT3.z, v1, c6
+
+// eye vector in (oT1-3).w
+mov oT1.w,r6.x
+mov oT2.w,r6.y
+mov oT3.w,r6.z
