@@ -282,6 +282,11 @@ void CGUIWindowManager::Render()
     pWindow->Render();
   }
 
+//  RenderDialogs();
+}
+
+void CGUIWindowManager::RenderDialogs()
+{
   // render modal windows
   int nWindow = 0;
   int nWindowsPre;

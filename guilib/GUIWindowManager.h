@@ -34,6 +34,7 @@ public:
   void RefreshWindow();
   void OnAction(const CAction &action);
   void Render();
+  void RenderDialogs();
   CGUIWindow* GetWindow(DWORD dwID);
   void Process();
   void SetCallback(IWindowManagerCallback& callback);

@@ -69,10 +69,14 @@ CURL::CURL(const CStdString& strURL)
     }
     else
     {
-      // smb domain without user/password
+      // smb domain without password
+      m_strUserName = strUserNamePassword;
       int iColon = strUserNamePassword.Find(";");
       if (iColon > 0)
+      {
         m_strDomain = strUserNamePassword.Left(iColon);
+        m_strUserName.Delete(0, iColon + 1);
+      }
     }
 
     iPos = iAlphaSign + 1;

@@ -5,6 +5,14 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-04-2005 added: Search for .cue sheet underlying media checks for cuesheetname.mp3 and the dropping of the .cue extension.
+  - 04-04-2005 added: support for smb://username@server/share (ie no password set no longer requires the colon.)
+  - 04-04-2005 fixed: Typos in source.
+  - 04-04-2005 changed: Volume bar is now modeless.
+  - 04-04-2005 changed: Render order is now: Window, Overlays, Dialogs. (was Window, Dialogs, Overlays).
+  - 04-04-2005 added: <useAltTexture> tags to togglebutton + removed duplicate code (now derives from GUIButtonControl).  The <useAltTexture> tag specifies a condition under which the toggle button should show the altTextures.  Current valid conditions are: Player.Paused, Player.Rewinding, Player.Forwarding.
+  - 04-04-2005 added: Execute functions: XBMC.PlayerControl(action), where action can be: Play, Stop, Rewind, Forward, Next, Previous.  Useful for OSD stuff.
+  - 04-04-2005 added: New dialog window PlayerControls.xml.  id is 114.  Can be anything you like, but I suspect you'll want to use it for actual playercontrols, as it is only displayed while something is playing!  Suggest mapping to pop this window up on START.  Does not display on the FullScreenVideo screen as we have an OSD for that anyway.
   - 04-04-2005 updated: Finnish language file (Thnx to jutski)
   - 04-04-2005 updated: German language file
   - 03-04-2005 added: a couple of emulated functions for dll loading

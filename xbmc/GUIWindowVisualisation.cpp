@@ -83,7 +83,12 @@ void CGUIWindowVisualisation::OnAction(const CAction &action)
     break;
 
   case KEY_BUTTON_Y:
-    g_application.m_CdgParser.Pause();
+    {
+    g_guiSettings.SetString("MyMusic.Visualisation", "g-force.vis");
+    CGUIMessage msg(GUI_MSG_CHANGE_VISUALISATION, 0, 0);
+    g_graphicsContext.SendMessage(msg);
+    }
+//    g_application.m_CdgParser.Pause();
     break;
 
   case ACTION_ANALOG_FORWARD:
@@ -136,43 +141,53 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 
       CGUIWindow::OnMessage(message);
 
-      CSingleLock lock (m_critSection);
-      if (m_pVisualisation)
-      {
-        m_pVisualisation->Stop();
-        delete m_pVisualisation;
-        g_graphicsContext.ApplyStateBlock();
-      }
-      m_pVisualisation = NULL;
-      if (g_application.m_pPlayer)
-        g_application.m_pPlayer->UnRegisterAudioCallback();
-
-
-      m_bInitialized = false;
-      CVisualisationFactory factory;
-      CStdString strVisz;
-      OutputDebugString("Load Visualisation\n");
-      strVisz.Format("Q:\\visualisations\\%s", g_guiSettings.GetString("MyMusic.Visualisation"));
-      m_pVisualisation = factory.LoadVisualisation(strVisz.c_str());
-      if (m_pVisualisation)
-      {
-        OutputDebugString("Visualisation::Create()\n");
-        m_pVisualisation->Create();
-        g_graphicsContext.CaptureStateBlock();
-        if (g_application.m_pPlayer)
-          g_application.m_pPlayer->RegisterAudioCallback(this);
-
-        // Create new audio buffers
-        CreateBuffers();
-      }
+      LoadVisualisation();
 
       // setup a z-buffer
       RESOLUTION res = g_graphicsContext.GetVideoResolution();
       g_graphicsContext.SetVideoResolution(res, TRUE);
       return true;
     }
+  case GUI_MSG_CHANGE_VISUALISATION:
+    {
+     LoadVisualisation();
+    }
   }
   return CGUIWindow::OnMessage(message);
+}
+
+
+void CGUIWindowVisualisation::LoadVisualisation()
+{
+  CSingleLock lock (m_critSection);
+  if (m_pVisualisation)
+  {
+    m_pVisualisation->Stop();
+    delete m_pVisualisation;
+    g_graphicsContext.ApplyStateBlock();
+  }
+  m_pVisualisation = NULL;
+  if (g_application.m_pPlayer)
+    g_application.m_pPlayer->UnRegisterAudioCallback();
+
+
+  m_bInitialized = false;
+  CVisualisationFactory factory;
+  CStdString strVisz;
+  OutputDebugString("Load Visualisation\n");
+  strVisz.Format("Q:\\visualisations\\%s", g_guiSettings.GetString("MyMusic.Visualisation"));
+  m_pVisualisation = factory.LoadVisualisation(strVisz.c_str());
+  if (m_pVisualisation)
+  {
+    OutputDebugString("Visualisation::Create()\n");
+    m_pVisualisation->Create();
+    g_graphicsContext.CaptureStateBlock();
+    if (g_application.m_pPlayer)
+      g_application.m_pPlayer->RegisterAudioCallback(this);
+
+    // Create new audio buffers
+    CreateBuffers();
+  }
 }
 
 void CGUIWindowVisualisation::OnMouse()

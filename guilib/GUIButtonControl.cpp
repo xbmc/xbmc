@@ -293,6 +293,7 @@ void CGUIButtonControl::OnMouseClick(DWORD dwButton)
 {
   if (dwButton == MOUSE_LEFT_BUTTON)
   {
+    g_Mouse.SetState(MOUSE_STATE_CLICK);
     CAction action;
     action.wID = ACTION_SELECT_ITEM;
     OnAction(action);

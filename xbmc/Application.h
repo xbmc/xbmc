@@ -21,6 +21,7 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogMuteBug.h"
+#include "GUIDialogPlayerControls.h"
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
 #include "GUIWindowFileManager.h"
@@ -165,6 +166,7 @@ public:
   CGUIDialogContextMenu m_guiDialogContextMenu;
   CGUIDialogMusicScan m_guiDialogMusicScan;
   CGUIDialogMuteBug m_guiDialogMuteBug;
+  CGUIDialogPlayerControls m_guiDialogPlayerControls;
   CGUIWindowFileManager m_guiFileManager;
   CGUIWindowVideoFiles m_guiMyVideo;
   CGUIWindowSettings m_guiSettings;

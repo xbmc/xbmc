@@ -87,10 +87,10 @@ public:
   void SetTextOffsetY(long lTextOffsetY) { m_lTextOffsetY = lTextOffsetY;};
   DWORD GetAlignmentY() const { return m_dwAlignY;};
   void SetAlignmentY(DWORD dwAlignY) { m_dwAlignY = dwAlignY;};
-  const CStdString& GetTexutureUpName() const { return m_imgspinUp.GetFileName(); };
-  const CStdString& GetTexutureDownName() const { return m_imgspinDown.GetFileName(); };
-  const CStdString& GetTexutureUpFocusName() const { return m_imgspinUpFocus.GetFileName(); };
-  const CStdString& GetTexutureDownFocusName() const { return m_imgspinDownFocus.GetFileName(); };
+  const CStdString& GetTextureUpName() const { return m_imgspinUp.GetFileName(); };
+  const CStdString& GetTextureDownName() const { return m_imgspinDown.GetFileName(); };
+  const CStdString& GetTextureUpFocusName() const { return m_imgspinUpFocus.GetFileName(); };
+  const CStdString& GetTextureDownFocusName() const { return m_imgspinDownFocus.GetFileName(); };
   DWORD GetTextColor() const { return m_dwTextColor;};
   void SetTextColor(DWORD dwColor) { m_dwTextColor = dwColor; };
   const CStdString& GetFontName() const { return m_strFont; };

@@ -250,7 +250,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_ANALOG_FORWARD:
     {
       // calculate the speed based on the amount the button is held down
-      int iPower = (int)(action.fAmount1 * 5.5f);
+      int iPower = (int)(action.fAmount1 * 5.0f + 0.5f);
       // returns 0 -> 5
       int iSpeed = 1 << iPower;
       if (iSpeed != 1 && action.wID == ACTION_ANALOG_REWIND)
@@ -649,7 +649,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
 
   if (m_gWindowManager.IsRouted() || m_gWindowManager.IsModelessAvailable())
-    m_gWindowManager.Render();
+    m_gWindowManager.RenderDialogs();
 
   if (m_bOSDVisible)
   {

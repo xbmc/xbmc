@@ -23,6 +23,7 @@ public:
 
   wstring GetLabel(const CStdString &strInfo);
   CStdString GetImage(const CStdString &strInfo);
+  bool GetBool(const CStdString &strCondition);
   LPDIRECT3DTEXTURE8 GetTexture(const CStdString &strInfo);
 
   wstring GetTime(bool bSeconds = false);
