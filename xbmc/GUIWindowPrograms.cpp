@@ -598,7 +598,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 	bool bFound=false;
 	CUtil::SetThumbs(items);
 	bool bOpen=true;
-	if (m_strDirectory[0] != 'C')
+	if ((int)m_strDirectory.size() != 2) // true for C:, E:, F:, G:
 	{
 		// first check all files
 		for (int i=0; i < (int)items.size(); ++i)
