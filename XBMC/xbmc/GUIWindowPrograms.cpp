@@ -649,15 +649,15 @@ void CGUIWindowPrograms::UpdateButtons()
 		switch (g_stSettings.m_iMyProgramsViewAsIcons)
     {
       case VIEW_AS_LIST:
-        iString=100; // view as icons
+        iString=101; // view as list
       break;
       
       case VIEW_AS_ICONS:
-        iString=417;  // view as large icons
+        iString=100;  // view as icons
         bViewIcon=true;
       break;
       case VIEW_AS_LARGEICONS:
-        iString=101; // view as list
+        iString=417; // view as list
         bViewIcon=true;
       break;
     }		
