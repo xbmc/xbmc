@@ -1103,6 +1103,9 @@ void CMPlayer::Unload()
 {
 	if (m_pDLL)
 	{
+		// if m_pDLL is not NULL we asume mplayer_open_file has already been called
+		// and thus we can call mplayer_close_file now.
+		mplayer_close_file();
 		delete m_pDLL;
 		dllReleaseAll( );
 		m_pDLL=NULL;
