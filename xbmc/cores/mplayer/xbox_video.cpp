@@ -681,14 +681,16 @@ static void video_flip_page(void)
         // update our subtitle position
         xbox_video_update_subtitle_position();
         xbox_video_render_subtitles(true);
+        g_graphicsContext.Unlock();
       }
+      g_graphicsContext.Lock();
       while (!g_graphicsContext.Get3DDevice()->GetOverlayUpdateStatus()) Sleep(10);
       g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_iBackBuffer], &rs, &rd, TRUE, 0x00010001  );
       if (m_bRenderGUI)
       {
         g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-        g_graphicsContext.Unlock();
       }
+      g_graphicsContext.Unlock();
       m_bRenderGUI=false;
     }
     else
@@ -767,7 +769,9 @@ static unsigned int video_draw_frame(unsigned char *src[])
 //********************************************************************************************************
 static unsigned int get_image(mp_image_t *mpi)
 {
+  g_graphicsContext.Lock();
   while (!g_graphicsContext.Get3DDevice()->GetOverlayUpdateStatus()) Sleep(10);
+  g_graphicsContext.Unlock();
 
   if((2*mpi->width==dstride) || (mpi->flags&(MP_IMGFLAG_ACCEPT_STRIDE|MP_IMGFLAG_ACCEPT_WIDTH)))
   {
@@ -786,7 +790,9 @@ static unsigned int get_image(mp_image_t *mpi)
 //********************************************************************************************************
 static unsigned int put_image(mp_image_t *mpi)
 {
+  g_graphicsContext.Lock();
   while (!g_graphicsContext.Get3DDevice()->GetOverlayUpdateStatus()) Sleep(10);
+  g_graphicsContext.Unlock();
 
   if((mpi->flags&MP_IMGFLAG_DIRECT)||(mpi->flags&MP_IMGFLAG_DRAW_CALLBACK)) 
   {
