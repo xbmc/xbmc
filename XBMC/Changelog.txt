@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-11-2004 Updated finnish strings.xml (thanks nanite1k)
   - 06-11-2004 updated: Italian language file (Thnx to kotix)
   - 06-11-2004 updated: Dutch language file (Thnx to joepmeloenx)
   - 06-11-2004 updated: German (Austrian) language file (Thnx to CEOMR)
