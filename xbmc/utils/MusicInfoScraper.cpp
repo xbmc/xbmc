@@ -49,6 +49,7 @@ bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
 	CUtil::URLEncode(strPostData);
 	strURL+=strPostData;
 	CMusicAlbumInfo newAlbum("",strURL);
+  if (strHTML.Find("No Results Found") > -1) return true;
   if (strHTML.Find("Album Search Results for:")==-1)
   {
     if (newAlbum.Parse(strHTML))
