@@ -336,11 +336,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
   if (strType=="progress")
   {
-      CStdString strTextureBg, strTextureFg;
+      CStdString strTextureBg, strLeft,strRight,strMid;
       strTextureBg=pControlNode->FirstChild("texturebg")->FirstChild()->Value();
-			strTextureFg=pControlNode->FirstChild("texturefg")->FirstChild()->Value();
+			strLeft =pControlNode->FirstChild("lefttexture")->FirstChild()->Value();
+			strMid  =pControlNode->FirstChild("midtexture")->FirstChild()->Value();
+			strRight=pControlNode->FirstChild("righttexture")->FirstChild()->Value();
 
-      CGUIProgressControl* pControl= new CGUIProgressControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureBg,strTextureFg);
+      CGUIProgressControl* pControl= new CGUIProgressControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureBg,strLeft,strMid,strRight);
       pControl->SetVisible(bVisible);
       return pControl;
   } 

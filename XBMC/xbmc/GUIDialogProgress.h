@@ -18,6 +18,8 @@ public:
 	void						SetHeading(int iString);
 	virtual void		Close();
 	bool						IsCanceled() const;
+	void						SetPercentage(int iPercentage);
+	void						ShowProgressBar(bool bOnOff);
 protected:
 	bool						m_bCanceled;
 };
