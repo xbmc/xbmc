@@ -33,6 +33,8 @@ public:
 	DWORD						  GetColorKey() const {return m_dwColorKey;};
   void              SetKeepAspectRatio(bool bOnOff);
   bool              GetKeepAspectRatio() const;
+  int               GetRenderWidth() const;
+  int               GetRenderHeight() const;
 protected:
   virtual void       Update();
 	void							 Process();
@@ -56,5 +58,7 @@ protected:
 	DWORD										m_dwFrameCounter;
   bool                    m_bKeepAspectRatio;
   vector <LPDIRECT3DTEXTURE8> m_vecTextures;
+  int                     m_iRenderWidth;
+  int                     m_iRenderHeight;
 };
 #endif
