@@ -9,6 +9,7 @@ CFileItem::CFileItem(const CFileItem& item)
 
 CFileItem::CFileItem(void)
 {
+  m_strDVDLabel="";
   m_fRating=0.0f;
   m_dwSize=0;
   m_bIsFolder=false;
@@ -21,6 +22,7 @@ CFileItem::CFileItem(void)
 CFileItem::CFileItem(const CStdString& strLabel)
 :CGUIListItem(strLabel)
 {
+  m_strDVDLabel="";
   m_dwSize=0;
   m_fRating=0.0f;
   m_bIsFolder=false;
@@ -54,6 +56,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
 	m_musicInfoTag=item.m_musicInfoTag;
   
   m_fRating=item.m_fRating;
+  m_strDVDLabel=item.m_strDVDLabel;
 	return *this;
 }
 

@@ -51,7 +51,7 @@ protected:
 	auto_ptr<Dataset>				  m_pDS;
 
   long    GetPath(const CStdString& strPath);
-  long    AddPath(const CStdString& strPath, const CStdString& strCdLabel);
+  long    AddPath(const CStdString& strPath);
   
   long    GetFile(const CStdString& strFilenameAndPath, long &lPathId, long& lMovieId, bool bExact=false);
   long    AddFile(long lMovieId, long lPathId, const CStdString& strFileName);

@@ -73,6 +73,21 @@ struct SSortVideoTitleByTitle
 					if ( rpStart.m_fRating > rpEnd.m_fRating) return !bGreater;
 					return true;
         break;
+        
+        case 3: // sort dvdLabel
+        {
+          int iNotEqual=0;
+					strcpy(szfilename1, rpStart.m_strDVDLabel.c_str());
+					strcpy(szfilename2, rpEnd.m_strDVDLabel.c_str());
+				  iNotEqual=(strcmp(szfilename1,szfilename2));
+			    
+          if (0==iNotEqual)
+          {
+            strcpy(szfilename1, rpStart.GetLabel().c_str());
+					  strcpy(szfilename2, rpEnd.GetLabel().c_str());
+          }
+        }
+        break;
 
 				default:	//	Sort by Filename by default
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
@@ -211,7 +226,7 @@ bool CGUIWindowVideoTitle::OnMessage(CGUIMessage& message)
       else if (iControl==CONTROL_BTNSORTBY) // sort by
       {
         g_stSettings.m_iMyVideoTitleSortMethod++;
-        if (g_stSettings.m_iMyVideoTitleSortMethod>=3) g_stSettings.m_iMyVideoTitleSortMethod=0;
+        if (g_stSettings.m_iMyVideoTitleSortMethod>=4) g_stSettings.m_iMyVideoTitleSortMethod=0;
 				g_settings.Save();
         
         UpdateButtons();
@@ -312,7 +327,23 @@ void CGUIWindowVideoTitle::UpdateButtons()
 
     ShowThumbPanel();
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyVideoTitleSortMethod+365);
+    
+    switch (g_stSettings.m_iMyVideoTitleSortMethod)
+    {
+      case 0:
+        iString=365;
+      break;
+      case 1:
+        iString=366;
+      break;
+      case 2:
+        iString=367;
+      break;
+      case 3:
+        iString=430;
+      break;
+    }
+		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,iString);
 
     if ( g_stSettings.m_bMyVideoTitleSortAscending)
     {
@@ -368,6 +399,10 @@ void CGUIWindowVideoTitle::OnSort()
         strRating.Format("%2.2f", pItem->m_fRating);
 				pItem->SetLabel2(strRating);
 			}
+    }
+    else if (g_stSettings.m_iMyVideoTitleSortMethod==3)
+    {
+      pItem->SetLabel2(pItem->m_strDVDLabel);
     }
     else
     {
@@ -430,6 +465,7 @@ void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
     pItem->SetThumbnailImage(strThumb);
     pItem->m_fRating     = movie.m_fRating; 
     pItem->m_stTime.wYear= movie.m_iYear;
+    pItem->m_strDVDLabel = movie.m_strDVDLabel;
 		m_vecItems.push_back(pItem);
   }
   SET_CONTROL_LABEL(GetID(), LABEL_TITLE,m_strDirectory);
