@@ -992,7 +992,7 @@ HRESULT CApplication::Initialize()
     // jump to my music when we're in NO tv mode
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
   }
-
+  
   m_bInitializing = false;
   return S_OK;
 }
@@ -1845,7 +1845,7 @@ void CApplication::OnKey(CKey& key)
 
 }
 
-void CApplication::SetKaiNotification(CStdString& aCaption, CStdString& aDescription, CGUIImage* aIcon)
+void CApplication::SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CGUIImage* aIcon)
 {
   // queue toast notification
   if (g_guiSettings.GetBool("XLinkKai.EnableNotifications"))
