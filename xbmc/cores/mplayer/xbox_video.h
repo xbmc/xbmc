@@ -34,8 +34,8 @@ unsigned int        PreInit(const char *arg);
 void      				  UnInit();
 inline void				  DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,unsigned char *srca, int stride);
 
-inline int					GetOSDWidth() { return m_iSourceWidth; };
-inline int					GetOSDHeight() { return m_iSourceHeight; };
+inline int					GetOSDWidth() { if (!m_bChanging && m_pRenderer) return m_pRenderer->GetNormalDisplayWidth(); else return 0;};
+inline int					GetOSDHeight() {if (!m_bChanging && m_pRenderer) return (int)((float)m_pRenderer->GetNormalDisplayWidth()/float(m_iSourceWidth/m_iSourceHeight)); else return 0; };
 inline bool					Paused() { return m_bPauseDrawing; };
 
 	CXBoxRenderer *m_pRenderer;
