@@ -843,7 +843,7 @@ void CGUIWindowSlideShow::Render()
   {
     if (m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1 - m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && !m_bWaitForNextPic)
     { // reload the image if we need to
-      CLog::DebugLog("Reloading the current image %s", m_vecSlides[m_iCurrentSlide].c_str());
+      CLog::Log(LOGDEBUG, "Reloading the current image %s", m_vecSlides[m_iCurrentSlide].c_str());
       // first, our 1:1 pixel mapping size:
       int maxWidth = (int)((float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth * zoomamount[m_iZoomFactor - 1]);
       int maxHeight = (int)((float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight * zoomamount[m_iZoomFactor - 1]);
@@ -869,7 +869,7 @@ void CGUIWindowSlideShow::Render()
   {
     if ((m_bSlideShow || m_bLoadNextPic) && m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1 - m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && !m_bWaitForNextPic)
     { // load the next image
-      CLog::DebugLog("Loading the next image %s", m_vecSlides[m_iNextSlide].c_str());
+      CLog::Log(LOGDEBUG, "Loading the next image %s", m_vecSlides[m_iNextSlide].c_str());
       m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, m_vecSlides[m_iNextSlide], g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight);
     }
   }
@@ -884,7 +884,7 @@ void CGUIWindowSlideShow::Render()
   // Check if we should be transistioning immediately
   if (m_bLoadNextPic)
   {
-    CLog::DebugLog("Starting immediate transistion due to user wanting slide %s", m_vecSlides[m_iNextSlide].c_str());
+    CLog::Log(LOGDEBUG, "Starting immediate transistion due to user wanting slide %s", m_vecSlides[m_iNextSlide].c_str());
     m_Image[m_iCurrentPic].StartTransistion();
     m_Image[m_iCurrentPic].SetTransistionTime(1, 20); // only 20 frames for the transistion
     m_bLoadNextPic = false;
@@ -904,7 +904,7 @@ void CGUIWindowSlideShow::Render()
     {
       if (m_pBackgroundLoader->IsLoading())
       {
-        CLog::DebugLog("Having to hold the current image (%s) while we load %s", m_vecSlides[m_iCurrentSlide].c_str(), m_vecSlides[m_iNextSlide].c_str());
+        CLog::Log(LOGDEBUG, "Having to hold the current image (%s) while we load %s", m_vecSlides[m_iCurrentSlide].c_str(), m_vecSlides[m_iNextSlide].c_str());
         m_Image[m_iCurrentPic].Keep();
       }
     }
@@ -913,7 +913,7 @@ void CGUIWindowSlideShow::Render()
   // check if we should swap images now
   if (m_Image[m_iCurrentPic].IsFinished())
   {
-    CLog::DebugLog("Image %s is finished rendering, switching to %s", m_vecSlides[m_iCurrentSlide].c_str(), m_vecSlides[m_iNextSlide].c_str());
+    CLog::Log(LOGDEBUG, "Image %s is finished rendering, switching to %s", m_vecSlides[m_iCurrentSlide].c_str(), m_vecSlides[m_iNextSlide].c_str());
     m_Image[m_iCurrentPic].Close();
     if (m_Image[1 - m_iCurrentPic].IsLoaded())
       m_iCurrentPic = 1 - m_iCurrentPic;
@@ -1109,6 +1109,10 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       // shuffle
       if (g_guiSettings.GetBool("Slideshow.Shuffle") && m_bSlideShow)
         Shuffle();
+
+      // turn off slideshow if we only have 1 image
+      if (m_vecSlides.size() <= 1)
+        m_bSlideShow = false;
       return true;
     }
   }
@@ -1177,7 +1181,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTex
   if (pTexture)
   {
     // set the pic's texture + size etc.
-    CLog::DebugLog("Finished background loading %s", m_vecSlides[iSlideNumber].c_str());
+    CLog::Log(LOGDEBUG, "Finished background loading %s", m_vecSlides[iSlideNumber].c_str());
     if (m_bReloadImage)
     {
       m_Image[m_iCurrentPic].UpdateTexture(pTexture, iWidth, iHeight);
