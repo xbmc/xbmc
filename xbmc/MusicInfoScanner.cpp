@@ -174,9 +174,9 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 	CFileItemList itemlist(items);
 	CDirectory dir;
 	dir.GetDirectory(strDirectory,items);
-	CUtil::SortFileItemsByName(items);
 	// filter items in the sub dir (for .cue sheet support)
 	g_application.m_guiMyMusicSongs.FilterItems(items);
+	CUtil::SortFileItemsByName(items);
 
 	if (RetrieveMusicInfo(items, strDirectory)>0)
 	{
