@@ -66,6 +66,7 @@ static float									m_OSDWidth;
 static float									m_OSDHeight;
 static DRAWRECT								m_OSDRect;
 static int										m_iOSDBuffer;
+static bool                   m_OSDRendered;
 //static bool										m_SubsOnOSD;
 static int                    m_iOSDTextureWidth;
 
@@ -470,6 +471,8 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 	// if it's down the bottom, use sub alpha blending
 //  m_SubsOnOSD = (y0 > (int)(rs.bottom - rs.top) * 4 / 5);
 
+  //use temporary rect for calculation to avoid messing with module-rect while other functions might be using it.
+  DRAWRECT osdRect;
 	// scale to fit screen
   float EnlargeFactor = 1.0f + (g_stSettings.m_iEnlargeSubtitlePercent / 100.0f);
 
@@ -477,48 +480,53 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 	{
 		const RECT& rv = g_graphicsContext.GetViewWindow();
 		float xscale = EnlargeFactor*(float)(rv.right - rv.left)/m_iOSDTextureWidth;
-		float yscale   = xscale * g_settings.m_ResInfo[m_iResolution].fPixelRatio;
-		m_OSDRect.left = (float)rv.left + (float)(rv.right - rv.left - (float)w*xscale)/2.0f;
-		m_OSDRect.right  = m_OSDRect.left + (float)w * xscale;
+		float yscale = xscale * g_settings.m_ResInfo[m_iResolution].fPixelRatio;
+		osdRect.left = (float)rv.left + (float)(rv.right - rv.left - (float)w*xscale)/2.0f;
+		osdRect.right  = m_OSDRect.left + (float)w * xscale;
 		float relbottom = ((float)(g_settings.m_ResInfo[m_iResolution].iSubtitles-g_settings.m_ResInfo[m_iResolution].Overscan.top))/(g_settings.m_ResInfo[m_iResolution].Overscan.bottom - g_settings.m_ResInfo[m_iResolution].Overscan.top);
-		m_OSDRect.bottom = (float)rv.top + (float)(rv.bottom-rv.top)*relbottom;
-		m_OSDRect.top    = m_OSDRect.bottom - (float)h * yscale;
+		osdRect.bottom = (float)rv.top + (float)(rv.bottom-rv.top)*relbottom;
+		osdRect.top    = osdRect.bottom - (float)h * yscale;
 	}
 	else
 	{
 		float xscale = EnlargeFactor;
-		float yscale   = xscale * g_settings.m_ResInfo[m_iResolution].fPixelRatio;
+		float yscale = xscale * g_settings.m_ResInfo[m_iResolution].fPixelRatio;
 
-		m_OSDRect.left = (float)g_settings.m_ResInfo[m_iResolution].Overscan.left + (float)(g_settings.m_ResInfo[m_iResolution].Overscan.right-g_settings.m_ResInfo[m_iResolution].Overscan.left - (float)w*xscale)/2.0f;
-		m_OSDRect.right  = m_OSDRect.left + (float)w * xscale;
-		m_OSDRect.bottom = (float)g_settings.m_ResInfo[m_iResolution].iSubtitles;
-		m_OSDRect.top    = m_OSDRect.bottom - (float)h * yscale;
+		osdRect.left   = (float)g_settings.m_ResInfo[m_iResolution].Overscan.left + (float)(g_settings.m_ResInfo[m_iResolution].Overscan.right-g_settings.m_ResInfo[m_iResolution].Overscan.left - (float)w*xscale)/2.0f;
+		osdRect.right  = osdRect.left + (float)w * xscale;
+		osdRect.bottom = (float)g_settings.m_ResInfo[m_iResolution].iSubtitles;
+		osdRect.top    = osdRect.bottom - (float)h * yscale;
 	}
 
 	// clip to buffer
 	if (w > m_iOSDTextureWidth) w = m_iOSDTextureWidth;
 	if (h > OSD_TEXTURE_HEIGHT) h = OSD_TEXTURE_HEIGHT;
 
-  m_OSDWidth  = (float)w;
-  m_OSDHeight = (float)h;
-
 	RECT rc = { 0, 0, w, h };
 
 	// flip buffers and wait for gpu
-	m_iOSDBuffer = 1-m_iOSDBuffer;
-	while (m_pOSDYTexture[m_iOSDBuffer]->IsBusy()) Sleep(1);
-	while (m_pOSDATexture[m_iOSDBuffer]->IsBusy()) Sleep(1);
+	int iOSDBuffer = 1-m_iOSDBuffer;
+	while (m_pOSDYTexture[iOSDBuffer]->IsBusy()) Sleep(1);
+	while (m_pOSDATexture[iOSDBuffer]->IsBusy()) Sleep(1);
 
   // draw textures
   D3DLOCKED_RECT lr, lra;
   if (
-    (D3D_OK == m_pOSDYTexture[m_iOSDBuffer]->LockRect(0, &lr, &rc, 0)) &&
-    (D3D_OK == m_pOSDATexture[m_iOSDBuffer]->LockRect(0, &lra, &rc, 0))
+    (D3D_OK == m_pOSDYTexture[iOSDBuffer]->LockRect(0, &lr, &rc, 0)) &&
+    (D3D_OK == m_pOSDATexture[iOSDBuffer]->LockRect(0, &lra, &rc, 0))
   ) {
     vo_draw_alpha_xbox(w,h,src,srca,stride, (BYTE*)lr.pBits, (BYTE*)lra.pBits, lr.Pitch);
   }
-  m_pOSDYTexture[m_iOSDBuffer]->UnlockRect(0);
-  m_pOSDATexture[m_iOSDBuffer]->UnlockRect(0);
+  m_pOSDYTexture[iOSDBuffer]->UnlockRect(0);
+  m_pOSDATexture[iOSDBuffer]->UnlockRect(0);
+
+  //set module variables to calculated values
+  m_iOSDBuffer = iOSDBuffer;
+  m_OSDRect    = osdRect;
+  m_OSDWidth   = (float)w;
+  m_OSDHeight  = (float)h;
+
+  m_OSDRendered = true;
 }
 
 //********************************************************************************************************
@@ -874,12 +882,18 @@ void xbox_video_render_osd()
 		return;
 	if (!m_OSDWidth || !m_OSDHeight)
 		return;
+
+  //copy alle static vars to local vars because they might change during this function by mplayer callbacks
+  int      buffer    = m_iOSDBuffer;
+  float    osdWidth  = m_OSDWidth;
+  float    osdHeight = m_OSDHeight;
+  DRAWRECT osdRect   = m_OSDRect;
 //  if (!viewportRect.bottom && !viewportRect.right) 
 //    return;
 
 	// Set state to render the image
-	g_graphicsContext.Get3DDevice()->SetTexture(0, m_pOSDYTexture[m_iOSDBuffer]);
-	g_graphicsContext.Get3DDevice()->SetTexture(1, m_pOSDATexture[m_iOSDBuffer]);
+	g_graphicsContext.Get3DDevice()->SetTexture(0, m_pOSDYTexture[buffer]);
+	g_graphicsContext.Get3DDevice()->SetTexture(1, m_pOSDATexture[buffer]);
 	Setup_Y8A8Render();
 
 	/* In mplayer's alpha planes, 0 is transparent, then 1 is nearly
@@ -924,16 +938,16 @@ void xbox_video_render_osd()
 	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, 0 );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, 0 );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDRect.left, m_OSDRect.top, 0, 1.0f );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, m_OSDWidth, 0 );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, m_OSDWidth, 0 );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDRect.right, m_OSDRect.top, 0, 1.0f );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, m_OSDWidth, m_OSDHeight );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, m_OSDWidth, m_OSDHeight );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDRect.right, m_OSDRect.bottom, 0, 1.0f );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, m_OSDHeight );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, m_OSDHeight );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDRect.left, m_OSDRect.bottom, 0, 1.0f );
+  g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, osdRect.left, osdRect.top, 0, 1.0f );
+  g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, osdWidth, 0 );
+  g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, osdWidth, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, osdRect.right, osdRect.top, 0, 1.0f );
+  g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, osdWidth, osdHeight );
+  g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, osdWidth, osdHeight );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, osdRect.right, osdRect.bottom, 0, 1.0f );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, osdHeight );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, osdHeight );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, osdRect.left, osdRect.bottom, 0, 1.0f );
 	g_graphicsContext.Get3DDevice()->End();
 
 	g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
@@ -941,8 +955,6 @@ void xbox_video_render_osd()
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAKILL, D3DTALPHAKILL_DISABLE );
 
 	g_graphicsContext.Get3DDevice()->SetScissors(0, FALSE, NULL);
-
-	m_OSDWidth = m_OSDHeight = 0;
 }
 
 void xbox_video_render()
@@ -950,6 +962,8 @@ void xbox_video_render()
   //if (m_iRGBRenderBuffer<0 || m_iRGBRenderBuffer >= NUM_BUFFERS) return;
 	if (m_iYUVRenderBuffer<0 || m_iYUVRenderBuffer >= NUM_BUFFERS) return;
 
+  //always render the buffer that is not currently being decoded to.
+  m_iYUVRenderBuffer = ((m_iYUVDecodeBuffer + 1) % NUM_BUFFERS);
   //g_graphicsContext.Get3DDevice()->SetTexture( 0, m_RGBTexture[m_iRGBRenderBuffer]);
 	g_graphicsContext.Get3DDevice()->SetTexture( 0, m_YTexture[m_iYUVRenderBuffer]);
 	g_graphicsContext.Get3DDevice()->SetTexture( 1, m_UTexture[m_iYUVRenderBuffer]);
@@ -1032,16 +1046,16 @@ static void video_flip_page(void)
   }
 	m_bFlip--;
   //++m_iRGBRenderBuffer %= NUM_BUFFERS;
-	++m_iYUVRenderBuffer %= NUM_BUFFERS;
+	//++m_iYUVRenderBuffer %= NUM_BUFFERS;
 //	m_pSubtitleYTexture[m_iBackBuffer]->UnlockRect(0);
 //	m_pSubtitleATexture[m_iBackBuffer]->UnlockRect(0);
 //	m_iBackBuffer = 1-m_iBackBuffer;
 
-	Directx_ManageDisplay();
-
-	g_graphicsContext.Lock();
 	if (g_graphicsContext.IsFullScreenVideo())
 	{
+	  Directx_ManageDisplay();
+
+	  g_graphicsContext.Lock();
 		g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
 
 		// render first so the subtitle overlay works
@@ -1052,10 +1066,16 @@ static void video_flip_page(void)
 
 //	  g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
 		g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
+  	g_graphicsContext.Unlock();
 	}
-	g_graphicsContext.Unlock();
-
-	m_bFlipped=true;
+  //if no osd was rendered before this call to flip_page make sure it doesn't get 
+  //rendered the next call to render not initialized by mplayer (like previewwindow + calibrationwindow);
+  if (!m_OSDRendered)
+  {
+	  m_OSDWidth = m_OSDHeight = 0;
+  }
+  m_OSDRendered = false;
+	m_bFlipped    = true;
 /*
 	// when movie is running,
 	// check the FPS again after 50 frames
@@ -1115,7 +1135,9 @@ void xbox_video_render_update()
 {
   //if (m_iRGBRenderBuffer < 0 || m_iRGBRenderBuffer >=NUM_BUFFERS) return;
 	if (m_iYUVRenderBuffer < 0 || m_iYUVRenderBuffer >=NUM_BUFFERS) return;
-  bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
+  if (!m_YTexture[0])return;
+
+  Directx_ManageDisplay();
 	g_graphicsContext.Lock();
 	xbox_video_render();
 //	if ( bFullScreen )
@@ -1123,7 +1145,6 @@ void xbox_video_render_update()
 //		xbox_video_update_subtitle_position();
 //		xbox_video_render_subtitles();
 //	}
-
 	g_graphicsContext.Unlock();
 }
 
