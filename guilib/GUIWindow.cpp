@@ -335,8 +335,7 @@ void CGUIWindow::Render()
 
 void CGUIWindow::OnAction(const CAction &action)
 {
-	if ( !(g_application.IsPlayingVideo()))
-	  if (action.wID == REMOTE_9)
+	  if (action.wID == ACTION_TAKE_SCREENSHOT)
 	  {
 		CUtil::TakeScreenshot();
 	  }
