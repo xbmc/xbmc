@@ -100,7 +100,7 @@ void CCdgLoader::OnStartup()
 		m_CdgFileState = FILE_ERR_OPENING;
 		return;
 	}
-	m_uiFileLength = m_File.GetLength();
+	m_uiFileLength = (int)m_File.GetLength();	// ASSUMES FILELENGTH IS LESS THAN 2^32 bytes!!!
 	if(!m_uiFileLength)	return;
 	m_File.Seek(0,SEEK_SET);
 	if(m_pBuffer)
