@@ -492,9 +492,9 @@ HRESULT CApplication::Create()
 	g_videoConfig.GetModes(m_pD3D);
   //init the present parameters with values that are supported
   RESOLUTION initialResolution = g_videoConfig.GetInitialMode(m_pD3D, &m_d3dpp);
-  g_graphicsContext.SetGUIResolution(initialResolution);
   // Transfer the resolution information to our graphics context
 	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
+  g_graphicsContext.SetGUIResolution(initialResolution);
 
   CIoSupport helper;
 	CStdString strPath;
@@ -658,7 +658,7 @@ HRESULT CApplication::Create()
 		FatalErrorHandler(false, false, true);
 
   
-	int  iResolution=g_stSettings.m_GUIResolution;
+	int  iResolution=g_graphicsContext.GetVideoResolution();
 	CLog::Log(LOGINFO, " GUI format %ix%i %s",
 		g_settings.m_ResInfo[iResolution].iWidth,
 		g_settings.m_ResInfo[iResolution].iHeight,
