@@ -51,11 +51,16 @@ CEncoderLame::CEncoderLame()
 {
 	memset(m_inPath, 0, MAX_PATH + 1);
 	memset(m_outPath, 0, MAX_PATH + 1);
-	m_pFile = NULL;
 }
 
-bool CEncoderLame::Init(const char* strFile)
+bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
 {
+	// we only accept 2 / 44100 / 16 atm
+	if (iInChannels != 2 || iInRate != 44100 || iInBits != 16) return false;
+
+	// set input stream information and open the file
+	if (!CEncoder::Init(strFile, iInChannels, iInRate, iInBits)) return false;
+
 	// load lame section
 	g_sectionLoader.Load("LIBLAME");
 
@@ -63,13 +68,6 @@ bool CEncoderLame::Init(const char* strFile)
 	if (!m_pGlobalFlags)
 	{
 		CLog::Log("Error: lame_init() failed");
-		return false;
-	}
-
-	m_pFile = fopen(strFile, "wb+");
-	if(!m_pFile)
-	{
-		CLog::Log("Error: Cannot open file: %s", strFile);
 		return false;
 	}
 
@@ -111,6 +109,15 @@ bool CEncoderLame::Init(const char* strFile)
 		return false;
   }
 
+	// add tags
+	id3tag_set_artist(m_pGlobalFlags, m_strArtist.c_str());
+	id3tag_set_title(m_pGlobalFlags, m_strTitle.c_str());
+	id3tag_set_album(m_pGlobalFlags, m_strAlbum.c_str());
+	id3tag_set_year(m_pGlobalFlags, m_strYear.c_str());
+	id3tag_set_comment(m_pGlobalFlags, m_strComment.c_str());
+	id3tag_set_track(m_pGlobalFlags, m_strTrack.c_str());
+	id3tag_set_genre(m_pGlobalFlags, m_strGenre.c_str());
+
 	return true;
 }
 
@@ -124,7 +131,7 @@ int CEncoderLame::Encode(int nNumBytesRead, BYTE* pbtStream)
 		return 0;
 	}
 
-	if (fwrite(m_buffer, 1, iBytes, m_pFile) != iBytes)
+	if (WriteStream(m_buffer, iBytes) != iBytes)
 	{ 
 		CLog::Log("Error writing Lame buffer to file");
 		return 0;
@@ -143,44 +150,24 @@ bool CEncoderLame::Close()
 		return false;
 	}
 
-	fwrite(m_buffer, 1, iBytes, m_pFile);
+	WriteStream(m_buffer, iBytes);
+	FlushStream();
+	FileClose();
 
-	lame_mp3_tags_fid(m_pGlobalFlags, m_pFile); /* add VBR tags to mp3 file */
+	// open again, but now the old way, lame only accepts FILE pointers
+	FILE* file = fopen(m_strFile.c_str(), "rb+");
+	if(!file)
+	{
+		CLog::Log("Error: Cannot open file for writing tags: %s", m_strFile);
+		return false;
+	}
+
+	lame_mp3_tags_fid(m_pGlobalFlags, file); /* add VBR tags to mp3 file */
+	fclose(file);
+
 	lame_close(m_pGlobalFlags);
-
-	fclose(m_pFile);
 
 	// unload lame section
 	g_sectionLoader.Unload("LIBLAME");
 	return true;
-}
-
-void CEncoderLame::AddTag(int key,const char* value)
-{
-	switch(key)
-	{
-	case ENC_ARTIST:
-		id3tag_set_artist(m_pGlobalFlags, value);
-		break;
-	case ENC_TITLE:
-		id3tag_set_title(m_pGlobalFlags, value);
-		break;
-	case ENC_ALBUM:
-		id3tag_set_album(m_pGlobalFlags, value);
-		break;
-	case ENC_YEAR:
-		id3tag_set_year(m_pGlobalFlags, value);
-		break;
-	case ENC_COMMENT:
-		id3tag_set_comment(m_pGlobalFlags, value);
-		break;
-	case ENC_TRACK:
-		id3tag_set_track(m_pGlobalFlags, value);
-		break;
-	case ENC_GENRE:
-		id3tag_set_genre(m_pGlobalFlags, value);
-		break;
-	default:
-		break;
-	}
 }
