@@ -381,11 +381,11 @@
   </string> 
   <string>
     <id>167</id>
-    <value>Ftp-Server:</value>
+    <value>Aktivera Ftp-Server:</value>
   </string> 
   <string>
     <id>168</id>
-    <value>Synkronisera tid:</value>
+    <value>Aktivera tidserver:</value>
   </string> 
   <string>
     <id>169</id>
@@ -761,7 +761,7 @@
   </string>
   <string>
     <id>263</id>
-    <value>HTTP-server:</value>
+    <value>Aktivera Web-server:</value>
   </string>
   <string>
     <id>264</id>
@@ -1969,7 +1969,7 @@
 	</string>
 	<string>
 		<id>723</id>
-		<value>Spara inställningarna och starta om XBoxen</value>
+		<value>Spara &amp; starta om XBoxen</value>
 	</string>
 	<string>
 		<id>724</id>
@@ -1983,6 +1983,31 @@
 		<id>726</id>
 		<value>Inställningar ej sparade. Fortsätt utan att spara?</value>
 	</string>
+<string>
+ <id>727</id>
+ <value>Web Server Inställningar</value>
+ </string> 
+ <string>
+ <id>728</id>
+ <value>FTP Inställningar</value>
+ </string> 
+ <string>
+ <id>729</id>
+ <value>Tidserver Inställningar</value>
+ </string> 
+ <string>
+ <id>730</id>
+ <value>Web Server Port:</value>
+ </string> 
+ <string>
+ <id>731</id>
+ <value>Adress till tidserver:</value>
+ </string>
+ <string>
+ <id>732</id>
+ <value>Spara inställningar</value>
+ </string> 
+
 
  <string>
  <id>998</id>
