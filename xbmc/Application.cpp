@@ -489,7 +489,7 @@ void CApplication::Render()
 	g_graphicsContext.Lock();
 
 	// draw GUI (always enable soften filter when displaying the UI)
-  m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+  m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
 	m_pd3dDevice->SetSoftDisplayFilter(true);
 	m_pd3dDevice->SetFlickerFilter(5);
 
