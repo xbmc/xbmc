@@ -921,6 +921,37 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
   }
 }
 
+bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
+{
+  CStdString strFolderImage;
+  strThumb="";
+	AddFileToFolder(strFolder, "folder.jpg", strFolderImage);
+
+	if (CUtil::IsRemote(strFolder) )
+	{
+		CUtil::GetThumbnail( strFolderImage,strThumb);
+		CFile file;
+		if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
+		{
+			return true;
+		}
+		else
+		{
+			if (CUtil::FileExists(strThumb))
+			{
+				return true;
+			}
+		}
+	}
+	else if (CUtil::FileExists(strFolderImage) )
+	{
+		strThumb=strFolderImage;
+    return true;
+	}
+  strThumb="";
+  return false;
+}
+
 void CUtil::SetThumb(CFileItem* pItem)
 {
   CStdString strThumb;
@@ -1046,29 +1077,10 @@ void CUtil::SetThumb(CFileItem* pItem)
 			{
 				if (pItem->m_bIsFolder)
 				{
-					CStdString strFolderImage;
-					AddFileToFolder(pItem->m_strPath, "folder.jpg", strFolderImage);
-
-					if (CUtil::IsRemote(pItem->m_strPath) )
-					{
-						CUtil::GetThumbnail( strFolderImage,strThumb);
-						CFile file;
-						if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
-						{
-							pItem->SetThumbnailImage(strThumb);
-						}
-						else
-						{
-							if (CUtil::FileExists(strThumb))
-							{
-								pItem->SetThumbnailImage(strThumb);
-							}
-						}
-					}
-					else if (CUtil::FileExists(strFolderImage) )
-					{
-						pItem->SetThumbnailImage(strFolderImage);
-					}
+          if ( CUtil::GetFolderThumb(pItem->m_strPath, strThumb))
+          {
+					  pItem->SetThumbnailImage(strThumb);
+          }
 				}
 			}
 		}
