@@ -765,6 +765,7 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
 			if(itotal < g_application.m_pPlayer->GetTime())
 				g_application.m_pPlayer->SeekTime(itotal);
 			m_iTimeCodePosition = 0;
+      m_bShowTime=false;
 		}
 	}
 }
