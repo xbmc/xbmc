@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-12-2004 updated: German (Austrian) language file (Thnx to CEOMR)
+  - 10-12-2004 updated: Italian language file (Thnx to kotix)
   - 10-12-2004 fixed: [ 1069833 ] white no longer triggers osd.
   - 09-12-2004 added: [ 1063544 ] Full LED Controll within the xbmc GUI, thanks to GeminiServer.
   - 09-12-2004 added: [ 1067203 ] GUI Contrast Control for Xenium-LCD, thanks to GreenGiant.
