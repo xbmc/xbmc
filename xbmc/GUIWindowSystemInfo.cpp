@@ -126,36 +126,19 @@ void  CGUIWindowSystemInfo::GetValues()
 	if(timeGetTime() - m_dwlastTime >= 1000)
 	{
 		m_dwlastTime = timeGetTime();
-    mbtemp   = CFanController::Instance()->GetGPUTemp();
-    cputemp  = CFanController::Instance()->GetCPUTemp();
     fanSpeed = CFanController::Instance()->GetFanSpeed();
 	}
-	WCHAR CPUText[32];
-	WCHAR GPUText[32];
-	WCHAR wszText[1024];
-  if(g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/) {
-    swprintf(CPUText, L"%2.2f%cF", ((9.0 / 5.0) * cputemp) + 32.0, 176);	
-    swprintf(GPUText, L"%2.2f%cF", ((9.0 / 5.0) * mbtemp) + 32.0,  176);	
-  }
-  else {
-    swprintf(CPUText, L"%2.2f%cC", cputemp, 176);	
-    swprintf(GPUText, L"%2.2f%cC", mbtemp,  176);	
+  // cpu + gpu temperature
+  SET_CONTROL_LABEL(2, g_infoManager.GetLabel("System.CPUTemperature"));
+  SET_CONTROL_LABEL(3, g_infoManager.GetLabel("System.GPUTemperature"));
+
+  //fanspeed
+  {
+		SET_CONTROL_LABEL(16, g_infoManager.GetLabel("System.FanSpeed"));
   }
 
-	{
-		const WCHAR *psztext=g_localizeStrings.Get(140).c_str();
-		swprintf(wszText,L"%s %s", psztext,CPUText);
-
-		SET_CONTROL_LABEL(2,wszText);
-	}
-	{
-		const WCHAR *psztext=g_localizeStrings.Get(141).c_str();
-		swprintf(wszText,L"%s %s", psztext,GPUText);
-
-		SET_CONTROL_LABEL(3,wszText);
-	}
-
-	// time build:
+  WCHAR wszText[1024];
+  // time build:
 	{
 		const WCHAR *psztext=g_localizeStrings.Get(144).c_str();
 		const WCHAR *pszbuild=g_localizeStrings.Get(6).c_str();
@@ -277,12 +260,4 @@ void  CGUIWindowSystemInfo::GetValues()
 			stat.dwTotalPhys  /(1024*1024)  );
 		SET_CONTROL_LABEL(15,wszText);
 	}
-
-  //fanspeed
-  {
-    CStdString strItem;
-    CStdString lbl = g_localizeStrings.Get(13300);
-    strItem.Format("%s %i%%", lbl.c_str(), fanSpeed * 2);
-		SET_CONTROL_LABEL(16, strItem);
-  }
 }
