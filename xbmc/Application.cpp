@@ -400,7 +400,7 @@ void CApplication::OnKey(CKey& key)
 				if (m_gWindowManager.GetActiveWindow()==2006)
 				{
 					m_gWindowManager.ActivateWindow(0);//home.
-				}
+				}	
 				else
 				{
 					m_gWindowManager.ActivateWindow(2006);//visz.
@@ -413,7 +413,10 @@ void CApplication::OnKey(CKey& key)
 			// music stopped.
 			if (m_gWindowManager.GetActiveWindow()==2006)
 			{
-				m_gWindowManager.ActivateWindow(0);//home.
+				if (g_playlistPlayer.size() ==0 || !m_pPlayer)
+				{
+					m_gWindowManager.ActivateWindow(0);//home.
+				}
 			}
 		}
 	}
