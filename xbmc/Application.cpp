@@ -113,6 +113,7 @@ CApplication::CApplication(void)
   m_iMasterLockRetriesRemaining = 0;
   m_bMasterLockPreviouslyEntered = false;
   m_bMasterLockOverridesLocalPasswords = false;
+  m_bInitializing=true;
 }
 
 CApplication::~CApplication(void)
@@ -984,6 +985,7 @@ HRESULT CApplication::Initialize()
     // jump to my music when we're in NO tv mode
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
   }
+  m_bInitializing=false;
   return S_OK;
 }
 void CApplication::PrintXBEToLCD(const char* xbePath)
@@ -1188,11 +1190,20 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     m_pPlayer = NULL;
   }
 
-  bool bKaiConnected=CKaiClient::GetInstance()->IsEngineConnected();
-  if (bKaiConnected)
+  //  When the app is started the instance of the 
+  //  kai client should not be created until the 
+  //  skin is loaded the first time, but we must
+  //  disconnect from the engine when the skin is 
+  //  changed
+  bool bKaiConnected=false;
+  if (!m_bInitializing)
   {
-    CLog::Log(LOGINFO, " Disconnecting Kai...");
-    CKaiClient::GetInstance()->RemoveObserver();
+    bKaiConnected=CKaiClient::GetInstance()->IsEngineConnected();
+    if (bKaiConnected)
+    {
+      CLog::Log(LOGINFO, " Disconnecting Kai...");
+      CKaiClient::GetInstance()->RemoveObserver();
+    }
   }
 
   CLog::Log(LOGINFO, "  delete old skin...");
@@ -1324,7 +1335,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   if (bKaiConnected)
   {
     CLog::Log(LOGINFO, " Reconnecting Kai...");
+    
     CKaiClient::GetInstance()->SetObserver(&m_guiMyBuddies);
+    Sleep(3000);  //  The client need some time to "resync"
   }
 }
 
