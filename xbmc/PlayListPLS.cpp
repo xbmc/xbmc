@@ -87,7 +87,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
 			{
 				long lDuration=atol(strDuration.c_str());
 				lDuration*=1000;
-				strFilename.Replace("http:","shout:");
+				//strFilename.Replace("http:","shout:");
 				CUtil::GetQualifiedFilename(strBasePath,strFilename);
 				CPlayListItem newItem(strInfo,strFilename,lDuration);
 				Add(newItem);

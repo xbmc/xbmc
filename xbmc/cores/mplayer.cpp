@@ -2,6 +2,7 @@
 #include "mplayer/mplayer.h"
 #include "../util.h"
 #include "../settings.h"
+#include "../url.h"
 #include "../filesystem/fileshoutcast.h"
 extern CFileShoutcast* m_pShoutCastRipper;
 extern "C" void dllReleaseAll( );
@@ -386,11 +387,16 @@ bool CMPlayer::openfile(const CStdString& strFile)
     iCacheSize=16384;
   }
 
+  CURL url(strFile);
+  bool bStreamingAudio=false;
   // for shoutcast, use cache of 256 kbyte
-  if ( CUtil::IsShoutCast(strFile) ) 
+  if (url.GetProtocol()=="http") bStreamingAudio=true;
+  if (url.GetProtocol()=="shout") bStreamingAudio=true;
+  if (bStreamingAudio)
   {
     iCacheSize=256;
   }
+  
   sprintf(szTmp,"set cache size to %i kbyte\n",iCacheSize);
   OutputDebugString(szTmp);
   
@@ -442,7 +448,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		return false;
 	}
 
-  if (CUtil::IsShoutCast(strFile) ) 
+  if (bStreamingAudio ) 
   {
     // for shoutcast we're done.
   }
@@ -572,6 +578,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
       }
     }
 
+  
     if (bNeed2Restart)
     {
       OutputDebugString("--------------- restart --------------- \n");
@@ -589,25 +596,6 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			}
 			
     }
-#if 0
-    if (!g_stSettings.m_bUseDigitalOutput)
-    {
-      // if we're playing an movie with AC3 audio and are using the analog output
-      // then set the default avdelay to -130msec.
-      if ( strstr(strAudioCodec,"AC3-liba52") )
-      {
-         SetAVDelay( -0.130f);
-      }
-      // if we're playing an mpeg movie and are using the analog output
-      // then set the avdelay to -130msec.
-      CStdString strExtension;
-      CUtil::GetExtension(strFile,strExtension);
-      if (CUtil::cmpnocase(strExtension,".mpg")==0)
-      {
-         SetAVDelay( -0.130f );
-      }
-    }
-#endif
   }
   m_bIsPlaying= true;
 	if ( ThreadHandle() == NULL)
