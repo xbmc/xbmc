@@ -1,0 +1,707 @@
+<strings>
+  <string>
+    <id>0</id>
+    <value>Programme</value>
+  </string>
+  <string>
+    <id>1</id>
+    <value>Bilder</value>
+  </string>
+  <string>
+    <id>2</id>
+    <value>MP3</value>
+  </string>
+  <string>
+    <id>3</id>
+    <value>Filme</value>
+  </string>
+  <string>
+    <id>4</id>
+    <value>TV Programm</value>
+  </string>
+  <string>
+    <id>5</id>
+    <value>Einstellungen</value>
+  </string>
+  <string>
+    <id>6</id>
+    <value>XBOX Media Center Oct 12th 2003 build</value>
+  </string>
+  <string>
+    <id>7</id>
+    <value>Explorer</value>
+  </string>
+  
+  <string>
+    <id>11</id>
+    <value>Montag</value>
+  </string>
+  <string>
+    <id>12</id>
+    <value>Dienstag</value>
+  </string>
+  <string>
+    <id>13</id>
+    <value>Mittwoch</value>
+  </string>
+  <string>
+    <id>14</id>
+    <value>Donnerstag</value>
+  </string>
+  <string>
+    <id>15</id>
+    <value>Freitag</value>
+  </string>
+  <string>
+    <id>16</id>
+    <value>Samstag</value>
+  </string>  
+  <string>
+    <id>17</id>
+    <value>Sonntag</value>
+  </string>
+  
+    
+  <string>
+    <id>21</id>
+    <value>Januar</value>
+  </string>
+  
+  <string>
+    <id>22</id>
+    <value>Februar</value>
+  </string>  
+  <string>
+    <id>23</id>
+    <value>März</value>
+  </string>  
+  <string>
+    <id>24</id>
+    <value>April</value>
+  </string>  
+  <string>
+    <id>25</id>
+    <value>Mai</value>
+  </string>  
+  <string>
+    <id>26</id>
+    <value>Juni</value>
+  </string>  
+  <string>
+    <id>27</id>
+    <value>Juli</value>
+  </string>  
+  <string>
+    <id>28</id>
+    <value>August</value>
+  </string>  
+  <string>
+    <id>29</id>
+    <value>September</value>
+  </string>  
+  <string>
+    <id>30</id>
+    <value>Oktober</value>
+  </string>  
+  <string>
+    <id>31</id>
+    <value>November</value>
+  </string>  
+  <string>
+    <id>32</id>
+    <value>Dezember</value>
+  </string>  
+  <string>
+    <id>100</id>
+    <value>Icon Ansicht</value>
+  </string>  
+  <string>
+    <id>101</id>
+    <value>Listen Ansicht</value>
+  </string>  
+  <string>
+    <id>102</id>
+    <value>Durchsuche</value>
+  </string>  
+  <string>
+    <id>103</id>
+    <value>n. Namen ord.</value>
+  </string> 
+  <string>
+    <id>104</id>
+    <value>n. Datum ord.</value>
+  </string>    
+  <string>
+    <id>105</id>
+    <value>n. Grösse ord.</value>
+  </string>      
+  <string>
+    <id>106</id>
+    <value>Nein</value>
+  </string>     
+  <string>
+    <id>107</id>
+    <value>Ja</value>
+  </string>   
+  <string>
+    <id>108</id>
+    <value>SlideShow</value>
+  </string>   
+  <string>
+    <id>109</id>
+    <value>Thumbs erstellen</value>
+  </string>   
+  <string>
+    <id>110</id>
+    <value>Thumbnails erstellen</value>
+  </string>   
+  <string>
+    <id>111</id>
+    <value>Shortcuts</value>
+  </string>   
+  <string>
+    <id>112</id>
+    <value>PAUSE</value>
+  </string>   
+  <string>
+    <id>113</id>
+    <value>Meine Daten : Quelle</value>
+  </string>   
+  <string>
+    <id>114</id>
+    <value>Meine Daten : Ziel</value>
+  </string>   
+  <string>
+    <id>115</id>
+    <value>Kopieren</value>
+  </string>   
+  <string>
+    <id>116</id>
+    <value>Verschieben</value>
+  </string>   
+  <string>
+    <id>117</id>
+    <value>Löschen</value>
+  </string>   
+  <string>
+    <id>118</id>
+    <value>Umbenennen</value>
+  </string>   
+  <string>
+    <id>119</id>
+    <value>Neuer Ordner</value>
+  </string>   
+  <string>
+    <id>120</id>
+    <value>Kopieren bestätigen</value>
+  </string>   
+  <string>
+    <id>121</id>
+    <value>Verschieben bestätigen</value>
+  </string>   
+  <string>
+    <id>122</id>
+    <value>Löschen bestätigen</value>
+  </string>   
+  <string>
+    <id>123</id>
+    <value>Möchtest Du wirklich diese Daten kopieren?</value>
+  </string>   
+  <string>
+    <id>124</id>
+    <value>Möchtest Du wirklich diese Daten verschieben?</value>
+  </string>   
+  <string>
+    <id>125</id>
+    <value>Möchtest Du wirklich diese Daten löschen?</value>
+  </string>  
+  <string>
+    <id>126</id>
+    <value>Status</value>
+  </string>  
+  <string>
+    <id>127</id>
+    <value>Objekte</value>
+  </string>  
+  <string>
+    <id>128</id>
+    <value>Allgemein</value>
+  </string> 
+  <string>
+    <id>129</id>
+    <value>Slideshow</value>
+  </string> 
+  <string>
+    <id>130</id>
+    <value>System Info</value>
+  </string>  
+  <string>
+    <id>131</id>
+    <value>Bildschirm</value>
+  </string>  
+  <string>
+    <id>132</id>
+    <value>Alben</value>
+  </string>  
+  <string>
+    <id>133</id>
+    <value>Künstler</value>
+  </string>  
+  <string>
+    <id>134</id>
+    <value>Zeige Titel</value>
+  </string>  
+  <string>
+    <id>135</id>
+    <value>Genre</value>
+  </string>  
+  <string>
+    <id>136</id>
+    <value>Playlists</value>
+  </string>  
+  <string>
+    <id>137</id>
+    <value>Suche</value>
+  </string>  
+  <string>
+    <id>138</id>
+    <value>SYSTEM INFORMATION</value>
+  </string>  
+  <string>
+    <id>139</id>
+    <value>Temperatur:</value>
+  </string> 
+  <string>
+    <id>140</id>
+    <value>CPU:</value>
+  </string> 
+  <string>
+    <id>141</id>
+    <value>GPU:</value>
+  </string> 
+  <string>
+    <id>142</id>
+    <value>Zeit:</value>
+  </string> 
+  <string>
+    <id>143</id>
+    <value>Gegenwärtig:</value>
+  </string> 
+  <string>
+    <id>144</id>
+    <value>Erbaut:</value>
+  </string> 
+  <string>
+    <id>145</id>
+    <value>Netzwerk:</value>
+  </string> 
+  <string>
+    <id>146</id>
+    <value>Type:</value>
+  </string> 
+  <string>
+    <id>147</id>
+    <value>Statisch</value>
+  </string> 
+  <string>
+    <id>148</id>
+    <value>DHCP</value>
+  </string> 
+  <string>
+    <id>149</id>
+    <value>MAC</value>
+  </string> 
+  <string>
+    <id>150</id>
+    <value>IP:</value>
+  </string> 
+  <string>
+    <id>151</id>
+    <value>Verbindung:</value>
+  </string> 
+  <string>
+    <id>152</id>
+    <value>Half duplex</value>
+  </string> 
+  <string>
+    <id>153</id>
+    <value>Full duplex</value>
+  </string> 
+  <string>
+    <id>154</id>
+    <value>Festplattenspeicher</value>
+  </string> 
+  <string>
+    <id>155</id>
+    <value>Laufwerk</value>
+  </string> 
+  <string>
+    <id>156</id>
+    <value>Frei</value>
+  </string> 
+  <string>
+    <id>157</id>
+    <value>Filme</value>
+  </string> 
+  <string>
+    <id>158</id>
+    <value>Freier Speicher</value>
+  </string> 
+  <string>
+    <id>159</id>
+    <value>Keine Verbindung</value>
+  </string> 
+  <string>
+    <id>160</id>
+    <value>Frei</value>
+  </string> 
+  <string>
+    <id>161</id>
+    <value>Nicht verfügbar</value>
+  </string> 
+  <string>
+    <id>162</id>
+    <value>Schublade offen</value>
+  </string> 
+  <string>
+    <id>163</id>
+    <value>Einlesen</value>
+  </string> 
+  <string>
+    <id>164</id>
+    <value>Keine Disk</value>
+  </string> 
+  <string>
+    <id>165</id>
+    <value>Disk eingelegt</value>
+  </string> 
+  <string>
+    <id>166</id>
+    <value>Skin:</value>
+  </string> 
+  <string>
+    <id>167</id>
+    <value>FTP Server:</value>
+  </string> 
+  <string>
+    <id>168</id>
+    <value>Zeit Server:</value>
+  </string> 
+  <string>
+    <id>169</id>
+    <value>Auflösung:</value>
+  </string> 
+  <string>
+    <id>170</id>
+    <value>Album:</value>
+  </string> 
+  <string>
+    <id>171</id>
+    <value>Künstler:</value>
+  </string> 
+  <string>
+    <id>172</id>
+    <value>Datum der Veröffentlichung:</value>
+  </string> 
+  <string>
+    <id>173</id>
+    <value>Bewertung:</value>
+  </string> 
+  <string>
+    <id>174</id>
+    <value>Genre:</value>
+  </string> 
+  <string>
+    <id>175</id>
+    <value>Töne:</value>
+  </string> 
+  <string>
+    <id>176</id>
+    <value>Styles:</value>
+  </string> 
+  <string>
+    <id>177</id>
+    <value>Review:</value>
+  </string> 
+  <string>
+    <id>178</id>
+    <value>Titel:</value>
+  </string> 
+  <string>
+    <id>179</id>
+    <value>Song</value>
+  </string> 
+  <string>
+    <id>180</id>
+    <value>Dauer</value>
+  </string> 
+  <string>
+    <id>181</id>
+    <value>Album wählen</value>
+  </string> 
+  <string>
+    <id>182</id>
+    <value>Titel</value>
+  </string> 
+  <string>
+    <id>183</id>
+    <value>Review</value>
+  </string> 
+  <string>
+    <id>184</id>
+    <value>Refresh</value>
+  </string> 
+  <string>
+    <id>185</id>
+    <value>Suche nach Album</value>
+  </string> 
+  <string>
+    <id>186</id>
+    <value>OK</value>
+  </string>  
+  <string>
+    <id>187</id>
+    <value>Kein Album gefunden!</value>
+  </string>  
+  <string>
+    <id>188</id>
+    <value>Alle auswählen</value>
+  </string>  
+  <string>
+    <id>189</id>
+    <value>Suche Medien Info</value>
+  </string>  
+  <string>
+    <id>190</id>
+    <value>Speichern</value>
+  </string>  
+  <string>
+    <id>191</id>
+    <value>Zufall</value>
+  </string>  
+  <string>
+    <id>192</id>
+    <value>Löschen</value>
+  </string>  
+  <string>
+    <id>193</id>
+    <value>Scan</value>
+  </string>  
+  <string>
+    <id>194</id>
+    <value>Durchsuche...</value>
+  </string> 
+  <string>
+    <id>195</id>
+    <value>Keinen IMDB Eintrag gefunden!</value>
+  </string> 
+  <string>
+    <id>196</id>
+    <value>Film auswählen:</value>
+  </string> 
+  <string>
+    <id>197</id>
+    <value>IMDB Info abfragen</value>
+  </string> 
+  <string>
+    <id>198</id>
+    <value>Lade Film Details</value>
+  </string> 
+  <string>
+    <id>199</id>
+    <value>Regisseur</value>
+  </string> 
+  <string>
+    <id>200</id>
+    <value>Credits</value>
+  </string> 
+  <string>
+    <id>201</id>
+    <value>Jahr</value>
+  </string> 
+  <string>
+    <id>202</id>
+    <value>Tag line</value>
+  </string> 
+  <string>
+    <id>203</id>
+    <value>Plot outline</value>
+  </string> 
+  <string>
+    <id>204</id>
+    <value>Bewertung</value>
+  </string> 
+  <string>
+    <id>205</id>
+    <value>Votes</value>
+  </string> 
+  <string>
+    <id>206</id>
+    <value>Cast</value>
+  </string> 
+  <string>
+    <id>207</id>
+    <value>Plot</value>
+  </string> 
+  <string>
+    <id>208</id>
+    <value>Play</value>
+  </string> 
+  <string>
+    <id>209</id>
+    <value>Nächste</value>
+  </string> 
+  <string>
+    <id>210</id>
+    <value>Vorherige</value>
+  </string> 
+  <string>
+    <id>211</id>
+    <value>Suche nach Anwendungen</value>
+  </string> 
+  <string>
+    <id>212</id>
+    <value>Anwendungen gefunden</value>
+  </string> 
+  <string>
+    <id>213</id>
+    <value>UI Kalibrierung</value>
+  </string> 
+  <string>
+    <id>214</id>
+    <value>Film Kalibrierung</value>
+  </string> 
+  <string>
+    <id>215</id>
+    <value>Weichzeichnen</value>
+  </string> 
+  <string>
+    <id>216</id>
+    <value>Zoom</value>
+  </string> 
+  <string>
+    <id>217</id>
+    <value>Strecken</value>
+  </string> 
+  <string>
+    <id>218</id>
+    <value>DVD Laufwerk</value>
+  </string> 
+  <string>
+    <id>219</id>
+    <value>Bitte lege eine CD ein</value>
+  </string> 
+  <string>
+    <id>220</id>
+    <value>Remote Share</value>
+  </string> 
+  <string>
+    <id>221</id>
+    <value>Netzwerk ist nicht verbunden</value>
+  </string> 
+  <string>
+    <id>222</id>
+    <value>Abbruch</value>
+  </string> 
+  <string>
+    <id>223</id>
+    <value>Wähle beste Auflösung für Filme</value>
+  </string> 
+  <string>
+    <id>224</id>
+    <value>Geschwindigkeit</value>
+  </string> 
+  <string>
+    <id>225</id>
+    <value>Übergangs Zeit</value>
+  </string> 
+  <string>
+    <id>226</id>
+    <value>Aktiviere PAL60</value>
+  </string> 
+  <string>
+    <id>227</id>
+    <value>Aktiviere CDDB</value>
+  </string> 
+  <string>
+    <id>228</id>
+    <value>Zufällige Playlist beim Laden</value>
+  </string> 
+  <string>
+    <id>229</id>
+    <value>HD Spindown Zeit (min)</value>
+  </string> 
+  <string>
+    <id>230</id>
+    <value>Filter</value>
+  </string> 
+  <string>
+    <id>231</id>
+    <value>Keine</value>
+  </string> 
+  <string>
+    <id>232</id>
+    <value>Punkt</value>
+  </string> 
+  <string>
+    <id>233</id>
+    <value>Gleichmässig</value>
+  </string> 
+  <string>
+    <id>234</id>
+    <value>Anisotropic</value>
+  </string> 
+  <string>
+    <id>235</id>
+    <value>Quincunx</value>
+  </string> 
+  <string>
+    <id>236</id>
+    <value>Gaussian Cubic</value>
+  </string> 
+  <string>
+    <id>237</id>
+    <value>Minification:</value>
+  </string> 
+  <string>
+    <id>238</id>
+    <value>Magnification:</value>
+  </string>
+  <string>
+    <id>240</id>
+    <value>Autostart DVD-Video</value>
+  </string>
+  <string>
+    <id>241</id>
+    <value>Autostart VCD/SVCD</value>
+  </string>
+  <string>
+    <id>242</id>
+    <value>Autostart Audio-CD</value>
+  </string>
+  <string>
+    <id>243</id>
+    <value>Autostart XBOX Spiele</value>
+  </string>
+  <string>
+    <id>244</id>
+    <value>Autostart Videos</value>
+  </string>
+  <string>
+    <id>245</id>
+    <value>Autostart Musik</value>
+  </string>
+  <string>
+    <id>246</id>
+    <value>Autostart Bilder</value>
+  </string>
+  <string>
+    <id>247</id>
+    <value>Scripts</value>
+  </string>
+  <string>
+    <id>248</id>
+    <value>Sprache</value>
+  </string>
+
+</strings>
