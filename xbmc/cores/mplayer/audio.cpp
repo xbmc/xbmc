@@ -122,7 +122,6 @@ static int audio_init(int rate,int channels,int format,int flags)
 		int	 iChannels;
 		BOOL bVBR;
 		bool bAC3PassThru=false;
-		bool bPCMPassThru=false;
 
 		int ao_format_bits = audio_out_format_bits(format); 
 		if (format==AFMT_AC3) ao_format_bits=16;
@@ -135,15 +134,13 @@ static int audio_init(int rate,int channels,int format,int flags)
 			// Check that we are allowed to pass through DD or DTS
 			if (strstr(strAudioCodec,"SPDIF") && (g_stSettings.m_bDD_DTSMultiChannelPassThrough || g_stSettings.m_bDDStereoPassThrough))
 				bAC3PassThru=true;
-			else if (lSampleRate == 48000 && iChannels == 2 && g_stSettings.m_bDDStereoPassThrough) 
-				bPCMPassThru=true; // use direct digital out for stereo 48kHz audio only if stereo passthru option is enabled
 		}
 		pao_data=GetAOData();
-		if (bAC3PassThru || bPCMPassThru)
+		if (bAC3PassThru)
 		{
 			channels=2;
 			// ac3 passthru
-			m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,ao_format_bits,bAC3PassThru);
+			m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,ao_format_bits);
 		}
 		else
 		{

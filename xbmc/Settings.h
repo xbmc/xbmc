@@ -299,6 +299,7 @@ public:
   int       m_iLCDType;
   int       m_iLCDBrightness;
 	bool			m_bDisplayRemoteCodes;	// Remote code debug info
+	bool			m_bResample;			// mplayer resampling to 48kHz
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
