@@ -201,6 +201,8 @@ void CGUIWindowVisualisation::Render()
 		{
 			try
 			{
+        //some visualisation seem to be depending on xbmc clearing the screen
+	      g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
 				m_pVisualisation->Render();
 //				CLog::Log(LOGERROR, "Test");
 			}
