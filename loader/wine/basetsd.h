@@ -28,16 +28,24 @@ extern "C" {
 
 /* Type model indepent typedefs */
 
+#ifndef __int8 // _XBOX
 typedef char          __int8;
+#endif
 typedef unsigned char __uint8;
 
+#ifndef __int16 // _XBOX
 typedef short          __int16;
+#endif
 typedef unsigned short __uint16;
 
+#ifndef __int32 // _XBOX
 typedef int          __int32;
+#endif
 typedef unsigned int __uint32;
 
+#ifndef __int64 // _XBOX
 typedef long long          __int64;
+#endif
 typedef unsigned long long __uint64;
 
 #if defined(_WIN64)
