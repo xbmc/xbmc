@@ -207,7 +207,15 @@ void CKaiClient::Invite(CStdString& aPlayer, CStdString& aVector, CStdString& aM
 	}
 }
 
-void CKaiClient::Host(CStdString& aPassword, int aPlayerLimit, CStdString& aDescription)
+void CKaiClient::Host()
+{
+	if (client_state==State::Authenticated)
+	{
+		SetHostingStatus(TRUE);
+	}
+}
+
+void CKaiClient::Host(CStdString& aPassword, CStdString& aDescription, int aPlayerLimit)
 {
 	if (client_state==State::Authenticated)
 	{
@@ -695,6 +703,12 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			{
 				CStdString strMode			= strtok(NULL, ";");
 				m_bHosting = atoi(strMode.c_str()) >0;
+
+				if (observer!=NULL)
+				{
+					observer->OnUpdateHostingStatus(m_bHosting);
+				}
+				CLog::Log(LOGINFO, m_bHosting ? "KAICLIENT: User intends to host games." : "KAICLIENT: User intends to join games.");
 			}
 
 			else if (strcmp(szMessage,"KAI_CLIENT_USER_SUB_VECTOR")==0)
