@@ -54,6 +54,7 @@ void CGUIWindowVideoOverlay::Render()
     {
       iSpeed=1;
       g_application.SetPlaySpeed(iSpeed);
+      g_application.m_pPlayer->SeekTime(0);
     }
   }
 
