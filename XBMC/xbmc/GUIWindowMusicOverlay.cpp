@@ -6,7 +6,14 @@
 #include "stdstring.h"
 #include "application.h"
 #include "MusicInfoTag.h"
+#include "albumdatabase.h"
+#include "picture.h"
 
+
+using namespace DATABASE;
+using namespace MUSIC_INFO;
+
+#define CONTROL_LOGO_PIC    1
 #define CONTROL_PLAYTIME		2
 #define CONTROL_PLAY_LOGO   3
 #define CONTROL_PAUSE_LOGO  4
@@ -15,6 +22,7 @@
 CGUIWindowMusicOverlay::CGUIWindowMusicOverlay()
 :CGUIWindow(0)
 {
+	m_pTexture=NULL;
 }
 
 CGUIWindowMusicOverlay::~CGUIWindowMusicOverlay()
@@ -64,12 +72,32 @@ void CGUIWindowMusicOverlay::Render()
 		CGUIMessage msg2(GUI_MSG_HIDDEN, GetID(), CONTROL_PAUSE_LOGO); 
 		OnMessage(msg2); 
 	}
+
+	if (m_pTexture)
+	{
+		
+		const CGUIControl* pControl = GetControl(CONTROL_LOGO_PIC); 
+		int iXPos=pControl->GetXPosition();
+		int iYPos=pControl->GetYPosition();
+		int iWidth=pControl->GetWidth();
+		int iHeight=pControl->GetHeight();
+		CPicture picture;
+		picture.RenderImage(m_pTexture,iXPos,iYPos,iWidth,iHeight,m_iTextureWidth,m_iTextureHeight);
+	}
 	CGUIWindow::Render();
 }
 
 
 	void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 	{
+		CStdString strAlbum=strFile;
+		if (m_pTexture)
+		{
+			m_pTexture->Release();
+			m_pTexture=NULL;
+		}
+		CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), CONTROL_LOGO_PIC); 
+		OnMessage(msg);
 		if ( CUtil::IsAudio(strFile) )
 		{
 			CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_INFO); 
@@ -99,6 +127,7 @@ void CGUIWindowMusicOverlay::Render()
 						CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 						msg1.SetLabel(tag.GetAlbum() );
 						OnMessage(msg1);
+						strAlbum=tag.GetAlbum();
 					}
 					
 					int iTrack=tag.GetTrackNumber();
@@ -136,6 +165,33 @@ void CGUIWindowMusicOverlay::Render()
 					CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 					msg1.SetLabel( CUtil::GetFileName(strFile) );
 					OnMessage(msg1);
+			}
+		}
+	
+		CAlbumDatabase albumDatabase(strAlbum);
+		if (albumDatabase.Load())
+		{
+			CStdString strURL=albumDatabase.GetAlbumInfoURL();
+			if (CUtil::FileExists(strURL) )
+			{
+				CMusicAlbumInfo album;
+				if ( album.Load(strURL))
+				{
+					CStdString strThumb;
+					CUtil::GetAlbumThumb(album.GetTitle(),strThumb);
+					if (CUtil::FileExists(strThumb) )
+					{
+						CPicture picture;
+						m_pTexture=picture.Load(strThumb);
+						m_iTextureWidth=picture.GetWidth();
+						m_iTextureHeight=picture.GetHeight();
+						if (m_pTexture)
+						{							
+							CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
+							OnMessage(msg1);
+						}
+					}
+				}
 			}
 		}
 	}
