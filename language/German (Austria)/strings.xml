@@ -33,7 +33,7 @@
 
   <string>
     <id>8</id>
-    <value>Wettervorhersage</value>
+    <value>Wetterbericht</value>
   </string>
   <string>
     <id>11</id>
@@ -390,11 +390,11 @@
   </string> 
   <string>
     <id>167</id>
-    <value>FTP server aktivieren</value>
+    <value>FTP Server aktivieren</value>
   </string> 
   <string>
     <id>168</id>
-    <value>Mit Zeit Server abgleichen</value>
+    <value>Zeit Server Synchronisation aktivieren</value>
   </string> 
   <string>
     <id>169</id>
@@ -578,11 +578,11 @@
   </string> 
   <string>
     <id>213</id>
-    <value>Bild zentrieren</value>
+    <value>Bildschirm zentrieren..</value>
   </string> 
   <string>
     <id>214</id>
-    <value>Bildschirm kalibrieren</value>
+    <value>Bildschirm kalibrieren..</value>
   </string> 
   <string>
     <id>215</id>
@@ -630,7 +630,7 @@
   </string> 
   <string>
     <id>226</id>
-    <value>PAL60 aktivieren</value>
+    <value>PAL 60 aktivieren</value>
   </string> 
   <string>
     <id>227</id>
@@ -642,7 +642,7 @@
   </string> 
   <string>
     <id>229</id>
-    <value>Festplatten ausschalten nach</value>
+    <value>HDD ausschalten nach</value>
   </string> 
   <string>
     <id>230</id>
@@ -682,31 +682,31 @@
   </string>
   <string>
     <id>240</id>
-    <value>Autostart DVD</value>
+    <value>Autostart einer DVD</value>
   </string>
   <string>
     <id>241</id>
-    <value>Autostart VCD/SVCD</value>
+    <value>Autostart einer VCD/SVCD</value>
   </string>
   <string>
     <id>242</id>
-    <value>Autostart Audio-CD</value>
+    <value>Autostart einer Audio-CD</value>
   </string>
   <string>
     <id>243</id>
-    <value>Autostart XBOX Spiele</value>
+    <value>Autostart eines XBOX Spiels</value>
   </string>
   <string>
     <id>244</id>
-    <value>Autostart Videos</value>
+    <value>Autostart einer Videodatei</value>
   </string>
   <string>
     <id>245</id>
-    <value>Autostart Musik</value>
+    <value>Autostart einer Musikdatei</value>
   </string>
   <string>
     <id>246</id>
-    <value>Autostart Bilder</value>
+    <value>Autostart einer Bilddatei</value>
   </string>
   <string>
     <id>247</id>
@@ -1146,7 +1146,7 @@
   </string>
   <string>
     <id>357</id>
-    <value>Ausschalten nach Leerlauf von</value>
+    <value>XBOX Ausschalten nach Leerlauf von</value>
   </string>
   <string>
     <id>358</id>
@@ -1158,7 +1158,7 @@
   </string>
   <string>
     <id>360</id>
-    <value>Bildschirmschoner</value>
+    <value>B-Schirmschoner</value>
   </string>
   <string>
     <id>361</id>
@@ -1302,7 +1302,7 @@
   </string>
   <string>
     <id>396</id> 
-    <value>Ortauswahl</value> 
+    <value>Ortsauswahl</value> 
   </string>
   <string>
     <id>397</id> 
@@ -1638,7 +1638,7 @@
   </string>
   <string>
     <id>480</id>
-    <value>Benutzeroberfläche</value>
+    <value>Darstellung</value>
   </string>
   <string>
     <id>481</id>
@@ -1674,7 +1674,7 @@
   </string>
   <string>
     <id>489</id>
-    <value>Automatisch nächstes Lied spielen</value>
+    <value>Automatisch nächstes Lied im Ordner abspielen</value>
   </string>
   <string>
     <id>490</id>
@@ -1686,7 +1686,7 @@
   </string>
   <string>
     <id>492</id>
-    <value>VobUntertitel vergr.</value>
+    <value>VobUntertitel vergrößern um</value>
   </string>
   <string>
     <id>493</id>
@@ -1875,11 +1875,11 @@
   </string>
   <string>
     <id>706</id>
-    <value>HTTP Proxy Host</value>
+    <value>- HTTP Proxy Host</value>
   </string>
   <string>
     <id>707</id>
-    <value>HTTP Proxy Port</value>
+    <value>- HTTP Proxy Port</value>
   </string>
   <string>
     <id>708</id>
@@ -1971,11 +1971,11 @@
   </string>	
   <string>
     <id>730</id>
-    <value>Web Server Port</value>
+    <value>- Web Server Port</value>
   </string>	
   <string>
     <id>731</id>
-    <value>Zeit Server Host</value>
+    <value>- Zeit Server Host</value>
   </string>
   <string>
     <id>732</id>
@@ -1983,7 +1983,7 @@
   </string>
   <string>
     <id>733</id>
-    <value>Web Server Passwort</value>
+    <value>- Web Server Passwort</value>
   </string>
   <string>
     <id>734</id>
@@ -2279,7 +2279,7 @@
   </string>
   <string>
     <id>13001</id> 
-    <value>- ausschalten während Stream</value> 
+    <value>HDD ausschalten während Stream</value> 
   </string>
   <string>
     <id>13002</id> 
@@ -2287,11 +2287,11 @@
   </string>
   <string>
     <id>13003</id> 
-    <value>-- Verzögerung</value> 
+    <value>- Verzögerung</value> 
   </string>
   <string>
     <id>13004</id> 
-    <value>-- minimale Datendauer</value> 
+    <value>- minimale Datendauer</value> 
   </string>
   <string>
     <id>13100</id> 
@@ -2323,19 +2323,19 @@
   </string>
   <string>
     <id>13299</id>
-    <value>Anzustrebende Temperatur:</value>
+    <value>- Temperatur:</value>
   </string>
   <string>
     <id>13300</id>
-    <value>Geschwindigkeit in %</value>
+    <value>- Geschwindigkeit:</value>
   </string>
   <string>
     <id>13301</id>
-    <value>Autom. Temperaturkontrolle</value>
+    <value>Automatische Temperaturkontrolle</value>
   </string>
   <string>
     <id>13302</id>
-    <value>Lüftereinstellung</value>
+    <value>Manuelle Lüftereinstellung</value>
   </string>
   <string>
     <id>13303</id>
@@ -2378,10 +2378,10 @@
 <value>OSD Einblendzeit</value>
 </string>
    <string><id>13315</id>
-<value>Miniaturansichten erstellen</value>
+<value>Miniaturansicht erst.</value>
 </string> 
      <string><id>13316</id>
-<value>Rekursive Miniaturansichten</value>
+<value>rekurs. Miniaturansicht</value>
 </string> 
      <string><id>13317</id>
 <value>Diaschau</value>
@@ -2480,37 +2480,37 @@
 <value>Spieleverzeichnis</value>
 </string>
      <string><id>14010</id><value>Ansichtenänderung</value></string> 
-     <string><id>14011</id><value>Automatische Ansicht aktivieren</value></string> 
+     <string><id>14011</id><value>Automatische Ansicht > aktivieren</value></string> 
      <string><id>14012</id><value>Große Symbole verwenden</value></string> 
-     <string><id>14013</id><value>Vorgehensweise:</value></string> 
+     <string><id>14013</id><value>></value></string> 
      <string><id>14014</id><value>Prozentanteil:</value></string> 
      <string><id>14015</id><value>Miniaturansicht wenn keine Dateien vorhanden</value></string> 
      <string><id>14016</id><value>Listenansicht wenn keine Ordner vorhanden</value></string> 
-     <string><id>14017</id><value>Prozentanteil an Miniaturbildern</value></string> 
-     <string><id>14018</id><value>Anzeige-Optionen</value></string> 
-     <string><id>14019</id><value>Ortskennzahl 1</value></string> 
-     <string><id>14020</id><value>Ortskennzahl 2</value></string> 
-     <string><id>14021</id><value>Ortskennzahl 3</value></string> 
+     <string><id>14017</id><value>Miniaturansicht bei %Anteil von  Miniaturbildern</value></string> 
+     <string><id>14018</id><value>Ansicht</value></string> 
+     <string><id>14019</id><value>Ortskennzahl [1]</value></string> 
+     <string><id>14020</id><value>Ortskennzahl [2]</value></string> 
+     <string><id>14021</id><value>Ortskennzahl [3]</value></string> 
      <string><id>14022</id><value>Datenbank</value></string> 
      <string><id>14023</id><value>Kein TV</value></string> 
      <string><id>14024</id><value>Stadt oder US Postleitzahl eingeben</value></string> 
      <string><id>14025</id><value>Video von Festplatte</value></string> 
-     <string><id>14026</id><value>Video von DVDLaufwerk</value></string> 
+     <string><id>14026</id><value>Video von DVD Laufwerk</value></string> 
      <string><id>14027</id><value>Video über lokales Netzwerk</value></string> 
      <string><id>14028</id><value>Video aus dem Internet</value></string> 
      <string><id>14029</id><value>Audio von Festplatte</value></string> 
-     <string><id>14030</id><value>Audio von DVDLauferk</value></string> 
+     <string><id>14030</id><value>Audio von DVD Laufwerk</value></string> 
      <string><id>14031</id><value>Audio über lokales Netzwerk</value></string> 
      <string><id>14032</id><value>Audio aus dem Internet</value></string> 
      <string><id>14033</id><value>DVD von Festplatte</value></string> 
-     <string><id>14034</id><value>DVD von DVDLaufwerk</value></string> 
+     <string><id>14034</id><value>DVD von DVD Laufwerk</value></string> 
      <string><id>14035</id><value>DVD über lokales Netzwerk</value></string> 
      <string><id>14036</id><value>Server</value></string> 
      <string><id>14037</id><value>Darstellung</value></string> 
      <string><id>14038</id><value>Netzwerkeinstellungen wurden geändert!</value></string> 
-     <string><id>14039</id><value>Die Änderungen werden erst wirksam, wenn sie die</value></string> 
-     <string><id>14040</id><value>XBOX neu starten. Möchten sie jetzt neu starten?</value></string> 
+     <string><id>14039</id><value>Um die Änderungen wirksam zu machen,</value></string> 
+     <string><id>14040</id><value>müssen sie die XBOX neu starten. NEUSTART?</value></string> 
      <string><id>14041</id><value>Post Processing</value></string> 
-   <string><id>14042</id><value>Gerät IP Addresse</value></string>
+   <string><id>14042</id><value>Engine IP Addresse</value></string>
 
 </strings>
