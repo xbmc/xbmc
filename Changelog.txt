@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 21-02-2005 fixed: read_font_desc() returned non-NULL when it should have been NULL.  Caused crash on exit of mplayer (particularly flac)
+  - 21-02-2005 added: mplayer bugfix/patch for flac.c: http://www1.mplayerhq.hu/cgi-bin/cvsweb.cgi/ffmpeg/libavcodec/flac.c?cvsroot=FFMpeg&sortby=date
   - 10-02-2005 improved: ff/rw should now work even better. needs testing. 
   - 07-02-2005 fixed: seeking in mpg's type video's sometimes reverted to beginning.
   - 01-02-2005 fixed: flac playback works sometimes but most times not

@@ -46,7 +46,6 @@ extern int sub_unicode;
 void free_font_desc( font_desc_t* desc )
 {
     int i;
-    
     if(desc) {
     	if (desc->fpath){
     		free(desc->fpath);
@@ -358,6 +357,8 @@ fail_out:
     fclose(f);
 #ifdef _XBOX
   free_font_desc( desc );
+  desc = NULL;
+  return NULL;
 #else
   if (desc->fpath)
     free(desc->fpath);
