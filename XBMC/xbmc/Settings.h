@@ -302,7 +302,8 @@ public:
   int       m_iLCDType;
   int       m_iLCDBrightness;
 	bool			m_bDisplayRemoteCodes;	// Remote code debug info
-	bool			m_bResample;			// mplayer resampling to 48kHz
+	bool			m_bResampleMusicAudio;	// resample using SSRC
+	bool			m_bResampleVideoAudio;	// separate from music, as it causes a CPU hit
   int       m_iLCDModChip;
   int		m_iOSDTimeout;		// OSD timeout in seconds
   };
