@@ -322,7 +322,9 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   }
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
-  CStdString strValue = pRootElement->Value();
+  CStdString strValue;
+  if (pRootElement)
+    strValue = pRootElement->Value();
   if ( strValue != "xboxmediacenter")
   {
     g_LoadErrorStr.Format("%s Doesn't contain <xboxmediacenter>", strXMLFile.c_str());
