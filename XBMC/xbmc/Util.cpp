@@ -1019,6 +1019,7 @@ bool CUtil::IsPlayList(const CStdString& strFile)
   if (strExtension==".b4s") return true;
   if (strExtension==".pls") return true;
   if (strExtension==".strm") return true;
+  if (strExtension==".wpl") return true;
   return false;
 }
 
