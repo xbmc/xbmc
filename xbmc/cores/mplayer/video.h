@@ -295,26 +295,28 @@ typedef struct
 	unsigned char *v;
 }
 IMAGE;
-extern int image_output(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst, unsigned int dst_stride,int csp,int interlaced);
-#define XVID_CSP_RGB24 	0		/* [b|g|r] */
-#define XVID_CSP_YV12	1
-#define XVID_CSP_YUY2	2
-#define XVID_CSP_UYVY	3
-#define XVID_CSP_I420	4
-#define XVID_CSP_RGB555	10
-#define XVID_CSP_RGB565	11
-#define XVID_CSP_USER	12
-#define XVID_CSP_EXTERN      1004  // per slice rendering
-#define XVID_CSP_YVYU	1002
-#define XVID_CSP_RGB32 	1000	/* [b|g|r|a] */
-#define XVID_CSP_ABGR	1006	/* [a|b|g|r] */
-#define XVID_CSP_RGBA	1005	/* [r|g|b|a] */
+extern int image_output(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst[4], unsigned int dst_stride[4],int csp,int interlaced);
+
+
+#define XVID_CSP_USER     (1<< 0) /* 4:2:0 planar */
+#define XVID_CSP_I420     (1<< 1) /* 4:2:0 packed(planar win32) */
+#define XVID_CSP_YV12     (1<< 2) /* 4:2:0 packed(planar win32) */
+#define XVID_CSP_YUY2     (1<< 3) /* 4:2:2 packed */
+#define XVID_CSP_UYVY     (1<< 4) /* 4:2:2 packed */
+#define XVID_CSP_YVYU     (1<< 5) /* 4:2:2 packed */
+#define XVID_CSP_BGRA     (1<< 6) /* 32-bit bgra packed */
+#define XVID_CSP_ABGR     (1<< 7) /* 32-bit abgr packed */
+#define XVID_CSP_RGBA     (1<< 8) /* 32-bit rgba packed */
+#define XVID_CSP_BGR      (1<< 9) /* 24-bit bgr packed */
+#define XVID_CSP_RGB555   (1<<10) /* 16-bit rgb555 packed */
+#define XVID_CSP_RGB565   (1<<11) /* 16-bit rgb565 packed */
+#define XVID_CSP_SLICE    (1<<12) /* decoder only: 4:2:0 planar, per slice rendering */
+#define XVID_CSP_INTERNAL (1<<13) /* decoder only: 4:2:0 planar, returns ptrs to internal buffers */
+#define XVID_CSP_NULL     (1<<14) /* decoder only: dont output anything */
+#define XVID_CSP_VFLIP    (1<<31) /* vertical flip mask */
 
 
 
-#define XVID_CSP_NULL 	9999
-
-#define XVID_CSP_VFLIP	0x80000000	// flip mask
 
 
 
