@@ -2556,6 +2556,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 							delete m_pPlayer;
 							m_pPlayer = 0;
 							m_itemCurrentFile.Clear();
+
 						}
 					}
 				}
@@ -2579,6 +2580,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
 			{
 				m_gWindowManager.PreviousWindow();
 			}
+
+			//	CDDA ejected while playing in vis ?
+			if (!IsPlayingAudio() && CUtil::IsCDDA(strFile) && !CDetectDVDMedia::IsDiscInDrive() && m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
+			{
+				//	yes, disable vis
+				m_gWindowManager.PreviousWindow();
+			}
+
 		}
 		break;
 
