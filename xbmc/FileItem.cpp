@@ -5,10 +5,9 @@
 
 CFileItem::CFileItem(const CSong& song)
 {
+  Clear();
 	m_strLabel=song.strTitle;
 	m_strPath=song.strFileName;
-	m_bIsFolder=false;
-	memset(&m_stTime,0,sizeof(m_stTime));
 	m_musicInfoTag.SetSong(song);
 	m_lStartOffset = song.iStartOffset;
 	m_lEndOffset = song.iEndOffset;
@@ -16,23 +15,18 @@ CFileItem::CFileItem(const CSong& song)
 
 CFileItem::CFileItem(const CAlbum& album)
 {
+  Clear();
 	m_strLabel=album.strAlbum;
 	m_strPath=album.strPath;
-	m_bIsFolder=true;
 	m_strLabel2=album.strArtist;
-	memset(&m_stTime,0,sizeof(m_stTime));
 	m_musicInfoTag.SetAlbum(album);
-	m_lStartOffset = 0;
-	m_lEndOffset = 0;
 }
 
 CFileItem::CFileItem(const CPlayList::CPlayListItem& item)
 {
+  Clear();
 	m_strLabel=item.GetDescription();
 	m_strPath=item.GetFileName();
-	m_bIsFolder=false;
-	m_bIsShareOrDrive = false;
-	memset(&m_stTime,0,sizeof(m_stTime));
 	m_lStartOffset = item.GetStartOffset();
 	m_lEndOffset = item.GetEndOffset();
 	m_musicInfoTag = item.GetMusicTag();
@@ -45,16 +39,7 @@ CFileItem::CFileItem(const CFileItem& item)
 
 CFileItem::CFileItem(void)
 {
-  m_strDVDLabel="";
-  m_fRating=0.0f;
-  m_dwSize=0;
-  m_bIsFolder=false;
-  m_bIsShareOrDrive=false;
-	memset(&m_stTime,0,sizeof(m_stTime));
-  m_iDriveType = SHARE_TYPE_UNKNOWN;
-  m_lStartOffset = 0;
-  m_lEndOffset = 0;
-  m_iprogramCount = 0;
+  Clear();
 }
 
 
@@ -126,6 +111,7 @@ void CFileItem::Clear()
 	m_iDriveType = SHARE_TYPE_UNKNOWN;
 	m_lStartOffset = 0;
 	m_lEndOffset = 0;
+	m_iprogramCount=0;
 }
 
 CFileItemList::CFileItemList(VECFILEITEMS& items)
