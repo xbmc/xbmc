@@ -58,7 +58,7 @@ public:
   
 	  int				m_iMyProgramsSortMethod;
 	  bool			m_bMyProgramsSortAscending;
-	  bool			m_bMyProgramsViewAsIcons;
+	  int       m_iMyProgramsViewAsIcons;
 	  bool			m_bMyProgramsFlatten;
 	  bool			m_bMyProgramsDefaultXBE;
 		
