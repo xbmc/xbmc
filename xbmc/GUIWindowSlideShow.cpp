@@ -374,7 +374,7 @@ void CGUIWindowSlideShow::Render()
 			msg.SetLabel(strFileInfo); 
 			OnMessage(msg);
 		}
-		strSlideInfo.Format("%i/%i", m_iCurrentSlide ,m_vecSlides.size());
+		strSlideInfo.Format("%i/%i", m_iCurrentSlide+1 ,m_vecSlides.size());
 		{
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2); 
 			msg.SetLabel(strSlideInfo); 
