@@ -62,8 +62,8 @@ void CGUIWindowScreensaver::InitMatrix()
 		{
 			do
 			{
-				m_mtrxGrid[iX][iY] = 'A'+(char)(rand() % 25);
-			} while(m_mtrxGrid[iX][iY] == cLast);	// prevent repeats
+				m_mtrxGrid[iX][iY] = 'A'+(char)(rand() % 19);
+			} while(m_mtrxGrid[iX][iY] == cLast && m_mtrxGrid[iX][iY] != 'S');	// prevent repeats and blanks
 			cLast = m_mtrxGrid[iX][iY];
 		}
 		// Pos will be (0-120)/4
@@ -122,7 +122,7 @@ void CGUIWindowScreensaver::RenderFrame()
 	// Render the PREVIOUS screen, which displays fading symbols
 	// as new symbol is drawn below it. The essence of the Matrix Effect	
 	
-	if (m_pTexture) RenderQuad(m_pTexture, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), (FLOAT)0.94, 1);		// fade was 0.90	
+	if (m_pTexture) RenderQuad(m_pTexture, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), (FLOAT)0.92, 1);		// fade was 0.90	
 	chText[1] = 0;
 
 	if ( m_bDoEffect )

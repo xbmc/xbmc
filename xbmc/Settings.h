@@ -149,6 +149,7 @@ public:
 		int		m_iShutdownTime;
 		int		m_iScreenSaverTime;		// CB: SCREENSAVER PATCH
 		int		m_iScreenSaverMode;		// CB: SCREENSAVER
+		int		m_iScreenSaverFadeLevel;
 
 		char			m_szDefaultMusic[128];
 		char			m_szDefaultPictures[128];

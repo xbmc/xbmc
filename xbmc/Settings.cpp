@@ -55,6 +55,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_iShutdownTime=0;	// minutes - 0 = none
 	g_stSettings.m_iScreenSaverTime=3;	// minutes - CB: SCREENSAVER PATCH
 	g_stSettings.m_iScreenSaverMode=1;	// 0=Off, 1=Fade to dim, 2=Fade to black, 3=Matrix Trails
+	g_stSettings.m_iScreenSaverFadeLevel = 20;	// default to 20%
 	g_stSettings.m_bAutoShufflePlaylist=true;
   g_stSettings.m_iSlideShowTransistionFrames=25;
   g_stSettings.m_iSlideShowStayTime=3000;
@@ -767,6 +768,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetInteger(pElement, "shutdowntime", g_stSettings.m_iShutdownTime);
 		GetInteger(pElement, "screensavertime", g_stSettings.m_iScreenSaverTime);	// CB: SCREENSAVER PATCH
 		GetInteger(pElement, "screensavermode", g_stSettings.m_iScreenSaverMode);	// CB: SCREENSAVER PATCH
+		GetInteger(pElement, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel);
 	}
 	// slideshow settings
 	pElement = pRootElement->FirstChildElement("slideshow");
@@ -1010,6 +1012,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetInteger(pNode, "shutdowntime", g_stSettings.m_iShutdownTime);
 	SetInteger(pNode, "screensavertime", g_stSettings.m_iScreenSaverTime);	// CB: SCREENSAVER PATCH
 	SetInteger(pNode, "screensavermode", g_stSettings.m_iScreenSaverMode);	// CB: SCREENSAVER PATCH
+	SetInteger(pNode, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel);
 	// slideshow settings
 	TiXmlElement slideshowNode("slideshow");
 	pNode = pRoot->InsertEndChild(slideshowNode);
