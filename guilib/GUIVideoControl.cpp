@@ -20,6 +20,7 @@ void CGUIVideoControl::Render()
 	rc.right	= m_dwPosX+m_dwWidth;
 	rc.bottom = m_dwPosY+m_dwHeight;
 	g_graphicsContext.SetViewWindow(rc);
+	  
 }
 
 

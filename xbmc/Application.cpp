@@ -200,7 +200,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiSettingsGeneral);					// window id = 8
 	m_gWindowManager.Add(&m_guiSettingsScreen);						// window id = 9
 	m_gWindowManager.Add(&m_guiSettingsUICalibration);		// window id = 10
-	
+	m_gWindowManager.Add(&m_guiSettingsMovieCalibration);	// window id = 11
 
   m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
   m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
@@ -258,6 +258,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiMusicOverlay.Load( strSkinPath+"\\musicOverlay.xml" );  
 	m_guiSettingsScreen.Load( strSkinPath+"\\settingsScreen.xml" );
   m_guiSettingsUICalibration.Load( strSkinPath+"\\settingsUICalibration.xml" );
+	m_guiSettingsMovieCalibration.Load( strSkinPath+"\\settingsMovieCalibration.xml" );
 }
 
 
@@ -277,10 +278,15 @@ void CApplication::Render()
 			Sleep(50);
 			return;
 		}
+		g_graphicsContext.EnablePreviewWindow(true);
+	}
+	else
+	{
+		g_graphicsContext.EnablePreviewWindow(false);
 	}
 
 	// draw GUI (always enable soften filter when displaying the UI)
-  m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0xff202020, 1.0f, 0L );
+  m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 	m_pd3dDevice->SetSoftDisplayFilter(false);
 	m_pd3dDevice->SetFlickerFilter(5);
 

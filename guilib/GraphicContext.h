@@ -34,6 +34,7 @@ public:
 	void									SetOffset(int iXoffset, int iYoffset);
 	void									Lock();
 	void									Unlock();
+	void									EnablePreviewWindow(bool bEnable);
 protected:
 	CRITICAL_SECTION			  m_critSection;
   IMsgSenderCallback*     m_pCallback;
@@ -48,6 +49,7 @@ protected:
 	bool										m_bFullScreenVideo;
 	int											m_iScreenOffsetX;
 	int											m_iScreenOffsetY;
+	bool										m_bShowPreviewWindow;
 };
 
 extern CGraphicContext g_graphicsContext;

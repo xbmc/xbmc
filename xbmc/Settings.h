@@ -109,6 +109,10 @@ public:
 		bool			m_bUseCDDB;
 		int				m_iUIOffsetX;
 		int				m_iUIOffsetY;
+		int				m_iMoviesOffsetX1;
+		int				m_iMoviesOffsetY1;
+		int				m_iMoviesOffsetX2;
+		int				m_iMoviesOffsetY2;
 		bool			m_bSoften;
 		bool			m_bZoom;
 		bool			m_bStretch;

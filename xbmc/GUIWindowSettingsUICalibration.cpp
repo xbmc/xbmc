@@ -40,8 +40,8 @@ void CGUIWindowSettingsUICalibration::OnKey(const CKey& key)
 
 		switch (key.GetButtonCode()) 
 		{
-			case KEY_BUTTON_A:
-			case KEY_REMOTE_SELECT:
+			case KEY_BUTTON_BLACK:
+			case KEY_REMOTE_INFO:
 				iXOff=0;
 				iYOff=0;
 				m_iSpeed=1;
