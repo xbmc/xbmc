@@ -138,7 +138,6 @@ void choose_best_resolution(float fps)
   if (d_image_width==480 && d_image_height==480) bWidescreen = false;
 
   // if video switching is not allowed then use current resolution (with pal 60 if needed)
-  // PERHAPS ALSO SUPPORT WIDESCREEN SWITCHING HERE??
   // if we're not in fullscreen mode then use current resolution 
   // if we're calibrating the video  then use current resolution 
   if  ( (!g_stSettings.m_bAllowVideoSwitching) ||
@@ -150,7 +149,7 @@ void choose_best_resolution(float fps)
     if (bUsingPAL)
     {
       // FIXME - Fix for autochange of widescreen once GUI option is implemented
-      //bWidescreen = (g_settings.m_ResInfo[m_iResolution].dwFlags&D3DPRESENTFLAG_WIDESCREEN)!=0;
+      bWidescreen = (g_settings.m_ResInfo[m_iResolution].dwFlags&D3DPRESENTFLAG_WIDESCREEN)!=0;
       if (bPal60)
       {
         if (bWidescreen)
@@ -170,6 +169,7 @@ void choose_best_resolution(float fps)
     g_graphicsContext.SetVideoResolution(m_iResolution);
     return;
   }
+  
   // We are allowed to switch video resolutions, so we must
   // now decide which is the best resolution for the video we have
   if (bUsingPAL)  // PAL resolutions
@@ -226,6 +226,7 @@ void choose_best_resolution(float fps)
       }
     }
   }
+  
   // Finished - update our video resolution
   g_graphicsContext.SetVideoResolution(m_iResolution);
 }
