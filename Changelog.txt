@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 25-07-2004 fixed: webserver doesn't use custom port when started from settings
+  - 25-07-2004 fixed: idle timeout shutdown freezes xbmc
   - 25-07-2004 fixed: Launching XBEs would hang (for example anything from My Programs).
   - 25-07-2004 added: Added: My Programs now allows for multiple Paths per bookmark.  Use a comma-separated list in the <path> tag.
   - 23-07-2004 added: profiles for settings
