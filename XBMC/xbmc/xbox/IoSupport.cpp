@@ -38,21 +38,82 @@
 
 typedef struct 
 {
-	char szDriveLetter;
+	char	szDriveLetter;
 	char* szDevice;
+	int   iPartition;
 } stDriveMapping;
 
 stDriveMapping driveMapping[]=
 {
-	{ 'C', "Harddisk0\\Partition2"},
-	{ 'D', "Cdrom0"},
-	{ 'E', "Harddisk0\\Partition1"},
-	{ 'F', "Harddisk0\\Partition6"},
-	{ 'X', "Harddisk0\\Partition3"},
-	{ 'Y', "Harddisk0\\Partition4"},
-	{ 'Z', "Harddisk0\\Partition5"},
+	{ 'C', "Harddisk0\\Partition2",2},
+	{ 'D', "Cdrom0",-1},
+	{ 'E', "Harddisk0\\Partition1",1},
+	{ 'F', "Harddisk0\\Partition6",6},
+	{ 'X', "Harddisk0\\Partition3",3},
+	{ 'Y', "Harddisk0\\Partition4",4},
+	{ 'Z', "Harddisk0\\Partition5",5},
+	{ 'G', "Harddisk0\\Partition7",7},
 };
 #define NUM_OF_DRIVES ( sizeof( driveMapping) / sizeof( driveMapping[0] ) )
+
+
+PARTITION_TABLE* CIoSupport::m_partitionTable=NULL;
+
+unsigned int CIoSupport::read_active_partition_table(PARTITION_TABLE *p_table)
+{
+	ANSI_STRING				a_file;
+	OBJECT_ATTRIBUTES	obj_attr;
+	IO_STATUS_BLOCK		io_stat_block;
+	HANDLE						handle;
+	unsigned int			stat;
+	unsigned int			ioctl_cmd_in_buf[100];
+	unsigned int			ioctl_cmd_out_buf[100];
+	unsigned int			partition_table_addr;
+
+	memset(p_table, 0, sizeof(PARTITION_TABLE));
+
+	RtlInitAnsiString(&a_file, "\\Device\\Harddisk0\\partition0");
+	obj_attr.RootDirectory = 0;
+	obj_attr.ObjectName = &a_file;
+	obj_attr.Attributes = OBJ_CASE_INSENSITIVE;
+
+	stat = NtOpenFile(&handle, (GENERIC_READ|0x00100000), &obj_attr, &io_stat_block, (FILE_SHARE_READ|FILE_SHARE_WRITE), 0x10);
+
+	if (stat != STATUS_SUCCESS) 
+	{
+		return stat;
+	}
+
+	memset(ioctl_cmd_out_buf, 0, sizeof(ioctl_cmd_out_buf));
+	memset(ioctl_cmd_in_buf, 0, sizeof(ioctl_cmd_in_buf));
+	ioctl_cmd_in_buf[0] = IOCTL_SUBCMD_GET_INFO;
+
+
+	stat = NtDeviceIoControlFile(handle, 0, 0, 0, &io_stat_block,
+															IOCTL_CMD_LBA48_ACCESS, 
+															ioctl_cmd_in_buf, sizeof(ioctl_cmd_in_buf),
+															ioctl_cmd_out_buf, sizeof(ioctl_cmd_out_buf));
+
+	NtClose(handle);
+	if (stat != STATUS_SUCCESS) 
+	{
+		return stat;
+	}
+
+	if ((ioctl_cmd_out_buf[LBA48_GET_INFO_MAGIC1_IDX] != LBA48_GET_INFO_MAGIC1_VAL) ||
+		  (ioctl_cmd_out_buf[LBA48_GET_INFO_MAGIC2_IDX] != LBA48_GET_INFO_MAGIC2_VAL)) 
+	{
+
+		return STATUS_UNSUCCESSFUL;
+	}
+
+	partition_table_addr = ioctl_cmd_out_buf[LBA48_GET_INFO_LOWCODE_BASE_IDX];
+	partition_table_addr += ioctl_cmd_out_buf[LBA48_GET_INFO_PART_TABLE_OFS_IDX];
+
+	memcpy(p_table, (void *)partition_table_addr, sizeof(PARTITION_TABLE));
+
+	return STATUS_SUCCESS;
+}
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -66,6 +127,18 @@ CIoSupport::CIoSupport()
 	m_rawXferBuffer = NULL;
 	if( m_gmXferBuffer )
 		m_rawXferBuffer = GlobalLock(m_gmXferBuffer);
+	
+	if (!m_partitionTable)
+	{
+		m_partitionTable= (PARTITION_TABLE*)malloc(sizeof(PARTITION_TABLE));
+		if ( read_active_partition_table(m_partitionTable) != STATUS_SUCCESS)
+		{
+			// use default mappings..
+			memset(m_partitionTable,0,sizeof(PARTITION_TABLE));
+			for (int i=1; i <=6;++i )
+				m_partitionTable->pt_entries[i].pe_flags =PE_PARTFLAGS_IN_USE;
+		}
+	}
 }
 
 CIoSupport::CIoSupport(CIoSupport& other)
@@ -98,6 +171,8 @@ HRESULT CIoSupport::Mount(const char* szDrive, char* szDevice)
 	char szSourceDevice[256];
 	char szDestinationDrive[16];
 
+	if (!PartitionExists(szDevice) ) return S_OK;
+
 	sprintf(szSourceDevice,"\\Device\\%s",szDevice);
 	sprintf(szDestinationDrive,"\\??\\%s",szDrive);
 
@@ -129,6 +204,7 @@ HRESULT CIoSupport::Unmount(const char* szDrive)
 #ifdef _XBOX
 	char szDestinationDrive[16];
 	sprintf(szDestinationDrive,"\\??\\%s",szDrive);
+	if (!DriveExists(szDrive) ) return S_OK;
 
 	STRING LinkName =
 	{
@@ -149,6 +225,8 @@ HRESULT CIoSupport::Unmount(const char* szDrive)
 HRESULT CIoSupport::Remount(LPCSTR szDrive, LPSTR szDevice)
 {
 #ifdef _XBOX
+	if (!PartitionExists(szDevice) ) return S_OK;
+
 	char szSourceDevice[48];
 	sprintf(szSourceDevice,"\\Device\\%s",szDevice);
 
@@ -195,6 +273,8 @@ HRESULT CIoSupport::Remap(char* szMapping)
 	{
 		*pComma = 0;
 		
+		if (!PartitionExists(&pComma[1]) ) return S_OK;
+
 		// map device to drive letter
 		Unmount(szMap);
 		Mount(szMap,&pComma[1]);
@@ -583,4 +663,40 @@ VOID CIoSupport::GetXbePath(char* szDest)
 		szDest[0]=0;	//somehow we cant get the xbepath :(
 	}
 #endif
+}
+
+bool CIoSupport::DriveExists(const char* szDrive)
+{
+	if (szDrive[0]=='Q') return true;
+	for (int i=0; i < (int)NUM_OF_DRIVES; ++i)
+	{
+		if ( driveMapping[i].szDriveLetter == szDrive[0])
+		{
+			int iPartition=driveMapping[i].iPartition;
+			if (iPartition<0) return true;
+			if ( m_partitionTable->pt_entries[iPartition].pe_flags & PE_PARTFLAGS_IN_USE)
+			{
+				return true;
+			}
+			return false;
+		}
+	}
+	return false;
+}
+bool CIoSupport::PartitionExists(const char* szPartition)
+{
+	for (int i=0; i < (int)NUM_OF_DRIVES; ++i)
+	{
+		if ( !strncmp(driveMapping[i].szDevice,szPartition,strlen(driveMapping[i].szDevice) ) )
+		{
+			int iPartition=driveMapping[i].iPartition;
+			if (iPartition<0) return true;
+			if ( m_partitionTable->pt_entries[iPartition].pe_flags & PE_PARTFLAGS_IN_USE)
+			{
+				return true;
+			}
+			return false;
+		}
+	}
+	return false;
 }

@@ -16,6 +16,7 @@ CVisualisation::CVisualisation(struct Visualisation* pVisz)
 CVisualisation::~CVisualisation()
 {
 	delete m_pVisz;
+	m_pVisz=NULL;
 }
 
 void CVisualisation::Create()
