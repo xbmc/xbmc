@@ -186,6 +186,7 @@ CGUIWindowMusicNav::CGUIWindowMusicNav(void)
   m_strGenre = "";
   m_strArtist = "";
   m_strAlbum = "";
+  m_strAlbumPath = "";
 }
 CGUIWindowMusicNav::~CGUIWindowMusicNav(void)
 {}
@@ -362,7 +363,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
 void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-  CLog::Log(LOGDEBUG, "CGUIWindowMusicNav::GetDirectory(%s), strGenre = [%s], strArtist = [%s], strAlbum = [%s]", strDirectory.c_str(), m_strGenre.c_str(), m_strArtist.c_str(), m_strAlbum.c_str());
+  CLog::Log(LOGDEBUG, "CGUIWindowMusicNav::GetDirectory(%s)",strDirectory.c_str());
+  CLog::Log(LOGDEBUG, "  strGenre = [%s], strArtist = [%s], strAlbum = [%s], strAlbumPath = [%s]",m_strGenre.c_str(), m_strArtist.c_str(), m_strAlbum.c_str(), m_strAlbumPath.c_str());
 
   // cleanup items
   if (items.Size())
@@ -529,7 +531,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
 
       // get songs from the database
       VECSONGS songs;
-      bool bTest = g_musicDatabase.GetSongsNav(songs, m_strGenre, m_strArtist, m_strAlbum);
+      bool bTest = g_musicDatabase.GetSongsNav(songs, m_strGenre, m_strArtist, m_strAlbum, m_strAlbumPath);
 
       // Display an error message if the database doesn't contain any albums
       DisplayEmptyDatabaseMessage(songs.empty());
@@ -787,10 +789,15 @@ void CGUIWindowMusicNav::OnClick(int iItem)
           m_iState = SHOW_SONGS;
           m_iPath += m_iState;
           m_strAlbum = pItem->m_musicInfoTag.GetAlbum();
+          m_strAlbumPath = pItem->m_strPath;
 
           // clicked on "All Albums" ?
           if (strPath.IsEmpty())
+          {
             m_strAlbum.Empty();
+            m_strAlbumPath.Empty();
+          }
+
         }
         break;
       }
@@ -1082,12 +1089,14 @@ void CGUIWindowMusicNav::GoParentFolder()
   {
     m_iState = SHOW_ALBUMS;
     m_strAlbum.Empty();
+    m_strAlbumPath.Empty();
   }
   // or back to artists?
   else if (m_iPath & (1 << 2))
   {
     m_iState = SHOW_ARTISTS;
     m_strAlbum.Empty();
+    m_strAlbumPath.Empty();
     m_strArtist.Empty();
   }
   // or back to genres?
@@ -1095,6 +1104,7 @@ void CGUIWindowMusicNav::GoParentFolder()
   {
     m_iState = SHOW_GENRES;
     m_strAlbum.Empty();
+    m_strAlbumPath.Empty();
     m_strArtist.Empty();
     m_strGenre.Empty();
   }
@@ -1103,6 +1113,7 @@ void CGUIWindowMusicNav::GoParentFolder()
   {
     m_iState = SHOW_ROOT;
     m_strAlbum.Empty();
+    m_strAlbumPath.Empty();
     m_strArtist.Empty();
     m_strGenre.Empty();
   }
