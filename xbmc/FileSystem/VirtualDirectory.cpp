@@ -123,9 +123,15 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 	*/
 bool CVirtualDirectory::IsShare(const CStdString& strPath) const
 {
+	CStdString strPathCpy = strPath;
+	strPathCpy.TrimRight("/");
+	strPathCpy.TrimRight("\\");
 	for (int i=0; i < (int)m_vecShares->size(); ++i)
 	{
 		const CShare& share=m_vecShares->at(i);
+		CStdString strShare = share.strPath;
+		strShare.TrimRight("/");
+		strShare.TrimRight("\\");
 		if (share.strPath==strPath) return true;
 	}
 	return false;
