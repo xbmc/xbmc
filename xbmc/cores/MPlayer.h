@@ -128,6 +128,7 @@ public:
 	virtual __int64 GetTime();
 	virtual void    ToFFRW(int iSpeed=0);
 	virtual void    ShowOSD(bool bOnoff);
+  virtual void   DoAudioWork();
 protected:
 	int GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool bFileOnInternet,bool bFileOnLAN, bool bIsVideo, bool bIsAudio, bool bIsDVD);
 	CStdString GetDVDArgument(const CStdString& strFile);

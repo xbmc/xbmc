@@ -72,6 +72,8 @@ public:
   virtual int	    GetTotalTime(){return 0;};
   virtual void	  ToFFRW(int iSpeed=0){};
   virtual void    ShowOSD(bool bOnoff){};
+
+  virtual void    DoAudioWork(){};
 protected:
 	IPlayerCallback& m_callback;
 };
