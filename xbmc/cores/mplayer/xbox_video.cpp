@@ -31,6 +31,7 @@
 #include "../../application.h"
 #include "../../util.h"
 #include "../../utils/log.h"
+#include "../../XBVideoConfig.h"
 
 #define OSD_TEXTURE_HEIGHT 150
 
@@ -111,15 +112,12 @@ static void video_flip_page(void);
 //********************************************************************************************************
 void choose_best_resolution(float fps)
 {
-	DWORD dwStandard = XGetVideoStandard();
-	DWORD dwFlags    = XGetVideoFlags();
-
-	bool bUsingPAL        = (dwStandard==XC_VIDEO_STANDARD_PAL_I);    // current video standard:PAL or NTSC 
-	bool bCanDoWidescreen = (dwFlags & XC_VIDEO_FLAGS_WIDESCREEN)!=0; // can widescreen be enabled?
+	bool bUsingPAL        = g_videoConfig.HasPAL();    // current video standard:PAL or NTSC 
+	bool bCanDoWidescreen = g_videoConfig.HasWidescreen(); // can widescreen be enabled?
 
 	// Work out if the framerate suits PAL50 or PAL60
 	bool bPal60=false;
-	if (bUsingPAL && g_stSettings.m_bAllowPAL60 && (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz))
+	if (bUsingPAL && g_stSettings.m_bAllowPAL60 && g_videoConfig.HasPAL60())
 	{
 		// yes we're in PAL
 		// yes PAL60 is allowed
@@ -221,21 +219,21 @@ void choose_best_resolution(float fps)
 	{
 		// Check if the picture warrants HDTV mode
 		// And if HDTV modes (1080i and 720p) are available
-		if ((image_height>720 || image_width>1280) && (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i))
+		if ((image_height>720 || image_width>1280) && g_videoConfig.Has1080i())
 		{ //image suits 1080i if it's available
 			m_iResolution = HDTV_1080i;
 		}
-		else if ((image_height>480 || image_width>720) && (dwFlags&XC_VIDEO_FLAGS_HDTV_720p))                  //1080i is available
+		else if ((image_height>480 || image_width>720) && g_videoConfig.Has720p())                  //1080i is available
 		{ // image suits 720p if it is available
 			m_iResolution = HDTV_720p;
 		}
-		else if ((image_height>480 || image_width>720) && (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i))
+		else if ((image_height>480 || image_width>720) && g_videoConfig.Has1080i())
 		{ // image suits 720p and obviously 720p is unavailable
 			m_iResolution = HDTV_1080i;
 		}
 		else  // either picture does not warrant HDTV, or HDTV modes are unavailable
 		{
-			if (dwFlags&XC_VIDEO_FLAGS_HDTV_480p)
+			if (g_videoConfig.Has480p())
 			{
 				if (bWidescreen)
 					m_iResolution = HDTV_480p_16x9;

@@ -2029,6 +2029,30 @@
 		<value>Not enough available memory to load image</value>
 	</string>
 	<string>
+		<id>748</id>
+		<value>Edit Path</value>
+	</string>
+	<string>
+		<id>749</id>
+		<value>Add Share</value>
+	</string>
+	<string>
+		<id>750</id>
+		<value>Are you sure?</value>
+	</string>
+	<string>
+		<id>751</id>
+		<value>Removing Share</value>
+	</string>
+	<string>
+		<id>752</id>
+		<value>Edit Share Path</value>
+	</string>
+	<string>
+		<id>753</id>
+		<value>Edit Share Name</value>
+	</string>
+	<string>
 		<id>998</id>
 		<value>XLink Kai</value>
 	</string>

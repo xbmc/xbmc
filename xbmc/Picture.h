@@ -21,6 +21,7 @@ public:
 	void								RenderImage(IDirect3DTexture8* pTexture, int x, int y, int width, int height, int iTextureWidth, int iTextureHeight, int iTextureLeft=0, int iTextureTop=0);
 
 protected:
+	IDirect3DTexture8*	LoadNative(const CStdString& strFilename);
 	bool								DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, int nMaxWidth, int nMaxHeight, bool bCacheFile=true);
 
 private:

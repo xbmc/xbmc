@@ -10,6 +10,9 @@ using namespace std;
 
 // TODO: Add support for symbols.
 
+// Symbol mapping (based on MS virtual keyboard - may need improving)
+static char symbol_map[37] = "!@#$%^&*()[]{}-_=+;:\'\",.<>/?\\|`~    ";
+
 #define CTL_BUTTON_DONE		300
 #define CTL_BUTTON_CANCEL	301
 #define CTL_BUTTON_SHIFT	302
@@ -19,6 +22,7 @@ using namespace std;
 #define CTL_BUTTON_RIGHT	306
 
 #define CTL_LABEL_EDIT		310
+#define CTL_LABEL_HEADING 311
 
 #define CTL_BUTTON_BACKSPACE  8
 
@@ -26,7 +30,8 @@ CGUIDialogKeyboard::CGUIDialogKeyboard(void) : CGUIDialog(0)
 {
 	m_bDirty = false;
 	m_bShift = false;
-	m_bCapsLock = false;
+	m_keyType = LOWER;
+	m_strHeading = "";
 }
 
 CGUIDialogKeyboard::~CGUIDialogKeyboard(void)
@@ -35,33 +40,6 @@ CGUIDialogKeyboard::~CGUIDialogKeyboard(void)
 
 void CGUIDialogKeyboard::OnInitWindow()
 {
-	char szLabel[2];
-	szLabel[0]=32;
-	szLabel[1]=0;
-
-	CStdString aLabel = szLabel;
-	int iButton;
-
-	// set numerals
-	for (iButton=48; iButton<=57; iButton++)
-	{
-		CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(iButton));
-		
-		if(pButton)
-		{
-			aLabel[0]=iButton;
-			pButton->SetText(aLabel);
-		}
-	}
-
-	// . button
-	CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(46));		
-	if(pButton)
-	{
-		aLabel[0]=46;
-		pButton->SetText(aLabel);
-	}
-
 	// set alphabetic (capitals)
 	UpdateButtons();
 
@@ -69,6 +47,17 @@ void CGUIDialogKeyboard::OnInitWindow()
 	if (pEdit)
 	{
 		pEdit->ShowCursor();
+	}
+
+	// set heading
+	if (!m_strHeading.IsEmpty())
+	{
+		SET_CONTROL_LABEL(GetID(), CTL_LABEL_HEADING, m_strHeading);
+		SET_CONTROL_VISIBLE(GetID(), CTL_LABEL_HEADING);
+	}
+	else
+	{
+		SET_CONTROL_HIDDEN(GetID(), CTL_LABEL_HEADING);
 	}
 }
 
@@ -126,10 +115,18 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
 					UpdateButtons();
 					break;
 				case CTL_BUTTON_CAPS:
-					m_bCapsLock = !m_bCapsLock;
+					if (m_keyType == LOWER)
+						m_keyType = CAPS;
+					else if (m_keyType == CAPS)
+						m_keyType = LOWER;
 					UpdateButtons();
 					break;
 				case CTL_BUTTON_SYMBOLS:
+					if (m_keyType == SYMBOLS)
+						m_keyType = LOWER;
+					else
+						m_keyType = SYMBOLS;
+					UpdateButtons();
 					break;
 				case CTL_BUTTON_LEFT:
 					{
@@ -210,9 +207,9 @@ void CGUIDialogKeyboard::Backspace()
 
 void CGUIDialogKeyboard::OnClickButton(int iButtonControl)
 {
-	if ( ((iButtonControl>=48) && (iButtonControl<=57)) || (iButtonControl==32) || (iButtonControl==46))
+	if ( ((iButtonControl>=48) && (iButtonControl<=57)) || (iButtonControl==32))
 	{	// number or space
-		Character((WCHAR)iButtonControl);
+		Character(GetCharacter(iButtonControl));
 	}
 	else if ((iButtonControl>=65) && (iButtonControl<=90))
 	{	// letter
@@ -247,12 +244,29 @@ void CGUIDialogKeyboard::OnRemoteNumberClick(int key)
 	const char* characterPressed = s_charsSeries[arrayIndex];
 	characterPressed += m_indexInSeries;
 
-	OnClickButton((int) *characterPressed);
+	// use caps where appropriate
+	WCHAR ch = (WCHAR)*characterPressed;
+	if (m_keyType != CAPS && *characterPressed >= 'A' && *characterPressed <= 'Z')
+		ch += 32;
+	Character(ch);
 }
 
 WCHAR CGUIDialogKeyboard::GetCharacter(int iButton)
 {
-	if ((m_bCapsLock && m_bShift) || (!m_bCapsLock && !m_bShift))
+	if (iButton >= 48 && iButton <= 57)
+	{
+		if (m_keyType == SYMBOLS)
+			return (WCHAR)symbol_map[iButton-48];
+		else
+			return (WCHAR)iButton;
+	}
+	if (iButton == 32)	// space
+		return (WCHAR)iButton;
+	if (m_keyType == SYMBOLS)
+	{	// symbol
+		return (WCHAR)symbol_map[iButton-65+10];
+	}
+	if ((m_keyType == CAPS && m_bShift) || (m_keyType == LOWER && !m_bShift))
 	{	// make lower case
 		iButton += 32;
 	}
@@ -276,7 +290,7 @@ void CGUIDialogKeyboard::UpdateButtons()
 		CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CTL_BUTTON_SHIFT);
 		OnMessage(msg);
 	}
-	if (m_bCapsLock)
+	if (m_keyType == CAPS)
 	{
 		CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CTL_BUTTON_CAPS);
 		OnMessage(msg);
@@ -286,12 +300,37 @@ void CGUIDialogKeyboard::UpdateButtons()
 		CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CTL_BUTTON_CAPS);
 		OnMessage(msg);
 	}
-
-	// set correct alphabet characters...
+	if (m_keyType == SYMBOLS)
+	{
+		CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CTL_BUTTON_SYMBOLS);
+		OnMessage(msg);
+	}
+	else
+	{
+		CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CTL_BUTTON_SYMBOLS);
+		OnMessage(msg);
+	}
 	char szLabel[2];
 	szLabel[0]=32;
 	szLabel[1]=0;
-	CStdString aLabel = szLabel;
+	CStdStringW aLabel = szLabel;
+
+	// set numerals
+	for (int iButton=48; iButton<=57; iButton++)
+	{
+		CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(iButton));
+		
+		if(pButton)
+		{
+			if (m_keyType == SYMBOLS)
+				aLabel[0]=(WCHAR)symbol_map[iButton-48];
+			else
+				aLabel[0]=iButton;
+			pButton->SetText(aLabel);
+		}
+	}
+
+	// set correct alphabet characters...
 
 	for (int iButton=65; iButton<=90; iButton++)
 	{
@@ -300,9 +339,13 @@ void CGUIDialogKeyboard::UpdateButtons()
 		if(pButton)
 		{
 			// set the correct case...
-			if ((m_bCapsLock && m_bShift) || (!m_bCapsLock && !m_bShift))
+			if ((m_keyType==CAPS && m_bShift) || (m_keyType==LOWER && !m_bShift))
 			{	// make lower case
 				aLabel[0] = iButton + 32;
+			}
+			else if (m_keyType == SYMBOLS)
+			{
+				aLabel[0] = (WCHAR)symbol_map[iButton-65+10];
 			}
 			else
 			{
@@ -316,7 +359,7 @@ void CGUIDialogKeyboard::UpdateButtons()
 // Show keyboard with initial value (aTextString) and replace with result string.
 // Returns: true  - successful display and input (empty result may return true or false depending on parameter)
 //          false - unsucessful display of the keyboard or cancelled editing
-bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult)
+bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, CStdString &strHeading, bool allowEmptyResult)
 {
 	CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 
@@ -325,6 +368,7 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, bool allowEmpt
 
 	// setup keyboard
 	pKeyboard->CenterWindow();
+	pKeyboard->SetHeading(strHeading);
 	pKeyboard->SetText(aTextString);
 	pKeyboard->DoModal(m_gWindowManager.GetActiveWindow());
 	pKeyboard->Close();
@@ -343,4 +387,17 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, bool allowEmpt
 	}
 }
 
-const char* CGUIDialogKeyboard::s_charsSeries[10] = { " 0", ".1", "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };
+bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult)
+{
+	return ShowAndGetInput(aTextString, CStdString(""), allowEmptyResult);
+}
+
+void CGUIDialogKeyboard::Close()
+{
+	// reset the heading (we don't always have this)
+	m_strHeading = "";
+	// call base class
+	CGUIDialog::Close();
+}
+
+const char* CGUIDialogKeyboard::s_charsSeries[10] = { " !@#$%^&*()[]{}<>/\\|0", ".,;:\'\"-+_=?`~1", "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };

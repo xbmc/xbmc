@@ -849,10 +849,12 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
 			float x = (float) (g_settings.m_ResInfo[m_iResolution].iWidth) / 2;
 			float y = (float) g_settings.m_ResInfo[m_iResolution].iSubtitles - h;
 
-			m_subtitleFont->DrawText(x-2, y, 0, subtitleText.c_str(), XBFONT_CENTER_X);
-			m_subtitleFont->DrawText(x+2, y, 0, subtitleText.c_str(), XBFONT_CENTER_X);
-			m_subtitleFont->DrawText(x, y+2, 0, subtitleText.c_str(), XBFONT_CENTER_X);
-			m_subtitleFont->DrawText(x, y-2, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+			float outlinewidth = (float)g_stSettings.m_iSubtitleHeight/8;
+
+			m_subtitleFont->DrawText(x-outlinewidth, y, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+			m_subtitleFont->DrawText(x+outlinewidth, y, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+			m_subtitleFont->DrawText(x, y+outlinewidth, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+			m_subtitleFont->DrawText(x, y-outlinewidth, 0, subtitleText.c_str(), XBFONT_CENTER_X);
 			m_subtitleFont->DrawText(x, y, g_stSettings.m_iSubtitleTTFColor, subtitleText.c_str(), XBFONT_CENTER_X);
 		}
 	}
@@ -999,9 +1001,17 @@ void CGUIWindowFullScreen::SetViewMode(int iViewMode)
 	else if (g_stSettings.m_iViewMode == VIEW_MODE_STRETCH_4x3)
 	{	// stretch image to 4:3 ratio
 		g_stSettings.m_fZoomAmount = 1.0;
-		// now we need to set g_stSettings.m_fPixelRatio so that 
-		// fOutputFrameRatio = 4:3.
-		g_stSettings.m_fPixelRatio = (4.0f/3.0f)/fSourceFrameRatio;
+		if (iRes == PAL_4x3 || iRes == PAL60_4x3 || iRes == NTSC_4x3 || iRes == HDTV_480p_4x3)
+		{	// stretch to the limits of the 4:3 screen.
+			// incorrect behaviour, but it's what the users want, so...
+			g_stSettings.m_fPixelRatio = (fScreenWidth/fScreenHeight)*g_settings.m_ResInfo[iRes].fPixelRatio/fSourceFrameRatio;
+		}
+		else
+		{
+			// now we need to set g_stSettings.m_fPixelRatio so that 
+			// fOutputFrameRatio = 4:3.
+			g_stSettings.m_fPixelRatio = (4.0f/3.0f)/fSourceFrameRatio;
+		}
 	}
 	else if (g_stSettings.m_iViewMode == VIEW_MODE_STRETCH_14x9)
 	{	// stretch image to 14:9 ratio
@@ -1013,9 +1023,16 @@ void CGUIWindowFullScreen::SetViewMode(int iViewMode)
 	else if (g_stSettings.m_iViewMode == VIEW_MODE_STRETCH_16x9)
 	{	// stretch image to 16:9 ratio
 		g_stSettings.m_fZoomAmount = 1.0;
-		// now we need to set g_stSettings.m_fPixelRatio so that 
-		// fOutputFrameRatio = 16:9.
-		g_stSettings.m_fPixelRatio = (16.0f/9.0f)/fSourceFrameRatio;
+		if (iRes == PAL_4x3 || iRes == PAL60_4x3 || iRes == NTSC_4x3 || iRes == HDTV_480p_4x3)
+		{	// now we need to set g_stSettings.m_fPixelRatio so that 
+			// fOutputFrameRatio = 16:9.
+			g_stSettings.m_fPixelRatio = (16.0f/9.0f)/fSourceFrameRatio;
+		}
+		else
+		{	// stretch to the limits of the 16:9 screen.
+			// incorrect behaviour, but it's what the users want, so...
+			g_stSettings.m_fPixelRatio = (fScreenWidth/fScreenHeight)*g_settings.m_ResInfo[iRes].fPixelRatio/fSourceFrameRatio;
+		}
 	}
 	else// if (g_stSettings.m_iViewMode == VIEW_MODE_ORIGINAL)
 	{	// zoom image so that the height is the original size
