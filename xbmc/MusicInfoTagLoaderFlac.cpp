@@ -37,7 +37,7 @@ bool CMusicInfoTagLoaderFlac::Load(const CStdString& strFileName, CMusicInfoTag&
 			CStdString strGenre=myTag.GetGenre();
 
 			tag.SetTrackNumber(myTag.GetTrackNum());
-			tag.SetDuration(myTag.GetDuration());
+			tag.SetDuration(myTag.GetDuration()/75);	// GetDuration() returns duration in frames
 
 			if (!strGenre.IsEmpty())
 			{
