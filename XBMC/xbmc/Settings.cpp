@@ -208,6 +208,7 @@ CSettings::CSettings(void)
 	g_stSettings.dwFileVersion =CONFIG_VERSION;
 	g_stSettings.m_iMyProgramsViewAsIcons=1;
   g_stSettings.m_iMyVideoPlaylistViewAsIcons=1;
+  g_stSettings.m_bMyVideoPlaylistRepeat=true;
 	g_stSettings.m_bMyProgramsSortAscending=true;
 	g_stSettings.m_bMyProgramsFlatten=true;
 	g_stSettings.m_bMyProgramsDefaultXBE=true;
@@ -241,8 +242,15 @@ CSettings::CSettings(void)
 	strcpy (g_stSettings.m_szMusicRecordingDirectory,"");
 	g_stSettings.m_bUseCDDB=false;
 
+  g_stSettings.m_bMyMusicRepeat=true;
+
+  g_stSettings.m_bMyMusicPlaylistRepeat=true;
+
 	g_stSettings.m_bMyMusicSongsRootSortAscending=true;
 	g_stSettings.m_bMyMusicSongsSortAscending=true;
+	g_stSettings.m_bMyMusicSongsUsePlaylist=true;
+	g_stSettings.m_bMyMusicSongsAutoSwitchThumbsList=false;
+	g_stSettings.m_bMyMusicSongsAutoSwitchBigThumbs=true;
 
 	g_stSettings.m_bMyMusicAlbumRootSortAscending=true;
 	g_stSettings.m_bMyMusicAlbumSortAscending=true;
@@ -892,6 +900,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 			GetInteger(pChild, "songssortmethodroot",g_stSettings.m_iMyMusicSongsRootSortMethod,0,0,2);
 			GetBoolean(pChild, "songssortascending",g_stSettings.m_bMyMusicSongsSortAscending);
 			GetBoolean(pChild, "songssortascendingroot",g_stSettings.m_bMyMusicSongsRootSortAscending);
+			GetBoolean(pChild, "songsuseplaylist",g_stSettings.m_bMyMusicSongsUsePlaylist);
+			GetBoolean(pChild, "songsautoswitchthumbslist",g_stSettings.m_bMyMusicSongsAutoSwitchThumbsList);
+			GetBoolean(pChild, "songsautoswitchbigicons",g_stSettings.m_bMyMusicSongsAutoSwitchBigThumbs);
 		}
 		pChild = pElement->FirstChildElement("album");
 		if (pChild)
@@ -933,7 +944,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		if (pChild)
 		{
 			GetInteger(pChild, "playlistrooticons", g_stSettings.m_iMyMusicPlaylistViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+			GetBoolean(pChild, "playlistrepeat",g_stSettings.m_bMyMusicPlaylistRepeat);
 		}
+		GetBoolean(pElement, "repeat",g_stSettings.m_bMyMusicRepeat);
 		GetInteger(pElement, "startwindow",g_stSettings.m_iMyMusicStartWindow,WINDOW_MUSIC_FILES,WINDOW_MUSIC_FILES,WINDOW_MUSIC_TOP100);//501; view songs
 	}
 	// myvideos settings
@@ -947,6 +960,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetBoolean(pElement, "stackyear", g_stSettings.m_bMyVideoYearStack);
     
     GetInteger(pElement, "videoplaylistviewicons", g_stSettings.m_iMyVideoPlaylistViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+		GetBoolean(pElement, "videoplaylistrepeat",g_stSettings.m_bMyVideoPlaylistRepeat);
 		GetInteger(pElement, "videoviewicons", g_stSettings.m_iMyVideoViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
 		GetInteger(pElement, "videorooticons", g_stSettings.m_iMyVideoRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
 		GetInteger(pElement, "videosortmethod",g_stSettings.m_iMyVideoSortMethod,0,0,2);
@@ -1196,6 +1210,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 		SetInteger(pChild, "songssortmethodroot",g_stSettings.m_iMyMusicSongsRootSortMethod);
 		SetBoolean(pChild, "songssortascending",g_stSettings.m_bMyMusicSongsSortAscending);
 		SetBoolean(pChild, "songssortascendingroot",g_stSettings.m_bMyMusicSongsRootSortAscending);
+		SetBoolean(pChild, "songsuseplaylist",g_stSettings.m_bMyMusicSongsUsePlaylist);
+		SetBoolean(pChild, "songsautoswitchthumbslist",g_stSettings.m_bMyMusicSongsAutoSwitchThumbsList);
+		SetBoolean(pChild, "songsautoswitchbigicons",g_stSettings.m_bMyMusicSongsAutoSwitchBigThumbs);
 	}
 	{
 		TiXmlElement childNode("album");
@@ -1242,8 +1259,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
 		if (!pChild) return false;
 		SetInteger(pChild, "playlistrooticons", g_stSettings.m_iMyMusicPlaylistViewAsIcons);
+		SetBoolean(pChild, "playlistrepeat",g_stSettings.m_bMyMusicPlaylistRepeat);
 	}
 
+	SetBoolean(pNode, "repeat",g_stSettings.m_bMyMusicRepeat);
 	SetInteger(pNode, "startwindow",g_stSettings.m_iMyMusicStartWindow);
 
 	// myvideos settings
@@ -1258,6 +1277,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetBoolean(pNode, "stackyear", g_stSettings.m_bMyVideoYearStack);
 
   SetInteger(pNode, "videoplaylistviewicons", g_stSettings.m_iMyVideoPlaylistViewAsIcons);
+  SetBoolean(pNode, "videoplaylistrepeat", g_stSettings.m_bMyVideoPlaylistRepeat);
 	SetInteger(pNode, "videoviewicons", g_stSettings.m_iMyVideoViewAsIcons);
 	SetInteger(pNode, "videorooticons", g_stSettings.m_iMyVideoRootViewAsIcons);
 	SetInteger(pNode, "videosortmethod",g_stSettings.m_iMyVideoSortMethod);

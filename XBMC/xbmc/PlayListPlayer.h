@@ -39,6 +39,10 @@ namespace PLAYLIST
 		int					RemoveDVDItems();
     void        Reset();
 		int					GetEntriesNotFound();
+		void				Repeat(int iPlaylist, bool bYesNo);
+		bool				Repeated(int iPlaylist);
+		void				RepeatOne(int iPlaylist, bool bYesNo);
+		bool				RepeatedOne(int iPlaylist);
 	protected:
 		int					m_iEntriesNotFound;
 		bool				m_bChanged;
@@ -49,6 +53,7 @@ namespace PLAYLIST
 		CPlayList		m_PlaylistVideo;
 		CPlayList		m_PlaylistVideoTemp;
 		CPlayList		m_PlaylistEmpty;
+		int					m_iRepeatOptions;
 	};
 
 };

@@ -145,6 +145,9 @@ public:
 	  bool			m_bMyMusicSongsSortAscending;
 	  int				m_iMyMusicSongsSortMethod;
 		int				m_iMyMusicSongsRootSortMethod;
+		bool			m_bMyMusicSongsUsePlaylist;
+		bool			m_bMyMusicSongsAutoSwitchThumbsList;
+		bool			m_bMyMusicSongsAutoSwitchBigThumbs;
 		int				m_iMyMusicAlbumRootViewAsIcons;
 		int				m_iMyMusicAlbumViewAsIcons;
 	  bool			m_bMyMusicAlbumRootSortAscending;
@@ -165,8 +168,10 @@ public:
 	  int				m_iMyMusicGenresSortMethod;
 	  int				m_iMyMusicGenresRootSortMethod;
 		int				m_iMyMusicPlaylistViewAsIcons;
+		bool			m_bMyMusicPlaylistRepeat;
 		int				m_iMyMusicTop100ViewAsIcons;
 		int				m_iMyMusicStartWindow;
+		bool			m_bMyMusicRepeat;
 
 		int 			m_iMyVideoViewAsIcons;
 		int 			m_iMyVideoRootViewAsIcons;
@@ -293,6 +298,7 @@ public:
   int       m_iCacheSizeLAN[3];
   int       m_iCacheSizeInternet[3];
   int       m_iMyVideoPlaylistViewAsIcons;
+	bool			m_bMyVideoPlaylistRepeat;
   bool      m_bLCDUsed;
   int       m_iLCDColumns;
   int       m_iLCDRows;

@@ -379,6 +379,20 @@ HRESULT CApplication::Initialize()
   CLog::Log("start dvd mediatype detection");	
 	m_DetectDVDType.Create( false);
 
+  CLog::Log("initializing playlistplayer");	
+	//g_playlistPlayer.Repeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat);
+	//g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_stSettings.m_bMyMusicRepeat);
+	//g_playlistPlayer.Repeat(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistRepeat);
+	//g_playlistPlayer.Repeat(PLAYLIST_VIDEO_TEMP, false);
+
+	g_playlistPlayer.Repeat(PLAYLIST_MUSIC, true);
+	g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, true);
+	g_playlistPlayer.Repeat(PLAYLIST_VIDEO, true);
+	g_playlistPlayer.Repeat(PLAYLIST_VIDEO_TEMP, true);
+	g_playlistPlayer.Repeat(PLAYLIST_MUSIC, false);
+	g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, false);
+	g_playlistPlayer.Repeat(PLAYLIST_VIDEO, false);
+	g_playlistPlayer.Repeat(PLAYLIST_VIDEO_TEMP, false);
 
   if (!m_bAllSettingsLoaded)
   {
