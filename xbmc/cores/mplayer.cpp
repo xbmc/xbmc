@@ -585,6 +585,17 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			}
 			
     }
+
+    // if we dont use ac3 passtru and we got an movie with AC3 audio
+    // then set the default avdelay to 130msec.
+    if (!options.GetAC3PassTru())
+    {
+      if ( strstr(strAudioCodec,"AC3-liba52") )
+      {
+        OutputDebugString("set default avdelay to -130msec\n");
+        SetAVDelay( -0.130f);
+      }
+    }
   }
   m_bIsPlaying= true;
 	if ( ThreadHandle() == NULL)
