@@ -624,11 +624,14 @@ void CGUIListControl::OnUp()
 		}
 		else
 		{
-			// move 2 last item in list
-			m_iOffset = m_vecItems.size() - m_iItemsPerPage;
-			if (m_iOffset<0) m_iOffset=0;
-			m_iCursorY = m_vecItems.size() - m_iOffset - 1;
-	    }
+			if (m_vecItems.size() > 0)
+			{
+				// move 2 last item in list
+				m_iOffset = m_vecItems.size() - m_iItemsPerPage;
+				if (m_iOffset<0) m_iOffset=0;
+				m_iCursorY = m_vecItems.size() - m_iOffset - 1;
+			}
+		}
 	}
 	else
 	{
