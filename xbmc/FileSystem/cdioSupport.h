@@ -98,6 +98,7 @@ namespace MEDIA_DETECT
 		int GetAudioTrackCount() { return m_nNumAudio; }
 		ULONG GetCddbDiscId() { return m_ulCddbDiscId; }
 		int GetDiscLength() { return m_nLenght; }
+		CStdString GetDiscLabel(){ return m_strDiscLabel; }
 
 		//	CD-ROM with ISO 9660 filesystem
 		bool IsIso9660( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_ISO_9660); }
@@ -188,6 +189,8 @@ namespace MEDIA_DETECT
 		bool HasCDDBInfo() { return m_bHasCDDBInfo; }
 		void SetNoCDDBInfo() { m_bHasCDDBInfo=false; }
 
+		void SetDiscLabel(const CStdString& strDiscLabel){ m_strDiscLabel=strDiscLabel; }
+
 	private:
 		int m_nFirstData;        /* # of first data track */
 		int m_nNumData;               /* # of data tracks */
@@ -199,6 +202,7 @@ namespace MEDIA_DETECT
 		ULONG m_ulCddbDiscId;
 		int m_nLenght;			//	Disclenght can be used for cddb query, also see trackinfo.nFrames
 		bool m_bHasCDDBInfo;
+		CStdString	m_strDiscLabel;
 	};
 
 	class CCdIoSupport
@@ -251,6 +255,9 @@ namespace MEDIA_DETECT
 		CdIo* cdio;
 		track_t m_nNumTracks;
 		track_t m_nFirstTrackNum;
+
+		CStdString m_strDiscLabel;
+
 
 		int                        m_nFirstData;        /* # of first data track */
 		int                        m_nNumData;                /* # of data tracks */
