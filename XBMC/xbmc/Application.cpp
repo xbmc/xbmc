@@ -67,7 +67,6 @@
 #endif
 
 extern IDirectSoundRenderer* m_pAudioDecoder;
-extern int m_iAudioStreamIDX;
 CApplication::CApplication(void)
 :m_ctrDpad(220,220)
 ,m_ctrIR(220,220)
@@ -1094,7 +1093,7 @@ void CApplication::FrameMove()
 	WORD wButtons = pGamepad->wButtons;
 	WORD wRemotes = pRemote->wButtons;
 	WORD wDpad = wButtons&(XINPUT_GAMEPAD_DPAD_UP|XINPUT_GAMEPAD_DPAD_DOWN|XINPUT_GAMEPAD_DPAD_LEFT|XINPUT_GAMEPAD_DPAD_RIGHT);
-
+	
 	BYTE bLeftTrigger = pGamepad->bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER];
 	BYTE bRightTrigger = pGamepad->bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER];
 	
@@ -1311,10 +1310,9 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
   if (!bRestart)
   {
     OutputDebugString("new file set audiostream:0\n");
-    g_stSettings.m_iAudioStream=0;
+    g_stSettings.m_iAudioStream=-1;
     g_stSettings.m_bNoCache=false;
     g_stSettings.m_bNonInterleaved=false;
-    m_iAudioStreamIDX=-1;
 
     // switch 2 default settings...
     g_settings.m_iBrightness=50;
