@@ -245,8 +245,8 @@ public:
 	RESOLUTION_INFO			m_ResInfo[10];
 protected:
 	void GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue);
-	void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue);
-	void GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue); 
+	void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
+	void GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue, const float fDefault, const float fMin, const float fMax); 
 	void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue);
 	void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault);
 	void ConvertHomeVar(CStdString& strText);
