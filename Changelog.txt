@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 23-03-2005 updated: Korean language file (Thnx to akoako)
+  - 23-03-2004 updated: Polish language file (Thnx to napek)
   - 23-03-2005 fixed: ".." item was always hidden in DVD folders.
   - 22-03-2005 fixed: [ 1095213 ] Error handleing of xboxmediacenter.xml.
   - 22-03-2005 added: VideoPlayer.Cover infoimage to the infomanager.
