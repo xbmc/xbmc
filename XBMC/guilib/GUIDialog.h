@@ -16,6 +16,7 @@ class CGUIDialog :
 public:
 	CGUIDialog(DWORD dwID);
 	virtual ~CGUIDialog(void);
+  virtual bool    OnMessage(CGUIMessage& message);
   virtual void    Render();
 	void						DoModal(DWORD dwParentId);
 	virtual void		Close();
@@ -29,4 +30,6 @@ protected:
 	DWORD						m_dwPrevRouteWindow;
 	CGUIWindow* 		m_pPrevRouteWindow;
 	bool						m_bRunning;
+private:
+  bool            m_bPrevOverlayAllowed;
 };

@@ -41,14 +41,12 @@ bool CGUIWindowScriptsInfo::OnMessage(CGUIMessage& message)
   {
 		case GUI_MSG_WINDOW_DEINIT:
 		{
-			g_application.EnableOverlay();
 		}
 		break;
 
     case GUI_MSG_WINDOW_INIT:
     {
 			CGUIWindow::OnMessage(message);
-			g_application.DisableOverlay();
 			return true;
     }
 		break;

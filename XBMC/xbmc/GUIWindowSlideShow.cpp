@@ -995,7 +995,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 			{
 				CSectionLoader::Unload("CXIMAGE");
 			}
-			g_application.EnableOverlay();
+      g_graphicsContext.SetOverlay(true);
 			g_graphicsContext.Get3DDevice()->EnableOverlay(FALSE);
 		}
 		break;
@@ -1011,7 +1011,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 			{
 				CSectionLoader::Load("CXIMAGE");
 			}
-			g_application.DisableOverlay();
+      g_graphicsContext.SetOverlay(false);
 			g_graphicsContext.Get3DDevice()->EnableOverlay(TRUE);
 			return true;
 		}

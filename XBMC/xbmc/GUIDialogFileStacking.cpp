@@ -21,7 +21,7 @@ void CGUIDialogFileStacking::OnAction(const CAction &action)
 		Close();
 		return;
   }
-	CGUIWindow::OnAction(action);
+	CGUIDialog::OnAction(action);
 }
 
 bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
