@@ -784,14 +784,11 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			// if we are using analog output, then we only got 2 stereo output
 			options.SetChannels(0);
 
-			// if we're using digital out & ac3/dts pass-through is enabled
-			// then try opening file with ac3/dts pass-through 
+			// if we're using digital out
+			// then try opening file with max channels
 			if (g_stSettings.m_bUseDigitalOutput && (bSupportsAC3Out || bSupportsDTSOut))
 			{
-				if (g_stSettings.m_bDDStereoPassThrough || g_stSettings.m_bDD_DTSMultiChannelPassThrough)
-				{
-					options.SetChannels(6);
-				}
+				options.SetChannels(6);
 			}
 		}
 
