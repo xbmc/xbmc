@@ -18,7 +18,7 @@ EOF
 ###################################################################################################
 echo "[ Running configure script for XBMC ]"
 ###################################################################################################
-./configure \
+chmod +x configure && ./configure \
 --prefix='Q:\\' \
 --bindir='Q:\\mplayer' \
 --datadir='Q:\\mplayer' \
@@ -32,6 +32,8 @@ echo "[ Running configure script for XBMC ]"
 --disable-vidix \
 --disable-inet6 \
 --disable-termcap \
+--disable-iconv \
+--disable-freetype \
 --enable-libdts \
 --enable-largefiles \
 --enable-winsock2 \
@@ -43,6 +45,7 @@ echo "[ Running configure script for XBMC ]"
 --enable-win32waveout \
 --with-codecsdir='Q:\\mplayer\\codecs' \
 --with-reallibdir='Q:\\mplayer\\codecs' \
---with-fribidi-config=$(PWD)/xbmcsys/fribidi/fribidi-config \
---with-extraincdir="$(PWD)/xbmcsys -I$(PWD)/xbmcsys/xbmc_vobsub -D_XBOX -DXBMC_VOBSUB" \
---with-extralibdir="$(PWD)/xbmcsys/lib -L$(PWD)/xbmcsys/xbmc_vobsub"
+--with-fribidi-config=$PWD/xbmcsys/fribidi/fribidi-config \
+--with-freetype-config=$PWD/xbmcsys/freetype/freetype-config \
+--with-extraincdir="$PWD/xbmcsys -I$PWD/xbmcsys/xbmc_vobsub -D_XBOX -DXBMC_VOBSUB" \
+--with-extralibdir="$PWD/xbmcsys/lib -L$PWD/xbmcsys/xbmc_vobsub"
