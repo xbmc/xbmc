@@ -274,7 +274,7 @@ static float max_pts_correction=0;//default_max_pts_correction;
 static float c_total=0;
 float audio_delay=0;
 
-static int softsleep=1;
+static int softsleep=0;
 
 float force_fps=0;
 static int force_srate=0;
@@ -898,7 +898,7 @@ int mplayer_init(int argc, char* argv[])
     delay_corrected=1;
     force_fps=0;
     c_total=0;
-    softsleep=1;
+    softsleep=0;
     audio_delay=0;
     max_pts_correction=0;
     font_factor=0.75;
@@ -4411,9 +4411,8 @@ void mplayer_setSubtitle(int iSubtitle)
 		printf("changed dvdsubid to %i from %i\n",sub->id,dvdsub_id );
 		dvdsub_id = sub->id;
 		
-		mp_msg(MSGT_INPUT,MSGL_DBG2,"d_dvdsub->id change: was %d is now %d\n", d_dvdsub->id,dvdsub_id);
 		//Need a better way of changing subs
-		d_dvdsub->id=dvdsub_id;
+		demuxer->sub->id=dvdsub_id;
 		spudec_reset(vo_spudec);
 #ifdef USE_SUB
 		//Disable any extra subtitles
@@ -4464,18 +4463,15 @@ void mplayer_setSubtitle(int iSubtitle)
         printf("changed subtitleto %i/%i\n", set_of_sub_pos,set_of_sub_size );	
 
 		//Turn off any other subtitles
-		if(d_dvdsub) //Dvd subs
+		dvdsub_id=-1; //Dvd subs
+		oggsub_id = -1; //Ogg subs
+		vobsub_id = -1; //Vobsubs
+
+		if(demuxer->sub) 
 		{
-			d_dvdsub->id=-1;
+			demuxer->sub->id=-1;
 			spudec_reset(vo_spudec);
 		}
-		if(oggsub_id>=0) //Ogg subs 
-		{
-			oggsub_id = -1;
-			if(demuxer->sub) 
-				demuxer->sub->id = -1;
-		}
-		vobsub_id = -1; //Vobsubs
 
 	}
 #endif
@@ -4632,7 +4628,17 @@ void mplayer_ToFFRW(int iSpeed)
     if (iSpeed ==1)
     {
         int ipercentage;
-        softsleep=1;
+        if(softsleep)
+		{
+			softsleep=0;
+			printf("Softsleep disabled");
+		}
+		else
+		{
+			softsleep=1;
+			printf("Softsleep enabled");
+		}
+
         frame_dropping=1;
         printf("FFRW:normal play\n");
         playback_speed = orgplayback_speed;
@@ -4647,7 +4653,7 @@ void mplayer_ToFFRW(int iSpeed)
     if (iSpeed >=1 && iSpeed <= 4)
     {
         printf("FF1:play FF:%ix\n",iSpeed);
-        softsleep=0;
+        //softsleep=0;
         frame_dropping=1;
         playback_speed = orgplayback_speed*( (float)iSpeed );
         if (mplayer_HasVideo())
@@ -4660,7 +4666,7 @@ void mplayer_ToFFRW(int iSpeed)
     else if (iSpeed >4)
     {
         printf("FF:play FF:%ix\n",iSpeed);
-        softsleep=0;
+        //softsleep=0;
         frame_dropping=0;
         playback_speed = orgplayback_speed;
         if (mplayer_HasVideo())
@@ -4691,7 +4697,7 @@ void mplayer_ToFFRW(int iSpeed)
     else if (iSpeed < 0)
     {
         printf("RW:play RW:%ix\n",iSpeed);
-        softsleep=0;
+        //softsleep=0;
         frame_dropping=0;
         switch (iSpeed)
         {
@@ -4951,9 +4957,9 @@ void xbmc_update_subs()
 			}
 		}
 
-		if(d_dvdsub)
-			if(d_dvdsub->id>=0)
-				xbmc_sub_current = xbmc_num_from_sid(d_dvdsub->id, XBMC_SUBTYPE_DVDSUB); //Set currently playing
+		if(demuxer->sub)
+			if(demuxer->sub->id>=0)
+				xbmc_sub_current = xbmc_num_from_sid(demuxer->sub->id, XBMC_SUBTYPE_DVDSUB); //Set currently playing
 		
 	}
 
