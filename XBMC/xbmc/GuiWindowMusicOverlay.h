@@ -29,15 +29,9 @@ protected:
   bool				m_bShowInfoAlways;
   int				  m_iFrameIncrement;
   DWORD				  m_dwTimeout;
-  int                 m_iPosOrgIcon;
-  int                 m_iPosOrgPlay;
-  int                 m_iPosOrgPause;
-  int                 m_iPosOrgInfo;
-  int                 m_iPosOrgBigPlayTime;
-  int                 m_iPosOrgPlayTime;
-  int                 m_iPosOrgRectangle;
-  void                SetPosition(int iControl, int iStep, int iMaxSteps,int iOrgPos);
-  int                 GetControlYPosition(int iControl);
+  int                 m_iTopPosition;
+  void                UpdatePosition(int iStep, int iMaxSteps);
+  void                GetTopControlPosition();
   void                ShowControl(int iControl);
   void                HideControl(int iControl);
 };

@@ -37,10 +37,11 @@ CGUIWindowMusicOverlay::CGUIWindowMusicOverlay()
 {
 	m_iFrames=0;
 	m_dwTimeout=0;
-	m_iPosOrgIcon=0;
+	m_iTopPosition=0;
 	m_lStartOffset=0;
 	m_pTexture=NULL;
 	m_bShowInfoAlways=false;
+	m_bRelativeCoords=true;	// so that we can move things around easily :)
 }
 
 CGUIWindowMusicOverlay::~CGUIWindowMusicOverlay()
@@ -168,66 +169,48 @@ void CGUIWindowMusicOverlay::HideControl(int iControl)
 	OnMessage(msg); 
 }
 
-void CGUIWindowMusicOverlay::SetPosition(int iControl, int iStep, int iSteps,int iOrgPos)
+void CGUIWindowMusicOverlay::UpdatePosition(int iStep, int iSteps)
 {
   int iScreenHeight=10+g_graphicsContext.GetHeight();
-  float fDiff=(float)iScreenHeight-(float)iOrgPos;
-  float fPos = fDiff / ((float)iSteps);
-  fPos *= -((float)iStep);
-  fPos += (float)iScreenHeight;
-  CGUIControl* pControl=(CGUIControl*)GetControl(iControl);
-  if (pControl) pControl->SetPosition(pControl->GetXPosition(), (DWORD)fPos);
+  float fDiff=(float)iScreenHeight-(float)m_iTopPosition;
+  float fPos = fDiff / ((float)iSteps) * ((float)iSteps-iStep);
+	SetPosition(0,(int)fPos);
 }
-int CGUIWindowMusicOverlay::GetControlYPosition(int iControl)
+
+void CGUIWindowMusicOverlay::GetTopControlPosition()
 {
-   CGUIControl* pControl=(CGUIControl*)GetControl(iControl);
-   if (!pControl) return 0;
-   return pControl->GetYPosition();
+	m_iTopPosition = g_graphicsContext.GetHeight();
+	for (int i=0; i<(int)m_vecControls.size(); i++)
+	{
+		CGUIControl* pControl=m_vecControls[i];
+		if (pControl)
+		{
+			if (pControl->GetYPosition() < m_iTopPosition)
+				m_iTopPosition = pControl->GetYPosition();
+		}
+	}
 }
 
 void CGUIWindowMusicOverlay::Render()
 {
 	if (!g_application.m_pPlayer) return;
 	if ( g_application.m_pPlayer->HasVideo()) return;
-  if (m_iPosOrgIcon==0)
+  if (m_iTopPosition==0)
   {
-		m_bShowInfo = g_stSettings.m_bMyMusicSongInfoInVis;
-    m_iPosOrgRectangle=GetControlYPosition(0);
-    m_iPosOrgIcon=GetControlYPosition(CONTROL_LOGO_PIC);
-    m_iPosOrgPlay=GetControlYPosition(CONTROL_PLAY_LOGO);
-    m_iPosOrgPause=GetControlYPosition(CONTROL_PAUSE_LOGO);
-    m_iPosOrgInfo=GetControlYPosition(CONTROL_INFO);
-    m_iPosOrgPlayTime=GetControlYPosition(CONTROL_PLAYTIME);
-    m_iPosOrgBigPlayTime=GetControlYPosition(CONTROL_BIG_PLAYTIME);
+		GetTopControlPosition();
   }
   //int iSteps=25;
   if ( (m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION) ||
 	  (m_bShowInfoAlways) )
   {
-    SetPosition(0, 50,50,m_iPosOrgRectangle);
-    SetPosition(CONTROL_LOGO_PIC, 50,50,m_iPosOrgIcon);
-    SetPosition(CONTROL_PLAY_LOGO, 50,50,m_iPosOrgPlay);
-    SetPosition(CONTROL_PAUSE_LOGO, 50,50,m_iPosOrgPause);
-    SetPosition(CONTROL_FF_LOGO, 50,50,m_iPosOrgPause);
-    SetPosition(CONTROL_RW_LOGO, 50,50,m_iPosOrgPause);
-    SetPosition(CONTROL_INFO, 50,50,m_iPosOrgInfo);
-    SetPosition(CONTROL_PLAYTIME, 50,50,m_iPosOrgPlayTime);
-    SetPosition(CONTROL_BIG_PLAYTIME, 50,50,m_iPosOrgBigPlayTime);
+    UpdatePosition(50,50);
     m_iFrames=0;
     m_iFrameIncrement = 1;
     m_dwTimeout = 0;
   }
   else
   {
-		SetPosition(0, m_iFrames,STEPS,m_iPosOrgRectangle);
-		SetPosition(CONTROL_LOGO_PIC, m_iFrames,STEPS,m_iPosOrgIcon);
-		SetPosition(CONTROL_PLAY_LOGO, m_iFrames,STEPS,m_iPosOrgPlay);
-		SetPosition(CONTROL_PAUSE_LOGO, m_iFrames,STEPS,m_iPosOrgPause);
-		SetPosition(CONTROL_FF_LOGO, m_iFrames,STEPS,m_iPosOrgPause);
-		SetPosition(CONTROL_RW_LOGO, m_iFrames,STEPS,m_iPosOrgPause);
-		SetPosition(CONTROL_INFO, m_iFrames,STEPS,m_iPosOrgInfo);
-		SetPosition(CONTROL_PLAYTIME, m_iFrames,STEPS,m_iPosOrgPlayTime);
-		SetPosition(CONTROL_BIG_PLAYTIME, m_iFrames,STEPS,m_iPosOrgBigPlayTime);
+		UpdatePosition(m_iFrames,STEPS);
 		m_iFrames+=m_iFrameIncrement;
 
 		if (!m_bShowInfo && m_iFrames <= 1)
@@ -381,8 +364,8 @@ void CGUIWindowMusicOverlay::Render()
 		const CGUIControl* pControl = GetControl(CONTROL_LOGO_PIC); 
     if (pControl)
     {
-		  float fXPos=(float)pControl->GetXPosition();
-		  float fYPos=(float)pControl->GetYPosition();
+		  float fXPos=(float)pControl->GetXPosition()+GetPosX();
+		  float fYPos=(float)pControl->GetYPosition()+GetPosY();
 		  int iWidth=pControl->GetWidth();
 		  int iHeight=pControl->GetHeight();
 		  g_graphicsContext.Correct(fXPos,fYPos);
@@ -737,5 +720,5 @@ void CGUIWindowMusicOverlay::SetCurrentFile(CFileItem& item)
 void CGUIWindowMusicOverlay::FreeResources()
 {
 	CGUIWindow::FreeResources();
-	m_iPosOrgIcon=0;
+	m_iTopPosition=0;
 }
