@@ -2,12 +2,14 @@
 #include "KaiClient.h"
 #include "Log.h"
 #include "../Settings.h"
-#include "dsstdfx.h"
+#include "../Application.h"
 #include "../Crc32.h"
+#include "dsstdfx.h"
 
 CKaiClient* CKaiClient::client = NULL;
 
 //#define SPEEX_LOOPBACK 1
+#define	KAI_CONTACT_SETTLING_PERIOD		5000L
 
 #ifdef SPEEX_LOOPBACK
 DWORD g_speexLoopbackPlayerId = 0xDEADBEEF;
@@ -32,6 +34,8 @@ void CKaiClient::QueryVectorPlayerCount(CStdString& aVector)
 		CStdString strQueryMessage;
 		strQueryMessage.Format("KAI_CLIENT_SPECIFIC_COUNT;%s;",aVector.c_str());
 		Send(server_addr, strQueryMessage);
+//		OutputDebugString(strQueryMessage.c_str());
+//		OutputDebugString("\r\n");
 	}
 }
 
@@ -40,6 +44,8 @@ CKaiClient::CKaiClient(void) : CUdpClient()
 	CLog::Log(LOGINFO, "KAICLIENT: Instantiating...");
 	observer = NULL;
 	m_bHosting	= FALSE;
+	m_bContactsSettling = TRUE;
+	m_nFriendsOnline = 0;
 	m_pDSound	= NULL;
 
 	// outbound packet queue, collects compressed audio until sufficient to send
@@ -138,6 +144,7 @@ void CKaiClient::SetObserver(IBuddyObserver* aObserver)
 	{
 		// Enable call back methods
 		observer = aObserver;
+		m_dwTimer = timeGetTime();
 
 		aObserver->OnInitialise(this);
 
@@ -260,7 +267,7 @@ void CKaiClient::Detach()
 	if (client_state==State::Authenticated)
 	{
 		CStdString strDisconnectionMessage = "KAI_CLIENT_DETACH;";
-		client_state = State::Disconnecting;
+		client_state = State::Disconnected;
 		Send(server_addr, strDisconnectionMessage);
 		Broadcast(KAI_SYSTEM_PORT, strDisconnectionMessage);
 	}
@@ -295,6 +302,10 @@ void CKaiClient::Login(LPCSTR aUsername, LPCSTR aPassword)
 	CStdString strLoginMessage;
 	strLoginMessage.Format("KAI_CLIENT_LOGIN;%s;%s;",aUsername,aPassword);
 	Send(server_addr, strLoginMessage);
+}
+bool CKaiClient::IsEngineConnected()
+{
+	return client_state == State::Authenticated;
 }
 
 void CKaiClient::QueryUserProfile(CStdString& aPlayerName)
@@ -420,6 +431,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 
 	CHAR* szMessage = strtok( (char*)((LPCSTR)aMessage), ";"); 
 
+	// now depending on state...
 	switch (client_state)
 	{
 		case State::Discovering:
@@ -444,6 +456,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			if (strcmp(szMessage,"KAI_CLIENT_LOGGED_IN")==0)
 			{
 				client_state = State::Authenticated;
+				m_dwTimer = timeGetTime();
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_NOT_LOGGED_IN")==0)
 			{
@@ -477,7 +490,18 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 				client_state = State::Authenticated;
 
 				CStdString strCaseCorrectedName = strtok(NULL, ";");
-				sprintf(g_stSettings.szOnlineUsername,strCaseCorrectedName.c_str());
+				if (strCaseCorrectedName.length()>0)
+				{
+					sprintf(g_stSettings.szOnlineUsername,strCaseCorrectedName.c_str());
+				}
+			}
+			else if (strcmp(szMessage,"KAI_CLIENT_AUTHENTICATION_FAILED")==0)
+			{
+				if (observer!=NULL)
+				{
+					CStdString strUsername = g_stSettings.szOnlineUsername;
+					observer->OnAuthenticationFailed(strUsername);
+				}
 			}
 			break;
 
@@ -487,6 +511,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 				(strcmp(szMessage,"KAI_CLIENT_CONTACT_OFFLINE")==0))
 
 			{
+				m_nFriendsOnline--;
 				if (observer!=NULL)
 				{
 					CStdString strContactName = strtok(NULL, ";");  
@@ -496,6 +521,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_CONTACT_ONLINE")==0)
 			{
+				m_nFriendsOnline++;
 				if (observer!=NULL)
 				{
 					CStdString strContactName = strtok(NULL, ";");  
@@ -790,12 +816,32 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 					observer->OnUpdateArena(strVector, atoi(strPlayers));
 				}
 			}
+			else if (strcmp(szMessage,"KAI_CLIENT_DETACH")==0)
+			{
+				if (observer!=NULL && client_state!=State::Disconnected)
+				{
+					observer->OnEngineDetached();
+				}
+
+				client_state = State::Disconnected;
+			}
+
 			break;
 	}
 }
 
-void CKaiClient::ProcessVoice()
+void CKaiClient::DoWork()
 {
+	// generate our own notifications
+	if (observer!=NULL && client_state == State::Authenticated)
+	{
+		if (m_bContactsSettling && (timeGetTime() - m_dwTimer > KAI_CONTACT_SETTLING_PERIOD) )
+		{
+			m_bContactsSettling = FALSE;
+			observer->OnContactsOnline(m_nFriendsOnline);
+		}
+	}
+
 	if (m_pDSound)
 	{
 		g_VoiceManager.ProcessVoice();

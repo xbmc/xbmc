@@ -37,6 +37,7 @@
 #include "GUIDialogSelect.h"
 #include "GUIDialogFileStacking.h"
 #include "GUIDialogVolumeBar.h"
+#include "GUIDialogKaiToast.h"
 #include "GUIDialogSubMenu.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowSystemInfo.h"
@@ -165,8 +166,9 @@ public:
 	void					SetVolume(int iPercent);
 	int						GetPlaySpeed() const;
 	void					SetPlaySpeed(int iSpeed);
-	bool									IsButtonDown(DWORD code);
-	bool				ResetScreenSaverWindow();
+	bool					IsButtonDown(DWORD code);
+	bool					ResetScreenSaverWindow();
+	void					SetKaiNotification(CStdString& aCaption, CStdString& aDescription);
 
 	CGUIWindowHome									m_guiHome;
   CGUIWindowPrograms							m_guiPrograms;
@@ -180,6 +182,7 @@ public:
 	CGUIDialogProgress							m_guiDialogProgress;
 	CGUIDialogOK										m_guiDialogOK;
 	CGUIDialogVolumeBar							m_guiDialogVolumeBar;
+	CGUIDialogKaiToast							m_guiDialogKaiToast;
 	CGUIDialogSubMenu								m_guiDialogSubMenu;
 	CGUIDialogContextMenu						m_guiDialogContextMenu;
 	CGUIWindowFileManager						m_guiFileManager;

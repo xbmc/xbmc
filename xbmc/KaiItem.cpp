@@ -27,7 +27,7 @@ CKaiItem::~CKaiItem(void)
 
 void CKaiItem::SetAvatar(CStdString& aAvatarUrl)
 {
-	OutputDebugString("Setting Kai avatar\r\n");
+//	OutputDebugString("Setting Kai avatar\r\n");
 
 	// Get file extension from url
 	CStdString strExtension;
@@ -83,7 +83,7 @@ void CKaiItem::OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRx
 {
 	if (aResult == IDownloadQueueObserver::Succeeded && aByteRxCount>=100) 
 	{
-		OutputDebugString("Downloaded avatar.\r\n");
+		//OutputDebugString("Downloaded avatar.\r\n");
 
 		CStdString strAvatarFilePath;
 		GetAvatarFilePath(strAvatarFilePath);
@@ -104,7 +104,7 @@ void CKaiItem::OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRx
 	}
 	else
 	{
-		OutputDebugString("Unable to download avatar.\r\n");
+		//OutputDebugString("Unable to download avatar.\r\n");
 	}
 }
 

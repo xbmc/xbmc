@@ -258,6 +258,8 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_strTimeServer,"");
 	strcpy(g_stSettings.szOnlineUsername,"");
 	strcpy(g_stSettings.szOnlinePassword,"");
+	strcpy(g_stSettings.szOnlineGamesDir,"");
+	g_stSettings.m_bOnlineNotifications=true;
 	g_stSettings.m_bTimeServerEnabled=false;
 	g_stSettings.m_bFTPServerEnabled=true;
 	g_stSettings.m_bHTTPServerEnabled=false;
@@ -1279,8 +1281,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetString(pElement, "httpproxyhost", g_stSettings.m_szHTTPProxy, "");
 		GetInteger(pElement, "httpproxyport", g_stSettings.m_iHTTPProxyPort, 8080, 1, 65535);
 
-		GetString(pElement, "kaiusername", g_stSettings.szOnlineUsername, "");
-		GetString(pElement, "kaipassword", g_stSettings.szOnlinePassword, "");
+		GetString(pElement, "kaiusername",	g_stSettings.szOnlineUsername, "");
+		GetString(pElement, "kaipassword",	g_stSettings.szOnlinePassword, "");
+		GetString(pElement, "kaigamesdir",	g_stSettings.szOnlineGamesDir, "");
+		GetBoolean(pElement,"kainotify",	g_stSettings.m_bOnlineNotifications);
 
 		GetString(pElement, "timeserverhost", g_stSettings.m_strTimeServer, "207.46.130.100");
 
@@ -1711,6 +1715,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 
 	SetString(pNode, "kaiusername", g_stSettings.szOnlineUsername);
 	SetString(pNode, "kaipassword", g_stSettings.szOnlinePassword);
+	SetString(pNode, "kaigamesdir", g_stSettings.szOnlineGamesDir);
+	SetBoolean(pNode,"kainotify",	g_stSettings.m_bOnlineNotifications);
 
 	SetString(pNode, "timeserverhost", g_stSettings.m_strTimeServer);
 

@@ -10,34 +10,36 @@
 #include "GUIDialogYesNo.h"
 #include "localizestrings.h"
 #include "util.h"
+#include "Xbox/Undocumented.h"
 #include <algorithm>
 #include "utils/log.h"
 
-#define CONTROL_BTNMODE			12				// Games Button
-#define CONTROL_BTNJOIN			13				// Join Button
-#define CONTROL_BTNSPEEX		16				// Speex Button
-#define CONTROL_BTNINVITE		14				// Invite Button
-#define CONTROL_BTNREMOVE		15				// Remove Button
+#define CONTROL_BTNMODE			3012				// Games Button
+#define CONTROL_BTNJOIN			3013				// Join Button
+#define CONTROL_BTNSPEEX		3016				// Speex Button
+#define CONTROL_BTNINVITE		3014				// Invite Button
+#define CONTROL_BTNREMOVE		3015				// Remove Button
 
-#define CONTROL_LISTEX			31
-#define CONTROL_BTNPLAY			33				// Play Button
-#define CONTROL_BTNHOST			35				// Host Button
-#define CONTROL_BTNADD			34				// Add Button
+#define CONTROL_LISTEX			3031
+#define CONTROL_BTNPLAY			3033				// Play Button
+#define CONTROL_BTNHOST			3035				// Host Button
+#define CONTROL_BTNADD			3034				// Add Button
 
-#define CONTROL_LABELBUDDYWIN	50
-#define CONTROL_LABELUSERNAME	51				// Xlink Kai Username
-#define CONTROL_LABELUPDATED	52				// Last update time
-#define CONTROL_IMAGELOGO		53				// Xlink Kai Logo
+#define CONTROL_LABELBUDDYWIN	3050
+#define CONTROL_LABELUSERNAME	3051				// Xlink Kai Username
+#define CONTROL_LABELUPDATED	3052				// Last update time
+#define CONTROL_IMAGELOGO		3053				// Xlink Kai Logo
 
-#define CONTROL_IMAGEBUDDYICON1	60				// Buddy (offline) icon
-#define CONTROL_IMAGEBUDDYICON2	61				// Buddy (online) icon
-#define CONTROL_IMAGEOPPONENT	62				// Opponent icon
-#define CONTROL_IMAGEARENA		63				// Arena icon
+#define CONTROL_IMAGEBUDDYICON1	3060				// Buddy (offline) icon
+#define CONTROL_IMAGEBUDDYICON2	3061				// Buddy (online) icon
+#define CONTROL_IMAGEOPPONENT	3062				// Opponent icon
+#define CONTROL_IMAGEARENA		3063				// Arena icon
+#define CONTROL_IMAGEME			3064				// My icon
 
-#define CONTROL_LABELBUDDYNAME	70				// Buddy Name
-#define CONTROL_LABELBUDDYSTAT	71				// Buddy Game Status
-#define CONTROL_LABELBUDDYINVT	72				// Buddy Invite Status
-#define CONTROL_LABELPLAYERCNT	73				// Arena Player Count
+#define CONTROL_LABELBUDDYNAME	3070				// Buddy Name
+#define CONTROL_LABELBUDDYSTAT	3071				// Buddy Game Status
+#define CONTROL_LABELBUDDYINVT	3072				// Buddy Invite Status
+#define CONTROL_LABELPLAYERCNT	3073				// Arena Player Count
 
 #define SET_CONTROL_DISABLED(dwSenderId, dwControlID) \
 { \
@@ -50,13 +52,6 @@
 	CGUIMessage msg(GUI_MSG_ENABLED, dwSenderId, dwControlID); \
 	g_graphicsContext.SendMessage(msg); \
 }
-
-#define SET_CONTROL_SELECTED(dwSenderId, dwControlID, bSelect) \
-{ \
-	CGUIMessage msg(bSelect?GUI_MSG_SELECTED:GUI_MSG_DESELECTED, dwSenderId, dwControlID); \
-	g_graphicsContext.SendMessage(msg); \
-}
-
 
 bool CGUIWindowBuddies::SortArenaItems(CGUIItem* pStart, CGUIItem* pEnd)
 {
@@ -90,7 +85,9 @@ CGUIWindowBuddies::CGUIWindowBuddies(void)
 	m_pKaiClient = NULL;
 	m_pOpponentImage = NULL; 
 	m_pCurrentAvatar = NULL;
+	m_pMe			 = NULL;
 	m_dwGamesUpdateTimer = 0;
+	m_bContactNotifications = FALSE;
 
 	m_friends.SetSortingAlgorithm(CGUIWindowBuddies::SortFriends);
 	m_arena.SetSortingAlgorithm(CGUIWindowBuddies::SortArenaItems);
@@ -143,8 +140,33 @@ void CGUIWindowBuddies::OnInitWindow()
 		CGUIMessage msgb(GUI_MSG_LABEL_BIND,GetID(),CONTROL_LISTEX,0,0,&m_friends);
 		g_graphicsContext.SendMessage(msgb);
 
-		QueryInstalledGames();
-		//g_VoiceManager.SetVoiceThroughSpeakers(true);
+		if (!m_pKaiClient->IsEngineConnected())
+		{
+			SET_CONTROL_DISABLED(GetID(), CONTROL_BTNMODE);	
+
+			CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+			pDialog->SetHeading("X-Link KAI Service Unavailable");
+			pDialog->SetLine(0,L"Please ensure that both XBOX network and KAI engine");
+			pDialog->SetLine(1,L"are available and configured correctly before restarting.");
+			pDialog->SetLine(2,L"");
+			pDialog->DoModal(GetID());
+		}
+		else
+		{
+			CStdString strXtag = g_stSettings.szOnlineUsername;
+			m_pMe = new CBuddyItem(strXtag);
+			
+			if (m_pMe->IsAvatarCached())
+			{
+				m_pMe->UseCachedAvatar();
+			}
+			else
+			{
+				m_pKaiClient->QueryAvatar(strXtag);
+			}
+
+			QueryInstalledGames();
+		}
 	}
 }
 
@@ -386,7 +408,7 @@ CGUIImage* CGUIWindowBuddies::GetCurrentAvatar()
 		// a item is selected, and his avatar is different to the one we last showed
 		if (pItem->m_pAvatar != m_pCurrentAvatar)
 		{
-			OutputDebugString("Changing avatar\r\n");
+//			OutputDebugString("Changing avatar\r\n");
 
 			// if we actually last showed an avatar free up its resources
 			if (m_pCurrentAvatar)
@@ -414,7 +436,7 @@ CGUIImage* CGUIWindowBuddies::GetCurrentAvatar()
 				}
 			}
 
-			OutputDebugString("Avatar changed.\r\n");
+//			OutputDebugString("Avatar changed.\r\n");
 		}
 	}
 	else
@@ -422,10 +444,10 @@ CGUIImage* CGUIWindowBuddies::GetCurrentAvatar()
 		// no item is selected so free up the current avatar if we have one
 		if (m_pCurrentAvatar)
 		{
-			OutputDebugString("Deallocating current avatar.\r\n");
+//			OutputDebugString("Deallocating current avatar.\r\n");
 			m_pCurrentAvatar->FreeResources();
 			m_pCurrentAvatar = NULL;
-			OutputDebugString("Avatar dellocated.\r\n");
+//			OutputDebugString("Avatar dellocated.\r\n");
 		}
 	}
 
@@ -513,6 +535,30 @@ void CGUIWindowBuddies::Render()
 	// Update buttons
 	UpdatePanel();
 
+	if (m_pMe && m_pMe->m_pAvatar)
+	{
+		if (!m_pMe->m_bProfileRequested)
+		{
+			m_pMe->m_bProfileRequested = TRUE;
+
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_IMAGEME);
+
+			CGUIImage&  placeholder = *(CGUIImage*)GetControl(CONTROL_IMAGEME);	
+			int x = placeholder.GetXPosition();
+			int y = placeholder.GetYPosition();
+			DWORD w = placeholder.GetWidth();
+			DWORD h = placeholder.GetHeight();
+			m_pMe->m_pAvatar->SetPosition(x,y);
+			m_pMe->m_pAvatar->SetWidth((int)w);
+			m_pMe->m_pAvatar->SetHeight((int)h);
+			m_pMe->m_pAvatar->AllocResources();
+		}
+		else
+		{
+			m_pMe->m_pAvatar->Render();
+		}
+	}
+
 	// Request buddy selection if needed
 	CBuddyItem* pBuddy = GetBuddySelection();
 	if (pBuddy)
@@ -523,16 +569,8 @@ void CGUIWindowBuddies::Render()
 		{
 			pBuddy->m_bProfileRequested = TRUE;
 			CStdString aName = pBuddy->GetName();
-
 			m_pKaiClient->QueryUserProfile(aName);
-			OutputDebugString("Requested user profile");
-
 			m_pKaiClient->QueryAvatar(aName);
-			OutputDebugString(" and avatar");
-
-			CStdString strDebug;
-			strDebug.Format(" for %s.\r\n",aName.c_str());
-			OutputDebugString(strDebug.c_str());
 		}
 	}
 
@@ -750,7 +788,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_LABEL(GetID(),  CONTROL_LABELBUDDYWIN,  "Friends");
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNMODE,		"Games");	
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNJOIN,		"Join");	
-			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNSPEEX,		"Chat");	
+			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNSPEEX,		"Voice");	
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNINVITE,		"Invite");	
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNREMOVE,		"Remove");
 			break;
@@ -837,6 +875,30 @@ void CGUIWindowBuddies::Enter(CArenaItem& aArena)
 
 
 /* IBuddyObserver methods */
+void CGUIWindowBuddies::OnEngineDetached()
+{
+	CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+	pDialog->SetHeading("X-Link KAI Shutdown");
+	pDialog->SetLine(0,L"The service terminated, please restart Xbox Media Center");
+	pDialog->SetLine(1,L"after restoring connectivity.");
+	pDialog->SetLine(2,L"");
+
+	ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+	g_applicationMessenger.SendMessage(tMsg, false);
+}
+
+void CGUIWindowBuddies::OnAuthenticationFailed(CStdString& aUsername)
+{
+	CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+	pDialog->SetHeading("X-Link KAI Authentication");
+	pDialog->SetLine(0,L"Your username and/or password was rejected by the");
+	pDialog->SetLine(1,L"orbital server. Please check your configuration.");
+	pDialog->SetLine(2,L"");
+
+	ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+	g_applicationMessenger.SendMessage(tMsg, false);
+}
+
 void CGUIWindowBuddies::OnContactOffline(CStdString& aFriend)
 {
 	CGUIList::GUILISTITEMS& list = m_friends.Lock();
@@ -872,6 +934,10 @@ void CGUIWindowBuddies::OnContactOffline(CStdString& aFriend)
 	m_friends.Release();
 }
 
+void CGUIWindowBuddies::OnContactsOnline(INT nCount)
+{
+	m_bContactNotifications = TRUE;
+}
 void CGUIWindowBuddies::OnContactOnline(CStdString& aFriend)
 {
 	CGUIList::GUILISTITEMS& list = m_friends.Lock();
@@ -895,12 +961,16 @@ void CGUIWindowBuddies::OnContactOnline(CStdString& aFriend)
 	pBuddy->SetIcon(16,16,"buddyitem-online.png");
 
 	m_friends.Release();
+
+	if (m_bContactNotifications)
+	{
+		CStdString note = "has just signed in";
+		g_application.SetKaiNotification(aFriend,note);
+	}
 }
 
 void CGUIWindowBuddies::OnContactPing(CStdString& aFriend, CStdString& aVector, DWORD aPing, int aStatus, CStdString& aBearerCapability)
 {
-//	CLog::Log(LOGINFO, "CGUIWindowBuddies::OnContactPing");	
-
 	CGUIList::GUILISTITEMS& list = m_friends.Lock();
 
 	CBuddyItem* pBuddy = (CBuddyItem*) m_friends.Find(aFriend);
@@ -922,7 +992,6 @@ void CGUIWindowBuddies::OnContactPing(CStdString& aFriend, CStdString& aVector, 
 
 void CGUIWindowBuddies::OnContactRemove(CStdString& aFriend)
 {
-	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnContactRemove");	
 	m_friends.Remove(aFriend);
 }
 void CGUIWindowBuddies::OnContactSpeexStatus(CStdString& aFriend, bool bSpeexEnabled)
@@ -950,10 +1019,9 @@ void CGUIWindowBuddies::OnContactSpeexRing(CStdString& aFriend)
 		if (pBuddy->m_bRingIndicator)
 		{
 			pBuddy->m_bRingIndicator = FALSE;
-			CStdString strNotification;
-			strNotification.Format("%s has invited you to voice chat",aFriend);
-			CLog::Log(LOGINFO,strNotification);
-			//pApplication->SetKaiNotification("X has invited you to voice chat");
+
+			CStdString note = "has initated voice chat";
+			g_application.SetKaiNotification(aFriend,note);
 		}
 	}
 
@@ -986,10 +1054,8 @@ void CGUIWindowBuddies::OnContactInvite(CStdString& aFriend, CStdString& aVector
 
 		pBuddy->m_bInvite = TRUE;
 
-		CStdString strNotification;
-		strNotification.Format("%s has sent you an invitation",aFriend);
-		CLog::Log(LOGINFO,strNotification);
-		//pApplication->SetKaiNotification("X has sent you an invitation");
+		CStdString note = "has sent you an invitation";
+		g_application.SetKaiNotification(aFriend,note);
 	}
 
 	m_friends.Release();
@@ -1024,15 +1090,30 @@ void CGUIWindowBuddies::QueryInstalledGames()
 
 void CGUIWindowBuddies::Play(CStdString& aVector)
 {
-	CGUIDialogProgress& dialog = *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
-
 	CStdString strGame;
 	CArenaItem::GetTier(CArenaItem::Game, aVector, strGame);
 
+	if (g_stSettings.szOnlineGamesDir[0]!=0)
+	{
+		// Get TitleId from current vector
+		DWORD dwTitleId = m_titles[strGame];
+		if (dwTitleId!=0x00000000)
+		{
+			CStdString strGamePath;
+			if (GetGamePathFromTitleId(dwTitleId,strGamePath))
+			{
+				CUtil::RunXBE(strGamePath);
+				return;
+			}
+		}
+	}
+
+	CGUIDialogProgress& dialog = *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
+
 	dialog.SetHeading(strGame.c_str());
-	dialog.SetLine(0,"Please place the game into your XBOX and");
-	dialog.SetLine(1,"select SYSTEM LINK to play online.");
-	dialog.SetLine(2,"" );
+	dialog.SetLine(0,"Xbox Media Center unable to locate game automatically.");
+	dialog.SetLine(1,"Insert the game disk into your XBOX or press 'A' to cancel");
+	dialog.SetLine(2,"and launch the game manually." );
 	dialog.StartModal(GetID());
 
 	while (true)
@@ -1053,16 +1134,71 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
 		dialog.Progress();
 	}
 
-	dialog.Close();	
+	dialog.Close();
 }
 
+bool CGUIWindowBuddies::GetGamePathFromTitleId(DWORD aTitleId, CStdString& aGamePath)
+{
+	WIN32_FIND_DATA wfd;
+	memset(&wfd,0,sizeof(wfd));
+
+	// Search for XBE in within GamesDir subfolders matching same TitleId.
+	CStdString strSearchMask;
+	strSearchMask.Format("%s\\*.*",g_stSettings.szOnlineGamesDir);
+	HANDLE hFind = FindFirstFile(strSearchMask.c_str(),&wfd);
+
+	aGamePath = "";
+
+	if (hFind!=NULL)
+	{
+		do
+		{
+			if (wfd.cFileName[0]!=0)
+			{
+				if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+				{
+					// Calculate the path of the game's xbe
+					CStdString strGamePath;
+					strGamePath.Format("%s\\%s\\default.xbe",g_stSettings.szOnlineGamesDir,(CHAR*)wfd.cFileName);
+
+					// If the XBE actually exists
+					if (CUtil::FileExists(strGamePath))
+					{
+						// Read its header info
+						FILE* hFile  = fopen(strGamePath.c_str(),"rb");
+						_XBE_HEADER HS;
+						fread(&HS,1,sizeof(HS),hFile);
+						fseek(hFile,HS.XbeHeaderSize,SEEK_SET);
+						_XBE_CERTIFICATE HC;
+						fread(&HC,1,sizeof(HC),hFile);
+						fclose(hFile);
+
+						// Is this the title we're looking for?
+						if (aTitleId == HC.TitleId)
+						{
+							// Store its path and stop searching
+							aGamePath = strGamePath;
+							break;
+						}
+					}
+				}
+			}
+		} while (FindNextFile(hFind, &wfd));
+
+		CloseHandle(hFind);
+	}
+
+	return aGamePath.length()>0;
+}
 
 void CGUIWindowBuddies::OnSupportedTitle(DWORD aTitleId, CStdString& aVector)
 {
-	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnSupportedTitle");	
-
 	INT arenaDelimiter = aVector.ReverseFind('/')+1;
 	CStdString arenaLabel = aVector.Mid(arenaDelimiter);
+
+	CStdString strGame;
+	CArenaItem::GetTier(CArenaItem::Game, aVector, strGame);
+	m_titles[strGame] = aTitleId;
 
 	CGUIList::GUILISTITEMS& list = m_games.Lock();
 
@@ -1073,8 +1209,12 @@ void CGUIWindowBuddies::OnSupportedTitle(DWORD aTitleId, CStdString& aVector)
 		pArena->m_strVector = aVector;
 		pArena->SetIcon(16,16,"arenaitem-small.png");
 
+		CStdString strSafeVector = aVector;
+		strSafeVector.Replace(" ","%20");
+		strSafeVector.Replace(":","%3A");
+
 		CStdString aAvatarUrl;
-		aAvatarUrl.Format("http://www.teamxlink.co.uk/media/avatars/%s.jpg",aVector);
+		aAvatarUrl.Format("http://www.teamxlink.co.uk/media/avatars/%s.jpg",strSafeVector);
 		pArena->SetAvatar(aAvatarUrl);
 
 		m_games.Add(pArena);
@@ -1085,8 +1225,6 @@ void CGUIWindowBuddies::OnSupportedTitle(DWORD aTitleId, CStdString& aVector)
 
 void CGUIWindowBuddies::OnEnterArena(CStdString& aVector, BOOL bCanHost)
 {
-	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnEnterArena");	
-
 	m_arena.Clear();
 	
 	if (bCanHost)
@@ -1103,8 +1241,6 @@ void CGUIWindowBuddies::OnEnterArena(CStdString& aVector, BOOL bCanHost)
 
 void CGUIWindowBuddies::OnEnterArenaFailed(CStdString& aVector, CStdString& aReason)
 {
-	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnEnterArenaFailed");
-
 	CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
 	pDialog->SetHeading("Access Denied");
 	pDialog->SetLine(0,aReason);
@@ -1119,8 +1255,6 @@ void CGUIWindowBuddies::OnNewArena(	CStdString& aVector, CStdString& aDescriptio
 									int nPlayers, int nPlayerLimit, int nPassword, bool bPersonal )
 
 {
-	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnNewArena");	
-
 	INT arenaDelimiter = aVector.ReverseFind('/')+1;
 
 	CStdString arenaLabel = aVector.Mid(arenaDelimiter);
@@ -1139,11 +1273,12 @@ void CGUIWindowBuddies::OnNewArena(	CStdString& aVector, CStdString& aDescriptio
 		pArena->m_bIsPrivate = nPassword>0;
 		pArena->SetIcon(16,16,"arenaitem-small.png");
 
-		aVector.Replace(" ","%20");
-		aVector.Replace(":","%3A");
+		CStdString strSafeVector = aVector;
+		strSafeVector.Replace(" ","%20");
+		strSafeVector.Replace(":","%3A");
 
 		CStdString aAvatarUrl;
-		aAvatarUrl.Format("http://www.teamxlink.co.uk/media/avatars/%s.jpg",aVector);
+		aAvatarUrl.Format("http://www.teamxlink.co.uk/media/avatars/%s.jpg",strSafeVector);
 		pArena->SetAvatar(aAvatarUrl);
 
 		m_arena.Add(pArena);
@@ -1156,6 +1291,10 @@ void CGUIWindowBuddies::OnUpdateArena(	CStdString& aVector, int nPlayers )
 {
 	INT arenaDelimiter = aVector.ReverseFind('/')+1;
 	CStdString arenaLabel = aVector.Mid(arenaDelimiter);
+
+//	CStdString strDebug;
+//	strDebug.Format("KAI: updated %s player count: %d",aVector,nPlayers);
+//	CLog::Log(LOGINFO,strDebug.c_str());
 
 	m_arena.Lock();
 	CArenaItem* pArena = (CArenaItem*) m_arena.Find(arenaLabel);
@@ -1177,9 +1316,9 @@ void CGUIWindowBuddies::OnUpdateArena(	CStdString& aVector, int nPlayers )
 void CGUIWindowBuddies::OnUpdateOpponent(CStdString& aOpponent, CStdString& aAge, 
 			CStdString& aBandwidth, CStdString& aLocation, CStdString& aBio)
 {
-	CStdString strDebug;
-	strDebug.Format("Received profile for %s.\r\n",aOpponent.c_str());
-	OutputDebugString(strDebug.c_str());
+	//CStdString strDebug;
+	//strDebug.Format("Received profile for %s.\r\n",aOpponent.c_str());
+	//OutputDebugString(strDebug.c_str());
 
 	m_arena.Lock();
 	CBuddyItem* pOpponent = (CBuddyItem*) m_arena.Find(aOpponent);
@@ -1202,9 +1341,9 @@ void CGUIWindowBuddies::OnUpdateOpponent(CStdString& aOpponent, CStdString& aAge
 
 void CGUIWindowBuddies::OnUpdateOpponent(CStdString& aOpponent, CStdString& aAvatarURL)
 {
-	CStdString strDebug;
-	strDebug.Format("Received avatar for %s.\r\n",aOpponent.c_str());
-	OutputDebugString(strDebug.c_str());
+//	CStdString strDebug;
+//	strDebug.Format("Received avatar for %s.\r\n",aOpponent.c_str());
+//	OutputDebugString(strDebug.c_str());
 
 	m_arena.Lock();
 	CBuddyItem* pOpponent = (CBuddyItem*) m_arena.Find(aOpponent);
@@ -1222,12 +1361,16 @@ void CGUIWindowBuddies::OnUpdateOpponent(CStdString& aOpponent, CStdString& aAva
 		pOpponent->SetAvatar(aAvatarURL);
 	}
 	m_friends.Release();
+
+	// may as well check if this avatar is mine
+	if (m_pMe && (m_pMe->GetName()==aOpponent))
+	{
+		m_pMe->SetAvatar(aAvatarURL);
+	}
 }
 
 void CGUIWindowBuddies::OnOpponentEnter(CStdString& aOpponent)
 {
-	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnOpponentEnter");	
-
 	CGUIList::GUILISTITEMS& list = m_arena.Lock();
 
 	CBuddyItem* pOpponent = (CBuddyItem*) m_arena.Find(aOpponent);
@@ -1264,7 +1407,6 @@ void CGUIWindowBuddies::OnOpponentPing(CStdString& aOpponent, DWORD aPing, int a
 
 void CGUIWindowBuddies::OnOpponentLeave(CStdString& aOpponent)
 {
-	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnOpponentLeave");	
 	m_arena.Remove(aOpponent);
 }
 
