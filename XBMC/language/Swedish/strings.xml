@@ -2495,7 +2495,7 @@
   <string><id>13334</id><value>Ändra Namn</value></string>
   <string><id>13335</id><value>Gör till standard</value></string>
   <string><id>13336</id><value>Ta bort knapp</value></string>
-  <string><id>13337</id><value>2 kanals PCM passthrough</value></string>
+  <string><id>13337</id><value>Stereo PCM passthrough</value></string>
 <string>
 <id>14000</id>
 <value>Stacking: Av</value>
