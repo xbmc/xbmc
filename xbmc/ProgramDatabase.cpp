@@ -130,6 +130,14 @@ bool CProgramDatabase::CreateTables()
 
 		CLog::Log("create files table");
 		m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, idProgram integer,strFilename text, xbedescription text, iTimesPlayed integer)\n");
+	
+		CLog::Log("create bookmark index");
+		m_pDS->exec("CREATE INDEX idxBookMark ON bookmark(bookmarkName)");
+		CLog::Log("create path index");
+		m_pDS->exec("CREATE INDEX idxPath ON path(strPath)");
+		CLog::Log("create files index");
+		m_pDS->exec("CREATE INDEX idxFiles ON files(strFilename)");
+	
 	}
 	catch (...) 
 	{ 
@@ -330,8 +338,8 @@ long CProgramDatabase::AddProgram(const CStdString& strFilenameAndPath, const CS
 //********************************************************************************************************************************
 void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, VECFILEITEMS& programs, bool bOnlyDefaultXBE)
 {
-	try {
-
+	try {	
+		VECPROGRAMPATHS todelete;
 		FILETIME localTime;
 		programs.erase(programs.begin(),programs.end());
 		if (NULL==m_pDB.get()) return ;
@@ -364,10 +372,19 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, VECFILEITE
 			}
 			else
 			{
-				DeleteProgram(strPath);
+				todelete.push_back(strPath); // push the paths that we need to delete and delete later
 			}
 			m_pDS->next();
 		}
+	
+		// let's now delete the program from the database since it no longer exists.. better way to do this?
+
+		for (int i=0; i < (int)todelete.size(); ++i)
+		{
+			CStdString& pathtodelete = todelete[i];
+			DeleteProgram(pathtodelete);
+		}
+
 	}
 	catch(...)
 	{
