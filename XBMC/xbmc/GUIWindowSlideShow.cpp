@@ -666,9 +666,10 @@ void CGUIWindowSlideShow::OnAction(const CAction &action)
 					if (m_iZoomLeft < 0) m_iZoomLeft = 0;
 					if (m_iZoomTop > (int)m_dwHeightBackGround - m_iZoomHeight) m_iZoomTop = m_dwHeightBackGround - m_iZoomHeight;
 					if (m_iZoomLeft > (int)m_dwWidthBackGround - m_iZoomWidth) m_iZoomLeft = m_dwWidthBackGround - m_iZoomWidth;
+			
+			    m_lSlideTime=timeGetTime();
 				}
-			}
-			m_lSlideTime=timeGetTime();
+      }
 		break;
 	}
 }

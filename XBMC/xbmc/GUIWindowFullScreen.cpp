@@ -462,8 +462,8 @@ void CGUIWindowFullScreen::ShowOSD()
   
 
   COSDSubMenu audioMenu(292,100,100);
-  iValue=g_application.m_pPlayer->GetAudioStreamCount()-1;
-  COSDOptionIntRange   optionAudioStream(MENU_ACTION_AUDIO_STREAM,302,false,0,iValue,1,g_stSettings.m_iAudioStream);
+  iValue=g_application.m_pPlayer->GetAudioStreamCount();
+  COSDOptionIntRange   optionAudioStream(MENU_ACTION_AUDIO_STREAM,302,false,1,iValue,1,g_stSettings.m_iAudioStream+1);
   audioMenu.AddOption(&optionAudioStream);
 
   COSDSubMenu SubtitleMenu(293,100,100);
@@ -562,7 +562,7 @@ void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
     break;
     case MENU_ACTION_AUDIO_STREAM:
       const COSDOptionIntRange* intOption = (const COSDOptionIntRange*)option;
-      g_stSettings.m_iAudioStream=intOption->GetValue();
+      g_stSettings.m_iAudioStream=intOption->GetValue()-1;
       m_iAudioStreamIDX=mplayer_getAudioStream(g_stSettings.m_iAudioStream);
       char szTmp[128];
       sprintf(szTmp,"got audio stream:%i=%i\n", g_stSettings.m_iAudioStream,m_iAudioStreamIDX);
