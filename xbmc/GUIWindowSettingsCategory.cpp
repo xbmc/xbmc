@@ -176,6 +176,11 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 		break;
 	case GUI_MSG_WINDOW_INIT:
 		{
+      if (message.GetParam1() != WINDOW_INVALID)
+      { // coming to this window first time (ie not returning back from some other window)
+        // so we reset our section
+        m_iSection = 0;
+      }
 			m_iScreen = (int)message.GetParam2() - (int)m_dwWindowId;
 			m_iNetworkAssignment = g_guiSettings.GetInt("Network.Assignment");
 			m_strNetworkIPAddress = g_guiSettings.GetString("Network.IPAddress");
