@@ -410,7 +410,7 @@ dvd_reader_t *DVDOpen( const char *path )
             }
             fclose( mntfile );
 	}
-#elif defined(WIN32)	
+#elif defined(WIN32)
 	dev_name = strdup(path);
 	auth_drive = DVDOpenImageFile( path, have_css );
 #endif
