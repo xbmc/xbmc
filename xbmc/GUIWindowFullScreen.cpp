@@ -395,13 +395,13 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			m_bLastRender=false;
 			m_bOSDVisible=false;
 			CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness,g_settings.m_iContrast,g_settings.m_iGamma,true);
-			g_graphicsContext.SetFullScreenVideo(false);//turn off to prevent calibration to OSD position
+//			g_graphicsContext.SetFullScreenVideo(false);//turn off to prevent calibration to OSD position
 			CGUIWindow::OnMessage(message);
-			g_graphicsContext.Lock();
-			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+//			g_graphicsContext.Lock();
+//			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 			g_graphicsContext.SetFullScreenVideo( true );
-			g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-			g_graphicsContext.Unlock();
+//			g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
+//			g_graphicsContext.Unlock();
 			if (g_application.m_pPlayer)
 				g_application.m_pPlayer->Update();
 			HideOSD();

@@ -110,6 +110,8 @@ void CGraphicContext::SetViewWindow(const RECT&	rc)
 	m_videoRect.top   = rc.top;
 	m_videoRect.right = rc.right;
 	m_videoRect.bottom= rc.bottom;
+	if (m_videoRect.left < 0) m_videoRect.left = 0;
+	if (m_videoRect.top < 0) m_videoRect.top = 0;
 	if (m_bShowPreviewWindow && !m_bFullScreenVideo)
 	{
 		D3DRECT d3dRC;
