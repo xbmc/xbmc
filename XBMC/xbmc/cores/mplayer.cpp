@@ -670,9 +670,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
     bIsVideo=HasVideo();
     bIsAudio=HasAudio();
     int iNewCacheSize=GetCacheSize(bFileOnHD,bFileOnISO,bFileOnUDF,bFileOnInternet,bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
-    if (iNewCacheSize!=iCacheSize)
+    if (iNewCacheSize > iCacheSize)
     {
-      CLog::Log("upgrade cachesize to %i", iNewCacheSize);
+      CLog::Log("detected video. Cachesize is now %i, (was %i)", iNewCacheSize,iCacheSize);
       mplayer_setcache_size(iCacheSize);
     }
     
