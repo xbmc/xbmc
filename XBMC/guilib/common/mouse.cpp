@@ -21,60 +21,65 @@ void CMouse::Initialize()
 {
 	m_dwMousePort = XGetDevices( XDEVICE_TYPE_DEBUG_MOUSE );
 
-	// Obtain handles to mice
-    // We obtain the actual handle(s) below in the 
-    // XInput_GetMouseInput function.
+  // See if a mouse is attached and get a handle to it, if it is.
+  for( DWORD i=0; i < XGetPortCount(); i++ )
+  {
+    if( ( m_hMouseDevice[i] == NULL ) && ( m_dwMousePort & ( 1 << i ) ) ) 
+    {
+      // Get a handle to the device
+      m_hMouseDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_MOUSE, i, 
+                                      XDEVICE_NO_SLOT, NULL );
+    }
+  }
 	// Set the default resolution (PAL)
 	SetResolution(720,576,1,1);
 }
 
 void CMouse::Update()
 {
-    // See if a mouse is attached and get a handle to it, if it is.
+  // Check if mouse or mice were removed or attached.
+  // We'll get the handle(s) next frame in the above code.
+  DWORD dwNumInsertions, dwNumRemovals;
+  if( XGetDeviceChanges( XDEVICE_TYPE_DEBUG_MOUSE, &dwNumInsertions, 
+                          &dwNumRemovals ) )
+  {
+    // Loop through all ports and remove any mice that have been unplugged
     for( DWORD i=0; i < XGetPortCount(); i++ )
     {
-        if( ( m_hMouseDevice[i] == NULL ) && ( m_dwMousePort & ( 1 << i ) ) ) 
-        {
-            // Get a handle to the device
-            m_hMouseDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_MOUSE, i, 
-                                            XDEVICE_NO_SLOT, NULL );
-        }
+      if( ( dwNumRemovals & ( 1 << i ) ) && ( m_hMouseDevice[i] != NULL ) )
+      {
+				XInputClose( m_hMouseDevice[i] );
+				m_hMouseDevice[i] = NULL;
+      }
     }
 
-    // Check if mouse or mice were removed or attached.
-    // We'll get the handle(s) next frame in the above code.
-    DWORD dwNumInsertions, dwNumRemovals;
-    if( XGetDeviceChanges( XDEVICE_TYPE_DEBUG_MOUSE, &dwNumInsertions, 
-                           &dwNumRemovals ) )
+    // Set the bits for all of the mice plugged in.
+    // We get the handles on the next pass through.
+    m_dwMousePort = dwNumInsertions;
+		for ( DWORD i=0; i< XGetPortCount(); i++ )
+		{
+			if( ( m_hMouseDevice[i] == NULL ) && ( m_dwMousePort & ( 1 << i ) ) ) 
+			{
+				// Get a handle to the device
+				m_hMouseDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_MOUSE, i, 
+																				XDEVICE_NO_SLOT, NULL );
+			}
+		}
+  }
+
+  // Poll the mouse.
+  DWORD bMouseMoved = 0;
+  for( DWORD i=0; i < XGetPortCount(); i++ )
+  {
+    if( m_hMouseDevice[i] )
+      XInputGetState( m_hMouseDevice[i], &m_MouseState[i] );
+
+    if( m_dwLastMousePacket[i] != m_MouseState[i].dwPacketNumber )
     {
-        // Loop through all ports and remove any mice that have been unplugged
-        for( DWORD i=0; i < XGetPortCount(); i++ )
-        {
-            if( ( dwNumRemovals & ( 1 << i ) ) && ( m_hMouseDevice[i] != NULL ) )
-            {
-                XInputClose( m_hMouseDevice[i] );
-                m_hMouseDevice[i] = NULL;
-            }
-        }
-
-        // Set the bits for all of the mice plugged in.
-        // We get the handles on the next pass through.
-        m_dwMousePort = dwNumInsertions;
+      bMouseMoved |= (1 << i); 
+      m_dwLastMousePacket[i] = m_MouseState[i].dwPacketNumber;
     }
-
-    // Poll the mouse.
-    DWORD bMouseMoved = 0;
-    for( DWORD i=0; i < XGetPortCount(); i++ )
-    {
-        if( m_hMouseDevice[i] )
-            XInputGetState( m_hMouseDevice[i], &m_MouseState[i] );
-
-        if( m_dwLastMousePacket[i] != m_MouseState[i].dwPacketNumber )
-        {
-            bMouseMoved |= (1 << i); 
-            m_dwLastMousePacket[i] = m_MouseState[i].dwPacketNumber;
-        }
-    }
+  }
 
 	// Check if we have an update...
 	if (bMouseMoved)

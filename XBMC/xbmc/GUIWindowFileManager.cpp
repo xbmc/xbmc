@@ -143,31 +143,51 @@ CGUIWindowFileManager::~CGUIWindowFileManager(void)
 
 void CGUIWindowFileManager::OnAction(const CAction &action)
 {
+	int item;
+	int list = GetFocusedList();
   if (action.wID == ACTION_DELETE_ITEM)
   {
-    OnDelete(GetFocusedList());
+		if (CanDelete(list))
+		{
+			bool bDeselect = SelectItem(list, item);
+			OnDelete(list);
+			if (bDeselect) m_vecItems[list][item]->Select(false);
+		}
     return;
   }
   if (action.wID == ACTION_COPY_ITEM)
   {
-		OnCopy(GetFocusedList());
+		if (CanCopy(list))
+		{
+			bool bDeselect = SelectItem(list, item);
+			OnCopy(list);
+			if (bDeselect) m_vecItems[list][item]->Select(false);
+		}
     return;
   }
   if (action.wID == ACTION_MOVE_ITEM)
   {
-		OnMove(GetFocusedList());
+		if (CanMove(list))
+		{
+			bool bDeselect = SelectItem(list, item);
+			OnMove(list);
+			if (bDeselect) m_vecItems[list][item]->Select(false);
+		}
     return;
   }
-
-	if (action.wID == ACTION_PARENT_DIR)
+	if (action.wID == ACTION_RENAME_ITEM)
 	{
-		GoParentFolder(GetFocusedList());
+		if (CanRename(list))
+		{
+			bool bDeselect = SelectItem(list, item);
+			OnRename(list);
+			if (bDeselect) m_vecItems[list][item]->Select(false);
+		}
 		return;
 	}
-
-	if (action.wID == ACTION_RENAME)
+	if (action.wID == ACTION_PARENT_DIR)
 	{
-		OnRename(GetFocusedList());
+		GoParentFolder(list);
 		return;
 	}
   if (action.wID == ACTION_PREVIOUS_MENU)
@@ -280,12 +300,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 				}
 				else if (iAction==ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
 				{
-					bool bDeselect(false);
-					if (!NumSelected(list) && m_vecItems[list][iItem]->GetLabel() != "..")
-					{
-						m_vecItems[list][iItem]->Select(true);
-						bDeselect = true;
-					}
+					bool bDeselect = SelectItem(list, iItem);
 					if (m_strDirectory[list] == "")
 					{
 						OnBookmarksPopupMenu(list, iItem);
@@ -485,7 +500,7 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 		CFileItemList itemleftlist(m_vecItems[iList]); // will clean up everything
 	}
 
-	GetDirectory(strDirectory, m_vecItems[iList]);
+	GetDirectory(iList, strDirectory, m_vecItems[iList]);
 	m_strDirectory[iList]=strDirectory;
 	// if we have a .tbn file, use itself as the thumb
 	for (int i=0; i<(int)m_vecItems[iList].size(); i++)
@@ -1036,7 +1051,14 @@ int CGUIWindowFileManager::GetSelectedItem(int iControl)
 
 void CGUIWindowFileManager::GoParentFolder(int iList)
 {
-	CFileItem *pItem;
+	CStdString strPath=m_strParentPath[iList];
+	Update(iList, strPath);
+/*	CStdString strParentPath;
+	if (CUtil::GetParentPath(m_strDirectory[iList], strParentPath))
+	{
+		Update(iList, strParentPath);
+	}*/
+/*	CFileItem *pItem;
 	if (!m_vecItems[iList].size()) return;
 	pItem=m_vecItems[iList][0];
 
@@ -1044,7 +1066,7 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
 	if (pItem->m_bIsFolder && pItem->GetLabel()=="..")
 	{
 		Update(iList, strPath);
-	}
+	}*/
 //	UpdateButtons();
 }
 
@@ -1111,7 +1133,7 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
 	}
 }
 
-void CGUIWindowFileManager::GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items)
+void CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirectory, VECFILEITEMS &items)
 {
   CStdString strParentPath;
 	bool bParentExists=CUtil::GetParentPath(strDirectory, strParentPath);
@@ -1123,22 +1145,30 @@ void CGUIWindowFileManager::GetDirectory(const CStdString &strDirectory, VECFILE
 		if ( bParentExists )
 		{
 			// yes
-			CFileItem *pItem = new CFileItem("..");
-			pItem->m_strPath=strParentPath;
-			pItem->m_bIsFolder=true;
-      pItem->m_bIsShareOrDrive=false;
-			items.push_back(pItem);
+			if (!g_stSettings.m_bHideParentDirItems)
+			{
+				CFileItem *pItem = new CFileItem("..");
+				pItem->m_strPath=strParentPath;
+				pItem->m_bIsFolder=true;
+				pItem->m_bIsShareOrDrive=false;
+				items.push_back(pItem);
+			}
+			m_strParentPath[iList] = strParentPath;
 		}
   }
   else
   {
 		// yes, this is the root of a share
 		// add parent path to the virtual directory
-	  CFileItem *pItem = new CFileItem("..");
-	  pItem->m_strPath="";
-	  pItem->m_bIsFolder=true;
-    pItem->m_bIsShareOrDrive=false;
-		items.push_back(pItem);
+		if (!g_stSettings.m_bHideParentDirItems)
+		{
+			CFileItem *pItem = new CFileItem("..");
+			pItem->m_strPath="";
+			pItem->m_bIsFolder=true;
+			pItem->m_bIsShareOrDrive=false;
+			items.push_back(pItem);
+		}
+		m_strParentPath[iList] = "";
   }
 
   m_rootDir.GetDirectory(strDirectory, items);
@@ -1318,4 +1348,19 @@ void CGUIWindowFileManager::OnBookmarksPopupMenu(int list, int item)
 		}
 	}
 	m_vecItems[list][item]->Select(false);
+}
+
+// Highlights the item in the list under the cursor
+// returns true if we should deselect the item, false otherwise
+bool CGUIWindowFileManager::SelectItem(int list, int &item)
+{
+	// get the currently selected item in the list
+	item = GetSelectedItem(list);
+	// select the item if we need to
+	if (!NumSelected(list) && m_vecItems[list][item]->GetLabel() != "..")
+	{
+		m_vecItems[list][item]->Select(true);
+		return true;
+	}
+	return false;
 }

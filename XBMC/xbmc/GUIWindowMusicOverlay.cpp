@@ -124,6 +124,10 @@ bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)
 			}
 		}
 	}
+	if (message.GetMessage() == GUI_MSG_WINDOW_INIT)
+	{	// on init, set the correct show vis setting
+		m_bShowInfo = g_stSettings.m_bMyMusicSongInfoInVis;
+	}
   return CGUIWindow::OnMessage(message);
 }
 
@@ -371,7 +375,7 @@ void CGUIWindowMusicOverlay::Render()
 		  g_graphicsContext.Correct(fXPos,fYPos);
 
 		  CPicture picture;
-		  picture.RenderImage(m_pTexture,(int)fXPos,(int)fYPos,iWidth,iHeight,m_iTextureWidth,m_iTextureHeight);
+		  picture.RenderImage(m_pTexture,fXPos,fYPos,(float)iWidth,(float)iHeight,m_iTextureWidth,m_iTextureHeight);
     }
 	}
 }

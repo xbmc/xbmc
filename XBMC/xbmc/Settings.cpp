@@ -284,7 +284,7 @@ CSettings::CSettings(void)
 
 	g_stSettings.m_bMyMusicGenresRootSortAscending=true;
 	g_stSettings.m_bMyMusicGenresSortAscending=true;
-	g_stSettings.m_bMyMusicShowTrackNumber=true;
+	g_stSettings.m_bMyMusicHideTrackNumber=false;
 
 	g_stSettings.m_bMyVideoSortAscending=true;
 	g_stSettings.m_bMyVideoRootSortAscending=true;
@@ -351,6 +351,7 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
 	strcpy(g_stSettings.m_strSambaWinsServer, "");
 	g_stSettings.m_bHideExtensions = false;
+	g_stSettings.m_bHideParentDirItems = false;
 
   g_stSettings.m_bAutoTemperature   = false;
   g_stSettings.m_iTargetTemperature = 55;
@@ -1096,7 +1097,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetInteger(pElement, "startwindow",g_stSettings.m_iMyMusicStartWindow,WINDOW_MUSIC_FILES,WINDOW_MUSIC_FILES,WINDOW_MUSIC_TOP100);//501; view songs
 		GetBoolean(pElement, "songinfoinvis",g_stSettings.m_bMyMusicSongInfoInVis);
     GetBoolean(pElement, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
-		GetBoolean(pElement, "showtracknumber", g_stSettings.m_bMyMusicShowTrackNumber);
+		GetBoolean(pElement, "hidetracknumber", g_stSettings.m_bMyMusicHideTrackNumber);
 	}
 	// myvideos settings
 	pElement = pRootElement->FirstChildElement("myvideos");
@@ -1214,6 +1215,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetString(pElement, "areacode3", g_stSettings.m_szWeatherArea[2], "CAXX0343");			//WEATHER SETTINGS
 		GetInteger(pElement, "osdtimeout", g_stSettings.m_iOSDTimeout,5,0,INT_MAX);
 		GetBoolean(pElement, "hideextensions", g_stSettings.m_bHideExtensions);
+		GetBoolean(pElement, "hideparentdiritem", g_stSettings.m_bHideParentDirItems);
 
 		GetString(pElement, "ipassignment", g_stSettings.m_strIPAssignment, "dash");
 		GetString(pElement, "ipadres", g_stSettings.m_strLocalIPAdres, "192.168.0.1");
@@ -1237,8 +1239,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 	pElement = pRootElement->FirstChildElement("slideshow");
 	if (pElement)
 	{
-		GetInteger(pElement, "transistionframes", g_stSettings.m_iSlideShowTransistionFrames,25,1,INT_MAX);
+		GetInteger(pElement, "transistiontime", g_stSettings.m_iSlideShowTransistionTime,2000,500,INT_MAX);
 		GetInteger(pElement, "staytime", g_stSettings.m_iSlideShowStayTime,3000,500,INT_MAX);
+		GetFloat(pElement, "moveamount", g_stSettings.m_fSlideShowMoveAmount,0.05f,0,0.5f);
+		GetFloat(pElement, "zoomamount", g_stSettings.m_fSlideShowZoomAmount,0.05f,0,0.5f);
 	}
 	// screen settings
 	pElement = pRootElement->FirstChildElement("screen");
@@ -1504,7 +1508,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetInteger(pNode, "startwindow",g_stSettings.m_iMyMusicStartWindow);
 	SetBoolean(pNode, "songinfoinvis",g_stSettings.m_bMyMusicSongInfoInVis);
   SetBoolean(pNode, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
-	SetBoolean(pNode, "showtracknumber", g_stSettings.m_bMyMusicShowTrackNumber);
+	SetBoolean(pNode, "hidetracknumber", g_stSettings.m_bMyMusicHideTrackNumber);
 
 	// myvideos settings
 	TiXmlElement videosNode("myvideos");
@@ -1621,6 +1625,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetString(pNode, "areacode3", g_stSettings.m_szWeatherArea[2]);			//WEATHER SETTINGS
 	SetInteger(pNode, "osdtimeout", g_stSettings.m_iOSDTimeout);
 	SetBoolean(pNode, "hideextensions", g_stSettings.m_bHideExtensions);
+	SetBoolean(pNode, "hideparentdiritem", g_stSettings.m_bHideParentDirItems);
 
 	SetString(pNode, "ipassignment", g_stSettings.m_strIPAssignment);
 	SetString(pNode, "ipadres", g_stSettings.m_strLocalIPAdres);
@@ -1643,8 +1648,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	TiXmlElement slideshowNode("slideshow");
 	pNode = pRoot->InsertEndChild(slideshowNode);
 	if (!pNode) return false;
-	SetInteger(pNode, "transistionframes", g_stSettings.m_iSlideShowTransistionFrames);
+	SetInteger(pNode, "transistiontime", g_stSettings.m_iSlideShowTransistionTime);
 	SetInteger(pNode, "staytime", g_stSettings.m_iSlideShowStayTime);
+	SetFloat(pNode, "moveamount", g_stSettings.m_fSlideShowMoveAmount);
+	SetFloat(pNode, "zoomamount", g_stSettings.m_fSlideShowZoomAmount);
 
 	// screen settings
 	TiXmlElement screenNode("screen");

@@ -39,7 +39,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilibd.lib d3dx8d.lib d3d8d.lib xgraphicsd.lib dsoundd.lib xboxkrnl.lib xonlined.lib"
+				AdditionalDependencies="xapilibd.lib d3dx8d.lib d3d8d.lib xgraphicsd.lib dsoundd.lib xboxkrnl.lib xonlined.lib xkbdd.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libc,libcmt"
@@ -94,7 +94,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3d8i.lib d3dx8.lib xgraphics.lib dsound.lib dmusici.lib xactengi.lib xsndtrk.lib xvoice.lib xonlines.lib xboxkrnl.lib xbdm.lib xperf.lib"
+				AdditionalDependencies="xapilib.lib d3d8i.lib d3dx8.lib xgraphics.lib dsound.lib dmusici.lib xactengi.lib xsndtrk.lib xvoice.lib xonlines.lib xboxkrnl.lib xbdm.lib xperf.lib xkbd.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
@@ -149,7 +149,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3d8i.lib d3dx8.lib xgraphics.lib dsound.lib dmusici.lib xactengi.lib xsndtrk.lib xvoice.lib xonlines.lib xboxkrnl.lib xbdm.lib xperf.lib"
+				AdditionalDependencies="xapilib.lib d3d8i.lib d3dx8.lib xgraphics.lib dsound.lib dmusici.lib xactengi.lib xsndtrk.lib xvoice.lib xonlines.lib xboxkrnl.lib xbdm.lib xperf.lib xkbd.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="LIBCMTd;libc;libcpmtd"
@@ -217,7 +217,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3dx8.lib d3d8.lib xgraphics.lib dsound.lib xboxkrnl.lib xonline.lib "
+				AdditionalDependencies="xapilib.lib d3dx8.lib d3d8.lib xgraphics.lib dsound.lib xboxkrnl.lib xonline.lib xkbd.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc"
@@ -277,7 +277,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3d8ltcg.lib d3dx8.lib xgraphicsltcg.lib dsound.lib dmusicltcg.lib xactengltcg.lib xsndtrk.lib xvoice.lib xonlines.lib xboxkrnl.lib"
+				AdditionalDependencies="xapilib.lib d3d8ltcg.lib d3dx8.lib xgraphicsltcg.lib dsound.lib dmusicltcg.lib xactengltcg.lib xsndtrk.lib xvoice.lib xonlines.lib xboxkrnl.lib xkbd.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
@@ -334,7 +334,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3dx8.lib d3d8.lib xgraphics.lib dsound.lib xboxkrnl.lib xonline.lib "
+				AdditionalDependencies="xapilib.lib d3dx8.lib d3d8.lib xgraphics.lib dsound.lib xboxkrnl.lib xonline.lib  xkbd.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc"
@@ -391,7 +391,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilibd.lib d3dx8d.lib d3d8d.lib xgraphicsd.lib dsoundd.lib xboxkrnl.lib xonlined.lib "
+				AdditionalDependencies="xapilibd.lib d3dx8d.lib d3d8d.lib xgraphicsd.lib dsoundd.lib xboxkrnl.lib xonlined.lib xkbdd.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libc"
@@ -809,9 +809,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowHome.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\GUIWindowMyFiles.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\GUIWindowOSD.cpp">
 				</File>
 				<File
@@ -1056,9 +1053,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowMusicTop100.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowMyFiles.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowOSD.h">

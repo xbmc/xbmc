@@ -79,6 +79,10 @@ void CGUIListControl::Render()
 			m_imgButton.Render();
       
 			// render the icon
+			if (/*!pItem->HasIcon() &&*/ pItem->HasThumbnail())
+			{	// copy the thumb -> icon
+				pItem->SetIconImage(pItem->GetThumbnailImage());
+			}
 			if (pItem->HasIcon() )
       {
 				// show icon
@@ -160,6 +164,28 @@ void CGUIListControl::Render()
 			iPosY += (DWORD)(m_iItemHeight+m_iSpaceBetweenItems);
     }
 	}
+
+  //free memory not used on screen at the moment
+  if (m_iOffset < 30000)
+  {
+    for (int i=0; i < m_iOffset;++i)
+    {
+      CGUIListItem *pItem=m_vecItems[i];
+      if (pItem)
+      {
+        pItem->FreeMemory();
+      }
+    }
+  }
+  for (int i=m_iOffset+m_iItemsPerPage; i < (int)m_vecItems.size(); ++i) 
+  {
+    CGUIListItem *pItem=m_vecItems[i];
+    if (pItem)
+    {
+      pItem->FreeMemory();
+    }
+  }
+
 	if (m_bUpDownVisible)
 	{
 		m_upDown.SetValue(GetPage());
@@ -647,7 +673,10 @@ int CGUIListControl::GetPage()
 			m_iOffset = 0;
 			return 1;
 		}
-		return m_vecItems.size()/m_iItemsPerPage+1;
+		if (m_vecItems.size() % m_iItemsPerPage)
+			return m_vecItems.size()/m_iItemsPerPage+1;
+		else
+			return m_vecItems.size()/m_iItemsPerPage;
 	}
 	else
 		return m_iOffset/m_iItemsPerPage+1;
