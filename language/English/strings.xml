@@ -572,7 +572,7 @@
   </string> 
   <string>
     <id>214</id>
-    <value>Screen Calib.</value>
+    <value>Screen Calibration</value>
   </string> 
   <string>
     <id>215</id>
@@ -860,7 +860,7 @@
   </string>
   <string>
     <id>287</id>
-    <value>Subtitles</value>
+    <value>SRT Subtitles</value>
   </string>
   <string>
     <id>288</id>
@@ -1052,7 +1052,7 @@
   </string>
   <string>
     <id>336</id>
-    <value>Adj. Framerate</value>
+    <value>Adjust Framerate</value>
   </string>
   <string>
     <id>337</id>
@@ -1632,7 +1632,7 @@
   </string>
   <string>
     <id>492</id>
-    <value>Enlarge subtitles</value>
+    <value>Enlarge VobSubs</value>
   </string>
 
 <string><id>10000</id><value>Home</value></string>
