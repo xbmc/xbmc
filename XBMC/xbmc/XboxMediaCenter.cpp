@@ -17,6 +17,9 @@
 //			- skinnable key mapping for controls
 //			- center text in dialog boxes
 //
+// My Files:
+//		  - make sure filenames < 42 chars
+//
 // My Pictures:
 //      - use analog thumbsticks voor zoom en move
 //      - FF/RW l/r trigger   : speed/slow down slideshow time
