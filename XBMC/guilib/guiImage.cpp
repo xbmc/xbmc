@@ -336,7 +336,7 @@ void CGUIImage::Update()
 
   if (m_bKeepAspectRatio && m_iTextureWidth && m_iTextureHeight)
   {
-    RESOLUTION iResolution=g_stSettings.m_GUIResolution;
+    RESOLUTION iResolution = g_graphicsContext.GetVideoResolution();
     float fSourceFrameRatio = ((float)m_iTextureWidth) / ((float)m_iTextureHeight);
     float fOutputFrameRatio = fSourceFrameRatio / g_graphicsContext.GetPixelRatio(iResolution); 
 

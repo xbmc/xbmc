@@ -251,6 +251,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 {
 	if (!IsValidResolution(res))
 	{	// Choose a failsafe resolution that we can actually display
+		CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
 		if (g_videoConfig.HasPAL())
 			res = PAL_4x3;
 		else
