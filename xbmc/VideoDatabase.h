@@ -68,5 +68,5 @@ protected:
   void    Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   void    RemoveInvalidChars(CStdString& strTxt);
 	bool		CreateTables();
-	CIMDBMovie GetDetailsFromDataset(auto_ptr<Dataset> pDS);
+	CIMDBMovie GetDetailsFromDataset(auto_ptr<Dataset> &pDS);
 };

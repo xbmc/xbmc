@@ -439,6 +439,25 @@ void CGUIWindowPictures::UpdateButtons()
 
 	
 	SET_CONTROL_LABEL(CONTROL_LABELFILES,wszText);
+
+	// check we can slideshow or recursive slideshow
+	int nFolders = CUtil::GetFolderCount(m_vecItems);
+	if (nFolders == m_vecItems.size())
+	{
+		CONTROL_DISABLE(CONTROL_BTNSLIDESHOW);
+	}
+	else
+	{
+		CONTROL_ENABLE(CONTROL_BTNSLIDESHOW);
+	}
+	if (m_vecItems.size() == 0)
+	{
+		CONTROL_DISABLE(CONTROL_BTNSLIDESHOW_RECURSIVE);
+	}
+	else
+	{
+		CONTROL_ENABLE(CONTROL_BTNSLIDESHOW_RECURSIVE);
+	}
 }
 
 void CGUIWindowPictures::Update(const CStdString &strDirectory)
@@ -752,7 +771,8 @@ void  CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
   pSlideShow->StartSlideShow();
 	if (!strPicture.IsEmpty())
 		pSlideShow->Select(strPicture);
-	m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+	if (pSlideShow->NumSlides())
+		m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
 void CGUIWindowPictures::OnSlideShowRecursive()
@@ -787,7 +807,8 @@ void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
 	pSlideShow->StartSlideShow();
 	if (!strPicture.IsEmpty())
 		pSlideShow->Select(strPicture);
-	m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+	if (pSlideShow->NumSlides())
+		m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
 bool CGUIWindowPictures::OnCreateThumbs()

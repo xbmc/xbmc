@@ -82,7 +82,7 @@ void CGUIListControl::Render()
 			if (pItem->HasThumbnail())
 			{
 				CStdString strThumb = pItem->GetThumbnailImage();
-				if (strThumb.Right(4) == ".tbn" || strThumb.Right(10) == "folder.jpg")
+				if (strThumb.Right(4) == ".tbn" || strThumb.Right(10) == "folder.jpg" || strThumb.Find("\\imdb\\imdb"))
 				{	// copy the thumb -> icon
 					pItem->SetIconImage(pItem->GetThumbnailImage());
 				}

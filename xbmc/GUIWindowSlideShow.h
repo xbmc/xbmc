@@ -145,7 +145,7 @@ public:
   virtual void	OnAction(const CAction &action);
   virtual void	Render();
 	void					OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, bool bFullSize);
-
+	int						NumSlides();
 private:
   void				RenderPause();
 	void				RenderErrorMessage();
