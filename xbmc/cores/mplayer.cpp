@@ -1217,20 +1217,45 @@ void CMPlayer::SubtitleOffset(bool bPlus)
 
 void CMPlayer::Seek(bool bPlus, bool bLargeStep)
 {
-	if (bLargeStep)
-	{
-		if (bPlus)
-			mplayer_put_key(KEY_PAGE_UP);
-		else
-			mplayer_put_key(KEY_PAGE_DOWN);
-	}
-	else
-	{
-		if (bPlus)
-			mplayer_put_key(KEY_UP);
-		else
-			mplayer_put_key(KEY_DOWN);
-	}
+  //Only use relative seek if we actually know the total time of the movie
+  if(GetTotalTime()==0){
+    CLog::Log(LOGDEBUG, "MPlayer doesn't know totaltime, revert to absolut seeking");
+	  if (bLargeStep)
+	  {
+		  if (bPlus)
+  			mplayer_put_key(KEY_PAGE_UP);
+      else
+  			mplayer_put_key(KEY_PAGE_DOWN);
+        
+	  }
+	  else
+	  {
+		  if (bPlus)
+  			mplayer_put_key(KEY_UP);
+		  else
+        mplayer_put_key(KEY_DOWN);
+	  }
+  }
+  else {
+    int iPercent = GetPercentage();
+	  if (bLargeStep)
+	  {
+		  if (bPlus)
+        iPercent+=10;
+		  else
+        iPercent-=10;
+	  }
+	  else
+	  {
+		  if (bPlus)
+        iPercent+=2;
+		  else
+        iPercent-=2;
+	  }
+    if(iPercent<0) iPercent=0;
+    if(iPercent>100) iPercent=100;
+    SeekPercentage(iPercent);
+  }
 }
 
 void CMPlayer::ToggleFrameDrop()
@@ -1423,6 +1448,9 @@ bool CMPlayer::Record(bool bOnOff)
 
 void CMPlayer::SeekPercentage(int iPercent)
 {
+  if(iPercent>100) iPercent = 100;
+  if(iPercent<0) iPercent = 0;
+
 	mplayer_setPercentage( iPercent);
 	if (HasVideo())
 	{
