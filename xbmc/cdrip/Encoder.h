@@ -58,3 +58,4 @@ protected:
 };
 
 #endif // _ENCODER_H
+
