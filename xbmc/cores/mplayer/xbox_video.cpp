@@ -53,6 +53,7 @@ static int									m_iDeviceHeight;
 bool												m_bFullScreen=false;
 bool												m_bPal60Allowed=true;
 static int									m_iResolution=0;
+static float                m_fImageAR;
 
 typedef struct directx_fourcc_caps
 {
@@ -270,7 +271,7 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 }
 
 //********************************************************************************************************
-static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height)
+static unsigned int Directx_ManageDisplay()
 {
 	float fOffsetX1 = (float)g_stSettings.m_rectMovieCalibration[m_iResolution].left;
 	float fOffsetY1 = (float)g_stSettings.m_rectMovieCalibration[m_iResolution].top;
@@ -314,11 +315,18 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 		{
 				// zoom / panscan the movie so that it fills the entire screen
 				// and keeps the Aspect ratio
-				float fAR = ( (float)image_width ) / (  (float)image_height );
-				if (g_graphicsContext.IsWidescreen())
-				{
-					fAR = ( (float)image_width ) / (  ((float)image_height)*1.33333f );
-				}
+
+				// calculate AR compensation for non square pixels (thx 2 poing)
+				float fARScreen=((float)m_iDeviceWidth)/((float)m_iDeviceHeight); // AR of the current screen resolution 
+				float fARTV    = 4.0f/3.0f; // aspect ratio of the TV for 4:3
+				if (g_graphicsContext.IsWidescreen()) fARTV=16.0f/9.0f; // for widescreen AR of TV = 16:9
+
+				float fARCompensation =  (fARTV / fARScreen );
+
+				// now calculate the AR we need
+				float fAR = ( (float)image_width ) / ( ( (float)image_height) * fARCompensation ); 
+
+			
 				float fNewWidth;
 				float fNewHeight;
 				float fHorzBorder=0;
@@ -364,36 +372,50 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 				return 0;
 		}
 
-
+		// NORMAL
 		// scale up image as much as possible
 		// and keep the aspect ratio (introduces with black bars)
-		float fAR = ( (float)image_width ) / (  (float)image_height );
-		if (g_graphicsContext.IsWidescreen())
-		{
-			fAR = ( (float)image_width ) / (  ((float)image_height)*1.33333f );
-		}
+		
+		// calculate AR compensation for non square pixels (thx 2 poing)
+		float fARScreen=((float)m_iDeviceWidth)/((float)m_iDeviceHeight); // AR of the current screen resolution 
+		float fARTV    = 4.0f/3.0f; // aspect ratio of the TV for 4:3
+		if (g_graphicsContext.IsWidescreen()) fARTV=16.0f/9.0f; // for widescreen AR of TV = 16:9
+		
+		float fARCompensation =  (fARTV / fARScreen );
+		
+		// now calculate the AR we need
+		float fAR = ( (float)image_width ) / ( ( (float)image_height) * fARCompensation ); 
+
+		// maximize the movie width
 		float fNewWidth  = (float)( iScreenWidth);
 		float fNewHeight = fNewWidth/fAR;
 		if ( image_height > image_width)
 		{
+			// if movie height is bigger then movie width
+			// then maximize the movie height
 			fNewHeight=(float)iScreenHeight - (float)iSubTitleHeight;
 			fNewWidth = fNewHeight*fAR;
 		}
+
+		// this shouldnt happen, but just make sure that everything still fits onscreen
 		if (fNewWidth > iScreenWidth || fNewHeight > iScreenHeight)
 		{
 			fNewWidth=(float)image_width;
 			fNewHeight=(float)image_height;
 		}
 
+		// source rect
 		rs.left		= 0;
 		rs.top    = 0;
 		rs.right	= image_width;
 		rs.bottom = image_height + iSubTitleHeight;
 
+
+		// destination rect 
 		float iPosY = iScreenHeight - fNewHeight;
 		float iPosX = iScreenWidth  - fNewWidth	;
-		iPosY /= 2;
-		iPosX /= 2;
+		iPosY /= 2; // center the movie
+		iPosX /= 2; // center the movie
 		rd.left   = (int)iPosX + (int)fOffsetX1;
 		rd.right  = (int)rd.left + (int)fNewWidth;
 		rd.top    = (int)iPosY  + (int)fOffsetY1;
@@ -410,22 +432,6 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 
 		return 0;
 	}
-	/*else
-	{
-		// preview window.
-		rs.left		= 0;
-		rs.top    = 0;
-		rs.right	= image_width;
-		rs.bottom = image_height;
-		
-		const RECT& rv = g_graphicsContext.GetViewWindow();
-		rd.left   = rv.left;
-		rd.right  = rv.right;
-		rd.top    = rv.top;
-		rd.bottom = rv.bottom;
-
-	}*/
-
 	return 0;
 }
 
@@ -564,7 +570,7 @@ static void video_flip_page(void)
 	m_bFlip=false;
 	m_pOverlay[m_dwVisibleOverlay]->UnlockRect(0);			
 
-	Directx_ManageDisplay(d_image_width,d_image_height);
+	Directx_ManageDisplay();
 	if ( g_graphicsContext.IsFullScreenVideo() )
 	{
 		g_graphicsContext.Lock();
@@ -645,7 +651,7 @@ void xbox_video_update()
 		}
 		g_graphicsContext.Unlock();
 	}
-	Directx_ManageDisplay(d_image_width,d_image_height);
+	Directx_ManageDisplay();
 	if ( g_graphicsContext.IsFullScreenVideo() )
 	{
 		g_graphicsContext.Lock();
@@ -741,6 +747,7 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 	float fps;
 	unsigned int iWidth,iHeight;
 	long tooearly, toolate;
+	m_fImageAR = (float)d_width / (float) d_height;
 	mplayer_GetVideoInfo(strFourCC,strVideoCodec, &fps, &iWidth,&iHeight, &tooearly, &toolate);
 	m_bPal60Allowed=true;
 	if (fps == 25.0f)
@@ -771,7 +778,7 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 
 	fs=1;//fullscreen
 
-	Directx_ManageDisplay(d_image_width,d_image_height);
+	Directx_ManageDisplay();
   Directx_CreateOverlay(image_format);
 	// get stride
 	D3DLOCKED_RECT rectLocked;
