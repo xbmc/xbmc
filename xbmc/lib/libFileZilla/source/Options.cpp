@@ -29,6 +29,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+#pragma warning (disable:4244)
+#pragma warning (disable:4800)
 std::list<COptions *> COptions::m_InstanceList;
 CCriticalSectionWrapper COptions::m_Sync;
 COptions::t_OptionsCache COptions::m_sOptionsCache[OPTIONS_NUM];

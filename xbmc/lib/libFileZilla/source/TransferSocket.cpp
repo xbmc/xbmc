@@ -34,6 +34,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+#pragma warning (disable:4244)
+#pragma warning (disable:4800)
 /////////////////////////////////////////////////////////////////////////////
 // CTransferSocket
 CTransferSocket::CTransferSocket(CControlSocket *pOwner)

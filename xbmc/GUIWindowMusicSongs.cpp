@@ -26,7 +26,7 @@
 #define CONTROL_LIST							50
 #define CONTROL_THUMBS						51
 
-struct SSortMusic
+struct SSortMusicSongs
 {
 	bool operator()(CFileItem* pStart, CFileItem* pEnd)
 	{
@@ -738,7 +738,7 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 
 void CGUIWindowMusicSongs::DoSort(VECFILEITEMS& items)
 {
-	SSortMusic sortmethod;
+	SSortMusicSongs sortmethod;
 
 	sortmethod.m_strDirectory=m_strDirectory;
 
