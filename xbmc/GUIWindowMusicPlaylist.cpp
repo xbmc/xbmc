@@ -273,9 +273,24 @@ void CGUIWindowMusicPlayList::ShufflePlayList()
 
 void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
 {
-	const CFileItem* pItem=m_vecItems[iItem];
-	CStdString strFileName=pItem->m_strPath;
-	g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(strFileName);
+	//	The current playing song can't be removed
+	if (g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC && g_application.IsPlayingAudio()
+			&& g_playlistPlayer.GetCurrentSong()==iItem)
+			return;
+
+	g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(iItem);
+
+	//	Correct the current playing song in playlistplayer
+	if (g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC && g_application.IsPlayingAudio())
+	{
+		int iCurrentSong=g_playlistPlayer.GetCurrentSong();
+		if (iItem<=iCurrentSong)
+		{
+			iCurrentSong--;
+			g_playlistPlayer.SetCurrentSong(iCurrentSong);
+		}
+	}
+
 	int iCount=0;
 	ivecItems it=m_vecItems.begin();
 	while (it!=m_vecItems.end())
@@ -288,10 +303,19 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
 		++it;
 		iCount++;
 	}
+
 	UpdateListControl();
 	UpdateButtons();
-	CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-	CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+
+	if (m_vecItems.size()<=0)
+	{
+		SET_CONTROL_FOCUS(GetID(), CONTROL_BTNVIEWASICONS, 0);
+	}
+	else
+	{
+		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem-1)
+		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem-1)
+	}
 }
 
 void CGUIWindowMusicPlayList::UpdateButtons()
