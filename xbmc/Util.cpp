@@ -1154,7 +1154,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
         {
           CStdString strFile;
           strFile.Format("T:\\%s", wfd.cFileName);
-          if (strFile.Find("subtitle") )
+          if (strFile.Find("subtitle")>=0 )
           {
             ::DeleteFile(strFile.c_str());
           }
