@@ -107,42 +107,55 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		mplayer_load_dll(*m_pDLL);
 
 		int argc=8;
-		bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
-		if (g_stSettings.m_iChannels==6 && bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru )
+		char szChannels[12];
+		sprintf(szChannels,"%i", g_stSettings.m_iChannels);
+		char *argv[] = {"xbmc.xbe", "-channels",szChannels,"-autoq", "6", "-vf", "pp", "1.avi",NULL};
+		mplayer_init(argc,argv);
+		
+		mplayer_setcache_size(1024);
+		if (CUtil::IsAudio(strFile) )
 		{
-			char szChannels[12];
-			argc=8;
-			sprintf(szChannels,"%i", g_stSettings.m_iChannels);
-			char *argv[] = {"xbmc.xbe", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
-			mplayer_init(argc,argv);
+			mplayer_setcache_size(0);
+		}
+		
+		int iRet=mplayer_open_file(strFile.c_str());
+		if (iRet < 0)
+		{
+			OutputDebugString("cmplayer::openfile() openfile failed\n");
+			closefile();
+			return false;
 		}
 
-		else
+		bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
+		if (CUtil::IsAudio(strFile)) bSupportsSPDIFOut=false;
+		if (g_stSettings.m_iChannels==6 && bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru )
 		{
-			char szChannels[12];
-			sprintf(szChannels,"%i", g_stSettings.m_iChannels);
-			char *argv[] = {"xbmc.xbe", "-channels",szChannels,"-autoq", "6", "-vf", "pp", "1.avi",NULL};
-			mplayer_init(argc,argv);
+			CStdString strAudioInfo;
+			GetAudioInfo( strAudioInfo);
+			if ( strAudioInfo.Find("AC3") >=0)
+			{
+				//reopen. now with AC3
+				mplayer_close_file();
+				char *argv[] = {"xbmc.xbe", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+				mplayer_init(argc,argv);
+				mplayer_setcache_size(1024);
+				if (CUtil::IsAudio(strFile) )
+				{
+					mplayer_setcache_size(0);
+				}
+				int iRet=mplayer_open_file(strFile.c_str());
+				if (iRet < 0)
+				{
+					OutputDebugString("cmplayer::openfile() openfile failed\n");
+					closefile();
+					return false;
+				}
+			}
 		}
 		Create();
 	}
-
-	OutputDebugString("cmplayer::openfile() setcachesize\n");
-	mplayer_setcache_size(1024);
-	if (CUtil::IsAudio(strFile) )
-	{
-		mplayer_setcache_size(0);
-	}
-
-	OutputDebugString("cmplayer::openfile() openfile\n");
 	m_dwTime=timeGetTime();
-	int iRet=mplayer_open_file(strFile.c_str());
-	if (iRet < 0)
-	{
-		OutputDebugString("cmplayer::openfile() openfile failed\n");
-		closefile();
-		return false;
-	}
+
 	
 	m_dwTime=timeGetTime();
 	m_startEvent.Set();
