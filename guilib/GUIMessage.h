@@ -35,6 +35,19 @@
 #include <string>
 using namespace std;
 
+#define CONTROL_SELECT(dwSenderId, dwControlID) \
+{ \
+	CGUIMessage msg(GUI_MSG_SELECTED, dwSenderId, dwControlID); \
+	g_graphicsContext.SendMessage(msg); \
+}
+
+#define CONTROL_DESELECT(dwSenderId, dwControlID) \
+{ \
+	CGUIMessage msg(GUI_MSG_DESELECTED, dwSenderId, dwControlID); \
+	g_graphicsContext.SendMessage(msg); \
+}
+
+
 #define CONTROL_ENABLE(dwSenderId, dwControlID) \
 { \
 	CGUIMessage msg(GUI_MSG_ENABLED, dwSenderId, dwControlID); \

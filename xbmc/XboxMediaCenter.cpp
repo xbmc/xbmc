@@ -45,7 +45,6 @@
 //			- ff/rwnd
 //			- cancel search 
 //			- cancel scan.
-//			- speedup artists/albums?
 //
 // my videos:
 //		  - control panel like in xbmp
@@ -66,9 +65,7 @@
 //			- Slideshow
 //					- specify mypics transition time/slideshow time
 //		  - screen:
-//					- UI screen calibration offsets
 //					- movies screen calibration 
-//					- soften on/off
 //					- stretch / zoom
 //
 

@@ -351,6 +351,12 @@
 				RelativePath=".\xbmc\GUIWindowSettingsGeneral.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsScreen.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsUICalibration.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSystemInfo.cpp">
 			</File>
 			<File
@@ -495,6 +501,12 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsGeneral.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsScreen.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsUICalibration.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSystemInfo.h">

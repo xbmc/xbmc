@@ -37,11 +37,11 @@ using namespace PLAYLIST;
 CApplication::CApplication(void)
 :m_ctrDpad(220,220)
 ,m_ctrIR(220,220)
-,m_guiSettingsScreen(0)
 {
 		m_bOverlayEnabled=true;
 		m_pPhytonParser=NULL;
 		m_pPlayer=NULL;
+		XSetProcessQuantumLength(5);
 }	
 
 CApplication::~CApplication(void)
@@ -189,26 +189,27 @@ HRESULT CApplication::Initialize()
     
   }
 	LoadSkin(g_stSettings.szDefaultSkin);
-  m_gWindowManager.Add(&m_guiHome);							// window id = 0
-  m_gWindowManager.Add(&m_guiPrograms);					// window id = 1
-	m_gWindowManager.Add(&m_guiPictures);					// window id = 2
-  m_gWindowManager.Add(&m_guiMyFiles);					// window id = 3
-  m_gWindowManager.Add(&m_guiMyMusic);					// window id = 5
-	m_gWindowManager.Add(&m_guiMyVideo);					// window id = 6
-	m_gWindowManager.Add(&m_guiSettings);					// window id = 4
-	m_gWindowManager.Add(&m_guiSystemInfo);				// window id = 7
-	m_gWindowManager.Add(&m_guiSettingsGeneral);	// window id = 8
-	m_gWindowManager.Add(&m_guiSettingsScreen);		// window id = 9
+  m_gWindowManager.Add(&m_guiHome);											// window id = 0
+  m_gWindowManager.Add(&m_guiPrograms);									// window id = 1
+	m_gWindowManager.Add(&m_guiPictures);									// window id = 2
+  m_gWindowManager.Add(&m_guiMyFiles);									// window id = 3
+  m_gWindowManager.Add(&m_guiMyMusic);									// window id = 5
+	m_gWindowManager.Add(&m_guiMyVideo);									// window id = 6
+	m_gWindowManager.Add(&m_guiSettings);									// window id = 4
+	m_gWindowManager.Add(&m_guiSystemInfo);								// window id = 7
+	m_gWindowManager.Add(&m_guiSettingsGeneral);					// window id = 8
+	m_gWindowManager.Add(&m_guiSettingsScreen);						// window id = 9
+	m_gWindowManager.Add(&m_guiSettingsUICalibration);		// window id = 10
 
-  m_gWindowManager.Add(&m_guiDialogYesNo);			// window id = 100
-  m_gWindowManager.Add(&m_guiDialogProgress);		// window id = 101
-  m_gWindowManager.Add(&m_keyboard);						// window id = 1000
-	m_gWindowManager.Add(&m_guiDialogSelect);			// window id = 2000
-	m_gWindowManager.Add(&m_guiMusicInfo);				// window id = 2001
-	m_gWindowManager.Add(&m_guiDialogOK);					// window id = 2002
-	m_gWindowManager.Add(&m_guiVideoInfo);				// window id = 2003
+  m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
+  m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
+  m_gWindowManager.Add(&m_keyboard);										// window id = 1000
+	m_gWindowManager.Add(&m_guiDialogSelect);							// window id = 2000
+	m_gWindowManager.Add(&m_guiMusicInfo);								// window id = 2001
+	m_gWindowManager.Add(&m_guiDialogOK);									// window id = 2002
+	m_gWindowManager.Add(&m_guiVideoInfo);								// window id = 2003
 	
-  g_graphicsContext.Set(m_pd3dDevice,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight, (m_d3dpp.Flags&D3DPRESENTFLAG_WIDESCREEN) !=0 );
+  g_graphicsContext.Set(m_pd3dDevice,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight, g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY, (m_d3dpp.Flags&D3DPRESENTFLAG_WIDESCREEN) !=0 );
   m_keyboard.Initialize();
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
 	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);
@@ -252,24 +253,41 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogOK.Load( strSkinPath+"\\dialogOK.xml" );  
 	m_guiVideoInfo.Load( strSkinPath+"\\DialogVideoInfo.xml" );  
 	m_guiMusicOverlay.Load( strSkinPath+"\\musicOverlay.xml" );  
-	m_guiSettingsScreen.Load( strSkinPath+"\\settingsScreen.xml" );  
+	m_guiSettingsScreen.Load( strSkinPath+"\\settingsScreen.xml" );
+  m_guiSettingsUICalibration.Load( strSkinPath+"\\settingsUICalibration.xml" );
 }
 
 
 void CApplication::Render()
 {
-  // Clear the backbuffer to a blue color
-  m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0xff202020, 1.0f, 0L );
-  
-	
-	m_gWindowManager.Render();
+	// process any phyton scripts...
+	ProcessScripts();
 
-	if (m_pPlayer && m_bOverlayEnabled)
+	// dont show GUI when playing full screen video
+	if ( IsPlayingVideo() )
 	{
-		if (m_pPlayer->IsPlaying() )
+		if ( g_graphicsContext.IsFullScreenVideo() ) 
 		{
-			m_guiMusicOverlay.Render();
+			// set soften on/off
+			m_pd3dDevice->SetSoftDisplayFilter(g_stSettings.m_bSoften);
+			m_pd3dDevice->SetFlickerFilter(g_stSettings.m_bSoften ? 5 : 0);
+			Sleep(50);
+			return;
 		}
+	}
+
+	// draw GUI (always enable soften filter when displaying the UI)
+  m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0xff202020, 1.0f, 0L );
+	m_pd3dDevice->SetSoftDisplayFilter(false);
+	m_pd3dDevice->SetFlickerFilter(5);
+
+  m_gWindowManager.Render();
+
+	// check if we're playing a file
+	if ( IsPlayingAudio() && m_bOverlayEnabled )
+	{
+		// yes, then render the music overlay window
+		m_guiMusicOverlay.Render();
 	}
 
   {
@@ -290,8 +308,6 @@ void CApplication::Render()
   // Present the backbuffer contents to the display
   m_pd3dDevice->BlockUntilVerticalBlank();      
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-	ProcessScripts();
-	 
 }
 
 void CApplication::FrameMove()
@@ -309,77 +325,78 @@ void CApplication::FrameMove()
 
   if ( wDir & DC_LEFTTRIGGER)
   {
-    CKey key(true,KEY_BUTTON_LEFT_TRIGGER);
+    CKey key(true,KEY_BUTTON_LEFT_TRIGGER,pGamepad->fX1,pGamepad->fY1);
     m_gWindowManager.OnKey(key);   
   }
   if ( wDir & DC_RIGHTTRIGGER)
   {
-    CKey key(true,KEY_BUTTON_RIGHT_TRIGGER);
+    CKey key(true,KEY_BUTTON_RIGHT_TRIGGER,pGamepad->fX1,pGamepad->fY1);
     m_gWindowManager.OnKey(key);   
   }
   if ( wDir & DC_LEFT )
   {
-    CKey key(true,KEY_BUTTON_DPAD_LEFT);
+    CKey key(true,KEY_BUTTON_DPAD_LEFT,pGamepad->fX1,pGamepad->fY1);
     m_gWindowManager.OnKey(key);   
   }
   if ( wDir & DC_RIGHT)
   {
-    CKey key(true,KEY_BUTTON_DPAD_RIGHT);
+    CKey key(true,KEY_BUTTON_DPAD_RIGHT,pGamepad->fX1,pGamepad->fY1);
     m_gWindowManager.OnKey(key);   
   }
   if ( wDir & DC_UP )
   {
-    CKey key(true,KEY_BUTTON_DPAD_UP);
+    CKey key(true,KEY_BUTTON_DPAD_UP,pGamepad->fX1,pGamepad->fY1);
     m_gWindowManager.OnKey(key);   
   }
   if ( wDir & DC_DOWN )
   {
-    CKey key(true,KEY_BUTTON_DPAD_DOWN);
+    CKey key(true,KEY_BUTTON_DPAD_DOWN,pGamepad->fX1,pGamepad->fY1);
     m_gWindowManager.OnKey(key);   
   }
 
   
 	if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_BACK )
   {
-    CKey key(true,KEY_BUTTON_BACK);
+    CKey key(true,KEY_BUTTON_BACK,pGamepad->fX1,pGamepad->fY1);
     m_gWindowManager.OnKey(key);   
   }
 	if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_START)
   {
-    CKey key(true,KEY_BUTTON_START);
+    CKey key(true,KEY_BUTTON_START,pGamepad->fX1,pGamepad->fY1);
     m_gWindowManager.OnKey(key);   
   }
 
 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_A])
   {
-    CKey key(true,KEY_BUTTON_A);
+    CKey key(true,KEY_BUTTON_A,pGamepad->fX1,pGamepad->fY1);
     m_gWindowManager.OnKey(key);   
   }
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_B])
   {
-    CKey key(true,KEY_BUTTON_B);
+    CKey key(true,KEY_BUTTON_B,pGamepad->fX1,pGamepad->fY1);
     m_gWindowManager.OnKey(key);
   }
   
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_X])
   {
-    CKey key(true,KEY_BUTTON_X);
+    CKey key(true,KEY_BUTTON_X,pGamepad->fX1,pGamepad->fY1);
     m_gWindowManager.OnKey(key);
+		
   }
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_Y])
   {
-    CKey key(true,KEY_BUTTON_Y);
+    CKey key(true,KEY_BUTTON_Y,pGamepad->fX1,pGamepad->fY1);
     m_gWindowManager.OnKey(key);   
   } 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_BLACK])
   {
-    CKey key(true,KEY_BUTTON_BLACK);
+    CKey key(true,KEY_BUTTON_BLACK,pGamepad->fX1,pGamepad->fY1);
     m_gWindowManager.OnKey(key);   
   } 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_WHITE])
   {
-    CKey key(true,KEY_BUTTON_WHITE);
+    CKey key(true,KEY_BUTTON_WHITE,pGamepad->fX1,pGamepad->fY1);
     m_gWindowManager.OnKey(key);   
   } 
 	
@@ -549,9 +566,7 @@ void CApplication::FrameMove()
 		  break;
     }
 
-
 	}
-
 	
 }
 void CApplication::Stop()
@@ -650,4 +665,22 @@ void CApplication::EnableOverlay()
 void CApplication::DisableOverlay()
 {
 	m_bOverlayEnabled=false;
+}
+
+
+bool CApplication::IsPlayingAudio() const 
+{
+	if (!m_pPlayer) return false;
+	if (!m_pPlayer->IsPlaying()) return false;
+	if (m_pPlayer->HasVideo()) return false;
+	if (m_pPlayer->HasAudio()) return true;
+	return false;
+}
+
+bool CApplication::IsPlayingVideo() const 
+{
+	if (!m_pPlayer) return false;
+	if (!m_pPlayer->IsPlaying()) return false;
+	if (m_pPlayer->HasVideo()) return true;
+	return false;
 }

@@ -53,20 +53,26 @@
 #define KEY_REMOTE_9          209
 
 
+#define KEY_INVALID						0xffff
+
 class CKey
 {
 public:
   CKey(void);
-  CKey(bool bButton, DWORD dwButtonCode);
+  CKey(bool bButton, DWORD dwButtonCode=KEY_INVALID, float fThumbX=0.0f, float fThumbY=0.0f);
   CKey(const CKey& key);
 
   virtual ~CKey(void);
   const CKey& operator=(const CKey& key);
   bool				IsButton() const;
   DWORD				GetButtonCode() const;
-
+	float				GetThumbX() const;
+	float				GetThumbY() const;
+	
 private:
-  bool  m_bIsButton;
-  DWORD m_dwButtonCode;
+	bool			m_bIsButton;
+  DWORD			m_dwButtonCode;
+	float			m_fThumbX;
+	float			m_fThumbY;
 };
 #endif
