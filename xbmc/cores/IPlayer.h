@@ -40,6 +40,8 @@ public:
 	virtual void    Update()=0;
 	virtual void		GetVideoRect(RECT& SrcRect, RECT& DestRect)=0;
 	virtual void		GetVideoAspectRatio(float& fAR)=0;
+	virtual void		AudioOffset(bool bPlus=true){};
+	virtual void		SwitchToNextAudioLanguage(){};
 protected:
 	IPlayerCallback& m_callback;
 };

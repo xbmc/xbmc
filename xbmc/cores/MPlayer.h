@@ -40,6 +40,8 @@ public:
 	virtual void    Update();
 	virtual void		GetVideoRect(RECT& SrcRect, RECT& DestRect);
 	virtual void		GetVideoAspectRatio(float& fAR);
+	virtual void		AudioOffset(bool bPlus=true);
+	virtual void		SwitchToNextAudioLanguage();
 protected:
 	virtual void				OnStartup();
 	virtual void				OnExit();

@@ -30,64 +30,64 @@
 #define KEY_INVALID						0xffff
 
 // actions that we have defined...
-#define ACTION_MOVE_LEFT			1	
-#define ACTION_MOVE_RIGHT			2
-#define ACTION_MOVE_UP				3
-#define ACTION_MOVE_DOWN			4
-#define ACTION_PAGE_UP				5
-#define ACTION_PAGE_DOWN			6
-#define ACTION_SELECT_ITEM			7
-#define ACTION_HIGHLIGHT_ITEM		8
-#define ACTION_PARENT_DIR			9
-#define ACTION_PARENT_MENU			10
-#define ACTION_SHOW_INFO			11
+#define ACTION_MOVE_LEFT							 1	
+#define ACTION_MOVE_RIGHT							 2
+#define ACTION_MOVE_UP								 3
+#define ACTION_MOVE_DOWN							 4
+#define ACTION_PAGE_UP								 5
+#define ACTION_PAGE_DOWN							 6
+#define ACTION_SELECT_ITEM						 7
+#define ACTION_HIGHLIGHT_ITEM					 8
+#define ACTION_PARENT_DIR							 9
+#define ACTION_PARENT_MENU						10
+#define ACTION_SHOW_INFO							11
 
-#define ACTION_PAUSE				12
-#define ACTION_STOP					13
-#define ACTION_NEXT_ITEM			14
-#define ACTION_PREV_ITEM			15
-#define ACTION_FORWARD				16
-#define ACTION_REWIND				17
+#define ACTION_PAUSE									12
+#define ACTION_STOP										13
+#define ACTION_NEXT_ITEM							14
+#define ACTION_PREV_ITEM							15
+#define ACTION_FORWARD								16
+#define ACTION_REWIND									17
 
-#define ACTION_SHOW_GUI				18
-#define ACTION_SHOW_FULLSCREEN		36
-#define ACTION_ASPECT_RATIO			19
-#define ACTION_STEP_FORWARD			20
-#define ACTION_STEP_BACK			21
-#define ACTION_BIG_STEP_FORWARD		22
-#define ACTION_BIG_STEP_BACK		23
-#define ACTION_SHOW_OSD				24
-#define ACTION_SHOW_SUBTITLES		25
-#define ACTION_NEXT_SUBTITLE		26
-#define ACTION_SHOW_CODEC			27
-
-#define ACTION_NEXT_PICTURE			28
-#define ACTION_PREV_PICTURE			29
-#define ACTION_ZOOM_OUT				30
-#define ACTION_ZOOM_IN				31
-#define ACTION_ZOOM_LEVEL_NORMAL	37
-#define ACTION_ZOOM_LEVEL_1			38
-#define ACTION_ZOOM_LEVEL_2			39
-#define ACTION_ZOOM_LEVEL_3			40
-#define ACTION_ZOOM_LEVEL_4			41
-#define ACTION_ZOOM_LEVEL_5			42
-#define ACTION_ZOOM_LEVEL_6			43
-#define ACTION_ZOOM_LEVEL_7			44
-#define ACTION_ZOOM_LEVEL_8			45
-#define ACTION_ZOOM_LEVEL_9			46
-#define ACTION_ROTATE_PICTURE		50
-
-#define ACTION_TOGGLE_SOURCE_DEST	32
-
-#define ACTION_SHOW_PLAYLIST		33
-#define ACTION_QUEUE_ITEM			34
-#define	ACTION_REMOVE_ITEM			35
-
+#define ACTION_SHOW_GUI								18
+#define ACTION_ASPECT_RATIO						19
+#define ACTION_STEP_FORWARD						20
+#define ACTION_STEP_BACK							21
+#define ACTION_BIG_STEP_FORWARD				22
+#define ACTION_BIG_STEP_BACK					23
+#define ACTION_SHOW_OSD								24
+#define ACTION_SHOW_SUBTITLES					25
+#define ACTION_NEXT_SUBTITLE					26
+#define ACTION_SHOW_CODEC							27
+#define ACTION_NEXT_PICTURE						28
+#define ACTION_PREV_PICTURE						29
+#define ACTION_ZOOM_OUT								30
+#define ACTION_ZOOM_IN								31
+#define ACTION_TOGGLE_SOURCE_DEST			32
+#define ACTION_SHOW_PLAYLIST					33
+#define ACTION_QUEUE_ITEM							34
+#define	ACTION_REMOVE_ITEM						35
+#define ACTION_SHOW_FULLSCREEN				36
+#define ACTION_ZOOM_LEVEL_NORMAL			37
+#define ACTION_ZOOM_LEVEL_1						38
+#define ACTION_ZOOM_LEVEL_2						39
+#define ACTION_ZOOM_LEVEL_3						40
+#define ACTION_ZOOM_LEVEL_4						41
+#define ACTION_ZOOM_LEVEL_5						42
+#define ACTION_ZOOM_LEVEL_6						43
+#define ACTION_ZOOM_LEVEL_7						44
+#define ACTION_ZOOM_LEVEL_8						45
+#define ACTION_ZOOM_LEVEL_9						46
 #define ACTION_CALIBRATE_SWAP_ARROWS	47
-#define ACTION_CALIBRATE_RESET			48
-#define ACTION_ANALOG_MOVE				49
-
-#define ACTION_CLOSE_DIALOG				51
+#define ACTION_CALIBRATE_RESET				48
+#define ACTION_ANALOG_MOVE						49
+#define ACTION_ROTATE_PICTURE					50
+#define ACTION_CLOSE_DIALOG						51
+#define ACTION_SUBTITLE_DELAY_MIN			52
+#define ACTION_SUBTITLE_DELAY_PLUS		53
+#define ACTION_AUDIO_DELAY_MIN				54
+#define ACTION_AUDIO_DELAY_PLUS				55
+#define ACTION_AUDIO_NEXT_LANGUAGE		56
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_HOME					0

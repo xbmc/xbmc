@@ -447,3 +447,14 @@ void CMPlayer::UnRegisterAudioCallback()
 {
 	xbox_audio_unregistercallback();
 }
+void CMPlayer::AudioOffset(bool bPlus)
+{
+	if (bPlus)
+ 		mplayer_put_key('+');
+	else
+		mplayer_put_key('-');
+}
+void CMPlayer::SwitchToNextAudioLanguage()
+{
+ 	
+}

@@ -93,6 +93,21 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		case ACTION_PAUSE:
 			g_application.m_pPlayer->Pause();
 		break;
+		case ACTION_SUBTITLE_DELAY_MIN:
+			g_application.m_pPlayer->SubtitleOffset(false);
+		break;
+		case ACTION_SUBTITLE_DELAY_PLUS:
+			g_application.m_pPlayer->SubtitleOffset(true);
+		break;
+		case ACTION_AUDIO_DELAY_MIN:
+			g_application.m_pPlayer->AudioOffset(false);
+		break;
+		case ACTION_AUDIO_DELAY_PLUS:
+			g_application.m_pPlayer->AudioOffset(true);
+		break;
+		case ACTION_AUDIO_NEXT_LANGUAGE:
+			//g_application.m_pPlayer->AudioOffset(false);
+		break;
 	}
 	CGUIWindow::OnAction(action);
 }
