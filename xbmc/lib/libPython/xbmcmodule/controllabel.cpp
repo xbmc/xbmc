@@ -17,21 +17,56 @@ namespace PYXBMC
 {
 	PyObject* ControlLabel_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	{
+		static char *keywords[] = {	
+			"x", "y", "width", "height", "label", "font", "textColor", 
+			"disabledColor", "alignment", "hasPath", NULL };
 		ControlLabel *self;
 		char *cFont = NULL;
 		char *cTextColor = NULL;
-		PyObject* pObjectText;
+		char *cDisabledColor = NULL;
+		PyObject* pObjectText = NULL;
 		
 		self = (ControlLabel*)type->tp_alloc(type, 0);
 		if (!self) return NULL;
 		
-		if (!PyArg_ParseTuple(args, "llll|Oss", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
-			&pObjectText, &cFont, &cTextColor)) return NULL;
-		if (!PyGetUnicodeString(self->strText, pObjectText, 5)) return NULL;
+		// set up default values in case they are not supplied
+        self->strFont = "font13";
+        self->dwTextColor = 0xffffffff;
+		self->dwDisabledColor = 0x60ffffff;
+        self->dwAlign = XBFONT_LEFT;
+        self->bHasPath = false;
 
-		self->strFont = cFont ? cFont : "font13";		
+		if (!PyArg_ParseTupleAndKeywords(
+            args,
+            kwds,
+            "llll|Ossslb",
+            keywords,
+            &self->dwPosX,
+            &self->dwPosY,
+            &self->dwWidth,
+            &self->dwHeight,
+			&pObjectText,
+            &cFont,
+            &cTextColor,
+            &cDisabledColor,
+            &self->dwAlign,
+            &self->bHasPath))
+        {
+            Py_DECREF( self );
+            return NULL;
+        }
+		if (!PyGetUnicodeString(self->strText, pObjectText, 5))
+        {
+            Py_DECREF( self );
+            return NULL;
+        }
+
+        if (cFont) self->strFont = cFont;
 		if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
-		else self->dwTextColor = 0xffffffff;
+        if (cDisabledColor)
+        {
+            sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
+        }
 
 		return (PyObject*)self;
 	}
@@ -43,9 +78,19 @@ namespace PYXBMC
 
 	CGUIControl* ControlLabel_Create(ControlLabel* pControl)
 	{
-		pControl->pGUIControl = new CGUILabelControl(pControl->iParentId, pControl->iControlId,
-				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-				pControl->strFont, pControl->strText, pControl->dwTextColor, pControl->dwTextColor, XBFONT_LEFT, false);
+		pControl->pGUIControl = new CGUILabelControl(
+            pControl->iParentId,
+            pControl->iControlId,
+			pControl->dwPosX,
+            pControl->dwPosY,
+            pControl->dwWidth,
+            pControl->dwHeight,
+			pControl->strFont,
+            pControl->strText,
+            pControl->dwTextColor,
+            pControl->dwDisabledColor,
+            pControl->dwAlign,
+            pControl->bHasPath );
 		return pControl->pGUIControl;
 	}
 
@@ -81,12 +126,19 @@ namespace PYXBMC
 	PyDoc_STRVAR(controlLabel__doc__,
 		"ControlLabel class.\n"
 		"\n"
-		"ControlLabel(int x, int y, int width, int height[, label, font, textColor])\n"
+		"ControlLabel(x, y, width, height, label, font, textColor, \n"
+        "             disabledColor, alignment, hasPath )\n"
 		"\n"
-		"label     : string or unicode string\n"
-		"font      : string fontname (example, 'font13' / 'font14')\n"
-		"textColor : hexString (example, '0xFFFF3300')");
-
+        "x             : integer x coordinate of control\n"
+        "y             : integer y coordinate of control\n"
+        "width         : integer width of control\n"
+        "height        : integer height of control\n"
+		"label         : string or unicode string (opt)\n"
+		"font          : string fontname (e.g., 'font13' / 'font14') (opt)\n"
+		"textColor     : hexString (e.g., '0xFFFF3300') (opt)\n"
+		"disabledColor : hexString (e.g., '0xFFFF3300') (opt)\n"
+		"alignment     : alignment of text - see xbfont.h (opt)\n"
+        "hasPath       : flag indicating label stores a path (opt)" );
 // Restore code and data sections to normal.
 #pragma code_seg()
 #pragma data_seg()

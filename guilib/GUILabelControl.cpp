@@ -45,9 +45,17 @@ void CGUILabelControl::Render()
     CStdStringW strLabelUnicode;
     g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
 
+    float fPosX = (float)m_iPosX;
+    if (m_dwTextAlign & XBFONT_CENTER_X)
+      fPosX += (float)m_dwWidth / 2;
+
+    float fPosY = (float)m_iPosY;
+    if (m_dwTextAlign & XBFONT_CENTER_Y)
+      fPosY += (float)m_dwHeight / 2;
+
     if (IsDisabled())
     {
-      m_pFont->DrawText((float)m_iPosX, (float)m_iPosY, m_dwDisabledColor, strLabelUnicode.c_str(), m_dwTextAlign, (float)m_dwWidth);
+      m_pFont->DrawText(fPosX, fPosY, m_dwDisabledColor, strLabelUnicode.c_str(), m_dwTextAlign, (float)m_dwWidth);
     }
     else
     {
@@ -63,7 +71,7 @@ void CGUILabelControl::Render()
       if (m_dwTextAlign & XBFONT_CENTER_X)
         fPosX += (float)m_dwWidth / 2;
 
-      m_pFont->DrawText(fPosX, (float)m_iPosY, m_dwTextColor, strLabelUnicode.c_str(), m_dwTextAlign, (float)m_dwWidth);
+      m_pFont->DrawText(fPosX, fPosY, m_dwTextColor, strLabelUnicode.c_str(), m_dwTextAlign, (float)m_dwWidth);
     }
   }
 }

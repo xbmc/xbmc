@@ -77,6 +77,9 @@ namespace PYXBMC
 		string strFont;
 		wstring strText;
 		DWORD dwTextColor;
+		DWORD dwDisabledColor;
+		DWORD dwAlign;
+        bool bHasPath;
 	} ControlLabel;
 
 	typedef struct {
@@ -84,6 +87,7 @@ namespace PYXBMC
 		string strFont;
 		DWORD dwTextColor;
 		std::vector<string> vecLabels;
+        DWORD dwAlign;
 	} ControlFadeLabel;
 
 	typedef struct {
@@ -107,6 +111,9 @@ namespace PYXBMC
 		string strTextureNoFocus;
 		DWORD dwTextColor;
 		DWORD dwDisabledColor;
+        DWORD dwTextXOffset;
+        DWORD dwTextYOffset;
+        DWORD dwAlign;
 	} ControlButton;
 
 	typedef struct {
@@ -137,6 +144,10 @@ namespace PYXBMC
 		DWORD dwImageWidth;
 		DWORD dwItemHeight;
 		DWORD dwSpace;
+
+        DWORD dwItemTextXOffset;
+        DWORD dwItemTextYOffset;
+        DWORD dwAlignmentY;
 	} ControlList;
 
 	extern void Control_Dealloc(Control* self);
