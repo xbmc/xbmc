@@ -105,14 +105,6 @@ void CApplicationMessenger::ProcessMessages()
 					CFileItem item;
 					item.m_strPath = pMsg->strParam;
 					g_application.PlayFile(item);
-
-					if (g_application.IsPlayingVideo())
-					{
-						// playing a video, switch to fullscreen
-						g_TextureManager.Flush();
-						//g_graphicsContext.SetFullScreenVideo(true);
-						//m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-					}
 				}
 				break;
 
