@@ -41,7 +41,7 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
 			+ pCdInfo->GetTrackInformation(iTrack).nSecs );
 
 		//	Only load cached cddb info in this tag loader, the internet database query is made in CCDDADirectory
-		if (g_guiSettings.GetBool("MyMusic.UseCDDB") && pCdInfo->HasCDDBInfo() && cddb.isCDCached(pCdInfo))
+		if (pCdInfo->HasCDDBInfo() && cddb.isCDCached(pCdInfo))
 		{
 			//	get cddb information
 			if (cddb.queryCDinfo(pCdInfo))

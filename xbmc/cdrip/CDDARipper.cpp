@@ -7,6 +7,7 @@
 #include "EncoderVorbis.h"
 #include "..\filesystem\CDDADirectory.h"
 #include "..\detectdvdtype.h"
+#include "../MusicInfoTagLoaderFactory.h"
 
 CCDDARipper::CCDDARipper()
 {
@@ -275,6 +276,20 @@ bool CCDDARipper::RipCD()
 	CFileItemList vecItems;
 	DIRECTORY::CCDDADirectory directory;
 	directory.GetDirectory("cdda://local/", vecItems);
+
+  //  Get cddb info
+  for (int i=0; i<vecItems.Size(); ++i)
+  {
+    CFileItem* pItem=vecItems[i];
+		CMusicInfoTagLoaderFactory factory;
+		auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+		if (NULL != pLoader.get())
+    {
+			pLoader->Load(pItem->m_strPath, pItem->m_musicInfoTag);	// get tag from file
+      if (!pItem->m_musicInfoTag.Loaded())
+        break;  //  No CDDB info available
+    }
+  }
 
 	// if album name from first item is set,
 	// then we use this as the directory to place the new file in.
