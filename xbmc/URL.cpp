@@ -35,7 +35,7 @@ CURL::CURL(const CStdString& strURL)
 	}
 
 	// form is format 1 or 2
-	// format 1: protocol://[username:password]@hostname[:port]/directoryandfile
+	// format 1: protocol://[domain;][username:password]@hostname[:port]/directoryandfile
 	// format 2: protocol://file
 
 	// decode protocol
@@ -56,7 +56,22 @@ CURL::CURL(const CStdString& strURL)
 			m_strUserName=strUserNamePassword.Left(iColon);
 			iColon++;
 			m_strPassword=strUserNamePassword.Right(strUserNamePassword.size()-iColon);
+			//	smb domain in username
+			iColon=m_strUserName.Find(";");
+			if (iColon>0)
+			{
+				m_strDomain=m_strUserName.Left(iColon);
+				m_strUserName.Delete(0, iColon+1);
+			}
 		}
+		else
+		{
+			//	smb domain without user/password
+			int iColon=strUserNamePassword.Find(";");
+			if (iColon>0)
+				m_strDomain=strUserNamePassword.Left(iColon);
+		}
+
 		iPos=iAlphaSign+1;
 	}
 	
@@ -161,6 +176,11 @@ const CStdString&  CURL::GetHostName() const
 	return m_strHostName;
 }
 
+const CStdString&  CURL::GetDomain() const
+{
+	return m_strDomain;
+}
+
 const CStdString&  CURL::GetUserName() const
 {
 	return m_strUserName;
@@ -195,6 +215,11 @@ void  CURL::GetURL(CStdString& strURL)
 	}
 	strURL=m_strProtocol;
 	strURL+="://";
+	if (m_strDomain!="")
+	{
+		strURL+=m_strDomain;
+		strURL+=";";
+	}
 	if (m_strUserName!="" && m_strPassword!="")
 	{	
 		strURL+=m_strUserName;
@@ -202,6 +227,15 @@ void  CURL::GetURL(CStdString& strURL)
 		strURL+=m_strPassword;
 		strURL+="@";
 	}
+	else if (m_strUserName!="")
+	{
+		strURL+=m_strUserName;
+		strURL+=":";
+		strURL+="@";
+	} 
+	else if (m_strDomain!="")
+		strURL+="@";
+
 	if (m_strHostName!="")
 	{
 		strURL+=m_strHostName;
