@@ -1076,24 +1076,23 @@ void CApplication::UpdateLCD()
           CGUIControl* pControl=(CGUIControl* )pWindow->GetControl(iControl);
           if (pControl)
           {
-            CGUIButtonControl* pButton=dynamic_cast<CGUIButtonControl*>(pControl);
-            if (pButton)
-              g_lcd->SetLine(1,pButton->GetLabel());
-            CGUISpinControl* pSpinControl=dynamic_cast<CGUISpinControl*>(pControl);
-            if (pSpinControl)
+						if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+              g_lcd->SetLine(1,((CGUIButtonControl*)pControl)->GetLabel());
+						else if (pControl->GetControlType() == CGUIControl::GUICONTROL_SPIN)
             {
+							CGUISpinControl* pSpinControl = (CGUISpinControl*)pControl;
               strTmp.Format("%i/%i", 1+pSpinControl->GetValue(), pSpinControl->GetMaximum());
               g_lcd->SetLine(1,strTmp);
             }
-            CGUIListControl* pListControl=dynamic_cast<CGUIListControl*>(pControl);
-            if (pListControl)
+						else if (pControl->GetControlType() == CGUIControl::GUICONTROL_LABEL)
             {
+							CGUIListControl* pListControl = (CGUIListControl*)pControl;
               pListControl->GetSelectedItem(strTmp);
               g_lcd->SetLine(1,strTmp);
             }
-            CGUIThumbnailPanel* pThumbControl=dynamic_cast<CGUIThumbnailPanel*>(pControl);
-            if (pThumbControl)
-            {
+						else if (pControl->GetControlType() == CGUIControl::GUICONTROL_THUMBNAIL)
+						{
+							CGUIThumbnailPanel* pThumbControl = (CGUIThumbnailPanel*)pControl;
               pThumbControl->GetSelectedItem(strTmp);
               g_lcd->SetLine(1,strTmp);
             }

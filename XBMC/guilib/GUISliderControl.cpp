@@ -20,6 +20,7 @@ CGUISliderControl::CGUISliderControl(DWORD dwParentID, DWORD dwControlId, DWORD 
     m_fValue=0.0;
 	m_dwControlOffsetX = 60;
 	m_dwControlOffsetY = 0;
+	ControlType = GUICONTROL_SLIDER;
 }
 
 CGUISliderControl::~CGUISliderControl(void)

@@ -60,6 +60,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, DWOR
   m_iThumbHeight=64;
   m_iThumbXPos=8;
   m_iThumbYPos=8;
+	ControlType = GUICONTROL_THUMBNAIL;
 }
 
 CGUIThumbnailPanel::~CGUIThumbnailPanel(void)

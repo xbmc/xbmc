@@ -34,6 +34,7 @@ CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX
 	m_pwzBuffer = NULL;
 	m_pbBuffer	= NULL;
 	m_pbColors	= NULL;
+	ControlType = GUICONTROL_RSS;
 }
 
 CGUIRSSControl::~CGUIRSSControl(void)

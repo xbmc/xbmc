@@ -19,6 +19,7 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD 
 	m_pFont=NULL;
   m_lHyperLinkWindowID=-1;
 	m_strScriptAction="";
+	ControlType = GUICONTROL_BUTTON;
 }
 
 CGUIButtonControl::~CGUIButtonControl(void)

@@ -10,6 +10,7 @@ CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControl
 ,m_imgRadioFocus(dwParentID, dwControlId, dwPosX, dwPosY,16,16,strRadioFocus)
 ,m_imgRadioNoFocus(dwParentID, dwControlId, dwPosX, dwPosY,16,16,strRadioNoFocus)
 {
+	ControlType = GUICONTROL_RADIO;
 }
 
 CGUIRadioButtonControl::~CGUIRadioButtonControl(void)

@@ -38,6 +38,7 @@ CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
 	
 	m_dwTextColor2=dwTextColor;
 	m_dwSelectedColor2=dwSelectedColor;
+	ControlType = GUICONTROL_LIST;
 }
 
 CGUIListControl::~CGUIListControl(void)

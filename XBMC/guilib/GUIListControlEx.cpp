@@ -38,6 +38,7 @@ CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, DWORD 
 	m_dwSelectedColor2=dwSelectedColor;
 	m_dwTextOffsetX = dwItemTextOffsetX;
 	m_dwTextOffsetY = dwItemTextOffsetY;
+	ControlType = GUICONTROL_LISTEX;
 }
 
 CGUIListControlEx::~CGUIListControlEx(void)

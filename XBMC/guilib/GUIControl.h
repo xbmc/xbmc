@@ -51,7 +51,33 @@ public:
   void          SetVisible(bool bVisible);
 	void					EnableCalibration(bool bOnOff);
 	bool					CalibrationEnabled() const;
-protected:  
+
+	enum GUICONTROLTYPES { 
+		GUICONTROL_UNKNOWN,
+		GUICONTROL_BUTTON,
+		GUICONTROL_CHECKMARK,
+		GUICONTROL_FADELABEL,
+		GUICONTROL_IMAGE,
+		GUICONTROL_LABEL,
+		GUICONTROL_LIST,
+		GUICONTROL_LISTEX,
+		GUICONTROL_MBUTTON,
+		GUICONTROL_PROGRESS,
+		GUICONTROL_RADIO,
+		GUICONTROL_RAM,
+		GUICONTROL_RSS,
+		GUICONTROL_SELECTBUTTON,
+		GUICONTROL_SLIDER,
+		GUICONTROL_SPINBUTTON,
+		GUICONTROL_SPIN,
+		GUICONTROL_TEXTBOX,
+		GUICONTROL_THUMBNAIL,
+		GUICONTROL_TOGGLEBUTTON,
+		GUICONTROL_VIDEO,
+	};
+	GUICONTROLTYPES GetControlType() { return ControlType; }
+
+protected:
   virtual void       Update() {};
   DWORD              m_dwControlLeft;
   DWORD              m_dwControlRight;
@@ -69,5 +95,6 @@ protected:
 	bool							 m_bDisabled;
   bool							 m_bSelected;
 	bool							 m_bCalibration;
+	GUICONTROLTYPES ControlType;
 };
 #endif

@@ -9,11 +9,12 @@ CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, DWORD dw
   m_strLabel=strLabel;
   m_pFont=g_fontManager.GetFont(strFont);
   m_dwTextColor=dwTextColor;
-  m_dwdwTextAlign=dwTextAlign;
+  m_dwTextAlign=dwTextAlign;
 	m_bHasPath = bHasPath;
   m_dwDisabledColor = dwDisabledColor;
   m_bShowCursor = false;
   m_dwCounter = 0;
+	ControlType = GUICONTROL_LABEL;
 }
 
 CGUILabelControl::~CGUILabelControl(void)
@@ -36,7 +37,7 @@ void CGUILabelControl::Render()
 	{
 		if (IsDisabled())
 		{
-			m_pFont->DrawText((float)m_dwPosX, (float)m_dwPosY,m_dwDisabledColor,m_strLabel.c_str(),m_dwdwTextAlign); 
+			m_pFont->DrawText((float)m_dwPosX, (float)m_dwPosY,m_dwDisabledColor,m_strLabel.c_str(),m_dwTextAlign,(float)m_dwWidth);
 		}
 		else
 		{
@@ -50,7 +51,7 @@ void CGUILabelControl::Render()
 				}
 			}
 
-			m_pFont->DrawText((float)m_dwPosX, (float)m_dwPosY,m_dwTextColor,label.c_str(),m_dwdwTextAlign); 
+			m_pFont->DrawText((float)m_dwPosX, (float)m_dwPosY,m_dwTextColor,label.c_str(),m_dwTextAlign, (float)m_dwWidth);
 		}
 	}
 }
@@ -63,10 +64,10 @@ bool CGUILabelControl::CanFocus() const
 
 void CGUILabelControl::SetText(CStdString aLabel)
 {
-    WCHAR wszText[1024];
+  WCHAR wszText[1024];
 	swprintf(wszText,L"%S",aLabel.c_str());	
 	m_strLabel = wszText;
- }
+}
 
 bool CGUILabelControl::OnMessage(CGUIMessage& message)
 {
