@@ -39,7 +39,7 @@
 #include "utils/delaycontroller.h"
 #include "keyboard/virtualkeyboard.h"
 #include "lib/libPython/XBPython.h"
-//#include "lib/libPython/xbox/XBPython.h"
+#include "lib/libGoAhead/webserver.h"
 #include "cores/IPlayer.h"
 #include "DetectDVDType.h"
 #include "Autorun.h"
@@ -114,6 +114,7 @@ public:
 	CDelayController								m_ctrDpad;
 	CDelayController								m_ctrIR;
 	XBPython*												m_pPythonParser;
+	CWebServer*											m_pWebServer;
 	IPlayer*												m_pPlayer;
 	bool														m_bSpinDown;
 	DWORD														m_dwSpinDownTime;

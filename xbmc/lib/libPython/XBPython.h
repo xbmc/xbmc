@@ -11,7 +11,6 @@
 #include <vector>
 
 #include "XBPyThread.h"
-#include "OutputBuffer.h"
 
 using namespace std;
 
@@ -46,20 +45,15 @@ public:
 	// returns -1 if no scripts exist with specified filename
 	int		getScriptId(const char* strFile);
 
-	void	enableOutput(int h, int l);
-	int		getOutputHeight();
-	int		getOutputLength();
-	char*	getOutputLine(int nr);
-
   PyThreadState *getMainThreadState();
-	
-	//Vector with list of threads used for running scripts
-	PyList vecPyList;
-	OutputBuffer *outputBuffer;
-	CRITICAL_SECTION	m_critSection;
+
 private:
 	int								nextid;
 	PyThreadState*		mainThreadState;
+
+	//Vector with list of threads used for running scripts
+	PyList vecPyList;
+	CRITICAL_SECTION	m_critSection;
 };	
 
 #endif //XBPYTHON_H_

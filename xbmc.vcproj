@@ -61,7 +61,7 @@
 				StackSize="0x40000"
 				IncludeDebugInfo="TRUE"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -226,7 +226,7 @@
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x80000"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -1179,6 +1179,69 @@
 			<File
 				RelativePath=".\xbmc\visualizations\VisualisationFactory.h">
 			</File>
+		</Filter>
+		<Filter
+			Name="libraries"
+			Filter="">
+			<Filter
+				Name="libPython"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\lib\libPython\socketutil.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libPython\socketutil.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libPython\util.cpp">
+					<FileConfiguration
+						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libPython\util.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libPython\xbmcmodule.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libPython\XBPython.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libPython\XBPython.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libPython\XBPyThread.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libPython\XBPyThread.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="libGoAhead"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\WebServer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\WebServer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\XBMCweb.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\XBMCweb.h">
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

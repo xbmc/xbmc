@@ -1,16 +1,21 @@
 #include "XBPyThread.h"
-#include <signal.h>
+#include "XBPython.h"
+
+#pragma code_seg("PY_TEXT")
+#pragma data_seg("PY_DATA")
+#pragma bss_seg("PY_BSS")
+#pragma const_seg("PY_RDATA")
 
 int xbTrace(PyObject *obj, _frame *frame, int what, PyObject *arg)
 {
-	//return error, script will now be stopped.
 	PyErr_SetString(PyExc_KeyboardInterrupt, "script interrupted by user\n");
-	//PyErr_SetNone(PyExc_KeyboardInterrupt);
 	return -1;
 }
 
-XBPyThread::XBPyThread(PyThreadState *mainThreadState)
+XBPyThread::XBPyThread(LPVOID pExecuter, PyThreadState* mainThreadState, int id)
 {
+	this->pExecuter = pExecuter;
+	this->id = id;
 	// get the global lock
 	PyEval_AcquireLock();
 	// get a reference to the PyInterpreterState
@@ -23,6 +28,7 @@ XBPyThread::XBPyThread(PyThreadState *mainThreadState)
 	PyEval_ReleaseLock();
 
 	done = false;
+	stopping = false;
 }
 
 XBPyThread::~XBPyThread()
@@ -35,6 +41,10 @@ int XBPyThread::evalFile(const char *src)
 	type = 'F';
 	source = new char[strlen(src)+1];
 	strcpy(source, src);
+	// chdir("Q:\\scripts\\medusa");
+	// Py_SetPythonHome("Q:\\scripts\\medusa");
+	// Py_SetProgramName(source);
+	// PySys_SetPath(source);
 	Create();
 	return 0;
 }
@@ -52,10 +62,25 @@ void XBPyThread::OnStartup(){}
 
 void XBPyThread::Process()
 {
+	char path[1024];
+	char sourcedir[1024];
+
 	PyEval_AcquireLock();
 	// swap in my thread state
 	PyThreadState_Swap(threadState);
+	//threadState-> >frame->
+	// get path from script file name and add python path's
+	// this is used for python so it will search modules from script path first
+	strcpy(sourcedir, source);
+	strcpy(strrchr(sourcedir, '\\'), ";");
+	
+	strcpy(path, sourcedir);
+	strcat(path, getenv("PYTHONPATH"));
 
+	// set current directory and python's path.
+	PySys_SetPath(path);
+	chdir(sourcedir);
+ 
 	if (type == 'F') {
 		// run script from file
 		FILE *fp = fopen(source, "r");
@@ -64,15 +89,12 @@ void XBPyThread::Process()
 			if (PyRun_SimpleFile(fp, source) == -1)
 			{
 				OutputDebugString("Scriptresult: Error\n");
-				if (PyErr_Occurred())
-				{
-					PyErr_Print();
-				}
+				if (PyErr_Occurred())	PyErr_Print();
 			}
 			else OutputDebugString("Scriptresult: Succes\n");
 			fclose(fp);
 		}
-		else pOut("%s not found!\n", source);
+		else Py_Output("%s not found!\n", source);
 	}
 	else
 	{
@@ -105,27 +127,29 @@ void XBPyThread::OnExit()
 	PyEval_ReleaseLock();
 
 	done = true;
+	((XBPython*)pExecuter)->setDone(id);
 }
 
 bool XBPyThread::isDone() {
 	return done;
 }
 
-static void pytest(int err)
-{
-
+bool XBPyThread::isStopping() {
+	return stopping;
 }
 
 void XBPyThread::stop()
 {
 	PyEval_AcquireLock();
+	//PyErr_SetInterrupt();
 
 	// enable tracing. xbTrace will generate an error and the sript will be stopped
 	//PyEval_SetTrace(xbTrace, NULL);
 
-	//PyErr_SetInterrupt();
 	threadState->c_tracefunc = xbTrace;
 	threadState->use_tracing = 1;
 	
 	PyEval_ReleaseLock();
+
+	stopping = true;
 }

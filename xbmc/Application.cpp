@@ -19,7 +19,8 @@ using namespace PLAYLIST;
 	#pragma comment (lib,"xbmc/lib/cximage/ImageLibd.lib")   // SECTIONNAME=CXIMAGE
 	#pragma comment (lib,"xbmc/lib/libID3/i3dlibd.lib")			 // SECTIONNAME=LIBID3
 	#pragma comment (lib,"xbmc/lib/libCDRip/cdripd.lib")		 // SECTIONNAME=LIBCDRIP
-	#pragma comment (lib,"xbmc/lib/libPython/pythond.lib")	 // SECTIONNAME=PYTHON
+	#pragma comment (lib,"xbmc/lib/libPython/pythond.lib")	 // SECTIONNAME=PYTHON/PY_RW
+	#pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
 	#pragma comment (lib,"xbmc/lib/sqlLite/libSQLited.lib")    
 	#pragma comment (lib,"guilib/debug/guiLib.lib")				   // -
 	#pragma comment (lib,"xbmc/cores/dllLoader/debug/dllloader.lib")				   // -
@@ -32,6 +33,7 @@ using namespace PLAYLIST;
 	#pragma comment (lib,"xbmc/lib/libID3/i3dlib.lib")					
 	#pragma comment (lib,"xbmc/lib/libCDRip/cdrip.lib")						
 	#pragma comment (lib,"xbmc/lib/libPython/python.lib")		 
+	#pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
 	#pragma comment (lib,"xbmc/lib/sqlLite/libSQLite.lib")    
 	#pragma comment (lib,"guiLib/release/guiLib.lib")
 	#pragma comment (lib,"xbmc/cores/dllLoader/release/dllloader.lib")				   // -
@@ -46,11 +48,11 @@ CApplication::CApplication(void)
 		m_bSpinDown=true;
 		m_bOverlayEnabled=true;
 		m_pPythonParser=NULL;
+		m_pWebServer=NULL;
 		m_pPlayer=NULL;
 		XSetProcessQuantumLength(5); //default=20msec
 		XSetFileCacheSize (256*1024);//default=64kb
-		m_dwSpinDownTime=timeGetTime();
-		
+		m_dwSpinDownTime=timeGetTime();		
 }	
 
 CApplication::~CApplication(void)
@@ -208,8 +210,16 @@ HRESULT CApplication::Initialize()
                             g_stSettings.m_strLocalNetmask,
                             g_stSettings.m_strGateway ) )
   {
-			m_sntpClient.Create();                      
-    
+			m_sntpClient.Create(); 
+			
+			if (false)//g_stSettings.m_bHTTPServerEnabled)
+			{
+				CSectionLoader::Load("LIBHTTP");
+				m_pWebServer = new CWebServer();
+				CStdString ipadres;
+				CUtil::GetTitleIP(ipadres);
+				m_pWebServer->Start(ipadres.c_str(), 80, "Q:\\web");
+			}  
   }
 	g_graphicsContext.Set(m_pd3dDevice,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight, g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY, (m_d3dpp.Flags&D3DPRESENTFLAG_WIDESCREEN) !=0 );
 	LoadSkin(g_stSettings.szDefaultSkin);
@@ -238,7 +248,9 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiDialogOK);									// window id = 2002
 	m_gWindowManager.Add(&m_guiVideoInfo);								// window id = 2003
 	m_gWindowManager.Add(&m_guiWindowVisualisation);			// window id = 2006
-	
+
+	/* window id's 3000 - 3100 are reserved for python */
+  	
   m_keyboard.Initialize();
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
 	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);
@@ -248,6 +260,8 @@ HRESULT CApplication::Initialize()
 
 	//	Start Thread for DVD Mediatype detection
 	m_DetectDVDType.Create( false);
+
+	//this->ExecutePythonScript("q:\\scripts\\medusa\\start_medusa.py");
 
 	return S_OK;
 }
@@ -316,7 +330,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 void CApplication::Render()
 {
 	SpinHD();
-
+	// process messages, even if a movie is playing
+	g_applicationMessenger.ProcessMessages();
+	
 	// dont show GUI when playing full screen video
 	if ( IsPlayingVideo() )
 	{
@@ -384,8 +400,10 @@ void CApplication::Render()
 	m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 	g_graphicsContext.Unlock();
 
-	// process any Python scripts and script messages...
-	g_applicationMessenger.ProcessMessages();
+	// process messages which have to be send to the gui
+	// (this can only be done after m_gWindowManager.Render())
+	g_applicationMessenger.ProcessMessages(MSG_TYPE_WINDOW);
+	// process any Python scripts
 	ProcessPythonScripts();
 }
 
@@ -784,6 +802,10 @@ void CApplication::Stop()
 {
 	if (m_pPythonParser)
 	{
+		//first load the python sections if not loaded.
+		if(!g_sectionLoader.IsLoaded("PYTHON")) g_sectionLoader.Load("PYTHON");
+		if(!g_sectionLoader.IsLoaded("PY_RW")) g_sectionLoader.Load("PY_RW");
+
 		ivecScriptIds it=m_vecScriptIds.begin();
 		while (it != m_vecScriptIds.end())
 		{
@@ -796,6 +818,13 @@ void CApplication::Stop()
 		}
 		delete m_pPythonParser;
 		m_pPythonParser=NULL;
+	}
+
+	if (m_pWebServer)
+	{
+		m_pWebServer->Stop();
+		delete m_pWebServer;
+		m_pWebServer = NULL;
 	}
 
 	if (m_pPlayer)
@@ -848,10 +877,8 @@ void CApplication::ProcessPythonScripts()
 		else ++it;
 	}
 	if ( m_vecScriptIds.size()==0)
-	{
 		// no scripts are running, it's safe to unload section PYTHON now
 		g_sectionLoader.Unload("PYTHON");
-	}
 }
 
 int CApplication::ScriptsSize()
