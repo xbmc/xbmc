@@ -503,3 +503,4 @@ void CGUIWindowMusicPlayList::OnRetrieveMusicInfo(VECFILEITEMS& items)
 
 	songsMap.erase(songsMap.begin(),songsMap.end());
 }
+
