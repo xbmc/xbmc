@@ -853,7 +853,7 @@ DllLoader::~DllLoader()
 
 	// free all functions which where created at the time we loaded the dll
 	std::list<unsigned long*>::iterator unIt = AllocatedFunctionList.begin();
-	while (unIt != AllocatedFunctionList.end()) { delete(*unIt); unIt++;	}
+	while (unIt != AllocatedFunctionList.end()) { delete[](*unIt); unIt++;	}
 	AllocatedFunctionList.clear();
 }
 
