@@ -171,6 +171,8 @@ CSettings::CSettings(void)
 	strcpy(m_ResInfo[PAL60_16x9].strMode,"PAL60 16:9");
 
 	strcpy(g_stSettings.m_szExternalDVDPlayer,"");
+	strcpy(g_stSettings.m_szExternalCDDAPlayer,"");
+
 	g_stSettings.m_bMyVideoVideoStack =false;
 	g_stSettings.m_bMyVideoActorStack =false;
 	g_stSettings.m_bMyVideoGenreStack =false;
@@ -472,6 +474,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 	GetBoolean(pRootElement, "displayremotecodes", g_stSettings.m_bDisplayRemoteCodes);
 
 	GetString(pRootElement, "dvdplayer", g_stSettings.m_szExternalDVDPlayer,"");
+	GetString(pRootElement, "cddaplayer", g_stSettings.m_szExternalCDDAPlayer,"");
 	GetBoolean(pRootElement, "mplayerdebug", g_stSettings.m_mplayerDebug);
 
 	CStdString strDir;
