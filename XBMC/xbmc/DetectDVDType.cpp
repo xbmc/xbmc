@@ -66,6 +66,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 				case DRIVE_OPEN:
 				{
 					m_DriveState = DRIVE_OPEN;
+					SetNewDVDShareUrl( "D:\\" ,false);
 					//	Send Message to GUI that disc been ejected
 					CGUIMessage msg( GUI_MSG_DVDDRIVE_EJECTED_CD, 0, 0, 0, 0, NULL );
 					waitLock.Leave();
@@ -142,44 +143,30 @@ void CDetectDVDMedia::DetectMediaType()
 	CStdString strNewUrl;
 	CCdIoSupport cdio;
 	//	Delete old CD-Information
-	if ( m_pCdInfo != NULL ) {
+	if ( m_pCdInfo != NULL ) 
+	{
 		delete m_pCdInfo;
 		m_pCdInfo = NULL;
 	}
 
 	//	Detect new CD-Information
 	m_pCdInfo = cdio.GetCdInfo();
-	if ( m_pCdInfo == NULL ) {
+	if ( m_pCdInfo == NULL ) 
+	{
 		OutputDebugString( "Detection of DVD-ROM media failed.\n" );
 		return;
 	}
 	char szLog[128];
 	sprintf(szLog,"tracks:%i audio tracks:%i data tracks:%i\n",
-		m_pCdInfo->GetTrackCount(),
-		m_pCdInfo->GetAudioTrackCount(),
-		m_pCdInfo->GetDataTrackCount() );
+	m_pCdInfo->GetTrackCount(),
+	m_pCdInfo->GetAudioTrackCount(),
+	m_pCdInfo->GetDataTrackCount() );
 	OutputDebugString(szLog);
 
-	bool bUDF=false;
-	for (int iTrack=m_pCdInfo->GetFirstDataTrack(); iTrack <= m_pCdInfo->GetDataTrackCount(); iTrack++)
-	{
-		sprintf(szLog,"  track:%i audio:%i UDF:%i UDFX:%i iso9660:%i\n", 
-						iTrack,
-						m_pCdInfo->IsAudio( iTrack ),
-						m_pCdInfo->IsUDF(iTrack),
-						m_pCdInfo->IsUDFX(iTrack),
-						m_pCdInfo->IsIso9660( iTrack ) || m_pCdInfo->IsIso9660Interactive( iTrack ) );
-		OutputDebugString(szLog);
-
-		if ( m_pCdInfo->IsUDF(iTrack)||m_pCdInfo->IsUDFX(iTrack)) bUDF=true;
-	}
-	if ( bUDF )
-	{
+	if (m_pCdInfo->IsUDF(1)||m_pCdInfo->IsUDFX(1))
 		strNewUrl = "D:\\";
-	}
 	else
 	{
-
 		//	Detect ISO9660(mode1/mode2) or CDDA filesystem
 		if ( m_pCdInfo->IsIso9660( 1 ) || m_pCdInfo->IsIso9660Interactive( 1 ) )
 			strNewUrl = "iso9660://";
