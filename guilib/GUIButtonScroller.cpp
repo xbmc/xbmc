@@ -28,6 +28,7 @@ CGUIButtonScroller::CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, int 
 	m_iAlpha = iAlpha;
 	m_bWrapAround = bWrapAround;
 	m_bSmoothScrolling = bSmoothScrolling;
+	m_iSlowScrollCount = 0;
 	if (!m_bWrapAround)
 	{	// force the amount of movement to allow for the number of slots
 		if (m_iMovementRange < m_iDefaultSlot) m_iMovementRange = m_iDefaultSlot;
@@ -637,12 +638,23 @@ void CGUIButtonScroller::OnMouseOver()
 	{
 		if (g_Mouse.iPosX < fStartAlpha)	// scroll down
 		{
-			m_bScrollDown = true;
+			m_bScrollUp = false;
+			if (m_iSlowScrollCount > 10) m_iSlowScrollCount = 0;
+			if (m_bSmoothScrolling || m_iSlowScrollCount == 0)
+				m_bScrollDown = true;
+			else
+				m_bScrollDown = false;
+			m_iSlowScrollCount++;
 			m_fScrollSpeed = 50.0f + SCROLL_SPEED - ((float)g_Mouse.iPosX-fStartAlpha)/((float)m_iPosX-fStartAlpha)*50.0f;
 		}
 		else if (g_Mouse.iPosX > fEndAlpha-1)	// scroll up
 		{
-			m_bScrollUp = true;
+			m_bScrollDown = false;
+			if (m_iSlowScrollCount > 10) m_iSlowScrollCount = 0;
+			if (m_bSmoothScrolling || m_iSlowScrollCount == 0)
+				m_bScrollUp = true;
+			else
+				m_bScrollUp = false;
 			m_fScrollSpeed = 50.0f + SCROLL_SPEED - ((float)g_Mouse.iPosX-fEndAlpha)/((float)m_iPosX+(float)m_dwWidth-fEndAlpha)*50.0f;
 		}
 		else	// call base class
@@ -655,14 +667,23 @@ void CGUIButtonScroller::OnMouseOver()
 		if (g_Mouse.iPosY < fStartAlpha)	// scroll down
 		{
 			m_bScrollUp = false;
-			if (!m_bScrollDown) m_bScrollDown = true;
+			if (m_iSlowScrollCount > 10) m_iSlowScrollCount = 0;
+			if (m_bSmoothScrolling || m_iSlowScrollCount == 0)
+				m_bScrollDown = true;
+			else
+				m_bScrollDown = false;
+			m_iSlowScrollCount++;
 			m_fScrollSpeed = 50.0f + SCROLL_SPEED - ((float)g_Mouse.iPosY-fStartAlpha)/((float)m_iPosY-fStartAlpha)*50.0f;
 		}
 		else if (g_Mouse.iPosY > fEndAlpha-1)	// scroll up
 		{
 			m_bScrollDown = false;
-			if (!m_bScrollUp) m_bScrollUp = true;
-			m_fScrollSpeed = 50.0f + SCROLL_SPEED - ((float)g_Mouse.iPosY-fEndAlpha)/((float)m_iPosY+(float)m_dwHeight-fEndAlpha)*50.0f;
+			if (m_iSlowScrollCount > 10) m_iSlowScrollCount = 0;
+			if (m_bSmoothScrolling || m_iSlowScrollCount == 0)
+				m_bScrollUp = true;
+			else
+				m_bScrollUp = false;
+			m_iSlowScrollCount++;			m_fScrollSpeed = 50.0f + SCROLL_SPEED - ((float)g_Mouse.iPosY-fEndAlpha)/((float)m_iPosY+(float)m_dwHeight-fEndAlpha)*50.0f;
 		}
 		else
 		{	// select the appropriate item, and call the base class (to set focus)
@@ -674,7 +695,7 @@ void CGUIButtonScroller::OnMouseOver()
 
 void CGUIButtonScroller::OnMouseClick(DWORD dwButton)
 {
-	if (dwButton != MOUSE_LEFT_BUTTON || dwButton != MOUSE_RIGHT_BUTTON) return;
+	if (dwButton != MOUSE_LEFT_BUTTON && dwButton != MOUSE_RIGHT_BUTTON) return;
 	// check if we are in the clickable button zone
 	float fStartAlpha, fEndAlpha;
 	GetScrollZone(fStartAlpha, fEndAlpha);
