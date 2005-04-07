@@ -91,6 +91,11 @@ void CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   Correct(fx, fy);
   D3DVIEWPORT8 newviewport;
   Get3DDevice()->GetViewport(&m_oldviewport);
+  // check range
+  if (fx < 0) fx = 0;
+  if (fy < 0) fy = 0;
+  if (fx + fwidth > m_iScreenWidth) fwidth = (float)m_iScreenWidth - fx;
+  if (fy + fheight > m_iScreenHeight) fheight = (float)m_iScreenHeight - fy;
   newviewport.X = (DWORD)fx;
   newviewport.Y = (DWORD)fy;
   newviewport.Width = (DWORD)(fwidth);
