@@ -336,19 +336,19 @@ void CGUIWindowSettingsCategory::CreateSettings()
       FillInVisualisations(pSetting);
     }
     // Karaoke patch (114097) ...
-    else if (strSetting == "VoiceOnPort0.VoiceMask")
+    else if (strSetting == "Karaoke.Port0VoiceMask" /*"VoiceOnPort0.VoiceMask"*/)
     {
       FillInVoiceMasks(0, pSetting);
     }
-    else if (strSetting == "VoiceOnPort1.VoiceMask")
+    else if (strSetting == "Karaoke.Port1VoiceMask" /*"VoiceOnPort1.VoiceMask"*/)
     {
       FillInVoiceMasks(1, pSetting);
     }
-    else if (strSetting == "VoiceOnPort2.VoiceMask")
+    else if (strSetting == "Karaoke.Port2VoiceMask" /*"VoiceOnPort2.VoiceMask"*/)
     {
       FillInVoiceMasks(2, pSetting);
     }
-    else if (strSetting == "VoiceOnPort3.VoiceMask")
+    else if (strSetting == "Karaoke.Port3VoiceMask" /*"VoiceOnPort3.VoiceMask"*/)
     {
       FillInVoiceMasks(3, pSetting);
     }
@@ -624,234 +624,232 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                            (g_guiSettings.GetInt("CDDARipper.Quality") == CDDARIP_QUALITY_CBR));
     }
     // Karaoke patch (114097) ...
-    else if (strSetting == "VoiceOnPort0.VoiceMask")
+ /*   else if (strSetting == "VoiceOnPort0.VoiceMask")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort0.EnableDevice"));
-    }
+    }*/
     else if (strSetting == "VoiceOnPort0.EnablefSpecEnergyWeight")
     {
-      CStdString strControl = g_guiSettings.GetString("VoiceOnPort0.VoiceMask");
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort0.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort0.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort0.fSpecEnergyWeight")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort0.EnablefSpecEnergyWeight")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort0.EnablefSpecEnergyWeight")
                                            && (g_guiSettings.GetString("VoiceOnPort0.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort0.EnablefPitchScale")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort0.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort0.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort0.fPitchScale")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort0.EnablefPitchScale")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort0.EnablefPitchScale")
                                            && (g_guiSettings.GetString("VoiceOnPort0.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort0.EnablefWhisperValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort0.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort0.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort0.fWhisperValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort0.EnablefWhisperValue")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort0.EnablefWhisperValue")
                                            && (g_guiSettings.GetString("VoiceOnPort0.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort0.EnablefRoboticValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort0.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort0.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort0.fRoboticValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort0.EnablefRoboticValue")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort0.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort0.EnablefRoboticValue")
                                            && (g_guiSettings.GetString("VoiceOnPort0.VoiceMask").compare("Custom") == 0) );
     }
-    else if (strSetting == "VoiceOnPort1.VoiceMask")
+/*    else if (strSetting == "VoiceOnPort1.VoiceMask")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort1.EnableDevice"));
-    }
+    }*/
     else if (strSetting == "VoiceOnPort1.EnablefSpecEnergyWeight")
     {
-      CStdString strControl = g_guiSettings.GetString("VoiceOnPort1.VoiceMask");
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort1.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort1.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort1.fSpecEnergyWeight")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort1.EnablefSpecEnergyWeight")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort1.EnablefSpecEnergyWeight")
                                            && (g_guiSettings.GetString("VoiceOnPort1.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort1.EnablefPitchScale")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort1.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort1.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort1.fPitchScale")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort1.EnablefPitchScale")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort1.EnablefPitchScale")
                                            && (g_guiSettings.GetString("VoiceOnPort1.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort1.EnablefWhisperValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort1.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort1.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort1.fWhisperValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort1.EnablefWhisperValue")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort1.EnablefWhisperValue")
                                            && (g_guiSettings.GetString("VoiceOnPort1.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort1.EnablefRoboticValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort1.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort1.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort1.fRoboticValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort1.EnablefRoboticValue")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort1.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort1.EnablefRoboticValue")
                                            && (g_guiSettings.GetString("VoiceOnPort1.VoiceMask").compare("Custom") == 0) );
     }
-    else if (strSetting == "VoiceOnPort2.VoiceMask")
+/*    else if (strSetting == "VoiceOnPort2.VoiceMask")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort2.EnableDevice"));
-    }
+    }*/
     else if (strSetting == "VoiceOnPort2.EnablefSpecEnergyWeight")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort2.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort2.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort2.fSpecEnergyWeight")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort2.EnablefSpecEnergyWeight")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort2.EnablefSpecEnergyWeight")
                                            && (g_guiSettings.GetString("VoiceOnPort2.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort2.EnablefPitchScale")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort2.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort2.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort2.fPitchScale")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort2.EnablefPitchScale")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort2.EnablefPitchScale")
                                            && (g_guiSettings.GetString("VoiceOnPort2.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort2.EnablefWhisperValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort2.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort2.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort2.fWhisperValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort2.EnablefWhisperValue")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort2.EnablefWhisperValue")
                                            && (g_guiSettings.GetString("VoiceOnPort2.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort2.EnablefRoboticValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort2.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort2.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort2.fRoboticValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort2.EnablefRoboticValue")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort2.EnablefRoboticValue")
                                            && (g_guiSettings.GetString("VoiceOnPort2.VoiceMask").compare("Custom") == 0) );
     }
-    else if (strSetting == "VoiceOnPort3.VoiceMask")
+/*    else if (strSetting == "VoiceOnPort3.VoiceMask")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort3.EnableDevice"));
-    }
+    }*/
     else if (strSetting == "VoiceOnPort3.EnablefSpecEnergyWeight")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort3.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort3.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort3.fSpecEnergyWeight")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort3.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort3.EnablefSpecEnergyWeight")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort3.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort3.EnablefSpecEnergyWeight")
                                            && (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort3.EnablefPitchScale")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort3.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort3.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort3.fPitchScale")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort3.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort3.EnablefPitchScale")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort3.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort3.EnablefPitchScale")
                                            && (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort3.EnablefWhisperValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort3.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort3.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort3.fWhisperValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort3.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort3.EnablefWhisperValue")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort3.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort3.EnablefWhisperValue")
                                            && (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort3.EnablefRoboticValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort3.EnableDevice")
-                                           && (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort3.EnableDevice")
+                                           &&*/ (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
     }
     else if (strSetting == "VoiceOnPort3.fRoboticValue")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort2.EnableDevice")
-                                           && g_guiSettings.GetBool("VoiceOnPort3.EnablefRoboticValue")
+      if (pControl) pControl->SetEnabled(/*g_guiSettings.GetBool("VoiceOnPort3.EnableDevice")
+                                           &&*/ g_guiSettings.GetBool("VoiceOnPort3.EnablefRoboticValue")
                                            && (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
     }
     // ... Karaoke patch (114097)
@@ -1041,33 +1039,33 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("MyMusic.Repeat"));
   }
   // Karaoke patch (114097) ...
-  else if (strSetting == "VoiceOnPort0.VoiceMask")
+  else if (strSetting == "Karaoke.Port0VoiceMask" /*"VoiceOnPort0.VoiceMask"*/)
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    g_guiSettings.SetString("VoiceOnPort0.VoiceMask", pControl->GetCurrentLabel());
-    FillInVoiceMaskValues(0, g_guiSettings.GetSetting("VoiceOnPort0.VoiceMask"));
+    g_guiSettings.SetString("Karaoke.Port0VoiceMask" /*"VoiceOnPort0.VoiceMask"*/, pControl->GetCurrentLabel());
+    FillInVoiceMaskValues(0, g_guiSettings.GetSetting("Karaoke.Port0VoiceMask" /*"VoiceOnPort0.VoiceMask"*/));
   }
-  else if (strSetting == "VoiceOnPort1.VoiceMask")
+  else if (strSetting == "Karaoke.Port1VoiceMask" /*"VoiceOnPort1.VoiceMask"*/)
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    g_guiSettings.SetString("VoiceOnPort1.VoiceMask", pControl->GetCurrentLabel());
-    FillInVoiceMaskValues(1, g_guiSettings.GetSetting("VoiceOnPort1.VoiceMask"));
+    g_guiSettings.SetString("Karaoke.Port1VoiceMask" /*"VoiceOnPort1.VoiceMask"*/, pControl->GetCurrentLabel());
+    FillInVoiceMaskValues(1, g_guiSettings.GetSetting("Karaoke.Port1VoiceMask" /*"VoiceOnPort1.VoiceMask"*/));
   }
-  else if (strSetting == "VoiceOnPort2.VoiceMask")
+  else if (strSetting == "Karaoke.Port2VoiceMask" /*"VoiceOnPort2.VoiceMask"*/)
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    g_guiSettings.SetString("VoiceOnPort2.VoiceMask", pControl->GetCurrentLabel());
-    FillInVoiceMaskValues(2, g_guiSettings.GetSetting("VoiceOnPort2.VoiceMask"));
+    g_guiSettings.SetString("Karaoke.Port2VoiceMask" /*"VoiceOnPort2.VoiceMask"*/, pControl->GetCurrentLabel());
+    FillInVoiceMaskValues(2, g_guiSettings.GetSetting("Karaoke.Port2VoiceMask" /*"VoiceOnPort2.VoiceMask"*/));
   }
-  else if (strSetting == "VoiceOnPort3.VoiceMask")
+  else if (strSetting == "Karaoke.Port2VoiceMask" /*"VoiceOnPort3.VoiceMask"*/)
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("VoiceOnPort3.VoiceMask", pControl->GetCurrentLabel());
-    FillInVoiceMaskValues(3, g_guiSettings.GetSetting("VoiceOnPort3.VoiceMask"));
+    FillInVoiceMaskValues(3, g_guiSettings.GetSetting("Karaoke.Port2VoiceMask" /*"VoiceOnPort3.VoiceMask"*/));
   }
   // ... Karaoke patch (114097)
   else if (strSetting == "MusicLibrary.Cleanup")
@@ -1849,9 +1847,9 @@ void CGUIWindowSettingsCategory::FillInVoiceMasks(DWORD dwPort, CSetting *pSetti
   CStdString strDefaultMask = pSettingString->GetData();
 
   sort(vecMask.begin(), vecMask.end(), sortstringbyname());
-  CStdString strCustom = "Custom";
+//  CStdString strCustom = "Custom";
   CStdString strNone = "None";
-  vecMask.insert(vecMask.begin(), strCustom);
+//  vecMask.insert(vecMask.begin(), strCustom);
   vecMask.insert(vecMask.begin(), strNone);
   for (int i = 0; i < (int) vecMask.size(); ++i)
   {
