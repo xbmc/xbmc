@@ -521,6 +521,16 @@
   <string><id>757</id><value>Ändra sökvägs djup</value></string>
   <string><id>758</id><value>Radera program länk</value></string>  
   <string><id>759</id><value>Vy: Stor Lista</value></string>
+  <string><id>760</id><value>Gul</value></string>
+  <string><id>761</id><value>Vit</value></string>
+  <string><id>762</id><value>Blå</value></string>
+  <string><id>763</id><value>Ljus Grön</value></string>
+  <string><id>764</id><value>Gul Grön</value></string>
+  <string><id>765</id><value>Cyan</value></string>
+  <string><id>766</id><value>Reserverad</value></string>
+  <string><id>767</id><value>Reserverad</value></string>
+  <string><id>768</id><value>Reserverad</value></string>
+  <string><id>769</id><value>Reserverad</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Online Spel</value></string>
   <string><id>1000</id><value>Förhandstitt av skärmsläckare</value></string>
