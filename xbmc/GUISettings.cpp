@@ -377,7 +377,7 @@ CGUISettings::CGUISettings(void)
   AddString(1, "Subtitles.Font", 288, "arial-iso-8859-1", SPIN_CONTROL_TEXT);
   AddInt(2, "Subtitles.Height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
   AddInt(3, "Subtitles.Style", 736, XFONT_BOLD, XFONT_NORMAL, 1, XFONT_BOLDITALICS, SPIN_CONTROL_TEXT);
-  AddInt(4, "Subtitles.Color", 737, SUBTITLE_COLOR_YELLOW, SUBTITLE_COLOR_YELLOW, 1, SUBTITLE_COLOR_WHITE, SPIN_CONTROL_TEXT);
+  AddInt(4, "Subtitles.Color", 737, SUBTITLE_COLOR_START, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
   AddString(5, "Subtitles.CharSet", 735, "ISO-8859-1", SPIN_CONTROL_TEXT);
   AddBool(6, "Subtitles.FlipBiDiCharSet", 13304, false);
   AddInt(7, "Subtitles.EnlargePercentage", 492, 100, 30, 10, 200, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);

@@ -51,6 +51,9 @@
 #define LABEL_CURRENT_TIME 22
 
 extern IDirectSoundRenderer* m_pAudioDecoder;
+
+static DWORD color[6] = { 0xFFFF00, 0xFFFFFF, 0x0099FF, 0x00FF00, 0xCCFF00, 0x00FFFF };
+
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
     : CGUIWindow(0)
 {
@@ -841,7 +844,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       m_subtitleFont->DrawText(x + outlinewidth, y, 0, subtitleText.c_str(), XBFONT_CENTER_X);
       m_subtitleFont->DrawText(x, y + outlinewidth, 0, subtitleText.c_str(), XBFONT_CENTER_X);
       m_subtitleFont->DrawText(x, y - outlinewidth, 0, subtitleText.c_str(), XBFONT_CENTER_X);
-      m_subtitleFont->DrawText(x, y, g_guiSettings.GetInt("Subtitles.Color") == SUBTITLE_COLOR_YELLOW ? 0xFFFF00 : 0xFFFFFF, subtitleText.c_str(), XBFONT_CENTER_X);
+      m_subtitleFont->DrawText(x, y, color[g_guiSettings.GetInt("Subtitles.Color")], subtitleText.c_str(), XBFONT_CENTER_X);
     }
   }
 }
