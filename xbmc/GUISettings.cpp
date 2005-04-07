@@ -215,9 +215,14 @@ CGUISettings::CGUISettings(void)
 
   // Karaoke patch (114097) ...
   AddBool(5, "Karaoke.VoiceEnabled", 13361, false);
+  AddString(6, "Karaoke.Port0VoiceMask", 13382, "None", SPIN_CONTROL_TEXT);
+  AddString(7, "Karaoke.Port1VoiceMask", 13383, "None", SPIN_CONTROL_TEXT);
+  AddString(8, "Karaoke.Port2VoiceMask", 13384, "None", SPIN_CONTROL_TEXT);
+  AddString(9, "Karaoke.Port3VoiceMask", 13385, "None", SPIN_CONTROL_TEXT);
+  AddInt(10, "Karaoke.Volume", 13376, 100, 0, 1, 100, SPIN_CONTROL_INT, MASK_PERCENT);
 
-  AddCategory(3, "VoiceOnPort0", 13371);
-  AddBool(2, "VoiceOnPort0.EnableDevice", 13375, false);
+//  AddCategory(3, "VoiceOnPort0", 13371);
+//  AddBool(2, "VoiceOnPort0.EnableDevice", 13375, false);
   AddInt(3, "VoiceOnPort0.Volume", 13376, 100, 0, 1 , 100, SPIN_CONTROL_INT);
   AddString(4, "VoiceOnPort0.VoiceMask", 13362, "None", SPIN_CONTROL_TEXT);
   AddBool(5, "VoiceOnPort0.EnablefSpecEnergyWeight", 13363, false);
@@ -229,8 +234,8 @@ CGUISettings::CGUISettings(void)
   AddBool(11, "VoiceOnPort0.EnablefRoboticValue", 13369, false);
   AddFloat(12, "VoiceOnPort0.fRoboticValue", 13370, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
 
-  AddCategory(3, "VoiceOnPort1", 13372);
-  AddBool(2, "VoiceOnPort1.EnableDevice", 13375, false);
+//  AddCategory(3, "VoiceOnPort1", 13372);
+//  AddBool(2, "VoiceOnPort1.EnableDevice", 13375, false);
   AddInt(3, "VoiceOnPort1.Volume", 13376, 100, 0, 1 , 100, SPIN_CONTROL_INT);
   AddString(4, "VoiceOnPort1.VoiceMask", 13362, "None", SPIN_CONTROL_TEXT);
   AddBool(5, "VoiceOnPort1.EnablefSpecEnergyWeight", 13363, false);
@@ -242,8 +247,8 @@ CGUISettings::CGUISettings(void)
   AddBool(11, "VoiceOnPort1.EnablefRoboticValue", 13369, false);
   AddFloat(12, "VoiceOnPort1.fRoboticValue", 13370, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
 
-  AddCategory(3, "VoiceOnPort2", 13373);
-  AddBool(2, "VoiceOnPort2.EnableDevice", 13375, false);
+//  AddCategory(3, "VoiceOnPort2", 13373);
+//  AddBool(2, "VoiceOnPort2.EnableDevice", 13375, false);
   AddInt(3, "VoiceOnPort2.Volume", 13376, 100, 0, 1 , 100, SPIN_CONTROL_INT);
   AddString(4, "VoiceOnPort2.VoiceMask", 13362, "None", SPIN_CONTROL_TEXT);
   AddBool(5, "VoiceOnPort2.EnablefSpecEnergyWeight", 13363, false);
@@ -255,8 +260,8 @@ CGUISettings::CGUISettings(void)
   AddBool(11, "VoiceOnPort2.EnablefRoboticValue", 13369, false);
   AddFloat(12, "VoiceOnPort2.fRoboticValue", 13370, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
 
-  AddCategory(3, "VoiceOnPort3", 13374);
-  AddBool(2, "VoiceOnPort3.EnableDevice", 13375, false);
+//  AddCategory(3, "VoiceOnPort3", 13374);
+//  AddBool(2, "VoiceOnPort3.EnableDevice", 13375, false);
   AddInt(3, "VoiceOnPort3.Volume", 13376, 100, 0, 1 , 100, SPIN_CONTROL_INT);
   AddString(4, "VoiceOnPort3.VoiceMask", 13362, "None", SPIN_CONTROL_TEXT);
   AddBool(5, "VoiceOnPort3.EnablefSpecEnergyWeight", 13363, false);
