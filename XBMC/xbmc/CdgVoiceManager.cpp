@@ -176,15 +176,15 @@ void CCdgChatter::Shutdown()
 void CCdgChatter::LoadSettings()
 {
   // Get the Max volume
-  CStdString strSetting;
-  strSetting.Format("VoiceOnPort%i.Volume", m_dwPort);
+  CStdString strSetting = "Karaoke.Volume";
+//  strSetting.Format("VoiceOnPort%i.Volume", m_dwPort);
   int iPercent = g_guiSettings.GetInt(strSetting);
   if (iPercent < 0) iPercent = 0;
   if (iPercent > 100) iPercent = 100;
   float fHardwareVolume = ((float)iPercent) / 100.0f * (VOLUME_MAXIMUM - VOLUME_MINIMUM) + VOLUME_MINIMUM;
   m_lVolume = (long)fHardwareVolume;
   //Load the voice mask
-  strSetting.Format("VoiceOnPort%i.VoiceMask", m_dwPort);
+  strSetting.Format("Karaoke.Port%iVoiceMask" /*"VoiceOnPort%i.VoiceMask"*/, m_dwPort);
   strSetting = g_guiSettings.GetString(strSetting);
   if (strSetting.CompareNoCase("None") == 0)
   {
@@ -497,7 +497,7 @@ void CCdgVoiceManager::Initialize( CDG_VOICE_MANAGER_CONFIG* pConfig )
   // Grab the config parameters
   memcpy( &m_cfg, pConfig, sizeof( CDG_VOICE_MANAGER_CONFIG ) );
 
-  CStdString strSetting;
+ /* CStdString strSetting;
   for (DWORD i = 0; i < XGetPortCount(); i++)
   {
     strSetting.Format("VoiceOnPort%i.EnableDevice", i );
@@ -505,7 +505,7 @@ void CCdgVoiceManager::Initialize( CDG_VOICE_MANAGER_CONFIG* pConfig )
       m_bEnabled[i] = true;
     else
       m_bEnabled[i] = false;
-  }
+  }*/
   //Update the starting voice device states
   DWORD dwComHeadMask = XGetDevices(XDEVICE_TYPE_VOICE_HEADPHONE);
   DWORD dwComMikeMask = XGetDevices(XDEVICE_TYPE_VOICE_MICROPHONE);
@@ -586,7 +586,7 @@ HRESULT CCdgVoiceManager::CheckDeviceChanges()
 HRESULT CCdgVoiceManager::OnVoiceDeviceInserted( DWORD dwPort, CDG_DEVICE_TYPE DeviceType )
 {
   if (dwPort < 0 || dwPort >= XGetPortCount() ) return E_FAIL;
-  if ( !m_bEnabled[dwPort] ) return S_OK;
+//  if ( !m_bEnabled[dwPort] ) return S_OK;
 
   HRESULT hr = m_Chatters[dwPort].Initialize(this, dwPort, DeviceType);
   if ( FAILED(hr) ) goto Cleanup;
@@ -634,7 +634,7 @@ HRESULT CCdgVoiceManager::EnableVoiceDevice( DWORD dwPort, bool bEnabled )
   // All we need to do is set the flag - if a communicator is currently
   // plugged in, it will be picked up in the next call to
   // CheckDeviceChanges
-  m_bEnabled[dwPort] = bEnabled;
+/*  m_bEnabled[dwPort] = bEnabled;
   if ( !bEnabled )
   {
     // Pretend the communicator was removed.  Having the enabled flag
@@ -644,7 +644,7 @@ HRESULT CCdgVoiceManager::EnableVoiceDevice( DWORD dwPort, bool bEnabled )
     else
       if ( m_dwConnectedHiFiMicrophones & ( 1 << dwPort ) )
         OnVoiceDeviceRemoved( dwPort, HIFI_MICROPHONE );
-  }
+  }*/
   return S_OK;
 }
 
