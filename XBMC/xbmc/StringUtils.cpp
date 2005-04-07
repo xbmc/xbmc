@@ -84,6 +84,7 @@ bool StringUtils::AlphaNumericCompare(const char *left, const char *right)
   char *l = (char *)left;
   char *r = (char *)right;
   char *ld, *rd;
+  char lc, rc;
   unsigned int lnum, rnum;
   while (*l != 0 && *r != 0)
   {
@@ -113,10 +114,17 @@ bool StringUtils::AlphaNumericCompare(const char *left, const char *right)
       r = rd;
       continue;
     }
+    // do case less comparison
+    lc = *l;
+    if (lc >= 'A' && lc <= 'Z')
+      lc += 'a'-'A';
+    rc = *r;
+    if (rc >= 'A' && rc <= 'Z')
+      rc += 'a'-'A';
     // ok, do a normal comparison.  Add special case stuff (eg '(' characters)) in here later
-    if (*l != *r)
+    if (lc  != rc)
     {
-      return *l < *r;
+      return lc < rc;
     }
     l++; r++;
   }
