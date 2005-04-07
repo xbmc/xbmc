@@ -14,8 +14,8 @@
 
 // Subtitle colours
 
-#define SUBTITLE_COLOR_YELLOW   0
-#define SUBTITLE_COLOR_WHITE   1
+#define SUBTITLE_COLOR_START  0
+#define SUBTITLE_COLOR_END    5
 
 // CDDA ripper defines
 #define CDDARIP_ENCODER_LAME     0
