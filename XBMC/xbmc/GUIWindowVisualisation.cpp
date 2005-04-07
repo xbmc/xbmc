@@ -112,9 +112,14 @@ void CGUIWindowVisualisation::FreeResources()
 void CGUIWindowVisualisation::OnWindowLoaded()
 {
   // Check if we have a vis control...
-  if (GetControl(CONTROL_VISUALISATION))
-    return;
-  CGUIVisualisationControl *pVisControl = new CGUIVisualisationControl(GetID(), CONTROL_VISUALISATION, 0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight());
+  for (unsigned int i = 0; i < m_vecControls.size(); i++)
+  {
+    CGUIControl *pControl = m_vecControls[i];
+    if (pControl->GetControlType() == CGUIControl::GUICONTROL_VISUALISATION)
+      return;
+  }
+  // not found - let's add a new one
+  CGUIVisualisationControl *pVisControl = new CGUIVisualisationControl(GetID(), 0, 0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight());
   if (pVisControl)
   {
     Add(pVisControl);
