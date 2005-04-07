@@ -57,8 +57,12 @@ void CASyncDirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
       memcpy(m_VisBuffer + m_VisBytes, pPacketContext, m_dwPacketSize);
       m_VisBytes += m_dwPacketSize;
     }
-    else
-      CLog::DebugLog("Vis buffer overflow");
+    // COMMENTED by JM 6 April 2005.
+    // This causes hardlockups when CLog::Log() then attempts to log.
+    // removing the CSingleLock lock(critSec) in CLog::Log() also prevents
+    // the lockup, but this is a much better hack-fix.
+//    else
+//      CLog::DebugLog("Vis buffer overflow");
   }
 }
 

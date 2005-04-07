@@ -377,6 +377,9 @@
 				RelativePath=".\GUIVideoControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIVisualisationControl.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIWindow.cpp">
 			</File>
 			<File
@@ -566,6 +569,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIVideoControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIVisualisationControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIWindow.h">
