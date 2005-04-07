@@ -31,6 +31,7 @@
 #include "GUIInfoLabelControl.h"
 #include "GUIInfoFadeLabelControl.h"
 #include "GUIInfoImage.h"
+#include "GUIVisualisationControl.h"
 #include "../xbmc/util.h"
 
 CGUIControlFactory::CGUIControlFactory(void)
@@ -704,6 +705,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureNoFocus = ((CGUISpinControlEx*)pReference)->GetTextureNoFocusName();
       strLabel = ((CGUISpinControlEx*)pReference)->GetLabel();
     }
+    else if (strType == "visualisation")
+    { // nothing to do here
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -942,7 +946,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     return pControl;
   }
-  if (strType == "infolabel")
+  else if (strType == "infolabel")
   {
     CGUIInfoLabelControl* pControl = new CGUIInfoLabelControl(
                                        dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -954,7 +958,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetInfo(vecInfo[0]);
     return pControl;
   }
-  if (strType == "edit")
+  else if (strType == "edit")
   {
     CGUIEditControl* pControl = new CGUIEditControl(
                                   dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -964,14 +968,14 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     return pControl;
   }
-  if (strType == "videowindow")
+  else if (strType == "videowindow")
   {
     CGUIVideoControl* pControl = new CGUIVideoControl(
                                    dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight);
 
     return pControl;
   }
-  if (strType == "fadelabel")
+  else if (strType == "fadelabel")
   {
     CGUIFadeLabelControl* pControl = new CGUIFadeLabelControl(
                                        dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -981,7 +985,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     return pControl;
   }
-  if (strType == "infofadelabel")
+  else if (strType == "infofadelabel")
   {
     CGUIInfoFadeLabelControl* pControl = new CGUIInfoFadeLabelControl(
                                            dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -992,7 +996,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetInfo(vecInfo);
     return pControl;
   }
-  if (strType == "spinbutton")
+  else if (strType == "spinbutton")
   {
     CGUISpinButtonControl* pControl = new CGUISpinButtonControl(
                                         dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1006,8 +1010,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     return pControl;
   }
-
-  if (strType == "rss")
+  else if (strType == "rss")
   {
     CGUIRSSControl* pControl = new CGUIRSSControl(
                                  dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1017,7 +1020,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     return pControl;
   }
-  if (strType == "ram")
+  else if (strType == "ram")
   {
     CGUIRAMControl* pControl = new CGUIRAMControl(
                                  dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1031,7 +1034,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     return pControl;
   }
-  if (strType == "console")
+  else if (strType == "console")
   {
     CGUIConsoleControl* pControl = new CGUIConsoleControl(
                                      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1041,7 +1044,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     return pControl;
   }
-  if (strType == "button")
+  else if (strType == "button")
   {
     CGUIButtonControl* pControl = new CGUIButtonControl(
                                     dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1057,7 +1060,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     return pControl;
   }
-  if (strType == "conditionalbutton")
+  else if (strType == "conditionalbutton")
   {
     CGUIConditionalButtonControl* pControl = new CGUIConditionalButtonControl(
           dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1073,7 +1076,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     return pControl;
   }
-  if (strType == "togglebutton")
+  else if (strType == "togglebutton")
   {
     CGUIToggleButtonControl* pControl = new CGUIToggleButtonControl(
                                           dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1090,7 +1093,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetToggleSelect(strToggleSelect);
     return pControl;
   }
-  if (strType == "buttonM")
+  else if (strType == "buttonM")
   {
     CGUIMButtonControl* pControl = new CGUIMButtonControl(
                                      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1105,7 +1108,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     return pControl;
   }
-  if (strType == "checkmark")
+  else if (strType == "checkmark")
   {
     CGUICheckMarkControl* pControl = new CGUICheckMarkControl(
                                        dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1120,7 +1123,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetShadow(bShadow);
     return pControl;
   }
-  if (strType == "radiobutton")
+  else if (strType == "radiobutton")
   {
     CGUIRadioButtonControl* pControl = new CGUIRadioButtonControl(
                                          dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1136,7 +1139,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     return pControl;
   }
-  if (strType == "spincontrol")
+  else if (strType == "spincontrol")
   {
     CGUISpinControl* pControl = new CGUISpinControl(
                                   dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1165,7 +1168,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     return pControl;
   }
-  if (strType == "slider")
+  else if (strType == "slider")
   {
     CGUISliderControl* pControl = new CGUISliderControl(
                                     dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1177,7 +1180,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetControlOffsetY(iControlOffsetY);
     return pControl;
   }
-  if (strType == "progress")
+  else if (strType == "progress")
   {
     CGUIProgressControl* pControl = new CGUIProgressControl(
                                       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1186,7 +1189,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     return pControl;
   }
-  if (strType == "image")
+  else if (strType == "image")
   {
     CGUIImage* pControl = new CGUIImage(
                             dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, strTexture, dwColorKey);
@@ -1197,7 +1200,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     return pControl;
   }
-  if (strType == "infoimage")
+  else if (strType == "infoimage")
   {
     CGUIInfoImage* pControl = new CGUIInfoImage(
                                 dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, strTexture, dwColorKey);
@@ -1209,7 +1212,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetInfo(vecInfo[0]);
     return pControl;
   }
-  if (strType == "listcontrol")
+  else if (strType == "listcontrol")
   {
     CGUIListControl* pControl = new CGUIListControl(
                                   dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1235,7 +1238,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetFont2( strFont2 );
     return pControl;
   }
-  if (strType == "listcontrolex")
+  else if (strType == "listcontrolex")
   {
     CGUIListControlEx* pControl = new CGUIListControlEx(
                                     dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1259,7 +1262,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetFont2( strFont2 );
     return pControl;
   }
-  if (strType == "textbox")
+  else if (strType == "textbox")
   {
     CGUITextBox* pControl = new CGUITextBox(
                               dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1275,7 +1278,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     return pControl;
   }
-  if (strType == "thumbnailpanel")
+  else if (strType == "thumbnailpanel")
   {
     CGUIThumbnailPanel* pControl = new CGUIThumbnailPanel(
                                      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1308,7 +1311,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     return pControl;
   }
-  if (strType == "selectbutton")
+  else if (strType == "selectbutton")
   {
     CGUISelectButtonControl* pControl = new CGUISelectButtonControl(
                                           dwParentId, dwID, iPosX, iPosY,
@@ -1323,21 +1326,21 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     return pControl;
   }
-  if (strType == "mover")
+  else if (strType == "mover")
   {
     CGUIMoverControl* pControl = new CGUIMoverControl(
                                    dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
                                    strTextureFocus, strTextureNoFocus);
     return pControl;
   }
-  if (strType == "resize")
+  else if (strType == "resize")
   {
     CGUIResizeControl* pControl = new CGUIResizeControl(
                                     dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
                                     strTextureFocus, strTextureNoFocus);
     return pControl;
   }
-  if (strType == "buttonscroller")
+  else if (strType == "buttonscroller")
   {
     CGUIButtonScroller* pControl = new CGUIButtonScroller(
                                      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, iButtonGap, iNumSlots, iDefaultSlot,
@@ -1347,7 +1350,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     return pControl;
   }
-  if (strType == "spincontrolex")
+  else if (strType == "spincontrolex")
   {
     CGUISpinControlEx* pControl = new CGUISpinControlEx(
                                     dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, dwSpinWidth, dwSpinHeight,
@@ -1362,6 +1365,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetLabel(strLabel);
     return pControl;
   }
-
+  else if (strType == "visualisation")
+  {
+    CGUIVisualisationControl* pControl = new CGUIVisualisationControl(dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight);
+    return pControl;
+  }
   return NULL;
 }
