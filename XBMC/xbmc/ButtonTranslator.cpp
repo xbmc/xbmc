@@ -40,24 +40,33 @@ bool CButtonTranslator::Load()
     //OutputDebugString("GLOBAL:\n");
     while (pAction)
     {
-      TiXmlNode* pNode = pAction->FirstChild("id");
       WORD wID = 0;    // action identity
       CStdString strID;
-      if (pNode)
+      // check for an <execute> tag first...
+      TiXmlNode* pExecute = pAction->FirstChild("execute");
+      if (pExecute && pExecute->FirstChild())
       {
-        if (pNode->FirstChild())
+        strID = pExecute->FirstChild()->Value();
+        wID = ACTION_BUILT_IN_FUNCTION;
+      }
+      else
+      {
+        TiXmlNode* pNode = pAction->FirstChild("id");
+        if (pNode)
         {
-          strID = pNode->FirstChild()->Value();
-          if (CUtil::IsBuiltIn(strID))
-            wID = ACTION_BUILT_IN_FUNCTION;
-          else
-            wID = (WORD)atol(strID);
+          if (pNode->FirstChild())
+          {
+            strID = pNode->FirstChild()->Value();
+            if (CUtil::IsBuiltIn(strID))
+              wID = ACTION_BUILT_IN_FUNCTION;
+            else
+              wID = (WORD)atol(strID);
+          }
         }
       }
       if (wID > 0)
       { // valid id, get the buttons associated with this action...
         MapAction(wID, strID, pAction->FirstChild(), map);
-        pNode = pAction->FirstChild();
       }
       pAction = pAction->NextSibling();
     }
@@ -82,24 +91,33 @@ bool CButtonTranslator::Load()
       TiXmlNode* pAction = pWindow->FirstChild("action");
       while (pAction)
       {
-        TiXmlNode* pNode = pAction->FirstChild("id");
-        WORD wID = 0;    // action identity
         CStdString strID;
-        if (pNode)
+        WORD wID = 0;    // action identity
+        // check for an <execute> tag first...
+        TiXmlNode* pExecute = pAction->FirstChild("execute");
+        if (pExecute && pExecute->FirstChild())
         {
-          if (pNode->FirstChild())
+          strID = pExecute->FirstChild()->Value();
+          wID = ACTION_BUILT_IN_FUNCTION;
+        }
+        else
+        {
+          TiXmlNode* pNode = pAction->FirstChild("id");
+          if (pNode)
           {
-            strID = pNode->FirstChild()->Value();
-            if (CUtil::IsBuiltIn(strID))
-              wID = ACTION_BUILT_IN_FUNCTION;
-            else
-              wID = (WORD)atol(strID);
+            if (pNode->FirstChild())
+            {
+              strID = pNode->FirstChild()->Value();
+              if (CUtil::IsBuiltIn(strID))
+                wID = ACTION_BUILT_IN_FUNCTION;
+              else
+                wID = (WORD)atol(strID);
+            }
           }
         }
         if (wID > 0)
         { // valid id, get the buttons associated with this action...
           MapAction(wID, strID, pAction->FirstChild(), map);
-          pNode = pAction->FirstChild();
         }
         pAction = pAction->NextSibling();
       }
@@ -132,33 +150,33 @@ void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action
   {
     action.fAmount1 = (float)key.GetLeftTrigger() / 255.0f;
   }
-  if (key.GetButtonCode() == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
   {
     action.fAmount1 = (float)key.GetRightTrigger() / 255.0f;
   }
-  if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK)
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK)
   {
     action.fAmount1 = key.GetLeftThumbX();
     action.fAmount2 = key.GetLeftThumbY();
   }
-  if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK)
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK)
   {
     action.fAmount1 = key.GetRightThumbX();
     action.fAmount2 = key.GetRightThumbY();
   }
-  if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_UP || key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_UP || key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
   {
     action.fAmount1 = key.GetLeftThumbY();
   }
-  if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_LEFT || key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_LEFT || key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
   {
     action.fAmount1 = key.GetLeftThumbX();
   }
-  if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_UP || key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_UP || key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
   {
     action.fAmount1 = key.GetRightThumbY();
   }
-  if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT || key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT || key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
   {
     action.fAmount1 = key.GetRightThumbX();
   }
@@ -195,92 +213,92 @@ void CButtonTranslator::MapAction(WORD wAction, const CStdString &strAction, TiX
         strButton = pNode->FirstChild()->Value();
       else strButton = "";
       if (strButton == "A") wButtonCode = KEY_BUTTON_A;
-      if (strButton == "B") wButtonCode = KEY_BUTTON_B;
-      if (strButton == "X") wButtonCode = KEY_BUTTON_X;
-      if (strButton == "Y") wButtonCode = KEY_BUTTON_Y;
-      if (strButton == "white") wButtonCode = KEY_BUTTON_WHITE;
-      if (strButton == "black") wButtonCode = KEY_BUTTON_BLACK;
-      if (strButton == "start") wButtonCode = KEY_BUTTON_START;
-      if (strButton == "back") wButtonCode = KEY_BUTTON_BACK;
-      if (strButton == "leftthumbbutton") wButtonCode = KEY_BUTTON_LEFT_THUMB_BUTTON;
-      if (strButton == "rightthumbbutton") wButtonCode = KEY_BUTTON_RIGHT_THUMB_BUTTON;
-      if (strButton == "leftthumbstick") wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK;
-      if (strButton == "leftthumbstickup") wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_UP;
-      if (strButton == "leftthumbstickdown") wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
-      if (strButton == "leftthumbstickleft") wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
-      if (strButton == "leftthumbstickright") wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
-      if (strButton == "rightthumbstick") wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK;
-      if (strButton == "rightthumbstickup") wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
-      if (strButton == "rightthumbstickdown") wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
-      if (strButton == "rightthumbstickleft") wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
-      if (strButton == "rightthumbstickright") wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
-      if (strButton == "lefttrigger") wButtonCode = KEY_BUTTON_LEFT_TRIGGER;
-      if (strButton == "righttrigger") wButtonCode = KEY_BUTTON_RIGHT_TRIGGER;
-      if (strButton == "leftanalogtrigger") wButtonCode = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
-      if (strButton == "rightanalogtrigger") wButtonCode = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
-      if (strButton == "dpadleft") wButtonCode = KEY_BUTTON_DPAD_LEFT;
-      if (strButton == "dpadright") wButtonCode = KEY_BUTTON_DPAD_RIGHT;
-      if (strButton == "dpadup") wButtonCode = KEY_BUTTON_DPAD_UP;
-      if (strButton == "dpaddown") wButtonCode = KEY_BUTTON_DPAD_DOWN;
+      else if (strButton == "B") wButtonCode = KEY_BUTTON_B;
+      else if (strButton == "X") wButtonCode = KEY_BUTTON_X;
+      else if (strButton == "Y") wButtonCode = KEY_BUTTON_Y;
+      else if (strButton == "white") wButtonCode = KEY_BUTTON_WHITE;
+      else if (strButton == "black") wButtonCode = KEY_BUTTON_BLACK;
+      else if (strButton == "start") wButtonCode = KEY_BUTTON_START;
+      else if (strButton == "back") wButtonCode = KEY_BUTTON_BACK;
+      else if (strButton == "leftthumbbutton") wButtonCode = KEY_BUTTON_LEFT_THUMB_BUTTON;
+      else if (strButton == "rightthumbbutton") wButtonCode = KEY_BUTTON_RIGHT_THUMB_BUTTON;
+      else if (strButton == "leftthumbstick") wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK;
+      else if (strButton == "leftthumbstickup") wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_UP;
+      else if (strButton == "leftthumbstickdown") wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
+      else if (strButton == "leftthumbstickleft") wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
+      else if (strButton == "leftthumbstickright") wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
+      else if (strButton == "rightthumbstick") wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK;
+      else if (strButton == "rightthumbstickup") wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
+      else if (strButton == "rightthumbstickdown") wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
+      else if (strButton == "rightthumbstickleft") wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
+      else if (strButton == "rightthumbstickright") wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+      else if (strButton == "lefttrigger") wButtonCode = KEY_BUTTON_LEFT_TRIGGER;
+      else if (strButton == "righttrigger") wButtonCode = KEY_BUTTON_RIGHT_TRIGGER;
+      else if (strButton == "leftanalogtrigger") wButtonCode = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
+      else if (strButton == "rightanalogtrigger") wButtonCode = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
+      else if (strButton == "dpadleft") wButtonCode = KEY_BUTTON_DPAD_LEFT;
+      else if (strButton == "dpadright") wButtonCode = KEY_BUTTON_DPAD_RIGHT;
+      else if (strButton == "dpadup") wButtonCode = KEY_BUTTON_DPAD_UP;
+      else if (strButton == "dpaddown") wButtonCode = KEY_BUTTON_DPAD_DOWN;
     }
-    if (strNode == "remote")
+    else if (strNode == "remote")
     {
       if (pNode->FirstChild())
         strButton = pNode->FirstChild()->Value();
       else
         strButton = "";
       if (strButton == "left") wButtonCode = XINPUT_IR_REMOTE_LEFT;
-      if (strButton == "right") wButtonCode = XINPUT_IR_REMOTE_RIGHT;
-      if (strButton == "up") wButtonCode = XINPUT_IR_REMOTE_UP;
-      if (strButton == "down") wButtonCode = XINPUT_IR_REMOTE_DOWN;
-      if (strButton == "select") wButtonCode = XINPUT_IR_REMOTE_SELECT;
-      if (strButton == "back") wButtonCode = XINPUT_IR_REMOTE_BACK;
-      if (strButton == "menu") wButtonCode = XINPUT_IR_REMOTE_MENU;
-      if (strButton == "info") wButtonCode = XINPUT_IR_REMOTE_INFO;
-      if (strButton == "display") wButtonCode = XINPUT_IR_REMOTE_DISPLAY;
-      if (strButton == "title") wButtonCode = XINPUT_IR_REMOTE_TITLE;
-      if (strButton == "play") wButtonCode = XINPUT_IR_REMOTE_PLAY;
-      if (strButton == "pause") wButtonCode = XINPUT_IR_REMOTE_PAUSE;
-      if (strButton == "reverse") wButtonCode = XINPUT_IR_REMOTE_REVERSE;
-      if (strButton == "forward") wButtonCode = XINPUT_IR_REMOTE_FORWARD;
-      if (strButton == "skipplus") wButtonCode = XINPUT_IR_REMOTE_SKIP_PLUS;
-      if (strButton == "skipminus") wButtonCode = XINPUT_IR_REMOTE_SKIP_MINUS;
-      if (strButton == "stop") wButtonCode = XINPUT_IR_REMOTE_STOP;
-      if (strButton == "0") wButtonCode = XINPUT_IR_REMOTE_0;
-      if (strButton == "1") wButtonCode = XINPUT_IR_REMOTE_1;
-      if (strButton == "2") wButtonCode = XINPUT_IR_REMOTE_2;
-      if (strButton == "3") wButtonCode = XINPUT_IR_REMOTE_3;
-      if (strButton == "4") wButtonCode = XINPUT_IR_REMOTE_4;
-      if (strButton == "5") wButtonCode = XINPUT_IR_REMOTE_5;
-      if (strButton == "6") wButtonCode = XINPUT_IR_REMOTE_6;
-      if (strButton == "7") wButtonCode = XINPUT_IR_REMOTE_7;
-      if (strButton == "8") wButtonCode = XINPUT_IR_REMOTE_8;
-      if (strButton == "9") wButtonCode = XINPUT_IR_REMOTE_9;
+      else if (strButton == "right") wButtonCode = XINPUT_IR_REMOTE_RIGHT;
+      else if (strButton == "up") wButtonCode = XINPUT_IR_REMOTE_UP;
+      else if (strButton == "down") wButtonCode = XINPUT_IR_REMOTE_DOWN;
+      else if (strButton == "select") wButtonCode = XINPUT_IR_REMOTE_SELECT;
+      else if (strButton == "back") wButtonCode = XINPUT_IR_REMOTE_BACK;
+      else if (strButton == "menu") wButtonCode = XINPUT_IR_REMOTE_MENU;
+      else if (strButton == "info") wButtonCode = XINPUT_IR_REMOTE_INFO;
+      else if (strButton == "display") wButtonCode = XINPUT_IR_REMOTE_DISPLAY;
+      else if (strButton == "title") wButtonCode = XINPUT_IR_REMOTE_TITLE;
+      else if (strButton == "play") wButtonCode = XINPUT_IR_REMOTE_PLAY;
+      else if (strButton == "pause") wButtonCode = XINPUT_IR_REMOTE_PAUSE;
+      else if (strButton == "reverse") wButtonCode = XINPUT_IR_REMOTE_REVERSE;
+      else if (strButton == "forward") wButtonCode = XINPUT_IR_REMOTE_FORWARD;
+      else if (strButton == "skipplus") wButtonCode = XINPUT_IR_REMOTE_SKIP_PLUS;
+      else if (strButton == "skipminus") wButtonCode = XINPUT_IR_REMOTE_SKIP_MINUS;
+      else if (strButton == "stop") wButtonCode = XINPUT_IR_REMOTE_STOP;
+      else if (strButton == "0") wButtonCode = XINPUT_IR_REMOTE_0;
+      else if (strButton == "1") wButtonCode = XINPUT_IR_REMOTE_1;
+      else if (strButton == "2") wButtonCode = XINPUT_IR_REMOTE_2;
+      else if (strButton == "3") wButtonCode = XINPUT_IR_REMOTE_3;
+      else if (strButton == "4") wButtonCode = XINPUT_IR_REMOTE_4;
+      else if (strButton == "5") wButtonCode = XINPUT_IR_REMOTE_5;
+      else if (strButton == "6") wButtonCode = XINPUT_IR_REMOTE_6;
+      else if (strButton == "7") wButtonCode = XINPUT_IR_REMOTE_7;
+      else if (strButton == "8") wButtonCode = XINPUT_IR_REMOTE_8;
+      else if (strButton == "9") wButtonCode = XINPUT_IR_REMOTE_9;
       // additional keys from the media center extender for xbox remote
-      if (strButton == "power") wButtonCode = XINPUT_IR_REMOTE_POWER;
-      if (strButton == "mytv") wButtonCode = XINPUT_IR_REMOTE_MY_TV;
-      if (strButton == "mymusic") wButtonCode = XINPUT_IR_REMOTE_MY_MUSIC;
-      if (strButton == "mypictures") wButtonCode = XINPUT_IR_REMOTE_MY_PICTURES;
-      if (strButton == "myvideo") wButtonCode = XINPUT_IR_REMOTE_MY_VIDEOS;
-      if (strButton == "record") wButtonCode = XINPUT_IR_REMOTE_RECORD;
-      if (strButton == "start") wButtonCode = XINPUT_IR_REMOTE_START;
-      if (strButton == "volumeplus") wButtonCode = XINPUT_IR_REMOTE_VOLUME_PLUS;
-      if (strButton == "volumeminus") wButtonCode = XINPUT_IR_REMOTE_VOLUME_MINUS;
-      if (strButton == "channelplus") wButtonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
-      if (strButton == "channelminus") wButtonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
-      if (strButton == "pageplus") wButtonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
-      if (strButton == "pageminus") wButtonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
-      if (strButton == "mute") wButtonCode = XINPUT_IR_REMOTE_MUTE;
-      if (strButton == "recorededtv") wButtonCode = XINPUT_IR_REMOTE_RECORDED_TV;
-      if (strButton == "guide") wButtonCode = XINPUT_IR_REMOTE_TITLE;   // same as title
-      if (strButton == "livetv") wButtonCode = XINPUT_IR_REMOTE_LIVE_TV;
-      if (strButton == "star") wButtonCode = XINPUT_IR_REMOTE_STAR;
-      if (strButton == "hash") wButtonCode = XINPUT_IR_REMOTE_HASH;
-      if (strButton == "clear") wButtonCode = XINPUT_IR_REMOTE_CLEAR;
-      if (strButton == "enter") wButtonCode = XINPUT_IR_REMOTE_SELECT;  // same as select
-      if (strButton == "xbox") wButtonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
+      else if (strButton == "power") wButtonCode = XINPUT_IR_REMOTE_POWER;
+      else if (strButton == "mytv") wButtonCode = XINPUT_IR_REMOTE_MY_TV;
+      else if (strButton == "mymusic") wButtonCode = XINPUT_IR_REMOTE_MY_MUSIC;
+      else if (strButton == "mypictures") wButtonCode = XINPUT_IR_REMOTE_MY_PICTURES;
+      else if (strButton == "myvideo") wButtonCode = XINPUT_IR_REMOTE_MY_VIDEOS;
+      else if (strButton == "record") wButtonCode = XINPUT_IR_REMOTE_RECORD;
+      else if (strButton == "start") wButtonCode = XINPUT_IR_REMOTE_START;
+      else if (strButton == "volumeplus") wButtonCode = XINPUT_IR_REMOTE_VOLUME_PLUS;
+      else if (strButton == "volumeminus") wButtonCode = XINPUT_IR_REMOTE_VOLUME_MINUS;
+      else if (strButton == "channelplus") wButtonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
+      else if (strButton == "channelminus") wButtonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
+      else if (strButton == "pageplus") wButtonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
+      else if (strButton == "pageminus") wButtonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
+      else if (strButton == "mute") wButtonCode = XINPUT_IR_REMOTE_MUTE;
+      else if (strButton == "recorededtv") wButtonCode = XINPUT_IR_REMOTE_RECORDED_TV;
+      else if (strButton == "guide") wButtonCode = XINPUT_IR_REMOTE_TITLE;   // same as title
+      else if (strButton == "livetv") wButtonCode = XINPUT_IR_REMOTE_LIVE_TV;
+      else if (strButton == "star") wButtonCode = XINPUT_IR_REMOTE_STAR;
+      else if (strButton == "hash") wButtonCode = XINPUT_IR_REMOTE_HASH;
+      else if (strButton == "clear") wButtonCode = XINPUT_IR_REMOTE_CLEAR;
+      else if (strButton == "enter") wButtonCode = XINPUT_IR_REMOTE_SELECT;  // same as select
+      else if (strButton == "xbox") wButtonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
     }
-    if (strNode == "remotecode")
+    else if (strNode == "remotecode")
     {
       // Button Code is 255 - OBC (Original Button Code) of the button
       if (pNode->FirstChild())
@@ -289,7 +307,7 @@ void CButtonTranslator::MapAction(WORD wAction, const CStdString &strAction, TiX
         if (wButtonCode > 255) wButtonCode = 0;
       }
     }
-    if (strNode == "keyboard")
+    else if (strNode == "keyboard")
     {
       if (pNode->FirstChild())
         strButton = pNode->FirstChild()->Value();
@@ -315,66 +333,66 @@ void CButtonTranslator::MapAction(WORD wAction, const CStdString &strAction, TiX
       { // for keys such as return etc. etc.
         CStdString strKey = strButton.ToLower();
         if (strKey == "return") wButtonCode = 0xF00D;
-        if (strKey == "enter") wButtonCode = 0xF06C;
-        if (strKey == "escape") wButtonCode = 0xF01B;
-        if (strKey == "esc") wButtonCode = 0xF01B;
-        if (strKey == "tab") wButtonCode = 0xF009;
-        if (strKey == "space") wButtonCode = 0xF020;
-        if (strKey == "left") wButtonCode = 0xF025;
-        if (strKey == "right") wButtonCode = 0xF027;
-        if (strKey == "up") wButtonCode = 0xF026;
-        if (strKey == "down") wButtonCode = 0xF028;
-        if (strKey == "insert") wButtonCode = 0xF02D;
-        if (strKey == "delete") wButtonCode = 0xF02E;
-        if (strKey == "home") wButtonCode = 0xF024;
-        if (strKey == "end") wButtonCode = 0xF023;
-        if (strKey == "f1") wButtonCode = 0xF070;
-        if (strKey == "f2") wButtonCode = 0xF071;
-        if (strKey == "f3") wButtonCode = 0xF072;
-        if (strKey == "f4") wButtonCode = 0xF073;
-        if (strKey == "f5") wButtonCode = 0xF074;
-        if (strKey == "f6") wButtonCode = 0xF075;
-        if (strKey == "f7") wButtonCode = 0xF076;
-        if (strKey == "f8") wButtonCode = 0xF077;
-        if (strKey == "f9") wButtonCode = 0xF078;
-        if (strKey == "f10") wButtonCode = 0xF079;
-        if (strKey == "f11") wButtonCode = 0xF07A;
-        if (strKey == "f12") wButtonCode = 0xF07B;
-        if (strKey == "numpad0") wButtonCode = 0xF060;
-        if (strKey == "numpad1") wButtonCode = 0xF061;
-        if (strKey == "numpad2") wButtonCode = 0xF062;
-        if (strKey == "numpad3") wButtonCode = 0xF063;
-        if (strKey == "numpad4") wButtonCode = 0xF064;
-        if (strKey == "numpad5") wButtonCode = 0xF065;
-        if (strKey == "numpad6") wButtonCode = 0xF066;
-        if (strKey == "numpad7") wButtonCode = 0xF067;
-        if (strKey == "numpad8") wButtonCode = 0xF068;
-        if (strKey == "numpad9") wButtonCode = 0xF069;
-        if (strKey == "numpad*") wButtonCode = 0xF06A;
-        if (strKey == "numpad+") wButtonCode = 0xF06B;
-        if (strKey == "numpad-") wButtonCode = 0xF06D;
-        if (strKey == "numpad.") wButtonCode = 0xF06E;
-        if (strKey == "numpad/") wButtonCode = 0xF06F;
-        if (strKey == "pageup") wButtonCode = 0xF021;
-        if (strKey == "pagedown") wButtonCode = 0xF022;
-        if (strKey == "printscreen") wButtonCode = 0xF02C;
-        if (strKey == "backspace") wButtonCode = 0xF008;
-        if (strKey == "menu") wButtonCode = 0xF05D;
-        if (strKey == "pause") wButtonCode = 0xF013;
-        if (strKey == "home") wButtonCode = 0xF024;
-        if (strKey == "end") wButtonCode = 0xF023;
-        if (strKey == "insert") wButtonCode = 0xF02D;
-        if (strKey == "leftshift") wButtonCode = 0xF0A0;
-        if (strKey == "rightshift") wButtonCode = 0xF0A1;
-        if (strKey == "leftctrl") wButtonCode = 0xF0A2;
-        if (strKey == "rightctrl") wButtonCode = 0xF0A3;
-        if (strKey == "leftalt") wButtonCode = 0xF0A4;
-        if (strKey == "rightalt") wButtonCode = 0xF0A5;
-        if (strKey == "leftwindows") wButtonCode = 0xF05B;
-        if (strKey == "rightwindows") wButtonCode = 0xF05C;
-        if (strKey == "capslock") wButtonCode = 0xF020;
-        if (strKey == "numlock") wButtonCode = 0xF090;
-        if (strKey == "scrolllock") wButtonCode = 0xF091;
+        else if (strKey == "enter") wButtonCode = 0xF06C;
+        else if (strKey == "escape") wButtonCode = 0xF01B;
+        else if (strKey == "esc") wButtonCode = 0xF01B;
+        else if (strKey == "tab") wButtonCode = 0xF009;
+        else if (strKey == "space") wButtonCode = 0xF020;
+        else if (strKey == "left") wButtonCode = 0xF025;
+        else if (strKey == "right") wButtonCode = 0xF027;
+        else if (strKey == "up") wButtonCode = 0xF026;
+        else if (strKey == "down") wButtonCode = 0xF028;
+        else if (strKey == "insert") wButtonCode = 0xF02D;
+        else if (strKey == "delete") wButtonCode = 0xF02E;
+        else if (strKey == "home") wButtonCode = 0xF024;
+        else if (strKey == "end") wButtonCode = 0xF023;
+        else if (strKey == "f1") wButtonCode = 0xF070;
+        else if (strKey == "f2") wButtonCode = 0xF071;
+        else if (strKey == "f3") wButtonCode = 0xF072;
+        else if (strKey == "f4") wButtonCode = 0xF073;
+        else if (strKey == "f5") wButtonCode = 0xF074;
+        else if (strKey == "f6") wButtonCode = 0xF075;
+        else if (strKey == "f7") wButtonCode = 0xF076;
+        else if (strKey == "f8") wButtonCode = 0xF077;
+        else if (strKey == "f9") wButtonCode = 0xF078;
+        else if (strKey == "f10") wButtonCode = 0xF079;
+        else if (strKey == "f11") wButtonCode = 0xF07A;
+        else if (strKey == "f12") wButtonCode = 0xF07B;
+        else if (strKey == "numpad0") wButtonCode = 0xF060;
+        else if (strKey == "numpad1") wButtonCode = 0xF061;
+        else if (strKey == "numpad2") wButtonCode = 0xF062;
+        else if (strKey == "numpad3") wButtonCode = 0xF063;
+        else if (strKey == "numpad4") wButtonCode = 0xF064;
+        else if (strKey == "numpad5") wButtonCode = 0xF065;
+        else if (strKey == "numpad6") wButtonCode = 0xF066;
+        else if (strKey == "numpad7") wButtonCode = 0xF067;
+        else if (strKey == "numpad8") wButtonCode = 0xF068;
+        else if (strKey == "numpad9") wButtonCode = 0xF069;
+        else if (strKey == "numpad*") wButtonCode = 0xF06A;
+        else if (strKey == "numpad+") wButtonCode = 0xF06B;
+        else if (strKey == "numpad-") wButtonCode = 0xF06D;
+        else if (strKey == "numpad.") wButtonCode = 0xF06E;
+        else if (strKey == "numpad/") wButtonCode = 0xF06F;
+        else if (strKey == "pageup") wButtonCode = 0xF021;
+        else if (strKey == "pagedown") wButtonCode = 0xF022;
+        else if (strKey == "printscreen") wButtonCode = 0xF02C;
+        else if (strKey == "backspace") wButtonCode = 0xF008;
+        else if (strKey == "menu") wButtonCode = 0xF05D;
+        else if (strKey == "pause") wButtonCode = 0xF013;
+        else if (strKey == "home") wButtonCode = 0xF024;
+        else if (strKey == "end") wButtonCode = 0xF023;
+        else if (strKey == "insert") wButtonCode = 0xF02D;
+        else if (strKey == "leftshift") wButtonCode = 0xF0A0;
+        else if (strKey == "rightshift") wButtonCode = 0xF0A1;
+        else if (strKey == "leftctrl") wButtonCode = 0xF0A2;
+        else if (strKey == "rightctrl") wButtonCode = 0xF0A3;
+        else if (strKey == "leftalt") wButtonCode = 0xF0A4;
+        else if (strKey == "rightalt") wButtonCode = 0xF0A5;
+        else if (strKey == "leftwindows") wButtonCode = 0xF05B;
+        else if (strKey == "rightwindows") wButtonCode = 0xF05C;
+        else if (strKey == "capslock") wButtonCode = 0xF020;
+        else if (strKey == "numlock") wButtonCode = 0xF090;
+        else if (strKey == "scrolllock") wButtonCode = 0xF091;
       }
     }
     // check we have a valid button code
