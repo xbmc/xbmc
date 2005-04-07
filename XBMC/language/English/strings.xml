@@ -522,6 +522,18 @@
   <string><id>757</id><value>Edit Path Depth</value></string>
   <string><id>758</id><value>Removing Program Link</value></string>  
   <string><id>759</id><value>View: Big List</value></string>
+
+  <string><id>760</id><value>Yellow</value></string>
+  <string><id>761</id><value>White</value></string>
+  <string><id>762</id><value>Blue</value></string>
+  <string><id>763</id><value>Bright Green</value></string>
+  <string><id>764</id><value>Yellow Green</value></string>
+  <string><id>765</id><value>Cyan</value></string>
+  <string><id>766</id><value>Reserved</value></string>
+  <string><id>767</id><value>Reserved</value></string>
+  <string><id>768</id><value>Reserved</value></string>
+  <string><id>769</id><value>Reserved</value></string>
+
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Gaming</value></string>
   <string><id>1000</id><value>Screensaver Preview</value></string>

@@ -477,8 +477,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(743), SUBTITLE_COLOR_YELLOW);
-      pControl->AddLabel(g_localizeStrings.Get(742), SUBTITLE_COLOR_WHITE);
+      for (int i = SUBTITLE_COLOR_START; i <= SUBTITLE_COLOR_END; i++)
+        pControl->AddLabel(g_localizeStrings.Get(760 + i), i);
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting == "Subtitles.Height")
