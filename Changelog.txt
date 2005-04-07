@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-04-2005 fixed: SetViewPort() crash if given out of range values.
   - 07-04-2005 added: Support for <execute> tag in keymap.xml
   - 07-04-2005 added: More subtitle colours (Blue, Bright Green, Cyan + Yellow Green)
   - 07-04-2005 added: Visualisation now runs in a control.  See musicVisualisation.xml for an example.  Some visz's (Boxalizer) probably need redoing.
