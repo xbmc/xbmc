@@ -722,236 +722,6 @@ void CFileItem::SetThumb()
   }
 }
 
-/*
-void CFileItem::SetMusicThumb()
-{
-  //  Set the album thumb for a file or folder.
-
-  //  Sets thumb by album title or uses files in
-  //  folder like folder.jpg or .tbn files.
-
-  // if it already has a thumbnail, then return
-  if ( HasThumbnail() ) return ;
-
-  if (IsInternetStream()) return ;
-
-  CStdString strThumb, strPath;
-
-  //  If item is not a folder, extract its path
-  if (!m_bIsFolder)
-    CUtil::GetDirectory(m_strPath, strPath);
-  else
-  {
-    strPath = m_strPath;
-    if (CUtil::HasSlashAtEnd(strPath))
-      strPath.Delete(strPath.size() - 1);
-  }
-
-  //  Look if an album thumb is available,
-  //  could be any file with tags loaded or
-  //  a directory in album window
-  CStdString strAlbum;
-  if (m_musicInfoTag.Loaded())
-    strAlbum = m_musicInfoTag.GetAlbum();
-
-  // OLD COMMENT POINT
-  if (!m_bIsFolder)
-  {
-    // look for a permanent thumb (Q:\albums\thumbs)
-    CUtil::GetAlbumThumb(strAlbum, strPath, strThumb);
-    if (CUtil::FileExists(strThumb))
-    {
-      //  found it, we are finished.
-      SetIconImage(strThumb);
-      SetThumbnailImage(strThumb);
-    }
-    else
-    {
-      // look for a temporary thumb (Q:\albums\thumbs\temp)
-      CUtil::GetAlbumThumb(strAlbum, strPath, strThumb, true);
-      if (CUtil::FileExists(strThumb) )
-      {
-        //  found it
-        SetIconImage(strThumb);
-        SetThumbnailImage(strThumb);
-      }
-      else
-      {
-        //  no thumb found
-        strThumb.Empty();
-      }
-    }
-  }
-
-  //  If we have not found a thumb before, look for a .tbn if its a file
-  if (strThumb.IsEmpty() && !m_bIsFolder)
-  {
-    CUtil::ReplaceExtension(m_strPath, ".tbn", strThumb);
-    if ( IsRemote() || IsDVD() || IsISO9660())
-    {
-      //  Query local cache
-      CStdString strCached;
-      CUtil::GetAlbumFolderThumb(strThumb, strCached, true);
-      if (CUtil::FileExists(strCached))
-      {
-        //  Remote thumb found in local cache
-        SetIconImage(strCached);
-        SetThumbnailImage(strCached);
-      }
-      else
-      {
-        if (IsRemote() && !IsDVD() && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs")) return ;
-        //  create cached thumb, if a .tbn file is found
-        //  on a remote share
-        if (CUtil::FileExists(strThumb))
-        {
-          //  found, save a thumb
-          //  to the temp thumb dir.
-          CPicture pic;
-          if (pic.CreateAlbumThumbnail(strThumb, strCached))
-          {
-            SetIconImage(strCached);
-            SetThumbnailImage(strCached);
-          }
-          else
-          {
-            //  save temp thumb failed,
-            //  no thumb available
-            strThumb.Empty();
-          }
-        }
-        else
-        {
-          //  no thumb available
-          strThumb.Empty();
-        }
-      }
-    }
-    else
-    {
-      if (CUtil::FileExists(strThumb))
-      {
-        //  use local .tbn file as thumb
-        SetIconImage(strThumb);
-        SetThumbnailImage(strThumb);
-      }
-      else
-      {
-        //  No thumb found
-        strThumb.Empty();
-      }
-    }
-  }
-  // OLD COMMENT POINT
-
-  //  If we have not found a thumb before, look for a folder thumb
-  if (strThumb.IsEmpty() && GetLabel() != "..")
-  {
-    CStdString strFolderThumb;
-
-    // Lookup permanent thumbs on HD, if a thumb for this folder exists
-    // First try using album name + path
-    // Then try using a folder thumb
-
-    // look for a permanent thumb (Q:\albums\thumbs)
-    CUtil::GetAlbumThumb(strAlbum, strPath, strFolderThumb);
-    if (CUtil::FileExists(strFolderThumb))
-    {
-      //  found it, we are finished.
-      SetIconImage(strFolderThumb);
-      SetThumbnailImage(strFolderThumb);
-    }
-    else
-    {
-      // look for a temporary thumb (Q:\albums\thumbs\temp)
-      CUtil::GetAlbumThumb(strAlbum, strPath, strFolderThumb, true);
-      if (CUtil::FileExists(strFolderThumb) )
-      {
-        //  found it
-        SetIconImage(strFolderThumb);
-        SetThumbnailImage(strFolderThumb);
-      }
-      // else try the old code!
-      else
-      {
-        CUtil::GetAlbumFolderThumb(strPath, strFolderThumb);
-        if (!CUtil::FileExists(strFolderThumb))
-        {
-          //  No, lookup saved temp thumbs on HD, if a previously
-          //  cached thumb for this folder exists...
-          CUtil::GetAlbumFolderThumb(strPath, strFolderThumb, true);
-          if (!CUtil::FileExists(strFolderThumb))
-          {
-            if (IsRemote() && !IsDVD() && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs")) return ;
-            if (m_bIsFolder)
-            {
-              CStdString strFolderTbn = strPath;
-              strFolderTbn += ".tbn";
-              CUtil::AddFileToFolder(m_strPath, "folder.jpg", strThumb);
-
-              //  ...no, check for a folder.jpg
-              if (CUtil::ThumbExists(strThumb, true))
-              {
-                //  found, save a thumb for this folder
-                //  to the temp thumb dir.
-                CPicture pic;
-                if (!pic.CreateAlbumThumbnail(strThumb, strPath))
-                {
-                  //  save temp thumb failed,
-                  //  no thumb available
-                  strFolderThumb.Empty();
-                }
-              } //  ...or maybe we have a "foldername".tbn
-              else if (CUtil::ThumbExists(strFolderTbn, true))
-              {
-                //  found, save a thumb for this folder
-                //  to the temp thumb dir.
-                CPicture pic;
-                if (!pic.CreateAlbumThumbnail(strFolderTbn, strPath))
-                {
-                  //  save temp thumb failed,
-                  //  no thumb available
-                  strFolderThumb.Empty();
-                }
-              }
-              else
-              {
-                //  no thumb exists, do we have a directory
-                //  from album window, use music.jpg as icon
-                if (!strAlbum.IsEmpty())
-                {
-                  SetIconImage("Music.jpg");
-                  SetThumbnailImage("Music.jpg");
-                }
-
-                strFolderThumb.Empty();
-              }
-            }
-            else
-            {
-              //  No thumb found for file
-              strFolderThumb.Empty();
-            }
-          }
-        }
-      }
-    }
-
-    // this gets the folder icon!
-    //  Have we found a folder thumb
-    if (!strFolderThumb.IsEmpty())
-    {
-      //  if we have a directory from album
-      //  window, set the icon too.
-      if (m_bIsFolder && !strAlbum.IsEmpty())
-        SetIconImage(strFolderThumb);
-
-      SetThumbnailImage(strFolderThumb);
-    }
-  }
-}
-*/
-
 // set the album thumb for a file or folder
 void CFileItem::SetMusicThumb()
 { 
@@ -965,7 +735,7 @@ void CFileItem::SetMusicThumb()
   if (GetLabel() == "..") return;
 
   // if item is not a folder, extract its path
-  CLog::Log(LOGDEBUG,"Looking for thumb for: %s",m_strPath.c_str());
+  //CLog::Log(LOGDEBUG,"Looking for thumb for: %s",m_strPath.c_str());
   CStdString strPath;
   if (!m_bIsFolder)
     CUtil::GetDirectory(m_strPath, strPath);
@@ -993,7 +763,7 @@ void CFileItem::SetMusicThumb()
     // found it, we are finished.
     SetIconImage(strThumb);
     SetThumbnailImage(strThumb);
-    CLog::Log(LOGDEBUG,"  Found cached permanent album thumb: %s",strThumb.c_str());
+    //CLog::Log(LOGDEBUG,"  Found cached permanent album thumb: %s",strThumb.c_str());
     return;
   }
   
@@ -1005,7 +775,7 @@ void CFileItem::SetMusicThumb()
     // found it, we are finished.
     SetIconImage(strThumb);
     SetThumbnailImage(strThumb);
-    CLog::Log(LOGDEBUG,"  Found cached temporary album thumb: %s",strThumb.c_str());
+    //CLog::Log(LOGDEBUG,"  Found cached temporary album thumb: %s",strThumb.c_str());
     return;
   }
 
@@ -1023,7 +793,7 @@ void CFileItem::SetMusicThumb()
       // found it, we are finished.
       SetIconImage(strCached);
       SetThumbnailImage(strCached);
-      CLog::Log(LOGDEBUG,"  Found cached permanent file.tbn thumb: %s",strCached.c_str());
+      //CLog::Log(LOGDEBUG,"  Found cached permanent file.tbn thumb: %s",strCached.c_str());
       return;
     }
 
@@ -1032,7 +802,6 @@ void CFileItem::SetMusicThumb()
     if (IsRemote() && !IsDVD() && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs"))
     {
       bTryRemote = false;
-      //return;
     }
 
     //  create cached thumb, if a .tbn file is found
@@ -1048,8 +817,8 @@ void CFileItem::SetMusicThumb()
         {
           SetIconImage(strCached);
           SetThumbnailImage(strCached);
-          CLog::Log(LOGDEBUG,"  Cached file.tbn thumb: %s",strThumb.c_str());
-          CLog::Log(LOGDEBUG,"  => to: %s",strCached.c_str());
+          //CLog::Log(LOGDEBUG,"  Cached file.tbn thumb: %s",strThumb.c_str());
+          //CLog::Log(LOGDEBUG,"  => to: %s",strCached.c_str());
           return;
         }
       }
@@ -1066,7 +835,7 @@ void CFileItem::SetMusicThumb()
     // found it, we are finished.
     SetIconImage(strFolderThumb);
     SetThumbnailImage(strFolderThumb);
-    CLog::Log(LOGDEBUG,"  Found cached permanent folder.jpg thumb: %s",strFolderThumb.c_str());
+    //CLog::Log(LOGDEBUG,"  Found cached permanent folder.jpg thumb: %s",strFolderThumb.c_str());
     return;
   }
   
@@ -1077,7 +846,7 @@ void CFileItem::SetMusicThumb()
     // found it, we are finished.
     SetIconImage(strFolderThumb);
     SetThumbnailImage(strFolderThumb);
-    CLog::Log(LOGDEBUG,"  Found cached temporary folder.jpg thumb: %s",strFolderThumb.c_str());
+    //CLog::Log(LOGDEBUG,"  Found cached temporary folder.jpg thumb: %s",strFolderThumb.c_str());
     return;
   }
 
@@ -1088,7 +857,6 @@ void CFileItem::SetMusicThumb()
     if (IsRemote() && !IsDVD() && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs"))
     {
       bTryRemote = false;
-      //return;
     }
 
     if (bTryRemote)
@@ -1104,8 +872,8 @@ void CFileItem::SetMusicThumb()
         {
           SetIconImage(strFolderThumb);
           SetThumbnailImage(strFolderThumb);
-          CLog::Log(LOGDEBUG,"  Cached folder.jpg thumb: %s",strThumb.c_str());
-          CLog::Log(LOGDEBUG,"  => to: %s",strFolderThumb.c_str());
+          //CLog::Log(LOGDEBUG,"  Cached folder.jpg thumb: %s",strThumb.c_str());
+          //CLog::Log(LOGDEBUG,"  => to: %s",strFolderThumb.c_str());
           return;
         }
       }
@@ -1121,8 +889,8 @@ void CFileItem::SetMusicThumb()
         {
           SetIconImage(strFolderThumb);
           SetThumbnailImage(strFolderThumb);
-          CLog::Log(LOGDEBUG,"  Created cached folder.tbn thumb: %s",strFolderTbn.c_str());
-          CLog::Log(LOGDEBUG,"  => to: %s",strFolderThumb.c_str());
+          //CLog::Log(LOGDEBUG,"  Created cached folder.tbn thumb: %s",strFolderTbn.c_str());
+          //CLog::Log(LOGDEBUG,"  => to: %s",strFolderThumb.c_str());
           return;
         }
       }
@@ -1134,10 +902,9 @@ void CFileItem::SetMusicThumb()
     // if we have a directory from album window, use music.jpg as icon
     if (!strAlbum.IsEmpty())
     {
-      CLog::Log(LOGDEBUG,"  Using default music.jpg thumb for album");
-      
       SetIconImage("Music.jpg");
       SetThumbnailImage("Music.jpg");
+      //CLog::Log(LOGDEBUG,"  Using default music.jpg thumb for album");
       return;
     }
   }

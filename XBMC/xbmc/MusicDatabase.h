@@ -129,19 +129,6 @@ public:
   bool GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1, const CStdString &strArtist1);
   bool GetSongsNav(VECSONGS& songs, const CStdString &strGenre1, const CStdString &strArtist1, const CStdString &strAlbum1, const CStdString &strAlbumPath1);
 
-//  REMOVED WITH ALBUMS, ARTISTS, AND GENRE VIEWS
-//  bool GetSongsByArtist(const CStdString strArtist, VECSONGS& songs);
-//  bool GetSongsByGenre(const CStdString& strGenre, VECSONGS& songs);
-//  bool GetArtists(VECARTISTS& vecArtists);
-//  bool GetAlbums(VECALBUMS& albums);
-//  bool GetGenres(VECGENRES& genres);
-//  bool GetRecentlyPlayedAlbums(VECALBUMS& albums);
-//  bool GetRecentlyAddedAlbums(VECALBUMS& albums);
-//  bool GetAlbumsByArtist(const CStdString& strArtist, VECALBUMS& albums);
-//  UNUSED FUNCTIONS
-//  bool GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs);
-//  bool GetAlbumByPath(const CStdString& strPath, CAlbum& album);
-
 protected:
   auto_ptr<SqliteDatabase> m_pDB;
   auto_ptr<Dataset> m_pDS;
