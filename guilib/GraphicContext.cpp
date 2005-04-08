@@ -234,7 +234,7 @@ void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllow
 void CGraphicContext::SetGUIResolution(RESOLUTION &res)
 {
   CLog::Log(LOGDEBUG, "Setting resolution %i", res);
-  SetVideoResolution(res);
+  SetVideoResolution(res, TRUE);
   CLog::Log(LOGDEBUG, "We set resolution %i", m_Resolution);
   if (!m_pd3dParams) return ;
   m_iScreenWidth = m_pd3dParams->BackBufferWidth ;
