@@ -121,8 +121,14 @@ bool CGUIControlFactory::GetBoolean(const TiXmlNode* pRootNode, const char* strT
   if (!pNode) return false;
   CStdString strEnabled = pNode->FirstChild()->Value();
   strEnabled.ToLower();
-  if (strEnabled == "off" || strEnabled == "no" || strEnabled == "disabled" || strEnabled == "false") bBoolValue = false;
-  else bBoolValue = true;
+  if (strEnabled == "off" || strEnabled == "no" || strEnabled == "disabled" || strEnabled == "false")
+    bBoolValue = false;
+  else
+  {
+    bBoolValue = true;
+    if (strEnabled != "on" && strEnabled != "yes" && strEnabled != "enabled" && strEnabled != "true")
+      return false; // invalid bool switch - it's probably some other string.
+  }
   return true;
 }
 
@@ -303,6 +309,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   bool bWrapAround = true;
   bool bSmoothScrolling = true;
   bool bKeepAspectRatio = false;
+  CStdString strVisible;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read default properties from reference controls
@@ -523,12 +530,14 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTexture = ((CGUIImage *)pReference)->GetFileName();
       dwColorKey = ((CGUIImage *)pReference)->GetColorKey();
       bKeepAspectRatio = ((CGUIImage *)pReference)->GetKeepAspectRatio();
+      strVisible = ((CGUIImage *)pReference)->GetVisibleCondition();
     }
     else if (strType == "infoimage")
     {
       strTexture = ((CGUIInfoImage *)pReference)->GetFileName();
       dwColorKey = ((CGUIInfoImage *)pReference)->GetColorKey();
       bKeepAspectRatio = ((CGUIInfoImage *)pReference)->GetKeepAspectRatio();
+      strVisible = ((CGUIInfoImage *)pReference)->GetVisibleCondition();
       vecInfo.push_back(((CGUIInfoImage *)pReference)->GetInfo());
     }
     else if (strType == "listcontrol")
@@ -754,7 +763,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   }
 
   GetHex(pControlNode, "colordiffuse", dwColorDiffuse);
-  GetBoolean(pControlNode, "visible", bVisible);
+  if (!GetBoolean(pControlNode, "visible", bVisible))
+  { // try a conditional visibility
+    GetString(pControlNode, "visible", strVisible);
+  }
   GetString(pControlNode, "font", strFont);
   GetAlignment(pControlNode, "align", dwAlign);
   GetAlignmentY(pControlNode, "alignY", dwAlignY);
@@ -1198,6 +1210,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetKeepAspectRatio(bKeepAspectRatio);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(strVisible);
     return pControl;
   }
   else if (strType == "infoimage")
@@ -1209,6 +1222,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetKeepAspectRatio(bKeepAspectRatio);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(strVisible);
     pControl->SetInfo(vecInfo[0]);
     return pControl;
   }

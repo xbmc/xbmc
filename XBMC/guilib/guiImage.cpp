@@ -2,6 +2,7 @@
 #include "GUIImage.h"
 #include "TextureManager.h"
 #include "../xbmc/settings.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
 CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexture, DWORD dwColorKey)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
@@ -23,6 +24,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, 
   m_iImageWidth = 0;
   m_iImageHeight = 0;
   m_bWasVisible = m_bVisible;
+  m_strVisible = "";
   for (int i = 0; i < 4; i++)
     m_dwAlpha[i] = 0xFF;
   ControlType = GUICONTROL_IMAGE;
@@ -80,6 +82,10 @@ void CGUIImage::Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
 
 void CGUIImage::Render()
 {
+  // check for conditional visibility
+  if (!m_strVisible.IsEmpty())
+    m_bVisible = g_infoManager.GetBool(m_strVisible);
+
   if (m_bDynamicResourceAlloc && !m_bVisible && IsAllocated())
     FreeResources();
 
