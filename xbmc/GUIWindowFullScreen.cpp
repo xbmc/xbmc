@@ -338,6 +338,15 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   //  Do not free resources of invisible controls
   //  or hdd will spin up when fast forwarding etc.
   DynamicResourceAlloc(false);
+  // make the pause image conditionally visible
+  CGUIImage *pImage = (CGUIImage *)GetControl(IMG_PAUSE);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Paused");
+  // make the 2x ff image conditionally visible
+  pImage = (CGUIImage *)GetControl(IMG_2X);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Forwarding2x");
+  // make the 2x rw image conditionally visible
+  pImage = (CGUIImage *)GetControl(IMG_2Xr);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding2x");
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
@@ -558,16 +567,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
   if (!g_application.m_pPlayer) return ;
 
-  bool bRenderGUI(false);
-  if (g_application.m_pPlayer->IsPaused() )
-  {
-    SET_CONTROL_VISIBLE(IMG_PAUSE);
-    bRenderGUI = true;
-  }
-  else
-  {
-    SET_CONTROL_HIDDEN(IMG_PAUSE);
-  }
+  bool bRenderGUI = g_application.m_pPlayer->IsPaused();
 
   //------------------------
   if (m_bShowCodecInfo)
@@ -695,7 +695,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
   int iSpeed = g_application.GetPlaySpeed();
   // hide all speed indicators first
-  SET_CONTROL_HIDDEN(IMG_2X);
+//  SET_CONTROL_HIDDEN(IMG_2X);
   SET_CONTROL_HIDDEN(IMG_4X);
   SET_CONTROL_HIDDEN(IMG_8X);
   SET_CONTROL_HIDDEN(IMG_16X);
@@ -703,7 +703,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
   if (bRewIcons)
   {
-    SET_CONTROL_HIDDEN(IMG_2Xr);
+//    SET_CONTROL_HIDDEN(IMG_2Xr);
     SET_CONTROL_HIDDEN(IMG_4Xr);
     SET_CONTROL_HIDDEN(IMG_8Xr);
     SET_CONTROL_HIDDEN(IMG_16Xr);
@@ -715,12 +715,12 @@ void CGUIWindowFullScreen::RenderFullScreen()
     bRenderGUI = true;
     switch (iSpeed)
     {
-    case 2:
-      SET_CONTROL_VISIBLE(IMG_2X);
-      break;
-    case - 2:
-      SET_CONTROL_VISIBLE(bRewIcons ? IMG_2Xr : IMG_2X);
-      break;
+ //   case 2:
+ //     SET_CONTROL_VISIBLE(IMG_2X);
+ //     break;
+ //   case - 2:
+ //     SET_CONTROL_VISIBLE(bRewIcons ? IMG_2Xr : IMG_2X);
+ //     break;
     case 4:
       SET_CONTROL_VISIBLE(IMG_4X);
       break;

@@ -54,8 +54,8 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       // remove z-buffer
-      RESOLUTION res = g_graphicsContext.GetVideoResolution();
-      g_graphicsContext.SetVideoResolution(res, FALSE);
+//      RESOLUTION res = g_graphicsContext.GetVideoResolution();
+ //     g_graphicsContext.SetVideoResolution(res, FALSE);
     }
     break;
 
@@ -71,8 +71,8 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 
       CGUIWindow::OnMessage(message);
       // setup a z-buffer
-      RESOLUTION res = g_graphicsContext.GetVideoResolution();
-      g_graphicsContext.SetVideoResolution(res, TRUE);
+//      RESOLUTION res = g_graphicsContext.GetVideoResolution();
+//      g_graphicsContext.SetVideoResolution(res, TRUE);
       return true;
     }
   }
@@ -122,6 +122,6 @@ void CGUIWindowVisualisation::OnWindowLoaded()
   CGUIVisualisationControl *pVisControl = new CGUIVisualisationControl(GetID(), 0, 0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight());
   if (pVisControl)
   {
-    Add(pVisControl);
+    m_vecControls.insert(m_vecControls.begin(), pVisControl);
   }
 }

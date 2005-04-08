@@ -74,22 +74,47 @@ bool CGUIInfoManager::GetBool(const CStdString &strCondition)
 {
   CStdString strTest = strCondition;
   strTest.ToLower();
+  bool bNegate = strTest[0] == '!';
+  bool bReturn = false;
+  // check playing conditions...
   if (g_application.IsPlaying())
   {
-    if (strTest.Equals("Player.Paused"))
-    {
-      return g_application.m_pPlayer->IsPaused();
-    }
+    if (strTest.Equals("Player.HasMedia"))
+      bReturn = true;
+    else if (strTest.Equals("Player.HasAudio"))
+      bReturn = g_application.IsPlayingAudio();
+    else if (strTest.Equals("Player.HasVideo"))
+      bReturn = g_application.IsPlayingVideo();
+    else if (strTest.Equals("Player.Playing"))
+      bReturn = !g_application.m_pPlayer->IsPaused() && (g_application.GetPlaySpeed() == 1);
+    else if (strTest.Equals("Player.Paused"))
+      bReturn = g_application.m_pPlayer->IsPaused();
     else if (strTest.Equals("Player.Rewinding"))
-    {
-      return g_application.GetPlaySpeed() < 1;
-    }
+      bReturn = g_application.GetPlaySpeed() < 1;
     else if (strTest.Equals("Player.Forwarding"))
-    {
-      return g_application.GetPlaySpeed() > 1;
-    }
+      bReturn = g_application.GetPlaySpeed() > 1;
+    else if (strTest.Equals("Player.Rewinding2x"))
+      bReturn = g_application.GetPlaySpeed() == -2;
+    else if (strTest.Equals("Player.Rewinding4x"))
+      bReturn = g_application.GetPlaySpeed() == -4;
+    else if (strTest.Equals("Player.Rewinding8x"))
+      bReturn = g_application.GetPlaySpeed() == -8;
+    else if (strTest.Equals("Player.Rewinding16x"))
+      bReturn = g_application.GetPlaySpeed() == -16;
+    else if (strTest.Equals("Player.Rewinding32x"))
+      bReturn = g_application.GetPlaySpeed() == -32;
+    else if (strTest.Equals("Player.Forwarding2x"))
+      bReturn = g_application.GetPlaySpeed() == 2;
+    else if (strTest.Equals("Player.Forwarding4x"))
+      bReturn = g_application.GetPlaySpeed() == 4;
+    else if (strTest.Equals("Player.Forwarding8x"))
+      bReturn = g_application.GetPlaySpeed() == 8;
+    else if (strTest.Equals("Player.Forwarding16x"))
+      bReturn = g_application.GetPlaySpeed() == 16;
+    else if (strTest.Equals("Player.Forwarding32x"))
+      bReturn = g_application.GetPlaySpeed() == 32;
   }
-  return false;
+  return bNegate ? !bReturn : bReturn;
 }
 
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
