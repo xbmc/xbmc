@@ -190,9 +190,6 @@ public:
   CGUIWindowMusicSongs m_guiMyMusicSongs;
   CGUIWindowMusicNav m_guiMyMusicNav;
   CGUIWindowMusicTop100 m_guiMyMusicTop100;
-//  CGUIWindowMusicAlbum m_guiMyMusicAlbum;
-//  CGUIWindowMusicArtists m_guiMyMusicArtists;
-//  CGUIWindowMusicGenres m_guiMyMusicGenres;
   CGUIWindowScreensaver m_guiWindowScreensaver;
   CGUIWindowVideoGenre m_guiVideoGenre;
   CGUIWindowVideoActors m_guiVideoActors;
