@@ -151,6 +151,18 @@ void CGUIWindowMusicOverlay::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
   m_bRelativeCoords = true;  // so that we can move things around easily :)
+  // set the pause button to be conditionally visible
+  CGUIImage *pImage = (CGUIImage*)GetControl(CONTROL_PAUSE_LOGO);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Paused");
+  // set the play button to be conditionally visible
+  pImage = (CGUIImage*)GetControl(CONTROL_PLAY_LOGO);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Playing");
+  // set the rewind button to be conditionally visible
+  pImage = (CGUIImage*)GetControl(CONTROL_RW_LOGO);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding");
+  // set the fastforward button to be conditionally visible
+  pImage = (CGUIImage*)GetControl(CONTROL_FF_LOGO);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Forwarding");
 }
 
 void CGUIWindowMusicOverlay::ShowControl(int iControl)
@@ -290,33 +302,9 @@ void CGUIWindowMusicOverlay::Render()
     {
       m_iFrames = STEPS ;
     }
-
-    HideControl( CONTROL_PLAY_LOGO);
-    HideControl( CONTROL_PAUSE_LOGO);
-    HideControl( CONTROL_FF_LOGO);
-    HideControl( CONTROL_RW_LOGO);
-    if (g_application.m_pPlayer->IsPaused() )
-    {
-      ShowControl(CONTROL_PAUSE_LOGO);
-    }
-    else
-    {
-      // apply the correct speed logo
-      int iSpeed = g_application.GetPlaySpeed();
-      if (iSpeed == 1)
-        ShowControl( CONTROL_PLAY_LOGO);
-      else if (iSpeed > 1)
-        ShowControl( CONTROL_FF_LOGO);
-      else
-        ShowControl( CONTROL_RW_LOGO);
-    }
   }
   else
   {
-    HideControl( CONTROL_PLAY_LOGO);
-    HideControl( CONTROL_PAUSE_LOGO);
-    HideControl( CONTROL_FF_LOGO);
-    HideControl( CONTROL_RW_LOGO);
     HideControl( CONTROL_PLAYTIME);
     HideControl( CONTROL_INFO);
     HideControl( CONTROL_BIG_PLAYTIME);
