@@ -40,12 +40,12 @@ md BUILD
 copy release\default.xbe BUILD
 copy *.xml BUILD
 copy *.txt BUILD
-xcopy skin\Projec~1\fonts "BUILD\skin\Project Mayhem\fonts" /E /Q /I /Y
-xcopy skin\Projec~1\*.xml "BUILD\skin\Project Mayhem\" /E /Q /I /Y
-REM %TEX% -input skin\Projec~1\media -output "BUILD\skin\Project Mayhem\media"
-xcopy skin\Projec~1\media\Textures.xpr "BUILD\skin\Project Mayhem\media" /Q /I /Y
-xcopy skin\Projec~1\media\background.png "BUILD\skin\Project Mayhem\media" /Q /I /Y
-xcopy skin\Projec~1\media\background2.png "BUILD\skin\Project Mayhem\media" /Q /I /Y
+xcopy "skin\Project Mayhem III\fonts" "BUILD\skin\Project Mayhem III\fonts" /E /Q /I /Y
+xcopy "skin\Project Mayhem III\*.xml" "BUILD\skin\Project Mayhem III\" /E /Q /I /Y
+REM %TEX% -input "skin\Project Mayhem III\media" -output "BUILD\skin\Project Mayhem III\media"
+xcopy "skin\Project Mayhem III\media\Textures.xpr" "BUILD\skin\Project Mayhem III\media" /Q /I /Y
+xcopy "skin\Project Mayhem III\media\background.png" "BUILD\skin\Project Mayhem III\media" /Q /I /Y
+xcopy "skin\Project Mayhem III\media\background2.png" "BUILD\skin\Project Mayhem III\media" /Q /I /Y
 xcopy credits BUILD\credits /Q /I /Y
 xcopy language BUILD\language /E /Q /I /Y
 xcopy xbmc\keyboard\media BUILD\media /E /Q /I /Y
