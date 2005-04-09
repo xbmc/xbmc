@@ -1,0 +1,210 @@
+<window>
+  <id>502</id>
+  <defaultcontrol>2</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <controls>
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>720</width>
+      <height>576</height>
+      <texture>background-music.png</texture>
+    </control>
+
+    <control>
+      <description>xbox media center label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>200</posX>
+      <posY>63</posY>
+      <align>right</align>
+      <label>xbox media center</label>
+      <font>special12</font>
+    </control>
+
+    <control>
+      <description>description label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>207</posX>
+      <posY>63</posY>
+      <align>left</align>
+      <label>10516</label>
+      <font>special13</font>
+    </control>
+
+    <control>
+      <description>number of files text label</description>
+      <type>label</type>
+      <id>12</id>
+      <posX>545</posX>
+      <posY>526</posY>
+      <align>right</align>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <*control>
+      <description>Database text label</description>
+      <type>label</type>
+      <id>15</id>
+      <align>left</align>
+      <posX>74</posX>
+      <posY>43</posY>
+      <label>132</label>
+      <font>font10</font>
+    <*/control>
+
+    <controlgroup>
+      <control>
+        <description>View As Icons button</description>
+        <type>button</type>
+        <id>2</id>
+        <posX>50</posX>
+        <posY>120</posY>
+        <label>100</label>
+        <font>font13</font>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>21</onup>
+        <ondown>3</ondown>
+      </control>
+
+      <control>
+        <description>Sort by button</description>
+        <type>button</type>
+        <id>3</id>
+        <posX>50</posX>
+        <posY>157</posY>
+        <label>103</label>
+        <font>font13</font>
+        <onleft>50</onleft>
+        <onright>4</onright>
+        <onup>2</onup>
+        <ondown>6</ondown>
+      </control>
+
+      <control>
+        <description>Sort asc</description>
+        <type>togglebutton</type>
+        <id>4</id>
+        <label>-</label>
+        <onleft>3</onleft>
+        <onright>50</onright>
+        <onup>4</onup>
+        <ondown>4</ondown>
+      </control>
+
+      <control>
+        <description>Albums/Artists/Songs/Genres button</description>
+        <type>selectbutton</type>
+        <id>6</id>
+        <posX>50</posX>
+        <posY>194</posY>
+        <label>457</label>
+        <font>font13</font>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>3</onup>
+        <ondown>8</ondown>
+      </control>
+
+      <control>
+        <description>Search button</description>
+        <type>button</type>
+        <id>8</id>
+        <posX>50</posX>
+        <posY>231</posY>
+        <label>137</label>
+        <font>font13</font>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>6</onup>
+        <ondown>21</ondown>
+      </control>
+
+      <control>
+        <description>Shuffle button</description>
+        <type>radiobutton</type>
+        <id>21</id>
+        <posX>50</posX>
+        <posY>268</posY>
+        <label>191</label>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>8</onup>
+        <ondown>2</ondown>
+      </control>
+
+    </controlgroup>
+
+    <control>
+      <description>listcontrol</description>
+      <type>listcontrol</type>
+      <id>50</id>
+      <posX>211</posX>
+      <posY>121</posY>
+      <onleft>51</onleft>
+      <onright>51</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+    </control>
+
+    <control>
+      <description>thumbnailpanel</description>
+      <type>thumbnailpanel</type>
+      <id>51</id>
+      <posX>211</posX>
+      <posY>121</posY>
+      <onleft>52</onleft>
+      <onright>52</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+    </control>
+
+    <control>
+      <description>big listcontrol</description>
+      <type>listcontrol</type>
+      <id>52</id>
+      <height>430</height>
+      <spinWidth>16</spinWidth>
+      <spinHeight>16</spinHeight>
+      <spinColor>ddffffff</spinColor>
+      <spinPosX>630</spinPosX>
+      <spinPosY>525</spinPosY>
+      <textureUp>scroll-up.png</textureUp>
+      <textureDown>scroll-down.png</textureDown>
+      <textureUpFocus>scroll-up-focus.gif</textureUpFocus>
+      <textureDownFocus>scroll-down-focus.gif</textureDownFocus>
+      <textureFocus>blue-rectangle.png</textureFocus>
+      <textureNoFocus>blue-rectangleNF.png</textureNoFocus>
+      <font>font14</font>
+      <font2>font13</font2>
+      <selectedColor>FFFFffff</selectedColor>
+      <textcolor>0xd0ffffff</textcolor>
+      <selectedColor2>0xFFFFffff</selectedColor2>
+      <textcolor2>0xd0ffffff</textcolor2>
+      <colordiffuse>ffffffff</colordiffuse>
+      <suffix>|</suffix>
+      <textXOff>10</textXOff>
+      <textYOff>10</textYOff>
+      <textXOff2>445</textXOff2>
+      <textYOff2>94</textYOff2>
+      <alignY>top</alignY>
+      <itemWidth>75</itemWidth>
+      <itemHeight>110</itemHeight>
+      <spaceBetweenItems>10</spaceBetweenItems>
+      <textureHeight>120</textureHeight>
+      <onleft>2</onleft>
+      <onright>2</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+    </control>
+
+  </controls>
+
+</window>
+
