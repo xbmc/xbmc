@@ -17,6 +17,7 @@ bool XBAudioConfig::HasDigitalOutput()
   DWORD dwAVPack = XGetAVPack();
   if (dwAVPack == XC_AV_PACK_SCART ||
       dwAVPack == XC_AV_PACK_HDTV ||
+      dwAVPack == XC_AV_PACK_VGA ||
       dwAVPack == XC_AV_PACK_SVIDEO)
     return true;
   return false;

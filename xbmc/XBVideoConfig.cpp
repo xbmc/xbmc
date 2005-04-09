@@ -193,6 +193,7 @@ void XBVideoConfig::PrintInfo() const
   CStdString strAVPack;
   if (dwAVPack == XC_AV_PACK_SCART) strAVPack = "Scart";
   else if (dwAVPack == XC_AV_PACK_HDTV) strAVPack = "HDTV";
+  else if (dwAVPack == XC_AV_PACK_VGA) strAVPack = "VGA";
   else if (dwAVPack == XC_AV_PACK_RFU) strAVPack = "RF Unit";
   else if (dwAVPack == XC_AV_PACK_SVIDEO) strAVPack = "S-Video";
   else if (dwAVPack == XC_AV_PACK_STANDARD) strAVPack = "Standard";
