@@ -751,9 +751,9 @@ HRESULT CApplication::Create()
   CLog::Log(LOGINFO, "Checking skin version of: %s", g_guiSettings.GetString("LookAndFeel.Skin").c_str());
   if (!g_SkinInfo.Check(strSkinPath))
   {
-    // reset to the default skin (Project Mayhem)
-    CLog::Log(LOGINFO, "The above skin isn't suitable - checking the version of the default: %s", "Project Mayhem");
-    strSkinPath = strSkinBase + "Project Mayhem";
+    // reset to the default skin (Project Mayhem III)
+    CLog::Log(LOGINFO, "The above skin isn't suitable - checking the version of the default: %s", "Project Mayhem III");
+    strSkinPath = strSkinBase + "Project Mayhem III";
     if (!g_SkinInfo.Check(strSkinPath))
     {
       g_LoadErrorStr.Format("No suitable skin version found.\nWe require at least version %5.4f \n", g_SkinInfo.GetMinVersion());
@@ -1261,10 +1261,10 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   {
     // failed to load home.xml
     // fallback to default skin
-    if ( CUtil::cmpnocase(strSkin.c_str(), "Project Mayhem") != 0)
+    if ( CUtil::cmpnocase(strSkin.c_str(), "Project Mayhem III") != 0)
     {
-      CLog::Log(LOGERROR, "failed to load home.xml for skin:%s, fallback to Project Mayhem skin", strSkin.c_str());
-      LoadSkin("Project Mayhem");
+      CLog::Log(LOGERROR, "failed to load home.xml for skin:%s, fallback to \"Project Mayhem III\" skin", strSkin.c_str());
+      LoadSkin("Project Mayhem III");
       return ;
     }
   }
