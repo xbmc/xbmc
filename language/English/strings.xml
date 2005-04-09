@@ -901,5 +901,8 @@
   <string><id>15104</id><value>* All Songs</value></string>
   <string><id>15105</id><value>* All Genres</value></string>
   <string><id>15106</id><value>Remember selected file on forward navigation</value></string>
+
+  <string><id>15107</id><value>Buffering...</value></string>
+  
 </strings>
 

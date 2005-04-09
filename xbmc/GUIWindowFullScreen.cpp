@@ -352,6 +352,9 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   // make the 2x rw image conditionally visible
   pImage = (CGUIImage *)GetControl(IMG_2Xr);
   if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding2x");
+  
+  //Set text of buffering label
+  SET_CONTROL_LABEL(LABEL_BUFFERING, 15107);
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
@@ -608,7 +611,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
         pControl->SetVisible(true);
     }
     SET_CONTROL_VISIBLE(LABEL_BUFFERING);
-    SET_CONTROL_LABEL(LABEL_BUFFERING, "Buffering...");
     bRenderGUI = true;
 
     m_bShowCurrentTime=false;
