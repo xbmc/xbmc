@@ -3194,7 +3194,6 @@ if(auto_quality>0){
     //Play at maximum speed mplayer can do. We will delay the amount we want to.
     playback_speed=100;
 
-    osd_function = OSD_REW;
     if(ffrw_sstepnum >= ffrw_sstepframes && blit_frame)
     {
       //Don't seek forward, and only display frames every half second
@@ -3219,11 +3218,14 @@ if(auto_quality>0){
     {
       ffrw_sstepnum++;
     }
-
-    osd_visible=sh_video->fps; // 1 sec
-    vo_osd_progbar_type=0;
-	  vo_osd_progbar_value=demuxer_get_percent_pos(demuxer) * 256 / 100;
-	  vo_osd_changed(OSDTYPE_PROGBAR);
+    if (osd_level)
+    {
+      osd_function = OSD_REW;
+      osd_visible=sh_video->fps; // 1 sec
+      vo_osd_progbar_type=0;
+	    vo_osd_progbar_value=demuxer_get_percent_pos(demuxer) * 256 / 100;
+	    vo_osd_changed(OSDTYPE_PROGBAR);
+    }
   }
   else if(ffrw_speed>0.0f)
   {
@@ -3242,11 +3244,14 @@ if(auto_quality>0){
       ffrw_sstepnum++;
     }
 
-    osd_function = OSD_FFW;
-    osd_visible=sh_video->fps; // 1 sec
-    vo_osd_progbar_type=0;
-	  vo_osd_progbar_value=demuxer_get_percent_pos(demuxer) * 256 / 100;
-	  vo_osd_changed(OSDTYPE_PROGBAR);
+    if (osd_level)
+    {
+      osd_function = OSD_FFW;
+      osd_visible=sh_video->fps; // 1 sec
+      vo_osd_progbar_type=0;
+	    vo_osd_progbar_value=demuxer_get_percent_pos(demuxer) * 256 / 100;
+	    vo_osd_changed(OSDTYPE_PROGBAR);
+    }
   }
   else if(ffrw_sstepframes==-1) //Set to tell mplayer to resync audio & video
   {
@@ -3296,11 +3301,14 @@ if(auto_quality>0){
     if(vo_vobsub) vobsub_reset(vo_vobsub);
 #endif
 
-    //Show progbar for 1 second.
-    osd_visible=sh_video->fps; // 1 sec
-    vo_osd_progbar_type=0;
-	  vo_osd_progbar_value=demuxer_get_percent_pos(demuxer) * 256 / 100;
-	  vo_osd_changed(OSDTYPE_PROGBAR);
+    if (osd_level)
+    {
+      //Show progbar for 1 second.
+      osd_visible=sh_video->fps; // 1 sec
+      vo_osd_progbar_type=0;
+	    vo_osd_progbar_value=demuxer_get_percent_pos(demuxer) * 256 / 100;
+	    vo_osd_changed(OSDTYPE_PROGBAR);
+    }
 
     ffrw_sstepframes=0;
   }
@@ -3522,7 +3530,11 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
     } break;
     case MP_CMD_OSD_SHOW_TEXT :  {
 #ifdef USE_OSD
+#ifdef _XBOX //Display text nomatter osd level
+      if(sh_video){
+#else
       if(osd_level && sh_video){
+#endif
 	osd_show_text=sh_video->fps; // 1 sec
         strncpy(osd_show_text_buffer, cmd->args[0].v.s, 64);
       }
@@ -5230,11 +5242,6 @@ void mplayer_showosd(int bonoff)
   }
 }
 
-void mplayer_MuteAudio()
-{
-    mixer_mute(&mixer);
-}
-
 int mplayer_getAudioStreamInfo(int iStream, stream_language_t* stream_info)
 {
 	if(!stream) return -1;
@@ -5421,4 +5428,16 @@ void mplayer_SetAudioStream(int iStream)
 
 }
 
+void mplayer_SlaveCommand(const char* cmd)
+{
+  mp_input_queue_cmd(mp_input_parse_cmd((char*)cmd));
+}
+
+int mplayer_GetCacheLevel()
+{
+  if(ffrw_speed)
+    return 1; //Disregard current buffer in this case
+  else
+    return cache_fill_status;
+}
 #endif //!_XBOX

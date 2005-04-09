@@ -63,4 +63,5 @@ EXPORTS
 	mplayer_setTimeMs @ 61 ;
 	mplayer_getCurrentSubtitle @ 62 ;
 	mplayer_isTextSubLoaded @ 63 ;
-  
+  mplayer_SlaveCommand @ 64 ;
+  mplayer_GetCacheLevel @ 65 ;
