@@ -24,6 +24,7 @@ public:
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
 
+  virtual void SetAlpha(DWORD dwAlpha);
   DWORD GetTextColor() const { return m_dwTextColor;}
   DWORD GetDisabledColor() const { return m_dwDisabledColor;}
   const char* GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; }

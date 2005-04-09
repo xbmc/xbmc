@@ -692,6 +692,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
         pDlgOK->SetLine(0, strMovieName);
         pDlgOK->SetLine(1, L"");
         pDlgOK->SetLine(2, L"");
+        pDlgOK->SetLine(3, L"");
         pDlgOK->DoModal(GetID());
       }
     }
