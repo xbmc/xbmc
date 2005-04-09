@@ -147,8 +147,8 @@
       <id>50</id>
       <posX>211</posX>
       <posY>121</posY>
-      <onleft>51</onleft>
-      <onright>51</onright>
+      <onleft>2</onleft>
+      <onright>2</onright>
       <onup>2</onup>
       <ondown>2</ondown>
     </control>
@@ -159,8 +159,8 @@
       <id>51</id>
       <posX>211</posX>
       <posY>121</posY>
-      <onleft>52</onleft>
-      <onright>52</onright>
+      <onleft>2</onleft>
+      <onright>2</onright>
       <onup>2</onup>
       <ondown>2</ondown>
     </control>
