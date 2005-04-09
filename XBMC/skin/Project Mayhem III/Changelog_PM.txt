@@ -1,1 +1,2 @@
+2004-04-09 changed:	sett all the onleft/onright for all listscontrols and thumbnailpanels to 2
 2004-04-09 fixed:	Minor Submenu typo - also changed the Movie Trailers link to use QuickTimeBroweser.py now
