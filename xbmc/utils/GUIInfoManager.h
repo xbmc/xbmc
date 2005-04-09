@@ -46,6 +46,7 @@ public:
   CStdString GetMusicLabel(const CStdString &strItem);
   CStdString GetVideoLabel(const CStdString &strItem);
   wstring GetFreeSpace(const CStdString &strDrive);
+  int GetPlayTime();
   CStdString GetCurrentPlayTime();
   int GetPlayTimeRemaining();
   CStdString GetCurrentPlayTimeRemaining();

@@ -15,4 +15,9 @@ public:
   virtual void OnMouse();
   virtual void Render();
   virtual void OnWindowLoaded();
+protected:
+  void SetAlpha(DWORD dwAlpha);
+  DWORD m_dwFrameCounter;
+  DWORD m_dwInitTimer;
+  bool m_bShowInfo;
 };

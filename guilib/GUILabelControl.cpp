@@ -82,6 +82,13 @@ bool CGUILabelControl::CanFocus() const
   return false;
 }
 
+void CGUILabelControl::SetAlpha(DWORD dwAlpha)
+{
+  CGUIControl::SetAlpha(dwAlpha);
+  m_dwTextColor = (dwAlpha << 24) | (m_dwTextColor & 0xFFFFFF);
+  m_dwDisabledColor = (dwAlpha << 24) | (m_dwDisabledColor & 0xFFFFFF);
+}
+
 void CGUILabelControl::SetLabel(const wstring &strLabel)
 {
   m_strLabel = strLabel;

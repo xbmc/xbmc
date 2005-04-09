@@ -8,4 +8,6 @@ public:
   virtual ~CGUIWindowVideoOverlay(void);
   virtual void Render();
   void Update();
+protected:
+  virtual void OnWindowLoaded();
 };

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GUIVideoControl.h"
 #include "GUIWindowManager.h"
-
+#include "../xbmc/Application.h"
 
 CGUIVideoControl::CGUIVideoControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
@@ -19,6 +19,7 @@ void CGUIVideoControl::Render()
 
   if (!IsVisible()) return ;
 
+  g_application.ResetScreenSaver();
   g_graphicsContext.Correct(x, y);
 
   rc.left = (DWORD)x;

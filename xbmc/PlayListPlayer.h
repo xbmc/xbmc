@@ -41,10 +41,12 @@ public:
   bool RepeatedOne(int iPlaylist);
   void ShufflePlay(int iPlaylist, bool bYesNo);
   bool ShuffledPlay(int iPlaylist);
+  bool HasPlayedFirstFile();
 protected:
   int NextShuffleItem();
   int m_iEntriesNotFound;
   bool m_bChanged;
+  bool m_bPlayedFirstFile;
   int m_iCurrentSong;
   int m_iCurrentPlayList;
   CPlayList m_PlaylistMusic;

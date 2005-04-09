@@ -3296,6 +3296,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       if (!IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       {
+        g_settings.Save();  // save vis settings
         m_gWindowManager.PreviousWindow();
       }
 
@@ -3303,6 +3304,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (!IsPlayingAudio() && (m_itemCurrentFile.IsCDDA() || m_itemCurrentFile.IsDVD() || m_itemCurrentFile.IsISO9660()) && !CDetectDVDMedia::IsDiscInDrive() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       {
         // yes, disable vis
+        g_settings.Save();    // save vis settings
         m_gWindowManager.PreviousWindow();
       }
 
@@ -3618,6 +3620,15 @@ bool CApplication::SwitchToFullScreen()
   // See if we're playing a video, and are in GUI mode
   if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
   {
+    // check whether we are playing from a playlist...
+    int playlist = g_playlistPlayer.GetCurrentPlaylist();
+    if (playlist == PLAYLIST_VIDEO || playlist == PLAYLIST_VIDEO_TEMP)
+    { // playing from a playlist by the looks
+      if (g_playlistPlayer.GetPlaylist(playlist).size() > 1 && g_playlistPlayer.HasPlayedFirstFile())
+      { // don't switch to fullscreen if we are not playing the first item...
+        return false;
+      }
+    }
     // then switch to fullscreen mode
     m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
     g_TextureManager.Flush();

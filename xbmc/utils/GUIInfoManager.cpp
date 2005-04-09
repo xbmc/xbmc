@@ -113,6 +113,10 @@ bool CGUIInfoManager::GetBool(const CStdString &strCondition)
       bReturn = g_application.GetPlaySpeed() == 16;
     else if (strTest.Equals("Player.Forwarding32x"))
       bReturn = g_application.GetPlaySpeed() == 32;
+    else if (strTest.Equals("Player.CanRecord"))
+      bReturn = g_application.m_pPlayer->CanRecord();
+    else if (strTest.Equals("Player.IsRecording"))
+      bReturn = g_application.m_pPlayer->IsRecording();
   }
   return bNegate ? !bReturn : bReturn;
 }
@@ -315,20 +319,30 @@ CStdString CGUIInfoManager::GetVideoLabel(const CStdString &strItem)
   return "";
 }
 
-CStdString CGUIInfoManager::GetCurrentPlayTime()
+int CGUIInfoManager::GetPlayTime()
 {
-  CStdString strTime;
   if (g_application.IsPlayingAudio())
   {
     __int64 lPTS = g_application.m_pPlayer->GetTime() - (g_infoManager.GetCurrentSongStart() * (__int64)1000) / 75;
     if (lPTS < 0) lPTS = 0;
-    CUtil::SecondsToHMSString((long)(lPTS / 1000), strTime);
+    return (int)(lPTS / 1000);
   }
   else if (g_application.IsPlayingVideo())
   {
     __int64 lPTS = g_application.m_pPlayer->GetTime();
-    CUtil::SecondsToHMSString((long)(lPTS / 1000), strTime, true);
+    if (lPTS < 0) lPTS = 0;
+    return (int)(lPTS / 1000);
   }
+  return 0;
+}
+
+CStdString CGUIInfoManager::GetCurrentPlayTime()
+{
+  CStdString strTime;
+  if (g_application.IsPlayingAudio())
+    CUtil::SecondsToHMSString(GetPlayTime(), strTime);
+  else if (g_application.IsPlayingVideo())
+    CUtil::SecondsToHMSString(GetPlayTime(), strTime, true);
   return strTime;
 }
 
