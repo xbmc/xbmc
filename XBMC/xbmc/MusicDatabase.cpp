@@ -1922,12 +1922,16 @@ bool CMusicDatabase::CleanupAlbumsFromPaths(const CStdString &strPathIds)
   return false;
 }
 
-bool CMusicDatabase::CleanupSongs()
+
+bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
 {
   try
   {
-    // run through all songs, checking for existence, and build up a string of those that no longer exist
-    CStdString strSQL = "select * from song,path where song.idPath=path.idPath";
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    // ok, now find all idSong's
+    CStdString strSQL;
+    strSQL.Format("select * from song join path on song.idPath = path.idPath where song.idSong in %s", strSongIds.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -1935,7 +1939,6 @@ bool CMusicDatabase::CleanupSongs()
       m_pDS->close();
       return true;
     }
-
     CStdString strSongsToDelete = "(";
     while (!m_pDS->eof())
     { // get the full song path
@@ -1962,6 +1965,46 @@ bool CMusicDatabase::CleanupSongs()
     return true;
   }
   catch (...)
+  {
+    CLog::Log(LOGERROR, "Exception in CMusicDatabase::CleanupSongsFromPaths()");
+  }
+  return false;
+}
+
+
+bool CMusicDatabase::CleanupSongs()
+{
+  try
+  {
+    // run through all songs and get all unique path ids
+    int iLIMIT = 1000;
+    for (int i=0;;i+=iLIMIT)
+    {
+      CStdString strSQL;
+      strSQL.Format("select song.idsong from song order by song.idsong limit %i offset %i",iLIMIT,i);
+      if (!m_pDS->query(strSQL.c_str())) return false;
+      int iRowsFound = m_pDS->num_rows();
+      // keep going until no rows are left!
+      if (iRowsFound == 0)
+      {
+        m_pDS->close();
+        return true;
+      }
+      CStdString strSongIds = "(";  
+      while (!m_pDS->eof())
+      {
+        strSongIds += m_pDS->fv("song.idSong").get_asString() + ",";
+        m_pDS->next();
+      }
+      m_pDS->close();
+      strSongIds.TrimRight(",");
+      strSongIds += ")";
+      CLog::Log(LOGDEBUG,"Checking songs from song ID list: %s",strSongIds.c_str());
+      if (!CleanupSongsByIds(strSongIds)) return false;
+    }
+    return true;
+  }
+  catch(...)
   {
     CLog::Log(LOGERROR, "Exception in CMusicDatabase::CleanupSongs()");
   }
