@@ -3,13 +3,16 @@
 #include "Application.h"
 #include "Util.h"
 #include "cores/mplayer/mplayer.h"
+#include "cores/mplayer.h"
 #include "VideoDatabase.h"
 #include "cores/mplayer/ASyncDirectSound.h"
 #include "PlayListPlayer.h"
 #include "utils/GUIInfoManager.h"
 #include "cores/mplayer/xbox_video.h"
+#include "../guilib/GUIProgressControl.h"
 
 #include <stdio.h>
+
 
 #define BLUE_BAR    0
 #define LABEL_ROW1 10
@@ -49,6 +52,8 @@
 #define IMG_32Xr      121
 
 #define LABEL_CURRENT_TIME 22
+#define CONTROL_PROGRESS 23
+#define LABEL_BUFFERING 24
 
 extern IDirectSoundRenderer* m_pAudioDecoder;
 
@@ -516,6 +521,11 @@ void CGUIWindowFullScreen::Render()
   return ;
 }
 
+bool CGUIWindowFullScreen::HasProgressDisplay()
+{
+  return GetControl(CONTROL_PROGRESS);
+}
+
 bool CGUIWindowFullScreen::NeedRenderFullScreen()
 {
   CSingleLock lock (m_section);
@@ -524,15 +534,12 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
     if (g_application.m_pPlayer->IsPaused() ) return true;
   }
 
-  if (g_application.GetPlaySpeed() != 1)
-  {
-    m_bShowCurrentTime = true;
-    m_dwTimeCodeTimeout = timeGetTime();
-  }
+  if (g_application.GetPlaySpeed() != 1) return true;
   if (m_bShowTime) return true;
   if (m_bShowCodecInfo) return true;
   if (m_bShowViewModeInfo) return true;
   if (m_bShowCurrentTime) return true;
+  if (m_bShowProgress) return true;
   if (m_gWindowManager.IsRouted()) return true;
   if (m_gWindowManager.IsModelessAvailable()) return true;
   if (m_bOSDVisible) return true;
@@ -552,6 +559,8 @@ void CGUIWindowFullScreen::RenderFullScreen()
   if (g_application.GetPlaySpeed() != 1)
   {
     m_bShowCurrentTime = true;
+    m_bShowProgress = true;
+    m_dwProgressTimout = timeGetTime();
     m_dwTimeCodeTimeout = timeGetTime();
   }
 
@@ -568,6 +577,53 @@ void CGUIWindowFullScreen::RenderFullScreen()
   if (!g_application.m_pPlayer) return ;
 
   bool bRenderGUI = g_application.m_pPlayer->IsPaused();
+
+  if (m_bShowProgress)
+  {
+    if ( (timeGetTime() - m_dwProgressTimout) >= 2500)
+    {
+      m_bShowProgress = false;
+    }
+ 
+    CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
+    if (pControl) 
+    {
+      pControl->SetPercentage(g_application.m_pPlayer->GetPercentage());
+      if (!pControl->IsVisible())
+        pControl->SetVisible(true);
+    }
+    bRenderGUI = true;
+  }
+
+
+  if( g_application.m_pPlayer->IsCaching() )
+  {
+    int iCacheFilled = g_application.m_pPlayer->GetCacheLevel();
+
+    CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
+    if (pControl) 
+    {
+      pControl->SetPercentage(iCacheFilled);
+      if (!pControl->IsVisible())
+        pControl->SetVisible(true);
+    }
+    SET_CONTROL_VISIBLE(LABEL_BUFFERING);
+    SET_CONTROL_LABEL(LABEL_BUFFERING, "Buffering...");
+    bRenderGUI = true;
+
+    m_bShowCurrentTime=false;
+    m_bShowProgress=false;
+  }
+  else
+  {
+    SET_CONTROL_HIDDEN(LABEL_BUFFERING);
+  }
+
+  if( !m_bShowProgress && !g_application.m_pPlayer->IsCaching() )
+  {
+    SET_CONTROL_HIDDEN(CONTROL_PROGRESS);    
+  }
+
 
   //------------------------
   if (m_bShowCodecInfo)
@@ -757,7 +813,11 @@ void CGUIWindowFullScreen::RenderFullScreen()
     CStdString strTime;
     bRenderGUI = true;
     SET_CONTROL_VISIBLE(LABEL_CURRENT_TIME);
-    SET_CONTROL_LABEL(LABEL_CURRENT_TIME, g_infoManager.GetLabel("videoplayer.time"));
+    CStdString strLabel;
+    strLabel = g_infoManager.GetLabel("videoplayer.time");
+    strLabel += " / ";
+    strLabel += g_infoManager.GetLabel("videoplayer.duration");
+    SET_CONTROL_LABEL(LABEL_CURRENT_TIME, strLabel);
     if ( (timeGetTime() - m_dwTimeCodeTimeout) >= 2500)
     {
       m_bShowCurrentTime = false;
@@ -949,6 +1009,11 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
     bNeedsPause = true;
   }
   g_application.m_pPlayer->Seek(bPlus, bLargeStep);
+  
+  m_bShowProgress = true;
+  m_dwProgressTimout = timeGetTime();
+  m_bShowCurrentTime = true;
+  m_dwTimeCodeTimeout = timeGetTime();
   // And repause it
   if (bNeedsPause)
   {

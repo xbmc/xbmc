@@ -71,6 +71,8 @@ void (__cdecl* pGetCurrentModule)(char* s, int n);
 void (__cdecl* pExitPlayer)(char* how);
 subtitle* (__cdecl* pGetCurrentSubtitle)();
 int (__cdecl* pIsTextSubLoaded)();
+void (__cdecl* pSlaveCommand)(const char* s);
+int (__cdecl* pGetCacheLevel)();
 
 extern "C"
 {
@@ -405,6 +407,19 @@ extern "C"
     }
   }
 
+  void mplayer_SlaveCommand(const char * s)
+  {
+    if (pSlaveCommand) pSlaveCommand(s);
+  }
+
+  int mplayer_GetCacheLevel()
+  {
+    if (pGetCacheLevel)
+      return pGetCacheLevel();
+    else
+      return -1;
+  }
+
   void mplayer_load_dll(DllLoader& dll)
   {
     dll.ResolveExport("audio_out_format_bits", (void**)&pAudioOutFormatBits);
@@ -468,6 +483,8 @@ extern "C"
     dll.ResolveExport("exit_player", (void**)&pExitPlayer);
     dll.ResolveExport("mplayer_getCurrentSubtitle", (void**) &pGetCurrentSubtitle);
     dll.ResolveExport("mplayer_isTextSubLoaded", (void**) &pIsTextSubLoaded);
+    dll.ResolveExport("mplayer_SlaveCommand", (void**) &pSlaveCommand);
+    dll.ResolveExport("mplayer_GetCacheLevel", (void**) &pGetCacheLevel);
 
     pSetVideoFunctions(&video_functions);
     pSetAudioFunctions(&audio_functions);
