@@ -895,7 +895,7 @@ void CFileItem::SetMusicThumb()
         }
       }
 
-      CLog::Log(LOGDEBUG,"  No remote thumbs found or cached");
+      //CLog::Log(LOGDEBUG,"  No remote thumbs found or cached");
     }
 
     // no remote thumb exists or remote thumbs are disabled

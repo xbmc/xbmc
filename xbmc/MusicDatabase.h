@@ -161,6 +161,7 @@ private:
   CSong GetSongFromDataset();
   CAlbum GetAlbumFromDataset();
   bool CleanupSongs();
+  bool CleanupSongsByIds(const CStdString &strSongIds);
   bool CleanupPaths();
   bool CleanupThumbs();
   bool CleanupAlbums();
