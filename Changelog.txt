@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-04-2005 new: support for returning amount of filled buffer to xbmc, and detect when buffer runs empty.
+  - 09-04-2005 new: support for sending slave commands from xbmc to mplayer.
+  - 09-04-2005 changed: made sure seeking didn't display progressbar of osd was turned of.
   - 02-04-2005 fixed: seeking and time reporting in mpg/vob files which has timecodes that doesn't start from zero
   - 27-03-2005 fixed: threading issue wich caused video to revert back to start when resuming from rewind
   - 17-03-2005 changed: reverted parts of last, syncing after ff/rw is now again done using a small seek. too many problems with it. Some other things tuned.

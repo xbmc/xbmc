@@ -92,6 +92,9 @@ int cache_read(cache_vars_t* s,unsigned char* buf,int size){
 	if(s->eof) break;
 	// waiting for buffer fill...
 	    Sleep(20);//READ_USLEEP_TIME); // 10ms
+#ifdef _XBOX
+      cache_fill_status=0; //Force fill status to 0
+#endif
 	continue; // try again...
     }
 
@@ -122,7 +125,9 @@ int cache_read(cache_vars_t* s,unsigned char* buf,int size){
     total+=len;
     
   }
+#ifndef _XBOX //Moved to cache_fill to give updates even if this thread isn't running
   cache_fill_status=100*(s->max_filepos-s->read_filepos)/s->buffer_size;
+#endif
   return total;
 }
 
@@ -163,6 +168,9 @@ int cache_fill(cache_vars_t* s){
   
   if(space<s->fill_limit){
 //    printf("Buffer is full (%d bytes free, limit: %d)\n",space,s->fill_limit);
+#ifdef _XBOX 
+    cache_fill_status=100*(s->buffer_size-s->back_size)/s->buffer_size; //Report full buffer all the time
+#endif
     return 0; // no fill...
   }
 
@@ -197,7 +205,15 @@ int cache_fill(cache_vars_t* s){
       // wrap...
       s->offset+=s->buffer_size;
   }
-  
+#ifdef _XBOX
+  int fill = 100*(s->max_filepos-s->read_filepos)/s->buffer_size;
+  if(s->eof)
+    cache_fill_status=100*(s->buffer_size-s->back_size)/s->buffer_size; //Report full buffer all the time
+  else if(cache_fill_status == 0)
+    cache_fill_status= fill > 5 ? fill : 0; //Only begin with atleast 5 percent in cache
+  else
+    cache_fill_status= fill;
+#endif
   return len;
   
 }
@@ -401,7 +417,10 @@ int cache_stream_seek_long(stream_t *stream,off_t pos){
   newpos=pos/s->sector_size; newpos*=s->sector_size; // align
   stream->pos=s->read_filepos=newpos;
   s->eof=0; // !!!!!!!
-
+#ifdef _XBOX
+    while((s->read_filepos>=s->max_filepos || s->read_filepos<s->min_filepos) && s->eof==0)
+      Sleep(20); //Make sure we sleep here instead of in reader as that might cause cachesize to bereported as 0
+#endif
   cache_stream_fill_buffer(stream);
 
   pos-=newpos;
