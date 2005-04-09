@@ -540,7 +540,7 @@ void CGUIWindowFullScreen::Render()
 
 bool CGUIWindowFullScreen::HasProgressDisplay()
 {
-  return GetControl(CONTROL_PROGRESS);
+  return GetControl(CONTROL_PROGRESS) != NULL;
 }
 
 bool CGUIWindowFullScreen::NeedRenderFullScreen()
