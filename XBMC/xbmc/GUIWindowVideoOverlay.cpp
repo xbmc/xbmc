@@ -21,6 +21,19 @@ CGUIWindowVideoOverlay::CGUIWindowVideoOverlay()
 CGUIWindowVideoOverlay::~CGUIWindowVideoOverlay()
 {}
 
+void CGUIWindowVideoOverlay::OnWindowLoaded()
+{
+  // make our images conditional if they're not already (backwards compatible)
+  CGUIImage *pImage = (CGUIImage *)GetControl(CONTROL_PLAY_LOGO);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Playing");
+  pImage = (CGUIImage *)GetControl(CONTROL_PAUSE_LOGO);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Paused");
+  pImage = (CGUIImage *)GetControl(CONTROL_RW_LOGO);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding");
+  pImage = (CGUIImage *)GetControl(CONTROL_FF_LOGO);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Forwarding");
+}
+
 void CGUIWindowVideoOverlay::Render()
 {
   if (!g_application.m_pPlayer) return ;
@@ -46,30 +59,6 @@ void CGUIWindowVideoOverlay::Render()
   SET_CONTROL_LABEL(CONTROL_BIG_PLAYTIME, g_infoManager.GetLabel("videoplayer.time"));
   SET_CONTROL_LABEL(CONTROL_PLAYTIME, g_infoManager.GetLabel("videoplayer.timespeed"));
 
-  SET_CONTROL_HIDDEN(CONTROL_PLAY_LOGO);
-  SET_CONTROL_HIDDEN(CONTROL_PAUSE_LOGO);
-  SET_CONTROL_HIDDEN( CONTROL_FF_LOGO);
-  SET_CONTROL_HIDDEN( CONTROL_RW_LOGO);
-  if (g_application.m_pPlayer->IsPaused() )
-  {
-    SET_CONTROL_VISIBLE( CONTROL_PAUSE_LOGO);
-  }
-  else
-  {
-    int iSpeed = g_application.GetPlaySpeed();
-    if (iSpeed > 1)
-    {
-      SET_CONTROL_VISIBLE( CONTROL_FF_LOGO);
-    }
-    else if (iSpeed < 0)
-    {
-      SET_CONTROL_VISIBLE( CONTROL_RW_LOGO);
-    }
-    else
-    {
-      SET_CONTROL_VISIBLE( CONTROL_PLAY_LOGO);
-    }
-  }
   CGUIWindow::Render();
 }
 

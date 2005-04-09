@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-04-2005 changed: Analog ffwd/rewd mapped to triggers in Vis, and dpad left/right is skip previous/next.
+  - 09-04-2005 added: WHITE hides/reveals controls on musicVisualisation screen.  Two options: either on or off.  When off, the song is faded in + out at beginning and end.
+  - 09-04-2005 fixed: Redid the video output startup/texture management.  Prevents crashes when starting when minimized.
+  - 09-04-2005 fixed: Spurious error message caused by empty infoImages.
+  - 09-04-2005 added: Video playlists will cause the video to remain minimized when switching videos if it is already minimized.
+  - 09-04-2005 fixed: IMDb info that failed showed "My Programs" string on the error dialog.
   - 09-04-2005 changed: Project Mayhem III is new default skin
   - 09-04-2005 added: directory tokens which reference XBMC's special directories for use as bookmark paths: $HOME, $SUBTITLES, $THUMBNAILS, $SHORTCUTS, $ALBUMS, $RECORDINGS, $SCREENSHOTS, $PLAYLISTS
   - 09-04-2005 fixed: music database cleanup with LARGE song table (SF bug 1172234)
