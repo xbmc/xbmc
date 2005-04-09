@@ -23,6 +23,7 @@ public:
   virtual void OnWindowLoaded();
   void RenderFullScreen();
   bool NeedRenderFullScreen();
+  bool HasProgressDisplay();
   bool OSDVisible() const;
   void ChangetheTimeCode(DWORD remote);
   void ChangetheSpeed(DWORD action);
@@ -36,6 +37,8 @@ private:
   void RenderTTFSubtitles();
   void Seek(bool bPlus, bool bLargeStep);
   bool m_bShowTime;
+  bool m_bShowProgress;
+  DWORD m_dwProgressTimout;
   bool m_bShowCodecInfo;
   bool m_bShowViewModeInfo;
   DWORD m_dwShowViewModeTimeout;

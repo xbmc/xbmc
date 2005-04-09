@@ -79,7 +79,7 @@ public:
   virtual bool CloseFile();
   virtual bool IsPlaying() const;
   virtual void Pause();
-  virtual bool IsPaused() const;
+  virtual bool IsPaused() const;  
   virtual void Unload();
   virtual bool HasVideo();
   virtual bool HasAudio();
@@ -136,6 +136,9 @@ public:
   virtual void ShowOSD(bool bOnoff);
   virtual void DoAudioWork();
 
+  virtual bool IsCaching() const {return m_bCaching;};
+  virtual int GetCacheLevel() const {return m_CacheLevel;};
+
   CStdString _SubtitleExtension;
 protected:
   int GetCacheSize(bool bFileOnHD, bool bFileOnISO, bool bFileOnUDF, bool bFileOnInternet, bool bFileOnLAN, bool bIsVideo, bool bIsAudio, bool bIsDVD);
@@ -146,10 +149,13 @@ protected:
   virtual void Process();
   bool m_bPaused;
   bool m_bIsPlaying;
+  bool m_bCaching;
+  int m_CacheLevel;
   DllLoader* m_pDLL;
   __int64 m_iPTS;
   Options options;
   bool m_bSubsVisibleTTF;
   bool m_bIsMplayeropenfile;
   CStdString m_strPath;
+
 };
