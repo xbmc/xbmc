@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-04-2005 added: support for pausing and rebuffering completly before continuing playback when running out of data
+  - 09-04-2005 added: support for using a skinned progress control in fullscreen video to display current position.
   - 08-04-2005 changed: <visible> tag in image controls is now a boolean conditional.  eg <visible>Player.HasMedia</visible> will cause the image to be rendered only if the player has something playing (or paused). 
   - 08-04-2005 changed: Z-buffer now used throughout the GUI (more mem usage, but it's needed for the visz)
   - 08-04-2005 changed: Hardware overlays renderer drops down to low quality pixel shader for the GUI.  Means
