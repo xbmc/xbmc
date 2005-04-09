@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-04-2005 fixed: Default control can now be focused on the list/thumb in music + video views.
   - 09-04-2005 fixed: Some 3rd party AV packs report as being "VGA" adapters incorrectly.  XBMC now supports this mode and enables Digital output for it.
   - 09-04-2005 changed: Analog ffwd/rewd mapped to triggers in Vis, and dpad left/right is skip previous/next.
   - 09-04-2005 added: WHITE hides/reveals controls on musicVisualisation screen.  Two options: either on or off.  When off, the song is faded in + out at beginning and end.

@@ -288,7 +288,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
         return true;
       }
-      else if (m_viewControl.HasView(iControl))  // list/thumb control
+      else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
         // get selected item
         int iItem = m_viewControl.GetSelectedItem();
@@ -315,6 +315,14 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_IMDB)
       {
         OnManualIMDB();
+      }
+    }
+  case GUI_MSG_SETFOCUS:
+    {
+      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
+      {
+        m_viewControl.SetFocused();
+        return true;
       }
     }
   }
