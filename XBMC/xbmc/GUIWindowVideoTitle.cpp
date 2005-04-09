@@ -213,7 +213,7 @@ bool CGUIWindowVideoTitle::OnMessage(CGUIMessage& message)
         return CGUIWindowVideoBase::OnMessage(message);
     }
   }
-  return CGUIWindow::OnMessage(message);
+  return CGUIWindowVideoBase::OnMessage(message);
 }
 
 //****************************************************************************************************************************
