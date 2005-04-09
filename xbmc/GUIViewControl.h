@@ -27,7 +27,8 @@ public:
   int GetSelectedItem();
   void SetFocused();
 
-  bool HasView(int viewMode);
+  bool HasControl(int viewMode);
+  int GetCurrentControl();
 
   void Clear();
 

@@ -344,7 +344,14 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         }
       }
     }
-
+  case GUI_MSG_SETFOCUS:
+    {
+      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
+      {
+        m_viewControl.SetFocused();
+        return true;
+      }
+    }
   }
   return CGUIWindow::OnMessage(message);
 }
@@ -1522,5 +1529,5 @@ void CGUIWindowMusicBase::SetLabelFromTag(CFileItem *pItem)
 
 bool CGUIWindowMusicBase::IsViewControl(int control)
 {
-  return m_viewControl.HasView(control);
+  return m_viewControl.HasControl(control);
 }
