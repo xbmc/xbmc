@@ -1,0 +1,143 @@
+<window>
+  <id>12</id>
+  <defaultcontrol>2</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <controls>
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>720</width>
+      <height>576</height>
+      <texture>background-settings.png</texture>
+    </control>
+
+    <control>
+      <description>xbox media center label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>200</posX>
+      <posY>63</posY>
+      <align>right</align>
+      <label>xbox media center</label>
+      <font>special12</font>
+    </control>
+
+    <control>
+      <description>description label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>207</posX>
+      <posY>63</posY>
+      <align>left</align>
+      <label>10507</label>
+      <font>special13</font>
+    </control>
+
+    <control>
+      <description>button area</description>
+      <type>image</type>
+      <id>3</id>
+      <posX>50</posX>
+      <posY>120</posY>
+      <width>150</width>
+      <height>300</height>
+      <texture>-</texture>
+    </control>
+
+    <control>
+      <description>button gap</description>
+      <type>image</type>
+      <id>4</id>
+      <width>350</width>
+      <height>38</height>
+      <texture>-</texture>
+    </control>
+
+    <control>
+      <description>control area</description>
+      <type>image</type>
+      <id>5</id>
+      <posX>211</posX>
+      <posY>121</posY>
+      <width>445</width>
+      <height>300</height>
+      <texture>-</texture>
+    </control>
+
+    <control>
+      <description>control gap</description>
+      <type>image</type>
+      <id>6</id>
+      <width>350</width>
+      <height>35</height>
+      <texture>-</texture>
+    </control>
+
+    <control>
+      <description>Default Button</description>
+      <type>button</type>
+      <id>7</id>
+      <posX>530</posX>
+      <posY>150</posY>
+      <font>font13</font>
+      <textOffsetX>7</textOffsetX>
+      <textureFocus>list-focus.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+    </control>
+
+    <control>
+      <description>Default RadioButton</description>
+      <type>radiobutton</type>
+      <id>8</id>
+      <posX>530</posX>
+      <posY>150</posY>
+      <font>font13</font>
+      <textureFocus>list-focus.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <textOffsetX>7</textOffsetX>
+      <textureRadioFocus>settings-check-box.png</textureRadioFocus>
+      <textureRadioNoFocus>settings-check-boxNF.png</textureRadioNoFocus>
+    </control>
+
+    <control>
+      <description>Default SpinControlex</description>
+      <type>spincontrolex</type>
+      <id>9</id>
+      <posX>530</posX>
+      <posY>150</posY>
+      <width>300</width>
+      <textureFocus>list-focus.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <textureUp>scroll-up.png</textureUp>
+      <textureDown>scroll-down.png</textureDown>
+      <textureUpFocus>scroll-up-focus.png</textureUpFocus>
+      <textureDownFocus>scroll-down-focus.png</textureDownFocus>
+      <font>font13</font>
+      <textcolor>ffffffff</textcolor>
+      <colordiffuse>ffffffff</colordiffuse>
+      <disabledcolor>60d0d0d0</disabledcolor>
+      <textOffsetX>7</textOffsetX>
+      <alignY>center</alignY>
+      <reverse>yes</reverse>
+    </control>
+
+    <control>
+      <description>Default Category Button</description>
+      <type>button</type>
+      <id>10</id>
+      <posX>208</posX>
+      <posY>150</posY>
+      <label>224</label>
+      <font>font13</font>
+      <align>left</align>
+      <textureFocus>button-focus.png</textureFocus>
+      <textureNoFocus>button-nofocus.png</textureNoFocus>
+    </control>
+
+  </controls>
+
+</window>
+

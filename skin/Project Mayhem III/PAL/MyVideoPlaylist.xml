@@ -1,0 +1,155 @@
+<window>
+  <id>28</id>
+  <defaultcontrol>2</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <controls>
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>720</width>
+      <height>576</height>
+      <texture>background-videos.png</texture>
+    </control>
+
+    <control>
+      <description>xbox media center label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>200</posX>
+      <posY>63</posY>
+      <align>right</align>
+      <label>xbox media center</label>
+      <font>special12</font>
+    </control>
+
+    <control>
+      <description>description label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>207</posX>
+      <posY>63</posY>
+      <align>left</align>
+      <label>10522</label>
+      <font>special13</font>
+    </control>
+
+    <control>
+      <description>number of files text label</description>
+      <type>label</type>
+      <id>12</id>
+      <posX>545</posX>
+      <posY>526</posY>
+      <align>right</align>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <controlgroup>
+      <control>
+        <description>View As Icons button</description>
+        <type>button</type>
+        <id>2</id>
+        <posX>50</posX>
+        <posY>120</posY>
+        <label>100</label>
+        <font>font13</font>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>22</onup>
+        <ondown>20</ondown>
+      </control>
+
+      <control>
+        <description>Shuffle button</description>
+        <type>radiobutton</type>
+        <id>20</id>
+        <posX>50</posX>
+        <posY>157</posY>
+        <label>191</label>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>2</onup>
+        <ondown>26</ondown>
+      </control>
+
+      <control>
+        <description>Repeat button</description>
+        <type>radiobutton</type>
+        <id>26</id>
+        <posX>50</posX>
+        <posY>194</posY>
+        <label>486</label>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>20</onup>
+        <ondown>27</ondown>
+      </control>
+
+      <control>
+        <description>Repeat one button</description>
+        <type>radiobutton</type>
+        <id>27</id>
+        <posX>50</posX>
+        <posY>231</posY>
+        <label>487</label>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>26</onup>
+        <ondown>21</ondown>
+      </control>
+
+      <control>
+        <description>Save button</description>
+        <type>button</type>
+        <id>21</id>
+        <posX>50</posX>
+        <posY>268</posY>
+        <label>190</label>
+        <font>font13</font>
+        <onup>27</onup>
+        <onleft>50</onleft>
+        <onright>50</onright>
+      </control>
+
+      <control>
+        <description>Clear button</description>
+        <type>button</type>
+        <id>22</id>
+        <posX>50</posX>
+        <posY>305</posY>
+        <label>192</label>
+        <font>font13</font>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <ondown>2</ondown>
+      </control>
+
+    </controlgroup>
+
+    <control>
+      <description>listcontrol</description>
+      <type>listcontrol</type>
+      <id>50</id>
+      <onleft>51</onleft>
+      <onright>51</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+    </control>
+
+    <control>
+      <description>thumbnailpanel</description>
+      <type>thumbnailpanel</type>
+      <id>51</id>
+      <onleft>2</onleft>
+      <onright>2</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+    </control>
+
+  </controls>
+
+</window>
+

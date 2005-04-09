@@ -1,0 +1,147 @@
+<fonts>
+  <fontset id="Default">
+    <font>
+      <name>font18</name>
+      <filename>common-font18.xpr</filename>
+    </font>
+
+    <font>
+      <name>font13</name>
+      <filename>common-720pfont14.xpr</filename>
+    </font>
+
+    <font>
+      <name>font14</name>
+      <filename>common-font18.xpr</filename>
+    </font>
+
+    <font>
+      <name>font64</name>
+      <filename>common-font64.xpr</filename>
+    </font>
+
+    <font>
+      <name>matrix8</name>
+      <filename>matrix8.xpr</filename>
+    </font>
+
+    <font>
+      <name>font04</name>
+      <filename>common-font18.xpr</filename>
+    </font>
+
+    <font>
+      <name>font15</name>
+      <filename>common-font15.xpr</filename>
+    </font>
+
+    <font>
+      <name>font10</name>
+      <filename>common-720pfont14.xpr</filename>
+    </font>
+
+    <font>
+      <name>font101</name>
+      <filename>common-720pfont14.xpr</filename>
+    </font>
+
+    <font>
+      <name>font12</name>
+      <filename>common-720pfont14.xpr</filename>
+    </font>
+
+    <font>
+      <name>fontKB</name>
+      <filename>common-720pfont14.xpr</filename>
+    </font>
+
+    <font>
+      <name>special12</name>
+      <filename>special-normal-pal.xpr</filename>
+    </font>
+
+    <font>
+      <name>special13</name>
+      <filename>special-bold-pal.xpr</filename>
+    </font>
+
+  </fontset>
+
+  <fontset id="Arial TTF">
+    <font>
+      <name>font18</name>
+      <filename>Arial.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>font13</name>
+      <filename>Arial.ttf</filename>
+      <size>19</size>
+    </font>
+
+    <font>
+      <name>font14</name>
+      <filename>Arial.ttf</filename>
+      <size>19</size>
+    </font>
+
+    <font>
+      <name>font64</name>
+      <filename>common-font64.xpr</filename>
+    </font>
+
+    <font>
+      <name>matrix8</name>
+      <filename>matrix8.xpr</filename>
+    </font>
+
+    <font>
+      <name>font04</name>
+      <filename>Arial.ttf</filename>
+      <size>19</size>
+    </font>
+
+    <font>
+      <name>font15</name>
+      <filename>Arial.ttf</filename>
+      <size>19</size>
+    </font>
+
+    <font>
+      <name>font10</name>
+      <filename>Arial.ttf</filename>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>font12</name>
+      <filename>Arial.ttf</filename>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>fontKB</name>
+      <filename>common-font13.xpr</filename>
+    </font>
+
+    <font>
+      <name>font101</name>
+      <filename>Arial.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>special12</name>
+      <filename>special-normal-pal.xpr</filename>
+    </font>
+
+    <font>
+      <name>special13</name>
+      <filename>special-bold-pal.xpr</filename>
+    </font>
+
+  </fontset>
+
+</fonts>
+

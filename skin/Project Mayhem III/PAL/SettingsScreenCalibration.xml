@@ -1,0 +1,103 @@
+<window>
+  <id>11</id>
+  <defaultcontrol>8</defaultcontrol>
+  <controls>
+    <control>
+      <description>videowindow</description>
+      <type>videowindow</type>
+      <id>20</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>720</width>
+      <height>576</height>
+    </control>
+
+    <control>
+      <description>top left mover</description>
+      <type>mover</type>
+      <id>8</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <textureFocus>calibrate-topleft-focus.png</textureFocus>
+      <textureNoFocus>calibrate-topleft.png</textureNoFocus>
+    </control>
+
+    <control>
+      <description>right bottom mover</description>
+      <type>mover</type>
+      <id>9</id>
+      <posX>700</posX>
+      <posY>500</posY>
+      <textureFocus>calibrate-bottomright-focus.png</textureFocus>
+      <textureNoFocus>calibrate-bottomright.png</textureNoFocus>
+    </control>
+
+    <control>
+      <description>subtitle position mover</description>
+      <type>mover</type>
+      <id>10</id>
+      <posX>200</posX>
+      <posY>500</posY>
+      <textureFocus>calibrate-subtitles-focus.png</textureFocus>
+      <textureNoFocus>calibrate-subtitles.png</textureNoFocus>
+    </control>
+
+    <control>
+      <description>pixel aspect ratio box</description>
+      <type>resize</type>
+      <id>11</id>
+      <posX>0</posX>
+      <posY>270</posY>
+      <width>288</width>
+      <height>288</height>
+      <textureFocus>calibrate-pixelratio-focus.png</textureFocus>
+      <textureNoFocus>calibrate-pixelratio.png</textureNoFocus>
+    </control>
+
+    <control>
+      <description>OSD Y Offset mover</description>
+      <type>mover</type>
+      <id>12</id>
+      <posX>200</posX>
+      <posY>500</posY>
+      <textureFocus>calibrate-subtitles-focus.png</textureFocus>
+      <textureNoFocus>calibrate-subtitles.png</textureNoFocus>
+      <colorkey>FFFF00FF</colorkey>
+      <colordiffuse>FFFFFFFF</colordiffuse>
+    </control>
+
+    <control>
+      <description>rectangle image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>256</posY>
+      <width>720</width>
+      <height>57</height>
+      <texture>bluebar.png</texture>
+    </control>
+
+    <control>
+      <description>coordinates label</description>
+      <type>label</type>
+      <id>2</id>
+      <posX>55</posX>
+      <posY>260</posY>
+      <label>-</label>
+      <font>font14</font>
+    </control>
+
+    <control>
+      <description>help information</description>
+      <type>label</type>
+      <id>3</id>
+      <posX>55</posX>
+      <posY>280</posY>
+      <label>-</label>
+      <font>font14</font>
+    </control>
+
+  </controls>
+
+</window>
+

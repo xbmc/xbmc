@@ -1,0 +1,51 @@
+<window>
+  <id>2004</id>
+  <defaultcontrol>5</defaultcontrol>
+  <controls>
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>720</width>
+      <height>576</height>
+      <texture>background-apps.png</texture>
+    </control>
+
+    <control>
+      <description>xbox media center label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>200</posX>
+      <posY>63</posY>
+      <align>right</align>
+      <label>xbox media center</label>
+      <font>special12</font>
+    </control>
+
+    <control>
+      <description>description label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>207</posX>
+      <posY>63</posY>
+      <align>left</align>
+      <label>262</label>
+      <font>special13</font>
+    </control>
+
+    <control>
+      <description>textarea</description>
+      <type>textbox</type>
+      <id>5</id>
+      <posX>220</posX>
+      <posY>120</posY>
+      <width>445</width>
+      <height>425</height>
+    </control>
+
+  </controls>
+
+</window>
+

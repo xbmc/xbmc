@@ -1,0 +1,66 @@
+<window>
+  <id>34</id>
+  <defaultcontrol>2</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <controls>
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>720</width>
+      <height>576</height>
+      <texture>background-settings.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>xbox media center label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>200</posX>
+      <posY>63</posY>
+      <align>right</align>
+      <label>xbox media center</label>
+      <font>special12</font>
+    </control>
+
+    <control>
+      <description>description label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>207</posX>
+      <posY>63</posY>
+      <align>left</align>
+      <label>10507</label>
+      <font>special13</font>
+    </control>
+
+    <control>
+      <description>Last loaded</description>
+      <type>fadelabel</type>
+      <id>3</id>
+      <posX>300</posX>
+      <posY>526</posY>
+      <width>250</width>
+      <align>right</align>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>listcontrol</description>
+      <type>listcontrol</type>
+      <id>2</id>
+      <onleft>2</onleft>
+      <onright>2</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+    </control>
+
+  </controls>
+
+</window>
+
