@@ -180,7 +180,7 @@ void CGUIViewControl::SetFocused()
   g_graphicsContext.SendMessage(msg);
 }
 
-bool CGUIViewControl::HasView(int viewControlID)
+bool CGUIViewControl::HasControl(int viewControlID)
 {
   // run through our controls, checking for the id
   for (map_iter it = m_vecViews.begin(); it != m_vecViews.end(); it++)
@@ -190,6 +190,15 @@ bool CGUIViewControl::HasView(int viewControlID)
       return true;
   }
   return false;
+}
+
+int CGUIViewControl::GetCurrentControl()
+{
+  map_iter it = m_vecViews.find(m_currentView);
+  if (it == m_vecViews.end())
+    return -1; // no valid current view!
+
+  return (*it).second->GetID();
 }
 
 void CGUIViewControl::Clear()
