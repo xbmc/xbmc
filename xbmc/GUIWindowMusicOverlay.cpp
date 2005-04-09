@@ -65,7 +65,7 @@ void CGUIWindowMusicOverlay::OnAction(const CAction &action)
         {
           m_bShowInfo = true;
           g_stSettings.m_bMyMusicSongInfoInVis = true;
-          g_stSettings.m_bMyMusicSongThumbInVis = true;
+//          g_stSettings.m_bMyMusicSongThumbInVis = true;
           m_iFrameIncrement = 1;
         }
         // info is already on screen in its resting spot.
@@ -232,7 +232,7 @@ void CGUIWindowMusicOverlay::Render()
       m_iFrames = 0;
       m_iFrameIncrement = 0;
       g_stSettings.m_bMyMusicSongInfoInVis = false;
-      g_stSettings.m_bMyMusicSongThumbInVis = false;
+//      g_stSettings.m_bMyMusicSongThumbInVis = false;
     }
     else if (!m_bShowInfo && m_iFrames >= STEPS)
     {
@@ -247,7 +247,7 @@ void CGUIWindowMusicOverlay::Render()
       m_iFrames = 0;
       m_iFrameIncrement = 0;
       g_stSettings.m_bMyMusicSongInfoInVis = false;
-      g_stSettings.m_bMyMusicSongThumbInVis = false;
+ //     g_stSettings.m_bMyMusicSongThumbInVis = false;
     }
     else if (m_iFrames >= STEPS)
     {
@@ -420,7 +420,7 @@ void CGUIWindowMusicOverlay::Update()
   {
     m_bShowInfo = true;
     g_stSettings.m_bMyMusicSongInfoInVis = true;
-    g_stSettings.m_bMyMusicSongThumbInVis = true;
+//    g_stSettings.m_bMyMusicSongThumbInVis = true;
   }
 
   if (m_bShowInfo && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)

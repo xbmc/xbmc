@@ -346,13 +346,27 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   // make the pause image conditionally visible
   CGUIImage *pImage = (CGUIImage *)GetControl(IMG_PAUSE);
   if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Paused");
-  // make the 2x ff image conditionally visible
+  // make the ff and rw images conditionally visible
   pImage = (CGUIImage *)GetControl(IMG_2X);
   if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Forwarding2x");
-  // make the 2x rw image conditionally visible
   pImage = (CGUIImage *)GetControl(IMG_2Xr);
   if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding2x");
-  
+  pImage = (CGUIImage *)GetControl(IMG_4X);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Forwarding4x");
+  pImage = (CGUIImage *)GetControl(IMG_4Xr);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding4x");
+  pImage = (CGUIImage *)GetControl(IMG_8X);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Forwarding8x");
+  pImage = (CGUIImage *)GetControl(IMG_8Xr);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding8x");
+  pImage = (CGUIImage *)GetControl(IMG_16X);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Forwarding16x");
+  pImage = (CGUIImage *)GetControl(IMG_16Xr);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding16x");
+  pImage = (CGUIImage *)GetControl(IMG_32X);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Forwarding32x");
+  pImage = (CGUIImage *)GetControl(IMG_32Xr);
+  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding32x");
   //Set text of buffering label
   SET_CONTROL_LABEL(LABEL_BUFFERING, 15107);
 }
@@ -748,66 +762,9 @@ void CGUIWindowFullScreen::RenderFullScreen()
     OnMessage(msg);
   }
 
-  // check if we have bidirectional controls and set controlIds
-  bool bRewIcons = (GetControl(IMG_2Xr) != NULL);
-
   int iSpeed = g_application.GetPlaySpeed();
-  // hide all speed indicators first
-//  SET_CONTROL_HIDDEN(IMG_2X);
-  SET_CONTROL_HIDDEN(IMG_4X);
-  SET_CONTROL_HIDDEN(IMG_8X);
-  SET_CONTROL_HIDDEN(IMG_16X);
-  SET_CONTROL_HIDDEN(IMG_32X);
-
-  if (bRewIcons)
-  {
-//    SET_CONTROL_HIDDEN(IMG_2Xr);
-    SET_CONTROL_HIDDEN(IMG_4Xr);
-    SET_CONTROL_HIDDEN(IMG_8Xr);
-    SET_CONTROL_HIDDEN(IMG_16Xr);
-    SET_CONTROL_HIDDEN(IMG_32Xr);
-  }
-
   if (iSpeed != 1)
-  {
     bRenderGUI = true;
-    switch (iSpeed)
-    {
- //   case 2:
- //     SET_CONTROL_VISIBLE(IMG_2X);
- //     break;
- //   case - 2:
- //     SET_CONTROL_VISIBLE(bRewIcons ? IMG_2Xr : IMG_2X);
- //     break;
-    case 4:
-      SET_CONTROL_VISIBLE(IMG_4X);
-      break;
-    case - 4:
-      SET_CONTROL_VISIBLE(bRewIcons ? IMG_4Xr : IMG_4X);
-      break;
-    case 8:
-      SET_CONTROL_VISIBLE(IMG_8X);
-      break;
-    case - 8:
-      SET_CONTROL_VISIBLE(bRewIcons ? IMG_8Xr : IMG_8X);
-      break;
-    case 16:
-      SET_CONTROL_VISIBLE(IMG_16X);
-      break;
-    case - 16:
-      SET_CONTROL_VISIBLE(bRewIcons ? IMG_16Xr : IMG_16X);
-      break;
-    case 32:
-      SET_CONTROL_VISIBLE(IMG_32X);
-      break;
-    case - 32:
-      SET_CONTROL_VISIBLE(bRewIcons ? IMG_32Xr : IMG_32X);
-      break;
-    default:
-      // do nothing, leave them all invisible
-      break;
-    }
-  }
 
   // Render current time if requested
   if (m_bShowCurrentTime)

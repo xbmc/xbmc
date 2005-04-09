@@ -187,6 +187,8 @@ void CGUIImage::PreAllocResources()
 
 void CGUIImage::AllocResources()
 {
+  if (m_strFileName.IsEmpty())
+    return;
   FreeResources();
   CGUIControl::AllocResources();
 

@@ -2,16 +2,17 @@
 #include "GUIWindowVisualisation.h"
 #include "application.h"
 #include "GUIVisualisationControl.h"
+#include "utils/GUIInfoManager.h"
 
-#define LABEL_ROW1 10
-#define LABEL_ROW2 11
-#define LABEL_ROW3 12
-
-#define CONTROL_VISUALISATION 20
+#define TRANSISTION_COUNT   50  // 1 second
+#define TRANSISTION_LENGTH 300  // 6 seconds
 
 CGUIWindowVisualisation::CGUIWindowVisualisation(void)
     : CGUIWindow(0)
 {
+  m_dwFrameCounter = 0;
+  m_dwInitTimer = 0;
+  m_bShowInfo = false;
 }
 
 CGUIWindowVisualisation::~CGUIWindowVisualisation(void)
@@ -24,7 +25,22 @@ void CGUIWindowVisualisation::OnAction(const CAction &action)
   {
   case ACTION_SHOW_INFO:
     //send the action to the overlay
-    g_application.m_guiMusicOverlay.OnAction(action);
+    if (g_graphicsContext.IsOverlayAllowed())
+      g_application.m_guiMusicOverlay.OnAction(action);
+    else
+    {
+      // reset the timer
+      m_dwInitTimer = 0;
+      if (m_dwFrameCounter)
+      { // already in the process of a fade - reverse it
+        m_dwFrameCounter = TRANSISTION_COUNT - m_dwFrameCounter;  // takes care of a switch half way
+        m_bShowInfo = !m_bShowInfo;
+      }
+      else
+        m_dwFrameCounter = TRANSISTION_COUNT;
+      // toggle our settings
+      g_stSettings.m_bMyMusicSongThumbInVis = !m_bShowInfo;
+    }
     break;
 
   case ACTION_SHOW_GUI:
@@ -40,8 +56,10 @@ void CGUIWindowVisualisation::OnAction(const CAction &action)
 
   case ACTION_ANALOG_FORWARD:
     // calculate the speed based on the amount the button is held down
+    {
     float AVDelay = g_application.m_CdgParser.GetAVDelay();
     g_application.m_CdgParser.SetAVDelay(AVDelay - action.fAmount1 / 4.0f);
+    }
     break;
   }
   CGUIWindow::OnAction(action);
@@ -53,12 +71,8 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      // remove z-buffer
-//      RESOLUTION res = g_graphicsContext.GetVideoResolution();
- //     g_graphicsContext.SetVideoResolution(res, FALSE);
     }
     break;
-
   case GUI_MSG_WINDOW_INIT:
     {
       // check whether we've come back here from a window during which time we've actually
@@ -69,10 +83,23 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
         return true;
       }
 
+      if (g_stSettings.m_bMyMusicSongThumbInVis)
+      { // always on
+        m_bShowInfo = true;
+        m_dwFrameCounter = 0;
+        m_dwInitTimer = 0;
+        SetAlpha(255);
+      }
+      else
+      {
+        // start display init timer (fade in then out after 5 secs...)
+        m_bShowInfo = false;
+        m_dwFrameCounter = TRANSISTION_COUNT;
+        m_dwInitTimer = TRANSISTION_LENGTH;
+        SetAlpha(0);
+      }
+
       CGUIWindow::OnMessage(message);
-      // setup a z-buffer
-//      RESOLUTION res = g_graphicsContext.GetVideoResolution();
-//      g_graphicsContext.SetVideoResolution(res, TRUE);
       return true;
     }
   }
@@ -99,7 +126,82 @@ void CGUIWindowVisualisation::OnMouse()
 void CGUIWindowVisualisation::Render()
 {
   g_application.ResetScreenSaver();
+  if (!g_stSettings.m_bMyMusicSongThumbInVis)
+  {
+    if (m_dwInitTimer)
+    {
+      m_dwInitTimer--;
+      if (!m_dwInitTimer)
+      { // time has elapsed - switch view modes!
+        m_dwFrameCounter = TRANSISTION_COUNT;
+      }
+    }
+    else if (!m_dwFrameCounter)
+    {  // check our current time, as we may have to fade in
+      int timeRemaining = g_infoManager.GetPlayTimeRemaining();
+      int timeStarted = g_infoManager.GetPlayTime();
+      if (timeStarted < 2 && !m_bShowInfo)
+      { // fade in at the start
+        m_dwFrameCounter = TRANSISTION_COUNT;
+      }
+      else if (timeStarted == TRANSISTION_LENGTH/50 && m_bShowInfo)
+      { // fade out after 5 seconds
+        m_dwFrameCounter = TRANSISTION_COUNT;
+      }
+      else if (timeRemaining < 2 && m_bShowInfo)
+      {
+        // fade out before end of track in the last second...
+        m_dwFrameCounter = TRANSISTION_COUNT;
+      }
+      else if (timeRemaining == TRANSISTION_LENGTH/50 && !m_bShowInfo)
+      {
+        // fade in if we have around 5 secs to go...
+        m_dwFrameCounter = TRANSISTION_COUNT;
+      }
+    }
+  }
+  if (m_dwFrameCounter)
+  {
+    m_dwFrameCounter--;
+    if (m_bShowInfo)
+    { // fading out
+      float fAlpha = (float)m_dwFrameCounter/((float)TRANSISTION_COUNT)*255.0f;
+      SetAlpha((DWORD)fAlpha);
+    }
+    else
+    { // fading in
+      float fAlpha = (float)(TRANSISTION_COUNT - m_dwFrameCounter)/((float)TRANSISTION_COUNT)*255.0f;
+      SetAlpha((DWORD)fAlpha);
+    }
+    // toggle condition
+    if (!m_dwFrameCounter)
+    {
+      m_bShowInfo = !m_bShowInfo;
+      CLog::DebugLog("Finished fade - state is faded %s.", m_bShowInfo ? "in" : "out");
+    }
+  }
   CGUIWindow::Render();
+}
+
+void CGUIWindowVisualisation::SetAlpha(DWORD dwAlpha)
+{
+  for (unsigned int i = 0; i < m_vecControls.size(); i++)
+  {
+    CGUIControl *pControl = m_vecControls[i];
+    if (pControl->GetControlType() != CGUIControl::GUICONTROL_VISUALISATION)
+    { // set the alpha
+      pControl->SetAlpha(dwAlpha);
+      if (pControl->GetControlType() == CGUIControl::GUICONTROL_LABEL)
+      { // TTF fonts don't do alpha, so we just have to turn them on and off as necessary
+        // not a particularly nice way to do it, but hopefully we can get alpha on ttf
+        // fonts at some stage to eliminate the need for this.
+        if (dwAlpha)
+          pControl->SetVisible(false);
+        else
+          pControl->SetVisible(true);
+      }
+    }
+  }
 }
 
 void CGUIWindowVisualisation::FreeResources()
@@ -125,3 +227,4 @@ void CGUIWindowVisualisation::OnWindowLoaded()
     m_vecControls.insert(m_vecControls.begin(), pVisControl);
   }
 }
+

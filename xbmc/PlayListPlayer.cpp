@@ -25,6 +25,7 @@ CPlayListPlayer::CPlayListPlayer(void)
 {
   m_iCurrentSong = -1;
   m_bChanged = false;
+  m_bPlayedFirstFile = false;
   m_iEntriesNotFound = 0;
   m_iCurrentPlayList = PLAYLIST_NONE;
   m_iOptions = 0;
@@ -170,6 +171,8 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay)
     // that couldn't be played
     m_iEntriesNotFound++;
   }
+  else
+    m_bPlayedFirstFile = true;
 }
 
 /// \brief Change the current song in playlistplayer.
@@ -221,6 +224,7 @@ void CPlayListPlayer::SetCurrentPlaylist( int iPlayList )
     return ;
   m_iCurrentPlayList = iPlayList;
   m_iEntriesNotFound = 0;
+  m_bPlayedFirstFile = false;
   m_bChanged = true;
 }
 
@@ -271,12 +275,19 @@ void CPlayListPlayer::Reset()
 {
   m_iCurrentSong = -1;
   m_iEntriesNotFound = 0;
+  m_bPlayedFirstFile = false;
 }
 
 /// \brief Number of playlist entries of the active playlist couldn't be played.
 int CPlayListPlayer::GetEntriesNotFound()
 {
   return m_iEntriesNotFound;
+}
+
+/// \brief Whether or not something has been played yet or not from the current playlist.
+bool CPlayListPlayer::HasPlayedFirstFile()
+{
+  return m_bPlayedFirstFile;
 }
 
 /// \brief Repeat a playlist
