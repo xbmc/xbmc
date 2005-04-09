@@ -74,6 +74,12 @@ public:
   virtual void ToFFRW(int iSpeed = 0){};
   virtual void ShowOSD(bool bOnoff){};
 
+  //Returns true if not playback (paused or stopped beeing filled)
+  virtual bool IsCaching() const {return false;};
+  //Cache filled in Percent
+  virtual int GetCacheLevel() const {return -1;}; 
+
+
   virtual void DoAudioWork(){};
   virtual bool OnAction(const CAction &action) { return false; };
 

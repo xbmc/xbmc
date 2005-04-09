@@ -10,6 +10,7 @@
 #include "../XBVideoConfig.h"
 #include "../langcodeexpander.h"
 #include "../VideoDatabase.h"
+#include "../GUIWindowFullScreen.h"
 
 #define KEY_ENTER 13
 #define KEY_TAB 9
@@ -93,6 +94,8 @@ const char * dvd_audio_stream_channels[6] =
 
 bool m_bCanceling = false;
 static CDlgCache* m_dlgCache = NULL;
+
+#define MPLAYERBACKBUFFER 20
 
 CMPlayer::Options::Options()
 {
@@ -553,6 +556,8 @@ CMPlayer::CMPlayer(IPlayerCallback& callback)
   m_bPaused = false;
   m_bIsMplayeropenfile = false;
   m_strPath = "";
+  m_bCaching = false;
+  m_bSubsVisibleTTF=false;
 }
 
 CMPlayer::~CMPlayer()
@@ -645,7 +650,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   int iRet = -1;
   m_bCanceling = false;
   int iCacheSize = 1024;
-  int iCacheSizeBackBuffer = 20; // 50 % backbuffer is mplayers default
+  int iCacheSizeBackBuffer = MPLAYERBACKBUFFER; // 50 % backbuffer is mplayers default
   CloseFile();
   bool bFileOnHD(false);
   bool bFileOnISO(false);
@@ -654,6 +659,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   bool bFileOnLAN(false);
   bool bFileIsDVDImage(false);
   bool bFileIsDVDIfoFile(false);
+  
 
   CStdString strFile = file.m_strPath;
   m_strPath = strFile;
@@ -677,6 +683,14 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     bIsDVD = true;
     bIsVideo = true;
   }
+  bool bNeedOSD(true);
+  {
+    CGUIWindowFullScreen* pFSWin = (CGUIWindowFullScreen*)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
+    if(pFSWin)
+      bNeedOSD = !pFSWin->HasProgressDisplay();
+  }
+
+
 
   iCacheSize = GetCacheSize(bFileOnHD, bFileOnISO, bFileOnUDF, bFileOnInternet, bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
   try
@@ -832,9 +846,13 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
 
     //CLog::Log(LOGINFO, "  open 1st time");
+
     mplayer_init(argc, argv);
     mplayer_setcache_size(iCacheSize);
     mplayer_setcache_backbuffer(iCacheSizeBackBuffer);
+    if(!bNeedOSD)
+      mplayer_SlaveCommand("osd 0");
+
     if (bFileIsDVDImage || bFileIsDVDIfoFile)
     {
       iRet = mplayer_open_file(GetDVDArgument(strFile).c_str());
@@ -948,9 +966,13 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
         }
         options.GetOptions(argc, argv);
         load();
+
         mplayer_init(argc, argv);
         mplayer_setcache_size(iCacheSize);
         mplayer_setcache_backbuffer(iCacheSizeBackBuffer);
+        if(!bNeedOSD)
+          mplayer_SlaveCommand("osd 0");
+
         if (bFileIsDVDImage || bFileIsDVDIfoFile)
         {
           iRet = mplayer_open_file(GetDVDArgument(strFile).c_str());
@@ -989,12 +1011,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     }
     bIsVideo = HasVideo();
     bIsAudio = HasAudio();
-    int iNewCacheSize = GetCacheSize(bFileOnHD, bFileOnISO, bFileOnUDF, bFileOnInternet, bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
-    if ((iCacheSize > 0) && (iNewCacheSize != iCacheSize))
-    {
-      CLog::Log(LOGINFO, "detected video and/or audio. Cachesize is now %i, (was %i)", iNewCacheSize, iCacheSize);
-      mplayer_setcache_size(iCacheSize); //<== does this really change the cachesize after the stream has started????
-    }
 
     if ( ThreadHandle() == NULL)
     {
@@ -1091,6 +1107,25 @@ void CMPlayer::Process()
           else
             Sleep(10);
         }
+
+        //Only count forward buffer as part of buffer level
+        //Cachelevel will be set to 0 when decoder has to wait for more data
+        //Cachelevel will be negative if the current mplayer.dll doesn't support it
+        m_CacheLevel = mplayer_GetCacheLevel() * 100 / (100 - MPLAYERBACKBUFFER);
+        if (!options.GetNoCache() && m_CacheLevel >= 0)
+        {
+          if(!m_bPaused && !m_bCaching && m_CacheLevel==0 )
+          {
+            m_bCaching=true;
+            Pause();
+          }
+          else if( m_bPaused && m_bCaching && m_CacheLevel > 85 )
+          {
+            m_bCaching=false;
+            Pause();
+          }
+        }
+
       }
       catch (...)
       {
@@ -1195,6 +1230,7 @@ void CMPlayer::Pause()
   else
   {
     m_bPaused = false;
+    m_bCaching = false;
     if (!HasVideo())
       audio_resume();
     mplayer_ToFFRW(1); //Tell mplayer we have resumed playback
@@ -1727,4 +1763,3 @@ bool CMPlayer::GetSubtitleExtension(CStdString &strSubtitleExtension)
   strSubtitleExtension = _SubtitleExtension;
   return (!_SubtitleExtension.IsEmpty());
 }
-
