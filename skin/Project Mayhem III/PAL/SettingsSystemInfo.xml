@@ -1,0 +1,273 @@
+<window>
+  <id>7</id>
+  <defaultcontrol>2</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <controls>
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>720</width>
+      <height>576</height>
+      <texture>background-settings.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>xbox media center label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>200</posX>
+      <posY>63</posY>
+      <align>right</align>
+      <label>xbox media center</label>
+      <font>special12</font>
+      <textcolor>ffffffff</textcolor>
+    </control>
+
+    <control>
+      <description>description label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>207</posX>
+      <posY>63</posY>
+      <align>left</align>
+      <label>10511</label>
+      <font>special13</font>
+      <textcolor>ffffffff</textcolor>
+    </control>
+
+    <control>
+      <description>Storage text label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>220</posX>
+      <posY>125</posY>
+      <font>font13</font>
+      <label>154</label>
+    </control>
+
+    <control>
+      <description>Drive C text label</description>
+      <type>label</type>
+      <id>10</id>
+      <posX>220</posX>
+      <posY>155</posY>
+      <label>155</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Drive D: text label</description>
+      <type>label</type>
+      <id>11</id>
+      <posX>220</posX>
+      <posY>180</posY>
+      <label>155</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Drive E: text label</description>
+      <type>label</type>
+      <id>12</id>
+      <posX>220</posX>
+      <posY>205</posY>
+      <label>155</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Drive F: text label</description>
+      <type>label</type>
+      <id>13</id>
+      <posX>220</posX>
+      <posY>230</posY>
+      <label>155</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Drive G: text label</description>
+      <type>label</type>
+      <id>17</id>
+      <posX>220</posX>
+      <posY>255</posY>
+      <label>155</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Video text label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>220</posX>
+      <posY>295</posY>
+      <font>font13</font>
+      <label>157</label>
+    </control>
+
+    <control>
+      <description>resolution text label</description>
+      <type>label</type>
+      <id>14</id>
+      <posX>220</posX>
+      <posY>325</posY>
+      <label>-</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>free mem text label</description>
+      <type>label</type>
+      <id>15</id>
+      <posX>220</posX>
+      <posY>350</posY>
+      <label>158</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Time text label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>220</posX>
+      <posY>390</posY>
+      <font>font13</font>
+      <label>142</label>
+    </control>
+
+    <control>
+      <description>current: text label</description>
+      <type>label</type>
+      <id>4</id>
+      <posX>220</posX>
+      <posY>420</posY>
+      <label>143</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>build: text label</description>
+      <type>label</type>
+      <id>5</id>
+      <posX>220</posX>
+      <posY>440</posY>
+      <label>144</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Network text label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>460</posX>
+      <posY>125</posY>
+      <font>font13</font>
+      <label>145</label>
+      <textcolor>FFFFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Type text label</description>
+      <type>label</type>
+      <id>6</id>
+      <posX>460</posX>
+      <posY>155</posY>
+      <label>146</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>MAC: text label</description>
+      <type>label</type>
+      <id>7</id>
+      <posX>460</posX>
+      <posY>180</posY>
+      <label>147</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>IP: text label</description>
+      <type>label</type>
+      <id>8</id>
+      <posX>460</posX>
+      <posY>205</posY>
+      <label>148</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Link: text label</description>
+      <type>label</type>
+      <id>9</id>
+      <posX>460</posX>
+      <posY>230</posY>
+      <label>151</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Temperatures text label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>460</posX>
+      <posY>270</posY>
+      <font>font13</font>
+      <label>139</label>
+    </control>
+
+    <control>
+      <description>CPU: text label</description>
+      <type>label</type>
+      <id>2</id>
+      <posX>460</posX>
+      <posY>300</posY>
+      <label>140</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>CPU: text label</description>
+      <type>label</type>
+      <id>3</id>
+      <posX>460</posX>
+      <posY>325</posY>
+      <label>141</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>fanspeed text label</description>
+      <type>label</type>
+      <id>16</id>
+      <posX>460</posX>
+      <posY>350</posY>
+      <label>-</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+  </controls>
+
+</window>
+

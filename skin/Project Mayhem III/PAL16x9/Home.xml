@@ -1,0 +1,426 @@
+<window>
+  <id>0</id>
+  <defaultcontrol>2</defaultcontrol>
+  <allowoverlay>no</allowoverlay>
+  <controls>
+    <control>
+      <type>image</type>
+      <id>102</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-myPrograms.png</texture>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>106</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-myfiles.png</texture>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>103</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-mymusic.png</texture>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>104</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-mypictures.png</texture>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>105</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-myvideos.png</texture>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>107</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-myweather.png</texture>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>109</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-settings.png</texture>
+    </control>
+
+    <control>
+      <type>visualisation</type>
+      <id>1</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>372</height>
+    </control>
+
+    <control>
+      <description>video preview window</description>
+      <type>videowindow</type>
+      <id>1</id>
+      <posX>180</posX>
+      <posY>60</posY>
+      <width>580</width>
+      <height>455</height>
+    </control>
+
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>720</width>
+      <height>576</height>
+      <texture>16x9home.png</texture>
+    </control>
+
+    <control>
+      <description>gradient</description>
+      <type>image</type>
+      <id>1</id>
+      <visible>Player.HasAudio</visible>
+      <posX>315</posX>
+      <posY>338</posY>
+      <width>400</width>
+      <height>99</height>
+      <texture>gradient.png</texture>
+    </control>
+
+    <control>
+      <description>image</description>
+      <type>infoimage</type>
+      <id>1</id>
+      <posX>565</posX>
+      <posY>338</posY>
+      <width>75</width>
+      <height>99</height>
+      <info>MusicPlayer.Cover</info>
+    </control>
+
+    <control>
+      <description>Artist label</description>
+      <type>infolabel</type>
+      <id>1</id>
+      <width>100</width>
+      <posX>555</posX>
+      <posY>340</posY>
+      <info>MusicPlayer.Artist</info>
+      <align>right</align>
+      <font>special12</font>
+    </control>
+
+    <control>
+      <description>Title label</description>
+      <type>infolabel</type>
+      <id>1</id>
+      <width>100</width>
+      <posX>555</posX>
+      <posY>365</posY>
+      <info>MusicPlayer.Title</info>
+      <align>right</align>
+      <font>special13</font>
+    </control>
+
+    <control>
+      <description>Album label</description>
+      <type>infolabel</type>
+      <id>1</id>
+      <width>100</width>
+      <posX>555</posX>
+      <posY>394</posY>
+      <info>MusicPlayer.Album</info>
+      <align>right</align>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>Time label</description>
+      <type>infolabel</type>
+      <id>1</id>
+      <width>100</width>
+      <posX>555</posX>
+      <posY>415</posY>
+      <info>MusicPlayer.Time</info>
+      <align>right</align>
+      <font>font10</font>
+    </control>
+
+    <controlgroup>
+      <control>
+        <description>My Programs normal push button</description>
+        <type>button</type>
+        <id>2</id>
+        <posX>76</posX>
+        <posY>221</posY>
+        <width>35</width>
+        <height>34</height>
+        <label>0</label>
+        <font>special13</font>
+        <hyperlink>1</hyperlink>
+        <onleft>98</onleft>
+        <onright>99</onright>
+        <onup>9</onup>
+        <ondown>4</ondown>
+        <textureFocus>home-focus.png</textureFocus>
+        <textureNoFocus>-</textureNoFocus>
+        <textOffsetX>45</textOffsetX>
+      </control>
+
+      <control>
+        <description>My Pictures normal push button</description>
+        <type>button</type>
+        <id>4</id>
+        <posX>76</posX>
+        <posY>261</posY>
+        <width>35</width>
+        <height>34</height>
+        <label>1</label>
+        <hyperlink>2</hyperlink>
+        <font>special13</font>
+        <onleft>98</onleft>
+        <onright>99</onright>
+        <onup>2</onup>
+        <ondown>5</ondown>
+        <textureFocus>home-focus.png</textureFocus>
+        <textureNoFocus>-</textureNoFocus>
+        <textOffsetX>45</textOffsetX>
+      </control>
+
+      <control>
+        <description>My Videos normal push button</description>
+        <type>button</type>
+        <id>5</id>
+        <posX>76</posX>
+        <posY>301</posY>
+        <width>35</width>
+        <height>34</height>
+        <label>3</label>
+        <font>special13</font>
+        <hyperlink>6</hyperlink>
+        <onleft>98</onleft>
+        <onright>99</onright>
+        <onup>4</onup>
+        <ondown>3</ondown>
+        <textureFocus>home-focus.png</textureFocus>
+        <textureNoFocus>-</textureNoFocus>
+        <textOffsetX>45</textOffsetX>
+      </control>
+
+      <control>
+        <description>My Music normal push button</description>
+        <type>button</type>
+        <id>3</id>
+        <posX>76</posX>
+        <posY>340</posY>
+        <width>35</width>
+        <height>34</height>
+        <label>2</label>
+        <hyperlink>501</hyperlink>
+        <font>special13</font>
+        <onleft>98</onleft>
+        <onright>99</onright>
+        <onup>5</onup>
+        <ondown>7</ondown>
+        <textureFocus>home-focus.png</textureFocus>
+        <textureNoFocus>-</textureNoFocus>
+        <textOffsetX>45</textOffsetX>
+      </control>
+
+      <control>
+        <description>My Weather normal push button</description>
+        <type>button</type>
+        <id>7</id>
+        <posX>76</posX>
+        <posY>380</posY>
+        <width>35</width>
+        <height>34</height>
+        <label>8</label>
+        <font>special13</font>
+        <hyperlink>2600</hyperlink>
+        <onleft>98</onleft>
+        <onright>99</onright>
+        <onup>3</onup>
+        <ondown>9</ondown>
+        <textureFocus>home-focus.png</textureFocus>
+        <textureNoFocus>-</textureNoFocus>
+        <textOffsetX>45</textOffsetX>
+      </control>
+
+      <control>
+        <description>Settings normal push button</description>
+        <type>button</type>
+        <id>9</id>
+        <posX>80</posX>
+        <posY>427</posY>
+        <width>20</width>
+        <height>20</height>
+        <label>5</label>
+        <font>font10</font>
+        <hyperlink>4</hyperlink>
+        <onleft>98</onleft>
+        <onright>6</onright>
+        <onup>7</onup>
+        <ondown>2</ondown>
+        <textureFocus>home-focus.png</textureFocus>
+        <textureNoFocus>-</textureNoFocus>
+        <textOffsetX>23</textOffsetX>
+      </control>
+
+      <control>
+        <description>My Files normal push button</description>
+        <type>button</type>
+        <id>6</id>
+        <posX>190</posX>
+        <posY>427</posY>
+        <width>20</width>
+        <height>20</height>
+        <label>7</label>
+        <hyperlink>3</hyperlink>
+        <font>font10</font>
+        <onleft>9</onleft>
+        <onright>99</onright>
+        <onup>7</onup>
+        <ondown>2</ondown>
+        <textureFocus>home-focus.png</textureFocus>
+        <textureNoFocus>-</textureNoFocus>
+        <textOffsetX>23</textOffsetX>
+      </control>
+
+    </controlgroup>
+
+    <control>
+      <description>date label</description>
+      <type>label</type>
+      <id>200</id>
+      <posX>575</posX>
+      <posY>70</posY>
+      <label>date</label>
+      <align>right</align>
+      <font>special12</font>
+    </control>
+
+    <control>
+      <description>suffix label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>585</posX>
+      <posY>68</posY>
+      <label>|</label>
+      <align>left</align>
+      <font>special12</font>
+      <textcolor>60ffffff</textcolor>
+    </control>
+
+    <control>
+      <description>time label</description>
+      <type>label</type>
+      <id>201</id>
+      <posX>595</posX>
+      <posY>70</posY>
+      <label>time</label>
+      <align>left</align>
+      <font>special12</font>
+      <textcolor>60ffffff</textcolor>
+    </control>
+
+    <control>
+      <description>rss feed</description>
+      <type>rss</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>470</posY>
+      <width>720</width>
+      <font>font13</font>
+      <feed>http://www.xbox-scene.com/xbox1data/xbox-scene.xml</feed>
+      <titlecolor>ffFFD200</titlecolor>
+      <headlinecolor>DDced8da</headlinecolor>
+      <textcolor>DDced8da</textcolor>
+    </control>
+
+    <control>
+      <description>xlink kai conditional button</description>
+      <type>conditionalbutton</type>
+      <id>99</id>
+      <posX>555</posX>
+      <posY>501</posY>
+      <width>30</width>
+      <height>37</height>
+      <label>-</label>
+      <textureFocus>home-kai.gif</textureFocus>
+      <textureNoFocus>home-kai.png</textureNoFocus>
+      <hyperlink>2700</hyperlink>
+      <onleft>2</onleft>
+      <onright>100</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+    </control>
+
+    <control>
+      <description>submenu button</description>
+      <type>button</type>
+      <id>100</id>
+      <posX>585</posX>
+      <posY>501</posY>
+      <width>30</width>
+      <height>37</height>
+      <hyperlink>105</hyperlink>
+      <textureFocus>home-sub.gif</textureFocus>
+      <textureNoFocus>home-sub.png</textureNoFocus>
+      <label>-</label>
+      <onleft>99</onleft>
+      <onright>98</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+    </control>
+
+    <control>
+      <description>submenu button</description>
+      <type>button</type>
+      <id>98</id>
+      <posX>615</posX>
+      <posY>501</posY>
+      <width>30</width>
+      <height>37</height>
+      <hyperlink>111</hyperlink>
+      <textureFocus>home-power.gif</textureFocus>
+      <textureNoFocus>home-power.png</textureNoFocus>
+      <label>-</label>
+      <onleft>100</onleft>
+      <onright>2</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+    </control>
+
+  </controls>
+
+</window>
+

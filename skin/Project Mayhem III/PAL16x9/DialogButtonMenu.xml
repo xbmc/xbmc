@@ -1,0 +1,132 @@
+<window>
+  <id>111</id>
+  <defaultcontrol>3112</defaultcontrol>
+  <type>buttonMenu</type>
+  <coordinates>
+    <system>1</system>
+    <posX>185</posX>
+    <posY>230</posY>
+  </coordinates>
+
+  <controls>
+    <control>
+      <type>image</type>
+      <id>0</id>
+      <posX>-245</posX>
+      <posY>-5</posY>
+      <width>805</width>
+      <height>160</height>
+      <texture>sub-background.png</texture>
+    </control>
+
+    <control>
+      <description>Dashboard button</description>
+      <type>button</type>
+      <id>3110</id>
+      <posX>30</posX>
+      <posY>10</posY>
+      <width>61</width>
+      <height>81</height>
+      <textureFocus>sub-dashboard-focus.png</textureFocus>
+      <textureNoFocus>sub-dashboard-nofocus.png</textureNoFocus>
+      <execute>XBMC.Dashboard()</execute>
+      <onleft>3114</onleft>
+      <onright>3111</onright>
+      <onup>3110</onup>
+      <ondown>3110</ondown>
+      <font>-</font>
+      <label>13006</label>
+    </control>
+
+    <control>
+      <description>Reboot button</description>
+      <type>button</type>
+      <id>3111</id>
+      <posX>90</posX>
+      <posY>10</posY>
+      <width>61</width>
+      <height>81</height>
+      <textureFocus>sub-reboot-focus.png</textureFocus>
+      <textureNoFocus>sub-reboot-nofocus.png</textureNoFocus>
+      <execute>XBMC.Reset()</execute>
+      <onleft>3110</onleft>
+      <onright>3112</onright>
+      <onup>3111</onup>
+      <ondown>3111</ondown>
+      <font>-</font>
+      <label>13313</label>
+    </control>
+
+    <control>
+      <description>Shutdown button</description>
+      <type>button</type>
+      <id>3112</id>
+      <posX>150</posX>
+      <posY>10</posY>
+      <width>61</width>
+      <height>81</height>
+      <textureFocus>sub-shutdown-focus.png</textureFocus>
+      <textureNoFocus>sub-shutdown-nofocus.png</textureNoFocus>
+      <execute>XBMC.ShutDown()</execute>
+      <onleft>3111</onleft>
+      <onright>3113</onright>
+      <onup>3112</onup>
+      <ondown>3112</ondown>
+      <font>-</font>
+      <label>13005</label>
+    </control>
+
+    <control>
+      <description>System Info button</description>
+      <type>button</type>
+      <id>3113</id>
+      <posX>210</posX>
+      <posY>10</posY>
+      <width>61</width>
+      <height>81</height>
+      <textureFocus>sub-info-focus.png</textureFocus>
+      <textureNoFocus>sub-info-nofocus.png</textureNoFocus>
+      <hyperlink>7</hyperlink>
+      <onleft>3112</onleft>
+      <onright>3114</onright>
+      <onup>3113</onup>
+      <ondown>3113</ondown>
+      <font>-</font>
+      <label>130</label>
+    </control>
+
+    <control>
+      <description>Profiles button</description>
+      <type>button</type>
+      <id>3114</id>
+      <posX>270</posX>
+      <posY>10</posY>
+      <width>61</width>
+      <height>81</height>
+      <textureFocus>sub-profiles-focus.png</textureFocus>
+      <textureNoFocus>sub-profiles-nofocus.png</textureNoFocus>
+      <hyperlink>34</hyperlink>
+      <onleft>3113</onleft>
+      <onright>3110</onright>
+      <onup>3114</onup>
+      <ondown>3114</ondown>
+      <font>-</font>
+      <label>13200</label>
+    </control>
+
+    <control>
+      <description>Label control</description>
+      <type>label</type>
+      <id>3100</id>
+      <posX>19</posX>
+      <posY>93</posY>
+      <width>322</width>
+      <height>20</height>
+      <align>center</align>
+      <font>font10</font>
+    </control>
+
+  </controls>
+
+</window>
+

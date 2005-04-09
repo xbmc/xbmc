@@ -1,0 +1,64 @@
+<window>
+  <id>2006</id>
+  <defaultcontrol>2</defaultcontrol>
+  <allowoverlay>no</allowoverlay>
+  <controls>
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>720</width>
+      <height>576</height>
+      <texture>16x9home2.png</texture>
+    </control>
+
+    <control>
+      <description>image</description>
+      <type>infoimage</type>
+      <id>1</id>
+      <posX>105</posX>
+      <posY>338</posY>
+      <width>90</width>
+      <height>99</height>
+      <info>MusicPlayer.Cover</info>
+    </control>
+
+    <control>
+      <description>Artist label</description>
+      <type>infolabel</type>
+      <id>1</id>
+      <posX>210</posX>
+      <posY>340</posY>
+      <info>MusicPlayer.Artist</info>
+      <align>left</align>
+      <font>special12</font>
+    </control>
+
+    <control>
+      <description>Title label</description>
+      <type>infolabel</type>
+      <id>1</id>
+      <posX>210</posX>
+      <posY>367</posY>
+      <info>MusicPlayer.Title</info>
+      <align>left</align>
+      <font>special13</font>
+    </control>
+
+    <control>
+      <description>Album label</description>
+      <type>infolabel</type>
+      <id>1</id>
+      <posX>210</posX>
+      <posY>405</posY>
+      <info>MusicPlayer.Album</info>
+      <align>left</align>
+      <font>font10</font>
+    </control>
+
+  </controls>
+
+</window>
+
