@@ -247,7 +247,7 @@
 
                       <control>
                         <description>Scripts button</description>	<visible>yes</visible>
-                        <type>button</type>		  		<execute>q:\scripts\AQTbrowser.py</execute>
+                        <type>button</type>		  		<execute>q:\scripts\QuickTimeBrowser.py</execute>
                         <id>1111</id>                			<label>Movie Trailers</label>
                         <posX>30</posX>
                         <posY>350</posY>
@@ -272,8 +272,8 @@
                         <width>110</width>
                         <height>20</height>
                         <font>font101</font>
-                        <onleft>1112</onleft>
-                        <onright>1112</onright>
+                        <onleft>1110</onleft>
+                        <onright>1110</onright>
                         <onup>1111</onup>
                         <ondown>1109</ondown>
                         <align>center</align>
