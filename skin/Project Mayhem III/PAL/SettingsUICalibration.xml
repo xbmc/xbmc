@@ -1,0 +1,42 @@
+<window>
+  <id>10</id>
+  <defaultcontrol>2</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <controls>
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>720</width>
+      <height>576</height>
+      <texture>background-UIcalibration.png</texture>
+    </control>
+
+    <control>
+      <description>rectangle image</description>
+      <type>mover</type>
+      <id>2</id>
+      <posX>0</posX>
+      <posY>271</posY>
+      <width>720</width>
+      <height>40</height>
+      <textureFocus>bluebar.png</textureFocus>
+      <textureNoFocus>bluebar.png</textureNoFocus>
+    </control>
+
+    <control>
+      <description>coordinates label</description>
+      <type>label</type>
+      <id>3</id>
+      <posX>360</posX>
+      <posY>275</posY>
+      <label>5</label>
+      <font>font04</font>
+    </control>
+
+  </controls>
+
+</window>
+

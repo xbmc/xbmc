@@ -1,0 +1,205 @@
+<window>
+  <id>1</id>
+  <defaultcontrol>2</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <controls>
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>720</width>
+      <height>576</height>
+      <texture>background-apps.png</texture>
+    </control>
+
+    <control>
+      <description>xbox media center label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>200</posX>
+      <posY>63</posY>
+      <align>right</align>
+      <label>xbox media center</label>
+      <font>special12</font>
+    </control>
+
+    <control>
+      <description>Applications label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>207</posX>
+      <posY>63</posY>
+      <align>left</align>
+      <label>10506</label>
+      <font>special13</font>
+    </control>
+
+    <control>
+      <description>number of files text label</description>
+      <type>label</type>
+      <id>9</id>
+      <posX>545</posX>
+      <posY>526</posY>
+      <align>right</align>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <controlgroup>
+      <control>
+        <description>View As Icons button</description>
+        <type>button</type>
+        <id>2</id>
+        <posX>50</posX>
+        <posY>120</posY>
+        <label>100</label>
+        <onleft>7</onleft>
+        <onright>7</onright>
+        <onup>3</onup>
+        <ondown>4</ondown>
+      </control>
+
+      <control>
+        <description>Sort by button</description>
+        <type>button</type>
+        <id>4</id>
+        <posX>50</posX>
+        <posY>157</posY>
+        <label>103</label>
+        <onleft>7</onleft>
+        <onright>5</onright>
+        <onup>2</onup>
+        <ondown>99</ondown>
+      </control>
+
+      <control>
+        <description>Sort asc</description>
+        <type>togglebutton</type>
+        <id>5</id>
+        <label>-</label>
+        <onleft>4</onleft>
+        <onright>7</onright>
+        <onup>2</onup>
+        <ondown>99</ondown>
+      </control>
+
+      <control>
+        <description>online gaming button</description>
+        <type>button</type>
+        <id>99</id>
+        <posX>50</posX>
+        <posY>194</posY>
+        <label>998</label>
+        <hyperlink>2700</hyperlink>
+        <onleft>7</onleft>
+        <onright>7</onright>
+        <onup>4</onup>
+        <ondown>100</ondown>
+      </control>
+
+      <control>
+        <description>bookmark button 1</description>
+        <type>button</type>
+        <id>100</id>
+        <posX>50</posX>
+        <posY>231</posY>
+        <label>103</label>
+        <onleft>7</onleft>
+        <onright>7</onright>
+        <onup>99</onup>
+        <ondown>101</ondown>
+      </control>
+
+      <control>
+        <description>bookmark button 2</description>
+        <type>button</type>
+        <id>101</id>
+        <posX>50</posX>
+        <posY>268</posY>
+        <label>103</label>
+        <onleft>7</onleft>
+        <onright>7</onright>
+        <onup>100</onup>
+        <ondown>102</ondown>
+      </control>
+
+      <control>
+        <description>bookmark button 3</description>
+        <type>button</type>
+        <id>102</id>
+        <posX>50</posX>
+        <posY>305</posY>
+        <label>103</label>
+        <onleft>7</onleft>
+        <onright>7</onright>
+        <onup>101</onup>
+        <ondown>103</ondown>
+      </control>
+
+      <control>
+        <description>bookmark button 4</description>
+        <type>button</type>
+        <id>103</id>
+        <posX>50</posX>
+        <posY>342</posY>
+        <label>103</label>
+        <onleft>7</onleft>
+        <onright>7</onright>
+        <onup>102</onup>
+        <ondown>104</ondown>
+      </control>
+
+      <control>
+        <description>bookmark button 5</description>
+        <type>button</type>
+        <id>104</id>
+        <posX>50</posX>
+        <posY>379</posY>
+        <label>103</label>
+        <onleft>7</onleft>
+        <onright>7</onright>
+        <onup>103</onup>
+        <ondown>3</ondown>
+      </control>
+
+      <control>
+        <description>scan button</description>
+        <type>button</type>
+        <id>3</id>
+        <posX>50</posX>
+        <posY>416</posY>
+        <label>102</label>
+        <onleft>7</onleft>
+        <onright>7</onright>
+        <onup>104</onup>
+        <ondown>2</ondown>
+      </control>
+
+    </controlgroup>
+
+    <control>
+      <description>apps listcontrol</description>
+      <type>listcontrol</type>
+      <id>7</id>
+      <onleft>8</onleft>
+      <onright>8</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+    </control>
+
+    <control>
+      <description>thumbnailpanel</description>
+      <type>thumbnailpanel</type>
+      <id>8</id>
+      <onleft>2</onleft>
+      <onright>2</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+    </control>
+
+  </controls>
+
+</window>
+

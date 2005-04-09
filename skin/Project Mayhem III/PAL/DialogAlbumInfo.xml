@@ -1,0 +1,220 @@
+<window>
+  <id>2001</id>
+  <defaultcontrol>5</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <controls>
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>720</width>
+      <height>576</height>
+      <texture>background-music.png</texture>
+    </control>
+
+    <control>
+      <description>xbox media center label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>200</posX>
+      <posY>63</posY>
+      <align>right</align>
+      <label>xbox media center</label>
+      <font>special12</font>
+    </control>
+
+    <control>
+      <description>description label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>207</posX>
+      <posY>63</posY>
+      <align>left</align>
+      <label>10523</label>
+      <font>special13</font>
+    </control>
+
+    <control>
+      <description>Artist value</description>
+      <type>fadelabel</type>
+      <id>21</id>
+      <posX>415</posX>
+      <posY>120</posY>
+      <width>240</width>
+      <label>-</label>
+      <font>special12</font>
+    </control>
+
+    <control>
+      <description>Album value</description>
+      <type>fadelabel</type>
+      <id>20</id>
+      <posX>415</posX>
+      <posY>145</posY>
+      <width>240</width>
+      <label>-</label>
+      <font>special13</font>
+    </control>
+
+    <control>
+      <description>Year</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>415</posX>
+      <posY>180</posY>
+      <label>201</label>
+      <font>font12</font>
+    </control>
+
+    <control>
+      <description>Rating</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>415</posX>
+      <posY>205</posY>
+      <label>173</label>
+      <font>font12</font>
+    </control>
+
+    <control>
+      <description>Genre</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>415</posX>
+      <posY>230</posY>
+      <label>174</label>
+      <font>font12</font>
+    </control>
+
+    <control>
+      <description>Tones</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>415</posX>
+      <posY>255</posY>
+      <label>175</label>
+      <font>font12</font>
+    </control>
+
+    <control>
+      <description>Styles</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>415</posX>
+      <posY>280</posY>
+      <label>176</label>
+      <font>font12</font>
+    </control>
+
+    <control>
+      <description>year value</description>
+      <type>fadelabel</type>
+      <id>22</id>
+      <width>150</width>
+      <posX>505</posX>
+      <posY>180</posY>
+      <label>-</label>
+      <font>font12</font>
+    </control>
+
+    <control>
+      <description>Rating value</description>
+      <type>fadelabel</type>
+      <id>23</id>
+      <width>150</width>
+      <posX>505</posX>
+      <posY>205</posY>
+      <label>-</label>
+      <font>font12</font>
+    </control>
+
+    <control>
+      <description>Genre value</description>
+      <type>fadelabel</type>
+      <id>24</id>
+      <width>150</width>
+      <posX>505</posX>
+      <posY>230</posY>
+      <label>-</label>
+      <font>font12</font>
+    </control>
+
+    <control>
+      <description>Tones value</description>
+      <type>fadelabel</type>
+      <id>25</id>
+      <posX>505</posX>
+      <posY>255</posY>
+      <width>150</width>
+      <label>-</label>
+      <font>font12</font>
+    </control>
+
+    <control>
+      <description>Styles value</description>
+      <type>fadelabel</type>
+      <id>26</id>
+      <width>150</width>
+      <posX>505</posX>
+      <posY>280</posY>
+      <label>-</label>
+      <font>font12</font>
+    </control>
+
+    <control>
+      <description>start logo</description>
+      <type>image</type>
+      <id>3</id>
+      <posX>220</posX>
+      <posY>120</posY>
+      <width>180</width>
+      <height>180</height>
+      <texture>-</texture>
+    </control>
+
+    <control>
+      <description>textarea</description>
+      <type>textbox</type>
+      <id>4</id>
+      <posX>220</posX>
+      <posY>320</posY>
+      <onleft>5</onleft>
+      <onright>5</onright>
+      <onup>5</onup>
+      <ondown>5</ondown>
+    </control>
+
+    <control>
+      <description>Tracks/Review</description>
+      <type>button</type>
+      <id>5</id>
+      <posX>50</posX>
+      <posY>120</posY>
+      <label>182</label>
+      <onleft>4</onleft>
+      <onright>4</onright>
+      <onup>6</onup>
+      <ondown>6</ondown>
+      <font>font13</font>
+    </control>
+
+    <control>
+      <description>Refresh</description>
+      <type>button</type>
+      <id>6</id>
+      <posX>50</posX>
+      <posY>157</posY>
+      <label>184</label>
+      <font>font13</font>
+      <onleft>4</onleft>
+      <onright>4</onright>
+      <onup>5</onup>
+      <ondown>5</ondown>
+    </control>
+
+  </controls>
+
+</window>
+
