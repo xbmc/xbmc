@@ -26,8 +26,8 @@
 #define CONTROL_STACK             7
 #define CONTROL_BTNSCAN           8
 #define CONTROL_IMDB              9
-#define CONTROL_LIST       10
-#define CONTROL_THUMBS      11
+#define CONTROL_LIST       50
+#define CONTROL_THUMBS      51
 #define CONTROL_LABELFILES         12
 
 struct SSortVideoByName
