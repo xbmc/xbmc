@@ -19,7 +19,8 @@ void CGUIVideoControl::Render()
 
   if (!IsVisible()) return ;
 
-  g_application.ResetScreenSaver();
+  if (g_application.IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
+    g_application.ResetScreenSaver();
   g_graphicsContext.Correct(x, y);
 
   rc.left = (DWORD)x;

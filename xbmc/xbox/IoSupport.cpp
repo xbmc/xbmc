@@ -592,7 +592,7 @@ UCHAR CIoSupport::IdexReadPortUchar(USHORT port)
   return rval;
 }
 
-VOID CIoSupport::SpindownHarddisk()
+VOID CIoSupport::SpindownHarddisk(bool bSpinDown)
 {
 #ifdef _XBOX
  #define IDE_ERROR_REGISTER          0x01F1
@@ -605,6 +605,7 @@ VOID CIoSupport::SpindownHarddisk()
  #define IDE_STATUS_DRIVE_READY      0x40
  #define IDE_STATUS_DRIVE_ERROR      0x01
  #define IDE_COMMAND_STANDBY         0xE0
+ #define IDE_COMMAND_ACTIVE          0xE1
  #define IDE_POWERSTATE_ACTIVE       0xFF
  #define IDE_POWERSTATE_STANDBY      0x00 // 0x80=idle
 
@@ -628,10 +629,15 @@ VOID CIoSupport::SpindownHarddisk()
   if ( (i < 2000) && (!(status & IDE_STATUS_DRIVE_ERROR)) )
   {
     iPowerCode = IdexReadPortUchar(IDE_SECTOR_COUNT_REGISTER);
-    if (iPowerCode != IDE_POWERSTATE_STANDBY)
+    if (bSpinDown && iPowerCode != IDE_POWERSTATE_STANDBY)
     {
       IdexWritePortUchar(IDE_DEVICE_SELECT_REGISTER, 0xA0 );
       IdexWritePortUchar(IDE_COMMAND_REGISTER, IDE_COMMAND_STANDBY);
+    }
+    else if (!bSpinDown && iPowerCode == IDE_POWERSTATE_STANDBY)
+    {
+      IdexWritePortUchar(IDE_DEVICE_SELECT_REGISTER, 0xA0 );
+      IdexWritePortUchar(IDE_COMMAND_REGISTER, IDE_COMMAND_ACTIVE);
     }
   }
   KeLowerIrql(oldIrql);
