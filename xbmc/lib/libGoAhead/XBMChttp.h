@@ -22,6 +22,7 @@ public:
 	void		xbmcForm(webs_t wp, char_t *path, char_t *query);
 	int			xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter);
 
+
 	int			xbmcAddToPlayList(webs_t wp, char_t *parameter);
 	int			xbmcPlayerPlayFile(webs_t wp, char_t *parameter); 
 	int			xbmcClearPlayList(webs_t wp, char_t *parameter); 
@@ -55,6 +56,8 @@ public:
 	int			xbmcFileExists(webs_t wp, char_t *parameter);
 	int			xbmcShowPicture(webs_t wp, char_t *parameter);
 	int			xbmcGetGUIStatus(webs_t wp);
+  int     xbmcExecBuiltIn(webs_t wp, char_t *parameter);
+  int     xbmcConfig(webs_t wp, char_t *parameter);
   int			xbmcHelp(webs_t wp);
 	CKey		GetKey();
 	void		ResetKey();

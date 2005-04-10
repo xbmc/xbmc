@@ -226,13 +226,13 @@ struct SSortWebFilesByName
 		if (rpStart.GetLabel()=="..") return true;
     if (rpEnd.GetLabel()=="..") return false;
 		bool bGreater=true;
-		if (g_stSettings.m_bMyFilesSourceSortAscending) bGreater=false;
+		if (m_bSortAscending) bGreater=false;
     if ( rpStart.m_bIsFolder   == rpEnd.m_bIsFolder)
 		{
 			char szfilename1[1024];
 			char szfilename2[1024];
 
-			switch ( g_stSettings.m_iMyFilesSourceSortMethod ) 
+			switch (m_iSortMethod) 
 			{
 				case 0:	//	Sort by Filename
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
@@ -290,8 +290,11 @@ struct SSortWebFilesByName
     if (!rpStart.m_bIsFolder) return false;
 		return true;
 	}
+  static bool m_bSortAscending;
+  static int m_iSortMethod;
 };
-
+bool SSortWebFilesByName::m_bSortAscending;
+int SSortWebFilesByName::m_iSortMethod;
 
 
 int displayDir(webs_t wp, char *dir) {
@@ -327,9 +330,11 @@ int displayDir(webs_t wp, char *dir) {
 	bool bResult=pDirectory->GetDirectory(folder,dirItems);
 	if (!bResult)
 	{
-		websWrite(wp, "<li>Error: Not folder\n");
+		websWrite(wp, "<li>Error:Not folder\n");
 		return 0;
 	}
+  SSortWebFilesByName::m_bSortAscending = true;
+  SSortWebFilesByName::m_iSortMethod = 0;
 	dirItems.Sort(SSortWebFilesByName::Sort);
 	for (int i=0; i<dirItems.Size(); ++i)
 	{
@@ -394,6 +399,9 @@ void AddItemToPlayList(const CFileItem* pItem, int playList)
 		CFactoryDirectory factory;
 		IDirectory *pDirectory = factory.Create(strDirectory);
 		bool bResult=pDirectory->GetDirectory(strDirectory,items);
+    SSortWebFilesByName::m_bSortAscending = true;
+    SSortWebFilesByName::m_iSortMethod = 0;
+	  items.Sort(SSortWebFilesByName::Sort);
 		for (int i=0; i < items.Size(); ++i)
 			AddItemToPlayList(items[i], playList);
 	}
@@ -401,15 +409,16 @@ void AddItemToPlayList(const CFileItem* pItem, int playList)
 	{
 		//selected item is a file, add it to playlist
 		PLAYLIST::CPlayList::CPlayListItem playlistItem;
-		playlistItem.SetFileName(pItem->m_strPath);
-		playlistItem.SetDescription(pItem->GetLabel());
-		playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+    CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
+		//playlistItem.SetFileName(pItem->m_strPath);
+		//playlistItem.SetDescription(pItem->GetLabel());
+		//playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
 		g_playlistPlayer.GetPlaylist(playList).Add(playlistItem);
 
 	}
 }
 
-void LoadPlayList(const CStdString& strPlayList, int playList)
+void LoadPlayListOld(const CStdString& strPlayList, int playList)
 {
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
@@ -443,8 +452,95 @@ void LoadPlayList(const CStdString& strPlayList, int playList)
 		item.m_strPath = playlist[0].GetFileName();
 		SetCurrentMediaItem(item);
 	}
-
 }
+
+
+bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoStart)
+{
+  //CStdString strPath = item.m_strPath;
+  CFileItem *item = new CFileItem(CUtil::GetFileName(strPath.c_str()));
+	item->m_strPath=strPath;
+  if (item->IsInternetStream())
+  {
+    //we got an url, create a dummy .strm playlist,
+    //pPlayList->Load will handle loading it from url instead of from a file
+    strPath = "temp.strm";
+  }
+
+  CPlayListFactory factory;
+  auto_ptr<CPlayList> pPlayList (factory.Create(strPath));
+  if ( NULL == pPlayList.get())
+    return false;
+  // load it
+  if (!pPlayList->Load(item->m_strPath))
+    return false;
+
+  CPlayList& playlist = (*pPlayList);
+
+  // no songs in playlist just return
+  if (playlist.size() == 0)
+    return false;
+
+  // how many songs are in the new playlist
+  if ((playlist.size() == 1) && (autoStart))
+  {
+    // just 1 song? then play it (no need to have a playlist of 1 song)
+    CPlayList::CPlayListItem item = playlist[0];
+    return g_application.PlayFile(CFileItem(item));
+  }
+
+  if (clearList)
+  // clear current playlist
+    g_playlistPlayer.GetPlaylist(iPlaylist).Clear();
+
+  // if autoshuffle playlist on load option is enabled
+  //  then shuffle the playlist
+  // (dont do this for shoutcast .pls files)
+  if (playlist.size())
+  {
+    const CPlayList::CPlayListItem& playListItem = playlist[0];
+    if (!playListItem.IsShoutCast() && g_guiSettings.GetBool("MusicLibrary.ShufflePlaylistsOnLoad"))
+      pPlayList->Shuffle();
+  }
+
+  // add each item of the playlist to the playlistplayer
+  for (int i = 0; i < (int)pPlayList->size(); ++i)
+  {
+    const CPlayList::CPlayListItem& playListItem = playlist[i];
+    CStdString strLabel = playListItem.GetDescription();
+    if (strLabel.size() == 0)
+      strLabel = CUtil::GetTitleFromPath(playListItem.GetFileName());
+
+    CPlayList::CPlayListItem playlistItem;
+    playlistItem.SetDescription(playListItem.GetDescription());
+    playlistItem.SetDuration(playListItem.GetDuration());
+    playlistItem.SetFileName(playListItem.GetFileName());
+    g_playlistPlayer.GetPlaylist( iPlaylist ).Add(playlistItem);
+  }
+
+  if (autoStart)
+    // if we got a playlist
+    if (g_playlistPlayer.GetPlaylist( iPlaylist ).size() )
+    {
+      // then get 1st song
+      CPlayList& playlist = g_playlistPlayer.GetPlaylist( iPlaylist );
+      const CPlayList::CPlayListItem& item = playlist[0];
+
+      // and start playing it
+      g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
+      g_playlistPlayer.Reset();
+      g_playlistPlayer.Play(0);
+      return true;
+    } 
+    else
+      return false;
+  else
+    return true;
+  return false;
+}
+
+
+
 CXbmcHttp::CXbmcHttp()
 {
 	CKey temp;
@@ -478,7 +574,7 @@ int CXbmcHttp::xbmcAddToPlayList( webs_t wp, char_t *parameter)
 	CFileItem *pItem = new CFileItem(strFileName);
 	pItem->m_strPath=name.c_str();
 	if (pItem->IsPlayList())
-		LoadPlayList(parameter,playList);
+		LoadPlayList(parameter,playList,false,false);
 	else
 	{
 		CFactoryDirectory factory;
@@ -486,21 +582,21 @@ int CXbmcHttp::xbmcAddToPlayList( webs_t wp, char_t *parameter)
 		bool bResult=pDirectory->Exists(pItem->m_strPath);
 		pItem->m_bIsFolder=bResult;
 		pItem->m_bIsShareOrDrive=false;
-		CMusicInfoTag& tag=pItem->m_musicInfoTag;
+		//CMusicInfoTag& tag=pItem->m_musicInfoTag;
 
-		if (g_guiSettings.GetBool("MyMusic.UseTags"))
-		{
-			// get correct tag parser
-			CMusicInfoTagLoaderFactory factory;
-			auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
-			if (NULL != pLoader.get())
-			{						
-				// get id3tag
-				if ( pLoader->Load(pItem->m_strPath,tag))
-				{
-				}
-			}
-		}
+		//if (g_guiSettings.GetBool("MyMusic.UseTags"))
+		//{
+		//	// get correct tag parser
+		//	CMusicInfoTagLoaderFactory factory;
+		//	auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+		//	if (NULL != pLoader.get())
+		//	{						
+		//		// get id3tag
+		//		if ( pLoader->Load(pItem->m_strPath,tag))
+		//		{
+		//		}
+		//	}
+		//}
 		AddItemToPlayList(pItem, playList);
 	}
 	g_playlistPlayer.HasChanged();
@@ -637,7 +733,7 @@ int  CXbmcHttp::xbmcGetDirectory(webs_t wp, char_t *parameter)
 	if (strcmp(parameter,"none"))
 		displayDir(wp, parameter);
 	else
-		websWrite(wp,"<li>Error: No path\n") ;
+		websWrite(wp,"<li>Error:No path\n") ;
 
 	websFooter(wp);
 	return 0;
@@ -681,7 +777,7 @@ int CXbmcHttp::xbmcGetMovieDetails( webs_t wp, char_t *parameter)
 		delete item;
 	}
 	else
-		websWrite(wp,"<li>Error: No file name\n") ;
+		websWrite(wp,"<li>Error:No file name\n") ;
 	websFooter(wp);
 	return 0;
 }
@@ -917,7 +1013,7 @@ int CXbmcHttp::xbmcGetThumbFilename(webs_t wp, char_t *parameter)
 		websWrite(wp, "<li>%s\n",thumbFilename.c_str()) ;
 	}
 	else
-		websWrite(wp,"<li>Error: Missing parameter (album;filename)") ;
+		websWrite(wp,"<li>Error:Missing parameter (album;filename)") ;
 	websFooter(wp);
 	return 0;
 }
@@ -926,13 +1022,14 @@ int CXbmcHttp::xbmcPlayerPlayFile( webs_t wp, char_t *parameter)
 	websHeader(wp);
 	CFileItem *item = new CFileItem(parameter);
 	item->m_strPath = parameter ;
-	if (item->IsPlayList())
-		LoadPlayList(parameter,g_playlistPlayer.GetCurrentPlaylist());
-	else {
-		SetCurrentMediaItem(*item); 
-		g_applicationMessenger.MediaStop();
-		g_applicationMessenger.MediaPlay(parameter);
-	}
+  g_application.PlayMedia((CStdString) parameter,g_playlistPlayer.GetCurrentPlaylist());
+	//if (item->IsPlayList())
+	//	LoadPlayList(parameter,g_playlistPlayer.GetCurrentPlaylist());
+	//else {
+	//	SetCurrentMediaItem(*item); 
+	//	g_applicationMessenger.MediaStop();
+	//	g_applicationMessenger.MediaPlay(parameter);
+	//}
 	websWrite(wp, "<li>OK\n");
 	websFooter(wp);
 	delete item;
@@ -952,7 +1049,7 @@ int CXbmcHttp::xbmcSetCurrentPlayList( webs_t wp, char_t *parameter)
 {
 	websHeader(wp);
 	if ((*parameter==0) || !strcmp(parameter,"none")) 
-		websWrite(wp, "<li>Error: missing playlist\n") ;
+		websWrite(wp, "<li>Error:missing playlist\n") ;
 	else {
 		g_playlistPlayer.SetCurrentPlaylist(atoi(parameter));
 		websWrite(wp, "<li>OK\n") ;
@@ -992,7 +1089,10 @@ int CXbmcHttp::xbmcGetPlayListSong( webs_t wp, char_t *parameter)
 
 	websHeader(wp);
 	if ((*parameter==0) || !strcmp(parameter,"none")) 
+  {
 		websWrite(wp, "<li>%i\n", g_playlistPlayer.GetCurrentSong());
+    success=true;
+  }
 	else {
 		CPlayList thePlayList;
 		iSong=atoi(parameter);	
@@ -1251,7 +1351,7 @@ int	CXbmcHttp::xbmcDownloadInternetFile(webs_t wp, char_t *parameter)
 
 	websHeader(wp);
 	if (srcAndDest=="none")
-		websWrite(wp,"<li>Error: Missing parameter");
+		websWrite(wp,"<li>Error:Missing parameter");
 	else
 	{
 		p=srcAndDest.Find(";");
@@ -1264,7 +1364,7 @@ int	CXbmcHttp::xbmcDownloadInternetFile(webs_t wp, char_t *parameter)
 		if (dest=="")
 			dest="Z:\\xbmcDownloadInternetFile.tmp" ;
 		if (src=="")
-			websWrite(wp,"<li>Error: Missing parameter");
+			websWrite(wp,"<li>Error:Missing parameter");
 		else
 		{
 			try
@@ -1274,7 +1374,7 @@ int	CXbmcHttp::xbmcDownloadInternetFile(webs_t wp, char_t *parameter)
 				CStdString encoded="";
 				encoded=encodeFileToBase64(dest,80);
 				if (encoded=="")
-					websWrite(wp,"<li>Error: Nothing downloaded");
+					websWrite(wp,"<li>Error:Nothing downloaded");
 				{
 					websWriteBlock(wp, (char_t *) encoded.c_str(), encoded.length()) ;
 					if (dest=="Z:\\xbmcDownloadInternetFile.tmp")
@@ -1299,7 +1399,7 @@ int	CXbmcHttp::xbmcSetFile(webs_t wp, char_t *parameter)
 
 	websHeader(wp);
 	if (destAndb64String=="none")
-		websWrite(wp,"<li>Error: Missing parameter");
+		websWrite(wp,"<li>Error:Missing parameter");
 	else
 	{
 		p=destAndb64String.Find(";");
@@ -1307,7 +1407,7 @@ int	CXbmcHttp::xbmcSetFile(webs_t wp, char_t *parameter)
 			dest=destAndb64String.Left(p);
 			b64String=destAndb64String.Right(destAndb64String.size()-p-1);
 			if (dest=="" || b64String=="")
-				websWrite(wp,"<li>Error: Missing parameter");
+				websWrite(wp,"<li>Error:Missing parameter");
 			else
 			{
 				decodeBase64ToFile(b64String, "Z:\\xbmcTemp.tmp");
@@ -1318,7 +1418,7 @@ int	CXbmcHttp::xbmcSetFile(webs_t wp, char_t *parameter)
 			}
 		}
 		else 
-			websWrite(wp,"<li>Error: Missing parameter");
+			websWrite(wp,"<li>Error:Missing parameter");
 	}
 	websFooter(wp);
 	return 0;
@@ -1333,7 +1433,7 @@ int	CXbmcHttp::xbmcCopyFile(webs_t wp, char_t *parameter)
 
 	websHeader(wp);
 	if (srcAndDest=="none")
-		websWrite(wp,"<li>Error: Missing parameter");
+		websWrite(wp,"<li>Error:Missing parameter");
 	else
 	{
 		p=srcAndDest.Find(";");
@@ -1341,7 +1441,7 @@ int	CXbmcHttp::xbmcCopyFile(webs_t wp, char_t *parameter)
 			src=srcAndDest.Left(p);
 			dest=srcAndDest.Right(srcAndDest.size()-p-1);
 			if (dest=="" || src=="")
-				websWrite(wp,"<li>Error: Missing parameter");
+				websWrite(wp,"<li>Error:Missing parameter");
 			else
 			{
 				CFile file;
@@ -1355,7 +1455,7 @@ int	CXbmcHttp::xbmcCopyFile(webs_t wp, char_t *parameter)
 			}
 		}
 		else 
-			websWrite(wp,"<li>Error: Missing parameter");
+			websWrite(wp,"<li>Error:Missing parameter");
 	}
 	websFooter(wp);
 	return 0;
@@ -1365,7 +1465,7 @@ int	CXbmcHttp::xbmcDeleteFile(webs_t wp, char_t *parameter)
 {
 	websHeader(wp);
 	if ((*parameter==0) || !strcmp(parameter,"none")) 
-		websWrite(wp,"<li>Error: Missing parameter");
+		websWrite(wp,"<li>Error:Missing parameter");
 	else
 	{
 		try
@@ -1392,7 +1492,7 @@ int	CXbmcHttp::xbmcFileExists(webs_t wp, char_t *parameter)
 {
 	websHeader(wp);
 	if ((*parameter==0) || !strcmp(parameter,"none")) 
-		websWrite(wp,"<li>Error: Missing parameter");
+		websWrite(wp,"<li>Error:Missing parameter");
 	else
 	{
 		try
@@ -1418,7 +1518,7 @@ int	CXbmcHttp::xbmcShowPicture(webs_t wp, char_t *parameter)
 {
 	websHeader(wp);
 	if ((*parameter==0) || !strcmp(parameter,"none")) 
-		websWrite(wp,"<li>Error: Missing parameter");
+		websWrite(wp,"<li>Error:Missing parameter");
 	else
 	{
 		CStdString filename = parameter;
@@ -1429,13 +1529,91 @@ int	CXbmcHttp::xbmcShowPicture(webs_t wp, char_t *parameter)
 	return 0;
 }
 
+int CXbmcHttp::xbmcExecBuiltIn(webs_t wp, char_t *parameter)
+{
+  	websHeader(wp);
+	if ((*parameter==0) || !strcmp(parameter,"none")) 
+		websWrite(wp,"<li>Error:Missing parameter");
+	else
+	{
+    CUtil::ExecBuiltIn((CStdString) parameter);
+		websWrite(wp, "<li>OK\n");
+	}
+	websFooter(wp);
+	return 0;
+}
+
+int CXbmcHttp::xbmcConfig(webs_t wp, char_t *parameter)
+{
+  int argc=0, i=0;
+  unsigned int p=0, pPrev=0;
+  CStdString cmdAndParas=parameter, cmd="";
+  CStdString tmp[20];
+  char_t* argv[20];
+  websHeader(wp);
+  p=cmdAndParas.Find(";");
+  if (p!=-1){
+    cmd=cmdAndParas.Left(p);
+    pPrev=p;
+    p=cmdAndParas.Find(";",p+1);
+    while ((p!=-1) && (p<cmdAndParas.length()) && (argc<19))
+    {
+      tmp[argc++]=cmdAndParas.Mid(pPrev+1,p-pPrev-1);
+      pPrev=p;
+      p=cmdAndParas.Find(";",p+1);
+    }
+    if ((argc<19) && (pPrev<cmdAndParas.length()-1))
+      tmp[argc++]=cmdAndParas.Right(cmdAndParas.length()-pPrev-1);
+    for (i=0; i<argc; i++)
+      argv[i]=(char_t*)tmp[i].c_str();
+  }
+  else
+    cmd=cmdAndParas;
+  argv[argc]=NULL;
+  if (cmd=="bookmarksize")
+    XbmcWebsAspConfigBookmarkSize(-1, wp, argc, argv);
+  else if (cmd=="getbookmark")
+    XbmcWebsAspConfigGetBookmark(-1, wp, argc, argv);
+  else if (cmd=="addbookmark") 
+  {
+    if (XbmcWebsAspConfigAddBookmark(-1, wp, argc, argv)==0)
+      websWrite(wp, "<li>OK\n");
+  }
+  else if (cmd=="savebookmark")
+  {
+    if (XbmcWebsAspConfigSaveBookmark(-1, wp, argc, argv)==0)
+      websWrite(wp, "<li>OK\n");
+  }
+  else if (cmd=="removebookmark")
+  {
+    if (XbmcWebsAspConfigRemoveBookmark(-1, wp, argc, argv)==0)
+      websWrite(wp, "<li>OK\n");
+  }
+  else if (cmd=="saveconfiguration")
+  {
+    if (XbmcWebsAspConfigSaveConfiguration(-1, wp, argc, argv)==0)
+      websWrite(wp, "<li>OK\n");
+  }
+  else if (cmd=="getoption")
+    XbmcWebsAspConfigGetOption(-1, wp, argc, argv);
+  else if (cmd=="setoption")
+  {
+    if (XbmcWebsAspConfigSetOption(-1, wp, argc, argv)==0)
+      websWrite(wp, "<li>OK\n");
+  }
+  else
+    websWrite(wp, "<li>Error:Unknown Config Command");
+  websFooter(wp);
+  return 0;
+}
+
 int	CXbmcHttp::xbmcHelp(webs_t wp)
 {
 	websHeader(wp);
 
   websWrite(wp, "<p><b>XBMC HTTP API Commands</b></p><p><b>Syntax: http://xbox/xbmcCmds/xbmcHttp?command=</b>one_of_the_following_commands<b>&ampparameter=</b>first_parameter<b>;</b>second_parameter<b>;...</b></p><p>Note the use of the semi colon to separate multiple parameters</p><p>For more information see the readme.txt and the source code of the demo client application on SourceForge.</p>");
 
-	websWrite(wp, "<li>clearplaylist\n<li>addtoplaylist\n<li>playfile\n<li>pause\n<li>stop\n<li>restart\n<li>shutdown\n<li>exit\n<li>reset\n<li>restartapp\n<li>getcurrentlyplaying\n<li>getdirectory\n<li>gettagfromfilename\n<li>getcurrentplaylist\n<li>setcurrentplaylist\n<li>getplaylistcontents\n<li>removefromplaylist\n<li>setplaylistsong\n<li>getplaylistsong\n<li>playlistnext\n<li>playlistprev\n<li>getpercentage\n<li>seekpercentage\n<li>setvolume\n<li>getvolume\n<li>getthumb\n<li>getthumbfilename\n<li>lookupalbum\n<li>choosealbum\n<li>downloadinternetfile\n<li>getmoviedetails\n<li>showpicture\n<li>setkey\n<li>deletefile\n<li>copyfile\n<li>fileexists\n<li>setfile\n<li>getguistatus\n<li>help");
+	websWrite(wp, "<li>clearplaylist\n<li>addtoplaylist\n<li>playfile\n<li>pause\n<li>stop\n<li>restart\n<li>shutdown\n<li>exit\n<li>reset\n<li>restartapp\n<li>getcurrentlyplaying\n<li>getdirectory\n<li>gettagfromfilename\n<li>getcurrentplaylist\n<li>setcurrentplaylist\n<li>getplaylistcontents\n<li>removefromplaylist\n<li>setplaylistsong\n<li>getplaylistsong\n<li>playlistnext\n<li>playlistprev\n<li>getpercentage\n<li>seekpercentage\n<li>setvolume\n<li>getvolume\n<li>getthumb\n<li>getthumbfilename\n<li>lookupalbum\n<li>choosealbum\n<li>downloadinternetfile\n<li>getmoviedetails\n<li>showpicture\n<li>setkey\n<li>deletefile\n<li>copyfile\n<li>fileexists\n<li>setfile\n<li>getguistatus\n<li>execbuiltin\n<li>config\n<li>help");
 
 	websFooter(wp);
 	return 0;
@@ -1482,14 +1660,17 @@ int CXbmcHttp::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *
 	else if (!strcmp(command, "fileexists"))		      	return xbmcFileExists(wp, parameter);
 	else if (!strcmp(command, "setfile"))				        return xbmcSetFile(wp, parameter);
 	else if (!strcmp(command, "getguistatus"))			    return xbmcGetGUIStatus(wp);
+	else if (!strcmp(command, "execbuiltin"))			      return xbmcExecBuiltIn(wp, parameter);
+  else if (!strcmp(command, "config"))	              return xbmcConfig(wp, parameter);
   else if (!strcmp(command, "help"))			            return xbmcHelp(wp);
 	else {
 		websHeader(wp);
-		websWrite(wp, "<li>Error: unknown command\n");
+		websWrite(wp, "<li>Error:unknown command\n");
 		websFooter(wp);
 	}
 	return 0;
 }
+
 
 
 /* XBMC form for posted data (in-memory CGI). 
@@ -1505,6 +1686,6 @@ void CXbmcHttp::xbmcForm(webs_t wp, char_t *path, char_t *query)
 
 	xbmcProcessCommand( NO_EID, wp, command, parameter);
 
-
-	websDone(wp, 200);
+  if (wp->timeout!=-1)
+	  websDone(wp, 200);
 }
