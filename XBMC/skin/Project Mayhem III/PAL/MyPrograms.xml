@@ -183,8 +183,8 @@
       <description>apps listcontrol</description>
       <type>listcontrol</type>
       <id>7</id>
-      <onleft>11</onleft>
-      <onright>11</onright>
+      <onleft>8</onleft>
+      <onright>8</onright>
       <onup>2</onup>
       <ondown>2</ondown>
     </control>
