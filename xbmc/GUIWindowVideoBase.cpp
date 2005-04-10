@@ -25,8 +25,8 @@
 #define CONTROL_STACK             7
 #define CONTROL_BTNSCAN           8
 #define CONTROL_IMDB              9
-#define CONTROL_LIST       10
-#define CONTROL_THUMBS      11
+#define CONTROL_LIST       50
+#define CONTROL_THUMBS      51
 #define CONTROL_LABELFILES         12
 
 struct SSortVideoListByName
@@ -331,6 +331,32 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
 void CGUIWindowVideoBase::OnWindowLoaded()
 {
+  // PRE1.3 transfer id's 10, 11 to 50, 51
+  if (!GetControl(CONTROL_LIST))
+  {
+    for (unsigned int i=0; i < m_vecControls.size(); i++)
+    {
+      CGUIControl *pControl = m_vecControls[i];
+      if (pControl->GetID() == 10) pControl->SetID(CONTROL_LIST);
+      if (pControl->GetControlIdUp() == 10) pControl->SetNavigation(CONTROL_LIST, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+      if (pControl->GetControlIdDown() == 10) pControl->SetNavigation(pControl->GetControlIdUp(), CONTROL_LIST, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+      if (pControl->GetControlIdLeft() == 10) pControl->SetNavigation(pControl->GetControlIdUp(), pControl->GetControlIdDown(), CONTROL_LIST, pControl->GetControlIdRight());
+      if (pControl->GetControlIdRight() == 10) pControl->SetNavigation(pControl->GetControlIdUp(), pControl->GetControlIdDown(), pControl->GetControlIdLeft(), CONTROL_LIST);
+    }
+  }
+  if (!GetControl(CONTROL_THUMBS))
+  {
+    for (unsigned int i=0; i < m_vecControls.size(); i++)
+    {
+      CGUIControl *pControl = m_vecControls[i];
+      if (pControl->GetID() == 11) pControl->SetID(CONTROL_THUMBS);
+      if (pControl->GetControlIdUp() == 11) pControl->SetNavigation(CONTROL_THUMBS, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+      if (pControl->GetControlIdDown() == 11) pControl->SetNavigation(pControl->GetControlIdUp(), CONTROL_THUMBS, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+      if (pControl->GetControlIdLeft() == 11) pControl->SetNavigation(pControl->GetControlIdUp(), pControl->GetControlIdDown(), CONTROL_THUMBS, pControl->GetControlIdRight());
+      if (pControl->GetControlIdRight() == 11) pControl->SetNavigation(pControl->GetControlIdUp(), pControl->GetControlIdDown(), pControl->GetControlIdLeft(), CONTROL_THUMBS);
+    }
+  }
+  // PRE1.3
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
   m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
@@ -830,8 +856,7 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
   AddItemToPlayList(pItem);
 
   //move to next item
-  CONTROL_SELECT_ITEM(CONTROL_LIST, iItem + 1);
-  CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem + 1);
+  m_viewControl.SetSelectedItem(iItem + 1);
 }
 
 void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem)

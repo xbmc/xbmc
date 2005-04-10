@@ -23,8 +23,8 @@ void CGUIVideoControl::Render()
     g_application.ResetScreenSaver();
   g_graphicsContext.Correct(x, y);
 
-  rc.left = (DWORD)x;
-  rc.top = (DWORD)y;
+  rc.left = (int)x;
+  rc.top = (int)y;
   rc.right = rc.left + m_dwWidth;
   rc.bottom = rc.top + m_dwHeight;
   g_graphicsContext.SetViewWindow(rc);
