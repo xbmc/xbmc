@@ -22,6 +22,7 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore, IPlayerCall
   if (strCoreLower == "mod") return new ModPlayer(callback);
   if (strCoreLower == "sid") return new SidPlayer(callback);
   //if (strCoreLower=="xine") return new CXinePlayer(callback);
+  if (strCoreLower == "paplayer" ) return new PAPlayer(callback); // added by dataratt
 
   // default = mplayer
   return new CMPlayer(callback);
