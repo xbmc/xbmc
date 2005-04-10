@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-04-2005 fixed: Crash in home on PM3 during video playback with UI off-center due to SetViewWindow() not correctly bounds checking.
   - 10-04-2005 changed: Cleaned up progressbar display during fullscreen and added two new conditional visibilty strings for skinning
                         Player.DisplayAfterSeek : Displays for 2.5 seconds after a seek has finished and during ff/rw
                         Player.IsCaching : True when the player is paused and recaching data
