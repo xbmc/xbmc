@@ -214,6 +214,43 @@
       <colordiffuse>ffffffff</colordiffuse>
     </control>
 
+    <!-- Will only be visible after a seek, during FF/RW or when forced on -->
+    <control>
+      <description>current time</description>
+      <type>label</type>
+      <id>22</id>
+      <posX>580</posX>
+      <posY>55</posY>
+      <label>-</label>
+      <align>right</align>
+      <font>font12</font>
+      <textcolor>FFFFFFFF</textcolor>
+    </control>
+
+    <!-- Will only be visible after a seek or during FF/RW -->
+    <control>
+      <description>progress control</description>
+      <type>progress</type>
+      <id>23</id>
+      <posX>210</posX>
+      <posY>500</posY>
+      <visible>no</visible>
+    </control>
+
+    <!-- Will only be visible during buffering -->
+    <control>
+      <description>buffering label</description>
+      <type>label</type>
+      <id>24</id>
+      <posX>580</posX>
+      <posY>55</posY>
+      <label>15107</label>
+      <align>right</align>
+      <font>font12</font>
+      <textcolor>FFFFFFFF</textcolor>
+    </control>
+
+
   </controls>
 
 </window>

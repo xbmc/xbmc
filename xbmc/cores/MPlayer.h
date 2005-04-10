@@ -150,6 +150,7 @@ protected:
   bool m_bPaused;
   bool m_bIsPlaying;
   bool m_bCaching;
+  bool m_bUseFullRecaching;
   int m_CacheLevel;
   DllLoader* m_pDLL;
   __int64 m_iPTS;
