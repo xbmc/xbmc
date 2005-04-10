@@ -179,10 +179,10 @@
         <description>My Programs normal push button</description>
         <type>button</type>
         <id>2</id>
-        <posX>76</posX>
-        <posY>221</posY>
-        <width>35</width>
-        <height>34</height>
+        <posX>91</posX>
+        <posY>231</posY>
+        <width>14</width>
+        <height>13</height>
         <label>0</label>
         <font>special13</font>
         <hyperlink>1</hyperlink>
@@ -190,19 +190,19 @@
         <onright>99</onright>
         <onup>9</onup>
         <ondown>4</ondown>
-        <textureFocus>home-focus.png</textureFocus>
+        <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
-        <textOffsetX>45</textOffsetX>
+        <textOffsetX>30</textOffsetX>
       </control>
 
       <control>
         <description>My Pictures normal push button</description>
         <type>button</type>
         <id>4</id>
-        <posX>76</posX>
-        <posY>261</posY>
-        <width>35</width>
-        <height>34</height>
+        <posX>91</posX>
+        <posY>271</posY>
+        <width>14</width>
+        <height>13</height>
         <label>1</label>
         <hyperlink>2</hyperlink>
         <font>special13</font>
@@ -210,19 +210,19 @@
         <onright>99</onright>
         <onup>2</onup>
         <ondown>5</ondown>
-        <textureFocus>home-focus.png</textureFocus>
+        <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
-        <textOffsetX>45</textOffsetX>
+        <textOffsetX>30</textOffsetX>
       </control>
 
       <control>
         <description>My Videos normal push button</description>
         <type>button</type>
         <id>5</id>
-        <posX>76</posX>
-        <posY>301</posY>
-        <width>35</width>
-        <height>34</height>
+        <posX>91</posX>
+        <posY>310</posY>
+        <width>14</width>
+        <height>13</height>
         <label>3</label>
         <font>special13</font>
         <hyperlink>6</hyperlink>
@@ -230,19 +230,19 @@
         <onright>99</onright>
         <onup>4</onup>
         <ondown>3</ondown>
-        <textureFocus>home-focus.png</textureFocus>
+        <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
-        <textOffsetX>45</textOffsetX>
+        <textOffsetX>30</textOffsetX>
       </control>
 
       <control>
         <description>My Music normal push button</description>
         <type>button</type>
         <id>3</id>
-        <posX>76</posX>
-        <posY>340</posY>
-        <width>35</width>
-        <height>34</height>
+        <posX>91</posX>
+        <posY>350</posY>
+        <width>14</width>
+        <height>13</height>
         <label>2</label>
         <hyperlink>501</hyperlink>
         <font>special13</font>
@@ -250,19 +250,19 @@
         <onright>99</onright>
         <onup>5</onup>
         <ondown>7</ondown>
-        <textureFocus>home-focus.png</textureFocus>
+        <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
-        <textOffsetX>45</textOffsetX>
+        <textOffsetX>30</textOffsetX>
       </control>
 
       <control>
         <description>My Weather normal push button</description>
         <type>button</type>
         <id>7</id>
-        <posX>76</posX>
-        <posY>380</posY>
-        <width>35</width>
-        <height>34</height>
+        <posX>91</posX>
+        <posY>388</posY>
+        <width>14</width>
+        <height>13</height>
         <label>8</label>
         <font>special13</font>
         <hyperlink>2600</hyperlink>
@@ -270,9 +270,9 @@
         <onright>99</onright>
         <onup>3</onup>
         <ondown>9</ondown>
-        <textureFocus>home-focus.png</textureFocus>
+        <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
-        <textOffsetX>45</textOffsetX>
+        <textOffsetX>30</textOffsetX>
       </control>
 
       <control>
@@ -281,8 +281,8 @@
         <id>9</id>
         <posX>80</posX>
         <posY>427</posY>
-        <width>20</width>
-        <height>20</height>
+        <width>14</width>
+        <height>13</height>
         <label>5</label>
         <font>font10</font>
         <hyperlink>4</hyperlink>
@@ -290,19 +290,19 @@
         <onright>6</onright>
         <onup>7</onup>
         <ondown>2</ondown>
-        <textureFocus>home-focus.png</textureFocus>
+        <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
-        <textOffsetX>23</textOffsetX>
+        <textOffsetX>20</textOffsetX>
       </control>
 
       <control>
         <description>My Files normal push button</description>
         <type>button</type>
         <id>6</id>
-        <posX>190</posX>
+        <posX>195</posX>
         <posY>427</posY>
-        <width>20</width>
-        <height>20</height>
+        <width>14</width>
+        <height>13</height>
         <label>7</label>
         <hyperlink>3</hyperlink>
         <font>font10</font>
@@ -310,9 +310,9 @@
         <onright>99</onright>
         <onup>7</onup>
         <ondown>2</ondown>
-        <textureFocus>home-focus.png</textureFocus>
+        <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
-        <textOffsetX>23</textOffsetX>
+        <textOffsetX>20</textOffsetX>
       </control>
 
     </controlgroup>
@@ -361,7 +361,7 @@
       <width>720</width>
       <font>font13</font>
       <feed>http://www.xbox-scene.com/xbox1data/xbox-scene.xml</feed>
-      <titlecolor>ffFFD200</titlecolor>
+      <titlecolor>ffD2FF00</titlecolor>
       <headlinecolor>DDced8da</headlinecolor>
       <textcolor>DDced8da</textcolor>
     </control>
