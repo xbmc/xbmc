@@ -6,6 +6,7 @@
 #include "modplayer.h"
 #include "SidPlayer.h"
 #include "dvdplayer\DVDPlayer.h"
+#include "paplayer\paplayer.h"
 
 CPlayerCoreFactory::CPlayerCoreFactory()
 {}
