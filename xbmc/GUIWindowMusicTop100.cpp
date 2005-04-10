@@ -11,7 +11,7 @@
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_LIST       50
-#define CONTROL_THUMBS      51
+#define CONTROL_BIGLIST      53
 
 CGUIWindowMusicTop100::CGUIWindowMusicTop100(void)
     : CGUIWindowMusicBase()
@@ -48,11 +48,11 @@ bool CGUIWindowMusicTop100::OnMessage(CGUIMessage& message)
       if (iControl == CONTROL_BTNVIEWASICONS)
       {
         m_iViewAsIconsRoot++;
-        if (m_iViewAsIconsRoot > VIEW_AS_ICONS) m_iViewAsIconsRoot = VIEW_AS_LIST;
-        Update("");
-
+        if (m_iViewAsIconsRoot > VIEW_AS_LARGE_LIST) m_iViewAsIconsRoot = VIEW_AS_LIST;
+        if (m_iViewAsIconsRoot != VIEW_AS_LIST) m_iViewAsIconsRoot = VIEW_AS_LARGE_LIST;
         g_stSettings.m_iMyMusicTop100ViewAsIcons = m_iViewAsIconsRoot;
         g_settings.Save();
+        UpdateButtons();
         return true;
       }
     }
@@ -174,8 +174,8 @@ void CGUIWindowMusicTop100::OnFileItemFormatLabel(CFileItem* pItem)
 
   // CONTROL_THUMB in top 100 is a listcontrol, so big
   // iconimages have to be shown if its enabled
-  if (ViewByIcon())
-    pItem->SetIconImage(pItem->GetThumbnailImage());
+//  if (ViewByIcon())
+  pItem->SetIconImage(pItem->GetThumbnailImage());
 }
 
 void CGUIWindowMusicTop100::DoSort(CFileItemList& items)

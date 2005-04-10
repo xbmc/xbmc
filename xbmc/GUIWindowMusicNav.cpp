@@ -271,7 +271,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         }
         g_settings.Save();
 
-        int nItem = GetSelectedItem();
+        int nItem = m_viewControl.GetSelectedItem();
         CFileItem*pItem = m_vecItems[nItem];
         CStdString strSelected = pItem->m_strPath;
 
@@ -310,7 +310,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           CFileItem* pItem = m_vecItems[i];
           if (pItem->m_strPath == strSelected)
           {
-            SetSelectedItem(i);
+            m_viewControl.SetSelectedItem(i);
             break;
           }
         }
@@ -374,9 +374,9 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
         return true;
       }
-      else if (IsViewControl(iControl))  // list/thumb control
+      else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
-        int iItem = GetSelectedItem();
+        int iItem = m_viewControl.GetSelectedItem();
         int iAction = message.GetParam1();
 
         // use play button to add folders of items to temp playlist
