@@ -321,7 +321,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         UpdateButtons();
         UpdateListControl();
 
-        int nItem = GetSelectedItem();
+        int nItem = m_viewControl.GetSelectedItem();
         if (nItem < 0) break;
         CFileItem*pItem = m_vecItems[nItem];
         CStdString strSelected = pItem->m_strPath;
@@ -357,7 +357,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
           CFileItem* pItem = m_vecItems[i];
           if (pItem->m_strPath == strSelected)
           {
-            SetSelectedItem(i);
+            m_viewControl.SetSelectedItem(i);
             break;
           }
         }
@@ -1029,7 +1029,7 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
       CFileItem* pItem = m_vecItems[i];
       if (pItem->m_strPath == strPath)
       {
-        SetSelectedItem(i);
+        m_viewControl.SetSelectedItem(i);
         break;
       }
     }
@@ -1054,7 +1054,7 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
       CFileItem* pItem = m_vecItems[i];
       if (pItem->m_strPath == pSelItem->m_strPath)
       {
-        SetSelectedItem(i);
+        m_viewControl.SetSelectedItem(i);
         break;
       }
     }

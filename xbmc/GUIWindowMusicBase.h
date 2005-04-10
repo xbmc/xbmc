@@ -75,8 +75,6 @@ protected:
   virtual void Update(const CStdString &strDirectory);
   void UpdateListControl();
   virtual void AddItemToPlayList(const CFileItem* pItem);
-  int GetSelectedItem();
-  void SetSelectedItem(int index);
   void OnRipCD();
   virtual void OnScan() {};
   void OnSearch();
@@ -87,7 +85,6 @@ protected:
   virtual void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   bool ViewByIcon();
   bool ViewByLargeIcon();
-  bool IsViewControl(int control);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
   void SetLabelFromTag(CFileItem *pItem);
 

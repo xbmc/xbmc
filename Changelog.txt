@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-04-2005 changed: Switching views issues in My Music Top 100 view.  Big list view has changed id to 52.
+  - 10-04-2005 changed: Removed unnecessary code from My Music + changed videoPlaylists window to use CGUIViewControl.
   - 09-04-2005 fixed: Default control can now be focused on the list/thumb in music + video views.
   - 09-04-2005 fixed: Some 3rd party AV packs report as being "VGA" adapters incorrectly.  XBMC now supports this mode and enables Digital output for it.
   - 09-04-2005 changed: Analog ffwd/rewd mapped to triggers in Vis, and dpad left/right is skip previous/next.
