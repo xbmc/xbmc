@@ -21,6 +21,7 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_fanSpeed = 0;
   m_gpuTemp = 0;
   m_cpuTemp = 0;
+  m_AfterSeekTimeout = 0;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -76,6 +77,10 @@ bool CGUIInfoManager::GetBool(const CStdString &strCondition)
   strTest.ToLower();
   bool bNegate = strTest[0] == '!';
   bool bReturn = false;
+
+  if(bNegate)
+    strTest.Delete(0, 1);
+
   // check playing conditions...
   if (g_application.IsPlaying())
   {
@@ -117,6 +122,10 @@ bool CGUIInfoManager::GetBool(const CStdString &strCondition)
       bReturn = g_application.m_pPlayer->CanRecord();
     else if (strTest.Equals("Player.IsRecording"))
       bReturn = g_application.m_pPlayer->IsRecording();
+    else if (strTest.Equals("Player.DisplayAfterSeek"))
+      bReturn = GetDisplayAfterSeek();
+    else if (g_application.m_pPlayer && strTest.Equals("Player.IsCaching"))
+      bReturn = g_application.m_pPlayer->IsCaching();
   }
   return bNegate ? !bReturn : bReturn;
 }
@@ -571,4 +580,17 @@ CStdString CGUIInfoManager::GetBuild()
   CStdString tmp;
   mbstowcs(wszDate, __DATE__, sizeof(wszDate));
   return wszDate;
+}
+
+void CGUIInfoManager::SetDisplayAfterSeek(DWORD dwTimeOut)
+{
+  if(dwTimeOut>0)    
+    m_AfterSeekTimeout = timeGetTime() +  dwTimeOut;
+  else
+    m_AfterSeekTimeout = 0;
+}
+
+bool CGUIInfoManager::GetDisplayAfterSeek()
+{
+  return (timeGetTime() < m_AfterSeekTimeout);
 }

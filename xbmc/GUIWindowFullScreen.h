@@ -37,8 +37,6 @@ private:
   void RenderTTFSubtitles();
   void Seek(bool bPlus, bool bLargeStep);
   bool m_bShowTime;
-  bool m_bShowProgress;
-  DWORD m_dwProgressTimout;
   bool m_bShowCodecInfo;
   bool m_bShowViewModeInfo;
   DWORD m_dwShowViewModeTimeout;

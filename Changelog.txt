@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-04-2005 changed: Cleaned up progressbar display during fullscreen and added two new conditional visibilty strings for skinning
+                        Player.DisplayAfterSeek : Displays for 2.5 seconds after a seek has finished and during ff/rw
+                        Player.IsCaching : True when the player is paused and recaching data
+  - 10-04-2005 updated: mplayer.dll to current cvs (support for full recaching of internet stream before resuming)
   - 10-04-2005 added: Harddisk spins up just before the end of the movie so that transistions during stacking is faster.
   - 10-04-2005 changed: Switching views issues in My Music Top 100 view.  Big list view has changed id to 52.
   - 10-04-2005 changed: Removed unnecessary code from My Music + changed videoPlaylists window to use CGUIViewControl.
