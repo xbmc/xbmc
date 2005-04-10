@@ -217,9 +217,9 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       }
       else
       {
-        int iItem = GetSelectedItem();
+        int iItem = m_viewControl.GetSelectedItem();
         Update(m_Directory.m_strPath);
-        SetSelectedItem(iItem);
+        m_viewControl.SetSelectedItem(iItem);
       }
     }
     break;
@@ -228,16 +228,16 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
     {
       if (m_Directory.IsVirtualDirectoryRoot())
       {
-        int iItem = GetSelectedItem();
+        int iItem = m_viewControl.GetSelectedItem();
         Update(m_Directory.m_strPath);
-        SetSelectedItem(iItem);
+        m_viewControl.SetSelectedItem(iItem);
       }
     }
     break;
 
   case GUI_MSG_WINDOW_DEINIT:
     {
-      m_nSelectedItem = GetSelectedItem();
+      m_nSelectedItem = m_viewControl.GetSelectedItem();
       m_iLastControl = GetFocusedControl();
       ClearFileItems();
       g_musicDatabase.Close();
@@ -274,7 +274,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
       if (m_nSelectedItem > -1)
       {
-        SetSelectedItem(m_nSelectedItem);
+        m_viewControl.SetSelectedItem(m_nSelectedItem);
       }
       return true;
     }
@@ -320,9 +320,9 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       {
         OnSearch();
       }
-      else if (IsViewControl(iControl))  // list/thumb control
+      else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
-        int iItem = GetSelectedItem();
+        int iItem = m_viewControl.GetSelectedItem();
         int iAction = message.GetParam1();
 
         // iItem is checked for validity inside these routines
@@ -397,23 +397,12 @@ void CGUIWindowMusicBase::UpdateListControl()
   m_viewControl.SetItems(m_vecItems);
 }
 
-/// \brief Returns the selected list/thumb control item
-int CGUIWindowMusicBase::GetSelectedItem()
-{
-  return m_viewControl.GetSelectedItem();
-}
-
-void CGUIWindowMusicBase::SetSelectedItem(int index)
-{
-  m_viewControl.SetSelectedItem(index);
-}
-
 /// \brief Set window to a specific directory
 /// \param strDirectory The directory to be displayed in list/thumb control
 void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 {
   // get selected item
-  int iItem = GetSelectedItem();
+  int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";
   if (iItem >= 0 && iItem < m_vecItems.Size())
   {
@@ -463,7 +452,7 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
       GetDirectoryHistoryString(pItem, strHistory);
       if (strHistory == strSelectedItem)
       {
-        SetSelectedItem(i);
+        m_viewControl.SetSelectedItem(i);
         bSelectedFound = true;
       }
     }
@@ -516,9 +505,9 @@ bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
       }
       // Update listcontrol, maybe share
       // was selected while disc change
-      int iItem = GetSelectedItem();
+      int iItem = m_viewControl.GetSelectedItem();
       Update( m_Directory.m_strPath );
-      SetSelectedItem(iItem);
+      m_viewControl.SetSelectedItem(iItem);
       return false;
     }
   }
@@ -908,7 +897,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 
   if (bUpdate)
   {
-    int iSelectedItem = GetSelectedItem();
+    int iSelectedItem = m_viewControl.GetSelectedItem();
     if (iSelectedItem >= 0 && m_vecItems[iSelectedItem] && m_vecItems[iSelectedItem]->m_bIsFolder)
     {
       // refresh only the icon of
@@ -974,7 +963,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   AddItemToPlayList(pItem);
 
   //move to next item
-  SetSelectedItem(iItem + 1);
+  m_viewControl.SetSelectedItem(iItem + 1);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() && !g_application.IsPlayingAudio() )
   {
     g_playlistPlayer.Reset();
@@ -1118,36 +1107,6 @@ bool CGUIWindowMusicBase::GetKeyboard(CStdString& strInput)
     if (strInput.IsEmpty())
       return false;
     return true;
-  }
-  return false;
-}
-
-/// \brief Is thumb or list control visible
-/// \return Returns \e true, if thumb control is visible
-bool CGUIWindowMusicBase::ViewByIcon()
-{
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-  {
-    if (m_iViewAsIconsRoot != VIEW_AS_LIST) return true;
-  }
-  else
-  {
-    if (m_iViewAsIcons != VIEW_AS_LIST) return true;
-  }
-  return false;
-}
-
-/// \brief Is thumb control in large icons mode
-/// \return Returns \e true, if thumb control is in large icons mode
-bool CGUIWindowMusicBase::ViewByLargeIcon()
-{
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-  {
-    if (m_iViewAsIconsRoot == VIEW_AS_LARGE_ICONS) return true;
-  }
-  else
-  {
-    if (m_iViewAsIcons == VIEW_AS_LARGE_ICONS) return true;
   }
   return false;
 }
@@ -1525,9 +1484,4 @@ void CGUIWindowMusicBase::SetLabelFromTag(CFileItem *pItem)
     CUtil::SecondsToHMSString(nDuration, strLabel);
     pItem->SetLabel2(strLabel);
   }
-}
-
-bool CGUIWindowMusicBase::IsViewControl(int control)
-{
-  return m_viewControl.HasControl(control);
 }
