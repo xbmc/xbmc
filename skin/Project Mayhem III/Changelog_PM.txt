@@ -1,3 +1,6 @@
+2004-04-10 changed:	moved the new timedisplay below the progressbar
+2004-04-10 fixed:       filstacking discs didnt display in the correct aspectratio in 16:9
+2004-04-10 changed:     some more things to match the overall color feel (like rss and sliders)
 2004-04-10 fixed:	removed test covershot from 16:9 videoOSD
 2004-04-10 changed:     homescreen facelift
 2004-04-10 added:       custom progressbar and time display in fullscreen video after seek and during ff/rw

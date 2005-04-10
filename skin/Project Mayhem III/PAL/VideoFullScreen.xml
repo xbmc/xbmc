@@ -217,12 +217,15 @@
     <!-- Will only be visible after a seek, during FF/RW or when forced on -->
     <control>
       <description>current time</description>
-      <type>label</type>
+      <type>button</type>
       <id>22</id>
-      <posX>580</posX>
-      <posY>55</posY>
+      <posX>210</posX>
+      <posY>510</posY>
       <label>-</label>
-      <align>right</align>
+      <width>291</width>
+      <textureFocus>-</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <align>center</align>
       <font>font12</font>
       <textcolor>FFFFFFFF</textcolor>
     </control>
@@ -233,19 +236,22 @@
       <type>progress</type>
       <id>23</id>
       <posX>210</posX>
-      <posY>500</posY>
+      <posY>485</posY>
       <visible>no</visible>
     </control>
 
     <!-- Will only be visible during buffering -->
     <control>
       <description>buffering label</description>
-      <type>label</type>
+      <type>button</type>
       <id>24</id>
-      <posX>580</posX>
-      <posY>55</posY>
+      <posX>210</posX>
+      <posY>510</posY>
       <label>15107</label>
-      <align>right</align>
+      <width>291</width>
+      <textureFocus>-</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <align>center</align>
       <font>font12</font>
       <textcolor>FFFFFFFF</textcolor>
     </control>
