@@ -118,7 +118,7 @@ public:
   BOOL IsDebug();
 
   static HRESULT Shutdown();
-  static VOID SpindownHarddisk();
+  static VOID SpindownHarddisk(bool bSpinDown=true);
   bool IsDrivePresent( const char* cDrive );
 
 protected:
