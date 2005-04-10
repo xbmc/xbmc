@@ -51,9 +51,17 @@
 #define IMG_16Xr    120
 #define IMG_32Xr      121
 
+//Displays current position, visible after seek or when forced
+//Alt, use conditional visibility Player.DisplayAfterSeek
 #define LABEL_CURRENT_TIME 22
-#define CONTROL_PROGRESS 23
+
+//Displays when video is rebuffering
+//Alt, use conditional visibility Player.IsCaching
 #define LABEL_BUFFERING 24
+
+//Progressbar used for buffering status and after seeking
+#define CONTROL_PROGRESS 23
+
 
 extern IDirectSoundRenderer* m_pAudioDecoder;
 
@@ -367,8 +375,6 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Forwarding32x");
   pImage = (CGUIImage *)GetControl(IMG_32Xr);
   if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding32x");
-  //Set text of buffering label
-  SET_CONTROL_LABEL(LABEL_BUFFERING, 15107);
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
@@ -556,7 +562,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowCodecInfo) return true;
   if (m_bShowViewModeInfo) return true;
   if (m_bShowCurrentTime) return true;
-  if (m_bShowProgress) return true;
+  if (g_infoManager.GetDisplayAfterSeek()) return true;
   if (m_gWindowManager.IsRouted()) return true;
   if (m_gWindowManager.IsModelessAvailable()) return true;
   if (m_bOSDVisible) return true;
@@ -574,12 +580,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
 void CGUIWindowFullScreen::RenderFullScreen()
 {
   if (g_application.GetPlaySpeed() != 1)
-  {
-    m_bShowCurrentTime = true;
-    m_bShowProgress = true;
-    m_dwProgressTimout = timeGetTime();
-    m_dwTimeCodeTimeout = timeGetTime();
-  }
+    g_infoManager.SetDisplayAfterSeek();
 
   m_bLastRender = true;
   m_fFrameCounter += 1.0f;
@@ -595,51 +596,36 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
   bool bRenderGUI = g_application.m_pPlayer->IsPaused();
 
-  if (m_bShowProgress)
+  //Display current progress
+  if( g_infoManager.GetDisplayAfterSeek() )
   {
-    if ( (timeGetTime() - m_dwProgressTimout) >= 2500)
-    {
-      m_bShowProgress = false;
-    }
- 
     CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
     if (pControl) 
     {
       pControl->SetPercentage(g_application.m_pPlayer->GetPercentage());
-      if (!pControl->IsVisible())
-        pControl->SetVisible(true);
+      pControl->SetVisible(true);
     }
     bRenderGUI = true;
   }
-
 
   if( g_application.m_pPlayer->IsCaching() )
   {
-    int iCacheFilled = g_application.m_pPlayer->GetCacheLevel();
-
     CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
     if (pControl) 
     {
-      pControl->SetPercentage(iCacheFilled);
-      if (!pControl->IsVisible())
-        pControl->SetVisible(true);
+      pControl->SetPercentage(g_application.m_pPlayer->GetCacheLevel());
+      pControl->SetVisible(true);
     }
-    SET_CONTROL_VISIBLE(LABEL_BUFFERING);
+    g_infoManager.SetDisplayAfterSeek(0); //Make sure these stuff aren't visible now
     bRenderGUI = true;
-
-    m_bShowCurrentTime=false;
-    m_bShowProgress=false;
   }
   else
-  {
     SET_CONTROL_HIDDEN(LABEL_BUFFERING);
-  }
 
-  if( !m_bShowProgress && !g_application.m_pPlayer->IsCaching() )
+  if( !g_infoManager.GetDisplayAfterSeek() && !g_application.m_pPlayer->IsCaching() )
   {
     SET_CONTROL_HIDDEN(CONTROL_PROGRESS);    
   }
-
 
   //------------------------
   if (m_bShowCodecInfo)
@@ -767,16 +753,17 @@ void CGUIWindowFullScreen::RenderFullScreen()
     bRenderGUI = true;
 
   // Render current time if requested
-  if (m_bShowCurrentTime)
+  if (m_bShowCurrentTime || g_infoManager.GetDisplayAfterSeek())
   {
     CStdString strTime;
     bRenderGUI = true;
-    SET_CONTROL_VISIBLE(LABEL_CURRENT_TIME);
     CStdString strLabel;
     strLabel = g_infoManager.GetLabel("videoplayer.time");
     strLabel += " / ";
     strLabel += g_infoManager.GetLabel("videoplayer.duration");
     SET_CONTROL_LABEL(LABEL_CURRENT_TIME, strLabel);
+    SET_CONTROL_VISIBLE(LABEL_CURRENT_TIME);
+
     if ( (timeGetTime() - m_dwTimeCodeTimeout) >= 2500)
     {
       m_bShowCurrentTime = false;
@@ -969,10 +956,9 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
   }
   g_application.m_pPlayer->Seek(bPlus, bLargeStep);
   
-  m_bShowProgress = true;
-  m_dwProgressTimout = timeGetTime();
-  m_bShowCurrentTime = true;
-  m_dwTimeCodeTimeout = timeGetTime();
+  //Make sure gui items are visible
+  g_infoManager.SetDisplayAfterSeek();
+
   // And repause it
   if (bNeedsPause)
   {

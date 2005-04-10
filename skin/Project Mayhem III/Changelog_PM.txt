@@ -1,3 +1,4 @@
+2004-04-10 added: custom progressbar and time display in fullscreen video after seek and during ff/rw
 2004-04-10 changed:     set id of biglist to 52 instead of 51 in MyMusicTop100.xml
 2004-04-09 changed:	set all the onleft/onright for all listscontrols and thumbnailpanels to 2
 2004-04-09 fixed:	Minor Submenu typo - also changed the Movie Trailers link to use QuickTimeBroweser.py now
