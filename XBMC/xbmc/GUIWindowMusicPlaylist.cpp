@@ -50,7 +50,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       // global playlist changed outside playlist window
       Update("");
 
-      if (IsViewControl(m_iLastControl) && m_vecItems.Size() <= 0)
+      if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
       {
         m_iLastControl = CONTROL_BTNVIEWASICONS;
         SET_CONTROL_FOCUS(m_iLastControl, 0);
@@ -80,7 +80,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         CONTROL_SELECT(CONTROL_BTNSHUFFLE);
       }
 
-      if (IsViewControl(m_iLastControl) && m_vecItems.Size() <= 0)
+      if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
       {
         m_iLastControl = CONTROL_BTNVIEWASICONS;
         SET_CONTROL_FOCUS(m_iLastControl, 0);
@@ -91,7 +91,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         int iSong = g_playlistPlayer.GetCurrentSong();
         if (iSong >= 0 && iSong <= m_vecItems.Size())
         {
-          SetSelectedItem(iSong);
+          m_viewControl.SetSelectedItem(iSong);
         }
       }
 
@@ -155,7 +155,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       {
         g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
         g_playlistPlayer.Reset();
-        g_playlistPlayer.Play(GetSelectedItem());
+        g_playlistPlayer.Play(m_viewControl.GetSelectedItem());
         UpdateButtons();
       }
       else if (iControl == CONTROL_BTNNEXT)
@@ -228,9 +228,9 @@ void CGUIWindowMusicPlayList::OnAction(const CAction &action)
 void CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iAction)
 {
   int iFocusedControl = GetFocusedControl();
-  if (IsViewControl(iFocusedControl))
+  if (m_viewControl.HasControl(iFocusedControl))
   {
-    int iSelected = GetSelectedItem();
+    int iSelected = m_viewControl.GetSelectedItem();
     int iNew = iSelected;
     if (iAction == ACTION_MOVE_ITEM_UP)
     {
@@ -256,7 +256,7 @@ void CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iAction)
     if (playlist.Swap(iSelected, iNew))
     {
       Update(m_Directory.m_strPath);
-      SetSelectedItem(iNew);
+      m_viewControl.SetSelectedItem(iNew);
       return ;
     }
   }
@@ -411,7 +411,7 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
   }
   else
   {
-    SetSelectedItem(iItem - 1);
+    m_viewControl.SetSelectedItem(iItem - 1);
   }
 }
 

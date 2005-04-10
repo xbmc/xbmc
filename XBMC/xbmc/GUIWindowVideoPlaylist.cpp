@@ -7,10 +7,6 @@
 #include "PlayListPlayer.h"
 #include "GUIThumbnailPanel.h"
 
-#define VIEW_AS_LIST           0
-#define VIEW_AS_ICONS          1
-#define VIEW_AS_LARGEICONS     2
-
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
 #define CONTROL_BTNSORTASC    4
@@ -74,10 +70,9 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       // global playlist changed outside playlist window
       Update("");
 
-      if ((m_iLastControl == CONTROL_THUMBS || m_iLastControl == CONTROL_LIST) && m_vecItems.Size() <= 0)
+      if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
       {
-        m_iLastControl = CONTROL_BTNVIEWASICONS;
-        SET_CONTROL_FOCUS(m_iLastControl, 0);
+        m_viewControl.SetFocused();
       }
 
     }
@@ -86,7 +81,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       OutputDebugString("deinit guiwindowvideoplaylist!\n");
-      m_iItemSelected = GetSelectedItem();
+      m_iItemSelected = m_viewControl.GetSelectedItem();
       m_iLastControl = GetFocusedControl();
     }
     break;
@@ -98,16 +93,14 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 
       Update("");
 
-      if ((m_iLastControl == CONTROL_THUMBS || m_iLastControl == CONTROL_LIST) && m_vecItems.Size() <= 0)
+      if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
       {
-        m_iLastControl = CONTROL_BTNVIEWASICONS;
-        SET_CONTROL_FOCUS(m_iLastControl, 0);
+        m_viewControl.SetFocused();
       }
 
       if (m_iItemSelected > -1)
       {
-        CONTROL_SELECT_ITEM(CONTROL_LIST, m_iItemSelected);
-        CONTROL_SELECT_ITEM(CONTROL_THUMBS, m_iItemSelected);
+        m_viewControl.SetSelectedItem(m_iItemSelected);
       }
 
       if (g_playlistPlayer.Repeated(PLAYLIST_VIDEO))
@@ -130,8 +123,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
         int iSong = g_playlistPlayer.GetCurrentSong();
         if (iSong >= 0 && iSong <= (int)m_vecItems.Size())
         {
-          CONTROL_SELECT_ITEM(CONTROL_LIST, iSong);
-          CONTROL_SELECT_ITEM(CONTROL_THUMBS, iSong);
+          m_viewControl.SetSelectedItem(iSong);
         }
       }
       return true;
@@ -151,9 +143,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       {
         CGUIWindow::OnMessage(message);
         g_stSettings.m_iMyVideoPlaylistViewAsIcons++;
-        if (g_stSettings.m_iMyVideoPlaylistViewAsIcons > VIEW_AS_LARGEICONS) g_stSettings.m_iMyVideoPlaylistViewAsIcons = VIEW_AS_LIST;
-
-        ShowThumbPanel();
+        if (g_stSettings.m_iMyVideoPlaylistViewAsIcons > VIEW_AS_LARGE_ICONS) g_stSettings.m_iMyVideoPlaylistViewAsIcons = VIEW_AS_LIST;
 
         g_settings.Save();
         UpdateButtons();
@@ -178,7 +168,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       {
         g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
         g_playlistPlayer.Reset();
-        g_playlistPlayer.Play(GetSelectedItem());
+        g_playlistPlayer.Play(m_viewControl.GetSelectedItem());
         UpdateButtons();
       }
       else if (iControl == CONTROL_BTNNEXT)
@@ -203,9 +193,9 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
         bRepeatOne = !bRepeatOne;
         g_playlistPlayer.RepeatOne(PLAYLIST_VIDEO, bRepeatOne);
       }
-      else if (iControl == CONTROL_LIST || iControl == CONTROL_THUMBS)  // list/thumb control
+      else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
-        int iItem = GetSelectedItem();
+        int iItem = m_viewControl.GetSelectedItem();
         int iAction = message.GetParam1();
         if (iItem < 0)
           break;
@@ -221,7 +211,14 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       }
     }
     break;
-
+  case GUI_MSG_SETFOCUS:
+    {
+      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
+      {
+        m_viewControl.SetFocused();
+        return true;
+      }
+    }
   }
   return CGUIWindow::OnMessage(message);
 }
@@ -258,18 +255,12 @@ void CGUIWindowVideoPlaylist::OnAction(const CAction &action)
   CGUIWindow::OnAction(action);
 }
 
-void CGUIWindowVideoPlaylist::SetSelectedItem(int index)
-{
-  CONTROL_SELECT_ITEM(CONTROL_LIST, index);
-  CONTROL_SELECT_ITEM(CONTROL_THUMBS, index);
-}
-
 void CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iAction)
 {
   int iFocusedControl = GetFocusedControl();
-  if (iFocusedControl == CONTROL_THUMBS || iFocusedControl == CONTROL_LIST)
+  if (m_viewControl.HasControl(iFocusedControl))
   {
-    int iSelected = GetSelectedItem();
+    int iSelected = m_viewControl.GetSelectedItem();
     int iNew = iSelected;
     if (iAction == ACTION_MOVE_ITEM_UP)
     {
@@ -295,7 +286,7 @@ void CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iAction)
     if (playlist.Swap(iSelected, iNew))
     {
       Update(m_Directory.m_strPath);
-      SetSelectedItem(iNew);
+      m_viewControl.SetSelectedItem(iNew);
       return ;
     }
   }
@@ -317,24 +308,13 @@ void CGUIWindowVideoPlaylist::ClearPlayList()
 
 void CGUIWindowVideoPlaylist::ClearFileItems()
 {
-  CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg1);
-
-  CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_THUMBS, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg2);
-
+  m_viewControl.Clear();
   m_vecItems.Clear(); // will clean up everything
 
 }
 
 void CGUIWindowVideoPlaylist::UpdateListControl()
 {
-  CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg1);
-
-  CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_THUMBS, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg2);
-
   for (int i = 0; i < (int)m_vecItems.Size(); i++)
   {
     CFileItem* pItem = m_vecItems[i];
@@ -346,20 +326,8 @@ void CGUIWindowVideoPlaylist::UpdateListControl()
 
   DoSort(m_vecItems);
 
-  ShowThumbPanel();
-
-  for (int i = 0; i < (int)m_vecItems.Size(); i++)
-  {
-    CFileItem* pItem = m_vecItems[i];
-
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, (void*)pItem);
-    g_graphicsContext.SendMessage(msg);
-
-    CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_THUMBS, 0, 0, (void*)pItem);
-    g_graphicsContext.SendMessage(msg2);
-  }
+  m_viewControl.SetItems(m_vecItems);
 }
-
 
 void CGUIWindowVideoPlaylist::OnFileItemFormatLabel(CFileItem* pItem)
 {
@@ -408,57 +376,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
     CONTROL_DISABLE(CONTROL_BTNREPEATONE);
   }
 
-  // Update listcontrol and and view by icon/list button
-  const CGUIControl* pControl = GetControl(CONTROL_THUMBS);
-  if (pControl)
-  {
-    if (!pControl->IsVisible())
-    {
-      int iItem = GetSelectedItem();
-      CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem);
-    }
-  }
-  pControl = GetControl(CONTROL_LIST);
-  if (pControl)
-  {
-    if (!pControl->IsVisible())
-    {
-      int iItem = GetSelectedItem();
-      CONTROL_SELECT_ITEM(CONTROL_LIST, iItem);
-    }
-  }
-
-  SET_CONTROL_HIDDEN(CONTROL_LIST);
-  SET_CONTROL_HIDDEN(CONTROL_THUMBS);
-
-  bool bViewIcon = false;
-  int iString;
-  switch (g_stSettings.m_iMyVideoPlaylistViewAsIcons)
-  {
-  case VIEW_AS_LIST:
-    iString = 101; // view as icons
-    break;
-
-  case VIEW_AS_ICONS:
-    iString = 100;  // view as large icons
-    bViewIcon = true;
-    break;
-  case VIEW_AS_LARGEICONS:
-    iString = 417; // view as list
-    bViewIcon = true;
-    break;
-  }
-
-  if (bViewIcon)
-  {
-    SET_CONTROL_VISIBLE(CONTROL_THUMBS);
-  }
-  else
-  {
-    SET_CONTROL_VISIBLE(CONTROL_LIST);
-  }
-
-  SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS, iString);
+  m_viewControl.SetCurrentView(g_stSettings.m_iMyVideoPlaylistViewAsIcons);
 
   // Update object count label
   int iItems = m_vecItems.Size();
@@ -484,63 +402,8 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
     CONTROL_SELECT(CONTROL_BTNREPEATONE);
   }
 
-
 }
 
-bool CGUIWindowVideoPlaylist::ViewByIcon()
-{
-  if (g_stSettings.m_iMyVideoPlaylistViewAsIcons != VIEW_AS_LIST) return true;
-  return false;
-}
-
-int CGUIWindowVideoPlaylist::GetSelectedItem()
-{
-  int iControl;
-
-
-  if ( ViewByIcon() )
-  {
-    iControl = CONTROL_THUMBS;
-  }
-  else
-    iControl = CONTROL_LIST;
-
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg);
-  int iItem = msg.GetParam1();
-  if (iItem >= (int)m_vecItems.Size())
-    return -1;
-  return iItem;
-}
-
-bool CGUIWindowVideoPlaylist::ViewByLargeIcon()
-{
-  if (g_stSettings.m_iMyVideoPlaylistViewAsIcons == VIEW_AS_LARGEICONS) return true;
-  return false;
-}
-
-
-void CGUIWindowVideoPlaylist::ShowThumbPanel()
-{
-  int iItem = GetSelectedItem();
-  if ( ViewByLargeIcon() )
-  {
-    CGUIThumbnailPanel* pControl = (CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
-    if (pControl)
-      pControl->ShowBigIcons(true);
-  }
-  else
-  {
-    CGUIThumbnailPanel* pControl = (CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
-    if (pControl)
-      pControl->ShowBigIcons(false);
-  }
-  if (iItem > -1)
-  {
-    CONTROL_SELECT_ITEM(CONTROL_LIST, iItem);
-    CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem);
-  }
-}
 
 void CGUIWindowVideoPlaylist::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
@@ -589,7 +452,7 @@ void CGUIWindowVideoPlaylist::GetDirectory(const CStdString &strDirectory, CFile
 void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
 {
   // get selected item
-  int iItem = GetSelectedItem();
+  int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";
   if (iItem >= 0 && iItem < (int)m_vecItems.Size())
   {
@@ -612,19 +475,6 @@ void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
   UpdateButtons();
 
   strSelectedItem = m_history.Get(m_Directory.m_strPath);
-
-  if (m_iLastControl == CONTROL_THUMBS || m_iLastControl == CONTROL_LIST)
-  {
-    if (ViewByIcon())
-    {
-      SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
-    }
-    else
-    {
-      SET_CONTROL_FOCUS(CONTROL_LIST, 0);
-    }
-  }
-
   int iCurrentSong = -1;
   // Search current playlist item
   if ((m_nTempPlayListWindow == GetID() && m_strTempPlayListDirectory.Find(m_Directory.m_strPath) > -1 && g_application.IsPlayingVideo()
@@ -646,8 +496,7 @@ void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
       GetDirectoryHistoryString(pItem, strHistory);
       if (strHistory == strSelectedItem)
       {
-        CONTROL_SELECT_ITEM(CONTROL_LIST, i);
-        CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
+        m_viewControl.SetSelectedItem(i);
         bSelectedFound = true;
       }
     }
@@ -713,8 +562,7 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
   }
   else
   {
-    CONTROL_SELECT_ITEM(CONTROL_LIST, iItem - 1)
-    CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem - 1)
+    m_viewControl.SetSelectedItem(iItem - 1);
   }
 }
 
@@ -794,4 +642,14 @@ bool CGUIWindowVideoPlaylist::GetKeyboard(CStdString& strInput)
     return true;
   }
   return false;
+}
+
+void CGUIWindowVideoPlaylist::OnWindowLoaded()
+{
+  m_viewControl.Reset();
+  m_viewControl.SetParentWindow(GetID());
+  m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
+  m_viewControl.AddView(VIEW_AS_ICONS, GetControl(CONTROL_THUMBS));
+  m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
+  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
 }

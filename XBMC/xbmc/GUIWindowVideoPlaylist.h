@@ -9,6 +9,7 @@ public:
 
   virtual bool OnMessage(CGUIMessage& message);
   virtual void OnAction(const CAction &action);
+  virtual void OnWindowLoaded();
 
 protected:
   void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
@@ -25,12 +26,7 @@ protected:
   void UpdateButtons();
   void ShufflePlayList();
   void SavePlayList();
-  int GetSelectedItem();
-  void SetSelectedItem(int index);
 
-  void ShowThumbPanel();
-  bool ViewByIcon();
-  bool ViewByLargeIcon();
   void OnClick(int iItem);
   void OnQueueItem(int iItem);
   int m_iItemSelected;
@@ -38,5 +34,6 @@ protected:
   CFileItemList m_vecItems;
   CDirectoryHistory m_history;
   CFileItem m_Directory;
+  CGUIViewControl m_viewControl;
   typedef vector <CFileItem*>::iterator ivecItems;
 };
