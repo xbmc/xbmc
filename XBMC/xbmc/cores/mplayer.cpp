@@ -558,6 +558,7 @@ CMPlayer::CMPlayer(IPlayerCallback& callback)
   m_strPath = "";
   m_bCaching = false;
   m_bSubsVisibleTTF=false;
+  m_bUseFullRecaching = false;
 }
 
 CMPlayer::~CMPlayer()
@@ -699,6 +700,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     {
       m_dlgCache = new CDlgCache();
       m_dlgCache->Update();
+      m_bUseFullRecaching = true;
     }
     if (iCacheSize == 0)
     {
@@ -1112,7 +1114,7 @@ void CMPlayer::Process()
         //Cachelevel will be set to 0 when decoder has to wait for more data
         //Cachelevel will be negative if the current mplayer.dll doesn't support it
         m_CacheLevel = mplayer_GetCacheLevel() * 100 / (100 - MPLAYERBACKBUFFER);
-        if (!options.GetNoCache() && m_CacheLevel >= 0)
+        if (m_bUseFullRecaching && !options.GetNoCache() && m_CacheLevel >= 0)
         {
           if(!m_bPaused && !m_bCaching && m_CacheLevel==0 )
           {

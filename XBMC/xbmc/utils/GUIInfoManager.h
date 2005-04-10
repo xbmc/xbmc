@@ -52,6 +52,9 @@ public:
   CStdString GetCurrentPlayTimeRemaining();
   CStdString GetVersion();
   CStdString GetBuild();
+
+  bool GetDisplayAfterSeek();
+  void SetDisplayAfterSeek(DWORD TimeOut = 2500);
 protected:
 
   wstring GetSystemHeatInfo(const CStdString &strInfo);
@@ -66,6 +69,9 @@ protected:
   int m_fanSpeed;
   float m_gpuTemp;
   float m_cpuTemp;
+
+  //Fullscreen OSD Stuff
+  DWORD m_AfterSeekTimeout;
 };
 
 /*!
