@@ -133,8 +133,8 @@
       <description>listcontrol</description>
       <type>listcontrol</type>
       <id>50</id>
-      <onleft>2</onleft>
-      <onright>2</onright>
+      <onleft>51</onleft>
+      <onright>51</onright>
       <onup>2</onup>
       <ondown>2</ondown>
     </control>
