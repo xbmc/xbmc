@@ -28,10 +28,11 @@
     <control>
       <description>play time label</description>
       <type>label</type>
-      <id>2</id>
+      <id>0</id>
       <posX>93</posX>
       <posY>500</posY>
       <label>-</label>
+      <info>VideoPlayer.TimeSpeed</info>
       <align>left</align>
       <font>font13</font>
     </control>
@@ -39,45 +40,49 @@
     <control>
       <description>play logo</description>
       <type>image</type>
-      <id>3</id>
+      <id>0</id>
       <posX>65</posX>
       <posY>503</posY>
       <width>20</width>
       <height>20</height>
       <texture>music-play.png</texture>
+      <visible>Player.Playing</visible>
     </control>
 
     <control>
       <description>Pause logo</description>
       <type>image</type>
-      <id>4</id>
+      <id>0</id>
       <posX>65</posX>
       <posY>503</posY>
       <width>20</width>
       <height>20</height>
       <texture>music-pause.png</texture>
+      <visible>Player.Paused</visible>
     </control>
 
     <control>
       <description>FF logo</description>
       <type>image</type>
-      <id>7</id>
+      <id>0</id>
       <posX>65</posX>
       <posY>503</posY>
       <width>20</width>
       <height>20</height>
       <texture>music-forward.png</texture>
+      <visible>Player.Forwarding</visible>
     </control>
 
     <control>
       <description>RW logo</description>
       <type>image</type>
-      <id>8</id>
+      <id>0</id>
       <posX>65</posX>
       <posY>503</posY>
       <width>20</width>
       <height>20</height>
       <texture>music-rewind.png</texture>
+      <visible>Player.Rewinding</visible>
     </control>
 
     <control>
@@ -87,7 +92,11 @@
       <posX>65</posX>
       <posY>525</posY>
       <font>font10</font>
-      <id>5</id>
+      <id>0</id>
+      <info>VideoPlayer.Title</info>
+      <info>VideoPlayer.Year</info>
+      <info>VideoPlayer.Director</info>
+      <info>VideoPlayer.Genre</info>
     </control>
 
   </controls>

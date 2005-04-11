@@ -1,3 +1,4 @@
+2004-04-11 changed:     Updated everything to use <info> and <visible> tags where appropriate (v1.3 compliance)
 2004-04-10 changed:	moved the new timedisplay below the progressbar
 2004-04-10 fixed:       filstacking discs didnt display in the correct aspectratio in 16:9
 2004-04-10 changed:     some more things to match the overall color feel (like rss and sliders)
