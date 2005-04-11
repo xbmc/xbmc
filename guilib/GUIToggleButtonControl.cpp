@@ -14,7 +14,7 @@ CGUIToggleButtonControl::CGUIToggleButtonControl(DWORD dwParentID, DWORD dwContr
     , m_selectButton(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureFocus, strTextureNoFocus, dwTextXOffset, dwTextYOffset, dwAlign)
 {
   m_bSelected = false;
-  m_toggleSelect = "";
+  m_toggleSelect = 0;
   ControlType = GUICONTROL_TOGGLEBUTTON;
 }
 
@@ -27,7 +27,7 @@ void CGUIToggleButtonControl::Render()
   if (!IsVisible() ) return ;
 
   // ask our infoManager whether we are selected or not...
-  if (!m_toggleSelect.IsEmpty())
+  if (m_toggleSelect)
     m_bSelected = !g_infoManager.GetBool(m_toggleSelect);
 
   if (m_bSelected)

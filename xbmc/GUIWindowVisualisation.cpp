@@ -196,9 +196,9 @@ void CGUIWindowVisualisation::SetAlpha(DWORD dwAlpha)
         // not a particularly nice way to do it, but hopefully we can get alpha on ttf
         // fonts at some stage to eliminate the need for this.
         if (dwAlpha)
-          pControl->SetVisible(false);
-        else
           pControl->SetVisible(true);
+        else
+          pControl->SetVisible(false);
       }
     }
   }

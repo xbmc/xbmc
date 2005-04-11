@@ -351,30 +351,31 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   //  Do not free resources of invisible controls
   //  or hdd will spin up when fast forwarding etc.
   DynamicResourceAlloc(false);
-  // make the pause image conditionally visible
+  // PRE1.3 make the pause image conditionally visible
   CGUIImage *pImage = (CGUIImage *)GetControl(IMG_PAUSE);
-  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Paused");
+  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(5);
   // make the ff and rw images conditionally visible
   pImage = (CGUIImage *)GetControl(IMG_2X);
-  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Forwarding2x");
+  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(13);
   pImage = (CGUIImage *)GetControl(IMG_2Xr);
-  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding2x");
+  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(7);
   pImage = (CGUIImage *)GetControl(IMG_4X);
-  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Forwarding4x");
+  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(14);
   pImage = (CGUIImage *)GetControl(IMG_4Xr);
-  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding4x");
+  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(8);
   pImage = (CGUIImage *)GetControl(IMG_8X);
-  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Forwarding8x");
+  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(15);
   pImage = (CGUIImage *)GetControl(IMG_8Xr);
-  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding8x");
+  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(9);
   pImage = (CGUIImage *)GetControl(IMG_16X);
-  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Forwarding16x");
+  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(16);
   pImage = (CGUIImage *)GetControl(IMG_16Xr);
-  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding16x");
+  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(10);
   pImage = (CGUIImage *)GetControl(IMG_32X);
-  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Forwarding32x");
+  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(17);
   pImage = (CGUIImage *)GetControl(IMG_32Xr);
-  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding32x");
+  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(11);
+  // PRE1.3
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
@@ -743,7 +744,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       else
         strDispTime[count] = (char)m_strTimeStamp[count] + 48;
     }
-    strDispTime += "/" + g_infoManager.GetVideoLabel("duration") + " [" + g_infoManager.GetVideoLabel("time") + "]";
+    strDispTime += "/" + g_infoManager.GetVideoLabel(257) + " [" + g_infoManager.GetVideoLabel(254) + "]"; // duration [ time ]
     msg.SetLabel(strDispTime);
     OnMessage(msg);
   }
@@ -758,9 +759,9 @@ void CGUIWindowFullScreen::RenderFullScreen()
     CStdString strTime;
     bRenderGUI = true;
     CStdString strLabel;
-    strLabel = g_infoManager.GetLabel("videoplayer.time");
+    strLabel = g_infoManager.GetLabel(254);   // time
     strLabel += " / ";
-    strLabel += g_infoManager.GetLabel("videoplayer.duration");
+    strLabel += g_infoManager.GetLabel(257);  // duration
     SET_CONTROL_LABEL(LABEL_CURRENT_TIME, strLabel);
     SET_CONTROL_VISIBLE(LABEL_CURRENT_TIME);
 

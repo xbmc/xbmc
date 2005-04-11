@@ -532,7 +532,7 @@ void CGUIWindowOSD::Get_TimeInfo()
   if (!g_application.m_pPlayer->HasVideo()) return ;
 
   // get the current playing time position and the total play back time
-  SET_CONTROL_LABEL(OSD_TIMEINFO, g_infoManager.GetVideoLabel("time") + "/" + g_infoManager.GetVideoLabel("duration"));
+  SET_CONTROL_LABEL(OSD_TIMEINFO, g_infoManager.GetVideoLabel(254) + "/" + g_infoManager.GetVideoLabel(257)); // time / duration
 
   // Get the estimated end time
   SYSTEMTIME time;
