@@ -243,7 +243,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           if (m_iViewAsIcons > VIEW_AS_LARGE_ICONS) m_iViewAsIcons = VIEW_AS_LIST;
         }
         SaveViewMode();
-//        UpdateThumbPanel();
         UpdateButtons();
       }
       else if (iControl == CONTROL_PLAY_DVD)

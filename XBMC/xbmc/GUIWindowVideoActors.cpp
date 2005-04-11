@@ -90,19 +90,11 @@ int SSortVideoActorByName::m_iSortMethod;
 CGUIWindowVideoActors::CGUIWindowVideoActors()
 {
   m_Directory.m_strPath = "";
-  m_Directory.m_bIsFolder = true;
-  m_iItemSelected = -1;
-  m_iLastControl = -1;
 }
 
 //****************************************************************************************************************************
 CGUIWindowVideoActors::~CGUIWindowVideoActors()
-{}
-
-//****************************************************************************************************************************
-void CGUIWindowVideoActors::OnAction(const CAction &action)
 {
-  CGUIWindowVideoBase::OnAction(action);
 }
 
 //****************************************************************************************************************************

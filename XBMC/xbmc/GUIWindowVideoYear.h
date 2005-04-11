@@ -12,7 +12,6 @@ public:
   CGUIWindowVideoYear(void);
   virtual ~CGUIWindowVideoYear(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnAction(const CAction &action);
 
 protected:
   virtual void SaveViewMode();
