@@ -373,8 +373,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     TiXmlElement* pControllerDelays = pDelaysElement->FirstChildElement("controller");
     if (pRemoteDelays)
     {
-      GetInteger(pRemoteDelays, "move", g_stSettings.m_iMoveDelayIR, 220, 1, INT_MAX);
-      GetInteger(pRemoteDelays, "repeat", g_stSettings.m_iRepeatDelayIR, 220, 1, INT_MAX);
+      GetInteger(pRemoteDelays, "repeat", g_stSettings.m_iRepeatDelayIR, 480, 1, INT_MAX);
     }
 
     if (pControllerDelays)
