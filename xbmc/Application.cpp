@@ -1719,100 +1719,90 @@ void CApplication::OnKey(CKey& key)
   m_gWindowManager.OnAction(action);
 
   /* handle extra global presses */
-  if (iWin != WINDOW_FULLSCREEN_VIDEO)
+  // stop : stops playing current audio song
+  if (action.wID == ACTION_STOP)
   {
-    // stop : stops playing current audio song
-    if (action.wID == ACTION_STOP)
-    {
-      StopPlaying();
-    }
+    StopPlaying();
+  }
 
+  // previous : play previous song from playlist
+  if (action.wID == ACTION_PREV_ITEM)
+  {
+    g_playlistPlayer.PlayPrevious();
+  }
+
+  // next : play next song from playlist
+  if (action.wID == ACTION_NEXT_ITEM)
+  {
+    g_playlistPlayer.PlayNext();
+  }
+
+  if ( IsPlaying())
+  {
     // pause : pauses current audio song
     if (action.wID == ACTION_PAUSE)
     {
-      if (IsPlaying())
+      m_pPlayer->Pause();
+      if (!m_pPlayer->IsPaused())
+      { // unpaused - set the playspeed back to normal
+        SetPlaySpeed(1);
+      }
+    }
+    if (!m_pPlayer->IsPaused())
+    {
+      // if we do a FF/RW in my music then map PLAY action togo back to normal speed
+      if (action.wID == ACTION_MUSIC_PLAY)
       {
-        m_pPlayer->Pause();
-        if (!m_pPlayer->IsPaused())
+        if (m_iPlaySpeed != 1)
         {
           SetPlaySpeed(1);
         }
       }
-    }
-
-
-    // previous : play previous song from playlist
-    if (action.wID == ACTION_PREV_ITEM)
-    {
-      g_playlistPlayer.PlayPrevious();
-    }
-
-    // next : play next song from playlist
-    if (action.wID == ACTION_NEXT_ITEM)
-    {
-      g_playlistPlayer.PlayNext();
-    }
-
-    if ( IsPlaying())
-    {
-      if (!m_pPlayer->IsPaused())
+      if (action.wID == ACTION_MUSIC_FORWARD || action.wID == ACTION_MUSIC_REWIND)
       {
-        // if we do a FF/RW in my music then map PLAY action togo back to normal speed
-        if (action.wID == ACTION_MUSIC_PLAY)
+        if (m_strCurrentPlayer == "sid")
         {
-          if (m_iPlaySpeed != 1)
-          {
-            SetPlaySpeed(1);
-          }
+          // sid uses these to track skip
+          m_pPlayer->Seek(action.wID == ACTION_MUSIC_FORWARD);
         }
-        if (action.wID == ACTION_MUSIC_FORWARD || action.wID == ACTION_MUSIC_REWIND)
+        else
         {
-          if (m_strCurrentPlayer == "sid")
-          {
-            // sid uses these to track skip
-            m_pPlayer->Seek(action.wID == ACTION_MUSIC_FORWARD);
-          }
+          int iPlaySpeed = m_iPlaySpeed;
+          if (action.wID == ACTION_MUSIC_REWIND && iPlaySpeed == 1) // Enables Rewinding
+            iPlaySpeed *= -2;
+          else if (action.wID == ACTION_MUSIC_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
+            iPlaySpeed /= 2;
+          else if (action.wID == ACTION_MUSIC_FORWARD && iPlaySpeed < 1) //goes up a notch if you're RWing
+            iPlaySpeed /= 2;
           else
-          {
-            int iPlaySpeed = m_iPlaySpeed;
-            if (action.wID == ACTION_MUSIC_REWIND && iPlaySpeed == 1) // Enables Rewinding
-              iPlaySpeed *= -2;
-            else if (action.wID == ACTION_MUSIC_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
-              iPlaySpeed /= 2;
-            else if (action.wID == ACTION_MUSIC_FORWARD && iPlaySpeed < 1) //goes up a notch if you're RWing
-              iPlaySpeed /= 2;
-            else
-              iPlaySpeed *= 2;
+            iPlaySpeed *= 2;
 
-            if (action.wID == ACTION_MUSIC_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
-              iPlaySpeed = 1;
-            if (iPlaySpeed > 32 || iPlaySpeed < -32)
-              iPlaySpeed = 1;
+          if (action.wID == ACTION_MUSIC_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
+            iPlaySpeed = 1;
+          if (iPlaySpeed > 32 || iPlaySpeed < -32)
+            iPlaySpeed = 1;
 
-            SetPlaySpeed(iPlaySpeed);
-          }
-        }
-        else if (action.wID == ACTION_ANALOG_REWIND || action.wID == ACTION_ANALOG_FORWARD)
-        {
-          // calculate the speed based on the amount the button is held down
-          int iPower = (int)(action.fAmount1 * 5.0f + 0.5f);
-          // returns 0 -> 5
-          int iSpeed = 1 << iPower;
-          if (iSpeed != 1 && action.wID == ACTION_ANALOG_REWIND)
-            iSpeed = -iSpeed;
-          g_application.SetPlaySpeed(iSpeed);
+          SetPlaySpeed(iPlaySpeed);
         }
       }
-      // allow play to unpause
-      else
+      else if (action.wID == ACTION_ANALOG_REWIND || action.wID == ACTION_ANALOG_FORWARD)
       {
-        if (action.wID == ACTION_MUSIC_PLAY)
-          m_pPlayer->Pause();
+        // calculate the speed based on the amount the button is held down
+        int iPower = (int)(action.fAmount1 * 5.0f + 0.5f);
+        // returns 0 -> 5
+        int iSpeed = 1 << iPower;
+        if (iSpeed != 1 && action.wID == ACTION_ANALOG_REWIND)
+          iSpeed = -iSpeed;
+        g_application.SetPlaySpeed(iSpeed);
       }
-
+    }
+    // allow play to unpause
+    else
+    {
+      if (action.wID == ACTION_MUSIC_PLAY)
+        m_pPlayer->Pause();
     }
   }
-
   if (action.wID == ACTION_MUTE)
   {
     if (g_stSettings.m_bMute == false)
