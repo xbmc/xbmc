@@ -96,7 +96,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 
       Update("");
 
-      if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
+      if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() > 0)
       {
         m_viewControl.SetFocused();
       }

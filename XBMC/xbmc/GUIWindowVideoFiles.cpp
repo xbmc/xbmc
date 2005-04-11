@@ -137,12 +137,6 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_DVDDRIVE_EJECTED_CD:
-  case GUI_MSG_DVDDRIVE_CHANGED_CD:
-  case GUI_MSG_WINDOW_DEINIT:
-    CGUIWindowVideoBase::OnMessage(message);
-    break;
-
   case GUI_MSG_WINDOW_INIT:
     {
       /*
