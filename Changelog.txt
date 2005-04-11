@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-04-2005 changed: Removed duplicate code from the Video Playlist window
   - 11-04-2005 changed: Removed all info* controls as it was just duplicate code.
   - 11-04-2005 changed: Optimised lookup of info from GUIInfoManager.
   - 10-04-2005 added: Progressbar control now obey's width/height. Background texture is used as reference to calculate scaling of other textures.
