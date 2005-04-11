@@ -16,21 +16,23 @@
     <control>
       <description>music logo</description>
       <type>image</type>
-      <id>1</id>
+      <id>0</id>
       <posX>65</posX>
       <posY>387</posY>
       <width>100</width>
       <height>109</height>
       <texture>music.jpg</texture>
+      <info>MusicPlayer.Cover</info>
     </control>
 
     <control>
       <description>play time label</description>
       <type>label</type>
-      <id>2</id>
+      <id>0</id>
       <posX>93</posX>
       <posY>500</posY>
       <label>-</label>
+      <info>MusicPlayer.TimeSpeed</info>
       <align>left</align>
       <font>font13</font>
     </control>
@@ -38,44 +40,48 @@
     <control>
       <description>play logo</description>
       <type>image</type>
-      <id>3</id>
+      <id>0</id>
       <posX>65</posX>
       <posY>503</posY>
       <width>20</width>
       <height>20</height>
+      <visible>Player.Playing</visible>
       <texture>music-play.png</texture>
     </control>
 
     <control>
       <description>Pause logo</description>
       <type>image</type>
-      <id>4</id>
+      <id>0</id>
       <posX>65</posX>
       <posY>503</posY>
       <width>20</width>
       <height>20</height>
+      <visible>Player.Paused</visible>
       <texture>music-pause.png</texture>
     </control>
 
     <control>
       <description>FF logo</description>
       <type>image</type>
-      <id>7</id>
+      <id>0</id>
       <posX>65</posX>
       <posY>503</posY>
       <width>20</width>
       <height>20</height>
+      <visible>Player.Forwarding</visible>
       <texture>music-forward.png</texture>
     </control>
 
     <control>
       <description>RW logo</description>
       <type>image</type>
-      <id>8</id>
+      <id>0</id>
       <posX>65</posX>
       <posY>503</posY>
       <width>20</width>
       <height>20</height>
+      <visible>Player.Rewinding</visible>
       <texture>music-rewind.png</texture>
     </control>
 
@@ -86,7 +92,11 @@
       <posX>65</posX>
       <posY>525</posY>
       <font>font10</font>
-      <id>5</id>
+      <id>0</id>
+      <info>MusicPlayer.Title</info>
+      <info>MusicPlayer.Artist</info>
+      <info>MusicPlayer.Album</info>
+      <info>MusicPlayer.Year</info>
     </control>
 
   </controls>
