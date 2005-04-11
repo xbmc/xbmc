@@ -223,17 +223,6 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     break;
 
-  case ACTION_STOP:
-    {
-      g_application.StopPlaying();
-    }
-    break;
-
-    // PAUSE action is handled globally in the Application class
-  case ACTION_PAUSE:
-    if (g_application.m_pPlayer) g_application.m_pPlayer->Pause();
-    break;
-
   case ACTION_SUBTITLE_DELAY_MIN:
     g_application.m_pPlayer->SubtitleOffset(false);
     break;
@@ -248,31 +237,6 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
     break;
   case ACTION_AUDIO_NEXT_LANGUAGE:
     //g_application.m_pPlayer->AudioOffset(false);
-    break;
-  case ACTION_PLAY:
-    if (g_application.m_pPlayer->IsPaused())
-    {
-      g_application.m_pPlayer->Pause();
-    }
-    g_application.SetPlaySpeed(1);
-    m_bShowCurrentTime = true;
-    m_dwTimeCodeTimeout = timeGetTime();
-    break;
-  case ACTION_REWIND:
-  case ACTION_FORWARD:
-    ChangetheSpeed(action.wID);
-    break;
-  case ACTION_ANALOG_REWIND:
-  case ACTION_ANALOG_FORWARD:
-    {
-      // calculate the speed based on the amount the button is held down
-      int iPower = (int)(action.fAmount1 * 5.0f + 0.5f);
-      // returns 0 -> 5
-      int iSpeed = 1 << iPower;
-      if (iSpeed != 1 && action.wID == ACTION_ANALOG_REWIND)
-        iSpeed = -iSpeed;
-      g_application.SetPlaySpeed(iSpeed);
-    }
     break;
   case REMOTE_0:
     ChangetheTimeCode(REMOTE_0);
