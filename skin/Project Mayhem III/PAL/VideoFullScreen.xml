@@ -217,14 +217,12 @@
     <!-- Will only be visible after a seek, during FF/RW or when forced on -->
     <control>
       <description>current time</description>
-      <type>button</type>
+      <type>label</type>
       <id>22</id>
       <posX>210</posX>
       <posY>510</posY>
       <label>-</label>
       <width>291</width>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
       <align>center</align>
       <font>font12</font>
       <textcolor>FFFFFFFF</textcolor>
@@ -243,14 +241,12 @@
     <!-- Will only be visible during buffering -->
     <control>
       <description>buffering label</description>
-      <type>button</type>
+      <type>label</type>
       <id>24</id>
       <posX>210</posX>
       <posY>510</posY>
       <label>15107</label>
       <width>291</width>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
       <align>center</align>
       <font>font12</font>
       <textcolor>FFFFFFFF</textcolor>
