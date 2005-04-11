@@ -110,6 +110,17 @@ void CGUIWindowOSD::OnWindowLoaded()
   //  or hdd will spin up when entering a osd submenu
   DynamicResourceAlloc(false);
   m_bRelativeCoords = true;
+  // PRE1.3 setup all the toggle buttons as necessary
+  CGUIToggleButtonControl *pToggle = (CGUIToggleButtonControl *)GetControl(OSD_PLAY);
+  if (pToggle && !pToggle->GetToggleSelect()) pToggle->SetToggleSelect(-5);
+  if (pToggle && pToggle->GetExecuteAction().IsEmpty()) pToggle->SetExecuteAction("XBMC.PlayerControl(Play)");
+  pToggle = (CGUIToggleButtonControl *)GetControl(OSD_REWIND);
+  if (pToggle && !pToggle->GetToggleSelect()) pToggle->SetToggleSelect(-6);
+  if (pToggle && pToggle->GetExecuteAction().IsEmpty()) pToggle->SetExecuteAction("XBMC.PlayerControl(Rewind)");
+  pToggle = (CGUIToggleButtonControl *)GetControl(OSD_FFWD);
+  if (pToggle && !pToggle->GetToggleSelect()) pToggle->SetToggleSelect(-12);
+  if (pToggle && pToggle->GetExecuteAction().IsEmpty()) pToggle->SetExecuteAction("XBMC.PlayerControl(Forward)");
+  // PRE1.3
 }
 
 void CGUIWindowOSD::Render()
@@ -145,52 +156,10 @@ void CGUIWindowOSD::OnAction(const CAction &action)
     }
     break;
 
-  case ACTION_PAUSE:
-    {
-      // push a message through to this window to handle the remote control button
-      CGUIMessage msgSet(GUI_MSG_CLICKED, OSD_PLAY, OSD_PLAY, 0, 0, NULL);
-      OnMessage(msgSet);
-      return ;
-    }
-    break;
-
-  case ACTION_MUSIC_PLAY:
-    {
-      // push a message through to this window to handle the remote control button
-      CGUIMessage msgSet(GUI_MSG_CLICKED, OSD_PLAY, OSD_PLAY, 0, 0, NULL);
-      OnMessage(msgSet);
-      return ;
-    }
-    break;
-
   case ACTION_STOP:
     {
       // push a message through to this window to handle the remote control button
       CGUIMessage msgSet(GUI_MSG_CLICKED, OSD_STOP, OSD_STOP, 0, 0, NULL);
-      OnMessage(msgSet);
-      return ;
-    }
-    break;
-
-  case ACTION_FORWARD:
-    {
-      // push a message through to this window to handle the remote control button
-      CGUIMessage msgSet(GUI_MSG_CLICKED, OSD_FFWD, OSD_FFWD, 0, 0, NULL);
-      OnMessage(msgSet);
-      return ;
-    }
-    break;
-
-  case ACTION_ANALOG_REWIND:
-  case ACTION_ANALOG_FORWARD:
-    { // call base class
-      g_application.m_guiWindowFullScreen.OnAction(action);
-    }
-    break;
-  case ACTION_REWIND:
-    {
-      // push a message through to this window to handle the remote control button
-      CGUIMessage msgSet(GUI_MSG_CLICKED, OSD_REWIND, OSD_REWIND, 0, 0, NULL);
       OnMessage(msgSet);
       return ;
     }
@@ -256,24 +225,6 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       m_iActiveMenu = 0;
       Reset();
 
-      // Set play/pause button into the right state
-      if (g_application.m_pPlayer && g_application.m_pPlayer->IsPaused())
-        ToggleButton(OSD_PLAY, true);  // make sure play button is down (so it shows the pause symbol)
-      else
-        ToggleButton(OSD_PLAY, false);  // make sure play button is up (so it shows the play symbol)
-
-      // Set rewind button state
-      if (g_application.GetPlaySpeed() < 1) // are we rewinding
-        ToggleButton(OSD_REWIND, true);  // make sure our button is in the down position
-      else
-        ToggleButton(OSD_REWIND, false); // pop the button back to it's up state
-
-      // Set forward button state
-      if (g_application.GetPlaySpeed() > 1) // are we forwarding
-        ToggleButton(OSD_FFWD, true);  // make sure out button is in the down position
-      else
-        ToggleButton(OSD_FFWD, false);  // pop the button back to it's up state
-
       // Set a dummy time value if the osd is used in screen calibration
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), OSD_TIMEINFO);
       msg.SetLabel("00:00:00/10:00:00");
@@ -302,28 +253,6 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
         Handle_ControlSetting(iControl, message.GetParam1());
       }
 
-      if (iControl == OSD_PLAY)
-      {
-        if (g_application.m_pPlayer)
-        {
-          if (g_application.GetPlaySpeed() != 1) // we're in ffwd or rewind mode
-          {
-            g_application.SetPlaySpeed(1);  // drop back to single speed
-            ToggleButton(OSD_REWIND, false); // pop all the relevant
-            ToggleButton(OSD_FFWD, false);  // buttons back to
-            ToggleButton(OSD_PLAY, false);  // their up state
-          }
-          else
-          {
-            g_application.m_pPlayer->Pause(); // Pause/Un-Pause playback
-            if (g_application.m_pPlayer->IsPaused())
-              ToggleButton(OSD_PLAY, true);  // make sure play button is down (so it shows the pause symbol)
-            else
-              ToggleButton(OSD_PLAY, false);  // make sure play button is up (so it shows the play symbol)
-          }
-        }
-      }
-
       if (iControl == OSD_STOP)
       {
         if (m_bSubMenuOn) // sub menu currently active ?
@@ -334,42 +263,6 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
         OutputDebugString("OSD:STOP\n");
         g_application.m_guiWindowFullScreen.m_bOSDVisible = false; // toggle the OSD off so parent window can de-init
         g_application.StopPlaying();      // close our media
-      }
-
-      if (iControl == OSD_REWIND)
-      {
-        g_application.m_guiWindowFullScreen.ChangetheSpeed(ACTION_REWIND); // start rewinding or speed up rewind
-      }
-
-      if (iControl == OSD_FFWD)
-      {
-        g_application.m_guiWindowFullScreen.ChangetheSpeed(ACTION_FORWARD); // start ffwd or speed up ffwd
-      }
-
-      if (iControl == OSD_FFWD || iControl == OSD_REWIND)
-      {
-        // Set rewind/forward button state if we are rewinding
-        if (g_application.GetPlaySpeed() < 1) // are we rewinding
-        {
-          ToggleButton(OSD_REWIND, true);  // make sure our button is in the down position
-          ToggleButton(OSD_FFWD, false); // pop the button back to it's up state
-          ToggleButton(OSD_PLAY, false);  // their up state
-        }
-
-        // Set rewind/forward button state if we are forwarding
-        if (g_application.GetPlaySpeed() > 1) // are we forwarding
-        {
-          ToggleButton(OSD_FFWD, true);  // make sure out button is in the down position
-          ToggleButton(OSD_REWIND, false); // pop the button back to it's up state
-          ToggleButton(OSD_PLAY, false);  // their up state
-        }
-
-        // Set rewind/forward button state if we are in normal play
-        if (g_application.GetPlaySpeed() == 1)
-        {
-          ToggleButton(OSD_FFWD, false);  // make sure out button is in the up position
-          ToggleButton(OSD_REWIND, false); // pop the button back to it's up state
-        }
       }
 
       if (iControl == OSD_SKIPBWD)

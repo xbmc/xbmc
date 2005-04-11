@@ -201,8 +201,9 @@ wstring CGUIInfoManager::GetLabel(int info)
 
 // checks the condition and returns it as necessary.  Currently used
 // for toggle button controls and visibility of images.
-bool CGUIInfoManager::GetBool(int condition) const
+bool CGUIInfoManager::GetBool(int condition1) const
 {
+  int condition = abs(condition1);
   bool bReturn = false;
   if (g_application.IsPlaying())
   {
@@ -249,7 +250,7 @@ bool CGUIInfoManager::GetBool(int condition) const
     else if (condition == PLAYER_IS_CACHING)
       bReturn = g_application.m_pPlayer->IsCaching();
   }
-  return (condition < 0) ? !bReturn : bReturn;
+  return (condition1 < 0) ? !bReturn : bReturn;
 }
 
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
