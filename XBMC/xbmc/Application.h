@@ -205,7 +205,6 @@ public:
   CDetectDVDMedia m_DetectDVDType;
   CAutorun m_Autorun;
   CDelayController m_ctrDpad;
-  CDelayController m_ctrIR;
   CWebServer* m_pWebServer;
   CXBFileZilla* m_pFileZilla;
   IPlayer* m_pPlayer;
