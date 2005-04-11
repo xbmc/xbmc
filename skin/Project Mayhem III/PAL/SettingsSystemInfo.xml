@@ -53,10 +53,11 @@
     <control>
       <description>Drive C text label</description>
       <type>label</type>
-      <id>10</id>
+      <id>0</id>
       <posX>220</posX>
       <posY>155</posY>
       <label>155</label>
+      <info>System.FreeSpace(C)</info>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
     </control>
@@ -75,10 +76,11 @@
     <control>
       <description>Drive E: text label</description>
       <type>label</type>
-      <id>12</id>
+      <id>0</id>
       <posX>220</posX>
       <posY>205</posY>
       <label>155</label>
+      <info>System.FreeSpace(E)</info>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
     </control>
@@ -86,10 +88,11 @@
     <control>
       <description>Drive F: text label</description>
       <type>label</type>
-      <id>13</id>
+      <id>0</id>
       <posX>220</posX>
       <posY>230</posY>
       <label>155</label>
+      <info>System.FreeSpace(F)</info>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
     </control>
@@ -97,10 +100,11 @@
     <control>
       <description>Drive G: text label</description>
       <type>label</type>
-      <id>17</id>
+      <id>0</id>
       <posX>220</posX>
       <posY>255</posY>
       <label>155</label>
+      <info>System.FreeSpace(G)</info>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
     </control>
@@ -205,10 +209,11 @@
     <control>
       <description>IP: text label</description>
       <type>label</type>
-      <id>8</id>
+      <id>0</id>
       <posX>460</posX>
       <posY>205</posY>
       <label>148</label>
+      <info>Network.IpAddress</info>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
     </control>
@@ -237,21 +242,23 @@
     <control>
       <description>CPU: text label</description>
       <type>label</type>
-      <id>2</id>
+      <id>0</id>
       <posX>460</posX>
       <posY>300</posY>
       <label>140</label>
+      <info>System.CPUTemperature</info>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
     </control>
 
     <control>
-      <description>CPU: text label</description>
+      <description>GPU: text label</description>
       <type>label</type>
-      <id>3</id>
+      <id>0</id>
       <posX>460</posX>
       <posY>325</posY>
       <label>141</label>
+      <info>System.GPUTemperature</info>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
     </control>
@@ -259,10 +266,11 @@
     <control>
       <description>fanspeed text label</description>
       <type>label</type>
-      <id>16</id>
+      <id>0</id>
       <posX>460</posX>
       <posY>350</posY>
       <label>-</label>
+      <info>System.FanSpeed</info>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
     </control>
