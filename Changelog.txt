@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-04-2005 fixed: FullscreenVideo wasn't rescaled correctly to PAL60.
+  - 11-04-2005 changed: GUIInfoManager if/else blocks to switch (faster)
   - 11-04-2005 fixed: Buffering text wasn't displayed during buffering
   - 11-04-2005 fixed: Selected item in My Videos wasn't remembered.
   - 11-04-2005 fixed: Double tap remote bug.
