@@ -138,14 +138,12 @@ struct SSortVideoTitleByTitle
 CGUIWindowVideoTitle::CGUIWindowVideoTitle()
 {
   m_Directory.m_strPath = "";
-  m_Directory.m_bIsFolder = true;
-  m_iItemSelected = -1;
-  m_iLastControl = -1;
 }
 
 //****************************************************************************************************************************
 CGUIWindowVideoTitle::~CGUIWindowVideoTitle()
-{}
+{
+}
 
 //****************************************************************************************************************************
 void CGUIWindowVideoTitle::OnAction(const CAction &action)

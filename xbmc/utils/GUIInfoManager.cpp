@@ -659,7 +659,7 @@ wstring CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
   else if (strInfo == "fan")
   {
     WCHAR FanText[32];
-    swprintf(FanText, L"%s %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);
+    swprintf(FanText, L"%s: %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);
     return FanText;
   }
   return L"";
@@ -671,7 +671,7 @@ wstring CGUIInfoManager::GetFreeSpace(int drive)
   WCHAR wszHD[64];
   wstring strReturn;
 
-  char cDrive = drive - SYSTEM_FREE_SPACE_C + 'c';
+  char cDrive = drive - SYSTEM_FREE_SPACE_C + 'C';
   CStdString strDriveFind;
   strDriveFind.Format("%c:\\", cDrive);
   const WCHAR *pszDrive = g_localizeStrings.Get(155).c_str();
