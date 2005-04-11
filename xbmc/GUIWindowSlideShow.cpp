@@ -1081,8 +1081,8 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       g_graphicsContext.SetOverlay(true);
       g_graphicsContext.Get3DDevice()->EnableOverlay(FALSE);
       // reset to gui mode so that we use it's filters
- //     g_graphicsContext.SetFullScreenVideo(false);
- //     g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+      g_graphicsContext.SetFullScreenVideo(false);
+      g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
       g_graphicsContext.Unlock();
     }
     break;
