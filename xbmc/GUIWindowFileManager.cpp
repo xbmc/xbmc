@@ -1278,7 +1278,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     m_vecItems[list][item]->Select(false);
     return ;
   }
-  if (item < 0 || item >= m_vecItems[list].Size()) return ;
+  if (item >= m_vecItems[list].Size()) return ;
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
@@ -1292,11 +1292,11 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     pMenu->AddButton(115); // Copy
     pMenu->AddButton(116); // Move
     pMenu->AddButton(119); // New Folder
-    pMenu->EnableButton(1, true);
-    pMenu->EnableButton(2, CanRename(list));
-    pMenu->EnableButton(3, CanDelete(list));
-    pMenu->EnableButton(4, CanCopy(list));
-    pMenu->EnableButton(5, CanMove(list));
+    pMenu->EnableButton(1, item >= 0);
+    pMenu->EnableButton(2, item >= 0 && CanRename(list));
+    pMenu->EnableButton(3, item >= 0 && CanDelete(list));
+    pMenu->EnableButton(4, item >= 0 && CanCopy(list));
+    pMenu->EnableButton(5, item >= 0 && CanMove(list));
     pMenu->EnableButton(6, CanNewFolder(list));
     // position it correctly
     pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
@@ -1324,7 +1324,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     default:
       break;
     }
-    if (bDeselect)
+    if (bDeselect && item >= 0)
     { // deselect item as we didn't do anything
       m_vecItems[list][item]->Select(false);
     }
