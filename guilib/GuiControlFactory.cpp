@@ -28,9 +28,7 @@
 #include "GUIResizeControl.h"
 #include "GUIButtonScroller.h"
 #include "GUISpinControlEx.h"
-#include "GUIInfoLabelControl.h"
-#include "GUIInfoFadeLabelControl.h"
-#include "GUIInfoImage.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 #include "GUIVisualisationControl.h"
 #include "../xbmc/util.h"
 
@@ -215,13 +213,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   wstring strLabel = L"";
   CStdString strFont = "";
   CStdString strTmp;
-  CStdStringArray vecInfo;
+  vector<int> vecInfo;
   DWORD dwTextColor = 0xFFFFFFFF;
   DWORD dwAlign = XBFONT_LEFT;
   DWORD dwAlignY = 0;
   CStdString strTextureFocus, strTextureNoFocus, strTextureUpFocus, strTextureDownFocus;
   CStdString strTextureAltFocus, strTextureAltNoFocus;
-  CStdString strToggleSelect;
+  int iToggleSelect;
   DWORD dwDisabledColor = 0xffffffff;;
   int iHyperLink = WINDOW_INVALID;
   DWORD dwItems;
@@ -309,7 +307,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   bool bWrapAround = true;
   bool bSmoothScrolling = true;
   bool bKeepAspectRatio = false;
-  CStdString strVisible;
+  int iVisibleCondition = 0;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read default properties from reference controls
@@ -323,22 +321,14 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     iPosY = pReference->GetYPosition();
     dwWidth = pReference->GetWidth();
     dwHeight = pReference->GetHeight();
-    if (strType == "label")
+    if (strType == "label" || strType == "infolabel") // PRE1.3 support
     {
       strFont = ((CGUILabelControl*)pReference)->GetFontName();
       strLabel = ((CGUILabelControl*)pReference)->GetLabel();
       dwTextColor = ((CGUILabelControl*)pReference)->GetTextColor();
       dwAlign = ((CGUILabelControl*)pReference)->m_dwTextAlign;
       dwDisabledColor = ((CGUILabelControl*)pReference)->GetDisabledColor();
-    }
-    else if (strType == "infolabel")
-    {
-      strFont = ((CGUIInfoLabelControl*)pReference)->GetFontName();
-      strLabel = ((CGUIInfoLabelControl*)pReference)->GetLabel();
-      dwTextColor = ((CGUIInfoLabelControl*)pReference)->GetTextColor();
-      dwAlign = ((CGUIInfoLabelControl*)pReference)->m_dwTextAlign;
-      dwDisabledColor = ((CGUIInfoLabelControl*)pReference)->GetDisabledColor();
-      vecInfo.push_back(((CGUIInfoLabelControl *)pReference)->GetInfo());
+      vecInfo.push_back(((CGUILabelControl *)pReference)->GetInfo());
     }
     else if (strType == "edit")
     {
@@ -348,18 +338,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwAlign = ((CGUIEditControl*)pReference)->m_dwTextAlign;
       dwDisabledColor = ((CGUIEditControl*)pReference)->GetDisabledColor();
     }
-    else if (strType == "fadelabel")
+    else if (strType == "fadelabel" || strType == "infofadelabel")
     {
       strFont = ((CGUIFadeLabelControl*)pReference)->GetFontName();
       dwTextColor = ((CGUIFadeLabelControl*)pReference)->GetTextColor();
       dwAlign = ((CGUIFadeLabelControl*)pReference)->GetAlignment();
-    }
-    else if (strType == "infofadelabel")
-    {
-      strFont = ((CGUIInfoFadeLabelControl*)pReference)->GetFontName();
-      dwTextColor = ((CGUIInfoFadeLabelControl*)pReference)->GetTextColor();
-      dwAlign = ((CGUIInfoFadeLabelControl*)pReference)->GetAlignment();
-      vecInfo = ((CGUIInfoFadeLabelControl*)pReference)->GetInfo();
+      vecInfo = ((CGUIFadeLabelControl*)pReference)->GetInfo();
     }
     else if (strType == "rss")
     {
@@ -449,7 +433,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       iHyperLink = ((CGUIToggleButtonControl*)pReference)->GetHyperLink();
       lTextOffsetX = ((CGUIToggleButtonControl*)pReference)->GetTextOffsetX();
       lTextOffsetY = ((CGUIToggleButtonControl*)pReference)->GetTextOffsetY();
-      strToggleSelect = ((CGUIToggleButtonControl*)pReference)->GetToggleSelect();
+      iToggleSelect = ((CGUIToggleButtonControl*)pReference)->GetToggleSelect();
     }
     else if (strType == "buttonM")
     {
@@ -525,20 +509,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strRight = ((CGUIProgressControl*)pReference)->GetBackTextureRightName();
       strOverlay = ((CGUIProgressControl*)pReference)->GetBackTextureOverlayName();
     }
-    else if (strType == "image")
+    else if (strType == "image" || strType == "infoimage")
     {
       strTexture = ((CGUIImage *)pReference)->GetFileName();
       dwColorKey = ((CGUIImage *)pReference)->GetColorKey();
       bKeepAspectRatio = ((CGUIImage *)pReference)->GetKeepAspectRatio();
-      strVisible = ((CGUIImage *)pReference)->GetVisibleCondition();
-    }
-    else if (strType == "infoimage")
-    {
-      strTexture = ((CGUIInfoImage *)pReference)->GetFileName();
-      dwColorKey = ((CGUIInfoImage *)pReference)->GetColorKey();
-      bKeepAspectRatio = ((CGUIInfoImage *)pReference)->GetKeepAspectRatio();
-      strVisible = ((CGUIInfoImage *)pReference)->GetVisibleCondition();
-      vecInfo.push_back(((CGUIInfoImage *)pReference)->GetInfo());
+      iVisibleCondition = ((CGUIImage *)pReference)->GetVisibleCondition();
+      vecInfo.push_back(((CGUIImage *)pReference)->GetInfo());
     }
     else if (strType == "listcontrol")
     {
@@ -765,7 +742,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   GetHex(pControlNode, "colordiffuse", dwColorDiffuse);
   if (!GetBoolean(pControlNode, "visible", bVisible))
   { // try a conditional visibility
+    CStdString strVisible;
     GetString(pControlNode, "visible", strVisible);
+    int iVisible = g_infoManager.TranslateString(strVisible);
+    if (iVisible != 0)
+      iVisibleCondition = iVisible;
   }
   GetString(pControlNode, "font", strFont);
   GetAlignment(pControlNode, "align", dwAlign);
@@ -777,7 +758,17 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   GetString(pControlNode, "script", strExecuteAction); // left in for backwards compatibility.
   GetString(pControlNode, "execute", strExecuteAction);
 
-  GetMultipleString(pControlNode, "info", vecInfo);
+  CStdStringArray strVecInfo;
+  if (GetMultipleString(pControlNode, "info", strVecInfo))
+  {
+    vecInfo.clear();
+    for (unsigned int i = 0; i < strVecInfo.size(); i++)
+    {
+      int info = g_infoManager.TranslateString(strVecInfo[i]);
+      if (info)
+        vecInfo.push_back(info);
+    }
+  }
   GetHex(pControlNode, "disabledcolor", dwDisabledColor);
   GetPath(pControlNode, "textureDownFocus", strTextureDownFocus);
   GetPath(pControlNode, "textureUpFocus", strTextureUpFocus);
@@ -785,7 +776,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   GetPath(pControlNode, "textureNoFocus", strTextureNoFocus);
   GetPath(pControlNode, "AltTextureFocus", strTextureAltFocus);
   GetPath(pControlNode, "AltTextureNoFocus", strTextureAltNoFocus);
+  CStdString strToggleSelect;
   GetString(pControlNode, "UseAltTexture", strToggleSelect);
+  iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
   GetDWORD(pControlNode, "bitmaps", dwItems);
   GetHex(pControlNode, "textcolor", dwTextColor);
 
@@ -947,7 +940,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   // Instantiate a new control using the properties gathered above
   //
 
-  if (strType == "label")
+  if (strType == "label" || strType == "infolabel")
   {
     CGUILabelControl* pControl = new CGUILabelControl(
                                    dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -956,18 +949,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    return pControl;
-  }
-  else if (strType == "infolabel")
-  {
-    CGUIInfoLabelControl* pControl = new CGUIInfoLabelControl(
-                                       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                       strFont, strLabel, dwTextColor, dwDisabledColor,
-                                       dwAlign, bHasPath);
-
-    pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
-    pControl->SetInfo(vecInfo[0]);
+    pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     return pControl;
   }
   else if (strType == "edit")
@@ -987,21 +969,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     return pControl;
   }
-  else if (strType == "fadelabel")
+  else if (strType == "fadelabel" || strType == "infofadelabel")
   {
     CGUIFadeLabelControl* pControl = new CGUIFadeLabelControl(
                                        dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
                                        strFont, dwTextColor, (dwAlign|dwAlignY));
-
-    pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
-    return pControl;
-  }
-  else if (strType == "infofadelabel")
-  {
-    CGUIInfoFadeLabelControl* pControl = new CGUIInfoFadeLabelControl(
-                                           dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                           strFont, dwTextColor, dwAlign);
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
@@ -1102,7 +1074,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetHyperLink(iHyperLink);
     pControl->SetExecuteAction(strExecuteAction);
     pControl->SetVisible(bVisible);
-    pControl->SetToggleSelect(strToggleSelect);
+    pControl->SetToggleSelect(iToggleSelect);
     return pControl;
   }
   else if (strType == "buttonM")
@@ -1201,7 +1173,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     return pControl;
   }
-  else if (strType == "image")
+  else if (strType == "image" || strType == "infoimage")
   {
     CGUIImage* pControl = new CGUIImage(
                             dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, strTexture, dwColorKey);
@@ -1210,20 +1182,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetKeepAspectRatio(bKeepAspectRatio);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(strVisible);
-    return pControl;
-  }
-  else if (strType == "infoimage")
-  {
-    CGUIInfoImage* pControl = new CGUIInfoImage(
-                                dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, strTexture, dwColorKey);
-
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetKeepAspectRatio(bKeepAspectRatio);
-    pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(strVisible);
-    pControl->SetInfo(vecInfo[0]);
+    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     return pControl;
   }
   else if (strType == "listcontrol")

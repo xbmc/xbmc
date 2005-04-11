@@ -2,6 +2,7 @@
 #include "GUILabelControl.h"
 #include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
 CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, const wstring& strLabel, DWORD dwTextColor, DWORD dwDisabledColor, DWORD dwTextAlign, bool bHasPath)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
@@ -15,6 +16,8 @@ CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPos
   m_bShowCursor = false;
   m_iCursorPos = 0;
   m_dwCounter = 0;
+  m_strBackupLabel = strLabel;
+  m_Info = 0;
   ControlType = GUICONTROL_LABEL;
 }
 
@@ -35,6 +38,21 @@ void CGUILabelControl::SetCursorPos(int iPos)
 
 void CGUILabelControl::Render()
 {
+  if (m_Info)
+  { // check if we need to update our info
+    wstring strLabel = g_infoManager.GetLabel(m_Info);
+    if (strLabel.length())
+    {
+      if (strLabel != m_strLabel)
+        SetLabel(strLabel);
+    }
+    else
+    {
+      if (m_strLabel != m_strBackupLabel)
+        SetLabel(m_strBackupLabel);
+    }
+  }
+
   if (!IsVisible() )
   {
     return ;

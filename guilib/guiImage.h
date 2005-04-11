@@ -47,8 +47,12 @@ public:
   int GetRenderHeight() const;
   void SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom);
 
-  void SetVisibleCondition(const CStdString &strVisible) { m_strVisible = strVisible; };
-  const CStdString &GetVisibleCondition() const { return m_strVisible; };
+  void SetVisibleCondition(int iVisible) { m_VisibleCondition = iVisible; };
+  int GetVisibleCondition() const { return m_VisibleCondition; };
+
+  void SetInfo(int info) { m_Info = info; };
+  int GetInfo() const { return m_Info; };
+
 protected:
   virtual void Update();
   void UpdateVB();
@@ -85,6 +89,10 @@ protected:
   float m_fNH;
 
   // conditional visibility
-  CStdString m_strVisible;
+  int m_VisibleCondition;
+
+  // conditional info
+  int m_Info;
+  CStdString m_strBackupFileName;
 };
 #endif

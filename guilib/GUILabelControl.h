@@ -37,6 +37,9 @@ public:
 
   DWORD m_dwTextAlign;
 
+  void SetInfo(int info) { m_Info = info; };
+  int GetInfo() const { return m_Info; };
+
 protected:
   void ShortenPath();
 protected:
@@ -48,5 +51,7 @@ protected:
   bool m_bShowCursor;
   int m_iCursorPos;
   DWORD m_dwCounter;
+  int m_Info;
+  wstring m_strBackupLabel;
 };
 #endif

@@ -31,9 +31,6 @@
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
 #include "GUIButtonScroller.h"
-#include "GUIInfoLabelControl.h"
-#include "GUIInfoFadeLabelControl.h"
-#include "GUIInfoImage.h"
 #include "SkinInfo.h"
 #include "../xbmc/xbox/XKUtils.h"
 #include "../xbmc/Application.h"
@@ -79,13 +76,9 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
     {
       stReferenceControl stControl;
       strcpy(stControl.m_szType, it->m_szType);
-      if (!strcmp(it->m_szType, "label"))
+      if (!strcmp(it->m_szType, "label") || !strcmp(it->m_szType, "infolabel"))
       {
         stControl.m_pControl = new CGUILabelControl(*((CGUILabelControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "infolabel"))
-      {
-        stControl.m_pControl = new CGUIInfoLabelControl(*((CGUIInfoLabelControl*)it->m_pControl));
       }
       else if (!strcmp(it->m_szType, "edit"))
       {
@@ -95,13 +88,9 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
       {
         stControl.m_pControl = new CGUIVideoControl(*((CGUIVideoControl*)it->m_pControl));
       }
-      else if (!strcmp(it->m_szType, "fadelabel"))
+      else if (!strcmp(it->m_szType, "fadelabel") || !strcmp(it->m_szType, "infofadelabel"))
       {
         stControl.m_pControl = new CGUIFadeLabelControl(*((CGUIFadeLabelControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "infofadelabel"))
-      {
-        stControl.m_pControl = new CGUIInfoFadeLabelControl(*((CGUIInfoFadeLabelControl*)it->m_pControl));
       }
       else if (!strcmp(it->m_szType, "spinbutton"))
       {
@@ -155,13 +144,9 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
       {
         stControl.m_pControl = new CGUIProgressControl(*((CGUIProgressControl*)it->m_pControl));
       }
-      else if (!strcmp(it->m_szType, "image"))
+      else if (!strcmp(it->m_szType, "image") || !strcmp(it->m_szType, "infoimage"))
       {
         stControl.m_pControl = new CGUIImage(*((CGUIImage*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "infoimage"))
-      {
-        stControl.m_pControl = new CGUIInfoImage(*((CGUIInfoImage*)it->m_pControl));
       }
       else if (!strcmp(it->m_szType, "listcontrol"))
       {
@@ -244,13 +229,9 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
   {
     stReferenceControl stControl;
     strcpy(stControl.m_szType, it->m_szType);
-    if (!strcmp(it->m_szType, "label"))
+    if (!strcmp(it->m_szType, "label") || !strcmp(it->m_szType, "infolabel"))
     {
       stControl.m_pControl = new CGUILabelControl(*((CGUILabelControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "infolabel"))
-    {
-      stControl.m_pControl = new CGUIInfoLabelControl(*((CGUIInfoLabelControl*)it->m_pControl));
     }
     else if (!strcmp(it->m_szType, "edit"))
     {
@@ -260,13 +241,9 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
     {
       stControl.m_pControl = new CGUIVideoControl(*((CGUIVideoControl*)it->m_pControl));
     }
-    else if (!strcmp(it->m_szType, "fadelabel"))
+    else if (!strcmp(it->m_szType, "fadelabel") || !strcmp(it->m_szType, "infofadelabel"))
     {
       stControl.m_pControl = new CGUIFadeLabelControl(*((CGUIFadeLabelControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "infofadelabel"))
-    {
-      stControl.m_pControl = new CGUIInfoFadeLabelControl(*((CGUIInfoFadeLabelControl*)it->m_pControl));
     }
     else if (!strcmp(it->m_szType, "spinbutton"))
     {
@@ -320,13 +297,9 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
     {
       stControl.m_pControl = new CGUIProgressControl(*((CGUIProgressControl*)it->m_pControl));
     }
-    else if (!strcmp(it->m_szType, "image"))
+    else if (!strcmp(it->m_szType, "image") || !strcmp(it->m_szType, "infoimage"))
     {
       stControl.m_pControl = new CGUIImage(*((CGUIImage*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "infoimage"))
-    {
-      stControl.m_pControl = new CGUIInfoImage(*((CGUIInfoImage*)it->m_pControl));
     }
     else if (!strcmp(it->m_szType, "listcontrol"))
     {
