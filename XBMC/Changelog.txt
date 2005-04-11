@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-04-2005 fixed: Context menu didn't popup in empty dirs if "Hide Parent Items" was turned on.
   - 11-04-2005 fixed: GUI Filters were not used correctly when returning from Slideshow.
   - 11-04-2005 changed: Removed duplicate code from the Video Playlist window
   - 11-04-2005 changed: Removed all info* controls as it was just duplicate code.
