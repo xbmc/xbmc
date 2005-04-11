@@ -263,7 +263,6 @@ public:
     int m_iScriptsSortMethod;
     bool m_bScriptsSortAscending;
 
-    int m_iMoveDelayIR;
     int m_iRepeatDelayIR;
     int m_iMoveDelayController;
     int m_iRepeatDelayController;
