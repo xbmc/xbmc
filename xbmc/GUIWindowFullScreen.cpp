@@ -520,6 +520,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (g_application.m_pPlayer)
   {
     if (g_application.m_pPlayer->IsPaused() ) return true;
+    if (g_application.m_pPlayer->IsCaching() ) return true;
   }
 
   if (g_application.GetPlaySpeed() != 1) return true;
@@ -583,6 +584,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
     }
     g_infoManager.SetDisplayAfterSeek(0); //Make sure these stuff aren't visible now
     bRenderGUI = true;
+    SET_CONTROL_VISIBLE(LABEL_BUFFERING);
   }
   else
     SET_CONTROL_HIDDEN(LABEL_BUFFERING);
