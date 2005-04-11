@@ -28,8 +28,6 @@ class CDelayController
 public:
   CDelayController( DWORD dwMoveDelay, DWORD dwRepeatDelay );
   WORD DpadInput( WORD wDpad, bool bLeftTrigger, bool bRightTrigger );
-  WORD IRInput( WORD wIR );
-  WORD DIRInput( WORD wDir );
 
   WORD StickInput( int x, int y );
   WORD DirInput( WORD wDir );

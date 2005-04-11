@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include <stdio.h>
 #include "XBInputEx.h"
+#include "Settings.h"
 
 //-----------------------------------------------------------------------------
 // Globals for the Remote
@@ -21,10 +22,10 @@ extern "C"
 }
 #endif
 
-#define INTERVAL 100 // msec
-
 DWORD g_prevPacketNumber[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 DWORD g_eventsSinceFirstEvent[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+bool bIsRepeating;
 
 // Global instance of input states
 XINPUT_STATEEX g_InputStatesEx[4];
@@ -143,18 +144,22 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
       {
         if (g_prevPacketNumber[i] != g_InputStatesEx[i].dwPacketNumber)
         {
+          // Got a fresh packet
           g_prevPacketNumber[i] = g_InputStatesEx[i].dwPacketNumber;
 
           // Count the number of events since firstEvent was set (when repeat or button release)
-          if (g_InputStatesEx[i].IR_Remote.firstEvent > 0)
+          // Seems that firstEvent is often the first button push, but can also be
+          // any event with counter not equal to 65 or 64.  (Not sure why exactly :P)
+          if (g_InputStatesEx[i].IR_Remote.firstEvent > 0 || g_InputStatesEx[i].IR_Remote.counter != 64 && g_InputStatesEx[i].IR_Remote.counter != 65)
           {
             g_eventsSinceFirstEvent[i] = 0;
+            bIsRepeating = false;
           }
           else
           {
             g_eventsSinceFirstEvent[i]++;
           }
-          /*
+    /*      
                char szTmp[129];
                sprintf(szTmp, "pkt:%i cnt:%i region:%i wbuttons:%i firstEvent:%i sinceFirst:%i...",
                    g_prevPacketNumber[i],
@@ -162,11 +167,21 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
                    g_InputStatesEx[i].IR_Remote.region,
                    g_InputStatesEx[i].IR_Remote.wButtons,
                    g_InputStatesEx[i].IR_Remote.firstEvent,
-                   g_eventsSinceFirstEvent[i]);
+                   g_eventsSinceFirstEvent[i], timeGetTime());
                OutputDebugString(szTmp);
-          */ 
+          */
+          bool bSendMessage = true;
           // If this is the first event or if at least 2 non first events have passed (assume repeat)
-          if (g_eventsSinceFirstEvent[i] == 0 || g_eventsSinceFirstEvent[i] > 2)
+          if (g_eventsSinceFirstEvent[i] > 0 && !bIsRepeating)
+          { // check for repeats (g_stSettings.m_iRepeatDelayIR is in milliseconds, so to translate
+            // into packets it's about delay/60, as each packet comes approximately every 60ms.
+            if ((int)g_eventsSinceFirstEvent[i] < g_stSettings.m_iRepeatDelayIR/60)
+              bSendMessage = false;
+            else
+              bIsRepeating = true;
+          }
+          
+          if (bSendMessage)
           {
             // Copy remote to local structure
             memcpy( &pIR_Remote[i], &g_InputStatesEx[i].IR_Remote, sizeof(XINPUT_IR_REMOTE) );
@@ -177,8 +192,8 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
                  }
                  else
                  {
-                  OutputDebugString("ignored\n");
-            */
+                  OutputDebugString("ignored\n");*/
+            
           }
 
         }

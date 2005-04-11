@@ -92,7 +92,6 @@ static char szHomePaths[][13] = { "E:\\Apps\\XBMC", "E:\\XBMC", "F:\\Apps\\XBMC"
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
     : m_ctrDpad(220, 220)
-    , m_ctrIR(220, 220)
 {
   m_iPlaySpeed = 1;
   m_bSpinDown = false;
@@ -956,7 +955,6 @@ HRESULT CApplication::Initialize()
 
 
   m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController, g_stSettings.m_iRepeatDelayController);
-  m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR, g_stSettings.m_iRepeatDelayIR);
 
   SAFE_DELETE(m_splash);
 
@@ -2164,8 +2162,8 @@ void CApplication::FrameMove()
   BYTE bRightTrigger = pGamepad->bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER];
 
   // pass them through the delay
+  // we don't pass the remote through, as delay is handled in the XBInputEx class.
   WORD wDir = m_ctrDpad.DpadInput(wDpad, 0 != bLeftTrigger, 0 != bRightTrigger);
-  wRemotes = m_ctrIR.IRInput(wRemotes);
 
   bool bGotKey = false;
 

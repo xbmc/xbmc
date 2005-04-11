@@ -238,11 +238,6 @@ WORD CDelayController::DpadInput( WORD wDpad, bool bLeftTrigger, bool bRightTrig
   return DirInput( wDir );
 }
 
-WORD CDelayController::IRInput( WORD wIR )
-{
-  return DIRInput( wIR );
-}
-
 WORD CDelayController::StickInput( int x, int y )
 {
   WORD wDir = 0;
@@ -263,85 +258,4 @@ WORD CDelayController::StickInput( int x, int y )
     wDir = DC_RIGHT;
   }
   return DirInput( wDir );
-}
-
-WORD CDelayController::DIRInput( WORD wDir )
-{
-  WORD wResult = 0;
-  if (!wDir) return 0;
-  if ( m_dwRepeatDelay == 0 )
-  {
-    m_dwRepeatDelay = 200;
-  }
-  if ( m_dwMoveDelay == 0 )
-  {
-    m_dwMoveDelay = 700;
-  }
-
-  if ( wDir != m_wLastDir )
-  {
-    // key pressed is different then previous key
-    if ( wDir >= DC_UP )
-    {
-      // key is pressed
-      wResult = wDir;
-      m_dwTimer = GetTickCount() + m_dwRepeatDelay;
-      m_dwLastTime = GetTickCount();
-    }
-    else
-    {
-      // no key is pressed
-      m_dwTimer = GetTickCount();
-    }
-    m_iCount = 0;
-  }
-  else
-  {
-    long lTicks = GetTickCount() - m_dwLastTime;
-    if ( m_iCount > 0 && (lTicks > (long)m_dwMoveDelay ) )
-    {
-      m_iCount = 0;
-      m_wLastDir = 0;
-    }
-    // key pressed is the same as last time
-    if ( m_iCount > 10 )
-    {
-      if ( wDir >= DC_UP )
-      {
-        wResult = wDir;
-        m_dwLastTime = GetTickCount();
-      }
-      else
-      {
-        m_dwTimer = GetTickCount();
-        m_iCount = 0;
-      }
-    }
-    else
-    {
-      if ( wDir >= DC_UP )
-      {
-        if ( m_dwTimer < GetTickCount() )
-        {
-          wResult = wDir;
-          m_iCount++;
-          m_dwTimer = GetTickCount() + m_dwMoveDelay;
-          m_dwLastTime = GetTickCount();
-        }
-        else
-        {
-          wResult = DC_SKIP;
-          m_dwLastTime = GetTickCount();
-        }
-      }
-      else
-      {
-        m_dwTimer = GetTickCount();
-        m_iCount = 0;
-      }
-    }
-
-  }
-  m_wLastDir = wDir;
-  return wResult;
 }
