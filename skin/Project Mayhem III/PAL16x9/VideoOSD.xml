@@ -100,10 +100,12 @@
       <posY>439</posY>
       <width>18</width>
       <height>26</height>
-      <AltTextureFocus>osd_button_rewFO.png</AltTextureFocus>
-      <AltTextureNoFocus>-</AltTextureNoFocus>
-      <textureFocus>osd_button_rewSELFO.png</textureFocus>
-      <textureNoFocus>osd_button_rewSELNF.png</textureNoFocus>
+      <textureFocus>osd_button_rewFO.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <UseAltTexture>Player.Rewinding</UseAltTexture>
+      <AltTextureFocus>osd_button_rewSELFO.png</AltTextureFocus>
+      <AltTextureNoFocus>osd_button_rewSELNF.png</AltTextureNoFocus>
+      <execute>XBMC.PlayerControl(Rewind)</execute>
       <label>-</label>
       <font>-</font>
       <onleft>215</onleft>
@@ -138,10 +140,12 @@
       <posY>427</posY>
       <width>37</width>
       <height>51</height>
-      <AltTextureFocus>osd_button_playFO.png</AltTextureFocus>
-      <AltTextureNoFocus>-</AltTextureNoFocus>
-      <textureFocus>osd_button_pauseFO.png</textureFocus>
-      <textureNoFocus>osd_button_pauseNF.png</textureNoFocus>
+      <textureFocus>osd_button_playFO.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <UseAltTexture>Player.Paused</UseAltTexture>
+      <AltTextureFocus>osd_button_pauseFO.png</AltTextureFocus>
+      <AltTextureNoFocus>osd_button_pauseNF.png</AltTextureNoFocus>
+      <execute>XBMC.PlayerControl(Play)</execute>
       <label>-</label>
       <font>-</font>
       <onleft>212</onleft>
@@ -158,10 +162,12 @@
       <posY>439</posY>
       <width>19</width>
       <height>26</height>
-      <AltTextureFocus>osd_button_ffFO.png</AltTextureFocus>
-      <AltTextureNoFocus>-</AltTextureNoFocus>
-      <textureFocus>osd_button_ffSELFO.png</textureFocus>
-      <textureNoFocus>osd_button_ffSELNF.png</textureNoFocus>
+      <textureFocus>osd_button_ffFO.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <UseAltTexture>Player.Forwarding</UseAltTexture>
+      <AltTextureFocus>osd_button_ffSELFO.png</AltTextureFocus>
+      <AltTextureNoFocus>osd_button_ffSELNF.png</AltTextureNoFocus>
+      <execute>XBMC.PlayerControl(Forward)</execute>
       <label>-</label>
       <font>-</font>
       <onleft>211</onleft>
