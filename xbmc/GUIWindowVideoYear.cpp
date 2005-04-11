@@ -94,19 +94,11 @@ int SSortVideoYearByName::m_iSortMethod;
 CGUIWindowVideoYear::CGUIWindowVideoYear()
 {
   m_Directory.m_strPath = "";
-  m_Directory.m_bIsFolder = true;
-  m_iItemSelected = -1;
-  m_iLastControl = -1;
 }
 
 //****************************************************************************************************************************
 CGUIWindowVideoYear::~CGUIWindowVideoYear()
-{}
-
-//****************************************************************************************************************************
-void CGUIWindowVideoYear::OnAction(const CAction &action)
 {
-  CGUIWindowVideoBase::OnAction(action);
 }
 
 //****************************************************************************************************************************

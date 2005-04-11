@@ -31,15 +31,12 @@ static int m_nTempPlayListWindow = 0;
 static CStdString m_strTempPlayListDirectory = "";
 
 
-CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist(void)
-    : CGUIWindow(0)
+CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist()
 {
   m_Directory.m_strPath = "";
-  m_Directory.m_bIsFolder = true;
-  m_iLastControl = -1;
-  m_iItemSelected = -1;
 }
-CGUIWindowVideoPlaylist::~CGUIWindowVideoPlaylist(void)
+
+CGUIWindowVideoPlaylist::~CGUIWindowVideoPlaylist()
 {
 }
 
@@ -47,6 +44,10 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+  case GUI_MSG_DVDDRIVE_EJECTED_CD:
+  case GUI_MSG_DVDDRIVE_CHANGED_CD:
+    return true;  // nothing to do
+    break;
   case GUI_MSG_PLAYBACK_ENDED:
   case GUI_MSG_PLAYBACK_STOPPED:
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
@@ -91,6 +92,8 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       OutputDebugString("init guiwindowvideoplaylist!\n");
       CGUIWindow::OnMessage(message);
 
+      LoadViewMode();
+
       Update("");
 
       if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
@@ -130,26 +133,10 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
     }
     break;
 
-  case GUI_MSG_DVDDRIVE_EJECTED_CD:
-  case GUI_MSG_DVDDRIVE_CHANGED_CD:
-    return true;
-    break;
-
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-
-      if (iControl == CONTROL_BTNVIEWASICONS)
-      {
-        CGUIWindow::OnMessage(message);
-        g_stSettings.m_iMyVideoPlaylistViewAsIcons++;
-        if (g_stSettings.m_iMyVideoPlaylistViewAsIcons > VIEW_AS_LARGE_ICONS) g_stSettings.m_iMyVideoPlaylistViewAsIcons = VIEW_AS_LIST;
-
-        g_settings.Save();
-        UpdateButtons();
-
-      }
-      else if (iControl == CONTROL_BTNSHUFFLE)
+      if (iControl == CONTROL_BTNSHUFFLE)
       {
         //ShufflePlayList();
         g_stSettings.m_bMyVideoPlaylistShuffle = !g_playlistPlayer.ShuffledPlay(PLAYLIST_VIDEO);
@@ -211,16 +198,8 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       }
     }
     break;
-  case GUI_MSG_SETFOCUS:
-    {
-      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
-      {
-        m_viewControl.SetFocused();
-        return true;
-      }
-    }
   }
-  return CGUIWindow::OnMessage(message);
+  return CGUIWindowVideoBase::OnMessage(message);
 }
 
 void CGUIWindowVideoPlaylist::OnAction(const CAction &action)
@@ -228,11 +207,6 @@ void CGUIWindowVideoPlaylist::OnAction(const CAction &action)
   if (action.wID == ACTION_PARENT_DIR)
   {
     // Playlist has no parent dirs
-    return ;
-  }
-  if (action.wID == ACTION_PREVIOUS_MENU)
-  {
-    m_gWindowManager.ActivateWindow(WINDOW_HOME);
     return ;
   }
   if (action.wID == ACTION_SHOW_PLAYLIST)
@@ -252,7 +226,7 @@ void CGUIWindowVideoPlaylist::OnAction(const CAction &action)
     return ;
   }
 
-  CGUIWindow::OnAction(action);
+  CGUIWindowVideoBase::OnAction(action);
 }
 
 void CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iAction)
@@ -304,13 +278,6 @@ void CGUIWindowVideoPlaylist::ClearPlayList()
   UpdateListControl();
   UpdateButtons();
   SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
-}
-
-void CGUIWindowVideoPlaylist::ClearFileItems()
-{
-  m_viewControl.Clear();
-  m_vecItems.Clear(); // will clean up everything
-
 }
 
 void CGUIWindowVideoPlaylist::UpdateListControl()
@@ -470,7 +437,6 @@ void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
 
   GetDirectory(m_Directory.m_strPath, m_vecItems);
 
-
   UpdateListControl();
   UpdateButtons();
 
@@ -518,6 +484,7 @@ void CGUIWindowVideoPlaylist::GetDirectoryHistoryString(const CFileItem* pItem, 
   if (CUtil::HasSlashAtEnd(strHistoryString))
     strHistoryString.Delete(strHistoryString.size() - 1);
 }
+
 void CGUIWindowVideoPlaylist::OnClick(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return ;
@@ -598,7 +565,7 @@ void CGUIWindowVideoPlaylist::ShufflePlayList()
 void CGUIWindowVideoPlaylist::SavePlayList()
 {
   CStdString strNewFileName;
-  if (GetKeyboard(strNewFileName))
+  if (CGUIDialogKeyboard::ShowAndGetInput(strNewFileName, false))
   {
     // need 2 rename it
     CStdString strPath = g_stSettings.m_szAlbumDirectory;
@@ -622,34 +589,14 @@ void CGUIWindowVideoPlaylist::SavePlayList()
     playlist.Save(strPath);
   }
 }
-/// \brief Display virtual keyboard
-/// \param strInput Set as defaultstring in keyboard and retrieves the input from keyboard
-bool CGUIWindowVideoPlaylist::GetKeyboard(CStdString& strInput)
-{
-  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
-  if (!pKeyboard) return false;
-  // setup keyboard
-  pKeyboard->CenterWindow();
-  pKeyboard->SetText(strInput);
-  pKeyboard->DoModal(m_gWindowManager.GetActiveWindow());
-  pKeyboard->Close();
 
-  if (pKeyboard->IsDirty())
-  { // have text - update this.
-    strInput = pKeyboard->GetText();
-    if (strInput.IsEmpty())
-      return false;
-    return true;
-  }
-  return false;
+void CGUIWindowVideoPlaylist::LoadViewMode()
+{
+  m_iViewAsIconsRoot = g_stSettings.m_iMyVideoPlaylistViewAsIcons;
 }
 
-void CGUIWindowVideoPlaylist::OnWindowLoaded()
+void CGUIWindowVideoPlaylist::SaveViewMode()
 {
-  m_viewControl.Reset();
-  m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
-  m_viewControl.AddView(VIEW_AS_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
+  g_stSettings.m_iMyVideoPlaylistViewAsIcons = m_iViewAsIconsRoot;
+  g_settings.Save();
 }

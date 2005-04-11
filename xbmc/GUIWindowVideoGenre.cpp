@@ -94,19 +94,11 @@ int SSortVideoGenreByName::m_iSortMethod;
 CGUIWindowVideoGenre::CGUIWindowVideoGenre()
 {
   m_Directory.m_strPath = "";
-  m_Directory.m_bIsFolder = true;
-  m_iItemSelected = -1;
-  m_iLastControl = -1;
 }
 
 //****************************************************************************************************************************
 CGUIWindowVideoGenre::~CGUIWindowVideoGenre()
-{}
-
-//****************************************************************************************************************************
-void CGUIWindowVideoGenre::OnAction(const CAction &action)
 {
-  CGUIWindowVideoBase::OnAction(action);
 }
 
 //****************************************************************************************************************************

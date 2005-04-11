@@ -114,21 +114,12 @@ bool SSortVideoByName::m_bSortAscending;
 int SSortVideoByName::m_iSortMethod;
 
 CGUIWindowVideoFiles::CGUIWindowVideoFiles()
-    : CGUIWindowVideoBase()
 {
-  m_Directory.m_strPath = "?";
-  m_Directory.m_bIsFolder = true;
-  m_iItemSelected = -1;
-  m_iLastControl = -1;
-  m_bDisplayEmptyDatabaseMessage = false;
-
-  m_iViewAsIcons = -1;
-  m_iViewAsIconsRoot = -1;
 }
 
 CGUIWindowVideoFiles::~CGUIWindowVideoFiles()
-{}
-
+{
+}
 
 void CGUIWindowVideoFiles::OnAction(const CAction &action)
 {
