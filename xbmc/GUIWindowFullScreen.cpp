@@ -82,6 +82,8 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   m_fFrameCounter = 0.0f;
   m_dwFPSTime = timeGetTime();
   m_subtitleFont = NULL;
+  // enable relative coordinates
+  m_bNeedsScaling = true;
 
   // audio
   //  - language
