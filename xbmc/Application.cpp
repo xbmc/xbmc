@@ -1908,7 +1908,7 @@ void CApplication::UpdateLCD()
         strTotalTime = " ";
       }
 
-      strTime = g_infoManager.GetVideoLabel("time");
+      strTime = g_infoManager.GetVideoLabel(254); // time
 
       if (m_iPlaySpeed < 1)
         strIcon.Format("\3 %ix", m_iPlaySpeed);
@@ -1922,10 +1922,10 @@ void CApplication::UpdateLCD()
       g_lcd->SetLine(0, strLine);
 
       int iLine = 1;
-      g_lcd->SetLine(iLine++, g_infoManager.GetVideoLabel("title"));
+      g_lcd->SetLine(iLine++, g_infoManager.GetVideoLabel(250));  // time
 
-      if (iLine < 4 && g_infoManager.GetVideoLabel("genre") != "")
-        g_lcd->SetLine(iLine++, g_infoManager.GetVideoLabel("genre"));
+      if (iLine < 4 && g_infoManager.GetVideoLabel(251) != "")  // genre
+        g_lcd->SetLine(iLine++, g_infoManager.GetVideoLabel(251));
 
       strProgressBar = g_lcd->GetProgressBar((double)g_application.m_pPlayer->GetTime() * 0.001f,
                                              (double)g_application.m_pPlayer->GetTotalTime());
@@ -1958,8 +1958,8 @@ void CApplication::UpdateLCD()
       // line 1: song title
       // line 2: artist
       // line 3: release date
-      strTime = g_infoManager.GetMusicLabel("time");
-      CStdString strDuration = g_infoManager.GetMusicLabel("duration");
+      strTime = g_infoManager.GetMusicLabel(205); // time
+      CStdString strDuration = g_infoManager.GetMusicLabel(209);  // duration
 
       if (m_iPlaySpeed < 1)
         strIcon.Format("\3:%ix", m_iPlaySpeed);
@@ -1975,13 +1975,13 @@ void CApplication::UpdateLCD()
         strLine.Format("%s %s", strIcon.c_str(), strTime.c_str());
       g_lcd->SetLine(0, strLine);
       int iLine = 1;
-      strLine = g_infoManager.GetMusicLabel("title");
+      strLine = g_infoManager.GetMusicLabel(200); // title
       if (iLine < 4 && strLine != "")
         g_lcd->SetLine(iLine++, strLine);
-      strLine = g_infoManager.GetMusicLabel("artist");
+      strLine = g_infoManager.GetMusicLabel(202);  // artist
       if (iLine < 4 && strLine != "")
         g_lcd->SetLine(iLine++, strLine);
-      strLine = g_infoManager.GetMusicLabel("album");
+      strLine = g_infoManager.GetMusicLabel(201);   // album
 
       strProgressBar = g_lcd->GetProgressBar( (double)(g_application.m_pPlayer->GetTime() * 0.001f - g_infoManager.GetCurrentSongStart() / 75.0f),
                                               (double)g_application.m_pPlayer->GetTotalTime());
@@ -1990,7 +1990,7 @@ void CApplication::UpdateLCD()
 
       if (iLine < 4 && strLine != "")
       {
-        CStdString strYear = g_infoManager.GetMusicLabel("year");
+        CStdString strYear = g_infoManager.GetMusicLabel(204);  // year
         if (strYear.size())
         {
           CStdString strYearLine;
@@ -2655,10 +2655,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     strNewPlayer = "sid";
   }
-  else if (url.GetFileType() == "mp3") // added by dataratt
-  {
-    if (CUtil::FileExists("Q:\\system\\players\\paplayer\\in_mp3.dll"))  strNewPlayer = "paplayer";
-  }
   // Check if we are moving from one cue sheet item to the next
   // need:
   // 1.  player to exist
@@ -2727,8 +2723,18 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // if file happens to contain video stream
     if ( IsPlayingVideo())
     {
-      // then switch to fullscreen video mode if we can
-      SwitchToFullScreen();
+      bool bCanSwitch = true;
+      // check whether we are playing from a playlist...
+      int playlist = g_playlistPlayer.GetCurrentPlaylist();
+      if (playlist == PLAYLIST_VIDEO || playlist == PLAYLIST_VIDEO_TEMP)
+      { // playing from a playlist by the looks
+        if (g_playlistPlayer.GetPlaylist(playlist).size() > 1 && g_playlistPlayer.HasPlayedFirstFile())
+        { // don't switch to fullscreen if we are not playing the first item...
+          bCanSwitch = false;
+        }
+      }
+      // switch to fullscreen video mode if we can
+      if (bCanSwitch) SwitchToFullScreen();
       //screen is setup, resume playing
       m_pPlayer->Pause();
     }
@@ -3641,15 +3647,6 @@ bool CApplication::SwitchToFullScreen()
   // See if we're playing a video, and are in GUI mode
   if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
   {
-    // check whether we are playing from a playlist...
-    int playlist = g_playlistPlayer.GetCurrentPlaylist();
-    if (playlist == PLAYLIST_VIDEO || playlist == PLAYLIST_VIDEO_TEMP)
-    { // playing from a playlist by the looks
-      if (g_playlistPlayer.GetPlaylist(playlist).size() > 1 && g_playlistPlayer.HasPlayedFirstFile())
-      { // don't switch to fullscreen if we are not playing the first item...
-        return false;
-      }
-    }
     // then switch to fullscreen mode
     m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
     g_TextureManager.Flush();

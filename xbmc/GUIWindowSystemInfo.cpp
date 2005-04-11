@@ -6,6 +6,10 @@
 #include "cores/DllLoader/dll.h"
 #include "Utils/GUIInfoManager.h"
 
+// PRE1.3
+#include "GUILabelControl.h"
+// PRE1.3
+
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
     : CGUIWindow(0)
 {}
@@ -117,11 +121,6 @@ void CGUIWindowSystemInfo::Render()
 
 void CGUIWindowSystemInfo::GetValues()
 {
-  // cpu + gpu temperature and fanspeed
-  SET_CONTROL_LABEL(2, g_infoManager.GetLabel("System.CPUTemperature"));
-  SET_CONTROL_LABEL(3, g_infoManager.GetLabel("System.GPUTemperature"));
-  SET_CONTROL_LABEL(16, g_infoManager.GetLabel("System.FanSpeed"));
-
   WCHAR wszText[1024];
   // time build:
   {
@@ -160,8 +159,6 @@ void CGUIWindowSystemInfo::GetValues()
       SET_CONTROL_LABEL(7, wzmac_addr);
     }
 
-    SET_CONTROL_LABEL(8, g_infoManager.GetLabel("Network.IPAddress"));
-
     {
       const WCHAR* pszHalf = g_localizeStrings.Get(152).c_str();
       const WCHAR* pszFull = g_localizeStrings.Get(153).c_str();
@@ -187,12 +184,6 @@ void CGUIWindowSystemInfo::GetValues()
       SET_CONTROL_LABEL(9, linkstatus);
     }
   }
-
-
-  SET_CONTROL_LABEL(10, g_infoManager.GetFreeSpace("C"));
-  SET_CONTROL_LABEL(12, g_infoManager.GetFreeSpace("E"));
-  SET_CONTROL_LABEL(13, g_infoManager.GetFreeSpace("F"));
-  SET_CONTROL_LABEL(17, g_infoManager.GetFreeSpace("G"));
 
   {
 
@@ -241,4 +232,26 @@ void CGUIWindowSystemInfo::GetValues()
              stat.dwTotalPhys / (1024*1024) );
     SET_CONTROL_LABEL(15, wszText);
   }
+}
+
+void CGUIWindowSystemInfo::OnWindowLoaded()
+{
+  // PRE1.3 - setup labels -> infolabels
+  CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(2); // cpu
+  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(112);
+  pLabel = (CGUILabelControl *)GetControl(3); // gpu
+  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(113);
+  pLabel = (CGUILabelControl *)GetControl(16); // fan
+  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(114);
+  pLabel = (CGUILabelControl *)GetControl(8);  // ip
+  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(190);
+  pLabel = (CGUILabelControl *)GetControl(10);  // free c
+  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(115);
+  pLabel = (CGUILabelControl *)GetControl(12);  // free e
+  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(117);
+  pLabel = (CGUILabelControl *)GetControl(13);  // free f
+  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(118);
+  pLabel = (CGUILabelControl *)GetControl(17);  // free g
+  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(119);
+  // PRE1.3
 }

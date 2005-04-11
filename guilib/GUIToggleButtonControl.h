@@ -34,13 +34,13 @@ public:
   void SetLabel(const CStdString& strFontName, const CStdString& strLabel, D3DCOLOR dwColor);
   const CStdString& GetTextureAltFocusName() const { return m_selectButton.GetTextureFocusName(); };
   const CStdString& GetTextureAltNoFocusName() const { return m_selectButton.GetTextureNoFocusName(); };
-  const CStdString& GetToggleSelect() const { return m_toggleSelect; };
-  void SetToggleSelect(const CStdString &toggleSelect) { m_toggleSelect = toggleSelect; };
+  int GetToggleSelect() const { return m_toggleSelect; };
+  void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
 
 protected:
   virtual void Update();
   CGUIButtonControl m_selectButton;
-  CStdString m_toggleSelect;
+  int m_toggleSelect;
   CStdString m_strExecuteAction;
 };
 #endif

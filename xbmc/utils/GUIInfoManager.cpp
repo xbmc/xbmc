@@ -13,6 +13,67 @@
 
 extern char g_szTitleIP[32];
 
+#define PLAYER_HAS_MEDIA              1
+#define PLAYER_HAS_AUDIO              2
+#define PLAYER_HAS_VIDEO              3
+#define PLAYER_PLAYING                4
+#define PLAYER_PAUSED                 5 
+#define PLAYER_REWINDING              6
+#define PLAYER_REWINDING_2x           7
+#define PLAYER_REWINDING_4x           8
+#define PLAYER_REWINDING_8x           9
+#define PLAYER_REWINDING_16x         10
+#define PLAYER_REWINDING_32x         11
+#define PLAYER_FORWARDING            12
+#define PLAYER_FORWARDING_2x         13
+#define PLAYER_FORWARDING_4x         14
+#define PLAYER_FORWARDING_8x         15
+#define PLAYER_FORWARDING_16x        16
+#define PLAYER_FORWARDING_32x        17
+#define PLAYER_CAN_RECORD            18
+#define PLAYER_IS_RECORDING          19
+#define PLAYER_IS_CACHING            20
+#define PLAYER_DISPLAY_AFTER_SEEK    21
+
+#define WEATHER_CONDITIONS          100
+#define WEATHER_TEMPERATURE         101
+#define WEATHER_LOCATION            102
+
+#define SYSTEM_TIME                 110
+#define SYSTEM_DATE                 111
+#define SYSTEM_CPU_TEMPERATURE      112
+#define SYSTEM_GPU_TEMPERATURE      113
+#define SYSTEM_FAN_SPEED            114
+#define SYSTEM_FREE_SPACE_C         115
+// 116 is reserved
+#define SYSTEM_FREE_SPACE_E         117
+#define SYSTEM_FREE_SPACE_F         118
+#define SYSTEM_FREE_SPACE_G         119
+
+#define NETWORK_IP_ADDRESS          190
+
+#define MUSICPLAYER_TITLE           200
+#define MUSICPLAYER_ALBUM           201
+#define MUSICPLAYER_ARTIST          202
+#define MUSICPLAYER_GENRE           203
+#define MUSICPLAYER_YEAR            204
+#define MUSICPLAYER_TIME            205
+#define MUSICPLAYER_TIME_REMAINING  206
+#define MUSICPLAYER_TIME_SPEED      207
+#define MUSICPLAYER_TRACK_NUMBER    208
+#define MUSICPLAYER_DURATION        209
+#define MUSICPLAYER_COVER           210
+
+#define VIDEOPLAYER_TITLE           250
+#define VIDEOPLAYER_GENRE           251
+#define VIDEOPLAYER_DIRECTOR        252
+#define VIDEOPLAYER_YEAR            253
+#define VIDEOPLAYER_TIME            254
+#define VIDEOPLAYER_TIME_REMAINING  255
+#define VIDEOPLAYER_TIME_SPEED      256
+#define VIDEOPLAYER_DURATION        257
+#define VIDEOPLAYER_COVER           258
+
 CGUIInfoManager g_infoManager;
 
 CGUIInfoManager::CGUIInfoManager(void)
@@ -25,37 +86,105 @@ CGUIInfoManager::CGUIInfoManager(void)
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
-{}
+{
+}
 
-/// \brief Obtains the label for the label control from whichever subsystem is needed
-wstring CGUIInfoManager::GetLabel(const CStdString &strInfo)
+/// \brief Translates a string as given by the skin into an int that we use for more
+/// efficient retrieval of data.
+int CGUIInfoManager::TranslateString(const CStdString &strCondition)
+{
+  if (strCondition.IsEmpty()) return 0;
+  CStdString strTest = strCondition;
+  strTest = strTest.ToLower();
+  bool bNegate = strTest[0] == '!';
+  int ret = 0;
+
+  if(bNegate)
+    strTest.Delete(0, 1);
+
+  // check playing conditions...
+  if (strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
+  else if (strTest.Equals("player.hasaudio")) ret = PLAYER_HAS_AUDIO;
+  else if (strTest.Equals("player.hasvideo")) ret = PLAYER_HAS_VIDEO;
+  else if (strTest.Equals("player.playing")) ret = PLAYER_PLAYING;
+  else if (strTest.Equals("player.paused")) ret = PLAYER_PAUSED;
+  else if (strTest.Equals("player.rewinding")) ret = PLAYER_REWINDING;
+  else if (strTest.Equals("player.forwarding")) ret = PLAYER_FORWARDING;
+  else if (strTest.Equals("player.rewinding2x")) ret = PLAYER_REWINDING_2x;
+  else if (strTest.Equals("player.rewinding4x")) ret = PLAYER_REWINDING_4x;
+  else if (strTest.Equals("player.rewinding8x")) ret = PLAYER_REWINDING_8x;
+  else if (strTest.Equals("player.rewinding16x")) ret = PLAYER_REWINDING_16x;
+  else if (strTest.Equals("player.rewinding32x")) ret = PLAYER_REWINDING_32x;
+  else if (strTest.Equals("player.forwarding2x")) ret = PLAYER_FORWARDING_2x;
+  else if (strTest.Equals("player.forwarding4x")) ret = PLAYER_FORWARDING_4x;
+  else if (strTest.Equals("player.forwarding8x")) ret = PLAYER_FORWARDING_8x;
+  else if (strTest.Equals("player.forwarding16x")) ret = PLAYER_FORWARDING_16x;
+  else if (strTest.Equals("player.forwarding32x")) ret = PLAYER_FORWARDING_32x;
+  else if (strTest.Equals("player.canrecord")) ret = PLAYER_CAN_RECORD;
+  else if (strTest.Equals("player.isrecording")) ret = PLAYER_IS_RECORDING;
+  else if (strTest.Equals("player.displayafterseek")) ret = PLAYER_DISPLAY_AFTER_SEEK;
+  else if (strTest.Equals("player.iscaching")) ret = PLAYER_IS_CACHING;
+  else if (strTest.Equals("weather.conditions")) ret = WEATHER_CONDITIONS;
+  else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
+  else if (strTest.Equals("system.date")) ret = SYSTEM_DATE;
+  else if (strTest.Equals("system.time")) ret = SYSTEM_TIME;
+  else if (strTest.Equals("system.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
+  else if (strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
+  else if (strTest.Equals("system.fanspeed")) ret = SYSTEM_FAN_SPEED;
+  else if (strTest.Equals("system.freespace(c)")) ret = SYSTEM_FREE_SPACE_C;
+  else if (strTest.Equals("system.freespace(e)")) ret = SYSTEM_FREE_SPACE_E;
+  else if (strTest.Equals("system.freespace(f)")) ret = SYSTEM_FREE_SPACE_F;
+  else if (strTest.Equals("system.freespace(g)")) ret = SYSTEM_FREE_SPACE_G;
+  else if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
+  else if (strTest.Equals("musicplayer.title")) ret = MUSICPLAYER_TITLE;
+  else if (strTest.Equals("musicplayer.album")) ret = MUSICPLAYER_ALBUM;
+  else if (strTest.Equals("musicplayer.artist")) ret = MUSICPLAYER_ARTIST;
+  else if (strTest.Equals("musicplayer.year")) ret = MUSICPLAYER_YEAR;
+  else if (strTest.Equals("musicplayer.genre")) ret = MUSICPLAYER_GENRE;
+  else if (strTest.Equals("musicplayer.time")) ret = MUSICPLAYER_TIME;
+  else if (strTest.Equals("musicplayer.timeremaining")) ret = MUSICPLAYER_TIME_REMAINING;
+  else if (strTest.Equals("musicplayer.timespeed")) ret = MUSICPLAYER_TIME_SPEED;
+  else if (strTest.Equals("musicplayer.tracknumber")) ret = MUSICPLAYER_TRACK_NUMBER;
+  else if (strTest.Equals("musicplayer.duration")) ret = MUSICPLAYER_DURATION;
+  else if (strTest.Equals("musicplayer.cover")) ret = MUSICPLAYER_COVER;
+  else if (strTest.Equals("videoplayer.title")) ret = VIDEOPLAYER_TITLE;
+  else if (strTest.Equals("videoplayer.genre")) ret = VIDEOPLAYER_GENRE;
+  else if (strTest.Equals("videoplayer.director")) ret = VIDEOPLAYER_DIRECTOR;
+  else if (strTest.Equals("videoplayer.year")) ret = VIDEOPLAYER_YEAR;
+  else if (strTest.Equals("videoplayer.time")) ret = VIDEOPLAYER_TIME;
+  else if (strTest.Equals("videoplayer.timeremaining")) ret = VIDEOPLAYER_TIME_REMAINING;
+  else if (strTest.Equals("videoplayer.timespeed")) ret = VIDEOPLAYER_TIME_SPEED;
+  else if (strTest.Equals("videoplayer.duration")) ret = VIDEOPLAYER_DURATION;
+  else if (strTest.Equals("videoplayer.cover")) ret = VIDEOPLAYER_COVER;
+  return bNegate ? -ret : ret;
+}
+
+wstring CGUIInfoManager::GetLabel(int info)
 {
   CStdString strLabel;
-  CStdString strTest = strInfo;
-  strTest = strTest.ToLower();
-  if (strTest == "weather.conditions")
+  if (info == WEATHER_CONDITIONS)
     strLabel = g_weatherManager.GetLabel(WEATHER_LABEL_CURRENT_COND);
-  else if (strTest == "weather.temperature")
+  else if (info == WEATHER_TEMPERATURE)
     strLabel = g_weatherManager.GetLabel(WEATHER_LABEL_CURRENT_TEMP);
-  else if (strTest == "weather.location")
+  else if (info == WEATHER_LOCATION)
     strLabel = g_weatherManager.GetLabel(WEATHER_LABEL_LOCATION);
-  else if (strTest == "system.time")
+  else if (info == SYSTEM_TIME)
     return GetTime();
-  else if (strTest == "system.date")
+  else if (info == SYSTEM_DATE)
     return GetDate();
-  else if (strTest.Left(11) == "musicplayer")
-    strLabel = GetMusicLabel(strTest.Mid(12));
-  else if (strTest.Left(11) == "videoplayer")
-    strLabel = GetVideoLabel(strTest.Mid(12));
-  else if (strTest.Left(16) == "system.freespace")
-    return GetFreeSpace(strTest.Mid(17, 1).ToUpper());
-  else if (strTest == "system.cputemperature")
+  else if (info >= MUSICPLAYER_TITLE && info <= MUSICPLAYER_DURATION)
+    strLabel = GetMusicLabel(info);
+  else if (info >= VIDEOPLAYER_TITLE && info <= VIDEOPLAYER_DURATION)
+    strLabel = GetVideoLabel(info);
+  else if (info >= SYSTEM_FREE_SPACE_C && info <= SYSTEM_FREE_SPACE_G)
+    return GetFreeSpace(info);
+  else if (info == SYSTEM_CPU_TEMPERATURE)
     return GetSystemHeatInfo("cpu");
-  else if (strTest == "system.gputemperature")
+  else if (info == SYSTEM_GPU_TEMPERATURE)
     return GetSystemHeatInfo("gpu");
-  else if (strTest == "system.fanspeed")
+  else if (info == SYSTEM_FAN_SPEED)
     return GetSystemHeatInfo("fan");
-  else if (strTest == "network.ipaddress")
+  else if (info == NETWORK_IP_ADDRESS)
   {
     const WCHAR* pszIP = g_localizeStrings.Get(150).c_str();
     WCHAR wzIP[32];
@@ -70,79 +199,70 @@ wstring CGUIInfoManager::GetLabel(const CStdString &strInfo)
   return strReturn;
 }
 
-// checks the condition and returns it as necessary.  Currently used for toggle button controls.
-bool CGUIInfoManager::GetBool(const CStdString &strCondition)
+// checks the condition and returns it as necessary.  Currently used
+// for toggle button controls and visibility of images.
+bool CGUIInfoManager::GetBool(int condition) const
 {
-  CStdString strTest = strCondition;
-  strTest.ToLower();
-  bool bNegate = strTest[0] == '!';
   bool bReturn = false;
-
-  if(bNegate)
-    strTest.Delete(0, 1);
-
-  // check playing conditions...
   if (g_application.IsPlaying())
   {
-    if (strTest.Equals("Player.HasMedia"))
+    if (condition == PLAYER_HAS_MEDIA)
       bReturn = true;
-    else if (strTest.Equals("Player.HasAudio"))
+    else if (condition == PLAYER_HAS_AUDIO)
       bReturn = g_application.IsPlayingAudio();
-    else if (strTest.Equals("Player.HasVideo"))
+    else if (condition == PLAYER_HAS_VIDEO)
       bReturn = g_application.IsPlayingVideo();
-    else if (strTest.Equals("Player.Playing"))
+    else if (condition == PLAYER_PLAYING)
       bReturn = !g_application.m_pPlayer->IsPaused() && (g_application.GetPlaySpeed() == 1);
-    else if (strTest.Equals("Player.Paused"))
+    else if (condition == PLAYER_PAUSED)
       bReturn = g_application.m_pPlayer->IsPaused();
-    else if (strTest.Equals("Player.Rewinding"))
+    else if (condition == PLAYER_REWINDING)
       bReturn = g_application.GetPlaySpeed() < 1;
-    else if (strTest.Equals("Player.Forwarding"))
+    else if (condition == PLAYER_FORWARDING)
       bReturn = g_application.GetPlaySpeed() > 1;
-    else if (strTest.Equals("Player.Rewinding2x"))
+    else if (condition == PLAYER_REWINDING_2x)
       bReturn = g_application.GetPlaySpeed() == -2;
-    else if (strTest.Equals("Player.Rewinding4x"))
+    else if (condition == PLAYER_REWINDING_4x)
       bReturn = g_application.GetPlaySpeed() == -4;
-    else if (strTest.Equals("Player.Rewinding8x"))
+    else if (condition == PLAYER_REWINDING_8x)
       bReturn = g_application.GetPlaySpeed() == -8;
-    else if (strTest.Equals("Player.Rewinding16x"))
+    else if (condition == PLAYER_REWINDING_16x)
       bReturn = g_application.GetPlaySpeed() == -16;
-    else if (strTest.Equals("Player.Rewinding32x"))
+    else if (condition == PLAYER_REWINDING_32x)
       bReturn = g_application.GetPlaySpeed() == -32;
-    else if (strTest.Equals("Player.Forwarding2x"))
+    else if (condition == PLAYER_FORWARDING_2x)
       bReturn = g_application.GetPlaySpeed() == 2;
-    else if (strTest.Equals("Player.Forwarding4x"))
+    else if (condition == PLAYER_FORWARDING_4x)
       bReturn = g_application.GetPlaySpeed() == 4;
-    else if (strTest.Equals("Player.Forwarding8x"))
+    else if (condition == PLAYER_FORWARDING_8x)
       bReturn = g_application.GetPlaySpeed() == 8;
-    else if (strTest.Equals("Player.Forwarding16x"))
+    else if (condition == PLAYER_FORWARDING_16x)
       bReturn = g_application.GetPlaySpeed() == 16;
-    else if (strTest.Equals("Player.Forwarding32x"))
+    else if (condition == PLAYER_FORWARDING_32x)
       bReturn = g_application.GetPlaySpeed() == 32;
-    else if (strTest.Equals("Player.CanRecord"))
+    else if (condition == PLAYER_CAN_RECORD)
       bReturn = g_application.m_pPlayer->CanRecord();
-    else if (strTest.Equals("Player.IsRecording"))
+    else if (condition == PLAYER_IS_RECORDING)
       bReturn = g_application.m_pPlayer->IsRecording();
-    else if (strTest.Equals("Player.DisplayAfterSeek"))
+    else if (condition == PLAYER_DISPLAY_AFTER_SEEK)
       bReturn = GetDisplayAfterSeek();
-    else if (g_application.m_pPlayer && strTest.Equals("Player.IsCaching"))
+    else if (condition == PLAYER_IS_CACHING)
       bReturn = g_application.m_pPlayer->IsCaching();
   }
-  return bNegate ? !bReturn : bReturn;
+  return (condition < 0) ? !bReturn : bReturn;
 }
 
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
-CStdString CGUIInfoManager::GetImage(const CStdString &strInfo)
+CStdString CGUIInfoManager::GetImage(int info)
 {
-  CStdString strTest = strInfo;
-  strTest = strTest.ToLower();
-  if (strTest == "weather.conditions")
+  if (info == WEATHER_CONDITIONS)
     return g_weatherManager.GetCurrentIcon();
-  if (strTest == "musicplayer.cover")
+  else if (info == MUSICPLAYER_COVER)
   {
     if (!g_application.IsPlayingAudio()) return "";
     return m_currentSong.HasThumbnail() ? m_currentSong.GetThumbnailImage() : "music.jpg";
   }
-  if (strTest == "videoplayer.cover")
+  else if (info == VIDEOPLAYER_COVER)
   {
     if (!g_application.IsPlayingVideo()) return "";
     return m_currentMovieThumb;
@@ -247,19 +367,19 @@ wstring CGUIInfoManager::GetTime(bool bSeconds)
   return strText;
 }
 
-CStdString CGUIInfoManager::GetMusicLabel(const CStdString &strItem)
+CStdString CGUIInfoManager::GetMusicLabel(int item)
 {
   if (!g_application.IsPlayingAudio()) return "";
   CMusicInfoTag& tag = m_currentSong.m_musicInfoTag;
   if (!tag.Loaded()) return "";
-  if (strItem == "title") return tag.GetTitle();
-  else if (strItem == "album") return tag.GetAlbum();
-  else if (strItem == "artist") return tag.GetArtist();
-  else if (strItem == "year") return tag.GetYear();
-  else if (strItem == "genre") return tag.GetGenre();
-  else if (strItem == "time") return GetCurrentPlayTime();
-  else if (strItem == "timeremaining") return GetCurrentPlayTimeRemaining();
-  else if (strItem == "timespeed")
+  if (item == MUSICPLAYER_TITLE) return tag.GetTitle();
+  else if (item == MUSICPLAYER_ALBUM) return tag.GetAlbum();
+  else if (item == MUSICPLAYER_ARTIST) return tag.GetArtist();
+  else if (item == MUSICPLAYER_YEAR) return tag.GetYear();
+  else if (item == MUSICPLAYER_GENRE) return tag.GetGenre();
+  else if (item == MUSICPLAYER_TIME) return GetCurrentPlayTime();
+  else if (item == MUSICPLAYER_TIME_REMAINING) return GetCurrentPlayTimeRemaining();
+  else if (item == MUSICPLAYER_TIME_SPEED)
   {
     CStdString strTime;
     if (g_application.GetPlaySpeed() != 1)
@@ -268,14 +388,14 @@ CStdString CGUIInfoManager::GetMusicLabel(const CStdString &strItem)
       strTime = GetCurrentPlayTime();
     return strTime;
   }
-  else if (strItem == "tracknumber")
+  else if (item == MUSICPLAYER_TRACK_NUMBER)
   {
     CStdString strTrack;
     if (tag.GetTrackNumber() > 0)
       strTrack.Format("%02i", tag.GetTrackNumber());
     return strTrack;
   }
-  else if (strItem == "duration")
+  else if (item == MUSICPLAYER_DURATION)
   {
     CStdString strDuration = "00:00";
     if (tag.GetDuration() > 0)
@@ -291,13 +411,13 @@ CStdString CGUIInfoManager::GetMusicLabel(const CStdString &strItem)
   return "";
 }
 
-CStdString CGUIInfoManager::GetVideoLabel(const CStdString &strItem)
+CStdString CGUIInfoManager::GetVideoLabel(int item)
 {
   if (!g_application.IsPlayingVideo()) return "";
-  if (strItem == "title") return m_currentMovie.m_strTitle;
-  else if (strItem == "genre") return m_currentMovie.m_strGenre;
-  else if (strItem == "director") return m_currentMovie.m_strDirector;
-  else if (strItem == "year")
+  if (item == VIDEOPLAYER_TITLE) return m_currentMovie.m_strTitle;
+  else if (item == VIDEOPLAYER_GENRE) return m_currentMovie.m_strGenre;
+  else if (item == VIDEOPLAYER_DIRECTOR) return m_currentMovie.m_strDirector;
+  else if (item == VIDEOPLAYER_YEAR)
   {
     if (m_currentMovie.m_iYear > 0)
     {
@@ -306,9 +426,9 @@ CStdString CGUIInfoManager::GetVideoLabel(const CStdString &strItem)
       return strYear;
     }
   }
-  else if (strItem == "time") return GetCurrentPlayTime();
-  else if (strItem == "timeremaining") return GetCurrentPlayTimeRemaining();
-  else if (strItem == "timespeed")
+  else if (item == VIDEOPLAYER_TIME) return GetCurrentPlayTime();
+  else if (item == VIDEOPLAYER_TIME_REMAINING) return GetCurrentPlayTimeRemaining();
+  else if (item == VIDEOPLAYER_TIME_SPEED)
   {
     CStdString strTime;
     if (g_application.GetPlaySpeed() != 1)
@@ -317,7 +437,7 @@ CStdString CGUIInfoManager::GetVideoLabel(const CStdString &strItem)
       strTime = GetCurrentPlayTime();
     return strTime;
   }
-  else if (strItem == "duration")
+  else if (item == VIDEOPLAYER_DURATION)
   {
     CStdString strDuration = "00:00:00";
     unsigned int iTotal = g_application.m_pPlayer->GetTotalTime();
@@ -545,24 +665,26 @@ wstring CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
   return L"";
 }
 
-wstring CGUIInfoManager::GetFreeSpace(const CStdString &strDrive)
+wstring CGUIInfoManager::GetFreeSpace(int drive)
 {
   ULARGE_INTEGER lTotalFreeBytes;
   WCHAR wszHD[64];
   wstring strReturn;
 
-  CStdString strDriveFind = strDrive + ":\\";
+  char cDrive = drive - SYSTEM_FREE_SPACE_C + 'c';
+  CStdString strDriveFind;
+  strDriveFind.Format("%c:\\", cDrive);
   const WCHAR *pszDrive = g_localizeStrings.Get(155).c_str();
   const WCHAR *pszFree = g_localizeStrings.Get(160).c_str();
   const WCHAR *pszUnavailable = g_localizeStrings.Get(161).c_str();
   if (GetDiskFreeSpaceEx( strDriveFind.c_str(), NULL, NULL, &lTotalFreeBytes))
   {
-    swprintf(wszHD, L"%s %c: %u Mb ", pszDrive, strDrive[0], lTotalFreeBytes.QuadPart / 1048576); //To make it MB
+    swprintf(wszHD, L"%s %c: %u Mb ", pszDrive, cDrive, lTotalFreeBytes.QuadPart / 1048576); //To make it MB
     wcscat(wszHD, pszFree);
   }
   else
   {
-    swprintf(wszHD, L"%s %c: ", pszDrive, strDrive[0]);
+    swprintf(wszHD, L"%s %c: ", pszDrive, cDrive);
     wcscat(wszHD, pszUnavailable);
   }
   strReturn = wszHD;
@@ -590,7 +712,7 @@ void CGUIInfoManager::SetDisplayAfterSeek(DWORD dwTimeOut)
     m_AfterSeekTimeout = 0;
 }
 
-bool CGUIInfoManager::GetDisplayAfterSeek()
+bool CGUIInfoManager::GetDisplayAfterSeek() const
 {
   return (timeGetTime() < m_AfterSeekTimeout);
 }

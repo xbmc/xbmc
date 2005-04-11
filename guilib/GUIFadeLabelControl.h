@@ -26,6 +26,9 @@ public:
   DWORD GetAlignment() const { return m_dwdwTextAlign;};
   const char * GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
 
+  void SetInfo(const vector<int> &vecInfo);
+  const vector<int> &GetInfo() const { return m_vecInfo; };
+
 protected:
   bool RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll );
   CGUIFont* m_pFont;
@@ -40,5 +43,6 @@ protected:
   int iStartFrame;
   bool m_bFadeIn;
   int m_iCurrentFrame;
+  vector<int> m_vecInfo;
 };
 #endif

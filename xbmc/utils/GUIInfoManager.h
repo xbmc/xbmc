@@ -21,10 +21,11 @@ public:
   CGUIInfoManager(void);
   virtual ~CGUIInfoManager(void);
 
-  wstring GetLabel(const CStdString &strInfo);
-  CStdString GetImage(const CStdString &strInfo);
-  bool GetBool(const CStdString &strCondition);
-  LPDIRECT3DTEXTURE8 GetTexture(const CStdString &strInfo);
+  int TranslateString(const CStdString &strCondition);
+  bool GetBool(int condition) const;
+  wstring GetLabel(int info);
+
+  CStdString GetImage(int info);
 
   wstring GetTime(bool bSeconds = false);
   wstring GetDate(bool bNumbersOnly = false);
@@ -43,9 +44,9 @@ public:
   void SetCurrentMovie(CFileItem &item);
   const CIMDBMovie &GetCurrentMovie() const { return m_currentMovie; };
 
-  CStdString GetMusicLabel(const CStdString &strItem);
-  CStdString GetVideoLabel(const CStdString &strItem);
-  wstring GetFreeSpace(const CStdString &strDrive);
+  CStdString GetMusicLabel(int item);
+  CStdString GetVideoLabel(int item);
+  wstring GetFreeSpace(int drive);
   int GetPlayTime();
   CStdString GetCurrentPlayTime();
   int GetPlayTimeRemaining();
@@ -53,7 +54,7 @@ public:
   CStdString GetVersion();
   CStdString GetBuild();
 
-  bool GetDisplayAfterSeek();
+  bool GetDisplayAfterSeek() const;
   void SetDisplayAfterSeek(DWORD TimeOut = 2500);
 protected:
 
