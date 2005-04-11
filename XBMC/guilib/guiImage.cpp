@@ -24,11 +24,13 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, 
   m_iImageWidth = 0;
   m_iImageHeight = 0;
   m_bWasVisible = m_bVisible;
-  m_strVisible = "";
+  m_VisibleCondition = 0;
   for (int i = 0; i < 4; i++)
     m_dwAlpha[i] = 0xFF;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
+  m_Info = 0;
+  m_strBackupFileName = strTexture;
 }
 
 CGUIImage::CGUIImage(const CGUIImage &left)
@@ -50,11 +52,14 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_iImageHeight = 0;
   m_iTextureWidth = 0;
   m_iTextureHeight = 0;
+  m_VisibleCondition = 0;
   for (int i = 0; i < 4; i++)
     m_dwAlpha[i] = left.m_dwAlpha[i];
   m_pPalette = NULL;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
+  m_Info = left.m_Info;
+  m_strBackupFileName = left.m_strBackupFileName;
 }
 
 CGUIImage::~CGUIImage(void)
@@ -83,8 +88,24 @@ void CGUIImage::Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
 void CGUIImage::Render()
 {
   // check for conditional visibility
-  if (!m_strVisible.IsEmpty())
-    m_bVisible = g_infoManager.GetBool(m_strVisible);
+  if (m_VisibleCondition)
+    m_bVisible = g_infoManager.GetBool(m_VisibleCondition);
+
+  // check for conditional information
+  if (m_Info)
+  {
+    CStdString strImage = g_infoManager.GetImage(m_Info);
+    if (strImage.size())
+    {
+      if (strImage != m_strFileName)
+        SetFileName(strImage);
+    }
+    else
+    {
+      if (m_strFileName != m_strBackupFileName)
+        SetFileName(m_strBackupFileName);
+    }
+  }
 
   if (m_bDynamicResourceAlloc && !m_bVisible && IsAllocated())
     FreeResources();

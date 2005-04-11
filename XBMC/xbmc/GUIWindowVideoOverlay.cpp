@@ -23,15 +23,20 @@ CGUIWindowVideoOverlay::~CGUIWindowVideoOverlay()
 
 void CGUIWindowVideoOverlay::OnWindowLoaded()
 {
-  // make our images conditional if they're not already (backwards compatible)
+  // PRE1.3 make our images conditional if they're not already (backwards compatible)
   CGUIImage *pImage = (CGUIImage *)GetControl(CONTROL_PLAY_LOGO);
-  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Playing");
+  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(4);
   pImage = (CGUIImage *)GetControl(CONTROL_PAUSE_LOGO);
-  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Paused");
+  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(5);
   pImage = (CGUIImage *)GetControl(CONTROL_RW_LOGO);
-  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Rewinding");
+  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(6);
   pImage = (CGUIImage *)GetControl(CONTROL_FF_LOGO);
-  if (pImage && pImage->GetVisibleCondition().IsEmpty()) pImage->SetVisibleCondition("Player.Forwarding");
+  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(12);
+  CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(CONTROL_BIG_PLAYTIME);
+  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(254);
+  pLabel = (CGUILabelControl *)GetControl(CONTROL_PLAYTIME);
+  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(256);
+  // PRE1.3
 }
 
 void CGUIWindowVideoOverlay::Render()
@@ -54,10 +59,6 @@ void CGUIWindowVideoOverlay::Render()
       g_application.m_pPlayer->SeekTime(0);
     }
   }
-
-
-  SET_CONTROL_LABEL(CONTROL_BIG_PLAYTIME, g_infoManager.GetLabel("videoplayer.time"));
-  SET_CONTROL_LABEL(CONTROL_PLAYTIME, g_infoManager.GetLabel("videoplayer.timespeed"));
 
   CGUIWindow::Render();
 }

@@ -2,6 +2,7 @@
 #include "GUIFadeLabelControl.h"
 #include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
 CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, DWORD dwTextColor, DWORD dwTextAlign)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
@@ -21,14 +22,33 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, 
 }
 
 CGUIFadeLabelControl::~CGUIFadeLabelControl(void)
-{}
+{
+}
 
+void CGUIFadeLabelControl::SetInfo(const vector<int> &vecInfo)
+{
+  m_vecInfo = vecInfo;
+  if (m_vecInfo.size() == 0)
+    return; // no info at all
+  m_vecLabels.clear();
+  // create dummy entries as necessary
+  for (unsigned int i = 0; i < m_vecInfo.size(); i++)
+    m_vecLabels.push_back(L"");
+  int iSize = m_vecLabels.size();
+  iSize--;
+}
 
 void CGUIFadeLabelControl::Render()
 {
   if (!IsVisible()) return ;
   if (!m_pFont) return ;
   if (m_vecLabels.size() == 0) return ;
+
+  if (m_vecInfo.size())
+  { // update our labels if we have the info to do so
+    if (m_iCurrentLabel >= (int)m_vecInfo.size() ) m_iCurrentLabel = 0;
+    m_vecLabels[m_iCurrentLabel] = g_infoManager.GetLabel(m_vecInfo[m_iCurrentLabel]);
+  }
   if (m_iCurrentLabel >= (int)m_vecLabels.size() ) m_iCurrentLabel = 0;
 
   wstring strLabel = m_vecLabels[m_iCurrentLabel];
