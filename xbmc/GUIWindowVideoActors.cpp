@@ -102,13 +102,6 @@ bool CGUIWindowVideoActors::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_DVDDRIVE_EJECTED_CD:
-  case GUI_MSG_DVDDRIVE_CHANGED_CD:
-  case GUI_MSG_WINDOW_DEINIT:
-  case GUI_MSG_WINDOW_INIT:
-    return CGUIWindowVideoBase::OnMessage(message);
-    break;
-
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -140,7 +133,7 @@ bool CGUIWindowVideoActors::OnMessage(CGUIMessage& message)
         return CGUIWindowVideoBase::OnMessage(message);
     }
   }
-  return CGUIWindow::OnMessage(message);
+  return CGUIWindowVideoBase::OnMessage(message);
 }
 
 //****************************************************************************************************************************

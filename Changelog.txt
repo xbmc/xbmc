@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-04-2005 fixed: Selected item in My Videos wasn't remembered.
   - 11-04-2005 fixed: Double tap remote bug.
   - 11-04-2005 changed: Removed duplicate code from Video OSD/Fullscreen.
   - 11-04-2005 fixed: Context menu didn't popup in empty dirs if "Hide Parent Items" was turned on.
