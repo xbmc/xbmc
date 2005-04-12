@@ -50,6 +50,7 @@ public:
   virtual void FreeResources();
           bool IsAllocated();
   virtual void DynamicResourceAlloc(bool bOnOff);
+  virtual bool IsDynamicallyAllocated() { return false; };
   virtual bool CanFocus() const;
   virtual bool IsVisible() const;
   virtual bool IsDisabled() const;

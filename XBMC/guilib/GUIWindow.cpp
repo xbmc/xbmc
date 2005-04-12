@@ -934,7 +934,8 @@ void CGUIWindow::AllocResources()
   for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
-    pControl->PreAllocResources();
+    if (pControl->GetControlType() != CGUIControl::GUICONTROL_IMAGE || !pControl->IsDynamicallyAllocated()) 
+      pControl->PreAllocResources();
   }
   g_TextureManager.EndPreLoad();
 
@@ -944,7 +945,8 @@ void CGUIWindow::AllocResources()
   for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
-    pControl->AllocResources();
+    if (pControl->GetControlType() != CGUIControl::GUICONTROL_IMAGE || !pControl->IsDynamicallyAllocated()) 
+      pControl->AllocResources();
   }
   g_TextureManager.FlushPreLoad();
 

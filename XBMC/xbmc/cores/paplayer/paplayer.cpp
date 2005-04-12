@@ -465,8 +465,8 @@ __int64 PAPlayer::GetTime()
 {
 
   __int64  timeconstant = m_Channels*(m_SampleSize/8)*m_SampleRate;
-  __int64  timeplus = ( m_dwBytesSentOut / timeconstant ) * 1000;
-    return  m_startOffset + timeplus;
+  __int64  timeplus = timeconstant ? ( m_dwBytesSentOut / timeconstant ) * 1000 : 0;
+  return  m_startOffset + timeplus;
 }
 
 int PAPlayer::GetTotalTime()

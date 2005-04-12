@@ -91,13 +91,20 @@ void CGUIFontTTF::DrawTextImpl( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* 
     if (fMaxPixelWidth > 0)
     {
       m_pTrueTypeFont->GetTextExtent(buf, -1, &lineWidth);
-      int ll = wcslen(buf);
-      while (fMaxPixelWidth > 0 && ll >= 2 && lineWidth > fMaxPixelWidth + 60)
+      if (lineWidth > fMaxPixelWidth)
       {
-        buf[ll - 2] = L'.';
-        buf[ll - 1] = L'\0';
-        ll--;
-        m_pTrueTypeFont->GetTextExtent(buf, -1, &lineWidth);
+        unsigned int elipsesWidth;
+        m_pTrueTypeFont->GetTextExtent(L"...", -1, &elipsesWidth);
+        int ll = wcslen(buf);
+        bool bElipses = false;
+        while (fMaxPixelWidth > 0 && ll >= 1 && lineWidth + elipsesWidth > fMaxPixelWidth)
+        {
+          buf[--ll] = L'\0';
+          m_pTrueTypeFont->GetTextExtent(buf, -1, &lineWidth);
+          bElipses = true;
+        }
+        if (bElipses)
+          wcscat(buf, L"...");
       }
     }
 
@@ -108,7 +115,7 @@ void CGUIFontTTF::DrawTextImpl( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* 
 
     m_pTrueTypeFont->SetTextAlignment(flags);
 
-    DrawTrueType((long)sx, (long)sy, (WCHAR *)buf, wcslen(strText));
+    DrawTrueType((long)sx, (long)sy, (WCHAR *)buf, wcslen(buf));
 
     sy += lineHeight;
 
