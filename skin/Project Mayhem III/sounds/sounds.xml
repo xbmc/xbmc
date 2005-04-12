@@ -42,7 +42,7 @@
       <description>Dialog Kai Toast</description>
       <id>107</id>
       <activate>notify.wav</activate>
-      <deactivate>notify.wav</deactivate>
+      <deactivate>out.wav</deactivate>
     </window>
   </windows>
 </sounds>
