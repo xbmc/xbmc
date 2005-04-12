@@ -1,0 +1,48 @@
+<sounds>
+  <actions>
+    <action>
+      <description>Move Left</description>
+      <id>1</id>
+      <file>cursor.wav</file>
+    </action>
+    <action>
+      <description>Move Right</description>
+      <id>2</id>
+      <file>cursor.wav</file>
+    </action>
+    <action>
+      <description>Move Up</description>
+      <id>3</id>
+      <file>cursor.wav</file>
+    </action>
+    <action>
+      <description>Move Down</description>
+      <id>4</id>
+      <file>cursor.wav</file>
+    </action>
+    <action>
+      <description>Select Item</description>
+      <id>7</id>
+      <file>click.wav</file>
+    </action>
+    <action>
+      <description>Parent Directory</description>
+      <id>9</id>
+      <file>back.wav</file>
+    </action>
+    <action>
+      <description>Previous Menu</description>
+      <id>10</id>
+      <file>back.wav</file>
+    </action>
+  </actions>
+
+  <windows>
+    <window>
+      <description>Dialog Kai Toast</description>
+      <id>107</id>
+      <activate>notify.wav</activate>
+      <deactivate>notify.wav</deactivate>
+    </window>
+  </windows>
+</sounds>

@@ -903,6 +903,8 @@
   <string><id>15106</id><value>Remember selected file on forward navigation</value></string>
 
   <string><id>15107</id><value>Buffering...</value></string>
-  
+  <string><id>15108</id><value>Navigation Sounds</value></string>
+  <string><id>15109</id><value>Skin Default</value></string>
+ 
 </strings>
 

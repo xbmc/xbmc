@@ -24,6 +24,7 @@
 #include "MPlayer.h"
 #include "../../util.h"
 #include "../../application.h" // Karaoke patch (114097)
+#include "AudioContext.h"
 
 #define VOLUME_MIN    DSBVOLUME_MIN
 #define VOLUME_MAX    DSBVOLUME_MAX
@@ -242,6 +243,8 @@ bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, 
 //***********************************************************************************************
 CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers, char* strAudioCodec)
 {
+  g_audioContext.RemoveActiveDevice();
+
   buffered_bytes = 0;
   m_pCallback = pCallback;
 
@@ -334,14 +337,9 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   m_adwStatus = new DWORD[ m_dwNumPackets ];
   m_pbSampleData = new PBYTE[ m_dwNumPackets ];
 
-  // Create DirectSound
-  HRESULT hr;
-  hr = DirectSoundCreate( NULL, &m_pDSound, NULL ) ;
-  if ( DS_OK != hr )
-  {
-    CLog::Log(LOGERROR, "DirectSoundCreate() Failed");
-    return ;
-  }
+  g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
+  m_pDSound=g_audioContext.GetDirectSoundDevice();
+
   m_nCurrentVolume = GetMaximumVolume();
 
   for ( DWORD j = 0; j < m_dwNumPackets; j++ )
@@ -487,12 +485,6 @@ HRESULT CASyncDirectSound::Deinitialize()
     m_pStream->Release();
     m_pStream = NULL;
   }
-  if ( m_pDSound )
-  {
-    m_pDSound->Release() ;
-  }
-  m_pDSound = NULL;
-
   if (m_VisBuffer)
     free(m_VisBuffer);
   m_VisBuffer = NULL;
@@ -508,6 +500,10 @@ HRESULT CASyncDirectSound::Deinitialize()
   if ( m_adwStatus )
     delete [] m_adwStatus;
   m_adwStatus = NULL;
+
+  m_pDSound = NULL;
+  g_audioContext.RemoveActiveDevice();
+  g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
 
   return S_OK;
 }
