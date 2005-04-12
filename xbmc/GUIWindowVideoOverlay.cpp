@@ -23,6 +23,7 @@ CGUIWindowVideoOverlay::~CGUIWindowVideoOverlay()
 
 void CGUIWindowVideoOverlay::OnWindowLoaded()
 {
+  CGUIWindow::OnWindowLoaded();
   // PRE1.3 make our images conditional if they're not already (backwards compatible)
   CGUIImage *pImage = (CGUIImage *)GetControl(CONTROL_PLAY_LOGO);
   if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(4);

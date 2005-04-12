@@ -4,10 +4,12 @@
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
+#define SCROLL_WAIT 50
+
 CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, const wstring& strLabel, DWORD dwTextColor, DWORD dwDisabledColor, DWORD dwTextAlign, bool bHasPath)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {
-  m_strLabel = strLabel;
+  SetLabel(strLabel);
   m_pFont = g_fontManager.GetFont(strFont);
   m_dwTextColor = dwTextColor;
   m_dwTextAlign = dwTextAlign;
@@ -63,33 +65,104 @@ void CGUILabelControl::Render()
     CStdStringW strLabelUnicode;
     g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
 
-    float fPosX = (float)m_iPosX;
-    if (m_dwTextAlign & XBFONT_CENTER_X)
-      fPosX += (float)m_dwWidth / 2;
-
     float fPosY = (float)m_iPosY;
     if (m_dwTextAlign & XBFONT_CENTER_Y)
       fPosY += (float)m_dwHeight / 2;
 
-    if (IsDisabled())
-    {
-      m_pFont->DrawText(fPosX, fPosY, m_dwDisabledColor, strLabelUnicode.c_str(), m_dwTextAlign, (float)m_dwWidth);
-    }
-    else
-    {
-      if (m_bShowCursor)
-      { // show the cursor...
-        if ((++m_dwCounter % 50) > 25)
-        {
-          strLabelUnicode.Insert(m_iCursorPos, L"|");
-        }
-      }
+/*  UNCOMMENT IF WE WANT SCROLLING RATHER THAN CROPPING
 
+    bool bNormalDraw = true;
+    if (0)//m_dwWidth > 0 && !IsDisabled())
+    { // ignore align center - just use align left/right
+      float width, height;
+      m_pFont->GetTextExtent(strLabelUnicode.c_str(), &width, &height);
+      if (width > m_dwWidth)
+      { // need to scroll - set the viewport.  Should be set just using the height of the text
+        bNormalDraw = false;
+        float fPosX = (float)m_iPosX;
+        if (m_dwTextAlign & XBFONT_RIGHT)
+          fPosX -= (float)m_dwWidth;
+        float vpy = fPosY;
+        if (m_dwTextAlign & XBFONT_CENTER_Y)
+          vpy -= (float)m_dwHeight / 2;
+        g_graphicsContext.SetViewPort(fPosX, vpy, (float)m_dwWidth, height);
+        // draw at our scroll position
+        // we handle the scrolling as follows:
+        //   We scroll on a per-pixel basis up until we have scrolled the first character outside
+        //   of our viewport, whereby we cycle the string around, and reset the scroll position.
+        //
+        //   m_PixelScroll is the amount in pixels to move the string by.
+        //   m_CharacterScroll is the amount in characters to rotate the string by.
+        //
+        if (!m_ScrollWait)
+        {
+          // First update our m_PixelScroll...
+          WCHAR sz[3];
+          if (m_CharacterScroll < m_strLabel.size())
+            sz[0] = strLabelUnicode[m_CharacterScroll];
+          else
+            sz[0] = L' ';
+          sz[1] = 0;
+          float charWidth = m_pFont->GetTextWidth(sz);
+          if (m_PixelScroll < charWidth - 1)
+            m_PixelScroll++;
+          else
+          {
+            m_PixelScroll = 0;
+            m_CharacterScroll++;
+            if (m_CharacterScroll > m_strLabel.size() + 3)
+            {
+              m_CharacterScroll = 0;
+              m_ScrollWait = SCROLL_WAIT;
+            }
+          }
+        }
+        else
+          m_ScrollWait--;
+        // Now rotate our string as needed
+        WCHAR *pOutput = new WCHAR[m_strLabel.size()+5];
+        WCHAR *pChar = pOutput;
+        for (unsigned int i = m_CharacterScroll; i < m_strLabel.size() + 4; i++)
+        {
+          if (i < m_strLabel.size())
+            *pChar++ = strLabelUnicode[i];
+          else
+            *pChar++ = L' ';
+        }
+        for (unsigned int i = 0; i < m_CharacterScroll; i++)
+        {
+          if (i < m_strLabel.size())
+            *pChar++ = strLabelUnicode[i];
+          else
+            *pChar++ = L' ';
+        }
+        *pChar = L'\0';
+        m_pFont->DrawTextWidth(fPosX - m_PixelScroll, vpy, m_dwTextColor, pOutput, (float)m_dwWidth + m_PixelScroll + height*2);
+        delete[] pOutput;
+        g_graphicsContext.RestoreViewPort();
+      }
+    }*/
+    if (1)
+    {
       float fPosX = (float)m_iPosX;
       if (m_dwTextAlign & XBFONT_CENTER_X)
         fPosX += (float)m_dwWidth / 2;
 
-      m_pFont->DrawText(fPosX, fPosY, m_dwTextColor, strLabelUnicode.c_str(), m_dwTextAlign, (float)m_dwWidth);
+      if (IsDisabled())
+      {
+        m_pFont->DrawText(fPosX, fPosY, m_dwDisabledColor, strLabelUnicode.c_str(), m_dwTextAlign | XBFONT_TRUNCATED, (float)m_dwWidth);
+      }
+      else
+      {
+        if (m_bShowCursor)
+        { // show the cursor...
+          if ((++m_dwCounter % 50) > 25)
+          {
+            strLabelUnicode.Insert(m_iCursorPos, L"|");
+          }
+        }
+        m_pFont->DrawText(fPosX, fPosY, m_dwTextColor, strLabelUnicode.c_str(), m_dwTextAlign | XBFONT_TRUNCATED, (float)m_dwWidth);
+      }
     }
   }
 }
@@ -110,13 +183,16 @@ void CGUILabelControl::SetAlpha(DWORD dwAlpha)
 void CGUILabelControl::SetLabel(const wstring &strLabel)
 {
   m_strLabel = strLabel;
+  m_PixelScroll = 0;
+  m_CharacterScroll = 0;
+  m_ScrollWait = SCROLL_WAIT;
 }
 
 void CGUILabelControl::SetText(CStdString aLabel)
 {
   WCHAR wszText[1024];
   swprintf(wszText, L"%S", aLabel.c_str());
-  m_strLabel = wszText;
+  SetLabel(wszText);
 }
 
 bool CGUILabelControl::OnMessage(CGUIMessage& message)
@@ -125,7 +201,7 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
   {
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
-      m_strLabel = message.GetLabel();
+      SetLabel(message.GetLabel());
 
       if ( m_bHasPath )
       {

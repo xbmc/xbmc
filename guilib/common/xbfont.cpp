@@ -609,6 +609,7 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 
   // Set a flag so we can determine initial justification effects
   BOOL bStartingNewLine = TRUE;
+  FLOAT fAlignedOriginX;
 
   while ( cchText-- )
   {
@@ -619,7 +620,10 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
       {
         // Get the extent of this line
         FLOAT w, h;
-        GetTextExtent( strText, &w, &h, TRUE );
+        if ( dwFlags & XBFONT_TRUNCATED )
+          w = fMaxPixelWidth;
+        else
+          GetTextExtent( strText, &w, &h, TRUE );
 
         // Offset this line's starting m_fCursorX value
         if ( dwFlags & XBFONT_RIGHT )
@@ -628,6 +632,7 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
           m_fCursorX = floorf( fOriginX - w / 2 );
       }
       bStartingNewLine = FALSE;
+      fAlignedOriginX = m_fCursorX;
     }
 
     // Get the current letter in the CStdString
@@ -653,7 +658,7 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
     if ( dwFlags & XBFONT_TRUNCATED )
     {
       // Check if we will be exceeded the max allowed width
-      if ( m_fCursorX + fOffset + fWidth + fEllipsesPixelWidth + m_fSlantFactor > fOriginX + fMaxPixelWidth )
+      if ( m_fCursorX + fOffset + fWidth + fEllipsesPixelWidth + m_fSlantFactor > fAlignedOriginX + fMaxPixelWidth )
       {
         // Yup. Let's draw the ellipses, then bail
         DrawText( m_fCursorX, m_fCursorY, dwColor, L"..." );

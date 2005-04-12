@@ -357,7 +357,9 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 }
 
 void CGUIWindowMusicBase::OnWindowLoaded()
-{ // add the view controls to our view controller
+{
+  CGUIWindow::OnWindowLoaded();
+  // add the view controls to our view controller
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
   m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
