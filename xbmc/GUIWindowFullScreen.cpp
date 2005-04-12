@@ -195,6 +195,13 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
     g_application.m_pPlayer->ToggleOSD();
     break;
 
+  case ACTION_SHOW_OSD_TIME:
+    if( !HasProgressDisplay() ) g_application.m_pPlayer->ToggleOSD();
+    m_bShowCurrentTime = !m_bShowCurrentTime;
+    if(!m_bShowCurrentTime)
+      g_infoManager.SetDisplayAfterSeek(0); //Force display off
+    break;
+
   case ACTION_SHOW_OSD:  // Show the OSD
     {
       //CSingleLock lock(m_section);
@@ -390,6 +397,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       }
       m_bLastRender = false;
       m_bOSDVisible = false;
+      m_bShowCurrentTime = false;
 
       //  Disable nav sounds if spindown is active as they are loaded
       //  from HDD all the time.
@@ -559,6 +567,8 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
 void CGUIWindowFullScreen::RenderFullScreen()
 {
   if (g_application.GetPlaySpeed() != 1)
+    g_infoManager.SetDisplayAfterSeek();
+  if (m_bShowCurrentTime)
     g_infoManager.SetDisplayAfterSeek();
 
   m_bLastRender = true;
@@ -733,7 +743,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
     bRenderGUI = true;
 
   // Render current time if requested
-  if (m_bShowCurrentTime || g_infoManager.GetDisplayAfterSeek())
+  if (g_infoManager.GetDisplayAfterSeek())
   {
     CStdString strTime;
     bRenderGUI = true;
@@ -743,11 +753,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
     strLabel += g_infoManager.GetLabel(257);  // duration
     SET_CONTROL_LABEL(LABEL_CURRENT_TIME, strLabel);
     SET_CONTROL_VISIBLE(LABEL_CURRENT_TIME);
-
-    if ( (timeGetTime() - m_dwTimeCodeTimeout) >= 2500)
-    {
-      m_bShowCurrentTime = false;
-    }
   }
   else
   {
