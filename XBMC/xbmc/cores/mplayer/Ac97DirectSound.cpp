@@ -24,6 +24,7 @@
 #include "Ac97DirectSound.h"
 #include "../../util.h"
 #include "mplayer.h"
+#include "AudioContext.h"
 
 #define VOLUME_MIN  DSBVOLUME_MIN
 #define VOLUME_MAX  DSBVOLUME_MAX
@@ -52,6 +53,8 @@ void CAc97DirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 //***********************************************************************************************
 CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bAC3DTS, bool bResample)
 {
+  g_audioContext.RemoveActiveDevice();
+
   m_pCallback = pCallback;
   m_bAc3DTS = bAC3DTS;
 
@@ -79,12 +82,8 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, uns
   for ( DWORD j = 0; j < m_dwNumPackets; j++ )
     m_adwStatus[ j ] = XMEDIAPACKET_STATUS_SUCCESS;
 
-  m_pDigitalOutput = NULL;
-  hr = Ac97CreateMediaObject(DSAC97_CHANNEL_DIGITAL, NULL, NULL, &m_pDigitalOutput);
-  if ( hr != DS_OK )
-  {
-    OutputDebugString("failed to create digital Ac97CreateMediaObject()\n");
-  }
+  g_audioContext.SetActiveDevice(CAudioContext::AC97_DEVICE);
+  m_pDigitalOutput = g_audioContext.GetAc97Device();
 
   XMEDIAINFO info;
   m_pDigitalOutput->GetInfo(&info);
@@ -118,11 +117,6 @@ HRESULT CAc97DirectSound::Deinitialize()
 {
   OutputDebugString("CAc97DirectSound::Deinitialize\n");
   m_bIsAllocated = false;
-  if (m_pDigitalOutput)
-  {
-    m_pDigitalOutput->Release();
-    m_pDigitalOutput = NULL;
-  }
 
   if (m_pbSampleData[0])
     XPhysicalFree(m_pbSampleData[0]);
@@ -131,6 +125,10 @@ HRESULT CAc97DirectSound::Deinitialize()
   if ( m_adwStatus )
     delete [] m_adwStatus;
   m_adwStatus = NULL;
+
+  m_pDigitalOutput=NULL;
+  g_audioContext.RemoveActiveDevice();
+  g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
 
   return S_OK;
 }

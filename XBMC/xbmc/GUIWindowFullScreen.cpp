@@ -10,6 +10,7 @@
 #include "utils/GUIInfoManager.h"
 #include "cores/mplayer/xbox_video.h"
 #include "../guilib/GUIProgressControl.h"
+#include "GUIAudioManager.h"
 
 #include <stdio.h>
 
@@ -390,6 +391,14 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       m_bLastRender = false;
       m_bOSDVisible = false;
 
+      //  Disable nav sounds if spindown is active as they are loaded
+      //  from HDD all the time.
+      const CIMDBMovie& movie=g_infoManager.GetCurrentMovie();
+      CFileItem movieItem(movie.m_strPath, false);
+      if ((movieItem.IsRemote() || movieItem.IsDVD() || movieItem.IsISO9660()) 
+        && g_guiSettings.GetInt("System.RemotePlayHDSpinDown")!=SPIN_DOWN_NONE)
+        g_audioManager.Enable(false);
+
       CGUIWindow::OnMessage(message);
 
       CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);
@@ -474,6 +483,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       if (g_application.m_pPlayer)
         g_application.m_pPlayer->Update();
+
+      g_audioManager.Enable(true);
       return true;
     }
   case GUI_MSG_SETFOCUS:
