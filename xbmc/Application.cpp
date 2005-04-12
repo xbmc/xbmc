@@ -2643,6 +2643,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     strNewPlayer = "sid";
   }
+  else if (url.GetFileType() == "mp3")
+  {
+    if (CUtil::FileExists("Q:\\system\\players\\paplayer\\in_mp3.dll"))  strNewPlayer = "paplayer";
+  }
   // Check if we are moving from one cue sheet item to the next
   // need:
   // 1.  player to exist
