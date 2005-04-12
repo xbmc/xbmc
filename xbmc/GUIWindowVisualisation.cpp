@@ -93,10 +93,10 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       else
       {
         // start display init timer (fade in then out after 5 secs...)
-        m_bShowInfo = false;
-        m_dwFrameCounter = TRANSISTION_COUNT;
+        m_bShowInfo = true;
+//        m_dwFrameCounter = TRANSISTION_COUNT;
         m_dwInitTimer = TRANSISTION_LENGTH;
-        SetAlpha(0);
+        SetAlpha(255);
       }
 
       CGUIWindow::OnMessage(message);
@@ -213,6 +213,7 @@ void CGUIWindowVisualisation::FreeResources()
 
 void CGUIWindowVisualisation::OnWindowLoaded()
 {
+  CGUIWindow::OnWindowLoaded();
   // Check if we have a vis control...
   for (unsigned int i = 0; i < m_vecControls.size(); i++)
   {

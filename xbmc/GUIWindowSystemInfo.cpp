@@ -236,6 +236,7 @@ void CGUIWindowSystemInfo::GetValues()
 
 void CGUIWindowSystemInfo::OnWindowLoaded()
 {
+  CGUIWindow::OnWindowLoaded();
   // PRE1.3 - setup labels -> infolabels
   CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(2); // cpu
   if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(112);

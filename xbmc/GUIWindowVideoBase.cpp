@@ -330,6 +330,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
 void CGUIWindowVideoBase::OnWindowLoaded()
 {
+  CGUIWindow::OnWindowLoaded();
   // PRE1.3 transfer id's 10, 11 to 50, 51
   if (!GetControl(CONTROL_LIST))
   {

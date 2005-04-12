@@ -87,9 +87,10 @@ void CGUIImage::Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
 
 void CGUIImage::Render()
 {
-  // check for conditional visibility
-  if (m_VisibleCondition)
-    m_bVisible = g_infoManager.GetBool(m_VisibleCondition);
+  // check for conditional visibility - only works if the app says it's ok to be visible
+  bool bVisible = m_bVisible;
+  if (m_VisibleCondition && bVisible)
+    bVisible = g_infoManager.GetBool(m_VisibleCondition);
 
   // check for conditional information
   if (m_Info)
@@ -107,17 +108,19 @@ void CGUIImage::Render()
     }
   }
 
-  if (m_bDynamicResourceAlloc && !m_bVisible && IsAllocated())
+  if (m_bDynamicResourceAlloc && !bVisible && IsAllocated())
     FreeResources();
 
-  if (!m_bVisible)
+  if (!bVisible)
   {
     m_bWasVisible = false;
     return ;
   }
   
-  if (m_bDynamicResourceAlloc && m_bVisible && !IsAllocated())
+  if (m_bDynamicResourceAlloc && bVisible && !IsAllocated())
     AllocResources();
+  else if (!m_bDynamicResourceAlloc && !IsAllocated())
+    AllocResources();  // not dynamic, make sure we allocate!
 
   if (!m_vecTextures.size())
     return ;
