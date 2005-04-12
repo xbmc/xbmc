@@ -45,7 +45,8 @@ xcopy "skin\Project Mayhem III\*.xml" "BUILD\skin\Project Mayhem III\" /E /Q /I 
 REM %TEX% -input "skin\Project Mayhem III\media" -output "BUILD\skin\Project Mayhem III\media"
 xcopy "skin\Project Mayhem III\media\Textures.xpr" "BUILD\skin\Project Mayhem III\media" /Q /I /Y
 xcopy "skin\Project Mayhem III\media\background.png" "BUILD\skin\Project Mayhem III\media" /Q /I /Y
-xcopy "skin\Project Mayhem III\media\background2.png" "BUILD\skin\Project Mayhem III\media" /Q /I /Y
+xcopy "skin\Project Mayhem III\media\background3.png" "BUILD\skin\Project Mayhem III\media" /Q /I /Y
+xcopy "skin\Project Mayhem III\sounds\*.*" "BUILD\skin\Project Mayhem III\sounds" /Q /I /Y 
 xcopy credits BUILD\credits /Q /I /Y
 xcopy language BUILD\language /E /Q /I /Y
 xcopy xbmc\keyboard\media BUILD\media /E /Q /I /Y
