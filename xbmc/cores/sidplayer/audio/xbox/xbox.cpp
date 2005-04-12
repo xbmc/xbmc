@@ -18,6 +18,7 @@ email                :
 
 #ifdef _XBOX
 #include "./xbox.h"
+#include "AudioContext.h"
 
 #include <stdio.h>
 #ifdef HAVE_EXCEPTIONS
@@ -53,6 +54,8 @@ void *Audio_Xbox::open (AudioConfig &cfg, const char *name)
 
   isOpen = true;
 
+  g_audioContext.RemoveActiveDevice();
+
   if (cfg.channels == 1)
     DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
   else if (cfg.channels == 2)
@@ -60,11 +63,8 @@ void *Audio_Xbox::open (AudioConfig &cfg, const char *name)
   else
     DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
 
-  if (FAILED(DirectSoundCreate(NULL, &pDS, NULL)))
-  {
-    _errorString = "XBOX ERROR: Could not open audio device.";
-    goto Audio_Xbox_openError;
-  }
+  g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
+  pDS=g_audioContext.GetDirectSoundDevice();
 
   XAudioCreatePcmFormat(cfg.channels, cfg.frequency, cfg.precision, &wfm);
 
@@ -198,7 +198,9 @@ void Audio_Xbox::close(void)
   }
 
   SAFE_RELEASE (pStream);
-  SAFE_RELEASE (pDS);
+  pDS=NULL;
+  g_audioContext.RemoveActiveDevice();
+  g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
 }
 
 void Audio_Xbox::pause(void)
