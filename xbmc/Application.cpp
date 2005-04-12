@@ -34,6 +34,7 @@
 #include "SkinInfo.h"
 #include "lib/libPython/XBPython.h"
 #include "ButtonTranslator.h"
+#include "GUIAudioManager.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -842,6 +843,7 @@ HRESULT CApplication::Initialize()
   CreateDirectory("Q:\\scripts", NULL);
   CreateDirectory("Q:\\language", NULL);
   CreateDirectory("Q:\\visualisations", NULL);
+  CreateDirectory("Q:\\sounds", NULL);
 
   if (g_stSettings.m_szAlternateSubtitleDirectory[0] == 0)
   {
@@ -958,6 +960,8 @@ HRESULT CApplication::Initialize()
 
   SAFE_DELETE(m_splash);
 
+  g_audioManager.PlayStartSound();
+
   m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
@@ -996,7 +1000,7 @@ HRESULT CApplication::Initialize()
     // jump to my music when we're in NO tv mode
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
   }
-  
+
   m_bInitializing = false;
   return S_OK;
 }
@@ -1237,6 +1241,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiPointer.FreeResources();
   m_guiPointer.ClearAll();
 
+  g_audioManager.DeInitialize();
+
   m_gWindowManager.DeInitialize();
   g_TextureManager.Cleanup();
 
@@ -1340,6 +1346,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
   m_gWindowManager.SetCallback(*this);
   m_gWindowManager.Initialize();
+  g_audioManager.Initialize();
+  g_audioManager.Load();
   CLog::Log(LOGINFO, "  skin loaded...");
 
   if (bKaiConnected)
@@ -1698,6 +1706,9 @@ void CApplication::OnKey(CKey& key)
     else
       g_buttonTranslator.GetAction(iWin, key, action);
   }
+
+  //  Play a sound based on the action
+  g_audioManager.PlayActionSound(action);
 
   // special case for switching between GUI & fullscreen mode.
   if (action.wID == ACTION_SHOW_GUI)
@@ -2481,6 +2492,7 @@ void CApplication::Stop()
     m_guiDialogMusicScan.FreeResources();
     g_fontManager.Clear();
     m_gWindowManager.DeInitialize();
+    g_audioManager.DeInitialize();
     g_TextureManager.Cleanup();
 
     CLog::Log(LOGNOTICE, "unload sections");
@@ -3444,6 +3456,9 @@ void CApplication::Process()
 
   // check for memory unit changes
   UpdateMemoryUnits();
+
+  // check if we can free unused memory
+  g_audioManager.FreeUnused();
 }
 void CApplication::Restart(bool bSamePosition)
 {

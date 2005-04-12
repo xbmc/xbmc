@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GUIWindowManager.h"
+#include "GUIAudioManager.h"
 
 CGUIWindowManager m_gWindowManager;
 
@@ -200,6 +201,8 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
   if (m_iActiveWindow >= 0)
   {
     CGUIWindow* pWindow = m_vecWindows[m_iActiveWindow];
+    //  Play the window specific deinit sound
+    g_audioManager.PlayWindowSound(pWindow->GetID(), SOUND_DEINIT);
     CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, iWindowID);
     pWindow->OnMessage(msg);
     m_iActiveWindow = -1;
@@ -212,6 +215,9 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
 
     if (pWindow->HasID(iWindowID))
     {
+      //  Play the window specific init sound
+      g_audioManager.PlayWindowSound(pWindow->GetID(), SOUND_INIT);
+
       CLog::Log(LOGINFO, "Activating Window ID: %i", iWindowID);
       if (!strPath.IsEmpty()) CLog::Log(LOGINFO, "  with path parameter: %s", strPath.c_str());
 
