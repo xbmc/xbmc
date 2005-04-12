@@ -15,6 +15,7 @@
 #include "PlayListPlayer.h"
 #include "SkinInfo.h"
 #include "GUIFontManager.h"
+#include "GUIAudioManager.h"
 
 #define CONTROL_GROUP_BUTTONS      0
 #define CONTROL_GROUP_SETTINGS     1
@@ -500,6 +501,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting == "LookAndFeel.Skin")
     {
       FillInSkins(pSetting);
+    }
+    else if (strSetting == "LookAndFeel.SoundSkin")
+    {
+      FillInSoundSkins(pSetting);
     }
     else if (strSetting == "LookAndFeel.Language")
     {
@@ -1273,6 +1278,18 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       pControl->SetSpinTextColor(pControl->GetDisabledColor());
     }
   }
+  else if (strSetting == "LookAndFeel.SoundSkin")
+  { // new sound skin choosen...
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    if (pControl->GetValue()==0)
+      g_guiSettings.SetString("LookAndFeel.SoundSkin", "OFF");
+    else if (pControl->GetValue()==1)
+      g_guiSettings.SetString("LookAndFeel.SoundSkin", "SKINDEFAULT");
+    else
+      g_guiSettings.SetString("LookAndFeel.SoundSkin", pControl->GetCurrentLabel());
+
+    g_audioManager.Load();
+  }
   else if (strSetting == "LookAndFeel.GUICentering")
   { // activate the video calibration screen
     m_gWindowManager.ActivateWindow(WINDOW_UI_CALIBRATION);
@@ -1739,6 +1756,56 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
     pControl->AddLabel(strSkin, iSkin++);
   }
   pControl->SetValue(iCurrentSkin);
+  return ;
+}
+
+void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
+{
+  CSettingString *pSettingString = (CSettingString*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
+  pControl->Clear();
+  pControl->SetShowRange(true);
+
+  m_strNewSkin.Empty();
+
+  //find skins...
+  CFileItemList items;
+  CStdString strPath = "Q:\\sounds\\";
+  CDirectory::GetDirectory(strPath, items);
+
+  int iCurrentSoundSkin = 0;
+  int iSoundSkin = 0;
+  vector<CStdString> vecSoundSkins;
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItem* pItem = items[i];
+    if (pItem->m_bIsFolder)
+    {
+      if (CUtil::cmpnocase(pItem->GetLabel().c_str(), "CVS") == 0) continue;
+      if (CUtil::cmpnocase(pItem->GetLabel().c_str(), "fonts") == 0) continue;
+      if (CUtil::cmpnocase(pItem->GetLabel().c_str(), "media") == 0) continue;
+      vecSoundSkins.push_back(pItem->GetLabel());
+    }
+  }
+
+  pControl->AddLabel(g_localizeStrings.Get(474), iSoundSkin++); // Off
+  pControl->AddLabel(g_localizeStrings.Get(15109), iSoundSkin++); // Skin Default
+
+  if (g_guiSettings.GetString("LookAndFeel.SoundSkin")=="SKINDEFAULT")
+    iCurrentSoundSkin=1;
+
+  sort(vecSoundSkins.begin(), vecSoundSkins.end(), sortstringbyname());
+  for (i = 0; i < (int) vecSoundSkins.size(); ++i)
+  {
+    CStdString strSkin = vecSoundSkins[i];
+    if (CUtil::cmpnocase(strSkin.c_str(), g_guiSettings.GetString("LookAndFeel.SoundSkin").c_str()) == 0)
+    {
+      iCurrentSoundSkin = iSoundSkin;
+    }
+    pControl->AddLabel(strSkin, iSoundSkin++);
+  }
+  pControl->SetValue(iCurrentSoundSkin);
   return ;
 }
 

@@ -709,6 +709,10 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   { // at least fill in the filename
     m_currentMovie.m_strTitle = CUtil::GetTitleFromPath(item.m_strPath);
   }
+  if (m_currentMovie.m_strPath.IsEmpty())
+  {
+    m_currentMovie.m_strPath = item.m_strPath;
+  }
   // Find a thumb for this file.
   item.SetThumb();
   if (!item.HasThumbnail())

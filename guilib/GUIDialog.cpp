@@ -2,6 +2,7 @@
 #include "GUIDialog.h"
 #include "GUIWindowManager.h"
 #include "GUILabelControl.h"
+#include "GUIAudioManager.h"
 
 CGUIDialog::CGUIDialog(DWORD dwID)
     : CGUIWindow(dwID)
@@ -74,6 +75,9 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
 
 void CGUIDialog::Close()
 {
+  //  Play the window specific deinit sound
+  g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
+
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
   OnMessage(msg);
 
@@ -104,6 +108,9 @@ void CGUIDialog::DoModal(DWORD dwParentId)
   m_bModal = true;
   m_gWindowManager.RouteToWindow(this);
 
+  //  Play the window specific init sound
+  g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
+
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
   OnMessage(msg);
@@ -128,6 +135,9 @@ void CGUIDialog::Show(DWORD dwParentId)
 
   m_bModal = false;
   m_gWindowManager.AddModeless(this);
+
+  //  Play the window specific init sound
+  g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
 
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);

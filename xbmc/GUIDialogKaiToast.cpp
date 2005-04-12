@@ -2,6 +2,7 @@
 #include "GUIDialogKaiToast.h"
 #include "GUISliderControl.h"
 #include "application.h"
+#include "GUIAudioManager.h"
 
 // May need to change this so that it is "modeless" rather than Modal,
 // though it works reasonably well as is...
@@ -140,6 +141,9 @@ bool CGUIDialogKaiToast::DoWork()
     }
 
     g_graphicsContext.Unlock();
+
+    //  Play the window specific init sound for each notification queued
+    g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
 
     ResetTimer();
   }

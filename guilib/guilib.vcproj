@@ -245,7 +245,13 @@
 				RelativePath=".\AnimatedGif.cpp">
 			</File>
 			<File
+				RelativePath=".\AudioContext.cpp">
+			</File>
+			<File
 				RelativePath=".\GraphicContext.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIAudioManager.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIButtonControl.cpp">
@@ -424,10 +430,16 @@
 				RelativePath=".\AnimatedGif.h">
 			</File>
 			<File
+				RelativePath=".\AudioContext.h">
+			</File>
+			<File
 				RelativePath=".\GraphicContext.h">
 			</File>
 			<File
 				RelativePath=".\gui3d.h">
+			</File>
+			<File
+				RelativePath=".\GUIAudioManager.h">
 			</File>
 			<File
 				RelativePath=".\GUIButtonControl.h">
@@ -560,6 +572,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIWindowManager.h">
+			</File>
+			<File
+				RelativePath=".\IAudioDeviceChangedCallback.h">
 			</File>
 			<File
 				RelativePath=".\IMsgSenderCallback.h">
