@@ -15,6 +15,9 @@
 #define CONTROL_BTN_XLINK_KAI  99
 #define CONTROL_BTN_SCROLLER  300
 
+#define CONTROL_DATE          200
+#define CONTROL_TIME          201
+
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(0)
 {
   m_iLastControl = -1;
@@ -38,6 +41,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       int iFocusControl = m_iLastControl;
+
       CGUIWindow::OnMessage(message);
 
       // make controls 101-120 invisible...
@@ -173,9 +177,6 @@ void CGUIWindowHome::OnAction(const CAction &action)
 
 void CGUIWindowHome::Render()
 {
-  SET_CONTROL_LABEL(200, g_infoManager.GetDate());
-  SET_CONTROL_LABEL(201, g_infoManager.GetTime());
-
   // set controls 121->160 invisible (these are the focus + nofocus buttons for the button scroller)
   for (int i = 121; i < 160; i++)
   {
@@ -376,3 +377,14 @@ bool CGUIWindowHome::OnPollXLinkClient(CGUIConditionalButtonControl* pButton)
 {
   return CKaiClient::GetInstance()->IsEngineConnected();
 }
+
+// PRE1.3
+void CGUIWindowHome::OnWindowLoaded()
+{
+  CGUIWindow::OnWindowLoaded();
+  CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(CONTROL_DATE);
+  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(111);
+  pLabel = (CGUILabelControl *)GetControl(CONTROL_TIME);
+  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(110);
+}
+// PRE1.3

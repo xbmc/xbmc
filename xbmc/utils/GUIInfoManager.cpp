@@ -31,8 +31,8 @@ extern char g_szTitleIP[32];
 #define PLAYER_FORWARDING_16x        16
 #define PLAYER_FORWARDING_32x        17
 #define PLAYER_CAN_RECORD            18
-#define PLAYER_IS_RECORDING          19
-#define PLAYER_IS_CACHING            20
+#define PLAYER_RECORDING             19
+#define PLAYER_CACHING               20
 #define PLAYER_DISPLAY_AFTER_SEEK    21
 
 #define WEATHER_CONDITIONS          100
@@ -121,9 +121,9 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
   else if (strTest.Equals("player.forwarding16x")) ret = PLAYER_FORWARDING_16x;
   else if (strTest.Equals("player.forwarding32x")) ret = PLAYER_FORWARDING_32x;
   else if (strTest.Equals("player.canrecord")) ret = PLAYER_CAN_RECORD;
-  else if (strTest.Equals("player.isrecording")) ret = PLAYER_IS_RECORDING;
+  else if (strTest.Equals("player.recording")) ret = PLAYER_RECORDING;
   else if (strTest.Equals("player.displayafterseek")) ret = PLAYER_DISPLAY_AFTER_SEEK;
-  else if (strTest.Equals("player.iscaching")) ret = PLAYER_IS_CACHING;
+  else if (strTest.Equals("player.caching")) ret = PLAYER_CACHING;
   else if (strTest.Equals("weather.conditions")) ret = WEATHER_CONDITIONS;
   else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
   else if (strTest.Equals("system.date")) ret = SYSTEM_DATE;
@@ -297,13 +297,13 @@ bool CGUIInfoManager::GetBool(int condition1) const
     case PLAYER_CAN_RECORD:
       bReturn = g_application.m_pPlayer->CanRecord();
       break;
-    case PLAYER_IS_RECORDING:
+    case PLAYER_RECORDING:
       bReturn = g_application.m_pPlayer->IsRecording();
     break;
     case PLAYER_DISPLAY_AFTER_SEEK:
       bReturn = GetDisplayAfterSeek();
     break;
-    case PLAYER_IS_CACHING:
+    case PLAYER_CACHING:
       bReturn = g_application.m_pPlayer->IsCaching();
     break;
     }
