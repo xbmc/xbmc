@@ -190,6 +190,8 @@
 
 #define ACTION_BUILT_IN_FUNCTION  122
 
+#define ACTION_SHOW_OSD_TIME      123 // displays current time, can be used in videoFullScreen.xml window id=2005
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                 9999
 #define WINDOW_HOME                   10000
