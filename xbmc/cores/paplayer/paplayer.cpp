@@ -318,7 +318,7 @@ bool PAPlayer::ProcessPAP()
     int m_InputBufferToRead = m_InputBytesWanted - m_dwInputBufferSize;
     if (m_InputBufferToRead && !m_CallPAPAgain && m_filePAP.GetPosition() != m_filePAP.GetLength() && !m_eof ) 
     {
-      int fileLeft=m_filePAP.GetLength() - m_filePAP.GetPosition();
+      int fileLeft=(int)(m_filePAP.GetLength() - m_filePAP.GetPosition());
       if ( m_InputBufferToRead >  fileLeft ) m_InputBufferToRead = fileLeft;
 
       DWORD dwBytesRead = m_filePAP.Read(m_pInputBuffer+m_dwInputBufferSize , m_InputBufferToRead);
