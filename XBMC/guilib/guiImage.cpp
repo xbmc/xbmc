@@ -30,7 +30,6 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, 
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_Info = 0;
-  m_strBackupFileName = strTexture;
 }
 
 CGUIImage::CGUIImage(const CGUIImage &left)
@@ -59,7 +58,6 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_Info = left.m_Info;
-  m_strBackupFileName = left.m_strBackupFileName;
 }
 
 CGUIImage::~CGUIImage(void)
@@ -96,16 +94,8 @@ void CGUIImage::Render()
   if (m_Info)
   {
     CStdString strImage = g_infoManager.GetImage(m_Info);
-    if (strImage.size())
-    {
-      if (strImage != m_strFileName)
-        SetFileName(strImage);
-    }
-    else
-    {
-      if (m_strFileName != m_strBackupFileName)
-        SetFileName(m_strBackupFileName);
-    }
+    if (strImage != m_strFileName)
+      SetFileName(strImage);
   }
 
   if (m_bDynamicResourceAlloc && !bVisible && IsAllocated())

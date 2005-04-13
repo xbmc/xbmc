@@ -7,16 +7,29 @@
 #include "GUIConditionalButtonControl.h"
 #include "utils/GUIInfoManager.h"
 
+#define MENU_BUTTON_START 2    // normal buttons
+#define MENU_BUTTON_END   20
+
+#define MENU_BUTTON_IMAGE_BACKGROUND_START   101  // background images
+#define MENU_BUTTON_IMAGE_BACKGROUND_END     120
+
+#define MENU_BUTTON_IMAGE_NOFOCUS_START      121  // button images for button scroller
+#define MENU_BUTTON_IMAGE_NOFOCUS_END        140
+#define MENU_BUTTON_IMAGE_FOCUS_START        141  // focused button images for button scroller
+#define MENU_BUTTON_IMAGE_FOCUS_END          160
+
+#define CONTROL_BTN_XLINK_KAI  99
+#define CONTROL_BTN_SCROLLER  300
+
+// PRE1.3
 #define CONTROL_BTN_SHUTDOWN  10
 #define CONTROL_BTN_DASHBOARD  11
 #define CONTROL_BTN_REBOOT   12
 #define CONTROL_BTN_CREDITS   13
 #define CONTROL_BTN_ONLINE   14
-#define CONTROL_BTN_XLINK_KAI  99
-#define CONTROL_BTN_SCROLLER  300
-
 #define CONTROL_DATE          200
 #define CONTROL_TIME          201
+// PRE1.3
 
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(0)
 {
@@ -44,8 +57,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
       CGUIWindow::OnMessage(message);
 
-      // make controls 101-120 invisible...
-      for (int iControl = 102; iControl < 120; iControl++)
+      // make controls 102-120 invisible...
+      for (int iControl = MENU_BUTTON_IMAGE_BACKGROUND_START; iControl < MENU_BUTTON_IMAGE_BACKGROUND_END; iControl++)
       {
         SET_CONTROL_HIDDEN(iControl);
       }
@@ -73,12 +86,12 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       int iControl = message.GetControlId();
       m_iLastControl = iControl;
-      if (iControl >= 2 && iControl <= 19)
+      if (iControl >= MENU_BUTTON_START && iControl <= MENU_BUTTON_END)
       {
         m_iLastMenuOption = m_iLastControl;
 
-        // make controls 101-120 invisible...
-        for (int i = 101; i < 120; i++)
+        // make controls 102-120 invisible...
+        for (int i = MENU_BUTTON_IMAGE_BACKGROUND_START; i < MENU_BUTTON_IMAGE_BACKGROUND_END; i++)
         {
           SET_CONTROL_HIDDEN(i);
         }
@@ -99,10 +112,10 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
           return true;
         }
         int iIconType = message.GetParam1();
-        if (iIconType >= 101 && iIconType <= 120)
+        if (iIconType >= MENU_BUTTON_IMAGE_BACKGROUND_START && iIconType <= MENU_BUTTON_IMAGE_BACKGROUND_END)
         {
           // make controls 101-120 invisible...
-          for (int i = 101; i < 120; i++)
+          for (int i = MENU_BUTTON_IMAGE_BACKGROUND_START; i < MENU_BUTTON_IMAGE_BACKGROUND_END; i++)
           {
             SET_CONTROL_HIDDEN(i);
           }
@@ -178,7 +191,7 @@ void CGUIWindowHome::OnAction(const CAction &action)
 void CGUIWindowHome::Render()
 {
   // set controls 121->160 invisible (these are the focus + nofocus buttons for the button scroller)
-  for (int i = 121; i < 160; i++)
+  for (int i = MENU_BUTTON_IMAGE_NOFOCUS_START; i < MENU_BUTTON_IMAGE_FOCUS_END; i++)
   {
     CGUIControl *pControl = (CGUIControl *)GetControl(i);
     if (pControl)

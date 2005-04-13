@@ -52,7 +52,6 @@ protected:
   int m_iCursorPos;
   DWORD m_dwCounter;
   int m_Info;
-  wstring m_strBackupLabel;
   // stuff for scrolling
   int m_PixelScroll;
   unsigned int m_CharacterScroll;
