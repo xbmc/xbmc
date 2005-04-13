@@ -149,8 +149,8 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
 
           // Count the number of events since firstEvent was set (when repeat or button release)
           // Seems that firstEvent is often the first button push, but can also be
-          // any event with counter not equal to 63,64 or 65.  (Not sure why exactly :P)
-          if (g_InputStatesEx[i].IR_Remote.firstEvent > 0 || g_InputStatesEx[i].IR_Remote.counter < 63 || g_InputStatesEx[i].IR_Remote.counter > 65)
+          // any event with counter not equal to 62,63,64 or 65.  (Not sure why exactly :P)
+          if (g_InputStatesEx[i].IR_Remote.firstEvent > 0 || g_InputStatesEx[i].IR_Remote.counter < 62 || g_InputStatesEx[i].IR_Remote.counter > 65)
           {
             g_eventsSinceFirstEvent[i] = 0;
             bIsRepeating = false;
@@ -160,7 +160,7 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
             g_eventsSinceFirstEvent[i]++;
           }
           
- /*              char szTmp[256];
+/*              char szTmp[256];
                sprintf(szTmp, "pkt:%i cnt:%i region:%i wbuttons:%i firstEvent:%i sinceFirst:%i...",
                    g_prevPacketNumber[i],
                    g_InputStatesEx[i].IR_Remote.counter,
@@ -194,7 +194,7 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
                   strcat(szTmp, "ignored\n");*/
             
           }
-//                CLog::Log(LOGERROR, "REMOTE: %s", szTmp);
+ //               CLog::Log(LOGERROR, "REMOTE: %s", szTmp);
 
         }
       }
