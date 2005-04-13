@@ -16,7 +16,7 @@
 
     <*control>
       <description>Cover Art</description>
-      <type>infoimage</type>
+      <type>image</type>
       <id>1</id>
       <posX>490</posX>
       <posY>238</posY>

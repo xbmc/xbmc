@@ -16,7 +16,7 @@
 
     <control>
       <description>image</description>
-      <type>infoimage</type>
+      <type>image</type>
       <id>1</id>
       <posX>105</posX>
       <posY>338</posY>
@@ -27,7 +27,7 @@
 
     <control>
       <description>Artist label</description>
-      <type>infolabel</type>
+      <type>label</type>
       <id>1</id>
       <posX>210</posX>
       <posY>340</posY>
@@ -38,7 +38,7 @@
 
     <control>
       <description>Title label</description>
-      <type>infolabel</type>
+      <type>label</type>
       <id>1</id>
       <posX>210</posX>
       <posY>367</posY>
@@ -49,7 +49,7 @@
 
     <control>
       <description>Album label</description>
-      <type>infolabel</type>
+      <type>label</type>
       <id>1</id>
       <posX>210</posX>
       <posY>405</posY>
