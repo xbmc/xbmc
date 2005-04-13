@@ -131,16 +131,18 @@
       <width>100</width>
       <height>99</height>
       <info>MusicPlayer.Cover</info>
+      <visible>Player.HasAudio</visible>
     </control>
 
     <control>
       <description>Artist label</description>
       <type>label</type>
       <id>1</id>
-      <width>240</width>
+      <width>255</width>
       <posX>525</posX>
       <posY>340</posY>
       <info>MusicPlayer.Artist</info>
+      <visible>Player.HasAudio</visible>
       <align>right</align>
       <font>special12</font>
     </control>
@@ -149,10 +151,11 @@
       <description>Title label</description>
       <type>label</type>
       <id>1</id>
-      <width>260</width>
+      <width>255</width>
       <posX>525</posX>
       <posY>365</posY>
       <info>MusicPlayer.Title</info>
+      <visible>Player.HasAudio</visible>
       <align>right</align>
       <font>special13</font>
     </control>
@@ -161,10 +164,11 @@
       <description>Album label</description>
       <type>label</type>
       <id>1</id>
-      <width>280</width>
+      <width>255</width>
       <posX>525</posX>
       <posY>394</posY>
       <info>MusicPlayer.Album</info>
+      <visible>Player.HasAudio</visible>
       <align>right</align>
       <font>font10</font>
     </control>
@@ -176,6 +180,7 @@
       <posX>525</posX>
       <posY>415</posY>
       <info>MusicPlayer.Time</info>
+      <visible>Player.HasAudio</visible>
       <align>right</align>
       <font>font10</font>
     </control>
@@ -371,7 +376,7 @@
       <feed>http://www.xbox-scene.com/xbox1data/xbox-scene.xml</feed>
       <titlecolor>ffD2FF00</titlecolor>
       <headlinecolor>DDced8da</headlinecolor>
-      <textcolor>DDced8da</textcolor>
+      <textcolor>ffD2FF00</textcolor>
     </control>
 
     <control>
