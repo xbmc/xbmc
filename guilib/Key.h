@@ -262,6 +262,8 @@
 #define WINDOW_SCREENSAVER            12900
 #define WINDOW_OSD                    12901
 
+#define WINDOW_MEDIA_MENU             12902
+
 // WINDOW_ID's from 13000 to 13099 reserved for Python
 
 #define WINDOW_PYTHON_START     13000

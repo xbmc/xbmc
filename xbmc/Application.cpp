@@ -1674,6 +1674,11 @@ void CApplication::OnKey(CKey& key)
       // yes then use OSD section of keymap.xml to map key->action
       g_buttonTranslator.GetAction(WINDOW_OSD, key, action);
     }
+    else if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
+    {
+      // if player is in some sort of menu, (ie DVDMENU) map buttons differently
+      g_buttonTranslator.GetAction(WINDOW_MEDIA_MENU, key, action);
+    }
     else
     {
       // no then use the fullscreen window section of keymap.xml to map key->action
