@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.178. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.182. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -32,7 +32,7 @@
   <string><id>99</id><value>Visning: Auto stor</value></string>
   <string><id>100</id><value>Viser: Ikoner</value></string>
   <string><id>101</id><value>Viser: Liste</value></string>
-  <string><id>102</id><value>Skann katalogsti</value></string>
+  <string><id>102</id><value>Skann mappe(r)</value></string>
   <string><id>103</id><value>Sortering: Navn</value></string>
   <string><id>104</id><value>Sortering: Dato</value></string>
   <string><id>105</id><value>Sortering: Størr.</value></string>
@@ -417,8 +417,8 @@
   <string><id>485</id><value>Slett album</value></string>
   <string><id>486</id><value>Gjenta</value></string>
   <string><id>487</id><value>Gjenta én</value></string>
-  <string><id>488</id><value>Gjenta spillelistemappe</value></string>
-  <string><id>489</id><value>Bruke spilleliste i sanger</value></string>
+  <string><id>488</id><value>Gjenta mapper</value></string>
+  <string><id>489</id><value>Spill automatisk av neste fil</value></string>
   <string><id>490</id><value>Skifte automatisk mellom liste og ikoner i sanger</value></string>
   <string><id>491</id><value>- Bruke store ikoner</value></string>
   <string><id>492</id><value>Størrelse på undertekster</value></string>
@@ -523,6 +523,18 @@
   <string><id>757</id><value>Rediger banedybde</value></string>
   <string><id>758</id><value>Fjerner programlink</value></string>  
   <string><id>759</id><value>Vis: Stor liste</value></string>
+
+  <string><id>760</id><value>Gul</value></string>
+  <string><id>761</id><value>Hvit</value></string>
+  <string><id>762</id><value>Blå</value></string>
+  <string><id>763</id><value>Lysegrønn</value></string>
+  <string><id>764</id><value>Gul-grønn</value></string>
+  <string><id>765</id><value>Cyan</value></string>
+  <string><id>766</id><value>Reserved</value></string>
+  <string><id>767</id><value>Reserved</value></string>
+  <string><id>768</id><value>Reserved</value></string>
+  <string><id>769</id><value>Reserved</value></string>
+
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Spill på nettet</value></string>
   <string><id>1000</id><value>Forhåndsvisning av skjermbeskytter</value></string>
@@ -733,7 +745,7 @@
   <string><id>13357</id><value>Høykvalitets pixel shader</value></string>
   <string><id>13360</id><value>Lag miniatyrbilder</value></string>
   <string><id>13361</id><value>Skru på tale</value></string>
-  <string><id>13362</id><value>Talemaske</value></string>
+  <string><id>13362</id><value>Stemmemaske</value></string>
   <string><id>13363</id><value>- Aktiver Spectrum Energy Weight</value></string>
   <string><id>13364</id><value>-- Spectrum Energy Weight verdi</value></string>
   <string><id>13365</id><value>- Aktiver Pitch Scaling</value></string>
@@ -747,12 +759,16 @@
   <string><id>13373</id><value>- Port 2 tale</value></string>
   <string><id>13374</id><value>- Port 3 tale</value></string>
   <string><id>13375</id><value>Aktiver enhet</value></string>
-  <string><id>13376</id><value>Volum(%)</value></string>
+  <string><id>13376</id><value>Volum</value></string>
   <string><id>13377</id><value>Standard visningsmodus</value></string>
   <string><id>13378</id><value>Standard lysstyrke</value></string>
   <string><id>13379</id><value>Standard kontrast</value></string>
   <string><id>13380</id><value>Standard gamma</value></string>
   <string><id>13381</id><value>Fortsett avspilling</value></string>
+  <string><id>13382</id><value>Stemmemaske - Port 0</value></string>
+  <string><id>13383</id><value>Stemmemaske - Port 1</value></string>
+  <string><id>13384</id><value>Stemmemaske - Port 2</value></string>
+  <string><id>13385</id><value>Stemmemaske - Port 3</value></string>
 
   <string><id>14000</id><value>Stabling: Av</value></string>
   <string><id>14001</id><value>Stabling: Enkel</value></string>
@@ -842,7 +858,7 @@
   <string><id>15023</id><value>Spill</value></string>
   <string><id>15024</id><value>Legg til</value></string>
   <string><id>15025</id><value>Vær vert</value></string>
-  <string><id>15026</id><value>Samtale</value></string>
+  <string><id>15026</id><value>Sam</value></string>
   <string><id>15027</id><value>Vis: Chat</value></string>
   <string><id>15028</id><value>Tastatur</value></string>
   <string><id>15029</id><value>Et passord kreves for å bli med i denne arenaen.</value></string>
@@ -886,5 +902,10 @@
   <string><id>15104</id><value>* Alle sanger</value></string>
   <string><id>15105</id><value>* Alle sjangre</value></string>
   <string><id>15106</id><value>Husk valgt fil ved videre navigasjon</value></string>
+
+  <string><id>15107</id><value>Bufring...</value></string>
+  <string><id>15108</id><value>Navigasjonslyder</value></string>
+  <string><id>15109</id><value>Standard for skinnet</value></string>
+  
 </strings>
 

@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-04-2005 updated: French language file (Thnx to modhack)
+  - 13-04-2005 updated: Italian language file (Thnx to kotix)
+  - 13-04-2005 updated: Polish language file (Thnx to napek)
+  - 13-04-2005 updated: Norwegian language file (Thnx to vnm)
+  - 13-04-2005 updated: Finnish language file (Thnx to jutski)
   - 13-04-2005 fixed: ff/rw/play buttons on remote didn't work in fullscreen
   - 13-04-2005 added: Support to toggle new time/progbar display in fullscreen (default mapped to white button)
   - 12-04-2005 added: navigation sounds
