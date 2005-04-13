@@ -18,7 +18,6 @@ CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPos
   m_bShowCursor = false;
   m_iCursorPos = 0;
   m_dwCounter = 0;
-  m_strBackupLabel = strLabel;
   m_Info = 0;
   ControlType = GUICONTROL_LABEL;
 }
@@ -43,16 +42,8 @@ void CGUILabelControl::Render()
   if (m_Info)
   { // check if we need to update our info
     wstring strLabel = g_infoManager.GetLabel(m_Info);
-    if (strLabel.length())
-    {
-      if (strLabel != m_strLabel)
-        SetLabel(strLabel);
-    }
-    else
-    {
-      if (m_strLabel != m_strBackupLabel)
-        SetLabel(m_strBackupLabel);
-    }
+    if (strLabel != m_strLabel)
+      SetLabel(strLabel);
   }
 
   if (!IsVisible() )
