@@ -28,7 +28,7 @@ void CGUIDialogNumeric::OnAction(const CAction &action)
     Close();
     return ;
   }
-  else if (action.m_dwButtonCode == KEY_BUTTON_START || action.wID == ACTION_MUSIC_PLAY)
+  else if (action.m_dwButtonCode == KEY_BUTTON_START || action.wID == ACTION_PLAYER_PLAY)
   {
     m_bConfirmed = false;
     m_bCanceled = false;
