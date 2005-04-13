@@ -1,3 +1,4 @@
+2004-04-13 changed:     Updated for v1.3 compatibility.
 2004-04-12 added:	GUI sound effects
 
 2004-04-11 changed:	Changed buttons->labels in VideoFullScreen.xml
