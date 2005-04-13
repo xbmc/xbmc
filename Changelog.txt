@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-04-2005 fixed: universal remote double taps (Sony universal)
   - 13-04-2005 fixed: controlbutton python docs.
   - 13-04-2005 fixed: label/image <info> showed wrong info if no valid info was available.
   - 13-04-2005 changed: My Pictures uses GUIViewControl to handle views.
