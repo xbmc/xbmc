@@ -94,6 +94,5 @@ protected:
 
   // conditional info
   int m_Info;
-  CStdString m_strBackupFileName;
 };
 #endif
