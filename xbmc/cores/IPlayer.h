@@ -79,6 +79,7 @@ public:
   //Cache filled in Percent
   virtual int GetCacheLevel() const {return -1;}; 
 
+  virtual bool IsInMenu() const {return false;};
 
   virtual void DoAudioWork(){};
   virtual bool OnAction(const CAction &action) { return false; };
