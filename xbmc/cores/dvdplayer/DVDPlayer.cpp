@@ -1059,6 +1059,9 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
     {
       CLog::Log(LOGDEBUG, "DVDNAV_SPU_STREAM_CHANGE");
 
+      //Make sure we clear old overlay here, or else old forced items are left.
+      m_dvdPlayerVideo.m_overlay.Clear();
+
       // update subtitle always in menu, or when no subtitle is selected in the movie
       if (m_dvd.iSelectedSPUStream == -1 || pStream->IsInMenu())
       {
