@@ -29,6 +29,7 @@
       <description>Artist label</description>
       <type>label</type>
       <id>1</id>
+      <width>430</width>
       <posX>210</posX>
       <posY>340</posY>
       <info>MusicPlayer.Artist</info>
@@ -40,6 +41,7 @@
       <description>Title label</description>
       <type>label</type>
       <id>1</id>
+      <width>430</width>
       <posX>210</posX>
       <posY>367</posY>
       <info>MusicPlayer.Title</info>
@@ -51,6 +53,7 @@
       <description>Album label</description>
       <type>label</type>
       <id>1</id>
+      <width>430</width>
       <posX>210</posX>
       <posY>405</posY>
       <info>MusicPlayer.Album</info>

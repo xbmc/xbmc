@@ -220,7 +220,7 @@
       <type>label</type>
       <id>22</id>
       <posX>210</posX>
-      <posY>510</posY>
+      <posY>520</posY>
       <label>-</label>
       <width>291</width>
       <align>center</align>
@@ -244,7 +244,7 @@
       <type>label</type>
       <id>24</id>
       <posX>210</posX>
-      <posY>510</posY>
+      <posY>520</posY>
       <label>15107</label>
       <width>291</width>
       <align>center</align>
