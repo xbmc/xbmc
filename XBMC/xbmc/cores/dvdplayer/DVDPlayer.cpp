@@ -1206,50 +1206,45 @@ bool CDVDPlayer::OnAction(const CAction &action)
 
       switch (action.wID)
       {
-      case ACTION_SHOW_OSD:  // MENU
+      case  ACTION_SHOW_OSD:  // MENU
         {
           CLog::DebugLog(" - menu select");
           pStream->OnMenu();
           m_dvd.state = DVDSTATE_NORMAL;
         }
         break;
-      case ACTION_SMALL_STEP_BACK:  // BACK
+      case ACTION_PREVIOUS_MENU:
         {
           CLog::DebugLog(" - menu back");
           pStream->OnBack();
           m_dvd.state = DVDSTATE_NORMAL;
         }
         break;
-      case ACTION_SHOW_SUBTITLES:  // TITLE:
-        {
-
-        }
-        break;
-      case ACTION_STEP_BACK:  //ACTION_MOVE_LEFT:
+      case ACTION_MOVE_LEFT:
         {
           CLog::DebugLog(" - move left");
           pStream->OnLeft();
         }
         break;
-      case ACTION_STEP_FORWARD:  //ACTION_MOVE_RIGHT:
+      case ACTION_MOVE_RIGHT:
         {
           CLog::DebugLog(" - move right");
           pStream->OnRight();
         }
         break;
-      case ACTION_BIG_STEP_FORWARD:  //ACTION_MOVE_UP:
+      case ACTION_MOVE_UP:
         {
           CLog::DebugLog(" - move up");
           pStream->OnUp();
         }
         break;
-      case ACTION_BIG_STEP_BACK:  //ACTION_MOVE_DOWN:
+      case ACTION_MOVE_DOWN:
         {
           CLog::DebugLog(" - move down");
           pStream->OnDown();
         }
         break;
-      case ACTION_ASPECT_RATIO:  //SELECT:
+      case ACTION_SELECT_ITEM:
         {
           CLog::DebugLog(" - button select");
 
@@ -1279,6 +1274,16 @@ bool CDVDPlayer::OnAction(const CAction &action)
   }
 
   // return false to inform the caller we didn't handle the message
+  return false;
+}
+
+bool CDVDPlayer::IsInMenu() const
+{
+  if (m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
+  {
+    CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
+    return pStream->IsInMenu();
+  }
   return false;
 }
 

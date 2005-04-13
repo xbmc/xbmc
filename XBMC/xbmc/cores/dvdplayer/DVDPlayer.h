@@ -105,6 +105,8 @@ public:
   virtual void DoAudioWork();
   virtual bool OnAction(const CAction &action);
 
+  virtual bool IsInMenu() const;
+
   int OutputPicture(DVDVideoPicture* pPicture, double pts1);
 
   bool OpenDefaultAudioStream();
