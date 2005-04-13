@@ -149,8 +149,8 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
 
           // Count the number of events since firstEvent was set (when repeat or button release)
           // Seems that firstEvent is often the first button push, but can also be
-          // any event with counter not equal to 65 or 64.  (Not sure why exactly :P)
-          if (g_InputStatesEx[i].IR_Remote.firstEvent > 0 || g_InputStatesEx[i].IR_Remote.counter != 64 && g_InputStatesEx[i].IR_Remote.counter != 65)
+          // any event with counter not equal to 63,64 or 65.  (Not sure why exactly :P)
+          if (g_InputStatesEx[i].IR_Remote.firstEvent > 0 || g_InputStatesEx[i].IR_Remote.counter < 63 || g_InputStatesEx[i].IR_Remote.counter > 65)
           {
             g_eventsSinceFirstEvent[i] = 0;
             bIsRepeating = false;
@@ -159,17 +159,16 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
           {
             g_eventsSinceFirstEvent[i]++;
           }
-    /*      
-               char szTmp[129];
+          
+ /*              char szTmp[256];
                sprintf(szTmp, "pkt:%i cnt:%i region:%i wbuttons:%i firstEvent:%i sinceFirst:%i...",
                    g_prevPacketNumber[i],
                    g_InputStatesEx[i].IR_Remote.counter,
                    g_InputStatesEx[i].IR_Remote.region,
                    g_InputStatesEx[i].IR_Remote.wButtons,
                    g_InputStatesEx[i].IR_Remote.firstEvent,
-                   g_eventsSinceFirstEvent[i], timeGetTime());
-               OutputDebugString(szTmp);
-          */
+                   g_eventsSinceFirstEvent[i], timeGetTime());*/
+          
           bool bSendMessage = true;
           // If this is the first event or if at least 2 non first events have passed (assume repeat)
           if (g_eventsSinceFirstEvent[i] > 0 && !bIsRepeating)
@@ -186,15 +185,16 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
             // Copy remote to local structure
             memcpy( &pIR_Remote[i], &g_InputStatesEx[i].IR_Remote, sizeof(XINPUT_IR_REMOTE) );
             pIR_Remote[i].hDevice = (HANDLE)1;
-            /*
-                  OutputDebugString("accepted\n");
+            
+/*                  strcat(szTmp, "accepted\n");
              
                  }
                  else
                  {
-                  OutputDebugString("ignored\n");*/
+                  strcat(szTmp, "ignored\n");*/
             
           }
+//                CLog::Log(LOGERROR, "REMOTE: %s", szTmp);
 
         }
       }
