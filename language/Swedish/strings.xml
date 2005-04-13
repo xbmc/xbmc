@@ -754,12 +754,16 @@
   <string><id>13373</id><value>- Port 2 röst</value></string>
   <string><id>13374</id><value>- Port 3 röst</value></string>
   <string><id>13375</id><value>Aktivera enhet</value></string>
-  <string><id>13376</id><value>Volym(%)</value></string>
+  <string><id>13376</id><value>Volym</value></string>
   <string><id>13377</id><value>Default View Mode</value></string>
   <string><id>13378</id><value>Förvald ljusstyrka</value></string>
   <string><id>13379</id><value>Förvald Kontrast</value></string>
   <string><id>13380</id><value>Förvald Gamma</value></string>
   <string><id>13381</id><value>Fortsätt Video</value></string>
+  <string><id>13382</id><value>Röst Mask - Port 0</value></string>
+  <string><id>13383</id><value>Röst Mask - Port 1</value></string>
+  <string><id>13384</id><value>Röst Mask - Port 2</value></string>
+  <string><id>13385</id><value>Röst Mask - Port 3</value></string>
   <string><id>14000</id><value>Stacking Av</value></string>
   <string><id>14001</id><value>Stacking enkel</value></string>
   <string><id>14002</id><value>Stacking luddig</value></string>
@@ -889,4 +893,6 @@
   <string><id>15105</id><value>* Alla genres</value></string>
   <string><id>15106</id><value>Kom ihåg vald fil under navigation framåt</value></string>
   <string><id>15107</id><value>Buffrar...</value></string>
+  <string><id>15108</id><value>Navigerings ljud</value></string>
+  <string><id>15109</id><value>Skinnets förval</value></string>
 </strings>
