@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-04-2005 changed: My Pictures uses GUIViewControl to handle views.
   - 13-04-2005 fixed: Remote double tap (universal remotes)
   - 13-04-2005 fixed: Crash/exception in Visualisation control (caused render issues)
   - 13-04-2005 fixed: Spectrum analyser didn't free memory correctly.
