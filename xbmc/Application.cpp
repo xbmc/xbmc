@@ -1760,33 +1760,33 @@ void CApplication::OnKey(CKey& key)
     if (!m_pPlayer->IsPaused())
     {
       // if we do a FF/RW in my music then map PLAY action togo back to normal speed
-      if ((action.wID == ACTION_MUSIC_PLAY || action.wID == ACTION_PLAY))
+      if (action.wID == ACTION_PLAYER_PLAY)
       {
         if (m_iPlaySpeed != 1)
         {
           SetPlaySpeed(1);
         }
       }
-      if ((action.wID == ACTION_MUSIC_FORWARD || action.wID == ACTION_FORWARD) || (action.wID == ACTION_MUSIC_REWIND || action.wID == ACTION_REWIND))
+      if (action.wID == ACTION_PLAYER_FORWARD || action.wID == ACTION_PLAYER_REWIND)
       {
         if (m_strCurrentPlayer == "sid")
         {
           // sid uses these to track skip
-          m_pPlayer->Seek((action.wID == ACTION_MUSIC_FORWARD || action.wID == ACTION_FORWARD));
+          m_pPlayer->Seek(action.wID == ACTION_PLAYER_FORWARD);
         }
         else
         {
           int iPlaySpeed = m_iPlaySpeed;
-          if ((action.wID == ACTION_MUSIC_REWIND || action.wID == ACTION_REWIND) && iPlaySpeed == 1) // Enables Rewinding
+          if (action.wID == ACTION_PLAYER_REWIND && iPlaySpeed == 1) // Enables Rewinding
             iPlaySpeed *= -2;
-          else if ((action.wID == ACTION_MUSIC_REWIND || action.wID == ACTION_REWIND) && iPlaySpeed > 1) //goes down a notch if you're FFing
+          else if (action.wID == ACTION_PLAYER_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
             iPlaySpeed /= 2;
-          else if ((action.wID == ACTION_MUSIC_FORWARD || action.wID == ACTION_FORWARD) && iPlaySpeed < 1) //goes up a notch if you're RWing
+          else if (action.wID == ACTION_PLAYER_FORWARD && iPlaySpeed < 1) //goes up a notch if you're RWing
             iPlaySpeed /= 2;
           else
             iPlaySpeed *= 2;
 
-          if ((action.wID == ACTION_MUSIC_FORWARD || action.wID == ACTION_FORWARD) && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
+          if (action.wID == ACTION_PLAYER_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
             iPlaySpeed = 1;
           if (iPlaySpeed > 32 || iPlaySpeed < -32)
             iPlaySpeed = 1;
@@ -1808,7 +1808,7 @@ void CApplication::OnKey(CKey& key)
     // allow play to unpause
     else
     {
-      if ((action.wID == ACTION_MUSIC_PLAY || action.wID == ACTION_PLAY))
+      if (action.wID == ACTION_PLAYER_PLAY)
         m_pPlayer->Pause();
     }
   }

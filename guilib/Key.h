@@ -71,8 +71,8 @@
 #define ACTION_STOP                   13
 #define ACTION_NEXT_ITEM              14
 #define ACTION_PREV_ITEM              15
-#define ACTION_FORWARD                16
-#define ACTION_REWIND                 17
+#define ACTION_FORWARD                16 // Can be used to specify specific action in a window, Playback control is handled in ACTION_PLAYER_*
+#define ACTION_REWIND                 17 // Can be used to specify specific action in a window, Playback control is handled in ACTION_PLAYER_*
 
 #define ACTION_SHOW_GUI               18 // toggle between GUI and movie or GUI and visualisation.
 #define ACTION_ASPECT_RATIO           19 // toggle quick-access zoom modes. Can b used in videoFullScreen.zml window id=2005
@@ -128,7 +128,7 @@
 #define REMOTE_8                    66
 #define REMOTE_9                    67
 
-#define ACTION_PLAY                 68  // Play current movie. Unpauses movie and sets playspeed to 1x.  Can b used in videoFullScreen.xml window id=2005
+#define ACTION_PLAY                 68  // Unused at the moment
 #define ACTION_OSD_SHOW_LEFT        69  // Move left in OSD. Can b used in videoFullScreen.xml window id=2005
 #define ACTION_OSD_SHOW_RIGHT       70  // Move right in OSD. Can b used in videoFullScreen.xml window id=2005
 #define ACTION_OSD_SHOW_UP          71  // Move up in OSD. Can b used in videoFullScreen.xml window id=2005
@@ -138,9 +138,9 @@
 #define ACTION_OSD_SHOW_VALUE_MIN   75  // decrease value of current option in OSD. Can b used in videoFullScreen.xml window id=2005
 #define ACTION_SMALL_STEP_BACK      76  // jumps a few seconds back during playback of movie. Can b used in videoFullScreen.xml window id=2005
 
-#define ACTION_MUSIC_FORWARD        77  // FF in current song. global action, can be used anywhere
-#define ACTION_MUSIC_REWIND         78  // RW in current song. global action, can be used anywhere
-#define ACTION_MUSIC_PLAY           79  // Play current song. Unpauses song and sets playspeed to 1x. global action, can be used anywhere
+#define ACTION_PLAYER_FORWARD        77  // FF in current file played. global action, can be used anywhere
+#define ACTION_PLAYER_REWIND         78  // RW in current file played. global action, can be used anywhere
+#define ACTION_PLAYER_PLAY           79  // Play current song. Unpauses song and sets playspeed to 1x. global action, can be used anywhere
 
 #define ACTION_DELETE_ITEM          80  // delete current selected item. Can be used in myfiles.xml window id=3 and in myvideoTitle.xml window id=25
 #define ACTION_COPY_ITEM            81  // copy current selected item. Can be used in myfiles.xml window id=3
