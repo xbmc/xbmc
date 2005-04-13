@@ -123,7 +123,7 @@
     </control>
 
     <control>
-      <description>image</description>
+      <description>cover image</description>
       <type>image</type>
       <id>1</id>
       <posX>565</posX>
@@ -131,7 +131,6 @@
       <width>75</width>
       <height>99</height>
       <info>MusicPlayer.Cover</info>
-      <visible>Player.HasAudio</visible>
     </control>
 
     <control>
@@ -142,7 +141,6 @@
       <posX>555</posX>
       <posY>340</posY>
       <info>MusicPlayer.Artist</info>
-      <visible>Player.HasAudio</visible>
       <align>right</align>
       <font>special12</font>
     </control>
@@ -155,7 +153,6 @@
       <posX>555</posX>
       <posY>365</posY>
       <info>MusicPlayer.Title</info>
-      <visible>Player.HasAudio</visible>
       <align>right</align>
       <font>special13</font>
     </control>
@@ -167,8 +164,6 @@
       <width>255</width>
       <posX>555</posX>
       <posY>394</posY>
-      <info>MusicPlayer.Album</info>
-      <visible>Player.HasAudio</visible>
       <align>right</align>
       <font>font10</font>
     </control>
@@ -181,7 +176,6 @@
       <posX>555</posX>
       <posY>415</posY>
       <info>MusicPlayer.Time</info>
-      <visible>Player.HasAudio</visible>
       <align>right</align>
       <font>font10</font>
     </control>
