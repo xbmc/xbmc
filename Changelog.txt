@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-04-2005 fixed: dvdplayer didn't work at all as it's pixelshader source had been removed
+  - 13-04-2005 added: new virtual window for dvdplayer when in menu mode. allows nicer keymappings.
   - 13-04-2005 updated: German language file
   - 13-04-2005 updated: French language file (Thnx to modhack)
   - 13-04-2005 updated: Italian language file (Thnx to kotix)
