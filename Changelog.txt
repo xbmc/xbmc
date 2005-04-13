@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-04-2005 updated: German language file
   - 13-04-2005 updated: French language file (Thnx to modhack)
   - 13-04-2005 updated: Italian language file (Thnx to kotix)
   - 13-04-2005 updated: Polish language file (Thnx to napek)
