@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-04-2005 fixed: Remote double tap (universal remotes)
+  - 13-04-2005 fixed: Crash/exception in Visualisation control (caused render issues)
+  - 13-04-2005 fixed: Spectrum analyser didn't free memory correctly.
   - 13-04-2005 fixed: dvdplayer didn't work at all as it's pixelshader source had been removed
   - 13-04-2005 added: new virtual window for dvdplayer when in menu mode. allows nicer keymappings.
   - 13-04-2005 updated: German language file
@@ -15,6 +18,9 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
   - 13-04-2005 updated: Finnish language file (Thnx to jutski)
   - 13-04-2005 fixed: ff/rw/play buttons on remote didn't work in fullscreen
   - 13-04-2005 added: Support to toggle new time/progbar display in fullscreen (default mapped to white button)
+  - 12-04-2005 changed: Textures are only loaded as needed if the are specified as dynamic in OnWindowLoaded().
+  - 12-04-2005 fixed: PaPlayer cue sheet based mp3 playback could crash at time 0.
+  - 12-04-2005 added: Support for <width> tag in label controls.
   - 12-04-2005 added: navigation sounds
   - 11-04-2005 fixed: FullscreenVideo wasn't rescaled correctly to PAL60.
   - 11-04-2005 changed: GUIInfoManager if/else blocks to switch (faster)

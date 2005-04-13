@@ -69,9 +69,10 @@ CGUIVisualisationControl::~CGUIVisualisationControl(void)
 
 void CGUIVisualisationControl::FreeVisualisation()
 {
-  CSingleLock lock (m_critSection);
+  m_bInitialized = false;
   if (g_application.m_pPlayer)
     g_application.m_pPlayer->UnRegisterAudioCallback();
+  CSingleLock lock (m_critSection);
   if (m_pVisualisation)
   {
     OutputDebugString("Visualisation::Stop()\n");
@@ -83,7 +84,6 @@ void CGUIVisualisationControl::FreeVisualisation()
     g_graphicsContext.ApplyStateBlock();
   }
   m_pVisualisation = NULL;
-  m_bInitialized = false;
   ClearBuffers();
 }
 
@@ -212,9 +212,10 @@ void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int 
 
     // Normalize the data
     float fMinData = (float)AUDIO_BUFFER_SIZE * AUDIO_BUFFER_SIZE * 3 / 8 * 0.5 * 0.5; // 3/8 for the Hann window, 0.5 as minimum amplitude
+    float fInvMinData = 1.0f/fMinData;
     for (int i = 0; i < AUDIO_BUFFER_SIZE + 2; i++)
     {
-      m_fFreq[i] /= fMinData;
+      m_fFreq[i] *= fInvMinData;
     }
 
     // Transfer data to our visualisation
