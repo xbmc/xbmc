@@ -11,6 +11,7 @@
       <width>640</width>
       <height>362</height>
       <texture>16x9home-myPrograms.png</texture>
+      <visible>!Player.HasMedia</visible>
     </control>
 
     <control>
@@ -21,6 +22,7 @@
       <width>640</width>
       <height>362</height>
       <texture>16x9home-myfiles.png</texture>
+      <visible>!Player.HasMedia</visible>
     </control>
 
     <control>
@@ -31,6 +33,7 @@
       <width>640</width>
       <height>362</height>
       <texture>16x9home-mymusic.png</texture>
+      <visible>!Player.HasMedia</visible>
     </control>
 
     <control>
@@ -41,6 +44,7 @@
       <width>640</width>
       <height>362</height>
       <texture>16x9home-mypictures.png</texture>
+      <visible>!Player.HasMedia</visible>
     </control>
 
     <control>
@@ -51,6 +55,7 @@
       <width>640</width>
       <height>362</height>
       <texture>16x9home-myvideos.png</texture>
+      <visible>!Player.HasMedia</visible>
     </control>
 
     <control>
@@ -61,6 +66,7 @@
       <width>640</width>
       <height>362</height>
       <texture>16x9home-myweather.png</texture>
+      <visible>!Player.HasMedia</visible>
     </control>
 
     <control>
@@ -71,6 +77,7 @@
       <width>640</width>
       <height>362</height>
       <texture>16x9home-settings.png</texture>
+      <visible>!Player.HasMedia</visible>
     </control>
 
     <control>
@@ -117,7 +124,7 @@
 
     <control>
       <description>image</description>
-      <type>infoimage</type>
+      <type>image</type>
       <id>1</id>
       <posX>540</posX>
       <posY>338</posY>
@@ -128,9 +135,9 @@
 
     <control>
       <description>Artist label</description>
-      <type>infolabel</type>
+      <type>label</type>
       <id>1</id>
-      <width>100</width>
+      <width>240</width>
       <posX>525</posX>
       <posY>340</posY>
       <info>MusicPlayer.Artist</info>
@@ -140,9 +147,9 @@
 
     <control>
       <description>Title label</description>
-      <type>infolabel</type>
+      <type>label</type>
       <id>1</id>
-      <width>100</width>
+      <width>260</width>
       <posX>525</posX>
       <posY>365</posY>
       <info>MusicPlayer.Title</info>
@@ -152,9 +159,9 @@
 
     <control>
       <description>Album label</description>
-      <type>infolabel</type>
+      <type>label</type>
       <id>1</id>
-      <width>100</width>
+      <width>280</width>
       <posX>525</posX>
       <posY>394</posY>
       <info>MusicPlayer.Album</info>
@@ -164,9 +171,8 @@
 
     <control>
       <description>Time label</description>
-      <type>infolabel</type>
+      <type>label</type>
       <id>1</id>
-      <width>100</width>
       <posX>525</posX>
       <posY>415</posY>
       <info>MusicPlayer.Time</info>
@@ -320,10 +326,11 @@
     <control>
       <description>date label</description>
       <type>label</type>
-      <id>200</id>
+      <id>0</id>
       <posX>575</posX>
       <posY>70</posY>
       <label>date</label>
+      <info>System.Date</info>
       <align>right</align>
       <font>special12</font>
     </control>
@@ -343,10 +350,11 @@
     <control>
       <description>time label</description>
       <type>label</type>
-      <id>201</id>
+      <id>0</id>
       <posX>595</posX>
       <posY>70</posY>
       <label>time</label>
+      <info>System.Time</info>
       <align>left</align>
       <font>special12</font>
       <textcolor>60ffffff</textcolor>

@@ -149,8 +149,8 @@
       <description>listcontrol</description>
       <type>listcontrol</type>
       <id>10</id>
-      <onleft>11</onleft>
-      <onright>11</onright>
+      <onleft>2</onleft>
+      <onright>2</onright>
       <onup>2</onup>
       <ondown>2</ondown>
     </control>
