@@ -511,8 +511,17 @@
   <string><id>751</id><value>Supprimer le partage</value></string>
   <string><id>752</id><value>Éditer le chemin du partage</value></string>
   <string><id>753</id><value>Éditer le nom du partage</value></string>
+  <string><id>754</id><value>Ajouter un lien programme</value></string>
+  <string><id>755</id><value>Editer le chemin du programme</value></string>
+  <string><id>756</id><value>Editer le nom du programme</value></string>
+  <string><id>757</id><value>Editer la profondeur du chemin</value></string>
+  <string><id>758</id><value>Supprimer le lien du programme</value></string>  
+  <string><id>759</id><value>Voir: Grande Liste</value></string>
+    
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Jeux en-ligne</value></string>
+  <string><id>1000</id><value>Prévisualisation de l'écran de veille</value></string>  
+  
   <string><id>10000</id><value>Accueil</value></string>
   <string><id>10001</id><value>Mes Programes</value></string>
   <string><id>10002</id><value>Mes Images</value></string>
@@ -629,9 +638,35 @@
   <string><id>13352</id><value>Scanner le dossier</value></string>
   <string><id>13353</id><value>Stopper le scan</value></string>
   <string><id>13354</id><value>Methode de rendus</value></string>
-  <string><id>13355</id><value>Pixel Shader</value></string>
-  <string><id>13356</id><value>YUY2 Overlays</value></string>
-  <string><id>13357</id><value>Combination Overlays/Shader</value></string>  
+  <string><id>13355</id><value>Ombrage des Pixels basse Qualité</value></string>
+  <string><id>13356</id><value>Traitement Hardware</value></string>
+  <string><id>13357</id><value>Ombrage des Pixels Haute Qualité</value></string>  
+  <string><id>13360</id><value>Générer des miniatures</value></string>
+  <string><id>13361</id><value>Activer la Voix</value></string>
+  <string><id>13362</id><value>Masque de Voix</value></string>
+  <string><id>13363</id><value>- Enable Spectrum Energy Weight</value></string>
+  <string><id>13364</id><value>-- Spectrum Energy Weight Value</value></string>
+  <string><id>13365</id><value>- Activer Pitch Scaling</value></string>
+  <string><id>13366</id><value>-- Valeur du Pitch Scaling</value></string>
+  <string><id>13367</id><value>- Activer Whisper Factor</value></string>
+  <string><id>13368</id><value>-- Whisper Factor Value</value></string>
+  <string><id>13369</id><value>- Activer Robotic Factor</value></string>
+  <string><id>13370</id><value>-- Robotic Factor Value</value></string>
+  <string><id>13371</id><value>- Voix Port 0</value></string>
+  <string><id>13372</id><value>- Voix Port 1</value></string>
+  <string><id>13373</id><value>- Voix Port 2</value></string>
+  <string><id>13374</id><value>- Voix Port 3</value></string>
+  <string><id>13375</id><value>Activer le périphérique</value></string>
+  <string><id>13376</id><value>Volume</value></string>
+  <string><id>13377</id><value>Affichage par défaut</value></string>
+  <string><id>13378</id><value>Brightness par défaut</value></string>
+  <string><id>13379</id><value>Contrast par défaut</value></string>
+  <string><id>13380</id><value>Gamma par défaut</value></string>
+  <string><id>13381</id><value>Reprendre Vidéo</value></string>
+  <string><id>13382</id><value>Masque Voix - Port 0</value></string>
+  <string><id>13383</id><value>Masque Voix - Port 1</value></string>
+  <string><id>13384</id><value>Masque Voix - Port 2</value></string>
+  <string><id>13385</id><value>Masque Voix - Port 3</value></string>  
   
   <string><id>14000</id><value>Empiler : désactivé</value></string>
   <string><id>14001</id><value>Empiler : simple</value></string>
@@ -759,4 +794,13 @@
   <string><id>15060</id><value>Votre message</value></string>
   <string><id>15061</id><value>Vous avez été invité à jouer %s.</value></string>
   <string><id>15062</id><value>Utiliser le lecteur mplayer alternatif</value></string>
+    <string><id>15100</id><value>Librairie</value></string>
+  <string><id>15101</id><value>Database</value></string>
+  <string><id>15102</id><value>* Tout les Albums</value></string>
+  <string><id>15103</id><value>* Tout les Artistes</value></string>
+  <string><id>15104</id><value>* Tout les Chansons</value></string>
+  <string><id>15105</id><value>* Tout les Genres</value></string>
+  <string><id>15106</id><value>Remember selected file on forward navigation</value></string>
+
+  <string><id>15107</id><value>Buffering...</value></string>
 </strings>
