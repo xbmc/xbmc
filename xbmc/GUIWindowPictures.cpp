@@ -162,10 +162,9 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       }
       else
       {
-        int iItem = GetSelectedItem();
+        int iItem = m_viewControl.GetSelectedItem();
         Update( m_Directory.m_strPath );
-        CONTROL_SELECT_ITEM(CONTROL_LIST, iItem)
-        CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem)
+        m_viewControl.SetSelectedItem(iItem);
       }
     }
     break;
@@ -173,17 +172,16 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
     {
       if ( m_Directory.IsVirtualDirectoryRoot() )
       {
-        int iItem = GetSelectedItem();
+        int iItem = m_viewControl.GetSelectedItem();
         Update( m_Directory.m_strPath );
-        CONTROL_SELECT_ITEM(CONTROL_LIST, iItem)
-        CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem)
+        m_viewControl.SetSelectedItem(iItem);
       }
     }
     break;
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_iLastControl = GetFocusedControl();
-      m_iItemSelected = GetSelectedItem();
+      m_iItemSelected = m_viewControl.GetSelectedItem();
 
       ClearFileItems();
       if (message.GetParam1() != WINDOW_SLIDESHOW)
@@ -251,8 +249,6 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
       Update(m_Directory.m_strPath);
 
-      UpdateThumbPanel();
-
       if (iLastControl > -1)
       {
         SET_CONTROL_FOCUS(iLastControl, 0);
@@ -264,8 +260,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
       if (m_iItemSelected >= 0)
       {
-        CONTROL_SELECT_ITEM(CONTROL_LIST, m_iItemSelected);
-        CONTROL_SELECT_ITEM(CONTROL_THUMBS, m_iItemSelected);
+        m_viewControl.SetSelectedItem(m_iItemSelected);
       }
 
       return true;
@@ -278,12 +273,15 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       if (iControl == CONTROL_BTNVIEWASICONS)
       {
         // cycle LIST->ICONS->LARGEICONS
-        int iViewMode = VIEW_AS_ICONS;
-        if (ViewByIcon()) iViewMode = VIEW_AS_LARGEICONS;
-        if (ViewByLargeIcon()) iViewMode = VIEW_AS_LIST;
-        SetViewMode(iViewMode);
+        if (m_Directory.IsVirtualDirectoryRoot())
+          m_iViewAsIconsRoot++;
+        else
+          m_iViewAsIcons++;
+        if (m_iViewAsIconsRoot > VIEW_AS_LARGE_ICONS) m_iViewAsIconsRoot = VIEW_AS_LIST;
+        if (m_iViewAsIcons > VIEW_AS_LARGE_ICONS) m_iViewAsIconsRoot = VIEW_AS_LIST;
+        g_stSettings.m_iMyPicturesRootViewAsIcons = m_iViewAsIconsRoot;
+        g_stSettings.m_iMyPicturesViewAsIcons = m_iViewAsIcons;
         g_settings.Save();
-        UpdateThumbPanel();
         UpdateButtons();
       }
       else if (iControl == CONTROL_BTNSORTBY) // sort by
@@ -333,9 +331,9 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         g_guiSettings.ToggleBool("Slideshow.Shuffle");
         g_settings.Save();
       }
-      else if (iControl == CONTROL_LIST || iControl == CONTROL_THUMBS)  // list/thumb control
+      else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
-        int iItem = GetSelectedItem();
+        int iItem = m_viewControl.GetSelectedItem();
         int iAction = message.GetParam1();
 
         // iItem is checked for validity inside these routines
@@ -350,21 +348,20 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       }
     }
     break;
+  case GUI_MSG_SETFOCUS:
+    {
+      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
+      {
+        m_viewControl.SetFocused();
+        return true;
+      }
+    }
   }
   return CGUIWindow::OnMessage(message);
 }
 
 void CGUIWindowPictures::OnSort()
 {
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg);
-
-
-  CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_THUMBS, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg2);
-
-
-
   for (int i = 0; i < (int)m_vecItems.Size(); i++)
   {
     CFileItem* pItem = m_vecItems[i];
@@ -393,51 +390,21 @@ void CGUIWindowPictures::OnSort()
 
   SortItems(m_vecItems);
 
-  for (int i = 0; i < (int)m_vecItems.Size(); i++)
-  {
-    CFileItem* pItem = m_vecItems[i];
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, (void*)pItem);
-    g_graphicsContext.SendMessage(msg);
-    CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_THUMBS, 0, 0, (void*)pItem);
-    g_graphicsContext.SendMessage(msg2);
-  }
+  m_viewControl.SetItems(m_vecItems);
 }
 
 void CGUIWindowPictures::ClearFileItems()
 {
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg);
-
-  CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_THUMBS, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg2);
-
+  m_viewControl.Clear();
   m_vecItems.Clear(); // will clean up everything
 }
 
 void CGUIWindowPictures::UpdateButtons()
 {
-  SET_CONTROL_HIDDEN(CONTROL_THUMBS);
-  SET_CONTROL_HIDDEN(CONTROL_LIST);
-
-  int iString = 101; // view as list
-  if (ViewByIcon())
-    iString = 100;  // view as icon
-  if (ViewByLargeIcon())
-    iString = 417;  // view as large icon
-
-  SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS, iString);
-  UpdateThumbPanel();
-
-  if (ViewByIcon())
-  {
-    SET_CONTROL_VISIBLE(CONTROL_THUMBS);
-    SET_CONTROL_HIDDEN(CONTROL_LIST);
-  }
+  if (m_Directory.IsVirtualDirectoryRoot())
+    m_viewControl.SetCurrentView(m_iViewAsIconsRoot);
   else
-  {
-    SET_CONTROL_VISIBLE(CONTROL_LIST);
-    SET_CONTROL_HIDDEN(CONTROL_THUMBS);
-  }
+    m_viewControl.SetCurrentView(m_iViewAsIcons);
 
   if (g_guiSettings.GetBool("Slideshow.Shuffle"))
   {
@@ -449,9 +416,6 @@ void CGUIWindowPictures::UpdateButtons()
     CGUIMessage msg2(GUI_MSG_DESELECTED, GetID(), CONTROL_SHUFFLE, 0, 0, NULL);
     g_graphicsContext.SendMessage(msg2);
   }
-
-  UpdateThumbPanel();
-  SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS, iString);
 
   // Update sort by button
   SET_CONTROL_LABEL(CONTROL_BTNSORTBY, SortMethod());
@@ -508,24 +472,14 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
   {
     m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
 
-    int iFocusedControl = GetFocusedControl();
-
-    UpdateThumbPanel();
     UpdateButtons();
-
-    if (iFocusedControl == CONTROL_LIST || iFocusedControl == CONTROL_THUMBS)
-    {
-      int iControl = CONTROL_LIST;
-      if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
-      SET_CONTROL_FOCUS(iControl, 0);
-    }
   }
 }
 
 void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 {
   // get selected item
-  int iItem = GetSelectedItem();
+  int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";
   if (iItem >= 0 && iItem < (int)m_vecItems.Size())
   {
@@ -540,8 +494,6 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 
   GetDirectory(strDirectory, m_vecItems);
 
-  m_iLastControl = GetFocusedControl();
-
   m_Directory.m_strPath = strDirectory;
   m_vecItems.SetThumbs();
   if (g_guiSettings.GetBool("FileLists.HideExtensions"))
@@ -552,19 +504,6 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 
   strSelectedItem = m_history.Get(m_Directory.m_strPath);
 
-  if (m_iLastControl == CONTROL_THUMBS || m_iLastControl == CONTROL_LIST)
-  {
-    if ( ViewByIcon() )
-    {
-      SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
-    }
-    else
-    {
-      SET_CONTROL_FOCUS(CONTROL_LIST, 0);
-    }
-  }
-  UpdateThumbPanel();
-
   for (int i = 0; i < (int)m_vecItems.Size(); ++i)
   {
     CFileItem* pItem = m_vecItems[i];
@@ -572,8 +511,7 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
     GetDirectoryHistoryString(pItem, strHistory);
     if (strHistory == strSelectedItem)
     {
-      CONTROL_SELECT_ITEM(CONTROL_LIST, i);
-      CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
+      m_viewControl.SetSelectedItem(i);
       break;
     }
   }
@@ -601,7 +539,7 @@ void CGUIWindowPictures::OnClick(int iItem)
   else
   {
     // show picture
-    m_iItemSelected = GetSelectedItem();
+    m_iItemSelected = m_viewControl.GetSelectedItem();
     OnShowPicture(strPath);
   }
 }
@@ -622,10 +560,9 @@ bool CGUIWindowPictures::HaveDiscOrConnection( CStdString& strPath, int iDriveTy
         dlg->SetLine( 2, L"" );
         dlg->DoModal( GetID() );
       }
-      int iItem = GetSelectedItem();
+      int iItem = m_viewControl.GetSelectedItem();
       Update( m_Directory.m_strPath );
-      CONTROL_SELECT_ITEM(CONTROL_LIST, iItem)
-      CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem)
+      m_viewControl.SetSelectedItem(iItem);
       return false;
     }
   }
@@ -924,26 +861,6 @@ void CGUIWindowPictures::Render()
   CGUIWindow::Render();
 }
 
-
-int CGUIWindowPictures::GetSelectedItem()
-{
-  int iControl;
-  bool bViewAsIcon = false;
-
-  if ( ViewByIcon())
-    iControl = CONTROL_THUMBS;
-  else
-    iControl = CONTROL_LIST;
-
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg);
-  int iItem = msg.GetParam1();
-  if (iItem >= (int)m_vecItems.Size())
-    return -1;
-  return iItem;
-}
-
-
 void CGUIWindowPictures::GoParentFolder()
 {
   CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
@@ -951,50 +868,6 @@ void CGUIWindowPictures::GoParentFolder()
 
   if (!g_guiSettings.GetBool("FileLists.FullDirectoryHistory"))
     m_history.Remove(strOldPath); //Delete current path
-}
-
-bool CGUIWindowPictures::ViewByIcon()
-{
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-  {
-    if (m_iViewAsIconsRoot != VIEW_AS_LIST) return true;
-  }
-  else
-  {
-    if (m_iViewAsIcons != VIEW_AS_LIST) return true;
-  }
-  return false;
-}
-
-bool CGUIWindowPictures::ViewByLargeIcon()
-{
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-  {
-    if (m_iViewAsIconsRoot == VIEW_AS_LARGEICONS) return true;
-  }
-  else
-  {
-    if (m_iViewAsIcons == VIEW_AS_LARGEICONS) return true;
-  }
-  return false;
-}
-
-void CGUIWindowPictures::UpdateThumbPanel()
-{
-  // uncommented the code to set the selected item to correct autoswitching.
-  // for some reason when the thumbpanel is using large thumbs,
-  // the selected item would change!
-  int iItem = GetSelectedItem();
-
-  CGUIThumbnailPanel* pControl = (CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
-  if (pControl)
-    pControl->ShowBigIcons(ViewByLargeIcon());
-
-  if (iItem > -1)
-  {
-    CONTROL_SELECT_ITEM(CONTROL_LIST, iItem);
-    CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem);
-  }
 }
 
 /// \brief Build a directory history string
@@ -1207,20 +1080,6 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
   m_vecItems[iItem]->Select(false);
 }
 
-void CGUIWindowPictures::SetViewMode(int iViewMode)
-{
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-  {
-    m_iViewAsIconsRoot = iViewMode;
-    g_stSettings.m_iMyPicturesRootViewAsIcons = iViewMode;
-  }
-  else
-  {
-    g_stSettings.m_iMyPicturesViewAsIcons = iViewMode;
-    m_iViewAsIcons = iViewMode;
-  }
-}
-
 int CGUIWindowPictures::SortMethod()
 {
   if (m_Directory.IsVirtualDirectoryRoot())
@@ -1255,4 +1114,15 @@ void CGUIWindowPictures::SortItems(CFileItemList& items)
     SSortPicturesByName::m_bSortAscending = g_stSettings.m_bMyPicturesSortAscending;
   }
   items.Sort(SSortPicturesByName::Sort);
+}
+
+void CGUIWindowPictures::OnWindowLoaded()
+{
+  CGUIWindow::OnWindowLoaded();
+  m_viewControl.Reset();
+  m_viewControl.SetParentWindow(GetID());
+  m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
+  m_viewControl.AddView(VIEW_AS_ICONS, GetControl(CONTROL_THUMBS));
+  m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
+  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
 }
