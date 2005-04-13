@@ -35,6 +35,11 @@
       <id>10</id>
       <file>back.wav</file>
     </action>
+    <action>
+      <description>Previous Menu</description>
+      <id>85</id>
+      <file>shutter.wav</file>
+    </action>
   </actions>
 
   <windows>
