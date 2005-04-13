@@ -164,6 +164,7 @@
       <width>255</width>
       <posX>555</posX>
       <posY>394</posY>
+      <info>MusicPlayer.Album</info>
       <align>right</align>
       <font>font10</font>
     </control>
