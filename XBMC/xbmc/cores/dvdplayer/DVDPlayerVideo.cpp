@@ -302,39 +302,41 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
 
   if (m_bInitializedOutputDevice)
   {
+
+    // create overlay picture if not already done
+    if (!m_pOverlayPicture)
+    {
+      m_pOverlayPicture = CDVDCodecUtils::AllocatePicture(pPicture->iWidth, pPicture->iHeight);
+    }
+
+    // copy picture to overlay
+    YUVOverlay overlay = m_dvdVideo.LockYUVOverlay();
+    CDVDCodecUtils::CopyPictureToOverlay(&overlay, pPicture);
+
     DVDOverlayPicture* pOverlayPicture = m_overlay.Get();
 
-    if (pOverlayPicture && (pOverlayPicture->bForced || (m_bRenderSubs
-                            && pOverlayPicture->iPTSStartTime <= pts && pOverlayPicture->iPTSStopTime >= pts)))
+    // remove any overlays that are out of time
+    while (pOverlayPicture && pOverlayPicture->iPTSStopTime < pts)
     {
-      // create overlay picture if not already done
-      if (!m_pOverlayPicture)
+      pOverlayPicture = pOverlayPicture->pNext;
+      m_overlay.Remove();      
+    }
+
+    //Check all overlays and render those that should be rendered, based on time and forced
+    while (pOverlayPicture)
+    {
+      if (pOverlayPicture->bForced || (m_bRenderSubs
+                              && pOverlayPicture->iPTSStartTime <= pts && pOverlayPicture->iPTSStopTime >= pts))
       {
-        m_pOverlayPicture = CDVDCodecUtils::AllocatePicture(pPicture->iWidth, pPicture->iHeight);
+        // display subtitle, if bForced is true, it's a menu overlay and we should crop it
+        m_overlay.RenderYUV(&overlay, pOverlayPicture, pOverlayPicture->bForced);
       }
 
-      // copy picture to overlay
-      YUVOverlay overlay = m_dvdVideo.LockYUVOverlay();
-      CDVDCodecUtils::CopyPictureToOverlay(&overlay, pPicture);
-
-      // display subtitle, if bForced is true, it's a menu overlay and we should crop it
-      m_overlay.RenderYUV(&overlay, pOverlayPicture, pOverlayPicture->bForced);
-
-      m_dvdVideo.UnlockYUVOverlay();
-    }
-    else
-    {
-      // no data to overlay, just display
-      YUVOverlay overlay = m_dvdVideo.LockYUVOverlay();
-      CDVDCodecUtils::CopyPictureToOverlay(&overlay, pPicture);
-      m_dvdVideo.UnlockYUVOverlay();
+      pOverlayPicture = pOverlayPicture->pNext;
     }
 
-    // remove subtitle so we can render the next one if needed
-    if (pOverlayPicture && pOverlayPicture->iPTSStopTime < pts)
-    {
-      m_overlay.Remove();
-    }
+    m_dvdVideo.UnlockYUVOverlay();
+
 
     vp->pts = pts;
 
