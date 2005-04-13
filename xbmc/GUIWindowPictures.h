@@ -3,6 +3,7 @@
 #include "filesystem/VirtualDirectory.h"
 #include "filesystem/DirectoryHistory.h"
 #include "GUIWindowSlideShow.h"
+#include "GUIViewControl.h"
 
 using namespace DIRECTORY;
 
@@ -14,6 +15,8 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void OnAction(const CAction &action);
   virtual void Render();
+
+  virtual void OnWindowLoaded();
 
 protected:
   void GoParentFolder();
@@ -29,17 +32,12 @@ protected:
   void OnSlideShow(const CStdString& strPicture);
   void OnSlideShow();
   bool OnCreateThumbs();
-  int GetSelectedItem();
   bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
   void OnSlideShowRecursive(const CStdString& strPicture);
   void OnSlideShowRecursive();
-  bool ViewByIcon();
-  bool ViewByLargeIcon();
-  void SetViewMode(int iMode);
   int SortMethod();
   bool SortAscending();
   void SortItems(CFileItemList& items);
-  void UpdateThumbPanel();
   void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   void SetHistoryForPath(const CStdString& strDirectory);
   bool DoCreateFolderThumbs(CStdString &strFolder, int *iTotalItems, int *iCurrentItem, bool bRecurse);
@@ -56,4 +54,6 @@ protected:
 
   int m_iViewAsIcons;
   int m_iViewAsIconsRoot;
+
+  CGUIViewControl m_viewControl;
 };
