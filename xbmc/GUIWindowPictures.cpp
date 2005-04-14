@@ -267,7 +267,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         else
           m_iViewAsIcons++;
         if (m_iViewAsIconsRoot > VIEW_AS_LARGE_ICONS) m_iViewAsIconsRoot = VIEW_AS_LIST;
-        if (m_iViewAsIcons > VIEW_AS_LARGE_ICONS) m_iViewAsIconsRoot = VIEW_AS_LIST;
+        if (m_iViewAsIcons > VIEW_AS_LARGE_ICONS) m_iViewAsIcons = VIEW_AS_LIST;
         g_stSettings.m_iMyPicturesRootViewAsIcons = m_iViewAsIconsRoot;
         g_stSettings.m_iMyPicturesViewAsIcons = m_iViewAsIcons;
         g_settings.Save();
