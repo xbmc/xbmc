@@ -11,7 +11,7 @@
       <width>538</width>
       <height>362</height>
       <texture>16x9home-myPrograms.png</texture>
-      <visible>!Player.HasMedia</visible>
+      <visible>!Player.HasVideo</visible>
     </control>
 
     <control>
@@ -22,7 +22,7 @@
       <width>538</width>
       <height>362</height>
       <texture>16x9home-myfiles.png</texture>
-      <visible>!Player.HasMedia</visible>
+      <visible>!Player.HasVideo</visible>
     </control>
 
     <control>
@@ -33,7 +33,7 @@
       <width>538</width>
       <height>362</height>
       <texture>16x9home-mymusic.png</texture>
-      <visible>!Player.HasMedia</visible>
+      <visible>!Player.HasVideo</visible>
     </control>
 
     <control>
@@ -44,7 +44,7 @@
       <width>538</width>
       <height>362</height>
       <texture>16x9home-mypictures.png</texture>
-      <visible>!Player.HasMedia</visible>
+      <visible>!Player.HasVideo</visible>
     </control>
 
     <control>
@@ -55,7 +55,7 @@
       <width>538</width>
       <height>362</height>
       <texture>16x9home-myvideos.png</texture>
-      <visible>!Player.HasMedia</visible>
+      <visible>!Player.HasVideo</visible>
     </control>
 
     <control>
@@ -66,7 +66,7 @@
       <width>538</width>
       <height>362</height>
       <texture>16x9home-myweather.png</texture>
-      <visible>!Player.HasMedia</visible>
+      <visible>!Player.HasVideo</visible>
     </control>
 
     <control>
@@ -77,7 +77,7 @@
       <width>538</width>
       <height>362</height>
       <texture>16x9home-settings.png</texture>
-      <visible>!Player.HasMedia</visible>
+      <visible>!Player.HasVideo</visible>
     </control>
 
     <control>
