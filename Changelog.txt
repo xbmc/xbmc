@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-04-2005 fixed: PaPlayer audio device starving by increasing buffer size
   - 13-04-2005 fixed: highlighting in dvdmenu failed if an menu with different highlighting scheme had been displayed before
   - 13-04-2005 fixed: universal remote double taps (Sony universal)
   - 13-04-2005 fixed: controlbutton python docs.
