@@ -151,7 +151,7 @@ void CGUIWindowMusicOverlay::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
   m_bRelativeCoords = true;  // so that we can move things around easily :)
-  // PRE1.3 set the pause button to be conditionally visible
+#ifndef SKIN_VERSION_1_3
   CGUIImage *pImage = (CGUIImage*)GetControl(CONTROL_PAUSE_LOGO);
   if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(5);
   // set the play button to be conditionally visible
@@ -178,7 +178,7 @@ void CGUIWindowMusicOverlay::OnWindowLoaded()
   if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(204);
   pImage = (CGUIImage *)GetControl(CONTROL_LOGO_PIC);
   if (pImage && !pImage->GetInfo()) pImage->SetInfo(210);
-  // PRE1.3
+#endif
 }
 
 void CGUIWindowMusicOverlay::ShowControl(int iControl)

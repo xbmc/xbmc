@@ -1,6 +1,8 @@
 #pragma once
 #include "playlist.h"
 
+//#define SKIN_VERSION_1_3 1
+
 struct network_info
 {
   char ip[32];
