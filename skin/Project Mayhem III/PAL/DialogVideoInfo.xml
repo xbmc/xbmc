@@ -274,7 +274,7 @@
       <ondown>7</ondown>
     </control>
 
-    <*control>
+    <!-- <control>
       <description>disc:</description>
       <type>label</type>
       <id>1</id>
@@ -282,9 +282,9 @@
       <posY>495</posY>
       <label>427</label>
       <font>font12</font>
-    <*/control>
+    </control>
 
-    <*control>
+    <control>
       <description>disc select</description>
       <type>spincontrol</type>
       <id>7</id>
@@ -295,7 +295,7 @@
       <ondown>5</ondown>
       <onleft>4</onleft>
       <onright>4</onright>
-    <*/control>
+    </control> -->
 
   </controls>
 

@@ -47,7 +47,7 @@
       <font>font10</font>
     </control>
 
-    <*control>
+    <!-- <control>
       <description>Database text label</description>
       <type>label</type>
       <id>15</id>
@@ -56,7 +56,7 @@
       <posY>43</posY>
       <label>132</label>
       <font>font10</font>
-    <*/control>
+    </control> -->
 
     <controlgroup>
       <control>
