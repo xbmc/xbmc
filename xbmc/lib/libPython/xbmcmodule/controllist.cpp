@@ -337,44 +337,53 @@ PyDoc_STRVAR(addItem__doc__,
 	PyDoc_STRVAR(getSelectedPosition__doc__,
 		"getSelectedPosition() -- Returns the position of the selected item.\n"
 		"\n"
-		"Position will be returned as an int");
+		"Position will be returned as an int.  Returns -1 for empty lists.");
 
 	PyObject* ControlList_GetSelectedPosition(ControlList *self, PyObject *args)
 	{
 		// create message
 		ControlList *pControl = (ControlList*)self;
 		CGUIMessage msg(GUI_MSG_ITEM_SELECTED, pControl->iParentId, pControl->iControlId);
+        long pos = -1;
 
 		// send message
 		PyGUILock();
-		if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
+        if ((self->vecItems.size() > 0) && pControl->pGUIControl)
+        {
+            pControl->pGUIControl->OnMessage(msg);
+            pos = msg.GetParam1();
+        }
 		PyGUIUnlock();
 
-		return Py_BuildValue("l", msg.GetParam1());
+		return Py_BuildValue("l", pos);
 	}
 
 	PyDoc_STRVAR(getSelectedItem__doc__,
 		"getSelectedPosition() -- Returns the selected ListItem.\n"
 		"\n"
 		"Same as getSelectedPosition(), but instead of an int a ListItem is returned.\n"
+		"Returns None for empty lists.\n"
 		"See windowexample.py on how to use this.");
 
 	PyObject* ControlList_GetSelectedItem(ControlList *self, PyObject *args)
 	{
 		// create message
 		ControlList *pControl = (ControlList*)self;
-		CGUIMessage msg(GUI_MSG_ITEM_SELECTED, pControl->iParentId, pControl->iControlId);
+		CGUIMessage msg(
+            GUI_MSG_ITEM_SELECTED, pControl->iParentId, pControl->iControlId);
+        PyObject* pListItem = Py_None;
 
 		// send message
 		PyGUILock();
-		if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
+		if ((self->vecItems.size() > 0) && pControl->pGUIControl)
+        {
+            pControl->pGUIControl->OnMessage(msg);
+            pListItem = (PyObject*)self->vecItems[msg.GetParam1()];
+        }
 		PyGUIUnlock();
 
-		// iterate through itemvector
-		ListItem* pListItem = self->vecItems[msg.GetParam1()];
 		Py_INCREF(pListItem);
-
-		return (PyObject*)pListItem;
+		return pListItem;
 	}
 			
 	PyMethodDef ControlList_methods[] = {
