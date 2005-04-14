@@ -66,7 +66,7 @@ void CGUIFadeLabelControl::Render()
   }
   if (m_bFadeIn)
   {
-    DWORD dwAlpha = (0xff / 12) * m_iCurrentFrame;
+    DWORD dwAlpha = (m_dwAlpha / 12) * m_iCurrentFrame;
     dwAlpha <<= 24;
     dwAlpha += ( m_dwTextColor & 0x00ffffff);
     m_pFont->DrawTextWidth((float)m_iPosX, (float)m_iPosY, dwAlpha, strLabelUnicode.c_str(), (float)m_dwWidth);
