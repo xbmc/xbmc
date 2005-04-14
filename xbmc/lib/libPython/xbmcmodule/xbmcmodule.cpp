@@ -116,6 +116,25 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(executeBuiltIn__doc__,
+		"executebuiltin(string) -- Execute a built in XBMC function.\n"
+		"\n"
+		"example:\n"
+    "  - executebuiltin('XBMC.RunXBE(C:\avalaunch.xbe)')\n");
+
+	PyObject* XBMC_ExecuteBuiltIn(PyObject *self, PyObject *args)
+	{
+		char *cLine;
+		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
+
+		ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
+		tMsg.strParam = cLine;
+		g_applicationMessenger.SendMessage(tMsg);
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
 	PyDoc_STRVAR(sleep__doc__,
 		"sleep(int time) -- Sleeps for 'time' msec.\n"
 		"\n"
@@ -251,6 +270,8 @@ namespace PYXBMC
 		{"output", (PyCFunction)XBMC_Output, METH_VARARGS, output__doc__},
 		{"log", (PyCFunction)XBMC_Log, METH_VARARGS, log__doc__},
 		{"executescript", (PyCFunction)XBMC_ExecuteScript, METH_VARARGS, executeScript__doc__},
+		{"executebuiltin", (PyCFunction)XBMC_ExecuteBuiltIn, METH_VARARGS, executeBuiltIn__doc__},
+
 		{"sleep", (PyCFunction)XBMC_Sleep, METH_VARARGS, sleep__doc__},
 		{"shutdown", (PyCFunction)XBMC_Shutdown, METH_VARARGS, shutdown__doc__},
 		{"dashboard", (PyCFunction)XBMC_Dashboard, METH_VARARGS, dashboard__doc__},
