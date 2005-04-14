@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 14-04-2005 added: patch [ 1182692 ]: Fix XBMC lockup with empty python list control selection, thanks to gimblefoot.
   - 14-04-2005 fixed: Weather.Location wasn't working.
   - 14-04-2005 fixed: bug [1182765] : Playlist – too many ‘/’.
   - 14-04-2005 fixed: More Visz <-> GUI crashes.
