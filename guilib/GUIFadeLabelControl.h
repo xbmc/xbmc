@@ -22,6 +22,7 @@ public:
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
+  virtual void SetAlpha(DWORD dwAlpha);
   DWORD GetTextColor() const { return m_dwTextColor;};
   DWORD GetAlignment() const { return m_dwdwTextAlign;};
   const char * GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };

@@ -191,7 +191,8 @@ void CGUIWindowVisualisation::SetAlpha(DWORD dwAlpha)
     if (pControl->GetControlType() != CGUIControl::GUICONTROL_VISUALISATION)
     { // set the alpha
       pControl->SetAlpha(dwAlpha);
-      if (pControl->GetControlType() == CGUIControl::GUICONTROL_LABEL)
+      if (pControl->GetControlType() == CGUIControl::GUICONTROL_LABEL ||
+          pControl->GetControlType() == CGUIControl::GUICONTROL_FADELABEL)
       { // TTF fonts don't do alpha, so we just have to turn them on and off as necessary
         // not a particularly nice way to do it, but hopefully we can get alpha on ttf
         // fonts at some stage to eliminate the need for this.
