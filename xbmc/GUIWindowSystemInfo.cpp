@@ -124,12 +124,7 @@ void CGUIWindowSystemInfo::GetValues()
   WCHAR wszText[1024];
   // time build:
   {
-    const WCHAR *psztext = g_localizeStrings.Get(144).c_str();
-    const WCHAR *pszbuild = g_localizeStrings.Get(6).c_str();
-    WCHAR wszDate[32];
-    mbstowcs(wszDate, __DATE__, sizeof(wszDate));
-    swprintf(wszText, L"%s %s (%s)\n%s", psztext, pszbuild, wszDate, m_wszMPlayerVersion);
-
+    swprintf(wszText, L"%s %S (%S)\n%s", g_localizeStrings.Get(144).c_str(), g_infoManager.GetVersion().c_str(), g_infoManager.GetBuild().c_str(), m_wszMPlayerVersion);
     SET_CONTROL_LABEL(5, wszText);
   }
 
