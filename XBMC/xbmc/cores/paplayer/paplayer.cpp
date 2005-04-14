@@ -35,7 +35,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_PcmSize = 0;  
   m_PcmPos = 0;
   m_pInputBuffer = new BYTE[m_InputBytesWanted];  
-  m_dwAudioMaxSize = (8*44100); // 4 seconds for now
+  m_dwAudioMaxSize = (16*44100); // 4 seconds for now
   m_pPcm = new BYTE[m_dwAudioMaxSize];
   m_BufferingPcm = true;
   m_AverageInputBytesPerSecond = 20000; // 160k , good place to start i guess
@@ -200,7 +200,6 @@ void PAPlayer::SetVolume(long nVolume)
 
 void PAPlayer::Process()
 {
-  CLog::Log(LOGINFO, "PAP Player: Process");
   if (m_startEvent.WaitMSec(100))
   {
     m_startEvent.Reset();
@@ -299,8 +298,8 @@ bool PAPlayer::ProcessPAP()
           m_PcmSize -= dwActual;
           if ( m_PcmSize == 0 ) 
             m_PcmPos = 0; // empty pcm buffer, go get some more quick
-          else
-            break; // Exit out to see if we need to stop, and so if we can keep the soundcard busy
+//          else
+//            break; // Exit out to see if we need to stop, and so if we can keep the soundcard busy
         }
       }
       else
@@ -471,7 +470,6 @@ __int64 PAPlayer::GetTime()
 
 int PAPlayer::GetTotalTime()
 {
-  // Why is gettime __int64 and this int?
   return (int)(m_filePAP.GetLength() / m_AverageInputBytesPerSecond);
 }
 
