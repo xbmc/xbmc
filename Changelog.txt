@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 14-04-2005 fixed: Switching from GUI<->fullscreen video when paused could result in black screens or blank video controls.
   - 14-04-2005 added: #define in Util.h to specify whether to build for skin version 1.3 or not.  Uncomment this line if you want to test for 1.3 compatibility.
   - 14-04-2005 fixed: bug [ 1182993 ] My Pictures - View As button could get stuck on List or Big Icons.
   - 14-04-2005 added: Python bindings for built in XBMC functions. Based on SF patch [ 1175015 ] thanks to thor918.
