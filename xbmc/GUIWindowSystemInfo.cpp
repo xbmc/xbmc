@@ -6,9 +6,9 @@
 #include "cores/DllLoader/dll.h"
 #include "Utils/GUIInfoManager.h"
 
-// PRE1.3
+#ifndef SKIN_VERSION_1_3
 #include "GUILabelControl.h"
-// PRE1.3
+#endif
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
     : CGUIWindow(0)
@@ -232,7 +232,7 @@ void CGUIWindowSystemInfo::GetValues()
 void CGUIWindowSystemInfo::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
-  // PRE1.3 - setup labels -> infolabels
+#ifndef SKIN_VERSION_1_3
   CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(2); // cpu
   if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(112);
   pLabel = (CGUILabelControl *)GetControl(3); // gpu
@@ -249,5 +249,5 @@ void CGUIWindowSystemInfo::OnWindowLoaded()
   if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(118);
   pLabel = (CGUILabelControl *)GetControl(17);  // free g
   if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(119);
-  // PRE1.3
+#endif
 }

@@ -325,7 +325,7 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   //  Do not free resources of invisible controls
   //  or hdd will spin up when fast forwarding etc.
   DynamicResourceAlloc(false);
-  // PRE1.3 make the pause image conditionally visible
+#ifndef SKIN_VERSION_1_3
   CGUIImage *pImage = (CGUIImage *)GetControl(IMG_PAUSE);
   if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(5);
   // make the ff and rw images conditionally visible
@@ -349,7 +349,7 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(17);
   pImage = (CGUIImage *)GetControl(IMG_32Xr);
   if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(11);
-  // PRE1.3
+#endif
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
