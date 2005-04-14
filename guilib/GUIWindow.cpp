@@ -49,6 +49,7 @@ CGUIWindow::CGUIWindow(DWORD dwID)
   m_bNeedsScaling = false;
   m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
   m_iOverlayAllowed = -1;   // Use parent or previous window's state
+  m_WindowAllocated = false;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -536,6 +537,12 @@ void CGUIWindow::CenterWindow()
 
 void CGUIWindow::Render()
 {
+  // If we're rendering from a different thread, then we should wait for the main
+  // app thread to finish AllocResources(), as dynamic resources (images in particular)
+  // will try and be allocated from 2 different threads, which causes nasty things
+  // to occur.
+  if (!m_WindowAllocated) return;
+
   // calculate necessary scalings
   float fFromWidth = (float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
   float fFromHeight = (float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
@@ -953,6 +960,7 @@ void CGUIWindow::AllocResources()
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
+  m_WindowAllocated = true;
   CLog::DebugLog("Alloc resources: %.2fms (%.2f ms preload)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (plend.QuadPart - start.QuadPart) / freq.QuadPart);
 }
 
@@ -965,6 +973,7 @@ void CGUIWindow::FreeResources()
     CGUIControl* pControl = *i;
     pControl->FreeResources();
   }
+  m_WindowAllocated = false;
   //g_TextureManager.Dump();
 }
 
