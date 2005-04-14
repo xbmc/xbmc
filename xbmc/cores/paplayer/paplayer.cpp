@@ -4,6 +4,8 @@
 #include "../../application.h"
 //#include "../lib/libcdio/util.h"
 
+#define VOLUME_FFWD_MUTE 900 // 9dB
+
 // PAP: Psycho-acoustic Audio Player
 // Supporting all open  audio codec standards.
 // First one being nullsoft's nsv audio decoder format
@@ -436,7 +438,7 @@ bool PAPlayer::ProcessPAP()
           m_lastByteOffset = m_filePAP.GetPosition();
           m_startOffset = ((m_lastByteOffset) / m_AverageInputBytesPerSecond) * 1000;
           m_dwBytesSentOut = 0;
-          SetVolume(g_stSettings.m_nVolumeLevel); // override xbmc mute 
+          SetVolume(g_stSettings.m_nVolumeLevel - VOLUME_FFWD_MUTE); // override xbmc mute 
          } // Is our next position smaller then the start...
         else if (m_lastByteOffset + iOffset < 0)
         { // ...disable seeking and start the track again
@@ -445,7 +447,7 @@ bool PAPlayer::ProcessPAP()
           m_startOffset = 0;
           m_dwBytesSentOut = 0;
           m_lastByteOffset = 0;
-          SetVolume(g_stSettings.m_nVolumeLevel); // override xbmc mute 
+          SetVolume(g_stSettings.m_nVolumeLevel - VOLUME_FFWD_MUTE); // override xbmc mute 
           CLog::Log(LOGINFO, "PAP Player: Start of track reached while seeking");
         } // is our next position greater then the end sector...
         else if (m_lastByteOffset + iOffset > m_filePAP.GetLength())
@@ -453,7 +455,7 @@ bool PAPlayer::ProcessPAP()
           m_iSpeed = 1;
           // HACK: restore volume level to the value before seeking was started
           // else next track will be muted
-          SetVolume(g_stSettings.m_nVolumeLevel);
+          SetVolume(g_stSettings.m_nVolumeLevel - VOLUME_FFWD_MUTE);
           CLog::Log(LOGINFO, "PAP Player: End of track reached while seeking");
           return false;
         }
