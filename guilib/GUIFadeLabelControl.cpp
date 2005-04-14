@@ -218,3 +218,9 @@ bool CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,
   g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
   return bResult;
 }
+
+void CGUIFadeLabelControl::SetAlpha(DWORD dwAlpha)
+{
+  CGUIControl::SetAlpha(dwAlpha);
+  m_dwTextColor = (dwAlpha << 24) | (m_dwTextColor & 0xFFFFFF);
+}
