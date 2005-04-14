@@ -14,7 +14,7 @@
       <visible>yes</visible>
     </control>
 
-    <*control>
+    <!-- <control>
       <description>Cover Art</description>
       <type>image</type>
       <id>1</id>
@@ -24,7 +24,7 @@
       <height>125</height>
       <info>VideoPlayer.Cover</info>
       <keepaspectratio>yes</keepaspectratio>
-    <*/control>
+    </control> -->
 
     <control>
       <description>clock bg</description>
