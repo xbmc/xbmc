@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-04-2005 updated: Korean language file (Thnx to akoakoako)
+  - 15-04-2004 updated: Dutch language file (Thnx to tijmengozer)
   - 14-04-2005 added: Music is muted 9dB on ffwd/rewd with mp3 player.
   - 14-04-2005 fixed: Fadelabels didn't fade out in visualisation on press of white.
   - 14-04-2005 fixed: Switching from GUI<->fullscreen video when paused could result in black screens or blank video controls.
