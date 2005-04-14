@@ -331,7 +331,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 void CGUIWindowVideoBase::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
-  // PRE1.3 transfer id's 10, 11 to 50, 51
+#ifndef SKIN_VERSION_1_3
   if (!GetControl(CONTROL_LIST))
   {
     for (unsigned int i=0; i < m_vecControls.size(); i++)
@@ -356,7 +356,7 @@ void CGUIWindowVideoBase::OnWindowLoaded()
       if (pControl->GetControlIdRight() == 11) pControl->SetNavigation(pControl->GetControlIdUp(), pControl->GetControlIdDown(), pControl->GetControlIdLeft(), CONTROL_THUMBS);
     }
   }
-  // PRE1.3
+#endif
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
   m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));

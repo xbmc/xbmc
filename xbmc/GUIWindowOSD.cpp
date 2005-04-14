@@ -110,7 +110,7 @@ void CGUIWindowOSD::OnWindowLoaded()
   //  or hdd will spin up when entering a osd submenu
   DynamicResourceAlloc(false);
   m_bRelativeCoords = true;
-  // PRE1.3 setup all the toggle buttons as necessary
+#ifndef SKIN_VERSION_1_3
   CGUIToggleButtonControl *pToggle = (CGUIToggleButtonControl *)GetControl(OSD_PLAY);
   if (pToggle && !pToggle->GetToggleSelect()) pToggle->SetToggleSelect(-5);
   if (pToggle && pToggle->GetExecuteAction().IsEmpty()) pToggle->SetExecuteAction("XBMC.PlayerControl(Play)");
@@ -120,7 +120,7 @@ void CGUIWindowOSD::OnWindowLoaded()
   pToggle = (CGUIToggleButtonControl *)GetControl(OSD_FFWD);
   if (pToggle && !pToggle->GetToggleSelect()) pToggle->SetToggleSelect(-12);
   if (pToggle && pToggle->GetExecuteAction().IsEmpty()) pToggle->SetExecuteAction("XBMC.PlayerControl(Forward)");
-  // PRE1.3
+#endif
 }
 
 void CGUIWindowOSD::Render()
