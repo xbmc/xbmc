@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 14-04-2005 fixed: bug [ 1182993 ] My Pictures - View As button could get stuck on List or Big Icons.
   - 14-04-2005 added: Python bindings for built in XBMC functions. Based on SF patch [ 1175015 ] thanks to thor918.
   - 14-04-2005 added: InfoManager labels: System.BuildDate and System.BuildVersion.
   - 14-04-2005 added: Built-in functions XBMC.SlideShow(dir) and XBMC.RecursiveSlideShow(dir).
