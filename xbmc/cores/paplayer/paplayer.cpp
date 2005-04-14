@@ -47,6 +47,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_eof = false;
   m_startOffset = 0;
   m_bGuessByterate = false;
+  m_lastByteOffset = 0;
   
 }
 
@@ -394,8 +395,29 @@ bool PAPlayer::ProcessPAP()
         m_SeekTime = -1;
         break;
       }
-      if ( m_cantSeek ) m_cantSeek--;
-      if (m_iSpeed != 1 && !m_cantSeek ) 
+      if ( m_cantSeek ) 
+      {
+        m_cantSeek--;
+        if (  m_iSpeed == 1)
+        {
+          // Reset everything to 1x
+          m_cantSeek = 0;
+          m_pPAP->flush(); 
+          m_dwInputBufferSize = 0;
+          m_CallPAPAgain = false;
+          m_PcmSize = 0;
+          m_PcmPos = 0;
+          m_dwBytesSentOut = 0;
+          m_lastByteOffset =m_filePAP.GetPosition();
+          m_startOffset = ( m_lastByteOffset / m_AverageInputBytesPerSecond) * 1000;
+          break;
+        }
+      }
+      int inewSpeed = m_iSpeed; if ( inewSpeed < 0 ) inewSpeed--;
+      int snippet; 
+      if ( inewSpeed != 0 )
+        snippet = (m_Channels*(m_SampleSize/8)*m_SampleRate)/abs(inewSpeed);  
+      if (m_iSpeed != 1 && !m_cantSeek && m_dwBytesSentOut > snippet && snippet ) 
       {
         // Calculate offset to seek if we do FF/RW
         int iOffset = (m_iSpeed / 2) * m_AverageInputBytesPerSecond;
@@ -405,24 +427,28 @@ bool PAPlayer::ProcessPAP()
         m_CallPAPAgain = false;
         m_PcmSize = 0;
         m_PcmPos = 0;
-         m_dwBytesSentOut = 0;
+        m_dwBytesSentOut = 0;
         // Is our offset inside the track range?
-        if (m_filePAP.GetPosition() + iOffset >= 0 && m_filePAP.GetPosition() + iOffset <= m_filePAP.GetLength())
+        if (m_lastByteOffset + iOffset >= 0 && m_lastByteOffset + iOffset <= m_filePAP.GetLength())
         { // just set next position to read
-          m_filePAP.Seek(iOffset, SEEK_CUR);
-          m_cantSeek = 30;  // 25 passes through process to play longer audio snippets
-          m_startOffset = ((m_filePAP.GetPosition()) / m_AverageInputBytesPerSecond) * 1000;
+          m_filePAP.Seek(m_lastByteOffset + iOffset, SEEK_SET);
+          m_cantSeek = 20;  // 25 passes through process to play longer audio snippets, and let the engine run
+          m_lastByteOffset = m_filePAP.GetPosition();
+          m_startOffset = ((m_lastByteOffset) / m_AverageInputBytesPerSecond) * 1000;
           m_dwBytesSentOut = 0;
+          SetVolume(g_stSettings.m_nVolumeLevel); // override xbmc mute 
          } // Is our next position smaller then the start...
-        else if (m_filePAP.GetPosition() + iOffset < 0)
+        else if (m_lastByteOffset + iOffset < 0)
         { // ...disable seeking and start the track again
           m_iSpeed = 1;
           m_filePAP.Seek(0, SEEK_SET);
           m_startOffset = 0;
           m_dwBytesSentOut = 0;
+          m_lastByteOffset = 0;
+          SetVolume(g_stSettings.m_nVolumeLevel); // override xbmc mute 
           CLog::Log(LOGINFO, "PAP Player: Start of track reached while seeking");
         } // is our next position greater then the end sector...
-        else if (m_filePAP.GetPosition() + iOffset > m_filePAP.GetLength())
+        else if (m_lastByteOffset + iOffset > m_filePAP.GetLength())
         { // ...disable seeking and quit player
           m_iSpeed = 1;
           // HACK: restore volume level to the value before seeking was started
