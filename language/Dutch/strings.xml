@@ -27,16 +27,16 @@
 <string><id>30</id><value>oktober</value></string>
 <string><id>31</id><value>november</value></string>
 <string><id>32</id><value>december</value></string>
-<string><id>98</id><value>Weergave: Automatisch</value></string> 
-<string><id>99</id><value>Weergave: Autom. Groot</value></string>
-<string><id>100</id><value>Weergave:Iconen</value></string>
-<string><id>101</id><value>Weergave:Lijst</value></string>
+<string><id>98</id><value>Weergave:Automatisch</value></string> 
+<string><id>99</id><value>Weergave:Autom. Groot</value></string>
+<string><id>100</id><value>Weergave: Iconen</value></string>
+<string><id>101</id><value>Weergave: Lijst</value></string>
 <string><id>102</id><value>Scannen</value></string>
-<string><id>103</id><value>Sorteren: Naam</value></string> 
-<string><id>104</id><value>Sorteren: Datum</value></string>
-<string><id>105</id><value>Sorteren: Formaat</value></string>
-<string><id>106</id><value>NEE</value></string> 
-<string><id>107</id><value>JA</value></string> 
+<string><id>103</id><value>Sorteren:Naam</value></string> 
+<string><id>104</id><value>Sorteren:Datum</value></string>
+<string><id>105</id><value>Sorteren:Formaat</value></string>
+<string><id>106</id><value>Nee</value></string> 
+<string><id>107</id><value>Ja</value></string> 
 <string><id>108</id><value>Schuifvoorstelling</value></string> 
 <string><id>109</id><value>Maak Thumbs</value></string> 
 <string><id>110</id><value>Maak Thumbnails</value></string> 
@@ -291,7 +291,7 @@
 <string><id>360</id><value>Screensaver</value></string>
 <string><id>361</id><value>Diavoorstelling</value></string> 
 <string><id>362</id><value>Screensaver doorzichtigheid</value></string>
-<string><id>363</id><value>Sorteren: Bestand</value></string> 
+<string><id>363</id><value>Sorteren:Bestand</value></string> 
 <string><id>364</id><value>- Versterker AC3 compatible</value></string> 
 <string><id>365</id><value>Sorteren: Naam</value></string> 
 <string><id>366</id><value>Sorteren: Jaar</value></string> 
@@ -300,7 +300,7 @@
 <string><id>369</id><value>Titel</value></string>
 <string><id>370</id><value>Onweer</value></string>
 <string><id>371</id><value>Gedeeltelijk</value></string>
-<string><id>372</id><value>Veel</value></string>
+<string><id>372</id><value>Overwegend</value></string>
 <string><id>373</id><value>Zonnig</value></string>
 <string><id>374</id><value>Bewolkt</value></string>
 <string><id>375</id><value>Sneeuw</value></string>
@@ -344,7 +344,7 @@
 <string><id>414</id><value>Geen recensie voor dit album</value></string>
 <string><id>415</id><value>Miniatuurafbeelding Downloaden...</value></string> 
 <string><id>416</id><value>Niet Beschikbaar</value></string> 
-<string><id>417</id><value>Weergave:Grote iconen</value></string> 
+<string><id>417</id><value>Weergave: Groot</value></string> 
 <string><id>418</id><value>Mijn Videos/Genres</value></string> 
 <string><id>419</id><value>Mijn Videos/Acteurs</value></string> 
 <string><id>420</id><value>Mijn Videos/Jaren</value></string> 
@@ -426,7 +426,7 @@
 <string><id>495</id><value>Video naar GUI resolutie upsamplen</value></string>
 <string><id>496</id><value>Kalibratie</value></string>
 <string><id>497</id><value>Media extensies verbergen</value></string>
-<string><id>498</id><value>Sorteren: Type</value></string>
+<string><id>498</id><value>Sorteren:Type</value></string>
 <string><id>499</id><value>Kan geen verbinding maken met allmusic.com</value></string>
 <string><id>500</id><value>Album info downloaden mislukt</value></string>
 <string><id>501</id><value>Zoeken naar albumnamen...</value></string>
@@ -435,7 +435,7 @@
 <string><id>504</id><value>Leeg</value></string>
 <string><id>505</id><value>Media info van bestanden inlezen...</value></string>
 <string><id>506</id><value>Gebruik mapnamen voor beschrijving</value></string>
-<string><id>507</id><value>Sorteren: Gebruik</value></string>
+<string><id>507</id><value>Sorteren:Gebruik</value></string>
 <string><id>508</id><value>Gebruik geen snelkoppelingen en scanfunctie</value></string>
 <string><id>509</id><value>Programma thumbnails cachen</value></string>
 <string><id>600</id><value>CD kopiëren</value></string>
@@ -515,7 +515,25 @@
 <string><id>750</id><value>Weet je het zeker?</value></string>
 <string><id>751</id><value>Snelkoppeling verwijderen</value></string>
 <string><id>752</id><value>Snelkoppeling wijzingen</value></string>
-<string><id>753</id><value>Naam snlkoppeling wijzingen</value></string>
+<string><id>753</id><value>Snelkoppelingnaam wijzingen</value></string>
+<string><id>754</id><value>Add Program Link</value></string>
+<string><id>755</id><value>Edit Program Path</value></string>
+<string><id>756</id><value>Edit Program Name</value></string>
+<string><id>757</id><value>Edit Path Depth</value></string>
+<string><id>758</id><value>Removing Program Link</value></string>  
+<string><id>759</id><value>Weergave:Groot</value></string>
+
+<string><id>760</id><value>Geel</value></string>
+<string><id>761</id><value>Wit</value></string>
+<string><id>762</id><value>Blauw</value></string>
+<string><id>763</id><value>Lichtgeel</value></string>
+<string><id>764</id><value>Geel green</value></string>
+<string><id>765</id><value>Lichtblauw</value></string>
+<string><id>766</id><value>Reserved</value></string>
+<string><id>767</id><value>Reserved</value></string>
+<string><id>768</id><value>Reserved</value></string>
+<string><id>769</id><value>Reserved</value></string>
+
 <string><id>998</id><value>XLink Kai</value></string>
 <string><id>999</id><value>Online gamen</value></string>
 <string><id>1000</id><value>Screensaver voorbeeld</value></string>
@@ -523,18 +541,18 @@
 <string><id>1396</id><value>Driftsneeuw</value></string>
 <string><id>1397</id><value>en</value></string>
 <string><id>1398</id><value>Vrieskou</value></string>
-<string><id>1399</id><value>Onbekend</value></string>
-<string><id>1400</id><value>Onbekend</value></string>
-<string><id>1401</id><value>Onbekend</value></string>
-<string><id>1402</id><value>Onbekend</value></string>
-<string><id>1403</id><value>Onbekend</value></string>
-<string><id>1404</id><value>Onbekend</value></string>
-<string><id>1405</id><value>Onbekend</value></string>
-<string><id>1406</id><value>Onbekend</value></string>
-<string><id>1407</id><value>Onbekend</value></string>
-<string><id>1408</id><value>Onbekend</value></string>
-<string><id>1409</id><value>Onbekend</value></string>
-<string><id>1410</id><value>Onbekend</value></string>
+<string><id>1399</id><value>Laat</value></string>
+<string><id>1400</id><value>Lokaal</value></string>
+<string><id>1401</id><value>Donderbuien</value></string>
+<string><id>1402</id><value>Donder</value></string>
+<string><id>1403</id><value>Zon</value></string>
+<string><id>1404</id><value>Hevige</value></string>
+<string><id>1405</id><value>in</value></string>
+<string><id>1406</id><value>de</value></string>
+<string><id>1407</id><value>Omgeving</value></string>
+<string><id>1408</id><value>IJs</value></string>
+<string><id>1409</id><value>Kristallen</value></string>
+<string><id>1410</id><value>Kalm</value></string>
 
 <string><id>10000</id><value>Home</value></string>
 <string><id>10001</id><value>Programma's</value></string>
@@ -703,7 +721,7 @@
 <string><id>13344</id><value>Roteren</value></string> 
 <string><id>13345</id><value>LED uitschakelen tijdens afspelen</value></string>
 <string><id>13346</id><value>Film informatie</value></string> 
-<string><id>13347</id><value>Toevoegen aan afspeellijst</value></string> 
+<string><id>13347</id><value>Toevoegen aan playlist</value></string> 
 <string><id>13348</id><value>IMDb doorzoeken...</value></string> 
 <string><id>13349</id><value>Alle IMDb info ophalen</value></string> 
 <string><id>13350</id><value>Speelt nu...</value></string>
@@ -736,6 +754,10 @@
 <string><id>13379</id><value>Standaard contrast</value></string>
 <string><id>13380</id><value>Standaard kleurbalans</value></string>
 <string><id>13381</id><value>Video hervatten</value></string>
+<string><id>13382</id><value>Stem - Poort 0</value></string>
+<string><id>13383</id><value>Stem - Poort 1</value></string>
+<string><id>13384</id><value>Stem - Poort 2</value></string>
+<string><id>13385</id><value>Stem - Poort 3</value></string>
 
 <string><id>14000</id><value>Samenvoegen: Uit</value></string>
 <string><id>14001</id><value>Samenvoegen: Aan</value></string> 
@@ -868,5 +890,8 @@
 <string><id>15103</id><value>* Alle artiesten</value></string>
 <string><id>15104</id><value>* Alle nummers</value></string>
 <string><id>15105</id><value>* Alle genres</value></string>
-<string><id>15106</id><value>Geselecteerd bestand onthouden bij voorwaarts navigeren</value></string>
+<string><id>15106</id><value>Geselecteerd bestand onthouden bij navigeren</value></string>
+<string><id>15107</id><value>Bufferen...</value></string>
+<string><id>15108</id><value>Navigatiegeluiden</value></string>
+<string><id>15109</id><value>Standaard uiterlijk</value></string>
 </strings>
