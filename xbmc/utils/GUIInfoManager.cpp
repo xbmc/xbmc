@@ -45,10 +45,12 @@ extern char g_szTitleIP[32];
 #define SYSTEM_GPU_TEMPERATURE      113
 #define SYSTEM_FAN_SPEED            114
 #define SYSTEM_FREE_SPACE_C         115
-// 116 is reserved
+// 116 is reserved for space on D
 #define SYSTEM_FREE_SPACE_E         117
 #define SYSTEM_FREE_SPACE_F         118
 #define SYSTEM_FREE_SPACE_G         119
+#define SYSTEM_BUILD_VERSION        120
+#define SYSTEM_BUILD_DATE           121
 
 #define NETWORK_IP_ADDRESS          190
 
@@ -136,6 +138,8 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
   else if (strTest.Equals("system.freespace(e)")) ret = SYSTEM_FREE_SPACE_E;
   else if (strTest.Equals("system.freespace(f)")) ret = SYSTEM_FREE_SPACE_F;
   else if (strTest.Equals("system.freespace(g)")) ret = SYSTEM_FREE_SPACE_G;
+  else if (strTest.Equals("system.buildversion")) ret = SYSTEM_BUILD_VERSION;
+  else if (strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
   else if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
   else if (strTest.Equals("musicplayer.title")) ret = MUSICPLAYER_TITLE;
   else if (strTest.Equals("musicplayer.album")) ret = MUSICPLAYER_ALBUM;
@@ -216,6 +220,12 @@ wstring CGUIInfoManager::GetLabel(int info)
     break;
   case SYSTEM_FAN_SPEED:
     return GetSystemHeatInfo("fan");
+    break;
+  case SYSTEM_BUILD_VERSION:
+    strLabel = GetVersion();
+    break;
+  case SYSTEM_BUILD_DATE:
+    strLabel = GetBuild();
     break;
   case NETWORK_IP_ADDRESS:
     {
@@ -788,12 +798,14 @@ wstring CGUIInfoManager::GetFreeSpace(int drive)
   strReturn = wszHD;
   return strReturn;
 }
+
 CStdString CGUIInfoManager::GetVersion()
 {
   CStdString tmp = g_localizeStrings.Get(6).c_str();
   tmp = tmp.substr(18, tmp.size() - 14);
   return tmp;
 }
+
 CStdString CGUIInfoManager::GetBuild()
 {
   WCHAR wszDate[32];
