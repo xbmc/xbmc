@@ -24,7 +24,7 @@ CGUIWindowVideoOverlay::~CGUIWindowVideoOverlay()
 void CGUIWindowVideoOverlay::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
-  // PRE1.3 make our images conditional if they're not already (backwards compatible)
+#ifndef SKIN_VERSION_1_3
   CGUIImage *pImage = (CGUIImage *)GetControl(CONTROL_PLAY_LOGO);
   if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(4);
   pImage = (CGUIImage *)GetControl(CONTROL_PAUSE_LOGO);
@@ -37,7 +37,7 @@ void CGUIWindowVideoOverlay::OnWindowLoaded()
   if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(254);
   pLabel = (CGUILabelControl *)GetControl(CONTROL_PLAYTIME);
   if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(256);
-  // PRE1.3
+#endif
 }
 
 void CGUIWindowVideoOverlay::Render()

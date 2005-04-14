@@ -77,7 +77,11 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
     {
       stReferenceControl stControl;
       strcpy(stControl.m_szType, it->m_szType);
-      if (!strcmp(it->m_szType, "label") || !strcmp(it->m_szType, "infolabel")) // PRE1.3
+#ifdef SKIN_VERSION_1_3
+      if (!strcmp(it->m_szType, "label"))
+#else
+      if (!strcmp(it->m_szType, "label") || !strcmp(it->m_szType, "infolabel"))
+#endif
       {
         stControl.m_pControl = new CGUILabelControl(*((CGUILabelControl*)it->m_pControl));
       }
@@ -89,7 +93,11 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
       {
         stControl.m_pControl = new CGUIVideoControl(*((CGUIVideoControl*)it->m_pControl));
       }
-      else if (!strcmp(it->m_szType, "fadelabel") || !strcmp(it->m_szType, "infofadelabel")) // PRE1.3
+#ifdef SKIN_VERSION_1_3
+      else if (!strcmp(it->m_szType, "fadelabel"))
+#else
+      else if (!strcmp(it->m_szType, "fadelabel") || !strcmp(it->m_szType, "infofadelabel"))
+#endif
       {
         stControl.m_pControl = new CGUIFadeLabelControl(*((CGUIFadeLabelControl*)it->m_pControl));
       }
@@ -145,7 +153,11 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
       {
         stControl.m_pControl = new CGUIProgressControl(*((CGUIProgressControl*)it->m_pControl));
       }
-      else if (!strcmp(it->m_szType, "image") || !strcmp(it->m_szType, "infoimage")) // PRE1.3
+#ifdef SKIN_VERSION_1_3
+      else if (!strcmp(it->m_szType, "image"))
+#else
+      else if (!strcmp(it->m_szType, "image") || !strcmp(it->m_szType, "infoimage"))
+#endif
       {
         stControl.m_pControl = new CGUIImage(*((CGUIImage*)it->m_pControl));
       }
@@ -230,7 +242,11 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
   {
     stReferenceControl stControl;
     strcpy(stControl.m_szType, it->m_szType);
-    if (!strcmp(it->m_szType, "label") || !strcmp(it->m_szType, "infolabel")) // PRE1.3
+#ifdef SKIN_VERSION_1_3
+    if (!strcmp(it->m_szType, "label"))
+#else
+    if (!strcmp(it->m_szType, "label") || !strcmp(it->m_szType, "infolabel"))
+#endif
     {
       stControl.m_pControl = new CGUILabelControl(*((CGUILabelControl*)it->m_pControl));
     }
@@ -242,7 +258,11 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
     {
       stControl.m_pControl = new CGUIVideoControl(*((CGUIVideoControl*)it->m_pControl));
     }
-    else if (!strcmp(it->m_szType, "fadelabel") || !strcmp(it->m_szType, "infofadelabel")) // PRE1.3
+#ifdef SKIN_VERSION_1_3
+    else if (!strcmp(it->m_szType, "fadelabel"))
+#else
+    else if (!strcmp(it->m_szType, "fadelabel") || !strcmp(it->m_szType, "infofadelabel"))
+#endif
     {
       stControl.m_pControl = new CGUIFadeLabelControl(*((CGUIFadeLabelControl*)it->m_pControl));
     }
@@ -298,7 +318,11 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
     {
       stControl.m_pControl = new CGUIProgressControl(*((CGUIProgressControl*)it->m_pControl));
     }
-    else if (!strcmp(it->m_szType, "image") || !strcmp(it->m_szType, "infoimage")) // PRE1.3
+#ifdef SKIN_VERSION_1_3
+    else if (!strcmp(it->m_szType, "image"))
+#else
+    else if (!strcmp(it->m_szType, "image") || !strcmp(it->m_szType, "infoimage"))
+#endif
     {
       stControl.m_pControl = new CGUIImage(*((CGUIImage*)it->m_pControl));
     }
