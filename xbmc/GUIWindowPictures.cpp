@@ -8,10 +8,6 @@
 #include "AutoSwitch.h"
 #include "GUIPassword.h"
 
-#define VIEW_AS_LIST           0
-#define VIEW_AS_ICONS          1
-#define VIEW_AS_LARGEICONS     2
-
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
 #define CONTROL_BTNSORTASC    4
@@ -142,13 +138,6 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_START_SLIDESHOW:
-    {
-      CStdString* pUrl = (CStdString*) message.GetLPVOID();
-      Update( *pUrl );
-      OnSlideShow();
-    }
-    break;
   case GUI_MSG_DVDDRIVE_EJECTED_CD:
     {
       if ( !m_Directory.IsVirtualDirectoryRoot() )
