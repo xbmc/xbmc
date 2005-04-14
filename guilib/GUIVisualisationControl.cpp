@@ -70,9 +70,9 @@ CGUIVisualisationControl::~CGUIVisualisationControl(void)
 void CGUIVisualisationControl::FreeVisualisation()
 {
   m_bInitialized = false;
+  CSingleLock lock (m_critSection);
   if (g_application.m_pPlayer)
     g_application.m_pPlayer->UnRegisterAudioCallback();
-  CSingleLock lock (m_critSection);
   if (m_pVisualisation)
   {
     OutputDebugString("Visualisation::Stop()\n");
