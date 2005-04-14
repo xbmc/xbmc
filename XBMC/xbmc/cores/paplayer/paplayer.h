@@ -105,6 +105,7 @@ private:
   DWORD   m_dwBytesReadIn;
   __int64 m_startOffset;
   __int64 m_dwBytesSentOut;
+  __int64 m_lastByteOffset;
   int     m_iLastSpeed;
   bool    m_bGuessByterate;
 };
