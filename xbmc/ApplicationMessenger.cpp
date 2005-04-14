@@ -178,6 +178,10 @@ void CApplicationMessenger::ProcessMessages()
         g_pythonParser.evalFile(pMsg->strParam.c_str());
         break;
 
+      case TMSG_EXECUTE_BUILT_IN:
+        CUtil::ExecBuiltIn(pMsg->strParam.c_str());
+        break;
+
       case TMSG_PLAYLISTPLAYER_PLAY:
         g_playlistPlayer.Play(pMsg->dwParam1);
         break;
