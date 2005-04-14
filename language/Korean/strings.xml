@@ -520,26 +520,39 @@
   <string><id>755</id><value>프로그램 경로 변경</value></string>
   <string><id>756</id><value>프로그램 이름 변경</value></string>
   <string><id>757</id><value>하위 경로 수 변경</value></string>
-  <string><id>758</id><value>프로그램 연결 제거</value></string>  
+  <string><id>758</id><value>프로그램 연결 제거</value></string>
+  <string><id>759</id><value>보기: 목록(Big)</value></string>
+  
+  <string><id>760</id><value>노란색</value></string>
+  <string><id>761</id><value>흰색</value></string>
+  <string><id>762</id><value>파란색</value></string>
+  <string><id>763</id><value>밝은 녹색</value></string>
+  <string><id>764</id><value>연두색</value></string>
+  <string><id>765</id><value>남색</value></string>
+  <string><id>766</id><value>예약</value></string>
+  <string><id>767</id><value>예약</value></string>
+  <string><id>768</id><value>예약</value></string>
+  <string><id>769</id><value>예약</value></string>
+    
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>온라인 게이밍</value></string>
   <string><id>1000</id><value>화면보호기 미리보기</value></string>
 
   <string><id>1396</id><value>뜬</value></string>
-  <string><id>1397</id><value>, </value></string>
+  <string><id>1397</id><value>그리고</value></string>
   <string><id>1398</id><value>몹시 추운</value></string>
-  <string><id>1399</id><value>N/A</value></string>
-  <string><id>1400</id><value>N/A</value></string>
-  <string><id>1401</id><value>N/A</value></string>
-  <string><id>1402</id><value>N/A</value></string>
-  <string><id>1403</id><value>N/A</value></string>
-  <string><id>1404</id><value>N/A</value></string>
-  <string><id>1405</id><value>N/A</value></string>
-  <string><id>1406</id><value>N/A</value></string>
-  <string><id>1407</id><value>N/A</value></string>
-  <string><id>1408</id><value>N/A</value></string>
-  <string><id>1409</id><value>N/A</value></string>
-  <string><id>1410</id><value>N/A</value></string>
+  <string><id>1399</id><value>늦</value></string>
+  <string><id>1400</id><value>고립된</value></string>
+  <string><id>1401</id><value>뇌우</value></string>
+  <string><id>1402</id><value>천둥</value></string>
+  <string><id>1403</id><value>햇빛</value></string>
+  <string><id>1404</id><value>많은</value></string>
+  <string><id>1405</id><value>in</value></string>
+  <string><id>1406</id><value>the</value></string>
+  <string><id>1407</id><value>전후</value></string>
+  <string><id>1408</id><value>얼음</value></string>
+  <string><id>1409</id><value>눈</value></string>
+  <string><id>1410</id><value>온화함</value></string>
     
   <string><id>10000</id><value>홈</value></string>
   <string><id>10001</id><value>프로그램</value></string>
@@ -745,13 +758,17 @@
   <string><id>13373</id><value>- 포트 2 음성</value></string> 
   <string><id>13374</id><value>- 포트 3 음성</value></string> 
   <string><id>13375</id><value>장치 사용</value></string> 
-  <string><id>13376</id><value>볼륨(%)</value></string>
+  <string><id>13376</id><value>볼륨</value></string>
   <string><id>13377</id><value>기본 보기 모드</value></string>
   <string><id>13378</id><value>기본 밝기</value></string>
   <string><id>13379</id><value>기본 대비</value></string>
   <string><id>13380</id><value>기본 감마</value></string>
   <string><id>13381</id><value>비디오 계속재생</value></string>
-   
+  <string><id>13382</id><value>음성 변조 - 포트 0</value></string>
+  <string><id>13383</id><value>음성 변조 - 포트 1</value></string>
+  <string><id>13384</id><value>음성 변조 - 포트 2</value></string>
+  <string><id>13385</id><value>음성 변조 - 포트 3</value></string>
+
   <string><id>14000</id><value>연속 재생: 끔</value></string>
   <string><id>14001</id><value>연속 재생: 간단</value></string>
   <string><id>14002</id><value>연속 재생: 자동</value></string>
@@ -877,11 +894,15 @@
   <string><id>15060</id><value>메시지</value></string>
   <string><id>15061</id><value>%s 게임에 초대 되었습니다</value></string>
   <string><id>15062</id><value>대체 mplayer 위치 사용</value></string>
-  <string><id>15100</id><value>탐색</value></string>
+  <string><id>15100</id><value>라이브러리</value></string>
   <string><id>15101</id><value>데이타베이스</value></string>
   <string><id>15102</id><value>* 모든 앨범</value></string>
   <string><id>15103</id><value>* 모든 음악가</value></string>
   <string><id>15104</id><value>* 모든 음악</value></string>
   <string><id>15105</id><value>* 모든 장르</value></string>
   <string><id>15106</id><value>다음 파일 재생시 선택된 파일 기억</value></string>
+  
+  <string><id>15107</id><value>버퍼링중...</value></string>
+  <string><id>15108</id><value>네비게이션 사운드</value></string>
+  <string><id>15109</id><value>스킨 기본값</value></string>
 </strings>
