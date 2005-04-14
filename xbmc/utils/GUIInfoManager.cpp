@@ -126,6 +126,7 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
   else if (strTest.Equals("player.caching")) ret = PLAYER_CACHING;
   else if (strTest.Equals("weather.conditions")) ret = WEATHER_CONDITIONS;
   else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
+  else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
   else if (strTest.Equals("system.date")) ret = SYSTEM_DATE;
   else if (strTest.Equals("system.time")) ret = SYSTEM_TIME;
   else if (strTest.Equals("system.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
