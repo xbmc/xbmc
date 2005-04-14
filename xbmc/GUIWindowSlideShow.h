@@ -133,6 +133,7 @@ public:
   void ShowNext();
   void ShowPrevious();
   void Select(const CStdString& strPicture);
+  void RunSlideShow(const CStdString& strPath, bool bRecursive = false);
   void StartSlideShow();
   bool InSlideShow() const;
   virtual bool OnMessage(CGUIMessage& message);
@@ -142,6 +143,7 @@ public:
   void OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize);
   int NumSlides();
 private:
+  void AddItems(const CStdString &strPath, bool bRecursive);
   void RenderPause();
   void RenderErrorMessage();
   void Rotate();

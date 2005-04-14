@@ -1115,6 +1115,17 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
         m_bSlideShow = false;
       return true;
     }
+    break;
+  case GUI_MSG_START_SLIDESHOW:
+    {
+      CStdString strFolder = message.GetStringParam();
+      bool bRecursive = message.GetParam1() != 0;
+      if (strFolder.size())
+      {
+        RunSlideShow(strFolder, bRecursive);
+      }
+    }
+    break;
   }
   return CGUIWindow::OnMessage(message);
 }
@@ -1233,3 +1244,43 @@ int CGUIWindowSlideShow::NumSlides()
   return (int)m_vecSlides.size();
 }
 
+void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursive)
+{
+  // stop any video
+  if (g_application.IsPlayingVideo())
+    g_application.StopPlaying();
+  // reset the slideshow
+  Reset();
+  AddItems(strPath, bRecursive);
+  // ok, now run the slideshow
+  StartSlideShow();
+  if (NumSlides())
+    m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+}
+
+void CGUIWindowSlideShow::AddItems(const CStdString &strPath, bool bRecursive)
+{
+  // read the directory in
+  CFactoryDirectory factory;
+  IDirectory *pDir = factory.Create(strPath);
+  if (!pDir) return;
+  CFileItemList items;
+  pDir->SetMask(g_stSettings.m_szMyPicturesExtensions);
+  bool bResult = pDir->GetDirectory(strPath, items);
+  delete pDir;
+  if (!bResult) return;
+  // now sort it as necessary
+  CUtil::SortFileItemsByName(items);
+  // need to go into all subdirs
+  for (int i = 0; i < items.Size(); i++)
+  {
+    if (items[i]->m_bIsFolder && bRecursive)
+    {
+      AddItems(items[i]->m_strPath, bRecursive);
+    }
+    else
+    { // add to the slideshow
+      Add(items[i]->m_strPath);
+    }
+  }
+}

@@ -2736,6 +2736,18 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
       CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", parameter.c_str());
     }
   }
+  else if (execute.Equals("SlideShow") || execute.Equals("RecursiveSlideShow"))
+  {
+    if (parameter.IsEmpty())
+    {
+      CLog::Log(LOGERROR, "XBMC.SlideShow called with empty parameter");
+      return ;
+    }
+    CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, execute.Equals("SlideShow") ? 0 : 1, 0, 0);
+    msg.SetStringParam(parameter);
+    CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+    if (pWindow) pWindow->OnMessage(msg);
+  }
   else if (execute.Equals("ReloadSkin"))
   {
     //	Reload the skin
