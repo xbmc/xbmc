@@ -221,11 +221,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           if (g_guiSettings.GetBool("Autorun.Pictures"))
           {
             bPlaying = true;
-            m_gWindowManager.ActivateWindow(WINDOW_PICTURES);
-            CStdString* strUrl = new CStdString( pItem->m_strPath.c_str() );
-            CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, 0, 0, (void*) strUrl );
-            m_gWindowManager.SendMessage( msg );
-            delete strUrl;
+            CStdString strExec;
+            strExec.Format("XBMC.RecursiveSlideShow(%s)", pItem->m_strPath.c_str());
+            CUtil::ExecBuiltIn(strExec);
             break;
           }
         }
@@ -272,11 +270,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       if (!pItem->m_bIsFolder && pItem->IsPicture())
       {
         bPlaying = true;
-        m_gWindowManager.ActivateWindow(WINDOW_PICTURES);
-        CStdString* strUrl = new CStdString( strDrive );
-        CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, 0, 0, (void*) strUrl );
-        m_gWindowManager.SendMessage( msg );
-        delete strUrl;
+        CStdString strExec;
+        strExec.Format("XBMC.RecursiveSlideShow(%s)", strDrive.c_str());
+        CUtil::ExecBuiltIn(strExec);
         break;
       }
     }
