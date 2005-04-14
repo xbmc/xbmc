@@ -375,7 +375,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
     {
       if (!( strFilename.c_str()[1] == ':')) //Filename not fully qualified
       {
-        if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\')
+        if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || HasSlashAtEnd(strBasePath))
         {
           strFilename = strBasePath + strFilename;
           strFilename.Replace('/', '\\');
@@ -399,7 +399,8 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   {
     if (plItemUrl.GetProtocol().length() == 0 ) //Filename is local
     {
-      if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' ) //Begins with a slash.. not good.. but we try to make the best of it..
+      if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || HasSlashAtEnd(strBasePath)) //Begins with a slash.. not good.. but we try to make the best of it..
+
       {
         strFilename = strBasePath + strFilename;
         strFilename.Replace('\\', '/');
