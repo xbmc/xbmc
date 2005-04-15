@@ -323,10 +323,11 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
     }
 
     //Check all overlays and render those that should be rendered, based on time and forced
+    //Both forced and subs should check timeing, pts == 0 in the stillframe case
     while (pOverlayPicture)
     {
-      if (pOverlayPicture->bForced || (m_bRenderSubs
-                              && pOverlayPicture->iPTSStartTime <= pts && pOverlayPicture->iPTSStopTime >= pts))
+      if ((pOverlayPicture->bForced || m_bRenderSubs)
+          && ((pOverlayPicture->iPTSStartTime <= pts && pOverlayPicture->iPTSStopTime >= pts) || pts == 0))
       {
         // display subtitle, if bForced is true, it's a menu overlay and we should crop it
         m_overlay.RenderYUV(&overlay, pOverlayPicture, pOverlayPicture->bForced);

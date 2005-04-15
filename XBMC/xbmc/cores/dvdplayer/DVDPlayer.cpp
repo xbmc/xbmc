@@ -254,6 +254,7 @@ void CDVDPlayer::Process()
 
   m_callback.OnPlayBackStarted();
 
+  int iErrorCounter = 0;
   for (;;)
   {
     // if the queues are full, no need to read more
@@ -300,12 +301,17 @@ void CDVDPlayer::Process()
     else if (!pPacket)
     {
       CLog::Log(LOGERROR, "Error reading data form demuxer");
-      continue;
+      
+      if(++iErrorCounter<100) //Allow 100 errors in a row before giving up
+        continue;
+      else
+        break;
     }
 
     if (pPacket)
     {
       oldstate = DVDSTATE_NORMAL;
+      iErrorCounter=0;
     }
 
     CDemuxStream *pStream = m_pDemuxer->GetStream(pPacket->iStreamId);
@@ -341,6 +347,7 @@ void CDVDPlayer::Process()
         m_dvdPlayerVideo.m_overlay.Add(pOverlayPicture);
 
         // JM hack (commented out m_dvd.state == DVDSTATE_STILL)
+        // It's no hack, the timeing of the highlight will be handled by the SPU package
         if (pSPUInfo->bForced /*&& m_dvd.state == DVDSTATE_STILL*/)
         {
           // recieved new menu overlay (button), update the screen when displaying a still
@@ -450,12 +457,48 @@ void CDVDPlayer::HandleMessages()
   {
     switch (pMessage->iMessage)
     {
-    case DVDMESSAGE_SEEK:
+    case DVDMESSAGE_SEEKPERCENT:
       {
-        if (!m_pDemuxer->Seek(pMessage->iValue)) CLog::Log(LOGWARNING, "error while seeking");
+        if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD) 
+        {
+          if (IsInMenu()) break; //We can't seek in a menu
+          if( ((CDVDInputStreamNavigator*)m_pInputStream)->SeekPercentage(pMessage->iValue))
+          {
+            FlushBuffers();
+          }
+          else
+            CLog::Log(LOGWARNING, "error while seeking");
+        }
         else
         {
-          FlushBuffers();
+          if (m_pDemuxer->Seek(pMessage->iValue*GetTotalTime()/100)) 
+          {
+            FlushBuffers();
+          }
+          else
+            CLog::Log(LOGWARNING, "error while seeking");
+        }
+      }
+      break;
+
+    case DVDMESSAGE_SEEK:
+      {
+        if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD) 
+        {
+          const int iTot = GetTotalTime();
+          if (iTot == 0) break;
+          pMessage->iValue = pMessage->iValue * 100 / iTot;
+          pMessage->iMessage = DVDMESSAGE_SEEKPERCENT;
+          continue; //Reuse code above
+        }
+        else
+        {
+          if (m_pDemuxer->Seek(pMessage->iValue)) 
+          {
+            FlushBuffers();
+          }
+          else
+            CLog::Log(LOGWARNING, "error while seeking");
         }
         break;
       }
@@ -564,15 +607,9 @@ void CDVDPlayer::SubtitleOffset(bool bPlus)
 
 void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 {
-  return ;
-
-  int iTime = GetTotalTime() / 100;
-  iTime *= bLargeStep ? 2 : 10; // search 2 or 10 %
-
-  if (!bPlus) iTime = 0 - iTime;
-
-  if (iTime < 0 || iTime > GetTime()) return ; // return if out of range
-  SeekTime((int)GetTime() + iTime);
+  int iPercent = (bLargeStep ? 10 : 2);
+  iPercent *= bPlus ? 1 : -1;
+  SeekPercentage(iPercent);
 }
 
 void CDVDPlayer::ToggleFrameDrop()
@@ -673,21 +710,25 @@ void CDVDPlayer::SwitchToNextAudioLanguage()
 
 void CDVDPlayer::SeekPercentage(int iPercent)
 {
-  // get timing and seeking from libdvdnav for dvd's
-  if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD) return ;
-
-  int iTime = GetTotalTime() / 100;
-  iTime *= iPercent;
-
-  if (iTime < 0 || iTime > GetTotalTime()) return ; // return if out of range
-  SeekTime(iTime);
+  if (m_pDemuxer)
+  {
+    DVDPlayerMessage* pMessage = new DVDPlayerMessage;
+    pMessage->iMessage = DVDMESSAGE_SEEKPERCENT;
+    pMessage->iValue = iPercent;
+    m_messenger.Send(pMessage);
+  }
 }
 
 int CDVDPlayer::GetPercentage()
 {
   // get timing and seeking from libdvdnav for dvd's
-  if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD) return 0;
-  double dPercent = (GetTime() * 100.0) / GetTotalTime();
+  if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
+  {
+    return ((CDVDInputStreamNavigator*)m_pInputStream)->GetPercentage();
+  }
+  const int iTot = GetTotalTime();
+  if( iTot == 0) return 0;
+  double dPercent = (GetTime() * 0.1) / iTot;
 
   return (int)RINT(dPercent);
 }
@@ -827,8 +868,6 @@ void CDVDPlayer::SetAudioStream(int iStream)
 void CDVDPlayer::SeekTime(int iTime)
 {
   // get timing and seeking from libdvdnav for dvd's
-  if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD) return ;
-
   if (m_pDemuxer)
   {
     m_messenger.Seek(iTime);
@@ -840,10 +879,10 @@ __int64 CDVDPlayer::GetTime()
   // get timing and seeking from libdvdnav for dvd's
   if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
   {
-    return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime(); // we should take our buffers into account
+    return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime() * (__int64)1000; // we should take our buffers into account
   }
 
-  return (m_clock.GetClock() / (DVD_TIME_BASE / 1000));
+  return (m_clock.GetClock() / (DVD_TIME_BASE / 1000)) * (__int64)1000;
 }
 
 int CDVDPlayer::GetTotalTime()
@@ -1105,7 +1144,9 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
                                     &m_dvdPlayerVideo.m_overlay.button_i_y_start, &m_dvdPlayerVideo.m_overlay.button_i_y_end, iButton))
       {
         // need to update the display, so display the last known picture here
-        if (pStream->IsInMenu())
+        // only needed if we are in a still, and when we have something else pts need to be
+        // adjusted before we are allowed to update menupicture (first highlight)
+        if (pStream->IsInMenu() && m_dvd.state == DVDSTATE_STILL)
         {
           m_dvdPlayerVideo.UpdateMenuPicture();
         }
@@ -1190,7 +1231,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         return true;
       }
       break;
-    case ACTION_SHOW_MPLAYER_OSD:   // white
+    case ACTION_ASPECT_RATIO:   // start button 
       {
         CLog::DebugLog(" - go to menu");
         pStream->OnMenu();
