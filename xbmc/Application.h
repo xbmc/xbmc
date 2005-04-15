@@ -139,7 +139,7 @@ public:
   bool IsButtonDown(DWORD code);
   bool AnyButtonDown();
   bool ResetScreenSaverWindow();
-  void SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CStdString aIconFile="");
+  void SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CGUIImage* aIcon=NULL);
   double GetTotalTime() const;
   double GetTime() const;
   void SeekTime( double dTime = 0.0 );
