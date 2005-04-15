@@ -150,20 +150,6 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
   switch (action.wID)
   {
 
-    // previous : play previous song from playlist
-  case ACTION_PREV_ITEM:
-    {
-      g_playlistPlayer.PlayPrevious();
-    }
-    break;
-
-    // next : play next song from playlist
-  case ACTION_NEXT_ITEM:
-    {
-      g_playlistPlayer.PlayNext();
-    }
-    break;
-
   case ACTION_SHOW_GUI:
     {
       // switch back to the menu
