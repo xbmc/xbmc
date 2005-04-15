@@ -1,28 +1,29 @@
-2004-04-15 fixed:	<width> tag in My Weather current conditions label.
-2004-04-15 fixed:       possible fix for the flickering homescreen during viz
+2005-04-15 fixed:       FileManager.xml had an unused image control.
+2005-04-15 fixed:	<width> tag in My Weather current conditions label.
+2005-04-15 fixed:       possible fix for the flickering homescreen during viz
 
-2004-04-14 changed:     made the homescreen txtures visible again when viz is disabled
-2004-04-14 changed:     Updated <version> to 1.3
-2004-04-14 fixed:	Commented controls now use correct xml comment format.
+2005-04-14 changed:     made the homescreen txtures visible again when viz is disabled
+2005-04-14 changed:     Updated <version> to 1.3
+2005-04-14 fixed:	Commented controls now use correct xml comment format.
 
-2004-04-13 added:	shutter sound when taking a screenshot
-2004-04-13 fixed:	time and buffering label positions during fullscreen video
-2004-04-13 fixed:	Music infolabel width in homescreen and fullscreen viz
-2004-04-13 changed:     Updated for v1.3 compatibility.
+2005-04-13 added:	shutter sound when taking a screenshot
+2005-04-13 fixed:	time and buffering label positions during fullscreen video
+2005-04-13 fixed:	Music infolabel width in homescreen and fullscreen viz
+2005-04-13 changed:     Updated for v1.3 compatibility.
 
-2004-04-12 added:	GUI sound effects
+2005-04-12 added:	GUI sound effects
 
-2004-04-11 changed:	Changed buttons->labels in VideoFullScreen.xml
-2004-04-11 changed:	VideoOSD v1.3 compliance
-2004-04-11 changed:	Updated everything to use <info> and <visible> tags where appropriate (v1.3 compliance)
+2005-04-11 changed:	Changed buttons->labels in VideoFullScreen.xml
+2005-04-11 changed:	VideoOSD v1.3 compliance
+2005-04-11 changed:	Updated everything to use <info> and <visible> tags where appropriate (v1.3 compliance)
 
-2004-04-10 changed:	moved the new timedisplay below the progressbar
-2004-04-10 fixed:       filstacking discs didnt display in the correct aspectratio in 16:9
-2004-04-10 changed:     some more things to match the overall color feel (like rss and sliders)
-2004-04-10 fixed:	removed test covershot from 16:9 videoOSD
-2004-04-10 changed:     homescreen facelift
-2004-04-10 added:       custom progressbar and time display in fullscreen video after seek and during ff/rw
-2004-04-10 changed:     set id of biglist to 52 instead of 51 in MyMusicTop100.xml
+2005-04-10 changed:	moved the new timedisplay below the progressbar
+2005-04-10 fixed:       filstacking discs didnt display in the correct aspectratio in 16:9
+2005-04-10 changed:     some more things to match the overall color feel (like rss and sliders)
+2005-04-10 fixed:	removed test covershot from 16:9 videoOSD
+2005-04-10 changed:     homescreen facelift
+2005-04-10 added:       custom progressbar and time display in fullscreen video after seek and during ff/rw
+2005-04-10 changed:     set id of biglist to 52 instead of 51 in MyMusicTop100.xml
 
-2004-04-09 changed:	set all the onleft/onright for all listscontrols and thumbnailpanels to 2
-2004-04-09 fixed:	Minor Submenu typo - also changed the Movie Trailers link to use QuickTimeBroweser.py now
+2005-04-09 changed:	set all the onleft/onright for all listscontrols and thumbnailpanels to 2
+2005-04-09 fixed:	Minor Submenu typo - also changed the Movie Trailers link to use QuickTimeBroweser.py now
