@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-04-2005 fixed: kai, crash when friend has no avatar
   - 15-04-2005 added: patch [ 1178392 ] Proxy support for shoutcast thanks to soepy.
   - 15-04-2005 fixed: bug [ 1180705 ] Empty Files and illegal fatx file names on SMB Server stops copy Process.
   - 15-04-2005 fixed: Togglebuttons weren't scaled on the fly correct (VideoOSD in PAL60 mode).
