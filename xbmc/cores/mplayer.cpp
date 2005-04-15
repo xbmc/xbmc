@@ -1765,3 +1765,16 @@ bool CMPlayer::GetSubtitleExtension(CStdString &strSubtitleExtension)
   strSubtitleExtension = _SubtitleExtension;
   return (!_SubtitleExtension.IsEmpty());
 }
+
+float CMPlayer::GetActualFPS()
+{
+  char strFourCC[10];
+  char strVideoCodec[128];
+  float fFPS;
+  unsigned int iWidth;
+  unsigned int iHeight;
+  long lFrames2Early;
+  long lFrames2Late;
+  mplayer_GetVideoInfo(strFourCC, strVideoCodec, &fFPS, &iWidth, &iHeight, &lFrames2Early, &lFrames2Late);
+  return options.GetSpeed()*fFPS;
+}
