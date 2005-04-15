@@ -895,4 +895,17 @@
   <string><id>15107</id><value>Buffrar...</value></string>
   <string><id>15108</id><value>Navigerings ljud</value></string>
   <string><id>15109</id><value>Skinnets förval</value></string>
+  <string><id>15200</id><value>AudioScrobbler</value></string>
+  <string><id>15201</id><value>Skicka låt Info till AudioScrobbler</value></string>
+  <string><id>15202</id><value>AudioScrobbler användarnamn</value></string>
+  <string><id>15203</id><value>AudioScrobbler lösenord</value></string>
+  <string><id>15204</id><value>Inget svar: vilar...</value></string>
+  <string><id>15205</id><value>Var gog och uppdatera XBMC</value></string>
+  <string><id>15206</id><value>Skick misslyckades: Felaktig verifikation.</value></string>
+  <string><id>15207</id><value>Uppkopplad</value></string>
+  <string><id>15208</id><value>Ej uppkopplad</value></string>
+  <string><id>15209</id><value>Skick Interval %i</value></string>
+  <string><id>15210</id><value>Cachede %i låtar</value></string>
+  <string><id>15211</id><value>Skickar...</value></string>
+  <string><id>15212</id><value>Skickar om %i seks</value></string>
 </strings>
