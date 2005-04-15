@@ -90,7 +90,7 @@
   <string><id>156</id><value>Frei</value></string>
   <string><id>157</id><value>Bildschirm:</value></string>
   <string><id>158</id><value>Freier Speicher</value></string>
-  <string><id>159</id><value>Keine Verbindung.</value></string>
+  <string><id>159</id><value> keine Verbindung</value></string>
   <string><id>160</id><value>frei</value></string>
   <string><id>161</id><value>Nicht verfügbar</value></string>
   <string><id>162</id><value>Laufwerk offen</value></string>
@@ -433,7 +433,7 @@
   <string><id>500</id><value>Fehler beim Erhalten der Albuminformationen!</value></string>
   <string><id>501</id><value>Albuminformationen werden gesucht..</value></string>
   <string><id>502</id><value>offen</value></string>
-  <string><id>503</id><value>Beschäftigt</value></string>
+  <string><id>503</id><value>ladend...</value></string>
   <string><id>504</id><value>Leer</value></string>
   <string><id>505</id><value>Informationen werden geladen...</value></string>
   <string><id>506</id><value>Verzeichnisnamen verwenden</value></string>
@@ -523,7 +523,17 @@
   <string><id>756</id><value>Verknüpfung: Bezeichnung (ändern):</value></string> 
   <string><id>757</id><value>Pfadtiefe (ändern): [Zahl]</value></string> 
   <string><id>758</id><value>Verknüpfung löschen</value></string>
-  <string><id>759</id><value>Ges.Liste</value></string>
+  <string><id>759</id><value>Gesamtansicht</value></string>
+  <string><id>760</id><value>Gelb</value></string> 
+  <string><id>761</id><value>Weiß</value></string> 
+  <string><id>762</id><value>Blau</value></string> 
+  <string><id>763</id><value>Hellgrün</value></string> 
+  <string><id>764</id><value>Gelbgrün</value></string> 
+  <string><id>765</id><value>Cyan</value></string> 
+  <string><id>766</id><value>Vorbehalten</value></string> 
+  <string><id>767</id><value>Vorbehalten</value></string> 
+  <string><id>768</id><value>Vorbehalten</value></string> 
+  <string><id>769</id><value>Vorbehalten</value></string> 
   <string><id>998</id><value>Online spielen</value></string>
   <string><id>999</id><value>Online spielen</value></string>
   <string><id>1000</id><value>Bildschirmschoner Vorschau</value></string>
@@ -747,15 +757,20 @@
   <string><id>13373</id><value>- Anschluss 2</value></string> 
   <string><id>13374</id><value>- Anschluss 3</value></string> 
   <string><id>13375</id><value>Modul aktivieren</value></string> 
-  <string><id>13376</id><value>Lautstärke(%)</value></string> 
+  <string><id>13376</id><value>Lautstärke</value></string> 
   <string><id>13377</id><value>Standard Ansicht</value></string> 
   <string><id>13378</id><value>Standard Helligkeit</value></string> 
   <string><id>13379</id><value>Standard Kontrast</value></string> 
   <string><id>13380</id><value>Standard Gamma</value></string> 
-  <string><id>13381</id><value>Video fortsetzen</value></string> 
+  <string><id>13381</id><value>Video fortsetzen</value></string>
+  <string><id>13382</id><value>Sprachmaske - Anschluss 0</value></string> 
+  <string><id>13383</id><value>Sprachmaske - Anschluss 1</value></string> 
+  <string><id>13384</id><value>Sprachmaske - Anschluss 2</value></string> 
+  <string><id>13385</id><value>Sprachmaske - Anschluss 3</value></string> 
+
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln aktiv.</value></string>
-  <string><id>14002</id><value>Koppeln unpräz.</value></string>
+
   <string><id>14003</id><value>Wiedergabeliste wird heruntergeladen...</value></string>
   <string><id>14004</id><value>Streams werden heruntergeladen...</value></string>
   <string><id>14005</id><value>Streams werden verarbeitet...</value></string>
@@ -880,10 +895,14 @@
   <string><id>15061</id><value>Einladung bei %s mitzuspielen.</value></string>
   <string><id>15062</id><value>Alternativen MediaPlayer verwenden</value></string>
   <string><id>15100</id><value>Bibliothek</value></string>
-  <string><id>15101</id><value>Datenbank</value></string> 
+  <string><id>15101</id><value>Bibliothek</value></string> 
   <string><id>15102</id><value>* Alle Alben</value></string> 
   <string><id>15103</id><value>* Alle Künstler</value></string> 
   <string><id>15104</id><value>* Alle Lieder</value></string> 
   <string><id>15105</id><value>* Alle Genres</value></string> 
   <string><id>15106</id><value>Gewählte Datei bei weiterer Navigation merken</value></string>
+  <string><id>15107</id><value>Zwischenspeichern...</value></string>
+  <string><id>15108</id><value>Navigations- Töne</value></string> 
+  <string><id>15109</id><value>Vorgabe des Skins</value></string> 
+
 </strings>

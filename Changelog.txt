@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-04-2005 updated: German language file
+  - 15-04-2005 updated: German (Austrian) language file (Thnx to CEOMR)
   - 15-04-2005 fixed: Double linebreak in TextBox caused repeated lines.
   - 15-04-2005 added: New built in function XBMC.EjectTray for opening/closing the dvd tray.
   - 15-04-2005 fixed: Adjust Frame Rate and PAL60 clash on 25fps files. 

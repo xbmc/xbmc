@@ -908,4 +908,18 @@
   <string><id>15107</id><value>Pufferung...</value></string>
   <string><id>15108</id><value>Navigations Sounds</value></string>
   <string><id>15109</id><value>Vorgabe des Skins</value></string>
+
+  <string><id>15200</id><value>AudioScrobbler</value></string>
+  <string><id>15201</id><value>Song Infos an AudioScrobbler übertragen</value></string>
+  <string><id>15202</id><value>AudioScrobbler Benutzername</value></string>
+  <string><id>15203</id><value>AudioScrobbler Passwort</value></string>
+  <string><id>15204</id><value>Verbindung fehlgeschlagen</value></string>
+  <string><id>15205</id><value>Bitte eine neuere Version von XBMC benutzen</value></string>
+  <string><id>15206</id><value>Übertragung fehlgeschlagen: Bitte Benutzerdaten prüfen</value></string>
+  <string><id>15207</id><value>Verbunden</value></string>
+  <string><id>15208</id><value>Nicht verbunden</value></string>
+  <string><id>15209</id><value>Übertragungs Interval %i</value></string>
+  <string><id>15210</id><value>%i Songs in Cache</value></string>
+  <string><id>15211</id><value>Übermittlung...</value></string>
+  <string><id>15212</id><value>Übermittlung in %i sek</value></string>
 </strings>
