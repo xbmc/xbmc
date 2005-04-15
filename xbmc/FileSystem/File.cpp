@@ -62,7 +62,8 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
     {
       CLog::Log(LOGWARNING, "FILE::cache: the file %s has a length of 0 bytes", strFileName);
       Close();
-      return false;
+      // no need to return false here.  Technically, we should create the new file and leave it at that
+//      return false;
     }
 
     CFile::Delete(szDest);
