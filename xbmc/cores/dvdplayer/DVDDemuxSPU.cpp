@@ -191,7 +191,7 @@ SPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case FSTA_DSP:
         p++;
         DebugLog("    GetPacket, FSTA_DSP: Forced Start Display, no arguments");
-        pSPUInfo->iPTSStartTime = 0;
+        pSPUInfo->iPTSStartTime = pSPUData->pts;
         pSPUInfo->iPTSStopTime = 0x9000000000000LL;
         pSPUInfo->bForced = true;
         // delay is always 0, the dvdplayer should decide when to display the packet (menu highlight)

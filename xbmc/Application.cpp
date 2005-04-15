@@ -1739,6 +1739,10 @@ void CApplication::OnKey(CKey& key)
     StopPlaying();
   }
 
+//HACK - We really should check if a window has handled on action
+//the dvdplayer handles these itself
+if (!m_strCurrentPlayer.Equals("dvdplayer"))
+{
   // previous : play previous song from playlist
   if (action.wID == ACTION_PREV_ITEM)
   {
@@ -1750,6 +1754,7 @@ void CApplication::OnKey(CKey& key)
   {
     g_playlistPlayer.PlayNext();
   }
+}
 
   if ( IsPlaying())
   {
