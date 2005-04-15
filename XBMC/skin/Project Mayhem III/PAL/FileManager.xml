@@ -84,15 +84,6 @@
       <ondown>21</ondown>
     </control>
 
-    <control>
-      <description>filemanager background image</description>
-      <type>image</type>
-      <id>1</id>
-      <width>720</width>
-      <height>576</height>
-      <texture>filemanager.png</texture>
-    </control>
-
   </controls>
 
 </window>
