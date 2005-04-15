@@ -50,9 +50,6 @@
 #include "GUIWindowSlideshow.h"
 #include "GUIWindowMusicPlaylist.h"
 #include "GUIWindowMusicSongs.h"
-//#include "GUIWindowMusicAlbum.h"
-//#include "GUIWindowMusicArtists.h"
-//#include "GUIWindowMusicGenres.h"
 #include "GUIWindowMusicTop100.h"
 #include "GUIWindowMusicNav.h"
 #include "GUIWindowBuddies.h"   //BUDDIES
@@ -122,6 +119,7 @@ public:
   void CheckNetworkHDSpinDown(bool playbackStarted = false);
   void CheckHDSpindown();
   void CheckScreenSaver();   // CB: SCREENSAVER PATCH
+  void CheckAudioScrobblerStatus();
   void ActivateScreenSaver();
   void CheckShutdown();
   CMusicInfoTag* GetCurrentSong();

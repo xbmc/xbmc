@@ -35,6 +35,7 @@
 #include "lib/libPython/XBPython.h"
 #include "ButtonTranslator.h"
 #include "GUIAudioManager.h"
+#include "lib/libscrobbler/scrobbler.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -1000,6 +1001,8 @@ HRESULT CApplication::Initialize()
     // jump to my music when we're in NO tv mode
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
   }
+
+  CScrobbler::GetInstance()->Init();
 
   m_bInitializing = false;
   return S_OK;
@@ -2754,7 +2757,18 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       if (bCanSwitch) SwitchToFullScreen();
       //screen is setup, resume playing
       m_pPlayer->Pause();
+    }// if file happens to contain audio stream
+    else if (IsPlayingAudio())
+    {
+      if (!m_itemCurrentFile.IsInternetStream())
+      {
+        CScrobbler::GetInstance()->SetSongStartTime();
+        CScrobbler::GetInstance()->SetSubmitSong(true);
+      }
+      else
+        CScrobbler::GetInstance()->SetSubmitSong(false);
     }
+
   }
   return bResult;
 }
@@ -2772,6 +2786,9 @@ void CApplication::OnPlayBackEnded()
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL);
   m_gWindowManager.SendThreadMessage(msg);
   StartLEDControl(false);
+
+  //  Reset audioscrobbler submit status
+  CScrobbler::GetInstance()->SetSubmitSong(false);
 }
 
 void CApplication::OnPlayBackStarted()
@@ -2800,6 +2817,9 @@ void CApplication::OnPlayBackStopped()
   m_gWindowManager.SendMessage(msg);
 
   StartLEDControl(false);
+
+  //  Reset audioscrobbler submit status
+  CScrobbler::GetInstance()->SetSubmitSong(false);
 }
 
 bool CApplication::IsPlaying() const
@@ -3472,7 +3492,11 @@ void CApplication::Process()
 
   // check if we can free unused memory
   g_audioManager.FreeUnused();
+
+  //  Check if we should submit a song to audioscrobbler
+  CheckAudioScrobblerStatus();
 }
+
 void CApplication::Restart(bool bSamePosition)
 {
   // this function gets called when the user changes a setting (like noninterleaved)
@@ -3709,3 +3733,38 @@ void CApplication::RestoreMusicScanSettings()
   g_settings.Save();
 }
 
+void CApplication::CheckAudioScrobblerStatus()
+{
+  if (!IsPlayingAudio() || !CScrobbler::GetInstance()->ShouldSubmit())
+    return;
+
+  //  Don't submit songs to audioscrobber when the user seeks.
+  //  Rule from audioscrobbler:
+  //  http://www.audioscrobbler.com/development/protocol.php
+  if (GetPlaySpeed()!=1)
+  {
+    CScrobbler::GetInstance()->SetSubmitSong(false);
+    return;
+  }
+
+  //  Submit the song if 50% or 240 seconds are played
+  double dTime=GetTime();
+  CMusicInfoTag& tag=m_itemCurrentFile.m_musicInfoTag;
+  double dLength=(tag.GetDuration()>0) ? (tag.GetDuration()/2.0f) : (GetTotalTime()/2.0f);
+  if (dLength==0.0f)
+  {
+    CScrobbler::GetInstance()->SetSubmitSong(false);
+    return;
+  }
+  if ((dLength)>240.0f)
+    dLength=240.0f;
+
+  int iTimeTillSubmit=(int)(dLength-dTime);
+  CScrobbler::GetInstance()->SetSecsTillSubmit(iTimeTillSubmit);
+
+  if (dTime>dLength)
+  {
+    CScrobbler::GetInstance()->AddSong(m_itemCurrentFile.m_musicInfoTag);
+    CScrobbler::GetInstance()->SetSubmitSong(false);
+  }
+}

@@ -199,6 +199,9 @@ CGUISettings::CGUISettings(void)
   AddString(3, "MusicLibrary.DeleteAlbumInfo", 422, "", BUTTON_CONTROL_STANDARD);
   AddString(4, "MusicLibrary.DeleteCDDBInfo", 423, "", BUTTON_CONTROL_STANDARD);
   AddBool(5, "MusicLibrary.FindRemoteThumbs", 14059, true);
+  AddBool(6, "MusicLibrary.UseAudioScrobbler", 15201, false);
+  AddString(7, "MusicLibrary.AudioScrobblerUserName", 15202, "");
+  AddString(8, "MusicLibrary.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT);
 
   // music osd 13314
   AddCategory(3, "CDDARipper", 620);
