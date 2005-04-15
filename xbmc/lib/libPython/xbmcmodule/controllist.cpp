@@ -221,7 +221,34 @@ PyDoc_STRVAR(addItem__doc__,
 
 		Py_INCREF(Py_None);
 		return Py_None;
-	}
+  }
+
+  /*
+  * ControlList_SelectItem(int item)
+  * Select an item by index
+  */
+  PyDoc_STRVAR(selectItem,
+    "selectItem(item) -- Select an item by index\n"
+    "\n"
+    "item is the index on the item to select.");
+
+  PyObject* ControlList_SelectItem(ControlList *self, PyObject *args)
+  {
+    long itemIndex;
+
+    if (!PyArg_ParseTuple(args, "l", &itemIndex))    return NULL;
+
+    // create message
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, self->iParentId, self->iControlId, itemIndex);
+
+    // send message
+    PyGUILock();
+    if (self->pGUIControl) self->pGUIControl->OnMessage(msg);
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
 
 	PyDoc_STRVAR(reset__doc__,
 		"reset() -- Clear all ListItems in this control list.");
@@ -388,6 +415,7 @@ PyDoc_STRVAR(addItem__doc__,
 			
 	PyMethodDef ControlList_methods[] = {
 		{"addItem", (PyCFunction)ControlList_AddItem, METH_VARARGS, addItem__doc__},
+    {"selectItem", (PyCFunction)ControlList_SelectItem, METH_VARARGS,  selectItem},
 		{"reset", (PyCFunction)ControlList_Reset, METH_VARARGS, reset__doc__},
 		{"getSpinControl", (PyCFunction)ControlList_GetSpinControl, METH_VARARGS, getSpinControl__doc__},
 		{"getSelectedPosition", (PyCFunction)ControlList_GetSelectedPosition, METH_VARARGS, getSelectedPosition__doc__},
