@@ -1333,7 +1333,7 @@ void CGUIWindowBuddies::OnContactOnline(CStdString& aFriend)
   if (m_bContactNotifications)
   {
     CStdString note = g_localizeStrings.Get(15034); // has just signed in
-    g_application.SetKaiNotification(aFriend, note, pBuddy->m_pAvatar->GetFileName());
+    g_application.SetKaiNotification(aFriend, note, pBuddy->m_pAvatar);
   }
 }
 
@@ -1410,7 +1410,7 @@ void CGUIWindowBuddies::OnContactSpeexRing(CStdString& aFriend)
       pBuddy->m_bRingIndicator = FALSE;
 
       CStdString note = g_localizeStrings.Get(15035); // has initiated voice chat
-      g_application.SetKaiNotification(aFriend, note, pBuddy->m_pAvatar->GetFileName());
+      g_application.SetKaiNotification(aFriend, note, pBuddy->m_pAvatar);
     }
   }
 
@@ -1444,7 +1444,7 @@ void CGUIWindowBuddies::OnContactInvite(CStdString& aFriend, CStdString& aVector
     pBuddy->m_bInvite = TRUE;
 
     CStdString note = g_localizeStrings.Get(15036); // has sent you an invitation
-    g_application.SetKaiNotification(aFriend, note, pBuddy->m_pAvatar->GetFileName());
+    g_application.SetKaiNotification(aFriend, note, pBuddy->m_pAvatar);
   }
 
   m_friends.Release();

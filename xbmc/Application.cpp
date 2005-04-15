@@ -1873,12 +1873,15 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
 
 }
 
-void CApplication::SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CStdString aIconFile/*=""*/)
+void CApplication::SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CGUIImage* aIcon/*=NULL*/)
 {
   // queue toast notification
   if (g_guiSettings.GetBool("XLinkKai.EnableNotifications"))
   {
-    m_guiDialogKaiToast.QueueNotification(aIconFile, aCaption, aDescription);
+    if (aIcon==NULL)
+      m_guiDialogKaiToast.QueueNotification(aCaption, aDescription);
+    else
+      m_guiDialogKaiToast.QueueNotification(aIcon->GetFileName(), aCaption, aDescription);
   }
 }
 
