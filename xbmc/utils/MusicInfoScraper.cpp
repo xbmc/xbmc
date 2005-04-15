@@ -26,8 +26,9 @@ CMusicAlbumInfo& CMusicInfoScraper::GetAlbum(int iAlbum)
   return m_vecAlbums[iAlbum];
 }
 
-bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
+bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum1)
 {
+  CStdString strAlbum=strAlbum1;
   CStdString strHTML;
   m_vecAlbums.erase(m_vecAlbums.begin(), m_vecAlbums.end());
   // make request
@@ -36,6 +37,7 @@ bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
 
   CHTTP http;
   CStdString strPostData;
+  CUtil::URLEncode(strAlbum);
   strPostData.Format("P=amg&SQL=%s&OPT1=2", strAlbum.c_str());
 
   // get the HTML
@@ -44,7 +46,6 @@ bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
 
   // check if this is an album
   CStdString strURL = "http://www.allmusic.com/cg/amg.dll?";
-  CUtil::URLEncode(strPostData);
   strURL += strPostData;
   CMusicAlbumInfo newAlbum("", strURL);
   if (strHTML.Find("No Results Found") > -1) return true;
