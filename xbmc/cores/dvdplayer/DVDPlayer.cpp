@@ -608,7 +608,9 @@ void CDVDPlayer::SubtitleOffset(bool bPlus)
 void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 {
   int iPercent = (bLargeStep ? 10 : 2);
+  iPercent += GetPercentage();
   iPercent *= bPlus ? 1 : -1;
+  
   SeekPercentage(iPercent);
 }
 
