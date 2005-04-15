@@ -851,7 +851,7 @@ void CUtil::URLEncode(CStdString& strURLData)
   {
     int kar = (unsigned char)strURLData[i];
     if (kar == ' ') strResult += '+';
-    else if (isalnum(kar) || kar == '&' || kar == '=' ) strResult += kar;
+    else if (isalnum(kar)) strResult += kar;
     else
     {
       CStdString strTmp;
