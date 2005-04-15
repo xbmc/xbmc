@@ -59,6 +59,7 @@ public:
 protected:
 
   wstring GetSystemHeatInfo(const CStdString &strInfo);
+  CStdString GetAudioScrobblerLabel(int item);
 
   // Current playing stuff
   CFileItem m_currentSong;

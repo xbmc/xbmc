@@ -582,10 +582,17 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 
   // send request...
   char* szHTTPHEADER = (char*)_alloca(350 + m_strHostName.size() + m_strCookie.size() + (pData ? strlen(pData) : 0));
-  strcpy(szHTTPHEADER, "Connection: close\r\n"
-         "Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/msword, */*\r\n"
-         "Accept-Language: en-us\r\n"
-         "Host:");
+  if (stricmp(verb, "POST")==0)
+  {
+    strcpy(szHTTPHEADER, "Content-Type: application/x-www-form-urlencoded\r\n");
+  }
+  else
+  {
+    strcpy(szHTTPHEADER, "Connection: close\r\n"
+          "Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/msword, */*\r\n"
+          "Accept-Language: en-us\r\n");
+  }
+  strcat(szHTTPHEADER, "Host:");
   strcat(szHTTPHEADER, m_strHostName.c_str());
   strcat(szHTTPHEADER, "\r\n"
          "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\r\n");

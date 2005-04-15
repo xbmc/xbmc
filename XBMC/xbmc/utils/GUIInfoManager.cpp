@@ -3,6 +3,7 @@
 #include "Weather.h"
 #include "../Application.h"
 #include "../Util.h"
+#include "../lib/libscrobbler/scrobbler.h"
 
 // stuff for current song
 #include "../filesystem/CDDADirectory.h"
@@ -75,6 +76,12 @@ extern char g_szTitleIP[32];
 #define VIDEOPLAYER_TIME_SPEED      256
 #define VIDEOPLAYER_DURATION        257
 #define VIDEOPLAYER_COVER           258
+
+#define AUDIOSCROBBLER_ENABLED      300
+#define AUDIOSCROBBLER_CONN_STATE   301
+#define AUDIOSCROBBLER_SUBMIT_INT   302
+#define AUDIOSCROBBLER_FILES_CACHED 303
+#define AUDIOSCROBBLER_SUBMIT_STATE 304
 
 CGUIInfoManager g_infoManager;
 
@@ -161,6 +168,11 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
   else if (strTest.Equals("videoplayer.timespeed")) ret = VIDEOPLAYER_TIME_SPEED;
   else if (strTest.Equals("videoplayer.duration")) ret = VIDEOPLAYER_DURATION;
   else if (strTest.Equals("videoplayer.cover")) ret = VIDEOPLAYER_COVER;
+  else if (strTest.Equals("audioscrobbler.enabled")) ret = AUDIOSCROBBLER_ENABLED;
+  else if (strTest.Equals("audioscrobbler.connectstate")) ret = AUDIOSCROBBLER_CONN_STATE;
+  else if (strTest.Equals("audioscrobbler.submitinterval")) ret = AUDIOSCROBBLER_SUBMIT_INT;
+  else if (strTest.Equals("audioscrobbler.filescached")) ret = AUDIOSCROBBLER_FILES_CACHED;
+  else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
   return bNegate ? -ret : ret;
 }
 
@@ -235,6 +247,12 @@ wstring CGUIInfoManager::GetLabel(int info)
       wstring strReturn = wzIP;
       return strReturn;
     }
+    break;
+  case AUDIOSCROBBLER_CONN_STATE:
+  case AUDIOSCROBBLER_SUBMIT_INT:
+  case AUDIOSCROBBLER_FILES_CACHED:
+  case AUDIOSCROBBLER_SUBMIT_STATE:
+    strLabel=GetAudioScrobblerLabel(info);
     break;
   }
   // convert our CStdString to a wstring (which the label expects!)
@@ -317,7 +335,11 @@ bool CGUIInfoManager::GetBool(int condition1) const
     case PLAYER_CACHING:
       bReturn = g_application.m_pPlayer->IsCaching();
     break;
+    case AUDIOSCROBBLER_ENABLED:
+      bReturn = g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler");
+    break;
     }
+    
   }
   return (condition1 < 0) ? !bReturn : bReturn;
 }
@@ -825,4 +847,25 @@ void CGUIInfoManager::SetDisplayAfterSeek(DWORD dwTimeOut)
 bool CGUIInfoManager::GetDisplayAfterSeek() const
 {
   return (timeGetTime() < m_AfterSeekTimeout);
+}
+
+CStdString CGUIInfoManager::GetAudioScrobblerLabel(int item)
+{
+  switch (item)
+  {
+  case AUDIOSCROBBLER_CONN_STATE:
+    return CScrobbler::GetInstance()->GetConnectionState();
+    break;
+  case AUDIOSCROBBLER_SUBMIT_INT:
+    return CScrobbler::GetInstance()->GetSubmitInterval();
+    break;
+  case AUDIOSCROBBLER_FILES_CACHED:
+    return CScrobbler::GetInstance()->GetFilesCached();
+    break;
+  case AUDIOSCROBBLER_SUBMIT_STATE:
+    return CScrobbler::GetInstance()->GetSubmitState();
+    break;
+  }
+
+  return "";
 }
