@@ -281,6 +281,7 @@ void CGUITextBox::SetText(const wstring &strText)
       iLastSpace = -1;
       iLastSpaceInLine = -1;
       lpos = 0;
+      szLine[0] = 0;  // reset in case of 2 line breaks in a row (don't want to add szLine twice)
     }
     else
     {
