@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-04-2005 added: selectItem method to ControlList for python, thanks to sambarza.
   - 15-04-2005 updated: German language file
   - 15-04-2005 updated: German (Austrian) language file (Thnx to CEOMR)
   - 15-04-2005 fixed: Double linebreak in TextBox caused repeated lines.
