@@ -36,7 +36,7 @@
       <file>back.wav</file>
     </action>
     <action>
-      <description>Previous Menu</description>
+      <description>Screenshot</description>
       <id>85</id>
       <file>shutter.wav</file>
     </action>
