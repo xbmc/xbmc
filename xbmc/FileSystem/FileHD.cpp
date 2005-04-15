@@ -20,6 +20,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 #include "FileHD.h"
+#include "../Util.h"
 #include <sys/stat.h>
 using namespace XFILE;
 //////////////////////////////////////////////////////////////////////
@@ -74,12 +75,17 @@ int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 //*********************************************************************************************
 bool CFileHD::OpenForWrite(const CURL& url, bool bBinary)
 {
-  CStdString strFile;
-  url.GetURL(strFile);
+  // make sure it's a legal FATX filename (we are writing to the harddisk)
+  CStdString strFileNameAndPath, strPath, strFileName;
+  url.GetURL(strFileNameAndPath);
 
-  strFile.Replace("/", "\\");
+  CUtil::Split(strFileNameAndPath, strPath, strFileName);
+  CStdString strNewFile = CUtil::MakeLegalFileName(strFileName.c_str(), true);
 
-  m_hFile.attach(CreateFile(strFile.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
+  strPath += strNewFile;
+  strPath.Replace("/", "\\");
+
+  m_hFile.attach(CreateFile(strPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
   if (!m_hFile.isValid()) return false;
 
   m_i64FilePos = 0;
