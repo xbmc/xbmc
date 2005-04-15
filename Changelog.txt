@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-04-2005 fixed: Togglebuttons weren't scaled on the fly correct (VideoOSD in PAL60 mode).
   - 15-04-2005 updated: libdvdnav.dll and libdvdcss-2.dll with support for largefiles (>2gb, using our custom headers)
   - 15-04-2005 added: added workround for next chapter/prev chapter which reuse global action_codes
   - 15-04-2005 fixed: Seeking didn't work at all in dvdplayer when playing dvd's
