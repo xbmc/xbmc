@@ -87,6 +87,19 @@ void CGUIToggleButtonControl::SetPosition(int iPosX, int iPosY)
   CGUIButtonControl::SetPosition(iPosX, iPosY);
   m_selectButton.SetPosition(iPosX, iPosY);
 }
+
+void CGUIToggleButtonControl::SetWidth(int iWidth)
+{
+  CGUIButtonControl::SetWidth(iWidth);
+  m_selectButton.SetWidth(iWidth);
+}
+
+void CGUIToggleButtonControl::SetHeight(int iHeight)
+{
+  CGUIButtonControl::SetHeight(iHeight);
+  m_selectButton.SetHeight(iHeight);
+}
+
 void CGUIToggleButtonControl::SetAlpha(DWORD dwAlpha)
 {
   CGUIButtonControl::SetAlpha(dwAlpha);
