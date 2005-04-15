@@ -3749,7 +3749,7 @@ void CApplication::CheckAudioScrobblerStatus()
 
   //  Submit the song if 50% or 240 seconds are played
   double dTime=GetTime();
-  CMusicInfoTag& tag=m_itemCurrentFile.m_musicInfoTag;
+  const CMusicInfoTag& tag=g_infoManager.GetCurrentSongTag();
   double dLength=(tag.GetDuration()>0) ? (tag.GetDuration()/2.0f) : (GetTotalTime()/2.0f);
   if (dLength==0.0f)
   {
@@ -3764,7 +3764,7 @@ void CApplication::CheckAudioScrobblerStatus()
 
   if (dTime>dLength)
   {
-    CScrobbler::GetInstance()->AddSong(m_itemCurrentFile.m_musicInfoTag);
+    CScrobbler::GetInstance()->AddSong(tag);
     CScrobbler::GetInstance()->SetSubmitSong(false);
   }
 }
