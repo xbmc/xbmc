@@ -50,6 +50,7 @@ public:
     void SetDVDDevice(const string & strDevice);
     void SetFlipBiDiCharset(const string& strCharset);
     void SetRawAudioFormat(const string& strHexRawAudioFormat);
+
   private:
     bool m_bResampleAudio;
     bool m_bNoCache;
@@ -111,7 +112,7 @@ public:
   virtual int GetPercentage();
   virtual void SetAVDelay(float fValue = 0.0f);
   virtual float GetAVDelay();
-
+  virtual float GetActualFPS();
 
   virtual void SetSubTitleDelay(float fValue = 0.0f);
   virtual float GetSubTitleDelay();
