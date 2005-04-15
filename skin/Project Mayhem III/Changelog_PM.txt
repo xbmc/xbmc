@@ -1,3 +1,4 @@
+2004-04-15 fixed:	<width> tag in My Weather current conditions label.
 2004-04-15 fixed:       possible fix for the flickering homescreen during viz
 
 2004-04-14 changed:     made the homescreen txtures visible again when viz is disabled
