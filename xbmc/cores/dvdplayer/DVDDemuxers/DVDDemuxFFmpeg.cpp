@@ -366,7 +366,7 @@ bool CDVDDemuxFFmpeg::Seek(int iTime)
 {
   Lock();
   __int64 seek_pts = (__int64)iTime * AV_TIME_BASE;
-  int ret = av_seek_frame(m_pFormatContext, -1, seek_pts, AVSEEK_FLAG_BACKWARD);
+  int ret = av_seek_frame(m_pFormatContext, -1, seek_pts, seek_pts < 0 ? AVSEEK_FLAG_BACKWARD : 0);
   Unlock();
   return (ret >= 0);
 }

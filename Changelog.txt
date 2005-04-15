@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-04-2005 updated: libdvdnav.dll and libdvdcss-2.dll with support for largefiles (>2gb, using our custom headers)
+  - 15-04-2005 added: added workround for next chapter/prev chapter which reuse global action_codes
+  - 15-04-2005 fixed: Seeking didn't work at all in dvdplayer when playing dvd's
+  - 15-04-2005 fixed: Initial highlight was displayed immidiatly when found instead of delayed as it should.
   - 15-04-2005 updated: Korean language file (Thnx to akoakoako)
   - 15-04-2004 updated: Dutch language file (Thnx to tijmengozer)
   - 14-04-2005 added: Music is muted 9dB on ffwd/rewd with mp3 player.
