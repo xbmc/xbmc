@@ -2821,6 +2821,14 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
       g_playlistPlayer.PlayPrevious();
     }
   }
+  else if (execute.Equals("EjectTray"))
+  {
+    CIoSupport io;
+    if (io.GetTrayState() == TRAY_OPEN)
+      io.CloseTray();
+    else
+      io.EjectTray();
+  }
 }
 
 void usleep(int t)
