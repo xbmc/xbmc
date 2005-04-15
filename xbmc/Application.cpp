@@ -3751,7 +3751,7 @@ void CApplication::CheckAudioScrobblerStatus()
   double dTime=GetTime();
   const CMusicInfoTag& tag=g_infoManager.GetCurrentSongTag();
   double dLength=(tag.GetDuration()>0) ? (tag.GetDuration()/2.0f) : (GetTotalTime()/2.0f);
-  if (dLength==0.0f)
+  if (!tag.Loaded() || dLength==0.0f)
   {
     CScrobbler::GetInstance()->SetSubmitSong(false);
     return;
