@@ -68,6 +68,7 @@ public:
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName){};
   virtual void SetAudioStream(int iStream){};
 
+  virtual float GetActualFPS() { return 0.0f; };
   virtual void SeekTime(__int64 iTime = 0){};
   virtual __int64 GetTime(){ return 0;};
   virtual int GetTotalTime(){ return 0;};
