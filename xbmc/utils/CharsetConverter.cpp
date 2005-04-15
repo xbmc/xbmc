@@ -245,7 +245,7 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdSt
   if (m_iconvStringCharsetToUtf8 != (iconv_t) - 1)
   {
     const char* src = strSource.c_str();
-    size_t inBytes = strSource.length() + 1;
+    size_t inBytes = strSource.length();
 
     size_t outBytes = (inBytes * 4) + 1;
     size_t originalOutBytes = outBytes;

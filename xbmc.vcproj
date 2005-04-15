@@ -2029,10 +2029,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -2554,6 +2554,25 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\lib\sqlLite\sqlitedataset.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="libScrobbler"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\lib\libscrobbler\errors.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libscrobbler\md5.c">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libscrobbler\md5.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libscrobbler\scrobbler.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libscrobbler\scrobbler.h">
 				</File>
 			</Filter>
 		</Filter>

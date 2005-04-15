@@ -905,6 +905,19 @@
   <string><id>15107</id><value>Buffering...</value></string>
   <string><id>15108</id><value>Navigation Sounds</value></string>
   <string><id>15109</id><value>Skin Default</value></string>
- 
+
+  <string><id>15200</id><value>AudioScrobbler</value></string>
+  <string><id>15201</id><value>Submit Songs Info to AudioScrobbler</value></string>
+  <string><id>15202</id><value>AudioScrobbler Username</value></string>
+  <string><id>15203</id><value>AudioScrobbler Password</value></string>
+  <string><id>15204</id><value>Unable to handshake: sleeping...</value></string>
+  <string><id>15205</id><value>Please Update XBMC</value></string>
+  <string><id>15206</id><value>Submission failed: bad authorization.</value></string>
+  <string><id>15207</id><value>Connected</value></string>
+  <string><id>15208</id><value>Not Connected</value></string>
+  <string><id>15209</id><value>Submit Interval %i</value></string>
+  <string><id>15210</id><value>Cached %i Songs</value></string>
+  <string><id>15211</id><value>Submitting...</value></string>
+  <string><id>15212</id><value>Submitting in %i secs</value></string>
 </strings>
 

@@ -16,6 +16,7 @@
 #include "SkinInfo.h"
 #include "GUIFontManager.h"
 #include "GUIAudioManager.h"
+#include "lib/libscrobbler/scrobbler.h"
 
 #define CONTROL_GROUP_BUTTONS      0
 #define CONTROL_GROUP_SETTINGS     1
@@ -1005,6 +1006,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       int iColour = g_guiSettings.GetInt("LED.Colour");
       pControl->SetEnabled(iColour != LED_COLOUR_NO_CHANGE && iColour != LED_COLOUR_OFF);
     }
+    else if (strSetting == "MusicLibrary.AudioScrobblerUserName" || strSetting == "MusicLibrary.AudioScrobblerPassword")
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler"));
+    }
   }
 }
 
@@ -1085,6 +1091,16 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting == "MusicLibrary.DeleteCDDBInfo")
   {
     g_musicDatabase.DeleteCDDBInfo();
+  }
+  else if (strSetting == "MusicLibrary.UseAudioScrobbler" || strSetting == "MusicLibrary.AudioScrobblerUserName" || strSetting == "MusicLibrary.AudioScrobblerPassword")
+  {
+    if (g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler"))
+    {
+      CStdString strPassword=g_guiSettings.GetString("MusicLibrary.AudioScrobblerPassword");
+      CStdString strUserName=g_guiSettings.GetString("MusicLibrary.AudioScrobblerUserName");
+      if (!strUserName.IsEmpty() || !strPassword.IsEmpty())
+        CScrobbler::GetInstance()->Init();
+    }
   }
   else if (strSetting == "AudioOutput.OutputToAllSpeakers")
   {
