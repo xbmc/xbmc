@@ -50,6 +50,8 @@ CScrobbler::CScrobbler()
   m_Interval = m_LastConnect = m_SongStartTime = 0;
   m_iSecsTillSubmit=0;
   m_bSubmitInProgress = false;
+  m_bReadyToSubmit=false;
+  m_iSongNum=0;
   DWORD threadid; // Needed for Win9x
   m_hWorkerEvent = CreateEvent(NULL, false, false, NULL);
   if (!m_hWorkerEvent)
@@ -100,6 +102,7 @@ void CScrobbler::Init()
 
 void CScrobbler::Term()
 {
+  m_bReadyToSubmit=false;
   SaveCache(m_strPostString.c_str(), m_iSongNum);
 }
 
@@ -413,6 +416,9 @@ int CScrobbler::LoadCache()
 
 int CScrobbler::SaveCache(const CStdString& strCache, int iNumEntries)
 { 
+  if (iNumEntries<=0)
+    return 0;
+
   CFile file;
   if (file.OpenForWrite(CACHE_FILE))
   {
