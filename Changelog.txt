@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-04-2005 updated: Norwegian language file (Thnx to vnm)
   - 16-04-2005 fixed: Mute dialog was not allocated, and thus not rendered.
   - 16-04-2005 fixed: [ 1182782 ] Default mode for Digital output should be Stereo
   - 15-04-2005 updated: Norwegian language file (Thnx to vnm)
