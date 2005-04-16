@@ -55,12 +55,6 @@ protected:
   auto_ptr<struct Visualisation> m_pVisz;
   auto_ptr<DllLoader> m_pLoader;
   CStdString m_strVisualisationName;
-
-  // position on screen
-  int m_posX;
-  int m_posY;
-  int m_width;
-  int m_height;
 };
 
 

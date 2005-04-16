@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-04-2005 changed: SetViewPort()/RestoreViewPort() done in the control rather than by the visualisation.  Should hopefully eliminate the "flickering screen on homepage" issue.
+  - 16-04-2005 fixed: Possible crash in Video database views if the listcontrol had the wrong id.
   - 16-04-2005 fixed: audioscrobbler status was only updated when restarting after settings change
   - 16-04-2005 updated: Norwegian language file (Thnx to vnm)
   - 16-04-2005 fixed: Mute dialog was not allocated, and thus not rendered.
