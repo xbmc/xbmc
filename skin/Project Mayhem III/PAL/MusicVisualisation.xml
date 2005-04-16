@@ -11,7 +11,7 @@
       <posY>0</posY>
       <width>720</width>
       <height>576</height>
-      <texture>16x9home2.png</texture>
+      <texture>4x3home2.png</texture>
     </control>
 
     <control>
