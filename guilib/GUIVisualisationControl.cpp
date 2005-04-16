@@ -148,14 +148,18 @@ void CGUIVisualisationControl::Render()
   {
     if (m_bInitialized)
     {
+      // set the viewport
+      g_graphicsContext.SetViewPort((float)m_iPosX, (float)m_iPosY, (float)m_dwWidth, (float)m_dwHeight);
       try
       {
         m_pVisualisation->Render();
       }
       catch (...)
       {
-        OutputDebugString("ohoh\n");
+        CLog::Log(LOGERROR, "Exception in Visualisation::Render()");
       }
+      // clear the viewport
+      g_graphicsContext.RestoreViewPort();
     }
   }
 }

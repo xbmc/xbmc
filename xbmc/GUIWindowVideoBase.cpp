@@ -763,9 +763,14 @@ void CGUIWindowVideoBase::Render()
   CGUIWindow::Render();
   if (m_bDisplayEmptyDatabaseMessage)
   {
+    int iX = 400;
+    int iY = 400;
     CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LIST);
-    int iX = pControl->GetXPosition() + pControl->GetWidth() / 2;
-    int iY = pControl->GetYPosition() + pControl->GetHeight() / 2;
+    if (pControl)
+    {
+      iX = pControl->GetXPosition() + pControl->GetWidth() / 2;
+      iY = pControl->GetYPosition() + pControl->GetHeight() / 2;
+    }
     CGUIFont *pFont = g_fontManager.GetFont(pControl->GetFontName());
     if (pFont)
     {
