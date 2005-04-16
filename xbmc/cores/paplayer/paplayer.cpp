@@ -2,6 +2,7 @@
 #include "../../stdafx.h"
 #include "paplayer.h"
 #include "../../application.h"
+#include "../../MusicInfoTagLoaderMP3.h"
 //#include "../lib/libcdio/util.h"
 
 #define VOLUME_FFWD_MUTE 900 // 9dB
@@ -31,7 +32,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_Channels = 0;
   m_SampleRate = 0;
   m_SampleSize = 0;
-  m_InputBytesWanted = 16384;  // Change when reading from http  
+  m_InputBytesWanted = 65535;  // Change when reading from http  
   m_dwInputBufferSize = 0;
   m_Decoding = false;
   m_PcmSize = 0;  
@@ -115,6 +116,8 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
   CloseFile();
 
+  iStartTime=5000;
+
   m_bPaused = false;
   m_bStopPlaying = false;
 
@@ -144,10 +147,33 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   else
   {
     // Guess Bitrate
-    m_bGuessByterate = true;  // If the user didn't load id3 tags, they also didnt load the Duration
-                              // If we dont have the TrackDuration will have to guess later.
+    CMusicInfoTagLoaderMP3 mp3info;
+    CMusicInfoTag tag;
+    mp3info.Load(file.m_strPath.c_str(), tag);
+
+    int TrackDuration = tag.GetDuration();
+    if ( TrackDuration ) m_AverageInputBytesPerSecond = (DWORD)(length / TrackDuration);
+    else m_bGuessByterate = true;  // If the user didn't load id3 tags, they also didnt load the Duration
+    // If we dont have the TrackDuration will have to guess later.
   }
 
+  if ( TrackDuration && iStartTime > 0 )
+  {
+    float realtime = (float)iStartTime / (float)1000.0;
+    float fseektime = float (m_AverageInputBytesPerSecond) * realtime;
+
+    if ( (__int64) fseektime < length ) 
+    {
+      m_filePAP.Seek( (__int64)(fseektime) , SEEK_SET);
+      m_lastByteOffset = m_filePAP.GetPosition();
+      m_startOffset = (__int64)(((float)m_lastByteOffset / (float) m_AverageInputBytesPerSecond) * 1000.00);
+      CLog::Log(LOGINFO, "PAP Player: Starting at %d",(__int64) fseektime);
+    }
+    else
+    {
+      CLog::Log(LOGINFO, "PAP Player: Start Time is greater than file length");
+    }
+  }
 
 
   if (ThreadHandle() == NULL)
@@ -354,11 +380,14 @@ bool PAPlayer::ProcessPAP()
             m_dwBytesReadIn+=m_dwInputBufferSize;
             m_dwInputBufferSize = 0; // Read more from the file
           }
+
+          if ( sendsize &&  formatdata[4] && m_bGuessByterate ) m_AverageInputBytesPerSecond = formatdata[4] / 8;
           if ( sendsize && !m_pAudioDevice && !m_BufferingPcm )
           {
             m_Channels    = formatdata[2];
             m_SampleRate  = formatdata[1];
             m_SampleSize  = formatdata[3];
+            
             CLog::Log(LOGINFO, "PAP Player: Channels %d : Sample Rate %d",m_Channels,m_SampleRate);
             // Create the audio device
             CreateBuffer();
@@ -385,11 +414,11 @@ bool PAPlayer::ProcessPAP()
       }
       if (m_SeekTime != -1)
       {
-        m_filePAP.Seek(m_SeekTime, SEEK_SET);
         __int64 iOffset = m_SeekTime * m_AverageInputBytesPerSecond;
-        m_filePAP.Seek(iOffset, SEEK_CUR);
+        m_filePAP.Seek(m_SeekTime, SEEK_SET);
         m_startOffset = ((m_filePAP.GetPosition()) / m_AverageInputBytesPerSecond) * 1000;
         m_dwBytesSentOut = 0;
+        m_dwInputBufferSize = 0;
         m_pAudioDevice->Stop();
         m_CallPAPAgain = false;
         m_PcmSize = 0;
@@ -400,30 +429,27 @@ bool PAPlayer::ProcessPAP()
       if ( m_cantSeek ) 
       {
         m_cantSeek--;
-        if (  m_iSpeed == 1)
+        if ( m_iSpeed == 1 )
         {
-          // Reset everything to 1x
-          m_cantSeek = 0;
-          m_pPAP->flush(); 
-          m_dwInputBufferSize = 0;
-          m_CallPAPAgain = false;
-          m_PcmSize = 0;
-          m_PcmPos = 0;
-          m_dwBytesSentOut = 0;
-          m_lastByteOffset =m_filePAP.GetPosition();
-          m_startOffset = ( m_lastByteOffset / m_AverageInputBytesPerSecond) * 1000;
-          break;
+          m_pAudioDevice->Stop();
+          SetVolume(g_stSettings.m_nVolumeLevel);
         }
       }
       int inewSpeed = m_iSpeed; if ( inewSpeed < 0 ) inewSpeed--;
       int snippet; 
       if ( inewSpeed != 0 )
         snippet = (m_Channels*(m_SampleSize/8)*m_SampleRate)/abs(inewSpeed);  
-      if (m_iSpeed != 1 && !m_cantSeek && m_dwBytesSentOut > snippet && snippet ) 
+      if (m_iSpeed != 1 && !m_cantSeek && m_dwBytesSentOut >= snippet && snippet ) 
       {
         // Calculate offset to seek if we do FF/RW
         int iOffset = (m_iSpeed / 2) * m_AverageInputBytesPerSecond;
-        //m_pAudioDevice->Stop()
+
+        __int64  timeconstant = m_Channels*(m_SampleSize/8)*m_SampleRate;
+        float timeout = (float) m_dwBytesSentOut / (float)timeconstant  ;
+        
+        m_lastByteOffset +=(__int64) ( (float) m_AverageInputBytesPerSecond * timeout );
+    
+        //m_pAudioDevice->Stop();
         m_pPAP->flush(); // Flush the decoder!
         m_dwInputBufferSize = 0;
         m_CallPAPAgain = false;
@@ -434,9 +460,9 @@ bool PAPlayer::ProcessPAP()
         if (m_lastByteOffset + iOffset >= 0 && m_lastByteOffset + iOffset <= m_filePAP.GetLength())
         { // just set next position to read
           m_filePAP.Seek(m_lastByteOffset + iOffset, SEEK_SET);
-          m_cantSeek = 20;  // 25 passes through process to play longer audio snippets, and let the engine run
+          m_cantSeek = 1;  
           m_lastByteOffset = m_filePAP.GetPosition();
-          m_startOffset = ((m_lastByteOffset) / m_AverageInputBytesPerSecond) * 1000;
+          m_startOffset = (__int64)(((float)m_lastByteOffset / (float) m_AverageInputBytesPerSecond) * 1000.00);
           m_dwBytesSentOut = 0;
           SetVolume(g_stSettings.m_nVolumeLevel - VOLUME_FFWD_MUTE); // override xbmc mute 
          } // Is our next position smaller then the start...
@@ -447,7 +473,8 @@ bool PAPlayer::ProcessPAP()
           m_startOffset = 0;
           m_dwBytesSentOut = 0;
           m_lastByteOffset = 0;
-          SetVolume(g_stSettings.m_nVolumeLevel - VOLUME_FFWD_MUTE); // override xbmc mute 
+          m_BufferingPcm = true;  // Rebuffer to avoid stutter
+          SetVolume(g_stSettings.m_nVolumeLevel); // override xbmc mute 
           CLog::Log(LOGINFO, "PAP Player: Start of track reached while seeking");
         } // is our next position greater then the end sector...
         else if (m_lastByteOffset + iOffset > m_filePAP.GetLength())
@@ -455,7 +482,7 @@ bool PAPlayer::ProcessPAP()
           m_iSpeed = 1;
           // HACK: restore volume level to the value before seeking was started
           // else next track will be muted
-          SetVolume(g_stSettings.m_nVolumeLevel - VOLUME_FFWD_MUTE);
+          SetVolume(g_stSettings.m_nVolumeLevel);
           CLog::Log(LOGINFO, "PAP Player: End of track reached while seeking");
           return false;
         }
@@ -472,7 +499,7 @@ int PAPlayer::CreateBuffer()
 {
   // Check we don't first need to kill our buffers
   KillBuffer();
-  m_pAudioDevice = new CASyncDirectSound(m_pCallback, m_Channels, m_SampleRate, m_SampleSize, g_guiSettings.GetBool("AudioOutput.HighQualityResampling"), 128); // use 64k of buffers
+  m_pAudioDevice = new CASyncDirectSound(m_pCallback, m_Channels, m_SampleRate, m_SampleSize,false, 128); // use 64k of buffers
   m_dwAudioBufferMin = m_pAudioDevice->GetChunkLen();
   CLog::Log(LOGINFO, "PAP Player: Chunklen %d",m_dwAudioBufferMin);
   return 0;
@@ -492,7 +519,7 @@ __int64 PAPlayer::GetTime()
 {
 
   __int64  timeconstant = m_Channels*(m_SampleSize/8)*m_SampleRate;
-  __int64  timeplus = timeconstant ? ( m_dwBytesSentOut / timeconstant ) * 1000 : 0;
+  __int64  timeplus = timeconstant ? (__int64)(((float) m_dwBytesSentOut / (float)timeconstant ) * 1000.0) : 0;
   return  m_startOffset + timeplus;
 }
 
