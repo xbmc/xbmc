@@ -1102,6 +1102,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       if (!strUserName.IsEmpty() || !strPassword.IsEmpty())
         CScrobbler::GetInstance()->Init();
     }
+    else
+    {
+      CScrobbler::GetInstance()->Term();
+    }
   }
   else if (strSetting == "AudioOutput.OutputToAllSpeakers")
   {
