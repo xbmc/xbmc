@@ -1,0 +1,591 @@
+<window>
+  <id>2600</id>
+  <defaultcontrol>2</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <controls>
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>720</width>
+      <height>576</height>
+      <texture>background-weather.png</texture>
+    </control>
+
+    <control>
+      <description>xbox media center label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>200</posX>
+      <posY>63</posY>
+      <align>right</align>
+      <label>xbox media center</label>
+      <font>special12</font>
+    </control>
+
+    <control>
+      <description>description label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>207</posX>
+      <posY>63</posY>
+      <align>left</align>
+      <label>10508</label>
+      <font>special13</font>
+    </control>
+
+    <control>
+      <description>Refresh Button</description>
+      <type>button</type>
+      <id>2</id>
+      <posX>60</posX>
+      <posY>120</posY>
+      <width>135</width>
+      <height>35</height>
+      <label>184</label>
+      <font>font13</font>
+      <onleft>3</onleft>
+      <onright>3</onright>
+      <onup>3</onup>
+      <ondown>3</ondown>
+      <align>center</align>
+    </control>
+
+    <control>
+      <description>logo image</description>
+      <type>image</type>
+      <id>101</id>
+      <posX>85</posX>
+      <posY>190</posY>
+      <texture>Q:\weather\logos\TWClogo_64px.png</texture>
+    </control>
+
+    <control>
+      <description>logo image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>211</posX>
+      <posY>120</posY>
+      <width>465</width>
+      <height>180</height>
+      <texture>blue_rectangle_weather.png</texture>
+    </control>
+
+    <control>
+      <description>logo image</description>
+      <type>button</type>
+      <id>1</id>
+      <posX>211</posX>
+      <posY>120</posY>
+      <width>464</width>
+    </control>
+
+    <control>
+      <description>logo image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>211</posX>
+      <posY>310</posY>
+      <width>111</width>
+      <height>198</height>
+      <texture>blue_rectangle_weather.png</texture>
+    </control>
+
+    <control>
+      <description>logo image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>329</posX>
+      <posY>310</posY>
+      <width>111</width>
+      <height>198</height>
+      <texture>blue_rectangle_weather.png</texture>
+    </control>
+
+    <control>
+      <description>logo image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>447</posX>
+      <posY>310</posY>
+      <width>111</width>
+      <height>198</height>
+      <texture>blue_rectangle_weather.png</texture>
+    </control>
+
+    <control>
+      <description>logo image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>565</posX>
+      <posY>310</posY>
+      <width>111</width>
+      <height>198</height>
+      <texture>blue_rectangle_weather.png</texture>
+    </control>
+
+    <control>
+      <description>weather location select</description>
+      <type>spincontrol</type>
+      <align>left</align>
+      <width>15</width>
+      <height>15</height>
+      <id>3</id>
+      <posX>226</posX>
+      <posY>130</posY>
+      <font>font14</font>
+      <reverse>yes</reverse>
+      <onup>2</onup>
+      <ondown>2</ondown>
+      <onleft>2</onleft>
+      <onright>2</onright>
+      <disabledcolor>ffffffff</disabledcolor>
+      <textOffsetX>0</textOffsetX>
+      <textOffsetY>0</textOffsetY>
+      <alignY>center</alignY>
+    </control>
+
+    <control>
+      <description>update time label</description>
+      <type>label</type>
+      <id>11</id>
+      <align>right</align>
+      <posX>660</posX>
+      <posY>129</posY>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>current temp static label</description>
+      <type>label</type>
+      <id>223</id>
+      <posX>221</posX>
+      <posY>168</posY>
+      <label>Temp</label>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>current feels like static label</description>
+      <type>label</type>
+      <id>224</id>
+      <posX>221</posX>
+      <posY>188</posY>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>current UV Index static label</description>
+      <type>label</type>
+      <id>225</id>
+      <posX>221</posX>
+      <posY>248</posY>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>current wind static label</description>
+      <type>label</type>
+      <id>226</id>
+      <posX>221</posX>
+      <posY>268</posY>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>current dew static label</description>
+      <type>label</type>
+      <id>227</id>
+      <posX>221</posX>
+      <posY>208</posY>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>current humidity static label</description>
+      <type>label</type>
+      <id>228</id>
+      <posX>221</posX>
+      <posY>228</posY>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>current weather icon</description>
+      <type>image</type>
+      <id>21</id>
+      <posX>530</posX>
+      <posY>158</posY>
+      <height>138</height>
+      <width>106</width>
+      <texture>background-myweather.png</texture>
+    </control>
+
+    <control>
+      <description>current condition label</description>
+      <type>label</type>
+      <align>right</align>
+      <id>22</id>
+      <posX>520</posX>
+      <posY>178</posY>
+      <width>120</width>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>current temp label</description>
+      <type>label</type>
+      <id>23</id>
+      <posX>335</posX>
+      <posY>168</posY>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>current feels like label</description>
+      <type>label</type>
+      <id>24</id>
+      <posX>335</posX>
+      <posY>188</posY>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>current UV Index label</description>
+      <type>label</type>
+      <id>25</id>
+      <posX>335</posX>
+      <posY>248</posY>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>current wind label</description>
+      <type>label</type>
+      <id>26</id>
+      <posX>335</posX>
+      <posY>268</posY>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>current dew label</description>
+      <type>label</type>
+      <id>27</id>
+      <posX>335</posX>
+      <posY>208</posY>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>current humidity label</description>
+      <type>label</type>
+      <id>28</id>
+      <posX>335</posX>
+      <posY>228</posY>
+      <label>-</label>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>day 0 label</description>
+      <type>button</type>
+      <align>center</align>
+      <height>28</height>
+      <width>110</width>
+      <id>31</id>
+      <posX>211</posX>
+      <posY>310</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+    </control>
+
+    <control>
+      <description>day 0 Hi label</description>
+      <type>button</type>
+      <align>center</align>
+      <width>110</width>
+      <id>32</id>
+      <posX>211</posX>
+      <posY>338</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+      <textureFocus>-</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+    </control>
+
+    <control>
+      <description>day 0 low label</description>
+      <type>button</type>
+      <align>center</align>
+      <width>110</width>
+      <id>33</id>
+      <posX>211</posX>
+      <posY>360</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+      <textureFocus>-</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+    </control>
+
+    <control>
+      <description>day 0 general weather label</description>
+      <type>button</type>
+      <align>center</align>
+      <alignY>top</alignY>
+      <width>110</width>
+      <id>34</id>
+      <posX>211</posX>
+      <posY>465</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+      <textureFocus>-</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+    </control>
+
+    <control>
+      <description>day 0 icon</description>
+      <type>image</type>
+      <id>35</id>
+      <posX>243</posX>
+      <posY>395</posY>
+      <height>64</height>
+      <width>48</width>
+      <texture>background-myweather.png</texture>
+    </control>
+
+    <control>
+      <description>day 1 label</description>
+      <type>button</type>
+      <align>center</align>
+      <height>28</height>
+      <width>110</width>
+      <id>41</id>
+      <posX>329</posX>
+      <posY>310</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+    </control>
+
+    <control>
+      <description>day 1 Hi label</description>
+      <type>button</type>
+      <align>center</align>
+      <width>110</width>
+      <id>42</id>
+      <posX>329</posX>
+      <posY>338</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+      <textureFocus>-</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+    </control>
+
+    <control>
+      <description>day 1 low label</description>
+      <type>button</type>
+      <align>center</align>
+      <width>110</width>
+      <id>43</id>
+      <posX>329</posX>
+      <posY>360</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+      <textureFocus>-</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+    </control>
+
+    <control>
+      <description>day 1 general weather label</description>
+      <type>button</type>
+      <align>center</align>
+      <alignY>top</alignY>
+      <width>110</width>
+      <id>44</id>
+      <posX>329</posX>
+      <posY>465</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+      <textureFocus>-</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+    </control>
+
+    <control>
+      <description>day 1 icon</description>
+      <type>image</type>
+      <id>45</id>
+      <posX>361</posX>
+      <posY>395</posY>
+      <height>64</height>
+      <width>48</width>
+      <texture>background-myweather.png</texture>
+    </control>
+
+    <control>
+      <description>day 2 label</description>
+      <type>button</type>
+      <align>center</align>
+      <height>28</height>
+      <width>110</width>
+      <id>51</id>
+      <posX>447</posX>
+      <posY>310</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+    </control>
+
+    <control>
+      <description>day 2 Hi label</description>
+      <type>button</type>
+      <align>center</align>
+      <width>110</width>
+      <id>52</id>
+      <posX>447</posX>
+      <posY>338</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+      <textureFocus>-</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+    </control>
+
+    <control>
+      <description>day 2 low label</description>
+      <type>button</type>
+      <align>center</align>
+      <width>110</width>
+      <id>53</id>
+      <posX>447</posX>
+      <posY>360</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+      <textureFocus>-</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+    </control>
+
+    <control>
+      <description>day 2 general weather label</description>
+      <type>button</type>
+      <align>center</align>
+      <alignY>top</alignY>
+      <width>110</width>
+      <id>54</id>
+      <posX>447</posX>
+      <posY>465</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+      <textureFocus>-</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+    </control>
+
+    <control>
+      <description>day 2 icon</description>
+      <type>image</type>
+      <id>55</id>
+      <posX>480</posX>
+      <posY>395</posY>
+      <height>64</height>
+      <width>48</width>
+      <texture>background-myweather.png</texture>
+    </control>
+
+    <control>
+      <description>day 3 label</description>
+      <type>button</type>
+      <align>center</align>
+      <height>28</height>
+      <width>110</width>
+      <id>61</id>
+      <posX>565</posX>
+      <posY>310</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+    </control>
+
+    <control>
+      <description>day 3 Hi label</description>
+      <type>button</type>
+      <align>center</align>
+      <width>110</width>
+      <id>62</id>
+      <posX>565</posX>
+      <posY>338</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+      <textureFocus>-</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+    </control>
+
+    <control>
+      <description>day 3 low label</description>
+      <type>button</type>
+      <align>center</align>
+      <width>110</width>
+      <id>63</id>
+      <posX>565</posX>
+      <posY>360</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+      <textureFocus>-</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+    </control>
+
+    <control>
+      <description>day 3 general weather label</description>
+      <type>button</type>
+      <align>center</align>
+      <alignY>top</alignY>
+      <width>110</width>
+      <id>64</id>
+      <posX>565</posX>
+      <posY>465</posY>
+      <label>-</label>
+      <font>font10</font>
+      <textOffsetX>-</textOffsetX>
+      <textureFocus>-</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+    </control>
+
+    <control>
+      <description>day 3 icon</description>
+      <type>image</type>
+      <id>65</id>
+      <posX>596</posX>
+      <posY>395</posY>
+      <height>64</height>
+      <width>48</width>
+      <texture>background-myweather.png</texture>
+    </control>
+
+  </controls>
+
+</window>
+
