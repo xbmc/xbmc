@@ -43,22 +43,22 @@
         <id>11</id>
         <posX>50</posX>
         <posY>120</posY>
-        <label>About XBMC</label>
+        <label>482</label>
         <execute>XBMC.Credits()</execute>
         <onleft>8</onleft>
         <onright>6</onright>
         <onup>13</onup>
-        <ondown>12</ondown>
+        <ondown>14</ondown>
       </control>
 
       <control>
         <description>About XBMC</description>
         <type>button</type>
-        <id>12</id>
+        <id>14</id>
         <posX>50</posX>
         <posY>157</posY>
-        <label>Skin Credits</label>
-        <execute>XBMC.Credits()</execute>
+        <label>PY Skin Builder</label>
+        <execute>XBMC.ActivateWindow(57)</execute>
         <onleft>8</onleft>
         <onright>6</onright>
         <onup>11</onup>
@@ -75,7 +75,7 @@
         <execute>XBMC.ReloadSkin()</execute>
         <onleft>8</onleft>
         <onright>6</onright>
-        <onup>12</onup>
+        <onup>14</onup>
         <ondown>11</ondown>
       </control>
 
