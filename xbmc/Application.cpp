@@ -2226,7 +2226,7 @@ void CApplication::FrameMove()
   {
     bGotKey = true;
     lastAnalogKey = bIsDown ? KEY_BUTTON_LEFT_THUMB_STICK_DOWN : 0;
-    CKey key(KEY_BUTTON_LEFT_THUMB_STICK_DOWN, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, -pGamepad->fY2);
+    CKey key(KEY_BUTTON_LEFT_THUMB_STICK_DOWN, bLeftTrigger, bRightTrigger, pGamepad->fX1, -pGamepad->fY1, pGamepad->fX2, -pGamepad->fY2);
     OnKey(key);
   }
   bIsDown = (pGamepad->fX1 > 0 && pGamepad->fY1 < pGamepad->fX1 && -pGamepad->fY1 < pGamepad->fX1);
@@ -2242,7 +2242,7 @@ void CApplication::FrameMove()
   {
     bGotKey = true;
     lastAnalogKey = bIsDown ? KEY_BUTTON_LEFT_THUMB_STICK_LEFT : 0;
-    CKey key(KEY_BUTTON_LEFT_THUMB_STICK_LEFT, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, -pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_LEFT_THUMB_STICK_LEFT, bLeftTrigger, bRightTrigger, -pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
     OnKey(key);
   }
   // right thumb stick
