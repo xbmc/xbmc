@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-04-2005 fixed: [ 1182782 ] Default mode for Digital output should be Stereo
   - 15-04-2005 updated: Norwegian language file (Thnx to vnm)
   - 15-04-2005 fixed: CUtil::URLEncode ignored '&' and '='
   - 15-04-2005 added: selectItem method to ControlList for python, thanks to sambarza.

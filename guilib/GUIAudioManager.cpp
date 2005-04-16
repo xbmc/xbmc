@@ -41,7 +41,8 @@ void CGUIAudioManager::Initialize()
   int iDevice=g_audioContext.GetActiveDevice();
   if (iDevice==CAudioContext::DEFAULT_DEVICE)
   {
-    DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
+    bool bAudioOnAllSpeakers=false;
+    g_audioContext.SetupSpeakerConfig(2, bAudioOnAllSpeakers);
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
   }
   else if (iDevice==CAudioContext::DIRECTSOUND_DEVICE)

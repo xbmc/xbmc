@@ -16,6 +16,7 @@
 #include "SkinInfo.h"
 #include "GUIFontManager.h"
 #include "GUIAudioManager.h"
+#include "AudioContext.h"
 #include "lib/libscrobbler/scrobbler.h"
 
 #define CONTROL_GROUP_BUTTONS      0
@@ -1106,11 +1107,23 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingBool *pSetting = (CSettingBool*)pSettingControl->GetSetting();
     if (pSetting->GetData()) g_guiSettings.SetBool("AudioOutput.PCMPassThrough", false);
+
+    if (!g_application.IsPlaying())
+    {
+      g_audioContext.RemoveActiveDevice();
+      g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
+    }
   }
   else if (strSetting == "AudioOutput.PCMPassThrough")
   {
     CSettingBool *pSetting = (CSettingBool*)pSettingControl->GetSetting();
     if (pSetting->GetData()) g_guiSettings.SetBool("AudioOutput.OutputToAllSpeakers", false);
+
+    if (!g_application.IsPlaying())
+    {
+      g_audioContext.RemoveActiveDevice();
+      g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
+    }
   }
   else if (strSetting == "LCD.Mode")
   {
