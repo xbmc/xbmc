@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.182. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.183. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -907,5 +907,18 @@
   <string><id>15108</id><value>Navigasjonslyder</value></string>
   <string><id>15109</id><value>Standard for skinnet</value></string>
   
+  <string><id>15200</id><value>AudioScrobbler</value></string>
+  <string><id>15201</id><value>Send informasjon om sanger til AudioScrobbler</value></string>
+  <string><id>15202</id><value>AudioScrobbler brukernavn</value></string>
+  <string><id>15203</id><value>AudioScrobbler passord</value></string>
+  <string><id>15204</id><value>Kunne ikke koble til: i dvale...</value></string>
+  <string><id>15205</id><value>Vennligst oppdater XBMC</value></string>
+  <string><id>15206</id><value>Sending feilet: feil ved autorisasjon.</value></string>
+  <string><id>15207</id><value>Koblet til</value></string>
+  <string><id>15208</id><value>Ikke tilkoblet</value></string>
+  <string><id>15209</id><value>Send interval %i</value></string>
+  <string><id>15210</id><value>Cachet %i sanger</value></string>
+  <string><id>15211</id><value>Sender...</value></string>
+  <string><id>15212</id><value>Sender om %i sekunder</value></string>
 </strings>
 
