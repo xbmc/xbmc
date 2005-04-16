@@ -280,14 +280,16 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath, long &lPathId
               return lFileId;
             }
           }
-/*          double fPercentage = fstrcmp(strFname.c_str(), strFileName.c_str(), COMPARE_PERCENTAGE_MIN );
+          /*
+          double fPercentage = fstrcmp(strFname.c_str(), strFileName.c_str(), COMPARE_PERCENTAGE_MIN );
           if ( fPercentage >= COMPARE_PERCENTAGE)
           {
             long lFileId = m_pDS->fv("idFile").get_asLong() ;
             lMovieId = m_pDS->fv("idMovie").get_asLong() ;
             m_pDS->close();
             return lFileId;
-          }*/
+          }
+          */
         }
         m_pDS->next();
       }
@@ -592,7 +594,8 @@ void CVideoDatabase::GetGenres(VECMOVIEGENRES& genres)
     genres.erase(genres.begin(), genres.end());
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    m_pDS->query("select * from genre join genrelinkmovie on genre.idGenre = genrelinkmovie.idGenre");
+    //m_pDS->query("select * from genre join genrelinkmovie on genre.idGenre = genrelinkmovie.idGenre");
+    m_pDS->query("select distinct genre.strGenre from genre join genrelinkmovie on genre.idGenre = genrelinkmovie.idGenre join movie on genrelinkmovie.idMovie = movie.idMovie");
     while (!m_pDS->eof())
     {
       genres.push_back( m_pDS->fv("genre.strGenre").get_asString() );
@@ -614,7 +617,8 @@ void CVideoDatabase::GetActors(VECMOVIEACTORS& actors)
     actors.erase(actors.begin(), actors.end());
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    m_pDS->query("select * from actors join actorlinkmovie on actors.idActor = actorlinkmovie.idActor");
+    //m_pDS->query("select * from actors join actorlinkmovie on actors.idActor = actorlinkmovie.idActor");
+    m_pDS->query("select distinct actors.strActor from actors join actorlinkmovie on actors.idActor = actorlinkmovie.idActor join movie on actorlinkmovie.idMovie = movie.idMovie");
     while (!m_pDS->eof())
     {
       actors.push_back( m_pDS->fv("actors.strActor").get_asString() );
@@ -1008,9 +1012,11 @@ void CVideoDatabase::GetYears(VECMOVIEYEARS& years)
     years.erase(years.begin(), years.end());
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    m_pDS->query("select * from movieinfo");
+    //m_pDS->query("select * from movieinfo");
+    m_pDS->query("select distinct movieinfo.iYear from movieinfo join movie on movieinfo.idMovie = movie.idMovie");
     while (!m_pDS->eof())
     {
+      /*
       CStdString strYear = m_pDS->fv("iYear").get_asString();
       bool bAdd = true;
       for (int i = 0; i < (int)years.size();++i)
@@ -1018,6 +1024,8 @@ void CVideoDatabase::GetYears(VECMOVIEYEARS& years)
         if (strYear == years[i]) bAdd = false;
       }
       if (bAdd) years.push_back( strYear);
+      */
+      years.push_back(m_pDS->fv("movieinfo.iYear").get_asString());
       m_pDS->next();
     }
     m_pDS->close();
