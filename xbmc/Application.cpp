@@ -1345,6 +1345,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiDialogVolumeBar.AllocResources();
   m_guiDialogKaiToast.AllocResources();
   m_guiDialogMusicScan.AllocResources();
+  m_guiDialogMuteBug.AllocResources();
   m_gWindowManager.AddMsgTarget(this);
   m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
   m_gWindowManager.SetCallback(*this);
