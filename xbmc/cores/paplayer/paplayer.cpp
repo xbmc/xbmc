@@ -116,8 +116,6 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
   CloseFile();
 
-  iStartTime=5000;
-
   m_bPaused = false;
   m_bStopPlaying = false;
 
@@ -151,7 +149,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     CMusicInfoTag tag;
     mp3info.Load(file.m_strPath.c_str(), tag);
 
-    int TrackDuration = tag.GetDuration();
+    TrackDuration = tag.GetDuration();
     if ( TrackDuration ) m_AverageInputBytesPerSecond = (DWORD)(length / TrackDuration);
     else m_bGuessByterate = true;  // If the user didn't load id3 tags, they also didnt load the Duration
     // If we dont have the TrackDuration will have to guess later.
@@ -172,6 +170,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     else
     {
       CLog::Log(LOGINFO, "PAP Player: Start Time is greater than file length");
+      return false;
     }
   }
 
