@@ -21,6 +21,8 @@ public:
           LPDIRECTSOUND8              GetDirectSoundDevice() { return m_pDirectSoundDevice; }
           LPAC97MEDIAOBJECT           GetAc97Device() { return m_pAC97Device; }
 
+          void                        SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers);
+
   enum AUDIO_DEVICE {NONE=0, DEFAULT_DEVICE, DIRECTSOUND_DEVICE, AC97_DEVICE };
 protected:
           LPAC97MEDIAOBJECT            m_pAC97Device;
