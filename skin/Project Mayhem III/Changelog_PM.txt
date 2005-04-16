@@ -1,3 +1,9 @@
+
+2005-04-16 added:	New Script Skin Builder - see custom3.xml
+2005-04-16 fixed:	weather icons now display correct in 16:9
+2005-04-16 added:	NoFocus textures for the Settings and My Files button
+2005-04-16 fixed:       finally fixed made the homescreen 4:3 compatible (was just quick n dirty from 16:9)
+
 2005-04-15 fixed:       FileManager.xml had an unused image control.
 2005-04-15 fixed:	<width> tag in My Weather current conditions label.
 2005-04-15 fixed:       possible fix for the flickering homescreen during viz

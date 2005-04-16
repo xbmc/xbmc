@@ -45,6 +45,18 @@
       <posY>503</posY>
       <width>20</width>
       <height>20</height>
+      <texture>music-rec.png</texture>
+      <visible>Player.Recording</visible>
+    </control>
+
+    <control>
+      <description>play logo</description>
+      <type>image</type>
+      <id>0</id>
+      <posX>65</posX>
+      <posY>503</posY>
+      <width>20</width>
+      <height>20</height>
       <texture>music-play.png</texture>
       <visible>Player.Playing</visible>
     </control>
