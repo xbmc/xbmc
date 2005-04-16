@@ -253,30 +253,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
     m_bResampleAudio = true;
 
   bool bAudioOnAllSpeakers(false);
-  if (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL)
-  {
-    if (g_guiSettings.GetBool("AudioOutput.OutputToAllSpeakers"))
-    {
-      bAudioOnAllSpeakers = true;
-      DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
-    }
-    else
-    {
-      if (iChannels == 1)
-        DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
-      else if (iChannels == 2)
-        DirectSoundOverrideSpeakerConfig(DSSPEAKER_STEREO);
-      else
-        DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
-    }
-  }
-  else // We don't want to use the Dolby Digital Encoder output. Downmix to surround instead.
-  {
-    if (iChannels == 1)
-      DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
-    else
-      DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
-  }
+  g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers);
 
   LARGE_INTEGER qwTicksPerSec;
   QueryPerformanceFrequency( &qwTicksPerSec );   // ticks/sec
