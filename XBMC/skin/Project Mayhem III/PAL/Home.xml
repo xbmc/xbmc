@@ -6,86 +6,86 @@
     <control>
       <type>image</type>
       <id>102</id>
-      <posX>100</posX>
+      <posX>182</posX>
       <posY>105</posY>
-      <width>640</width>
+      <width>538</width>
       <height>362</height>
-      <texture>16x9home-myPrograms.png</texture>
+      <texture>4x3home-myPrograms.png</texture>
       <visible>!Player.HasVideo</visible>
     </control>
 
     <control>
       <type>image</type>
       <id>106</id>
-      <posX>100</posX>
+      <posX>182</posX>
       <posY>105</posY>
-      <width>640</width>
+      <width>538</width>
       <height>362</height>
-      <texture>16x9home-myfiles.png</texture>
+      <texture>4x3home-myfiles.png</texture>
       <visible>!Player.HasVideo</visible>
     </control>
 
     <control>
       <type>image</type>
       <id>103</id>
-      <posX>100</posX>
+      <posX>182</posX>
       <posY>105</posY>
-      <width>640</width>
+      <width>538</width>
       <height>362</height>
-      <texture>16x9home-mymusic.png</texture>
+      <texture>4x3home-mymusic.png</texture>
       <visible>!Player.HasVideo</visible>
     </control>
 
     <control>
       <type>image</type>
       <id>104</id>
-      <posX>100</posX>
+      <posX>182</posX>
       <posY>105</posY>
-      <width>640</width>
+      <width>538</width>
       <height>362</height>
-      <texture>16x9home-mypictures.png</texture>
+      <texture>4x3home-mypictures.png</texture>
       <visible>!Player.HasVideo</visible>
     </control>
 
     <control>
       <type>image</type>
       <id>105</id>
-      <posX>100</posX>
+      <posX>182</posX>
       <posY>105</posY>
-      <width>640</width>
+      <width>538</width>
       <height>362</height>
-      <texture>16x9home-myvideos.png</texture>
+      <texture>4x3home-myvideos.png</texture>
       <visible>!Player.HasVideo</visible>
     </control>
 
     <control>
       <type>image</type>
       <id>107</id>
-      <posX>100</posX>
+      <posX>182</posX>
       <posY>105</posY>
-      <width>640</width>
+      <width>538</width>
       <height>362</height>
-      <texture>16x9home-myweather.png</texture>
+      <texture>4x3home-myweather.png</texture>
       <visible>!Player.HasVideo</visible>
     </control>
 
     <control>
       <type>image</type>
       <id>109</id>
-      <posX>100</posX>
+      <posX>182</posX>
       <posY>105</posY>
-      <width>640</width>
+      <width>538</width>
       <height>362</height>
-      <texture>16x9home-settings.png</texture>
+      <texture>4x3home-settings.png</texture>
       <visible>!Player.HasVideo</visible>
     </control>
 
     <control>
       <type>visualisation</type>
       <id>1</id>
-      <posX>100</posX>
+      <posX>182</posX>
       <posY>105</posY>
-      <width>620</width>
+      <width>538</width>
       <height>372</height>
     </control>
 
@@ -107,7 +107,7 @@
       <posY>0</posY>
       <width>720</width>
       <height>576</height>
-      <texture>16x9home.png</texture>
+      <texture>4x3home.png</texture>
     </control>
 
     <control>
@@ -286,9 +286,9 @@
         <type>button</type>
         <id>9</id>
         <posX>80</posX>
-        <posY>427</posY>
-        <width>14</width>
-        <height>13</height>
+        <posY>434</posY>
+        <width>9</width>
+        <height>8</height>
         <label>5</label>
         <font>font10</font>
         <hyperlink>4</hyperlink>
@@ -306,9 +306,9 @@
         <type>button</type>
         <id>6</id>
         <posX>195</posX>
-        <posY>427</posY>
-        <width>14</width>
-        <height>13</height>
+        <posY>434</posY>
+        <width>9</width>
+        <height>8</height>
         <label>7</label>
         <hyperlink>3</hyperlink>
         <font>font10</font>
@@ -324,10 +324,30 @@
     </controlgroup>
 
     <control>
+      <type>image</type>
+      <id>102</id>
+        <posX>77</posX>
+        <posY>430</posY>
+        <width>15</width>
+        <height>16</height>
+      <texture>homebutton-small.png</texture>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>102</id>
+        <posX>192</posX>
+        <posY>430</posY>
+        <width>15</width>
+        <height>16</height>
+      <texture>homebutton-small.png</texture>
+    </control>
+
+    <control>
       <description>date label</description>
       <type>label</type>
       <id>0</id>
-      <posX>575</posX>
+      <posX>582</posX>
       <posY>70</posY>
       <label>date</label>
       <info>System.Date</info>
@@ -339,7 +359,7 @@
       <description>suffix label</description>
       <type>label</type>
       <id>1</id>
-      <posX>585</posX>
+      <posX>592</posX>
       <posY>68</posY>
       <label>|</label>
       <align>left</align>
@@ -351,7 +371,7 @@
       <description>time label</description>
       <type>label</type>
       <id>0</id>
-      <posX>595</posX>
+      <posX>602</posX>
       <posY>70</posY>
       <label>time</label>
       <info>System.Time</info>
