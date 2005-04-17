@@ -2,7 +2,6 @@
 #include "../../stdafx.h"
 #include "paplayer.h"
 #include "../../application.h"
-#include "../../MusicInfoTagLoaderMP3.h"
 //#include "../lib/libcdio/util.h"
 
 #define VOLUME_FFWD_MUTE 900 // 9dB
@@ -135,7 +134,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   CLog::Log(LOGINFO, "PAP Player: Playing %s", file.m_strPath.c_str());
 
 
-  int TrackDuration = file.m_musicInfoTag.GetDuration();
+  int TrackDuration = 0; //file.m_musicInfoTag.GetDuration();
   __int64 length = m_filePAP.GetLength();
 
   if ( TrackDuration && !iStartTime) 
@@ -148,8 +147,11 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     CMusicInfoTagLoaderMP3 mp3info;
     CMusicInfoTag tag;
     mp3info.Load(file.m_strPath.c_str(), tag);
-
-    TrackDuration = tag.GetDuration();
+    m_bHasVBRInfo = mp3info.GetSeekInfo(m_vbrInfo);
+    if (m_bHasVBRInfo)
+      TrackDuration = (int)m_vbrInfo.GetDuration();
+    else
+      TrackDuration = tag.GetDuration();
     if ( TrackDuration ) m_AverageInputBytesPerSecond = (DWORD)(length / TrackDuration);
     else m_bGuessByterate = true;  // If the user didn't load id3 tags, they also didnt load the Duration
     // If we dont have the TrackDuration will have to guess later.
@@ -159,12 +161,15 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   {
     float realtime = (float)iStartTime / (float)1000.0;
     float fseektime = float (m_AverageInputBytesPerSecond) * realtime;
+    // calculate our seek offset accurately if we have a vbr source
+    if (m_bHasVBRInfo)
+      fseektime = (float)m_vbrInfo.GetByteOffset(realtime);
 
     if ( (__int64) fseektime < length ) 
     {
       m_filePAP.Seek( (__int64)(fseektime) , SEEK_SET);
       m_lastByteOffset = m_filePAP.GetPosition();
-      m_startOffset = (__int64)(((float)m_lastByteOffset / (float) m_AverageInputBytesPerSecond) * 1000.00);
+      m_startOffset = iStartTime;
       CLog::Log(LOGINFO, "PAP Player: Starting at %d",(__int64) fseektime);
     }
     else
@@ -329,6 +334,8 @@ bool PAPlayer::ProcessPAP()
 //          else
 //            break; // Exit out to see if we need to stop, and so if we can keep the soundcard busy
         }
+        else
+          Sleep(10);
       }
       else
       {
@@ -413,9 +420,12 @@ bool PAPlayer::ProcessPAP()
       }
       if (m_SeekTime != -1)
       {
-        __int64 iOffset = m_SeekTime * m_AverageInputBytesPerSecond;
-        m_filePAP.Seek(m_SeekTime, SEEK_SET);
-        m_startOffset = ((m_filePAP.GetPosition()) / m_AverageInputBytesPerSecond) * 1000;
+        // calculate our offset
+        __int64 iOffset = m_SeekTime * m_AverageInputBytesPerSecond / 1000;
+        if (m_bHasVBRInfo)
+          iOffset = (__int64)m_vbrInfo.GetByteOffset(0.001f * m_SeekTime);
+        m_filePAP.Seek(iOffset, SEEK_SET);
+        m_startOffset = m_SeekTime / 1000;
         m_dwBytesSentOut = 0;
         m_dwInputBufferSize = 0;
         m_pAudioDevice->Stop();

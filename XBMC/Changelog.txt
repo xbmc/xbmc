@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 17-04-2005 added: Better VBR seeking for PaPlayer.
   - 17-04-2005 fixed: AudioScrobbler submission on .cue sheet items was wrong.
   - 17-04-2005 changed: Skin version hits v1.3.
   - 17-04-2005 fixed: .Cue sheet media file finding.

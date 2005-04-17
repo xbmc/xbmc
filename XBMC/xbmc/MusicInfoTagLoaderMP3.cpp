@@ -78,10 +78,12 @@ using namespace MUSIC_INFO;
 using namespace XFILE;
 
 CMusicInfoTagLoaderMP3::CMusicInfoTagLoaderMP3(void)
-{}
+{
+}
 
 CMusicInfoTagLoaderMP3::~CMusicInfoTagLoaderMP3()
-{}
+{
+}
 
 char* CMusicInfoTagLoaderMP3::GetString(const ID3_Frame *frame, ID3_FieldID fldName)
 {
@@ -543,6 +545,22 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
       if (buffer[i + 7] & VBR_FRAMES_FLAG) /* Is the frame count there? */
       {
         frame_count = BYTES2INT(buffer[i + 8], buffer[i + 8 + 1], buffer[i + 8 + 2], buffer[i + 8 + 3]);
+        if (buffer[i + 7] & VBR_TOC_FLAG)
+        {
+          int iOffset = i + 12;
+          if (buffer[i + 7] & VBR_BYTES_FLAG)
+          {
+            nMp3DataSize = BYTES2INT(buffer[i + 12], buffer[i + 12 + 1], buffer[i + 12 + 2], buffer[i + 12 + 3]);
+            iOffset += 4;
+          }
+          float *offset = new float[101];
+          for (int j = 0; j < 100; j++)
+            offset[j] = (float)buffer[iOffset + j]/256.0f * nMp3DataSize + nPrependedBytes;
+          offset[100] = (float)nMp3DataSize + nPrependedBytes;
+          m_seekInfo.SetDuration((float)(frame_count * tpf));
+          m_seekInfo.SetOffsets(100, offset);
+          delete[] offset;
+        }
       }
     }
 
@@ -578,15 +596,15 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 
       int layer = 0;
       switch (mpegheader & LAYER_MASK)
-  {
+      {
       case (3 << 17):  // LAYER_I
-              layer = 1;
+        layer = 1;
         break;
       case (2 << 17):  // LAYER_II
-              layer = 2;
+        layer = 2;
         break;
       case (1 << 17):  // LAYER_III
-              layer = 3;
+        layer = 3;
         break;
       }
 
@@ -616,7 +634,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 
       /* Calculate bytes per frame, calculation depends on layer */
       switch (layer)
-  {
+      {
       case 1:
         bpf = bitrate;
         bpf *= 48000;
@@ -670,6 +688,22 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
         if (xing[7] & VBR_FRAMES_FLAG) /* Is the frame count there? */
         {
           frame_count = BYTES2INT(xing[8], xing[8 + 1], xing[8 + 2], xing[8 + 3]);
+          if (xing[7] & VBR_TOC_FLAG)
+          {
+            int iOffset = 12;
+            if (xing[7] & VBR_BYTES_FLAG)
+            {
+              nMp3DataSize = BYTES2INT(xing[12], xing[12 + 1], xing[12 + 2], xing[12 + 3]);
+              iOffset += 4;
+            }
+            float *offset = new float[101];
+            for (int j = 0; j < 100; j++)
+              offset[j] = (float)xing[iOffset + j]/256.0f * nMp3DataSize + nPrependedBytes;
+            offset[100] = (float)nMp3DataSize + nPrependedBytes;
+            m_seekInfo.SetDuration((float)(frame_count * tpf));
+            m_seekInfo.SetOffsets(100, offset);
+            delete[] offset;
+          }
         }
       }
       if (vbri[0] == 'V' &&
@@ -679,6 +713,27 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
       {
         frame_count = BYTES2INT(vbri[14], vbri[14 + 1],
                                 vbri[14 + 2], vbri[14 + 3]);
+        nMp3DataSize = BYTES2INT(vbri[10], vbri[10 + 1], vbri[10 + 2], vbri[10 + 3]);
+        int iSeekOffsets = ((vbri[18] & 0xFF) << 8) | (vbri[19] & 0xFF) + 1;
+        float *offset = new float[iSeekOffsets + 1];
+        int iScaleFactor = ((vbri[20] & 0xFF) << 8) | (vbri[21] & 0xFF);
+        int iOffsetSize = ((vbri[22] & 0xFF) << 8) | (vbri[23] & 0xFF);
+        offset[0] = (float)nPrependedBytes;
+        for (int j = 0; j < iSeekOffsets; j++)
+        {
+          DWORD dwOffset = 0;
+          for (int k = 0; k < iOffsetSize; k++)
+          {
+            dwOffset = dwOffset << 8;
+            dwOffset += vbri[26 + j*iOffsetSize + k];
+          }
+          offset[j] += (float)dwOffset * iScaleFactor;
+          offset[j + 1] = offset[j];
+        }
+        offset[iSeekOffsets] = (float)nPrependedBytes + nMp3DataSize;
+        m_seekInfo.SetDuration((float)(frame_count * tpf));
+        m_seekInfo.SetOffsets(iSeekOffsets, offset);
+        delete[] offset;
       }
       // We are done!
       break;
@@ -696,6 +751,15 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
   // Now song length is (filesize without id3v1/v2 tag)/((bitrate)/(8))
   double d = (double)(nMp3DataSize / ((bitrate * 1000) / 8));
   return (int)d;
+}
+
+bool CMusicInfoTagLoaderMP3::GetSeekInfo(CVBRMP3SeekHelper &info)
+{
+  if (!m_seekInfo.GetNumOffsets())
+    return false;
+  info.SetDuration(m_seekInfo.GetDuration());
+  info.SetOffsets(m_seekInfo.GetNumOffsets(), m_seekInfo.GetOffsets());
+  return true;
 }
 
 CStdString CMusicInfoTagLoaderMP3::ParseMP3Genre (const CStdString& str)
