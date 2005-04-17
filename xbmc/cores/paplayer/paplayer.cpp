@@ -138,7 +138,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   int TrackDuration = file.m_musicInfoTag.GetDuration();
   __int64 length = m_filePAP.GetLength();
 
-  if ( TrackDuration) 
+  if ( TrackDuration && !iStartTime) 
   {
     m_AverageInputBytesPerSecond = (DWORD)(length / TrackDuration);
   }
