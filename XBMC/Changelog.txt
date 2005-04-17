@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 17-04-2005 fixed: Timeoffset in PAPlayer (.cue sheets).
   - 17-04-2005 fixed: More universal remote double tap fixes.
   - 17-04-2005 fixed: Version is derived internally (top of GUIInfoManager.cpp) instead of relying on strings.xml.
   - 16-04-2005 fixed: duplicate and phantom entries in Video Actors, Genres, and Years views.
