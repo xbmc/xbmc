@@ -331,32 +331,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 void CGUIWindowVideoBase::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
-#ifndef SKIN_VERSION_1_3
-  if (!GetControl(CONTROL_LIST))
-  {
-    for (unsigned int i=0; i < m_vecControls.size(); i++)
-    {
-      CGUIControl *pControl = m_vecControls[i];
-      if (pControl->GetID() == 10) pControl->SetID(CONTROL_LIST);
-      if (pControl->GetControlIdUp() == 10) pControl->SetNavigation(CONTROL_LIST, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-      if (pControl->GetControlIdDown() == 10) pControl->SetNavigation(pControl->GetControlIdUp(), CONTROL_LIST, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-      if (pControl->GetControlIdLeft() == 10) pControl->SetNavigation(pControl->GetControlIdUp(), pControl->GetControlIdDown(), CONTROL_LIST, pControl->GetControlIdRight());
-      if (pControl->GetControlIdRight() == 10) pControl->SetNavigation(pControl->GetControlIdUp(), pControl->GetControlIdDown(), pControl->GetControlIdLeft(), CONTROL_LIST);
-    }
-  }
-  if (!GetControl(CONTROL_THUMBS))
-  {
-    for (unsigned int i=0; i < m_vecControls.size(); i++)
-    {
-      CGUIControl *pControl = m_vecControls[i];
-      if (pControl->GetID() == 11) pControl->SetID(CONTROL_THUMBS);
-      if (pControl->GetControlIdUp() == 11) pControl->SetNavigation(CONTROL_THUMBS, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-      if (pControl->GetControlIdDown() == 11) pControl->SetNavigation(pControl->GetControlIdUp(), CONTROL_THUMBS, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-      if (pControl->GetControlIdLeft() == 11) pControl->SetNavigation(pControl->GetControlIdUp(), pControl->GetControlIdDown(), CONTROL_THUMBS, pControl->GetControlIdRight());
-      if (pControl->GetControlIdRight() == 11) pControl->SetNavigation(pControl->GetControlIdUp(), pControl->GetControlIdDown(), pControl->GetControlIdLeft(), CONTROL_THUMBS);
-    }
-  }
-#endif
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
   m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
