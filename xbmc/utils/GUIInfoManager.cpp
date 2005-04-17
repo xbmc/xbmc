@@ -5,6 +5,8 @@
 #include "../Util.h"
 #include "../lib/libscrobbler/scrobbler.h"
 
+#define VERSION_STRING "1.1.0"
+
 // stuff for current song
 #include "../filesystem/CDDADirectory.h"
 #include "../musicInfoTagLoaderFactory.h"
@@ -823,17 +825,16 @@ wstring CGUIInfoManager::GetFreeSpace(int drive)
 
 CStdString CGUIInfoManager::GetVersion()
 {
-  CStdString tmp = g_localizeStrings.Get(6).c_str();
-  tmp = tmp.substr(18, tmp.size() - 14);
+  CStdString tmp;
+  tmp.Format("%s", VERSION_STRING);
   return tmp;
 }
 
 CStdString CGUIInfoManager::GetBuild()
 {
-  WCHAR wszDate[32];
   CStdString tmp;
-  mbstowcs(wszDate, __DATE__, sizeof(wszDate));
-  return wszDate;
+  tmp.Format("%s", __DATE__);
+  return tmp;
 }
 
 void CGUIInfoManager::SetDisplayAfterSeek(DWORD dwTimeOut)
