@@ -3749,7 +3749,7 @@ void CApplication::CheckAudioScrobblerStatus()
   }
 
   //  Submit the song if 50% or 240 seconds are played
-  double dTime=GetTime();
+  double dTime=g_infoManager.GetPlayTime();
   const CMusicInfoTag& tag=g_infoManager.GetCurrentSongTag();
   double dLength=(tag.GetDuration()>0) ? (tag.GetDuration()/2.0f) : (GetTotalTime()/2.0f);
   if (!tag.Loaded() || dLength==0.0f)
