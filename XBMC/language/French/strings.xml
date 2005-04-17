@@ -769,7 +769,7 @@
   <string><id>15035</id><value>a initialisé un chat vocal</value></string>
   <string><id>15036</id><value>vous a envoyé une invitation</value></string>
   <string><id>15037</id><value>XBMC ne peux pas vérifier si votre réseau est accessible</value></string>
-  <string><id>15038</id><value>You may experience difficulties joining or hosting games.</value></string>
+  <string><id>15038</id><value>Vous aurez peut être des difficultés à joindre ou héberger une partie.</value></string>
   <string><id>15039</id><value>Xbox Media Center n'arrive pas à détecter vos jeux automatiquement.</value></string>
   <string><id>15040</id><value>Inserez le jeux dans votre XBOX ou appuyez sur 'A' pour annuler</value></string>
   <string><id>15041</id><value>et lancez le jeux manuellement.</value></string>
@@ -802,5 +802,22 @@
   <string><id>15105</id><value>* Tout les Genres</value></string>
   <string><id>15106</id><value>Remember selected file on forward navigation</value></string>
 
-  <string><id>15107</id><value>Buffering...</value></string>
+  <string><id>15107</id><value>Mise en cache...</value></string>
+    <string><id>15108</id><value>Sons Navigation</value></string>
+  <string><id>15109</id><value>Ceux du skin par défaut</value></string>
+
+  <string><id>15200</id><value>AudioScrobbler</value></string>
+  <string><id>15201</id><value>Envoyer les infos des chansons à AudioScrobbler</value></string>
+  <string><id>15202</id><value>Compte AudioScrobbler</value></string>
+  <string><id>15203</id><value>Mot de passe AudioScrobbler</value></string>
+  <string><id>15204</id><value>Impossible de contacter le serveur: En attente...</value></string>
+  <string><id>15205</id><value>Vous devez mettre à jour XBMC</value></string>
+  <string><id>15206</id><value>Echec d'envoi: mauvaise autorisation.</value></string>
+  <string><id>15207</id><value>Connecté</value></string>
+  <string><id>15208</id><value>Non Connecté</value></string>
+  <string><id>15209</id><value>Transfert Interval %i</value></string>
+  <string><id>15210</id><value>Mise en cache %i Chansons</value></string>
+  <string><id>15211</id><value>Transfert...</value></string>
+  <string><id>15212</id><value>Transfert en %i secs</value></string>
+  
 </strings>
