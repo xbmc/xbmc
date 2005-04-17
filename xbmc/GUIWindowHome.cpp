@@ -21,16 +21,6 @@
 #define CONTROL_BTN_XLINK_KAI  99
 #define CONTROL_BTN_SCROLLER  300
 
-#ifndef SKIN_VERSION_1_3
-#define CONTROL_BTN_SHUTDOWN  10
-#define CONTROL_BTN_DASHBOARD  11
-#define CONTROL_BTN_REBOOT   12
-#define CONTROL_BTN_CREDITS   13
-#define CONTROL_BTN_ONLINE   14
-#define CONTROL_DATE          200
-#define CONTROL_TIME          201
-#endif
-
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(0)
 {
   m_iLastControl = -1;
