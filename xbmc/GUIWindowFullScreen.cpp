@@ -311,31 +311,6 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   //  Do not free resources of invisible controls
   //  or hdd will spin up when fast forwarding etc.
   DynamicResourceAlloc(false);
-#ifndef SKIN_VERSION_1_3
-  CGUIImage *pImage = (CGUIImage *)GetControl(IMG_PAUSE);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(5);
-  // make the ff and rw images conditionally visible
-  pImage = (CGUIImage *)GetControl(IMG_2X);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(13);
-  pImage = (CGUIImage *)GetControl(IMG_2Xr);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(7);
-  pImage = (CGUIImage *)GetControl(IMG_4X);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(14);
-  pImage = (CGUIImage *)GetControl(IMG_4Xr);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(8);
-  pImage = (CGUIImage *)GetControl(IMG_8X);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(15);
-  pImage = (CGUIImage *)GetControl(IMG_8Xr);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(9);
-  pImage = (CGUIImage *)GetControl(IMG_16X);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(16);
-  pImage = (CGUIImage *)GetControl(IMG_16Xr);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(10);
-  pImage = (CGUIImage *)GetControl(IMG_32X);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(17);
-  pImage = (CGUIImage *)GetControl(IMG_32Xr);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(11);
-#endif
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)

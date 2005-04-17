@@ -3,11 +3,7 @@
 #include "../xbmc/Util.h"
 #include "../xbmc/Settings.h"
 
-#ifdef SKIN_VERSION_1_3
 #define SKIN_MIN_VERSION 1.3
-#else
-#define SKIN_MIN_VERSION 1.22
-#endif
 
 CSkinInfo g_SkinInfo; // global
 
