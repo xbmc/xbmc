@@ -1231,6 +1231,7 @@ void CFileItemList::FilterCueItems()
             for (int j = 0; j < (int)newitems.size(); j++)
             {
               CSong song = newitems[j];
+              song.strFileName = strMediaFile;
               if (tag.Loaded())
               {
                 if (song.strAlbum.empty() && !tag.GetAlbum().empty()) song.strAlbum = tag.GetAlbum();
