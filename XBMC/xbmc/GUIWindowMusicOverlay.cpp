@@ -151,34 +151,6 @@ void CGUIWindowMusicOverlay::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
   m_bRelativeCoords = true;  // so that we can move things around easily :)
-#ifndef SKIN_VERSION_1_3
-  CGUIImage *pImage = (CGUIImage*)GetControl(CONTROL_PAUSE_LOGO);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(5);
-  // set the play button to be conditionally visible
-  pImage = (CGUIImage*)GetControl(CONTROL_PLAY_LOGO);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(4);
-  // set the rewind button to be conditionally visible
-  pImage = (CGUIImage*)GetControl(CONTROL_RW_LOGO);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(6);
-  // set the fastforward button to be conditionally visible
-  pImage = (CGUIImage*)GetControl(CONTROL_FF_LOGO);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(12);
-  // Setup our infolabels
-  CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(CONTROL_BIG_PLAYTIME);
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(205);
-  pLabel = (CGUILabelControl *)GetControl(CONTROL_PLAYTIME);
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(207);
-  pLabel = (CGUILabelControl *)GetControl(CONTROL_TITLE);
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(200);
-  pLabel = (CGUILabelControl *)GetControl(CONTROL_ALBUM);
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(201);
-  pLabel = (CGUILabelControl *)GetControl(CONTROL_ARTIST);
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(202);
-  pLabel = (CGUILabelControl *)GetControl(CONTROL_YEAR);
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(204);
-  pImage = (CGUIImage *)GetControl(CONTROL_LOGO_PIC);
-  if (pImage && !pImage->GetInfo()) pImage->SetInfo(210);
-#endif
 }
 
 void CGUIWindowMusicOverlay::ShowControl(int iControl)

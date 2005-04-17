@@ -21,25 +21,6 @@ CGUIWindowVideoOverlay::CGUIWindowVideoOverlay()
 CGUIWindowVideoOverlay::~CGUIWindowVideoOverlay()
 {}
 
-void CGUIWindowVideoOverlay::OnWindowLoaded()
-{
-  CGUIWindow::OnWindowLoaded();
-#ifndef SKIN_VERSION_1_3
-  CGUIImage *pImage = (CGUIImage *)GetControl(CONTROL_PLAY_LOGO);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(4);
-  pImage = (CGUIImage *)GetControl(CONTROL_PAUSE_LOGO);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(5);
-  pImage = (CGUIImage *)GetControl(CONTROL_RW_LOGO);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(6);
-  pImage = (CGUIImage *)GetControl(CONTROL_FF_LOGO);
-  if (pImage && !pImage->GetVisibleCondition()) pImage->SetVisibleCondition(12);
-  CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(CONTROL_BIG_PLAYTIME);
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(254);
-  pLabel = (CGUILabelControl *)GetControl(CONTROL_PLAYTIME);
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(256);
-#endif
-}
-
 void CGUIWindowVideoOverlay::Render()
 {
   if (!g_application.m_pPlayer) return ;

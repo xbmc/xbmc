@@ -321,11 +321,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     iPosY = pReference->GetYPosition();
     dwWidth = pReference->GetWidth();
     dwHeight = pReference->GetHeight();
-#ifdef SKIN_VERSION_1_3
     if (strType == "label")
-#else
-    if (strType == "label" || strType == "infolabel")
-#endif
     {
       strFont = ((CGUILabelControl*)pReference)->GetFontName();
       strLabel = ((CGUILabelControl*)pReference)->GetLabel();
@@ -342,11 +338,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwAlign = ((CGUIEditControl*)pReference)->m_dwTextAlign;
       dwDisabledColor = ((CGUIEditControl*)pReference)->GetDisabledColor();
     }
-#ifdef SKIN_VERSION_1_3
     else if (strType == "fadelabel")
-#else
-    else if (strType == "fadelabel" || strType == "infofadelabel")
-#endif
     {
       strFont = ((CGUIFadeLabelControl*)pReference)->GetFontName();
       dwTextColor = ((CGUIFadeLabelControl*)pReference)->GetTextColor();
@@ -517,11 +509,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strRight = ((CGUIProgressControl*)pReference)->GetBackTextureRightName();
       strOverlay = ((CGUIProgressControl*)pReference)->GetBackTextureOverlayName();
     }
-#ifdef SKIN_VERSION_1_3
     else if (strType == "image")
-#else
-    else if (strType == "image" || strType == "infoimage")
-#endif
     {
       strTexture = ((CGUIImage *)pReference)->GetFileName();
       dwColorKey = ((CGUIImage *)pReference)->GetColorKey();
@@ -952,11 +940,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   // Instantiate a new control using the properties gathered above
   //
 
-#ifdef SKIN_VERSION_1_3
   if (strType == "label")
-#else
-  if (strType == "label" || strType == "infolabel")
-#endif
   {
     CGUILabelControl* pControl = new CGUILabelControl(
                                    dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -985,11 +969,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     return pControl;
   }
-#ifdef SKIN_VERSION_1_3
   else if (strType == "fadelabel")
-#else
-  else if (strType == "fadelabel" || strType == "infofadelabel")
-#endif
   {
     CGUIFadeLabelControl* pControl = new CGUIFadeLabelControl(
                                        dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1193,11 +1173,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     return pControl;
   }
-#ifdef SKIN_VERSION_1_3
   else if (strType == "image")
-#else
-  else if (strType == "image" || strType == "infoimage")
-#endif
   {
     CGUIImage* pControl = new CGUIImage(
                             dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, strTexture, dwColorKey);
