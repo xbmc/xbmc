@@ -35,14 +35,6 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(0)
 {
   m_iLastControl = -1;
   m_iLastMenuOption = -1;
-
-#ifndef SKIN_VERSION_1_3
-  ON_CLICK_MESSAGE(CONTROL_BTN_SHUTDOWN, CGUIWindowHome, OnClickShutdown);
-  ON_CLICK_MESSAGE(CONTROL_BTN_DASHBOARD, CGUIWindowHome, OnClickDashboard);
-  ON_CLICK_MESSAGE(CONTROL_BTN_REBOOT, CGUIWindowHome, OnClickReboot);
-  ON_CLICK_MESSAGE(CONTROL_BTN_CREDITS, CGUIWindowHome, OnClickCredits);
-  ON_CLICK_MESSAGE(CONTROL_BTN_ONLINE, CGUIWindowHome, OnClickOnlineGaming);
-#endif
 }
 
 CGUIWindowHome::~CGUIWindowHome(void)
@@ -391,15 +383,4 @@ void CGUIWindowHome::OnPopupContextMenu()
 bool CGUIWindowHome::OnPollXLinkClient(CGUIConditionalButtonControl* pButton)
 {
   return CKaiClient::GetInstance()->IsEngineConnected();
-}
-
-void CGUIWindowHome::OnWindowLoaded()
-{
-  CGUIWindow::OnWindowLoaded();
-#ifndef SKIN_VERSION_1_3
-  CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(CONTROL_DATE);
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(111);
-  pLabel = (CGUILabelControl *)GetControl(CONTROL_TIME);
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(110);
-#endif
 }

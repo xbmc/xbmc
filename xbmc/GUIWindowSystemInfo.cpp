@@ -6,10 +6,6 @@
 #include "cores/DllLoader/dll.h"
 #include "Utils/GUIInfoManager.h"
 
-#ifndef SKIN_VERSION_1_3
-#include "GUILabelControl.h"
-#endif
-
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
     : CGUIWindow(0)
 {}
@@ -227,27 +223,4 @@ void CGUIWindowSystemInfo::GetValues()
              stat.dwTotalPhys / (1024*1024) );
     SET_CONTROL_LABEL(15, wszText);
   }
-}
-
-void CGUIWindowSystemInfo::OnWindowLoaded()
-{
-  CGUIWindow::OnWindowLoaded();
-#ifndef SKIN_VERSION_1_3
-  CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(2); // cpu
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(112);
-  pLabel = (CGUILabelControl *)GetControl(3); // gpu
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(113);
-  pLabel = (CGUILabelControl *)GetControl(16); // fan
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(114);
-  pLabel = (CGUILabelControl *)GetControl(8);  // ip
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(190);
-  pLabel = (CGUILabelControl *)GetControl(10);  // free c
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(115);
-  pLabel = (CGUILabelControl *)GetControl(12);  // free e
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(117);
-  pLabel = (CGUILabelControl *)GetControl(13);  // free f
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(118);
-  pLabel = (CGUILabelControl *)GetControl(17);  // free g
-  if (pLabel && !pLabel->GetInfo()) pLabel->SetInfo(119);
-#endif
 }
