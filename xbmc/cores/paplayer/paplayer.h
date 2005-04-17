@@ -4,6 +4,7 @@
 #include "../mplayer/ASyncDirectSound.h"
 #include "../../utils/thread.h"
 #include "../../cores/DllLoader/dll.h"
+#include "../../MusicInfoTagLoaderMP3.h"
 
 #include "dec_if.h" // Found in nsv_codec_sdk.zip @ http://www.nullsoft.com/nsv/nsv_codec_sdk.zip
                     // SDK has a readme file that explains everything. Here is the text about decoding.
@@ -108,4 +109,7 @@ private:
   __int64 m_lastByteOffset;
   int     m_iLastSpeed;
   bool    m_bGuessByterate;
+
+  bool    m_bHasVBRInfo;
+  CVBRMP3SeekHelper m_vbrInfo;
 };
