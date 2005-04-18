@@ -51,7 +51,7 @@ void CAc97DirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bAC3DTS, bool bResample)
+CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bAC3DTS, bool bResample, int iNumBuffers)
 {
   g_audioContext.RemoveActiveDevice();
 
@@ -62,7 +62,6 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, uns
   if (bResample && g_guiSettings.GetBool("AudioOutput.HighQualityResampling") && uiSamplesPerSec != 48000)
     m_bResampleAudio = true;
 
-  m_dwPacketSize = 1152 * (uiBitsPerSample / 8) * iChannels;
   m_bPause = false;
   m_bMute = false;
   m_bIsAllocated = false;
@@ -73,7 +72,10 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, uns
   m_wfx.cbSize = sizeof(m_wfx);
   XAudioCreatePcmFormat( iChannels, 48000, 16, &m_wfx ); //passthrough is always 48000KHz/16bit
 
-  m_dwNumPackets = 8 * iChannels;
+  if(iNumBuffers)
+    m_dwNumPackets = iNumBuffers;
+  else
+    m_dwNumPackets = 8 * iChannels;
 
   HRESULT hr;
 

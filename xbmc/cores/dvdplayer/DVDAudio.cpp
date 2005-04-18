@@ -2,6 +2,7 @@
 #include "../../stdafx.h"
 #include "dvdaudio.h"
 #include "..\mplayer\ASyncDirectSound.h"
+#include "..\mplayer\ac97directsound.h"
 #include "..\..\util.h"
 #include "DVDClock.h"
 
@@ -36,15 +37,25 @@ void CDVDAudio::UnRegisterAudioCallback()
   m_pCallback = NULL;
 }
 
-bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample)
+bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPasstrough)
 {
-  m_iPackets = 32; //64;// better sync with smaller buffers?
 
   // if passthrough isset do something else
   CSingleLock lock (m_critSection);
 
   // we don't allow resampling now, there is a bug in sscc that causes it to return the wrong chunklen.
-  m_pAudioDecoder = new CASyncDirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, false, m_iPackets); // true = resample, 128 buffers
+  if( bPasstrough )
+  {
+    m_iPackets = 16;
+    m_pAudioDecoder = new CAc97DirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, true, false, m_iPackets); // true = resample, 128 buffers
+  }
+  else
+  {
+    m_iPackets = 32; //64;// better sync with smaller buffers?
+    m_pAudioDecoder = new CASyncDirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, false, m_iPackets); // true = resample, 128 buffers
+  }
+
+
   if (!m_pAudioDecoder) return false;
 
   m_iChannels = iChannels;

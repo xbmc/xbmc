@@ -135,6 +135,7 @@ public:
   CDemuxStreamAudio* m_pCurrentDemuxStreamAudio;
   int m_iCurrentVideoStream;
   int m_iCurrentAudioStream;
+  int m_iDefaultAudioStreamNumber; //The x:th audio stream will be opened by default
 
   CDVDPlayerAudio m_dvdPlayerAudio;
   CDVDPlayerVideo m_dvdPlayerVideo;
