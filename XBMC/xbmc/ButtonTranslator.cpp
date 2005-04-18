@@ -164,22 +164,22 @@ void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action
     action.fAmount1 = key.GetRightThumbX();
     action.fAmount2 = key.GetRightThumbY();
   }
-  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_UP || key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
-  {
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_UP)
     action.fAmount1 = key.GetLeftThumbY();
-  }
-  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_LEFT || key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
-  {
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
+    action.fAmount1 = -key.GetLeftThumbY();
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_LEFT)
+    action.fAmount1 = -key.GetLeftThumbX();
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
     action.fAmount1 = key.GetLeftThumbX();
-  }
-  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_UP || key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
-  {
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_UP)
     action.fAmount1 = key.GetRightThumbY();
-  }
-  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT || key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
-  {
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
+    action.fAmount1 = -key.GetRightThumbY();
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT)
+    action.fAmount1 = -key.GetRightThumbX();
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
     action.fAmount1 = key.GetRightThumbX();
-  }
 }
 
 WORD CButtonTranslator::GetActionCode(WORD wWindow, const CKey &key, CStdString &strAction)

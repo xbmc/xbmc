@@ -134,7 +134,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   CLog::Log(LOGINFO, "PAP Player: Playing %s", file.m_strPath.c_str());
 
 
-  int TrackDuration = 0; //file.m_musicInfoTag.GetDuration();
+  float TrackDuration = 0.0f; //file.m_musicInfoTag.GetDuration();
   __int64 length = m_filePAP.GetLength();
 
   if ( TrackDuration && !iStartTime) 
@@ -149,9 +149,9 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     mp3info.Load(file.m_strPath.c_str(), tag);
     m_bHasVBRInfo = mp3info.GetSeekInfo(m_vbrInfo);
     if (m_bHasVBRInfo)
-      TrackDuration = (int)m_vbrInfo.GetDuration();
+      TrackDuration = m_vbrInfo.GetDuration();
     else
-      TrackDuration = tag.GetDuration();
+      TrackDuration = (float)tag.GetDuration();
     if ( TrackDuration ) m_AverageInputBytesPerSecond = (DWORD)(length / TrackDuration);
     else m_bGuessByterate = true;  // If the user didn't load id3 tags, they also didnt load the Duration
     // If we dont have the TrackDuration will have to guess later.
@@ -425,7 +425,7 @@ bool PAPlayer::ProcessPAP()
         if (m_bHasVBRInfo)
           iOffset = (__int64)m_vbrInfo.GetByteOffset(0.001f * m_SeekTime);
         m_filePAP.Seek(iOffset, SEEK_SET);
-        m_startOffset = m_SeekTime / 1000;
+        m_startOffset = m_SeekTime;
         m_dwBytesSentOut = 0;
         m_dwInputBufferSize = 0;
         m_pAudioDevice->Stop();
@@ -444,14 +444,14 @@ bool PAPlayer::ProcessPAP()
           SetVolume(g_stSettings.m_nVolumeLevel);
         }
       }
-      int inewSpeed = m_iSpeed; if ( inewSpeed < 0 ) inewSpeed--;
+      int inewSpeed = 8;
       int snippet; 
       if ( inewSpeed != 0 )
         snippet = (m_Channels*(m_SampleSize/8)*m_SampleRate)/abs(inewSpeed);  
       if (m_iSpeed != 1 && !m_cantSeek && m_dwBytesSentOut >= snippet && snippet ) 
       {
         // Calculate offset to seek if we do FF/RW
-        int iOffset = (m_iSpeed / 2) * m_AverageInputBytesPerSecond;
+        int iOffset = (int)(m_AverageInputBytesPerSecond*((m_iSpeed - 1.0f) / inewSpeed));
 
         __int64  timeconstant = m_Channels*(m_SampleSize/8)*m_SampleRate;
         float timeout = (float) m_dwBytesSentOut / (float)timeconstant  ;
@@ -472,6 +472,8 @@ bool PAPlayer::ProcessPAP()
           m_cantSeek = 1;  
           m_lastByteOffset = m_filePAP.GetPosition();
           m_startOffset = (__int64)(((float)m_lastByteOffset / (float) m_AverageInputBytesPerSecond) * 1000.00);
+          if (m_bHasVBRInfo)
+            m_startOffset = m_vbrInfo.GetTimeOffset(m_lastByteOffset);
           m_dwBytesSentOut = 0;
           SetVolume(g_stSettings.m_nVolumeLevel - VOLUME_FFWD_MUTE); // override xbmc mute 
          } // Is our next position smaller then the start...
