@@ -18,7 +18,7 @@ public:
   void SetVolume(int iVolume);
   void Pause();
   void Resume();
-  bool Create(int iChannels, int iBitrate, int iBitsPerSample);
+  bool Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPasstrough);
   void Destroy();
   DWORD AddPackets(unsigned char* data, DWORD len);
   void DoWork();
