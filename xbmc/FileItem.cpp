@@ -1263,7 +1263,7 @@ void CFileItemList::FilterCueItems()
     for (int j = 0; j < (int)m_items.size(); j++)
     {
       CFileItem *pItem = m_items[j];
-      if (pItem->m_strPath == itemstodelete[i])
+      if (stricmp(pItem->m_strPath.c_str(), itemstodelete[i].c_str()) == 0)
       { // delete this item
         delete pItem;
         m_items.erase(m_items.begin() + j);
