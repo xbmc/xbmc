@@ -1472,15 +1472,39 @@ void CApplication::Render()
     m_pPlayer->DoAudioWork();
   }
 
-  // check that we haven't passed the end of the file (for queue sheets)
+  // check that we haven't passed the end of the file (for cue sheets)
   if ((m_pPlayer != NULL) && m_pPlayer->IsPlaying())
   {
     int timeinsecs = (int)(m_pPlayer->GetTime() / 1000);
-    if (m_itemCurrentFile.m_lEndOffset && m_itemCurrentFile.m_lEndOffset / 75 < timeinsecs)
+    if ((m_itemCurrentFile.m_lEndOffset && m_itemCurrentFile.m_lEndOffset / 75 < timeinsecs) /*||
+        (m_itemCurrentFile.m_lStartOffset && m_itemCurrentFile.m_lStartOffset / 75 > timeinsecs)*/)
     { // time to stop the file...
       OnPlayBackEnded();
     }
   }
+
+  // check if we haven't rewound past the start of the file (for cue sheets)
+
+  if (IsPlaying())
+  {
+    int iSpeed = g_application.GetPlaySpeed();
+    if (iSpeed < 1)
+    {
+      iSpeed *= -1;
+      int iPower = 0;
+      while (iSpeed != 1)
+      {
+        iSpeed >>= 1;
+        iPower++;
+      }
+      if (g_infoManager.GetPlayTime() < iPower)
+      {
+        g_application.SetPlaySpeed(1);
+        g_application.m_pPlayer->SeekTime((m_itemCurrentFile.m_lStartOffset * 1000) / 75);
+      }
+    }
+  }
+
   // dont show GUI when playing full screen video
   if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
   {
@@ -1817,6 +1841,8 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
         if (iSpeed != 1 && action.wID == ACTION_ANALOG_REWIND)
           iSpeed = -iSpeed;
         g_application.SetPlaySpeed(iSpeed);
+        if (iSpeed == 1)
+          CLog::DebugLog("Resetting playspeed");
       }
     }
     // allow play to unpause
@@ -2213,88 +2239,44 @@ void CApplication::FrameMove()
   }
   // direction specific keys (for defining different actions for each direction)
   // left thumb stick
-  bIsDown = (pGamepad->fY1 > 0 && pGamepad->fX1 < pGamepad->fY1 && -pGamepad->fX1 < pGamepad->fY1);
-  if (lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_UP || bIsDown)
-  {
-    bGotKey = true;
-    lastAnalogKey = bIsDown ? KEY_BUTTON_LEFT_THUMB_STICK_UP : 0;
-    CKey key(KEY_BUTTON_LEFT_THUMB_STICK_UP, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+  // find new direction.  Note, only handles one direction at a time at the moment.
+  int newAnalogKey = 0;
+  if (pGamepad->fY1 > 0 && pGamepad->fX1 < pGamepad->fY1 && -pGamepad->fX1 < pGamepad->fY1)
+    newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
+  else if (pGamepad->fY1 < 0 && pGamepad->fX1 < -pGamepad->fY1 && -pGamepad->fX1 < -pGamepad->fY1)
+    newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
+  else if (pGamepad->fX1 > 0 && pGamepad->fY1 < pGamepad->fX1 && -pGamepad->fY1 < pGamepad->fX1)
+    newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
+  else if (pGamepad->fX1 < 0 && pGamepad->fY1 < -pGamepad->fX1 && -pGamepad->fY1 < -pGamepad->fX1)
+    newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
+  else if (pGamepad->fY2 > 0 && pGamepad->fX2 < pGamepad->fY2 && -pGamepad->fX2 < pGamepad->fY2)
+    newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
+  else if (pGamepad->fY2 < 0 && pGamepad->fX2 < -pGamepad->fY2 && -pGamepad->fX2 < -pGamepad->fY2)
+    newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
+  else if (pGamepad->fX2 > 0 && pGamepad->fY2 < pGamepad->fX2 && -pGamepad->fY2 < pGamepad->fX2)
+    newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+  else if (pGamepad->fX2 < 0 && pGamepad->fY2 < -pGamepad->fX2 && -pGamepad->fY2 < -pGamepad->fX2)
+    newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
+  else if (bLeftTrigger)
+    newAnalogKey = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
+  else if (bRightTrigger)
+    newAnalogKey = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
+
+  if (lastAnalogKey && newAnalogKey != lastAnalogKey)
+  { // was held down last time - and we have a new key now
+    // post old key reset message...
+    CKey key(lastAnalogKey, 0, 0, 0, 0, 0, 0);
     OnKey(key);
   }
-  bIsDown = (pGamepad->fY1 < 0 && pGamepad->fX1 < -pGamepad->fY1 && -pGamepad->fX1 < -pGamepad->fY1);
-  if (lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_DOWN || bIsDown)
+  // ok, now we can update our last key and post it's message
+  lastAnalogKey = newAnalogKey;
+  if (newAnalogKey)
   {
-    bGotKey = true;
-    lastAnalogKey = bIsDown ? KEY_BUTTON_LEFT_THUMB_STICK_DOWN : 0;
-    CKey key(KEY_BUTTON_LEFT_THUMB_STICK_DOWN, bLeftTrigger, bRightTrigger, pGamepad->fX1, -pGamepad->fY1, pGamepad->fX2, -pGamepad->fY2);
-    OnKey(key);
-  }
-  bIsDown = (pGamepad->fX1 > 0 && pGamepad->fY1 < pGamepad->fX1 && -pGamepad->fY1 < pGamepad->fX1);
-  if (lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT || bIsDown)
-  {
-    bGotKey = true;
-    lastAnalogKey = bIsDown ? KEY_BUTTON_LEFT_THUMB_STICK_RIGHT : 0;
-    CKey key(KEY_BUTTON_LEFT_THUMB_STICK_RIGHT, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-  }
-  bIsDown = (pGamepad->fX1 < 0 && pGamepad->fY1 < -pGamepad->fX1 && -pGamepad->fY1 < -pGamepad->fX1);
-  if (lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_LEFT || bIsDown)
-  {
-    bGotKey = true;
-    lastAnalogKey = bIsDown ? KEY_BUTTON_LEFT_THUMB_STICK_LEFT : 0;
-    CKey key(KEY_BUTTON_LEFT_THUMB_STICK_LEFT, bLeftTrigger, bRightTrigger, -pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-  }
-  // right thumb stick
-  bIsDown = (pGamepad->fY2 > 0 && pGamepad->fX2 < pGamepad->fY2 && -pGamepad->fX2 < pGamepad->fY2);
-  if (lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_UP || bIsDown)
-  {
-    bGotKey = true;
-    lastAnalogKey = bIsDown ? KEY_BUTTON_RIGHT_THUMB_STICK_UP : 0;
-    CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_UP, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-  }
-  bIsDown = (pGamepad->fY2 < 0 && pGamepad->fX2 < -pGamepad->fY2 && -pGamepad->fX2 < -pGamepad->fY2);
-  if (lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN || bIsDown)
-  {
-    bGotKey = true;
-    lastAnalogKey = bIsDown ? KEY_BUTTON_RIGHT_THUMB_STICK_DOWN : 0;
-    CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_DOWN, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, -pGamepad->fY2);
-    OnKey(key);
-  }
-  bIsDown = (pGamepad->fX2 > 0 && pGamepad->fY2 < pGamepad->fX2 && -pGamepad->fY2 < pGamepad->fX2);
-  if (lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT || bIsDown)
-  {
-    bGotKey = true;
-    lastAnalogKey = bIsDown ? KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT : 0;
-    CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-  }
-  bIsDown = (pGamepad->fX2 < 0 && pGamepad->fY2 < -pGamepad->fX2 && -pGamepad->fY2 < -pGamepad->fX2);
-  if (lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT || bIsDown)
-  {
-    bGotKey = true;
-    lastAnalogKey = bIsDown ? KEY_BUTTON_RIGHT_THUMB_STICK_LEFT : 0;
-    CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_LEFT, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, -pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-  }
-  // analog trigger detection
-  // with code to make sure it resets on release
-  if (bLeftTrigger || lastAnalogKey == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
-  {
-    lastAnalogKey = bLeftTrigger ? KEY_BUTTON_LEFT_ANALOG_TRIGGER : 0;
-    bGotKey = true;
-    CKey key(KEY_BUTTON_LEFT_ANALOG_TRIGGER, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-  }
-  if (bRightTrigger || lastAnalogKey == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
-  {
-    lastAnalogKey = bRightTrigger ? KEY_BUTTON_RIGHT_ANALOG_TRIGGER : 0;
-    bGotKey = true;
-    CKey key(KEY_BUTTON_RIGHT_ANALOG_TRIGGER, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(newAnalogKey, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
     OnKey(key);
   }
 
+  // Now the digital buttons...
   if ( wDir & DC_LEFTTRIGGER)
   {
     bGotKey = true;
@@ -2697,6 +2679,21 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       return true;
     }
   }
+  // check for the case where we rewind back past the start of a .cue sheet item
+  if (m_pPlayer && (m_pPlayer->GetTime() < m_itemCurrentFile.m_lStartOffset*(__int64)1000 / 75))
+  {
+    if (item.m_lEndOffset > 0 && item.m_lEndOffset == m_itemCurrentFile.m_lStartOffset &&
+        item.m_strPath == m_itemCurrentFile.m_strPath && m_pPlayer)
+    { // this is the next cue sheet item, so we don't have to restart the player
+      // just update our display etc.
+      m_itemCurrentFile = item;
+      g_infoManager.SetCurrentItem(m_itemCurrentFile);
+      m_guiMusicOverlay.Update();
+      m_guiVideoOverlay.Update();
+      m_dwIdleTime = timeGetTime();
+      return true;
+    }
+  }
   //We have to stop parsing a cdg before mplayer is deallocated
   m_CdgParser.Stop();
   // We should restart the player, unless the previous and next tracks are using the cdda player
@@ -2777,7 +2774,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 void CApplication::OnPlayBackEnded()
 {
   //playback ended
-  m_iPlaySpeed = 1;
+  SetPlaySpeed(1);
 
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
@@ -3323,9 +3320,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
           // Normal playback ended
           if (m_pPlayer)
           {
+            bool bPlayPrev = m_itemCurrentFile.m_lStartOffset > 0 && m_itemCurrentFile.m_lStartOffset*1000 > m_pPlayer->GetTime() * 1000;
             CPlayList& playlist = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
 
-            if (g_playlistPlayer.GetEntriesNotFound() < playlist.size())
+            if (bPlayPrev && g_playlistPlayer.GetCurrentSong() > 1)
+            {
+              g_playlistPlayer.PlayPrevious();
+            }
+            else if (g_playlistPlayer.GetEntriesNotFound() < playlist.size())
             {
               g_playlistPlayer.PlayNext(true);
             }

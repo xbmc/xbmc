@@ -101,8 +101,8 @@ struct SSortMusicSongs
         break;
 
       case 8:  // Sort by FileName
-        strcpy(szfilename1, rpStart.m_strPath);
-        strcpy(szfilename2, rpEnd.m_strPath);
+        sprintf(szfilename1, "%s%07i", rpStart.m_strPath.c_str(), rpStart.m_lStartOffset);
+        sprintf(szfilename2, "%s%07i", rpEnd.m_strPath.c_str(), rpEnd.m_lStartOffset);
         break;
 
       case 9:  // Sort by share type
