@@ -853,6 +853,7 @@ void CDVDPlayer::SetAudioStream(int iStream)
     if (pStream->type == STREAM_AUDIO) audio_index++;
     if (iStream == audio_index)
     {
+      m_iDefaultAudioStreamNumber=iStream;
       LockStreams();
       CloseAudioStream(false);
       if (!OpenAudioStream(stream_index))
@@ -930,17 +931,27 @@ void CDVDPlayer::RenderSubtitles()
  */
 bool CDVDPlayer::OpenDefaultAudioStream()
 {
+  int iCount=-1, iFirst=-1;;
   for (int i = 0; i < m_pDemuxer->GetNrOfStreams(); i++)
   {
     CDemuxStream* pStream = m_pDemuxer->GetStream(i);
     if (pStream->type == STREAM_AUDIO)
     {
-      CDemuxStreamAudio* pStreamAudio = (CDemuxStreamAudio*)pStream;
+      iCount++;
+      if(iFirst<0) iFirst = i;
+      if(iCount == m_iDefaultAudioStreamNumber)
       {
-        if (OpenAudioStream(i)) return true;
+        CDemuxStreamAudio* pStreamAudio = (CDemuxStreamAudio*)pStream;
+        {
+          if (OpenAudioStream(i)) return true;
+        }
       }
     }
+
   }
+
+  //Requested stream not found just open first
+  if (OpenAudioStream(iFirst)) return true;
   return false;
 }
 
@@ -1115,17 +1126,33 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
   case DVDNAV_AUDIO_STREAM_CHANGE:
     {
       CLog::Log(LOGDEBUG, "DVDNAV_AUDIO_STREAM_CHANGE");
-      /*
-      // update audio stream always in menu, or when no audio stream is selected in the movie
-      if (m_dvd.iSelectedSPUStream == -1 || pStream->IsInMenu())
-      {
-        int iStream = pStream->GetActiveAudioStream();
-        if (iStream >= 0) m_dvd.iSelectedSPUStream = 0x20 + iStream; // ???
-        else m_dvd.iSelectedSPUStream = -1; // ???
-      }
-
+      
+      //This should be the correct way i think, however we don't have any streams right now
+      //since the demuxer hasn't started so it doesn't change. not sure how to do this.
       dvdnav_audio_stream_change_event_t* event = (dvdnav_audio_stream_change_event_t*)pData;
-      m_dvd.iSelectedAudioStream = 0; // ???*/
+      
+      //Tell system what audiostream should be opened by default
+      m_iDefaultAudioStreamNumber = event->physical;
+
+      //If we have demuxer open already, make it change
+      int audio_index = -1;
+      for (int stream_index = 0; stream_index < m_pDemuxer->GetNrOfStreams(); stream_index++)
+      {
+        CDemuxStream* pStream = m_pDemuxer->GetStream(stream_index);
+        if (pStream->type == STREAM_AUDIO) audio_index++;
+        if (audio_index == event->physical)
+        {
+          if( stream_index != m_iCurrentAudioStream )
+          {
+            LockStreams();
+            CloseAudioStream(false);
+            if (!OpenAudioStream(stream_index))
+              OpenDefaultAudioStream();
+            UnlockStreams();
+          }
+          break;
+        }
+      }
     }
     break;
   case DVDNAV_HIGHLIGHT:

@@ -39,7 +39,7 @@ extern void UnRegisterAudioCallback();
 class CAc97DirectSound : public IDirectSoundRenderer
 {
 public:
-  CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bAC3DTS = true, bool bResample = false);
+  CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bAC3DTS = true, bool bResample = false, int iNumBuffers = 0);
   virtual ~CAc97DirectSound();
 
   virtual void UnRegisterAudioCallback();

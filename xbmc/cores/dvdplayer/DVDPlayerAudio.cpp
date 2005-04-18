@@ -3,6 +3,8 @@
 #include "DVDPlayerAudio.h"
 #include "DVDCodecs\DVDAudioCodec.h"
 #include "DVDCodecs\DVDFactoryCodec.h"
+#include "DVDCodecs\dvdaudiocodecpassthrough.h"
+
 #include "..\..\util.h"
 #include "DVDClock.h"
 
@@ -49,47 +51,34 @@ bool CDVDPlayerAudio::OpenStream(CodecID codecID, int iChannels, int iSampleRate
   int iWantedChannels = iChannels;
   if (iWantedChannels == 5) iWantedChannels = 6;
 
-  switch (codecID)
-  {
-  case CODEC_ID_AC3:
-    {
-      iWantedChannels = 2;
-      break;
-    }
-    //case CODEC_ID_AAC:
-  case CODEC_ID_MP2:
-  case CODEC_ID_PCM_S16BE:
-  case CODEC_ID_PCM_S16LE:
-  case CODEC_ID_MP3:
-    {
-      break;
-    }
-  case CODEC_ID_DTS:
-    {
-      // dts stream
-      // asyncaudiostream is unable to open dts streams, use ac97 for this
-      CLog::Log(LOGWARNING, "CODEC_ID_DTS is currently not supported");
-      return false;
-    }
-  default:
-    {
-      CLog::Log(LOGWARNING, "Unsupported audio codec");
-      return false;
-    }
-  }
+  //Let codec downmix for us int the case of ac3
+  if( codecID == CODEC_ID_AC3 )
+    iWantedChannels = 2;
 
-  CLog::Log(LOGNOTICE, "Creating audio codec with codec id: %i", codecID);
-  m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(codecID);
 
-  CLog::Log(LOGNOTICE, "Opening audio codec id: %i, channels: %i, sample rate: %i, bits: %i",
-            codecID, iWantedChannels, iSampleRate, 16);
-  if (!m_pAudioCodec->Open(codecID, iWantedChannels, iSampleRate, 16))
+  CLog::Log(LOGNOTICE, "Opening passtrough codec for: %i", codecID);
+  m_pAudioCodec = new CDVDAudioCodecPassthrough();
+  if (!m_pAudioCodec->Open(codecID, iChannels, iSampleRate, 16))
   {
-    CLog::Log(LOGERROR, "Error opening audio codec");
+    CLog::Log(LOGNOTICE, "Failed to open passtrough codec for: %i", codecID);
     m_pAudioCodec->Dispose();
     delete m_pAudioCodec;
     m_pAudioCodec = NULL;
-    return false;
+
+    //Okey now try a normal codec
+    CLog::Log(LOGNOTICE, "Creating audio codec with codec id: %i", codecID);
+    m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(codecID);
+
+    CLog::Log(LOGNOTICE, "Opening audio codec id: %i, channels: %i, sample rate: %i, bits: %i",
+              codecID, iWantedChannels, iSampleRate, 16);
+    if (!m_pAudioCodec->Open(codecID, iWantedChannels, iSampleRate, 16))
+    {
+      CLog::Log(LOGERROR, "Error opening audio codec");
+      m_pAudioCodec->Dispose();
+      delete m_pAudioCodec;
+      m_pAudioCodec = NULL;
+      return false;
+    }
   }
 
   m_codec = codecID;
@@ -294,6 +283,7 @@ bool CDVDPlayerAudio::InitializeOutputDevice()
   int iChannels = m_pAudioCodec->GetChannels();
   int iSampleRate = m_pAudioCodec->GetSampleRate();
   int iBitsPerSample = m_pAudioCodec->GetBitsPerSample();
+  bool bPasstrough = m_pAudioCodec->NeedPasstrough();
 
   if (iChannels == 0 || iSampleRate == 0 || iBitsPerSample == 0)
   {
@@ -302,7 +292,7 @@ bool CDVDPlayerAudio::InitializeOutputDevice()
   }
 
   CLog::Log(LOGNOTICE, "Creating audio device with codec id: %i, channels: %i, sample rate: %i", m_codec, iChannels, iSampleRate);
-  if (m_dvdAudio.Create(iChannels, iSampleRate, iBitsPerSample)) // always 16 bit with ffmpeg ?
+  if (m_dvdAudio.Create(iChannels, iSampleRate, iBitsPerSample, bPasstrough)) // always 16 bit with ffmpeg ?
   {
     return true;
   }
