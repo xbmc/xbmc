@@ -69,8 +69,9 @@ CGUIVisualisationControl::~CGUIVisualisationControl(void)
 
 void CGUIVisualisationControl::FreeVisualisation()
 {
-  m_bInitialized = false;
   CSingleLock lock (m_critSection);
+  CLog::Log(LOGERROR, "FreeVisualisation() started");
+  m_bInitialized = false;
   if (g_application.m_pPlayer)
     g_application.m_pPlayer->UnRegisterAudioCallback();
   if (m_pVisualisation)
@@ -85,10 +86,12 @@ void CGUIVisualisationControl::FreeVisualisation()
   }
   m_pVisualisation = NULL;
   ClearBuffers();
+  CLog::Log(LOGERROR, "FreeVisualisation() done");
 }
 
 void CGUIVisualisationControl::LoadVisualisation()
 {
+  CLog::Log(LOGERROR, "LoadVisualisation() started");
   CSingleLock lock (m_critSection);
   if (m_pVisualisation)
   {
@@ -118,6 +121,7 @@ void CGUIVisualisationControl::LoadVisualisation()
     // Create new audio buffers
     CreateBuffers();
   }
+  CLog::Log(LOGERROR, "LoadVisualisation() done");
 }
 
 void CGUIVisualisationControl::Render()
@@ -170,6 +174,7 @@ void CGUIVisualisationControl::OnInitialize(int iChannels, int iSamplesPerSec, i
   CSingleLock lock (m_critSection);
   if (!m_pVisualisation)
     return ;
+  CLog::Log(LOGERROR, "OnInitialize() started");
 
   m_bInitialized = true;
   m_iChannels = iChannels;
@@ -181,16 +186,15 @@ void CGUIVisualisationControl::OnInitialize(int iChannels, int iSamplesPerSec, i
   OutputDebugString("Visualisation::Start()\n");
   m_pVisualisation->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile);
   m_bInitialized = true;
-
+  CLog::Log(LOGERROR, "OnInitialize() done");
 }
 
 void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int iAudioDataLength)
 {
+  CSingleLock lock (m_critSection);
   if (!m_pVisualisation)
     return ;
   if (!m_bInitialized) return ;
-
-  CSingleLock lock (m_critSection);
 
   // Save our audio data in the buffers
   auto_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(2*AUDIO_BUFFER_SIZE) );
@@ -229,6 +233,7 @@ void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int 
     }
     catch (...)
     {
+      CLog::Log(LOGERROR, "Exception in Visualisation::AudioData()");
     }
   }
   else
@@ -239,9 +244,9 @@ void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int 
     }
     catch (...)
     {
+      CLog::Log(LOGERROR, "Exception in Visualisation::AudioData()");
     }
   }
-
   return ;
 }
 

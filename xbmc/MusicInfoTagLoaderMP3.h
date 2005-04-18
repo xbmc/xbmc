@@ -27,7 +27,7 @@ public:
       delete m_SeekOffset;
   };
 
-  int GetByteOffset(float fTime)
+  __int64 GetByteOffset(float fTime)
   {
     if (fTime > m_fTotalDuration)
       fTime = m_fTotalDuration;
@@ -36,8 +36,25 @@ public:
     if (iOffset > m_iSeekOffsets-1) iOffset = m_iSeekOffsets - 1;
     float fa = m_SeekOffset[iOffset];
     float fb = m_SeekOffset[iOffset + 1];
-    return (int)(fa + (fb - fa) * (fOffset - iOffset));
-  }
+    return (__int64)(fa + (fb - fa) * (fOffset - iOffset));
+  };
+  
+  __int64 GetTimeOffset(__int64 iBytes)
+  {
+    float fBytes = (float)iBytes;
+    if (fBytes > m_SeekOffset[m_iSeekOffsets])
+      fBytes = m_SeekOffset[m_iSeekOffsets];
+    if (fBytes < m_SeekOffset[0])
+      fBytes = m_SeekOffset[0];
+    // run through our byte offsets searching for our times...
+    int iOffset = 1;
+    while (iOffset < m_iSeekOffsets && fBytes > m_SeekOffset[iOffset])
+      iOffset++;
+    // iOffset will be the last of the two offsets and will be bigger than 1.
+    float fTimeOffset = (float)iOffset - 1 + (fBytes - m_SeekOffset[iOffset - 1])/(m_SeekOffset[iOffset] - m_SeekOffset[iOffset - 1]);
+    float fTime = fTimeOffset / m_iSeekOffsets * m_fTotalDuration;
+    return (__int64)(fTime * 1000.0f);
+  };
 
   void SetDuration(float fDuration) { m_fTotalDuration = fDuration; };
   float GetDuration() const { return m_fTotalDuration; };
