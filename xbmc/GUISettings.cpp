@@ -16,6 +16,8 @@
 #define MASK_KB    14049
 #define MASK_DB    14050
 
+#define TEXT_OFF 351
+
 class CGUISettings g_guiSettings;
 
 struct sortsettings
@@ -65,19 +67,21 @@ CSettingInt::CSettingInt(int iOrder, const char *strSetting, int iLabel, int iDa
   m_iMax = iMax;
   m_iStep = iStep;
   m_iFormat = -1;
+  m_iLabelMin = -1;
   if (strFormat)
     m_strFormat = strFormat;
   else
     m_strFormat = "%i";
 }
 
-CSettingInt::CSettingInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat)
+CSettingInt::CSettingInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat, int iLabelMin)
     : CSetting(iOrder, strSetting, iLabel, iControlType)
 {
   m_iData = iData;
   m_iMin = iMin;
   m_iMax = iMax;
   m_iStep = iStep;
+  m_iLabelMin = iLabelMin;
   if (iFormat > -1)
     m_iFormat = iFormat;
   else
@@ -186,7 +190,7 @@ CGUISettings::CGUISettings(void)
   AddBool(4, "MyMusic.Repeat", 488, false);
   AddBool(5, "MyMusic.UseCDDB", 227, true);
   AddBool(6, "MyMusic.UseTags", 258, true);
-  AddInt(7, "MyMusic.OSDTimeout", 13314, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddInt(7, "MyMusic.OSDTimeout", 13314, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddCategory(3, "MusicLists", 14018);
   AddString(1, "MusicLists.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT);
   AddBool(2, "MusicLists.HideParentDirItems", 13306, true);
@@ -291,11 +295,11 @@ CGUISettings::CGUISettings(void)
   // System settings
   AddGroup(4, 13000);
   AddCategory(4, "System", 13000);
-  AddInt(1, "System.HDSpinDownTime", 229, 0, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS); // Minutes
+  AddInt(1, "System.HDSpinDownTime", 229, 0, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF); // Minutes
   AddInt(2, "System.RemotePlayHDSpinDown", 13001, 0, 0, 1, 3, SPIN_CONTROL_TEXT); // off, music, video, both
   AddInt(3, "System.RemotePlayHDSpinDownMinDuration", 13004, 20, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_MINS); // Minutes
   AddInt(4, "System.RemotePlayHDSpinDownDelay", 13003, 20, 5, 5, 300, SPIN_CONTROL_INT_PLUS, MASK_SECS); // seconds
-  AddInt(5, "System.ShutDownTime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(5, "System.ShutDownTime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
   AddBool(6, "System.ShutDownWhilePlaying", 14043, false);
   AddBool(7, "System.FanSpeedControl", 13302, false);
   AddInt(8, "System.FanSpeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 1, 50, SPIN_CONTROL_TEXT);
@@ -348,7 +352,7 @@ CGUISettings::CGUISettings(void)
   AddBool(3, "MyVideos.PAL60Switching", 226, true);
   AddBool(4, "MyVideos.FrameRateConversions", 336, false);
   AddBool(5, "MyVideos.UseGUIResolution", 495, true);
-  AddInt(6, "MyVideos.OSDTimeout", 472, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddInt(6, "MyVideos.OSDTimeout", 472, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddInt(7, "MyVideos.ViewMode", 13377, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, 1, VIEW_MODE_CUSTOM, SPIN_CONTROL_TEXT);
   AddInt(8, "MyVideos.Brightness", 13378, 50, 0, 1, 100, SPIN_CONTROL_INT);
   AddInt(9, "MyVideos.Contrast", 13379, 50, 0, 1, 100, SPIN_CONTROL_INT);
@@ -566,9 +570,9 @@ void CGUISettings::AddInt(int iOrder, const char *strSetting, int iLabel, int iD
   settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
 }
 
-void CGUISettings::AddInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat)
+void CGUISettings::AddInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat, int iLabelMin/*=-1*/)
 {
-  CSettingInt* pSetting = new CSettingInt(iOrder, strSetting, iLabel, iData, iMin, iStep, iMax, iControlType, iFormat);
+  CSettingInt* pSetting = new CSettingInt(iOrder, strSetting, iLabel, iData, iMin, iStep, iMax, iControlType, iFormat, iLabelMin);
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
 }
