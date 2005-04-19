@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 19-04-2005 fixed: audioscrobbler status notification is shown every 30 sec. if no network connection available
   - 19-04-2005 updated: Spanish language file (Thnx to jose_t)
   - 19-04-2005 updated: German language file
   - 19-04-2005 updated: Polish language file (Thnx to napek)
