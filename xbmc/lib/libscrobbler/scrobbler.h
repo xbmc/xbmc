@@ -247,6 +247,7 @@ private:
   time_t m_SongStartTime;
 
   bool m_bUpdateWarningDone;
+  bool m_bConnectionWarningDone;
 
   int m_iSecsTillSubmit;
   bool m_bShouldSubmit;
