@@ -239,7 +239,7 @@ PyDoc_STRVAR(addItem__doc__,
     if (!PyArg_ParseTuple(args, "l", &itemIndex))    return NULL;
 
     // create message
-    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, self->iParentId, self->iControlId, itemIndex);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, self->iParentId, self->iControlId, itemIndex);
 
     // send message
     PyGUILock();
