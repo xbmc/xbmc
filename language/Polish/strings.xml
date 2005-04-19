@@ -453,7 +453,7 @@
   <string><id>607</id><value>Do:</value></string>
   <string><id>608</id><value>Nie mo¿na zapisaæ CD lub œcie¿ki</value></string>
   <string><id>609</id><value>CDDARipPath nie jest ustawiony w XboxMediaCenter.xml</value></string>
-  <string><id>620</id><value>Zgrywam CD</value></string>
+  <string><id>620</id><value>Rippowanie CD</value></string>
   <string><id>621</id><value>Koder</value></string>
   <string><id>622</id><value>Jakoœæ</value></string>
   <string><id>623</id><value>Szybkoœæ transmisji</value></string>
@@ -900,4 +900,20 @@
   <string><id>15104</id><value>* Wszystkie Piosenki</value></string>
   <string><id>15105</id><value>* Wszystkie Gatunki</value></string>
   <string><id>15106</id><value>Zapamiêtaj wybrany plik</value></string>
+  <string><id>15107</id><value>Buforujê...</value></string>
+  <string><id>15108</id><value>DŸwiêki nawigacyjne</value></string>
+  <string><id>15109</id><value>Domyœlna skóra</value></string>
+  <string><id>15200</id><value>AudioScrobbler</value></string>
+  <string><id>15201</id><value>Przesy³anie informacji o utworze do AudioScrobbler</value></string>
+  <string><id>15202</id><value>AudioScrobbler U¿ytkownik</value></string>
+  <string><id>15203</id><value>AudioScrobbler Has³o</value></string>
+  <string><id>15204</id><value>Nie mogê potwierdziæ: zasypiam...</value></string>
+  <string><id>15205</id><value>Proszê uaktualniæ XBMC</value></string>
+  <string><id>15206</id><value>Przesy³anie przerwane: b³¹d autoryzacji.</value></string>
+  <string><id>15207</id><value>Po³¹czony</value></string>
+  <string><id>15208</id><value>Nie po³¹czony</value></string>
+  <string><id>15209</id><value>Interwa³ przesy³ania %i</value></string>
+  <string><id>15210</id><value>Utworów w buforze %i</value></string>
+  <string><id>15211</id><value>Przesy³am...</value></string>
+  <string><id>15212</id><value>Przes³ano w %i sekund</value></string>
 </strings>
