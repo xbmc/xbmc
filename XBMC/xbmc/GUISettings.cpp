@@ -180,12 +180,13 @@ CGUISettings::CGUISettings(void)
   // My Music Settings
   AddGroup(3, 2);
   AddCategory(3, "MyMusic", 249);
-  AddString(1, "MyMusic.Visualisation", 250, "goom.vis", SPIN_CONTROL_TEXT);
-  AddBool(2, "MyMusic.AutoPlayNextItem", 489, true);
-  AddBool(3, "MyMusic.Repeat", 488, false);
-  AddBool(4, "MyMusic.UseCDDB", 227, true);
-  AddBool(5, "MyMusic.UseTags", 258, true);
-  AddInt(6, "MyMusic.OSDTimeout", 13314, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddBool(1, "MyMusic.VisEnabled", 510, true);
+  AddString(2, "MyMusic.Visualisation", 250, "goom.vis", SPIN_CONTROL_TEXT);
+  AddBool(3, "MyMusic.AutoPlayNextItem", 489, true);
+  AddBool(4, "MyMusic.Repeat", 488, false);
+  AddBool(5, "MyMusic.UseCDDB", 227, true);
+  AddBool(6, "MyMusic.UseTags", 258, true);
+  AddInt(7, "MyMusic.OSDTimeout", 13314, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddCategory(3, "MusicLists", 14018);
   AddString(1, "MusicLists.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT);
   AddBool(2, "MusicLists.HideParentDirItems", 13306, true);
