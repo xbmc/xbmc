@@ -44,6 +44,7 @@ CScrobbler::CScrobbler()
 {
   m_bShouldSubmit=false;
   m_bUpdateWarningDone=false;
+  m_bConnectionWarningDone=false;
   m_strClientId = CLIENT_ID; 
   m_strClientVer = CLIENT_VERSION;
   m_bCloseThread = false;
@@ -450,15 +451,19 @@ void CScrobbler::StatusUpdate(ScrobbleStatus status, const CStdString& strText)
   else if(S_HANDHAKE_NOTREADY == status)
   {
     CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
-    CStdString strMsg=g_localizeStrings.Get(15204); // Unable to handshake: sleeping...
-    StatusUpdate(strMsg);
+    if(!m_bConnectionWarningDone)
+    {
+      m_bConnectionWarningDone=true;
+      CStdString strMsg=g_localizeStrings.Get(15204); // Unable to handshake: sleeping...
+      StatusUpdate(strMsg);
+    }
   }
   else if(S_HANDSHAKE_OLD_CLIENT == status)
   {
+    CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
     if(!m_bUpdateWarningDone)
     {
       m_bUpdateWarningDone=true;
-      CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
       CStdString strMsg=g_localizeStrings.Get(15205); // Please update xbmc
       StatusUpdate(strMsg);
     }
