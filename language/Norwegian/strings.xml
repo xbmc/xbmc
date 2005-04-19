@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.183. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.184. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -439,6 +439,7 @@
   <string><id>507</id><value>Sortering: Bruk</value></string>
   <string><id>508</id><value>Ikke bruke snarveier eller skanning</value></string>
   <string><id>509</id><value>Cache programikoner</value></string>
+  <string><id>510</id><value>Skru på visualisering</value></string>
   <string><id>600</id><value>Ripp musikk-CD</value></string>
   <string><id>601</id><value>Middels</value></string>
   <string><id>602</id><value>Standard</value></string>

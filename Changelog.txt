@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 19-04-2005 updated: Spanish language file (Thnx to jose_t)
+  - 19-04-2005 updated: German language file
+  - 19-04-2005 updated: Polish language file (Thnx to napek)
+  - 19-04-2005 updated: Norwegian language file (Thnx to vnm)
+  - 19-04-2005 updated: Finnish language file (Thnx to jutski)
   - 18-04-2005 added: option to disable music visualisation (localized string instead of using disabled.vis)
   - 18-04-2005 added: Support for AC3/DTS passthrough for dvdplayer and partly fixed audiostream selection from dvdmenu.
   - 17-04-2005 fixed: PAPlayer seeking was way too fast.

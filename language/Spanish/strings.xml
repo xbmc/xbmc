@@ -7,7 +7,7 @@
   <string><id>5</id><value>Configuración</value></string>
   <!-- La línea string id 6 no se usa aquí, solamente se pone en el fichero de idioma inglés !-->
   <string><id>7</id><value>Archivos</value></string>
-  <string><id>8</id><value>Meteorología</value></string>
+  <string><id>8</id><value>El Tiempo</value></string>  
   <string><id>11</id><value>Lunes</value></string>
   <string><id>12</id><value>Martes</value></string>
   <string><id>13</id><value>Miércoles</value></string>
@@ -74,15 +74,14 @@
   <string><id>142</id><value>Fecha y Hora</value></string>
   <string><id>143</id><value>Actual</value></string>
   <string><id>144</id><value>Compilación:</value></string>
-  <string><id>145</id><value>Red</value></string>
+  <string><id>145</id><value>Red Local</value></string>
   <string><id>146</id><value>Tipo:</value></string>
-  <string><id>147</id><value>Estática</value></string>
-  <string><id>148</id><value>DHCP</value></string>
-  <string><id>149</id><value>MAC</value></string>
-  <string><id>150</id><value>IP</value></string>
+  <string><id>147</id><value>IP Estática</value></string>
+  <string><id>148</id><value>Auto (DHCP)</value></string>
+  <string><id>149</id><value>Dirección MAC</value></string>    <string><id>150</id><value>Dirección IP</value></string>
   <string><id>151</id><value>Enlace: </value></string>
-  <string><id>152</id><value>Semidúplex</value></string>
-  <string><id>153</id><value>Dúplex Completo</value></string>
+  <string><id>152</id><value>Semi bi-direccional</value></string> 
+  <string><id>153</id><value>Bi-direccional</value></string> 
   <string><id>154</id><value>Almacenamiento</value></string>
   <string><id>155</id><value>Disco</value></string>
   <string><id>156</id><value>Libres</value></string>
@@ -95,7 +94,7 @@
   <string><id>163</id><value>Leyendo</value></string>
   <string><id>164</id><value>Sin Disco</value></string>
   <string><id>165</id><value>Disco presente</value></string>
-  <string><id>166</id><value>Máscara</value></string>
+  <string><id>166</id><value>Tema Visual</value></string>
   <string><id>167</id><value>Activar servidor FTP</value></string>
   <string><id>168</id><value>Activar sincr. horaria desde Internet</value></string>
   <string><id>169</id><value>Resolución</value></string>
@@ -144,7 +143,7 @@
   <string><id>211</id><value>Buscando aplicaciones</value></string>
   <string><id>212</id><value>Aplicaciones encontradas</value></string>
   <string><id>213</id><value>Posición Interfaz</value></string>
-  <string><id>214</id><value>Calibración</value></string>
+  <string><id>214</id><value>Calib. Pantalla</value></string> 
   <string><id>215</id><value>Suavizar</value></string>
   <string><id>216</id><value>Aumentar</value></string>
   <string><id>217</id><value>Ajustar</value></string>
@@ -153,9 +152,9 @@
   <string><id>220</id><value>Recurso compartido remoto</value></string>
   <string><id>221</id><value>La red no está conectada</value></string>
   <string><id>222</id><value>Cancelar</value></string>
-  <string><id>223</id><value>Elegir autom. la mejor resolución para los vídeos</value></string>
-  <string><id>224</id><value>Tiempo de trans.</value></string>
-  <string><id>225</id><value>Velocidad</value></string>
+  <string><id>223</id><value>Cambio automático a pantalla panoramica</value></string> 
+  <string><id>224</id><value>Velocidad</value></string> 
+  <string><id>225</id><value>Tiempo Transición</value></string>
   <string><id>226</id><value>Activar PAL60</value></string>
   <string><id>227</id><value>Activar CDDB</value></string>
   <string><id>228</id><value>Lista de reproducción aleatoria al cargar</value></string>
@@ -185,7 +184,7 @@
   <string><id>253</id><value>Número de canales</value></string>
   <string><id>254</id><value>- Decodificador compatible DTS</value></string>
   <string><id>255</id><value>CDDB</value></string>
-  <string><id>256</id><value>Consultando Freedb para información CDDB</value></string>
+  <string><id>256</id><value>Consultando información CDDB en freedb</value></string>
   <string><id>257</id><value>Error</value></string>
   <string><id>258</id><value>Activar etiquetas ID3</value></string>
   <string><id>259</id><value>Abriendo</value></string>
@@ -200,7 +199,7 @@
   <string><id>268</id><value>Por: Título</value></string>
   <string><id>269</id><value>Por: Intérprete</value></string>
   <string><id>270</id><value>Por: Álbum</value></string>
-  <string><id>271</id><value>Los 100 más</value></string>
+  <string><id>271</id><value>Top 100</value></string>
   <string><id>272</id><value>Compensación de sobreexploración sup. izq.</value></string>
   <string><id>273</id><value>Compensación de sobreexploración inf. der.</value></string>
   <string><id>274</id><value>Posición de los subtítulos</value></string>
@@ -224,7 +223,7 @@
   <string><id>292</id><value>Audio</value></string>
   <string><id>293</id><value>Subtítulos</value></string>
   <string><id>294</id><value>Crear marcador</value></string>
-  <string><id>295</id><value>Todos los marcadores</value></string>
+  <string><id>295</id><value>Siguiente marcador</value></string>
   <string><id>296</id><value>Borrar marcadores</value></string>
   <string><id>297</id><value>Retardo AV</value></string>
   <string><id>298</id><value>Barra de desplaz.</value></string>
@@ -234,14 +233,13 @@
   <string><id>303</id><value>Retardo</value></string>
   <string><id>304</id><value>Idioma</value></string>
   <string><id>305</id><value>Activado</value></string>
-  <string><id>306</id><value>No entrelazado</value></string>
+  <string><id>306</id><value>No-Interpolado</value></string>
   <string><id>307</id><value>- Postprocesado automático</value></string>
-  <string><id>308</id><value>- Filtro de desagrupado vertical</value></string>
-  <string><id>309</id><value>- Filtro de desagrupado horizontal</value></string>
+  <string><id>308</id><value>- Filtro anti-cuadros vertical</value></string>
+  <string><id>309</id><value>- Filtro anti-cuadros horizontal</value></string>
   <string><id>310</id><value>- Brillo/Contraste automáticos</value></string>
-  <string><id>311</id><value>- Desanillado</value></string>
-  <string><id>312</id><value>(0=automático)</value></string>
-  <string><id>313</id><value>Limpiando base de datos</value></string>
+  <string><id>311</id><value>- Filtro anti-círculos</value></string>
+  <string><id>313</id><value>Limpieza de base de datos</value></string>
   <string><id>314</id><value>Preparando...</value></string>
   <string><id>315</id><value>Error en base de datos</value></string>
   <string><id>316</id><value>Buscando canciones...</value></string>
@@ -289,7 +287,7 @@
   <string><id>358</id><value>Todos los álb.</value></string>
   <string><id>359</id><value>álb. Recientes</value></string>
   <string><id>360</id><value>Prot. de pantalla</value></string>
-  <string><id>361</id><value>Presentación</value></string>
+  <string><id>361</id><value>Diapos. Recur.</value></string>
   <string><id>362</id><value>Nivel de atenuación (%)</value></string>
   <string><id>363</id><value>Por: Archivo</value></string>
   <string><id>364</id><value>- Decodificador compatible AC3</value></string>
@@ -314,16 +312,14 @@
   <string><id>383</id><value>Viento</value></string>
   <string><id>384</id><value>Fuerte</value></string>
   <string><id>385</id><value>Bueno</value></string>
-  <string><id>386</id><value>Despejado</value></string>
-  <string><id>387</id><value>Nubes</value></string>
-  <string><id>388</id><value>S/D</value></string>
-  <string><id>389</id><value>S/D</value></string>
-  <string><id>390</id><value>S/D</value></string>
-  <string><id>391</id><value>S/D</value></string>
-  <string><id>392</id><value>S/D</value></string>
-  <string><id>393</id><value>S/D</value></string>
-  <string><id>394</id><value>S/D</value></string>
-  <string><id>395</id><value>S/D</value></string>
+  <string><id>388</id><value>Temprano</value></string>
+  <string><id>389</id><value>Chubascos</value></string>
+  <string><id>390</id><value>Ráfagas de aire</value></string>
+  <string><id>391</id><value>Bajo</value></string>
+  <string><id>392</id><value>Medio</value></string>
+  <string><id>393</id><value>Alto</value></string>
+  <string><id>394</id><value>Niebla</value></string>
+  <string><id>395</id><value>Bruma</value></string>
   <string><id>396</id><value>Seleccione lugar</value></string>
   <string><id>397</id><value>Actualizar cada</value></string>
   <string><id>398</id><value>Temperatura en</value></string>
@@ -338,7 +334,7 @@
   <string><id>407</id><value>De</value></string>
   <string><id>408</id><value>a</value></string>
   <string><id>410</id><value>Accediendo a Weather.com</value></string>
-  <string><id>411</id><value>Obteniendo meteorología para:</value></string>
+  <string><id>411</id><value>Obteniendo el tiempo para:</value></string>
   <string><id>412</id><value>No se pueden obtener datos meteorológicos</value></string>
   <string><id>413</id><value>Manual</value></string>
   <string><id>414</id><value>No hay crítica para este álbum</value></string>
@@ -365,11 +361,7 @@
   <string><id>435</id><value>Pista</value></string>
   <string><id>436</id><value>Año:</value></string>
   <string><id>437</id><value>Duración:</value></string>
-  <string><id>438</id><value>Abriendo archivo</value></string>
-  <string><id>439</id><value>Caché</value></string>
-  <string><id>440</id><value>Disco Duro</value></string>
-  <string><id>441</id><value>UDF</value></string>
-  <string><id>442</id><value>LAN</value></string>
+  <string><id>442</id><value>Red Local</value></string> 
   <string><id>443</id><value>Internet</value></string>
   <string><id>444</id><value>vídeo</value></string>
   <string><id>445</id><value>audio</value></string>
@@ -385,10 +377,9 @@
   <string><id>454</id><value>Posición línea 4</value></string>
   <string><id>455</id><value>Líneas</value></string>
   <string><id>456</id><value>Modo</value></string>
-  <string><id>457</id><value>Cambiar vista</value></string>
-  <string><id>458</id><value>Marcador</value></string>
+  <string><id>458</id><value>B/Mark</value></string>
   <string><id>459</id><value>Subtítulos</value></string>
-  <string><id>460</id><value>Flujo de audio</value></string>
+  <string><id>460</id><value>Canal Audio</value></string>
   <string><id>461</id><value>[activo]</value></string>
   <string><id>462</id><value>Subtítulo</value></string>
   <string><id>463</id><value>Retroiluminación</value></string>
@@ -407,7 +398,7 @@
   <string><id>476</id><value>Música y Vídeo</value></string>
   <string><id>477</id><value>No se puede cargar la lista de reproducción</value></string>
   <string><id>478</id><value>OSD</value></string>
-  <string><id>479</id><value>Máscara e Idioma</value></string>
+  <string><id>479</id><value>Idioma y Tema Visual</value></string>
   <string><id>480</id><value>Apariencia</value></string>
   <string><id>481</id><value>Opciones de audio</value></string>
   <string><id>482</id><value>Acerca de XBMC</value></string>
@@ -418,36 +409,37 @@
   <string><id>487</id><value>Repetir uno</value></string>
   <string><id>488</id><value>Repetir carpetas</value></string>
   <string><id>489</id><value>Autorreproducir el siguiente elemento</value></string>
-  <string><id>490</id><value>Cambiar automáticamente listas e iconos en las canciones</value></string>
+  <string><id>490</id><value>Cambiar autom. listas e iconos en canciones</value></string>
   <string><id>491</id><value>- Usar iconos grandes</value></string>
   <string><id>492</id><value>Agrandar subtítulos VOB</value></string>
   <string><id>493</id><value>Opciones avanzadas (¡Sólo expertos!)</value></string>
   <string><id>494</id><value>Margen total de audio (dB)</value></string>
-  <string><id>495</id><value>Sobremuestrear vídeos a la resolución GUI</value></string>
+  <string><id>495</id><value>Sobremuestrear vídeos a resolución XBMC</value></string>
   <string><id>496</id><value>Calibración</value></string>
-  <string><id>497</id><value>Ocultar extensiones del medio</value></string>
+  <string><id>497</id><value>Ocultar extensiones de archivos</value></string>
   <string><id>498</id><value>Por: Tipo</value></string>
   <string><id>499</id><value>No se puede conectar con www.allmusic.com</value></string>
-  <string><id>500</id><value>Descarga de información del álbum fallida</value></string>
+  <string><id>500</id><value>Error al obtener información de album</value></string>
   <string><id>501</id><value>Buscando nombres de los álbumes...</value></string>
   <string><id>502</id><value>Abierto</value></string>
   <string><id>503</id><value>Ocupado</value></string>
-  <string><id>504</id><value>Vacío</value></string>		
-  <string><id>505</id><value>Cargando información del medio desde los archivos...</value></string>
+  <string><id>504</id><value>Vacío</value></string>
+  <string><id>505</id><value>Cargando informacion de ficheros...</value></string>	
   <string><id>506</id><value>Usar los nombres de directorios como descripción</value></string>
   <string><id>507</id><value>Por: Uso</value></string>
   <string><id>508</id><value>No usar accesos directos ni explorar</value></string> 
-  <string><id>600</id><value>Extraer audio desde CD-Audio</value></string>
-  <string><id>601</id><value>Medio</value></string>
+  <string><id>509</id><value>Almacenar Miniaturas de Programas</value></string>
+  <string><id>600</id><value>Comprimir CD de Música</value></string>
+  <string><id>601</id><value>Media</value></string>
   <string><id>602</id><value>Estándar</value></string>
-  <string><id>603</id><value>Extremo</value></string>
-  <string><id>604</id><value>Velocidad de bits constante</value></string>
-  <string><id>605</id><value>Extrayendo...</value></string>
+  <string><id>603</id><value>Extrema</value></string>
+  <string><id>604</id><value>Velocidad de bits constante (CBR)</value></string>
+  <string><id>605</id><value>Comprimiendo...</value></string>
   <string><id>606</id><value>Número de Pista:</value></string>
   <string><id>607</id><value>A:</value></string>
-  <string><id>608</id><value>No se puede extraer el audio del CD o pista</value></string>
+  <string><id>608</id><value>No se puede copiar CD o Pista</value></string>
   <string><id>609</id><value>CDDARipPath no está configurado en XboxMediaCenter.xml</value></string>
-  <string><id>620</id><value>Extraer audio desde CD</value></string>
+  <string><id>620</id><value>Copiar CD de Audio</value></string>
   <string><id>621</id><value>Codificador</value></string>
   <string><id>622</id><value>Calidad</value></string>
   <string><id>623</id><value>Velocidad de bits</value></string>
@@ -465,14 +457,14 @@
   <string><id>701</id><value>Eliminando las canciones antiguas de la biblioteca</value></string>
   <string><id>702</id><value>Esta ruta ya ha sido explorada</value></string>
   <string><id>703</id><value>Pulse Sí para actualizar todas las canciones en esta ruta</value></string>
-  <string><id>704</id><value>Pulse No para simplemente añadir nuevas canciones</value></string>
-  <string><id>705</id><value>Red</value></string>
+  <string><id>704</id><value>Pulse No para añadir nuevas canciones</value></string>
+  <string><id>705</id><value>Red Local</value></string>
   <string><id>706</id><value>- Host del Proxy HTTP</value></string>
   <string><id>707</id><value>- Puerto del Proxy HTTP</value></string>
   <string><id>708</id><value>Activar Proxy HTTP</value></string>
-  <string><id>709</id><value>Xtag de XLink Kai</value></string>
+  <string><id>709</id><value>XTag de XLink Kai</value></string>
   <string><id>710</id><value>Contraseña de XLink Kai</value></string>
-  <string><id>711</id><value>Protocolo de Internet (IP)</value></string>
+  <string><id>711</id><value>Config. TCP/IP</value></string>
   <string><id>712</id><value>Puerto especificado no válido. El valor debe estar entre 1 y 65535.</value></string>
   <string><id>713</id><value>Proxy HTTP</value></string>	
   <string><id>714</id><value>XLink Kai</value></string>	
@@ -490,7 +482,7 @@
   <string><id>726</id><value>Cambios no guardados. ¿Seguir sin guardar?</value></string>
   <string><id>727</id><value>Servidor Web</value></string>	
   <string><id>728</id><value>Servidor FTP</value></string>	
-  <string><id>729</id><value>Hora desde Internet</value></string>	
+  <string><id>729</id><value>Hora desde Internet</value></string>
   <string><id>730</id><value>- Puerto del servidor Web</value></string>	
   <string><id>731</id><value>- Host del servidor horario</value></string>
   <string><id>732</id><value>Guardar y Aplicar</value></string>
@@ -499,8 +491,8 @@
   <string><id>735</id><value>- Juego de Caracteres</value></string>	
   <string><id>736</id><value>- Estilo</value></string>	
   <string><id>737</id><value>- Color</value></string>
-  <string><id>738</id><value>Normal</value></string>	
-  <string><id>739</id><value>Negrita</value></string>	
+  <string><id>738</id><value>Normal</value></string>
+  <string><id>739</id><value>Negrita</value></string>
   <string><id>740</id><value>Cursiva</value></string>	
   <string><id>741</id><value>Negrita Cursiva</value></string>	
   <string><id>742</id><value>Blanco</value></string>	
@@ -515,8 +507,43 @@
   <string><id>751</id><value>Dejar de compartir</value></string>
   <string><id>752</id><value>Editar ruta de recurso compartido</value></string>
   <string><id>753</id><value>Editar nombre de recurso compartido</value></string>
+  <string><id>754</id><value>Añadir Enlace a Programa</value></string>
+  <string><id>755</id><value>Editar Ruta Programa</value></string>
+  <string><id>756</id><value>Editar Nombre Programa</value></string>
+  <string><id>757</id><value>Editar Profundidad Ruta</value></string>
+  <string><id>758</id><value>Eliminando Enlace a Programa</value></string>  
+  <string><id>759</id><value>Lista Grande</value></string>
+
+  <string><id>760</id><value>Amarillo</value></string>
+  <string><id>761</id><value>Blanco</value></string>
+  <string><id>762</id><value>Azul</value></string>
+  <string><id>763</id><value>Verde Claro</value></string>
+  <string><id>764</id><value>Verde amarillento</value></string>
+  <string><id>765</id><value>Verde azulado</value></string>
+  <string><id>766</id><value>Reserved</value></string>
+  <string><id>767</id><value>Reserved</value></string>
+  <string><id>768</id><value>Reserved</value></string>
+  <string><id>769</id><value>Reserved</value></string>
+
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Jugar en línea</value></string>
+  <string><id>1000</id><value>Vista Previa Protector Pantalla</value></string>
+
+  <string><id>1396</id><value>A la deriva</value></string>
+  <string><id>1397</id><value>y</value></string>
+  <string><id>1398</id><value>Helando</value></string>
+  <string><id>1399</id><value>Tarde</value></string>
+  <string><id>1400</id><value>Aislado</value></string>
+  <string><id>1401</id><value>T-Lluvias</value></string>
+  <string><id>1402</id><value>Truenos</value></string>
+  <string><id>1403</id><value>Sol</value></string>
+  <string><id>1404</id><value>Duro</value></string>
+  <string><id>1405</id><value>en</value></string>
+  <string><id>1406</id><value>el</value></string>
+  <string><id>1407</id><value>Vecindad</value></string>
+  <string><id>1408</id><value>Hielo</value></string>
+  <string><id>1409</id><value>Cristales</value></string>
+  <string><id>1410</id><value>Calma</value></string>
   <string><id>10000</id><value>Inicio</value></string>
   <string><id>10001</id><value>Programas</value></string>
   <string><id>10002</id><value>Imágenes</value></string>
@@ -553,6 +580,26 @@
   <string><id>10503</id><value>My Music/artists</value></string>
   <string><id>10504</id><value>My Music/genres</value></string>
   <string><id>10505</id><value>My Music/top100</value></string>
+  <string><id>10506</id><value>Applications</value></string>
+  <string><id>10507</id><value>Configuration</value></string>
+  <string><id>10508</id><value>Weather Forecast</value></string>
+  <string><id>10509</id><value>Network Gaming</value></string>
+  <string><id>10510</id><value>Extensions</value></string>
+  <string><id>10511</id><value>System Info</value></string>
+  <string><id>10512</id><value>My Music - Albums</value></string>
+  <string><id>10513</id><value>My Music - Artists</value></string>
+  <string><id>10514</id><value>My Music - Genres</value></string>
+  <string><id>10515</id><value>My Music - Top 100</value></string>
+  <string><id>10516</id><value>My Music - Library</value></string>
+  <string><id>10517</id><value>My Music - Playlist</value></string>
+  <string><id>10518</id><value>My Video - Actors</value></string>
+  <string><id>10519</id><value>My Video - Genres</value></string>
+  <string><id>10520</id><value>My Video - Title</value></string>
+  <string><id>10521</id><value>My Video - Year</value></string>
+  <string><id>10522</id><value>My Video - Playlist</value></string>
+  <string><id>10523</id><value>Album Info</value></string>
+  <string><id>10524</id><value>Movie Info</value></string>
+
   <string><id>11000</id><value>Teclado</value></string>
   <string><id>12000</id><value>Seleccionar cuadro de diálogo</value></string>
   <string><id>12001</id><value>My Music/info</value></string>
@@ -600,6 +647,16 @@
   <string><id>12345</id><value>Acceso denegado</value></string>
   <string><id>12346</id><value>Se ha superado el límite de intentos</value></string>
   <string><id>12347</id><value>La XBOX se apagará ahora</value></string>
+
+  <string><id>12348</id><value>Elemento Bloqueado</value></string>
+  <string><id>12349</id><value>¿Recordar Código Maestro hasta el siguiente inicio?</value></string>
+  <string><id>12350</id><value>(Abrir cualquier elemento en Configuración</value></string>
+  <string><id>12351</id><value>automáticamente re-habilitará el Bloqueo Maestro.)</value></string>
+  <string><id>12352</id><value>Enter Master Code button combo and </value></string>
+  <string><id>12353</id><value>Reactivate Lock</value></string>
+  <string><id>12354</id><value>Override folder locks until next boot?</value></string>
+  <string><id>12355</id><value>automatically re-enable folder locks.)</value></string>
+
   <string><id>12600</id><value>Meteorología</value></string>
   <string><id>12900</id><value>Protector de pantalla</value></string>
   <string><id>12901</id><value>OSD a pantalla completa</value></string>
@@ -617,6 +674,9 @@
   <string><id>13203</id><value>El perfil '%s' ha sido cargado con éxito</value></string>
   <string><id>13204</id><value>Último perfil cargado:</value></string>
   <string><id>13205</id><value>Desconocido</value></string>
+  <string><id>13206</id><value>Sobreescribir</value></string>
+  <string><id>13207</id><value>Sobreescribir perfil '%s'?</value></string>
+
   <string><id>13299</id><value>Temperatura máxima</value></string>
   <string><id>13300</id><value>Velocidad del ventilador</value></string>
   <string><id>13301</id><value>Control automático por temperatura</value></string>
@@ -672,7 +732,38 @@
   <string><id>13351</id><value>Información del álbum</value></string>
   <string><id>13352</id><value>Explorar carpeta para la base de datos</value></string>
   <string><id>13353</id><value>Detener la exploración</value></string>
-  
+
+  <string><id>13354</id><value>Método Visualización</value></string>
+  <string><id>13355</id><value>Pixel Shader Baja Calidad</value></string>
+  <string><id>13356</id><value>Overlays por Hardware</value></string>
+  <string><id>13357</id><value>Pixel Shader Alta Calidad</value></string>
+  <string><id>13360</id><value>Generar Miniat.</value></string>
+  <string><id>13361</id><value>Habilitar Voz</value></string>
+  <string><id>13362</id><value>Máscara Voz</value></string>
+  <string><id>13363</id><value>- Habilitar Spectrum Energy Weight</value></string>
+  <string><id>13364</id><value>-- Valor Spectrum Energy Weight</value></string>
+  <string><id>13365</id><value>- Habilitar Pitch Scaling</value></string>
+  <string><id>13366</id><value>-- Valor Pitch Scaling</value></string>
+  <string><id>13367</id><value>- Habilitar Factor Susurro</value></string>
+  <string><id>13368</id><value>-- Valor Factor Susurro</value></string>
+  <string><id>13369</id><value>- Habilitar Factor Robótico</value></string>
+  <string><id>13370</id><value>-- Valor Factor Robótico</value></string>
+  <string><id>13371</id><value>- Voz Puerto 0 Voz</value></string>
+  <string><id>13372</id><value>- Voz Puerto 1 Voz</value></string>
+  <string><id>13373</id><value>- Voz Puerto 2 Voz</value></string>
+  <string><id>13374</id><value>- Voz Puerto 3 Voz</value></string>
+  <string><id>13375</id><value>Habilitar Dispositivo</value></string>
+  <string><id>13376</id><value>Volumen</value></string>
+  <string><id>13377</id><value>Modo Vista por Defecto</value></string>
+  <string><id>13378</id><value>Brillo por Defecto</value></string>
+  <string><id>13379</id><value>Contraste por Defecto</value></string>
+  <string><id>13380</id><value>Gamma por Defecto</value></string>
+  <string><id>13381</id><value>Reanudar Video</value></string>
+  <string><id>13382</id><value>Máscara Voz - Puerto 0</value></string>
+  <string><id>13383</id><value>Máscara Voz - Puerto 1</value></string>
+  <string><id>13384</id><value>Máscara Voz - Puerto 2</value></string>
+  <string><id>13385</id><value>Máscara Voz - Puerto 3</value></string>
+
   <string><id>14000</id><value>Agrupar: No</value></string>
   <string><id>14001</id><value>Agrupar: Simple</value></string>
   <string><id>14002</id><value>Agrupar: Complejo</value></string>
@@ -731,4 +822,99 @@
   <string><id>14055</id><value>Utilizar exploración en segundo plano</value></string>
   <string><id>14056</id><value>Detener la exploración</value></string>
   <string><id>14057</id><value>No es posible mientras se explora la información del medio</value></string>
+
+  <string><id>14058</id><value>Efecto Pelicula con Textura Granulada</value></string>
+  <string><id>14059</id><value>Buscar miniaturas en recursos compartidos remotos</value></string>
+  <string><id>14060</id><value>Tipo de Cache Desconocido - Internet</value></string>
+  <string><id>14061</id><value>Auto</value></string>
+  <string><id>14062</id><value>Introduzca nombre de usuario para</value></string>
+
+  <string><id>15000</id><value>XLink Kai</value></string>
+  <string><id>15001</id><value>El servicio no está conectado, ¿Quiere intentar</value></string>
+  <string><id>15002</id><value>reconectarlo mediante Xbox Media Center?</value></string>
+  <string><id>15003</id><value>Introduzca su mensaje.</value></string>
+  <string><id>15004</id><value>Ha sido invitado para jugar a %s.</value></string>
+  <string><id>15005</id><value>Fecha: %s</value></string>
+  <string><id>15006</id><value>De: %s</value></string>
+  <string><id>15007</id><value>Invitación</value></string>
+  <string><id>15008</id><value>Ha sido invitado para entrar en %s.</value></string>
+  <string><id>15009</id><value>Desconectado</value></string>
+  <string><id>15010</id><value>Amigos</value></string>
+  <string><id>15011</id><value>Ver: Amigos</value></string>
+  <string><id>15012</id><value>Entrar</value></string>
+  <string><id>15013</id><value>Voz</value></string>
+  <string><id>15014</id><value>Invitar</value></string>
+  <string><id>15015</id><value>Eliminar</value></string>
+  <string><id>15016</id><value>Juegos</value></string>
+  <string><id>15017</id><value>Ver: Juegos</value></string>
+  <string><id>15018</id><value>Entrar</value></string>
+  <string><id>15019</id><value>Añadir</value></string>
+  <string><id>15020</id><value>Host</value></string>
+  <string><id>15021</id><value>Salas</value></string>
+  <string><id>15022</id><value>Ver: Salas</value></string>
+  <string><id>15023</id><value>Jugar</value></string>
+  <string><id>15024</id><value>Añadir</value></string>
+  <string><id>15025</id><value>Host</value></string>
+  <string><id>15026</id><value>Chat</value></string>
+  <string><id>15027</id><value>Ver: Chat</value></string>
+  <string><id>15028</id><value>Teclado</value></string>
+  <string><id>15029</id><value>Es necesaria una contraseña para entrar en esta sala.</value></string>
+  <string><id>15030</id><value>El servicio ha desconectado</value></string>
+  <string><id>15031</id><value>Autenticación XLink Kai</value></string>
+  <string><id>15032</id><value>Su usuario y/o contraseña han sido rechazados por el</value></string>
+  <string><id>15033</id><value>servidor orbital. Por favor, compruebe su configuración.</value></string>
+  <string><id>15034</id><value>se ha conectado</value></string>
+  <string><id>15035</id><value>ha iniciado una conversación de voz</value></string>
+  <string><id>15036</id><value>te ha enviado una invitación</value></string>
+  <string><id>15037</id><value>XBMC no puede confirmar que su red sea accesible.</value></string>
+  <string><id>15038</id><value>Vd. puede experimentar dificultades entrando en u hospedando juegos.</value></string>
+  <string><id>15039</id><value>Xbox Media Center no puede localizar el juego automáticamente.</value></string>
+  <string><id>15040</id><value>Inserte el disco del juego en su XBOX o pulse XBOX 'A' para cancelar</value></string>
+  <string><id>15041</id><value>e inicie el juego manualmente.</value></string>
+  <string><id>15042</id><value>Acceso Denegado</value></string>
+  <string><id>15043</id><value>%s entra en el chat.</value></string>
+  <string><id>15044</id><value>%s abandona el chat.</value></string>
+  <string><id>15045</id><value>Introduzca su mensaje personal.</value></string>
+  <string><id>15046</id><value>Arena Actual</value></string>
+  <string><id>15047</id><value>Introduzca una contraseña para su sala.</value></string>
+  <string><id>15048</id><value>Introduzca una descripción para su sala.</value></string>
+  <string><id>15049</id><value>Hospedar Juego</value></string>
+  <string><id>15050</id><value>Hospedar en sala privada</value></string>
+  <string><id>15051</id><value>Máx. Jugadores</value></string>
+  <string><id>15052</id><value>Contraseña</value></string>
+  <string><id>15053</id><value>Descripción</value></string>
+  <string><id>15054</id><value>Diálogo Invitar</value></string>
+
+  <string><id>15055</id><value>Seleccione juego:</value></string>
+  <string><id>15056</id><value>Introduzca mensaje:</value></string>
+  <string><id>15057</id><value>Enviar</value></string>
+  <string><id>15058</id><value>Hospedar partida</value></string>
+  <string><id>15059</id><value>Invitacion aceptada!</value></string>
+  <string><id>15060</id><value>Mensaje aquí</value></string>
+  <string><id>15061</id><value>Te han invitado a jugar a %s.</value></string>
+  <string><id>15062</id><value>Usar ruta alternativa mplayer</value></string>
+  <string><id>15100</id><value>Librería</value></string>
+  <string><id>15101</id><value>Base de datos</value></string>
+  <string><id>15102</id><value>* Todos Albums</value></string>
+  <string><id>15103</id><value>* Todos Artistas</value></string>
+  <string><id>15104</id><value>* Todas Canciones</value></string>
+  <string><id>15105</id><value>* Todos Géneros</value></string>
+  <string><id>15106</id><value>Recordar fichero seleccionado en navegación hacia adelante</value></string>
+  <string><id>15107</id><value>Almacenando...</value></string>
+  <string><id>15108</id><value>Sonidos de Navegación</value></string>
+  <string><id>15109</id><value>Tema por Defecto</value></string>
+
+  <string><id>15200</id><value>AudioScrobbler</value></string>
+  <string><id>15201</id><value>Enviar Info de Canciones a AudioScrobbler</value></string>
+  <string><id>15202</id><value>Usuario AudioScrobbler</value></string>
+  <string><id>15203</id><value>Contraseña AudioScrobbler</value></string>
+  <string><id>15204</id><value>Imposible conectar: durmiendo...</value></string>
+  <string><id>15205</id><value>Por favor, Actualice XBMC</value></string>
+  <string><id>15206</id><value>Envío fallido: autorización incorrecta.</value></string>
+  <string><id>15207</id><value>Conectado</value></string>
+  <string><id>15208</id><value>No Conectado</value></string>
+  <string><id>15209</id><value>Intervalo de Envío %i</value></string>
+  <string><id>15210</id><value>Almacenadas %i Canciones</value></string>
+  <string><id>15211</id><value>Enviando...</value></string>
+  <string><id>15212</id><value>Enviando en %i segs</value></string>
 </strings>
