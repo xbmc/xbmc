@@ -46,7 +46,14 @@ CSpinExSettingControl::CSpinExSettingControl(CGUISpinControlEx *pSpin, DWORD dwI
     m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
     m_pSpin->Clear();
     CStdString strLabel;
-    for (int i = pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i += pSettingInt->m_iStep)
+    int i = pSettingInt->m_iMin;
+    if (pSettingInt->m_iLabelMin>-1)
+    {
+      strLabel=g_localizeStrings.Get(pSettingInt->m_iLabelMin);
+      m_pSpin->AddLabel(strLabel, pSettingInt->m_iMin);
+      i += pSettingInt->m_iStep;
+    }
+    for (; i <= pSettingInt->m_iMax; i += pSettingInt->m_iStep)
     {
       if (pSettingInt->m_iFormat > -1)
       {
