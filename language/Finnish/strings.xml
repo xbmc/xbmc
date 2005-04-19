@@ -234,10 +234,10 @@
   <string><id>303</id><value>Viive</value></string>
   <string><id>304</id><value>Kieli</value></string>
   <string><id>305</id><value>Tekstitys</value></string>
-  <string><id>306</id><value>Non-Interleaved</value></string>
+  <string><id>306</id><value>Lomittamaton</value></string>
   <string><id>307</id><value>- Automaattinen j‰lkik‰sittely</value></string>
   <string><id>308</id><value>- vertical deblocking-suodatus</value></string>
-  <string><id>309</id><value>- horizontal deblocking-suodat.</value></string>
+  <string><id>309</id><value>- horizontal deblocking-suodatus</value></string>
   <string><id>310</id><value>- Autom. kirkkaus/kontrasti</value></string>
   <string><id>311</id><value>- Dering</value></string>
   <string><id>312</id><value>(0=auto)</value></string>
@@ -903,6 +903,21 @@
   <string><id>15106</id><value>Muista valittu tiedosto selattaessa eteenp‰in</value></string>
 
   <string><id>15107</id><value>Puskurointi...</value></string>
+  <string><id>15108</id><value>Valikko‰‰net</value></string>
+  <string><id>15109</id><value>Skinin oletus</value></string>
 
+  <string><id>15200</id><value>AudioScrobbler</value></string>
+  <string><id>15201</id><value>L‰het‰ kappaleiden tiedot AudioScrobbleriin</value></string>
+  <string><id>15202</id><value>AudioScrobbler k‰ytt‰j‰tunnus</value></string>
+  <string><id>15203</id><value>AudioScrobbler salasana</value></string>
+  <string><id>15204</id><value>Ei saatu yhteytt‰: odotetaan...</value></string>
+  <string><id>15205</id><value>P‰ivit‰ XBMC</value></string>
+  <string><id>15206</id><value>L‰hetys ep‰onnistui: salasana/tunnus ei kelpaa.</value></string>
+  <string><id>15207</id><value>Yhdistetty</value></string>
+  <string><id>15208</id><value>Ei yhdistetty</value></string>
+  <string><id>15209</id><value>L‰hetysv‰li %i</value></string>
+  <string><id>15210</id><value>V‰limuistissa %i kappaletta</value></string>
+  <string><id>15211</id><value>L‰hetet‰‰n...</value></string>
+  <string><id>15212</id><value>L‰hetet‰‰n %i sek kuluttua</value></string>
 </strings>
 
