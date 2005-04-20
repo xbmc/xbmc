@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 19-04-2005 fixed: create thumbs in my pictures now skips files that already have thumbs
   - 19-04-2005 changed: settings where 0 indicates off show "Off" as text now
   - 19-04-2005 fixed: audioscrobbler status notification is shown every 30 sec. if no network connection available
   - 19-04-2005 updated: Spanish language file (Thnx to jose_t)
