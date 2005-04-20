@@ -311,7 +311,7 @@ bool CPicture::CreateThumbFromImage(const CStdString &strFileName, const CStdStr
     {
       if (!image.Resample(width, height, QUALITY) || !image.IsValid())
       {
-        CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to resample image for thumbnail. Error:%s\n", image.GetLastError());
+        CLog::Log(LOGERROR, "PICTURE::CreateThumbnailFromImage: Unable to resample image for thumbnail. Error:%s\n", image.GetLastError());
         return false;
       }
       width = image.GetWidth();
@@ -323,7 +323,7 @@ bool CPicture::CreateThumbFromImage(const CStdString &strFileName, const CStdStr
     {
       if (!image.IncreaseBpp(24) || !image.IsValid())
       {
-        CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to convert to 24bpp: Error:%s\n", image.GetLastError());
+        CLog::Log(LOGERROR, "PICTURE::CreateThumbnailFromImage: Unable to convert to 24bpp: Error:%s\n", image.GetLastError());
         return false;
       }
       bNeedToConvert = true;
@@ -337,7 +337,7 @@ bool CPicture::CreateThumbFromImage(const CStdString &strFileName, const CStdStr
       image.SetJpegQuality(90);
       if (!image.Save(strThumbnail.c_str(), CXIMAGE_FORMAT_JPG))
       {
-        CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to save image: %s Error:%s\n", strThumbnail.c_str(), image.GetLastError());
+        CLog::Log(LOGERROR, "PICTURE::CreateThumbnailFromImage: Unable to save image: %s Error:%s\n", strThumbnail.c_str(), image.GetLastError());
         ::DeleteFile(strThumbnail.c_str());
         return false;
       }
@@ -347,7 +347,7 @@ bool CPicture::CreateThumbFromImage(const CStdString &strFileName, const CStdStr
       CFile file;
       if ( !file.Cache(strFileName.c_str(), strThumbnail.c_str(), NULL, NULL) )
       {
-        CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to copy file %s\n", strFileName.c_str());
+        CLog::Log(LOGERROR, "PICTURE::CreateThumbnailFromImage: Unable to copy file %s\n", strFileName.c_str());
         ::DeleteFile(strThumbnail.c_str());
         return false;
       }
@@ -361,7 +361,12 @@ bool CPicture::CreateThumbFromImage(const CStdString &strFileName, const CStdStr
 
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, int nMaxWidth, int nMaxHeight, bool bCacheFile /*=true*/)
 {
-  CLog::Log(LOGINFO, "Creating thumb from: %s", strFileName.c_str());
+  CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", strFileName.c_str(),strThumbFileName.c_str());
+  
+  // don't creat the thumb if it already exists
+  if (CUtil::FileExists(strThumbFileName))
+    return true;
+  
   CStdString strExtension;
   CStdString strCachedFile;
   DWORD dwImageType = CXIMAGE_FORMAT_JPG;
@@ -389,7 +394,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
     CFile file;
     if ( !file.Cache(strFileName.c_str(), strCachedFile.c_str(), NULL, NULL) )
     {
-      CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to cache file %s\n", strFileName.c_str());
+      CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: Unable to cache file: %s\n", strFileName.c_str());
       return false;
     }
   }
@@ -408,7 +413,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
     CxImage image(dwImageType);
     if (!image.Load(strCachedFile.c_str(), dwImageType) || !image.IsValid())
     {
-      CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: Unable to open image: %s Error:%s\n", strCachedFile.c_str(), image.GetLastError());
+      CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: Unable to open image: %s Error:%s\n", strCachedFile.c_str(), image.GetLastError());
       return false;
     }
 
@@ -416,7 +421,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: exception: %s\n", strCachedFile.c_str());
+    CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: exception on cached file: %s\n", strCachedFile.c_str());
     return false;
   }
   return true;
