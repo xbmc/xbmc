@@ -2707,7 +2707,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   m_CdgParser.Stop();
   // We should restart the player, unless the previous and next tracks are using the cdda player
   // (allows gapless cdda playback)
-  if (m_pPlayer && !(m_strCurrentPlayer == strNewPlayer && (m_strCurrentPlayer == "cdda" || m_strCurrentPlayer == "dvdplayer")))
+  if (m_pPlayer && !(m_strCurrentPlayer == strNewPlayer && (m_strCurrentPlayer == "cdda" || m_strCurrentPlayer == "dvdplayer" || m_strCurrentPlayer == "paplayer")))
   {
     if (1 || m_strCurrentPlayer != strNewPlayer || !m_itemCurrentFile.IsAudio() )
     {

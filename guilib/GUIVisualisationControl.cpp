@@ -108,6 +108,8 @@ void CGUIVisualisationControl::LoadVisualisation()
   CStdString strVisz;
   OutputDebugString("Load Visualisation\n");
   m_currentVis = g_guiSettings.GetString("MyMusic.Visualisation");
+  if (m_currentVis.Equals("None"))
+    return;
   strVisz.Format("Q:\\visualisations\\%s", m_currentVis.c_str());
   m_pVisualisation = factory.LoadVisualisation(strVisz.c_str());
   if (m_pVisualisation)
@@ -126,10 +128,6 @@ void CGUIVisualisationControl::LoadVisualisation()
 
 void CGUIVisualisationControl::Render()
 {
-  // just return if visualisations are disabled
-  if (!g_guiSettings.GetBool("MyMusic.VisEnabled"))
-    return;
-
   if (!m_bInitialized)
   { // check if we need to load
     if (g_application.IsPlayingAudio())
