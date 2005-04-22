@@ -205,6 +205,8 @@ int CScrobbler::AddSong(const CMusicInfoTag& tag)
   m_strPostString += strSubmitStr;
   m_iSongNum++;
 
+  SaveCache(m_strPostString.c_str(), m_iSongNum);
+
   time_t now;
   time (&now);
   if ((m_Interval + m_LastConnect) < now) 
@@ -409,7 +411,6 @@ int CScrobbler::LoadCache()
     ar >> strCache;
     ar.Close();
     file.Close();
-    ::DeleteFile(CACHE_FILE);
     SetCache(strCache, iNumEntries);
     return 1;
   }
@@ -520,6 +521,7 @@ void CScrobbler::WorkerThread()
         LPSTR lphtml=strHtml.GetBuffer();
         HandleSubmit(lphtml);
         strHtml.ReleaseBuffer();
+        ::DeleteFile(CACHE_FILE);
       }
     }
 

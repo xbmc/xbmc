@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 22-04-2005 added: audioscrobbler now saves a cache if no server is available or connection failed
   - 22-04-2005 fixed: audioscrobbler tried to submit songs, before the initial handshake with the server succeeds
   - 19-04-2005 changed: increased thumb cache to 64K thumbs (from 4K)
                         thumbs will need to be recreated or use tools/UpdateThumbs.py from the scripts dialog to update your old thumb cache
