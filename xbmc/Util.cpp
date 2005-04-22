@@ -523,10 +523,22 @@ void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
     }
   }
 
+  /*
   Crc32 crc;
   crc.ComputeFromLowerCase(strFileName);
-
   strThumb.Format("%s\\%x.tbn", g_stSettings.szThumbnailsDirectory, crc);
+  */
+
+  GetCachedThumbnail(strFileName, strThumb);
+}
+
+void CUtil::GetCachedThumbnail(const CStdString& strFileName, CStdString& strCachedThumb)
+{
+  Crc32 crc;
+  crc.ComputeFromLowerCase(strFileName);
+  CStdString strHex;
+  strHex.Format("%08x",crc);
+  strCachedThumb.Format("%s\\%s\\%s.tbn", g_stSettings.szThumbnailsDirectory, strHex.Left(1).c_str(), strHex.c_str());
 }
 
 void CUtil::GetFileSize(__int64 dwFileSize, CStdString& strFileSize)
@@ -978,9 +990,12 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 
   if (CUtil::IsDVD(strFilePath) || g_guiSettings.GetBool("MyPrograms.CacheProgramThumbs") )  // create CRC for DVD as we can't store default.tbn on DVD
   {
+    /*
     Crc32 crc;
     crc.Compute(strFilePath);
     strIcon.Format("%s\\%x.tbn", g_stSettings.szThumbnailsDirectory, crc);
+    */
+    GetCachedThumbnail(strFilePath, strIcon);
   }
   else
   {
