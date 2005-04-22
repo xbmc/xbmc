@@ -960,6 +960,9 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
 void CGUIWindowMusicBase::OnQueueItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
+
+  int iOldSize=g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size();
+
   // add item 2 playlist
   const CFileItem* pItem = m_vecItems[iItem];
   AddItemToPlayList(pItem);
@@ -977,7 +980,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
       g_playlistPlayer.PlayNext();
     }
     else
-      g_playlistPlayer.Play(0);
+      g_playlistPlayer.Play(iOldSize);  //  Start playlist with the first new song added
   }
 }
 
