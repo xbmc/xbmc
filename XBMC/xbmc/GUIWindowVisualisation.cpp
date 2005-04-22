@@ -5,7 +5,7 @@
 #include "utils/GUIInfoManager.h"
 
 #define TRANSISTION_COUNT   50  // 1 second
-#define TRANSISTION_LENGTH 300  // 6 seconds
+#define TRANSISTION_LENGTH 250  // 5 seconds
 
 CGUIWindowVisualisation::CGUIWindowVisualisation(void)
     : CGUIWindow(0)
@@ -138,7 +138,7 @@ void CGUIWindowVisualisation::Render()
     }
     else if (!m_dwFrameCounter)
     {  // check our current time, as we may have to fade in
-      int timeRemaining = g_infoManager.GetPlayTimeRemaining();
+//      int timeRemaining = g_infoManager.GetPlayTimeRemaining();
       int timeStarted = g_infoManager.GetPlayTime();
       if (timeStarted < 2 && !m_bShowInfo)
       { // fade in at the start
@@ -148,7 +148,7 @@ void CGUIWindowVisualisation::Render()
       { // fade out after 5 seconds
         m_dwFrameCounter = TRANSISTION_COUNT;
       }
-      else if (timeRemaining < 2 && m_bShowInfo)
+/*      else if (timeRemaining < 2 && m_bShowInfo)
       {
         // fade out before end of track in the last second...
         m_dwFrameCounter = TRANSISTION_COUNT;
@@ -157,7 +157,7 @@ void CGUIWindowVisualisation::Render()
       {
         // fade in if we have around 5 secs to go...
         m_dwFrameCounter = TRANSISTION_COUNT;
-      }
+      }*/
     }
   }
   if (m_dwFrameCounter)

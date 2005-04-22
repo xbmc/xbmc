@@ -706,6 +706,24 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
           }
         }
       }
+      // Get the info from the Lame header (if any)
+      if ((xing[0] == 'X' && xing[1] == 'i' && xing[2] == 'n' && xing[3] == 'g') ||
+          (xing[0] == 'I' && xing[1] == 'n' && xing[2] == 'f' && xing[3] == 'o'))
+      {
+        if (xing[0x78] == 'L' &&
+            xing[0x79] == 'A' &&
+            xing[0x7a] == 'M' &&
+            xing[0x7b] == 'E')
+        { // Found LAME tag - extract the start and end offsets
+          int iDelay = ((xing[0x8d] & 0xFF) << 4) + ((xing[0x8e] & 0xF0) >> 4);
+          iDelay += (int)tpfbs[layer]; // This header is going to be decoded as a silent frame
+          int iPadded = ((xing[0x8e] & 0x0F) << 8) + (xing[0x8f] & 0xFF);
+          m_seekInfo.SetSampleRange(iDelay, iPadded);
+          // calculate new (more accurate) duration:
+          __int64 lastSample = (__int64)frame_count * (__int64)tpfbs[layer] - iPadded - iDelay;
+          m_seekInfo.SetDuration((float)lastSample / frequency);
+        }
+      }
       if (vbri[0] == 'V' &&
           vbri[1] == 'B' &&
           vbri[2] == 'R' &&
@@ -750,16 +768,20 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
   // Normal mp3 with constant bitrate duration
   // Now song length is (filesize without id3v1/v2 tag)/((bitrate)/(8))
   double d = (double)(nMp3DataSize / ((bitrate * 1000) / 8));
+  m_seekInfo.SetDuration((float)d);
+  float offset[2];
+  offset[0] = (float)nPrependedBytes;
+  offset[1] = (float)nPrependedBytes + nMp3DataSize;
+  m_seekInfo.SetOffsets(1, offset);
   return (int)d;
 }
 
-bool CMusicInfoTagLoaderMP3::GetSeekInfo(CVBRMP3SeekHelper &info)
+void CMusicInfoTagLoaderMP3::GetSeekInfo(CVBRMP3SeekHelper &info)
 {
-  if (!m_seekInfo.GetNumOffsets())
-    return false;
   info.SetDuration(m_seekInfo.GetDuration());
   info.SetOffsets(m_seekInfo.GetNumOffsets(), m_seekInfo.GetOffsets());
-  return true;
+  info.SetSampleRange(m_seekInfo.GetFirstSample(), m_seekInfo.GetLastSample());
+  return;
 }
 
 CStdString CMusicInfoTagLoaderMP3::ParseMP3Genre (const CStdString& str)

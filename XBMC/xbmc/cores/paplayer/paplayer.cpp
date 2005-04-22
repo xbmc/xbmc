@@ -6,6 +6,8 @@
 
 #define VOLUME_FFWD_MUTE 900 // 9dB
 
+#define DECODER_DELAY 529 // decoder delay in samples
+
 // PAP: Psycho-acoustic Audio Player
 // Supporting all open  audio codec standards.
 // First one being nullsoft's nsv audio decoder format
@@ -50,7 +52,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_startOffset = 0;
   m_bGuessByterate = false;
   m_lastByteOffset = 0;
-  
+  m_bDllLoaded = false;
 }
 
 PAPlayer::~PAPlayer()
@@ -81,6 +83,8 @@ void PAPlayer::OnExit()
 
 bool PAPlayer::LoadDLL()
 {
+  if (m_bDllLoaded)
+    return true;
   CStdString strDll = "Q:\\system\\players\\paplayer\\in_mp3.dll"; 
   m_pDll = new DllLoader(strDll.c_str(), true);
   if (!m_pDll)
@@ -108,6 +112,7 @@ bool PAPlayer::LoadDLL()
     m_pDll = NULL;
     return false;
   }
+  m_bDllLoaded = true;
   return true;
 }
 
@@ -115,8 +120,24 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
   CloseFile();
 
+  if (!m_eof)
+  { // we started a new file whilst still playing the old one - let's free up our buffers and so on.
+    KillBuffer();
+    m_PcmPos = 0;
+    m_PcmSize = 0;
+    m_dwInputBufferSize = 0;
+  }
+
   m_bPaused = false;
   m_bStopPlaying = false;
+  m_eof = false;
+  m_lastByteOffset = 0;
+  m_dwBytesSentOut = 0;
+  m_startOffset = 0;
+  m_IgnoreFirst = true; // we want to be gapless
+  m_pIgnoredFirstBytes = NULL;
+  m_IgnoreLast = true;
+  m_BufferingPcm = true;  // buffer as much info as we can to begin with
 
   if (!m_filePAP.Open(file.m_strPath))
     return false;
@@ -126,6 +147,11 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   if ( !m_pDll ) return false;
 
   // TODO:  add file extension checking and HTTP/Icecast/Shoutcast reading
+  if (m_pPAP)
+  {
+    delete m_pPAP;
+    m_pPAP = NULL;
+  }
   m_pPAP = CreateAudioDecoder(' 3PM',NULL);
 
   if ( m_pPAP )  CLog::Log(LOGINFO, "PAP Player: Loaded decoder at %p", m_pPAP);
@@ -137,33 +163,21 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   float TrackDuration = 0.0f; //file.m_musicInfoTag.GetDuration();
   __int64 length = m_filePAP.GetLength();
 
-  if ( TrackDuration && !iStartTime) 
-  {
+  // Guess Bitrate
+  CMusicInfoTagLoaderMP3 mp3info;
+  CMusicInfoTag tag;
+  mp3info.Load(file.m_strPath.c_str(), tag);
+  mp3info.GetSeekInfo(m_seekInfo);
+  TrackDuration = m_seekInfo.GetDuration();
+  if ( TrackDuration )
     m_AverageInputBytesPerSecond = (DWORD)(length / TrackDuration);
-  }
   else
-  {
-    // Guess Bitrate
-    CMusicInfoTagLoaderMP3 mp3info;
-    CMusicInfoTag tag;
-    mp3info.Load(file.m_strPath.c_str(), tag);
-    m_bHasVBRInfo = mp3info.GetSeekInfo(m_vbrInfo);
-    if (m_bHasVBRInfo)
-      TrackDuration = m_vbrInfo.GetDuration();
-    else
-      TrackDuration = (float)tag.GetDuration();
-    if ( TrackDuration ) m_AverageInputBytesPerSecond = (DWORD)(length / TrackDuration);
-    else m_bGuessByterate = true;  // If the user didn't load id3 tags, they also didnt load the Duration
-    // If we dont have the TrackDuration will have to guess later.
-  }
+    m_bGuessByterate = true;  // If we don't have the TrackDuration we'll have to guess later.
 
   if ( TrackDuration && iStartTime > 0 )
   {
-    float realtime = (float)iStartTime / (float)1000.0;
-    float fseektime = float (m_AverageInputBytesPerSecond) * realtime;
-    // calculate our seek offset accurately if we have a vbr source
-    if (m_bHasVBRInfo)
-      fseektime = (float)m_vbrInfo.GetByteOffset(realtime);
+    // calculate our seek offset accurately using the seekInfo from the file
+    float fseektime = (float)m_seekInfo.GetByteOffset(iStartTime / 1000.0f);
 
     if ( (__int64) fseektime < length ) 
     {
@@ -314,12 +328,12 @@ bool PAPlayer::ProcessPAP()
       // TODO I THINK...
       return false;
     }
-    if ( m_PcmSize  && m_pAudioDevice && !m_BufferingPcm )
+    if ( m_PcmSize  && m_pAudioDevice )
     {
       // We have data to move into the output audio buffer
 
       // Check if we have packets free in the buffer
-      if ( m_PcmSize >=  m_dwAudioBufferMin )
+      if ( m_PcmSize >=  m_dwAudioBufferMin && !m_BufferingPcm)
       {
         DWORD dwSize = m_PcmSize;
 
@@ -360,7 +374,8 @@ bool PAPlayer::ProcessPAP()
         return false; 
       // add the size of read PAP data to the buffer size
       m_dwInputBufferSize = dwBytesRead;
-      if ( m_filePAP.GetLength() == m_filePAP.GetPosition() ) m_eof = true;
+      if ( m_filePAP.GetLength() == m_filePAP.GetPosition() )
+        m_eof = true;
     }
     if (m_dwInputBufferSize || m_CallPAPAgain || m_PcmSize )
     {
@@ -378,17 +393,52 @@ bool PAPlayer::ProcessPAP()
         result = m_pPAP->decode( m_pInputBuffer,m_dwInputBufferSize,m_pPcm+m_PcmPos+m_PcmSize,&sendsize, (unsigned int *)&formatdata);
         if ( result == 1 || result == 0) 
         {
+          if (sendsize && m_PcmSize <= 1152*4*20)
+          {
+//            MemDump(m_pPcm + m_PcmPos + m_PcmSize, sendsize);
+          }
           m_PcmSize += sendsize;
-          if ( m_BufferingPcm ) if ( m_PcmSize >  m_dwAudioMaxSize / 2 ) m_BufferingPcm = false;
-          if ( result ) m_CallPAPAgain = true; // Codec wants us to call it again with the same buffer
+          if ( m_BufferingPcm ) 
+          {
+            if ( m_PcmSize >  m_dwAudioMaxSize / 2 )
+              m_BufferingPcm = false;
+          }
+          if ( m_IgnoreFirst && sendsize )
+          {
+            // starting up - lets ignore the first (typically 576) samples
+            // this code assumes that sendsize is at least as big as the number of ignored bytes.
+            if (!m_pIgnoredFirstBytes)
+              m_pIgnoredFirstBytes = m_pPcm + m_PcmPos + m_PcmSize - sendsize;
+            int iDelay = DECODER_DELAY + m_seekInfo.GetFirstSample();  // decoder delay + encoder delay
+            iDelay *= formatdata[2] * formatdata[3] / 8;            // sample size
+            if (m_pPcm + m_PcmPos + m_PcmSize - m_pIgnoredFirstBytes >= iDelay)
+            { // have enough data to ignore up to our first sample
+              // dump samples as we have them...
+              int iAmountToMove = m_pPcm + m_PcmPos + m_PcmSize - m_pIgnoredFirstBytes - iDelay;
+              memmove(m_pIgnoredFirstBytes, m_pIgnoredFirstBytes + iDelay, iAmountToMove);
+              m_PcmSize -= iDelay;
+              m_IgnoreFirst = false;
+            }
+          }
+          if ( result )
+            m_CallPAPAgain = true; // Codec wants us to call it again with the same buffer
           else 
           {
             m_dwBytesReadIn+=m_dwInputBufferSize;
             m_dwInputBufferSize = 0; // Read more from the file
+            if (m_eof && m_IgnoreLast)
+            {
+              // lets remove the last sample info from our buffer
+              unsigned int samplestoremove = (m_seekInfo.GetLastSample() - DECODER_DELAY);
+              samplestoremove *= m_Channels * m_SampleSize / 8;
+              if (samplestoremove > m_PcmSize) samplestoremove = m_PcmSize;
+              m_PcmSize -= samplestoremove;
+              m_IgnoreLast = false;
+            }
           }
 
           if ( sendsize &&  formatdata[4] && m_bGuessByterate ) m_AverageInputBytesPerSecond = formatdata[4] / 8;
-          if ( sendsize && !m_pAudioDevice && !m_BufferingPcm )
+          if ( sendsize && !m_BufferingPcm && (!m_pAudioDevice || m_Channels != formatdata[2] || m_SampleRate != formatdata[1] || m_SampleSize != formatdata[3]))
           {
             m_Channels    = formatdata[2];
             m_SampleRate  = formatdata[1];
@@ -413,7 +463,7 @@ bool PAPlayer::ProcessPAP()
     {
       // Current Track ended?
       // And theres nothing left to decode
-      if (m_filePAP.GetPosition() == m_filePAP.GetLength() && !m_Decoding )
+      if (m_eof && !m_Decoding )
       {
         CLog::Log(LOGINFO, "PAP Player: End of Track reached");
         return false;
@@ -421,9 +471,7 @@ bool PAPlayer::ProcessPAP()
       if (m_SeekTime != -1)
       {
         // calculate our offset
-        __int64 iOffset = m_SeekTime * m_AverageInputBytesPerSecond / 1000;
-        if (m_bHasVBRInfo)
-          iOffset = (__int64)m_vbrInfo.GetByteOffset(0.001f * m_SeekTime);
+        __int64 iOffset = (__int64)m_seekInfo.GetByteOffset(0.001f * m_SeekTime);
         m_filePAP.Seek(iOffset, SEEK_SET);
         m_startOffset = m_SeekTime;
         m_dwBytesSentOut = 0;
@@ -471,9 +519,7 @@ bool PAPlayer::ProcessPAP()
           m_filePAP.Seek(m_lastByteOffset + iOffset, SEEK_SET);
           m_cantSeek = 1;  
           m_lastByteOffset = m_filePAP.GetPosition();
-          m_startOffset = (__int64)(((float)m_lastByteOffset / (float) m_AverageInputBytesPerSecond) * 1000.00);
-          if (m_bHasVBRInfo)
-            m_startOffset = m_vbrInfo.GetTimeOffset(m_lastByteOffset);
+          m_startOffset = m_seekInfo.GetTimeOffset(m_lastByteOffset);
           m_dwBytesSentOut = 0;
           SetVolume(g_stSettings.m_nVolumeLevel - VOLUME_FFWD_MUTE); // override xbmc mute 
          } // Is our next position smaller then the start...

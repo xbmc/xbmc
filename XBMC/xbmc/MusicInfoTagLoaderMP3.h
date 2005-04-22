@@ -20,6 +20,8 @@ public:
     m_iSeekOffsets = 0;
     m_fTotalDuration = 0.0f;
     m_SeekOffset = NULL;
+    m_iFirstSample = 0;
+    m_iLastSample = 0;
   };
   virtual ~CVBRMP3SeekHelper()
   {
@@ -71,10 +73,20 @@ public:
   int GetNumOffsets() const { return m_iSeekOffsets; };
   const float *GetOffsets() const { return m_SeekOffset; };
 
+  void SetSampleRange(int firstSample, int lastSample)
+  { 
+    m_iFirstSample = firstSample;
+    m_iLastSample = lastSample;
+  };
+  int GetFirstSample() const { return m_iFirstSample; };
+  int GetLastSample() const { return m_iLastSample; };
+
 protected:
   float m_fTotalDuration;
   int m_iSeekOffsets;
   float *m_SeekOffset;
+  int m_iFirstSample;
+  int m_iLastSample;
 };
 
 class CMusicInfoTagLoaderMP3: public IMusicInfoTagLoader
@@ -84,7 +96,7 @@ public:
   virtual ~CMusicInfoTagLoaderMP3();
   virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
   bool ReadTag(ID3_Tag& id3tag, CMusicInfoTag& tag);
-  bool GetSeekInfo(CVBRMP3SeekHelper &info);
+  void GetSeekInfo(CVBRMP3SeekHelper &info);
 
 protected:
   int ReadDuration(CFile& file, const ID3_Tag& id3tag);

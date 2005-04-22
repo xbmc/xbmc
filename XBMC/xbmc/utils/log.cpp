@@ -104,6 +104,27 @@ void CLog::DebugLog(const char *format, ... )
   OutputDebugString(tmp);
 }
 
+void CLog::MemDump(BYTE *pData, int length)
+{
+  DebugLog("MEM_DUMP: Dumping from %x", pData);
+  for (int i = 0; i < length; i+=16)
+  {
+    CStdString strLine;
+    strLine.Format("MEM_DUMP: %04x ", i);
+    for (int k=0; k < 4; k++)
+    {
+      for (int j=0; j < 4; j++)
+      {
+        CStdString strFormat;
+        strFormat.Format(" %02x", *pData++);
+        strLine += strFormat;
+      }
+      strLine += " ";
+    }
+    DebugLog(strLine.c_str());
+  }
+}
+
 int CLog::GetLevel()
 {
   return g_stSettings.m_iLogLevel;
