@@ -197,6 +197,14 @@ void CDirectoryCache::InitThumbCache()
     g_directoryCache.m_thumbDirs.insert(strThumb);
     strThumb += "\\imdb";
     g_directoryCache.m_thumbDirs.insert(strThumb);
+    for (unsigned int hex=0; hex < 16; hex++)
+    {
+      CStdString strThumbLoc = g_stSettings.szThumbnailsDirectory;
+      CStdString strHex;
+      strHex.Format("%x",hex);
+      strThumbLoc += "\\" + strHex;
+      g_directoryCache.m_thumbDirs.insert(strThumbLoc);
+    }
   }
 
   InitCache(g_directoryCache.m_thumbDirs);
