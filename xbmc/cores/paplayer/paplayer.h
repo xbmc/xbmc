@@ -72,6 +72,7 @@ private:
   
 
   DllLoader *m_pDll;                  // PAP DLL
+  bool m_bDllLoaded;                  // whether our dll is loaded
   bool LoadDLL();                     // load the DLL in question
   IAudioDecoder* m_pPAP;            // handle to the codec.
 
@@ -86,6 +87,10 @@ private:
   BYTE* m_pInputBuffer;   // our PAP input buffer
   int CreateBuffer();     // initializes the above
   void KillBuffer();      // kills the above
+
+  bool m_IgnoreFirst;     // Ignore first samples if this is true (for gapless playback)
+  bool m_IgnoreLast;     // Ignore first samples if this is true (for gapless playback)
+  BYTE *m_pIgnoredFirstBytes;  // amount of samples ignored thus far
 
   bool ProcessPAP();    // does the actual reading and decode from our PAP dll
  
@@ -110,6 +115,5 @@ private:
   int     m_iLastSpeed;
   bool    m_bGuessByterate;
 
-  bool    m_bHasVBRInfo;
-  CVBRMP3SeekHelper m_vbrInfo;
+  CVBRMP3SeekHelper m_seekInfo;
 };
