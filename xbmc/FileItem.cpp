@@ -579,10 +579,10 @@ void CFileItem::FillInDefaultIcon()
   }
 }
 
+// set the thumbnail for an file item
 void CFileItem::SetThumb()
 {
   CStdString strThumb;
-  // set the thumbnail for an file item
 
   // if it already has a thumbnail, then return
   if (HasThumbnail()) return ;
@@ -626,11 +626,15 @@ void CFileItem::SetThumb()
   else
     item.m_strPath = m_strPath;
 
-  // get filename of cached thumbnail like Q:\thumbs\aed638.tbn
+  // get filename of cached thumbnail like Q:\thumbs\00aed638.tbn
   CStdString strCachedThumbnail;
+  CUtil::GetCachedThumbnail(item.m_strPath,strCachedThumbnail);
+
+  /*
   Crc32 crc;
   crc.ComputeFromLowerCase(item.m_strPath);
   strCachedThumbnail.Format("%s\\%x.tbn", g_stSettings.szThumbnailsDirectory, crc);
+  */
 
   bool bGotIcon(false);
 
