@@ -599,11 +599,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("ProgramsLists.UseAutoSwitching") && g_guiSettings.GetInt("ProgramsLists.AutoSwitchMethod") == 2);
     }
-    else if (strSetting == "MyMusic.Visualisation")
-    { // enable the visualisation chooser only if visualisations are enabled
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MyMusic.VisEnabled"));
-    }
     else if (strSetting == "MusicLists.AutoSwitchUseLargeThumbs" || strSetting == "MusicLists.AutoSwitchMethod")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1049,7 +1044,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   { // new visualisation choosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    g_guiSettings.SetString("MyMusic.Visualisation", pControl->GetCurrentLabel() + ".vis");
+    if (pControl->GetValue() == 0)
+      pSettingString->SetData("None");
+    else
+      pSettingString->SetData(pControl->GetCurrentLabel() + ".vis");
   }
   else if (strSetting == "MyMusic.Repeat")
   {
@@ -1877,8 +1875,6 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting)
   CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetShowRange(true); // show the range
-  int iCurrentVis = 0;
-  int iVis = 0;
   vector<CStdString> vecVis;
   //find visz....
   CHDDirectory directory;
@@ -1901,9 +1897,15 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting)
   }
 
   CStdString strDefaultVis = pSettingString->GetData();
-  strDefaultVis.Delete(strDefaultVis.size() - 4, 4);
+  if (!strDefaultVis.Equals("None"))
+    strDefaultVis.Delete(strDefaultVis.size() - 4, 4);
 
   sort(vecVis.begin(), vecVis.end(), sortstringbyname());
+
+  // add the "disabled" setting first
+  int iVis = 0;
+  int iCurrentVis = 0;
+  pControl->AddLabel(g_localizeStrings.Get(231), iVis++);
   for (int i = 0; i < (int) vecVis.size(); ++i)
   {
     CStdString strVis = vecVis[i];

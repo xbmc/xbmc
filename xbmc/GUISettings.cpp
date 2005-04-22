@@ -184,7 +184,6 @@ CGUISettings::CGUISettings(void)
   // My Music Settings
   AddGroup(3, 2);
   AddCategory(3, "MyMusic", 249);
-  AddBool(1, "MyMusic.VisEnabled", 510, true);
   AddString(2, "MyMusic.Visualisation", 250, "goom.vis", SPIN_CONTROL_TEXT);
   AddBool(3, "MyMusic.AutoPlayNextItem", 489, true);
   AddBool(4, "MyMusic.Repeat", 488, false);
