@@ -2248,6 +2248,15 @@ void CUtil::ClearCache()
   strThumb = g_stSettings.szThumbnailsDirectory;
   g_directoryCache.ClearDirectory(strThumb);
   g_directoryCache.ClearDirectory(strThumb + "\\imdb");
+
+  for (unsigned int hex=0; hex < 16; hex++)
+  {
+    CStdString strThumbLoc = g_stSettings.szThumbnailsDirectory;
+    CStdString strHex;
+    strHex.Format("%x",hex);
+    strThumbLoc += "\\" + strHex;
+    g_directoryCache.ClearDirectory(strThumbLoc);
+  }
 }
 
 void CUtil::SortFileItemsByName(CFileItemList& items, bool bSortAscending /*=true*/)
