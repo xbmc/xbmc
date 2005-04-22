@@ -828,6 +828,15 @@ HRESULT CApplication::Initialize()
   CreateDirectory(g_stSettings.m_szScreenshotsDirectory, NULL);
 
   CLog::Log(LOGINFO, "  thumbnails folder:%s", g_stSettings.szThumbnailsDirectory);
+  for (unsigned int hex=0; hex < 16; hex++)
+  {
+    CStdString strThumbLoc = g_stSettings.szThumbnailsDirectory;
+    CStdString strHex;
+    strHex.Format("%x",hex);
+    strThumbLoc += "\\" + strHex;
+    CreateDirectory(strThumbLoc.c_str(),NULL);
+  }
+
   CLog::Log(LOGINFO, "  shortcuts folder:%s", g_stSettings.m_szShortcutDirectory);
   CLog::Log(LOGINFO, "  albums folder:%s", g_stSettings.m_szAlbumDirectory);
   CLog::Log(LOGINFO, "  recording folder:%s", g_stSettings.m_szMusicRecordingDirectory);
