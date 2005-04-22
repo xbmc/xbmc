@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 22-04-2005 changed: my music, adding songs to existing, stopped playlist will start the first song added
   - 22-04-2005 added: audioscrobbler now saves a cache if no server is available or connection failed
   - 22-04-2005 fixed: audioscrobbler tried to submit songs, before the initial handshake with the server succeeds
   - 19-04-2005 changed: increased thumb cache to 64K thumbs (from 4K)
