@@ -238,11 +238,12 @@ void CScrobbler::DoSubmit()
     StatusUpdate(S_NOT_SUBMITTING,"Previous submission still in progress");
     return;
   }
+
+  if (m_strUserName.IsEmpty() || m_strPassword.IsEmpty() || !m_bReadyToSubmit)
+    return;
+
   m_bSubmitInProgress = true;
 
-
-  if (m_strUserName == "" || m_strPassword == "" || !m_bReadyToSubmit)
-    return;
   StatusUpdate(S_SUBMITTING,"Submitting cache...");
   time_t now;
   time (&now);
