@@ -1,6 +1,6 @@
 import xbmc, xbmcgui, re, os
 
-thumbDir = "E:\\data\\thumbs"
+thumbDir = "Q:\\thumbs"
 files = os.listdir(thumbDir)
 test = re.compile("\.tbn$", re.IGNORECASE)
 files = filter(test.search, files)
