@@ -743,6 +743,7 @@
   <string><id>13355</id><value>Low Quality Pixel Shader</value></string>
   <string><id>13356</id><value>Hardware Overlays</value></string>
   <string><id>13357</id><value>High Quality Pixel Shader</value></string>
+  <string><id>13358</id><value>Play Item</value></string>
   <string><id>13360</id><value>Generate Thumbs</value></string>
   <string><id>13361</id><value>Enable Voice</value></string>
   <string><id>13362</id><value>Voice Mask</value></string>

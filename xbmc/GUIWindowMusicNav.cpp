@@ -1269,37 +1269,7 @@ void CGUIWindowMusicNav::PlayItem(int iItem)
 
   // root is not allowed
   if (m_iState == SHOW_ROOT)
-    return ;
+    return;
 
-  const CFileItem* pItem = m_vecItems[iItem];
-  // if its a folder, build a temp playlist
-  if (pItem->m_bIsFolder)
-  {
-    // skip ".."
-    if (pItem->GetLabel() == "..")
-      return ;
-
-    // clear current temp playlist
-    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Clear();
-    g_playlistPlayer.Reset();
-
-    // recursively add items to temp playlist
-    AddItemToTempPlayList(pItem);
-
-    // play!
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
-    if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC_TEMP))
-    {
-      // if shuffled dont start on first song
-      g_playlistPlayer.SetCurrentSong(0);
-      g_playlistPlayer.PlayNext();
-    }
-    else
-      g_playlistPlayer.Play(0);
-  }
-  // otherwise just play the song
-  else
-  {
-    OnClick(iItem);
-  }
+  CGUIWindowMusicBase::PlayItem(iItem);
 }
