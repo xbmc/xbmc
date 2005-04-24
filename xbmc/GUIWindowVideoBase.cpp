@@ -895,6 +895,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
     iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
+  bool bEnabledDVD = strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0;
   // mark the item
   bool bSelected = m_vecItems[iItem]->IsSelected(); // item maybe selected (playlistitem)
   m_vecItems[iItem]->Select(true);
@@ -911,6 +912,9 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   pMenu->AddButton(13349); // Query Info For All Files
   pMenu->AddButton(13348); // Search IMDb...
   pMenu->AddButton(5);   // Settings
+  if(bEnabledDVD)
+    pMenu->AddButton(15213);
+
 
   // check to see if the Resume Video button is applicable
   int startOffset = 0;
@@ -946,6 +950,11 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   // turn off the query info button if we aren't in files view
   if (GetID() != WINDOW_VIDEOS)
     pMenu->EnableButton(5, false);
+  
+  if(bEnabledDVD && !(m_vecItems[iItem]->IsDVDFile(true, true) || m_vecItems[iItem]->IsDVD() || m_vecItems[iItem]->IsDVDImage()) )
+    pMenu->EnableButton(8, false);
+
+
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal(GetID());
@@ -974,6 +983,11 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     break;
   case 7:  // Settings
     m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
+    return ;
+    break;
+  case 8:  // Play using dvdplayer
+    g_application.m_strForcedNextPlayer = "dvdplayer";
+    OnClick(iItem);
     return ;
     break;
   }
