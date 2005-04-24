@@ -50,11 +50,15 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   InitializeCriticalSection(&m_critStreamSection);
   memset(&m_dvd, 0, sizeof(DVDInfo));
   m_dvd.iCurrentCell = -1;
+  m_dvd.iNAVPackStart = -1;
+  m_dvd.iNAVPackFinish = -1;
+  m_dvd.iFlagSentStart = 0;
   m_bReadData = false;
   m_filename[0] = '\0';
   m_bAbortRequest = false;
   m_iCurrentVideoStream = 0;
   m_iCurrentAudioStream = 0;
+  m_iCurrentPhysicalAudioStream = 0;
   m_bRenderSubtitle = false;
 }
 
@@ -270,7 +274,6 @@ void CDVDPlayer::Process()
 
     // read a data frame from stream.
     CDVDDemux::DemuxPacket* pPacket = m_pDemuxer->Read();
-
     // m_bFirstHandleMessages could be true, in which case we should handle some messages first
     if (m_bFirstHandleMessages && !pPacket)
     {
@@ -308,11 +311,8 @@ void CDVDPlayer::Process()
         break;
     }
 
-    if (pPacket)
-    {
-      oldstate = DVDSTATE_NORMAL;
-      iErrorCounter=0;
-    }
+    oldstate = DVDSTATE_NORMAL;
+    iErrorCounter=0;
 
     CDemuxStream *pStream = m_pDemuxer->GetStream(pPacket->iStreamId);
 
@@ -383,7 +383,15 @@ void CDVDPlayer::Process()
               m_dvdPlayerAudio.m_iSourceChannels != pStreamAudio->iChannels) CloseAudioStream(false);
         }
 
-        if (m_iCurrentAudioStream >= 0) m_dvdPlayerAudio.m_packetQueue.Put(pPacket);
+        if (m_iCurrentAudioStream >= 0) 
+          if (!(m_dvd.iFlagSentStart & 1) && pPacket->pts > m_dvd.iNAVPackStart && pPacket->pts < m_dvd.iNAVPackFinish)
+          {
+            m_dvdPlayerAudio.m_packetQueue.Put(pPacket, (void*)DVDSTATE_RESYNC);
+            m_dvd.iFlagSentStart |= 1;
+          }
+          else
+            m_dvdPlayerAudio.m_packetQueue.Put(pPacket);
+
         else CDVDDemuxUtils::FreeDemuxPacket(pPacket);
       }
       else if (pPacket->iStreamId == m_iCurrentVideoStream ||
@@ -392,7 +400,16 @@ void CDVDPlayer::Process()
         // if we have no video stream yet, openup the video device now
         if (m_iCurrentVideoStream < 0) OpenVideoStream(pPacket->iStreamId);
 
-        if (m_iCurrentVideoStream >= 0) m_dvdPlayerVideo.m_packetQueue.Put(pPacket);
+        if (m_iCurrentVideoStream >= 0) 
+          if (!(m_dvd.iFlagSentStart & 2) && pPacket->pts > m_dvd.iNAVPackStart && pPacket->pts < m_dvd.iNAVPackFinish)
+          {
+            //For some reason this isn't always found.. not sure why exactly. what should be used?? pts or dts???
+            m_dvdPlayerVideo.m_packetQueue.Put(pPacket, (void*)DVDSTATE_RESYNC);
+            m_dvd.iFlagSentStart |= 2;
+          }
+          else
+            m_dvdPlayerVideo.m_packetQueue.Put(pPacket);
+
         else CDVDDemuxUtils::FreeDemuxPacket(pPacket);
       }
       else CDVDDemuxUtils::FreeDemuxPacket(pPacket); // free it since we won't do anything with it
@@ -465,6 +482,7 @@ void CDVDPlayer::HandleMessages()
           if( ((CDVDInputStreamNavigator*)m_pInputStream)->SeekPercentage(pMessage->iValue))
           {
             FlushBuffers();
+            m_pDemuxer->Reset();
           }
           else
             CLog::Log(LOGWARNING, "error while seeking");
@@ -853,7 +871,7 @@ void CDVDPlayer::SetAudioStream(int iStream)
     if (pStream->type == STREAM_AUDIO) audio_index++;
     if (iStream == audio_index)
     {
-      m_iDefaultAudioStreamNumber=iStream;
+      m_iCurrentPhysicalAudioStream=iStream;
       LockStreams();
       CloseAudioStream(false);
       if (!OpenAudioStream(stream_index))
@@ -931,15 +949,15 @@ void CDVDPlayer::RenderSubtitles()
  */
 bool CDVDPlayer::OpenDefaultAudioStream()
 {
-  int iCount=-1, iFirst=-1;;
+  int iCount=-1;
+  int iDefault=m_pDemuxer->GetStreamNoFromLogicalNo(m_iCurrentPhysicalAudioStream, STREAM_AUDIO);
   for (int i = 0; i < m_pDemuxer->GetNrOfStreams(); i++)
   {
     CDemuxStream* pStream = m_pDemuxer->GetStream(i);
     if (pStream->type == STREAM_AUDIO)
     {
       iCount++;
-      if(iFirst<0) iFirst = i;
-      if(iCount == m_iDefaultAudioStreamNumber)
+      if(iCount == iDefault)
       {
         CDemuxStreamAudio* pStreamAudio = (CDemuxStreamAudio*)pStream;
         {
@@ -947,11 +965,7 @@ bool CDVDPlayer::OpenDefaultAudioStream()
         }
       }
     }
-
   }
-
-  //Requested stream not found just open first
-  if (OpenAudioStream(iFirst)) return true;
   return false;
 }
 
@@ -1041,6 +1055,7 @@ void CDVDPlayer::FlushBuffers()
 {
   m_dvdPlayerAudio.Flush();
   m_dvdPlayerVideo.Flush();
+  m_dvd.iFlagSentStart = 0; //We will have a discontinuity here
 }
 
 // since we call ffmpeg functions to decode, this is being called in the same thread as ::Process() is
@@ -1132,26 +1147,12 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       dvdnav_audio_stream_change_event_t* event = (dvdnav_audio_stream_change_event_t*)pData;
       
       //Tell system what audiostream should be opened by default
-      m_iDefaultAudioStreamNumber = event->physical;
-
-      //If we have demuxer open already, make it change
-      int audio_index = -1;
-      for (int stream_index = 0; stream_index < m_pDemuxer->GetNrOfStreams(); stream_index++)
+      if (m_iCurrentPhysicalAudioStream != event->physical)
       {
-        CDemuxStream* pStream = m_pDemuxer->GetStream(stream_index);
-        if (pStream->type == STREAM_AUDIO) audio_index++;
-        if (audio_index == event->physical)
-        {
-          if( stream_index != m_iCurrentAudioStream )
-          {
-            LockStreams();
-            CloseAudioStream(false);
-            if (!OpenAudioStream(stream_index))
-              OpenDefaultAudioStream();
-            UnlockStreams();
-          }
-          break;
-        }
+        m_iCurrentPhysicalAudioStream = event->physical;
+        LockStreams();
+        CloseAudioStream(false); //Close current, it will be reopened automatically
+        UnlockStreams();
       }
     }
     break;
@@ -1209,6 +1210,16 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
     break;
   case DVDNAV_NAV_PACKET:
     {
+        pci_t* pci = (pci_t*)pData;
+
+        if( pci->pci_gi.vobu_s_ptm*10 != m_dvd.iNAVPackFinish)
+        {
+          m_dvdPlayerVideo.ExpectDiscontinuity();
+          m_dvd.iFlagSentStart=0;
+          //Only set this when we have the first non continous packet
+          m_dvd.iNAVPackStart = pci->pci_gi.vobu_s_ptm*10;
+        }
+        m_dvd.iNAVPackFinish = pci->pci_gi.vobu_e_ptm*10;      
     }
     break;
   case DVDNAV_HOP_CHANNEL:
@@ -1265,6 +1276,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         CLog::DebugLog(" - go to menu");
         pStream->OnMenu();
         m_dvd.state = DVDSTATE_NORMAL;
+        return true;
       }
       break;
     }

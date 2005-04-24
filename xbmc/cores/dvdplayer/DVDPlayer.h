@@ -23,6 +23,7 @@ class CDemuxStreamAudio;
 
 #define DVDSTATE_NORMAL 0x00000001 // normal dvd state
 #define DVDSTATE_STILL  0x00000002 // currently displaying a still frame
+#define DVDSTATE_RESYNC 0x00000004 // will be set in a packet to signal that we have an discontinuity
 
 typedef struct DVDInfo
 {
@@ -34,6 +35,9 @@ typedef struct DVDInfo
   int iSelectedSPUStream; // mpeg stream id, or -1 if disabled
   int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
   // DVDVideoPicture* pStillPicture;
+  unsigned __int64 iNAVPackStart;
+  unsigned __int64 iNAVPackFinish;
+  int iFlagSentStart;
 }
 DVDInfo;
 
@@ -135,7 +139,7 @@ public:
   CDemuxStreamAudio* m_pCurrentDemuxStreamAudio;
   int m_iCurrentVideoStream;
   int m_iCurrentAudioStream;
-  int m_iDefaultAudioStreamNumber; //The x:th audio stream will be opened by default
+  int m_iCurrentPhysicalAudioStream; //The x:th audio stream will be opened by default
 
   CDVDPlayerAudio m_dvdPlayerAudio;
   CDVDPlayerVideo m_dvdPlayerVideo;
