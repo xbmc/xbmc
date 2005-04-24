@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 24-04-2005 changed: white button on keypad now brings up the new time/progessbar
   - 22-04-2005 fixed: Location of Kai Thumbs didn't use the thumbs folder configured.
   - 22-04-2005 added: gapless mp3 playback.  Files should be encoded with LAME (>3.90.3) in order to be truly gapless.
   - 22-04-2005 changed: Enable Visualisation combined into vis spincontrol (first option is Off).
