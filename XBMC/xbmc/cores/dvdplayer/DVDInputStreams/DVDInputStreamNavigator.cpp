@@ -387,7 +387,9 @@ int CDVDInputStreamNavigator::ProcessBlock()
         // and decoding pipeline just like any other data.
         pci_t* pci = dvdnav_get_current_nav_pci(m_dvdnav);
         m_iCurrentTime = (int)((pci->pci_gi.vobu_s_ptm / 100000) & 0xFFFFFFFF);
-        //CLog::DebugLog("NAV Pakcet");
+        
+        m_pDVDPlayer->OnDVDNavResult((void*)pci, DVDNAV_NAV_PACKET);
+
       }
       break;
 

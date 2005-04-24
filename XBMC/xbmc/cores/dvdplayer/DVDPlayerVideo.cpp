@@ -27,6 +27,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock) : CThread
   m_pOverlayPicture = NULL;
   m_iSpeed = 1;
   m_bRenderSubs = false;
+  m_iDiscontinousPicts = 0;
 
   InitializeCriticalSection(&m_critCodecSection);
   m_packetQueue.SetMaxSize(5 * 256 * 1024); // 1310720
@@ -114,6 +115,10 @@ void CDVDPlayerVideo::OnStartup()
   pictq_rindex = 0;
   pictq_windex = 0;
 }
+void CDVDPlayerVideo::ExpectDiscontinuity()
+{
+  m_iDiscontinousPicts = 30; //Guess something close to 30.. this should be reset as soon as a proper package is found
+}
 
 void CDVDPlayerVideo::Process()
 {
@@ -122,7 +127,7 @@ void CDVDPlayerVideo::Process()
   HANDLE hVideoRefreshThread;
   CDVDDemux::DemuxPacket* pPacket;
   DVDVideoPicture picture;
-  __int64 pts;
+  __int64 pts=0;
   int dvdstate;
 
   m_bRunningVideo = true;
@@ -136,8 +141,15 @@ void CDVDPlayerVideo::Process()
 
     if (m_packetQueue.Get(&pPacket, 1, (void**)&dvdstate) < 0) break;
 
-    pts = 0;
-    if (pPacket->dts != DVD_NOPTS_VALUE) pts = pPacket->dts;
+    if (dvdstate == DVDSTATE_RESYNC)
+    {
+      //Discontinuity found, use normal time adjustments again after all qued pics has been rendered;
+      m_iDiscontinousPicts = pictq_size; //We really don't know how many packets where left 
+    }
+    else if (dvdstate == DVDSTATE_STILL)
+      m_iDiscontinousPicts = 0;
+
+    pts = pPacket->dts == DVD_NOPTS_VALUE ? 0 : pPacket->dts;        
 
     EnterCriticalSection(&m_critCodecSection);
     int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize);
@@ -184,7 +196,6 @@ void CDVDPlayerVideo::Process()
       iDecoderState = m_pVideoCodec->Decode(NULL, NULL);
     }
     LeaveCriticalSection(&m_critCodecSection);
-
     // all data is used by the decoder, we can safely free it now
     CDVDDemuxUtils::FreeDemuxPacket(pPacket);
   }
@@ -405,6 +416,7 @@ DWORD video_refresh_thread(void *arg)
   DVDVideoPicture *vp;
 
   CLog::Log(LOGNOTICE, "running thread: video_refresh_thread");
+  int iSleepTime = 0; //Needed to remember old sleeptime when in discontinuities
 
   while (pDVDPlayerVideo->m_bRunningVideo)
   {
@@ -417,9 +429,20 @@ DWORD video_refresh_thread(void *arg)
     {
       // dequeue the picture
       vp = &pDVDPlayerVideo->pictq[pDVDPlayerVideo->pictq_rindex];
-
+      
       // determine time to sleep before we display the picture
-      int iSleepTime = (int)((vp->pts - pDVDPlayerVideo->m_pClock->GetClock()) & 0xFFFFFFFF);;
+      // use old sleeptime if we are expecting a discontinuity
+      if (pDVDPlayerVideo->m_iDiscontinousPicts>0)
+      {
+        //Clock is in a discontinous state, just use old sleep time
+        if(iSleepTime == 0)
+          iSleepTime = 30000; //Guess something close to 30fps        
+        pDVDPlayerVideo->m_iDiscontinousPicts--;
+      }
+      else
+      {
+        iSleepTime = (int)((vp->pts - pDVDPlayerVideo->m_pClock->GetClock()) & 0xFFFFFFFF);
+      }
       if (iSleepTime > 500000) iSleepTime = 500000; // drop to a minimum of 2 frames/sec
 
       // we could drop some frames here too if iSleepTime < 0, but I don't think it will be any
