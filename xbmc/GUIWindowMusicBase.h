@@ -67,22 +67,27 @@ protected:
   virtual void OnQueueItem(int iItem);
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
   virtual void GoParentFolder();
+  virtual void ClearFileItems();
+  virtual void Update(const CStdString &strDirectory);
+  virtual void AddItemToPlayList(const CFileItem* pItem);
+  virtual void OnSearchItemFound(const CFileItem* pItem);
+  virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
+  virtual void OnScan() {};
+  virtual void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
+
+  // new methods
+  virtual void PlayItem(int iItem);
+  virtual void AddItemToTempPlayList(const CFileItem* pItem);
+
   void RetrieveMusicInfo();
   void OnInfo(int iItem);
   bool FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumInfo& album);
   void ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh);
-  virtual void ClearFileItems();
-  virtual void Update(const CStdString &strDirectory);
   void UpdateListControl();
-  virtual void AddItemToPlayList(const CFileItem* pItem);
   void OnRipCD();
-  virtual void OnScan() {};
   void OnSearch();
-  virtual void OnSearchItemFound(const CFileItem* pItem);
-  virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
   bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
   bool GetKeyboard(CStdString& strInput);
-  virtual void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   bool ViewByIcon();
   bool ViewByLargeIcon();
   void DisplayEmptyDatabaseMessage(bool bDisplay);
