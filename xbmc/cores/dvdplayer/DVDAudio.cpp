@@ -189,13 +189,12 @@ __int64 CDVDAudio::GetDelay()
   if (m_pAudioDecoder)
   {
     CSingleLock lock (m_critSection);
-    DWORD dwSpace = m_pAudioDecoder->GetSpace();
     delay = (__int64)(m_pAudioDecoder->GetDelay() * DVD_TIME_BASE);
     bool bIsResampling = m_pAudioDecoder->IsResampling();
     lock.Leave();
-
-    if (bIsResampling) delay += (((__int64)(m_iPackets * m_dwPacketSize) - dwSpace) * DVD_TIME_BASE) / (48000 * m_iChannels * 2);
-    else delay += (((__int64)(m_iPackets * m_dwPacketSize) - dwSpace) * DVD_TIME_BASE) / (m_iBitrate * m_iChannels * 2);
+    
+    if (bIsResampling) delay += ((__int64)m_pAudioDecoder->GetBytesInBuffer() * DVD_TIME_BASE) / (48000 * m_iChannels * 2);
+    else delay += ((__int64)m_pAudioDecoder->GetBytesInBuffer() * DVD_TIME_BASE) / (m_iBitrate * m_iChannels * 2);
 
     return delay;
   }
