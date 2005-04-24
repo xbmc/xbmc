@@ -18,16 +18,16 @@ protected:
   virtual void DoSort(CFileItemList& items);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
   virtual void OnSearchItemFound(const CFileItem* pItem);
-
-  void SetHistoryForPath(const CStdString& strDirectory);
   virtual void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
-
   virtual void OnScan();
-  void LoadPlayList(const CStdString& strPlayList);
-
   virtual void Update(const CStdString &strDirectory);
 
+  // new method
+  virtual void PlayItem(int iItem);
+
+  void SetHistoryForPath(const CStdString& strDirectory);
+  void LoadPlayList(const CStdString& strPlayList);
   void LoadDirectoryCache(const CStdString& strDirectory, MAPFILEITEMS& items);
   void SaveDirectoryCache(const CStdString& strDirectory, CFileItemList& items);
   void DeleteDirectoryCache();
