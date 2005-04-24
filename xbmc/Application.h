@@ -226,6 +226,7 @@ public:
   bool m_bMasterLockPreviouslyEntered;
   int m_iMasterLockRetriesRemaining;
   bool m_bMasterLockOverridesLocalPasswords;
+  CStdString m_strForcedNextPlayer;
 
 protected:
   CStdString m_strCurrentPlayer;

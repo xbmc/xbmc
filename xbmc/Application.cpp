@@ -115,6 +115,7 @@ CApplication::CApplication(void)
   m_bMasterLockPreviouslyEntered = false;
   m_bMasterLockOverridesLocalPasswords = false;
   m_bInitializing = true;
+  m_strForcedNextPlayer = "";
 }
 
 CApplication::~CApplication(void)
@@ -2646,15 +2647,20 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   CURL url(item.m_strPath);
   CStdString strNewPlayer = "mplayer";
-  if ( url.GetProtocol() == "cdda")
+  if (m_strForcedNextPlayer.length() != 0)
+  {
+    strNewPlayer = m_strForcedNextPlayer;
+    m_strForcedNextPlayer = "";
+  }
+  else if ( url.GetProtocol() == "cdda")
   {
     strNewPlayer = "cdda";
   }
-  else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 &&
-           (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage()))
-  {
-    strNewPlayer = "dvdplayer";
-  }
+  //else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 &&
+  //         (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage()))
+  //{
+  //  strNewPlayer = "dvdplayer";
+  //}
   else if (ModPlayer::IsSupportedFormat(url.GetFileType()))
   {
     strNewPlayer = "mod";
@@ -2667,6 +2673,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     if (CUtil::FileExists("Q:\\system\\players\\paplayer\\in_mp3.dll"))  strNewPlayer = "paplayer";
   }
+
   // Check if we are moving from one cue sheet item to the next
   // need:
   // 1.  player to exist
