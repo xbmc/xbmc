@@ -9,9 +9,13 @@
 #include "DVDdemuxUtils.h"
 #include "..\DVDClock.h" // for DVD_TIME_BASE
 
+#define SWAP(a,b)   { int t; t=a; a=b; b=t; }
+    
+
 // class CDemuxStreamVideoFFmpeg
 void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
 {
+  if(!pPrivate) return;
   char temp[128];
   avcodec_string(temp, 128, &((AVStream*)pPrivate)->codec, 0);
   strInfo = temp;
@@ -20,6 +24,7 @@ void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
 // class CDemuxStreamVideoFFmpeg
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
+  if(!pPrivate) return;
   char temp[128];
   avcodec_string(temp, 128, &((AVStream*)pPrivate)->codec, 0);
   strInfo = temp;
@@ -362,6 +367,52 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
   return pPacket;
 }
 
+int CDVDDemuxFFmpeg::GetStreamNoFromLogicalNo(int iLogical, StreamType iType)
+{
+  //Get the n'th stream sorted on internal id
+
+  int n = GetNrOfStreams();
+
+  int pOrdered[20];
+
+  int i, j=0, k=0;
+  for(i=0;i<n;i++)
+  {
+    if (m_streams[i]->type == iType)
+      if( m_streams[i]->codec == CODEC_ID_DTS)
+        pOrdered[k++]=m_streams[i]->iId-8; //DTS is apperently counted as an AC3 stream when libdvdnav counts streams
+      else
+        pOrdered[k++]=m_streams[i]->iId;
+  }
+
+  if( iLogical >= k ) return -1;
+
+  for (i=0; i<k-1; i++) {
+    for (j=0; j<k-1-i; j++)
+      if (pOrdered[j+1] < pOrdered[j]) {  /* compare the two neighbors */
+        SWAP(pOrdered[j],pOrdered[j+1])
+    }
+  }
+
+  //Store stream->id
+  k = pOrdered[iLogical];
+
+  //Find what number of type itype that is
+  j=-1;
+  for(i=0;i<n;i++)
+  {
+    if( m_streams[i]->type == iType ) j++;
+    if( m_streams[i]->codec == CODEC_ID_DTS )
+    {
+      if(m_streams[i]->iId-8 == k) return j;
+    }
+    else
+      if(m_streams[i]->iId == k) return j;
+  }
+
+  return -1;
+}
+
 bool CDVDDemuxFFmpeg::Seek(int iTime)
 {
   Lock();
@@ -437,6 +488,9 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
     m_streams[iId]->codec = pStream->codec.codec_id;
     m_streams[iId]->iId = pStream->id;
+
+    if( m_streams[iId]->codec == CODEC_ID_AC3 && (m_streams[iId]->iId & 0x8) )
+      m_streams[iId]->codec = CODEC_ID_DTS;
 
     // we set this pointer to detect a stream changed inside ffmpeg
     // used to extract info too

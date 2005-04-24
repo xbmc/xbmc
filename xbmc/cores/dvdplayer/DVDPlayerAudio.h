@@ -51,7 +51,6 @@ protected:
 
   CDVDAudioCodec* m_pAudioCodec; // audio codec
 
-
   // for audio decoding
   CDVDDemux::DemuxPacket* pAudioPacket;
   BYTE* audio_pkt_data; // current audio packet

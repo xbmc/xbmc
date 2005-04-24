@@ -1,6 +1,7 @@
 
 #include "../../stdafx.h"
 #include "DVDPlayerAudio.h"
+#include "DVDPlayer.h"
 #include "DVDCodecs\DVDAudioCodec.h"
 #include "DVDCodecs\DVDFactoryCodec.h"
 #include "DVDCodecs\dvdaudiocodecpassthrough.h"
@@ -11,12 +12,19 @@
 #define EMULATE_INTTYPES
 #include "ffmpeg\avcodec.h"
 
+#define ROUNDED_DIV(a,b) (((a)>0 ? (a) + ((b)>>1) : (a) - ((b)>>1))/(b))
+#define ABS(a) ((a) >= 0 ? (a) : (-(a)))
+
+#define FFMAX(a,b) ((a) > (b) ? (a) : (b))
+#define FFMIN(a,b) ((a) > (b) ? (b) : (a))
+
 CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) : CThread()
 {
   m_pClock = pClock;
   m_pAudioCodec = NULL;
   m_bInitializedOutputDevice = false;
   m_iSourceChannels = 0;
+  m_audioClock = 0;
 
   InitializeCriticalSection(&m_critCodecSection);
   m_packetQueue.SetMaxSize(10 * 16 * 1024);
@@ -124,20 +132,30 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
 {
   CDVDDemux::DemuxPacket* pPacket = pAudioPacket;
-  int n, len, data_size;
+  int n=48000*2*16/8, len, data_size;
+
+  //Store amount left at this point, and what last pts was
+  unsigned __int64 first_pkt_pts = 0;
+  int first_pkt_size = 0; 
+  int first_pkt_used = 0;
+  if (pPacket)
+  {
+    first_pkt_pts = pPacket->pts;
+    first_pkt_size = pPacket->iSize;
+    first_pkt_used = first_pkt_size - audio_pkt_size;
+  }
 
   for (;;)
   {
     /* NOTE: the audio packet can contain several frames */
     while (audio_pkt_size > 0)
     {
-      EnterCriticalSection(&m_critCodecSection);
       len = m_pAudioCodec->Decode(audio_pkt_data, audio_pkt_size);
-      LeaveCriticalSection(&m_critCodecSection);
       if (len < 0)
       {
         /* if error, we skip the frame */
-        audio_pkt_size = 0;
+        audio_pkt_size=0;
+        m_pAudioCodec->Reset();
         break;
       }
 
@@ -148,14 +166,12 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
       audio_pkt_size -= len;
 
       if (data_size <= 0) continue;
-
-      // if no pts, then compute it
-      n = 2 * m_pAudioCodec->GetChannels();
-      m_audioClock += ((__int64)data_size * DVD_TIME_BASE) / (n * m_pAudioCodec->GetSampleRate());
-
+      
+      // compute pts.
+      n = m_pAudioCodec->GetChannels() * m_pAudioCodec->GetBitsPerSample() / 8 * m_pAudioCodec->GetSampleRate();
+      m_audioClock += ((__int64)data_size * (__int64)DVD_TIME_BASE) / (__int64)n;
       return data_size;
     }
-
     /* free the current packet */
     if (pPacket)
     {
@@ -165,18 +181,46 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
     }
 
     if (m_packetQueue.RecievedAbortRequest()) return -1;
-
+    
     // read next packet and return -1 on error
-    if (m_packetQueue.Get(&pPacket, 1) < 0) return -1;
+    int dvdstate=0, packstate=0;
+    LeaveCriticalSection(&m_critCodecSection); //Leave here as this might stall a while
+    packstate = m_packetQueue.Get(&pPacket, 1, (void**)&dvdstate);
+    EnterCriticalSection(&m_critCodecSection);
+    if (packstate < 0) return -1;
 
     pAudioPacket = pPacket;
     audio_pkt_data = pPacket->pData;
     audio_pkt_size = pPacket->iSize;
 
     // if update the audio clock with the pts
-    if (pPacket->pts != DVD_NOPTS_VALUE)
+    if (dvdstate == DVDSTATE_RESYNC || first_pkt_pts > pPacket->pts)
     {
-      m_audioClock = ((__int64)pPacket->pts * DVD_TIME_BASE) / AV_TIME_BASE;
+      //Okey first packet in this continous stream,
+      //Setup clock, and then exit so we player can sync clock
+      m_audioClock = pPacket->pts;
+      m_pAudioCodec->Reset();
+      return 0;
+    }
+    else if (pPacket->pts != DVD_NOPTS_VALUE)
+    {
+      if (first_pkt_size == 0) 
+      {
+        m_audioClock = pPacket->pts;
+        continue;
+      }
+
+      if((unsigned __int64)m_audioClock < first_pkt_pts || (unsigned __int64)m_audioClock > pPacket->pts)
+      {
+        //crap, moved outsided correct pts
+        //Use pts from current packet, untill we find a better value for it.
+        //Should be ok after a couple of frames, as soon as it starts clean on a packet
+        m_audioClock = pPacket->pts;
+      }
+      else if(first_pkt_size == first_pkt_used)
+      { //Nice starting up freshly on the start of a packet, use pts from it
+        m_audioClock = pPacket->pts;
+      }
     }
   }
 }
@@ -184,6 +228,7 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
 void CDVDPlayerAudio::OnStartup()
 {
   pAudioPacket = NULL;
+  m_audioClock = 0;
   audio_pkt_data = NULL;
   audio_pkt_size = 0;
 }
@@ -193,28 +238,26 @@ void CDVDPlayerAudio::Process()
   CLog::Log(LOGNOTICE, "running thread: audio_thread");
 
   int len;
-  int iAudioBufferSize = 0;
-  int iAudioBufferIndex = 0;
 
   // silence data
   BYTE silence[1024];
   memset(silence, 0, 1024);
 
   BYTE* pAudioBuffer;
-
+  __int64 iClockDiff=0;
+  int iDiffCount=0;;
   while (!m_bStop)
   {
-    if (iAudioBufferIndex >= iAudioBufferSize)
+    //Don't let anybody mess with our global variables
+    EnterCriticalSection(&m_critCodecSection);
+    len = DecodeFrame(&pAudioBuffer); // blocks if no audio is available, but leaves critical section before doing so
+    LeaveCriticalSection(&m_critCodecSection);
+
+    if (len < 0)
     {
-      iAudioBufferSize = DecodeFrame(&pAudioBuffer); // blocks if no audio is available
-      if (iAudioBufferSize < 0)
-      {
-        iAudioBufferSize = 1024;
-        pAudioBuffer = silence;
-      }
-      iAudioBufferIndex = 0;
+      len = 1024;
+      pAudioBuffer = silence;
     }
-    len = iAudioBufferSize - iAudioBufferIndex;
 
     // we have succesfully decoded an audio frame, openup the audio device if not already done
     if (!m_bInitializedOutputDevice)
@@ -222,22 +265,36 @@ void CDVDPlayerAudio::Process()
       m_bInitializedOutputDevice = InitializeOutputDevice();
     }
 
-    // while (pDVDPlayer->m_bIsDVD && !pDVDPlayer->m_bDrawedFrame) Sleep(5); // wait for first video picture
-    __int64 iCurrentAudioClock = m_audioClock - m_dvdAudio.GetDelay();
-    __int64 iClockDiff = (iCurrentAudioClock - m_pClock->GetClock());
-    if (iClockDiff < 0) iClockDiff = 0 - iClockDiff;
-    //if (/*diff < 25000/ && */diff > -25000)
-    {
+    //Add any packets decode
+    if( len > 0 ) m_dvdAudio.AddPackets(pAudioBuffer, len);
 
-    }
-    if (iClockDiff > 5000) // sync clock if diff is bigger than 5 msec
+    //Clock should be calculated after packets have been addet
+    const __int64 iClock = m_pClock->GetClock();
+    const __int64 iCurrDiff = (m_audioClock - m_dvdAudio.GetDelay()) - iClock;
+    const __int64 iAvDiff = (iClockDiff + iCurrDiff)/2;
+
+    //Check for discontinuity in the stream, use an average of last two diffs to 
+    //eliminate fluctuations, and not over adjust
+    if( len == 0)
     {
-      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, iCurrentAudioClock);
-      CLog::DebugLog("CDVDPlayer:: Detected Audio Discontinuity, syncing clock");
-      //usleep(1000);
+      //Expected discontinuity
+      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, iClock + iCurrDiff);
+      iClockDiff = 0;
     }
-    m_dvdAudio.AddPackets(pAudioBuffer + iAudioBufferIndex, len);
-    iAudioBufferIndex += len;
+    else if (ABS(iAvDiff) > 5000) // sync clock if average diff is bigger than 5 msec 
+    {
+      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, iClock + iCurrDiff );
+      CLog::DebugLog("CDVDPlayer:: Detected Audio Discontinuity, syncing clock. diff was: %d, %d, av: %d", (int)iClockDiff, (int)iCurrDiff, (int)iAvDiff);
+      iClockDiff = 0;
+    }
+    else
+    {      
+      //Do gradual adjustments (not working yet)
+      //m_pClock->AdjustSpeedToMatch(iClock + iAvDiff);
+      iClockDiff = iCurrDiff;
+    }
+
+    
   }
 }
 
@@ -265,9 +322,12 @@ void CDVDPlayerAudio::Flush()
 {
   m_packetQueue.Flush();
   m_dvdAudio.Flush();
+
   if (m_pAudioCodec)
   {
     EnterCriticalSection(&m_critCodecSection);
+    audio_pkt_size = 0;
+    audio_pkt_data = NULL;
     m_pAudioCodec->Reset();
     LeaveCriticalSection(&m_critCodecSection);
   }

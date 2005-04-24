@@ -41,6 +41,7 @@ public:
   int GetStreamLenght();
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();
+  int GetStreamNoFromLogicalNo(int iLogical, StreamType iType);
 
   AVFormatContext* m_pFormatContext;
 

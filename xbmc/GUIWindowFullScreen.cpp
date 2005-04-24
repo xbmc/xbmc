@@ -299,6 +299,10 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
       while ( (newpos > orgpos - jumpsize) && (setpos > 0) && (--triesleft > 0));
       // repause player if needed
       if (bNeedPause) g_application.m_pPlayer->Pause();
+
+      //Make sure gui items are visible
+      g_infoManager.SetDisplayAfterSeek();
+
     }
     break;
   }
