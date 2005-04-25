@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.184. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.186. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -744,6 +744,7 @@
   <string><id>13355</id><value>Lavkvalitets pixel shader</value></string>
   <string><id>13356</id><value>Hardwareoverlegg</value></string>
   <string><id>13357</id><value>Høykvalitets pixel shader</value></string>
+  <string><id>13358</id><value>Spill av</value></string>
   <string><id>13360</id><value>Lag miniatyrbilder</value></string>
   <string><id>13361</id><value>Skru på tale</value></string>
   <string><id>13362</id><value>Stemmemaske</value></string>
@@ -921,5 +922,7 @@
   <string><id>15210</id><value>Cachet %i sanger</value></string>
   <string><id>15211</id><value>Sender...</value></string>
   <string><id>15212</id><value>Sender om %i sekunder</value></string>
+
+  <string><id>15213</id><value>[PLASSHOLDER]</value></string>
 </strings>
 
