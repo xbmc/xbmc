@@ -746,6 +746,7 @@
   <string><id>13355</id><value>Shader (niedrige Qualität)</value></string>
   <string><id>13356</id><value>Hardware Overlays</value></string>
   <string><id>13357</id><value>Shader (hohe Qualität)</value></string>
+  <string><id>13358</id><value>Abspielen</value></string>
   <string><id>13360</id><value>Abbilder erstellen</value></string>
   <string><id>13361</id><value>Voice aktivieren</value></string>
   <string><id>13362</id><value>Voice Maske</value></string>
@@ -923,4 +924,6 @@
   <string><id>15210</id><value>%i Songs in Cache</value></string>
   <string><id>15211</id><value>Übermittlung...</value></string>
   <string><id>15212</id><value>Übermittlung in %i sek</value></string>
+  
+  <string><id>15213</id><value>[PLACEHOLDER]</value></string>
 </strings>
