@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 25-04-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+  - 25-04-2005 updated: Italian language file (Thnx to kotix)
+  - 25-04-2005 updated: Norwegian language file (Thnx to vnm)
   - 24-04-2005 added: "Play Item" added to Music Context Menu to support PLAY action in Files and Library views since the Play action is not mapped by default on the gamepad
   - 24-04-2005 added: Play action in Music Files can be used to recursively play a folder using the temporary playlist (like in Music Library view)
   - 24-04-2005 fixed/changed: stuff-up with ac3/dts passthrough with dvdplayer and fixes to discontinuity handling
