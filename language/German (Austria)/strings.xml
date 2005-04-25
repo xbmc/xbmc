@@ -440,6 +440,7 @@
   <string><id>507</id><value>n. Verw. ord.</value></string>
   <string><id>508</id><value>Verknüpfungen und Durchsuchen deaktivieren</value></string>
   <string><id>509</id><value>Miniaturansichten zwischenspeichern</value></string>
+  <string><id>510</id><value>Visualisierungen aktivieren</value></string>
   <string><id>600</id><value>CD Rippen</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -740,6 +741,7 @@
   <string><id>13355</id><value>Pixel Shader (niedrige Qualität)</value></string> 
   <string><id>13356</id><value>Hardware Overlay</value></string> 
   <string><id>13357</id><value>Pixel Shader (hohe Qualität)</value></string>
+  <string><id>13358</id><value>Wiedergabe</value></string>
 
   <string><id>13360</id><value>Miniaturansichten erstellen</value></string>
   <string><id>13361</id><value>Spracheingabe aktivieren</value></string> 
@@ -902,7 +904,20 @@
   <string><id>15105</id><value>* Alle Genres</value></string> 
   <string><id>15106</id><value>Gewählte Datei bei weiterer Navigation merken</value></string>
   <string><id>15107</id><value>Zwischenspeichern...</value></string>
-  <string><id>15108</id><value>Navigations- Töne</value></string> 
+  <string><id>15108</id><value>Navigations Töne</value></string> 
   <string><id>15109</id><value>Vorgabe des Skins</value></string> 
+  <string><id>15200</id><value>AudioScrobbler</value></string> 
+  <string><id>15201</id><value>Lieder Infos an AudioScrobbler senden</value></string> 
+  <string><id>15202</id><value>- Benutzername</value></string> 
+  <string><id>15203</id><value>- Kennwort</value></string> 
+  <string><id>15204</id><value>Verbindungsfehler...</value></string> 
+  <string><id>15205</id><value>MediaCenter aktualisieren!</value></string> 
+  <string><id>15206</id><value>Übertragung fehlgeschlagen: Benutzerdaten prüfen!</value></string> 
+  <string><id>15207</id><value>Verbunden</value></string> 
+  <string><id>15208</id><value>Nicht verbunden</value></string> 
+  <string><id>15209</id><value>Übertragungs Intervall %i</value></string> 
+  <string><id>15210</id><value>%i Lieder gecached</value></string> 
+  <string><id>15211</id><value>Übermittlung...</value></string> 
+  <string><id>15212</id><value>Übermittlung in %i sek</value></string> 
 
 </strings>
