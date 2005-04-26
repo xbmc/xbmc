@@ -11,6 +11,7 @@ public:
   CGUIDialogMusicScan(void);
   virtual ~CGUIDialogMusicScan(void);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual void Render();
 
   void StartScanning(const CStdString& strDirectory, bool bUpdateAll);
   void StopScanning();

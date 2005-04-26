@@ -1246,8 +1246,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiDialogVolumeBar.ClearAll();
   m_guiDialogKaiToast.FreeResources();
   m_guiDialogKaiToast.ClearAll();
-  m_guiDialogMusicScan.FreeResources();
-  m_guiDialogMusicScan.ClearAll();
   m_guiDialogMuteBug.FreeResources();
   m_guiDialogMuteBug.ClearAll();
 
@@ -1354,7 +1352,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiVideoOverlay.AllocResources();
   m_guiDialogVolumeBar.AllocResources();
   m_guiDialogKaiToast.AllocResources();
-  m_guiDialogMusicScan.AllocResources();
   m_guiDialogMuteBug.AllocResources();
   m_gWindowManager.AddMsgTarget(this);
   m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
@@ -2154,10 +2151,6 @@ void CApplication::FrameMove()
     }
   }
 
-  // Update display of the dialog if
-  // we are scanning for new music info
-  m_guiDialogMusicScan.UpdateState();
-
   if (g_lcd)
     UpdateLCD();
   // read raw input from controller, remote control, mouse and keyboard
@@ -2498,7 +2491,6 @@ void CApplication::Stop()
     m_guiPointer.FreeResources();
     m_guiDialogVolumeBar.FreeResources();
     m_guiDialogKaiToast.FreeResources();
-    m_guiDialogMusicScan.FreeResources();
     g_fontManager.Clear();
     m_gWindowManager.DeInitialize();
     g_audioManager.DeInitialize();
