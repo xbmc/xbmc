@@ -20,7 +20,7 @@ bool CGUIDialogMusicScan::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      // resources are allocated in g_application
+      CGUIDialog::OnMessage(message);
 
       m_ScanState = PREPARING;
 
@@ -30,17 +30,17 @@ bool CGUIDialogMusicScan::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
-
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-      //don't deinit, g_application handles it
-
-      return true;
-    }
-    break;
   }
 
   return CGUIDialog::OnMessage(message);
+}
+
+void CGUIDialogMusicScan::Render()
+{
+  if (m_bRunning)
+    UpdateState();
+
+  CGUIDialog::Render();
 }
 
 void CGUIDialogMusicScan::OnDirectoryChanged(const CStdString& strDirectory)
@@ -96,24 +96,21 @@ void CGUIDialogMusicScan::OnFinished()
 
 void CGUIDialogMusicScan::UpdateState()
 {
-  if (m_bRunning)
+  CSingleLock lock (m_critical);
+
+  SET_CONTROL_LABEL(CONTROL_LABELSTATUS, GetStateString());
+
+  if (m_ScanState == READING_MUSIC_INFO)
   {
-    CSingleLock lock (m_critical);
+    CURL url(m_strCurrentDir);
+    CStdString strStrippedPath;
+    url.GetURLWithoutUserDetails(strStrippedPath);
 
-    SET_CONTROL_LABEL(CONTROL_LABELSTATUS, GetStateString());
-
-    if (m_ScanState == READING_MUSIC_INFO)
-    {
-      CURL url(m_strCurrentDir);
-      CStdString strStrippedPath;
-      url.GetURLWithoutUserDetails(strStrippedPath);
-
-      SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, strStrippedPath);
-    }
-    else
-    {
-      SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, "");
-    }
+    SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, strStrippedPath);
+  }
+  else
+  {
+    SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, "");
   }
 }
 
