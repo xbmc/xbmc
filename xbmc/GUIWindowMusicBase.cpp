@@ -342,6 +342,19 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         {
           OnPopupMenu(iItem);
         }
+        // use play button to add folders of items to temp playlist
+        else if (iAction == ACTION_PLAYER_PLAY)
+        {
+          // if playback is paused or playback speed != 1, return
+          if (g_application.IsPlayingAudio())
+          {
+            if (g_application.m_pPlayer->IsPaused()) return true;
+            if (g_application.GetPlaySpeed() != 1) return true;
+          }
+
+          // not playing audio, or playback speed == 1
+          PlayItem(iItem);
+        }
       }
     }
   case GUI_MSG_SETFOCUS:
