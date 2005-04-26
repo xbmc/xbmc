@@ -406,6 +406,10 @@ bool CFileItem::HasDefaultThumb() const
   if (strThumb.Equals("defaultVideoBig.png")) return true;
   if (strThumb.Equals("defaultXBOXDVDBig.png")) return true;
 
+  // album defaults
+  if (strThumb.Equals("MyMusic.jpg")) return true;
+  if (strThumb.Equals("music.jpg")) return true;
+
   // check the default icons
   for (unsigned int i = 0; i < g_settings.m_vecIcons.size(); ++i)
   {
@@ -434,6 +438,10 @@ bool CFileItem::HasDefaultIcon() const
   if (strThumb.Equals("defaultVCD.png")) return true;
   if (strThumb.Equals("defaultVideo.png")) return true;
   if (strThumb.Equals("defaultXBOXDVD.png")) return true;
+
+  // album defaults
+  if (strThumb.Equals("MyMusic.jpg")) return true;
+  if (strThumb.Equals("music.jpg")) return true;
 
   // check the default icons
   for (unsigned int i = 0; i < g_settings.m_vecIcons.size(); ++i)
@@ -630,12 +638,6 @@ void CFileItem::SetThumb()
   CStdString strCachedThumbnail;
   CUtil::GetCachedThumbnail(item.m_strPath,strCachedThumbnail);
 
-  /*
-  Crc32 crc;
-  crc.ComputeFromLowerCase(item.m_strPath);
-  strCachedThumbnail.Format("%s\\%x.tbn", g_stSettings.szThumbnailsDirectory, crc);
-  */
-
   bool bGotIcon(false);
 
   // does a cached thumbnail exists?
@@ -724,6 +726,23 @@ void CFileItem::SetThumb()
     // yes local cached thumbnail exists, use it
     SetThumbnailImage(strCachedThumbnail);
   }
+}
+
+void CFileItem::SetArtistThumb()
+{
+  CStdString strArtist = "artist" + m_strPath;
+  CStdString strThumb = "";
+  CUtil::GetCachedThumbnail(strArtist, strThumb);
+
+  if (CUtil::FileExists(strThumb))
+  {
+    // found it, we are finished.
+    SetIconImage(strThumb);
+    SetThumbnailImage(strThumb);
+    //CLog::Log(LOGDEBUG,"  Found cached artist [%s] thumb: %s",m_strPath.c_str(),strThumb.c_str());
+  }
+
+  return;
 }
 
 // set the album thumb for a file or folder

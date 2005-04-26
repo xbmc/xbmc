@@ -25,6 +25,9 @@ protected:
   virtual void AddItemToPlayList(const CFileItem* pItem);
   virtual void PlayItem(int iItem);
   virtual void AddItemToTempPlayList(const CFileItem* pItem);
+  virtual void OnPopupMenu(int iItem);
+
+  void SetArtistImage(int iItem);
 
   // state of the window
   int m_iState;
