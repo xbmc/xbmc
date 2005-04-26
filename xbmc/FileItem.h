@@ -62,6 +62,7 @@ public:
   void FillInDefaultIcon();
   void SetThumb();
   void SetMusicThumb();
+  void SetArtistThumb();
 
 public:
   CStdString m_strPath;            ///< complete path to item

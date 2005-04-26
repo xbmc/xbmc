@@ -6,6 +6,7 @@
 #include "application.h"
 #include "playlistplayer.h"
 #include "GUIPassword.h"
+#include "GUIListControl.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY   3
@@ -373,25 +374,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         UpdateButtons();
 
         return true;
-      }
-      else if (m_viewControl.HasControl(iControl))  // list/thumb control
-      {
-        int iItem = m_viewControl.GetSelectedItem();
-        int iAction = message.GetParam1();
-
-        // use play button to add folders of items to temp playlist
-        if (iAction == ACTION_PLAYER_PLAY)
-        {
-          // if playback is paused or playback speed != 1, return
-          if (g_application.IsPlayingAudio())
-          {
-            if (g_application.m_pPlayer->IsPaused()) return true;
-            if (g_application.GetPlaySpeed() != 1) return true;
-          }
-
-          // not playing audio, or playback speed == 1
-          PlayItem(iItem);
-        }
       }
     }
     break;
@@ -845,7 +827,9 @@ void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
   }
 
   // set thumbs and default icons
-  if (m_iState != SHOW_ROOT)
+  if (m_iState == SHOW_ARTISTS)
+    pItem->SetArtistThumb();
+  else if (m_iState != SHOW_ROOT)
     pItem->SetMusicThumb();
   if (pItem->GetIconImage() == "music.jpg")
     pItem->SetThumbnailImage("MyMusic.jpg");
@@ -1272,4 +1256,98 @@ void CGUIWindowMusicNav::PlayItem(int iItem)
     return;
 
   CGUIWindowMusicBase::PlayItem(iItem);
+}
+
+void CGUIWindowMusicNav::OnPopupMenu(int iItem)
+{
+  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
+  // calculate our position
+  int iPosX = 200;
+  int iPosY = 100;
+  CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
+  if (pList)
+  {
+    iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
+    iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
+  }
+  // mark the item
+  bool bSelected = m_vecItems[iItem]->IsSelected(); // item maybe selected (playlistitem)
+  m_vecItems[iItem]->Select(true);
+  // popup the context menu
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  if (!pMenu) return ;
+  // clean any buttons not needed
+  pMenu->ClearButtons();
+  // add the needed buttons
+  pMenu->AddButton(13351);    // 1: Music Information
+  pMenu->AddButton(13347);    // 2: Queue Item
+  pMenu->AddButton(13358);    // 3: Play Item
+  pMenu->AddButton(13350);    // 4: Now Playing...
+  pMenu->AddButton(137);      // 5: Search...
+  pMenu->AddButton(13359);    // 6: Set Artist Thumb
+  pMenu->AddButton(5);        // 7: Settings...
+
+  // turn off info/queue/play/set artist thumb if the current item is goto parent ..
+  bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
+  if (bIsGotoParent)
+  {
+    pMenu->EnableButton(1, false);
+    pMenu->EnableButton(2, false);
+    pMenu->EnableButton(3, false);
+    pMenu->EnableButton(6, false);
+  }
+  // turn off the now playing button if nothing is playing
+  if (!g_application.IsPlayingAudio())
+    pMenu->EnableButton(4, false);
+  // turn off set artist image if artist is not being filtered
+  // or if the source is an "all" item (path is empty)
+  // or if the source has no thumbnail
+  // or if the source has a default thumb
+  if (m_strArtist.IsEmpty() || m_vecItems[iItem]->m_strPath.IsEmpty() || !m_vecItems[iItem]->HasThumbnail() || m_vecItems[iItem]->HasDefaultThumb())
+    pMenu->EnableButton(6, false);
+  // position it correctly
+  pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+  pMenu->DoModal(GetID());
+  switch (pMenu->GetButton())
+  {
+  case 1:  // Music Information
+    OnInfo(iItem);
+    break;
+  case 2:  // Queue Item
+    OnQueueItem(iItem);
+    break;
+  case 3:  // Play Item
+    PlayItem(iItem);
+    break;
+  case 4:  // Now Playing...
+    m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+    return;
+    break;
+  case 5:  // Search
+    OnSearch();
+    break;
+  case 6:  // Set Artist Image
+    SetArtistImage(iItem);
+    break;
+  case 7:  // Settings
+    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
+    return;
+    break;
+  }
+  m_vecItems[iItem]->Select(bSelected);
+}
+
+void CGUIWindowMusicNav::SetArtistImage(int iItem)
+{
+  const CFileItem* pItem = m_vecItems[iItem];
+  CStdString strArtist = "artist" + m_strArtist;
+  CStdString strSrcThumb = pItem->GetThumbnailImage();
+  CStdString strDestThumb;
+  CUtil::GetCachedThumbnail(strArtist, strDestThumb);
+  //CLog::Log(LOGDEBUG,"Setting thumb for Artist [%s]",m_strArtist.c_str());
+  //CLog::Log(LOGDEBUG,"  Src = [%s]",strSrcThumb.c_str());
+  //CLog::Log(LOGDEBUG,"  Dest = [%s]",strDestThumb.c_str());
+  CFile file;
+  if (!file.Cache(strSrcThumb.c_str(), strDestThumb.c_str(), NULL, NULL))
+    CLog::Log(LOGERROR,"  Could not cache artist thumb: %s",strSrcThumb.c_str());
 }
