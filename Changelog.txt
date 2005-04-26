@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 26-04-2005 fixed: mute symbol is not shown after startup, if volume is minimum
   - 26-04-2005 changed: music scan dialog is not allocated at startup anymore
   - 26-04-2005 changed: auto discovered xbmsp server show network share icon now
   - 25-04-2005 updated: German language file
