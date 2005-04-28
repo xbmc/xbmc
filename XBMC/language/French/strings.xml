@@ -557,6 +557,27 @@
   <string><id>10503</id><value>Mes Musiques/artistes</value></string>
   <string><id>10504</id><value>Mes Musiques/genres</value></string>
   <string><id>10505</id><value>Mes Musiques/top 100</value></string>
+  
+  <string><id>10506</id><value>Applications</value></string>
+  <string><id>10507</id><value>Configuration</value></string>
+  <string><id>10508</id><value>Weather Forecast</value></string>
+  <string><id>10509</id><value>Jeux en réseau</value></string>
+  <string><id>10510</id><value>Extensions</value></string>
+  <string><id>10511</id><value>Infos Systeme</value></string>
+  <string><id>10512</id><value>Ma Music - Albums</value></string>
+  <string><id>10513</id><value>Ma Music - Artists</value></string>
+  <string><id>10514</id><value>Ma Music - Genres</value></string>
+  <string><id>10515</id><value>Ma Music - Top 100</value></string>
+  <string><id>10516</id><value>Ma Music - Librairie</value></string>
+  <string><id>10517</id><value>Ma Music - Playlist</value></string>
+  <string><id>10518</id><value>Mes Vidéos - Actors</value></string>
+  <string><id>10519</id><value>Mes Vidéos - Genres</value></string>
+  <string><id>10520</id><value>Mes Vidéos - Titre</value></string>
+  <string><id>10521</id><value>Mes Vidéos - Année</value></string>
+  <string><id>10522</id><value>Mes Vidéos - Playliste</value></string>
+  <string><id>10523</id><value>Album Infos</value></string>
+  <string><id>10524</id><value>Film Infos</value></string>  
+  
   <string><id>11000</id><value>clavier</value></string>
   <string><id>12000</id><value>Choisir une boîte de dialogues</value></string>
   <string><id>12001</id><value>Mes Musiques/info</value></string>
@@ -567,12 +588,59 @@
   <string><id>12006</id><value>Effets vidéos d'accompagnement</value></string>
   <string><id>12007</id><value>Mes images/Diaporama</value></string>
   <string><id>12008</id><value>Boîtes de dialogue sélection de fichier</value></string>
+  
+ <string><id>12310</id><value>0</value></string>
+  <string><id>12311</id><value>1</value></string>
+  <string><id>12312</id><value>2</value></string>
+  <string><id>12313</id><value>3</value></string>
+  <string><id>12314</id><value>4</value></string>
+  <string><id>12315</id><value>5</value></string>
+  <string><id>12316</id><value>6</value></string>
+  <string><id>12317</id><value>7</value></string>
+  <string><id>12318</id><value>8</value></string>
+  <string><id>12319</id><value>9</value></string>
+  <string><id>12320</id><value>c</value></string>
+  <string><id>12321</id><value>ok</value></string>
+  <string><id>12322</id><value>*</value></string>
+  <string><id>12324</id><value>XBMC Protection</value></string>
+  <string><id>12325</id><value>Dossier Protégé</value></string>
+  <string><id>12326</id><value>Entrez le mot de passe</value></string>
+  <string><id>12327</id><value>Entrez le code maître puis "E",</value></string>
+  <string><id>12328</id><value>Entrez le code de protection  puis "E"r,</value></string> 
+  <string><id>12329</id><value>ou appuyez sur C pour annuler</value></string>
+  <string><id>12330</id><value>Entrez la combinaison de boutons XBOX et </value></string>
+  <string><id>12331</id><value>appuyez sur Start, ou Back pour annuler</value></string>
+  <string><id>12332</id><value>Protéger</value></string>
+  <string><id>12333</id><value>Déprotéger</value></string>
+  <string><id>12334</id><value>Effacer protection</value></string>
+  <string><id>12335</id><value>Enlever la protection</value></string>
+  <string><id>12336</id><value>Selectionnez le type de protection:</value></string>
+  <string><id>12337</id><value>Mot de passe numérique</value></string>
+  <string><id>12338</id><value>Combinaison de boutons</value></string>
+  <string><id>12339</id><value>Mot de passe texte</value></string>
+  <string><id>12340</id><value>Entrez le nouveau mot de passe</value></string>
+  <string><id>12341</id><value>Entrez à nouveau le mot de passe</value></string>
+  <string><id>12342</id><value>Mot de passe incorrecte,</value></string>
+  <string><id>12343</id><value>Essais restant </value></string>
+  <string><id>12344</id><value>Le mot de passe qui a été entré ne correspond pas.</value></string>
+  <string><id>12345</id><value>Accès refusé</value></string>
+  <string><id>12346</id><value>Vous avez excédé le nombre d'essais autorisé.</value></string>
+  <string><id>12347</id><value>La XBOX vas maintenant s'éteindre.</value></string>
+  <string><id>12348</id><value>Item Locked</value></string>
+  <string><id>12349</id><value>Se souvenir du code Maître la prochaine fois ?</value></string>
+  <string><id>12350</id><value>(Opening any item in Settings will</value></string>
+  <string><id>12351</id><value>automatically re-enable Master Lock.)</value></string>
+  <string><id>12352</id><value>Entrez la combinaison des touches maître et</value></string>
+  <string><id>12353</id><value>remettre la protection</value></string>
+  <string><id>12354</id><value>Override folder locks until next boot?</value></string>
+  <string><id>12355</id><value>automatically re-enable folder locks.)</value></string>  
+  
   <string><id>12600</id><value>Ma Météo</value></string>
   <string><id>12900</id><value>écran de veille</value></string>
   <string><id>12901</id><value>Réglages plein écran</value></string>
   <string><id>13000</id><value>Système</value></string>
   <string><id>13001</id><value>Ralentissement auto du DD</value></string>
-  <string><id>13002</id><value>Video seule</value></string>
+  <string><id>13002</id><value>Vidéo seule</value></string>
   <string><id>13003</id><value>- Delai</value></string>
   <string><id>13004</id><value>- Durée mimimale du fichier</value></string>
   <string><id>13100</id><value>Filtre de clignotement</value></string>
@@ -641,6 +709,8 @@
   <string><id>13355</id><value>Ombrage des Pixels basse Qualité</value></string>
   <string><id>13356</id><value>Traitement Hardware</value></string>
   <string><id>13357</id><value>Ombrage des Pixels Haute Qualité</value></string>  
+  <string><id>13358</id><value>Jouer la musique</value></string>
+  <string><id>13359</id><value>Définir comme image</value></string>
   <string><id>13360</id><value>Générer des miniatures</value></string>
   <string><id>13361</id><value>Activer la Voix</value></string>
   <string><id>13362</id><value>Masque de Voix</value></string>
@@ -686,7 +756,7 @@
   <string><id>14015</id><value>Aucun fichier et au moins une vignette</value></string>
   <string><id>14016</id><value>Au moins un fichier et une vignette</value></string>
   <string><id>14017</id><value>Pourcentage des vignettes</value></string>
-  <string><id>14018</id><value>Options d'affichage</value></string>
+  <string><id>14018</id><value>Affichage</value></string>
   <string><id>14019</id><value>Changer location 1</value></string>
   <string><id>14020</id><value>Changer location 2</value></string>
   <string><id>14021</id><value>Changer location 3</value></string>
