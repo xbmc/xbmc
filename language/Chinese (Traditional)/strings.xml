@@ -83,14 +83,14 @@
   <string><id>151</id><value>連線：</value></string>
   <string><id>152</id><value>半雙工</value></string>
   <string><id>153</id><value>全雙工</value></string>
-  <string><id>154</id><value>儲存媒體</value></string>
+  <string><id>154</id><value>儲存媒體：</value></string>
   <string><id>155</id><value>裝置</value></string>
   <string><id>156</id><value>可用</value></string>
-  <string><id>157</id><value>影片</value></string>
+  <string><id>157</id><value>顯示：</value></string>
   <string><id>158</id><value>可用記憶體</value></string>
   <string><id>159</id><value>未連線</value></string>
   <string><id>160</id><value>可用</value></string>
-  <string><id>161</id><value>無效的</value></string>
+  <string><id>161</id><value>沒有</value></string>
   <string><id>162</id><value>托盤開啟</value></string>
   <string><id>163</id><value>讀取中</value></string>
   <string><id>164</id><value>無光碟片</value></string>
@@ -310,7 +310,7 @@
   <string><id>379</id><value>下午</value></string>
   <string><id>380</id><value>陣雨</value></string>
   <string><id>381</id><value>少數</value></string>
-  <string><id>382</id><value>分散的</value></string>
+  <string><id>382</id><value>間歇性</value></string>
   <string><id>383</id><value>風</value></string>
   <string><id>384</id><value>強烈</value></string>
   <string><id>385</id><value>轉晴</value></string>
@@ -438,6 +438,8 @@
   <string><id>507</id><value>排序：使用數</value></string>
   <string><id>508</id><value>不使用捷徑及掃瞄</value></string>
   <string><id>509</id><value>快取程式的圖示</value></string>
+  <string><id>510</id><value>開啟 Visualisations</value></string>
+  <!--                       Enable Visualisations           !-->
   <string><id>600</id><value>擷取音樂 CD</value></string>
   <string><id>601</id><value>中等</value></string>
   <string><id>602</id><value>標準</value></string>
@@ -522,7 +524,6 @@
   <string><id>757</id><value>編輯路徑深度</value></string>
   <string><id>758</id><value>移除程式連結</value></string>
   <string><id>759</id><value>顯示：大列表</value></string>
-  <!--                       View: Big List           !-->
 
   <string><id>760</id><value>黃色</value></string>
   <string><id>761</id><value>白色</value></string>
@@ -836,7 +837,7 @@
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>目前並沒有連線到執行 XLink Kai 的電腦，</value></string>
-  <string><id>15002</id><value>請確定設定無誤後再嘗試連線。</value></string>
+  <string><id>15002</id><value>請檢查設定無誤後再嘗試連線。</value></string>
   <string><id>15003</id><value>輸入你的訊息。</value></string>
   <string><id>15004</id><value>有人邀請你玩 %s。</value></string>
   <string><id>15005</id><value>日期：%s</value></string>
@@ -874,8 +875,8 @@
   <string><id>15037</id><value>XBMC 無法確定你的網路是否能夠連線。</value></string>
   <string><id>15038</id><value>你將會很難加入或主持遊戲。</value></string>
   <string><id>15039</id><value>XBMC 無法讓遊戲自動執行。</value></string>
-  <string><id>15040</id><value>放入遊戲片或按'A'取消</value></string>
-  <string><id>15041</id><value>和開啟遊戲手冊。</value></string>
+  <string><id>15040</id><value>放入遊戲片或按'A'取消，並參考遊戲</value></string>
+  <string><id>15041</id><value>相關說明。</value></string>
   <string><id>15042</id><value>存取被拒</value></string>
   <string><id>15043</id><value>%s 加入聊天室。</value></string>
   <string><id>15044</id><value>%s 離開聊天室。</value></string>
@@ -903,9 +904,27 @@
   <string><id>15103</id><value>* 所有藝人</value></string>
   <string><id>15104</id><value>* 所有歌曲</value></string>
   <string><id>15105</id><value>* 所有類別</value></string>
-  <string><id>15106</id><value>向前瀏覽時記住選擇的檔案</value></string>
+  <string><id>15106</id><value>向前瀏覽時提醒選擇的檔案</value></string>
 
   <string><id>15107</id><value>暫存中...</value></string>
+  <string><id>15108</id><value>按鍵音</value></string>
+  <string><id>15109</id><value>主題預設</value></string>
 
+  <string><id>15200</id><value>AudioScrobbler</value></string>
+  <string><id>15201</id><value>上傳歌曲資訊到 AudioScrobbler</value></string>
+  <string><id>15202</id><value>AudioScrobbler 使用者名稱</value></string>
+  <string><id>15203</id><value>AudioScrobbler 密碼</value></string>
+  <string><id>15204</id><value>無法連線：休息中...</value></string>
+  <!--                         Unable to handshake: sleeping...!-->
+  <string><id>15205</id><value>請更新 XBMC</value></string>
+  <string><id>15206</id><value>上傳失敗：無法通過認證。</value></string>
+  <string><id>15207</id><value>連線</value></string>
+  <string><id>15208</id><value>無法連線</value></string>
+  <string><id>15209</id><value>上傳進度 %i</value></string>
+  <!--                         Submit Interval %i      !-->
+  <string><id>15210</id><value>已上傳 %i 首</value></string>
+  <!--                         Cached %i Songs          !-->
+  <string><id>15211</id><value>上傳中...</value></string>
+  <string><id>15212</id><value>上傳剩餘 %i 秒</value></string>
 </strings>
 
