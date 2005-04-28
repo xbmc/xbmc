@@ -561,13 +561,20 @@ void CScrobbler::SetSongStartTime()
 
 CStdString CScrobbler::GetConnectionState()
 {
+  if (!g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler"))
+    return "";
+
   return (m_bReadyToSubmit ? g_localizeStrings.Get(15207) : g_localizeStrings.Get(15208));  // Connected : Not Connected
 }
 
 CStdString CScrobbler::GetSubmitInterval()
 {
-  CStdString strFormat=g_localizeStrings.Get(15209);  // Submit Interval %i
   CStdString strInterval;
+
+  if (!g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler"))
+    return strInterval;
+
+  CStdString strFormat=g_localizeStrings.Get(15209);  // Submit Interval %i
   strInterval.Format(strFormat.c_str(), m_Interval);
 
   return strInterval;
@@ -575,8 +582,12 @@ CStdString CScrobbler::GetSubmitInterval()
 
 CStdString CScrobbler::GetFilesCached()
 {
-  CStdString strFormat=g_localizeStrings.Get(15210);  // Cached %i Songs
   CStdString strCachedFiles;
+
+  if (!g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler"))
+    return strCachedFiles;
+
+  CStdString strFormat=g_localizeStrings.Get(15210);  // Cached %i Songs
   strCachedFiles.Format(strFormat.c_str(), m_iSongNum);
 
   return strCachedFiles;
@@ -590,6 +601,10 @@ void CScrobbler::SetSecsTillSubmit(int iSecs)
 CStdString CScrobbler::GetSubmitState()
 {
   CStdString strText;
+
+  if (!g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler"))
+    return strText;
+
   if (m_bSubmitInProgress)
   {
     strText=g_localizeStrings.Get(15211);  // Submitting...
