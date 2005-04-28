@@ -2,7 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "RssReader.h"
 #include "Http.h"
 #include "../utils/HTMLUtil.h"
@@ -134,7 +134,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode)
 
       for (i = m_tagSet.begin(); i != m_tagSet.end(); i++)
       {
-        if (i->Equals(strName))
+        if (!childNode->NoChildren() && i->Equals(strName))
         {
           mTagElements.insert(StrPair(*i, childNode->FirstChild()->Value()));
         }
@@ -217,7 +217,7 @@ bool CRssReader::Parse()
   if (channelXmlNode)
   {
     TiXmlElement* titleNode = channelXmlNode->FirstChildElement("title");
-    if (titleNode)
+    if (titleNode && !titleNode->NoChildren())
     {
       CStdString strChannel;
       strChannel.Format("%s RSS News: ", titleNode->FirstChild()->Value());
