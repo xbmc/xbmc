@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 28-04-2005 updated: Chinese (Traditional) language file (Thnx to dog099)
+  - 28-04-2005 updated: French language file (Thnx to modhack)
+  - 28-04-2005 updated: Norwegian language file (Thnx to vnm)
   - 27-04-2005 fixed: Goom/G-Force <width> and <height> related crashes.
   - 26-04-2005 added: Set Artist Thumb via Music Library context menu after an artist filter is applied
   - 26-04-2005 fixed: mute symbol is not shown after startup, if volume is minimum
