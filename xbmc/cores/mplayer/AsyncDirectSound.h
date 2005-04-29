@@ -119,7 +119,6 @@ private:
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;
-  bool xbox_Ac3encoder_active;
 
   // 48kHz Resampler stuff
   bool m_bResampleAudio;  // Are we resampling?
