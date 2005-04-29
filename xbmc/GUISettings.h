@@ -81,6 +81,20 @@
 #define BUTTON_CONTROL_STANDARD   8
 #define BUTTON_CONTROL_IP_INPUT   9
 
+#define REPLAY_GAIN_NONE 0
+#define REPLAY_GAIN_ALBUM 1
+#define REPLAY_GAIN_TRACK 2
+
+// replay gain settings struct for quick access by the player multiple
+// times per second (saves doing settings lookup)
+struct ReplayGainSettings
+{
+  int iPreAmp;
+  int iNoGainPreAmp;
+  int iType;
+  bool bAvoidClipping;
+};
+
 // base class for all settings types
 class CSetting
 {
@@ -288,6 +302,8 @@ public:
   //m_LookAndFeelResolution holds the real gui resolution,
   //also when g_guiSettings.GetInt("LookAndFeel.Resolution") is set to AUTORES
   RESOLUTION m_LookAndFeelResolution;
+  ReplayGainSettings m_replayGain;
+
 private:
   typedef map<CStdString, CSetting*>::iterator mapIter;
   map<CStdString, CSetting*> settingsMap;

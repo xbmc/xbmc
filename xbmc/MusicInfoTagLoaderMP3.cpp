@@ -307,6 +307,9 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
   auto_aptr<char>pMBBID   (GetMusicBrainzAlbumID(&id3tag));
   auto_aptr<char>pMBABID  (GetMusicBrainzAlbumArtistID(&id3tag));
   auto_aptr<char>pMBTRMID (GetMusicBrainzTRMID(&id3tag));
+
+  GetReplayGainInfo(&id3tag);
+
   int nTrackNum = ID3_GetTrackNum(&id3tag);
 
   tag.SetTrackNumber(nTrackNum);
@@ -710,17 +713,10 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
       if ((xing[0] == 'X' && xing[1] == 'i' && xing[2] == 'n' && xing[3] == 'g') ||
           (xing[0] == 'I' && xing[1] == 'n' && xing[2] == 'f' && xing[3] == 'o'))
       {
-        if (xing[0x78] == 'L' &&
-            xing[0x79] == 'A' &&
-            xing[0x7a] == 'M' &&
-            xing[0x7b] == 'E')
-        { // Found LAME tag - extract the start and end offsets
-          int iDelay = ((xing[0x8d] & 0xFF) << 4) + ((xing[0x8e] & 0xF0) >> 4);
-          iDelay += (int)tpfbs[layer]; // This header is going to be decoded as a silent frame
-          int iPadded = ((xing[0x8e] & 0x0F) << 8) + (xing[0x8f] & 0xFF);
-          m_seekInfo.SetSampleRange(iDelay, iPadded);
+        if (ReadLAMETagInfo(xing - 0x24))
+        {
           // calculate new (more accurate) duration:
-          __int64 lastSample = (__int64)frame_count * (__int64)tpfbs[layer] - iPadded - iDelay;
+          __int64 lastSample = (__int64)frame_count * (__int64)tpfbs[layer] - m_seekInfo.GetFirstSample() - m_seekInfo.GetLastSample();
           m_seekInfo.SetDuration((float)lastSample / frequency);
         }
       }
@@ -876,4 +872,89 @@ CStdString CMusicInfoTagLoaderMP3::ParseMP3Genre (const CStdString& str)
     strGenre += strTemp;
   }
   return strGenre;
+}
+
+bool CMusicInfoTagLoaderMP3::ReadLAMETagInfo(BYTE *b)
+{
+  if (b[0x9c] != 'L' ||
+      b[0x9d] != 'A' ||
+      b[0x9e] != 'M' ||
+      b[0x9f] != 'E')
+    return false;
+
+  // Found LAME tag - extract the start and end offsets
+  int iDelay = ((b[0xb1] & 0xFF) << 4) + ((b[0xb2] & 0xF0) >> 4);
+  iDelay += 1152; // This header is going to be decoded as a silent frame
+  int iPadded = ((b[0xb2] & 0x0F) << 8) + (b[0xb3] & 0xFF);
+  m_seekInfo.SetSampleRange(iDelay, iPadded);
+
+  /* Don't read replaygain information from here as no other player respects this.
+
+  // Now do the ReplayGain stuff
+  if (!m_replayGainInfo.iHasGainInfo)
+  { // haven't found the gain info - let's test here for it
+    BYTE *p = b + 0xA7;
+    #define REPLAY_GAIN_RADIO 1
+    #define REPLAY_GAIN_AUDIOPHILE 2
+    m_replayGainInfo.fTrackPeak = *(float *)p;
+    if (m_replayGainInfo.fTrackPeak != 0.0f) m_replayGainInfo.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
+    for (int i = 0; i <= 6; i+=2)
+    {
+      BYTE gainType = (*(p+i) & 0xE0) >> 5;
+      BYTE gainFrom = (*(p+i) & 0x1C) >> 2;  // where the gain is from
+      if (gainFrom && (gainType == REPLAY_GAIN_RADIO || gainType == REPLAY_GAIN_AUDIOPHILE))
+      { // have some replay gain stuff
+        int sign = (*(p+i) & 0x02) ? -1 : 1;
+        int gainLevel = ((*(p+i) & 0x01) << 8) | (*(p+i+1) & 0xFF);
+        gainLevel *= sign;
+        if (gainType == REPLAY_GAIN_RADIO)
+        {
+          m_replayGainInfo.iTrackGain = gainLevel*10;
+          m_replayGainInfo.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
+        }
+        if (gainType == REPLAY_GAIN_AUDIOPHILE)
+        {
+          m_replayGainInfo.iAlbumGain = gainLevel*10;
+          m_replayGainInfo.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
+        }
+      }
+    }
+  }*/
+  return true;
+}
+
+void CMusicInfoTagLoaderMP3::GetReplayGainInfo(const ID3_Tag *tag)
+{
+  char *szGain = GetUserText(tag, "replaygain_track_gain");
+  if (szGain)
+  {
+    m_replayGainInfo.iTrackGain = (int)(atof(szGain) * 100 + 0.5);
+    m_replayGainInfo.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
+  }
+  szGain = GetUserText(tag, "replaygain_album_gain");
+  if (szGain)
+  {
+    m_replayGainInfo.iAlbumGain = (int)(atof(szGain) * 100 + 0.5);
+    m_replayGainInfo.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
+  }
+  szGain = GetUserText(tag, "replaygain_track_peak");
+  if (szGain)
+  {
+    m_replayGainInfo.fTrackPeak = (float)atof(szGain);
+    m_replayGainInfo.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
+  }
+  szGain = GetUserText(tag, "replaygain_album_peak");
+  if (szGain)
+  {
+    m_replayGainInfo.fAlbumPeak = (float)atof(szGain);
+    m_replayGainInfo.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
+  }
+}
+
+bool CMusicInfoTagLoaderMP3::GetReplayGain(CReplayGain &info)
+{
+  if (!m_replayGainInfo.iHasGainInfo)
+    return false;
+  info = m_replayGainInfo;
+  return true;
 }
