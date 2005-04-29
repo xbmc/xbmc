@@ -28,7 +28,7 @@ typedef std::vector<PVOID> PlayerCallbackList;
 class XBPython : public IMsgSenderCallback, public IPlayerCallback
 {
 public:
-	      XBPython();
+	XBPython();
 	virtual void SendMessage(CGUIMessage& message);
 	virtual void OnPlayBackEnded();
 	virtual void OnPlayBackStarted();

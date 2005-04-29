@@ -134,6 +134,7 @@ CStdString CSettingString::ToString()
 // Settings are case sensitive
 CGUISettings::CGUISettings(void)
 {
+  ZeroMemory(&m_replayGain, sizeof(ReplayGainSettings));
   // Pictures settings
   AddGroup(0, 1);
   AddCategory(0, "Slideshow", 108);
@@ -206,6 +207,12 @@ CGUISettings::CGUISettings(void)
   AddBool(6, "MusicLibrary.UseAudioScrobbler", 15201, false);
   AddString(7, "MusicLibrary.AudioScrobblerUserName", 15202, "");
   AddString(8, "MusicLibrary.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT);
+
+  AddCategory(3, "ReplayGain", 637);
+  AddInt(1, "ReplayGain.Type", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
+  AddInt(2, "ReplayGain.PreAmp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddInt(3, "ReplayGain.NoGainPreAmp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddBool(4, "ReplayGain.AvoidClipping", 643, false);
 
   // music osd 13314
   AddCategory(3, "CDDARipper", 620);
@@ -760,6 +767,11 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement)
       SetInt("LookAndFeel.Resolution", newRes);
     }
   }
+  // Move replaygain settings into our struct
+  m_replayGain.iPreAmp = GetInt("ReplayGain.PreAmp");
+  m_replayGain.iNoGainPreAmp = GetInt("ReplayGain.NoGainPreAmp");
+  m_replayGain.iType = GetInt("ReplayGain.Type");
+  m_replayGain.bAvoidClipping = GetBool("ReplayGain.AvoidClipping");
 }
 
 void CGUISettings::SaveXML(TiXmlNode *pRootNode)

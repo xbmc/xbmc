@@ -70,7 +70,7 @@ CGUIVisualisationControl::~CGUIVisualisationControl(void)
 void CGUIVisualisationControl::FreeVisualisation()
 {
   CSingleLock lock (m_critSection);
-  CLog::Log(LOGERROR, "FreeVisualisation() started");
+  CLog::Log(LOGDEBUG, "FreeVisualisation() started");
   m_bInitialized = false;
   if (g_application.m_pPlayer)
     g_application.m_pPlayer->UnRegisterAudioCallback();
@@ -86,12 +86,12 @@ void CGUIVisualisationControl::FreeVisualisation()
   }
   m_pVisualisation = NULL;
   ClearBuffers();
-  CLog::Log(LOGERROR, "FreeVisualisation() done");
+  CLog::Log(LOGDEBUG, "FreeVisualisation() done");
 }
 
 void CGUIVisualisationControl::LoadVisualisation()
 {
-  CLog::Log(LOGERROR, "LoadVisualisation() started");
+  CLog::Log(LOGDEBUG, "LoadVisualisation() started");
   CSingleLock lock (m_critSection);
   if (m_pVisualisation)
   {
@@ -123,7 +123,7 @@ void CGUIVisualisationControl::LoadVisualisation()
     // Create new audio buffers
     CreateBuffers();
   }
-  CLog::Log(LOGERROR, "LoadVisualisation() done");
+  CLog::Log(LOGDEBUG, "LoadVisualisation() done");
 }
 
 void CGUIVisualisationControl::Render()
@@ -176,7 +176,7 @@ void CGUIVisualisationControl::OnInitialize(int iChannels, int iSamplesPerSec, i
   CSingleLock lock (m_critSection);
   if (!m_pVisualisation)
     return ;
-  CLog::Log(LOGERROR, "OnInitialize() started");
+  CLog::Log(LOGDEBUG, "OnInitialize() started");
 
   m_bInitialized = true;
   m_iChannels = iChannels;
@@ -188,7 +188,7 @@ void CGUIVisualisationControl::OnInitialize(int iChannels, int iSamplesPerSec, i
   OutputDebugString("Visualisation::Start()\n");
   m_pVisualisation->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile);
   m_bInitialized = true;
-  CLog::Log(LOGERROR, "OnInitialize() done");
+  CLog::Log(LOGDEBUG, "OnInitialize() done");
 }
 
 void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int iAudioDataLength)
