@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "AudioContext.h"
 #include "../xbmc/Settings.h"
+#include "../xbmc/XBAudioConfig.h"
 
 CAudioContext g_audioContext;
 
@@ -79,12 +80,15 @@ void CAudioContext::RemoveActiveDevice()
 // \brief set a new speaker config
 void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers)
 {
+  m_bAC3EncoderActive = false;
+
   if (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL)
   {
     if (g_guiSettings.GetBool("AudioOutput.OutputToAllSpeakers"))
     {
       bAudioOnAllSpeakers = true;
-      DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
+      DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT); //Allows ac3 encoder should it be enabled
+      m_bAC3EncoderActive = g_audioConfig.GetAC3Enabled();
     }
     else
     {
@@ -93,7 +97,11 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers)
       else if (iChannels == 2)
         DirectSoundOverrideSpeakerConfig(DSSPEAKER_STEREO);
       else
-        DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
+      {
+        DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT); //Allows ac3 encoder should it be enabled
+        m_bAC3EncoderActive = g_audioConfig.GetAC3Enabled();
+         
+      }
     }
   }
   else // We don't want to use the Dolby Digital Encoder output. Downmix to surround instead.
@@ -101,6 +109,11 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers)
     if (iChannels == 1)
       DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
     else
-      DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
+      DirectSoundOverrideSpeakerConfig(DSSPEAKER_SURROUND); //Will turn of ac3 encoder and force downmix
   }
+}
+
+bool CAudioContext::IsAC3EncoderActive()
+{
+  return m_bAC3EncoderActive;
 }

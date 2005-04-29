@@ -20,8 +20,9 @@ public:
 
           LPDIRECTSOUND8              GetDirectSoundDevice() { return m_pDirectSoundDevice; }
           LPAC97MEDIAOBJECT           GetAc97Device() { return m_pAC97Device; }
-
+          
           void                        SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers);
+          bool                        IsAC3EncoderActive();
 
   enum AUDIO_DEVICE {NONE=0, DEFAULT_DEVICE, DIRECTSOUND_DEVICE, AC97_DEVICE };
 protected:
@@ -30,6 +31,7 @@ protected:
 
           int                          m_iDevice;
           IAudioDeviceChangedCallback* m_pCallback;
+          bool                         m_bAC3EncoderActive;
 };
 
 extern CAudioContext g_audioContext;
