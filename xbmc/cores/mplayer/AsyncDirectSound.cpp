@@ -243,8 +243,6 @@ bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, 
 //***********************************************************************************************
 CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers, char* strAudioCodec)
 {
-  g_audioContext.RemoveActiveDevice();
-
   buffered_bytes = 0;
   m_pCallback = pCallback;
 
@@ -253,7 +251,10 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
     m_bResampleAudio = true;
 
   bool bAudioOnAllSpeakers(false);
+  g_audioContext.RemoveActiveDevice(); 
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers);
+  g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
+  m_pDSound=g_audioContext.GetDirectSoundDevice();
 
   LARGE_INTEGER qwTicksPerSec;
   QueryPerformanceFrequency( &qwTicksPerSec );   // ticks/sec
@@ -263,7 +264,6 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   m_iAudioSkip = 1;
   m_bIsPlaying = false;
   m_bIsAllocated = false;
-  m_pDSound = NULL;
   m_adwStatus = NULL;
   m_pStream = NULL;
   m_iCurrentAudioStream = 0;
@@ -314,9 +314,6 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   m_adwStatus = new DWORD[ m_dwNumPackets ];
   m_pbSampleData = new PBYTE[ m_dwNumPackets ];
 
-  g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
-  m_pDSound=g_audioContext.GetDirectSoundDevice();
-
   m_nCurrentVolume = GetMaximumVolume();
 
   for ( DWORD j = 0; j < m_dwNumPackets; j++ )
@@ -359,10 +356,6 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   }
 
   m_wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
-
-  xbox_Ac3encoder_active = false;
-  if ( (dsmb.dwMixBinCount > 2) && ((XGetAudioFlags()&(DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0 ) )
-    xbox_Ac3encoder_active = true;
 
   DSSTREAMDESC dssd;
   memset(&dssd, 0, sizeof(dssd));
@@ -768,7 +761,7 @@ void CASyncDirectSound::ResetBytesInBuffer()
 //***********************************************************************************************
 FLOAT CASyncDirectSound::GetDelay()
 {
-  if (xbox_Ac3encoder_active) //2 channel materials will not be encoded as ac3 stream
+  if (g_audioContext.IsAC3EncoderActive()) //2 channel materials will not be encoded as ac3 stream
     return 0.049f;      //(Ac3 encoder 29ms)+(receiver 20ms)
   else
     return 0.008f;      //PCM output 8ms
