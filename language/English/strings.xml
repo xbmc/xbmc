@@ -463,6 +463,15 @@
   <string><id>634</id><value>Stretch 16:9</value></string>
   <string><id>635</id><value>Original Size</value></string>
   <string><id>636</id><value>Custom</value></string>
+
+  <string><id>637</id><value>Replay Gain</value></string>
+  <string><id>638</id><value>Mode</value></string>
+  <string><id>639</id><value>Use Track Levels</value></string>
+  <string><id>640</id><value>Use Album Levels</value></string>
+  <string><id>641</id><value>PreAmp Level - Replay Gained Files</value></string>
+  <string><id>642</id><value>PreAmp Level - Non Replay Gained Files</value></string>
+  <string><id>643</id><value>Avoid Clipping on Replay Gained Files</value></string>
+
   <string><id>700</id><value>Cleaning up Library</value></string>
   <string><id>701</id><value>Removing old songs from the Library</value></string>
   <string><id>702</id><value>This path has been scanned before.</value></string>

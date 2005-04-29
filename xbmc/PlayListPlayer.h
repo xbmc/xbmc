@@ -27,6 +27,7 @@ public:
   void PlayPrevious();
   void Play(int iSong, bool bAutoPlay = false);
   int GetCurrentSong() const;
+  int GetNextSong();
   void SetCurrentSong(int iSong);
   bool HasChanged();
   void SetCurrentPlaylist( int iPlayList );

@@ -1413,6 +1413,10 @@ void CUtil::RemoveTempFiles()
 
 void CUtil::DeleteTDATA()
 {
+  // delete T:\\settings.xml only
+  CLog::Log(LOGINFO, "  DeleteFile(T:\\settings.xml)");
+  ::DeleteFile("T:\\settings.xml");
+  /*
   WIN32_FIND_DATA wfd;
   CStdString strTDATADir;
   strTDATADir = "T:\\*.*";
@@ -1431,7 +1435,7 @@ void CUtil::DeleteTDATA()
       DeleteFile(strFile.c_str());
     }
   }
-  while (FindNextFile(hFind, &wfd));
+  while (FindNextFile(hFind, &wfd));*/
 }
 
 bool CUtil::IsHD(const CStdString& strFileName)

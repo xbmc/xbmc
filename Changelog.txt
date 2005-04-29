@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 28-04-2005 added: Initial Replaygain support to PAPlayer - only works from ID3v2 tags (non-standard) atm.
+  - 28-04-2005 added: APE lossless support to PAPlayer.
+  - 28-04-2005 changed: Refactored PAPlayer to remove all the mp3-specific code.
   - 28-04-2005 changed: audioscrobbler info labels shown no info when scrobbler is disabled
   - 28-04-2005 fixed: rss feed could crash
   - 28-04-2005 updated: Chinese (Traditional) language file (Thnx to dog099)

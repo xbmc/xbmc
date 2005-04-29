@@ -58,6 +58,7 @@ public:
   virtual DWORD GetChunkLen() = 0;
 
   virtual DWORD GetBytesInBuffer() = 0;
+  virtual void ResetBytesInBuffer() = 0;
   virtual LONG GetMinimumVolume() const = 0;
   virtual LONG GetMaximumVolume() const = 0;
   virtual LONG GetCurrentVolume() const = 0;

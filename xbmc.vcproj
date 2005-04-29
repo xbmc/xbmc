@@ -2035,10 +2035,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -2352,10 +2352,31 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="paplayer"
 				Filter="">
 				<File
+					RelativePath=".\xbmc\cores\paplayer\APEcodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\APEcodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\ICodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\MP3codec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\MP3codec.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\paplayer.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\paplayer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\ReplayGain.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\ReplayGain.h">
 				</File>
 			</Filter>
 		</Filter>

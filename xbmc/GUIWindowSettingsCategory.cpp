@@ -559,6 +559,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(630 + i), i);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting == "ReplayGain.Type")
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(351), REPLAY_GAIN_NONE);
+      pControl->AddLabel(g_localizeStrings.Get(639), REPLAY_GAIN_TRACK);
+      pControl->AddLabel(g_localizeStrings.Get(640), REPLAY_GAIN_ALBUM);
+      pControl->SetValue(pSettingInt->GetData());
+    }
     iPosY += iGapY;
   }
   // fix first and last navigation
@@ -1386,6 +1395,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting == "LED.Colour")
   { // Alter LED Colour immediately
     ILED::CLEDControl(((CSettingInt *)pSettingControl->GetSetting())->GetData());
+  }
+  else if (strSetting.Left(10).Equals("ReplayGain"))
+  { // Update our replaygain settings
+    g_guiSettings.m_replayGain.iType = g_guiSettings.GetInt("ReplayGain.Type");
+    g_guiSettings.m_replayGain.iPreAmp = g_guiSettings.GetInt("ReplayGain.PreAmp");
+    g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("ReplayGain.NoGainPreAmp");
+    g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("ReplayGain.AvoidClipping");
   }
   g_settings.Save();
   UpdateSettings();
