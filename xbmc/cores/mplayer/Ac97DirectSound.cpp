@@ -386,6 +386,13 @@ DWORD CAc97DirectSound::GetBytesInBuffer()
   return max(0, m_dwTotalBytesAdded - m_dwPos);
 }
 
+void CAc97DirectSound::ResetBytesInBuffer()
+{
+  DWORD dwPos=0;
+  m_pDigitalOutput->GetCurrentPosition(&dwPos);
+  m_dwTotalBytesAdded = dwPos;
+}
+
 //***********************************************************************************************
 FLOAT CAc97DirectSound::GetDelay()
 {

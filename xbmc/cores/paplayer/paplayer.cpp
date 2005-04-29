@@ -1,119 +1,61 @@
-
 #include "../../stdafx.h"
 #include "paplayer.h"
 #include "../../application.h"
-//#include "../lib/libcdio/util.h"
+#include "../../util.h"
+#include "MP3Codec.h"
+#include "APECodec.h"
 
 #define VOLUME_FFWD_MUTE 900 // 9dB
 
-#define DECODER_DELAY 529 // decoder delay in samples
+#define INTERNAL_BUFFER_LENGTH  2*4*44100     // 2 seconds
+#define OUTPUT_BUFFER_LENGTH    48000*4/768   // 1 second
 
 // PAP: Psycho-acoustic Audio Player
 // Supporting all open  audio codec standards.
 // First one being nullsoft's nsv audio decoder format
 
-static IAudioDecoder* (__cdecl* CreateAudioDecoder)(unsigned int type, IAudioOutput **output)=NULL;
-
 static IAudioCallback* m_pCallback = NULL;
 
 PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
 {
-  
-  m_pDll = NULL;
-  m_pPAP = NULL;
   m_bIsPlaying = false;
   m_bPaused = false;
   m_dwAudioBufferMin = 0;
   m_pAudioDevice = NULL;
-  m_pInputBuffer = NULL;
   m_dwAudioBufferSize = 0;
-  m_dwAudioBufferPos = 0;
   m_iSpeed = 1;
-  m_iLastSpeed = 1;
-  m_Channels = 0;
-  m_SampleRate = 0;
-  m_SampleSize = 0;
-  m_InputBytesWanted = 65535;  // Change when reading from http  
-  m_dwInputBufferSize = 0;
-  m_Decoding = false;
   m_PcmSize = 0;  
   m_PcmPos = 0;
-  m_pInputBuffer = new BYTE[m_InputBytesWanted];  
-  m_dwAudioMaxSize = (16*44100); // 4 seconds for now
+  m_dwAudioMaxSize = INTERNAL_BUFFER_LENGTH;
   m_pPcm = new BYTE[m_dwAudioMaxSize];
   m_BufferingPcm = true;
-  m_AverageInputBytesPerSecond = 20000; // 160k , good place to start i guess
-  // Initialize our buffer and output device later
-  m_dwBytesReadIn = 0;
   m_dwBytesSentOut = 0;
   m_SeekTime=-1;
-  m_cantSeek = 0;
+  m_IsFFwdRewding = false;
   m_eof = false;
   m_startOffset = 0;
-  m_bGuessByterate = false;
-  m_lastByteOffset = 0;
-  m_bDllLoaded = false;
+  m_codec = NULL;
+  m_BytesPerSecond = 0;
 }
 
 PAPlayer::~PAPlayer()
 {
   CloseFile();
 
-  // kill our buffers etc.
-  KillBuffer();
-  if (m_pPAP )
-    delete m_pPAP;
-  m_pPAP = NULL;
-  if (m_pDll)
-    delete m_pDll;
-  m_pDll = NULL;
+  KillAudioDevice();
 
-  if ( m_pInputBuffer )
-    delete m_pInputBuffer;
-  m_pInputBuffer = NULL;
   if ( m_pPcm )
     delete m_pPcm;
   m_pPcm = NULL;
+
+  if ( m_codec )
+    delete m_codec;
+  m_codec = NULL;
 }
 
 void PAPlayer::OnExit()
 {
 
-}
-
-bool PAPlayer::LoadDLL()
-{
-  if (m_bDllLoaded)
-    return true;
-  CStdString strDll = "Q:\\system\\players\\paplayer\\in_mp3.dll"; 
-  m_pDll = new DllLoader(strDll.c_str(), true);
-  if (!m_pDll)
-  {
-    CLog::Log(LOGERROR, "PAP Player: Unable to load dll %s", strDll.c_str());
-    return false;
-  }
-  if (!m_pDll->Parse())
-  {
-    // failed,
-    CLog::Log(LOGERROR, "PAP Player: Unable to load dll %s", strDll.c_str());
-    delete m_pDll;
-    m_pDll = NULL;
-    return false;
-  }
-  m_pDll->ResolveImports();
-
-  // get handle to the functions in the dll
-  m_pDll->ResolveExport("CreateAudioDecoder", (void**)&CreateAudioDecoder);
-  
-  if (!CreateAudioDecoder )
-  {
-    CLog::Log(LOGERROR, "PAP Player: Unable to find PAP data in dll %s", strDll.c_str());
-    delete m_pDll;
-    m_pDll = NULL;
-    return false;
-  }
-  m_bDllLoaded = true;
-  return true;
 }
 
 bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
@@ -122,77 +64,52 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
   if (!m_eof)
   { // we started a new file whilst still playing the old one - let's free up our buffers and so on.
-    KillBuffer();
+    CLog::Log(LOGDEBUG, "PAPlayer: Starting next track whilst already playing - killing our output buffers");
+    KillAudioDevice();
+    if (m_codec)
+      delete m_codec;
+    m_codec = NULL;
     m_PcmPos = 0;
     m_PcmSize = 0;
-    m_dwInputBufferSize = 0;
   }
 
+  m_iSpeed = 1;
   m_bPaused = false;
   m_bStopPlaying = false;
   m_eof = false;
-  m_lastByteOffset = 0;
   m_dwBytesSentOut = 0;
   m_startOffset = 0;
-  m_IgnoreFirst = true; // we want to be gapless
-  m_pIgnoredFirstBytes = NULL;
-  m_IgnoreLast = true;
   m_BufferingPcm = true;  // buffer as much info as we can to begin with
 
-  if (!m_filePAP.Open(file.m_strPath))
-    return false;
-
-  LoadDLL();
-
-  if ( !m_pDll ) return false;
-
-  // TODO:  add file extension checking and HTTP/Icecast/Shoutcast reading
-  if (m_pPAP)
-  {
-    delete m_pPAP;
-    m_pPAP = NULL;
+  // determine which type of codec we should use.
+  CURL url(file.m_strPath);
+  if (m_codec && !m_codec->HandlesType(url.GetFileType().c_str()))
+  { // we're opening a different type of file - close the current decoder
+    delete m_codec;
+    m_codec = NULL;
   }
-  m_pPAP = CreateAudioDecoder(' 3PM',NULL);
+  if (!m_codec)
+  {
+    if (url.GetFileType().Equals("mp3"))
+      m_codec = new MP3Codec;
+    else if (url.GetFileType().Equals("ape") || url.GetFileType().Equals("mac"))
+      m_codec = new APECodec;
+  }
 
-  if ( m_pPAP )  CLog::Log(LOGINFO, "PAP Player: Loaded decoder at %p", m_pPAP);
-  else  return false;
+  if (!m_codec || !m_codec->Init(file.m_strPath))
+  {
+    CLog::Log(LOGERROR, "PAP Player: Unable to Init Codec!");
+    return false;
+  }
   
   CLog::Log(LOGINFO, "PAP Player: Playing %s", file.m_strPath.c_str());
 
+  if (!m_pAudioDevice)
+    CreateAudioDevice();
 
-  float TrackDuration = 0.0f; //file.m_musicInfoTag.GetDuration();
-  __int64 length = m_filePAP.GetLength();
-
-  // Guess Bitrate
-  CMusicInfoTagLoaderMP3 mp3info;
-  CMusicInfoTag tag;
-  mp3info.Load(file.m_strPath.c_str(), tag);
-  mp3info.GetSeekInfo(m_seekInfo);
-  TrackDuration = m_seekInfo.GetDuration();
-  if ( TrackDuration )
-    m_AverageInputBytesPerSecond = (DWORD)(length / TrackDuration);
-  else
-    m_bGuessByterate = true;  // If we don't have the TrackDuration we'll have to guess later.
-
-  if ( TrackDuration && iStartTime > 0 )
-  {
-    // calculate our seek offset accurately using the seekInfo from the file
-    float fseektime = (float)m_seekInfo.GetByteOffset(iStartTime / 1000.0f);
-
-    if ( (__int64) fseektime < length ) 
-    {
-      m_filePAP.Seek( (__int64)(fseektime) , SEEK_SET);
-      m_lastByteOffset = m_filePAP.GetPosition();
-      m_startOffset = iStartTime;
-      CLog::Log(LOGINFO, "PAP Player: Starting at %d",(__int64) fseektime);
-    }
-    else
-    {
-      CLog::Log(LOGINFO, "PAP Player: Start Time is greater than file length");
-      return false;
-    }
-  }
-
+  // Seek to appropriate start position
+  if ( iStartTime > 0 && iStartTime < m_codec->m_TotalTime )
+    m_startOffset = m_codec->Seek(iStartTime);
 
   if (ThreadHandle() == NULL)
     Create();
@@ -214,8 +131,12 @@ bool PAPlayer::CloseFile()
 
   StopThread();
 
-  m_filePAP.Close();
-
+  // Close our decoder
+  if (m_codec)
+  {
+    delete m_codec;
+    m_codec = NULL;
+  }
   return true;
 }
 
@@ -229,7 +150,6 @@ void PAPlayer::Pause()
   if (m_bPaused)
   {
     m_pAudioDevice->Pause();
-    
     CLog::Log(LOGINFO, "PAP Player: Playback paused");
   }
   else
@@ -247,9 +167,13 @@ void PAPlayer::SetVolume(long nVolume)
 
 void PAPlayer::Process()
 {
+  CLog::Log(LOGDEBUG, "PAPlayer: Thread started");
   if (m_startEvent.WaitMSec(100))
   {
     m_startEvent.Reset();
+
+    m_callback.OnPlayBackStarted();
+
     do
     {
       if (!m_bPaused)
@@ -264,7 +188,7 @@ void PAPlayer::Process()
     }
     while (!m_bStopPlaying && m_bIsPlaying && !m_bStop);
 
-    m_filePAP.Close();
+    m_codec->DeInit();
 
     m_bIsPlaying = false;
     if (!m_bStopPlaying && !m_bStop)
@@ -302,267 +226,201 @@ void PAPlayer::OnAudioData(const unsigned char* pAudioData, int iAudioDataLength
 
 void PAPlayer::ToFFRW(int iSpeed)
 {
-  /*int iRate = 48000;
-  if ( iSpeed != 1 )
-  {
-    iRate += ( iSpeed * 500 );
-  } // When using the AsyncDirectSound, you can SetFrequency in Async's SetPlaySpeed() to iRate here to get pitch/tempo control
-      // Async would just need to take iRate as the Freq and do no other math
-  if ( m_pAudioDevice) m_pAudioDevice->SetPlaySpeed( iSpeed );*/
   m_iSpeed = iSpeed;
 }
 
 bool PAPlayer::ProcessPAP()
 {
- 
+  /*
+   * Here's what we should be doing in each player loop:
+   *
+   * 1.  Run DoWork() on our audio device to actually output audio.
+   *
+   * 2.  Pass our current buffer to the audio device to see if it wants anything,
+   *     and if so, reduce our buffer size accordingly.
+   *
+   * 3.  Check whether we have space in our buffer for more data, and if so,
+   *     read some more in.
+   *
+   * 4.  Check for end of file and return false if we reach it.
+   *
+   * 5.  Perform any seeking and ffwd/rewding as necessary.
+   *
+   * 6.  If we don't do anything in 2...5, we can take a breather and break out for sleeping.
+   */
+  if (!m_pAudioDevice)
+    return false;
+
   while (true && !m_bStop) // Just go once... see if that helps the system more.. vs sticking around so much
   {
-          
-    if (m_pAudioDevice) m_pAudioDevice->DoWork();
+    m_pAudioDevice->DoWork();
 
-    if ( (m_PcmSize < m_dwAudioBufferMin && !m_CallPAPAgain && m_pAudioDevice && m_eof &&  !m_dwInputBufferSize) || m_bStop )
+    // Check to see if we are finished decoding
+    if ( (m_PcmSize < m_dwAudioBufferMin && m_eof) || m_bStop )
     {
       // Looks like we're done, get out.. 
-      // anything left thats under min buffersize will be lost...
-      // Let directsound run itself empty before we call it quit
-      // TODO I THINK...
+      // anything left thats under min buffersize will be lost, but this
+      // is normally very insubstantial (currently in the order of 200 samples)
       return false;
     }
-    if ( m_PcmSize  && m_pAudioDevice )
+    // Current Track ended?
+    if ( m_eof )
     {
-      // We have data to move into the output audio buffer
-
-      // Check if we have packets free in the buffer
-      if ( m_PcmSize >=  m_dwAudioBufferMin && !m_BufferingPcm)
-      {
-        DWORD dwSize = m_PcmSize;
-
-        DWORD dwActual = m_pAudioDevice->AddPackets(m_pPcm + m_PcmPos, dwSize);
-        if (dwActual)
-        { // they've taken a packet of size dwSize to the audio buffers
-          m_dwBytesSentOut += dwActual;
-          m_PcmPos += dwActual;
-          m_PcmSize -= dwActual;
-          if ( m_PcmSize == 0 ) 
-            m_PcmPos = 0; // empty pcm buffer, go get some more quick
-//          else
-//            break; // Exit out to see if we need to stop, and so if we can keep the soundcard busy
-        }
-        else
-          Sleep(10);
-      }
-      else
-      {
-        if (m_PcmPos) 
-        {
-          memmove(m_pPcm, m_pPcm+m_PcmPos,m_PcmSize); // Copy down remainder, always less then min buffer size
-          m_PcmPos = 0;
-        }
-      }
-    }    
-
-
-    // Get some more data, read 8192 if we can
-    int m_InputBufferToRead = m_InputBytesWanted - m_dwInputBufferSize;
-    if (m_InputBufferToRead && !m_CallPAPAgain && m_filePAP.GetPosition() != m_filePAP.GetLength() && !m_eof ) 
-    {
-      int fileLeft=(int)(m_filePAP.GetLength() - m_filePAP.GetPosition());
-      if ( m_InputBufferToRead >  fileLeft ) m_InputBufferToRead = fileLeft;
-
-      DWORD dwBytesRead = m_filePAP.Read(m_pInputBuffer+m_dwInputBufferSize , m_InputBufferToRead);
-      if (!dwBytesRead)
-        return false; 
-      // add the size of read PAP data to the buffer size
-      m_dwInputBufferSize = dwBytesRead;
-      if ( m_filePAP.GetLength() == m_filePAP.GetPosition() )
-        m_eof = true;
+      // This is the point where we could request the next track from our GUI.
+      // We don't at this stage as our system is very much a push-based one - the GUI
+      // pushes us the tracks and we just play 'em.  Once we have everything incorporated
+      // into the output stream system, we'd do it either here (or earlier) and allow 2
+      // streams to exist for crossfade and the like.
     }
-    if (m_dwInputBufferSize || m_CallPAPAgain || m_PcmSize )
-    {
-      int result;
-        
-      m_Decoding = true;
-
-      int sendsize=(m_dwAudioMaxSize-m_PcmSize)-m_PcmPos;
-      if ( sendsize )
+    // Move PCM information into our output device
+    DWORD dwActual = 0;
+    if ( !m_BufferingPcm && m_PcmSize )
+      dwActual = m_pAudioDevice->AddPackets(m_pPcm + m_PcmPos, m_PcmSize);
+    if (dwActual)
+    { // they've taken a packet of size dwSize to the audio buffers
+//          CLog::Log(LOGERROR, "Taken %i bytes of data", dwActual);
+      m_dwBytesSentOut += dwActual;
+      m_PcmPos += dwActual;
+      m_PcmSize -= dwActual;
+      if ( m_PcmSize == 0 ) 
+        m_PcmPos = 0; // empty pcm buffer, go get some more quick
+      // copy down any remaining audio if we're more than half way through the buffer
+      if (m_PcmPos > m_dwAudioMaxSize / 2) 
       {
-        unsigned int formatdata[8];
-        
-        m_CallPAPAgain = false;
-        
-        result = m_pPAP->decode( m_pInputBuffer,m_dwInputBufferSize,m_pPcm+m_PcmPos+m_PcmSize,&sendsize, (unsigned int *)&formatdata);
-        if ( result == 1 || result == 0) 
-        {
-          if (sendsize && m_PcmSize <= 1152*4*20)
-          {
-//            MemDump(m_pPcm + m_PcmPos + m_PcmSize, sendsize);
-          }
-          m_PcmSize += sendsize;
-          if ( m_BufferingPcm ) 
-          {
-            if ( m_PcmSize >  m_dwAudioMaxSize / 2 )
-              m_BufferingPcm = false;
-          }
-          if ( m_IgnoreFirst && sendsize )
-          {
-            // starting up - lets ignore the first (typically 576) samples
-            // this code assumes that sendsize is at least as big as the number of ignored bytes.
-            if (!m_pIgnoredFirstBytes)
-              m_pIgnoredFirstBytes = m_pPcm + m_PcmPos + m_PcmSize - sendsize;
-            int iDelay = DECODER_DELAY + m_seekInfo.GetFirstSample();  // decoder delay + encoder delay
-            iDelay *= formatdata[2] * formatdata[3] / 8;            // sample size
-            if (m_pPcm + m_PcmPos + m_PcmSize - m_pIgnoredFirstBytes >= iDelay)
-            { // have enough data to ignore up to our first sample
-              // dump samples as we have them...
-              int iAmountToMove = m_pPcm + m_PcmPos + m_PcmSize - m_pIgnoredFirstBytes - iDelay;
-              memmove(m_pIgnoredFirstBytes, m_pIgnoredFirstBytes + iDelay, iAmountToMove);
-              m_PcmSize -= iDelay;
-              m_IgnoreFirst = false;
-            }
-          }
-          if ( result )
-            m_CallPAPAgain = true; // Codec wants us to call it again with the same buffer
-          else 
-          {
-            m_dwBytesReadIn+=m_dwInputBufferSize;
-            m_dwInputBufferSize = 0; // Read more from the file
-            if (m_eof && m_IgnoreLast)
-            {
-              // lets remove the last sample info from our buffer
-              unsigned int samplestoremove = (m_seekInfo.GetLastSample() - DECODER_DELAY);
-              samplestoremove *= m_Channels * m_SampleSize / 8;
-              if (samplestoremove > m_PcmSize) samplestoremove = m_PcmSize;
-              m_PcmSize -= samplestoremove;
-              m_IgnoreLast = false;
-            }
-          }
-
-          if ( sendsize &&  formatdata[4] && m_bGuessByterate ) m_AverageInputBytesPerSecond = formatdata[4] / 8;
-          if ( sendsize && !m_BufferingPcm && (!m_pAudioDevice || m_Channels != formatdata[2] || m_SampleRate != formatdata[1] || m_SampleSize != formatdata[3]))
-          {
-            m_Channels    = formatdata[2];
-            m_SampleRate  = formatdata[1];
-            m_SampleSize  = formatdata[3];
-            
-            CLog::Log(LOGINFO, "PAP Player: Channels %d : Sample Rate %d",m_Channels,m_SampleRate);
-            // Create the audio device
-            CreateBuffer();
-            m_callback.OnPlayBackStarted();
-            break;
-          }
-        }
-        else if ( result == -1 ) 
-        {
-          // error decoding, lets finish up and get out
-          CLog::Log(LOGINFO, "PAP Player: Error while decoding");
-          m_Decoding = false;
-        }
-      } 
-    }
-    if ( m_pAudioDevice ) // If we're playing we can seek, if not, dont bother
-    {
-      // Current Track ended?
-      // And theres nothing left to decode
-      if (m_eof && !m_Decoding )
-      {
-        CLog::Log(LOGINFO, "PAP Player: End of Track reached");
-        return false;
-      }
-      if (m_SeekTime != -1)
-      {
-        // calculate our offset
-        __int64 iOffset = (__int64)m_seekInfo.GetByteOffset(0.001f * m_SeekTime);
-        m_filePAP.Seek(iOffset, SEEK_SET);
-        m_startOffset = m_SeekTime;
-        m_dwBytesSentOut = 0;
-        m_dwInputBufferSize = 0;
-        m_pAudioDevice->Stop();
-        m_CallPAPAgain = false;
-        m_PcmSize = 0;
+        memmove(m_pPcm, m_pPcm+m_PcmPos,m_PcmSize);
         m_PcmPos = 0;
-        m_SeekTime = -1;
+      }
+    }
+    if (m_SeekTime != -1)
+    {
+      // Do any seeking as necessary.  We reset the audio buffers at this point as
+      // they typically hold around 4 seconds of audio in advance that needs to be
+      // cleared out.
+      m_startOffset = m_codec->Seek(m_SeekTime);
+      m_dwBytesSentOut = 0;
+      m_pAudioDevice->ResetBytesInBuffer();
+      m_PcmSize = 0;
+      m_PcmPos = 0;
+      m_SeekTime = -1;
+      m_pAudioDevice->Stop();
+      break;
+    }
+    if (m_IsFFwdRewding || m_iSpeed != 1)
+    {
+      // Do ffwd and rewind.
+      // The technique used is to play a snippet of audio (a fraction of a second)
+      // and then skip forward a suitable amount so that we effectively move through
+      // the audio at the speed specified.
+      // Audio is muted by a set amount, and levels are reset once we are back at
+      // normal playback speed.
+      if ( m_IsFFwdRewding && m_iSpeed == 1 ) 
+      { // reset ffwd/rewind
+        m_IsFFwdRewding = false;
+        m_pAudioDevice->Stop();
+        SetVolume(g_stSettings.m_nVolumeLevel);
         break;
       }
-      if ( m_cantSeek ) 
-      {
-        m_cantSeek--;
-        if ( m_iSpeed == 1 )
-        {
-          m_pAudioDevice->Stop();
-          SetVolume(g_stSettings.m_nVolumeLevel);
-        }
-      }
-      int inewSpeed = 8;
-      int snippet; 
-      if ( inewSpeed != 0 )
-        snippet = (m_Channels*(m_SampleSize/8)*m_SampleRate)/abs(inewSpeed);  
-      if (m_iSpeed != 1 && !m_cantSeek && m_dwBytesSentOut >= snippet && snippet ) 
+      // we're definitely fastforwarding or rewinding
+      int snippet = m_BytesPerSecond / 4;
+      if ( m_dwBytesSentOut >= snippet ) 
       {
         // Calculate offset to seek if we do FF/RW
-        int iOffset = (int)(m_AverageInputBytesPerSecond*((m_iSpeed - 1.0f) / inewSpeed));
-
-        __int64  timeconstant = m_Channels*(m_SampleSize/8)*m_SampleRate;
-        float timeout = (float) m_dwBytesSentOut / (float)timeconstant  ;
-        
-        m_lastByteOffset +=(__int64) ( (float) m_AverageInputBytesPerSecond * timeout );
-    
-        //m_pAudioDevice->Stop();
-        m_pPAP->flush(); // Flush the decoder!
-        m_dwInputBufferSize = 0;
-        m_CallPAPAgain = false;
+        __int64 time = GetTime();
+        if (m_IsFFwdRewding) snippet = (int)m_dwBytesSentOut;
+        time += (__int64)((double)snippet * (m_iSpeed - 1.0) / m_BytesPerSecond * 1000.0);
         m_PcmSize = 0;
         m_PcmPos = 0;
-        m_dwBytesSentOut = 0;
         // Is our offset inside the track range?
-        if (m_lastByteOffset + iOffset >= 0 && m_lastByteOffset + iOffset <= m_filePAP.GetLength())
+        if (time >= 0 && time <= m_codec->m_TotalTime)
         { // just set next position to read
-          m_filePAP.Seek(m_lastByteOffset + iOffset, SEEK_SET);
-          m_cantSeek = 1;  
-          m_lastByteOffset = m_filePAP.GetPosition();
-          m_startOffset = m_seekInfo.GetTimeOffset(m_lastByteOffset);
+          m_IsFFwdRewding = true;  
+          m_startOffset = m_codec->Seek(time);
           m_dwBytesSentOut = 0;
+          m_pAudioDevice->ResetBytesInBuffer();
           SetVolume(g_stSettings.m_nVolumeLevel - VOLUME_FFWD_MUTE); // override xbmc mute 
-         } // Is our next position smaller then the start...
-        else if (m_lastByteOffset + iOffset < 0)
+        }
+        else if (time < 0)
         { // ...disable seeking and start the track again
-          m_iSpeed = 1;
-          m_filePAP.Seek(0, SEEK_SET);
-          m_startOffset = 0;
+          m_startOffset = m_codec->Seek(0);
           m_dwBytesSentOut = 0;
-          m_lastByteOffset = 0;
+          m_pAudioDevice->ResetBytesInBuffer();
+          m_iSpeed = 1;
           m_BufferingPcm = true;  // Rebuffer to avoid stutter
           SetVolume(g_stSettings.m_nVolumeLevel); // override xbmc mute 
           CLog::Log(LOGINFO, "PAP Player: Start of track reached while seeking");
         } // is our next position greater then the end sector...
-        else if (m_lastByteOffset + iOffset > m_filePAP.GetLength())
+        else //if (time > m_codec->m_TotalTime)
         { // ...disable seeking and quit player
           m_iSpeed = 1;
           // HACK: restore volume level to the value before seeking was started
           // else next track will be muted
+          m_eof = true;
           SetVolume(g_stSettings.m_nVolumeLevel);
           CLog::Log(LOGINFO, "PAP Player: End of track reached while seeking");
           return false;
         }
-       
+      }
+    }
+    // Read in more data
+    int result = -1;
+    int sendsize = m_BytesPerSecond / 2;  // 1/2 a second.
+    if ( m_PcmPos + m_PcmSize + sendsize > m_dwAudioMaxSize ) 
+      sendsize = m_dwAudioMaxSize - m_PcmSize - m_PcmPos;
+    if ( sendsize )
+    {
+      int actualdatasent = 0;
+//       CLog::Log(LOGERROR, "Getting %i more data, TIME = %i", sendsize * m_nBytesPerBlock, timeGetTime());
+      int result = m_codec->ReadPCM(m_pPcm + m_PcmPos + m_PcmSize, sendsize, &actualdatasent);
+      if ( result != READ_ERROR && actualdatasent ) 
+      {
+        // Apply replaygain.
+        if (g_guiSettings.m_replayGain.iType)
+          ApplyReplayGain(m_pPcm+m_PcmPos+m_PcmSize, actualdatasent);
+
+        m_PcmSize += actualdatasent;
+        if ( m_BufferingPcm ) 
+        {
+          if ( m_PcmSize >  m_dwAudioMaxSize / 2 )
+            m_BufferingPcm = false;
+        }
+        if (result == READ_EOF)
+        { // EOF reached
+          m_eof = true;
+        }
+      }
+      else if (result == READ_ERROR)
+      {
+        // error decoding, lets finish up and get out
+        CLog::Log(LOGINFO, "PAP Player: Error while decoding %i", result);
+        return false;
+      }
+      else if (result == READ_EOF)
+        m_eof = true;
+      else
+      { // nothing to do - let's sleep and take a break
+        Sleep(10);
         break;
-        
       }
     }
   }
   return true;
 }
 
-int PAPlayer::CreateBuffer()
+int PAPlayer::CreateAudioDevice()
 {
+  // TODO: This routine should query our audio stream for it's current parameters and
+  // reload it completely if they need changing.  This will currently cause problems
+  // when changing from stereo -> mono and/or 16bit -> 8bit and vice-versa.
   // Check we don't first need to kill our buffers
-  KillBuffer();
-  m_pAudioDevice = new CASyncDirectSound(m_pCallback, m_Channels, m_SampleRate, m_SampleSize,false, 128); // use 64k of buffers
+  KillAudioDevice();
+  m_BytesPerSecond = m_codec->m_Channels * m_codec->m_SampleRate * m_codec->m_BitsPerSample / 8;
+  m_pAudioDevice = new CASyncDirectSound(m_pCallback, m_codec->m_Channels, m_codec->m_SampleRate, m_codec->m_BitsPerSample, false, OUTPUT_BUFFER_LENGTH); // use 64k of buffers
   m_dwAudioBufferMin = m_pAudioDevice->GetChunkLen();
-  CLog::Log(LOGINFO, "PAP Player: Chunklen %d",m_dwAudioBufferMin);
+  CLog::Log(LOGINFO, "PAP Player: New AudioDevice created. Chunklen %d",m_dwAudioBufferMin);
   return 0;
 }
 
-void PAPlayer::KillBuffer()
+void PAPlayer::KillAudioDevice()
 {
   if (m_pAudioDevice)
   {
@@ -574,15 +432,17 @@ void PAPlayer::KillBuffer()
 
 __int64 PAPlayer::GetTime()
 {
-
-  __int64  timeconstant = m_Channels*(m_SampleSize/8)*m_SampleRate;
-  __int64  timeplus = timeconstant ? (__int64)(((float) m_dwBytesSentOut / (float)timeconstant ) * 1000.0) : 0;
+  __int64  timeplus = 0;
+  if (m_pAudioDevice)
+    timeplus = m_BytesPerSecond ? (__int64)(((float)(m_dwBytesSentOut - m_pAudioDevice->GetBytesInBuffer())) / (float)m_BytesPerSecond * 1000.0) : 0;
+  else
+    timeplus = m_BytesPerSecond ? (__int64)(((float) m_dwBytesSentOut / (float)m_BytesPerSecond ) * 1000.0) : 0;
   return  m_startOffset + timeplus;
 }
 
 int PAPlayer::GetTotalTime()
 {
-  return (int)(m_filePAP.GetLength() / m_AverageInputBytesPerSecond);
+  return (int)(m_codec->m_TotalTime / 1000);
 }
 
 void PAPlayer::SeekTime(__int64 iTime /*=0*/)
@@ -590,11 +450,47 @@ void PAPlayer::SeekTime(__int64 iTime /*=0*/)
   m_SeekTime = iTime;
 }
 
-// Application.cpp
-//else if (url.GetFileType() == "mp3")
-//{
-//    if (CUtil::FileExists("Q:\\system\\players\\paplayer\\in_mp3.dll"))  strNewPlayer = "paplayer";
-//  }
-
-// PlayerCoreFactory.cpp
- //if (strCoreLower == "paplayer" ) return new PAPlayer(callback);
+void PAPlayer::ApplyReplayGain(void *pData, int size)
+{
+  // Ideally, we'd keep everything in floats until we
+  // get to the output stage.  Unfortunately, AddPackets() doesn't support this
+  // yet.  It'd be reasonably easy to add, however.
+  // This will currently fail rather badly on non-16bit audio.
+#define REPLAY_GAIN_DEFAULT_LEVEL 89.0f
+#define MAX_SHORT_VALUE 32767
+#define MIN_SHORT_VALUE -32768  // this hardclipping is necessary due to the above.
+  // Compute amount of gain
+  float replaydB, peak;
+  if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_TRACK_INFO)
+  {
+    replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iTrackGain / 100.0f;
+    peak = m_codec->m_replayGain.fTrackPeak;
+  }
+  else if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_ALBUM_INFO)
+  {
+    replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iAlbumGain / 100.0f;
+    peak = m_codec->m_replayGain.fAlbumPeak;
+  }
+  else
+  {
+    replaydB = (float)g_guiSettings.m_replayGain.iNoGainPreAmp;
+    peak = 0.0f;
+  }
+  // convert to a gain type
+  float replaygain = pow(10.0f, (replaydB - REPLAY_GAIN_DEFAULT_LEVEL)* 0.05f);
+  // check peaks
+  if (g_guiSettings.m_replayGain.bAvoidClipping)
+  {
+    if (fabs(peak * replaygain) > 1.0f)
+      replaygain = 1.0f / fabs(peak);
+  }
+  // apply gain
+  short *pShortData = (short *)pData;
+  for (int i = size; i; i-=2)
+  {
+    float result = *pShortData * replaygain;
+    if (result > MAX_SHORT_VALUE) result = MAX_SHORT_VALUE;
+    if (result < MIN_SHORT_VALUE) result = MIN_SHORT_VALUE;
+    *pShortData++ = (short)result;
+  }
+}

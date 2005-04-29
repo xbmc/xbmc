@@ -65,6 +65,7 @@ public:
   virtual HRESULT Stop();
   virtual HRESULT Resume();
   virtual DWORD GetBytesInBuffer();
+  virtual void ResetBytesInBuffer();
   virtual LONG GetMinimumVolume() const;
   virtual LONG GetMaximumVolume() const;
   virtual LONG GetCurrentVolume() const;

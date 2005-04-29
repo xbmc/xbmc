@@ -6,6 +6,7 @@
 #include "lib/libID3/tag.h"
 #include "lib/libID3/readers.h"
 #include "XIStreamReader.h"
+#include "cores/paplayer/ReplayGain.h"
 
 using namespace MUSIC_INFO;
 
@@ -97,9 +98,11 @@ public:
   virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
   bool ReadTag(ID3_Tag& id3tag, CMusicInfoTag& tag);
   void GetSeekInfo(CVBRMP3SeekHelper &info);
+  bool GetReplayGain(CReplayGain &info);
 
 protected:
   int ReadDuration(CFile& file, const ID3_Tag& id3tag);
+  bool ReadLAMETagInfo(BYTE *p);
   bool IsMp3FrameHeader(unsigned long head);
   char* GetString(const ID3_Frame *frame, ID3_FieldID fldName);
   char* GetArtist(const ID3_Tag *tag);
@@ -110,6 +113,7 @@ protected:
   char* GetMusicBrainzAlbumID(const ID3_Tag *tag);
   char* GetMusicBrainzAlbumArtistID(const ID3_Tag *tag);
   char* GetMusicBrainzTRMID(const ID3_Tag *tag);
+  void  GetReplayGainInfo(const ID3_Tag *tag);
 
 private:
   char* GetUniqueFileID(const ID3_Tag *tag, const CStdString& strUfidOwner);
@@ -117,5 +121,6 @@ private:
   CStdString ParseMP3Genre(const CStdString& str);
 
   CVBRMP3SeekHelper m_seekInfo;
+  CReplayGain       m_replayGainInfo;
 };
 };

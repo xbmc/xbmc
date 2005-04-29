@@ -90,6 +90,7 @@ CStdString g_LoadErrorStr;
 static char szHomePaths[][13] = { "E:\\Apps\\XBMC", "E:\\XBMC", "F:\\Apps\\XBMC", "F:\\XBMC" };
 
 #define NUM_HOME_PATHS 4
+#define MAX_FFWD_SPEED 5
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
@@ -1846,8 +1847,8 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
       else if (action.wID == ACTION_ANALOG_REWIND || action.wID == ACTION_ANALOG_FORWARD)
       {
         // calculate the speed based on the amount the button is held down
-        int iPower = (int)(action.fAmount1 * 5.0f + 0.5f);
-        // returns 0 -> 5
+        int iPower = (int)(action.fAmount1 * MAX_FFWD_SPEED + 0.5f);
+        // returns 0 -> MAX_FFWD_SPEED
         int iSpeed = 1 << iPower;
         if (iSpeed != 1 && action.wID == ACTION_ANALOG_REWIND)
           iSpeed = -iSpeed;
@@ -2669,7 +2670,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     if (CUtil::FileExists("Q:\\system\\players\\paplayer\\in_mp3.dll"))  strNewPlayer = "paplayer";
   }
-
+  else if (url.GetFileType() == "ape" || url.GetFileType() == "mac")
+  {
+    strNewPlayer = "paplayer";
+  }
   // Check if we are moving from one cue sheet item to the next
   // need:
   // 1.  player to exist
@@ -2792,7 +2796,7 @@ void CApplication::OnPlayBackEnded()
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackEnded();
 
-  OutputDebugString("Playback has finished\n");
+  CLog::Log(LOGDEBUG, "Playback has finished");
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL);
   m_gWindowManager.SendThreadMessage(msg);
   StartLEDControl(false);
@@ -2806,6 +2810,8 @@ void CApplication::OnPlayBackStarted()
   // informs python script currently running playback has started
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackStarted();
+
+  CLog::Log(LOGDEBUG, "Playback has started");
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0, 0, 0, NULL);
   m_gWindowManager.SendThreadMessage(msg);

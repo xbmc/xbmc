@@ -151,8 +151,8 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
 
           // Count the number of events since firstEvent was set (when repeat or button release)
           // Seems that firstEvent is often the first button push, but can also be
-          // any event with counter not equal to 62 through 67.  (Not sure why exactly :P)
-          if (g_InputStatesEx[i].IR_Remote.firstEvent > 0 || g_InputStatesEx[i].IR_Remote.counter < 62 || g_InputStatesEx[i].IR_Remote.counter > 67)
+          // any event with counter not equal to 62 through 68.  (Not sure why exactly :P)
+          if (g_InputStatesEx[i].IR_Remote.firstEvent > 0 || g_InputStatesEx[i].IR_Remote.counter < 62 || g_InputStatesEx[i].IR_Remote.counter > 68)
           {
             g_eventsSinceFirstEvent[i] = 0;
             bIsRepeating = false;

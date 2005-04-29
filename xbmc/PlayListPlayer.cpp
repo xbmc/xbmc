@@ -60,14 +60,13 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
   return true;
 }
 
-/// \brief Play next entry in current playlist
-void CPlayListPlayer::PlayNext(bool bAutoPlay)
+int CPlayListPlayer::GetNextSong()
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)
-    return ;
-
+    return -1;
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
-  if (playlist.size() <= 0) return ;
+  if (playlist.size() <= 0)
+    return -1;
   int iSong = m_iCurrentSong;
 
   if (ShuffledPlay(m_iCurrentPlayList) && playlist.size() > 1)
@@ -81,18 +80,27 @@ void CPlayListPlayer::PlayNext(bool bAutoPlay)
       iSong++;
   }
 
-  if (iSong >= playlist.size() )
-  {
+  if (iSong >= playlist.size() && Repeated(m_iCurrentPlayList))
     iSong = 0;
 
-    if (!Repeated(m_iCurrentPlayList))
-    {
-      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-      m_gWindowManager.SendThreadMessage(msg);
-      Reset();
-      m_iCurrentPlayList = PLAYLIST_NONE;
-      return ;
-    }
+  return iSong;
+}
+
+/// \brief Play next entry in current playlist
+void CPlayListPlayer::PlayNext(bool bAutoPlay)
+{
+  int iSong = GetNextSong();
+  if (iSong < 0)
+    return;
+
+  CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+  if (iSong >= playlist.size())
+  {
+    CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
+    m_gWindowManager.SendThreadMessage(msg);
+    Reset();
+    m_iCurrentPlayList = PLAYLIST_NONE;
+    return ;
   }
 
   if (bAutoPlay)
