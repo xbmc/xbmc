@@ -106,6 +106,7 @@ public:
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
   bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC_TEMP);
+  bool ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist);
   bool PlayFile(const CFileItem& item, bool bRestart = false);
   void StopPlaying();
   void Restart(bool bSamePosition = true);
@@ -227,6 +228,7 @@ public:
   int m_iMasterLockRetriesRemaining;
   bool m_bMasterLockOverridesLocalPasswords;
   CStdString m_strForcedNextPlayer;
+  CStdString m_strPlayListFile;
 
 protected:
   CStdString m_strCurrentPlayer;

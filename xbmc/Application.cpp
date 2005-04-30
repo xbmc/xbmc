@@ -117,6 +117,7 @@ CApplication::CApplication(void)
   m_bMasterLockOverridesLocalPasswords = false;
   m_bInitializing = true;
   m_strForcedNextPlayer = "";
+  m_strPlayListFile = "";
 }
 
 CApplication::~CApplication(void)
@@ -2543,69 +2544,7 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
   if (!pPlayList->Load(item.m_strPath))
     return false;
 
-  CPlayList& playlist = (*pPlayList);
-
-  // no songs in playlist just return
-  if (playlist.size() == 0)
-    return false;
-
-  // how many songs are in the new playlist
-  if (playlist.size() == 1)
-  {
-    // just 1 song? then play it (no need to have a playlist of 1 song)
-    CPlayList::CPlayListItem item = playlist[0];
-    return g_application.PlayFile(CFileItem(item));
-  }
-
-  // clear current playlist
-  g_playlistPlayer.GetPlaylist(iPlaylist).Clear();
-
-  // if autoshuffle playlist on load option is enabled
-  //  then shuffle the playlist
-  // (dont do this for shoutcast .pls files)
-  if (playlist.size())
-  {
-    const CPlayList::CPlayListItem& playListItem = playlist[0];
-    if (!playListItem.IsShoutCast() && g_guiSettings.GetBool("MusicLibrary.ShufflePlaylistsOnLoad"))
-      pPlayList->Shuffle();
-  }
-
-  // add each item of the playlist to the playlistplayer
-  for (int i = 0; i < (int)pPlayList->size(); ++i)
-  {
-    const CPlayList::CPlayListItem& playListItem = playlist[i];
-    CStdString strLabel = playListItem.GetDescription();
-    if (strLabel.size() == 0)
-      strLabel = CUtil::GetTitleFromPath(playListItem.GetFileName());
-
-    CPlayList::CPlayListItem playlistItem;
-    playlistItem.SetDescription(playListItem.GetDescription());
-    playlistItem.SetDuration(playListItem.GetDuration());
-    playlistItem.SetFileName(playListItem.GetFileName());
-    g_playlistPlayer.GetPlaylist( iPlaylist ).Add(playlistItem);
-  }
-
-  // if we got a playlist
-  if (g_playlistPlayer.GetPlaylist( iPlaylist ).size() )
-  {
-    // then get 1st song
-    CPlayList& playlist = g_playlistPlayer.GetPlaylist( iPlaylist );
-    const CPlayList::CPlayListItem& item = playlist[0];
-
-    // and start playing it
-    g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
-    g_playlistPlayer.Reset();
-    if (g_playlistPlayer.ShuffledPlay(iPlaylist))
-    {
-      // if shuffled dont start on first song
-      g_playlistPlayer.SetCurrentSong(0);
-      g_playlistPlayer.PlayNext();
-    }
-    else
-      g_playlistPlayer.Play(0);
-    return true;
-  }
-  return false;
+  return ProcessAndStartPlaylist(strPath, *pPlayList, iPlaylist);
 }
 
 bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
@@ -3788,4 +3727,77 @@ void CApplication::CheckAudioScrobblerStatus()
     CScrobbler::GetInstance()->AddSong(tag);
     CScrobbler::GetInstance()->SetSubmitSong(false);
   }
+}
+
+bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist)
+{
+  // no songs in playlist just return
+  if (playlist.size() == 0)
+    return false;
+
+  // if the playlist contains an internet stream, this file will be used
+  // to generate a thumbnail for musicplayer.cover 
+  g_application.m_strPlayListFile = strPlayList;
+
+  // how many songs are in the new playlist
+  if (playlist.size() == 1)
+  {
+    // just 1 song? then play it (no need to have a playlist of 1 song)
+    CPlayList::CPlayListItem item = playlist[0];
+    return g_application.PlayFile(CFileItem(item));
+  }
+
+  // clear current playlist
+  g_playlistPlayer.GetPlaylist(iPlaylist).Clear();
+
+  // if autoshuffle playlist on load option is enabled
+  // then shuffle the playlist
+  // dont do this for shoutcast .pls files
+  // or for video playlists
+  if (playlist.size())
+  {
+    if (iPlaylist == PLAYLIST_MUSIC || iPlaylist == PLAYLIST_MUSIC_TEMP)
+    {
+      const CPlayList::CPlayListItem& playListItem = playlist[0];
+      if (!playListItem.IsShoutCast() && g_guiSettings.GetBool("MusicLibrary.ShufflePlaylistsOnLoad"))
+       playlist.Shuffle();
+    }
+  }
+
+  // add each item of the playlist to the playlistplayer
+  for (int i = 0; i < (int)playlist.size(); ++i)
+  {
+    const CPlayList::CPlayListItem& playListItem = playlist[i];
+    CStdString strLabel = playListItem.GetDescription();
+    if (strLabel.size() == 0)
+      strLabel = CUtil::GetTitleFromPath(playListItem.GetFileName());
+
+    CPlayList::CPlayListItem playlistItem;
+    playlistItem.SetDescription(playListItem.GetDescription());
+    playlistItem.SetDuration(playListItem.GetDuration());
+    playlistItem.SetFileName(playListItem.GetFileName());
+    g_playlistPlayer.GetPlaylist( iPlaylist ).Add(playlistItem);
+  }
+
+  // if we got a playlist
+  if (g_playlistPlayer.GetPlaylist( iPlaylist ).size() )
+  {
+    // then get 1st song
+    CPlayList& playlist = g_playlistPlayer.GetPlaylist( iPlaylist );
+    const CPlayList::CPlayListItem& item = playlist[0];
+
+    // and start playing it
+    g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
+    g_playlistPlayer.Reset();
+    if (g_playlistPlayer.ShuffledPlay(iPlaylist))
+    {
+      // if shuffled dont start on first song
+      g_playlistPlayer.SetCurrentSong(0);
+      g_playlistPlayer.PlayNext();
+    }
+    else
+      g_playlistPlayer.Play(0);
+    return true;
+  }
+  return false;
 }
