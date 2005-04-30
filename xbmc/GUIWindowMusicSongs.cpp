@@ -533,63 +533,11 @@ void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
       }
       return ; //hmmm unable to load playlist?
     }
-
-    CPlayList& playlist = (*pPlayList);
-
-    // no songs in playlist just return
-    if (playlist.size() == 0)
-      return ;
-
-    // how many songs are in the new playlist
-    if (playlist.size() == 1)
-    {
-      // just 1 song? then play it (no need to have a playlist of 1 song)
-      CPlayList::CPlayListItem item = playlist[0];
-      g_application.PlayFile(CFileItem(item));
-      return ;
-    }
-
-    // clear current playlist
-    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Clear();
-
-    // if autoshuffle playlist on load option is enabled
-    //  then shuffle the playlist
-    // (dont do this for shoutcast .pls files)
-    if (playlist.size())
-    {
-      const CPlayList::CPlayListItem& playListItem = playlist[0];
-      if (!playListItem.IsShoutCast() && g_guiSettings.GetBool("MusicLibrary.ShufflePlaylistsOnLoad"))
-        pPlayList->Shuffle();
-    }
-
-    // add each item of the playlist to the playlistplayer
-    for (int i = 0; i < (int)pPlayList->size(); ++i)
-    {
-      const CPlayList::CPlayListItem& playListItem = playlist[i];
-      CStdString strLabel = playListItem.GetDescription();
-      if (strLabel.size() == 0)
-        strLabel = CUtil::GetTitleFromPath(playListItem.GetFileName());
-
-      CPlayList::CPlayListItem playlistItem;
-      playlistItem.SetDescription(playListItem.GetDescription());
-      playlistItem.SetDuration(playListItem.GetDuration());
-      playlistItem.SetFileName(playListItem.GetFileName());
-      g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
-    }
   }
 
-  // if we got a playlist
-  if (g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size() )
+  if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST_MUSIC))
   {
-    // then get 1st song
-    CPlayList& playlist = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC );
-    const CPlayList::CPlayListItem& item = playlist[0];
-
-    // and start playing it
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-    g_playlistPlayer.Reset();
-    g_playlistPlayer.Play(0);
-    // and activate the playlist window if its not activated yet
+    // activate the playlist window if its not activated yet
     if (GetID() == m_gWindowManager.GetActiveWindow())
     {
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);

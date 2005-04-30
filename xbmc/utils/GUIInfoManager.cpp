@@ -725,8 +725,17 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     tag.SetLoaded(true);
   }
 
-  // Find a thumb for this file.
-  m_currentSong.SetMusicThumb();
+  // find a thumb for this file.
+  if (m_currentSong.IsInternetStream())
+  {
+    CFileItem* pItemTemp = new CFileItem(g_application.m_strPlayListFile,false);
+    pItemTemp->SetMusicThumb();
+    CStdString strThumb = pItemTemp->GetThumbnailImage();
+    if (CUtil::FileExists(strThumb))
+      m_currentSong.SetThumbnailImage(strThumb);
+  }
+  else
+    m_currentSong.SetMusicThumb();
   m_currentSong.FillInDefaultIcon();
 }
 
