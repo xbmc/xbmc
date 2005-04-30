@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET) 
+  - 29-04-2005 added: support for .tbn and folder.jpg images for music .pls and .strm files
   - 29-04-2005 fixed: Multichannel audio wasn't being downmixed properly when ac3 decoder was enabled in dash, but analog autput set in xbmc. Also caused sync problems
   - 28-04-2005 added: Initial Replaygain support to PAPlayer - only works from ID3v2 tags (non-standard) atm.
   - 28-04-2005 added: APE lossless support to PAPlayer.
