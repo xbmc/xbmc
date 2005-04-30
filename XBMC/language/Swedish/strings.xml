@@ -462,6 +462,13 @@
   <string><id>634</id><value>Sträck 169</value></string>
   <string><id>635</id><value>Original storlek</value></string>
   <string><id>636</id><value>Egen</value></string>
+  <string><id>637</id><value>Replay Gain</value></string>
+  <string><id>638</id><value>Läge</value></string>
+  <string><id>639</id><value>Använd låt nivå</value></string>
+  <string><id>640</id><value>Använd album nivåer</value></string>
+  <string><id>641</id><value>PreAmp Level - Replay Gained Filer</value></string>
+  <string><id>642</id><value>PreAmp Level - Icke Replay Gained Filer</value></string>
+  <string><id>643</id><value>Undvik Clipping på Replay Gained Filer</value></string>
   <string><id>700</id><value>Rensa Databasen</value></string>
   <string><id>701</id><value>Radera gammla låtar från databasen</value></string>
   <string><id>702</id><value>Denna sökväg har scannats innan.</value></string>
