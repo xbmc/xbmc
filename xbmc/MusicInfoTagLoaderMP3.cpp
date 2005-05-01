@@ -79,6 +79,7 @@ using namespace XFILE;
 
 CMusicInfoTagLoaderMP3::CMusicInfoTagLoaderMP3(void)
 {
+  m_iID3v2Size=0;
 }
 
 CMusicInfoTagLoaderMP3::~CMusicInfoTagLoaderMP3()
@@ -510,6 +511,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
     /* Now check what the ID3v2 size field says */
     file.Read(buffer, 4);
     nPrependedBytes = UNSYNC(buffer[0], buffer[1], buffer[2], buffer[3]) + 10;
+    m_iID3v2Size=nPrependedBytes;
   }
 
   //raw mp3Data = FileSize - ID3v1 tag - ID3v2 tag
