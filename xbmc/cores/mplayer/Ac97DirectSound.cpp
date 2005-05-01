@@ -287,10 +287,9 @@ DWORD CAc97DirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
           xmpAudio.pContext = m_pbSampleData[dwIndex];
           // Process the audio
           if (DS_OK != m_pDigitalOutput->Process( &xmpAudio, NULL ))
-          {
-            m_dwTotalBytesAdded+=m_dwPacketSize;
             return iBytesCopied;
-          }
+
+          m_dwTotalBytesAdded+=m_dwPacketSize;
           // Okay - we've done this bit, update our data info
           //buffered_bytes+=m_dwPacketSize;
           // break to get another packet and restart the loop
