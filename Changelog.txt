@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 01-05-2005 fixed: pcm passthrough was not working using mplayer
   - 01-05-2005 fixed: some mp3's may hang when playing with paplayer
   - 29-04-2005 added: support for .tbn and folder.jpg images for music .pls and .strm files
   - 29-04-2005 fixed: Multichannel audio wasn't being downmixed properly when ac3 decoder was enabled in dash, but analog autput set in xbmc. Also caused sync problems
