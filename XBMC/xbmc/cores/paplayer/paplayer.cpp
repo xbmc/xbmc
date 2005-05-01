@@ -1,5 +1,7 @@
 #include "../../stdafx.h"
 #include "paplayer.h"
+#include "../mplayer/ASyncDirectSound.h"
+#include "../mplayer/Ac97DirectSound.h"
 #include "../../application.h"
 #include "../../util.h"
 #include "MP3Codec.h"
@@ -45,7 +47,7 @@ PAPlayer::~PAPlayer()
   KillAudioDevice();
 
   if ( m_pPcm )
-    delete m_pPcm;
+    delete[] m_pPcm;
   m_pPcm = NULL;
 
   if ( m_codec )
@@ -414,8 +416,18 @@ int PAPlayer::CreateAudioDevice()
   // Check we don't first need to kill our buffers
   KillAudioDevice();
   m_BytesPerSecond = m_codec->m_Channels * m_codec->m_SampleRate * m_codec->m_BitsPerSample / 8;
-  m_pAudioDevice = new CASyncDirectSound(m_pCallback, m_codec->m_Channels, m_codec->m_SampleRate, m_codec->m_BitsPerSample, false, OUTPUT_BUFFER_LENGTH); // use 64k of buffers
+
+  bool bResample(false);
+  if (g_guiSettings.GetBool("AudioOutput.HighQualityResampling"))
+    bResample = true;
+
+  if (m_codec->m_Channels == 2 && (m_codec->m_SampleRate == 48000 || bResample) && (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL) && g_guiSettings.GetBool("AudioOutput.PCMPassThrough")) // need add menu options here
+    m_pAudioDevice = new CAc97DirectSound(m_pCallback, m_codec->m_Channels, m_codec->m_SampleRate, m_codec->m_BitsPerSample, false, bResample);
+  else
+    m_pAudioDevice = new CASyncDirectSound(m_pCallback, m_codec->m_Channels, m_codec->m_SampleRate, m_codec->m_BitsPerSample, bResample, OUTPUT_BUFFER_LENGTH); // use 64k of buffers
+  
   m_dwAudioBufferMin = m_pAudioDevice->GetChunkLen();
+
   CLog::Log(LOGINFO, "PAP Player: New AudioDevice created. Chunklen %d",m_dwAudioBufferMin);
   return 0;
 }
