@@ -324,14 +324,10 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
     YUVOverlay overlay = m_dvdVideo.LockYUVOverlay();
     CDVDCodecUtils::CopyPictureToOverlay(&overlay, pPicture);
 
-    DVDOverlayPicture* pOverlayPicture = m_overlay.Get();
-
     // remove any overlays that are out of time
-    while (pOverlayPicture && pOverlayPicture->iPTSStopTime < pts)
-    {
-      pOverlayPicture = pOverlayPicture->pNext;
-      m_overlay.Remove();      
-    }
+    m_overlay.CleanUp(pts);
+
+    DVDOverlayPicture* pOverlayPicture = m_overlay.Get();
 
     //Check all overlays and render those that should be rendered, based on time and forced
     //Both forced and subs should check timeing, pts == 0 in the stillframe case

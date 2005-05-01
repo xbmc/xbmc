@@ -1167,6 +1167,9 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
       if (pOverlayPicture)
       {
+        //It's the last packet recieved that is of interest currently
+        while( pOverlayPicture->pNext ) pOverlayPicture = pOverlayPicture->pNext;
+
         pStream->GetButtonInfo(pOverlayPicture, &m_dvdspus);
       }
 
