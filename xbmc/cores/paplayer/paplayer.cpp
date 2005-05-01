@@ -4,8 +4,7 @@
 #include "../mplayer/Ac97DirectSound.h"
 #include "../../application.h"
 #include "../../util.h"
-#include "MP3Codec.h"
-#include "APECodec.h"
+#include "CodecFactory.h"
 
 #define VOLUME_FFWD_MUTE 900 // 9dB
 
@@ -90,13 +89,9 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     delete m_codec;
     m_codec = NULL;
   }
+  // create a new decoder if needed
   if (!m_codec)
-  {
-    if (url.GetFileType().Equals("mp3"))
-      m_codec = new MP3Codec;
-    else if (url.GetFileType().Equals("ape") || url.GetFileType().Equals("mac"))
-      m_codec = new APECodec;
-  }
+    m_codec=CodecFactory::CreateCodec(url.GetFileType());
 
   if (!m_codec || !m_codec->Init(file.m_strPath))
   {
