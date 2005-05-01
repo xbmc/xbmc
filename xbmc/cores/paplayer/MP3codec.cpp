@@ -42,11 +42,11 @@ MP3Codec::~MP3Codec()
   m_pPAP = NULL;
 
   if ( m_InputBuffer )
-    delete m_InputBuffer;
+    delete[] m_InputBuffer;
   m_InputBuffer = NULL;
 
   if ( m_OutputBuffer )
-    delete m_OutputBuffer;
+    delete[] m_OutputBuffer;
   m_OutputBuffer = NULL;
 
   if (m_pDll)
@@ -102,10 +102,12 @@ bool MP3Codec::Init(const CStdString &strFile)
   // Read in some data so we can determine the sample size and so on
   // This needs to be made more intelligent - possibly use a temp output buffer
   // and cycle around continually reading until we have the necessary data
-  m_filePAP.Read(m_InputBuffer, 32768); // should be enough to get past the ID3v2 header
-  int sendsize = 32768;
+  // as a first workaround skip the id3v2 tag at the beginning of the file
+  m_filePAP.Seek(mp3info.GetID3v2Size());
+  m_filePAP.Read(m_InputBuffer, 8192);
+  int sendsize = 8192;
   unsigned int formatdata[8];
-  int result = m_pPAP->decode(m_InputBuffer, 32768, m_InputBuffer + 32768, &sendsize, (unsigned int *)&formatdata);
+  int result = m_pPAP->decode(m_InputBuffer, 8192, m_InputBuffer + 8192, &sendsize, (unsigned int *)&formatdata);
   if ( (result == 0 || result == 1) && sendsize )
   {
     m_Channels    = formatdata[2];
@@ -113,7 +115,7 @@ bool MP3Codec::Init(const CStdString &strFile)
     m_BitsPerSample  = formatdata[3];
   }
   m_pPAP->flush();
-  m_filePAP.Seek(0);
+  m_filePAP.Seek(mp3info.GetID3v2Size());
   return true;
 }
 

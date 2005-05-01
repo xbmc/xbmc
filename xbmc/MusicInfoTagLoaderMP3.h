@@ -99,6 +99,7 @@ public:
   bool ReadTag(ID3_Tag& id3tag, CMusicInfoTag& tag);
   void GetSeekInfo(CVBRMP3SeekHelper &info);
   bool GetReplayGain(CReplayGain &info);
+  int GetID3v2Size() const { return m_iID3v2Size; }
 
 protected:
   int ReadDuration(CFile& file, const ID3_Tag& id3tag);
@@ -122,5 +123,6 @@ private:
 
   CVBRMP3SeekHelper m_seekInfo;
   CReplayGain       m_replayGainInfo;
+  int m_iID3v2Size;
 };
 };
