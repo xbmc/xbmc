@@ -185,7 +185,7 @@ static int audio_init(int rate, int channels, int format, int flags)
     if ( channels == 3 || channels == 5 || channels > 6 )
       return 1;  // this is an ugly hack due to our code use mplayer_open_file for both playing file, and format detecttion
 
-    if ( channels == 2 && !mplayer_HasVideo() && (lSampleRate == 48000 || bResample) && (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL) && g_guiSettings.GetBool("AudioOutput.PCMPassthrough")) // need add menu options here
+    if ( channels == 2 && !mplayer_HasVideo() && (lSampleRate == 48000 || bResample) && (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL) && g_guiSettings.GetBool("AudioOutput.PCMPassThrough")) // need add menu options here
       m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback, channels, rate, ao_format_bits, bAC3PassThru, bResample);
     else
       m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback, channels, rate, ao_format_bits, bResample, 0, strAudioCodec);
