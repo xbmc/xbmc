@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 01-04-2005 added: enabled pcm passthrough in paplayer
   - 01-05-2005 fixed: ac97 sound device has not counted total bytes added
   - 01-05-2005 fixed: pcm passthrough was not working using mplayer
   - 01-05-2005 fixed: some mp3's may hang when playing with paplayer
