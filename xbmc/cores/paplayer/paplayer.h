@@ -1,8 +1,8 @@
 #pragma once
 #include "../../Application.h"
 #include "../iplayer.h"
-#include "../mplayer/ASyncDirectSound.h"
 #include "../../utils/thread.h"
+#include "../mplayer/IDirectSoundRenderer.h"
 #include "ICodec.h"
 
 class PAPlayer : public IPlayer, public CThread
@@ -59,7 +59,7 @@ protected:
 
 private:
   
-  CASyncDirectSound* m_pAudioDevice;  // our output device
+  IDirectSoundRenderer* m_pAudioDevice;  // our output device
   DWORD m_dwAudioBufferSize; // size of the buffer in use
   DWORD m_dwAudioBufferMin;  // minimum size of our buffer before we need more
   DWORD m_dwAudioMaxSize;
