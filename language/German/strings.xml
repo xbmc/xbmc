@@ -466,6 +466,15 @@
   <string><id>634</id><value>Stretch 16:9</value></string>
   <string><id>635</id><value>Original Größe</value></string>
   <string><id>636</id><value>Benutzerdefiniert</value></string>
+ 
+  <string><id>637</id><value>Replay Gain</value></string>
+  <string><id>638</id><value>Modus</value></string>
+  <string><id>639</id><value>Niveau des Tracks benutzen</value></string>
+  <string><id>640</id><value>Niveau des Albums benutzen</value></string>
+  <string><id>641</id><value>Lautstärke Niveau - Dateien mit Replay Gain</value></string>
+  <string><id>642</id><value>Lautstärke Niveau - Dateien ohne Replay Gain</value></string>
+  <string><id>643</id><value>Abschneidung verhindern bei Dateien mit Replay Gain</value></string>
+
   <string><id>700</id><value>Bibliothek aufräumen</value></string>
   <string><id>701</id><value>Alte Musikdaten aus der Bibliothek löschen</value></string>
   <string><id>702</id><value>Der Pfad wurde bereits durchsucht</value></string>
@@ -747,6 +756,7 @@
   <string><id>13356</id><value>Hardware Overlays</value></string>
   <string><id>13357</id><value>Shader (hohe Qualität)</value></string>
   <string><id>13358</id><value>Abspielen</value></string>
+  <string><id>13359</id><value>Interpreten Thumbnail setzen</value></string>
   <string><id>13360</id><value>Abbilder erstellen</value></string>
   <string><id>13361</id><value>Voice aktivieren</value></string>
   <string><id>13362</id><value>Voice Maske</value></string>
@@ -806,7 +816,7 @@
   <string><id>14030</id><value>Audio Cache - DVD-Rom</value></string>
   <string><id>14031</id><value>- Lokales Netzwerk</value></string>
   <string><id>14032</id><value>- Internet</value></string>
-   <string><id>14034</id><value>DVD Cache - DVD-Rom</value></string>
+  <string><id>14034</id><value>DVD Cache - DVD-Rom</value></string>
   <string><id>14035</id><value>- Lokales Netzwerk</value></string>
   <string><id>14036</id><value>Server</value></string>
   <string><id>14037</id><value>Darstellung</value></string>
@@ -824,7 +834,7 @@
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
   <string><id>14051</id><value>12 Stunden Uhr anzeigen</value></string>
-  <string><id>14052</id><value>Monat und Tag im Home Screen tauschen</value></string>
+  <string><id>14052</id><value>Europäische Datumsanzeige</value></string>
   <string><id>14053</id><value>GUI Filter</value></string>
   <string><id>14054</id><value>Internet Anfragen zulassen</value></string>
   <string><id>14055</id><value>Durchsuchen in Hintergrund</value></string>
