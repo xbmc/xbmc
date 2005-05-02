@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 02-05-2005 changed: music info scanner now only processes files matching the music extensions
   - 02-05-2005 updated: German language file
   - 02-05-2005 updated: Finnish language file (Thnx to jutski)
   - 02-05-2005 updated: Chinese (Traditional) language file (Thnx to dog099)
