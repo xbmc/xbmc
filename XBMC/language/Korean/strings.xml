@@ -89,7 +89,7 @@
   <string><id>157</id><value>비디오</value></string>
   <string><id>158</id><value>사용가능 메모리</value></string>
   <string><id>159</id><value>인터넷 연결안됨</value></string>
-  <string><id>160</id><value>남은용량</value></string>
+  <string><id>160</id><value>사용가능</value></string>
   <string><id>161</id><value>사용불가</value></string>
   <string><id>162</id><value>트레이 열림</value></string>
   <string><id>163</id><value>읽는 중</value></string>
@@ -410,7 +410,7 @@
   <string><id>479</id><value>스킨과 언어</value></string>
   <string><id>480</id><value>사용자 인터페이스</value></string>
   <string><id>481</id><value>오디오 옵션</value></string>
-  <string><id>482</id><value>XBMC에 대하여</value></string>
+  <string><id>482</id><value>XBMC정보</value></string>
   <string><id>483</id><value>앨범</value></string>
   <string><id>484</id><value>음악가</value></string>
   <string><id>485</id><value>앨범 삭제</value></string>
@@ -438,6 +438,7 @@
   <string><id>507</id><value>정렬: 사용빈도</value></string>
   <string><id>508</id><value>바로가기나 검색을 사용하지 않음</value></string>
   <string><id>509</id><value>프로그램 미리보기 캐시</value></string>
+  <string><id>510</id><value>시각화 사용</value></string>
   <string><id>600</id><value>시디 추출</value></string>
   <string><id>601</id><value>중간</value></string>
   <string><id>602</id><value>표준</value></string>
@@ -462,6 +463,15 @@
   <string><id>634</id><value>늘림 16:9</value></string>
   <string><id>635</id><value>원래 크기</value></string>
   <string><id>636</id><value>사용자 정의</value></string>
+  
+  <string><id>637</id><value>리플레이 게인</value></string>
+  <string><id>638</id><value>모드</value></string>
+  <string><id>639</id><value>트랙 레벨 사용</value></string>
+  <string><id>640</id><value>앨범 레벨 사용</value></string>
+  <string><id>641</id><value>증폭 레벨 - ReplayGain 있는 파일</value></string>
+  <string><id>642</id><value>증폭 레벨 - ReplayGain 없는 파일</value></string>
+  <string><id>643</id><value>리플레이 게인 정보가 있는 파일의 클리핑 방지</value></string>
+
   <string><id>700</id><value>데이터베이스 정리</value></string>
   <string><id>701</id><value>데이터베이스로부터 오래된 음악 제거</value></string>
   <string><id>702</id><value>이 경로는 이미 스캔되었음</value></string>
@@ -742,6 +752,8 @@
   <string><id>13355</id><value>저화질 픽셀 쉐이더</value></string>
   <string><id>13356</id><value>하드웨어 오버레이</value></string>
   <string><id>13357</id><value>고화질 픽셀 쉐이더</value></string>
+  <string><id>13358</id><value>항목 재생</value></string>
+  <string><id>13359</id><value>음악가 미리보기 설정</value></string>
   <string><id>13360</id><value>미리보기 생성</value></string>
   <string><id>13361</id><value>음성 사용</value></string> 
   <string><id>13362</id><value>음성 변조</value></string> 
@@ -905,4 +917,20 @@
   <string><id>15107</id><value>버퍼링중...</value></string>
   <string><id>15108</id><value>네비게이션 사운드</value></string>
   <string><id>15109</id><value>스킨 기본값</value></string>
+
+  <string><id>15200</id><value>AudioScrobbler</value></string>
+  <string><id>15201</id><value>음악 정보를 AudioScrobbler로 전송</value></string>
+  <string><id>15202</id><value>AudioScrobbler 사용자명</value></string>
+  <string><id>15203</id><value>AudioScrobbler 비밀번호</value></string>
+  <string><id>15204</id><value>연결 실패 : 응답없음...</value></string>
+  <string><id>15205</id><value>XBMC를 업데이트 하십시오</value></string>
+  <string><id>15206</id><value>전송 실패: 잘못된 인증</value></string>
+  <string><id>15207</id><value>연결됨</value></string>
+  <string><id>15208</id><value>연결안됨</value></string>
+  <string><id>15209</id><value>전송 간격 %i</value></string>
+  <string><id>15210</id><value> %i 곡 캐시됨</value></string>
+  <string><id>15211</id><value>전송중...</value></string>
+  <string><id>15212</id><value>%i초 후 전송</value></string>
+  
+  <string><id>15213</id><value>[PLACEHOLDER]</value></string>
 </strings>
