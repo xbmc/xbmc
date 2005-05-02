@@ -619,8 +619,7 @@
   <string><id>12003</id><value>我的影片：資訊</value></string>
   <string><id>12004</id><value>我的劇本：資訊</value></string>
   <string><id>12005</id><value>全螢幕影片</value></string>
-  <string><id>12006</id><value>聲音 visisalisation</value></string>
-  <!--                         Audio visisalisation              !-->
+  <string><id>12006</id><value>Audio visisalisation</value></string>
   <string><id>12007</id><value>我的圖片、幻燈片秀</value></string>
   <string><id>12008</id><value>檔案定位對話</value></string>
   <string><id>12310</id><value>0</value></string>
@@ -926,5 +925,7 @@
   <!--                         Cached %i Songs          !-->
   <string><id>15211</id><value>上傳中...</value></string>
   <string><id>15212</id><value>上傳剩餘 %i 秒</value></string>
+
+  <string><id>15213</id><value>[預留位置]</value></string>
 </strings>
 

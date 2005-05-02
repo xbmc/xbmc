@@ -5,7 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-
+  - 02-05-2005 updated: German language file
+  - 02-05-2005 updated: Finnish language file (Thnx to jutski)
+  - 02-05-2005 updated: Chinese (Traditional) language file (Thnx to dog099)
+  - 02-05-2005 updated: Norwegian language file (Thnx to vnm)
+  - 02-05-2005 updated: Korean language file (Thnx to akoako)
   - 01-05-2005 fixed: some more highlighting issues for dvdplayer
   - 01-05-2005 added: codec factory for paplayer
   - 01-05-2005 added: enabled pcm passthrough in paplayer

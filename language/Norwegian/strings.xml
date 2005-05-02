@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.187. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.188. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -464,6 +464,15 @@
   <string><id>634</id><value>Strekk 16:9</value></string>
   <string><id>635</id><value>Originalstørrelse</value></string>
   <string><id>636</id><value>Egendefinert</value></string>
+
+  <string><id>637</id><value>Replay Gain</value></string>
+  <string><id>638</id><value>Modus</value></string>
+  <string><id>639</id><value>Bruk spornivåer</value></string>
+  <string><id>640</id><value>Bruk albumnivåer</value></string>
+  <string><id>641</id><value>PreAmp-nivå - filer med Replay Gain</value></string>
+  <string><id>642</id><value>PreAmp-nivå - filer uten Replay Gain</value></string>
+  <string><id>643</id><value>Unngå klipping i filer med Replay Gain</value></string>
+
   <string><id>700</id><value>Rydder opp i databasen</value></string>
   <string><id>701</id><value>Fjerner gamle sanger fra databasen</value></string>
   <string><id>702</id><value>Denne katalogstien har blitt skannet før.</value></string>
