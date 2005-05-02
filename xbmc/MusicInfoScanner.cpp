@@ -174,7 +174,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   // load subfolder
   CFileItemList items;
   CDirectory dir;
-  dir.GetDirectory(strDirectory, items);
+  dir.GetDirectory(strDirectory, items, g_stSettings.m_szMyMusicExtensions);
   // filter items in the sub dir (for .cue sheet support)
   items.FilterCueItems();
   CUtil::SortFileItemsByName(items);
