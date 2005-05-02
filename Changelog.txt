@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+  - 01-05-2005 fixed: some more highlighting issues for dvdplayer
   - 01-05-2005 added: codec factory for paplayer
   - 01-05-2005 added: enabled pcm passthrough in paplayer
   - 01-05-2005 fixed: ac97 sound device has not counted total bytes added
