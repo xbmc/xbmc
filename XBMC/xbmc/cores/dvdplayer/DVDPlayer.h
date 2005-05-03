@@ -61,8 +61,8 @@ public:
   virtual void ToggleFrameDrop();
   virtual void SubtitleOffset(bool bPlus = true);
   virtual void Seek(bool bPlus, bool bLargeStep);
-  virtual void SeekPercentage(int iPercent);
-  virtual int GetPercentage();
+  virtual void SeekPercentage(float iPercent);
+  virtual float GetPercentage();
   virtual void SetVolume(long nVolume);
   virtual int GetVolume();
   virtual void SetContrast(bool bPlus);

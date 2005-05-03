@@ -861,6 +861,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogProgress.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogSeekBar.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogSeekBar.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GuiDialogSelect.cpp">
 				</File>
 				<File
