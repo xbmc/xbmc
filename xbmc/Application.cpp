@@ -1862,8 +1862,8 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
         if (iSpeed == 1)
           CLog::DebugLog("Resetting playspeed");
       }
-      if (g_application.GetPlaySpeed() != 1 && !m_guiDialogSeekBar.IsRunning())
-        m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
+//      if (g_application.GetPlaySpeed() != 1 && !m_guiDialogSeekBar.IsRunning())
+//        m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
     }
     // allow play to unpause
     else
@@ -1924,9 +1924,9 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
   if (IsPlaying() && (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK))
   {
     // show visual feedback of seek change...
-    if (!m_guiDialogSeekBar.IsRunning())
-      m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
-    m_guiDialogSeekBar.OnAction(action);
+//    if (!m_guiDialogSeekBar.IsRunning())
+//      m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
+//    m_guiDialogSeekBar.OnAction(action);
   }
 }
 
