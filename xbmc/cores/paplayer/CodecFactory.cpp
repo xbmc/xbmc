@@ -2,6 +2,7 @@
 #include "CodecFactory.h"
 #include "MP3Codec.h"
 #include "APECodec.h"
+#include "CDDACodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -9,6 +10,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new MP3Codec;
   else if (strFileType.Equals("ape") || strFileType.Equals("mac"))
     return new APECodec;
+  else if (strFileType.Equals("cdda"))
+    return new CDDACodec;
 
   return NULL;
 }
