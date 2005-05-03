@@ -567,7 +567,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
     CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
     if (pControl) 
     {
-      pControl->SetPercentage(g_application.m_pPlayer->GetCacheLevel());
+      pControl->SetPercentage((float)g_application.m_pPlayer->GetCacheLevel());
       pControl->SetVisible(true);
     }
     g_infoManager.SetDisplayAfterSeek(0); //Make sure these stuff aren't visible now

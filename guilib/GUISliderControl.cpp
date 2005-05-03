@@ -177,6 +177,8 @@ void CGUISliderControl::Move(int iNumSteps)
 
 void CGUISliderControl::SetPercentage(int iPercent)
 {
+  if (iPercent > 100) iPercent = 100;
+  if (iPercent < 0) iPercent = 0;
   m_iPercent = iPercent;
 }
 
