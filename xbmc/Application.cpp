@@ -2588,10 +2588,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     strNewPlayer = m_strForcedNextPlayer;
     m_strForcedNextPlayer = "";
   }
-  else if ( url.GetProtocol() == "cdda")
-  {
-    strNewPlayer = "cdda";
-  }
   //else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 &&
   //         (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage()))
   //{
@@ -2609,7 +2605,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     if (CUtil::FileExists("Q:\\system\\players\\paplayer\\in_mp3.dll"))  strNewPlayer = "paplayer";
   }
-  else if (url.GetFileType() == "ape" || url.GetFileType() == "mac")
+  else if (url.GetFileType() == "ape" || url.GetFileType() == "mac" || url.GetFileType() == "cdda")
   {
     strNewPlayer = "paplayer";
   }
@@ -3501,7 +3497,8 @@ void CApplication::Mute(void)
   g_stSettings.m_bMute = true;
   g_stSettings.m_nVolumeLevel = VOLUME_MINIMUM;
 
-  m_guiDialogMuteBug.Show(m_gWindowManager.GetActiveWindow());
+  if (!m_guiDialogMuteBug.IsRunning())
+    m_guiDialogMuteBug.Show(m_gWindowManager.GetActiveWindow());
 }
 
 void CApplication::UnMute(void)
