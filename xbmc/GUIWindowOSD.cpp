@@ -393,15 +393,15 @@ void CGUIWindowOSD::SetVideoProgress()
 {
   if (g_application.m_pPlayer)
   {
-    int iValue = g_application.m_pPlayer->GetPercentage(); // Find out where we are at the moment
+    float fValue = g_application.m_pPlayer->GetPercentage(); // Find out where we are at the moment
 
     CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(OSD_VIDEOPROGRESS);
-    if (pControl) pControl->SetPercentage(iValue);   // Update our progress bar accordingly ...
+    if (pControl) pControl->SetPercentage(fValue);   // Update our progress bar accordingly ...
 
     CGUISliderControl* pSlider = (CGUISliderControl*)GetControl(OSD_VIDEOPOS);
-    if (pSlider) pSlider->SetIntValue(iValue);    // Update our position bar accordingly ...
+    if (pSlider) pSlider->SetFloatValue(fValue);    // Update our position bar accordingly ...
 
-    iValue = g_application.GetVolume();
+    int iValue = g_application.GetVolume();
     pSlider = (CGUISliderControl*)GetControl(OSD_VOLUMESLIDER);
     if (pSlider) pSlider->SetPercentage(iValue);   // Update our volume bar accordingly ...
 
@@ -620,7 +620,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
       if (pControl)
       {
         // Set mplayer's seek position to the percentage requested by the user
-        g_application.m_pPlayer->SeekPercentage(pControl->GetIntValue());
+        g_application.m_pPlayer->SeekPercentage(pControl->GetFloatValue());
       }
     }
     break;

@@ -851,7 +851,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying( webs_t wp)
 				websWrite(wp, szTime);
 				websWrite(wp, "\n");
 			}
-			websWrite(wp,"<li>Percentage:%i\n",g_application.m_pPlayer->GetPercentage()) ;
+			websWrite(wp,"<li>Percentage:%i\n",(int)g_application.m_pPlayer->GetPercentage()) ;
 		}
 	}
 	websFooter(wp);
@@ -864,7 +864,7 @@ int CXbmcHttp::xbmcGetPercentage( webs_t wp)
 	websHeader(wp);
 	if (g_application.m_pPlayer)
 	{
-		websWrite(wp,"<li>Percentage:%i\n",g_application.m_pPlayer->GetPercentage()) ;
+		websWrite(wp,"<li>Percentage:%i\n",(int)g_application.m_pPlayer->GetPercentage()) ;
 	}
 	else
 		websWrite(wp, "<li>Error\n");
@@ -876,7 +876,7 @@ int CXbmcHttp::xbmcSeekPercentage( webs_t wp, char_t *parameter)
 	websHeader(wp);
 	if (g_application.m_pPlayer)
 	{
-		g_application.m_pPlayer->SeekPercentage(atoi(parameter));
+		g_application.m_pPlayer->SeekPercentage((float)atoi(parameter));
 
 		websWrite(wp,"<li>OK\n") ;
 	}

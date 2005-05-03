@@ -108,8 +108,8 @@ public:
   virtual bool CanRecord() ;
   virtual bool IsRecording();
   virtual bool Record(bool bOnOff) ;
-  virtual void SeekPercentage(int iPercent = 0);
-  virtual int GetPercentage();
+  virtual void SeekPercentage(float fPercent = 0);
+  virtual float GetPercentage();
   virtual void SetAVDelay(float fValue = 0.0f);
   virtual float GetAVDelay();
   virtual float GetActualFPS();

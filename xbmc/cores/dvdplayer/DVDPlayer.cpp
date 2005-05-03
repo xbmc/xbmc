@@ -479,7 +479,7 @@ void CDVDPlayer::HandleMessages()
         if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD) 
         {
           if (IsInMenu()) break; //We can't seek in a menu
-          if( ((CDVDInputStreamNavigator*)m_pInputStream)->SeekPercentage(pMessage->iValue))
+          if( ((CDVDInputStreamNavigator*)m_pInputStream)->SeekPercentage((float)pMessage->iValue))
           {
             FlushBuffers();
             m_pDemuxer->Reset();
@@ -625,11 +625,11 @@ void CDVDPlayer::SubtitleOffset(bool bPlus)
 
 void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 {
-  int iPercent = (bLargeStep ? 10 : 2);
-  iPercent += GetPercentage();
-  iPercent *= bPlus ? 1 : -1;
+  float percent = (bLargeStep ? 10.0f : 2.0f);
+  percent += GetPercentage();
+  percent *= bPlus ? 1 : -1;
   
-  SeekPercentage(iPercent);
+  SeekPercentage(percent);
 }
 
 void CDVDPlayer::ToggleFrameDrop()
@@ -728,29 +728,29 @@ void CDVDPlayer::AudioOffset(bool bPlus)
 void CDVDPlayer::SwitchToNextAudioLanguage()
 {}
 
-void CDVDPlayer::SeekPercentage(int iPercent)
+void CDVDPlayer::SeekPercentage(float iPercent)
 {
   if (m_pDemuxer)
   {
     DVDPlayerMessage* pMessage = new DVDPlayerMessage;
     pMessage->iMessage = DVDMESSAGE_SEEKPERCENT;
-    pMessage->iValue = iPercent;
+    pMessage->iValue = (int)iPercent;
     m_messenger.Send(pMessage);
   }
 }
 
-int CDVDPlayer::GetPercentage()
+float CDVDPlayer::GetPercentage()
 {
   // get timing and seeking from libdvdnav for dvd's
   if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
   {
-    return ((CDVDInputStreamNavigator*)m_pInputStream)->GetPercentage();
+    return (float)((CDVDInputStreamNavigator*)m_pInputStream)->GetPercentage();
   }
   const int iTot = GetTotalTime();
   if( iTot == 0) return 0;
   double dPercent = (GetTime() * 0.1) / iTot;
 
-  return (int)RINT(dPercent);
+  return (float)(dPercent);
 }
 
 void CDVDPlayer::SetAVDelay(float fValue)

@@ -650,7 +650,7 @@ int CDVDInputStreamNavigator::GetTime()
   return m_iCurrentTime;
 }
 
-int CDVDInputStreamNavigator::GetPercentage()
+float CDVDInputStreamNavigator::GetPercentage()
 {
   uint32_t pos=0, len=0;
   if( dvdnav_get_position(m_dvdnav, &pos, &len) == DVDNAV_STATUS_ERR )
@@ -658,16 +658,16 @@ int CDVDInputStreamNavigator::GetPercentage()
     CLog::Log(LOGDEBUG, "dvdnav: %s", dvdnav_err_to_string(m_dvdnav));
     return -1;
   }
-  return (pos * 100 / len);
+  return (pos * 100.0f / len);
 }
 
-bool CDVDInputStreamNavigator::SeekPercentage(int iPercent)
+bool CDVDInputStreamNavigator::SeekPercentage(float fPercent)
 {
   uint32_t pos=0, len=0;
   uint64_t newpos=0;
   dvdnav_get_position(m_dvdnav, &pos, &len);
     
-  newpos = (uint64_t)iPercent * (uint64_t)len / 100;
+  newpos = (uint64_t)(fPercent * (uint64_t)len / 100.0f);
   if (dvdnav_sector_search(m_dvdnav, newpos, SEEK_SET) == DVDNAV_STATUS_ERR)
   {
     CLog::Log(LOGDEBUG, "dvdnav: %s", dvdnav_err_to_string(m_dvdnav));

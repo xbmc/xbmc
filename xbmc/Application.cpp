@@ -931,6 +931,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiDialogInvite);             // window id = 102
   m_gWindowManager.Add(&m_guiDialogKeyboard);           // window id = 103
   m_gWindowManager.Add(&m_guiDialogVolumeBar);          // window id = 104
+  m_gWindowManager.Add(&m_guiDialogSeekBar);            // window id = 115
   m_gWindowManager.Add(&m_guiDialogSubMenu);            // window id = 105
   m_gWindowManager.Add(&m_guiDialogContextMenu);        // window id = 106
   m_gWindowManager.Add(&m_guiDialogKaiToast);           // window id = 107
@@ -1250,6 +1251,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   m_guiDialogVolumeBar.FreeResources();
   m_guiDialogVolumeBar.ClearAll();
+  m_guiDialogSeekBar.FreeResources();
+  m_guiDialogSeekBar.ClearAll();
   m_guiDialogKaiToast.FreeResources();
   m_guiDialogKaiToast.ClearAll();
   m_guiDialogMuteBug.FreeResources();
@@ -1307,6 +1310,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiDialogYesNo.Load("dialogYesNo.xml");
   m_guiDialogProgress.Load("dialogProgress.xml");
   m_guiDialogVolumeBar.Load("dialogVolumeBar.xml");
+  m_guiDialogSeekBar.Load("dialogSeekBar.xml");
   m_guiDialogKaiToast.Load("dialogKaiToast.xml");
   m_guiDialogNumeric.Load("dialogNumeric.xml");
   m_guiDialogGamepad.Load("dialogGamepad.xml");
@@ -1357,6 +1361,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiMusicOverlay.AllocResources();
   m_guiVideoOverlay.AllocResources();
   m_guiDialogVolumeBar.AllocResources();
+  m_guiDialogSeekBar.AllocResources();
   m_guiDialogKaiToast.AllocResources();
   m_guiDialogMuteBug.AllocResources();
   m_gWindowManager.AddMsgTarget(this);
@@ -1857,6 +1862,8 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
         if (iSpeed == 1)
           CLog::DebugLog("Resetting playspeed");
       }
+      if (g_application.GetPlaySpeed() != 1 && !m_guiDialogSeekBar.IsRunning())
+        m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
     }
     // allow play to unpause
     else
@@ -1913,7 +1920,14 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
     else
       m_guiDialogVolumeBar.OnAction(action);
   }
-
+  // Check for global seek control
+  if (IsPlaying() && (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK))
+  {
+    // show visual feedback of seek change...
+    if (!m_guiDialogSeekBar.IsRunning())
+      m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
+    m_guiDialogSeekBar.OnAction(action);
+  }
 }
 
 void CApplication::SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CGUIImage* aIcon/*=NULL*/)
@@ -2496,6 +2510,7 @@ void CApplication::Stop()
     m_guiVideoOverlay.FreeResources();
     m_guiPointer.FreeResources();
     m_guiDialogVolumeBar.FreeResources();
+    m_guiDialogSeekBar.FreeResources();
     m_guiDialogKaiToast.FreeResources();
     g_fontManager.Clear();
     m_gWindowManager.DeInitialize();
@@ -2674,9 +2689,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       //pause video until screen is setup
       m_pPlayer->Pause();
     }
-    g_infoManager.SetCurrentItem(m_itemCurrentFile);
-    m_guiMusicOverlay.Update();
-    m_guiVideoOverlay.Update();
 
     if (m_itemCurrentFile.IsAudio() && !m_itemCurrentFile.IsInternetStream() && g_guiSettings.GetBool("Karaoke.Enabled"))
       m_CdgParser.Start(m_itemCurrentFile.m_strPath);
@@ -3217,6 +3229,7 @@ void CApplication::ResetAllControls()
   m_guiMusicOverlay.ResetAllControls();
   m_guiVideoOverlay.ResetAllControls();
   m_guiDialogVolumeBar.ResetAllControls();
+  m_guiDialogSeekBar.ResetAllControls();
   m_guiDialogKaiToast.ResetAllControls();
   m_guiDialogMuteBug.ResetAllControls();
 
@@ -3238,13 +3251,19 @@ bool CApplication::OnMessage(CGUIMessage& message)
     }
     break;
 
+  case GUI_MSG_PLAYBACK_STARTED:
+    {
+      // Update our infoManager with the new details etc.
+      g_infoManager.SetCurrentItem(m_itemCurrentFile);
+      m_guiMusicOverlay.Update();
+      m_guiVideoOverlay.Update();
+    }
+    break;
+
   case GUI_MSG_PLAYBACK_STOPPED:
   case GUI_MSG_PLAYBACK_ENDED:
     {
       m_dwIdleTime = timeGetTime();
-
-      // reset our infoManager details
-      g_infoManager.ResetCurrentItem();
 
       // reset our spindown
       m_bNetworkSpinDown = false;
@@ -3266,6 +3285,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
             delete m_pPlayer;
             m_pPlayer = 0;
             m_itemCurrentFile.Clear();
+            g_infoManager.ResetCurrentItem();
           }
         }
         else
@@ -3289,7 +3309,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
               delete m_pPlayer;
               m_pPlayer = 0;
               m_itemCurrentFile.Clear();
-
+              g_infoManager.ResetCurrentItem();
             }
           }
         }
@@ -3298,9 +3318,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         if (m_pPlayer)
         {
-          m_itemCurrentFile.Clear();
           delete m_pPlayer;
           m_pPlayer = 0;
+          m_itemCurrentFile.Clear();
+          g_infoManager.ResetCurrentItem();
         }
       }
 
@@ -3471,13 +3492,13 @@ void CApplication::Restart(bool bSamePosition)
   }
 
   // else get current position
-  int iPercentage = m_pPlayer->GetPercentage();
+  float fPercentage = m_pPlayer->GetPercentage();
 
   // reopen the file
   if ( PlayFile(m_itemCurrentFile, true) )
   {
     // and seek to the position
-    m_pPlayer->SeekPercentage(iPercentage);
+    m_pPlayer->SeekPercentage(fPercentage);
   }
 }
 

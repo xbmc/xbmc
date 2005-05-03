@@ -28,8 +28,8 @@ public:
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetPosition(int iPosX, int iPosY);
-  void SetPercentage(int iPercent);
-  int GetPercentage() const;
+  void SetPercentage(float fPercent);
+  float GetPercentage() const;
   const CStdString& GetBackGroundTextureName() const { return m_guiBackground.GetFileName();};
   const CStdString& GetBackTextureLeftName() const { return m_guiLeft.GetFileName();};
   const CStdString& GetBackTextureRightName() const { return m_guiRight.GetFileName();};
@@ -41,6 +41,6 @@ protected:
   CGUIImage m_guiRight;
   CGUIImage m_guiMid;
   CGUIImage m_guiOverlay;
-  int m_iPercent;
+  float m_fPercent;
 };
 #endif
