@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 03-05-2005 changed: Get/SeekPercentage now take floats.
+  - 03-05-2005 added: Initial seek bar support - not currently implemented at the skin level.
+  - 03-05-2005 changed: Increased PAPlayer output buffer size + added debug output if it drops down.
   - 03-05-2005 changed: moved cdda playback into paplayer
   - 02-05-2005 changed: music info scanner now only processes files matching the music extensions
   - 02-05-2005 updated: German language file

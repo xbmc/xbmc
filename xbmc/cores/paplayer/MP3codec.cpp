@@ -19,11 +19,11 @@ MP3Codec::MP3Codec()
   m_AverageInputBytesPerSecond = 20000; // 160k , good place to start i guess
   m_bGuessByterate = false;
   m_lastByteOffset = 0;
-  m_InputBufferSize = 65535;       // Change when reading from http  
+  m_InputBufferSize = 128*1024;         // 128k works reasonably well for SMB - Change when reading from http?
   m_InputBuffer = new BYTE[m_InputBufferSize];  
   m_InputBufferPos = 0;
   // create our output buffer
-  m_OutputBufferSize = 1152*4*4;    // enough for 4 frames
+  m_OutputBufferSize = 1152*4*4;        // enough for 4 frames
   m_OutputBuffer = new BYTE[m_OutputBufferSize];
   m_OutputBufferPos = 0;
   m_Decoding = false;
@@ -132,6 +132,7 @@ __int64 MP3Codec::Seek(__int64 iSeekTime)
   // Flush the decoder
   m_pPAP->flush();
   m_InputBufferPos = 0;
+  m_OutputBufferPos = 0;
   m_CallPAPAgain = false;
   return iSeekTime;
 }
@@ -209,6 +210,8 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
             {
               unsigned int samplestoremove = (m_seekInfo.GetLastSample() - DECODER_DELAY);
               samplestoremove *= m_Channels * m_BitsPerSample / 8;
+              if (samplestoremove > m_OutputBufferPos)
+                samplestoremove = m_OutputBufferPos;
               m_OutputBufferPos -= samplestoremove;
               m_IgnoreLast = false;
             }
@@ -237,10 +240,9 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     m_OutputBufferPos -= amounttomove;
     memmove(m_OutputBuffer, m_OutputBuffer + amounttomove, m_OutputBufferPos);
     *actualsize = amounttomove;
-    // If we have no data left at all, we're at the end of the file
-    if (!m_OutputBufferPos)
-      return READ_EOF;
   }
+  if (m_eof && !m_Decoding)
+    return READ_EOF;
   return READ_SUCCESS;
 }
 

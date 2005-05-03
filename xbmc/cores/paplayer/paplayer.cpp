@@ -9,7 +9,7 @@
 #define VOLUME_FFWD_MUTE 900 // 9dB
 
 #define INTERNAL_BUFFER_LENGTH  2*4*44100     // 2 seconds
-#define OUTPUT_BUFFER_LENGTH    48000*4/768   // 1 second
+#define OUTPUT_BUFFER_LENGTH    48000*4/768*2 // 2 seconds
 
 // PAP: Psycho-acoustic Audio Player
 // Supporting all open  audio codec standards.
@@ -252,6 +252,16 @@ bool PAPlayer::ProcessPAP()
   {
     m_pAudioDevice->DoWork();
 
+    // Check the state of our output buffer, and report if it's dropped too low.
+#ifndef _DEBUG
+    if (g_stSettings.m_iLogLevel == LOGDEBUG)
+#endif
+    {
+      int iBufferSize = m_pAudioDevice->GetBytesInBuffer();
+      if (m_PcmSize && !m_BufferingPcm && m_iSpeed == 1 && iBufferSize < 65536)
+        CLog::Log(LOGDEBUG, "PAPlayer::Output Buffer size only %i bytes.  PCM buffer size %i", iBufferSize, m_PcmSize);
+    }
+
     // Check to see if we are finished decoding
     if ( (m_PcmSize < m_dwAudioBufferMin && m_eof) || m_bStop )
     {
@@ -300,7 +310,6 @@ bool PAPlayer::ProcessPAP()
       m_PcmPos = 0;
       m_SeekTime = -1;
       m_pAudioDevice->Stop();
-      break;
     }
     if (m_IsFFwdRewding || m_iSpeed != 1)
     {
@@ -319,11 +328,11 @@ bool PAPlayer::ProcessPAP()
       }
       // we're definitely fastforwarding or rewinding
       int snippet = m_BytesPerSecond / 4;
-      if ( m_dwBytesSentOut >= snippet ) 
+      if ( m_dwBytesSentOut - m_pAudioDevice->GetBytesInBuffer() >= snippet ) 
       {
         // Calculate offset to seek if we do FF/RW
         __int64 time = GetTime();
-        if (m_IsFFwdRewding) snippet = (int)m_dwBytesSentOut;
+        if (m_IsFFwdRewding) snippet = (int)m_dwBytesSentOut - m_pAudioDevice->GetBytesInBuffer();
         time += (__int64)((double)snippet * (m_iSpeed - 1.0) / m_BytesPerSecond * 1000.0);
         m_PcmSize = 0;
         m_PcmPos = 0;
@@ -333,6 +342,7 @@ bool PAPlayer::ProcessPAP()
           m_IsFFwdRewding = true;  
           m_startOffset = m_codec->Seek(time);
           m_dwBytesSentOut = 0;
+          m_pAudioDevice->Stop();
           m_pAudioDevice->ResetBytesInBuffer();
           SetVolume(g_stSettings.m_nVolumeLevel - VOLUME_FFWD_MUTE); // override xbmc mute 
         }
@@ -393,10 +403,10 @@ bool PAPlayer::ProcessPAP()
       }
       else if (result == READ_EOF)
         m_eof = true;
-      else
-      { // nothing to do - let's sleep and take a break
+      else if (m_PcmSize)
+      { // nothing to do - let's sleep (and take a break?)
         Sleep(10);
-        break;
+//        break;
       }
     }
   }
@@ -455,6 +465,18 @@ int PAPlayer::GetTotalTime()
 void PAPlayer::SeekTime(__int64 iTime /*=0*/)
 {
   m_SeekTime = iTime;
+}
+
+void PAPlayer::SeekPercentage(float fPercent /*=0*/)
+{
+  if (fPercent < 0.0f) fPercent = 0.0f;
+  if (fPercent > 100.0f) fPercent = 100.0f;
+  m_SeekTime = (__int64)(fPercent * 0.01f * (float)m_codec->m_TotalTime);
+}
+
+float PAPlayer::GetPercentage()
+{
+  return (float)GetTime() * 100.0f / (float)m_codec->m_TotalTime;
 }
 
 void PAPlayer::ApplyReplayGain(void *pData, int size)

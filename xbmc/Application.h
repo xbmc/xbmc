@@ -13,6 +13,7 @@
 #include "GUIDialogSelect.h"
 #include "GUIDialogFileStacking.h"
 #include "GUIDialogVolumeBar.h"
+#include "GUIDialogSeekBar.h"
 #include "GUIDialogKaiToast.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
@@ -157,6 +158,7 @@ public:
   CGUIDialogProgress m_guiDialogProgress;
   CGUIDialogOK m_guiDialogOK;
   CGUIDialogVolumeBar m_guiDialogVolumeBar;
+  CGUIDialogSeekBar m_guiDialogSeekBar;
   CGUIDialogKaiToast m_guiDialogKaiToast;
   CGUIDialogNumeric m_guiDialogNumeric;
   CGUIDialogGamepad m_guiDialogGamepad;

@@ -127,7 +127,7 @@ void CGUIDialogProgress::SetPercentage(int iPercentage)
   if (iPercentage < 0) iPercentage = 0;
   if (iPercentage > 100) iPercentage = 100;
   CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS_BAR);
-  if (pControl) pControl->SetPercentage(iPercentage);
+  if (pControl) pControl->SetPercentage((float)iPercentage);
 }
 void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
 {

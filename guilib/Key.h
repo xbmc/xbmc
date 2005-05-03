@@ -191,6 +191,8 @@
 #define ACTION_BUILT_IN_FUNCTION  122
 
 #define ACTION_SHOW_OSD_TIME      123 // displays current time, can be used in videoFullScreen.xml window id=2005
+#define ACTION_ANALOG_SEEK_FORWARD  124 // seeks forward, and displays the seek bar.
+#define ACTION_ANALOG_SEEK_BACK     125 // seeks backward, and displays the seek bar.
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                 9999
@@ -241,6 +243,7 @@
 #define WINDOW_DIALOG_MUSIC_SCAN      10112
 #define WINDOW_DIALOG_MUTE_BUG        10113
 #define WINDOW_DIALOG_PLAYER_CONTROLS 10114
+#define WINDOW_DIALOG_SEEK_BAR        10115
 
 #define WINDOW_MUSIC_PLAYLIST         10500
 #define WINDOW_MUSIC_FILES            10501

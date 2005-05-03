@@ -10,7 +10,7 @@ CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, in
     , m_guiRight(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strRightTexture)
     , m_guiOverlay(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strOverlayTexture)
 {
-  m_iPercent = 0;
+  m_fPercent = 0;
   ControlType = GUICONTROL_PROGRESS;
 }
 
@@ -37,7 +37,7 @@ void CGUIProgressControl::Render()
   m_guiBackground.SetWidth((int)(fScaleX*m_guiBackground.GetTextureWidth()));
   m_guiBackground.Render();
 
-  float fWidth = (float)m_iPercent;
+  float fWidth = m_fPercent;
   fWidth /= 100.0f;
   fWidth *= (float) (m_guiBackground.GetTextureWidth() - m_guiLeft.GetTextureWidth() - m_guiRight.GetTextureWidth());
 
@@ -53,7 +53,7 @@ void CGUIProgressControl::Render()
   m_guiLeft.Render();
 
   iXPos += (int)(fScaleX*m_guiLeft.GetTextureWidth());
-  if (m_iPercent && (int)fWidth > 1)
+  if (m_fPercent && (int)fWidth > 1)
   {
     int iOffset = abs((int)(fScaleY * 0.5f * (m_guiMid.GetTextureHeight() - m_guiBackground.GetTextureHeight())));
     if (iOffset > 0)  //  Center texture to the background if necessary
@@ -97,14 +97,14 @@ bool CGUIProgressControl::OnMessage(CGUIMessage& message)
   return CGUIControl::OnMessage(message);
 }
 
-void CGUIProgressControl::SetPercentage(int iPercent)
+void CGUIProgressControl::SetPercentage(float fPercent)
 {
-  m_iPercent = iPercent;
+  m_fPercent = fPercent;
 }
 
-int CGUIProgressControl::GetPercentage() const
+float CGUIProgressControl::GetPercentage() const
 {
-  return m_iPercent;
+  return m_fPercent;
 }
 void CGUIProgressControl::FreeResources()
 {

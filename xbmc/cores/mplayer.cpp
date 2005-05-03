@@ -1306,24 +1306,24 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
   }
   else
   {
-    int iPercent = GetPercentage();
+    float percent = GetPercentage();
     if (bLargeStep)
     {
       if (bPlus)
-        iPercent += 10;
+        percent += 10;
       else
-        iPercent -= 10;
+        percent -= 10;
     }
     else
     {
       if (bPlus)
-        iPercent += 2;
+        percent += 2;
       else
-        iPercent -= 2;
+        percent -= 2;
     }
-    if (iPercent < 0) iPercent = 0;
-    if (iPercent > 100) iPercent = 100;
-    SeekPercentage(iPercent);
+    if (percent < 0) percent = 0;
+    if (percent > 100) percent = 100;
+    SeekPercentage(percent);
   }
 }
 
@@ -1514,12 +1514,12 @@ bool CMPlayer::Record(bool bOnOff)
 }
 
 
-void CMPlayer::SeekPercentage(int iPercent)
+void CMPlayer::SeekPercentage(float percent)
 {
-  if (iPercent > 100) iPercent = 100;
-  if (iPercent < 0) iPercent = 0;
+  if (percent > 100) percent = 100;
+  if (percent < 0) percent = 0;
 
-  mplayer_setPercentage( iPercent);
+  mplayer_setPercentage( (int)percent );
   if (HasVideo())
   {
     SwitchToThread();
@@ -1527,9 +1527,9 @@ void CMPlayer::SeekPercentage(int iPercent)
   }
 }
 
-int CMPlayer::GetPercentage()
+float CMPlayer::GetPercentage()
 {
-  return mplayer_getPercentage( );
+  return (float)mplayer_getPercentage( );
 }
 
 
