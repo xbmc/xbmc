@@ -97,7 +97,7 @@ unsigned int CFileCDDA::Read(void* lpBuf, __int64 uiBufSize)
 
   if (cdio_read_audio_sectors(m_pCdIo, lpBuf, m_lsnCurrent, iSectorCount) != DRIVER_OP_SUCCESS)
   {
-    CLog::Log(LOGERROR, "CDDA Player: Reading %d sectors of audio data starting at lsn %d failed", iSectorCount, m_lsnCurrent);
+    CLog::Log(LOGERROR, "file cdda: Reading %d sectors of audio data starting at lsn %d failed", iSectorCount, m_lsnCurrent);
     return 0;
   }
 
