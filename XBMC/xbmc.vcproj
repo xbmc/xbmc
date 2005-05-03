@@ -976,9 +976,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\CDDADirectory.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\CDDAPlayer.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\cddb.h">
 			</File>
 			<File
@@ -1805,9 +1802,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			Name="cores"
 			Filter="">
 			<File
-				RelativePath=".\xbmc\cores\CDDAPlayer.cpp">
-			</File>
-			<File
 				RelativePath=".\xbmc\cores\dlgcache.cpp">
 			</File>
 			<File
@@ -2035,10 +2029,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -2356,6 +2350,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\APEcodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\CDDAcodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\CDDAcodec.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\CodecFactory.cpp">

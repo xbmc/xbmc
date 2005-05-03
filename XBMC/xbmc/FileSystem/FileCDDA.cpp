@@ -3,7 +3,9 @@
 #include <sys/stat.h>
 #include "../util.h"
 #include "../lib/libcdio/util.h"
+#include "../DetectDVDType.h"
 
+using namespace MEDIA_DETECT;
 using namespace XFILE;
 
 CFileCDDA::CFileCDDA(void)
@@ -21,7 +23,7 @@ CFileCDDA::~CFileCDDA(void)
 
 bool CFileCDDA::Open(const CURL& url, bool bBinary /*=true*/)
 {
-  if (!IsValidFile(url))
+  if (!CDetectDVDMedia::IsDiscInDrive() || !IsValidFile(url))
     return false;
 
   // Open the dvd drive
@@ -45,6 +47,7 @@ bool CFileCDDA::Open(const CURL& url, bool bBinary /*=true*/)
     return false;
   }
 
+  m_lsnEnd-=CDIO_PREGAP_SECTORS;
   return true;
 }
 
@@ -80,7 +83,7 @@ int CFileCDDA::Stat(const CURL& url, struct __stat64* buffer)
 
 unsigned int CFileCDDA::Read(void* lpBuf, __int64 uiBufSize)
 {
-  if (!m_pCdIo)
+  if (!m_pCdIo || !CDetectDVDMedia::IsDiscInDrive())
     return 0;
 
   int iSectorCount = (int)uiBufSize / CDIO_CD_FRAMESIZE_RAW;
