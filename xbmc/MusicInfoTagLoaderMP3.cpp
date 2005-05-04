@@ -4,6 +4,7 @@
 #include "Util.h"
 #include "picture.h"
 #include "lib/libID3/misc_support.h"
+#include "apev2tag.h"
 
 using namespace MUSIC_INFO;
 
@@ -449,6 +450,33 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
             bResult = ReadTag( myTag, tag );
           }
         }
+      }
+      // Check for an APEv2 tag
+      CAPEv2Tag apeTag;
+      if (apeTag.ReadTag(strFileName.c_str()))
+      { // found - let's copy over the additional info (if any)
+        if (apeTag.GetArtist().size())
+          tag.SetArtist(apeTag.GetArtist());
+        if (apeTag.GetAlbum().size())
+          tag.SetAlbum(apeTag.GetAlbum());
+        if (apeTag.GetTitle().size())
+        {
+          bResult = true;
+          tag.SetTitle(apeTag.GetTitle());
+        }
+        if (apeTag.GetGenre().size())
+          tag.SetGenre(apeTag.GetGenre());
+        if (apeTag.GetYear().size())
+        {
+          SYSTEMTIME time;
+          ZeroMemory(&time, sizeof(SYSTEMTIME));
+          time.wYear = atoi(apeTag.GetYear().c_str());
+          tag.SetReleaseDate(time);
+        }
+        if (apeTag.GetTrackNum())
+          tag.SetTrackNumber(apeTag.GetTrackNum());
+        if (apeTag.GetReplayGain().iHasGainInfo)
+          m_replayGainInfo = apeTag.GetReplayGain();
       }
       tag.SetDuration(ReadDuration(file, myTag));
       file.Close();

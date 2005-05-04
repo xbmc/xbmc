@@ -1,5 +1,6 @@
 #include "../../stdafx.h"
 #include "APECodec.h"
+#include "../../APEv2Tag.h"
 
 APECodec::APECodec()
 {
@@ -40,6 +41,16 @@ bool APECodec::Init(const CStdString &strFile)
   m_Channels = m_dll.GetInfo(m_handle, APE_INFO_CHANNELS, 0, 0);
   m_BytesPerBlock = m_BitsPerSample * m_Channels / 8;
   m_TotalTime = (__int64)m_dll.GetInfo(m_handle, APE_INFO_LENGTH_MS, 0, 0);
+
+  // Get the replay gain data
+  IAPETag *pTag = (IAPETag *)m_dll.GetInfo(m_handle, APE_INFO_TAG, 0, 0);
+  if (pTag)
+  {
+    CAPEv2Tag tag;
+    tag.GetReplayGainFromTag(pTag);
+    m_replayGain = tag.GetReplayGain();
+    delete pTag;
+  }
 
   return true;
 }
