@@ -1,3 +1,4 @@
+2005-05-04 changed:     new Video OSD
 
 2005-04-16 added:	New Script Skin Builder - see custom3.xml
 2005-04-16 fixed:	weather icons now display correct in 16:9

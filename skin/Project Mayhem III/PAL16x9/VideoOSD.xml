@@ -6,31 +6,19 @@
       <description>Panel</description>
       <type>image</type>
       <id>1</id>
-      <posX>50</posX>
-      <posY>400</posY>
-      <height>168</height>
-      <width>272</width>
+      <posX>60</posX>
+      <posY>300</posY>
+      <height>256</height>
+      <width>180</width>
       <texture>osd_panel.png</texture>
       <visible>yes</visible>
     </control>
-
-    <!-- <control>
-      <description>Cover Art</description>
-      <type>image</type>
-      <id>1</id>
-      <posX>490</posX>
-      <posY>238</posY>
-      <width>100</width>
-      <height>125</height>
-      <info>VideoPlayer.Cover</info>
-      <keepaspectratio>yes</keepaspectratio>
-    </control> -->
 
     <control>
       <description>clock bg</description>
       <type>image</type>
       <id>1</id>
-      <posX>490</posX>
+      <posX>480</posX>
       <posY>38</posY>
       <width>240</width>
       <height>73</height>
@@ -41,11 +29,11 @@
       <description>Current Time Info</description>
       <type>label</type>
       <id>100</id>
-      <posX>519</posX>
+      <posX>509</posX>
       <posY>56</posY>
       <label>-</label>
       <align>left</align>
-      <font>font12</font>
+      <font>font13</font>
     </control>
 
     <control>
@@ -76,52 +64,53 @@
       <description>Skip Bwd</description>
       <type>togglebutton</type>
       <id>210</id>
-      <posX>206</posX>
-      <posY>438</posY>
-      <width>19</width>
-      <height>29</height>
+      <posX>81</posX>
+      <posY>409</posY>
+      <width>38</width>
+      <height>50</height>
       <AltTextureFocus>osd_button_skip_minusFO.png</AltTextureFocus>
       <AltTextureNoFocus>-</AltTextureNoFocus>
       <textureFocus>osd_button_skip_minusSELFO.png</textureFocus>
       <textureNoFocus>osd_button_skip_minusSELNF.png</textureNoFocus>
+      <*execute>XBMC.PlayerControl(Previous)<*/execute>
       <label>-</label>
       <font>-</font>
-      <onleft>213</onleft>
-      <onright>215</onright>
-      <onup>210</onup>
-      <ondown>220</ondown>
+      <onleft>215</onleft>
+      <onright>211</onright>
+      <onup>218</onup>
+      <ondown>219</ondown>
     </control>
 
     <control>
       <description>Rewind</description>
       <type>togglebutton</type>
       <id>211</id>
-      <posX>264</posX>
-      <posY>439</posY>
-      <width>18</width>
-      <height>26</height>
+      <posX>112</posX>
+      <posY>404</posY>
+      <width>34</width>
+      <height>48</height>
       <textureFocus>osd_button_rewFO.png</textureFocus>
       <textureNoFocus>-</textureNoFocus>
       <UseAltTexture>Player.Rewinding</UseAltTexture>
       <AltTextureFocus>osd_button_rewSELFO.png</AltTextureFocus>
       <AltTextureNoFocus>osd_button_rewSELNF.png</AltTextureNoFocus>
-      <execute>XBMC.PlayerControl(Rewind)</execute>
       <label>-</label>
       <font>-</font>
-      <onleft>215</onleft>
-      <onright>214</onright>
-      <onup>211</onup>
+      <onleft>210</onleft>
+      <onright>213</onright>
+      <onup>221</onup>
       <ondown>220</ondown>
+      <execute>XBMC.PlayerControl(Rewind)</execute>
     </control>
 
-    <control>
+    <*control>
       <description>Stop</description>
       <type>button</type>
       <id>212</id>
-      <posX>121</posX>
+      <posX>142</posX>
       <posY>435</posY>
-      <width>25</width>
-      <height>34</height>
+      <width>31</width>
+      <height>36</height>
       <textureFocus>osd_button_stopFO.png</textureFocus>
       <textureNoFocus>-</textureNoFocus>
       <label>-</label>
@@ -130,79 +119,80 @@
       <onright>213</onright>
       <onup>212</onup>
       <ondown>218</ondown>
-    </control>
+    <*/control>
 
     <control>
       <description>Play</description>
       <type>togglebutton</type>
       <id>213</id>
-      <posX>155</posX>
-      <posY>427</posY>
-      <width>37</width>
-      <height>51</height>
+      <posX>136</posX>
+      <posY>385</posY>
+      <width>52</width>
+      <height>66</height>
       <textureFocus>osd_button_playFO.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <textureNoFocus>osd_button_playNF.png</textureNoFocus>
       <UseAltTexture>Player.Paused</UseAltTexture>
       <AltTextureFocus>osd_button_pauseFO.png</AltTextureFocus>
-      <AltTextureNoFocus>osd_button_pauseNF.png</AltTextureNoFocus>
-      <execute>XBMC.PlayerControl(Play)</execute>
+      <AltTextureNoFocus>osd_button_pauseNF.png</AltTextureNoFocus>             
       <label>-</label>
       <font>-</font>
-      <onleft>212</onleft>
-      <onright>210</onright>
-      <onup>213</onup>
+      <onleft>211</onleft>
+      <onright>214</onright>
+      <onup>221</onup>
       <ondown>220</ondown>
+      <execute>XBMC.PlayerControl(Play)</execute>
     </control>
 
     <control>
       <description>Fast Forward</description>
       <type>togglebutton</type>
       <id>214</id>
-      <posX>286</posX>
-      <posY>439</posY>
-      <width>19</width>
-      <height>26</height>
+      <posX>179</posX>
+      <posY>387</posY>
+      <width>32</width>
+      <height>46</height>
       <textureFocus>osd_button_ffFO.png</textureFocus>
       <textureNoFocus>-</textureNoFocus>
       <UseAltTexture>Player.Forwarding</UseAltTexture>
       <AltTextureFocus>osd_button_ffSELFO.png</AltTextureFocus>
       <AltTextureNoFocus>osd_button_ffSELNF.png</AltTextureNoFocus>
-      <execute>XBMC.PlayerControl(Forward)</execute>
       <label>-</label>
       <font>-</font>
-      <onleft>211</onleft>
-      <onright>216</onright>
-      <onup>214</onup>
+      <onleft>213</onleft>
+      <onright>215</onright>
+      <onup>221</onup>
       <ondown>220</ondown>
+      <execute>XBMC.PlayerControl(Forward)</execute>
     </control>
 
     <control>
       <description>Skip Fwd</description>
       <type>togglebutton</type>
       <id>215</id>
-      <posX>229</posX>
-      <posY>439</posY>
-      <width>18</width>
-      <height>26</height>
+      <posX>202</posX>
+      <posY>380</posY>
+      <width>33</width>
+      <height>46</height>
       <AltTextureFocus>osd_button_skip_plusFO.png</AltTextureFocus>
       <AltTextureNoFocus>-</AltTextureNoFocus>
       <textureFocus>osd_button_skip_plusSELFO.png</textureFocus>
       <textureNoFocus>osd_button_skip_plusSELNF.png</textureNoFocus>
+      <*execute>XBMC.PlayerControl(Next)<*/execute>
       <label>-</label>
       <font>-</font>
-      <onleft>210</onleft>
-      <onright>211</onright>
-      <onup>215</onup>
-      <ondown>220</ondown>
+      <onleft>214</onleft>
+      <onright>210</onright>
+      <onup>218</onup>
+      <ondown>219</ondown>
     </control>
 
-    <control>
+    <*control>
       <description>Mute</description>
       <type>togglebutton</type>
       <id>216</id>
-      <posX>83</posX>
-      <posY>406</posY>
-      <width>24</width>
+      <posX>93</posX>
+      <posY>376</posY>
+      <width>30</width>
       <height>34</height>
       <AltTextureFocus>osd_button_volumeFO.png</AltTextureFocus>
       <AltTextureNoFocus>-</AltTextureNoFocus>
@@ -214,86 +204,86 @@
       <onright>212</onright>
       <onup>216</onup>
       <ondown>219</ondown>
-    </control>
-
-    <control>
-      <description>Bookmarks Menu</description>
-      <type>togglebutton</type>
-      <id>219</id>
-      <posX>87</posX>
-      <posY>497</posY>
-      <width>19</width>
-      <height>26</height>
-      <AltTextureFocus>osd_button_bookmarkFO.png</AltTextureFocus>
-      <AltTextureNoFocus>-</AltTextureNoFocus>
-      <textureFocus>osd_button_bookmarkSELFO.png</textureFocus>
-      <textureNoFocus>osd_button_bookmarkSELNF.png</textureNoFocus>
-      <label>-</label>
-      <font>-</font>
-      <onleft>220</onleft>
-      <onright>218</onright>
-      <onup>216</onup>
-      <ondown>219</ondown>
-    </control>
+    <*/control>
 
     <control>
       <description>Subtitles Menu</description>
       <type>togglebutton</type>
       <id>218</id>
-      <posX>112</posX>
-      <posY>497</posY>
-      <width>19</width>
-      <height>26</height>
+      <posX>130</posX>
+      <posY>318</posY>
+      <width>38</width>
+      <height>43</height>
       <AltTextureFocus>osd_button_subtitlesFO.png</AltTextureFocus>
       <AltTextureNoFocus>-</AltTextureNoFocus>
       <textureFocus>osd_button_subtitlesSELFO.png</textureFocus>
       <textureNoFocus>osd_button_subtitlesSELNF.png</textureNoFocus>
       <label>-</label>
       <font>-</font>
-      <onleft>219</onleft>
-      <onright>221</onright>
-      <onup>212</onup>
-      <ondown>218</ondown>
+      <onleft>210</onleft>
+      <onright>215</onright>
+      <onup>219</onup>
+      <ondown>221</ondown>
     </control>
 
     <control>
-      <description>Audio Menu</description>
+      <description>Bookmarks Menu</description>
       <type>togglebutton</type>
-      <id>221</id>
-      <posX>137</posX>
-      <posY>497</posY>
-      <width>19</width>
-      <height>26</height>
-      <AltTextureFocus>osd_button_audioFO.png</AltTextureFocus>
+      <id>219</id>
+      <posX>156</posX>
+      <posY>479</posY>
+      <width>43</width>
+      <height>48</height>
+      <AltTextureFocus>osd_button_bookmarkFO.png</AltTextureFocus>
       <AltTextureNoFocus>-</AltTextureNoFocus>
-      <textureFocus>osd_button_audioSELFO.png</textureFocus>
-      <textureNoFocus>osd_button_audioSELNF.png</textureNoFocus>
+      <textureFocus>osd_button_bookmarkSELFO.png</textureFocus>
+      <textureNoFocus>osd_button_bookmarkSELNF.png</textureNoFocus>
       <label>-</label>
       <font>-</font>
-      <onleft>218</onleft>
-      <onright>220</onright>
-      <onup>213</onup>
-      <ondown>221</ondown>
+      <onleft>210</onleft>
+      <onright>215</onright>
+      <onup>220</onup>
+      <ondown>218</ondown>
     </control>
 
     <control>
       <description>Video Menu</description>
       <type>togglebutton</type>
       <id>220</id>
-      <posX>163</posX>
-      <posY>497</posY>
-      <width>19</width>
-      <height>26</height>
+      <posX>151</posX>
+      <posY>445</posY>
+      <width>41</width>
+      <height>42</height>
       <AltTextureFocus>osd_button_videoFO.png</AltTextureFocus>
       <AltTextureNoFocus>-</AltTextureNoFocus>
       <textureFocus>osd_button_videoSELFO.png</textureFocus>
       <textureNoFocus>osd_button_videoSELNF.png</textureNoFocus>
       <label>-</label>
       <font>-</font>
-      <onleft>221</onleft>
-      <onright>219</onright>
+      <onleft>211</onleft>
+      <onright>214</onright>
       <onup>213</onup>
-      <ondown>220</ondown>
+      <ondown>219</ondown>
+    </control>
+
+    <control>
+      <description>Audio Menu</description>
+      <type>togglebutton</type>
+      <id>221</id>
+      <posX>135</posX>
+      <posY>353</posY>
+      <width>40</width>
+      <height>40</height>
+      <AltTextureFocus>osd_button_audioFO.png</AltTextureFocus>
+      <AltTextureNoFocus>-</AltTextureNoFocus>
+      <textureFocus>osd_button_audioSELFO.png</textureFocus>
+      <textureNoFocus>osd_button_audioSELNF.png</textureNoFocus>
+      <label>-</label>
+      <font>-</font>
+      <onleft>211</onleft>
+      <onright>214</onright>
+      <onup>218</onup>
+      <ondown>213</ondown>
     </control>
 
     <control>
@@ -344,7 +334,7 @@
       <id>304</id>
       <posX>272</posX>
       <posY>193</posY>
-      <width>400</width>
+      <width>380</width>
       <height>270</height>
       <texture>osd_menu_bg.png</texture>
       <colorkey>0</colorkey>
@@ -509,7 +499,7 @@
       <description>Video Position Slider</description>
       <type>slider</type>
       <id>700</id>
-      <posX>410</posX>
+      <posX>390</posX>
       <posY>210</posY>
       <subtype>int</subtype>
       <textureSliderBar>osd_slider_bg.png</textureSliderBar>
@@ -579,8 +569,10 @@
       <description>Video Zoom Slider</description>
       <type>slider</type>
       <id>707</id>
-      <posX>410</posX>
+      <posX>415</posX>
       <posY>300</posY>
+      <controlOffsetX>50</controlOffsetX>
+      <controlOffsetY>0</controlOffsetY>
       <subtype>float</subtype>
       <textureSliderBar>osd_slider_bg.png</textureSliderBar>
       <textureSliderNib>osd_slider_nibNF.png</textureSliderNib>
@@ -607,8 +599,10 @@
       <description>Pixel Ratio Slider</description>
       <type>slider</type>
       <id>708</id>
-      <posX>410</posX>
+      <posX>415</posX>
       <posY>330</posY>
+      <controlOffsetX>50</controlOffsetX>
+      <controlOffsetY>0</controlOffsetY>
       <subtype>float</subtype>
       <textureSliderBar>osd_slider_bg.png</textureSliderBar>
       <textureSliderNib>osd_slider_nibNF.png</textureSliderNib>
@@ -635,7 +629,7 @@
       <description>brightness</description>
       <type>slider</type>
       <id>704</id>
-      <posX>410</posX>
+      <posX>390</posX>
       <posY>360</posY>
       <subtype>int</subtype>
       <textureSliderBar>osd_slider_bg.png</textureSliderBar>
@@ -663,7 +657,7 @@
       <description>contrast</description>
       <type>slider</type>
       <id>705</id>
-      <posX>410</posX>
+      <posX>390</posX>
       <posY>390</posY>
       <subtype>int</subtype>
       <textureSliderBar>osd_slider_bg.png</textureSliderBar>
@@ -691,7 +685,7 @@
       <description>gamma</description>
       <type>slider</type>
       <id>706</id>
-      <posX>410</posX>
+      <posX>390</posX>
       <posY>420</posY>
       <subtype>int</subtype>
       <textureSliderBar>osd_slider_bg.png</textureSliderBar>
