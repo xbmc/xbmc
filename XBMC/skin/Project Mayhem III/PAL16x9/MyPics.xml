@@ -1,6 +1,6 @@
 <window>
   <id>2</id>
-  <defaultcontrol>2</defaultcontrol>
+  <defaultcontrol>10</defaultcontrol>
   <allowoverlay>yes</allowoverlay>
   <controls>
     <control>
@@ -177,7 +177,7 @@
       <thumbPosYBig>16</thumbPosYBig>
       <onleft>2</onleft>
       <onright>2</onright>
-      <onup>2</onup>
+      <onup>11</onup>
       <ondown>2</ondown>
     </control>
 
