@@ -82,6 +82,58 @@ void CSectionLoader::Unload(const CStdString& strSection)
   }
 }
 
+DllLoader *CSectionLoader::LoadDLL(const CStdString &dllname)
+{
+  if (!dllname) return NULL;
+  // check if it's already loaded, and increase the reference count if so
+  for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
+  {
+    CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
+    if (dll.m_strDllName == dllname)
+    {
+      dll.m_lReferenceCount++;
+      return dll.m_pDll;
+    }
+  }
+  // ok, now load the dll and resolve imports as necessary
+  CDll newDLL;
+  newDLL.m_strDllName = dllname;
+  newDLL.m_lReferenceCount = 1;
+  newDLL.m_pDll = new DllLoader(dllname);
+  if (newDLL.m_pDll && newDLL.m_pDll->Parse())
+  {
+    newDLL.m_pDll->ResolveImports();
+    g_sectionLoader.m_vecLoadedDLLs.push_back(newDLL);
+    CStdString strLog;
+    strLog.Format("SECTION:LoadDLL(%s)\n", dllname.c_str());
+    OutputDebugString(strLog);
+    return newDLL.m_pDll;
+  }
+  return NULL;
+}
+
+void CSectionLoader::UnloadDLL(const CStdString &dllname)
+{
+  if (!dllname) return;
+  // check if it's already loaded, and increase the reference count if so
+  for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
+  {
+    CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
+    if (dll.m_strDllName == dllname)
+    {
+      dll.m_lReferenceCount--;
+      if (dll.m_lReferenceCount == 0)
+      {
+        if (dll.m_pDll) delete dll.m_pDll;
+        g_sectionLoader.m_vecLoadedDLLs.erase(g_sectionLoader.m_vecLoadedDLLs.begin() + i);
+        CStdString strLog;
+        strLog.Format("SECTION:UnloadDLL(%s)\n", dllname.c_str());
+        OutputDebugString(strLog);
+        return;
+      }
+    }
+  }
+}
 
 void CSectionLoader::UnloadAll()
 {
@@ -96,5 +148,15 @@ void CSectionLoader::UnloadAll()
     OutputDebugString("\n");
     XFreeSection(section.m_strSectionName.c_str());
     i = g_sectionLoader.m_vecLoadedSections.erase(i);
+  }
+
+  // delete the dll's
+  vector<CDll>::iterator it = g_sectionLoader.m_vecLoadedDLLs.begin();
+  while (it != g_sectionLoader.m_vecLoadedDLLs.end())
+  {
+    CDll& dll = *it;
+    if (dll.m_pDll)
+      delete dll.m_pDll;
+    it = g_sectionLoader.m_vecLoadedDLLs.erase(it);
   }
 }
