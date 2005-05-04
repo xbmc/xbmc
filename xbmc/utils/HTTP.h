@@ -27,9 +27,9 @@ public:
   bool GetHeader(CStdString strName, CStdString& strValue) const;
 
   string m_redirectedURL;
+  static bool BreakURL(const string& strURL, string& strHostName, string &strUsername, string &strPassword, int& iPort, string& Page);
 
 protected:
-  bool BreakURL(const string& strURL, string& strHostName, int& iPort, string& Page);
   bool Send(char* pBuffer, int iLen);
   bool Connect();
   int Open(const string& strURL, const char* verb, const char* pData);
@@ -48,6 +48,8 @@ private:
   string m_strHostName;
   string m_strCookie;
   string m_strHeaders;
+  string m_strUsername;
+  string m_strPassword;
   map<CStdString, CStdString> m_mapHeaders;
 
   bool m_bProxyEnabled;

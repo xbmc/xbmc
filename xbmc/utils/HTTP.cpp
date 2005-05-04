@@ -15,7 +15,60 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+/* 
+ * HTTP Helper
+ * by Bertrand Baudet <bertrand_baudet@yahoo.com>
+ * (C) 2001, MPlayer team.
+ *
+ * Only base64_encode copied
+ */
 
+int base64_encode(const void *enc, int encLen, char *out, int outMax) {
+	static const char	b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+
+	unsigned char		*encBuf;
+	int			outLen;
+	unsigned int		bits;
+	unsigned int		shift;
+
+	encBuf = (unsigned char*)enc;
+	outLen = 0;
+	bits = 0;
+	shift = 0;
+
+	while( outLen<outMax ) {
+		if( encLen>0 ) {
+			// Shift in byte
+			bits <<= 8;
+			bits |= *encBuf;
+			shift += 8;
+			// Next byte
+			encBuf++;
+			encLen--;
+		} else if( shift>0 ) {
+			// Pad last bits to 6 bits - will end next loop
+			bits <<= 6 - shift;
+			shift = 6;
+		} else {
+			// Terminate with Mime style '='
+			*out = '=';
+			outLen++;
+
+			return outLen;
+		}
+
+		// Encode 6 bit segments
+		while( shift>=6 ) {
+			shift -= 6;
+			*out = b64[ (bits >> shift) & 0x3F ];
+			out++;
+			outLen++;
+		}
+	}
+
+	// Output overflow
+	return -1;
+}
 
 CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
     : m_strProxyServer(strProxyServer)
@@ -363,7 +416,7 @@ bool CHTTP::Connect()
 
 
 //------------------------------------------------------------------------------------------------------------------
-bool CHTTP::BreakURL(const string &strURL, string &strHostName, int& iPort, string &strFile)
+bool CHTTP::BreakURL(const string &strURL, string &strHostName, string &strUsername, string &strPassword, int& iPort, string &strFile)
 {
   int pos1, pos2;
   char *ptr1, *ptr2, *ptr3;
@@ -388,6 +441,50 @@ bool CHTTP::BreakURL(const string &strURL, string &strHostName, int& iPort, stri
   ptr1 += 3;
   pos1 += 3;
 
+  // look for username and pass
+  ptr2 = strchr(ptr1, '@');
+  // if @ is after first slash it isn't an username delimiter
+  ptr3 = strchr(ptr1, '/');
+  if( ptr2 && ptr3 && ptr3 < ptr2 )
+    ptr2 = NULL;
+
+  if( ptr2 )
+  {
+    char *szBuff = new char[ptr2 - ptr1 + 2];
+
+    //If the colon is before the @, it's a username:password setting
+    ptr3 = strchr(ptr1, ':');
+    if(ptr3 && ptr3 < ptr2)
+    {
+      // URL like http://username:password@host.....
+
+      strncpy(szBuff, ptr1, ptr3 - ptr1);
+      szBuff[ptr3 - ptr1] = '\0';
+      strUsername = szBuff;
+
+      strncpy(szBuff, ptr3+1, ptr2 - ptr3 - 1);
+      szBuff[ptr2 - ptr3 - 1] = '\0';
+      strPassword = szBuff;
+    }
+    else
+    {
+      // URL like http://username@host.....
+      strncpy(szBuff, ptr1, ptr2 - ptr1);
+      szBuff[ptr2 - ptr1] = '\0';
+      strUsername = szBuff;
+      strPassword = "";
+    }
+    delete[] szBuff;
+
+    //Skip ahead as auth has now been read
+    pos1 += ptr2 - ptr1 + 1;
+    ptr1 += ptr2 - ptr1 + 1;
+  }
+  else
+  {
+    strUsername = "";
+    strPassword = "";
+  }
 
   // look if the port is given
   ptr2 = strchr(ptr1, ':');
@@ -568,7 +665,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
   string strFile = "";
   m_strHostName = "";
   m_redirectedURL = strURL;
-  if (!BreakURL(strURL, m_strHostName, m_iPort, strFile))
+  if (!BreakURL(strURL, m_strHostName, m_strUsername, m_strPassword, m_iPort, strFile))
   {
     CLog::Log(LOGERROR, "Invalid url: %s", strURL.c_str());
     return 0;
@@ -609,6 +706,29 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
     strcat(szHTTPHEADER, pData);
   }
 
+  if( m_strUsername.size())
+  {
+    //Basic authentication
+    char *szBuff, *szEncode;
+    szBuff = (char*)_alloca(m_strUsername.size() + m_strPassword.size() + 2);
+    sprintf(szBuff, "%s:%s", m_strUsername.c_str(), m_strPassword.c_str());
+   
+    int len = strlen(szBuff);
+    szEncode = (char*)_alloca(len*2); 
+    
+    len = base64_encode(szBuff, len, szEncode, len*2);
+    if( len < 0 )
+    {
+      CLog::Log(LOGERROR, "Base64 Encode Overflow");
+      Close();
+      return 0;
+    }
+    szEncode[len] = '\0';
+    strcat(szHTTPHEADER, "Authorization: Basic ");
+    strcat(szHTTPHEADER, szEncode);
+    strcat(szHTTPHEADER, "\r\n");
+  }
+
   char* szGet;
   if (m_strProxyServer.size())
   {
@@ -620,6 +740,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
     szGet = (char*)_alloca(strlen(szHTTPHEADER) + strFile.size() + 20);
     sprintf(szGet, "%s %s HTTP/1.1\r\n%s\r\n", verb, strFile.c_str(), szHTTPHEADER);
   }
+
 
   //CLog::Log(LOGINFO, "Opening page with request:\n%s", szGet);
 
