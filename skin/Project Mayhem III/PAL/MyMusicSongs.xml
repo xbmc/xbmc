@@ -1,6 +1,6 @@
 <window>
   <id>501</id>
-  <defaultcontrol>2</defaultcontrol>
+  <defaultcontrol>50</defaultcontrol>
   <allowoverlay>yes</allowoverlay>
   <controls>
     <control>
@@ -188,7 +188,7 @@
       <id>51</id>
       <onleft>2</onleft>
       <onright>2</onright>
-      <onup>2</onup>
+      <onup>51</onup>
       <ondown>2</ondown>
     </control>
 
