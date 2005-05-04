@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-05-2005 changed: SectionLoader can now load/unload dll's on demand - for preloading dlls that will be needed repeatedly.
+  - 04-05-2005 added: APEv2 tag reading in APE/MP3 files, including ReplayGain info.  Requires MACDll.dll to be present.
+  - 04-05-2005 fixed: APE wasn't part of the default music extensions.
   - 03-05-2005 added: basic authentication support to http reader. means authed rss feeds, authed internet playlists (thou the streams themself might not be authed). 
   - 03-05-2005 changed: Get/SeekPercentage now take floats.
   - 03-05-2005 added: Initial seek bar support - not currently implemented at the skin level.

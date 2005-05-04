@@ -6,6 +6,7 @@
 #include "MusicInfoTagLoaderFlac.h"
 #include "MusicInfoTagLoaderMP4.h"
 #include "MusicInfoTagLoaderCDDA.h"
+#include "MusicInfoTagLoaderApe.h"
 #include "util.h"
 
 using namespace MUSIC_INFO;
@@ -55,6 +56,11 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   else if (strExtension == ".cdda")
   {
     CMusicInfoTagLoaderCDDA *pTagLoader = new CMusicInfoTagLoaderCDDA();
+    return (IMusicInfoTagLoader*)pTagLoader;
+  }
+  else if (strExtension == ".ape" || strExtension == ".mac")
+  {
+    CMusicInfoTagLoaderApe *pTagLoader = new CMusicInfoTagLoaderApe();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
   return NULL;
