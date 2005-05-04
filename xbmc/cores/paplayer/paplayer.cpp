@@ -6,6 +6,9 @@
 #include "../../util.h"
 #include "CodecFactory.h"
 
+// HACK
+#include "../../APEv2Tag.h"
+// hACK
 #define VOLUME_FFWD_MUTE 900 // 9dB
 
 #define INTERNAL_BUFFER_LENGTH  2*4*44100     // 2 seconds
@@ -63,6 +66,10 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
   CloseFile();
 
+  // HACK
+  CAPEv2Tag tag;
+  tag.ReadTag(file.m_strPath);
+  // HACK
   if (!m_eof)
   { // we started a new file whilst still playing the old one - let's free up our buffers and so on.
     CLog::Log(LOGDEBUG, "PAPlayer: Starting next track whilst already playing - killing our output buffers");
