@@ -115,7 +115,7 @@ bool CAPEv2Tag::LoadDLL()
   if ( !GetAPETag || !GetAPEDuration )
   {
     CLog::Log(LOGERROR, "CApeTag: Unable to get needed export functions from our dll %s", APE_DLL);
-    delete m_pDll;
+    CSectionLoader::UnloadDLL(APE_DLL);
     m_pDll = NULL;
     return false;
   }
