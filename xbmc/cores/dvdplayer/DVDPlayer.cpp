@@ -949,15 +949,12 @@ void CDVDPlayer::RenderSubtitles()
  */
 bool CDVDPlayer::OpenDefaultAudioStream()
 {
-  int iCount=-1;
-  int iDefault=m_pDemuxer->GetStreamNoFromLogicalNo(m_iCurrentPhysicalAudioStream, STREAM_AUDIO);
   for (int i = 0; i < m_pDemuxer->GetNrOfStreams(); i++)
   {
     CDemuxStream* pStream = m_pDemuxer->GetStream(i);
     if (pStream->type == STREAM_AUDIO)
     {
-      iCount++;
-      if(iCount == iDefault)
+      if( pStream->iPhysicalId == m_iCurrentPhysicalAudioStream )
       {
         CDemuxStreamAudio* pStreamAudio = (CDemuxStreamAudio*)pStream;
         {

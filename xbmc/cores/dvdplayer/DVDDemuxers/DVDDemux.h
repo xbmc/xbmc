@@ -34,6 +34,7 @@ public:
   }
 
   int iId; // file stream id
+  int iPhysicalId; //Physical Id of audio or video
   CodecID codec;
   StreamType type;
 
@@ -118,10 +119,6 @@ public:
    * return nr of streams, 0 if none
    */
   virtual int GetNrOfStreams() = 0;
-  /*
-   * return the the iLogical'th stream of type iType, sorted by internal id
-   */
-  virtual int GetStreamNoFromLogicalNo(int iLogical, StreamType iType) = 0;
 
 protected:
   CDVDInputStream* m_pInput;
