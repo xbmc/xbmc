@@ -28,6 +28,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock) : CThread
   m_iSpeed = 1;
   m_bRenderSubs = false;
   m_fFPS = 25;
+  m_iVideoDelay = 0;
 
   InitializeCriticalSection(&m_critCodecSection);
   m_packetQueue.SetMaxSize(5 * 256 * 1024); // 1310720
@@ -397,7 +398,12 @@ float CDVDPlayerVideo::GetAspectRatio()
 
 __int64 CDVDPlayerVideo::GetDelay()
 {
-  return 0LL;
+  return m_iVideoDelay;
+}
+
+void CDVDPlayerVideo::SetDelay(__int64 delay)
+{
+  m_iVideoDelay = delay;
 }
 
 __int64 CDVDPlayerVideo::GetDiff()
@@ -431,7 +437,7 @@ DWORD video_refresh_thread(void *arg)
       if( pDVDPlayerVideo->m_pClock->HadDiscontinuity(1*DVD_TIME_BASE) ) //Playback at normal fps untill 1 sec after discontinuity
         iSleepTime = (int)(DVD_TIME_BASE / pDVDPlayerVideo->m_fFPS) - (int)(frameclock.GetClock() - iTimeStamp);
       else
-        iSleepTime = (int)((vp->pts - pDVDPlayerVideo->m_pClock->GetClock()) & 0xFFFFFFFF);
+        iSleepTime = (int)((vp->pts + pDVDPlayerVideo->m_iVideoDelay - pDVDPlayerVideo->m_pClock->GetClock()) & 0xFFFFFFFF);
   
       
       if (iSleepTime > 500000) iSleepTime = 500000; // drop to a minimum of 2 frames/sec
