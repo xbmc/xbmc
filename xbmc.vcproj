@@ -2391,6 +2391,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\MP3codec.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\paplayer\OGGcodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\OGGcodec.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\paplayer.cpp">
 				</File>
 				<File
