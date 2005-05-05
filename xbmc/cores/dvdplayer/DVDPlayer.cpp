@@ -29,6 +29,7 @@
 #include "DVDCodecs\DVDCodecUtils.h"
 
 #include "..\..\util.h"
+#include "../../utils/GUIInfoManager.h"
 
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 
@@ -900,6 +901,7 @@ void CDVDPlayer::SeekTime(int iTime)
   {
     m_messenger.Seek(iTime);
   }
+  g_infoManager.m_bPerformingSeek = false;
 }
 
 __int64 CDVDPlayer::GetTime()
