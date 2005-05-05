@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-05-2005 changed: temp filename for audio scrobbler cache
+  - 05-05-2005 fixed: archive class couldn't save very long strings
   - 05-05-2005 added: ogg codec for paplayer
   - 05-05-2005 fixed: subtitle/audiostream stream selection from xbmc osd in dvdplayer should now be working and remembered. 
   - 05-05-2005 changed: dvd audiostream selection from dvdmenu reworked. more stable than last solution.
