@@ -331,7 +331,12 @@ int CDVDInputStreamNavigator::ProcessBlock()
 
     case DVDNAV_AUDIO_STREAM_CHANGE:
       // Player applications should inform their audio decoder to switch channels
+      {
+        dvdnav_audio_stream_change_event_t* event = (dvdnav_audio_stream_change_event_t*)buf;
+        event->logical = dvdnav_get_audio_logical_stream(m_dvdnav, event->physical);
+      }
       m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_AUDIO_STREAM_CHANGE);
+
       break;
 
     case DVDNAV_HIGHLIGHT:
@@ -420,6 +425,30 @@ int CDVDInputStreamNavigator::ProcessBlock()
   }
   bFinished = false;
   return iNavresult;
+}
+
+bool CDVDInputStreamNavigator::SetActiveAudioStream(int iPhysicalId)
+{
+  vm_t* vm = dvdnav_get_vm(m_dvdnav);
+
+  if((vm->state).domain != VTS_DOMAIN)
+    return false;
+
+
+  int iStreams = vm->vtsi->vtsi_mat->nr_of_vts_audio_streams;
+  for( int audioN = 0; audioN < iStreams; audioN++ )
+  {
+    if((vm->state).pgc->audio_control[audioN] & (1<<15))
+    {
+      int streamN = ((vm->state).pgc->audio_control[audioN] >> 8) & 0x07;
+      if( streamN == iPhysicalId )
+      {
+        (vm->state).AST_REG = audioN;
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 void CDVDInputStreamNavigator::ActivateButton()

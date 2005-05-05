@@ -871,15 +871,17 @@ void CDVDPlayer::SetAudioStream(int iStream)
     if (pStream->type == STREAM_AUDIO) audio_index++;
     if (iStream == audio_index)
     {
-      m_iCurrentPhysicalAudioStream=iStream;
+      m_iCurrentPhysicalAudioStream=pStream->iPhysicalId;
+
+      if(m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD )
+      {
+        CDVDInputStreamNavigator* pInput = (CDVDInputStreamNavigator*)m_pInputStream;
+        pInput->SetActiveAudioStream(m_iCurrentPhysicalAudioStream);
+      }
+    
+      //Just close here, it will be opened automatically
       LockStreams();
       CloseAudioStream(false);
-      if (!OpenAudioStream(stream_index))
-      {
-        // open old stream again if we could not open the new stream
-        if (old_index < 0) OpenDefaultAudioStream();
-        else OpenAudioStream(old_index);
-      }
       UnlockStreams();
       break;
     }
