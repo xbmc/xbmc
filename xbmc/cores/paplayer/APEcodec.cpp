@@ -49,7 +49,7 @@ bool APECodec::Init(const CStdString &strFile)
     CAPEv2Tag tag;
     tag.GetReplayGainFromTag(pTag);
     m_replayGain = tag.GetReplayGain();
-    delete pTag;
+    // Don't delete the tag - it's deleted by the dll in Destroy()
   }
 
   return true;

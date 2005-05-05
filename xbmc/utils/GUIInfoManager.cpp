@@ -94,6 +94,7 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_gpuTemp = 0;
   m_cpuTemp = 0;
   m_AfterSeekTimeout = 0;
+  m_bPerformingSeek = false;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -576,19 +577,19 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   return "";
 }
 
-int CGUIInfoManager::GetPlayTime()
+__int64 CGUIInfoManager::GetPlayTime()
 {
   if (g_application.IsPlayingAudio())
   {
     __int64 lPTS = g_application.m_pPlayer->GetTime() - (g_infoManager.GetCurrentSongStart() * (__int64)1000) / 75;
     if (lPTS < 0) lPTS = 0;
-    return (int)(lPTS / 1000);
+    return lPTS;
   }
   else if (g_application.IsPlayingVideo())
   {
     __int64 lPTS = g_application.m_pPlayer->GetTime();
     if (lPTS < 0) lPTS = 0;
-    return (int)(lPTS / 1000);
+    return lPTS;
   }
   return 0;
 }
@@ -597,10 +598,30 @@ CStdString CGUIInfoManager::GetCurrentPlayTime()
 {
   CStdString strTime;
   if (g_application.IsPlayingAudio())
-    CUtil::SecondsToHMSString(GetPlayTime(), strTime);
+    CUtil::SecondsToHMSString((int)(GetPlayTime()/1000), strTime);
   else if (g_application.IsPlayingVideo())
-    CUtil::SecondsToHMSString(GetPlayTime(), strTime, true);
+    CUtil::SecondsToHMSString((int)(GetPlayTime()/1000), strTime, true);
   return strTime;
+}
+
+int CGUIInfoManager::GetTotalPlayTime()
+{
+  int iTotalTime = 0;
+  if (g_application.IsPlayingAudio())
+  {
+    iTotalTime = g_application.m_pPlayer->GetTotalTime();
+    if (m_currentSong.m_musicInfoTag.GetDuration() > 0)
+      iTotalTime = m_currentSong.m_musicInfoTag.GetDuration();
+    else if (iTotalTime < 0)
+      iTotalTime = 0;
+  }
+  else if (g_application.IsPlayingVideo())
+  {
+    iTotalTime = g_application.m_pPlayer->GetTotalTime();
+    if (iTotalTime < 0)
+      iTotalTime = 0;
+  }
+  return iTotalTime;
 }
 
 int CGUIInfoManager::GetPlayTimeRemaining()

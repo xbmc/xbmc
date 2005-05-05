@@ -131,7 +131,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      m_iSelectedItem = GetSelectedItem();
+      m_iSelectedItem = m_viewControl.GetSelectedItem();
       m_iLastControl = GetFocusedControl();
       ClearFileItems();
     }
@@ -167,10 +167,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
       }
 
       if (m_iSelectedItem > -1)
-      {
-        CONTROL_SELECT_ITEM(CONTROL_LIST, m_iSelectedItem);
-        CONTROL_SELECT_ITEM(CONTROL_THUMBS, m_iSelectedItem);
-      }
+        m_viewControl.SetSelectedItem(m_iSelectedItem);
 
       return true;
     }
@@ -204,9 +201,9 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
         OnSort();
       }
 
-      else if (iControl == CONTROL_LIST || iControl == CONTROL_THUMBS)  // list/thumb control
+      else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
-        int iItem = GetSelectedItem();
+        int iItem = m_viewControl.GetSelectedItem();
         int iAction = message.GetParam1();
         if (iItem < 0) break;
         if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
@@ -222,32 +219,11 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 
 void CGUIWindowScripts::UpdateButtons()
 {
-  SET_CONTROL_HIDDEN(CONTROL_LIST);
-  SET_CONTROL_HIDDEN(CONTROL_THUMBS);
-  bool bViewIcon = false;
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-  {
-    bViewIcon = g_stSettings.m_bScriptsRootViewAsIcons;
-  }
+  if (m_Directory.IsVirtualDirectoryRoot())
+    m_viewControl.SetCurrentView(g_stSettings.m_bScriptsRootViewAsIcons);
   else
-  {
-    bViewIcon = g_stSettings.m_bScriptsViewAsIcons;
-  }
-  if (bViewIcon)
-  {
-    SET_CONTROL_VISIBLE(CONTROL_THUMBS);
-  }
-  else
-  {
-    SET_CONTROL_VISIBLE(CONTROL_LIST);
-  }
+    m_viewControl.SetCurrentView(g_stSettings.m_bScriptsViewAsIcons);
 
-  int iString = 100;
-  if (!bViewIcon)
-  {
-    iString = 101;
-  }
-  SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS, iString);
   SET_CONTROL_LABEL(CONTROL_BTNSORTBY, g_stSettings.m_iScriptsSortMethod + 103);
 
   if ( g_stSettings.m_bScriptsSortAscending)
@@ -276,23 +252,12 @@ void CGUIWindowScripts::UpdateButtons()
 
 void CGUIWindowScripts::ClearFileItems()
 {
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg);
-
-  CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_THUMBS, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg2);
-
+  m_viewControl.Clear();
   m_vecItems.Clear(); // will clean up everything
 }
 
 void CGUIWindowScripts::OnSort()
 {
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg);
-
-  CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_THUMBS, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg2);
-
   for (int i = 0; i < m_vecItems.Size(); i++)
   {
     CFileItem* pItem = m_vecItems[i];
@@ -321,20 +286,13 @@ void CGUIWindowScripts::OnSort()
 
   m_vecItems.Sort(SSortScriptsByName::Sort);
 
-  for (int i = 0; i < (int)m_vecItems.Size(); i++)
-  {
-    CFileItem* pItem = m_vecItems[i];
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, (void*)pItem);
-    g_graphicsContext.SendMessage(msg);
-    CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_THUMBS, 0, 0, (void*)pItem);
-    g_graphicsContext.SendMessage(msg2);
-  }
+  m_viewControl.SetItems(m_vecItems);
 }
 
 void CGUIWindowScripts::Update(const CStdString &strDirectory)
 {
   // get selected item
-  int iItem = GetSelectedItem();
+  int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";
   if (iItem >= 0 && iItem < m_vecItems.Size())
   {
@@ -425,63 +383,16 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 
   strSelectedItem = m_history.Get(m_Directory.m_strPath);
 
-  if (m_iLastControl == CONTROL_THUMBS || m_iLastControl == CONTROL_LIST)
-  {
-    bool bViewAsIcon = false;
-    if ( m_Directory.IsVirtualDirectoryRoot() )
-      bViewAsIcon = g_stSettings.m_bScriptsRootViewAsIcons;
-    else
-      bViewAsIcon = g_stSettings.m_bScriptsViewAsIcons;
-
-    if ( bViewAsIcon )
-    {
-      SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
-    }
-    else
-    {
-      SET_CONTROL_FOCUS(CONTROL_LIST, 0);
-    }
-  }
-
   for (int i = 0; i < (int)m_vecItems.Size(); ++i)
   {
     CFileItem* pItem = m_vecItems[i];
     if (pItem->m_strPath == strSelectedItem)
     {
-      CONTROL_SELECT_ITEM(CONTROL_LIST, i);
-      CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
+      m_viewControl.SetSelectedItem(i);
       break;
     }
   }
 }
-
-int CGUIWindowScripts::GetSelectedItem()
-{
-  int iControl;
-  bool bViewIcon = false;
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-  {
-    bViewIcon = g_stSettings.m_bScriptsRootViewAsIcons;
-  }
-  else
-  {
-    bViewIcon = g_stSettings.m_bScriptsViewAsIcons;
-  }
-  if ( bViewIcon)
-  {
-    iControl = CONTROL_THUMBS;
-  }
-  else
-    iControl = CONTROL_LIST;
-
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg);
-  int iItem = msg.GetParam1();
-  if (iItem >= (int)m_vecItems.Size())
-    return -1;
-  return iItem;
-}
-
 
 void CGUIWindowScripts::OnClick(int iItem)
 {
@@ -517,10 +428,9 @@ void CGUIWindowScripts::OnClick(int iItem)
         g_pythonParser.stopScript(id);
 
         // update items
-        int selectedItem = GetSelectedItem();
+        int selectedItem = m_viewControl.GetSelectedItem();
         Update(m_Directory.m_strPath);
-        CONTROL_SELECT_ITEM(CONTROL_LIST, selectedItem);
-        CONTROL_SELECT_ITEM(CONTROL_THUMBS, selectedItem);
+        m_viewControl.SetSelectedItem(selectedItem);
         return ;
       }
     }
@@ -580,10 +490,9 @@ void CGUIWindowScripts::Render()
   // update control_list / control_thumbs if one or more scripts have stopped / started
   if (g_pythonParser.ScriptsSize() != scriptSize)
   {
-    int selectedItem = GetSelectedItem();
+    int selectedItem = m_viewControl.GetSelectedItem();
     Update(m_Directory.m_strPath);
-    CONTROL_SELECT_ITEM(CONTROL_LIST, selectedItem);
-    CONTROL_SELECT_ITEM(CONTROL_THUMBS, selectedItem);
+    m_viewControl.SetSelectedItem(selectedItem);
     scriptSize = g_pythonParser.ScriptsSize();
   }
   CGUIWindow::Render();
@@ -598,4 +507,15 @@ void CGUIWindowScripts::GoParentFolder()
   if (!g_guiSettings.GetBool("FileLists.FullDirectoryHistory"))
     m_history.Remove(strOldPath); //Delete current path
 
+}
+
+void CGUIWindowScripts::OnWindowLoaded()
+{
+  CGUIWindow::OnWindowLoaded();
+  m_viewControl.Reset();
+  m_viewControl.SetParentWindow(GetID());
+  m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
+  m_viewControl.AddView(VIEW_AS_ICONS, GetControl(CONTROL_THUMBS));
+  m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
+  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
 }

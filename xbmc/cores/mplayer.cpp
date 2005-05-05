@@ -11,6 +11,7 @@
 #include "../langcodeexpander.h"
 #include "../VideoDatabase.h"
 #include "../GUIWindowFullScreen.h"
+#include "../utils/GUIInfoManager.h"
 
 #define KEY_ENTER 13
 #define KEY_TAB 9
@@ -1669,6 +1670,7 @@ void CMPlayer::SeekTime(__int64 iTime)
     SwitchToThread();
     xbox_video_wait();
   }
+  g_infoManager.m_bPerformingSeek = false;
 }
 
 //Time in milleseconds

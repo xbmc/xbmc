@@ -16,5 +16,7 @@ public:
   virtual ~CMusicInfoTagLoaderApe();
 
   virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
+private:
+  virtual int ReadDuration(const CStdString& strFileName);
 };
 };

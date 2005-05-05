@@ -15,11 +15,6 @@
 
 using namespace DIRECTORY;
 
-#define VIEW_AS_LIST           0
-#define VIEW_AS_ICONS          1
-#define VIEW_AS_LARGEICONS     2
-
-
 #define CONTROL_BTNVIEWAS     2
 #define CONTROL_BTNSCAN       3
 #define CONTROL_BTNSORTMETHOD 4
@@ -48,7 +43,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_iLastControl = GetFocusedControl();
-      m_iSelectedItem = GetSelectedItem();
+      m_iSelectedItem = m_viewControl.GetSelectedItem();
       ClearFileItems();
       m_database.Close();
     }
@@ -154,10 +149,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       }
 
       if (m_iSelectedItem > -1)
-      {
-        CONTROL_SELECT_ITEM(CONTROL_LIST, m_iSelectedItem);
-        CONTROL_SELECT_ITEM(CONTROL_THUMBS, m_iSelectedItem);
-      }
+        m_viewControl.SetSelectedItem(m_iSelectedItem);
+
       return true;
     }
     break;
@@ -173,11 +166,10 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       {
         bool bLargeIcons(false);
         m_iViewAsIcons++;
-        if (m_iViewAsIcons > VIEW_AS_LARGEICONS) m_iViewAsIcons = VIEW_AS_LIST;
+        if (m_iViewAsIcons > VIEW_AS_LARGE_ICONS) m_iViewAsIcons = VIEW_AS_LIST;
         g_stSettings.m_iMyProgramsViewAsIcons = m_iViewAsIcons;
         g_settings.Save();
 
-        ShowThumbPanel();
         UpdateButtons();
       }
       else if (iControl == CONTROL_BTNSCAN) // button
@@ -274,19 +266,19 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         UpdateButtons();
         OnSort();
       }
-      else if (iControl == CONTROL_LIST || iControl == CONTROL_THUMBS)  // list/thumb control
+      else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
         // get selected item
         int iAction = message.GetParam1();
         if (ACTION_SELECT_ITEM == iAction || ACTION_MOUSE_LEFT_CLICK == iAction)
         {
-          int iItem = GetSelectedItem();
+          int iItem = m_viewControl.GetSelectedItem();
           // iItem is checked within the OnClick routine
           OnClick(iItem);
         }
         else if (ACTION_CONTEXT_MENU == iAction)
         {
-          int iItem = GetSelectedItem();
+          int iItem = m_viewControl.GetSelectedItem();
           // iItem is checked inside OnPopupMenu
           if (OnPopupMenu(iItem))
           { // update bookmark buttons
@@ -506,12 +498,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 
 void CGUIWindowPrograms::ClearFileItems()
 {
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg);
-
-  CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_THUMBS, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg2);
-
+  m_viewControl.Clear();
   m_vecItems.Clear();
 }
 
@@ -521,18 +508,7 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
   if (g_guiSettings.GetBool("ProgramsLists.UseAutoSwitching"))
   {
     m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
-
-    int iFocusedControl = GetFocusedControl();
-
-    ShowThumbPanel();
     UpdateButtons();
-
-    if (iFocusedControl == CONTROL_LIST || iFocusedControl == CONTROL_THUMBS)
-    {
-      int iControl = CONTROL_LIST;
-      if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
-      SET_CONTROL_FOCUS(iControl, 0);
-    }
   }
 }
 
@@ -698,19 +674,6 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 
   OnSort();
   UpdateButtons();
-
-  if (m_iLastControl == CONTROL_THUMBS || m_iLastControl == CONTROL_LIST)
-  {
-    if ( ViewByIcon() )
-    {
-      SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
-    }
-    else
-    {
-      SET_CONTROL_FOCUS(CONTROL_LIST, 0);
-    }
-  }
-  ShowThumbPanel();
 }
 
 void CGUIWindowPrograms::OnClick(int iItem)
@@ -891,15 +854,6 @@ struct SSortProgramsByName
 
 void CGUIWindowPrograms::OnSort()
 {
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg);
-
-
-  CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_THUMBS, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg2);
-
-
-
   for (int i = 0; i < (int)m_vecItems.Size(); i++)
   {
     CFileItem* pItem = m_vecItems[i];
@@ -941,49 +895,12 @@ void CGUIWindowPrograms::OnSort()
 
   m_vecItems.Sort(SSortProgramsByName::Sort);
 
-  for (int i = 0; i < (int)m_vecItems.Size(); i++)
-  {
-    CFileItem* pItem = m_vecItems[i];
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, (void*)pItem);
-    g_graphicsContext.SendMessage(msg);
-    CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_THUMBS, 0, 0, (void*)pItem);
-    g_graphicsContext.SendMessage(msg2);
-  }
+  m_viewControl.SetItems(m_vecItems);
 }
 
 void CGUIWindowPrograms::UpdateButtons()
 {
-  SET_CONTROL_HIDDEN(CONTROL_LIST);
-  SET_CONTROL_HIDDEN(CONTROL_THUMBS);
-  bool bViewIcon = false;
-  int iString;
-
-  switch (m_iViewAsIcons)
-  {
-  case VIEW_AS_LIST:
-    iString = 101; // view as list
-    break;
-
-  case VIEW_AS_ICONS:
-    iString = 100;  // view as icons
-    bViewIcon = true;
-    break;
-  case VIEW_AS_LARGEICONS:
-    iString = 417; // view as list
-    bViewIcon = true;
-    break;
-  }
-
-  if (bViewIcon)
-  {
-    SET_CONTROL_VISIBLE(CONTROL_THUMBS);
-  }
-  else
-  {
-    SET_CONTROL_VISIBLE(CONTROL_LIST);
-  }
-
-  SET_CONTROL_LABEL(CONTROL_BTNVIEWAS, iString);
+  m_viewControl.SetCurrentView(m_iViewAsIcons);
 
   if (g_stSettings.m_iMyProgramsSortMethod == 3)
   {
@@ -1136,63 +1053,22 @@ void CGUIWindowPrograms::DeleteThumbs(CFileItemList& items)
   }
 }
 
-int CGUIWindowPrograms::GetSelectedItem()
-{
-  int iControl;
-  if ( ViewByIcon())
-  {
-    iControl = CONTROL_THUMBS;
-  }
-  else
-    iControl = CONTROL_LIST;
-
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg);
-  int iItem = msg.GetParam1();
-  if (iItem >= (int)m_vecItems.Size())
-    return -1;
-  return iItem;
-}
-
-
-bool CGUIWindowPrograms::ViewByIcon()
-{
-  if (m_iViewAsIcons != VIEW_AS_LIST) return true;
-  return false;
-}
-
-bool CGUIWindowPrograms::ViewByLargeIcon()
-{
-  if (m_iViewAsIcons == VIEW_AS_LARGEICONS) return true;
-  return false;
-}
-
-void CGUIWindowPrograms::ShowThumbPanel()
-{
-  int iItem = GetSelectedItem();
-  if ( ViewByLargeIcon() )
-  {
-    CGUIThumbnailPanel* pControl = (CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
-    if (pControl)
-      pControl->ShowBigIcons(true);
-  }
-  else
-  {
-    CGUIThumbnailPanel* pControl = (CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
-    if (pControl)
-      pControl->ShowBigIcons(false);
-  }
-  if (iItem > -1)
-  {
-    CONTROL_SELECT_ITEM(CONTROL_LIST, iItem);
-    CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem);
-  }
-}
-
 /// \brief Call to go to parent folder
 void CGUIWindowPrograms::GoParentFolder()
 {
   //CStdString strPath=m_strParentPath;
   m_Directory.m_strPath = m_strParentPath;
   Update(m_Directory.m_strPath);
+}
+
+
+void CGUIWindowPrograms::OnWindowLoaded()
+{
+  CGUIWindow::OnWindowLoaded();
+  m_viewControl.Reset();
+  m_viewControl.SetParentWindow(GetID());
+  m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
+  m_viewControl.AddView(VIEW_AS_ICONS, GetControl(CONTROL_THUMBS));
+  m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
+  m_viewControl.SetViewControlID(CONTROL_BTNVIEWAS);
 }
