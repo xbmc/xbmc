@@ -754,12 +754,15 @@ float CDVDPlayer::GetPercentage()
   return (float)(dPercent);
 }
 
+//This is how much audio is delayed to video, we count the oposite in the dvdplayer
 void CDVDPlayer::SetAVDelay(float fValue)
-{}
+{
+  m_dvdPlayerVideo.SetDelay( - (__int64)(fValue * DVD_TIME_BASE) ) ;
+}
 
 float CDVDPlayer::GetAVDelay()
 {
-  return 0.0f;
+  return - m_dvdPlayerVideo.GetDelay() / (float)DVD_TIME_BASE;
 }
 
 void CDVDPlayer::SetSubTitleDelay(float fValue)

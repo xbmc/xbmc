@@ -33,7 +33,9 @@ public:
   void GetVideoRect(RECT& SrcRect, RECT& DestRect);
   float GetAspectRatio();
   __int64 GetDelay();
+    void SetDelay(__int64 delay);
   __int64 GetDiff();
+  
 
   bool InitializedOutputDevice();
   CDVDPacketQueue m_packetQueue;
@@ -55,8 +57,8 @@ public:
   int m_iSpeed;
   bool m_bRenderSubs;
   float m_fFPS;
-protected:
-
+  __int64 m_iVideoDelay;
+protected:  
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
