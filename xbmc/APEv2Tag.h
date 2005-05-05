@@ -4,6 +4,8 @@
 #include "cores/DllLoader/dll.h"
 #include "cores/paplayer/ReplayGain.h"
 
+#define APE_DLL "Q:\\system\\players\\PAPlayer\\MACDll.dll"
+
 typedef wchar_t str_utf16;
 typedef char str_ansi;
 
@@ -25,7 +27,7 @@ public:
   CAPEv2Tag(void);
   virtual ~CAPEv2Tag(void);
   bool ReadTag(const char* filename);
-  __int64 ReadDuration(const char* filename);
+  __int64 ReadMPCDuration(const char* filename);
   CStdString GetTitle() { return m_strTitle; }
   CStdString GetArtist() { return m_strArtist; }
   CStdString GetYear() { return m_strYear; }
@@ -56,7 +58,6 @@ protected:
 private:
   DllLoader *m_pDll;
   IAPETag * (__stdcall* GetAPETag)(const char *filename);
-  __int64 (__stdcall* GetAPEDuration)(const char *filename);
   bool LoadDLL();                     // load the DLL in question
   bool m_bDllLoaded;                  // whether our dll is loaded
 };

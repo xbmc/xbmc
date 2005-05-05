@@ -7,6 +7,7 @@
 #include "MusicInfoTagLoaderMP4.h"
 #include "MusicInfoTagLoaderCDDA.h"
 #include "MusicInfoTagLoaderApe.h"
+#include "MusicInfoTagLoaderMPC.h"
 #include "util.h"
 
 using namespace MUSIC_INFO;
@@ -61,6 +62,11 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   else if (strExtension == ".ape" || strExtension == ".mac")
   {
     CMusicInfoTagLoaderApe *pTagLoader = new CMusicInfoTagLoaderApe();
+    return (IMusicInfoTagLoader*)pTagLoader;
+  }
+  else if (strExtension == ".mpc" || strExtension == ".mpp" || strExtension == ".mp+")
+  {
+    CMusicInfoTagLoaderMPC *pTagLoader = new CMusicInfoTagLoaderMPC();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
   return NULL;

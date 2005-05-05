@@ -1228,7 +1228,7 @@ void CFileItemList::FilterCueItems()
                 {
                   CUtil::ReplaceExtension(pItem->m_strPath, extensions[i], strMediaFile);
                   CFileItem item(strMediaFile, false);
-                  if (!strMediaFile.Equals(pItem->m_strPath) && HasFileNoCase(strMediaFile))
+                  if (!item.IsCUESheet() && !item.IsPlayList() && HasFileNoCase(strMediaFile))
                   {
                     bFoundMediaFile = true;
                     break;

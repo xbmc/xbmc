@@ -139,7 +139,7 @@ void CGUIWindowVisualisation::Render()
     else if (!m_dwFrameCounter)
     {  // check our current time, as we may have to fade in
 //      int timeRemaining = g_infoManager.GetPlayTimeRemaining();
-      int timeStarted = g_infoManager.GetPlayTime();
+      int timeStarted = (int)(g_infoManager.GetPlayTime()/1000);
       if (timeStarted < 2 && !m_bShowInfo)
       { // fade in at the start
         m_dwFrameCounter = TRANSISTION_COUNT;

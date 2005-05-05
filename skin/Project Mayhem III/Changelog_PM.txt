@@ -1,3 +1,5 @@
+2005-05-05 fixed:       id in seekbar was wrong.
+
 2005-05-04 added:       inital xml and gfx for the new seekbar
 2005-05-04 changed:     new Video OSD
 

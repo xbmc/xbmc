@@ -66,7 +66,7 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
       //resources are allocated in g_application
       //CGUIDialog::OnMessage(message);
       if (g_application.m_pPlayer)
-        m_fSeekPercentage = g_application.m_pPlayer->GetPercentage();
+        m_fSeekPercentage = (float)g_infoManager.GetPlayTime() / g_infoManager.GetTotalPlayTime() * 0.1f;
       // start timer
       m_dwTimer = timeGetTime();
       m_bRequireSeek = false;
@@ -82,24 +82,6 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
     }
     break;
 
-  case GUI_MSG_CLICKED:
-    {
-      if (message.GetSenderId() == POPUP_SEEK_SLIDER) // who else is it going to be??
-      {
-        CGUISliderControl* pControl = (CGUISliderControl*)GetControl(message.GetSenderId());
-        if (pControl)
-        {
-          // Set the global volume setting to the percentage requested
-          int iPercentage = pControl->GetPercentage();
-          g_application.SetVolume(iPercentage);
-          // Label and control will auto-update when Render() is called.
-        }
-        // reset the timer
-        m_dwTimer = timeGetTime();
-        return true;
-      }
-    }
-    break;
   case GUI_MSG_LABEL_SET:
     {
       if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_SEEK_LABEL)
@@ -122,10 +104,15 @@ void CGUIDialogSeekBar::Render()
     return;
   }
 
-  if (!m_bRequireSeek)
+  // check if we should seek or exit
+  if (!g_infoManager.m_bPerformingSeek && timeGetTime() - m_dwTimer > SEEK_BAR_DISPLAY_TIME)
+    Close();
+
+  // render our controls
+  if (!m_bRequireSeek && !g_infoManager.m_bPerformingSeek)
   { // position the bar at our current time
     CGUISliderControl *pSlider = (CGUISliderControl*)GetControl(POPUP_SEEK_SLIDER);
-    if (pSlider) pSlider->SetPercentage((int)g_application.m_pPlayer->GetPercentage());
+    if (pSlider) pSlider->SetPercentage((int)((float)g_infoManager.GetPlayTime()/g_infoManager.GetTotalPlayTime() * 0.1f));
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), POPUP_SEEK_LABEL);
     msg.SetLabel(g_infoManager.GetCurrentPlayTime());
     OnMessage(msg);
@@ -133,22 +120,21 @@ void CGUIDialogSeekBar::Render()
   else
   {
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), POPUP_SEEK_LABEL);
-    int time = (int)(g_application.m_pPlayer->GetTotalTime() * m_fSeekPercentage * 0.01f);
+    int time = (int)(g_infoManager.GetTotalPlayTime() * m_fSeekPercentage * 0.01f);
     CStdString strHMS;
     CUtil::SecondsToHMSString(time, strHMS, g_application.IsPlayingVideo());
     msg.SetLabel(strHMS);
     OnMessage(msg);
   }
-  // render the controls
   CGUIDialog::Render();
-  // and check if we should seek or exit
-  if (timeGetTime() - m_dwTimer > SEEK_BAR_DISPLAY_TIME)
+
+  // Check for seek timeout, and perform the seek
+  if (m_bRequireSeek && timeGetTime() - m_dwTimer > SEEK_BAR_SEEK_TIME)
   {
-    Close();
-  }
-  else if (m_bRequireSeek && timeGetTime() - m_dwTimer > SEEK_BAR_SEEK_TIME)
-  {
-    g_application.m_pPlayer->SeekPercentage(m_fSeekPercentage);
+    g_infoManager.m_bPerformingSeek = true;
+    float time = g_infoManager.GetTotalPlayTime() * m_fSeekPercentage * 10.0f;
+    time += g_infoManager.GetCurrentSongStart() * 1000.0f/75.0f;
+    g_application.m_pPlayer->SeekTime((__int64)time);
     m_bRequireSeek = false;
   }
 }
