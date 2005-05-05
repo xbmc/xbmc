@@ -104,8 +104,18 @@ CArchive& CArchive::operator<<(const CStdString& str)
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
-  memcpy(&m_pBuffer[m_BufferPos], str.c_str(), size);
-  m_BufferPos += size;
+  int iBufferMaxParts=size/BUFFER_MAX;
+  for (int i=0; i<iBufferMaxParts; i++)
+  {
+    memcpy(&m_pBuffer[m_BufferPos], str.c_str()+(i*BUFFER_MAX), BUFFER_MAX);
+    m_BufferPos+=BUFFER_MAX;
+    FlushBuffer();
+  }
+
+  int iPos=iBufferMaxParts*BUFFER_MAX;
+  int iSizeLeft=size-iPos;
+  memcpy(&m_pBuffer[m_BufferPos], str.c_str()+iPos, iSizeLeft);
+  m_BufferPos+=iSizeLeft;
 
   return *this;
 }
@@ -118,8 +128,18 @@ CArchive& CArchive::operator<<(const CStdStringW& str)
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
-  memcpy(&m_pBuffer[m_BufferPos], str.c_str(), size);
-  m_BufferPos += size;
+  int iBufferMaxParts=size/BUFFER_MAX;
+  for (int i=0; i<iBufferMaxParts; ++i)
+  {
+    memcpy(&m_pBuffer[m_BufferPos], str.c_str()+(i*BUFFER_MAX), BUFFER_MAX);
+    m_BufferPos+=BUFFER_MAX;
+    FlushBuffer();
+  }
+
+  int iPos=iBufferMaxParts*BUFFER_MAX;
+  int iSizeLeft=size-iPos;
+  memcpy(&m_pBuffer[m_BufferPos], str.c_str()+iPos, iSizeLeft);
+  m_BufferPos+=iSizeLeft;
 
   return *this;
 }
