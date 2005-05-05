@@ -75,6 +75,7 @@ public:
   std::string GetAudioStreamLanguage(int iId);
   int GetAudioStreamCount();
   bool SetActiveAudioStream(int iPhysicalId);
+  bool SetActiveSubtitleStream(int iPhysicalId);
 
   int GetTotalTime(); // the total time in seconds
   int GetTime(); // the current position in seconds
