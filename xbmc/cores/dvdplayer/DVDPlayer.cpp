@@ -799,6 +799,11 @@ void CDVDPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
 void CDVDPlayer::SetSubtitle(int iStream)
 {
   m_dvd.iSelectedSPUStream = 0x20 + iStream;
+  if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
+  {
+    CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
+    pStream->SetActiveSubtitleStream(iStream);
+  }
 }
 
 bool CDVDPlayer::GetSubtitleVisible()
