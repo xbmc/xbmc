@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-05-2005 updated: Chinese (Simple) language file (Thnx to iikii)
+  - 05-05-2005 updated: Polish language file (Thnx to napek)
+  - 05-05-2005 updated: German (Austrian) language file (Thnx to CEOMR)
   - 05-05-2005 changed: temp filename for audio scrobbler cache
   - 05-05-2005 fixed: archive class couldn't save very long strings
   - 05-05-2005 added: ogg codec for paplayer
