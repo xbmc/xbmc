@@ -2,6 +2,7 @@
 #include "GUIWindow.h"
 #include "FileSystem/VirtualDirectory.h"
 #include "FileSystem/DirectoryHistory.h"
+#include "GUIViewControl.h"
 
 using namespace DIRECTORY;
 
@@ -13,6 +14,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void OnAction(const CAction &action);
   virtual void Render();
+  virtual void OnWindowLoaded();
 
 protected:
   void GoParentFolder();
@@ -22,7 +24,6 @@ protected:
   void UpdateButtons();
   void ClearFileItems();
   void Update(const CStdString &strDirectory);
-  int GetSelectedItem();
   bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
 
   CVirtualDirectory m_rootDir;
@@ -37,4 +38,6 @@ protected:
   int m_iLastControl;
   int m_iSelectedItem;
   VECSHARES shares;
+
+  CGUIViewControl m_viewControl;
 };

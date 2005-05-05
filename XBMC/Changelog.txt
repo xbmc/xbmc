@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-05-2005 fixed: Videos Original Size view wasn't initialized properly.
+  - 05-05-2005 changed: Scripts/Programs windows now use ViewControl.
+  - 05-05-2005 added: Musepack codec to paplayer.
+  - 05-05-2005 fixed: .m3u was detected as a valid underlying media file for .cue sheets
+  - 05-05-2005 added: Seek bar enabled - move left/right on left thumb stick.
   - 05-05-2005 updated: Chinese (Simple) language file (Thnx to iikii)
   - 05-05-2005 updated: Polish language file (Thnx to napek)
   - 05-05-2005 updated: German (Austrian) language file (Thnx to CEOMR)

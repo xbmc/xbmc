@@ -2,9 +2,11 @@
 #include "stdafx.h"
 #include "APEv2tag.h"
 
-using namespace MUSIC_INFO;
+// MPC stuff
+#include "cores/paplayer/MPCCodec.h"
+// MPC stuff
 
-#define APE_DLL "Q:\\system\\players\\PAPlayer\\MACDll.dll"
+using namespace MUSIC_INFO;
 
 CAPEv2Tag::CAPEv2Tag()
 {
@@ -12,7 +14,6 @@ CAPEv2Tag::CAPEv2Tag()
   m_bDllLoaded = false;
   m_pDll = NULL;
   GetAPETag = NULL;
-  GetAPEDuration = NULL;
 }
 
 CAPEv2Tag::~CAPEv2Tag()
@@ -89,11 +90,14 @@ void CAPEv2Tag::GetReplayGainFromTag(IAPETag *tag)
   }
 }
 
-__int64 CAPEv2Tag::ReadDuration(const char* filename)
+__int64 CAPEv2Tag::ReadMPCDuration(const char* filename)
 {
-  if (!filename || !LoadDLL())
+  if (!filename)
     return 0;
-  return GetAPEDuration(filename);
+  MPCCodec codec;
+  if (codec.Init(filename))
+    return codec.m_TotalTime;
+  return 0;
 }
 
 bool CAPEv2Tag::LoadDLL()
@@ -109,10 +113,9 @@ bool CAPEv2Tag::LoadDLL()
 
   // get handle to the functions in the dll
   m_pDll->ResolveExport("_GetAPETag@4", (void**)&GetAPETag);
-  m_pDll->ResolveExport("_GetAPEDuration@4", (void**)&GetAPEDuration);
 
   // Check resolves + version number
-  if ( !GetAPETag || !GetAPEDuration )
+  if ( !GetAPETag )
   {
     CLog::Log(LOGERROR, "CApeTag: Unable to get needed export functions from our dll %s", APE_DLL);
     CSectionLoader::UnloadDLL(APE_DLL);

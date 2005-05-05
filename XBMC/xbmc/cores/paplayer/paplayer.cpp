@@ -5,6 +5,7 @@
 #include "../../application.h"
 #include "../../util.h"
 #include "CodecFactory.h"
+#include "../../utils/GUIInfoManager.h"
 
 // HACK
 #include "../../APEv2Tag.h"
@@ -66,17 +67,13 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
   CloseFile();
 
-  // HACK
-  CAPEv2Tag tag;
-  tag.ReadTag(file.m_strPath);
-  // HACK
   if (!m_eof)
   { // we started a new file whilst still playing the old one - let's free up our buffers and so on.
     CLog::Log(LOGDEBUG, "PAPlayer: Starting next track whilst already playing - killing our output buffers");
-    KillAudioDevice();
     if (m_codec)
       delete m_codec;
     m_codec = NULL;
+    KillAudioDevice();
     m_PcmPos = 0;
     m_PcmSize = 0;
   }
@@ -141,6 +138,7 @@ bool PAPlayer::CloseFile()
     delete m_codec;
     m_codec = NULL;
   }
+
   return true;
 }
 
@@ -317,6 +315,7 @@ bool PAPlayer::ProcessPAP()
       m_PcmPos = 0;
       m_SeekTime = -1;
       m_pAudioDevice->Stop();
+      g_infoManager.m_bPerformingSeek = false;
     }
     if (m_IsFFwdRewding || m_iSpeed != 1)
     {
@@ -451,7 +450,6 @@ void PAPlayer::KillAudioDevice()
     delete m_pAudioDevice;
     m_pAudioDevice = NULL;
   }
-
 }
 
 __int64 PAPlayer::GetTime()

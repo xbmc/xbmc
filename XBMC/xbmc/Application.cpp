@@ -1515,7 +1515,7 @@ void CApplication::Render()
         iSpeed >>= 1;
         iPower++;
       }
-      if (g_infoManager.GetPlayTime() < iPower)
+      if (g_infoManager.GetPlayTime() / 1000 < iPower)
       {
         g_application.SetPlaySpeed(1);
         g_application.m_pPlayer->SeekTime((m_itemCurrentFile.m_lStartOffset * 1000) / 75);
@@ -1862,8 +1862,8 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
         if (iSpeed == 1)
           CLog::DebugLog("Resetting playspeed");
       }
-//      if (g_application.GetPlaySpeed() != 1 && !m_guiDialogSeekBar.IsRunning())
-//        m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
+      if (g_application.GetPlaySpeed() != 1 && !m_guiDialogSeekBar.IsRunning())
+        m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
     }
     // allow play to unpause
     else
@@ -1924,9 +1924,9 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
   if (IsPlaying() && (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK))
   {
     // show visual feedback of seek change...
-//    if (!m_guiDialogSeekBar.IsRunning())
-//      m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
-//    m_guiDialogSeekBar.OnAction(action);
+    if (!m_guiDialogSeekBar.IsRunning())
+      m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
+    m_guiDialogSeekBar.OnAction(action);
   }
 }
 
@@ -2620,7 +2620,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     if (CUtil::FileExists("Q:\\system\\players\\paplayer\\in_mp3.dll"))  strNewPlayer = "paplayer";
   }
-  else if (url.GetFileType() == "ape" || url.GetFileType() == "mac" || url.GetFileType() == "cdda" || url.GetFileType() == "ogg")
+  else if (url.GetFileType() == "ape" || url.GetFileType() == "mac" || url.GetFileType() == "cdda" || url.GetFileType() == "ogg" || url.GetFileType() == "mpc")
   {
     strNewPlayer = "paplayer";
   }
@@ -3726,7 +3726,7 @@ void CApplication::CheckAudioScrobblerStatus()
   }
 
   //  Submit the song if 50% or 240 seconds are played
-  double dTime=g_infoManager.GetPlayTime();
+  double dTime=(double)g_infoManager.GetPlayTime()/1000.0;
   const CMusicInfoTag& tag=g_infoManager.GetCurrentSongTag();
   double dLength=(tag.GetDuration()>0) ? (tag.GetDuration()/2.0f) : (GetTotalTime()/2.0f);
   if (!tag.Loaded() || dLength==0.0f)

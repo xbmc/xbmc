@@ -47,15 +47,18 @@ public:
   CStdString GetMusicLabel(int item);
   CStdString GetVideoLabel(int item);
   wstring GetFreeSpace(int drive);
-  int GetPlayTime();
+  __int64 GetPlayTime();  // in ms
   CStdString GetCurrentPlayTime();
   int GetPlayTimeRemaining();
+  int GetTotalPlayTime();
   CStdString GetCurrentPlayTimeRemaining();
   CStdString GetVersion();
   CStdString GetBuild();
 
   bool GetDisplayAfterSeek() const;
   void SetDisplayAfterSeek(DWORD TimeOut = 2500);
+
+  bool m_bPerformingSeek;
 protected:
 
   wstring GetSystemHeatInfo(const CStdString &strInfo);
