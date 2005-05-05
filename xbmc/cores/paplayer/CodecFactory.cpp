@@ -3,6 +3,7 @@
 #include "MP3Codec.h"
 #include "APECodec.h"
 #include "CDDACodec.h"
+#include "OGGCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -12,6 +13,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new APECodec;
   else if (strFileType.Equals("cdda"))
     return new CDDACodec;
+  else if (strFileType.Equals("ogg"))
+    return new OGGCodec;
 
   return NULL;
 }
