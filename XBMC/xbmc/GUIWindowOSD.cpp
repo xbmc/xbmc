@@ -29,6 +29,8 @@
 #define OSD_AVDELAY 500
 #define OSD_AVDELAY_LABEL 550
 #define OSD_AUDIOSTREAM_LIST 501
+#define OSD_AUDIO_VOLUME_SLIDER 502
+#define OSD_AUDIO_VOLUME_LABEL 552
 
 #define OSD_CREATEBOOKMARK 600
 #define OSD_BOOKMARKS_LIST 601
@@ -367,14 +369,27 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
         {
           // set the controls values
           SetSliderValue( -g_stSettings.m_fAudioDelayRange, g_stSettings.m_fAudioDelayRange, g_application.m_pPlayer->GetAVDelay(), OSD_AVDELAY);
+          SetSliderValue( 0.0f, 100.0f, (float)g_application.GetVolume(), OSD_AUDIO_VOLUME_SLIDER);
 
           // show the controls on this sub menu
           SET_CONTROL_VISIBLE(OSD_AVDELAY);
           SET_CONTROL_VISIBLE(OSD_AVDELAY_LABEL);
           SET_CONTROL_VISIBLE(OSD_AUDIOSTREAM_LIST);
+          SET_CONTROL_VISIBLE(OSD_AUDIO_VOLUME_SLIDER);
+          SET_CONTROL_VISIBLE(OSD_AUDIO_VOLUME_LABEL);
 
-          FOCUS_CONTROL(GetID(), OSD_AVDELAY, 0); // set focus to the first control in our group
-          PopulateAudioStreams();  // populate the list control with audio streams for this video
+          // set focus to the first control in our group
+          if (GetControl(OSD_AUDIO_VOLUME_SLIDER))
+          {
+            FOCUS_CONTROL(GetID(), OSD_AUDIO_VOLUME_SLIDER, 0);
+          }
+          else
+          {
+            FOCUS_CONTROL(GetID(), OSD_AVDELAY, 0);
+          }
+
+          // populate the list control with audio streams for this video
+          PopulateAudioStreams();  
         }
       }
 
@@ -401,10 +416,12 @@ void CGUIWindowOSD::SetVideoProgress()
     CGUISliderControl* pSlider = (CGUISliderControl*)GetControl(OSD_VIDEOPOS);
     if (pSlider) pSlider->SetFloatValue(fValue);    // Update our position bar accordingly ...
 
+    // Update our volume bar(s) accordingly ...
     int iValue = g_application.GetVolume();
     pSlider = (CGUISliderControl*)GetControl(OSD_VOLUMESLIDER);
-    if (pSlider) pSlider->SetPercentage(iValue);   // Update our volume bar accordingly ...
-
+    if (pSlider) pSlider->SetPercentage(iValue);
+    pSlider = (CGUISliderControl*)GetControl(OSD_AUDIO_VOLUME_SLIDER);
+    if (pSlider) pSlider->SetPercentage(iValue);
   }
 }
 
@@ -510,12 +527,14 @@ void CGUIWindowOSD::ToggleSubMenu(DWORD iButtonID, DWORD iBackID)
   HIDE_CONTROL(GetID(), OSD_VOLUMESLIDER);
   HIDE_CONTROL(GetID(), OSD_VIDEOPOS);
   HIDE_CONTROL(GetID(), OSD_VIDEOPOS_LABEL);
-  HIDE_CONTROL(GetID(), OSD_AUDIOSTREAM_LIST);
-  HIDE_CONTROL(GetID(), OSD_AVDELAY);
   HIDE_CONTROL(GetID(), OSD_NONINTERLEAVED);
   HIDE_CONTROL(GetID(), OSD_NOCACHE);
   HIDE_CONTROL(GetID(), OSD_ADJFRAMERATE);
+  HIDE_CONTROL(GetID(), OSD_AVDELAY);
   HIDE_CONTROL(GetID(), OSD_AVDELAY_LABEL);
+  HIDE_CONTROL(GetID(), OSD_AUDIOSTREAM_LIST);
+  HIDE_CONTROL(GetID(), OSD_AUDIO_VOLUME_SLIDER);
+  HIDE_CONTROL(GetID(), OSD_AUDIO_VOLUME_LABEL);
 
   HIDE_CONTROL(GetID(), OSD_ZOOM);
   HIDE_CONTROL(GetID(), OSD_ZOOMLABEL);
@@ -602,6 +621,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 
   switch (iControlID)
   {
+  case OSD_AUDIO_VOLUME_SLIDER:
   case OSD_VOLUMESLIDER:
     {
       CGUISliderControl* pControl = (CGUISliderControl*)GetControl(iControlID);
@@ -1080,6 +1100,8 @@ void CGUIWindowOSD::Reset()
   HIDE_CONTROL(GetID(), OSD_NOCACHE);
   HIDE_CONTROL(GetID(), OSD_ADJFRAMERATE);
   HIDE_CONTROL(GetID(), OSD_AVDELAY_LABEL);
+  HIDE_CONTROL(GetID(), OSD_AUDIO_VOLUME_SLIDER);
+  HIDE_CONTROL(GetID(), OSD_AUDIO_VOLUME_LABEL);
 
   HIDE_CONTROL(GetID(), OSD_ZOOM);
   HIDE_CONTROL(GetID(), OSD_ZOOMLABEL);

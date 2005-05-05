@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-05-2005 added: Code support for volume bar in video OSD audio submenu - needs skinning.
   - 05-05-2005 fixed: Videos Original Size view wasn't initialized properly.
   - 05-05-2005 changed: Scripts/Programs windows now use ViewControl.
   - 05-05-2005 added: Musepack codec to paplayer.
