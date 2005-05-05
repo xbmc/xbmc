@@ -1223,7 +1223,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
         if( pci->pci_gi.vobu_s_ptm*10 != m_dvd.iNAVPackFinish)
         {
-          m_dvdPlayerVideo.ExpectDiscontinuity();
           m_dvd.iFlagSentStart=0;
           //Only set this when we have the first non continous packet
           m_dvd.iNAVPackStart = pci->pci_gi.vobu_s_ptm*10;

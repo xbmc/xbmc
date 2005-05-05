@@ -29,8 +29,7 @@ public:
 
   void Update(bool bPauseDrawing); // called form xbmc
   void UpdateMenuPicture();
-  void ExpectDiscontinuity();
-
+  
   void GetVideoRect(RECT& SrcRect, RECT& DestRect);
   float GetAspectRatio();
   __int64 GetDelay();
@@ -46,7 +45,6 @@ public:
 
   CDVDVideo m_dvdVideo;
   bool m_bRunningVideo;
-  int m_iDiscontinousPicts;
   CDVDClock* m_pClock;
 
   CDVDOverlay m_overlay;
@@ -56,7 +54,7 @@ public:
 
   int m_iSpeed;
   bool m_bRenderSubs;
-
+  float m_fFPS;
 protected:
 
   virtual void OnStartup();

@@ -269,21 +269,17 @@ void CDVDPlayerAudio::Process()
     if( len > 0 ) m_dvdAudio.AddPackets(pAudioBuffer, len);
 
     //Clock should be calculated after packets have been addet
-    const __int64 iClock = m_pClock->GetClock();
-    const __int64 iCurrDiff = (m_audioClock - m_dvdAudio.GetDelay()) - iClock;
+    const __int64 iCurrDiff = (m_audioClock - m_dvdAudio.GetDelay()) - m_pClock->GetClock();
     const __int64 iAvDiff = (iClockDiff + iCurrDiff)/2;
 
     //Check for discontinuity in the stream, use an average of last two diffs to 
-    //eliminate fluctuations, and not over adjust
-    if( len == 0)
+    //eliminate highfreq fluctuations of large packet sizes
+    if (ABS(iAvDiff) > 5000 || len == 0) // sync clock if average diff is bigger than 5 msec 
     {
-      //Expected discontinuity
-      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, iClock + iCurrDiff);
-      iClockDiff = 0;
-    }
-    else if (ABS(iAvDiff) > 5000) // sync clock if average diff is bigger than 5 msec 
-    {
-      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, iClock + iCurrDiff );
+      //len == 0 is an expected discontinuity
+      //Wait untill only one packet is left in buffer to minimize choppyness in video
+      m_dvdAudio.WaitForBuffer(1);
+      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, m_audioClock - m_dvdAudio.GetDelay());
       CLog::DebugLog("CDVDPlayer:: Detected Audio Discontinuity, syncing clock. diff was: %d, %d, av: %d", (int)iClockDiff, (int)iCurrDiff, (int)iAvDiff);
       iClockDiff = 0;
     }

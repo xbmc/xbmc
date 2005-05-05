@@ -201,6 +201,12 @@ __int64 CDVDAudio::GetDelay()
   return 0LL;
 }
 
+void CDVDAudio::WaitForBuffer(int iPacketsLeft)
+{
+  while(m_pAudioDecoder->GetBytesInBuffer() > iPacketsLeft*m_dwPacketSize)
+    Sleep(1);
+}
+
 void CDVDAudio::Flush()
 {
   CSingleLock lock (m_critSection);

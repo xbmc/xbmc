@@ -18,13 +18,15 @@ public:
 
   __int64 GetClock();
   void Discontinuity(ClockDiscontinuityType type, __int64 currentPts = 0LL);
+  
+  bool HadDiscontinuity(__int64 delay);
   void AdjustSpeedToMatch(__int64 currPts );
 protected:
 
   LARGE_INTEGER m_systemUsed;
   LARGE_INTEGER m_systemFrequency;
   LARGE_INTEGER m_startClock;
-  __int64 diffsum;
+  __int64 m_iDisc;
   bool m_bReset;
 
   __int64 m_lastPts;
