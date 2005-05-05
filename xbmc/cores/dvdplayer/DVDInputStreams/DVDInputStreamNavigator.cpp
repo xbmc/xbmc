@@ -451,6 +451,33 @@ bool CDVDInputStreamNavigator::SetActiveAudioStream(int iPhysicalId)
   return false;
 }
 
+bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iPhysicalId)
+{
+  vm_t* vm = dvdnav_get_vm(m_dvdnav);
+
+  if((vm->state).domain != VTS_DOMAIN)
+    return false;
+
+
+  int iStreams = vm->vtsi->vtsi_mat->nr_of_vts_subp_streams;
+  for( int subpN = 0; subpN < iStreams; subpN++ )
+  {
+    if((vm->state).pgc->subp_control[subpN] & (1<<31))
+    {
+      int streamN0 = ((vm->state).pgc->subp_control[subpN] >> 16) & 0x1f;
+      int streamN1 = ((vm->state).pgc->subp_control[subpN] >> 8) & 0x1f;
+      int streamN2 = (vm->state).pgc->subp_control[subpN] & 0x1f;
+      if( streamN0 == iPhysicalId || streamN1 == iPhysicalId || streamN2 == iPhysicalId )
+      {
+        (vm->state).SPST_REG = subpN;
+        return true;
+      }
+    }
+  }
+  return false;
+
+
+}
 void CDVDInputStreamNavigator::ActivateButton()
 {
   if (!m_dvdnav) return ;
