@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-05-2005 fixed: audiostream selection from xbmc osd from dvdplayer now fully working
   - 05-05-2005 changed: dvd audiostream selection reworked. more stable than last solution.
   - 04-05-2005 changed: SectionLoader can now load/unload dll's on demand - for preloading dlls that will be needed repeatedly.
   - 04-05-2005 added: APEv2 tag reading in APE/MP3 files, including ReplayGain info.  Requires MACDll.dll to be present.
