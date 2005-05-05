@@ -27,7 +27,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock) : CThread
   m_pOverlayPicture = NULL;
   m_iSpeed = 1;
   m_bRenderSubs = false;
-  m_iDiscontinousPicts = 0;
+  m_fFPS = 25;
 
   InitializeCriticalSection(&m_critCodecSection);
   m_packetQueue.SetMaxSize(5 * 256 * 1024); // 1310720
@@ -115,10 +115,6 @@ void CDVDPlayerVideo::OnStartup()
   pictq_rindex = 0;
   pictq_windex = 0;
 }
-void CDVDPlayerVideo::ExpectDiscontinuity()
-{
-  m_iDiscontinousPicts = 30; //Guess something close to 30.. this should be reset as soon as a proper package is found
-}
 
 void CDVDPlayerVideo::Process()
 {
@@ -143,11 +139,9 @@ void CDVDPlayerVideo::Process()
 
     if (dvdstate == DVDSTATE_RESYNC)
     {
-      //Discontinuity found, use normal time adjustments again after all qued pics has been rendered;
-      m_iDiscontinousPicts = pictq_size; //We really don't know how many packets where left 
+      //Discontinuity found..
+      //Audio side normally handles discontinuities so don't do anything here.
     }
-    else if (dvdstate == DVDSTATE_STILL)
-      m_iDiscontinousPicts = 0;
 
     pts = pPacket->dts == DVD_NOPTS_VALUE ? 0 : pPacket->dts;        
 
@@ -296,7 +290,13 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
 
   vp = &pictq[pictq_windex];
 
-  float fFps = ((float)m_pDemuxStreamVideo->iFpsRate / m_pDemuxStreamVideo->iFpsScale);
+  if( m_pDemuxStreamVideo->iFpsRate != 0 && m_pDemuxStreamVideo->iFpsScale != 0)
+    m_fFPS = ((float)m_pDemuxStreamVideo->iFpsRate / m_pDemuxStreamVideo->iFpsScale);
+  else
+  {
+    CLog::Log(LOGERROR, "Demuxer reported invalid framerate: %d or fpsscale: %d", m_pDemuxStreamVideo->iFpsRate, m_pDemuxStreamVideo->iFpsScale);
+    m_fFPS = 25;
+  }
 
   if (!m_bInitializedOutputDevice)
   {
@@ -305,9 +305,9 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
     m_dvdVideo.Init();
 
     CLog::Log(LOGNOTICE, "  fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i",
-              fFps, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
+              m_fFPS, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
 
-    m_dvdVideo.Config(fFps, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
+    m_dvdVideo.Config(m_fFPS, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
     m_bInitializedOutputDevice = true;
   }
 
@@ -413,7 +413,9 @@ DWORD video_refresh_thread(void *arg)
 
   CLog::Log(LOGNOTICE, "running thread: video_refresh_thread");
   int iSleepTime = 0; //Needed to remember old sleeptime when in discontinuities
-
+  CDVDClock frameclock;
+  __int64 iTimeStamp = frameclock.GetClock();
+  
   while (pDVDPlayerVideo->m_bRunningVideo)
   {
     if (pDVDPlayerVideo->pictq_size == 0 || pDVDPlayerVideo->m_iSpeed == 0)
@@ -426,19 +428,12 @@ DWORD video_refresh_thread(void *arg)
       // dequeue the picture
       vp = &pDVDPlayerVideo->pictq[pDVDPlayerVideo->pictq_rindex];
       
-      // determine time to sleep before we display the picture
-      // use old sleeptime if we are expecting a discontinuity
-      if (pDVDPlayerVideo->m_iDiscontinousPicts>0)
-      {
-        //Clock is in a discontinous state, just use old sleep time
-        if(iSleepTime == 0)
-          iSleepTime = 30000; //Guess something close to 30fps        
-        pDVDPlayerVideo->m_iDiscontinousPicts--;
-      }
+      if( pDVDPlayerVideo->m_pClock->HadDiscontinuity(1*DVD_TIME_BASE) ) //Playback at normal fps untill 1 sec after discontinuity
+        iSleepTime = (int)(DVD_TIME_BASE / pDVDPlayerVideo->m_fFPS) - (int)(frameclock.GetClock() - iTimeStamp);
       else
-      {
         iSleepTime = (int)((vp->pts - pDVDPlayerVideo->m_pClock->GetClock()) & 0xFFFFFFFF);
-      }
+  
+      
       if (iSleepTime > 500000) iSleepTime = 500000; // drop to a minimum of 2 frames/sec
 
       // we could drop some frames here too if iSleepTime < 0, but I don't think it will be any
@@ -449,6 +444,7 @@ DWORD video_refresh_thread(void *arg)
 
       // display picture
       // we expect the video device to be initialized here
+      __int64 iTimeStamp = frameclock.GetClock();
       pDVDPlayerVideo->m_dvdVideo.FlipPage();
 
       // update queue size and signal for next picture

@@ -10,8 +10,6 @@ CDVDClock::CDVDClock()
   QueryPerformanceFrequency(&m_systemFrequency);
   m_systemUsed.QuadPart = m_systemUsed.QuadPart;
   m_bReset = true;
-  m_lastPts = 0;
-  diffsum = 0;
 }
 
 CDVDClock::~CDVDClock()
@@ -37,7 +35,6 @@ __int64 CDVDClock::GetClock()
 
 void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts)
 {
-  m_lastPts = 0;
   switch (type)
   {
   case CLOCK_DISC_FULL:
@@ -52,12 +49,19 @@ void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts)
 
       QueryPerformanceCounter(&m_startClock);      
       m_startClock.QuadPart -= ((currentPts * m_systemUsed.QuadPart) / DVD_TIME_BASE);
-      
-      diffsum = 0;
+      m_iDisc = currentPts;
 
       break;
     }
   }
+}
+
+bool CDVDClock::HadDiscontinuity(__int64 delay)
+{
+  if(m_iDisc + delay > GetClock())
+    return true;
+  else
+    return false;
 }
 
 void CDVDClock::AdjustSpeedToMatch(__int64 currPts )
