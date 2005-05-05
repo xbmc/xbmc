@@ -951,7 +951,11 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   if (GetID() != WINDOW_VIDEOS)
     pMenu->EnableButton(5, false);
   
-  if(bEnabledDVD && !(m_vecItems[iItem]->IsDVDFile(true, true) || m_vecItems[iItem]->IsDVD() || m_vecItems[iItem]->IsDVDImage()) )
+  if(bEnabledDVD && !(m_vecItems[iItem]->IsDVDFile(true, true) 
+      || m_vecItems[iItem]->IsDVD() 
+      || m_vecItems[iItem]->IsDVDImage() 
+      || m_vecItems[iItem]->IsVideo() 
+      || m_vecItems[iItem]->IsAudio() ) )
     pMenu->EnableButton(8, false);
 
 
