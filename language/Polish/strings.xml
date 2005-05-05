@@ -443,6 +443,7 @@
   <string><id>507</id><value>Sortowanie: ulubione</value></string>
   <string><id>508</id><value>Nie u¿ywaj skrutów</value></string>
   <string><id>509</id><value>Buforuj miniaturki programów</value></string>
+  <string><id>510</id><value>W³¹cz wizualizacje</value></string>
   <string><id>600</id><value>Zgraj CD</value></string>
   <string><id>601</id><value>Œrednia</value></string>
   <string><id>602</id><value>Standardowa</value></string>
@@ -467,6 +468,13 @@
   <string><id>634</id><value>Proporcje 16:9</value></string>
   <string><id>635</id><value>Oryginalny rozmiar</value></string>
   <string><id>636</id><value>W³asny</value></string>
+  <string><id>637</id><value>Odtwarzaj ponownie</value></string>
+  <string><id>638</id><value>Tryb</value></string>
+  <string><id>639</id><value>U¿yj poziomowania œcie¿ek</value></string>
+  <string><id>640</id><value>U¿yj poziomowania albumów</value></string>
+  <string><id>641</id><value>Wzmacnianie poziomu - Pliki odtwarzane ponownie</value></string>
+  <string><id>642</id><value>Wzmacnianie poziomu - Pliki nie odtwarzane ponownie</value></string>
+  <string><id>643</id><value>Unikaj przycinania powtórnie odtwarzanych plików</value></string>
   <string><id>700</id><value>Czyszczenie bazy danych</value></string>
   <string><id>701</id><value>Usuwam stare piosenki z bazy danych</value></string>
   <string><id>702</id><value>Ta œcie¿ka by³a ju¿ skanowana.</value></string>
@@ -743,6 +751,8 @@
   <string><id>13355</id><value>Niskiej jakoœci cieniowanie pixeli</value></string>
   <string><id>13356</id><value>Sprzêtowe nak³adki</value></string>
   <string><id>13357</id><value>Wysokiej jakoœci cieniowanie pixeli</value></string>
+  <string><id>13358</id><value>Odtwarzaj</value></string>
+  <string><id>13359</id><value>Ustaw miniaturkê dla artysty</value></string>
   <string><id>13360</id><value>Generuj miniaturki</value></string>
   <string><id>13361</id><value>W³¹cz g³os</value></string>
   <string><id>13362</id><value>Maska g³osu</value></string>
@@ -893,7 +903,7 @@
   <string><id>15060</id><value>Wiadomoœæ</value></string>
   <string><id>15061</id><value>Zosta³eœ zaproszony do gry %s.</value></string>
   <string><id>15062</id><value>U¿yj alternatywnej wersji MPlayer'a</value></string>
-  <string><id>15100</id><value>Nav</value></string>
+  <string><id>15100</id><value>Biblioteka</value></string>
   <string><id>15101</id><value>Baza danych</value></string>
   <string><id>15102</id><value>* Wszystkie Albumy</value></string>
   <string><id>15103</id><value>* Wszyscy Artyœci</value></string>
@@ -913,7 +923,8 @@
   <string><id>15207</id><value>Po³¹czony</value></string>
   <string><id>15208</id><value>Nie po³¹czony</value></string>
   <string><id>15209</id><value>Interwa³ przesy³ania %i</value></string>
-  <string><id>15210</id><value>Utworów w buforze %i</value></string>
+  <string><id>15210</id><value>%i utworów w buforze</value></string>
   <string><id>15211</id><value>Przesy³am...</value></string>
   <string><id>15212</id><value>Przes³ano w %i sekund</value></string>
+  <string><id>15213</id><value>[WYPE£NIACZ]</value></string>
 </strings>
