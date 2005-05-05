@@ -465,6 +465,13 @@
   <string><id>634</id><value>Stretch 16:9</value></string>
   <string><id>635</id><value>Original Größe</value></string>
   <string><id>636</id><value>Benutzerdefiniert</value></string>
+  <string><id>637</id><value>Lautstärke</value></string> 
+  <string><id>638</id><value>Modus [Replay Gain]</value></string> 
+  <string><id>639</id><value>Titel basierend</value></string> 
+  <string><id>640</id><value>Album basierend</value></string> 
+  <string><id>641</id><value>Ziellautstärke bei angepassten Dateien</value></string> 
+  <string><id>642</id><value>Ziellautstärke bei unangepassten Dateien</value></string> 
+  <string><id>643</id><value>Störgeräusche entfernen bei angepassten Dateien</value></string>
   <string><id>700</id><value>Datenbank säubern</value></string>
   <string><id>701</id><value>Lösche alte Musikdaten</value></string>
   <string><id>702</id><value>Dieser Pfad wurde bereits durchsucht!</value></string>
@@ -742,7 +749,7 @@
   <string><id>13356</id><value>Hardware Overlay</value></string> 
   <string><id>13357</id><value>Pixel Shader (hohe Qualität)</value></string>
   <string><id>13358</id><value>Wiedergabe</value></string>
-
+  <string><id>13359</id><value>Interpreten Miniaturansicht setzen</value></string>
   <string><id>13360</id><value>Miniaturansichten erstellen</value></string>
   <string><id>13361</id><value>Spracheingabe aktivieren</value></string> 
   <string><id>13362</id><value>Sprachmaske</value></string> 
