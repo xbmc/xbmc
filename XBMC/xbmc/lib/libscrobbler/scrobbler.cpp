@@ -36,7 +36,7 @@
 #define CLIENT_ID "xbm"
 #define CLIENT_VERSION "0.1"
 
-#define CACHE_FILE "Z:\\scrobbler.cha"
+#define CACHE_FILE "Z:\\scrobbler.tmp"
 
 CScrobbler* CScrobbler::m_pInstance=NULL;
 
@@ -251,6 +251,7 @@ void CScrobbler::DoSubmit()
   time (&now);
   m_LastConnect = now;
   m_strSubmit.Format("u=%s&s=%s&%s", m_strUserName.c_str(), m_strSessionKey.c_str(), m_strPostString.c_str());
+  StatusUpdate(S_SUBMITTING,m_strSubmit);
   SetEvent(m_hWorkerEvent);
 }
 
