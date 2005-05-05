@@ -1,0 +1,91 @@
+<window>
+  <id>104</id>
+  <defaultcontrol>1</defaultcontrol>
+  <coordinates>
+    <system>1</system>
+    <posX>473</posX>
+    <posY>40</posY>
+  </coordinates>
+
+  <controls>
+    <control>
+      <description>Popup Seek Dialog Background</description>
+      <type>image</type>
+      <id>400</id>
+      <posX>1</posX>
+      <posY>2</posY>
+      <width>184</width>
+      <height>75</height>
+      <texture>voulume-panel-bg.png</texture>
+    </control>
+
+    <control>
+      <description>Seek Slider</description>
+      <type>slider</type>
+      <id>401</id>
+      <posX>33</posX>
+      <posY>42</posY>
+      <textureSliderBar>seekslider.png</textureSliderBar>
+      <textureSliderNib>slider_nibFO.png</textureSliderNib>
+      <textureSliderNibFocus>slider_nibFO.png</textureSliderNibFocus>
+      <onup>1</onup>
+      <ondown>1</ondown>
+      <onleft>1</onleft>
+      <onright>1</onright>
+    </control>
+
+    <control>
+      <description>Seek Label</description>
+      <type>label</type>
+      <id>402</id>
+      <posX>90</posX>
+      <posY>20</posY>
+      <font>font10</font>
+      <align>right</align>
+      <width>100</width>
+      <height>16</height>
+    </control>
+
+    <control>
+      <description>suffix label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>95</posX>
+      <posY>20</posY>
+      <label>/</label>
+      <align>left</align>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>Seek Label</description>
+      <type>label</type>
+      <id>403</id>
+      <posX>104</posX>
+      <posY>20</posY>
+      <info>MusicPlayer.Duration</info>
+      <visible>Player.HasAudio</visible>
+      <font>font10</font>
+      <align>left</align>
+      <width>100</width>
+      <height>16</height>
+    </control>
+
+    <control>
+      <description>Seek Label</description>
+      <type>label</type>
+      <id>403</id>
+      <posX>104</posX>
+      <posY>20</posY>
+      <info>VideoPlayer.Duration</info>
+      <visible>Player.HasVideo</visible>
+      <font>font10</font>
+      <align>left</align>
+      <width>100</width>
+      <height>16</height>
+    </control>
+
+  </controls>
+
+</window>
+
