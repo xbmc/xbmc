@@ -2345,10 +2345,10 @@ void CApplication::FrameMove()
   { // was held down last time - and we have a new key now
     // post old key reset message...
     CKey key(lastAnalogKey, 0, 0, 0, 0, 0, 0);
+    lastAnalogKey = newAnalogKey;
     if (OnKey(key)) return;
   }
-  // ok, now we can update our last key and post it's message
-  lastAnalogKey = newAnalogKey;
+  // post the new key's message
   if (newAnalogKey)
   {
     CKey key(newAnalogKey, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
