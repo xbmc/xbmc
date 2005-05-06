@@ -455,7 +455,7 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters)
 }
 
 //*********************************************************************************************
-void CUtil::LaunchXbe(char* szPath, char* szXbe, char* szParameters)
+void CUtil::LaunchXbe(char* szPath, char* szXbe, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry)
 {
   CLog::Log(LOGINFO, "launch xbe:%s %s", szPath, szXbe);
   CLog::Log(LOGINFO, " mount %s as D:", szPath);
@@ -466,6 +466,57 @@ void CUtil::LaunchXbe(char* szPath, char* szXbe, char* szParameters)
 
   // detach if connected to kai
   CKaiClient::GetInstance()->RemoveObserver();
+
+  if( g_guiSettings.GetBool("MyPrograms.GameAutoRegion") )
+  {
+    CLog::Log(LOGINFO,"Extracting region from xbe");
+    CXBE xbe;
+    uint32 iRegion = xbe.ExtractGameRegion(szXbe);
+    F_COUNTRY Country = COUNTRY_NULL;
+    F_VIDEO Video = VIDEO_NULL;
+	  //Valid regions are 1, 2 and 4
+	  if (iRegion>0 && iRegion < 5 )
+	  {
+		  if( ForceVideo == VIDEO_NULL )
+		  {
+        switch(iRegion)
+        {
+        case 1:
+	        if( !(XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) )
+          {
+		        Country = COUNTRY_USA;
+		        Video = VIDEO_NTSCM;
+	        }
+	        break;
+        case 2:
+	        if( !(XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J) )
+          {
+		        Country = COUNTRY_JAP;
+		        Video = VIDEO_NTSCJ;
+	        }
+	        break;
+        case 4:
+	        if( !(XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) )
+          {
+		        Country = COUNTRY_EUR;
+		        Video = VIDEO_PAL50;
+	        }
+	        break;
+        }
+		  }
+      else
+      {
+        Video = ForceVideo;
+        Country = ForceCountry;
+		  }
+		  if (Country != COUNTRY_NULL && Video != VIDEO_NULL)
+      {
+			  bool bSuccessful = PatchCountryVideo(Country, Video);
+			  if( !bSuccessful )
+				  CLog::Log(LOGINFO,"AutoSwitch: Failed to set mode");
+		  }
+	  }
+  }
 
   CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
 
