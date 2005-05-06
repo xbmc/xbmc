@@ -11,6 +11,9 @@ DWORD video_refresh_thread(void *arg);
 #define EMULATE_INTTYPES
 #include "ffmpeg\avcodec.h"
 
+#define ABS(a) ((a) >= 0 ? (a) : (-(a)))
+
+
 // for displaying video in the small window
 static CDVDVideo* pdvdVideo = NULL;
 void xbox_dvdplayer_render_update()
@@ -124,6 +127,7 @@ void CDVDPlayerVideo::Process()
   HANDLE hVideoRefreshThread;
   CDVDDemux::DemuxPacket* pPacket;
   DVDVideoPicture picture;
+  memset(&picture, 0, sizeof(DVDVideoPicture));
   __int64 pts=0;
   int dvdstate;
 
@@ -144,10 +148,9 @@ void CDVDPlayerVideo::Process()
       //Audio side normally handles discontinuities so don't do anything here.
     }
 
-    pts = pPacket->dts == DVD_NOPTS_VALUE ? 0 : pPacket->dts;        
-
     EnterCriticalSection(&m_critCodecSection);
     int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize);
+
 
     // loop while no error
     while (!(iDecoderState & VC_ERROR))
@@ -155,6 +158,7 @@ void CDVDPlayerVideo::Process()
       // check for a new picture
       if (iDecoderState & VC_PICTURE)
       {
+
         // try to retrieve the picture (should never fail!), unless there is a demuxer bug ofcours
         if (m_pVideoCodec->GetPicture(&picture))
         { /*
@@ -169,11 +173,17 @@ void CDVDPlayerVideo::Process()
                       CDVDCodecUtils::CopyPicture(pDVDPlayer->m_dvd.pStillPicture, &picture);
                     }
           */
-          if (OutputPicture(&picture, pts) < 0)
+          if( picture.iFrameType == 1 || picture.iFrameType == 0) //Only use pts when we have an I frame
+            pts = pPacket->dts == DVD_NOPTS_VALUE ? 0 : pPacket->dts;
+
+          int iOutputState=0;
+          do 
           {
-            // LeaveCriticalSection(&m_critCodecSection);
-            break;
-          }
+            if( iOutputState = OutputPicture(&picture, pts) ) break;
+            if( picture.iDuration ) pts+=picture.iDuration;
+          } while (picture.iRepeatPicture-- > 0);
+          if( iOutputState < 0 ) break;
+
         }
         else
         {

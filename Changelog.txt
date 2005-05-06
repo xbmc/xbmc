@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-05-2005 fixed: smoothness of NTSC video stored using 3:2 pulldown. Still plays at 24fps.. (dvdplayer)
+  - 05-05-2005 fixed: aspectratio selection for dvdplayer
   - 05-05-2005 added: adjustable audio/video delay in dvdplayer
   - 05-05-2005 changed: Better discontinuity handling in dvdplayer
   - 05-05-2005 changed: Seek moved onto the right thumb stick - less clashes.
