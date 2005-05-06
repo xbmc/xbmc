@@ -1160,6 +1160,7 @@ void CApplication::StartServices()
   StartWebServer();
   StartFtpServer();
   StartLEDControl(false);
+  CheckDate();
 
   // Start Thread for DVD Mediatype detection
   CLog::Log(LOGNOTICE, "start dvd mediatype detection");
