@@ -118,6 +118,8 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode)
   typedef pair <CStdString, CStdString> StrPair;
   list <CStdString>::iterator i;
 
+  bool bEmpty=true;
+
   // Add the title tag in if we didn't pass any tags in at all
   // Represents default behaviour before configurability
 
@@ -126,6 +128,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode)
 
   while (itemNode > 0)
   {
+    bEmpty = false;
     TiXmlNode* childNode = itemNode->FirstChild();
     mTagElements.clear();
     while (childNode > 0)
@@ -160,6 +163,12 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode)
       AddString(text, rsscolour);
     }
     itemNode = itemNode->NextSiblingElement("item");
+  }
+  // spiff - avoid trailing ' - '
+  if( bEmpty )
+  {
+    m_strFeed.erase(m_strFeed.length()-3);
+    m_strColors.erase(m_strColors.length()-3);
   }
 }
 

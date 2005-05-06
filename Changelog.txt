@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 06-05-2005 added: SF patch [1196172] remove trailing dash for rss-feeds - thanks to spiff
   - 06-05-2005 changed: OnAction() now returns a bool.  It should be true if the action has been dealt with and
                         needs no further processing, and false if it hasn't been handled.
   - 06-05-2005 added: Check Xbox System-Clock at Startup (GeminiServer)
