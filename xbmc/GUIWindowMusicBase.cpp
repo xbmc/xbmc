@@ -1459,42 +1459,54 @@ void CGUIWindowMusicBase::SetLabelFromTag(CFileItem *pItem)
   int iPos1 = 0;
   int iPos2 = strFormat.Find('%', iPos1);
   CStdString strLabel;
+  bool bDoneSomething = !(iPos1 == iPos2); // stuff in front should be applied - everything using this bool is added by spiff
   while (iPos2 >= 0)
   {
-    if (iPos2 > iPos1)
+    if( (iPos2 > iPos1) && bDoneSomething )
+    {
       strLabel += strFormat.Mid(iPos1, iPos2 - iPos1);
+      bDoneSomething = false;  
+    }
     CStdString str;
     if (strFormat[iPos2 + 1] == 'N' && tag.GetTrackNumber() > 0)
     { // number
       str.Format("%02.2i", tag.GetTrackNumber());
+      bDoneSomething = true;
     }
     else if (strFormat[iPos2 + 1] == 'A' && tag.GetArtist().size())
     { // artist
       str = tag.GetArtist();
+      bDoneSomething = true;
     }
     else if (strFormat[iPos2 + 1] == 'T' && tag.GetTitle().size())
     { // title
       str = tag.GetTitle();
+      bDoneSomething = true;
     }
     else if (strFormat[iPos2 + 1] == 'B' && tag.GetAlbum().size())
     { // album
       str = tag.GetAlbum();
+      bDoneSomething = true;
     }
     else if (strFormat[iPos2 + 1] == 'G' && tag.GetGenre().size())
     { // genre
       str = tag.GetGenre();
+      bDoneSomething = true;
     }
     else if (strFormat[iPos2 + 1] == 'Y')
     { // year
       str = tag.GetYear();
+      bDoneSomething = true;
     }
     else if (strFormat[iPos2 + 1] == 'F')
     { // filename
       str = CUtil::GetTitleFromPath(pItem->m_strPath);
+      bDoneSomething = true;
     }
     else if (strFormat[iPos2 + 1] == '%')
     { // %% to print %
       str = '%';
+      bDoneSomething = true;
     }
     strLabel += str;
     iPos1 = iPos2 + 2;
@@ -1502,7 +1514,13 @@ void CGUIWindowMusicBase::SetLabelFromTag(CFileItem *pItem)
   }
   if (iPos1 < (int)strFormat.size())
     strLabel += strFormat.Right(strFormat.size() - iPos1);
-  pItem->SetLabel( strLabel );
+
+  // if we don't have anything at the moment (due to empty tags)
+  // we just remove the extension.
+  if (strLabel.size())
+    pItem->SetLabel( strLabel );
+  else if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+    pItem->RemoveExtension();
 
   // set label 2
   int nDuration = tag.GetDuration();
