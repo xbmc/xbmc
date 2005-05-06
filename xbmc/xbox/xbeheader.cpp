@@ -110,3 +110,54 @@ bool CXBE::ExtractIcon(const CStdString& strFilename, const CStdString& strIcon)
   }
   return false;
 }
+
+// spiff
+uint32 CXBE::ExtractGameRegion(const CStdString& strFilename)
+{
+  // Open the local file
+  CAutoPtrHandle hFile( CreateFile( strFilename.c_str(),
+    GENERIC_READ,
+    0,
+    NULL,
+    OPEN_EXISTING,
+    FILE_ATTRIBUTE_NORMAL,
+    NULL ) );
+
+  if (!hFile.isValid() ) return( -1 );
+
+  // Read the header
+  DWORD dwRead;
+  if ( !::ReadFile( (HANDLE)hFile,
+    m_pHeader,
+    min( m_iHeaderSize,
+    ( int )GetFileSize( (HANDLE)hFile, ( LPDWORD )NULL ) ),
+    &dwRead,
+    NULL ) )
+  {
+    return( -1 );
+  }
+
+  // Header read. Copy information about header
+  memcpy( &m_XBEInfo.Header, m_pHeader, sizeof( m_XBEInfo.Header ) );
+
+  if ( SetFilePointer( (HANDLE)hFile,
+    m_XBEInfo.Header.certificate_addr-m_XBEInfo.Header.base,
+    NULL,
+    FILE_BEGIN ) == ( DWORD )0xFFFFFFFF )
+  {
+    return( -1 );
+  }
+  // re-read to be sure
+  if ( !::ReadFile( (HANDLE)hFile,
+    m_pHeader,
+    sizeof(m_XBEInfo.Certificate),
+    &dwRead,
+    NULL ) )
+  {
+    return( -1 );
+  }
+
+  memcpy(&m_XBEInfo.Certificate,m_pHeader,sizeof(m_XBEInfo.Certificate));
+
+  return( m_XBEInfo.Certificate.game_region );
+}
