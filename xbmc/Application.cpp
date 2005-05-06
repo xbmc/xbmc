@@ -87,6 +87,11 @@
 
 CStdString g_LoadErrorStr;
 
+extern "C"
+{
+	extern bool WINAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
+};
+
 static char szHomePaths[][13] = { "E:\\Apps\\XBMC", "E:\\XBMC", "F:\\Apps\\XBMC", "F:\\XBMC" };
 
 #define NUM_HOME_PATHS 4
@@ -1182,7 +1187,34 @@ void CApplication::StartServices()
     CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("System.FanSpeed"));
   }
 }
+void CApplication::CheckDate()
+{
+	CLog::Log(LOGNOTICE, "Checking the Date!");	//GeminiServer Date Check
+	// Check the Date: Year, if it is  above 2099 set to 2004!
+	SYSTEMTIME CurTime;
+	SYSTEMTIME NewTime;
+	GetLocalTime(&CurTime);
+	GetLocalTime(&NewTime);
+	CLog::Log(LOGNOTICE, "- Current Date is: %i-%i-%i",CurTime.wDay, CurTime.wMonth, CurTime.wYear);
+	if ((CurTime.wYear > 2099) || (CurTime.wYear < 2001) )	// XBOX MS Dashboard also uses min/max DateYear 2001/2099 !!
+	{
+		CLog::Log(LOGNOTICE, "- The Date is Wrong: Setting New Date!");
+		NewTime.wYear		= 2004;	// 2004
+		NewTime.wMonth		= 1;	// January
+		NewTime.wDayOfWeek	= 1;	// Monday
+		NewTime.wDay		= 5;	// Monday 05.01.2004!!	
+		NewTime.wHour		= 12;
+		NewTime.wMinute		= 0;
 
+		FILETIME stNewTime, stCurTime;
+		SystemTimeToFileTime(&NewTime, &stNewTime);
+		SystemTimeToFileTime(&CurTime, &stCurTime);
+		NtSetSystemTime(&stNewTime, &stCurTime);	// Set a Default Year 2004!
+
+		CLog::Log(LOGNOTICE, "- New Date is now: %i-%i-%i",NewTime.wDay, NewTime.wMonth, NewTime.wYear);
+	}
+	return ;
+}
 void CApplication::StopServices()
 {
   StopWebServer();
