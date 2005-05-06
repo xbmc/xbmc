@@ -135,20 +135,20 @@ CGUIWindowVideoBase::~CGUIWindowVideoBase()
 {}
 
 
-void CGUIWindowVideoBase::OnAction(const CAction &action)
+bool CGUIWindowVideoBase::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PARENT_DIR)
   {
     GoParentFolder();
-    return ;
+    return true;
   }
 
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.ActivateWindow(WINDOW_HOME);
-    return ;
+    return true;
   }
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)

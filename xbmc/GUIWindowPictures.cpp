@@ -119,19 +119,19 @@ CGUIWindowPictures::CGUIWindowPictures(void)
 CGUIWindowPictures::~CGUIWindowPictures(void)
 {}
 
-void CGUIWindowPictures::OnAction(const CAction &action)
+bool CGUIWindowPictures::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PARENT_DIR)
   {
     GoParentFolder();
-    return ;
+    return true;
   }
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
-    return ;
+    return true;
   }
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowPictures::OnMessage(CGUIMessage& message)

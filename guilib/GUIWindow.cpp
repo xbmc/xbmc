@@ -575,7 +575,7 @@ void CGUIWindow::Render()
   }
 }
 
-void CGUIWindow::OnAction(const CAction &action)
+bool CGUIWindow::OnAction(const CAction &action)
 {
   static bool PowerButtonDown = false;
   static DWORD PowerButtonCode;
@@ -584,6 +584,7 @@ void CGUIWindow::OnAction(const CAction &action)
   if (action.wID == ACTION_TAKE_SCREENSHOT)
   {
     CUtil::TakeScreenshot();
+    return true;
   }
   else if (action.wID == ACTION_POWERDOWN)
   {
@@ -602,6 +603,7 @@ void CGUIWindow::OnAction(const CAction &action)
       if (GetTickCount() >= MarkTime + 3000)
       {
         g_applicationMessenger.Shutdown();
+        return true;
       }
     }
     else
@@ -610,15 +612,14 @@ void CGUIWindow::OnAction(const CAction &action)
   if (action.wID == ACTION_MOUSE)
   {
     OnMouseAction();
-    return ;
+    return true;
   }
   for (ivecControls i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
     if (pControl->HasFocus() && pControl->IsVisible())
     {
-      pControl->OnAction(action);
-      return ;
+      return pControl->OnAction(action);
     }
   }
 
@@ -626,6 +627,7 @@ void CGUIWindow::OnAction(const CAction &action)
   // set focus to the default control then
   CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwDefaultFocusControlID);
   OnMessage(msg);
+  return false;
 }
 
 // OnMouseAction - called by OnAction()
@@ -694,14 +696,15 @@ finished:
 // Handles any mouse actions that are not handled by a control
 // default is to go back a window on a right click.
 // This function should be overridden for other windows
-void CGUIWindow::OnMouse()
+bool CGUIWindow::OnMouse()
 {
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go to previous menu
     CAction action;
     action.wID = ACTION_PREVIOUS_MENU;
-    OnAction(action);
+    return OnAction(action);
   }
+  return false;
 }
 
 bool CGUIWindow::HandleMouse(CGUIControl *pControl)

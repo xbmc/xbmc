@@ -21,7 +21,7 @@ public:
   bool DoWork();
 
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
   virtual void Render();
   void ResetTimer();
 

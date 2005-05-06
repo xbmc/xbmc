@@ -99,7 +99,7 @@ void CGUIListControlEx::Render()
 }
 
 
-void CGUIListControlEx::OnAction(const CAction &action)
+bool CGUIListControlEx::OnAction(const CAction &action)
 {
   // track state before action
   int iOldItem = m_iCursorY + m_iOffset;
@@ -108,10 +108,12 @@ void CGUIListControlEx::OnAction(const CAction &action)
   {
   case ACTION_PAGE_UP:
     OnPageUp();
+    return true;
     break;
 
   case ACTION_PAGE_DOWN:
     OnPageDown();
+    return true;
     break;
 
     /* TODO: doesn't bloody work does it ;-)
@@ -160,12 +162,13 @@ void CGUIListControlEx::OnAction(const CAction &action)
       // generate a control clicked event
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
       g_graphicsContext.SendMessage(msg);
+      return true;
       break;
     }
   }
 
   // call the base class
-  CGUIControl::OnAction(action);
+  bool handled = CGUIControl::OnAction(action);
 
   // post event notifications
   switch (action.wID)
@@ -185,6 +188,7 @@ void CGUIListControlEx::OnAction(const CAction &action)
       break;
     }
   }
+  return handled;
 }
 
 bool CGUIListControlEx::OnMessage(CGUIMessage& message)

@@ -21,7 +21,7 @@ public:
   virtual ~CGUIToggleButtonControl(void);
 
   virtual void Render();
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();

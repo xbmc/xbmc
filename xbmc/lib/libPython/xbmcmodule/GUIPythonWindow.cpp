@@ -19,7 +19,7 @@ CGUIPythonWindow::~CGUIPythonWindow(void)
 	CloseHandle(m_actionEvent);
 }
 
-void CGUIPythonWindow::OnAction(const CAction &action)
+bool CGUIPythonWindow::OnAction(const CAction &action)
 {
 	if(pCallbackWindow)
 	{
@@ -32,7 +32,7 @@ void CGUIPythonWindow::OnAction(const CAction &action)
 		PulseActionEvent();
 	}
 
-	CGUIWindow::OnAction(action);
+	return CGUIWindow::OnAction(action);
 }
 
 bool CGUIPythonWindow::OnMessage(CGUIMessage& message)

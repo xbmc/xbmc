@@ -17,15 +17,15 @@ CGUIWindowSettingsProfile::CGUIWindowSettingsProfile(void)
 CGUIWindowSettingsProfile::~CGUIWindowSettingsProfile(void)
 {}
 
-void CGUIWindowSettingsProfile::OnAction(const CAction &action)
+bool CGUIWindowSettingsProfile::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
-    return ;
+    return true;
   }
 
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 int CGUIWindowSettingsProfile::GetSelectedItem()

@@ -29,7 +29,7 @@ class XBPython : public IMsgSenderCallback, public IPlayerCallback
 {
 public:
 	XBPython();
-	virtual void SendMessage(CGUIMessage& message);
+	virtual bool SendMessage(CGUIMessage& message);
 	virtual void OnPlayBackEnded();
 	virtual void OnPlayBackStarted();
 	virtual void OnPlayBackStopped();

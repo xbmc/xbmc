@@ -34,14 +34,14 @@ CGUIWindowVideoInfo::~CGUIWindowVideoInfo(void)
 {}
 
 
-void CGUIWindowVideoInfo::OnAction(const CAction &action)
+bool CGUIWindowVideoInfo::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     Close();
-    return ;
+    return true;
   }
-  CGUIDialog::OnAction(action);
+  return CGUIDialog::OnAction(action);
 }
 
 bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)

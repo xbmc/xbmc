@@ -5,7 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 05-05-2005 added: Check Xbox System-Clock at Startup (GeminiServer)
+  - 06-05-2005 changed: OnAction() now returns a bool.  It should be true if the action has been dealt with and
+                        needs no further processing, and false if it hasn't been handled.
+  - 06-05-2005 added: Check Xbox System-Clock at Startup (GeminiServer)
   - 05-05-2005 fixed: smoothness of NTSC video stored using 3:2 pulldown. Still plays at 24fps.. (dvdplayer)
   - 05-05-2005 fixed: aspectratio selection for dvdplayer
   - 05-05-2005 added: adjustable audio/video delay in dvdplayer

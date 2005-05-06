@@ -23,8 +23,9 @@ void CGUIWindowManager::Initialize()
   g_graphicsContext.setMessageSender(this);
 }
 
-void CGUIWindowManager::SendMessage(CGUIMessage& message)
+bool CGUIWindowManager::SendMessage(CGUIMessage& message)
 {
+  bool handled = false;
   // Send the message to all none window targets
   for (int i = 0; i < (int) m_vecMsgTargets.size(); i++)
   {
@@ -32,7 +33,7 @@ void CGUIWindowManager::SendMessage(CGUIMessage& message)
 
     if (pMsgTarget)
     {
-      pMsgTarget->OnMessage( message );
+      if (pMsgTarget->OnMessage( message )) handled = true;
     }
   }
 
@@ -43,7 +44,7 @@ void CGUIWindowManager::SendMessage(CGUIMessage& message)
 
     if (pWindow)
     {
-      pWindow->OnMessage( message );
+      if (pWindow->OnMessage( message )) handled = true;
     }
   }
 
@@ -51,11 +52,12 @@ void CGUIWindowManager::SendMessage(CGUIMessage& message)
   if (m_vecModalWindows.size() > 0)
   {
     // ...send the message to the top most.
-    m_vecModalWindows[m_vecModalWindows.size() - 1]->OnMessage(message);
+    if (m_vecModalWindows[m_vecModalWindows.size() - 1]->OnMessage(message))
+      handled = true;
 
     if (m_iActiveWindow < 0)
     {
-      return ;
+      return false;
     }
 
     CGUIWindow* pWindow = m_vecWindows[m_iActiveWindow];
@@ -65,7 +67,7 @@ void CGUIWindowManager::SendMessage(CGUIMessage& message)
          message.GetControlId() == pWindow->GetID() ||
          message.GetSenderId() == 0 )
     {
-      pWindow->OnMessage(message);
+      if (pWindow->OnMessage(message)) handled = true;
     }
   }
   else
@@ -73,13 +75,13 @@ void CGUIWindowManager::SendMessage(CGUIMessage& message)
     // ..no, only call message function of the active window
     if (m_iActiveWindow < 0)
     {
-      return ;
+      return false;
     }
 
     CGUIWindow* pWindow = m_vecWindows[m_iActiveWindow];
-    pWindow->OnMessage(message);
+    if (pWindow->OnMessage(message)) handled = true;
   }
-
+  return handled;
 }
 
 void CGUIWindowManager::Add(CGUIWindow* pWindow)
@@ -261,13 +263,13 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
   CLog::Log(LOGERROR, "ActivateWindow() failed trying to activate window %d", iWindowID - WINDOW_HOME);
 }
 
-void CGUIWindowManager::OnAction(const CAction &action)
+bool CGUIWindowManager::OnAction(const CAction &action)
 {
   // Have we have routed windows...
   if (m_vecModalWindows.size() > 0)
   {
     // ...send the action to the top most.
-    m_vecModalWindows[m_vecModalWindows.size() - 1]->OnAction(action);
+    return m_vecModalWindows[m_vecModalWindows.size() - 1]->OnAction(action);
   }
   else if (m_iActiveWindow >= 0)
   {
@@ -275,9 +277,10 @@ void CGUIWindowManager::OnAction(const CAction &action)
 
     if (pWindow)
     {
-      pWindow->OnAction(action);
+      return pWindow->OnAction(action);
     }
   }
+  return false;
 }
 
 void CGUIWindowManager::Render()

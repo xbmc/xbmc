@@ -51,7 +51,7 @@ public:
   CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType, DWORD dwAlign = XBFONT_RIGHT);
   virtual ~CGUISpinControl(void);
   virtual void Render();
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
   virtual void OnLeft();
   virtual void OnRight();
   virtual void OnMouseOver();

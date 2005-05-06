@@ -62,15 +62,15 @@ bool CGUIWindowMusicTop100::OnMessage(CGUIMessage& message)
   return CGUIWindowMusicBase::OnMessage(message);
 }
 
-void CGUIWindowMusicTop100::OnAction(const CAction &action)
+bool CGUIWindowMusicTop100::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PARENT_DIR)
   {
     // Top 100 has no parent dirs
-    return ;
+    return true;
   }
 
-  CGUIWindowMusicBase::OnAction(action);
+  return CGUIWindowMusicBase::OnAction(action);
 }
 
 void CGUIWindowMusicTop100::GetDirectory(const CStdString &strDirectory, CFileItemList &items)

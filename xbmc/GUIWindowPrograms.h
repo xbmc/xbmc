@@ -12,7 +12,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnPopupMenu(int iItem);
   virtual void Render();
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
   virtual void OnWindowLoaded();
 protected:
   void OnScan(CFileItemList& items, int& iTotalAppsFound) ;

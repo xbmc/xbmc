@@ -68,27 +68,29 @@ void CGUITextBox::Render()
   m_upDown.Render();
 }
 
-void CGUITextBox::OnAction(const CAction &action)
+bool CGUITextBox::OnAction(const CAction &action)
 {
   switch (action.wID)
   {
   case ACTION_PAGE_UP:
     OnPageUp();
+    return true;
     break;
 
   case ACTION_PAGE_DOWN:
     OnPageDown();
+    return true;
     break;
 
   case ACTION_MOVE_UP:
   case ACTION_MOVE_DOWN:
   case ACTION_MOVE_LEFT:
   case ACTION_MOVE_RIGHT:
-    CGUIControl::OnAction(action);
+    return CGUIControl::OnAction(action);
     break;
 
   default:
-    m_upDown.OnAction(action);
+    return m_upDown.OnAction(action);
   }
 }
 

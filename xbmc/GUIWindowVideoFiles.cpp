@@ -121,16 +121,16 @@ CGUIWindowVideoFiles::~CGUIWindowVideoFiles()
 {
 }
 
-void CGUIWindowVideoFiles::OnAction(const CAction &action)
+bool CGUIWindowVideoFiles::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_SHOW_PLAYLIST)
   {
     OutputDebugString("activate guiwindowvideoplaylist!\n");
     m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
-    return ;
+    return true;
   }
 
-  CGUIWindowVideoBase::OnAction(action);
+  return CGUIWindowVideoBase::OnAction(action);
 }
 
 bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)

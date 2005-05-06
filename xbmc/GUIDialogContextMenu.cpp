@@ -24,14 +24,14 @@ CGUIDialogContextMenu::CGUIDialogContextMenu(void)
 CGUIDialogContextMenu::~CGUIDialogContextMenu(void)
 {}
 
-void CGUIDialogContextMenu::OnAction(const CAction &action)
+bool CGUIDialogContextMenu::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
   {
     Close();
-    return ;
+    return true;
   }
-  CGUIDialog::OnAction(action);
+  return CGUIDialog::OnAction(action);
 }
 
 bool CGUIDialogContextMenu::OnMessage(CGUIMessage &message)

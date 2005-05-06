@@ -58,7 +58,7 @@ public:
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   virtual bool OnMessage(CGUIMessage &message);
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
   virtual void Render();
 
 protected:

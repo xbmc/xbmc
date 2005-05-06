@@ -202,31 +202,31 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
   return CGUIWindowVideoBase::OnMessage(message);
 }
 
-void CGUIWindowVideoPlaylist::OnAction(const CAction &action)
+bool CGUIWindowVideoPlaylist::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PARENT_DIR)
   {
     // Playlist has no parent dirs
-    return ;
+    return true;
   }
   if (action.wID == ACTION_SHOW_PLAYLIST)
   {
     OutputDebugString("leave videplaylist!\n");
     m_gWindowManager.PreviousWindow();
-    return ;
+    return true;
   }
   if (action.wID == ACTION_MOVE_ITEM_UP)
   {
     MoveCurrentPlayListItem(ACTION_MOVE_ITEM_UP);
-    return ;
+    return true;
   }
   if (action.wID == ACTION_MOVE_ITEM_DOWN)
   {
     MoveCurrentPlayListItem(ACTION_MOVE_ITEM_DOWN);
-    return ;
+    return true;
   }
 
-  CGUIWindowVideoBase::OnAction(action);
+  return CGUIWindowVideoBase::OnAction(action);
 }
 
 void CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iAction)

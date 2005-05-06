@@ -135,7 +135,7 @@ CGUIWindowFileManager::CGUIWindowFileManager(void)
 CGUIWindowFileManager::~CGUIWindowFileManager(void)
 {}
 
-void CGUIWindowFileManager::OnAction(const CAction &action)
+bool CGUIWindowFileManager::OnAction(const CAction &action)
 {
   int item;
   int list = GetFocusedList();
@@ -147,7 +147,7 @@ void CGUIWindowFileManager::OnAction(const CAction &action)
       OnDelete(list);
       if (bDeselect) m_vecItems[list][item]->Select(false);
     }
-    return ;
+    return true;
   }
   if (action.wID == ACTION_COPY_ITEM)
   {
@@ -157,7 +157,7 @@ void CGUIWindowFileManager::OnAction(const CAction &action)
       OnCopy(list);
       if (bDeselect) m_vecItems[list][item]->Select(false);
     }
-    return ;
+    return true;
   }
   if (action.wID == ACTION_MOVE_ITEM)
   {
@@ -167,7 +167,7 @@ void CGUIWindowFileManager::OnAction(const CAction &action)
       OnMove(list);
       if (bDeselect) m_vecItems[list][item]->Select(false);
     }
-    return ;
+    return true;
   }
   if (action.wID == ACTION_RENAME_ITEM)
   {
@@ -177,19 +177,19 @@ void CGUIWindowFileManager::OnAction(const CAction &action)
       OnRename(list);
       if (bDeselect) m_vecItems[list][item]->Select(false);
     }
-    return ;
+    return true;
   }
   if (action.wID == ACTION_PARENT_DIR)
   {
     GoParentFolder(list);
-    return ;
+    return true;
   }
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
-    return ;
+    return true;
   }
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)

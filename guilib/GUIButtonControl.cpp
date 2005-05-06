@@ -122,9 +122,8 @@ void CGUIButtonControl::Render()
 
 }
 
-void CGUIButtonControl::OnAction(const CAction &action)
+bool CGUIButtonControl::OnAction(const CAction &action)
 {
-  CGUIControl::OnAction(action);
   if (action.wID == ACTION_SELECT_ITEM)
   {
     // Save values, SEND_CLICK_MESSAGE may deactivate the window
@@ -139,7 +138,7 @@ void CGUIButtonControl::OnAction(const CAction &action)
       CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
       message.SetStringParam(strExecuteAction);
       g_graphicsContext.SendMessage(message);
-      return ;
+      return true;
     }
 
     if (lHyperLinkWindowID != WINDOW_INVALID)
@@ -155,7 +154,9 @@ void CGUIButtonControl::OnAction(const CAction &action)
         m_gWindowManager.ActivateWindow(lHyperLinkWindowID);
       }
     }
+    return true;
   }
+  return CGUIControl::OnAction(action);
 }
 
 bool CGUIButtonControl::OnMessage(CGUIMessage& message)

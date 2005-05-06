@@ -24,22 +24,21 @@ CGUIWindowSettingsScreenCalibration::~CGUIWindowSettingsScreenCalibration(void)
 {}
 
 
-void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
+bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 {
-  CGUIWindow::OnAction(action); // base class to handle basic movement etc.
   switch (action.wID)
   {
   case ACTION_PREVIOUS_MENU:
     {
       m_gWindowManager.PreviousWindow();
-      return ;
+      return true;
     }
     break;
 
   case ACTION_CALIBRATE_SWAP_ARROWS:
     {
       NextControl();
-      return ;
+      return true;
     }
     break;
 
@@ -47,7 +46,7 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
     g_graphicsContext.ResetScreenParameters(m_Res[m_iCurRes]);
     ResetControls();
     g_application.m_guiWindowOSD.SetPosition(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
-    return ;
+    return true;
     break;
 
   case ACTION_CHANGE_RESOLUTION:
@@ -59,9 +58,10 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
     g_graphicsContext.SetGUIResolution(m_Res[m_iCurRes]);
     ResetControls();
     g_application.m_guiWindowOSD.SetPosition(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
-    return ;
+    return true;
     break;
   }
+  return CGUIWindow::OnAction(action); // base class to handle basic movement etc.
 }
 
 void CGUIWindowSettingsScreenCalibration::AllocResources()

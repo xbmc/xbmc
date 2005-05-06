@@ -306,16 +306,18 @@ void CGUIThumbnailPanel::Render()
   m_upDown.Render();
 }
 
-void CGUIThumbnailPanel::OnAction(const CAction &action)
+bool CGUIThumbnailPanel::OnAction(const CAction &action)
 {
   switch (action.wID)
   {
   case ACTION_PAGE_UP:
     OnPageUp();
+    return false;
     break;
 
   case ACTION_PAGE_DOWN:
     OnPageDown();
+    return false;
     break;
 
   case ACTION_SCROLL_UP:
@@ -338,6 +340,7 @@ void CGUIThumbnailPanel::OnAction(const CAction &action)
           m_iCursorX = m_iColumns - 1;
         }
       }
+      return false;
     }
     break;
   case ACTION_SCROLL_DOWN:
@@ -361,6 +364,7 @@ void CGUIThumbnailPanel::OnAction(const CAction &action)
           m_iCursorX = 0;
         }
       }
+      return false;
     }
     break;
 
@@ -369,7 +373,7 @@ void CGUIThumbnailPanel::OnAction(const CAction &action)
   case ACTION_MOVE_LEFT:
   case ACTION_MOVE_RIGHT:
     { // use the base class
-      CGUIControl::OnAction(action);
+      return CGUIControl::OnAction(action);
     }
     break;
 
@@ -377,11 +381,12 @@ void CGUIThumbnailPanel::OnAction(const CAction &action)
     {
       if (m_iSelect == CONTROL_LIST)
       {
-        SEND_CLICK_MESSAGE(GetID(), GetParentID(), action.wID);
+        CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
+        return g_graphicsContext.SendMessage(msg);
       }
       else
       {
-        m_upDown.OnAction(action);
+        return m_upDown.OnAction(action);
       }
     }
   }

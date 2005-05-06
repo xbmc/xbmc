@@ -1712,7 +1712,12 @@ void CApplication::Render()
 
 }
 
-void CApplication::OnKey(CKey& key)
+// OnKey() translates the key into a CAction which is sent on to our Window Manager.
+// The window manager will return true if the event is processed, false otherwise.
+// If not already processed, this routine handles global keypresses.  It returns
+// true if the key has been processed, false otherwise.
+
+bool CApplication::OnKey(CKey& key)
 {
   // Turn the mouse off, as we've just got a keypress from controller or remote
   g_Mouse.SetInactive();
@@ -1732,7 +1737,7 @@ void CApplication::OnKey(CKey& key)
 
     ResetScreenSaver();
     if (ResetScreenSaverWindow())
-      return ;
+      return true;
   }
 
   // get the current active window
@@ -1797,42 +1802,40 @@ void CApplication::OnKey(CKey& key)
   if (action.wID == ACTION_SHOW_GUI)
   { // Switch to fullscreen mode if we can
     if (SwitchToFullScreen())
-      return ;
+      return true;
   }
 
   // handle global functions - form is XBMC.Function()
   if (action.wID == ACTION_BUILT_IN_FUNCTION)
   {
     CUtil::ExecBuiltIn(action.strAction);
-    return ;
+    return true;
   }
   // in normal case
   // just pass the action to the current window and let it handle it
-  m_gWindowManager.OnAction(action);
+  if (m_gWindowManager.OnAction(action)) return true;
 
   /* handle extra global presses */
   // stop : stops playing current audio song
   if (action.wID == ACTION_STOP)
   {
     StopPlaying();
+    return true;
   }
 
-//HACK - We really should check if a window has handled on action
-//the dvdplayer handles these itself
-if (!m_strCurrentPlayer.Equals("dvdplayer"))
-{
   // previous : play previous song from playlist
   if (action.wID == ACTION_PREV_ITEM)
   {
     g_playlistPlayer.PlayPrevious();
+    return true;
   }
 
   // next : play next song from playlist
   if (action.wID == ACTION_NEXT_ITEM)
   {
     g_playlistPlayer.PlayNext();
+    return true;
   }
-}
 
   if ( IsPlaying())
   {
@@ -1844,6 +1847,7 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
       { // unpaused - set the playspeed back to normal
         SetPlaySpeed(1);
       }
+      return true;
     }
     if (!m_pPlayer->IsPaused())
     {
@@ -1854,6 +1858,7 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
         {
           SetPlaySpeed(1);
         }
+        return true;
       }
       if (action.wID == ACTION_PLAYER_FORWARD || action.wID == ACTION_PLAYER_REWIND)
       {
@@ -1861,6 +1866,7 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
         {
           // sid uses these to track skip
           m_pPlayer->Seek(action.wID == ACTION_PLAYER_FORWARD);
+          return true;
         }
         else
         {
@@ -1880,9 +1886,13 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
             iPlaySpeed = 1;
 
           SetPlaySpeed(iPlaySpeed);
+          // show our seekbar if necessary
+          if (g_application.GetPlaySpeed() != 1 && !m_guiDialogSeekBar.IsRunning())
+            m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
+          return true;
         }
       }
-      else if (action.wID == ACTION_ANALOG_REWIND || action.wID == ACTION_ANALOG_FORWARD)
+      else if ((action.fAmount1 || GetPlaySpeed() != 1) && (action.wID == ACTION_ANALOG_REWIND || action.wID == ACTION_ANALOG_FORWARD))
       {
         // calculate the speed based on the amount the button is held down
         int iPower = (int)(action.fAmount1 * MAX_FFWD_SPEED + 0.5f);
@@ -1893,15 +1903,18 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
         g_application.SetPlaySpeed(iSpeed);
         if (iSpeed == 1)
           CLog::DebugLog("Resetting playspeed");
+        // show our seekbar if necessary
+        if (g_application.GetPlaySpeed() != 1 && !m_guiDialogSeekBar.IsRunning())
+          m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
+        return true;
       }
-      if (g_application.GetPlaySpeed() != 1 && !m_guiDialogSeekBar.IsRunning())
-        m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
     }
     // allow play to unpause
     else
     {
       if (action.wID == ACTION_PLAYER_PLAY)
         m_pPlayer->Pause();
+      return true;
     }
   }
   if (action.wID == ACTION_MUTE)
@@ -1913,10 +1926,11 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
 
     if (m_pPlayer)
       m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
+    return true;
   }
 
   // Check for global volume control
-  if (action.wID == ACTION_VOLUME_UP || action.wID == ACTION_VOLUME_DOWN)
+  if (action.fAmount1 && (action.wID == ACTION_VOLUME_UP || action.wID == ACTION_VOLUME_DOWN))
   {
     if (g_stSettings.m_bMute == true)
     {
@@ -1951,15 +1965,18 @@ if (!m_strCurrentPlayer.Equals("dvdplayer"))
       m_guiDialogVolumeBar.Show(m_gWindowManager.GetActiveWindow());
     else
       m_guiDialogVolumeBar.OnAction(action);
+    return true;
   }
   // Check for global seek control
-  if (IsPlaying() && (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK))
+  if (IsPlaying() && action.fAmount1 && (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK))
   {
     // show visual feedback of seek change...
     if (!m_guiDialogSeekBar.IsRunning())
       m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
     m_guiDialogSeekBar.OnAction(action);
+    return true;
   }
+  return false;
 }
 
 void CApplication::SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CGUIImage* aIcon/*=NULL*/)
@@ -2256,9 +2273,16 @@ void CApplication::FrameMove()
     WORD wkeyID = (WORD)vkey | KEY_VKEY;
     //  CLog::DebugLog("Keyboard: time=%i key=%i", timeGetTime(), vkey);
     CKey key(wkeyID);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
+
+  // Handle the gamepad and remote button presses.  We check for button down,
+  // then call OnKey() which handles the translation to actions, and sends the
+  // action to our window manager's OnAction() function, which filters the messages
+  // to where they're supposed to end up, returning true if the message is successfully
+  // processed.  If OnKey() returns false, then the key press wasn't processed at all,
+  // and we can safely process the next key (or next check on the same key in the
+  // case of the analog sticks which can produce more than 1 key event.)
 
   XBIR_REMOTE* pRemote = &m_DefaultIR_Remote;
   XBGAMEPAD* pGamepad = &m_DefaultGamepad;
@@ -2284,13 +2308,13 @@ void CApplication::FrameMove()
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_LEFT_THUMB_STICK, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
+    if (OnKey(key)) return;
   }
   if (pGamepad->fX2 || pGamepad->fY2)
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_RIGHT_THUMB_STICK, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
+    if (OnKey(key)) return;
   }
   // direction specific keys (for defining different actions for each direction)
   // left thumb stick
@@ -2321,14 +2345,14 @@ void CApplication::FrameMove()
   { // was held down last time - and we have a new key now
     // post old key reset message...
     CKey key(lastAnalogKey, 0, 0, 0, 0, 0, 0);
-    OnKey(key);
+    if (OnKey(key)) return;
   }
   // ok, now we can update our last key and post it's message
   lastAnalogKey = newAnalogKey;
   if (newAnalogKey)
   {
     CKey key(newAnalogKey, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
+    if (OnKey(key)) return;
   }
 
   // Now the digital buttons...
@@ -2336,43 +2360,37 @@ void CApplication::FrameMove()
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_LEFT_TRIGGER, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
   if ( wDir & DC_RIGHTTRIGGER)
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_RIGHT_TRIGGER, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
   if ( wDir & DC_LEFT )
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_DPAD_LEFT, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
   if ( wDir & DC_RIGHT)
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_DPAD_RIGHT, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
   if ( wDir & DC_UP )
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_DPAD_UP, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
   if ( wDir & DC_DOWN )
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_DPAD_DOWN, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
 
 
@@ -2380,31 +2398,27 @@ void CApplication::FrameMove()
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_BACK, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
   if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_START)
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_START, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
 
   if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_LEFT_THUMB)
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_LEFT_THUMB_BUTTON, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
 
   if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_RIGHT_THUMB_BUTTON, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
 
 
@@ -2412,44 +2426,38 @@ void CApplication::FrameMove()
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_A, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
   if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_B])
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_B, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
 
   if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_X])
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_X, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
   if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_Y])
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_Y, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
   if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_BLACK])
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_BLACK, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
   if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_WHITE])
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_WHITE, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
-    OnKey(key);
-    return ;
+    if (OnKey(key)) return;
   }
 
   switch (wRemotes)
@@ -3280,6 +3288,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
         m_gWindowManager.SendMessage( msg );
       }
+      return true;
     }
     break;
 
@@ -3289,6 +3298,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       g_infoManager.SetCurrentItem(m_itemCurrentFile);
       m_guiMusicOverlay.Update();
       m_guiVideoOverlay.Update();
+      return true;
     }
     break;
 
@@ -3380,7 +3390,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         g_settings.Save();    // save vis settings
         m_gWindowManager.PreviousWindow();
       }
-
+      return true;
     }
     break;
 
@@ -3411,6 +3421,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
           }
         }
       }
+      return true;
     }
     break;
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
@@ -3422,11 +3433,13 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
       m_CdgParser.Free();
       SAFE_DELETE(m_pPlayer);
+      return true;
     }
     break;
   case GUI_MSG_FULLSCREEN:
     { // Switch to fullscreen, if we can
       SwitchToFullScreen();
+      return true;
     }
     break;
   case GUI_MSG_EXECUTE:
@@ -3453,9 +3466,12 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         CUtil::ExecBuiltIn(item.m_strPath);
       }
+      else
+        return false;
+      return true;
     }
   }
-  return true;
+  return false;
 }
 
 void CApplication::Process()

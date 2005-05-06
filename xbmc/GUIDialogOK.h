@@ -16,7 +16,7 @@ public:
   void SetHeading(const wstring& strLine);
   void SetHeading(const string& strLine);
   void SetHeading(int iString);
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
 protected:
   bool m_bConfirmed;
 

@@ -35,7 +35,7 @@ CGUIWindowMusicOverlay::~CGUIWindowMusicOverlay()
 {}
 
 
-void CGUIWindowMusicOverlay::OnAction(const CAction &action)
+bool CGUIWindowMusicOverlay::OnAction(const CAction &action)
 {
   if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
   {
@@ -94,7 +94,7 @@ void CGUIWindowMusicOverlay::OnAction(const CAction &action)
       break;
     }
   }
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)
@@ -117,7 +117,7 @@ bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIWindowMusicOverlay::OnMouse()
+bool CGUIWindowMusicOverlay::OnMouse()
 {
   CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_LOGO_PIC);
   if (pControl && pControl->HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
@@ -140,10 +140,11 @@ void CGUIWindowMusicOverlay::OnMouse()
       // reset it so that we don't call other actions
       g_Mouse.bClick[MOUSE_RIGHT_BUTTON] = false;
     }
+    return true;
   }
   else
   {
-    CGUIWindow::OnMouse();
+    return CGUIWindow::OnMouse();
   }
 }
 

@@ -57,42 +57,50 @@ void CGUIDialogKeyboard::OnInitWindow()
   }
 }
 
-void CGUIDialogKeyboard::OnAction(const CAction &action)
+bool CGUIDialogKeyboard::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
   {
     m_bDirty = false;
     Close();
+    return true;
   }
   else if (action.wID == ACTION_BACKSPACE)
   {
     Backspace();
+    return true;
   }
   else if (action.wID == ACTION_CURSOR_LEFT)
   {
     OnCursor( -1);
+    return true;
   }
   else if (action.wID == ACTION_CURSOR_RIGHT)
   {
     OnCursor(1);
+    return true;
   }
   else if (action.wID == ACTION_SHIFT)
   {
     OnShift();
+    return true;
   }
   else if (action.wID == ACTION_SYMBOLS)
   {
     OnSymbols();
+    return true;
   }
   else if (action.wID >= REMOTE_0 && action.wID <= REMOTE_9)
   {
     OnRemoteNumberClick(action.wID);
+    return true;
   }
   else if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
     BYTE b = action.wID & 0xFF;
     if (b == 0x25) OnCursor( -1); // left
     if (b == 0x27) OnCursor(1);  // right
+    return true;
   }
   else if (action.wID >= KEY_ASCII)
   { // input from the keyboard
@@ -118,10 +126,11 @@ void CGUIDialogKeyboard::OnAction(const CAction &action)
       Character((WCHAR)ch);
       break;
     }
+    return true;
   }
   else
   {
-    CGUIDialog::OnAction(action);
+    return CGUIDialog::OnAction(action);
   }
 }
 

@@ -23,7 +23,16 @@ public:
   CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight);
   virtual ~CGUIControl(void);
   virtual void Render();
-  virtual void OnAction(const CAction &action) ;
+
+  // OnAction() is called by our window when we are the focused control.
+  // We should process any control-specific actions in the derived classes,
+  // and return true if we have taken care of the action.  Returning false
+  // indicates that the message may be handed down to the window or application
+  // levels.  This base class implementation handles basic movement, and should
+  // be called from the derived classes when the action has not been handled.
+  // Return true to indicate that the action has been dealt with.
+  virtual bool OnAction(const CAction &action);
+
   // Common actions to make the code easier to read (no ugly switch statements in derived controls)
   virtual void OnUp();
   virtual void OnDown();

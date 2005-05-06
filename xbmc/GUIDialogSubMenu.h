@@ -7,7 +7,7 @@ class CGUIDialogSubMenu :
 public:
   CGUIDialogSubMenu(void);
   virtual ~CGUIDialogSubMenu(void);
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage &message);
 
 protected:

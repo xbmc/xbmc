@@ -78,7 +78,7 @@ public:
                           const CStdString& strSelectArrowRight, const CStdString& strSelectArrowRightFocus);
   virtual ~CGUISelectButtonControl(void);
   virtual void Render();
-  virtual void OnAction(const CAction &action) ;
+  virtual bool OnAction(const CAction &action) ;
   virtual void OnLeft();
   virtual void OnRight();
   virtual bool OnMessage(CGUIMessage& message);

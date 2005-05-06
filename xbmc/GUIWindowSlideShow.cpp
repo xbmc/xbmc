@@ -976,7 +976,7 @@ void CGUIWindowSlideShow::Render()
   CGUIWindow::Render();
 }
 
-void CGUIWindowSlideShow::OnAction(const CAction &action)
+bool CGUIWindowSlideShow::OnAction(const CAction &action)
 {
   switch (action.wID)
   {
@@ -1050,8 +1050,9 @@ void CGUIWindowSlideShow::OnAction(const CAction &action)
     Move(action.fAmount1*PICTURE_MOVE_AMOUNT_ANALOG, -action.fAmount2*PICTURE_MOVE_AMOUNT_ANALOG);
     break;
   default:
-    CGUIWindow::OnAction(action);
+    return CGUIWindow::OnAction(action);
   }
+  return true;
 }
 
 void CGUIWindowSlideShow::RenderErrorMessage()

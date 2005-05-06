@@ -31,7 +31,7 @@ public:
                      const CStdString& strFont, DWORD dwTextColor, DWORD dwSelectedColor);
   virtual ~CGUIThumbnailPanel(void);
   virtual void Render();
-  virtual void OnAction(const CAction &action) ;
+  virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
 
   virtual bool CanFocus() const;
