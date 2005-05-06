@@ -7,7 +7,7 @@ public:
   CGUIWindowSettingsScreenCalibration(void);
   virtual ~CGUIWindowSettingsScreenCalibration(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual void AllocResources();
   virtual void FreeResources();

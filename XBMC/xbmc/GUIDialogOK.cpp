@@ -149,12 +149,12 @@ void CGUIDialogOK::SetLine(int iLine, int iString)
   OnMessage(msg);
 }
 
-void CGUIDialogOK::OnAction(const CAction &action)
+bool CGUIDialogOK::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
   {
     Close();
-    return ;
+    return true;
   }
-  CGUIDialog::OnAction(action);
+  return CGUIDialog::OnAction(action);
 }

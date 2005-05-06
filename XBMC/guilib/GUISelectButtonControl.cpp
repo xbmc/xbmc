@@ -173,7 +173,7 @@ bool CGUISelectButtonControl::OnMessage(CGUIMessage& message)
   return CGUIButtonControl::OnMessage(message);
 }
 
-void CGUISelectButtonControl::OnAction(const CAction &action)
+bool CGUISelectButtonControl::OnAction(const CAction &action)
 {
   if (!m_bShowSelect)
   {
@@ -186,9 +186,10 @@ void CGUISelectButtonControl::OnAction(const CAction &action)
       // or moves left/right. The control will
       // automatically select the current item.
       m_dwTicks = timeGetTime();
+      return true;
     }
     else
-      CGUIButtonControl::OnAction(action);
+      return CGUIButtonControl::OnAction(action);
   }
   else
   {
@@ -200,7 +201,7 @@ void CGUISelectButtonControl::OnAction(const CAction &action)
       // ...and send a message.
       CGUIMessage message(GUI_MSG_CLICKED, GetID(), GetParentID() );
       g_graphicsContext.SendMessage(message);
-      return ;
+      return true;
     }
     if (action.wID == ACTION_MOVE_UP || action.wID == ACTION_MOVE_DOWN )
     {
@@ -209,7 +210,7 @@ void CGUISelectButtonControl::OnAction(const CAction &action)
       m_iCurrentItem = m_iDefaultItem;
     }
     // call the base class
-    CGUIButtonControl::OnAction(action);
+    return CGUIButtonControl::OnAction(action);
   }
 }
 

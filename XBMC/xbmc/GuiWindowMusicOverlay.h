@@ -7,8 +7,8 @@ public:
   CGUIWindowMusicOverlay(void);
   virtual ~CGUIWindowMusicOverlay(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnAction(const CAction &action);
-  virtual void OnMouse();
+  virtual bool OnAction(const CAction &action);
+  virtual bool OnMouse();
   virtual void Render();
   virtual void FreeResources();
   void Update();

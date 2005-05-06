@@ -49,10 +49,10 @@ void CGraphicContext::SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams, RESOLUT
   m_pResInfo = pResInfo;
 }
 
-void CGraphicContext::SendMessage(CGUIMessage& message)
+bool CGraphicContext::SendMessage(CGUIMessage& message)
 {
-  if (!m_pCallback) return ;
-  m_pCallback->SendMessage(message);
+  if (!m_pCallback) return false;
+  return m_pCallback->SendMessage(message);
 }
 
 void CGraphicContext::setMessageSender(IMsgSenderCallback* pCallback)

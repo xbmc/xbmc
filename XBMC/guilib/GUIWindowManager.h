@@ -22,7 +22,7 @@ class CGUIWindowManager: public IMsgSenderCallback
 public:
   CGUIWindowManager(void);
   virtual ~CGUIWindowManager(void);
-  virtual void SendMessage(CGUIMessage& message);
+  virtual bool SendMessage(CGUIMessage& message);
   void Initialize();
   void Add(CGUIWindow* pWindow);
   void AddCustomWindow(CGUIWindow* pWindow);
@@ -32,7 +32,12 @@ public:
   void ActivateWindow(int iWindowID, const CStdString& strPath = "");
   void PreviousWindow();
   void RefreshWindow();
-  void OnAction(const CAction &action);
+
+  // OnAction() runs through our active dialogs and windows and sends the message
+  // off to the callbacks (application, python, playlist player) and to the
+  // currently focused window(s).  Returns true only if the message is handled.
+  bool OnAction(const CAction &action);
+
   void Render();
   void RenderDialogs();
   CGUIWindow* GetWindow(DWORD dwID);

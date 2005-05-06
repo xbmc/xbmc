@@ -16,7 +16,7 @@ CGUIDialogGamepad::CGUIDialogGamepad(void)
 CGUIDialogGamepad::~CGUIDialogGamepad(void)
 {}
 
-void CGUIDialogGamepad::OnAction(const CAction &action)
+bool CGUIDialogGamepad::OnAction(const CAction &action)
 {
   if ((action.m_dwButtonCode >= KEY_BUTTON_A &&
        action.m_dwButtonCode <= KEY_BUTTON_RIGHT_TRIGGER) ||
@@ -37,7 +37,7 @@ void CGUIDialogGamepad::OnAction(const CAction &action)
     case KEY_BUTTON_DPAD_DOWN : m_strUserInput += "D"; break;
     case KEY_BUTTON_DPAD_LEFT : m_strUserInput += "L"; break;
     case KEY_BUTTON_DPAD_RIGHT : m_strUserInput += "R"; break;
-    default : return ; break;
+    default : return true; break;
     }
 
     CStdStringW strHiddenInput(m_strUserInput);
@@ -46,7 +46,7 @@ void CGUIDialogGamepad::OnAction(const CAction &action)
       strHiddenInput[i] = m_cHideInputChar;
     }
     SetLine(2, strHiddenInput);
-    return ;
+    return true;
   }
   else if (action.m_dwButtonCode == KEY_BUTTON_BACK || action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU || action.wID == ACTION_PARENT_DIR)
   {
@@ -55,7 +55,7 @@ void CGUIDialogGamepad::OnAction(const CAction &action)
     m_strUserInput = L"";
     m_bHideInputChars = true;
     Close();
-    return ;
+    return true;
   }
   else if (action.m_dwButtonCode == KEY_BUTTON_START)
   {
@@ -74,7 +74,7 @@ void CGUIDialogGamepad::OnAction(const CAction &action)
 
       m_bHideInputChars = true;
       Close();
-      return ;
+      return true;
     }
 
     // correct password entered
@@ -83,13 +83,15 @@ void CGUIDialogGamepad::OnAction(const CAction &action)
     m_strUserInput = L"";
     m_bHideInputChars = true;
     Close();
-    return ;
+    return true;
   }
   else if (action.wID >= REMOTE_0 && action.wID <= REMOTE_9)
-  {}
+  {
+    return true; // unhandled
+  }
   else
   {
-    CGUIDialog::OnAction(action);
+    return CGUIDialog::OnAction(action);
   }
 }
 

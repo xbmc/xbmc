@@ -8,6 +8,6 @@ public:
   CGUIDialogPlayerControls(void);
   virtual ~CGUIDialogPlayerControls(void);
 
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
   virtual void Render();
 };

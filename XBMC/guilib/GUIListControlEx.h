@@ -30,7 +30,7 @@ public:
                     DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY, DWORD dwTextAlign);
   virtual ~CGUIListControlEx(void);
   virtual void Render();
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
   virtual void OnMouseOver();
   virtual void OnMouseClick(DWORD dwButton);
   virtual bool OnMessage(CGUIMessage& message);

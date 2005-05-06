@@ -73,7 +73,7 @@ public:
   void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams, RESOLUTION_INFO *pResInfo);
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
-  void SendMessage(CGUIMessage& message);
+  bool SendMessage(CGUIMessage& message);
   void setMessageSender(IMsgSenderCallback* pCallback);
   DWORD GetNewID();
   const CStdString& GetMediaDir() const { return m_strMediaDir; }

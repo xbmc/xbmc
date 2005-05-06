@@ -132,21 +132,23 @@ bool CGUISliderControl::OnMessage(CGUIMessage& message)
   return CGUIControl::OnMessage(message);
 }
 
-void CGUISliderControl::OnAction(const CAction &action)
+bool CGUISliderControl::OnAction(const CAction &action)
 {
   switch ( action.wID )
   {
   case ACTION_MOVE_LEFT:
     //case ACTION_OSD_SHOW_VALUE_MIN:
     Move( -1);
+    return true;
     break;
 
   case ACTION_MOVE_RIGHT:
     //case ACTION_OSD_SHOW_VALUE_PLUS:
     Move(1);
+    return true;
     break;
   default:
-    CGUIControl::OnAction(action);
+    return CGUIControl::OnAction(action);
   }
 }
 

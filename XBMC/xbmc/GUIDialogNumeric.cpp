@@ -17,7 +17,7 @@ CGUIDialogNumeric::CGUIDialogNumeric(void)
 CGUIDialogNumeric::~CGUIDialogNumeric(void)
 {}
 
-void CGUIDialogNumeric::OnAction(const CAction &action)
+bool CGUIDialogNumeric::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU || action.wID == ACTION_PARENT_DIR)
   {
@@ -26,7 +26,7 @@ void CGUIDialogNumeric::OnAction(const CAction &action)
     m_strUserInput = L"";
     m_bHideInputChars = true;
     Close();
-    return ;
+    return true;
   }
   else if (action.m_dwButtonCode == KEY_BUTTON_START || action.wID == ACTION_PLAYER_PLAY)
   {
@@ -45,7 +45,7 @@ void CGUIDialogNumeric::OnAction(const CAction &action)
 
       m_bHideInputChars = true;
       Close();
-      return ;
+      return true;
     }
 
     // correct password entered
@@ -54,7 +54,7 @@ void CGUIDialogNumeric::OnAction(const CAction &action)
     m_strUserInput = L"";
     m_bHideInputChars = true;
     Close();
-    return ;
+    return true;
   }
   else if (action.wID >= REMOTE_0 && action.wID <= REMOTE_9)
   {
@@ -72,10 +72,11 @@ void CGUIDialogNumeric::OnAction(const CAction &action)
       }
       SetLine(2, strHiddenInput);
     }
+    return true;
   }
   else
   {
-    CGUIDialog::OnAction(action);
+    return CGUIDialog::OnAction(action);
   }
 }
 

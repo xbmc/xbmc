@@ -66,16 +66,16 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
 CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
 {}
 
-void CGUIWindowSettingsCategory::OnAction(const CAction &action)
+bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     m_iLastControl = -1;
 
     m_gWindowManager.PreviousWindow();
-    return ;
+    return true;
   }
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)

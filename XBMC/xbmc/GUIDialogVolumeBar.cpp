@@ -21,19 +21,19 @@ CGUIDialogVolumeBar::CGUIDialogVolumeBar(void)
 CGUIDialogVolumeBar::~CGUIDialogVolumeBar(void)
 {}
 
-void CGUIDialogVolumeBar::OnAction(const CAction &action)
+bool CGUIDialogVolumeBar::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_VOLUME_UP || action.wID == ACTION_VOLUME_DOWN)
   { // reset the timer, as we've changed the volume level
     ResetTimer();
-    return ;
+    return true;
   }
   if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
   {
     Close();
-    return ;
+    return true;
   }
-  CGUIDialog::OnAction(action);
+  return CGUIDialog::OnAction(action);
 }
 
 bool CGUIDialogVolumeBar::OnMessage(CGUIMessage& message)

@@ -48,9 +48,16 @@ public:
   virtual void SetPosition(int iPosX, int iPosY);
   void CenterWindow();
   virtual void Render();
-  virtual void OnAction(const CAction &action);
+
+  // OnAction() is called by our window manager.  We should process any messages
+  // that should be handled at the window level in the derived classes, and any
+  // unhandled messages should be dropped through to here where we send the message
+  // on to the currently focused control.  Returns true if the action has been handled
+  // and does not need to be passed further down the line (to our global action handlers)
+  virtual bool OnAction(const CAction &action);
+
   void OnMouseAction();
-  virtual void OnMouse();
+  virtual bool OnMouse();
   bool HandleMouse(CGUIControl *pControl);
   virtual bool OnMessage(CGUIMessage& message);
   void Add(CGUIControl* pControl);

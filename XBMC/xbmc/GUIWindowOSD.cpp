@@ -123,7 +123,7 @@ void CGUIWindowOSD::Render()
   CLog::DebugLog("Finished Rendering OSD");
 }
 
-void CGUIWindowOSD::OnAction(const CAction &action)
+bool CGUIWindowOSD::OnAction(const CAction &action)
 {
   switch (action.wID)
   {
@@ -143,7 +143,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
         FOCUS_CONTROL(GetID(), m_iActiveMenuButtonID, 0); // set focus to last menu button
         ToggleSubMenu(0, m_iActiveMenu);      // hide the currently active sub-menu
       }
-      return ;
+      return true;
     }
     break;
 
@@ -152,7 +152,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
       // push a message through to this window to handle the remote control button
       CGUIMessage msgSet(GUI_MSG_CLICKED, OSD_STOP, OSD_STOP, 0, 0, NULL);
       OnMessage(msgSet);
-      return ;
+      return true;
     }
     break;
 
@@ -161,7 +161,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
       // push a message through to this window to handle the remote control button
       CGUIMessage msgSet(GUI_MSG_CLICKED, OSD_SKIPFWD, OSD_SKIPFWD, 0, 0, NULL);
       OnMessage(msgSet);
-      return ;
+      return true;
     }
     break;
 
@@ -170,12 +170,12 @@ void CGUIWindowOSD::OnAction(const CAction &action)
       // push a message through to this window to handle the remote control button
       CGUIMessage msgSet(GUI_MSG_CLICKED, OSD_SKIPBWD, OSD_SKIPBWD, 0, 0, NULL);
       OnMessage(msgSet);
-      return ;
+      return true;
     }
     break;
   }
 
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
@@ -399,9 +399,9 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIWindowOSD::OnMouse()
+bool CGUIWindowOSD::OnMouse()
 {
-  g_application.m_guiWindowFullScreen.OnMouse();
+  return g_application.m_guiWindowFullScreen.OnMouse();
 }
 
 void CGUIWindowOSD::SetVideoProgress()

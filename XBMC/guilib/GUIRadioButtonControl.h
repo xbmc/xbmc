@@ -22,7 +22,7 @@ public:
 
   virtual ~CGUIRadioButtonControl(void);
   virtual void Render();
-  virtual void OnAction(const CAction &action) ;
+  virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
   virtual void PreAllocResources();
   virtual void AllocResources();

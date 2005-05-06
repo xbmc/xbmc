@@ -14,20 +14,21 @@ CGUIWindowSettingsUICalibration::CGUIWindowSettingsUICalibration(void)
 CGUIWindowSettingsUICalibration::~CGUIWindowSettingsUICalibration(void)
 {}
 
-void CGUIWindowSettingsUICalibration::OnAction(const CAction &action)
+bool CGUIWindowSettingsUICalibration::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     m_iLastControl = -1;
     m_gWindowManager.PreviousWindow();
+    return true;
   }
   else if (action.wID == ACTION_CALIBRATE_RESET)
   {
     CGUIMoverControl *pControl = (CGUIMoverControl *)GetControl(CONTROL_MOVER);
     if (pControl) pControl->SetLocation(0, 0);
+    return true;
   }
-  else
-    CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowSettingsUICalibration::OnMessage(CGUIMessage& message)

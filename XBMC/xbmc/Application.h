@@ -115,7 +115,7 @@ public:
   bool IsPlaying() const ;
   bool IsPlayingAudio() const ;
   bool IsPlayingVideo() const ;
-  void OnKey(CKey& key);
+  bool OnKey(CKey& key);
   void RenderFullScreen();
   bool NeedRenderFullScreen();
   bool MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown = true);

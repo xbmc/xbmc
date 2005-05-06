@@ -7,7 +7,7 @@ public:
   CGUIWindowVideoTitle(void);
   virtual ~CGUIWindowVideoTitle(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
 
 protected:
   virtual void SaveViewMode();

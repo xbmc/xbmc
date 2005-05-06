@@ -710,7 +710,7 @@ bool CGUIWindowBuddies::OnMessage(CGUIMessage &message)
 }
 
 
-void CGUIWindowBuddies::OnAction(const CAction &action)
+bool CGUIWindowBuddies::OnAction(const CAction &action)
 {
   if (window_state == State::Chat && (action.wID & KEY_ASCII || action.wID & KEY_VKEY) )
   {
@@ -725,7 +725,7 @@ void CGUIWindowBuddies::OnAction(const CAction &action)
       CGUIMessage dummy(0, 0, 0);
       OnClickKeyboardButton(dummy);
     }
-    return ;
+    return true;
   }
 
   switch (action.wID)
@@ -740,26 +740,30 @@ void CGUIWindowBuddies::OnAction(const CAction &action)
           break;
         }
       }
+      return true;
       break;
     }
   case ACTION_PREVIOUS_MENU:
     {
       m_gWindowManager.PreviousWindow();
+      return true;
       break;
     }
   case ACTION_PREV_PICTURE:
     {
       PreviousView();
+      return true;
       break;
     }
   case ACTION_NEXT_PICTURE:
     {
       NextView();
+      return true;
       break;
     }
   default:
     {
-      CGUIWindow::OnAction(action);
+      return CGUIWindow::OnAction(action);
       break;
     }
   }

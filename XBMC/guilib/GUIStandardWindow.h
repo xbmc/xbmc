@@ -14,7 +14,7 @@ public:
   virtual ~CGUIStandardWindow(void);
 
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
 
 protected:
   int m_iLastControl;

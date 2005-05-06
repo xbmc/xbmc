@@ -28,7 +28,7 @@ public:
   static int ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& strHeading, int iRetries);
   static bool ShowAndVerifyInput(CStdStringW& strPassword, const CStdStringW& dlgHeading, const CStdStringW& dlgLine0, const CStdStringW& dlgLine1, const CStdStringW& dlgLine2, bool bGetUserInput, bool bHideInputChars);
 protected:
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
   bool m_bConfirmed;
   bool m_bCanceled;
   wchar_t m_cHideInputChar;

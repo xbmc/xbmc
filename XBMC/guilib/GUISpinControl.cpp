@@ -68,7 +68,7 @@ CGUISpinControl::~CGUISpinControl(void)
 {}
 
 
-void CGUISpinControl::OnAction(const CAction &action)
+bool CGUISpinControl::OnAction(const CAction &action)
 {
   switch (action.wID)
   {
@@ -110,7 +110,7 @@ void CGUISpinControl::OnAction(const CAction &action)
             {
               m_iTypedPos = 0;
               strcpy(m_szTyped, "");
-              return ;
+              return true;
             }
           }
           m_iValue = iValue;
@@ -132,7 +132,7 @@ void CGUISpinControl::OnAction(const CAction &action)
             {
               m_iTypedPos = 0;
               strcpy(m_szTyped, "");
-              return ;
+              return true;
             }
           }
           m_iValue = iValue;
@@ -142,6 +142,7 @@ void CGUISpinControl::OnAction(const CAction &action)
         break;
 
       }
+      return true;
     }
     break;
   }
@@ -151,7 +152,7 @@ void CGUISpinControl::OnAction(const CAction &action)
       PageDown();
     else
       PageUp();
-    return ;
+    return true;
   }
   if (action.wID == ACTION_PAGE_DOWN)
   {
@@ -159,22 +160,22 @@ void CGUISpinControl::OnAction(const CAction &action)
       PageUp();
     else
       PageDown();
-    return ;
+    return true;
   }
   if (action.wID == ACTION_SELECT_ITEM)
   {
     if (m_iSelect == SPIN_BUTTON_UP)
     {
       MoveUp();
-      return ;
+      return true;
     }
     if (m_iSelect == SPIN_BUTTON_DOWN)
     {
       MoveDown();
-      return ;
+      return true;
     }
   }
-  CGUIControl::OnAction(action);
+  return CGUIControl::OnAction(action);
 }
 
 void CGUISpinControl::OnLeft()

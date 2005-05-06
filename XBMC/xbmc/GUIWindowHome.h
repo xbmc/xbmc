@@ -12,7 +12,7 @@ public:
   virtual ~CGUIWindowHome(void);
 
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
   virtual void Render();
 
 protected:
