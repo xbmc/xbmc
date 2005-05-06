@@ -203,6 +203,7 @@ __int64 CDVDAudio::GetDelay()
 
 void CDVDAudio::WaitForBuffer(int iPacketsLeft)
 {
+  if(!m_pAudioDecoder) return;
   while(m_pAudioDecoder->GetBytesInBuffer() > iPacketsLeft*m_dwPacketSize)
     Sleep(1);
 }
