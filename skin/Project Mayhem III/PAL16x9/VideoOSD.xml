@@ -320,7 +320,7 @@
       <id>303</id>
       <posX>272</posX>
       <posY>273</posY>
-      <width>370</width>
+      <width>380</width>
       <height>150</height>
       <texture>osd_menu_bg.png</texture>
       <colorkey>0</colorkey>
@@ -347,9 +347,9 @@
       <type>image</type>
       <id>305</id>
       <posX>272</posX>
-      <posY>273</posY>
-      <width>370</width>
-      <height>150</height>
+      <posY>233</posY>
+      <width>380</width>
+      <height>180</height>
       <texture>osd_menu_bg.png</texture>
       <colorkey>0</colorkey>
       <colordiffuse>ffffffff</colordiffuse>
@@ -365,22 +365,6 @@
       <texture>-</texture>
       <colorkey>0</colorkey>
       <colordiffuse>ffffffff</colordiffuse>
-      <visible>no</visible>
-    </control>
-
-    <control>
-      <description>Volume Slider</description>
-      <type>slider</type>
-      <id>400</id>
-      <posX>80</posX>
-      <posY>350</posY>
-      <textureSliderBar>osd_slider_volume_bg.png</textureSliderBar>
-      <textureSliderNib>osd_slider_nibNF.png</textureSliderNib>
-      <textureSliderNibFocus>osd_slider_nibFO.png</textureSliderNibFocus>
-      <onup>216</onup>
-      <ondown>216</ondown>
-      <onleft>400</onleft>
-      <onright>400</onright>
       <visible>no</visible>
     </control>
 
@@ -442,6 +426,33 @@
     </control>
 
     <control>
+      <description>Audio Volume label</description>
+      <type>label</type>
+      <id>552</id>
+      <posX>290</posX>
+      <posY>253</posY>
+      <label>13376</label>
+      <font>font13</font>
+      <visible>no</visible>
+    </control>
+
+    <control>
+      <description>Audio Volume Slider</description>
+      <type>slider</type>
+      <id>502</id>
+      <posX>465</posX>
+      <posY>253</posY>
+      <textureSliderBar>osd_volumeslider.png</textureSliderBar>
+      <textureSliderNib>osd_slider_nibNF.png</textureSliderNib>
+      <textureSliderNibFocus>osd_slider_nibFO.png</textureSliderNibFocus>
+      <onup>502</onup>
+      <ondown>500</ondown>
+      <onleft>502</onleft>
+      <onright>502</onright>
+      <visible>no</visible>
+    </control>
+
+    <control>
       <description>A/v Delay label</description>
       <type>label</type>
       <id>550</id>
@@ -462,7 +473,7 @@
       <textureSliderBar>osd_slider_bg.png</textureSliderBar>
       <textureSliderNib>osd_slider_nibNF.png</textureSliderNib>
       <textureSliderNibFocus>osd_slider_nibFO.png</textureSliderNibFocus>
-      <onup>500</onup>
+      <onup>502</onup>
       <ondown>501</ondown>
       <onleft>501</onleft>
       <onright>501</onright>
