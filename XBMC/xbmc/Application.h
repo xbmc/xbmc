@@ -92,6 +92,7 @@ public:
   void StartLEDControl(bool switchoff = false);
   void DimLCDOnPlayback(bool dim);
   void PrintXBEToLCD(const char* xbePath);
+  void CheckDate();		//GeminiServer CheckDate
 
   void Stop();
   void RestartApp();
