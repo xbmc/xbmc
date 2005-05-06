@@ -185,6 +185,7 @@ public:
   CXBE();
   virtual ~CXBE();
   bool ExtractIcon(const CStdString& strFilename, const CStdString& strIcon);
+  uint32 ExtractGameRegion(const CStdString& strFilename);
 protected:
   XBE_INFO m_XBEInfo;
   int m_iHeaderSize;

@@ -1734,6 +1734,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\utils\CharsetConverter.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\CherryPatch.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\CherryPatch.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\utils\CriticalSection.cpp">
 			</File>
 			<File
@@ -2053,10 +2059,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
