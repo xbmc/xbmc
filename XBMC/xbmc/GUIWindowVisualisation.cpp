@@ -57,7 +57,9 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     return true;
     break;
 
-  case ACTION_ANALOG_FORWARD:
+    // TODO: This should be mapped to it's own function - at the moment it's overriding
+    // the global action of fastforward/rewind.
+/*  case ACTION_ANALOG_FORWARD:
     // calculate the speed based on the amount the button is held down
     if (action.fAmount1)
     {
@@ -65,7 +67,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
       g_application.m_CdgParser.SetAVDelay(AVDelay - action.fAmount1 / 4.0f);
       return true;
     }
-    break;
+    break;*/
   }
   return CGUIWindow::OnAction(action);
 }
