@@ -85,15 +85,16 @@ void CGUICheckMarkControl::Render()
   }
 }
 
-void CGUICheckMarkControl::OnAction(const CAction &action)
+bool CGUICheckMarkControl::OnAction(const CAction &action)
 {
-  CGUIControl::OnAction(action);
   if (action.wID == ACTION_SELECT_ITEM)
   {
     m_bSelected = !m_bSelected;
     CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
     g_graphicsContext.SendMessage(msg);
+    return true;
   }
+  return CGUIControl::OnAction(action);
 }
 
 bool CGUICheckMarkControl::OnMessage(CGUIMessage& message)

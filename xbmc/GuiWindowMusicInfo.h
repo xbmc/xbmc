@@ -10,7 +10,7 @@ public:
   CGUIWindowMusicInfo(void);
   virtual ~CGUIWindowMusicInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
   virtual void Render();
   void SetAlbum(CMusicAlbumInfo& album);
   bool NeedRefresh() const;

@@ -187,17 +187,17 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
   return CGUIWindowMusicBase::OnMessage(message);
 }
 
-void CGUIWindowMusicPlayList::OnAction(const CAction &action)
+bool CGUIWindowMusicPlayList::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PARENT_DIR)
   {
     // Playlist has no parent dirs
-    return ;
+    return true;
   }
   if (action.wID == ACTION_SHOW_PLAYLIST)
   {
     m_gWindowManager.PreviousWindow();
-    return ;
+    return true;
   }
   if (action.wID == ACTION_MOVE_ITEM_UP)
   {
@@ -209,6 +209,7 @@ void CGUIWindowMusicPlayList::OnAction(const CAction &action)
 
     if (bRestart)
       m_tagloader.Load(m_vecItems);
+    return true;
   }
   if (action.wID == ACTION_MOVE_ITEM_DOWN)
   {
@@ -220,9 +221,10 @@ void CGUIWindowMusicPlayList::OnAction(const CAction &action)
 
     if (bRestart)
       m_tagloader.Load(m_vecItems);
+    return true;
   }
 
-  CGUIWindowMusicBase::OnAction(action);
+  return CGUIWindowMusicBase::OnAction(action);
 }
 
 void CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iAction)

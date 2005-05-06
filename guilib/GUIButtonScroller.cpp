@@ -53,7 +53,7 @@ CGUIButtonScroller::CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, int 
 CGUIButtonScroller::~CGUIButtonScroller(void)
 {}
 
-void CGUIButtonScroller::OnAction(const CAction &action)
+bool CGUIButtonScroller::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_SELECT_ITEM)
   {
@@ -62,13 +62,14 @@ void CGUIButtonScroller::OnAction(const CAction &action)
     // find our currently highlighted item
     message.SetStringParam(m_vecButtons[GetActiveButton()]->strExecute.c_str());
     g_graphicsContext.SendMessage(message);
-    return ;
+    return true;
   }
   if (action.wID == ACTION_CONTEXT_MENU)
   { // send a click message to our parent
     SEND_CLICK_MESSAGE(GetID(), GetParentID(), action.wID);
+    return true;
   }
-  CGUIControl::OnAction(action);
+  return CGUIControl::OnAction(action);
 }
 
 bool CGUIButtonScroller::OnMessage(CGUIMessage &message)

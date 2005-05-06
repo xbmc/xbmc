@@ -38,13 +38,13 @@ void CGUIRadioButtonControl::Render()
   }
 }
 
-void CGUIRadioButtonControl::OnAction(const CAction &action)
+bool CGUIRadioButtonControl::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_SELECT_ITEM)
   {
     m_bSelected = !m_bSelected;
   }
-  CGUIButtonControl::OnAction(action);
+  return CGUIButtonControl::OnAction(action);
 }
 
 bool CGUIRadioButtonControl::OnMessage(CGUIMessage& message)

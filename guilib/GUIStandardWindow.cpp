@@ -10,16 +10,16 @@ CGUIStandardWindow::CGUIStandardWindow(void) : CGUIWindow(0)
 CGUIStandardWindow::~CGUIStandardWindow(void)
 {}
 
-void CGUIStandardWindow::OnAction(const CAction &action)
+bool CGUIStandardWindow::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     m_iLastControl = -1;
     m_gWindowManager.PreviousWindow();
-    return ;
+    return true;
   }
 
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 bool CGUIStandardWindow::OnMessage(CGUIMessage& message)

@@ -25,9 +25,9 @@ XBPython::XBPython()
 	vecPlayerCallbackList.clear();
 }
 
-void XBPython::SendMessage(CGUIMessage& message)
+bool XBPython::SendMessage(CGUIMessage& message)
 {
-	evalFile(message.GetStringParam().c_str());
+  return (evalFile(message.GetStringParam().c_str()) != -1);
 }
 
 // message all registered callbacks that xbmc stopped playing

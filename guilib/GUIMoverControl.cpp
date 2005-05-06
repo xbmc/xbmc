@@ -56,13 +56,14 @@ void CGUIMoverControl::Render()
   m_imgNoFocus.Render();
 }
 
-void CGUIMoverControl::OnAction(const CAction &action)
+bool CGUIMoverControl::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_SELECT_ITEM)
   {
     // button selected - send message to parent
     CGUIMessage message(GUI_MSG_CLICKED, GetID(), GetParentID());
     g_graphicsContext.SendMessage(message);
+    return true;
   }
   if (action.wID == ACTION_ANALOG_MOVE)
   {
@@ -72,11 +73,10 @@ void CGUIMoverControl::OnAction(const CAction &action)
     //   Move((int)(m_fAnalogSpeed*action.fAmount1), 0);
     //  else // ALLOWED_DIRECTIONS_ALL
     Move((int)(m_fAnalogSpeed*action.fAmount1), (int)( -m_fAnalogSpeed*action.fAmount2));
+    return true;
   }
-  else
-  { // base class
-    CGUIControl::OnAction(action);
-  }
+  // base class
+  return CGUIControl::OnAction(action);
 }
 
 void CGUIMoverControl::OnUp()

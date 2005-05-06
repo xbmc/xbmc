@@ -20,7 +20,7 @@ public:
   CGUIPythonWindow(DWORD dwId);
   virtual ~CGUIPythonWindow(void);
   virtual bool    OnMessage(CGUIMessage& message);
-  virtual void    OnAction(const CAction &action);
+  virtual bool    OnAction(const CAction &action);
 	void						SetCallbackWindow(PyObject *object);
 	void						WaitForActionEvent(DWORD timeout);
 	void						PulseActionEvent();

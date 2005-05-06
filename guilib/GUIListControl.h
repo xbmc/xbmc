@@ -29,7 +29,7 @@ public:
                   DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY);
   virtual ~CGUIListControl(void);
   virtual void Render();
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
   virtual void OnRight();
   virtual void OnLeft();
   virtual void OnDown();

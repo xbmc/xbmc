@@ -16,7 +16,7 @@ class CGUIButtonScroller :
 public:
   CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, int iGap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, int iTextXOffset, int iTextYOffset, DWORD dwAlign = XBFONT_LEFT);
   virtual ~CGUIButtonScroller(void);
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage &message);
   virtual void OnUp();
   virtual void OnLeft();

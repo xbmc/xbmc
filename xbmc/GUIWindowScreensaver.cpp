@@ -50,18 +50,20 @@ void CGUIWindowScreensaver::Render()
   CGUIWindow::Render();
 }
 
-void CGUIWindowScreensaver::OnAction(const CAction &action)
+bool CGUIWindowScreensaver::OnAction(const CAction &action)
 {
   // We're just a screen saver, nothing to do here except maybe take screenshots
   // of the guys' hardwork :)
   if (action.wID == ACTION_TAKE_SCREENSHOT)
-    CGUIWindow::OnAction(action);
+    return CGUIWindow::OnAction(action);
+  return false;
 }
 
 // called when the mouse is moved/clicked etc. etc.
-void CGUIWindowScreensaver::OnMouse()
+bool CGUIWindowScreensaver::OnMouse()
 {
   m_gWindowManager.PreviousWindow();
+  return true;
 }
 
 bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)

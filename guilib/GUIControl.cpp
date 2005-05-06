@@ -81,26 +81,31 @@ void CGUIControl::Render()
   m_bInvalidated = false;
 }
 
-void CGUIControl::OnAction(const CAction &action)
+bool CGUIControl::OnAction(const CAction &action)
 {
   switch (action.wID)
   {
   case ACTION_MOVE_DOWN:
     OnDown();
+    return true;
     break;
 
   case ACTION_MOVE_UP:
     OnUp();
+    return true;
     break;
 
   case ACTION_MOVE_LEFT:
     OnLeft();
+    return true;
     break;
 
   case ACTION_MOVE_RIGHT:
     OnRight();
+    return true;
     break;
   }
+  return false;
 }
 
 // Movement controls (derived classes can override)

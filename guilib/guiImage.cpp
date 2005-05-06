@@ -183,9 +183,9 @@ void CGUIImage::Render()
   CGUIControl::Render();
 }
 
-void CGUIImage::OnAction(const CAction &action)
+bool CGUIImage::OnAction(const CAction &action)
 {
-
+  return false;
 }
 
 bool CGUIImage::OnMessage(CGUIMessage& message)

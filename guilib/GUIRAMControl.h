@@ -42,7 +42,7 @@ public:
   virtual ~CGUIRAMControl(void);
 
   virtual void Render();
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
 
   virtual void OnMediaUpdate( INT nIndex, CStdString& strFilepath,
                               CStdString& strTitle, CStdString& strImagePath);

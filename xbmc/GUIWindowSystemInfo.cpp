@@ -13,14 +13,14 @@ CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 {}
 
-void CGUIWindowSystemInfo::OnAction(const CAction &action)
+bool CGUIWindowSystemInfo::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
-    return ;
+    return true;
   }
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 //lpParam will get the version info, wchar format

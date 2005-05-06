@@ -104,25 +104,26 @@ CGUIWindowScripts::~CGUIWindowScripts()
 {}
 
 
-void CGUIWindowScripts::OnAction(const CAction &action)
+bool CGUIWindowScripts::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PARENT_DIR)
   {
     GoParentFolder();
-    return ;
+    return true;
   }
 
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
-    return ;
+    return true;
   }
 
   if (action.wID == ACTION_SHOW_INFO)
   {
     OnInfo();
+    return true;
   }
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
@@ -346,6 +347,9 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
   m_Directory.m_strPath = strDirectory;
   m_rootDir.GetDirectory(strDirectory, m_vecItems);
   m_vecItems.SetThumbs();
+  if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+    m_vecItems.RemoveExtensions();
+
   m_vecItems.FillInDefaultIcons();
 
   /* check if any python scripts are running. If true, place "(Running)" after the item.

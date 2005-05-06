@@ -25,7 +25,7 @@ public:
   virtual ~CGUIButtonControl(void);
 
   virtual void Render();
-  virtual void OnAction(const CAction &action) ;
+  virtual bool OnAction(const CAction &action) ;
   virtual void OnMouseClick(DWORD dwButton);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void PreAllocResources();

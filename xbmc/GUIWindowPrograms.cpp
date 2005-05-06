@@ -363,21 +363,21 @@ void CGUIWindowPrograms::Render()
 }
 
 
-void CGUIWindowPrograms::OnAction(const CAction &action)
+bool CGUIWindowPrograms::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PARENT_DIR)
   {
     GoParentFolder();
-    return ;
+    return true;
   }
 
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
-    return ;
+    return true;
   }
 
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 
