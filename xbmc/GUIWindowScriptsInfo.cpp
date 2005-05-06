@@ -10,12 +10,12 @@ CGUIWindowScriptsInfo::CGUIWindowScriptsInfo(void)
 CGUIWindowScriptsInfo::~CGUIWindowScriptsInfo(void)
 {}
 
-void CGUIWindowScriptsInfo::OnAction(const CAction &action)
+bool CGUIWindowScriptsInfo::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     Close();
-    return ;
+    return true;
   }
   if (action.wID == ACTION_SHOW_INFO)
   {
@@ -24,8 +24,9 @@ void CGUIWindowScriptsInfo::OnAction(const CAction &action)
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_TEXTAREA);
     msg.SetLabel(strInfo);
     OnMessage(msg);
+    return true;
   }
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowScriptsInfo::OnMessage(CGUIMessage& message)

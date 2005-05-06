@@ -23,7 +23,7 @@ public:
 
   virtual void Render();
   virtual void Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight);
-  virtual void OnAction(const CAction &action) ;
+  virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
   virtual void PreAllocResources();
   virtual void AllocResources();

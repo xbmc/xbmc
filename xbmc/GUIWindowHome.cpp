@@ -165,11 +165,9 @@ void CGUIWindowHome::OnClickOnlineGaming(CGUIMessage& aMessage)
   m_gWindowManager.ActivateWindow( WINDOW_BUDDIES );
 }
 
-void CGUIWindowHome::OnAction(const CAction &action)
+bool CGUIWindowHome::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_CONTEXT_MENU)
-  {}
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 void CGUIWindowHome::Render()

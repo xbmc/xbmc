@@ -53,22 +53,21 @@ void CGUIResizeControl::Render()
   m_imgNoFocus.Render();
 }
 
-void CGUIResizeControl::OnAction(const CAction &action)
+bool CGUIResizeControl::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_SELECT_ITEM)
   {
     // button selected - send message to parent
     CGUIMessage message(GUI_MSG_CLICKED, GetID(), GetParentID());
     g_graphicsContext.SendMessage(message);
+    return true;
   }
   if (action.wID == ACTION_ANALOG_MOVE)
   {
     Resize((int)(m_fAnalogSpeed*action.fAmount1), (int)( -m_fAnalogSpeed*action.fAmount2));
+    return true;
   }
-  else
-  { // base class
-    CGUIControl::OnAction(action);
-  }
+  return CGUIControl::OnAction(action);
 }
 
 void CGUIResizeControl::OnUp()

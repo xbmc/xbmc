@@ -52,12 +52,13 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
         m_gWindowManager.SendThreadMessage(msg);
         Reset();
         m_iCurrentPlayList = PLAYLIST_NONE;
+        return true;
       }
     }
     break;
   }
 
-  return true;
+  return false;
 }
 
 int CPlayListPlayer::GetNextSong()

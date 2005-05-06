@@ -350,7 +350,7 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth, DWOR
   }
 }
 
-void CGUIListControl::OnAction(const CAction &action)
+bool CGUIListControl::OnAction(const CAction &action)
 {
   switch (action.wID)
   {
@@ -365,6 +365,7 @@ void CGUIListControl::OnAction(const CAction &action)
       { // scroll up to the previous page
         Scroll( -m_iItemsPerPage);
       }
+      return true;
     }
     break;
   case ACTION_PAGE_DOWN:
@@ -378,14 +379,17 @@ void CGUIListControl::OnAction(const CAction &action)
       { // scroll down to the next page
         Scroll(m_iItemsPerPage);
       }
+      return true;
     }
     break;
     // smooth scrolling (for analog controls)
   case ACTION_SCROLL_UP:
     {
       m_fSmoothScrollOffset += action.fAmount1 * action.fAmount1;
+      bool handled = false;
       while (m_fSmoothScrollOffset > 0.4)
       {
+        handled = true;
         m_fSmoothScrollOffset -= 0.4f;
         if (m_iOffset > 0 && m_iCursorY <= m_iItemsPerPage / 2)
         {
@@ -396,13 +400,16 @@ void CGUIListControl::OnAction(const CAction &action)
           m_iCursorY--;
         }
       }
+      return handled;
     }
     break;
   case ACTION_SCROLL_DOWN:
     {
       m_fSmoothScrollOffset += action.fAmount1 * action.fAmount1;
+      bool handled = false;
       while (m_fSmoothScrollOffset > 0.4)
       {
+        handled = true;
         m_fSmoothScrollOffset -= 0.4f;
         if (m_iOffset + m_iItemsPerPage < (int)m_vecItems.size() && m_iCursorY >= m_iItemsPerPage / 2)
         {
@@ -413,6 +420,7 @@ void CGUIListControl::OnAction(const CAction &action)
           m_iCursorY++;
         }
       }
+      return handled;
     }
     break;
 
@@ -421,7 +429,7 @@ void CGUIListControl::OnAction(const CAction &action)
   case ACTION_MOVE_DOWN:
   case ACTION_MOVE_UP:
     { // use base class implementation
-      CGUIControl::OnAction(action);
+      return CGUIControl::OnAction(action);
     }
     break;
 
@@ -429,11 +437,12 @@ void CGUIListControl::OnAction(const CAction &action)
     {
       if (m_iSelect == CONTROL_LIST)
       { // Don't know what to do, so send to our parent window.
-        SEND_CLICK_MESSAGE(GetID(), GetParentID(), action.wID);
+        CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
+        return g_graphicsContext.SendMessage(msg);
       }
       else
       { // send action to the page control
-        m_upDown.OnAction(action);
+        return m_upDown.OnAction(action);
       }
     }
   }

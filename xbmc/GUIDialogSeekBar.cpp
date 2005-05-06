@@ -29,7 +29,7 @@ CGUIDialogSeekBar::~CGUIDialogSeekBar(void)
 {
 }
 
-void CGUIDialogSeekBar::OnAction(const CAction &action)
+bool CGUIDialogSeekBar::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK)
   {
@@ -47,14 +47,14 @@ void CGUIDialogSeekBar::OnAction(const CAction &action)
       m_bRequireSeek = true;
     }
     ResetTimer();
-    return ;
+    return true;
   }
   if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
   {
     Close();
-    return ;
+    return true;
   }
-  CGUIDialog::OnAction(action);
+  return CGUIDialog::OnAction(action);
 }
 
 bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)

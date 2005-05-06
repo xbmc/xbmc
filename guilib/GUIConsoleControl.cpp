@@ -59,9 +59,9 @@ void CGUIConsoleControl::FreeResources()
   CGUIControl::FreeResources();
 }
 
-void CGUIConsoleControl::OnAction(const CAction &action)
+bool CGUIConsoleControl::OnAction(const CAction &action)
 {
-  CGUIControl::OnAction(action);
+  return CGUIControl::OnAction(action);
 }
 
 void CGUIConsoleControl::Render()

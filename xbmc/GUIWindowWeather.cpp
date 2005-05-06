@@ -53,14 +53,14 @@ CGUIWindowWeather::CGUIWindowWeather(void)
 CGUIWindowWeather::~CGUIWindowWeather(void)
 {}
 
-void CGUIWindowWeather::OnAction(const CAction &action)
+bool CGUIWindowWeather::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
-    return ;
+    return true;
   }
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowWeather::OnMessage(CGUIMessage& message)

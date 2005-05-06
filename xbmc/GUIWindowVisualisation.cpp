@@ -19,14 +19,14 @@ CGUIWindowVisualisation::~CGUIWindowVisualisation(void)
 {
 }
 
-void CGUIWindowVisualisation::OnAction(const CAction &action)
+bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
   switch (action.wID)
   {
   case ACTION_SHOW_INFO:
     //send the action to the overlay
     if (g_graphicsContext.IsOverlayAllowed())
-      g_application.m_guiMusicOverlay.OnAction(action);
+      return g_application.m_guiMusicOverlay.OnAction(action);
     else
     {
       // reset the timer
@@ -40,6 +40,7 @@ void CGUIWindowVisualisation::OnAction(const CAction &action)
         m_dwFrameCounter = TRANSISTION_COUNT;
       // toggle our settings
       g_stSettings.m_bMyMusicSongThumbInVis = !m_bShowInfo;
+      return true;
     }
     break;
 
@@ -48,10 +49,12 @@ void CGUIWindowVisualisation::OnAction(const CAction &action)
     //the bool m_bShowInfoAlways
     g_application.m_guiMusicOverlay.OnAction(action);
     m_gWindowManager.PreviousWindow();
+    return true;
     break;
 
   case KEY_BUTTON_Y:
     g_application.m_CdgParser.Pause();
+    return true;
     break;
 
   case ACTION_ANALOG_FORWARD:
@@ -60,9 +63,10 @@ void CGUIWindowVisualisation::OnAction(const CAction &action)
     float AVDelay = g_application.m_CdgParser.GetAVDelay();
     g_application.m_CdgParser.SetAVDelay(AVDelay - action.fAmount1 / 4.0f);
     }
+    return true;
     break;
   }
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
@@ -106,14 +110,14 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIWindowVisualisation::OnMouse()
+bool CGUIWindowVisualisation::OnMouse()
 {
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go back to GUI
     CAction action;
     action.wID = ACTION_SHOW_GUI;
     OnAction(action);
-    return ;
+    return true;
   }
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // no control found to absorb this click - toggle the track INFO
@@ -121,6 +125,7 @@ void CGUIWindowVisualisation::OnMouse()
     action.wID = ACTION_SHOW_INFO;
     OnAction(action);
   }
+  return true;
 }
 
 void CGUIWindowVisualisation::Render()

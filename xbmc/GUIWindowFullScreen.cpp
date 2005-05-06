@@ -121,9 +121,8 @@ void CGUIWindowFullScreen::FreeResources()
   CGUIWindow::FreeResources();
 }
 
-void CGUIWindowFullScreen::OnAction(const CAction &action)
+bool CGUIWindowFullScreen::OnAction(const CAction &action)
 {
-
   if (m_bOSDVisible)
   {
     if (action.wID == ACTION_SHOW_OSD && !g_application.m_guiWindowOSD.SubMenuVisible())  // hide the OSD
@@ -133,19 +132,19 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
       CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0, NULL);
       g_application.m_guiWindowOSD.OnMessage(msg);  // Send a de-init msg to the OSD
       m_bOSDVisible = false;
-
     }
     else
     {
       OutputDebugString("CGUIWindowFullScreen::OnAction() reset timeout\n");
       m_dwOSDTimeOut = timeGetTime();
-      g_application.m_guiWindowOSD.OnAction(action);  // route keys to OSD window
+      return g_application.m_guiWindowOSD.OnAction(action);  // route keys to OSD window
     }
-    return ;
+    return true;
   }
 
   // if the player has handled the message, just return
-  if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action)) return ;
+  if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
+    return true;
 
   switch (action.wID)
   {
@@ -157,28 +156,33 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
       m_gWindowManager.PreviousWindow();
       OutputDebugString("Now in GUI\n");
 
-      return ;
+      return true;
     }
     break;
 
   case ACTION_STEP_BACK:
     Seek(false, false);
+    return true;
     break;
 
   case ACTION_STEP_FORWARD:
     Seek(true, false);
+    return true;
     break;
 
   case ACTION_BIG_STEP_BACK:
     Seek(false, true);
+    return true;
     break;
 
   case ACTION_BIG_STEP_FORWARD:
     Seek(true, true);
+    return true;
     break;
 
   case ACTION_SHOW_MPLAYER_OSD:
     g_application.m_pPlayer->ToggleOSD();
+    return true;
     break;
 
   case ACTION_SHOW_OSD_TIME:
@@ -186,6 +190,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
     m_bShowCurrentTime = !m_bShowCurrentTime;
     if(!m_bShowCurrentTime)
       g_infoManager.SetDisplayAfterSeek(0); //Force display off
+    return true;
     break;
 
   case ACTION_SHOW_OSD:  // Show the OSD
@@ -199,70 +204,62 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
       m_bOSDVisible = true;
 
     }
+    return true;
     break;
 
   case ACTION_SHOW_SUBTITLES:
     {
       g_application.m_pPlayer->ToggleSubtitles();
     }
+    return true;
     break;
 
   case ACTION_SHOW_CODEC:
     {
       m_bShowCodecInfo = !m_bShowCodecInfo;
     }
+    return true;
     break;
 
   case ACTION_NEXT_SUBTITLE:
     {
       g_application.m_pPlayer->SwitchToNextLanguage();
     }
+    return true;
     break;
 
   case ACTION_SUBTITLE_DELAY_MIN:
     g_application.m_pPlayer->SubtitleOffset(false);
+    return true;
     break;
   case ACTION_SUBTITLE_DELAY_PLUS:
     g_application.m_pPlayer->SubtitleOffset(true);
+    return true;
     break;
   case ACTION_AUDIO_DELAY_MIN:
     g_application.m_pPlayer->AudioOffset(false);
+    return true;
     break;
   case ACTION_AUDIO_DELAY_PLUS:
     g_application.m_pPlayer->AudioOffset(true);
+    return true;
     break;
   case ACTION_AUDIO_NEXT_LANGUAGE:
     //g_application.m_pPlayer->AudioOffset(false);
+    return true;
     break;
   case REMOTE_0:
-    ChangetheTimeCode(REMOTE_0);
-    break;
   case REMOTE_1:
-    ChangetheTimeCode(REMOTE_1);
-    break;
   case REMOTE_2:
-    ChangetheTimeCode(REMOTE_2);
-    break;
   case REMOTE_3:
-    ChangetheTimeCode(REMOTE_3);
-    break;
   case REMOTE_4:
-    ChangetheTimeCode(REMOTE_4);
-    break;
   case REMOTE_5:
-    ChangetheTimeCode(REMOTE_5);
-    break;
   case REMOTE_6:
-    ChangetheTimeCode(REMOTE_6);
-    break;
   case REMOTE_7:
-    ChangetheTimeCode(REMOTE_7);
-    break;
   case REMOTE_8:
-    ChangetheTimeCode(REMOTE_8);
-    break;
   case REMOTE_9:
-    ChangetheTimeCode(REMOTE_9);
+    ChangetheTimeCode(action.wID);
+    return true;
     break;
 
   case ACTION_ASPECT_RATIO:
@@ -274,6 +271,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
       m_bShowViewModeInfo = true;
       m_dwShowViewModeTimeout = timeGetTime();
     }
+    return true;
     break;
   case ACTION_SMALL_STEP_BACK:
     {
@@ -304,9 +302,10 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
       g_infoManager.SetDisplayAfterSeek();
 
     }
+    return true;
     break;
   }
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 void CGUIWindowFullScreen::OnWindowLoaded()
@@ -470,14 +469,14 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIWindowFullScreen::OnMouse()
+bool CGUIWindowFullScreen::OnMouse()
 {
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go back to GUI
     CAction action;
     action.wID = ACTION_SHOW_GUI;
     OnAction(action);
-    return ;
+    return true;
   }
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // no control found to absorb this click - toggle the OSD
@@ -485,6 +484,7 @@ void CGUIWindowFullScreen::OnMouse()
     action.wID = ACTION_SHOW_OSD;
     OnAction(action);
   }
+  return true;
 }
 
 // Dummy override of Render() - RenderFullScreen() is where the action takes place

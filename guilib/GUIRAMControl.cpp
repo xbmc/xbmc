@@ -198,7 +198,7 @@ void CGUIRAMControl::Render()
 
 
 
-void CGUIRAMControl::OnAction(const CAction &action)
+bool CGUIRAMControl::OnAction(const CAction &action)
 {
   switch (action.wID)
   {
@@ -209,6 +209,7 @@ void CGUIRAMControl::OnAction(const CAction &action)
       {
         m_iSelection = RECENT_MOVIES - 1;
       }
+      return true;
       break;
     }
 
@@ -219,6 +220,7 @@ void CGUIRAMControl::OnAction(const CAction &action)
       {
         m_iSelection = 0;
       }
+      return true;
       break;
     }
 
@@ -226,24 +228,27 @@ void CGUIRAMControl::OnAction(const CAction &action)
     {
       CFileItem item(m_current[m_iSelection].strFilepath, false);
       PlayMovie( item );
+      return true;
       break;
     }
 
   case ACTION_SHOW_INFO:
     {
       UpdateTitle(m_current[m_iSelection].strFilepath, m_iSelection);
+      return true;
       break;
     }
 
   case ACTION_SHOW_GUI:
     {
       UpdateAllTitles();
+      return true;
       break;
     }
 
   default:
     {
-      CGUIControl::OnAction(action);
+      return CGUIControl::OnAction(action);
       break;
     }
   }

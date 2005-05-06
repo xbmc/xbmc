@@ -48,12 +48,12 @@ CGUIWindowMusicBase::~CGUIWindowMusicBase ()
 
 /// \brief Handle actions on window.
 /// \param action Action that can be reacted on.
-void CGUIWindowMusicBase::OnAction(const CAction& action)
+bool CGUIWindowMusicBase::OnAction(const CAction& action)
 {
   if (action.wID == ACTION_PARENT_DIR)
   {
     GoParentFolder();
-    return ;
+    return true;
   }
 
   if (action.wID == ACTION_PREVIOUS_MENU)
@@ -65,16 +65,16 @@ void CGUIWindowMusicBase::OnAction(const CAction& action)
     }
 
     m_gWindowManager.ActivateWindow(WINDOW_HOME);
-    return ;
+    return true;
   }
 
   if (action.wID == ACTION_SHOW_PLAYLIST)
   {
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
-    return ;
+    return true;
   }
 
-  CGUIWindow::OnAction(action);
+  return CGUIWindow::OnAction(action);
 }
 
 /*!

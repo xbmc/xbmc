@@ -10,7 +10,7 @@ public:
   CGUIWindowSettingsCategory(void);
   virtual ~CGUIWindowSettingsCategory(void);
   virtual bool OnMessage(CGUIMessage &message);
-  virtual void OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual DWORD GetID() const { return m_dwWindowId + (DWORD)m_iScreen; };
 protected:
