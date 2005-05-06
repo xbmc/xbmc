@@ -405,6 +405,7 @@ bool CFileItem::HasDefaultThumb() const
   if (strThumb.Equals("defaultVCDBig.png")) return true;
   if (strThumb.Equals("defaultVideoBig.png")) return true;
   if (strThumb.Equals("defaultXBOXDVDBig.png")) return true;
+  if (strThumb.Equals("defaultScriptBig.png")) return true;
 
   // album defaults
   if (strThumb.Equals("MyMusic.jpg")) return true;
@@ -438,6 +439,7 @@ bool CFileItem::HasDefaultIcon() const
   if (strThumb.Equals("defaultVCD.png")) return true;
   if (strThumb.Equals("defaultVideo.png")) return true;
   if (strThumb.Equals("defaultXBOXDVD.png")) return true;
+  if (strThumb.Equals("defaultScript.png")) return true;
 
   // album defaults
   if (strThumb.Equals("MyMusic.jpg")) return true;
@@ -553,6 +555,10 @@ void CFileItem::FillInDefaultIcon()
         strDescription = strFName.Left(iPos);
         SetLabel(strDescription);
         SetIconImage("defaultShortcut.png");
+      }
+      else if ( IsPythonScript() )
+      {
+        SetIconImage("DefaultScript.png");
       }
       //else
       //{
