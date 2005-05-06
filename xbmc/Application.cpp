@@ -2348,6 +2348,7 @@ void CApplication::FrameMove()
     lastAnalogKey = newAnalogKey;
     if (OnKey(key)) return;
   }
+  lastAnalogKey = newAnalogKey;
   // post the new key's message
   if (newAnalogKey)
   {
