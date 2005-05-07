@@ -3,7 +3,7 @@
 
 #define DECODER_DELAY 529 // decoder delay in samples
 
-MP3Codec::MP3Codec()
+MP3Codec::MP3Codec() : m_filePAP(65536, 4)
 {
   CreateDecoder = NULL;
   m_SampleRate = 0;
@@ -19,7 +19,8 @@ MP3Codec::MP3Codec()
   m_AverageInputBytesPerSecond = 20000; // 160k , good place to start i guess
   m_bGuessByterate = false;
   m_lastByteOffset = 0;
-  m_InputBufferSize = 128*1024;         // 128k works reasonably well for SMB - Change when reading from http?
+  m_InputBufferSize = 64*1024;         // 64k is a reasonable amount, considering that we actual are
+                                       // using a background reader thread now that caches in advance.
   m_InputBuffer = new BYTE[m_InputBufferSize];  
   m_InputBufferPos = 0;
   // create our output buffer

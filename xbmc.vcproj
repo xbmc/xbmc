@@ -2394,6 +2394,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\CodecFactory.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\paplayer\FileReader.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\FileReader.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\ICodec.h">
 				</File>
 				<File
