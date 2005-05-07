@@ -11,7 +11,7 @@ CFileReader::CFileReader(unsigned int bufferSize, unsigned int numBuffers)
   m_bufferSize = bufferSize;
   for (unsigned int i = 0; i < numBuffers; i++)
   {
-    CBuffer *buffer = new CBuffer(m_bufferSize);
+    CFileBuffer *buffer = new CFileBuffer(m_bufferSize);
     if (buffer)
       m_buffer.push_back(buffer);
   }
