@@ -102,6 +102,7 @@ public:
 
   virtual void SeekTime(int iTime);
   virtual __int64 GetTime();
+  int GetTimeInMsec();
   virtual int GetTotalTime();
   virtual void ToFFRW(int iSpeed);
   virtual void ShowOSD(bool bOnoff);
