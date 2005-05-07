@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-05-2005 changed: nav sounds respect volume settings
   - 07-05-2005 added: SF patch [1196982] make sidplayer respect volume at start - thanks to spiff
   - 07-05-2005 added: Threaded FileReader class to mp3 codec (paplayer) to allow file readahead caching.
   - 07-05-2005 fixed: keymap.xml had wrong id's for Library and Top 100 views which did not allow to queue up songs or switch to playlist menu.

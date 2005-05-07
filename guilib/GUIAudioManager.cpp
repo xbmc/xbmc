@@ -104,7 +104,7 @@ bool CGUIAudioManager::CreateBuffer(LPWAVEFORMATEX wfx, int iLength, LPDIRECTSOU
   }
 
   //  Make effects a loud as possible
-  (*ppSoundBuffer)->SetVolume(DSBVOLUME_MAX);
+  (*ppSoundBuffer)->SetVolume(g_stSettings.m_nVolumeLevel);
   (*ppSoundBuffer)->SetHeadroom(0);
 
   // Set the default mixbins headroom to appropriate level as set in the settings file (to allow the maximum volume)
@@ -410,4 +410,22 @@ bool CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const CStdString&
 void CGUIAudioManager::Enable(bool bEnable)
 {
   m_bEnabled=bEnable;
+}
+
+void CGUIAudioManager::SetVolume(int iLevel)
+{
+  if (m_lpActionSoundBuffer)
+    m_lpActionSoundBuffer->SetVolume(iLevel);
+
+  if (m_lpStartSoundBuffer)
+    m_lpStartSoundBuffer->SetVolume(iLevel);
+
+  soundBufferMap::iterator it=m_windowSoundBuffers.begin();
+  while (it!=m_windowSoundBuffers.end())
+  {
+    if (it->second)
+      it->second->SetVolume(iLevel);
+
+    ++it;
+  }
 }

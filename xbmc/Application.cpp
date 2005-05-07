@@ -36,6 +36,7 @@
 #include "ButtonTranslator.h"
 #include "GUIAudioManager.h"
 #include "lib/libscrobbler/scrobbler.h"
+#include "cores/PAPlayer/PAPlayer.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -2662,7 +2663,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     if (CUtil::FileExists("Q:\\system\\players\\paplayer\\in_mp3.dll"))  strNewPlayer = "paplayer";
   }
-  else if (url.GetFileType() == "ape" || url.GetFileType() == "mac" || url.GetFileType() == "cdda" || url.GetFileType() == "ogg" || url.GetFileType() == "mpc")
+  else if (PAPlayer::IsSupportedFileType(url.GetFileType()))
   {
     strNewPlayer = "paplayer";
   }
@@ -3594,6 +3595,8 @@ void CApplication::SetVolume(int iPercent)
   // and tell our player to update the volume
   if (m_pPlayer)
     m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
+
+  g_audioManager.SetVolume(g_stSettings.m_nVolumeLevel);
 }
 
 int CApplication::GetVolume() const
