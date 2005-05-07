@@ -2,6 +2,7 @@
 #include "ICodec.h"
 #include "../../cores/DllLoader/dll.h"
 #include "../../MusicInfoTagLoaderMP3.h"
+#include "FileReader.h"
 
 #include "dec_if.h"
 
@@ -19,7 +20,7 @@ public:
 
 private:
   // Decoding variables
-  CFile   m_filePAP;          // Our MP3 file
+  CFileReader   m_filePAP;          // Our MP3 file
   __int64 m_lastByteOffset;
   bool    m_eof;
   IAudioDecoder* m_pPAP;    // handle to the codec.
