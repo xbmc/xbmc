@@ -36,7 +36,6 @@
 #include "ButtonTranslator.h"
 #include "GUIAudioManager.h"
 #include "lib/libscrobbler/scrobbler.h"
-#include "cores/PAPlayer/PAPlayer.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -2663,7 +2662,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     if (CUtil::FileExists("Q:\\system\\players\\paplayer\\in_mp3.dll"))  strNewPlayer = "paplayer";
   }
-  else if (PAPlayer::IsSupportedFileType(url.GetFileType()))
+  else if (url.GetFileType() == "ape" || url.GetFileType() == "mac" || url.GetFileType() == "cdda" || url.GetFileType() == "ogg" || url.GetFileType() == "mpc")
   {
     strNewPlayer = "paplayer";
   }
