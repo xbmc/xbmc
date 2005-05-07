@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-05-2005 updated: Italian language file (Thnx to kotix)
+  - 07-05-2005 updated: Norwegian language file (Thnx to vnm)
   - 07-05-2005 fixed: m3u's with album and artist info (#EXTART and #EXTALB) loads them as songs
   - 07-05-2005 changed: cdda track filenames start at 1 instead of 0
   - 07-05-2005 fixed: wrong vorbisfile.dll in repository
