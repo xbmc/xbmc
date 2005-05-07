@@ -59,7 +59,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_bAbortRequest = false;
   m_iCurrentVideoStream = 0;
   m_iCurrentAudioStream = 0;
-  m_iCurrentPhysicalAudioStream = 0;
+  m_iCurrentPhysicalAudioStream = -1;
   m_bRenderSubtitle = false;
 }
 
@@ -475,40 +475,34 @@ void CDVDPlayer::HandleMessages()
   {
     switch (pMessage->iMessage)
     {
-    case DVDMESSAGE_SEEKPERCENT:
-      {
-        if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD) 
-        {
-          if (IsInMenu()) break; //We can't seek in a menu
-          if( ((CDVDInputStreamNavigator*)m_pInputStream)->SeekPercentage((float)pMessage->iValue))
-          {
-            FlushBuffers();
-            m_pDemuxer->Reset();
-          }
-          else
-            CLog::Log(LOGWARNING, "error while seeking");
-        }
-        else
-        {
-          if (m_pDemuxer->Seek(pMessage->iValue*GetTotalTime()/100)) 
-          {
-            FlushBuffers();
-          }
-          else
-            CLog::Log(LOGWARNING, "error while seeking");
-        }
-      }
-      break;
-
     case DVDMESSAGE_SEEK:
       {
         if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD) 
         {
-          const int iTot = GetTotalTime();
-          if (iTot == 0) break;
-          pMessage->iValue = pMessage->iValue * 100 / iTot;
-          pMessage->iMessage = DVDMESSAGE_SEEKPERCENT;
-          continue; //Reuse code above
+          //We can't seek in a menu
+          if (!IsInMenu())
+          {
+            // need to get the seek based on file positition working in CDVDInputStreamNavigator
+            // so that demuxers can control the stream (seeking in this case)
+            // for now use time based seeking
+            if (((CDVDInputStreamNavigator*)m_pInputStream)->Seek(pMessage->iValue))
+            {
+              FlushBuffers();
+              // can't do this this way, because our streampointers (m_pCurrentDemuxStreamAudio and Video)
+              // will get invalid
+            
+              /// m_pDemuxer->Reset();
+            
+              // let the code below handle the reset
+              /// m_messenger.ResetDemuxer();
+              
+              // just as easy to leave it away
+              // libmpeg2 can handle streams that are incorrect, so a bit of incorrect data is no problem here
+              // better would be to flush all data in the demuxer, but not to close reset it!
+            }
+            else CLog::Log(LOGWARNING, "error while seeking");
+          }
+          else CLog::Log(LOGWARNING, "can't seek in a menu");
         }
         else
         {
@@ -516,8 +510,7 @@ void CDVDPlayer::HandleMessages()
           {
             FlushBuffers();
           }
-          else
-            CLog::Log(LOGWARNING, "error while seeking");
+          else CLog::Log(LOGWARNING, "error while seeking");
         }
         break;
       }
@@ -627,10 +620,15 @@ void CDVDPlayer::SubtitleOffset(bool bPlus)
 void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 {
   float percent = (bLargeStep ? 10.0f : 2.0f);
-  percent += GetPercentage();
-  percent *= bPlus ? 1 : -1;
   
-  SeekPercentage(percent);
+  if (bPlus) percent += GetPercentage();
+  else percent = GetPercentage() - percent;
+
+  if (percent >= 0 && percent <= 100)
+  {  
+    // should be modified to seektime
+    SeekPercentage(percent);
+  }
 }
 
 void CDVDPlayer::ToggleFrameDrop()
@@ -731,27 +729,20 @@ void CDVDPlayer::SwitchToNextAudioLanguage()
 
 void CDVDPlayer::SeekPercentage(float iPercent)
 {
-  if (m_pDemuxer)
-  {
-    DVDPlayerMessage* pMessage = new DVDPlayerMessage;
-    pMessage->iMessage = DVDMESSAGE_SEEKPERCENT;
-    pMessage->iValue = (int)iPercent;
-    m_messenger.Send(pMessage);
-  }
+  int iTotalMsec = GetTotalTime();
+  int iTime = (int)(iTotalMsec * iPercent / 100);
+  
+  SeekTime(iTime);
 }
 
 float CDVDPlayer::GetPercentage()
 {
-  // get timing and seeking from libdvdnav for dvd's
-  if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
-  {
-    return (float)((CDVDInputStreamNavigator*)m_pInputStream)->GetPercentage();
-  }
-  const int iTot = GetTotalTime();
-  if( iTot == 0) return 0;
-  double dPercent = (GetTime() * 0.1) / iTot;
+  int iTotalTime = GetTotalTime();
+  int iCurrentTime = (int)GetTimeInMsec();
+  
+  float fPercent = iCurrentTime * 100 / (float)iTotalTime;
 
-  return (float)(dPercent);
+  return fPercent;
 }
 
 //This is how much audio is delayed to video, we count the oposite in the dvdplayer
@@ -880,7 +871,7 @@ void CDVDPlayer::SetAudioStream(int iStream)
     if (pStream->type == STREAM_AUDIO) audio_index++;
     if (iStream == audio_index)
     {
-      m_iCurrentPhysicalAudioStream=pStream->iPhysicalId;
+      m_iCurrentPhysicalAudioStream = pStream->iPhysicalId;
 
       if(m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD )
       {
@@ -907,17 +898,24 @@ void CDVDPlayer::SeekTime(int iTime)
   g_infoManager.m_bPerformingSeek = false;
 }
 
+// return the time in seconds, should be changed in xbmc to msec
 __int64 CDVDPlayer::GetTime()
+{
+  return (GetTimeInMsec() / 1000);
+}
+
+int CDVDPlayer::GetTimeInMsec()
 {
   // get timing and seeking from libdvdnav for dvd's
   if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
   {
-    return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime() * (__int64)1000; // we should take our buffers into account
+    return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime(); // we should take our buffers into account
   }
 
-  return (m_clock.GetClock() / (DVD_TIME_BASE / 1000)) * (__int64)1000;
+  return (int)(m_clock.GetClock() / (DVD_TIME_BASE / 1000));
 }
 
+// return length in msec
 int CDVDPlayer::GetTotalTime()
 {
   // get timing and seeking from libdvdnav for dvd's
@@ -966,7 +964,7 @@ bool CDVDPlayer::OpenDefaultAudioStream()
     CDemuxStream* pStream = m_pDemuxer->GetStream(i);
     if (pStream->type == STREAM_AUDIO)
     {
-      if( pStream->iPhysicalId == m_iCurrentPhysicalAudioStream )
+      if(m_iCurrentPhysicalAudioStream < 0 || pStream->iPhysicalId == m_iCurrentPhysicalAudioStream )
       {
         CDemuxStreamAudio* pStreamAudio = (CDemuxStreamAudio*)pStream;
         {

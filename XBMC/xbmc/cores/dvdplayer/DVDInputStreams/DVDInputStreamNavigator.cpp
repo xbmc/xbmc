@@ -227,6 +227,7 @@ int CDVDInputStreamNavigator::Read(BYTE* buf, int buf_size)
   return temp;
 }
 
+// not working yet, but it is the recommanded way for seeking
 int CDVDInputStreamNavigator::Seek(__int64 offset, int whence)
 {
   if (!m_dvdnav) return -1;  
@@ -698,32 +699,26 @@ bool CDVDInputStreamNavigator::GetButtonInfo(DVDOverlayPicture* pOverlayPicture,
 
 int CDVDInputStreamNavigator::GetTotalTime()
 {
-  return m_iTotalTime;
+  return m_iTotalTime * 1000;
 }
 
 int CDVDInputStreamNavigator::GetTime()
 {
-  return m_iCurrentTime;
+  return m_iCurrentTime * 1000;
 }
 
-float CDVDInputStreamNavigator::GetPercentage()
-{
-  uint32_t pos=0, len=0;
-  if( dvdnav_get_position(m_dvdnav, &pos, &len) == DVDNAV_STATUS_ERR )
-  {
-    CLog::Log(LOGDEBUG, "dvdnav: %s", dvdnav_err_to_string(m_dvdnav));
-    return -1;
-  }
-  return (pos * 100.0f / len);
-}
-
-bool CDVDInputStreamNavigator::SeekPercentage(float fPercent)
+bool CDVDInputStreamNavigator::Seek(int iTimeInMsec)
 {
   uint32_t pos=0, len=0;
   uint64_t newpos=0;
   dvdnav_get_position(m_dvdnav, &pos, &len);
-    
-  newpos = (uint64_t)(fPercent * (uint64_t)len / 100.0f);
+  
+  int iDesiredPrecentage = (iTimeInMsec * 100 / GetTotalTime());
+  
+  // would be much easier if we knew how much blocks one second is
+  
+  //newpos = (uint64_t)iTimeInMsec / 1000 * 2048;
+  newpos = (uint64_t)(iDesiredPrecentage * (uint64_t)len / 100.0f);
   if (dvdnav_sector_search(m_dvdnav, newpos, SEEK_SET) == DVDNAV_STATUS_ERR)
   {
     CLog::Log(LOGDEBUG, "dvdnav: %s", dvdnav_err_to_string(m_dvdnav));
