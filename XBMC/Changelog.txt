@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-05-2005 fixed: keymap.xml had wrong id's for Library and Top 100 views which did not allow to queue up songs or switch to playlist menu.
   - 06-05-2005 fixed: Analog buttons sticking with new action system and updated keymap.xml for visualisation window.
   - 06-05-2005 added: SF patch [1194146] video mode switch based on game region - thanks to spiff
   - 06-05-2005 added: SF patch [1196174] make trailing fill characters be part of tag in music template - thanks to spiff
