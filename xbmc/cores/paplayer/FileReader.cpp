@@ -2,40 +2,33 @@
 #include "FileReader.h"
 #include "../../utils/SingleLock.h"
 
-#define READ_FINISHED -1
-#define READ_NO_DATA_AVAILABLE 0
-#define READ_GOT_DATA 1
-
-CFileReader::CFileReader(unsigned int bufferSize, unsigned int numBuffers)
+CFileReader::CFileReader(unsigned int bufferSize, unsigned int dataToKeepBehind, unsigned int chunkSize)
 {
   m_bufferSize = bufferSize;
-  for (unsigned int i = 0; i < numBuffers; i++)
-  {
-    CFileBuffer *buffer = new CFileBuffer(m_bufferSize);
-    if (buffer)
-      m_buffer.push_back(buffer);
-  }
-  m_filePos = 0;
+  m_chunkSize = chunkSize;
+  m_dataToKeepBehind = dataToKeepBehind;
+  m_buffer = new BYTE[m_bufferSize];
+  m_bufferedDataStart = 0;
+  m_bufferedDataPos = 0;
+  m_readFromPos = 0;
   m_readError = false;
 }
 
 CFileReader::~CFileReader()
 {
   Close();
-  for (unsigned int i = 0; i < m_buffer.size(); i++)
-  {
-    if (m_buffer[i])
-      delete m_buffer[i];
-    m_buffer[i] = NULL;
-  }
-  m_buffer.clear();
+  if (m_buffer)
+    delete[] m_buffer;
 }
 
 bool CFileReader::Open(const CStdString &strFile)
 {
   if (!m_file.Open(strFile))
     return false;
-  m_filePos = 0;
+
+  m_bufferedDataStart = 0;
+  m_bufferedDataPos = 0;
+  m_readFromPos = 0;
   m_readError = false;
   // start our thread process to start buffering the file
   if (ThreadHandle() == NULL)
@@ -54,7 +47,7 @@ void CFileReader::Close()
 
 __int64 CFileReader::GetPosition()
 {
-  return m_filePos;
+  return m_bufferedDataPos;
 }
 
 __int64 CFileReader::GetLength()
@@ -64,98 +57,70 @@ __int64 CFileReader::GetLength()
 
 int CFileReader::Read(void *out, __int64 size)
 {
+  BYTE *byteOut = (BYTE *)out;
   // read out of our buffers - we have a separate thread prefetching data
-  if (m_filePos + size > m_file.GetLength())
-    size = m_file.GetLength() - m_filePos;
+  if (m_bufferedDataPos + size > m_file.GetLength())
+    size = m_file.GetLength() - m_bufferedDataPos;
   __int64 sizeleft = size;
-  __int64 pos = 0;
   while (sizeleft)
   {
-    // wait for our other thread - give it a breather by sleeping
-    int ret = ReadFromBuffers((BYTE *)out, &pos, &sizeleft);
-    if (ret == READ_FINISHED)
-      break;  // we are done
-    else if (ret == READ_NO_DATA_AVAILABLE)
-    { // sleep to give our input thread time to finish reading more data in
+    // read data in from our buffer
+    unsigned int readAhead = (unsigned int)(m_file.GetPosition() - m_bufferedDataPos);
+    if (readAhead)
+    {
+      unsigned int amountToCopy = (unsigned int)min(readAhead, sizeleft);
+      if (m_readFromPos + amountToCopy > m_bufferSize)
+      { // we must wrap around in our circular buffer
+        unsigned int copyAmount = m_bufferSize - m_readFromPos;
+        memcpy(byteOut, m_buffer + m_readFromPos, copyAmount);
+        m_readFromPos = 0;
+        m_bufferedDataPos += copyAmount;
+        byteOut += copyAmount;
+        sizeleft -= copyAmount;
+        amountToCopy -= copyAmount;
+      }
+      memcpy(byteOut, m_buffer + m_readFromPos, amountToCopy);
+      m_readFromPos += amountToCopy;
+      m_bufferedDataPos += amountToCopy;
+      byteOut += amountToCopy;
+      sizeleft -= amountToCopy;
+    }
+    else
+    { // nothing to copy yet - sleep while we wait for our reader thread to read the data in.
       Sleep(1);
     }
-    if (m_readError)
-      return 0;
   }
   return (int)size;
 }
 
-// Reads data from our buffers, updating pos and size respectively.
-// returns true if it's taken some data - false otherwise.
-// pos is the byte position in our output buffer (altered as we read data in)
-// size is the amount of bytes left to read (altered as we read data in)
-int CFileReader::ReadFromBuffers(BYTE *out, __int64 *pos, __int64 *size)
-{
-  if (!*size) return READ_FINISHED;
-  // run through our buffers and check whether they have relavent data
-  for (unsigned int i = 0; i < m_buffer.size(); i++)
-  {
-    if (m_buffer[i]->offset <= m_filePos && m_filePos < m_buffer[i]->offset + m_buffer[i]->size)
-    { // have data in this buffer to read from
-      m_buffer[i]->Lock();
-      // copy to output buffer
-      unsigned int amount = (unsigned int)min(m_buffer[i]->offset + m_buffer[i]->size - m_filePos, *size);
-      memcpy(out + *pos, m_buffer[i]->buffer + m_filePos - m_buffer[i]->offset, amount);
-      m_filePos += amount;
-      *pos += amount;
-      *size -= amount;
-      // if our buffer is empty show it
-      // TODO: Buffer empty should probably be handled by our reader thread, so that
-      // we can keep some buffers both behind and forward of where we are to allow for
-      // nicer rewinding.  Currently we only keep data forward of where we are (excluding
-      // the current buffer).
-      if (m_filePos == m_buffer[i]->offset + m_buffer[i]->size)
-        m_buffer[i]->size = 0;
-      m_buffer[i]->Unlock();
-      return READ_GOT_DATA;
-    }
-  }
-  return READ_NO_DATA_AVAILABLE;
-}
-
 // Seek.  We must seek to the appropriate position and update our buffers (flushing them
 // if necessary).
-// TODO: This could be optimized as follows:
-// 1. Set our new real file position to our virtual file position.
-// 2. See if we have a single valid buffer (as is done currently, but using the real file position variable).
-// 3. If so, mark it as valid, and increment our real file pointer accordingly, and go to 2.
-// 4. If not, remove all non-valid buffers.
 int CFileReader::Seek(__int64 pos, int whence)
 {
   CSingleLock lock(m_fileLock);
-  // calculate our position
+  // calculate our new position
+  __int64 newBufferedDataPos = 0;
   if (whence == SEEK_SET)
-    m_filePos = pos;
+    newBufferedDataPos = pos;
   else if (whence == SEEK_END)
-    m_filePos = m_file.GetLength() + pos;
+    newBufferedDataPos = m_file.GetLength() + pos;
   else if (whence == SEEK_CUR)
-    m_filePos += pos;
-  __int64 newFilePos = m_filePos;
-  // flush any out of range buffers - both forward and backward.
-  for (unsigned int i = 0; i < m_buffer.size(); i++)
-  {
-    if ((m_buffer[i]->offset + m_buffer[i]->size < m_filePos) || (m_filePos < m_buffer[i]->offset))
-    { // m_buffer[i] is out of range
-      // grab a lock
-      m_buffer[i]->Lock();
-      // and flush it out
-      m_buffer[i]->size = 0;
-      m_buffer[i]->offset = m_filePos - m_bufferSize;
-      m_buffer[i]->Unlock();
-    }
-    else
-    { // this buffer has valid data - let's update our real file position accordingly
-      if (newFilePos < m_buffer[i]->offset + m_buffer[i]->size)
-        newFilePos = m_buffer[i]->offset + m_buffer[i]->size;
-    }
+    newBufferedDataPos = m_bufferedDataPos + pos;
+
+  if (newBufferedDataPos < m_file.GetPosition() && newBufferedDataPos >= m_bufferedDataStart)
+  { // have valid data - just update our file position
+    m_readFromPos += (unsigned int)(newBufferedDataPos - m_bufferedDataPos);
+    if (m_readFromPos >= m_bufferSize)
+      m_readFromPos -= m_bufferSize;
+    m_bufferedDataPos = newBufferedDataPos;
   }
-  // and do the seek
-  m_file.Seek(newFilePos, SEEK_SET);
+  else
+  { // no valid data exists - flush our buffer and seek
+    m_readFromPos = 0;
+    m_bufferedDataStart = newBufferedDataPos;
+    m_bufferedDataPos = newBufferedDataPos;
+    m_file.Seek(m_bufferedDataPos, SEEK_SET);
+  }
   return 0;
 }
 
@@ -163,46 +128,36 @@ void CFileReader::Process()
 {
   while (!m_bStop)
   {
-    ReadIntoBuffers();
+    // calculate whether we have more space to read data in
+    unsigned int dataAhead = (unsigned int)(m_file.GetPosition() - m_bufferedDataPos);
+    if (dataAhead < m_bufferSize - m_dataToKeepBehind)
+    {
+      // grab a file lock
+      CSingleLock lock(m_fileLock);
+      unsigned int amountToRead = min(m_chunkSize, m_bufferSize - m_dataToKeepBehind - dataAhead);
+      // check the range of our valid data
+      if (m_file.GetPosition() + amountToRead - m_bufferedDataStart > m_bufferSize)
+      { // we're gonna be going over data that is over the start - move our start
+        // forward to accomodate.
+        m_bufferedDataStart = m_file.GetPosition() + amountToRead - m_bufferSize;
+      }
+      // work out where in the ringbuffer to read the data into
+      unsigned int inBufferPos = m_readFromPos + dataAhead;
+      if (inBufferPos > m_bufferSize)
+        inBufferPos -= m_bufferSize;  // wraparound
+      // do the read
+      if (inBufferPos + amountToRead > m_bufferSize)
+      {
+        unsigned int readAmount = m_bufferSize - inBufferPos;
+        m_file.Read(m_buffer + inBufferPos, readAmount);
+        amountToRead -= readAmount;
+        inBufferPos = 0;
+      }
+      m_file.Read(m_buffer + inBufferPos, amountToRead);
+    }
+    else
+    { // no space to read data into right now - sleep
+      Sleep(1);
+    }
   }
-}
-
-// Called via our reader thread to fill up buffers as necessary.
-void CFileReader::ReadIntoBuffers()
-{
-  __int64 amountLeft = m_file.GetLength() - m_file.GetPosition();
-  if (!amountLeft)
-  {
-    Sleep(1);
-    return;
-  }
-  // run through our buffers and see if we have some free.
-  unsigned int numfreebuffers = 0;
-  unsigned int *freebuffer = new unsigned int[m_buffer.size()];
-  for (unsigned int i = 0; i < m_buffer.size(); i++)
-  {
-    if (!m_buffer[i]->size)
-      freebuffer[numfreebuffers++] = i;
-  }
-  if (numfreebuffers)
-  { // have free buffers - find the oldest one
-    CSingleLock lock(m_fileLock);
-    unsigned int oldest = freebuffer[0];
-    for (unsigned int i = 1; i < numfreebuffers; i++)
-      if (m_buffer[oldest]->offset > m_buffer[freebuffer[i]]->offset) oldest = freebuffer[i];
-    // and fill it up
-    m_buffer[oldest]->Lock();
-    int amount = (int)min(amountLeft, m_bufferSize);
-    m_buffer[oldest]->offset = m_file.GetPosition();
-    if (!m_file.Read(m_buffer[oldest]->buffer, amount))
-      m_readError = true;
-    m_buffer[oldest]->size = amount;
-    m_buffer[oldest]->Unlock();
-  }
-  else
-  {
-    // nothing to do at this stage - let's sleep
-    Sleep(1);
-  }
-  delete[] freebuffer;
 }

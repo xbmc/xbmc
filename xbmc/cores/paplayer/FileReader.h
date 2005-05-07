@@ -4,45 +4,12 @@
 #include "../../utils/CriticalSection.h"
 #include "../../filesystem/file.h"
 
-class CFileBuffer
-{
-public:
-  CFileBuffer(unsigned int buffersize)
-  {
-    lock = false;
-    offset = 0;
-    size = 0;
-    buffer = new BYTE[buffersize];
-  }
-  ~CFileBuffer()
-  {
-    if (buffer)
-      delete[] buffer;
-  };
-  void Lock()
-  {
-    while (lock)
-      Sleep(1);
-    lock = true;
-  }
-  void Unlock()
-  {
-    lock = false;
-  }
-public:
-  __int64 offset;           // offset of start of this buffer into the file
-  unsigned int size;        // size in bytes of this buffer
-  BYTE *buffer;             // the buffer
-private:
-  bool lock;                // to allow separate threads to process it
-};
-
 // A threaded file reader class that reads ahead of the current file position
 // using a separate thread.
 class CFileReader : public CThread
 {
 public:
-  CFileReader(unsigned int bufferSize, unsigned int numBuffers);
+  CFileReader(unsigned int bufferSize, unsigned int dataToKeepBehind, unsigned int chunkSize);
   virtual ~CFileReader();
 
   virtual bool Open(const CStdString &strFile);
@@ -53,9 +20,6 @@ public:
   virtual __int64 GetLength();
 
 protected:
-  int ReadFromBuffers(BYTE *out, __int64 *pos, __int64 *size);
-  void ReadIntoBuffers();
-
   // thread functions
   virtual void OnStartup() {}
   virtual void Process();
@@ -63,9 +27,20 @@ protected:
 
 private:
   CFile   m_file;
-  __int64 m_filePos;
-  vector<CFileBuffer *> m_buffer;
-  unsigned int m_bufferSize;
+  __int64 m_bufferedDataStart;    // the earliest piece of data in our buffer that is considered valid
+  __int64 m_bufferedDataPos;      // the position our client thinks we're at
+  // __int64 m_bufferedDataEnd;   // the current file position - no need to store this.
+
+  unsigned int m_readFromPos;     // the position in the buffer that corresponds to the data
+                                  // at m_bufferedDataPos in the file.  From this we calculate
+                                  // where in the buffer we should read from and write to.
+
+  // our buffer
+  BYTE *m_buffer;
+  unsigned int m_bufferSize;        // buffer size
+  unsigned int m_dataToKeepBehind;  // amount of data to keep behind the current data position
+  unsigned int m_chunkSize;         // chunk size to read at a time.
+
   bool    m_readError;
   // file lock
   CCriticalSection m_fileLock;
