@@ -29,6 +29,7 @@ public:
           void        FreeUnused();
 
           void        Enable(bool bEnable);
+          void        SetVolume(int iLevel);
 private:
           bool        CreateBufferFromFile(const CStdString& strFile, LPDIRECTSOUNDBUFFER* ppSoundBuffer);
           bool        CreateBuffer(LPWAVEFORMATEX wfx, int iLength, LPDIRECTSOUNDBUFFER* ppSoundBuffer);
