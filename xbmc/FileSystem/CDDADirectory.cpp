@@ -118,20 +118,20 @@ bool CCDDADirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   // Filling the file items with cddb info happens in CMusicInfoTagLoaderCDDA
 
   // Generate fileitems
-  for (int i = 0;i < nTracks;++i)
+  for (int i = 1;i < nTracks;++i)
   {
     // Skip Datatracks for display,
     // but needed to query cddb
-    if (!pCdInfo->IsAudio(i + 1))
+    if (!pCdInfo->IsAudio(i))
       continue;
 
     // Format standard cdda item label
     CStdString strLabel;
-    strLabel.Format("Track %02.2i", i + 1);
+    strLabel.Format("Track %02.2i", i);
 
     CFileItem* pItem = new CFileItem(strLabel);
     pItem->m_bIsFolder = false;
-    pItem->m_strPath.Format("cdda://local/%i.cdda", i);
+    pItem->m_strPath.Format("cdda://local/%02.2i.cdda", i);
 
     __stat64 s64;
     CFile file;

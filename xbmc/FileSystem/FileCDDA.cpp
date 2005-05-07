@@ -175,6 +175,6 @@ int CFileCDDA::GetTrackNum(const CURL& url)
   CStdString strFileName;
   url.GetURL(strFileName);
 
-  // get track number from "cdda://local/0.cdda"
-  return atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str()) + 1;
+  // get track number from "cdda://local/01.cdda"
+  return atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str());
 }
