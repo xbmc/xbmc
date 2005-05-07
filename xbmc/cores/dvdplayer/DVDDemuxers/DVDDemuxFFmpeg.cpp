@@ -370,7 +370,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
 bool CDVDDemuxFFmpeg::Seek(int iTime)
 {
   Lock();
-  __int64 seek_pts = (__int64)iTime * AV_TIME_BASE;
+  __int64 seek_pts = (__int64)iTime * (AV_TIME_BASE / 1000);
   int ret = av_seek_frame(m_pFormatContext, -1, seek_pts, seek_pts < 0 ? AVSEEK_FLAG_BACKWARD : 0);
   Unlock();
   return (ret >= 0);
@@ -380,7 +380,7 @@ int CDVDDemuxFFmpeg::GetStreamLenght()
 {
   if (m_pFormatContext->duration == DVD_NOPTS_VALUE) return 0;
 
-  return (int)(m_pFormatContext->duration / AV_TIME_BASE);
+  return (int)(m_pFormatContext->duration / (AV_TIME_BASE / 1000));
 }
 
 CDemuxStream* CDVDDemuxFFmpeg::GetStream(int iStreamId)

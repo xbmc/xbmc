@@ -80,8 +80,8 @@ public:
   int GetTotalTime(); // the total time in seconds
   int GetTime(); // the current position in seconds
 
-  bool SeekPercentage(float fPercent); //seek within current pg(c)
-  float GetPercentage(); //percentage within current pg(c)
+  bool Seek(int iTimeInMsec); //seek within current pg(c)
+  //float GetPercentage(); //percentage within current pg(c)
 
 
 protected:
