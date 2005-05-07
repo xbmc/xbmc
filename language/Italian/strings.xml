@@ -464,6 +464,14 @@
   <string><id>634</id><value>Stretch 16:9</value></string>
   <string><id>635</id><value>Dimensione originale</value></string>
   <string><id>636</id><value>Personalizzata</value></string>
+  <string><id>637</id><value>Replay Gain</value></string> 
+  <string><id>638</id><value>Modo</value></string> 
+  <string><id>639</id><value>Usa Livelli Traccia Trac</value></string> 
+  <string><id>640</id><value>Usa Livelli Album</value></string> 
+  <string><id>641</id><value>Livello PreAmp - Replay Gained Files</value></string> 
+  <string><id>642</id><value>Livello PreAmp - Non Replay Gained Files</value></string> 
+  <string><id>643</id><value>Evita Clipping nei Replay Gained Files</value></string> 
+
   <string><id>700</id><value>Riorganizzo l'archivio</value></string>
   <string><id>701</id><value>Eliminazione vecchie canzoni dall' archivio</value></string>
   <string><id>702</id><value>Questo percorso è già stato esaminato in precedenza.</value></string>
@@ -742,6 +750,8 @@
   <string><id>13355</id><value>Pixel Shader Bassa Qualità</value></string>
   <string><id>13356</id><value>Overlays Hardware</value></string>
   <string><id>13357</id><value>Pixel Shader Alta Qualità</value></string>
+  <string><id>13358</id><value>Play File</value></string>
+  <string><id>13359</id><value>Setta Icona Artista</value></string>
   <string><id>13360</id><value>Crea Icone Automaticamente</value></string>
   <string><id>13361</id><value>Attiva Voce</value></string>
   <string><id>13362</id><value>Mascheramento Voce</value></string>
@@ -921,4 +931,5 @@
   <string><id>15210</id><value>%i Canzoni Memorizzate</value></string>
   <string><id>15211</id><value>Inviando...</value></string>
   <string><id>15212</id><value>Inviato in %i secondi</value></string>
+  <string><id>15213</id><value>[CONTENITORE]</value></string>
 </strings>
