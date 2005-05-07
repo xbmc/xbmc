@@ -150,8 +150,6 @@ bool SidPlayer::createOutput (OUTPUTS driver, const SidTuneInfo *tuneInfo)
     return false;
   }
 
-  // Set the volume level
-  SetVolume(g_stSettings.m_nVolumeLevel);
   // Configure with user settings
   m_driver.cfg.frequency = m_engCfg.frequency;
   m_driver.cfg.precision = m_engCfg.precision;
@@ -193,6 +191,10 @@ bool SidPlayer::createOutput (OUTPUTS driver, const SidTuneInfo *tuneInfo)
     //   << " audio channels not supported" << endl;
     return false;
   }
+  
+  // Set the volume level - spiff
+  SetVolume(g_stSettings.m_nVolumeLevel);
+
   return true;
 }
 
