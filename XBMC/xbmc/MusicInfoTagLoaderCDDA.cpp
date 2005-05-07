@@ -31,7 +31,7 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
     strDir.Format("%s\\cddb", g_stSettings.m_szAlbumDirectory);
     cddb.setCacheDir(strDir);
 
-    int iTrack = atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str()) + 1;
+    int iTrack = atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str());
 
     // Tracknumber and duration is always available
     tag.SetTrackNumber(iTrack);

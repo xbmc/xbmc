@@ -40,7 +40,7 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
   if (infoTag)
   {
     CStdString strTrack;
-    strTrack.Format("%i", atoi(strTrackFile.substr(13, strTrackFile.size() - 13 - 5).c_str()) + 1);
+    strTrack.Format("%i", atoi(strTrackFile.substr(13, strTrackFile.size() - 13 - 5).c_str()));
 
     m_pEncoder->SetComment("Ripped with XBMC");
     m_pEncoder->SetArtist(infoTag->GetArtist().c_str());
@@ -103,7 +103,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   bool bCancelled = false;
   const char* strFilename = strFile.c_str();
 
-  CLog::Log(LOGINFO, "Start ripping track %s to %s", strTrackFile, strFile);
+  CLog::Log(LOGINFO, "Start ripping track %s to %s", strTrackFile.c_str(), strFile.c_str());
 
   // if we are ripping to a samba share, rip it to hd first and then copy it it the share
   CFileItem file(strFile, false);
@@ -124,7 +124,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   // setup the progress dialog
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   CStdStringW strLine0, strLine1;
-  int iTrack = atoi(strTrackFile.substr(13, strTrackFile.size() - 13 - 5).c_str()) + 1;
+  int iTrack = atoi(strTrackFile.substr(13, strTrackFile.size() - 13 - 5).c_str());
   strLine0.Format(L"%ls %i", g_localizeStrings.Get(606).c_str(), iTrack); // Track Number: %i
   strLine1.Format(L"%ls %hs", g_localizeStrings.Get(607).c_str(), strFile); // To: %s
   pDlgProgress->SetHeading(605); // Ripping
@@ -163,7 +163,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
     CFile file;
     if (!file.Cache(strFilename, strFile.c_str()))
     {
-      CLog::Log(LOGINFO, "Error copying file from %s to %s", strFilename, strFile);
+      CLog::Log(LOGINFO, "Error copying file from %s to %s", strFilename, strFile.c_str());
       // show error
       g_graphicsContext.Lock();
       CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
@@ -181,7 +181,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   }
 
   if (bCancelled) CLog::Log(LOGWARNING, "User Cancelled CDDA Rip");
-  else CLog::Log(LOGINFO, "Finished ripping %s", strTrackFile);
+  else CLog::Log(LOGINFO, "Finished ripping %s", strTrackFile.c_str());
   return !bCancelled;
 }
 
@@ -211,8 +211,8 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
     return false;
   }
 
-  // get track number from "cdda://local/0.cdda"
-  iTrack = atoi(pItem->m_strPath.substr(13, pItem->m_strPath.size() - 13 - 5).c_str()) + 1;
+  // get track number from "cdda://local/01.cdda"
+  iTrack = atoi(pItem->m_strPath.substr(13, pItem->m_strPath.size() - 13 - 5).c_str());
 
   // if album name is set, then we use this as the directory to place the new file in.
   if (pItem->m_musicInfoTag.GetAlbum().size() > 0)
@@ -329,8 +329,8 @@ bool CCDDARipper::RipCD()
   for (int i = 0; i < vecItems.Size() && bResult == true; i++)
   {
     char* cExt = GetExtension(g_guiSettings.GetInt("CDDARipper.Encoder"));
-    // get track number from "cdda://local/0.cdda"
-    iTrack = atoi(vecItems[i]->m_strPath.substr(13, vecItems[i]->m_strPath.size() - 13 - 5).c_str()) + 1;
+    // get track number from "cdda://local/01.cdda"
+    iTrack = atoi(vecItems[i]->m_strPath.substr(13, vecItems[i]->m_strPath.size() - 13 - 5).c_str());
     // if title is set we use it, and modify it if needed
     if (vecItems[i]->m_musicInfoTag.GetTitle().size() > 0)
     {
