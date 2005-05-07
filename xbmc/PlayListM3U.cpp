@@ -9,9 +9,13 @@ using namespace XFILE;
 
 #define M3U_START_MARKER "#EXTM3U"
 #define M3U_INFO_MARKER  "#EXTINF"
+#define M3U_ARTIST_MARKER  "#EXTART"
+#define M3U_ALBUM_MARKER  "#EXTALB"
 
 // example m3u file:
 //   #EXTM3U
+//   #EXTART:Demo Artist
+//   #EXTALB:Demo Album
 //   #EXTINF:5,demo
 //   E:\Program Files\Winamp3\demo.mp3
 //   #EXTINF:5,demo
@@ -68,7 +72,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 
       }
     }
-    else if (strLine != M3U_START_MARKER)
+    else if (strLine != M3U_START_MARKER && strLine.Left(strlen(M3U_ARTIST_MARKER)) != M3U_ARTIST_MARKER && strLine.Left(strlen(M3U_ALBUM_MARKER)) != M3U_ALBUM_MARKER )
     {
       CStdString strFileName = strLine;
 
