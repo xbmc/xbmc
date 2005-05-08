@@ -1,0 +1,37 @@
+
+#include "stdafx.h"
+#include "MusicInfoTagLoaderShn.h"
+#include "cores/paplayer/SHNCodec.h"
+
+using namespace MUSIC_INFO;
+
+CMusicInfoTagLoaderSHN::CMusicInfoTagLoaderSHN(void)
+{}
+
+CMusicInfoTagLoaderSHN::~CMusicInfoTagLoaderSHN()
+{}
+
+bool CMusicInfoTagLoaderSHN::Load(const CStdString& strFileName, CMusicInfoTag& tag)
+{
+  try
+  {
+    // SHN has no tag information other than the duration.
+
+    // Load our codec class
+    SHNCodec codec;
+    if (codec.Init(strFileName))
+    {
+      tag.SetDuration((int)((codec.m_TotalTime + 500)/ 1000));
+      tag.SetLoaded(true);
+      codec.DeInit();
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "Tag loader ape: exception in file %s", strFileName.c_str());
+  }
+
+  tag.SetLoaded(false);
+  return false;
+}

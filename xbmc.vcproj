@@ -636,6 +636,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\MusicInfoTagLoaderOgg.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderShn.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderShn.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\MusicInfoTagLoaderWMA.cpp">
 				</File>
 				<File
@@ -2059,10 +2065,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -2431,6 +2437,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\ReplayGain.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\SHNcodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\SHNcodec.h">
 				</File>
 			</Filter>
 		</Filter>
