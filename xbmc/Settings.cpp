@@ -260,6 +260,17 @@ CSettings::CSettings(void)
   g_stSettings.m_bMyMusicOldUseTags = true;
   g_stSettings.m_bMyMusicOldFindThumbs = true;
 
+  // defaults for seeking
+  g_stSettings.m_iMyVideoTimeSeekForward = 60;
+  g_stSettings.m_iMyVideoTimeSeekBackward = -60;
+  g_stSettings.m_iMyVideoTimeSeekForwardBig = 600;
+  g_stSettings.m_iMyVideoTimeSeekBackwardBig = -600;
+
+  g_stSettings.m_iMyVideoPercentSeekForward = 2;
+  g_stSettings.m_iMyVideoPercentSeekBackward = -2;
+  g_stSettings.m_iMyVideoPercentSeekForwardBig = 10;
+  g_stSettings.m_iMyVideoPercentSeekBackwardBig = -10;
+
   xbmcXmlLoaded = false;
 }
 
@@ -1050,6 +1061,16 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetInteger(pElement, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds, 7, 1, INT_MAX);
     GetInteger(pElement, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries, 3, 1, 10);
     GetInteger(pElement, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay, 300, 100, 5000); //MS
+
+    GetInteger(pElement, "timeseekforward", g_stSettings.m_iMyVideoTimeSeekForward, 60, 0, 6000);
+    GetInteger(pElement, "timeseekbackward", g_stSettings.m_iMyVideoTimeSeekBackward, -60, -6000, 0);
+    GetInteger(pElement, "timeseekforwardbig", g_stSettings.m_iMyVideoTimeSeekForwardBig, 600, 0, 6000);
+    GetInteger(pElement, "timeseekbackwardbig", g_stSettings.m_iMyVideoTimeSeekBackwardBig, -600, -6000, 0);
+
+    GetInteger(pElement, "percentseekforward", g_stSettings.m_iMyVideoPercentSeekForward, 2, 0, 100);
+    GetInteger(pElement, "percentseekbackward", g_stSettings.m_iMyVideoPercentSeekBackward, -2, -100, 0);
+    GetInteger(pElement, "percentseekforwardbig", g_stSettings.m_iMyVideoPercentSeekForwardBig, 10, 0, 100);
+    GetInteger(pElement, "percentseekbackwardbig", g_stSettings.m_iMyVideoPercentSeekBackwardBig, -10, -100, 0);
   }
   // myscripts settings
   pElement = pRootElement->FirstChildElement("myscripts");
@@ -1281,6 +1302,16 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   SetInteger(pNode, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds);
   SetInteger(pNode, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries);
   SetInteger(pNode, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay);
+
+  SetInteger(pNode, "timeseekforward", g_stSettings.m_iMyVideoTimeSeekForward);
+  SetInteger(pNode, "timeseekbackward", g_stSettings.m_iMyVideoTimeSeekBackward);
+  SetInteger(pNode, "timeseekforwardbig", g_stSettings.m_iMyVideoTimeSeekForwardBig);
+  SetInteger(pNode, "timeseekbackwardbig", g_stSettings.m_iMyVideoTimeSeekBackwardBig);
+
+  SetInteger(pNode, "percentseekforward", g_stSettings.m_iMyVideoPercentSeekForward);
+  SetInteger(pNode, "percentseekbackward", g_stSettings.m_iMyVideoPercentSeekBackward);
+  SetInteger(pNode, "percentseekforwardbig", g_stSettings.m_iMyVideoPercentSeekForwardBig);
+  SetInteger(pNode, "percentseekbackwardbig", g_stSettings.m_iMyVideoPercentSeekBackwardBig);
 
   // myscripts settings
   TiXmlElement scriptsNode("myscripts");
