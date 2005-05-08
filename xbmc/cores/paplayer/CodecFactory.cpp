@@ -5,6 +5,7 @@
 #include "CDDACodec.h"
 #include "OGGCodec.h"
 #include "MPCCodec.h"
+#include "SHNCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -18,6 +19,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new OGGCodec;
   else if (strFileType.Equals("mpc"))
     return new MPCCodec;
+  else if (strFileType.Equals("shn"))
+    return new SHNCodec;
 
   return NULL;
 }
