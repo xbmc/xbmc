@@ -77,9 +77,16 @@ bool CDVDPlayerAudio::OpenStream(CodecID codecID, int iChannels, int iSampleRate
     CLog::Log(LOGNOTICE, "Creating audio codec with codec id: %i", codecID);
     m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(codecID);
 
+    if( !m_pAudioCodec )
+    {
+      CLog::Log(LOGERROR, "Unsupported audio codec");
+      return false;
+    }
+
+
     CLog::Log(LOGNOTICE, "Opening audio codec id: %i, channels: %i, sample rate: %i, bits: %i",
               codecID, iWantedChannels, iSampleRate, 16);
-    if (!m_pAudioCodec->Open(codecID, iWantedChannels, iSampleRate, 16))
+    if (m_pAudioCodec && !m_pAudioCodec->Open(codecID, iWantedChannels, iSampleRate, 16))
     {
       CLog::Log(LOGERROR, "Error opening audio codec");
       m_pAudioCodec->Dispose();
