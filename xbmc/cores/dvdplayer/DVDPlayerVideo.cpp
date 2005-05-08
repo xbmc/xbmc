@@ -173,8 +173,8 @@ void CDVDPlayerVideo::Process()
                       CDVDCodecUtils::CopyPicture(pDVDPlayer->m_dvd.pStillPicture, &picture);
                     }
           */
-          if( picture.iFrameType == 1 || picture.iFrameType == 0) //Only use pts when we have an I frame
-            pts = pPacket->dts == DVD_NOPTS_VALUE ? 0 : pPacket->dts;
+          if( (picture.iFrameType == 1 || picture.iFrameType == 0) && pPacket->dts != DVD_NOPTS_VALUE ) //Only use pts when we have an I frame, or unknown
+            pts = pPacket->dts;
 
           int iOutputState=0;
           do 
@@ -261,22 +261,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
 {
   DVDVideoPicture *vp;
 
-  // compute the exact PTS for the picture if it is omitted in the stream
-  __int64 pts;
-  {
-    __int64 frame_delay;
-    pts = pts1;
+  __int64 pts = pts1;
 
-    /* update video clock for next frame */
-    frame_delay = ((__int64)m_pDemuxStreamVideo->iFpsScale * DVD_TIME_BASE) / m_pDemuxStreamVideo->iFpsRate;
-
-    /* for MPEG2, the frame can be repeated, so we update the clock accordingly */
-    if (pPicture->iRepeatPicture) frame_delay += pPicture->iRepeatPicture * (frame_delay / 2);
-
-    /* update video clock with pts, if present */
-    // if (pts != 0) is->video_clock = pts + frame_delay;
-    // else is->video_clock += frame_delay;
-  }
   if (pts == DVD_NOPTS_VALUE)
   {
 #ifdef _DEBUG
@@ -285,7 +271,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
 #endif
 
   }
-  // end of compute
 
   // wait  until we have space to put a new picture
   EnterCriticalSection(&m_critSection);
@@ -357,7 +342,11 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
     m_dvdVideo.UnlockYUVOverlay();
 
 
+    //Hmm why not just assigne the entire picure??
+    //the vp isn't used at all is it?? overlay is what's rendered all the time
     vp->pts = pts;
+    vp->iDuration = pPicture->iDuration;
+    vp->iFrameType = pPicture->iFrameType;
 
     /* now we can update the picture count */
     if (++pictq_windex == VIDEO_PICTURE_QUEUE_SIZE) pictq_windex = 0;
@@ -428,10 +417,11 @@ DWORD video_refresh_thread(void *arg)
   DVDVideoPicture *vp;
 
   CLog::Log(LOGNOTICE, "running thread: video_refresh_thread");
-  int iSleepTime = 0; //Needed to remember old sleeptime when in discontinuities
+  int iSleepTime = 0;
   CDVDClock frameclock;
   __int64 iTimeStamp = frameclock.GetClock();
-  
+  int iFrameTime = DVD_TIME_BASE / 25;
+
   while (pDVDPlayerVideo->m_bRunningVideo)
   {
     if (pDVDPlayerVideo->pictq_size == 0 || pDVDPlayerVideo->m_iSpeed == 0)
@@ -445,11 +435,17 @@ DWORD video_refresh_thread(void *arg)
       vp = &pDVDPlayerVideo->pictq[pDVDPlayerVideo->pictq_rindex];
       
       if( pDVDPlayerVideo->m_pClock->HadDiscontinuity(1*DVD_TIME_BASE) ) //Playback at normal fps untill 1 sec after discontinuity
-        iSleepTime = (int)(DVD_TIME_BASE / pDVDPlayerVideo->m_fFPS) - (int)(frameclock.GetClock() - iTimeStamp);
+        iSleepTime = iFrameTime - (int)(frameclock.GetClock() - iTimeStamp);
       else
         iSleepTime = (int)((vp->pts + pDVDPlayerVideo->m_iVideoDelay - pDVDPlayerVideo->m_pClock->GetClock()) & 0xFFFFFFFF);
   
-      
+      if( vp->iDuration )
+        iFrameTime = vp->iDuration;
+      else if( pDVDPlayerVideo->m_fFPS )
+        iFrameTime = (int)(DVD_TIME_BASE / pDVDPlayerVideo->m_fFPS);
+      else
+        iFrameTime = DVD_TIME_BASE / 25;
+
       if (iSleepTime > 500000) iSleepTime = 500000; // drop to a minimum of 2 frames/sec
 
       // we could drop some frames here too if iSleepTime < 0, but I don't think it will be any
