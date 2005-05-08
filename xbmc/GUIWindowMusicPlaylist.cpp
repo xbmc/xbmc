@@ -284,15 +284,20 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, CFile
   {
     CPlayList::CPlayListItem& item = playlist[i];
 
-    CStdString strFileName = item.GetFileName();
-    CStdString strPath, strFName;
-    CUtil::Split( strFileName, strPath, strFName);
-    if (CUtil::HasSlashAtEnd(strFileName))
-      strFileName.Delete(strFileName.size());
+    // Commented by JM - don't see the point of this code, as our label is in the least
+    // the filename.  Why precede it with a number?  Also, if we have a "proper" label
+    // from the EXFINF code, then this will override it.
+/*    {
+      CStdString strFileName = item.GetFileName();
+      CStdString strPath, strFName;
+      CUtil::Split( strFileName, strPath, strFName);
+      if (CUtil::HasSlashAtEnd(strFileName))
+        strFileName.Delete(strFileName.size());
 
-    CStdString strLabel;
-    strLabel.Format("%02.2i. %s", i + 1, strFName);
-    item.SetLabel(strLabel);
+      CStdString strLabel;
+      strLabel.Format("%02.2i. %s", i + 1, strFName);
+      item.SetLabel(strLabel);
+    }*/
 
     if (item.GetDuration())
     {
