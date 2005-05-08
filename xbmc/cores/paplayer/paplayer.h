@@ -82,7 +82,13 @@ private:
 
   unsigned int     m_PcmSize;  
   unsigned int     m_PcmPos;
+
   unsigned int     m_BytesPerSecond;
+  // we remember the following from 1 tune to the next so that we can restart the audiodevice
+  // if necessary
+  unsigned int     m_SampleRate;
+  unsigned int     m_Channels;
+  unsigned int     m_BitsPerSample;
 
   __int64 m_startOffset;
   __int64 m_dwBytesSentOut;

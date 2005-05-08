@@ -41,6 +41,9 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_startOffset = 0;
   m_codec = NULL;
   m_BytesPerSecond = 0;
+  m_SampleRate = 0;
+  m_Channels = 0;
+  m_BitsPerSample = 0;
 }
 
 PAPlayer::~PAPlayer()
@@ -103,10 +106,13 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     return false;
   }
   
-  CLog::Log(LOGINFO, "PAP Player: Playing %s", file.m_strPath.c_str());
+  if (!CreateAudioDevice())
+  {
+    CLog::Log(LOGERROR, "PAP Player: CreateAudioDevice() failed");
+    return false;
+  }
 
-  if (!m_pAudioDevice)
-    CreateAudioDevice();
+  CLog::Log(LOGINFO, "PAP Player: Playing %s", file.m_strPath.c_str());
 
   // Seek to appropriate start position
   if ( iStartTime > 0 && iStartTime < m_codec->m_TotalTime )
@@ -421,12 +427,26 @@ bool PAPlayer::ProcessPAP()
 
 int PAPlayer::CreateAudioDevice()
 {
-  // TODO: This routine should query our audio stream for it's current parameters and
-  // reload it completely if they need changing.  This will currently cause problems
-  // when changing from stereo -> mono and/or 16bit -> 8bit and vice-versa.
-  // Check we don't first need to kill our buffers
-  KillAudioDevice();
-  m_BytesPerSecond = m_codec->m_Channels * m_codec->m_SampleRate * m_codec->m_BitsPerSample / 8;
+  if (!m_codec)
+    return 0;
+
+  if (m_pAudioDevice)
+  {
+    if (m_codec->m_Channels != m_Channels ||
+        m_codec->m_SampleRate != m_SampleRate ||
+        m_codec->m_BitsPerSample != m_BitsPerSample)
+    {
+      KillAudioDevice();
+    }
+    else
+    { // no need to reset the output device - keep the one we have
+      return 1;
+    }
+  }
+  m_Channels = m_codec->m_Channels;
+  m_SampleRate = m_codec->m_SampleRate;
+  m_BitsPerSample = m_codec->m_BitsPerSample;
+  m_BytesPerSecond = m_Channels * m_SampleRate * m_BitsPerSample / 8;
 
   bool bResample(false);
   if (g_guiSettings.GetBool("AudioOutput.HighQualityResampling"))
@@ -440,7 +460,7 @@ int PAPlayer::CreateAudioDevice()
   m_dwAudioBufferMin = m_pAudioDevice->GetChunkLen();
 
   CLog::Log(LOGINFO, "PAP Player: New AudioDevice created. Chunklen %d",m_dwAudioBufferMin);
-  return 0;
+  return 1;
 }
 
 void PAPlayer::KillAudioDevice()
