@@ -136,7 +136,11 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 
   // we can't open files like smb://file.f or smb://server/file.f
   // if a file matches the if below return false, it can't exist on a samba share.
-  if (!IsValidFile(url.GetFileName())) return false;
+  if (!IsValidFile(url.GetFileName()))
+  {
+      CLog::Log(LOGNOTICE,"FileSmb->Open: Bad URL : '%s'",url.GetFileName().c_str());
+      return false;
+  }
 
   CStdString strFileName;
 
@@ -465,9 +469,25 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary)
 
 bool CFileSMB::IsValidFile(const CStdString& strFileName)
 {
-  if (strFileName.Find('/') < 0 ||
-      strFileName.at(0) == '.' ||
-      strFileName.Find("/.") >= 0) return false;
+  if (strFileName.Find('/') < 0) return false;
+  if (strFileName.at(0) == '.') return false;
+
+  int i = 0;
+
+  i = strFileName.Find("/.",0);
+  while (i>=0)
+  {
+    i += 2;
+    if ((uint)i>=strFileName.length()) // illegal if ends in "/."
+      return false;
+
+    if (strFileName.at(i) == '.')
+      return false; // illegal if "/.."
+    if (strFileName.at(i) == '/') 
+      return false; // illegal if "/./"
+
+    i = strFileName.Find("/.",i);
+  }
 
   return true;
 }
