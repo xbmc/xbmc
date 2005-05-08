@@ -1283,6 +1283,10 @@ void CFileItemList::FilterCueItems()
             itemstodelete.push_back(pItem->m_strPath);
           }
         }
+        else
+        { // remove the .cue sheet from the directory (can't parse it - no point listing it)
+          itemstodelete.push_back(pItem->m_strPath);
+        }
       }
     }
   }
