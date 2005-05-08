@@ -1285,24 +1285,29 @@ void CMPlayer::SubtitleOffset(bool bPlus)
 
 void CMPlayer::Seek(bool bPlus, bool bLargeStep)
 {
-  //Only use relative seek if we actually know the total time of the movie
-  if (GetTotalTime() == 0)
+  // Use relative time seeking if we dont know the length of the video
+  // or its explicitly enabled, and the length is alteast twice the size of the largest forward seek value
+
+  int iTime = GetTotalTime();
+  int iTest = g_stSettings.m_iMyVideoTimeSeekForward;
+  if (g_stSettings.m_iMyVideoTimeSeekForwardBig > iTest)
+    iTest = g_stSettings.m_iMyVideoTimeSeekForwardBig;
+
+  if ((iTime == 0) || (g_guiSettings.GetBool("MyVideos.UseTimeBasedSeeking") && iTime > 2*iTest))
   {
-    CLog::Log(LOGDEBUG, "MPlayer doesn't know totaltime, revert to absolut seeking");
     if (bLargeStep)
     {
       if (bPlus)
-        mplayer_put_key(KEY_PAGE_UP);
+        SeekRelativeTime(g_stSettings.m_iMyVideoTimeSeekForwardBig);
       else
-        mplayer_put_key(KEY_PAGE_DOWN);
-
+        SeekRelativeTime(g_stSettings.m_iMyVideoTimeSeekBackwardBig);
     }
     else
     {
       if (bPlus)
-        mplayer_put_key(KEY_UP);
+        SeekRelativeTime(g_stSettings.m_iMyVideoTimeSeekForward);
       else
-        mplayer_put_key(KEY_DOWN);
+        SeekRelativeTime(g_stSettings.m_iMyVideoTimeSeekBackward);
     }
   }
   else
@@ -1311,21 +1316,28 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
     if (bLargeStep)
     {
       if (bPlus)
-        percent += 10;
+        percent += g_stSettings.m_iMyVideoPercentSeekForwardBig;
       else
-        percent -= 10;
+        percent += g_stSettings.m_iMyVideoPercentSeekBackwardBig;
     }
     else
     {
       if (bPlus)
-        percent += 2;
+        percent += g_stSettings.m_iMyVideoPercentSeekForward;
       else
-        percent -= 2;
+        percent += g_stSettings.m_iMyVideoPercentSeekBackward;
     }
     if (percent < 0) percent = 0;
     if (percent > 100) percent = 100;
     SeekPercentage(percent);
   }
+}
+
+void CMPlayer::SeekRelativeTime(int iSeconds)
+{
+  CStdString strCommand;
+  strCommand.Format("seek %+i 0",iSeconds);
+  mplayer_SlaveCommand(strCommand.c_str());
 }
 
 void CMPlayer::ToggleFrameDrop()

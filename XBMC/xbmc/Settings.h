@@ -362,6 +362,16 @@ public:
     bool m_bMyVideoPlaylistRepeat;
     bool m_bMyVideoPlaylistShuffle;
 
+    int m_iMyVideoTimeSeekForward;
+    int m_iMyVideoTimeSeekBackward;
+    int m_iMyVideoTimeSeekForwardBig;
+    int m_iMyVideoTimeSeekBackwardBig;
+
+    int m_iMyVideoPercentSeekForward;
+    int m_iMyVideoPercentSeekBackward;
+    int m_iMyVideoPercentSeekForwardBig;
+    int m_iMyVideoPercentSeekBackwardBig;
+
     int m_iVideoStartWindow;
 
     int m_iMyVideoVideoStack;

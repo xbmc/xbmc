@@ -781,6 +781,7 @@
   <string><id>13383</id><value>Voice Mask - Port 1</value></string>
   <string><id>13384</id><value>Voice Mask - Port 2</value></string>
   <string><id>13385</id><value>Voice Mask - Port 3</value></string>
+  <string><id>13386</id><value>Use Time Based Seeking</value></string>
 
   <string><id>14000</id><value>Stacking: Off</value></string>
   <string><id>14001</id><value>Stacking: Simple</value></string>

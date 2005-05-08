@@ -148,6 +148,7 @@ protected:
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
+  void SeekRelativeTime(int iSeconds = 0);
   bool m_bPaused;
   bool m_bIsPlaying;
   bool m_bCaching;

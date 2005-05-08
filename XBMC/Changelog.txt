@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 08-05-2005 added: option for time based seeking in videos. big jumps are +/- 10 minutes, small jumps are +/- 1 minute.
+                      if a video is less than two forward seek intervals in duration, xbmc reverts back to percentage based seeking
   - 08-05-2005 fixed: paplayer resets the audiodevice if the format changes (eg samplerate/channels etc.)
   - 08-05-2005 removed: Code in playlist view formatting that added the number in the playlist to the track name (screwed up charset of filenames over smb.)
   - 08-05-2005 fixed: potential divide by zero errors and framerate might be somewhat off after a discontinuity
