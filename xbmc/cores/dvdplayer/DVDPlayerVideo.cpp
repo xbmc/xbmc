@@ -68,6 +68,12 @@ bool CDVDPlayerVideo::OpenStream(CodecID codecID, int iWidth, int iHeight, CDemu
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", codecID);
   m_pVideoCodec = CDVDFactoryCodec::CreateVideoCodec(codecID);
 
+  if( !m_pVideoCodec )
+  {
+    CLog::Log(LOGERROR, "Unsupported video codec");
+    return false;
+  }
+
   if (!m_pVideoCodec->Open(codecID, iWidth, iHeight))
   {
     m_pVideoCodec->Dispose();
