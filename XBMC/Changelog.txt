@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 08-05-2005 fixed: UTF8 tags in APEv2 showed wrong characters.
   - 08-05-2005 changed: Don't list .cue sheets with more than one source file.
   - 08-05-2005 added: SF patch [1197478] Fix for bug #1192620 - thanks to Devin Cook
   - 08-05-2005 added: Shorten (.shn) support to paplayer.
