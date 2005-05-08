@@ -119,6 +119,9 @@ bool CCueDocument::Parse(const CStdString &strFile)
     {
       if (m_iTotalTracks == -1)
         ExtractQuoteInfo(m_strFilePath, strLine + 4);
+      else if (m_strFilePath.size())
+        return false;                 // means we have more than 1 media file in the .cue
+                                      // we don't currently handle these type of cue sheets.
     }
   }
   // Resolve absolute paths (if needed).
