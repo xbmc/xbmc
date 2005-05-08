@@ -739,10 +739,11 @@ float CDVDPlayer::GetPercentage()
 {
   int iTotalTime = GetTotalTime();
   int iCurrentTime = (int)GetTimeInMsec();
-  
-  float fPercent = iCurrentTime * 100 / (float)iTotalTime;
 
-  return fPercent;
+  if(iTotalTime != 0)
+    return iCurrentTime * 100 / (float)iTotalTime;
+
+  return 0.0f;
 }
 
 //This is how much audio is delayed to video, we count the oposite in the dvdplayer
