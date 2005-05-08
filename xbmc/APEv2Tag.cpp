@@ -36,19 +36,19 @@ bool CAPEv2Tag::ReadTag(const char* filename)
   int chars = 256;
   char buffer[256];
   if (tag->GetFieldString(L"Title", buffer, &chars, TRUE) != -1)
-    m_strTitle = buffer;
+    g_charsetConverter.utf8ToStringCharset(buffer, m_strTitle);
   chars = 256;
   if (tag->GetFieldString(L"Album", buffer, &chars, TRUE) != -1)
-    m_strAlbum = buffer;
+    g_charsetConverter.utf8ToStringCharset(buffer, m_strAlbum);
   chars = 256;
   if (tag->GetFieldString(L"Artist", buffer, &chars, TRUE) != -1)
-    m_strArtist = buffer;
+    g_charsetConverter.utf8ToStringCharset(buffer, m_strArtist);
   chars = 256;
   if (tag->GetFieldString(L"Genre", buffer, &chars, TRUE) != -1)
-    m_strGenre = buffer;
+    g_charsetConverter.utf8ToStringCharset(buffer, m_strGenre);
   chars = 256;
   if (tag->GetFieldString(L"Year", buffer, &chars, TRUE) != -1)
-    m_strYear = buffer;
+    g_charsetConverter.utf8ToStringCharset(buffer, m_strYear);
   chars = 256;
   if (tag->GetFieldString(L"Track", buffer, &chars, TRUE) != -1)
     m_nTrackNum = atoi(buffer);
