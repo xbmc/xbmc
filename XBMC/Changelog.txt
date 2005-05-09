@@ -5,6 +5,15 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-05-2005 added: New SystemInfo stuff! [GeminiServer]
+                      Harddisk Detection: HDD Model, HDD Firmware, HDD Serial, HDD Lock State [show Locked or Unlocked], HDD Lock Key , HDD Temp
+                      DVD-ROM Detection: DVD-ROM Model, DVD-ROM Firmware
+                      Storage Detection: Size of C;E;F;G;X;Y;Z, Total Size: Used, Free, Total, percent show used and free size
+                      Network: Online/Offline [Internet] detection, Show Network Type, Show Cur. IP, Show Mac Adress
+                      VIDEO: XBOX Encoder Information (Name:Focus, CONNEXANT, XCALIBUR), XBOX Video Resolution, A/V Pack Info (Standard RGB, SCART, HDTV, VGA^, RFU, S-Video), DVD Playback Kit Zone
+                      Hardware: XBOX Version Detection [v1.0 - v1.6], XBOX Serial, CPU Speed, ModChip Detection, XBLive Online Key,  XBOX Produce Date/Place
+                      BIOS Detection: it uses the MD5 in biosIDs.ini to detect the Bios
+                      Attached units: Controller/Mouse/Keyboard/MemoryCard/Stick/ Ir-Remote
   - 09-05-2005 added: pmblobs added to screensavers
   - 08-05-2005 added: option for time based seeking in videos. big jumps are +/- 10 minutes, small jumps are +/- 1 minute.
                       if a video is less than two forward seek intervals in duration, xbmc reverts back to percentage based seeking
