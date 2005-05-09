@@ -27,6 +27,7 @@ public:
   bool GetHeader(CStdString strName, CStdString& strValue) const;
 
   string m_redirectedURL;
+  bool IsInternet();
   static bool BreakURL(const string& strURL, string& strHostName, string &strUsername, string &strPassword, int& iPort, string& Page);
 
 protected:

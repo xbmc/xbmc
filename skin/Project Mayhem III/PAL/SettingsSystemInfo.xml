@@ -1,6 +1,6 @@
 <window>
   <id>7</id>
-  <defaultcontrol>2</defaultcontrol>
+  <defaultcontrol>95</defaultcontrol>
   <allowoverlay>yes</allowoverlay>
   <controls>
     <control>
@@ -32,245 +32,309 @@
       <description>description label</description>
       <type>label</type>
       <id>1</id>
-      <posX>207</posX>
+      <posX>280</posX>
       <posY>63</posY>
       <align>left</align>
-      <label>10511</label>
+      <label>130</label>
       <font>special13</font>
       <textcolor>ffffffff</textcolor>
     </control>
 
-    <control>
-      <description>Storage text label</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>220</posX>
-      <posY>125</posY>
-      <font>font13</font>
-      <label>154</label>
-    </control>
+    <controlgroup>
+
+      <control>
+        <description>Section Label</description>
+        <type>label</type>
+        <id>40</id>
+        <posX>220</posX>
+        <posY>120</posY>
+        <font>font13</font>
+        <label>139</label>
+      </control>
+    
+      <control>
+        <description>Button Default Values</description>
+        <type>button</type>
+        <id>95</id>
+        <posX>50</posX>
+         <posY>120</posY>
+        <label>13278</label>
+        <font>font13</font>
+        <onleft>95</onleft>
+        <onright>95</onright>
+        <onup>98</onup>
+        <ondown>94</ondown>
+        <align>Left</align>
+      </control>
+      
+      <control>
+        <description>Button Storage</description>
+        <type>button</type>
+        <id>94</id>
+        <posX>50</posX>
+        <posY>157</posY>
+        <label>13277</label>
+        <font>font13</font>
+        <onleft>94</onleft>
+        <onright>94</onright>
+        <onup>95</onup>
+        <ondown>92</ondown>
+        <align>Left</align>
+      </control>
+      
+      <control>
+        <description>Button HDD</description>
+        <type>button</type>
+        <id>92</id>
+        <posX>50</posX>
+        <posY>194</posY>
+        <label>13275</label>
+        <font>font13</font>
+        <onleft>92</onleft>
+        <onright>92</onright>
+        <onup>94</onup>
+        <ondown>93</ondown>
+        <align>Left</align>
+      </control>
+
+      <control>
+        <description>Button DVD</description>
+        <type>button</type>
+        <id>93</id>
+        <posX>50</posX>
+        <posY>231</posY>
+        <label>13276</label>
+        <font>font13</font>
+        <onleft>93</onleft>
+        <onright>93</onright>
+        <onup>92</onup>
+        <ondown>96</ondown>
+        <align>Left</align>
+      </control>
+
+      <control>
+        <description>Button Network</description>
+        <type>button</type>
+        <id>96</id>
+        <posX>50</posX>
+        <posY>268</posY>
+        <label>13279</label>
+        <font>font13</font>
+        <onleft>96</onleft>
+        <onright>96</onright>
+        <onup>93</onup>
+        <ondown>97</ondown>
+        <align>Left</align>
+      </control>
+
+      <control>
+        <description>Button VIDEO</description>
+        <type>button</type>
+        <id>97</id>
+        <posX>50</posX>
+        <posY>305</posY>
+        <label>13280</label>
+        <font>font13</font>
+        <onleft>97</onleft>
+        <onright>97</onright>
+        <onup>96</onup>
+        <ondown>98</ondown>
+        <align>Left</align>
+      </control>
+
+      <control>
+        <description>Button XBOX Hardware</description>
+        <type>button</type>
+        <id>98</id>
+        <posX>50</posX>
+        <posY>342</posY>
+        <label>13281</label>
+        <font>font13</font>
+        <onleft>98</onleft>
+        <onright>98</onright>
+        <onup>97</onup>
+        <ondown>95</ondown>
+        <align>Left</align>
+      </control>
+
+    </controlgroup>
 
     <control>
-      <description>Drive C text label</description>
+      <description>Label 2</description>
       <type>label</type>
-      <id>0</id>
+      <id>2</id>
       <posX>220</posX>
-      <posY>155</posY>
-      <label>155</label>
-      <info>System.FreeSpace(C)</info>
-      <font>font12</font>
+      <posY>150</posY>
+      <label>13282</label>
+      <font>font13</font>
       <textcolor>70FFFFFF</textcolor>
     </control>
 
     <control>
-      <description>Drive D: text label</description>
+      <description>Label 3</description>
       <type>label</type>
-      <id>11</id>
+      <id>3</id>
       <posX>220</posX>
       <posY>180</posY>
-      <label>155</label>
-      <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
-    </control>
-
-    <control>
-      <description>Drive E: text label</description>
-      <type>label</type>
-      <id>0</id>
-      <posX>220</posX>
-      <posY>205</posY>
-      <label>155</label>
-      <info>System.FreeSpace(E)</info>
-      <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
-    </control>
-
-    <control>
-      <description>Drive F: text label</description>
-      <type>label</type>
-      <id>0</id>
-      <posX>220</posX>
-      <posY>230</posY>
-      <label>155</label>
-      <info>System.FreeSpace(F)</info>
-      <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
-    </control>
-
-    <control>
-      <description>Drive G: text label</description>
-      <type>label</type>
-      <id>0</id>
-      <posX>220</posX>
-      <posY>255</posY>
-      <label>155</label>
-      <info>System.FreeSpace(G)</info>
-      <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
-    </control>
-
-    <control>
-      <description>Video text label</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>220</posX>
-      <posY>295</posY>
+      <label>13282</label>
       <font>font13</font>
-      <label>157</label>
-    </control>
-
-    <control>
-      <description>resolution text label</description>
-      <type>label</type>
-      <id>14</id>
-      <posX>220</posX>
-      <posY>325</posY>
-      <label>-</label>
-      <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
     </control>
 
     <control>
-      <description>free mem text label</description>
-      <type>label</type>
-      <id>15</id>
-      <posX>220</posX>
-      <posY>350</posY>
-      <label>158</label>
-      <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
-    </control>
-
-    <control>
-      <description>Time text label</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>220</posX>
-      <posY>390</posY>
-      <font>font13</font>
-      <label>142</label>
-    </control>
-
-    <control>
-      <description>current: text label</description>
+      <description>Label 4</description>
       <type>label</type>
       <id>4</id>
       <posX>220</posX>
-      <posY>420</posY>
+      <posY>210</posY>
+      <label>13282</label>
+      <font>font13</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Label 5</description>
+      <type>label</type>
+      <id>5</id>
+      <posX>220</posX>
+      <posY>240</posY>
+      <label>13282</label>
+      <font>font13</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Label 6</description>
+      <type>label</type>
+      <id>6</id>
+      <posX>220</posX>
+      <posY>270</posY>
+      <label>13282</label>
+      <font>font13</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Label 7</description>
+      <type>label</type>
+      <id>7</id>
+      <posX>220</posX>
+      <posY>300</posY>
+      <label>13282</label>
+      <font>font13</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Label 8</description>
+      <type>label</type>
+      <id>8</id>
+      <posX>220</posX>
+      <posY>330</posY>
+      <label>13282</label>
+      <font>font13</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Label 9</description>
+      <type>label</type>
+      <id>9</id>
+      <posX>220</posX>
+      <posY>360</posY>
+      <label>13282</label>
+      <font>font13</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Label 10</description>
+      <type>label</type>
+      <id>10</id>
+      <posX>220</posX>
+      <posY>390</posY>
+      <label>13282</label>
+      <font>font13</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <control>
+      <description>Label 11</description>
+      <type>label</type>
+      <id>11</id>
+      <posX>220</posX>
+      <posY>405</posY>
+      <label>13282</label>
+      <font>font13</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+
+    <!--
+    <control>
+      <description>Label 12</description>
+      <type>label</type>
+      <id>12</id>
+      <posX>220</posX>
+      <posY>425</posY>
+      <label>13282</label>
+      <font>font13</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
+    -->
+    <!-- Here can also add. Fav. Values!
+    <control>
+      <description>TEST Label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>220</posX>
+      <posY>426</posY>
+      <label>-</label>
+      <info>Network.IPAddress</info>
+      <align>left</align>
+      <font>font12</font>
+    </control>
+    -->
+    
+    <control>
+      <description>Current Time</description>
+      <type>label</type>
+      <id>50</id>
+      <posX>220</posX>
+      <posY>442</posY>
       <label>143</label>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
     </control>
 
     <control>
-      <description>build: text label</description>
+      <description>XBMC Version</description>
       <type>label</type>
-      <id>5</id>
+      <id>51</id>
       <posX>220</posX>
-      <posY>440</posY>
+      <posY>458</posY>
       <label>144</label>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
     </control>
 
     <control>
-      <description>Network text label</description>
+      <description>XBMC XBE BUILD Version</description>
       <type>label</type>
-      <id>1</id>
-      <posX>460</posX>
-      <posY>125</posY>
-      <font>font13</font>
-      <label>145</label>
-      <textcolor>FFFFFFFF</textcolor>
-    </control>
-
-    <control>
-      <description>Type text label</description>
-      <type>label</type>
-      <id>6</id>
-      <posX>460</posX>
-      <posY>155</posY>
-      <label>146</label>
+      <id>52</id>
+      <posX>220</posX>
+      <posY>474</posY>
+      <label>144</label>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
     </control>
 
     <control>
-      <description>MAC: text label</description>
+      <description>Mplayer DLL Version</description>
       <type>label</type>
-      <id>7</id>
-      <posX>460</posX>
-      <posY>180</posY>
-      <label>147</label>
-      <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
-    </control>
-
-    <control>
-      <description>IP: text label</description>
-      <type>label</type>
-      <id>0</id>
-      <posX>460</posX>
-      <posY>205</posY>
-      <label>148</label>
-      <info>Network.IpAddress</info>
-      <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
-    </control>
-
-    <control>
-      <description>Link: text label</description>
-      <type>label</type>
-      <id>9</id>
-      <posX>460</posX>
-      <posY>230</posY>
-      <label>151</label>
-      <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
-    </control>
-
-    <control>
-      <description>Temperatures text label</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>460</posX>
-      <posY>270</posY>
-      <font>font13</font>
-      <label>139</label>
-    </control>
-
-    <control>
-      <description>CPU: text label</description>
-      <type>label</type>
-      <id>0</id>
-      <posX>460</posX>
-      <posY>300</posY>
-      <label>140</label>
-      <info>System.CPUTemperature</info>
-      <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
-    </control>
-
-    <control>
-      <description>GPU: text label</description>
-      <type>label</type>
-      <id>0</id>
-      <posX>460</posX>
-      <posY>325</posY>
-      <label>141</label>
-      <info>System.GPUTemperature</info>
-      <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
-    </control>
-
-    <control>
-      <description>fanspeed text label</description>
-      <type>label</type>
-      <id>0</id>
-      <posX>460</posX>
-      <posY>350</posY>
-      <label>-</label>
-      <info>System.FanSpeed</info>
+      <id>53</id>
+      <posX>220</posX>
+      <posY>490</posY>
+      <label>144</label>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
     </control>
@@ -278,4 +342,3 @@
   </controls>
 
 </window>
-

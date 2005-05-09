@@ -790,6 +790,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\StringUtils.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\SystemInfo.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\ThumbnailCache.cpp">
 				</File>
 				<File
@@ -1321,6 +1324,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\utils\log.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\md5.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\utils\MediaMonitor.h">
 			</File>
 			<File
@@ -1469,6 +1475,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\StringUtils.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\SystemInfo.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\Thread.h">
