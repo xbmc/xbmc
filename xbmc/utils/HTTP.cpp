@@ -268,6 +268,32 @@ bool CHTTP::Get(string& strURL, string& strHTML)
   return true;
 }
 
+//GeminiServer Detect if we online or not! Very Simple and Dirty!
+bool CHTTP::IsInternet()
+  {
+	CStdString strURL="http://www.google.com";
+	CStdString strURL2="http://www.yahoo.com";
+
+	CLog::Log(LOGDEBUG, "Connecting to the Internet:!");
+		CLog::Log(LOGDEBUG, "	- Sending Ping to: http://www.google.com");
+	int status = Open(strURL, "HEAD", NULL);
+		CLog::Log(LOGDEBUG, "	- Sending Ping to: http://www.yahoo.com");
+	int status2 = Open(strURL2, "HEAD", NULL);
+	Close();
+	//if ( (status != 302) || (status2 != 200) )	//Status=302 Status2=200
+	if (status != 302 )
+	{
+		CLog::Log(LOGDEBUG, "ERROR Connecting to the Internet Failed!");
+		return false;
+	}
+	else
+	{
+		CLog::Log(LOGDEBUG, "Connecting to the Internet Succesfull!");
+		return true; 
+	}
+	return false;
+}
+
 bool CHTTP::Head(string& strURL)
 {
   CLog::Log(LOGINFO, "Get Header URL: %s", strURL.c_str());
