@@ -915,11 +915,9 @@
   <string><id>15104</id><value>* All Songs</value></string>
   <string><id>15105</id><value>* All Genres</value></string>
   <string><id>15106</id><value>Remember selected file on forward navigation</value></string>
-
   <string><id>15107</id><value>Buffering...</value></string>
   <string><id>15108</id><value>Navigation Sounds</value></string>
   <string><id>15109</id><value>Skin Default</value></string>
-
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Submit Songs Info to AudioScrobbler</value></string>
   <string><id>15202</id><value>AudioScrobbler Username</value></string>
@@ -934,6 +932,52 @@
   <string><id>15211</id><value>Submitting...</value></string>
   <string><id>15212</id><value>Submitting in %i secs</value></string>
   
+  <string><id>13150</id><value>HDD Key:</value></string>
+  <string><id>13151</id><value>HDD Temp:</value></string>
+  <string><id>13152</id><value>DVD Model:</value></string>
+  <string><id>13153</id><value>DVD Firmware:</value></string>
+  <string><id>13154</id><value>HDD Model:</value></string>
+  <string><id>13155</id><value>HDD Serial:</value></string>
+  <string><id>13156</id><value>HDD Firmware:</value></string>
+  <string><id>13157</id><value>HDD Password:</value></string>
+  <string><id>13158</id><value>HDD Lock State:</value></string>
+  <string><id>13159</id><value>Subnet mask:</value></string>
+  <string><id>13160</id><value>Gateway:</value></string>
+  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13162</id><value>Initialize failed</value></string>
+  <string><id>13163</id><value>GamePads On Port:</value></string>
+  <string><id>13164</id><value>Keyboard On Port:</value></string>
+  <string><id>13165</id><value>Mouse On Port:</value></string>
+  <string><id>13166</id><value>Head/MicroPhone On Port:</value></string>
+  <string><id>13167</id><value>MemoryStick On Port:</value></string>
+  <string><id>13168</id><value>IR-Remote On Port:</value></string>
+
+  <string><id>13270</id><value>Hardware:</value></string>
+  <string><id>13271</id><value>CPU Speed:</value></string>
+  <string><id>13275</id><value>Hard Disk</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>Storage</value></string>
+  <string><id>13278</id><value>Default</value></string>
+  <string><id>13279</id><value>Network</value></string>
+  <string><id>13280</id><value>Video</value></string>
+  <string><id>13281</id><value>Hardware</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>Kernel Version:</value></string>
+  <string><id>13284</id><value>CPU Speed:</value></string>
+  <string><id>13285</id><value>Detected BIOS:</value></string>
+  <string><id>13286</id><value>Video Encoder:</value></string>
+  <string><id>13287</id><value>Screen Resolution:</value></string>
+  <string><id>13288</id><value>Xbox Version:</value></string>
+  <string><id>13289</id><value>Xbox Serialnumber:</value></string>
+  <string><id>13290</id><value>XBOX Manufacture:</value></string>
+  <string><id>13291</id><value>ModChip:</value></string>
+  <string><id>13292</id><value>A/V Cable:</value></string>
+  <string><id>13293</id><value>Video &amp; XBE Region:</value></string>
+  <string><id>13294</id><value>DVD Region:</value></string>
+  <string><id>13295</id><value>Internet:</value></string>
+  <string><id>13296</id><value>Xbox is Connected!</value></string>
+  <string><id>13297</id><value>Xbox is NOT Connected! Check Netwotk Settings!</value></string>
+  <string><id>13298</id><value>XBLIVE Key:</value></string>
+
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
 </strings>
-
