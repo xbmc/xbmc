@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-05-2005 added: pmblobs added to screensavers
   - 08-05-2005 added: option for time based seeking in videos. big jumps are +/- 10 minutes, small jumps are +/- 1 minute.
                       if a video is less than two forward seek intervals in duration, xbmc reverts back to percentage based seeking
   - 08-05-2005 fixed: paplayer resets the audiodevice if the format changes (eg samplerate/channels etc.)
