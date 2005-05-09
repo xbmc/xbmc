@@ -679,6 +679,25 @@
   <string><id>13005</id><value>Stäng av</value></string>
   <string><id>13006</id><value>Dashboard</value></string>
   <string><id>13100</id><value>Fladder filter</value></string>
+  <string><id>13150</id><value>HDD Nyckel:</value></string>
+  <string><id>13151</id><value>HDD Temp:</value></string>
+  <string><id>13152</id><value>DVD Model:</value></string>
+  <string><id>13153</id><value>DVD Firmware:</value></string>
+  <string><id>13154</id><value>HDD Model:</value></string>
+  <string><id>13155</id><value>HDD Serienummer:</value></string>
+  <string><id>13156</id><value>HDD Firmware:</value></string>
+  <string><id>13157</id><value>HDD lösenord:</value></string>
+  <string><id>13158</id><value>HDD Lås Statusate:</value></string>
+  <string><id>13159</id><value>Subnet mask:</value></string>
+  <string><id>13160</id><value>Gateway:</value></string>
+  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13162</id><value>Uppstart Misslyckades</value></string>
+  <string><id>13163</id><value>Spelkontroll På Port:</value></string>
+  <string><id>13164</id><value>Tangentbord På Port:</value></string>
+  <string><id>13165</id><value>Mus På Port:</value></string>
+  <string><id>13166</id><value>HeadSet/Mikrofone På Port:</value></string>
+  <string><id>13167</id><value>MemoryStick På Port:</value></string>
+  <string><id>13168</id><value>Fjärrkontroll På Port:</value></string>
   <string><id>13200</id><value>Profiler</value></string>
   <string><id>13201</id><value>Radera profil '%s'?</value></string>
   <string><id>13202</id><value>Spara nuvarande inställningar som profil...</value></string>
@@ -687,6 +706,32 @@
   <string><id>13205</id><value>Okänd</value></string>
   <string><id>13206</id><value>Skrivöver</value></string>
   <string><id>13207</id><value>Skrivöver profil '%s'?</value></string>
+  <string><id>13270</id><value>Hårdvara:</value></string>
+  <string><id>13271</id><value>CPU Hastighet:</value></string>
+  <string><id>13275</id><value>Hård Disk</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>Utrymme</value></string>
+  <string><id>13278</id><value>Förval</value></string>
+  <string><id>13279</id><value>Nätverk</value></string>
+  <string><id>13280</id><value>Video</value></string>
+  <string><id>13281</id><value>Hårdvara</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>Kernel Version:</value></string>
+  <string><id>13284</id><value>CPU Hastigehet:</value></string>
+  <string><id>13285</id><value>Upptäckt BIOS:</value></string>
+  <string><id>13286</id><value>Video Chip:</value></string>
+  <string><id>13287</id><value>Skärm Upplösning:</value></string>
+  <string><id>13288</id><value>XBox Version:</value></string>
+  <string><id>13289</id><value>XBox Serienummer:</value></string>
+  <string><id>13290</id><value>XBOX Tillverkad:</value></string>
+  <string><id>13291</id><value>ModChip:</value></string>
+  <string><id>13292</id><value>A/V Kabel:</value></string>
+  <string><id>13293</id><value>Video &amp; XBE Region:</value></string>
+  <string><id>13294</id><value>DVD Region:</value></string>
+  <string><id>13295</id><value>Internet:</value></string>
+  <string><id>13296</id><value>XBoxen Är Uppkopplad!</value></string>
+  <string><id>13297</id><value>XBoxen Är INTE Uppkopplad! Undersök Nätverksinställningarna</value></string>
+  <string><id>13298</id><value>XBLIVE Nyckel:</value></string>
   <string><id>13299</id><value>Mål Temperatur</value></string>
   <string><id>13300</id><value>Fläktfart:</value></string>
   <string><id>13301</id><value>Automatisk temp. kontroll</value></string>
@@ -918,4 +963,5 @@
   <string><id>15210</id><value>Cachede %i låtar</value></string>
   <string><id>15211</id><value>Skickar...</value></string>
   <string><id>15212</id><value>Skickar om %i seks</value></string>
+  <string><id>15213</id><value>[PLACEHOLDER]</value></string>
 </strings>
