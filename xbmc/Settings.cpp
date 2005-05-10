@@ -249,7 +249,7 @@ CSettings::CSettings(void)
   g_stSettings.m_iPreMuteVolumeLevel = 0;
   g_stSettings.m_bMute = false;
 
-  g_stSettings.m_iLogLevel = LOGNOTICE;
+  g_stSettings.m_iLogLevel = LOGINFO;
   g_stSettings.m_bUnhandledExceptionToFatalError = false;
   g_stSettings.m_bShowFreeMem = false;
 

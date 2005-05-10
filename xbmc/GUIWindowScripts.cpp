@@ -214,6 +214,15 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
       }
     }
     break;
+  case GUI_MSG_SETFOCUS:
+    {
+      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
+      {
+        m_viewControl.SetFocused();
+        return true;
+      }
+    }
+    break;
   }
   return CGUIWindow::OnMessage(message);
 }
