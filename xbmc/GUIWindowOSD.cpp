@@ -47,6 +47,7 @@
 #define OSD_ZOOMLABEL 751
 #define OSD_PIXELRATIO 708
 #define OSD_PIXELRATIO_LABEL 755
+#define OSD_AUTOCROP  709
 
 #define OSD_BRIGHTNESS 704
 #define OSD_BRIGHTNESSLABEL 752
@@ -341,6 +342,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
           SetCheckmarkValue(g_stSettings.m_currentVideoSettings.m_NonInterleaved, OSD_NONINTERLEAVED);
           SetCheckmarkValue(g_stSettings.m_currentVideoSettings.m_NoCache, OSD_NOCACHE);
           SetCheckmarkValue(g_stSettings.m_currentVideoSettings.m_AdjustFrameRate, OSD_ADJFRAMERATE);
+          SetCheckmarkValue(g_stSettings.m_currentVideoSettings.m_Crop, OSD_AUTOCROP);
 
           // show the controls on this sub menu
           SET_CONTROL_VISIBLE(OSD_VIDEOPOS);
@@ -352,6 +354,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
           SET_CONTROL_VISIBLE(OSD_ZOOMLABEL);
           SET_CONTROL_VISIBLE(OSD_PIXELRATIO);
           SET_CONTROL_VISIBLE(OSD_PIXELRATIO_LABEL);
+          SET_CONTROL_VISIBLE(OSD_AUTOCROP);
           SET_CONTROL_VISIBLE(OSD_BRIGHTNESS);
           SET_CONTROL_VISIBLE(OSD_BRIGHTNESSLABEL);
           SET_CONTROL_VISIBLE(OSD_CONTRAST);
@@ -540,6 +543,7 @@ void CGUIWindowOSD::ToggleSubMenu(DWORD iButtonID, DWORD iBackID)
   HIDE_CONTROL(GetID(), OSD_ZOOMLABEL);
   HIDE_CONTROL(GetID(), OSD_PIXELRATIO);
   HIDE_CONTROL(GetID(), OSD_PIXELRATIO_LABEL);
+  HIDE_CONTROL(GetID(), OSD_AUTOCROP);
 
   HIDE_CONTROL(GetID(), OSD_BRIGHTNESS);
   HIDE_CONTROL(GetID(), OSD_BRIGHTNESSLABEL);
@@ -772,6 +776,13 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
       OutputDebugString("OSD:RESTART4\n");
       g_application.m_guiWindowFullScreen.m_bOSDVisible = false; // toggle the OSD off so parent window can de-init
       g_application.Restart(true);        // restart to make the new setting active
+    }
+    break;
+
+  case OSD_AUTOCROP:
+    {
+      g_stSettings.m_currentVideoSettings.m_Crop = !g_stSettings.m_currentVideoSettings.m_Crop;
+      g_renderManager.AutoCrop(g_stSettings.m_currentVideoSettings.m_Crop);
     }
     break;
 
@@ -1107,6 +1118,7 @@ void CGUIWindowOSD::Reset()
   HIDE_CONTROL(GetID(), OSD_ZOOMLABEL);
   HIDE_CONTROL(GetID(), OSD_PIXELRATIO);
   HIDE_CONTROL(GetID(), OSD_PIXELRATIO_LABEL);
+  HIDE_CONTROL(GetID(), OSD_AUTOCROP);
 
   HIDE_CONTROL(GetID(), OSD_BRIGHTNESS);
   HIDE_CONTROL(GetID(), OSD_BRIGHTNESSLABEL);
