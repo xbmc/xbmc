@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-05-2005 changed: moved audio scrobbler cache to Q:\albums
   - 10-05-2005 added: flac codec for paplayer
   - 10-05-2005 added: Anti-aliasing of TTF fonts (including rendering of alpha shades).
   - 10-05-2005 added: Crop Black Bars checkbox to video OSD.  Pressing this will trigger XBMC to auto-crop out black bars on the current video, storing the offsets in the movie database for later play.  Turning it off resets.  Best to do on a scene that's not too dark.
