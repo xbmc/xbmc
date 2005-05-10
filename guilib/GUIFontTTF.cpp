@@ -12,6 +12,7 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFontName) : CGUIFont(strFontName)
   m_texture = NULL;
   m_char = NULL;
   m_maxChars = 0;
+  m_dwNestedBeginCount = 0;
 }
 
 CGUIFontTTF::~CGUIFontTTF(void)
@@ -34,6 +35,7 @@ void CGUIFontTTF::Clear()
   m_textureRows = 0;
   m_posX = 0;
   m_posY = 0;
+  m_dwNestedBeginCount = 0;
 }
 
 // Change font style: XFONT_NORMAL, XFONT_BOLD, XFONT_ITALICS, XFONT_BOLDITALICS
@@ -108,6 +110,7 @@ void CGUIFontTTF::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw2
 
 void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalette, BYTE *pbColours, const WCHAR* strText, DWORD cchText, DWORD dwFlags, FLOAT fMaxPixelWidth )
 {
+  Begin();
   // vertically centered
   if (dwFlags & XBFONT_CENTER_Y)
   {
@@ -196,12 +199,14 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
           RenderCharacter(posX, (int)sy, GetCharacter(L'.'), dwColor);
           posX += m_ellipsesWidth;
         }
+        End();
         return;
       }
     }
     RenderCharacter(posX, (int)sy, ch, dwColor);
     posX += ch->width;
   }
+  End();
 }
 
 void CGUIFontTTF::GetTextExtent( const WCHAR* strText, FLOAT* pWidth,
@@ -276,13 +281,18 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
     memmove(m_char + low + 1, m_char + low, (m_numChars - low) * sizeof(Character));
   }
   // render the character to our texture
+  // must End() as we can't render text to our texture during a Begin(), End() block
+  DWORD dwNestedBeginCount = m_dwNestedBeginCount;
+  m_dwNestedBeginCount = 1;
+  End();
   CacheCharacter(letter, m_char + low);
+  Begin();
+  m_dwNestedBeginCount = dwNestedBeginCount;
   return m_char + low;
 }
 
 void CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
 {
-  // ok, have enough room, let's create the new character
   WCHAR text[2];
   text[0] = letter;
   text[1] = 0;
@@ -331,31 +341,55 @@ void CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   m_numChars++;
 }
 
+void CGUIFontTTF::Begin()
+{
+  if (m_dwNestedBeginCount == 0)
+  {
+    // just have to blit from our texture.
+    m_pD3DDevice->SetTexture( 0, m_texture );
+
+    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
+    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
+    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
+    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
+
+    m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
+    m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
+    m_pD3DDevice->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
+    m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+    m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
+    m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+    m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
+    m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+    m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
+    m_pD3DDevice->SetVertexShader( D3DFVF_XYZRHW | D3DFVF_TEX1 );
+    m_pD3DDevice->SetScreenSpaceOffset( -0.5f, -0.5f ); // fix texel align
+
+    // Render the image
+    m_pD3DDevice->Begin(D3DPT_QUADLIST);
+  }
+  // Keep track of the nested begin/end calls.
+  m_dwNestedBeginCount++;
+}
+
+void CGUIFontTTF::End()
+{
+  if (m_dwNestedBeginCount == 0)
+    return;
+
+  if (--m_dwNestedBeginCount > 0)
+    return;
+
+  m_pD3DDevice->End();
+
+  m_pD3DDevice->SetScreenSpaceOffset( 0, 0 );
+  m_pD3DDevice->SetTexture(0, NULL);
+}
+
 void CGUIFontTTF::RenderCharacter(int posX, int posY, const Character *ch, D3DCOLOR dwColor)
 {
-  // just have to blit from our texture.
-  m_pD3DDevice->SetTexture( 0, m_texture );
-
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
-
-  m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
-  m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-  m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
-  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-  m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
-  m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-  m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
-  m_pD3DDevice->SetVertexShader( D3DFVF_XYZRHW | D3DFVF_TEX1 );
   m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor);
-  m_pD3DDevice->SetScreenSpaceOffset( -0.5f, -0.5f ); // fix texel align
 
-  // Render the image
-  m_pD3DDevice->Begin(D3DPT_QUADLIST);
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->left, (float)ch->top );
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)posX, (float)posY, 0, 1.0f );
 
@@ -367,8 +401,4 @@ void CGUIFontTTF::RenderCharacter(int posX, int posY, const Character *ch, D3DCO
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->left, (float)ch->bottom );
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)posX, (float)posY + ch->height, 0, 1.0f );
-  m_pD3DDevice->End();
-
-  m_pD3DDevice->SetScreenSpaceOffset( 0, 0 );
-  m_pD3DDevice->SetTexture(0, NULL);
 }
