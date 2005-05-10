@@ -6,6 +6,7 @@
 #include "OGGCodec.h"
 #include "MPCCodec.h"
 #include "SHNCodec.h"
+#include "FLACCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -21,6 +22,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new MPCCodec;
   else if (strFileType.Equals("shn"))
     return new SHNCodec;
+  else if (strFileType.Equals("flac"))
+    return new FLACCodec;
 
   return NULL;
 }
