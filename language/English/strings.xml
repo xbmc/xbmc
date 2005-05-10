@@ -472,6 +472,7 @@
   <string><id>641</id><value>PreAmp Level - Replay Gained Files</value></string>
   <string><id>642</id><value>PreAmp Level - Non Replay Gained Files</value></string>
   <string><id>643</id><value>Avoid Clipping on Replay Gained Files</value></string>
+  <string><id>644</id><value>Crop Black Bars</value></string>
 
   <string><id>700</id><value>Cleaning up Library</value></string>
   <string><id>701</id><value>Removing old songs from the Library</value></string>

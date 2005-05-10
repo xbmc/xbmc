@@ -545,7 +545,7 @@
       <posY>240</posY>
       <label>431</label>
       <onup>700</onup>
-      <ondown>703</ondown>
+      <ondown>709</ondown>
       <onleft>701</onleft>
       <onright>702</onright>
       <visible>no</visible>
@@ -561,7 +561,21 @@
       <onup>701</onup>
       <ondown>707</ondown>
       <onleft>703</onleft>
-      <onright>702</onright>
+      <onright>709</onright>
+      <visible>no</visible>
+    </control>
+
+    <control>
+      <description>No Cache Checkbox</description>
+      <type>checkmark</type>
+      <id>709</id>
+      <posX>500</posX>
+      <posY>270</posY>
+      <label>644</label>
+      <onup>702</onup>
+      <ondown>707</ondown>
+      <onleft>703</onleft>
+      <onright>709</onright>
       <visible>no</visible>
     </control>
 

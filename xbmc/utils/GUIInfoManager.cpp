@@ -78,6 +78,7 @@ extern char g_szTitleIP[32];
 #define VIDEOPLAYER_TIME_SPEED      256
 #define VIDEOPLAYER_DURATION        257
 #define VIDEOPLAYER_COVER           258
+#define VIDEOPLAYER_USING_OVERLAYS  259
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -171,6 +172,7 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
   else if (strTest.Equals("videoplayer.timespeed")) ret = VIDEOPLAYER_TIME_SPEED;
   else if (strTest.Equals("videoplayer.duration")) ret = VIDEOPLAYER_DURATION;
   else if (strTest.Equals("videoplayer.cover")) ret = VIDEOPLAYER_COVER;
+  else if (strTest.Equals("videoplayer.usingoverlays")) ret = VIDEOPLAYER_USING_OVERLAYS;
   else if (strTest.Equals("audioscrobbler.enabled")) ret = AUDIOSCROBBLER_ENABLED;
   else if (strTest.Equals("audioscrobbler.connectstate")) ret = AUDIOSCROBBLER_CONN_STATE;
   else if (strTest.Equals("audioscrobbler.submitinterval")) ret = AUDIOSCROBBLER_SUBMIT_INT;
@@ -340,6 +342,9 @@ bool CGUIInfoManager::GetBool(int condition1) const
     break;
     case AUDIOSCROBBLER_ENABLED:
       bReturn = g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler");
+    break;
+    case VIDEOPLAYER_USING_OVERLAYS:
+      bReturn = (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS);
     break;
     }
     
