@@ -439,6 +439,7 @@
   <string><id>508</id><value>Älä näytä Kirjanmerkit- ja Päivitys-painikkeita</value></string>
   <string><id>509</id><value>Ohjelmien pikkukuvat välimuistissa</value></string>
   <string><id>510</id><value>Visualisoinnit käytössä</value></string>
+  <string><id>511</id><value>Vaihda näyttötila automaattisesti aluekoodin mukaiseksi</value></string>
   <string><id>600</id><value>Rippaa CD</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standardi</value></string>
@@ -463,6 +464,16 @@
   <string><id>634</id><value>Venytetty 16:9</value></string>
   <string><id>635</id><value>Alkuperäinen koko</value></string>
   <string><id>636</id><value>Oma</value></string>
+
+  <string><id>637</id><value>Replay Gain</value></string>
+  <string><id>638</id><value>Tila</value></string>
+  <string><id>639</id><value>Käytä kappaletasoja</value></string>
+  <string><id>640</id><value>Käytä albumitasoja</value></string>
+  <string><id>641</id><value>Esivahvistustaso - RG-tasatut tiedostot</value></string>
+  <string><id>642</id><value>Esivahvistustaso - RG-tasaamattomat tiedostot</value></string>
+  <string><id>643</id><value>Vältä äänen leikkautumista RG-tasatuissa tiedostoissa</value></string>
+  <string><id>644</id><value>Rajaa mustat palkit pois</value></string>
+
   <string><id>700</id><value>Päivitetään tietokantaa</value></string>
   <string><id>701</id><value>Poistetaan vanhat kappaleet tietokannasta</value></string>
   <string><id>702</id><value>Tämä polku on jo päivitetty</value></string>
@@ -771,6 +782,7 @@
   <string><id>13383</id><value>Äänimaski - Portti 1</value></string>
   <string><id>13384</id><value>Äänimaski - Portti 2</value></string>
   <string><id>13385</id><value>Äänimaski - Portti 3</value></string>
+  <string><id>13386</id><value>Käytä aikapohjaista hakua</value></string>
 
   <string><id>14000</id><value>Älä yhdistä osia</value></string>
   <string><id>14001</id><value>Yhdistä osat (norm)</value></string>
@@ -904,11 +916,9 @@
   <string><id>15104</id><value>* Kaikki kappaleet</value></string>
   <string><id>15105</id><value>* Kaikki tyylilajit</value></string>
   <string><id>15106</id><value>Muista valittu tiedosto selattaessa eteenpäin</value></string>
-
   <string><id>15107</id><value>Puskurointi...</value></string>
   <string><id>15108</id><value>Valikkoäänet</value></string>
   <string><id>15109</id><value>Skinin oletus</value></string>
-
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Lähetä kappaleiden tiedot AudioScrobbleriin</value></string>
   <string><id>15202</id><value>AudioScrobbler käyttäjätunnus</value></string>
@@ -922,7 +932,33 @@
   <string><id>15210</id><value>Välimuistissa %i kappaletta</value></string>
   <string><id>15211</id><value>Lähetetään...</value></string>
   <string><id>15212</id><value>Lähetetään %i sek kuluttua</value></string>
-  
+
+  <string><id>13270</id><value>Laitteisto:</value></string>
+  <string><id>13271</id><value>CPU:n nopeus:</value></string>
+  <string><id>13275</id><value>Kovalevy</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>Tallennus</value></string>
+  <string><id>13278</id><value>Oletus</value></string>
+  <string><id>13279</id><value>Verkko</value></string>
+  <string><id>13280</id><value>Video</value></string>
+  <string><id>13281</id><value>Laitteisto</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>Ytimen versio:</value></string>
+  <string><id>13284</id><value>CPU:n nopeus:</value></string>
+  <string><id>13285</id><value>Tunnistettu BIOS:</value></string>
+  <string><id>13286</id><value>Videoenkooderi:</value></string>
+  <string><id>13287</id><value>Näyttöresoluutio:</value></string>
+  <string><id>13288</id><value>Xboxin versio:</value></string>
+  <string><id>13289</id><value>Xboxin sarjanumero:</value></string>
+  <string><id>13290</id><value>XBOX valmistettu:</value></string>
+  <string><id>13291</id><value>ModChip:</value></string>
+  <string><id>13292</id><value>A/V-kaapeli:</value></string>
+  <string><id>13293</id><value>Video- &amp; XBE-alue:</value></string>
+  <string><id>13294</id><value>DVD-alue:</value></string>
+  <string><id>13295</id><value>Internet:</value></string>
+  <string><id>13296</id><value>Xbox on yhdistetty!</value></string>
+  <string><id>13297</id><value>Xbox ei ole yhdistetty! Tarkista verkkoasetukset!</value></string>
+  <string><id>13298</id><value>XBLive!-avain:</value></string>
+
   <string><id>15213</id><value>[PAIKANPITÄJÄ]</value></string>
 </strings>
-
