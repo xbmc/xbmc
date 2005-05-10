@@ -345,6 +345,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         return true;
       }
     }
+    break;
   }
   return CGUIWindow::OnMessage(message);
 }
