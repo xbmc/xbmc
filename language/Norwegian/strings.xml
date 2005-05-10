@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.188. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.192. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -473,6 +473,7 @@
   <string><id>641</id><value>PreAmp-nivå - filer med Replay Gain</value></string>
   <string><id>642</id><value>PreAmp-nivå - filer uten Replay Gain</value></string>
   <string><id>643</id><value>Unngå klipping i filer med Replay Gain</value></string>
+  <string><id>644</id><value>Fjern sorte felt</value></string>
 
   <string><id>700</id><value>Rydder opp i databasen</value></string>
   <string><id>701</id><value>Fjerner gamle sanger fra databasen</value></string>
@@ -782,6 +783,7 @@
   <string><id>13383</id><value>Stemmemaske - Port 1</value></string>
   <string><id>13384</id><value>Stemmemaske - Port 2</value></string>
   <string><id>13385</id><value>Stemmemaske - Port 3</value></string>
+  <string><id>13386</id><value>Bruk tidsbasert søking</value></string>
 
   <string><id>14000</id><value>Stabling: Av</value></string>
   <string><id>14001</id><value>Stabling: Enkel</value></string>
@@ -915,11 +917,9 @@
   <string><id>15104</id><value>* Alle sanger</value></string>
   <string><id>15105</id><value>* Alle sjangre</value></string>
   <string><id>15106</id><value>Husk valgt fil ved videre navigasjon</value></string>
-
   <string><id>15107</id><value>Bufring...</value></string>
   <string><id>15108</id><value>Navigasjonslyder</value></string>
   <string><id>15109</id><value>Standard for skinnet</value></string>
-  
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Send informasjon om sanger til AudioScrobbler</value></string>
   <string><id>15202</id><value>AudioScrobbler brukernavn</value></string>
@@ -934,6 +934,52 @@
   <string><id>15211</id><value>Sender...</value></string>
   <string><id>15212</id><value>Sender om %i sekunder</value></string>
 
+  <string><id>13150</id><value>HDD-nøkkel:</value></string>
+  <string><id>13151</id><value>HDD-temperatur:</value></string>
+  <string><id>13152</id><value>DVD-modell:</value></string>
+  <string><id>13153</id><value>DVD-firmware:</value></string>
+  <string><id>13154</id><value>HDD-modell:</value></string>
+  <string><id>13155</id><value>HDD-serienøkkel:</value></string>
+  <string><id>13156</id><value>HDD-firmware:</value></string>
+  <string><id>13157</id><value>HDD-passord:</value></string>
+  <string><id>13158</id><value>HDD-låsstatus:</value></string>
+  <string><id>13159</id><value>Nettverksmaske:</value></string>
+  <string><id>13160</id><value>Gateway:</value></string>
+  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13162</id><value>Initialisering feilet</value></string>
+  <string><id>13163</id><value>Kontrollere på port:</value></string>
+  <string><id>13164</id><value>Tastatur på port:</value></string>
+  <string><id>13165</id><value>Mus på port:</value></string>
+  <string><id>13166</id><value>Headset/mikrofon på port:</value></string>
+  <string><id>13167</id><value>Minnepinne på port:</value></string>
+  <string><id>13168</id><value>Fjernkontroll på port:</value></string>
+
+  <string><id>13270</id><value>Maskinvare:</value></string>
+  <string><id>13271</id><value>CPU-hastighet:</value></string>
+  <string><id>13275</id><value>Harddisk</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>Lagring</value></string>
+  <string><id>13278</id><value>Standard</value></string>
+  <string><id>13279</id><value>Nettverk</value></string>
+  <string><id>13280</id><value>Video</value></string>
+  <string><id>13281</id><value>Maskinvare</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>Kjerneversjon:</value></string>
+  <string><id>13284</id><value>CPU-hastighet:</value></string>
+  <string><id>13285</id><value>Oppdaget BIOS:</value></string>
+  <string><id>13286</id><value>Videobrikke:</value></string>
+  <string><id>13287</id><value>Skjermoppløsning:</value></string>
+  <string><id>13288</id><value>Xbox Versjon:</value></string>
+  <string><id>13289</id><value>Xbox Serienummer:</value></string>
+  <string><id>13290</id><value>XBOX Produksjon:</value></string>
+  <string><id>13291</id><value>ModChip:</value></string>
+  <string><id>13292</id><value>A/V-kabel:</value></string>
+  <string><id>13293</id><value>Video &amp; XBE-region:</value></string>
+  <string><id>13294</id><value>DVD-region:</value></string>
+  <string><id>13295</id><value>Internett:</value></string>
+  <string><id>13296</id><value>Xbox er tilkoblet!</value></string>
+  <string><id>13297</id><value>Xbox er IKKE tilkoblet! Sjekk nettverksinstillinger!</value></string>
+  <string><id>13298</id><value>XBLIVE nøkkel:</value></string>
+
   <string><id>15213</id><value>[PLASSHOLDER]</value></string>
 </strings>
-
