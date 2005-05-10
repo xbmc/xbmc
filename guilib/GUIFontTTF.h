@@ -34,6 +34,8 @@ public:
   // Change font style: XFONT_NORMAL, XFONT_BOLD, XFONT_ITALICS, XFONT_BOLDITALICS
   bool Load(const CStdString& strFilename, int height = 20, int style = XFONT_NORMAL);
 
+  virtual void Begin();
+  virtual void End();
   virtual void GetTextExtent(const WCHAR* strText, FLOAT* pWidth,
                              FLOAT* pHeight, BOOL bFirstLineOnly = FALSE);
 
@@ -70,6 +72,8 @@ protected:
   int m_posX;                        // current position in the texture
   int m_posY;
   unsigned int m_ellipsesWidth;               // this is used every character (width of '.')
+
+  DWORD m_dwNestedBeginCount;             // speedups
 };
 
 #endif
