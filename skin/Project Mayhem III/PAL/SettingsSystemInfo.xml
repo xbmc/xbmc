@@ -32,7 +32,7 @@
       <description>description label</description>
       <type>label</type>
       <id>1</id>
-      <posX>280</posX>
+      <posX>207</posX>
       <posY>63</posY>
       <align>left</align>
       <label>130</label>
@@ -281,7 +281,8 @@
       <textcolor>70FFFFFF</textcolor>
     </control>
     -->
-    <!-- Here can also add. Fav. Values!
+
+    <!-- Add fav values here!
     <control>
       <description>TEST Label</description>
       <type>label</type>
@@ -300,7 +301,7 @@
       <type>label</type>
       <id>50</id>
       <posX>220</posX>
-      <posY>442</posY>
+      <posY>422</posY>
       <label>143</label>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
@@ -311,7 +312,7 @@
       <type>label</type>
       <id>51</id>
       <posX>220</posX>
-      <posY>458</posY>
+      <posY>443</posY>
       <label>144</label>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
@@ -322,7 +323,7 @@
       <type>label</type>
       <id>52</id>
       <posX>220</posX>
-      <posY>474</posY>
+      <posY>465</posY>
       <label>144</label>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
@@ -333,7 +334,7 @@
       <type>label</type>
       <id>53</id>
       <posX>220</posX>
-      <posY>490</posY>
+      <posY>485</posY>
       <label>144</label>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
