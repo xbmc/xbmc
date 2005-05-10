@@ -4,12 +4,12 @@
 #include "GraphicContext.h"
 
 #define TEXTURE_WIDTH 512
+#define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
 
 CGUIFontTTF::CGUIFontTTF(const CStdString& strFontName) : CGUIFont(strFontName)
 {
   m_pTrueTypeFont = NULL;
   m_texture = NULL;
-  ZeroMemory(m_charTable, sizeof(m_charTable));
   m_char = NULL;
   m_maxChars = 0;
 }
@@ -32,6 +32,8 @@ void CGUIFontTTF::Clear()
   m_maxChars = 0;
   m_numChars = 0;
   m_textureRows = 0;
+  m_posX = 0;
+  m_posY = 0;
 }
 
 // Change font style: XFONT_NORMAL, XFONT_BOLD, XFONT_ITALICS, XFONT_BOLDITALICS
@@ -50,8 +52,6 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
     delete[] m_char;
   m_char = NULL;
 
-  for (int i = 0; i < 65536; i++)
-    m_charTable[i] = (unsigned short)-1;
   m_maxChars = 0;
   m_numChars = 0;
   m_textureRows = 0;
@@ -78,8 +78,14 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
   m_pTrueTypeFont->SetTextColor(0xffffffff);
   m_pTrueTypeFont->SetTextAlignment(XFONT_LEFT);
 
-  float fTextHeight;
-  GetTextExtent( L"W", &m_iMaxCharWidth, &fTextHeight);
+  unsigned int width;
+  m_pTrueTypeFont->GetTextExtent( L"W", 1, &width);
+  m_iMaxCharWidth = (float)width;
+  // cache the ellipses width
+  m_pTrueTypeFont->GetTextExtent( L".", 1, &m_ellipsesWidth);
+  // set the posX and posY so that our texture will be created on first character write.
+  m_posX = TEXTURE_WIDTH;
+  m_posY = -m_iHeight;
 
   return true;
 }
@@ -127,10 +133,6 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
         dwFlags &= (~XBFONT_TRUNCATED);
     }
   }
-
-  WCHAR ellipse = L'.';
-  unsigned int ellipsesWidth;
-  m_pTrueTypeFont->GetTextExtent(&ellipse, 1, &ellipsesWidth);
 
   int posX = (int)sx;
   // Set a flag so we can determine initial justification effects
@@ -180,28 +182,25 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
     }
 
     // grab the next character
-    if (m_charTable[letter] == (unsigned short)-1)
-      CacheCharacter(letter);
+    Character *ch = GetCharacter(letter);
 
     if ( dwFlags & XBFONT_TRUNCATED )
     {
       // Check if we will be exceeded the max allowed width
-      if ( posX + m_char[m_charTable[letter]].right - m_char[m_charTable[letter]].left + 3 * ellipsesWidth > alignedStartX + fMaxPixelWidth )
+      if ( posX + ch->width + 3 * m_ellipsesWidth > alignedStartX + fMaxPixelWidth )
       {
         // Yup. Let's draw the ellipses, then bail
         // Perhaps we should really bail to the next line in this case??
-        if (m_charTable[L'.'] == (unsigned short)-1)
-          CacheCharacter(L'.');
         for (int i = 0; i < 3; i++)
         {
-          RenderCharacter(posX, (int)sy, m_char[m_charTable[L'.']], dwColor);
-          posX += ellipsesWidth;
+          RenderCharacter(posX, (int)sy, GetCharacter(L'.'), dwColor);
+          posX += m_ellipsesWidth;
         }
         return;
       }
     }
-    RenderCharacter(posX, (int)sy, m_char[m_charTable[letter]], dwColor);
-    posX += m_char[m_charTable[letter]].right - m_char[m_charTable[letter]].left;
+    RenderCharacter(posX, (int)sy, ch, dwColor);
+    posX += ch->width;
   }
 }
 
@@ -241,41 +240,61 @@ void CGUIFontTTF::GetTextExtent( const WCHAR* strText, FLOAT* pWidth,
   return ;
 }
 
-void CGUIFontTTF::CacheCharacter(WCHAR ch)
+CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
 {
+  int low = 0;
+  int high = m_numChars - 1;
+  int mid;
+  while (low <= high)
+  {
+    mid = (low + high) >> 1;
+    if (letter > m_char[mid].letter)
+      low = mid + 1;
+    else if (letter < m_char[mid].letter)
+      high = mid - 1;
+    else
+      return &m_char[mid];
+  }
+  // if we get to here, then low is where we should insert the new character
+
+  // increase the size of the buffer if we need it
   if (m_numChars >= m_maxChars)
-  { // increment the size of our character buffer
-    Character *newTable = new Character[m_maxChars + 256];
+  { // need to increase the size of the buffer
+    Character *newTable = new Character[m_maxChars + CHAR_CHUNK];
     if (m_char)
     {
-      memcpy(newTable, m_char, m_maxChars*sizeof(Character));
+      memcpy(newTable, m_char, low * sizeof(Character));
+      memcpy(newTable + low + 1, m_char + low, (m_numChars - low) * sizeof(Character));
       delete[] m_char;
     }
     m_char = newTable;
-    m_maxChars += 256;
+    m_maxChars += CHAR_CHUNK;
+
   }
+  else
+  { // just move the data along as necessary
+    memmove(m_char + low + 1, m_char + low, (m_numChars - low) * sizeof(Character));
+  }
+  // render the character to our texture
+  CacheCharacter(letter, m_char + low);
+  return m_char + low;
+}
+
+void CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
+{
   // ok, have enough room, let's create the new character
-  // default to top right of texture so that the first character causes the
-  // texture to be created
-  short posX = TEXTURE_WIDTH;
-  short posY = -(short)m_pTrueTypeFont->GetTextHeight();
-  if (m_numChars > 0)
-  {
-    posX = m_char[m_numChars - 1].right + m_charGap + 1;    // extra pixel spacing for smaller fonts (due to kerning)
-    posY = m_char[m_numChars - 1].top;
-  }
   WCHAR text[2];
-  text[0] = ch;
+  text[0] = letter;
   text[1] = 0;
-  float width, height;
-  GetTextExtent(text, &width, &height);
-  if (posX + width + m_charGap > TEXTURE_WIDTH)
+  unsigned int width;
+  m_pTrueTypeFont->GetTextExtent(&letter, 1, &width);
+  if (m_posX + width + m_charGap > TEXTURE_WIDTH)
   { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
-    posX = 0;
-    posY += m_pTrueTypeFont->GetTextHeight();
+    m_posX = 0;
+    m_posY += m_iHeight;
     // create the new larger texture
     LPDIRECT3DTEXTURE8 newTexture;
-    if (D3D_OK != m_pD3DDevice->CreateTexture(TEXTURE_WIDTH, m_pTrueTypeFont->GetTextHeight() * (m_textureRows + 1), 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &newTexture))
+    if (D3D_OK != m_pD3DDevice->CreateTexture(TEXTURE_WIDTH, m_iHeight * (m_textureRows + 1), 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &newTexture))
     {
       CLog::Log(LOGERROR, "Unable to create texture for font");
       return;
@@ -286,11 +305,11 @@ void CGUIFontTTF::CacheCharacter(WCHAR ch)
     { // copy across from our current one, and clear the new row
       D3DLOCKED_RECT lr2;
       m_texture->LockRect(0, &lr2, NULL, 0);
-      memcpy(lr.pBits, lr2.pBits, lr2.Pitch * m_textureRows * m_pTrueTypeFont->GetTextHeight());
+      memcpy(lr.pBits, lr2.pBits, lr2.Pitch * m_textureRows * m_iHeight);
       m_texture->UnlockRect(0);
       m_texture->Release();
     }
-    memset((BYTE *)lr.pBits + lr.Pitch * m_textureRows * m_pTrueTypeFont->GetTextHeight(), 0, lr.Pitch * m_pTrueTypeFont->GetTextHeight());
+    memset((BYTE *)lr.pBits + lr.Pitch * m_textureRows * m_iHeight, 0, lr.Pitch * m_iHeight);
     newTexture->UnlockRect(0);
     m_texture = newTexture;
     m_textureRows++;
@@ -298,18 +317,21 @@ void CGUIFontTTF::CacheCharacter(WCHAR ch)
   // ok, now render it to our texture
   LPDIRECT3DSURFACE8 surface;
   m_texture->GetSurfaceLevel(0, &surface);
-  m_pTrueTypeFont->TextOut(surface, text, 1, posX, posY);
+  m_pTrueTypeFont->TextOut(surface, text, 1, m_posX, m_posY);
   surface->Release();
   // and set it in our table
-  m_charTable[ch] = m_numChars;
-  m_char[m_numChars].left = posX;
-  m_char[m_numChars].top = posY;
-  m_char[m_numChars].right = posX + (unsigned short)width;
-  m_char[m_numChars].bottom = posY + (unsigned short)height;
+  ch->letter = letter;
+  ch->left = m_posX;
+  ch->top = m_posY;
+  ch->right = m_posX + (unsigned short)width;
+  ch->bottom = m_posY + (unsigned short)m_iHeight;
+  ch->width = (unsigned short)(width + m_charGap);
+  ch->height = (unsigned short)m_iHeight;
+  m_posX += ch->width + 1;  // 1 pixel extra to control kerning.
   m_numChars++;
 }
 
-void CGUIFontTTF::RenderCharacter(int posX, int posY, const Character &ch, D3DCOLOR dwColor)
+void CGUIFontTTF::RenderCharacter(int posX, int posY, const Character *ch, D3DCOLOR dwColor)
 {
   // just have to blit from our texture.
   m_pD3DDevice->SetTexture( 0, m_texture );
@@ -334,17 +356,17 @@ void CGUIFontTTF::RenderCharacter(int posX, int posY, const Character &ch, D3DCO
 
   // Render the image
   m_pD3DDevice->Begin(D3DPT_QUADLIST);
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch.left, (float)ch.top );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->left, (float)ch->top );
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)posX, (float)posY, 0, 1.0f );
 
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch.right + m_charGap, (float)ch.top );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)posX + m_charGap + ch.right - ch.left, (float)posY, 0, 1.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->right + m_charGap, (float)ch->top );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)posX + ch->width, (float)posY, 0, 1.0f );
 
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch.right + m_charGap, (float)ch.bottom );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)posX + m_charGap + ch.right - ch.left, (float)posY + ch.bottom - ch.top, 0, 1.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->right + m_charGap, (float)ch->bottom );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)posX + ch->width, (float)posY + ch->height, 0, 1.0f );
 
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch.left, (float)ch.bottom );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)posX, (float)posY + ch.bottom - ch.top, 0, 1.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->left, (float)ch->bottom );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)posX, (float)posY + ch->height, 0, 1.0f );
   m_pD3DDevice->End();
 
   m_pD3DDevice->SetScreenSpaceOffset( 0, 0 );

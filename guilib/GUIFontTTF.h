@@ -20,7 +20,9 @@ class CGUIFontTTF: public CGUIFont
 {
   struct Character
   {
+    int letter;
     unsigned short left, top, right, bottom;
+    unsigned short width, height;           // just for packing to 16 bytes.
   };
 public:
 
@@ -54,17 +56,20 @@ protected:
   CStdString m_strFilename;
 
   // Stuff for pre-rendering for speed
-  void CacheCharacter(WCHAR ch);
-  void RenderCharacter(int posX, int posY, const Character &ch, D3DCOLOR dwColor);
+  Character *GetCharacter(WCHAR letter);
+  void CacheCharacter(WCHAR letter, Character *ch);
+  void RenderCharacter(int posX, int posY, const Character *ch, D3DCOLOR dwColor);
 
   LPDIRECT3DTEXTURE8 m_texture;
   LPDIRECT3DDEVICE8 m_pD3DDevice;
-  unsigned short m_charTable[65536]; // our character table
   Character *m_char;                 // our characters
   int m_maxChars;                    // size of character array (can be incremented)
   int m_numChars;                    // the current number of cached characters
   int m_textureRows;                 // the number of rows in our texture
   int m_charGap;                     // space between characters in pixels in our texture (for kerning)
+  int m_posX;                        // current position in the texture
+  int m_posY;
+  unsigned int m_ellipsesWidth;               // this is used every character (width of '.')
 };
 
 #endif
