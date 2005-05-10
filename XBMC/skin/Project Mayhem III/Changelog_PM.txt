@@ -1,5 +1,6 @@
-2005-05-06 added:       new system info
+2005-05-10 changed:     Default control in scripts + programs is now the list/thumb view.
 
+2005-05-06 added:       new system info
 2005-05-06 added:       Volume in OSD audio options
 
 2005-05-05 fixed:       id in seekbar was wrong.
