@@ -28,6 +28,11 @@ CVideoSettings::CVideoSettings()
   m_AdjustFrameRate = false;
   m_AudioDelay = 0.0f;
   m_ResumeTime = 0;
+  m_Crop = false;
+  m_CropTop = 0;
+  m_CropBottom = 0;
+  m_CropLeft = 0;
+  m_CropRight = 0;
 }
 
 bool CVideoSettings::operator!=(const CVideoSettings &right) const
@@ -49,5 +54,10 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_AdjustFrameRate != right.m_AdjustFrameRate) return true;
   if (m_AudioDelay != right.m_AudioDelay) return true;
   if (m_ResumeTime != right.m_ResumeTime) return true;
+  if (m_Crop != right.m_Crop) return true;
+  if (m_CropTop != right.m_CropTop) return true;
+  if (m_CropBottom != right.m_CropBottom) return true;
+  if (m_CropLeft != right.m_CropLeft) return true;
+  if (m_CropRight != right.m_CropRight) return true;
   return false;
 }

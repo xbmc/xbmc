@@ -1096,12 +1096,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
   if (pElement)
   {
     //    GetInteger(pElement, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
-    //    GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 1.0f, 2.0f);
-    //    GetFloat(pElement, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio, 1.0f, 0.5f, 2.0f);
+    GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 1.0f, 2.0f);
+    GetFloat(pElement, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio, 1.0f, 0.5f, 2.0f);
     // there is no way to set these settings correctly, so lets default them
     g_stSettings.m_defaultVideoSettings.m_ViewMode = VIEW_MODE_NORMAL;
-    g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount = 1.0f;
-    g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio = 1.0f;
   }
   // audio settings
   pElement = pRootElement->FirstChildElement("audio");
@@ -1333,7 +1331,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   TiXmlElement screenNode("screen");
   pNode = pRoot->InsertEndChild(screenNode);
   if (!pNode) return false;
-  SetInteger(pNode, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode);
   SetFloat(pNode, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount);
   SetFloat(pNode, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio);
 

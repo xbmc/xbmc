@@ -14,12 +14,13 @@ public:
 
   // Functions called from the GUI
   void GetRects(RECT &rs, RECT &rd) { if (!m_bChanging && m_pRenderer) m_pRenderer->GetRects(rs, rd); };
-float GetAR() { if (!m_bChanging && m_pRenderer) return m_pRenderer->GetAR(); else return 1.0f; };
+  float GetAR() { if (!m_bChanging && m_pRenderer) return m_pRenderer->GetAR(); else return 1.0f; };
+  void AutoCrop(bool bCrop = true) { if (!m_bChanging && m_pRenderer) m_pRenderer->AutoCrop(bCrop); };
   void Update(bool bPauseDrawing);
-void RenderUpdate() { if (!m_bChanging && m_pRenderer) m_pRenderer->RenderUpdate(); };
-void CheckScreenSaver() { if (!m_bChanging && m_pRenderer) m_pRenderer->CheckScreenSaver(); };
+  void RenderUpdate() { if (!m_bChanging && m_pRenderer) m_pRenderer->RenderUpdate(); };
+  void CheckScreenSaver() { if (!m_bChanging && m_pRenderer) m_pRenderer->CheckScreenSaver(); };
   void SetupScreenshot();
-void SetViewMode(int iViewMode) { if (!m_bChanging && m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
+  void SetViewMode(int iViewMode) { if (!m_bChanging && m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
 
   // Functions called from mplayer
   inline void WaitForFlip();
@@ -34,9 +35,9 @@ void SetViewMode(int iViewMode) { if (!m_bChanging && m_pRenderer) m_pRenderer->
   void UnInit();
   inline void DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride);
 
-inline int GetOSDWidth() { if (!m_bChanging && m_pRenderer) return m_pRenderer->GetNormalDisplayWidth(); else return 0;};
-inline int GetOSDHeight() { if (!m_bChanging && m_pRenderer) return m_pRenderer->GetNormalDisplayHeight(); else return 0; };
-inline bool Paused() { return m_bPauseDrawing; };
+  inline int GetOSDWidth() { if (!m_bChanging && m_pRenderer) return m_pRenderer->GetNormalDisplayWidth(); else return 0;};
+  inline int GetOSDHeight() { if (!m_bChanging && m_pRenderer) return m_pRenderer->GetNormalDisplayHeight(); else return 0; };
+  inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
   CXBoxRenderer *m_pRenderer;
 protected:

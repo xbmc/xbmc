@@ -34,6 +34,11 @@ public:
   bool m_AdjustFrameRate;
   float m_AudioDelay;
   int m_ResumeTime;
+  bool m_Crop;
+  int m_CropTop;
+  int m_CropBottom;
+  int m_CropLeft;
+  int m_CropRight;
 private:
 };
 
