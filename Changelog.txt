@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-05-2005 updated: Italian language file (Thnx to kotix)
+  - 10-04-2004 updated: Dutch language file (Thnx to tijmengozer)
+  - 10-05-2005 updated: Chinese (Traditional) language file (Thnx to dog099)
+  - 10-05-2005 updated: Finnish language file (Thnx to jutski)
+  - 10-05-2005 updated: Norwegian language file (Thnx to vnm)
+  - 10-05-2005 updated: Polish language file (Thnx to napek)
   - 10-05-2005 improved: Mem usage of TTF fonts is now comparible to XPR fonts.
   - 10-05-2005 changed: moved audio scrobbler cache to Q:\albums
   - 10-05-2005 added: flac codec for paplayer

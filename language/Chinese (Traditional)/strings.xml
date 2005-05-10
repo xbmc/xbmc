@@ -464,6 +464,15 @@
   <string><id>634</id><value>16:9 畫面</value></string>
   <string><id>635</id><value>原始大小</value></string>
   <string><id>636</id><value>自訂</value></string>
+
+  <string><id>637</id><value>重覆播放</value></string>
+  <string><id>638</id><value>模式</value></string>
+  <string><id>639</id><value>依曲目</value></string>
+  <string><id>640</id><value>依專輯</value></string>
+  <string><id>641</id><value>音量 - 重覆播放的檔案</value></string>
+  <string><id>642</id><value>音量 - 不重覆播放的檔案</value></string>
+  <string><id>643</id><value>循環播放</value></string>
+
   <string><id>700</id><value>清除音樂庫</value></string>
   <string><id>701</id><value>清除音樂庫中的舊檔案</value></string>
   <string><id>702</id><value>目前路徑曾經被掃瞄過。</value></string>
@@ -745,6 +754,8 @@
   <string><id>13355</id><value>低品質像素著色器</value></string>
   <string><id>13356</id><value>硬體超頻</value></string>
   <string><id>13357</id><value>高品質像素著色器</value></string>
+  <string><id>13358</id><value>播放項目</value></string>
+  <string><id>13359</id><value>設定藝人圖示</value></string>
   <string><id>13360</id><value>建立圖示</value></string>
   <string><id>13361</id><value>開啟語音</value></string>
   <string><id>13362</id><value>語音特效</value></string>
