@@ -564,9 +564,10 @@ void CGUIWindow::Render()
       {
         pControl->SetWidth((DWORD)(fScaleX*width + 0.5f));
         pControl->SetHeight((DWORD)(fScaleY*height + 0.5f));
-        pControl->SetPosition((int)(fScaleX*iPosX + 0.5f), (int)(fScaleY*iPosY + 0.5f));
+        pControl->SetPosition((int)(fScaleX*(iPosX + m_iPosX) + 0.5f), (int)(fScaleY*(iPosY + m_iPosY) + 0.5f));
       }
-      pControl->SetPosition(pControl->GetXPosition() + m_iPosX, pControl->GetYPosition() + m_iPosY);
+      else
+        pControl->SetPosition(pControl->GetXPosition() + m_iPosX, pControl->GetYPosition() + m_iPosY);
       pControl->Render();
       pControl->SetWidth(width);
       pControl->SetHeight(height);
