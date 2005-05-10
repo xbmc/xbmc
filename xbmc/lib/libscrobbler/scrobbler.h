@@ -219,6 +219,8 @@ private:
 
   static DWORD WINAPI threadProc(void *param) { static_cast<CScrobbler*>(param)->WorkerThread(); return 1; }
 
+  CStdString GetTempFileName();
+
   CStdString m_strUserName;
   CStdString m_strPassword; // MD5 hash
   CStdString m_strChallenge;

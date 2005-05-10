@@ -36,8 +36,6 @@
 #define CLIENT_ID "xbm"
 #define CLIENT_VERSION "0.1"
 
-#define CACHE_FILE "Z:\\scrobbler.tmp"
-
 CScrobbler* CScrobbler::m_pInstance=NULL;
 
 CScrobbler::CScrobbler()
@@ -405,7 +403,7 @@ int CScrobbler::LoadCache()
   CStdString strCache;
 
   CFile file;
-  if (file.Open(CACHE_FILE))
+  if (file.Open(GetTempFileName()))
   {
     CArchive ar(&file, CArchive::load);
     ar >> iNumEntries;
@@ -424,7 +422,7 @@ int CScrobbler::SaveCache(const CStdString& strCache, int iNumEntries)
     return 0;
 
   CFile file;
-  if (file.OpenForWrite(CACHE_FILE))
+  if (file.OpenForWrite(GetTempFileName()))
   {
     CArchive ar(&file, CArchive::store);
     ar << iNumEntries;
@@ -522,7 +520,7 @@ void CScrobbler::WorkerThread()
         LPSTR lphtml=strHtml.GetBuffer();
         HandleSubmit(lphtml);
         strHtml.ReleaseBuffer();
-        ::DeleteFile(CACHE_FILE);
+        ::DeleteFile(GetTempFileName());
       }
     }
 
@@ -631,4 +629,12 @@ void CScrobbler::SetSubmitSong(bool bSubmit)
 bool CScrobbler::ShouldSubmit()
 {
   return m_bShouldSubmit;
+}
+
+CStdString CScrobbler::GetTempFileName()
+{
+  CStdString strFileName = g_stSettings.m_szAlbumDirectory;
+  strFileName+="\\Scrobbler.tmp";
+
+  return strFileName;
 }
