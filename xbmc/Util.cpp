@@ -2567,11 +2567,13 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
    * music
    * music\\album
    */
-  int i, s = 0;
-  if (path.at(1) == ':') i = 2; // to skip 'e:'
-  s = i;
+
+  int i = url.GetProtocol().size() + 1;
+  if (i == 1) i = 2; // local hard drive has no protocol
+  int s = i;
   while (i < iSize)
   {
+    CLog::Log(LOGDEBUG,"CUtil... loop: s = [%i], i = [%i]",s,i);
     i = path.find(cSep, i + 1);
     if (i < 0) i = iSize; // get remaining chars
     strArray.push_back(path.substr(s, i - s));
@@ -2581,12 +2583,12 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   url.GetURLWithoutFilename(strTemp);
   for (unsigned int i = 0; i < strArray.size(); i++)
   {
-    CDirectory::Create(strTemp + strArray[i].c_str());
+    CStdString strTemp1 = strTemp + strArray[i];
+    CDirectory::Create(strTemp1.c_str());
   }
-
   strArray.clear();
 
-  // is the directory successfully created ?
+  // was the final destination directory successfully created ?
   if (!CDirectory::Exists(strPath)) return false;
   return true;
 }
