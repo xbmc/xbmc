@@ -94,6 +94,7 @@ public:
 	static char* ReturnBiosName(char *str);
 	static char* ReturnBiosSign(char *str);
 	static char* CheckMD5 (char *Sign);
+	static CStdString MD5FileNew(char *filename,long PosizioneInizio,int KBytes);
 
 private:
 	static SYSINFO* _Instance;

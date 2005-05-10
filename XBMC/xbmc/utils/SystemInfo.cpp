@@ -135,6 +135,65 @@ static unsigned char inb(unsigned short port)
   return data;
 }
 
+char* MDPrint (MD5_CTX_N *mdContext)
+{
+	ZeroMemory(MD5_Sign, 16);
+	int i;
+	char carat[10],tmpcarat;
+	for (i = 0; i < 16; i++)
+	{
+		ultoa(mdContext->digest[i],carat,16);
+		if (strlen(carat)==1 )
+		{
+			tmpcarat = carat[0];
+			carat[0] = '0';
+			carat[1] = tmpcarat;
+			carat[2] = '\0';
+		}
+		strcat(MD5_Sign,carat);
+  }
+  return (strupr(MD5_Sign));
+}
+char* MD5File(char *filename,long PosizioneInizio,int KBytes)
+{
+  FILE *inFile = fopen (filename, "rb");
+  MD5_CTX_N mdContext;
+  unsigned int bytes;
+  unsigned char *data;
+  if (inFile == NULL) 
+  {
+    printf ("%s can't be opened.\n", filename);
+    return NULL;
+  }
+  data	= (unsigned char*) malloc (1024*KBytes);
+  fseek(inFile,PosizioneInizio,SEEK_SET);
+  
+  MD5Init (&mdContext);
+  bytes	= fread (data, 1, 1024*KBytes, inFile);
+  
+  MD5Update(&mdContext, data, bytes);
+  MD5Final (&mdContext);
+  strcpy(MD5_Sign,MDPrint (&mdContext));
+  fclose (inFile);
+  free (data);
+  return (strupr(MD5_Sign));
+}
+CStdString SYSINFO::MD5FileNew(char *filename,long PosizioneInizio,int KBytes)
+{
+  CStdString strReturn;
+  FILE *inFile = fopen (filename, "rb");
+  MD5_CTX_N mdContext;  int bytes;  UCHAR *data;
+  data	= (UCHAR*) malloc (1024*KBytes);
+  fseek(inFile,PosizioneInizio,SEEK_SET);
+  MD5Init(&mdContext);
+  bytes	= fread(data, 1, 1024*KBytes, inFile);
+  MD5Update(&mdContext, data, bytes);
+  MD5Final (&mdContext);
+  strReturn.Format("%s",MDPrint(&mdContext));
+  fclose(inFile);
+  free(data);
+  return strReturn;
+}
 CStdString SYSINFO::GetAVPackInfo()
 {	//AV-Pack Detection PICReg(0x04)
 	int cAVPack; 
@@ -422,7 +481,7 @@ BYTE SYSINFO::GetSmartValues(int SmartREQ)
 	else return 0;
 }
 bool SYSINFO::CheckBios(CStdString& strDetBiosNa)
-{
+{	
 	FILE *fp;
 	BYTE data;
 	char *BIOS_Name;
@@ -444,133 +503,102 @@ bool SYSINFO::CheckBios(CStdString& strDetBiosNa)
 		fclose(fp);
 		if (!LoadBiosSigns()) return false;
 		
-		// Detect a 1024 KB Bios|MD5
+		// Detect a 1024 KB Bios MD5
 		MD5File (cTempBIOSFile,0,1024);
 		strcpy(BIOS_Name,CheckMD5(MD5_Sign));
 		if ( strcmp(BIOS_Name,"Unknown") == 0)
 		{
-			// Detect a 512 KB Bios|MD5
+			// Detect a 512 KB Bios MD5
 			MD5File (cTempBIOSFile,0,512);
 			strcpy(BIOS_Name,CheckMD5(MD5_Sign));
 			if ( strcmp(BIOS_Name,"Unknown") == 0)
 			{
-				// Detect a 256 KB Bios|MD5
+				// Detect a 256 KB Bios MD5
 				MD5File (cTempBIOSFile,0,256);
 				strcpy(BIOS_Name,CheckMD5(MD5_Sign));
 				if ( strcmp(BIOS_Name,"Unknown") != 0)
 				{
-					CLog::Log(LOGDEBUG, "- Detected BIOS: %hs",BIOS_Name);
+					CLog::Log(LOGDEBUG, "- Detected BIOS [256 KB]: %hs",BIOS_Name);
 					CLog::Log(LOGDEBUG, "- BIOS MD5 Hash: %hs",MD5_Sign);
 					strDetBiosNa = BIOS_Name;
+					free(BIOS_Name);
 					return true;					
 				}
 				else
 				{
-					for (i=0;i<16; i++) MD5_Sign[i]='\0';
-					CLog::Log(LOGDEBUG, "512k BIOSES:");
-					MD5File (cTempBIOSFile,0,512);
-					
-					CLog::Log(LOGDEBUG, "1.Bios > %hs",CheckMD5(MD5_Sign));
-					CLog::Log(LOGDEBUG, "MD5 Hash = %hs",MD5_Sign);
-					
-					for (i=0;i<16; i++) MD5_Sign[i]='\0';
-
-					MD5File (cTempBIOSFile,524288,512);
-					CLog::Log(LOGDEBUG, "2.Bios > %hs",CheckMD5(MD5_Sign));
-					CLog::Log(LOGDEBUG, "MD5 Hash = %hs",MD5_Sign);
-					for (i=0;i<16; i++) MD5_Sign[i]='\0';
-
-					CLog::Log(LOGDEBUG, "256k BIOSES:");
-					CLog::Log(LOGDEBUG, "Checksums da 256KB");
-					MD5File (cTempBIOSFile,0,256);
-					CLog::Log(LOGDEBUG, "1.Bios > %hs",CheckMD5(MD5_Sign));
-					CLog::Log(LOGDEBUG, "MD5 Hash = %hs",MD5_Sign);
-
-					for (i=0;i<16; i++) MD5_Sign[i]='\0';
-
-					MD5File (cTempBIOSFile,262144,256);
-					CLog::Log(LOGDEBUG, "2.Bios > %hs",CheckMD5(MD5_Sign));
-					CLog::Log(LOGDEBUG, "MD5 Hash = %hs",MD5_Sign);
-					for (i=0;i<16; i++) MD5_Sign[i]='\0';
-
-					MD5File (cTempBIOSFile,524288,256);
-					CLog::Log(LOGDEBUG, "3.Bios > %hs",CheckMD5(MD5_Sign));
-					CLog::Log(LOGDEBUG, "MD5 Hash = %hs",MD5_Sign);
-					for (i=0;i<16; i++) MD5_Sign[i]='\0';
-
-					MD5File (cTempBIOSFile,786432,256);
-					CLog::Log(LOGDEBUG, "4.Bios > %hs",CheckMD5(MD5_Sign));
-					CLog::Log(LOGDEBUG, "MD5 Hash = %hs",MD5_Sign);
-					for (i=0;i<16; i++) MD5_Sign[i]='\0';
-					strDetBiosNa = "Unknown! Add. MD5 from Log to BiosIDs.ini!";
-					return true;
-				} 
+					CLog::Log(LOGINFO, "------------------- BIOS Detection Log ------------------");
+					// 256k Bios MD5
+					if ( (MD5FileNew(cTempBIOSFile,0,256) == MD5FileNew(cTempBIOSFile,262144,256)) && (MD5FileNew(cTempBIOSFile,524288,256)== MD5FileNew(cTempBIOSFile,786432,256)) )
+					{
+							for (i=0;i<16; i++) MD5_Sign[i]='\0';
+							MD5File(cTempBIOSFile,0,256);
+							CLog::Log(LOGINFO, "256k BIOSES: Checksums are (256)");					
+							CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(MD5_Sign));
+							CLog::Log(LOGINFO, "  Add this to BiosIDs.ini: (256)BiosNameHere = %hs",MD5_Sign);
+							CLog::Log(LOGINFO, "---------------------------------------------------------");
+							strDetBiosNa = "Unknown! Add. MD5 from Log to BiosIDs.ini!";
+							free(BIOS_Name);
+							return true;
+					}
+					else
+					{	CLog::Log(LOGINFO, "- BIOS: This is not a 256KB Bios!");
+						// 512k Bios MD5
+						if ((MD5FileNew(cTempBIOSFile,0,512)) == (MD5FileNew(cTempBIOSFile,524288,512)))
+						{
+							for (i=0;i<16; i++) MD5_Sign[i]='\0';
+							MD5File(cTempBIOSFile,0,512);
+							CLog::Log(LOGINFO, "512k BIOSES: Checksums are (512)");					
+							CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(MD5_Sign));
+							CLog::Log(LOGINFO, "  Add. this to BiosIDs.ini: (512)BiosNameHere = %hs",MD5_Sign);
+							CLog::Log(LOGINFO, "---------------------------------------------------------");
+							strDetBiosNa = "Unknown! Add. MD5 from Log to BiosIDs.ini!";
+							free(BIOS_Name);
+							return true;
+						}
+						else 
+						{
+							CLog::Log(LOGINFO, "- BIOS: This is not a 512KB Bios!");
+							// 1024k Bios MD5
+							for (i=0;i<16; i++) MD5_Sign[i]='\0';
+							MD5File(cTempBIOSFile,0,1024);
+							CLog::Log(LOGINFO, "1024k BIOS: Checksums are (1MB)");
+							CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(MD5_Sign));
+							CLog::Log(LOGINFO, "  Add. this to BiosIDs.ini: (1MB)BiosNameHere = %hs",MD5_Sign);
+							CLog::Log(LOGINFO, "---------------------------------------------------------");
+							strDetBiosNa = "Unknown! Add. MD5 from Log to BiosIDs.ini!";
+							free(BIOS_Name);
+							return true;
+						}
+					} 
+				}
 			}
 			else
 			{
-				CLog::Log(LOGDEBUG, "- Detected BIOS: %hs",BIOS_Name);
-				CLog::Log(LOGDEBUG, "- BIOS MD5 Hash: %hs",MD5_Sign);
+				CLog::Log(LOGINFO, "- Detected BIOS [512 KB]: %hs",BIOS_Name);
+				CLog::Log(LOGINFO, "- BIOS MD5 Hash: %hs",MD5_Sign);
 				strDetBiosNa = BIOS_Name;
+				free(BIOS_Name);
 				return true;
 				
 			} 
 		}
-		else if ( strcmp(BIOS_Name,"Unknown") != 0)
-		{
-			CLog::Log(LOGDEBUG, "- Detected BIOS: %hs",BIOS_Name);
-			CLog::Log(LOGDEBUG, "- BIOS MD5 Hash: %hs",MD5_Sign);
-			strDetBiosNa = BIOS_Name;
-			return true;
-		}
 		else
 		{
-			for (i=0;i<16; i++) MD5_Sign[i]='\0';
-			CLog::Log(LOGDEBUG, "512k BIOSES:");
-			MD5File (cTempBIOSFile,0,512);
-			
-			CLog::Log(LOGDEBUG, "1.Bios > %hs",CheckMD5(MD5_Sign));
-			CLog::Log(LOGDEBUG, "MD5 Hash = %hs",MD5_Sign);
-			
-			for (i=0;i<16; i++) MD5_Sign[i]='\0';
-
-			MD5File (cTempBIOSFile,524288,512);
-			CLog::Log(LOGDEBUG, "2.Bios > %hs",CheckMD5(MD5_Sign));
-			CLog::Log(LOGDEBUG, "MD5 Hash = %hs",MD5_Sign);
-			for (i=0;i<16; i++) MD5_Sign[i]='\0';
-
-			CLog::Log(LOGDEBUG, "256k BIOSES:");
-			CLog::Log(LOGDEBUG, "Checksums da 256KB");
-			MD5File (cTempBIOSFile,0,256);
-			CLog::Log(LOGDEBUG, "1.Bios > %hs",CheckMD5(MD5_Sign));
-			CLog::Log(LOGDEBUG, "MD5 Hash = %hs",MD5_Sign);
-
-			for (i=0;i<16; i++) MD5_Sign[i]='\0';
-
-			MD5File (cTempBIOSFile,262144,256);
-			CLog::Log(LOGDEBUG, "2.Bios > %hs",CheckMD5(MD5_Sign));
-			CLog::Log(LOGDEBUG, "MD5 Hash = %hs",MD5_Sign);
-			for (i=0;i<16; i++) MD5_Sign[i]='\0';
-
-			MD5File (cTempBIOSFile,524288,256);
-			CLog::Log(LOGDEBUG, "3.Bios > %hs",CheckMD5(MD5_Sign));
-			CLog::Log(LOGDEBUG, "MD5 Hash = %hs",MD5_Sign);
-			for (i=0;i<16; i++) MD5_Sign[i]='\0';
-
-			MD5File (cTempBIOSFile,786432,256);
-			CLog::Log(LOGDEBUG, "4.Bios > %hs",CheckMD5(MD5_Sign));
-			CLog::Log(LOGDEBUG, "MD5 Hash = %hs",MD5_Sign);
-			for (i=0;i<16; i++) MD5_Sign[i]='\0';
-			strDetBiosNa = "Unknown";
+			CLog::Log(LOGINFO, "- Detected BIOS [1024 KB]: %hs",BIOS_Name);
+			CLog::Log(LOGINFO, "- BIOS MD5 Hash: %hs",MD5_Sign);
+			strDetBiosNa = BIOS_Name;
+			free(BIOS_Name);
 			return true;
 		}
 	}
 	else 
 	{
-		CLog::Log(LOGDEBUG, "BIOS FILE CREATION ERROR!");
+		CLog::Log(LOGINFO, "BIOS FILE CREATION ERROR!");
 		strDetBiosNa = "Detection Error!";
+		free(BIOS_Name);
 		return false;
 	}
-	//free(BIOS_Name);
+	free(BIOS_Name);
 	return false;
 }
 bool SYSINFO::GetXBOXVersionDetected(CStdString& strXboxVer)
@@ -1139,48 +1167,3 @@ char* SYSINFO::CheckMD5 (char *Sign)
 	while( strcmp(Listone[cntBioses].Name,"\0") != 0);
 	return ("Unknown");
 }
-char* MDPrint (MD5_CTX_N *mdContext)
-{
-	ZeroMemory(MD5_Sign, 16);
-	int i;
-	char carat[10],tmpcarat;
-	for (i = 0; i < 16; i++)
-	{
-		ultoa(mdContext->digest[i],carat,16);
-		if (strlen(carat)==1 )
-		{
-			tmpcarat = carat[0];
-			carat[0] = '0';
-			carat[1] = tmpcarat;
-			carat[2] = '\0';
-		}
-		strcat(MD5_Sign,carat);
-  }
-  return (strupr(MD5_Sign));
-}
-char* MD5File(char *filename,long PosizioneInizio,int KBytes)
-{
-  FILE *inFile = fopen (filename, "rb");
-  MD5_CTX_N mdContext;
-  unsigned int bytes;
-  unsigned char *data;
-  if (inFile == NULL) 
-  {
-    printf ("%s can't be opened.\n", filename);
-    return NULL;
-  }
-  data	= (unsigned char*) malloc (1024*KBytes);
-  fseek(inFile,PosizioneInizio,SEEK_SET);
-  
-  MD5Init (&mdContext);
-  bytes	= fread (data, 1, 1024*KBytes, inFile);
-  
-  MD5Update(&mdContext, data, bytes);
-  MD5Final (&mdContext);
-  strcpy(MD5_Sign,MDPrint (&mdContext));
-  fclose (inFile);
-  free (data);
-
-  return (strupr(MD5_Sign));
-}
-
