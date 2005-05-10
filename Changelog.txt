@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-05-2005 added: SystemInfo Bios Detection LOG: new algo with bios size and log detection! The entry for BiosIDs.ini will be also created in the log file! [GeminiServer]
   - 10-05-2005 updated: Italian language file (Thnx to kotix)
   - 10-04-2004 updated: Dutch language file (Thnx to tijmengozer)
   - 10-05-2005 updated: Chinese (Traditional) language file (Thnx to dog099)
