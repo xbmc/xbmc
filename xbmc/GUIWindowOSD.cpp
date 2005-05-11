@@ -119,9 +119,7 @@ void CGUIWindowOSD::Render()
 {
   SetVideoProgress();   // get the percentage of playback complete so far
   Get_TimeInfo();    // show the time elapsed/total playing time
-  CLog::DebugLog("Rendering OSD");
   CGUIWindow::Render();  // render our controls to the screen
-  CLog::DebugLog("Finished Rendering OSD");
 }
 
 bool CGUIWindowOSD::OnAction(const CAction &action)
