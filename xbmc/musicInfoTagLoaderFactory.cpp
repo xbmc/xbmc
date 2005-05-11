@@ -9,6 +9,9 @@
 #include "MusicInfoTagLoaderApe.h"
 #include "MusicInfoTagLoaderMPC.h"
 #include "MusicInfoTagLoaderSHN.h"
+#include "MusicInfoTagLoaderSid.h"
+#include "MusicInfoTagLoaderMod.h" 
+#include "cores/ModPlayer.h" 
 #include "util.h"
 
 using namespace MUSIC_INFO;
@@ -75,5 +78,16 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
     CMusicInfoTagLoaderSHN *pTagLoader = new CMusicInfoTagLoaderSHN();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
+  else if (strExtension == ".sid")
+  {
+    CMusicInfoTagLoaderSid *pTagLoader = new CMusicInfoTagLoaderSid();
+    return (IMusicInfoTagLoader*)pTagLoader;
+  } 
+  else if (ModPlayer::IsSupportedFormat(strExtension.substr(1)) )
+  {
+    CMusicInfoTagLoaderMod *pTagLoader = new CMusicInfoTagLoaderMod();
+    return (IMusicInfoTagLoader*)pTagLoader;
+  } 
+
   return NULL;
 }

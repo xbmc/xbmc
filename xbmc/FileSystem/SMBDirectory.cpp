@@ -224,7 +224,11 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
       }
       else
       {
-        const char* cError = get_friendly_nt_error_msg(nt_error);
+        CStdStringW cError;
+        if (nt_error == 0xc0000034)
+          cError.Format(g_localizeStrings.Get(770).c_str(),nt_error);
+        else
+          cError = get_friendly_nt_error_msg(nt_error);       
 
         CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
         pDialog->SetHeading(257);
