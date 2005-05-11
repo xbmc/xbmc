@@ -14,7 +14,7 @@
       <id>997</id>
       <posX>0</posX>
       <posY>-30</posY>
-      <width>208</width>
+      <width>238</width>
       <height>30</height>
       <texture>dialog-context-top.png</texture>
     </control>
@@ -25,7 +25,7 @@
       <id>999</id>
       <posX>0</posX>
       <posY>0</posY>
-      <width>208</width>
+      <width>238</width>
       <texture>dialog-context-middle.png</texture>
     </control>
 
@@ -34,7 +34,7 @@
       <type>image</type>
       <id>998</id>
       <posX>0</posX>
-      <width>208</width>
+      <width>238</width>
       <height>30</height>
       <texture>dialog-context-bottom.png</texture>
     </control>
@@ -45,8 +45,8 @@
       <id>1000</id>
       <posX>22</posX>
       <posY>15</posY>
-      <width>170</width>
-      <height>28</height>
+      <width>200</width>
+      <height>30</height>
       <align>center</align>
     </control>
 
