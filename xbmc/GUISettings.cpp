@@ -201,13 +201,14 @@ CGUISettings::CGUISettings(void)
   AddInt(6, "MusicLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddCategory(3, "MusicLibrary", 14022);
   AddBool(1, "MusicLibrary.ShufflePlaylistsOnLoad", 228, false);
-  AddString(2, "MusicLibrary.Cleanup", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(3, "MusicLibrary.DeleteAlbumInfo", 422, "", BUTTON_CONTROL_STANDARD);
-  AddString(4, "MusicLibrary.DeleteCDDBInfo", 423, "", BUTTON_CONTROL_STANDARD);
-  AddBool(5, "MusicLibrary.FindRemoteThumbs", 14059, true);
-  AddBool(6, "MusicLibrary.UseAudioScrobbler", 15201, false);
-  AddString(7, "MusicLibrary.AudioScrobblerUserName", 15202, "");
-  AddString(8, "MusicLibrary.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT);
+  AddBool(2, "MusicLibrary.ClearPlaylistsOnEnd",239,false);
+  AddString(3, "MusicLibrary.Cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(4, "MusicLibrary.DeleteAlbumInfo", 422, "", BUTTON_CONTROL_STANDARD);
+  AddString(5, "MusicLibrary.DeleteCDDBInfo", 423, "", BUTTON_CONTROL_STANDARD);
+  AddBool(6, "MusicLibrary.FindRemoteThumbs", 14059, true);
+  AddBool(7, "MusicLibrary.UseAudioScrobbler", 15201, false);
+  AddString(8, "MusicLibrary.AudioScrobblerUserName", 15202, "");
+  AddString(9, "MusicLibrary.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT); 
 
   AddCategory(3, "ReplayGain", 637);
   AddInt(1, "ReplayGain.Type", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);

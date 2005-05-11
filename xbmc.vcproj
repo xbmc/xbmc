@@ -621,6 +621,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\MusicInfoTagLoaderFlac.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderMod.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderMod.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\MusicInfoTagLoaderMP3.cpp">
 				</File>
 				<File
@@ -640,6 +646,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\MusicInfoTagLoaderShn.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderSid.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderSid.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\MusicInfoTagLoaderWMA.cpp">
@@ -1743,16 +1755,16 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			Name="utils"
 			Filter="">
 			<File
+				RelativePath=".\xbmc\utils\AlarmClock.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\AlarmClock.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\AutoPtrHandle.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\CharsetConverter.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\CherryPatch.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\CherryPatch.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\CriticalSection.cpp">
@@ -2074,10 +2086,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">

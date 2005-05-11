@@ -169,6 +169,7 @@
   <string><id>236</id><value>Gaussian Cubic</value></string>
   <string><id>237</id><value>Minification</value></string>
   <string><id>238</id><value>Magnification</value></string>
+  <string><id>239</id><value>Clear playlist on finish</value></string>
   <string><id>240</id><value>Autorun DVD-Video</value></string>
   <string><id>241</id><value>Autorun VCD/SVCD</value></string>
   <string><id>242</id><value>Autorun Audio-CD</value></string>
@@ -546,6 +547,8 @@
   <string><id>768</id><value>Reserved</value></string>
   <string><id>769</id><value>Reserved</value></string>
 
+  <string><id>770</id><value>Error %i: share not available</value></string>
+
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Gaming</value></string>
   <string><id>1000</id><value>Screensaver Preview</value></string>
@@ -695,6 +698,13 @@
   <string><id>13205</id><value>Unknown</value></string>
   <string><id>13206</id><value>Overwrite</value></string>
   <string><id>13207</id><value>Overwrite profile '%s'?</value></string>
+  
+  <string><id>13208</id><value>Alarm clock</value></string>
+  <string><id>13209</id><value>Alarm clock interval (in minutes)</value></string>
+  <string><id>13210</id><value>Started, alarm in %im</value></string>
+  <string><id>13211</id><value>Alarm!</value></string>
+  <string><id>13212</id><value>Canceled with %im%is left</value></string>
+  
   <string><id>13299</id><value>Target Temperature</value></string>
   <string><id>13300</id><value>Fan Speed</value></string>
   <string><id>13301</id><value>Auto Temperature Control</value></string>
