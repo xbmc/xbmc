@@ -17,6 +17,7 @@
 #include "playlistplayer.h"
 #include "lib/libPython/XBPython.h"
 #include "utils/RegExp.h"
+#include "utils/AlarmClock.h" 
 
 bool CUtil::m_bNetworkUp = false;
 
@@ -422,10 +423,129 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   }
 }
 
+bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
+{
+  BYTE	*Kernel=(BYTE *)0x80010000;
+  DWORD	i, j = 0;
+  DWORD	*CountryPtr;
+  BYTE	CountryValues[4]={0, 1, 2, 4};
+  BYTE	VideoTyValues[5]={0, 1, 2, 3, 3};
+  BYTE	VideoFrValues[5]={0x00, 0x40, 0x40, 0x80, 0x40};
+
+  // No Country or Video specified, do nothing.
+  if ((Country==0) && (Video==0))
+    return( false );
+
+  // Video specified with no Country - select default Country for this Video Mode.
+  if (Country==0)
+  {
+    Country=COUNTRY_EUR;
+    if (Video==VIDEO_NTSCM)	
+      Country=COUNTRY_USA;
+    else if (Video==VIDEO_NTSCJ)	
+      Country=COUNTRY_JAP;
+  }
+
+  // Country specified with no Video - select default Video Mode for this Country.
+  if (Video==0)
+  {
+    Video=VIDEO_PAL50;
+    if(Country==COUNTRY_USA)
+	    Video=VIDEO_NTSCM;
+    if(Country==COUNTRY_JAP)
+	    Video=VIDEO_NTSCJ;
+  }
+
+  // Search for the original code in the Kernel.
+  // Searching from 0x80011000 to 0x80024000 in order that this will work on as many Kernels
+  // as possible.
+
+  for(i=0x1000; i<0x14000; i++)
+  {
+    if(Kernel[i]!=OriginalData[0])	
+	    continue;
+
+    for(j=0; j<57; j++)
+    {
+	    if(Kernel[i+j]!=OriginalData[j])	
+		    break;
+    }
+    if(j==57)	
+	    break;
+  }
+
+  if(j==57)
+  {
+    // Ok, found the code to patch. Get pointer to original Country setting.
+    // This may not be strictly neccessary, but lets do it anyway for completeness.
+
+    j=(Kernel[i+57])+(Kernel[i+58]<<8)+(Kernel[i+59]<<16)+(Kernel[i+60]<<24);
+    CountryPtr=(DWORD *)j;
+  }
+  else
+  {
+    // Did not find code in the Kernel. Check if my patch is already there.
+
+    for(i=0x1000; i<0x14000; i++)
+    {
+	    if(Kernel[i]!=PatchData[0])	
+		    continue;
+
+	    for(j=0; j<25; j++)
+	    {
+		    if(Kernel[i+j]!=PatchData[j])	
+			    break;
+	    }
+	    if(j==25)	
+		    break;
+    }
+
+    if(j==25)
+    {
+	    // Ok, found my patch. Get pointer to original Country setting.
+	    // This may not be strictly neccessary, but lets do it anyway for completeness.
+
+	    j=(Kernel[i+66])+(Kernel[i+67]<<8)+(Kernel[i+68]<<16)+(Kernel[i+69]<<24);
+	    CountryPtr=(DWORD *)j;
+    }
+    else
+    {
+	    // Did not find my patch - so I can't work with this BIOS. Exit.
+	    return( false );
+    }
+  }
+
+  // Patch in new code.
+
+  j=MmQueryAddressProtect(&Kernel[i]);
+  MmSetAddressProtect(&Kernel[i], 70, PAGE_READWRITE);
+
+  memcpy(&Kernel[i], &PatchData[0], 70);
+
+  // Patch Success. Fix up values.
+
+  *CountryPtr=(DWORD)CountryValues[Country];
+  Kernel[i+0x1f]=CountryValues[Country];
+  Kernel[i+0x19]=VideoTyValues[Video];
+  Kernel[i+0x1a]=VideoFrValues[Video];
+
+  j=(DWORD)CountryPtr;
+  Kernel[i+66]=(BYTE)(j&0xff);
+  Kernel[i+67]=(BYTE)((j>>8)&0xff);
+  Kernel[i+68]=(BYTE)((j>>16)&0xff);
+  Kernel[i+69]=(BYTE)((j>>24)&0xff);
+
+  MmSetAddressProtect(&Kernel[i], 70, j);
+
+  // All Done!
+  return( true );
+} 
+
+
 /// \brief Runs an executable file
 /// \param szPath1 Path of executeable to run
 /// \param szParameters Any parameters to pass to the executeable being run
-void CUtil::RunXBE(const char* szPath1, char* szParameters)
+void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry) 
 {
   g_application.PrintXBEToLCD(szPath1); //write to LCD
   Sleep(600);        //and wait a little bit to execute
@@ -451,72 +571,71 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters)
 
   g_application.Stop();
 
-  CUtil::LaunchXbe(szDevicePath, szXbePath, szParameters);
+  CUtil::LaunchXbe(szDevicePath, szXbePath, szParameters, ForceVideo, ForceCountry);
 }
 
 //*********************************************************************************************
-void CUtil::LaunchXbe(char* szPath, char* szXbe, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry)
+void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry)
 {
   CLog::Log(LOGINFO, "launch xbe:%s %s", szPath, szXbe);
   CLog::Log(LOGINFO, " mount %s as D:", szPath);
 
   CIoSupport helper;
   helper.Unmount("D:");
-  helper.Mount("D:", szPath);
+  helper.Mount("D:", const_cast<char*>(szPath));
 
   // detach if connected to kai
   CKaiClient::GetInstance()->RemoveObserver();
-
   if( g_guiSettings.GetBool("MyPrograms.GameAutoRegion") )
   {
-    CLog::Log(LOGINFO,"Extracting region from xbe");
-    CXBE xbe;
-    uint32 iRegion = xbe.ExtractGameRegion(szXbe);
     F_COUNTRY Country = COUNTRY_NULL;
     F_VIDEO Video = VIDEO_NULL;
-	  //Valid regions are 1, 2 and 4
-	  if (iRegion>0 && iRegion < 5 )
-	  {
-		  if( ForceVideo == VIDEO_NULL )
-		  {
+    if (ForceVideo == VIDEO_NULL) 
+    {
+      CLog::Log(LOGINFO,"Extracting region from xbe");
+      CXBE xbe;
+      uint32 iRegion = xbe.ExtractGameRegion(szXbe);
+      //Valid regions are 1, 2 and 4
+      if (iRegion>0 && iRegion < 5 )
+      {
         switch(iRegion)
         {
         case 1:
-	        if( !(XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) )
+          if( !(XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) )
           {
-		        Country = COUNTRY_USA;
-		        Video = VIDEO_NTSCM;
-	        }
-	        break;
+            Country = COUNTRY_USA;
+            Video = VIDEO_NTSCM;
+          }
+          break;
         case 2:
-	        if( !(XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J) )
+          if( !(XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J) )
           {
-		        Country = COUNTRY_JAP;
-		        Video = VIDEO_NTSCJ;
-	        }
-	        break;
+            Country = COUNTRY_JAP;
+            Video = VIDEO_NTSCJ;
+          }
+          break;
         case 4:
-	        if( !(XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) )
+          if( !(XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) )
           {
-		        Country = COUNTRY_EUR;
-		        Video = VIDEO_PAL50;
-	        }
-	        break;
+            Country = COUNTRY_EUR;
+            Video = VIDEO_PAL50;
+          }
+          break;
         }
-		  }
-      else
-      {
-        Video = ForceVideo;
-        Country = ForceCountry;
-		  }
-		  if (Country != COUNTRY_NULL && Video != VIDEO_NULL)
-      {
-			  bool bSuccessful = PatchCountryVideo(Country, Video);
-			  if( !bSuccessful )
-				  CLog::Log(LOGINFO,"AutoSwitch: Failed to set mode");
-		  }
-	  }
-  }
+      }
+    }
+    else
+    {
+      Video = ForceVideo;
+      Country = ForceCountry;
+    }
+    if (Country != COUNTRY_NULL && Video != VIDEO_NULL)
+    {
+      bool bSuccessful = PatchCountryVideo(Country, Video);
+      if( !bSuccessful )
+        CLog::Log(LOGINFO,"AutoSwitch: Failed to set mode");
+    }
+  } 
 
   CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
 
@@ -2911,6 +3030,24 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
     else
       io.EjectTray();
   }
+  else if( execute.Equals("AlarmClock") ) 
+  {	
+    CStdStringW strTime;
+    CStdString strHeading = g_localizeStrings.Get(13209);
+    float fSecs;
+    if( !parameter.IsEmpty() ) 
+      fSecs = static_cast<float>(atoi(parameter.c_str())*60);
+    else { 
+      if( CGUIDialogNumeric::ShowAndGetInput(strTime,strHeading,false) )
+        fSecs = static_cast<float>(atoi(CStdString(strTime).c_str())*60);
+      else
+        return;
+    }
+    if( g_alarmClock.isRunning() )
+      g_alarmClock.stop();
+    g_alarmClock.start(fSecs);
+  } 
+  
 }
 
 void usleep(int t)

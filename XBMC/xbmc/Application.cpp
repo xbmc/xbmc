@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include "xbox/XKEEPROM.h"
 #include "application.h"
 #include "utils/lcd.h"
 #include "xbox\iosupport.h"
@@ -608,6 +609,44 @@ HRESULT CApplication::Create()
     g_stSettings.m_bShowFreeMem = true;
     CLog::Log(LOGINFO, "Key combination detected for full debug logging (X+Y)");
   }
+
+// now check if we are switching video modes. if, are we in the wrong mode according to eeprom?
+  if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+  {
+    // should use xkeeprom.h :/
+    EEPROMDATA EEPROM;
+
+    if( XKUtils::ReadEEPROMFromXBOX((LPBYTE)&(EEPROM),0,255) ) 
+    {
+      DWORD DWVideo = *(LPDWORD)(&EEPROM.VideoStandard[0]);
+      char temp[1024];
+      helper.GetXbePath(temp);
+      char temp2[1024];
+      char temp3[2];
+      temp3[0] = temp[0]; temp3[1] = '\0';
+      helper.GetPartition((LPCSTR)temp3,temp2);
+      CStdString strTemp(temp+2);
+      int iLastSlash = strTemp.rfind('\\');
+      strcat(temp2,strTemp.substr(0,iLastSlash).c_str());
+      
+      if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_M) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I)) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J)) 
+      {
+        Destroy();
+        CUtil::LaunchXbe(temp2,("D:\\"+strTemp.substr(iLastSlash+1)).c_str(),NULL,VIDEO_NTSCM,COUNTRY_USA);
+      }
+      else if ((DWVideo == XKEEPROM::VIDEO_STANDARD::PAL_I) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J)))
+      {
+        Destroy();
+        CUtil::LaunchXbe(temp2,("D:\\"+strTemp.substr(iLastSlash+1)).c_str(),NULL,VIDEO_PAL50,COUNTRY_EUR);
+      }
+      else if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_J) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) || (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I)))
+      {
+        Destroy();
+        CUtil::LaunchXbe(temp2,("D:\\"+strTemp.substr(iLastSlash+1)).c_str(),NULL,VIDEO_NTSCJ,COUNTRY_JAP);
+      }
+    }
+  } 
+  
 
   CLog::Log(LOGINFO, "map drives...");
   CLog::Log(LOGINFO, "  map drive C:");
@@ -2786,6 +2825,13 @@ void CApplication::OnPlayBackEnded()
   g_pythonParser.OnPlayBackEnded();
 
   CLog::Log(LOGDEBUG, "Playback has finished");
+  if ((g_guiSettings.GetBool("MusicLibrary.ClearPlaylistsOnEnd")) && (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)) 
+  {
+    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Clear();
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
+  } 
+  
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL);
   m_gWindowManager.SendThreadMessage(msg);
   StartLEDControl(false);
