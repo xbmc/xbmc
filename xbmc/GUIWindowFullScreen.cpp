@@ -66,7 +66,7 @@
 
 extern IDirectSoundRenderer* m_pAudioDecoder;
 
-static DWORD color[6] = { 0xFFFF00, 0xFFFFFF, 0x0099FF, 0x00FF00, 0xCCFF00, 0x00FFFF };
+static DWORD color[6] = { 0xFFFFFF00, 0xFFFFFFFF, 0xFF0099FF, 0xFF00FF00, 0xFFCCFF00, 0xFF00FFFF };
 
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
     : CGUIWindow(0)
@@ -794,13 +794,22 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       float x = (float) (g_settings.m_ResInfo[m_iResolution].iWidth) / 2;
       float y = (float) g_settings.m_ResInfo[m_iResolution].iSubtitles - h;
 
-      float outlinewidth = (float)g_guiSettings.GetInt("Subtitles.Height") / 8;
+      float outlinewidth = 3;
 
-      m_subtitleFont->DrawText(x - outlinewidth, y, 0, subtitleText.c_str(), XBFONT_CENTER_X);
-      m_subtitleFont->DrawText(x + outlinewidth, y, 0, subtitleText.c_str(), XBFONT_CENTER_X);
-      m_subtitleFont->DrawText(x, y + outlinewidth, 0, subtitleText.c_str(), XBFONT_CENTER_X);
-      m_subtitleFont->DrawText(x, y - outlinewidth, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+      m_subtitleFont->Begin();
+      for (int i = 1; i < outlinewidth; i++)
+      {
+        int ymax = (int)(sqrt(outlinewidth*outlinewidth - i*i) + 0.5f);
+        for (int j = 1; j < ymax; j++)
+        {
+          m_subtitleFont->DrawText(x - i, y + j, 0xFF000000, subtitleText.c_str(), XBFONT_CENTER_X);
+          m_subtitleFont->DrawText(x - i, y - j, 0xFF000000, subtitleText.c_str(), XBFONT_CENTER_X);
+          m_subtitleFont->DrawText(x + i, y + j, 0xFF000000, subtitleText.c_str(), XBFONT_CENTER_X);
+          m_subtitleFont->DrawText(x + i, y - j, 0xFF000000, subtitleText.c_str(), XBFONT_CENTER_X);
+        }
+      }
       m_subtitleFont->DrawText(x, y, color[g_guiSettings.GetInt("Subtitles.Color")], subtitleText.c_str(), XBFONT_CENTER_X);
+      m_subtitleFont->End();
     }
   }
 }
