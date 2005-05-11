@@ -1,3 +1,5 @@
+2005-05-10 fixed:       context menu size (some labels barely fit)
+2005-05-10 fixed:       some ttf font issues/sizes
 2005-05-10 changed:     Default control in scripts + programs is now the list/thumb view.
 
 2005-05-06 added:       new system info
