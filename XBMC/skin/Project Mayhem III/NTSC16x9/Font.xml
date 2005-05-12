@@ -58,13 +58,15 @@
     <font>
       <name>font13</name>
       <filename>Arial.ttf</filename>
-      <size>17</size>
+      <size>15</size>
+      <style>bold</style>
     </font>
 
     <font>
       <name>font14</name>
       <filename>Arial.ttf</filename>
       <size>17</size>
+      <style>bold</style>
     </font>
 
     <font>
@@ -76,18 +78,21 @@
       <name>font04</name>
       <filename>Arial.ttf</filename>
       <size>17</size>
+      <style>bold</style>
     </font>
 
     <font>
       <name>font10</name>
       <filename>Arial.ttf</filename>
-      <size>15</size>
+      <size>13</size>
+      <style>bold</style>
     </font>
 
     <font>
       <name>font12</name>
       <filename>Arial.ttf</filename>
-      <size>16</size>
+      <size>14</size>
+      <style>bold</style>
     </font>
 
     <font>
@@ -98,19 +103,21 @@
     <font>
       <name>font101</name>
       <filename>Arial.ttf</filename>
-      <size>15</size>
+      <size>13</size>
+      <style>bold</style>
     </font>
 
     <font>
       <name>special12</name>
       <filename>Arial.ttf</filename>
-      <size>17</size>
+      <size>16</size>
     </font>
 
     <font>
       <name>special13</name>
       <filename>Arial.ttf</filename>
-      <size>18</size>
+      <size>16</size>
+      <style>bold</style>
     </font>
 
   </fontset>
