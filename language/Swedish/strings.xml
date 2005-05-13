@@ -169,6 +169,7 @@
   <string><id>236</id><value>Gaussisk kubiskt</value></string>
   <string><id>237</id><value>Förminskning</value></string>
   <string><id>238</id><value>Förstoring</value></string>
+  <string><id>239</id><value>Rensa spellista vid slutet</value></string>
   <string><id>240</id><value>Starta DVD-Video automatiskt</value></string>
   <string><id>241</id><value>Starta VCD/SVCD automatiskt</value></string>
   <string><id>242</id><value>Starta Audio-CD automatiskt</value></string>
@@ -470,6 +471,7 @@
   <string><id>641</id><value>PreAmp Level - Replay Gained Filer</value></string>
   <string><id>642</id><value>PreAmp Level - Icke Replay Gained Filer</value></string>
   <string><id>643</id><value>Undvik Clipping på Replay Gained Filer</value></string>
+  <string><id>644</id><value>Ta bort Svarat Ränder</value></string>
   <string><id>700</id><value>Rensa Databasen</value></string>
   <string><id>701</id><value>Radera gammla låtar från databasen</value></string>
   <string><id>702</id><value>Denna sökväg har scannats innan.</value></string>
@@ -540,6 +542,7 @@
   <string><id>767</id><value>Reserverad</value></string>
   <string><id>768</id><value>Reserverad</value></string>
   <string><id>769</id><value>Reserverad</value></string>
+  <string><id>770</id><value>Fel %i: delningen är inte tillgänglig</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Online Spel</value></string>
   <string><id>1000</id><value>Förhandstitt av skärmsläckare</value></string>
@@ -706,6 +709,11 @@
   <string><id>13205</id><value>Okänd</value></string>
   <string><id>13206</id><value>Skrivöver</value></string>
   <string><id>13207</id><value>Skrivöver profil '%s'?</value></string>
+  <string><id>13208</id><value>Alarmklocka</value></string>
+  <string><id>13209</id><value>Alarmklocks interval (i minuter)</value></string>
+  <string><id>13210</id><value>Startad, alarm om %im</value></string>
+  <string><id>13211</id><value>Alarm!</value></string>
+  <string><id>13212</id><value>Avbruten med %im%is kvar</value></string>
   <string><id>13270</id><value>Hårdvara:</value></string>
   <string><id>13271</id><value>CPU Hastighet:</value></string>
   <string><id>13275</id><value>Hårddisk</value></string>
