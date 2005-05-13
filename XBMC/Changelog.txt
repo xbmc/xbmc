@@ -5,12 +5,15 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-- 12-05-2005 added: XBMC now resets to the EEPROM saved video mode upon start if 'Auto switch video mode based on game region' is enabled.
-- 12-05-2005 added: New option to clear music playlists on finish.
-- 12-05-2005 added: New built-in command, XBMC.AlarmClock(). 
-- 12-05-2005 added: Module info reader support. Supports .mdz's (http://www.textfiles.com/computers/DOCUMENTATION/mdzfile.nfo), with fallback to reading the title from the module file.
-- 12-05-2005 added: .sid info reader support. Needs HVSC (http://www.hvsc.c64.org) paths to identify .sid's and uses SIDList.csv (http://www.transbyte.org/SID/SIDlist.html) to grab the info. Put the .csv-file (call it sidlist.csv) in your albums directory.
-- 10-05-2005 fixed: TTF subs were transparent.  Also improved the quality of the borders etc.
+  - 12-05-2005 fixed: CD ripping to a Samba share
+  - 12-05-2005 changed: defaults for time based seeking are now +/- 30 seconds, and +/- 5 minutes
+			(if you're already running a version with this you'll need to change your values manually from settings.xml)
+  - 12-05-2005 added: XBMC now resets to the EEPROM saved video mode upon start if 'Auto switch video mode based on game region' is enabled.
+  - 12-05-2005 added: New option to clear music playlists on finish.
+  - 12-05-2005 added: New built-in command, XBMC.AlarmClock(). 
+  - 12-05-2005 added: Module info reader support. Supports .mdz's (http://www.textfiles.com/computers/DOCUMENTATION/mdzfile.nfo), with fallback to reading the title from the module file.
+  - 12-05-2005 added: .sid info reader support. Needs HVSC (http://www.hvsc.c64.org) paths to identify .sid's and uses SIDList.csv (http://www.transbyte.org/SID/SIDlist.html) to grab the info. Put the .csv-file (call it sidlist.csv) in your albums directory.
+  - 10-05-2005 fixed: TTF subs were transparent.  Also improved the quality of the borders etc.
   - 10-05-2005 improved: TTF rendering speed is up with XPR now.
   - 10-05-2005 fixed: Scaling for different resolutions didn't effect the window's coordinates.
   - 10-05-2005 changed: Scripts/Programs default control now set to list/thumb view.
