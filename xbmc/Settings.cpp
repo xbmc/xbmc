@@ -261,10 +261,10 @@ CSettings::CSettings(void)
   g_stSettings.m_bMyMusicOldFindThumbs = true;
 
   // defaults for seeking
-  g_stSettings.m_iMyVideoTimeSeekForward = 60;
-  g_stSettings.m_iMyVideoTimeSeekBackward = -60;
-  g_stSettings.m_iMyVideoTimeSeekForwardBig = 600;
-  g_stSettings.m_iMyVideoTimeSeekBackwardBig = -600;
+  g_stSettings.m_iMyVideoTimeSeekForward = 30;
+  g_stSettings.m_iMyVideoTimeSeekBackward = -30;
+  g_stSettings.m_iMyVideoTimeSeekForwardBig = 300;
+  g_stSettings.m_iMyVideoTimeSeekBackwardBig = -300;
 
   g_stSettings.m_iMyVideoPercentSeekForward = 2;
   g_stSettings.m_iMyVideoPercentSeekBackward = -2;
@@ -1062,10 +1062,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetInteger(pElement, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries, 3, 1, 10);
     GetInteger(pElement, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay, 300, 100, 5000); //MS
 
-    GetInteger(pElement, "timeseekforward", g_stSettings.m_iMyVideoTimeSeekForward, 60, 0, 6000);
-    GetInteger(pElement, "timeseekbackward", g_stSettings.m_iMyVideoTimeSeekBackward, -60, -6000, 0);
-    GetInteger(pElement, "timeseekforwardbig", g_stSettings.m_iMyVideoTimeSeekForwardBig, 600, 0, 6000);
-    GetInteger(pElement, "timeseekbackwardbig", g_stSettings.m_iMyVideoTimeSeekBackwardBig, -600, -6000, 0);
+    GetInteger(pElement, "timeseekforward", g_stSettings.m_iMyVideoTimeSeekForward, 30, 0, 6000);
+    GetInteger(pElement, "timeseekbackward", g_stSettings.m_iMyVideoTimeSeekBackward, -30, -6000, 0);
+    GetInteger(pElement, "timeseekforwardbig", g_stSettings.m_iMyVideoTimeSeekForwardBig, 300, 0, 6000);
+    GetInteger(pElement, "timeseekbackwardbig", g_stSettings.m_iMyVideoTimeSeekBackwardBig, -300, -6000, 0);
 
     GetInteger(pElement, "percentseekforward", g_stSettings.m_iMyVideoPercentSeekForward, 2, 0, 100);
     GetInteger(pElement, "percentseekbackward", g_stSettings.m_iMyVideoPercentSeekBackward, -2, -100, 0);

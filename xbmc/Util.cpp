@@ -2687,12 +2687,25 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
    * music\\album
    */
 
-  int i = url.GetProtocol().size() + 1;
-  if (i == 1) i = 2; // local hard drive has no protocol
+  int i;
+  CFileItem *pItem = new CFileItem(strPath,true);
+  if (pItem->IsSmb())
+  {
+    i = 0;
+  }
+  else if (pItem->IsHD())
+  {
+    i = 2; // remove the "E:" from the filename
+  }
+  else
+  {
+    CLog::Log(LOGERROR,"CUtil::CreateDirectoryEx called with an unsupported path: %s",strPath.c_str());
+    return false;
+  }
+
   int s = i;
   while (i < iSize)
   {
-    CLog::Log(LOGDEBUG,"CUtil... loop: s = [%i], i = [%i]",s,i);
     i = path.find(cSep, i + 1);
     if (i < 0) i = iSize; // get remaining chars
     strArray.push_back(path.substr(s, i - s));
