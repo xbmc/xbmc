@@ -33,6 +33,9 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   CUtil::GetExtension( strFileName, strExtension);
   strExtension.ToLower();
 
+  if (strExtension.IsEmpty())
+    return NULL;
+
   if (strExtension == ".mp3")
   {
     CMusicInfoTagLoaderMP3 *pTagLoader = new CMusicInfoTagLoaderMP3();
