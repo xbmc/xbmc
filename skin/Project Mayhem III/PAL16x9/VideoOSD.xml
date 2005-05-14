@@ -129,11 +129,11 @@
       <posY>385</posY>
       <width>52</width>
       <height>66</height>
-      <textureFocus>osd_button_playFO.png</textureFocus>
-      <textureNoFocus>osd_button_playNF.png</textureNoFocus>
+      <textureFocus>osd_button_pauseFO.png</textureFocus>
+      <textureNoFocus>osd_button_pauseNF.png</textureNoFocus>
       <UseAltTexture>Player.Paused</UseAltTexture>
-      <AltTextureFocus>osd_button_pauseFO.png</AltTextureFocus>
-      <AltTextureNoFocus>osd_button_pauseNF.png</AltTextureNoFocus>             
+      <AltTextureFocus>osd_button_playFO.png</AltTextureFocus>
+      <AltTextureNoFocus>osd_button_playNF.png</AltTextureNoFocus>             
       <label>-</label>
       <font>-</font>
       <onleft>211</onleft>
