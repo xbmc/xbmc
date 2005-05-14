@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 14-05-2005 changed: Performance enhancements to My Programs (requires new database to be created which will be slow initially when entering bookmarks)
+  - 14-05-2005 fixed: GetDirectoryName did not work properly if file was in root of drive
   - 14-05-2005 added: WAV codec to paplayer
   - 14-05-2005 updated: German (Austrian) language file (Thnx to CEOMR)
   - 14-05-2005 updated: Finnish language file (Thnx to jutski)

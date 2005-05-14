@@ -33,8 +33,12 @@ protected:
   int m_iSelectedItem;
   int m_iDepth;
   CStdString m_strBookmarkName;
+//  set <CStdString> m_setPaths;
+//  set <CStdString> m_setPaths1;
+  vector<CStdString> m_vecPaths, m_vecPaths1;
   CProgramDatabase m_database;
   CStdString m_strParentPath;
   int m_iViewAsIcons;
+  bool m_isRoot;
   CGUIViewControl m_viewControl;
 };
