@@ -169,10 +169,11 @@
   <string><id>236</id><value>Gaussian Cubic</value></string>
   <string><id>237</id><value>Pienennys</value></string>
   <string><id>238</id><value>Suurennus</value></string>
+  <string><id>239</id><value>Tyhjennä soittolista lopussa</value></string>
   <string><id>240</id><value>Näytä DVD-Video -levyt automaattisesti</value></string>
   <string><id>241</id><value>Näytä VCD/SVCD -levyt automaattisesti</value></string>
   <string><id>242</id><value>Soita Audio-CD -levyt automaattisesti</value></string>
-  <string><id>243</id><value>Käynnistä XBOX-pelit automaattisesti</value></string>
+  <string><id>243</id><value>Käynnistä Xbox-pelit automaattisesti</value></string>
   <string><id>244</id><value>Näytä Videot automaattisesti</value></string>
   <string><id>245</id><value>Soita Musiikki automaattisesti</value></string>
   <string><id>246</id><value>Näytä Kuvat automaattisesti</value></string>
@@ -546,6 +547,8 @@
   <string><id>768</id><value>Varattu</value></string>
   <string><id>769</id><value>Varattu</value></string>
 
+  <string><id>770</id><value>Virhe %i: jako ei saatavilla</value></string>
+
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Nettipelaaminen</value></string>
   <string><id>1000</id><value>Näytönsäästäjän esikatselu</value></string>
@@ -650,7 +653,7 @@
   <string><id>12327</id><value>Anna pääsalasana ja paina Enter,</value></string>
   <string><id>12328</id><value>Anna avauskoodi ja paina Enter,</value></string> 
   <string><id>12329</id><value>tai paina C peruuttaaksesi</value></string>
-  <string><id>12330</id><value>Anna XBOX-ohjaimen painikeyhdistelmä ja </value></string>
+  <string><id>12330</id><value>Anna Xbox-ohjaimen painikeyhdistelmä ja </value></string>
   <string><id>12331</id><value>paina Start, tai Back peruuttaaksesi</value></string>
   <string><id>12332</id><value>Lukitse jako</value></string>
   <string><id>12333</id><value>Avaa jako</value></string>
@@ -667,7 +670,7 @@
   <string><id>12344</id><value>Annetut salasanat eivät täsmää.</value></string>
   <string><id>12345</id><value>Pääsy evätty</value></string>
   <string><id>12346</id><value>Yritykset käytetty.</value></string>
-  <string><id>12347</id><value>XBOX sammutetaan nyt.</value></string>
+  <string><id>12347</id><value>Xbox sammutetaan nyt.</value></string>
   <string><id>12348</id><value>Kohde lukittu</value></string>
   <string><id>12349</id><value>Muista pääsalasana uudelleenkäynnistykseen asti?</value></string>
   <string><id>12350</id><value>(Minkä tahansa kohteen avaaminen Asetuksissa</value></string>
@@ -684,7 +687,7 @@
   <string><id>13002</id><value>Vain Videoille</value></string>
   <string><id>13003</id><value>- Sammutuksen viive</value></string>
   <string><id>13004</id><value>- Tiedoston vähimmäiskesto</value></string>
-  <string><id>13005</id><value>Sammuta XBOX</value></string>
+  <string><id>13005</id><value>Sammuta Xbox</value></string>
   <string><id>13006</id><value>Dashboard</value></string>
   <string><id>13100</id><value>Välkkymisen poisto</value></string>
   <string><id>13200</id><value>Profiilit</value></string>
@@ -695,6 +698,13 @@
   <string><id>13205</id><value>Tuntematon</value></string>
   <string><id>13206</id><value>Korvaa</value></string>
   <string><id>13207</id><value>Korvataanko profiili '%s'?</value></string>
+
+  <string><id>13208</id><value>Munakello</value></string>
+  <string><id>13209</id><value>Hälytysväli (minuuttia)</value></string>
+  <string><id>13210</id><value>Käynnistetty, hälytys %im kuluttua</value></string>
+  <string><id>13211</id><value>Herätys!</value></string>
+  <string><id>13212</id><value>Peruutettu, %im jäljellä</value></string>
+
   <string><id>13299</id><value>Tavoitelämpötila</value></string>
   <string><id>13300</id><value>Tuulettimen nopeus</value></string>
   <string><id>13301</id><value>Automaattinen lämmönhallinta</value></string>
@@ -704,7 +714,7 @@
   <string><id>13305</id><value>RSS Uutispalvelu käytössä</value></string>
   <string><id>13306</id><value>Piilota äitihakemisto</value></string>
   <string><id>13307</id><value>Kappaleen nimeämismalli</value></string>
-  <string><id>13308</id><value>Käynnistetäänkö koko XBOX uudelleen,</value></string>
+  <string><id>13308</id><value>Käynnistetäänkö koko Xbox uudelleen,</value></string>
   <string><id>13309</id><value>eikä vain pelkkä XBMC?</value></string>
   <string><id>13310</id><value>Zoomaus-efekti</value></string>
   <string><id>13311</id><value>Kellumis-efekti</value></string>
@@ -886,7 +896,7 @@
   <string><id>15037</id><value>XBMC ei pysty varmistamaan verkkosi saavutettavuutta.</value></string>
   <string><id>15038</id><value>Saatat kohdata ongelmia liittyessäsi tai isännöidessäsi pelejä.</value></string>
   <string><id>15039</id><value>Xbox Media Center ei löytänyt peliä automaattisesti.</value></string>
-  <string><id>15040</id><value>Aseta peli XBOXiin tai paina 'A' peruuttaaksesi</value></string>
+  <string><id>15040</id><value>Aseta peli Xboxiin tai paina 'A' peruuttaaksesi</value></string>
   <string><id>15041</id><value>ja käynnistä peli manuaalisesti.</value></string>
   <string><id>15042</id><value>Pääsy evätty</value></string>
   <string><id>15043</id><value>%s liittyi keskusteluun.</value></string>
@@ -933,6 +943,26 @@
   <string><id>15211</id><value>Lähetetään...</value></string>
   <string><id>15212</id><value>Lähetetään %i sek kuluttua</value></string>
 
+  <string><id>13150</id><value>HDD avain:</value></string>
+  <string><id>13151</id><value>HDD lämpötila:</value></string>
+  <string><id>13152</id><value>DVD malli:</value></string>
+  <string><id>13153</id><value>DVD firmware:</value></string>
+  <string><id>13154</id><value>HDD malli:</value></string>
+  <string><id>13155</id><value>HDD sarjanro:</value></string>
+  <string><id>13156</id><value>HDD firmware:</value></string>
+  <string><id>13157</id><value>HDD salasana:</value></string>
+  <string><id>13158</id><value>HDD lukitus:</value></string>
+  <string><id>13159</id><value>Aliverkon peite:</value></string>
+  <string><id>13160</id><value>Yhdyskäytävä:</value></string>
+  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13162</id><value>Alustus epäonnistui</value></string>
+  <string><id>13163</id><value>Ohjaimet porteissa:</value></string>
+  <string><id>13164</id><value>Näppäimistö portissa:</value></string>
+  <string><id>13165</id><value>Hiiri portissa:</value></string>
+  <string><id>13166</id><value>Kuulokemikrofoni portissa:</value></string>
+  <string><id>13167</id><value>Muistikortti portissa:</value></string>
+  <string><id>13168</id><value>IR-kaukosäädin portissa:</value></string>
+
   <string><id>13270</id><value>Laitteisto:</value></string>
   <string><id>13271</id><value>CPU:n nopeus:</value></string>
   <string><id>13275</id><value>Kovalevy</value></string>
@@ -950,7 +980,7 @@
   <string><id>13287</id><value>Näyttöresoluutio:</value></string>
   <string><id>13288</id><value>Xboxin versio:</value></string>
   <string><id>13289</id><value>Xboxin sarjanumero:</value></string>
-  <string><id>13290</id><value>XBOX valmistettu:</value></string>
+  <string><id>13290</id><value>Xbox valmistettu:</value></string>
   <string><id>13291</id><value>ModChip:</value></string>
   <string><id>13292</id><value>A/V-kaapeli:</value></string>
   <string><id>13293</id><value>Video- &amp; XBE-alue:</value></string>
