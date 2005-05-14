@@ -2688,12 +2688,12 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
    */
 
   int i;
-  CFileItem *pItem = new CFileItem(strPath,true);
-  if (pItem->IsSmb())
+  CFileItem item(strPath,true);
+  if (item.IsSmb())
   {
     i = 0;
   }
-  else if (pItem->IsHD())
+  else if (item.IsHD())
   {
     i = 2; // remove the "E:" from the filename
   }
