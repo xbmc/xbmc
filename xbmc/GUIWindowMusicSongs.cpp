@@ -860,7 +860,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
     CFileItem* pItem = items[i];
 
     // dont try reading tags for folders, playlists or shoutcast streams
-    if (pItem->m_bIsFolder && pItem->IsPlayList() && pItem->IsInternetStream())
+    if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsInternetStream())
     {
       iTaglessFiles++;
       continue;
