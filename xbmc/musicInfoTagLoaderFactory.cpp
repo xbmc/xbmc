@@ -11,6 +11,7 @@
 #include "MusicInfoTagLoaderSHN.h"
 #include "MusicInfoTagLoaderSid.h"
 #include "MusicInfoTagLoaderMod.h" 
+#include "MusicInfoTagLoaderWav.h" 
 #include "cores/ModPlayer.h" 
 #include "util.h"
 
@@ -32,63 +33,69 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   CStdString strExtension;
   CUtil::GetExtension( strFileName, strExtension);
   strExtension.ToLower();
+  strExtension.TrimLeft('.');
 
   if (strExtension.IsEmpty())
     return NULL;
 
-  if (strExtension == ".mp3")
+  if (strExtension == "mp3")
   {
     CMusicInfoTagLoaderMP3 *pTagLoader = new CMusicInfoTagLoaderMP3();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-  else if (strExtension == ".ogg")
+  else if (strExtension == "ogg")
   {
     CMusicInfoTagLoaderOgg *pTagLoader = new CMusicInfoTagLoaderOgg();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-  else if (strExtension == ".wma")
+  else if (strExtension == "wma")
   {
     CMusicInfoTagLoaderWMA *pTagLoader = new CMusicInfoTagLoaderWMA();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-  else if (strExtension == ".flac")
+  else if (strExtension == "flac")
   {
     CMusicInfoTagLoaderFlac *pTagLoader = new CMusicInfoTagLoaderFlac();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-  else if (strExtension == ".m4a")
+  else if (strExtension == "m4a")
   {
     CMusicInfoTagLoaderMP4 *pTagLoader = new CMusicInfoTagLoaderMP4();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-  else if (strExtension == ".cdda")
+  else if (strExtension == "cdda")
   {
     CMusicInfoTagLoaderCDDA *pTagLoader = new CMusicInfoTagLoaderCDDA();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-  else if (strExtension == ".ape" || strExtension == ".mac")
+  else if (strExtension == "ape" || strExtension == "mac")
   {
     CMusicInfoTagLoaderApe *pTagLoader = new CMusicInfoTagLoaderApe();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-  else if (strExtension == ".mpc" || strExtension == ".mpp" || strExtension == ".mp+")
+  else if (strExtension == "mpc" || strExtension == "mpp" || strExtension == "mp+")
   {
     CMusicInfoTagLoaderMPC *pTagLoader = new CMusicInfoTagLoaderMPC();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-  else if (strExtension == ".shn")
+  else if (strExtension == "shn")
   {
     CMusicInfoTagLoaderSHN *pTagLoader = new CMusicInfoTagLoaderSHN();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-  else if (strExtension == ".sid")
+  else if (strExtension == "sid")
   {
     CMusicInfoTagLoaderSid *pTagLoader = new CMusicInfoTagLoaderSid();
     return (IMusicInfoTagLoader*)pTagLoader;
   } 
-  else if (ModPlayer::IsSupportedFormat(strExtension.substr(1)) )
+  else if (ModPlayer::IsSupportedFormat(strExtension))
   {
     CMusicInfoTagLoaderMod *pTagLoader = new CMusicInfoTagLoaderMod();
+    return (IMusicInfoTagLoader*)pTagLoader;
+  } 
+  else if (strExtension == "wav")
+  {
+    CMusicInfoTagLoaderWAV *pTagLoader = new CMusicInfoTagLoaderWAV();
     return (IMusicInfoTagLoader*)pTagLoader;
   } 
 
