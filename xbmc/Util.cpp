@@ -1299,8 +1299,8 @@ bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescr
   {
     strDescription = strDescription.Right(strDescription.size() - iPos - 1);
   }
-
-  else strDescription = strFName;
+  else if (strDescription.size() <= 0)    
+    strDescription = strFName;
   return true;
 }
 bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDescription)
