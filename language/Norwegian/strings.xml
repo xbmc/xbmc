@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.192. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.193. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -696,6 +696,13 @@
   <string><id>13205</id><value>Ukjent</value></string>
   <string><id>13206</id><value>Erstatt</value></string>
   <string><id>13207</id><value>Erstatt profil '%s'?</value></string>
+
+  <string><id>13208</id><value>Alarm</value></string>
+  <string><id>13209</id><value>Alarmintervall (i minutter)</value></string>
+  <string><id>13210</id><value>Startet, alarm om %im</value></string>
+  <string><id>13211</id><value>Alarm!</value></string>
+  <string><id>13212</id><value>Avbrutt med %im%is igjen</value></string>
+
   <string><id>13299</id><value>Temperaturmål</value></string>
   <string><id>13300</id><value>Viftehastighet</value></string>
   <string><id>13301</id><value>Automatisk temperaturkontroll</value></string>

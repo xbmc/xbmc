@@ -71,8 +71,8 @@
   <string><id>137</id><value>Suchen..</value></string>
   <string><id>138</id><value>Systeminformationen</value></string>
   <string><id>139</id><value>Temperatur:</value></string>
-  <string><id>140</id><value>- CPU:</value></string>
-  <string><id>141</id><value>- GPU:</value></string>
+  <string><id>140</id><value>CPU Temperatur:</value></string>
+  <string><id>141</id><value>GPU Temperatur:</value></string>
   <string><id>142</id><value>Zeit:</value></string>
   <string><id>143</id><value>Lokal:</value></string>
   <string><id>144</id><value>Version:</value></string>
@@ -171,6 +171,7 @@
   <string><id>236</id><value>Gaussian Cubic</value></string>
   <string><id>237</id><value>Verkleinerung:</value></string>
   <string><id>238</id><value>Vergrößerung:</value></string>
+  <string><id>239</id><value>Wiedergabeliste nach Beendigung löschen</value></string>
   <string><id>240</id><value>DVD</value></string>
   <string><id>241</id><value>VCD/SVCD</value></string>
   <string><id>242</id><value>Audio CD</value></string>
@@ -235,7 +236,7 @@
   <string><id>302</id><value>Stream</value></string>
   <string><id>303</id><value>UT Verzög.</value></string>
   <string><id>304</id><value>Sprache</value></string>
-  <string><id>305</id><value>Ein/Aus</value></string>
+  <string><id>305</id><value>Akt./Deakt.</value></string>
   <string><id>306</id><value>paralleles Audio/Video</value></string>
   <string><id>307</id><value>- Automatisches Postprocessing</value></string>
   <string><id>308</id><value>- Vertikaler Deblocking Filter</value></string>
@@ -281,7 +282,7 @@
   <string><id>348</id><value>Einfache Verzeichnisanzeige</value></string>
   <string><id>349</id><value>Nur Default.xbe zeigen</value></string>
   <string><id>350</id><value>Programme</value></string>
-  <string><id>351</id><value>AUS</value></string>
+  <string><id>351</id><value>Deaktiviert</value></string>
   <string><id>352</id><value>Verdunkelung</value></string>
   <string><id>353</id><value>Schwarz</value></string>
   <string><id>354</id><value>MatrixSchleifen</value></string>
@@ -404,7 +405,7 @@
   <string><id>471</id><value>Modchip</value></string>
   <string><id>472</id><value>OSD Einblendzeit</value></string>
   <string><id>473</id><value>Abtastrate verbessern</value></string>
-  <string><id>474</id><value>deaktiviert</value></string>
+  <string><id>474</id><value>Deaktiviert</value></string>
   <string><id>475</id><value>Audio</value></string>
   <string><id>476</id><value>Audio &amp; Video</value></string>
   <string><id>477</id><value>Wiedergabeliste konnte nicht geladen werden!</value></string>
@@ -441,6 +442,8 @@
   <string><id>508</id><value>Verknüpfungen und Durchsuchen deaktivieren</value></string>
   <string><id>509</id><value>Miniaturansichten zwischenspeichern</value></string>
   <string><id>510</id><value>Visualisierungen aktivieren</value></string>
+  <string><id>511</id><value>Video Modus auf Spielregion automatisch anpassen</value></string>
+
   <string><id>600</id><value>CD Rippen</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -472,6 +475,8 @@
   <string><id>641</id><value>Ziellautstärke bei angepassten Dateien</value></string> 
   <string><id>642</id><value>Ziellautstärke bei unangepassten Dateien</value></string> 
   <string><id>643</id><value>Störgeräusche entfernen bei angepassten Dateien</value></string>
+  <string><id>644</id><value>Balken entfernen</value></string>
+
   <string><id>700</id><value>Datenbank säubern</value></string>
   <string><id>701</id><value>Lösche alte Musikdaten</value></string>
   <string><id>702</id><value>Dieser Pfad wurde bereits durchsucht!</value></string>
@@ -541,7 +546,9 @@
   <string><id>766</id><value>Vorbehalten</value></string> 
   <string><id>767</id><value>Vorbehalten</value></string> 
   <string><id>768</id><value>Vorbehalten</value></string> 
-  <string><id>769</id><value>Vorbehalten</value></string> 
+  <string><id>769</id><value>Vorbehalten</value></string>
+  <string><id>770</id><value>Fehler %i: Freigabe nicht verfügbar</value></string>
+
   <string><id>998</id><value>Online spielen</value></string>
   <string><id>999</id><value>Online spielen</value></string>
   <string><id>1000</id><value>Bildschirmschoner Vorschau</value></string>
@@ -681,6 +688,27 @@
   <string><id>13005</id><value>XBOX MediaCenter ausschalten</value></string> 
   <string><id>13006</id><value>Dashboard</value></string> 
   <string><id>13100</id><value>Flimmerfilter</value></string>
+
+  <string><id>13150</id><value>Key:</value></string> 
+  <string><id>13151</id><value>Temperatur:</value></string> 
+  <string><id>13152</id><value>Hersteller:</value></string> 
+  <string><id>13153</id><value>Firmware:</value></string> 
+  <string><id>13154</id><value>Modell:</value></string> 
+  <string><id>13155</id><value>Serial:</value></string> 
+  <string><id>13156</id><value>Firmware:</value></string> 
+  <string><id>13157</id><value>Kennwort:</value></string> 
+  <string><id>13158</id><value>Lock Status:</value></string> 
+  <string><id>13159</id><value>Subnetzmaske:</value></string> 
+  <string><id>13160</id><value>Gateway:</value></string> 
+  <string><id>13161</id><value>DNS:</value></string> 
+  <string><id>13162</id><value>Initialisierungs Fehler</value></string> 
+  <string><id>13163</id><value>GamePad an Port:</value></string> 
+  <string><id>13164</id><value>Tastatur an Port:</value></string> 
+  <string><id>13165</id><value>Maus an Port:</value></string> 
+  <string><id>13166</id><value>Kopf/Mikrofon an Port:</value></string> 
+  <string><id>13167</id><value>MemoryStick an Port:</value></string> 
+  <string><id>13168</id><value>IR-Remote an Port:</value></string> 
+
   <string><id>13200</id><value>Profile</value></string>
   <string><id>13201</id><value>Profil löschen '%s'?</value></string>
   <string><id>13202</id><value>Einstellungen als Profil sichern</value></string>
@@ -689,8 +717,41 @@
   <string><id>13205</id><value>Unbekannt</value></string>
   <string><id>13206</id><value>Überschreiben</value></string> 
   <string><id>13207</id><value>Profil '%s' überschreiben?</value></string>
+  <string><id>13208</id><value>Wecker</value></string> 
+  <string><id>13209</id><value>Wecker Intervall (in Minuten)</value></string> 
+  <string><id>13210</id><value>Gestartet, Alarm in %im</value></string> 
+  <string><id>13211</id><value>Alarm!</value></string> 
+  <string><id>13212</id><value>Abgebrochen mit %im%is übrig</value></string> 
+
+  <string><id>13270</id><value>System:</value></string> 
+  <string><id>13271</id><value>CPU Geschwindigkeit:</value></string> 
+  <string><id>13275</id><value>Festplatte</value></string> 
+  <string><id>13276</id><value>DVD-Laufwerk</value></string> 
+  <string><id>13277</id><value>Speicher</value></string> 
+  <string><id>13278</id><value>Übersicht</value></string> 
+  <string><id>13279</id><value>Netzwerk</value></string> 
+  <string><id>13280</id><value>Video</value></string> 
+  <string><id>13281</id><value>System</value></string> 
+  <string><id>13282</id><value>_</value></string> 
+  <string><id>13283</id><value>Kernel Version:</value></string> 
+  <string><id>13284</id><value>CPU Geschwindigkeit:</value></string> 
+  <string><id>13285</id><value>Detected BIOS:</value></string> 
+  <string><id>13286</id><value>Video Encoder:</value></string> 
+  <string><id>13287</id><value>Bildschirmauflösung:</value></string> 
+  <string><id>13288</id><value>Xbox Version:</value></string> 
+  <string><id>13289</id><value>Xbox Seriennummer:</value></string> 
+  <string><id>13290</id><value>XBOX Manufacture:</value></string> 
+  <string><id>13291</id><value>ModChip:</value></string> 
+  <string><id>13292</id><value>A/V Kabel:</value></string> 
+  <string><id>13293</id><value>Video &amp; XBE Region:</value></string> 
+  <string><id>13294</id><value>DVD Region:</value></string> 
+  <string><id>13295</id><value>Internet:</value></string> 
+  <string><id>13296</id><value>Xbox verbunden!</value></string> 
+  <string><id>13297</id><value>Xbox NICHT verbunden! Check Netwotk Settings!</value></string> 
+  <string><id>13298</id><value>XBLIVE Key:</value></string> 
+
   <string><id>13299</id><value>- Temperatur:</value></string>
-  <string><id>13300</id><value>- Lüftergeschwindigkeit:</value></string>
+  <string><id>13300</id><value>Lüftergeschwindigkeit:</value></string>
   <string><id>13301</id><value>Automatische Temperaturkontrolle</value></string>
   <string><id>13302</id><value>Manuelle Lüftereinstellung</value></string>
   <string><id>13303</id><value>- Schriftart</value></string>
@@ -761,10 +822,10 @@
   <string><id>13368</id><value>--></value></string>
   <string><id>13369</id><value>- Robotereffekt verwenden</value></string> 
   <string><id>13370</id><value>--></value></string>
-  <string><id>13371</id><value>- Anschluss 0</value></string> 
-  <string><id>13372</id><value>- Anschluss 1</value></string> 
-  <string><id>13373</id><value>- Anschluss 2</value></string> 
-  <string><id>13374</id><value>- Anschluss 3</value></string> 
+  <string><id>13371</id><value>- Port 0</value></string> 
+  <string><id>13372</id><value>- Port 1</value></string> 
+  <string><id>13373</id><value>- Port 2</value></string> 
+  <string><id>13374</id><value>- Port 3</value></string> 
   <string><id>13375</id><value>Modul aktivieren</value></string> 
   <string><id>13376</id><value>Lautstärke</value></string> 
   <string><id>13377</id><value>Standard Ansicht</value></string> 
@@ -772,10 +833,11 @@
   <string><id>13379</id><value>Standard Kontrast</value></string> 
   <string><id>13380</id><value>Standard Gamma</value></string> 
   <string><id>13381</id><value>Video fortsetzen</value></string>
-  <string><id>13382</id><value>Sprachmaske - Anschluss 0</value></string> 
-  <string><id>13383</id><value>Sprachmaske - Anschluss 1</value></string> 
-  <string><id>13384</id><value>Sprachmaske - Anschluss 2</value></string> 
-  <string><id>13385</id><value>Sprachmaske - Anschluss 3</value></string> 
+  <string><id>13382</id><value>Sprachmaske - Port 0</value></string> 
+  <string><id>13383</id><value>Sprachmaske - Port 1</value></string> 
+  <string><id>13384</id><value>Sprachmaske - Port 2</value></string> 
+  <string><id>13385</id><value>Sprachmaske - Port 3</value></string> 
+  <string><id>13386</id><value>Zeitbezogene Positionssuche verwenden</value></string>
 
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln aktiv.</value></string>
