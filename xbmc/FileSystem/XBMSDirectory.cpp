@@ -170,15 +170,15 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       pItem->m_dwSize = _atoi64(szSize);
     }
 
-    char* pstrAccessStart = strstr(fileinfo, "<ACCESS>");
-    char* pstrAccessEnd = strstr(fileinfo, "</ACCESS>");
-    if (pstrAccessStart && pstrAccessEnd)
+    char* pstrModificationStart = strstr(fileinfo, "<MODIFICATION>");
+    char* pstrModificationEnd = strstr(fileinfo, "</MODIFICATION>");
+    if (pstrModificationStart && pstrModificationEnd)
     {
-      char szAccess[128];
-      pstrAccessStart += strlen("<ACCESS>");
-      strncpy(szAccess, pstrAccessStart, pstrAccessEnd - pstrAccessStart);
-      szAccess[pstrAccessEnd - pstrAccessStart] = 0;
-      __int64 lTimeDate = _atoi64(szAccess);
+      char szModification[128];
+      pstrModificationStart += strlen("<MODIFICATION>");
+      strncpy(szModification, pstrModificationStart, pstrModificationEnd - pstrModificationStart);
+      szModification[pstrModificationEnd - pstrModificationStart] = 0;
+      __int64 lTimeDate = _atoi64(szModification);
 
       FILETIME fileTime, localTime;
       LONGLONG ll = Int32x32To64(lTimeDate, 10000000) + 116444736000000000;
