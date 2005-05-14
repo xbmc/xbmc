@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 14-05-2005 fixed: exception when loading tag info if file has no extension
   - 14-05-2005 fixed: my music files tries to load tag info for folders and playlists
   - 12-05-2005 fixed: CD ripping to a Samba share
   - 12-05-2005 changed: defaults for time based seeking are now +/- 30 seconds, and +/- 5 minutes
