@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 14-05-2005 added: WAV codec to paplayer
   - 14-05-2005 updated: German (Austrian) language file (Thnx to CEOMR)
   - 14-05-2005 updated: Finnish language file (Thnx to jutski)
   - 14-05-2005 updated: Norwegian language file (Thnx to vnm)

@@ -7,6 +7,7 @@
 #include "MPCCodec.h"
 #include "SHNCodec.h"
 #include "FLACCodec.h"
+#include "WAVCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -24,6 +25,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new SHNCodec;
   else if (strFileType.Equals("flac"))
     return new FLACCodec;
+  else if (strFileType.Equals("wav"))
+    return new WAVCodec;
 
   return NULL;
 }
