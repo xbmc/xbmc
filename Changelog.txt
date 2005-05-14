@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 14-05-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+  - 14-05-2005 updated: Finnish language file (Thnx to jutski)
+  - 14-05-2005 updated: Norwegian language file (Thnx to vnm)
   - 14-05-2005 changed: [1201081] Change XBMS directory to use mtime
   - 14-05-2005 fixed: exception when loading tag info if file has no extension
   - 14-05-2005 fixed: my music files tries to load tag info for folders and playlists
