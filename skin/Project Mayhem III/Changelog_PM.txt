@@ -1,3 +1,5 @@
+2005-05-14 changed:     swapped play/pause button textures in video osd and playercontrol
+
 2005-05-11 changed:     somemore ttf size tweaks
 
 2005-05-10 fixed:       context menu size (some labels barely fit)

@@ -78,11 +78,11 @@
       <width>21</width>
       <height>22</height>
       <label>-</label>
-      <textureFocus>music-play-focus.png</textureFocus>
-      <textureNoFocus>music-play-nofocus.png</textureNoFocus>
+      <textureFocus>music-pause-focus.png</textureFocus>
+      <textureNoFocus>music-pause-nofocus.png</textureNoFocus>
       <UseAltTexture>Player.Paused</UseAltTexture>
-      <AltTextureFocus>music-pause-focus.png</AltTextureFocus>
-      <AltTextureNoFocus>music-pause-nofocus.png</AltTextureNoFocus>
+      <AltTextureFocus>music-play-focus.png</AltTextureFocus>
+      <AltTextureNoFocus>music-play-nofocus.png</AltTextureNoFocus>
       <onleft>402</onleft>
       <onright>404</onright>
       <onup>403</onup>
