@@ -71,6 +71,7 @@ protected:
   int m_charGap;                     // space between characters in pixels in our texture (for kerning)
   int m_posX;                        // current position in the texture
   int m_posY;
+  unsigned int m_descent;
   unsigned int m_ellipsesWidth;               // this is used every character (width of '.')
 
   DWORD m_dwNestedBeginCount;             // speedups

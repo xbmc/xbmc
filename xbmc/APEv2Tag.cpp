@@ -2,10 +2,6 @@
 #include "stdafx.h"
 #include "APEv2tag.h"
 
-// MPC stuff
-#include "cores/paplayer/MPCCodec.h"
-// MPC stuff
-
 using namespace MUSIC_INFO;
 
 CAPEv2Tag::CAPEv2Tag()
@@ -23,13 +19,13 @@ CAPEv2Tag::~CAPEv2Tag()
   m_pDll = NULL;
 }
 
-bool CAPEv2Tag::ReadTag(const char* filename)
+bool CAPEv2Tag::ReadTag(const char* filename, bool checkID3Tag)
 {
   if (!filename || !LoadDLL())
     return false;
 
   // Read in our tag using our dll
-  IAPETag *tag = GetAPETag(filename);
+  IAPETag *tag = GetAPETag(filename, checkID3Tag);
   if (!tag)
     return false;
 
@@ -90,16 +86,6 @@ void CAPEv2Tag::GetReplayGainFromTag(IAPETag *tag)
   }
 }
 
-__int64 CAPEv2Tag::ReadMPCDuration(const char* filename)
-{
-  if (!filename)
-    return 0;
-  MPCCodec codec;
-  if (codec.Init(filename))
-    return codec.m_TotalTime;
-  return 0;
-}
-
 bool CAPEv2Tag::LoadDLL()
 {
   if (m_bDllLoaded)
@@ -112,7 +98,7 @@ bool CAPEv2Tag::LoadDLL()
   }
 
   // get handle to the functions in the dll
-  m_pDll->ResolveExport("_GetAPETag@4", (void**)&GetAPETag);
+  m_pDll->ResolveExport("_GetAPETag@8", (void**)&GetAPETag);
 
   // Check resolves + version number
   if ( !GetAPETag )
