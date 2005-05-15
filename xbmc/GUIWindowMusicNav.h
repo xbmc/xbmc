@@ -28,6 +28,13 @@ protected:
   virtual void OnPopupMenu(int iItem);
 
   void SetArtistImage(int iItem);
+  void SaveDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int& iSortMethod, int& iAscending);
+  void LoadDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int& iSortMethod, int& iAscending);
+
+  // directory caching
+  bool m_bGotDirFromCache;
+  int m_iSortCache;
+  int m_iAscendCache;
 
   // state of the window
   int m_iState;
