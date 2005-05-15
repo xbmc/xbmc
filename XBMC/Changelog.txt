@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-05-2005 fixed: TTF fonts could show bits of other characters under the current chars.
+  - 15-05-2005 fixed: APEv2 tag reader also read + prioritized ID3v1 tags if the APEv2 tags weren't complete.
+  - 15-05-2005 improved: Ringbuffer code.
   - 15-05-2005 added: added: Milkdrop, ported by MrC, (some) presets included and FATX renamed
   - 14-05-2005 changed: Performance enhancements to My Programs (requires new database to be created which will be slow initially when entering bookmarks)
   - 14-05-2005 fixed: GetDirectoryName did not work properly if file was in root of drive

@@ -24,7 +24,7 @@ bool CMusicInfoTagLoaderApe::Load(const CStdString& strFileName, CMusicInfoTag& 
     bool bResult = false;
     tag.SetURL(strFileName);
     CAPEv2Tag myTag;
-    if (myTag.ReadTag(strFileName.c_str()))
+    if (myTag.ReadTag(strFileName.c_str(), true)) // true to check ID3 tag as well
     {
       tag.SetTitle(myTag.GetTitle());
       tag.SetAlbum(myTag.GetAlbum());

@@ -85,9 +85,13 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
   m_iMaxCharWidth = (float)width;
   // cache the ellipses width
   m_pTrueTypeFont->GetTextExtent( L".", 1, &m_ellipsesWidth);
+
+  unsigned int cellheight;
+  m_pTrueTypeFont->GetFontMetrics(&cellheight, &m_descent);
+
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = TEXTURE_WIDTH;
-  m_posY = -m_iHeight;
+  m_posY = -(m_iHeight + (int)m_descent);
 
   return true;
 }
@@ -114,9 +118,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
   // vertically centered
   if (dwFlags & XBFONT_CENTER_Y)
   {
-    FLOAT w, h;
-    GetTextExtent( strText, &w, &h );
-    sy = floorf( sy - h / 2 );
+    sy = floorf( sy - (m_iHeight - m_descent + 1) / 2 );
   }
 
   // Check if we will really need to truncate the CStdString
@@ -301,10 +303,10 @@ void CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   if (m_posX + width + m_charGap > TEXTURE_WIDTH)
   { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
     m_posX = 0;
-    m_posY += m_iHeight;
+    m_posY += m_iHeight + m_descent;
     // create the new larger texture
     LPDIRECT3DTEXTURE8 newTexture;
-    if (D3D_OK != m_pD3DDevice->CreateTexture(TEXTURE_WIDTH, m_iHeight * (m_textureRows + 1), 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &newTexture))
+    if (D3D_OK != m_pD3DDevice->CreateTexture(TEXTURE_WIDTH, (m_iHeight + m_descent) * (m_textureRows + 1), 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &newTexture))
     {
       CLog::Log(LOGERROR, "Unable to create texture for font");
       return;
@@ -315,11 +317,11 @@ void CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     { // copy across from our current one, and clear the new row
       D3DLOCKED_RECT lr2;
       m_texture->LockRect(0, &lr2, NULL, 0);
-      memcpy(lr.pBits, lr2.pBits, lr2.Pitch * m_textureRows * m_iHeight);
+      memcpy(lr.pBits, lr2.pBits, lr2.Pitch * m_textureRows * (m_iHeight + m_descent));
       m_texture->UnlockRect(0);
       m_texture->Release();
     }
-    memset((BYTE *)lr.pBits + lr.Pitch * m_textureRows * m_iHeight, 0, lr.Pitch * m_iHeight);
+    memset((BYTE *)lr.pBits + lr.Pitch * m_textureRows * (m_iHeight + m_descent), 0, lr.Pitch * (m_iHeight + m_descent));
     newTexture->UnlockRect(0);
     m_texture = newTexture;
     m_textureRows++;
