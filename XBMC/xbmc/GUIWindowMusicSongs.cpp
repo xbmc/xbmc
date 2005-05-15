@@ -1283,6 +1283,26 @@ void CGUIWindowMusicSongs::DeleteRemoveableMediaDirectoryCache()
   while (FindNextFile(hFind, &wfd));
 }
 
+void CGUIWindowMusicSongs::DeleteDatabaseDirectoryCache()
+{
+  WIN32_FIND_DATA wfd;
+  memset(&wfd, 0, sizeof(wfd));
+
+  CAutoPtrFind hFind( FindFirstFile("Z:\\db-*.fi", &wfd));
+  if (!hFind.isValid())
+    return;
+  do
+  {
+    if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+    {
+      CStdString strFile = "Z:\\";
+      strFile += wfd.cFileName;
+      DeleteFile(strFile.c_str());
+    }
+  }
+  while (FindNextFile(hFind, &wfd));
+}
+
 void CGUIWindowMusicSongs::PlayItem(int iItem)
 {
   // unlike additemtoplaylist, we need to check the items here

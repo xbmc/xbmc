@@ -211,13 +211,16 @@ CStdString SSortMusicNav::m_strDirectory;
 CGUIWindowMusicNav::CGUIWindowMusicNav(void)
     : CGUIWindowMusicBase()
 {
+  m_bGotDirFromCache = false;
+  m_iSortCache = -1;
+  m_iAscendCache = -1;
+
   m_iState = SHOW_ROOT;
   m_iPath = m_iState;
   m_strGenre = "";
   m_strArtist = "";
   m_strAlbum = "";
   m_strAlbumPath = "";
-//  m_iThumbControl = CONTROL_THUMBS;
 }
 CGUIWindowMusicNav::~CGUIWindowMusicNav(void)
 {
@@ -276,8 +279,15 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         CFileItem*pItem = m_vecItems[nItem];
         CStdString strSelected = pItem->m_strPath;
 
+        // save cache state, and reset so we can resort
+        bool bGotDirFromCache = m_bGotDirFromCache;
+        m_bGotDirFromCache = false;
+
         UpdateButtons();
         UpdateListControl();
+
+        // restore cache state
+        m_bGotDirFromCache = bGotDirFromCache;
 
         CStdString strDirectory = m_Directory.m_strPath;
         if (CUtil::HasSlashAtEnd(strDirectory))
@@ -360,8 +370,15 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           g_stSettings.m_bMyMusicNavSongsSortAscending = !g_stSettings.m_bMyMusicNavSongsSortAscending;
         g_settings.Save();
 
+        // save cache state, and reset so we can resort
+        bool bGotDirFromCache = m_bGotDirFromCache;
+        m_bGotDirFromCache = false;
+
         UpdateButtons();
         UpdateListControl();
+
+        // restore cache state
+        m_bGotDirFromCache = bGotDirFromCache;
 
         return true;
       }
@@ -383,6 +400,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
 void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
+  m_bGotDirFromCache = false;
+
   CLog::Log(LOGDEBUG, "CGUIWindowMusicNav::GetDirectory(%s)",strDirectory.c_str());
   CLog::Log(LOGDEBUG, "  strGenre = [%s], strArtist = [%s], strAlbum = [%s], strAlbumPath = [%s]",m_strGenre.c_str(), m_strArtist.c_str(), m_strAlbum.c_str(), m_strAlbumPath.c_str());
 
@@ -420,6 +439,14 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     {
       g_stSettings.m_iMyMusicNavRootSortMethod = 0;
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavGenresViewAsIcons;
+
+      // check cache first
+      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache);
+      if (items.Size())
+      {
+        m_bGotDirFromCache = true;
+        break;
+      }
 
       // set parent directory
       if (!g_guiSettings.GetBool("MusicLists.HideParentDirItems"))
@@ -462,6 +489,14 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       g_stSettings.m_iMyMusicNavRootSortMethod = 8;
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavArtistsViewAsIcons;
 
+      // check cache first
+      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache);
+      if (items.Size())
+      {
+        m_bGotDirFromCache = true;
+        break;
+      }
+
       // set parent directory
       if (!g_guiSettings.GetBool("MusicLists.HideParentDirItems"))
       {
@@ -502,6 +537,15 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     {
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavAlbumsViewAsIcons;
 
+      // check cache first
+      // check cache first
+      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache);
+      if (items.Size())
+      {
+        m_bGotDirFromCache = true;
+        break;
+      }
+
       // set parent directory
       if (!g_guiSettings.GetBool("MusicLists.HideParentDirItems"))
       {
@@ -539,6 +583,14 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   case SHOW_SONGS:
     {
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavSongsViewAsIcons;
+
+      // check cache first
+      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache);
+      if (items.Size())
+      {
+        m_bGotDirFromCache = true;
+        break;
+      }
 
       // set parent directory
       if (!g_guiSettings.GetBool("MusicLists.HideParentDirItems"))
@@ -796,6 +848,9 @@ void CGUIWindowMusicNav::OnClick(int iItem)
 
 void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
 {
+  // skip if directory was returned from cache
+  if (m_bGotDirFromCache) return;
+
   // clear label for special directories
   if (pItem->m_strPath.IsEmpty())
     pItem->SetLabel2("");
@@ -865,7 +920,14 @@ void CGUIWindowMusicNav::DoSort(CFileItemList& items)
     SSortMusicNav::m_bSortAscending = g_stSettings.m_bMyMusicNavSongsSortAscending;
   }
 
+  // skip if directory was returned from cache
+  // and the sort parameters match
+  if ((m_bGotDirFromCache) && (m_iSortCache == SSortMusicNav::m_iSortMethod) && (m_iAscendCache == SSortMusicNav::m_bSortAscending))
+    return;
+
+  // else sort the list, and the save it to cache
   items.Sort(SSortMusicNav::Sort);
+  SaveDatabaseDirectoryCache(m_Directory.m_strPath, m_vecItems, SSortMusicNav::m_iSortMethod, SSortMusicNav::m_bSortAscending);
 }
 
 void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
@@ -1350,4 +1412,74 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
   CFile file;
   if (!file.Cache(strSrcThumb.c_str(), strDestThumb.c_str(), NULL, NULL))
     CLog::Log(LOGERROR,"  Could not cache artist thumb: %s",strSrcThumb.c_str());
+}
+
+void CGUIWindowMusicNav::SaveDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int& iSortMethod, int& iAscending)
+{
+  int iSize = items.Size();
+  if (iSize <= 0)
+    return;
+
+  CLog::Log(LOGDEBUG,"Caching database directory [%s]",strDirectory.c_str());
+
+  CFileItem directory(strDirectory, true);
+  if (CUtil::HasSlashAtEnd(directory.m_strPath))
+    directory.m_strPath.Delete(directory.m_strPath.size() - 1);
+
+  Crc32 crc;
+  crc.ComputeFromLowerCase(directory.m_strPath);
+
+  CStdString strFileName;
+  strFileName.Format("Z:\\db-%08x.fi", crc);
+
+  CFile file;
+  if (file.OpenForWrite(strFileName))
+  {
+    CArchive ar(&file, CArchive::store);
+    ar << items.Size();
+    ar << iSortMethod;
+    ar << iAscending;
+    CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %i",iSize,iSortMethod,iAscending);
+    for (int i = 0; i < iSize; i++)
+    {
+      CFileItem* pItem = items[i];
+      ar << *pItem;
+    }
+    ar.Close();
+    file.Close();
+  }
+}
+
+void CGUIWindowMusicNav::LoadDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int& iSortMethod, int& iAscending)
+{
+  CLog::Log(LOGDEBUG,"Loading database directory [%s]",strDirectory.c_str());
+
+  CFileItem directory(strDirectory, true);
+  if (CUtil::HasSlashAtEnd(directory.m_strPath))
+    directory.m_strPath.Delete(directory.m_strPath.size() - 1);
+
+  Crc32 crc;
+  crc.ComputeFromLowerCase(directory.m_strPath);
+
+  CStdString strFileName;
+  strFileName.Format("Z:\\db-%08x.fi", crc);
+
+  CFile file;
+  if (file.Open(strFileName))
+  {
+    CArchive ar(&file, CArchive::load);
+    int iSize = 0;
+    ar >> iSize;
+    ar >> iSortMethod;
+    ar >> iAscending;
+    CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %i",iSize,iSortMethod,iAscending);
+    for (int i = 0; i < iSize; i++)
+    {
+      CFileItem* pItem = new CFileItem();
+      ar >> *pItem;
+      items.Add(pItem);
+    }
+    ar.Close();
+    file.Close();
+  }
 }
