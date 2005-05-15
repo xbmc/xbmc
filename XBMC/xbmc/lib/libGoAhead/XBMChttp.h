@@ -59,6 +59,7 @@ public:
   int     xbmcExecBuiltIn(webs_t wp, char_t *parameter);
   int     xbmcConfig(webs_t wp, char_t *parameter);
   int			xbmcHelp(webs_t wp);
+  int     xbmcGetSystemInfo(webs_t wp);
 	CKey		GetKey();
 	void		ResetKey();
 

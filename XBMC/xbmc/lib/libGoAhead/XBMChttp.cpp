@@ -301,22 +301,27 @@ int displayDir(webs_t wp, char *dir) {
 	//mask = ".mp3|.wma" -> matching files
 	//mask = "*" -> just folders
 	//mask = "" -> all files and folder
+  //option = "1" -> append date&time to file name
 
 	CFileItemList dirItems;
 	CStdString output="";
 
-	CStdString folderAndMask=dir, folder, mask;
-	int p ;
+	CStdString folderMaskOption=dir, folder, mask="", option="";
+	int p,p1 ;
 
-	p=folderAndMask.Find(";");
+	p=folderMaskOption.Find(";");
 	if (p>=0) {
-		folder=folderAndMask.Left(p);
-		mask=folderAndMask.Right(folderAndMask.size()-p-1);
+		folder=folderMaskOption.Left(p);
+    p1=folderMaskOption.Find(";",p+1);
+    if (p1>=0){
+      mask=folderMaskOption.Mid(p+1,p1-p-1);
+      option=folderMaskOption.Right(folderMaskOption.size()-p1-1);
+    }
+    else
+		  mask=folderMaskOption.Right(folderMaskOption.size()-p-1);
 	}
-	else {
-		folder=folderAndMask;
-		mask="";
-	}
+	else 
+		folder=folderMaskOption;
 
 	CFactoryDirectory factory;
 	IDirectory *pDirectory = factory.Create(folder);
@@ -346,6 +351,11 @@ int displayDir(webs_t wp, char *dir) {
 				output+="\n<li>" + itm->m_strPath ;
 		else if (!itm->m_bIsFolder)
 			output+="\n<li>" + itm->m_strPath;
+    if (option="1") {
+      CStdString theDate;
+      CUtil::GetDate(itm->m_stTime,theDate) ;
+      output+="  ;" + theDate ;
+    }
 	}
 	websWriteBlock(wp, (char_t *) output.c_str(), output.length()) ;
 	return 0;
@@ -1020,19 +1030,10 @@ int CXbmcHttp::xbmcGetThumbFilename(webs_t wp, char_t *parameter)
 int CXbmcHttp::xbmcPlayerPlayFile( webs_t wp, char_t *parameter)
 {
 	websHeader(wp);
-	CFileItem *item = new CFileItem(parameter);
-	item->m_strPath = parameter ;
-  g_application.PlayMedia((CStdString) parameter,g_playlistPlayer.GetCurrentPlaylist());
-	//if (item->IsPlayList())
-	//	LoadPlayList(parameter,g_playlistPlayer.GetCurrentPlaylist());
-	//else {
-	//	SetCurrentMediaItem(*item); 
-	//	g_applicationMessenger.MediaStop();
-	//	g_applicationMessenger.MediaPlay(parameter);
-	//}
+  CFileItem item(parameter, FALSE);
+  g_application.PlayMedia(item, g_playlistPlayer.GetCurrentPlaylist());
 	websWrite(wp, "<li>OK\n");
 	websFooter(wp);
-	delete item;
 	return 0;
 }
 
@@ -1607,14 +1608,24 @@ int CXbmcHttp::xbmcConfig(webs_t wp, char_t *parameter)
   return 0;
 }
 
+int CXbmcHttp::xbmcGetSystemInfo(webs_t wp)
+{
+  websHeader(wp);
+  CStdString output="";
+  CGUIInfoManager g;
+  output="<li>build: "+g.GetBuild();
+  output+="\n<li>version: "+g.GetVersion();
+  websWrite(wp, "%s", output.c_str());
+  websFooter(wp);
+	return 0;
+}
+
 int	CXbmcHttp::xbmcHelp(webs_t wp)
 {
 	websHeader(wp);
-
   websWrite(wp, "<p><b>XBMC HTTP API Commands</b></p><p><b>Syntax: http://xbox/xbmcCmds/xbmcHttp?command=</b>one_of_the_following_commands<b>&ampparameter=</b>first_parameter<b>;</b>second_parameter<b>;...</b></p><p>Note the use of the semi colon to separate multiple parameters</p><p>For more information see the readme.txt and the source code of the demo client application on SourceForge.</p>");
 
-	websWrite(wp, "<li>clearplaylist\n<li>addtoplaylist\n<li>playfile\n<li>pause\n<li>stop\n<li>restart\n<li>shutdown\n<li>exit\n<li>reset\n<li>restartapp\n<li>getcurrentlyplaying\n<li>getdirectory\n<li>gettagfromfilename\n<li>getcurrentplaylist\n<li>setcurrentplaylist\n<li>getplaylistcontents\n<li>removefromplaylist\n<li>setplaylistsong\n<li>getplaylistsong\n<li>playlistnext\n<li>playlistprev\n<li>getpercentage\n<li>seekpercentage\n<li>setvolume\n<li>getvolume\n<li>getthumb\n<li>getthumbfilename\n<li>lookupalbum\n<li>choosealbum\n<li>downloadinternetfile\n<li>getmoviedetails\n<li>showpicture\n<li>setkey\n<li>deletefile\n<li>copyfile\n<li>fileexists\n<li>setfile\n<li>getguistatus\n<li>execbuiltin\n<li>config\n<li>help");
-
+	websWrite(wp, "<li>clearplaylist\n<li>addtoplaylist\n<li>playfile\n<li>pause\n<li>stop\n<li>restart\n<li>shutdown\n<li>exit\n<li>reset\n<li>restartapp\n<li>getcurrentlyplaying\n<li>getdirectory\n<li>gettagfromfilename\n<li>getcurrentplaylist\n<li>setcurrentplaylist\n<li>getplaylistcontents\n<li>removefromplaylist\n<li>setplaylistsong\n<li>getplaylistsong\n<li>playlistnext\n<li>playlistprev\n<li>getpercentage\n<li>seekpercentage\n<li>setvolume\n<li>getvolume\n<li>getthumb\n<li>getthumbfilename\n<li>lookupalbum\n<li>choosealbum\n<li>downloadinternetfile\n<li>getmoviedetails\n<li>showpicture\n<li>setkey\n<li>deletefile\n<li>copyfile\n<li>fileexists\n<li>setfile\n<li>getguistatus\n<li>execbuiltin\n<li>config\n<li>getsysteminfo\n<li>help");
 	websFooter(wp);
 	return 0;
 }
@@ -1663,6 +1674,7 @@ int CXbmcHttp::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *
 	else if (!strcmp(command, "execbuiltin"))			      return xbmcExecBuiltIn(wp, parameter);
   else if (!strcmp(command, "config"))	              return xbmcConfig(wp, parameter);
   else if (!strcmp(command, "help"))			            return xbmcHelp(wp);
+  else if (!strcmp(command, "getsysteminfo"))			    return xbmcGetSystemInfo(wp);
 	else {
 		websHeader(wp);
 		websWrite(wp, "<li>Error:unknown command\n");
