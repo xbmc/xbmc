@@ -2,12 +2,13 @@
 #include "ICodec.h"
 #include "../../cores/DllLoader/dll.h"
 #include "shn/shnplay.h"
+#include "FileReader.h"
 
 #define SHN_DLL "Q:\\system\\players\\PAPlayer\\libshnplay.dll"
 
 struct ShnPlayFileStream {
 	ShnPlayStream vtbl;
-	CFile *file;
+	CFileReader *file;
 };
 
 typedef struct ShnPlayFileStream ShnPlayFileStream;
@@ -35,7 +36,7 @@ public:
   virtual bool HandlesType(const char *type);
 private:
 
-  CFile m_fileSHN;
+  CFileReader m_fileSHN;
   ShnPlayFileStream m_stream;
   ShnPlay *m_handle;
   // Our dll

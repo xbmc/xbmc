@@ -6,6 +6,7 @@ int Shn_Callback_Read(ShnPlayStream * stream, void * buffer, int bytes, int * by
 {
 	ShnPlayFileStream *filestream = (ShnPlayFileStream *)stream;
   if (!filestream || !buffer || !filestream->file) return 0;
+//  CLog::Log(LOGERROR, "Reading from SHN dll - stream @ %x, - file @ %x", (int)stream, filestream->file);
   int amountread = (int)filestream->file->Read(buffer, bytes);
   if (bytes_read)
     *bytes_read = amountread;
@@ -49,7 +50,7 @@ int Shn_Callback_GetPosition(ShnPlayStream * stream)
 
 // SHNCodec class
 
-SHNCodec::SHNCodec()
+SHNCodec::SHNCodec() : m_fileSHN(4*65536, 65536)
 {
   m_SampleRate = 0;
   m_Channels = 0;
@@ -65,6 +66,8 @@ SHNCodec::SHNCodec()
 SHNCodec::~SHNCodec()
 {
   DeInit();
+  CSectionLoader::UnloadDLL(SHN_DLL);
+  m_pDll = NULL;
 }
 
 bool SHNCodec::Init(const CStdString &strFile)
@@ -110,8 +113,10 @@ void SHNCodec::DeInit()
   if (m_handle)
     m_dll.Close(m_handle);
   m_handle = NULL;
+
+  m_fileSHN.Close();
   if (m_stream.file)
-    m_stream.file->Close();
+    m_stream.file = NULL;
 }
 
 __int64 SHNCodec::Seek(__int64 iSeekTime)
@@ -123,6 +128,7 @@ __int64 SHNCodec::Seek(__int64 iSeekTime)
     return -1;
   return iSeekTime;
 }
+#define BLOCK_READ_SIZE 588*4  // read 4 frames of samples at a time
 
 static int total_samples = 0;
 int SHNCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
@@ -130,7 +136,7 @@ int SHNCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   if (!m_handle)
     return READ_ERROR;
 
-  int samplesToRead = size * 8 / m_BitsPerSample / m_Channels;
+  int samplesToRead = min(size * 8 / m_BitsPerSample / m_Channels, BLOCK_READ_SIZE);
   int samplesRead = 0;
   if (m_dll.Read(m_handle, pBuffer, samplesToRead, &samplesRead))
   {
@@ -154,21 +160,12 @@ bool SHNCodec::LoadDLL()
 {
   if (m_bDllLoaded)
     return true;
-  m_pDll = new DllLoader(SHN_DLL, true);
+  m_pDll = CSectionLoader::LoadDLL(SHN_DLL);
   if (!m_pDll)
   {
     CLog::Log(LOGERROR, "SHNCodec: Unable to load dll %s", SHN_DLL);
     return false;
   }
-  if (!m_pDll->Parse())
-  {
-    // failed,
-    CLog::Log(LOGERROR, "SHNCodec: Unable to load dll %s", SHN_DLL);
-    delete m_pDll;
-    m_pDll = NULL;
-    return false;
-  }
-  m_pDll->ResolveImports();
 
   // get handle to the functions in the dll
   m_pDll->ResolveExport("ShnPlay_OpenStream", (void **)&m_dll.OpenStream);
@@ -183,7 +180,7 @@ bool SHNCodec::LoadDLL()
       !m_dll.ErrorMessage || !m_dll.Read || !m_dll.Seek)
   {
     CLog::Log(LOGERROR, "SHNCodec: Unable to load our dll %s", SHN_DLL);
-    delete m_pDll;
+    CSectionLoader::UnloadDLL(SHN_DLL);
     m_pDll = NULL;
     return false;
   }

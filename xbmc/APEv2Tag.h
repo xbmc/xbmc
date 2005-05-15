@@ -26,8 +26,7 @@ class CAPEv2Tag
 public:
   CAPEv2Tag(void);
   virtual ~CAPEv2Tag(void);
-  bool ReadTag(const char* filename);
-  __int64 ReadMPCDuration(const char* filename);
+  bool ReadTag(const char* filename, bool checkID3Tag = false);
   CStdString GetTitle() { return m_strTitle; }
   CStdString GetArtist() { return m_strArtist; }
   CStdString GetYear() { return m_strYear; }
@@ -57,7 +56,7 @@ protected:
   __int64 m_nDuration;
 private:
   DllLoader *m_pDll;
-  IAPETag * (__stdcall* GetAPETag)(const char *filename);
+  IAPETag * (__stdcall* GetAPETag)(const char *filename, BOOL bCheckID3Tag);
   bool LoadDLL();                     // load the DLL in question
   bool m_bDllLoaded;                  // whether our dll is loaded
 };
