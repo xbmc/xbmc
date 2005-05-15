@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-05-2005 changed: Milkdrop now default visualization
   - 15-05-2005 added: filelist caching in Music->Library
   - 15-05-2005 fixed: HttpApi playfile command - not sure when it had become broken
   - 15-05-2005 added: option to retrieve file date in HttpApi GetDirectory command
