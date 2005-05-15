@@ -2559,7 +2559,7 @@ bool CMusicDatabase::GetGenresNav(VECGENRES& genres)
     CStdString strSQL = strSQL1 + "union " + strSQL2;
 
     // run query
-    CLog::Log(LOGDEBUG, "CMusicDatabase::GetArtistsNav() query: %s", strSQL.c_str());
+    CLog::Log(LOGDEBUG, "CMusicDatabase::GetGenresNav() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
