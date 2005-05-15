@@ -3,13 +3,15 @@
 #include "../../utils/thread.h"
 #include "../../utils/CriticalSection.h"
 #include "../../filesystem/file.h"
+#include "RingHoldBuffer.h"
 
 // A threaded file reader class that reads ahead of the current file position
 // using a separate thread.
 class CFileReader : public CThread
 {
+  const static int chunk_size = 65536;
 public:
-  CFileReader(unsigned int bufferSize, unsigned int dataToKeepBehind, unsigned int chunkSize);
+  CFileReader(unsigned int bufferSize, unsigned int dataToKeepBehind);
   virtual ~CFileReader();
 
   virtual bool Open(const CStdString &strFile);
@@ -27,21 +29,12 @@ protected:
 
 private:
   CFile   m_file;
-  __int64 m_bufferedDataStart;    // the earliest piece of data in our buffer that is considered valid
   __int64 m_bufferedDataPos;      // the position our client thinks we're at
-  // __int64 m_bufferedDataEnd;   // the current file position - no need to store this.
-
-  unsigned int m_readFromPos;     // the position in the buffer that corresponds to the data
-                                  // at m_bufferedDataPos in the file.  From this we calculate
-                                  // where in the buffer we should read from and write to.
-
-  // our buffer
-  BYTE *m_buffer;
-  unsigned int m_bufferSize;        // buffer size
-  unsigned int m_dataToKeepBehind;  // amount of data to keep behind the current data position
-  unsigned int m_chunkSize;         // chunk size to read at a time.
 
   bool    m_readError;
-  // file lock
+
   CCriticalSection m_fileLock;
+  
+  char m_chunkBuffer[chunk_size];   // buffer that we read chunks of our file into.
+  CRingHoldBuffer m_ringBuffer;     // ring buffer that holds our read-in data
 };

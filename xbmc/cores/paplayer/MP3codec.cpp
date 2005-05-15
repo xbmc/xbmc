@@ -3,7 +3,7 @@
 
 #define DECODER_DELAY 529 // decoder delay in samples
 
-MP3Codec::MP3Codec() : m_filePAP(65536*4, 65536, 65536)
+MP3Codec::MP3Codec() : m_filePAP(65536*4, 65536)
 {
   CreateDecoder = NULL;
   m_SampleRate = 0;

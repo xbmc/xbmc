@@ -72,15 +72,20 @@ __int64 APECodec::Seek(__int64 iSeekTime)
   return iSeekTime;
 }
 
+#define BLOCK_READ_SIZE 588*4  // read 4 frames of samples at a time
+
 int APECodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
-  int iRetVal = m_dll.GetData(m_handle, (char *)pBuffer, size / m_BytesPerBlock, actualsize);
+  DWORD time = timeGetTime();
+  int sizeToRead = min(size / m_BytesPerBlock, BLOCK_READ_SIZE);
+  int iRetVal = m_dll.GetData(m_handle, (char *)pBuffer, sizeToRead, actualsize);
   *actualsize *= m_BytesPerBlock;
   if (iRetVal)
   {
     CLog::Log(LOGERROR, "APECodec: Read error %i", iRetVal);
     return READ_ERROR;
   }
+  CLog::Log(LOGERROR, "APECodec: Read %i bytes, took %i ms", *actualsize, timeGetTime() - time);
   if (!*actualsize)
     return READ_EOF;
   return READ_SUCCESS;
