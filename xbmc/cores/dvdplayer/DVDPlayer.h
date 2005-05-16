@@ -100,9 +100,9 @@ public:
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName);
   virtual void SetAudioStream(int iStream);
 
-  virtual void SeekTime(int iTime);
+  virtual void SeekTime(__int64 iTime);
   virtual __int64 GetTime();
-  int GetTimeInMsec();
+  __int64 GetTotalTimeInMsec();
   virtual int GetTotalTime();
   virtual void ToFFRW(int iSpeed);
   virtual void ShowOSD(bool bOnoff);

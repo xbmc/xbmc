@@ -77,8 +77,8 @@ public:
   bool SetActiveAudioStream(int iPhysicalId);
   bool SetActiveSubtitleStream(int iPhysicalId);
 
-  int GetTotalTime(); // the total time in seconds
-  int GetTime(); // the current position in seconds
+  int GetTotalTime(); // the total time in milli seconds
+  int GetTime(); // the current position in milli seconds
 
   bool Seek(int iTimeInMsec); //seek within current pg(c)
   //float GetPercentage(); //percentage within current pg(c)
