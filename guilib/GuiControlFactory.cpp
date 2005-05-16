@@ -41,7 +41,7 @@ CGUIControlFactory::~CGUIControlFactory(void)
 bool CGUIControlFactory::GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwHexValue)
 {
   TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode) return false;
+  if (!pNode || !pNode->FirstChild()) return false;
   sscanf(pNode->FirstChild()->Value(), "%x", &dwHexValue );
   return true;
 }
@@ -49,7 +49,7 @@ bool CGUIControlFactory::GetHex(const TiXmlNode* pRootNode, const char* strTag, 
 bool CGUIControlFactory::GetDWORD(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwDWORDValue)
 {
   TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode) return false;
+  if (!pNode || !pNode->FirstChild()) return false;
   dwDWORDValue = atol(pNode->FirstChild()->Value());
   return true;
 }
@@ -57,14 +57,14 @@ bool CGUIControlFactory::GetDWORD(const TiXmlNode* pRootNode, const char* strTag
 bool CGUIControlFactory::GetLong(const TiXmlNode* pRootNode, const char* strTag, long& lLongValue)
 {
   TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode) return false;
+  if (!pNode || !pNode->FirstChild()) return false;
   lLongValue = atol(pNode->FirstChild()->Value());
   return true;
 }
 bool CGUIControlFactory::GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue)
 {
   TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode) return false;
+  if (!pNode || !pNode->FirstChild()) return false;
   iIntValue = atoi(pNode->FirstChild()->Value());
   return true;
 }
@@ -72,7 +72,7 @@ bool CGUIControlFactory::GetInt(const TiXmlNode* pRootNode, const char* strTag, 
 bool CGUIControlFactory::GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue)
 {
   TiXmlNode* pNode = pRootNode->FirstChild(strTag);
-  if (!pNode) return false;
+  if (!pNode || !pNode->FirstChild()) return false;
   iMinValue = atoi(pNode->FirstChild()->Value());
   char* maxValue = strchr(pNode->FirstChild()->Value(), ',');
   if (maxValue)
@@ -94,7 +94,7 @@ bool CGUIControlFactory::GetIntRange(const TiXmlNode* pRootNode, const char* str
 bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& fMinValue, float& fMaxValue, float& fIntervalValue)
 {
   TiXmlNode* pNode = pRootNode->FirstChild(strTag);
-  if (!pNode) return false;
+  if (!pNode || !pNode->FirstChild()) return false;
   fMinValue = (float) atof(pNode->FirstChild()->Value());
   char* maxValue = strchr(pNode->FirstChild()->Value(), ',');
   if (maxValue)
@@ -116,7 +116,7 @@ bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* s
 bool CGUIControlFactory::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& bBoolValue)
 {
   TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode) return false;
+  if (!pNode || !pNode->FirstChild()) return false;
   CStdString strEnabled = pNode->FirstChild()->Value();
   strEnabled.ToLower();
   if (strEnabled == "off" || strEnabled == "no" || strEnabled == "disabled" || strEnabled == "false")
@@ -163,7 +163,7 @@ bool CGUIControlFactory::GetPath(const TiXmlNode* pRootNode, const char* strTag,
 {
   TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode) return false;
-  strStringPath = pNode->FirstChild()->Value();
+  strStringPath = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
   strStringPath.Replace('/', '\\');
   return true;
 }
@@ -171,7 +171,7 @@ bool CGUIControlFactory::GetPath(const TiXmlNode* pRootNode, const char* strTag,
 bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment)
 {
   TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode) return false;
+  if (!pNode || !pNode->FirstChild()) return false;
 
   CStdString strAlign = pNode->FirstChild()->Value();
   if (strAlign == "right") dwAlignment = XBFONT_RIGHT;
@@ -183,7 +183,7 @@ bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* st
 bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment)
 {
   TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode)
+  if (!pNode || !pNode->FirstChild())
   {
     return false;
   }
