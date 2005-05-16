@@ -287,7 +287,7 @@ void CDVDPlayerAudio::Process()
       //Wait untill only one packet is left in buffer to minimize choppyness in video
       m_dvdAudio.WaitForBuffer(1);
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, m_audioClock - m_dvdAudio.GetDelay());
-      CLog::DebugLog("CDVDPlayer:: Detected Audio Discontinuity, syncing clock. diff was: %d, %d, av: %d", (int)iClockDiff, (int)iCurrDiff, (int)iAvDiff);
+      CLog::DebugLog("CDVDPlayer:: Detected Audio Discontinuity, syncing clock. diff was: %I64d, %I64d, av: %I64d", iClockDiff, iCurrDiff, iAvDiff);
       iClockDiff = 0;
     }
     else

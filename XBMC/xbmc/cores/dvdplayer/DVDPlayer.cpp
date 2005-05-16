@@ -729,19 +729,16 @@ void CDVDPlayer::SwitchToNextAudioLanguage()
 
 void CDVDPlayer::SeekPercentage(float iPercent)
 {
-  int iTotalMsec = GetTotalTime();
-  int iTime = (int)(iTotalMsec * iPercent / 100);
-  
+  __int64 iTime = (__int64)(GetTotalTimeInMsec() * iPercent / 100);  
   SeekTime(iTime);
 }
 
 float CDVDPlayer::GetPercentage()
 {
-  int iTotalTime = GetTotalTime();
-  int iCurrentTime = (int)GetTimeInMsec();
+  __int64 iTotalTime = GetTotalTimeInMsec();
 
   if(iTotalTime != 0)
-    return iCurrentTime * 100 / (float)iTotalTime;
+    return GetTime() * 100 / (float)iTotalTime;
 
   return 0.0f;
 }
@@ -889,7 +886,7 @@ void CDVDPlayer::SetAudioStream(int iStream)
   }
 }
 
-void CDVDPlayer::SeekTime(int iTime)
+void CDVDPlayer::SeekTime(__int64 iTime)
 {
   // get timing and seeking from libdvdnav for dvd's
   if (m_pDemuxer)
@@ -899,13 +896,8 @@ void CDVDPlayer::SeekTime(int iTime)
   g_infoManager.m_bPerformingSeek = false;
 }
 
-// return the time in seconds, should be changed in xbmc to msec
+// return the time in milliseconds
 __int64 CDVDPlayer::GetTime()
-{
-  return (GetTimeInMsec() / 1000);
-}
-
-int CDVDPlayer::GetTimeInMsec()
 {
   // get timing and seeking from libdvdnav for dvd's
   if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
@@ -916,8 +908,7 @@ int CDVDPlayer::GetTimeInMsec()
   return (int)(m_clock.GetClock() / (DVD_TIME_BASE / 1000));
 }
 
-// return length in msec
-int CDVDPlayer::GetTotalTime()
+__int64 CDVDPlayer::GetTotalTimeInMsec()
 {
   // get timing and seeking from libdvdnav for dvd's
   if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
@@ -927,6 +918,13 @@ int CDVDPlayer::GetTotalTime()
 
   if (m_pDemuxer) return m_pDemuxer->GetStreamLenght();
   return 0;
+
+}
+
+// return length in seconds.. this shoul be changed to return in milleseconds throughout xbmc
+int CDVDPlayer::GetTotalTime()
+{
+  return (__int64)(GetTotalTimeInMsec() / 1000);
 }
 
 void CDVDPlayer::ToFFRW(int iSpeed)
