@@ -966,7 +966,7 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
 	WCHAR wszText[1024];
 	XNADDR net_stat;
 	WCHAR wzIP[32];
-	
+
 	// Set IP Type [DHCP/Fixed]
 	const WCHAR *psztext3=g_localizeStrings.Get(146).c_str();
 	const WCHAR *psztype3;
@@ -1037,7 +1037,10 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
 		CStdString strItem2;
 		CStdString strItem3;
 
-		swprintf(wzIP,L"%s: %S",pszIP,g_guiSettings.GetString("Network.IPAddress").c_str());
+		//17.05.2005 Todo: Complete Rewriting the Network Section in XBMC is needed to get all Network-Settings right!
+		// Set IP Adress
+		swprintf(wzIP,L"%s: %S",pszIP,g_szTitleIP);
+		//swprintf(wzIP,L"%s: %S",pszIP,g_guiSettings.GetString("Network.IPAddress").c_str());
 		strItem1.Format("%s %s", strlblSubnet.c_str(), g_guiSettings.GetString("Network.Subnet").c_str());
 		strItem2.Format("%s %s", strlblGateway.c_str(), g_guiSettings.GetString("Network.Gateway").c_str());
 		strItem3.Format("%s %s", strlblDNS.c_str(), g_guiSettings.GetString("Network.DNS").c_str());
