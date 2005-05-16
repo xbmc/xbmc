@@ -34,6 +34,7 @@ public:
   bool Open(CDVDInputStream* pInput);
   void Dispose();
   void Reset();
+  void Flush();
 
   CDVDDemux::DemuxPacket* Read();
 

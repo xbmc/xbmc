@@ -228,13 +228,13 @@ int CDVDInputStreamNavigator::Read(BYTE* buf, int buf_size)
 }
 
 // not working yet, but it is the recommanded way for seeking
-int CDVDInputStreamNavigator::Seek(__int64 offset, int whence)
+__int64 CDVDInputStreamNavigator::Seek(__int64 offset, int whence)
 {
   if (!m_dvdnav) return -1;  
   uint32_t pos=0, len=1;
   if (dvdnav_sector_search(m_dvdnav, (uint64_t)(offset / DVD_VIDEO_LB_LEN), (int32_t)whence) != DVDNAV_STATUS_ERR)
   {
-    dvdnav_get_position(m_dvdnav, &pos, &len);    
+    dvdnav_get_position(m_dvdnav, &pos, &len);
   }
   else
   {
@@ -402,7 +402,10 @@ int CDVDInputStreamNavigator::ProcessBlock()
     case DVDNAV_HOP_CHANNEL:
       // This event is issued whenever a non-seamless operation has been executed.
       // Applications with fifos should drop the fifos content to speed up responsiveness.
-      m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_HOP_CHANNEL);
+      if (!m_bDiscardHop)
+      {
+        m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_HOP_CHANNEL);
+      }
       break;
 
     case DVDNAV_STOP:
@@ -546,6 +549,7 @@ void CDVDInputStreamNavigator::OnNext()
 {
   if (m_dvdnav && !IsInMenu())
   {
+    m_bDiscardHop = true;
     dvdnav_next_pg_search(m_dvdnav);
   }
 }
@@ -555,6 +559,7 @@ void CDVDInputStreamNavigator::OnPrevious()
 {
   if (m_dvdnav && !IsInMenu())
   {
+    m_bDiscardHop = true;
     dvdnav_prev_pg_search(m_dvdnav);
   }
 }
@@ -726,5 +731,6 @@ bool CDVDInputStreamNavigator::Seek(int iTimeInMsec)
     CLog::Log(LOGDEBUG, "dvdnav: %s", dvdnav_err_to_string(m_dvdnav));
     return false;
   }
+  m_bDiscardHop = true;
   return true;
 }

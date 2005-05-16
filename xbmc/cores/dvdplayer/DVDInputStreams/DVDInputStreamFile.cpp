@@ -55,12 +55,12 @@ int CDVDInputStreamFile::Read(BYTE* buf, int buf_size)
   return (int)(ret & 0xFFFFFFFF);
 }
 
-int CDVDInputStreamFile::Seek(__int64 offset, int whence)
+__int64 CDVDInputStreamFile::Seek(__int64 offset, int whence)
 {
   __int64 ret = 0;
   if (m_pFile) ret = m_pFile->Seek(offset, whence);
 
   else return -1;
 
-  return (int)(ret & 0xFFFFFFFF);
+  return ret;
 }
