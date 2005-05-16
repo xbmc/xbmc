@@ -462,7 +462,7 @@ DWORD video_refresh_thread(void *arg)
 
       // display picture
       // we expect the video device to be initialized here
-      __int64 iTimeStamp = frameclock.GetClock();
+      iTimeStamp = frameclock.GetClock();
       pDVDPlayerVideo->m_dvdVideo.FlipPage();
 
       // update queue size and signal for next picture

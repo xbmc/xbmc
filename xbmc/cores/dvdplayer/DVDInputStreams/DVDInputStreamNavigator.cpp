@@ -372,7 +372,7 @@ int CDVDInputStreamNavigator::ProcessBlock()
         CLog::DebugLog("At position %.0f%% inside the feature\n", 100 * (double)pos / (double)len);
 
         dvdnav_cell_change_event_t* cell_event = (dvdnav_cell_change_event_t*)buf;
-        m_iTotalTime = (int)((cell_event->pgc_length / 100000) & 0xFFFFFFFF);
+        m_iTotalTime = (int)((cell_event->pgc_length / 100) & 0xFFFFFFFF);
 
         m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_CELL_CHANGE);
       }
@@ -392,7 +392,7 @@ int CDVDInputStreamNavigator::ProcessBlock()
         // Applications with fifos should therefore pass the NAV packet through the fifo
         // and decoding pipeline just like any other data.
         pci_t* pci = dvdnav_get_current_nav_pci(m_dvdnav);
-        m_iCurrentTime = (int)((pci->pci_gi.vobu_s_ptm / 100000) & 0xFFFFFFFF);
+        m_iCurrentTime = (int)((pci->pci_gi.vobu_s_ptm / 100) & 0xFFFFFFFF);
         
         m_pDVDPlayer->OnDVDNavResult((void*)pci, DVDNAV_NAV_PACKET);
 
@@ -699,12 +699,12 @@ bool CDVDInputStreamNavigator::GetButtonInfo(DVDOverlayPicture* pOverlayPicture,
 
 int CDVDInputStreamNavigator::GetTotalTime()
 {
-  return m_iTotalTime * 1000;
+  return m_iTotalTime;
 }
 
 int CDVDInputStreamNavigator::GetTime()
 {
-  return m_iCurrentTime * 1000;
+  return m_iCurrentTime;
 }
 
 bool CDVDInputStreamNavigator::Seek(int iTimeInMsec)
@@ -713,12 +713,14 @@ bool CDVDInputStreamNavigator::Seek(int iTimeInMsec)
   uint64_t newpos=0;
   dvdnav_get_position(m_dvdnav, &pos, &len);
   
-  int iDesiredPrecentage = (iTimeInMsec * 100 / GetTotalTime());
+  float fDesiredPrecentage = (iTimeInMsec / (float)GetTotalTime());
   
   // would be much easier if we knew how much blocks one second is
-  
+  // should actually look trough the vm tables to find the closest block the the requested time.
+  // kinda think it's abit of overkill thou.
+
   //newpos = (uint64_t)iTimeInMsec / 1000 * 2048;
-  newpos = (uint64_t)(iDesiredPrecentage * (uint64_t)len / 100.0f);
+  newpos = (uint64_t)( fDesiredPrecentage * len );
   if (dvdnav_sector_search(m_dvdnav, newpos, SEEK_SET) == DVDNAV_STATUS_ERR)
   {
     CLog::Log(LOGDEBUG, "dvdnav: %s", dvdnav_err_to_string(m_dvdnav));
