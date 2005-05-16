@@ -11,8 +11,9 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
   virtual void DoModal(DWORD dwParentId);
   void ClearButtons();
-  void AddButton(int iLabel);
-  void AddButton(const wstring &strButton);
+  int AddButton(int iLabel);
+  int AddButton(const wstring &strButton);
+  int GetNumButtons();
   void EnableButton(int iButton, bool bEnable);
   int GetButton();
   DWORD GetWidth();

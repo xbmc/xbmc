@@ -76,18 +76,18 @@ void CGUIDialogContextMenu::ClearButtons()
   m_iNumButtons = 0;
 }
 
-void CGUIDialogContextMenu::AddButton(int iLabel)
+int CGUIDialogContextMenu::AddButton(int iLabel)
 {
-  AddButton(g_localizeStrings.Get(iLabel));
+  return AddButton(g_localizeStrings.Get(iLabel));
 }
 
-void CGUIDialogContextMenu::AddButton(const wstring &strLabel)
+int CGUIDialogContextMenu::AddButton(const wstring &strLabel)
 {
   // add a button to our control
   CGUIButtonControl *pButtonTemplate = (CGUIButtonControl *)GetControl(BUTTON_TEMPLATE);
-  if (!pButtonTemplate) return ;
+  if (!pButtonTemplate) return 0;
   CGUIButtonControl *pButton = new CGUIButtonControl(*pButtonTemplate);
-  if (!pButton) return ;
+  if (!pButton) return 0;
   // set the button's ID and position
   m_iNumButtons++;
   DWORD dwID = BUTTON_TEMPLATE + m_iNumButtons;
@@ -108,6 +108,7 @@ void CGUIDialogContextMenu::AddButton(const wstring &strLabel)
       pControl2->SetPosition(pControl2->GetXPosition(), pControl->GetYPosition() + pControl->GetHeight());
     }
   }
+  return m_iNumButtons;
 }
 
 void CGUIDialogContextMenu::DoModal(DWORD dwParentId)
@@ -155,6 +156,11 @@ DWORD CGUIDialogContextMenu::GetWidth()
     return pControl->GetWidth();
   else
     return CGUIDialog::GetWidth();
+}
+
+int CGUIDialogContextMenu::GetNumButtons()
+{
+  return m_iNumButtons;
 }
 
 void CGUIDialogContextMenu::EnableButton(int iButton, bool bEnable)
