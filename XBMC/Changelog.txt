@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-05-2005 fixed: Empty tags in skins crash.
   - 16-05-2005 fix: minor fix for possible overflows in clock sync handling (dvdplayer)
   - 15-05-2005 changed: Milkdrop now default visualization
   - 15-05-2005 added: filelist caching in Music->Library
