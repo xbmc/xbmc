@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-05-2005 fixed: backwards seeking for dvd player
   - 16-05-2005 added: SF patch [1198898] Del File Context item added to Videos - thanks to deadken
   - 16-05-2005 fixed: dvdplayer would be very jumpy after a seek (somewhat better now)
   - 16-05-2005 fixed: playtime and totaltime were reported wrongly in dvdplayer
