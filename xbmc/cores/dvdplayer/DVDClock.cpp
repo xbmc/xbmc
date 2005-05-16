@@ -3,12 +3,9 @@
 #include "DVDClock.h"
 #include <math.h>
 
-#define ABS(a) ((a) >= 0 ? (a) : (-(a)))
-
 CDVDClock::CDVDClock()
 {
   QueryPerformanceFrequency(&m_systemFrequency);
-  m_systemUsed.QuadPart = m_systemUsed.QuadPart;
   m_bReset = true;
 }
 
@@ -21,16 +18,14 @@ __int64 CDVDClock::GetClock()
   if (m_bReset)
   {
     QueryPerformanceCounter(&m_startClock);
+    m_systemUsed.QuadPart = m_systemFrequency.QuadPart;
+    m_iDisc = 0I64;
     m_bReset = false;
   }
   QueryPerformanceCounter(&current);
+
   current.QuadPart -= m_startClock.QuadPart;
-
-  //tricky, but very acurate.
-  current.QuadPart *= DVD_TIME_BASE;
-  current.QuadPart /= m_systemUsed.QuadPart;
-
-  return current.QuadPart;
+  return current.QuadPart * DVD_TIME_BASE / m_systemUsed.QuadPart + m_iDisc;
 }
 
 void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts)
@@ -47,8 +42,7 @@ void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts)
       //Reset speed to normal
       m_systemUsed.QuadPart = m_systemFrequency.QuadPart;
 
-      QueryPerformanceCounter(&m_startClock);      
-      m_startClock.QuadPart -= ((currentPts * m_systemUsed.QuadPart) / DVD_TIME_BASE);
+      QueryPerformanceCounter(&m_startClock);
       m_iDisc = currentPts;
 
       break;
