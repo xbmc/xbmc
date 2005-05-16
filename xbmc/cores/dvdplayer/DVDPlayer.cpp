@@ -891,7 +891,7 @@ void CDVDPlayer::SeekTime(__int64 iTime)
   // get timing and seeking from libdvdnav for dvd's
   if (m_pDemuxer)
   {
-    m_messenger.Seek(iTime);
+    m_messenger.Seek( (int)iTime );
   }
   g_infoManager.m_bPerformingSeek = false;
 }
@@ -924,7 +924,7 @@ __int64 CDVDPlayer::GetTotalTimeInMsec()
 // return length in seconds.. this shoul be changed to return in milleseconds throughout xbmc
 int CDVDPlayer::GetTotalTime()
 {
-  return (__int64)(GetTotalTimeInMsec() / 1000);
+  return (int)(GetTotalTimeInMsec() / 1000);
 }
 
 void CDVDPlayer::ToFFRW(int iSpeed)
