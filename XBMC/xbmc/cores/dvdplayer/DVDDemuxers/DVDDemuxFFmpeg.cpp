@@ -277,6 +277,14 @@ void CDVDDemuxFFmpeg::Reset()
   Open(pInputStream);
 }
 
+void CDVDDemuxFFmpeg::Flush()
+{
+  if (m_pFormatContext)
+  {
+    //av_read_frame_flush(m_pFormatContext);
+  }
+}
+
 CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
 {
   AVPacket pkt;

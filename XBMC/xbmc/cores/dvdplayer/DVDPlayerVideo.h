@@ -35,7 +35,7 @@ public:
   __int64 GetDelay();
     void SetDelay(__int64 delay);
   __int64 GetDiff();
-  
+
 
   bool InitializedOutputDevice();
   CDVDPacketQueue m_packetQueue;
