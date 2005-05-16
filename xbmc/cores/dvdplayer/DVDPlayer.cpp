@@ -272,13 +272,16 @@ void CDVDPlayer::Process()
 
     // handle messages send to this thread, like seek or demuxer reset requests
     HandleMessages();
-
+    m_bReadAgain = false;
+  
     // read a data frame from stream.
     CDVDDemux::DemuxPacket* pPacket = m_pDemuxer->Read();
-    // m_bFirstHandleMessages could be true, in which case we should handle some messages first
-    if (m_bFirstHandleMessages && !pPacket)
+
+    // in a read action, the dvd navigator can do certain actions that require
+    // us to read again
+    if (m_bReadAgain)
     {
-      m_bFirstHandleMessages = false;
+      if (pPacket) (CDVDDemuxUtils::FreeDemuxPacket(pPacket));
       continue;
     }
 
@@ -401,7 +404,7 @@ void CDVDPlayer::Process()
         // if we have no video stream yet, openup the video device now
         if (m_iCurrentVideoStream < 0) OpenVideoStream(pPacket->iStreamId);
 
-        if (m_iCurrentVideoStream >= 0) 
+        if (m_iCurrentVideoStream >= 0)
           if (!(m_dvd.iFlagSentStart & 2) && pPacket->pts > m_dvd.iNAVPackStart && pPacket->pts < m_dvd.iNAVPackFinish)
           {
             //For some reason this isn't always found.. not sure why exactly. what should be used?? pts or dts???
@@ -470,7 +473,7 @@ void CDVDPlayer::OnExit()
 void CDVDPlayer::HandleMessages()
 {
   DVDPlayerMessage* pMessage = m_messenger.Recieve();
-
+  
   while (pMessage)
   {
     switch (pMessage->iMessage)
@@ -498,7 +501,7 @@ void CDVDPlayer::HandleMessages()
               
               // just as easy to leave it away
               // libmpeg2 can handle streams that are incorrect, so a bit of incorrect data is no problem here
-              // better would be to flush all data in the demuxer, but not to close reset it!
+              // better would be to flush all data in the demuxer, but not to close / reset it!
             }
             else CLog::Log(LOGWARNING, "error while seeking");
           }
@@ -512,6 +515,10 @@ void CDVDPlayer::HandleMessages()
           }
           else CLog::Log(LOGWARNING, "error while seeking");
         }
+        
+        // set flag to indicate we have finished a seeking request
+        g_infoManager.m_bPerformingSeek = false;
+        
         break;
       }
     case DVDMESSAGE_CHAPTER_NEXT:
@@ -729,7 +736,10 @@ void CDVDPlayer::SwitchToNextAudioLanguage()
 
 void CDVDPlayer::SeekPercentage(float iPercent)
 {
-  __int64 iTime = (__int64)(GetTotalTimeInMsec() * iPercent / 100);  
+
+  __int64 iTotalMsec = GetTotalTimeInMsec();
+  __int64 iTime = (__int64)(iTotalMsec * iPercent / 100);
+
   SeekTime(iTime);
 }
 
@@ -737,8 +747,10 @@ float CDVDPlayer::GetPercentage()
 {
   __int64 iTotalTime = GetTotalTimeInMsec();
 
-  if(iTotalTime != 0)
+  if (iTotalTime != 0)
+  {
     return GetTime() * 100 / (float)iTotalTime;
+  }
 
   return 0.0f;
 }
@@ -893,7 +905,8 @@ void CDVDPlayer::SeekTime(__int64 iTime)
   {
     m_messenger.Seek( (int)iTime );
   }
-  g_infoManager.m_bPerformingSeek = false;
+  // this should be set to false when its really done seeking
+  //g_infoManager.m_bPerformingSeek = false;
 }
 
 // return the time in milliseconds
@@ -908,6 +921,7 @@ __int64 CDVDPlayer::GetTime()
   return (int)(m_clock.GetClock() / (DVD_TIME_BASE / 1000));
 }
 
+// return length in msec
 __int64 CDVDPlayer::GetTotalTimeInMsec()
 {
   // get timing and seeking from libdvdnav for dvd's
@@ -1059,9 +1073,13 @@ bool CDVDPlayer::CloseVideoStream(bool bWaitForBuffers) // bWaitForBuffers curre
 
 void CDVDPlayer::FlushBuffers()
 {
+  //m_pDemuxer->Flush();
   m_dvdPlayerAudio.Flush();
   m_dvdPlayerVideo.Flush();
   m_dvd.iFlagSentStart = 0; //We will have a discontinuity here
+  
+  m_bReadAgain = true;
+  // this makes sure a new packet is read
 }
 
 // since we call ffmpeg functions to decode, this is being called in the same thread as ::Process() is
@@ -1202,7 +1220,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       // so we send a message to indicate the main loop that the demuxer needs a reset
       // this also means the libdvdnav may not return any data packets after this command
       m_messenger.ResetDemuxer();
-      m_bFirstHandleMessages = true;
+      m_bReadAgain = true;
     }
     break;
   case DVDNAV_CELL_CHANGE:

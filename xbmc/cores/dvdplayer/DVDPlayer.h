@@ -134,14 +134,14 @@ public:
 
   CDVDDemux* m_pDemuxer;
 
-  bool m_bFirstHandleMessages; // tricky, if set to true, the main loop will start over again
+  bool m_bReadAgain; // tricky, if set to true, the main loop will start over again
   bool m_bDrawedFrame;
   CDemuxStreamVideo* m_pCurrentDemuxStreamVideo;
   CDemuxStreamAudio* m_pCurrentDemuxStreamAudio;
   int m_iCurrentVideoStream;
   int m_iCurrentAudioStream;
   int m_iCurrentPhysicalAudioStream; //The x:th audio stream will be opened by default
-
+  
   CDVDPlayerAudio m_dvdPlayerAudio;
   CDVDPlayerVideo m_dvdPlayerVideo;
   CDVDPlayerMessenger m_messenger;

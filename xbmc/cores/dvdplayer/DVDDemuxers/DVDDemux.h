@@ -94,9 +94,13 @@ public:
    */
   virtual void Dispose() = 0;
   /*
-   * Reset,
+   * Reset the entire demuxer (same result as closing and opening it)
    */
   virtual void Reset() = 0;
+  /*
+   * Flush the demuxer, if any data is kept in buffers, this should be freed now
+   */
+  virtual void Flush() = 0;
   /*
    * Read a packet, returns NULL on error
    * 
