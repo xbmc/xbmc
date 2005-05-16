@@ -179,16 +179,22 @@ void CDVDPlayerVideo::Process()
                       CDVDCodecUtils::CopyPicture(pDVDPlayer->m_dvd.pStillPicture, &picture);
                     }
           */
-          if( (picture.iFrameType == 1 || picture.iFrameType == 0) && pPacket->dts != DVD_NOPTS_VALUE ) //Only use pts when we have an I frame, or unknown
+          if ((picture.iFrameType == FRAME_TYPE_I || picture.iFrameType == FRAME_TYPE_UNDEF) &&
+              pPacket->dts != DVD_NOPTS_VALUE ) //Only use pts when we have an I frame, or unknown
+          {
             pts = pPacket->dts;
-
-            int iOutputState=0;
-            do 
-            {
-              if( iOutputState = OutputPicture(&picture, pts) ) break;
-              if( picture.iDuration ) pts+=picture.iDuration;
-            } while (picture.iRepeatPicture-- > 0);
-            if( iOutputState < 0 ) break;
+          }
+          
+          int iOutputState=0;
+          
+          do 
+          {
+            if (iOutputState = OutputPicture(&picture, pts)) break;
+            if (picture.iDuration ) pts+=picture.iDuration;
+          }
+          while (picture.iRepeatPicture-- > 0);
+          
+          if( iOutputState < 0 ) break;
 
         }
         else
