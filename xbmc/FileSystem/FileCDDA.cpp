@@ -47,7 +47,6 @@ bool CFileCDDA::Open(const CURL& url, bool bBinary /*=true*/)
     return false;
   }
 
-  m_lsnEnd-=CDIO_PREGAP_SECTORS;
   return true;
 }
 
