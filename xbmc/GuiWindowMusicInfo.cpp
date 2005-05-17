@@ -62,14 +62,8 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTN_REFRESH)
       {
-        CStdString strThumb;
-        CUtil::GetAlbumThumb(m_pAlbum->GetTitle(), m_pAlbum->GetAlbumPath(), strThumb);
-
         CUtil::ClearCache();
-        if (CUtil::FileExists(strThumb))
-          DeleteFile(strThumb.c_str());
 
-        //Refresh();
         m_bRefresh = true;
         Close();
         return true;
