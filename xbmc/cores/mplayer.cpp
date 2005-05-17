@@ -1607,17 +1607,20 @@ void CMPlayer::SetSubtitle(int iStream)
 
 bool CMPlayer::GetSubtitleVisible()
 {
-  if (CUtil::IsUsingTTFSubtitles() && mplayer_isTextSubLoaded())
+  if( CUtil::IsUsingTTFSubtitles() && mplayer_isTextSubLoaded() )
   {
+    //Make sure normal subs are turned of if this is the case and turn on ttf subs instead.
+    //This is called on each frame rendered so it should work fine to switch is here
+
+    if (mplayer_SubtitleVisible()) 
+    {      
+      mplayer_showSubtitle(false);
+      m_bSubsVisibleTTF=true;
+    }
     return m_bSubsVisibleTTF;
   }
-  else
-  {
-    if (mplayer_SubtitleVisible())
-      return true;
-    else
-      return false;
-  }
+  else 
+    return mplayer_SubtitleVisible() != 0;
 }
 void CMPlayer::SetSubtitleVisible(bool bVisible)
 {
