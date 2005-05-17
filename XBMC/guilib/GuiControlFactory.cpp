@@ -210,10 +210,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   DWORD dwID = 0, left = 0, right = 0, up = 0, down = 0;
   DWORD dwColorDiffuse = 0xFFFFFFFF;
   bool bVisible = true;
-  wstring strLabel = L"";
   CStdString strFont = "";
   CStdString strTmp;
   vector<int> vecInfo;
+  vector<wstring> vecLabel;
+  wstring strLabel;
   DWORD dwTextColor = 0xFFFFFFFF;
   DWORD dwAlign = XBFONT_LEFT;
   DWORD dwAlignY = 0;
@@ -328,7 +329,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwTextColor = ((CGUILabelControl*)pReference)->GetTextColor();
       dwAlign = ((CGUILabelControl*)pReference)->m_dwTextAlign;
       dwDisabledColor = ((CGUILabelControl*)pReference)->GetDisabledColor();
-      vecInfo.push_back(((CGUILabelControl *)pReference)->GetInfo());
+      vecInfo = ((CGUILabelControl*)pReference)->GetInfo();
     }
     else if (strType == "edit")
     {
@@ -344,6 +345,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwTextColor = ((CGUIFadeLabelControl*)pReference)->GetTextColor();
       dwAlign = ((CGUIFadeLabelControl*)pReference)->GetAlignment();
       vecInfo = ((CGUIFadeLabelControl*)pReference)->GetInfo();
+      vecLabel = ((CGUIFadeLabelControl*)pReference)->GetLabel();
     }
     else if (strType == "rss")
     {
@@ -894,26 +896,34 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   if (GetDWORD(pControlNode, "itemHeightBig", itemHeightBig)) g_graphicsContext.ScaleYCoord(itemHeightBig, res);
   GetDWORD(pControlNode, "buddycontrolid", dwBuddyControlID);
 
-  if ( GetString(pControlNode, "label", strTmp))
+  CStdStringArray strVecLabel;
+  if (GetMultipleString(pControlNode, "label", strVecLabel))
   {
-    if (strTmp.size() > 0)
+    vecLabel.clear();
+    for (unsigned int i = 0; i < strVecLabel.size(); i++)
     {
-      if (strTmp[0] != '-')
-      {
-        if (CUtil::IsNaturalNumber(strTmp))
-        {
-          DWORD dwLabelID = atol(strTmp);
-          strLabel = g_localizeStrings.Get(dwLabelID);
-        }
-        else
-        {
-          WCHAR wszTmp[256];
-          swprintf(wszTmp, L"%S", strTmp.c_str());
-          strLabel = wszTmp;
-        }
-      }
+		strTmp = strVecLabel[i];
+		if (strTmp.size() > 0)
+		{
+			if (strTmp[0] != '-')
+			{
+				if (CUtil::IsNaturalNumber(strTmp))
+				{
+					DWORD dwLabelID = atol(strTmp);
+					strLabel = g_localizeStrings.Get(dwLabelID);
+				}
+				else
+				{
+					WCHAR wszTmp[256];
+					swprintf(wszTmp, L"%S", strTmp.c_str());
+					strLabel = wszTmp;
+				}
+		        vecLabel.push_back(strLabel);
+			}
+		}
     }
   }
+
 
   // stuff for button scroller
   if ( GetString(pControlNode, "orientation", strTmp) )
@@ -949,7 +959,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetInfo(vecInfo);
     return pControl;
   }
   else if (strType == "edit")
@@ -960,6 +971,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     return pControl;
   }
   else if (strType == "videowindow")
@@ -977,6 +989,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetLabel(vecLabel);
     pControl->SetInfo(vecInfo);
     return pControl;
   }

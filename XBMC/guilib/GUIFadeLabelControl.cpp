@@ -28,34 +28,64 @@ CGUIFadeLabelControl::~CGUIFadeLabelControl(void)
 void CGUIFadeLabelControl::SetInfo(const vector<int> &vecInfo)
 {
   m_vecInfo = vecInfo;
-  if (m_vecInfo.size() == 0)
-    return; // no info at all
-  m_vecLabels.clear();
-  // create dummy entries as necessary
-  for (unsigned int i = 0; i < m_vecInfo.size(); i++)
-    m_vecLabels.push_back(L"");
-  int iSize = m_vecLabels.size();
-  iSize--;
+}
+
+void CGUIFadeLabelControl::SetLabel(const vector<wstring> &vecLabel)
+{
+  m_vecLabels = vecLabel;
 }
 
 void CGUIFadeLabelControl::Render()
 {
-  if (!IsVisible()) return ;
-  if (!m_pFont) return ;
-  if (m_vecLabels.size() == 0) return ;
+	bool bVisible = IsVisible();
+	if (m_VisibleCondition && bVisible)
+	{
+		bVisible = g_infoManager.GetBool(m_VisibleCondition);
+	}
+	if (!bVisible )
+	{
+		return ;
+	}
+	if (!m_pFont) return ;
 
-  if (m_vecInfo.size())
-  { // update our labels if we have the info to do so
-    if (m_iCurrentLabel >= (int)m_vecInfo.size() ) m_iCurrentLabel = 0;
-    m_vecLabels[m_iCurrentLabel] = g_infoManager.GetLabel(m_vecInfo[m_iCurrentLabel]);
-  }
-  if (m_iCurrentLabel >= (int)m_vecLabels.size() ) m_iCurrentLabel = 0;
 
-  wstring strLabel = m_vecLabels[m_iCurrentLabel];
+	if ((int)m_vecLabels.size() == 0 && (int)m_vecInfo.size() == 0) return ;
+
+	int iTempLabelCount = m_iCurrentLabel;
+	if ((int)m_vecLabels.size() > 0 && m_iCurrentLabel >= (int)m_vecLabels.size() )
+	{
+		m_iCurrentLabel = 0;
+	}
+
+	wstring tempLabel = L"";
+	int iLabelCount = (int)m_vecLabels.size();
+	if (iLabelCount > 0)
+	{
+		tempLabel = m_vecLabels[m_iCurrentLabel];
+	}
+	WCHAR szLabel[1024];
+	swprintf(szLabel, L"%s", tempLabel.c_str() );
+	CStdString strRenderLabel = szLabel;
+
+	if (m_vecInfo.size())
+	{ 
+		iLabelCount = (int)m_vecInfo.size();
+		m_iCurrentLabel = iTempLabelCount;
+		if (m_iCurrentLabel >= (int)m_vecInfo.size() )
+		{
+			m_iCurrentLabel = 0;
+		}
+		strRenderLabel = g_infoManager.GetLabel(m_vecInfo[m_iCurrentLabel]);
+	}
+	else
+	{
+		strRenderLabel = ParseLabel(strRenderLabel);
+	}
+
   CStdStringW strLabelUnicode;
-  g_charsetConverter.stringCharsetToFontCharset(strLabel, strLabelUnicode);
+  g_charsetConverter.stringCharsetToFontCharset(strRenderLabel, strLabelUnicode);
 
-  if ((int)m_vecLabels.size() == 1)
+  if (iLabelCount == 1)
   {
     DWORD iWidth = (DWORD)m_pFont->GetTextWidth(strLabelUnicode.c_str());
     if (iWidth < m_dwWidth)
