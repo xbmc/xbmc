@@ -352,8 +352,8 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
           // if playback is paused or playback speed != 1, return
           if (g_application.IsPlayingAudio())
           {
-            if (g_application.m_pPlayer->IsPaused()) return true;
-            if (g_application.GetPlaySpeed() != 1) return true;
+            if (g_application.m_pPlayer->IsPaused()) return false;
+            if (g_application.GetPlaySpeed() != 1) return false;
           }
 
           // not playing audio, or playback speed == 1
@@ -1216,7 +1216,19 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
   try
   {
     CMusicInfoScraper scraper;
-    if (scraper.FindAlbuminfo(strAlbum))
+    scraper.FindAlbuminfo(strAlbum);
+
+    while (!scraper.FindCompleted())
+    {
+      if (m_dlgProgress)
+      {
+        if (m_dlgProgress->IsCanceled())
+          scraper.CancelFind();
+        m_dlgProgress->Progress();
+      }
+    }
+
+    if (scraper.FindSuccessfull())
     {
       // did we found at least 1 album?
       int iAlbumCount = scraper.GetAlbumCount();
