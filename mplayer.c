@@ -5405,10 +5405,15 @@ int mplayer_isTextSubLoaded()
   //because XBMC need know which subtitle is text format for render by XBMC
   //this isn't completly correct, as mkv can contain vobsubs too
   int source = sub_sourceof(global_sub_pos);
- 	if (source != SUB_SOURCE_VOBSUB && source >= 0)
+
+  if ( source == SUB_SOURCE_SUBS )
     return TRUE;
-	else
-		return FALSE;
+	else if ( source == SUB_SOURCE_DEMUX )
+  {
+    return vo_sub == NULL ? 0 : 1;
+  }
+	
+  return FALSE;
 }
 #endif
 

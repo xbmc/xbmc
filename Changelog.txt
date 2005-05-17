@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 18-05-2005 fixed: subtitles didn't display in dvdimages if ttf subtitle fonts where selected in xbmc
   - 09-04-2005 new: support for returning amount of filled buffer to xbmc, and detect when buffer runs empty.
   - 09-04-2005 new: support for sending slave commands from xbmc to mplayer.
   - 09-04-2005 changed: made sure seeking didn't display progressbar of osd was turned of.
