@@ -1,5 +1,6 @@
 #pragma once
 #include "musicsong.h"
+#include ".\http.h"
 
 using namespace MUSIC_GRABBER;
 
@@ -30,8 +31,8 @@ public:
   const CMusicSong& GetSong(int iSong);
   const CStdString& GetAlbumURL() const;
   void SetTitle(const CStdString& strTitle);
-  bool Load();
-  bool Parse(const CStdString& strHTML);
+  bool Load(CHTTP& http);
+  bool Parse(const CStdString& strHTML, CHTTP& http);
   void SetAlbumPath(const CStdString& strAlbumPath);
   const CStdString& GetAlbumPath();
   void SetSongs(vector<CMusicSong> songs);

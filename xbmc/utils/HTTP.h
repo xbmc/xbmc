@@ -25,6 +25,7 @@ public:
   bool Head(string& strURL);
   bool Download(const string &strURL, const string &strFileName, LPDWORD pdwSize = NULL);
   bool GetHeader(CStdString strName, CStdString& strValue) const;
+  void Cancel();
 
   string m_redirectedURL;
   bool IsInternet();
