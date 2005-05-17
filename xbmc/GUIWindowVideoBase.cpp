@@ -311,8 +311,11 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           OnPopupMenu(iItem);
         }
        	else if (iAction == ACTION_PLAYER_PLAY && !g_application.IsPlayingVideo())
+
         {
+
           OnResumeItem(iItem);
+
         }
       }
       else if (iControl == CONTROL_IMDB)
@@ -893,13 +896,16 @@ int  CGUIWindowVideoBase::ResumeItemOffset(int iItem)
   vector<CStdString> movies;
 
   GetStackedFiles(m_vecItems[iItem]->m_strPath, movies);
+
   if (!m_vecItems[iItem]->IsNFO() && !m_vecItems[iItem]->IsPlayList())
    { // ok, we have a video file at least
      // grab the database info.  If stacking is enabled, we may have to check multiple files...
      for (unsigned int i=0; i < movies.size(); i++)
      {
        CVideoSettings settings;
+
        m_database.GetVideoSettings(movies[i], settings);
+
        if (settings.m_ResumeTime > 0)
        {
          startOffset = settings.m_ResumeTime + 0x10000000 * i; // assume no more than 16 files are stacked
@@ -907,7 +913,6 @@ int  CGUIWindowVideoBase::ResumeItemOffset(int iItem)
        }
      }
    }
-  
    return startOffset;
 }
 
@@ -940,16 +945,18 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   pMenu->ClearButtons();
   // add the needed buttons
   int btn_Show_Info     = pMenu->AddButton(13346); // Show Video Information
-  int btn_Resume        = pMenu->AddButton(13381);  // Resume Video
+  int btn_Resume        = pMenu->AddButton(13381); // Resume Video
   int btn_Queue         = pMenu->AddButton(13347); // Add to Playlist
   int btn_Now_Playing   = pMenu->AddButton(13350); // Now Playing...
   int btn_Query         = pMenu->AddButton(13349); // Query Info For All Files
   int btn_Search_IMDb   = pMenu->AddButton(13348); // Search IMDb...
-  int btn_Settings      = pMenu->AddButton(5);   // Settings
+  int btn_Settings      = pMenu->AddButton(5);     // Settings
+  int btn_Delete = pMenu->AddButton(117);          // Delete
+
+  // dvd player placeholder
   int btn_DVD = 0;
   if(bEnabledDVD)
     btn_DVD = pMenu->AddButton(15213);
-  int btn_Delete = pMenu->AddButton(117); // Delete
 
   // check to see if the Resume Video button is applicable
   pMenu->EnableButton(btn_Resume, ResumeItemOffset(iItem)>0);
@@ -967,8 +974,6 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   // turn off the query info button if we aren't in files view
   if (GetID() != WINDOW_VIDEOS)
     pMenu->EnableButton(btn_Show_Info, false);
-  pMenu->EnableButton(btn_Resume, false);
-  pMenu->EnableButton(btn_Queue, false);
 
   if(bEnabledDVD && !(m_vecItems[iItem]->IsDVDFile(true, true) 
       || m_vecItems[iItem]->IsDVD() 
@@ -981,7 +986,9 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal(GetID());
   // Skip the DVD button if it doesn't exist
+
   int btnid = pMenu->GetButton();
+
   if (btnid>0)
   {
     if (btnid == btn_Show_Info)
@@ -1152,9 +1159,7 @@ void CGUIWindowVideoBase::PlayMovies(VECMOVIESFILES &movies, long lStartOffset)
 void CGUIWindowVideoBase::OnDeleteItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
-
   const CFileItem* pItem = m_vecItems[iItem];
-
   CStdString strFile;
 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -1170,11 +1175,13 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   }
 
   if (m_dlgProgress) m_dlgProgress->StartModal(GetID());
+
   CStdString strLog;
   strLog.Format("delete %s\n", strFile.c_str());
-
   strFile = pItem->m_strPath;
+
   CFile::Delete(strFile.c_str());
+
   if (m_dlgProgress)
   {
     m_dlgProgress->SetLine(0, 117);
@@ -1188,4 +1195,3 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   Update( m_Directory.m_strPath );
   m_viewControl.SetSelectedItem(iItem);
 }
-
