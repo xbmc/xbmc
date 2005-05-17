@@ -1216,19 +1216,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
   try
   {
     CMusicInfoScraper scraper;
-    scraper.FindAlbuminfo(strAlbum);
-
-    while (!scraper.FindCompleted())
-    {
-      if (m_dlgProgress)
-      {
-        if (m_dlgProgress->IsCanceled())
-          scraper.CancelFind();
-        m_dlgProgress->Progress();
-      }
-    }
-
-    if (scraper.FindSuccessfull())
+    if (scraper.FindAlbuminfo(strAlbum))
     {
       // did we found at least 1 album?
       int iAlbumCount = scraper.GetAlbumCount();
