@@ -2,7 +2,6 @@
 #include "../stdafx.h"
 
 #include ".\musicinfoscraper.h"
-#include ".\http.h"
 #include ".\htmlutil.h"
 #include ".\htmltable.h"
 #include "../util.h"
@@ -10,11 +9,16 @@
 using namespace HTML;
 
 CMusicInfoScraper::CMusicInfoScraper(void)
-{}
+{
+  m_bSuccessfull=false;
+  m_bCanceled=false;
+  m_iAlbum=-1;
+}
 
 CMusicInfoScraper::~CMusicInfoScraper(void)
-{}
+{
 
+}
 
 int CMusicInfoScraper::GetAlbumCount() const
 {
@@ -26,37 +30,44 @@ CMusicAlbumInfo& CMusicInfoScraper::GetAlbum(int iAlbum)
   return m_vecAlbums[iAlbum];
 }
 
-bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum1)
+void CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
 {
-  CStdString strAlbum=strAlbum1;
+  m_strAlbum=strAlbum;
+  StopThread();
+  Create();
+}
+
+void CMusicInfoScraper::FindAlbuminfo()
+{
+  CStdString strAlbum=m_strAlbum;
   CStdString strHTML;
   m_vecAlbums.erase(m_vecAlbums.begin(), m_vecAlbums.end());
   // make request
   // type is
   // http://www.allmusic.com/cg/amg.dll?P=amg&SQL=escapolygy&OPT1=2
 
-  CHTTP http;
   CStdString strPostData;
   CUtil::URLEncode(strAlbum);
   strPostData.Format("P=amg&SQL=%s&OPT1=2", strAlbum.c_str());
 
   // get the HTML
-  if (!http.Post("http://www.allmusic.com/cg/amg.dll", strPostData, strHTML))
-    return false;
+  if (!m_http.Post("http://www.allmusic.com/cg/amg.dll", strPostData, strHTML))
+    return;
 
   // check if this is an album
   CStdString strURL = "http://www.allmusic.com/cg/amg.dll?";
   strURL += strPostData;
   CMusicAlbumInfo newAlbum("", strURL);
-  if (strHTML.Find("No Results Found") > -1) return true;
+  if (strHTML.Find("No Results Found") > -1) return;
   if (strHTML.Find("Album Search Results for:") == -1)
   {
-    if (newAlbum.Parse(strHTML))
+    if (newAlbum.Parse(strHTML, m_http))
     {
       m_vecAlbums.push_back(newAlbum);
-      return true;
+      m_bSuccessfull=true;
+      return;
     }
-    return false;
+    return;
   }
 
   // check if we found a list of albums
@@ -64,9 +75,9 @@ bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum1)
   strHTMLLow.MakeLower();
 
   int iStartOfTable = strHTMLLow.Find("id=\"expansiontable1\"");
-  if (iStartOfTable < 0) return false;
+  if (iStartOfTable < 0) return;
   iStartOfTable = strHTMLLow.ReverseFind("<table", iStartOfTable);
-  if (iStartOfTable < 0) return false;
+  if (iStartOfTable < 0) return;
 
   CHTMLTable table;
   CHTMLUtil util;
@@ -128,6 +139,85 @@ bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum1)
     }
   }
 
-  return true;
+  if (m_vecAlbums.size()>0)
+    m_bSuccessfull=true;
+
+  return;
 }
 
+void CMusicInfoScraper::LoadAlbuminfo(int iAlbum)
+{
+  m_iAlbum=iAlbum;
+  StopThread();
+  Create();
+}
+
+void CMusicInfoScraper::LoadAlbuminfo()
+{
+  if (m_iAlbum<0 || m_iAlbum>(int)m_vecAlbums.size())
+    return;
+
+  CMusicAlbumInfo& album=m_vecAlbums[m_iAlbum];
+  if (!album.Load(m_http))
+    return;
+
+  CStdString strThumb;
+  CStdString strImage = album.GetImageURL();
+  CUtil::GetAlbumThumb(album.GetTitle(), album.GetAlbumPath(), strThumb);
+  if (!CUtil::FileExists(strThumb) && !strImage.IsEmpty() )
+  {
+    // Download image and save as
+    // permanent thumb
+    m_http.Download(strImage, strThumb);
+  }
+
+  m_bSuccessfull=true;
+}
+
+bool CMusicInfoScraper::Completed()
+{
+  return m_eventStop.WaitMSec(10);
+}
+
+bool CMusicInfoScraper::Successfull()
+{
+  return m_bSuccessfull;
+}
+
+void CMusicInfoScraper::Cancel()
+{
+  m_http.Cancel();
+  m_bCanceled=true;
+}
+
+bool CMusicInfoScraper::IsCanceled()
+{
+  return m_bCanceled;
+}
+
+void CMusicInfoScraper::OnStartup()
+{
+  m_bSuccessfull=false;
+  m_bCanceled=false;
+}
+
+void CMusicInfoScraper::Process()
+{
+  try
+  {
+    if (m_strAlbum.size())
+    {
+      FindAlbuminfo();
+      m_strAlbum.Empty();
+    }
+    if (m_iAlbum>-1)
+    {
+      LoadAlbuminfo();
+      m_iAlbum=-1;
+    }
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "Exception in CMusicInfoScraper::Process()");
+  }
+}

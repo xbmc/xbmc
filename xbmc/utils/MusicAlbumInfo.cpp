@@ -2,7 +2,6 @@
 #include ".\musicalbuminfo.h"
 #include ".\htmltable.h"
 #include ".\htmlutil.h"
-#include ".\http.h"
 #include "../util.h"
 
 using namespace MUSIC_GRABBER;
@@ -112,7 +111,7 @@ const CMusicSong& CMusicAlbumInfo::GetSong(int iSong)
   return m_vecSongs[iSong];
 }
 
-bool CMusicAlbumInfo::Parse(const CStdString& strHTML)
+bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
 {
   m_vecSongs.erase(m_vecSongs.begin(), m_vecSongs.end());
   CHTMLUtil util;
@@ -162,7 +161,7 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML)
   if (strReview.Find("read more...") >= 0)
   {
     m_strAlbumURL += "~T1";
-    return Load();
+    return Load(http);
   }
 
   // Extract album, artist...
@@ -403,12 +402,11 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML)
 }
 
 
-bool CMusicAlbumInfo::Load()
+bool CMusicAlbumInfo::Load(CHTTP& http)
 {
   CStdString strHTML;
-  CHTTP http;
   if ( !http.Get(m_strAlbumURL, strHTML)) return false;
-  return Parse(strHTML);
+  return Parse(strHTML, http);
 }
 
 void CMusicAlbumInfo::Save(CStdString& strFileName)

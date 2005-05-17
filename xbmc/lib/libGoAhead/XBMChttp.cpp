@@ -1296,7 +1296,11 @@ int	CXbmcHttp::xbmcLookupAlbum(webs_t wp, char_t *parameter)
 	websHeader(wp);
 	try
 	{
-	  if (scraper.FindAlbuminfo(parameter))
+	  scraper.FindAlbuminfo(parameter);
+
+	  while (!scraper.Completed()) {}
+
+	  if (scraper.Successfull())
 	  {
 		  // did we found at least 1 album?
 		  int iAlbumCount=scraper.GetAlbumCount();
@@ -1328,7 +1332,8 @@ int	CXbmcHttp::xbmcChooseAlbum(webs_t wp, char_t *parameter)
 	try
 	{
 		CMusicAlbumInfo musicInfo("",parameter) ;
-		if (musicInfo.Load())
+		CHTTP http;
+		if (musicInfo.Load(http))
 		{
 			output="<li>image:" + musicInfo.GetImageURL() + "\n";
 			output+="<li>review:" + musicInfo.GetReview()+ "\n";

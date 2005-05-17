@@ -431,6 +431,9 @@ bool CHTTP::Connect()
     int e = WSAGetLastError();
     if ((e != WSAETIMEDOUT && e != WSAEADDRINUSE) || ++nTries > 3) // retry up to 3 times on timeout / addr in use
     {
+      if (e == WSAECANCELLED)
+        CLog::Log(LOGNOTICE, "HTTP: User canceled");
+
       Close();
       return false;
     }
@@ -603,6 +606,11 @@ bool CHTTP::Send(char* pBuffer, int iLen)
           return false;
         }
       }
+      else if (WSAGetLastError() == WSAECANCELLED)
+      {
+        CLog::Log(LOGNOTICE, "HTTP: User canceled");
+        return false;
+      }
       else
         return false;
     }
@@ -651,6 +659,11 @@ bool CHTTP::Recv(int iLen)
           WSASetLastError(WSAETIMEDOUT);
           return false;
         }
+      }
+      else if (WSAGetLastError() == WSAECANCELLED)
+      {
+        CLog::Log(LOGNOTICE, "HTTP: User canceled");
+        return false;
       }
       else
       {
@@ -933,6 +946,8 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
   }
 }
 
+//------------------------------------------------------------------------------------------------------------------
+
 void CHTTP::ParseHeaders()
 {
   string::size_type nStart, nColon, nEnd;
@@ -971,6 +986,8 @@ void CHTTP::ParseHeaders()
   ParseHeader(nStart, nColon, i);
 }
 
+//------------------------------------------------------------------------------------------------------------------
+
 void CHTTP::ParseHeader(string::size_type start, string::size_type colon, string::size_type end)
 {
   // If colon or end are 0, bail
@@ -1003,4 +1020,11 @@ void CHTTP::Close()
     delete [] m_RecvBuffer;
   m_RecvBuffer = 0;
   WSASetLastError(e);
+}
+
+//------------------------------------------------------------------------------------------------------------------
+
+void CHTTP::Cancel()
+{
+  WSACancelOverlappedIO((SOCKET)m_socket);
 }
