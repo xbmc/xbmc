@@ -1210,13 +1210,24 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
     m_dlgProgress->SetLine(1, "");
     m_dlgProgress->SetLine(2, "");
     m_dlgProgress->StartModal(GetID());
-    m_dlgProgress->Progress();
   }
 
   try
   {
     CMusicInfoScraper scraper;
-    if (scraper.FindAlbuminfo(strAlbum))
+    scraper.FindAlbuminfo(strAlbum);
+
+    while (!scraper.Completed())
+    {
+      if (m_dlgProgress)
+      {
+        if (m_dlgProgress->IsCanceled())
+          scraper.Cancel();
+        m_dlgProgress->Progress();
+      }
+    }
+
+    if (scraper.Successfull())
     {
       // did we found at least 1 album?
       int iAlbumCount = scraper.GetAlbumCount();
@@ -1264,23 +1275,22 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
         }
 
         // ok, downloading the album info
-        album = scraper.GetAlbum(iSelectedAlbum);
+        scraper.LoadAlbuminfo(iSelectedAlbum);
 
-        if (m_dlgProgress)
+        while (!scraper.Completed())
         {
-          m_dlgProgress->SetHeading(185);
-          m_dlgProgress->SetLine(0, album.GetTitle2());
-          m_dlgProgress->SetLine(1, "");
-          m_dlgProgress->SetLine(2, "");
-          m_dlgProgress->Progress();
+          if (m_dlgProgress)
+          {
+            if (m_dlgProgress->IsCanceled())
+              scraper.Cancel();
+            m_dlgProgress->Progress();
+          }
         }
 
-        // download the album info
-        bool bLoaded = album.Loaded();
-        if (!bLoaded)
-          bLoaded = album.Load();
+        if (scraper.Successfull())
+          album = scraper.GetAlbum(iSelectedAlbum);
 
-        return true;
+        return scraper.Successfull();
       }
       else
       {
@@ -1295,7 +1305,8 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
         }
       }
     }
-    else
+    
+    if (!scraper.IsCanceled())
     {
       // unable 2 connect to www.allmusic.com
       if (pDlgOK)
