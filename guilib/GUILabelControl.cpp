@@ -18,8 +18,9 @@ CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPos
   m_bShowCursor = false;
   m_iCursorPos = 0;
   m_dwCounter = 0;
-  m_Info = 0;
   ControlType = GUICONTROL_LABEL;
+  m_VisibleCondition = 0;
+
 }
 
 CGUILabelControl::~CGUILabelControl(void)
@@ -37,24 +38,46 @@ void CGUILabelControl::SetCursorPos(int iPos)
   m_iCursorPos = iPos;
 }
 
+void CGUILabelControl::SetInfo(const vector<int> &vecInfo)
+{
+  m_vecInfo = vecInfo;
+  if (m_vecInfo.size() == 0)
+    return; // no info at all
+}
+
 void CGUILabelControl::Render()
 {
-  if (m_Info)
-  { // check if we need to update our info
-    wstring strLabel = g_infoManager.GetLabel(m_Info);
-    if (strLabel != m_strLabel)
-      SetLabel(strLabel);
+
+  bool bVisible = IsVisible();
+  if (m_VisibleCondition && bVisible)
+  {
+    bVisible = g_infoManager.GetBool(m_VisibleCondition);
   }
 
-  if (!IsVisible() )
+  if (!bVisible )
   {
     return ;
   }
 
+ 
+	WCHAR szLabel[1024];
+	swprintf(szLabel, L"%s", m_strLabel.c_str() );
+	CStdString strRenderLabel = szLabel;
+
+	if (m_vecInfo.size())
+	{ 
+		strRenderLabel = g_infoManager.GetLabel(m_vecInfo[0]);
+	}
+	else
+	{
+		strRenderLabel = ParseLabel(strRenderLabel);
+	}
+
+
   if (m_pFont)
   {
     CStdStringW strLabelUnicode;
-    g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
+    g_charsetConverter.stringCharsetToFontCharset(strRenderLabel, strLabelUnicode);
 
     float fPosY = (float)m_iPosY;
     if (m_dwTextAlign & XBFONT_CENTER_Y)

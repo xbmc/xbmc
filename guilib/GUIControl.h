@@ -88,6 +88,7 @@ public:
   virtual void EnableCalibration(bool bOnOff);
   bool CalibrationEnabled() const;
   void SetGroup(int iGroup);
+  CStdString ParseLabel(CStdString &strLabel);
   int GetGroup(void) const;
   virtual void Update() { m_bInvalidated = true; };
 
