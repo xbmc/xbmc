@@ -1,5 +1,9 @@
 #include "stdafx.h"
 #include "GUIControl.h"
+#include "../xbmc/utils/GUIInfoManager.h"
+#include "LocalizeStrings.h"
+#include "../xbmc/Util.h"
+
 
 CGUIControl::CGUIControl()
 {
@@ -406,3 +410,80 @@ int CGUIControl::GetGroup(void) const
 {
   return m_iGroup;
 }
+
+CStdString CGUIControl::ParseLabel(CStdString &strLabel)
+{
+  CStdString toString = L"";
+  int lastPos = 0;
+  int t = strLabel.Find('$');
+  while ( t >= 0 )
+  {
+    int skip = 0;
+    CStdString checkEscape = L"";
+		if (t+1 < (int)strLabel.length())
+		{
+			checkEscape = strLabel.substr(t+1,1);
+		}
+    if (!checkEscape.Equals("$"))
+    {
+      if (t != lastPos)
+      {
+        CStdString tempString = strLabel.substr(lastPos,t-lastPos);
+        tempString.Replace("$$","$");
+        toString.append(tempString);
+        lastPos = t;
+      }
+      int startData = strLabel.Find('(',t);
+      int endData = strLabel.Find(')',t);
+      if (startData > t && endData > startData)
+      {
+        CStdString strType = strLabel.substr(t+1,(startData - t)-1);
+        CStdString strValue = strLabel.substr(startData+1,(endData - startData)-1);
+        if (strType.Equals("INFO"))
+        {
+          int info = g_infoManager.TranslateString(strValue);
+          if (info)
+          {
+            CStdString tempString = g_infoManager.GetLabel(info);
+            toString.append(tempString);
+          }
+          // just skip ahead if the parameter is bad
+          lastPos = endData + 1;
+          skip = endData - t;
+        }
+        else if (strType.Equals("LOCALIZE"))
+        {
+          int localize = atoi(strValue);
+          if (localize && CUtil::IsNaturalNumber(strValue))
+          {
+            CStdString tempString = g_localizeStrings.Get(localize);
+            toString.append(tempString);
+          }
+          // just skip ahead if the parameter is bad
+          lastPos = endData + 1;
+          skip = endData - t;
+        }
+      }
+    }
+    else
+    {
+      skip = 1;
+    }
+    if (t+skip < (int)strLabel.length())
+    {
+      t = strLabel.Find('$',t+skip + 1);
+    }
+    else
+    {
+      t = -1;
+    }
+  }
+  if (lastPos < (int)strLabel.length())
+  {
+    CStdString tempString = strLabel.substr(lastPos,(int)strLabel.length()-lastPos);
+    tempString.Replace("$$","$");
+    toString.append(tempString);
+  }
+  return toString;
+}
+
