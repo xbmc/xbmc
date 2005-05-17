@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-05-2005 fixed: play button does not revert to normal playback speed when seeking
  - 16-05-2005 fixed: SF Patch [1203229] Resume Video in My Videos context menu, thanks to deadken
  - 16-05-2005 added: SF patch [1200420] support for multiple info items and localized strings in a single label control, thanks to desertbear
                      use $INFO(<info manager string>) and $LOCALIZE(<string id>)
