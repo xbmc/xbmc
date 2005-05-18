@@ -20,4 +20,5 @@ protected:
   DWORD m_dwFrameCounter;
   DWORD m_dwInitTimer;
   bool m_bShowInfo;
+  bool m_bFadingAtStart;
 };
