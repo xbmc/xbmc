@@ -1129,6 +1129,14 @@ void CMPlayer::Process()
           }
         }
 
+        //Check to see we are not rendering text subtitles internal
+        if( CUtil::IsUsingTTFSubtitles() && mplayer_SubtitleVisible() && mplayer_isTextSubLoaded())
+        {
+          mplayer_showSubtitle(false);
+          m_bSubsVisibleTTF=true;
+        }
+
+
       }
       catch (...)
       {
@@ -1607,20 +1615,7 @@ void CMPlayer::SetSubtitle(int iStream)
 
 bool CMPlayer::GetSubtitleVisible()
 {
-  if( CUtil::IsUsingTTFSubtitles() && mplayer_isTextSubLoaded() )
-  {
-    //Make sure normal subs are turned of if this is the case and turn on ttf subs instead.
-    //This is called on each frame rendered so it should work fine to switch is here
-
-    if (mplayer_SubtitleVisible()) 
-    {      
-      mplayer_showSubtitle(false);
-      m_bSubsVisibleTTF=true;
-    }
-    return m_bSubsVisibleTTF;
-  }
-  else 
-    return mplayer_SubtitleVisible() != 0;
+  return( m_bSubsVisibleTTF || mplayer_SubtitleVisible() != 0 );
 }
 void CMPlayer::SetSubtitleVisible(bool bVisible)
 {
@@ -1631,7 +1626,10 @@ void CMPlayer::SetSubtitleVisible(bool bVisible)
     mplayer_showSubtitle(false);
   }
   else
+  {
+    m_bSubsVisibleTTF = false;
     mplayer_showSubtitle(bVisible);
+  }
 }
 
 int CMPlayer::GetAudioStreamCount()
