@@ -414,76 +414,133 @@ int CGUIControl::GetGroup(void) const
 CStdString CGUIControl::ParseLabel(CStdString &strLabel)
 {
   CStdString toString = L"";
+  CStdString queueString = L"";
   int lastPos = 0;
+  bool lastValid = true;
+
+  // first first parseable item
   int t = strLabel.Find('$');
   while ( t >= 0 )
   {
     int skip = 0;
-    CStdString checkEscape = L"";
+    CStdString checkEscape = "";
+
+    // read next character
 		if (t+1 < (int)strLabel.length())
 		{
 			checkEscape = strLabel.substr(t+1,1);
 		}
+    bool emptyInfo = false;
+
+    // $ means escape
     if (!checkEscape.Equals("$"))
     {
-      if (t != lastPos)
+      //write all text since the last parsable item till this one to the literal text queue
+      if (t > lastPos)
       {
         CStdString tempString = strLabel.substr(lastPos,t-lastPos);
         tempString.Replace("$$","$");
-        toString.append(tempString);
-        lastPos = t;
+        queueString.append(tempString);
       }
+
+      // look for a type delimiter
+      CStdString infoString = L"";
       int startData = strLabel.Find('(',t);
       int endData = strLabel.Find(')',t);
       if (startData > t && endData > startData)
       {
         CStdString strType = strLabel.substr(t+1,(startData - t)-1);
         CStdString strValue = strLabel.substr(startData+1,(endData - startData)-1);
+
+        // info item
         if (strType.Equals("INFO"))
         {
           int info = g_infoManager.TranslateString(strValue);
           if (info)
           {
-            CStdString tempString = g_infoManager.GetLabel(info);
-            toString.append(tempString);
+            infoString = g_infoManager.GetLabel(info);
+            emptyInfo = (infoString.length() == 0);
           }
           // just skip ahead if the parameter is bad
           lastPos = endData + 1;
           skip = endData - t;
         }
+
+        // localized string
         else if (strType.Equals("LOCALIZE"))
         {
           int localize = atoi(strValue);
           if (localize && CUtil::IsNaturalNumber(strValue))
           {
-            CStdString tempString = g_localizeStrings.Get(localize);
-            toString.append(tempString);
+            CStdString localizeString = g_localizeStrings.Get(localize);
+            queueString.append(localizeString);
           }
           // just skip ahead if the parameter is bad
           lastPos = endData + 1;
           skip = endData - t;
         }
       }
+
+      // figure out what to write out
+			if (infoString.length() > 0)
+			{
+				// if the previous info item was valid (or if there was none), and this one also, 1st write all queued literal text
+				if (lastValid && queueString.length() > 0)
+				{
+					toString.append(queueString);
+				}
+				// empty literal text queue string
+				queueString = L"";
+
+				// now write info string
+				toString.append(infoString);
+				lastValid = true;
+			}
+			else if (emptyInfo)
+			{
+				queueString = L"";
+			}
+			else
+			{
+				lastValid = false;
+			}
     }
+
+    // escape character found, skip ahead one character
     else
     {
       skip = 1;
     }
+
+    // are there anymore characters to test?
     if (t+skip < (int)strLabel.length())
     {
+      // find the next parsable item
       t = strLabel.Find('$',t+skip + 1);
     }
+
+    // no more characters
     else
     {
+      // exit the while loop
       t = -1;
     }
   }
+
+	// if any text was leftover after the last parsable tag, add it to the literal text queue
   if (lastPos < (int)strLabel.length())
   {
     CStdString tempString = strLabel.substr(lastPos,(int)strLabel.length()-lastPos);
     tempString.Replace("$$","$");
-    toString.append(tempString);
+    queueString.append(tempString.c_str());
   }
+
+	//if the last info item was valid, append the literal text queue to the result string
+	if (lastValid && queueString.length() > 0)
+	{
+		toString.append(queueString.c_str());
+	}
+
   return toString;
 }
 
