@@ -182,8 +182,8 @@ CSettings::CSettings(void)
   strcpy( g_stSettings.m_szIMDBurl, "");
   strcpy (g_stSettings.m_szMusicRecordingDirectory, "");
 
-  g_stSettings.m_bMyMusicSongInfoInVis = true;
-  g_stSettings.m_bMyMusicSongThumbInVis = true;
+  g_stSettings.m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
+  g_stSettings.m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
 
   g_stSettings.m_bMyMusicSongsRootSortAscending = true;
   g_stSettings.m_bMyMusicSongsSortAscending = true;
