@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-05-2005 added: info tag parser now hides text in between missing items, thanks to desertbear
  - 18-05-2005 fixed: FLAC buffer overrun (crash) on seek.
  - 18-05-2005 fixed/improved: Visualisation info fade in/fade out.
  - 18-05-2005 fixed: crash when swithing between fullscreen and small window when mplayer osd was visible
