@@ -274,17 +274,7 @@ void CGUIWindowMusicOverlay::Render()
     ShowControl( CONTROL_INFO);
     ShowControl( CONTROL_BIG_PLAYTIME);
 
-    // TODO: Move to our application render funtion
-    __int64 lPTS = g_application.m_pPlayer->GetTime() - (g_infoManager.GetCurrentSongStart() * (__int64)1000) / 75;
-    int iSpeed = g_application.GetPlaySpeed();
-    if (lPTS < 5000 && iSpeed < 1)
-    {
-      iSpeed = 1;
-      g_application.SetPlaySpeed(iSpeed);
-      g_application.m_pPlayer->SeekTime(0);
-    }
-
-    if (iSpeed != 1)
+    if (g_application.GetPlaySpeed() != 1)
     {
       m_iFrames = STEPS ;
     }

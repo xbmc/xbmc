@@ -105,9 +105,12 @@ void FLACCodec::DeInit()
 __int64 FLACCodec::Seek(__int64 iSeekTime)
 {
   //  Seek to the nearest sample
+  // set the buffer size to 0 first, as this invokes a WriteCallback which
+  // may be called when the buffer is almost full (resulting in a buffer
+  // overrun unless we reset m_BufferSize first).
+  m_BufferSize=0;
   m_dll.FLAC__seekable_stream_decoder_seek_absolute(m_pFlacDecoder,
 		(__int64)(iSeekTime*m_SampleRate)/1000); 	
-  m_BufferSize=0;
   return iSeekTime;
 }
 
