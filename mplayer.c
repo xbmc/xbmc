@@ -5002,6 +5002,8 @@ void mplayer_showSubtitle(int bOnOff)
         sub_visibility=1;
     else
         sub_visibility=0;
+
+    vo_osd_changed(OSDTYPE_SUBTITLE);
 }
 
 int mplayer_SubtitleVisible()
