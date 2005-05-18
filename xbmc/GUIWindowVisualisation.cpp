@@ -5,7 +5,8 @@
 #include "utils/GUIInfoManager.h"
 
 #define TRANSISTION_COUNT   50  // 1 second
-#define TRANSISTION_LENGTH 250  // 5 seconds
+#define TRANSISTION_LENGTH 200  // 4 seconds
+#define START_FADE_LENGTH  100  // 2 seconds on startup
 
 CGUIWindowVisualisation::CGUIWindowVisualisation(void)
     : CGUIWindow(0)
@@ -13,6 +14,7 @@ CGUIWindowVisualisation::CGUIWindowVisualisation(void)
   m_dwFrameCounter = 0;
   m_dwInitTimer = 0;
   m_bShowInfo = false;
+  m_bFadingAtStart = false;
 }
 
 CGUIWindowVisualisation::~CGUIWindowVisualisation(void)
@@ -30,6 +32,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     else
     {
       // reset the timer
+      CLog::Log(LOGERROR, "White has been pressed. Status is m_bShowInfo = %i, m_dwInitTimer = %i, m_dwFrameCounter = %i", m_bShowInfo, m_dwInitTimer, m_dwFrameCounter);
       m_dwInitTimer = 0;
       if (m_dwFrameCounter)
       { // already in the process of a fade - reverse it
@@ -48,6 +51,8 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     //send the action to the overlay so we can reset
     //the bool m_bShowInfoAlways
     g_application.m_guiMusicOverlay.OnAction(action);
+    // save the settings
+    g_settings.Save();
     m_gWindowManager.PreviousWindow();
     return true;
     break;
@@ -99,10 +104,10 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       }
       else
       {
-        // start display init timer (fade in then out after 5 secs...)
+        // start display init timer (fade out after 3 secs...)
         m_bShowInfo = true;
-//        m_dwFrameCounter = TRANSISTION_COUNT;
-        m_dwInitTimer = TRANSISTION_LENGTH;
+        m_dwInitTimer = START_FADE_LENGTH;
+        m_bFadingAtStart = true;
         SetAlpha(255);
       }
 
@@ -146,26 +151,21 @@ void CGUIWindowVisualisation::Render()
     }
     else if (!m_dwFrameCounter)
     {  // check our current time, as we may have to fade in
-//      int timeRemaining = g_infoManager.GetPlayTimeRemaining();
       int timeStarted = (int)(g_infoManager.GetPlayTime()/1000);
-      if (timeStarted < 2 && !m_bShowInfo)
+      if (timeStarted < TRANSISTION_LENGTH/50 && !m_bShowInfo && !m_bFadingAtStart)
       { // fade in at the start
+        CLog::Log(LOGERROR, "Fading in at start, time=%i", timeStarted);
         m_dwFrameCounter = TRANSISTION_COUNT;
+        m_bFadingAtStart = true;
       }
-      else if (timeStarted == TRANSISTION_LENGTH/50 && m_bShowInfo)
+      else if (timeStarted >= TRANSISTION_LENGTH/50 && m_bShowInfo)
       { // fade out after 5 seconds
+        CLog::Log(LOGERROR, "Fading out at start, time=%i", timeStarted);
         m_dwFrameCounter = TRANSISTION_COUNT;
+        m_bFadingAtStart = false;
       }
-/*      else if (timeRemaining < 2 && m_bShowInfo)
-      {
-        // fade out before end of track in the last second...
-        m_dwFrameCounter = TRANSISTION_COUNT;
-      }
-      else if (timeRemaining == TRANSISTION_LENGTH/50 && !m_bShowInfo)
-      {
-        // fade in if we have around 5 secs to go...
-        m_dwFrameCounter = TRANSISTION_COUNT;
-      }*/
+      else if (timeStarted > TRANSISTION_LENGTH/50)
+        m_bFadingAtStart = false; // reset so that at next track we're good to go again.
     }
   }
   if (m_dwFrameCounter)

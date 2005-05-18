@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-05-2005 fixed: FLAC buffer overrun (crash) on seek.
+ - 18-05-2005 fixed/improved: Visualisation info fade in/fade out.
  - 18-05-2005 fixed: crash when swithing between fullscreen and small window when mplayer osd was visible
  - 18-05-2005 fixed: ttf subtitles sometimes didn't enable untill selected from sub selection, even thou mplayer subtitles where visible on screen
  - 17-05-2005 fixed: album info, cover art gets deleted when a lookup fails
