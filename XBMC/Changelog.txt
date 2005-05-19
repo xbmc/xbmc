@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-05-2005 fixed: Seek(offset, SEEK_END) behaviour with files over Relax, XBMSP, iso9660, CDDA, SndTrk etc. was incorrect (caused tag issues among others).
  - 18-05-2005 added: info tag parser now hides text in between missing items, thanks to desertbear
  - 18-05-2005 fixed: FLAC buffer overrun (crash) on seek.
  - 18-05-2005 fixed/improved: Visualisation info fade in/fade out.

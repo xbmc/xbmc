@@ -123,8 +123,8 @@ __int64 CFileCDDA::Seek(__int64 iFilePosition, int iWhence /*=SEEK_SET*/)
     m_lsnCurrent += lsnPosition;
     break;
   case SEEK_END:
-    // end -= pos
-    m_lsnCurrent = m_lsnEnd - lsnPosition;
+    // end += pos
+    m_lsnCurrent = m_lsnEnd + lsnPosition;
     break;
   }
 

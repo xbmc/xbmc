@@ -234,8 +234,8 @@ __int64 CFileRelax::Seek(__int64 iFilePosition, int iWhence)
     m_filePos += iFilePosition;
     break;
   case SEEK_END:
-    // end -= pos
-    m_filePos = m_fileSize - iFilePosition;
+    // end += pos
+    m_filePos = m_fileSize + iFilePosition;
     break;
   }
   // Return offset from beginning
