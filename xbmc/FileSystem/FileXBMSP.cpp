@@ -285,8 +285,8 @@ __int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
     newpos = m_filePos + iFilePosition;
     break;
   case SEEK_END:
-    // end -= pos
-    newpos = m_fileSize - iFilePosition;
+    // end += pos
+    newpos = m_fileSize + iFilePosition;
     break;
   }
   if (newpos < 0) newpos = 0;
