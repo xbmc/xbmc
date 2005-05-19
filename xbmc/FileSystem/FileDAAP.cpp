@@ -98,7 +98,7 @@ bool CFileDAAP::Open(const CURL& url, bool bBinary)
 
   OutputDebugString("daap:open:");
   OutputDebugString(strFileName);
-
+/*
   // If we already have a song open, use that instead!
   if (g_application.m_DAAPSong)
   {
@@ -111,7 +111,7 @@ bool CFileDAAP::Open(const CURL& url, bool bBinary)
     OutputDebugString(" (cached)\n");
     return true;
   }
-
+*/
   OutputDebugString("\n");
 
   if (g_application.m_DAAPPtr)
@@ -317,8 +317,8 @@ __int64 CFileDAAP::Seek(__int64 iFilePosition, int iWhence)
     newpos = m_filePos + iFilePosition;
     break;
   case SEEK_END:
-    // end -= pos
-    newpos = m_song.size - iFilePosition;
+    // end += pos
+    newpos = m_song.size + iFilePosition;
     break;
   }
   if (newpos < 0) newpos = 0;
