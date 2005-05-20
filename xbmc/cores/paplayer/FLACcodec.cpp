@@ -1,7 +1,6 @@
 #include "../../stdafx.h"
 #include "FLACCodec.h"
-#include "../../MusicInfoTagLoaderFLAC.h"
-#include "../../MusicInfoTag.h"
+#include "../../FLACtag.h"
 
 #define FLAC_DLL "Q:\\system\\players\\PAPlayer\\libFlac.dll"
 
@@ -77,6 +76,11 @@ bool FLACCodec::Init(const CStdString &strFile)
     FreeDecoder();
     return false;
   }
+
+  //  Extract ReplayGain info
+  CFlacTag tag;
+  if (tag.ReadTagFromFile(strFile))
+    m_replayGain=tag.GetReplayGain();
 
   if (m_pBuffer)
   {
