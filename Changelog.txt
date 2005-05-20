@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-05-2005 fixed: if you change the track format, cached filelists from my music -> library are cleared
+ - 19-05-2005 added: the right column in my music is now controlled via a format string.  default is duration (%D)
+ - 19-05-2005 fixed: info tag parser now correctly displays localized text in between items, thanks to desertbear
  - 19-05-2005 fixed: Seek(offset, SEEK_END) behaviour with files over Relax, XBMSP, iso9660, CDDA, SndTrk etc. was incorrect (caused tag issues among others).
  - 18-05-2005 added: info tag parser now hides text in between missing items, thanks to desertbear
  - 18-05-2005 fixed: FLAC buffer overrun (crash) on seek.
