@@ -505,6 +505,8 @@ void CGUIWindowMusicSongs::OnScan()
     if (pDialog->IsConfirmed()) bUpdateAll = true;
   }
 
+  CUtil::DeleteDatabaseDirectoryCache();
+
   // Start background loader
   g_application.m_guiDialogMusicScan.StartScanning(m_Directory.m_strPath, bUpdateAll);
   UpdateButtons();
@@ -1274,26 +1276,6 @@ void CGUIWindowMusicSongs::DeleteRemoveableMediaDirectoryCache()
   do
   {
     if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
-    {
-      CStdString strFile = "Z:\\";
-      strFile += wfd.cFileName;
-      DeleteFile(strFile.c_str());
-    }
-  }
-  while (FindNextFile(hFind, &wfd));
-}
-
-void CGUIWindowMusicSongs::DeleteDatabaseDirectoryCache()
-{
-  WIN32_FIND_DATA wfd;
-  memset(&wfd, 0, sizeof(wfd));
-
-  CAutoPtrFind hFind( FindFirstFile("Z:\\db-*.fi", &wfd));
-  if (!hFind.isValid())
-    return;
-  do
-  {
-    if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
     {
       CStdString strFile = "Z:\\";
       strFile += wfd.cFileName;

@@ -1465,11 +1465,28 @@ void CGUIWindowMusicBase::OnRipCD()
 
 void CGUIWindowMusicBase::SetLabelFromTag(CFileItem *pItem)
 {
-  CStdString strFormat = g_guiSettings.GetString("MusicLists.TrackFormat");
+  CStdString strLabel  = ParseFormat(pItem, g_guiSettings.GetString("MusicLists.TrackFormat"));
+  CStdString strLabel2 = ParseFormat(pItem, g_guiSettings.GetString("MusicLists.TrackFormatRight"));
+
+  // set label 1
+  // if we don't have anything at the moment (due to empty tags),
+  // we just remove the extension
+  if (strLabel.size())
+    pItem->SetLabel(strLabel);
+  else if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+    pItem->RemoveExtension();
+
+  // set label 2
+  if (strLabel2.size())
+    pItem->SetLabel2(strLabel2);
+}
+
+CStdString CGUIWindowMusicBase::ParseFormat(CFileItem *pItem, const CStdString& strFormat)
+{
+  CStdString strLabel = "";
   CMusicInfoTag& tag = pItem->m_musicInfoTag;
   int iPos1 = 0;
   int iPos2 = strFormat.Find('%', iPos1);
-  CStdString strLabel;
   bool bDoneSomething = !(iPos1 == iPos2); // stuff in front should be applied - everything using this bool is added by spiff
   while (iPos2 >= 0)
   {
@@ -1514,6 +1531,12 @@ void CGUIWindowMusicBase::SetLabelFromTag(CFileItem *pItem)
       str = CUtil::GetTitleFromPath(pItem->m_strPath);
       bDoneSomething = true;
     }
+    else if (strFormat[iPos2 + 1] == 'D' && tag.GetDuration() > 0)
+    { // duration
+      int nDuration = tag.GetDuration();
+      CUtil::SecondsToHMSString(nDuration, str);
+      bDoneSomething = true;
+    }
     else if (strFormat[iPos2 + 1] == '%')
     { // %% to print %
       str = '%';
@@ -1526,20 +1549,7 @@ void CGUIWindowMusicBase::SetLabelFromTag(CFileItem *pItem)
   if (iPos1 < (int)strFormat.size())
     strLabel += strFormat.Right(strFormat.size() - iPos1);
 
-  // if we don't have anything at the moment (due to empty tags)
-  // we just remove the extension.
-  if (strLabel.size())
-    pItem->SetLabel( strLabel );
-  else if (g_guiSettings.GetBool("FileLists.HideExtensions"))
-    pItem->RemoveExtension();
-
-  // set label 2
-  int nDuration = tag.GetDuration();
-  if (nDuration > 0)
-  {
-    CUtil::SecondsToHMSString(nDuration, strLabel);
-    pItem->SetLabel2(strLabel);
-  }
+  return strLabel;
 }
 
 void CGUIWindowMusicBase::AddItemToTempPlayList(const CFileItem* pItem)

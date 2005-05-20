@@ -61,6 +61,8 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   // set the network settings so that we don't reset them unnecessarily
   m_iNetworkAssignment = -1;
   m_strErrorMessage = L"";
+  m_strOldTrackFormat = "";
+  m_strOldTrackFormatRight = "";
 }
 
 CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
@@ -185,6 +187,8 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       m_strNetworkSubnet = g_guiSettings.GetString("Network.Subnet");
       m_strNetworkGateway = g_guiSettings.GetString("Network.Gateway");
       m_strNetworkDNS = g_guiSettings.GetString("Network.DNS");
+      m_strOldTrackFormat = g_guiSettings.GetString("MusicLists.TrackFormat");
+      m_strOldTrackFormatRight = g_guiSettings.GetString("MusicLists.TrackFormatRight");
       m_dwResTime = 0;
       m_OldResolution = (RESOLUTION)g_guiSettings.GetInt("LookAndFeel.Resolution");
       int iFocusControl = m_iLastControl;
@@ -1021,6 +1025,22 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler"));
     }
+    else if (strSetting == "MusicLists.TrackFormat")
+    {
+      if (m_strOldTrackFormat != g_guiSettings.GetString("MusicLists.TrackFormat"))
+      {
+        CUtil::DeleteDatabaseDirectoryCache();
+        m_strOldTrackFormat = g_guiSettings.GetString("MusicLists.TrackFormat");
+      }
+    }
+    else if (strSetting == "MusicLists.TrackFormatRight")
+    {
+      if (m_strOldTrackFormatRight != g_guiSettings.GetString("MusicLists.TrackFormatRight"))
+      {
+        CUtil::DeleteDatabaseDirectoryCache();
+        m_strOldTrackFormatRight = g_guiSettings.GetString("MusicLists.TrackFormatRight");
+      }
+    }
   }
 }
 
@@ -1095,6 +1115,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting == "MusicLibrary.Cleanup")
   {
     g_musicDatabase.Clean();
+    CUtil::DeleteDatabaseDirectoryCache();
   }
   else if (strSetting == "MusicLibrary.DeleteAlbumInfo")
   {

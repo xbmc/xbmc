@@ -194,11 +194,12 @@ CGUISettings::CGUISettings(void)
   AddInt(7, "MyMusic.OSDTimeout", 13314, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddCategory(3, "MusicLists", 14018);
   AddString(1, "MusicLists.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT);
-  AddBool(2, "MusicLists.HideParentDirItems", 13306, true);
-  AddBool(3, "MusicLists.UseAutoSwitching", 14011, false);
-  AddBool(4, "MusicLists.AutoSwitchUseLargeThumbs", 14012, false);
-  AddInt(5, "MusicLists.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddInt(6, "MusicLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddString(2, "MusicLists.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT);
+  AddBool(3, "MusicLists.HideParentDirItems", 13306, true);
+  AddBool(4, "MusicLists.UseAutoSwitching", 14011, false);
+  AddBool(5, "MusicLists.AutoSwitchUseLargeThumbs", 14012, false);
+  AddInt(6, "MusicLists.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddInt(7, "MusicLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddCategory(3, "MusicLibrary", 14022);
   AddBool(1, "MusicLibrary.ShufflePlaylistsOnLoad", 228, false);
   AddBool(2, "MusicLibrary.ClearPlaylistsOnEnd",239,false);
