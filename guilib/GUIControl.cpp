@@ -485,7 +485,7 @@ CStdString CGUIControl::ParseLabel(CStdString &strLabel)
 			if (infoString.length() > 0)
 			{
 				// if the previous info item was valid (or if there was none), and this one also, 1st write all queued literal text
-				if (lastValid && queueString.length() > 0)
+				if (queueString.length() > 0)
 				{
 					toString.append(queueString);
 				}
@@ -499,11 +499,14 @@ CStdString CGUIControl::ParseLabel(CStdString &strLabel)
 			else if (emptyInfo)
 			{
 				queueString = L"";
+        lastValid = false;
 			}
+      /*
 			else
 			{
 				lastValid = false;
 			}
+      */
     }
 
     // escape character found, skip ahead one character

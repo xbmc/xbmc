@@ -170,6 +170,7 @@ public:
   static int GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName);
   static CStdString TranslateSpecialDir(const CStdString &strSpecial);
   static void TranslateBookmarks(VECSHARES& vecShares);
+  static void DeleteDatabaseDirectoryCache();
 
 private:
   static bool m_bNetworkUp;

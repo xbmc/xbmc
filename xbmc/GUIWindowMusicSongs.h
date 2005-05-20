@@ -32,7 +32,6 @@ protected:
   void SaveDirectoryCache(const CStdString& strDirectory, CFileItemList& items);
   void DeleteDirectoryCache();
   void DeleteRemoveableMediaDirectoryCache();
-  void DeleteDatabaseDirectoryCache();
 
   CStdString m_strPrevDir;
 };

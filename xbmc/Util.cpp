@@ -3149,7 +3149,6 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
       
 void CUtil::TranslateBookmarks(VECSHARES& vecShares)
 {
-
   // replace the special dirs
   VECSHARES vecTemp;
   for (int i = 0; i < (int)vecShares.size(); ++i)
@@ -3169,4 +3168,24 @@ void CUtil::TranslateBookmarks(VECSHARES& vecShares)
 
   vecShares.empty();
   vecShares = vecTemp;
+}
+
+void CUtil::DeleteDatabaseDirectoryCache()
+{
+  WIN32_FIND_DATA wfd;
+  memset(&wfd, 0, sizeof(wfd));
+
+  CAutoPtrFind hFind( FindFirstFile("Z:\\db-*.fi", &wfd));
+  if (!hFind.isValid())
+    return;
+  do
+  {
+    if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+    {
+      CStdString strFile = "Z:\\";
+      strFile += wfd.cFileName;
+      DeleteFile(strFile.c_str());
+    }
+  }
+  while (FindNextFile(hFind, &wfd));
 }
