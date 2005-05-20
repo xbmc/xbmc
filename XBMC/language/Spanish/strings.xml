@@ -168,6 +168,7 @@
   <string><id>236</id><value>Cúbico gaussiano</value></string>
   <string><id>237</id><value>Minificación</value></string>
   <string><id>238</id><value>Magnificación</value></string>
+  <string><id>239</id><value>Limpiar lista de reproducción al terminar</value></string>
   <string><id>240</id><value>Reproducción automática de DVD Vídeo</value></string>
   <string><id>241</id><value>Reproducción automática de VCD/SVCD</value></string>
   <string><id>242</id><value>Reproducción automática de CD Audio</value></string>
@@ -366,7 +367,7 @@
   <string><id>444</id><value>vídeo</value></string>
   <string><id>445</id><value>audio</value></string>
   <string><id>446</id><value>DVD</value></string>
-  <string><id>447</id><value>Reproducción automática</value></string>
+  <string><id>447</id><value>Reprod. automática</value></string>
   <string><id>448</id><value>LCD</value></string>
   <string><id>449</id><value>Activado</value></string>
   <string><id>450</id><value>Columnas</value></string>
@@ -377,6 +378,7 @@
   <string><id>454</id><value>Posición línea 4</value></string>
   <string><id>455</id><value>Líneas</value></string>
   <string><id>456</id><value>Modo</value></string>
+  <string><id>457</id><value>Cambiar vista</value></string>
   <string><id>458</id><value>B/Mark</value></string>
   <string><id>459</id><value>Subtítulos</value></string>
   <string><id>460</id><value>Canal Audio</value></string>
@@ -429,6 +431,7 @@
   <string><id>507</id><value>Por: Uso</value></string>
   <string><id>508</id><value>No usar accesos directos ni explorar</value></string> 
   <string><id>509</id><value>Almacenar Miniaturas de Programas</value></string>
+  <string><id>511</id><value>Cambiar modo de video según región del juego</value></string>
   <string><id>600</id><value>Comprimir CD de Música</value></string>
   <string><id>601</id><value>Media</value></string>
   <string><id>602</id><value>Estándar</value></string>
@@ -737,7 +740,7 @@
   <string><id>13355</id><value>Pixel Shader Baja Calidad</value></string>
   <string><id>13356</id><value>Overlays por Hardware</value></string>
   <string><id>13357</id><value>Pixel Shader Alta Calidad</value></string>
-  <string><id>13360</id><value>Generar Miniat.</value></string>
+  <string><id>13360</id><value>Generar miniaturas</value></string>
   <string><id>13361</id><value>Habilitar Voz</value></string>
   <string><id>13362</id><value>Máscara Voz</value></string>
   <string><id>13363</id><value>- Habilitar Spectrum Energy Weight</value></string>
@@ -763,6 +766,8 @@
   <string><id>13383</id><value>Máscara Voz - Puerto 1</value></string>
   <string><id>13384</id><value>Máscara Voz - Puerto 2</value></string>
   <string><id>13385</id><value>Máscara Voz - Puerto 3</value></string>
+  <string><id>13386</id><value>Usar busqueda basada en tiempo</value></string>
+
 
   <string><id>14000</id><value>Agrupar: No</value></string>
   <string><id>14001</id><value>Agrupar: Simple</value></string>
@@ -801,7 +806,7 @@
   <string><id>14034</id><value>                 - DVDRom</value></string>
   <string><id>14035</id><value>                 - Red Local</value></string>
   <string><id>14036</id><value>Servidores</value></string>
-  <string><id>14037</id><value>Apariencia y Ambiente</value></string>
+  <string><id>14037</id><value>Apariencia y Ambte</value></string>
   <string><id>14038</id><value>Configuración de red cambiada</value></string>
   <string><id>14039</id><value>XBMC necesita reiniciar para poder cambiar su</value></string>
   <string><id>14040</id><value>configuración de red. ¿Quiere reiniciar ahora?</value></string>
@@ -917,4 +922,51 @@
   <string><id>15210</id><value>Almacenadas %i Canciones</value></string>
   <string><id>15211</id><value>Enviando...</value></string>
   <string><id>15212</id><value>Enviando en %i segs</value></string>
+
+  <string><id>13150</id><value>Clave del HDD:</value></string>
+  <string><id>13151</id><value>Temperatura del HDD:</value></string>
+  <string><id>13152</id><value>Model del DVD:</value></string>
+  <string><id>13153</id><value>Firmware del DVD:</value></string>
+  <string><id>13154</id><value>Modelo del HDD:</value></string>
+  <string><id>13155</id><value>Numero de serie del HDD:</value></string>
+  <string><id>13156</id><value>Firmware del HDD :</value></string>
+  <string><id>13157</id><value>Contraseña del HDD:</value></string>
+  <string><id>13158</id><value>Estado del bloqueo del HDD:</value></string>
+  <string><id>13159</id><value>Máscara de red:</value></string>
+  <string><id>13160</id><value>Puerta de enlace:</value></string>
+  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13162</id><value>Initialize failed</value></string>
+  <string><id>13163</id><value>Mandos en puerto:</value></string>
+  <string><id>13164</id><value>Teclado en puerto:</value></string>
+  <string><id>13165</id><value>Ratón en puerto:</value></string>
+  <string><id>13166</id><value>Head/Micrófono en puerto:</value></string>
+  <string><id>13167</id><value>MemoryStick en puerto:</value></string>
+  <string><id>13168</id><value>IR-Remote en puerto:</value></string>
+
+  <string><id>13270</id><value>Hardware:</value></string>
+  <string><id>13271</id><value>Velocidad de CPU:</value></string>
+  <string><id>13275</id><value>Disco Duro</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>Almacenamiento</value></string>
+  <string><id>13278</id><value>Por defecto</value></string>
+  <string><id>13279</id><value>Red de trabajo</value></string>
+  <string><id>13280</id><value>Video</value></string>
+  <string><id>13281</id><value>Hardware</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>Version de Kernel:</value></string>
+  <string><id>13284</id><value>Velocidad de CPU:</value></string>
+  <string><id>13285</id><value>BIOS detectada:</value></string>
+  <string><id>13286</id><value>Video Encoder:</value></string>
+  <string><id>13287</id><value>Resolución de pantalla:</value></string>
+  <string><id>13288</id><value>Version de Xbox:</value></string>
+  <string><id>13289</id><value>Numero de serie de Xbox:</value></string>
+  <string><id>13290</id><value>Fabricación de XBOX:</value></string>
+  <string><id>13291</id><value>ModChip:</value></string>
+  <string><id>13292</id><value>Cable A/V:</value></string>
+  <string><id>13293</id><value>Video &amp; XBE Region:</value></string>
+  <string><id>13294</id><value>Región de DVD:</value></string>
+  <string><id>13295</id><value>Internet:</value></string>
+  <string><id>13296</id><value>¡Xbox conectada!</value></string>
+  <string><id>13297</id><value>¡Xbox NO conectada! ¡Comprueba las opciones de red!</value></string>
+  <string><id>13298</id><value>Clave de XBLIVE:</value></string>
 </strings>

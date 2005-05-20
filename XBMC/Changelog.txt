@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-05-2005 updated: German language file
+ - 20-05-2005 updated: Spanish language file (Thnx to unknown)
+ - 20-05-2005 updated: Korean language file (Thnx to unknown)
+ - 20-05-2005 updated: French language file (Thnx to modhack)
  - 20-05-2005 added: Replay gain support for ogg and flac files
  - 19-05-2005 fixed: if you change the track format, cached filelists from my music -> library are cleared
  - 19-05-2005 added: the right column in my music is now controlled via a format string.  default is duration (%D)

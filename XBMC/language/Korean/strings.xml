@@ -89,7 +89,7 @@
   <string><id>157</id><value>비디오</value></string>
   <string><id>158</id><value>사용가능 메모리</value></string>
   <string><id>159</id><value>인터넷 연결안됨</value></string>
-  <string><id>160</id><value>사용가능</value></string>
+  <string><id>160</id><value>남은용량</value></string>
   <string><id>161</id><value>사용불가</value></string>
   <string><id>162</id><value>트레이 열림</value></string>
   <string><id>163</id><value>읽는 중</value></string>
@@ -169,6 +169,7 @@
   <string><id>236</id><value>Gaussian Cubic</value></string>
   <string><id>237</id><value>축소</value></string>
   <string><id>238</id><value>확대</value></string>
+  <string><id>239</id><value>종료시 재생목록 비우기</value></string>  
   <string><id>240</id><value>DVD 자동실행</value></string>
   <string><id>241</id><value>VCD/SVCD 자동실행</value></string>
   <string><id>242</id><value>음악 CD 자동실행</value></string>
@@ -410,7 +411,7 @@
   <string><id>479</id><value>스킨과 언어</value></string>
   <string><id>480</id><value>사용자 인터페이스</value></string>
   <string><id>481</id><value>오디오 옵션</value></string>
-  <string><id>482</id><value>XBMC정보</value></string>
+  <string><id>482</id><value>XBMC 정보</value></string>
   <string><id>483</id><value>앨범</value></string>
   <string><id>484</id><value>음악가</value></string>
   <string><id>485</id><value>앨범 삭제</value></string>
@@ -439,6 +440,7 @@
   <string><id>508</id><value>바로가기나 검색을 사용하지 않음</value></string>
   <string><id>509</id><value>프로그램 미리보기 캐시</value></string>
   <string><id>510</id><value>시각화 사용</value></string>
+  <string><id>511</id><value>게임 지역코드에 따른 비디오모드 자동변경</value></string>
   <string><id>600</id><value>시디 추출</value></string>
   <string><id>601</id><value>중간</value></string>
   <string><id>602</id><value>표준</value></string>
@@ -468,9 +470,10 @@
   <string><id>638</id><value>모드</value></string>
   <string><id>639</id><value>트랙 레벨 사용</value></string>
   <string><id>640</id><value>앨범 레벨 사용</value></string>
-  <string><id>641</id><value>증폭 레벨 - ReplayGain 있는 파일</value></string>
-  <string><id>642</id><value>증폭 레벨 - ReplayGain 없는 파일</value></string>
+  <string><id>641</id><value>프리엠프 레벨 - 게인 정보가 있는 파일</value></string>
+  <string><id>642</id><value>프리엠프 레벨 - 게인 정보가 없는 파일</value></string>
   <string><id>643</id><value>리플레이 게인 정보가 있는 파일의 클리핑 방지</value></string>
+  <string><id>644</id><value>검은 여백 제거</value></string>
 
   <string><id>700</id><value>데이터베이스 정리</value></string>
   <string><id>701</id><value>데이터베이스로부터 오래된 음악 제거</value></string>
@@ -543,6 +546,8 @@
   <string><id>767</id><value>예약</value></string>
   <string><id>768</id><value>예약</value></string>
   <string><id>769</id><value>예약</value></string>
+  
+  <string><id>770</id><value>오류 %i: 공유를 사용할 수 없습니다</value></string>
     
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>온라인 게이밍</value></string>
@@ -693,6 +698,13 @@
   <string><id>13205</id><value>알수없음</value></string>
   <string><id>13206</id><value>덮어쓰기</value></string>
   <string><id>13207</id><value>'%s'프로필을 덮어씁니까?</value></string>
+
+  <string><id>13208</id><value>알람 시계</value></string>
+  <string><id>13209</id><value>알람 간격(분)</value></string>
+  <string><id>13210</id><value>시작, %im 분 후 알람</value></string>
+  <string><id>13211</id><value>알람!</value></string>
+  <string><id>13212</id><value>%im% 분을 남겨놓고 취소됨</value></string>  
+  
   <string><id>13299</id><value>목표 온도</value></string>
   <string><id>13300</id><value>팬 속도:</value></string>
   <string><id>13301</id><value>자동 온도 조절</value></string>
@@ -780,6 +792,7 @@
   <string><id>13383</id><value>음성 변조 - 포트 1</value></string>
   <string><id>13384</id><value>음성 변조 - 포트 2</value></string>
   <string><id>13385</id><value>음성 변조 - 포트 3</value></string>
+  <string><id>13386</id><value>시간단위 검색기능 사용</value></string>
 
   <string><id>14000</id><value>연속 재생: 끔</value></string>
   <string><id>14001</id><value>연속 재생: 간단</value></string>
@@ -931,6 +944,53 @@
   <string><id>15210</id><value> %i 곡 캐시됨</value></string>
   <string><id>15211</id><value>전송중...</value></string>
   <string><id>15212</id><value>%i초 후 전송</value></string>
+
+  <string><id>13150</id><value>HDD 키:</value></string>
+  <string><id>13151</id><value>HDD 온도:</value></string>
+  <string><id>13152</id><value>DVD 모델:</value></string>
+  <string><id>13153</id><value>DVD 펌웨어:</value></string>
+  <string><id>13154</id><value>HDD 모델:</value></string>
+  <string><id>13155</id><value>HDD 시리얼:</value></string>
+  <string><id>13156</id><value>HDD 펌웨어:</value></string>
+  <string><id>13157</id><value>HDD 비밀번호:</value></string>
+  <string><id>13158</id><value>HDD 잠금 상태:</value></string>
+  <string><id>13159</id><value>서브넷마스크:</value></string>
+  <string><id>13160</id><value>게이트웨이:</value></string>
+  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13162</id><value>초기화 실패</value></string>
+  <string><id>13163</id><value>게임패드 연결포트:</value></string>
+  <string><id>13164</id><value>키보드 연결포트:</value></string>
+  <string><id>13165</id><value>마우스 연결포트:</value></string>
+  <string><id>13166</id><value>라이브 킷 연결포트:</value></string>
+  <string><id>13167</id><value>메모리카드 연결포트:</value></string>
+  <string><id>13168</id><value>DVD 킷 연결포트:</value></string>
+
+  <string><id>13270</id><value>하드웨어:</value></string>
+  <string><id>13271</id><value>CPU 속도:</value></string>
+  <string><id>13275</id><value>하드디스크</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>저장장치</value></string>
+  <string><id>13278</id><value>기본</value></string>
+  <string><id>13279</id><value>네트워크</value></string>
+  <string><id>13280</id><value>비디오</value></string>
+  <string><id>13281</id><value>하드웨어</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>Kernel 버전:</value></string>
+  <string><id>13284</id><value>CPU 속도:</value></string>
+  <string><id>13285</id><value>확인된 BIOS:</value></string>
+  <string><id>13286</id><value>비디오 인코더:</value></string>
+  <string><id>13287</id><value>화면 해상도:</value></string>
+  <string><id>13288</id><value>Xbox 버전:</value></string>
+  <string><id>13289</id><value>Xbox 시리얼:</value></string>
+  <string><id>13290</id><value>XBOX 제조사:</value></string>
+  <string><id>13291</id><value>ModChip:</value></string>
+  <string><id>13292</id><value>A/V 케이블:</value></string>
+  <string><id>13293</id><value>비디오 &amp; XBE 지역코드:</value></string>
+  <string><id>13294</id><value>DVD 지역코드:</value></string>
+  <string><id>13295</id><value>인터넷:</value></string>
+  <string><id>13296</id><value>Xbox가 연결되어 있음!</value></string>
+  <string><id>13297</id><value>Xbox가 연결되지 않음! 네트워크 설정을 확인하세요!</value></string>
+  <string><id>13298</id><value>XBLIVE 키:</value></string>
   
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
 </strings>

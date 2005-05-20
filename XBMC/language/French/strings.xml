@@ -166,6 +166,7 @@
   <string><id>236</id><value>Cubique Gaussien</value></string>
   <string><id>237</id><value>Optique (-) :</value></string>
   <string><id>238</id><value>Optique (+) :</value></string>
+  <string><id>239</id><value>Effacer la Playliste à la fin de la lecture</value></string>
   <string><id>240</id><value>Lire automatiquement les DVD vidéo</value></string>
   <string><id>241</id><value>Lire automatiquement les VCD/SVCD</value></string>
   <string><id>242</id><value>Lire automatiquement les CD audio</value></string>
@@ -433,6 +434,9 @@
   <string><id>506</id><value>Utiliser les noms des dossiers comme descrip.</value></string>
   <string><id>507</id><value>Lister : usage</value></string>
   <string><id>508</id><value>Ne pas utiliser les raccourcis et le scan</value></string>
+  <string><id>509</id><value>Mettre en cache les miniatures programmes</value></string> 
+  <string><id>510</id><value>Activer les Visualisations</value></string>
+  <string><id>511</id><value>Basculer le mode vidéo en fonction de la région du jeu</value></string>
   <string><id>600</id><value>Importer CD</value></string>
   <string><id>601</id><value>Moyenne</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -457,6 +461,15 @@
   <string><id>634</id><value>Étirée 16:9</value></string>
   <string><id>635</id><value>Originale</value></string>
   <string><id>636</id><value>Personnalisée</value></string>
+  <string><id>637</id><value>Replay Gain</value></string>
+  <string><id>638</id><value>Mode</value></string>
+  <string><id>639</id><value>Utiliser le niveau de la chanson</value></string>
+  <string><id>640</id><value>Utiliser le niveau de l'album</value></string>
+  <string><id>641</id><value>PreAmp Level - Replay Gained Files</value></string>
+  <string><id>642</id><value>PreAmp Level - Non Replay Gained Files</value></string>
+  <string><id>643</id><value>Avoid Clipping on Replay Gained Files</value></string>
+  <string><id>644</id><value>Crop Black Bars</value></string>  
+  
   <string><id>700</id><value>Optimisation de la base de données</value></string>
   <string><id>701</id><value>Suppression des anciens morceaux de la base de données</value></string>
   <string><id>702</id><value>Ce chemin a été scanné</value></string>
@@ -475,7 +488,7 @@
   <string><id>715</id><value>Attribution</value></string>
   <string><id>716</id><value>Automatique (DHCP)</value></string>
   <string><id>717</id><value>Manuelle (Statique)</value></string>
-  <string><id>718</id><value>Defaut (Dashboard)</value></string>
+  <string><id>718</id><value>Défaut (Dashboard)</value></string>
   <string><id>719</id><value>Addresse IP</value></string>
   <string><id>720</id><value>Masque de sous-réseau</value></string>
   <string><id>721</id><value>Passerelle par défaut</value></string>
@@ -882,12 +895,59 @@
   <string><id>15203</id><value>Mot de passe AudioScrobbler</value></string>
   <string><id>15204</id><value>Impossible de contacter le serveur: En attente...</value></string>
   <string><id>15205</id><value>Vous devez mettre à jour XBMC</value></string>
-  <string><id>15206</id><value>Echec d'envoi: mauvaise autorisation.</value></string>
+  <string><id>15206</id><value>Autorisation refusé.</value></string>
   <string><id>15207</id><value>Connecté</value></string>
   <string><id>15208</id><value>Non Connecté</value></string>
   <string><id>15209</id><value>Transfert Interval %i</value></string>
   <string><id>15210</id><value>Mise en cache %i Chansons</value></string>
   <string><id>15211</id><value>Transfert...</value></string>
   <string><id>15212</id><value>Transfert en %i secs</value></string>
+  
+  <string><id>13150</id><value>HDD Key:</value></string>
+  <string><id>13151</id><value>HDD Temp:</value></string>
+  <string><id>13152</id><value>DVD Model:</value></string>
+  <string><id>13153</id><value>DVD Firmware:</value></string>
+  <string><id>13154</id><value>HDD Model:</value></string>
+  <string><id>13155</id><value>HDD Serial:</value></string>
+  <string><id>13156</id><value>HDD Firmware:</value></string>
+  <string><id>13157</id><value>HDD Password:</value></string>
+  <string><id>13158</id><value>HDD Lock State:</value></string>
+  <string><id>13159</id><value>Masque de sous-réseau:</value></string>
+  <string><id>13160</id><value>Passerelle:</value></string>
+  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13162</id><value>Echec lors de l'initialisation</value></string>
+  <string><id>13163</id><value>Manettes Port:</value></string>
+  <string><id>13164</id><value> / Claviers Port:</value></string>
+  <string><id>13165</id><value> / Souris Port:</value></string>
+  <string><id>13166</id><value> / Micro Casque Port:</value></string>
+  <string><id>13167</id><value>MemoryStick Port:</value></string>
+  <string><id>13168</id><value>Récepteur IR Port:</value></string>  
+  
+  <string><id>13270</id><value>Hardware:</value></string>
+  <string><id>13271</id><value>Vitesse CPU:</value></string>
+  <string><id>13275</id><value>Disque Dur</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>Capacités</value></string>
+  <string><id>13278</id><value>Défaut</value></string>
+  <string><id>13279</id><value>Réseau</value></string>
+  <string><id>13280</id><value>Vidéo</value></string>
+  <string><id>13281</id><value>Hardware</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>Kernel Version:</value></string>
+  <string><id>13284</id><value>Vitesse du CPU:</value></string>
+  <string><id>13285</id><value>BIOS Détecté:</value></string>
+  <string><id>13286</id><value>Encodeur Videor:</value></string>
+  <string><id>13287</id><value>Résolution de l'ecran:</value></string>
+  <string><id>13288</id><value>Version XBOX:</value></string>
+  <string><id>13289</id><value>Numéro de série de la XBOX:</value></string>
+  <string><id>13290</id><value>Fabrication:</value></string>
+  <string><id>13291</id><value>Puce:</value></string>
+  <string><id>13292</id><value>Cable A/V:</value></string>
+  <string><id>13293</id><value>Video &amp; XBE Region:</value></string>
+  <string><id>13294</id><value>Région du DVD:</value></string>
+  <string><id>13295</id><value>Internet:</value></string>
+  <string><id>13296</id><value>La XBOX est connecté!</value></string>
+  <string><id>13297</id><value>La XBOX n'est pas connecté ! Vérifiez vos paramètres réseaux</value></string>
+  <string><id>13298</id><value>XBLIVE Key:</value></string>  
   
 </strings>
