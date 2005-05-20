@@ -90,6 +90,16 @@ bool COggTag::ReadTag( CFile* file )
   return true;
 }
 
+bool COggTag::ReadTagFromFile(const CStdString& strFileName)
+{
+  CFile file;
+
+  if (!file.Open(strFileName))
+    return false;
+
+  return ReadTag(&file);
+}
+
 void COggTag::ProcessVorbisComment(const char *pBuffer)
 {
   int Pos = 0;      // position in the buffer
@@ -184,6 +194,44 @@ int COggTag::parseTagEntry(CStdString& strTagEntry)
     m_strMusicBrainzTRMID = strTagValue;
   }
 
+  //  Get new style replay gain info
+  if (strTagType=="replaygain_track_gain")
+  {
+    m_replayGain.iTrackGain = (int)(atof(strTagValue.c_str()) * 100 + 0.5);
+    m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
+  }
+  else if (strTagType=="replaygain_track_peak")
+  {
+    m_replayGain.fTrackPeak = (float)atof(strTagValue.c_str());
+    m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
+  }
+  else if (strTagType=="replaygain_album_gain")
+  {
+    m_replayGain.iAlbumGain = (int)(atof(strTagValue.c_str()) * 100 + 0.5);
+    m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
+  }
+  else if (strTagType=="replaygain_album_peak")
+  {
+    m_replayGain.fAlbumPeak = (float)atof(strTagValue.c_str());
+    m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
+  }
+
+  //  Get old style replay gain info
+  if (strTagType=="rg_radio")
+  {
+    m_replayGain.iTrackGain = (int)(atof(strTagValue.c_str()) * 100 + 0.5);
+    m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
+  }
+  else if (strTagType=="rg_peak")
+  {
+    m_replayGain.fTrackPeak = (float)atof(strTagValue.c_str());
+    m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
+  }
+  else if (strTagType=="rg_audiophile")
+  {
+    m_replayGain.iAlbumGain = (int)(atof(strTagValue.c_str()) * 100 + 0.5);
+    m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
+  }
   return 0;
 }
 

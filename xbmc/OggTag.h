@@ -1,6 +1,7 @@
 //------------------------------
 // COggTag in 2003 by Bobbin007
 //------------------------------
+#include "cores/paplayer/replaygain.h"
 
 namespace MUSIC_INFO
 {
@@ -12,7 +13,8 @@ class COggTag
 public:
   COggTag(void);
   virtual ~COggTag(void);
-  bool ReadTag(CFile* file);
+  virtual bool ReadTag(CFile* file);
+  bool ReadTagFromFile(const CStdString& strFileName);
   CStdString GetTitle() { return m_strTitle; }
   CStdString GetArtist() { return m_strArtist; }
   CStdString GetYear() { return m_strYear; }
@@ -25,6 +27,7 @@ public:
   CStdString GetMusicBrainzAlbumID() { return m_strMusicBrainzAlbumID; }
   CStdString GetMusicBrainzAlbumArtistID() { return m_strMusicBrainzAlbumArtistID; }
   CStdString GetMusicBrainzTRMID() { return m_strMusicBrainzTRMID; }
+  const CReplayGain &GetReplayGain() { return m_replayGain; };
 
 protected:
   void ProcessVorbisComment(const char *pBuffer);
@@ -49,6 +52,6 @@ protected:
   __int64 m_nSamples;  // number of samples in file
   int m_nDuration;  // duration in frames (75th of a second)
   CStdString m_strGenre;
-
+  CReplayGain m_replayGain;
 };
 };

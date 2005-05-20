@@ -1,5 +1,6 @@
 #include "../../stdafx.h"
 #include "OGGCodec.h"
+#include "../../oggtag.h"
 
 //  Note: this dll has the ogg.dll and vorbis.dll statically linked 
 #define OGG_DLL "Q:\\system\\players\\PAPlayer\\vorbisfile.dll"
@@ -77,8 +78,16 @@ bool OGGCodec::Init(const CStdString &strFile)
   if (m_dll.ov_open_callbacks((void*)&m_fileOGG, &m_VorbisFile, NULL, 0, oggIOCallbacks)!=0)
     return false;
 
+  //  Extract ReplayGain info
+  COggTag tag;
+  if (tag.ReadTagFromFile(strFile))
+    m_replayGain=tag.GetReplayGain();
+
   //  get file info
   vorbis_info* pInfo=m_dll.ov_info(&m_VorbisFile, -1);
+  if (!pInfo)
+    return false;
+
   m_SampleRate = pInfo->rate;
   m_Channels = pInfo->channels;
   m_BitsPerSample = 16;
