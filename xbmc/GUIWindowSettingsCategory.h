@@ -59,4 +59,7 @@ protected:
   CStdString m_strNewSkin;
   CStdString m_strNewLanguage;
   CStdStringW m_strErrorMessage;
+
+  CStdString m_strOldTrackFormat;
+  CStdString m_strOldTrackFormatRight;
 };

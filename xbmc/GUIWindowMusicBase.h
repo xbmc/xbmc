@@ -92,6 +92,7 @@ protected:
   bool ViewByLargeIcon();
   void DisplayEmptyDatabaseMessage(bool bDisplay);
   void SetLabelFromTag(CFileItem *pItem);
+  CStdString ParseFormat(CFileItem *pItem, const CStdString& strFormat);
 
   CFileItem m_Directory; ///< Holds the current direcotry path after calling Update()
   CVirtualDirectory m_rootDir; ///< Used to get directories from shares and the shares itself
