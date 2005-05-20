@@ -172,6 +172,7 @@
   <string><id>236</id><value>Gaussian Cubic</value></string>
   <string><id>237</id><value>Verkleinerung:</value></string>
   <string><id>238</id><value>Vergrößerung:</value></string>
+  <string><id>239</id><value>Playlist nach der Wiedergabe löschen</value></string>
   <string><id>240</id><value>DVD-Video automatisch abspielen</value></string>
   <string><id>241</id><value>VCD/SVCD automatisch abspielen</value></string>
   <string><id>242</id><value>Audio CD's automatisch abspielen</value></string>
@@ -442,6 +443,7 @@
   <string><id>508</id><value>Verknüpfungen und Durchsuchen deaktivieren</value></string>
   <string><id>509</id><value>Programm Thumbnails cachen</value></string>
   <string><id>510</id><value>Visualisierung benutzen</value></string>
+  <string><id>511</id><value>Video Modus auf Basis der Spiele Region wechseln</value></string>
   <string><id>600</id><value>CD Rippen</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -474,6 +476,7 @@
   <string><id>641</id><value>Lautstärke Niveau - Dateien mit Replay Gain</value></string>
   <string><id>642</id><value>Lautstärke Niveau - Dateien ohne Replay Gain</value></string>
   <string><id>643</id><value>Abschneidung verhindern bei Dateien mit Replay Gain</value></string>
+  <string><id>644</id><value>Schwarze Balken abschneiden</value></string>
 
   <string><id>700</id><value>Bibliothek aufräumen</value></string>
   <string><id>701</id><value>Alte Musikdaten aus der Bibliothek löschen</value></string>
@@ -546,6 +549,8 @@
   <string><id>767</id><value>Reserved</value></string>
   <string><id>768</id><value>Reserved</value></string>
   <string><id>769</id><value>Reserved</value></string>
+
+  <string><id>770</id><value>Fehler %i: Share ist nicht verfügbar</value></string>
 
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Online spielen</value></string>
@@ -696,6 +701,13 @@
   <string><id>13205</id><value>Unbekannt</value></string>
   <string><id>13206</id><value>Überschreiben</value></string>
   <string><id>13207</id><value>Profile '%s' überschreiben?</value></string>
+  
+  <string><id>13208</id><value>Wecker</value></string>
+  <string><id>13209</id><value>Interval (in Minuten)</value></string>
+  <string><id>13210</id><value>Gestartet, Alarm in %im</value></string>
+  <string><id>13211</id><value>Alarm!</value></string>
+  <string><id>13212</id><value>Abgebrochen, es sind %im%is übrig</value></string>
+  
   <string><id>13299</id><value>- Angestrebte CPU Temperatur</value></string>
   <string><id>13300</id><value>- Geschwindigkeit</value></string>
   <string><id>13301</id><value>Lüftergeschwindigkeit über CPU Temperatur regeln</value></string>
@@ -783,6 +795,8 @@
   <string><id>13383</id><value>Voice Maske - Port 1</value></string>
   <string><id>13384</id><value>Voice Maske - Port 2</value></string>
   <string><id>13385</id><value>Voice Maske - Port 3</value></string>
+  <string><id>13386</id><value>Zeitbasiertes Vor-/Rückspulen</value></string>
+  <string><id>13387</id><value>Formatvorlage für Track Namen rechts</value></string>
 
   <string><id>14000</id><value>Stapeln: Aus</value></string>
   <string><id>14001</id><value>Stapeln: Einfach</value></string>
@@ -916,11 +930,9 @@
   <string><id>15104</id><value>* Alle Titel</value></string>
   <string><id>15105</id><value>* Alle Genre</value></string>
   <string><id>15106</id><value>Ausgewählte Dateien beim forwärts navigieren merken</value></string>
-
   <string><id>15107</id><value>Pufferung...</value></string>
   <string><id>15108</id><value>Navigations Sounds</value></string>
   <string><id>15109</id><value>Vorgabe des Skins</value></string>
-
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Song Infos an AudioScrobbler übertragen</value></string>
   <string><id>15202</id><value>AudioScrobbler Benutzername</value></string>
@@ -935,5 +947,52 @@
   <string><id>15211</id><value>Übermittlung...</value></string>
   <string><id>15212</id><value>Übermittlung in %i sek</value></string>
   
+  <string><id>13150</id><value>HDD Key:</value></string>
+  <string><id>13151</id><value>HDD Temp:</value></string>
+  <string><id>13152</id><value>DVD Model:</value></string>
+  <string><id>13153</id><value>DVD Firmware:</value></string>
+  <string><id>13154</id><value>HDD Model:</value></string>
+  <string><id>13155</id><value>HDD Seriennummer:</value></string>
+  <string><id>13156</id><value>HDD Firmware:</value></string>
+  <string><id>13157</id><value>HDD Passwort:</value></string>
+  <string><id>13158</id><value>HDD Lock Status:</value></string>
+  <string><id>13159</id><value>Subnetz Maske:</value></string>
+  <string><id>13160</id><value>Gateway:</value></string>
+  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13162</id><value>Initialize failed</value></string>
+  <string><id>13163</id><value>GamePads an Port:</value></string>
+  <string><id>13164</id><value>Keyboard an Port:</value></string>
+  <string><id>13165</id><value>Mouse an Port:</value></string>
+  <string><id>13166</id><value>Headset/Mic an Port:</value></string>
+  <string><id>13167</id><value>MemoryStick an Port:</value></string>
+  <string><id>13168</id><value>Fernbedienung an Port:</value></string>
+
+  <string><id>13270</id><value>Hardware:</value></string>
+  <string><id>13271</id><value>CPU Speed:</value></string>
+  <string><id>13275</id><value>Festplatte</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>Speicher</value></string>
+  <string><id>13278</id><value>Default</value></string>
+  <string><id>13279</id><value>Netzwerk</value></string>
+  <string><id>13280</id><value>Video</value></string>
+  <string><id>13281</id><value>Hardware</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>Kernel Version:</value></string>
+  <string><id>13284</id><value>CPU Speed:</value></string>
+  <string><id>13285</id><value>BIOS:</value></string>
+  <string><id>13286</id><value>Video Encoder:</value></string>
+  <string><id>13287</id><value>Bildschirm Auflösung:</value></string>
+  <string><id>13288</id><value>Xbox Version:</value></string>
+  <string><id>13289</id><value>Xbox Seriennummer:</value></string>
+  <string><id>13290</id><value>XBOX Hersteller:</value></string>
+  <string><id>13291</id><value>ModChip:</value></string>
+  <string><id>13292</id><value>A/V Kabel:</value></string>
+  <string><id>13293</id><value>Video &amp; XBE Region:</value></string>
+  <string><id>13294</id><value>DVD Region:</value></string>
+  <string><id>13295</id><value>Internet:</value></string>
+  <string><id>13296</id><value>Xbox ist verbunden!</value></string>
+  <string><id>13297</id><value>Xbox is nicht verbunden! Check Netwotk Settings!</value></string>
+  <string><id>13298</id><value>XBLIVE Key:</value></string>
+
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
 </strings>
