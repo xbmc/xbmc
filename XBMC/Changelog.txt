@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-05-2005 added: HttpApi GetSystemInfoByName and (changed) GetSystemInfo commands
  - 20-05-2005 updated: German language file
  - 20-05-2005 updated: Spanish language file (Thnx to unknown)
  - 20-05-2005 updated: Korean language file (Thnx to unknown)
