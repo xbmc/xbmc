@@ -746,61 +746,61 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 
 void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 {
-  // set label 1
+  // set label 1 & 2 from format string
   if (pItem->m_musicInfoTag.Loaded())
   {
     SetLabelFromTag(pItem);
   }
   else
-  { // No tag, so we disable the file extension if it has one
+  { // no tag info, so we disable the file extension if it has one
     if (g_guiSettings.GetBool("FileLists.HideExtensions"))
       pItem->RemoveExtension();
-  }
 
-  // set label 2
-  int nMyMusicSortMethod = 0;
-  if (m_Directory.IsVirtualDirectoryRoot())
-    nMyMusicSortMethod = g_stSettings.m_iMyMusicSongsRootSortMethod;
-  else
-    nMyMusicSortMethod = g_stSettings.m_iMyMusicSongsSortMethod;
-
-  if (nMyMusicSortMethod == 0 || nMyMusicSortMethod == 2 || nMyMusicSortMethod == 8)
-  {
-    if (pItem->m_bIsFolder)
-    {
-      if (!pItem->IsShoutCast())
-        pItem->SetLabel2("");
-    }
+    // and then set label 2
+    int nMyMusicSortMethod = 0;
+    if (m_Directory.IsVirtualDirectoryRoot())
+      nMyMusicSortMethod = g_stSettings.m_iMyMusicSongsRootSortMethod;
     else
+      nMyMusicSortMethod = g_stSettings.m_iMyMusicSongsSortMethod;
+
+    if (nMyMusicSortMethod == 0 || nMyMusicSortMethod == 2 || nMyMusicSortMethod == 8)
     {
-      if (pItem->m_dwSize > 0)
+      if (pItem->m_bIsFolder)
       {
-        CStdString strFileSize;
-        CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
-        pItem->SetLabel2(strFileSize);
+        if (!pItem->IsShoutCast())
+          pItem->SetLabel2("");
       }
-      if (nMyMusicSortMethod == 0 || nMyMusicSortMethod == 8)
+      else
       {
-        int nDuration = pItem->m_musicInfoTag.GetDuration();
-        if (nDuration > 0)
+        if (pItem->m_dwSize > 0)
         {
-          CStdString strDuration;
-          CUtil::SecondsToHMSString(nDuration, strDuration);
-          pItem->SetLabel2(strDuration);
+          CStdString strFileSize;
+          CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
+          pItem->SetLabel2(strFileSize);
+        }
+        if (nMyMusicSortMethod == 0 || nMyMusicSortMethod == 8)
+        {
+          int nDuration = pItem->m_musicInfoTag.GetDuration();
+          if (nDuration > 0)
+          {
+            CStdString strDuration;
+            CUtil::SecondsToHMSString(nDuration, strDuration);
+            pItem->SetLabel2(strDuration);
+          }
         }
       }
     }
-  }
-  else
-  {
-    if (pItem->m_stTime.wYear && (!pItem->IsShoutCast()))
+    else
     {
-      CStdString strDateTime;
-      CUtil::GetDate(pItem->m_stTime, strDateTime);
-      pItem->SetLabel2(strDateTime);
+      if (pItem->m_stTime.wYear && (!pItem->IsShoutCast()))
+      {
+        CStdString strDateTime;
+        CUtil::GetDate(pItem->m_stTime, strDateTime);
+        pItem->SetLabel2(strDateTime);
+      }
+      else if (!pItem->IsShoutCast())
+        pItem->SetLabel2("");
     }
-    else if (!pItem->IsShoutCast())
-      pItem->SetLabel2("");
   }
 
   // set thumbs and default icons
