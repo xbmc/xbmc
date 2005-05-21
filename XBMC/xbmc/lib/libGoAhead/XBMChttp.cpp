@@ -1613,14 +1613,54 @@ int CXbmcHttp::xbmcConfig(webs_t wp, char_t *parameter)
   return 0;
 }
 
-int CXbmcHttp::xbmcGetSystemInfo(webs_t wp)
+int CXbmcHttp::xbmcGetSystemInfo(webs_t wp, char_t *parameter)
 {
+  unsigned int p=0, indx;
+  int p1;
   websHeader(wp);
-  CStdString output="";
-  CGUIInfoManager g;
-  output="<li>build: "+g.GetBuild();
-  output+="\n<li>version: "+g.GetVersion();
-  websWrite(wp, "%s", output.c_str());
+  CStdString strInfo = "", para = parameter;
+  if (para.Right(1)!=";")
+    para += ";";
+  p1 = para.Find(";");
+  while (p1!=-1)
+  {
+    indx = atoi(para.Mid(p,p1-p));
+    strInfo += "<li>" + (CStdString) g_infoManager.GetLabel(indx) + "\n";
+    p = p1+1;
+    if (p<para.length())
+      p1 = para.Find(";",p);
+    else
+      p1 = -1;
+  }
+  if (strInfo == "")
+    strInfo="Error: No information retrieved\n";
+  websWrite(wp, "%s", strInfo.c_str());
+  websFooter(wp);
+	return 0;
+}
+
+int CXbmcHttp::xbmcGetSystemInfoByName(webs_t wp, char_t *parameter)
+{
+  unsigned int p=0;
+  int p1;
+  websHeader(wp);
+  CStdString strInfo = "", para = parameter, name="";
+  if (para.Right(1)!=";")
+    para += ";";
+  p1 = para.Find(";");
+  while (p1!=-1)
+  {
+    name = para.Mid(p,p1-p);
+    strInfo += "<li>" + (CStdString) g_infoManager.GetLabel(g_infoManager.TranslateString(name)) + "\n";
+    p = p1+1;
+    if (p<para.length())
+      p1 = para.Find(";",p);
+    else
+      p1 = -1;
+  }
+  if (strInfo == "")
+    strInfo="Error: No information retrieved\n";
+  websWrite(wp, "%s", strInfo.c_str());
   websFooter(wp);
 	return 0;
 }
@@ -1679,7 +1719,8 @@ int CXbmcHttp::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *
 	else if (!strcmp(command, "execbuiltin"))			      return xbmcExecBuiltIn(wp, parameter);
   else if (!strcmp(command, "config"))	              return xbmcConfig(wp, parameter);
   else if (!strcmp(command, "help"))			            return xbmcHelp(wp);
-  else if (!strcmp(command, "getsysteminfo"))			    return xbmcGetSystemInfo(wp);
+  else if (!strcmp(command, "getsysteminfo"))			    return xbmcGetSystemInfo(wp, parameter);
+  else if (!strcmp(command, "getsysteminfobyname"))   return xbmcGetSystemInfoByName(wp, parameter);
 	else {
 		websHeader(wp);
 		websWrite(wp, "<li>Error:unknown command\n");
@@ -1687,6 +1728,7 @@ int CXbmcHttp::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *
 	}
 	return 0;
 }
+
 
 
 
