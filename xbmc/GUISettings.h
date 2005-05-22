@@ -3,9 +3,9 @@
 #define CONFIG_VERSION 0x000F
 
 #include "Profile.h"
-#include "tinyxml/tinyxml.h"
+#include "..\guilib\tinyxml/tinyxml.h"
 #include <vector>
-#include "GraphicContext.h"
+#include "..\guilib\GraphicContext.h"
 
 // Render Methods
 #define RENDER_LQ_RGB_SHADER   0
