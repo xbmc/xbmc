@@ -5102,6 +5102,10 @@ int mplayer_getTime()
 
 void mplayer_ToFFRW(int iSpeed)
 {
+  //fixes autosync problems in pause, get rid of the huge delay caused by
+  //us stopping the thread
+  if(iSpeed == 1 && ffrw_speed == 0) GetRelativeTime();
+
   char buff[15];
   sprintf(buff, "speed_set %d", iSpeed);
   mp_input_queue_cmd(mp_input_parse_cmd(buff));
@@ -5161,9 +5165,6 @@ void ffrw_setspeed(int iSpeed)
         ffrw_sstepframes=-1; //Tell our system to resync
       }
       else {
-        //Make sure we get rid of the big delay that might have gone by in pause
-        //fixes autosync problems in pause
-        GetRelativeTime(); 
         ffrw_sstepframes=0;
       }
       ffrw_speed=0;
