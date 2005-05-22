@@ -3,7 +3,7 @@
  \brief
  */
 #pragma once
-#include "guilistitem.h"
+#include "..\guilib\guilistitem.h"
 #include "song.h"
 #include "settings.h"
 #include "utils/archive.h"
