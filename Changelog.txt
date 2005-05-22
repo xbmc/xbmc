@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-05-2005 changed: ftpserver now shortens names and replaces illegal chars (fat-x limitations)
  - 20-05-2005 fixed: formatting of the right column in my music -> files
  - 20-05-2005 changed: Commands are now case invariant
  - 20-05-2005 added: HttpApi GetSystemInfoByName and (changed) GetSystemInfo commands
