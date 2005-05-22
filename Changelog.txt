@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-05-2005 updated: new Milkdrop.vis version that has .xml (settings) support and bugfixes
+ - 22-05-2005 added: Milkdrop sourcecode (/docs/visualisations)
  - 22-05-2005 updated: mplayer.dll (fix for subtitles not showing when ttf fonts selected)
  - 20-05-2005 changed: ftpserver now shortens names and replaces illegal chars (fat-x limitations)
  - 20-05-2005 fixed: formatting of the right column in my music -> files
