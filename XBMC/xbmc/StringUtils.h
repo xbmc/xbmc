@@ -12,7 +12,7 @@
 #ifndef __STRINGUTILS_H_
 #define __STRINGUTILS_H_
 
-#include "StdString.h"
+#include "..\guilib\StdString.h"
 #include <vector>
 
 using namespace std;
