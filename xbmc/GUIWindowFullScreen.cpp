@@ -319,7 +319,7 @@ void CGUIWindowFullScreen::OnWindowLoaded()
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 {
 
-  if (m_bOSDVisible)
+  if ((m_bOSDVisible) && (message.GetMessage() != GUI_MSG_WINDOW_DEINIT))
   {
     //if (timeGetTime()-m_dwOSDTimeOut > 5000)
     if (g_guiSettings.GetInt("MyVideos.OSDTimeout"))
