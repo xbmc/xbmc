@@ -19,7 +19,6 @@
 */
 #include "../../stdafx.h"
 #include "XBoxRenderer.h"
-#include "mplayer.h"
 #include "../../application.h"
 #include "../../util.h"
 #include "../../XBVideoConfig.h"
