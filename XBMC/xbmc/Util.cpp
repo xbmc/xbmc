@@ -20,7 +20,10 @@
 #include "utils/AlarmClock.h" 
 
 bool CUtil::m_bNetworkUp = false;
-
+extern "C"
+{
+	extern bool WINAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
+};
 struct SSortByLabel
 {
   static bool Sort(CFileItem* pStart, CFileItem* pEnd)
@@ -2134,7 +2137,6 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
     ftploop = 1;
     mode ++;
   }
-
   if ( mode == 6 )
   {
     vReturn = XNetGetTitleXnAddr(&sAddress);
@@ -2145,8 +2147,7 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
     if ( vReturn != XNET_GET_XNADDR_PENDING )
     {
       char azIPAdd[256];
-      //char  azMessage[256];
-
+	  //char  azMessage[256];
       memset(azIPAdd, 0, sizeof(azIPAdd));
 
       XNetInAddrToString(sAddress.ina, azIPAdd, sizeof(azIPAdd));
@@ -2724,7 +2725,6 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   if (!CDirectory::Exists(strPath)) return false;
   return true;
 }
-
 // check if the filename is a legal FATX one.
 // this means illegal chars will be removed from the string,
 // and the remaining string is stripped back to 42 chars if needed
@@ -3145,8 +3145,7 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
   if (strReturn.IsEmpty())
     CLog::Log(LOGERROR,"Invalid special directory token: %s",strSpecial.c_str());
   return strReturn;
-}
-      
+}     
 void CUtil::TranslateBookmarks(VECSHARES& vecShares)
 {
   // replace the special dirs
@@ -3188,4 +3187,115 @@ void CUtil::DeleteDatabaseDirectoryCache()
     }
   }
   while (FindNextFile(hFind, &wfd));
+}
+bool CUtil::IsLeapYear(int iLYear, int iLMonth, int iLTag, int &iMonMax, int &iWeekDay)  // GeminiServer
+{
+	// Rückgabewert: FALSE, wenn kein Schaltjahr,   TRUE, wenn Schaltjahr
+	bool ret_value;
+	int iIsLeapYear;
+	if(iLYear%4 == 0 && (iLYear%100 != 0 || iLYear %400 == 0))
+	{
+		ret_value=TRUE;
+		iIsLeapYear = 1;
+	}
+	else
+	{
+		ret_value=FALSE;
+		iIsLeapYear = 0;
+	}
+	switch(iLMonth)
+		{
+			case 1:	iMonMax = 31 ;	
+				break;
+			case 2:	iMonMax = 28+iIsLeapYear; 
+				break;
+			case 3:	iMonMax = 31;
+				break;
+			case 4:	iMonMax = 30;
+				break;
+			case 5:	iMonMax = 31;
+				break;
+			case 6:	iMonMax = 30;
+				break;
+			case 7:	iMonMax = 31;
+				break;
+			case 8:	iMonMax = 31;
+				break;
+			case 9:	iMonMax = 30;
+				break;
+			case 10: iMonMax = 31;
+				break;
+			case 11: iMonMax = 30;
+				break;
+			case 12: iMonMax = 31;
+				break;
+			default: iMonMax = 31;
+		}
+	// monat: von 1... 12, tag von 1... 31.
+	if(iLMonth <= 2)
+	{
+		iLMonth += 10;
+		--iLYear;
+	}
+	else iLMonth -= 2;
+	iWeekDay = (iLTag+(13*iLMonth-1)/5+iLYear+iLYear/4-iLYear/100+iLYear/400)%7;
+	return(ret_value);
+}
+
+bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute)
+ {
+	//GeminiServer
+	TIME_ZONE_INFORMATION tziNew;
+	SYSTEMTIME CurTime;
+	SYSTEMTIME NewTime;
+	GetLocalTime(&CurTime);
+	GetLocalTime(&NewTime);
+	int iRescBiases, iHourUTC;
+	bool bResc;
+	
+	DWORD dwRet = GetTimeZoneInformation(&tziNew);
+	
+	CLog::Log(LOGDEBUG, "------------ TimeZone -------------");
+	CLog::Log(LOGDEBUG, "-          Bias: %i",tziNew.Bias);
+	CLog::Log(LOGDEBUG, "-  DaylightBias: %i",tziNew.DaylightBias);
+	CLog::Log(LOGDEBUG, "-  StandardBias: %i",tziNew.StandardBias);
+	CLog::Log(LOGDEBUG, "--------------- END ---------------");
+
+	if (dwRet == TIME_ZONE_ID_STANDARD)
+	{
+		CStdString strTemp = tziNew.StandardName;
+		CLog::Log(LOGDEBUG, "GetTimeZoneID[GTZI]: %s",strTemp);
+		bResc = true;
+	}
+	else if (dwRet == TIME_ZONE_ID_DAYLIGHT ) 
+	{
+		CStdString strTemp = tziNew.DaylightName;
+		CLog::Log(LOGDEBUG, "GetTimeZoneID[GTZI]: %s",tziNew.DaylightName);
+		bResc = true;
+	}
+	else 
+	{
+		CLog::Log(LOGDEBUG, "GetTimeZoneID[GTZI] Failed: TIME_ZONE_ID_UNKNOWN!");
+		bResc = false;
+	}
+	if(!bResc)
+	{
+		if(tziNew.Bias>0) iRescBiases = -60;
+		if(tziNew.Bias<0) iRescBiases = 60;
+		iHourUTC = ( ((iHour * 60) + tziNew.Bias) + iRescBiases ) / 60;
+	}
+	else iHourUTC = ( ((iHour * 60) + tziNew.Bias) + tziNew.StandardBias + tziNew.DaylightBias ) / 60;
+	
+	NewTime.wYear		= (WORD)iYear;
+	NewTime.wMonth		= (WORD)iMonth;
+	NewTime.wDay		= (WORD)iDay;	
+	NewTime.wHour		= (WORD)iHourUTC;
+	NewTime.wMinute		= (WORD)iMinute;
+
+	FILETIME stNewTime, stCurTime;
+	SystemTimeToFileTime(&NewTime, &stNewTime);
+	SystemTimeToFileTime(&CurTime, &stCurTime);
+	NtSetSystemTime(&stNewTime, &stCurTime);
+
+	return true;
 }

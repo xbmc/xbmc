@@ -172,6 +172,11 @@ public:
   static void TranslateBookmarks(VECSHARES& vecShares);
   static void DeleteDatabaseDirectoryCache();
 
+  //GeminiServer
+  static bool IsLeapYear(int iLYear, int iLMonth, int iLTag, int &iMonMax, int &iWeekDay);
+  static bool SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute);
+
+
 private:
   static bool m_bNetworkUp;
 };

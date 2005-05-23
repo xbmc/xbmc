@@ -379,7 +379,7 @@ wstring CGUIInfoManager::GetDate(bool bNumbersOnly)
   if (bNumbersOnly)
   {
     CStdString strDate;
-    if (g_guiSettings.GetBool("LookAndFeel.SwapMonthAndDay"))
+    if (g_guiSettings.GetBool("XBDateTime.SwapMonthAndDay"))
       swprintf(szText, L"%02.2i-%02.2i-%02.2i", time.wDay, time.wMonth, time.wYear);
     else
       swprintf(szText, L"%02.2i-%02.2i-%02.2i", time.wMonth, time.wDay, time.wYear);
@@ -417,7 +417,7 @@ wstring CGUIInfoManager::GetDate(bool bNumbersOnly)
 
     if (day && month)
     {
-      if (g_guiSettings.GetBool("LookAndFeel.SwapMonthAndDay"))
+      if (g_guiSettings.GetBool("XBDateTime.SwapMonthAndDay"))
         swprintf(szText, L"%s, %d %s", day, time.wDay, month);
       else
         swprintf(szText, L"%s, %s %d", day, month, time.wDay);
@@ -437,7 +437,7 @@ wstring CGUIInfoManager::GetTime(bool bSeconds)
 
   INT iHour = time.wHour;
 
-  if (g_guiSettings.GetBool("LookAndFeel.Clock12Hour"))
+  if (g_guiSettings.GetBool("XBDateTime.Clock12Hour"))
   {
     if (iHour > 11)
     {

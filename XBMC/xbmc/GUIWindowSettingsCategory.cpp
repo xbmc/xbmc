@@ -292,9 +292,7 @@ void CGUIWindowSettingsCategory::SetupControls()
 void CGUIWindowSettingsCategory::CreateSettings()
 {
   FreeSettingsControls();
-  // add the control group
-  m_vecGroups.push_back( -1);
-
+  m_vecGroups.push_back( -1); // add the control group
   const CGUIControl *pControlArea = GetControl(CONTROL_AREA);
   const CGUIControl *pControlGap = GetControl(CONTROL_GAP);
   if (!pControlArea || !pControlGap)
@@ -309,7 +307,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
   {
     CSetting *pSetting = settings[i];
     AddSetting(pSetting, iPosX, iPosY, iWidth, CONTROL_START_CONTROL + i);
-    // special cases...
     CStdString strSetting = pSetting->GetSetting();
     if (strSetting == "Pictures.AutoSwitchMethod" || strSetting == "ProgramsLists.AutoSwitchMethod" || strSetting == "MusicLists.AutoSwitchMethod" || strSetting == "VideoLists.AutoSwitchMethod")
     {
@@ -342,7 +339,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInVisualisations(pSetting);
     }
-    // Karaoke patch (114097) ...
     else if (strSetting == "Karaoke.Port0VoiceMask" /*"VoiceOnPort0.VoiceMask"*/)
     {
       FillInVoiceMasks(0, pSetting);
@@ -359,7 +355,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInVoiceMasks(3, pSetting);
     }
-    // ... Karaoke patch (114097)
     else if (strSetting == "AudioOutput.Mode")
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -572,7 +567,25 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(640), REPLAY_GAIN_ALBUM);
       pControl->SetValue(pSettingInt->GetData());
     }
-    iPosY += iGapY;
+	else if (strSetting == "XBDateTime.Year")
+	{	// GeminiServer
+		SYSTEMTIME CurTime;
+		GetLocalTime(&CurTime);
+		g_guiSettings.SetInt("XBDateTime.Year",		(int)CurTime.wYear);
+		g_guiSettings.SetInt("XBDateTime.Day",		(int)CurTime.wDay);
+		g_guiSettings.SetInt("XBDateTime.Hour",		(int)CurTime.wHour);
+		g_guiSettings.SetInt("XBDateTime.Minute",	(int)CurTime.wMinute);
+	}
+	else if (strSetting == "XBDateTime.Month")
+	{	// GeminiServer
+		SYSTEMTIME CurTime;
+		GetLocalTime(&CurTime);
+		CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+		g_guiSettings.SetInt("XBDateTime.Month",(int)CurTime.wMonth);
+		FillInXBDateTime(pSetting, 2);
+	}
+	iPosY += iGapY;
   }
   // fix first and last navigation
   CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_CONTROL + (int)m_vecSettings.size() - 1);
@@ -918,11 +931,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Servers.WebServer"));
     }
-    else if (strSetting == "Servers.TimeAddress")
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Servers.TimeServer"));
-    }
     else if (strSetting == "Network.IPAddress" || strSetting == "Network.Subnet" || strSetting == "Network.Gateway" || strSetting == "Network.DNS")
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
@@ -1041,6 +1049,71 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         m_strOldTrackFormatRight = g_guiSettings.GetString("MusicLists.TrackFormatRight");
       }
     }
+	else if (strSetting == "XBDateTime.TimeAddress")
+    {
+		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("XBDateTime.TimeServer"));
+    }
+	else if (strSetting == "XBDateTime.Year")
+	{
+		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		if (pControl) 
+		{ 
+			if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
+				pControl->SetEnabled(false); 
+			else pControl->SetEnabled(true); 
+		}
+	}
+	else if (strSetting == "XBDateTime.Month")
+	{
+		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		if (pControl) 
+		{ 
+			if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
+				pControl->SetEnabled(false); 
+			else pControl->SetEnabled(true); 
+		}
+	}
+	else if (strSetting == "XBDateTime.Day")
+	{
+		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		if (pControl) 
+		{ 
+			if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
+				pControl->SetEnabled(false); 
+			else pControl->SetEnabled(true); 
+		}
+	}
+	else if (strSetting == "XBDateTime.Hour")
+	{
+		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		if (pControl) 
+		{ 
+			if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
+				pControl->SetEnabled(false); 
+			else pControl->SetEnabled(true); 
+		}
+	}
+	else if (strSetting == "XBDateTime.Minute")
+	{
+		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		if (pControl) 
+		{ 
+			if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
+				pControl->SetEnabled(false); 
+			else pControl->SetEnabled(true); 
+		}
+	}
+	else if (strSetting == "XBDateTime.SetDateTime")
+	{
+		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		if (pControl) 
+		{ 
+			if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
+				pControl->SetEnabled(false); 
+			else pControl->SetEnabled(true); 
+		}
+	}
   }
 }
 
@@ -1218,12 +1291,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     }
     else
       CFanController::Instance()->RestoreStartupSpeed();
-  }
-  else if (strSetting == "Servers.TimeServer" || strSetting == "Servers.TimeAddress")
-  {
-    g_application.StopTimeServer();
-    if (g_guiSettings.GetBool("Servers.TimeServer"))
-      g_application.StartTimeServer();
   }
   else if (strSetting == "Servers.FTPServer")
   {
@@ -1424,10 +1491,38 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("ReplayGain.NoGainPreAmp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("ReplayGain.AvoidClipping");
   }
+
+
+  else if (strSetting == "XBDateTime.TimeServer" || strSetting == "XBDateTime.TimeAddress")
+  {
+    g_application.StopTimeServer();
+    if (g_guiSettings.GetBool("XBDateTime.TimeServer"))
+      g_application.StartTimeServer();
+  }
+  else if (strSetting == "XBDateTime.Year")
+  {	  // GeminiServer
+	  CSetting *pSetting = pSettingControl->GetSetting();
+	  FillInXBDateTime(pSetting, 0); //
+  }
+  else if (strSetting == "XBDateTime.Month")
+  {   // GeminiServer
+	  CSetting *pSetting = pSettingControl->GetSetting();
+	  FillInXBDateTime(pSetting, 2); // Add. Month Names!
+  }
+  else if (strSetting == "XBDateTime.Day")
+  {   // GeminiServer
+	  CSetting *pSetting = pSettingControl->GetSetting();
+	  FillInXBDateTime(pSetting, 1); //Add. Month Max Days [Leap Stuff]
+  }
+  else if (strSetting == "XBDateTime.SetDateTime")
+  {   // GeminiServer
+	  CSetting *pSetting = pSettingControl->GetSetting();
+	  FillInXBDateTime(pSetting, 3); //Ask, Check and then Set UTC Time!
+  }
+  
   g_settings.Save();
   UpdateSettings();
 }
-
 void CGUIWindowSettingsCategory::FreeControls()
 {
   // free any created controls
@@ -1956,7 +2051,6 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting)
   pControl->SetValue(iCurrentVis);
 }
 
-// Karaoke patch (114097) ...
 void CGUIWindowSettingsCategory::FillInVoiceMasks(DWORD dwPort, CSetting *pSetting)
 {
   CSettingString *pSettingString = (CSettingString*)pSetting;
@@ -2150,8 +2244,6 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
   g_guiSettings.SetBool(strBoolRobotic, bRobotic);
 
 }
-// ... Karaoke patch (114097)
-
 void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting)
 {
   CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -2288,6 +2380,91 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   pControl->SetValue(iCurrentScr);
 }
 
+void CGUIWindowSettingsCategory::FillInXBDateTime(CSetting *pSetting, int bState)
+{
+	// GeminiServer
+	CStdString xid[32]={"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"};
+	CSettingString *pSettingString = (CSettingString*)pSetting;
+	CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+	if (bState == 1 || bState == 2)	pControl->Clear();
+	SYSTEMTIME CurTime;
+	GetLocalTime(&CurTime);
+	CStdString strday;
+	bool bIsLeapYear;
+	int iMonMax, iWeekDay;
+		
+	//g_guiSettings.GetInt("XBDateTime.Day");
+	//g_guiSettings.SetInt("XBDateTime.Day", (int)CurTime.wDay);
+	int iSetYear   = g_guiSettings.GetInt("XBDateTime.Year");
+	int iSetMonth  = g_guiSettings.GetInt("XBDateTime.Month");
+	int iSetDay	   = g_guiSettings.GetInt("XBDateTime.Day");
+	int iSetHour   = g_guiSettings.GetInt("XBDateTime.Hour");
+	int iSetMinute = g_guiSettings.GetInt("XBDateTime.Minute");
+
+	bIsLeapYear = CUtil::IsLeapYear( iSetYear, iSetMonth, iSetDay, iMonMax, iWeekDay);
+	
+	switch (iWeekDay)
+	{
+		case 0:	// Sunday
+			strday = g_localizeStrings.Get(17);
+			break;
+		case 1: // Monday
+			strday = g_localizeStrings.Get(11);
+			break;
+		case 2: //Tuesday
+			strday = g_localizeStrings.Get(12);
+			break;
+		case 3: //Wednesday
+			strday = g_localizeStrings.Get(13);
+			break;
+		case 4: //Thursday
+			strday = g_localizeStrings.Get(14);
+			break;
+		case 5: //Friday
+			strday = g_localizeStrings.Get(15);
+			break;
+		case 6: //Saturday
+			strday = g_localizeStrings.Get(16);
+			break;
+	}
+	if (bState == 1) //Set Month Max Days
+	{
+		for (int i = 0; i < iMonMax; i++)
+		{	
+			pControl->AddLabel(xid[i], (int)i);
+		}
+	}
+	else if (bState == 2) //Set Month Names!
+	{
+		for (int i = 1; i <= 12; i++)
+		{	
+			pControl->AddLabel(g_localizeStrings.Get(20+i), (int)i);
+		}
+	}
+	else if (bState == 3) //Button Set Time!
+	{
+		CStdString strlblDay,strlblTime,strlblMonth,strTimelbl;
+		
+		strlblMonth = g_localizeStrings.Get(20+iSetMonth);
+		strTimelbl = g_localizeStrings.Get(142);
+		strlblDay.Format("%s %i %s %i",strday,iSetDay,strlblMonth,iSetYear);
+		strlblTime.Format("%s %i:%i",strTimelbl,iSetHour,iSetMinute);
+		
+		CGUIDialogYesNo *dlg = (CGUIDialogYesNo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+		if (!dlg) return ;
+		dlg->SetHeading( g_localizeStrings.Get(14063) );
+		dlg->SetLine( 0, g_localizeStrings.Get(14069) );
+		dlg->SetLine( 1, strlblDay);
+		dlg->SetLine( 2, strlblTime );
+		dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+		if (dlg->IsConfirmed())
+		{ 
+			// Detect the Systime subtract Bias and then Set the System UTC time!
+			if (iSetHour == 0) iSetHour=24;
+			CUtil::SetSysDateTimeYear(iSetYear, iSetMonth, iSetDay, iSetHour, iSetMinute);
+		}
+	}
+}
 CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &strSetting)
 {
   for (unsigned int i = 0; i < m_vecSettings.size(); i++)
@@ -2297,4 +2474,3 @@ CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &st
   }
   return NULL;
 }
-
