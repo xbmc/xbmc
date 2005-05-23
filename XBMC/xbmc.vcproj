@@ -2031,7 +2031,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\SidPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\sscc.cpp">
+				RelativePath=".\xbmc\cores\ssrc.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\ssrc.h">
@@ -2049,34 +2049,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\mplayer\audio.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\mplayer\ComboRenderer.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\cores\mplayer\ComboRenderer.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\cores\mplayer\mplayer.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\mplayer\PixelShaderRenderer.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\cores\mplayer\PixelShaderRenderer.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\cores\mplayer\RGBRenderer.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\cores\mplayer\RGBRenderer.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\cores\mplayer\xbox_video.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\cores\mplayer\XBoxRenderer.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\cores\mplayer\XBoxRenderer.h">
 				</File>
 			</Filter>
 			<Filter
@@ -2271,12 +2247,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerVideo.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\cores\dvdplayer\DVDVideo.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\cores\dvdplayer\DVDVideo.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\dvdplayer\IDVDPlayer.h">
@@ -2482,6 +2452,40 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\WAVcodec.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="VideoRenderers"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\cores\VideoRenderers\ComboRenderer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\VideoRenderers\ComboRenderer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\VideoRenderers\PixelShaderRenderer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\VideoRenderers\PixelShaderRenderer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\VideoRenderers\RenderManager.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\VideoRenderers\RenderManager.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\VideoRenderers\RGBRenderer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\VideoRenderers\RGBRenderer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\VideoRenderers\XBoxRenderer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\VideoRenderers\XBoxRenderer.h">
 				</File>
 			</Filter>
 		</Filter>

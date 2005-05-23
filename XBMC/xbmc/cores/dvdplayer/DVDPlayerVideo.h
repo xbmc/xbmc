@@ -1,7 +1,7 @@
 #pragma once
 #include "../../utils/thread.h"
 
-#include "DVDVideo.h"
+#include "../VideoRenderers/RenderManager.h"
 #include "DVDDemuxers\DVDPacketQueue.h"
 #include "DVDDemuxers\DVDDemuxUtils.h"
 #include "DVDDemuxers\DVDDemux.h"
@@ -45,7 +45,6 @@ public:
   CRITICAL_SECTION m_critSection;
   HANDLE m_hEvent;
 
-  CDVDVideo m_dvdVideo;
   bool m_bRunningVideo;
   CDVDClock* m_pClock;
 

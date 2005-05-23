@@ -14,11 +14,9 @@ DWORD video_refresh_thread(void *arg);
 #define ABS(a) ((a) >= 0 ? (a) : (-(a)))
 
 
-// for displaying video in the small window
-static CDVDVideo* pdvdVideo = NULL;
 void xbox_dvdplayer_render_update()
 {
-  if (pdvdVideo) pdvdVideo->Update(false);
+  g_renderManager.Update(false);
 }
 
 CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock) : CThread()
@@ -35,8 +33,6 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock) : CThread
 
   InitializeCriticalSection(&m_critCodecSection);
   m_packetQueue.SetMaxSize(5 * 256 * 1024); // 1310720
-
-  pdvdVideo = &m_dvdVideo;
 
   // create sections and event for thread sync (should be destroyed at video stop)
   InitializeCriticalSection(&m_critSection);
@@ -235,7 +231,7 @@ void CDVDPlayerVideo::OnExit()
   }
   m_pOverlayPicture = NULL;
 
-  m_dvdVideo.UnInit();
+  g_renderManager.UnInit();
   m_bInitializedOutputDevice = false;
 
   CLog::Log(LOGNOTICE, "thread end: audio_thread");
@@ -310,12 +306,12 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
   {
     CLog::Log(LOGNOTICE, "Initializing video device");
 
-    m_dvdVideo.Init();
+    g_renderManager.PreInit();
 
     CLog::Log(LOGNOTICE, "  fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i",
               m_fFPS, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
 
-    m_dvdVideo.Config(m_fFPS, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
+    g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFPS);
     m_bInitializedOutputDevice = true;
   }
 
@@ -329,30 +325,34 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
     }
 
     // copy picture to overlay
-    YUVOverlay overlay = m_dvdVideo.LockYUVOverlay();
-    CDVDCodecUtils::CopyPictureToOverlay(&overlay, pPicture);
-
-    // remove any overlays that are out of time
-    m_overlay.CleanUp(pts);
-
-    DVDOverlayPicture* pOverlayPicture = m_overlay.Get();
-
-    //Check all overlays and render those that should be rendered, based on time and forced
-    //Both forced and subs should check timeing, pts == 0 in the stillframe case
-    while (pOverlayPicture)
+    YV12Image image;
+    if (g_renderManager.GetImage(&image))
     {
-      if ((pOverlayPicture->bForced || m_bRenderSubs)
-          && ((pOverlayPicture->iPTSStartTime <= pts && pOverlayPicture->iPTSStopTime >= pts) || pts == 0))
+      CDVDCodecUtils::CopyPictureToOverlay(&image, pPicture);
+
+      // remove any overlays that are out of time
+      m_overlay.CleanUp(pts);
+
+      DVDOverlayPicture* pOverlayPicture = m_overlay.Get();
+
+      //Check all overlays and render those that should be rendered, based on time and forced
+      //Both forced and subs should check timeing, pts == 0 in the stillframe case
+      while (pOverlayPicture)
       {
-        // display subtitle, if bForced is true, it's a menu overlay and we should crop it
-        m_overlay.RenderYUV(&overlay, pOverlayPicture, pOverlayPicture->bForced);
+        if ((pOverlayPicture->bForced || m_bRenderSubs)
+            && ((pOverlayPicture->iPTSStartTime <= pts && pOverlayPicture->iPTSStopTime >= pts) || pts == 0))
+        {
+          // display subtitle, if bForced is true, it's a menu overlay and we should crop it
+          m_overlay.RenderYUV(&image, pOverlayPicture, pOverlayPicture->bForced);
+        }
+
+        pOverlayPicture = pOverlayPicture->pNext;
       }
 
-      pOverlayPicture = pOverlayPicture->pNext;
+      // tell the renderer that we've finished with the image (so it can do any
+      // post processing before FlipPage() is called.)
+      g_renderManager.ReleaseImage();
     }
-
-    m_dvdVideo.UnlockYUVOverlay();
-
 
     //Hmm why not just assigne the entire picure??
     //the vp isn't used at all is it?? overlay is what's rendered all the time
@@ -380,7 +380,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
 
 void CDVDPlayerVideo::Update(bool bPauseDrawing)
 {
-  m_dvdVideo.Update(bPauseDrawing);
+  g_renderManager.Update(bPauseDrawing);
 }
 
 void CDVDPlayerVideo::UpdateMenuPicture()
@@ -399,12 +399,12 @@ void CDVDPlayerVideo::UpdateMenuPicture()
 
 void CDVDPlayerVideo::GetVideoRect(RECT& SrcRect, RECT& DestRect)
 {
-  m_dvdVideo.GetVideoRect(SrcRect, DestRect);
+  g_renderManager.GetVideoRect(SrcRect, DestRect);
 }
 
 float CDVDPlayerVideo::GetAspectRatio()
 {
-  return m_dvdVideo.GetAspectRatio();
+  return g_renderManager.GetAspectRatio();
 }
 
 __int64 CDVDPlayerVideo::GetDelay()
@@ -469,7 +469,7 @@ DWORD video_refresh_thread(void *arg)
       // display picture
       // we expect the video device to be initialized here
       iTimeStamp = frameclock.GetClock();
-      pDVDPlayerVideo->m_dvdVideo.FlipPage();
+      g_renderManager.FlipPage();
 
       // update queue size and signal for next picture
       if (++pDVDPlayerVideo->pictq_rindex == VIDEO_PICTURE_QUEUE_SIZE) pDVDPlayerVideo->pictq_rindex = 0;
