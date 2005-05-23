@@ -32,7 +32,6 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     else
     {
       // reset the timer
-      CLog::Log(LOGERROR, "White has been pressed. Status is m_bShowInfo = %i, m_dwInitTimer = %i, m_dwFrameCounter = %i", m_bShowInfo, m_dwInitTimer, m_dwFrameCounter);
       m_dwInitTimer = 0;
       if (m_dwFrameCounter)
       { // already in the process of a fade - reverse it
@@ -154,13 +153,11 @@ void CGUIWindowVisualisation::Render()
       int timeStarted = (int)(g_infoManager.GetPlayTime()/1000);
       if (timeStarted < TRANSISTION_LENGTH/50 && !m_bShowInfo && !m_bFadingAtStart)
       { // fade in at the start
-        CLog::Log(LOGERROR, "Fading in at start, time=%i", timeStarted);
         m_dwFrameCounter = TRANSISTION_COUNT;
         m_bFadingAtStart = true;
       }
       else if (timeStarted >= TRANSISTION_LENGTH/50 && m_bShowInfo)
       { // fade out after 5 seconds
-        CLog::Log(LOGERROR, "Fading out at start, time=%i", timeStarted);
         m_dwFrameCounter = TRANSISTION_COUNT;
         m_bFadingAtStart = false;
       }
@@ -185,7 +182,6 @@ void CGUIWindowVisualisation::Render()
     if (!m_dwFrameCounter)
     {
       m_bShowInfo = !m_bShowInfo;
-      CLog::DebugLog("Finished fade - state is faded %s.", m_bShowInfo ? "in" : "out");
     }
   }
   CGUIWindow::Render();
@@ -199,16 +195,6 @@ void CGUIWindowVisualisation::SetAlpha(DWORD dwAlpha)
     if (pControl->GetControlType() != CGUIControl::GUICONTROL_VISUALISATION)
     { // set the alpha
       pControl->SetAlpha(dwAlpha);
-      if (pControl->GetControlType() == CGUIControl::GUICONTROL_LABEL ||
-          pControl->GetControlType() == CGUIControl::GUICONTROL_FADELABEL)
-      { // TTF fonts don't do alpha, so we just have to turn them on and off as necessary
-        // not a particularly nice way to do it, but hopefully we can get alpha on ttf
-        // fonts at some stage to eliminate the need for this.
-        if (dwAlpha)
-          pControl->SetVisible(true);
-        else
-          pControl->SetVisible(false);
-      }
     }
   }
 }

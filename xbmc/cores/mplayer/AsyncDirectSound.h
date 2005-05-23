@@ -36,15 +36,6 @@
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
 
-#define DSMIXBINTYPE_STANDARD 1
-#define DSMIXBINTYPE_DMO 2
-#define DSMIXBINTYPE_AAC 3
-#define DSMIXBINTYPE_OGG 4
-#define DSMIXBINTYPE_CUSTOM 5
-#define DSMIXBINTYPE_STEREOALL 6
-#define DSMIXBINTYPE_STEREOLEFT 7
-#define DSMIXBINTYPE_STEREORIGHT 8
-
 class CASyncDirectSound : public IDirectSoundRenderer
 {
 public:
@@ -78,7 +69,6 @@ public:
   virtual void WaitCompletion();
   virtual void DoWork();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
-  bool GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, DWORD* dwChannelMask, int Type, int Channels);
 
   //Cdg voice callback (Karaoke patch (114097))
   static void CdgVoiceDataCallback( DWORD dwPort, DWORD dwSize, VOID* pvData, VOID* pContext );

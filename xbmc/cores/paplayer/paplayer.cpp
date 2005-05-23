@@ -1,19 +1,19 @@
 #include "../../stdafx.h"
-#include "paplayer.h"
+#include "PAPlayer.h"
 #include "../mplayer/ASyncDirectSound.h"
 #include "../mplayer/Ac97DirectSound.h"
 #include "../../application.h"
 #include "../../util.h"
 #include "CodecFactory.h"
 #include "../../utils/GUIInfoManager.h"
+#include "AudioContext.h"
 
-// HACK
-#include "../../APEv2Tag.h"
-// hACK
 #define VOLUME_FFWD_MUTE 900 // 9dB
 
-#define INTERNAL_BUFFER_LENGTH  2*4*44100     // 2 seconds
-#define OUTPUT_BUFFER_LENGTH    48000*4/768*2 // 2 seconds
+#define FADE_TIME 2 * 2048.0f / 48000.0f      // 2 packets
+
+#define TIME_TO_CACHE_NEXT_FILE 5000L         // 5 seconds
+#define TIME_TO_CROSS_FADE      10000L        // 10 seconds
 
 // PAP: Psycho-acoustic Audio Player
 // Supporting all open  audio codec standards.
@@ -25,40 +25,57 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
 {
   m_bIsPlaying = false;
   m_bPaused = false;
-  m_dwAudioBufferMin = 0;
-  m_pAudioDevice = NULL;
-  m_dwAudioBufferSize = 0;
+  m_cachingNextFile = false;
+  m_currentlyCrossFading = false;
+
+  m_currentDecoder = 0;
+
   m_iSpeed = 1;
-  m_PcmSize = 0;  
-  m_PcmPos = 0;
-  m_dwAudioMaxSize = INTERNAL_BUFFER_LENGTH;
-  m_pPcm = new BYTE[m_dwAudioMaxSize];
-  m_BufferingPcm = true;
-  m_dwBytesSentOut = 0;
   m_SeekTime=-1;
   m_IsFFwdRewding = false;
-  m_eof = false;
-  m_startOffset = 0;
-  m_codec = NULL;
+  m_timeOffset = 0;
+
+  m_pStream[0] = NULL;
+  m_pStream[1] = NULL;
+  m_currentStream = 0;
+
+  m_bytesSentOut = 0;
+
   m_BytesPerSecond = 0;
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
+
+  m_resampleAudio = g_guiSettings.GetBool("AudioOutput.HighQualityResampling");
+
+  m_visBufferLength = 0;
 }
 
 PAPlayer::~PAPlayer()
 {
   CloseFile();
+  m_decoder[0].Destroy();
+  m_decoder[1].Destroy();
 
-  KillAudioDevice();
+  if (m_pStream[0])
+  {
+    // destroy the stream nicely
+    m_pStream[0]->Discontinuity();
+    m_pStream[0]->FlushEx( 0, DSSTREAMFLUSHEX_ASYNC | DSSTREAMFLUSHEX_ENVELOPE );
+    DirectSoundDoWork();
+    m_pStream[0]->Release();
+  }
+  m_pStream[0] = NULL;
 
-  if ( m_pPcm )
-    delete[] m_pPcm;
-  m_pPcm = NULL;
-
-  if ( m_codec )
-    delete m_codec;
-  m_codec = NULL;
+  if (m_pStream[1])
+  {
+    // destroy the stream nicely
+    m_pStream[1]->Discontinuity();
+    m_pStream[1]->FlushEx( 0, DSSTREAMFLUSHEX_ASYNC | DSSTREAMFLUSHEX_ENVELOPE );
+    DirectSoundDoWork();
+    m_pStream[1]->Release();
+  }
+  m_pStream[1] = NULL;
 }
 
 void PAPlayer::OnExit()
@@ -70,53 +87,33 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
   CloseFile();
 
-  if (!m_eof)
-  { // we started a new file whilst still playing the old one - let's free up our buffers and so on.
-    CLog::Log(LOGDEBUG, "PAPlayer: Starting next track whilst already playing - killing our output buffers");
-    if (m_codec)
-      delete m_codec;
-    m_codec = NULL;
-    KillAudioDevice();
-    m_PcmPos = 0;
-    m_PcmSize = 0;
-  }
+  // always open the file using the current decoder
+  m_currentDecoder = 0;
+  m_crossFading = g_guiSettings.GetInt("MyMusic.CrossFade");
+
+  if (!m_decoder[m_currentDecoder].Create(file, iStartTime, m_crossFading))
+    return false;
 
   m_iSpeed = 1;
   m_bPaused = false;
   m_bStopPlaying = false;
-  m_eof = false;
-  m_dwBytesSentOut = 0;
-  m_startOffset = 0;
-  m_BufferingPcm = true;  // buffer as much info as we can to begin with
-
-  // determine which type of codec we should use.
-  CURL url(file.m_strPath);
-  if (m_codec && !m_codec->HandlesType(url.GetFileType().c_str()))
-  { // we're opening a different type of file - close the current decoder
-    delete m_codec;
-    m_codec = NULL;
-  }
-  // create a new decoder if needed
-  if (!m_codec)
-    m_codec=CodecFactory::CreateCodec(url.GetFileType());
-
-  if (!m_codec || !m_codec->Init(file.m_strPath))
-  {
-    CLog::Log(LOGERROR, "PAP Player: Unable to Init Codec!");
-    return false;
-  }
-  
-  if (!CreateAudioDevice())
-  {
-    CLog::Log(LOGERROR, "PAP Player: CreateAudioDevice() failed");
-    return false;
-  }
+  m_bytesSentOut = 0;
 
   CLog::Log(LOGINFO, "PAP Player: Playing %s", file.m_strPath.c_str());
 
-  // Seek to appropriate start position
-  if ( iStartTime > 0 && iStartTime < m_codec->m_TotalTime )
-    m_startOffset = m_codec->Seek(iStartTime);
+  m_timeOffset = iStartTime;
+
+  m_decoder[m_currentDecoder].GetDataFormat(&m_Channels, &m_SampleRate, &m_BitsPerSample);
+
+  SetupDirectSound(m_Channels);
+
+  if (!CreateStream(m_currentStream, m_Channels, m_SampleRate, m_BitsPerSample))
+  {
+    m_decoder[m_currentDecoder].Destroy();
+    CLog::Log(LOGERROR, "PAPlayer::Unable to create audio stream");
+  }
+
+  m_currentFile = file;
 
   if (ThreadHandle() == NULL)
     Create();
@@ -124,6 +121,50 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   m_startEvent.Set();
 
   m_bIsPlaying = true;
+  m_cachingNextFile = false;
+  m_currentlyCrossFading = false;
+
+  m_decoder[m_currentDecoder].Start();  // start playback
+  m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
+
+  return true;
+}
+
+bool PAPlayer::QueueNextFile(const CFileItem &file)
+{
+  if (file.m_strPath == m_currentFile.m_strPath &&
+      file.m_lStartOffset > 0 && 
+      file.m_lStartOffset == m_currentFile.m_lEndOffset)
+  { // continuing on a .cue sheet item - return true to say we'll handle the transistion
+    m_nextFile = file;
+    return true;
+  }
+  // check if we can handle this file at all
+  int decoder = 1 - m_currentDecoder;
+  __int64 seekOffset = (file.m_lStartOffset * 1000) / 75;
+  if (!m_decoder[decoder].Create(file, seekOffset, m_crossFading))
+    return false;
+  // ok, we're good to go on queuing this one up
+  CLog::Log(LOGINFO, "PAP Player: Queuing next file %s", file.m_strPath.c_str());
+
+  unsigned int channels, samplerate, bitspersample;
+  m_decoder[decoder].GetDataFormat(&channels, &samplerate, &bitspersample);
+
+  // Are we playing gapless?
+  if (0)
+  {
+    // gapless
+  }
+  else
+  { // crossfading - need to create a new stream
+    if (!CreateStream(1 - m_currentStream, channels, samplerate, bitspersample))
+    {
+      m_decoder[decoder].Destroy();
+      CLog::Log(LOGERROR, "PAPlayer::Unable to create audio stream");
+    }
+  }
+
+  m_nextFile = file;
 
   return true;
 }
@@ -138,39 +179,160 @@ bool PAPlayer::CloseFile()
 
   StopThread();
 
-  // Close our decoder
-  if (m_codec)
+  // kill both our streams if we need to
+  for (int i = 0; i < 2; i++)
   {
-    delete m_codec;
-    m_codec = NULL;
+    m_decoder[i].Destroy();
+    FreeStream(i);
   }
+
+  m_currentFile.Clear();
+  m_nextFile.Clear();
+
+  g_audioContext.RemoveActiveDevice();
+  g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
 
   return true;
 }
 
+void PAPlayer::FreeStream(int stream)
+{
+  if (m_pStream[stream])
+    m_pStream[stream]->Release();
+  m_pStream[stream] = NULL;
+  ZeroMemory(packet[stream], PACKET_COUNT * sizeof(AudioPacket));
+  m_resampler[stream].DeInitialize();
+}
+
+void PAPlayer::SetupDirectSound(int channels)
+{
+  bool bAudioOnAllSpeakers(false);
+  g_audioContext.RemoveActiveDevice(); 
+  g_audioContext.SetupSpeakerConfig(channels, bAudioOnAllSpeakers);
+  g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
+  LPDIRECTSOUND pDSound=g_audioContext.GetDirectSoundDevice();
+  if (!pDSound)
+    return;
+  // Set the default mixbins headroom to appropriate level as set in the settings file (to allow the maximum volume)
+  for (DWORD i = 0; i < 8;i++)
+    pDSound->SetMixBinHeadroom(i, DWORD(g_guiSettings.GetInt("AudioOutput.Headroom") / 6));
+}
+
+bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample)
+{
+  FreeStream(num);
+
+  // create our resampler
+  m_resampler[num].InitConverter(samplerate, bitspersample, channels, 48000, 16, PACKET_SIZE);
+  samplerate = 48000;
+  bitspersample = 16;
+
+  // our wave format
+  WAVEFORMATEX wfx    = {0};
+  wfx.wFormatTag      = WAVE_FORMAT_PCM;
+  wfx.nChannels       = channels;
+  wfx.nSamplesPerSec  = samplerate;
+  wfx.wBitsPerSample  = bitspersample;
+  wfx.nBlockAlign     = wfx.nChannels * wfx.wBitsPerSample / 8;
+  wfx.nAvgBytesPerSec = wfx.nBlockAlign * wfx.nSamplesPerSec;
+  m_BytesPerSecond = wfx.nAvgBytesPerSec;
+
+  WAVEFORMATEXTENSIBLE wfxex = {0};
+  wfxex.Format = wfx;
+  wfxex.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
+  wfxex.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX) ;
+  wfxex.Samples.wReserved = 0;
+  wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
+
+  // setup the mixbins
+  DSMIXBINS dsmb;
+  DWORD dwCMask;
+  DSMIXBINVOLUMEPAIR dsmbvp8[8];
+  int iMixBinCount;
+
+  // TODO: Support correct channel mapping of AAC and Ogg
+  if (g_guiSettings.GetBool("AudioOutput.OutputToAllSpeakers") && channels == 2)
+  {
+    g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STEREOALL, channels);
+  }
+  else
+  {
+/*    if (strstr(strAudioCodec, "AAC"))
+      g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_AAC, channels);
+    else if (strstr(strAudioCodec, "OggVorbis"))
+      g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_OGG, channels);
+    else*/
+      g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STANDARD, channels);
+  }
+  wfxex.dwChannelMask = dwCMask;
+  dsmb.dwMixBinCount = iMixBinCount;
+  dsmb.lpMixBinVolumePairs = dsmbvp8;
+
+  // Set up the stream descriptor so we can create our streams
+  DSSTREAMDESC dssd;
+  memset(&dssd, 0, sizeof(dssd));
+
+  dssd.dwFlags = DSSTREAMCAPS_ACCURATENOTIFY; // xbmp=0
+  dssd.dwMaxAttachedPackets   = PACKET_COUNT;
+  dssd.lpwfxFormat            = (WAVEFORMATEX*)&wfxex;
+  dssd.lpfnCallback           = StaticStreamCallback;
+  dssd.lpvContext             = this;
+  dssd.lpMixBins              = &dsmb;
+
+  // Create the streams
+  HRESULT hr = DirectSoundCreateStream( &dssd, (LPDIRECTSOUNDSTREAM *)&m_pStream[num] );
+  if( FAILED( hr ) )
+    return false;
+
+  // Set up amplitude envelopes to handle the fade-in/fade-out
+  DSENVELOPEDESC dsed = {0};
+  dsed.dwEG           = DSEG_AMPLITUDE;
+  dsed.dwMode         = DSEG_MODE_ATTACK;
+  dsed.dwAttack       = DWORD( 48000 * FADE_TIME / 512 );
+  dsed.dwRelease      = DWORD( 48000 * FADE_TIME / 512 );
+  dsed.dwSustain      = 255;
+
+  m_pStream[num]->SetEG(&dsed);
+  m_pStream[num]->SetHeadroom(0);
+  m_pStream[num]->SetVolume(g_stSettings.m_nVolumeLevel);
+  m_pStream[num]->Pause(DSSTREAMPAUSE_PAUSE);
+
+  // TODO: How do we best handle the callback, given that our samplerate etc. may be
+  // changing at this point?
+
+  // fire off our init to our callback
+  if (m_pCallback)
+    m_pCallback->OnInitialize(channels, samplerate, bitspersample);
+
+  return true;
+}
 
 void PAPlayer::Pause()
 {
-  if (!m_bIsPlaying || !m_pAudioDevice) return ;
+  if (!m_bIsPlaying || !m_pStream) return ;
 
   m_bPaused = !m_bPaused;
 
   if (m_bPaused)
-  {
-    m_pAudioDevice->Pause();
+  { // pause both streams if we're crossfading
+    if (m_pStream[m_currentStream]) m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_PAUSE);
+    if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
+      m_pStream[1 - m_currentStream]->Pause(DSSTREAMPAUSE_PAUSE);
     CLog::Log(LOGINFO, "PAP Player: Playback paused");
   }
   else
   {
-    m_pAudioDevice->Resume();
+    if (m_pStream[m_currentStream]) m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
+    if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
+      m_pStream[1 - m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
     CLog::Log(LOGINFO, "PAP Player: Playback resumed");
   }
 }
 
 void PAPlayer::SetVolume(long nVolume)
 {
-  if (m_pAudioDevice)
-    m_pAudioDevice->SetCurrentVolume(nVolume);
+  if (m_pStream[m_currentStream])
+    m_pStream[m_currentStream]->SetVolume(nVolume);
 }
 
 void PAPlayer::Process()
@@ -196,40 +358,13 @@ void PAPlayer::Process()
     }
     while (!m_bStopPlaying && m_bIsPlaying && !m_bStop);
 
-    m_codec->DeInit();
-
+    CLog::Log(LOGINFO, "PAPlayer: End of playback reached");
     m_bIsPlaying = false;
     if (!m_bStopPlaying && !m_bStop)
     {
       m_callback.OnPlayBackEnded();
     }
   }
-}
-
-void PAPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
-{
-  m_pCallback = pCallback;
-  if (m_pAudioDevice)
-    m_pAudioDevice->RegisterAudioCallback( m_pCallback);
-}
-
-void PAPlayer::UnRegisterAudioCallback()
-{
-  m_pCallback = NULL;
-  if (m_pAudioDevice)
-    m_pAudioDevice->UnRegisterAudioCallback();
-}
-
-void PAPlayer::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample)
-{
-  if (!m_pCallback) return ;
-  m_pCallback->OnInitialize(iChannels, iSamplesPerSec, iBitsPerSample);
-}
-
-void PAPlayer::OnAudioData(const unsigned char* pAudioData, int iAudioDataLength)
-{
-  if (!m_pCallback) return ;
-  m_pCallback->OnAudioData(pAudioData, iAudioDataLength);
 }
 
 void PAPlayer::ToFFRW(int iSpeed)
@@ -256,239 +391,217 @@ bool PAPlayer::ProcessPAP()
    *
    * 6.  If we don't do anything in 2...5, we can take a breather and break out for sleeping.
    */
-  if (!m_pAudioDevice)
-    return false;
-
-  while (true && !m_bStop) // Just go once... see if that helps the system more.. vs sticking around so much
+  while (true)
   {
-    m_pAudioDevice->DoWork();
+    if (m_bStop) return false;
 
-    // Check the state of our output buffer, and report if it's dropped too low.
-#ifndef _DEBUG
-    if (g_stSettings.m_iLogLevel == LOGDEBUG)
-#endif
+    // Check for .cue sheet item end
+    if (m_currentFile.m_lEndOffset && GetTime() >= GetTotalTime64())
     {
-      int iBufferSize = m_pAudioDevice->GetBytesInBuffer();
-      if (m_PcmSize && !m_BufferingPcm && m_iSpeed == 1 && iBufferSize < 65536)
-        CLog::Log(LOGDEBUG, "PAPlayer::Output Buffer size only %i bytes.  PCM buffer size %i", iBufferSize, m_PcmSize);
+      CLog::Log(LOGINFO, "PAPlayer: Passed end of track in a .cue sheet item");
+      m_decoder[m_currentDecoder].SetStatus(STATUS_ENDED);
     }
 
-    // Check to see if we are finished decoding
-    if ( (m_PcmSize < m_dwAudioBufferMin && m_eof) || m_bStop )
-    {
-      // Looks like we're done, get out.. 
-      // anything left thats under min buffersize will be lost, but this
-      // is normally very insubstantial (currently in the order of 200 samples)
+    // check whether we need to send off our callbacks etc.
+    int status = m_decoder[m_currentDecoder].GetStatus();
+    if (status == STATUS_NO_FILE)
       return false;
+
+    // check whether we should queue the next file up
+    if (GetTotalTime64() - GetTime() < TIME_TO_CACHE_NEXT_FILE + m_crossFading * 1000L && !m_cachingNextFile)
+    { // request the next file from our application
+      m_callback.OnQueueNextItem();
+      m_cachingNextFile = true;
     }
-    // Current Track ended?
-    if ( m_eof )
+
+    if (m_crossFading)
     {
-      // This is the point where we could request the next track from our GUI.
-      // We don't at this stage as our system is very much a push-based one - the GUI
-      // pushes us the tracks and we just play 'em.  Once we have everything incorporated
-      // into the output stream system, we'd do it either here (or earlier) and allow 2
-      // streams to exist for crossfade and the like.
-    }
-    // Move PCM information into our output device
-    DWORD dwActual = 0;
-    if ( !m_BufferingPcm && m_PcmSize )
-      dwActual = m_pAudioDevice->AddPackets(m_pPcm + m_PcmPos, m_PcmSize);
-    if (dwActual)
-    { // they've taken a packet of size dwSize to the audio buffers
-//          CLog::Log(LOGERROR, "Taken %i bytes of data", dwActual);
-      m_dwBytesSentOut += dwActual;
-      m_PcmPos += dwActual;
-      m_PcmSize -= dwActual;
-      if ( m_PcmSize == 0 ) 
-        m_PcmPos = 0; // empty pcm buffer, go get some more quick
-      // copy down any remaining audio if we're more than half way through the buffer
-      if (m_PcmPos > m_dwAudioMaxSize / 2) 
-      {
-        memmove(m_pPcm, m_pPcm+m_PcmPos,m_PcmSize);
-        m_PcmPos = 0;
-      }
-    }
-    if (m_SeekTime != -1)
-    {
-      // Do any seeking as necessary.  We reset the audio buffers at this point as
-      // they typically hold around 4 seconds of audio in advance that needs to be
-      // cleared out.
-      m_startOffset = m_codec->Seek(m_SeekTime);
-      m_dwBytesSentOut = 0;
-      m_pAudioDevice->ResetBytesInBuffer();
-      m_PcmSize = 0;
-      m_PcmPos = 0;
-      m_SeekTime = -1;
-      m_pAudioDevice->Stop();
-      g_infoManager.m_bPerformingSeek = false;
-    }
-    if (m_IsFFwdRewding || m_iSpeed != 1)
-    {
-      // Do ffwd and rewind.
-      // The technique used is to play a snippet of audio (a fraction of a second)
-      // and then skip forward a suitable amount so that we effectively move through
-      // the audio at the speed specified.
-      // Audio is muted by a set amount, and levels are reset once we are back at
-      // normal playback speed.
-      if ( m_IsFFwdRewding && m_iSpeed == 1 ) 
-      { // reset ffwd/rewind
-        m_IsFFwdRewding = false;
-        m_pAudioDevice->Stop();
-        SetVolume(g_stSettings.m_nVolumeLevel);
-        break;
-      }
-      // we're definitely fastforwarding or rewinding
-      int snippet = m_BytesPerSecond / 4;
-      if ( m_dwBytesSentOut - m_pAudioDevice->GetBytesInBuffer() >= snippet ) 
-      {
-        // Calculate offset to seek if we do FF/RW
-        __int64 time = GetTime();
-        if (m_IsFFwdRewding) snippet = (int)m_dwBytesSentOut - m_pAudioDevice->GetBytesInBuffer();
-        time += (__int64)((double)snippet * (m_iSpeed - 1.0) / m_BytesPerSecond * 1000.0);
-        m_PcmSize = 0;
-        m_PcmPos = 0;
-        // Is our offset inside the track range?
-        if (time >= 0 && time <= m_codec->m_TotalTime)
-        { // just set next position to read
-          m_IsFFwdRewding = true;  
-          m_startOffset = m_codec->Seek(time);
-          m_dwBytesSentOut = 0;
-          m_pAudioDevice->Stop();
-          m_pAudioDevice->ResetBytesInBuffer();
-          SetVolume(g_stSettings.m_nVolumeLevel - VOLUME_FFWD_MUTE); // override xbmc mute 
+      if (GetTotalTime64() - GetTime() < m_crossFading * 1000L && !m_currentlyCrossFading)
+      { // request the next file from our application
+        if (m_decoder[1 - m_currentDecoder].GetStatus() == STATUS_QUEUED && m_pStream[1 - m_currentStream])
+        {
+          m_currentlyCrossFading = true;
+          m_crossFadeLength = GetTotalTime64() - GetTime();
+          m_currentDecoder = 1 - m_currentDecoder;
+          m_decoder[m_currentDecoder].Start();
+          m_currentStream = 1 - m_currentStream;
+          if (m_decoder[0].GetChannels() != m_decoder[1].GetChannels())
+          { // channel change - reset speaker config
+            CLog::Log(LOGWARNING, "PAPlayer: Channel number has changed - unimplemented feature!");
+          }
+          CLog::Log(LOGINFO, "Starting Crossfade - resuming stream %i", m_currentStream);
+          m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
+          m_callback.OnPlayBackStarted();
+          m_timeOffset = m_nextFile.m_lStartOffset * 1000 / 75;
+          m_bytesSentOut = 0;
+          m_currentFile = m_nextFile;
+          m_nextFile.Clear();
+          m_cachingNextFile = false;
         }
-        else if (time < 0)
-        { // ...disable seeking and start the track again
-          m_startOffset = m_codec->Seek(0);
-          m_dwBytesSentOut = 0;
-          m_pAudioDevice->ResetBytesInBuffer();
-          m_iSpeed = 1;
-          m_BufferingPcm = true;  // Rebuffer to avoid stutter
-          SetVolume(g_stSettings.m_nVolumeLevel); // override xbmc mute 
-          CLog::Log(LOGINFO, "PAP Player: Start of track reached while seeking");
-        } // is our next position greater then the end sector...
-        else //if (time > m_codec->m_TotalTime)
-        { // ...disable seeking and quit player
-          m_iSpeed = 1;
-          // HACK: restore volume level to the value before seeking was started
-          // else next track will be muted
-          m_eof = true;
-          SetVolume(g_stSettings.m_nVolumeLevel);
-          CLog::Log(LOGINFO, "PAP Player: End of track reached while seeking");
+      }
+    }
+
+    // Check for EOF and queue the next track if applicable
+    if (m_decoder[m_currentDecoder].GetStatus() == STATUS_ENDED)
+    { // time to swap tracks
+      if (m_nextFile.m_strPath != m_currentFile.m_strPath ||
+          !m_nextFile.m_lStartOffset ||
+          m_nextFile.m_lStartOffset != m_currentFile.m_lEndOffset)
+      { // don't have a .cue sheet item
+        int nextstatus = m_decoder[1 - m_currentDecoder].GetStatus();
+        if (nextstatus == STATUS_QUEUED || nextstatus == STATUS_QUEUING || nextstatus == STATUS_PLAYING)
+        { // swap streams
+          CLog::Log(LOGINFO, "PAPlayer: Swapping tracks %i to %i", m_currentDecoder, 1-m_currentDecoder);
+          if (!m_crossFading)
+          { // playing gapless (we use only the 1 output stream in this case
+            int prefixAmount = m_decoder[m_currentDecoder].GetDataSize();
+            CLog::Log(LOGINFO, "PAPlayer::Prefixing %i bytes of old data to new track for gapless playback", prefixAmount);
+            m_decoder[1 - m_currentDecoder].PrefixData(m_decoder[m_currentDecoder].GetData(prefixAmount), prefixAmount);
+            // check if we need to change the resampler (due to format change)
+            unsigned int channels, samplerate, bitspersample;
+            m_decoder[m_currentDecoder].GetDataFormat(&channels, &samplerate, &bitspersample);
+            unsigned int channels2, samplerate2, bitspersample2;
+            m_decoder[1 - m_currentDecoder].GetDataFormat(&channels2, &samplerate2, &bitspersample2);
+            if (channels != channels2 || samplerate != samplerate2 || bitspersample != bitspersample2)
+            {
+              CLog::Log(LOGINFO, "PAPlayer: Restarting resampler due to a change in data format");
+              m_resampler[m_currentStream].DeInitialize();
+              if (!m_resampler[m_currentStream].InitConverter(samplerate2, bitspersample2, channels2, 48000, 16, PACKET_SIZE))
+              {
+                CLog::Log(LOGERROR, "PAPlayer: Error initializing resampler!");
+                return false;
+              }
+              // change of channels - reinitialize our speaker configuration
+              if (channels != channels2)
+              {
+                CLog::Log(LOGWARNING, "PAPlayer: Channel number has changed - unimplemented feature!");
+//                SetupDirectSound(channels2);
+              }
+            }
+            CLog::Log(LOGINFO, "PAPlayer: Starting new track");
+            m_decoder[1 - m_currentDecoder].Start();
+            m_callback.OnPlayBackStarted();
+            m_timeOffset = m_nextFile.m_lStartOffset * 1000 / 75;
+            m_bytesSentOut = 0;
+            m_currentFile = m_nextFile;
+            m_nextFile.Clear();
+            m_cachingNextFile = false;
+            m_currentDecoder = 1 - m_currentDecoder;
+          }
+          else
+          { // cross fading - shouldn't ever get here - if we do, return false
+            if (!m_currentlyCrossFading)
+            {
+              CLog::Log(LOGERROR, "End of file Reached before crossfading kicked in!");
+              return false;
+            }
+            else
+            {
+              CLog::Log(LOGINFO, "End of file reached before crossfading finished!");
+              return false;
+            }
+          }
+        }
+        else
+        {
+          // no track queued - return and get another one
           return false;
         }
       }
-    }
-    // Read in more data
-    int result = -1;
-    int sendsize = m_BytesPerSecond / 2;  // 1/2 a second.
-    if ( m_PcmPos + m_PcmSize + sendsize > m_dwAudioMaxSize ) 
-      sendsize = m_dwAudioMaxSize - m_PcmSize - m_PcmPos;
-    if ( sendsize )
-    {
-      int actualdatasent = 0;
-//       CLog::Log(LOGERROR, "Getting %i more data, TIME = %i", sendsize * m_nBytesPerBlock, timeGetTime());
-      int result = m_codec->ReadPCM(m_pPcm + m_PcmPos + m_PcmSize, sendsize, &actualdatasent);
-      if ( result != READ_ERROR && actualdatasent ) 
+      else
       {
-        // Apply replaygain.
-        if (g_guiSettings.m_replayGain.iType)
-          ApplyReplayGain(m_pPcm+m_PcmPos+m_PcmSize, actualdatasent);
+        // set the next track playing (.cue sheet)
+        m_decoder[m_currentDecoder].SetStatus(STATUS_PLAYING);
+        m_callback.OnPlayBackStarted();
+        m_timeOffset = m_nextFile.m_lStartOffset * 1000 / 75;
+        m_bytesSentOut = 0;
+        m_currentFile = m_nextFile;
+        m_nextFile.Clear();
+        m_cachingNextFile = false;
+      }
+    }
 
-        m_PcmSize += actualdatasent;
-        if ( m_BufferingPcm ) 
-        {
-          if ( m_PcmSize >  m_dwAudioMaxSize / 2 )
-            m_BufferingPcm = false;
-        }
-        if (result == READ_EOF)
-        { // EOF reached
-          m_eof = true;
-        }
-      }
-      else if (result == READ_ERROR)
+    // handle seeking and ffwd/rewding.
+    HandleSeeking();
+    if (!HandleFFwdRewd())
+    {
+      // need to skip to the next track - let's see if we already have another one
+      m_decoder[m_currentDecoder].SetStatus(STATUS_ENDED);
+      continue; // loop around to start the next track
+    }
+
+    // Let our decoding stream(s) do their thing
+    DWORD time = timeGetTime();
+    unsigned int dataToRead = PACKET_SIZE * 2;  // read 2 packets at a time
+    int retVal = m_decoder[m_currentDecoder].ReadData(dataToRead);
+    if (retVal == RET_ERROR)
+      return false;
+    int retVal2 = m_decoder[1 - m_currentDecoder].ReadData(dataToRead);
+    if (retVal2 == RET_ERROR)
+    {
+      m_decoder[1 - m_currentDecoder].Destroy();
+    }
+    DWORD time2 = timeGetTime();
+
+    // if we're cross-fading, then we do this for both streams, otherwise
+    // we do it just for the one stream.
+    if (m_currentlyCrossFading)
+    {
+      if (GetTime() >= m_crossFadeLength)  // finished
       {
-        // error decoding, lets finish up and get out
-        CLog::Log(LOGINFO, "PAP Player: Error while decoding %i", result);
-        return false;
+        CLog::Log(LOGINFO, "Finished Crossfading");
+        m_currentlyCrossFading = false;
+        SetStreamVolume(m_currentStream, g_stSettings.m_nVolumeLevel);
+        FreeStream(1 - m_currentStream);
       }
-      else if (result == READ_EOF)
-        m_eof = true;
-      else if (m_PcmSize)
-      { // nothing to do - let's sleep (and take a break?)
-        Sleep(10);
-//        break;
+      else
+      {
+        float fraction = (float)(m_crossFadeLength - GetTime()) / (float)m_crossFadeLength - 0.5f;
+        float volumeCurrent = 2000.0f * log10(0.5f - fraction);
+        float volumeNext = 2000.0f * log10(0.5f + fraction);
+        SetStreamVolume(m_currentStream, g_stSettings.m_nVolumeLevel + (int)volumeCurrent);
+        SetStreamVolume(1 - m_currentStream, g_stSettings.m_nVolumeLevel + (int)volumeNext);
+        if (AddPacketsToStream(1 - m_currentStream, m_decoder[1 - m_currentDecoder]))
+          retVal2 = RET_SUCCESS;
       }
     }
+    // add packets as necessary
+    if (AddPacketsToStream(m_currentStream, m_decoder[m_currentDecoder]))
+      retVal = RET_SUCCESS;
+
+    if (retVal == RET_SLEEP && retVal2 == RET_SLEEP)
+      Sleep(1);
+    DWORD time3 = timeGetTime();
+ //   CLog::Log(LOGINFO, "Time Decoding: %i, Time Resampling: %i, bytes processed %i, buffer 1 state %i, buffer 2 state %i", time2-time, time3-time2, dataToRead, m_decoder[m_currentDecoder].GetDataSize(), m_decoder[1 - m_currentDecoder].GetDataSize());
   }
   return true;
 }
 
-int PAPlayer::CreateAudioDevice()
-{
-  if (!m_codec)
-    return 0;
-
-  if (m_pAudioDevice)
-  {
-    if (m_codec->m_Channels != m_Channels ||
-        m_codec->m_SampleRate != m_SampleRate ||
-        m_codec->m_BitsPerSample != m_BitsPerSample)
-    {
-      KillAudioDevice();
-    }
-    else
-    { // no need to reset the output device - keep the one we have
-      return 1;
-    }
-  }
-  m_Channels = m_codec->m_Channels;
-  m_SampleRate = m_codec->m_SampleRate;
-  m_BitsPerSample = m_codec->m_BitsPerSample;
-  m_BytesPerSecond = m_Channels * m_SampleRate * m_BitsPerSample / 8;
-
-  bool bResample(false);
-  if (g_guiSettings.GetBool("AudioOutput.HighQualityResampling"))
-    bResample = true;
-
-  if (m_codec->m_Channels == 2 && (m_codec->m_SampleRate == 48000 || bResample) && (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL) && g_guiSettings.GetBool("AudioOutput.PCMPassThrough")) // need add menu options here
-    m_pAudioDevice = new CAc97DirectSound(m_pCallback, m_codec->m_Channels, m_codec->m_SampleRate, m_codec->m_BitsPerSample, false, bResample);
-  else
-    m_pAudioDevice = new CASyncDirectSound(m_pCallback, m_codec->m_Channels, m_codec->m_SampleRate, m_codec->m_BitsPerSample, bResample, OUTPUT_BUFFER_LENGTH); // use 64k of buffers
-  
-  m_dwAudioBufferMin = m_pAudioDevice->GetChunkLen();
-
-  CLog::Log(LOGINFO, "PAP Player: New AudioDevice created. Chunklen %d",m_dwAudioBufferMin);
-  return 1;
-}
-
-void PAPlayer::KillAudioDevice()
-{
-  if (m_pAudioDevice)
-  {
-    delete m_pAudioDevice;
-    m_pAudioDevice = NULL;
-  }
-}
-
 __int64 PAPlayer::GetTime()
 {
-  __int64  timeplus = 0;
-  if (m_pAudioDevice)
-    timeplus = m_BytesPerSecond ? (__int64)(((float)(m_dwBytesSentOut - m_pAudioDevice->GetBytesInBuffer())) / (float)m_BytesPerSecond * 1000.0) : 0;
-  else
-    timeplus = m_BytesPerSecond ? (__int64)(((float) m_dwBytesSentOut / (float)m_BytesPerSecond ) * 1000.0) : 0;
-  return  m_startOffset + timeplus;
+  __int64  timeplus = m_BytesPerSecond ? (__int64)(((float) m_bytesSentOut / (float)m_BytesPerSecond ) * 1000.0) : 0;
+  return m_timeOffset + timeplus - m_currentFile.m_lStartOffset * 1000 / 75;
+}
+
+__int64 PAPlayer::GetTotalTime64()
+{
+  __int64 total = m_decoder[m_currentDecoder].TotalTime();
+  if (m_currentFile.m_lEndOffset)
+    total = m_currentFile.m_lEndOffset * 1000 / 75;
+  if (m_currentFile.m_lStartOffset)
+    total -= m_currentFile.m_lStartOffset * 1000 / 75;
+  return total;
 }
 
 int PAPlayer::GetTotalTime()
 {
-  return (int)(m_codec->m_TotalTime / 1000);
+  return (int)(GetTotalTime64()/1000);
 }
 
 void PAPlayer::SeekTime(__int64 iTime /*=0*/)
 {
+  if (m_currentFile.m_lStartOffset)
+    iTime += m_currentFile.m_lStartOffset * 1000 / 75;
   m_SeekTime = iTime;
 }
 
@@ -496,55 +609,216 @@ void PAPlayer::SeekPercentage(float fPercent /*=0*/)
 {
   if (fPercent < 0.0f) fPercent = 0.0f;
   if (fPercent > 100.0f) fPercent = 100.0f;
-  m_SeekTime = (__int64)(fPercent * 0.01f * (float)m_codec->m_TotalTime);
+  SeekTime((__int64)(fPercent * 0.01f * (float)GetTotalTime64()));
 }
 
 float PAPlayer::GetPercentage()
 {
-  return (float)GetTime() * 100.0f / (float)m_codec->m_TotalTime;
+  return (float)GetTime() * 100.0f / GetTotalTime64();
 }
 
-void PAPlayer::ApplyReplayGain(void *pData, int size)
+void PAPlayer::HandleSeeking()
 {
-  // Ideally, we'd keep everything in floats until we
-  // get to the output stage.  Unfortunately, AddPackets() doesn't support this
-  // yet.  It'd be reasonably easy to add, however.
-  // This will currently fail rather badly on non-16bit audio.
-#define REPLAY_GAIN_DEFAULT_LEVEL 89.0f
-#define MAX_SHORT_VALUE 32767
-#define MIN_SHORT_VALUE -32768  // this hardclipping is necessary due to the above.
-  // Compute amount of gain
-  float replaydB, peak;
-  if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_TRACK_INFO)
+  if (m_SeekTime != -1)
   {
-    replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iTrackGain / 100.0f;
-    peak = m_codec->m_replayGain.fTrackPeak;
+    m_timeOffset = m_decoder[m_currentDecoder].Seek(m_SeekTime);
+    FlushStreams();
+    m_bytesSentOut = 0;
+    m_SeekTime = -1;
   }
-  else if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_ALBUM_INFO)
+  g_infoManager.m_bPerformingSeek = false;
+}
+
+void PAPlayer::FlushStreams()
+{
+  for (int stream = 0; stream < 2; stream++)
   {
-    replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iAlbumGain / 100.0f;
-    peak = m_codec->m_replayGain.fAlbumPeak;
+    if (m_pStream[stream] && packet[stream])
+    {
+      DWORD status;
+      m_pStream[stream]->GetStatus(&status);
+      m_pStream[stream]->Flush();
+      for (int i = PACKET_COUNT; i; i--)
+        packet[stream][i].status = XMEDIAPACKET_STATUS_SUCCESS;
+      // make sure it's still paused if it should be
+      if (status == DSSTREAMSTATUS_PAUSED)
+      {
+        CLog::Log(LOGINFO, "Pausing stream %i after Flush()", stream);
+        m_pStream[stream]->Pause(DSSTREAMPAUSE_PAUSE);
+      }
+    }
   }
-  else
-  {
-    replaydB = (float)g_guiSettings.m_replayGain.iNoGainPreAmp;
-    peak = 0.0f;
+}
+
+bool PAPlayer::HandleFFwdRewd()
+{
+  if (!m_IsFFwdRewding && m_iSpeed == 1)
+    return true;  // nothing to do
+  if (m_IsFFwdRewding && m_iSpeed == 1)
+  { // stop ffwd/rewd
+    m_IsFFwdRewding = false;
+    SetVolume(g_stSettings.m_nVolumeLevel);
+    m_bytesSentOut = 0;
+    FlushStreams();
+    return true;
   }
-  // convert to a gain type
-  float replaygain = pow(10.0f, (replaydB - REPLAY_GAIN_DEFAULT_LEVEL)* 0.05f);
-  // check peaks
-  if (g_guiSettings.m_replayGain.bAvoidClipping)
+  // we're definitely fastforwarding or rewinding
+  int snippet = m_BytesPerSecond / 2;
+  if ( m_bytesSentOut >= snippet ) 
   {
-    if (fabs(peak * replaygain) > 1.0f)
-      replaygain = 1.0f / fabs(peak);
+    // Calculate offset to seek if we do FF/RW
+    __int64 time = GetTime();
+    if (m_IsFFwdRewding) snippet = (int)m_bytesSentOut;
+    time += (__int64)((double)snippet * (m_iSpeed - 1.0) / m_BytesPerSecond * 1000.0);
+
+    // Is our offset inside the track range?
+    if (time >= 0 && time <= m_decoder[m_currentDecoder].TotalTime())
+    { // just set next position to read
+      m_IsFFwdRewding = true;  
+      time += m_currentFile.m_lStartOffset * 1000 / 75;
+      m_timeOffset = m_decoder[m_currentDecoder].Seek(time);
+      m_bytesSentOut = 0;
+      FlushStreams();
+      SetVolume(g_stSettings.m_nVolumeLevel - VOLUME_FFWD_MUTE); // override xbmc mute 
+    }
+    else if (time < 0)
+    { // ...disable seeking and start the track again
+      time = m_currentFile.m_lStartOffset * 1000 / 75;
+      m_timeOffset = m_decoder[m_currentDecoder].Seek(time);
+      m_bytesSentOut = 0;
+      FlushStreams();
+      m_iSpeed = 1;
+      SetVolume(g_stSettings.m_nVolumeLevel); // override xbmc mute 
+    } // is our next position greater then the end sector...
+    else //if (time > m_codec->m_TotalTime)
+    {
+      // restore volume level so the next track isn't muted
+      SetVolume(g_stSettings.m_nVolumeLevel);
+      CLog::Log(LOGINFO, "PAP Player: End of track reached while seeking");
+      return false;
+    }
   }
-  // apply gain
-  short *pShortData = (short *)pData;
-  for (int i = size; i; i-=2)
+  return true;
+}
+
+void PAPlayer::SetStreamVolume(int stream, long nVolume)
+{
+  if (nVolume > DSBVOLUME_MAX) nVolume = DSBVOLUME_MAX;
+  if (nVolume < DSBVOLUME_MIN) nVolume = DSBVOLUME_MIN;
+  if (m_pStream[stream])
+    m_pStream[stream]->SetVolume(nVolume);
+}
+
+bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
+{
+  if (!m_pStream[stream] || dec.GetStatus() == STATUS_NO_FILE)
+    return false;
+
+  bool ret = false;
+  // find a free packet and fill it with the decoded data
+  DWORD dwPacket;
+  while (FindFreePacket(stream, &dwPacket))
   {
-    float result = *pShortData * replaygain;
-    if (result > MAX_SHORT_VALUE) result = MAX_SHORT_VALUE;
-    if (result < MIN_SHORT_VALUE) result = MIN_SHORT_VALUE;
-    *pShortData++ = (short)result;
+    XMEDIAPACKET xmp;
+    ZeroMemory( &xmp, sizeof( XMEDIAPACKET ) );
+    // have a free packet - grab some data from our resampler to fill it with
+    if (m_resampler[stream].GetData(packet[stream][dwPacket].packet))
+    {
+      // got some data from our resampler - construct audio packet
+      packet[stream][dwPacket].length = PACKET_SIZE;
+      packet[stream][dwPacket].status = XMEDIAPACKET_STATUS_PENDING;
+      packet[stream][dwPacket].stream = stream;
+      xmp.pContext          = &packet[stream][dwPacket];
+      xmp.pvBuffer          = packet[stream][dwPacket].packet;
+      xmp.dwMaxSize         = packet[stream][dwPacket].length;
+      xmp.pdwCompletedSize  = NULL;
+      xmp.prtTimestamp      = NULL;
+      xmp.pdwStatus         = &packet[stream][dwPacket].status;
+
+      if (DS_OK != m_pStream[stream]->Process(&xmp, NULL))
+      { // bad news :(
+        return false;
+      }
+
+      // something done
+      ret = true;
+    }
+    else
+    { // resampler wants more data - let's feed it
+      int amount = m_resampler[stream].GetInputSize();
+      if (amount <= 0 || amount > (int)dec.GetDataSize())
+      { // doesn't need anything
+        break;
+      }
+      // needs some data - let's feed it
+      m_resampler[stream].PutData((BYTE *)dec.GetData(amount), amount);
+      ret = true;
+    }
+  }
+  return ret;
+}
+
+bool PAPlayer::FindFreePacket( int stream, DWORD* pdwPacket )
+{
+  for( DWORD dwIndex = 0; dwIndex < PACKET_COUNT; dwIndex++ )
+  {
+    // The first EXTRA_PACKETS * 2 packets are reserved - odd packets
+    // for stream 1, even packets for stream 2.  This is to ensure
+    // that there are packets available during the crossfade
+    if( XMEDIAPACKET_STATUS_PENDING != packet[stream][dwIndex].status )
+    {
+      (*pdwPacket) = dwIndex;
+      return true;
+    }
+  }
+  return false;
+}
+
+void PAPlayer::RegisterAudioCallback(IAudioCallback *pCallback)
+{
+  m_pCallback = pCallback;
+  if (m_pCallback)
+    m_pCallback->OnInitialize(m_Channels, m_SampleRate, m_BitsPerSample);
+}
+
+void PAPlayer::UnRegisterAudioCallback()
+{
+  m_pCallback = NULL;
+}
+
+void PAPlayer::DoAudioWork()
+{
+  if (m_pCallback && m_visBufferLength)
+  {
+    m_pCallback->OnAudioData(m_visBuffer, m_visBufferLength);
+    m_visBufferLength = 0;
+}
+  }
+
+void PAPlayer::StreamCallback( LPVOID pPacketContext )
+{
+  AudioPacket *pkt = (AudioPacket *)pPacketContext;
+
+  // only process from the current stream (if we're crossfading for instance)
+  if (pkt->stream != m_currentStream)
+    return;
+
+  m_bytesSentOut += pkt->length;
+
+  if (m_pCallback)
+  { // copy into our visualisation buffer.
+    // can't use a fast_memcpy() here due to the context (will crash otherwise)
+    memcpy(m_visBuffer, pkt->packet, pkt->length);
+    m_visBufferLength = pkt->length;
+  }
+}
+
+void CALLBACK StaticStreamCallback( VOID* pStreamContext, VOID* pPacketContext, DWORD dwStatus )
+{
+  PAPlayer* pPlayer = (PAPlayer*)pStreamContext;
+
+  if( dwStatus == XMEDIAPACKET_STATUS_SUCCESS )
+  {
+    pPlayer->StreamCallback(pPacketContext);
   }
 }

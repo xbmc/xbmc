@@ -7,6 +7,7 @@ public:
   virtual void OnPlayBackEnded() = 0;
   virtual void OnPlayBackStarted() = 0;
   virtual void OnPlayBackStopped() = 0;
+  virtual void OnQueueNextItem() = 0;
 };
 
 class IPlayer
@@ -17,6 +18,7 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
   virtual void UnRegisterAudioCallback() = 0;
   virtual bool OpenFile(const CFileItem& file, __int64 iStartTime){ return false;};
+  virtual bool QueueNextFile(const CFileItem &file) { return false; };
   virtual bool CloseFile(){ return true;};
   virtual bool IsPlaying() const { return false;} ;
   virtual void Pause() = 0;

@@ -107,6 +107,7 @@ public:
   virtual void OnPlayBackEnded();
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
+  virtual void OnQueueNextItem();
   bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC_TEMP);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist);
   bool PlayFile(const CFileItem& item, bool bRestart = false);
@@ -244,6 +245,7 @@ protected:
   bool m_bAllSettingsLoaded;
   bool m_bInitializing;
   CFileItem m_itemCurrentFile;
+  int m_nextPlaylistItem;
   D3DGAMMARAMP m_OldRamp;  // CB: SCREENSAVER PATCH
   CSplash* m_splash;
 

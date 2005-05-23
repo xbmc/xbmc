@@ -17,12 +17,10 @@ APECodec::APECodec()
 APECodec::~APECodec()
 {
   DeInit();
-  if (m_pDll)
-    delete m_pDll;
-  m_pDll = NULL;
+  CSectionLoader::UnloadDLL(APE_DLL);
 }
 
-bool APECodec::Init(const CStdString &strFile)
+bool APECodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   if (!LoadDLL())
     return false;
@@ -85,7 +83,6 @@ int APECodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     CLog::Log(LOGERROR, "APECodec: Read error %i", iRetVal);
     return READ_ERROR;
   }
-  CLog::Log(LOGERROR, "APECodec: Read %i bytes, took %i ms", *actualsize, timeGetTime() - time);
   if (!*actualsize)
     return READ_EOF;
   return READ_SUCCESS;
@@ -95,23 +92,12 @@ bool APECodec::LoadDLL()
 {
   if (m_bDllLoaded)
     return true;
-  CStdString strDll = "Q:\\system\\players\\PAPlayer\\MACDll.dll"; 
-  m_pDll = new DllLoader(strDll.c_str(), true);
+  m_pDll = CSectionLoader::LoadDLL(APE_DLL);
   if (!m_pDll)
   {
-    CLog::Log(LOGERROR, "APECodec: Unable to load dll %s", strDll.c_str());
+    CLog::Log(LOGERROR, "APECodec: Unable to load dll %s", APE_DLL);
     return false;
   }
-  if (!m_pDll->Parse())
-  {
-    // failed,
-    CLog::Log(LOGERROR, "APECodec: Unable to load dll %s", strDll.c_str());
-    delete m_pDll;
-    m_pDll = NULL;
-    return false;
-  }
-  m_pDll->ResolveImports();
-
   // get handle to the functions in the dll
   m_pDll->ResolveExport("GetVersionNumber", (void**)&m_dll.GetVersionNumber);
   m_pDll->ResolveExport("c_APEDecompress_Create", (void**)&m_dll.Create);
@@ -124,7 +110,7 @@ bool APECodec::LoadDLL()
   if (!m_dll.GetVersionNumber || !m_dll.Create || !m_dll.Destroy ||
       !m_dll.GetData || !m_dll.Seek || !m_dll.GetInfo || m_dll.GetVersionNumber() != MAC_VERSION_NUMBER)
   {
-    CLog::Log(LOGERROR, "APECodec: Unable to load our dll %s", strDll.c_str());
+    CLog::Log(LOGERROR, "APECodec: Unable to load our dll %s", APE_DLL);
     delete m_pDll;
     m_pDll = NULL;
     return false;

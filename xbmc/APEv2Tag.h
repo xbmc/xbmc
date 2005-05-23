@@ -4,8 +4,6 @@
 #include "cores/DllLoader/dll.h"
 #include "cores/paplayer/ReplayGain.h"
 
-#define APE_DLL "Q:\\system\\players\\PAPlayer\\MACDll.dll"
-
 typedef wchar_t str_utf16;
 typedef char str_ansi;
 

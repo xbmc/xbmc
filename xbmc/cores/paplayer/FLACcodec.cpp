@@ -28,8 +28,10 @@ FLACCodec::~FLACCodec()
   CSectionLoader::UnloadDLL(FLAC_DLL);
 }
 
-bool FLACCodec::Init(const CStdString &strFile)
+bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
+  m_file.Initialize(filecache);
+
   if (!LoadDLL())
     return false;
 
