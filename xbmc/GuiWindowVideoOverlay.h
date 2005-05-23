@@ -7,6 +7,4 @@ public:
   CGUIWindowVideoOverlay(void);
   virtual ~CGUIWindowVideoOverlay(void);
   virtual void Render();
-  void Update();
-protected:
 };

@@ -3332,8 +3332,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         m_itemCurrentFile = item;
       }
       g_infoManager.SetCurrentItem(m_itemCurrentFile);
-      m_guiMusicOverlay.Update();
-      m_guiVideoOverlay.Update();
       return true;
     }
     break;

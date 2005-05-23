@@ -297,7 +297,6 @@ unsigned int CFileShoutcast::Read(void* lpBuf, __int64 uiBufSize)
     CMusicInfoTagLoaderMP3 ldr;
     ldr.ReadTag(id3tag, tag);
     g_infoManager.SetCurrentSongTag(tag);
-    g_application.m_guiMusicOverlay.UpdateInfo(tag);
   }
   return iRead;
 }
