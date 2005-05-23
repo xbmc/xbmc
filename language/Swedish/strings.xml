@@ -671,6 +671,9 @@
   <string><id>12353</id><value>Återaktivera delningslåsk</value></string>
   <string><id>12354</id><value>Gå förbi mapplås tills nästa uppstart?</value></string>
   <string><id>12355</id><value>automatisk återaktivering av mapplåss.)</value></string>
+  <string><id>12356</id><value>Byt lås</value></string> 
+  <string><id>12357</id><value>Delnings Låsk</value></string>
+  <string><id>12358</id><value>Lösenordet lämnades blankt. Försök igen.</value></string> 
   <string><id>12600</id><value>Mitt väder</value></string>
   <string><id>12900</id><value>Skärmsläckare</value></string>
   <string><id>12901</id><value>Helskärms OSD</value></string>
@@ -756,7 +759,7 @@
   <string><id>13311</id><value>Transtion float</value></string>
   <string><id>13312</id><value>Gräns reduktion</value></string>
   <string><id>13313</id><value>Reseta/Starta om</value></string>
-  <string><id>13314</id><value>Musik OSD timeout</value></string>
+  <string><id>13314</id><value>Crossfade</value></string>
   <string><id>13315</id><value>Skapa miniatyrer</value></string>
   <string><id>13316</id><value>Recursive miniatyrer</value></string>
   <string><id>13317</id><value>Titta på bildspel</value></string>
@@ -827,6 +830,7 @@
   <string><id>13384</id><value>Röst Mask - Port 2</value></string>
   <string><id>13385</id><value>Röst Mask - Port 3</value></string>
   <string><id>13386</id><value>Använd tidsbaserad sökning</value></string>
+  <string><id>13387</id><value>Track Naming Template Right</value></string>
   <string><id>14000</id><value>Stacking Av</value></string>
   <string><id>14001</id><value>Stacking enkel</value></string>
   <string><id>14002</id><value>Stacking luddig</value></string>
@@ -885,6 +889,16 @@
   <string><id>14057</id><value>Inte möjligt medans du scannar för mediainfo</value></string>
   <string><id>14058</id><value>Lägg till extra fillmbrus</value></string>
   <string><id>14059</id><value>Leta efter thumbnails i delade mappar på datorn</value></string>
+  <string><id>14061</id><value>Auto</value></string>
+  <string><id>14062</id><value>Ange användarnamn för</value></string>
+  <string><id>14063</id><value>datum &amp; Tid</value></string>
+  <string><id>14064</id><value>Sätt År</value></string>
+  <string><id>14065</id><value>Sätt Månad</value></string>
+  <string><id>14066</id><value>Sätt Dag</value></string>
+  <string><id>14067</id><value>Sätt Timme</value></string>
+  <string><id>14068</id><value>Sätt Minuter</value></string>
+  <string><id>14069</id><value>Vill du använda inställningarna nu?</value></string>
+  <string><id>14070</id><value>Använd ändringar nu</value></string> 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Tjänsten är inte kontaktbar, vill du försöka</value></string>
   <string><id>15002</id><value>återupprätta anslutningen med XboxMediaCenter?</value></string>
