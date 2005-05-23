@@ -464,7 +464,7 @@ CGUISettings::CGUISettings(void)
   AddInt(6, "XBDateTime.Month", 14065, SYS_MONTH_MAY, 1, SYS_MONTH_JANUARY, SYS_MONTH_DECEMBER, SPIN_CONTROL_INT);
   AddInt(7, "XBDateTime.Day", 14066, 15, 1, 1, 31, SPIN_CONTROL_INT);
   AddInt(8, "XBDateTime.Hour", 14067, 12, 0, 1, 23, SPIN_CONTROL_INT);
-  AddInt(9, "XBDateTime.Minute", 14068, 30, 0, 1, 60, SPIN_CONTROL_INT);
+  AddInt(9, "XBDateTime.Minute", 14068, 30, 0, 1, 59, SPIN_CONTROL_INT);
   AddString(10, "XBDateTime.SetDateTime", 14070, "", BUTTON_CONTROL_STANDARD);
   
 
