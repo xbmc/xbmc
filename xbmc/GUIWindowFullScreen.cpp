@@ -8,7 +8,7 @@
 #include "cores/mplayer/ASyncDirectSound.h"
 #include "PlayListPlayer.h"
 #include "utils/GUIInfoManager.h"
-#include "cores/mplayer/xbox_video.h"
+#include "cores/VideoRenderers/RenderManager.h"
 #include "../guilib/GUIProgressControl.h"
 #include "GUIAudioManager.h"
 
@@ -508,7 +508,6 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
     if (g_application.m_pPlayer->IsPaused() ) return true;
     if (g_application.m_pPlayer->IsCaching() ) return true;
   }
-
   if (g_application.GetPlaySpeed() != 1) return true;
   if (m_bShowTime) return true;
   if (m_bShowCodecInfo) return true;
