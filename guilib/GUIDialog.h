@@ -30,7 +30,4 @@ protected:
   CGUIWindow* m_pParentWindow;
   bool m_bRunning;
   bool m_bModal;
-
-private:
-  int m_iPrevOverlayAllowed;
 };

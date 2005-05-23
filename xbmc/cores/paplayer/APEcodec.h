@@ -65,7 +65,7 @@ public:
   APECodec();
   virtual ~APECodec();
 
-  virtual bool Init(const CStdString &strFile);
+  virtual bool Init(const CStdString &strFile, unsigned int filecache);
   virtual void DeInit();
   virtual __int64 Seek(__int64 iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);

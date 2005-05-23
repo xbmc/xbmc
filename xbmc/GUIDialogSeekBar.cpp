@@ -34,7 +34,7 @@ bool CGUIDialogSeekBar::OnAction(const CAction &action)
   if (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK)
   {
     // calculate our seek amount
-    if (g_application.m_pPlayer)
+    if (g_application.m_pPlayer && !g_infoManager.m_bPerformingSeek)
     {
       if (action.wID == ACTION_ANALOG_SEEK_FORWARD)
         m_fSeekPercentage += action.fAmount1 * SEEK_SPEED;
@@ -45,8 +45,8 @@ bool CGUIDialogSeekBar::OnAction(const CAction &action)
       CGUISliderControl *pSlider = (CGUISliderControl*)GetControl(POPUP_SEEK_SLIDER);
       if (pSlider) pSlider->SetPercentage((int)m_fSeekPercentage);   // Update our seek bar accordingly
       m_bRequireSeek = true;
+      ResetTimer();
     }
-    ResetTimer();
     return true;
   }
   if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
@@ -133,8 +133,10 @@ void CGUIDialogSeekBar::Render()
   {
     g_infoManager.m_bPerformingSeek = true;
     float time = g_infoManager.GetTotalPlayTime() * m_fSeekPercentage * 10.0f;
-    time += g_infoManager.GetCurrentSongStart() * 1000.0f/75.0f;
     g_application.m_pPlayer->SeekTime((__int64)time);
     m_bRequireSeek = false;
+    // if we're seeking very near the end, let's reset our seek amount
+    if (m_fSeekPercentage > 95.0f)
+      m_fSeekPercentage = 0.0f;
   }
 }

@@ -19,7 +19,7 @@ bool CMusicInfoTagLoaderWAV::Load(const CStdString& strFileName, CMusicInfoTag& 
 
     // Load our codec class
     WAVCodec codec;
-    if (codec.Init(strFileName))
+    if (codec.Init(strFileName, 4096))
     {
       tag.SetDuration((int)(codec.m_TotalTime/1000));
       codec.DeInit();

@@ -2,6 +2,11 @@
 
 #include "cores/DllLoader/dll.h"
 
+// dll defines
+#define APE_DLL "Q:\\system\\players\\PAPlayer\\MACDll.dll"
+#define SHN_DLL "Q:\\system\\players\\PAPlayer\\libshnplay.dll"
+#define MPC_DLL "Q:\\system\\players\\PAPlayer\\MPCcodec.dll"
+
 class CSectionLoader
 {
 public:

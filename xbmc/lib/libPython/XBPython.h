@@ -33,6 +33,7 @@ public:
 	virtual void OnPlayBackEnded();
 	virtual void OnPlayBackStarted();
 	virtual void OnPlayBackStopped();
+  virtual void OnQueueNextItem() {};
 	void	RegisterPythonPlayerCallBack(IPlayerCallback* pCallback);
 	void	UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback);
 	void	Initialize();

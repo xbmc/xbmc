@@ -1,4 +1,5 @@
 **************************************************************************************************************************************************************************************************************************                                     Xbox Media Center CHANGELOG************************************************************************************************************* *************************************************************************************************************added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-05-2005 added: PAPlayer v2.
  - 23-05-2005 changed: Cleaned up video renderers + merged the interface for mplayer + dvdplayer.
  - 23-05-2005 changed: removed the Swap Month and Day from Look&Feel and add To Date & Time.[GeminiServer]
  - 23-05-2005 changed: removed the Swap 12HourClock from Look&Feel and add To Date & Time.[GeminiServer]

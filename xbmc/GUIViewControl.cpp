@@ -38,6 +38,8 @@ void CGUIViewControl::SetParentWindow(int window)
 
 void CGUIViewControl::SetCurrentView(int viewMode)
 {
+  if (viewMode == m_currentView)
+    return;
 //  CLog::DebugLog("SetCurrentView: Oldview: %i, Newview :%i", m_currentView, viewMode);
   map_iter it = m_vecViews.find(viewMode);
   if (it == m_vecViews.end()) return;

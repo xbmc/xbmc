@@ -11,6 +11,7 @@ MPCCodec::MPCCodec()
   m_pDll = NULL;
   m_bDllLoaded = false;
   ZeroMemory(&m_dll, sizeof(MPCdll));
+  m_sampleBufferSize = 0;
 }
 
 MPCCodec::~MPCCodec()
@@ -18,7 +19,7 @@ MPCCodec::~MPCCodec()
   DeInit();
 }
 
-bool MPCCodec::Init(const CStdString &strFile)
+bool MPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   if (!LoadDLL())
     return false;
@@ -63,7 +64,14 @@ bool MPCCodec::Init(const CStdString &strFile)
 
 void MPCCodec::DeInit()
 {
-  m_dll.Close();
+  CLog::Log(LOGERROR, "MPCCodec::DeInit");
+  if (m_bDllLoaded)
+    m_dll.Close();
+  if (m_pDll)
+    delete m_pDll;
+  m_pDll = NULL;
+  m_bDllLoaded = false;
+  ZeroMemory(&m_dll, sizeof(MPCdll));
 }
 
 __int64 MPCCodec::Seek(__int64 iSeekTime)
@@ -75,23 +83,48 @@ __int64 MPCCodec::Seek(__int64 iSeekTime)
 
 int MPCCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
+  short *pShort = (short *)pBuffer;
   *actualsize = 0;
-  int ret = m_dll.Read( sample_buffer, size / 2);
+  // start by emptying out our frame buffer
+  int copied = 0;
+  for (copied = 0; copied < m_sampleBufferSize && copied < size / 2; copied++)
+  {
+    float sample = m_sampleBuffer[copied]*32768.0f + 0.5f;
+    if (sample > 32767.0f) sample = 32767.0f;
+    if (sample < -32768.0f) sample = -32768.0f;
+    *pShort++ = (short)sample;
+  }
+  size -= 2 * copied;
+  m_sampleBufferSize -= copied;
+  *actualsize = 2 * copied;
+  if (m_sampleBufferSize)
+  { // didn't require as much as was in our sample buffer - copy data down and return.
+    memmove(m_sampleBuffer, &m_sampleBuffer[copied], m_sampleBufferSize * sizeof(float));
+    return READ_SUCCESS;
+  }
+  // emptied our sample buffer - let's fill it up again
+  int ret = m_dll.Read( m_sampleBuffer, FRAMELEN * 2);
   if (ret == -2)
     return READ_EOF;
   if (ret == -1)
     return READ_ERROR;
   // have valid float data - let's convert back to normal 16bit info
   // (FIXME - should transfer directly for better quality)
-  short *pShort = (short *)pBuffer;
-  for (int i=0; i < ret * 2 && i < FRAMELEN * 2; i++)
+  copied = 0;
+  ASSERT(ret <= FRAMELEN * 2);
+  for (copied = 0; copied < ret * 2 && copied < size / 2; copied++)
   {
-    float sample = sample_buffer[i]*32786.0f + 0.5f;
+    float sample = m_sampleBuffer[copied]*32768.0f + 0.5f;
     if (sample > 32767.0f) sample = 32767.0f;
     if (sample < -32768.0f) sample = -32768.0f;
     *pShort++ = (short)sample;
   }
-  *actualsize = ret * 2 * 2;
+  *actualsize += copied * 2;
+  m_sampleBufferSize = ret * 2 - copied;
+  if (m_sampleBufferSize)
+  { // copy data down
+    memmove(m_sampleBuffer, &m_sampleBuffer[copied], m_sampleBufferSize * sizeof(float));
+  }
   return READ_SUCCESS;
 }
 

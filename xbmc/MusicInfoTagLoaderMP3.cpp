@@ -543,7 +543,9 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
   }
 
   //raw mp3Data = FileSize - ID3v1 tag - ID3v2 tag
-  int nMp3DataSize = id3tag.GetFileSize() - id3tag.GetAppendedBytes() - nPrependedBytes;
+  int nMp3DataSize = (int)file.GetLength() - nPrependedBytes;
+  if (id3tag.HasV1Tag())
+    nMp3DataSize -= id3tag.GetAppendedBytes();
 
   const int freqtab[][4] =
     {

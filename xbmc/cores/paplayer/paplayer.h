@@ -1,19 +1,35 @@
 #pragma once
-#include "../../Application.h"
 #include "../iplayer.h"
 #include "../../utils/thread.h"
 #include "../mplayer/IDirectSoundRenderer.h"
-#include "ICodec.h"
+#include "AudioDecoder.h"
+#include "../ssrc.h"
+
+#define PACKET_COUNT  40 // number of packets of size PACKET_SIZE (defined in AudioDecoder.h)
+
+#define STATUS_NO_FILE  0
+#define STATUS_QUEUING  1
+#define STATUS_QUEUED   2
+#define STATUS_PLAYING  3
+#define STATUS_ENDING   4
+#define STATUS_ENDED    5
+
+struct AudioPacket
+{
+  BYTE packet[PACKET_SIZE];
+  DWORD length;
+  DWORD status;
+  int   stream;
+};
 
 class PAPlayer : public IPlayer, public CThread
 {
 public:
   PAPlayer(IPlayerCallback& callback);
   virtual ~PAPlayer();
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback);
-  virtual void UnRegisterAudioCallback();
 
   virtual bool OpenFile(const CFileItem& file, __int64 iStartTime);
+  virtual bool QueueNextFile(const CFileItem &file);
   virtual bool CloseFile();
   virtual bool IsPlaying() const { return m_bIsPlaying; }
   virtual void Pause();
@@ -39,21 +55,35 @@ public:
   virtual void Update(bool bPauseDrawing = false) {}
   virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect){}
   virtual void GetVideoAspectRatio(float& fAR) {}
-  virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
-  virtual void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);
   virtual void ToFFRW(int iSpeed = 0);
   virtual int GetTotalTime();
+  __int64 GetTotalTime64();
   virtual __int64 GetTime();
   virtual void SeekTime(__int64 iTime = 0);
 
+  void StreamCallback( LPVOID pPacketContext );
+
+  virtual void RegisterAudioCallback(IAudioCallback *pCallback);
+  virtual void UnRegisterAudioCallback();
+
+  static bool HandlesType(const CStdString &type);
+  virtual void DoAudioWork();
 protected:
   virtual void OnStartup() {}
   virtual void Process();
   virtual void OnExit();
 
+  bool ReadData(int amount);
+  void HandleSeeking();
+  bool HandleFFwdRewd();
+
   bool m_bPaused;
   bool m_bIsPlaying;
   bool m_bStopPlaying;
+  bool m_cachingNextFile;
+  int  m_crossFading;
+  bool m_currentlyCrossFading;
+  __int64 m_crossFadeLength;
 
   CEvent m_startEvent;
 
@@ -61,37 +91,47 @@ protected:
 
 private:
   
-  IDirectSoundRenderer* m_pAudioDevice;  // our output device
-  DWORD m_dwAudioBufferSize; // size of the buffer in use
-  DWORD m_dwAudioBufferMin;  // minimum size of our buffer before we need more
-  DWORD m_dwAudioMaxSize;
-  
-  BYTE* m_pPcm;           // our temporary pcm buffer so we can learn the format of the data
-
-  int CreateAudioDevice();     // initializes our audio device
-  void KillAudioDevice();      // kills the above
-
   bool ProcessPAP();    // does the actual reading and decode from our PAP dll
-  void ApplyReplayGain(void *pData, int size);
-
-  bool    m_BufferingPcm;
-  bool    m_eof;
 
   __int64 m_SeekTime;
   int     m_IsFFwdRewding;
+  __int64 m_timeOffset;
 
-  unsigned int     m_PcmSize;  
-  unsigned int     m_PcmPos;
+  int m_currentDecoder;
+  CAudioDecoder m_decoder[2]; // our 2 audiodecoders (for crossfading + precaching)
 
-  unsigned int     m_BytesPerSecond;
-  // we remember the following from 1 tune to the next so that we can restart the audiodevice
-  // if necessary
+  void SetupDirectSound(int channels);
+
+  // Our directsoundstream
+  friend static void CALLBACK StaticStreamCallback( LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus );
+  bool AddPacketsToStream(int stream, CAudioDecoder &dec);
+  bool FindFreePacket(int stream, DWORD *pdwPacket );     // Looks for a free packet
+  void FreeStream(int stream);
+  bool CreateStream(int stream, int channels, int samplerate, int bitspersample);
+  void FlushStreams();
+  void SetStreamVolume(int stream, long nVolume);
+
+  int m_currentStream;
+  IDirectSoundStream *m_pStream[2];
+  AudioPacket         packet[2][PACKET_COUNT];
+
+  __int64                 m_bytesSentOut;
+
+  // format (this should be stored/retrieved from the audio device object probably)
   unsigned int     m_SampleRate;
   unsigned int     m_Channels;
   unsigned int     m_BitsPerSample;
+  unsigned int     m_BytesPerSecond;
 
-  __int64 m_startOffset;
-  __int64 m_dwBytesSentOut;
+    // resampler
+  Cssrc            m_resampler[2];
+  bool             m_resampleAudio;
 
-  ICodec*          m_codec;
+  // our file
+  CFileItem        m_currentFile;
+  CFileItem        m_nextFile;
+
+  // stuff for visualisation
+  BYTE             m_visBuffer[PACKET_SIZE];
+  unsigned int     m_visBufferLength;
 };

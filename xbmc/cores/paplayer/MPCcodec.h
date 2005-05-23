@@ -2,10 +2,9 @@
 #include "ICodec.h"
 #include "../../cores/DllLoader/dll.h"
 
-#define MPC_DLL "Q:\\system\\players\\PAPlayer\\MPCCodec.dll"
-
 // stuff from dll we need
-#define FRAMELEN (36 * 32)
+#define FRAMELEN 1152
+
 #include "mpc/in_mpc.h"
 
 class MPCCodec : public ICodec
@@ -22,13 +21,14 @@ public:
   MPCCodec();
   virtual ~MPCCodec();
 
-  virtual bool Init(const CStdString &strFile);
+  virtual bool Init(const CStdString &strFile, unsigned int filecache);
   virtual void DeInit();
   virtual __int64 Seek(__int64 iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool HandlesType(const char *type);
 private:
-  float sample_buffer[FRAMELEN * 2 * 2];
+  float m_sampleBuffer[FRAMELEN * 2 * 2];
+  int m_sampleBufferSize;
   // Our dll
   DllLoader *m_pDll;
   bool LoadDLL();
