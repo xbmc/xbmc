@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-05-2005 fixed: Date&Time: TimeZone/Daylight Detection was wrong! Fixed!(Supported Range GMT-12 - GMT+12) [GeminiServer]
+ - 23-05-2005 fixed: Date&Time: Selectable Minute Range was from 0-60! Now 0-59! [GeminiServer]
  - 23-05-2005 changed: Info on visualisation fades in/out on Shoutcast track change as well as normal track change.
  - 23-05-2005 removed: Unusued code in VideoOverlay and MusicOverlay.
  - 23-05-2005 fixed: Better seek bar behaviour at end of media.
