@@ -5,6 +5,16 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+ - 23-05-2005 changed: removed the Swap Month and Day from Look&Feel and add To Date & Time.[GeminiServer]
+ - 23-05-2005 changed: removed the Swap 12HourClock from Look&Feel and add To Date & Time.[GeminiServer]
+ - 23-05-2005 changed: removed the Internet Time from the Network place and add to Date & Time.[GeminiServer]
+ - 23-05-2005 added: If Internet Time is True, Date & Time Change Settings are Disabled [GeminiServer]
+ - 23-05-2005 fixed: Set Share Lock [Keyboard] was broken, does not displayed the 2nd keyboard to verify the pw [GeminiServer]
+ - 23-05-2005 added: NEW Date & Time Change Settings [Year/Month/Day/Hour/Minute] with leap year and TimeZone detection![GeminiServer]
+ - 23-05-2005 added: Show error to user saying the password entry was blank [for Numeric, GamePad, Fulltext] [GeminiServer]
+ - 23-05-2005 added: Show error to user on share lock the password re-entry failed [for Numeric, GamePad, Fulltext] [GeminiServer]
+ - 23-05-2005 added: Share Lock Password can be Changed now from Contex Menu! On the Contex Menu: Remove, Reactive Now Plus Change Lock![GeminiServer]
  - 22-05-2005 fixed: xbmc would fail to restore proper gui resolution if osd was visible when video playback ended
  - 22-05-2005 updated: new Milkdrop.vis version that has .xml (settings) support and bugfixes
  - 22-05-2005 added: Milkdrop sourcecode (/docs/visualisations)

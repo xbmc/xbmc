@@ -679,7 +679,13 @@
   <string><id>12353</id><value>Reactivate Lock</value></string>
   <string><id>12354</id><value>Override folder locks until next boot?</value></string>
   <string><id>12355</id><value>automatically re-enable folder locks.)</value></string>
-  <string><id>12600</id><value>My Weather</value></string>
+	<string><id>12356</id><value>Change Lock</value></string>
+	
+	<string><id>12357</id><value>Share Lock</value></string>
+	<string><id>12358</id><value>Password entry was blank. Try again.</value></string>
+	
+	
+	<string><id>12600</id><value>My Weather</value></string>
   <string><id>12900</id><value>Screensaver</value></string>
   <string><id>12901</id><value>Fullscreen OSD</value></string>
   <string><id>13000</id><value>System</value></string>
@@ -856,7 +862,16 @@
   <string><id>14060</id><value>Unknown type Cache - Internet</value></string>
   <string><id>14061</id><value>Auto</value></string>
   <string><id>14062</id><value>Enter username for</value></string>
-
+  
+    <string><id>14063</id><value>Date &amp; Time</value></string>
+	  <string><id>14064</id><value>Set Year</value></string>
+	  <string><id>14065</id><value>Set Month</value></string>
+	  <string><id>14066</id><value>Set Day</value></string>
+	  <string><id>14067</id><value>Set Hour</value></string>
+	  <string><id>14068</id><value>Set Minute</value></string>
+	  <string><id>14069</id><value>Do you want set these Settings Now?</value></string>
+	  <string><id>14070</id><value>Apply Changes Now</value></string>
+	  
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>The service is not connected, would you like to attempt</value></string>
   <string><id>15002</id><value>reconnecting it with Xbox Media Center?</value></string>

@@ -423,12 +423,9 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStri
       return false;
     return true;
   }
-  else
-  {
-    return false;
-  }
-}
+  else return false;
 
+}
 // Show keyboard with initial value (aTextString) and replace with result string.
 // Returns: true  - successful display and input (empty result may return true or false depending on parameter)
 //          false - unsucessful display of the keyboard or cancelled editing
@@ -458,25 +455,22 @@ bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdStringW& strNewPassword)
   if (ShowAndVerifyPassword(strUserInput, "12340", 0))
   {
     // TODO: Show error to user saying the password entry was blank
-    return false;
+	CGUIDialogOK::ShowAndGetInput(L"12357", L"12358", L"", L""); // Password is empty/blank
+	return false;
   }
-
   if (L"" == strUserInput)
-    // user canceled out
-    return false;
+	  return false; // user canceled out
 
   // Prompt again for password input, this time sending previous input as the password to verify
-  if (!ShowAndVerifyPassword(strUserInput, "12341", 0))
+  if (ShowAndVerifyPassword(strUserInput, "12341", 0))
   {
     // TODO: Show error to user saying the password re-entry failed
-    return false;
+	CGUIDialogOK::ShowAndGetInput(L"12357", L"12344", L"", L""); // Password do not match
+	return false; 
   }
-
-  // password entry and re-entry succeeded
-  strNewPassword = strUserInput;
+  strNewPassword = strUserInput; // password entry and re-entry succeeded
   return true;
 }
-
 // \brief Show keyboard and verify user input against strPassword.
 // \param strPassword Value to compare against user input.
 // \param dlgHeading String shown on dialog title. Converts to localized string if contains a positive integer.
@@ -490,26 +484,28 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdStringW& strPassword, const CS
     strHeadingTemp = g_localizeStrings.Get(_wtoi(strHeadingTemp)).c_str();
 
   if (1 > iRetries)
-  {
-    strHeadingTemp.Format(L"%s - %s", strHeadingTemp, g_localizeStrings.Get(12326));
-  }
+  {  strHeadingTemp.Format(L"%s - %s", strHeadingTemp, g_localizeStrings.Get(12326));  }
   else
-  {
-    strHeadingTemp.Format(L"%s - %i %s", g_localizeStrings.Get(12326).c_str(), g_stSettings.m_iMasterLockMaxRetry - iRetries, g_localizeStrings.Get(12343).c_str());
-  }
-
+  {  strHeadingTemp.Format(L"%s - %i %s", g_localizeStrings.Get(12326).c_str(), g_stSettings.m_iMasterLockMaxRetry - iRetries, g_localizeStrings.Get(12343).c_str()); }
   if (!ShowAndGetInput(strUserInput, strHeadingTemp, false))
-    // user canceled out
-    return -1;
+	  return -1; // user canceled out
 
-  if (strUserInput == strPassword)
-    // user entered correct password
-    return 0;
-
-  // user must have entered an incorrect password
-  return 1;
+  if (strPassword != L"")
+  {
+	  if (strUserInput == strPassword)
+		  return 0;		// user entered correct password
+	  else return 1;	// user must have entered an incorrect password
+  }
+  else 
+  {
+	  if (strUserInput != L"")
+	  {
+		strPassword = strUserInput;
+		return 0; // user entered correct password
+	  }
+	  else return 1;
+  }
 }
-
 void CGUIDialogKeyboard::Close()
 {
   // reset the heading (we don't always have this)
