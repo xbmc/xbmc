@@ -8,7 +8,7 @@
 #include "GUIImage.h"
 #include "util.h"
 #include "utils/GUIInfoManager.h"
-#include "cores/mplayer/xbox_video.h"
+#include "cores/VideoRenderers/RenderManager.h"
 
 #define OSD_VIDEOPROGRESS 101
 #define OSD_SKIPBWD 210
