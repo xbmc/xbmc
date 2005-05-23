@@ -65,7 +65,7 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
     {
       //resources are allocated in g_application
       //CGUIDialog::OnMessage(message);
-      if (g_application.m_pPlayer)
+      if (g_infoManager.GetTotalPlayTime())
         m_fSeekPercentage = (float)g_infoManager.GetPlayTime() / g_infoManager.GetTotalPlayTime() * 0.1f;
       // start timer
       m_dwTimer = timeGetTime();
@@ -87,6 +87,15 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
       if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_SEEK_LABEL)
         CGUIDialog::OnMessage(message);
     }
+    break;
+  case GUI_MSG_PLAYBACK_STARTED:
+    { // new song started while our window is up - update our details
+      if (g_infoManager.GetTotalPlayTime())
+        m_fSeekPercentage = (float)g_infoManager.GetPlayTime() / g_infoManager.GetTotalPlayTime() * 0.1f;
+      m_bRequireSeek = false;
+    }
+    break;
+
   }
   return false; // don't process anything other than what we need!
 }
@@ -135,8 +144,5 @@ void CGUIDialogSeekBar::Render()
     float time = g_infoManager.GetTotalPlayTime() * m_fSeekPercentage * 10.0f;
     g_application.m_pPlayer->SeekTime((__int64)time);
     m_bRequireSeek = false;
-    // if we're seeking very near the end, let's reset our seek amount
-    if (m_fSeekPercentage > 95.0f)
-      m_fSeekPercentage = 0.0f;
   }
 }
