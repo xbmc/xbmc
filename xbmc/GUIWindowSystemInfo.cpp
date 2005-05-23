@@ -355,9 +355,11 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 					SET_CONTROL_LABEL(2,strXBoxVer);
 					
 					// Label 3: XBOX Serial
-					CStdString strXBSerial;
+					CStdString strXBSerial, strXBOXSerial;
+					CStdString strlblXBSerial = g_localizeStrings.Get(13289).c_str();
 					if (GetXBOXSerial(strXBSerial))
-						SET_CONTROL_LABEL(3,strXBSerial);
+						strXBOXSerial.Format("%s %s",strlblXBSerial.c_str(),strXBSerial);
+						SET_CONTROL_LABEL(3,strXBOXSerial);
 					
 					// Label 4: ModChip ID!
 					pDlgProgress.SetLine(1, "Detecting ModCHIP ID");
@@ -566,11 +568,12 @@ bool CGUIWindowSystemInfo::GetXBOXSerial(CStdString& strXBOXSerial)
 	//Detect XBOX Serial Number
 	CHAR TempString1[100];
 	ZeroMemory(TempString1, 100);
-	CStdString strlblXBSerial = g_localizeStrings.Get(13289).c_str();
+	//CStdString strlblXBSerial = g_localizeStrings.Get(13289).c_str();
 	if ( XKUtils::ReadEEPROMFromXBOX((LPBYTE)&m_EEPROMData, 0, 255))
 	{
 		strncpy(TempString1, (LPSTR)&m_EEPROMData.SerialNumber, SERIALNUMBER_SIZE);
-		strXBOXSerial.Format("%s %s",strlblXBSerial.c_str(),TempString1);
+		//strXBOXSerial.Format("%s %s",strlblXBSerial.c_str(),TempString1);
+		strXBOXSerial.Format("%s",TempString1);
 		return true;
 	}
 	else return false;
@@ -761,7 +764,7 @@ bool CGUIWindowSystemInfo::GetCurTime(CStdString& strCurTime)
 	SYSTEMTIME time;
 	GetLocalTime(&time);
 	CStdString strlblCurTime = g_localizeStrings.Get(142).c_str();
-	if (g_guiSettings.GetBool("LookAndFeel.Clock12Hour"))
+	if (g_guiSettings.GetBool("XBDateTime.Clock12Hour"))
 	{
 		if (time.wHour>12)
 		{

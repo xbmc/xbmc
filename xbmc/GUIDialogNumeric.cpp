@@ -211,7 +211,8 @@ bool CGUIDialogNumeric::ShowAndGetNewPassword(CStdStringW& strNewPassword)
   if (ShowAndVerifyInput(strUserInput, "12340", "12328", "12329", L"", true, true))
   {
     // TODO: Show error to user saying the password entry was blank
-    return false;
+	CGUIDialogOK::ShowAndGetInput(L"12357", L"12358", L"", L""); // Password is empty/blank
+	return false;
   }
 
   if (L"" == strUserInput)
@@ -222,6 +223,7 @@ bool CGUIDialogNumeric::ShowAndGetNewPassword(CStdStringW& strNewPassword)
   if (!ShowAndVerifyInput(strUserInput, "12341", "12328", "12329", L"", false, true))
   {
     // TODO: Show error to user saying the password re-entry failed
+	CGUIDialogOK::ShowAndGetInput(L"12357", L"12344", L"", L""); // Password do not match
     return false;
   }
 

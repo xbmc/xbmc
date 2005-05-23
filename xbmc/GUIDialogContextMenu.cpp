@@ -6,6 +6,7 @@
 #include "GUIDialogGamepad.h"
 #include "application.h"
 #include "GUIPassword.h"
+
 #include "util.h"
 
 #define BACKGROUND_IMAGE 999
@@ -196,7 +197,11 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
         pMenu->AddButton(12335);  // 5: Remove Share Lock
         // don't show next button if folder locks are being overridden
         if (!g_application.m_bMasterLockOverridesLocalPasswords)
+		{
           pMenu->AddButton(12353);  // 6: Reactivate Share Lock
+		  
+		  pMenu->AddButton(12356);  // 7: Change Share Lock
+		}
       }
     }
 
@@ -374,6 +379,44 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
         else  // this should never happen, but if it does, don't perform any action
           return false;
       }
+	case 7: // Share Change Lock Password 
+	  {
+		// 7: Set New Password for the Chare
+			// prompt user for mastercode when changing lock settings
+		  //if (!g_passwordManager.IsMasterLockUnlocked(true))
+		  //   return false;
+		  //else
+		  //{
+			CStdStringW strNewPW;
+			CStdStringW strNewLockMode;
+				switch (iLockMode)
+				{
+				case -1:  // 1: Numeric Password
+					if (!CGUIDialogNumeric::ShowAndGetNewPassword(strNewPW))
+					return false;
+					else strNewLockMode = "1";
+					break;
+				case -2:  // 2: Gamepad Password
+					if (!CGUIDialogGamepad::ShowAndGetNewPassword(strNewPW))
+					return false;
+					else strNewLockMode = "2";
+					break;
+				case -3:  // 3: Fulltext Password
+					if (!CGUIDialogKeyboard::ShowAndGetNewPassword(strNewPW))
+					return false;
+					else strNewLockMode = "3";
+					break;
+				default:  // Not supported, abort
+					return false;
+					break;
+				}
+				// password ReSet and re-entry succeeded, write out the lock data
+				g_settings.UpdateBookmark(strType, strLabel, "lockcode", strNewPW);
+				g_settings.UpdateBookmark(strType, strLabel, "lockmode", strNewLockMode);
+				g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", "0");
+				return true;
+		//}
+	  }
     }
   }
   return false;
