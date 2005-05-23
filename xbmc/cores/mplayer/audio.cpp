@@ -6,7 +6,7 @@
 #include "Ac97DirectSound.h"
 #include "IAudioCallback.h"
 #include "mplayer.h"
-#include "xbox_video.h"
+#include "../VideoRenderers/RenderManager.h"
 
 IDirectSoundRenderer* m_pAudioDecoder = NULL;
 
