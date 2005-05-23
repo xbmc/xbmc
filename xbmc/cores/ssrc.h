@@ -139,6 +139,15 @@ public:
   //---------------------------------------------------------------------------
   int Cssrc::PutData(unsigned char *pInData, int iSize);
 
+  //---------------------------------------------------------------------------
+  // returns the amount of data read that the resampler will take in
+  // in one run of PutData()
+  // if we first need to do a GetData() it returns 0.
+  // if we can't take any data (eg downsampling, which is current disabled) it
+  // returns -1
+  //---------------------------------------------------------------------------
+  int Cssrc::GetInputSize();
+
   int Cssrc::GetMaxInputSize() { return m_iMaxInputSize;};
   //---------------------------------------------------------------------------
   // Converts some data-
@@ -163,6 +172,7 @@ private:
   int shaper_type, shaper_len, shaper_clipmin, shaper_clipmax;
   int *randbuf, randptr;
   bool UpSampling;
+  bool DownSampling;
   int frqgcd, nch, sfrq, bps, dfrq, dbps, osf, fs1, fs2;
   int n1, n1x, n1y, n2, n2b, n2x, n2y, n1b;
   int filter2len; /* stage 2 filter length */

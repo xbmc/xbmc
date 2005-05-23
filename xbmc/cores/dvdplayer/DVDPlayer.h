@@ -4,7 +4,6 @@
 
 #include "IDVDPlayer.h"
 
-#include "DVDVideo.h"
 #include "DVDDemuxers\DVDPacketQueue.h"
 #include "DVDDemuxSPU.h"
 #include "DVDClock.h"
