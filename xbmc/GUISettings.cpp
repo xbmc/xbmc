@@ -422,11 +422,9 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(6, "Servers", 14036);
   AddBool(1, "Servers.FTPServer", 167, true);
-  AddBool(2, "Servers.TimeServer", 168, false);
-  AddString(3, "Servers.TimeAddress", 731, "207.46.130.100");
-  AddBool(3, "Servers.WebServer", 263, false);
-  AddString(4, "Servers.WebServerPort", 730, "80");
-  AddString(5, "Servers.WebServerPassword", 733, "", BUTTON_CONTROL_HIDDEN_INPUT, true);
+  AddBool(2, "Servers.WebServer", 263, false);
+  AddString(3, "Servers.WebServerPort", 730, "80");
+  AddString(4, "Servers.WebServerPassword", 733, "", BUTTON_CONTROL_HIDDEN_INPUT, true);
 
   // appearance settings
   AddGroup(7, 480);
@@ -437,10 +435,8 @@ CGUISettings::CGUISettings(void)
   AddString(4, "LookAndFeel.Language", 248, "english", SPIN_CONTROL_TEXT);
   AddString(5, "LookAndFeel.Font", 13303, "Default", SPIN_CONTROL_TEXT);
   AddString(6, "LookAndFeel.CharSet", 735, "ISO-8859-1", SPIN_CONTROL_TEXT);
-  AddBool(7, "LookAndFeel.Clock12Hour", 14051, false);
-  AddBool(8, "LookAndFeel.SwapMonthAndDay", 14052, false);
-  AddBool(9, "LookAndFeel.EnableRSSFeeds", 13305, true);
-  AddString(10, "LookAndFeel.GUICentering", 213, "", BUTTON_CONTROL_STANDARD);
+  AddBool(7, "LookAndFeel.EnableRSSFeeds", 13305, true);
+  AddString(8, "LookAndFeel.GUICentering", 213, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(7, "FileLists", 14018);
   AddBool(1, "FileLists.HideExtensions", 497, false);
@@ -456,6 +452,20 @@ CGUISettings::CGUISettings(void)
   AddCategory(7, "UIFilters", 14053);
   AddInt(1, "UIFilters.Flicker", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT);
   AddBool(2, "UIFilters.Soften", 215, false);
+
+  // GeminiServer
+  AddCategory(7, "XBDateTime", 14063);
+  AddBool(1, "XBDateTime.Clock12Hour", 14051, false);
+  AddBool(2, "XBDateTime.SwapMonthAndDay", 14052, false);
+  AddBool(3, "XBDateTime.TimeServer", 168, false);
+  AddString(4, "XBDateTime.TimeAddress", 731, "207.46.130.100");
+  AddInt(5, "XBDateTime.Year", 14064, 2005, 2000, 1, 2099, SPIN_CONTROL_INT);
+  AddInt(6, "XBDateTime.Month", 14065, SYS_MONTH_MAY, 1, SYS_MONTH_JANUARY, SYS_MONTH_DECEMBER, SPIN_CONTROL_INT);
+  AddInt(7, "XBDateTime.Day", 14066, 15, 1, 1, 31, SPIN_CONTROL_INT);
+  AddInt(8, "XBDateTime.Hour", 14067, 12, 0, 1, 23, SPIN_CONTROL_INT);
+  AddInt(9, "XBDateTime.Minute", 14068, 30, 0, 1, 60, SPIN_CONTROL_INT);
+  AddString(10, "XBDateTime.SetDateTime", 14070, "", BUTTON_CONTROL_STANDARD);
+  
 
   AddInt( -1, "UIOffset.X", 0, 0, -128, 1, 128, SPIN_CONTROL_INT);
   AddInt( -1, "UIOffset.Y", 0, 0, -128, 1, 128, SPIN_CONTROL_INT);
