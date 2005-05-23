@@ -28,8 +28,11 @@ CDDACodec::~CDDACodec()
   }
 }
 
-bool CDDACodec::Init(const CStdString &strFile)
+bool CDDACodec::Init(const CStdString &strFile, unsigned int filecache)
 {
+  // we don't use a filereader class here (so no need to respect the filecache var)
+  // as we are always reading from a local cd.
+
   if (!m_fileCDDA.Open(strFile))
     return false;
 

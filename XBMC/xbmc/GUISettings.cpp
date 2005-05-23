@@ -191,7 +191,8 @@ CGUISettings::CGUISettings(void)
   AddBool(4, "MyMusic.Repeat", 488, false);
   AddBool(5, "MyMusic.UseCDDB", 227, true);
   AddBool(6, "MyMusic.UseTags", 258, true);
-  AddInt(7, "MyMusic.OSDTimeout", 13314, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+//  AddInt(7, "MyMusic.OSDTimeout", 13314, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+  AddInt(7, "MyMusic.CrossFade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddCategory(3, "MusicLists", 14018);
   AddString(1, "MusicLists.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT);
   AddString(2, "MusicLists.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT);

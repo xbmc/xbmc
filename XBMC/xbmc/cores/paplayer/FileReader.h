@@ -9,11 +9,12 @@
 // using a separate thread.
 class CFileReader : public CThread
 {
-  const static int chunk_size = 65536;
+  const static int chunk_size = 16384;
 public:
-  CFileReader(unsigned int bufferSize, unsigned int dataToKeepBehind);
+  CFileReader();
   virtual ~CFileReader();
 
+  void Initialize(unsigned int bufferSize);
   virtual bool Open(const CStdString &strFile);
   virtual void Close();
   virtual int Read(void *out, __int64 size);

@@ -4,8 +4,6 @@
 #include "shn/shnplay.h"
 #include "FileReader.h"
 
-#define SHN_DLL "Q:\\system\\players\\PAPlayer\\libshnplay.dll"
-
 struct ShnPlayFileStream {
 	ShnPlayStream vtbl;
 	CFileReader *file;
@@ -29,14 +27,14 @@ public:
   SHNCodec();
   virtual ~SHNCodec();
 
-  virtual bool Init(const CStdString &strFile);
+  virtual bool Init(const CStdString &strFile, unsigned int filecache);
   virtual void DeInit();
   virtual __int64 Seek(__int64 iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool HandlesType(const char *type);
 private:
 
-  CFileReader m_fileSHN;
+  CFileReader m_file;
   ShnPlayFileStream m_stream;
   ShnPlay *m_handle;
   // Our dll

@@ -28,8 +28,6 @@ using namespace MUSIC_GRABBER;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
 
-#define APE_DLL "Q:\\system\\players\\PAPlayer\\MACDll.dll"
-
 int CGUIWindowMusicBase::m_nTempPlayListWindow = 0;
 CStdString CGUIWindowMusicBase::m_strTempPlayListDirectory = "";
 
@@ -246,6 +244,8 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       CSectionLoader::Unload("LIBID3");
       CSectionLoader::Unload("LIBMP4");
       CSectionLoader::UnloadDLL(APE_DLL);
+      CSectionLoader::UnloadDLL(SHN_DLL);
+      CSectionLoader::UnloadDLL(MPC_DLL);
     }
     break;
 
@@ -257,6 +257,8 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       CSectionLoader::Load("LIBID3");
       CSectionLoader::Load("LIBMP4");
       CSectionLoader::LoadDLL(APE_DLL);
+      CSectionLoader::LoadDLL(SHN_DLL);
+      CSectionLoader::LoadDLL(MPC_DLL);
 
       g_musicDatabase.Open();
 

@@ -124,6 +124,7 @@ CApplication::CApplication(void)
   m_bInitializing = true;
   m_strForcedNextPlayer = "";
   m_strPlayListFile = "";
+  m_nextPlaylistItem = -1;
 }
 
 CApplication::~CApplication(void)
@@ -1561,19 +1562,18 @@ void CApplication::Render()
   {
     m_pPlayer->DoAudioWork();
   }
-
+/*
   // check that we haven't passed the end of the file (for cue sheets)
   if ((m_pPlayer != NULL) && m_pPlayer->IsPlaying())
   {
     int timeinsecs = (int)(m_pPlayer->GetTime() / 1000);
-    if ((m_itemCurrentFile.m_lEndOffset && m_itemCurrentFile.m_lEndOffset / 75 < timeinsecs) /*||
-        (m_itemCurrentFile.m_lStartOffset && m_itemCurrentFile.m_lStartOffset / 75 > timeinsecs)*/)
+    if ((m_itemCurrentFile.m_lEndOffset && m_itemCurrentFile.m_lEndOffset / 75 < timeinsecs)
     { // time to stop the file...
       OnPlayBackEnded();
     }
-  }
+  }*/
 
-  // check if we haven't rewound past the start of the file (for cue sheets)
+  // check if we haven't rewound past the start of the file
 
   if (IsPlaying())
   {
@@ -1590,7 +1590,7 @@ void CApplication::Render()
       if (g_infoManager.GetPlayTime() / 1000 < iPower)
       {
         g_application.SetPlaySpeed(1);
-        g_application.m_pPlayer->SeekTime((m_itemCurrentFile.m_lStartOffset * 1000) / 75);
+        g_application.m_pPlayer->SeekTime(0);
       }
     }
   }
@@ -2141,7 +2141,7 @@ void CApplication::UpdateLCD()
         g_lcd->SetLine(iLine++, strLine);
       strLine = g_infoManager.GetMusicLabel(201);   // album
 
-      strProgressBar = g_lcd->GetProgressBar( (double)(g_application.m_pPlayer->GetTime() * 0.001f - g_infoManager.GetCurrentSongStart() / 75.0f),
+      strProgressBar = g_lcd->GetProgressBar( (double)(g_application.m_pPlayer->GetTime() * 0.001f),
                                               (double)g_application.m_pPlayer->GetTotalTime());
 
       g_lcd->SetLine(iLine++, strProgressBar);
@@ -2705,47 +2705,11 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     strNewPlayer = "paplayer";
   }
-  // Check if we are moving from one cue sheet item to the next
-  // need:
-  // 1.  player to exist
-  // 2.  current play time > endtime of current song.
-  // 3.  next item's startoffset>0
-  // 4.  next item start offset == current items end offset
-  // 5.  current and next item based on same media file.
-  if (m_pPlayer && (m_pPlayer->GetTime() > m_itemCurrentFile.m_lEndOffset*(__int64)1000 / 75))
-  {
-    if (item.m_lStartOffset > 0 && item.m_lStartOffset == m_itemCurrentFile.m_lEndOffset &&
-        item.m_strPath == m_itemCurrentFile.m_strPath && m_pPlayer)
-    { // this is the next cue sheet item, so we don't have to restart the player
-      // just update our display etc.
-      m_itemCurrentFile = item;
-      g_infoManager.SetCurrentItem(m_itemCurrentFile);
-      m_guiMusicOverlay.Update();
-      m_guiVideoOverlay.Update();
-      m_dwIdleTime = timeGetTime();
-      return true;
-    }
-  }
-  // check for the case where we rewind back past the start of a .cue sheet item
-  if (m_pPlayer && (m_pPlayer->GetTime() < m_itemCurrentFile.m_lStartOffset*(__int64)1000 / 75))
-  {
-    if (item.m_lEndOffset > 0 && item.m_lEndOffset == m_itemCurrentFile.m_lStartOffset &&
-        item.m_strPath == m_itemCurrentFile.m_strPath && m_pPlayer)
-    { // this is the next cue sheet item, so we don't have to restart the player
-      // just update our display etc.
-      m_itemCurrentFile = item;
-      g_infoManager.SetCurrentItem(m_itemCurrentFile);
-      m_guiMusicOverlay.Update();
-      m_guiVideoOverlay.Update();
-      m_dwIdleTime = timeGetTime();
-      return true;
-    }
-  }
   //We have to stop parsing a cdg before mplayer is deallocated
   m_CdgParser.Stop();
-  // We should restart the player, unless the previous and next tracks are using the cdda player
-  // (allows gapless cdda playback)
-  if (m_pPlayer && !(m_strCurrentPlayer == strNewPlayer && (m_strCurrentPlayer == "cdda" || m_strCurrentPlayer == "dvdplayer" || m_strCurrentPlayer == "paplayer")))
+  // We should restart the player, unless the previous and next tracks are using
+  // one of the players that allows gapless playback (paplayer, dvdplayer)
+  if (m_pPlayer && !(m_strCurrentPlayer == strNewPlayer && (m_strCurrentPlayer == "dvdplayer" || m_strCurrentPlayer == "paplayer")))
   {
     if (1 || m_strCurrentPlayer != strNewPlayer || !m_itemCurrentFile.IsAudio() )
     {
@@ -2755,6 +2719,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
 
   m_itemCurrentFile = item;
+  m_nextPlaylistItem = -1;
   m_strCurrentPlayer = strNewPlayer;
   if (!m_pPlayer)
   {
@@ -2854,6 +2819,18 @@ void CApplication::OnPlayBackStarted()
   CheckNetworkHDSpinDown(true);
 
   StartLEDControl(true);
+}
+
+void CApplication::OnQueueNextItem()
+{
+  // informs python script currently running that we are requesting the next track
+  // (does nothing if python is not loaded)
+  g_pythonParser.OnQueueNextItem(); // currently unimplemented
+
+  CLog::Log(LOGDEBUG, "Player has asked for the next item");
+
+  CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0, 0, 0, NULL);
+  m_gWindowManager.SendThreadMessage(msg);
 }
 
 void CApplication::OnPlayBackStopped()
@@ -3343,9 +3320,39 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_STARTED:
     {
       // Update our infoManager with the new details etc.
+      if (m_nextPlaylistItem >= 0)
+      { // we've started a previously queued item
+        CPlayList::CPlayListItem &item = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[m_nextPlaylistItem];
+        // update the playlist manager
+        WORD currentSong = g_playlistPlayer.GetCurrentSong();
+        DWORD dwParam = ((currentSong & 0xffff) << 16) | (m_nextPlaylistItem & 0xffff);
+        CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, g_playlistPlayer.GetCurrentPlaylist(), dwParam, (LPVOID)&item);
+        m_gWindowManager.SendThreadMessage(msg);
+        g_playlistPlayer.SetCurrentSong(m_nextPlaylistItem);
+        m_itemCurrentFile = item;
+      }
       g_infoManager.SetCurrentItem(m_itemCurrentFile);
       m_guiMusicOverlay.Update();
       m_guiVideoOverlay.Update();
+      return true;
+    }
+    break;
+
+  case GUI_MSG_QUEUE_NEXT_ITEM:
+    {
+      // Check to see if our playlist player has a new item for us,
+      // and if so, we check whether our current player wants the file
+      int iNext = g_playlistPlayer.GetNextSong();
+      CPlayList& playlist = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
+      if (iNext < 0 || iNext >= playlist.size())
+        return true; // nothing to do
+      // ok, grab the next song
+      CFileItem item = playlist[iNext];
+      // ok - send the file to the player if it wants it
+      if (m_pPlayer && m_pPlayer->QueueNextFile(item))
+      { // player wants the next file
+        m_nextPlaylistItem = iNext;
+      }
       return true;
     }
     break;
