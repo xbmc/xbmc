@@ -26,10 +26,6 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
   switch (action.wID)
   {
   case ACTION_SHOW_INFO:
-    //send the action to the overlay
-    if (g_graphicsContext.IsOverlayAllowed())
-      return g_application.m_guiMusicOverlay.OnAction(action);
-    else
     {
       // reset the timer
       m_dwInitTimer = 0;
@@ -47,9 +43,6 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     break;
 
   case ACTION_SHOW_GUI:
-    //send the action to the overlay so we can reset
-    //the bool m_bShowInfoAlways
-    g_application.m_guiMusicOverlay.OnAction(action);
     // save the settings
     g_settings.Save();
     m_gWindowManager.PreviousWindow();
@@ -94,6 +87,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
         return true;
       }
 
+      m_tag = g_infoManager.GetCurrentSongTag();
       if (g_stSettings.m_bMyMusicSongThumbInVis)
       { // always on
         m_bShowInfo = true;
@@ -149,7 +143,22 @@ void CGUIWindowVisualisation::Render()
       }
     }
     else if (!m_dwFrameCounter)
-    {  // check our current time, as we may have to fade in
+    {
+      // check whether our info manager has updated
+      const CMusicInfoTag &tag = g_infoManager.GetCurrentSongTag();
+      if (tag != m_tag)
+      { // need to fade in then out again
+        m_tag = tag;
+        m_dwFrameCounter = TRANSISTION_COUNT;
+        m_bFadingAtStart = true;
+      }
+      else if (m_bFadingAtStart && m_bShowInfo)
+      {
+        m_dwInitTimer = START_FADE_LENGTH;
+        m_bFadingAtStart = false;
+      }
+/*
+      // check our current time, as we may have to fade in
       int timeStarted = (int)(g_infoManager.GetPlayTime()/1000);
       if (timeStarted < TRANSISTION_LENGTH/50 && !m_bShowInfo && !m_bFadingAtStart)
       { // fade in at the start
@@ -162,7 +171,7 @@ void CGUIWindowVisualisation::Render()
         m_bFadingAtStart = false;
       }
       else if (timeStarted > TRANSISTION_LENGTH/50)
-        m_bFadingAtStart = false; // reset so that at next track we're good to go again.
+        m_bFadingAtStart = false; // reset so that at next track we're good to go again.*/
     }
   }
   if (m_dwFrameCounter)
