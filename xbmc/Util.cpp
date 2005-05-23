@@ -12,12 +12,12 @@
 #include "filesystem/hddirectory.h"
 #include "filesystem/DirectoryCache.h"
 #include "Credits.h"
-#include "cores/mplayer/xbox_video.h"
 #include "shortcut.h"
 #include "playlistplayer.h"
 #include "lib/libPython/XBPython.h"
 #include "utils/RegExp.h"
 #include "utils/AlarmClock.h" 
+#include "cores/VideoRenderers/RenderManager.h"
 
 bool CUtil::m_bNetworkUp = false;
 extern "C"
