@@ -21,4 +21,5 @@ protected:
   DWORD m_dwInitTimer;
   bool m_bShowInfo;
   bool m_bFadingAtStart;
+  CMusicInfoTag m_tag;    // current tag info, for finding when the info manager updates
 };

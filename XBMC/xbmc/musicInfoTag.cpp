@@ -39,6 +39,18 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   return *this;
 }
 
+bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const
+{
+  if (this == &tag) return false;
+  if (m_strURL != tag.m_strURL) return true;
+  if (m_strTitle != tag.m_strTitle) return true;
+  if (m_strArtist != tag.m_strArtist) return true;
+  if (m_strAlbum != tag.m_strAlbum) return true;
+  if (m_iDuration != tag.m_iDuration) return true;
+  if (m_iTrack != tag.m_iTrack) return true;
+  return false;
+}
+
 int CMusicInfoTag::GetTrackNumber() const
 {
   return m_iTrack;
