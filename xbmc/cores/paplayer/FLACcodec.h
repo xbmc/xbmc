@@ -1,6 +1,7 @@
 #pragma once
 #include "ICodec.h"
 #include "flac/seekable_stream_decoder.h"
+#include "FileReader.h"
 
 class FLACCodec : public ICodec
 {
@@ -56,7 +57,7 @@ public:
   FLACCodec();
   virtual ~FLACCodec();
 
-  virtual bool Init(const CStdString &strFile);
+  virtual bool Init(const CStdString &strFile, unsigned int filecache);
   virtual void DeInit();
   virtual __int64 Seek(__int64 iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
@@ -78,7 +79,7 @@ private:
 
   bool m_bDllLoaded;                  // whether our dll is loaded
   FLACdll  m_dll;
-  CFile m_file;
+  CFileReader m_file;
   BYTE* m_pBuffer;                    //  buffer to hold the decoded audio data
   int m_BufferSize;                   //  size of buffer is filled with decoded audio data
   int m_MaxFrameSize;                 //  size of a single decoded frame

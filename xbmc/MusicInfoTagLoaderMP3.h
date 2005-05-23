@@ -66,6 +66,9 @@ public:
   {
     m_iSeekOffsets = iSeekOffsets;
     if (m_SeekOffset) delete[] m_SeekOffset;
+    m_SeekOffset = NULL;
+    if (m_iSeekOffsets <= 0)
+      return;
     m_SeekOffset = new float[m_iSeekOffsets + 1];
     for (int i = 0; i <= m_iSeekOffsets; i++)
       m_SeekOffset[i] = offsets[i];

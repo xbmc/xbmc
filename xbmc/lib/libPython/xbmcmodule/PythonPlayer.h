@@ -16,6 +16,7 @@ public:
 	void		OnPlayBackStarted();
 	void		OnPlayBackEnded();
  	void		OnPlayBackStopped();
+  void		OnQueueNextItem() {}; // unimplemented
 
 protected:
 	PyObject*		pCallback;

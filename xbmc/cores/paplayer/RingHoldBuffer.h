@@ -261,7 +261,6 @@ public:
   //
   BOOL WriteBinary( char * pBuf, int nBufLen )
   {
-//    CLog::Log(LOGERROR, "RingHoldBuffer::WriteBinary %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount);
     ::EnterCriticalSection(&m_critSection );
     BOOL bResult = FALSE;
     {
@@ -291,7 +290,6 @@ public:
       }
     }
     ::LeaveCriticalSection(&m_critSection );
-//    CLog::Log(LOGERROR, "RingHoldBuffer::WriteBinary Done %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount);
     return bResult;
   }
 

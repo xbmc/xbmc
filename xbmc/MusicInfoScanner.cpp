@@ -11,8 +11,6 @@
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;
 
-#define APE_DLL "Q:\\system\\players\\PAPlayer\\MACDll.dll"
-
 CMusicInfoScanner::CMusicInfoScanner()
 {
   m_bRunning = false;
@@ -54,6 +52,8 @@ void CMusicInfoScanner::Process()
     CSectionLoader::Load("CXIMAGE");
     CSectionLoader::Load("LIBMP4");
     CSectionLoader::LoadDLL(APE_DLL);
+    CSectionLoader::LoadDLL(SHN_DLL);
+    CSectionLoader::LoadDLL(MPC_DLL);
 
     CUtil::ThumbCacheClear();
     g_directoryCache.InitMusicThumbCache();
@@ -118,6 +118,8 @@ void CMusicInfoScanner::Process()
     CSectionLoader::Unload("CXIMAGE");
     CSectionLoader::Unload("LIBMP4");
     CSectionLoader::UnloadDLL(APE_DLL);
+    CSectionLoader::UnloadDLL(SHN_DLL);
+    CSectionLoader::UnloadDLL(MPC_DLL);
 
     CUtil::ThumbCacheClear();
     g_directoryCache.ClearMusicThumbCache();

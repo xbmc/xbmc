@@ -59,7 +59,7 @@ OGGCodec::~OGGCodec()
   CSectionLoader::UnloadDLL(OGG_DLL);
 }
 
-bool OGGCodec::Init(const CStdString &strFile)
+bool OGGCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   if (!LoadDLL())
     return false;

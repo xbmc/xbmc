@@ -37,8 +37,6 @@ public:
   void SetCurrentSong(CFileItem &item);
   void SetCurrentSongTag(const CMusicInfoTag &tag) { m_currentSong.m_musicInfoTag = tag; m_currentSong.m_lStartOffset = 0;};
   const CMusicInfoTag &GetCurrentSongTag() const { return m_currentSong.m_musicInfoTag; };
-  long GetCurrentSongStart() { return m_currentSong.m_lStartOffset; };
-  long GetCurrentSongEnd() { return m_currentSong.m_lEndOffset; };
 
   // Current movie stuff
   void SetCurrentMovie(CFileItem &item);

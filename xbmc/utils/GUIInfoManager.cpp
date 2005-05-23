@@ -584,13 +584,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
 
 __int64 CGUIInfoManager::GetPlayTime()
 {
-  if (g_application.IsPlayingAudio())
-  {
-    __int64 lPTS = g_application.m_pPlayer->GetTime() - (g_infoManager.GetCurrentSongStart() * (__int64)1000) / 75;
-    if (lPTS < 0) lPTS = 0;
-    return lPTS;
-  }
-  else if (g_application.IsPlayingVideo())
+  if (g_application.IsPlaying())
   {
     __int64 lPTS = g_application.m_pPlayer->GetTime();
     if (lPTS < 0) lPTS = 0;
@@ -611,47 +605,13 @@ CStdString CGUIInfoManager::GetCurrentPlayTime()
 
 int CGUIInfoManager::GetTotalPlayTime()
 {
-  int iTotalTime = 0;
-  if (g_application.IsPlayingAudio())
-  {
-    iTotalTime = g_application.m_pPlayer->GetTotalTime();
-    if (m_currentSong.m_musicInfoTag.GetDuration() > 0)
-      iTotalTime = m_currentSong.m_musicInfoTag.GetDuration();
-    else if (iTotalTime < 0)
-      iTotalTime = 0;
-  }
-  else if (g_application.IsPlayingVideo())
-  {
-    iTotalTime = g_application.m_pPlayer->GetTotalTime();
-    if (iTotalTime < 0)
-      iTotalTime = 0;
-  }
-  return iTotalTime;
+  int iTotalTime = g_application.m_pPlayer->GetTotalTime();
+  return iTotalTime > 0 ? iTotalTime : 0;
 }
 
 int CGUIInfoManager::GetPlayTimeRemaining()
 {
-  int iReverse = 0;
-  if (g_application.IsPlayingAudio())
-  {
-    int iTotalTime = g_application.m_pPlayer->GetTotalTime();
-    if (m_currentSong.m_musicInfoTag.GetDuration() > 0)
-      iTotalTime = m_currentSong.m_musicInfoTag.GetDuration();
-    else if (iTotalTime < 0)
-      iTotalTime = 0;
-
-    __int64 lPTS = g_application.m_pPlayer->GetTime() - (g_infoManager.GetCurrentSongStart() * (__int64)1000) / 75;
-    if (lPTS < 0) lPTS = 0;
-    iReverse = iTotalTime - (int)(lPTS / 1000);
-  }
-  else if (g_application.IsPlayingVideo())
-  {
-    int iTotalTime = g_application.m_pPlayer->GetTotalTime();
-    if (iTotalTime < 0)
-      iTotalTime = 0;
-
-    iReverse = iTotalTime - (int)(g_application.m_pPlayer->GetTime() / 1000);
-  }
+  int iReverse = GetTotalPlayTime() - (int)(g_application.m_pPlayer->GetTime() / 1000);
   return iReverse > 0 ? iReverse : 0;
 }
 

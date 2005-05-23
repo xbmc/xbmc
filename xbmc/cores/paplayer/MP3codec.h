@@ -12,7 +12,7 @@ public:
   MP3Codec();
   virtual ~MP3Codec();
 
-  virtual bool Init(const CStdString &strFile);
+  virtual bool Init(const CStdString &strFile, unsigned int filecache);
   virtual void DeInit();
   virtual __int64 Seek(__int64 iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
@@ -20,12 +20,12 @@ public:
 
 private:
   // Decoding variables
-  CFileReader   m_filePAP;          // Our MP3 file
+  CFileReader   m_file;          // Our MP3 file
   __int64 m_lastByteOffset;
   bool    m_eof;
-  IAudioDecoder* m_pPAP;    // handle to the codec.
+  IAudioDecoder* m_pDecoder;    // handle to the codec.
   bool    m_Decoding;
-  bool    m_CallPAPAgain;
+  bool    m_CallAgainWithSameBuffer;
 
   // Input buffer to read our mp3 data into
   BYTE*         m_InputBuffer;

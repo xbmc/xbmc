@@ -2,9 +2,10 @@
 #include "FileReader.h"
 #include "../../utils/SingleLock.h"
 
-CFileReader::CFileReader(unsigned int bufferSize, unsigned int dataToKeepBehind)
+#define DATA_TO_KEEP_BEHIND 65536
+
+CFileReader::CFileReader()
 {
-  m_ringBuffer.Create(bufferSize, dataToKeepBehind);
   m_bufferedDataPos = 0;
   m_readError = false;
 }
@@ -12,6 +13,11 @@ CFileReader::CFileReader(unsigned int bufferSize, unsigned int dataToKeepBehind)
 CFileReader::~CFileReader()
 {
   Close();
+}
+
+void CFileReader::Initialize(unsigned int bufferSize)
+{
+  m_ringBuffer.Create(bufferSize + DATA_TO_KEEP_BEHIND, DATA_TO_KEEP_BEHIND);
 }
 
 bool CFileReader::Open(const CStdString &strFile)
@@ -31,6 +37,7 @@ bool CFileReader::Open(const CStdString &strFile)
 void CFileReader::Close()
 {
   // kill our background reader thread
+  m_bStop = true;
   StopThread();
   // and close the file
   m_file.Close();
@@ -46,17 +53,22 @@ __int64 CFileReader::GetLength()
   return m_file.GetLength();
 }
 
+static int sleeptime = 0;
+
 int CFileReader::Read(void *out, __int64 size)
 {
   char *byteOut = (char *)out;
   // read out of our buffers - we have a separate thread prefetching data
-  if (m_bufferedDataPos + size > m_file.GetLength())
-    size = m_file.GetLength() - m_bufferedDataPos;
   __int64 sizeleft = size;
   while (sizeleft)
   {
+    if (m_readError)
+    { // uh oh
+      CLog::Log(LOGERROR, "FileReader::Read - encountered read error");
+      return 0;
+    }
     // read data in from our ring buffer
-    unsigned int readAhead = (unsigned int)(m_file.GetPosition() - m_bufferedDataPos);
+    unsigned int readAhead = m_ringBuffer.GetMaxReadSize();
     if (readAhead)
     {
       unsigned int amountToCopy = (unsigned int)min(readAhead, sizeleft);
@@ -66,10 +78,20 @@ int CFileReader::Read(void *out, __int64 size)
         byteOut += amountToCopy;
         sizeleft -= amountToCopy;
       }
+      if (sleeptime)
+      {
+        CLog::Log(LOGDEBUG, "FileReader: Waited a total of %i ms on data", sleeptime);
+        sleeptime = 0;
+      }
+      if (m_bufferedDataPos == m_file.GetLength())
+      { // end of file reached
+        return (int)(size - sizeleft);
+      }
     }
     else
     { // nothing to copy yet - sleep while we wait for our reader thread to read the data in.
       Sleep(1);
+      sleeptime++;
     }
   }
   return (int)size;
@@ -110,24 +132,29 @@ void CFileReader::Process()
     {
       // grab a file lock
       CSingleLock lock(m_fileLock);
-      unsigned int amountToRead = min(chunk_size, m_ringBuffer.GetMaxWriteSize()/* - m_dataToKeepBehind*/);
+      unsigned int amountToRead = min(chunk_size, m_ringBuffer.GetMaxWriteSize());
+      if (amountToRead > m_file.GetLength() - m_file.GetPosition())
+        amountToRead = (unsigned int)(m_file.GetLength() - m_file.GetPosition());
       // check the range of our valid data
-      if (m_file.Read(m_chunkBuffer, amountToRead))
+      if (amountToRead)
       {
-        if (!m_ringBuffer.WriteBinary(m_chunkBuffer, amountToRead))
+        unsigned int amountRead = m_file.Read(m_chunkBuffer, amountToRead);
+        if (amountRead > 0)
         {
-          throw 1;  // should never get here!
+          if (!m_ringBuffer.WriteBinary(m_chunkBuffer, amountRead))
+          {
+            throw 1;  // should never get here!
+          }
+          continue; // read some more immediately
+        }
+        else if (m_file.GetPosition() != m_file.GetLength())
+        { // uh oh!
+          m_readError = true;
+          break;
         }
       }
-      else
-      { // uh oh!
-        m_readError = true;
-        break;
-      }
     }
-    else
-    { // no space to read data into right now - sleep
-      Sleep(1);
-    }
+    // no space to read data into right now, or at end of file - sleep
+    Sleep(1);
   }
 }

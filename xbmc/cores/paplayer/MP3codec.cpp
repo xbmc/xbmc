@@ -3,7 +3,7 @@
 
 #define DECODER_DELAY 529 // decoder delay in samples
 
-MP3Codec::MP3Codec() : m_filePAP(65536*4, 65536)
+MP3Codec::MP3Codec()
 {
   CreateDecoder = NULL;
   m_SampleRate = 0;
@@ -14,8 +14,8 @@ MP3Codec::MP3Codec() : m_filePAP(65536*4, 65536)
   m_bDllLoaded = false;
   m_pDll = NULL;
   // mp3 related
-  m_pPAP = NULL;
-  m_CallPAPAgain = false;
+  m_pDecoder = NULL;
+  m_CallAgainWithSameBuffer = false;
   m_AverageInputBytesPerSecond = 20000; // 160k , good place to start i guess
   m_bGuessByterate = false;
   m_lastByteOffset = 0;
@@ -38,9 +38,9 @@ MP3Codec::~MP3Codec()
 {
   DeInit();
 
-  if (m_pPAP )
-    delete m_pPAP;
-  m_pPAP = NULL;
+  if (m_pDecoder )
+    delete m_pDecoder;
+  m_pDecoder = NULL;
 
   if ( m_InputBuffer )
     delete[] m_InputBuffer;
@@ -55,24 +55,23 @@ MP3Codec::~MP3Codec()
   m_pDll = NULL;
 }
 
-bool MP3Codec::Init(const CStdString &strFile)
+bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 {
+  m_file.Initialize(filecache);
+
   if (!LoadDLL())
     return false;
 
-  if (!m_filePAP.Open(strFile))
-    return false;
-
   // TODO:  add file extension checking and HTTP/Icecast/Shoutcast reading
-  if (m_pPAP)
+  if (m_pDecoder)
   {
-    delete m_pPAP;
-    m_pPAP = NULL;
+    delete m_pDecoder;
+    m_pDecoder = NULL;
   }
-  m_pPAP = CreateDecoder(' 3PM',NULL);
+  m_pDecoder = CreateDecoder(' 3PM',NULL);
 
-  if ( m_pPAP )
-    CLog::Log(LOGINFO, "MP3Codec: Loaded decoder at %p", m_pPAP);
+  if ( m_pDecoder )
+    CLog::Log(LOGINFO, "MP3Codec: Loaded decoder at %p", m_pDecoder);
   else
     return false;
 
@@ -84,9 +83,9 @@ bool MP3Codec::Init(const CStdString &strFile)
   m_IgnoreLast = true;
   m_lastByteOffset = 0;
   m_eof = false;
-  m_CallPAPAgain = false;
+  m_CallAgainWithSameBuffer = false;
 
-  __int64 length = m_filePAP.GetLength();
+  __int64 length = m_file.GetLength();
 
   // Guess Bitrate and obtain replayGain information etc.
   CMusicInfoTagLoaderMP3 mp3info;
@@ -100,41 +99,49 @@ bool MP3Codec::Init(const CStdString &strFile)
   else
     m_bGuessByterate = true;  // If we don't have the TrackDuration we'll have to guess later.
 
+  if (!m_file.Open(strFile))
+  {
+    CLog::Log(LOGERROR, "MP3Codec: Unable to open file %s", strFile.c_str());
+    delete m_pDecoder;
+    m_pDecoder = NULL;
+    return false;
+  }
+
   // Read in some data so we can determine the sample size and so on
   // This needs to be made more intelligent - possibly use a temp output buffer
   // and cycle around continually reading until we have the necessary data
   // as a first workaround skip the id3v2 tag at the beginning of the file
-  m_filePAP.Seek(mp3info.GetID3v2Size());
-  m_filePAP.Read(m_InputBuffer, 8192);
+  m_file.Seek(mp3info.GetID3v2Size());
+  m_file.Read(m_InputBuffer, 8192);
   int sendsize = 8192;
   unsigned int formatdata[8];
-  int result = m_pPAP->decode(m_InputBuffer, 8192, m_InputBuffer + 8192, &sendsize, (unsigned int *)&formatdata);
+  int result = m_pDecoder->decode(m_InputBuffer, 8192, m_InputBuffer + 8192, &sendsize, (unsigned int *)&formatdata);
   if ( (result == 0 || result == 1) && sendsize )
   {
     m_Channels    = formatdata[2];
     m_SampleRate  = formatdata[1];
     m_BitsPerSample  = formatdata[3];
   }
-  m_pPAP->flush();
-  m_filePAP.Seek(mp3info.GetID3v2Size());
+  m_pDecoder->flush();
+  m_file.Seek(mp3info.GetID3v2Size());
   return true;
 }
 
 void MP3Codec::DeInit()
 {
-  m_filePAP.Close();
+  m_file.Close();
 }
 
 __int64 MP3Codec::Seek(__int64 iSeekTime)
 {
   // calculate our offset to seek to in the file
   m_lastByteOffset = m_seekInfo.GetByteOffset(0.001f * iSeekTime);
-  m_filePAP.Seek(m_lastByteOffset, SEEK_SET);
+  m_file.Seek(m_lastByteOffset, SEEK_SET);
   // Flush the decoder
-  m_pPAP->flush();
+  m_pDecoder->flush();
   m_InputBufferPos = 0;
   m_OutputBufferPos = 0;
-  m_CallPAPAgain = false;
+  m_CallAgainWithSameBuffer = false;
   return iSeekTime;
 }
 
@@ -143,12 +150,12 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   *actualsize = 0;
   // First read in any extra info we need from our MP3
   int inputBufferToRead = m_InputBufferSize - m_InputBufferPos;
-  if ( inputBufferToRead && !m_CallPAPAgain && !m_eof ) 
+  if ( inputBufferToRead && !m_CallAgainWithSameBuffer && !m_eof ) 
   {
-    int fileLeft=(int)(m_filePAP.GetLength() - m_filePAP.GetPosition());
+    int fileLeft=(int)(m_file.GetLength() - m_file.GetPosition());
     if (inputBufferToRead >  fileLeft ) inputBufferToRead = fileLeft;
 
-    DWORD dwBytesRead = m_filePAP.Read(m_InputBuffer + m_InputBufferPos , inputBufferToRead);
+    DWORD dwBytesRead = m_file.Read(m_InputBuffer + m_InputBufferPos , inputBufferToRead);
     if (!dwBytesRead)
     {
       CLog::Log(LOGERROR, "MP3Codec: Error reading file");
@@ -156,11 +163,11 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     }
     // add the size of read PAP data to the buffer size
     m_InputBufferPos += dwBytesRead;
-    if ( m_filePAP.GetLength() == m_filePAP.GetPosition() )
+    if ( m_file.GetLength() == m_file.GetPosition() )
       m_eof = true;
   }
   // Decode data if we have some to decode
-  if ( m_InputBufferPos || m_CallPAPAgain || m_eof )
+  if ( m_InputBufferPos || m_CallAgainWithSameBuffer || m_eof )
   {
     int result;
       
@@ -168,11 +175,11 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
     if ( size )
     {
-      m_CallPAPAgain = false;
+      m_CallAgainWithSameBuffer = false;
       unsigned int formatdata[8];
       int outputsize = m_OutputBufferSize - m_OutputBufferPos;
       // Now decode data into the vacant frame buffer
-      result = m_pPAP->decode( m_InputBuffer, m_InputBufferPos, m_OutputBuffer + m_OutputBufferPos, &outputsize, (unsigned int *)&formatdata);
+      result = m_pDecoder->decode( m_InputBuffer, m_InputBufferPos, m_OutputBuffer + m_OutputBufferPos, &outputsize, (unsigned int *)&formatdata);
       if ( result == 1 || result == 0) 
       {
         // let's check if we need to ignore the decoded data.
@@ -198,7 +205,7 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
         }
         // Do we need to call back with the same set of data?
         if ( result )
-          m_CallPAPAgain = true; // Codec wants us to call it again with the same buffer
+          m_CallAgainWithSameBuffer = true;
         else 
         { // Read more from the file
           m_InputBufferPos = 0;
@@ -235,7 +242,8 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     amounttomove = m_OutputBufferPos - 1152 * 4 * 2;
   if (m_eof && !m_Decoding)
     amounttomove = m_OutputBufferPos;
-  if (amounttomove && size >= amounttomove)
+  if (amounttomove > size) amounttomove = size;
+  if (amounttomove)
   {
     memcpy(pBuffer, m_OutputBuffer, amounttomove);
     m_OutputBufferPos -= amounttomove;

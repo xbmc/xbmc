@@ -12,21 +12,21 @@
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
   if (strFileType.Equals("mp3"))
-    return new MP3Codec;
+    return new MP3Codec();
   else if (strFileType.Equals("ape") || strFileType.Equals("mac"))
-    return new APECodec;
+    return new APECodec();
   else if (strFileType.Equals("cdda"))
-    return new CDDACodec;
+    return new CDDACodec();
   else if (strFileType.Equals("ogg"))
-    return new OGGCodec;
+    return new OGGCodec();
   else if (strFileType.Equals("mpc"))
-    return new MPCCodec;
+    return new MPCCodec();
   else if (strFileType.Equals("shn"))
-    return new SHNCodec;
+    return new SHNCodec();
   else if (strFileType.Equals("flac"))
-    return new FLACCodec;
+    return new FLACCodec();
   else if (strFileType.Equals("wav"))
-    return new WAVCodec;
+    return new WAVCodec();
 
   return NULL;
 }

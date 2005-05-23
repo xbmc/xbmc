@@ -50,7 +50,7 @@ int Shn_Callback_GetPosition(ShnPlayStream * stream)
 
 // SHNCodec class
 
-SHNCodec::SHNCodec() : m_fileSHN(4*65536, 65536)
+SHNCodec::SHNCodec()
 {
   m_SampleRate = 0;
   m_Channels = 0;
@@ -70,16 +70,18 @@ SHNCodec::~SHNCodec()
   m_pDll = NULL;
 }
 
-bool SHNCodec::Init(const CStdString &strFile)
+bool SHNCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
+  m_file.Initialize(filecache);
+
   if (!LoadDLL())
     return false;
 
-  if (!m_fileSHN.Open(strFile))
+  if (!m_file.Open(strFile))
     return false;
 
   // setup our callbacks
-  m_stream.file = &m_fileSHN;
+  m_stream.file = &m_file;
   m_stream.vtbl.Read = Shn_Callback_Read;
   m_stream.vtbl.Seek = Shn_Callback_Seek;
   m_stream.vtbl.CanSeek = Shn_Callback_CanSeek;
@@ -114,7 +116,7 @@ void SHNCodec::DeInit()
     m_dll.Close(m_handle);
   m_handle = NULL;
 
-  m_fileSHN.Close();
+  m_file.Close();
   if (m_stream.file)
     m_stream.file = NULL;
 }

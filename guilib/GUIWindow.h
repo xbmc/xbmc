@@ -83,6 +83,7 @@ public:
   virtual void ResetAllControls();
   static void FlushReferenceCache();
   virtual bool IsDialog() { return false;};
+  int OverlayAllowed() const { return m_iOverlayAllowed; };
 
 protected:
   virtual void OnWindowUnload() {}
