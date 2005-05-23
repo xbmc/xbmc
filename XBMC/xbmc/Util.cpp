@@ -3251,46 +3251,57 @@ bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int i
 	GetLocalTime(&CurTime);
 	GetLocalTime(&NewTime);
 	int iRescBiases, iHourUTC;
-	bool bResc;
 	
-	DWORD dwRet = GetTimeZoneInformation(&tziNew);
-	
-	CLog::Log(LOGDEBUG, "------------ TimeZone -------------");
+  DWORD dwRet = GetTimeZoneInformation(&tziNew);  // Get TimeZone Informations  
+	int iGMTZone = (tziNew.Bias)/60;                // Cals the GMT Time
+  
+  CLog::Log(LOGDEBUG, "------------ TimeZone -------------");
+  CLog::Log(LOGDEBUG, "-      GMT Zone: GMT %i",iGMTZone);
 	CLog::Log(LOGDEBUG, "-          Bias: %i",tziNew.Bias);
 	CLog::Log(LOGDEBUG, "-  DaylightBias: %i",tziNew.DaylightBias);
 	CLog::Log(LOGDEBUG, "-  StandardBias: %i",tziNew.StandardBias);
 	CLog::Log(LOGDEBUG, "--------------- END ---------------");
-
+  
 	if (dwRet == TIME_ZONE_ID_STANDARD)
 	{
-		CStdString strTemp = tziNew.StandardName;
-		CLog::Log(LOGDEBUG, "GetTimeZoneID[GTZI]: %s",strTemp);
-		bResc = true;
+		iHourUTC = ( ((iHour * 60) + tziNew.Bias) + tziNew.StandardBias ) / 60;
 	}
 	else if (dwRet == TIME_ZONE_ID_DAYLIGHT ) 
 	{
-		CStdString strTemp = tziNew.DaylightName;
-		CLog::Log(LOGDEBUG, "GetTimeZoneID[GTZI]: %s",tziNew.DaylightName);
-		bResc = true;
+		iHourUTC = ( ((iHour * 60) + tziNew.Bias) + tziNew.StandardBias + tziNew.DaylightBias) / 60;
 	}
-	else 
+	else if (dwRet == TIME_ZONE_ID_UNKNOWN || dwRet == TIME_ZONE_ID_INVALID)
 	{
-		CLog::Log(LOGDEBUG, "GetTimeZoneID[GTZI] Failed: TIME_ZONE_ID_UNKNOWN!");
-		bResc = false;
+		if (iHour >12 )
+    {
+      if (tziNew.Bias < 0)                                      // Max -12h (-720 Minutes)
+      {
+         iHourUTC = ( ((iHour * 60) + tziNew.Bias) + tziNew.StandardBias ) / 60;
+      }
+      else if (tziNew.Bias > 0)                                 // Max +12h (720 Minutes)
+      {
+        iRescBiases = ((tziNew.Bias + tziNew.StandardBias) / 60);
+        iHourUTC    = iHour - abs(iRescBiases);                 // We must minus the Bias, to Prevent time > 23
+      }
+      else if (tziNew.Bias == 0 && iHour == 24 )iHourUTC = 0;   // GMT Zone 0
+    }
+    else if (iHour < 12 )
+    {
+      iRescBiases   = ((tziNew.Bias + tziNew.StandardBias )/ 60);
+      iHourUTC      = iHour + abs(iRescBiases);
+    }
+    else 
+    {
+      iHourUTC = ( ((iHour * 60) + tziNew.Bias) + tziNew.StandardBias ) / 60;
+      if (iHourUTC == 24) iHourUTC = 0;                         // if Hour is 24h Must be 0
+    }
 	}
-	if(!bResc)
-	{
-		if(tziNew.Bias>0) iRescBiases = -60;
-		if(tziNew.Bias<0) iRescBiases = 60;
-		iHourUTC = ( ((iHour * 60) + tziNew.Bias) + iRescBiases ) / 60;
-	}
-	else iHourUTC = ( ((iHour * 60) + tziNew.Bias) + tziNew.StandardBias + tziNew.DaylightBias ) / 60;
-	
-	NewTime.wYear		= (WORD)iYear;
-	NewTime.wMonth		= (WORD)iMonth;
+  
+  NewTime.wYear		= (WORD)iYear;    // Now Set the New-,Detected Time Values to System Time!
+	NewTime.wMonth	= (WORD)iMonth;
 	NewTime.wDay		= (WORD)iDay;	
 	NewTime.wHour		= (WORD)iHourUTC;
-	NewTime.wMinute		= (WORD)iMinute;
+	NewTime.wMinute	= (WORD)iMinute;
 
 	FILETIME stNewTime, stCurTime;
 	SystemTimeToFileTime(&NewTime, &stNewTime);
