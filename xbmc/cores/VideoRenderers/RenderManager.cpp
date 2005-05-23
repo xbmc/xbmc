@@ -20,10 +20,6 @@
 #include "../../stdafx.h"
 #include "RenderManager.h"
 
-#include "../../application.h"
-#include "../../util.h"
-#include "../../XBVideoConfig.h"
-
 #include "PixelShaderRenderer.h"
 #include "ComboRenderer.h"
 #include "RGBRenderer.h"

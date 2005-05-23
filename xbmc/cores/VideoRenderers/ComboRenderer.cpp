@@ -19,11 +19,9 @@
 */
 #include "../../stdafx.h"
 #include "ComboRenderer.h"
-#include "GUIFontManager.h"
-#include "mplayer.h"
 #include "../../application.h"
+#include "GUIFontManager.h"
 #include "../../util.h"
-#include "../../XBVideoConfig.h"
 
 CComboRenderer::CComboRenderer(LPDIRECT3DDEVICE8 pDevice)
     : CXBoxRenderer(pDevice)

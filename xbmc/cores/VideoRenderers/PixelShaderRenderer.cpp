@@ -20,10 +20,6 @@
 #include "../../stdafx.h"
 #include "PixelShaderRenderer.h"
 #include "GUIFontManager.h"
-#include "mplayer.h"
-#include "../../application.h"
-#include "../../util.h"
-#include "../../XBVideoConfig.h"
 
 CPixelShaderRenderer::CPixelShaderRenderer(LPDIRECT3DDEVICE8 pDevice)
     : CXBoxRenderer(pDevice)

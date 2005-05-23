@@ -20,10 +20,7 @@
 #include "../../stdafx.h"
 #include "RGBRenderer.h"
 #include "GUIFontManager.h"
-#include "mplayer.h"
-#include "../../application.h"
 #include "../../util.h"
-#include "../../XBVideoConfig.h"
 
 // coefficients used for YUV->RGB coefficient
 #define Y_SCALE 1.164383561643835616438356164383f
