@@ -73,7 +73,7 @@
   <string><id>139</id><value>Temperatur:</value></string>
   <string><id>140</id><value>CPU Temperatur:</value></string>
   <string><id>141</id><value>GPU Temperatur:</value></string>
-  <string><id>142</id><value>Zeit:</value></string>
+  <string><id>142</id><value>Uhrzeit:</value></string>
   <string><id>143</id><value>Lokal:</value></string>
   <string><id>144</id><value>Version:</value></string>
   <string><id>145</id><value>Netzwerk:</value></string>
@@ -171,7 +171,7 @@
   <string><id>236</id><value>Gaussian Cubic</value></string>
   <string><id>237</id><value>Verkleinerung:</value></string>
   <string><id>238</id><value>Vergrößerung:</value></string>
-  <string><id>239</id><value>Wiedergabeliste nach Beendigung löschen</value></string>
+  <string><id>239</id><value>Wiedergabeliste nach Wiedergabe löschen</value></string>
   <string><id>240</id><value>DVD</value></string>
   <string><id>241</id><value>VCD/SVCD</value></string>
   <string><id>242</id><value>Audio CD</value></string>
@@ -677,6 +677,10 @@
   <string><id>12353</id><value>Sperre aktivieren</value></string>
   <string><id>12354</id><value>Ordnersperre bis Neustart aufheben?</value></string>
   <string><id>12355</id><value>Ordnersperre autom. reaktivieren)</value></string>
+  <string><id>12356</id><value>Kennwort ändern</value></string> 
+  <string><id>12357</id><value>Verzeichnissperre</value></string> 
+  <string><id>12358</id><value>Es wurde kein Kennwort eingegeben...</value></string>
+
   <string><id>12600</id><value>Wetter</value></string>
   <string><id>12900</id><value>Bildschirmschoner</value></string>
   <string><id>12901</id><value>Vollbild OSD</value></string>
@@ -694,10 +698,10 @@
   <string><id>13152</id><value>Hersteller:</value></string> 
   <string><id>13153</id><value>Firmware:</value></string> 
   <string><id>13154</id><value>Modell:</value></string> 
-  <string><id>13155</id><value>Serial:</value></string> 
+  <string><id>13155</id><value>Seriennummer:</value></string> 
   <string><id>13156</id><value>Firmware:</value></string> 
   <string><id>13157</id><value>Kennwort:</value></string> 
-  <string><id>13158</id><value>Lock Status:</value></string> 
+  <string><id>13158</id><value>Sperr- Status:</value></string> 
   <string><id>13159</id><value>Subnetzmaske:</value></string> 
   <string><id>13160</id><value>Gateway:</value></string> 
   <string><id>13161</id><value>DNS:</value></string> 
@@ -735,19 +739,19 @@
   <string><id>13282</id><value>_</value></string> 
   <string><id>13283</id><value>Kernel Version:</value></string> 
   <string><id>13284</id><value>CPU Geschwindigkeit:</value></string> 
-  <string><id>13285</id><value>Detected BIOS:</value></string> 
+  <string><id>13285</id><value>BIOS:</value></string> 
   <string><id>13286</id><value>Video Encoder:</value></string> 
   <string><id>13287</id><value>Bildschirmauflösung:</value></string> 
   <string><id>13288</id><value>Xbox Version:</value></string> 
   <string><id>13289</id><value>Xbox Seriennummer:</value></string> 
-  <string><id>13290</id><value>XBOX Manufacture:</value></string> 
+  <string><id>13290</id><value>XBOX Hersteller:</value></string> 
   <string><id>13291</id><value>ModChip:</value></string> 
   <string><id>13292</id><value>A/V Kabel:</value></string> 
   <string><id>13293</id><value>Video &amp; XBE Region:</value></string> 
   <string><id>13294</id><value>DVD Region:</value></string> 
   <string><id>13295</id><value>Internet:</value></string> 
   <string><id>13296</id><value>Xbox verbunden!</value></string> 
-  <string><id>13297</id><value>Xbox NICHT verbunden! Check Netwotk Settings!</value></string> 
+  <string><id>13297</id><value>Xbox NICHT verbunden! Netzwerk überprüfen!</value></string> 
   <string><id>13298</id><value>XBLIVE Key:</value></string> 
 
   <string><id>13299</id><value>- Temperatur:</value></string>
@@ -838,6 +842,7 @@
   <string><id>13384</id><value>Sprachmaske - Port 2</value></string> 
   <string><id>13385</id><value>Sprachmaske - Port 3</value></string> 
   <string><id>13386</id><value>Zeitbezogene Positionssuche verwenden</value></string>
+  <string><id>13387</id><value>- rechte Spalte [Dauer]</value></string>
 
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln aktiv.</value></string>
@@ -902,6 +907,15 @@
   <string><id>14060</id><value>Daten Cache  - Internet</value></string>
   <string><id>14061</id><value>Automatisch</value></string>
   <string><id>14062</id><value>Benutzername eingeben</value></string>
+  <string><id>14063</id><value>Datum &amp; Uhrzeit</value></string> 
+  <string><id>14064</id><value>> Jahr</value></string> 
+  <string><id>14065</id><value>> Monat</value></string> 
+  <string><id>14066</id><value>> Tag</value></string> 
+  <string><id>14067</id><value>> Stunde</value></string> 
+  <string><id>14068</id><value>> Minute</value></string> 
+  <string><id>14069</id><value>Änderungen übernehmen?</value></string> 
+  <string><id>14070</id><value>Änderungen übernehmen</value></string> 
+
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Es besteht keine Verbindung mit XLink,</value></string> 
   <string><id>15002</id><value>soll XBMC versuchen mit XLink zu verbinden?</value></string> 

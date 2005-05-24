@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-05-2005 updated: German language file
+ - 24-05-2005 updated: Italian language file (Thnx to kotix)
+ - 24-05-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 24-05-2005 updated: Finnish language file (Thnx to jutski)
+ - 24-05-2005 updated: Norwegian language file (Thnx to vnm)
  - 23-05-2005 fixed: Date&Time: TimeZone/Daylight Detection was wrong! Fixed!(Supported Range GMT-12 - GMT+12) [GeminiServer]
  - 23-05-2005 fixed: Date&Time: Selectable Minute Range was from 0-60! Now 0-59! [GeminiServer]
  - 23-05-2005 changed: Info on visualisation fades in/out on Shoutcast track change as well as normal track change.
