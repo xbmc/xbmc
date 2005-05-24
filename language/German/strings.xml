@@ -476,7 +476,7 @@
   <string><id>641</id><value>Lautstärke Niveau - Dateien mit Replay Gain</value></string>
   <string><id>642</id><value>Lautstärke Niveau - Dateien ohne Replay Gain</value></string>
   <string><id>643</id><value>Abschneidung verhindern bei Dateien mit Replay Gain</value></string>
-  <string><id>644</id><value>Schwarze Balken abschneiden</value></string>
+  <string><id>644</id><value>Balken abschneiden</value></string>
 
   <string><id>700</id><value>Bibliothek aufräumen</value></string>
   <string><id>701</id><value>Alte Musikdaten aus der Bibliothek löschen</value></string>
@@ -682,6 +682,10 @@
   <string><id>12353</id><value>Share Sperre reaktivieren</value></string>
   <string><id>12354</id><value>Share Sperre bis zum Neustart aufheben?</value></string>
   <string><id>12355</id><value>Share Sperre automatisch reaktivieren.)</value></string>
+  <string><id>12356</id><value>Sperre ändern</value></string>
+  <string><id>12357</id><value>Share Sperre</value></string>
+  <string><id>12358</id><value>Kein Passwort eingegeben. Bitte nochmal versuchen.</value></string>
+
   <string><id>12600</id><value>Wetter</value></string>
   <string><id>12900</id><value>Bildschirmschoner</value></string>
   <string><id>12901</id><value>Vollbild OSD</value></string>
@@ -723,7 +727,7 @@
   <string><id>13311</id><value>Übergang gleitend</value></string>
   <string><id>13312</id><value>Ränderreduktion</value></string>
   <string><id>13313</id><value>Reset/Neustart</value></string>
-  <string><id>13314</id><value>OSD deaktivieren nach</value></string>
+  <string><id>13314</id><value>Crossfade</value></string>
   <string><id>13315</id><value>Thumbnails erstellen</value></string>
   <string><id>13316</id><value>Rekursive Thumbnails</value></string>
   <string><id>13317</id><value>Slideshow anzeigen</value></string>
@@ -859,6 +863,15 @@
   <string><id>14060</id><value>Unbekannter Typ Cache - Internet</value></string>
   <string><id>14061</id><value>Automatisch</value></string>
   <string><id>14062</id><value>Bitte Benutzernamen für</value></string>
+
+  <string><id>14063</id><value>Datum &amp; Uhrzeit</value></string>
+  <string><id>14064</id><value>Jahr</value></string>
+  <string><id>14065</id><value>Monat</value></string>
+  <string><id>14066</id><value>Tag</value></string>
+  <string><id>14067</id><value>Stunde</value></string>
+  <string><id>14068</id><value>Minute</value></string>
+  <string><id>14069</id><value>Sollen die Einstellungen übernommen werden?</value></string>
+  <string><id>14070</id><value>Übernehmen</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Keine Verbindung zu Kai XLink, möchtest du versuchen</value></string>
