@@ -922,7 +922,7 @@ HRESULT CApplication::Initialize()
     g_guiSettings.SetString("Network.DNS", "192.168.0.1");
     g_guiSettings.SetBool("Servers.FTPServer", true);
     g_guiSettings.SetBool("Servers.WebServer", false);
-    g_guiSettings.SetBool("Servers.TimeServer", false);
+    g_guiSettings.SetBool("XBDateTime.TimeServer", false);
   }
   CStdString strAssignment;
   if (g_guiSettings.GetInt("Network.Assignment") == NETWORK_DASH)
@@ -1136,7 +1136,7 @@ void CApplication::StopFtpServer()
 
 void CApplication::StartTimeServer()
 {
-  if (g_guiSettings.GetBool("Servers.TimeServer") && CUtil::IsNetworkUp())
+  if (g_guiSettings.GetBool("XBDateTime.TimeServer") && CUtil::IsNetworkUp())
   {
     CLog::Log(LOGNOTICE, "start timeserver thread");
     m_sntpClient.Create();
