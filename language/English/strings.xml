@@ -182,7 +182,7 @@
   <string><id>249</id><value>Music</value></string>
   <string><id>250</id><value>Visualisation</value></string>
   <string><id>251</id><value>Select destination directory</value></string>
-  <string><id>252</id><value>- Output Stereo to all Speakers</value></string>
+  <string><id>252</id><value>Output Stereo to all Speakers</value></string>
   <string><id>253</id><value>Number of channels</value></string>
   <string><id>254</id><value>- DTS Capable Receiver</value></string>
   <string><id>255</id><value>CDDB</value></string>
@@ -549,6 +549,7 @@
 
   <string><id>770</id><value>Error %i: share not available</value></string>
   <string><id>771</id><value>Workaround for fatx limits in FTP server</value></string>
+  <string><id>772</id><value>Audio hardware</value></string>
 
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Gaming</value></string>

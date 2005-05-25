@@ -886,7 +886,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                            && (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
     }
     // ... Karaoke patch (114097)
-    else if (strSetting == "AudioOutput.OutputToAllSpeakers" || strSetting == "AudioOutput.PCMPassThrough"
+    else if (strSetting == "AudioMusic.OutputToAllSpeakers" || strSetting == "AudioVideo.OutputToAllSpeakers"
              || strSetting == "AudioOutput.AC3PassThrough" || strSetting == "AudioOutput.DTSPassThrough")
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1213,21 +1213,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       CScrobbler::GetInstance()->Term();
     }
   }
-  else if (strSetting == "AudioOutput.OutputToAllSpeakers")
+  else if (strSetting == ("AudioMusic.OutputToAllSpeakers") || (strSetting == "AudioVideo.OutputToAllSpeakers") )
   {
     CSettingBool *pSetting = (CSettingBool*)pSettingControl->GetSetting();
-    if (pSetting->GetData()) g_guiSettings.SetBool("AudioOutput.PCMPassThrough", false);
-
-    if (!g_application.IsPlaying())
-    {
-      g_audioContext.RemoveActiveDevice();
-      g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
-    }
-  }
-  else if (strSetting == "AudioOutput.PCMPassThrough")
-  {
-    CSettingBool *pSetting = (CSettingBool*)pSettingControl->GetSetting();
-    if (pSetting->GetData()) g_guiSettings.SetBool("AudioOutput.OutputToAllSpeakers", false);
 
     if (!g_application.IsPlaying())
     {

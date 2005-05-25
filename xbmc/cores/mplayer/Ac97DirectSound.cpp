@@ -59,7 +59,7 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, uns
   m_bAc3DTS = bAC3DTS;
 
   m_bResampleAudio = false;
-  if (bResample && g_guiSettings.GetBool("AudioOutput.HighQualityResampling") && uiSamplesPerSec != 48000)
+  if (bResample && uiSamplesPerSec != 48000)
     m_bResampleAudio = true;
 
   m_bPause = false;
