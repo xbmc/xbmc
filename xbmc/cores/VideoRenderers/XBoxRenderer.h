@@ -56,7 +56,7 @@ public:
   virtual int GetNormalDisplayHeight() { return (int)(m_iNormalDestWidth / (m_iSourceWidth / (float)m_iSourceHeight)); }
   virtual void RenderBlank();
   void AutoCrop(bool bCrop);
-
+  int GetBuffersCount() { return m_NumYV12Buffers; };
 protected:
   virtual void Render() {};
   virtual void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);
