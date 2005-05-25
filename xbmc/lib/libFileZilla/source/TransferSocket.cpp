@@ -483,7 +483,7 @@ void CTransferSocket::OnReceive(int nErrorCode)
       // this to handle fat-x limitations
       if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
       {
-        CUtil::ShortenFileName(m_Filename); // change! addme to new ports
+        /*CUtil::ShortenFileName(m_Filename); // change! addme to new ports
         CStdString strFilename = CUtil::GetFileName(m_Filename);
         CStdString strPath;
         CUtil::GetDirectory(m_Filename,strPath);
@@ -497,7 +497,8 @@ void CTransferSocket::OnReceive(int nErrorCode)
           strPath += "\\"+*iter;
         }
         CUtil::RemoveIllegalChars(strFilename);
-        m_Filename = strPath+"\\"+strFilename;
+        m_Filename = strPath+"\\"+strFilename;*/
+        CUtil::GetFatXQualifiedPath(m_Filename);
       }
 
 			m_hFile = CreateFile(m_Filename, GENERIC_WRITE, FILE_SHARE_READ, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, 0);

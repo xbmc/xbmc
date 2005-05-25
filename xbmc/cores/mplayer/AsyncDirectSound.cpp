@@ -79,18 +79,18 @@ void CASyncDirectSound::DoWork()
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers, char* strAudioCodec)
+CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers, char* strAudioCodec, bool bIsMusic)
 {
   buffered_bytes = 0;
   m_pCallback = pCallback;
 
   m_bResampleAudio = false;
-  if (bResample && g_guiSettings.GetBool("AudioOutput.HighQualityResampling") && uiSamplesPerSec != 48000)
+  if (bResample && uiSamplesPerSec != 48000)
     m_bResampleAudio = true;
 
   bool bAudioOnAllSpeakers(false);
   g_audioContext.RemoveActiveDevice(); 
-  g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers);
+  g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers,bIsMusic);
   g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
   m_pDSound=g_audioContext.GetDirectSoundDevice();
 

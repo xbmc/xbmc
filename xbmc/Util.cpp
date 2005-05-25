@@ -399,6 +399,8 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
       iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('\\') + 1;
       strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
     }
+    if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
+      CUtil::GetFatXQualifiedPath(strFilename);
   }
   else //Base is remote
   {
@@ -1471,6 +1473,30 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
   // no thumb found
   strThumb = "";
   return false;
+}
+
+void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
+{
+  vector<CStdString> tokens;
+  CStdString strBasePath;
+  CUtil::GetDirectory(strFileNameAndPath,strBasePath);
+  CStdString strFileName = CUtil::GetFileName(strFileNameAndPath);
+  CUtil::Tokenize(strBasePath,tokens,"\\/");
+  strFileNameAndPath = tokens.front();
+  for (vector<CStdString>::iterator token=tokens.begin()+1;token != tokens.end();++token)
+  {
+    CStdString strToken = token->Left(42);
+    CUtil::RemoveIllegalChars(strToken);
+    strFileNameAndPath += "\\"+strToken;
+  }
+  if (strFileName != "")
+  {
+    CUtil::ShortenFileName(strFileName);
+    if (strFileName[0] == '\\') 
+      strFileName.erase(0,1);
+    CUtil::RemoveIllegalChars(strFileName);
+    strFileNameAndPath += "\\"+strFileName;
+  }
 }
 
 void CUtil::ShortenFileName(CStdString& strFileNameAndPath)

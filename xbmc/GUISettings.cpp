@@ -292,16 +292,9 @@ CGUISettings::CGUISettings(void)
   AddFloat(12, "VoiceOnPort3.fRoboticValue", 13370, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
   // ... Karaoke patch (114097)
 
-  AddCategory(3, "AudioOutput", 481);
-  AddInt(2, "AudioOutput.Mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
-  AddBool(3, "AudioOutput.PCMPassThrough", 13337, true);
-  AddBool(4, "AudioOutput.OutputToAllSpeakers", 252, false);
-  AddBool(5, "AudioOutput.AC3PassThrough", 364, true);
-  AddBool(6, "AudioOutput.DTSPassThrough", 254, true);
-  AddBool(7, "AudioOutput.HighQualityResampling", 473, true);
-  AddInt(8, "AudioOutput.Headroom", 494, 6, 0, 6, 12, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  // don't show the one underneath here
-  AddInt(1, "AudioVideo.VolumeAmplification", 290, 0, -200, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddCategory(3, "AudioMusic", 481);
+  AddBool(1, "AudioMusic.OutputToAllSpeakers", 252, false);
+
   // System settings
   AddGroup(4, 13000);
   AddCategory(4, "System", 13000);
@@ -353,6 +346,12 @@ CGUISettings::CGUISettings(void)
   AddHex(9, "LCD.Row2Address", 452, 0x40, 0, 0x4, 0x100, SPIN_CONTROL_INT_PLUS, "%x");
   AddHex(10, "LCD.Row3Address", 453, 0x14, 0, 0x4, 0x100, SPIN_CONTROL_INT_PLUS, "%x");
   AddHex(11, "LCD.Row4Address", 454, 0x54, 0, 0x4, 0x100, SPIN_CONTROL_INT_PLUS, "%x");
+
+  AddCategory(4, "AudioOutput", 772);
+  AddInt(2, "AudioOutput.Mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
+  AddBool(3, "AudioOutput.AC3PassThrough", 364, true);
+  AddBool(4, "AudioOutput.DTSPassThrough", 254, true);
+  AddInt(5, "AudioOutput.Headroom", 494, 6, 0, 6, 12, SPIN_CONTROL_INT_PLUS, MASK_DB);
 
   // video settings
   AddGroup(5, 3);
@@ -407,7 +406,9 @@ CGUISettings::CGUISettings(void)
   AddBool(6, "Subtitles.FlipBiDiCharSet", 13304, false);
   AddInt(7, "Subtitles.EnlargePercentage", 492, 100, 30, 10, 200, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
-  AddCategory(5, "Audio", 481);
+  AddCategory(5, "AudioVideo", 481);
+  AddInt(1, "AudioVideo.VolumeAmplification", 290, 0, -200, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddBool(2, "AudioVideo.OutputToAllSpeakers", 252, false);
 
   // network settings
   AddGroup(6, 705);

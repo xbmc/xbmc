@@ -78,13 +78,13 @@ void CAudioContext::RemoveActiveDevice()
 }
 
 // \brief set a new speaker config
-void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers)
+void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers, bool bIsMusic)
 {
   m_bAC3EncoderActive = false;
 
   if (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL)
   {
-    if (g_guiSettings.GetBool("AudioOutput.OutputToAllSpeakers"))
+    if (((g_guiSettings.GetBool("AudioMusic.OutputToAllSpeakers")) && (bIsMusic)) || (g_guiSettings.GetBool("AudioVideo.OutputToAllSpeakers") && !bIsMusic))
     {
       bAudioOnAllSpeakers = true;
       DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT); //Allows ac3 encoder should it be enabled

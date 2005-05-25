@@ -714,7 +714,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
             g_stSettings.m_currentVideoSettings.m_AudioStream = -1 - pList->GetSelectedItem();
             PopulateAudioStreams();
             // call monkeyh1's code here...
-            bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL) && g_guiSettings.GetBool("Audio.OutputToAllSpeakers");
+            bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL) && g_guiSettings.GetBool("AudioVideo.OutputToAllSpeakers");
             xbox_audio_switch_channel(pList->GetSelectedItem(), bAudioOnAllSpeakers);
             break;
           }
