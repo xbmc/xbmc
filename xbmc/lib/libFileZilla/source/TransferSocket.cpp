@@ -24,6 +24,7 @@
 #include "ControlSocket.h"
 #include "options.h"
 #include "../../../util.h"
+#include "../../../GUISettings.h"
 #include "ServerThread.h"
 #ifndef NOLAYERS
 #include "AsyncGssSocketLayer.h"
@@ -480,21 +481,24 @@ void CTransferSocket::OnReceive(int nErrorCode)
 			ASSERT(m_Filename!="");
       
       // this to handle fat-x limitations
-      CUtil::ShortenFileName(m_Filename); // change! addme to new ports
-      CStdString strFilename = CUtil::GetFileName(m_Filename);
-      CStdString strPath;
-      CUtil::GetDirectory(m_Filename,strPath);
-      vector<CStdString> tokens;
-      CUtil::Tokenize(strPath,tokens,"\\/");
-      strPath = tokens.front();
-      for (vector<CStdString>::iterator iter=tokens.begin()+1; iter != tokens.end(); ++iter)
+      if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
       {
-        CUtil::ShortenFileName(*iter);
-        CUtil::RemoveIllegalChars(*iter);
-        strPath += "\\"+*iter;
+        CUtil::ShortenFileName(m_Filename); // change! addme to new ports
+        CStdString strFilename = CUtil::GetFileName(m_Filename);
+        CStdString strPath;
+        CUtil::GetDirectory(m_Filename,strPath);
+        vector<CStdString> tokens;
+        CUtil::Tokenize(strPath,tokens,"\\/");
+        strPath = tokens.front();
+        for (vector<CStdString>::iterator iter=tokens.begin()+1; iter != tokens.end(); ++iter)
+        {
+          CUtil::ShortenFileName(*iter);
+          CUtil::RemoveIllegalChars(*iter);
+          strPath += "\\"+*iter;
+        }
+        CUtil::RemoveIllegalChars(strFilename);
+        m_Filename = strPath+"\\"+strFilename;
       }
-      CUtil::RemoveIllegalChars(strFilename);
-      m_Filename = strPath+"\\"+strFilename;
 
 			m_hFile = CreateFile(m_Filename, GENERIC_WRITE, FILE_SHARE_READ, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, 0);
 			if (m_hFile == INVALID_HANDLE_VALUE)
