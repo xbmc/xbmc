@@ -52,7 +52,7 @@ bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPa
   else
   {
     m_iPackets = 32; //64;// better sync with smaller buffers?
-    m_pAudioDecoder = new CASyncDirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, false, m_iPackets); // true = resample, 128 buffers
+    m_pAudioDecoder = new CASyncDirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, false, m_iPackets, false); // true = resample, 128 buffers
   }
 
 
