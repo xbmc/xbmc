@@ -423,9 +423,10 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(6, "Servers", 14036);
   AddBool(1, "Servers.FTPServer", 167, true);
-  AddBool(2, "Servers.WebServer", 263, false);
-  AddString(3, "Servers.WebServerPort", 730, "80");
-  AddString(4, "Servers.WebServerPassword", 733, "", BUTTON_CONTROL_HIDDEN_INPUT, true);
+  AddBool(2, "Servers.FTPAutoFatX",771,true);
+  AddBool(3, "Servers.WebServer", 263, false);
+  AddString(4, "Servers.WebServerPort", 730, "80");
+  AddString(5, "Servers.WebServerPassword", 733, "", BUTTON_CONTROL_HIDDEN_INPUT, true);
 
   // appearance settings
   AddGroup(7, 480);

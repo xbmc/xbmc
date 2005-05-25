@@ -33,6 +33,7 @@
 #include "../../utils/MemUnit.h"
 #include "../../Util.h"
 #include "../../Utils/log.h"
+#include "../../GUISettings.h"
 
 extern void fast_memcpy(void* d, const void* s, unsigned n);
 
@@ -1451,15 +1452,16 @@ void CControlSocket::ParseCommand()
             str = str.Left(str.rfind("\\"));
             continue;
           }
-          if (piece.size() > 42)
+          if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
           {
-            piece = piece.Left(42);
+            if (piece.size() > 42)
+              piece = piece.Left(42);
+            if (piece[piece.size()-1] == '\\')
+              piece.erase(piece.length()-1);
+            if( piece[piece.size()-1] != ':') // avoid fuckups with F: etc
+              CUtil::RemoveIllegalChars(piece);
+            piece += '\\';
           }
-          if (piece[piece.size()-1] == '\\')
-            piece.erase(piece.length()-1);
-          if( piece[piece.size()-1] != ':') // avoid fuckups with F: etc
-            CUtil::RemoveIllegalChars(piece);
-          piece += '\\';
           str += piece;
 					result = result.Mid(result.Find("\\")+1);
 					res = CreateDirectory(str,0);
