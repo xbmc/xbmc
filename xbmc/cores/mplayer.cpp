@@ -765,7 +765,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
         options.SetAC3PassTru(bSupportsAC3Out);
         options.SetDTSPassTru(bSupportsDTSOut);
 
-        if (g_guiSettings.GetBool("AudioOutput.OutputToAllSpeakers"))
+        if ((g_guiSettings.GetBool("VideoAudio.OutputToAllSpeakers")) && (bIsVideo) || (g_guiSettings.GetBool("MusicAudio.OutputToAllSpeakers")) && (!bIsVideo))
           options.SetLimitedHWAC3(true); //Will limit hwac3 to not kick in on 2.0 channel streams
       }
     }
@@ -1013,7 +1013,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
     if (g_stSettings.m_currentVideoSettings.m_AudioStream < -1)
     { // check + fix up the stereo/left/right setting
-      bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL) && g_guiSettings.GetBool("Audio.OutputToAllSpeakers");
+      bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL) && ((g_guiSettings.GetBool("AudioVideo.OutputToAllSpeakers") && HasVideo()) || (g_guiSettings.GetBool("AudioMusic.OutputToAllSpeakers") && !HasVideo()));
       xbox_audio_switch_channel(-1 - g_stSettings.m_currentVideoSettings.m_AudioStream, bAudioOnAllSpeakers);
     }
     bIsVideo = HasVideo();

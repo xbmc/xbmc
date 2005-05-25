@@ -46,7 +46,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_Channels = 0;
   m_BitsPerSample = 0;
 
-  m_resampleAudio = g_guiSettings.GetBool("AudioOutput.HighQualityResampling");
+  m_resampleAudio = true;
 
   m_visBufferLength = 0;
 }
@@ -208,7 +208,7 @@ void PAPlayer::SetupDirectSound(int channels)
 {
   bool bAudioOnAllSpeakers(false);
   g_audioContext.RemoveActiveDevice(); 
-  g_audioContext.SetupSpeakerConfig(channels, bAudioOnAllSpeakers);
+  g_audioContext.SetupSpeakerConfig(channels, bAudioOnAllSpeakers,true);
   g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
   LPDIRECTSOUND pDSound=g_audioContext.GetDirectSoundDevice();
   if (!pDSound)
@@ -251,7 +251,8 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   int iMixBinCount;
 
   // TODO: Support correct channel mapping of AAC and Ogg
-  if (g_guiSettings.GetBool("AudioOutput.OutputToAllSpeakers") && channels == 2)
+  //if (g_guiSettings.GetBool("AudioOutput.OutputToAllSpeakers") && channels == 2)
+  if ((channels == 2) && (g_guiSettings.GetBool("AudioMusic.OutputToAllSpeakers")))
   {
     g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STEREOALL, channels);
   }

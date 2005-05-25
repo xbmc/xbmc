@@ -30,7 +30,7 @@ public:
   LPDIRECTSOUND8              GetDirectSoundDevice() { return m_pDirectSoundDevice; }
   LPAC97MEDIAOBJECT           GetAc97Device() { return m_pAC97Device; }
   
-  void                        SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers);
+  void                        SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers, bool bIsMusic=true);
   bool                        IsAC3EncoderActive();
 
   bool                        GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, DWORD* dwChannelMask, int Type, int Channels);
