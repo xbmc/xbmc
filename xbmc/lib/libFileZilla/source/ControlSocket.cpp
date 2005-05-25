@@ -31,6 +31,8 @@
 
 #include "../../Settings.h"
 #include "../../utils/MemUnit.h"
+#include "../../Util.h"
+#include "../../Utils/log.h"
 
 extern void fast_memcpy(void* d, const void* s, unsigned n);
 
@@ -1425,7 +1427,8 @@ void CControlSocket::ParseCommand()
 #endif
 			CStdString result;
 			int error=m_pOwner->m_pPermissions->GetDirName(m_status.user, args,m_CurrentDir, DOP_CREATE, result);
-			if (error & PERMISSION_DOESALREADYEXIST && (error & PERMISSION_FILENOTDIR)!=PERMISSION_FILENOTDIR)
+      CLog::Log(LOGDEBUG,"error: %i",error);
+      if (error & PERMISSION_DOESALREADYEXIST && (error & PERMISSION_FILENOTDIR)!=PERMISSION_FILENOTDIR)
 				Send("550 Directory already exists");
 			else if (error & PERMISSION_DENIED)
 				Send("550 Can't create directory. Permission denied");
@@ -1440,13 +1443,24 @@ void CControlSocket::ParseCommand()
 				while (result!="")
 				{
 					CStdString piece = result.Left(result.Find("\\")+1);
-					if (piece.Right(2) == ".\\")
-					{
-						Send("550 Directoryname not valid");
-						bReplySent = TRUE;
-						break;
-					}
-					str += piece;
+          CLog::Log(LOGDEBUG,"piece: %s",piece.c_str());
+					if (piece == ".\\")
+					  continue;
+          if (piece == "..\\")
+          {
+            str = str.Left(str.rfind("\\"));
+            continue;
+          }
+          if (piece.size() > 42)
+          {
+            piece = piece.Left(42);
+          }
+          if (piece[piece.size()-1] == '\\')
+            piece.erase(piece.length()-1);
+          if( piece[piece.size()-1] != ':') // avoid fuckups with F: etc
+            CUtil::RemoveIllegalChars(piece);
+          piece += '\\';
+          str += piece;
 					result = result.Mid(result.Find("\\")+1);
 					res = CreateDirectory(str,0);
 				}
