@@ -543,6 +543,7 @@
   <string><id>768</id><value>Reserverad</value></string>
   <string><id>769</id><value>Reserverad</value></string>
   <string><id>770</id><value>Fel %i: delningen är inte tillgänglig</value></string>
+  <string><id>771</id><value>Låt ftpservern göra om filnamn till fatx</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Online Spel</value></string>
   <string><id>1000</id><value>Förhandstitt av skärmsläckare</value></string>
@@ -672,7 +673,7 @@
   <string><id>12354</id><value>Gå förbi mapplås tills nästa uppstart?</value></string>
   <string><id>12355</id><value>automatisk återaktivering av mapplåss.)</value></string>
   <string><id>12356</id><value>Byt lås</value></string> 
-  <string><id>12357</id><value>Delnings Låsk</value></string>
+  <string><id>12357</id><value>Delnings Lås</value></string>
   <string><id>12358</id><value>Lösenordet lämnades blankt. Försök igen.</value></string> 
   <string><id>12600</id><value>Mitt väder</value></string>
   <string><id>12900</id><value>Skärmsläckare</value></string>
@@ -986,4 +987,5 @@
   <string><id>15211</id><value>Skickar...</value></string>
   <string><id>15212</id><value>Skickar om %i seks</value></string>
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
+  <string><id>15214</id><value>Använd Smoothed A/V Syncronisering</value></string>
 </strings>
