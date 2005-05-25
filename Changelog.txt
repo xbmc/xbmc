@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-05-2005 fixed: ftpserver could fail to accept directory names containing "."
+ - 25-05-2005 changed: ftpserver now truncates directory names aswell
  - 24-05-2005 fixed: TimeServer Request was brocken [GeminiServer]
  - 24-05-2005 updated: German language file
  - 24-05-2005 updated: Italian language file (Thnx to kotix)

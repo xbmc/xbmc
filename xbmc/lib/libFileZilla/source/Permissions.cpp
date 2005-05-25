@@ -504,7 +504,7 @@ int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString curren
 		for (std::list<CStdString>::reverse_iterator iter=piecelist.rbegin(); iter!=piecelist.rend(); iter++)
 		{
 			CStdString tmp=*iter;
-			while (tmp.Left(2)=="..")
+			if (tmp == "..")
 			{ //Oh, double dots found! Remove one piece
 				remove++;
 				tmp=tmp.Mid(1);
@@ -652,7 +652,7 @@ int CPermissions::GetFileName(LPCTSTR user, CStdString filename, CStdString curr
 		for (std::list<CStdString>::reverse_iterator iter=piecelist.rbegin(); iter!=piecelist.rend(); iter++)
 		{
 			CStdString tmp=*iter;
-			while (tmp.Left(2)=="..")
+			while (tmp == "..")
 			{ //Oh, double dots found! Remove one piece
 				remove++;
 				tmp=tmp.Mid(1);
@@ -795,11 +795,11 @@ int CPermissions::GetRealDirectory(CStdString directory, int user, t_directory &
 			CStdString piece=directory.Mid(pos+1);
 			
 			BOOL bRemoveThis=FALSE;
-			while (piece.Left(2)=="..")
+			while (piece.Left(3)=="../")
 			{ //Oh, double dots found! Remove one piece
 				bRemoveThis=TRUE;
 				remove++;
-				piece=piece.Mid(1);
+				piece=piece.Mid(2);
 			}
 			if (!bRemoveThis && piece!=".") //Skips single dots
 			{
@@ -884,11 +884,11 @@ int CPermissions::GetRealDirectory(CStdString directory, int user, t_directory &
 			CStdString piece=directory.Mid(pos+1);
 
 			BOOL bRemoveThis=FALSE;
-			while (piece.Left(2)=="..")
+			while (piece.Left(3)=="..")
 			{ //Oh, double dots found! Remove one piece
 				bRemoveThis=TRUE;
 				remove++;
-				piece=piece.Mid(1);
+				piece=piece.Mid(2);
 			}
 			if (!bRemoveThis && piece!=".") //Skips single dots
 			{
@@ -1102,7 +1102,7 @@ int CPermissions::ChangeCurrentDir(LPCTSTR user, CStdString &currentdir, CStdStr
 		for (std::list<CStdString>::reverse_iterator iter=piecelist.rbegin(); iter!=piecelist.rend(); iter++)
 		{
 			CStdString tmp=*iter;
-			while (tmp.Left(2)=="..")
+      if (tmp == "..")
 			{ //Oh, double dots found! Remove one piece
 				remove++;
 				tmp=tmp.Mid(1);

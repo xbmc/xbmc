@@ -484,6 +484,15 @@ void CTransferSocket::OnReceive(int nErrorCode)
       CStdString strFilename = CUtil::GetFileName(m_Filename);
       CStdString strPath;
       CUtil::GetDirectory(m_Filename,strPath);
+      vector<CStdString> tokens;
+      CUtil::Tokenize(strPath,tokens,"\\/");
+      strPath = tokens.front();
+      for (vector<CStdString>::iterator iter=tokens.begin()+1; iter != tokens.end(); ++iter)
+      {
+        CUtil::ShortenFileName(*iter);
+        CUtil::RemoveIllegalChars(*iter);
+        strPath += "\\"+*iter;
+      }
       CUtil::RemoveIllegalChars(strFilename);
       m_Filename = strPath+"\\"+strFilename;
 
