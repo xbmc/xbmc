@@ -548,6 +548,7 @@
   <string><id>769</id><value>Reserved</value></string>
 
   <string><id>770</id><value>Error %i: share not available</value></string>
+  <string><id>771</id><value>Workaround for fatx limits in FTP server</value></string>
 
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Gaming</value></string>
