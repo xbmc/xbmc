@@ -24,6 +24,22 @@
 #include "video.h"
 #include "mplayer.h"
 
+//Uncomment line here to allow direct rendering
+//Disabling for now.. the code below works, however it doesn't seem
+//to be any gain in using it.. atleast not the way it is now
+//pp goes slower for some reason. i believe it's reading back data
+//even thou the mp_imgflag_readable hasn't been set
+//and since we are using video memmory reading from it is slow as hell
+//also there is a bug in ffmpeg that causes MP_IMGFLAG_ACCEPT_STRIDE to be 
+//set even thou it can't handle a different stride than width.
+
+//#define MP_DIRECTRENDERING
+
+#ifdef MP_DIRECTRENDERING
+static bool m_bImageLocked = false;
+static bool m_bAllowDR = true;
+#endif
+
 void video_uninit(void);
 
 void xbox_video_CheckScreenSaver()
@@ -131,6 +147,7 @@ static void video_flip_page(void)
 */
 static unsigned int video_draw_frame(unsigned char *src[])
 {
+  return VO_FALSE; //SHOULD NEVER HAPPEN
   return g_renderManager.DrawFrame(src);
 }
 
@@ -157,6 +174,10 @@ static unsigned int video_draw_frame(unsigned char *src[])
 static unsigned int video_config(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format)
 {
   OutputDebugString("video_config()\n");
+#ifdef MP_DIRECTRENDERING
+  m_bImageLocked = false;
+  m_bAllowDR = true;
+#endif
   float fps = 25.00f;
   if (g_application.m_pPlayer)
     fps = g_application.m_pPlayer->GetActualFPS();
@@ -170,11 +191,67 @@ static unsigned int video_control(unsigned int request, void *data, ...)
   switch (request)
   {
   case VOCTRL_GET_IMAGE:
+    {
     //libmpcodecs Direct Rendering interface
     //You need to update mpi (mp_image.h) structure, for example,
     //look at vo_x11, vo_sdl, vo_xv or mga_common.
-    return VO_FALSE;  //g_renderManager.GetImage((mp_image_t *)data);
 
+#ifdef MP_DIRECTRENDERING
+
+      if( !m_bAllowDR ) return VO_FALSE;
+
+      mp_image_t *mpi = (mp_image_t*)data;
+      
+      //We have several buffers, can't direct render right now..
+      
+      if( mpi->type == MP_IMGTYPE_STATIC && g_renderManager.m_pRenderer->GetBuffersCount() > 1 ) return VO_FALSE;
+
+      //We only work with planar data
+      if( !(mpi->flags & MP_IMGFLAG_PLANAR) ) return VO_FALSE;
+      
+      if( mpi->flags & MP_IMGFLAG_READABLE )
+      { //Okey codec will read back data..
+        //but we normally don't have enough buffers for anything else than just normal I frames
+        //also not sure if the memory our textures are in is fast enough to read from
+        if( mpi->type == MP_IMGTYPE_IPB )
+        {
+          //TODO
+          return VO_FALSE;
+        }
+        else if( mpi->type == MP_IMGTYPE_IP )
+        {
+          //TODO
+          return VO_FALSE;
+        }
+      }
+
+      YV12Image image;
+      if( g_renderManager.GetImage(&image) )
+      {
+        if((mpi->width==image.stride[0]) || (mpi->flags&(MP_IMGFLAG_ACCEPT_STRIDE|MP_IMGFLAG_ACCEPT_WIDTH)))
+	      {
+		      //IMGFMT_YV12 
+			    mpi->planes[2] = image.plane[2];
+	        mpi->planes[1] = image.plane[1];
+          mpi->planes[0] = image.plane[0];
+
+          mpi->stride[0] = image.stride[0];
+          mpi->stride[1] = image.stride[1];
+          mpi->stride[2] = image.stride[2];
+
+          //Okey, everything seem fine for direct rendering
+          m_bImageLocked = true;
+          mpi->flags |= MP_IMGFLAG_DIRECT;
+          return VO_TRUE;
+        }
+
+        //Can't direct render so release our image again
+        g_renderManager.ReleaseImage();
+      }
+#endif
+
+      return VO_FALSE; 
+    }
     /********************************************************************************************************
        VOCTRL_QUERY_FORMAT  -  queries if a given pixelformat is supported.
         It also returns various flags decsirbing the capabilities
@@ -194,9 +271,9 @@ static unsigned int video_control(unsigned int request, void *data, ...)
       unsigned int format = *((unsigned int*)data);
       if (format == IMGFMT_YV12)
         return VFCAP_CSP_SUPPORTED_BY_HW | VFCAP_CSP_SUPPORTED | VFCAP_OSD | VFCAP_HWSCALE_UP | VFCAP_HWSCALE_DOWN | VFCAP_ACCEPT_STRIDE;
+     
       return 0;
     }
-
   case VOCTRL_DRAW_IMAGE:
     /*  replacement for the current draw_slice/draw_frame way of
         passing video frames. by implementing SET_IMAGE, you'll get
@@ -205,10 +282,39 @@ static unsigned int video_control(unsigned int request, void *data, ...)
         old-style draw_* functils will be called!
         Note: draw_slice is still mandatory, for per-slice rendering!
     */
+    {
+      mp_image_t *mpi = (mp_image_t*)data;
 
-    return VO_FALSE; //g_renderManager.PutImage((mp_image_t *)data);
-    //      return VO_NOTIMPL;
+#ifdef MP_DIRECTRENDERING
+      if( m_bImageLocked )
+      {
+        //We where direct rendering last frame, release image here
+        g_renderManager.ReleaseImage();
+        m_bImageLocked = false;
 
+        if (mpi->flags & MP_IMGFLAG_DIRECT)
+        {
+          // direct rendering.. everything should already be fine
+          return VO_TRUE;
+        }
+        else
+        {
+          //Crap, we enabled directrendering in last call, but apperently something went wrong
+          CLog::Log(LOGWARNING, "Direct Rendering Failed, Disabling for future frames");
+          m_bAllowDR = false;
+        }
+      }
+#endif
+
+      if (mpi->flags & MP_IMGFLAG_DRAW_CALLBACK)
+          return VO_TRUE;         // done
+      if (mpi->flags & MP_IMGFLAG_PLANAR)
+      {
+        g_renderManager.DrawSlice(mpi->planes, (int*)(mpi->stride), mpi->w, mpi->h, 0, 0);
+        return VO_TRUE;
+      }
+      return VO_FALSE;
+    }
   case VOCTRL_FULLSCREEN:
     {
       //TODO
