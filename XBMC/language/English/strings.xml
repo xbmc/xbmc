@@ -1006,4 +1006,6 @@
   <string><id>13298</id><value>XBLIVE Key:</value></string>
 
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
+  
+  <string><id>15214</id><value>Use Smoothed A/V Syncronization</value></string>
 </strings>

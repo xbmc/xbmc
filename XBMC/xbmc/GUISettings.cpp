@@ -396,6 +396,7 @@ CGUISettings::CGUISettings(void)
   AddInt(3, "Filters.RenderMethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADER, SPIN_CONTROL_TEXT);
   AddBool(4, "Filters.Noise", 14058, false);
   AddInt(5, "Filters.NoiseLevel", 14058, 10, 1, 1, 100, SPIN_CONTROL_INT);
+  AddBool(6, "Filters.UseAutosync", 15214, false);
 
   AddCategory(5, "Subtitles", 287);
   AddString(1, "Subtitles.Font", 288, "arial-iso-8859-1", SPIN_CONTROL_TEXT);

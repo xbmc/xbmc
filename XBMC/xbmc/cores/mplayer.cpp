@@ -856,6 +856,10 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     if(!bNeedOSD)
       mplayer_SlaveCommand("osd 0");
 
+    //Enable smoothing of audio clock to create smoother playback.
+    if( g_guiSettings.GetBool("Filters.UseAutosync") )
+      mplayer_SlaveCommand("autosync 30");
+
     if (bFileIsDVDImage || bFileIsDVDIfoFile)
     {
       iRet = mplayer_open_file(GetDVDArgument(strFile).c_str());
