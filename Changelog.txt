@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-05-2005 fixed: last track of a audio cd is not shown
  - 25-05-2005 added: fat-x limits handled by playlist loaders.
  - 25-05-2005 changed: separated "output to all speakers" setting for music and video
  - 25-05-2005 added: Ability to enable autosync option for mplayer in settings. (Use Smoothed A/V Sync)
