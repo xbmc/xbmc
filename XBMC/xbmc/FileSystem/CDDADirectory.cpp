@@ -118,7 +118,7 @@ bool CCDDADirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   // Filling the file items with cddb info happens in CMusicInfoTagLoaderCDDA
 
   // Generate fileitems
-  for (int i = 1;i < nTracks;++i)
+  for (int i = 1;i <= nTracks;++i)
   {
     // Skip Datatracks for display,
     // but needed to query cddb
