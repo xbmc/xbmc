@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.196. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.202. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -183,7 +183,7 @@
   <string><id>249</id><value>Musikk</value></string>
   <string><id>250</id><value>Visualisering</value></string>
   <string><id>251</id><value>Velg destinasjonskatalog</value></string>
-  <string><id>252</id><value>- Send stereolyd til alle høyttalere</value></string>
+  <string><id>252</id><value>Send stereolyd til alle høyttalere</value></string>
   <string><id>253</id><value>Antall kanaler</value></string>
   <string><id>254</id><value>- Forsterker med DTS</value></string>
   <string><id>255</id><value>CDDB</value></string>
@@ -536,7 +536,6 @@
   <string><id>757</id><value>Rediger banedybde</value></string>
   <string><id>758</id><value>Fjerner programlink</value></string>  
   <string><id>759</id><value>Vis: Stor liste</value></string>
-
   <string><id>760</id><value>Gul</value></string>
   <string><id>761</id><value>Hvit</value></string>
   <string><id>762</id><value>Blå</value></string>
@@ -547,12 +546,42 @@
   <string><id>767</id><value>Reserved</value></string>
   <string><id>768</id><value>Reserved</value></string>
   <string><id>769</id><value>Reserved</value></string>
-
   <string><id>770</id><value>Feil %i: mappe ikke tilgjengelig</value></string>
-
+  <string><id>771</id><value>Løsning for fatx-grenser i FTP-server</value></string>
+  <string><id>772</id><value>Lyd-maskinvare</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Spill på nettet</value></string>
+
   <string><id>1000</id><value>Forhåndsvisning av skjermbeskytter</value></string>
+  <string><id>1200</id><value>SMB-mappe</value></string>
+  <string><id>1201</id><value>SMB IP</value></string>
+  <string><id>1202</id><value>SMB arbeidsgruppe</value></string>
+  <string><id>1203</id><value>SMB brukernavn</value></string>
+  <string><id>1204</id><value>SMB passord</value></string>
+  <string><id>1205</id><value>SMB delingsnavn</value></string>
+  <string><id>1206</id><value>SMB delingsgruppe</value></string>
+  <string><id>1207</id><value>SMB WINS-server</value></string>
+  <string><id>1208</id><value>Instillinger</value></string>
+  
+  <string><id>1209</id><value>SMB delingsinstillinger ble lagret!</value></string>
+  
+  <string><id>1210</id><value>Fjern</value></string>
+  <string><id>1211</id><value>Musikk</value></string>
+  <string><id>1212</id><value>Video</value></string>
+  <string><id>1213</id><value>Bilder</value></string>
+  <string><id>1214</id><value>Filer</value></string>
+  <string><id>1215</id><value>Musikk &amp; Video </value></string>
+  <string><id>1216</id><value>Musikk &amp; Bilder</value></string>
+  <string><id>1217</id><value>Musikk &amp; Filer</value></string>
+  <string><id>1218</id><value>Video &amp; Bilder</value></string>
+  <string><id>1219</id><value>Video &amp; Filer</value></string>
+  <string><id>1220</id><value>Bilder &amp; Filer</value></string>
+  <string><id>1221</id><value>Musikk &amp; Video &amp; Bilder</value></string>
+  <string><id>1222</id><value>Musikk &amp; Video &amp; Bilder &amp; Filer</value></string>
+  <string><id>1223</id><value>Skrudd av</value></string>
+  <string><id>1224</id><value>Normal bruker</value></string>
+  <string><id>1225</id><value>Avansert bruker</value></string>
+  
 
   <string><id>1396</id><value>Forbigående</value></string>
   <string><id>1397</id><value>og</value></string>
@@ -679,16 +708,14 @@
   <string><id>12352</id><value>Skriv inn masterkode knappekombinasjon og </value></string>
   <string><id>12353</id><value>Reaktiver lås</value></string>
   <string><id>12354</id><value>Overstyr mappelåser inntil neste oppstart?</value></string>
-  <string><id>12355</id><value>automatisk reaktiver mappelåser.)</value></string>
-	<string><id>12356</id><value>Endre lås</value></string>
+  <string><id>12355</id><value>Automatisk reaktiver mappelåser.)</value></string>
+  <string><id>12356</id><value>Endre lås</value></string>
+  <string><id>12357</id><value>Lås</value></string>
+  <string><id>12358</id><value>Blankt passord. Prøv igjen.</value></string>
 	
-	<string><id>12357</id><value>Lås</value></string>
-	<string><id>12358</id><value>Blankt passord. Prøv igjen.</value></string>
-	
-
-	<string><id>12600</id><value>Været</value></string>
+  <string><id>12600</id><value>Været</value></string>
   <string><id>12900</id><value>Skjermbeskytter</value></string>
-  <string><id>12901</id><value>Fullskjerm OSD</value></string>
+  <string><id>12901</id><value>Fullskjerm OSD</value></string>  
   <string><id>13000</id><value>System</value></string>
   <string><id>13001</id><value>Skru av harddisk umiddelbart</value></string>
   <string><id>13002</id><value>Kun video</value></string>
@@ -864,14 +891,14 @@
   <string><id>14061</id><value>Auto</value></string>
   <string><id>14062</id><value>Skriv inn brukernavn for</value></string>
 
-    <string><id>14063</id><value>Dato &amp; Tid</value></string>
-	  <string><id>14064</id><value>Sett år</value></string>
-	  <string><id>14065</id><value>Sett måned</value></string>
-	  <string><id>14066</id><value>Sett dag</value></string>
-	  <string><id>14067</id><value>Sett time</value></string>
-	  <string><id>14068</id><value>Sett minutt</value></string>
-	  <string><id>14069</id><value>Vil du bruke disse instillingene nå?</value></string>
-	  <string><id>14070</id><value>Bruk disse instillingene nå</value></string>
+  <string><id>14063</id><value>Dato &amp; Tid</value></string>
+  <string><id>14064</id><value>Sett år</value></string>
+  <string><id>14065</id><value>Sett måned</value></string>
+  <string><id>14066</id><value>Sett dag</value></string>
+  <string><id>14067</id><value>Sett time</value></string>
+  <string><id>14068</id><value>Sett minutt</value></string>
+  <string><id>14069</id><value>Vil du bruke disse instillingene nå?</value></string>
+  <string><id>14070</id><value>Bruk disse instillingene nå</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Tjenesten er ikke tilkoblet, vil du forsøke</value></string>
@@ -1007,5 +1034,6 @@
   <string><id>13297</id><value>Xbox er IKKE tilkoblet! Sjekk nettverksinstillinger!</value></string>
   <string><id>13298</id><value>XBLIVE nøkkel:</value></string>
 
-  <string><id>15213</id><value>[PLASSHOLDER]</value></string>
+  <string><id>15213</id><value>[PLASSHOLDER]</value></string>													   
+  <string><id>15214</id><value>Bruk utjevnet A/V-synkronisering</value></string>
 </strings>
