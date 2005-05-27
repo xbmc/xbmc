@@ -210,6 +210,9 @@ public:
   bool LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
   bool SaveFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
 
+  bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strChild, const CStdString &strChildValue);
+  bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strFirstChildValue);
+
   struct stSettings
   {
 public:
@@ -407,9 +410,11 @@ public:
 
     int m_iSambaDebugLevel;
     char m_strSambaWorkgroup[128];
-    char m_strSambaWinsServer[32];
+    char m_strSambaIPAdress[32];
+    char m_strSambaShareName[32];
     char m_strSambaDefaultUserName[128];
     char m_strSambaDefaultPassword[128];
+    char m_strSambaWinsServer[32];
 
     int m_nVolumeLevel;       // measured in 100th's of a dB.  0dB is max, -60.00dB is min
     int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
@@ -430,6 +435,7 @@ public:
   VECSHARES m_vecMyFilesShares;
   VECSHARES m_vecMyMusicShares;
   VECSHARES m_vecMyVideoShares;
+  VECSHARES m_vecSambeShres;
   VECFILETYPEICONS m_vecIcons;
   VECPROFILES m_vecProfiles;
   int m_iLastLoadedProfileIndex;
