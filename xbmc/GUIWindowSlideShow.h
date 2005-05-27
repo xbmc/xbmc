@@ -46,6 +46,7 @@ public:
   void SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
   void UpdateTexture(D3DTexture *pTexture, int iWidth, int iHeight);
   bool IsLoaded() const { return m_bIsLoaded;};
+  void UnLoad() {m_bIsLoaded = false;};
   void Render();
   void Close();
   bool IsFinished() const { return m_bIsFinished;};
