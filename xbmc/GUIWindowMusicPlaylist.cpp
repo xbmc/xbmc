@@ -338,7 +338,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
       CPlayList::CPlayListItem newItem;
       newItem.SetFileName(pItem->m_strPath);
       newItem.SetDescription(pItem->GetLabel());
-      if (pItem->m_musicInfoTag.Loaded())
+      if (pItem->m_musicInfoTag.GetDuration())
         newItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
       else
         newItem.SetDuration(0);
@@ -508,10 +508,9 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   } // if (pItem->m_musicInfoTag.Loaded())
   else
   {
-    // If we have a cdda track without cddb information,...
-    if (!pItem->m_musicInfoTag.Loaded() && pItem->IsCDDA() )
+    // Our tag may have a duration even if its not loaded
+    if (pItem->m_musicInfoTag.GetDuration())
     {
-      // ...we have the duration for display
       int nDuration = pItem->m_musicInfoTag.GetDuration();
       if (nDuration > 0)
       {

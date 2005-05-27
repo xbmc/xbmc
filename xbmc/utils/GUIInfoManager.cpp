@@ -471,7 +471,6 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
 {
   if (!g_application.IsPlayingAudio()) return "";
   CMusicInfoTag& tag = m_currentSong.m_musicInfoTag;
-  if (!tag.Loaded()) return "";
   switch (item)
   {
   case MUSICPLAYER_TITLE: 
