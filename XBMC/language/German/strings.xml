@@ -185,7 +185,7 @@
   <string><id>249</id><value>Musik</value></string>
   <string><id>250</id><value>Visualisierung</value></string>
   <string><id>251</id><value>Wähle Ziel-Ordner</value></string>
-  <string><id>252</id><value>- Stereo auf alle Lautsprecher ausgeben</value></string>
+  <string><id>252</id><value>Stereo auf alle Lautsprecher ausgeben</value></string>
   <string><id>253</id><value>Anzahl der Kanäle</value></string>
   <string><id>254</id><value>- Receiver unterstützt DTS</value></string>
   <string><id>255</id><value>CDDB</value></string>
@@ -538,7 +538,6 @@
   <string><id>757</id><value>Pfadtiefe bearbeiten</value></string>
   <string><id>758</id><value>Programmlink entfernen</value></string>  
   <string><id>759</id><value>Große Liste</value></string>
-
   <string><id>760</id><value>Gelb</value></string>
   <string><id>761</id><value>Weiß</value></string>
   <string><id>762</id><value>Blau</value></string>
@@ -549,12 +548,42 @@
   <string><id>767</id><value>Reserved</value></string>
   <string><id>768</id><value>Reserved</value></string>
   <string><id>769</id><value>Reserved</value></string>
-
   <string><id>770</id><value>Fehler %i: Share ist nicht verfügbar</value></string>
-
+  <string><id>771</id><value>Workaround für Fatx limits im FTP-Server</value></string>
+  <string><id>772</id><value>Audio Hardware</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Online spielen</value></string>
+
   <string><id>1000</id><value>Vorschau</value></string>
+  <string><id>1200</id><value>SMB Share</value></string>
+  <string><id>1201</id><value>SMB IP</value></string>
+  <string><id>1202</id><value>SMB Workgroup</value></string>
+  <string><id>1203</id><value>SMB Benutzername</value></string>
+  <string><id>1204</id><value>SMB Passwort</value></string>
+  <string><id>1205</id><value>SMB Share Name</value></string>
+  <string><id>1206</id><value>SMB Share Gruppe</value></string>
+  <string><id>1207</id><value>SMB WINS-Server</value></string>
+  <string><id>1208</id><value>Modus</value></string>
+  
+  <string><id>1209</id><value>Die Einstellungen wurden erforlgreich übernommen</value></string>
+  
+  <string><id>1210</id><value>Entfernen</value></string>
+  <string><id>1211</id><value>Musik</value></string>
+  <string><id>1212</id><value>Video</value></string>
+  <string><id>1213</id><value>Bilder</value></string>
+  <string><id>1214</id><value>Dateien</value></string>
+  <string><id>1215</id><value>Musik &amp; Video </value></string>
+  <string><id>1216</id><value>Musik &amp; Bilder</value></string>
+  <string><id>1217</id><value>Musik &amp; Dateien</value></string>
+  <string><id>1218</id><value>Video &amp; Bilder</value></string>
+  <string><id>1219</id><value>Video &amp; Dateien</value></string>
+  <string><id>1220</id><value>Bilder &amp; Dateien</value></string>
+  <string><id>1221</id><value>Musik &amp; Video &amp; Bilder</value></string>
+  <string><id>1222</id><value>Musik &amp; Video &amp; Bilder &amp; Dateien</value></string>
+  <string><id>1223</id><value>Disabled</value></string>
+  <string><id>1224</id><value>Normaler Benutzer</value></string>
+  <string><id>1225</id><value>Experte</value></string>
+  
 
   <string><id>1396</id><value>rutschig</value></string>
   <string><id>1397</id><value>und</value></string>
@@ -1008,4 +1037,5 @@
   <string><id>13298</id><value>XBLIVE Key:</value></string>
 
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
+  <string><id>15214</id><value>Smoothed A/V Syncronisation benutzen</value></string>
 </strings>
