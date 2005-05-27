@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-05-2005 fixed: different info tags are not shown when file has no tag
  - 27-05-2005 fixed: g_applicationMessenger.PictureShow - browser interface would not display single picture
  - 27-05-2005 added: SMB Share control within the GUI! [GeminiServer]
                      This will  make it easy to set the SMB share, instead of XboxMediaCenter.xml editing to set the <samba> settings.
