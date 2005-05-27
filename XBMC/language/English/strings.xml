@@ -535,7 +535,6 @@
   <string><id>757</id><value>Edit Path Depth</value></string>
   <string><id>758</id><value>Removing Program Link</value></string>  
   <string><id>759</id><value>View: Big List</value></string>
-
   <string><id>760</id><value>Yellow</value></string>
   <string><id>761</id><value>White</value></string>
   <string><id>762</id><value>Blue</value></string>
@@ -546,15 +545,43 @@
   <string><id>767</id><value>Reserved</value></string>
   <string><id>768</id><value>Reserved</value></string>
   <string><id>769</id><value>Reserved</value></string>
-
   <string><id>770</id><value>Error %i: share not available</value></string>
   <string><id>771</id><value>Workaround for fatx limits in FTP server</value></string>
   <string><id>772</id><value>Audio hardware</value></string>
-
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Gaming</value></string>
-  <string><id>1000</id><value>Screensaver Preview</value></string>
 
+  <string><id>1000</id><value>Screensaver Preview</value></string>
+  <string><id>1200</id><value>SMB Share</value></string>
+  <string><id>1201</id><value>SMB IP</value></string>
+  <string><id>1202</id><value>SMB Workgroup</value></string>
+  <string><id>1203</id><value>SMB Username</value></string>
+  <string><id>1204</id><value>SMB Passorwd</value></string>
+  <string><id>1205</id><value>SMB Share Name</value></string>
+  <string><id>1206</id><value>SMB Share Group</value></string>
+  <string><id>1207</id><value>SMB WINS-Server</value></string>
+  <string><id>1208</id><value>Settings Mode</value></string>
+  
+  <string><id>1209</id><value>The SMB Share Settings was set succesfull!</value></string>
+  
+  <string><id>1210</id><value>Remove</value></string>
+  <string><id>1211</id><value>Music</value></string>
+  <string><id>1212</id><value>Video</value></string>
+  <string><id>1213</id><value>Pictures</value></string>
+  <string><id>1214</id><value>Files</value></string>
+  <string><id>1215</id><value>Music &amp; Video </value></string>
+  <string><id>1216</id><value>Music &amp; Pictures</value></string>
+  <string><id>1217</id><value>Music &amp; Files</value></string>
+  <string><id>1218</id><value>Video &amp; Pictures</value></string>
+  <string><id>1219</id><value>Video &amp; Files</value></string>
+  <string><id>1220</id><value>Pictures &amp; Files</value></string>
+  <string><id>1221</id><value>Music &amp; Video &amp; Pictures</value></string>
+  <string><id>1222</id><value>Music &amp; Video &amp; Pictures &amp; Files</value></string>
+  <string><id>1223</id><value>Disabled</value></string>
+  <string><id>1224</id><value>Normal User</value></string>
+  <string><id>1225</id><value>Advanced User</value></string>
+  
+  
   <string><id>1396</id><value>Drifting</value></string>
   <string><id>1397</id><value>and</value></string>
   <string><id>1398</id><value>Freezing</value></string>
@@ -680,7 +707,7 @@
   <string><id>12352</id><value>Enter Master Code button combo and </value></string>
   <string><id>12353</id><value>Reactivate Lock</value></string>
   <string><id>12354</id><value>Override folder locks until next boot?</value></string>
-  <string><id>12355</id><value>automatically re-enable folder locks.)</value></string>
+  <string><id>12355</id><value>Automatically re-enable folder locks.)</value></string>
   <string><id>12356</id><value>Change Lock</value></string>
   <string><id>12357</id><value>Share Lock</value></string>
   <string><id>12358</id><value>Password entry was blank. Try again.</value></string>
@@ -995,8 +1022,8 @@
   <string><id>13286</id><value>Video Encoder:</value></string>
   <string><id>13287</id><value>Screen Resolution:</value></string>
   <string><id>13288</id><value>Xbox Version:</value></string>
-  <string><id>13289</id><value>Xbox Serialnumber:</value></string>
-  <string><id>13290</id><value>XBOX Manufacture:</value></string>
+  <string><id>13289</id><value>Xbox Serial Number:</value></string>
+  <string><id>13290</id><value>XBOX manufacturer:</value></string>
   <string><id>13291</id><value>ModChip:</value></string>
   <string><id>13292</id><value>A/V Cable:</value></string>
   <string><id>13293</id><value>Video &amp; XBE Region:</value></string>
@@ -1007,6 +1034,5 @@
   <string><id>13298</id><value>XBLIVE Key:</value></string>
 
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
-  
   <string><id>15214</id><value>Use Smoothed A/V Syncronization</value></string>
 </strings>

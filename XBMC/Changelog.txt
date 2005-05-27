@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-05-2005 added: SMB Share control within the GUI! [GeminiServer]
+                     This will  make it easy to set the SMB share, instead of XboxMediaCenter.xml editing to set the <samba> settings.
+                     it will set the Shares automatic to the desired groups like Video, Musik [also choose able]. 
+                     You can define the IP, Workgroup, Username, Password, WINS-Server, Share Name! 
+                     Also you can define the Settings mode for Advanced or Normal user, to hold it Simple for the beginners
+                     SMB Share Setting is located --> Settings - Network - SMB Share!
  - 26-05-2005 fixed: last track of a audio cd is not shown
  - 25-05-2005 added: fat-x limits handled by playlist loaders.
  - 25-05-2005 changed: separated "output to all speakers" setting for music and video

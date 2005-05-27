@@ -430,6 +430,18 @@ CGUISettings::CGUISettings(void)
   AddString(4, "Servers.WebServerPort", 730, "80");
   AddString(5, "Servers.WebServerPassword", 733, "", BUTTON_CONTROL_HIDDEN_INPUT, true);
 
+  //GeminiServer
+  AddCategory(6, "Smb", 1200);
+  AddInt(1,    "Smb.SimpAdvance", 1208,   1, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddString(2, "Smb.Ip",          1201,   "192.168.0.5",  BUTTON_CONTROL_IP_INPUT);
+  AddString(3, "Smb.Workgroup",   1202,   "WORKGROUP");
+  AddString(4, "Smb.Username",    1203,   "Username");
+  AddString(5, "Smb.Password",    1204,   "Password", BUTTON_CONTROL_HIDDEN_INPUT, true);
+  AddString(6, "Smb.Winsserver",  1207,   "-",  BUTTON_CONTROL_IP_INPUT);
+  AddString(7, "Smb.ShareName",   1205,   "WORKGROUP (SMB) Network");
+  AddInt(8,    "Smb.ShareGroup",  1206,   SMB_SHARE_MU_VI_PIC_FIL, SMB_SHARE_MUSIC, 1, SMB_SHARE_MU_VI_PIC_FIL, SPIN_CONTROL_TEXT);
+  AddString(9, "Smb.SetSmb",      14070,  "", BUTTON_CONTROL_STANDARD);
+
   // appearance settings
   AddGroup(7, 480);
   AddCategory(7, "LookAndFeel", 14037);
