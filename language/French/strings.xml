@@ -5,7 +5,7 @@
   <string><id>3</id><value>Vidéos</value></string>
   <string><id>4</id><value>Guide TV</value></string>
   <string><id>5</id><value>Paramètres</value></string>
-  <!-- String with id 6 should not be set here, only in the english language file !-->
+  <string><id>6</id><value>XBOX Media Center 1.1.0</value></string>
   <string><id>7</id><value>Fichiers</value></string>
   <string><id>8</id><value>Météo</value></string>
   <string><id>11</id><value>Lundi</value></string>
@@ -27,12 +27,14 @@
   <string><id>30</id><value>Octobre</value></string>
   <string><id>31</id><value>Novembre</value></string>
   <string><id>32</id><value>Décembre</value></string>
-  <string><id>100</id><value>Voir : icônes</value></string>
-  <string><id>101</id><value>Voir : liste</value></string>
+  <string><id>98</id><value>Voir: Auto</value></string>
+  <string><id>99</id><value>Voir: Auto Grand</value></string>
+  <string><id>100</id><value>Voir: icônes</value></string>
+  <string><id>101</id><value>Voir: liste</value></string>
   <string><id>102</id><value>Scanner</value></string>
-  <string><id>103</id><value>Lister : nom</value></string>
-  <string><id>104</id><value>Lister : date</value></string>
-  <string><id>105</id><value>Lister : taille</value></string>
+  <string><id>103</id><value>Lister par: nom</value></string>
+  <string><id>104</id><value>Lister par: date</value></string>
+  <string><id>105</id><value>Lister par: taille</value></string>
   <string><id>106</id><value>Non</value></string>
   <string><id>107</id><value>Oui</value></string>
   <string><id>108</id><value>Diaporama</value></string>
@@ -133,6 +135,7 @@
   <string><id>203</id><value>Synopsis : </value></string>
   <string><id>204</id><value>Intérêt : </value></string>
   <string><id>205</id><value>Votes : </value></string>
+  <string><id>2050</id><value>Durée:</value></string>
   <string><id>206</id><value>Casting</value></string>
   <string><id>207</id><value>Synopsis</value></string>
   <string><id>208</id><value>Lire</value></string>
@@ -141,7 +144,7 @@
   <string><id>211</id><value>Recherche d'applications</value></string>
   <string><id>212</id><value>applications trouvées</value></string>
   <string><id>213</id><value>Config interface</value></string>
-  <string><id>214</id><value>Config écran</value></string>
+  <string><id>214</id><value>Etalonnage de l'écran</value></string>
   <string><id>215</id><value>Adoucir</value></string>
   <string><id>216</id><value>Zoom</value></string>
   <string><id>217</id><value>Etirement</value></string>
@@ -314,14 +317,14 @@
   <string><id>385</id><value>Beau</value></string>
   <string><id>386</id><value>Dégagé</value></string>
   <string><id>387</id><value>Nuages</value></string>
-  <string><id>388</id><value>N/C</value></string>
-  <string><id>389</id><value>N/C</value></string>
-  <string><id>390</id><value>N/C</value></string>
-  <string><id>391</id><value>N/C</value></string>
-  <string><id>392</id><value>N/C</value></string>
-  <string><id>393</id><value>N/C</value></string>
-  <string><id>394</id><value>N/C</value></string>
-  <string><id>395</id><value>N/C</value></string>
+  <string><id>388</id><value>Tôt</value></string>
+  <string><id>389</id><value>Douche</value></string>
+  <string><id>390</id><value>Rafales</value></string>
+  <string><id>391</id><value>Faible</value></string>
+  <string><id>392</id><value>Moyen</value></string>
+  <string><id>393</id><value>Important</value></string>
+  <string><id>394</id><value>Brouillard</value></string>
+  <string><id>395</id><value>Brume</value></string>
   <string><id>396</id><value>Choisir un lieux</value></string>
   <string><id>397</id><value>Rafraichir</value></string>
   <string><id>398</id><value>Unité température</value></string>
@@ -376,6 +379,7 @@
   <string><id>448</id><value>LCD</value></string>
   <string><id>449</id><value>Activé</value></string>
   <string><id>450</id><value>Colones</value></string>
+  <string><id>4501</id><value>Type LCD</value></string>
   <string><id>451</id><value>Ligne 1 adresse :</value></string>
   <string><id>452</id><value>Ligne 2 adresse :</value></string>
   <string><id>453</id><value>Ligne 3 adresse :</value></string>
@@ -446,7 +450,7 @@
   <string><id>606</id><value>Numéro de piste :</value></string>
   <string><id>607</id><value>A :</value></string>
   <string><id>608</id><value>Impossible d'importer le CD ou la piste</value></string>
-  <string><id>609</id><value>La propriété CDDARipPath n'est pas définie dans XboxMediaCenter.xml</value></string>
+  <string><id>609</id><value>Le chemin d'importation n'est pas définie dans XboxMediaCenter.xml</value></string>
   <string><id>620</id><value>Importation de CD</value></string>
   <string><id>621</id><value>Encodeur</value></string>
   <string><id>622</id><value>Qualité</value></string>
@@ -454,21 +458,22 @@
   <string><id>624</id><value>Inclure le numéro de la piste</value></string>
   <string><id>625</id><value>Toutes les chansons de</value></string>
   <string><id>629</id><value>Type de vue</value></string>
-  <string><id>630</id><value>Normal</value></string>
+  <string><id>630</id><value>Normale</value></string>
   <string><id>631</id><value>Zoom</value></string>
   <string><id>632</id><value>Étirée 4:3</value></string>
   <string><id>633</id><value>Étirée 14:9</value></string>
   <string><id>634</id><value>Étirée 16:9</value></string>
   <string><id>635</id><value>Originale</value></string>
   <string><id>636</id><value>Personnalisée</value></string>
+  
   <string><id>637</id><value>Replay Gain</value></string>
   <string><id>638</id><value>Mode</value></string>
   <string><id>639</id><value>Utiliser le niveau de la chanson</value></string>
   <string><id>640</id><value>Utiliser le niveau de l'album</value></string>
-  <string><id>641</id><value>PreAmp Level - Replay Gained Files</value></string>
-  <string><id>642</id><value>PreAmp Level - Non Replay Gained Files</value></string>
-  <string><id>643</id><value>Avoid Clipping on Replay Gained Files</value></string>
-  <string><id>644</id><value>Crop Black Bars</value></string>  
+  <string><id>641</id><value>Niveau PreAmpl - Fichiers Replay Gain</value></string>
+  <string><id>642</id><value>Niveau PreAmpl - Fichiers non Replay Gain</value></string>
+  <string><id>643</id><value>Eviter les coupures sur les fichiers Replay Gain</value></string>
+  <string><id>644</id><value>Couper les barres noires</value></string>  
   
   <string><id>700</id><value>Optimisation de la base de données</value></string>
   <string><id>701</id><value>Suppression des anciens morceaux de la base de données</value></string>
@@ -499,9 +504,9 @@
   <string><id>726</id><value>Les changements n'ont pas été enregistrés. Continuer sans sauvegarder ?</value></string>
   <string><id>727</id><value>Serveur Web</value></string>
   <string><id>728</id><value>Serveur FTP</value></string>
-  <string><id>729</id><value>Serveur d'heure</value></string>
+  <string><id>729</id><value>Serveur Horaire</value></string>
   <string><id>730</id><value>Port du serveur Web</value></string>
-  <string><id>731</id><value>Adresse du serveur d'heure</value></string>
+  <string><id>731</id><value>Adresse du serveur horaire</value></string>
   <string><id>732</id><value>Enregistrer et appliquer</value></string>
   <string><id>733</id><value>Mot de passe du serveur web</value></string>
   <string><id>734</id><value>Pas de mot de passe</value></string>
@@ -516,7 +521,7 @@
   <string><id>743</id><value>Jaune</value></string>
   <string><id>744</id><value>Fichiers</value></string>
   <string><id>745</id><value>Aucune information trouvée pour cet affichage</value></string>
-  <string><id>746</id><value>Passez à l'affichage fichiers</value></string>
+  <string><id>746</id><value>Passez à l'affichage "Fichiers"</value></string>
   <string><id>747</id><value>Mémoire insuffisante au chargement de l'image</value></string>
   <string><id>748</id><value>Éditer le chemin</value></string>
   <string><id>749</id><value>Ajouter un partage</value></string>
@@ -530,10 +535,68 @@
   <string><id>757</id><value>Editer la profondeur du chemin</value></string>
   <string><id>758</id><value>Supprimer le lien du programme</value></string>  
   <string><id>759</id><value>Voir: Grande Liste</value></string>
-    
+  
+  <string><id>760</id><value>Jaune</value></string>
+  <string><id>761</id><value>Blanc</value></string>
+  <string><id>762</id><value>Bleu</value></string>
+  <string><id>763</id><value>Vert claire</value></string>
+  <string><id>764</id><value>Jaune Vert</value></string>
+  <string><id>765</id><value>Cyan</value></string>
+  <string><id>766</id><value>Reserved</value></string>
+  <string><id>767</id><value>Reserved</value></string>
+  <string><id>768</id><value>Reserved</value></string>
+  <string><id>769</id><value>Reserved</value></string>
+  <string><id>770</id><value>Erreur %i: partage non disponible</value></string>
+  <string><id>771</id><value>Laisser XBMC gérer la limitation fatx du serveur FTP</value></string>
+  <string><id>772</id><value>Audio hardware</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Jeux en-ligne</value></string>
-  <string><id>1000</id><value>Prévisualisation de l'écran de veille</value></string>  
+ 
+  <string><id>1000</id><value>Prévisualisation de l'écran de veille</value></string>
+  <string><id>1200</id><value>Partage SMB</value></string>
+  <string><id>1201</id><value>SMB Adresse IP</value></string>
+  <string><id>1202</id><value>SMB Groupe de travail</value></string>
+  <string><id>1203</id><value>SMB Utilisateur</value></string>
+  <string><id>1204</id><value>SMB Mot de passe</value></string>
+  <string><id>1205</id><value>SMB Nom du partage</value></string>
+  <string><id>1206</id><value>SMB Groupe</value></string>
+  <string><id>1207</id><value>SMB Serveur WINS</value></string>
+  <string><id>1208</id><value>Mode de configuration</value></string>
+  
+  <string><id>1209</id><value>La configuration du partage SMB a reussis</value></string>
+  
+  <string><id>1210</id><value>Supprimer</value></string>
+  <string><id>1211</id><value>Musique</value></string>
+  <string><id>1212</id><value>Vidéo</value></string>
+  <string><id>1213</id><value>Images</value></string>
+  <string><id>1214</id><value>Fichiers</value></string>
+  <string><id>1215</id><value>Musique &amp; Vidéos </value></string>
+  <string><id>1216</id><value>Musique &amp; Images</value></string>
+  <string><id>1217</id><value>Musique &amp; Fichiers</value></string>
+  <string><id>1218</id><value>Vidéos &amp; Images</value></string>
+  <string><id>1219</id><value>Vidéos &amp; Fichiers</value></string>
+  <string><id>1220</id><value>Images &amp; Fichiers</value></string>
+  <string><id>1221</id><value>Musique &amp; Vidéos &amp; Images</value></string>
+  <string><id>1222</id><value>Musique &amp; Vidéos &amp; Images &amp; Fichiers</value></string>
+  <string><id>1223</id><value>Désactivé</value></string>
+  <string><id>1224</id><value>Utilisateur Normal</value></string>
+  <string><id>1225</id><value>Utilisateur Avancé</value></string>
+  
+  <string><id>1396</id><value>Drifting</value></string>
+  <string><id>1397</id><value>and</value></string>
+  <string><id>1398</id><value>Freezing</value></string>
+  <string><id>1399</id><value>Late</value></string>
+  <string><id>1400</id><value>Isolated</value></string>
+  <string><id>1401</id><value>T-Showers</value></string>
+  <string><id>1402</id><value>Thunder</value></string>
+  <string><id>1403</id><value>Sun</value></string>
+  <string><id>1404</id><value>Heavy</value></string>
+  <string><id>1405</id><value>in</value></string>
+  <string><id>1406</id><value>the</value></string>
+  <string><id>1407</id><value>Vicinity</value></string>
+  <string><id>1408</id><value>Ice</value></string>
+  <string><id>1409</id><value>Crystals</value></string>
+  <string><id>1410</id><value>Calm</value></string>
   
   <string><id>10000</id><value>Accueil</value></string>
   <string><id>10001</id><value>Mes Programes</value></string>
@@ -542,6 +605,7 @@
   <string><id>10004</id><value>Paramètres</value></string>
   <string><id>10005</id><value>Mes Musiques</value></string>
   <string><id>10006</id><value>Mes Vidéos</value></string>
+  <string><id>10007</id><value>Information Système</value></string>
   <string><id>10008</id><value>Paramètres-&gt;Général</value></string>
   <string><id>10009</id><value>Paramètres-&gt;Affichage</value></string>
   <string><id>10010</id><value>Paramètres-&gt;Affichage-&gt;Interface</value></string>
@@ -570,7 +634,6 @@
   <string><id>10503</id><value>Mes Musiques/artistes</value></string>
   <string><id>10504</id><value>Mes Musiques/genres</value></string>
   <string><id>10505</id><value>Mes Musiques/top 100</value></string>
-  
   <string><id>10506</id><value>Applications</value></string>
   <string><id>10507</id><value>Configuration</value></string>
   <string><id>10508</id><value>Weather Forecast</value></string>
@@ -589,8 +652,7 @@
   <string><id>10521</id><value>Mes Vidéos - Année</value></string>
   <string><id>10522</id><value>Mes Vidéos - Playliste</value></string>
   <string><id>10523</id><value>Album Infos</value></string>
-  <string><id>10524</id><value>Film Infos</value></string>  
-  
+  <string><id>10524</id><value>Film Infos</value></string>
   <string><id>11000</id><value>clavier</value></string>
   <string><id>12000</id><value>Choisir une boîte de dialogues</value></string>
   <string><id>12001</id><value>Mes Musiques/info</value></string>
@@ -601,8 +663,7 @@
   <string><id>12006</id><value>Effets vidéos d'accompagnement</value></string>
   <string><id>12007</id><value>Mes images/Diaporama</value></string>
   <string><id>12008</id><value>Boîtes de dialogue sélection de fichier</value></string>
-  
- <string><id>12310</id><value>0</value></string>
+  <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
   <string><id>12312</id><value>2</value></string>
   <string><id>12313</id><value>3</value></string>
@@ -639,15 +700,18 @@
   <string><id>12345</id><value>Accès refusé</value></string>
   <string><id>12346</id><value>Vous avez excédé le nombre d'essais autorisé.</value></string>
   <string><id>12347</id><value>La XBOX vas maintenant s'éteindre.</value></string>
-  <string><id>12348</id><value>Item Locked</value></string>
+  <string><id>12348</id><value>Objet Protégé</value></string>
   <string><id>12349</id><value>Se souvenir du code Maître la prochaine fois ?</value></string>
-  <string><id>12350</id><value>(Opening any item in Settings will</value></string>
-  <string><id>12351</id><value>automatically re-enable Master Lock.)</value></string>
+  <string><id>12350</id><value>(Ouvrir une option des paramètres  va</value></string>
+  <string><id>12351</id><value>automatiquement re-activer le code maître.)</value></string>
   <string><id>12352</id><value>Entrez la combinaison des touches maître et</value></string>
   <string><id>12353</id><value>remettre la protection</value></string>
-  <string><id>12354</id><value>Override folder locks until next boot?</value></string>
-  <string><id>12355</id><value>automatically re-enable folder locks.)</value></string>  
-  
+  <string><id>12354</id><value>Ignorer le dossier protégé jusqu'au prochain demarrage?</value></string>
+  <string><id>12355</id><value>automatiquement re-activer la protection du dossier.)</value></string> 
+  <string><id>12356</id><value>Changer Protection</value></string>
+  <string><id>12357</id><value>Protection Partages</value></string>
+  <string><id>12358</id><value>Le mot de passe rentré est vide. Essayez encore.</value></string>
+	
   <string><id>12600</id><value>Ma Météo</value></string>
   <string><id>12900</id><value>écran de veille</value></string>
   <string><id>12901</id><value>Réglages plein écran</value></string>
@@ -656,6 +720,8 @@
   <string><id>13002</id><value>Vidéo seule</value></string>
   <string><id>13003</id><value>- Delai</value></string>
   <string><id>13004</id><value>- Durée mimimale du fichier</value></string>
+  <string><id>13005</id><value>Eteindre</value></string>
+  <string><id>13006</id><value>Dashboard</value></string>
   <string><id>13100</id><value>Filtre de clignotement</value></string>
   <string><id>13200</id><value>Profils</value></string>
   <string><id>13201</id><value>Supprimer le profil '%s' ?</value></string>
@@ -663,26 +729,35 @@
   <string><id>13203</id><value>Le profil '%s' a été chargé avec succès</value></string>
   <string><id>13204</id><value>Dernier profil chargé :</value></string>
   <string><id>13205</id><value>Inconnu</value></string>
+  <string><id>13206</id><value>Ecraser</value></string>
+  <string><id>13207</id><value>Ecraser le profile '%s'?</value></string>
+  
+  <string><id>13208</id><value>Alarme horloge</value></string>
+  <string><id>13209</id><value>Alarm clock intervale (en minutes)</value></string>
+  <string><id>13210</id><value>Lancé, alarme dans %im</value></string>
+  <string><id>13211</id><value>Alarme!</value></string>
+  <string><id>13212</id><value>Annulé avec %im%is restant</value></string>
+  
+  <string><id>13299</id><value>Température voulus</value></string>
   <string><id>13300</id><value>Vitesse du ventilateur :</value></string>
   <string><id>13301</id><value>Contrôleur de température</value></string>
   <string><id>13302</id><value>Contrôle de la vitesse du ventilateur</value></string>
   <string><id>13303</id><value>Fonte du thème</value></string>
   <string><id>13304</id><value>Activer les basculements de chaînes bi-directionnelle</value></string>
   <string><id>13305</id><value>Activer les flux RSS</value></string>
-  <string><id>13306</id><value>Masquer les éléments du répertoire parent</value></string>
-  <string><id>13307</id><value>Masquer les numéros des pistes</value></string>
-  <string><id>13307</id><value>Reset/Reboot</value></string>
+  <string><id>13306</id><value>Masquer l'accès au répertoire parent</value></string>
+  <string><id>13307</id><value>Méthode d'affichage pour les noms des pistes</value></string>
   <string><id>13308</id><value>Voulez vous redémarrer la XBOX ?</value></string>
   <string><id>13309</id><value>sinon "non" pour redémarrer seulement XBMC</value></string>
   <string><id>13310</id><value>Zoom</value></string>
   <string><id>13311</id><value>Flottement</value></string>
-  <string><id>13312</id><value>réduction de la barre noire</value></string>
+  <string><id>13312</id><value>Réduction de la barre noire</value></string>
   <string><id>13313</id><value>Reset/Reboot</value></string>
-  <string><id>13314</id><value>Timeout panneau musique</value></string>
+  <string><id>13314</id><value>Utiliser le crossfade entre deux chansons</value></string>
   <string><id>13315</id><value>Créer vignettes</value></string>
-  <string><id>13316</id><value>Récursivement</value></string>
+  <string><id>13316</id><value>Vignettes récursives</value></string>
   <string><id>13317</id><value>Voir le diaporama</value></string>
-  <string><id>13318</id><value>Récursivement</value></string>
+  <string><id>13318</id><value>Diaporama récursif</value></string>
   <string><id>13319</id><value>Aléatoire</value></string>
   <string><id>13320</id><value>Stéréo</value></string>
   <string><id>13321</id><value>Gauche seulement</value></string>
@@ -705,7 +780,7 @@
   <string><id>13338</id><value>LED centrale</value></string>
   <string><id>13339</id><value>Couleur de la LED centrale</value></string>
   <string><id>13340</id><value>Par défaut</value></string>
-  <string><id>13341</id><value>Vert</value></string>
+  <string><id>13341</id><value>Verte</value></string>
   <string><id>13342</id><value>Orange</value></string>
   <string><id>13343</id><value>Rouge</value></string>
   <string><id>13344</id><value>Cyclique</value></string>
@@ -713,18 +788,18 @@
   <string><id>13346</id><value>Information du Film</value></string>
   <string><id>13347</id><value>Ajouter</value></string>
   <string><id>13348</id><value>Chercher sur IMDb...</value></string>
-  <string><id>13349</id><value>Chercher pour tout</value></string>
-  <string><id>13350</id><value>playliste...</value></string>
+  <string><id>13349</id><value>Pour tout les films</value></string>
+  <string><id>13350</id><value>Playliste...</value></string>
   <string><id>13351</id><value>Information sur l'Album</value></string>
   <string><id>13352</id><value>Scanner le dossier</value></string>
   <string><id>13353</id><value>Stopper le scan</value></string>
-  <string><id>13354</id><value>Methode de rendus</value></string>
-  <string><id>13355</id><value>Ombrage des Pixels basse Qualité</value></string>
+  <string><id>13354</id><value>Méthode de rendus:</value></string>
+  <string><id>13355</id><value>Ombrage Pixels basse Qualité</value></string>
   <string><id>13356</id><value>Traitement Hardware</value></string>
-  <string><id>13357</id><value>Ombrage des Pixels Haute Qualité</value></string>  
+  <string><id>13357</id><value>Ombrage Pixels Haute Qualité</value></string>  
   <string><id>13358</id><value>Jouer la musique</value></string>
-  <string><id>13359</id><value>Définir comme image</value></string>
-  <string><id>13360</id><value>Générer des miniatures</value></string>
+  <string><id>13359</id><value>Définir Image Artiste</value></string>
+  <string><id>13360</id><value>Générer les miniatures automatiquement</value></string>
   <string><id>13361</id><value>Activer la Voix</value></string>
   <string><id>13362</id><value>Masque de Voix</value></string>
   <string><id>13363</id><value>- Enable Spectrum Energy Weight</value></string>
@@ -749,7 +824,9 @@
   <string><id>13382</id><value>Masque Voix - Port 0</value></string>
   <string><id>13383</id><value>Masque Voix - Port 1</value></string>
   <string><id>13384</id><value>Masque Voix - Port 2</value></string>
-  <string><id>13385</id><value>Masque Voix - Port 3</value></string>  
+  <string><id>13385</id><value>Masque Voix - Port 3</value></string>
+  <string><id>13386</id><value>Utiliser le déplacement sur la base temps</value></string>
+  <string><id>13387</id><value>Template pour les noms des pistes</value></string>
   
   <string><id>14000</id><value>Empiler : désactivé</value></string>
   <string><id>14001</id><value>Empiler : simple</value></string>
@@ -776,17 +853,15 @@
   <string><id>14022</id><value>Librairie</value></string>
   <string><id>14023</id><value>Sans TV</value></string>
   <string><id>14024</id><value>Entrez la ville la plus proche ou le code postal</value></string>
-  <string><id>14025</id><value>Vidéo depuis le Disque Dur</value></string>
-  <string><id>14026</id><value>Vidéo depuis le DVDRom</value></string>
-  <string><id>14027</id><value>Vidéo depuis le réseau local</value></string>
-  <string><id>14028</id><value>Vidéo depuis Internet</value></string>
-  <string><id>14029</id><value>Audio depuis le Disque Dur</value></string>
-  <string><id>14030</id><value>Audio depuis le DVDRom</value></string>
-  <string><id>14031</id><value>Audio depuis le réseau local</value></string>
-  <string><id>14032</id><value>Audio depuis Internet</value></string>
-  <string><id>14033</id><value>DVD depuis le Disque Dur</value></string>
-  <string><id>14034</id><value>DVD depuis le DVDRom</value></string>
-  <string><id>14035</id><value>DVD depuis le réseau local</value></string>
+  <string><id>14025</id><value>Video/Audio/DVD Cache - Disque Dur</value></string>
+  <string><id>14026</id><value>Video Cache - DVDRom</value></string>
+  <string><id>14027</id><value>- Réseau Locale</value></string>
+  <string><id>14028</id><value>- Internet</value></string>
+  <string><id>14030</id><value>Audio Cache - DVDRom</value></string>
+  <string><id>14031</id><value>- Réseau Locale</value></string>
+  <string><id>14032</id><value>- Internet</value></string>
+  <string><id>14034</id><value>DVD Cache - DVDRom</value></string>
+  <string><id>14035</id><value>- Réseau Locale</value></string>
   <string><id>14036</id><value>Serveurs</value></string>
   <string><id>14037</id><value>Apparences</value></string>
   <string><id>14038</id><value>Les paramètres réseaux ont été changés</value></string>
@@ -806,17 +881,27 @@
   <string><id>14052</id><value>Intervertir le mois et le jour sur l'écran d'accueil</value></string>
   <string><id>14053</id><value>Filtres graphiques</value></string>
   <string><id>14054</id><value>Activer les recherches Internet</value></string>
-  <string><id>14055</id><value>Utiliser le scanne en arrière plan</value></string>
+  <string><id>14055</id><value>Utiliser le scan en arrière plan</value></string>
   <string><id>14056</id><value>Stopper le scan</value></string>
   <string><id>14057</id><value>Impossible d'afficher les infos pendant le scan</value></string>
   <string><id>14058</id><value>Effet de grain sur les films</value></string>
   <string><id>14059</id><value>Utiliser les miniatures perso sur les partages distants</value></string>
   <string><id>14060</id><value>Cache inconnus - Internet</value></string>
   <string><id>14061</id><value>Auto</value></string>
-
+  <string><id>14062</id><value>Entrer le nom pour</value></string>
+  
+  <string><id>14063</id><value>Date &amp; Heure</value></string>
+  <string><id>14064</id><value>Année</value></string>
+  <string><id>14065</id><value>Mois</value></string>
+  <string><id>14066</id><value>Jour</value></string>
+  <string><id>14067</id><value>Heure</value></string>
+  <string><id>14068</id><value>Minute</value></string>
+  <string><id>14069</id><value>Voulez vous appliquer cette configuration ?</value></string>
+  <string><id>14070</id><value>Appliquer les changements maintenant</value></string>
+	  
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Le service n'est pas connecté, voulez vous essayer</value></string>
-  <string><id>15002</id><value>de vous reconnecter avec Xbox Media Center?</value></string>
+  <string><id>15002</id><value>qu'il se reconnecte avec Xbox Media Center?</value></string>
   <string><id>15003</id><value>Entrez votre message.</value></string>
   <string><id>15004</id><value>Vous avez été invité à jouer %s.</value></string>
   <string><id>15005</id><value>Date: %s</value></string>
@@ -877,18 +962,16 @@
   <string><id>15060</id><value>Votre message</value></string>
   <string><id>15061</id><value>Vous avez été invité à jouer %s.</value></string>
   <string><id>15062</id><value>Utiliser le lecteur mplayer alternatif</value></string>
-    <string><id>15100</id><value>Librairie</value></string>
+  <string><id>15100</id><value>Librairie</value></string>
   <string><id>15101</id><value>Database</value></string>
   <string><id>15102</id><value>* Tout les Albums</value></string>
   <string><id>15103</id><value>* Tout les Artistes</value></string>
   <string><id>15104</id><value>* Tout les Chansons</value></string>
   <string><id>15105</id><value>* Tout les Genres</value></string>
-  <string><id>15106</id><value>Remember selected file on forward navigation</value></string>
-
+  <string><id>15106</id><value>Se souvenir du dernier fichier selectionné</value></string>
   <string><id>15107</id><value>Mise en cache...</value></string>
-    <string><id>15108</id><value>Sons Navigation</value></string>
+  <string><id>15108</id><value>Sons Navigation</value></string>
   <string><id>15109</id><value>Ceux du skin par défaut</value></string>
-
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Envoyer les infos des chansons à AudioScrobbler</value></string>
   <string><id>15202</id><value>Compte AudioScrobbler</value></string>
@@ -950,4 +1033,6 @@
   <string><id>13297</id><value>La XBOX n'est pas connecté ! Vérifiez vos paramètres réseaux</value></string>
   <string><id>13298</id><value>XBLIVE Key:</value></string>  
   
+  <string><id>15213</id><value>[PLACEHOLDER]</value></string>
+  <string><id>15214</id><value>Utiliser une synchronisation A/V Lissée</value></string>
 </strings>

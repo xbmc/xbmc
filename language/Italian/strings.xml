@@ -182,7 +182,7 @@
   <string><id>249</id><value>Musica</value></string>
   <string><id>250</id><value>Effetto grafico</value></string>
   <string><id>251</id><value>Seleziona la directory di destinazione</value></string>
-  <string><id>252</id><value>- Uscita Stereo su tutte le Casse</value></string>
+  <string><id>252</id><value>Uscita Stereo su tutte le Casse</value></string>
   <string><id>253</id><value>Numero di canali</value></string>
   <string><id>254</id><value>- Amplificatore con DTS</value></string>
   <string><id>255</id><value>CDDB</value></string>
@@ -546,9 +546,40 @@
   <string><id>768</id><value>Reserved</value></string>
   <string><id>769</id><value>Reserved</value></string>
   <string><id>770</id><value>Errore %i: condivisione non disponibile</value></string>
+  <string><id>771</id><value>Arrangiamento per limiti fatx nell FTP server</value></string>
+  <string><id>772</id><value>Audio hardware</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Gioco Online</value></string>
   <string><id>1000</id><value>Anteprima Screensaver</value></string>
+
+  <string><id>1200</id><value>Condivisione SMB</value></string>
+  <string><id>1201</id><value>SMB IP</value></string>
+  <string><id>1202</id><value>SMB Workgroup</value></string>
+  <string><id>1203</id><value>SMB Username</value></string>
+  <string><id>1204</id><value>SMB Passorwd</value></string>
+  <string><id>1205</id><value>Nome Condivisione SMB</value></string>
+  <string><id>1206</id><value>Gruppo Condiv. SMB</value></string>
+  <string><id>1207</id><value>SMB WINS-Server</value></string>
+  <string><id>1208</id><value>Modalità Impostazioni</value></string>
+  
+  <string><id>1209</id><value>Le Impostazioni SMB sono state salvate!</value></string>
+  
+  <string><id>1210</id><value>Rimuovi</value></string>
+  <string><id>1211</id><value>Musica</value></string>
+  <string><id>1212</id><value>Video</value></string>
+  <string><id>1213</id><value>Immagini</value></string>
+  <string><id>1214</id><value>Files</value></string>
+  <string><id>1215</id><value>Musica e Video </value></string>
+  <string><id>1216</id><value>Musica e Immagini</value></string>
+  <string><id>1217</id><value>Musica e Files</value></string>
+  <string><id>1218</id><value>Video e Immagini</value></string>
+  <string><id>1219</id><value>Video e Files</value></string>
+  <string><id>1220</id><value>Immagini e Files</value></string>
+  <string><id>1221</id><value>Musica, Video e Immagini</value></string>
+  <string><id>1222</id><value>Musica, Video, Immagini e Files</value></string>
+  <string><id>1223</id><value>Disattivo</value></string>
+  <string><id>1224</id><value>Utente Normale</value></string>
+  <string><id>1225</id><value>Utente Esperto</value></string>
 
   <string><id>1396</id><value>Mutevole</value></string>
   <string><id>1397</id><value>e</value></string>
@@ -677,6 +708,10 @@
   <string><id>12353</id><value>Riattiva Blocco</value></string>
   <string><id>12354</id><value>Salta blocco cartelle fino al prossimo avvio?</value></string>
   <string><id>12355</id><value>riabiliterà automaticamente il blocco cartelle.)</value></string>
+  <string><id>12356</id><value>Cambia Lock</value></string>
+  <string><id>12357</id><value>Condividi Lock</value></string>
+  <string><id>12358</id><value>Password inserita è vuota. Riprova.</value></string>
+
   <string><id>12600</id><value>Meteo</value></string>
   <string><id>12900</id><value>Screensaver</value></string>
   <string><id>12901</id><value>OSD a schermo intero</value></string>
@@ -717,7 +752,7 @@
   <string><id>13311</id><value>Effetto Spostamento</value></string>
   <string><id>13312</id><value>Riduzione Barra Nera</value></string>
   <string><id>13313</id><value>Reset/Riavvio</value></string>
-  <string><id>13314</id><value>Timeout OSD Musica</value></string>
+  <string><id>13314</id><value>Crossfade</value></string>
   <string><id>13315</id><value>Crea Icone</value></string>
   <string><id>13316</id><value>Icone Ricorsive</value></string>
   <string><id>13317</id><value>Vedi Slideshow</value></string>
@@ -855,6 +890,14 @@
   <string><id>14060</id><value>Cache di tipo Sconosciuto - Internet</value></string>
   <string><id>14061</id><value>Auto</value></string>
   <string><id>14062</id><value>Inserire Nome Utente per</value></string>
+  <string><id>14063</id><value>Data e Ora</value></string>
+  <string><id>14064</id><value>Imposta Anno</value></string>
+  <string><id>14065</id><value>Imposta Mese</value></string>
+  <string><id>14066</id><value>Imposta Giorno</value></string>
+  <string><id>14067</id><value>Imposta Ora</value></string>
+  <string><id>14068</id><value>Imposta Minuti</value></string>
+  <string><id>14069</id><value>Vuoi impostare questi dati adesso?</value></string>
+  <string><id>14070</id><value>Salva Impostazioni</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Il servizio non è connesso, vuoi riprovare</value></string>
@@ -944,6 +987,7 @@
   <string><id>15211</id><value>Inviando...</value></string>
   <string><id>15212</id><value>Inviato in %i secondi</value></string>
   <string><id>15213</id><value>[CONTENITORE]</value></string>
+  <string><id>15214</id><value>Usa Sincronizzazione A/V Morbida</value></string>
 
   <string><id>13150</id><value>HDD Key:</value></string>
   <string><id>13151</id><value>HDD Temp:</value></string>
