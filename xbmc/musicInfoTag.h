@@ -25,7 +25,7 @@ public:
   const CStdString& GetAlbum() const;
   const CStdString& GetGenre() const;
   int GetTrackNumber() const;
-  int GetDuration() const;
+  int GetDuration() const;  // may be set even if Loaded() returns false
   void GetReleaseDate(SYSTEMTIME& dateTime) const;
   CStdString GetYear() const;
   const CStdString& GetMusicBrainzTrackID() const;
