@@ -441,7 +441,7 @@
   <string><id>505</id><value>Wczytujê informacje o mediach z plików...</value></string>
   <string><id>506</id><value>U¿yj nazw katalogów dla opisów</value></string>
   <string><id>507</id><value>Sortowanie: ulubione</value></string>
-  <string><id>508</id><value>Nie u¿ywaj skrutów</value></string>
+  <string><id>508</id><value>Nie u¿ywaj skrótów</value></string>
   <string><id>509</id><value>Buforuj miniaturki programów</value></string>
   <string><id>510</id><value>W³¹cz wizualizacje</value></string>
   <string><id>511</id><value>Zmieñ tryb ekranu bazuj¹c na regionie gry</value></string>
@@ -475,7 +475,8 @@
   <string><id>640</id><value>U¿yj poziomowania albumów</value></string>
   <string><id>641</id><value>Wzmacnianie poziomu - Pliki odtwarzane ponownie</value></string>
   <string><id>642</id><value>Wzmacnianie poziomu - Pliki nie odtwarzane ponownie</value></string>
-  <string><id>643</id><value>Unikaj przycinania powtórnie odtwarzanych plików</value></string>
+  <string><id>643</id><value>Unikaj obcinania powtórnie odtwarzanych plików</value></string>
+  <string><id>644</id><value>Przytnij czarne pasy</value></string>
   <string><id>700</id><value>Czyszczenie bazy danych</value></string>
   <string><id>701</id><value>Usuwam stare piosenki z bazy danych</value></string>
   <string><id>702</id><value>Ta œcie¿ka by³a ju¿ skanowana.</value></string>
@@ -693,6 +694,11 @@
   <string><id>13205</id><value>Nieznany</value></string>
   <string><id>13206</id><value>Nadpisz</value></string>
   <string><id>13207</id><value>Nadpisz profil '%s'?</value></string>
+  <string><id>13208</id><value>Budzik</value></string>
+  <string><id>13209</id><value>Przerwa budzika (w minutach)</value></string>
+  <string><id>13210</id><value>Uruchomiony, alarm za %im</value></string>
+  <string><id>13211</id><value>Alarm!</value></string>
+  <string><id>13212</id><value>Anulowano pozosta³o minut %im%</value></string>
   <string><id>13299</id><value>Temperatura</value></string>
   <string><id>13300</id><value>Prêdkoœæ wiatraka:</value></string>
   <string><id>13301</id><value>Automatyczna kontrola temperatury</value></string>
@@ -927,5 +933,50 @@
   <string><id>15210</id><value>%i utworów w buforze</value></string>
   <string><id>15211</id><value>Przesy³am...</value></string>
   <string><id>15212</id><value>Przes³ano w %i sekund</value></string>
+  <string><id>13150</id><value>HDD Klucz:</value></string>
+  <string><id>13151</id><value>HDD Temp:</value></string>
+  <string><id>13152</id><value>DVD Model:</value></string>
+  <string><id>13153</id><value>DVD Firmware:</value></string>
+  <string><id>13154</id><value>HDD Model:</value></string>
+  <string><id>13155</id><value>HDD Nr. seryjny:</value></string>
+  <string><id>13156</id><value>HDD Firmware:</value></string>
+  <string><id>13157</id><value>HDD Has³o:</value></string>
+  <string><id>13158</id><value>HDD stan blokady:</value></string>
+  <string><id>13159</id><value>Maska podsieci:</value></string>
+  <string><id>13160</id><value>Bramka:</value></string>
+  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13162</id><value>Inicjalizacja nie powiod³a siê</value></string>
+  <string><id>13163</id><value>Pady - Port:</value></string>
+  <string><id>13164</id><value>Klawiatura - Port:</value></string>
+  <string><id>13165</id><value>Mysz - Port:</value></string>
+  <string><id>13166</id><value>S³uchawki/Mikrofon - Port:</value></string>
+  <string><id>13167</id><value>MemoryStick - Port:</value></string>
+  <string><id>13168</id><value>Pilot - Port:</value></string>
+  <string><id>13270</id><value>Sprzêt:</value></string>
+  <string><id>13271</id><value>Prêdkoœci CPU:</value></string>
+  <string><id>13275</id><value>Dysk twardy</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>Pamiêæ</value></string>
+  <string><id>13278</id><value>Domyœlny</value></string>
+  <string><id>13279</id><value>Sieæ</value></string>
+  <string><id>13280</id><value>Obraz</value></string>
+  <string><id>13281</id><value>Sprzêt</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>Wersja Kernela:</value></string>
+  <string><id>13284</id><value>Prêdkoœæ CPU:</value></string>
+  <string><id>13285</id><value>Wykryty BIOS:</value></string>
+  <string><id>13286</id><value>Dekoder Obrazu:</value></string>
+  <string><id>13287</id><value>Rozdzielczoœæ ekranu:</value></string>
+  <string><id>13288</id><value>Wersja Xbox'a:</value></string>
+  <string><id>13289</id><value>Numer seryjny Xbox'a:</value></string>
+  <string><id>13290</id><value>Producent Xbox'a:</value></string>
+  <string><id>13291</id><value>ModChip:</value></string>
+  <string><id>13292</id><value>Kabel A/Ve:</value></string>
+  <string><id>13293</id><value>Region (.XBE):</value></string>
+  <string><id>13294</id><value>Region DVD:</value></string>
+  <string><id>13295</id><value>Internet:</value></string>
+  <string><id>13296</id><value>Xbox jest po³¹czony!</value></string>
+  <string><id>13297</id><value>Xbox nie jest po³¹czony! SprawdŸ ustawienia sieci!</value></string>
+  <string><id>13298</id><value>Klucz XBLIVE:</value></string>
   <string><id>15213</id><value>[WYPE£NIACZ]</value></string>
 </strings>
