@@ -399,8 +399,10 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
       iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('\\') + 1;
       strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
     }
-    if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
+    CLog::Log(LOGDEBUG,"filenaem: %s",strFilename.c_str());
+    if (g_guiSettings.GetBool("Servers.FTPAutoFatX") && (CUtil::IsHD(strFilename)))
       CUtil::GetFatXQualifiedPath(strFilename);
+    CLog::Log(LOGDEBUG,"filenaem: %s",strFilename.c_str());
   }
   else //Base is remote
   {
