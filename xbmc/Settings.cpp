@@ -243,6 +243,8 @@ CSettings::CSettings(void)
   g_stSettings.m_bDisplayRemoteCodes = false;
   g_stSettings.m_iSambaDebugLevel = 0;
   strcpy(g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
+  strcpy(g_stSettings.m_strSambaIPAdress, "192.168.0.5");
+  strcpy(g_stSettings.m_strSambaShareName, "WORKGROUP (SMB) Network");
   strcpy(g_stSettings.m_strSambaWinsServer, "");
 
   g_stSettings.m_nVolumeLevel = 0;
@@ -358,6 +360,10 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   if (pSambaElement)
   {
     GetString(pSambaElement, "workgroup", g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
+    GetString(pSambaElement, "smbip", g_stSettings.m_strSambaIPAdress, "192.168.0.5");
+    GetString(pSambaElement, "smbsharename", g_stSettings.m_strSambaShareName, "WORKGROUP (SMB) Network");
+    
+    
     GetString(pSambaElement, "winsserver", g_stSettings.m_strSambaWinsServer, "");
     GetInteger(pSambaElement, "debuglevel", g_stSettings.m_iSambaDebugLevel , 0, 0, 100);
     GetString(pSambaElement, "defaultusername", g_stSettings.m_strSambaDefaultUserName, "");
@@ -1469,6 +1475,7 @@ bool CSettings::LoadXml()
 
 bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strOldName, const CStdString &strUpdateElement, const CStdString &strUpdateText)
 {
+  bool breturn; breturn = false;
   if (!LoadXml()) return false;
 
   VECSHARES *pShares = NULL;
@@ -1484,6 +1491,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strO
   {
     if ((*it).strName == strOldName)
     {
+      breturn = true;
       if ("name" == strUpdateElement)
         (*it).strName = strUpdateText;
       else if ("path" == strUpdateElement)
@@ -1499,6 +1507,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strO
       else
         return false;
     }
+    else breturn = false;
   }
   // Return bookmark of
   TiXmlElement *pRootElement = xbmcXml.RootElement();
@@ -1508,7 +1517,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strO
   pNode = pRootElement->FirstChild(strType);
 
   // if valid bookmark, find child at pos (id)
-  if (pNode)
+  if (pNode && breturn)
   {
     pIt = pNode->FirstChild("bookmark");
     while (pIt)
@@ -1533,12 +1542,57 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strO
       else
         pIt = pIt->NextSibling("bookmark");
     }
+    return xbmcXml.SaveFile();
   }
-  return xbmcXml.SaveFile();
+  return breturn;
 }
 
+bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strChild, const CStdString &strChildValue)
+{
+  bool breturn; breturn = false;
+  if (!LoadXml()) return false;
+  //<strFirstChild>
+  //    <strChild>strChildValue</strChild>
+  
+  TiXmlElement *pRootElement = xbmcXml.RootElement();
+  TiXmlNode *pNode = pRootElement->FirstChild(strFirstChild);;
+  TiXmlNode *pIt = pNode->FirstChild(strChild);;
+  if (pIt)
+  {
+    pIt->FirstChild()->SetValue(strChildValue);
+    breturn = true;
+  }
+  else
+  {
+    TiXmlText xmlText(strChildValue);
+    TiXmlElement eElement(strChild);
+    eElement.InsertEndChild(xmlText);
+    pIt->ToElement()->InsertEndChild(eElement);
+    breturn = true;
+  }
+  if(breturn)
+    return xbmcXml.SaveFile();
+  else return false;
+}
+bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strFirstChildValue)
+{
+  if (!LoadXml()) return false;
+  
+  //
+  //<strFirstChild>strFirstChildValue<strFirstChild>
+  
+  TiXmlElement *pRootElement = xbmcXml.RootElement();
+  TiXmlNode *pNode = pRootElement->FirstChild(strFirstChild);;
+  if (pNode)
+  {
+    pNode->FirstChild()->SetValue(strFirstChildValue);
+    return xbmcXml.SaveFile();
+  }
+  else return false;
+}  
 bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath)
 {
+   bool breturn; breturn = false;
   if (!LoadXml()) return false;
 
   VECSHARES *pShares = NULL;
@@ -1555,38 +1609,43 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString &strN
     if ((*it).strName == strName && (*it).strPath == strPath)
     {
       pShares->erase(it);
+       breturn = true;
       break;
     }
   }
   // Return bookmark of
-  TiXmlElement *pRootElement = xbmcXml.RootElement();
-  TiXmlNode *pNode = NULL;
-  TiXmlNode *pIt = NULL;
-
-  pNode = pRootElement->FirstChild(strType);
-
-  // if valid bookmark, find child at pos (id)
-  if (pNode)
+  if (breturn)
   {
-    pIt = pNode->FirstChild("bookmark");
-    while (pIt)
+    TiXmlElement *pRootElement = xbmcXml.RootElement();
+    TiXmlNode *pNode = NULL;
+    TiXmlNode *pIt = NULL;
+
+    pNode = pRootElement->FirstChild(strType);
+
+    // if valid bookmark, find child at pos (id)
+    if (pNode)
     {
-      TiXmlNode *pChild = pIt->FirstChild("name");
-      if (pChild && pChild->FirstChild()->Value() == strName)
+      pIt = pNode->FirstChild("bookmark");
+      while (pIt)
       {
-        pChild->FirstChild()->SetValue(strName);
-        pChild = pIt->FirstChild("path");
-        if (pChild && pChild->FirstChild()->Value() == strPath)
+        TiXmlNode *pChild = pIt->FirstChild("name");
+        if (pChild && pChild->FirstChild()->Value() == strName)
         {
-          pNode->RemoveChild(pIt);
-          break;
+          pChild->FirstChild()->SetValue(strName);
+          pChild = pIt->FirstChild("path");
+          if (pChild && pChild->FirstChild()->Value() == strPath)
+          {
+            pNode->RemoveChild(pIt);
+            break;
+          }
         }
+        else
+          pIt = pIt->NextSibling("bookmark");
       }
-      else
-        pIt = pIt->NextSibling("bookmark");
     }
+    return xbmcXml.SaveFile();
   }
-  return xbmcXml.SaveFile();
+  else return breturn;
 }
 
 bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath)

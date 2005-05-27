@@ -567,7 +567,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(640), REPLAY_GAIN_ALBUM);
       pControl->SetValue(pSettingInt->GetData());
     }
-	else if (strSetting == "XBDateTime.Year")
+	  else if (strSetting == "XBDateTime.Year")
 	{	// GeminiServer
 		SYSTEMTIME CurTime;
 		GetLocalTime(&CurTime);
@@ -576,7 +576,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
 		g_guiSettings.SetInt("XBDateTime.Hour",		(int)CurTime.wHour);
 		g_guiSettings.SetInt("XBDateTime.Minute",	(int)CurTime.wMinute);
 	}
-	else if (strSetting == "XBDateTime.Month")
+	  else if (strSetting == "XBDateTime.Month")
 	{	// GeminiServer
 		SYSTEMTIME CurTime;
 		GetLocalTime(&CurTime);
@@ -585,7 +585,44 @@ void CGUIWindowSettingsCategory::CreateSettings()
 		g_guiSettings.SetInt("XBDateTime.Month",(int)CurTime.wMonth);
 		FillInXBDateTime(pSetting, 2);
 	}
-	iPosY += iGapY;
+    else if (strSetting == "Smb.Ip")
+	{	// GeminiServer
+    g_guiSettings.SetString("Smb.Ip",         g_stSettings.m_strSambaIPAdress);
+    g_guiSettings.SetString("Smb.Workgroup",  g_stSettings.m_strSambaWorkgroup);
+    g_guiSettings.SetString("Smb.Username",   g_stSettings.m_strSambaDefaultUserName);
+    g_guiSettings.SetString("Smb.Password",   g_stSettings.m_strSambaDefaultPassword);
+    g_guiSettings.SetString("Smb.ShareName",  g_stSettings.m_strSambaShareName);
+    g_guiSettings.SetString("Smb.Winsserver", g_stSettings.m_strSambaWinsServer);
+	}
+    else if (strSetting == "Smb.ShareGroup")
+	{	// GeminiServer
+    CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+    pControl->AddLabel(g_localizeStrings.Get(1211), SMB_SHARE_MUSIC	        );
+    pControl->AddLabel(g_localizeStrings.Get(1212), SMB_SHARE_VIDEO	        );
+    pControl->AddLabel(g_localizeStrings.Get(1213), SMB_SHARE_PICTURES	    );
+    pControl->AddLabel(g_localizeStrings.Get(1214), SMB_SHARE_FILES         );
+    pControl->AddLabel(g_localizeStrings.Get(1215), SMB_SHARE_MU_VI         );
+    pControl->AddLabel(g_localizeStrings.Get(1216), SMB_SHARE_MU_PIC        );
+    pControl->AddLabel(g_localizeStrings.Get(1217), SMB_SHARE_MU_FIL        );
+    pControl->AddLabel(g_localizeStrings.Get(1218), SMB_SHARE_VI_PIC        );
+    pControl->AddLabel(g_localizeStrings.Get(1219), SMB_SHARE_VI_FIL        );
+    pControl->AddLabel(g_localizeStrings.Get(1220), SMB_SHARE_PIC_FIL       );
+    pControl->AddLabel(g_localizeStrings.Get(1221), SMB_SHARE_MU_VI_PIC     );
+    pControl->AddLabel(g_localizeStrings.Get(1222), SMB_SHARE_MU_VI_PIC_FIL );
+    pControl->SetValue(pSettingInt->GetData());
+  }
+    else if (strSetting == "Smb.SimpAdvance")
+	{	// GeminiServer
+    CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+    pControl->AddLabel(g_localizeStrings.Get(1223), 0 );    //Disabled User
+    pControl->AddLabel(g_localizeStrings.Get(1224), 1 );    //Normal User
+    pControl->AddLabel(g_localizeStrings.Get(1225), 2 );    //Advanced User
+    pControl->SetValue(pSettingInt->GetData());
+  }
+
+	  iPosY += iGapY;
   }
   // fix first and last navigation
   CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_CONTROL + (int)m_vecSettings.size() - 1);
@@ -714,7 +751,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                            &&*/ g_guiSettings.GetBool("VoiceOnPort0.EnablefRoboticValue")
                                            && (g_guiSettings.GetString("VoiceOnPort0.VoiceMask").compare("Custom") == 0) );
     }
-/*    else if (strSetting == "VoiceOnPort1.VoiceMask")
+    /*    else if (strSetting == "VoiceOnPort1.VoiceMask")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort1.EnableDevice"));
@@ -771,7 +808,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                            &&*/ g_guiSettings.GetBool("VoiceOnPort1.EnablefRoboticValue")
                                            && (g_guiSettings.GetString("VoiceOnPort1.VoiceMask").compare("Custom") == 0) );
     }
-/*    else if (strSetting == "VoiceOnPort2.VoiceMask")
+    /*    else if (strSetting == "VoiceOnPort2.VoiceMask")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort2.EnableDevice"));
@@ -828,7 +865,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                            &&*/ g_guiSettings.GetBool("VoiceOnPort2.EnablefRoboticValue")
                                            && (g_guiSettings.GetString("VoiceOnPort2.VoiceMask").compare("Custom") == 0) );
     }
-/*    else if (strSetting == "VoiceOnPort3.VoiceMask")
+    /*    else if (strSetting == "VoiceOnPort3.VoiceMask")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VoiceOnPort3.EnableDevice"));
@@ -885,7 +922,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                            &&*/ g_guiSettings.GetBool("VoiceOnPort3.EnablefRoboticValue")
                                            && (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
     }
-    // ... Karaoke patch (114097)
     else if (strSetting == "AudioMusic.OutputToAllSpeakers" || strSetting == "AudioVideo.OutputToAllSpeakers"
              || strSetting == "AudioOutput.AC3PassThrough" || strSetting == "AudioOutput.DTSPassThrough")
     { // only visible if we are in digital mode
@@ -1049,71 +1085,89 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         m_strOldTrackFormatRight = g_guiSettings.GetString("MusicLists.TrackFormatRight");
       }
     }
-	else if (strSetting == "XBDateTime.TimeAddress")
+	  else if (strSetting == "XBDateTime.TimeAddress")
+      {
+		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		  if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("XBDateTime.TimeServer"));
+      }
+	  else if (strSetting == "XBDateTime.Year")
+	  {
+		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		  if (pControl) 
+		  { 
+			  if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
+				  pControl->SetEnabled(false); 
+			  else pControl->SetEnabled(true); 
+		  }
+	  }
+	  else if (strSetting == "XBDateTime.Month")
+	  {
+		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		  if (pControl) 
+		  { 
+			  if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
+				  pControl->SetEnabled(false); 
+			  else pControl->SetEnabled(true); 
+		  }
+	  }
+	  else if (strSetting == "XBDateTime.Day")
+	  {
+		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		  if (pControl) 
+		  { 
+			  if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
+				  pControl->SetEnabled(false); 
+			  else pControl->SetEnabled(true); 
+		  }
+	  }
+	  else if (strSetting == "XBDateTime.Hour")
+	  {
+		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		  if (pControl) 
+		  { 
+			  if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
+				  pControl->SetEnabled(false); 
+			  else pControl->SetEnabled(true); 
+		  }
+	  }
+	  else if (strSetting == "XBDateTime.Minute")
+	  {
+		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		  if (pControl) 
+		  { 
+			  if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
+				  pControl->SetEnabled(false); 
+			  else pControl->SetEnabled(true); 
+		  }
+	  }
+	  else if (strSetting == "XBDateTime.SetDateTime")
+	  {
+		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		  if (pControl) 
+		  { 
+			  if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
+				  pControl->SetEnabled(false); 
+			  else pControl->SetEnabled(true); 
+		  }
+	  }
+    else if (strSetting == "Smb.Ip" || strSetting == "Smb.Workgroup"  || strSetting == "Smb.Username" || strSetting == "Smb.Password" || strSetting == "Smb.SetSmb")
     {
-		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-		if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("XBDateTime.TimeServer"));
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      bool bState;
+      if (g_guiSettings.GetInt("Smb.SimpAdvance") == 0) bState = false; //Disable
+      if (g_guiSettings.GetInt("Smb.SimpAdvance") == 1) bState = true;  //Normal User
+      if (g_guiSettings.GetInt("Smb.SimpAdvance") == 2) bState = true;  //Advanced User
+      if (pControl) pControl->SetEnabled(bState);
     }
-	else if (strSetting == "XBDateTime.Year")
-	{
-		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-		if (pControl) 
-		{ 
-			if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
-				pControl->SetEnabled(false); 
-			else pControl->SetEnabled(true); 
-		}
-	}
-	else if (strSetting == "XBDateTime.Month")
-	{
-		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-		if (pControl) 
-		{ 
-			if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
-				pControl->SetEnabled(false); 
-			else pControl->SetEnabled(true); 
-		}
-	}
-	else if (strSetting == "XBDateTime.Day")
-	{
-		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-		if (pControl) 
-		{ 
-			if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
-				pControl->SetEnabled(false); 
-			else pControl->SetEnabled(true); 
-		}
-	}
-	else if (strSetting == "XBDateTime.Hour")
-	{
-		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-		if (pControl) 
-		{ 
-			if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
-				pControl->SetEnabled(false); 
-			else pControl->SetEnabled(true); 
-		}
-	}
-	else if (strSetting == "XBDateTime.Minute")
-	{
-		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-		if (pControl) 
-		{ 
-			if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
-				pControl->SetEnabled(false); 
-			else pControl->SetEnabled(true); 
-		}
-	}
-	else if (strSetting == "XBDateTime.SetDateTime")
-	{
-		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-		if (pControl) 
-		{ 
-			if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
-				pControl->SetEnabled(false); 
-			else pControl->SetEnabled(true); 
-		}
-	}
+    else if (strSetting == "Smb.Winsserver" || strSetting == "Smb.ShareName" || strSetting == "Smb.ShareGroup")
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      bool bState;
+      if (g_guiSettings.GetInt("Smb.SimpAdvance") == 0) bState = false; //Disable
+      if (g_guiSettings.GetInt("Smb.SimpAdvance") == 1) bState = false; //Normal User
+      if (g_guiSettings.GetInt("Smb.SimpAdvance") == 2) bState = true;  //Advanced User
+      if (pControl) pControl->SetEnabled(bState);
+    }
   }
 }
 
@@ -1155,7 +1209,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("MyMusic.Repeat"));
   }
-  // Karaoke patch (114097) ...
   else if (strSetting == "Karaoke.Port0VoiceMask" /*"VoiceOnPort0.VoiceMask"*/)
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
@@ -1184,7 +1237,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.SetString("VoiceOnPort3.VoiceMask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(3, g_guiSettings.GetSetting("Karaoke.Port2VoiceMask" /*"VoiceOnPort3.VoiceMask"*/));
   }
-  // ... Karaoke patch (114097)
   else if (strSetting == "MusicLibrary.Cleanup")
   {
     g_musicDatabase.Clean();
@@ -1506,6 +1558,151 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {   // GeminiServer
 	  CSetting *pSetting = pSettingControl->GetSetting();
 	  FillInXBDateTime(pSetting, 3); //Ask, Check and then Set UTC Time!
+  }
+  else if (strSetting == "Smb.SetSmb" || strSetting == "Smb.SimpAdvance")
+  {
+    //Let's get the ip and set the correct url string smb://IP !
+    CStdString strSmbIp;
+    strSmbIp.Format("smb://%s/",g_guiSettings.GetString("Smb.Ip"));
+    
+    // We need the previos smb share name to remove them
+    CStdString strSmbShareName;
+    strSmbShareName.Format("%s",g_stSettings.m_strSambaShareName);
+    
+    //Delete all Previos Share neames before add. new/changed one!
+    //!! If there are a share , with the same name but non SMB, this will be alo deleted!
+    g_settings.DeleteBookmark("music",    strSmbShareName, strSmbIp);
+    g_settings.DeleteBookmark("video",    strSmbShareName, strSmbIp);
+    g_settings.DeleteBookmark("pictures", strSmbShareName, strSmbIp);
+    g_settings.DeleteBookmark("files",    strSmbShareName, strSmbIp);
+
+    //Set Default if all is Empty
+    if (g_guiSettings.GetString("Smb.Ip")        == "") g_guiSettings.SetString("Smb.Ip", "192.168.0.5");
+    if (g_guiSettings.GetString("Smb.Workgroup") == "") g_guiSettings.SetString("Smb.Workgroup", "WORKGROUP");
+    if (g_guiSettings.GetString("Smb.Username")  == "") g_guiSettings.SetString("Smb.Username", "-");
+    if (g_guiSettings.GetString("Smb.Password")  == "") g_guiSettings.SetString("Smb.Password", "-");
+    if (g_guiSettings.GetString("Smb.ShareName") == "") g_guiSettings.SetString("Smb.ShareName", "WORKGROUP (SMB) Network");
+    if (g_guiSettings.GetString("Smb.Winsserver")== "") g_guiSettings.SetString("Smb.Winsserver", "-");
+
+    //Set/Update
+    strcpy(g_stSettings.m_strSambaIPAdress,         g_guiSettings.GetString("Smb.Ip"));
+    strcpy(g_stSettings.m_strSambaWorkgroup,        g_guiSettings.GetString("Smb.Workgroup"));
+    strcpy(g_stSettings.m_strSambaDefaultUserName,  g_guiSettings.GetString("Smb.Username"));
+    strcpy(g_stSettings.m_strSambaDefaultPassword,  g_guiSettings.GetString("Smb.Password"));
+    strcpy(g_stSettings.m_strSambaShareName,        g_guiSettings.GetString("Smb.ShareName"));
+    strcpy(g_stSettings.m_strSambaWinsServer,       g_guiSettings.GetString("Smb.Winsserver"));
+
+    g_settings.UpDateXbmcXML("samba", "winsserver",       g_guiSettings.GetString("Smb.Winsserver"));
+    g_settings.UpDateXbmcXML("samba", "smbip",            g_guiSettings.GetString("Smb.Ip"));
+    g_settings.UpDateXbmcXML("samba", "workgroup",        g_guiSettings.GetString("Smb.Workgroup"));
+    g_settings.UpDateXbmcXML("samba", "defaultusername",  g_guiSettings.GetString("Smb.Username"));
+    g_settings.UpDateXbmcXML("samba", "defaultpassword",  g_guiSettings.GetString("Smb.Password"));
+    g_settings.UpDateXbmcXML("samba", "smbsharename",     g_guiSettings.GetString("Smb.ShareName"));
+    
+    //g_settings.UpDateXbmcXML("CDDBIpAddress", "194.97.4.18"); //This is a Test ;
+
+    // if the SMB settings is disabled set also the Share group to 0
+    if(g_guiSettings.GetInt("Smb.SimpAdvance")!= 0)
+    {
+      switch (g_guiSettings.GetInt("Smb.ShareGroup"))
+      {
+        case SMB_SHARE_MUSIC:
+          //Musikc
+            if (!g_settings.UpdateBookmark("music",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+            { g_settings.AddBookmark("music",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp); }
+          break;
+        case SMB_SHARE_VIDEO:
+          //Video
+            if(!g_settings.UpdateBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+            {g_settings.AddBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
+          break;
+        case SMB_SHARE_PICTURES:
+          //Pictures
+            if(!g_settings.UpdateBookmark("pictures", g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+            {g_settings.AddBookmark("pictures",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
+
+          break;
+        case SMB_SHARE_FILES:
+          //Files
+          if(!g_settings.UpdateBookmark("files",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("files",    g_guiSettings.GetString("Smb.ShareName"),  strSmbIp);}
+          break;
+        case SMB_SHARE_MU_VI:
+          //Musik&Video
+          if(!g_settings.UpdateBookmark("music",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("music",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
+          if(!g_settings.UpdateBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("video",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
+          break;
+        case SMB_SHARE_MU_PIC:
+          //Musik&Pictures
+          if(!g_settings.UpdateBookmark("music",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("music",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
+          if(!g_settings.UpdateBookmark("pictures", g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("pictures",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
+          break;
+        case SMB_SHARE_MU_FIL:
+          //Musik&Files
+          if(!g_settings.UpdateBookmark("music",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("music",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
+          if(!g_settings.UpdateBookmark("files",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("files",    g_guiSettings.GetString("Smb.ShareName"),  strSmbIp);}
+          break;
+        case SMB_SHARE_VI_PIC:
+          //Video&Pic
+          if(!g_settings.UpdateBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("video",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
+          if(!g_settings.UpdateBookmark("pictures", g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("pictures",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
+          break;
+        case SMB_SHARE_VI_FIL:
+          //Video&Files
+          if(!g_settings.UpdateBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("video",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
+          if(!g_settings.UpdateBookmark("files",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("files",    g_guiSettings.GetString("Smb.ShareName"),  strSmbIp);}
+          break;
+        case SMB_SHARE_PIC_FIL:
+          //Picture&Files
+          if(!g_settings.UpdateBookmark("pictures", g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("pictures",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
+          if(!g_settings.UpdateBookmark("files",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("files",    g_guiSettings.GetString("Smb.ShareName"),  strSmbIp);}
+          break;
+        case SMB_SHARE_MU_VI_PIC:
+          //Musik&Video&Picture
+          if(!g_settings.UpdateBookmark("music",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("music",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
+          if(!g_settings.UpdateBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("video",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
+          if(!g_settings.UpdateBookmark("pictures", g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("pictures",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
+          break;
+        case SMB_SHARE_MU_VI_PIC_FIL:
+          //Musik&Video&Picture&File
+          if(!g_settings.UpdateBookmark("music",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("music",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
+          if(!g_settings.UpdateBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("video",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
+          if(!g_settings.UpdateBookmark("pictures", g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("pictures",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
+          if(!g_settings.UpdateBookmark("files",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
+          {g_settings.AddBookmark("files",    g_guiSettings.GetString("Smb.ShareName"),  strSmbIp);}
+          break;
+      }
+    }
+    if (strSetting == "Smb.SetSmb")
+    {
+      CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+      if (!dlg) return ;
+      dlg->SetHeading( g_localizeStrings.Get(1200) );
+      dlg->SetLine( 0, g_localizeStrings.Get(1209) );
+      dlg->SetLine( 1, g_guiSettings.GetString("Smb.ShareName"));
+      dlg->SetLine( 2, strSmbIp);
+      dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+      //if (dlg->IsConfirmed()) //Do nothing!
+    }
+
   }
   
   g_settings.Save();
