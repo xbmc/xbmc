@@ -47,6 +47,8 @@ OGGCodec::OGGCodec()
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
+  m_Bitrate = 0;
+  m_CodecName = L"OGG";
 
   // dll stuff
   ZeroMemory(&m_dll, sizeof(OGGdll));
@@ -92,6 +94,12 @@ bool OGGCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Channels = pInfo->channels;
   m_BitsPerSample = 16;
   m_TotalTime = (__int64)m_dll.ov_time_total(&m_VorbisFile, -1)*1000;
+
+  m_Bitrate = pInfo->bitrate_nominal;
+  if (m_Bitrate == 0)
+  {
+	  m_Bitrate = (int)(m_fileOGG.GetLength()*8 / (m_TotalTime / 1000));
+  }
 
   return true;
 }

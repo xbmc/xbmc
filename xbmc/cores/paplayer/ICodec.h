@@ -14,6 +14,8 @@ public:
     m_SampleRate = 0;
     m_BitsPerSample = 0;
     m_Channels = 0;
+    m_Bitrate = 0;
+    m_CodecName = L"";
   };
   virtual ~ICodec() {};
 
@@ -54,5 +56,7 @@ public:
   int m_SampleRate;
   int m_BitsPerSample;
   int m_Channels;
+  int m_Bitrate;
+  CStdString m_CodecName;
   CReplayGain m_replayGain;
 };

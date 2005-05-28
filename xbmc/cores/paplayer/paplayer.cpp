@@ -599,6 +599,31 @@ int PAPlayer::GetTotalTime()
   return (int)(GetTotalTime64()/1000);
 }
 
+int PAPlayer::GetChannels()
+{
+  return (int)(m_decoder[m_currentDecoder].GetCodec()->m_Channels);
+}
+
+int PAPlayer::GetBitsPerSample()
+{
+  return (int)(m_decoder[m_currentDecoder].GetCodec()->m_BitsPerSample);
+}
+
+int PAPlayer::GetSampleRate()
+{
+  return (int)((m_decoder[m_currentDecoder].GetCodec()->m_SampleRate / 1000) + 0.5);
+}
+
+CStdString PAPlayer::GetCodec()
+{
+  return m_decoder[m_currentDecoder].GetCodec()->m_CodecName;
+}
+
+int PAPlayer::GetBitrate()
+{
+	return (int)((m_decoder[m_currentDecoder].GetCodec()->m_Bitrate / 1000) + 0.5); // in kbits/s, rounded to the nearest int
+}
+
 void PAPlayer::SeekTime(__int64 iTime /*=0*/)
 {
   if (m_currentFile.m_lStartOffset)

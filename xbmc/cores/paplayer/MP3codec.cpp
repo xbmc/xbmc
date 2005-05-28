@@ -10,9 +10,13 @@ MP3Codec::MP3Codec()
   m_Channels = 0;
   m_BitsPerSample = 0;
   m_TotalTime = 0;
+  m_Bitrate = 0;
+  m_CodecName = L"MP3";
+
   // dll stuff
   m_bDllLoaded = false;
   m_pDll = NULL;
+
   // mp3 related
   m_pDecoder = NULL;
   m_CallAgainWithSameBuffer = false;
@@ -23,6 +27,7 @@ MP3Codec::MP3Codec()
                                        // using a background reader thread now that caches in advance.
   m_InputBuffer = new BYTE[m_InputBufferSize];  
   m_InputBufferPos = 0;
+
   // create our output buffer
   m_OutputBufferSize = 1152*4*4;        // enough for 4 frames
   m_OutputBuffer = new BYTE[m_OutputBufferSize];
@@ -85,19 +90,12 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   m_eof = false;
   m_CallAgainWithSameBuffer = false;
 
-  __int64 length = m_file.GetLength();
-
   // Guess Bitrate and obtain replayGain information etc.
   CMusicInfoTagLoaderMP3 mp3info;
   CMusicInfoTag tag;
   mp3info.Load(strFile, tag);
   mp3info.GetSeekInfo(m_seekInfo);
   mp3info.GetReplayGain(m_replayGain);
-  m_TotalTime = (__int64)(m_seekInfo.GetDuration() * 1000.0f);
-  if ( m_TotalTime )
-    m_AverageInputBytesPerSecond = (DWORD)(length / m_seekInfo.GetDuration());
-  else
-    m_bGuessByterate = true;  // If we don't have the TrackDuration we'll have to guess later.
 
   if (!m_file.Open(strFile))
   {
@@ -106,6 +104,16 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     m_pDecoder = NULL;
     return false;
   }
+  
+  __int64 length = m_file.GetLength();
+  m_TotalTime = (__int64)(m_seekInfo.GetDuration() * 1000.0f);
+  if ( m_TotalTime )
+  {
+    m_AverageInputBytesPerSecond = (DWORD)(length / m_seekInfo.GetDuration());
+    m_Bitrate = m_AverageInputBytesPerSecond * 8;  // average bitrate
+  }
+  else
+    m_bGuessByterate = true;  // If we don't have the TrackDuration we'll have to guess later.
 
   // Read in some data so we can determine the sample size and so on
   // This needs to be made more intelligent - possibly use a temp output buffer
@@ -118,9 +126,9 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   int result = m_pDecoder->decode(m_InputBuffer, 8192, m_InputBuffer + 8192, &sendsize, (unsigned int *)&formatdata);
   if ( (result == 0 || result == 1) && sendsize )
   {
-    m_Channels    = formatdata[2];
-    m_SampleRate  = formatdata[1];
-    m_BitsPerSample  = formatdata[3];
+    m_Channels = formatdata[2];
+    m_SampleRate = formatdata[1];
+    m_BitsPerSample = formatdata[3];
   }
   m_pDecoder->flush();
   m_file.Seek(mp3info.GetID3v2Size());

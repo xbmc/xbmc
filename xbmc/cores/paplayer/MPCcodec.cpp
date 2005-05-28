@@ -7,6 +7,9 @@ MPCCodec::MPCCodec()
   m_Channels = 0;
   m_BitsPerSample = 0;
   m_TotalTime = 0;
+  m_Bitrate = 0;
+  m_CodecName = L"MPC";
+
   // dll stuff
   m_pDll = NULL;
   m_bDllLoaded = false;
@@ -33,6 +36,16 @@ bool MPCCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_BitsPerSample = 16;
 	m_Channels = 2;
   m_SampleRate = (int)data.SampleFreq;
+
+  m_Bitrate = data.Bitrate;
+  if (m_Bitrate == 0)
+  {
+	  m_Bitrate = (int)data.AverageBitrate;
+  }
+  if (m_Bitrate == 0)
+  {
+	  m_Bitrate = (int)((data.TotalFileLength * 8) / (m_TotalTime / 1000));
+  }
 
   // Replay gain
   if (data.GainTitle || data.PeakTitle)

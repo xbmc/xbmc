@@ -58,6 +58,11 @@ public:
   virtual void ToFFRW(int iSpeed = 0);
   virtual int GetTotalTime();
   __int64 GetTotalTime64();
+  virtual int GetBitrate();
+  virtual int GetChannels();
+  virtual int GetBitsPerSample();
+  virtual int GetSampleRate();
+  virtual CStdString GetCodec();
   virtual __int64 GetTime();
   virtual void SeekTime(__int64 iTime = 0);
 
