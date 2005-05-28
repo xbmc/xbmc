@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-05-2005 fixed: SMB Share Controll, when set to Normal User, the default share place should be all [GeminiServer]
  - 27-05-2005 updated: Korean language file (Thnx to AkoXko)
  - 27-05-2005 updated: German language file
  - 27-05-2005 updated: Italian language file (Thnx to kotix)

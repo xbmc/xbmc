@@ -556,7 +556,7 @@
   <string><id>1201</id><value>SMB IP</value></string>
   <string><id>1202</id><value>SMB Workgroup</value></string>
   <string><id>1203</id><value>SMB Username</value></string>
-  <string><id>1204</id><value>SMB Passorwd</value></string>
+  <string><id>1204</id><value>SMB Password</value></string>
   <string><id>1205</id><value>SMB Share Name</value></string>
   <string><id>1206</id><value>SMB Share Group</value></string>
   <string><id>1207</id><value>SMB WINS-Server</value></string>
