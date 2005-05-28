@@ -1604,6 +1604,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     // if the SMB settings is disabled set also the Share group to 0
     if(g_guiSettings.GetInt("Smb.SimpAdvance")!= 0)
     {
+      //if the user mode is //Normal User, Set the SMB share to all Modes!
+      if (g_guiSettings.GetInt("Smb.SimpAdvance") == 1) g_guiSettings.SetInt("Smb.ShareGroup",SMB_SHARE_MU_VI_PIC_FIL);
+
       switch (g_guiSettings.GetInt("Smb.ShareGroup"))
       {
         case SMB_SHARE_MUSIC:
