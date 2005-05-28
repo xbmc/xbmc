@@ -23,6 +23,8 @@ WAVCodec::WAVCodec()
   m_Channels = 0;
   m_BitsPerSample = 0;
   m_iDataLen=0;
+  m_Bitrate = 0;
+  m_CodecName = L"WAV";
 }
 
 WAVCodec::~WAVCodec()
@@ -53,6 +55,7 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_BitsPerSample = wavHeader.FormatSpecific;
   m_iDataLen = wavHeader.datalen;
   m_TotalTime = m_iDataLen/(m_SampleRate*m_Channels*(m_BitsPerSample/8))*1000;
+  m_Bitrate = (int)((m_iDataLen * 8) / (m_TotalTime / 1000));
 
   if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0)
     return false;
