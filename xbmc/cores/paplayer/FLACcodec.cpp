@@ -10,6 +10,8 @@ FLACCodec::FLACCodec()
   m_Channels = 0;
   m_BitsPerSample = 0;
   m_TotalTime=0;
+  m_Bitrate = 0;
+  m_CodecName = L"FLAC";
 
   m_pFlacDecoder=NULL;
 
@@ -83,6 +85,8 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
   CFlacTag tag;
   if (tag.ReadTagFromFile(strFile))
     m_replayGain=tag.GetReplayGain();
+
+  m_Bitrate = (int)((m_file.GetLength() * 8) / (m_TotalTime/1000));
 
   if (m_pBuffer)
   {

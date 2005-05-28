@@ -56,6 +56,9 @@ SHNCodec::SHNCodec()
   m_Channels = 0;
   m_BitsPerSample = 0;
   m_TotalTime = 0;
+  m_Bitrate = 0;
+  m_CodecName = L"SHN";
+
   // dll stuff
   m_pDll = NULL;
   m_bDllLoaded = false;
@@ -101,6 +104,7 @@ bool SHNCodec::Init(const CStdString &strFile, unsigned int filecache)
 		m_SampleRate = info.sample_rate;
 		m_BitsPerSample = info.bits_per_sample;
     m_TotalTime = (__int64)info.sample_count * 1000 / info.sample_rate;
+	  m_Bitrate = (int)(m_file.GetLength() * 8 / (m_TotalTime / 1000));
 	}
 	else
 	{

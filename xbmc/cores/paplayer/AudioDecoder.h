@@ -41,6 +41,7 @@ public:
   unsigned int GetDataSize();
   void *GetData(unsigned int size);
   void PrefixData(void *data, unsigned int size);
+  ICodec *GetCodec() { return m_codec; }
 
 private:
   void ProcessAudio(void *data, int size);

@@ -74,6 +74,11 @@ public:
   virtual void SeekTime(__int64 iTime = 0){};
   virtual __int64 GetTime(){ return 0;};
   virtual int GetTotalTime(){ return 0;};
+  virtual int GetBitrate(){ return 0;};
+  virtual int GetChannels(){ return 0;};
+  virtual int GetBitsPerSample(){ return 0;};
+  virtual int GetSampleRate(){ return 0;};
+  virtual CStdString GetCodec(){ return L"";};
   virtual void ToFFRW(int iSpeed = 0){};
   virtual void ShowOSD(bool bOnoff){};
 
