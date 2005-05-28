@@ -4,6 +4,7 @@
 #include "../Application.h"
 #include "../Util.h"
 #include "../lib/libscrobbler/scrobbler.h"
+#include "../playlistplayer.h"
 
 #define VERSION_STRING "1.1.0"
 
@@ -68,6 +69,13 @@ extern char g_szTitleIP[32];
 #define MUSICPLAYER_TRACK_NUMBER    208
 #define MUSICPLAYER_DURATION        209
 #define MUSICPLAYER_COVER           210
+#define MUSICPLAYER_BITRATE         211
+#define MUSICPLAYER_PLAYLISTLEN     212
+#define MUSICPLAYER_PLAYLISTPOS     213
+#define MUSICPLAYER_CHANNELS        214
+#define MUSICPLAYER_BITSPERSAMPLE   215
+#define MUSICPLAYER_SAMPLERATE      216
+#define MUSICPLAYER_CODEC           217
 
 #define VIDEOPLAYER_TITLE           250
 #define VIDEOPLAYER_GENRE           251
@@ -163,6 +171,13 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
   else if (strTest.Equals("musicplayer.tracknumber")) ret = MUSICPLAYER_TRACK_NUMBER;
   else if (strTest.Equals("musicplayer.duration")) ret = MUSICPLAYER_DURATION;
   else if (strTest.Equals("musicplayer.cover")) ret = MUSICPLAYER_COVER;
+  else if (strTest.Equals("musicplayer.bitrate")) ret = MUSICPLAYER_BITRATE;
+  else if (strTest.Equals("musicplayer.playlistlength")) ret = MUSICPLAYER_PLAYLISTLEN;
+  else if (strTest.Equals("musicplayer.playlistposition")) ret = MUSICPLAYER_PLAYLISTPOS;
+  else if (strTest.Equals("musicplayer.channels")) ret = MUSICPLAYER_CHANNELS;
+  else if (strTest.Equals("musicplayer.bitspersample")) ret = MUSICPLAYER_BITSPERSAMPLE;
+  else if (strTest.Equals("musicplayer.samplerate")) ret = MUSICPLAYER_SAMPLERATE;
+  else if (strTest.Equals("musicplayer.codec")) ret = MUSICPLAYER_CODEC;
   else if (strTest.Equals("videoplayer.title")) ret = VIDEOPLAYER_TITLE;
   else if (strTest.Equals("videoplayer.genre")) ret = VIDEOPLAYER_GENRE;
   else if (strTest.Equals("videoplayer.director")) ret = VIDEOPLAYER_DIRECTOR;
@@ -211,6 +226,13 @@ wstring CGUIInfoManager::GetLabel(int info)
   case MUSICPLAYER_TIME_SPEED:
   case MUSICPLAYER_TRACK_NUMBER:
   case MUSICPLAYER_DURATION:
+  case MUSICPLAYER_BITRATE:
+  case MUSICPLAYER_PLAYLISTLEN:
+  case MUSICPLAYER_PLAYLISTPOS:
+  case MUSICPLAYER_CHANNELS:
+  case MUSICPLAYER_BITSPERSAMPLE:
+  case MUSICPLAYER_SAMPLERATE:
+  case MUSICPLAYER_CODEC:
     strLabel = GetMusicLabel(info);
   break;
   case VIDEOPLAYER_TITLE:
@@ -473,20 +495,20 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   CMusicInfoTag& tag = m_currentSong.m_musicInfoTag;
   switch (item)
   {
-  case MUSICPLAYER_TITLE: 
-    return tag.GetTitle();
+  case MUSICPLAYER_TITLE:
+    if (tag.GetTitle().size()) { return tag.GetTitle(); }
     break;
   case MUSICPLAYER_ALBUM: 
-    return tag.GetAlbum();
+    if (tag.GetAlbum().size()) { return tag.GetAlbum(); }
     break;
   case MUSICPLAYER_ARTIST: 
-    return tag.GetArtist();
+    if (tag.GetArtist().size()) { return tag.GetArtist(); }
     break;
   case MUSICPLAYER_YEAR: 
-    return tag.GetYear();
+    if (tag.GetYear().size()) { return tag.GetYear(); }
     break;
   case MUSICPLAYER_GENRE: 
-    return tag.GetGenre();
+    if (tag.GetGenre().size()) { return tag.GetGenre(); }
     break;
   case MUSICPLAYER_TIME: 
     return GetCurrentPlayTime();
@@ -507,9 +529,11 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   case MUSICPLAYER_TRACK_NUMBER:
     {
       CStdString strTrack;
-      if (tag.GetTrackNumber() > 0)
+      if (tag.Loaded() && tag.GetTrackNumber() > 0)
+      {
         strTrack.Format("%02i", tag.GetTrackNumber());
-      return strTrack;
+        return strTrack;
+      }
     }
     break;
   case MUSICPLAYER_DURATION:
@@ -524,6 +548,73 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
           CUtil::SecondsToHMSString(iTotal, strDuration, true);
       }
       return strDuration;
+    }
+    break;
+  case MUSICPLAYER_PLAYLISTLEN:
+    {
+      CStdString strPlayListLength = L"";
+      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC || g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC_TEMP)
+  	  {
+  			strPlayListLength.Format("%i", g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).size());
+  	  }
+      return strPlayListLength;
+  	}
+	  break;
+  case MUSICPLAYER_PLAYLISTPOS:
+    {
+      CStdString strPlayListPosition = L"";
+      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC || g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC_TEMP)
+  	  {
+  			strPlayListPosition.Format("%i",g_playlistPlayer.GetCurrentSong() + 1);
+  	  }
+      return strPlayListPosition;
+  	}
+  	break;
+  case MUSICPLAYER_BITRATE:
+    {
+      CStdString strBitrate = L"";
+	    if (g_application.m_pPlayer->GetBitrate() > 0)
+	    {
+	      strBitrate.Format("%i", g_application.m_pPlayer->GetBitrate());
+	    }
+      return strBitrate;
+    }
+    break;
+  case MUSICPLAYER_CHANNELS:
+    {
+      CStdString strChannels = L"";
+	    if (g_application.m_pPlayer->GetChannels() > 0)
+	    {
+	      strChannels.Format("%i", g_application.m_pPlayer->GetChannels());
+	    }
+      return strChannels;
+    }
+    break;
+  case MUSICPLAYER_BITSPERSAMPLE:
+    {
+      CStdString strBitsPerSample = L"";
+	    if (g_application.m_pPlayer->GetBitsPerSample() > 0)
+	    {
+	      strBitsPerSample.Format("%i", g_application.m_pPlayer->GetBitsPerSample());
+	    }
+      return strBitsPerSample;
+    }
+    break;
+  case MUSICPLAYER_SAMPLERATE:
+    {
+      CStdString strSampleRate = L"";
+	    if (g_application.m_pPlayer->GetSampleRate() > 0)
+	    {
+	      strSampleRate.Format("%i",g_application.m_pPlayer->GetSampleRate());
+	    }
+      return strSampleRate;
+    }
+    break;
+  case MUSICPLAYER_CODEC:
+    {
+      CStdString strCodec;
+      strCodec.Format("%s", g_application.m_pPlayer->GetCodec().c_str());
+      return strCodec;
     }
     break;
   }

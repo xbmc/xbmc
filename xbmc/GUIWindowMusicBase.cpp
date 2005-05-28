@@ -1160,25 +1160,6 @@ void CGUIWindowMusicBase::UpdateButtons()
   msg2.SetLabel(strItem);
   g_graphicsContext.SendMessage(msg2);
 
-  /*
-  // REMOVED ALUBMS, ARTISTS, AND GENRE VIEWS
-  strItem = g_localizeStrings.Get(132); // Album
-  msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
-
-  strItem = g_localizeStrings.Get(133); // Artist
-  msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
-
-  strItem = g_localizeStrings.Get(135); // Genre
-  msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
-
-  strItem = g_localizeStrings.Get(271); // Top 100
-  msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
-  */
-
   strItem = g_localizeStrings.Get(15100); // Library
   msg2.SetLabel(strItem);
   g_graphicsContext.SendMessage(msg2);

@@ -9,6 +9,9 @@ APECodec::APECodec()
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
+  m_Bitrate = 0;
+  m_CodecName = L"APE";
+
   // dll stuff
   m_bDllLoaded = false;
   m_pDll = NULL;
@@ -39,6 +42,7 @@ bool APECodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Channels = m_dll.GetInfo(m_handle, APE_INFO_CHANNELS, 0, 0);
   m_BytesPerBlock = m_BitsPerSample * m_Channels / 8;
   m_TotalTime = (__int64)m_dll.GetInfo(m_handle, APE_INFO_LENGTH_MS, 0, 0);
+  m_Bitrate = m_dll.GetInfo(m_handle, APE_INFO_AVERAGE_BITRATE, 0, 0) * 1000;
 
   // Get the replay gain data
   IAPETag *pTag = (IAPETag *)m_dll.GetInfo(m_handle, APE_INFO_TAG, 0, 0);
