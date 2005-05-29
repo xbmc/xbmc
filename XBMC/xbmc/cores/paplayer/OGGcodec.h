@@ -52,7 +52,6 @@ public:
   virtual __int64 Seek(__int64 iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool HandlesType(const char *type);
-          int GetStreamsCount();
 
 private:
   static size_t ReadCallback(void *ptr, size_t size, size_t nmemb, void *datasource);
