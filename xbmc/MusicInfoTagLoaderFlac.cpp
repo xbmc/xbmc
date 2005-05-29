@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "musicinfotagloaderflac.h"
+#include "FlacTag.h"
 
 using namespace MUSIC_INFO;
 
