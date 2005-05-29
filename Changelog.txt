@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-05-2005 changed: simplified vorbisfile.dll handling
  - 29-05-2005 fixed: ogg and flac files could not be started from the database view after rescan
  - 29-05-2005 fixed: audioscrobbler submits only the first song when using PAPlayer v2
  - 29-05-2005 added: support for ogg bitstreams aka chapters (vorbisfile.dll got updated)
