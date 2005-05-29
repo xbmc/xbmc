@@ -57,11 +57,6 @@ public:
   virtual bool ReadTag(const CStdString& strFile);
           int  GetStreamCount(const CStdString& strFile);
 protected:
-  static size_t ReadCallback(void *ptr, size_t size, size_t nmemb, void *datasource);
-  static int SeekCallback(void *datasource, ogg_int64_t offset, int whence);
-  static int CloseCallback(void *datasource);
-  static long TellCallback(void *datasource);
-
   bool LoadDLL();                     // load the DLL in question
   bool m_bDllLoaded;                  // whether our dll is loaded
   OGGdll m_dll;

@@ -5,6 +5,9 @@
 
 using namespace MUSIC_INFO;
 
+//  From EMUmsvcrt.cpp to open a file for a dll
+extern "C" FILE * dll_fopen (const char * filename, const char * mode);
+
 COggTag::COggTag()
 {
   // dll stuff
@@ -41,20 +44,14 @@ bool COggTag::ReadTag(const CStdString& strFile1)
       strFile.Delete(strFile.size()-1);
   }
 
-  CFile file;
-  if (!file.Open(strFile.c_str()))
+  //Use the emulated fopen() as its only used inside the dll
+  FILE* file=dll_fopen (strFile.c_str(), "r");
+  if (!file)
     return false;
-
-  //  setup ogg i/o callbacks
-  ov_callbacks oggIOCallbacks;
-  oggIOCallbacks.read_func=ReadCallback;
-  oggIOCallbacks.seek_func=SeekCallback;
-  oggIOCallbacks.tell_func=TellCallback;
-  oggIOCallbacks.close_func=CloseCallback;
 
   OggVorbis_File vf;
   //  open ogg file with decoder
-  if (m_dll.ov_open_callbacks(&file, &vf, NULL, 0, oggIOCallbacks)!=0)
+  if (m_dll.ov_open(file, &vf, NULL, 0)!=0)
     return false;
 
   int iStreams=m_dll.ov_streams(&vf);
@@ -140,62 +137,18 @@ bool COggTag::LoadDLL()
   return true;
 }
 
-size_t COggTag::ReadCallback(void *ptr, size_t size, size_t nmemb, void *datasource)
-{
-  CFile* pFile=(CFile*)datasource;
-  if (!pFile)
-    return 0;
-
-  return pFile->Read(ptr, size*nmemb);
-}
-
-int COggTag::SeekCallback(void *datasource, ogg_int64_t offset, int whence)
-{
-  CFile* pFile=(CFile*)datasource;
-  if (!pFile)
-    return 0;
-
-  return (int)pFile->Seek(offset, whence);
-}
-
-int COggTag::CloseCallback(void *datasource)
-{
-  CFile* pFile=(CFile*)datasource;
-  if (!pFile)
-    return 0;
-
-  pFile->Close();
-  return 1;
-}
-
-long COggTag::TellCallback(void *datasource)
-{
-  CFile* pFile=(CFile*)datasource;
-  if (!pFile)
-    return 0;
-
-  return (long)pFile->GetPosition();
-}
-
 int COggTag::GetStreamCount(const CStdString& strFile)
 {
   if (!LoadDLL())
     return 0;
 
-  CFile file;
-  if (!file.Open(strFile.c_str()))
+  FILE* file=dll_fopen (strFile.c_str(), "r");
+  if (!file)
     return 0;
-
-  //  setup ogg i/o callbacks
-  ov_callbacks oggIOCallbacks;
-  oggIOCallbacks.read_func=ReadCallback;
-  oggIOCallbacks.seek_func=SeekCallback;
-  oggIOCallbacks.tell_func=TellCallback;
-  oggIOCallbacks.close_func=CloseCallback;
 
   OggVorbis_File vf;
   //  open ogg file with decoder
-  if (m_dll.ov_open_callbacks(&file, &vf, NULL, 0, oggIOCallbacks)!=0)
+  if (m_dll.ov_open(file, &vf, NULL, 0)!=0)
     return 0;
 
   int iStreams=m_dll.ov_streams(&vf);
