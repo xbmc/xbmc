@@ -666,6 +666,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\OggTag.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\VorbisTag.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\VorbisTag.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\XMP4File.cpp">
 				</File>
 				<File
@@ -1300,7 +1306,13 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\mplayer\IAudioCallback.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\IDirectory.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\IFile.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\IFileDirectory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\IMDB.h">
@@ -1357,10 +1369,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1619,6 +1631,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\FactoryDirectory.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\FactoryFileDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FactoryFileDirectory.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\File.cpp">
 			</File>
 			<File
@@ -1674,6 +1692,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\ISO9660Directory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\OGGFileDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\OGGFileDirectory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\RTVDirectory.cpp">

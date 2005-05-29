@@ -60,7 +60,8 @@ bool CFileHD::Exists(const CURL& url)
   CStdString strFile(url.GetFileName());
   strFile.Replace("/", "\\");
 
-  return GetFileAttributes(strFile.c_str()) != -1;
+  struct __stat64 buffer;
+  return (_stat64(strFile.c_str(), &buffer)==0);
 }
 
 int CFileHD::Stat(const CURL& url, struct __stat64* buffer)

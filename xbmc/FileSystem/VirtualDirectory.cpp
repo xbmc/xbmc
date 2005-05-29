@@ -43,30 +43,10 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
          share.strPath == strPath3.Left( share.strPath.size() ) ||
          strPath.Mid(1, 1) == ":" )
     {
-      CFactoryDirectory factory;
-      CStdString path;
-
-      // get local path
-      if (strPath.Mid(1, 1) == ":")
-      {
-        path = strPath;
-      }
-      else
-      {
-        path = share.strPath;
-      }
-      IDirectory *pDirectory = factory.Create(path);
-
-      if (!pDirectory) return false;
-
       // Only cache directory we are getting now
       g_directoryCache.Clear();
-      pDirectory->SetMask(m_strFileMask);
-      bool bResult = pDirectory->GetDirectory(strPath, items);
-      //CUtil::SetThumbs(items);
-      //CUtil::FillInDefaultIcons(items);
-      delete pDirectory;
-      return bResult;
+
+      return CDirectory::GetDirectory(strPath, items, m_strFileMask);
     }
   }
 

@@ -1,6 +1,8 @@
 
 #include "../stdafx.h"
+#include "../util.h"
 #include "factorydirectory.h"
+#include "factoryfiledirectory.h"
 #include "HDDirectory.h"
 #include "ISO9660Directory.h"
 #include "XNSDirectory.h"
@@ -27,6 +29,11 @@ CFactoryDirectory::~CFactoryDirectory(void)
 IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 {
   CURL url(strPath);
+
+  IFileDirectory* pDir=CFactoryFileDirectory().Create(strPath);
+  if (pDir)
+    return pDir;
+
   CStdString strProtocol = url.GetProtocol();
   if (strProtocol == "iso9660")
   {
