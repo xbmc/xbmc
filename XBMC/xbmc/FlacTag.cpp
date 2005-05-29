@@ -7,18 +7,25 @@
 
 using namespace MUSIC_INFO;
 
+#define CHUNK_SIZE 8192  // should suffice for most tags
+
 CFlacTag::CFlacTag()
 {
-  m_nDuration = 0;
+
 }
 
 CFlacTag::~CFlacTag()
 {}
 
 // overridden from COggTag
-bool CFlacTag::ReadTag( CFile* file )
+bool CFlacTag::ReadTag(const CStdString& strFile)
 {
-  m_file = file;
+  CFile file;
+
+  if (!file.Open(strFile))
+    return false;
+
+  m_file = &file;
 
   // format is:
   // fLaC METABLOCK ... METABLOCK
@@ -78,7 +85,7 @@ int CFlacTag::ReadFlacHeader(void)
   m_file->Read(buffer, 8);    // read 64 bits of data
   int iFreq = (buffer[0] << 12) | (buffer[1] << 4) | (buffer[2] >> 4);
   __int64 iNumSamples = (__int64(buffer[3] & 0x0F) << 32) | (__int64(buffer[4]) << 24) | (buffer[5] << 16) | (buffer[6] << 8) | buffer[7];
-  m_nDuration = (int)((iNumSamples * 75) / iFreq);
+  m_musicInfoTag.SetDuration((int)((iNumSamples) / iFreq));
   return iPos + 38;
 }
 
@@ -105,4 +112,27 @@ int CFlacTag::FindFlacHeader(void)
   }
 
   return 0;
+}
+
+void CFlacTag::ProcessVorbisComment(const char *pBuffer)
+{
+  int Pos = 0;      // position in the buffer
+  int *I1 = (int*)(pBuffer + Pos); // length of vendor string
+  Pos += I1[0] + 4;     // just pass the vendor string
+  I1 = (int*)(pBuffer + Pos);   // number of comments
+  int Count = I1[0];
+  Pos += 4;    // Start of the first comment
+  char C1[CHUNK_SIZE];
+  for (int I2 = 0; I2 < Count; I2++) // Run through the comments
+  {
+    I1 = (int*)(pBuffer + Pos);   // Length of comment
+    strncpy(C1, pBuffer + Pos + 4, I1[0]);
+    C1[I1[0]] = '\0';
+    CStdString strItem;
+    g_charsetConverter.utf8ToStringCharset(C1, strItem);  // convert UTF-8 to charset string
+    // Parse the tag entry
+    ParseTagEntry( strItem );
+    // Increment our position in the file buffer
+    Pos += I1[0] + 4;
+  }
 }

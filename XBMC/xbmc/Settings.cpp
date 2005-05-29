@@ -413,6 +413,9 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   GetString(pRootElement, "pictureextensions", g_stSettings.m_szMyPicturesExtensions, ".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
 
   GetString(pRootElement, "musicextensions", g_stSettings.m_szMyMusicExtensions, ".ac3|.aac|.strm|.pls|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
+  //  Internal file-types
+  strcat(g_stSettings.m_szMyMusicExtensions, "|.oggstream"); //  bitstreams inside a ogg file
+
   GetString(pRootElement, "videoextensions", g_stSettings.m_szMyVideoExtensions, ".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
 
   // stacking regexps

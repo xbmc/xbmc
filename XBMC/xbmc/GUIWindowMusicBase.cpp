@@ -246,6 +246,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       CSectionLoader::UnloadDLL(APE_DLL);
       CSectionLoader::UnloadDLL(SHN_DLL);
       CSectionLoader::UnloadDLL(MPC_DLL);
+      CSectionLoader::UnloadDLL(OGG_DLL);
     }
     break;
 
@@ -259,6 +260,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       CSectionLoader::LoadDLL(APE_DLL);
       CSectionLoader::LoadDLL(SHN_DLL);
       CSectionLoader::LoadDLL(MPC_DLL);
+      CSectionLoader::LoadDLL(OGG_DLL);
 
       g_musicDatabase.Open();
 

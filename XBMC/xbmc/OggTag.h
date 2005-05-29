@@ -1,57 +1,69 @@
 //------------------------------
 // COggTag in 2003 by Bobbin007
 //------------------------------
+#include "VorbisTag.h"
 #include "cores/paplayer/replaygain.h"
+#include "cores/paplayer/ogg/vorbisfile.h"
 
 namespace MUSIC_INFO
 {
 
 #pragma once
 
-class COggTag
+class COggTag : public CVorbisTag
 {
+  struct OGGdll
+  {
+    int (__cdecl* ov_clear)(OggVorbis_File *vf);
+    int (__cdecl* ov_open)(FILE *f,OggVorbis_File *vf,char *initial,long ibytes);
+    int (__cdecl* ov_open_callbacks)(void *datasource, OggVorbis_File *vf,
+		                      char *initial, long ibytes, ov_callbacks callbacks);
+
+    int (__cdecl* ov_test)(FILE *f,OggVorbis_File *vf,char *initial,long ibytes);
+    int (__cdecl* ov_test_callbacks)(void *datasource, OggVorbis_File *vf,
+		                      char *initial, long ibytes, ov_callbacks callbacks);
+    int (__cdecl* ov_test_open)(OggVorbis_File *vf);
+
+    long (__cdecl* ov_bitrate)(OggVorbis_File *vf,int i);
+    long (__cdecl* ov_bitrate_instant)(OggVorbis_File *vf);
+    long (__cdecl* ov_streams)(OggVorbis_File *vf);
+    long (__cdecl* ov_seekable)(OggVorbis_File *vf);
+    long (__cdecl* ov_serialnumber)(OggVorbis_File *vf,int i);
+
+    ogg_int64_t (__cdecl* ov_raw_total)(OggVorbis_File *vf,int i);
+    ogg_int64_t (__cdecl* ov_pcm_total)(OggVorbis_File *vf,int i);
+    double (__cdecl* ov_time_total)(OggVorbis_File *vf,int i);
+
+    int (__cdecl* ov_raw_seek)(OggVorbis_File *vf,ogg_int64_t pos);
+    int (__cdecl* ov_pcm_seek)(OggVorbis_File *vf,ogg_int64_t pos);
+    int (__cdecl* ov_pcm_seek_page)(OggVorbis_File *vf,ogg_int64_t pos);
+    int (__cdecl* ov_time_seek)(OggVorbis_File *vf,double pos);
+    int (__cdecl* ov_time_seek_page)(OggVorbis_File *vf,double pos);
+
+    ogg_int64_t (__cdecl* ov_raw_tell)(OggVorbis_File *vf);
+    ogg_int64_t (__cdecl* ov_pcm_tell)(OggVorbis_File *vf);
+    double (__cdecl* ov_time_tell)(OggVorbis_File *vf);
+
+    vorbis_info *(__cdecl* ov_info)(OggVorbis_File *vf,int link);
+    vorbis_comment *(__cdecl* ov_comment)(OggVorbis_File *vf,int link);
+
+    long (__cdecl* ov_read)(OggVorbis_File *vf,char *buffer,int length,
+		    int bigendianp,int word,int sgned,int *bitstream);
+  };
+
 public:
   COggTag(void);
   virtual ~COggTag(void);
-  virtual bool ReadTag(CFile* file);
-  bool ReadTagFromFile(const CStdString& strFileName);
-  CStdString GetTitle() { return m_strTitle; }
-  CStdString GetArtist() { return m_strArtist; }
-  CStdString GetYear() { return m_strYear; }
-  CStdString GetAlbum() { return m_strAlbum; }
-  int GetTrackNum() { return m_nTrackNum; }
-  int GetDuration() { return m_nDuration; }
-  CStdString GetGenre() { return m_strGenre; }
-  CStdString GetMusicBrainzTrackID() { return m_strMusicBrainzTrackID; }
-  CStdString GetMusicBrainzArtistID() { return m_strMusicBrainzArtistID; }
-  CStdString GetMusicBrainzAlbumID() { return m_strMusicBrainzAlbumID; }
-  CStdString GetMusicBrainzAlbumArtistID() { return m_strMusicBrainzAlbumArtistID; }
-  CStdString GetMusicBrainzTRMID() { return m_strMusicBrainzTRMID; }
-  const CReplayGain &GetReplayGain() { return m_replayGain; };
-
+  virtual bool ReadTag(const CStdString& strFile);
+          int  GetStreamCount(const CStdString& strFile);
 protected:
-  void ProcessVorbisComment(const char *pBuffer);
+  static size_t ReadCallback(void *ptr, size_t size, size_t nmemb, void *datasource);
+  static int SeekCallback(void *datasource, ogg_int64_t offset, int whence);
+  static int CloseCallback(void *datasource);
+  static long TellCallback(void *datasource);
 
-  int parseTagEntry(CStdString& strTagEntry);
-  void SplitEntry(const CStdString& strTagEntry, CStdString& strTagType, CStdString& strTagValue);
-  CFile* m_file;
-
-  CStdString m_strTitle;
-  CStdString m_strArtist;
-  CStdString m_strYear;
-  CStdString m_strAlbum;
-  CStdString m_strMusicBrainzTrackID;
-  CStdString m_strMusicBrainzArtistID;
-  CStdString m_strMusicBrainzAlbumID;
-  CStdString m_strMusicBrainzAlbumArtistID;
-  CStdString m_strMusicBrainzTRMID;
-  int m_nTrackNum;
-  int m_nBitrate;
-  int m_nSamplesPerSec;
-  int m_nChannels;
-  __int64 m_nSamples;  // number of samples in file
-  int m_nDuration;  // duration in frames (75th of a second)
-  CStdString m_strGenre;
-  CReplayGain m_replayGain;
+  bool LoadDLL();                     // load the DLL in question
+  bool m_bDllLoaded;                  // whether our dll is loaded
+  OGGdll m_dll;
 };
 };

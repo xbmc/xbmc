@@ -43,7 +43,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
     CMusicInfoTagLoaderMP3 *pTagLoader = new CMusicInfoTagLoaderMP3();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-  else if (strExtension == "ogg")
+  else if (strExtension == "ogg" || strExtension == "oggstream")
   {
     CMusicInfoTagLoaderOgg *pTagLoader = new CMusicInfoTagLoaderOgg();
     return (IMusicInfoTagLoader*)pTagLoader;
