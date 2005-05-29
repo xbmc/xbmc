@@ -26,6 +26,8 @@ bool COggTag::ReadTag(const CStdString& strFile1)
   CStdString strFile=strFile1;
   int currentStream=0;
 
+  m_musicInfoTag.SetURL(strFile);
+
   CStdString strExtension;
   CUtil::GetExtension(strFile, strExtension);
   if (strExtension==".oggstream")

@@ -22,6 +22,8 @@ bool CFlacTag::ReadTag(const CStdString& strFile)
 {
   CFile file;
 
+  m_musicInfoTag.SetURL(strFile);
+
   if (!file.Open(strFile))
     return false;
 
