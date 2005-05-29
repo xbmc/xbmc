@@ -52,11 +52,19 @@ public:
   virtual __int64 Seek(__int64 iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool HandlesType(const char *type);
+          int GetStreamsCount();
 
 private:
-  CFile m_fileOGG;
+  static size_t ReadCallback(void *ptr, size_t size, size_t nmemb, void *datasource);
+  static int SeekCallback(void *datasource, ogg_int64_t offset, int whence);
+  static int CloseCallback(void *datasource);
+  static long TellCallback(void *datasource);
+
+  CFile m_file;
   OGGdll m_dll;
   OggVorbis_File m_VorbisFile;
+  double m_TimeOffset;
+  int m_CurrentStream;
   bool LoadDLL();                     // load the DLL in question
   bool m_bDllLoaded;                  // whether our dll is loaded
 };

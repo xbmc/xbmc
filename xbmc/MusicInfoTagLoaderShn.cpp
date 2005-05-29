@@ -21,6 +21,7 @@ bool CMusicInfoTagLoaderSHN::Load(const CStdString& strFileName, CMusicInfoTag& 
     SHNCodec codec;
     if (codec.Init(strFileName, 65536))
     {
+      tag.SetURL(strFileName);
       tag.SetDuration((int)((codec.m_TotalTime + 500)/ 1000));
       tag.SetLoaded(false);
       codec.DeInit();

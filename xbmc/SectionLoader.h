@@ -6,6 +6,7 @@
 #define APE_DLL "Q:\\system\\players\\PAPlayer\\MACDll.dll"
 #define SHN_DLL "Q:\\system\\players\\PAPlayer\\libshnplay.dll"
 #define MPC_DLL "Q:\\system\\players\\PAPlayer\\MPCcodec.dll"
+#define OGG_DLL "Q:\\system\\players\\PAPlayer\\vorbisfile.dll"
 
 class CSectionLoader
 {

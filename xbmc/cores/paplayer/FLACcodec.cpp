@@ -27,7 +27,8 @@ FLACCodec::FLACCodec()
 FLACCodec::~FLACCodec()
 {
   DeInit();
-  CSectionLoader::UnloadDLL(FLAC_DLL);
+  if (m_bDllLoaded)
+    CSectionLoader::UnloadDLL(FLAC_DLL);
 }
 
 bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
@@ -83,7 +84,7 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   //  Extract ReplayGain info
   CFlacTag tag;
-  if (tag.ReadTagFromFile(strFile))
+  if (tag.ReadTag(strFile))
     m_replayGain=tag.GetReplayGain();
 
   m_Bitrate = (int)((m_file.GetLength() * 8) / (m_TotalTime/1000));
