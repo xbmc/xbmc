@@ -2,8 +2,6 @@
 
 #include "IMusicInfoTagLoader.h"
 
-#include "OggTag.h"
-
 using namespace MUSIC_INFO;
 
 namespace MUSIC_INFO
