@@ -2764,16 +2764,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       if (bCanSwitch) SwitchToFullScreen();
       //screen is setup, resume playing
       m_pPlayer->Pause();
-    }// if file happens to contain audio stream
-    else if (IsPlayingAudio())
-    {
-      if (!m_itemCurrentFile.IsInternetStream())
-      {
-        CScrobbler::GetInstance()->SetSongStartTime();
-        CScrobbler::GetInstance()->SetSubmitSong(true);
-      }
-      else
-        CScrobbler::GetInstance()->SetSubmitSong(false);
     }
 
   }
@@ -3332,6 +3322,18 @@ bool CApplication::OnMessage(CGUIMessage& message)
         m_itemCurrentFile = item;
       }
       g_infoManager.SetCurrentItem(m_itemCurrentFile);
+
+      if (IsPlayingAudio())
+      {
+        //  Activate audio scrobbler
+        if (!m_itemCurrentFile.IsInternetStream())
+        {
+          CScrobbler::GetInstance()->SetSongStartTime();
+          CScrobbler::GetInstance()->SetSubmitSong(true);
+        }
+        else
+          CScrobbler::GetInstance()->SetSubmitSong(false);
+      }
       return true;
     }
     break;
