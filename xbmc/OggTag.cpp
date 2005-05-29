@@ -1,248 +1,204 @@
 
 #include "stdafx.h"
 #include "oggtag.h"
+#include "util.h"
 
 using namespace MUSIC_INFO;
 
-#define CHUNK_SIZE 8192  // should suffice for most tags
-
 COggTag::COggTag()
 {
-  m_nTrackNum = 0;
-  m_nDuration = 0;
-  m_nSamplesPerSec = 0;
-  m_nChannels = 0;
-  m_nBitrate = 0;
-  m_nSamples = 0;
+  // dll stuff
+  ZeroMemory(&m_dll, sizeof(OGGdll));
+  m_bDllLoaded = false;
 }
 
 COggTag::~COggTag()
-{}
-
-bool COggTag::ReadTag( CFile* file )
 {
-  m_file = file;
+  if (m_bDllLoaded)
+    CSectionLoader::UnloadDLL(OGG_DLL);
+}
 
-  char* const pBuffer = new char[CHUNK_SIZE + 100]; //+100 for later...
-  unsigned char* const pBufferU = (unsigned char*)pBuffer; //unsigned char pointer to data
-  m_file->Read((void *)pBuffer, CHUNK_SIZE);
-
-  // Check we've got an ogg file
-  if (pBuffer[0] != 'O' || pBuffer[1] != 'g' || pBuffer[2] != 'g' || pBuffer[3] != 'S')
-  {
-    delete [] pBuffer;
+bool COggTag::ReadTag(const CStdString& strFile1)
+{
+  if (!LoadDLL())
     return false;
+
+  CStdString strFile=strFile1;
+  int currentStream=0;
+
+  CStdString strExtension;
+  CUtil::GetExtension(strFile, strExtension);
+  if (strExtension==".oggstream")
+  {
+    CStdString strFileName=CUtil::GetFileName(strFile);
+    int iStart=strFileName.ReverseFind("-")+1;
+    currentStream = atoi(strFileName.substr(iStart, strFileName.size()-iStart-10).c_str())-1;
+    CStdString strPath=strFile;
+    CUtil::GetDirectory(strPath, strFile);
+    if (CUtil::HasSlashAtEnd(strFile))
+      strFile.Delete(strFile.size()-1);
   }
 
-  int iNext = 4; //Next page of data's offset
-  int iOffset = 0; //iOffset in file
+  CFile file;
+  if (!file.Open(strFile.c_str()))
+    return false;
 
-  while (iOffset + iNext < CHUNK_SIZE)
+  //  setup ogg i/o callbacks
+  ov_callbacks oggIOCallbacks;
+  oggIOCallbacks.read_func=ReadCallback;
+  oggIOCallbacks.seek_func=SeekCallback;
+  oggIOCallbacks.tell_func=TellCallback;
+  oggIOCallbacks.close_func=CloseCallback;
+
+  OggVorbis_File vf;
+  //  open ogg file with decoder
+  if (m_dll.ov_open_callbacks(&file, &vf, NULL, 0, oggIOCallbacks)!=0)
+    return false;
+
+  int iStreams=m_dll.ov_streams(&vf);
+  if (iStreams>1)
   {
-    // find the next chunk of data
-    iNext = 4;
-    while ((pBuffer[iOffset + iNext] != 'O' || pBuffer[iOffset + iNext + 1] != 'g' || pBuffer[iOffset + iNext + 2] != 'g' || pBuffer[iOffset + iNext + 3] != 'S') && iOffset + iNext < CHUNK_SIZE)
-      iNext++;
-    if (iOffset + iNext < CHUNK_SIZE)
+    if (currentStream > iStreams)
     {
-      int iStart = iOffset + 28 + pBuffer[iOffset + 26]; //Start of header
-      int Id = pBuffer[iStart - 1];     // Id of header
-      if (Id == 1)  // Vorbis header field
-      {
-        if (pBuffer[iOffset + 29] == 'v' && pBuffer[iOffset + 30] == 'o') // vorbis audio header
-        {
-          m_nChannels = (int) * (pBufferU + iOffset + 39); //LittleEndian2int8u;
-          m_nSamplesPerSec = *(int *)(pBufferU + iOffset + 40); //LittleEndian2int64u;
-          m_nBitrate = *(int*)(pBufferU + iOffset + 48); //LittleEndian2int64s
-        }
-      }
-      else if (Id == 3) // Vorbis Comment field
-      {
-        //vendorlength, vendor, number of comments, comment length, comment
-        ProcessVorbisComment(pBuffer + iStart + 6);
-      }
-      iOffset += iNext;
-      iNext = 0;
+      m_dll.ov_clear(&vf);
+      return false;
     }
   }
 
-  // Find the last data packet
-  iOffset = -1;
-  int AA = 0;
-  while (iOffset == -1 || AA > 128)
-  {
-    AA++;
-    m_file->Seek( -CHUNK_SIZE*AA, SEEK_END); //fseek(fb, -CHUNK_SIZE*AA, SEEK_END);
-    m_file->Read((void *)pBuffer, CHUNK_SIZE + 100); //+100 for possible overlaps in the data pages
+  m_musicInfoTag.SetDuration((int)m_dll.ov_time_total(&vf, currentStream));
 
-    iOffset = CHUNK_SIZE + 100 - 1;
-    while ((pBuffer[iOffset] != 'O' || pBuffer[iOffset + 1] != 'g' || pBuffer[iOffset + 2] != 'g' || pBuffer[iOffset + 3] != 'S') && iOffset >= 0)
-      iOffset--;
-  }
-  // OK, grab the granule position (this is the position in samples)
-  if (iOffset >= 0)
+  vorbis_comment* pComments=m_dll.ov_comment(&vf, currentStream);
+  if (pComments)
   {
-    m_nSamples = *(int *)(pBufferU + iOffset + 6); //Granule Pos
-    m_nDuration = (int)((m_nSamples * 75) / m_nSamplesPerSec); // *75 for frames
+    for (int i=0; i<pComments->comments; ++i)
+    {
+      CStdString strEntry=pComments->user_comments[i];
+      ParseTagEntry(strEntry);
+    }
   }
-
-  delete [] pBuffer;
+  m_dll.ov_clear(&vf);
   return true;
 }
 
-bool COggTag::ReadTagFromFile(const CStdString& strFileName)
+bool COggTag::LoadDLL()
 {
-  CFile file;
+  if (m_bDllLoaded)
+    return true;
 
-  if (!file.Open(strFileName))
+  DllLoader* pDll=CSectionLoader::LoadDLL(OGG_DLL);
+
+  pDll->ResolveExport("ov_clear", (void**)&m_dll.ov_clear);
+  pDll->ResolveExport("ov_open", (void**)&m_dll.ov_open);
+  pDll->ResolveExport("ov_open_callbacks", (void**)&m_dll.ov_open_callbacks);
+
+  pDll->ResolveExport("ov_test", (void**)&m_dll.ov_test);
+  pDll->ResolveExport("ov_test_callbacks", (void**)&m_dll.ov_test_callbacks);
+  pDll->ResolveExport("ov_test_open", (void**)&m_dll.ov_test_open);
+
+  pDll->ResolveExport("ov_bitrate", (void**)&m_dll.ov_bitrate);
+  pDll->ResolveExport("ov_bitrate_instant", (void**)&m_dll.ov_bitrate_instant);
+  pDll->ResolveExport("ov_streams", (void**)&m_dll.ov_streams);
+  pDll->ResolveExport("ov_seekable", (void**)&m_dll.ov_seekable);
+  pDll->ResolveExport("ov_serialnumber", (void**)&m_dll.ov_serialnumber);
+
+  pDll->ResolveExport("ov_raw_total", (void**)&m_dll.ov_raw_total);
+  pDll->ResolveExport("ov_pcm_total", (void**)&m_dll.ov_pcm_total);
+  pDll->ResolveExport("ov_time_total", (void**)&m_dll.ov_time_total);
+
+  pDll->ResolveExport("ov_raw_seek", (void**)&m_dll.ov_raw_seek);
+  pDll->ResolveExport("ov_pcm_seek", (void**)&m_dll.ov_pcm_seek);
+  pDll->ResolveExport("ov_pcm_seek_page", (void**)&m_dll.ov_pcm_seek_page);
+  pDll->ResolveExport("ov_time_seek", (void**)&m_dll.ov_time_seek);
+  pDll->ResolveExport("ov_time_seek_page", (void**)&m_dll.ov_time_seek_page);
+
+  pDll->ResolveExport("ov_raw_tell", (void**)&m_dll.ov_raw_tell);
+  pDll->ResolveExport("ov_pcm_tell", (void**)&m_dll.ov_pcm_tell);
+  pDll->ResolveExport("ov_time_tell", (void**)&m_dll.ov_time_tell);
+
+  pDll->ResolveExport("ov_info", (void**)&m_dll.ov_info);
+  pDll->ResolveExport("ov_comment", (void**)&m_dll.ov_comment);
+
+  pDll->ResolveExport("ov_read", (void**)&m_dll.ov_read);
+
+  // Check resolves
+  if (!m_dll.ov_clear || !m_dll.ov_open || !m_dll.ov_open_callbacks || 
+      !m_dll.ov_test || !m_dll.ov_test_callbacks || !m_dll.ov_test_open || 
+      !m_dll.ov_bitrate || !m_dll.ov_bitrate_instant || !m_dll.ov_streams || 
+      !m_dll.ov_seekable ||   !m_dll.ov_serialnumber || !m_dll.ov_raw_total || 
+      !m_dll.ov_pcm_total || !m_dll.ov_time_total || !m_dll.ov_raw_seek || 
+      !m_dll.ov_pcm_seek || !m_dll.ov_pcm_seek_page || !m_dll.ov_time_seek || 
+      !m_dll.ov_time_seek_page || !m_dll.ov_raw_tell || !m_dll.ov_pcm_tell || 
+      !m_dll.ov_time_tell || !m_dll.ov_info || !m_dll.ov_comment || !m_dll.ov_read) 
+  {
+    CLog::Log(LOGERROR, "OGGCodec: Unable to load our dll %s", OGG_DLL);
     return false;
+  }
 
-  return ReadTag(&file);
+  m_bDllLoaded = true;
+  return true;
 }
 
-void COggTag::ProcessVorbisComment(const char *pBuffer)
+size_t COggTag::ReadCallback(void *ptr, size_t size, size_t nmemb, void *datasource)
 {
-  int Pos = 0;      // position in the buffer
-  int *I1 = (int*)(pBuffer + Pos); // length of vendor string
-  Pos += I1[0] + 4;     // just pass the vendor string
-  I1 = (int*)(pBuffer + Pos);   // number of comments
-  int Count = I1[0];
-  Pos += 4;    // Start of the first comment
-  char C1[CHUNK_SIZE];
-  for (int I2 = 0; I2 < Count; I2++) // Run through the comments
-  {
-    I1 = (int*)(pBuffer + Pos);   // Length of comment
-    strncpy(C1, pBuffer + Pos + 4, I1[0]);
-    C1[I1[0]] = '\0';
-    CStdString strItem;
-    g_charsetConverter.utf8ToStringCharset(C1, strItem);  // convert UTF-8 to charset string
-    // Parse the tag entry
-    parseTagEntry( strItem );
-    // Increment our position in the file buffer
-    Pos += I1[0] + 4;
-  }
+  CFile* pFile=(CFile*)datasource;
+  if (!pFile)
+    return 0;
+
+  return pFile->Read(ptr, size*nmemb);
 }
 
-int COggTag::parseTagEntry(CStdString& strTagEntry)
+int COggTag::SeekCallback(void *datasource, ogg_int64_t offset, int whence)
 {
-  CStdString strTagValue;
-  CStdString strTagType;
+  CFile* pFile=(CFile*)datasource;
+  if (!pFile)
+    return 0;
 
-  // Split tag entry like ARTIST=Sublime
-  SplitEntry( strTagEntry, strTagType, strTagValue);
-
-  // Save tag entry to members
-
-  if ( strTagType == "artist" )
-  {
-    if (m_strArtist.length())
-      m_strArtist += " / " + strTagValue;
-    else
-      m_strArtist = strTagValue;
-  }
-
-  if ( strTagType == "title" )
-  {
-    m_strTitle = strTagValue;
-  }
-
-  if ( strTagType == "album" )
-  {
-    m_strAlbum = strTagValue;
-  }
-
-  if ( strTagType == "tracknumber" )
-  {
-    m_nTrackNum = atoi( strTagValue );
-  }
-
-  if ( strTagType == "date" )
-  {
-    m_strYear = strTagValue;
-  }
-
-  if ( strTagType == "genre" )
-  {
-    if (m_strGenre.length())
-      m_strGenre += " / " + strTagValue;
-    else
-      m_strGenre = strTagValue;
-  }
-
-  if ( strTagType == "musicbrainz_trackid" )
-  {
-    m_strMusicBrainzTrackID = strTagValue;
-  }
-
-  if ( strTagType == "musicbrainz_artistid" )
-  {
-    m_strMusicBrainzArtistID = strTagValue;
-  }
-
-  if ( strTagType == "musicbrainz_albumid" )
-  {
-    m_strMusicBrainzAlbumID = strTagValue;
-  }
-
-  if ( strTagType == "musicbrainz_albumartistid" )
-  {
-    m_strMusicBrainzAlbumArtistID = strTagValue;
-  }
-
-  if ( strTagType == "musicbrainz_trmid" )
-  {
-    m_strMusicBrainzTRMID = strTagValue;
-  }
-
-  //  Get new style replay gain info
-  if (strTagType=="replaygain_track_gain")
-  {
-    m_replayGain.iTrackGain = (int)(atof(strTagValue.c_str()) * 100 + 0.5);
-    m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
-  }
-  else if (strTagType=="replaygain_track_peak")
-  {
-    m_replayGain.fTrackPeak = (float)atof(strTagValue.c_str());
-    m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
-  }
-  else if (strTagType=="replaygain_album_gain")
-  {
-    m_replayGain.iAlbumGain = (int)(atof(strTagValue.c_str()) * 100 + 0.5);
-    m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
-  }
-  else if (strTagType=="replaygain_album_peak")
-  {
-    m_replayGain.fAlbumPeak = (float)atof(strTagValue.c_str());
-    m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
-  }
-
-  //  Get old style replay gain info
-  if (strTagType=="rg_radio")
-  {
-    m_replayGain.iTrackGain = (int)(atof(strTagValue.c_str()) * 100 + 0.5);
-    m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
-  }
-  else if (strTagType=="rg_peak")
-  {
-    m_replayGain.fTrackPeak = (float)atof(strTagValue.c_str());
-    m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
-  }
-  else if (strTagType=="rg_audiophile")
-  {
-    m_replayGain.iAlbumGain = (int)(atof(strTagValue.c_str()) * 100 + 0.5);
-    m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
-  }
-  return 0;
+  return (int)pFile->Seek(offset, whence);
 }
 
-void COggTag::SplitEntry(const CStdString& strTagEntry, CStdString& strTagType, CStdString& strTagValue)
+int COggTag::CloseCallback(void *datasource)
 {
-  int nPos = strTagEntry.Find( '=' );
+  CFile* pFile=(CFile*)datasource;
+  if (!pFile)
+    return 0;
 
-  if ( nPos > -1 )
-  {
-    strTagValue = strTagEntry.Mid( nPos + 1 );
-    strTagType = strTagEntry.Left( nPos );
-    strTagType.ToLower();
-  }
+  pFile->Close();
+  return 1;
+}
+
+long COggTag::TellCallback(void *datasource)
+{
+  CFile* pFile=(CFile*)datasource;
+  if (!pFile)
+    return 0;
+
+  return (long)pFile->GetPosition();
+}
+
+int COggTag::GetStreamCount(const CStdString& strFile)
+{
+  if (!LoadDLL())
+    return 0;
+
+  CFile file;
+  if (!file.Open(strFile.c_str()))
+    return 0;
+
+  //  setup ogg i/o callbacks
+  ov_callbacks oggIOCallbacks;
+  oggIOCallbacks.read_func=ReadCallback;
+  oggIOCallbacks.seek_func=SeekCallback;
+  oggIOCallbacks.tell_func=TellCallback;
+  oggIOCallbacks.close_func=CloseCallback;
+
+  OggVorbis_File vf;
+  //  open ogg file with decoder
+  if (m_dll.ov_open_callbacks(&file, &vf, NULL, 0, oggIOCallbacks)!=0)
+    return 0;
+
+  int iStreams=m_dll.ov_streams(&vf);
+
+  m_dll.ov_clear(&vf);
+
+  return iStreams;
 }

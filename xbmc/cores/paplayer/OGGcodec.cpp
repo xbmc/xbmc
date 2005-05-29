@@ -1,46 +1,9 @@
 #include "../../stdafx.h"
 #include "OGGCodec.h"
 #include "../../oggtag.h"
+#include "../../Util.h"
 
-//  Note: this dll has the ogg.dll and vorbis.dll statically linked 
-#define OGG_DLL "Q:\\system\\players\\PAPlayer\\vorbisfile.dll"
-
-size_t ogg_read(void *ptr, size_t size, size_t nmemb, void *datasource)
-{
-  CFile* pFile=(CFile*)datasource;
-  if (!pFile)
-    return 0;
-
-  return pFile->Read(ptr, size*nmemb);
-}
-
-int ogg_seek(void *datasource, ogg_int64_t offset, int whence)
-{
-  CFile* pFile=(CFile*)datasource;
-  if (!pFile)
-    return 0;
-
-  return (int)pFile->Seek(offset, whence);
-}
-
-int ogg_close(void *datasource)
-{
-  CFile* pFile=(CFile*)datasource;
-  if (!pFile)
-    return 0;
-
-  pFile->Close();
-  return 1;
-}
-
-long ogg_tell(void *datasource)
-{
-  CFile* pFile=(CFile*)datasource;
-  if (!pFile)
-    return 0;
-
-  return (long)pFile->GetPosition();
-}
+//  Note: the vorbisfile.dll has the ogg.dll and vorbis.dll statically linked 
 
 OGGCodec::OGGCodec()
 {
@@ -49,6 +12,8 @@ OGGCodec::OGGCodec()
   m_BitsPerSample = 0;
   m_Bitrate = 0;
   m_CodecName = L"OGG";
+  m_TimeOffset = 0;
+  m_CurrentStream=0;
 
   // dll stuff
   ZeroMemory(&m_dll, sizeof(OGGdll));
@@ -58,47 +23,100 @@ OGGCodec::OGGCodec()
 OGGCodec::~OGGCodec()
 {
   DeInit();
-  CSectionLoader::UnloadDLL(OGG_DLL);
+  if (m_bDllLoaded)
+  {
+    CSectionLoader::UnloadDLL(OGG_DLL);
+  }
 }
 
-bool OGGCodec::Init(const CStdString &strFile, unsigned int filecache)
+bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
 {
+  CStdString strFile=strFile1;
   if (!LoadDLL())
     return false;
+  
+  m_CurrentStream=0;
 
-  if (!m_fileOGG.Open(strFile.c_str()))
+  CStdString strExtension;
+  CUtil::GetExtension(strFile, strExtension);
+
+  //  A bitstream inside a ogg file?
+  if (strExtension==".oggstream")
+  {
+    //  Extract the bitstream to play
+    CStdString strFileName=CUtil::GetFileName(strFile);
+    int iStart=strFileName.ReverseFind("-")+1;
+    m_CurrentStream = atoi(strFileName.substr(iStart, strFileName.size()-iStart-10).c_str())-1;
+    //  The directory we are in, is the file
+    //  that contains the bitstream to play,
+    //  so extract it
+    CStdString strPath=strFile;
+    CUtil::GetDirectory(strPath, strFile);
+    if (CUtil::HasSlashAtEnd(strFile))
+      strFile.Delete(strFile.size()-1);
+  }
+
+  //  Open the file to play
+  if (!m_file.Open(strFile.c_str()))
     return false;
 
   //  setup ogg i/o callbacks
   ov_callbacks oggIOCallbacks;
-  oggIOCallbacks.read_func=ogg_read;
-  oggIOCallbacks.seek_func=ogg_seek;
-  oggIOCallbacks.tell_func=ogg_tell;
-  oggIOCallbacks.close_func=ogg_close;
+  oggIOCallbacks.read_func=ReadCallback;
+  oggIOCallbacks.seek_func=SeekCallback;
+  oggIOCallbacks.tell_func=TellCallback;
+  oggIOCallbacks.close_func=CloseCallback;
 
   //  open ogg file with decoder
-  if (m_dll.ov_open_callbacks((void*)&m_fileOGG, &m_VorbisFile, NULL, 0, oggIOCallbacks)!=0)
+  if (m_dll.ov_open_callbacks(this, &m_VorbisFile, NULL, 0, oggIOCallbacks)!=0)
     return false;
 
-  //  Extract ReplayGain info
-  COggTag tag;
-  if (tag.ReadTagFromFile(strFile))
-    m_replayGain=tag.GetReplayGain();
+  long iStreams=m_dll.ov_streams(&m_VorbisFile);
+  if (iStreams>1)
+  {
+    if (m_CurrentStream > iStreams)
+      return false;
+  }
+
+  //  Calculate the offset in secs where the bitstream starts
+  for (int i=0; i<m_CurrentStream; ++i)
+    m_TimeOffset += (__int64)m_dll.ov_time_total(&m_VorbisFile, i);
 
   //  get file info
-  vorbis_info* pInfo=m_dll.ov_info(&m_VorbisFile, -1);
+  vorbis_info* pInfo=m_dll.ov_info(&m_VorbisFile, m_CurrentStream);
   if (!pInfo)
     return false;
 
   m_SampleRate = pInfo->rate;
   m_Channels = pInfo->channels;
   m_BitsPerSample = 16;
-  m_TotalTime = (__int64)m_dll.ov_time_total(&m_VorbisFile, -1)*1000;
-
+  m_TotalTime = (__int64)m_dll.ov_time_total(&m_VorbisFile, m_CurrentStream)*1000;
   m_Bitrate = pInfo->bitrate_nominal;
   if (m_Bitrate == 0)
   {
-	  m_Bitrate = (int)(m_fileOGG.GetLength()*8 / (m_TotalTime / 1000));
+	  m_Bitrate = (int)(m_file.GetLength()*8 / (m_TotalTime / 1000));
+  }
+
+  //  Get replay gain tags
+  vorbis_comment* pComments=m_dll.ov_comment(&m_VorbisFile, m_CurrentStream);
+  if (!pComments)
+    return false;
+
+  COggTag oggTag;
+  for (int i=0; i < pComments->comments; ++i)
+  {
+    CStdString strTag=pComments->user_comments[i];
+    CStdString strItem;
+    g_charsetConverter.utf8ToStringCharset(strTag, strItem);
+    oggTag.ParseTagEntry(strItem);
+  }
+  m_replayGain=oggTag.GetReplayGain();
+
+  //  Seek to the logical bitstream to play
+  if (m_TimeOffset>0)
+  {
+    if (m_dll.ov_time_seek(&m_VorbisFile, m_TimeOffset)!=0)
+      return false;
   }
 
   return true;
@@ -111,14 +129,10 @@ void OGGCodec::DeInit()
 
 __int64 OGGCodec::Seek(__int64 iSeekTime)
 {
-  //  Calculate the next full second...
-  int iSeekTimeFullSec=(int)(iSeekTime+(1000-(iSeekTime%1000)))/1000;
-
-  //  ...and seek to the new time
-  if (m_dll.ov_time_seek(&m_VorbisFile, (double)iSeekTimeFullSec)!=0)
+  if (m_dll.ov_time_seek(&m_VorbisFile, m_TimeOffset+(double)(iSeekTime/1000.0f))!=0)
     return 0;
 
-  return iSeekTimeFullSec*1000;
+  return iSeekTime;
 }
 
 int OGGCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
@@ -133,8 +147,12 @@ int OGGCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   //  Fill buffer as much as possible
   while (true)
   {
-    //  the maximum chunk size the vorbis decoder seem to return with on call is 4096
+    //  the maximum chunk size the vorbis decoder seem to return with one call is 4096
     lReadNow=m_dll.ov_read(&m_VorbisFile, (char*)pBuffer+lTotalRead, iAmountToRead, 0, 2, 1, &iBitStream);
+    
+    //  Our logical bitstream changed, we reached the eof
+    if (m_CurrentStream!=iBitStream)
+      lReadNow=0;
 
     if (lReadNow<0)
     {
@@ -222,4 +240,41 @@ bool OGGCodec::LoadDLL()
 bool OGGCodec::HandlesType(const char *type)
 {
   return ( strcmp(type, "ogg") == 0 );
+}
+
+size_t OGGCodec::ReadCallback(void *ptr, size_t size, size_t nmemb, void *datasource)
+{
+  OGGCodec* pCodec=(OGGCodec*)datasource;
+  if (!pCodec)
+    return 0;
+
+  return pCodec->m_file.Read(ptr, size*nmemb);
+}
+
+int OGGCodec::SeekCallback(void *datasource, ogg_int64_t offset, int whence)
+{
+  OGGCodec* pCodec=(OGGCodec*)datasource;
+  if (!pCodec)
+    return 0;
+
+  return (int)pCodec->m_file.Seek(offset, whence);
+}
+
+int OGGCodec::CloseCallback(void *datasource)
+{
+  OGGCodec* pCodec=(OGGCodec*)datasource;
+  if (!pCodec)
+    return 0;
+
+  pCodec->m_file.Close();
+  return 1;
+}
+
+long OGGCodec::TellCallback(void *datasource)
+{
+  OGGCodec* pCodec=(OGGCodec*)datasource;
+  if (!pCodec)
+    return 0;
+
+  return (long)pCodec->m_file.GetPosition();
 }
