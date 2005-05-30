@@ -720,8 +720,8 @@
   <string><id>13154</id><value>HDD Model:</value></string>
   <string><id>13155</id><value>HDD Serienummer:</value></string>
   <string><id>13156</id><value>HDD Firmware:</value></string>
-  <string><id>13157</id><value>HDD lösenord:</value></string>
-  <string><id>13158</id><value>HDD Lås Statusate:</value></string>
+  <string><id>13157</id><value>HDD Lösenord:</value></string>
+  <string><id>13158</id><value>HDD Lås Status:</value></string>
   <string><id>13159</id><value>Subnet mask:</value></string>
   <string><id>13160</id><value>Gateway:</value></string>
   <string><id>13161</id><value>DNS:</value></string>
@@ -939,13 +939,13 @@
   <string><id>15009</id><value>Offline</value></string>
   <string><id>15010</id><value>Vänner</value></string>
   <string><id>15011</id><value>Vy: Vänner</value></string>
-  <string><id>15012</id><value>Join</value></string>
+  <string><id>15012</id><value>Gå till</value></string>
   <string><id>15013</id><value>Röst</value></string>
   <string><id>15014</id><value>Bjud in</value></string>
   <string><id>15015</id><value>Ta bort</value></string>
   <string><id>15016</id><value>Spel</value></string>
   <string><id>15017</id><value>Vy: Spel</value></string>
-  <string><id>15018</id><value>Enter</value></string>
+  <string><id>15018</id><value>Gå till</value></string>
   <string><id>15019</id><value>Lägg till</value></string>
   <string><id>15020</id><value>Värd</value></string>
   <string><id>15021</id><value>Arena</value></string>
