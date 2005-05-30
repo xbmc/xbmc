@@ -32,6 +32,10 @@ public:
   
   void GetVideoRect(RECT& SrcRect, RECT& DestRect);
   float GetAspectRatio();
+
+  //Set a forced aspect ratio
+  void SetAspectRatio(float fAspectRatio);
+
   __int64 GetDelay();
     void SetDelay(__int64 delay);
   __int64 GetDiff();
@@ -71,7 +75,7 @@ protected:
 
   CDVDVideoCodec* m_pVideoCodec;
   bool m_bInitializedOutputDevice;
-
+  float m_fForcedAspectRatio;
   DVDVideoPicture* m_pOverlayPicture;
 
   CDVDDemuxSPU* m_pDVDSpu;
