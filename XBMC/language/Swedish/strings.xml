@@ -404,7 +404,7 @@
   <string><id>473</id><value>Högkvalitativ resampling</value></string>
   <string><id>474</id><value>Av</value></string>
   <string><id>475</id><value>Bara musik</value></string>
-  <string><id>476</id><value>Musik & video</value></string>
+  <string><id>476</id><value>Musik &amp; video</value></string>
   <string><id>477</id><value>Kunde inte ladda spellista</value></string>
   <string><id>478</id><value>OSD</value></string>
   <string><id>479</id><value>Skal och språk</value></string>
@@ -919,7 +919,7 @@
   <string><id>14059</id><value>Leta efter thumbnails i delade mappar på datorn</value></string>
   <string><id>14061</id><value>Auto</value></string>
   <string><id>14062</id><value>Ange användarnamn för</value></string>
-  <string><id>14063</id><value>datum &amp; Tid</value></string>
+  <string><id>14063</id><value>Datum &amp; Tid</value></string>
   <string><id>14064</id><value>Sätt År</value></string>
   <string><id>14065</id><value>Sätt Månad</value></string>
   <string><id>14066</id><value>Sätt Dag</value></string>
