@@ -80,6 +80,8 @@ public:
   int GetTotalTime(); // the total time in milli seconds
   int GetTime(); // the current position in milli seconds
 
+  float GetVideoAspectRatio();
+
   bool Seek(int iTimeInMsec); //seek within current pg(c)
   //float GetPercentage(); //percentage within current pg(c)
 

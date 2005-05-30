@@ -30,6 +30,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock) : CThread
   m_bRenderSubs = false;
   m_fFPS = 25;
   m_iVideoDelay = 0;
+  m_fForcedAspectRatio = 0;
 
   InitializeCriticalSection(&m_critCodecSection);
   m_packetQueue.SetMaxSize(5 * 256 * 1024); // 1310720
@@ -180,9 +181,14 @@ void CDVDPlayerVideo::Process()
           {
             pts = pPacket->dts;
           }
-          
-          int iOutputState=0;
-          
+
+          //Check if dvd has forced an aspect ratio
+          if( m_fForcedAspectRatio != 0.0f )
+          {
+            picture.iDisplayWidth = (int) (picture.iDisplayHeight * m_fForcedAspectRatio);
+          }
+
+          int iOutputState=0;          
           do 
           {
             if (iOutputState = OutputPicture(&picture, pts)) break;
@@ -420,6 +426,11 @@ void CDVDPlayerVideo::SetDelay(__int64 delay)
 __int64 CDVDPlayerVideo::GetDiff()
 {
   return 0LL;
+}
+
+void CDVDPlayerVideo::SetAspectRatio(float fAspectRatio)
+{
+  m_fForcedAspectRatio = fAspectRatio;
 }
 
 /* called to display each frame */
