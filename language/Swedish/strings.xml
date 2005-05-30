@@ -544,11 +544,38 @@
   <string><id>769</id><value>Reserverad</value></string>
   <string><id>770</id><value>Fel %i: delningen är inte tillgänglig</value></string>
   <string><id>771</id><value>Låt ftpservern göra om filnamn till fatx</value></string>
+  <string><id>772</id><value>Audio hårdvara</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Online Spel</value></string>
   <string><id>1000</id><value>Förhandstitt av skärmsläckare</value></string>
-  <string><id>1396</id><value>Drifting</value></string>
-  <string><id>1397</id><value>and</value></string>
+  <string><id>1200</id><value>SMB Utdelning</value></string>
+  <string><id>1201</id><value>SMB IP</value></string>
+  <string><id>1202</id><value>SMB ARBETSGRUPP</value></string>
+  <string><id>1203</id><value>SMB Användarnamn</value></string>
+  <string><id>1204</id><value>SMB Lösenord</value></string>
+  <string><id>1205</id><value>SMB Delnings Namn</value></string>
+  <string><id>1206</id><value>SMB Delnings Grupp</value></string>
+  <string><id>1207</id><value>SMB WINS-Server</value></string>
+  <string><id>1208</id><value>Inställnings Läge</value></string>
+  <string><id>1209</id><value>SMB inställningar lyckades!</value></string>
+  <string><id>1210</id><value>Ta bort</value></string>
+  <string><id>1211</id><value>Musik</value></string>
+  <string><id>1212</id><value>Video</value></string>
+  <string><id>1213</id><value>Bilder</value></string>
+  <string><id>1214</id><value>Filer</value></string>
+  <string><id>1215</id><value>Musik &amp; Video </value></string>
+  <string><id>1216</id><value>Musik &amp; Bilder</value></string>
+  <string><id>1217</id><value>Musik &amp; Filer</value></string>
+  <string><id>1218</id><value>Video &amp; Bilder</value></string>
+  <string><id>1219</id><value>Video &amp; Filer</value></string>
+  <string><id>1220</id><value>Bilder &amp; Filer</value></string>
+  <string><id>1221</id><value>Musik &amp; Video &amp; Bilder</value></string>
+  <string><id>1222</id><value>Musik &amp; Video &amp; Bilder &amp; Filer</value></string>
+  <string><id>1223</id><value>Inaktiverad</value></string>
+  <string><id>1224</id><value>Normal Användare</value></string>
+  <string><id>1225</id><value>Advancerad Användare</value></string>
+  <string><id>1396</id><value>Flytande</value></string>
+  <string><id>1397</id><value>och</value></string>
   <string><id>1398</id><value>Nollgradigt</value></string>
   <string><id>1399</id><value>Sent</value></string>
   <string><id>1400</id><value>Isolerade</value></string>
