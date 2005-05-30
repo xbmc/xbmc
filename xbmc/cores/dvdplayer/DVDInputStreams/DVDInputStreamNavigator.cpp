@@ -406,6 +406,8 @@ int CDVDInputStreamNavigator::ProcessBlock()
       {
         m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_HOP_CHANNEL);
       }
+      //Reset skip flag.
+      m_bDiscardHop = false;
       break;
 
     case DVDNAV_STOP:
@@ -734,3 +736,28 @@ bool CDVDInputStreamNavigator::Seek(int iTimeInMsec)
   m_bDiscardHop = true;
   return true;
 }
+
+float CDVDInputStreamNavigator::GetVideoAspectRatio()
+{
+  int iAspect = dvdnav_get_video_aspect(m_dvdnav);
+  int iPerm = dvdnav_get_video_scale_permission(m_dvdnav);
+
+  //The video scale permissions should give if the source is letterboxed
+  //and such. should be able to give us info that we can zoom in automatically
+  //not sure what to do with it currently
+
+  printf("DVD - Aspect wanted: %d, Scale permissions: %d", iAspect, iPerm);
+  switch(iAspect)
+  {
+    case 0: //4:3
+      return 4.0f / 3.0f;
+    case 1: //Unspecifed
+    case 2: //Reserved
+      return 0.0f;
+    case 3: //16:9
+      return 16.0f / 9.0f;
+    default: //Unknown
+      return 0.0f;
+  }    
+}
+

@@ -54,6 +54,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_dvd.iNAVPackStart = -1;
   m_dvd.iNAVPackFinish = -1;
   m_dvd.iFlagSentStart = 0;
+ 
   m_bReadData = false;
   m_filename[0] = '\0';
   m_bAbortRequest = false;
@@ -1221,6 +1222,11 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       // this also means the libdvdnav may not return any data packets after this command
       m_messenger.ResetDemuxer();
       m_bReadAgain = true;
+      
+      //Force an aspect ratio that is set in the dvdheaders if available
+      //techinally wrong place to do, should really be done when next video packet 
+      //is decoded.. but won't cause too many problems
+      m_dvdPlayerVideo.SetAspectRatio(pStream->GetVideoAspectRatio());      
     }
     break;
   case DVDNAV_CELL_CHANGE:
@@ -1364,14 +1370,12 @@ bool CDVDPlayer::OnAction(const CAction &action)
           m_dvd.iSelectedSPUStream = -1;
 
           pStream->ActivateButton();
-
-          m_bReadData = false;
-
-          // sleep until the dvd player is reading some data with read_frame
-          // in case of a still we should wait until the still is drawed.
-          //m_iCommands |= DVDCOMMAND_FLUSH;
-          FlushBuffers(); // this will also flush the overlay's (subtitles and menus)
           m_dvd.state = DVDSTATE_NORMAL;
+
+          //Wait till we have read some data. 
+          //buffers will have been flushed by
+          //a hopchannel nav command
+          m_bReadData = false;
           while (!m_bReadData) Sleep(1);
 
         }
