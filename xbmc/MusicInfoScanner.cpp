@@ -54,6 +54,7 @@ void CMusicInfoScanner::Process()
     CSectionLoader::LoadDLL(APE_DLL);
     CSectionLoader::LoadDLL(SHN_DLL);
     CSectionLoader::LoadDLL(MPC_DLL);
+    CSectionLoader::LoadDLL(OGG_DLL);
 
     CUtil::ThumbCacheClear();
     g_directoryCache.InitMusicThumbCache();
@@ -120,6 +121,7 @@ void CMusicInfoScanner::Process()
     CSectionLoader::UnloadDLL(APE_DLL);
     CSectionLoader::UnloadDLL(SHN_DLL);
     CSectionLoader::UnloadDLL(MPC_DLL);
+    CSectionLoader::UnloadDLL(OGG_DLL);
 
     CUtil::ThumbCacheClear();
     g_directoryCache.ClearMusicThumbCache();
