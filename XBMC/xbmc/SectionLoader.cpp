@@ -84,6 +84,8 @@ void CSectionLoader::Unload(const CStdString& strSection)
 
 DllLoader *CSectionLoader::LoadDLL(const CStdString &dllname)
 {
+  CSingleLock lock(g_sectionLoader.m_critSection);
+
   if (!dllname) return NULL;
   // check if it's already loaded, and increase the reference count if so
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
@@ -99,7 +101,7 @@ DllLoader *CSectionLoader::LoadDLL(const CStdString &dllname)
   CDll newDLL;
   newDLL.m_strDllName = dllname;
   newDLL.m_lReferenceCount = 1;
-  newDLL.m_pDll = new DllLoader(dllname);
+  newDLL.m_pDll = new DllLoader(dllname, true);
   if (newDLL.m_pDll && newDLL.m_pDll->Parse())
   {
     newDLL.m_pDll->ResolveImports();
@@ -114,6 +116,8 @@ DllLoader *CSectionLoader::LoadDLL(const CStdString &dllname)
 
 void CSectionLoader::UnloadDLL(const CStdString &dllname)
 {
+  CSingleLock lock(g_sectionLoader.m_critSection);
+
   if (!dllname) return;
   // check if it's already loaded, and increase the reference count if so
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
@@ -151,6 +155,7 @@ void CSectionLoader::UnloadAll()
   }
 
   // delete the dll's
+  CSingleLock lock(g_sectionLoader.m_critSection);
   vector<CDll>::iterator it = g_sectionLoader.m_vecLoadedDLLs.begin();
   while (it != g_sectionLoader.m_vecLoadedDLLs.end())
   {
