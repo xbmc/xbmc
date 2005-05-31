@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 31-05-2005 fixed: my music, sections and dll's got unloaded even if they are not loaded
  - 31-05-2005 fixed: ogg files without vorbis comments could not be played
  - 31-05-2005 fixed: paplayer could crash when next song is played
  - 30-05-2005 updated: mplayer.dll

@@ -130,6 +130,7 @@ protected:
   int m_iLastControl; ///< Backups the last selected control before window is deinitialized
   bool m_bDisplayEmptyDatabaseMessage;  ///< If true we display a message informing the user to switch back to the Files view.
   CStdString m_strParentPath; ///< Parent path to handle going up a dir
+  bool m_bSectionsLoaded;
 
   CGUIViewControl m_viewControl;  ///< Handles our various views
 };
