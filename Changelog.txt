@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 31-05-2005 fixed: music scanning, vorbisfile.dll was not loaded
  - 31-05-2005 changed: section loader for dll's is now thread save
  - 31-05-2005 fixed: my music, sections and dll's got unloaded even if they are not loaded
  - 31-05-2005 fixed: ogg files without vorbis comments could not be played
