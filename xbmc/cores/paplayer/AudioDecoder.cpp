@@ -157,6 +157,8 @@ void CAudioDecoder::PrefixData(void *data, unsigned int size)
 
 int CAudioDecoder::ReadData(int sendsize)
 {
+  CSingleLock lock(m_critSection);
+
   if (m_status == STATUS_NO_FILE)
     return RET_SLEEP;             // nothing loaded yet
 
