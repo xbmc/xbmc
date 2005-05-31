@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 31-05-2005 fixed: paplayer could crash when next song is played
  - 30-05-2005 updated: mplayer.dll
  - 30-05-2005 updated: Swedish strings.xml Again: Please submit better translations if possible for this as i know some translations just suck!
  - 30-05-2005 reverted: aspectratio change in dvdplayer (original solution was much better) + added aspectratio override from dvd ifo files.
