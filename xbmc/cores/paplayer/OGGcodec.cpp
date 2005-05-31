@@ -58,7 +58,10 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
 
   //  Open the file to play
   if (!m_file.Open(strFile.c_str()))
+  {
+    CLog::Log(LOGERROR, "OGGCodec: Can't open %s", strFile1.c_str());
     return false;
+  }
 
   //  setup ogg i/o callbacks
   ov_callbacks oggIOCallbacks;
@@ -69,7 +72,10 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
 
   //  open ogg file with decoder
   if (m_dll.ov_open_callbacks(this, &m_VorbisFile, NULL, 0, oggIOCallbacks)!=0)
+  {
+    CLog::Log(LOGERROR, "OGGCodec: Can't open decoder for %s", strFile1.c_str());
     return false;
+  }
 
   long iStreams=m_dll.ov_streams(&m_VorbisFile);
   if (iStreams>1)
@@ -85,7 +91,10 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   //  get file info
   vorbis_info* pInfo=m_dll.ov_info(&m_VorbisFile, m_CurrentStream);
   if (!pInfo)
+  {
+    CLog::Log(LOGERROR, "OGGCodec: Can't get stream info from %s", strFile1.c_str());
     return false;
+  }
 
   m_SampleRate = pInfo->rate;
   m_Channels = pInfo->channels;
@@ -93,30 +102,37 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   m_TotalTime = (__int64)m_dll.ov_time_total(&m_VorbisFile, m_CurrentStream)*1000;
   m_Bitrate = pInfo->bitrate_nominal;
   if (m_Bitrate == 0)
-  {
 	  m_Bitrate = (int)(m_file.GetLength()*8 / (m_TotalTime / 1000));
+
+  if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0)
+  {
+    CLog::Log(LOGERROR, "OGGCodec: incomplete stream info from %s, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%i", strFile1.c_str(), m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime);
+    return false;
   }
 
   //  Get replay gain tags
   vorbis_comment* pComments=m_dll.ov_comment(&m_VorbisFile, m_CurrentStream);
-  if (!pComments)
-    return false;
-
-  COggTag oggTag;
-  for (int i=0; i < pComments->comments; ++i)
+  if (pComments)
   {
-    CStdString strTag=pComments->user_comments[i];
-    CStdString strItem;
-    g_charsetConverter.utf8ToStringCharset(strTag, strItem);
-    oggTag.ParseTagEntry(strItem);
+    COggTag oggTag;
+    for (int i=0; i < pComments->comments; ++i)
+    {
+      CStdString strTag=pComments->user_comments[i];
+      CStdString strItem;
+      g_charsetConverter.utf8ToStringCharset(strTag, strItem);
+      oggTag.ParseTagEntry(strItem);
+    }
+    m_replayGain=oggTag.GetReplayGain();
   }
-  m_replayGain=oggTag.GetReplayGain();
 
   //  Seek to the logical bitstream to play
   if (m_TimeOffset>0)
   {
     if (m_dll.ov_time_seek(&m_VorbisFile, m_TimeOffset)!=0)
+    {
+      CLog::Log(LOGERROR, "OGGCodec: Can't seek to the bitstream start time (%s)", strFile1.c_str());
       return false;
+    }
   }
 
   return true;
