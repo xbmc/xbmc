@@ -1945,6 +1945,19 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
       CStdString strFileName = m_pDS->fv("path.strPath").get_asString();
       CUtil::AddDirectorySeperator(strFileName);
       strFileName += m_pDS->fv("song.strFileName").get_asString();
+
+      //  Special case for streams inside an ogg file. (oggstream)
+      //  The last dir in the path is the ogg file that 
+      //  contains the stream, so test if its there
+      CStdString strExtension=CUtil::GetExtension(strFileName);
+      if (strExtension==".oggstream")
+      {
+        CStdString strFileAndPath=strFileName;
+        CUtil::GetDirectory(strFileAndPath, strFileName);
+        if (CUtil::HasSlashAtEnd(strFileName))
+          strFileName.Delete(strFileName.size()-1);
+      }
+      
       if (!CUtil::FileExists(strFileName))
       { // file no longer exists, so add to deletion list
         strSongsToDelete += m_pDS->fv("song.idSong").get_asString() + ",";
