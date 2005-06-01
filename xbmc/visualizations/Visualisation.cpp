@@ -71,3 +71,13 @@ void CVisualisation::GetInfo(VIS_INFO *info)
   // get info from vis
   m_pVisz->GetInfo(info);
 }
+
+bool CVisualisation::OnAction(long flags) 
+{
+  // see if vis wants to handle the input
+  // returns false if vis doesnt want the input
+  // returns true if vis handled the input
+  if (m_pVisz->OnAction)
+    return m_pVisz->OnAction(flags);
+  return false;
+}
