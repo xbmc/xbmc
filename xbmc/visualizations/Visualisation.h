@@ -9,6 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 #include "../cores/DllLoader/dll.h"
+#include "../../guilib/key.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -32,6 +33,7 @@ public:
     void (__cdecl* Render) ();
     void (__cdecl* Stop)();
     void (__cdecl* GetInfo)(VIS_INFO *info);
+    bool (__cdecl* OnAction)(long flags);
   } ;
 
 #ifdef __cplusplus
@@ -51,6 +53,7 @@ public:
   void Render();
   void Stop();
   void GetInfo(VIS_INFO *info);
+  bool OnAction(long flags);
 protected:
   auto_ptr<struct Visualisation> m_pVisz;
   auto_ptr<DllLoader> m_pLoader;

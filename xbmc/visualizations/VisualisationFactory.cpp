@@ -30,6 +30,7 @@ CVisualisation* CVisualisationFactory::LoadVisualisation(const CStdString& strVi
   // get handle to the get_module() function from the visualisation
   void (__cdecl* pGetModule)(struct Visualisation*);
   struct Visualisation* pVisz = (struct Visualisation*)malloc(sizeof(struct Visualisation));
+  ZeroMemory(pVisz, sizeof(struct Visualisation));
   void* pProc;
   pDLL->ResolveExport("get_module", &pProc);
   if (!pProc)

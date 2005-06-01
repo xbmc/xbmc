@@ -252,6 +252,11 @@ void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int 
   return ;
 }
 
+bool CGUIVisualisationControl::OnAction(const CAction &action)
+{
+  return m_pVisualisation->OnAction(action.wID);
+}
+
 void CGUIVisualisationControl::CreateBuffers()
 {
   CSingleLock lock (m_critSection);
