@@ -72,10 +72,10 @@
 #define SYS_MONTH_NOVEMBER	11
 #define SYS_MONTH_DECEMBER	12
 
-// GeminiServer: Add SMB Shares to
-#define SMB_SHARE_MUSIC	        0 // Musik
-#define SMB_SHARE_VIDEO	        1 // Video
-#define SMB_SHARE_PICTURES	    2 // Pictures
+// GeminiServer: Add SMB Shares to [1+2+4+8=15]
+#define SMB_SHARE_MUSIC         0 // Musik
+#define SMB_SHARE_VIDEO         1 // Video
+#define SMB_SHARE_PICTURES      2 // Pictures
 #define SMB_SHARE_FILES         3 // Files
 #define SMB_SHARE_MU_VI         4 // Musik & Video
 #define SMB_SHARE_MU_PIC        5 // Musik & Picture
@@ -84,7 +84,10 @@
 #define SMB_SHARE_VI_FIL        8 // Video & Files
 #define SMB_SHARE_PIC_FIL       9 // Picture & Files
 #define SMB_SHARE_MU_VI_PIC     10 // Musik & Video & Pictures
-#define SMB_SHARE_MU_VI_PIC_FIL 11 // Musik & Video & Pictures & Files
+#define SMB_SHARE_FIL_VI_MU     11 // Files & Video & Musik
+#define SMB_SHARE_FIL_PIC_MU    12 // Files & Pictures & Musik
+#define SMB_SHARE_FIL_PIC_VI    13 // Musik & Picture & Video
+#define SMB_SHARE_MU_VI_PIC_FIL 14 // Musik & Video & Pictures & Files
 
 #define LED_PLAYBACK_OFF     0
 #define LED_PLAYBACK_VIDEO    1
