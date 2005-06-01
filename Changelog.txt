@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-06-2005 added: Milkdrop Preset changing thanks to Bizzeh.  Requires new keymap, skin + Milkdrop.vis.
  - 01-06-2005 added: SMB Share Controll: Share group definitions are now complete [GeminiServer]
  - 31-05-2005 updated: Chinese (Simple) language file (Thnx to gaocuo)
  - 31-05-2005 fixed: ogg streams got deleted from music database when reorg'ing even if the ogg file exists
