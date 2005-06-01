@@ -561,9 +561,7 @@
   <string><id>1206</id><value>SMB Share Group</value></string>
   <string><id>1207</id><value>SMB WINS-Server</value></string>
   <string><id>1208</id><value>Settings Mode</value></string>
-  
   <string><id>1209</id><value>The SMB Share Settings was set succesfull!</value></string>
-  
   <string><id>1210</id><value>Remove</value></string>
   <string><id>1211</id><value>Music</value></string>
   <string><id>1212</id><value>Video</value></string>
@@ -577,6 +575,9 @@
   <string><id>1220</id><value>Pictures &amp; Files</value></string>
   <string><id>1221</id><value>Music &amp; Video &amp; Pictures</value></string>
   <string><id>1222</id><value>Music &amp; Video &amp; Pictures &amp; Files</value></string>
+  <string><id>1226</id><value>Files &amp; Musik &amp; Video</value></string>
+  <string><id>1227</id><value>Files &amp; Pictures &amp; Music</value></string>
+  <string><id>1228</id><value>Files &amp; Pictures &amp; Video</value></string>
   <string><id>1223</id><value>Disabled</value></string>
   <string><id>1224</id><value>Normal User</value></string>
   <string><id>1225</id><value>Advanced User</value></string>
