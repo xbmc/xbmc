@@ -208,8 +208,7 @@ void CDVDPlayerVideo::Process()
 
       // if the decoder needs more data, we just break this loop
       // and try to get more data from the videoQueue
-      // in case of a DVD_STILLPICTURE there is never more data, just break so we can keep the picture for later
-      if (iDecoderState & VC_BUFFER || dvdstate == DVDSTATE_STILL) break;
+      if (iDecoderState & VC_BUFFER) break;
 
       // the decoder didn't need more data, flush the remaning buffer
       iDecoderState = m_pVideoCodec->Decode(NULL, NULL);

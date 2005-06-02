@@ -761,7 +761,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
 void CGUIWindowFullScreen::RenderTTFSubtitles()
 {
-  if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
+  if ( g_application.GetCurrentPlayer() == "mplayer" && CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
   {
     CSingleLock lock (m_fontLock);
 
