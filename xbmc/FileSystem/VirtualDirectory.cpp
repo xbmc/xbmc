@@ -21,6 +21,28 @@ void CVirtualDirectory::SetShares(VECSHARES& vecShares)
   m_vecShares = &vecShares;
 }
 
+void CVirtualDirectory::AddShare(const CShare& share)
+{
+  unsigned int i;
+  for (i=0;i<m_vecShares->size();++i ) 
+    if( (*m_vecShares)[i].strPath == share.strPath) // not added before i presume
+      break;
+  if (i==m_vecShares->size()) // we're safe, then add
+    m_vecShares->push_back(share);
+}
+
+bool CVirtualDirectory::RemoveShare(const CStdString& strPath)
+{
+  for (vector<CShare>::iterator it=m_vecShares->begin(); it != m_vecShares->end(); ++it)
+    if ((*it).strPath == strPath) 
+    {
+      m_vecShares->erase(it,it+1);
+      return true;
+    }
+
+  return false;
+}
+
 /*!
  \brief Retrieve the shares or the content of a directory.
  \param strPath Specifies the path of the directory to retrieve or pass an empty string to get the shares.
@@ -54,6 +76,9 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   for (int i = 0; i < (int)m_vecShares->size(); ++i)
   {
     CShare& share = m_vecShares->at(i);
+    if ((share.strPath.substr(0,6) == "rar://") || (share.strPath.substr(0,6) == "zip://")) // do not add the virtual archive shares to list
+      continue;
+
     CFileItem* pItem = new CFileItem(share);
     CStdString strPathUpper = pItem->m_strPath;
     strPathUpper.ToUpper();
@@ -100,9 +125,13 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
  */
 bool CVirtualDirectory::IsShare(const CStdString& strPath) const
 {
+  if (strPath.Left(6) == "zip://") // fucks up directory navigation otherwise..
+    return false; 
+
   CStdString strPathCpy = strPath;
   strPathCpy.TrimRight("/");
   strPathCpy.TrimRight("\\");
+
   // just to make sure there's no mixed slashing in share/default defines
   // ie. f:/video and f:\video was not be recognised as the same directory,
   // resulting in navigation to a lower directory then the share.

@@ -323,8 +323,8 @@ int displayDir(webs_t wp, char *dir) {
 	else 
 		folder=folderMaskOption;
 
-	CFactoryDirectory factory;
-	IDirectory *pDirectory = factory.Create(folder);
+//	CFactoryDirectory factory;
+  IDirectory *pDirectory = CFactoryDirectory::Create(folder);
 
 	if (!pDirectory) 
 	{
@@ -406,8 +406,7 @@ void AddItemToPlayList(const CFileItem* pItem, int playList)
 		if (pItem->GetLabel() == "..") return;
 		CStdString strDirectory=pItem->m_strPath;
 		CFileItemList items;
-		CFactoryDirectory factory;
-		IDirectory *pDirectory = factory.Create(strDirectory);
+    IDirectory *pDirectory = CFactoryDirectory::Create(strDirectory);
 		bool bResult=pDirectory->GetDirectory(strDirectory,items);
     SSortWebFilesByName::m_bSortAscending = true;
     SSortWebFilesByName::m_iSortMethod = 0;
@@ -587,8 +586,7 @@ int CXbmcHttp::xbmcAddToPlayList( webs_t wp, char_t *parameter)
 		LoadPlayList(parameter,playList,false,false);
 	else
 	{
-		CFactoryDirectory factory;
-		IDirectory *pDirectory = factory.Create(pItem->m_strPath);
+    IDirectory *pDirectory = CFactoryDirectory::Create(pItem->m_strPath);
 		bool bResult=pDirectory->Exists(pItem->m_strPath);
 		pItem->m_bIsFolder=bResult;
 		pItem->m_bIsShareOrDrive=false;

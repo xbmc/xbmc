@@ -3,6 +3,8 @@
 #include "Application.h"
 #include "Util.h"
 #include "FileSystem/Directory.h"
+#include "FileSystem/ZipManager.h"
+#include "FileSystem/ZipDirectory.h"
 #include "Picture.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIListControl.h"
@@ -569,6 +571,13 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     }
     Update(iList, strPath);
   }
+  else if (pItem->IsZIP() || pItem->IsCBZ()) // mount zip archive
+  {
+    CShare shareZip;
+    shareZip.strPath.Format("zip://Z:\\temp\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
+    m_rootDir.AddShare(shareZip);
+    Update(iList, shareZip.strPath);
+  }
   else
   {
     m_iItemSelected = GetSelectedItem(iList);
@@ -605,6 +614,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
     pSlideShow->Reset();
     pSlideShow->Add(pItem->m_strPath);
     pSlideShow->Select(pItem->m_strPath);
+
     m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
   }
 }
@@ -1073,6 +1083,20 @@ int CGUIWindowFileManager::GetSelectedItem(int iControl)
 
 void CGUIWindowFileManager::GoParentFolder(int iList)
 {
+  CURL url(m_Directory[iList].m_strPath);
+  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) 
+  {
+    // check for step-below, if, unmount rar
+    if (url.GetFileName().IsEmpty())
+    {
+      g_ZipManager.release(m_Directory[iList].m_strPath); // release resources
+      m_rootDir.RemoveShare(m_Directory[iList].m_strPath);
+      CStdString strPath;
+      CUtil::GetDirectory(url.GetHostName(),strPath);
+      Update(iList,strPath);
+      return;
+    }
+  }
   CStdString strPath(m_strParentPath[iList]), strOldPath(m_Directory[iList].m_strPath);
   Update(iList, strPath);
 

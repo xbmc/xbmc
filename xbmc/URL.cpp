@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "url.h"
+#include "utils/RegExp.h"
 
 CURL::CURL(const CStdString& strURL)
 {
@@ -44,6 +45,45 @@ CURL::CURL(const CStdString& strURL)
   if (iPos < 0) return ;
   m_strProtocol = strURL.Left(iPos);
   iPos += 3;
+
+  //archive subpaths may contain delimiters so they need special processing
+  //format 4: zip://CachePath,AutoDelMask,Password, RarPath,\FilePathInRar
+  if ((m_strProtocol.CompareNoCase("rar")==0) || (m_strProtocol.CompareNoCase("zip")==0))
+	{
+    CRegExp reg;
+    reg.RegComp("...://([^,]*),([0-9]*),([^,]*),(.*),\\\\(.*)$");
+    if( (reg.RegFind(strURL.c_str()) >= 0))
+    {
+      char* szDomain = reg.GetReplaceString("\\1");
+      char* szPort = reg.GetReplaceString("\\2");
+      char* szPassword = reg.GetReplaceString("\\3");
+      char* szHostName = reg.GetReplaceString("\\4");
+      char* szFileName = reg.GetReplaceString("\\5");
+      m_strDomain = szDomain;
+      m_iPort = atoi(szPort);
+      m_strPassword = szPassword;
+      m_strHostName = szHostName;
+      m_strFileName = szFileName;
+      int iFileType = m_strFileName.ReverseFind('.') + 1;
+      if (iFileType)
+      {
+        m_strFileType = m_strFileName.Right(m_strFileName.size() - iFileType);
+        m_strFileType.Normalize();
+      }
+      if (szDomain)
+        free(szDomain);
+      if (szPort)
+        free(szPort);
+      if (szPassword)
+        free(szPassword);
+      if (szHostName)
+        free(szHostName);
+      if (szFileName)
+        free(szFileName);
+
+      return;
+    }
+	}
 
   // check for username/password
   int iAlphaSign = strURL.Find("@", iPos);
@@ -270,6 +310,21 @@ void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
     strURL = m_strFileName;
     return ;
   }
+  if (m_strProtocol == "rar")
+  {
+    CStdString strNoBackSlash = m_strFileName;
+    strNoBackSlash.Replace("\\","/");
+    strURL.Format("rar://%s/%s",m_strHostName.c_str(),strNoBackSlash.c_str());
+    return; 
+  }
+  if( m_strProtocol == "zip")
+  {
+    CStdString strNoBackSlash = m_strFileName;
+    strNoBackSlash.Replace("\\","/");
+    strURL.Format("zip://%s/%s",m_strHostName.c_str(),strNoBackSlash.c_str());
+    return; 
+  }
+
   strURL = m_strProtocol;
   strURL += "://";
 
@@ -295,6 +350,17 @@ void CURL::GetURLWithoutFilename(CStdString& strURL) const
     strURL = m_strFileName.substr(0, 2); // only copy 'e:'
     return ;
   }
+  if (m_strProtocol == "rar")
+  {
+    strURL.Format("rar://%s,%i,%s,%s,\\",m_strDomain,m_iPort,m_strPassword,m_strHostName);
+    return; 
+  }
+  if (m_strProtocol == "zip")
+  {
+    strURL.Format("zip://%s,%i,%s,%s,\\",m_strDomain,m_iPort,m_strPassword,m_strHostName);
+    return; 
+  }
+
   strURL = m_strProtocol;
   strURL += "://";
 

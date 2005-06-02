@@ -7,6 +7,8 @@
 #include "../xbmc/StringUtils.h"
 #include "GUISettings.h"
 
+#include <vector>
+
 #define SHARE_TYPE_UNKNOWN      0
 #define SHARE_TYPE_LOCAL        1
 #define SHARE_TYPE_DVD          2
@@ -58,7 +60,7 @@ public:
   bool m_bSortAscending;
 };
 
-typedef vector<CFolderView*> VECFOLDERVIEWS;
+typedef std::vector<CFolderView*> VECFOLDERVIEWS;
 
 /*!
 \ingroup windows
@@ -120,17 +122,17 @@ public:
 \brief A vector to hold CShare objects.
 \sa CShare, IVECSHARES
 */
-typedef vector<CShare> VECSHARES;
+typedef std::vector<CShare> VECSHARES;
 
 /*!
 \ingroup windows
 \brief Iterator of VECSHARES.
 \sa CShare, VECSHARES
 */
-typedef vector<CShare>::iterator IVECSHARES;
+typedef std::vector<CShare>::iterator IVECSHARES;
 
-typedef vector<CProfile> VECPROFILES;
-typedef vector<CProfile>::iterator IVECPROFILES;
+typedef std::vector<CProfile> VECPROFILES;
+typedef std::vector<CProfile>::iterator IVECPROFILES;
 
 class CFileTypeIcon
 {
@@ -140,8 +142,8 @@ public:
   CStdString m_strName;
   CStdString m_strIcon;
 };
-typedef vector<CFileTypeIcon> VECFILETYPEICONS;
-typedef vector<CFileTypeIcon>::iterator IVECFILETYPEICONS;
+typedef std::vector<CFileTypeIcon> VECFILETYPEICONS;
+typedef std::vector<CFileTypeIcon>::iterator IVECFILETYPEICONS;
 
 
 class CButtonScrollerSettings
@@ -183,7 +185,7 @@ public:
     CStdString m_strExecute;
     int m_iIcon;
   };
-  vector<CButton *> m_vecButtons;
+  std::vector<CButton *> m_vecButtons;
   int m_iDefaultButton;
 };
 

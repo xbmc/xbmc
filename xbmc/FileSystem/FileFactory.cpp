@@ -12,6 +12,7 @@
 #include "FileSndtrk.h"
 #include "FileDAAP.h"
 #include "FileCDDA.h"
+#include "FileZip.h"
 
 using namespace XFILE;
 
@@ -38,6 +39,7 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
   if (strProtocol == "soundtrack") return (IFile*)new CFileSndtrk();
   if (strProtocol == "daap") return (IFile*)new CFileDAAP();
   if (strProtocol == "cdda") return (IFile*)new CFileCDDA();
+  if (strProtocol == "zip") return (IFile*)new CFileZip();
 
   return (IFile*)new CFileHD();
 }
