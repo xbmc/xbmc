@@ -1204,7 +1204,8 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         // need to update the display, so display the last known picture here
         // only needed if we are in a still, and when we have something else pts need to be
         // adjusted before we are allowed to update menupicture (first highlight)
-        if (pStream->IsInMenu() && m_dvd.state == DVDSTATE_STILL)
+        // Allways output this here.
+        if ( pStream->IsInMenu() ) //  && m_dvd.state == DVDSTATE_STILL)
         {
           m_dvdPlayerVideo.UpdateMenuPicture();
         }
