@@ -564,14 +564,20 @@ CMPlayer::CMPlayer(IPlayerCallback& callback)
 
 CMPlayer::~CMPlayer()
 {
-  m_bIsPlaying = false;
-  StopThread();
+  CloseFile();
   Unload();
   while ( criticalsection_head )
   {
     CriticalSection_List * entry = criticalsection_head;
     criticalsection_head = entry->Next;
-    delete entry;
+    try
+    {
+      delete entry;
+    }
+    catch(...)
+    {
+      CLog::Log(LOGERROR, "CMPlayer::~CMPlayer() - Unable to delete CriticalSection.. Skipping");
+    }
   } //fix winnt and xbox critical data mismatch issue.
   save_registry(); // save registry to disk
   free_registry(); //free memory take by registry structures
@@ -649,11 +655,13 @@ extern void xbox_audio_switch_channel(int iAudioStream, bool bAudioOnAllSpeakers
 
 bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
+  //Close any prevoiusely playing file
+  CloseFile();
+
   int iRet = -1;
   m_bCanceling = false;
   int iCacheSize = 1024;
   int iCacheSizeBackBuffer = MPLAYERBACKBUFFER; // 50 % backbuffer is mplayers default
-  CloseFile();
   bool bFileOnHD(false);
   bool bFileOnISO(false);
   bool bFileOnUDF(false);
@@ -862,13 +870,13 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
     if (bFileIsDVDImage || bFileIsDVDIfoFile)
     {
-      iRet = mplayer_open_file(GetDVDArgument(strFile).c_str());
       m_bIsMplayeropenfile = true;
+      iRet = mplayer_open_file(GetDVDArgument(strFile).c_str());
     }
     else
     {
-      iRet = mplayer_open_file(strFile.c_str());
       m_bIsMplayeropenfile = true;
+      iRet = mplayer_open_file(strFile.c_str());
     }
     if (iRet <= 0 || m_bCanceling)
     {
@@ -982,13 +990,13 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
         if (bFileIsDVDImage || bFileIsDVDIfoFile)
         {
-          iRet = mplayer_open_file(GetDVDArgument(strFile).c_str());
           m_bIsMplayeropenfile = true;
+          iRet = mplayer_open_file(GetDVDArgument(strFile).c_str());
         }
         else
         {
-          iRet = mplayer_open_file(strFile.c_str());
           m_bIsMplayeropenfile = true;
+          iRet = mplayer_open_file(strFile.c_str());
         }
         if (iRet <= 0 || m_bCanceling)
         {
@@ -1028,15 +1036,9 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   catch (...)
   {
     CLog::Log(LOGERROR, "cmplayer::openfile() %s failed", strFile.c_str());
-
-    //Lock here to make sure cache thread isn't using the object
-    g_graphicsContext.Lock();
-    if (m_dlgCache) delete m_dlgCache;
-    m_dlgCache = NULL;
-    g_graphicsContext.Unlock();
-
+    iRet=-1;
     CloseFile();
-    return false;
+    Unload();
   }
 
   //Lock here to make sure cache thread isn't using the object
@@ -1054,8 +1056,31 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
 bool CMPlayer::CloseFile()
 {
-  m_bIsPlaying = false;
-  StopThread();
+
+  if( m_bIsPlaying )
+  {
+    StopThread();
+    m_bIsPlaying = false;
+  }
+
+  //Check if file is still open
+  if(m_bIsMplayeropenfile)
+  { //Attempt to let mplayer clean up afterit self
+    try
+    {
+      m_bIsMplayeropenfile = false;
+      mplayer_close_file();
+    }
+    catch(std::exception& e)
+    {
+      CLog::Log(LOGERROR, "CMPlayer::CloseFile() - Exception in mplayer_close_file: %s", e.what());
+    }
+    catch(...)
+    {
+      CLog::Log(LOGERROR, "CMPlayer::CloseFile() - Unknown Exception in mplayer_close_file()");
+    }
+  }
+
   return true;
 }
 
@@ -1174,21 +1199,12 @@ void CMPlayer::Process()
     }
     _SubtitleExtension.Empty();
 
-    try
-    {
-      if (m_bIsMplayeropenfile)
-      {
-        m_bIsMplayeropenfile = false;
-        mplayer_close_file();
-      }
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "mplayer generated exception in mplayer_close_file");
-    }
+    //We've stopped playing
+    m_bIsPlaying = false;
+    CloseFile();
 
   }
-  m_bIsPlaying = false;
+  
   // Save our settings for the current movie for later
   if (bHasVideo)
   {
@@ -1199,7 +1215,13 @@ void CMPlayer::Process()
     dbs.SetVideoSettings(m_strPath, g_stSettings.m_currentVideoSettings);
     dbs.Close();
   }
-  if (!m_bStop)
+
+  if (m_bStop)
+  {
+    //Can't be sent here as it apperently causes the mplayer class to be deleted
+    //m_callback.OnPlayBackStopped();
+  }
+  else
   {
     m_callback.OnPlayBackEnded();
   }
@@ -1210,27 +1232,22 @@ void CMPlayer::Unload()
 {
   if (m_pDLL)
   {
-    // if m_pDLL is not NULL we asume mplayer_open_file has already been called
-    // and thus we can call mplayer_close_file now.
+    //Make sure we stop playback before unloading
+    CloseFile();
     try
     {
-      if (m_bIsMplayeropenfile)
-      {
-        m_bIsMplayeropenfile = false;
-        mplayer_close_file();
-      }
+      delete m_pDLL;
+      dllReleaseAll( );
+      m_pDLL = NULL;
     }
-    catch (...)
+    catch(std::exception& e)
     {
-      CLog::Log(LOGERROR, "mplayer generated exception in mplayer_close_file");
+      CLog::Log(LOGERROR, "CMPlayer::Unload() - Exception: %s", e.what());
     }
-
-    delete m_pDLL;
-    dllReleaseAll( );
-    m_pDLL = NULL;
-
-    // free unfreed mplayer dll's
-    tracker_free_mplayer_dlls();
+    catch(...)
+    {
+      CLog::Log(LOGERROR, "CMPlayer::Unload() - Unknown Exception");
+    }
   }
 }
 
