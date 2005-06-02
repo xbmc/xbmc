@@ -340,6 +340,22 @@ bool CFileItem::IsRAR() const
   return false;
 }
 
+bool CFileItem::IsZIP() const
+{
+  CStdString strExtension;
+  CUtil::GetExtension(m_strPath, strExtension);
+  if (strExtension.CompareNoCase(".zip") == 0) return true;
+  return false;
+}
+
+bool CFileItem::IsCBZ() const
+{
+  CStdString strExtension;
+  CUtil::GetExtension(m_strPath, strExtension);
+  if (strExtension.CompareNoCase(".cbz") == 0) return true;
+  return false;
+}
+
 bool CFileItem::IsCDDA() const
 {
   return CUtil::IsCDDA(m_strPath);

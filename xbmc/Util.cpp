@@ -64,8 +64,13 @@ CUtil::~CUtil(void)
 
 char* CUtil::GetExtension(const CStdString& strFileName)
 {
-  char* extension = strrchr(strFileName.c_str(), '.');
-  return extension ;
+  CURL url(strFileName);
+  const char* extension;
+  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
+    extension = strFileName.c_str()+strFileName.rfind(".");
+  else
+    extension = strrchr(strFileName.c_str(), '.');
+  return (char*)extension ;
 }
 
 int CUtil::cmpnocase(const char* str1, const char* str2)
@@ -84,17 +89,19 @@ int CUtil::cmpnocase(const char* str1, const char* str2)
 
 char* CUtil::GetFileName(const CStdString& strFileNameAndPath)
 {
-
-  char* extension = strrchr(strFileNameAndPath.c_str(), '\\');
+  CURL url(strFileNameAndPath);
+  const char* extension;
+  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
+    extension = strFileNameAndPath.c_str()+strFileNameAndPath.rfind("\\");
+  else
+    extension = strrchr(strFileNameAndPath.c_str(), '\\');
   if (!extension)
   {
     extension = strrchr(strFileNameAndPath.c_str(), '/');
     if (!extension) return (char*)strFileNameAndPath.c_str();
   }
-
   extension++;
-  return extension;
-
+  return (char*)extension;
 }
 
 CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath)
@@ -323,7 +330,30 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
   CURL url(strPath);
   CStdString strFile = url.GetFileName();
-  if (strFile.size() == 0)
+  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
+  { 
+    if (url.GetFileName().size() == 0)
+    {
+      CUtil::GetDirectory(url.GetHostName(),strParent);
+      return true;
+    }
+    else
+    {
+      CStdString strParentPath;
+      bool bOkay = GetParentPath("D:\\"+url.GetFileName(),strParentPath);
+      if (bOkay) 
+      {
+        if (strParentPath.size() > 3)
+          strParent = strPath.substr(0,strPath.size()-url.GetFileName().size())+strParentPath.substr(3)+"\\";
+        else
+          strParent = strPath.substr(0,strPath.size()-url.GetFileName().size());
+        return true;
+      }
+      else
+        return false;
+    }
+  }
+  else if (strFile.size() == 0)
   {
     if (url.GetProtocol() == "smb" && (url.GetHostName().size() > 0))
     {
@@ -399,10 +429,8 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
       iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('\\') + 1;
       strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
     }
-    CLog::Log(LOGDEBUG,"filenaem: %s",strFilename.c_str());
     if (g_guiSettings.GetBool("Servers.FTPAutoFatX") && (CUtil::IsHD(strFilename)))
       CUtil::GetFatXQualifiedPath(strFilename);
-    CLog::Log(LOGDEBUG,"filenaem: %s",strFilename.c_str());
   }
   else //Base is remote
   {
@@ -981,6 +1009,22 @@ bool CUtil::IsDVD(const CStdString& strFile)
   if (strFile.Left(4) == "UDF:" || strFile.Left(4) == "udf:")
     return true;
 
+  return false;
+}
+
+bool CUtil::IsRAR(const CStdString& strFile)
+{
+  CStdString strExtension;
+  CUtil::GetExtension(strFile,strExtension);
+  if ( (strExtension.CompareNoCase(".rar") == 0) || (strExtension.Equals(".001")) ) return true; // sometimes the first rar is named .001
+  return false;
+}
+
+bool CUtil::IsZIP(const CStdString& strFile)
+{
+  CStdString strExtension;
+  CUtil::GetExtension(strFile,strExtension);
+  if (strExtension.CompareNoCase(".zip") == 0) return true;
   return false;
 }
 
@@ -1655,6 +1699,7 @@ void CUtil::RemoveIllegalChars( CStdString& strText)
 {
   char szRemoveIllegal [1024];
   strcpy(szRemoveIllegal , strText.c_str());
+  // legg til åæø og tødler
   static char legalChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~. ";
   char *cursor;
   for (cursor = szRemoveIllegal; *(cursor += strspn(cursor, legalChars)); /**/ )
@@ -1866,6 +1911,14 @@ void CUtil::GetPath(const CStdString& strFileName, CStdString& strPath)
 //This behaviour should probably be changed, but it would break other things
 void CUtil::GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath)
 {
+  if ((strFilePath.substr(0,6) == "rar://") || (strFilePath.substr(0,6) == "zip://"))
+  {
+    CURL url(strFilePath);
+    CStdString strTemp;
+    GetDirectory(url.GetFileName(),strTemp);
+    strDirectoryPath.Format("%s://%s,%i,%s,%s,\\%s",url.GetProtocol().c_str(),url.GetDomain(),url.GetPort(),url.GetPassWord(),url.GetHostName(),strTemp);
+    return;
+  }
   int iPos1 = strFilePath.ReverseFind('/');
   int iPos2 = strFilePath.ReverseFind('\\');
 

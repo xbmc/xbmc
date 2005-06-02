@@ -1,6 +1,8 @@
 #pragma once
 #include "guiDialog.h"
 
+#include <queue>
+
 class CGUIImage;
 
 class CGUIDialogKaiToast: public CGUIDialog
@@ -35,7 +37,7 @@ protected:
   DWORD m_dwIconWidth;
   DWORD m_dwIconHeight;
 
-  typedef queue<Notification> TOASTQUEUE;
+  typedef std::queue<Notification> TOASTQUEUE;
   TOASTQUEUE m_notifications;
   CRITICAL_SECTION m_critical;
 };

@@ -65,8 +65,7 @@ void CAutorun::RunXboxCd()
 
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
   int nAddedToPlaylist = 0;
-  CFactoryDirectory factory;
-  auto_ptr<IDirectory> pDir ( factory.Create( "D:\\" ) );
+  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "D:\\" ) );
   bool bPlaying = RunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true);
   if ( !bPlaying && nAddedToPlaylist > 0 )
   {
@@ -88,8 +87,7 @@ void CAutorun::RunCdda()
   }
   else
   {
-    CFactoryDirectory factory;
-    auto_ptr<IDirectory> pDir ( factory.Create( "cdda://local/" ) );
+    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "cdda://local/" ) );
     if ( !pDir->GetDirectory( "cdda://local/", vecItems ) )
       return ;
 
@@ -124,8 +122,7 @@ void CAutorun::RunISOMedia()
 
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
   int nAddedToPlaylist = 0;
-  CFactoryDirectory factory;
-  auto_ptr<IDirectory> pDir ( factory.Create( "iso9660://" ));
+  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "iso9660://" ));
   bool bPlaying = RunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true);
   if ( !bPlaying && nAddedToPlaylist > 0 )
   {

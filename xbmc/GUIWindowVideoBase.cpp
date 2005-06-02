@@ -16,6 +16,7 @@
 #include "GUIPassword.h"
 #include "AutoSwitch.h"
 #include "GUIFontManager.h"
+#include "FileSystem/ZipManager.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
@@ -767,6 +768,22 @@ void CGUIWindowVideoBase::Render()
 
 void CGUIWindowVideoBase::GoParentFolder()
 {
+  CURL url(m_Directory.m_strPath);
+  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) 
+  {
+    // check for step-below, if, unmount rar
+    if (url.GetFileName().IsEmpty())
+    {
+      g_ZipManager.release(m_Directory.m_strPath); // release resources
+      m_rootDir.RemoveShare(m_Directory.m_strPath);
+      CStdString strPath;
+      CUtil::GetDirectory(url.GetHostName(),strPath);
+      Update(strPath);
+      UpdateButtons();
+      return;
+    }
+  }
+  
   // don't call Update() with m_strParentPath, as we update m_strParentPath before the
   // directory is retrieved.
   CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);

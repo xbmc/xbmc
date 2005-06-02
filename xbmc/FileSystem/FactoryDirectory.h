@@ -27,8 +27,6 @@ namespace DIRECTORY
 class CFactoryDirectory
 {
 public:
-  CFactoryDirectory(void);
-  virtual ~CFactoryDirectory(void);
-  IDirectory* Create(const CStdString& strPath);
+  static IDirectory* Create(const CStdString& strPath);
 };
 }

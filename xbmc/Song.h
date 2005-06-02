@@ -3,6 +3,10 @@
 \brief
 */
 #pragma once
+
+#include <map>
+#include <vector>
+
 #include "MusicInfotag.h"
 
 using namespace MUSIC_INFO;
@@ -75,38 +79,38 @@ public:
  \brief A vector of CSong objects, used for CMusicDatabase
  \sa CMusicDatabase
  */
-typedef vector<CSong> VECSONGS;
+typedef std::vector<CSong> VECSONGS;
 
 /*!
  \ingroup music
  \brief A map of CSong objects, used for CMusicDatabase
  \sa IMAPSONGS, CMusicDatabase
  */
-typedef map<CStdString, CSong> MAPSONGS;
+typedef std::map<CStdString, CSong> MAPSONGS;
 
 /*!
  \ingroup music
  \brief The MAPSONGS iterator
  \sa MAPSONGS, CMusicDatabase
  */
-typedef map<CStdString, CSong>::iterator IMAPSONGS;
+typedef std::map<CStdString, CSong>::iterator IMAPSONGS;
 
 /*!
  \ingroup music
  \brief A vector of CStdString objects, used for CMusicDatabase
  */
-typedef vector<CStdString> VECARTISTS;
+typedef std::vector<CStdString> VECARTISTS;
 
 /*!
  \ingroup music
  \brief A vector of CStdString objects, used for CMusicDatabase
  \sa CMusicDatabase
  */
-typedef vector<CStdString> VECGENRES;
+typedef std::vector<CStdString> VECGENRES;
 
 /*!
  \ingroup music
  \brief A vector of CAlbum objects, used for CMusicDatabase
  \sa CMusicDatabase
  */
-typedef vector<CAlbum> VECALBUMS;
+typedef std::vector<CAlbum> VECALBUMS;

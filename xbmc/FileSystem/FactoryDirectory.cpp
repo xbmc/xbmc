@@ -13,12 +13,7 @@
 #include "SndtrkDirectory.h"
 #include "DAAPDirectory.h"
 #include "shoutcastdirectory.h"
-
-CFactoryDirectory::CFactoryDirectory(void)
-{}
-
-CFactoryDirectory::~CFactoryDirectory(void)
-{}
+#include "zipdirectory.h"
 
 /*!
  \brief Create a IDirectory object of the share type specified in \e strPath .
@@ -73,6 +68,10 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "shout")
   {
     return (IDirectory*)new CShoutcastDirectory();
+  }
+  if (strProtocol == "zip")
+  {
+    return (IDirectory*)new CZipDirectory();
   }
 
   return (IDirectory*)new CHDDirectory();

@@ -3,6 +3,7 @@
 #include "GUISpinControlEx.h"
 #include "GUIButtonControl.h"
 #include "GUIRadioButtonControl.h"
+#include <xtl.h>
 
 class CBaseSettingControl
 {

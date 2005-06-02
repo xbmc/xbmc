@@ -1,5 +1,7 @@
 #pragma once
 
+#include <queue>
+
 struct TICKET
 {
   TICKET(WORD aQueueId, DWORD aItemId)
