@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 02-06-2005 added: zip support
+ - 02-06-2005 added: zip support. this means, any media can be viewed straight from .zip. playback of big .avi's 
+                     not recommended, although supported. currently .ogg playback is broken.
  - 02-06-2005 changed: hopefully way better error handling around mplayer. it shouldn't crash entire xbmc on a crash.
  - 02-06-2005 fixed: dvdplayer would crash if TTFSubtitle fonts where selected
  - 02-06-2005 changed/fixed: Moved videobuffer handling from inside libmpeg2 to xbmc, fixes some menu's where highlight didn't work. 
