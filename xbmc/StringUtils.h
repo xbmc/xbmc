@@ -17,7 +17,7 @@
 
 using namespace std;
 
-typedef vector<CStdString> CStdStringArray;
+typedef std::vector<CStdString> CStdStringArray;
 
 class StringUtils
 {

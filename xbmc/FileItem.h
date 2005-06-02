@@ -48,6 +48,8 @@ public:
   bool IsDVDImage() const;
   bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
   bool IsRAR() const;
+  bool IsZIP() const;
+  bool IsCBZ() const;
   bool IsISO9660() const;
   bool IsCDDA() const;
   bool IsDVD() const;

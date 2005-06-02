@@ -15,6 +15,8 @@ public:
   virtual ~CVirtualDirectory(void);
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   void SetShares(VECSHARES& vecShares);
+  void AddShare(const CShare& share);
+  bool RemoveShare(const CStdString& strPath);
   bool IsShare(const CStdString& strPath) const;
   CStdString GetDVDDriveUrl();
 

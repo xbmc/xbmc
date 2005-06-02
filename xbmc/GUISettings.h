@@ -5,6 +5,7 @@
 #include "Profile.h"
 #include "..\guilib\tinyxml/tinyxml.h"
 #include <vector>
+#include <map>
 #include "..\guilib\GraphicContext.h"
 
 // Render Methods
@@ -259,7 +260,7 @@ public:
   DWORD m_dwLabelID;
 };
 
-typedef vector<CSettingsCategory *> vecSettingsCategory;
+typedef std::vector<CSettingsCategory *> vecSettingsCategory;
 
 class CSettingsGroup
 {
@@ -296,7 +297,7 @@ private:
   DWORD m_dwLabelID;
 };
 
-typedef vector<CSetting *> vecSettings;
+typedef std::vector<CSetting *> vecSettings;
 
 class CGUISettings
 {
@@ -343,9 +344,9 @@ public:
   ReplayGainSettings m_replayGain;
 
 private:
-  typedef map<CStdString, CSetting*>::iterator mapIter;
-  map<CStdString, CSetting*> settingsMap;
-  vector<CSettingsGroup *> settingsGroups;
+  typedef std::map<CStdString, CSetting*>::iterator mapIter;
+  std::map<CStdString, CSetting*> settingsMap;
+  std::vector<CSettingsGroup *> settingsGroups;
 };
 
 extern class CGUISettings g_guiSettings;

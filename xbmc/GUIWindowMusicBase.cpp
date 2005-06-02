@@ -3,6 +3,7 @@
 #include "MusicInfoTagLoaderFactory.h"
 #include "GUIWindowMusicInfo.h"
 #include "FileSystem/HDdirectory.h"
+#include "FileSystem/ZipManager.h"
 #include "PlayListFactory.h"
 #include "Util.h"
 #include "PlayListM3U.h"
@@ -504,6 +505,20 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 /// \brief Call to go to parent folder
 void CGUIWindowMusicBase::GoParentFolder()
 {
+  CURL url(m_Directory.m_strPath);
+  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) 
+  {
+    // check for step-below, if, unmount rar
+    if (url.GetFileName().IsEmpty())
+    {
+      g_ZipManager.release(m_Directory.m_strPath); // release resources
+      m_rootDir.RemoveShare(m_Directory.m_strPath);
+      CStdString strPath;
+      CUtil::GetDirectory(url.GetHostName(),strPath);
+      Update(strPath);
+      return;
+    }
+  }
   CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
   Update(strPath);
 
