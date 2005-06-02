@@ -93,6 +93,8 @@ public:
   static bool HasSlashAtEnd(const CStdString& strFile);
   static bool IsRemote(const CStdString& strFile);
   static bool IsDVD(const CStdString& strFile);
+  static bool IsRAR(const CStdString& strFile);
+  static bool IsZIP(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static void RemoveCRLF(CStdString& strLine);

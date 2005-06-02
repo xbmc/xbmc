@@ -1263,8 +1263,7 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursiv
 void CGUIWindowSlideShow::AddItems(const CStdString &strPath, bool bRecursive)
 {
   // read the directory in
-  CFactoryDirectory factory;
-  IDirectory *pDir = factory.Create(strPath);
+  IDirectory *pDir = CFactoryDirectory::Create(strPath);
   if (!pDir) return;
   CFileItemList items;
   pDir->SetMask(g_stSettings.m_szMyPicturesExtensions);

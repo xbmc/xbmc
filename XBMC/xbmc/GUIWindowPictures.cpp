@@ -7,6 +7,7 @@
 #include "GUIThumbnailPanel.h"
 #include "AutoSwitch.h"
 #include "GUIPassword.h"
+#include "FileSystem/ZipManager.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
@@ -526,6 +527,33 @@ void CGUIWindowPictures::OnClick(int iItem)
     }
     Update(strPath);
   }
+  else if (pItem->IsZIP()) // mount zip archive
+  {
+    CShare shareZip;
+    shareZip.strPath.Format("zip://Z:\\filesrar\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
+    m_rootDir.AddShare(shareZip);
+    m_iItemSelected = -1;
+    Update(shareZip.strPath);
+  }
+  else if (pItem->IsCBZ()) //mount'n'show'n'unmount
+  {
+    CShare shareZip;
+    shareZip.strPath.Format("zip://Z:\\filesrar\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
+    m_rootDir.AddShare(shareZip);
+    CUtil::GetDirectory(pItem->m_strPath,strPath);
+    Update(shareZip.strPath);
+    if (m_vecItems.Size() > 0)
+    {
+      int iZipItem=0;
+      while ((m_vecItems[iZipItem]->m_bIsFolder) && (iZipItem < m_vecItems.Size())) iZipItem++;
+      if (iZipItem < m_vecItems.Size())
+        OnShowPicture(m_vecItems[iZipItem]->m_strPath);
+    }
+    g_ZipManager.release(m_Directory.m_strPath); // release resources
+    m_rootDir.RemoveShare(m_Directory.m_strPath);
+    m_iItemSelected = iItem;
+    Update(strPath);
+  }
   else
   {
     // show picture
@@ -853,6 +881,21 @@ void CGUIWindowPictures::Render()
 
 void CGUIWindowPictures::GoParentFolder()
 {
+  CURL url(m_Directory.m_strPath);
+  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) 
+  {
+    // check for step-below, if, unmount rar
+    if (url.GetFileName().IsEmpty())
+    {
+      g_ZipManager.release(m_Directory.m_strPath); // release resources
+      m_rootDir.RemoveShare(m_Directory.m_strPath);
+      CStdString strPath;
+      CUtil::GetDirectory(url.GetHostName(),strPath);
+      Update(strPath);
+      return;
+    }
+  }
+  
   CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
   Update(strPath);
 

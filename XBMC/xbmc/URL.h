@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../guilib/stdstring.h"
+
 class CURL
 {
 public:

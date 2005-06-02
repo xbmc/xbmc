@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "stdstring.h"
+
 //  Forward
 class CGUIImage;
 

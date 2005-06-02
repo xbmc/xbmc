@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "IMsgSenderCallback.h"
 #include "common/mouse.h"
 
@@ -94,7 +96,7 @@ public:
   bool IsOverlayAllowed() const;
   void SetOverlay(bool bOnOff);
   void SetGUIResolution(RESOLUTION &res);
-  void GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllowPAL60 = false);
+  void GetAllowedResolutions(std::vector<RESOLUTION> &res, bool bAllowPAL60 = false);
   bool IsValidResolution(RESOLUTION res);
   void SetVideoResolution(RESOLUTION &res, BOOL NeedZ = FALSE);
   RESOLUTION GetVideoResolution() const;

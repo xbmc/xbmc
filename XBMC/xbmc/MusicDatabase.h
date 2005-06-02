@@ -5,6 +5,10 @@
 #pragma once
 #include "lib/sqlLite/sqlitedataset.h"
 #include "song.h"
+
+#include <set>
+#include <vector>
+
 using namespace dbiplus;
 
 // return codes of Cleaning up the Database
@@ -27,20 +31,20 @@ using namespace dbiplus;
  \brief A set of CStdString objects, used for CMusicDatabase
  \sa ISETPATHES, CMusicDatabase
  */
-typedef set<CStdString> SETPATHES;
+typedef std::set<CStdString> SETPATHES;
 
 /*!
  \ingroup music
  \brief The SETPATHES iterator
  \sa SETPATHES, CMusicDatabase
  */
-typedef set<CStdString>::iterator ISETPATHES;
+typedef std::set<CStdString>::iterator ISETPATHES;
 
 /*!
  \ingroup music
  \brief A vector of longs for iDs, used for CMusicDatabase's multiple artist/genre capability
  */
-typedef vector<long> VECLONGS;
+typedef std::vector<long> VECLONGS;
 
 class CGUIDialogProgress;
 

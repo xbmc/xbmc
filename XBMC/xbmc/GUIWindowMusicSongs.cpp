@@ -690,6 +690,13 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
     }
     Update(strPath);
   }
+  else if (pItem->IsZIP()) // mount zip archive
+  {
+    CShare shareZip;
+    shareZip.strPath.Format("zip://Z:\\temp\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
+    m_rootDir.AddShare(shareZip);
+    Update(shareZip.strPath);
+  }
   else
   {
     if (pItem->IsPlayList())

@@ -1679,6 +1679,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\FileXBMSP.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\FileZip.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileZip.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\HDDirectory.cpp">
 			</File>
 			<File
@@ -1725,6 +1731,24 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\XNSDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\zconf.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\ZipDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\ZipDirectory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\ZipManager.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\ZipManager.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\zlib.h">
 			</File>
 		</Filter>
 		<Filter
@@ -2092,10 +2116,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
