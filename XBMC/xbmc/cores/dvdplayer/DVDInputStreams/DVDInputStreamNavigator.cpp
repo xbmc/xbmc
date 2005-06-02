@@ -749,14 +749,13 @@ float CDVDInputStreamNavigator::GetVideoAspectRatio()
   printf("DVD - Aspect wanted: %d, Scale permissions: %d", iAspect, iPerm);
   switch(iAspect)
   {
-    case 0: //4:3
+    case 2: //4:3
       return 4.0f / 3.0f;
-    case 1: //Unspecifed
-    case 2: //Reserved
-      return 0.0f;
     case 3: //16:9
       return 16.0f / 9.0f;
-    default: //Unknown
+    case 4: 
+      return 2.11f / 1.0f;
+    default: //Unknown, use libmpeg2
       return 0.0f;
   }    
 }
