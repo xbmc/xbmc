@@ -110,6 +110,9 @@ unsigned int CAudioDecoder::GetDataSize()
 {
   if (m_status == STATUS_QUEUING || m_status == STATUS_NO_FILE)
     return 0;
+  // check for end of file and end of buffer
+  if (m_status == STATUS_ENDING && m_pcmBuffer.GetMaxReadSize() < PACKET_SIZE)
+    m_status = STATUS_ENDED;
   return m_pcmBuffer.GetMaxReadSize();
 }
 
@@ -157,14 +160,15 @@ void CAudioDecoder::PrefixData(void *data, unsigned int size)
 
 int CAudioDecoder::ReadData(int sendsize)
 {
-  CSingleLock lock(m_critSection);
-
-  if (m_status == STATUS_NO_FILE)
+  if (m_status == STATUS_NO_FILE || m_status == STATUS_ENDING || m_status == STATUS_ENDING)
     return RET_SLEEP;             // nothing loaded yet
 
   // start playing once we're fully queued and we're ready to go
   if (m_status == STATUS_QUEUED && m_canPlay)
     m_status = STATUS_PLAYING;
+
+  // grab a lock to ensure the codec is created at this point.
+  CSingleLock lock(m_critSection);
 
   // Read in more data
   int maxsize = min(INPUT_SIZE, m_pcmBuffer.GetMaxWriteSize());
