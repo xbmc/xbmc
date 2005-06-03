@@ -1551,7 +1551,10 @@ void CControlSocket::ParseCommand()
 			if (bRenFile)
 			{
 				CStdString result;
-				int error = m_pOwner->m_pPermissions->GetFileName(m_status.user, args, m_CurrentDir, FOP_CREATENEW, result);
+        int error = m_pOwner->m_pPermissions->GetFileName(m_status.user, args, m_CurrentDir, FOP_CREATENEW, result);
+        if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
+          CUtil::GetFatXQualifiedPath(result);
+        
 				if (error)
 					RenName = "";
 				if (error & 1)
@@ -1572,7 +1575,10 @@ void CControlSocket::ParseCommand()
 			{
 				CStdString result;
 				int error = m_pOwner->m_pPermissions->GetDirName(m_status.user, args, m_CurrentDir, DOP_CREATE, result);
-				if (error)
+				if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
+          CUtil::GetFatXQualifiedPath(result);
+       
+        if (error)
 					RenName = "";
 				if (error & 1)
 					Send("550 Permission denied");
