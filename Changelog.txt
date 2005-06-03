@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-06-2005 fixed: PAPlayer small pause while caching next track.
  - 02-06-2005 fixed: system info storage percentages now adds up to 100 as they should.
  - 02-06-2005 fixed: Fat-X limit workaround didn't apply to renaming.
  - 02-06-2005 added: Milkdrop - Ability to select a folder or a zip file containing presets from the xml config file.
