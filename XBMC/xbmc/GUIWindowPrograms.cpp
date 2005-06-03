@@ -139,7 +139,10 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       }
 
 
-      UpdateDir(m_Directory.m_strPath);
+      
+      m_vecPaths.clear();
+      m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
+      Update(m_Directory.m_strPath);
 
       if (iLastControl > -1)
       {
@@ -442,11 +445,11 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
             bool foundPath = false;                             
             for (int i = 0; i < (int)m_vecPaths.size(); i++)    
             
-            {                                                   
-              if (file.m_strPath == m_vecPaths[i])              
+            {
+              if (file.m_strPath == m_vecPaths[i])
               {
-                foundPath = true;                               
-                break;                                          
+                foundPath = true;              
+                break;
               }                                                 
             }                                                   
             if (!foundPath)                                     
