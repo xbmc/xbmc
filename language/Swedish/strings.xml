@@ -545,6 +545,7 @@
   <string><id>770</id><value>Fel %i: delningen är inte tillgänglig</value></string>
   <string><id>771</id><value>Låt ftpservern göra om filnamn till fatx</value></string>
   <string><id>772</id><value>Audio hårdvara</value></string>
+  <string><id>773</id><value>Söker</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Online Spel</value></string>
   <string><id>1000</id><value>Förhandstitt av skärmsläckare</value></string>
@@ -574,6 +575,9 @@
   <string><id>1223</id><value>Inaktiverad</value></string>
   <string><id>1224</id><value>Normal Användare</value></string>
   <string><id>1225</id><value>Advancerad Användare</value></string>
+  <string><id>1226</id><value>Filer &amp; Musik &amp; Video</value></string>
+  <string><id>1227</id><value>Filer &amp; Bilder &amp; Musik</value></string>
+  <string><id>1228</id><value>Filer &amp; Bilder &amp; Video</value></string>
   <string><id>1396</id><value>Flytande</value></string>
   <string><id>1397</id><value>och</value></string>
   <string><id>1398</id><value>Nollgradigt</value></string>
@@ -831,6 +835,7 @@
   <string><id>13355</id><value>Pixel Shader med låg kvalitet</value></string>
   <string><id>13356</id><value>Hårdvaru Overlay</value></string>
   <string><id>13357</id><value>Pixel Shader med hög kvalitet</value></string>
+  <string><id>13358</id><value>Spela Val</value></string>
   <string><id>13360</id><value>Generera Thumbnails</value></string>
   <string><id>13361</id><value>Aktivera Röst</value></string>
   <string><id>13362</id><value>Röst Mask</value></string>
