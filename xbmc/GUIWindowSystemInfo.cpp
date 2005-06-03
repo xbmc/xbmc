@@ -1240,14 +1240,20 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
 	ULARGE_INTEGER lTotalDiscPercent;
 	
 	lTotalDiscUsed.QuadPart		= lTotalDiscSpace.QuadPart - lTotalDiscFree.QuadPart;
-	lTotalDiscPercent.QuadPart	= lTotalDiscSpace.QuadPart/100;  // => 1%
+	lTotalDiscPercent.QuadPart	= lTotalDiscSpace.QuadPart/100;  // => 1%   
 
 	swprintf(wszHDTotalSize, L"Total: %u MB",lTotalDiscSpace.QuadPart/MB );		//Total Used To make it MB
 	swprintf(wszHDTotalUsed, L", Used: %u MB",lTotalDiscUsed.QuadPart/MB );		//Total Free To make it MB
 	swprintf(wszHDTotalFree, L", Free: %u MB ",lTotalDiscFree.QuadPart/MB );	//Total Free To make it MB
+  
+  int iuAdd = 0, ifAdd = 0;
+  if (lTotalDiscUsed.QuadPart % lTotalDiscPercent.QuadPart >= lTotalDiscPercent.QuadPart/2 )
+    iuAdd = 1; 
+  else 
+    ifAdd = 1;
 
-	swprintf(wszHDTotalUsedPercent, L"Total HDD Used: %u%%",lTotalDiscUsed.QuadPart/lTotalDiscPercent.QuadPart );	//Total Used %
-	swprintf(wszHDTotalFreePercent, L"  Free: %u%%",lTotalDiscFree.QuadPart/lTotalDiscPercent.QuadPart);	//Total Free %
+	swprintf(wszHDTotalUsedPercent, L"Total HDD Used: %u%%",lTotalDiscUsed.QuadPart/lTotalDiscPercent.QuadPart+iuAdd );	//Total Used %
+	swprintf(wszHDTotalFreePercent, L"  Free: %u%%",lTotalDiscFree.QuadPart/lTotalDiscPercent.QuadPart+ifAdd);	//Total Free %
 	
 	wcscat(wszHDTotalSize,wszHDTotalUsed);
 	wcscat(wszHDTotalSize,wszHDTotalFree);
