@@ -7,10 +7,9 @@
 
 extern CApplication g_application;
 
-CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strUrl, CStdString& strRSSTags)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
+CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strRSSTags)
+: CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {
-  m_strUrl = strUrl;
   m_dwChannelColor = dwChannelColor;
   m_dwHeadlineColor = dwHeadlineColor;
   m_dwTextColor = dwNormalColor;
@@ -47,7 +46,11 @@ CGUIRSSControl::~CGUIRSSControl(void)
   //if(m_pdwPalette) //Shouldn't be deallocated as it is used by all RSSControls
   //  delete[] m_pdwPalette;
   if (m_pReader)
+  {
+    m_pReader->ResumeThread();
+    m_pReader->StopThread();
     delete m_pReader;
+  }
   if (m_pwzText)
     delete[] m_pwzText;
   if (m_pwzBuffer)
@@ -63,6 +66,11 @@ CGUIRSSControl::~CGUIRSSControl(void)
   m_pwzBuffer = NULL;
   m_pbColors = NULL;
 }
+
+void CGUIRSSControl::SetUrls(const vector<wstring> &vecUrl)
+{
+  m_vecUrls = vecUrl; 
+};
 
 void CGUIRSSControl::Render()
 {
@@ -86,25 +94,37 @@ void CGUIRSSControl::Render()
       for (i = 0;i < (int)vecSplitTags.size();i++)
         m_pReader->AddTag(vecSplitTags[i]);
     }
-    m_pReader->Create(this, m_strUrl, m_iLeadingSpaces);
+    GetLocalTime(&timeSnapShot);
+    m_pReader->Create(this, m_vecUrls, m_iLeadingSpaces);
   }
 
   if (m_pFont && m_pwzText)
   {
     RenderText();
   }
+  SYSTEMTIME time;
+  GetLocalTime(&time);
+
+  if (((time.wDay * 24 * 60) + (time.wHour * 60) + time.wMinute) - ((timeSnapShot.wDay * 24 * 60) + (timeSnapShot.wHour * 60) + timeSnapShot.wMinute) > 30 )
+  {
+    CLog::Log(LOGDEBUG, "Updating RSS");
+
+    GetLocalTime(&timeSnapShot);
+    m_pReader->ResumeThread();
+  }
 }
 
 void CGUIRSSControl::OnFeedUpdate(CStdString& aFeed, LPBYTE aColorArray)
 {
   int nStringLength = aFeed.GetLength() + 1;
-
+  CLog::Log(LOGDEBUG,"delete %p %p %p",m_pwzText,m_pwzBuffer,m_pbBuffer);
   if (m_pwzText)
     delete[] m_pwzText;
   if (m_pwzBuffer)
     delete[] m_pwzBuffer;
   if (m_pbBuffer)
     delete[] m_pbBuffer;
+  CLog::Log(LOGDEBUG,"delete %p %p %p",m_pwzText,m_pwzBuffer,m_pbBuffer);
 
   m_pwzText = NULL;
   m_pwzBuffer = NULL;
@@ -114,7 +134,9 @@ void CGUIRSSControl::OnFeedUpdate(CStdString& aFeed, LPBYTE aColorArray)
   m_pwzBuffer = new WCHAR[nStringLength];
   swprintf(m_pwzText, L"%S", aFeed.c_str() );
 
+  CLog::Log(LOGDEBUG,"getfont!");
   if (m_pFont) m_pFont->GetTextExtent( m_pwzText, &m_fTextWidth, &m_fTextHeight);
+  CLog::Log(LOGDEBUG,"gotfont!");
   m_iTextLenght = (int)wcslen(m_pwzText);
 
   m_pbColors = aColorArray;
