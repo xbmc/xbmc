@@ -49,7 +49,6 @@ xcopy "skin\Project Mayhem III\media\background3.png" "BUILD\skin\Project Mayhem
 xcopy "skin\Project Mayhem III\sounds\*.*" "BUILD\skin\Project Mayhem III\sounds" /Q /I /Y 
 xcopy credits BUILD\credits /Q /I /Y
 xcopy language BUILD\language /E /Q /I /Y
-xcopy xbmc\keyboard\media BUILD\media /E /Q /I /Y
 xcopy screensavers BUILD\screensavers /E /Q /I /Y
 xcopy visualisations BUILD\visualisations /E /Q /I /Y
 xcopy weather BUILD\weather /E /Q /I /Y
