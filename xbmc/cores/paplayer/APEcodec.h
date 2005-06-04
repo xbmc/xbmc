@@ -77,7 +77,6 @@ protected:
 private:
   APEdll m_dll;
   APE_DECOMPRESS_HANDLE m_handle;
-  DllLoader *m_pDll;                  // PAP DLL
   bool LoadDLL();                     // load the DLL in question
   bool m_bDllLoaded;                  // whether our dll is loaded
 };

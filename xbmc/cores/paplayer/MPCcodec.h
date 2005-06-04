@@ -30,7 +30,6 @@ private:
   float m_sampleBuffer[FRAMELEN * 2 * 2];
   int m_sampleBufferSize;
   // Our dll
-  DllLoader *m_pDll;
   bool LoadDLL();
   bool m_bDllLoaded;
   MPCdll m_dll;

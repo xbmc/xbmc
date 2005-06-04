@@ -175,7 +175,10 @@ bool FLACCodec::LoadDLL()
   DllLoader* pDll=CSectionLoader::LoadDLL(FLAC_DLL);
 
   if (!pDll)
+  {
+    CLog::Log(LOGERROR, "FLACCodec: Unable to load dll %s", FLAC_DLL);
     return false;
+  }
 
   pDll->ResolveExport("FLAC__seekable_stream_decoder_new", (void**)&m_dll.FLAC__seekable_stream_decoder_new);
   pDll->ResolveExport("FLAC__seekable_stream_decoder_delete", (void**)&m_dll.FLAC__seekable_stream_decoder_delete);
@@ -241,7 +244,8 @@ bool FLACCodec::LoadDLL()
       !m_dll.FLAC__seekable_stream_decoder_process_until_end_of_stream || !m_dll.FLAC__seekable_stream_decoder_skip_single_frame || 
       !m_dll.FLAC__seekable_stream_decoder_seek_absolute)
   {
-    CLog::Log(LOGERROR, "FLACCodec: Unable to load %s", FLAC_DLL);
+    CLog::Log(LOGERROR, "FLACCodec: Unable to resolve exports from %s", FLAC_DLL);
+    CSectionLoader::UnloadDLL(FLAC_DLL);
     return false;
   }
 

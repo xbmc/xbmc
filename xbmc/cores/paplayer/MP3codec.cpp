@@ -1,6 +1,8 @@
 #include "../../stdafx.h"
 #include "MP3Codec.h"
 
+#define MP3_DLL "Q:\\system\\players\\PAPlayer\\in_mp3.dll"
+
 #define DECODER_DELAY 529 // decoder delay in samples
 
 MP3Codec::MP3Codec()
@@ -15,7 +17,6 @@ MP3Codec::MP3Codec()
 
   // dll stuff
   m_bDllLoaded = false;
-  m_pDll = NULL;
 
   // mp3 related
   m_pDecoder = NULL;
@@ -55,9 +56,8 @@ MP3Codec::~MP3Codec()
     delete[] m_OutputBuffer;
   m_OutputBuffer = NULL;
 
-  if (m_pDll)
-    delete m_pDll;
-  m_pDll = NULL;
+  if (m_bDllLoaded)
+    CSectionLoader::UnloadDLL(MP3_DLL);
 }
 
 bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
@@ -267,32 +267,22 @@ bool MP3Codec::LoadDLL()
 {
   if (m_bDllLoaded)
     return true;
-  CStdString strDll = "Q:\\system\\players\\PAPlayer\\in_mp3.dll"; 
-  m_pDll = new DllLoader(strDll.c_str(), true);
-  if (!m_pDll)
+
+  DllLoader* pDll = CSectionLoader::LoadDLL(MP3_DLL);
+  if (!pDll)
   {
-    CLog::Log(LOGERROR, "MP3Codec: Unable to load dll %s", strDll.c_str());
+    CLog::Log(LOGERROR, "MP3Codec: Unable to load dll %s", MP3_DLL);
     return false;
   }
-  if (!m_pDll->Parse())
-  {
-    // failed,
-    CLog::Log(LOGERROR, "MP3Codec: Unable to load dll %s", strDll.c_str());
-    delete m_pDll;
-    m_pDll = NULL;
-    return false;
-  }
-  m_pDll->ResolveImports();
 
   // get handle to the functions in the dll
-  m_pDll->ResolveExport("CreateAudioDecoder", (void**)&CreateDecoder);
+  pDll->ResolveExport("CreateAudioDecoder", (void**)&CreateDecoder);
 
   // Check resolves + version number
   if ( !CreateDecoder )
   {
-    CLog::Log(LOGERROR, "MP3Codec: Unable to load our dll %s", strDll.c_str());
-    delete m_pDll;
-    m_pDll = NULL;
+    CLog::Log(LOGERROR, "MP3Codec: Unable to resolve exports from %s", MP3_DLL);
+    CSectionLoader::UnloadDLL(MP3_DLL);
     return false;
   }
 
