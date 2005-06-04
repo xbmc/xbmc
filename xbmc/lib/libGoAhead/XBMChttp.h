@@ -41,7 +41,7 @@ public:
 	int			xbmcGetVolume(webs_t wp);
 	int			xbmcGetPercentage(webs_t wp);
 	int			xbmcSeekPercentage(webs_t wp, char_t *parameter);
-	int			xbmcAction(webs_t wp, int theAction);
+	int			xbmcAction(webs_t wp, char_t *parameter, int theAction);
 	int			xbmcExit(webs_t wp, int theAction);
 	int			xbmcGetThumb(webs_t wp, char_t *parameter);
 	int			xbmcGetThumbFilename(webs_t wp, char_t *parameter);
@@ -61,6 +61,13 @@ public:
   int			xbmcHelp(webs_t wp);
   int     xbmcGetSystemInfo(webs_t wp, char_t *parameter);
   int     xbmcGetSystemInfoByName(webs_t wp, char_t *parameter);
+  int     xbmcAddToSlideshow(webs_t wp, char_t *parameter);
+  int			xbmcClearSlideshow(webs_t wp);
+  int			xbmcPlaySlideshow(webs_t wp, char_t *parameter);
+  int     xbmcSlideshowSelect(webs_t wp, char_t *parameter);
+  int     xbmcGetSlideshowContents( webs_t wp);
+  int     xbmcGetCurrentSlide( webs_t wp);
+  int			xbmcGUISetting(webs_t wp, char_t *parameter);
 	CKey		GetKey();
 	void		ResetKey();
 
