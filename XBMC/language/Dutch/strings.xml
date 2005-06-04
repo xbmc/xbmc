@@ -29,7 +29,7 @@
 <string><id>32</id><value>december</value></string>
 <string><id>98</id><value>Weergave:Automatisch</value></string> 
 <string><id>99</id><value>Weergave:Autom. Groot</value></string>
-<string><id>100</id><value>Weergave: Iconen</value></string>
+<string><id>100</id><value>Weergave: Klein</value></string>
 <string><id>101</id><value>Weergave: Lijst</value></string>
 <string><id>102</id><value>Scannen</value></string>
 <string><id>103</id><value>Sorteren:Naam</value></string> 
@@ -52,9 +52,9 @@
 <string><id>120</id><value>Bevestig bestand(en) kopiëren</value></string> 
 <string><id>121</id><value>Bevestig bestand(en) verplaatsen</value></string> 
 <string><id>122</id><value>Bevestig bestand(en) verwijderen</value></string> 
-<string><id>123</id><value>Weet u zeker dat u deze bestanden wilt kopiëren?</value></string> 
-<string><id>124</id><value>Weet u zeker dat u deze bestanden wilt verplaatsen?</value></string> 
-<string><id>125</id><value>Weet u zeker dat u deze bestanden wilt verwijderen?</value></string>
+<string><id>123</id><value>Weet je zeker dat u deze bestanden wilt kopiëren?</value></string> 
+<string><id>124</id><value>Weet je zeker dat u deze bestanden wilt verplaatsen?</value></string> 
+<string><id>125</id><value>Weet je zeker dat u deze bestanden wilt verwijderen?</value></string>
 <string><id>126</id><value>Status</value></string>
 <string><id>127</id><value>objecten</value></string>
 <string><id>128</id><value>Algemeen</value></string> 
@@ -169,6 +169,7 @@
 <string><id>236</id><value>Gaussian Cubic</value></string> 
 <string><id>237</id><value>Verkleinen:</value></string> 
 <string><id>238</id><value>Vergroten:</value></string>
+<string><id>239</id><value>Afspeellijst wissen na voltooien</value></string>
 <string><id>240</id><value>Automatisch afspelen DVD-video</value></string>
 <string><id>241</id><value>Automatisch afspelen VCD/SVCD</value></string>
 <string><id>242</id><value>Automatisch afspelen Audio-CD</value></string>
@@ -365,7 +366,7 @@
 <string><id>435</id><value>Nummer</value></string> 
 <string><id>436</id><value>Jaar:</value></string> 
 <string><id>437</id><value>Lengte:</value></string> 
-<string><id>438</id><value>Openen Bestand</value></string> 
+<string><id>438</id><value>Bestand openen</value></string> 
 <string><id>439</id><value>Cache</value></string> 
 <string><id>440</id><value>Harde Schijf</value></string> 
 <string><id>441</id><value>UDF</value></string> 
@@ -439,6 +440,7 @@
 <string><id>508</id><value>Gebruik geen snelkoppelingen en scanfunctie</value></string>
 <string><id>509</id><value>Programma thumbnails cachen</value></string>
 <string><id>510</id><value>Visualisaties weergeven</value></string>
+<string><id>511</id><value>Automatisch videoweergave aanpassen aan regiocode</value></string>
 <string><id>600</id><value>CD kopiëren</value></string>
 <string><id>601</id><value>Middelmatig</value></string>
 <string><id>602</id><value>Standaard</value></string>
@@ -463,6 +465,7 @@
 <string><id>634</id><value>Uitrekken 16:9</value></string>
 <string><id>635</id><value>Originele grootte</value></string>
 <string><id>636</id><value>Eigen instelling</value></string>
+
 <string><id>637</id><value>Normalisering</value></string>
 <string><id>638</id><value>Methode</value></string>
 <string><id>639</id><value>Per track</value></string>
@@ -470,6 +473,7 @@
 <string><id>641</id><value>PreAmp level - Afgespeelde bestanden</value></string>
 <string><id>642</id><value>PreAmp level - Niet afgespeelde bestanden</value></string>
 <string><id>643</id><value>Snijden in afgespeelde bestanden voorkomen</value></string>
+<string><id>644</id><value>Balken afsnijden</value></string>
 
 <string><id>700</id><value>Bibliotheek opschonen</value></string>
 <string><id>701</id><value>Verwijder oude nummers uit de bibliotheek</value></string>
@@ -525,11 +529,11 @@
 <string><id>751</id><value>Snelkoppeling verwijderen</value></string>
 <string><id>752</id><value>Snelkoppeling wijzingen</value></string>
 <string><id>753</id><value>Snelkoppelingnaam wijzingen</value></string>
-<string><id>754</id><value>Add Program Link</value></string>
-<string><id>755</id><value>Edit Program Path</value></string>
-<string><id>756</id><value>Edit Program Name</value></string>
-<string><id>757</id><value>Edit Path Depth</value></string>
-<string><id>758</id><value>Removing Program Link</value></string>  
+<string><id>754</id><value>Programmalink toevoegen</value></string>
+<string><id>755</id><value>Programalink wijzigen</value></string>
+<string><id>756</id><value>Programmanaam wijzigen</value></string>
+<string><id>757</id><value>Zoekdiepte instellen</value></string>
+<string><id>758</id><value>Programmalink verwijderen</value></string>  
 <string><id>759</id><value>Weergave:Groot</value></string>
 
 <string><id>760</id><value>Geel</value></string>
@@ -542,10 +546,42 @@
 <string><id>767</id><value>Reserved</value></string>
 <string><id>768</id><value>Reserved</value></string>
 <string><id>769</id><value>Reserved</value></string>
-
+<string><id>770</id><value>Fout %i: gedeelde map niet beschikbaar</value></string>
+<string><id>771</id><value>Workaround voor fatx beperkingen in FTP server</value></string>
+<string><id>772</id><value>Audio hardware</value></string>
 <string><id>998</id><value>XLink Kai</value></string>
 <string><id>999</id><value>Online gamen</value></string>
+
 <string><id>1000</id><value>Screensaver voorbeeld</value></string>
+<string><id>1200</id><value>SMB deelmappen</value></string>
+<string><id>1201</id><value>SMB IP</value></string>
+<string><id>1202</id><value>SMB werkgroep</value></string>
+<string><id>1203</id><value>SMB gebruikersnaam</value></string>
+<string><id>1204</id><value>SMB wachtwoord</value></string>
+<string><id>1205</id><value>SMB naam</value></string>
+<string><id>1206</id><value>SMB groep</value></string>
+<string><id>1207</id><value>SMB WINS server</value></string>
+<string><id>1208</id><value>Modus</value></string>
+<string><id>1209</id><value>De SMB instellingen zijn succesvol ingesteld!</value></string>
+<string><id>1210</id><value>Verwijderen</value></string>
+<string><id>1211</id><value>Muziek</value></string>
+<string><id>1212</id><value>Video</value></string>
+<string><id>1213</id><value>Afbeeldingen</value></string>
+<string><id>1214</id><value>Bestanden</value></string>
+<string><id>1215</id><value>Muziek en video's</value></string>
+<string><id>1216</id><value>Muziek en afbeeldingen</value></string>
+<string><id>1217</id><value>Muziek en bestanden</value></string>
+<string><id>1218</id><value>Video en afbeeldingen</value></string>
+<string><id>1219</id><value>Video en bestanden</value></string>
+<string><id>1220</id><value>Afbeeldingen en bestanden</value></string>
+<string><id>1221</id><value>Muziek, video's en afbeeldingen</value></string>
+<string><id>1222</id><value>Muziek, video's, afbeeldingen en bestanden</value></string>
+<string><id>1226</id><value>Bestanden, muziek en video</value></string>
+<string><id>1227</id><value>Bestanden, afbeeldingen en muziek</value></string>
+<string><id>1228</id><value>Bestanden, afbeeldingen en video</value></string>
+<string><id>1223</id><value>Uitgeschakeld</value></string>
+<string><id>1224</id><value>Normale gebruikers</value></string>
+<string><id>1225</id><value>Geavanceerde gebruikers</value></string>
 
 <string><id>1396</id><value>Driftsneeuw</value></string>
 <string><id>1397</id><value>en</value></string>
@@ -644,7 +680,7 @@
 <string><id>12324</id><value>XBMC Hoofdvergrendeling</value></string> 
 <string><id>12325</id><value>Folder vergrendeld</value></string> 
 <string><id>12326</id><value>Voer het wachtwoord in</value></string> 
-<string><id>12327</id><value>Voer Hoofdvergrendelings code in en druk op Enter,</value></string> 
+<string><id>12327</id><value>Voer de hoofdcode in en druk op Enter,</value></string> 
 <string><id>12328</id><value>Voer de ontgrendelcode in en druk op Enter,</value></string> 
 <string><id>12329</id><value>of druk op C om te annuleren</value></string> 
 <string><id>12330</id><value>Voer Xbox controller knoppencombinatie in en </value></string> 
@@ -665,6 +701,18 @@
 <string><id>12345</id><value>Toegang geweigerd</value></string> 
 <string><id>12346</id><value>Wachtwoord invoerpogingen overschreden</value></string> 
 <string><id>12347</id><value>De Xbox wordt nu uitgeschakeld.</value></string>
+<string><id>12348</id><value>Item vergrendeld</value></string>
+<string><id>12349</id><value>Hoofdcode onthouden tot de volgende herstart?</value></string>
+<string><id>12350</id><value>(Een item in instellingen openen</value></string>
+<string><id>12351</id><value>zal de hoofdvergrendeling weer aan zetten.)</value></string>
+<string><id>12352</id><value>Geef de hoofdcode knopcombinatie en</value></string>
+<string><id>12353</id><value>Vergrendeling heractiveren</value></string>
+<string><id>12354</id><value>Mapontgrendeling behouden tot de volgende herstart?</value></string>
+<string><id>12355</id><value>automatisch vergrendeling heractiveren.)</value></string>
+<string><id>12356</id><value>Vergrendeling veranderen</value></string>
+<string><id>12357</id><value>Vergrendeling delen</value></string>
+<string><id>12358</id><value>Wachtwoord is niet opgegeven. Probeer het opnieuw.</value></string>
+
 <string><id>12600</id><value>Het Weer</value></string>
 <string><id>12900</id><value>Schermbeveiliging</value></string>
 <string><id>12901</id><value>Volledig scherm On Screen Display</value></string>
@@ -682,6 +730,15 @@
 <string><id>13203</id><value>Laden van profiel '%s' geslaagd</value></string>
 <string><id>13204</id><value>Laatst gebruikte profiel:</value></string>
 <string><id>13205</id><value>Onbekend</value></string>
+<string><id>13206</id><value>Overschrijven</value></string>
+<string><id>13207</id><value>Profiel '%s' overschrijven?</value></string>
+
+<string><id>13208</id><value>Alarmklok</value></string>
+<string><id>13209</id><value>Alarmklok interval (in minuten)</value></string>
+<string><id>13210</id><value>Gestart, alarm over %im</value></string>
+<string><id>13211</id><value>Alarm!</value></string>
+<string><id>13212</id><value>Gestopt met nog %im%is te gaan</value></string>
+
 <string><id>13299</id><value>Doeltemperatuur:</value></string>
 <string><id>13300</id><value>Ventilatorsnelheid:</value></string>
 <string><id>13301</id><value>Automatische temperatuurregeling</value></string>
@@ -706,7 +763,7 @@
 <string><id>13320</id><value>Stereo</value></string>
 <string><id>13321</id><value>Alleen links</value></string> 
 <string><id>13322</id><value>Alleen rechts</value></string>
-<string><id>13323</id><value>CD+G inschakelen</value></string>
+<string><id>13323</id><value>CD+G (karaoke) inschakelen</value></string>
 <string><id>13324</id><value>Achtergrond doorzichtigheid</value></string> 
 <string><id>13325</id><value>Voorgrond doorzichtigheid</value></string>
 <string><id>13326</id><value>A/V vertraging</value></string> 
@@ -770,10 +827,11 @@
 <string><id>13384</id><value>Stem - Poort 2</value></string>
 <string><id>13385</id><value>Stem - Poort 3</value></string>
 <string><id>13386</id><value>Op tijd gebaseerd zoeken</value></string>
+<string><id>13387</id><value>Track weergeven als (rechts)</value></string>
 
-<string><id>14000</id><value>Samenvoegen: Uit</value></string>
-<string><id>14001</id><value>Samenvoegen: Aan</value></string> 
-<string><id>14002</id><value>Samenvoegen: Fuzzy</value></string>
+<string><id>14000</id><value>Groeperen: Uit</value></string>
+<string><id>14001</id><value>Groeperen: Aan</value></string> 
+<string><id>14002</id><value>Groeperen: Fuzzy</value></string>
 <string><id>14003</id><value>Downloaden van playlist...</value></string>
 <string><id>14004</id><value>Downloaden van streams lijst...</value></string>
 <string><id>14005</id><value>Uitpakken streams lijst...</value></string>
@@ -833,10 +891,19 @@
 <string><id>14061</id><value>Automatisch</value></string>
 <string><id>14062</id><value>Geef gebruikersnaam voor</value></string>
 
+<string><id>14063</id><value>Datum &amp; tijd</value></string>
+<string><id>14064</id><value>Jaar</value></string>
+<string><id>14065</id><value>Maand</value></string>
+<string><id>14066</id><value>Dag</value></string>
+<string><id>14067</id><value>Uur</value></string>
+<string><id>14068</id><value>Minuut</value></string>
+<string><id>14069</id><value>Wil je de volgende instellingen nu toepassen?</value></string>
+<string><id>14070</id><value>Instellingen toepassen</value></string>
+
 <string><id>15000</id><value>XLink Kai</value></string>
-<string><id>15001</id><value>De service is niet verbonden, wil je nu verbinding</value></string>
-<string><id>15002</id><value>maken via Xbox Media Center?</value></string>
-<string><id>15003</id><value>Typ je bericht.</value></string>
+<string><id>15001</id><value>De service is niet verbonden, wil je</value></string>
+<string><id>15002</id><value>nu verbinding maken via XBMC?</value></string>
+<string><id>15003</id><value>Type je bericht.</value></string>
 <string><id>15004</id><value>Je bent uitgenodigd te komen spelen in %s.</value></string>
 <string><id>15005</id><value>Datum: %s</value></string>
 <string><id>15006</id><value>Van: %s</value></string>
@@ -872,13 +939,13 @@
 <string><id>15036</id><value>heeft je een uitnodiging gestuurd</value></string>
 <string><id>15037</id><value>XBMC was niet in staat te controleren of je netwerk bereikbaar is.</value></string>
 <string><id>15038</id><value>Het kan zijn dat je problemen tegenkomt tijdens het meedoen of hosten van spellen.</value></string>
-<string><id>15039</id><value>Xbox Media Center kon het spel niet automatisch lokaal vinden.</value></string>
+<string><id>15039</id><value>XBMC kon het spel niet automatisch lokaal vinden.</value></string>
 <string><id>15040</id><value>Plaats de speldisk in je Xbox of druk op 'A' om te stoppen</value></string>
 <string><id>15041</id><value>en het spel zelf te starten.</value></string>
 <string><id>15042</id><value>Toegang geweigerd</value></string>
 <string><id>15043</id><value>%s is de chat binnengekomen.</value></string>
 <string><id>15044</id><value>%s heeft de chat verlaten.</value></string>
-<string><id>15045</id><value>Typ je persoonlijke bericht.</value></string>
+<string><id>15045</id><value>Type je persoonlijke bericht.</value></string>
 <string><id>15046</id><value>Huidige arena</value></string>
 <string><id>15047</id><value>Geef een wachtwoord voor je arena.</value></string>
 <string><id>15048</id><value>Geef een beschrijving voor je arena.</value></string>
@@ -889,7 +956,7 @@
 <string><id>15053</id><value>Beschrijving</value></string>
 <string><id>15054</id><value>Uitnodig venster</value></string>
 <string><id>15055</id><value>Kies een spel:</value></string>
-<string><id>15056</id><value>Typ je bericht:</value></string>
+<string><id>15056</id><value>Type je bericht:</value></string>
 <string><id>15057</id><value>Sturen</value></string>
 <string><id>15058</id><value>Host</value></string>
 <string><id>15059</id><value>Uitnodiging geaccepteerd!</value></string>
@@ -902,7 +969,7 @@
 <string><id>15103</id><value>* Alle artiesten</value></string>
 <string><id>15104</id><value>* Alle nummers</value></string>
 <string><id>15105</id><value>* Alle genres</value></string>
-<string><id>15106</id><value>Geselecteerd bestand onthouden bij navigeren</value></string>
+<string><id>15106</id><value>Geselecteerde bestanden onthouden bij navigeren</value></string>
 <string><id>15107</id><value>Bufferen...</value></string>
 <string><id>15108</id><value>Navigatiegeluiden</value></string>
 <string><id>15109</id><value>Standaard uiterlijk</value></string>
@@ -911,7 +978,7 @@
 <string><id>15202</id><value>AudioScrobbler gebruikersnaam</value></string>
 <string><id>15203</id><value>AudioScrobbler wachtwoord</value></string>
 <string><id>15204</id><value>Verbinding mislukt</value></string>
-<string><id>15205</id><value>Update XBMC a.u.b.</value></string>
+<string><id>15205</id><value>Update je versie van XBMC a.u.b.</value></string>
 <string><id>15206</id><value>Authentificatie mislukt</value></string>
 <string><id>15207</id><value>Verbonden</value></string>
 <string><id>15208</id><value>Niet verbonden</value></string>
@@ -967,4 +1034,5 @@
 <string><id>13298</id><value>Xbox Live sleutel:</value></string>
 
 <string><id>15213</id><value>[PLACEHOLDER]</value></string>
+<string><id>15214</id><value>Geleidelijk geluid synchroniseren</value></string>
 </strings>
