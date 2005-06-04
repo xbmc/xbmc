@@ -38,7 +38,6 @@ private:
   ShnPlayFileStream m_stream;
   ShnPlay *m_handle;
   // Our dll
-  DllLoader *m_pDll;
   bool LoadDLL();
   bool m_bDllLoaded;
   SHNdll m_dll;
