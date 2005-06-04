@@ -1,20 +1,27 @@
 #pragma once
 #include "ICodec.h"
 #include "../../cores/DllLoader/dll.h"
+#include "FileReader.h"
 
 // stuff from dll we need
 #define FRAMELEN 1152
 
+#include "mpc/MPCReader.h"
 #include "mpc/in_mpc.h"
+
+struct MpcPlayFileStream {
+	MpcPlayStream vtbl;
+	CFileReader *file;
+};
 
 class MPCCodec : public ICodec
 {
   struct MPCdll
   {
-    bool (__cdecl * Open)(const char *, StreamInfo::BasicData *data, double *timeinseconds);
-    void (__cdecl * Close)();
-    int (__cdecl * Read)(float *, int);
-    int (__cdecl * Seek)(double);
+    bool (__cdecl * Open)(MpcPlayState **state, MpcPlayStream *stream, StreamInfo::BasicData *data, double *timeinseconds);
+    void (__cdecl * Close)(MpcPlayState *state);
+    int (__cdecl * Read)(MpcPlayState *state, float *buffer, int size);
+    int (__cdecl * Seek)(MpcPlayState *state, double timeinseconds);
   };
 
 public:
@@ -29,6 +36,11 @@ public:
 private:
   float m_sampleBuffer[FRAMELEN * 2 * 2];
   int m_sampleBufferSize;
+
+  CFileReader m_file;
+  MpcPlayFileStream m_stream;
+  MpcPlayState *m_handle;
+
   // Our dll
   bool LoadDLL();
   bool m_bDllLoaded;

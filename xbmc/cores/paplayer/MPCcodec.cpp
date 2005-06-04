@@ -1,6 +1,53 @@
 #include "../../stdafx.h"
 #include "MPCCodec.h"
 
+// Callbacks for file reading
+int Mpc_Callback_Read(MpcPlayStream * stream, void * buffer, int bytes, int * bytes_read)
+{
+	MpcPlayFileStream *filestream = (MpcPlayFileStream *)stream;
+  if (!filestream || !buffer || !filestream->file) return 0;
+//  CLog::Log(LOGERROR, "Reading from MPC dll - stream @ %x, - file @ %x", (int)stream, filestream->file);
+  int amountread = (int)filestream->file->Read(buffer, bytes);
+  if (bytes_read)
+    *bytes_read = amountread;
+	if (amountread == bytes || filestream->file->GetPosition() == filestream->file->GetLength())
+		return 1;
+	return 0;
+}
+
+int Mpc_Callback_Seek(MpcPlayStream * stream, int position)
+{
+	MpcPlayFileStream *filestream = (MpcPlayFileStream *)stream;
+  if (!filestream || !filestream->file) return 0;
+
+  __int64 seek = (int)filestream->file->Seek(position, SEEK_SET);
+  if (seek >= 0)
+    return 1;
+  return 0;
+}
+
+int Mpc_Callback_CanSeek(MpcPlayStream * stream)
+{
+  return 1;
+}
+
+int Mpc_Callback_GetLength(MpcPlayStream * stream)
+{
+	MpcPlayFileStream *filestream = (MpcPlayFileStream *)stream;
+  if (!filestream || !filestream->file) return 0;
+  return (int)filestream->file->GetLength();
+}
+
+int Mpc_Callback_GetPosition(MpcPlayStream * stream)
+{
+	MpcPlayFileStream *filestream = (MpcPlayFileStream *)stream;
+  if (!filestream || !filestream->file) return 0;
+  int position = (int)filestream->file->GetPosition();
+	if (position >= 0)
+		return position;
+	return -1;
+}
+
 MPCCodec::MPCCodec()
 {
   m_SampleRate = 0;
@@ -14,6 +61,7 @@ MPCCodec::MPCCodec()
   m_bDllLoaded = false;
   ZeroMemory(&m_dll, sizeof(MPCdll));
   m_sampleBufferSize = 0;
+  m_handle = NULL;
 }
 
 MPCCodec::~MPCCodec()
@@ -25,12 +73,25 @@ MPCCodec::~MPCCodec()
 
 bool MPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
+  m_file.Initialize(filecache);
+
   if (!LoadDLL())
     return false;
 
+  if (!m_file.Open(strFile))
+    return false;
+
+  // setup our callbacks
+  m_stream.file = &m_file;
+  m_stream.vtbl.Read = Mpc_Callback_Read;
+  m_stream.vtbl.Seek = Mpc_Callback_Seek;
+  m_stream.vtbl.CanSeek = Mpc_Callback_CanSeek;
+  m_stream.vtbl.GetLength = Mpc_Callback_GetLength;
+  m_stream.vtbl.GetPosition = Mpc_Callback_GetPosition;
+
   StreamInfo::BasicData data;
   double timeinseconds = 0.0;
-  if (!m_dll.Open(strFile.c_str(), &data, &timeinseconds))
+  if (!m_dll.Open(&m_handle, (MpcPlayStream *)&m_stream, &data, &timeinseconds))
     return false;
 
   m_TotalTime = (__int64)(timeinseconds * 1000.0 + 0.5);
@@ -71,29 +132,34 @@ bool MPCCodec::Init(const CStdString &strFile, unsigned int filecache)
     }
 	}
 
-//  delete info;
-
   return true;
 }
 
 void MPCCodec::DeInit()
 {
-  CLog::Log(LOGERROR, "MPCCodec::DeInit");
-  if (m_bDllLoaded)
-  {
-    m_dll.Close();
-  }
+  if (m_handle)
+    m_dll.Close(m_handle);
+  m_handle = NULL;
+
+  m_file.Close();
+  if (m_stream.file)
+    m_stream.file = NULL;
 }
 
 __int64 MPCCodec::Seek(__int64 iSeekTime)
 {
-  if (!m_dll.Seek((double)iSeekTime/1000.0))
+  if (!m_handle)
+    return -1;
+  if (!m_dll.Seek(m_handle, (double)iSeekTime/1000.0))
     return -1;
   return iSeekTime;
 }
 
 int MPCCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
+  if (!m_handle)
+    return READ_ERROR;
+
   short *pShort = (short *)pBuffer;
   *actualsize = 0;
   // start by emptying out our frame buffer
@@ -114,7 +180,7 @@ int MPCCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     return READ_SUCCESS;
   }
   // emptied our sample buffer - let's fill it up again
-  int ret = m_dll.Read( m_sampleBuffer, FRAMELEN * 2);
+  int ret = m_dll.Read(m_handle, m_sampleBuffer, FRAMELEN * 2);
   if (ret == -2)
     return READ_EOF;
   if (ret == -1)
