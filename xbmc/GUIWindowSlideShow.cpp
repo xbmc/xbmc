@@ -754,6 +754,31 @@ void CGUIWindowSlideShow::Select(const CStdString& strPicture)
   }
 }
 
+vector<CStdString> CGUIWindowSlideShow::GetSlideShowContents()
+{
+  return m_vecSlides ;
+}
+
+CStdString CGUIWindowSlideShow::GetCurrentSlide()
+{
+  if (m_bSlideShow)
+    return m_vecSlides[m_iCurrentSlide];
+  else
+    return "";
+}
+
+bool CGUIWindowSlideShow::GetCurrentSlideInfo(int &width, int &height)
+{
+  
+if (m_Image[m_iCurrentPic].IsLoaded())
+{
+  width=m_Image[m_iCurrentPic].GetWidth();
+  height=m_Image[m_iCurrentPic].GetHeight();
+  return true;
+}
+else
+  return false;
+}
 
 bool CGUIWindowSlideShow::InSlideShow() const
 {
@@ -769,7 +794,6 @@ void CGUIWindowSlideShow::Render()
 {
   // reset the screensaver if we're in a slideshow
   if (m_bSlideShow) g_application.ResetScreenSaver();
-
   int iSlides = m_vecSlides.size();
   if (!iSlides) return ;
   //  g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
@@ -1122,10 +1146,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
     {
       CStdString strFolder = message.GetStringParam();
       bool bRecursive = message.GetParam1() != 0;
-      if (strFolder.size())
-      {
         RunSlideShow(strFolder, bRecursive);
-      }
     }
     break;
   }
@@ -1251,10 +1272,13 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursiv
   // stop any video
   if (g_application.IsPlayingVideo())
     g_application.StopPlaying();
-  // reset the slideshow
-  Reset();
-  AddItems(strPath, bRecursive);
-  // ok, now run the slideshow
+  if (strPath!="")
+  {
+    // reset the slideshow
+    Reset();
+    AddItems(strPath, bRecursive);
+    // ok, now run the slideshow
+  }
   StartSlideShow();
   if (NumSlides())
     m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
