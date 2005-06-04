@@ -14,23 +14,10 @@ CMusicInfoTagLoaderMPC::~CMusicInfoTagLoaderMPC()
 
 int CMusicInfoTagLoaderMPC::ReadDuration(const CStdString &strFileName)
 {
-  // load the mpc dll if we need it
-  DllLoader *pDll = CSectionLoader::LoadDLL(MPC_DLL);
-  if (!pDll) return 0;
-  // resolve the exports we need
-  bool (__cdecl * Open)(const char *, StreamInfo::BasicData *data, double *timeinseconds) = NULL;
-  void (__cdecl * Close)() = NULL;
-  pDll->ResolveExport("Open", (void **)&Open);
-  pDll->ResolveExport("Close", (void **)&Close);
-  // Read the duration
-  int duration = 0;
-  if (Open && Close)
+  MPCCodec codec;
+  if (codec.Init(strFileName, 4096))
   {
-    double timeinseconds;
-    Open(strFileName.c_str(), NULL, &timeinseconds);
-    Close();
-    duration = (int)(timeinseconds + 0.5);
+    return (int)((codec.m_TotalTime + 500) / 1000);
   }
-  CSectionLoader::UnloadDLL(MPC_DLL);
-  return duration;
+  return 0;
 }
