@@ -182,9 +182,9 @@
   <string><id>249</id><value>Musiikki</value></string>
   <string><id>250</id><value>Visualisointi</value></string>
   <string><id>251</id><value>Valitse kohdehakemisto</value></string>
-  <string><id>252</id><value>- Stereoääni kaikille kaiuttimille</value></string>
+  <string><id>252</id><value>Syötä stereoääni kaikille kaiuttimille</value></string>
   <string><id>253</id><value>Kanavien määrä</value></string>
-  <string><id>254</id><value>- DTS-äänentoistolaite käytössä</value></string>
+  <string><id>254</id><value>- DTS-dekooderi käytössä</value></string>
   <string><id>255</id><value>CDDB</value></string>
   <string><id>256</id><value>Haetaan freedb-kannasta levyn CDDB tiedot</value></string>
   <string><id>257</id><value>Virhe</value></string>
@@ -535,7 +535,6 @@
   <string><id>757</id><value>Muokkaa polun syvyyttä</value></string>
   <string><id>758</id><value>Poistetaan linkki ohjelmaan</value></string>  
   <string><id>759</id><value>Näytä: Iso lista</value></string>
-
   <string><id>760</id><value>Keltainen</value></string>
   <string><id>761</id><value>Valkoinen</value></string>
   <string><id>762</id><value>Sininen</value></string>
@@ -546,12 +545,42 @@
   <string><id>767</id><value>Varattu</value></string>
   <string><id>768</id><value>Varattu</value></string>
   <string><id>769</id><value>Varattu</value></string>
-
   <string><id>770</id><value>Virhe %i: jako ei saatavilla</value></string>
-
+  <string><id>771</id><value>Ohita FATX:n rajoitukset FTP-palvelimessa</value></string>
+  <string><id>772</id><value>Äänilaitteisto</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Nettipelaaminen</value></string>
+  
   <string><id>1000</id><value>Näytönsäästäjän esikatselu</value></string>
+  <string><id>1200</id><value>SMB-jako</value></string>
+  <string><id>1201</id><value>SMB IP-osoite</value></string>
+  <string><id>1202</id><value>SMB työryhmä</value></string>
+  <string><id>1203</id><value>SMB käyttäjätunnus</value></string>
+  <string><id>1204</id><value>SMB salasana</value></string>
+  <string><id>1205</id><value>SMB jaon nimi</value></string>
+  <string><id>1206</id><value>SMB jaon ryhmä</value></string>
+  <string><id>1207</id><value>SMB WINS-palvelin</value></string>
+  <string><id>1208</id><value>Asetustila</value></string>
+  <string><id>1209</id><value>SMB-jako asetettiin onnistuneesti!</value></string>
+  <string><id>1210</id><value>Poista</value></string>
+  <string><id>1211</id><value>Musiikki</value></string>
+  <string><id>1212</id><value>Videot</value></string>
+  <string><id>1213</id><value>Kuvat</value></string>
+  <string><id>1214</id><value>Tiedostot</value></string>
+  <string><id>1215</id><value>Musiikki &amp; Videot</value></string>
+  <string><id>1216</id><value>Musiikki &amp; Kuvat</value></string>
+  <string><id>1217</id><value>Musiikki &amp; Tiedostot</value></string>
+  <string><id>1218</id><value>Videot &amp; Kuvat</value></string>
+  <string><id>1219</id><value>Videot &amp; Tiedostot</value></string>
+  <string><id>1220</id><value>Kuvat &amp; Tiedostot</value></string>
+  <string><id>1221</id><value>Musiikki &amp; Videot &amp; Kuvat</value></string>
+  <string><id>1222</id><value>Musiikki &amp; Videot &amp; Kuvat &amp; Tiedostot</value></string>
+  <string><id>1226</id><value>Tiedostot &amp; Musiikki &amp; Videot</value></string>
+  <string><id>1227</id><value>Tiedostot &amp; Kuvat &amp; Musiikki</value></string>
+  <string><id>1228</id><value>Tiedostot &amp; Kuvat &amp; Videot</value></string>
+  <string><id>1223</id><value>Ei käytössä</value></string>
+  <string><id>1224</id><value>Normaalikäyttäjä</value></string>
+  <string><id>1225</id><value>Tehokäyttäjä</value></string>
 
   <string><id>1396</id><value>Kasaantuvaa</value></string>
   <string><id>1397</id><value>ja</value></string>
@@ -677,11 +706,9 @@
   <string><id>12351</id><value>asettaa pääsalasanan uudelleen käyttöön.)</value></string>
   <string><id>12352</id><value>Anna pääsalasana-painikeyhdistelmä </value></string>
   <string><id>12353</id><value>Uudelleenaktivoi lukitus</value></string>
-  <string><id>12354</id><value>Ohita kansioiden lukituksen uudelleenkäynnitykseen asti?</value></string>
-  <string><id>12355</id><value>ota kansioiden lukituksen automaattisesti käyttöön uudestaan.)</value></string>
-
+  <string><id>12354</id><value>Ohita kansioiden lukitus uudelleenkäynnitykseen asti?</value></string>
+  <string><id>12355</id><value>Ota kansioiden lukituksen automaattisesti käyttöön uudestaan.)</value></string>
   <string><id>12356</id><value>Muuta lukitus</value></string>
-
   <string><id>12357</id><value>Jaon lukitus</value></string>
   <string><id>12358</id><value>Tyhjä salasana. Yritä uudestaan.</value></string>
 
@@ -1007,4 +1034,5 @@
   <string><id>13298</id><value>XBLive!-avain:</value></string>
 
   <string><id>15213</id><value>[PAIKANPITÄJÄ]</value></string>
+  <string><id>15214</id><value>Käytä tasoitettua A/V-synkronointia</value></string>
 </strings>

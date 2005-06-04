@@ -551,6 +551,7 @@
   <string><id>770</id><value>Fehler %i: Share ist nicht verfügbar</value></string>
   <string><id>771</id><value>Workaround für Fatx limits im FTP-Server</value></string>
   <string><id>772</id><value>Audio Hardware</value></string>
+  <string><id>773</id><value>Positionieren</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Online spielen</value></string>
 
@@ -564,9 +565,7 @@
   <string><id>1206</id><value>SMB Share Gruppe</value></string>
   <string><id>1207</id><value>SMB WINS-Server</value></string>
   <string><id>1208</id><value>Modus</value></string>
-  
   <string><id>1209</id><value>Die Einstellungen wurden erforlgreich übernommen</value></string>
-  
   <string><id>1210</id><value>Entfernen</value></string>
   <string><id>1211</id><value>Musik</value></string>
   <string><id>1212</id><value>Video</value></string>
@@ -580,7 +579,10 @@
   <string><id>1220</id><value>Bilder &amp; Dateien</value></string>
   <string><id>1221</id><value>Musik &amp; Video &amp; Bilder</value></string>
   <string><id>1222</id><value>Musik &amp; Video &amp; Bilder &amp; Dateien</value></string>
-  <string><id>1223</id><value>Disabled</value></string>
+  <string><id>1226</id><value>Dateien &amp; Musik &amp; Video</value></string>
+  <string><id>1227</id><value>Dateien &amp; Bilder &amp; Musik</value></string>
+  <string><id>1228</id><value>Dateien &amp; Bilder &amp; Video</value></string>
+  <string><id>1223</id><value>Aus</value></string>
   <string><id>1224</id><value>Normaler Benutzer</value></string>
   <string><id>1225</id><value>Experte</value></string>
   
