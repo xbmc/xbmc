@@ -48,7 +48,6 @@ private:
   bool m_IgnoreLast;      // Ignore first samples if this is true (for gapless playback)
   int m_IgnoredBytes;     // amount of samples ignored thus far
 
-  DllLoader *m_pDll;                  // PAP DLL
   IAudioDecoder* (__cdecl* CreateDecoder)(unsigned int, IAudioOutput **); // our decode function
   bool LoadDLL();                     // load the DLL in question
   bool m_bDllLoaded;                  // whether our dll is loaded

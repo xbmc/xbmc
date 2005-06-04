@@ -24,9 +24,7 @@ OGGCodec::~OGGCodec()
 {
   DeInit();
   if (m_bDllLoaded)
-  {
     CSectionLoader::UnloadDLL(OGG_DLL);
-  }
 }
 
 bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
@@ -128,7 +126,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   //  Seek to the logical bitstream to play
   if (m_TimeOffset>0)
   {
-    if (m_dll.ov_time_seek(&m_VorbisFile, m_TimeOffset)!=0)
+    if (m_dll.ov_time_seek_page(&m_VorbisFile, m_TimeOffset)!=0)
     {
       CLog::Log(LOGERROR, "OGGCodec: Can't seek to the bitstream start time (%s)", strFile1.c_str());
       return false;
@@ -200,7 +198,10 @@ bool OGGCodec::LoadDLL()
   DllLoader* pDll=CSectionLoader::LoadDLL(OGG_DLL);
 
   if (!pDll)
+  {
+    CLog::Log(LOGERROR, "OGGCodec: Unable to load dll %s", OGG_DLL);
     return false;
+  }
 
   pDll->ResolveExport("ov_clear", (void**)&m_dll.ov_clear);
   pDll->ResolveExport("ov_open", (void**)&m_dll.ov_open);
@@ -245,7 +246,8 @@ bool OGGCodec::LoadDLL()
       !m_dll.ov_time_seek_page || !m_dll.ov_raw_tell || !m_dll.ov_pcm_tell || 
       !m_dll.ov_time_tell || !m_dll.ov_info || !m_dll.ov_comment || !m_dll.ov_read) 
   {
-    CLog::Log(LOGERROR, "OGGCodec: Unable to load our dll %s", OGG_DLL);
+    CLog::Log(LOGERROR, "OGGCodec: Unable to resolve exports from %s", OGG_DLL);
+    CSectionLoader::UnloadDLL(OGG_DLL);
     return false;
   }
 

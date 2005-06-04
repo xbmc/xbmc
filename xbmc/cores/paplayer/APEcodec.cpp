@@ -14,13 +14,13 @@ APECodec::APECodec()
 
   // dll stuff
   m_bDllLoaded = false;
-  m_pDll = NULL;
 }
 
 APECodec::~APECodec()
 {
   DeInit();
-  CSectionLoader::UnloadDLL(APE_DLL);
+  if (m_bDllLoaded)
+    CSectionLoader::UnloadDLL(APE_DLL);
 }
 
 bool APECodec::Init(const CStdString &strFile, unsigned int filecache)
@@ -96,27 +96,26 @@ bool APECodec::LoadDLL()
 {
   if (m_bDllLoaded)
     return true;
-  m_pDll = CSectionLoader::LoadDLL(APE_DLL);
-  if (!m_pDll)
+  DllLoader* pDll = CSectionLoader::LoadDLL(APE_DLL);
+  if (!pDll)
   {
     CLog::Log(LOGERROR, "APECodec: Unable to load dll %s", APE_DLL);
     return false;
   }
   // get handle to the functions in the dll
-  m_pDll->ResolveExport("GetVersionNumber", (void**)&m_dll.GetVersionNumber);
-  m_pDll->ResolveExport("c_APEDecompress_Create", (void**)&m_dll.Create);
-  m_pDll->ResolveExport("c_APEDecompress_Destroy", (void**)&m_dll.Destroy);
-  m_pDll->ResolveExport("c_APEDecompress_GetData", (void**)&m_dll.GetData);
-  m_pDll->ResolveExport("c_APEDecompress_Seek", (void**)&m_dll.Seek);
-  m_pDll->ResolveExport("c_APEDecompress_GetInfo", (void**)&m_dll.GetInfo);
+  pDll->ResolveExport("GetVersionNumber", (void**)&m_dll.GetVersionNumber);
+  pDll->ResolveExport("c_APEDecompress_Create", (void**)&m_dll.Create);
+  pDll->ResolveExport("c_APEDecompress_Destroy", (void**)&m_dll.Destroy);
+  pDll->ResolveExport("c_APEDecompress_GetData", (void**)&m_dll.GetData);
+  pDll->ResolveExport("c_APEDecompress_Seek", (void**)&m_dll.Seek);
+  pDll->ResolveExport("c_APEDecompress_GetInfo", (void**)&m_dll.GetInfo);
 
   // Check resolves + version number
   if (!m_dll.GetVersionNumber || !m_dll.Create || !m_dll.Destroy ||
       !m_dll.GetData || !m_dll.Seek || !m_dll.GetInfo || m_dll.GetVersionNumber() != MAC_VERSION_NUMBER)
   {
-    CLog::Log(LOGERROR, "APECodec: Unable to load our dll %s", APE_DLL);
-    delete m_pDll;
-    m_pDll = NULL;
+    CLog::Log(LOGERROR, "APECodec: Unable to resolve exports from %s", APE_DLL);
+    CSectionLoader::UnloadDLL(APE_DLL);
     return false;
   }
 
