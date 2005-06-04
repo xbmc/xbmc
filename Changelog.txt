@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-06-2005 added: G-Force - Ability to select a folder or a zip file for presets from the xml config.
  - 03-06-2005 fixed: stupidity in zip code. big preset zips should be handled more graciously.
  - 03-06-2005 fixed: [ 1214263 ] Duplicate Program Icons
  - 03-06-2005 updated: Swedish strings.xml
