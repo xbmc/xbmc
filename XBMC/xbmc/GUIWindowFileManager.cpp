@@ -1329,6 +1329,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     {
     case 1:
       OnSelectAll(list);
+      bDeselect=false;
       break;
     case 2:
       OnRename(list);
