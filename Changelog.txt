@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-06-2005 updated: Dutch language file (Thnx to tijmengozer)
  - 04-06-2005 updated: German language file
  - 04-06-2005 updated: German (Austrian) language file (Thnx to CEOMR)
  - 04-06-2005 updated: Finnish language file (Thnx to jutski)
