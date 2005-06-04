@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-06-2005 added: HttpApi Slideshow commands
  - 04-06-2005 fixed: File manager, context menu option "select all" does not select all items
  - 04-06-2005 changed: unified dll load/unload in paplayer codecs by using the section loader
  - 03-06-2005 added: G-Force - Ability to select a folder or a zip file for presets from the xml config.
