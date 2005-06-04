@@ -21,17 +21,19 @@ public:
   virtual void OnFeedUpdate(CStdString& aFeed, LPBYTE aColorArray) = 0;
 };
 
-class CRssReader : CThread
+class CRssReader : public CThread
 {
 public:
   CRssReader();
   virtual ~CRssReader();
 
-  void Create(IRssObserver* aObserver, CStdString& aUrl, INT iLeadingSpaces);
+  void Create(IRssObserver* aObserver, vector<wstring>& aUrl, INT iLeadingSpaces);
   bool Load(CStdString& aFile);
   bool Parse(LPSTR szBuffer);
   void getFeed(CStdString& strText, LPBYTE& pbColors);
   void AddTag(const CStdString addTag);
+  DWORD SuspendThread();
+  DWORD ResumeThread();
 
 private:
   void Process();
@@ -40,12 +42,13 @@ private:
   void AddString(CStdString aString, int aColour);
 
   IRssObserver* m_pObserver;
-  CStdString m_strUrl;
+  
   CStdString m_strFeed;
   CStdString m_strColors;
   INT m_iLeadingSpaces;
   TiXmlDocument m_xml;
   list <CStdString> m_tagSet;
+  vector<wstring> m_vecUrls;
 };
 
 #endif // !defined(AFX_RSSREADER_H__157FED93_0CDE_4295_A9AF_75BEF4E81761__INCLUDED_)
