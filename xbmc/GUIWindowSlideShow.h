@@ -134,6 +134,9 @@ public:
   void ShowNext();
   void ShowPrevious();
   void Select(const CStdString& strPicture);
+  vector<CStdString> GetSlideShowContents();
+  CStdString GetCurrentSlide();
+  bool GetCurrentSlideInfo(int &width, int &height);
   void RunSlideShow(const CStdString& strPath, bool bRecursive = false);
   void StartSlideShow();
   bool InSlideShow() const;
