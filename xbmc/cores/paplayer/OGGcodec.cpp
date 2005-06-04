@@ -14,6 +14,7 @@ OGGCodec::OGGCodec()
   m_CodecName = L"OGG";
   m_TimeOffset = 0;
   m_CurrentStream=0;
+  m_VorbisFile.datasource = NULL;
 
   // dll stuff
   ZeroMemory(&m_dll, sizeof(OGGdll));
@@ -29,6 +30,8 @@ OGGCodec::~OGGCodec()
 
 bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
 {
+  m_file.Initialize(filecache);
+
   CStdString strFile=strFile1;
   if (!LoadDLL())
     return false;
@@ -138,7 +141,9 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
 
 void OGGCodec::DeInit()
 {
-  m_dll.ov_clear(&m_VorbisFile);
+  if (m_VorbisFile.datasource)
+    m_dll.ov_clear(&m_VorbisFile);
+  m_VorbisFile.datasource = NULL;
 }
 
 __int64 OGGCodec::Seek(__int64 iSeekTime)
