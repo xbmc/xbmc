@@ -90,6 +90,11 @@ int CFileReader::Read(void *out, __int64 size)
     }
     else
     { // nothing to copy yet - sleep while we wait for our reader thread to read the data in.
+      // check we don't reach EOF and loop forever
+      if (m_bufferedDataPos == m_file.GetLength())
+      { // end of file reached
+        return (int)(size - sizeleft);
+      }
       Sleep(1);
       sleeptime++;
     }
