@@ -216,8 +216,9 @@ void CGUIFontTTF::GetTextExtent( const WCHAR* strText, FLOAT* pWidth,
 {
   unsigned width;
   // First let's calculate width
-  WCHAR buf[1024];
   int len = wcslen(strText);
+  WCHAR* buf = new WCHAR[len+1];
+  buf[0] = L'\0';
   int i = 0, j = 0;
   *pWidth = *pHeight = 0.0f;
 
@@ -241,9 +242,13 @@ void CGUIFontTTF::GetTextExtent( const WCHAR* strText, FLOAT* pWidth,
     i = j + 1;
 
     if (bFirstLineOnly)
+    {
+      delete[] buf;
       return ;
+    }
   }
 
+  delete[] buf;
   return ;
 }
 

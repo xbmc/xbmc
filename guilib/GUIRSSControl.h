@@ -12,13 +12,13 @@
 #include "..\XBMC\Utils\RssReader.h"
 
 /*!
- \ingroup controls
- \brief 
- */
+\ingroup controls
+\brief 
+*/
 class CGUIRSSControl : public CGUIControl, public IRssObserver
 {
 public:
-  CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strUrl, CStdString& strRSSTags);
+  CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strRSSTags);
   virtual ~CGUIRSSControl(void);
 
   virtual void Render();
@@ -28,7 +28,8 @@ public:
   DWORD GetHeadlineTextColor() const { return m_dwHeadlineColor;};
   DWORD GetNormalTextColor() const { return m_dwTextColor;};
   const char *GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
-  const CStdString& GetUrl() const { return m_strUrl; };
+  void SetUrls(const vector<wstring> &vecUrl);
+  const vector<wstring> &GetUrls() const { return m_vecUrls; };
   const CStdString& GetTags() const { return m_strRSSTags; };
 
 protected:
@@ -42,7 +43,6 @@ protected:
   LPBYTE m_pbBuffer;
   LPDWORD m_pdwPalette;
 
-  CStdString m_strUrl;
   CStdString m_strRSSTags;
   D3DCOLOR m_dwChannelColor;
   D3DCOLOR m_dwHeadlineColor;
@@ -56,5 +56,7 @@ protected:
   int m_iTextLenght;
   float m_fTextHeight;
   float m_fTextWidth;
+  SYSTEMTIME timeSnapShot;
+  vector<wstring> m_vecUrls;
 };
 #endif

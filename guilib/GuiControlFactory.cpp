@@ -277,7 +277,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   int iTextureWidth = 80;
   bool bHasPath = false;
   CStdString strExecuteAction = "";
-  CStdString strRSSUrl = "";
+  vector<wstring> vecUrls;
   CStdString strTitle = "";
   CStdString strRSSTags = "";
 
@@ -350,7 +350,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     else if (strType == "rss")
     {
       strFont = ((CGUIRSSControl*)pReference)->GetFontName();
-      strRSSUrl = ((CGUIRSSControl*)pReference)->GetUrl();
+      vecUrls = ((CGUIRSSControl*)pReference)->GetUrls();
       strRSSTags = ((CGUIRSSControl*)pReference)->GetTags();
       dwTextColor3 = ((CGUIRSSControl*)pReference)->GetChannelTextColor();
       dwTextColor2 = ((CGUIRSSControl*)pReference)->GetHeadlineTextColor();
@@ -814,7 +814,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   GetPath(pControlNode, "textureSliderNib", strMid);
   GetPath(pControlNode, "textureSliderNibFocus", strMidFocus);
   GetDWORD(pControlNode, "disposition", dwDisposition);
-  GetString(pControlNode, "feed", strRSSUrl);
+
   GetString(pControlNode, "title", strTitle);
   GetString(pControlNode, "tagset", strRSSTags);
   GetHex(pControlNode, "headlinecolor", dwTextColor2);
@@ -902,28 +902,44 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     vecLabel.clear();
     for (unsigned int i = 0; i < strVecLabel.size(); i++)
     {
-		strTmp = strVecLabel[i];
-		if (strTmp.size() > 0)
-		{
-			if (strTmp[0] != '-')
-			{
-				if (CUtil::IsNaturalNumber(strTmp))
-				{
-					DWORD dwLabelID = atol(strTmp);
-					strLabel = g_localizeStrings.Get(dwLabelID);
-				}
-				else
-				{
-					WCHAR wszTmp[256];
-					swprintf(wszTmp, L"%S", strTmp.c_str());
-					strLabel = wszTmp;
-				}
-		        vecLabel.push_back(strLabel);
-			}
-		}
+      strTmp = strVecLabel[i];
+      if (strTmp.size() > 0)
+      {
+        if (strTmp[0] != '-')
+        {
+          if (CUtil::IsNaturalNumber(strTmp))
+          {
+            DWORD dwLabelID = atol(strTmp);
+            strLabel = g_localizeStrings.Get(dwLabelID);
+          }
+          else
+          {
+            WCHAR wszTmp[256];
+            swprintf(wszTmp, L"%S", strTmp.c_str());
+            strLabel = wszTmp;
+          }
+          vecLabel.push_back(strLabel);
+        }
+      }
     }
   }
 
+  CStdStringArray strVecUrl;
+  if (GetMultipleString(pControlNode, "feed", strVecUrl))
+  {
+    vecUrls.clear();
+    for (unsigned int i = 0; i < strVecUrl.size(); i++)
+    {
+      strTmp = strVecUrl[i];
+      if (strTmp.size() > 0)
+      {
+        WCHAR wszTmp[1024];
+        swprintf(wszTmp, L"%S", strTmp.c_str());
+        wstring tempUrl = wszTmp;
+        vecUrls.push_back(tempUrl);
+      }
+    }
+  }
 
   // stuff for button scroller
   if ( GetString(pControlNode, "orientation", strTmp) )
@@ -953,9 +969,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   if (strType == "label")
   {
     CGUILabelControl* pControl = new CGUILabelControl(
-                                   dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                   strFont, strLabel, dwTextColor, dwDisabledColor,
-                                   dwAlign, bHasPath);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strFont, strLabel, dwTextColor, dwDisabledColor,
+      dwAlign, bHasPath);
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
@@ -966,8 +982,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "edit")
   {
     CGUIEditControl* pControl = new CGUIEditControl(
-                                  dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                  strFont, strLabel, dwTextColor, dwDisabledColor);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strFont, strLabel, dwTextColor, dwDisabledColor);
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
@@ -977,15 +993,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "videowindow")
   {
     CGUIVideoControl* pControl = new CGUIVideoControl(
-                                   dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight);
 
     return pControl;
   }
   else if (strType == "fadelabel")
   {
     CGUIFadeLabelControl* pControl = new CGUIFadeLabelControl(
-                                       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                       strFont, dwTextColor, (dwAlign|dwAlignY));
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strFont, dwTextColor, (dwAlign|dwAlignY));
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
@@ -997,10 +1013,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "spinbutton")
   {
     CGUISpinButtonControl* pControl = new CGUISpinButtonControl(
-                                        dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                        strTextureNoFocus, strTextureFocus,
-                                        strTextureUpFocus, strTextureDownFocus,
-                                        strFont, dwTextColor, (int)dwDisposition);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strTextureNoFocus, strTextureFocus,
+      strTextureUpFocus, strTextureDownFocus,
+      strFont, dwTextColor, (int)dwDisposition);
 
     pControl->SetDisabledColor(dwDisabledColor);
     pControl->SetNavigation(up, down, left, right);
@@ -1011,19 +1027,20 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "rss")
   {
     CGUIRSSControl* pControl = new CGUIRSSControl(
-                                 dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                 strFont, dwTextColor3, dwTextColor2, dwTextColor, strRSSUrl, strRSSTags);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strFont, dwTextColor3, dwTextColor2, dwTextColor, strRSSTags);
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
+    pControl->SetUrls(vecUrls);
     return pControl;
   }
   else if (strType == "ram")
   {
     CGUIRAMControl* pControl = new CGUIRAMControl(
-                                 dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                 strFont, strFont2, dwTextColor3, dwTextColor,
-                                 dwSelectedColor, lTextOffsetX, lTextOffsetY);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strFont, strFont2, dwTextColor3, dwTextColor,
+      dwSelectedColor, lTextOffsetX, lTextOffsetY);
 
     pControl->SetTextSpacing(dwTextSpaceY);
     pControl->SetThumbAttributes(dwThumbWidth, dwThumbHeight, dwThumbSpaceX, dwThumbSpaceY, strDefaultThumb);
@@ -1035,8 +1052,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "console")
   {
     CGUIConsoleControl* pControl = new CGUIConsoleControl(
-                                     dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                     strFont, dwTextColor, dwTextColor2, dwTextColor3, dwSelectedColor);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strFont, dwTextColor, dwTextColor2, dwTextColor3, dwSelectedColor);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
     pControl->SetNavigation(up, down, left, right);
@@ -1045,9 +1062,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "button")
   {
     CGUIButtonControl* pControl = new CGUIButtonControl(
-                                    dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                    strTextureFocus, strTextureNoFocus,
-                                    lTextOffsetX, lTextOffsetY, (dwAlign | dwAlignY));
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strTextureFocus, strTextureNoFocus,
+      lTextOffsetX, lTextOffsetY, (dwAlign | dwAlignY));
 
     pControl->SetLabel(strFont, strLabel, dwTextColor);
     pControl->SetDisabledColor(dwDisabledColor);
@@ -1061,9 +1078,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "conditionalbutton")
   {
     CGUIConditionalButtonControl* pControl = new CGUIConditionalButtonControl(
-          dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-          strTextureFocus, strTextureNoFocus,
-          lTextOffsetX, lTextOffsetY, (dwAlign | dwAlignY));
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strTextureFocus, strTextureNoFocus,
+      lTextOffsetX, lTextOffsetY, (dwAlign | dwAlignY));
 
     pControl->SetLabel(strFont, strLabel, dwTextColor);
     pControl->SetDisabledColor(dwDisabledColor);
@@ -1077,9 +1094,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "togglebutton")
   {
     CGUIToggleButtonControl* pControl = new CGUIToggleButtonControl(
-                                          dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                          strTextureFocus, strTextureNoFocus,
-                                          strTextureAltFocus, strTextureAltNoFocus, lTextOffsetX, lTextOffsetY, (dwAlign | dwAlignY));
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strTextureFocus, strTextureNoFocus,
+      strTextureAltFocus, strTextureAltNoFocus, lTextOffsetX, lTextOffsetY, (dwAlign | dwAlignY));
 
     pControl->SetLabel(strFont, strLabel, dwTextColor);
     pControl->SetDisabledColor(dwDisabledColor);
@@ -1094,9 +1111,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "buttonM")
   {
     CGUIMButtonControl* pControl = new CGUIMButtonControl(
-                                     dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                     dwItems, strTextureFocus, strTextureNoFocus,
-                                     lTextOffsetX, lTextOffsetY);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      dwItems, strTextureFocus, strTextureNoFocus,
+      lTextOffsetX, lTextOffsetY);
 
     pControl->SetLabel(strFont, strLabel, dwTextColor);
     pControl->SetDisabledColor(dwDisabledColor);
@@ -1109,9 +1126,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "checkmark")
   {
     CGUICheckMarkControl* pControl = new CGUICheckMarkControl(
-                                       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                       strTextureCheckMark, strTextureCheckMarkNF,
-                                       dwCheckWidth, dwCheckHeight, dwAlign);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strTextureCheckMark, strTextureCheckMarkNF,
+      dwCheckWidth, dwCheckHeight, dwAlign);
 
     pControl->SetLabel(strFont, strLabel, dwTextColor);
     pControl->SetDisabledColor(dwDisabledColor);
@@ -1124,10 +1141,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "radiobutton")
   {
     CGUIRadioButtonControl* pControl = new CGUIRadioButtonControl(
-                                         dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                         strTextureFocus, strTextureNoFocus,
-                                         lTextOffsetX, lTextOffsetY, (dwAlign | dwAlignY),
-                                         strTextureRadioFocus, strTextureRadioNoFocus);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strTextureFocus, strTextureNoFocus,
+      lTextOffsetX, lTextOffsetY, (dwAlign | dwAlignY),
+      strTextureRadioFocus, strTextureRadioNoFocus);
 
     pControl->SetLabel(strFont, strLabel, dwTextColor);
     pControl->SetDisabledColor(dwDisabledColor);
@@ -1140,9 +1157,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "spincontrol")
   {
     CGUISpinControl* pControl = new CGUISpinControl(
-                                  dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                  strUp, strDown, strUpFocus, strDownFocus,
-                                  strFont, dwTextColor, iType, dwAlign);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strUp, strDown, strUpFocus, strDownFocus,
+      strFont, dwTextColor, iType, dwAlign);
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
@@ -1169,8 +1186,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "slider")
   {
     CGUISliderControl* pControl = new CGUISliderControl(
-                                    dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                    strTextureBg, strMid, strMidFocus, iType);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strTextureBg, strMid, strMidFocus, iType);
 
     pControl->SetVisible(bVisible);
     pControl->SetNavigation(up, down, left, right);
@@ -1181,8 +1198,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "progress")
   {
     CGUIProgressControl* pControl = new CGUIProgressControl(
-                                      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                      strTextureBg, strLeft, strMid, strRight, strOverlay);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strTextureBg, strLeft, strMid, strRight, strOverlay);
 
     pControl->SetVisible(bVisible);
     return pControl;
@@ -1190,7 +1207,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "image")
   {
     CGUIImage* pControl = new CGUIImage(
-                            dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, strTexture, dwColorKey);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, strTexture, dwColorKey);
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
@@ -1203,15 +1220,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "listcontrol")
   {
     CGUIListControl* pControl = new CGUIListControl(
-                                  dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                  strFont,
-                                  dwSpinWidth, dwSpinHeight,
-                                  strUp, strDown,
-                                  strUpFocus, strDownFocus,
-                                  dwSpinColor, iSpinPosX, iSpinPosY,
-                                  strFont, dwTextColor, dwSelectedColor,
-                                  strButton, strButtonFocus,
-                                  lTextOffsetX, lTextOffsetY);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strFont,
+      dwSpinWidth, dwSpinHeight,
+      strUp, strDown,
+      strUpFocus, strDownFocus,
+      dwSpinColor, iSpinPosX, iSpinPosY,
+      strFont, dwTextColor, dwSelectedColor,
+      strButton, strButtonFocus,
+      lTextOffsetX, lTextOffsetY);
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
@@ -1229,15 +1246,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "listcontrolex")
   {
     CGUIListControlEx* pControl = new CGUIListControlEx(
-                                    dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                    strFont,
-                                    dwSpinWidth, dwSpinHeight,
-                                    strUp, strDown,
-                                    strUpFocus, strDownFocus,
-                                    dwSpinColor, iSpinPosX, iSpinPosY,
-                                    strFont, dwTextColor, dwSelectedColor,
-                                    strButton, strButtonFocus,
-                                    lTextOffsetX, lTextOffsetY, dwAlignY);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strFont,
+      dwSpinWidth, dwSpinHeight,
+      strUp, strDown,
+      strUpFocus, strDownFocus,
+      dwSpinColor, iSpinPosX, iSpinPosY,
+      strFont, dwTextColor, dwSelectedColor,
+      strButton, strButtonFocus,
+      lTextOffsetX, lTextOffsetY, dwAlignY);
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
@@ -1253,13 +1270,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "textbox")
   {
     CGUITextBox* pControl = new CGUITextBox(
-                              dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                              strFont,
-                              dwSpinWidth, dwSpinHeight,
-                              strUp, strDown,
-                              strUpFocus, strDownFocus,
-                              dwSpinColor, iSpinPosX, iSpinPosY,
-                              strFont, dwTextColor);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strFont,
+      dwSpinWidth, dwSpinHeight,
+      strUp, strDown,
+      strUpFocus, strDownFocus,
+      dwSpinColor, iSpinPosX, iSpinPosY,
+      strFont, dwTextColor);
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
@@ -1269,15 +1286,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "thumbnailpanel")
   {
     CGUIThumbnailPanel* pControl = new CGUIThumbnailPanel(
-                                     dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                     strFont,
-                                     strImage, strImageFocus,
-                                     dwitemWidth, dwitemHeight,
-                                     dwSpinWidth, dwSpinHeight,
-                                     strUp, strDown,
-                                     strUpFocus, strDownFocus,
-                                     dwSpinColor, iSpinPosX, iSpinPosY,
-                                     strFont, dwTextColor, dwSelectedColor);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strFont,
+      strImage, strImageFocus,
+      dwitemWidth, dwitemHeight,
+      dwSpinWidth, dwSpinHeight,
+      strUp, strDown,
+      strUpFocus, strDownFocus,
+      dwSpinColor, iSpinPosX, iSpinPosY,
+      strFont, dwTextColor, dwSelectedColor);
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
@@ -1302,10 +1319,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "selectbutton")
   {
     CGUISelectButtonControl* pControl = new CGUISelectButtonControl(
-                                          dwParentId, dwID, iPosX, iPosY,
-                                          dwWidth, dwHeight, strTextureFocus, strTextureNoFocus,
-                                          lTextOffsetX, lTextOffsetY, (dwAlign | dwAlignY),
-                                          strTextureBg, strLeft, strLeftFocus, strRight, strRightFocus);
+      dwParentId, dwID, iPosX, iPosY,
+      dwWidth, dwHeight, strTextureFocus, strTextureNoFocus,
+      lTextOffsetX, lTextOffsetY, (dwAlign | dwAlignY),
+      strTextureBg, strLeft, strLeftFocus, strRight, strRightFocus);
 
     pControl->SetLabel(strFont, strLabel, dwTextColor);
     pControl->SetDisabledColor(dwDisabledColor);
@@ -1317,23 +1334,23 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "mover")
   {
     CGUIMoverControl* pControl = new CGUIMoverControl(
-                                   dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                   strTextureFocus, strTextureNoFocus);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strTextureFocus, strTextureNoFocus);
     return pControl;
   }
   else if (strType == "resize")
   {
     CGUIResizeControl* pControl = new CGUIResizeControl(
-                                    dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                    strTextureFocus, strTextureNoFocus);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      strTextureFocus, strTextureNoFocus);
     return pControl;
   }
   else if (strType == "buttonscroller")
   {
     CGUIButtonScroller* pControl = new CGUIButtonScroller(
-                                     dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, iButtonGap, iNumSlots, iDefaultSlot,
-                                     iMovementRange, bHorizontal, iAlpha, bWrapAround, bSmoothScrolling,
-                                     strTextureFocus, strTextureNoFocus, lTextOffsetX, lTextOffsetY, dwAlign | dwAlignY);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, iButtonGap, iNumSlots, iDefaultSlot,
+      iMovementRange, bHorizontal, iAlpha, bWrapAround, bSmoothScrolling,
+      strTextureFocus, strTextureNoFocus, lTextOffsetX, lTextOffsetY, dwAlign | dwAlignY);
     pControl->SetFont(strFont, dwTextColor);
     pControl->SetNavigation(up, down, left, right);
     return pControl;
@@ -1341,9 +1358,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "spincontrolex")
   {
     CGUISpinControlEx* pControl = new CGUISpinControlEx(
-                                    dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, dwSpinWidth, dwSpinHeight,
-                                    strTextureFocus, strTextureNoFocus, strUp, strDown, strUpFocus, strDownFocus,
-                                    strFont, dwTextColor, lTextOffsetX, lTextOffsetY, dwAlignY, iType);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, dwSpinWidth, dwSpinHeight,
+      strTextureFocus, strTextureNoFocus, strUp, strDown, strUpFocus, strDownFocus,
+      strFont, dwTextColor, lTextOffsetX, lTextOffsetY, dwAlignY, iType);
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
