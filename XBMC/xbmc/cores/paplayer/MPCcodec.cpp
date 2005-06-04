@@ -11,7 +11,6 @@ MPCCodec::MPCCodec()
   m_CodecName = L"MPC";
 
   // dll stuff
-  m_pDll = NULL;
   m_bDllLoaded = false;
   ZeroMemory(&m_dll, sizeof(MPCdll));
   m_sampleBufferSize = 0;
@@ -20,6 +19,8 @@ MPCCodec::MPCCodec()
 MPCCodec::~MPCCodec()
 {
   DeInit();
+  if (m_bDllLoaded)
+    CSectionLoader::UnloadDLL(MPC_DLL);
 }
 
 bool MPCCodec::Init(const CStdString &strFile, unsigned int filecache)
@@ -79,12 +80,9 @@ void MPCCodec::DeInit()
 {
   CLog::Log(LOGERROR, "MPCCodec::DeInit");
   if (m_bDllLoaded)
+  {
     m_dll.Close();
-  if (m_pDll)
-    delete m_pDll;
-  m_pDll = NULL;
-  m_bDllLoaded = false;
-  ZeroMemory(&m_dll, sizeof(MPCdll));
+  }
 }
 
 __int64 MPCCodec::Seek(__int64 iSeekTime)
@@ -150,34 +148,25 @@ bool MPCCodec::LoadDLL()
 {
   if (m_bDllLoaded)
     return true;
-  m_pDll = new DllLoader(MPC_DLL, true);
-  if (!m_pDll)
+
+  DllLoader* pDll = CSectionLoader::LoadDLL(MPC_DLL);
+  if (!pDll)
   {
     CLog::Log(LOGERROR, "MPCCodec: Unable to load dll %s", MPC_DLL);
     return false;
   }
-  if (!m_pDll->Parse())
-  {
-    // failed,
-    CLog::Log(LOGERROR, "MPCCodec: Unable to load dll %s", MPC_DLL);
-    delete m_pDll;
-    m_pDll = NULL;
-    return false;
-  }
-  m_pDll->ResolveImports();
 
   // get handle to the functions in the dll
-  m_pDll->ResolveExport("Open", (void**)&m_dll.Open);
-  m_pDll->ResolveExport("Close", (void**)&m_dll.Close);
-  m_pDll->ResolveExport("Read", (void**)&m_dll.Read);
-  m_pDll->ResolveExport("Seek", (void**)&m_dll.Seek);
+  pDll->ResolveExport("Open", (void**)&m_dll.Open);
+  pDll->ResolveExport("Close", (void**)&m_dll.Close);
+  pDll->ResolveExport("Read", (void**)&m_dll.Read);
+  pDll->ResolveExport("Seek", (void**)&m_dll.Seek);
 
   // Check resolves + version number
   if (!m_dll.Open || !m_dll.Close || !m_dll.Read || !m_dll.Seek)
   {
-    CLog::Log(LOGERROR, "MPCCodec: Unable to load our dll %s", MPC_DLL);
-    delete m_pDll;
-    m_pDll = NULL;
+    CLog::Log(LOGERROR, "MPCCodec: Unable to resolve exports from %s", MPC_DLL);
+    CSectionLoader::UnloadDLL(MPC_DLL);
     return false;
   }
 
