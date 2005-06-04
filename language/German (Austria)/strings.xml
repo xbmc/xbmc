@@ -184,7 +184,7 @@
   <string><id>249</id><value>Eigene Musik</value></string>
   <string><id>250</id><value>Visualisierung</value></string>
   <string><id>251</id><value>Ziel Ordner wählen</value></string>
-  <string><id>252</id><value>- Ausgabe an alle Lautsprecher</value></string>
+  <string><id>252</id><value>Ausgabe an alle Lautsprecher</value></string>
   <string><id>253</id><value>Anzahl der Kanäle</value></string>
   <string><id>254</id><value>- Dolby Digital Stereo</value></string>
   <string><id>255</id><value>CDDB</value></string>
@@ -268,7 +268,7 @@
   <string><id>334</id><value>Musik Datenbank reorganisieren</value></string>
   <string><id>335</id><value>Ausführen</value></string>
   <string><id>336</id><value>Framerate anpassen</value></string>
-  <string><id>337</id><value>Audio Ausgabe</value></string>
+  <string><id>337</id><value>Audioausgabe</value></string>
   <string><id>338</id><value>Analog</value></string>
   <string><id>339</id><value>Digital</value></string>
   <string><id>340</id><value>Versch. Interpreten</value></string>
@@ -548,10 +548,44 @@
   <string><id>768</id><value>Vorbehalten</value></string> 
   <string><id>769</id><value>Vorbehalten</value></string>
   <string><id>770</id><value>Fehler %i: Freigabe nicht verfügbar</value></string>
+  <string><id>771</id><value>FTP FatX Übertragungsanpassung</value></string>
+  <string><id>772</id><value>Audioausgabe</value></string>
+  <string><id>773</id><value>Positionssuche</value></string>
 
   <string><id>998</id><value>Online spielen</value></string>
   <string><id>999</id><value>Online spielen</value></string>
   <string><id>1000</id><value>Bildschirmschoner Vorschau</value></string>
+
+  <string><id>1200</id><value>SMB Freigabe</value></string> 
+  <string><id>1201</id><value>SMB IP Adresse</value></string> 
+  <string><id>1202</id><value>SMB Arbeitsgruppe</value></string> 
+  <string><id>1203</id><value>SMB Benutzername</value></string> 
+  <string><id>1204</id><value>SMB Kennwort</value></string> 
+  <string><id>1205</id><value>SMB Benennung</value></string> 
+  <string><id>1206</id><value>SMB Gruppe</value></string> 
+  <string><id>1207</id><value>SMB WINS-Server</value></string> 
+  <string><id>1208</id><value>Modus</value></string>    
+  <string><id>1209</id><value>SMB Freigabe erfolgreich konfiguriert!</value></string> 
+  <string><id>1210</id><value>Entfernen</value></string> 
+  <string><id>1211</id><value>Musik</value></string> 
+  <string><id>1212</id><value>Videos</value></string> 
+  <string><id>1213</id><value>Bilder</value></string> 
+  <string><id>1214</id><value>Dateien</value></string> 
+  <string><id>1215</id><value>Musik &amp; Videos</value></string> 
+  <string><id>1216</id><value>Musik &amp; Bilder</value></string> 
+  <string><id>1217</id><value>Musik &amp; Dateien</value></string> 
+  <string><id>1218</id><value>Videos &amp; Bilder</value></string> 
+  <string><id>1219</id><value>Videos &amp; Dateien</value></string> 
+  <string><id>1220</id><value>Bilder &amp; Dateien</value></string> 
+  <string><id>1221</id><value>Musik &amp; Videos &amp; Bilder</value></string> 
+  <string><id>1222</id><value>Musik &amp; Videos &amp; Bilder &amp; Dateien</value></string> 
+  <string><id>1223</id><value>Deaktiviert</value></string> 
+  <string><id>1224</id><value>Benutzer</value></string> 
+  <string><id>1225</id><value>Hauptbenutzer</value></string> 
+  <string><id>1226</id><value>Dateien &amp; Musik &amp; Videos</value></string> 
+  <string><id>1227</id><value>Dateien &amp; Bilder &amp; Musik</value></string> 
+  <string><id>1228</id><value>Dateien &amp; Bilder &amp; Videos</value></string>
+
   <string><id>1396</id><value>Verwehungen</value></string> 
   <string><id>1397</id><value>und</value></string> 
   <string><id>1398</id><value>Gefrierend</value></string> 
@@ -769,7 +803,7 @@
   <string><id>13311</id><value>- Übergang gleitend</value></string>
   <string><id>13312</id><value>Ränderreduktion</value></string>
   <string><id>13313</id><value>XBOX MediaCenter neustarten</value></string>
-  <string><id>13314</id><value>OSD Einblendzeit</value></string>
+  <string><id>13314</id><value>Überblendung</value></string>
   <string><id>13315</id><value>Miniaturansicht erst.</value></string>
   <string><id>13316</id><value>rekurs. Miniaturansicht</value></string>
   <string><id>13317</id><value>Diaschau</value></string>
@@ -1001,6 +1035,8 @@
   <string><id>15209</id><value>Übertragungs Intervall %i</value></string> 
   <string><id>15210</id><value>%i Lieder gecached</value></string> 
   <string><id>15211</id><value>Übermittlung...</value></string> 
-  <string><id>15212</id><value>Übermittlung in %i sek</value></string> 
+  <string><id>15212</id><value>Übermittlung in %i sek</value></string>
+  <string><id>15213</id><value>[PLACEHOLDER]</value></string>
+  <string><id>15214</id><value>Ausgeglichene A/V Synchronisation verwenden</value></string> 
 
 </strings>

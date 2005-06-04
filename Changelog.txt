@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-06-2005 updated: German language file
+ - 04-06-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 04-06-2005 updated: Finnish language file (Thnx to jutski)
+ - 04-06-2005 updated: Norwegian language file (Thnx to vnm)
  - 04-06-2005 added: HttpApi Slideshow commands
  - 04-06-2005 fixed: File manager, context menu option "select all" does not select all items
  - 04-06-2005 changed: unified dll load/unload in paplayer codecs by using the section loader

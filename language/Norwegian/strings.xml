@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.202. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.205. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -549,6 +549,7 @@
   <string><id>770</id><value>Feil %i: mappe ikke tilgjengelig</value></string>
   <string><id>771</id><value>Løsning for fatx-grenser i FTP-server</value></string>
   <string><id>772</id><value>Lyd-maskinvare</value></string>
+  <string><id>773</id><value>Søker</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Spill på nettet</value></string>
 
@@ -562,9 +563,7 @@
   <string><id>1206</id><value>SMB delingsgruppe</value></string>
   <string><id>1207</id><value>SMB WINS-server</value></string>
   <string><id>1208</id><value>Instillinger</value></string>
-  
   <string><id>1209</id><value>SMB delingsinstillinger ble lagret!</value></string>
-  
   <string><id>1210</id><value>Fjern</value></string>
   <string><id>1211</id><value>Musikk</value></string>
   <string><id>1212</id><value>Video</value></string>
@@ -578,6 +577,9 @@
   <string><id>1220</id><value>Bilder &amp; Filer</value></string>
   <string><id>1221</id><value>Musikk &amp; Video &amp; Bilder</value></string>
   <string><id>1222</id><value>Musikk &amp; Video &amp; Bilder &amp; Filer</value></string>
+  <string><id>1226</id><value>Filer &amp; Musikk &amp; Video</value></string>
+  <string><id>1227</id><value>Filer &amp; Bilder &amp; Musikk</value></string>
+  <string><id>1228</id><value>Filer &amp; Bilder &amp; Video</value></string>
   <string><id>1223</id><value>Skrudd av</value></string>
   <string><id>1224</id><value>Normal bruker</value></string>
   <string><id>1225</id><value>Avansert bruker</value></string>
