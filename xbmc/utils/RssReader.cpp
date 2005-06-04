@@ -20,65 +20,125 @@ CRssReader::CRssReader() : CThread()
 CRssReader::~CRssReader()
 {}
 
-void CRssReader::Create(IRssObserver* aObserver, CStdString& aUrl, INT iLeadingSpaces)
+void CRssReader::Create(IRssObserver* aObserver, vector<wstring>& aUrls, INT iLeadingSpaces)
 {
   m_pObserver = aObserver;
-  m_strUrl = aUrl;
   m_iLeadingSpaces = iLeadingSpaces;
+  m_vecUrls = aUrls;
 
   CThread::Create(false);
 }
 
-void CRssReader::Process()
+DWORD CRssReader::ResumeThread()
 {
-  CHTTP http;
-  CStdString strXML;
-  CStdString strFeed;
-  LPBYTE pbColors = NULL;
-
-  int nRetries = 3;
-
-  while ( (!m_bStop) && (nRetries > 0) )
-  {
-    nRetries--;
-
-    if (http.Get(m_strUrl, strXML))
-    {
-      break;
-    }
-  }
-
-  if ((!strXML.IsEmpty()) && m_pObserver)
-  {
-    // remove CDATA sections from our buffer (timyXML is not able to parse these)
-    CStdString strCDATAElement;
-    int iStart = strXML.Find("<![CDATA[");
-    int iEnd = 0;
-    while (iStart > 0)
-    {
-      // get CDATA end position
-      iEnd = strXML.Find("]]>", iStart) + 3;
-
-      // get data in CDATA section
-      strCDATAElement = strXML.substr(iStart + 9, iEnd - iStart - 12);
-
-      // replace CDATA section with new string
-      strXML = strXML.erase(iStart, iEnd - iStart).insert(iStart, strCDATAElement);
-
-      iStart = strXML.Find("<![CDATA[");
-    }
-
-    if (Parse((LPSTR)strXML.c_str()))
-    {
-      getFeed(strFeed, pbColors);
-      g_graphicsContext.Lock();
-      m_pObserver->OnFeedUpdate(strFeed, pbColors);
-      g_graphicsContext.Unlock();
-    }
-  }
+  return ::ResumeThread(m_ThreadHandle);
 }
 
+DWORD CRssReader::SuspendThread()
+{
+  return ::SuspendThread(m_ThreadHandle);
+}
 
+void CRssReader::Process()
+{
+  int tempLeading = m_iLeadingSpaces;
+  while (!CThread::m_bStop)
+  {
+    CStdString strFeed;
+    LPBYTE pbColors = NULL;
+    vector<pair<LPBYTE,int> > vecColors;
+
+    m_strFeed = "";
+    m_strColors = "";
+
+    CLog::Log(LOGDEBUG,"# of feeds: %i",m_vecUrls.size());
+
+    CStdString strWholeFeed;
+    for (unsigned i = 0; i < (int)m_vecUrls.size(); i++)
+    {
+      if (i > 0)
+      {
+        m_iLeadingSpaces = tempLeading / 2;
+      }
+      else
+      {
+        m_iLeadingSpaces = tempLeading;
+      }
+
+      CHTTP http;
+      CStdString strXML;
+      CStdString strUrl = m_vecUrls[i];
+
+      int nRetries = 3;
+
+      while ( (!m_bStop) && (nRetries > 0) )
+      {
+        nRetries--;
+
+        if (http.Get(strUrl, strXML))
+        {
+          CLog::Log(LOGDEBUG, "Got rss feed: %s", strUrl.c_str());
+          break;
+        }
+      }
+
+      if ((!strXML.IsEmpty()) && m_pObserver)
+      {
+        // remove CDATA sections from our buffer (timyXML is not able to parse these)
+        CStdString strCDATAElement;
+        int iStart = strXML.Find("<![CDATA[");
+        int iEnd = 0;
+        while (iStart > 0)
+        {
+          // get CDATA end position
+          iEnd = strXML.Find("]]>", iStart) + 3;
+
+          // get data in CDATA section
+          strCDATAElement = strXML.substr(iStart + 9, iEnd - iStart - 12);
+
+          // replace CDATA section with new string
+          strXML = strXML.erase(iStart, iEnd - iStart).insert(iStart, strCDATAElement);
+
+          iStart = strXML.Find("<![CDATA[");
+        }
+
+        if (Parse((LPSTR)strXML.c_str()))
+        {
+          CLog::Log(LOGDEBUG, "Parsed rss feed: %s", strUrl.c_str());
+        }
+      }
+      CLog::Log(LOGDEBUG,"getfeed!");
+      /*getFeed(strFeed, pbColors);
+      strWholeFeed += strFeed;
+      vecColors.push_back(std::make_pair<LPBYTE,int>(pbColors,strFeed.size()));
+      pbColors = NULL;
+      CLog::Log(LOGDEBUG,"gotfeed!");*/
+    }
+    getFeed(strWholeFeed,pbColors);
+    if (strWholeFeed.size() > 0)
+    {
+      /*CLog::Log(LOGDEBUG,"size down: %i, %s",strWholeFeed.length(),strWholeFeed.c_str());
+      pbColors = new BYTE[strWholeFeed.length()];
+      unsigned int j=0;
+      for (unsigned int yo=0;yo<vecColors.size();++yo )
+      {
+        CLog::Log(LOGDEBUG,"copy %i bytes from %p to %p",vecColors[yo].second,pbColors+j,vecColors[yo].first);
+        memcpy(pbColors+j,vecColors[yo].first,vecColors[yo].second);
+        delete[] vecColors[yo].first;
+        j +=vecColors[yo].second;
+      }*/
+      //CLog::Log(LOGDEBUG,"size down: %i %i, %s",j,strWholeFeed.size(),strWholeFeed.c_str());
+      CLog::Log(LOGDEBUG,"lock context!");  
+      g_graphicsContext.Lock();
+      CLog::Log(LOGDEBUG,"locked context!");  
+      m_pObserver->OnFeedUpdate(strWholeFeed, pbColors);
+      CLog::Log(LOGDEBUG,"unlocklock context!");  
+      g_graphicsContext.Unlock();
+    }
+    CLog::Log(LOGDEBUG,"suspending thread!");
+    SuspendThread();
+  }
+}
 
 void CRssReader::getFeed(CStdString& strText, LPBYTE& pbColors)
 {
@@ -188,9 +248,7 @@ bool CRssReader::Load(CStdString& aFile)
 
 bool CRssReader::Parse(LPSTR szBuffer)
 {
-  m_strFeed = "";
-  m_strColors = "";
-
+  m_xml.Clear();
   m_xml.Parse((LPCSTR)szBuffer);
 
   return Parse();
@@ -229,7 +287,7 @@ bool CRssReader::Parse()
     if (titleNode && !titleNode->NoChildren())
     {
       CStdString strChannel;
-      strChannel.Format("%s RSS News: ", titleNode->FirstChild()->Value());
+      strChannel.Format("%s: ", titleNode->FirstChild()->Value());
       AddString(strChannel, RSS_COLOR_CHANNEL);
     }
 
