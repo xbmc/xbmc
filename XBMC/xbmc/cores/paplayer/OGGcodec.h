@@ -1,6 +1,7 @@
 #pragma once
 #include "ICodec.h"
 #include "ogg/vorbisfile.h"
+#include "FileReader.h"
 
 class OGGCodec : public ICodec
 {
@@ -59,7 +60,7 @@ private:
   static int CloseCallback(void *datasource);
   static long TellCallback(void *datasource);
 
-  CFile m_file;
+  CFileReader m_file;
   OGGdll m_dll;
   OggVorbis_File m_VorbisFile;
   double m_TimeOffset;
