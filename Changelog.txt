@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-06-2005 changed: Ogg codec now uses the FileReader.
  - 04-06-2005 changed: Updated MPCCodec.dll so that MPC files use the FileReader.
  - 04-06-2005 updated: [ 1212669 ] Newest BiosIDs.ini (Thnx to bubbadood)
  - 04-06-2005 changed: added zipped G-Force presetfiles.
