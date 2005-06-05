@@ -28,8 +28,8 @@ public:
   DWORD GetHeadlineTextColor() const { return m_dwHeadlineColor;};
   DWORD GetNormalTextColor() const { return m_dwTextColor;};
   const char *GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
-  void SetUrls(const vector<wstring> &vecUrl);
-  const vector<wstring> &GetUrls() const { return m_vecUrls; };
+  void SetUrls(const std::vector<wstring>& vecUrl);
+  const std::vector<wstring>& GetUrls() const { return m_vecUrls; };
   const CStdString& GetTags() const { return m_strRSSTags; };
 
 protected:
@@ -57,6 +57,6 @@ protected:
   float m_fTextHeight;
   float m_fTextWidth;
   SYSTEMTIME timeSnapShot;
-  vector<wstring> m_vecUrls;
+  std::vector<wstring> m_vecUrls;
 };
 #endif

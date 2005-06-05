@@ -1685,8 +1685,7 @@ void CUtil::RemoveIllegalChars( CStdString& strText)
 {
   char szRemoveIllegal [1024];
   strcpy(szRemoveIllegal , strText.c_str());
-  // legg til åæø og tødler
-  static char legalChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~. ";
+  static char legalChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.åäöø ";
   char *cursor;
   for (cursor = szRemoveIllegal; *(cursor += strspn(cursor, legalChars)); /**/ )
     *cursor = '_';

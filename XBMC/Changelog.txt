@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-06-2005 fixed: some legal fat-x chars were not in the list - thanks to yoci!
+ - 06-06-2005 changed: moved rss specifications to xboxmediacenter.xml and added url sets.
+ - 06-06-2005 changed: removed libmp4 linkage. reduces xbe with ~ 110kb
+ - 06-06-2005 added: sf.net patch [1215111] Fast AAC/MP4 tag retrieval - thanks to arnie pie!
  - 05-06-2005 changed: Cleaned up use of CUtil::cmpnocase, replacing with strcmpi throughout.
  - 05-06-2005 added: Combined spectrums into a single .vis with presets, changeable on the fly.
  - 05-06-2005 fixed: dvdplayer would fail to play from scrambled disc untill mplayer had once played it

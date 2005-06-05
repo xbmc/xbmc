@@ -117,14 +117,12 @@ void CGUIRSSControl::Render()
 void CGUIRSSControl::OnFeedUpdate(CStdString& aFeed, LPBYTE aColorArray)
 {
   int nStringLength = aFeed.GetLength() + 1;
-  CLog::Log(LOGDEBUG,"delete %p %p %p",m_pwzText,m_pwzBuffer,m_pbBuffer);
   if (m_pwzText)
     delete[] m_pwzText;
   if (m_pwzBuffer)
     delete[] m_pwzBuffer;
   if (m_pbBuffer)
     delete[] m_pbBuffer;
-  CLog::Log(LOGDEBUG,"delete %p %p %p",m_pwzText,m_pwzBuffer,m_pbBuffer);
 
   m_pwzText = NULL;
   m_pwzBuffer = NULL;
@@ -134,9 +132,8 @@ void CGUIRSSControl::OnFeedUpdate(CStdString& aFeed, LPBYTE aColorArray)
   m_pwzBuffer = new WCHAR[nStringLength];
   swprintf(m_pwzText, L"%S", aFeed.c_str() );
 
-  CLog::Log(LOGDEBUG,"getfont!");
   if (m_pFont) m_pFont->GetTextExtent( m_pwzText, &m_fTextWidth, &m_fTextHeight);
-  CLog::Log(LOGDEBUG,"gotfont!");
+
   m_iTextLenght = (int)wcslen(m_pwzText);
 
   m_pbColors = aColorArray;
