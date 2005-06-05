@@ -16,7 +16,7 @@
 
 struct AudioPacket
 {
-  BYTE packet[PACKET_SIZE];
+  BYTE *packet;
   DWORD length;
   DWORD status;
   int   stream;
@@ -118,7 +118,7 @@ private:
 
   int m_currentStream;
   IDirectSoundStream *m_pStream[2];
-  AudioPacket         packet[2][PACKET_COUNT];
+  AudioPacket         m_packet[2][PACKET_COUNT];
 
   __int64                 m_bytesSentOut;
 
