@@ -435,6 +435,29 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
       pStackRegExp = pStackRegExp->NextSibling("regexp");
     }
   }
+  // rss feeds
+  TiXmlElement* pRssFeeds = pRootElement->FirstChildElement("rss");
+  if (pRssFeeds)
+  {
+    g_settings.m_vecRssUrls.clear();
+    TiXmlNode* pSet = pRssFeeds->FirstChild("set");
+    while (pSet) {
+      std::vector<wstring> vecSet;
+      TiXmlNode* pFeed = pSet->FirstChild("feed");
+      while (pFeed)
+      {
+        if (pFeed->FirstChild())
+        {
+          CStdStringW strUrl = pFeed->FirstChild()->Value();
+          strUrl.MakeLower();
+          vecSet.push_back(strUrl);
+        }
+        pFeed = pFeed->NextSibling("feed");
+      }
+      g_settings.m_vecRssUrls.push_back(vecSet);
+      pSet = pSet->NextSibling("set");
+    }
+  }
 
   GetInteger(pRootElement, "startwindow", g_stSettings.m_iStartupWindow, 0, 0, INT_MAX);
   g_stSettings.m_iStartupWindow += WINDOW_HOME; // windows referenced from WINDOW_HOME

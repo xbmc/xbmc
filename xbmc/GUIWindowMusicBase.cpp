@@ -246,7 +246,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       if (m_bSectionsLoaded)
       {
         CSectionLoader::Unload("LIBID3");
-        CSectionLoader::Unload("LIBMP4");
+//        CSectionLoader::Unload("LIBMP4");
         CSectionLoader::UnloadDLL(APE_DLL);
         CSectionLoader::UnloadDLL(SHN_DLL);
         CSectionLoader::UnloadDLL(MPC_DLL);
@@ -262,7 +262,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
 
       CSectionLoader::Load("LIBID3");
-      CSectionLoader::Load("LIBMP4");
+//      CSectionLoader::Load("LIBMP4");
       CSectionLoader::LoadDLL(APE_DLL);
       CSectionLoader::LoadDLL(SHN_DLL);
       CSectionLoader::LoadDLL(MPC_DLL);
