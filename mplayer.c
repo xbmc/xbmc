@@ -4419,16 +4419,19 @@ if(rel_seek_secs || abs_seek_pos){
 
       if(sh_video){
 	 current_module="seek_video_reset";
-       #ifdef _XBOX
+#ifdef _XBOX
          // do not call resync_video_stream when ffwd'ing, this causes problems :)
-         if (playback_speed != orgplayback_speed)
-       #endif
+         if(ffrw_speed==0)
+#endif
          resync_video_stream(sh_video);
          if(vo_config_count) video_out->control(VOCTRL_RESET,NULL);
       }
       
       if(sh_audio){
         current_module="seek_audio_reset";
+#ifdef _XBOX //Only reset audio of we are not ff/rwding. it's way to slow to do
+        if(ffrw_speed==0)
+#endif
         audio_out->reset(); // stop audio, throwing away buffered data
       }
 #ifdef USE_OSD
