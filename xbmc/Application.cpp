@@ -616,6 +616,7 @@ HRESULT CApplication::Create()
   {
     // should use xkeeprom.h :/
     EEPROMDATA EEPROM;
+  	ZeroMemory(&EEPROM, sizeof(EEPROMDATA));
 
     if( XKUtils::ReadEEPROMFromXBOX((LPBYTE)&(EEPROM),0,255) ) 
     {
