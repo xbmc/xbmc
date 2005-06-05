@@ -216,6 +216,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   vector<wstring> vecLabel;
   wstring strLabel;
   DWORD dwTextColor = 0xFFFFFFFF;
+  int iUrlSet=0;
   DWORD dwAlign = XBFONT_LEFT;
   DWORD dwAlignY = 0;
   CStdString strTextureFocus, strTextureNoFocus, strTextureUpFocus, strTextureDownFocus;
@@ -277,7 +278,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   int iTextureWidth = 80;
   bool bHasPath = false;
   CStdString strExecuteAction = "";
-  vector<wstring> vecUrls;
   CStdString strTitle = "";
   CStdString strRSSTags = "";
 
@@ -350,7 +350,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     else if (strType == "rss")
     {
       strFont = ((CGUIRSSControl*)pReference)->GetFontName();
-      vecUrls = ((CGUIRSSControl*)pReference)->GetUrls();
       strRSSTags = ((CGUIRSSControl*)pReference)->GetTags();
       dwTextColor3 = ((CGUIRSSControl*)pReference)->GetChannelTextColor();
       dwTextColor2 = ((CGUIRSSControl*)pReference)->GetHeadlineTextColor();
@@ -924,7 +923,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     }
   }
 
-  CStdStringArray strVecUrl;
+  GetInt(pControlNode,"urlset",iUrlSet);
+  
+  /*  CStdStringArray strVecUrl;
   if (GetMultipleString(pControlNode, "feed", strVecUrl))
   {
     vecUrls.clear();
@@ -939,7 +940,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
         vecUrls.push_back(tempUrl);
       }
     }
-  }
+  }*/
 
   // stuff for button scroller
   if ( GetString(pControlNode, "orientation", strTmp) )
@@ -1032,7 +1033,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetUrls(vecUrls);
+    pControl->SetUrls(g_settings.m_vecRssUrls[iUrlSet]);
     return pControl;
   }
   else if (strType == "ram")

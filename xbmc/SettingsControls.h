@@ -4,6 +4,7 @@
 #include "GUIButtonControl.h"
 #include "GUIRadioButtonControl.h"
 #include <xtl.h>
+#include "../guilib/stdstring.h"
 
 class CBaseSettingControl
 {

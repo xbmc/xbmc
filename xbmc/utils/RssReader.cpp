@@ -51,9 +51,6 @@ void CRssReader::Process()
     m_strFeed = "";
     m_strColors = "";
 
-    CLog::Log(LOGDEBUG,"# of feeds: %i",m_vecUrls.size());
-
-    CStdString strWholeFeed;
     for (unsigned i = 0; i < (int)m_vecUrls.size(); i++)
     {
       if (i > 0)
@@ -107,35 +104,14 @@ void CRssReader::Process()
           CLog::Log(LOGDEBUG, "Parsed rss feed: %s", strUrl.c_str());
         }
       }
-      CLog::Log(LOGDEBUG,"getfeed!");
-      /*getFeed(strFeed, pbColors);
-      strWholeFeed += strFeed;
-      vecColors.push_back(std::make_pair<LPBYTE,int>(pbColors,strFeed.size()));
-      pbColors = NULL;
-      CLog::Log(LOGDEBUG,"gotfeed!");*/
     }
-    getFeed(strWholeFeed,pbColors);
-    if (strWholeFeed.size() > 0)
+    getFeed(strFeed,pbColors);
+    if (strFeed.size() > 0)
     {
-      /*CLog::Log(LOGDEBUG,"size down: %i, %s",strWholeFeed.length(),strWholeFeed.c_str());
-      pbColors = new BYTE[strWholeFeed.length()];
-      unsigned int j=0;
-      for (unsigned int yo=0;yo<vecColors.size();++yo )
-      {
-        CLog::Log(LOGDEBUG,"copy %i bytes from %p to %p",vecColors[yo].second,pbColors+j,vecColors[yo].first);
-        memcpy(pbColors+j,vecColors[yo].first,vecColors[yo].second);
-        delete[] vecColors[yo].first;
-        j +=vecColors[yo].second;
-      }*/
-      //CLog::Log(LOGDEBUG,"size down: %i %i, %s",j,strWholeFeed.size(),strWholeFeed.c_str());
-      CLog::Log(LOGDEBUG,"lock context!");  
       g_graphicsContext.Lock();
-      CLog::Log(LOGDEBUG,"locked context!");  
-      m_pObserver->OnFeedUpdate(strWholeFeed, pbColors);
-      CLog::Log(LOGDEBUG,"unlocklock context!");  
+      m_pObserver->OnFeedUpdate(strFeed, pbColors);
       g_graphicsContext.Unlock();
     }
-    CLog::Log(LOGDEBUG,"suspending thread!");
     SuspendThread();
   }
 }

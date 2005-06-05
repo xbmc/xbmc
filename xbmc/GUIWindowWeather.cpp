@@ -47,6 +47,10 @@ CGUIWindowWeather::CGUIWindowWeather(void)
     : CGUIWindow(0)
 {
   m_iCurWeather = 0;
+#ifdef _USE_ZIP_
+  
+
+#endif
   srand(timeGetTime());
 }
 
