@@ -187,12 +187,14 @@ void XKUtils::WriteEEPROMToXBOX(LPBYTE EEPROMDATA, UCHAR STARTPOS, UCHAR ENDPOS)
 bool XKUtils::ReadEEPROMFromXBOX(LPBYTE EEPROMDATA, UCHAR STARTPOS, UCHAR ENDPOS)
 {
 	// StartPos and EndPos are both ZERO offset based
-	ZeroMemory(EEPROMDATA, 256);
-	
+	BYTE pad[4];
 	OUTPUT_DEBUG_STRING( "XKUtils: Reading EEPROM from XBOX...\n" );
 	for (UCHAR i=STARTPOS;i<ENDPOS;i++)
 	{
-		HalReadSMBusValue(SMBDEV_EEPROM, i, 0, EEPROMDATA+i);
+    //HalReadSMBusValue allways touches 4 bytes on each call. we use a temp variable to not 
+    //overrun the given target
+		HalReadSMBusValue(SMBDEV_EEPROM, i, 0, pad);
+    (*(EEPROMDATA+i)) = pad[0];
 		Sleep(1);
 	}
 	return TRUE;
