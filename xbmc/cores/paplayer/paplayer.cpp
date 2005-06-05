@@ -38,6 +38,8 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_pStream[0] = NULL;
   m_pStream[1] = NULL;
   m_currentStream = 0;
+  m_packet[0][0].packet = NULL;
+  m_packet[1][0].packet = NULL;
 
   m_bytesSentOut = 0;
 
@@ -54,28 +56,6 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
 PAPlayer::~PAPlayer()
 {
   CloseFile();
-  m_decoder[0].Destroy();
-  m_decoder[1].Destroy();
-
-  if (m_pStream[0])
-  {
-    // destroy the stream nicely
-    m_pStream[0]->Discontinuity();
-    m_pStream[0]->FlushEx( 0, DSSTREAMFLUSHEX_ASYNC | DSSTREAMFLUSHEX_ENVELOPE );
-    DirectSoundDoWork();
-    m_pStream[0]->Release();
-  }
-  m_pStream[0] = NULL;
-
-  if (m_pStream[1])
-  {
-    // destroy the stream nicely
-    m_pStream[1]->Discontinuity();
-    m_pStream[1]->FlushEx( 0, DSSTREAMFLUSHEX_ASYNC | DSSTREAMFLUSHEX_ENVELOPE );
-    DirectSoundDoWork();
-    m_pStream[1]->Release();
-  }
-  m_pStream[1] = NULL;
 }
 
 void PAPlayer::OnExit()
@@ -150,12 +130,8 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
   unsigned int channels, samplerate, bitspersample;
   m_decoder[decoder].GetDataFormat(&channels, &samplerate, &bitspersample);
 
-  // Are we playing gapless?
-  if (0)
-  {
-    // gapless
-  }
-  else
+  // check the number of channels isn't changing (else we can't do crossfading)
+  if (m_crossFading && m_decoder[m_currentDecoder].GetChannels() == channels)
   { // crossfading - need to create a new stream
     if (!CreateStream(1 - m_currentStream, channels, samplerate, bitspersample))
     {
@@ -198,16 +174,28 @@ bool PAPlayer::CloseFile()
 void PAPlayer::FreeStream(int stream)
 {
   if (m_pStream[stream])
+  {
+    m_pStream[stream]->Flush();
+    m_pStream[stream]->Pause(DSSTREAMPAUSE_PAUSE);  // do we need this?
     m_pStream[stream]->Release();
+  }
   m_pStream[stream] = NULL;
-  ZeroMemory(packet[stream], PACKET_COUNT * sizeof(AudioPacket));
+
+  if (m_packet[stream][0].packet)
+    XPhysicalFree(m_packet[stream][0].packet);
+  for (int i = 0; i < PACKET_COUNT; i++)
+  {
+    m_packet[stream][i].packet = NULL;
+    m_packet[stream][i].status = XMEDIAPACKET_STATUS_SUCCESS;
+  }
+
   m_resampler[stream].DeInitialize();
 }
 
 void PAPlayer::SetupDirectSound(int channels)
 {
   bool bAudioOnAllSpeakers(false);
-  g_audioContext.RemoveActiveDevice(); 
+  g_audioContext.RemoveActiveDevice();
   g_audioContext.SetupSpeakerConfig(channels, bAudioOnAllSpeakers,true);
   g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
   LPDIRECTSOUND pDSound=g_audioContext.GetDirectSoundDevice();
@@ -221,6 +209,12 @@ void PAPlayer::SetupDirectSound(int channels)
 bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample)
 {
   FreeStream(num);
+
+  // Create our audio buffers
+  // XphysicalAlloc has page (4k) granularity, so allocate all the buffers in one chunk
+  m_packet[num][0].packet = (BYTE*)XPhysicalAlloc(PACKET_SIZE * PACKET_COUNT, MAXULONG_PTR, 0, PAGE_READWRITE | PAGE_WRITECOMBINE);
+  for (int i = 1; i < PACKET_COUNT ; i++)
+    m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
 
   // create our resampler
   m_resampler[num].InitConverter(samplerate, bitspersample, channels, 48000, 16, PACKET_SIZE);
@@ -415,7 +409,7 @@ bool PAPlayer::ProcessPAP()
       m_cachingNextFile = true;
     }
 
-    if (m_crossFading)
+    if (m_crossFading && m_decoder[0].GetChannels() == m_decoder[1].GetChannels())
     {
       if (GetTotalTime64() - GetTime() < m_crossFading * 1000L && !m_currentlyCrossFading)
       { // request the next file from our application
@@ -426,10 +420,6 @@ bool PAPlayer::ProcessPAP()
           m_currentDecoder = 1 - m_currentDecoder;
           m_decoder[m_currentDecoder].Start();
           m_currentStream = 1 - m_currentStream;
-          if (m_decoder[0].GetChannels() != m_decoder[1].GetChannels())
-          { // channel change - reset speaker config
-            CLog::Log(LOGWARNING, "PAPlayer: Channel number has changed - unimplemented feature!");
-          }
           CLog::Log(LOGINFO, "Starting Crossfade - resuming stream %i", m_currentStream);
           m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
           m_callback.OnPlayBackStarted();
@@ -453,8 +443,8 @@ bool PAPlayer::ProcessPAP()
         if (nextstatus == STATUS_QUEUED || nextstatus == STATUS_QUEUING || nextstatus == STATUS_PLAYING)
         { // swap streams
           CLog::Log(LOGINFO, "PAPlayer: Swapping tracks %i to %i", m_currentDecoder, 1-m_currentDecoder);
-          if (!m_crossFading)
-          { // playing gapless (we use only the 1 output stream in this case
+          if (!m_crossFading || m_decoder[0].GetChannels() != m_decoder[1].GetChannels())
+          { // playing gapless (we use only the 1 output stream in this case)
             int prefixAmount = m_decoder[m_currentDecoder].GetDataSize();
             CLog::Log(LOGINFO, "PAPlayer::Prefixing %i bytes of old data to new track for gapless playback", prefixAmount);
             m_decoder[1 - m_currentDecoder].PrefixData(m_decoder[m_currentDecoder].GetData(prefixAmount), prefixAmount);
@@ -463,7 +453,20 @@ bool PAPlayer::ProcessPAP()
             m_decoder[m_currentDecoder].GetDataFormat(&channels, &samplerate, &bitspersample);
             unsigned int channels2, samplerate2, bitspersample2;
             m_decoder[1 - m_currentDecoder].GetDataFormat(&channels2, &samplerate2, &bitspersample2);
-            if (channels != channels2 || samplerate != samplerate2 || bitspersample != bitspersample2)
+            // change of channels - reinitialize our speaker configuration
+            if (channels != channels2)
+            {
+              CLog::Log(LOGWARNING, "PAPlayer: Channel number has changed - restarting direct sound");
+              FreeStream(m_currentStream);
+              SetupDirectSound(channels2);
+              if (!CreateStream(m_currentStream, channels2, samplerate2, bitspersample2))
+              {
+                CLog::Log(LOGERROR, "PAPlayer: Error creating stream!");
+                return false;
+              }
+              m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
+            }
+            else if (samplerate != samplerate2 || bitspersample != bitspersample2)
             {
               CLog::Log(LOGINFO, "PAPlayer: Restarting resampler due to a change in data format");
               m_resampler[m_currentStream].DeInitialize();
@@ -471,12 +474,6 @@ bool PAPlayer::ProcessPAP()
               {
                 CLog::Log(LOGERROR, "PAPlayer: Error initializing resampler!");
                 return false;
-              }
-              // change of channels - reinitialize our speaker configuration
-              if (channels != channels2)
-              {
-                CLog::Log(LOGWARNING, "PAPlayer: Channel number has changed - unimplemented feature!");
-//                SetupDirectSound(channels2);
               }
             }
             CLog::Log(LOGINFO, "PAPlayer: Starting new track");
@@ -573,7 +570,7 @@ bool PAPlayer::ProcessPAP()
     if (retVal == RET_SLEEP && retVal2 == RET_SLEEP)
       Sleep(1);
     DWORD time3 = timeGetTime();
- //   CLog::Log(LOGINFO, "Time Decoding: %i, Time Resampling: %i, bytes processed %i, buffer 1 state %i, buffer 2 state %i", time2-time, time3-time2, dataToRead, m_decoder[m_currentDecoder].GetDataSize(), m_decoder[1 - m_currentDecoder].GetDataSize());
+//   CLog::Log(LOGINFO, "Time Decoding: %i, Time Resampling: %i, bytes processed %i, buffer 1 state %i, buffer 2 state %i", time2-time, time3-time2, dataToRead, m_decoder[m_currentDecoder].GetDataSize(), m_decoder[1 - m_currentDecoder].GetDataSize());
   }
   return true;
 }
@@ -659,13 +656,13 @@ void PAPlayer::FlushStreams()
 {
   for (int stream = 0; stream < 2; stream++)
   {
-    if (m_pStream[stream] && packet[stream])
+    if (m_pStream[stream] && m_packet[stream])
     {
       DWORD status;
       m_pStream[stream]->GetStatus(&status);
       m_pStream[stream]->Flush();
       for (int i = PACKET_COUNT; i; i--)
-        packet[stream][i].status = XMEDIAPACKET_STATUS_SUCCESS;
+        m_packet[stream][i].status = XMEDIAPACKET_STATUS_SUCCESS;
       // make sure it's still paused if it should be
       if (status == DSSTREAMSTATUS_PAUSED)
       {
@@ -748,21 +745,23 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
     XMEDIAPACKET xmp;
     ZeroMemory( &xmp, sizeof( XMEDIAPACKET ) );
     // have a free packet - grab some data from our resampler to fill it with
-    if (m_resampler[stream].GetData(packet[stream][dwPacket].packet))
+    if (m_resampler[stream].GetData(m_packet[stream][dwPacket].packet))
     {
       // got some data from our resampler - construct audio packet
-      packet[stream][dwPacket].length = PACKET_SIZE;
-      packet[stream][dwPacket].status = XMEDIAPACKET_STATUS_PENDING;
-      packet[stream][dwPacket].stream = stream;
-      xmp.pContext          = &packet[stream][dwPacket];
-      xmp.pvBuffer          = packet[stream][dwPacket].packet;
-      xmp.dwMaxSize         = packet[stream][dwPacket].length;
+      m_packet[stream][dwPacket].length = PACKET_SIZE;
+      m_packet[stream][dwPacket].status = XMEDIAPACKET_STATUS_PENDING;
+      m_packet[stream][dwPacket].stream = stream;
+      xmp.pContext          = &m_packet[stream][dwPacket];
+      xmp.pvBuffer          = m_packet[stream][dwPacket].packet;
+      xmp.dwMaxSize         = m_packet[stream][dwPacket].length;
       xmp.pdwCompletedSize  = NULL;
       xmp.prtTimestamp      = NULL;
-      xmp.pdwStatus         = &packet[stream][dwPacket].status;
+      xmp.pdwStatus         = &m_packet[stream][dwPacket].status;
 
+//      CLog::Log(LOGINFO, "Adding packet %i to stream %i", dwPacket, stream);
       if (DS_OK != m_pStream[stream]->Process(&xmp, NULL))
       { // bad news :(
+        CLog::Log(LOGERROR, "Error adding packet %i to stream %i", dwPacket, stream);
         return false;
       }
 
@@ -791,7 +790,7 @@ bool PAPlayer::FindFreePacket( int stream, DWORD* pdwPacket )
     // The first EXTRA_PACKETS * 2 packets are reserved - odd packets
     // for stream 1, even packets for stream 2.  This is to ensure
     // that there are packets available during the crossfade
-    if( XMEDIAPACKET_STATUS_PENDING != packet[stream][dwIndex].status )
+    if( XMEDIAPACKET_STATUS_PENDING != m_packet[stream][dwIndex].status )
     {
       (*pdwPacket) = dwIndex;
       return true;
