@@ -168,7 +168,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   m_dvd.iSelectedSPUStream = -1;
   m_dvd.iSelectedAudioStream = -1;
 
-  if (strFile.Find("dvd://") >= 0) strcpy(m_filename, "\\Device\\Cdrom0");
+  if (strFile.Find("dvd://") >= 0 || strFile.CompareNoCase("d:\\video_ts\\video_ts.ifo") == 0) strcpy(m_filename, "\\Device\\Cdrom0");
   else strcpy(m_filename, strFile.c_str());
 
   ResetEvent(m_hReadyEvent);
