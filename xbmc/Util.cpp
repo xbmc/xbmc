@@ -73,20 +73,6 @@ char* CUtil::GetExtension(const CStdString& strFileName)
   return (char*)extension ;
 }
 
-int CUtil::cmpnocase(const char* str1, const char* str2)
-{
-  int iLen;
-  if ( strlen(str1) != strlen(str2) ) return 1;
-
-  iLen = strlen(str1);
-  for (int i = 0; i < iLen;i++ )
-  {
-    if (tolower((unsigned char)str1[i]) != tolower((unsigned char)str2[i]) ) return 1;
-  }
-  return 0;
-}
-
-
 char* CUtil::GetFileName(const CStdString& strFileNameAndPath)
 {
   CURL url(strFileNameAndPath);

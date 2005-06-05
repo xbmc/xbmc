@@ -118,7 +118,7 @@ bool CXNSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   {
     CStdString strTagName = pChild->Value();
 
-    if ( !CUtil::cmpnocase(strTagName.c_str(), "ITEM") )
+    if ( !strcmpi(strTagName.c_str(), "ITEM") )
     {
       const TiXmlNode *pathNode = pChild->FirstChild("PATH");
       const TiXmlNode *atrbNode = pChild->FirstChild("ATTRIB");

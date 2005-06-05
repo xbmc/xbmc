@@ -795,20 +795,20 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
 
       float outlinewidth = 3;
 
-      m_subtitleFont->Begin();
       for (int i = 1; i < outlinewidth; i++)
       {
         int ymax = (int)(sqrt(outlinewidth*outlinewidth - i*i) + 0.5f);
         for (int j = 1; j < ymax; j++)
         {
+          m_subtitleFont->Begin();
           m_subtitleFont->DrawText(x - i, y + j, 0xFF000000, subtitleText.c_str(), XBFONT_CENTER_X);
           m_subtitleFont->DrawText(x - i, y - j, 0xFF000000, subtitleText.c_str(), XBFONT_CENTER_X);
           m_subtitleFont->DrawText(x + i, y + j, 0xFF000000, subtitleText.c_str(), XBFONT_CENTER_X);
           m_subtitleFont->DrawText(x + i, y - j, 0xFF000000, subtitleText.c_str(), XBFONT_CENTER_X);
+          m_subtitleFont->End();
         }
       }
       m_subtitleFont->DrawText(x, y, color[g_guiSettings.GetInt("Subtitles.Color")], subtitleText.c_str(), XBFONT_CENTER_X);
-      m_subtitleFont->End();
     }
   }
 }

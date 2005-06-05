@@ -127,7 +127,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     {
       CStdString strTagName = pChild->Value();
 
-      if ( !CUtil::cmpnocase(strTagName.c_str(), "ITEM") )
+      if ( !strcmpi(strTagName.c_str(), "ITEM") )
       {
         const TiXmlNode *nameNode = pChild->FirstChild("DISPLAYNAME");
         const TiXmlNode *qualityNode = pChild->FirstChild("QUALITY");
