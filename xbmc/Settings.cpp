@@ -716,10 +716,10 @@ void CSettings::GetBoolean(const TiXmlElement* pRootElement, const CStdString& s
 {
   char szString[128];
   GetString(pRootElement, strTagName, szString, "");
-  if ( CUtil::cmpnocase(szString, "enabled") == 0 ||
-       CUtil::cmpnocase(szString, "yes") == 0 ||
-       CUtil::cmpnocase(szString, "on") == 0 ||
-       CUtil::cmpnocase(szString, "true") == 0 )
+  if ( strcmpi(szString, "enabled") == 0 ||
+       strcmpi(szString, "yes") == 0 ||
+       strcmpi(szString, "on") == 0 ||
+       strcmpi(szString, "true") == 0 )
   {
     bValue = true;
   }
@@ -894,7 +894,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     return false;
   }
   TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (CUtil::cmpnocase(pRootElement->Value(), "settings") != 0)
+  if (strcmpi(pRootElement->Value(), "settings") != 0)
   {
     g_LoadErrorStr.Format("%s\nDoesn't contain <settings>", strSettingsFile.c_str());
     return false;

@@ -1359,7 +1359,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   {
     // failed to load home.xml
     // fallback to default skin
-    if ( CUtil::cmpnocase(strSkin.c_str(), "Project Mayhem III") != 0)
+    if ( strcmpi(strSkin.c_str(), "Project Mayhem III") != 0)
     {
       CLog::Log(LOGERROR, "failed to load home.xml for skin:%s, fallback to \"Project Mayhem III\" skin", strSkin.c_str());
       LoadSkin("Project Mayhem III");
@@ -1563,16 +1563,6 @@ void CApplication::Render()
   {
     m_pPlayer->DoAudioWork();
   }
-/*
-  // check that we haven't passed the end of the file (for cue sheets)
-  if ((m_pPlayer != NULL) && m_pPlayer->IsPlaying())
-  {
-    int timeinsecs = (int)(m_pPlayer->GetTime() / 1000);
-    if ((m_itemCurrentFile.m_lEndOffset && m_itemCurrentFile.m_lEndOffset / 75 < timeinsecs)
-    { // time to stop the file...
-      OnPlayBackEnded();
-    }
-  }*/
 
   // check if we haven't rewound past the start of the file
 

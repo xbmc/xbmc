@@ -534,7 +534,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
   // handle .nfo files
   CStdString strExtension;
   CUtil::GetExtension(strFile, strExtension);
-  if ( CUtil::cmpnocase(strExtension.c_str(), ".nfo") == 0)
+  if ( strcmpi(strExtension.c_str(), ".nfo") == 0)
   {
     CFile file;
     if ( file.Cache(strFile, "Z:\\movie.nfo", NULL, NULL))
