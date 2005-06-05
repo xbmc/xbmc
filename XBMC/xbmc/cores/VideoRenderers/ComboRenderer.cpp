@@ -231,7 +231,13 @@ void CComboRenderer::YV12toYUY2()
   if (!m_RGBTexture[m_iYUVDecodeBuffer]) return;
 
   while (m_RGBTexture[m_iYUVDecodeBuffer]->IsBusy())
-    Sleep(1);
+  {
+    if (m_RGBTexture[m_iYUVDecodeBuffer]->Lock)
+      m_pD3DDevice->BlockOnFence(m_RGBTexture[m_iYUVDecodeBuffer]->Lock);
+    else
+      Sleep(1);
+  }
+
   g_graphicsContext.Lock();
 
   // Do the YV12 -> YUY2 conversion.
