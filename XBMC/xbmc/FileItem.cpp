@@ -984,6 +984,7 @@ void CFileItem::CleanFileName()
 
 CFileItemList::CFileItemList()
 {
+  m_fastLookup = false;
 }
 
 CFileItemList::~CFileItemList()
@@ -1001,6 +1002,36 @@ const CFileItem* CFileItemList::operator[] (int iItem) const
   return Get(iItem);
 }
 
+void CFileItemList::SetFastLookup(bool fastLookup)
+{
+  if (fastLookup && !m_fastLookup)
+  { // generate the map
+    m_map.clear();
+    for (unsigned int i=0; i < m_items.size(); i++)
+    {
+      CFileItem *pItem = m_items[i];
+      m_map.insert(MAPFILEITEMSPAIR(pItem->m_strPath, pItem));
+    }
+  }
+  if (!fastLookup && m_fastLookup)
+    m_map.clear();
+  m_fastLookup = fastLookup;
+}
+
+bool CFileItemList::Contains(CStdString& fileName)
+{
+  if (m_fastLookup)
+    return m_map.find(fileName) != m_map.end();
+  // slow method...
+  for (unsigned int i = 0; i < m_items.size(); i++)
+  {
+    CFileItem *pItem = m_items[i];
+    if (pItem->m_strPath == fileName)
+      return true;
+  }
+  return false;
+}
+
 void CFileItemList::Clear()
 {
   if (m_items.size())
@@ -1013,18 +1044,24 @@ void CFileItemList::Clear()
       delete pItem;
       i = m_items.erase(i);
     }
+    m_map.clear();
   }
 }
 
 void CFileItemList::ClearKeepPointers()
 {
   if (m_items.size())
+  {
     m_items.clear();
+    m_map.clear();
+  }
 }
 
 void CFileItemList::Add(CFileItem* pItem)
 {
   m_items.push_back(pItem);
+  if (m_fastLookup)
+    m_map.insert(MAPFILEITEMSPAIR(pItem->m_strPath, pItem));
 }
 
 void CFileItemList::Remove(CFileItem* pItem)
@@ -1034,6 +1071,8 @@ void CFileItemList::Remove(CFileItem* pItem)
     if (pItem == *it)
     {
       m_items.erase(it);
+      if (m_fastLookup)
+        m_map.erase(pItem->m_strPath);
       break;
     }
   }
@@ -1044,6 +1083,8 @@ void CFileItemList::Remove(int iItem)
   if (iItem >= 0 && iItem < (int)Size())
   {
     CFileItem* pItem = *(m_items.begin() + iItem);
+    if (m_fastLookup)
+      m_map.erase(pItem->m_strPath);
     delete pItem;
     m_items.erase(m_items.begin() + iItem);
   }
