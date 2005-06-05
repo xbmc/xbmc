@@ -176,6 +176,11 @@ extern "C" void* __cdecl track_malloc(size_t s)
   std::map<unsigned, AllocLenCaller>* pList = get_track_list(loc);
 
   void* p = malloc(s);
+  if (!p) 
+  {    
+    CLog::Log(LOGDEBUG, "DLL: %s : malloc failed, crash imminent", get_track_dll_path(loc));
+    return NULL;
+  }
   if (pList)
   {
     AllocLenCaller temp;
@@ -195,6 +200,11 @@ extern "C" void* __cdecl track_calloc(size_t n, size_t s)
   std::map<unsigned, AllocLenCaller>* pList = get_track_list(loc);
 
   void* p = calloc(n, s);
+  if (!p) 
+  {    
+    CLog::Log(LOGDEBUG, "DLL: %s : calloc failed, crash imminent", get_track_dll_path(loc));
+    return NULL;
+  }
   if (pList)
   {
     AllocLenCaller temp;
@@ -214,6 +224,11 @@ extern "C" void* __cdecl track_realloc(void* p, size_t s)
   std::map<unsigned, AllocLenCaller>* pList = get_track_list(loc);
 
   void* q = realloc(p, s);
+  if (!q) 
+  {    
+    CLog::Log(LOGDEBUG, "DLL: %s : realloc failed, crash imminent", get_track_dll_path(loc));
+    return NULL;
+  }
   if (pList)
   {
     if (p != q) pList->erase((unsigned)p);
