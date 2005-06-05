@@ -43,6 +43,7 @@ CTexture::~CTexture()
 
 void CTexture::FreeTexture()
 {
+  g_graphicsContext.Lock();
   if (m_pTexture)
   {
     if (m_bPacked)
@@ -70,6 +71,7 @@ void CTexture::FreeTexture()
       m_pPalette->Release();
   }
   m_pPalette = NULL;
+  g_graphicsContext.Unlock();
 }
 
 void CTexture::Dump() const
