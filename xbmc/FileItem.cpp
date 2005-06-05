@@ -271,7 +271,7 @@ bool CFileItem::IsPythonScript() const
 {
   char* pExtension = CUtil::GetExtension(m_strPath);
   if (!pExtension) return false;
-  if (CUtil::cmpnocase(pExtension, ".py") == 0) return true;
+  if (strcmpi(pExtension, ".py") == 0) return true;
   return false;
 }
 
@@ -279,7 +279,7 @@ bool CFileItem::IsXBE() const
 {
   char* pExtension = CUtil::GetExtension(m_strPath);
   if (!pExtension) return false;
-  if (CUtil::cmpnocase(pExtension, ".xbe") == 0) return true;
+  if (strcmpi(pExtension, ".xbe") == 0) return true;
   return false;
 }
 
@@ -287,7 +287,7 @@ bool CFileItem::IsDefaultXBE() const
 {
   char* pFileName = CUtil::GetFileName(m_strPath);
   if (!pFileName) return false;
-  if (CUtil::cmpnocase(pFileName, "default.xbe") == 0) return true;
+  if (strcmpi(pFileName, "default.xbe") == 0) return true;
   return false;
 }
 
@@ -295,7 +295,7 @@ bool CFileItem::IsShortCut() const
 {
   char* pExtension = CUtil::GetExtension(m_strPath);
   if (!pExtension) return false;
-  if (CUtil::cmpnocase(pExtension, ".cut") == 0) return true;
+  if (strcmpi(pExtension, ".cut") == 0) return true;
   return false;
 }
 
@@ -303,7 +303,7 @@ bool CFileItem::IsNFO() const
 {
   char *pExtension = CUtil::GetExtension(m_strPath);
   if (!pExtension) return false;
-  if (CUtil::cmpnocase(pExtension, ".nfo") == 0) return true;
+  if (strcmpi(pExtension, ".nfo") == 0) return true;
   return false;
 }
 
@@ -498,7 +498,7 @@ void CFileItem::FillInDefaultIcon()
     {
       CFileTypeIcon& icon = g_settings.m_vecIcons[i];
 
-      if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName) == 0)
+      if (strcmpi(strExtension.c_str(), icon.m_strName) == 0)
       {
         SetIconImage(icon.m_strIcon);
         break;
@@ -515,7 +515,7 @@ void CFileItem::FillInDefaultIcon()
         SetIconImage("defaultPlaylist.png");
 
         CUtil::GetExtension(m_strPath, strExtension);
-        if ( CUtil::cmpnocase(strExtension.c_str(), ".strm") != 0)
+        if ( strcmpi(strExtension.c_str(), ".strm") != 0)
         {
           //  Save playlists to playlist directroy
           CStdString strDir;

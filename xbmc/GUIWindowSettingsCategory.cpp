@@ -1960,7 +1960,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
         CFileItem* pItem = items[i];
         if (pItem->m_bIsFolder)
         {
-          if (CUtil::cmpnocase(pItem->GetLabel().c_str(), "CVS") == 0) continue;
+          if (strcmpi(pItem->GetLabel().c_str(), "CVS") == 0) continue;
           int iSizeTmp = atoi(pItem->GetLabel().c_str());
           if (iSizeTmp == pSettingInt->GetData())
             iCurrentSize = iSize;
@@ -1996,8 +1996,8 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
       CFileItem* pItem = items[i];
       if (pItem->m_bIsFolder)
       {
-        if (CUtil::cmpnocase(pItem->GetLabel().c_str(), "CVS") == 0) continue;
-        if (CUtil::cmpnocase(pItem->GetLabel().c_str(), pSettingString->GetData().c_str()) == 0)
+        if (strcmpi(pItem->GetLabel().c_str(), "CVS") == 0) continue;
+        if (strcmpi(pItem->GetLabel().c_str(), pSettingString->GetData().c_str()) == 0)
           iCurrentFont = iFont;
         pControl->AddLabel(pItem->GetLabel(), iFont++);
       }
@@ -2019,7 +2019,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
         {
           char* extension = CUtil::GetExtension(pItem->GetLabel().c_str());
           if (stricmp(extension, ".ttf") != 0) continue;
-          if (CUtil::cmpnocase(pItem->GetLabel().c_str(), pSettingString->GetData().c_str()) == 0)
+          if (strcmpi(pItem->GetLabel().c_str(), pSettingString->GetData().c_str()) == 0)
             iCurrentFont = iFont;
 
           pControl->AddLabel(pItem->GetLabel(), iFont++);
@@ -2074,7 +2074,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
         const char* idAttr = ((TiXmlElement*) pChild)->Attribute("id");
         if (idAttr != NULL)
         {
-          if (CUtil::cmpnocase(idAttr, g_guiSettings.GetString("LookAndFeel.Font").c_str()) == 0)
+          if (strcmpi(idAttr, g_guiSettings.GetString("LookAndFeel.Font").c_str()) == 0)
           {
             iCurrentSkinFontSet = iSkinFontSet;
           }
@@ -2119,9 +2119,9 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
     CFileItem* pItem = items[i];
     if (pItem->m_bIsFolder)
     {
-      if (CUtil::cmpnocase(pItem->GetLabel().c_str(), "CVS") == 0) continue;
-      if (CUtil::cmpnocase(pItem->GetLabel().c_str(), "fonts") == 0) continue;
-      if (CUtil::cmpnocase(pItem->GetLabel().c_str(), "media") == 0) continue;
+      if (strcmpi(pItem->GetLabel().c_str(), "CVS") == 0) continue;
+      if (strcmpi(pItem->GetLabel().c_str(), "fonts") == 0) continue;
+      if (strcmpi(pItem->GetLabel().c_str(), "media") == 0) continue;
       //   if (g_SkinInfo.Check(pItem->m_strPath))
       //   {
       vecSkins.push_back(pItem->GetLabel());
@@ -2133,7 +2133,7 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
   for (i = 0; i < (int) vecSkins.size(); ++i)
   {
     CStdString strSkin = vecSkins[i];
-    if (CUtil::cmpnocase(strSkin.c_str(), g_guiSettings.GetString("LookAndFeel.Skin").c_str()) == 0)
+    if (strcmpi(strSkin.c_str(), g_guiSettings.GetString("LookAndFeel.Skin").c_str()) == 0)
     {
       iCurrentSkin = iSkin;
     }
@@ -2166,9 +2166,9 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
     CFileItem* pItem = items[i];
     if (pItem->m_bIsFolder)
     {
-      if (CUtil::cmpnocase(pItem->GetLabel().c_str(), "CVS") == 0) continue;
-      if (CUtil::cmpnocase(pItem->GetLabel().c_str(), "fonts") == 0) continue;
-      if (CUtil::cmpnocase(pItem->GetLabel().c_str(), "media") == 0) continue;
+      if (strcmpi(pItem->GetLabel().c_str(), "CVS") == 0) continue;
+      if (strcmpi(pItem->GetLabel().c_str(), "fonts") == 0) continue;
+      if (strcmpi(pItem->GetLabel().c_str(), "media") == 0) continue;
       vecSoundSkins.push_back(pItem->GetLabel());
     }
   }
@@ -2183,7 +2183,7 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
   for (i = 0; i < (int) vecSoundSkins.size(); ++i)
   {
     CStdString strSkin = vecSoundSkins[i];
-    if (CUtil::cmpnocase(strSkin.c_str(), g_guiSettings.GetString("LookAndFeel.SoundSkin").c_str()) == 0)
+    if (strcmpi(strSkin.c_str(), g_guiSettings.GetString("LookAndFeel.SoundSkin").c_str()) == 0)
     {
       iCurrentSoundSkin = iSoundSkin;
     }
@@ -2258,7 +2258,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting)
   {
     CStdString strVis = vecVis[i];
 
-    if (CUtil::cmpnocase(strVis.c_str(), strDefaultVis.c_str()) == 0)
+    if (strcmpi(strVis.c_str(), strDefaultVis.c_str()) == 0)
       iCurrentVis = iVis;
 
     pControl->AddLabel(strVis, iVis++);
@@ -2309,7 +2309,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMasks(DWORD dwPort, CSetting *pSetti
   {
     CStdString strMask = vecMask[i];
 
-    if (CUtil::cmpnocase(strMask.c_str(), strDefaultMask.c_str()) == 0)
+    if (strcmpi(strMask.c_str(), strDefaultMask.c_str()) == 0)
       iCurrentMask = iMask;
 
     pControl->AddLabel(strMask, iMask++);
@@ -2509,9 +2509,9 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
     CFileItem* pItem = items[i];
     if (pItem->m_bIsFolder)
     {
-      if (CUtil::cmpnocase(pItem->GetLabel().c_str(), "CVS") == 0) continue;
-      if (CUtil::cmpnocase(pItem->GetLabel().c_str(), "fonts") == 0) continue;
-      if (CUtil::cmpnocase(pItem->GetLabel().c_str(), "media") == 0) continue;
+      if (strcmpi(pItem->GetLabel().c_str(), "CVS") == 0) continue;
+      if (strcmpi(pItem->GetLabel().c_str(), "fonts") == 0) continue;
+      if (strcmpi(pItem->GetLabel().c_str(), "media") == 0) continue;
       vecLanguage.push_back(pItem->GetLabel());
     }
   }
@@ -2520,7 +2520,7 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   for (i = 0; i < (int) vecLanguage.size(); ++i)
   {
     CStdString strLanguage = vecLanguage[i];
-    if (CUtil::cmpnocase(strLanguage.c_str(), pSettingString->GetData().c_str()) == 0)
+    if (strcmpi(strLanguage.c_str(), pSettingString->GetData().c_str()) == 0)
       iCurrentLang = iLanguage;
     pControl->AddLabel(strLanguage, iLanguage++);
   }
@@ -2573,7 +2573,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   {
     CStdString strScr = vecScr[i];
 
-    if (CUtil::cmpnocase(strScr.c_str(), strDefaultScr.c_str()) == 0)
+    if (strcmpi(strScr.c_str(), strDefaultScr.c_str()) == 0)
       iCurrentScr = i + 3;
 
     pControl->AddLabel(strScr, i + 3);

@@ -228,7 +228,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
           g_graphicsContext.SetOffset(g_guiSettings.GetInt("UIOffset.X"), g_guiSettings.GetInt("UIOffset.Y"));
           if (
             (iPrevResolution != g_guiSettings.m_LookAndFeelResolution) ||
-            (CUtil::cmpnocase(strPrevSkin.c_str(), g_guiSettings.GetString("LookAndFeel.Skin").c_str()))
+            (strcmpi(strPrevSkin.c_str(), g_guiSettings.GetString("LookAndFeel.Skin").c_str()))
           )
           {
             g_application.LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));

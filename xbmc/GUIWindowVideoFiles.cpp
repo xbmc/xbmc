@@ -541,7 +541,7 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
   CStdString strPath = pItem->m_strPath;
   CStdString strExtension;
   CUtil::GetExtension(pItem->m_strPath, strExtension);
-  if ( CUtil::cmpnocase(strExtension.c_str(), ".nfo") == 0)
+  if ( strcmpi(strExtension.c_str(), ".nfo") == 0)
   {
     OnInfo(iItem);
     return ;
