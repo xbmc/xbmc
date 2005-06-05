@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-06-2005 fixed: player was resetting audio on each seak during ff/rw.. caused slowdowns
   - 22-05-2005 fixed: too fast playback immidiatly after resume from pause when autosync enabled.
   - 18-05-2005 fixed: subtitles didn't display in dvdimages if ttf subtitle fonts where selected in xbmc
   - 09-04-2005 new: support for returning amount of filled buffer to xbmc, and detect when buffer runs empty.
