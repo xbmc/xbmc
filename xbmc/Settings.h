@@ -421,10 +421,12 @@ public:
     int m_nVolumeLevel;       // measured in 100th's of a dB.  0dB is max, -60.00dB is min
     int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
     bool m_bMute;
-
   };
 
   CStdStringArray m_MyVideoStackRegExps;
+
+  std::vector<std::vector<wstring> > m_vecRssUrls;
+
 
   // cache copies of these parsed values, to avoid re-parsing over and over
   CStdString m_szMyVideoStackSeparatorsString;
