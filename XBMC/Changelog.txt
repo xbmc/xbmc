@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-06-2005 added: Combined spectrums into a single .vis with presets, changeable on the fly.
  - 05-06-2005 fixed: dvdplayer would fail to play from scrambled disc untill mplayer had once played it
  - 05-06-2005 fixed: XBMC would sometimes lockup during FF/RW when using Hardware Overlays
  - 05-06-2005 added: Write to log when memory allocation failes in a dll
