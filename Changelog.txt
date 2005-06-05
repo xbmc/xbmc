@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-06-2005 fixed: PAPlayer correctly handles track changes where the number of channels changes + handles 6 channel tracks correctly.
  - 04-06-2005 added: sf.net patch [1209466] Multiple RSS feeds concatenated - thanks to desertbear!
  - 04-06-2005 fixed: long rss feeds could crash xbmc when using ttf fonts.
  - 04-06-2005 added: All Winamp milkdrops "Winamp-presets(436).zip", no shortened filenames. Zip 'normal' compression used.
