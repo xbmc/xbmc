@@ -148,6 +148,11 @@ public:
   void RemoveExtensions();
   void CleanFileNames();
   bool HasFileNoCase(CStdString& path);
+  void SetFastLookup(bool fastLookup);
+  bool Contains(CStdString& fileName);
+  bool GetFastLookup() { return m_fastLookup; };
 private:
   VECFILEITEMS m_items;
+  MAPFILEITEMS m_map;
+  bool m_fastLookup;
 };
