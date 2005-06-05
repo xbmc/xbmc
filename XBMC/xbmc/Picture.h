@@ -22,8 +22,8 @@ public:
 
   void CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs);
 protected:
-  IDirect3DTexture8* LoadNative(const CStdString& strFilename);
   bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, int nMaxWidth, int nMaxHeight, bool bCacheFile = true);
+  DWORD GetImageType(const char *ext);
 
 private:
   struct VERTEX

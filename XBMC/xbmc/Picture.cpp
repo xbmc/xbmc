@@ -30,25 +30,31 @@ void CPicture::Free()
   }
 }
 
+DWORD CPicture::GetImageType(const char *ext)
+{
+  if ( 0 == strcmpi(ext, ".bmp") ) return CXIMAGE_FORMAT_BMP;
+  else if ( 0 == strcmpi(ext, ".gif") ) return CXIMAGE_FORMAT_GIF;
+  else if ( 0 == strcmpi(ext, ".tbn") ) return CXIMAGE_FORMAT_JPG;
+  else if ( 0 == strcmpi(ext, ".jpg") ) return CXIMAGE_FORMAT_JPG;
+  else if ( 0 == strcmpi(ext, ".jpeg") ) return CXIMAGE_FORMAT_JPG;
+  else if ( 0 == strcmpi(ext, ".png") ) return CXIMAGE_FORMAT_PNG;
+  else if ( 0 == strcmpi(ext, ".ico") ) return CXIMAGE_FORMAT_ICO;
+  else if ( 0 == strcmpi(ext, ".tif") ) return CXIMAGE_FORMAT_TIF;
+  else if ( 0 == strcmpi(ext, ".tiff") ) return CXIMAGE_FORMAT_TIF;
+  else if ( 0 == strcmpi(ext, ".tga") ) return CXIMAGE_FORMAT_TGA;
+  else if ( 0 == strcmpi(ext, ".pcx") ) return CXIMAGE_FORMAT_PCX;
+  return CXIMAGE_FORMAT_UNKNOWN;
+}
+
 CxImage* CPicture::LoadImage(const CStdString& strFileName, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth, int iMaxHeight)
 {
   CStdString strExtension;
-  DWORD dwImageType = 0xffff;
 
   CUtil::GetExtension(strFileName, strExtension);
   if (!strExtension.size()) return NULL;
 
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".bmp") ) dwImageType = CXIMAGE_FORMAT_BMP;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".gif") ) dwImageType = CXIMAGE_FORMAT_GIF;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".tbn") ) dwImageType = CXIMAGE_FORMAT_JPG;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".jpg") ) dwImageType = CXIMAGE_FORMAT_JPG;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".jpeg") ) dwImageType = CXIMAGE_FORMAT_JPG;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".png") ) dwImageType = CXIMAGE_FORMAT_PNG;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".ico") ) dwImageType = CXIMAGE_FORMAT_ICO;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".tif") ) dwImageType = CXIMAGE_FORMAT_TIF;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".tiff") ) dwImageType = CXIMAGE_FORMAT_TIF;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".tga") ) dwImageType = CXIMAGE_FORMAT_TGA;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".pcx") ) dwImageType = CXIMAGE_FORMAT_PCX;
+  DWORD dwImageType = GetImageType(strExtension.c_str());
+
 
   CFileItem fileName(strFileName, false);
   CFileItem cachedFile("", false);
@@ -160,57 +166,6 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int &iOriginalW
   return pTexture;
 }
 
-IDirect3DTexture8* CPicture::LoadNative(const CStdString& strFileName)
-{
-  CStdString strExtension;
-  CUtil::GetExtension(strFileName, strExtension);
-  if (!strExtension.size()) return NULL;
-
-  // TODO: Add other known stuff that D3DCreateTextureFromFileEx supports
-  if ( 0 != CUtil::cmpnocase(strExtension.c_str(), ".jpg") &&
-       0 != CUtil::cmpnocase(strExtension.c_str(), ".jpeg") &&
-       0 != CUtil::cmpnocase(strExtension.c_str(), ".png") &&
-       0 != CUtil::cmpnocase(strExtension.c_str(), ".bmp")) return NULL;
-
-  try
-  {
-    IDirect3DTexture8 *pTexture = NULL;
-    if (g_graphicsContext.Get3DDevice()->CreateTexture(1024, 1024, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
-    {
-      IDirect3DSurface8 *pSurface = NULL;
-      if (pTexture->GetSurfaceLevel(0, &pSurface) == D3D_OK)
-      {
-        D3DXIMAGE_INFO info;
-        if (D3DXLoadSurfaceFromFile(pSurface, NULL, NULL, strFileName.c_str(), NULL, D3DX_DEFAULT, 0, &info) == D3D_OK)
-        {
-          m_dwWidth = info.Width;
-          m_dwHeight = info.Height;
-          pSurface->Release();
-          return pTexture;
-        }
-      }
-    }
-    return NULL;
-    /*  D3DXIMAGE_INFO info;
-      DWORD dwColorKey = 0;
-      if (D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(),strFileName.c_str(), D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED,
-        D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
-      {
-       CLog::Log(LOGERROR, "PICTURE::load: Unable to open image: %s\n", strFileName.c_str());
-        return NULL;
-       }
-     
-      m_dwWidth  = info.Width;
-      m_dwHeight = info.Height;
-      return pTexture;*/
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "PICTURE::load: Unable to open image: %s\n", strFileName.c_str());
-    return NULL;
-  }
-}
-
 DWORD CPicture::GetWidth() const
 {
   return m_dwWidth;
@@ -220,7 +175,6 @@ DWORD CPicture::GetHeight() const
 {
   return m_dwHeight;
 }
-
 
 IDirect3DTexture8* CPicture::GetTexture( CxImage& image )
 {
@@ -369,23 +323,11 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   
   CStdString strExtension;
   CStdString strCachedFile;
-  DWORD dwImageType = CXIMAGE_FORMAT_JPG;
 
   CUtil::GetExtension(strFileName, strExtension);
   if (!strExtension.size()) return false;
 
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".bmp") ) dwImageType = CXIMAGE_FORMAT_BMP;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".gif") ) dwImageType = CXIMAGE_FORMAT_GIF;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".jpg") ) dwImageType = CXIMAGE_FORMAT_JPG;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".tbn") ) dwImageType = CXIMAGE_FORMAT_JPG;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".jpeg") ) dwImageType = CXIMAGE_FORMAT_JPG;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".png") ) dwImageType = CXIMAGE_FORMAT_PNG;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".ico") ) dwImageType = CXIMAGE_FORMAT_ICO;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".tif") ) dwImageType = CXIMAGE_FORMAT_TIF;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".tiff") ) dwImageType = CXIMAGE_FORMAT_TIF;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".tga") ) dwImageType = CXIMAGE_FORMAT_TGA;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".pcx") ) dwImageType = CXIMAGE_FORMAT_PCX;
-
+  DWORD dwImageType = GetImageType(strExtension.c_str());
 
   if (bCacheFile)
   {
@@ -438,18 +380,18 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
   }
   else
   {
-    if ( 0 == CUtil::cmpnocase(strExtension.c_str(), "bmp") ) dwImageType = CXIMAGE_FORMAT_BMP;
-    if ( 0 == CUtil::cmpnocase(strExtension.c_str(), "bitmap") ) dwImageType = CXIMAGE_FORMAT_BMP;
-    if ( 0 == CUtil::cmpnocase(strExtension.c_str(), "gif") ) dwImageType = CXIMAGE_FORMAT_GIF;
-    if ( 0 == CUtil::cmpnocase(strExtension.c_str(), "jpg") ) dwImageType = CXIMAGE_FORMAT_JPG;
-    if ( 0 == CUtil::cmpnocase(strExtension.c_str(), "tbn") ) dwImageType = CXIMAGE_FORMAT_JPG;
-    if ( 0 == CUtil::cmpnocase(strExtension.c_str(), "jpeg") ) dwImageType = CXIMAGE_FORMAT_JPG;
-    if ( 0 == CUtil::cmpnocase(strExtension.c_str(), "png") ) dwImageType = CXIMAGE_FORMAT_PNG;
-    if ( 0 == CUtil::cmpnocase(strExtension.c_str(), "ico") ) dwImageType = CXIMAGE_FORMAT_ICO;
-    if ( 0 == CUtil::cmpnocase(strExtension.c_str(), "tif") ) dwImageType = CXIMAGE_FORMAT_TIF;
-    if ( 0 == CUtil::cmpnocase(strExtension.c_str(), "tiff") ) dwImageType = CXIMAGE_FORMAT_TIF;
-    if ( 0 == CUtil::cmpnocase(strExtension.c_str(), "tga") ) dwImageType = CXIMAGE_FORMAT_TGA;
-    if ( 0 == CUtil::cmpnocase(strExtension.c_str(), "pcx") ) dwImageType = CXIMAGE_FORMAT_PCX;
+    if ( 0 == strcmpi(strExtension.c_str(), "bmp") ) dwImageType = CXIMAGE_FORMAT_BMP;
+    if ( 0 == strcmpi(strExtension.c_str(), "bitmap") ) dwImageType = CXIMAGE_FORMAT_BMP;
+    if ( 0 == strcmpi(strExtension.c_str(), "gif") ) dwImageType = CXIMAGE_FORMAT_GIF;
+    if ( 0 == strcmpi(strExtension.c_str(), "jpg") ) dwImageType = CXIMAGE_FORMAT_JPG;
+    if ( 0 == strcmpi(strExtension.c_str(), "tbn") ) dwImageType = CXIMAGE_FORMAT_JPG;
+    if ( 0 == strcmpi(strExtension.c_str(), "jpeg") ) dwImageType = CXIMAGE_FORMAT_JPG;
+    if ( 0 == strcmpi(strExtension.c_str(), "png") ) dwImageType = CXIMAGE_FORMAT_PNG;
+    if ( 0 == strcmpi(strExtension.c_str(), "ico") ) dwImageType = CXIMAGE_FORMAT_ICO;
+    if ( 0 == strcmpi(strExtension.c_str(), "tif") ) dwImageType = CXIMAGE_FORMAT_TIF;
+    if ( 0 == strcmpi(strExtension.c_str(), "tiff") ) dwImageType = CXIMAGE_FORMAT_TIF;
+    if ( 0 == strcmpi(strExtension.c_str(), "tga") ) dwImageType = CXIMAGE_FORMAT_TGA;
+    if ( 0 == strcmpi(strExtension.c_str(), "pcx") ) dwImageType = CXIMAGE_FORMAT_PCX;
   }
 
   if (dwImageType == CXIMAGE_FORMAT_UNKNOWN)
@@ -623,22 +565,10 @@ bool CPicture::Convert(const CStdString& strSource, const CStdString& strDest)
 {
   CStdString strExtension;
   CStdString strCachedFile;
-  DWORD dwImageType;
 
   CUtil::GetExtension(strSource, strExtension);
   if (!strExtension.size()) return false;
-
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".bmp") ) dwImageType = CXIMAGE_FORMAT_BMP;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".gif") ) dwImageType = CXIMAGE_FORMAT_GIF;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".jpg") ) dwImageType = CXIMAGE_FORMAT_JPG;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".jpeg") ) dwImageType = CXIMAGE_FORMAT_JPG;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".png") ) dwImageType = CXIMAGE_FORMAT_PNG;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".ico") ) dwImageType = CXIMAGE_FORMAT_ICO;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".tif") ) dwImageType = CXIMAGE_FORMAT_TIF;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".tiff") ) dwImageType = CXIMAGE_FORMAT_TIF;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".tga") ) dwImageType = CXIMAGE_FORMAT_TGA;
-  if ( 0 == CUtil::cmpnocase(strExtension.c_str(), ".pcx") ) dwImageType = CXIMAGE_FORMAT_PCX;
-
+  DWORD dwImageType = GetImageType(strExtension.c_str());
 
   CFileItem source(strSource, false);
   if (!source.IsHD())

@@ -44,7 +44,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
   bool bShoutCast = false;
   CStdString strExt = CUtil::GetExtension(strFileName);
   strExt.ToLower();
-  if ( CUtil::cmpnocase(strExt, ".pls") == 0) bShoutCast = true;
+  if ( strcmpi(strExt, ".pls") == 0) bShoutCast = true;
 
   Clear();
   m_strPlayListName = CUtil::GetFileName(strFileName);
