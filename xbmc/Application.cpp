@@ -3381,14 +3381,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
           // Normal playback ended
           if (m_pPlayer)
           {
-            bool bPlayPrev = m_itemCurrentFile.m_lStartOffset > 0 && m_itemCurrentFile.m_lStartOffset*1000 > m_pPlayer->GetTime() * 1000;
             CPlayList& playlist = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
-
-            if (bPlayPrev && g_playlistPlayer.GetCurrentSong() > 1)
-            {
-              g_playlistPlayer.PlayPrevious();
-            }
-            else if (g_playlistPlayer.GetEntriesNotFound() < playlist.size())
+            if (g_playlistPlayer.GetEntriesNotFound() < playlist.size())
             {
               g_playlistPlayer.PlayNext(true);
             }
