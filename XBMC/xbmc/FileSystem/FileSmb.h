@@ -60,7 +60,7 @@ public:
   virtual __int64 GetPosition();
   virtual int Write(const void* lpBuf, __int64 uiBufSize);
 
-  virtual bool OpenForWrite(const CURL& url, bool bBinary = true);
+  virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false);
   virtual bool Delete(const char* strFileName);
   virtual bool Rename(const char* strFileName, const char* strNewFileName);
   virtual char GetDirectorySeperator() { return '/'; }
