@@ -20,7 +20,7 @@ public:
   virtual ~IFile();
 
   virtual bool Open(const CURL& url, bool bBinary = true) = 0;
-  virtual bool OpenForWrite(const CURL& url, bool bBinary = true) { return false; };
+  virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false) { return false; };
   virtual bool Exists(const CURL& url) = 0;
   virtual int Stat(const CURL& url, struct __stat64* buffer) = 0;
 

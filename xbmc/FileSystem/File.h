@@ -36,7 +36,7 @@ public:
   void Close();
   void Flush();
 
-  bool OpenForWrite(const char* strFileName, bool bBinary = true);
+  bool OpenForWrite(const char* strFileName, bool bBinary = true, bool bOverWrite = false);
   static bool Delete(const char* strFileName);
   static bool Rename(const char* strFileName, const char* strNewFileName);
 

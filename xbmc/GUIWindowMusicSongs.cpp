@@ -1237,7 +1237,7 @@ void CGUIWindowMusicSongs::SaveDirectoryCache(const CStdString& strDirectory, CF
     strFileName.Format("Z:\\%x.fi", crc);
 
   CFile file;
-  if (file.OpenForWrite(strFileName))
+  if (file.OpenForWrite(strFileName, true, true)) // overwrite always
   {
     CArchive ar(&file, CArchive::store);
     ar << items.Size();
