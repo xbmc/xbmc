@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-06-2005 changed: VSync now always on.
  - 06-06-2005 added: dll_fprintf() initial code for writing text files from dll's.
  - 06-06-2005 changed: Updated OpenForWrite() to open with overwrite if requested.
  - 06-06-2005 fixed: FileZip Read() missed last chunk if read chunksize was small.
