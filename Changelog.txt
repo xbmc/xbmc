@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-06-2004 updated: Hungarian language file (Thnx to tcsizmadia)
  - 06-06-2005 fixed: mplayer may crash when playback ends (updated again)
  - 06-06-2005 fixed: item is highlighted as playing when the start of a song fails
  - 06-06-2005 fixed: .cue sheets would loop indefinitely on the last two tracks.
