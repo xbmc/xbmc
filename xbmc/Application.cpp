@@ -3359,42 +3359,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
-        if (m_itemCurrentFile.IsVideo() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO_TEMP)
-        {
-          // Video stacking playback ended
-          CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
-
-          if (g_playlistPlayer.GetEntriesNotFound() < playlist.size())
-          {
-            g_playlistPlayer.PlayNext(true);
-          }
-          else if (m_pPlayer)
-          {
-            delete m_pPlayer;
-            m_pPlayer = 0;
-            m_itemCurrentFile.Clear();
-            g_infoManager.ResetCurrentItem();
-          }
-        }
-        else
-        {
-          // Normal playback ended
-          if (m_pPlayer)
-          {
-            CPlayList& playlist = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
-            if (g_playlistPlayer.GetEntriesNotFound() < playlist.size())
-            {
-              g_playlistPlayer.PlayNext(true);
-            }
-            else
-            {
-              delete m_pPlayer;
-              m_pPlayer = 0;
-              m_itemCurrentFile.Clear();
-              g_infoManager.ResetCurrentItem();
-            }
-          }
-        }
+        g_playlistPlayer.PlayNext(true);
       }
       else
       {

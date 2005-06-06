@@ -35,7 +35,6 @@ public:
   CPlayList& GetPlaylist( int nPlayList);
   int RemoveDVDItems();
   void Reset();
-  int GetEntriesNotFound();
   void Repeat(int iPlaylist, bool bYesNo);
   bool Repeated(int iPlaylist);
   void RepeatOne(int iPlaylist, bool bYesNo);
@@ -45,7 +44,6 @@ public:
   bool HasPlayedFirstFile();
 protected:
   int NextShuffleItem();
-  int m_iEntriesNotFound;
   bool m_bChanged;
   bool m_bPlayedFirstFile;
   int m_iCurrentSong;
