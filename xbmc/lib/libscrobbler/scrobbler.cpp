@@ -422,7 +422,7 @@ int CScrobbler::SaveCache(const CStdString& strCache, int iNumEntries)
     return 0;
 
   CFile file;
-  if (file.OpenForWrite(GetTempFileName()))
+  if (file.OpenForWrite(GetTempFileName(), true, true)) // overwrite always
   {
     CArchive ar(&file, CArchive::store);
     ar << iNumEntries;
