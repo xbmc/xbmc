@@ -68,7 +68,7 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 
     CFile::Delete(szDest);
     CFile newFile;
-    if (!newFile.OpenForWrite(szDest))
+    if (!newFile.OpenForWrite(szDest, true, true))  // overwrite always
     {
       delete m_pFile;
       m_pFile = NULL;
@@ -182,7 +182,7 @@ bool CFile::Open(const char* strFileName, bool bBinary)
   return m_pFile->Open(url, bBinary);
 }
 
-bool CFile::OpenForWrite(const char* strFileName, bool bBinary)
+bool CFile::OpenForWrite(const char* strFileName, bool bBinary, bool bOverWrite)
 {
   CFileFactory factory;
   m_pFile = factory.CreateLoader(strFileName);
@@ -190,7 +190,7 @@ bool CFile::OpenForWrite(const char* strFileName, bool bBinary)
 
   CURL url(strFileName);
 
-  return m_pFile->OpenForWrite(url, bBinary);
+  return m_pFile->OpenForWrite(url, bBinary, bOverWrite);
 }
 
 bool CFile::Exists(const char* strFileName)

@@ -45,7 +45,7 @@ void CShoutcastDirectory::CacheItems(CFileItemList &items)
     return ;
 
   CFile file;
-  if (file.OpenForWrite("Z:\\cachedPlaylists.txt"))
+  if (file.OpenForWrite("Z:\\cachedPlaylists.txt", true, true)) // always overwrite
   {
     int i = 0;
     if (items[0]->GetLabel() == "..")

@@ -1433,7 +1433,7 @@ void CGUIWindowMusicNav::SaveDatabaseDirectoryCache(const CStdString& strDirecto
   strFileName.Format("Z:\\db-%08x.fi", crc);
 
   CFile file;
-  if (file.OpenForWrite(strFileName))
+  if (file.OpenForWrite(strFileName, true, true)) // overwrite always
   {
     CArchive ar(&file, CArchive::store);
     ar << items.Size();

@@ -423,7 +423,7 @@ bool CFileSMB::Rename(const char* strFileName, const char* strNewFileName)
   return (result == 0);
 }
 
-bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary)
+bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
 {
   m_bBinary = bBinary;
   m_fileSize = 0;
@@ -449,6 +449,8 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary)
 
   smb.Lock();
 
+  if (!bOverWrite)
+    CLog::Log(LOGWARNING, "FileSmb::OpenForWrite() called with no overwriting, yet we are overwriting anyway!");
   m_fd = smbc_creat(strFileName.c_str(), 0);
 
   if (m_fd == -1)

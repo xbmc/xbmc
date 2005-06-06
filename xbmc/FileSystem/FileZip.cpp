@@ -18,19 +18,19 @@ bool CFileZip::Open(const CURL&url, bool bBinary)
   
   if ((mZipItem.flags & 64) == 64)
   {
-    CLog::Log(LOGDEBUG,"FileZip: compressed file, not supported!");
+    CLog::Log(LOGERROR,"FileZip: compressed file, not supported!");
     return false;
   }
   
   if ((mZipItem.method != 8) && (mZipItem.method != 0))
   {
-    CLog::Log(LOGDEBUG,"FileZip: unsupported compression method!");
+    CLog::Log(LOGERROR,"FileZip: unsupported compression method!");
     return false;
   }
 
   if (!mFile.Open(url.GetHostName().c_str(),true)) // this is the zip-file, always open binary
   {
-    CLog::Log(LOGDEBUG,"FileZip: unable to open zip file!");
+    CLog::Log(LOGERROR,"FileZip: unable to open zip file!");
     return false;
   }
   mFile.Seek(mZipItem.offset,SEEK_SET);
@@ -44,7 +44,7 @@ bool CFileZip::Open(const CURL&url, bool bBinary)
   if( mZipItem.method != 0 )
     if (inflateInit2(&m_ZStream,-MAX_WBITS) != Z_OK)
     { 
-      CLog::Log(LOGDEBUG,"FileZip: error initializing zlib!");
+      CLog::Log(LOGERROR,"FileZip: error initializing zlib!");
       return false;
     }
   m_ZStream.next_in = (Bytef*)m_szBuffer;
@@ -246,8 +246,13 @@ unsigned int CFileZip::Read(void* lpBuf, __int64 uiBufSize)
       }
 
       if (!m_ZStream.avail_in)
+      {
         if (!FillBuffer()) // eof! 
+        {
+          iDecompressed = m_ZStream.total_out-prevOut;
           break;
+        }
+      }
 
       int iMessage = inflate(&m_ZStream,Z_SYNC_FLUSH);
       m_bFlush = ((iMessage == Z_OK) && (m_ZStream.avail_out == 0))?true:false; // more info in input buffer
