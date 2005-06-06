@@ -174,21 +174,6 @@
   </control>
 
   <control>
-    <description>default rss control</description>
-    <type>rss</type>
-    <id>1</id>
-    <posX>48</posX>
-    <posY>420</posY>
-    <width>640</width>
-    <height>16</height>
-    <font>font12</font>
-    <feed>http://www.xbox-scene.com/xbox1data/xbox-scene.xml</feed>
-    <titlecolor>ffd0ad59</titlecolor>
-    <headlinecolor>ddffffff</headlinecolor>
-    <textcolor>ffa0a0a0</textcolor>
-  </control>
-
-  <control>
     <description>default ram (recently added media) control</description>
     <type>ram</type>
     <id>20</id>

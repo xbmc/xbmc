@@ -1,3 +1,5 @@
+2005-06-06 changed:     Updated rss controls to new scheme (zero based <urlset> references to XBoxMediaCenter.xml)
+
 2005-05-14 changed:     swapped play/pause button textures in video osd and playercontrol
 
 2005-05-11 changed:     somemore ttf size tweaks

@@ -1033,7 +1033,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetUrls(g_settings.m_vecRssUrls[iUrlSet]);
+    if (iUrlSet >= 0 && iUrlSet < (int)g_settings.m_vecRssUrls.size())
+      pControl->SetUrls(g_settings.m_vecRssUrls[iUrlSet]);
     return pControl;
   }
   else if (strType == "ram")
