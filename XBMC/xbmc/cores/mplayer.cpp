@@ -565,7 +565,14 @@ CMPlayer::CMPlayer(IPlayerCallback& callback)
 CMPlayer::~CMPlayer()
 {
   CloseFile();
-  m_eventStop.Wait();
+
+  //Make sure the thread really is completly closed
+  //things will fail otherwise.
+  while(!WaitForThreadExit(2000))
+  {
+    CLog::Log(LOGWARNING, "CMPlayer::~CMPlayer() - Waiting for thread to exit...");
+  }
+
   Unload();
   while ( criticalsection_head )
   {
@@ -586,8 +593,7 @@ CMPlayer::~CMPlayer()
 }
 bool CMPlayer::load()
 {
-  m_bIsPlaying = false;
-  StopThread();
+  CloseFile();
   Unload();
   if (!m_pDLL)
   {
@@ -1008,7 +1014,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
       }
     }
-    m_bIsPlaying = true;
 
     // set up defaults
     SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
@@ -1028,6 +1033,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     bIsVideo = HasVideo();
     bIsAudio = HasAudio();
 
+    m_bIsPlaying = true;
     if ( ThreadHandle() == NULL)
     {
       Create();
@@ -1066,7 +1072,7 @@ bool CMPlayer::CloseFile()
 
   //Check if file is still open
   if(m_bIsMplayeropenfile)
-  { //Attempt to let mplayer clean up afterit self
+  { //Attempt to let mplayer clean up after it self
     try
     {
       m_bIsMplayeropenfile = false;
@@ -1100,8 +1106,9 @@ void CMPlayer::OnExit()
 void CMPlayer::Process()
 {
   bool bHasVideo = HasVideo();
-  if (m_pDLL && m_bIsPlaying)
-  {
+
+  if (!m_pDLL || !m_bIsPlaying) return;
+
     m_callback.OnPlayBackStarted();
 
     int exceptionCount = 0;
@@ -1117,10 +1124,7 @@ void CMPlayer::Process()
           // we're playing
           int iRet = mplayer_process();
 
-          if (iRet < 0)
-          {
-            m_bIsPlaying = false;
-          }
+          if (iRet < 0) break;
 
           __int64 iPTS = mplayer_get_pts();
           if (iPTS)
@@ -1177,8 +1181,8 @@ void CMPlayer::Process()
         exceptionCount++;
 
         // bad codec detection
-        if (FirstLoop)
-          m_bIsPlaying = false;
+        if (FirstLoop) break;
+
       }
 
       if (exceptionCount > 0)
@@ -1192,19 +1196,13 @@ void CMPlayer::Process()
       }
 
     }
-    while ((m_bIsPlaying && !m_bStop) && (exceptionCount < 5));
+    while ((!m_bStop) && (exceptionCount < 5));
 
     if (!m_bStop)
     {
       xbox_audio_wait_completion();
     }
     _SubtitleExtension.Empty();
-
-    //We've stopped playing
-    m_bIsPlaying = false;
-    CloseFile();
-
-  }
   
   // Save our settings for the current movie for later
   if (bHasVideo)
@@ -1216,6 +1214,10 @@ void CMPlayer::Process()
     dbs.SetVideoSettings(m_strPath, g_stSettings.m_currentVideoSettings);
     dbs.Close();
   }
+
+  //Set m_bIsPlaying to false here to make sure closefile doesn't try to close the file again
+  m_bIsPlaying = false;
+  CloseFile();
 
   if (m_bStop)
   {
