@@ -389,7 +389,7 @@
       <posY>470</posY>
       <width>720</width>
       <font>font13</font>
-      <feed>http://www.xbox-scene.com/xbox1data/xbox-scene.xml</feed>
+      <urlset>0</urlset>
       <titlecolor>ffD2FF00</titlecolor>
       <headlinecolor>DDced8da</headlinecolor>
       <textcolor>ffD2FF00</textcolor>
