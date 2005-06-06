@@ -565,6 +565,7 @@ CMPlayer::CMPlayer(IPlayerCallback& callback)
 CMPlayer::~CMPlayer()
 {
   CloseFile();
+  m_eventStop.Wait();
   Unload();
   while ( criticalsection_head )
   {
