@@ -26,7 +26,6 @@ CPlayListPlayer::CPlayListPlayer(void)
   m_iCurrentSong = -1;
   m_bChanged = false;
   m_bPlayedFirstFile = false;
-  m_iEntriesNotFound = 0;
   m_iCurrentPlayList = PLAYLIST_NONE;
   m_iOptions = 0;
 }
@@ -160,6 +159,17 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay)
   m_iCurrentSong = iSong;
   const CPlayList::CPlayListItem& item = playlist[m_iCurrentSong];
 
+  if (!g_application.PlayFile(item, bAutoPlay))
+  {
+    CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
+    m_gWindowManager.SendThreadMessage(msg);
+    Reset();
+    m_iCurrentPlayList = PLAYLIST_NONE;
+    return;
+  }
+
+  m_bPlayedFirstFile = true;
+
   if (!item.IsShoutCast())
   {
     if (iPreviousSong < 0)
@@ -173,15 +183,6 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay)
       m_gWindowManager.SendThreadMessage(msg);
     }
   }
-
-  if (!g_application.PlayFile(item, bAutoPlay))
-  {
-    // Count entries in current playlist
-    // that couldn't be played
-    m_iEntriesNotFound++;
-  }
-  else
-    m_bPlayedFirstFile = true;
 }
 
 /// \brief Change the current song in playlistplayer.
@@ -232,7 +233,6 @@ void CPlayListPlayer::SetCurrentPlaylist( int iPlayList )
   if (iPlayList == m_iCurrentPlayList)
     return ;
   m_iCurrentPlayList = iPlayList;
-  m_iEntriesNotFound = 0;
   m_bPlayedFirstFile = false;
   m_bChanged = true;
 }
@@ -283,14 +283,7 @@ int CPlayListPlayer::RemoveDVDItems()
 void CPlayListPlayer::Reset()
 {
   m_iCurrentSong = -1;
-  m_iEntriesNotFound = 0;
   m_bPlayedFirstFile = false;
-}
-
-/// \brief Number of playlist entries of the active playlist couldn't be played.
-int CPlayListPlayer::GetEntriesNotFound()
-{
-  return m_iEntriesNotFound;
 }
 
 /// \brief Whether or not something has been played yet or not from the current playlist.
