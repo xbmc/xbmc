@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-06-2005 fixed: OutputToAllSpeakers didn't work with when AC3 Output was enabled on 2ch AC3 files
  - 06-06-2005 changed: VSync now always on.
  - 06-06-2005 added: dll_fprintf() initial code for writing text files from dll's.
  - 06-06-2005 changed: Updated OpenForWrite() to open with overwrite if requested.
