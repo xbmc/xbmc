@@ -3004,7 +3004,7 @@ AVCodec snow_decoder = {
     0 /*CODEC_CAP_DR1*/ /*| CODEC_CAP_DRAW_HORIZ_BAND*/,
     NULL
 };
-
+#ifdef CONFIG_ENCODERS
 AVCodec snow_encoder = {
     "snow",
     CODEC_TYPE_VIDEO,
@@ -3014,7 +3014,7 @@ AVCodec snow_encoder = {
     encode_frame,
     encode_end,
 };
-
+#endif
 
 #if 0
 #undef malloc
