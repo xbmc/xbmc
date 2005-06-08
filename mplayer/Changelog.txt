@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 08-06-2005 updated: system headers to use with mingw 3.4.4 (USE GCC 3.4.4 OR HIGHER 3.4.x SERIES FROM NOW)
+  - 08-06-2005 removed: unneeded video/audio filters
+  - 08-06-2005 moved: xbmc hookup for audio into ao_directx instead of win32
   - 05-06-2005 fixed: player was resetting audio on each seak during ff/rw.. caused slowdowns
   - 22-05-2005 fixed: too fast playback immidiatly after resume from pause when autosync enabled.
   - 18-05-2005 fixed: subtitles didn't display in dvdimages if ttf subtitle fonts where selected in xbmc

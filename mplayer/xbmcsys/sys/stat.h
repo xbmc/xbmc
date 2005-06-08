@@ -1,31 +1,13 @@
 /*
  * stat.h
+ * This file has no copyright assigned and is placed in the Public Domain.
+ * This file is a part of the mingw-runtime package.
+ * No warranty is given; refer to the file DISCLAIMER within the package.
  *
  * Symbolic constants for opening and creating files, also stat, fstat and
  * chmod functions.
  *
- * This file is part of the Mingw32 package.
- *
- * Contributors:
- *  Created by Colin Peters <colin@bird.fu.is.saga-u.ac.jp>
- *
- *  THIS SOFTWARE IS NOT COPYRIGHTED
- *
- *  This source code is offered for use in the public domain. You may
- *  use, modify or distribute it freely.
- *
- *  This code is distributed in the hope that it will be useful but
- *  WITHOUT ANY WARRANTY. ALL WARRANTIES, EXPRESS OR IMPLIED ARE HEREBY
- *  DISCLAIMED. This includes but is not limited to warranties of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * $Revision$
- * $Author$
- * $Date$
- *
  */
-
-#ifndef __STRICT_ANSI__
 
 #ifndef _STAT_H_
 #define _STAT_H_
@@ -44,6 +26,8 @@
 /*
  * Constants for the stat st_mode member.
  */
+#ifndef __STRICT_ANSI__
+#endif
 #define	_S_IFIFO	0x1000	/* FIFO */
 #define	_S_IFCHR	0x2000	/* Character */
 #define	_S_IFBLK	0x3000	/* Block: Is this ever set under w32? */
@@ -101,7 +85,6 @@
  * invalid, they will cause localtime et. al. to return NULL. And calling
  * asctime with a NULL pointer causes an Invalid Page Fault. So watch it!
  */
-#if 0
 struct _stat
 {
 	_dev_t	st_dev;		/* Equivalent to drive number 0=A 1=B ... */
@@ -111,7 +94,7 @@ struct _stat
 	short	st_uid;		/* User: Maybe significant on NT ? */
 	short	st_gid;		/* Group: Ditto */
 	_dev_t	st_rdev;	/* Seems useless (not even filled in) */
-	long	st_size;	/* File size in bytes */
+	_off_t	st_size;	/* File size in bytes */
 	time_t	st_atime;	/* Accessed date (always 00:00 hrs local
 				 * on FAT) */
 	time_t	st_mtime;	/* Modified time */
@@ -127,13 +110,12 @@ struct stat
 	short	st_uid;		/* User: Maybe significant on NT ? */
 	short	st_gid;		/* Group: Ditto */
 	_dev_t	st_rdev;	/* Seems useless (not even filled in) */
-	long	st_size;	/* File size in bytes */
+	_off_t	st_size;	/* File size in bytes */
 	time_t	st_atime;	/* Accessed date (always 00:00 hrs local
 				 * on FAT) */
 	time_t	st_mtime;	/* Modified time */
 	time_t	st_ctime;	/* Creation time */
 };
-#endif
 
 #if defined (__MSVCRT__)
 struct _stati64 {
@@ -149,6 +131,21 @@ struct _stati64 {
     time_t st_mtime;
     time_t st_ctime;
 };
+
+struct __stat64
+{
+    _dev_t st_dev;
+    _ino_t st_ino;
+    _mode_t st_mode;
+    short st_nlink;
+    short st_uid;
+    short st_gid;
+    _dev_t st_rdev;
+    _off_t st_size;
+    __time64_t st_atime;
+    __time64_t st_mtime;
+    __time64_t st_ctime;
+};
 #endif /* __MSVCRT__ */
 #define _STAT_DEFINED
 #endif /* _STAT_DEFINED */
@@ -157,47 +154,56 @@ struct _stati64 {
 extern "C" {
 #endif
 
-//_CRTIMP int __cdecl	_fstat (int, struct _stat*);
+_CRTIMP int __cdecl	_fstat (int, struct _stat*);
 _CRTIMP int __cdecl	_chmod (const char*, int);
-//_CRTIMP int __cdecl	_stat (const char*, struct _stat*);
-
-#if defined (__MSVCRT__)
-_CRTIMP int __cdecl  _fstati64(int, struct _stati64 *);
-_CRTIMP int __cdecl  _stati64(const char *, struct _stati64 *);
-#if !defined ( _WSTAT_DEFINED) /* also declared in wchar.h */
-//_CRTIMP int __cdecl	_wstat(const wchar_t*, struct _stat*);
-//_CRTIMP int __cdecl	_wstati64 (const wchar_t*, struct _stati64*);
-#define _WSTAT_DEFINED
-#endif /* _WSTAT_DEFIND */
-#endif /* __MSVCRT__ */
+_CRTIMP int __cdecl	_stat (const char*, struct _stat*);
 
 #ifndef	_NO_OLDNAMES
 
 /* These functions live in liboldnames.a. */
-//_CRTIMP int __cdecl	fstat (int, struct stat*);
+_CRTIMP int __cdecl	fstat (int, struct stat*);
 _CRTIMP int __cdecl	chmod (const char*, int);
-//_CRTIMP int __cdecl	stat (const char*, struct stat*);
+_CRTIMP int __cdecl	stat (const char*, struct stat*);
 
 #endif	/* Not _NO_OLDNAMES */
 
+#if defined (__MSVCRT__)
+_CRTIMP int __cdecl  _fstati64(int, struct _stati64 *);
+_CRTIMP int __cdecl  _stati64(const char *, struct _stati64 *);
+/* These require newer versions of msvcrt.dll (6.10 or higher).  */ 
+#if __MSVCRT_VERSION__ >= 0x0601
+_CRTIMP int __cdecl _fstat64 (int, struct __stat64*);
+_CRTIMP int __cdecl _stat64 (const char*, struct __stat64*);
+#endif /* __MSVCRT_VERSION__ >= 0x0601 */
+#if !defined ( _WSTAT_DEFINED) /* also declared in wchar.h */
+_CRTIMP int __cdecl	_wstat(const wchar_t*, struct _stat*);
+_CRTIMP int __cdecl	_wstati64 (const wchar_t*, struct _stati64*);
+#if __MSVCRT_VERSION__ >= 0x0601
+_CRTIMP int __cdecl _wstat64 (const wchar_t*, struct __stat64*);
+#endif /* __MSVCRT_VERSION__ >= 0x0601 */
+#define _WSTAT_DEFINED
+#endif /* _WSTAT_DEFIND */
+#endif /* __MSVCRT__ */
 
+#ifdef _XBOX
+#ifndef _XBOXSTAT_
+#define _XBOXSTAT_
 
 /* XBMC-Largefiles Structures and Functions */
 #define _stat _stati64
 #define stat _stati64
 #define _fstat _fstati64
 #define fstat _fstati64
+#define _wstat _wstati64
 
+#endif
+#endif
 
 #ifdef	__cplusplus
 }
 #endif
 
-
-
 #endif	/* Not RC_INVOKED */
 
+
 #endif	/* Not _STAT_H_ */
-
-#endif	/* Not __STRICT_ANSI__ */
-

@@ -1,30 +1,14 @@
 /*
  * stdio.h
+ * This file has no copyright assigned and is placed in the Public Domain.
+ * This file is a part of the mingw-runtime package.
+ * No warranty is given; refer to the file DISCLAIMER within the package.
  *
  * Definitions of types and prototypes of functions for standard input and
  * output.
  *
  * NOTE: The file manipulation functions provided by Microsoft seem to
  * work with either slash (/) or backslash (\) as the directory separator.
- *
- * This file is part of the Mingw32 package.
- *
- * Contributors:
- *  Created by Colin Peters <colin@bird.fu.is.saga-u.ac.jp>
- *
- *  THIS SOFTWARE IS NOT COPYRIGHTED
- *
- *  This source code is offered for use in the public domain. You may
- *  use, modify or distribute it freely.
- *
- *  This code is distributed in the hope that it will be useful but
- *  WITHOUT ANY WARRANTY. ALL WARRANTIES, EXPRESS OR IMPLIED ARE HEREBY
- *  DISCLAIMED. This includes but is not limited to warranties of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * $Revision$
- * $Author$
- * $Date$
  *
  */
 
@@ -65,11 +49,11 @@
 /*
  * The maximum length of a file name. You should use GetVolumeInformation
  * instead of this constant. But hey, this works.
- *
- * NOTE: This is used in the structure _finddata_t (see io.h) so changing it
- *       is probably not a good idea.
+ * Also defined in io.h.
  */
+#ifndef FILENAME_MAX
 #define	FILENAME_MAX	(260)
+#endif
 
 /*
  * The maximum number of files that may be open at once. I have set this to
@@ -86,6 +70,9 @@
  * Redefining these macros does not effect the CRT functions.
  */
 #define _P_tmpdir   "\\"
+#ifndef __STRICT_ANSI__
+#define P_tmpdir _P_tmpdir
+#endif
 #define _wP_tmpdir  L"\\"
 
 /*
@@ -142,7 +129,7 @@
 /*
  * The structure underlying the FILE type.
  *
- * I still believe that nobody in their right mind should make use of the
+ * Some believe that nobody in their right mind should make use of the
  * internals of this structure. Provided by Pedro A. Aranda Gutiirrez
  * <paag@tid.es>.
  */
@@ -197,11 +184,16 @@ _CRTIMP int __cdecl	remove (const char*);
 _CRTIMP int __cdecl	rename (const char*, const char*);
 _CRTIMP FILE* __cdecl	tmpfile (void);
 _CRTIMP char* __cdecl	tmpnam (char*);
+
+#ifndef __STRICT_ANSI__
 _CRTIMP char* __cdecl	_tempnam (const char*, const char*);
+_CRTIMP int  __cdecl    _rmtmp(void);
 
 #ifndef	NO_OLDNAMES
 _CRTIMP char* __cdecl	tempnam (const char*, const char*);
+_CRTIMP int __cdecl     rmtmp(void);
 #endif
+#endif /* __STRICT_ANSI__ */
 
 _CRTIMP int __cdecl	setvbuf (FILE*, char*, int, size_t);
 
@@ -222,7 +214,7 @@ _CRTIMP int __cdecl	_vsnprintf (char*, size_t, const char*, __VALIST);
 
 #ifndef __NO_ISOCEXT  /* externs in libmingwex.a */
 int __cdecl snprintf(char* s, size_t n, const char*  format, ...);
-extern __inline__ int __cdecl
+__CRT_INLINE int __cdecl
 vsnprintf (char* s, size_t n, const char* format, __VALIST arg)
   { return _vsnprintf ( s, n, format, arg); }
 int __cdecl vscanf (const char * __restrict__, __VALIST);
@@ -247,13 +239,56 @@ _CRTIMP int __cdecl	fgetc (FILE*);
 _CRTIMP char* __cdecl	fgets (char*, int, FILE*);
 _CRTIMP int __cdecl	fputc (int, FILE*);
 _CRTIMP int __cdecl	fputs (const char*, FILE*);
-_CRTIMP int __cdecl	getc (FILE*);
-_CRTIMP int __cdecl	getchar (void);
 _CRTIMP char* __cdecl	gets (char*);
-_CRTIMP int __cdecl	putc (int, FILE*);
-_CRTIMP int __cdecl	putchar (int);
 _CRTIMP int __cdecl	puts (const char*);
 _CRTIMP int __cdecl	ungetc (int, FILE*);
+
+/* Traditionally, getc and putc are defined as macros. but the
+   standard doesn't say that they must be macros.
+   We use inline functions here to allow the fast versions
+   to be used in C++ with namespace qualification, eg., ::getc.
+
+   _filbuf and _flsbuf  are not thread-safe. */
+_CRTIMP int __cdecl	_filbuf (FILE*);
+_CRTIMP int __cdecl	_flsbuf (int, FILE*);
+
+#if !defined _MT && !defined _XBOX
+
+__CRT_INLINE int __cdecl getc (FILE* __F)
+{
+  return (--__F->_cnt >= 0)
+    ?  (int) (unsigned char) *__F->_ptr++
+    : _filbuf (__F);
+}
+
+__CRT_INLINE int __cdecl putc (int __c, FILE* __F)
+{
+  return (--__F->_cnt >= 0)
+    ?  (int) (unsigned char) (*__F->_ptr++ = (char)__c)
+    :  _flsbuf (__c, __F);
+}
+
+__CRT_INLINE int __cdecl getchar (void)
+{
+  return (--stdin->_cnt >= 0)
+    ?  (int) (unsigned char) *stdin->_ptr++
+    : _filbuf (stdin);
+}
+
+__CRT_INLINE int __cdecl putchar(int __c)
+{
+  return (--stdout->_cnt >= 0)
+    ?  (int) (unsigned char) (*stdout->_ptr++ = (char)__c)
+    :  _flsbuf (__c, stdout);}
+
+#else  /* Use library functions.  */
+
+_CRTIMP int __cdecl	getc (FILE*);
+_CRTIMP int __cdecl	putc (int, FILE*);
+_CRTIMP int __cdecl	getchar (void);
+_CRTIMP int __cdecl	putchar (int);
+
+#endif
 
 /*
  * Direct Input and Output Functions
@@ -304,9 +339,22 @@ _CRTIMP int __cdecl	fsetpos (FILE*, const fpos_t*);
  * Error Functions
  */
 
-_CRTIMP void __cdecl	clearerr (FILE*);
 _CRTIMP int __cdecl	feof (FILE*);
 _CRTIMP int __cdecl	ferror (FILE*);
+
+#ifndef _XBOX //Cant use inlines or macros here, they have to be overridden in our code.
+#ifdef __cplusplus
+inline int __cdecl feof (FILE* __F)
+  { return __F->_flag & _IOEOF; }
+inline int __cdecl ferror (FILE* __F)
+  { return __F->_flag & _IOERR; }
+#else
+#define feof(__F)     ((__F)->_flag & _IOEOF)
+#define ferror(__F)   ((__F)->_flag & _IOERR)
+#endif
+#endif
+
+_CRTIMP void __cdecl	clearerr (FILE*);
 _CRTIMP void __cdecl	perror (const char*);
 
 
@@ -331,6 +379,7 @@ _CRTIMP int __cdecl	_fputchar (int);
 _CRTIMP FILE* __cdecl	_fdopen (int, const char*);
 _CRTIMP int __cdecl	_fileno (FILE*);
 _CRTIMP int __cdecl	_fcloseall(void);
+_CRTIMP FILE* __cdecl	_fsopen(const char*, const char*, int);
 #ifdef __MSVCRT__
 _CRTIMP int __cdecl	_getmaxstdio(void);
 _CRTIMP int __cdecl	_setmaxstdio(int);
@@ -342,6 +391,35 @@ _CRTIMP int __cdecl	fputchar (int);
 _CRTIMP FILE* __cdecl	fdopen (int, const char*);
 _CRTIMP int __cdecl	fileno (FILE*);
 #endif	/* Not _NO_OLDNAMES */
+
+#define _fileno(__F) ((__F)->_file)
+#ifndef _NO_OLDNAMES
+#define fileno(__F) ((__F)->_file)
+#endif
+
+#if defined (__MSVCRT__) && !defined (__NO_MINGW_LFS)
+#include <sys/types.h>
+__CRT_INLINE FILE* __cdecl fopen64 (const char* filename, const char* mode)
+{
+  return fopen (filename, mode); 
+}
+
+int __cdecl fseeko64 (FILE*, off64_t, int);
+
+#ifdef __USE_MINGW_FSEEK
+int __cdecl __mingw_fseeko64 (FILE *, off64_t, int);
+#define fseeko64(fp, offset, whence)  __mingw_fseeko64(fp, offset, whence)
+#endif
+
+__CRT_INLINE off64_t __cdecl ftello64 (FILE * stream)
+{
+  fpos_t pos;
+  if (fgetpos(stream, &pos))
+    return  -1LL;
+  else
+   return ((off64_t) pos);
+}
+#endif /* __NO_MINGW_LFS */
 
 #endif	/* Not __STRICT_ANSI__ */
 
@@ -387,7 +465,7 @@ _CRTIMP FILE* __cdecl	_wpopen (const wchar_t*, const wchar_t*);
 
 #ifndef __NO_ISOCEXT  /* externs in libmingwex.a */
 int __cdecl snwprintf (wchar_t* s, size_t n, const wchar_t*  format, ...);
-extern __inline__ int __cdecl
+__CRT_INLINE int __cdecl
 vsnwprintf (wchar_t* s, size_t n, const wchar_t* format, __VALIST arg)
   { return _vsnwprintf ( s, n, format, arg);}
 int __cdecl vwscanf (const wchar_t * __restrict__, __VALIST);

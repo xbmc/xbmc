@@ -1,27 +1,10 @@
 /*
  * types.h
+ * This file has no copyright assigned and is placed in the Public Domain.
+ * This file is a part of the mingw-runtime package.
+ * No warranty is given; refer to the file DISCLAIMER within the package.
  *
  * The definition of constants, data types and global variables.
- *
- * This file is part of the Mingw32 package.
- *
- * Contributors:
- *  Created by Colin Peters <colin@bird.fu.is.saga-u.ac.jp>
- *  Lots of types supplied by Pedro A. Aranda <paag@tid.es>
- *
- *  THIS SOFTWARE IS NOT COPYRIGHTED
- *
- *  This source code is offered for use in the public domain. You may
- *  use, modify or distribute it freely.
- *
- *  This code is distributed in the hope that it will be useful but
- *  WITHOUT ANY WARRANTY. ALL WARRENTIES, EXPRESS OR IMPLIED ARE HEREBY
- *  DISCLAIMED. This includes but is not limited to warrenties of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * $Revision$
- * $Author$
- * $Date$
  *
  */
 
@@ -45,13 +28,14 @@ typedef	long	time_t;
 #define	_TIME_T_DEFINED
 #endif
 
-
-#ifndef	__STRICT_ANSI__
+#ifndef _TIME64_T_DEFINED
+typedef __int64 __time64_t;
+#define _TIME64_T_DEFINED
+#endif
 
 #ifndef	_OFF_T_
 #define	_OFF_T_
-
-typedef __int64 _off_t;
+typedef long _off_t;
 
 #ifndef	_NO_OLDNAMES
 typedef _off_t	off_t;
@@ -114,15 +98,38 @@ typedef _sigset_t	sigset_t;
 
 #ifndef _SSIZE_T_
 #define _SSIZE_T_
-typedef int _ssize_t;
+typedef long _ssize_t;
 
 #ifndef	_NO_OLDNAMES
 typedef _ssize_t ssize_t;
 #endif
 #endif /* Not _SSIZE_T_ */ 
 
-#endif	/* Not __STRICT_ANSI__ */
+#ifndef _FPOS64_T_
+#define _FPOS64_T_
+typedef long long fpos64_t;
+#endif
+
+#ifndef _OFF64_T_
+#define _OFF64_T_
+typedef long long off64_t;
+#endif
 
 #endif	/* Not RC_INVOKED */
+
+#ifdef _XBOX
+#ifndef _XBOXTYPES_
+#define _XBOXTYPES_
+
+typedef int _xbssize_t;
+#define _ssize_t _xbssize_t
+#define ssize_t _xbssize_t
+
+#define _off_t off64_t
+#define off_t off64_t
+
+#endif
+#endif
+
 
 #endif	/* Not _TYPES_H_ */

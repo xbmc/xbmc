@@ -98,6 +98,36 @@ extern vf_info_t vf_info_softskip;
 
 // list of available filters:
 static vf_info_t* filter_list[]={
+#ifdef _XBOX
+#ifdef FF_POSTPROCESS
+    &vf_info_pp,
+#endif
+    &vf_info_scale,
+//    &vf_info_osd,
+    &vf_info_vo,
+    &vf_info_format,
+    &vf_info_noformat,
+#ifdef USE_LIBAVCODEC
+    &vf_info_lavcdeint,
+#endif
+#ifdef HAVE_ZR
+    &vf_info_zrmjpeg,
+#endif
+    &vf_info_denoise3d,
+    &vf_info_hqdn3d,
+    &vf_info_detc,
+    &vf_info_telecine,
+    &vf_info_tinterlace,
+    &vf_info_tfields,
+    &vf_info_ivtc,
+    &vf_info_softpulldown,
+    &vf_info_pullup,
+    &vf_info_filmdint,
+#ifdef USE_LIBAVCODEC
+    &vf_info_spp,
+#endif
+    &vf_info_kerndeint,
+#else //!XBOX.....
     &vf_info_rectangle,
 #ifndef HAVE_NO_POSIX_SELECT
     &vf_info_bmovl,
@@ -168,8 +198,8 @@ static vf_info_t* filter_list[]={
     &vf_info_hue,
 #ifdef USE_LIBAVCODEC
     &vf_info_spp,
-#endif
     &vf_info_yuvcsp,
+#endif
     &vf_info_kerndeint,
     &vf_info_rgbtest,
 #ifdef USE_LIBAVCODEC
@@ -179,6 +209,7 @@ static vf_info_t* filter_list[]={
     &vf_info_divtc,
     &vf_info_harddup,
     &vf_info_softskip,
+#endif //XBOX
     NULL
 };
 

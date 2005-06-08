@@ -1,47 +1,24 @@
 /* 
  * io.h
+ * This file has no copyright assigned and is placed in the Public Domain.
+ * This file is a part of the mingw-runtime package.
+ * No warranty is given; refer to the file DISCLAIMER within the package.
  *
  * System level I/O functions and types.
  *
- * This file is part of the Mingw32 package.
- *
- * Contributors:
- *  Created by Colin Peters <colin@bird.fu.is.saga-u.ac.jp>
- *
- *  THIS SOFTWARE IS NOT COPYRIGHTED
- *
- *  This source code is offered for use in the public domain. You may
- *  use, modify or distribute it freely.
- *
- *  This code is distributed in the hope that it will be useful but
- *  WITHOUT ANY WARRANTY. ALL WARRANTIES, EXPRESS OR IMPLIED ARE HEREBY
- *  DISCLAIMED. This includes but is not limited to warranties of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * $Revision$
- * $Author$
- * $Date$
- *
  */
-
-
-#ifndef	__STRICT_ANSI__
-
 #ifndef	_IO_H_
 #define	_IO_H_
 
 /* All the headers include this file. */
 #include <_mingw.h>
 
-/* We need the definition of FILE anyway... */
-#include <stdio.h>
-
 /* MSVC's io.h contains the stuff from dir.h, so I will too.
  * NOTE: This also defines off_t, the file offset type, through
  *       an inclusion of sys/types.h */
-#ifndef __STRICT_ANSI__
 
 #include <sys/types.h>	/* To get time_t. */
+#include <stdint.h>  /* For intptr_t.  */
 
 /*
  * Attributes of files as returned by _findfirst et al.
@@ -60,6 +37,15 @@
 #ifndef	_FSIZE_T_DEFINED
 typedef	unsigned long	_fsize_t;
 #define _FSIZE_T_DEFINED
+#endif
+
+/*
+ * The maximum length of a file name. You should use GetVolumeInformation
+ * instead of this constant. But hey, this works.
+ * Also defined in stdio.h. 
+ */
+#ifndef FILENAME_MAX
+#define	FILENAME_MAX	(260)
 #endif
 
 /*
@@ -85,6 +71,14 @@ struct _finddatai64_t {
     char        name[FILENAME_MAX];
 };
 
+struct __finddata64_t {
+        unsigned    attrib;
+        __time64_t  time_create;    
+        __time64_t  time_access;    
+        __time64_t  time_write;
+        _fsize_t    size;
+         char       name[FILENAME_MAX];
+};
 
 #ifndef _WFINDDATA_T_DEFINED
 struct _wfinddata_t {
@@ -95,6 +89,7 @@ struct _wfinddata_t {
     	_fsize_t	size;
     	wchar_t		name[FILENAME_MAX];	/* may include spaces. */
 };
+
 struct _wfinddatai64_t {
     unsigned    attrib;
     time_t      time_create;
@@ -102,6 +97,15 @@ struct _wfinddatai64_t {
     time_t      time_write;
     __int64     size;
     wchar_t     name[FILENAME_MAX];
+};
+
+struct __wfinddata64_t {
+        unsigned    attrib;
+        __time64_t  time_create;    
+        __time64_t  time_access;
+        __time64_t  time_write;
+        _fsize_t    size;
+        wchar_t     name[FILENAME_MAX];
 };
 
 #define _WFINDDATA_T_DEFINED
@@ -117,9 +121,10 @@ extern "C" {
  * _findclose calls. _findnext also returns -1 if no match could be found,
  * and 0 if a match was found. Call _findclose when you are finished.
  */
-_CRTIMP int __cdecl _findfirst (const char*, struct _finddata_t*);
-_CRTIMP int __cdecl _findnext (int, struct _finddata_t*);
-_CRTIMP int __cdecl _findclose (int);
+/*  FIXME: Should these all use intptr_t, as per recent MSDN docs?  */
+_CRTIMP long __cdecl _findfirst (const char*, struct _finddata_t*);
+_CRTIMP int __cdecl _findnext (long, struct _finddata_t*);
+_CRTIMP int __cdecl _findclose (long);
 
 _CRTIMP int __cdecl _chdir (const char*);
 _CRTIMP char* __cdecl _getcwd (char*, int);
@@ -128,15 +133,26 @@ _CRTIMP char* __cdecl _mktemp (char*);
 _CRTIMP int __cdecl _rmdir (const char*);
 _CRTIMP int __cdecl _chmod (const char*, int);
 
-
 #ifdef __MSVCRT__
 _CRTIMP __int64 __cdecl _filelengthi64(int);
 _CRTIMP long __cdecl _findfirsti64(const char*, struct _finddatai64_t*);
 _CRTIMP int __cdecl _findnexti64(long, struct _finddatai64_t*);
 _CRTIMP __int64 __cdecl _lseeki64(int, __int64, int);
 _CRTIMP __int64 __cdecl _telli64(int);
-#endif /* __MSVCRT__ */
+/* These require newer versions of msvcrt.dll (6.1 or higher). */ 
+#if __MSVCRT_VERSION__ >= 0x0601
+_CRTIMP intptr_t __cdecl _findfirst64(const char*, struct __finddata64_t*);
+_CRTIMP intptr_t __cdecl _findnext64(intptr_t, struct __finddata64_t*); 
+#endif /* __MSVCRT_VERSION__ >= 0x0601 */
 
+#ifndef __NO_MINGW_LFS
+__CRT_INLINE off64_t lseek64 (int fd, off64_t offset, int whence) 
+{
+  return _lseeki64(fd, (__int64) offset, whence);
+}
+#endif
+
+#endif /* __MSVCRT__ */
 
 #ifndef _NO_OLDNAMES
 
@@ -157,12 +173,9 @@ _CRTIMP int __cdecl chmod (const char*, int);
 
 #endif	/* Not RC_INVOKED */
 
-#endif	/* Not __STRICT_ANSI__ */
-
 /* TODO: Maximum number of open handles has not been tested, I just set
  * it the same as FOPEN_MAX. */
 #define	HANDLE_MAX	FOPEN_MAX
-
 
 /* Some defines for _access nAccessMode (MS doesn't define them, but
  * it doesn't seem to hurt to add them). */
@@ -189,7 +202,6 @@ _CRTIMP int __cdecl _creat (const char*, int);
 _CRTIMP int __cdecl _dup (int);
 _CRTIMP int __cdecl _dup2 (int, int);
 _CRTIMP long __cdecl _filelength (int);
-_CRTIMP int __cdecl _fileno (FILE*);
 _CRTIMP long __cdecl _get_osfhandle (int);
 _CRTIMP int __cdecl _isatty (int);
 
@@ -204,8 +216,7 @@ _CRTIMP int __cdecl _eof (int);
 
 /* LK_... locking commands defined in sys/locking.h. */
 _CRTIMP int __cdecl _locking (int, int, long);
-
-//_CRTIMP long __cdecl _lseek (int, long, int);
+_CRTIMP long __cdecl _lseek (int, long, int);
 
 /* Optional third argument is unsigned unPermissions. */
 _CRTIMP int __cdecl _open (const char*, int, ...);
@@ -218,8 +229,8 @@ _CRTIMP int __cdecl _setmode (int, int);
 /* SH_... flags for nShFlags defined in share.h
  * Optional fourth argument is unsigned unPermissions */
 _CRTIMP int __cdecl _sopen (const char*, int, int, ...);
-
 _CRTIMP long __cdecl _tell (int);
+
 /* Should umask be in sys/stat.h and/or sys/types.h instead? */
 _CRTIMP int __cdecl _umask (int);
 _CRTIMP int __cdecl _unlink (const char*);
@@ -240,6 +251,10 @@ _CRTIMP int __cdecl _wsopen(const wchar_t*, int, int, ...);
 _CRTIMP wchar_t * __cdecl _wmktemp(wchar_t*);
 _CRTIMP long __cdecl _wfindfirsti64(const wchar_t*, struct _wfinddatai64_t*);
 _CRTIMP int __cdecl _wfindnexti64(long, struct _wfinddatai64_t*);
+#if __MSVCRT_VERSION__ >= 0x0601
+_CRTIMP intptr_t __cdecl _wfindfirst64(const wchar_t*, struct __wfinddata64_t*); 
+_CRTIMP intptr_t __cdecl _wfindnext64(intptr_t, struct __wfinddata64_t*);
+#endif
 #endif /* defined (__MSVCRT__) */
 #define _WIO_DEFINED
 #endif /* _WIO_DEFINED */
@@ -259,9 +274,8 @@ _CRTIMP int __cdecl dup (int);
 _CRTIMP int __cdecl dup2 (int, int);
 _CRTIMP int __cdecl eof (int);
 _CRTIMP long __cdecl filelength (int);
-_CRTIMP int __cdecl fileno (FILE*);
 _CRTIMP int __cdecl isatty (int);
-//_CRTIMP long __cdecl lseek (int, long, int);
+_CRTIMP long __cdecl lseek (int, long, int);
 _CRTIMP int __cdecl open (const char*, int, ...);
 _CRTIMP int __cdecl read (int, void*, unsigned int);
 _CRTIMP int __cdecl setmode (int, int);
@@ -290,21 +304,22 @@ wchar_t * 	wmktemp(wchar_t *);
 #endif	/* Not _NO_OLDNAMES */
 
 /* XBMC-Largefiles */
+#ifdef _XBOX
+#ifndef _XBOXSEEK_
+#define _XBOXSEEK_
+
 #define _lseek(a, b, c) _lseeki64(a, b, c)
 #define lseek(a, b, c) _lseeki64(a, b, c)
 #define _tell(a) _telli64(a)
 #define tell(a) _telli64(a)
 
+#endif
+#endif
 
 #ifdef	__cplusplus
 }
 #endif
 
-
-
 #endif	/* Not RC_INVOKED */
 
 #endif	/* _IO_H_ not defined */
-
-#endif	/* Not strict ANSI */
-
