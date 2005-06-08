@@ -1012,7 +1012,7 @@ static int h261_decode_end(AVCodecContext *avctx)
     MPV_common_end(s);
     return 0;
 }
-
+#ifdef CONFIG_ENCODERS
 AVCodec h261_encoder = {
     "h261",
     CODEC_TYPE_VIDEO,
@@ -1022,6 +1022,7 @@ AVCodec h261_encoder = {
     MPV_encode_picture,
     MPV_encode_end,
 };
+#endif
 
 AVCodec h261_decoder = {
     "h261",

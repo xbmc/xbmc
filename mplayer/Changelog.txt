@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 08-06-2005 updated: fixed two linking errors so that mplayer.dll can be compiled without the last of libavcodecs encoders. (also demands dumping libavformat)
+                        you can save almost 1 meg of memory if these changes are done. remove the libavformat dir and after having run configurexbmc add a line with
+                        #undef CONFIG_ENCODERS to the end of config.h
   - 08-06-2005 updated: system headers to use with mingw 3.4.4 (USE GCC 3.4.4 OR HIGHER 3.4.x SERIES FROM NOW)
   - 08-06-2005 removed: unneeded video/audio filters
   - 08-06-2005 moved: xbmc hookup for audio into ao_directx instead of win32
