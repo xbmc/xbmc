@@ -780,7 +780,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
         options.SetAC3PassTru(bSupportsAC3Out);
         options.SetDTSPassTru(bSupportsDTSOut);
 
-        if ((g_guiSettings.GetBool("VideoAudio.OutputToAllSpeakers")) && (bIsVideo) || (g_guiSettings.GetBool("MusicAudio.OutputToAllSpeakers")) && (!bIsVideo))
+        if ((g_guiSettings.GetBool("AudioVideo.OutputToAllSpeakers")) && (bIsVideo) || (g_guiSettings.GetBool("AudioMusic.OutputToAllSpeakers")) && (!bIsVideo))
           options.SetLimitedHWAC3(true); //Will limit hwac3 to not kick in on 2.0 channel streams
       }
     }
