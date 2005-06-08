@@ -44,6 +44,32 @@ static ao_info_t info =
 	""
 };
 
+#ifdef _XBOX
+ao_functions_t audio_out_dsound;
+ao_data_t* GetAOData(){
+	return &ao_data;
+}
+
+void SetAudioFunctions(ao_functions_t* pFunctions)
+{
+	printf(" set audio functions called\n");
+	audio_out_dsound.info		  = 	pFunctions->info;
+	audio_out_dsound.control		= 	pFunctions->control;
+	audio_out_dsound.init	    = 	pFunctions->init;
+	audio_out_dsound.uninit	  = 	pFunctions->uninit;
+	audio_out_dsound.reset		  = 	pFunctions->reset;
+	audio_out_dsound.get_space = 	pFunctions->get_space;
+	audio_out_dsound.play			= 	pFunctions->play;
+	audio_out_dsound.get_delay = 	pFunctions->get_delay;
+	audio_out_dsound.pause			= 	pFunctions->pause;
+	audio_out_dsound.resume		= 	pFunctions->resume;
+	printf(" done\n");
+}
+
+ao_functions_t* GetAudioFunctions() {
+	return &audio_out_dsound;
+}
+#else
 LIBAO_EXTERN(dsound)
 
 /**
@@ -555,3 +581,5 @@ static float get_delay()
 	if(space <= 0)space += buffer_size;
 	return (float)(buffer_size - space) / (float)ao_data.bps;
 }
+
+#endif

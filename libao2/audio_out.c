@@ -56,10 +56,8 @@ extern ao_functions_t audio_out_sgi;
 #ifdef HAVE_WIN32WAVEOUT
 extern ao_functions_t audio_out_win32;
 #endif
-#ifndef _XBOX
 #ifdef HAVE_DIRECTX
 extern ao_functions_t audio_out_dsound;
-#endif
 #endif
 #ifdef HAVE_DXR2
 extern ao_functions_t audio_out_dxr2;
@@ -77,10 +75,8 @@ ao_functions_t* audio_out_drivers[] =
         &audio_out_dxr2,
 #endif
 // native:
-#ifndef _XBOX
 #ifdef HAVE_DIRECTX
         &audio_out_dsound,
-#endif
 #endif
 #ifdef HAVE_WIN32WAVEOUT
         &audio_out_win32,

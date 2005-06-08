@@ -91,7 +91,6 @@ static unsigned int buf_write_pos=0;
 static int          full_buffers=0;
 static int          buffered_bytes=0;
 
-
 static ao_info_t info = 
 {
 	"Windows waveOut audio output",
@@ -100,32 +99,6 @@ static ao_info_t info =
 	""
 };
 
-#ifdef _XBOX
-ao_functions_t audio_out_win32;
-ao_data_t* GetAOData(){
-	return &ao_data;
-}
-
-void SetAudioFunctions(ao_functions_t* pFunctions)
-{
-	printf(" set audio functions called\n");
-	audio_out_win32.info		  = 	pFunctions->info;
-	audio_out_win32.control		= 	pFunctions->control;
-	audio_out_win32.init	    = 	pFunctions->init;
-	audio_out_win32.uninit	  = 	pFunctions->uninit;
-	audio_out_win32.reset		  = 	pFunctions->reset;
-	audio_out_win32.get_space = 	pFunctions->get_space;
-	audio_out_win32.play			= 	pFunctions->play;
-	audio_out_win32.get_delay = 	pFunctions->get_delay;
-	audio_out_win32.pause			= 	pFunctions->pause;
-	audio_out_win32.resume		= 	pFunctions->resume;
-	printf(" done\n");
-}
-
-ao_functions_t* GetAudioFunctions() {
-	return &audio_out_win32;
-}
-#else
 LIBAO_EXTERN(win32)
 
 static void CALLBACK waveOutProc(HWAVEOUT hWaveOut,UINT uMsg,DWORD dwInstance,  
@@ -354,4 +327,3 @@ static float get_delay()
 {
 	return (float)(buffered_bytes + ao_data.buffersize)/(float)ao_data.bps;
 }
-#endif //!_XBOX

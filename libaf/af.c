@@ -31,6 +31,14 @@ extern af_info_t af_info_hrtf;
 extern af_info_t af_info_ladspa;
 
 static af_info_t* filter_list[]={ 
+#ifdef _XBOX
+   &af_info_channels,
+   &af_info_format,
+   &af_info_resample,
+   &af_info_equalizer,
+   &af_info_hrtf,
+
+#else //XBOX
    &af_info_dummy,
    &af_info_delay,
    &af_info_channels,
@@ -56,6 +64,7 @@ static af_info_t* filter_list[]={
 #ifdef HAVE_LADSPA
    &af_info_ladspa,
 #endif
+#endif //XBOX
    NULL 
 };
 
