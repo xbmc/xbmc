@@ -5680,7 +5680,11 @@ fi
 
 _def_libavformat='#undef USE_LIBAVFORMAT'
 _def_libavformat_win32='#undef CONFIG_WIN32'
+#ON XBOX WE WISH TO DISABLE THE ENCODERS 
+#IF LIBAVFORMAT ISN'T LINKED AS IT REDUCES MEM USAGE
+_def_ffencoders='#undef CONFIG_ENCODERS'
 if test "$_libavformat" = yes ; then
+  _def_ffencoders='#define CONFIG_ENCODERS 1'
   _def_libavformat='#define USE_LIBAVFORMAT 1'
   _ld_libavformat='libavformat/libavformat.a'
   _dep_libavformat='libavformat/libavformat.a'
@@ -7000,8 +7004,9 @@ $_def_libavformat_win32
 
 /* Use libavcodec's decoders */
 #define CONFIG_DECODERS 1
+
 /* Use libavcodec's encoders */
-#define CONFIG_ENCODERS 1
+$_def_ffencoders
 
 #define CONFIG_MPEGAUDIO_HP 1
 
