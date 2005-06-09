@@ -32,6 +32,7 @@ extern af_info_t af_info_ladspa;
 
 static af_info_t* filter_list[]={ 
 #ifdef _XBOX
+   &af_info_dummy,
    &af_info_channels,
    &af_info_format,
    &af_info_resample,

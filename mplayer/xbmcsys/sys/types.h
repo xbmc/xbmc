@@ -115,8 +115,6 @@ typedef long long fpos64_t;
 typedef long long off64_t;
 #endif
 
-#endif	/* Not RC_INVOKED */
-
 #ifdef _XBOX
 #ifndef _XBOXTYPES_
 #define _XBOXTYPES_
@@ -131,5 +129,6 @@ typedef int _xbssize_t;
 #endif
 #endif
 
+#endif	/* Not RC_INVOKED */
 
 #endif	/* Not _TYPES_H_ */
