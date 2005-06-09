@@ -55,7 +55,8 @@ chmod +x configure && ./configure \
 --with-fribidi-config=$PWD/xbmcsys/fribidi/fribidi-config \
 --with-freetype-config=$PWD/xbmcsys/freetype/freetype-config \
 --with-extraincdir="$PWD/xbmcsys -I$PWD/xbmcsys/xbmc_vobsub -D_XBOX -DXBMC_VOBSUB" \
---with-extralibdir="$PWD/xbmcsys/lib -L$PWD/xbmcsys/xbmc_vobsub"
+--with-extralibdir="$PWD/xbmcsys/lib -L$PWD/xbmcsys/xbmc_vobsub" \
+$@
 
 
 
