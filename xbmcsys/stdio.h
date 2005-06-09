@@ -392,11 +392,14 @@ _CRTIMP FILE* __cdecl	fdopen (int, const char*);
 _CRTIMP int __cdecl	fileno (FILE*);
 #endif	/* Not _NO_OLDNAMES */
 
+#ifndef _XBOX //Can't use anything that referes to the file structure
 #define _fileno(__F) ((__F)->_file)
 #ifndef _NO_OLDNAMES
 #define fileno(__F) ((__F)->_file)
 #endif
+#endif
 
+#ifndef _XBOX //Not neded and it causes types.h to be included from here
 #if defined (__MSVCRT__) && !defined (__NO_MINGW_LFS)
 #include <sys/types.h>
 __CRT_INLINE FILE* __cdecl fopen64 (const char* filename, const char* mode)
@@ -420,6 +423,7 @@ __CRT_INLINE off64_t __cdecl ftello64 (FILE * stream)
    return ((off64_t) pos);
 }
 #endif /* __NO_MINGW_LFS */
+#endif
 
 #endif	/* Not __STRICT_ANSI__ */
 

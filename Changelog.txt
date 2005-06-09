@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 08-06-2005 fixed: chipmunk playback caused by removal of dummy audio filter
   - 08-06-2005 updated: fixed two linking errors so that mplayer.dll can be compiled without the last of libavcodecs encoders. (also demands dumping libavformat)
                         you can save almost 1 meg of memory if these changes are done. remove the libavformat dir and after having run configurexbmc add a line with
                         #undef CONFIG_ENCODERS to the end of config.h
