@@ -176,6 +176,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 				unsigned int iControl=message.GetSenderId();
 				if(iControl == CONTROL_BT_HDD)
 				{	
+          b_IsHome = FALSE;
 					SetLabelDummy();
 					SET_CONTROL_LABEL(40,"HardDisk:");
 
@@ -213,11 +214,11 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 
 					pDlgProgress.Close();
 					
-					b_IsHome = FALSE;
 					CGUIWindow::Render();
 				}
 				else if(iControl == CONTROL_BT_DVD)
 				{
+          b_IsHome = FALSE;
 					//Todo: Get DVD-ROM Supportted Disc's
 					SetLabelDummy();
 					SET_CONTROL_LABEL(40,"DVD-ROM Values:");
@@ -240,18 +241,17 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 
 					pDlgProgress.Close();
 					
-					b_IsHome = FALSE;
 					CGUIWindow::Render();
 				}
 				else if(iControl == CONTROL_BT_STORAGE)
 				{
+          b_IsHome = FALSE;
 					SetLabelDummy();
 					SET_CONTROL_LABEL(40,"Storage Values:");
 
 					// Label 2-10: Storage Values
 					GetStorage(2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 					
-					b_IsHome = FALSE;
 					CGUIWindow::Render();
 				}
 				else if(iControl == CONTROL_BT_DEFAULT)
@@ -262,6 +262,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 				}
 				else if(iControl == CONTROL_BT_NETWORK)
 				{
+          b_IsHome = FALSE;
 					SetLabelDummy();
 					SET_CONTROL_LABEL(40,"Network Informations:");
 
@@ -297,11 +298,11 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 					SET_CONTROL_LABEL(9,strInetCon);
 					pDlgProgress.Close();
 					
-					b_IsHome = FALSE;
 					CGUIWindow::Render();
 				}
 				else if(iControl == CONTROL_BT_VIDEO)
 				{
+          b_IsHome = FALSE;
 					SetLabelDummy();
 					SET_CONTROL_LABEL(40,"Video Values:");
 
@@ -330,7 +331,6 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 					GetDVDZone(strdvdzone);
 					SET_CONTROL_LABEL(5,strdvdzone);
 					
-					b_IsHome = FALSE;
 					CGUIWindow::Render();
 				}
 				else if(iControl == CONTROL_BT_HARDWARE)
