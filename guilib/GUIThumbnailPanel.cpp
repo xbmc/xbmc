@@ -287,7 +287,7 @@ void CGUIThumbnailPanel::Render()
       }
       // Update the page counter
       int iPage = m_iRowOffset / m_iRows + 1;
-      if ((m_iRowOffset + m_iRows)*m_iColumns > (int)m_vecItems.size() && iPage < m_upDown.GetMaximum())
+      if ((m_iRowOffset + m_iRows)*m_iColumns >= (int)m_vecItems.size() && iPage < m_upDown.GetMaximum())
         iPage++; // last page
       m_upDown.SetValue(iPage);
     }
@@ -679,6 +679,11 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
       newviewport.Height = (DWORD)(fHeight);
       newviewport.MinZ = 0.0f;
       newviewport.MaxZ = 1.0f;
+      // we are using an oldviewport here as well, so intersect them both
+      if (newviewport.Y > oldviewport.Y + oldviewport.Height)
+        return; // shouldn't be shown
+      else if (newviewport.Y + newviewport.Height > oldviewport.Y + oldviewport.Height)
+        newviewport.Height = oldviewport.Y + oldviewport.Height - newviewport.Y;  // done intersection
       g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
 
       fMaxWidth += (float) (m_iItemWidth * 0.1);
@@ -1027,7 +1032,7 @@ void CGUIThumbnailPanel::ScrollDown()
       m_iCursorX = iPos % m_iColumns;
     }
     int iPage = m_iRowOffset / m_iRows + 1;
-    if ((m_iRowOffset + m_iRows)*m_iColumns > (int)m_vecItems.size() && iPage < m_upDown.GetMaximum())
+    if ((m_iRowOffset + m_iRows)*m_iColumns >= (int)m_vecItems.size() && iPage < m_upDown.GetMaximum())
       iPage++; // last page
     m_upDown.SetValue(iPage);
   }
@@ -1070,4 +1075,13 @@ void CGUIThumbnailPanel::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, D
 {
   CGUIControl::SetNavigation(dwUp, dwDown, dwLeft, dwRight);
   m_upDown.SetNavigation(0, 0, 0, dwRight);
+}
+
+void CGUIThumbnailPanel::SetPosition(int iPosX, int iPosY)
+{
+  // offset our spin control by the appropriate amount
+  int iSpinOffsetX = m_upDown.GetXPosition() - GetXPosition();
+  int iSpinOffsetY = m_upDown.GetYPosition() - GetYPosition();
+  CGUIControl::SetPosition(iPosX, iPosY);
+  m_upDown.SetPosition(GetXPosition() + iSpinOffsetX, GetYPosition() + iSpinOffsetY);
 }

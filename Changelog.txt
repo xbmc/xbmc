@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-06-2005 fixed: GUIThumbnailPanel graphical glitches (focused item while scrolling + page number glitch on last page).
+ - 10-06-2005 fixed: List/Thumb controls spin control didn't use relative coordinates correctly.
  - 10-06-2005 changed: rss sets must be tagged with a <id>#</id> now.
  - 10-06-2005 fixed: [ 1218199 ] Fix for Bug 1216728 (hardware panel on systeminfo) thanks to Mr_Muh.
  - 10-06-2005 changed: IMDb lookups (and Scanning) now threaded.  Now easily cancellable.
