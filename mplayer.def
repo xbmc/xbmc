@@ -25,6 +25,7 @@ EXPORTS
 	audio_out_format_bits @ 23 ; 
 	mplayer_HasVideo @ 24 ;
 	mplayer_HasAudio @ 25 ;
+	mplayer_GetCacheLevel @ 26 ;
 	init_color_conversions @ 27 ;
 	mplayer_setcache_size @ 28 ;
 	mplayer_GetAudioInfo @ 29 ;
@@ -63,4 +64,4 @@ EXPORTS
 	mplayer_getCurrentSubtitle @ 62 ;
 	mplayer_isTextSubLoaded @ 63 ;
   mplayer_SlaveCommand @ 64 ;
-  mplayer_GetCacheLevel @ 65 ;
+ 

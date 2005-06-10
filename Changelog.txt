@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-06-2005 fixed: playback using mplayer.dll without libavformat would never start, load of dll failed.
   - 10-06-2005 fixed: made libavformat conditional, just run configurexbmc --disable-libavformat
   - 10-06-2005 fixed: chipmunk playback caused by removal of dummy audio filter
   - 08-06-2005 updated: fixed two linking errors so that mplayer.dll can be compiled without the last of libavcodecs encoders.
