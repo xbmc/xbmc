@@ -439,22 +439,29 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   TiXmlElement* pRssFeeds = pRootElement->FirstChildElement("rss");
   if (pRssFeeds)
   {
-    g_settings.m_vecRssUrls.clear();
+    g_settings.m_mapRssUrls.clear();
     TiXmlNode* pSet = pRssFeeds->FirstChild("set");
     while (pSet) {
-      std::vector<wstring> vecSet;
-      TiXmlNode* pFeed = pSet->FirstChild("feed");
-      while (pFeed)
-      {
-        if (pFeed->FirstChild())
+      TiXmlNode *pId = pSet->FirstChild("id");
+      if (pId) {    
+        int iId = atoi(pId->FirstChild()->Value());
+        std::vector<wstring> vecSet;
+        TiXmlNode* pFeed = pSet->FirstChild("feed");
+        while (pFeed)
         {
-          CStdStringW strUrl = pFeed->FirstChild()->Value();
-          strUrl.MakeLower();
-          vecSet.push_back(strUrl);
+          if (pFeed->FirstChild())
+          {
+            CStdStringW strUrl = pFeed->FirstChild()->Value();
+            strUrl.MakeLower();
+            vecSet.push_back(strUrl);
+          }
+          pFeed = pFeed->NextSibling("feed");
         }
-        pFeed = pFeed->NextSibling("feed");
-      }
-      g_settings.m_vecRssUrls.push_back(vecSet);
+        g_settings.m_mapRssUrls.insert(std::make_pair<int,std::vector<wstring> >(iId,vecSet));
+      } 
+      else 
+        CLog::Log(LOGERROR,"found rss url set with no id in XboxMediaCenter.xml, ignored");
+
       pSet = pSet->NextSibling("set");
     }
   }
