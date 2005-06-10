@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-06-2005 added: more extensive RSS comments & changed the id method in xboxmediacenter.xml
  - 10-06-2005 changed: rss sets use an id attribute rather than separate tag + updated skin.
  - 10-06-2005 fixed: GUIThumbnailPanel graphical glitches (focused item while scrolling + page number glitch on last page).
  - 10-06-2005 fixed: List/Thumb controls spin control didn't use relative coordinates correctly.
