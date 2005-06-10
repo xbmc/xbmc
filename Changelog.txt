@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-06-2005 changed: rss sets must be tagged with a <id>#</id> now.
  - 10-06-2005 fixed: [ 1218199 ] Fix for Bug 1216728 (hardware panel on systeminfo) thanks to Mr_Muh.
  - 10-06-2005 changed: IMDb lookups (and Scanning) now threaded.  Now easily cancellable.
  - 10-06-2005 fixed: Crossfade - initial volume of new track could spike to max volume.
