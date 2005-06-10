@@ -67,7 +67,7 @@ bool CIMDB::LoadDLL()
   return true;
 }
 
-bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movielist)
+bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movielist)
 {
   // load our dll if need be
   if (!m_pDll)
@@ -131,7 +131,7 @@ bool CIMDB::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString
   return false;
 }
 
-bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
+bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 {
   // load our dll if need be
   if (!m_pDll && !LoadDLL())
@@ -377,4 +377,87 @@ void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL)
   // sprintf(szURL,"http://us.imdb.com/Tsearch?title=%s", szMovie);
   // strURL = szURL;
   strURL.Format("http://%s/Tsearch?title=%s", g_stSettings.m_szIMDBurl, szMovie);
+}
+
+// threaded functions
+void CIMDB::Process()
+{
+  m_found = false;
+  if (m_state == FIND_MOVIE)
+  {
+    if (!FindMovie(m_strMovie, m_movieList))
+      CLog::Log(LOGERROR, "IMDb::Error looking up movie %s", m_strMovie.c_str());
+  }
+  else if (m_state == GET_DETAILS)
+  {
+    if (!GetDetails(m_url, m_movieDetails))
+      CLog::Log(LOGERROR, "IMDb::Error getting movie details from %s", m_url.m_strURL.c_str());
+  }
+  m_found = true;
+}
+
+bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUIDialogProgress *pProgress /* = NULL */)
+{
+  m_strMovie = strMovie;
+  if (pProgress)
+  { // threaded version
+    m_state = FIND_MOVIE;
+    m_found = false;
+    if (ThreadHandle())
+      StopThread();
+    Create();
+    while (!m_found)
+    {
+      pProgress->Progress();
+      if (pProgress->IsCanceled())
+      {
+        CloseThread();
+        return false;
+      }
+    }
+    // transfer to our movielist
+    movieList.clear();
+    for (unsigned int i=0; i < m_movieList.size(); i++)
+      movieList.push_back(m_movieList[i]);
+    m_movieList.clear();
+    CloseThread();
+    return true;
+  }
+  else  // unthreaded
+    return InternalFindMovie(strMovie, movieList);
+}
+
+bool CIMDB::GetDetails(const CIMDBUrl &url, CIMDBMovie &movieDetails, CGUIDialogProgress *pProgress /* = NULL */)
+{
+  m_url = url;
+  if (pProgress)
+  { // threaded version
+    m_state = GET_DETAILS;
+    m_found = false;
+    if (ThreadHandle())
+      StopThread();
+    Create();
+    while (!m_found)
+    {
+      pProgress->Progress();
+      if (pProgress->IsCanceled())
+      {
+        CloseThread();
+        return false;
+      }
+    }
+    movieDetails = m_movieDetails;
+    CloseThread();
+    return true;
+  }
+  else  // unthreaded
+    return InternalGetDetails(url, movieDetails);
+}
+
+void CIMDB::CloseThread()
+{
+  m_http.Cancel();
+  StopThread();
+  m_state = DO_NOTHING;
+  m_found = false;
 }

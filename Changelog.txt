@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-06-2005 changed: IMDb lookups (and Scanning) now threaded.  Now easily cancellable.
  - 10-06-2005 fixed: Crossfade - initial volume of new track could spike to max volume.
  - 10-06-2005 removed: unneded function call to mplayer.dll
  - 08-06-2005 fixed: OutputToAllSpeakers didn't work with when AC3 Output was enabled on 2ch AC3 files

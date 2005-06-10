@@ -581,7 +581,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
 
       OutputDebugString("query imdb\n");
       IMDB_MOVIELIST movielist;
-      if (IMDB.FindMovie(strMovieName, movielist) )
+      if (IMDB.FindMovie(strMovieName, movielist, pDlgProgress))
       {
         pDlgProgress->Close();
 
@@ -632,7 +632,9 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
             pDlgProgress->SetLine(2, "");
             pDlgProgress->StartModal(GetID());
             pDlgProgress->Progress();
-            if ( IMDB.GetDetails(url, movieDetails) )
+
+            // get the movie info
+            if (IMDB.GetDetails(url, movieDetails, pDlgProgress))
             {
               // got all movie details :-)
               OutputDebugString("got details\n");
@@ -682,6 +684,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
             {
               OutputDebugString("failed to get details\n");
               pDlgProgress->Close();
+              bError = !pDlgProgress->IsCanceled();
             }
           }
         }
@@ -696,6 +699,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
       else
       {
         pDlgProgress->Close();
+        if (pDlgProgress->IsCanceled()) return;
         if (!CGUIDialogKeyboard::ShowAndGetInput(strMovieName, false)) return ;
         bContinue = true;
         bError = false;
