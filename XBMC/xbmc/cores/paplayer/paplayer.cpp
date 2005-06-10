@@ -555,6 +555,9 @@ bool PAPlayer::ProcessPAP()
       else
       {
         float fraction = (float)(m_crossFadeLength - GetTime()) / (float)m_crossFadeLength - 0.5f;
+        // make sure we can take valid logs.
+        if (fraction > 0.499f) fraction = 0.499f;
+        if (fraction < -0.499f) fraction = -0.499f;
         float volumeCurrent = 2000.0f * log10(0.5f - fraction);
         float volumeNext = 2000.0f * log10(0.5f + fraction);
         SetStreamVolume(m_currentStream, g_stSettings.m_nVolumeLevel + (int)volumeCurrent);
