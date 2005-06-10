@@ -5,6 +5,19 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-06-2005 added: Master Code Control: XBMC Startup Lock! [GeminiServer]
+		     XBMC Startup Lock will use the Master Lock Settings and if Startup Lock is enabled:
+		     On XBMC Startup, the XBMC Startup Lock will ask you the predefined Master Code in 
+		     addition with the Max Retry. If you enter the correct MasterCode, XBMC will start as used
+		     But if you enter the Wrong Master Code in addition with the Max Retry:
+		     Then XBMC switches off! if you restart XBMC it will ask the Master Code again!
+ - 10-06-2005 added: Master Code control within the GUI! [GeminiServer]
+		     This will  make it easy to set the Master Code handling, instead of XboxMediaCenter.xml 
+		     editing to set the <masterlock> settings. It will set the Master Code, Retry, Enable Shutdown, 
+		     Protect Shares, Master Mode, automatic, with MasterCode detection and also the conditions to use it!
+		     Master Lock will use the Max Retry condition, to prevent the infinite tries on the Settings
+		     Screen! It will ask you the Master code on: Entering a New Master Code, Disabling Master Mode
+		     and also it will ask on hit Applying Changes! The Master Code Remember is not used here, to prevent not intended changes
  - 10-06-2005 added: more extensive RSS comments & changed the id method in xboxmediacenter.xml
  - 10-06-2005 changed: rss sets use an id attribute rather than separate tag + updated skin.
  - 10-06-2005 fixed: GUIThumbnailPanel graphical glitches (focused item while scrolling + page number glitch on last page).

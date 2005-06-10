@@ -28,6 +28,7 @@ protected:
   void FillInResolutions(CSetting *pSetting);
   void FillInScreenSavers(CSetting *pSetting);
   void FillInXBDateTime(CSetting *pSetting, int bState);
+  bool CheckMasterLockCode();
 
   virtual void SetupControls();
   void CreateSettings();

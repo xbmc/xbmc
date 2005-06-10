@@ -18,22 +18,21 @@
 #include "GUIAudioManager.h"
 #include "AudioContext.h"
 #include "lib/libscrobbler/scrobbler.h"
+#include "GUIPassword.h"
 
-#define CONTROL_GROUP_BUTTONS      0
-#define CONTROL_GROUP_SETTINGS     1
-
-#define CONTROL_SETTINGS_LABEL     2
-
-#define CONTROL_BUTTON_AREA       3
-#define CONTROL_BUTTON_GAP       4
-#define CONTROL_AREA          5
-#define CONTROL_GAP           6
-#define CONTROL_DEFAULT_BUTTON     7
+#define CONTROL_GROUP_BUTTONS         0
+#define CONTROL_GROUP_SETTINGS        1
+#define CONTROL_SETTINGS_LABEL        2
+#define CONTROL_BUTTON_AREA           3
+#define CONTROL_BUTTON_GAP            4
+#define CONTROL_AREA                  5
+#define CONTROL_GAP                   6
+#define CONTROL_DEFAULT_BUTTON        7
 #define CONTROL_DEFAULT_RADIOBUTTON   8
-#define CONTROL_DEFAULT_SPIN      9
-#define CONTROL_DEFAULT_SETTINGS_BUTTON 10
-#define CONTROL_START_BUTTONS      30
-#define CONTROL_START_CONTROL      50
+#define CONTROL_DEFAULT_SPIN          9
+#define CONTROL_DEFAULT_SETTINGS_BUTTON   10
+#define CONTROL_START_BUTTONS         30
+#define CONTROL_START_CONTROL         50
 
 struct sortstringbyname
 {
@@ -568,64 +567,94 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
     }
 	  else if (strSetting == "XBDateTime.Year")
-	{	// GeminiServer
-		SYSTEMTIME CurTime;
-		GetLocalTime(&CurTime);
-		g_guiSettings.SetInt("XBDateTime.Year",		(int)CurTime.wYear);
-		g_guiSettings.SetInt("XBDateTime.Day",		(int)CurTime.wDay);
-		g_guiSettings.SetInt("XBDateTime.Hour",		(int)CurTime.wHour);
-		g_guiSettings.SetInt("XBDateTime.Minute",	(int)CurTime.wMinute);
-	}
+	  {	// GeminiServer
+		  SYSTEMTIME CurTime;
+		  GetLocalTime(&CurTime);
+		  g_guiSettings.SetInt("XBDateTime.Year",		(int)CurTime.wYear);
+		  g_guiSettings.SetInt("XBDateTime.Day",		(int)CurTime.wDay);
+		  g_guiSettings.SetInt("XBDateTime.Hour",		(int)CurTime.wHour);
+		  g_guiSettings.SetInt("XBDateTime.Minute",	(int)CurTime.wMinute);
+	  }
 	  else if (strSetting == "XBDateTime.Month")
-	{	// GeminiServer
-		SYSTEMTIME CurTime;
-		GetLocalTime(&CurTime);
-		CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-		g_guiSettings.SetInt("XBDateTime.Month",(int)CurTime.wMonth);
-		FillInXBDateTime(pSetting, 2);
-	}
+	  {	// GeminiServer
+		  SYSTEMTIME CurTime;
+		  GetLocalTime(&CurTime);
+		  CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+		  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+		  g_guiSettings.SetInt("XBDateTime.Month",(int)CurTime.wMonth);
+		  FillInXBDateTime(pSetting, 2);
+	  }
     else if (strSetting == "Smb.Ip")
-	{	// GeminiServer
-    g_guiSettings.SetString("Smb.Ip",         g_stSettings.m_strSambaIPAdress);
-    g_guiSettings.SetString("Smb.Workgroup",  g_stSettings.m_strSambaWorkgroup);
-    g_guiSettings.SetString("Smb.Username",   g_stSettings.m_strSambaDefaultUserName);
-    g_guiSettings.SetString("Smb.Password",   g_stSettings.m_strSambaDefaultPassword);
-    g_guiSettings.SetString("Smb.ShareName",  g_stSettings.m_strSambaShareName);
-    g_guiSettings.SetString("Smb.Winsserver", g_stSettings.m_strSambaWinsServer);
-	}
+	  {	// GeminiServer
+      g_guiSettings.SetString("Smb.Ip",         g_stSettings.m_strSambaIPAdress);
+      g_guiSettings.SetString("Smb.Workgroup",  g_stSettings.m_strSambaWorkgroup);
+      g_guiSettings.SetString("Smb.Username",   g_stSettings.m_strSambaDefaultUserName);
+      g_guiSettings.SetString("Smb.Password",   g_stSettings.m_strSambaDefaultPassword);
+      g_guiSettings.SetString("Smb.ShareName",  g_stSettings.m_strSambaShareName);
+      g_guiSettings.SetString("Smb.Winsserver", g_stSettings.m_strSambaWinsServer);
+	  }
     else if (strSetting == "Smb.ShareGroup")
-	{	// GeminiServer
-    CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-    pControl->AddLabel(g_localizeStrings.Get(1211), SMB_SHARE_MUSIC	        );       
-    pControl->AddLabel(g_localizeStrings.Get(1212), SMB_SHARE_VIDEO	        );    
-    pControl->AddLabel(g_localizeStrings.Get(1213), SMB_SHARE_PICTURES	    );    
-    pControl->AddLabel(g_localizeStrings.Get(1214), SMB_SHARE_FILES         );    
-    pControl->AddLabel(g_localizeStrings.Get(1215), SMB_SHARE_MU_VI         );    
-    pControl->AddLabel(g_localizeStrings.Get(1216), SMB_SHARE_MU_PIC        );    
-    pControl->AddLabel(g_localizeStrings.Get(1217), SMB_SHARE_MU_FIL        );    
-    pControl->AddLabel(g_localizeStrings.Get(1218), SMB_SHARE_VI_PIC        );    
-    pControl->AddLabel(g_localizeStrings.Get(1219), SMB_SHARE_VI_FIL        );    
-    pControl->AddLabel(g_localizeStrings.Get(1220), SMB_SHARE_PIC_FIL       );    
-    pControl->AddLabel(g_localizeStrings.Get(1221), SMB_SHARE_MU_VI_PIC     );    
-    pControl->AddLabel(g_localizeStrings.Get(1226), SMB_SHARE_FIL_VI_MU     );   
-    pControl->AddLabel(g_localizeStrings.Get(1227), SMB_SHARE_FIL_PIC_MU    );   
-    pControl->AddLabel(g_localizeStrings.Get(1228), SMB_SHARE_FIL_PIC_VI    );   
-    pControl->AddLabel(g_localizeStrings.Get(1222), SMB_SHARE_MU_VI_PIC_FIL );
-    pControl->SetValue(pSettingInt->GetData());
-  }
+	  {	// GeminiServer
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(1211), SMB_SHARE_MUSIC	        );       
+      pControl->AddLabel(g_localizeStrings.Get(1212), SMB_SHARE_VIDEO	        );    
+      pControl->AddLabel(g_localizeStrings.Get(1213), SMB_SHARE_PICTURES	    );    
+      pControl->AddLabel(g_localizeStrings.Get(1214), SMB_SHARE_FILES         );    
+      pControl->AddLabel(g_localizeStrings.Get(1215), SMB_SHARE_MU_VI         );    
+      pControl->AddLabel(g_localizeStrings.Get(1216), SMB_SHARE_MU_PIC        );    
+      pControl->AddLabel(g_localizeStrings.Get(1217), SMB_SHARE_MU_FIL        );    
+      pControl->AddLabel(g_localizeStrings.Get(1218), SMB_SHARE_VI_PIC        );    
+      pControl->AddLabel(g_localizeStrings.Get(1219), SMB_SHARE_VI_FIL        );    
+      pControl->AddLabel(g_localizeStrings.Get(1220), SMB_SHARE_PIC_FIL       );    
+      pControl->AddLabel(g_localizeStrings.Get(1221), SMB_SHARE_MU_VI_PIC     );    
+      pControl->AddLabel(g_localizeStrings.Get(1226), SMB_SHARE_FIL_VI_MU     );   
+      pControl->AddLabel(g_localizeStrings.Get(1227), SMB_SHARE_FIL_PIC_MU    );   
+      pControl->AddLabel(g_localizeStrings.Get(1228), SMB_SHARE_FIL_PIC_VI    );   
+      pControl->AddLabel(g_localizeStrings.Get(1222), SMB_SHARE_MU_VI_PIC_FIL );
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting == "Smb.SimpAdvance")
-	{	// GeminiServer
-    CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-    pControl->AddLabel(g_localizeStrings.Get(1223), 0 );    //Disabled User
-    pControl->AddLabel(g_localizeStrings.Get(1224), 1 );    //Normal User
-    pControl->AddLabel(g_localizeStrings.Get(1225), 2 );    //Advanced User
-    pControl->SetValue(pSettingInt->GetData());
-  }
-
-	  iPosY += iGapY;
+	  {	// GeminiServer
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(1223), 0 );    //Disabled User
+      pControl->AddLabel(g_localizeStrings.Get(1224), 1 );    //Normal User
+      pControl->AddLabel(g_localizeStrings.Get(1225), 2 );    //Advanced User
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting == "Masterlock.Mastermode")
+    {
+      //GeminiServer
+      g_guiSettings.SetInt("Masterlock.Mastermode", g_stSettings.m_iMasterLockMode );
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(1223), LOCK_MODE_EVERYONE );    //Disabled
+      pControl->AddLabel(g_localizeStrings.Get(12337), LOCK_MODE_NUMERIC );    //Numeric
+      pControl->AddLabel(g_localizeStrings.Get(12338), LOCK_MODE_GAMEPAD );    //Gamepad
+      pControl->AddLabel(g_localizeStrings.Get(12339), LOCK_MODE_QWERTY );    //Text
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting == "Masterlock.Maxretry")
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CStdString cLbl[10]= {"0","1","2","3","4","5","6","7","8","9"};
+      pControl->AddLabel(g_localizeStrings.Get(1223), 0);   //Disabled
+      for (unsigned int i = 1; i <= 9; i++)  pControl->AddLabel(cLbl[i], i);
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting == "Masterlock.Enableshutdown")
+    {
+      bool bmcesState, bmcptState;
+      if (g_stSettings.m_iMasterLockEnableShutdown == 0) bmcesState = false;  else bmcesState = true;
+      if (g_stSettings.m_iMasterLockProtectShares  == 0) bmcptState = false;  else bmcptState = true;
+      g_guiSettings.SetBool("Masterlock.Enableshutdown", bmcesState);
+      g_guiSettings.SetBool("Masterlock.Protectshares", bmcptState);
+      g_guiSettings.SetInt("Masterlock.Maxretry", g_stSettings.m_iMasterLockMaxRetry);
+      g_guiSettings.SetString("Masterlock.Mastercode", g_stSettings.szMasterLockCode);
+    }
+    iPosY += iGapY;
   }
   // fix first and last navigation
   CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_CONTROL + (int)m_vecSettings.size() - 1);
@@ -1169,6 +1198,52 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (g_guiSettings.GetInt("Smb.SimpAdvance") == 0) bState = false; //Disable
       if (g_guiSettings.GetInt("Smb.SimpAdvance") == 1) bState = false; //Normal User
       if (g_guiSettings.GetInt("Smb.SimpAdvance") == 2) bState = true;  //Advanced User
+      if (pControl) pControl->SetEnabled(bState);
+    }
+    else if (strSetting == "Masterlock.Mastermode")
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());  
+      if (g_guiSettings.GetInt("Masterlock.Mastermode") == 1) g_guiSettings.GetString("Masterlock.Mastercode") = "-";
+      if (g_guiSettings.GetInt("Masterlock.Mastermode") == 2) g_guiSettings.GetString("Masterlock.Mastercode") = "-";
+      if (g_guiSettings.GetInt("Masterlock.Mastermode") == 3) g_guiSettings.GetString("Masterlock.Mastercode") = "-";
+
+      if (g_guiSettings.GetInt("Masterlock.Mastermode") == 0) // Disabled !!
+      {
+        if(CheckMasterLockCode())
+        {
+          g_stSettings.m_iMasterLockMaxRetry              = 0;
+          g_stSettings.m_iMasterLockEnableShutdown        = 0;
+          g_stSettings.m_iMasterLockProtectShares         = 0;
+          g_stSettings.m_iMasterLockMode                  = 0;
+          g_stSettings.m_iMasterLockStartupLock           = 0;
+          strcpy(g_stSettings.szMasterLockCode, (const char*)"-");
+
+          g_settings.UpDateXbmcXML("masterlock", "mastermode",      "0");
+          g_settings.UpDateXbmcXML("masterlock", "mastercode",      "-");
+          g_settings.UpDateXbmcXML("masterlock", "maxretry",        "0");
+          g_settings.UpDateXbmcXML("masterlock", "enableshutdown",  "0");
+          g_settings.UpDateXbmcXML("masterlock", "protectshares",   "0");
+          g_settings.UpDateXbmcXML("masterlock", "startuplock",     "0");
+        }
+        else
+        {
+          // PopUp OK and Display: Master Code is not Valid or is empty or not set!
+          CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+          if (!dlg) return ;
+          dlg->SetHeading( g_localizeStrings.Get(12360));
+          dlg->SetLine( 0, g_localizeStrings.Get(12367));
+          dlg->SetLine( 1, g_localizeStrings.Get(12368));
+          dlg->SetLine( 2, "");
+          dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+        }
+      }
+    }
+    else if (strSetting == "Masterlock.Enableshutdown" || strSetting == "Masterlock.Protectshares" || strSetting == "Masterlock.Maxretry" || strSetting == "Masterlock.Mastercode" || strSetting == "Masterlock.SetMasterlock" || strSetting == "Masterlock.StartupLock")
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      bool bState;
+      if (g_guiSettings.GetInt("Masterlock.Mastermode") == 0) bState = false; //Disable
+        else bState = true;
       if (pControl) pControl->SetEnabled(bState);
     }
   }
@@ -1735,7 +1810,136 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     }
 
   }
-  
+  else if (strSetting == "Masterlock.Mastercode")
+  {
+    
+    CStdString strTempMasterCode;
+    // prompt user for mastercode if the mastercode was set b4 or by xml
+   if (CheckMasterLockCode()) // Now Prompt User to enter the old and then the new MasterCode! Choosed GUI LOCK Mode will appear!
+    {
+      CStdStringW strNewPassword;
+      switch (g_guiSettings.GetInt("Masterlock.Mastermode"))
+      {
+          case LOCK_MODE_NUMERIC:
+            CGUIDialogNumeric::ShowAndGetNewPassword(strNewPassword);
+            break;
+          case LOCK_MODE_GAMEPAD:
+            CGUIDialogGamepad::ShowAndGetNewPassword(strNewPassword);
+            break;
+          case LOCK_MODE_QWERTY:
+            CGUIDialogKeyboard::ShowAndGetNewPassword(strNewPassword);
+            break;
+      }
+      strTempMasterCode = strNewPassword;
+    }
+   if (strTempMasterCode != "" && strTempMasterCode != "-")
+    {
+     g_guiSettings.SetString("Masterlock.Mastercode", strTempMasterCode.c_str());
+    }
+   CStdString strTEST = g_guiSettings.GetString("Masterlock.Mastercode");
+  }
+  else if (strSetting == "Masterlock.SetMasterlock")
+  {
+    bool bIsMasterMode = true;
+    int iStateSD, iStatePS, iStateSL, iLockModeP, iLockModeN;
+    CStdString csMMode, csMRetry, csStateSD, csStatePS, csStateSL, csMCode, strMLC;
+    csMCode = g_guiSettings.GetString("Masterlock.Mastercode");
+    strMLC  = g_stSettings.szMasterLockCode;
+    iLockModeP = g_stSettings.m_iMasterLockMode;
+    iLockModeN = g_guiSettings.GetInt("Masterlock.Mastermode");
+    
+    //Some Converting stuff!
+    switch (g_guiSettings.GetInt("Masterlock.Mastermode"))
+    {
+      case 0:               case 2:
+        csMMode = "0";        csMMode = "2";
+        break;                break;
+      case 1:               case 3:
+        csMMode = "1";        csMMode = "3";
+        break;                break;
+    }
+
+    switch (g_guiSettings.GetInt("Masterlock.Maxretry"))
+    {
+      case 0:               case 4:             case 8:
+        csMRetry = "0";       csMRetry = "4";     csMRetry = "8";
+        break;                break;              break;
+      case 1:               case 5:             case 9:
+        csMRetry = "1";       csMRetry = "5";     csMRetry = "9";
+        break;                break;              break;
+      case 2:               case 6:             
+        csMRetry = "2";       csMRetry = "6";   
+        break;                break;            
+      case 3:               case 7:             
+        csMRetry = "3";       csMRetry = "7";   
+        break;                break;            
+    }
+
+    if (g_guiSettings.GetBool("Masterlock.Enableshutdown")) { iStateSD = 1; csStateSD = "1"; } else { iStateSD = 0; csStateSD = "0"; }
+    if (g_guiSettings.GetBool("Masterlock.Protectshares"))  { iStatePS = 1; csStatePS = "1"; } else { iStatePS = 0; csStatePS = "0"; }
+    if (g_guiSettings.GetBool("Masterlock.StartupLock"))    { iStateSL = 1; csStateSL = "1"; } else { iStateSL = 0; csStateSL = "0"; }
+    
+    if((iLockModeP == iLockModeN && csMCode == strMLC)||(iLockModeP != iLockModeN && csMCode != strMLC)||(iLockModeP == iLockModeN && csMCode != strMLC))
+    {
+      if (g_guiSettings.GetString("Masterlock.Mastercode")!= "" && g_guiSettings.GetString("Masterlock.Mastercode")!= "-")
+      {
+        //Check if the MasterLockCode is changed or not! If not PopUP MasterLockCode! 
+        if (g_stSettings.szMasterLockCode == g_guiSettings.GetString("Masterlock.Mastercode"))
+        { if(!CheckMasterLockCode()) bIsMasterMode = false; }
+        
+        if (bIsMasterMode)
+        {
+          //Set Master Lock Changes to the Internal Settings!
+          g_stSettings.m_iMasterLockMaxRetry              = g_guiSettings.GetInt("Masterlock.Maxretry");
+          g_application.m_iMasterLockRetriesRemaining     = g_stSettings.m_iMasterLockMaxRetry;
+          g_stSettings.m_iMasterLockEnableShutdown        = iStateSD;
+          g_stSettings.m_iMasterLockProtectShares         = iStatePS;
+          g_stSettings.m_iMasterLockStartupLock           = iStateSL;
+          g_stSettings.m_iMasterLockMode                  = g_guiSettings.GetInt("Masterlock.Mastermode");
+          strcpy(g_stSettings.szMasterLockCode, g_guiSettings.GetString("Masterlock.Mastercode") );
+          
+          // Set Master Lock Changes to the XML
+          g_settings.UpDateXbmcXML("masterlock", "mastermode",      csMMode);
+          g_settings.UpDateXbmcXML("masterlock", "mastercode",      csMCode);
+          g_settings.UpDateXbmcXML("masterlock", "maxretry",        csMRetry);
+          g_settings.UpDateXbmcXML("masterlock", "enableshutdown",  csStateSD);
+          g_settings.UpDateXbmcXML("masterlock", "protectshares",   csStatePS);
+          g_settings.UpDateXbmcXML("masterlock", "startuplock",     csStateSL);
+
+          // PopUp OK and Display the Changed MasterCode!
+          CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+          if (!dlg) return ;
+          dlg->SetHeading( g_localizeStrings.Get(12360));
+          dlg->SetLine( 0, g_localizeStrings.Get(12366));
+          dlg->SetLine( 1, csMCode);
+          dlg->SetLine( 2, "");
+          dlg->DoModal( m_gWindowManager.GetActiveWindow());
+        }
+      }
+      else
+      {
+        // PopUp OK and Display: Master Code is not Valid or is empty or not set!
+        CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+        if (!dlg) return ;
+        dlg->SetHeading( g_localizeStrings.Get(12360));
+        dlg->SetLine( 0, g_localizeStrings.Get(12367));
+        dlg->SetLine( 1, g_localizeStrings.Get(12368));
+        dlg->SetLine( 2, "");
+        dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+      }
+    }
+    else
+    {
+      // PopUp OK and Display: MasterLock mode has changed but no no Mastercode has been set!
+      CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+      if (!dlg) return ;
+      dlg->SetHeading( g_localizeStrings.Get(12360));
+      dlg->SetLine( 0, g_localizeStrings.Get(12370));
+      dlg->SetLine( 1, g_localizeStrings.Get(12371));
+      dlg->SetLine( 2, "");
+      dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+    }
+  }
   g_settings.Save();
   UpdateSettings();
 }
@@ -2680,6 +2884,13 @@ void CGUIWindowSettingsCategory::FillInXBDateTime(CSetting *pSetting, int bState
 			CUtil::SetSysDateTimeYear(iSetYear, iSetMonth, iSetDay, iSetHour, iSetMinute);
 		}
 	}
+}
+bool CGUIWindowSettingsCategory::CheckMasterLockCode()
+{
+  // prompt user for mastercode if the mastercode was set b4 or by xml
+  // prompt user for mastercode when changing lock settings
+  if (g_passwordManager.IsMasterLockLocked(true))  return true;
+  else return false;
 }
 CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &strSetting)
 {

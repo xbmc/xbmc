@@ -471,18 +471,27 @@ CGUISettings::CGUISettings(void)
 
   // GeminiServer
   AddCategory(7, "XBDateTime", 14063);
-  AddBool(1, "XBDateTime.Clock12Hour", 14051, false);
-  AddBool(2, "XBDateTime.SwapMonthAndDay", 14052, false);
-  AddBool(3, "XBDateTime.TimeServer", 168, false);
-  AddString(4, "XBDateTime.TimeAddress", 731, "207.46.130.100");
-  AddInt(5, "XBDateTime.Year", 14064, 2005, 2000, 1, 2099, SPIN_CONTROL_INT);
-  AddInt(6, "XBDateTime.Month", 14065, SYS_MONTH_MAY, 1, SYS_MONTH_JANUARY, SYS_MONTH_DECEMBER, SPIN_CONTROL_INT);
-  AddInt(7, "XBDateTime.Day", 14066, 15, 1, 1, 31, SPIN_CONTROL_INT);
-  AddInt(8, "XBDateTime.Hour", 14067, 12, 0, 1, 23, SPIN_CONTROL_INT);
-  AddInt(9, "XBDateTime.Minute", 14068, 30, 0, 1, 59, SPIN_CONTROL_INT);
-  AddString(10, "XBDateTime.SetDateTime", 14070, "", BUTTON_CONTROL_STANDARD);
+  AddBool(1,   "XBDateTime.Clock12Hour"      , 14051, false);
+  AddBool(2,   "XBDateTime.SwapMonthAndDay"  , 14052, false);
+  AddBool(3,   "XBDateTime.TimeServer"       , 168  , false);
+  AddString(4, "XBDateTime.TimeAddress"      , 731  , "207.46.130.100");
+  AddInt(5,    "XBDateTime.Year"             , 14064, 2005, 2000, 1, 2099, SPIN_CONTROL_INT);
+  AddInt(6,    "XBDateTime.Month"            , 14065, SYS_MONTH_MAY, 1, SYS_MONTH_JANUARY, SYS_MONTH_DECEMBER, SPIN_CONTROL_INT);
+  AddInt(7,    "XBDateTime.Day"              , 14066, 15, 1, 1, 31, SPIN_CONTROL_INT);
+  AddInt(8,    "XBDateTime.Hour"             , 14067, 12, 0, 1, 23, SPIN_CONTROL_INT);
+  AddInt(9,    "XBDateTime.Minute"           , 14068, 30, 0, 1, 59, SPIN_CONTROL_INT);
+  AddString(10,"XBDateTime.SetDateTime"      , 14070, "", BUTTON_CONTROL_STANDARD);
   
-
+  //GeminiServer
+  AddCategory(7, "Masterlock", 12360);
+  AddInt(1,   "Masterlock.Mastermode"       , 12364, LOCK_MODE_EVERYONE, LOCK_MODE_EVERYONE, 1, LOCK_MODE_QWERTY, SPIN_CONTROL_TEXT); // 0:always Unlocked, 1:Numeric, 2:Gamepad, 3:Text
+  AddString(2,"Masterlock.Mastercode"       , 12365, "-", BUTTON_CONTROL_STANDARD); // This is the CODE, Changing in addition with Mastermode!
+  AddInt(3,   "Masterlock.Maxretry"         , 12361, 0, 0, 1, 9, SPIN_CONTROL_TEXT); //Max Retry is 3, 0 is off
+  AddBool(4,  "Masterlock.Enableshutdown"   , 12362,false); //talse:0 is off, true:1 will shutdows if Maxrety is reached
+  AddBool(5,  "Masterlock.Protectshares"    , 12363,false); //false:0 is Normal user Mode, true:1 is Mastermode
+  AddBool(6,  "Masterlock.StartupLock"      , 12369,false); //false:0 is no ask StarupCode, true:1 ask for MasterCode if is false switxh off xbmc
+  AddString(7,"Masterlock.SetMasterlock"    , 14070, "", BUTTON_CONTROL_STANDARD);
+  
   AddInt( -1, "UIOffset.X", 0, 0, -128, 1, 128, SPIN_CONTROL_INT);
   AddInt( -1, "UIOffset.Y", 0, 0, -128, 1, 128, SPIN_CONTROL_INT);
 }
@@ -530,8 +539,6 @@ void CGUISettings::AddBool(int iOrder, const char *strSetting, int iLabel, bool 
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
 }
-
-// hmmmm - would be nice to return a bool - what should the default be?
 bool CGUISettings::GetBool(const char *strSetting)
 {
   mapIter it = settingsMap.find(strSetting);

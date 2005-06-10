@@ -37,6 +37,7 @@
 #include "ButtonTranslator.h"
 #include "GUIAudioManager.h"
 #include "lib/libscrobbler/scrobbler.h"
+#include "GUIPassword.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -1026,6 +1027,9 @@ HRESULT CApplication::Initialize()
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 
+  //GeminiServer: Check StartUpLock MasterCode
+  if(g_stSettings.m_iMasterLockStartupLock == 1)  g_passwordManager.CheckStartUpLock();
+  
   if (!m_bAllSettingsLoaded)
   {
     CLog::Log(LOGWARNING, "settings not correct, show dialog");
@@ -3874,3 +3878,4 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
   }
   return false;
 }
+
