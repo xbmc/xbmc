@@ -1033,8 +1033,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    if (iUrlSet >= 0 && iUrlSet < (int)g_settings.m_vecRssUrls.size())
-      pControl->SetUrls(g_settings.m_vecRssUrls[iUrlSet]);
+    std::map<int, std::vector<wstring> >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
+    if (iter != g_settings.m_mapRssUrls.end())
+      pControl->SetUrls(iter->second);
+    else
+      CLog::Log(LOGERROR,"invalid rss url set referenced in skin");
     return pControl;
   }
   else if (strType == "ram")
