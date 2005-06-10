@@ -33,7 +33,7 @@ void (__cdecl* pVODrawAlphargb16)(int w, int h, unsigned char* src, unsigned cha
 __int64 (__cdecl* pGetPTS)();
 BOOL (__cdecl* pHasVideo)();
 BOOL (__cdecl* pHasAudio)();
-int (__cdecl* pImageOutput)(IMAGE * image, unsigned int width, int height, unsigned int edged_width, unsigned char * dst[4], unsigned int dst_stride[4], int csp, int interlaced);
+//int (__cdecl* pImageOutput)(IMAGE * image, unsigned int width, int height, unsigned int edged_width, unsigned char * dst[4], unsigned int dst_stride[4], int csp, int interlaced);
 void (__cdecl* pInitColorConversions)();
 void (__cdecl* pSetCacheSize)(int);
 void (__cdecl* pSetCacheBackBuffer)(int);
@@ -255,10 +255,10 @@ extern "C"
   {
     pInitColorConversions();
   }
-  int image_output(IMAGE * image, unsigned int width, int height, unsigned int edged_width, unsigned char * dst[4], unsigned int dst_stride[4], int csp, int interlaced)
-  {
-    return pImageOutput(image, width, height, edged_width, dst, dst_stride, csp, interlaced);
-  }
+  //int image_output(IMAGE * image, unsigned int width, int height, unsigned int edged_width, unsigned char * dst[4], unsigned int dst_stride[4], int csp, int interlaced)
+  //{
+  //  return pImageOutput(image, width, height, edged_width, dst, dst_stride, csp, interlaced);
+  //}
 
 
   BOOL mplayer_HasVideo()
@@ -445,7 +445,7 @@ extern "C"
     dll.ResolveExport("mplayer_get_pts", (void**)&pGetPTS);
     dll.ResolveExport("mplayer_HasVideo", (void**)&pHasVideo);
     dll.ResolveExport("mplayer_HasAudio", (void**)&pHasAudio);
-    dll.ResolveExport("image_output", (void**)&pImageOutput);
+    //dll.ResolveExport("image_output", (void**)&pImageOutput);
     dll.ResolveExport("init_color_conversions", (void**)&pInitColorConversions);
     dll.ResolveExport("mplayer_setcache_size", (void**)&pSetCacheSize);
     dll.ResolveExport("mplayer_setcache_backbuffer", (void**)&pSetCacheBackBuffer);
