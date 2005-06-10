@@ -334,7 +334,9 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 					CGUIWindow::Render();
 				}
 				else if(iControl == CONTROL_BT_HARDWARE)
-				{
+        {
+          b_IsHome = FALSE;
+
 					SetLabelDummy();
 					SET_CONTROL_LABEL(40,"Hardware Values:");
 
@@ -405,7 +407,6 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 					pDlgProgress.Progress();
 					pDlgProgress.Close();
 
-					b_IsHome = FALSE;
 					CGUIWindow::Render();
 				}
 			}
