@@ -142,7 +142,7 @@
   <string><id>209</id><value>Next</value></string>
   <string><id>210</id><value>Previous</value></string>
   <string><id>211</id><value>Searching for applications</value></string>
-  <string><id>212</id><value>applications found</value></string>
+  <string><id>212</id><value>Applications found</value></string>
   <string><id>213</id><value>Center User Interface...</value></string>
   <string><id>214</id><value>Video Calibration...</value></string>
   <string><id>215</id><value>Soften</value></string>
@@ -210,7 +210,7 @@
   <string><id>277</id><value>Move the bar to change the subtitles position</value></string>
   <string><id>278</id><value>Change the rectangle so that it is perfectly square</value></string>
   <string><id>279</id><value>Unable to load settings</value></string>
-  <string><id>280</id><value>using default fallbacks</value></string>
+  <string><id>280</id><value>Using default fallbacks</value></string>
   <string><id>281</id><value>Please check the .xml files</value></string>
   <string><id>282</id><value>found %i items</value></string>
   <string><id>283</id><value>Search Results</value></string>
@@ -254,7 +254,7 @@
   <string><id>322</id><value>Cleaning genres...</value></string>
   <string><id>323</id><value>Error cleaning genres</value></string>
   <string><id>324</id><value>Cleaning paths...</value></string>
-  <string><id>325</id><value>Error cleaning pathes</value></string>
+  <string><id>325</id><value>Error cleaning paths</value></string>
   <string><id>326</id><value>Cleaning albums...</value></string>
   <string><id>327</id><value>Error cleaning albums</value></string>
   <string><id>328</id><value>Writing changes...</value></string>
@@ -361,7 +361,7 @@
   <string><id>430</id><value>Sort by: DVD#</value></string>
   <string><id>431</id><value>No Cache</value></string>
   <string><id>432</id><value>Delete movie from database</value></string>
-  <string><id>433</id><value>Are you sure to remove</value></string>
+  <string><id>433</id><value>Are you sure about removing</value></string>
   <string><id>434</id><value>the movie?</value></string>
   <string><id>435</id><value>Track</value></string>
   <string><id>436</id><value>Year:</value></string>
@@ -372,18 +372,18 @@
   <string><id>441</id><value>UDF</value></string>
   <string><id>442</id><value>LAN</value></string>
   <string><id>443</id><value>Internet</value></string>
-  <string><id>444</id><value>video</value></string>
-  <string><id>445</id><value>audio</value></string>
+  <string><id>444</id><value>Video</value></string>
+  <string><id>445</id><value>Audio</value></string>
   <string><id>446</id><value>DVD</value></string>
   <string><id>447</id><value>Autorun</value></string>
   <string><id>448</id><value>LCD</value></string>
   <string><id>449</id><value>Enabled</value></string>
   <string><id>450</id><value>Columns</value></string>
   <string><id>4501</id><value>LCD Type</value></string>
-  <string><id>451</id><value>Row 1 Adress</value></string>
-  <string><id>452</id><value>Row 2 Adress</value></string>
-  <string><id>453</id><value>Row 3 Adress</value></string>
-  <string><id>454</id><value>Row 4 Adress</value></string>
+  <string><id>451</id><value>Row 1 Address</value></string>
+  <string><id>452</id><value>Row 2 Address</value></string>
+  <string><id>453</id><value>Row 3 Address</value></string>
+  <string><id>454</id><value>Row 4 Address</value></string>
   <string><id>455</id><value>Rows</value></string>
   <string><id>456</id><value>Mode</value></string>
   <string><id>457</id><value>Switch view</value></string>
@@ -477,9 +477,9 @@
 
   <string><id>700</id><value>Cleaning up Library</value></string>
   <string><id>701</id><value>Removing old songs from the Library</value></string>
-  <string><id>702</id><value>This path has been scanned before.</value></string>
-  <string><id>703</id><value>Press Yes to update all songs in this path.</value></string>
-  <string><id>704</id><value>Press No to just add new songs.</value></string>
+  <string><id>702</id><value>This path has been scanned before</value></string>
+  <string><id>703</id><value>Press Yes to update all songs in this path</value></string>
+  <string><id>704</id><value>Press No to just add new songs</value></string>
   <string><id>705</id><value>Network</value></string>
   <string><id>706</id><value>- HTTP Proxy Host</value></string>
   <string><id>707</id><value>- HTTP Proxy Port</value></string>
@@ -562,7 +562,7 @@
   <string><id>1206</id><value>SMB Share Group</value></string>
   <string><id>1207</id><value>SMB WINS-Server</value></string>
   <string><id>1208</id><value>Settings Mode</value></string>
-  <string><id>1209</id><value>The SMB Share Settings was set succesfull!</value></string>
+  <string><id>1209</id><value>The SMB Share Settings was set succesfully!</value></string>
   <string><id>1210</id><value>Remove</value></string>
   <string><id>1211</id><value>Music</value></string>
   <string><id>1212</id><value>Video</value></string>
@@ -576,7 +576,7 @@
   <string><id>1220</id><value>Pictures &amp; Files</value></string>
   <string><id>1221</id><value>Music &amp; Video &amp; Pictures</value></string>
   <string><id>1222</id><value>Music &amp; Video &amp; Pictures &amp; Files</value></string>
-  <string><id>1226</id><value>Files &amp; Musik &amp; Video</value></string>
+  <string><id>1226</id><value>Files &amp; Music &amp; Video</value></string>
   <string><id>1227</id><value>Files &amp; Pictures &amp; Music</value></string>
   <string><id>1228</id><value>Files &amp; Pictures &amp; Video</value></string>
   <string><id>1223</id><value>Disabled</value></string>
@@ -662,7 +662,7 @@
   <string><id>12003</id><value>My Videos/Info</value></string>
   <string><id>12004</id><value>My Scripts/Info</value></string>
   <string><id>12005</id><value>Fullscreen video</value></string>
-  <string><id>12006</id><value>Audio visisalisation</value></string>
+  <string><id>12006</id><value>Audio visualisation</value></string>
   <string><id>12007</id><value>My Picture/slideshow</value></string>
   <string><id>12008</id><value>Filestacking dialog</value></string>
   <string><id>12310</id><value>0</value></string>
@@ -713,7 +713,19 @@
   <string><id>12356</id><value>Change Lock</value></string>
   <string><id>12357</id><value>Share Lock</value></string>
   <string><id>12358</id><value>Password entry was blank. Try again.</value></string>
-
+  <string><id>12360</id><value>Master Lock</value></string>
+  <string><id>12361</id><value>Max Retry</value></string>
+  <string><id>12362</id><value>Enable Shutdown</value></string>
+  <string><id>12363</id><value>Protect Shares</value></string>
+  <string><id>12364</id><value>Master Mode</value></string>
+  <string><id>12365</id><value>Master Code</value></string>
+  <string><id>12366</id><value>Master Lock is changed. Master Code is now set to:</value></string>
+  <string><id>12367</id><value>Master Code is not Valid!</value></string>
+  <string><id>12368</id><value>Please Enter a Valid Master Code!</value></string>
+  <string><id>12369</id><value>XBMC Startup Lock</value></string>
+  <string><id>12370</id><value>Master Lock Mode changed, the Master Code wasn't set!</value></string>
+  <string><id>12371</id><value>Please Set a new Master Code!</value></string>
+  
   <string><id>12600</id><value>My Weather</value></string>
   <string><id>12900</id><value>Screensaver</value></string>
   <string><id>12901</id><value>Fullscreen OSD</value></string>
@@ -769,10 +781,10 @@
   <string><id>13325</id><value>Foreground Transparency</value></string>
   <string><id>13326</id><value>A/V delay</value></string>
   <string><id>13327</id><value>Karaoke</value></string>
-  <string><id>13328</id><value>%s not found.</value></string>
+  <string><id>13328</id><value>%s not found</value></string>
   <string><id>13329</id><value>Error opening %s</value></string>
   <string><id>13330</id><value>Unable to load %s</value></string>
-  <string><id>13331</id><value>Error: out of memory.</value></string>
+  <string><id>13331</id><value>Error: out of memory</value></string>
   <string><id>13332</id><value>Move Up</value></string>
   <string><id>13333</id><value>Move Down</value></string>
   <string><id>13334</id><value>Edit Label</value></string>
@@ -904,7 +916,7 @@
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>The service is not connected, would you like to attempt</value></string>
   <string><id>15002</id><value>reconnecting it with Xbox Media Center?</value></string>
-  <string><id>15003</id><value>Enter your message.</value></string>
+  <string><id>15003</id><value>Enter your message</value></string>
   <string><id>15004</id><value>You've been invited to play %s.</value></string>
   <string><id>15005</id><value>Date: %s</value></string>
   <string><id>15006</id><value>From: %s</value></string>
@@ -1025,7 +1037,7 @@
   <string><id>13287</id><value>Screen Resolution:</value></string>
   <string><id>13288</id><value>Xbox Version:</value></string>
   <string><id>13289</id><value>Xbox Serial Number:</value></string>
-  <string><id>13290</id><value>XBOX manufacturer:</value></string>
+  <string><id>13290</id><value>XBOX Manufacturer:</value></string>
   <string><id>13291</id><value>ModChip:</value></string>
   <string><id>13292</id><value>A/V Cable:</value></string>
   <string><id>13293</id><value>Video &amp; XBE Region:</value></string>

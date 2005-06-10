@@ -14,10 +14,13 @@ public:
   bool IsItemUnlocked(CFileItem* pItem, const CStdString &strType);
   bool IsItemUnlocked(CShare* pItem, const CStdString &strType);
   bool IsMasterLockUnlocked(bool bPromptUser);
+  bool IsMasterLockLocked(bool bPromptUser);  // This one does not ask for saving the MasterCode!
   void UpdateMasterLockRetryCount(bool bResetCount);
   void GetSMBShareUserPassword();
   void SetSMBShare(const CStdString &strShare);
   CStdString GetSMBShare();
+  bool CheckStartUpLock();
+
 
 	MAPPASSWORDS			m_mapSMBPasswordCache; // SMB share password cache
 protected:
