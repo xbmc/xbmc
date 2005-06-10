@@ -731,7 +731,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
 
           CIMDB IMDB;
           IMDB_MOVIELIST movielist;
-          if (IMDB.FindMovie(strMovieName, movielist) )
+          if (IMDB.FindMovie(strMovieName, movielist, m_dlgProgress) )
           {
             int iMoviesFound = movielist.size();
             if (iMoviesFound > 0)
@@ -751,7 +751,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
               }
 
               CUtil::ClearCache();
-              if ( IMDB.GetDetails(url, movieDetails) )
+              if ( IMDB.GetDetails(url, movieDetails, m_dlgProgress) )
               {
                 // add to all movies in the stacked set
                 m_database.SetMovieInfo(pItem->m_strPath, movieDetails);

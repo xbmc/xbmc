@@ -12,6 +12,8 @@
 
 #include "http.h"
 #include "../cores/DllLoader/dll.h"
+#include "thread.h"
+#include "../GUIDialogProgress.h"
 
 class CIMDBUrl
 {
@@ -49,7 +51,7 @@ public:
 private:
 };
 
-class CIMDB
+class CIMDB : public CThread
 {
 public:
   CIMDB();
@@ -57,16 +59,35 @@ public:
   virtual ~CIMDB();
 
   bool LoadDLL();
-  bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist);
-  bool GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails);
+  bool InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist);
+  bool InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails);
   bool Download(const CStdString &strURL, const CStdString &strFileName);
   void GetURL(const CStdString& strMovie, CStdString& strURL);
+
+  // threaded lookup functions
+  bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
+  bool GetDetails(const CIMDBUrl& url, CIMDBMovie &movieDetails, CGUIDialogProgress *pProgress = NULL);
+
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
   bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue);
   CHTTP m_http;
 
   DllLoader *m_pDll;
+
+  // threaded stuff
+  void Process();
+  void CloseThread();
+
+  enum LOOKUP_STATE { DO_NOTHING = 0,
+                      FIND_MOVIE = 1,
+                      GET_DETAILS = 2 };
+  CStdString      m_strMovie;
+  IMDB_MOVIELIST  m_movieList;
+  CIMDBMovie      m_movieDetails;
+  CIMDBUrl        m_url;
+  LOOKUP_STATE    m_state;
+  bool            m_found;
 };
 
 #endif // !defined(AFX_IMDB1_H__562A722A_CD2A_4B4A_8A67_32DE8088A7D3__INCLUDED_)
