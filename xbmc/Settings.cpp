@@ -440,11 +440,12 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   if (pRssFeeds)
   {
     g_settings.m_mapRssUrls.clear();
-    TiXmlNode* pSet = pRssFeeds->FirstChild("set");
-    while (pSet) {
-      TiXmlNode *pId = pSet->FirstChild("id");
-      if (pId) {    
-        int iId = atoi(pId->FirstChild()->Value());
+    TiXmlElement* pSet = pRssFeeds->FirstChildElement("set");
+    while (pSet)
+    {
+      int iId;
+      if (pSet->QueryIntAttribute("id", &iId) == TIXML_SUCCESS)
+      {
         std::vector<wstring> vecSet;
         TiXmlNode* pFeed = pSet->FirstChild("feed");
         while (pFeed)
@@ -462,7 +463,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
       else 
         CLog::Log(LOGERROR,"found rss url set with no id in XboxMediaCenter.xml, ignored");
 
-      pSet = pSet->NextSibling("set");
+      pSet = pSet->NextSiblingElement("set");
     }
   }
 
