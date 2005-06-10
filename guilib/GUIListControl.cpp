@@ -435,7 +435,7 @@ bool CGUIListControl::OnAction(const CAction &action)
 
   default:
     {
-      if (m_iSelect == CONTROL_LIST)
+      if (m_iSelect == CONTROL_LIST && action.wID)
       { // Don't know what to do, so send to our parent window.
         CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
         return g_graphicsContext.SendMessage(msg);
@@ -895,4 +895,13 @@ void CGUIListControl::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWOR
 {
   CGUIControl::SetNavigation(dwUp, dwDown, dwLeft, dwRight);
   m_upDown.SetNavigation(0, 0, 0, dwRight);
+}
+
+void CGUIListControl::SetPosition(int iPosX, int iPosY)
+{
+  // offset our spin control by the appropriate amount
+  int iSpinOffsetX = m_upDown.GetXPosition() - GetXPosition();
+  int iSpinOffsetY = m_upDown.GetYPosition() - GetYPosition();
+  CGUIControl::SetPosition(iPosX, iPosY);
+  m_upDown.SetPosition(GetXPosition() + iSpinOffsetX, GetYPosition() + iSpinOffsetY);
 }
