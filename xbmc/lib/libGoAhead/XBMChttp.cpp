@@ -34,7 +34,7 @@
 #pragma const_seg("WEB_RD")
 
 #define XML_MAX_INNERTEXT_SIZE 256
-
+#define MAX_PARAS 10
 #define NO_EID -1
 
 //#define USE_MUSIC_DATABASE
@@ -184,6 +184,24 @@ bool decodeBase64ToFile( CStdString inString, CStdString outfilename )
 }
 
 
+
+int splitParameter(char_t *parameter, CStdString paras[])
+{
+  int num=0, p;
+  CStdString para=parameter;
+  if ((*parameter==0) || !strcmp(parameter,XBMC_NONE) || (para.Trim()==""))
+    return 0;
+  p=para.Find(";");
+  while (p!=-1 && num<MAX_PARAS)
+  {
+    paras[num++]=para.Left(p-1);
+    para=para.Right(para.length()-p-1);
+    p=para.Find(";");
+  }
+  if (para.Trim()!="")
+    paras[num++]=para;
+  return num;
+}
 
 struct SSortWebFilesByName
 {
@@ -1922,68 +1940,72 @@ int	CXbmcHttp::xbmcHelp(webs_t wp)
 /* Parse an XBMC HTTP API command */
 int CXbmcHttp::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter)
 {
+  int retVal;
+  CLog::Log(LOGDEBUG, "HttpApi Start command: %s  paras: %s", command, parameter);
   websHeader(wp);
-	if (!stricmp(command, "clearplaylist"))              return xbmcClearPlayList(wp, parameter);  
-	else if (!stricmp(command, "addtoplaylist"))         return xbmcAddToPlayList(wp, parameter);  
-	else if (!stricmp(command, "playfile"))              return xbmcPlayerPlayFile(wp, parameter); 
-	else if (!stricmp(command, "pause"))                 return xbmcAction(wp, parameter,1);
-	else if (!stricmp(command, "stop"))					        return xbmcAction(wp, parameter,2);
-  else if (!stricmp(command, "playnext"))					        return xbmcAction(wp, parameter,3);
-  else if (!stricmp(command, "playprev"))					        return xbmcAction(wp, parameter,4);
-  else if (!stricmp(command, "rotate"))					        return xbmcAction(wp, parameter,5);
-  else if (!stricmp(command, "move"))					        return xbmcAction(wp, parameter,6);
-  else if (!stricmp(command, "zoom"))					        return xbmcAction(wp, parameter,7);
-	else if (!stricmp(command, "restart"))				        return xbmcExit(wp,1);
-	else if (!stricmp(command, "shutdown"))				      return xbmcExit(wp,2);
-	else if (!stricmp(command, "exit"))					        return xbmcExit(wp,3);
-	else if (!stricmp(command, "reset"))					        return xbmcExit(wp,4);
-	else if (!stricmp(command, "restartapp"))			  		return xbmcExit(wp,5);
-	else if (!stricmp(command, "getcurrentlyplaying"))	  return xbmcGetCurrentlyPlaying(wp); 
-	else if (!stricmp(command, "getdirectory"))			    return xbmcGetDirectory(wp, parameter); 
-	else if (!stricmp(command, "gettagfromfilename"))  	return xbmcGetTagFromFilename(wp, parameter);
-	else if (!stricmp(command, "getcurrentplaylist"))	  return xbmcGetCurrentPlayList(wp);
-	else if (!stricmp(command, "setcurrentplaylist"))	  return xbmcSetCurrentPlayList(wp, parameter);
-	else if (!stricmp(command, "getplaylistcontents"))	  return xbmcGetPlayListContents(wp, parameter);
-	else if (!stricmp(command, "removefromplaylist"))  	return xbmcRemoveFromPlayList(wp, parameter);
-	else if (!stricmp(command, "setplaylistsong"))		    return xbmcSetPlayListSong(wp, parameter);
-	else if (!stricmp(command, "getplaylistsong"))	    	return xbmcGetPlayListSong(wp, parameter);
-	else if (!stricmp(command, "playlistnext"))			    return xbmcPlayListNext(wp);
-	else if (!stricmp(command, "playlistprev"))			    return xbmcPlayListPrev(wp);
-	else if (!stricmp(command, "getpercentage"))		    	return xbmcGetPercentage(wp);
-	else if (!stricmp(command, "seekpercentage"))	    	return xbmcSeekPercentage(wp, parameter);
-	else if (!stricmp(command, "setvolume"))				      return xbmcSetVolume(wp, parameter);
-	else if (!stricmp(command, "getvolume"))			      	return xbmcGetVolume(wp);
-	else if (!stricmp(command, "getthumb"))			      	return xbmcGetThumb(wp, parameter);
-	else if (!stricmp(command, "getthumbfilename"))  		return xbmcGetThumbFilename(wp, parameter);
-	else if (!stricmp(command, "lookupalbum"))			      return xbmcLookupAlbum(wp, parameter);
-	else if (!stricmp(command, "choosealbum"))			      return xbmcChooseAlbum(wp, parameter);
-	else if (!stricmp(command, "downloadinternetfile"))	return xbmcDownloadInternetFile(wp, parameter);
-	else if (!stricmp(command, "getmoviedetails"))		    return xbmcGetMovieDetails(wp, parameter);
-	else if (!stricmp(command, "showpicture"))			      return xbmcShowPicture(wp, parameter);
-	else if (!stricmp(command, "setkey"))				        return xbmcSetKey(wp, parameter);
-	else if (!stricmp(command, "deletefile"))		      	return xbmcDeleteFile(wp, parameter);
-	else if (!stricmp(command, "copyfile"))			      	return xbmcCopyFile(wp, parameter);
-	else if (!stricmp(command, "fileexists"))		      	return xbmcFileExists(wp, parameter);
-	else if (!stricmp(command, "setfile"))				        return xbmcSetFile(wp, parameter);
-	else if (!stricmp(command, "getguistatus"))			    return xbmcGetGUIStatus(wp);
-	else if (!stricmp(command, "execbuiltin"))			      return xbmcExecBuiltIn(wp, parameter);
-  else if (!stricmp(command, "config"))	              return xbmcConfig(wp, parameter);
-  else if (!stricmp(command, "help"))			            return xbmcHelp(wp);
-  else if (!stricmp(command, "getsysteminfo"))			    return xbmcGetSystemInfo(wp, parameter);
-  else if (!stricmp(command, "getsysteminfobyname"))   return xbmcGetSystemInfoByName(wp, parameter);
-  else if (!stricmp(command, "addtoslideshow"))			    return xbmcAddToSlideshow(wp, parameter);
-  else if (!stricmp(command, "clearslideshow"))			    return xbmcClearSlideshow(wp);
-  else if (!stricmp(command, "playslideshow"))			    return xbmcPlaySlideshow(wp, parameter);
-  else if (!stricmp(command, "getslideshowcontents"))		return xbmcGetSlideshowContents(wp);
-  else if (!stricmp(command, "slideshowselect"))			  return xbmcSlideshowSelect(wp, parameter);
-  else if (!stricmp(command, "getcurrentslide"))			  return xbmcGetCurrentSlide(wp);
-  else if (!stricmp(command, "guisetting"))			    return xbmcGUISetting(wp, parameter);
+	if (!stricmp(command, "clearplaylist"))              retVal =  xbmcClearPlayList(wp, parameter);  
+	else if (!stricmp(command, "addtoplaylist"))         retVal =  xbmcAddToPlayList(wp, parameter);  
+	else if (!stricmp(command, "playfile"))              retVal =  xbmcPlayerPlayFile(wp, parameter); 
+	else if (!stricmp(command, "pause"))                 retVal =  xbmcAction(wp, parameter,1);
+	else if (!stricmp(command, "stop"))					        retVal =  xbmcAction(wp, parameter,2);
+  else if (!stricmp(command, "playnext"))					        retVal =  xbmcAction(wp, parameter,3);
+  else if (!stricmp(command, "playprev"))					        retVal =  xbmcAction(wp, parameter,4);
+  else if (!stricmp(command, "rotate"))					        retVal =  xbmcAction(wp, parameter,5);
+  else if (!stricmp(command, "move"))					        retVal =  xbmcAction(wp, parameter,6);
+  else if (!stricmp(command, "zoom"))					        retVal =  xbmcAction(wp, parameter,7);
+	else if (!stricmp(command, "restart"))				        retVal =  xbmcExit(wp,1);
+	else if (!stricmp(command, "shutdown"))				      retVal =  xbmcExit(wp,2);
+	else if (!stricmp(command, "exit"))					        retVal =  xbmcExit(wp,3);
+	else if (!stricmp(command, "reset"))					        retVal =  xbmcExit(wp,4);
+	else if (!stricmp(command, "restartapp"))			  		retVal =  xbmcExit(wp,5);
+	else if (!stricmp(command, "getcurrentlyplaying"))	  retVal =  xbmcGetCurrentlyPlaying(wp); 
+	else if (!stricmp(command, "getdirectory"))			    retVal =  xbmcGetDirectory(wp, parameter); 
+	else if (!stricmp(command, "gettagfromfilename"))  	retVal =  xbmcGetTagFromFilename(wp, parameter);
+	else if (!stricmp(command, "getcurrentplaylist"))	  retVal =  xbmcGetCurrentPlayList(wp);
+	else if (!stricmp(command, "setcurrentplaylist"))	  retVal =  xbmcSetCurrentPlayList(wp, parameter);
+	else if (!stricmp(command, "getplaylistcontents"))	  retVal =  xbmcGetPlayListContents(wp, parameter);
+	else if (!stricmp(command, "removefromplaylist"))  	retVal =  xbmcRemoveFromPlayList(wp, parameter);
+	else if (!stricmp(command, "setplaylistsong"))		    retVal =  xbmcSetPlayListSong(wp, parameter);
+	else if (!stricmp(command, "getplaylistsong"))	    	retVal =  xbmcGetPlayListSong(wp, parameter);
+	else if (!stricmp(command, "playlistnext"))			    retVal =  xbmcPlayListNext(wp);
+	else if (!stricmp(command, "playlistprev"))			    retVal =  xbmcPlayListPrev(wp);
+	else if (!stricmp(command, "getpercentage"))		    	retVal =  xbmcGetPercentage(wp);
+	else if (!stricmp(command, "seekpercentage"))	    	retVal =  xbmcSeekPercentage(wp, parameter);
+	else if (!stricmp(command, "setvolume"))				      retVal =  xbmcSetVolume(wp, parameter);
+	else if (!stricmp(command, "getvolume"))			      	retVal =  xbmcGetVolume(wp);
+	else if (!stricmp(command, "getthumb"))			      	retVal =  xbmcGetThumb(wp, parameter);
+	else if (!stricmp(command, "getthumbfilename"))  		retVal =  xbmcGetThumbFilename(wp, parameter);
+	else if (!stricmp(command, "lookupalbum"))			      retVal =  xbmcLookupAlbum(wp, parameter);
+	else if (!stricmp(command, "choosealbum"))			      retVal =  xbmcChooseAlbum(wp, parameter);
+	else if (!stricmp(command, "downloadinternetfile"))	retVal =  xbmcDownloadInternetFile(wp, parameter);
+	else if (!stricmp(command, "getmoviedetails"))		    retVal =  xbmcGetMovieDetails(wp, parameter);
+	else if (!stricmp(command, "showpicture"))			      retVal =  xbmcShowPicture(wp, parameter);
+	else if (!stricmp(command, "setkey"))				        retVal =  xbmcSetKey(wp, parameter);
+	else if (!stricmp(command, "deletefile"))		      	retVal =  xbmcDeleteFile(wp, parameter);
+	else if (!stricmp(command, "copyfile"))			      	retVal =  xbmcCopyFile(wp, parameter);
+	else if (!stricmp(command, "fileexists"))		      	retVal =  xbmcFileExists(wp, parameter);
+	else if (!stricmp(command, "setfile"))				        retVal =  xbmcSetFile(wp, parameter);
+	else if (!stricmp(command, "getguistatus"))			    retVal =  xbmcGetGUIStatus(wp);
+	else if (!stricmp(command, "execbuiltin"))			      retVal =  xbmcExecBuiltIn(wp, parameter);
+  else if (!stricmp(command, "config"))	              retVal =  xbmcConfig(wp, parameter);
+  else if (!stricmp(command, "help"))			            retVal =  xbmcHelp(wp);
+  else if (!stricmp(command, "getsysteminfo"))			    retVal =  xbmcGetSystemInfo(wp, parameter);
+  else if (!stricmp(command, "getsysteminfobyname"))   retVal =  xbmcGetSystemInfoByName(wp, parameter);
+  else if (!stricmp(command, "addtoslideshow"))			    retVal =  xbmcAddToSlideshow(wp, parameter);
+  else if (!stricmp(command, "clearslideshow"))			    retVal =  xbmcClearSlideshow(wp);
+  else if (!stricmp(command, "playslideshow"))			    retVal =  xbmcPlaySlideshow(wp, parameter);
+  else if (!stricmp(command, "getslideshowcontents"))		retVal =  xbmcGetSlideshowContents(wp);
+  else if (!stricmp(command, "slideshowselect"))			  retVal =  xbmcSlideshowSelect(wp, parameter);
+  else if (!stricmp(command, "getcurrentslide"))			  retVal =  xbmcGetCurrentSlide(wp);
+  else if (!stricmp(command, "guisetting"))			    retVal =  xbmcGUISetting(wp, parameter);
 
 	else {
 		websWrite(wp, "<li>Error:unknown command\n");
+    retVal = 0;
 	}
   websFooter(wp);
-	return 0;
+  CLog::Log(LOGDEBUG, "HttpApi End command: %s  paras: %s", command, parameter);
+	return retVal;
 }
 
 
@@ -2004,4 +2026,6 @@ void CXbmcHttp::xbmcForm(webs_t wp, char_t *path, char_t *query)
 
   if (wp->timeout!=-1)
 	  websDone(wp, 200);
+  else
+    CLog::Log(LOGERROR, "HttpApi Timeout command: %s  paras: %s", command, parameter);
 }
