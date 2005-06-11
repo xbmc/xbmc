@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-06-2005 updated: mplayer.dll - about 1 meg smaller than old (saves mem).
+                       has been compiled with gcc.3.4.4 and has some unneeded filters removed
  - 11-06-2005 fixed: HttpApi internal logic bug
  - 10-06-2005 added: Master Code Control: XBMC Startup Lock! [GeminiServer]
 		     XBMC Startup Lock will use the Master Lock Settings and if Startup Lock is enabled:
