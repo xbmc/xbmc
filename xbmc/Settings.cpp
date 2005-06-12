@@ -447,18 +447,26 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
       if (pSet->QueryIntAttribute("id", &iId) == TIXML_SUCCESS)
       {
         std::vector<wstring> vecSet;
-        TiXmlNode* pFeed = pSet->FirstChild("feed");
+        std::vector<int> vecIntervals;
+        TiXmlElement* pFeed = pSet->FirstChildElement("feed");
         while (pFeed)
         {
+          int iInterval;
+          if ( pFeed->QueryIntAttribute("updateinterval",&iInterval) != TIXML_SUCCESS)
+          {
+            iInterval=30; // default to 30 min
+            CLog::Log(LOGDEBUG,"no interval set, default to 30!");
+          }
           if (pFeed->FirstChild())
           {
             CStdStringW strUrl = pFeed->FirstChild()->Value();
             strUrl.MakeLower();
             vecSet.push_back(strUrl);
+            vecIntervals.push_back(iInterval);
           }
-          pFeed = pFeed->NextSibling("feed");
+          pFeed = pFeed->NextSiblingElement("feed");
         }
-        g_settings.m_mapRssUrls.insert(std::make_pair<int,std::vector<wstring> >(iId,vecSet));
+        g_settings.m_mapRssUrls.insert(std::make_pair<int,std::pair<std::vector<int>,std::vector<wstring> > >(iId,std::make_pair<std::vector<int>,std::vector<wstring> >(vecIntervals,vecSet)));
       } 
       else 
         CLog::Log(LOGERROR,"found rss url set with no id in XboxMediaCenter.xml, ignored");
