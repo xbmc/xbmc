@@ -110,6 +110,7 @@ CMPlayer::Options::Options()
   m_bNonInterleaved = false;
   m_fSpeed = 1.0f;
   m_fFPS = 0.0f;
+  m_iAutoSync = 0;
 
   m_iAudioStream = -1;
   m_iSubtitleStream = -1;
@@ -259,6 +260,11 @@ void CMPlayer::Options::SetRawAudioFormat(const string& strHexRawAudioFormat)
   m_strHexRawAudioFormat = strHexRawAudioFormat;
 }
 
+void CMPlayer::Options::SetAutoSync(int iAutoSync)
+{
+  m_iAutoSync = iAutoSync;
+}
+
 void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 {
   CStdString strTmp;
@@ -365,6 +371,15 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("-af");
     m_vecOptions.push_back(m_strChannelMapping);
   }
+
+  if ( m_iAutoSync )
+  {
+    // Enable autosync
+    m_vecOptions.push_back("-autosync");
+    strTmp.Format("%i", m_iAutoSync);
+    m_vecOptions.push_back(strTmp);
+  }
+
   if ( m_bAC3PassTru || m_bDTSPassTru)
   {
     // this is nice, we can ask mplayer to try hwac3 filter (used for ac3/dts pass-through) first
@@ -859,6 +874,10 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
       options.SetRawAudioFormat("0x2001");
     }
 
+    //Enable smoothing of audio clock to create smoother playback.
+    if( g_guiSettings.GetBool("Filters.UseAutosync") )
+      options.SetAutoSync(30);
+
     options.GetOptions(argc, argv);
 
 
@@ -869,10 +888,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     mplayer_setcache_backbuffer(iCacheSizeBackBuffer);
     if(!bNeedOSD)
       mplayer_SlaveCommand("osd 0");
-
-    //Enable smoothing of audio clock to create smoother playback.
-    if( g_guiSettings.GetBool("Filters.UseAutosync") )
-      mplayer_SlaveCommand("autosync 30");
 
     if (bFileIsDVDImage || bFileIsDVDIfoFile)
     {
