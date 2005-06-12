@@ -51,6 +51,8 @@ public:
     void SetFlipBiDiCharset(const string& strCharset);
     void SetRawAudioFormat(const string& strHexRawAudioFormat);
 
+    void SetAutoSync(int iAutoSync);
+
   private:
     bool m_bResampleAudio;
     bool m_bNoCache;
@@ -61,6 +63,7 @@ public:
     int m_iAudioStream;
     int m_iSubtitleStream;
     int m_iCacheSizeBackBuffer; // percent of cache used for back buffering
+    int m_iAutoSync;
     bool m_bAC3PassTru;
     bool m_bDTSPassTru;
     float m_fVolumeAmplification;
