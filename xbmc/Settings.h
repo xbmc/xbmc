@@ -425,7 +425,7 @@ public:
 
   CStdStringArray m_MyVideoStackRegExps;
 
-  std::map<int,std::vector<wstring> > m_mapRssUrls;
+  std::map<int,std::pair<std::vector<int>,std::vector<wstring> > > m_mapRssUrls;
 
 
   // cache copies of these parsed values, to avoid re-parsing over and over

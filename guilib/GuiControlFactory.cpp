@@ -1033,9 +1033,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    std::map<int, std::vector<wstring> >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
+    std::map<int, std::pair<std::vector<int>,std::vector<wstring> > >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
     if (iter != g_settings.m_mapRssUrls.end())
-      pControl->SetUrls(iter->second);
+    {
+      pControl->SetUrls(iter->second.second);
+      pControl->SetIntervals(iter->second.first);
+    }
     else
       CLog::Log(LOGERROR,"invalid rss url set referenced in skin");
     return pControl;
