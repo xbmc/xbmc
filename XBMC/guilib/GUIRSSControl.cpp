@@ -47,7 +47,6 @@ CGUIRSSControl::~CGUIRSSControl(void)
   //  delete[] m_pdwPalette;
   if (m_pReader)
   {
-    m_pReader->ResumeThread();
     m_pReader->StopThread();
     delete m_pReader;
   }
@@ -60,6 +59,9 @@ CGUIRSSControl::~CGUIRSSControl(void)
   if (m_pbColors) //Deallocate here since there isn't any better place
     delete[] m_pbColors;
 
+  for (unsigned int i=0;i<m_vecTimeSnapShot.size();++i)
+    delete m_vecTimeSnapShot[i];
+
   m_pdwPalette = NULL;
   m_pReader = NULL;
   m_pwzText = NULL;
@@ -71,6 +73,11 @@ void CGUIRSSControl::SetUrls(const vector<wstring> &vecUrl)
 {
   m_vecUrls = vecUrl; 
 };
+
+void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
+{
+  m_vecIntervals = vecIntervals;
+}
 
 void CGUIRSSControl::Render()
 {
@@ -94,8 +101,14 @@ void CGUIRSSControl::Render()
       for (i = 0;i < (int)vecSplitTags.size();i++)
         m_pReader->AddTag(vecSplitTags[i]);
     }
-    GetLocalTime(&timeSnapShot);
     m_pReader->Create(this, m_vecUrls, m_iLeadingSpaces);
+    for (unsigned int i=0;i<m_vecUrls.size();++i ) // force update on init
+    {
+      m_pReader->AddToQueue(i);
+      SYSTEMTIME* time = new SYSTEMTIME;
+      GetLocalTime(time);
+      m_vecTimeSnapShot.push_back(time);
+    }
   }
 
   if (m_pFont && m_pwzText)
@@ -105,13 +118,14 @@ void CGUIRSSControl::Render()
   SYSTEMTIME time;
   GetLocalTime(&time);
 
-  if (((time.wDay * 24 * 60) + (time.wHour * 60) + time.wMinute) - ((timeSnapShot.wDay * 24 * 60) + (timeSnapShot.wHour * 60) + timeSnapShot.wMinute) > 30 )
-  {
-    CLog::Log(LOGDEBUG, "Updating RSS");
+  for (unsigned int i=0;i<m_vecUrls.size();++i )
+    if (((time.wDay * 24 * 60) + (time.wHour * 60) + time.wMinute) - ((m_vecTimeSnapShot[i]->wDay * 24 * 60) + (m_vecTimeSnapShot[i]->wHour * 60) + m_vecTimeSnapShot[i]->wMinute) > m_vecIntervals[i] )
+    {
+      CLog::Log(LOGDEBUG, "Updating RSS");
 
-    GetLocalTime(&timeSnapShot);
-    m_pReader->ResumeThread();
-  }
+      GetLocalTime(m_vecTimeSnapShot[i]);
+      m_pReader->AddToQueue(i);
+    }
 }
 
 void CGUIRSSControl::OnFeedUpdate(CStdString& aFeed, LPBYTE aColorArray)
