@@ -82,7 +82,6 @@ void audio_resume();
 extern void tracker_free_mplayer_dlls(void);
 extern "C" void save_registry(void);
 extern "C" void free_registry(void);
-extern void xbox_video_wait();
 extern void xbox_video_CheckScreenSaver(); // Screensaver check
 extern CFileShoutcast* m_pShoutCastRipper;
 extern "C" void dllReleaseAll( );
@@ -1124,6 +1123,10 @@ void CMPlayer::Process()
           // we're playing
           int iRet = mplayer_process();
 
+          //Set to notify that we are out of the process loop
+          //can be used to syncronize seeking
+          m_evProcessDone.Set();
+
           if (iRet < 0) break;
 
           __int64 iPTS = mplayer_get_pts();
@@ -1194,7 +1197,6 @@ void CMPlayer::Process()
           exceptionCount--;
         }
       }
-
     }
     while ((!m_bStop) && (exceptionCount < 5));
 
@@ -1370,6 +1372,15 @@ void CMPlayer::SeekRelativeTime(int iSeconds)
   CStdString strCommand;
   strCommand.Format("seek %+i 0",iSeconds);
   mplayer_SlaveCommand(strCommand.c_str());
+
+  //We are in the normal mplayer thread, return as otherwise we would
+  //hardlock waiting for those events
+  if( GetCurrentThreadId() == ThreadId() ) return;
+
+  //Wait till process has finished twice, 
+  //otherwise we can't be sure the seek has finished
+  m_evProcessDone.WaitMSec(1000);
+  m_evProcessDone.WaitMSec(1000);
 }
 
 void CMPlayer::ToggleFrameDrop()
@@ -1565,11 +1576,15 @@ void CMPlayer::SeekPercentage(float percent)
   if (percent < 0) percent = 0;
 
   mplayer_setPercentage( (int)percent );
-  if (HasVideo())
-  {
-    SwitchToThread();
-    xbox_video_wait();
-  }
+
+  //We are in the normal mplayer thread, return as otherwise we would
+  //hardlock waiting for those events
+  if( GetCurrentThreadId() == ThreadId() ) return;
+
+  //Wait till process has finished twice, 
+  //otherwise we can't be sure the seek has finished
+  m_evProcessDone.WaitMSec(1000);
+  m_evProcessDone.WaitMSec(1000);
 }
 
 float CMPlayer::GetPercentage()
@@ -1702,12 +1717,16 @@ void CMPlayer::SetAudioStream(int iStream)
 void CMPlayer::SeekTime(__int64 iTime)
 {
   mplayer_setTimeMs(iTime);
-  if (HasVideo())
-  {
-    SwitchToThread();
-    xbox_video_wait();
-  }
   g_infoManager.m_bPerformingSeek = false;
+
+  //We are in the normal mplayer thread, return as otherwise we would
+  //hardlock waiting for those events
+  if( GetCurrentThreadId() == ThreadId() ) return;
+
+  //Wait till process has finished twice, 
+  //otherwise we can't be sure the seek has finished
+  m_evProcessDone.WaitMSec(1000);
+  m_evProcessDone.WaitMSec(1000);
 }
 
 //Time in milleseconds
@@ -1735,8 +1754,6 @@ int CMPlayer::GetTotalTime()
 void CMPlayer::ToFFRW(int iSpeed)
 {
   mplayer_ToFFRW( iSpeed);
-  //SwitchToThread();
-  //xbox_video_wait();
 }
 
 

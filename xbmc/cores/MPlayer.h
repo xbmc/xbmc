@@ -160,5 +160,6 @@ protected:
   bool m_bSubsVisibleTTF;
   bool m_bIsMplayeropenfile;
   CStdString m_strPath;
+  CEvent m_evProcessDone;
 
 };
