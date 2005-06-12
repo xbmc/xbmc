@@ -7,6 +7,8 @@ CFileZip::CFileZip() : m_dlgProgress(NULL), m_bUseProgressBar(false)
 
 CFileZip::~CFileZip()
 {
+  if (m_szStringBuffer)
+    delete[] m_szStringBuffer;
 }
 
 bool CFileZip::Open(const CURL&url, bool bBinary)
@@ -50,6 +52,7 @@ bool CFileZip::Open(const CURL&url, bool bBinary)
   m_ZStream.next_in = (Bytef*)m_szBuffer;
   m_ZStream.avail_in = 0;
   m_ZStream.total_out = 0;
+  m_szStringBuffer = NULL;
   return true;
 }
 
@@ -225,6 +228,14 @@ int CFileZip::Stat(const CURL& url, struct __stat64* buffer)
 
 unsigned int CFileZip::Read(void* lpBuf, __int64 uiBufSize)
 {
+  // flush what might be left in the string buffer
+  if (m_iDataInStringBuffer > 0)
+  {
+    size_t iMax = static_cast<size_t>((uiBufSize>m_iDataInStringBuffer?m_iDataInStringBuffer:uiBufSize));
+    memcpy(lpBuf,m_szStartOfStringBuffer,iMax);
+    uiBufSize -= iMax;
+    m_iDataInStringBuffer -= iMax;
+  }
   if (mZipItem.method == 8) // deflated
   {
     uLong iDecompressed = 0;
@@ -288,7 +299,72 @@ void CFileZip::Close()
 
 bool CFileZip::ReadString(char* szLine, int iLineLength)
 {
-  return false;
+  if (!m_szStringBuffer)
+  {
+    m_szStringBuffer = new char[1024]; // 1024 byte long strings per read
+    m_szStartOfStringBuffer = m_szStringBuffer;
+    m_iDataInStringBuffer = 0;
+    m_iRead = 0;
+  }
+  
+  bool bEof = m_iDataInStringBuffer==0;
+  while ((iLineLength > 1) && (m_iRead > -1))
+  {
+    if (m_iDataInStringBuffer > 0)
+    {
+      bEof = false;
+      m_iRead = 1;
+      int iMax = (iLineLength<m_iDataInStringBuffer?iLineLength-1:m_iDataInStringBuffer-1);
+      for( int i=0;i<iMax;++i )
+      {
+        if (m_szStartOfStringBuffer[i] == '\r') // mac or win32 endings
+        {
+          strncpy(szLine,m_szStartOfStringBuffer,i);
+          szLine[i] = '\0';
+          m_iDataInStringBuffer -= i+1;
+          m_szStartOfStringBuffer += i+1;
+          if( m_szStartOfStringBuffer[0] == '\n') // win32 endings
+          { 
+            m_szStartOfStringBuffer++;
+            m_iDataInStringBuffer--;
+          }
+          return true;
+        }
+        else if (m_szStartOfStringBuffer[i] == '\n') // unix or fucked up win32 endings
+        {
+          strncpy(szLine,m_szStartOfStringBuffer,i);
+          szLine[i] = '\0';
+          m_iDataInStringBuffer -= i+1;
+          m_szStartOfStringBuffer += i+1;
+          if (m_szStartOfStringBuffer[0] == '\r')
+          {
+            m_szStartOfStringBuffer++;
+            m_iDataInStringBuffer--;
+          }
+          return true;
+        } 
+      }
+      strncpy(szLine,m_szStartOfStringBuffer,iMax);
+      szLine += iMax;
+      iLineLength -= iMax;
+      m_iDataInStringBuffer -= iMax;
+    }
+    
+    if (m_iRead == 1 && (m_iDataInStringBuffer == 1))
+    {
+      m_szStringBuffer[0] = m_szStringBuffer[1023]; // need to make sure we don't loose any '\r\n' between buffers
+      m_iDataInStringBuffer = Read(m_szStringBuffer+1,1023); 
+    }
+    else
+      m_iDataInStringBuffer = Read(m_szStringBuffer,1024); 
+    m_szStartOfStringBuffer = m_szStringBuffer;
+    if (m_iDataInStringBuffer)
+      m_iRead = 1;
+    else
+      m_iRead = -1;
+  }
+  szLine[0] = '\0';
+  return !bEof;
 }
 
 bool CFileZip::FillBuffer()
