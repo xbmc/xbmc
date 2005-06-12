@@ -12,7 +12,7 @@
 #pragma once
 
 
-#include "../../stdafx.h"
+#include "..\..\stdafx.h"
 #include "WebServer.h"
 #include "XbmcHttp.h"
 #include "..\..\PlayListFactory.h"
@@ -37,7 +37,7 @@
 #define MAX_PARAS 10
 #define NO_EID -1
 
-//#define USE_MUSIC_DATABASE
+#define USE_MUSIC_DATABASE
 
 
 /***************************** Definitions ***************************/
@@ -194,7 +194,7 @@ int splitParameter(char_t *parameter, CStdString paras[])
   p=para.Find(";");
   while (p!=-1 && num<MAX_PARAS)
   {
-    paras[num++]=para.Left(p-1);
+    paras[num++]=para.Left(p);
     para=para.Right(para.length()-p-1);
     p=para.Find(";");
   }
@@ -722,13 +722,13 @@ int CXbmcHttp::xbmcGetTagFromFilename( webs_t wp, char_t *parameter)
 	return 0;
 }
 
-int CXbmcHttp::xbmcClearPlayList( webs_t wp, char_t *parameter)
+int CXbmcHttp::xbmcClearPlayList( webs_t wp, int numParas, CStdString paras[])
 {
 	int playList ;
-	if ((*parameter==0) || !strcmp(parameter,XBMC_NONE))
+	if (numParas==0)
 		playList = g_playlistPlayer.GetCurrentPlaylist() ;
 	else
-		playList=atoi(parameter) ;
+		playList=atoi(paras[0]) ;
 	g_playlistPlayer.GetPlaylist( playList ).Clear();
 	websWrite(wp, "<li>OK\n");
 	return 0;
@@ -1183,6 +1183,7 @@ int CXbmcHttp::xbmcSetCurrentPlayList( webs_t wp, char_t *parameter)
 	}
 	return 0;
 }
+
 
 int CXbmcHttp::xbmcGetPlayListContents( webs_t wp, char_t *parameter)
 {
@@ -1940,10 +1941,12 @@ int	CXbmcHttp::xbmcHelp(webs_t wp)
 /* Parse an XBMC HTTP API command */
 int CXbmcHttp::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter)
 {
-  int retVal;
+  int retVal, numParas;
+  CStdString paras[MAX_PARAS];
   CLog::Log(LOGDEBUG, "HttpApi Start command: %s  paras: %s", command, parameter);
+  numParas = splitParameter(parameter, paras);
   websHeader(wp);
-	if (!stricmp(command, "clearplaylist"))              retVal =  xbmcClearPlayList(wp, parameter);  
+	if (!stricmp(command, "clearplaylist"))              retVal =  xbmcClearPlayList(wp, numParas, paras);  
 	else if (!stricmp(command, "addtoplaylist"))         retVal =  xbmcAddToPlayList(wp, parameter);  
 	else if (!stricmp(command, "playfile"))              retVal =  xbmcPlayerPlayFile(wp, parameter); 
 	else if (!stricmp(command, "pause"))                 retVal =  xbmcAction(wp, parameter,1);

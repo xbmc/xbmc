@@ -25,7 +25,7 @@ public:
 
 	int			xbmcAddToPlayList(webs_t wp, char_t *parameter);
 	int			xbmcPlayerPlayFile(webs_t wp, char_t *parameter); 
-	int			xbmcClearPlayList(webs_t wp, char_t *parameter); 
+	int			xbmcClearPlayList(webs_t wp, int numParas, CStdString paras[]); 
 	int			xbmcGetCurrentlyPlaying(  webs_t wp); 
 	int			xbmcGetDirectory(webs_t wp, char_t *parameter); 
 	int			xbmcGetTagFromFilename(webs_t wp, char_t *parameter); 
