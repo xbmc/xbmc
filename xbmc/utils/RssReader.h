@@ -27,28 +27,29 @@ public:
   CRssReader();
   virtual ~CRssReader();
 
-  void Create(IRssObserver* aObserver, vector<wstring>& aUrl, INT iLeadingSpaces);
-  bool Load(CStdString& aFile);
-  bool Parse(LPSTR szBuffer);
+  void Create(IRssObserver* aObserver, const vector<wstring>& aUrl, INT iLeadingSpaces);
+  bool Parse(LPSTR szBuffer, int iFeed);
   void getFeed(CStdString& strText, LPBYTE& pbColors);
   void AddTag(const CStdString addTag);
-  DWORD SuspendThread();
-  DWORD ResumeThread();
-
+  void AddToQueue(int iAdd);
 private:
   void Process();
-  bool Parse();
-  void GetNewsItems(TiXmlElement* channelXmlNode);
-  void AddString(CStdString aString, int aColour);
+  bool Parse(int iFeed);
+  void GetNewsItems(TiXmlElement* channelXmlNode, int iFeed);
+  void AddString(CStdString aString, int aColour, int iFeed);
+  void UpdateFeed();
+  virtual void OnExit();
 
   IRssObserver* m_pObserver;
   
-  CStdString m_strFeed;
-  CStdString m_strColors;
+  std::vector<CStdString> m_strFeed;
+  std::vector<CStdString> m_strColors;
   INT m_iLeadingSpaces;
   TiXmlDocument m_xml;
   list <CStdString> m_tagSet;
   vector<wstring> m_vecUrls;
+  vector<int> m_vecQueue;
+  bool m_bIsRunning;
 };
 
 #endif // !defined(AFX_RSSREADER_H__157FED93_0CDE_4295_A9AF_75BEF4E81761__INCLUDED_)
