@@ -216,7 +216,6 @@
                         <posY>310</posY>
                         <width>110</width>
                         <height>20</height>
-                        <label>13200</label>
                         <font>font101</font>
                         <onleft>1113</onleft>
                         <onright>1113</onright>
@@ -229,8 +228,8 @@
 
                       <control>
                         <description>scripts button</description>	<visible>yes</visible>
-                        <type>button</type>				<execute>q:\scripts\gametrailers.py</execute>
-                        <id>1112</id>					<label>Game Trailers</label>
+                        <type>button</type>				<execute>q:\scripts\QuickTimeBrowser.py</execute>
+                        <id>1112</id>					<label>Movie Trailers</label>
                         <posX>30</posX>
                         <posY>330</posY>
                         <width>110</width>
@@ -247,8 +246,8 @@
 
                       <control>
                         <description>Scripts button</description>	<visible>yes</visible>
-                        <type>button</type>		  		<execute>q:\scripts\QuickTimeBrowser.py</execute>
-                        <id>1111</id>                			<label>Movie Trailers</label>
+                        <type>button</type>		  		<execute>q:\scripts\KMLbrowse.py</execute>
+                        <id>1111</id>                			<label>Web Radio</label>
                         <posX>30</posX>
                         <posY>350</posY>
                         <width>110</width>
@@ -265,8 +264,8 @@
 
                       <control>
                         <description>Shutdown button</description>	<visible>yes</visible>
-                        <type>button</type>				<execute>q:\scripts\KMLbrowse.py</execute>
-                        <id>1110</id>					<label>Web Radio</label>
+                        <type>button</type>				<execute>XBMC.ActivateWindow(20)</execute>
+                        <id>1110</id>					<label>247</label>
                         <posX>30</posX>
                         <posY>370</posY>
                         <width>110</width>
@@ -283,8 +282,8 @@
 
                       <control>
                         <description>Credits button</description>	<visible>yes</visible>
-                        <type>button</type>				<execute>XBMC.ActivateWindow(20)</execute>
-                        <id>1109</id>					<label>247</label>
+                        <type>button</type>				<execute>XBMC.EjectTray()</execute>
+                        <id>1109</id>					<label>Eject/Load</label>
                         <posX>30</posX>
                         <posY>390</posY>
                         <width>110</width>
