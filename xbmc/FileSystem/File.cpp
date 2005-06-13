@@ -22,6 +22,7 @@
 #include "File.h"
 #include "filefactory.h"
 #include "../application.h"
+#include "../Util.h"
 #include "DirectoryCache.h"
 using namespace XFILE;
 
@@ -66,8 +67,21 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 //      return false;
     }
 
-    CFile::Delete(szDest);
     CFile newFile;
+    if (CUtil::IsHD(szDest)) // create possible missing dirs
+    {
+      vector<CStdString> tokens;
+      CStdString strDirectory;
+      CUtil::GetDirectory(szDest,strDirectory);
+      CUtil::Tokenize(strDirectory,tokens,"\\");
+      CStdString strCurrPath = tokens[0]+"\\";
+      for (vector<CStdString>::iterator iter=tokens.begin()+1;iter!=tokens.end();++iter)
+      {
+        strCurrPath += *iter+"\\";
+        CDirectory::Create(strCurrPath);
+      }
+    }
+    CFile::Delete(szDest);
     if (!newFile.OpenForWrite(szDest, true, true))  // overwrite always
     {
       delete m_pFile;

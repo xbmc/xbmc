@@ -530,10 +530,18 @@ void CGUIWindowPictures::OnClick(int iItem)
   else if (pItem->IsZIP()) // mount zip archive
   {
     CShare shareZip;
-    shareZip.strPath.Format("zip://Z:\\filesrar\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
+    shareZip.strPath.Format("zip://Z:\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
     m_rootDir.AddShare(shareZip);
     m_iItemSelected = -1;
     Update(shareZip.strPath);
+  }
+  else if (pItem->IsRAR()) // mount rar archive
+  {
+    CShare shareRar;
+    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_OVERWRITE|EXFILE_AUTODELETE, pItem->m_strPath.c_str() );
+    m_rootDir.AddShare(shareRar);
+    m_iItemSelected = -1;
+    Update(shareRar.strPath);
   }
   else if (pItem->IsCBZ()) //mount'n'show'n'unmount
   {
@@ -550,6 +558,24 @@ void CGUIWindowPictures::OnClick(int iItem)
         OnShowPicture(m_vecItems[iZipItem]->m_strPath);
     }
     g_ZipManager.release(m_Directory.m_strPath); // release resources
+    m_rootDir.RemoveShare(m_Directory.m_strPath);
+    m_iItemSelected = iItem;
+    Update(strPath);
+  }
+  else if (pItem->IsCBR()) // mount'n'show'n'unmount
+  {
+    CShare shareRar;
+    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE|EXFILE_OVERWRITE,pItem->m_strPath.c_str() );
+    m_rootDir.AddShare(shareRar);
+    CUtil::GetDirectory(pItem->m_strPath,strPath);
+    Update(shareRar.strPath);
+    if (m_vecItems.Size() > 0)
+    {
+      int iRarItem=0;
+      while ((m_vecItems[iRarItem]->m_bIsFolder) && (iRarItem < m_vecItems.Size())) iRarItem++; // locate first picture
+      if (iRarItem < m_vecItems.Size())
+        OnShowPicture(m_vecItems[iRarItem]->m_strPath);
+    }
     m_rootDir.RemoveShare(m_Directory.m_strPath);
     m_iItemSelected = iItem;
     Update(strPath);
@@ -887,7 +913,8 @@ void CGUIWindowPictures::GoParentFolder()
     // check for step-below, if, unmount rar
     if (url.GetFileName().IsEmpty())
     {
-      g_ZipManager.release(m_Directory.m_strPath); // release resources
+      if (url.GetProtocol() == "zip")
+        g_ZipManager.release(m_Directory.m_strPath); // release resources
       m_rootDir.RemoveShare(m_Directory.m_strPath);
       CStdString strPath;
       CUtil::GetDirectory(url.GetHostName(),strPath);

@@ -69,7 +69,7 @@ char* CUtil::GetExtension(const CStdString& strFileName)
   if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
     extension = strFileName.c_str()+strFileName.rfind(".");
   else
-    extension = strrchr(strFileName.c_str(), '.');
+    extension = strFileName.c_str()+strFileName.rfind(".");
   return (char*)extension ;
 }
 
@@ -1674,7 +1674,7 @@ bool CUtil::IsHD(const CStdString& strFileName)
 {
   if (strFileName.size() <= 2) return false;
   char szDriveletter = tolower(strFileName.GetAt(0));
-  if ( (szDriveletter >= 'c' && szDriveletter <= 'g' && szDriveletter != 'd') || (szDriveletter == 'q') )
+  if ( (szDriveletter >= 'c' && szDriveletter <= 'g' && szDriveletter != 'd') || (szDriveletter == 'q') || (szDriveletter == 'z') )
   {
     if (strFileName.GetAt(1) == ':') return true;
   }
@@ -1763,9 +1763,13 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   {
     if (strLookInPaths[step].length() != 0)
     {
-
+	    // first, check for rarred subtitles
+      CStdString strRarPath = CUtil::GetFileName(strMovie);
+	    strRarPath = CUtil::MakeLegalFileName(strRarPath, true, true);
+	    CUtil::ReplaceExtension(strRarPath , ".rar", strRarPath);
+      strRarPath.Format("%s%s", strLookInPaths[step].c_str(),strRarPath);
+	    bool bFoundSubs = CacheRarSubtitles( strExtensionCached, strRarPath,  sub_exts ); 
       g_directoryCache.ClearDirectory(strLookInPaths[step]);
-
 
       CFileItemList items;
 
@@ -1807,6 +1811,50 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
     }
   }
 }
+
+bool CUtil::CacheRarSubtitles(CStdString& strExtensionCached, const CStdString& strRarPath, const char * const* pSubExts  )
+{
+  bool bFoundSubs = false;
+  CRarManager RarMgr;
+  CFileItemList ItemList;
+  // Rar is cached to Z:\ by default and will be autodeleted in RarMgr's dtor():
+  if( !RarMgr.GetFilesInRar(ItemList, strRarPath, true) ) return false;
+  CLog::Log(LOGDEBUG,"go through list!");
+  for (int it= 0 ; it <ItemList.Size();++it)
+  {
+    CStdString strPathInRar = ItemList[it]->m_strPath;
+    int iPos=0;
+    while (pSubExts[iPos])
+    {
+      CStdString strExt = CUtil::GetExtension(strPathInRar);
+      if (strExt.CompareNoCase(".rar") == 0)
+      {
+        CStdString strExtAdded;
+        CStdString strRarInRar;
+        CUtil::CreateRarPath(strRarInRar, strRarPath, strPathInRar);
+        CacheRarSubtitles(strExtAdded,strRarInRar,pSubExts);
+        strExtensionCached += strExtAdded;
+      }
+      if(strExt.CompareNoCase(pSubExts[iPos]) == 0)
+      {
+        CStdString strSourceUrl, strDestUrl;
+        CUtil::CreateRarPath(strSourceUrl, strRarPath, strPathInRar); 
+        CStdString strDestFile;
+        strDestFile.Format("subtitle%s", pSubExts[iPos]);
+        CFile file;
+        if (file.Cache(strSourceUrl,"Z:\\"+strDestFile))
+        {
+          CLog::Log(LOGINFO, " cached subtitle %s->Z:\\%s\n", strPathInRar.c_str(), strDestFile.c_str());
+          strExtensionCached = (CStdString)pSubExts[iPos];
+          bFoundSubs = true;
+        }
+      }
+      iPos++;
+    }
+  }
+  return bFoundSubs;
+}
+
 
 void CUtil::SecondsToHMSString(long lSeconds, CStdString& strHMS, bool bMustUseHHMMSS)
 {
@@ -1935,6 +1983,17 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
 }
 
+void CUtil::CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, const CStdString& strFilePathInRar, 
+                          const WORD wOptions,  const CStdString& strPwd, const CStdString& strCachePath)
+{
+  //The possibilties for wOptions are
+  //RAR_AUTODELETE : the cached version of the rar (strRarPath) will be deleted in file's dtor.
+  //EXFILE_AUTODELETE : the extracted file (strFilePathInRar) will be deleted in file's dtor.
+  //RAR_OVERWRITE : if the rar is already cached, overwrite the local copy.
+  //EXFILE_OVERWRITE : if the extracted file is already cached, overwrite the local copy.
+  int iAutoDelMask = wOptions;
+  strUrlPath.Format("rar://%s,%i,%s,%s,\\%s",  strCachePath, iAutoDelMask, strPwd, strRarPath, strFilePathInRar);
+}
 bool CUtil::ThumbExists(const CStdString& strFileName, bool bAddCache)
 {
   return CThumbnailCache::GetThumbnailCache()->ThumbExists(strFileName, bAddCache);

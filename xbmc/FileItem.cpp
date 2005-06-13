@@ -356,6 +356,14 @@ bool CFileItem::IsCBZ() const
   return false;
 }
 
+bool CFileItem::IsCBR() const
+{
+  CStdString strExtension;
+  CUtil::GetExtension(m_strPath, strExtension);
+  if (strExtension.CompareNoCase(".cbr") == 0) return true;
+  return false;
+}
+
 bool CFileItem::IsCDDA() const
 {
   return CUtil::IsCDDA(m_strPath);
