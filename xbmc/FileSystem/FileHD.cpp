@@ -81,7 +81,11 @@ bool CFileHD::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
   url.GetURL(strFileNameAndPath);
 
   CUtil::Split(strFileNameAndPath, strPath, strFileName);
-  CStdString strNewFile = CUtil::MakeLegalFileName(strFileName.c_str(), true);
+  CStdString strNewFile;
+  if (g_guiSettings.GetBool("Servers.FTPAutoFatX")) // allow overriding
+    strNewFile = CUtil::MakeLegalFileName(strFileName.c_str(), true);
+  else
+    strNewFile = strFileName;
 
   strPath += strNewFile;
   strPath.Replace("/", "\\");
