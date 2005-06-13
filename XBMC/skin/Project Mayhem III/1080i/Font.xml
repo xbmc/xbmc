@@ -16,11 +16,6 @@
     </font>
 
     <font>
-      <name>font64</name>
-      <filename>common-font64.xpr</filename>
-    </font>
-
-    <font>
       <name>matrix8</name>
       <filename>matrix8.xpr</filename>
     </font>
@@ -28,11 +23,6 @@
     <font>
       <name>font04</name>
       <filename>common-font18.xpr</filename>
-    </font>
-
-    <font>
-      <name>font15</name>
-      <filename>common-font15.xpr</filename>
     </font>
 
     <font>
