@@ -4,6 +4,8 @@
 CFileZip::CFileZip() : m_dlgProgress(NULL), m_bUseProgressBar(false)
 {
   m_szStringBuffer = NULL;
+  m_szStartOfStringBuffer = NULL;
+  m_iDataInStringBuffer = 0;
 }
 
 CFileZip::~CFileZip()
@@ -53,7 +55,6 @@ bool CFileZip::Open(const CURL&url, bool bBinary)
   m_ZStream.next_in = (Bytef*)m_szBuffer;
   m_ZStream.avail_in = 0;
   m_ZStream.total_out = 0;
-  m_szStringBuffer = NULL;
   return true;
 }
 

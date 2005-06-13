@@ -4,7 +4,6 @@
 #include "Util.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/ZipManager.h"
-#include "FileSystem/ZipDirectory.h"
 #include "Picture.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIListControl.h"
@@ -578,6 +577,13 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     m_rootDir.AddShare(shareZip);
     Update(iList, shareZip.strPath);
   }
+  /*else if (pItem->IsRAR())
+  {
+    CShare shareRar;
+    shareRar.strPath.Format("rar://Z:\\filestemp\\,%i,,%s,\\",EXFILE_AUTODELETE,pItem->m_strPath.c_str() );
+    m_rootDir.AddShare(shareRar);
+    Update(iList, shareRar.strPath);
+  }*/
   else
   {
     m_iItemSelected = GetSelectedItem(iList);
@@ -1092,7 +1098,8 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
     // check for step-below, if, unmount rar
     if (url.GetFileName().IsEmpty())
     {
-      g_ZipManager.release(m_Directory[iList].m_strPath); // release resources
+      if (url.GetProtocol() == "zip") 
+        g_ZipManager.release(m_Directory[iList].m_strPath); // release resources
       m_rootDir.RemoveShare(m_Directory[iList].m_strPath);
       CStdString strPath;
       CUtil::GetDirectory(url.GetHostName(),strPath);

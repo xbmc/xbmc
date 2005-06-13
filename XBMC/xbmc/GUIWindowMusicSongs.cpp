@@ -693,9 +693,16 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
   else if (pItem->IsZIP()) // mount zip archive
   {
     CShare shareZip;
-    shareZip.strPath.Format("zip://Z:\\temp\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
+    shareZip.strPath.Format("zip://Z:\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
     m_rootDir.AddShare(shareZip);
     Update(shareZip.strPath);
+  }
+  else if (pItem->IsRAR()) // mount rar archive
+  {
+    CShare shareRar;
+    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE|EXFILE_OVERWRITE, pItem->m_strPath.c_str() );
+    m_rootDir.AddShare(shareRar);
+    Update(shareRar.strPath);
   }
   else
   {

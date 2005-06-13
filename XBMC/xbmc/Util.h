@@ -1,5 +1,6 @@
 #pragma once
 #include "playlist.h"
+#include "filesystem/rarmanager.h"
 
 //#define SKIN_VERSION_1_3 1
 
@@ -131,6 +132,7 @@ public:
 
   static void RemoveIllegalChars( CStdString& strText);
   static void CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached);
+  static bool CacheRarSubtitles(CStdString& strExtensionCached, const CStdString& strRarPath, const char * const* pSubExts  );
   static void ClearSubtitles();
   static void SecondsToHMSString( long lSeconds, CStdString& strHMS, bool bMustUseHHMMSS = false);
   static void PrepareSubtitleFonts();
@@ -138,6 +140,9 @@ public:
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
   static void GetPath(const CStdString& strFileName, CStdString& strPath);
   static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
+static void CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, 
+    const CStdString& strFilePathInRar,  const WORD wOptions = EXFILE_AUTODELETE , 
+    const CStdString& strPwd = RAR_DEFAULT_PASSWORD, const CStdString& strCachePath = RAR_DEFAULT_CACHE);
   static bool ThumbExists(const CStdString& strFileName, bool bAddCache = false);
   static bool ThumbCached(const CStdString& strFileName);
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);

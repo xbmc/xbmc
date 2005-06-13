@@ -511,7 +511,8 @@ void CGUIWindowMusicBase::GoParentFolder()
     // check for step-below, if, unmount rar
     if (url.GetFileName().IsEmpty())
     {
-      g_ZipManager.release(m_Directory.m_strPath); // release resources
+      if (url.GetProtocol() == "zip")
+        g_ZipManager.release(m_Directory.m_strPath); // release resources
       m_rootDir.RemoveShare(m_Directory.m_strPath);
       CStdString strPath;
       CUtil::GetDirectory(url.GetHostName(),strPath);

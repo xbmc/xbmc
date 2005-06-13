@@ -2,6 +2,11 @@
 #include "stdafx.h"
 #include "Weather.h"
 #include "../util.h"
+#include "../../guilib/localizestrings.h"
+#include "../guidialogselect.h"
+#include "../guidialogprogress.h"
+#include "../../guilib/guiwindowmanager.h"
+#include "../FileSystem/ZipManager.h"
 
 #define SPEED_KMH 0
 #define SPEED_MPH 1
@@ -54,12 +59,22 @@ FIXME'S
 >weather.com dev account is mine not a general xbmc one
 */
 
+// REPLACE WITH THESE ONCE BUILD.BAT IS DONE!
+/*const CStdString strBasePath = "Z:\\weather\\";
+const bool bUseZip = true;
+const CStdString strZipFile = "Q:\\weather\\weather.zip";*/
+
+const CStdString strBasePath = "Q:\\weather\\";
+const bool bUseZip = false;
+const CStdString strZipFile = "";
+
 CWeather g_weatherManager;
 
 CBackgroundWeatherLoader::CBackgroundWeatherLoader(CWeather *pCallback, int iArea)
 {
   m_pCallback = pCallback;
   m_iArea = iArea;
+  m_bImagesOkay = false;
   CThread::Create(true);
 }
 
@@ -89,11 +104,19 @@ void CBackgroundWeatherLoader::Process()
     if (httpUtil.Download(strURL, strWeatherFile))
     {
       CLog::Log(LOGINFO, "WEATHER: Weather download successful");
+      if (!m_bImagesOkay)
+      {
+        if (bUseZip)
+          g_ZipManager.ExtractArchive(strZipFile,strBasePath);
+        m_bImagesOkay = true;
+      }
       m_pCallback->LoadWeather(strWeatherFile);
     }
     else
       CLog::Log(LOGERROR, "WEATHER: Weather download failed!");
 
+    // extract 
+    
     // and we now die
     m_pCallback->LoaderFinished();
   }
@@ -108,7 +131,10 @@ CWeather::CWeather(void)
   }
   // empty all our strings etc.
   strcpy(m_szLastUpdateTime, "");
-  strcpy(m_szCurrentIcon, "Q:\\weather\\128x128\\na.png");
+  //strcpy(m_szCurrentIcon, "Q:\\weather\\128x128\\na.png");
+  /*strcpy(m_szCurrentIcon,strBasePath.c_str());
+  strcat(m_szCurrentIcon,"128x128\\na.png");*/
+  strcpy(m_szCurrentIcon,"");
   strcpy(m_szCurrentConditions, "");
   strcpy(m_szCurrentTemperature, "");
   strcpy(m_szCurrentFeelsLike, "");
@@ -121,7 +147,10 @@ CWeather::CWeather(void)
   //loop here as well
   for (int i = 0; i < NUM_DAYS; i++)
   {
-    strcpy(m_dfForcast[i].m_szIcon, "Q:\\weather\\64x64\\na.png");
+    //strcpy(m_dfForcast[i].m_szIcon, "Q:\\weather\\64x64\\na.png");
+    /*strcpy(m_dfForcast[i].m_szIcon,strBasePath.c_str());
+    strcat(m_dfForcast[i].m_szIcon,"64x64\\na.png");*/
+    strcat(m_dfForcast[i].m_szIcon,"");
     strcpy(m_dfForcast[i].m_szOverview, "");
     strcpy(m_dfForcast[i].m_szDay, "");
     strcpy(m_dfForcast[i].m_szHigh, "");
@@ -138,7 +167,8 @@ CWeather::CWeather(void)
 }
 
 CWeather::~CWeather(void)
-{}
+{
+}
 
 void CWeather::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue)
 {
@@ -306,9 +336,11 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
 
     GetString(pElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
     if (strcmp(iTmpStr, "N/A") == 0)
-      sprintf(m_szCurrentIcon, "Q:\\weather\\128x128\\na.png");
+    {
+      sprintf(m_szCurrentIcon, "%s128x128\\na.png",strBasePath.c_str());
+    }
     else
-      sprintf(m_szCurrentIcon, "Q:\\weather\\128x128\\%s.png", iTmpStr);
+      sprintf(m_szCurrentIcon, "%s128x128\\%s.png", strBasePath.c_str(),iTmpStr);
 
     GetString(pElement, "t", m_szCurrentConditions, "");   //current condition
     LocalizeOverview(m_szCurrentConditions);
@@ -387,9 +419,9 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
         {
           GetString(pDayTimeElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
           if (strcmp(iTmpStr, "N/A") == 0)
-            sprintf(m_dfForcast[i].m_szIcon, "Q:\\weather\\64x64\\na.png");
+            sprintf(m_dfForcast[i].m_szIcon, "%s64x64\\na.png",strBasePath.c_str());
           else
-            sprintf(m_dfForcast[i].m_szIcon, "Q:\\weather\\64x64\\%s.png", iTmpStr);
+            sprintf(m_dfForcast[i].m_szIcon, "%s64x64\\%s.png", strBasePath.c_str(),iTmpStr);
 
           GetString(pDayTimeElement, "t", m_dfForcast[i].m_szOverview, "");
           LocalizeOverview(m_dfForcast[i].m_szOverview);
@@ -659,6 +691,12 @@ char *CWeather::GetCurrentIcon()
   { // need to refresh!
     Refresh(m_iCurWeather);
   }
-  if (m_bBusy) return "Q:\\weather\\128x128\\na.png";
+  //if (m_bBusy) return "Q:\\weather\\128x128\\na.png";
+  if (m_bBusy) 
+  {
+    char *tmp = new char[128];
+    sprintf(tmp,"%s128x128\\na.png",strBasePath.c_str());
+    return tmp;
+  }
   return m_szCurrentIcon;
 }

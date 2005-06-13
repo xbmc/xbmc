@@ -68,7 +68,9 @@ public:
 
   bool GetZipList(const CStdString& strPath, vector<SZipEntry>& items);
   bool GetZipEntry(const CStdString& strPath, SZipEntry& item);
-  void release(const CStdString& strPath); // release resources used to list zip
+  bool ExtractArchive(const CStdString& strArchive, const CStdString& strPath);
+  void CleanUp(const CStdString& strArchive, const CStdString& strPath); // deletes extracted archive. use with care!
+  void release(const CStdString& strPath); // release resources used by list zip
 private:
   void readHeader(SZipEntry& info);
   std::map<CStdString,std::vector<SZipEntry> > mZipMap;

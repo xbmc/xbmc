@@ -100,7 +100,7 @@ bool CZipManager::GetZipEntry(const CStdString& strPath, SZipEntry& item)
 
   CStdString strFileName = url.GetFileName();
   strFileName.Replace("\\","/");
-  for (std::vector<SZipEntry>::iterator it2=items.begin();it2 != items.end(); ++it2)
+  for (std::vector<SZipEntry>::iterator it2=items.begin();it2 != items.end();++it2)
   {
     if (CStdString(it2->name) == strFileName)
     {
@@ -109,6 +109,44 @@ bool CZipManager::GetZipEntry(const CStdString& strPath, SZipEntry& item)
     }
   }
   return false;
+}
+
+bool CZipManager::ExtractArchive(const CStdString& strArchive, const CStdString& strPath)
+{
+  std::vector<SZipEntry> entry;
+  CStdString strZipPath;
+  strZipPath.Format("zip://Z:\\temp,1,,%s,\\",strArchive.c_str());
+  GetZipList(strZipPath,entry);
+  CFile file;
+  for (std::vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
+  {
+    if (it->name[strlen(it->name)-1] == '/') // skip dirs
+      continue;
+    CStdString strFilePath(it->name);
+    strFilePath.Replace("/","\\");
+    strZipPath.Format("zip://Z:\\temp,1,,%s,\\%s",strArchive.c_str(),strFilePath.c_str());
+    if (!file.Cache(strZipPath.c_str(),(strPath+strFilePath).c_str()))
+      return false;
+  }
+  return true;
+}
+
+void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPath)
+{
+  std::vector<SZipEntry> entry;
+  CStdString strZipPath;
+  strZipPath.Format("zip://Z:\\temp,1,,%s,\\",strArchive.c_str());
+  GetZipList(strZipPath,entry);
+  CFile file;
+  for (std::vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
+  {
+    if (it->name[strlen(it->name)-1] == '/') // skip dirs
+      continue;
+    CStdString strFilePath(it->name);
+    strFilePath.Replace("/","\\");
+    CLog::Log(LOGDEBUG,"delete file: %s",(strPath+strFilePath).c_str());
+    file.Delete((strPath+strFilePath).c_str());
+  }
 }
 
 void CZipManager::readHeader(SZipEntry& info)
