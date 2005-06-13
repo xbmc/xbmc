@@ -142,11 +142,17 @@ __int64 CFileHD::Seek(__int64 iFilePosition, int iWhence)
   switch (iWhence)
   {
   case SEEK_SET:
-    bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_BEGIN);
+    if (iFilePosition <= GetLength())
+      bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_BEGIN);
+    else
+      bSuccess = false;
     break;
 
   case SEEK_CUR:
-    bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_CURRENT);
+    if ((GetPosition()+iFilePosition) <= GetLength())
+      bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_CURRENT);
+    else
+      bSuccess = false;
     break;
 
   case SEEK_END:
