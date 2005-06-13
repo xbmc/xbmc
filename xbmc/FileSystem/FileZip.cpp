@@ -3,6 +3,7 @@
 
 CFileZip::CFileZip() : m_dlgProgress(NULL), m_bUseProgressBar(false)
 {
+  m_szStringBuffer = NULL;
 }
 
 CFileZip::~CFileZip()
