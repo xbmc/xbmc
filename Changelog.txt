@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-06-2005 fixed: cosmetic problem introduced by previous commit.
  - 13-06-2005 added: ability to select rss feeds update interval.
  - 13-06-2005 fixed: the option to enable autosync in mplayer (smooth audio clock) wasn't taking affect
  - 12-06-2005 added: readstring method to zip file class.
