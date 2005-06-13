@@ -125,6 +125,7 @@ void CRssReader::Process()
     m_pObserver->OnFeedUpdate(strFeed, pbColors);
     g_graphicsContext.Unlock();
   }
+  m_iLeadingSpaces = tempLeading;
 }
 
 void CRssReader::getFeed(CStdString& strText, LPBYTE& pbColors)
