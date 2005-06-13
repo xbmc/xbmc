@@ -719,10 +719,13 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
 
 
       // shorten file if filename length > 42 chars
-      CUtil::ShortenFileName(strDestFileShortened);
-      for (int i = 0; i < (int)strDestFileShortened.size(); ++i)
+      if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
       {
-        if (strDestFileShortened.GetAt(i) == ',') strDestFileShortened.SetAt(i, '_');
+        CUtil::ShortenFileName(strDestFileShortened);
+        for (int i = 0; i < (int)strDestFileShortened.size(); ++i)
+        {
+          if (strDestFileShortened.GetAt(i) == ',') strDestFileShortened.SetAt(i, '_');
+        }
       }
       CFile file;
       if (!file.Cache(strFile.c_str(), strDestFileShortened.c_str(), this, NULL))
