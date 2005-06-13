@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-06-2005 fixed: possible crash in zip file handler.
+ - 14-06-2005 changed: weather pictures now in weather.zip (currently disabled).
+ - 14-06-2005 added: rar support. since it has to extract the files to disc, it is currently only available for: 
+		- .cbr/.rar in my pictures. 
+		- compressed (vob)subs (supports a rar within a rar etc)
+		- my music.
  - 13-06-2005 changed: fat-x limit setting also affects filemanager.
  - 13-06-2005 fixed: cosmetic problem introduced by previous commit.
  - 13-06-2005 added: ability to select rss feeds update interval.

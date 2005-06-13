@@ -1652,6 +1652,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\FileISO.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\FileRar.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileRar.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\FileRelax.cpp">
 			</File>
 			<File
@@ -1698,6 +1704,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\OGGFileDirectory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\RarDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\RarDirectory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\RarManager.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\RarManager.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\RTVDirectory.cpp">
@@ -2110,10 +2128,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">

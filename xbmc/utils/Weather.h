@@ -35,6 +35,7 @@ private:
   void Process();
   int m_iArea;
   CWeather *m_pCallback;
+  bool m_bImagesOkay;
 };
 
 class CWeather

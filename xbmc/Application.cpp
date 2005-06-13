@@ -38,6 +38,12 @@
 #include "GUIAudioManager.h"
 #include "lib/libscrobbler/scrobbler.h"
 #include "GUIPassword.h"
+#include "../guilib/localizestrings.h"
+#include "../guilib/guiwindowmanager.h"
+#include "applicationmessenger.h"
+#include "sectionloader.h"
+#include "utils/charsetconverter.h"
+#include "guiusermessages.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -66,6 +72,7 @@
  #pragma comment (lib,"xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
  #pragma comment (lib,"xbmc/lib/libiconv/libiconvd.lib")
  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidid.lib")
+ #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlibd.lib")
 #else
  #pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
  #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
@@ -85,6 +92,7 @@
  #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
  #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
+ #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlib.lib")
 #endif
 
 CStdString g_LoadErrorStr;
@@ -741,7 +749,6 @@ HRESULT CApplication::Create()
       FatalErrorHandler(true, false, true);
     }
   }
-
 
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {

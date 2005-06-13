@@ -50,6 +50,7 @@ public:
   bool IsRAR() const;
   bool IsZIP() const;
   bool IsCBZ() const;
+  bool IsCBR() const;
   bool IsISO9660() const;
   bool IsCDDA() const;
   bool IsDVD() const;

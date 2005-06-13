@@ -13,6 +13,7 @@
 #include "FileDAAP.h"
 #include "FileCDDA.h"
 #include "FileZip.h"
+#include "FileRar.h"
 
 using namespace XFILE;
 
@@ -40,6 +41,7 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
   if (strProtocol == "daap") return (IFile*)new CFileDAAP();
   if (strProtocol == "cdda") return (IFile*)new CFileCDDA();
   if (strProtocol == "zip") return (IFile*)new CFileZip();
+  if (strProtocol == "rar") return (IFile*)new CFileRar();
 
   return (IFile*)new CFileHD();
 }
