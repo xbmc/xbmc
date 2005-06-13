@@ -361,7 +361,7 @@
   <string><id>430</id><value>Sortera efter DVD#</value></string>
   <string><id>431</id><value>7. Ingen cache</value></string>
   <string><id>432</id><value>Radera filmen från databasen</value></string>
-  <string><id>433</id><value>Är du säker på att ta bort</value></string>
+  <string><id>433</id><value>Är du säker på att radera</value></string>
   <string><id>434</id><value>filmen?</value></string>
   <string><id>435</id><value>Låt</value></string>
   <string><id>436</id><value>År</value></string>
@@ -706,6 +706,18 @@
   <string><id>12356</id><value>Byt lås</value></string> 
   <string><id>12357</id><value>Delnings Lås</value></string>
   <string><id>12358</id><value>Lösenordet lämnades blankt. Försök igen.</value></string> 
+  <string><id>12360</id><value>Huvudlås</value></string>
+  <string><id>12361</id><value>Max Försök</value></string>
+  <string><id>12362</id><value>Akvtivera Avstägning</value></string>
+  <string><id>12363</id><value>Skydda Delningar</value></string>
+  <string><id>12364</id><value>Master Mode</value></string>
+  <string><id>12365</id><value>Huvudkod</value></string>
+  <string><id>12366</id><value>Huvudlåset är ändrat. Är nu:</value></string>
+  <string><id>12367</id><value>Huvudlåset inte gilltigt!</value></string>
+  <string><id>12368</id><value>Vargod och skriv in det gilltiga huvudlåset!</value></string>
+  <string><id>12369</id><value>XBMC Uppstartslås</value></string>
+  <string><id>12370</id><value>Huvudlås läge ändrat, huvudlåset är inte satt!</value></string>
+  <string><id>12371</id><value>Vargod och ställ in ett nytt huvudlås!</value></string>
   <string><id>12600</id><value>Mitt väder</value></string>
   <string><id>12900</id><value>Skärmsläckare</value></string>
   <string><id>12901</id><value>Helskärms OSD</value></string>
