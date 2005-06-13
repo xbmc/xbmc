@@ -1,3 +1,4 @@
+2005-06-13 fixed:	720p font.xml still refered to unused fonts. 1080i yet to test
 2005-06-13 added:	eject funktion to SubMenu
 
 2005-06-06 changed:     Updated rss controls to new scheme (zero based <urlset> references to XBoxMediaCenter.xml)
