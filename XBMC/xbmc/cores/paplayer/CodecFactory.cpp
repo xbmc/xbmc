@@ -27,8 +27,6 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new FLACCodec();
   else if (strFileType.Equals("wav"))
     return new WAVCodec();
-  else if (strFileType.Equals("aac"))
-    return new AACCodec();
 
   return NULL;
 }
