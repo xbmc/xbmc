@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-06-2005 updated: mplayer.dll (fixes crash with noise filter)
  - 14-06-2005 added: CGUIListControl::SetPageControlVisible() exposed to python.
  - 14-06-2005 fixed: Navigation off the right of list/thumb controls was not functioning.
  - 14-06-2005 changed: Spin control only shows in thumb/list controls if more than 1 page exists.
