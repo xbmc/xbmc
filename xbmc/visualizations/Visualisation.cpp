@@ -28,7 +28,8 @@ void CVisualisation::Create(int posx, int posy, int width, int height)
   char szTmp[129];
   sprintf(szTmp, "create:%ix%i at %ix%i %s\n", width, height, posx, posy, m_strVisualisationName.c_str());
   OutputDebugString(szTmp);
-  m_pVisz->Create (g_graphicsContext.Get3DDevice(), posx, posy, width, height, m_strVisualisationName.c_str());
+  
+  m_pVisz->Create (g_graphicsContext.Get3DDevice(), posx, posy, width, height, m_strVisualisationName.c_str(), g_graphicsContext.GetPixelRatio(g_graphicsContext.GetVideoResolution()));
   if (g_guiSettings.GetBool("Karaoke.Enabled"))
     g_application.m_CdgParser.AllocGraphics();
 }
