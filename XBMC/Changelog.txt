@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-06-2005 changed: Milkdrop - now renders with correct aspect ratio.
+ - 14-06-2005 added: Pixel ratio parameter added to the visualisation Create function and more Direct X exports.
  - 14-06-2005 changed: added option in build.bat to unrar web stuff (Thanks to Aasum)
  - 14-06-2005 changed: build.bat now RAR's weather gfx and puts it in media/ folder (required for gfx to show)
  - 14-06-2005 fixed: rar code had problems with multiple volumes.
