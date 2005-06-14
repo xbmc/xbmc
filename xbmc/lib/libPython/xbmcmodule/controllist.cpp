@@ -341,6 +341,30 @@ PyDoc_STRVAR(addItem__doc__,
 		return Py_None;
 	}
 
+
+	PyDoc_STRVAR(setPageControlVisible__doc__,
+		"setPageControlVisible(bool isOn) -- Sets the spin control visible or hidden.\n"
+		"\n"
+        "isOn   : True if visible, False if hidden" );
+
+	PyObject* ControlList_SetPageControlVisible(ControlList *self, PyObject *args)
+	{
+    bool isOn = true;
+
+		if (!PyArg_ParseTuple(args, "b", &isOn))
+            return NULL;
+
+		PyGUILock();
+		if (self->pGUIControl)
+        {
+          ((CGUIListControl*)self->pGUIControl)->SetPageControlVisible( isOn );
+        }
+		PyGUIUnlock();
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
 	PyDoc_STRVAR(setSpace__doc__,
 		"setSpace(int space) -- Set's the space between ListItems");
 
@@ -423,6 +447,7 @@ PyDoc_STRVAR(addItem__doc__,
 		{"setImageDimensions", (PyCFunction)ControlList_SetImageDimensions, METH_VARARGS, setImageDimensions__doc__},
 		{"setItemHeight", (PyCFunction)ControlList_SetItemHeight, METH_VARARGS, setItemHeight__doc__},
 		{"setSpace", (PyCFunction)ControlList_SetSpace, METH_VARARGS, setSpace__doc__},
+		{"setPageControlVisible", (PyCFunction)ControlList_SetPageControlVisible, METH_VARARGS, setPageControlVisible__doc__},
 		{NULL, NULL, 0, NULL}
 	};
 
