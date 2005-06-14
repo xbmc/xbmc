@@ -8,7 +8,6 @@
 #include "SHNCodec.h"
 #include "FLACCodec.h"
 #include "WAVCodec.h"
-#include "AACCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
