@@ -876,6 +876,9 @@
   <string><id>13385</id><value>Röst Mask - Port 3</value></string>
   <string><id>13386</id><value>Använd tidsbaserad sökning</value></string>
   <string><id>13387</id><value>Track Naming Template Right</value></string>
+  <string><id>13388</id><value>Förval</value></string>
+  <string><id>13389</id><value>Det finns inget förvale&#10;för denna visualisation</value></string>
+  <string><id>13390</id><value>Det finns inget val tillgängligt&#10;för denna visualisation</value></string>
   <string><id>14000</id><value>Stacking Av</value></string>
   <string><id>14001</id><value>Stacking enkel</value></string>
   <string><id>14002</id><value>Stacking luddig</value></string>
