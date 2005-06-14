@@ -51,7 +51,7 @@ xcopy screensavers BUILD\screensavers /E /Q /I /Y
 xcopy visualisations BUILD\visualisations /E /Q /I /Y
 xcopy weather BUILD\weather /E /Q /I /Y
 xcopy system BUILD\system /E /Q /I /Y
-rem xcopy web BUILD\web /E /Q /I /Y
+rem %rar% x web\Project_Mayhem_webserver*.rar build\web\
 rem xcopy python BUILD\python /E /Q /I /Y
 rem xcopy %SKINS% Build\Skin /E /Q /I /Y
 xcopy media BUILD\media /E /Q /I /Y
