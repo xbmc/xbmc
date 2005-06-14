@@ -74,7 +74,7 @@ public:
   virtual DWORD GetHeight() const;
   /// \brief Used to test whether the pointer location (fPosX, fPosY) is inside the control.  For mouse events.
   virtual bool HitTest(int iPosX, int iPosY) const;
-  void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
+  virtual void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
   DWORD GetControlIdUp() const { return m_dwControlUp;};
   DWORD GetControlIdDown() const { return m_dwControlDown;};
   DWORD GetControlIdLeft() const { return m_dwControlLeft;};
@@ -83,6 +83,9 @@ public:
   virtual void SetWidth(int iWidth);
   virtual void SetHeight(int iHeight);
   virtual void SetVisible(bool bVisible);
+  virtual void SetVisibleCondition(int iVisible) { m_VisibleCondition = iVisible; };
+  int GetVisibleCondition() const { return m_VisibleCondition; };
+  virtual bool UpdateVisibility();
   void SetSelected(bool bSelected);
   virtual void SetEnabled(bool bEnable);
   virtual void EnableCalibration(bool bOnOff);
@@ -147,5 +150,11 @@ protected:
   bool m_bInvalidated;
   bool m_bAllocated;
   GUICONTROLTYPES ControlType;
+  // fading information
+  enum FADE_STATE { FADING_NONE = 0, FADING_IN, FADING_OUT };
+  FADE_STATE m_fadingState;
+  DWORD m_fadingTime;
+  DWORD m_fadingPos;
+  int m_VisibleCondition;
 };
 #endif

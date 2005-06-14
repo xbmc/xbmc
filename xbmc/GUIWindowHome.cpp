@@ -73,14 +73,29 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (iControl >= MENU_BUTTON_START && iControl <= MENU_BUTTON_END)
       {
         m_iLastMenuOption = m_iLastControl;
+        bool fade = (message.GetSenderId() >= MENU_BUTTON_START) && (message.GetSenderId() < MENU_BUTTON_END) && (message.GetSenderId() != iControl);
 
         // make controls 102-120 invisible...
         for (int i = MENU_BUTTON_IMAGE_BACKGROUND_START; i < MENU_BUTTON_IMAGE_BACKGROUND_END; i++)
         {
-          SET_CONTROL_HIDDEN(i);
+          if (fade)
+          {
+            SET_CONTROL_FADE_OUT(i, 10);
+          }
+          else
+          {
+            SET_CONTROL_HIDDEN(i);
+          }
         }
 
-        SET_CONTROL_VISIBLE(iControl + 100);
+        if (fade)
+        {
+          SET_CONTROL_FADE_IN(iControl + 100, 10);
+        }
+        else
+        {
+          SET_CONTROL_VISIBLE(iControl + 100);
+        }
         break;
       }
       if (iControl == CONTROL_BTN_SCROLLER)
@@ -125,39 +140,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     }
   }
   return CGUIWindow::OnMessage(message);
-}
-
-void CGUIWindowHome::OnClickShutdown(CGUIMessage& aMessage)
-{
-  g_applicationMessenger.Shutdown();
-}
-
-void CGUIWindowHome::OnClickDashboard(CGUIMessage& aMessage)
-{
-  CUtil::RunXBE(g_stSettings.szDashboard);
-}
-
-void CGUIWindowHome::OnClickReboot(CGUIMessage& aMessage)
-{
-  CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (dlgYesNo)
-  {
-    dlgYesNo->SetHeading(13313);
-    dlgYesNo->SetLine(0, 13308);
-    dlgYesNo->SetLine(1, 13309);
-    dlgYesNo->SetLine(2, "");
-    dlgYesNo->DoModal(GetID());
-
-    if (dlgYesNo->IsConfirmed())
-      g_applicationMessenger.Restart();
-    else
-      g_applicationMessenger.RestartApp();
-  }
-}
-
-void CGUIWindowHome::OnClickCredits(CGUIMessage& aMessage)
-{
-  RunCredits();
 }
 
 void CGUIWindowHome::OnClickOnlineGaming(CGUIMessage& aMessage)

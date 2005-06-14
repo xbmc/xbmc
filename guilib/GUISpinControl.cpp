@@ -341,7 +341,7 @@ void CGUISpinControl::DynamicResourceAlloc(bool bOnOff)
 
 void CGUISpinControl::Render()
 {
-  if (!IsVisible())
+  if (!UpdateVisibility())
   {
     m_iTypedPos = 0;
     strcpy(m_szTyped, "");

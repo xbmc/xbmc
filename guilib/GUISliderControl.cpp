@@ -33,7 +33,7 @@ void CGUISliderControl::Render()
   CGUIFont* pFont13 = g_fontManager.GetFont("font13");
   float fRange, fPos, fPercent;
 
-  if (!IsVisible()) return ;
+  if (!UpdateVisibility()) return ;
   if (IsDisabled()) return ;
 
   switch (m_iType)

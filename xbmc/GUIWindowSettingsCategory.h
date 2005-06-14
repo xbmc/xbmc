@@ -13,6 +13,9 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual DWORD GetID() const { return m_dwWindowId + (DWORD)m_iScreen; };
+
+  // static function as it's accessed elsewhere
+  static void FillInVisualisations(CSetting *pSetting, int iControlID);
 protected:
   void CheckNetworkSettings();
   void FillInSubtitleHeights(CSetting *pSetting);
@@ -22,7 +25,6 @@ protected:
   void FillInSkins(CSetting *pSetting);
   void FillInSoundSkins(CSetting *pSetting);
   void FillInLanguages(CSetting *pSetting);
-  void FillInVisualisations(CSetting *pSetting);
   void FillInVoiceMasks(DWORD dwPort, CSetting *pSetting);   // Karaoke patch (114097)
   void FillInVoiceMaskValues(DWORD dwPort, CSetting *pSetting); // Karaoke patch (114097)
   void FillInResolutions(CSetting *pSetting);

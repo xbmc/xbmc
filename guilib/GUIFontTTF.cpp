@@ -2,9 +2,11 @@
 #define XFONT_TRUETYPE
 #include "GUIFontTTF.h"
 #include "GraphicContext.h"
+#include <xgraphics.h>
 
 #define TEXTURE_WIDTH 512
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
+#define TTF_FONT_CACHE_SIZE 32*1024
 
 CGUIFontTTF::CGUIFontTTF(const CStdString& strFontName) : CGUIFont(strFontName)
 {
@@ -13,10 +15,14 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFontName) : CGUIFont(strFontName)
   m_char = NULL;
   m_maxChars = 0;
   m_dwNestedBeginCount = 0;
+  m_charTexture = NULL;
+  m_fontShader = NULL;
+  m_copyShader = NULL;
 }
 
 CGUIFontTTF::~CGUIFontTTF(void)
 {
+  Clear();
 }
 
 void CGUIFontTTF::Clear()
@@ -29,6 +35,10 @@ void CGUIFontTTF::Clear()
   m_texture = NULL;
   if (m_char)
     delete[] m_char;
+  if (m_charTexture)
+    m_charTexture->Release();
+  m_charTexture = NULL;
+  m_fontShader = NULL;
   m_char = NULL;
   m_maxChars = 0;
   m_numChars = 0;
@@ -62,7 +72,7 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
   m_pD3DDevice = g_graphicsContext.Get3DDevice();
 
   // size of the font cache in bytes
-  DWORD dwFontCacheSize = 64 * 1024;
+  DWORD dwFontCacheSize = TTF_FONT_CACHE_SIZE;
 
   m_strFilename = strFilename;
 
@@ -93,6 +103,8 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
   m_posX = TEXTURE_WIDTH;
   m_posY = -(m_iHeight + (int)m_descent);
 
+  // create our character texture + font shader
+  CreateShaderAndTexture();
   return true;
 }
 
@@ -311,7 +323,7 @@ void CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     m_posY += m_iHeight + m_descent;
     // create the new larger texture
     LPDIRECT3DTEXTURE8 newTexture;
-    if (D3D_OK != m_pD3DDevice->CreateTexture(TEXTURE_WIDTH, (m_iHeight + m_descent) * (m_textureRows + 1), 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &newTexture))
+    if (D3D_OK != m_pD3DDevice->CreateTexture(TEXTURE_WIDTH, (m_iHeight + m_descent) * (m_textureRows + 1), 1, 0, D3DFMT_LIN_L8, 0, &newTexture))
     {
       CLog::Log(LOGERROR, "Unable to create texture for font");
       return;
@@ -331,11 +343,19 @@ void CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     m_texture = newTexture;
     m_textureRows++;
   }
-  // ok, now render it to our texture
+  // ok, now render it to our temp texture
   LPDIRECT3DSURFACE8 surface;
-  m_texture->GetSurfaceLevel(0, &surface);
-  m_pTrueTypeFont->TextOut(surface, text, 1, m_posX, m_posY);
+  // clear surface
+  m_charTexture->GetSurfaceLevel(0, &surface);
+  D3DLOCKED_RECT lr;
+  surface->LockRect(&lr, NULL, 0);
+  memset(lr.pBits, 0, lr.Pitch * (m_iHeight + m_descent));
+  surface->UnlockRect();
+  m_pTrueTypeFont->TextOut(surface, text, 1, 0, 0);
   surface->Release();
+
+  // copy to our font texture
+  CopyTexture(width);
   // and set it in our table
   ch->letter = letter;
   ch->left = m_posX;
@@ -370,6 +390,7 @@ void CGUIFontTTF::Begin()
     m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
     m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
     m_pD3DDevice->SetVertexShader( D3DFVF_XYZRHW | D3DFVF_TEX1 );
+    m_pD3DDevice->SetPixelShader(m_fontShader);
     m_pD3DDevice->SetScreenSpaceOffset( -0.5f, -0.5f ); // fix texel align
 
     // Render the image
@@ -390,6 +411,7 @@ void CGUIFontTTF::End()
   m_pD3DDevice->End();
 
   m_pD3DDevice->SetScreenSpaceOffset( 0, 0 );
+  m_pD3DDevice->SetPixelShader(NULL);
   m_pD3DDevice->SetTexture(0, NULL);
 }
 
@@ -408,4 +430,86 @@ void CGUIFontTTF::RenderCharacter(int posX, int posY, const Character *ch, D3DCO
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->left, (float)ch->bottom );
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)posX, (float)posY + ch->height, 0, 1.0f );
+}
+
+void CGUIFontTTF::CreateShaderAndTexture()
+{
+  if (m_charTexture)
+    m_charTexture->Release();
+  m_charTexture = NULL;
+
+  m_pD3DDevice->CreateTexture(m_iHeight * 2, (m_iHeight + m_descent), 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_charTexture);
+  D3DLOCKED_RECT lr;
+  m_charTexture->LockRect(0, &lr, NULL, 0);
+  memset(lr.pBits, 0, lr.Pitch * (m_iHeight + m_descent));
+  m_charTexture->UnlockRect(0);
+
+  if (!m_fontShader)
+  {
+    // shader from the alpha texture to the full 32bit font.  Basically, anything with
+    // alpha > 0 is filled in fully in the colour channels
+    const char *fonts =
+      "xps.1.1\n"
+      "def c0,0,0,0,0\n"
+      "def c1,1,1,1,0\n"
+      "def c2,0.0039,0.0039,0.0039,0.0039\n"
+      "def c3,0,0,0,1\n"
+      "tex t0\n"
+      "mul r1, t0.b, v0.a\n"     // modulate the 2 alpha values into r1
+      "sub r0, r1, c2_bias\n"    // compare alpha value in r1 to minimum alpha
+      "cnd r0, r0.a, v0, c0\n"   // and if greater, copy the colour to r0, else set r0 to transparent.
+      "xmma discard, discard, r0, r0, c1, r1, c3\n"; // add colour value in r0 to alpha value in r1
+
+    // shader to copy from the alpha channel of a 32 bit texture to a LIN_L8 texture.
+    // copies the alpha channel into the blue channel, which is outputted.
+    const char *copy =
+      "xps.1.1\n"
+      "tex t0\n"
+      "mov r0, t0.a\n";
+
+    XGBuffer* pShader;
+    XGAssembleShader("FontsShader", fonts, strlen(fonts), 0, NULL, &pShader, NULL, NULL, NULL, NULL, NULL);
+    m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_fontShader);
+    pShader->Release();
+
+    XGBuffer* pShader2;
+    XGAssembleShader("CopyShader", copy, strlen(copy), 0, NULL, &pShader2, NULL, NULL, NULL, NULL, NULL);
+    m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader2->GetBufferPointer(), &m_copyShader);
+    pShader2->Release();
+  }
+}
+
+void CGUIFontTTF::CopyTexture(int width)
+{
+  LPDIRECT3DSURFACE8 newRT, oldRT;
+  m_texture->GetSurfaceLevel(0, &newRT);
+  m_pD3DDevice->GetRenderTarget(&oldRT);
+  m_pD3DDevice->SetRenderTarget(newRT, NULL);
+  m_pD3DDevice->SetTexture(0, m_charTexture);
+
+  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+  m_pD3DDevice->SetPixelShader(m_copyShader);
+
+  m_pD3DDevice->SetScreenSpaceOffset( -0.5f, -0.5f ); // fix texel align
+  m_pD3DDevice->Begin(D3DPT_QUADLIST);
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)0, (float)0 );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX, (float)m_posY, 0, 1.0f );
+
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)width, (float)0 );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX + width, (float)m_posY, 0, 1.0f );
+
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)width, (float)m_iHeight );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX + width, (float)m_posY + m_iHeight, 0, 1.0f );
+
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)0, (float)m_iHeight );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX, (float)m_posY + m_iHeight, 0, 1.0f );
+  m_pD3DDevice->End();
+  m_pD3DDevice->SetScreenSpaceOffset( 0, 0 );
+
+  m_pD3DDevice->SetTexture(0, NULL);
+  m_pD3DDevice->SetPixelShader(NULL);
+  m_pD3DDevice->SetRenderTarget(oldRT, NULL);
+  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+  oldRT->Release();
+  newRT->Release();
 }

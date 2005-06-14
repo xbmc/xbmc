@@ -69,6 +69,10 @@ CGUIVisualisationControl::~CGUIVisualisationControl(void)
 
 void CGUIVisualisationControl::FreeVisualisation()
 {
+  // tell our app that we're going
+  CGUIMessage msg(GUI_MSG_VISUALISATION_UNLOADING, 0, 0);
+  g_graphicsContext.SendMessage(msg);
+
   CSingleLock lock (m_critSection);
   CLog::Log(LOGDEBUG, "FreeVisualisation() started");
   m_bInitialized = false;
@@ -124,6 +128,10 @@ void CGUIVisualisationControl::LoadVisualisation()
     CreateBuffers();
   }
   CLog::Log(LOGDEBUG, "LoadVisualisation() done");
+
+  // tell our app that we're back
+  CGUIMessage msg(GUI_MSG_VISUALISATION_LOADED, 0, 0, 0, 0, m_pVisualisation);
+  g_graphicsContext.SendMessage(msg);
 }
 
 void CGUIVisualisationControl::Render()
@@ -254,7 +262,38 @@ void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int 
 
 bool CGUIVisualisationControl::OnAction(const CAction &action)
 {
-  return m_pVisualisation->OnAction(action.wID);
+  if (!m_pVisualisation) return false;
+  enum CVisualisation::VIS_ACTION visAction = CVisualisation::VIS_ACTION_NONE;
+  if (action.wID == ACTION_VIS_PRESET_NEXT)
+    visAction = CVisualisation::VIS_ACTION_NEXT_PRESET;
+  else if (action.wID == ACTION_VIS_PRESET_PREV)
+    visAction = CVisualisation::VIS_ACTION_PREV_PRESET;
+  else if (action.wID == ACTION_VIS_PRESET_LOCK)
+    visAction = CVisualisation::VIS_ACTION_LOCK_PRESET;
+  else if (action.wID == ACTION_VIS_PRESET_RANDOM)
+    visAction = CVisualisation::VIS_ACTION_RANDOM_PRESET;
+  else if (action.wID == ACTION_VIS_RATE_PRESET_PLUS)
+    visAction = CVisualisation::VIS_ACTION_RATE_PRESET_PLUS;
+  else if (action.wID == ACTION_VIS_RATE_PRESET_MINUS)
+    visAction = CVisualisation::VIS_ACTION_RATE_PRESET_MINUS;
+
+  return m_pVisualisation->OnAction(visAction);
+}
+
+bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
+{
+  if (message.GetMessage() == GUI_MSG_GET_VISUALISATION)
+  {
+    message.SetLPVOID(m_pVisualisation);
+    return true;
+  }
+  else if (message.GetMessage() == GUI_MSG_VISUALISATION_ACTION)
+  {
+    CAction action;
+    action.wID = (WORD)message.GetParam1();
+    return OnAction(action);
+  }
+  return CGUIControl::OnMessage(message);
 }
 
 void CGUIVisualisationControl::CreateBuffers()

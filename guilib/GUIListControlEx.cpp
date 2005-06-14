@@ -47,7 +47,7 @@ CGUIListControlEx::~CGUIListControlEx(void)
 
 void CGUIListControlEx::Render()
 {
-  if ( (!IsVisible()) || (!m_pList) || (!m_pFont) )
+  if ( (!UpdateVisibility()) || (!m_pList) || (!m_pFont) )
   {
     return ;
   }

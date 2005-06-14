@@ -48,9 +48,6 @@ public:
   int GetRenderHeight() const;
   void SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom);
 
-  void SetVisibleCondition(int iVisible) { m_VisibleCondition = iVisible; };
-  int GetVisibleCondition() const { return m_VisibleCondition; };
-
   void SetInfo(int info) { m_Info = info; };
   int GetInfo() const { return m_Info; };
 
@@ -88,9 +85,6 @@ protected:
   float m_fV;
   float m_fNW;
   float m_fNH;
-
-  // conditional visibility
-  int m_VisibleCondition;
 
   // conditional info
   int m_Info;

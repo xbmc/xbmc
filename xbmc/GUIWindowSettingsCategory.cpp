@@ -336,7 +336,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting == "MyMusic.Visualisation")
     {
-      FillInVisualisations(pSetting);
+      FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
     }
     else if (strSetting == "Karaoke.Port0VoiceMask" /*"VoiceOnPort0.VoiceMask"*/)
     {
@@ -2422,11 +2422,15 @@ void CGUIWindowSettingsCategory::FillInCharSets(CSetting *pSetting)
   pControl->SetValue(iCurrentCharset);
 }
 
-void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting)
+void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iControlID)
 {
   CSettingString *pSettingString = (CSettingString*)pSetting;
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-  pControl->SetShowRange(true); // show the range
+  if (!pSetting) return;
+  int iWinID = m_gWindowManager.GetActiveWindow();
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, iWinID, iControlID);
+    g_graphicsContext.SendMessage(msg);
+  }
   vector<CStdString> vecVis;
   //find visz....
   CHDDirectory directory;
@@ -2457,7 +2461,11 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting)
   // add the "disabled" setting first
   int iVis = 0;
   int iCurrentVis = 0;
-  pControl->AddLabel(g_localizeStrings.Get(231), iVis++);
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, iWinID, iControlID, iVis++);
+    msg.SetLabel(231);
+    g_graphicsContext.SendMessage(msg);
+  }
   for (int i = 0; i < (int) vecVis.size(); ++i)
   {
     CStdString strVis = vecVis[i];
@@ -2465,10 +2473,16 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting)
     if (strcmpi(strVis.c_str(), strDefaultVis.c_str()) == 0)
       iCurrentVis = iVis;
 
-    pControl->AddLabel(strVis, iVis++);
+    {
+      CGUIMessage msg(GUI_MSG_LABEL_ADD, iWinID, iControlID, iVis++);
+      msg.SetLabel(strVis);
+      g_graphicsContext.SendMessage(msg);
+    }
   }
-
-  pControl->SetValue(iCurrentVis);
+  {
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, iWinID, iControlID, iCurrentVis);
+    g_graphicsContext.SendMessage(msg);
+  }
 }
 
 void CGUIWindowSettingsCategory::FillInVoiceMasks(DWORD dwPort, CSetting *pSetting)

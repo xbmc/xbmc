@@ -12,6 +12,7 @@ CGUIControl::CGUIControl()
   m_iGroup = -1;
   m_dwParentID = 0;
   m_bVisible = true;
+  m_VisibleCondition = 0;
   m_bDisabled = false;
   m_bSelected = false;
   m_bCalibration = true;
@@ -23,6 +24,9 @@ CGUIControl::CGUIControl()
   m_dwControlRight = 0;
   m_dwControlUp = 0;
   m_dwControlDown = 0;
+  m_fadingState = FADING_NONE;
+  m_fadingTime = 0;
+  m_fadingPos = 0;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
@@ -41,6 +45,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
   m_iGroup = -1;
   m_dwParentID = dwParentID;
   m_bVisible = true;
+  m_VisibleCondition = 0;
   m_bDisabled = false;
   m_bSelected = false;
   m_bCalibration = true;
@@ -48,6 +53,9 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
   m_dwControlRight = 0;
   m_dwControlUp = 0;
   m_dwControlDown = 0;
+  m_fadingState = FADING_NONE;
+  m_fadingTime = 0;
+  m_fadingPos = 0;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
@@ -221,12 +229,45 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       break;
 
     case GUI_MSG_VISIBLE:
+      if (message.GetParam1())  // fade time
+      {
+        if (!m_bVisible && m_fadingState != FADING_IN)
+        {
+          m_fadingState = FADING_IN;
+          m_fadingTime = m_fadingPos = message.GetParam1();
+        }
+        else if (m_bVisible && m_fadingState == FADING_OUT)
+        { // turn around direction of fade
+          m_fadingState = FADING_IN;
+          m_fadingPos = (int)(m_fadingPos * (float)message.GetParam1() / m_fadingTime);
+          m_fadingTime = message.GetParam1();
+        }
+      }
+      else
+      {
+        SetAlpha(255);      // make sure it's fully visible.
+      }
       m_bVisible = true;
       return true;
       break;
 
     case GUI_MSG_HIDDEN:
-      m_bVisible = false;
+      if (message.GetParam1())  // fade time
+      {
+        if (m_bVisible && m_fadingState == FADING_NONE)
+        {
+          m_fadingState = FADING_OUT;
+          m_fadingTime = m_fadingPos = message.GetParam1();
+        }
+        else if (m_bVisible && m_fadingState == FADING_IN)
+        { // turn around direction of fade
+          m_fadingState = FADING_OUT;
+          m_fadingPos = (int)(m_fadingPos * (float)message.GetParam1() / m_fadingTime);
+          m_fadingTime = message.GetParam1();
+        }
+      }
+      else
+        m_bVisible = false;
       return true;
       break;
 
@@ -262,7 +303,11 @@ bool CGUIControl::CanFocus() const
 
 bool CGUIControl::IsVisible() const
 {
-  return m_bVisible;
+  if (!m_bVisible)
+    return false;
+  if (m_VisibleCondition && !g_infoManager.GetBool(m_VisibleCondition))
+    return false;
+  return true;
 }
 
 bool CGUIControl::IsSelected() const
@@ -547,3 +592,29 @@ CStdString CGUIControl::ParseLabel(CStdString &strLabel)
   return toString;
 }
 
+bool CGUIControl::UpdateVisibility()
+{
+  // update our alpha values if we're fading
+  if (m_fadingState == FADING_IN)
+  { // doing a fade in
+    m_fadingPos--;
+    if (!m_fadingPos)
+    {
+      m_fadingState = FADING_NONE;
+    }
+    DWORD fadeAmount = (DWORD)(m_fadingPos * 255.0f / m_fadingTime + 0.5f);
+    SetAlpha(255 - fadeAmount);
+  }
+  else if (m_fadingState == FADING_OUT)
+  {
+    m_fadingPos--;
+    if (!m_fadingPos)
+    {
+      m_fadingState = FADING_NONE;
+      m_bVisible = false;
+    }
+    DWORD fadeAmount = (DWORD)(m_fadingPos * 255.0f / m_fadingTime + 0.5f);
+    SetAlpha(fadeAmount);
+  }
+  return IsVisible();
+}

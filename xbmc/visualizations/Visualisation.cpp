@@ -72,12 +72,61 @@ void CVisualisation::GetInfo(VIS_INFO *info)
   m_pVisz->GetInfo(info);
 }
 
-bool CVisualisation::OnAction(long flags) 
+bool CVisualisation::OnAction(VIS_ACTION action, void *param) 
 {
   // see if vis wants to handle the input
   // returns false if vis doesnt want the input
   // returns true if vis handled the input
   if (m_pVisz->OnAction)
-    return m_pVisz->OnAction(flags);
+    return m_pVisz->OnAction((int)action, param);
   return false;
+}
+
+void CVisualisation::GetSettings(vector<VisSetting> **vecSettings)
+{
+  if (vecSettings) *vecSettings = NULL;
+  if (m_pVisz->GetSettings)
+    m_pVisz->GetSettings(vecSettings);
+}
+
+void CVisualisation::UpdateSetting(int num)
+{
+  if (m_pVisz->UpdateSetting)
+    m_pVisz->UpdateSetting(num);
+}
+
+void CVisualisation::GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
+{
+  if (m_pVisz->GetPresets)
+    m_pVisz->GetPresets(pPresets, currentPreset, numPresets, locked);
+}
+
+void CVisualisation::GetCurrentPreset(char **pPreset, bool *locked)
+{
+  if (pPreset && locked && m_pVisz->GetPresets)
+  {
+    char **presets = NULL;
+    int currentPreset = 0;
+    int numPresets = 0;
+    *locked = false;
+    m_pVisz->GetPresets(&presets, &currentPreset, &numPresets, locked);
+    if (presets && currentPreset < numPresets)
+      *pPreset = presets[currentPreset];
+  }
+}
+
+bool CVisualisation::IsLocked()
+{
+  char *preset;
+  bool locked = false;
+  GetCurrentPreset(&preset, &locked);
+  return locked;
+}
+
+char *CVisualisation::GetPreset()
+{
+  char *preset = NULL;
+  bool locked = false;
+  GetCurrentPreset(&preset, &locked);
+  return preset;
 }

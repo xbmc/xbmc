@@ -51,7 +51,7 @@ CGUIListControl::~CGUIListControl(void)
 void CGUIListControl::Render()
 {
   if (!m_pFont) return ;
-  if (!IsVisible()) return ;
+  if (!UpdateVisibility()) return ;
 
   CGUIControl::Render();
 
@@ -222,7 +222,7 @@ void CGUIListControl::Render()
   }
   m_pFont2->End();
 
-  if (m_bUpDownVisible)
+  if (m_bUpDownVisible && m_upDown.GetMaximum() > 1)
   {
     m_upDown.SetValue(GetPage());
     m_upDown.Render();

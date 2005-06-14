@@ -24,6 +24,29 @@ extern "C"
     //  int iFreqDataLength;
   };
 
+  // The VisSetting class for GUI settings for vis.
+  class VisSetting
+  {
+  public:
+    enum SETTING_TYPE { NONE=0, CHECK, SPIN };
+    VisSetting()
+    {
+      name = NULL;
+      current = 0;
+      type = NONE;
+    };
+    ~VisSetting()
+    {
+      if (name)
+        delete[] name;
+      name = NULL;
+    }
+    SETTING_TYPE type;
+    char *name;
+    int  current;
+    vector<const char *> entry;
+  };
+
   struct Visualisation
   {
 public:
@@ -33,7 +56,10 @@ public:
     void (__cdecl* Render) ();
     void (__cdecl* Stop)();
     void (__cdecl* GetInfo)(VIS_INFO *info);
-    bool (__cdecl* OnAction)(long flags);
+    bool (__cdecl* OnAction)(long flags, void *param);
+    void (__cdecl *GetSettings)(vector<VisSetting> **vecSettings);
+    void (__cdecl *UpdateSetting)(int num);
+    void (__cdecl *GetPresets)(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
   } ;
 
 #ifdef __cplusplus
@@ -43,17 +69,31 @@ public:
 class CVisualisation
 {
 public:
+  enum VIS_ACTION { VIS_ACTION_NONE = 0,
+                    VIS_ACTION_NEXT_PRESET,
+                    VIS_ACTION_PREV_PRESET,
+                    VIS_ACTION_LOAD_PRESET,
+                    VIS_ACTION_RANDOM_PRESET,
+                    VIS_ACTION_LOCK_PRESET,
+                    VIS_ACTION_RATE_PRESET_PLUS,
+                    VIS_ACTION_RATE_PRESET_MINUS };
   CVisualisation(struct Visualisation* pVisz, DllLoader* pLoader, const CStdString& strVisualisationName);
   ~CVisualisation();
 
-  // Things that MUST be supplied by the child classes
   void Create(int posx, int posy, int width, int height);
   void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName);
   void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
   void Render();
   void Stop();
   void GetInfo(VIS_INFO *info);
-  bool OnAction(long flags);
+  bool OnAction(VIS_ACTION action, void *param = NULL);
+  void GetSettings(vector<VisSetting> **vecSettings);
+  void UpdateSetting(int num);
+  void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
+  void GetCurrentPreset(char **pPreset, bool *locked);
+  bool IsLocked();
+  char *GetPreset();
+
 protected:
   auto_ptr<struct Visualisation> m_pVisz;
   auto_ptr<DllLoader> m_pLoader;
