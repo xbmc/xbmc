@@ -35,6 +35,7 @@ public:
 	void MakeCachedPath(CStdString& strCachedPath, const CStdString& strDir, const CStdString& strFilePath);
 	void ClearCache();
   void ClearCachedFile(const CStdString& strRarPath, const CStdString& strPathInRar);
+  void ExtractArchive(const CStdString& strArchive, const CStdString& strPath);
 protected:
   std::map<CStdString, CFileInfo> m_ExFiles;
 	CCriticalSection m_CritSection;

@@ -7,6 +7,7 @@
 #include "../guidialogprogress.h"
 #include "../../guilib/guiwindowmanager.h"
 #include "../FileSystem/ZipManager.h"
+#include "../FileSystem/RarManager.h"
 
 #define SPEED_KMH 0
 #define SPEED_MPH 1
@@ -59,14 +60,25 @@ FIXME'S
 >weather.com dev account is mine not a general xbmc one
 */
 
-// REPLACE WITH THESE ONCE BUILD.BAT IS DONE!
-/*const CStdString strBasePath = "Z:\\weather\\";
-const bool bUseZip = true;
-const CStdString strZipFile = "Q:\\weather\\weather.zip";*/
-
 const CStdString strBasePath = "Q:\\weather\\";
 const bool bUseZip = false;
+const bool bUseRar = false;
 const CStdString strZipFile = "";
+const CStdString strRarFile = "";
+
+// FOR ZIP
+/*const CStdString strBasePath = "Z:\\weather\\";
+const bool bUseZip = true;
+const bool bUseRar = false;
+const CStdString strZipFile = "Q:\\weather\\weather.zip";
+const CStdString strRarFile = "Q:\\weather\\weather.rar";*/
+
+// OR THESE FOR RAR
+/*const CStdString strBasePath = "Z:\\weather\\";
+const bool bUseZip = false;
+const bool bUseRar = true;
+const CStdString strZipFile = "";
+const CStdString strRarFile = "Q:\\weather\\weather.rar";*/
 
 CWeather g_weatherManager;
 
@@ -108,6 +120,8 @@ void CBackgroundWeatherLoader::Process()
       {
         if (bUseZip)
           g_ZipManager.ExtractArchive(strZipFile,strBasePath);
+        else if (bUseRar)
+          g_RarManager.ExtractArchive(strRarFile,strBasePath);
         m_bImagesOkay = true;
       }
       m_pCallback->LoadWeather(strWeatherFile);
