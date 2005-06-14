@@ -11,13 +11,13 @@
 IDirectSoundRenderer* m_pAudioDecoder = NULL;
 
 static IAudioCallback* m_pAudioCallback = NULL;
-static bool m_bHasVideo = false;
+static int m_bHasVideo = false;
 void audio_uninit(int);
 
 ao_info_t audio_info = {
-                         "XBOX Directsound output",
-                         "dsound",
-                         "Team XBMC",
+                         "Windows waveOut audio output",
+                         "win32",
+                         "SaschaSommer <saschasommer@freenet.de>",
                          ""
                        };
 extern "C" int mplayer_getVolume()
@@ -150,11 +150,9 @@ static int audio_init(int rate, int channels, int format, int flags)
   }
 
 
-  //We where using aodata here before, but that can't be used really
-  //the ao device is supposed to set this, so set it to what the codec detected
-  //This could be wrong should we have other filters in between..
-  //problem is that mplayer doesn't separate decoded channels and output channels
-  channels = iChannels;
+  pao_data = GetAOData();
+
+  channels = pao_data->channels;
   m_bHasVideo = mplayer_HasVideo() == TRUE;
 
   //In the case of forced audio filter, channel number for the GetAudioInfo, and from pao_data
@@ -192,8 +190,6 @@ static int audio_init(int rate, int channels, int format, int flags)
     else*/
       m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback, channels, rate, ao_format_bits, bResample, 0, strAudioCodec, !mplayer_HasVideo());
   }
-
-  pao_data = GetAOData();
   pao_data->channels = channels;
   pao_data->samplerate = rate;
   pao_data->format = format;
