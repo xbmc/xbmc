@@ -1,0 +1,222 @@
+<window>
+  <id>120</id>
+  <defaultcontrol>213</defaultcontrol>
+
+  <controls>
+
+    <control>
+      <description>Panel</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>60</posX>
+      <posY>300</posY>
+      <height>256</height>
+      <width>180</width>
+      <texture>osd_panel_audio.png</texture>
+      <visible>yes</visible>
+    </control>
+
+    <control>
+      <description>Skip Bwd</description>
+      <type>button</type>
+      <id>210</id>
+      <posX>81</posX>
+      <posY>409</posY>
+      <width>38</width>
+      <height>50</height>
+      <textureFocus>osd_button_skip_minusFO.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <label>-</label>
+      <font>-</font>
+      <onleft>215</onleft>
+      <onright>211</onright>
+      <onup>501</onup>
+      <ondown>219</ondown>
+      <execute>XBMC.PlayerControl(Previous)</execute>
+    </control>
+
+    <control>
+      <description>Rewind</description>
+      <type>togglebutton</type>
+      <id>211</id>
+      <posX>112</posX>
+      <posY>404</posY>
+      <width>34</width>
+      <height>48</height>
+      <textureFocus>osd_button_rewFO.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <UseAltTexture>Player.Rewinding</UseAltTexture>
+      <AltTextureFocus>osd_button_rewSELFO.png</AltTextureFocus>
+      <AltTextureNoFocus>osd_button_rewSELNF.png</AltTextureNoFocus>
+      <label>-</label>
+      <font>-</font>
+      <onleft>210</onleft>
+      <onright>213</onright>
+      <onup>500</onup>
+      <ondown>220</ondown>
+      <execute>XBMC.PlayerControl(Rewind)</execute>
+    </control>
+
+    <control>
+      <description>Play</description>
+      <type>togglebutton</type>
+      <id>213</id>
+      <posX>136</posX>
+      <posY>385</posY>
+      <width>52</width>
+      <height>66</height>
+      <textureFocus>osd_button_pauseFO.png</textureFocus>
+      <textureNoFocus>osd_button_pauseNF.png</textureNoFocus>
+      <UseAltTexture>Player.Paused</UseAltTexture>
+      <AltTextureFocus>osd_button_playFO.png</AltTextureFocus>
+      <AltTextureNoFocus>osd_button_playNF.png</AltTextureNoFocus>             
+      <label>-</label>
+      <font>-</font>
+      <onleft>211</onleft>
+      <onright>214</onright>
+      <onup>500</onup>
+      <ondown>220</ondown>
+      <execute>XBMC.PlayerControl(Play)</execute>
+    </control>
+
+    <control>
+      <description>Fast Forward</description>
+      <type>togglebutton</type>
+      <id>214</id>
+      <posX>179</posX>
+      <posY>387</posY>
+      <width>32</width>
+      <height>46</height>
+      <textureFocus>osd_button_ffFO.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <UseAltTexture>Player.Forwarding</UseAltTexture>
+      <AltTextureFocus>osd_button_ffSELFO.png</AltTextureFocus>
+      <AltTextureNoFocus>osd_button_ffSELNF.png</AltTextureNoFocus>
+      <label>-</label>
+      <font>-</font>
+      <onleft>213</onleft>
+      <onright>215</onright>
+      <onup>500</onup>
+      <ondown>220</ondown>
+      <execute>XBMC.PlayerControl(Forward)</execute>
+    </control>
+
+    <control>
+      <description>Skip Fwd</description>
+      <type>button</type>
+      <id>215</id>
+      <posX>202</posX>
+      <posY>380</posY>
+      <width>33</width>
+      <height>46</height>
+      <textureFocus>osd_button_skip_plusSELFO.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <label>-</label>
+      <font>-</font>
+      <onleft>214</onleft>
+      <onright>210</onright>
+      <onup>501</onup>
+      <ondown>219</ondown>
+      <execute>XBMC.PlayerControl(Next)</execute>
+    </control>
+
+    <control>
+      <description>Lock Vis Button</description>
+      <type>togglebutton</type>
+      <id>501</id>
+      <posX>130</posX>
+      <posY>318</posY>
+      <width>38</width>
+      <height>43</height>
+      <AltTextureFocus>osd_button_vislockFO.png</AltTextureFocus>
+      <AltTextureNoFocus>-</AltTextureNoFocus>
+      <UseAltTexture>!Visualisation.Locked</UseAltTexture>
+      <textureFocus>osd_button_vislockSELFO.png</textureFocus>
+      <textureNoFocus>osd_button_vislockSELNF.png</textureNoFocus>
+      <label>-</label>
+      <font>-</font>
+      <onleft>210</onleft>
+      <onright>215</onright>
+      <onup>219</onup>
+      <ondown>500</ondown>
+    </control>
+
+    <control>
+      <description>Popup Vis Select Button</description>
+      <type>button</type>
+      <id>500</id>
+      <posX>135</posX>
+      <posY>353</posY>
+      <width>40</width>
+      <height>40</height>
+      <textureFocus>osd_button_visFO.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <label>-</label>
+      <font>-</font>
+      <onleft>211</onleft>
+      <onright>214</onright>
+      <onup>501</onup>
+      <ondown>213</ondown>
+    </control>
+
+    <control>
+      <description>Popup Vis Preset List</description>
+      <type>button</type>
+      <id>220</id>
+      <posX>151</posX>
+      <posY>445</posY>
+      <width>41</width>
+      <height>42</height>
+      <textureFocus>osd_button_presetsFO.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <label>-</label>
+      <font>-</font>
+      <onleft>211</onleft>
+      <onright>214</onright>
+      <onup>213</onup>
+      <ondown>219</ondown>
+     <execute>XBMC.ActivateWindow(122)</execute>
+    </control>
+
+    <control>
+      <description>Popup Vis Settings</description>
+      <type>button</type>
+      <id>219</id>
+      <posX>156</posX>
+      <posY>479</posY>
+      <width>43</width>
+      <height>48</height>
+      <textureFocus>osd_button_vizsettingsFO.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <label>-</label>
+      <font>-</font>
+      <onleft>210</onleft>
+      <onright>215</onright>
+      <onup>220</onup>
+      <ondown>501</ondown>
+     <execute>XBMC.ActivateWindow(121)</execute>
+    </control>
+
+    <control>
+      <description>Visualisation Select Button</description>
+      <type>selectbutton</type>
+      <id>503</id>
+      <visible>false</visible>
+      <posX>250</posX>
+      <posY>431</posY>
+      <width>420</width>
+      <height>35</height>
+      <label>-</label>
+      <textureNoFocus>-</textureNoFocus>
+      <textureFocus>-</textureFocus>
+      <texturebg>osd_settings_header.png</texturebg>
+      <onleft>500</onleft>
+      <onright>500</onright>
+      <onup>500</onup>
+      <ondown>500</ondown>
+    </control>
+
+  </controls>
+
+</window>
+

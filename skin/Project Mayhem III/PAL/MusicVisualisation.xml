@@ -71,6 +71,41 @@
       <font>font10</font>
     </control>
 
+    <control>
+      <description>preset background image</description>
+      <type>image</type>
+      <id>3</id>
+      <posX>55</posX>
+      <posY>50</posY>
+      <width>600</width>
+      <height>60</height>
+      <texture>Scan-panel-bg.png</texture>
+    </control>
+
+    <control>
+      <type>label</type>
+      <description>Presets label</description>
+      <id>3</id>
+      <posX>125</posX>
+      <posY>66</posY>
+      <width>460</width>
+      <info>Visualisation.Preset</info>
+      <font>font12</font>
+      <align>center</align>
+    </control>
+
+    <control>
+      <type>image</type>
+      <description>Preset locked image</description>
+      <id>4</id>
+      <posX>93</posX>
+      <posY>69</posY>
+      <width>15</width>
+      <height>15</height>
+      <visible>Visualisation.Locked</visible>
+      <texture>arenaitem-private.png</texture>
+    </control>
+
   </controls>
 
 </window>
