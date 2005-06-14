@@ -36,6 +36,7 @@ static af_info_t* filter_list[]={
    &af_info_channels,
    &af_info_format,
    &af_info_resample,
+   &af_info_volume,
    &af_info_equalizer,
    &af_info_hrtf,
 
