@@ -57,3 +57,9 @@
 
 //  Player has requested the next item for caching purposes (PAPlayer)
 #define GUI_MSG_QUEUE_NEXT_ITEM         GUI_MSG_USER + 16
+
+// Visualisation messages when loading/unloading
+#define GUI_MSG_VISUALISATION_UNLOADING GUI_MSG_USER + 17 // sent by vis
+#define GUI_MSG_VISUALISATION_LOADED    GUI_MSG_USER + 18 // sent by vis
+#define GUI_MSG_GET_VISUALISATION       GUI_MSG_USER + 19 // request to vis for the visualisation object
+#define GUI_MSG_VISUALISATION_ACTION    GUI_MSG_USER + 20 // request the vis perform an action

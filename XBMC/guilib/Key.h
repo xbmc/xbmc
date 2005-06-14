@@ -194,6 +194,15 @@
 #define ACTION_ANALOG_SEEK_FORWARD  124 // seeks forward, and displays the seek bar.
 #define ACTION_ANALOG_SEEK_BACK     125 // seeks backward, and displays the seek bar.
 
+#define ACTION_VIS_PRESET_SHOW        126
+#define ACTION_VIS_PRESET_LIST        127
+#define ACTION_VIS_PRESET_NEXT        128
+#define ACTION_VIS_PRESET_PREV        129
+#define ACTION_VIS_PRESET_LOCK        130
+#define ACTION_VIS_PRESET_RANDOM      131
+#define ACTION_VIS_RATE_PRESET_PLUS   132
+#define ACTION_VIS_RATE_PRESET_MINUS  133
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                 9999
 #define WINDOW_HOME                   10000
@@ -244,6 +253,9 @@
 #define WINDOW_DIALOG_MUTE_BUG        10113
 #define WINDOW_DIALOG_PLAYER_CONTROLS 10114
 #define WINDOW_DIALOG_SEEK_BAR        10115
+#define WINDOW_DIALOG_MUSIC_OSD       10120
+#define WINDOW_DIALOG_VIS_SETTINGS    10121
+#define WINDOW_DIALOG_VIS_PRESET_LIST 10122
 
 #define WINDOW_MUSIC_PLAYLIST         10500
 #define WINDOW_MUSIC_FILES            10501

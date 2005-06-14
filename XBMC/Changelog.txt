@@ -5,6 +5,13 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-06-2005 fixed: Navigation off the right of list/thumb controls was not functioning.
+ - 14-06-2005 changed: Spin control only shows in thumb/list controls if more than 1 page exists.
+ - 14-06-2005 changed: All controls now check for conditional visibility.
+ - 14-06-2005 changed: Moved fading code into the base control class.
+ - 14-06-2005 changed: Removed ability to alter Brightness/Gamma/Contrast from video OSD during Hardware Overlays rendering.
+ - 14-06-2005 added: Visualisation settings, and ability to show, select and lock vis presets.
+ - 14-06-2005 added: Nicer music OSD during visualisation (thanks to Chokeman for all the nice graphics)
  - 14-06-2005 updated: mplayer.dll (fixes 2x playback speed when volumn amplification was enabled)
  - 14-06-2005 fixed: possible crash in zip file handler.
  - 14-06-2005 changed: weather pictures now in weather.zip (currently disabled).

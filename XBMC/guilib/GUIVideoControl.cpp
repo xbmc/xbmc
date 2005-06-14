@@ -17,7 +17,7 @@ void CGUIVideoControl::Render()
   float x = (float)m_iPosX;
   float y = (float)m_iPosY;
 
-  if (!IsVisible()) return ;
+  if (!UpdateVisibility()) return ;
 
   if (!g_application.IsPlayingVideo()) return;
 

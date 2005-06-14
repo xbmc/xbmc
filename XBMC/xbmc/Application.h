@@ -23,6 +23,9 @@
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogMuteBug.h"
 #include "GUIDialogPlayerControls.h"
+#include "GUIDialogMusicOSD.h"
+#include "GUIDialogVisualisationSettings.h"
+#include "GUIDialogVisualisationPresetList.h"
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
 #include "GUIWindowFileManager.h"
@@ -170,6 +173,9 @@ public:
   CGUIDialogMusicScan m_guiDialogMusicScan;
   CGUIDialogMuteBug m_guiDialogMuteBug;
   CGUIDialogPlayerControls m_guiDialogPlayerControls;
+  CGUIDialogMusicOSD m_guiDialogMusicOSD;
+  CGUIDialogVisualisationSettings m_guiDialogVisualisationSettings;
+  CGUIDialogVisualisationPresetList m_guiDialogVisualisationPresetList;
   CGUIWindowFileManager m_guiFileManager;
   CGUIWindowVideoFiles m_guiMyVideo;
   CGUIWindowSettings m_guiSettings;

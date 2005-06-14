@@ -309,6 +309,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   bool bSmoothScrolling = true;
   bool bKeepAspectRatio = false;
   int iVisibleCondition = 0;
+  bool bScrollLabel = false;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read default properties from reference controls
@@ -330,6 +331,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwAlign = ((CGUILabelControl*)pReference)->m_dwTextAlign;
       dwDisabledColor = ((CGUILabelControl*)pReference)->GetDisabledColor();
       vecInfo = ((CGUILabelControl*)pReference)->GetInfo();
+      bScrollLabel = ((CGUILabelControl*)pReference)->GetWidthControl();
     }
     else if (strType == "edit")
     {
@@ -919,6 +921,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
           }
           vecLabel.push_back(strLabel);
         }
+        else
+          strLabel = L"";
       }
     }
   }
@@ -962,6 +966,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   GetBoolean(pControlNode, "wraparound", bWrapAround);
   GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
   GetBoolean(pControlNode, "keepaspectratio", bKeepAspectRatio);
+  GetBoolean(pControlNode, "scroll", bScrollLabel);
 
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
@@ -978,6 +983,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition);
     pControl->SetInfo(vecInfo);
+    pControl->SetWidthControl(bScrollLabel);
     return pControl;
   }
   else if (strType == "edit")
@@ -1023,6 +1029,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     return pControl;
   }
   else if (strType == "rss")
@@ -1033,6 +1040,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     std::map<int, std::pair<std::vector<int>,std::vector<wstring> > >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
     if (iter != g_settings.m_mapRssUrls.end())
     {
@@ -1054,6 +1062,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetThumbAttributes(dwThumbWidth, dwThumbHeight, dwThumbSpaceX, dwThumbSpaceY, strDefaultThumb);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     pControl->SetNavigation(up, down, left, right);
     return pControl;
   }
@@ -1064,6 +1073,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strFont, dwTextColor, dwTextColor2, dwTextColor3, dwSelectedColor);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     pControl->SetNavigation(up, down, left, right);
     return pControl;
   }
@@ -1081,6 +1091,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetHyperLink(iHyperLink);
     pControl->SetExecuteAction(strExecuteAction);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     return pControl;
   }
   else if (strType == "conditionalbutton")
@@ -1097,6 +1108,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetHyperLink(iHyperLink);
     pControl->SetExecuteAction(strExecuteAction);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     return pControl;
   }
   else if (strType == "togglebutton")
@@ -1113,6 +1125,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetHyperLink(iHyperLink);
     pControl->SetExecuteAction(strExecuteAction);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     pControl->SetToggleSelect(iToggleSelect);
     return pControl;
   }
@@ -1129,6 +1142,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetHyperLink(iHyperLink);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     return pControl;
   }
   else if (strType == "checkmark")
@@ -1143,6 +1157,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     pControl->SetShadow(bShadow);
     return pControl;
   }
@@ -1160,6 +1175,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetHyperLink(iHyperLink);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     return pControl;
   }
   else if (strType == "spincontrol")
@@ -1172,6 +1188,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     pControl->SetReverse(bReverse);
     pControl->SetBuddyControlID(dwBuddyControlID);
     pControl->SetDisabledColor(dwDisabledColor);
@@ -1198,6 +1215,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureBg, strMid, strMidFocus, iType);
 
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetControlOffsetX(iControlOffsetX);
     pControl->SetControlOffsetY(iControlOffsetY);
@@ -1210,6 +1228,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureBg, strLeft, strMid, strRight, strOverlay);
 
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     return pControl;
   }
   else if (strType == "image")
@@ -1244,6 +1263,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetTextOffsets(iTextXOff, iTextYOff, iTextXOff2, iTextYOff2);
     pControl->SetAlignmentY(dwAlignY);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     pControl->SetImageDimensions(dwitemWidth, dwitemHeight);
     pControl->SetItemHeight(iTextureHeight);
     pControl->SetSpace(iSpace);
@@ -1268,6 +1288,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetScrollySuffix(strSuffix);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     pControl->SetImageDimensions(dwitemWidth, dwitemHeight);
     pControl->SetItemHeight(iTextureHeight);
     pControl->SetSpace(iSpace);
@@ -1289,6 +1310,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     return pControl;
   }
   else if (strType == "thumbnailpanel")
@@ -1308,6 +1330,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetScrollySuffix(strSuffix);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     pControl->SetTextureDimensions(iTextureWidth, iTextureHeight);
     pControl->SetThumbDimensions(iThumbXPos, iThumbYPos, iThumbWidth, iThumbHeight);
     pControl->SetTextureWidthBig(textureWidthBig);
@@ -1337,6 +1360,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     return pControl;
   }
   else if (strType == "mover")
@@ -1373,6 +1397,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition);
     pControl->SetReverse(bReverse);
     pControl->SetDisabledColor(dwDisabledColor);
     pControl->SetLabel(strLabel);

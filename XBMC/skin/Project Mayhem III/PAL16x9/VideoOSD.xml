@@ -647,7 +647,7 @@
       <posY>360</posY>
       <label>464</label>
       <font>font13</font>
-      <visible>no</visible>
+      <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
     - <control>
@@ -664,7 +664,7 @@
       <ondown>705</ondown>
       <onleft>704</onleft>
       <onright>704</onright>
-      <visible>no</visible>
+      <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
     - <control>
@@ -675,7 +675,7 @@
       <posY>390</posY>
       <label>465</label>
       <font>font13</font>
-      <visible>no</visible>
+      <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
     - <control>
@@ -692,7 +692,7 @@
       <ondown>706</ondown>
       <onleft>705</onleft>
       <onright>705</onright>
-      <visible>no</visible>
+      <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
     - <control>
@@ -703,7 +703,7 @@
       <posY>420</posY>
       <label>466</label>
       <font>font13</font>
-      <visible>no</visible>
+      <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
     - <control>
@@ -717,10 +717,10 @@
       <textureSliderNib>osd_slider_nibNF.png</textureSliderNib>
       <textureSliderNibFocus>osd_slider_nibFO.png</textureSliderNibFocus>
       <onup>705</onup>
-      <ondown>706</ondown>
+      <ondown>700</ondown>
       <onleft>706</onleft>
       <onright>706</onright>
-      <visible>no</visible>
+      <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
     <control>

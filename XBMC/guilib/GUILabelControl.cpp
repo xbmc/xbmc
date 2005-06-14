@@ -19,8 +19,7 @@ CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPos
   m_iCursorPos = 0;
   m_dwCounter = 0;
   ControlType = GUICONTROL_LABEL;
-  m_VisibleCondition = 0;
-
+  m_ScrollInsteadOfTruncate = false;
 }
 
 CGUILabelControl::~CGUILabelControl(void)
@@ -47,16 +46,9 @@ void CGUILabelControl::SetInfo(const vector<int> &vecInfo)
 
 void CGUILabelControl::Render()
 {
-
-  bool bVisible = IsVisible();
-  if (m_VisibleCondition && bVisible)
+  if (!UpdateVisibility())
   {
-    bVisible = g_infoManager.GetBool(m_VisibleCondition);
-  }
-
-  if (!bVisible )
-  {
-    return ;
+    return;
   }
 
  
@@ -83,10 +75,9 @@ void CGUILabelControl::Render()
     if (m_dwTextAlign & XBFONT_CENTER_Y)
       fPosY += (float)m_dwHeight / 2;
 
-/*  UNCOMMENT IF WE WANT SCROLLING RATHER THAN CROPPING
-
+    // check for scrolling
     bool bNormalDraw = true;
-    if (0)//m_dwWidth > 0 && !IsDisabled())
+    if (m_ScrollInsteadOfTruncate && m_dwWidth > 0 && !IsDisabled())
     { // ignore align center - just use align left/right
       float width, height;
       m_pFont->GetTextExtent(strLabelUnicode.c_str(), &width, &height);
@@ -112,7 +103,7 @@ void CGUILabelControl::Render()
         {
           // First update our m_PixelScroll...
           WCHAR sz[3];
-          if (m_CharacterScroll < m_strLabel.size())
+          if (m_CharacterScroll < strRenderLabel.size())
             sz[0] = strLabelUnicode[m_CharacterScroll];
           else
             sz[0] = L' ';
@@ -124,7 +115,7 @@ void CGUILabelControl::Render()
           {
             m_PixelScroll = 0;
             m_CharacterScroll++;
-            if (m_CharacterScroll > m_strLabel.size() + 3)
+            if (m_CharacterScroll > strRenderLabel.size() + 3)
             {
               m_CharacterScroll = 0;
               m_ScrollWait = SCROLL_WAIT;
@@ -134,18 +125,18 @@ void CGUILabelControl::Render()
         else
           m_ScrollWait--;
         // Now rotate our string as needed
-        WCHAR *pOutput = new WCHAR[m_strLabel.size()+5];
+        WCHAR *pOutput = new WCHAR[strRenderLabel.size()+5];
         WCHAR *pChar = pOutput;
-        for (unsigned int i = m_CharacterScroll; i < m_strLabel.size() + 4; i++)
+        for (unsigned int i = m_CharacterScroll; i < strRenderLabel.size() + 4; i++)
         {
-          if (i < m_strLabel.size())
+          if (i < strRenderLabel.size())
             *pChar++ = strLabelUnicode[i];
           else
             *pChar++ = L' ';
         }
         for (unsigned int i = 0; i < m_CharacterScroll; i++)
         {
-          if (i < m_strLabel.size())
+          if (i < strRenderLabel.size())
             *pChar++ = strLabelUnicode[i];
           else
             *pChar++ = L' ';
@@ -155,8 +146,8 @@ void CGUILabelControl::Render()
         delete[] pOutput;
         g_graphicsContext.RestoreViewPort();
       }
-    }*/
-    if (1)
+    }
+    if (bNormalDraw)
     {
       float fPosX = (float)m_iPosX;
       if (m_dwTextAlign & XBFONT_CENTER_X)
@@ -179,6 +170,7 @@ void CGUILabelControl::Render()
       }
     }
   }
+  CGUIControl::Render();
 }
 
 
@@ -197,6 +189,12 @@ void CGUILabelControl::SetAlpha(DWORD dwAlpha)
 void CGUILabelControl::SetLabel(const wstring &strLabel)
 {
   m_strLabel = strLabel;
+  SetWidthControl(m_ScrollInsteadOfTruncate);
+}
+
+void CGUILabelControl::SetWidthControl(bool bScroll)
+{
+  m_ScrollInsteadOfTruncate = bScroll;
   m_PixelScroll = 0;
   m_CharacterScroll = 0;
   m_ScrollWait = SCROLL_WAIT;

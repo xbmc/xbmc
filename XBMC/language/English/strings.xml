@@ -841,6 +841,9 @@
   <string><id>13385</id><value>Voice Mask - Port 3</value></string>
   <string><id>13386</id><value>Use Time Based Seeking</value></string>
   <string><id>13387</id><value>Track Naming Template Right</value></string>
+  <string><id>13388</id><value>Presets</value></string>
+  <string><id>13389</id><value>There are no presets available&#10;for this visualisation</value></string>
+  <string><id>13390</id><value>There are no settings available&#10;for this visualisation</value></string>
 
   <string><id>14000</id><value>Stacking: Off</value></string>
   <string><id>14001</id><value>Stacking: Simple</value></string>
