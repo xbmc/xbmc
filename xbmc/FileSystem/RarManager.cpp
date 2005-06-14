@@ -26,7 +26,6 @@ CRarManager::~CRarManager()
 
 bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar, BYTE  bOptions, const CStdString& strDir)
 {
-	// Caches rar if not already done.
 	CSingleLock lock(m_CritSection);
     //If file is listed in the cache, then use listed copy or cleanup before overwriting.
 	bool bOverwrite = (bOptions & EXFILE_OVERWRITE) != 0;
@@ -47,7 +46,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
 		}
 	}
   //Extract archived file, using existing local copy or overwriting if wanted...
-  if( !urarlib_get((char*) strRarPath.c_str(), (char*) strDir.c_str(),(char*) strPathInRar.c_str(), "") )
+  if( !urarlib_get(const_cast<char*>(strRarPath.c_str()), const_cast<char*>(strDir.c_str()),const_cast<char*>(strPathInRar.c_str()), "") )
     return false;
 	if(!pFile) 
   {
@@ -163,4 +162,9 @@ void CRarManager::ClearCachedFile(const CStdString& strRarPath, const CStdString
   }
   if (file.Delete(j->second.m_strCachedPath))
     m_ExFiles.erase(j);
+}
+
+void CRarManager::ExtractArchive(const CStdString& strArchive, const CStdString& strPath)
+{
+  urarlib_get(const_cast<char*>(strArchive.c_str()),const_cast<char*>(strPath.c_str()),NULL);
 }
