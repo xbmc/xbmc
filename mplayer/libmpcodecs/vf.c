@@ -127,6 +127,11 @@ static vf_info_t* filter_list[]={
     &vf_info_spp,
 #endif
     &vf_info_kerndeint,
+    &vf_info_noise,
+    &vf_info_format,
+    &vf_info_noformat,
+    &vf_info_field,
+    &vf_info_delogo,
 #else //!XBOX.....
     &vf_info_rectangle,
 #ifndef HAVE_NO_POSIX_SELECT
