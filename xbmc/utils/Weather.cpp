@@ -60,11 +60,11 @@ FIXME'S
 >weather.com dev account is mine not a general xbmc one
 */
 
-const CStdString strBasePath = "Q:\\weather\\";
+/*const CStdString strBasePath = "Q:\\weather\\";
 const bool bUseZip = false;
 const bool bUseRar = false;
 const CStdString strZipFile = "";
-const CStdString strRarFile = "";
+const CStdString strRarFile = "";*/
 
 // FOR ZIP
 /*const CStdString strBasePath = "Z:\\weather\\";
@@ -74,11 +74,11 @@ const CStdString strZipFile = "Q:\\weather\\weather.zip";
 const CStdString strRarFile = "Q:\\weather\\weather.rar";*/
 
 // OR THESE FOR RAR
-/*const CStdString strBasePath = "Z:\\weather\\";
+const CStdString strBasePath = "Z:\\weather\\";
 const bool bUseZip = false;
 const bool bUseRar = true;
 const CStdString strZipFile = "";
-const CStdString strRarFile = "Q:\\weather\\weather.rar";*/
+const CStdString strRarFile = "Q:\\media\\weather.rar";
 
 CWeather g_weatherManager;
 

@@ -11,7 +11,6 @@ rem and finally set the options for the final rar.
 rem ---------------------------------------------
 rem Remove 'rem' from %NET% to compile and/or clean the solution prior packing it.
 rem Remove 'rem' from 'xcopy web/python' to copy these to the BUILD directory.
-rem pike: I've temporarily commented out xbmctex sections. Let's call it an evaluation.. 
 rem ---------------------------------------------
 TITLE XBMC Build Prepare Script
 ECHO Wait while preparing the build.
@@ -22,8 +21,8 @@ rem	CONFIG START
 	set CLEAN=xbmc.sln /clean release
 	set XBE=xbepatch.exe
 	set RAR=C:\Progra~1\Winrar\rar.exe
-	set RAROPS=a -r -idp -inul -m5 XBMC.rar BUILD
-	set TEX=XBMCTex.exe
+	set RAROPS1=a -r -idp -inul -m5 XBMC.rar BUILD
+	set RAROPS2=a -ep1 -inul
 	set SKINS=..\Skins
 rem	CONFIG END
 rem ---------------------------------------------
@@ -42,7 +41,6 @@ copy *.xml BUILD
 copy *.txt BUILD
 xcopy "skin\Project Mayhem III\fonts" "BUILD\skin\Project Mayhem III\fonts" /E /Q /I /Y
 xcopy "skin\Project Mayhem III\*.xml" "BUILD\skin\Project Mayhem III\" /E /Q /I /Y
-REM %TEX% -input "skin\Project Mayhem III\media" -output "BUILD\skin\Project Mayhem III\media"
 xcopy "skin\Project Mayhem III\media\Textures.xpr" "BUILD\skin\Project Mayhem III\media" /Q /I /Y
 xcopy "skin\Project Mayhem III\media\background.png" "BUILD\skin\Project Mayhem III\media" /Q /I /Y
 xcopy "skin\Project Mayhem III\media\background3.png" "BUILD\skin\Project Mayhem III\media" /Q /I /Y
@@ -60,13 +58,18 @@ xcopy media BUILD\media /E /Q /I /Y
 del BUILD\media\dsstdfx.bin
 del BUILD\system\players\mplayer\codecs\.cvsignore
 
-REM ECHO ------------------------------
-REM ECHO Removing CVS directories from build
-REM FOR /R BUILD %%d IN (CVS) DO @RD /S /Q %%d
+ECHO ------------------------------
+ECHO Removing CVS directories from build
+FOR /R BUILD %%d IN (CVS) DO @RD /S /Q %%d
+
+ECHO ------------------------------
+ECHO Rarring Weather graphics
+%RAR% %RAROPS2% BUILD\media\weather.rar BUILD\weather\64x64 BUILD\weather\128x128 BUILD\weather\logos
+rmdir BUILD\weather /S /Q
 
 ECHO ------------------------------
 ECHO Rarring...
-%RAR% %RAROPS%
+%RAR% %RAROPS1%
 
 ECHO ------------------------------
 ECHO finished!
