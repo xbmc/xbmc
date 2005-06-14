@@ -1,5 +1,8 @@
+// THIS FILE IS MODIFIED TO WORK WITH XBMC
+
 #include "rar.hpp"
 #include "../../utils/log.h"
+#include "../../Util.h"
 
 char* PointToName(const char *Path)
 {
@@ -192,13 +195,16 @@ void SetSFXExt(wchar *SFXName)
 
 char *GetExt(const char *Name)
 {
-  return(strrchrd(PointToName(Name),'.'));
+  CStdString strExtension;
+  CUtil::GetExtension(Name,strExtension);
+  return(strstr(Name,strExtension.c_str()));
 }
-
 
 wchar *GetExt(const wchar *Name)
 {
-  return(Name==NULL ? (wchar *)L"":strrchrw(PointToName(Name),'.'));
+  CStdString strExtension;
+  CUtil::GetExtension(Name,strExtension);
+  return(wcsstr(Name,CStdStringW(strExtension).c_str()));
 }
 
 
