@@ -94,6 +94,9 @@ extern char g_szTitleIP[32];
 #define AUDIOSCROBBLER_FILES_CACHED 303
 #define AUDIOSCROBBLER_SUBMIT_STATE 304
 
+#define VISUALISATION_LOCKED        400
+#define VISUALISATION_PRESET        401
+
 CGUIInfoManager g_infoManager;
 
 CGUIInfoManager::CGUIInfoManager(void)
@@ -193,6 +196,8 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
   else if (strTest.Equals("audioscrobbler.submitinterval")) ret = AUDIOSCROBBLER_SUBMIT_INT;
   else if (strTest.Equals("audioscrobbler.filescached")) ret = AUDIOSCROBBLER_FILES_CACHED;
   else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
+  else if (strTest.Equals("visualisation.locked")) ret = VISUALISATION_LOCKED;
+  else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
   return bNegate ? -ret : ret;
 }
 
@@ -281,6 +286,22 @@ wstring CGUIInfoManager::GetLabel(int info)
   case AUDIOSCROBBLER_SUBMIT_STATE:
     strLabel=GetAudioScrobblerLabel(info);
     break;
+  case VISUALISATION_PRESET:
+    {
+      CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+      g_graphicsContext.SendMessage(msg);
+      if (msg.GetLPVOID())
+      {
+        CVisualisation *pVis = (CVisualisation *)msg.GetLPVOID();
+        char *preset = pVis->GetPreset();
+        if (preset)
+        {
+          strLabel = preset;
+          CUtil::RemoveExtension(strLabel);
+        }
+      }
+    }
+    break;
   }
   // convert our CStdString to a wstring (which the label expects!)
   WCHAR szLabel[256];
@@ -368,6 +389,16 @@ bool CGUIInfoManager::GetBool(int condition1) const
     case VIDEOPLAYER_USING_OVERLAYS:
       bReturn = (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS);
     break;
+    case VISUALISATION_LOCKED:
+      {
+        CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+        g_graphicsContext.SendMessage(msg);
+        if (msg.GetLPVOID())
+        {
+          CVisualisation *pVis = (CVisualisation *)msg.GetLPVOID();
+          bReturn = pVis->IsLocked();
+        }
+      }
     }
     
   }

@@ -147,7 +147,7 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
 void CGUIThumbnailPanel::Render()
 {
   if (!m_pFont) return ;
-  if (!IsVisible()) return ;
+  if (!UpdateVisibility()) return ;
 
   if (!ValidItem(m_iCursorX, m_iCursorY) )
   {
@@ -303,7 +303,8 @@ void CGUIThumbnailPanel::Render()
       m_upDown.SetValue(iPage);
     }
   }
-  m_upDown.Render();
+  if (m_upDown.GetMaximum() > 1)
+    m_upDown.Render();
 }
 
 bool CGUIThumbnailPanel::OnAction(const CAction &action)
@@ -601,10 +602,10 @@ void CGUIThumbnailPanel::OnDown()
       {
         m_iCursorY++;
       }
-      else
+      else if (m_upDown.GetMaximum() > 1)
       {
-        m_upDown.SetFocus(true);
         m_iSelect = CONTROL_UPDOWN;
+        m_upDown.SetFocus(true);
       }
     }
   }

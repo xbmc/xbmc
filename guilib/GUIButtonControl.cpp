@@ -38,7 +38,7 @@ void CGUIButtonControl::SetDisabledColor(D3DCOLOR color)
 
 void CGUIButtonControl::Render()
 {
-  if (!IsVisible())
+  if (!UpdateVisibility())
   {
     return ;
   }

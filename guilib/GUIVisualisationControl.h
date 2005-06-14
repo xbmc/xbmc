@@ -32,7 +32,8 @@ public:
   virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
   virtual void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);
   virtual bool OnAction(const CAction &action);
-
+  virtual bool OnMessage(CGUIMessage& message);
+  CVisualisation *GetVisualisation() { return m_pVisualisation; };
 private:
   void FreeVisualisation();
   void LoadVisualisation();

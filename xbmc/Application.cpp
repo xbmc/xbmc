@@ -995,6 +995,9 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiDialogButtonMenu);         // window id = 111
   m_gWindowManager.Add(&m_guiDialogMusicScan);          // window id = 112
   m_gWindowManager.Add(&m_guiDialogPlayerControls);     // window id = 113
+  m_gWindowManager.Add(&m_guiDialogMusicOSD);           // window id = 120
+  m_gWindowManager.Add(&m_guiDialogVisualisationSettings);     // window id = 121
+  m_gWindowManager.Add(&m_guiDialogVisualisationPresetList);   // window id = 122
 
   m_gWindowManager.Add(&m_guiMyMusicPlayList);          // window id = 500
   m_gWindowManager.Add(&m_guiMyMusicSongs);             // window id = 501
@@ -1404,6 +1407,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiDialogContextMenu.Load("dialogContextMenu.xml");
   m_guiDialogMusicScan.Load("dialogMusicScan.xml");
   m_guiDialogPlayerControls.Load("PlayerControls.xml");
+  m_guiDialogMusicOSD.Load("MusicOSD.xml");
+  m_guiDialogVisualisationSettings.Load("MusicOSDVisSettings.xml");
+  m_guiDialogVisualisationPresetList.Load("VisualisationPresetList.xml");
   m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
   m_guiMyMusicSongs.Load("mymusicsongs.xml");
   m_guiMyMusicNav.Load("mymusicnav.xml");

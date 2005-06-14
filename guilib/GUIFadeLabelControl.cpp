@@ -37,12 +37,7 @@ void CGUIFadeLabelControl::SetLabel(const vector<wstring> &vecLabel)
 
 void CGUIFadeLabelControl::Render()
 {
-	bool bVisible = IsVisible();
-	if (m_VisibleCondition && bVisible)
-	{
-		bVisible = g_infoManager.GetBool(m_VisibleCondition);
-	}
-	if (!bVisible )
+	if (!UpdateVisibility())
 	{
 		return ;
 	}

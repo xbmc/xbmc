@@ -31,7 +31,6 @@ public:
   void SetLabel(const vector<wstring> &vecLabel);
   const vector<int> &GetInfo() const { return m_vecInfo; };
   const vector<wstring> &GetLabel() const { return m_vecLabels; };
-  void SetVisibleCondition(int iVisible) { m_VisibleCondition = iVisible; };
 
 protected:
   bool RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll );
@@ -48,7 +47,5 @@ protected:
   bool m_bFadeIn;
   int m_iCurrentFrame;
   vector<int> m_vecInfo;
-  int m_VisibleCondition;
-
 };
 #endif

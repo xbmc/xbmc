@@ -600,7 +600,7 @@ int DllLoader::ResolveImports(void)
               {
                 Fixup = track_realloc;
               }
-              else if (!strcmp(ImpName, "free") || !strcmp(ImpName, "??3@YAXPAX@Z"))
+              else if (!strcmp(ImpName, "free") || !strcmp(ImpName, "??3@YAXPAX@Z") || !strcmp(ImpName, "??_V@YAXPAX@Z"))
               {
                 Fixup = track_free;
               }
