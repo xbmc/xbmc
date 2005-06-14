@@ -61,9 +61,15 @@ protected:
   Character *GetCharacter(WCHAR letter);
   void CacheCharacter(WCHAR letter, Character *ch);
   void RenderCharacter(int posX, int posY, const Character *ch, D3DCOLOR dwColor);
+  void CreateShaderAndTexture();
+  void CopyTexture(int width);
 
-  LPDIRECT3DTEXTURE8 m_texture;
+  LPDIRECT3DTEXTURE8 m_texture;      // texture that holds our rendered characters (8bit alpha only)
+  LPDIRECT3DTEXTURE8 m_charTexture;  // texture to use for first render of characters (32bit)
+  DWORD m_fontShader;                // pixel shader for rendering chars from the 8bit alpha texture
+  DWORD m_copyShader;                // pixel shader for copying from 32bit -> 8bit alpha texture
   LPDIRECT3DDEVICE8 m_pD3DDevice;
+
   Character *m_char;                 // our characters
   int m_maxChars;                    // size of character array (can be incremented)
   int m_numChars;                    // the current number of cached characters

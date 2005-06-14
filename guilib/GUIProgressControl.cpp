@@ -27,7 +27,7 @@ void CGUIProgressControl::SetPosition(int iPosX, int iPosY)
 
 void CGUIProgressControl::Render()
 {
-  if (!IsVisible()) return ;
+  if (!UpdateVisibility()) return ;
   if (IsDisabled()) return ;
   float fScaleX, fScaleY;
   fScaleY = m_dwHeight == 0 ? 1.0f : m_dwHeight/(float)m_guiBackground.GetTextureHeight();

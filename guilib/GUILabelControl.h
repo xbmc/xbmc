@@ -36,8 +36,8 @@ public:
   int GetCursorPos() const { return m_iCursorPos;};
   void SetInfo(const vector<int> &vecInfo);
   const vector<int> &GetInfo() const { return m_vecInfo; };
-  void SetVisibleCondition(int iVisible) { m_VisibleCondition = iVisible; };
-
+  void SetWidthControl(bool bScroll);
+  bool GetWidthControl() { return m_ScrollInsteadOfTruncate; };
   DWORD m_dwTextAlign;
 
 
@@ -55,9 +55,9 @@ protected:
   DWORD m_dwCounter;
   vector<int> m_vecInfo;
   // stuff for scrolling
+  bool m_ScrollInsteadOfTruncate;
   int m_PixelScroll;
   unsigned int m_CharacterScroll;
   int m_ScrollWait;
-  int m_VisibleCondition;
 };
 #endif

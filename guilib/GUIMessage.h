@@ -172,6 +172,26 @@
  \ingroup winmsg
  \brief 
  */
+#define SET_CONTROL_FADE_IN(dwControlID, framesToFade) \
+{ \
+ CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), dwControlID, framesToFade); \
+ OnMessage(msg); \
+}
+
+/*!
+ \ingroup winmsg
+ \brief 
+ */
+#define SET_CONTROL_FADE_OUT(dwControlID, framesToFade) \
+{ \
+ CGUIMessage msg(GUI_MSG_HIDDEN, GetID(), dwControlID, framesToFade); \
+ OnMessage(msg); \
+}
+
+/*!
+ \ingroup winmsg
+ \brief 
+ */
 class CGUIMessage
 {
 public:

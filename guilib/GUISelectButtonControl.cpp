@@ -41,7 +41,7 @@ CGUISelectButtonControl::~CGUISelectButtonControl(void)
 
 void CGUISelectButtonControl::Render()
 {
-  if (!IsVisible() ) return ;
+  if (!UpdateVisibility() ) return ;
 
 
   // Are we in selection mode
@@ -105,14 +105,11 @@ void CGUISelectButtonControl::Render()
         CStdStringW itemStrUnicode;
         g_charsetConverter.stringCharsetToFontCharset(m_vecItems[m_iCurrentItem].c_str(), itemStrUnicode);
 
-        float fTextWidth, fTextHeight;
-        m_pFont->GetTextExtent( itemStrUnicode.c_str(), &fTextWidth, &fTextHeight );
-        DWORD dwOffsetX = (m_imgBackground.GetWidth() - (DWORD)fTextWidth) / 2;
+        DWORD dwAlign = m_dwTextAlignment | XBFONT_CENTER_X;
         float fPosY = (float)m_iPosY + m_dwTextOffsetY;
         if (m_dwTextAlignment & XBFONT_CENTER_Y)
           fPosY = (float)m_iPosY + m_imgBackground.GetHeight() / 2;
-        m_pFont->DrawText( (float)m_iPosX + dwOffsetX,
-                           fPosY, dwTextColor, itemStrUnicode.c_str(), m_dwTextAlignment);
+        m_pFont->DrawText( (float)m_iPosX + GetWidth()/2, fPosY, dwTextColor, itemStrUnicode.c_str(), dwAlign);
       }
     }
 
@@ -163,6 +160,7 @@ bool CGUISelectButtonControl::OnMessage(CGUIMessage& message)
     else if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
     {
       message.SetParam1(m_iCurrentItem);
+      message.SetLabel(m_vecItems[m_iCurrentItem]);
     }
     else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
     {
@@ -379,4 +377,20 @@ void CGUISelectButtonControl::OnMouseWheel()
     OnLeft();
   else
     OnRight();
+}
+
+void CGUISelectButtonControl::SetPosition(int iPosX, int iPosY)
+{
+  int iLeftOffX = m_imgLeft.GetXPosition() - m_iPosX;
+  int iLeftOffY = m_imgLeft.GetYPosition() - m_iPosY;
+  int iRightOffX = m_imgRight.GetXPosition() - m_iPosX;
+  int iRightOffY = m_imgRight.GetYPosition() - m_iPosY;
+  int iBackOffX = m_imgBackground.GetXPosition() - m_iPosX;
+  int iBackOffY = m_imgBackground.GetYPosition() - m_iPosY;
+  CGUIButtonControl::SetPosition(iPosX, iPosY);
+  m_imgLeft.SetPosition(iPosX + iLeftOffX, iPosY + iLeftOffY);
+  m_imgLeftFocus.SetPosition(iPosX + iLeftOffX, iPosY + iLeftOffY);
+  m_imgRight.SetPosition(iPosX + iRightOffX, iPosY + iRightOffY);
+  m_imgRightFocus.SetPosition(iPosX + iRightOffX, iPosY + iRightOffY);
+  m_imgBackground.SetPosition(iPosX + iBackOffX, iPosY + iBackOffY);
 }

@@ -52,8 +52,14 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
   if (m_vecModalWindows.size() > 0)
   {
     // ...send the message to the top most.
-    if (m_vecModalWindows[m_vecModalWindows.size() - 1]->OnMessage(message))
-      handled = true;
+    int topWindow = m_vecModalWindows.size();
+    bool modalHandled = false;
+    while (topWindow && !modalHandled)
+    {
+      if (m_vecModalWindows[--topWindow]->OnMessage(message))
+        modalHandled = true;
+    }
+    if (modalHandled) handled = true;
 
     if (m_iActiveWindow < 0)
     {

@@ -888,6 +888,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogKeyboard.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogMusicOSD.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogMusicOSD.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogMuteBug.cpp">
 				</File>
 				<File
@@ -916,6 +922,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogSubMenu.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogVisualisationPresetList.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogVisualisationPresetList.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogVisualisationSettings.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogVisualisationSettings.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogVolumeBar.cpp">
@@ -2438,6 +2456,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			<Filter
 				Name="paplayer"
 				Filter="">
+				<File
+					RelativePath=".\xbmc\cores\paplayer\AACcodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\AACcodec.h">
+				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\APEcodec.cpp">
 				</File>

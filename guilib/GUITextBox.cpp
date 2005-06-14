@@ -31,7 +31,7 @@ CGUITextBox::~CGUITextBox(void)
 void CGUITextBox::Render()
 {
   if (!m_pFont) return ;
-  if (!IsVisible()) return ;
+  if (!UpdateVisibility()) return ;
   CGUIControl::Render();
   int iPosY = m_iPosY;
 

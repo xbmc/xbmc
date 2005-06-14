@@ -24,7 +24,6 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, 
   m_iImageWidth = 0;
   m_iImageHeight = 0;
   m_bWasVisible = m_bVisible;
-  m_VisibleCondition = 0;
   for (int i = 0; i < 4; i++)
     m_dwAlpha[i] = 0xFF;
   ControlType = GUICONTROL_IMAGE;
@@ -51,7 +50,6 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_iImageHeight = 0;
   m_iTextureWidth = 0;
   m_iTextureHeight = 0;
-  m_VisibleCondition = 0;
   for (int i = 0; i < 4; i++)
     m_dwAlpha[i] = left.m_dwAlpha[i];
   m_pPalette = NULL;
@@ -85,10 +83,8 @@ void CGUIImage::Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
 
 void CGUIImage::Render()
 {
-  // check for conditional visibility - only works if the app says it's ok to be visible
-  bool bVisible = m_bVisible;
-  if (m_VisibleCondition && bVisible)
-    bVisible = g_infoManager.GetBool(m_VisibleCondition);
+  // check for conditional visibility
+  bool bVisible = UpdateVisibility();
 
   // check for conditional information
   if (m_Info)

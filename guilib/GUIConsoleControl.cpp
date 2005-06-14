@@ -66,7 +66,7 @@ bool CGUIConsoleControl::OnAction(const CAction &action)
 
 void CGUIConsoleControl::Render()
 {
-  if (!IsVisible() || !m_pFont)
+  if (!UpdateVisibility() || !m_pFont)
   {
     return ;
   }
