@@ -5,7 +5,6 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 14-06-2005 fixed: 2 x playback speed on some movies when using new mplayer.dll
  - 14-06-2005 fixed: possible crash in zip file handler.
  - 14-06-2005 changed: weather pictures now in weather.zip (currently disabled).
  - 14-06-2005 added: rar support. since it has to extract the files to disc, it is currently only available for: 
