@@ -3389,12 +3389,14 @@ bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int i
   
 	if (dwRet == TIME_ZONE_ID_STANDARD)
 	{
-		iHourUTC = ( ((iHour * 60) + tziNew.Bias) + tziNew.StandardBias ) / 60;
+    iHourUTC = ( ((iHour * 60) + tziNew.Bias) + tziNew.StandardBias ) / 60;
+    if (iHour == 24)  iHourUTC = iHourUTC - 24;                 // if iHour is 24h, we must prevent + 1day [+24h!] so -24h!
 	}
 	else if (dwRet == TIME_ZONE_ID_DAYLIGHT ) 
 	{
-		iHourUTC = ( ((iHour * 60) + tziNew.Bias) + tziNew.StandardBias + tziNew.DaylightBias) / 60;
-	}
+    iHourUTC = ( ((iHour * 60) + tziNew.Bias) + tziNew.StandardBias + tziNew.DaylightBias) / 60;
+    if (iHour == 24)  iHourUTC = iHourUTC - 24;                 // if iHour is 24h, we must prevent + 1day [+24h!] so -24h!
+  }
 	else if (dwRet == TIME_ZONE_ID_UNKNOWN || dwRet == TIME_ZONE_ID_INVALID)
 	{
 		if (iHour >12 )

@@ -441,6 +441,10 @@
   <string><id>509</id><value>Cache Program Thumbnails</value></string>
   <string><id>510</id><value>Enable Visualisations</value></string>
   <string><id>511</id><value>Auto switch video mode based on game region</value></string>
+  <string><id>512</id><value>Startup Window</value></string>
+  <string><id>513</id><value>Home Window</value></string>
+  <string><id>514</id><value>Manual Settings</value></string>
+
   <string><id>600</id><value>Rip CD Audio</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -582,8 +586,7 @@
   <string><id>1223</id><value>Disabled</value></string>
   <string><id>1224</id><value>Normal User</value></string>
   <string><id>1225</id><value>Advanced User</value></string>
-  
-  
+
   <string><id>1396</id><value>Drifting</value></string>
   <string><id>1397</id><value>and</value></string>
   <string><id>1398</id><value>Freezing</value></string>
