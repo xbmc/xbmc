@@ -654,6 +654,18 @@ void CGUIWindowSettingsCategory::CreateSettings()
       g_guiSettings.SetInt("Masterlock.Maxretry", g_stSettings.m_iMasterLockMaxRetry);
       g_guiSettings.SetString("Masterlock.Mastercode", g_stSettings.szMasterLockCode);
     }
+    else if (strSetting == "LookAndFeel.StartUpWindow")
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(514),  0 );  // Manual Settings [XBMC-XML]
+      pControl->AddLabel(g_localizeStrings.Get(513),  1	);  // 0    XBMC Home
+      pControl->AddLabel(g_localizeStrings.Get(0),    2	);  // 1    My Programs
+      pControl->AddLabel(g_localizeStrings.Get(1),    3	);  // 2    My Pictures
+      pControl->AddLabel(g_localizeStrings.Get(2),    4 );  // 501  My Musik
+      pControl->AddLabel(g_localizeStrings.Get(3),    5 );  // 6    My Video
+      pControl->SetValue(pSettingInt->GetData());
+    }
     iPosY += iGapY;
   }
   // fix first and last navigation
@@ -1938,6 +1950,34 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       dlg->SetLine( 1, g_localizeStrings.Get(12371));
       dlg->SetLine( 2, "");
       dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+    }
+  }
+  else if (strSetting == "LookAndFeel.StartUpWindow")
+  {
+    // Set the Current XML or Previos StartWindow state!
+    CStdString strStWin;
+    int iCurState = g_guiSettings.GetInt("LookAndFeel.StartUpWindow");
+    if (iCurState !=0)  // 0 if Manual Settings, don't tuch the StartWindow Stuff!
+    {
+      switch (iCurState)
+        {
+          case 1:                      
+            strStWin = "0";     // 0 XBMC Home           
+            break;                     
+          case 2:                      
+            strStWin = "1";     // 1 My Programs           
+            break;
+          case 3:                
+            strStWin = "2";     // 2 My Pictures     
+            break;               
+          case 4:                
+            strStWin = "501";   // 501 My Musik  
+            break;               
+          case 5:                
+            strStWin = "6";     // 6 My Video    
+            break;  
+        }
+      g_settings.UpDateXbmcXML("startwindow", strStWin);
     }
   }
   g_settings.Save();
