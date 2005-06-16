@@ -5,6 +5,7 @@
 #include "picture.h"
 #include "lib/libID3/misc_support.h"
 #include "apev2tag.h"
+#include "cores/paplayer/aaccodec.h"
 
 using namespace MUSIC_INFO;
 
@@ -478,7 +479,17 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
         if (apeTag.GetReplayGain().iHasGainInfo)
           m_replayGainInfo = apeTag.GetReplayGain();
       }
-      tag.SetDuration(ReadDuration(file, myTag));
+
+      CStdString strExtension;
+      CUtil::GetExtension(strFileName, strExtension);
+      if (strExtension==".mp3")
+        tag.SetDuration(ReadDuration(file, myTag));
+      else if (strExtension==".aac")
+      {
+        AACCodec codec;
+        codec.Init(strFileName, 4096);
+        tag.SetDuration((int)(int)((codec.m_TotalTime + 500)/ 1000));
+      }
       file.Close();
     }
 
