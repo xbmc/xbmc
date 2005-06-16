@@ -7,6 +7,7 @@
 #define SHN_DLL "Q:\\system\\players\\PAPlayer\\libshnplay.dll"
 #define MPC_DLL "Q:\\system\\players\\PAPlayer\\MPCcodec.dll"
 #define OGG_DLL "Q:\\system\\players\\PAPlayer\\vorbisfile.dll"
+#define AAC_DLL "Q:\\system\\players\\paplayer\\aaccodec.dll"
 
 class CSectionLoader
 {

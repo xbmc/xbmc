@@ -38,7 +38,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   if (strExtension.IsEmpty())
     return NULL;
 
-  if (strExtension == "mp3")
+  if (strExtension == "mp3" || strExtension == "aac")
   {
     CMusicInfoTagLoaderMP3 *pTagLoader = new CMusicInfoTagLoaderMP3();
     return (IMusicInfoTagLoader*)pTagLoader;

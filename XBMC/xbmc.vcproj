@@ -2457,6 +2457,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="paplayer"
 				Filter="">
 				<File
+					RelativePath=".\xbmc\cores\paplayer\AACcodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\AACcodec.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\APEcodec.cpp">
 				</File>
 				<File

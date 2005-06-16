@@ -2709,7 +2709,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     if (CUtil::FileExists("Q:\\system\\players\\paplayer\\in_mp3.dll"))  strNewPlayer = "paplayer";
   }
-  else if (url.GetFileType() == "ape" || url.GetFileType() == "mac" || url.GetFileType() == "cdda" || url.GetFileType() == "ogg" || url.GetFileType() == "oggstream" || url.GetFileType() == "mpc" || url.GetFileType() == "shn" || url.GetFileType() == "flac" || url.GetFileType() == "wav")
+  else if (url.GetFileType() == "ape" || url.GetFileType() == "mac" || url.GetFileType() == "cdda" || url.GetFileType() == "ogg" || url.GetFileType() == "oggstream" || url.GetFileType() == "mpc" || url.GetFileType() == "shn" || url.GetFileType() == "flac" || url.GetFileType() == "wav" || url.GetFileType() == "m4a" || url.GetFileType() == "aac")
   {
     strNewPlayer = "paplayer";
   }
