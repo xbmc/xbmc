@@ -445,14 +445,15 @@ CGUISettings::CGUISettings(void)
   // appearance settings
   AddGroup(7, 480);
   AddCategory(7, "LookAndFeel", 14037);
-  AddString(1, "LookAndFeel.Skin", 166, "Project Mayhem III", SPIN_CONTROL_TEXT);
-  AddString(2, "LookAndFeel.SoundSkin", 15108, "SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddInt(3, "LookAndFeel.Resolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
-  AddString(4, "LookAndFeel.Language", 248, "english", SPIN_CONTROL_TEXT);
-  AddString(5, "LookAndFeel.Font", 13303, "Default", SPIN_CONTROL_TEXT);
-  AddString(6, "LookAndFeel.CharSet", 735, "ISO-8859-1", SPIN_CONTROL_TEXT);
-  AddBool(7, "LookAndFeel.EnableRSSFeeds", 13305, true);
-  AddString(8, "LookAndFeel.GUICentering", 213, "", BUTTON_CONTROL_STANDARD);
+  AddString(1, "LookAndFeel.Skin",          166,    "Project Mayhem III", SPIN_CONTROL_TEXT);
+  AddString(2, "LookAndFeel.SoundSkin",     15108,  "SKINDEFAULT", SPIN_CONTROL_TEXT);
+  AddInt(3,    "LookAndFeel.Resolution",    169,    (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddString(4, "LookAndFeel.Language",      248,    "english", SPIN_CONTROL_TEXT);
+  AddString(5, "LookAndFeel.Font",          13303,  "Default", SPIN_CONTROL_TEXT);
+  AddString(6, "LookAndFeel.CharSet",       735,    "ISO-8859-1", SPIN_CONTROL_TEXT);
+  AddInt(7,    "LookAndFeel.StartUpWindow", 512,    1, 0, 1, 6, SPIN_CONTROL_TEXT);
+  AddBool(8,   "LookAndFeel.EnableRSSFeeds",13305,  true);
+  AddString(9, "LookAndFeel.GUICentering",  213,    "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(7, "FileLists", 14018);
   AddBool(1, "FileLists.HideExtensions", 497, false);
