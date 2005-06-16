@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-06-2005 added: Startup Window now setable via GUI! Systeminfo - Appearance - Look and Feel - Startup Window! [GeminiServer]
+                     It will set the XBMC Startup Window [Manual Settings, Home, Programms, Pictures, Music, Videos, Music, ] default it Home Window!
+                     Manual Settings will not touch the Settings and you can define your own Startwindow in xbmc xml.
+ - 16-06-2005 fixed: sf.net Bug [1220193]. if Date and Time Set Hour is 0 (24), it will add. + 1day [GeminiServer]
  - 14-06-2005 fixed: home.xml, urlset was 0, changed to 1, RSS should work now again
  - 14-06-2005 changed: Milkdrop - now renders with correct aspect ratio.
  - 14-06-2005 added: Pixel ratio parameter added to the visualisation Create function and more Direct X exports.
