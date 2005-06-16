@@ -22,6 +22,7 @@ void CFileReader::Initialize(unsigned int bufferSize)
 
 bool CFileReader::Open(const CStdString &strFile)
 {
+  Close();
   if (!m_file.Open(strFile))
     return false;
 
@@ -37,7 +38,6 @@ bool CFileReader::Open(const CStdString &strFile)
 void CFileReader::Close()
 {
   // kill our background reader thread
-  m_bStop = true;
   StopThread();
   // and close the file
   m_file.Close();
