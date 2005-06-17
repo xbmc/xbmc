@@ -41,12 +41,19 @@ struct SSortVideoTitleByTitle
     {
       char szfilename1[1024];
       char szfilename2[1024];
+      CStdString strStart, strEnd;
 
       switch ( g_stSettings.m_iMyVideoTitleSortMethod )
       {
       case 0:  // Sort by name
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
+        strStart = rpStart.GetLabel();
+        strEnd = rpEnd.GetLabel();
+        if (strStart.Left(4).Equals("The "))
+          strStart = strStart.Mid(4);
+        if (strEnd.Left(4).Equals("The "))
+          strEnd = strEnd.Mid(4);
+        strcpy(szfilename1, strStart.c_str());
+        strcpy(szfilename2, strEnd.c_str());
         break;
 
       case 1:  // Sort by year
@@ -111,8 +118,14 @@ struct SSortVideoTitleByTitle
         break;
 
       default:  // Sort by Filename by default
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
+        strStart = rpStart.GetLabel();
+        strEnd = rpEnd.GetLabel();
+        if (strStart.Left(4).Equals("The "))
+          strStart = strStart.Mid(4);
+        if (strEnd.Left(4).Equals("The "))
+          strEnd = strEnd.Mid(4);
+        strcpy(szfilename1, strStart.c_str());
+        strcpy(szfilename2, strEnd.c_str());
         break;
       }
 
