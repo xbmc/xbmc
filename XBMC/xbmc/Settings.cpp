@@ -460,7 +460,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
           if (pFeed->FirstChild())
           {
             CStdStringW strUrl = pFeed->FirstChild()->Value();
-            strUrl.MakeLower();
             vecSet.push_back(strUrl);
             vecIntervals.push_back(iInterval);
           }
