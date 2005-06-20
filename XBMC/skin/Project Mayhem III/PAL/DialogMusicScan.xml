@@ -24,7 +24,7 @@
       <type>label</type>
       <id>401</id>
       <posX>126</posX>
-      <posY>17</posY>
+      <posY>21</posY>
       <font>font12</font>
       <align>center</align>
       <width>160</width>
@@ -36,7 +36,7 @@
       <type>label</type>
       <id>402</id>
       <posX>60</posX>
-      <posY>45</posY>
+      <posY>43</posY>
       <hasPath>yes</hasPath>
       <font>font10</font>
       <onleft>402</onleft>

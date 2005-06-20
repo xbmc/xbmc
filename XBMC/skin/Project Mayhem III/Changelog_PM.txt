@@ -1,3 +1,5 @@
+2005-06-20 fixed:	some minor font placement issues
+
 2005-06-13 added:       Music OSD during fullscreen visualisation
 
 2005-06-13 fixed:	720p font.xml still refered to unused fonts. 1080i yet to test
