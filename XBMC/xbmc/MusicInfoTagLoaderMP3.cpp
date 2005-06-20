@@ -973,24 +973,28 @@ void CMusicInfoTagLoaderMP3::GetReplayGainInfo(const ID3_Tag *tag)
   {
     m_replayGainInfo.iTrackGain = (int)(atof(szGain) * 100 + 0.5);
     m_replayGainInfo.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
+    delete[] szGain;
   }
   szGain = GetUserText(tag, "replaygain_album_gain");
   if (szGain)
   {
     m_replayGainInfo.iAlbumGain = (int)(atof(szGain) * 100 + 0.5);
     m_replayGainInfo.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
+    delete[] szGain;
   }
   szGain = GetUserText(tag, "replaygain_track_peak");
   if (szGain)
   {
     m_replayGainInfo.fTrackPeak = (float)atof(szGain);
     m_replayGainInfo.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
+    delete[] szGain;
   }
   szGain = GetUserText(tag, "replaygain_album_peak");
   if (szGain)
   {
     m_replayGainInfo.fAlbumPeak = (float)atof(szGain);
     m_replayGainInfo.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
+    delete[] szGain;
   }
 }
 
