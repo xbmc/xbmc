@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.205. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.207. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -143,7 +143,7 @@
   <string><id>209</id><value>Neste</value></string>
   <string><id>210</id><value>Forrige</value></string>
   <string><id>211</id><value>Leter etter applikasjoner</value></string>
-  <string><id>212</id><value>applikasjoner funnet</value></string>
+  <string><id>212</id><value>Applikasjoner funnet</value></string>
   <string><id>213</id><value>Sentrér grensesnitt...</value></string>
   <string><id>214</id><value>Kalibrér bilde...</value></string>
   <string><id>215</id><value>Bløthet</value></string>
@@ -211,7 +211,7 @@
   <string><id>277</id><value>Flytt linjen for å endre plassering av undertekster</value></string>
   <string><id>278</id><value>Justér firkanten til den blir helt kvadratisk</value></string>
   <string><id>279</id><value>Kunne ikke laste innstillinger</value></string>
-  <string><id>280</id><value>bruker standard innstillinger</value></string>
+  <string><id>280</id><value>Bruker standard innstillinger</value></string>
   <string><id>281</id><value>Vennligst sjekk .xml filene</value></string>
   <string><id>282</id><value>Fant %i treff</value></string>
   <string><id>283</id><value>Søkeresultater</value></string>
@@ -255,7 +255,7 @@
   <string><id>322</id><value>Rydder opp i sjangre...</value></string>
   <string><id>323</id><value>Feil ved opprydning av sjangre</value></string>
   <string><id>324</id><value>Rydder opp i filstier...</value></string>
-  <string><id>325</id><value>Feil ved opprydning av filstier</value></string>
+  <string><id>325</id><value>Feil ved opprydning av filbaner</value></string>
   <string><id>326</id><value>Rydder opp i album...</value></string>
   <string><id>327</id><value>Feil ved opprydning av album</value></string>
   <string><id>328</id><value>Lagrer endringer...</value></string>
@@ -373,7 +373,7 @@
   <string><id>441</id><value>UDF</value></string>
   <string><id>442</id><value>LAN</value></string>
   <string><id>443</id><value>Internett</value></string>
-  <string><id>444</id><value>Film</value></string>
+  <string><id>444</id><value>Video</value></string>
   <string><id>445</id><value>Lyd</value></string>
   <string><id>446</id><value>DVD</value></string>
   <string><id>447</id><value>Automatisk start</value></string>
@@ -478,8 +478,8 @@
 
   <string><id>700</id><value>Rydder opp i databasen</value></string>
   <string><id>701</id><value>Fjerner gamle sanger fra databasen</value></string>
-  <string><id>702</id><value>Denne katalogstien har blitt skannet før.</value></string>
-  <string><id>703</id><value>Trykk ja for å oppdatere alle sanger i denne katalogstien.</value></string>
+  <string><id>702</id><value>Denne katalogen har blitt skannet før.</value></string>
+  <string><id>703</id><value>Trykk ja for å oppdatere alle sanger i denne katalogen.</value></string>
   <string><id>704</id><value>Trykk nei for kun å legge til nye sanger.</value></string>
   <string><id>705</id><value>Nettverk</value></string>
   <string><id>706</id><value>HTTP-proxyvert</value></string>
@@ -714,6 +714,18 @@
   <string><id>12356</id><value>Endre lås</value></string>
   <string><id>12357</id><value>Lås</value></string>
   <string><id>12358</id><value>Blankt passord. Prøv igjen.</value></string>
+  <string><id>12360</id><value>Masterlås</value></string>
+  <string><id>12361</id><value>Maks forsøk</value></string>
+  <string><id>12362</id><value>Aktiver avslutting</value></string>
+  <string><id>12363</id><value>Beskytt mapper</value></string>
+  <string><id>12364</id><value>Mastermodus</value></string>
+  <string><id>12365</id><value>Masterkode</value></string>
+  <string><id>12366</id><value>Masterlås er forandret. Masterkoden er nå:</value></string>
+  <string><id>12367</id><value>Masterkoden er ikke gyldig!</value></string>
+  <string><id>12368</id><value>Vennligst skriv inn en gyldig masterkode!</value></string>
+  <string><id>12369</id><value>XBMC Oppstartslås</value></string>
+  <string><id>12370</id><value>Masterlås-modus forandret, masterkoden ble ikke angitt!</value></string>
+  <string><id>12371</id><value>Vennligst angi en ny masterkode!</value></string>
 	
   <string><id>12600</id><value>Været</value></string>
   <string><id>12900</id><value>Skjermbeskytter</value></string>
@@ -770,10 +782,10 @@
   <string><id>13325</id><value>Forgrunn-gjennomsiktighet</value></string>
   <string><id>13326</id><value>A/V-forsinkelse</value></string>
   <string><id>13327</id><value>Karaoke</value></string>
-  <string><id>13328</id><value>%s ikke funnet.</value></string>
+  <string><id>13328</id><value>%s ikke funnet</value></string>
   <string><id>13329</id><value>Feil ved åpning av %s</value></string>
   <string><id>13330</id><value>Kunne ikke laste %s</value></string>
-  <string><id>13331</id><value>Feil: tom for minne.</value></string>
+  <string><id>13331</id><value>Feil: tom for minne</value></string>
   <string><id>13332</id><value>Flytt opp</value></string>
   <string><id>13333</id><value>Flytt ned</value></string>
   <string><id>13334</id><value>Rediger knapp</value></string>
@@ -830,6 +842,9 @@
   <string><id>13385</id><value>Stemmemaske - Port 3</value></string>
   <string><id>13386</id><value>Bruk tidsbasert søking</value></string>
   <string><id>13387</id><value>Musikklisteformat høyre</value></string>
+  <string><id>13388</id><value>Forhåndsinnstillinger</value></string>
+  <string><id>13389</id><value>Det er ingen forhåndsinnstillinger tilgjengelig&#10;for denne visualiseringen</value></string>
+  <string><id>13390</id><value>Det er ingen innstillinger tilgjengelige&#10;for denne visualiseringen</value></string>
 
   <string><id>14000</id><value>Stabling: Av</value></string>
   <string><id>14001</id><value>Stabling: Enkel</value></string>
@@ -905,7 +920,7 @@
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Tjenesten er ikke tilkoblet, vil du forsøke</value></string>
   <string><id>15002</id><value>å koble den til Xbox Media Center?</value></string>
-  <string><id>15003</id><value>Skriv inn din melding.</value></string>
+  <string><id>15003</id><value>Skriv inn din melding</value></string>
   <string><id>15004</id><value>Du har blitt invitert til å spille %s.</value></string>
   <string><id>15005</id><value>Dato: %s</value></string>
   <string><id>15006</id><value>Fra: %s</value></string>

@@ -444,6 +444,10 @@
   <string><id>509</id><value>Programm Thumbnails cachen</value></string>
   <string><id>510</id><value>Visualisierung benutzen</value></string>
   <string><id>511</id><value>Video Modus auf Basis der Spiele Region wechseln</value></string>
+  <string><id>512</id><value>Start Fenster</value></string>
+  <string><id>513</id><value>Home</value></string>
+  <string><id>514</id><value>Manuell einstellen</value></string>
+
   <string><id>600</id><value>CD Rippen</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -832,6 +836,9 @@
   <string><id>13385</id><value>Voice Maske - Port 3</value></string>
   <string><id>13386</id><value>Zeitbasiertes Vor-/Rückspulen</value></string>
   <string><id>13387</id><value>Formatvorlage für Track Namen rechts</value></string>
+  <string><id>13388</id><value>Presets</value></string>
+  <string><id>13389</id><value>Es sind keine Presets für diese&#10;Visualisierung verfügbar</value></string>
+  <string><id>13390</id><value>Es sind keine Einstellungen für diese&#10;Visualisierung verfügbar</value></string>
 
   <string><id>14000</id><value>Stapeln: Aus</value></string>
   <string><id>14001</id><value>Stapeln: Einfach</value></string>

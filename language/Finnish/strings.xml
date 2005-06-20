@@ -141,8 +141,8 @@
   <string><id>208</id><value>Toista</value></string>
   <string><id>209</id><value>Seuraava</value></string>
   <string><id>210</id><value>Edellinen</value></string>
-  <string><id>211</id><value>Haetaan sovellukset</value></string>
-  <string><id>212</id><value>sovellusta löytynyt</value></string>
+  <string><id>211</id><value>Haetaan sovelluksia</value></string>
+  <string><id>212</id><value>Löydetyt sovellukset</value></string>
   <string><id>213</id><value>Käyttöliittymän keskitys</value></string>
   <string><id>214</id><value>Kuvaruudun säätö</value></string>
   <string><id>215</id><value>Pehmennä</value></string>
@@ -210,7 +210,7 @@
   <string><id>277</id><value>Siirtämällä palkkia voit määrittää tekstityksen sijainnin</value></string>
   <string><id>278</id><value>Muuta laatikon muotoa niin, että se on täysin neliö</value></string>
   <string><id>279</id><value>Asetuksia ei voitu ladata</value></string>
-  <string><id>280</id><value>oletusasetukset otettu käyttöön</value></string>
+  <string><id>280</id><value>Oletusasetukset otettu käyttöön</value></string>
   <string><id>281</id><value>Tarkista .xml tiedostot</value></string>
   <string><id>282</id><value>%i kpl nimikkeitä löydetty</value></string>
   <string><id>283</id><value>Haun tulos</value></string>
@@ -361,7 +361,7 @@
   <string><id>430</id><value>DVD nro:n mukaan</value></string>
   <string><id>431</id><value>Välimuisti pois</value></string>
   <string><id>432</id><value>Poista elokuva tietokannasta</value></string>
-  <string><id>433</id><value>Haluatko varmasti poistaa</value></string>
+  <string><id>433</id><value>Oletko varma poistamisesta?</value></string>
   <string><id>434</id><value>elokuvan?</value></string>
   <string><id>435</id><value>Raita</value></string>
   <string><id>436</id><value>Valmistusvuosi:</value></string>
@@ -372,8 +372,8 @@
   <string><id>441</id><value>UDF-levyltä</value></string>
   <string><id>442</id><value>Paikallisverkosta</value></string>
   <string><id>443</id><value>Internetistä</value></string>
-  <string><id>444</id><value>video</value></string>
-  <string><id>445</id><value>musiikki</value></string>
+  <string><id>444</id><value>Video</value></string>
+  <string><id>445</id><value>Musiikki</value></string>
   <string><id>446</id><value>DVD</value></string>
   <string><id>447</id><value>Autorun</value></string>
   <string><id>448</id><value>LCD</value></string>
@@ -441,6 +441,10 @@
   <string><id>509</id><value>Ohjelmien pikkukuvat välimuistissa</value></string>
   <string><id>510</id><value>Visualisoinnit käytössä</value></string>
   <string><id>511</id><value>Vaihda näyttötila automaattisesti aluekoodin mukaiseksi</value></string>
+  <string><id>512</id><value>Aloitusikkuna</value></string>
+  <string><id>513</id><value>Koti-ikkuna</value></string>
+  <string><id>514</id><value>Manuaaliset asetukset</value></string>
+
   <string><id>600</id><value>Rippaa CD</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standardi</value></string>
@@ -477,9 +481,9 @@
 
   <string><id>700</id><value>Päivitetään tietokantaa</value></string>
   <string><id>701</id><value>Poistetaan vanhat kappaleet tietokannasta</value></string>
-  <string><id>702</id><value>Tämä polku on jo päivitetty</value></string>
-  <string><id>703</id><value>Kyllä: Päivitä kaikki kappaleet tässä polussa.</value></string>
-  <string><id>704</id><value>Ei: Lisää vain uudet kappaleet.</value></string>
+  <string><id>702</id><value>Tämä polku on jo etsitty</value></string>
+  <string><id>703</id><value>Kyllä: Päivitä kaikki kappaleet</value></string>
+  <string><id>704</id><value>Ei: Lisää vain uudet kappaleet</value></string>
   <string><id>705</id><value>Verkkoasetukset</value></string>
   <string><id>706</id><value>HTTP-välityspalvelin</value></string>
   <string><id>707</id><value>HTTP-välityspalvelimen portti</value></string>
@@ -548,6 +552,7 @@
   <string><id>770</id><value>Virhe %i: jako ei saatavilla</value></string>
   <string><id>771</id><value>Ohita FATX:n rajoitukset FTP-palvelimessa</value></string>
   <string><id>772</id><value>Äänilaitteisto</value></string>
+  <string><id>773</id><value>Haku</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Nettipelaaminen</value></string>
   
@@ -711,6 +716,18 @@
   <string><id>12356</id><value>Muuta lukitus</value></string>
   <string><id>12357</id><value>Jaon lukitus</value></string>
   <string><id>12358</id><value>Tyhjä salasana. Yritä uudestaan.</value></string>
+  <string><id>12360</id><value>Yleislukitus</value></string>
+  <string><id>12361</id><value>Yrityksiä</value></string>
+  <string><id>12362</id><value>Salli sammuttaminen</value></string>
+  <string><id>12363</id><value>Suojaa jaot</value></string>
+  <string><id>12364</id><value>Yleislukitustila</value></string>
+  <string><id>12365</id><value>Yleiskoodi</value></string>
+  <string><id>12366</id><value>Yleislukitusta muutettu. Uusi yleiskoodi on nyt:</value></string>
+  <string><id>12367</id><value>Epäkelpo yleiskoodi!</value></string>
+  <string><id>12368</id><value>Anna kelvollinen yleiskoodi!</value></string>
+  <string><id>12369</id><value>XBMC käynnistyslukitus</value></string>
+  <string><id>12370</id><value>Yleislukitustila muuttunut, yleiskoodia ei asetettu!</value></string>
+  <string><id>12371</id><value>Aseta uusi yleiskoodi!</value></string>
 
   <string><id>12600</id><value>Säätila</value></string>
   <string><id>12900</id><value>Näytönsäästäjä</value></string>
@@ -767,10 +784,10 @@
   <string><id>13325</id><value>Edustan läpinäkyvyys</value></string>
   <string><id>13326</id><value>Äänen viive</value></string>
   <string><id>13327</id><value>Karaoke</value></string>
-  <string><id>13328</id><value>%s ei löytynyt.</value></string>
+  <string><id>13328</id><value>%s ei löytynyt</value></string>
   <string><id>13329</id><value>Virhe avattaessa: %s</value></string>
   <string><id>13330</id><value>%s ei voitu ladata</value></string>
-  <string><id>13331</id><value>Virhe: muisti ei riitä.</value></string>
+  <string><id>13331</id><value>Virhe: muisti ei riitä</value></string>
   <string><id>13332</id><value>Siirrä ylös</value></string>
   <string><id>13333</id><value>Siirrä alas</value></string>
   <string><id>13334</id><value>Muuta nimeä</value></string>
@@ -827,6 +844,9 @@
   <string><id>13385</id><value>Äänimaski - Portti 3</value></string>
   <string><id>13386</id><value>Käytä aikapohjaista hakua</value></string>
   <string><id>13387</id><value>Kappaleen nimeämismalli, oikeanpuoleinen</value></string>
+  <string><id>13388</id><value>Presetit</value></string>
+  <string><id>13389</id><value>Tälle visualisoinnille ei&#10;löytynyt presettejä</value></string>
+  <string><id>13390</id><value>Tälle visualisoinnille ei&#10;löytynyt asetuksia</value></string>
 
   <string><id>14000</id><value>Älä yhdistä osia</value></string>
   <string><id>14001</id><value>Yhdistä osat (norm)</value></string>
@@ -890,7 +910,7 @@
   <string><id>14061</id><value>Automaattinen</value></string>
   <string><id>14062</id><value>Anna käyttäjätunnus:</value></string>
 
-  <string><id>14063</id><value>Aika & Päivämäärä</value></string>
+  <string><id>14063</id><value>Aika &amp; Päivämäärä</value></string>
   <string><id>14064</id><value>Aseta vuosi</value></string>
   <string><id>14065</id><value>Aseta kuukausi</value></string>
   <string><id>14066</id><value>Aseta päivä</value></string>
@@ -902,7 +922,7 @@
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Ei yhteyttä palveluun, haluaisitko</value></string>
   <string><id>15002</id><value>yrittää yhdistää uudelleen XBMC:llä?</value></string>
-  <string><id>15003</id><value>Kirjoita viesti.</value></string>
+  <string><id>15003</id><value>Kirjoita viesti</value></string>
   <string><id>15004</id><value>Sinut on kutsuttu pelaamaan peliä %s.</value></string>
   <string><id>15005</id><value>Päiväys: %s</value></string>
   <string><id>15006</id><value>Lähettäjä: %s</value></string>
