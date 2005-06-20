@@ -196,11 +196,33 @@ bool CGUIAudioManager::CreateBufferFromFile(const CStdString& strFile, LPDIRECTS
 
   //  Load WAV header
   wav_header_s header;
-  fread(&header, 44, 1, fd);
+  if (fread(&header, 1, 44, fd)!=44)
+  {
+    fclose(fd);
+    return false;
+  }
+
+  //  Do we really have a valid WAV file?
+  if (strncmp(header.riff, "RIFF", 4)!=0 || strncmp(header.wavefmt, "WAVEfmt ", 8)!=0 || header.datalen<=0)
+  {
+    fclose(fd);
+    return false;
+  }
 
   //  Load WAV data into memory
   LPBYTE pbData=new BYTE[header.datalen+1];
-  fread(pbData, header.datalen, 1, fd);
+  if (!pbData)
+  {
+    fclose(fd);
+    return false;
+  }
+
+  if (fread(pbData, 1, header.datalen, fd)!=header.datalen)
+  {
+    delete[] pbData;
+    fclose(fd);
+    return false;
+  }
   fclose(fd);
 
   // Set up wave format structure. 
