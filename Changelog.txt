@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-06-2005 fixed: unneeded logs from track_realloc when mem with 0 bytes size is reallocated
  - 20-06-2005 fixed: mem leak in mp3 tag loader
  - 20-06-2005 fixed: audiomanager (nav sounds) could crash on an invalid wav file
  - 20-06-2005 added: replay gain support for aaccodec (aaccodec.dll in system\players\paplayer was updated)

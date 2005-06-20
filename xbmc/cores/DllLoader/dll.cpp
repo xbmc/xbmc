@@ -225,8 +225,9 @@ extern "C" void* __cdecl track_realloc(void* p, size_t s)
 
   void* q = realloc(p, s);
   if (!q) 
-  {    
-    CLog::Log(LOGDEBUG, "DLL: %s : realloc failed, crash imminent", get_track_dll_path(loc));
+  {
+    //  a dll may realloc with a size of 0, so NULL is the correct return value is this case
+    if (s>0) CLog::Log(LOGDEBUG, "DLL: %s : realloc failed, crash imminent", get_track_dll_path(loc));
     return NULL;
   }
   if (pList)
