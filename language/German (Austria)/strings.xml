@@ -1,7 +1,7 @@
 <!-- German (AUSTRIA) language for XBMC -->
 <!--     Translation done by CEOMR      -->
 <strings>
-  <string><id>0</id><value>Programme</value></string>
+  <string><id>0</id><value>Anwendungen</value></string>
   <string><id>1</id><value>Eigene Bilder</value></string>
   <string><id>2</id><value>Eigene Musik</value></string>
   <string><id>3</id><value>Eigene Videos</value></string>
@@ -443,6 +443,9 @@
   <string><id>509</id><value>Miniaturansichten zwischenspeichern</value></string>
   <string><id>510</id><value>Visualisierungen aktivieren</value></string>
   <string><id>511</id><value>Video Modus auf Spielregion automatisch anpassen</value></string>
+  <string><id>512</id><value>Startfenster</value></string> 
+  <string><id>513</id><value>Standard</value></string> 
+  <string><id>514</id><value>Manuelle Einstellung</value></string> 
 
   <string><id>600</id><value>CD Rippen</value></string>
   <string><id>601</id><value>Medium</value></string>
@@ -679,9 +682,9 @@
   <string><id>12320</id><value>C</value></string> 
   <string><id>12321</id><value>OK</value></string> 
   <string><id>12322</id><value>*</value></string> 
-  <string><id>12324</id><value>XBMC Zugriffskontrolle - HauptKennwort</value></string> 
-  <string><id>12325</id><value>Verzeichnis gesperrt</value></string> 
-  <string><id>12326</id><value>Kennwort eingeben</value></string> 
+  <string><id>12324</id><value>XBMC Zugriffskontrolle - Hauptkennwort</value></string> 
+  <string><id>12325</id><value>Bitte geben sie ihr Kennwort ein...</value></string> 
+  <string><id>12326</id><value>Bitte geben sie ihr Kennwort ein...</value></string> 
   <string><id>12327</id><value>Kennwort eingeben und E drücken,</value></string> 
   <string><id>12328</id><value>Kennwort eingeben und E drücken,</value></string> 
   <string><id>12329</id><value>oder um abzubrechen C drücken</value></string> 
@@ -714,6 +717,19 @@
   <string><id>12356</id><value>Kennwort ändern</value></string> 
   <string><id>12357</id><value>Verzeichnissperre</value></string> 
   <string><id>12358</id><value>Es wurde kein Kennwort eingegeben...</value></string>
+
+  <string><id>12360</id><value>Zugriffskontrolle</value></string> 
+  <string><id>12361</id><value>Eingabelimit</value></string> 
+  <string><id>12362</id><value>Abschalten nach Limitüberschreitung</value></string> 
+  <string><id>12363</id><value>Freigaben sperren</value></string> 
+  <string><id>12364</id><value>Eingabemodus</value></string> 
+  <string><id>12365</id><value>Hauptkennwort</value></string> 
+  <string><id>12366</id><value>Hauptkennwort wurde geändert:</value></string> 
+  <string><id>12367</id><value>Ein falsches Kennwort wure eingegeben!</value></string> 
+  <string><id>12368</id><value>Bitte Eingabe wiederholen!</value></string> 
+  <string><id>12369</id><value>XBMC Startkennwort</value></string> 
+  <string><id>12370</id><value>Einstellungen geändert, kein Hauptkennwort wurde gesetzt!</value></string> 
+  <string><id>12371</id><value>Bitte einen neues Hauptkennwort eingeben!</value></string> 
 
   <string><id>12600</id><value>Wetter</value></string>
   <string><id>12900</id><value>Bildschirmschoner</value></string>
@@ -877,6 +893,10 @@
   <string><id>13385</id><value>Sprachmaske - Port 3</value></string> 
   <string><id>13386</id><value>Zeitbezogene Positionssuche verwenden</value></string>
   <string><id>13387</id><value>- rechte Spalte [Dauer]</value></string>
+  <string><id>13388</id><value>Vorauswahl</value></string> 
+  <string><id>13389</id><value>Keine Vorauswahl für diese Visualisierung&#10;vorhanden</value></string> 
+  <string><id>13390</id><value>Keine Einstellmöglichkeiten für diese Visualisierung&#10;vorhanden</value></string> 
+
 
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln aktiv.</value></string>
@@ -1039,4 +1059,7 @@
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
   <string><id>15214</id><value>Ausgeglichene A/V Synchronisation verwenden</value></string> 
 
+  <string><id>16000</id><value>Wechseln zu...</value></string>
+  <string><id>16001</id><value>Zu Favoriten hinzuf.</value></string>
+  <string><id>16002</id><value>Favoriten</value></string>
 </strings>

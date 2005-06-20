@@ -96,7 +96,7 @@
   <string><id>165</id><value>Disco presente</value></string>
   <string><id>166</id><value>Tema Visual</value></string>
   <string><id>167</id><value>Activar servidor FTP</value></string>
-  <string><id>168</id><value>Activar sincr. horaria desde Internet</value></string>
+  <string><id>168</id><value>Activar sincronización horaria desde Internet</value></string>
   <string><id>169</id><value>Resolución</value></string>
   <string><id>170</id><value>Álbum:</value></string>
   <string><id>171</id><value>Intérprete</value></string>
@@ -143,7 +143,7 @@
   <string><id>211</id><value>Buscando aplicaciones</value></string>
   <string><id>212</id><value>Aplicaciones encontradas</value></string>
   <string><id>213</id><value>Posición Interfaz</value></string>
-  <string><id>214</id><value>Calib. Pantalla</value></string> 
+  <string><id>214</id><value>Calibrar Pantalla</value></string> 
   <string><id>215</id><value>Suavizar</value></string>
   <string><id>216</id><value>Aumentar</value></string>
   <string><id>217</id><value>Ajustar</value></string>
@@ -154,7 +154,7 @@
   <string><id>222</id><value>Cancelar</value></string>
   <string><id>223</id><value>Cambio automático a pantalla panoramica</value></string> 
   <string><id>224</id><value>Velocidad</value></string> 
-  <string><id>225</id><value>Tiempo Transición</value></string>
+  <string><id>225</id><value>Tiempo de transición</value></string>
   <string><id>226</id><value>Activar PAL60</value></string>
   <string><id>227</id><value>Activar CDDB</value></string>
   <string><id>228</id><value>Lista de reproducción aleatoria al cargar</value></string>
@@ -219,7 +219,7 @@
   <string><id>287</id><value>Subtítulos</value></string>
   <string><id>288</id><value>Fuente</value></string>
   <string><id>289</id><value>- Tamaño</value></string>
-  <string><id>290</id><value>Amplific. de volumen (dB)</value></string>
+  <string><id>290</id><value>Amplificación de volumen (dB)</value></string>
   <string><id>291</id><value>Vídeo</value></string>
   <string><id>292</id><value>Audio</value></string>
   <string><id>293</id><value>Subtítulos</value></string>
@@ -282,8 +282,8 @@
   <string><id>352</id><value>Atenuar</value></string>
   <string><id>353</id><value>Negro</value></string>
   <string><id>354</id><value>Tipo Matrix</value></string>
-  <string><id>355</id><value>Activar prot. de pantalla tras</value></string>
-  <string><id>356</id><value>Modo del prot. de pantalla</value></string>
+  <string><id>355</id><value>Activar protector de pantalla tras</value></string>
+  <string><id>356</id><value>Modo del protector de pantalla</value></string>
   <string><id>357</id><value>Apagar consola tras</value></string>
   <string><id>358</id><value>Todos los álb.</value></string>
   <string><id>359</id><value>álb. Recientes</value></string>
@@ -430,13 +430,13 @@
   <string><id>506</id><value>Usar los nombres de directorios como descripción</value></string>
   <string><id>507</id><value>Por: Uso</value></string>
   <string><id>508</id><value>No usar accesos directos ni explorar</value></string> 
-  <string><id>509</id><value>Almacenar Miniaturas de Programas</value></string>
+  <string><id>509</id><value>Almacenar miniaturas de programas</value></string>
   <string><id>511</id><value>Cambiar modo de video según región del juego</value></string>
   <string><id>600</id><value>Comprimir CD de Música</value></string>
   <string><id>601</id><value>Media</value></string>
   <string><id>602</id><value>Estándar</value></string>
   <string><id>603</id><value>Extrema</value></string>
-  <string><id>604</id><value>Velocidad de bits constante (CBR)</value></string>
+  <string><id>604</id><value>Tasa de bits constante (CBR)</value></string>
   <string><id>605</id><value>Comprimiendo...</value></string>
   <string><id>606</id><value>Número de Pista:</value></string>
   <string><id>607</id><value>A:</value></string>
@@ -445,7 +445,7 @@
   <string><id>620</id><value>Copiar CD de Audio</value></string>
   <string><id>621</id><value>Codificador</value></string>
   <string><id>622</id><value>Calidad</value></string>
-  <string><id>623</id><value>Velocidad de bits</value></string>
+  <string><id>623</id><value>Tasa de bits</value></string>
   <string><id>624</id><value>Incluir número de pista</value></string>
   <string><id>625</id><value>Todas las canciones de</value></string>
   <string><id>629</id><value>Modo de vista</value></string>
@@ -491,7 +491,7 @@
   <string><id>732</id><value>Guardar y Aplicar</value></string>
   <string><id>733</id><value>- Contraseña del servidor Web</value></string>
   <string><id>734</id><value>Sin contraseña</value></string>
-  <string><id>735</id><value>- Juego de Caracteres</value></string>	
+  <string><id>735</id><value>- Juego de caracteres</value></string>	
   <string><id>736</id><value>- Estilo</value></string>	
   <string><id>737</id><value>- Color</value></string>
   <string><id>738</id><value>Normal</value></string>
@@ -527,10 +527,40 @@
   <string><id>767</id><value>Reserved</value></string>
   <string><id>768</id><value>Reserved</value></string>
   <string><id>769</id><value>Reserved</value></string>
-
+  <string><id>771</id><value>Apañar limites de fatx en servidor FTP</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Jugar en línea</value></string>
-  <string><id>1000</id><value>Vista Previa Protector Pantalla</value></string>
+  <string><id>1000</id><value>Vista previa del protector de pantalla</value></string>
+
+  <string><id>1200</id><value>SMB Compartición</value></string>
+  <string><id>1201</id><value>SMB IP</value></string>
+  <string><id>1202</id><value>SMB Grupo de trabajo</value></string>
+  <string><id>1203</id><value>SMB Usuario</value></string>
+  <string><id>1204</id><value>SMB Contraseña</value></string>
+  <string><id>1205</id><value>SMB Nombre de compartición</value></string>
+  <string><id>1206</id><value>SMB Contenido</value></string>
+  <string><id>1207</id><value>SMB Servidor-WINS</value></string>
+  <string><id>1208</id><value>Modo de opciones</value></string>
+  <string><id>1209</id><value>The SMB Share Settings was set succesfully!</value></string>
+  <string><id>1210</id><value>Eliminar</value></string>
+  <string><id>1211</id><value>Musica</value></string>
+  <string><id>1212</id><value>Video</value></string>
+  <string><id>1213</id><value>Imágenes</value></string>
+  <string><id>1214</id><value>Archivos</value></string>
+  <string><id>1215</id><value>Musica y Video </value></string>
+  <string><id>1216</id><value>Musica e Imágenes</value></string>
+  <string><id>1217</id><value>Musica y Archivos</value></string>
+  <string><id>1218</id><value>Video e Imágenes</value></string>
+  <string><id>1219</id><value>Video y Archivos</value></string>
+  <string><id>1220</id><value>Imágenes y Archivos</value></string>
+  <string><id>1221</id><value>Musica y Video e Imágenes</value></string>
+  <string><id>1222</id><value>Musica y Video e Imágenes y Archivos</value></string>
+  <string><id>1226</id><value>Archivos y Musica y Video</value></string>
+  <string><id>1227</id><value>Archivos e Imágenes y Musica</value></string>
+  <string><id>1228</id><value>Archivos e Imágenes y Video</value></string>
+  <string><id>1223</id><value>Deshabilitado</value></string>
+  <string><id>1224</id><value>Usuario normal</value></string>
+  <string><id>1225</id><value>Usuario avanzado</value></string>
 
   <string><id>1396</id><value>A la deriva</value></string>
   <string><id>1397</id><value>y</value></string>
@@ -664,7 +694,7 @@
   <string><id>12900</id><value>Protector de pantalla</value></string>
   <string><id>12901</id><value>OSD a pantalla completa</value></string>
   <string><id>13000</id><value>Sistema</value></string>
-  <string><id>13001</id><value>Parar el Disco Duro inmediatamente</value></string>
+  <string><id>13001</id><value>Parar el disco duro inmediatamente</value></string>
   <string><id>13002</id><value>Sólo Vídeo</value></string>
   <string><id>13003</id><value>- Retardo</value></string>
   <string><id>13004</id><value>- Duración mínima del archivo</value></string>
@@ -784,10 +814,10 @@
   <string><id>14012</id><value>- Usar Iconos Grandes</value></string>
   <string><id>14013</id><value>- Cambio basado en</value></string>
   <string><id>14014</id><value>- Porcentaje</value></string>
-  <string><id>14015</id><value>Sin archivos y al menos una miniatura</value></string>
+  <string><id>14015</id><value>sin archivos y al menos una miniatura</value></string>
   <string><id>14016</id><value>Al menos un archivo y una miniatura</value></string>
   <string><id>14017</id><value>Porcentaje de miniaturas</value></string>
-  <string><id>14018</id><value>Opciones de la vista</value></string>
+  <string><id>14018</id><value>Opciones de vista</value></string>
   <string><id>14019</id><value>Cambiar código de área 1</value></string>
   <string><id>14020</id><value>Cambiar código de área 2</value></string>
   <string><id>14021</id><value>Cambiar código de área 3</value></string>
@@ -830,9 +860,18 @@
 
   <string><id>14058</id><value>Efecto Pelicula con Textura Granulada</value></string>
   <string><id>14059</id><value>Buscar miniaturas en recursos compartidos remotos</value></string>
-  <string><id>14060</id><value>Tipo de Cache Desconocido - Internet</value></string>
+  <string><id>14060</id><value>Tipo de Caché Desconocido - Internet</value></string>
   <string><id>14061</id><value>Auto</value></string>
   <string><id>14062</id><value>Introduzca nombre de usuario para</value></string>
+
+  <string><id>14063</id><value>Fecha y hora</value></string>
+  <string><id>14064</id><value>Establecer Año</value></string>
+  <string><id>14065</id><value>Establecer Mes</value></string>
+  <string><id>14066</id><value>Establecer Dia</value></string>
+  <string><id>14067</id><value>Establecer Hora</value></string>
+  <string><id>14068</id><value>Establecer Minuto</value></string>
+  <string><id>14069</id><value>¿Quieres aplicar las opciones ahora?</value></string>
+  <string><id>14070</id><value>Aplicar cambios ahora</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>El servicio no está conectado, ¿Quiere intentar</value></string>
@@ -910,7 +949,7 @@
   <string><id>15109</id><value>Tema por Defecto</value></string>
 
   <string><id>15200</id><value>AudioScrobbler</value></string>
-  <string><id>15201</id><value>Enviar Info de Canciones a AudioScrobbler</value></string>
+  <string><id>15201</id><value>Enviar información de canciones a AudioScrobbler</value></string>
   <string><id>15202</id><value>Usuario AudioScrobbler</value></string>
   <string><id>15203</id><value>Contraseña AudioScrobbler</value></string>
   <string><id>15204</id><value>Imposible conectar: durmiendo...</value></string>
@@ -939,9 +978,9 @@
   <string><id>13163</id><value>Mandos en puerto:</value></string>
   <string><id>13164</id><value>Teclado en puerto:</value></string>
   <string><id>13165</id><value>Ratón en puerto:</value></string>
-  <string><id>13166</id><value>Head/Micrófono en puerto:</value></string>
+  <string><id>13166</id><value>Cascos/Micrófono en puerto:</value></string>
   <string><id>13167</id><value>MemoryStick en puerto:</value></string>
-  <string><id>13168</id><value>IR-Remote en puerto:</value></string>
+  <string><id>13168</id><value>Mando a distancia en puerto:</value></string>
 
   <string><id>13270</id><value>Hardware:</value></string>
   <string><id>13271</id><value>Velocidad de CPU:</value></string>
@@ -969,4 +1008,6 @@
   <string><id>13296</id><value>¡Xbox conectada!</value></string>
   <string><id>13297</id><value>¡Xbox NO conectada! ¡Comprueba las opciones de red!</value></string>
   <string><id>13298</id><value>Clave de XBLIVE:</value></string>
+
+  <string><id>15214</id><value>Usar sincronización A/V suavizada</value></string>
 </strings>
