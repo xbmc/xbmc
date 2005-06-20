@@ -64,6 +64,27 @@ bool AACCodec::Init(const CStdString &strFile, unsigned int filecache)
 
     m_Buffer = new BYTE[2048*m_Channels*sizeof(short)*2];
 
+    //  Get replay gain info
+    if (info.replaygain_track_gain)
+    {
+      m_replayGain.iTrackGain = (int)(atof(info.replaygain_track_gain) * 100 + 0.5);
+      m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
+    }
+    if (info.replaygain_track_peak)
+    {
+      m_replayGain.fTrackPeak = (float)atof(info.replaygain_track_peak);
+      m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
+    }
+    if (info.replaygain_album_gain)
+    {
+      m_replayGain.iAlbumGain = (int)(atof(info.replaygain_album_gain) * 100 + 0.5);
+      m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
+    }
+    if (info.replaygain_album_peak)
+    {
+      m_replayGain.fAlbumPeak = (float)atof(info.replaygain_album_peak);
+      m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
+    }
 	}
 	else
 	{
@@ -77,6 +98,7 @@ void AACCodec::DeInit()
 {
   if (m_Handle!=AAC_INVALID_HANDLE)
     m_dll.AACClose(m_Handle);
+
   m_file.Close();
 
   if (m_Buffer)
@@ -124,7 +146,7 @@ int AACCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
       m_BufferSize+=iAmountRead;
   }
 
-  //  Our buffer is empty and no data left to read from the cd
+  //  Our buffer is empty and no data left to read
   if (m_BufferSize-m_BufferPos==0 && bEof)
     return READ_EOF;
 
@@ -169,7 +191,7 @@ bool AACCodec::LoadDLL()
   pDll->ResolveExport("AACRead", (void **)&m_dll.AACRead);
   pDll->ResolveExport("AACSeek", (void **)&m_dll.AACSeek);
 
-  // Check resolves + version number
+  // Check resolves
   if (!m_dll.AACOpen || !m_dll.AACClose || !m_dll.AACGetInfo ||
       !m_dll.AACGetErrorMessage || !m_dll.AACRead || !m_dll.AACSeek)
   {
