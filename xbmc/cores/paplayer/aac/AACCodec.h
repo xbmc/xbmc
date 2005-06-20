@@ -42,6 +42,11 @@ typedef struct AACInfo
   int bitspersample;
   int totaltime;
   int bitrate;
+
+  char* replaygain_track_gain;
+  char* replaygain_album_gain;
+  char* replaygain_track_peak;
+  char* replaygain_album_peak;
 } AACInfo;
 
 /* possible return values of AACRead */
