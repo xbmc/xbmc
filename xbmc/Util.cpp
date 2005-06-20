@@ -1784,7 +1784,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
           Split(items[j]->m_strPath, strPath, strItem);
 
           //Cache any alternate subtitles.
-          if (strItem.Left(9) == "subtitle." && strItem.Right(l).ToLower() == sub_exts[i])
+          if (strItem.Left(9).ToLower() == "subtitle." && strItem.Right(l).ToLower() == sub_exts[i])
           {
             strLExt = strItem.Right(strItem.GetLength() - 9);
             strDest.Format("Z:\\subtitle.alt-%s", strLExt);
@@ -1796,7 +1796,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
           }
 
           //Cache subtitle with same name as movie
-          if (strItem.Right(l).ToLower() == sub_exts[i] && strItem.Left(fnl) == strFileNameNoExt)
+          if (strItem.Right(l).ToLower() == sub_exts[i] && strItem.Left(fnl).ToLower() == strFileNameNoExt.ToLower())
           {
             strLExt = strItem.Right(strItem.size() - fnl - 1); //Disregard separator char
             strDest.Format("Z:\\subtitle.%s", strLExt);
