@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-06-2005 fixed: [ 1223555 ] Case sensitive - Subtitle files where case sensitive.
  - 20-06-2005 fixed: ogg playback
  - 20-06-2005 fixed: unneeded logs from track_realloc when mem with 0 bytes size is reallocated
  - 20-06-2005 fixed: mem leak in mp3 tag loader
