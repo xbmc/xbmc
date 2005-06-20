@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.207. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.208. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -442,6 +442,10 @@
   <string><id>509</id><value>Cache programikoner</value></string>
   <string><id>510</id><value>Skru på visualisering</value></string>
   <string><id>511</id><value>Bytt auomatisk videoformat basert på spillregion</value></string>
+  <string><id>512</id><value>Starbilde</value></string>
+  <string><id>513</id><value>Hovedmeny</value></string>
+  <string><id>514</id><value>Manuelle innstillinger</value></string>
+
   <string><id>600</id><value>Ripp musikk-CD</value></string>
   <string><id>601</id><value>Middels</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -582,8 +586,7 @@
   <string><id>1228</id><value>Filer &amp; Bilder &amp; Video</value></string>
   <string><id>1223</id><value>Skrudd av</value></string>
   <string><id>1224</id><value>Normal bruker</value></string>
-  <string><id>1225</id><value>Avansert bruker</value></string>
-  
+  <string><id>1225</id><value>Avansert bruker</value></string>  
 
   <string><id>1396</id><value>Forbigående</value></string>
   <string><id>1397</id><value>og</value></string>
