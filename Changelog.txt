@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-06-2005 updated: [ 1215375 ] Newest BiosIDs.ini (Thnx to bubbadood)
  - 16-06-2005 changed: 'the' is ignored during sorting in my videos as well.
  - 16-06-2005 added: aac codec for paplayer (needs aaccodec.dll in system\players\paplayer)
  - 16-06-2005 added: Startup Window now setable via GUI! Systeminfo - Appearance - Look and Feel - Startup Window! [GeminiServer]
