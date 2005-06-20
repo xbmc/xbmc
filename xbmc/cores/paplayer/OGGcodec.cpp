@@ -158,41 +158,25 @@ int OGGCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
   *actualsize=0;
   int iBitStream=-1;
-  long lReadNow=0;
-  long lTotalRead=0;
-  long iSizeLeft=size;
-  long iAmountToRead= size<4096 ? size : 4096;
 
-  //  Fill buffer as much as possible
-  while (true)
+  //  the maximum chunk size the vorbis decoder seem to return with one call is 4096
+  long lRead=m_dll.ov_read(&m_VorbisFile, (char*)pBuffer, size, 0, 2, 1, &iBitStream);
+  
+  //  Our logical bitstream changed, we reached the eof
+  if (m_CurrentStream!=iBitStream)
+    lRead=0;
+
+  if (lRead<0)
   {
-    //  the maximum chunk size the vorbis decoder seem to return with one call is 4096
-    lReadNow=m_dll.ov_read(&m_VorbisFile, (char*)pBuffer+lTotalRead, iAmountToRead, 0, 2, 1, &iBitStream);
-    
-    //  Our logical bitstream changed, we reached the eof
-    if (m_CurrentStream!=iBitStream)
-      lReadNow=0;
-
-    if (lReadNow<0)
-    {
-      CLog::Log(LOGERROR, "OGGCodec: Read error %i", lReadNow);
-      return READ_ERROR;
-    }
-
-    lTotalRead+=lReadNow;
-    iSizeLeft-=lReadNow;
-
-    //  Is our buffer filled as much as possible
-    if ((lTotalRead==size || iSizeLeft/4096==0) || (lReadNow==0 && lTotalRead!=0))
-    {
-      *actualsize=lTotalRead;
-      return READ_SUCCESS;
-    }
-    else if (lReadNow==0)
-      return READ_EOF;
+    CLog::Log(LOGERROR, "OGGCodec: Read error %i", lRead);
+    return READ_ERROR;
   }
+  else if (lRead==0)
+    return READ_EOF;
+  else
+    *actualsize=lRead;
 
-  return READ_ERROR;
+  return READ_SUCCESS;
 }
 
 bool OGGCodec::LoadDLL()
