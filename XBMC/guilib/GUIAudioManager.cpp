@@ -4,21 +4,18 @@
 #include "../xbmc/Util.h"
 #include ".\guiaudiomanager.h"
 
-typedef struct wav_header{ /* RIFF */
- char riff[4];         /* "RIFF" (4 bytes) */
- long TotLen;          /* File length - 8 bytes  (4 bytes) */
- char wavefmt[8];      /* "WAVEfmt "  (8 bytes) */
- long Len;             /* Remaining length  (4 bytes) */
- short format_tag;     /* Tag (1 = PCM) (2 bytes) */
- short channels;       /* Mono=1 Stereo=2 (2 bytes) */
- long SamplesPerSec;   /* No samples/sec (4 bytes) */
- long AvgBytesPerSec;  /* Average bytes/sec (4 bytes) */
- short BlockAlign;     /* Block align (2 bytes) */
- short FormatSpecific; /* 8 or 16 bit (2 bytes) */
- char data[4];         /* "data" (4 bytes) */
- long datalen;         /* Raw data length (4 bytes) */
- /* ..data follows. Total header size = 44 bytes */
-} wav_header_s;
+typedef struct
+{
+  char chunk_id[4];
+  long chunksize;
+} WAVE_CHUNK;
+
+typedef struct
+{
+  char riff[4];
+  long filesize;
+  char rifftype[4];
+} WAVE_RIFFHEADER;
 
 CGUIAudioManager g_audioManager;
 
@@ -190,53 +187,13 @@ bool CGUIAudioManager::CreateBufferFromFile(const CStdString& strFile, LPDIRECTS
   if (!m_lpDirectSound || !m_bEnabled)
     return false;
 
-  FILE* fd = fopen(strFile, "rb");
-  if (!fd)
+  LPBYTE pbData=NULL;
+  WAVEFORMATEX wfx;
+  int size=0;
+  if (!LoadWav(strFile, &wfx, &pbData, &size))
     return false;
 
-  //  Load WAV header
-  wav_header_s header;
-  if (fread(&header, 1, 44, fd)!=44)
-  {
-    fclose(fd);
-    return false;
-  }
-
-  //  Do we really have a valid WAV file?
-  if (strncmp(header.riff, "RIFF", 4)!=0 || strncmp(header.wavefmt, "WAVEfmt ", 8)!=0 || header.datalen<=0)
-  {
-    fclose(fd);
-    return false;
-  }
-
-  //  Load WAV data into memory
-  LPBYTE pbData=new BYTE[header.datalen+1];
-  if (!pbData)
-  {
-    fclose(fd);
-    return false;
-  }
-
-  if (fread(pbData, 1, header.datalen, fd)!=header.datalen)
-  {
-    delete[] pbData;
-    fclose(fd);
-    return false;
-  }
-  fclose(fd);
-
-  // Set up wave format structure. 
-  WAVEFORMATEX wfx; 
-  memset(&wfx, 0, sizeof(WAVEFORMATEX)); 
-  wfx.wFormatTag = header.format_tag; 
-  wfx.nChannels = header.channels; 
-  wfx.nSamplesPerSec = header.SamplesPerSec; 
-  wfx.nBlockAlign = header.BlockAlign; 
-  wfx.nAvgBytesPerSec = header.AvgBytesPerSec;
-  wfx.wBitsPerSample = header.FormatSpecific; 
-  wfx.cbSize = 0;
-
-  bool bReady=(CreateBuffer(&wfx, header.datalen, ppSoundBuffer) && FillBuffer(pbData, header.datalen, *ppSoundBuffer));
+  bool bReady=(CreateBuffer(&wfx, size, ppSoundBuffer) && FillBuffer(pbData, size, *ppSoundBuffer));
 
   if (!bReady)
     FreeBuffer(ppSoundBuffer);
@@ -244,6 +201,69 @@ bool CGUIAudioManager::CreateBufferFromFile(const CStdString& strFile, LPDIRECTS
   delete[] pbData;
 
   return bReady;
+}
+
+bool CGUIAudioManager::LoadWav(const CStdString& strFile, WAVEFORMATEX* wfx, LPBYTE* ppWavData, int* pDataSize)
+{
+  FILE* fd = fopen(strFile, "rb");
+  if (!fd)
+    return false;
+
+  // read header
+  WAVE_RIFFHEADER riffh;
+  fread(&riffh, sizeof(WAVE_RIFFHEADER), 1, fd);
+
+  // file valid?
+  if (strncmp(riffh.riff, "RIFF", 4)!=0 && strncmp(riffh.rifftype, "WAVE", 4)!=0)
+  {
+    fclose(fd);
+    return false;
+  }
+
+  long offset=0;
+  offset += sizeof(WAVE_RIFFHEADER);
+  offset -= sizeof(WAVE_CHUNK);
+
+  // parse chunks
+  do
+  {
+    WAVE_CHUNK chunk;
+
+    // always seeking to the start of a chunk
+    fseek(fd, offset + sizeof(WAVE_CHUNK), SEEK_SET);
+    fread(&chunk, sizeof(WAVE_CHUNK), 1, fd);
+
+    if (!strncmp(chunk.chunk_id, "fmt ", 4))
+    { // format chunk
+      memset(wfx, 0, sizeof(WAVEFORMATEX));
+      fread(wfx, 1, 16, fd);
+      // we only need 16 bytes of the fmt chunk
+      if (chunk.chunksize-16>0)
+        fseek(fd, chunk.chunksize-16, SEEK_CUR);
+    }
+    else if (!strncmp(chunk.chunk_id, "data", 4))
+    { // data chunk
+      *ppWavData=new BYTE[chunk.chunksize+1];
+      fread(*ppWavData, 1, chunk.chunksize, fd);
+      *pDataSize=chunk.chunksize;
+
+      if (chunk.chunksize & 1)
+        offset++;
+    }
+    else
+    { // other chunk - unused, just skip
+      fseek(fd, chunk.chunksize, SEEK_CUR);
+    }
+
+    offset+=(chunk.chunksize+sizeof(WAVE_CHUNK));
+
+    if (offset & 1)
+      offset++;
+
+  } while (offset < riffh.filesize);
+
+  fclose(fd);
+  return true;
 }
 
 void CGUIAudioManager::Play(LPDIRECTSOUNDBUFFER pSoundBuffer)

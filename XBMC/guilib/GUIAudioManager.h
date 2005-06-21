@@ -40,6 +40,8 @@ private:
           void        StopPlaying(LPDIRECTSOUNDBUFFER pSoundBuffer);
           bool        IsPlaying(LPDIRECTSOUNDBUFFER pSoundBuffer);
 
+          bool        LoadWav(const CStdString& strFile, WAVEFORMATEX* wfx, LPBYTE* ppWavData, int* pDataSize);
+
           bool        LoadWindowSound(TiXmlNode* pWindowNode, const CStdString& strIdentifier, CStdString& strFile);
 
   typedef map<DWORD, LPDIRECTSOUNDBUFFER> soundBufferMap;
