@@ -20,6 +20,7 @@ public:
   void SetSMBShare(const CStdString &strShare);
   CStdString GetSMBShare();
   bool CheckStartUpLock();
+  bool CheckMenuLock(int iWindowID);
 
 
 	MAPPASSWORDS			m_mapSMBPasswordCache; // SMB share password cache

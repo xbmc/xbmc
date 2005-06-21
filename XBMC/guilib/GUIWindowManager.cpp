@@ -2,8 +2,11 @@
 #include "GUIWindowManager.h"
 #include "GUIAudioManager.h"
 
-CGUIWindowManager m_gWindowManager;
+//GeminiServer 
+#include "../xbmc/FileItem.h"
+#include "../xbmc/GUIPassword.h"
 
+CGUIWindowManager m_gWindowManager;
 CGUIWindowManager::CGUIWindowManager(void)
 {
   InitializeCriticalSection(&m_critSection);
@@ -202,6 +205,12 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
   { // nothing to see here - move along
     CLog::Log(LOGERROR, "Unable to locate window with id %d.  Check skin files", iWindowID - WINDOW_HOME);
     return ;
+  }
+   // GeminiServer HomeMenuLock with MasterCode!
+  if(!g_passwordManager.CheckMenuLock(iWindowID))
+  {
+    CLog::Log(LOGERROR, "MasterCode is Wrong: Window with id %d will not be loaded! Enter a correct MasterCode!", iWindowID);
+    iWindowID = WINDOW_HOME;
   }
 
   // deactivate any window

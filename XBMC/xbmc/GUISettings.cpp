@@ -491,7 +491,10 @@ CGUISettings::CGUISettings(void)
   AddBool(4,  "Masterlock.Enableshutdown"   , 12362,false); //talse:0 is off, true:1 will shutdows if Maxrety is reached
   AddBool(5,  "Masterlock.Protectshares"    , 12363,false); //false:0 is Normal user Mode, true:1 is Mastermode
   AddBool(6,  "Masterlock.StartupLock"      , 12369,false); //false:0 is no ask StarupCode, true:1 ask for MasterCode if is false switxh off xbmc
-  AddString(7,"Masterlock.SetMasterlock"    , 14070, "", BUTTON_CONTROL_STANDARD);
+  AddBool(7,  "Masterlock.LockFilemanager"  , 12372,false); //false:0 if off, true:1 will ask for MasterCode on Filemanager Window
+  AddBool(8,  "Masterlock.LockSettings"     , 12373,false); //false:0 if off, true:1 will ask for MasterCode on Settings Window
+  AddInt(9,   "Masterlock.LockHomeMedia"    , 12374, LOCK_DISABLED, LOCK_DISABLED, 1, LOCK_MU_VI_PIC_PROG, SPIN_CONTROL_TEXT); // LockHomeMedia, for lock the Video/Music/Programs/Pictures
+  AddString(10,"Masterlock.SetMasterlock"   , 14070, "", BUTTON_CONTROL_STANDARD);
   
   AddInt( -1, "UIOffset.X", 0, 0, -128, 1, 128, SPIN_CONTROL_INT);
   AddInt( -1, "UIOffset.Y", 0, 0, -128, 1, 128, SPIN_CONTROL_INT);

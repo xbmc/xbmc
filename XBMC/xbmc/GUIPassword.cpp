@@ -446,3 +446,53 @@ bool CGUIPassword::CheckStartUpLock()   // GeminiServer
     return false;
   }
 }
+bool CGUIPassword::CheckMenuLock(int iWindowID)
+{
+  bool bCheckPW         = false;
+  int iLockFilemanager  = g_stSettings.m_iMasterLockFilemanager;
+  int iLockSettings     = g_stSettings.m_iMasterLockSettings;
+  int iLockHomeMedia    = g_stSettings.m_iMasterLockHomeMedia;
+  switch (iWindowID)
+  {
+    case WINDOW_SETTINGS_MENU:  // Settings 
+      if (iLockSettings == 1) bCheckPW = true;
+      break;
+    case WINDOW_FILES:          // Files
+      if (iLockFilemanager == 1) bCheckPW = true;
+      break;
+    case WINDOW_PROGRAMS:       // Programs
+      if (  iLockHomeMedia == LOCK_PROGRAMS     || iLockHomeMedia == LOCK_MU_PROG       || iLockHomeMedia == LOCK_VI_PROG     || 
+            iLockHomeMedia == LOCK_PIC_PROG     || iLockHomeMedia == LOCK_PROG_VI_MU    || iLockHomeMedia == LOCK_PROG_PIC_MU || 
+            iLockHomeMedia == LOCK_PROG_PIC_VI  || iLockHomeMedia == LOCK_MU_VI_PIC_PROG  )
+        bCheckPW = true;
+      break;
+    case WINDOW_MUSIC_FILES:    // Music
+      if (  iLockHomeMedia == LOCK_MUSIC        || iLockHomeMedia == LOCK_MU_VI          || iLockHomeMedia == LOCK_MU_PIC     || 
+            iLockHomeMedia == LOCK_MU_PROG      || iLockHomeMedia == LOCK_MU_VI_PIC      || iLockHomeMedia == LOCK_PROG_VI_MU || 
+            iLockHomeMedia == LOCK_PROG_PIC_MU  || iLockHomeMedia == LOCK_MU_VI_PIC_PROG   )
+      bCheckPW = true;
+      break;
+    case WINDOW_VIDEOS:         // Video
+      if (  iLockHomeMedia == LOCK_VIDEO        || iLockHomeMedia == LOCK_MU_VI          || iLockHomeMedia == LOCK_VI_PIC     || 
+            iLockHomeMedia == LOCK_VI_PROG      || iLockHomeMedia == LOCK_MU_VI_PIC      || iLockHomeMedia == LOCK_PROG_VI_MU || 
+            iLockHomeMedia == LOCK_PROG_PIC_VI  || iLockHomeMedia == LOCK_MU_VI_PIC_PROG   )
+      bCheckPW = true;
+      break;
+    case WINDOW_PICTURES:       // Pictures
+      if (  iLockHomeMedia == LOCK_PICTURES     || iLockHomeMedia == LOCK_MU_PIC         || iLockHomeMedia == LOCK_VI_PIC      || 
+            iLockHomeMedia == LOCK_PIC_PROG     || iLockHomeMedia == LOCK_MU_VI_PIC      || iLockHomeMedia == LOCK_PROG_PIC_MU || 
+            iLockHomeMedia == LOCK_PROG_PIC_VI  || iLockHomeMedia == LOCK_MU_VI_PIC_PROG   )
+      bCheckPW = true;
+      break;
+    default:
+      bCheckPW = false;
+      break;
+  }
+  //Now let's check the PW if we need!
+  if (bCheckPW)
+  {
+    if(IsMasterLockLocked(true))return true;
+    else  return false; 
+  }
+  else return true;
+}
