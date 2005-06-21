@@ -272,7 +272,7 @@ CSettings::CSettings(void)
   g_stSettings.m_iMyVideoPercentSeekBackward = -2;
   g_stSettings.m_iMyVideoPercentSeekForwardBig = 10;
   g_stSettings.m_iMyVideoPercentSeekBackwardBig = -10;
-
+  
   xbmcXmlLoaded = false;
 }
 
@@ -354,6 +354,9 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     GetInteger(pMasterLockElement, "mastermode", g_stSettings.m_iMasterLockMode , 0, 0, 3);
     GetString(pMasterLockElement, "mastercode", g_stSettings.szMasterLockCode, "");
     GetInteger(pMasterLockElement, "startuplock", g_stSettings.m_iMasterLockStartupLock , 0, 0, 1);
+    GetInteger(pMasterLockElement, "LockFilemanager", g_stSettings.m_iMasterLockFilemanager , 0, 0, 1);
+    GetInteger(pMasterLockElement, "LockSettings", g_stSettings.m_iMasterLockSettings , 0, 0, 1);
+    GetInteger(pMasterLockElement, "LockHomeMedia", g_stSettings.m_iMasterLockHomeMedia , 0, 0, 15);
   }
 
   TiXmlElement* pSambaElement = pRootElement->FirstChildElement("samba");

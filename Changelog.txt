@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-06-2005 added: New MasterLock option: Settings & Filemanager & Home Media [GeminiServer]
+                     Now you can define a MasterLock also for Settings, Filemanager, My Video, My Music, My Pictures, My Programms
+                     Location: Settings - Appearance - Master Lock: Lock Filemanger, Lock Settings and Lock Media!
+                     These settings are also setable via xboxmediacenter.xml: <LockFilemanager>0</LockFilemanager>, <LockSettings>0</LockSettings>, <LockHomeMedia>0</LockHomeMedia>
  - 21-06-2005 added: use of combined conditional visibility is now supported in skin.
                      + is logical AND, | is used for logical OR. ie VideoPlayer.IsFullscreen + !Player.Caching, will display when fullscreen and not rebuffering
  - 21-06-2005 added: progress bar / slider can use info values. ie <info>Player.Progress</info> will make progressbar/slider display current progress
