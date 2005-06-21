@@ -146,3 +146,4 @@ void CGUIDialogSeekBar::Render()
     m_bRequireSeek = false;
   }
 }
+

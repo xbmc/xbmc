@@ -11,6 +11,18 @@
 #include "../FileItem.h"
 #include "../videodatabase.h"
 
+//bool: true if we are caching
+//int: current progress when caching (can be used in progressbars or sliders)
+#define PLAYER_CACHING               20
+
+#define PLAYER_DISPLAY_AFTER_SEEK    21
+#define PLAYER_PROGRESS              22
+
+//This has multiple values
+//bool: true if seekbar is visible
+//int: progress value 0-100 (can be used in progressbars or sliders)
+#define PLAYER_SEEKBAR               23
+
 /*!
  \ingroup strings
  \brief 
@@ -23,6 +35,7 @@ public:
 
   int TranslateString(const CStdString &strCondition);
   bool GetBool(int condition) const;
+  int GetInt(int info) const;
   wstring GetLabel(int info);
 
   CStdString GetImage(int info);
@@ -58,6 +71,7 @@ public:
 
   bool m_bPerformingSeek;
 protected:
+  int TranslateSingleString(const CStdString &strCondition);
 
   wstring GetSystemHeatInfo(const CStdString &strInfo);
   CStdString GetAudioScrobblerLabel(int item);
@@ -75,6 +89,23 @@ protected:
 
   //Fullscreen OSD Stuff
   DWORD m_AfterSeekTimeout;
+
+  class CCombinedValue
+  {
+  public:
+    enum EOPERATOR
+    {
+      OP_OR,
+      OP_AND,
+    } m_iOperator;
+    CStdString m_sInfo;
+    int m_iId;
+    int m_iLeftId;
+    int m_iRightId;
+    void operator=(const CCombinedValue& mSrc);
+  };
+
+  std::vector<CCombinedValue> m_CombinedValues;
 };
 
 /*!

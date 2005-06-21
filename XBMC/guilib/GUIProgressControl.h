@@ -29,6 +29,9 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetPosition(int iPosX, int iPosY);
   void SetPercentage(float fPercent);
+  void SetInfo(int iInfo);
+  int GetInfo() const {return m_iInfoCode;};
+
   float GetPercentage() const;
   const CStdString& GetBackGroundTextureName() const { return m_guiBackground.GetFileName();};
   const CStdString& GetBackTextureLeftName() const { return m_guiLeft.GetFileName();};
@@ -41,6 +44,7 @@ protected:
   CGUIImage m_guiRight;
   CGUIImage m_guiMid;
   CGUIImage m_guiOverlay;
+  int m_iInfoCode;
   float m_fPercent;
 };
 #endif

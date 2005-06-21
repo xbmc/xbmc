@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GUISliderControl.h"
 #include "GUIFontManager.h"
-
+#include "../xbmc/utils/GUIInfoManager.h"
 
 CGUISliderControl::CGUISliderControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strBackGroundTexture, const CStdString& strMidTexture, const CStdString& strMidTextureFocus, int iType)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
@@ -21,6 +21,7 @@ CGUISliderControl::CGUISliderControl(DWORD dwParentID, DWORD dwControlId, int iP
   m_iControlOffsetX = 60;
   m_iControlOffsetY = 0;
   ControlType = GUICONTROL_SLIDER;
+  m_iInfoCode = 0;
 }
 
 CGUISliderControl::~CGUISliderControl(void)
@@ -39,6 +40,8 @@ void CGUISliderControl::Render()
   switch (m_iType)
   {
   case SPIN_CONTROL_TYPE_FLOAT:
+    if(m_iInfoCode) m_fValue = (float)g_infoManager.GetInt(m_iInfoCode);
+
     swprintf(strValue, L"%2.2f", m_fValue);
     if (pFont13)
     {
@@ -58,6 +61,8 @@ void CGUISliderControl::Render()
     break;
 
   case SPIN_CONTROL_TYPE_INT:
+    if(m_iInfoCode) m_iValue = g_infoManager.GetInt(m_iInfoCode);
+
     swprintf(strValue, L"%i/%i", m_iValue, m_iEnd);
     if (pFont13)
     {
@@ -74,12 +79,19 @@ void CGUISliderControl::Render()
     fPos = (float)(m_iValue - m_iStart);
     m_iPercent = (int) ((fPos / fRange) * 100.0f);
     break;
+  default:
+    if(m_iInfoCode) m_iPercent = g_infoManager.GetInt(m_iInfoCode);
   }
 
-  m_guiBackground.Render();
-  m_guiBackground.SetHeight(m_dwHeight);
+  float fScaleX, fScaleY;
+  fScaleY = m_dwHeight == 0 ? 1.0f : m_dwHeight/(float)m_guiBackground.GetTextureHeight();
+  fScaleX = m_dwWidth == 0 ? 1.0f : m_dwWidth/(float)m_guiBackground.GetTextureWidth();
 
-  float fWidth = (float)(m_guiBackground.GetTextureWidth() - m_guiMid.GetWidth());
+  m_guiBackground.SetHeight(m_dwHeight);
+  m_guiBackground.SetWidth(m_dwWidth);
+  m_guiBackground.Render();
+
+  float fWidth = (float)(m_guiBackground.GetTextureWidth() - m_guiMid.GetTextureWidth())*fScaleX;
 
   fPos = (float)m_iPercent;
   fPos /= 100.0f;
@@ -91,11 +103,15 @@ void CGUISliderControl::Render()
     if (m_bHasFocus)
     {
       m_guiMidFocus.SetPosition((int)fPos, m_guiBackground.GetYPosition() );
+      m_guiMidFocus.SetWidth((int)(m_guiMidFocus.GetTextureWidth()*fScaleX));
+      m_guiMidFocus.SetHeight((int)(m_guiMidFocus.GetTextureHeight()*fScaleY));
       m_guiMidFocus.Render();
     }
     else
     {
       m_guiMid.SetPosition((int)fPos, m_guiBackground.GetYPosition() );
+      m_guiMid.SetWidth((int)(m_guiMid.GetTextureWidth()*fScaleX));
+      m_guiMid.SetHeight((int)(m_guiMid.GetTextureHeight()*fScaleY));
       m_guiMid.Render();
     }
   }
@@ -320,4 +336,9 @@ void CGUISliderControl::OnMouseDrag()
 void CGUISliderControl::OnMouseWheel()
 { // move the slider 10 steps in the appropriate direction
   Move(g_Mouse.cWheel*10);
+}
+
+void CGUISliderControl::SetInfo(int iInfo)
+{
+  m_iInfoCode = iInfo;
 }

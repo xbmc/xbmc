@@ -1,5 +1,6 @@
 #include "../stdafx.h"
 #include "GUIInfoManager.h"
+#include "../GUIDialogSeekBar.h"
 #include "Weather.h"
 #include "../Application.h"
 #include "../Util.h"
@@ -36,8 +37,11 @@ extern char g_szTitleIP[32];
 #define PLAYER_FORWARDING_32x        17
 #define PLAYER_CAN_RECORD            18
 #define PLAYER_RECORDING             19
-#define PLAYER_CACHING               20
-#define PLAYER_DISPLAY_AFTER_SEEK    21
+//Defined in header instead as they are needed at other places
+//#define PLAYER_CACHING               20
+//#define PLAYER_DISPLAY_AFTER_SEEK    21
+//#define PLAYER_PROGRESS              22
+//#define PLAYER_SEEKBAR               23
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -87,6 +91,7 @@ extern char g_szTitleIP[32];
 #define VIDEOPLAYER_DURATION        257
 #define VIDEOPLAYER_COVER           258
 #define VIDEOPLAYER_USING_OVERLAYS  259
+#define VIDEOPLAYER_ISFULLSCREEN    260
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -97,7 +102,19 @@ extern char g_szTitleIP[32];
 #define VISUALISATION_LOCKED        400
 #define VISUALISATION_PRESET        401
 
+
+#define COMBINED_VALUES_START        100000
+
 CGUIInfoManager g_infoManager;
+
+void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
+{
+  this->m_sInfo = mSrc.m_sInfo;
+  this->m_iId = mSrc.m_iId;
+  this->m_iLeftId = mSrc.m_iLeftId;
+  this->m_iRightId = mSrc.m_iRightId;
+  this->m_iOperator = mSrc.m_iOperator;
+}
 
 CGUIInfoManager::CGUIInfoManager(void)
 {
@@ -112,14 +129,64 @@ CGUIInfoManager::CGUIInfoManager(void)
 CGUIInfoManager::~CGUIInfoManager(void)
 {
 }
+/// \brief Translates a string as given by the skin into an int that we use for more
+/// efficient retrieval of data. Can handle combined strings on the form
+/// Player.Caching + VideoPlayer.IsFullscreen (Logical and)
+/// Player.HasVideo | Player.HasAudio (Logical or)
+int CGUIInfoManager::TranslateString(const CStdString &strCondition)
+{
+  int iOr, iAnd;
+  iOr = strCondition.find_first_of("|");
+  iAnd = strCondition.find_first_of("+");
+
+  if( iOr != strCondition.npos || iAnd != strCondition.npos )
+  {
+    //Check if this was added before
+    std::vector<CCombinedValue>::iterator it;
+    for(it = m_CombinedValues.begin(); it != m_CombinedValues.end(); it++)
+    {
+      if(strCondition.CompareNoCase(it->m_sInfo) == 0)
+        return it->m_iId;
+    }
+
+    if( iOr != strCondition.npos )
+    {
+      CCombinedValue mComb;
+      mComb.m_iId = m_CombinedValues.size()+COMBINED_VALUES_START;
+      mComb.m_iOperator = CCombinedValue::OP_OR;
+      mComb.m_iLeftId = TranslateString(strCondition.Left(iOr));
+      mComb.m_iRightId = TranslateString(strCondition.Mid(iOr+1));
+      mComb.m_sInfo = strCondition;
+      m_CombinedValues.push_back( mComb );
+      return mComb.m_iId;
+    }
+
+    if( iAnd != strCondition.npos )
+    {
+      CCombinedValue mComb;
+      mComb.m_iId = m_CombinedValues.size()+COMBINED_VALUES_START;
+      mComb.m_iOperator = CCombinedValue::OP_AND;
+      mComb.m_iLeftId = TranslateString(strCondition.Left(iAnd));
+      mComb.m_iRightId = TranslateString(strCondition.Mid(iAnd+1));
+      mComb.m_sInfo = strCondition;
+      m_CombinedValues.push_back( mComb );
+      return mComb.m_iId;
+    }
+  }  
+  //Just single command.
+  return TranslateSingleString(strCondition);
+}
+
 
 /// \brief Translates a string as given by the skin into an int that we use for more
 /// efficient retrieval of data.
-int CGUIInfoManager::TranslateString(const CStdString &strCondition)
+int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 {
   if (strCondition.IsEmpty()) return 0;
   CStdString strTest = strCondition;
-  strTest = strTest.ToLower();
+  strTest.ToLower();
+  strTest.TrimLeft(" ");
+  strTest.TrimRight(" ");
   bool bNegate = strTest[0] == '!';
   int ret = 0;
 
@@ -148,6 +215,8 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
   else if (strTest.Equals("player.recording")) ret = PLAYER_RECORDING;
   else if (strTest.Equals("player.displayafterseek")) ret = PLAYER_DISPLAY_AFTER_SEEK;
   else if (strTest.Equals("player.caching")) ret = PLAYER_CACHING;
+  else if (strTest.Equals("player.seekbar")) ret = PLAYER_SEEKBAR;
+  else if (strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
   else if (strTest.Equals("weather.conditions")) ret = WEATHER_CONDITIONS;
   else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
   else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
@@ -191,6 +260,7 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
   else if (strTest.Equals("videoplayer.duration")) ret = VIDEOPLAYER_DURATION;
   else if (strTest.Equals("videoplayer.cover")) ret = VIDEOPLAYER_COVER;
   else if (strTest.Equals("videoplayer.usingoverlays")) ret = VIDEOPLAYER_USING_OVERLAYS;
+  else if (strTest.Equals("videoplayer.isfullscreen")) ret = VIDEOPLAYER_ISFULLSCREEN;
   else if (strTest.Equals("audioscrobbler.enabled")) ret = AUDIOSCROBBLER_ENABLED;
   else if (strTest.Equals("audioscrobbler.connectstate")) ret = AUDIOSCROBBLER_CONN_STATE;
   else if (strTest.Equals("audioscrobbler.submitinterval")) ret = AUDIOSCROBBLER_SUBMIT_INT;
@@ -310,10 +380,40 @@ wstring CGUIInfoManager::GetLabel(int info)
   return strReturn;
 }
 
+// tries to get a integer value for use in progressbars/sliders and such
+int CGUIInfoManager::GetInt(int info) const
+{
+  if( g_application.IsPlaying() && g_application.m_pPlayer)
+  {
+    switch( info )
+    {
+    case PLAYER_PROGRESS:
+      return (int)(g_application.m_pPlayer->GetPercentage());
+    case PLAYER_SEEKBAR:
+      return (int)(((CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR))->GetPercentage());
+    case PLAYER_CACHING:
+      return (int)(g_application.m_pPlayer->GetCacheLevel());
+      
+    }
+  }
+  return 0;
+}
 // checks the condition and returns it as necessary.  Currently used
 // for toggle button controls and visibility of images.
 bool CGUIInfoManager::GetBool(int condition1) const
 {
+
+  if(  condition1 >= COMBINED_VALUES_START && (condition1 - COMBINED_VALUES_START) < (int)(m_CombinedValues.size()) )
+  {
+    CCombinedValue mComb;
+    mComb = m_CombinedValues[condition1 - COMBINED_VALUES_START];
+    if( mComb.m_iOperator == CCombinedValue::OP_OR )
+      return GetBool(mComb.m_iLeftId) || GetBool(mComb.m_iRightId);
+    else if( mComb.m_iOperator == CCombinedValue::OP_AND )
+      return GetBool(mComb.m_iLeftId) && GetBool(mComb.m_iRightId);
+  }
+
+
   int condition = abs(condition1);
   bool bReturn = false;
   if (g_application.IsPlaying())
@@ -383,11 +483,17 @@ bool CGUIInfoManager::GetBool(int condition1) const
     case PLAYER_CACHING:
       bReturn = g_application.m_pPlayer->IsCaching();
     break;
+    case PLAYER_SEEKBAR:
+      bReturn = ((CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR))->IsRunning();
+    break;
     case AUDIOSCROBBLER_ENABLED:
       bReturn = g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler");
     break;
     case VIDEOPLAYER_USING_OVERLAYS:
       bReturn = (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS);
+    break;
+    case VIDEOPLAYER_ISFULLSCREEN:
+      bReturn = m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO;
     break;
     case VISUALISATION_LOCKED:
       {
