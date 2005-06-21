@@ -314,6 +314,33 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   //  Do not free resources of invisible controls
   //  or hdd will spin up when fast forwarding etc.
   DynamicResourceAlloc(false);
+
+
+  CGUIProgressControl* pProgress = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
+  if(pProgress)
+  {
+    if( pProgress->GetInfo() == 0 || pProgress->GetVisibleCondition() == 0)
+    {
+      pProgress->SetInfo(PLAYER_PROGRESS);
+      pProgress->SetVisibleCondition(PLAYER_DISPLAY_AFTER_SEEK);
+      pProgress->SetVisible(true);
+    }
+  }
+
+  CGUILabelControl* pLabel = (CGUILabelControl*)GetControl(LABEL_BUFFERING);
+  if(pLabel && pLabel->GetVisibleCondition() == 0)
+  {
+    pLabel->SetVisibleCondition(PLAYER_CACHING);
+    pLabel->SetVisible(true);
+  }
+
+  pLabel = (CGUILabelControl*)GetControl(LABEL_CURRENT_TIME);
+  if(pLabel && pLabel->GetVisibleCondition() == 0)
+  {
+    pLabel->SetVisibleCondition(PLAYER_DISPLAY_AFTER_SEEK);
+    pLabel->SetVisible(true);
+    pLabel->SetLabel(L"$INFO(VIDEOPLAYER.TIME) / $INFO(VIDEOPLAYER.DURATION)");
+  }
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
@@ -497,7 +524,11 @@ void CGUIWindowFullScreen::Render()
 
 bool CGUIWindowFullScreen::HasProgressDisplay()
 {
-  return GetControl(CONTROL_PROGRESS) != NULL;
+
+  CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
+  if(pControl) return true;
+  
+  return false;
 }
 
 bool CGUIWindowFullScreen::NeedRenderFullScreen()
@@ -514,6 +545,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowViewModeInfo) return true;
   if (m_bShowCurrentTime) return true;
   if (g_infoManager.GetDisplayAfterSeek()) return true;
+  if (g_infoManager.GetBool(PLAYER_SEEKBAR)) return true;
   if (m_gWindowManager.IsRouted()) return true;
   if (m_gWindowManager.IsModelessAvailable()) return true;
   if (m_bOSDVisible) return true;
@@ -551,35 +583,17 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
   //Display current progress
   if( g_infoManager.GetDisplayAfterSeek() )
-  {
-    CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
-    if (pControl) 
-    {
-      pControl->SetPercentage(g_application.m_pPlayer->GetPercentage());
-      pControl->SetVisible(true);
-    }
     bRenderGUI = true;
-  }
 
   if( g_application.m_pPlayer->IsCaching() )
   {
-    CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
-    if (pControl) 
-    {
-      pControl->SetPercentage((float)g_application.m_pPlayer->GetCacheLevel());
-      pControl->SetVisible(true);
-    }
     g_infoManager.SetDisplayAfterSeek(0); //Make sure these stuff aren't visible now
     bRenderGUI = true;
-    SET_CONTROL_VISIBLE(LABEL_BUFFERING);
   }
-  else
-    SET_CONTROL_HIDDEN(LABEL_BUFFERING);
 
-  if( !g_infoManager.GetDisplayAfterSeek() && !g_application.m_pPlayer->IsCaching() )
-  {
-    SET_CONTROL_HIDDEN(CONTROL_PROGRESS);    
-  }
+  //We need to render should the seekbar be visible
+  if (g_infoManager.GetBool(PLAYER_SEEKBAR)) 
+    bRenderGUI = true;
 
   //------------------------
   if (m_bShowCodecInfo)
@@ -705,23 +719,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
   int iSpeed = g_application.GetPlaySpeed();
   if (iSpeed != 1)
     bRenderGUI = true;
-
-  // Render current time if requested
-  if (g_infoManager.GetDisplayAfterSeek())
-  {
-    CStdString strTime;
-    bRenderGUI = true;
-    CStdString strLabel;
-    strLabel = g_infoManager.GetLabel(254);   // time
-    strLabel += " / ";
-    strLabel += g_infoManager.GetLabel(257);  // duration
-    SET_CONTROL_LABEL(LABEL_CURRENT_TIME, strLabel);
-    SET_CONTROL_VISIBLE(LABEL_CURRENT_TIME);
-  }
-  else
-  {
-    SET_CONTROL_HIDDEN(LABEL_CURRENT_TIME);
-  }
 
   if ( bRenderGUI)
   {

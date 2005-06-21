@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-06-2005 added: use of combined conditional visibility is now supported in skin.
+                     + is logical AND, | is used for logical OR. ie VideoPlayer.IsFullscreen + !Player.Caching, will display when fullscreen and not rebuffering
+ - 21-06-2005 added: progress bar / slider can use info values. ie <info>Player.Progress</info> will make progressbar/slider display current progress
+                     valid commands are so far only: Player.Progress, Plyayer.Seekbar (Seekbars current location), Player.Caching (Progress of caching)
+ - 21-06-2005 added: sliders now respect <height> and <width>, scaling will be based on background image
  - 21-06-2005 fixed: aaccodec, return value of AACOpen is not always AAC_INVALID_HANDLE when open fails
  - 21-06-2005 fixed: audiomanager (nav sounds) could crash on an invalid wav file, second try ;)
  - 21-06-2005 changed: added more chars (éèçàùêÅåÂñáåÄÜüÖ) to the allowed for fatx limits 

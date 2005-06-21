@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GUIProgressControl.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
 
 CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, CStdString& strBackGroundTexture, CStdString& strLeftTexture, CStdString& strMidTexture, CStdString& strRightTexture, CStdString& strOverlayTexture)
@@ -11,6 +12,7 @@ CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, in
     , m_guiOverlay(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strOverlayTexture)
 {
   m_fPercent = 0;
+  m_iInfoCode = 0;
   ControlType = GUICONTROL_PROGRESS;
 }
 
@@ -29,6 +31,10 @@ void CGUIProgressControl::Render()
 {
   if (!UpdateVisibility()) return ;
   if (IsDisabled()) return ;
+
+
+  if(m_iInfoCode) m_fPercent = (float)g_infoManager.GetInt(m_iInfoCode);
+
   float fScaleX, fScaleY;
   fScaleY = m_dwHeight == 0 ? 1.0f : m_dwHeight/(float)m_guiBackground.GetTextureHeight();
   fScaleX = m_dwWidth == 0 ? 1.0f : m_dwWidth/(float)m_guiBackground.GetTextureWidth();
@@ -150,4 +156,9 @@ void CGUIProgressControl::AllocResources()
   m_guiLeft.SetHeight(20);
   m_guiMid.SetHeight(20);
   m_guiOverlay.SetHeight(20);
+}
+
+void CGUIProgressControl::SetInfo(int iInfo)
+{
+  m_iInfoCode = iInfo;
 }
