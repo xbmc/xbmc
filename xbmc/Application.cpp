@@ -1033,7 +1033,15 @@ HRESULT CApplication::Initialize()
 
   g_audioManager.PlayStartSound();
 
-  m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
+  // We need to Popup the WindowHome to initiate the GUIWindowManger for MasterCode popup dialog!
+  // Then we can start the StartUpWindow! To prevent BlackScreen if the target Window is Protected with MasterCode! 
+  if (g_stSettings.m_iStartupWindow != WINDOW_HOME)
+  {  
+    m_gWindowManager.ActivateWindow(WINDOW_HOME);                       
+    m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
+  }
+  else m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
+
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 

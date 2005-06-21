@@ -409,6 +409,9 @@ public:
     int m_iMasterLockMode;            // determines the type of master lock UI to present to the user, if any
     char szMasterLockCode[128];       // password to check for on startup
     int m_iMasterLockStartupLock;     // prompts user for szMasterLockCode on startup if true
+    int m_iMasterLockFilemanager;     // prompts user for MasterLockCode on Click Filemanager! 
+    int m_iMasterLockSettings;        // prompts user for MasterLockCode on Click Settings!
+    int m_iMasterLockHomeMedia;       // prompts user for MasterLockCode on Click Media [Video/Picture/Musik/Programs]!
     
     int m_iSambaDebugLevel;
     char m_strSambaWorkgroup[128];
