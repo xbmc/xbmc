@@ -152,11 +152,11 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
     if( iOr != strCondition.npos )
     {
       CCombinedValue mComb;
-      mComb.m_iId = m_CombinedValues.size()+COMBINED_VALUES_START;
       mComb.m_iOperator = CCombinedValue::OP_OR;
       mComb.m_iLeftId = TranslateString(strCondition.Left(iOr));
       mComb.m_iRightId = TranslateString(strCondition.Mid(iOr+1));
       mComb.m_sInfo = strCondition;
+      mComb.m_iId = m_CombinedValues.size()+COMBINED_VALUES_START;
       m_CombinedValues.push_back( mComb );
       return mComb.m_iId;
     }
@@ -164,11 +164,11 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
     if( iAnd != strCondition.npos )
     {
       CCombinedValue mComb;
-      mComb.m_iId = m_CombinedValues.size()+COMBINED_VALUES_START;
       mComb.m_iOperator = CCombinedValue::OP_AND;
       mComb.m_iLeftId = TranslateString(strCondition.Left(iAnd));
       mComb.m_iRightId = TranslateString(strCondition.Mid(iAnd+1));
       mComb.m_sInfo = strCondition;
+      mComb.m_iId = m_CombinedValues.size()+COMBINED_VALUES_START;
       m_CombinedValues.push_back( mComb );
       return mComb.m_iId;
     }
