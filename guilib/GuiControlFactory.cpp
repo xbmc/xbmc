@@ -1216,6 +1216,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetControlOffsetX(iControlOffsetX);
     pControl->SetControlOffsetY(iControlOffsetY);
@@ -1229,6 +1230,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     return pControl;
   }
   else if (strType == "image")

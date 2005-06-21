@@ -34,6 +34,7 @@ public:
   virtual void SetRange(int iStart, int iEnd);
   virtual void SetFloatRange(float fStart, float fEnd);
   virtual bool OnMessage(CGUIMessage& message);
+  void SetInfo(int iInfo);
   void SetPercentage(int iPercent);
   int GetPercentage() const;
   void SetIntValue(int iValue);
@@ -70,5 +71,6 @@ protected:
   float m_fInterval;
   int m_iControlOffsetX;
   int m_iControlOffsetY;
+  int m_iInfoCode;
 };
 #endif
