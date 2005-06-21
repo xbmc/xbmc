@@ -10,6 +10,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   void ResetTimer();
+  float GetPercentage() {return m_fSeekPercentage;};
 protected:
   DWORD m_dwTimer;
   float m_fSeekPercentage;
