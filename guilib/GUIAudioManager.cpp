@@ -260,10 +260,10 @@ bool CGUIAudioManager::LoadWav(const CStdString& strFile, WAVEFORMATEX* wfx, LPB
     if (offset & 1)
       offset++;
 
-  } while (offset < riffh.filesize);
+  } while (offset+(int)sizeof(WAVE_CHUNK) < riffh.filesize);
 
   fclose(fd);
-  return true;
+  return (*ppWavData!=NULL);
 }
 
 void CGUIAudioManager::Play(LPDIRECTSOUNDBUFFER pSoundBuffer)
