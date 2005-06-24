@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-06-2005 fixed: Small issue in FileHD (reading of weather .rar file triggered it)
+ - 24-06-2005 fixed: Transistion on press of left/right in my pictures faded incorrectly.
  - 24-06-2005 changed: aaccodec now uses mp4ff to read m4a files (aaccodec.dll in system\players\paplayer got updated)
  - 24-06-2005 updated: Norwegian language file (Thnx to vnm)
  - 24-06-2005 updated: German language file
