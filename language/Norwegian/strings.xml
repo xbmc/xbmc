@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.208. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.209. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -581,12 +581,20 @@
   <string><id>1220</id><value>Bilder &amp; Filer</value></string>
   <string><id>1221</id><value>Musikk &amp; Video &amp; Bilder</value></string>
   <string><id>1222</id><value>Musikk &amp; Video &amp; Bilder &amp; Filer</value></string>
-  <string><id>1226</id><value>Filer &amp; Musikk &amp; Video</value></string>
-  <string><id>1227</id><value>Filer &amp; Bilder &amp; Musikk</value></string>
-  <string><id>1228</id><value>Filer &amp; Bilder &amp; Video</value></string>
   <string><id>1223</id><value>Skrudd av</value></string>
   <string><id>1224</id><value>Normal bruker</value></string>
   <string><id>1225</id><value>Avansert bruker</value></string>  
+  <string><id>1226</id><value>Filer &amp; Musikk &amp; Video</value></string>
+  <string><id>1227</id><value>Filer &amp; Bilder &amp; Musikk</value></string>
+  <string><id>1228</id><value>Filer &amp; Bilder &amp; Video</value></string>
+
+  <string><id>1229</id><value>Musikk &amp; Programmer</value></string>
+  <string><id>1230</id><value>Video &amp; Programmer</value></string>
+  <string><id>1231</id><value>Bilder &amp; Programmer</value></string>
+  <string><id>1232</id><value>Musikk &amp; Video &amp; Bilder &amp; Programmer</value></string>
+  <string><id>1233</id><value>Programmer &amp; Video &amp; Musikk</value></string>
+  <string><id>1234</id><value>Programmer &amp; Bilder &amp; Musikk</value></string>
+  <string><id>1235</id><value>Programmer &amp; Bilder &amp; Video</value></string>
 
   <string><id>1396</id><value>Forbigående</value></string>
   <string><id>1397</id><value>og</value></string>
@@ -730,6 +738,10 @@
   <string><id>12370</id><value>Masterlås-modus forandret, masterkoden ble ikke angitt!</value></string>
   <string><id>12371</id><value>Vennligst angi en ny masterkode!</value></string>
 	
+  <string><id>12372</id><value>Lås filbehandler</value></string>
+  <string><id>12373</id><value>Lås innstillinger</value></string>
+  <string><id>12374</id><value>Lås media</value></string>
+  
   <string><id>12600</id><value>Været</value></string>
   <string><id>12900</id><value>Skjermbeskytter</value></string>
   <string><id>12901</id><value>Fullskjerm OSD</value></string>  
