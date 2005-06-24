@@ -27,10 +27,8 @@ public:
 private:
   static unsigned __int32 OpenCallback(const char *pName, const char *mode, void *userData);
   static void CloseCallback(void *userData);
-  static unsigned __int32 ReadCallback(void *pBuffer, unsigned int nBytesToRead, void *userData);
-  static unsigned __int32 WriteCallback(void *pBuffer, unsigned int nBytesToWrite, void *userData);
-  static __int32 SetposCallback(unsigned __int32 pos, void *userData);
-  static __int64 GetposCallback(void *userData);
+  static unsigned __int32 ReadCallback(void *userData, void *pBuffer, unsigned long nBytesToRead);
+  static __int32 SeekCallback(void *userData, unsigned __int64 pos);
   static __int64 FilesizeCallback(void *userData);
 
   AACHandle m_Handle;

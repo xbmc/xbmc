@@ -15,11 +15,9 @@ typedef void* AACHandle;
 /* function definitions for io via callbacks */
 typedef unsigned __int32 (*AACOpenCallback)(const char *pName, const char *mode, void *userData);
 typedef void (*AACCloseCallback)(void *userData);
-typedef unsigned __int32 (*AACReadCallback)(void *pBuffer, unsigned int nBytesToRead, void *userData);
-typedef unsigned __int32 (*AACWriteCallback)(void *pBuffer, unsigned int nBytesToWrite, void *userData);
-typedef __int32 (*AACSetposCallback)(unsigned __int32 pos, void *userData);
-typedef __int64 (*AACGetposCallback)(void *userData);
-typedef __int64 (*AACFilesizeCallback)(void *userData);
+typedef unsigned __int32 (*AACReadCallback)(void *userData, void *pBuffer, unsigned long nBytesToRead);
+typedef __int32 (*AACSeekCallback)(void *userData, unsigned __int64 pos);
+typedef __int64 (*AACFileSizeCallback)(void *userData);
 
 /* io callback structure */
 typedef struct AACIOCallbacks
@@ -27,10 +25,8 @@ typedef struct AACIOCallbacks
   AACOpenCallback Open;
   AACCloseCallback Close;
   AACReadCallback Read;
-  AACWriteCallback Write;
-  AACSetposCallback Setpos;
-  AACGetposCallback Getpos;
-  AACFilesizeCallback Filesize;
+  AACSeekCallback Seek;
+  AACFileSizeCallback Filesize;
   void *userData;
 } AACIOCallbacks;
 
