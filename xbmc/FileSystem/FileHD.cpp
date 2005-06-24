@@ -159,9 +159,11 @@ __int64 CFileHD::Seek(__int64 iFilePosition, int iWhence)
     bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_END);
     break;
   }
-  m_i64FilePos = lNewPos.QuadPart;
   if (bSuccess)
-    return (lNewPos.QuadPart);
+  {
+    m_i64FilePos = lNewPos.QuadPart;
+    return m_i64FilePos;
+  }
   else
     return -1;
 }
