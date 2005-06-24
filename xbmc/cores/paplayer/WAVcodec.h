@@ -16,5 +16,6 @@ public:
 
 private:
   CFileReader m_file;
-  int m_iDataLen;
+  long m_iDataStart;
+  long m_iDataLen;
 };

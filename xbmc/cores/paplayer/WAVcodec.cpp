@@ -1,27 +1,25 @@
 #include "../../stdafx.h"
 #include "WAVCodec.h"
 
-typedef struct wav_header{ /* RIFF */
- char riff[4];         /* "RIFF" (4 bytes) */
- long TotLen;          /* File length - 8 bytes  (4 bytes) */
- char wavefmt[8];      /* "WAVEfmt "  (8 bytes) */
- long Len;             /* Remaining length  (4 bytes) */
- short format_tag;     /* Tag (1 = PCM) (2 bytes) */
- short channels;       /* Mono=1 Stereo=2 (2 bytes) */
- long SamplesPerSec;   /* No samples/sec (4 bytes) */
- long AvgBytesPerSec;  /* Average bytes/sec (4 bytes) */
- short BlockAlign;     /* Block align (2 bytes) */
- short FormatSpecific; /* 8 or 16 bit (2 bytes) */
- char data[4];         /* "data" (4 bytes) */
- long datalen;         /* Raw data length (4 bytes) */
- /* ..data follows. Total header size = 44 bytes */
-} wav_header_s;
+typedef struct
+{
+  char chunk_id[4];
+  long chunksize;
+} WAVE_CHUNK;
+
+typedef struct
+{
+  char riff[4];
+  long filesize;
+  char rifftype[4];
+} WAVE_RIFFHEADER;
 
 WAVCodec::WAVCodec()
 {
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
+  m_iDataStart=0;
   m_iDataLen=0;
   m_Bitrate = 0;
   m_CodecName = L"WAV";
@@ -39,26 +37,70 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
   if (!m_file.Open(strFile.c_str()))
     return false;
 
-  wav_header_s wavHeader;
-  ZeroMemory(&wavHeader, sizeof(wav_header_s));
+  // read header
+  WAVE_RIFFHEADER riffh;
+  m_file.Read(&riffh, sizeof(WAVE_RIFFHEADER));
 
-  if (m_file.Read(&wavHeader, sizeof(wav_header_s))<=0)
+  // file valid?
+  if (strncmp(riffh.riff, "RIFF", 4)!=0 && strncmp(riffh.rifftype, "WAVE", 4)!=0)
     return false;
 
-  //  Valid wav file and PCM format?
-  if (strcmp(wavHeader.riff, "RIFF")!=0 && wavHeader.format_tag!=1)
-    return false;
+  long offset=0;
+  offset += sizeof(WAVE_RIFFHEADER);
+  offset -= sizeof(WAVE_CHUNK);
 
-  //  Get file info
-  m_SampleRate = wavHeader.SamplesPerSec;
-  m_Channels = wavHeader.channels;
-  m_BitsPerSample = wavHeader.FormatSpecific;
-  m_iDataLen = wavHeader.datalen;
+  // parse chunks
+  do
+  {
+    WAVE_CHUNK chunk;
+
+    // always seeking to the start of a chunk
+    m_file.Seek(offset + sizeof(WAVE_CHUNK), SEEK_SET);
+    m_file.Read(&chunk, sizeof(WAVE_CHUNK));
+
+    if (!strncmp(chunk.chunk_id, "fmt ", 4))
+    { // format chunk
+      WAVEFORMATEX wfx;
+      memset(&wfx, 0, sizeof(WAVEFORMATEX));
+      m_file.Read(&wfx, 16);
+
+      //  Get file info
+      m_SampleRate = wfx.nSamplesPerSec;
+      m_Channels = wfx.nChannels;
+      m_BitsPerSample = wfx.wBitsPerSample;
+
+      // we only need 16 bytes of the fmt chunk
+      if (chunk.chunksize-16>0)
+        m_file.Seek(chunk.chunksize-16, SEEK_CUR);
+    }
+    else if (!strncmp(chunk.chunk_id, "data", 4))
+    { // data chunk
+      m_iDataStart=(long)m_file.GetPosition();
+      m_iDataLen=chunk.chunksize;
+
+      if (chunk.chunksize & 1)
+        offset++;
+    }
+    else
+    { // other chunk - unused, just skip
+      m_file.Seek(chunk.chunksize, SEEK_CUR);
+    }
+
+    offset+=(chunk.chunksize+sizeof(WAVE_CHUNK));
+
+    if (offset & 1)
+      offset++;
+
+  } while (offset+(int)sizeof(WAVE_CHUNK) < riffh.filesize);
+
   m_TotalTime = m_iDataLen/(m_SampleRate*m_Channels*(m_BitsPerSample/8))*1000;
   m_Bitrate = (int)((m_iDataLen * 8) / (m_TotalTime / 1000));
 
-  if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0)
+  if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0 || m_iDataStart==0 || m_iDataLen==0)
     return false;
+
+  //  Seek to the start of the data chunk
+  m_file.Seek(m_iDataStart);
 
   return true;
 }
@@ -74,7 +116,7 @@ __int64 WAVCodec::Seek(__int64 iSeekTime)
   int iSampleSize=m_SampleRate*m_Channels*(m_BitsPerSample/8);
 
   //  Seek to the position in the file
-  m_file.Seek(sizeof(wav_header_s)+((iSeekTime/1000)*iSampleSize));
+  m_file.Seek(m_iDataStart+((iSeekTime/1000)*iSampleSize));
 
   return iSeekTime;
 }
@@ -83,17 +125,10 @@ int WAVCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
   *actualsize=0;
   int iPos=(int)m_file.GetPosition();
-  if (iPos == m_iDataLen)
+  if (iPos >= m_iDataStart+m_iDataLen)
     return READ_EOF;
 
-  int iSize=size;
-  if (iPos+size>m_iDataLen)
-  {
-    iSize=m_iDataLen-iPos;
-    iSize-=iSize%2;
-  }
-
-  int iAmountRead=m_file.Read(pBuffer, iSize);
+  int iAmountRead=m_file.Read(pBuffer, size);
   if (iAmountRead>0)
   {
     *actualsize=iAmountRead;
