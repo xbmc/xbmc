@@ -921,7 +921,7 @@ void CGUIWindowSlideShow::Render()
     if (m_Image[1 - m_iCurrentPic].IsLoaded())
     {
       // set the appropriate transistion time
-      m_Image[1 - m_iCurrentPic].SetTransistionTime(0, m_Image[1 - m_iCurrentPic].GetTransistionTime(1));
+      m_Image[1 - m_iCurrentPic].SetTransistionTime(0, m_Image[m_iCurrentPic].GetTransistionTime(1));
       m_Image[1 - m_iCurrentPic].Pause(m_bPause);
       m_Image[1 - m_iCurrentPic].Render();
     }
