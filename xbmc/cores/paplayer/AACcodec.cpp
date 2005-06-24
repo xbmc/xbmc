@@ -40,11 +40,9 @@ bool AACCodec::Init(const CStdString &strFile, unsigned int filecache)
   callbacks.userData=this;
   callbacks.Open=OpenCallback;
   callbacks.Read=ReadCallback;
-  callbacks.Write=WriteCallback;
   callbacks.Close=CloseCallback;
   callbacks.Filesize=FilesizeCallback;
-  callbacks.Getpos=GetposCallback;
-  callbacks.Setpos=SetposCallback;
+  callbacks.Seek=SeekCallback;
 
   m_Handle=m_dll.AACOpen(strFile.c_str(), callbacks);
   if (m_Handle==AAC_INVALID_HANDLE)
@@ -224,7 +222,7 @@ void AACCodec::CloseCallback(void *userData)
   codec->m_file.Close();
 }
 
-unsigned __int32 AACCodec::ReadCallback(void *pBuffer, unsigned int nBytesToRead, void *userData)
+unsigned __int32 AACCodec::ReadCallback(void *userData, void *pBuffer, unsigned long nBytesToRead)
 {
   AACCodec* codec=(AACCodec*) userData;
 
@@ -234,12 +232,7 @@ unsigned __int32 AACCodec::ReadCallback(void *pBuffer, unsigned int nBytesToRead
   return codec->m_file.Read(pBuffer, nBytesToRead);
 }
 
-unsigned __int32 AACCodec::WriteCallback(void *pBuffer, unsigned int nBytesToWrite, void *userData)
-{
-  return 0;
-}
-
-__int32 AACCodec::SetposCallback(unsigned __int32 pos, void *userData)
+__int32 AACCodec::SeekCallback(void *userData, unsigned __int64 pos)
 {
   AACCodec* codec=(AACCodec*) userData;
 
@@ -249,16 +242,6 @@ __int32 AACCodec::SetposCallback(unsigned __int32 pos, void *userData)
   codec->m_file.Seek(pos);
 
   return 0;
-}
-
-__int64 AACCodec::GetposCallback(void *userData)
-{
-  AACCodec* codec=(AACCodec*) userData;
-
-  if (!codec)
-    return -1;
-
-  return codec->m_file.GetPosition();
 }
 
 __int64 AACCodec::FilesizeCallback(void *userData)
