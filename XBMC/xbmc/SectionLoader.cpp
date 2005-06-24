@@ -3,6 +3,9 @@
 
 class CSectionLoader g_sectionLoader;
 
+//  delay for unloading dll's
+#define UNLOAD_DELAY 30*1000 // 30 sec.
+
 CSectionLoader::CSectionLoader(void)
 {}
 
@@ -128,13 +131,29 @@ void CSectionLoader::UnloadDLL(const CStdString &dllname)
       dll.m_lReferenceCount--;
       if (dll.m_lReferenceCount == 0)
       {
-        if (dll.m_pDll) delete dll.m_pDll;
-        g_sectionLoader.m_vecLoadedDLLs.erase(g_sectionLoader.m_vecLoadedDLLs.begin() + i);
-        CStdString strLog;
-        strLog.Format("SECTION:UnloadDLL(%s)\n", dllname.c_str());
-        OutputDebugString(strLog);
+        dll.m_lUnloadDelayStartTick=GetTickCount();
         return;
       }
+    }
+  }
+}
+
+void CSectionLoader::UnloadDLLsDelayed()
+{
+  CSingleLock lock(g_sectionLoader.m_critSection);
+
+  // check if we can unload any unreferenced dlls
+  for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
+  {
+    CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
+    if (dll.m_lReferenceCount == 0 && GetTickCount()-dll.m_lUnloadDelayStartTick>UNLOAD_DELAY)
+    {
+      CStdString strLog;
+      strLog.Format("SECTION:UnloadDLLsDelayed(%s)\n", dll.m_strDllName.c_str());
+      OutputDebugString(strLog);
+      if (dll.m_pDll) delete dll.m_pDll;
+      g_sectionLoader.m_vecLoadedDLLs.erase(g_sectionLoader.m_vecLoadedDLLs.begin() + i);
+      return;
     }
   }
 }

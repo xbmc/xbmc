@@ -3550,6 +3550,9 @@ void CApplication::Process()
 
   //  Check if we should submit a song to audioscrobbler
   CheckAudioScrobblerStatus();
+
+  //  check if we can unload any unreferenced dlls
+  CSectionLoader::UnloadDLLsDelayed();
 }
 
 void CApplication::Restart(bool bSamePosition)
