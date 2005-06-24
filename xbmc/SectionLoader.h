@@ -24,6 +24,7 @@ public:
     CStdString m_strDllName;
     long m_lReferenceCount;
     DllLoader *m_pDll;
+    DWORD m_lUnloadDelayStartTick;
   };
   CSectionLoader(void);
   virtual ~CSectionLoader(void);
@@ -33,6 +34,7 @@ public:
   static void Unload(const CStdString& strSection);
   static DllLoader *LoadDLL(const CStdString& strSection);
   static void UnloadDLL(const CStdString& strSection);
+  static void UnloadDLLsDelayed();
   static void UnloadAll();
 protected:
   vector<CSection> m_vecLoadedSections;

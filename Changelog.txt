@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 21-06-2005 fixed: some nav sounds are not played correctly
+ - 23-06-2005 changed: dll's loaded via section loader are unloaded with a 30 secs delay when unreferenced -> more freemem when using my music
+ - 22-06-2005 fixed: some nav sounds are not played correctly
  - 22-06-2005 added: New MasterLock option: Settings & Filemanager & Home Media [GeminiServer]
                      Now you can define a MasterLock also for Settings, Filemanager, My Video, My Music, My Pictures, My Programms
                      Location: Settings - Appearance - Master Lock: Lock Filemanger, Lock Settings and Lock Media!
