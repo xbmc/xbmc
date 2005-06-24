@@ -101,6 +101,9 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
   Transparent = -1;
 #ifdef _XBOX
   BytesPerRow = PadPow2(Width = iWidth);
+  // align to minimum 64 for XGSwizzleRect - no idea why this is needed,
+  // but it avoids a crash
+  if (BytesPerRow < 64) BytesPerRow = 64; 
 #else
   BytesPerRow = Width = iWidth;
 #endif

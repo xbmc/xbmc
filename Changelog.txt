@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-06-2005 fixed: Small width anim-gif loading crash.
  - 24-06-2005 fixed: wav header parsing in wavcodec is incorrect
  - 24-06-2005 fixed: Small issue in FileHD (reading of weather .rar file triggered it)
  - 24-06-2005 fixed: Transistion on press of left/right in my pictures faded incorrectly.
