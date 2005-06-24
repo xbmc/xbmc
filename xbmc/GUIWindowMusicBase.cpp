@@ -247,11 +247,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       {
         CSectionLoader::Unload("LIBID3");
 //        CSectionLoader::Unload("LIBMP4");
-        CSectionLoader::UnloadDLL(APE_DLL);
-        CSectionLoader::UnloadDLL(SHN_DLL);
-        CSectionLoader::UnloadDLL(MPC_DLL);
-        CSectionLoader::UnloadDLL(OGG_DLL);
-        CSectionLoader::UnloadDLL(AAC_DLL);
         m_bSectionsLoaded=false;
       }
     }
@@ -264,11 +259,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
       CSectionLoader::Load("LIBID3");
 //      CSectionLoader::Load("LIBMP4");
-      CSectionLoader::LoadDLL(APE_DLL);
-      CSectionLoader::LoadDLL(SHN_DLL);
-      CSectionLoader::LoadDLL(MPC_DLL);
-      CSectionLoader::LoadDLL(OGG_DLL);
-      CSectionLoader::LoadDLL(AAC_DLL);
       m_bSectionsLoaded=true;
 
       g_musicDatabase.Open();
