@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-06-2005 changed: aaccodec now uses mp4ff to read m4a files (aaccodec.dll in system\players\paplayer got updated)
  - 24-06-2005 updated: Norwegian language file (Thnx to vnm)
  - 24-06-2005 updated: German language file
  - 24-06-2005 changed: dll's loaded via section loader are unloaded with a 30 secs delay when unreferenced -> more freemem when using my music
