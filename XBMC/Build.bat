@@ -11,6 +11,7 @@ rem and finally set the options for the final rar.
 rem ---------------------------------------------
 rem Remove 'rem' from %NET% to compile and/or clean the solution prior packing it.
 rem Remove 'rem' from 'xcopy web/python' to copy these to the BUILD directory.
+rem For any item that is REM'ed you can enable them by removing REM.
 rem ---------------------------------------------
 TITLE XBMC Build Prepare Script
 ECHO Wait while preparing the build.
@@ -22,7 +23,6 @@ rem	CONFIG START
 	set XBE=xbepatch.exe
 	set RAR=C:\Progra~1\Winrar\rar.exe
 	set RAROPS1=a -r -idp -inul -m5 XBMC.rar BUILD
-	set RAROPS2=a -ep1 -inul
 	set SKINS=..\Skins
 rem	CONFIG END
 rem ---------------------------------------------
@@ -49,7 +49,6 @@ xcopy credits BUILD\credits /Q /I /Y
 xcopy language BUILD\language /E /Q /I /Y
 xcopy screensavers BUILD\screensavers /E /Q /I /Y
 xcopy visualisations BUILD\visualisations /E /Q /I /Y
-xcopy weather BUILD\weather /E /Q /I /Y
 xcopy system BUILD\system /E /Q /I /Y
 rem %rar% x web\Project_Mayhem_webserver*.rar build\web\
 rem xcopy python BUILD\python /E /Q /I /Y
@@ -61,11 +60,6 @@ del BUILD\system\players\mplayer\codecs\.cvsignore
 ECHO ------------------------------
 ECHO Removing CVS directories from build
 FOR /R BUILD %%d IN (CVS) DO @RD /S /Q %%d
-
-ECHO ------------------------------
-ECHO Rarring Weather graphics
-%RAR% %RAROPS2% BUILD\media\weather.rar BUILD\weather\64x64 BUILD\weather\128x128 BUILD\weather\logos
-rmdir BUILD\weather /S /Q
 
 ECHO ------------------------------
 ECHO Rarring...
