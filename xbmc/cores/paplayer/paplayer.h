@@ -5,7 +5,7 @@
 #include "AudioDecoder.h"
 #include "../ssrc.h"
 
-#define PACKET_COUNT  40 // number of packets of size PACKET_SIZE (defined in AudioDecoder.h)
+#define PACKET_COUNT  20 // number of packets of size PACKET_SIZE (defined in AudioDecoder.h)
 
 #define STATUS_NO_FILE  0
 #define STATUS_QUEUING  1

@@ -343,7 +343,7 @@ void CComboRenderer::Render()
 
     LPDIRECT3DSURFACE8 pSurface;
     m_YUY2Texture[m_iYUVRenderBuffer].GetSurfaceLevel(0, &pSurface);
-    m_pD3DDevice->UpdateOverlay( pSurface, &rs, &rd, TRUE, 0x00010001 );
+    m_pD3DDevice->UpdateOverlay( pSurface, &rs, &rd, TRUE, m_clearColour );
     pSurface->Release();
   }
   RenderOSD();
@@ -437,7 +437,7 @@ void CComboRenderer::CheckScreenSaver()
       while (!m_pD3DDevice->GetOverlayUpdateStatus()) Sleep(1);
       LPDIRECT3DSURFACE8 pSurface;
       m_YUY2Texture[m_iYUVDecodeBuffer].GetSurfaceLevel(0, &pSurface);
-      m_pD3DDevice->UpdateOverlay( pSurface, &rs, &rd, TRUE, 0x00010001 );
+      m_pD3DDevice->UpdateOverlay( pSurface, &rs, &rd, TRUE, m_clearColour );
       pSurface->Release();
       g_graphicsContext.Unlock();
     }

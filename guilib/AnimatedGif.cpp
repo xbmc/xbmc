@@ -101,9 +101,6 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
   Transparent = -1;
 #ifdef _XBOX
   BytesPerRow = PadPow2(Width = iWidth);
-  // align to minimum 64 for XGSwizzleRect - no idea why this is needed,
-  // but it avoids a crash
-  if (BytesPerRow < 64) BytesPerRow = 64; 
 #else
   BytesPerRow = Width = iWidth;
 #endif
@@ -126,9 +123,14 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
 
 #ifndef _XBOX // Not needed as already fixed to power of two
   BytesPerRow += (ALIGN - Width % ALIGN) % ALIGN; // Align BytesPerRow
+  int size = BytesPerRow * Height;
+#else
+  // align to multiple of 4096 for XGSwizzleRect
+  int size = BytesPerRow * Height;
+  size += (4096 - size % 4096) % 4096;  // align size
 #endif
 
-  Raster = new char [BytesPerRow * Height];
+  Raster = new char [size];
 
   pbmi->bmiHeader.biSize = sizeof (GUIBITMAPINFOHEADER);
   pbmi->bmiHeader.biWidth = Width;

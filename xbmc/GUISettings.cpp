@@ -367,6 +367,8 @@ CGUISettings::CGUISettings(void)
   AddInt(9, "MyVideos.Contrast", 13379, 50, 0, 1, 100, SPIN_CONTROL_INT);
   AddInt(10, "MyVideos.Gamma", 13380, 20, 0, 1, 100, SPIN_CONTROL_INT);
   AddBool(11, "MyVideos.UseTimeBasedSeeking", 13386, false);
+  // hidden setting for blackbars
+  AddInt(0, "Videos.BlackBarColour", 0, 1, 1, 1, 255, SPIN_CONTROL_INT);
 
   AddCategory(5, "VideoLists", 14018);
   AddBool(1, "VideoLists.HideParentDirItems", 13306, true);
