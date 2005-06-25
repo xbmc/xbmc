@@ -766,7 +766,7 @@ void CXBoxRenderer::FlipPage()
   {
     ManageDisplay();
     g_graphicsContext.Lock();
-    m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0x00010001, 1.0f, 0L );
+    m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
 
     Render();
     if (g_application.NeedRenderFullScreen())
@@ -897,6 +897,8 @@ unsigned int CXBoxRenderer::PreInit()
   m_NumOSDBuffers = 0;
   m_NumYV12Buffers = 0;
   m_iYV12DecodeBuffer = 0;
+  // setup the background colour
+  m_clearColour = (g_guiSettings.GetInt("Videos.BlackBarColour") & 0xff) * 0x010101;
   // low memory pixel shader
   if (!m_hLowMemShader)
   {
