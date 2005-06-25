@@ -116,6 +116,9 @@ protected:
 
   // pixel shader (low memory shader used in all renderers while in GUI)
   DWORD m_hLowMemShader;
+
+  // clear colour for "black" bars
+  DWORD m_clearColour;
 };
 
 #endif

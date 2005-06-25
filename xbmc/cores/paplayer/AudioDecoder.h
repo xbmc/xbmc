@@ -3,7 +3,7 @@
 #include "ICodec.h"
 #include "ringholdbuffer.h"
 
-#define PACKET_SIZE 1920    // audio packet size - we keep 1 in reserve for gapless playback
+#define PACKET_SIZE 3840    // audio packet size - we keep 1 in reserve for gapless playback
                             // using a multiple of 1, 2, 3, 4, 5, 6 to guarantee track alignment
                             // note that 7 or higher channels won't work too well.
 
