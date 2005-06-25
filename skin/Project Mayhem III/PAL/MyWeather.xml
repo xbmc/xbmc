@@ -59,7 +59,7 @@
       <id>101</id>
       <posX>85</posX>
       <posY>190</posY>
-      <texture>Q:\weather\logos\TWClogo_64px.png</texture>
+      <texture>TWClogo_64px.png</texture>
     </control>
 
     <control>

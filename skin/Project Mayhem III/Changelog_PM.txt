@@ -1,3 +1,5 @@
+2005-06-25 changed:	Moved weather logo into the skin.
+
 2005-06-20 fixed:	some minor font placement issues
 
 2005-06-13 added:       Music OSD during fullscreen visualisation
