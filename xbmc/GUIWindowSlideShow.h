@@ -62,7 +62,7 @@ public:
 
   int SlideNumber() const { return m_iSlideNumber;};
 
-  void Zoom(int iZoomAmount);
+  void Zoom(int iZoomAmount, bool immediate = false);
   void Rotate(int iRotateAmount);
   void Pause(bool bPause) { if (!m_bDrawNextImage) m_bPause = bPause;};
 
