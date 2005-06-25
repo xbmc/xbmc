@@ -15,6 +15,8 @@
 #define MAX_PICTURE_HEIGHT 4096
 #define MAX_PICTURE_SIZE 2048*2048
 
+#define IMMEDIATE_TRANSISTION_TIME 20
+
 #define PICTURE_MOVE_AMOUNT     0.02f
 #define PICTURE_MOVE_AMOUNT_ANALOG 0.01f
 #define PICTURE_VIEW_BOX_COLOR   0xffffff00 // YELLOW
@@ -235,9 +237,11 @@ void CSlideShowPic::Process()
       m_dwAlpha = 0xFF; // opaque
     }
   }
+  bool bPaused = m_bPause;
   // check if we're doing a temporary effect (such as rotate + zoom)
   if (m_transistionTemp.type != TRANSISTION_NONE)
   {
+    bPaused = true;
     if (m_iCounter >= m_transistionTemp.start)
     {
       if (m_iCounter >= m_transistionTemp.start + m_transistionTemp.length)
@@ -270,9 +274,6 @@ void CSlideShowPic::Process()
       }
     }
   }
-  // if we are zoomed, make sure we are paused
-  bool bPaused = m_bPause;
-  if (m_fZoomAmount > 1.0f) bPaused = true;
   // now just display
   if (!m_bNoEffect && !bPaused)
   {
@@ -384,19 +385,24 @@ void CSlideShowPic::Rotate(int iRotate)
   if (m_transistionTemp.type == TRANSISTION_ZOOM) return ;
   m_transistionTemp.type = TRANSISTION_ROTATE;
   m_transistionTemp.start = m_iCounter;
-  m_transistionTemp.length = m_transistionStart.length;
+  m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
   m_fTransistionAngle = (float)(iRotate - m_fAngle) / (float)m_transistionTemp.length;
   // reset the timer
   m_transistionEnd.start = m_iCounter + m_transistionStart.length + g_guiSettings.GetInt("Slideshow.StayTime") * FPS;
 }
 
-void CSlideShowPic::Zoom(int iZoom)
+void CSlideShowPic::Zoom(int iZoom, bool immediate /*= false*/)
 {
   if (m_bDrawNextImage) return ;
   if (m_transistionTemp.type == TRANSISTION_ROTATE) return ;
+  if (immediate)
+  {
+    m_fZoomAmount = zoomamount[iZoom - 1];
+    return;
+  }
   m_transistionTemp.type = TRANSISTION_ZOOM;
   m_transistionTemp.start = m_iCounter;
-  m_transistionTemp.length = m_transistionStart.length;
+  m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
   m_fTransistionZoom = (float)(zoomamount[iZoom - 1] - m_fZoomAmount) / (float)m_transistionTemp.length;
   // reset the timer
   m_transistionEnd.start = m_iCounter + m_transistionStart.length + g_guiSettings.GetInt("Slideshow.StayTime") * FPS;
@@ -820,7 +826,7 @@ void CGUIWindowSlideShow::Render()
       if (!m_bSlideShow)
       { // tell the pic to start transistioning out now
         m_Image[m_iCurrentPic].StartTransistion();
-        m_Image[m_iCurrentPic].SetTransistionTime(1, 20); // only 20 frames for the transistion
+        m_Image[m_iCurrentPic].SetTransistionTime(1, IMMEDIATE_TRANSISTION_TIME); // only 20 frames for the transistion
       }
       m_bWaitForNextPic = true;
       m_bErrorMessage = false;
@@ -895,7 +901,9 @@ void CGUIWindowSlideShow::Render()
     if ((m_bSlideShow || m_bLoadNextPic) && m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1 - m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && !m_bWaitForNextPic)
     { // load the next image
       CLog::Log(LOGDEBUG, "Loading the next image %s", m_vecSlides[m_iNextSlide].c_str());
-      m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, m_vecSlides[m_iNextSlide], g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight);
+      int maxWidth = (int)((float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth * zoomamount[m_iZoomFactor - 1]);
+      int maxHeight = (int)((float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight * zoomamount[m_iZoomFactor - 1]);
+      m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, m_vecSlides[m_iNextSlide], maxWidth, maxHeight);
     }
   }
 
@@ -911,7 +919,7 @@ void CGUIWindowSlideShow::Render()
   {
     CLog::Log(LOGDEBUG, "Starting immediate transistion due to user wanting slide %s", m_vecSlides[m_iNextSlide].c_str());
     m_Image[m_iCurrentPic].StartTransistion();
-    m_Image[m_iCurrentPic].SetTransistionTime(1, 20); // only 20 frames for the transistion
+    m_Image[m_iCurrentPic].SetTransistionTime(1, IMMEDIATE_TRANSISTION_TIME); // only 20 frames for the transistion
     m_bLoadNextPic = false;
   }
 
@@ -949,7 +957,7 @@ void CGUIWindowSlideShow::Render()
       if (m_iNextSlide >= (int)m_vecSlides.size())
         m_iNextSlide = 0;
     }
-    m_iZoomFactor = 1;
+//    m_iZoomFactor = 1;
     m_iRotate = 0;
   }
 
@@ -1009,11 +1017,11 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     m_gWindowManager.PreviousWindow();
     break;
   case ACTION_NEXT_PICTURE:
-    if (m_iZoomFactor == 1)
+//    if (m_iZoomFactor == 1)
       ShowNext();
     break;
   case ACTION_PREV_PICTURE:
-    if (m_iZoomFactor == 1)
+//    if (m_iZoomFactor == 1)
       ShowPrevious();
     break;
   case ACTION_MOVE_RIGHT:
@@ -1229,6 +1237,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTex
       else
         m_Image[iPic].SetTexture(iSlideNumber, pTexture, iWidth, iHeight, iRotate, EFFECT_NO_TIMEOUT);
       m_Image[iPic].SetOriginalSize(iOriginalWidth, iOriginalHeight, bFullSize);
+      m_Image[iPic].Zoom(m_iZoomFactor, true);
     }
   }
   else
