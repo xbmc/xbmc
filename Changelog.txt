@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-06-2005 changed: weather gfx now prerarred in media/weather.rar, Build.bat updated
  - 25-06-2005 changed: Moved weather logo into the skin.
  - 25-06-2005 fixed: Small navigation issue with Thumbpanels.
  - 25-06-2005 added: Next/Prev picture works when zoomed in.  Slideshow mode needs a rewrite - zooming is unpredictable at best in slideshow mode.  Pays to pause before zooming.
