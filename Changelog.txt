@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-06-2005 fixed: MACDll.dll had paths limited to 259 characters.
+ - 25-06-2005 fixed: 6 ch AAC playback with PAPlayer would crash/play slowly.
+ - 25-06-2005 added: hidden setting to alter the background colour during video playback (see settings.xml, tag is <BlackBarColour> - this specifies the greyscale value used.)
  - 24-06-2005 fixed: Small width anim-gif loading crash.
  - 24-06-2005 fixed: wav header parsing in wavcodec is incorrect
  - 24-06-2005 fixed: Small issue in FileHD (reading of weather .rar file triggered it)

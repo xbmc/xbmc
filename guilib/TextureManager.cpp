@@ -517,7 +517,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
         {
           D3DLOCKED_RECT lr;
           CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
-          RECT rc = { 0, 0, pImage->Width, pImage->Height };
+          RECT rc = { 0, 0, pImage->Width - 1, pImage->Height - 1 };
           if ( D3D_OK == pTexture->LockRect( 0, &lr, &rc, 0 ))
           {
             POINT pt = { 0, 0 };
