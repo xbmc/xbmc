@@ -528,6 +528,8 @@ void CGUIThumbnailPanel::OnRight()
       m_iSelect = CONTROL_UPDOWN;
       m_upDown.SetFocus(true);
     }
+    else
+      CGUIControl::OnRight();
   }
   else
   {
@@ -596,18 +598,17 @@ void CGUIThumbnailPanel::OnDown()
       ScrollDown();
       return ;
     }
-    else
+    if ( ValidItem(m_iCursorX, m_iCursorY + 1) )
     {
-      if ( ValidItem(m_iCursorX, m_iCursorY + 1) )
-      {
-        m_iCursorY++;
-      }
-      else if (m_upDown.GetMaximum() > 1)
-      {
-        m_iSelect = CONTROL_UPDOWN;
-        m_upDown.SetFocus(true);
-      }
+      m_iCursorY++;
     }
+    else if (m_upDown.GetMaximum() > 1)
+    {
+      m_iSelect = CONTROL_UPDOWN;
+      m_upDown.SetFocus(true);
+    }
+    else
+      CGUIControl::OnDown();
   }
   else
   {
