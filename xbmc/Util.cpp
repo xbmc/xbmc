@@ -2494,9 +2494,38 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
   g_graphicsContext.Unlock();
 }
 
+void CUtil::TakeScreenshot(const char* fn)
+{
+    LPDIRECT3DSURFACE8 lpSurface = NULL;
+
+    g_graphicsContext.Lock();
+    if (g_application.IsPlayingVideo())
+    {
+      g_renderManager.SetupScreenshot();
+    }
+    g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+    if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( -1, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+    {
+      if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
+      {
+        CLog::Log(LOGERROR, "Failed to Generate Screenshot");
+      }
+      else
+      {
+        CLog::Log(LOGINFO, "Screen shot saved as %s", fn);
+      }
+      lpSurface->Release();
+    }
+    g_graphicsContext.Unlock();
+    g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+    FlashScreen(true, true);
+    Sleep(10);
+    g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+    FlashScreen(true, false);
+}
+
 void CUtil::TakeScreenshot()
 {
-  LPDIRECT3DSURFACE8 lpSurface = NULL;
   char fn[1024];
   CStdString strDir = g_stSettings.m_szScreenshotsDirectory;
 
@@ -2507,30 +2536,7 @@ void CUtil::TakeScreenshot()
 
     if (strlen(fn))
     {
-      g_graphicsContext.Lock();
-      if (g_application.IsPlayingVideo())
-      {
-        g_renderManager.SetupScreenshot();
-      }
-      g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
-      if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( -1, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
-      {
-        if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
-        {
-          CLog::Log(LOGERROR, "Failed to Generate Screenshot");
-        }
-        else
-        {
-          CLog::Log(LOGINFO, "Screen shot saved as %s", fn);
-        }
-        lpSurface->Release();
-      }
-      g_graphicsContext.Unlock();
-      g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
-      FlashScreen(true, true);
-      Sleep(10);
-      g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
-      FlashScreen(true, false);
+      TakeScreenshot(fn);
     }
     else
     {

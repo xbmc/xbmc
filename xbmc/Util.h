@@ -152,6 +152,7 @@ static void CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath,
   static void GetVideoThumbnail(const CStdString& strIMDBID, CStdString& strThumb);
   static CStdString GetNextFilename(const char* fn_template, int max);
   static void TakeScreenshot();
+  static void TakeScreenshot(const char* fn);
   static void SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate);
   static void SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, int iGamma, bool bImmediate);
   static void Tokenize(const CStdString& path, vector<CStdString>& tokens, const string& delimiters);
