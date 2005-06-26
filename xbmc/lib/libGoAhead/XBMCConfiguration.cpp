@@ -152,9 +152,12 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, int argc, char_t **argv
 			if (pIt->FirstChild("path"))
 			{
         eid!=-1 ? ejSetResult( eid, (char*)pIt->FirstChild("path")->FirstChild()->Value()):
-                  websWrite(wp, "<li>%s", (char*)pIt->FirstChild("path")->FirstChild()->Value());;
+                  websWrite(wp, "<li>%s", (char*)pIt->FirstChild("path")->FirstChild()->Value());
 			}
 		}
+    else
+      eid!=-1 ? websError(wp, 500, T("Parameter not known\n")):
+                websWrite(wp, "<li>Error:Parameter not known");
 	}
   else
   {
