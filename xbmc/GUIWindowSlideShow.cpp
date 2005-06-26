@@ -767,7 +767,7 @@ vector<CStdString> CGUIWindowSlideShow::GetSlideShowContents()
 
 CStdString CGUIWindowSlideShow::GetCurrentSlide()
 {
-  if (m_bSlideShow)
+  if (m_vecSlides.size()>(unsigned int)m_iCurrentSlide)
     return m_vecSlides[m_iCurrentSlide];
   else
     return "";
