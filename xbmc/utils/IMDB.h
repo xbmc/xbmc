@@ -61,6 +61,8 @@ public:
   bool LoadDLL();
   bool InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist);
   bool InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails);
+  bool ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails);
+  bool LoadDetails(const CStdString& strIMDB, CIMDBMovie &movieDetails);
   bool Download(const CStdString &strURL, const CStdString &strFileName);
   void GetURL(const CStdString& strMovie, CStdString& strURL);
 

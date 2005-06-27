@@ -904,6 +904,7 @@ HRESULT CApplication::Initialize()
   CreateDirectory((strAlbumDir + "\\cddb").c_str(), NULL);
   CreateDirectory((strAlbumDir + "\\thumbs").c_str(), NULL); // contains the album thumbs
   CreateDirectory((strAlbumDir + "\\thumbs\\temp").c_str(), NULL);
+  CreateDirectory((strAlbumDir + "\\imdb").c_str(), NULL);
   CreateDirectory("Q:\\python", NULL);
   CreateDirectory("Q:\\python\\Lib", NULL);
   CreateDirectory("Q:\\python\\temp", NULL);
