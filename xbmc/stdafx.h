@@ -5,6 +5,8 @@
 
 #pragma once
 
+#define XBMC_MAX_PATH 1024 // normal max path is 260, but smb shares and the like can be longer
+
 #define DEBUG_MOUSE
 #define DEBUG_KEYBOARD
 #include <xtl.h>
