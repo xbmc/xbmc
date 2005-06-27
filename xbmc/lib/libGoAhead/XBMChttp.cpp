@@ -1425,8 +1425,8 @@ int CXbmcHttp::xbmcExit( webs_t wp, int theAction)
 		break;
 	case 3:
 		websWrite(wp, "<li>OK\n");
-    CUtil::ExecBuiltIn("xbmc.Dashboard");
-		break;
+    g_applicationMessenger.RebootToDashBoard();
+    break;
 	case 4:
 		websWrite(wp, "<li>OK\n");
 		g_applicationMessenger.Reset();
@@ -1682,7 +1682,10 @@ int CXbmcHttp::xbmcExecBuiltIn(webs_t wp, int numParas, CStdString paras[])
 		websWrite(wp,"<li>Error:Missing parameter");
 	else
 	{
-    CUtil::ExecBuiltIn(paras[0]);
+    //CUtil::ExecBuiltIn(paras[0]);
+    ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
+		tMsg.strParam = paras[0];
+		g_applicationMessenger.SendMessage(tMsg);
 		websWrite(wp, "<li>OK\n");
 	}
 	return 0;
@@ -1704,8 +1707,8 @@ int CXbmcHttp::xbmcGUISetting(webs_t wp, int numParas, CStdString paras[])
 					break;
 				case 1: // bool
           g_guiSettings.GetBool(paras[1])==0?
-            websWrite(wp, "<li>False"):
-            websWrite(wp, "<li>True");
+          websWrite(wp, "<li>False"):
+          websWrite(wp, "<li>True");
           break;
         case 2: // float
           websWrite(wp, "<li>%f", g_guiSettings.GetFloat(paras[1]));
@@ -1840,10 +1843,10 @@ int CXbmcHttp::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *
 {
   int retVal, numParas;
   CStdString paras[MAX_PARAS];
-  //if (strlen(parameter)<300)
-  //  CLog::Log(LOGDEBUG, "HttpApi Start command: %s  paras: %s", command, parameter);
-  //else
-  //  CLog::Log(LOGDEBUG, "HttpApi Start command: %s  paras: [not recorded]", command);
+  if (strlen(parameter)<300)
+    CLog::Log(LOGDEBUG, "HttpApi Start command: %s  paras: %s", command, parameter);
+  else
+    CLog::Log(LOGDEBUG, "HttpApi Start command: %s  paras: [not recorded]", command);
   numParas = splitParameter(parameter, paras);
   websHeader(wp);
 	if (!stricmp(command, "clearplaylist"))             retVal =  xbmcClearPlayList(wp, numParas, paras);  
@@ -1908,7 +1911,7 @@ int CXbmcHttp::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *
     retVal = 0;
 	}
   websFooter(wp);
-  //CLog::Log(LOGDEBUG, "HttpApi End command: %s", command);
+  CLog::Log(LOGDEBUG, "HttpApi End command: %s", command);
 	return retVal;
 }
 
