@@ -60,6 +60,8 @@ private:
   static int CloseCallback(void *datasource);
   static long TellCallback(void *datasource);
 
+  void RemapChannels(short *SampleBuffer, int samples);
+
   CFileReader m_file;
   OGGdll m_dll;
   OggVorbis_File m_VorbisFile;

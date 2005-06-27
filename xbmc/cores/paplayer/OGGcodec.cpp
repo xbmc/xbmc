@@ -176,6 +176,9 @@ int OGGCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   else
     *actualsize=lRead;
 
+  if (m_Channels==6)  // Only 6 channel files need remapping
+    RemapChannels((short*)pBuffer, size/2);  // size/2 = 16 bit samples
+
   return READ_SUCCESS;
 }
 
@@ -247,6 +250,28 @@ bool OGGCodec::LoadDLL()
 bool OGGCodec::HandlesType(const char *type)
 {
   return ( strcmp(type, "ogg") == 0 );
+}
+
+// OGG order : L, C, R, L", R", LFE
+// XBOX order : L, R, L", R", C, LFE
+void OGGCodec::RemapChannels(short *SampleBuffer, int samples)
+{
+  short r1, r2, r3, r4, r5, r6;
+  for (int i = 0; i < samples; i += 6)
+  {
+    r1 = SampleBuffer[i];
+    r2 = SampleBuffer[i+1];
+    r3 = SampleBuffer[i+2];
+    r4 = SampleBuffer[i+3];
+    r5 = SampleBuffer[i+4];
+    r6 = SampleBuffer[i+5];
+    SampleBuffer[i] = r1;
+    SampleBuffer[i+1] = r3;
+    SampleBuffer[i+2] = r4;
+    SampleBuffer[i+3] = r5;
+    SampleBuffer[i+4] = r2;
+    SampleBuffer[i+5] = r6;
+  }
 }
 
 size_t OGGCodec::ReadCallback(void *ptr, size_t size, size_t nmemb, void *datasource)
