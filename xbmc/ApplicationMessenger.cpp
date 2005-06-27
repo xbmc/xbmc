@@ -79,6 +79,7 @@ void CApplicationMessenger::ProcessMessages()
         break;
 
       case TMSG_DASHBOARD:
+        CUtil::ExecBuiltIn("XBMC.Dashboard()");
         break;
 
       case TMSG_RESTART:
