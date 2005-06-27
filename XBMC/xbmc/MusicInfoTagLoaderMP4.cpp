@@ -60,6 +60,9 @@ static unsigned int ReadUnsignedInt( const char* pData )
   return result;
 }
 
+#define TEMP_MP4_THUMB_FILE "Z:\\temp_mp4_thumb.tbn"
+
+static bool foundThumb = false;
 
 // Given a metadata type, and a pointer to the data (and the size), this function attempts to populate
 // XBMC's CMusicInfoTag object. Tags that we don't support are simply ignored..
@@ -164,21 +167,14 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
   case	g_CoverArtAtomName:
     {
       // This cover-art handling is pretty much what was in the old MP4 tag processing code..
-      CStdString strCoverArt, strPath;
-      CUtil::GetDirectory( tag.GetURL(), strPath );
-      CUtil::GetAlbumThumb( tag.GetAlbum(), strPath, strCoverArt, true );
+      foundThumb = true;
 
       CPicture pic;
-      if ( pic.CreateAlbumThumbnailFromMemory( ( const BYTE* )pMetaData, metaSize, "", strCoverArt ) )
+      if ( !pic.CreateAlbumThumbnailFromMemory( ( const BYTE* )pMetaData, metaSize, "", TEMP_MP4_THUMB_FILE ) )
       {
-        CUtil::ThumbCacheAdd( strCoverArt, true );
-      }
-      else
-      {
-        CUtil::ThumbCacheAdd( strCoverArt, false );
         CLog::Log(LOGERROR, "Tag loader mp4: Unable to create album art for %s (size=%d)", tag.GetURL().c_str(), metaSize );
       }
-
+      
       break;
     }
   default:
@@ -317,8 +313,24 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
     tag.SetURL(strFileName);
 
     // Now go parse our atom data
+    foundThumb = false;
     ParseAtom( file, 0, file.GetLength(), tag );
 
+    if (foundThumb)
+    { // cache the thumb
+      CStdString strCoverArt, strPath;
+      CUtil::GetDirectory( tag.GetURL(), strPath );
+      CUtil::GetAlbumThumb( tag.GetAlbum(), strPath, strCoverArt, true );
+
+      if (file.Cache(TEMP_MP4_THUMB_FILE, strCoverArt.c_str()))
+      {
+        CUtil::ThumbCacheAdd( strCoverArt, true );
+      }
+      else
+      {
+        CUtil::ThumbCacheAdd( strCoverArt, false );
+      }
+    }
     // Close the file..
     file.Close();
 
