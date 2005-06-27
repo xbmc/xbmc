@@ -53,8 +53,8 @@ CEncoderLame::CEncoderLame()
 {
   m_pDLLLame = NULL;
 
-  memset(m_inPath, 0, MAX_PATH + 1);
-  memset(m_outPath, 0, MAX_PATH + 1);
+  memset(m_inPath, 0, XBMC_MAX_PATH + 1);
+  memset(m_outPath, 0, XBMC_MAX_PATH + 1);
 }
 
 bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
