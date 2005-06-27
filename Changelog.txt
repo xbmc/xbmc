@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-06-2005 fixed: Movie information wasn't enabled in db views.
  - 27-06-2005 fixed: upper case MP3/AAC extensions weren't read correctly.
  - 27-06-2005 fixed: Very long file names reading from smb could crash.
  - 26-06-2005 fixed: HttpApi:PlayNext and PlayPrev commands

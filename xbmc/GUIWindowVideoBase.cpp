@@ -1005,8 +1005,8 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     pMenu->EnableButton(btn_Resume, false);
     pMenu->EnableButton(btn_Queue, false);
   }
-  // turn off the query info button if we aren't in files view
-  if (GetID() != WINDOW_VIDEOS)
+  // turn off the query info button if we are in playlists view
+  if (GetID() == WINDOW_VIDEO_PLAYLIST || GetID() != WINDOW_VIDEOS && m_vecItems[iItem]->m_bIsFolder)
     pMenu->EnableButton(btn_Show_Info, false);
 
   if(bEnabledDVD && !(m_vecItems[iItem]->IsDVDFile(true, true) 
