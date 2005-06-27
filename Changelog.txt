@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-06-2005 fixed: incorrect channel mapping for 6 channel ogg files when using paplayer
  - 27-06-2005 fixed: Black screen when paused in hardware overlays.
  - 27-06-2005 fixed: Movie information wasn't enabled in db views.
  - 27-06-2005 fixed: upper case MP3/AAC extensions weren't read correctly.
