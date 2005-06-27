@@ -1624,9 +1624,8 @@ void CApplication::Render()
         if (m_pPlayer->IsPaused())
         {
           g_graphicsContext.Lock();
-          m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-          extern void xbox_video_render_update();
-          xbox_video_render_update();
+          extern void xbox_video_render_update(bool);
+          xbox_video_render_update(true);
           RenderFullScreen();
           m_gWindowManager.Render();
           m_pd3dDevice->BlockUntilVerticalBlank();

@@ -16,7 +16,7 @@ public:
   float GetAspectRatio() { if (!m_bChanging && m_pRenderer) return m_pRenderer->GetAspectRatio(); else return 1.0f; };
   void AutoCrop(bool bCrop = true) { if (!m_bChanging && m_pRenderer) m_pRenderer->AutoCrop(bCrop); };
   void Update(bool bPauseDrawing);
-  void RenderUpdate() { if (!m_bChanging && m_pRenderer) m_pRenderer->RenderUpdate(); };
+  void RenderUpdate(bool clear) { if (!m_bChanging && m_pRenderer) m_pRenderer->RenderUpdate(clear); };
   void CheckScreenSaver() { if (!m_bChanging && m_pRenderer) m_pRenderer->CheckScreenSaver(); };
   void SetupScreenshot();
   void SetViewMode(int iViewMode) { if (!m_bChanging && m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };

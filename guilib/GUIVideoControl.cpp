@@ -32,8 +32,8 @@ void CGUIVideoControl::Render()
   rc.bottom = rc.top + m_dwHeight;
   g_graphicsContext.SetViewWindow(rc);
 
-  extern void xbox_video_render_update();
-  xbox_video_render_update();
+  extern void xbox_video_render_update(bool);
+  xbox_video_render_update(false);
 }
 
 void CGUIVideoControl::OnMouseClick(DWORD dwButton)
