@@ -189,6 +189,16 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
     return false;
   }
 
+  // save the xml file for later reading...
+  CFile file;
+  CStdString strXMLFile;
+  strXMLFile.Format("%s\\imdb\\%s.xml", g_stSettings.m_szAlbumDirectory, movieDetails.m_strIMDBNumber.c_str());
+  if (file.OpenForWrite(strXMLFile.c_str()))
+  {
+    file.Write(szXML, strlen(szXML));
+    file.Close();
+  }
+
   // ok, now parse the xml file
   TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
@@ -197,6 +207,28 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
     CLog::Log(LOGERROR, "IMDB: Unable to parse xml");
     return false;
   }
+
+  bool ret = ParseDetails(doc, movieDetails);
+  TiXmlBase::SetCondenseWhiteSpace(true);
+
+  return ret;
+}
+
+bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
+{
+  // fill in the defaults
+  CStdString strLocNotAvail = g_localizeStrings.Get(416); // Not available
+  movieDetails.m_strDirector = strLocNotAvail;
+  movieDetails.m_strWritingCredits = strLocNotAvail;
+  movieDetails.m_strGenre = strLocNotAvail;
+  movieDetails.m_strTagLine = strLocNotAvail;
+  movieDetails.m_strPlotOutline = strLocNotAvail;
+  movieDetails.m_strPlot = strLocNotAvail;
+  movieDetails.m_strPictureURL = "";
+  movieDetails.m_strVotes = strLocNotAvail;
+  movieDetails.m_strCast = strLocNotAvail;
+  movieDetails.m_iTop250 = 0;
+
   TiXmlNode *details = doc.FirstChild( "details" );
 
   if (!details)
@@ -222,8 +254,37 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
   GetString(details, "director", movieDetails.m_strDirector);
   GetString(details, "plot", movieDetails.m_strPlot);
 
-  TiXmlBase::SetCondenseWhiteSpace(true);
   return true;
+}
+
+bool CIMDB::LoadDetails(const CStdString& strIMDB, CIMDBMovie &movieDetails)
+{
+  CStdString strXMLFile;
+  strXMLFile.Format("%s\\imdb\\%s.xml", g_stSettings.m_szAlbumDirectory, strIMDB.c_str());
+  TiXmlBase::SetCondenseWhiteSpace(false);
+  TiXmlDocument doc;
+  movieDetails.m_strIMDBNumber = strIMDB;
+  if (doc.LoadFile(strXMLFile) && ParseDetails(doc, movieDetails))
+  { // excellent!
+    return true;
+  }
+  TiXmlBase::SetCondenseWhiteSpace(true);
+  // oh no - let's try and redownload them.
+  CGUIDialogProgress *pDlgProgress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (!pDlgProgress)
+    return false;
+  pDlgProgress->SetHeading(198);
+  pDlgProgress->SetLine(0, "");
+  pDlgProgress->SetLine(1, movieDetails.m_strTitle);
+  pDlgProgress->SetLine(2, "");
+  pDlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+  pDlgProgress->Progress();
+  CIMDBUrl url;
+  url.m_strTitle = movieDetails.m_strTitle;
+  url.m_strURL.Format("http://%s/title/%s", g_stSettings.m_szIMDBurl, strIMDB.c_str());
+  bool ret = GetDetails(url, movieDetails, pDlgProgress);
+  pDlgProgress->Close();
+  return ret;
 }
 
 bool CIMDB::Download(const CStdString &strURL, const CStdString &strFileName)
@@ -430,6 +491,7 @@ bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGU
 bool CIMDB::GetDetails(const CIMDBUrl &url, CIMDBMovie &movieDetails, CGUIDialogProgress *pProgress /* = NULL */)
 {
   m_url = url;
+  m_movieDetails = movieDetails;
   if (pProgress)
   { // threaded version
     m_state = GET_DETAILS;
