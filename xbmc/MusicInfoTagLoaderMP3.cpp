@@ -482,6 +482,7 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
 
       CStdString strExtension;
       CUtil::GetExtension(strFileName, strExtension);
+      strExtension.ToLower();
       if (strExtension==".mp3")
         tag.SetDuration(ReadDuration(file, myTag));
       else if (strExtension==".aac")
@@ -806,7 +807,9 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 
   // Normal mp3 with constant bitrate duration
   // Now song length is (filesize without id3v1/v2 tag)/((bitrate)/(8))
-  double d = (double)(nMp3DataSize / ((bitrate * 1000) / 8));
+  double d = 0;
+  if (bitrate > 0)
+   d = (double)(nMp3DataSize / ((bitrate * 1000) / 8));
   m_seekInfo.SetDuration((float)d);
   float offset[2];
   offset[0] = (float)nPrependedBytes;
