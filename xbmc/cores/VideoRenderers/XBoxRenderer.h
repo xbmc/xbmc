@@ -31,7 +31,7 @@ public:
   virtual void GetVideoRect(RECT &rs, RECT &rd);
   virtual float GetAspectRatio();
   virtual void Update(bool bPauseDrawing);
-  virtual void RenderUpdate();
+  virtual void RenderUpdate(bool clear);
   virtual void CheckScreenSaver() {};
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
