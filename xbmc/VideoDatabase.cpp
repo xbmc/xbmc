@@ -790,6 +790,11 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     if (m_pDS->num_rows() > 0)
     {
       details = GetDetailsFromDataset(m_pDS);
+      if (details.m_strWritingCredits.IsEmpty())
+      { // try loading off disk
+        CIMDB imdb;
+        imdb.LoadDetails(details.m_strIMDBNumber, details);
+      }
     }
     m_pDS->close();
   }
@@ -900,14 +905,9 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     {
       m_pDS->close();
       CStdString strTmp = "";
-      strSQL.Format("insert into movieinfo ( idMovie,idDirector,strPlotOutline,strPlot,strTagLine,strVotes,strRuntime,fRating,strCast,strCredits , iYear  ,strGenre, strPictureURL, strTitle,IMDBID) values(%i,%i,'%s','%s','%s','%s','%s','%s','%s','%s',%i,'%s','%s','%s','%s')",
-                    lMovieId, lDirector, details1.m_strPlotOutline.c_str(),
-                    details1.m_strPlot.c_str(), details1.m_strTagLine.c_str(),
-                    details1.m_strVotes.c_str(), details1.m_strRuntime.c_str(), strRating.c_str(),
-                    details1.m_strCast.c_str(), details1.m_strWritingCredits.c_str(),
-
-                    details1.m_iYear, details1.m_strGenre.c_str(),
-                    details1.m_strPictureURL.c_str(), details1.m_strTitle.c_str(),
+      strSQL.Format("insert into movieinfo ( idMovie,idDirector,strRuntime,fRating,iYear,strTitle,IMDBID) values(%i,%i,'%s','%s',%i,'%s','%s')",
+                    lMovieId, lDirector, details1.m_strRuntime.c_str(), strRating.c_str(),
+                    details1.m_iYear, details1.m_strTitle.c_str(),
                     details1.m_strIMDBNumber.c_str() );
 
       m_pDS->exec(strSQL.c_str());
@@ -916,13 +916,9 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     else
     {
       m_pDS->close();
-      strSQL.Format("update movieinfo set idDirector=%i, strPlotOutline='%s', strPlot='%s', strTagLine='%s', strVotes='%s', strRuntime='%s', fRating='%s', strCast='%s',strCredits='%s', iYear=%i, strGenre='%s' strPictureURL='%s', strTitle='%s' IMDBID='%s' where idMovie=%i",
-                    lDirector, details1.m_strPlotOutline.c_str(),
-                    details1.m_strPlot.c_str(), details1.m_strTagLine.c_str(),
-                    details1.m_strVotes.c_str(), details1.m_strRuntime.c_str(), strRating.c_str(),
-                    details1.m_strCast.c_str(), details1.m_strWritingCredits.c_str(),
-                    details1.m_iYear, details1.m_strGenre.c_str(),
-                    details1.m_strPictureURL.c_str(), details1.m_strTitle.c_str(),
+      strSQL.Format("update movieinfo set idDirector=%i, strRuntime='%s', fRating='%s', iYear=%i, strTitle='%s', IMDBID='%s' where idMovie=%i",
+                    lDirector, details1.m_strRuntime.c_str(), strRating.c_str(),
+                    details1.m_iYear, details1.m_strTitle.c_str(),
                     details1.m_strIMDBNumber.c_str(),
                     lMovieId);
       m_pDS->exec(strSQL.c_str());
