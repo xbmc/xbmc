@@ -747,15 +747,17 @@ void CXBoxRenderer::Update(bool bPauseDrawing)
     g_graphicsContext.Lock();
     g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution : g_guiSettings.m_LookAndFeelResolution, !bFullScreen);
     g_graphicsContext.Unlock();
-    RenderUpdate();
+    RenderUpdate(false);
   }
 }
 
-void CXBoxRenderer::RenderUpdate()
+void CXBoxRenderer::RenderUpdate(bool clear)
 {
   if (!m_YTexture[0]) return ;
   g_graphicsContext.Lock();
   ManageDisplay();
+  if (clear)
+    m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
   Render();
   g_graphicsContext.Unlock();
 }

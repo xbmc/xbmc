@@ -62,9 +62,9 @@ void xbox_video_wait()
   g_renderManager.WaitForFlip();
 }
 
-void xbox_video_render_update()
+void xbox_video_render_update(bool clear)
 {
-  g_renderManager.RenderUpdate();
+  g_renderManager.RenderUpdate(clear);
 }
 
 void xbox_video_update(bool bPauseDrawing)
