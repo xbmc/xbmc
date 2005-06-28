@@ -250,17 +250,20 @@ void CTransferSocket::OnSend(int nErrorCode)
 				{
 					CloseHandle(m_hFile);
 					m_hFile = INVALID_HANDLE_VALUE;
-					m_status=0;
-					m_pOwner->m_pOwner->PostThreadMessage(WM_FILEZILLA_THREADMSG, FTM_TRANSFERMSG, m_pOwner->m_userid);
-					Close();
-					return;
+          if (!m_nBufferPos)
+          { // only close if we've actually finished!
+					  m_status=0;
+					  m_pOwner->m_pOwner->PostThreadMessage(WM_FILEZILLA_THREADMSG, FTM_TRANSFERMSG, m_pOwner->m_userid);
+					  Close();
+					  return;
+          }
 				}
 				numread+=m_nBufferPos;
 				m_nBufferPos=0;
 			}
 			else
 				numread=m_nBufferPos;
-			m_nBufferPos=0;
+      m_nBufferPos=0;
 
 			if (numread<m_nBufSize)
 			{
@@ -298,9 +301,9 @@ void CTransferSocket::OnSend(int nErrorCode)
 			{
 				memmove(m_pBuffer, m_pBuffer+numsent, numread-numsent);
 				m_nBufferPos=numread-numsent;
-			}
+      }
 
-			if (nLimit != -1 && GetState() != aborted)
+      if (nLimit != -1 && GetState() != aborted)
 				m_pOwner->m_SlQuota.nDownloaded += numsent;
 
 			((CServerThread *)m_pOwner->m_pOwner)->IncSendCount(numsent);
