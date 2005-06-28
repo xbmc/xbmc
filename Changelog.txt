@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-06-2005 fixed: Thumbnail orientation rotates using the EXIF information.
+ - 28-06-2005 added: Thumbnail generation of pics uses embedded thumbnails (EXIF) in jpgs.
  - 28-06-2005 changed: SEEKING to Left Thumbstick in keymap.xml
  - 27-06-2005 added: Support for running xbe's off Q:
  - 27-06-2005 changed: Large IMDb information (plots etc.) no longer stored in the video database - they are now stored in albums/imdb.

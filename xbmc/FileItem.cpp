@@ -283,6 +283,13 @@ bool CFileItem::IsXBE() const
   return false;
 }
 
+bool CFileItem::IsType(const char *ext) const
+{
+  char* pExtension = CUtil::GetExtension(m_strPath);
+  if (!pExtension) return false;
+  return (strcmpi(pExtension, ext) == 0);
+}
+
 bool CFileItem::IsDefaultXBE() const
 {
   char* pFileName = CUtil::GetFileName(m_strPath);
@@ -734,6 +741,15 @@ void CFileItem::SetThumb()
           //  local, just use it
           SetThumbnailImage(strThumbnailFileName);
           bGotIcon = true;
+        }
+      }
+      else
+      { // no thumb found - in the case of a jpeg file we can see if it contains a thumb though
+        if (item.IsType(".jpg") && item.IsHD())
+        {
+          CPicture pic;
+          if (pic.GetExifThumbnail(item.m_strPath, strCachedThumbnail))
+            SetThumbnailImage(strCachedThumbnail);
         }
       }
     }
