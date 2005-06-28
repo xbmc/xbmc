@@ -1046,7 +1046,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     Move(0, -PICTURE_MOVE_AMOUNT);
     break;
 
-  case ACTION_SHOW_CODEC:
+  case ACTION_SHOW_INFO:
     m_bShowInfo = !m_bShowInfo;
     break;
 

@@ -877,24 +877,6 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
     }
   }
 }
-void CGUIWindowFullScreen::ChangetheSpeed(DWORD action)
-{
-  int iSpeed = g_application.GetPlaySpeed();
-  if (action == ACTION_REWIND && iSpeed == 1) // Enables Rewinding
-    iSpeed *= -2;
-  else if (action == ACTION_REWIND && iSpeed > 1) //goes down a notch if you're FFing
-    iSpeed /= 2;
-  else if (action == ACTION_FORWARD && iSpeed < 1) //goes up a notch if you're RWing
-    iSpeed /= 2;
-  else
-    iSpeed *= 2;
-
-  if (action == ACTION_FORWARD && iSpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
-    iSpeed = 1;
-  if (iSpeed > 32 || iSpeed < -32)
-    iSpeed = 1;
-  g_application.SetPlaySpeed(iSpeed);
-}
 
 void CGUIWindowFullScreen::Update()
 {
