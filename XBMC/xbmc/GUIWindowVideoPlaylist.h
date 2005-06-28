@@ -32,5 +32,4 @@ protected:
   void SavePlayList();
 
   virtual void OnClick(int iItem);
-  void OnQueueItem(int iItem);
 };
