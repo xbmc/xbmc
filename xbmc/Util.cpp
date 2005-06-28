@@ -18,6 +18,7 @@
 #include "utils/RegExp.h"
 #include "utils/AlarmClock.h" 
 #include "cores/VideoRenderers/RenderManager.h"
+#include "ButtonTranslator.h"
 
 bool CUtil::m_bNetworkUp = false;
 extern "C"
@@ -3059,9 +3060,9 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
 
     // confirm the window destination is actually a number
     // before switching
-    if (CUtil::IsNaturalNumber(strWindow))
+    int iWindow = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
+    if (iWindow != WINDOW_INVALID)
     {
-      int iWindow = WINDOW_HOME + atoi(parameter.c_str());
       // check what type of window we have (it could be a dialog)
       CGUIWindow *pWindow = m_gWindowManager.GetWindow(iWindow);
       if (pWindow && pWindow->IsDialog())
