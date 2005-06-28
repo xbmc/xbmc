@@ -153,7 +153,6 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int &iOriginalW
   if (!pImage) return NULL;
 
   m_ExifOrientation = pImage->GetExifOrientation();
-
   IDirect3DTexture8* pTexture = GetTexture(*pImage);
   if (bCreateThumb)
   {
@@ -283,6 +282,12 @@ bool CPicture::CreateThumbFromImage(const CStdString &strFileName, const CStdStr
       bNeedToConvert = true;
     }
 
+    if ( image.GetExifOrientation() > 1 )
+    {
+      image.RotateExif(image.GetExifOrientation());
+      bNeedToConvert = true;
+    }
+
     ::DeleteFile(strThumbnail.c_str());
     // only resave the image if we have to (quality of the JPG saver isn't too hot!)
     if (bNeedToConvert)
@@ -351,14 +356,23 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 
   try
   {
-    bool bNeedToConvert = dwImageType != CXIMAGE_FORMAT_JPG;
+    // jpeg's may contain an EXIF preview image - use that if it's there
+    if (dwImageType == CXIMAGE_FORMAT_JPG && GetExifThumbnail(strCachedFile, strThumbFileName))
+    {
+      return true;
+    }
     CxImage image(dwImageType);
-    if (!image.Load(strCachedFile.c_str(), dwImageType) || !image.IsValid())
+    int iWidth = nMaxWidth;
+    int iHeight = nMaxHeight;
+    if (!image.Load(strCachedFile.c_str(), dwImageType, iWidth, iHeight) || !image.IsValid())
     {
       CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: Unable to open image: %s Error:%s\n", strCachedFile.c_str(), image.GetLastError());
       return false;
     }
 
+    bool bNeedToConvert = dwImageType != CXIMAGE_FORMAT_JPG;
+    if (iWidth > nMaxWidth || iHeight > nMaxHeight)
+      bNeedToConvert = true;
     return CreateThumbFromImage(strCachedFile, strThumbFileName, image, nMaxWidth, nMaxHeight, bNeedToConvert);
   }
   catch (...)
@@ -525,7 +539,6 @@ void CPicture::RenderImage(IDirect3DTexture8* pTexture, float x, float y, float 
     vertex[i].col = dwColor;
   }
   m_pVB->Unlock();
-
 
   // Set state to render the image
   g_graphicsContext.Get3DDevice()->SetTexture( 0, pTexture );
@@ -695,4 +708,10 @@ void CPicture::CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs)
   {
     CLog::Log(LOGERROR, "Unable to save thumb file");
   }
+}
+
+bool CPicture::GetExifThumbnail(const CStdString &strFile, const CStdString &strCachedThumb)
+{
+  CxImage image;
+  return image.GetExifThumbnail(strFile.c_str(), strCachedThumb.c_str());
 }

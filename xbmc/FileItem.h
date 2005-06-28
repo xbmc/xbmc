@@ -57,6 +57,7 @@ public:
   bool IsHD() const;
   bool IsRemote() const;
   bool IsSmb() const;
+  bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;
   bool IsReadOnly() const;
 

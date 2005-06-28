@@ -18,6 +18,7 @@ public:
   DWORD GetWidth() const;
   DWORD GetHeight() const;
   long GetExifOrientation() const { return m_ExifOrientation;};
+  bool GetExifThumbnail(const CStdString &strFile, const CStdString &strCachedThumb);
   void RenderImage(IDirect3DTexture8* pTexture, float x, float y, float width, float height, int iTextureWidth, int iTextureHeight, int iTextureLeft = 0, int iTextureTop = 0, DWORD dwAlpha = 0xFF);
 
   void CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs);
