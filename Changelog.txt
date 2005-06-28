@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-06-2005 fixed: FTP server could corrupt files on send in some (fairly rare) scenarios.
  - 28-06-2005 changed: Keymap.xml format has changed.  Hopefully easier to understand for newcomers.
  - 28-06-2005 fixed: Thumbnail orientation rotates using the EXIF information.
  - 28-06-2005 added: Thumbnail generation of pics uses embedded thumbnails (EXIF) in jpgs.
