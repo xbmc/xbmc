@@ -180,6 +180,17 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         bRepeatOne = !bRepeatOne;
         g_playlistPlayer.RepeatOne(PLAYLIST_MUSIC, bRepeatOne);
       }
+      else if (m_viewControl.HasControl(iControl))
+      {
+        int iAction = message.GetParam1();
+        if (iAction == ACTION_DELETE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
+        {
+          int iItem = m_viewControl.GetSelectedItem();
+          if ( iItem >= 0 )
+            RemovePlayListItem(iItem);
+          return true;
+        }
+      }
     }
     break;
 
@@ -481,12 +492,6 @@ void CGUIWindowMusicPlayList::OnClick(int iItem)
   g_playlistPlayer.SetCurrentPlaylist( PLAYLIST_MUSIC );
   g_playlistPlayer.Reset();
   g_playlistPlayer.Play( iItem );
-}
-
-void CGUIWindowMusicPlayList::OnQueueItem(int iItem)
-{
-  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
-  RemovePlayListItem(iItem);
 }
 
 void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)

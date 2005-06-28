@@ -187,9 +187,10 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
         if (iItem < 0)
           break;
 
-        if (iAction == ACTION_QUEUE_ITEM)
+        if (iAction == ACTION_DELETE_ITEM)
         {
-          OnQueueItem(iItem);
+          RemovePlayListItem(iItem);
+          return true;
         }
         else if (iAction == ACTION_SELECT_ITEM)
         {
@@ -493,12 +494,6 @@ void CGUIWindowVideoPlaylist::OnClick(int iItem)
   g_playlistPlayer.SetCurrentPlaylist( PLAYLIST_VIDEO);
   g_playlistPlayer.Reset();
   g_playlistPlayer.Play( iItem );
-}
-
-void CGUIWindowVideoPlaylist::OnQueueItem(int iItem)
-{
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return ;
-  RemovePlayListItem(iItem);
 }
 
 void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)

@@ -64,7 +64,6 @@ protected:
   \brief Overwrite to update your gui buttons (visible, enable,...)
   */
   virtual void UpdateButtons();
-  virtual void OnQueueItem(int iItem);
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
   virtual void GoParentFolder();
   virtual void ClearFileItems();
@@ -81,6 +80,7 @@ protected:
 
   void RetrieveMusicInfo();
   void OnInfo(int iItem);
+  void OnQueueItem(int iItem);
   bool FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumInfo& album);
   void ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh);
   void UpdateListControl();

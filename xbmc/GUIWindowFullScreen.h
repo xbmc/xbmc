@@ -26,7 +26,6 @@ public:
   bool HasProgressDisplay();
   bool OSDVisible() const;
   void ChangetheTimeCode(DWORD remote);
-  void ChangetheSpeed(DWORD action);
   virtual void OnExecute(int iAction, const IOSDOption* option);
   bool m_bOSDVisible;
 
