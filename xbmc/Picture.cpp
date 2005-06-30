@@ -12,7 +12,9 @@
 
 CPicture::CPicture(void)
 {
-  m_bSectionLoaded = false;
+  m_bDllLoaded = false;
+  ZeroMemory(&m_info, sizeof(ImageInfo));
+  ZeroMemory(&m_dll, sizeof(ImageDLL));
 }
 
 CPicture::~CPicture(void)
@@ -22,362 +24,56 @@ CPicture::~CPicture(void)
 
 void CPicture::Free()
 {
-
-  if ( m_bSectionLoaded)
+  if (m_bDllLoaded)
   {
-    CSectionLoader::Unload("CXIMAGE");
-    m_bSectionLoaded = false;
+    CSectionLoader::Unload(IMAGE_DLL);
+    m_bDllLoaded = false;
   }
 }
 
-DWORD CPicture::GetImageType(const char *ext)
+IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight, bool bCreateThumb)
 {
-  if ( 0 == strcmpi(ext, ".bmp") ) return CXIMAGE_FORMAT_BMP;
-  else if ( 0 == strcmpi(ext, ".gif") ) return CXIMAGE_FORMAT_GIF;
-  else if ( 0 == strcmpi(ext, ".tbn") ) return CXIMAGE_FORMAT_JPG;
-  else if ( 0 == strcmpi(ext, ".jpg") ) return CXIMAGE_FORMAT_JPG;
-  else if ( 0 == strcmpi(ext, ".jpeg") ) return CXIMAGE_FORMAT_JPG;
-  else if ( 0 == strcmpi(ext, ".png") ) return CXIMAGE_FORMAT_PNG;
-  else if ( 0 == strcmpi(ext, ".ico") ) return CXIMAGE_FORMAT_ICO;
-  else if ( 0 == strcmpi(ext, ".tif") ) return CXIMAGE_FORMAT_TIF;
-  else if ( 0 == strcmpi(ext, ".tiff") ) return CXIMAGE_FORMAT_TIF;
-  else if ( 0 == strcmpi(ext, ".tga") ) return CXIMAGE_FORMAT_TGA;
-  else if ( 0 == strcmpi(ext, ".pcx") ) return CXIMAGE_FORMAT_PCX;
-  return CXIMAGE_FORMAT_UNKNOWN;
-}
+  if (!LoadDLL()) return NULL;
 
-CxImage* CPicture::LoadImage(const CStdString& strFileName, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth, int iMaxHeight)
-{
-  CStdString strExtension;
-
-  CUtil::GetExtension(strFileName, strExtension);
-  if (!strExtension.size()) return NULL;
-
-  DWORD dwImageType = GetImageType(strExtension.c_str());
-
-
-  CFileItem fileName(strFileName, false);
-  CFileItem cachedFile("", false);
-  if (! fileName.IsHD())
+  memset(&m_info, 0, sizeof(ImageInfo));
+  if (!m_dll.LoadImage(strFileName.c_str(), iMaxWidth, iMaxHeight, &m_info))
   {
-    cachedFile.m_strPath = "Z:\\cachedpic";
-    cachedFile.m_strPath += strExtension;
-    CFile file;
-    ::DeleteFile(cachedFile.m_strPath.c_str());
-    if ( !file.Cache(fileName.m_strPath.c_str(), cachedFile.m_strPath.c_str(), NULL, NULL) )
-    {
-      ::DeleteFile(cachedFile.m_strPath.c_str());
-      CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to cache file %s\n", fileName.m_strPath.c_str());
-      return NULL;
-    }
-  }
-  else
-  {
-    cachedFile.m_strPath = fileName.m_strPath;
-  }
-
-  if (!m_bSectionLoaded)
-  {
-    CSectionLoader::Load("CXIMAGE");
-    m_bSectionLoaded = true;
-  }
-
-  CxImage* pImage = new CxImage(dwImageType);
-  if (!pImage) return NULL;
-  int iWidth = iMaxWidth;
-  int iHeight = iMaxHeight;
-  try
-  {
-    CLog::Log(LOGDEBUG, "PICTURE::LoadImage: Attempting to load %s", cachedFile.m_strPath.c_str());
-    if (!pImage->Load(cachedFile.m_strPath.c_str(), dwImageType, iWidth, iHeight) || !pImage->IsValid())
-    {
-      CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to open image: %s Error:%s\n", cachedFile.m_strPath.c_str(), pImage->GetLastError());
-      delete pImage;
-      return NULL;
-    }
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to open image: %s\n", cachedFile.m_strPath.c_str());
-    if (cachedFile.IsHD() )
-    {
-      ::DeleteFile(cachedFile.m_strPath.c_str());
-    }
-    delete pImage;
+    CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
     return NULL;
   }
-
-  CLog::Log(LOGDEBUG, "PICTURE::LoadImage: Loaded %s successfully.", cachedFile.m_strPath.c_str());
-
-  iOriginalWidth = iWidth;
-  iOriginalHeight = iHeight;
-  m_dwWidth = pImage->GetWidth();
-  m_dwHeight = pImage->GetHeight();
-
-  bool bResize = false;
-  float fAspect = ((float)m_dwWidth) / ((float)m_dwHeight);
-
-  if (m_dwWidth > (DWORD)iMaxWidth)
-  {
-    bResize = true;
-    m_dwWidth = iMaxWidth;
-    m_dwHeight = (DWORD)( ( (float)m_dwWidth) / fAspect);
-  }
-
-  if (m_dwHeight > (DWORD)iMaxHeight)
-  {
-    bResize = true;
-    m_dwHeight = iMaxHeight;
-    m_dwWidth = (DWORD)( fAspect * ( (float)m_dwHeight) );
-  }
-
-  if (bResize)
-  {
-    if (!pImage->Resample(m_dwWidth, m_dwHeight, QUALITY) || !pImage->IsValid())
-    {
-      CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to resample picture: %s\n", cachedFile.m_strPath.c_str());
-      delete pImage;
-      return NULL;
-    }
-  }
-
-  m_dwWidth = pImage->GetWidth();
-  m_dwHeight = pImage->GetHeight();
-
-  return pImage;
-}
-
-IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth, int iMaxHeight, bool bCreateThumb)
-{
-  CxImage *pImage = LoadImage(strFileName, iOriginalWidth, iOriginalHeight, iMaxWidth, iMaxHeight);
-  if (!pImage) return NULL;
-
-  m_ExifOrientation = pImage->GetExifOrientation();
-  IDirect3DTexture8* pTexture = GetTexture(*pImage);
-  if (bCreateThumb)
-  {
-    CStdString strThumbnail;
-    CUtil::GetThumbnail(strFileName, strThumbnail);
-    CreateThumbFromImage(strFileName, strThumbnail, *pImage, MAX_THUMB_WIDTH, MAX_THUMB_HEIGHT, true);
-  }
-  delete pImage;
-  pImage = NULL;
-  return pTexture;
-}
-
-DWORD CPicture::GetWidth() const
-{
-  return m_dwWidth;
-}
-
-DWORD CPicture::GetHeight() const
-{
-  return m_dwHeight;
-}
-
-IDirect3DTexture8* CPicture::GetTexture( CxImage& image )
-{
-  IDirect3DTexture8* pTexture = NULL;
-  if (g_graphicsContext.Get3DDevice()->CreateTexture( image.GetWidth(),
-      image.GetHeight(),
-      1,  // levels
-      0,  //usage
-      D3DFMT_LIN_A8R8G8B8 ,
-      0,
-      &pTexture) != D3D_OK)
-  {
-    return NULL;
-  }
-  if (!pTexture)
-  {
-    return NULL;
-  }
-
-  DWORD dwHeight = image.GetHeight();
-  DWORD dwWidth = image.GetWidth();
-
-  D3DLOCKED_RECT lr;
-  if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
-  {
-    DWORD strideScreen = lr.Pitch;
-    for (DWORD y = 0; y < dwHeight; y++)
-    {
-      BYTE *pDest = (BYTE*)lr.pBits + strideScreen * y;
-      for (DWORD x = 0; x < dwWidth; x++)
-      {
-        RGBQUAD rgb = image.GetPixelColor( x, dwHeight - 1 - y);
-
-        *pDest++ = rgb.rgbBlue;
-        *pDest++ = rgb.rgbGreen;
-        *pDest++ = rgb.rgbRed;
-        *pDest++ = 0xff;
-      }
-    }
-    pTexture->UnlockRect( 0 );
-  }
-  return pTexture;
+  // loaded successfully
+  return m_info.texture;
 }
 
 bool CPicture::CreateAlbumThumbnail(const CStdString& strFileName, const CStdString& strAlbum)
 {
   CStdString strThumbnail;
   CUtil::GetAlbumFolderThumb(strAlbum, strThumbnail, true);
-  return DoCreateThumbnail(strFileName, strThumbnail, MAX_ALBUM_THUMB_WIDTH, MAX_ALBUM_THUMB_HEIGHT);
+  return DoCreateThumbnail(strFileName, strThumbnail);
 }
 
 bool CPicture::CreateThumbnail(const CStdString& strFileName)
 {
   CStdString strThumbnail;
   CUtil::GetThumbnail(strFileName, strThumbnail);
-  CFileItem fileName(strFileName, false);
-  bool bCacheFile = fileName.IsRemote();
-  return DoCreateThumbnail(strFileName, strThumbnail, MAX_THUMB_WIDTH, MAX_THUMB_HEIGHT, bCacheFile);
+  return DoCreateThumbnail(strFileName, strThumbnail);
 }
 
-bool CPicture::CreateThumbFromImage(const CStdString &strFileName, const CStdString &strThumbnail, CxImage& image, int nMaxWidth, int nMaxHeight, bool bNeedToConvert)
-{
-  try
-  {
-    // don't creat the thumb if it already exists
-    if (CUtil::FileExists(strThumbnail))
-      return true;
-    bool bResize = false;
-    int width = image.GetWidth();
-    int height = image.GetHeight();
-    float fAspect = ((float)width) / ((float)height);
-
-    if (width > nMaxWidth )
-    {
-      bResize = true;
-      width = nMaxWidth;
-      height = (int)( ( (float)width) / fAspect);
-    }
-
-    if (height > nMaxHeight )
-    {
-      bResize = true;
-      height = nMaxHeight;
-      width = (int)( fAspect * ( (float)height) );
-    }
-
-    if (bResize)
-    {
-      if (!image.Resample(width, height, QUALITY) || !image.IsValid())
-      {
-        CLog::Log(LOGERROR, "PICTURE::CreateThumbnailFromImage: Unable to resample image for thumbnail. Error:%s\n", image.GetLastError());
-        return false;
-      }
-      width = image.GetWidth();
-      height = image.GetHeight();
-      bNeedToConvert = true;
-    }
-
-    if ( image.GetNumColors() )
-    {
-      if (!image.IncreaseBpp(24) || !image.IsValid())
-      {
-        CLog::Log(LOGERROR, "PICTURE::CreateThumbnailFromImage: Unable to convert to 24bpp: Error:%s\n", image.GetLastError());
-        return false;
-      }
-      bNeedToConvert = true;
-    }
-
-    if ( image.GetExifOrientation() > 1 )
-    {
-      image.RotateExif(image.GetExifOrientation());
-      bNeedToConvert = true;
-    }
-
-    ::DeleteFile(strThumbnail.c_str());
-    // only resave the image if we have to (quality of the JPG saver isn't too hot!)
-    if (bNeedToConvert)
-    {
-      // May as well have decent quality thumbs
-      image.SetJpegQuality(90);
-      if (!image.Save(strThumbnail.c_str(), CXIMAGE_FORMAT_JPG))
-      {
-        CLog::Log(LOGERROR, "PICTURE::CreateThumbnailFromImage: Unable to save image: %s Error:%s\n", strThumbnail.c_str(), image.GetLastError());
-        ::DeleteFile(strThumbnail.c_str());
-        return false;
-      }
-    }
-    else
-    { // Don't need to convert the file - cache it instead
-      CFile file;
-      if ( !file.Cache(strFileName.c_str(), strThumbnail.c_str(), NULL, NULL) )
-      {
-        CLog::Log(LOGERROR, "PICTURE::CreateThumbnailFromImage: Unable to copy file %s\n", strFileName.c_str());
-        ::DeleteFile(strThumbnail.c_str());
-        return false;
-      }
-    }
-    return true;
-  }
-  catch (...)
-  {}
-  return false;
-}
-
-bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, int nMaxWidth, int nMaxHeight, bool bCacheFile /*=true*/)
+bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName)
 {
   CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", strFileName.c_str(),strThumbFileName.c_str());
   
-  // don't creat the thumb if it already exists
+  // don't create the thumb if it already exists
   if (CUtil::FileExists(strThumbFileName))
     return true;
-  
-  CStdString strExtension;
-  CStdString strCachedFile;
 
-  CUtil::GetExtension(strFileName, strExtension);
-  if (!strExtension.size()) return false;
+  // load our dll
+  if (!LoadDLL()) return false;
 
-  DWORD dwImageType = GetImageType(strExtension.c_str());
-
-  if (bCacheFile)
+  memset(&m_info, 0, sizeof(ImageInfo));
+  if (!m_dll.CreateThumbnail(strFileName.c_str(), strThumbFileName.c_str()))
   {
-    strCachedFile = "Z:\\cachedpic";
-    strCachedFile += strExtension;
-    CFile file;
-    if ( !file.Cache(strFileName.c_str(), strCachedFile.c_str(), NULL, NULL) )
-    {
-      CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: Unable to cache file: %s\n", strFileName.c_str());
-      return false;
-    }
-  }
-  else
-    strCachedFile = strFileName;
-
-  if (!m_bSectionLoaded)
-  {
-    CSectionLoader::Load("CXIMAGE");
-    m_bSectionLoaded = true;
-  }
-
-  try
-  {
-    // jpeg's may contain an EXIF preview image - use that if it's there
-    if (dwImageType == CXIMAGE_FORMAT_JPG && GetExifThumbnail(strCachedFile, strThumbFileName))
-    {
-      return true;
-    }
-    CxImage image(dwImageType);
-    int iWidth = nMaxWidth;
-    int iHeight = nMaxHeight;
-    if (!image.Load(strCachedFile.c_str(), dwImageType, iWidth, iHeight) || !image.IsValid())
-    {
-      CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: Unable to open image: %s Error:%s\n", strCachedFile.c_str(), image.GetLastError());
-      return false;
-    }
-
-    bool bNeedToConvert = dwImageType != CXIMAGE_FORMAT_JPG;
-    if (iWidth > nMaxWidth || iHeight > nMaxHeight)
-      bNeedToConvert = true;
-    return CreateThumbFromImage(strCachedFile, strThumbFileName, image, nMaxWidth, nMaxHeight, bNeedToConvert);
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: exception on cached file: %s\n", strCachedFile.c_str());
+    CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: Unable to create thumbfile %s from image %s", strThumbFileName.c_str(), strFileName.c_str());
     return false;
   }
   return true;
@@ -386,124 +82,13 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
 {
   CLog::Log(LOGINFO, "Creating album thumb from memory: %s", strThumbFileName.c_str());
-  DWORD dwImageType = CXIMAGE_FORMAT_UNKNOWN;
-
-  if (strExtension.IsEmpty())
+  if (!LoadDLL()) return false;
+  if (!m_dll.CreateThumbnailFromMemory((BYTE *)pBuffer, nBufSize, strExtension.c_str(), strThumbFileName.c_str()))
   {
-    dwImageType = DetectFileType(pBuffer, nBufSize);
-  }
-  else
-  {
-    if ( 0 == strcmpi(strExtension.c_str(), "bmp") ) dwImageType = CXIMAGE_FORMAT_BMP;
-    if ( 0 == strcmpi(strExtension.c_str(), "bitmap") ) dwImageType = CXIMAGE_FORMAT_BMP;
-    if ( 0 == strcmpi(strExtension.c_str(), "gif") ) dwImageType = CXIMAGE_FORMAT_GIF;
-    if ( 0 == strcmpi(strExtension.c_str(), "jpg") ) dwImageType = CXIMAGE_FORMAT_JPG;
-    if ( 0 == strcmpi(strExtension.c_str(), "tbn") ) dwImageType = CXIMAGE_FORMAT_JPG;
-    if ( 0 == strcmpi(strExtension.c_str(), "jpeg") ) dwImageType = CXIMAGE_FORMAT_JPG;
-    if ( 0 == strcmpi(strExtension.c_str(), "png") ) dwImageType = CXIMAGE_FORMAT_PNG;
-    if ( 0 == strcmpi(strExtension.c_str(), "ico") ) dwImageType = CXIMAGE_FORMAT_ICO;
-    if ( 0 == strcmpi(strExtension.c_str(), "tif") ) dwImageType = CXIMAGE_FORMAT_TIF;
-    if ( 0 == strcmpi(strExtension.c_str(), "tiff") ) dwImageType = CXIMAGE_FORMAT_TIF;
-    if ( 0 == strcmpi(strExtension.c_str(), "tga") ) dwImageType = CXIMAGE_FORMAT_TGA;
-    if ( 0 == strcmpi(strExtension.c_str(), "pcx") ) dwImageType = CXIMAGE_FORMAT_PCX;
-  }
-
-  if (dwImageType == CXIMAGE_FORMAT_UNKNOWN)
-  {
-    CLog::Log(LOGERROR, "PICTURE::createthumbnailfrommemory: Unknown filetype: %s\n", strExtension.c_str());
+    CLog::Log(LOGERROR, "PICTURE::CreateAlbumThumbnailFromMemory: exception: memfile FileType: %s\n", strExtension.c_str());
     return false;
   }
-
-  auto_aptr<BYTE> pPicture(new BYTE[nBufSize]);
-  fast_memcpy(pPicture.get(), pBuffer, nBufSize);
-
-  if (!m_bSectionLoaded)
-  {
-    CSectionLoader::Load("CXIMAGE");
-    m_bSectionLoaded = true;
-  }
-
-  try
-  {
-    CxImage image(dwImageType);
-    if (!image.Decode(pPicture.get(), nBufSize, dwImageType) || !image.IsValid())
-    {
-      CLog::Log(LOGERROR, "PICTURE::createthumbnailfrommemory: Unable to load image from memory Error:%s\n", image.GetLastError());
-      return false;
-    }
-
-    m_dwWidth = image.GetWidth();
-    m_dwHeight = image.GetHeight();
-
-    bool bResize = false;
-    float fAspect = ((float)m_dwWidth) / ((float)m_dwHeight);
-
-    if (m_dwWidth > (DWORD)MAX_ALBUM_THUMB_WIDTH )
-    {
-      bResize = true;
-      m_dwWidth = MAX_ALBUM_THUMB_WIDTH;
-      m_dwHeight = (DWORD)( ( (float)m_dwWidth) / fAspect);
-    }
-
-    if (m_dwHeight > (DWORD)MAX_ALBUM_THUMB_HEIGHT )
-    {
-      bResize = true;
-      m_dwHeight = MAX_ALBUM_THUMB_HEIGHT;
-      m_dwWidth = (DWORD)( fAspect * ( (float)m_dwHeight) );
-    }
-
-    if (bResize)
-    {
-      if (!image.Resample(m_dwWidth, m_dwHeight, QUALITY) || !image.IsValid())
-      {
-        CLog::Log(LOGERROR, "PICTURE::createthumbnailfrommemory: Unable to resample image Error:%s\n", image.GetLastError());
-        return false;
-      }
-      m_dwWidth = image.GetWidth();
-      m_dwHeight = image.GetHeight();
-    }
-
-    ::DeleteFile(strThumbFileName.c_str());
-    if ( image.GetNumColors() )
-    {
-      if (!image.IncreaseBpp(24) || !image.IsValid())
-      {
-        CLog::Log(LOGERROR, "PICTURE::createthumbnailfrommemory: Unable to increase bpp Error:%s\n", image.GetLastError());
-        return false;
-      }
-    }
-    image.SetJpegQuality(90); // decent quality thumbs needed!
-    if (!image.Save(strThumbFileName.c_str(), CXIMAGE_FORMAT_JPG))
-    {
-      CLog::Log(LOGERROR, "PICTURE::createthumbnailfrommemory: Unable to save image:%s Error:%s\n", strThumbFileName.c_str(), image.GetLastError());
-
-      ::DeleteFile(strThumbFileName.c_str());
-      return false;
-    }
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "PICTURE::createthumbnailfrommemory: exception: memfile FileType: %s\n", strExtension.c_str());
-  }
-  return false;
-}
-
-int CPicture::DetectFileType(const BYTE* pBuffer, int nBufSize)
-{
-  if (nBufSize <= 5)
-    return CXIMAGE_FORMAT_UNKNOWN;
-
-  if (pBuffer[1] == 'P' && pBuffer[2] == 'N' && pBuffer[3] == 'G')
-    return CXIMAGE_FORMAT_PNG;
-
-  if (pBuffer[0] == 'B' && pBuffer[1] == 'M')
-    return CXIMAGE_FORMAT_BMP;
-
-  if (pBuffer[0] == 0xFF && pBuffer[1] == 0xD8 && pBuffer[2] == 0xFF && pBuffer[3] == 0xE0)
-    return CXIMAGE_FORMAT_JPG;
-
-  return CXIMAGE_FORMAT_UNKNOWN;
+  return true;
 }
 
 void CPicture::RenderImage(IDirect3DTexture8* pTexture, float x, float y, float width, float height, int iTextureWidth, int iTextureHeight, int iTextureLeft, int iTextureTop, DWORD dwAlpha)
@@ -572,146 +157,66 @@ void CPicture::RenderImage(IDirect3DTexture8* pTexture, float x, float y, float 
   m_pVB->Release();
 }
 
-
-
 bool CPicture::Convert(const CStdString& strSource, const CStdString& strDest)
 {
-  CStdString strExtension;
-  CStdString strCachedFile;
-
-  CUtil::GetExtension(strSource, strExtension);
-  if (!strExtension.size()) return false;
-  DWORD dwImageType = GetImageType(strExtension.c_str());
-
-  CFileItem source(strSource, false);
-  if (!source.IsHD())
-  {
-    strCachedFile = "Z:\\cachedpic";
-    strCachedFile += strExtension;
-    CFile file;
-    if ( !file.Cache(strSource.c_str(), strCachedFile.c_str(), NULL, NULL) )
-    {
-      CLog::Log(LOGERROR, "PICTURE::convert: Unable to cache image %s\n", strCachedFile.c_str());
-      ::DeleteFile(strCachedFile.c_str());
-      return NULL;
-    }
-  }
-  else
-  {
-    strCachedFile = strSource;
-  }
-
-  if (!m_bSectionLoaded)
-  {
-    CSectionLoader::Load("CXIMAGE");
-    m_bSectionLoaded = true;
-  }
-
-  try
-  {
-    CxImage image(dwImageType);
-    if (!image.Load(strCachedFile.c_str(), dwImageType))
-    {
-      CLog::Log(LOGERROR, "PICTURE::convert: Unable to load image: %s Error:%s\n", strCachedFile.c_str(), image.GetLastError());
-      return false;
-    }
-
-    ::DeleteFile(strDest.c_str());
-    if ( image.GetNumColors() )
-    {
-      image.IncreaseBpp(24);
-    }
-    image.SetJpegQuality(90); // decent quality thumbs needed!
-    if (!image.Save(strDest.c_str(), CXIMAGE_FORMAT_JPG))
-    {
-      CLog::Log(LOGERROR, "PICTURE::convert: Unable to save image: %s Error:%s\n", strDest.c_str(), image.GetLastError());
-      ::DeleteFile(strDest.c_str());
-      return false;
-    }
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "PICTURE::convert: exception %s\n", strCachedFile.c_str());
-    ::DeleteFile(strDest.c_str());
-    return false;
-  }
-
-  return true;
+  return DoCreateThumbnail(strSource, strDest);
 }
 
 void CPicture::CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs)
 { // we want to mold the thumbs together into one single one
-  CStdString strThumbnail;
-  CUtil::GetThumbnail(strFolder, strThumbnail);
-  CxImage image(MAX_THUMB_WIDTH, MAX_THUMB_HEIGHT, 32, CXIMAGE_FORMAT_PNG);
-  CxImage *pImage = NULL;
-  int iWidth = MAX_THUMB_WIDTH / 2;
-  int iHeight = MAX_THUMB_HEIGHT / 2;
-  for (int i = 0; i < 2; i++)
+  if (!LoadDLL()) return;
+  CStdString strFolderThumbnail;
+  CUtil::GetThumbnail(strFolder, strFolderThumbnail);
+  CStdString strThumbnails[4];
+  const char *szThumbs[4];
+  for (int i=0; i < 4; i++)
   {
-    for (int j = 0; j < 2; j++)
-    {
-      int width, height;
-      bool bBlank = false;
-      if (strThumbs[i*2 + j].IsEmpty())
-        bBlank = true;
-      if (!bBlank)
-      {
-        CStdString strImageThumb;
-        CUtil::GetThumbnail(strThumbs[i*2 + j], strImageThumb);
-        pImage = LoadImage(strImageThumb, width, height, iWidth - 2, iHeight - 2);
-      }
-      if (!pImage)
-        bBlank = true;
-      if (!bBlank)
-      {
-        int iOffX = (iWidth - 2 - pImage->GetWidth()) / 2;
-        int iOffY = (iHeight - 2 - pImage->GetHeight()) / 2;
-        for (int x = 0; x < iWidth; x++)
-        {
-          for (int y = 0; y < iHeight; y++)
-          {
-            RGBQUAD rgb;
-            BYTE alpha = 0xFF;
-            if (x < iOffX || x >= iOffX + (int)pImage->GetWidth() || y < iOffY || y >= iOffY + (int)pImage->GetHeight())
-            {
-              rgb.rgbBlue = 0; rgb.rgbGreen = 0; rgb.rgbRed = 0;
-              alpha = 0; // transparent
-            }
-            else
-              rgb = pImage->GetPixelColor(x - iOffX, y - iOffY);
-            image.SetPixelColor(x + j*iWidth, y + (1 - i)*iHeight, rgb);
-            //      image.AlphaSet(x+j*iWidth, y+i*iHeight, alpha);
-          }
-        }
-        delete pImage;
-        pImage = NULL;
-      }
-      else
-      { // no image - just fill with black alpha
-        for (int x = 0; x < iWidth; x++)
-        {
-          for (int y = 0; y < iHeight; y++)
-          {
-            RGBQUAD rgb;
-            rgb.rgbBlue = 0; rgb.rgbGreen = 0; rgb.rgbRed = 0;
-            BYTE alpha = 0; // transparent
-            image.SetPixelColor(x + j*iWidth, y + (1 - i)*iHeight, rgb);
-            //      image.AlphaSet(x+j*iWidth, y+i*iHeight, alpha);
-          }
-        }
-      }
-    }
+    if (strThumbs[i].IsEmpty())
+      strThumbnails[i] = "";
+    else
+      CUtil::GetThumbnail(strThumbs[i], strThumbnails[i]);
+    szThumbs[i] = strThumbnails[i].c_str();
   }
-  ::DeleteFile(strThumbnail.c_str());
-  if (!image.Save(strThumbnail.c_str(), CXIMAGE_FORMAT_PNG))
+  if (!m_dll.CreateFolderThumbnail(szThumbs, strFolderThumbnail.c_str()))
   {
-    CLog::Log(LOGERROR, "Unable to save thumb file");
+    CLog::Log(LOGERROR, "PICTURE::CreateFolderThumb() failed for folder %s", strFolder.c_str());
   }
 }
 
-bool CPicture::GetExifThumbnail(const CStdString &strFile, const CStdString &strCachedThumb)
+bool CPicture::CreateExifThumbnail(const CStdString &strFile, const CStdString &strCachedThumb)
 {
-  CxImage image;
-  return image.GetExifThumbnail(strFile.c_str(), strCachedThumb.c_str());
+  if (!LoadDLL()) return false;
+  return m_dll.CreateExifThumbnail(strFile.c_str(), strCachedThumb.c_str());
+}
+
+bool CPicture::CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName)
+{
+  if (!pBuffer || !LoadDLL()) return false;
+  return m_dll.CreateThumbnailFromSurface(pBuffer, width, height, stride, strThumbFileName.c_str());
+}
+
+bool CPicture::LoadDLL()
+{
+  if (m_bDllLoaded) return true;
+  DllLoader *pDll = CSectionLoader::LoadDLL(IMAGE_DLL);
+  if (!pDll)
+  {
+    CLog::Log(LOGERROR, "PICTURE: Unable to load the dll %s",IMAGE_DLL);
+    return false;
+  }
+  // resolve exports
+  pDll->ResolveExport("LoadImage", (void **)&m_dll.LoadImage);
+  pDll->ResolveExport("CreateThumbnail", (void **)&m_dll.CreateThumbnail);
+  pDll->ResolveExport("CreateThumbnailFromMemory", (void **)&m_dll.CreateThumbnailFromMemory);
+  pDll->ResolveExport("CreateFolderThumbnail", (void **)&m_dll.CreateFolderThumbnail);
+  pDll->ResolveExport("CreateExifThumbnail", (void **)&m_dll.CreateExifThumbnail);
+
+  // verify exports
+  if (!m_dll.LoadImage || !m_dll.CreateThumbnail || !m_dll.CreateThumbnailFromMemory || !m_dll.CreateFolderThumbnail)
+  {
+    CLog::Log(LOGERROR, "PICTURE: Unable to resolve functions in the dll %s", IMAGE_DLL);
+    return false;
+  }
+  m_bDllLoaded = true;
+  return true;
 }

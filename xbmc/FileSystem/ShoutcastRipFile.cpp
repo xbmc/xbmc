@@ -161,8 +161,9 @@ void CShoutcastRipFile::StopRecording()
       ID3_XIStreamReader reader( file );
       ID3_Tag id3TagFile;
       id3TagFile.Clear();
-      id3TagFile.Link( reader);
+      id3TagFile.Link( reader );
       id3TagFile = m_id3Tag;
+//      id3TagFile.Update();
       file.Close();
       id3TagFile.Update(m_szFilteredFileName);
     }

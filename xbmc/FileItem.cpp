@@ -748,7 +748,7 @@ void CFileItem::SetThumb()
         if (item.IsType(".jpg") && item.IsHD())
         {
           CPicture pic;
-          if (pic.GetExifThumbnail(item.m_strPath, strCachedThumbnail))
+          if (pic.CreateExifThumbnail(item.m_strPath, strCachedThumbnail))
             SetThumbnailImage(strCachedThumbnail);
         }
       }
