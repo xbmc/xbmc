@@ -6,7 +6,6 @@
 #include "xbox/xbeheader.h"
 #include "xbox/undocumented.h"
 #include "xbresource.h"
-#include "lib/cximage/ximage.h"
 #include "DetectDVDType.h"
 #include "ThumbnailCache.h"
 #include "filesystem/hddirectory.h"
@@ -19,6 +18,7 @@
 #include "utils/AlarmClock.h" 
 #include "cores/VideoRenderers/RenderManager.h"
 #include "ButtonTranslator.h"
+#include "Picture.h"
 
 bool CUtil::m_bNetworkUp = false;
 extern "C"
@@ -1302,31 +1302,11 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
           {
             DWORD strideScreen = rectLocked.Pitch;
             //mp_msg(0,0," strideScreen=%i\n", strideScreen);
-
-            CSectionLoader::Load("CXIMAGE");
-            CxImage* pImage = new CxImage(iWidth, iHeight, 24, CXIMAGE_FORMAT_JPG);
-            for (int y = 0; y < iHeight; y++)
-            {
-              byte *pPtr = pBuff + (y * (strideScreen));
-              for (int x = 0; x < iWidth;x++)
-              {
-                byte Alpha = *(pPtr + 3);
-                byte b = *(pPtr + 0);
-                byte g = *(pPtr + 1);
-                byte r = *(pPtr + 2);
-                pPtr += 4;
-                pImage->SetPixelColor(x, y, RGB(r, g, b));
-              }
-            }
-
-            m_pTexture->UnlockRect(0);
-            pImage->Flip();
-            pImage->Save(strIcon.c_str(), CXIMAGE_FORMAT_JPG);
-            delete pImage;
-            bFoundThumbnail = true;
-            CSectionLoader::Unload("CXIMAGE");
+            CPicture pic;
+            if (pic.CreateThumbnailFromSurface(pBuff, iHeight, iWidth, strideScreen, strIcon.c_str()))
+              bFoundThumbnail = true;
           }
-          else m_pTexture->UnlockRect(0);
+          m_pTexture->UnlockRect(0);
         }
         pSrcSurface->Release();
         pDestSurface->Release();

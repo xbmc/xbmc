@@ -1,30 +1,41 @@
 #pragma once
-#include "lib/cximage/ximage.h"
 
 class CPicture
 {
 public:
+  struct ImageInfo
+  {
+    unsigned int width;
+    unsigned int height;
+    unsigned int originalwidth;
+    unsigned int originalheight;
+    int rotation;
+    LPDIRECT3DTEXTURE8 texture;
+  };
+
   CPicture(void);
   virtual ~CPicture(void);
-  IDirect3DTexture8* Load(const CStdString& strFilename, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth = 128, int iMaxHeight = 128, bool bCreateThumb = false);
-  CxImage* LoadImage(const CStdString& strFilename, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth = 128, int iMaxHeight = 128);
+  IDirect3DTexture8* Load(const CStdString& strFilename, int iMaxWidth = 128, int iMaxHeight = 128, bool bCreateThumb = false);
 
-  bool CreateThumbFromImage(const CStdString &strFileName, const CStdString& strThumbnailImage, CxImage& image, int iMaxWidth, int iMaxHeight, bool bWrongFormat = false);
   bool CreateThumbnail(const CStdString& strFileName);
+  bool CreateExifThumbnail(const CStdString &strFile, const CStdString &strCachedThumb);
   bool CreateAlbumThumbnail(const CStdString& strFileName, const CStdString& strAlbum);
   bool CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName);
-  int DetectFileType(const BYTE* pBuffer, int nBufSize);
+  bool CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName);
   bool Convert(const CStdString& strSource, const CStdString& strDest);
-  DWORD GetWidth() const;
-  DWORD GetHeight() const;
-  long GetExifOrientation() const { return m_ExifOrientation;};
-  bool GetExifThumbnail(const CStdString &strFile, const CStdString &strCachedThumb);
+
+  ImageInfo GetInfo() const { return m_info; };
+  unsigned int GetWidth() const { return m_info.width; };
+  unsigned int GetHeight() const { return m_info.height; };
+  unsigned int GetOriginalWidth() const { return m_info.originalwidth; };
+  unsigned int GetOriginalHeight() const { return m_info.originalheight; };
+  long GetExifOrientation() const { return m_info.rotation; };
+
   void RenderImage(IDirect3DTexture8* pTexture, float x, float y, float width, float height, int iTextureWidth, int iTextureHeight, int iTextureLeft = 0, int iTextureTop = 0, DWORD dwAlpha = 0xFF);
 
   void CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs);
 protected:
-  bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, int nMaxWidth, int nMaxHeight, bool bCacheFile = true);
-  DWORD GetImageType(const char *ext);
+  bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName);
 
 private:
   struct VERTEX
@@ -35,10 +46,20 @@ private:
   };
   static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 
-  IDirect3DTexture8* GetTexture( CxImage& image );
+  struct ImageDLL
+  {
+    bool (__cdecl*  LoadImage)(const char *, unsigned int, unsigned int, ImageInfo *);
+    bool (__cdecl*  CreateThumbnail)(const char *, const char *);
+    bool (__cdecl*  CreateThumbnailFromMemory)(BYTE *, unsigned int, const char *, const char *);
+    bool (__cdecl*  CreateFolderThumbnail)(const char **, const char *);
+    bool (__cdecl*  CreateExifThumbnail)(const char *, const char *);
+    bool (__cdecl*  CreateThumbnailFromSurface)(BYTE *, unsigned int, unsigned int, unsigned int, const char *);
+  };
+  bool LoadDLL();
+  bool m_bDllLoaded;
+  ImageDLL m_dll;
+
   void Free();
-  bool m_bSectionLoaded;
-  DWORD m_dwHeight;
-  DWORD m_dwWidth;
-  long m_ExifOrientation;
+
+  ImageInfo m_info;
 };
