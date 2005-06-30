@@ -10,90 +10,31 @@ using namespace DIRECTORY;
 
 CMusicInfoLoader::CMusicInfoLoader()
 {
-  m_bRunning = false;
 }
 
 CMusicInfoLoader::~CMusicInfoLoader()
 {
 }
 
-void CMusicInfoLoader::OnStartup()
+void CMusicInfoLoader::OnLoaderStart()
 {
-  m_bRunning = true;
+  // Load previously cached items from HD
+  if (!m_strCacheFileName.IsEmpty())
+    LoadCache(m_strCacheFileName, m_mapFileItems);
+
+  // Precache album thumbs
+  g_directoryCache.InitMusicThumbCache();
+
+  m_musicDatabase.Open();
 }
 
-void CMusicInfoLoader::Process()
+bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 {
-  try
-  {
-    CFileItemList& vecItems = (*m_pVecItems);
+  if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
+    return false;
 
-    if (vecItems.Size() <= 0)
-      return ;
-
-    // Load previously cached items from HD
-    if (!m_strCacheFileName.IsEmpty())
-      LoadCache(m_strCacheFileName, m_mapFileItems);
-
-    // Precache album thumbs
-    g_directoryCache.InitMusicThumbCache();
-
-    m_musicDatabase.Open();
-
-    for (int i = 0; i < (int)vecItems.Size(); ++i)
-    {
-      CFileItem* pItem = vecItems[i];
-
-      if (m_bStop)
-        break;
-
-      if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
-        continue;
-
-      // Fill in tag for the item
-      LoadItem(pItem);
-
-      // Notify observer a item
-      // is loaded.
-      if (m_pObserver)
-      {
-        g_graphicsContext.Lock();
-        m_pObserver->OnItemLoaded(pItem);
-        g_graphicsContext.Unlock();
-      }
-    }
-
-    // clear precached album thumbs
-    g_directoryCache.ClearMusicThumbCache();
-
-    // cleanup last loaded songs from database
-    m_songsMap.erase(m_songsMap.begin(), m_songsMap.end());
-
-    // cleanup cache loaded from HD
-    it = m_mapFileItems.begin();
-    while (it != m_mapFileItems.end())
-    {
-      delete it->second;
-      it++;
-    }
-    m_mapFileItems.erase(m_mapFileItems.begin(), m_mapFileItems.end());
-
-    // Save loaded items to HD
-    if (!m_strCacheFileName.IsEmpty())
-      SaveCache(m_strCacheFileName, vecItems);
-
-    m_musicDatabase.Close();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "tagloaderthread: Unhandled exception");
-  }
-}
-
-void CMusicInfoLoader::LoadItem(CFileItem* pItem)
-{
   if (pItem->m_musicInfoTag.Loaded())
-    return ;
+    return false;
 
   CStdString strFileName, strPath;
   CUtil::GetDirectory(pItem->m_strPath, strPath);
@@ -141,28 +82,31 @@ void CMusicInfoLoader::LoadItem(CFileItem* pItem)
   }
 
   m_strPrevPath = strPath;
+  return true;
 }
 
-void CMusicInfoLoader::OnExit()
+void CMusicInfoLoader::OnLoaderFinish()
 {
-  m_bRunning = false;
-}
+  // clear precached album thumbs
+  g_directoryCache.ClearMusicThumbCache();
 
-void CMusicInfoLoader::Load(CFileItemList& items)
-{
-  m_pVecItems = &items;
-  StopThread();
-  Create();
-}
+  // cleanup last loaded songs from database
+  m_songsMap.erase(m_songsMap.begin(), m_songsMap.end());
 
-bool CMusicInfoLoader::IsLoading()
-{
-  return m_bRunning;
-}
+  // cleanup cache loaded from HD
+  it = m_mapFileItems.begin();
+  while (it != m_mapFileItems.end())
+  {
+    delete it->second;
+    it++;
+  }
+  m_mapFileItems.erase(m_mapFileItems.begin(), m_mapFileItems.end());
 
-void CMusicInfoLoader::SetObserver(IMusicInfoLoaderObserver* pObserver)
-{
-  m_pObserver = pObserver;
+  // Save loaded items to HD
+  if (!m_strCacheFileName.IsEmpty())
+    SaveCache(m_strCacheFileName, *m_pVecItems);
+
+  m_musicDatabase.Close();
 }
 
 void CMusicInfoLoader::UseCacheOnHD(const CStdString& strFileName)

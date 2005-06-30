@@ -1,4 +1,4 @@
-#include "utils/Thread.h"
+#include "BackgroundInfoLoader.h"
 
 #pragma once
 
@@ -6,36 +6,22 @@
 
 namespace MUSIC_INFO
 {
-class IMusicInfoLoaderObserver
-{
-public:
-  virtual void OnItemLoaded(CFileItem* pItem) = 0;
-};
-
-class CMusicInfoLoader : public CThread
+class CMusicInfoLoader : public CBackgroundInfoLoader
 {
 public:
   CMusicInfoLoader();
   virtual ~CMusicInfoLoader();
 
-  void Load(CFileItemList& items);
-  bool IsLoading();
-  virtual void OnStartup();
-  virtual void OnExit();
   void UseCacheOnHD(const CStdString& strFileName);
-  virtual void Process();
-  void SetObserver(IMusicInfoLoaderObserver* pObserver);
 
 protected:
-  void LoadItem(CFileItem* pItem);
+  virtual bool LoadItem(CFileItem* pItem);
+  virtual void OnLoaderStart();
+  virtual void OnLoaderFinish();
   void LoadCache(const CStdString& strFileName, MAPFILEITEMS& items);
   void SaveCache(const CStdString& strFileName, CFileItemList& items);
-
 protected:
-  CFileItemList* m_pVecItems;
-  IMusicInfoLoaderObserver* m_pObserver;
   CStdString m_strCacheFileName;
-  bool m_bRunning;
   MAPFILEITEMS m_mapFileItems;
   IMAPFILEITEMS it;
   MAPSONGS m_songsMap;

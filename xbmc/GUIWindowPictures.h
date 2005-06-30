@@ -4,10 +4,11 @@
 #include "filesystem/DirectoryHistory.h"
 #include "GUIWindowSlideShow.h"
 #include "GUIViewControl.h"
+#include "PictureThumbLoader.h"
 
 using namespace DIRECTORY;
 
-class CGUIWindowPictures : public CGUIWindow
+class CGUIWindowPictures : public CGUIWindow, public IBackgroundLoaderObserver
 {
 public:
   CGUIWindowPictures(void);
@@ -43,6 +44,7 @@ protected:
   bool DoCreateFolderThumbs(CStdString &strFolder, int *iTotalItems, int *iCurrentItem, bool bRecurse);
   void CreateFolderThumbs(bool bRecurse = false);
   void AddDir(CGUIWindowSlideShow *pSlideShow, const CStdString& strPath);
+  virtual void OnItemLoaded(CFileItem* pItem) {};
   CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems;
   CFileItem m_Directory;
@@ -56,4 +58,5 @@ protected:
   int m_iViewAsIconsRoot;
 
   CGUIViewControl m_viewControl;
+  CPictureThumbLoader m_thumbLoader;
 };
