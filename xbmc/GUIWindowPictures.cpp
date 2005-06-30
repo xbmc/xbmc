@@ -115,6 +115,7 @@ CGUIWindowPictures::CGUIWindowPictures(void)
 
   m_iViewAsIcons = -1;
   m_iViewAsIconsRoot = -1;
+  m_thumbLoader.SetObserver(this);
 }
 
 CGUIWindowPictures::~CGUIWindowPictures(void)
@@ -170,6 +171,9 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_DEINIT:
     {
+      if (m_thumbLoader.IsLoading())
+        m_thumbLoader.StopThread();
+
       m_iLastControl = GetFocusedControl();
       m_iItemSelected = m_viewControl.GetSelectedItem();
 
@@ -458,6 +462,9 @@ void CGUIWindowPictures::UpdateButtons()
 
 void CGUIWindowPictures::Update(const CStdString &strDirectory)
 {
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+
   UpdateDir(strDirectory);
   if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("Pictures.UseAutoSwitching"))
   {
@@ -465,6 +472,8 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 
     UpdateButtons();
   }
+  
+  m_thumbLoader.Load(m_vecItems);
 }
 
 void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
@@ -486,7 +495,7 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
   GetDirectory(strDirectory, m_vecItems);
 
   m_Directory.m_strPath = strDirectory;
-  m_vecItems.SetThumbs();
+//  m_vecItems.SetThumbs();
   if (g_guiSettings.GetBool("FileLists.HideExtensions"))
     m_vecItems.RemoveExtensions();
   m_vecItems.FillInDefaultIcons();

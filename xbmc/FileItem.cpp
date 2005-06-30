@@ -625,12 +625,18 @@ void CFileItem::FillInDefaultIcon()
 }
 
 // set the thumbnail for an file item
-void CFileItem::SetThumb()
+void CFileItem::SetThumb(bool ignoreDefault /* = false */)
 {
   CStdString strThumb;
 
   // if it already has a thumbnail, then return
-  if (HasThumbnail()) return ;
+  if (HasThumbnail())
+  {
+    if (ignoreDefault && !HasDefaultThumb())
+      return;
+    else if (!ignoreDefault)
+      return;
+  }
 
   //  No thumb for parent folder items
   if (GetLabel() == "..") return ;
@@ -741,15 +747,6 @@ void CFileItem::SetThumb()
           //  local, just use it
           SetThumbnailImage(strThumbnailFileName);
           bGotIcon = true;
-        }
-      }
-      else
-      { // no thumb found - in the case of a jpeg file we can see if it contains a thumb though
-        if (item.IsType(".jpg") && item.IsHD())
-        {
-          CPicture pic;
-          if (pic.CreateExifThumbnail(item.m_strPath, strCachedThumbnail))
-            SetThumbnailImage(strCachedThumbnail);
         }
       }
     }

@@ -2,7 +2,7 @@
 #include "GUIWindowMusicBase.h"
 #include "MusicInfoLoader.h"
 
-class CGUIWindowMusicPlayList : public CGUIWindowMusicBase, public IMusicInfoLoaderObserver
+class CGUIWindowMusicPlayList : public CGUIWindowMusicBase, public IBackgroundLoaderObserver
 {
 public:
   CGUIWindowMusicPlayList(void);

@@ -64,7 +64,7 @@ public:
   void RemoveExtension();
   void CleanFileName();
   void FillInDefaultIcon();
-  void SetThumb();
+  void SetThumb(bool ignoreDefault = false);
   void SetMusicThumb();
   void SetArtistThumb();
 
