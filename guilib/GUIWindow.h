@@ -84,6 +84,8 @@ public:
   static void FlushReferenceCache();
   virtual bool IsDialog() { return false;};
   int OverlayAllowed() const { return m_iOverlayAllowed; };
+  void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
+  RESOLUTION GetCoordsRes() { return m_coordsRes; };
 
 protected:
   virtual void OnWindowUnload() {}
@@ -125,6 +127,7 @@ protected:
   vector<int> m_vecGroups;
   int m_iOverlayAllowed;
   bool m_WindowAllocated;
+  RESOLUTION m_coordsRes; // resolution that the window coordinates are in.
 };
 
 #endif
