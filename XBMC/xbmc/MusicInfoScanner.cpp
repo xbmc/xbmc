@@ -49,7 +49,7 @@ void CMusicInfoScanner::Process()
     }
 
     // Preload section for ID3 cover art reading
-    CSectionLoader::Load("CXIMAGE");
+    CSectionLoader::LoadDLL(IMAGE_DLL);
 //    CSectionLoader::Load("LIBMP4");
     CSectionLoader::LoadDLL(APE_DLL);
     CSectionLoader::LoadDLL(SHN_DLL);
@@ -116,7 +116,7 @@ void CMusicInfoScanner::Process()
 
     m_musicDatabase.EmptyCache();
 
-    CSectionLoader::Unload("CXIMAGE");
+    CSectionLoader::UnloadDLL(IMAGE_DLL);
 //    CSectionLoader::Unload("LIBMP4");
     CSectionLoader::UnloadDLL(APE_DLL);
     CSectionLoader::UnloadDLL(SHN_DLL);

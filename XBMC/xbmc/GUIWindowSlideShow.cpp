@@ -60,8 +60,7 @@ void CBackgroundPicLoader::Process()
       if (m_pCallback)
       {
         CPicture pic;
-        int iOriginalWidth, iOriginalHeight;
-        D3DTexture *pTexture = pic.Load(m_strFileName, iOriginalWidth, iOriginalHeight, m_maxWidth, m_maxHeight, g_guiSettings.GetBool("Slideshow.GenerateThumbs"));
+        D3DTexture *pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight, g_guiSettings.GetBool("Slideshow.GenerateThumbs"));
         // tell our parent
         bool bFullSize = ((int)pic.GetWidth() < m_maxWidth) && ((int)pic.GetHeight() < m_maxHeight);
         if (!bFullSize)
@@ -74,7 +73,7 @@ void CBackgroundPicLoader::Process()
           if (!bFullSize && pic.GetHeight() == MAX_PICTURE_HEIGHT)
             bFullSize = true;
         }
-        m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, pTexture, pic.GetWidth(), pic.GetHeight(), iOriginalWidth, iOriginalHeight, pic.GetExifOrientation(), bFullSize);
+        m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, pTexture, pic.GetWidth(), pic.GetHeight(), pic.GetOriginalWidth(), pic.GetOriginalHeight(), pic.GetExifOrientation(), bFullSize);
       }
     }
     m_bLoadPic = false;
@@ -1109,7 +1108,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       //   Reset();
       if (message.GetParam1() != WINDOW_PICTURES)
       {
-        CSectionLoader::Unload("CXIMAGE");
+        CSectionLoader::UnloadDLL(IMAGE_DLL);
       }
       g_graphicsContext.Lock();
       g_graphicsContext.SetOverlay(true);
@@ -1130,7 +1129,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       g_TextureManager.Flush();
       if (message.GetParam1() != WINDOW_PICTURES)
       {
-        CSectionLoader::Load("CXIMAGE");
+        CSectionLoader::LoadDLL(IMAGE_DLL);
       }
       g_graphicsContext.Lock();
       g_graphicsContext.SetOverlay(false);

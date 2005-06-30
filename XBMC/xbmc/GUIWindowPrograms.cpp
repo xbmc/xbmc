@@ -3,7 +3,6 @@
 #include "util.h"
 #include "Xbox\IoSupport.h"
 #include "Xbox\Undocumented.h"
-#include "lib/cximage/ximage.h"
 #include "Shortcut.h"
 #include "application.h"
 #include "filesystem/HDDirectory.h"

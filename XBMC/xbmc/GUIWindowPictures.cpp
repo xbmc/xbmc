@@ -176,7 +176,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       ClearFileItems();
       if (message.GetParam1() != WINDOW_SLIDESHOW)
       {
-        CSectionLoader::Unload("CXIMAGE");
+        CSectionLoader::UnloadDLL(IMAGE_DLL);
       }
     }
     break;
@@ -187,7 +187,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       if (message.GetParam1() != WINDOW_SLIDESHOW)
       {
-        CSectionLoader::Load("CXIMAGE");
+        CSectionLoader::LoadDLL(IMAGE_DLL);
       }
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
@@ -735,7 +735,7 @@ bool CGUIWindowPictures::OnCreateThumbs()
     m_dlgProgress->SetHeading(110);
     m_dlgProgress->StartModal(GetID());
   }
-  CSectionLoader::Load("CXIMAGE");
+  CSectionLoader::LoadDLL(IMAGE_DLL);
   // calculate the number of items to take thumbs of
   int iTotalItems = m_vecItems.Size() - m_vecItems.GetFolderCount();
   int iCurrentItem = 0;
@@ -777,7 +777,7 @@ bool CGUIWindowPictures::OnCreateThumbs()
       if (bCancel) break;
     }
   }
-  CSectionLoader::Unload("CXIMAGE");
+  CSectionLoader::UnloadDLL(IMAGE_DLL);
   if (m_dlgProgress) m_dlgProgress->Close();
   Update(m_Directory.m_strPath);
   return !bCancel;
@@ -792,9 +792,9 @@ void CGUIWindowPictures::CreateFolderThumbs(bool bRecurse)
   }
   int iTotalItems = 0;
   int iCurrentItem = 0;
-  CSectionLoader::Load("CXIMAGE");
+  CSectionLoader::LoadDLL(IMAGE_DLL);
   DoCreateFolderThumbs(m_Directory.m_strPath, &iTotalItems, &iCurrentItem, bRecurse);
-  CSectionLoader::Unload("CXIMAGE");
+  CSectionLoader::UnloadDLL(IMAGE_DLL);
   if (m_dlgProgress) m_dlgProgress->Close();
   Update(m_Directory.m_strPath);
 }
