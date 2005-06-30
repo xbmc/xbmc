@@ -8,6 +8,8 @@
 #define MPC_DLL "Q:\\system\\players\\PAPlayer\\MPCcodec.dll"
 #define OGG_DLL "Q:\\system\\players\\PAPlayer\\vorbisfile.dll"
 #define AAC_DLL "Q:\\system\\players\\paplayer\\aaccodec.dll"
+#define IMAGE_DLL "Q:\\system\\ImageLib.dll"
+
 
 class CSectionLoader
 {
