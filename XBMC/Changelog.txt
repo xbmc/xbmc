@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-06-2005 fixed: nfo files weren't being utilized if available for movie information.
  - 30-06-2005 changed: Image library moved into a dll.  Means smaller xbe, and faster image loading and tag generation off network shares due to not having to cache pictures locally before displaying them.  Requires ImageLib.dll to be in system folder.
  - 28-06-2005 changed: keymap.xml format is now much simpler to understand.
  - 28-06-2005 fixed: FTP server could corrupt files on send in some (fairly rare) scenarios.

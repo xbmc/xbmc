@@ -545,12 +545,20 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
   if (!g_guiSettings.GetBool("Network.EnableInternet")) return ;
 
   // handle .nfo files
-  CStdString strExtension;
+  CStdString strExtension, strNfoFile;
   CUtil::GetExtension(strFile, strExtension);
-  if ( strcmpi(strExtension.c_str(), ".nfo") == 0)
+  if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
+    strNfoFile = strFile;
+  else
+  {
+    CUtil::ReplaceExtension(strFile, ".nfo", strNfoFile);
+    if (!CUtil::FileExists(strNfoFile))
+      strNfoFile.Empty();
+  }
+  if ( !strNfoFile.IsEmpty() )
   {
     CFile file;
-    if ( file.Cache(strFile, "Z:\\movie.nfo", NULL, NULL))
+    if ( file.Cache(strNfoFile, "Z:\\movie.nfo", NULL, NULL))
     {
       CNfoFile nfoReader;
       if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
