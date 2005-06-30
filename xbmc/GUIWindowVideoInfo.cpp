@@ -292,7 +292,7 @@ void CGUIWindowVideoInfo::Refresh()
 
     CStdString strThumb = "";
     CStdString strImage = m_pMovie->m_strPictureURL;
-    if (strImage.size() > 0 && m_pMovie->m_strSearchString.size() > 0)
+    if (strImage.size() > 0/* && m_pMovie->m_strSearchString.size() > 0*/)
     {
       CUtil::GetVideoThumbnail(m_pMovie->m_strIMDBNumber, strThumb);
       if (!CUtil::FileExists(strThumb) )

@@ -23,9 +23,13 @@ HRESULT CNfoFile::Create(LPSTR szPath)
     return E_FAIL;
 
   CHAR* szUrl = strstr(m_doc, "http://us.imdb");
-  if (!szUrl )
+  if (!szUrl)
   {
     szUrl = strstr(m_doc, "http://www.imdb.com");
+  }
+  if (!szUrl)
+  {
+    szUrl = strstr(m_doc, "http://akas.imdb.com");
   }
   if (szUrl)
   {
@@ -34,7 +38,7 @@ HRESULT CNfoFile::Create(LPSTR szPath)
     for (int i = 0; i < 1024; i++)
     {
       char c = szUrl[i];
-      if ( (c == 32) || (c == 10) || (c == 13) )
+      if ( (c == 0) || (c == 32) || (c == 10) || (c == 13) )
       {
         szScrape[i] = 0;
         break;
@@ -48,7 +52,7 @@ HRESULT CNfoFile::Create(LPSTR szPath)
 
   Close();
 
-  return S_OK;
+  return (m_strImDbUrl.size() > 0) ? S_OK : E_FAIL;
 }
 
 HRESULT CNfoFile::Load(char* szFile)
@@ -69,7 +73,7 @@ HRESULT CNfoFile::Load(char* szFile)
 
   fseek(hFile, 0, SEEK_SET);
 
-  m_doc = (char*) malloc(m_size);
+  m_doc = (char*) malloc(m_size + 1);
   if (!m_doc)
   {
     m_size = 0;
@@ -86,6 +90,7 @@ HRESULT CNfoFile::Load(char* szFile)
     return E_FAIL;
   }
 
+  m_doc[m_size] = 0;
   fclose(hFile);
   return S_OK;
 }
