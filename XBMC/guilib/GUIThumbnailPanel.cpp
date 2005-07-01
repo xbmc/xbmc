@@ -87,12 +87,18 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
       m_imgFolder.SetPosition(iCenteredPosX, iPosY);
       if (m_bShowTexture) m_imgFolder.Render();
     }
-    if (pItem->HasThumbnail() )
+    CStdString strThumb = pItem->GetThumbnailImage();
+    if (strThumb.IsEmpty() && pItem->HasIcon())
+    { // no thumbnail, but it does have an icon
+      strThumb = pItem->GetIconImage();
+      strThumb.Insert(strThumb.Find("."), "Big");
+    }
+    if (!strThumb.IsEmpty())
     {
       CGUIImage *pImage = pItem->GetThumbnail();
       if (!pImage )
       {
-        pImage = new CGUIImage(0, 0, m_iThumbXPos + iCenteredPosX, m_iThumbYPos + iPosY, m_iThumbWidth, m_iThumbHeight, pItem->GetThumbnailImage(), 0x0);
+        pImage = new CGUIImage(0, 0, m_iThumbXPos + iCenteredPosX, m_iThumbYPos + iPosY, m_iThumbWidth, m_iThumbHeight, strThumb, 0x0);
         pImage->SetKeepAspectRatio(true);
         pImage->AllocResources();
         pItem->SetThumbnail(pImage);

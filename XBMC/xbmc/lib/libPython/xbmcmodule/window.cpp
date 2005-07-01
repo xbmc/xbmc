@@ -604,7 +604,18 @@ namespace PYXBMC
 	}
 
 	PyDoc_STRVAR(getResolution__doc__,
-		"getResolution(self) -- Returns the resolution of the screen.");
+		"getResolution(self) -- Returns the resolution of the screen."
+    " The returned value is one of the following:\n"
+    "   0 - 1080i      (1920x1080)\n"
+    "   1 - 720p       (1280x720)\n"
+    "   2 - 480p 4:3   (720x480)\n"
+    "   3 - 480p 16:9  (720x480)\n"
+    "   4 - NTSC 4:3   (720x480)\n"
+    "   5 - NTSC 16:9  (720x480)\n"
+    "   6 - PAL 4:3    (720x576)\n"
+    "   7 - PAL 16:9   (720x576)\n"
+    "   8 - PAL60 4:3  (720x480)\n"
+    "   9 - PAL60 16:9 (720x480)\n");
 
 	PyObject* Window_GetResolution(Window *self, PyObject *args)
 	{
@@ -615,7 +626,18 @@ namespace PYXBMC
 		"setCoordinateResolution(self, int resolution) -- Sets the resolution\n"
 		"that the coordinates of all controls are defined in.  Allows XBMC\n"
     "to scale control positions and width/heights to whatever resolution\n"
-    "XBMC is currently using.");
+    "XBMC is currently using.\n"
+    " resolution is one of the following:\n"
+    "   0 - 1080i      (1920x1080)\n"
+    "   1 - 720p       (1280x720)\n"
+    "   2 - 480p 4:3   (720x480)\n"
+    "   3 - 480p 16:9  (720x480)\n"
+    "   4 - NTSC 4:3   (720x480)\n"
+    "   5 - NTSC 16:9  (720x480)\n"
+    "   6 - PAL 4:3    (720x576)\n"
+    "   7 - PAL 16:9   (720x576)\n"
+    "   8 - PAL60 4:3  (720x480)\n"
+    "   9 - PAL60 16:9 (720x480)\n");
 
 	PyObject* Window_SetCoordinateResolution(Window *self, PyObject *args)
 	{

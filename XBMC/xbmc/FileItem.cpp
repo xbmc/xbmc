@@ -417,74 +417,6 @@ bool CFileItem::IsReadOnly() const
   return false;
 }
 
-bool CFileItem::HasDefaultThumb() const
-{
-  CStdString strThumb = GetThumbnailImage();
-
-  if (strThumb.Equals("DefaultPlaylistBig.png")) return true;
-  if (strThumb.Equals("DefaultProgramBig.png")) return true;
-  if (strThumb.Equals("DefaultShortcutBig.png")) return true;
-  if (strThumb.Equals("defaultAudioBig.png")) return true;
-  if (strThumb.Equals("defaultCddaBig.png")) return true;
-  if (strThumb.Equals("defaultDVDEmptyBig.png")) return true;
-  if (strThumb.Equals("defaultDVDRomBig.png")) return true;
-  if (strThumb.Equals("defaultFolderBackBig.png")) return true;
-  if (strThumb.Equals("defaultFolderBig.png")) return true;
-  if (strThumb.Equals("defaultHardDiskBig.png")) return true;
-  if (strThumb.Equals("defaultNetworkBig.png")) return true;
-  if (strThumb.Equals("defaultPictureBig.png")) return true;
-  if (strThumb.Equals("defaultVCDBig.png")) return true;
-  if (strThumb.Equals("defaultVideoBig.png")) return true;
-  if (strThumb.Equals("defaultXBOXDVDBig.png")) return true;
-  if (strThumb.Equals("defaultScriptBig.png")) return true;
-
-  // album defaults
-  if (strThumb.Equals("MyMusic.jpg")) return true;
-  if (strThumb.Equals("music.jpg")) return true;
-
-  // check the default icons
-  for (unsigned int i = 0; i < g_settings.m_vecIcons.size(); ++i)
-  {
-    if (strThumb.Equals(g_settings.m_vecIcons[i].m_strIcon)) return true;
-  }
-
-  return false;
-}
-
-bool CFileItem::HasDefaultIcon() const
-{
-  CStdString strThumb = GetThumbnailImage();
-
-  if (strThumb.Equals("DefaultPlaylist.png")) return true;
-  if (strThumb.Equals("DefaultProgram.png")) return true;
-  if (strThumb.Equals("DefaultShortcut.png")) return true;
-  if (strThumb.Equals("defaultAudio.png")) return true;
-  if (strThumb.Equals("defaultCdda.png")) return true;
-  if (strThumb.Equals("defaultDVDEmpty.png")) return true;
-  if (strThumb.Equals("defaultDVDRom.png")) return true;
-  if (strThumb.Equals("defaultFolder.png")) return true;
-  if (strThumb.Equals("defaultFolderBack.png")) return true;
-  if (strThumb.Equals("defaultHardDisk.png")) return true;
-  if (strThumb.Equals("defaultNetwork.png")) return true;
-  if (strThumb.Equals("defaultPicture.png")) return true;
-  if (strThumb.Equals("defaultVCD.png")) return true;
-  if (strThumb.Equals("defaultVideo.png")) return true;
-  if (strThumb.Equals("defaultXBOXDVD.png")) return true;
-  if (strThumb.Equals("defaultScript.png")) return true;
-
-  // album defaults
-  if (strThumb.Equals("MyMusic.jpg")) return true;
-  if (strThumb.Equals("music.jpg")) return true;
-
-  // check the default icons
-  for (unsigned int i = 0; i < g_settings.m_vecIcons.size(); ++i)
-  {
-    if (strThumb.Equals(g_settings.m_vecIcons[i].m_strIcon)) return true;
-  }
-
-  return false;
-}
-
 void CFileItem::FillInDefaultIcon()
 {
   //CLog::Log(LOGINFO, "FillInDefaultIcon(%s)", pItem->GetLabel().c_str());
@@ -503,7 +435,6 @@ void CFileItem::FillInDefaultIcon()
 
   CStdString strThumb;
   CStdString strExtension;
-  bool bOnlyDefaultXBE = g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly");
   if (!m_bIsFolder)
   {
     CStdString strExtension;
@@ -524,7 +455,7 @@ void CFileItem::FillInDefaultIcon()
   {
     if (!m_bIsFolder)
     {
-      if (IsPlayList())
+      if ( IsPlayList() )
       {
         // playlist
         SetIconImage("defaultPlaylist.png");
@@ -555,12 +486,12 @@ void CFileItem::FillInDefaultIcon()
           }
         }
       }
-      else if (IsPicture() )
+      else if ( IsPicture() )
       {
         // picture
         SetIconImage("defaultPicture.png");
       }
-      else if ( bOnlyDefaultXBE ? IsDefaultXBE() : IsXBE() )
+      else if ( IsXBE() )
       {
         // xbe
         SetIconImage("defaultProgram.png");
@@ -570,12 +501,12 @@ void CFileItem::FillInDefaultIcon()
         // audio
         SetIconImage("defaultAudio.png");
       }
-      else if (IsVideo() )
+      else if ( IsVideo() )
       {
         // video
         SetIconImage("defaultVideo.png");
       }
-      else if (IsShortCut() )
+      else if ( IsShortCut() )
       {
         // shortcut
         CStdString strDescription;
@@ -609,34 +540,16 @@ void CFileItem::FillInDefaultIcon()
       }
     }
   }
-
-  if (GetThumbnailImage() == "")
-  {
-    if (GetIconImage() != "")
-    {
-      CStdString strBig;
-      int iPos = GetIconImage().Find(".");
-      strBig = GetIconImage().Left(iPos);
-      strBig += "Big";
-      strBig += GetIconImage().Right(GetIconImage().size() - (iPos));
-      SetThumbnailImage(strBig);
-    }
-  }
 }
 
 // set the thumbnail for an file item
-void CFileItem::SetThumb(bool ignoreDefault /* = false */)
+void CFileItem::SetThumb()
 {
   CStdString strThumb;
 
   // if it already has a thumbnail, then return
   if (HasThumbnail())
-  {
-    if (ignoreDefault && !HasDefaultThumb())
-      return;
-    else if (!ignoreDefault)
-      return;
-  }
+    return;
 
   //  No thumb for parent folder items
   if (GetLabel() == "..") return ;
