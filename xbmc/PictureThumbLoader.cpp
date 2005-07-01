@@ -12,8 +12,8 @@ CPictureThumbLoader::~CPictureThumbLoader()
 
 bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
 {
-  pItem->SetThumb(true);  // sets thumb even if it has an icon
-  if (!pItem->m_bIsFolder && (!pItem->HasThumbnail() || pItem->HasDefaultThumb()))
+  pItem->SetThumb();
+  if (!pItem->m_bIsFolder && !pItem->HasThumbnail())
   { // load the thumb from the image file
     CPicture pic;
     pic.CreateThumbnail(pItem->m_strPath);

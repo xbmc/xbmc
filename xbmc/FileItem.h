@@ -37,8 +37,6 @@ public:
   bool IsCUESheet() const;
   bool IsShoutCast() const;
   bool IsInternetStream() const;
-  bool HasDefaultThumb() const;
-  bool HasDefaultIcon() const;
   bool IsPlayList() const;
   bool IsPythonScript() const;
   bool IsXBE() const;
@@ -64,7 +62,7 @@ public:
   void RemoveExtension();
   void CleanFileName();
   void FillInDefaultIcon();
-  void SetThumb(bool ignoreDefault = false);
+  void SetThumb();
   void SetMusicThumb();
   void SetArtistThumb();
 
