@@ -1365,7 +1365,7 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   // or if the source is an "all" item (path is empty)
   // or if the source has no thumbnail
   // or if the source has a default thumb
-  if (m_strArtist.IsEmpty() || m_vecItems[iItem]->m_strPath.IsEmpty() || !m_vecItems[iItem]->HasThumbnail() || m_vecItems[iItem]->HasDefaultThumb())
+  if (m_strArtist.IsEmpty() || m_vecItems[iItem]->m_strPath.IsEmpty() || !m_vecItems[iItem]->HasThumbnail())
     pMenu->EnableButton(6, false);
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
