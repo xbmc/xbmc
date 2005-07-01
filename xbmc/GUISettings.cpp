@@ -547,6 +547,7 @@ void CGUISettings::AddBool(int iOrder, const char *strSetting, int iLabel, bool 
 }
 bool CGUISettings::GetBool(const char *strSetting)
 {
+  ASSERT(settingsMap.size());
   mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   { // old category
@@ -559,6 +560,7 @@ bool CGUISettings::GetBool(const char *strSetting)
 
 void CGUISettings::SetBool(const char *strSetting, bool bSetting)
 {
+  ASSERT(settingsMap.size());
   mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   { // old category
@@ -571,6 +573,7 @@ void CGUISettings::SetBool(const char *strSetting, bool bSetting)
 
 void CGUISettings::ToggleBool(const char *strSetting)
 {
+  ASSERT(settingsMap.size());
   mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   { // old category
@@ -590,6 +593,7 @@ void CGUISettings::AddFloat(int iOrder, const char *strSetting, int iLabel, floa
 
 float CGUISettings::GetFloat(const char *strSetting)
 {
+  ASSERT(settingsMap.size());
   mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
@@ -602,6 +606,7 @@ float CGUISettings::GetFloat(const char *strSetting)
 
 void CGUISettings::SetFloat(const char *strSetting, float fSetting)
 {
+  ASSERT(settingsMap.size());
   mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
@@ -635,6 +640,7 @@ void CGUISettings::AddHex(int iOrder, const char *strSetting, int iLabel, int iD
 
 int CGUISettings::GetInt(const char *strSetting)
 {
+  ASSERT(settingsMap.size());
   mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
@@ -647,6 +653,7 @@ int CGUISettings::GetInt(const char *strSetting)
 
 void CGUISettings::SetInt(const char *strSetting, int iSetting)
 {
+  ASSERT(settingsMap.size());
   mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
@@ -668,6 +675,7 @@ void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, con
 
 CStdString CGUISettings::GetString(const char *strSetting)
 {
+  ASSERT(settingsMap.size());
   mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
@@ -680,6 +688,7 @@ CStdString CGUISettings::GetString(const char *strSetting)
 
 void CGUISettings::SetString(const char *strSetting, const char *strData)
 {
+  ASSERT(settingsMap.size());
   mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
@@ -692,6 +701,7 @@ void CGUISettings::SetString(const char *strSetting, const char *strData)
 
 CSetting *CGUISettings::GetSetting(const char *strSetting)
 {
+  ASSERT(settingsMap.size());
   mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
     return (*it).second;
