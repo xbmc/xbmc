@@ -50,6 +50,7 @@ CGUIWindow::CGUIWindow(DWORD dwID)
   m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
   m_iOverlayAllowed = -1;   // Use parent or previous window's state
   m_WindowAllocated = false;
+  m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -380,7 +381,7 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
   m_bRelativeCoords = false;
   m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
   m_iOverlayAllowed = -1;   // Use parent or previous window's state
-  m_coordsRes = resToUse;
+  m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
 
   VECREFERENCECONTOLS referencecontrols;
   IVECREFERENCECONTOLS it;
