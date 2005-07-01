@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-07-2005 changed: 2 small updates to Build.bat: made config paths long filename & removed 2 unnecessary copy actions.
  - 01-07-2005 added: ASSERT() code to GUISettings to make sure settings aren't read before they're initialized - thanks to jslawler for finding this.
  - 01-07-2005 changed: Removed the need for HasDefaultThumbnail() and so on - if no thumb exists, thumbviews now show the large version of the icon at render time.
  - 01-07-2005 added: Window methods getResolution() and setCoordinateResolution() to python interface.  Should allow XBMC to scale control sizes and positions, removing the burden off python coders.
