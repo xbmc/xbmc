@@ -603,7 +603,41 @@ namespace PYXBMC
 		return PyLong_FromLong(g_graphicsContext.GetWidth());
 	}
 
-	PyMethodDef Window_methods[] = {
+	PyDoc_STRVAR(getResolution__doc__,
+		"getResolution(self) -- Returns the resolution of the screen.");
+
+	PyObject* Window_GetResolution(Window *self, PyObject *args)
+	{
+    return PyLong_FromLong((long)g_graphicsContext.GetVideoResolution());
+  }
+
+  	PyDoc_STRVAR(setCoordinateResolution__doc__,
+		"setCoordinateResolution(self, int resolution) -- Sets the resolution\n"
+		"that the coordinates of all controls are defined in.  Allows XBMC\n"
+    "to scale control positions and width/heights to whatever resolution\n"
+    "XBMC is currently using.");
+
+	PyObject* Window_SetCoordinateResolution(Window *self, PyObject *args)
+	{
+		long res;
+		if (!PyArg_ParseTuple(args, "l", &res)) return NULL;
+
+    if (res < HDTV_1080i || res > AUTORES)
+    {
+			PyErr_SetString(PyExc_RuntimeError, "Invalid resolution.");
+      return NULL;
+    }
+
+		CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+		if (PyWindowIsNull(pWindow)) return NULL;
+
+    pWindow->SetCoordsRes((RESOLUTION)res);
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+  PyMethodDef Window_methods[] = {
 		//{"load", (PyCFunction)Window_Load, METH_VARARGS, ""},
 		{"onAction", (PyCFunction)Window_OnAction, METH_VARARGS, onAction__doc__},
 		{"doModal", (PyCFunction)Window_DoModal, METH_VARARGS, doModal__doc__},
@@ -616,6 +650,8 @@ namespace PYXBMC
 		{"getFocus", (PyCFunction)Window_GetFocus, METH_VARARGS, getFocus__doc__},
 		{"getHeight", (PyCFunction)Window_GetHeight, METH_VARARGS, getHeight__doc__},
 		{"getWidth", (PyCFunction)Window_GetWidth, METH_VARARGS, getWidth__doc__},
+		{"getResolution", (PyCFunction)Window_GetResolution, METH_VARARGS, getResolution__doc__},
+		{"setCoordinateResolution", (PyCFunction)Window_SetCoordinateResolution, METH_VARARGS, setCoordinateResolution__doc__},
 		{NULL, NULL, 0, NULL}
 	};
 
