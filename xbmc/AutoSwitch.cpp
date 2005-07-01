@@ -109,12 +109,12 @@ int CAutoSwitch::ByFolders(bool bBigThumbs, CFileItemList& vecItems)
   // is the list all folders?
   if (vecItems.GetFolderCount() == vecItems.Size())
   {
-    // test for non-default thumbs
+    // test for thumbs
     bool bThumbs = false;
     for (int i = 0; i < vecItems.Size(); i++)
     {
       CFileItem* pItem = vecItems[i];
-      if (!pItem->HasDefaultThumb())
+      if (pItem->HasThumbnail())
       {
         bThumbs = true;
         break;
@@ -155,11 +155,11 @@ int CAutoSwitch::ByFiles(bool bBigThumbs, bool bHideParentDirItems, CFileItemLis
   // confirm the list is not just files and folderback
   if (vecItems.GetFolderCount() > iCompare)
   {
-    // test to see if there are thumbs other than the defaults
+    // test for thumbs
     for (int i = 0; i < vecItems.Size(); i++)
     {
       CFileItem* pItem = vecItems[i];
-      if (!pItem->HasDefaultThumb())
+      if (pItem->HasThumbnail())
       {
         bThumbs = true;
         break;
@@ -192,7 +192,7 @@ int CAutoSwitch::ByFiles(bool bBigThumbs, bool bHideParentDirItems, CFileItemLis
 int CAutoSwitch::ByThumbPercent(bool bBigThumbs, bool bHideParentDirItems, int iPercent, CFileItemList& vecItems)
 {
   bool bThumbs = false;
-  int iNonDefault = 0;
+  int iNumThumbs = 0;
   int iNumItems = vecItems.Size();
   if (!bHideParentDirItems)
   {
@@ -202,10 +202,10 @@ int CAutoSwitch::ByThumbPercent(bool bBigThumbs, bool bHideParentDirItems, int i
   for (int i = 0; i < vecItems.Size(); i++)
   {
     CFileItem* pItem = vecItems[i];
-    if (!pItem->HasDefaultThumb())
+    if (pItem->HasThumbnail())
     {
-      iNonDefault++;
-      float fTempPercent = ( (float)iNonDefault / (float)iNumItems ) * (float)100;
+      iNumThumbs++;
+      float fTempPercent = ( (float)iNumThumbs / (float)iNumItems ) * (float)100;
       if (fTempPercent >= (float)iPercent)
       {
         bThumbs = true;
