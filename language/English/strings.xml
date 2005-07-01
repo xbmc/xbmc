@@ -5,7 +5,7 @@
   <string><id>3</id><value>My Videos</value></string>
   <string><id>4</id><value>TV Guide</value></string>
   <string><id>5</id><value>Settings</value></string>
-  <string><id>6</id><value>XBOX Media Center 1.1.0</value></string>
+  <string><id>6</id><value>XBMC CVS 2005-07-01  19:09</value></string>
   <string><id>7</id><value>My Files</value></string>
   <string><id>8</id><value>Weather</value></string>
   <string><id>11</id><value>Monday</value></string>
@@ -859,6 +859,7 @@
   <string><id>13388</id><value>Presets</value></string>
   <string><id>13389</id><value>There are no presets available&#10;for this visualisation</value></string>
   <string><id>13390</id><value>There are no settings available&#10;for this visualisation</value></string>
+  <string><id>13391</id><value>Eject/Load</value></string>
 
   <string><id>14000</id><value>Stacking: Off</value></string>
   <string><id>14001</id><value>Stacking: Simple</value></string>
