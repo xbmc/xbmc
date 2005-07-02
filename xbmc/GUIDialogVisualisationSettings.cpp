@@ -2,6 +2,7 @@
 #include "GUIDialogVisualisationSettings.h"
 #include "GUIWindowSettingsCategory.h"
 #include "util.h"
+#include "utils/GUIInfoManager.h"
 
 #define CONTROL_SETTINGS_LABEL      2
 #define CONTROL_NONE_AVAILABLE      3
@@ -112,14 +113,8 @@ void CGUIDialogVisualisationSettings::SetupPage()
   m_pOriginalSettingsButton->SetVisible(false);
 
   // update our settings label
-  CStdString strVis = g_guiSettings.GetString("MyMusic.Visualisation");
-  if (strVis != "None" && strVis.size() > 4)
-  { // make it look pretty
-    strVis = strVis.Left(strVis.size() - 4);
-    strVis[0] = toupper(strVis[0]);
-  }
   CStdStringW strSettings;
-  strSettings.Format(L"%S %s", strVis.c_str(), g_localizeStrings.Get(5));
+  strSettings.Format(L"%s %s", g_infoManager.GetLabel(402).c_str(), g_localizeStrings.Get(5));
   SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, strSettings);
 
   // our controls for layout...
