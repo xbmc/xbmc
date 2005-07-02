@@ -47,6 +47,8 @@
 #define KEY_BUTTON_LEFT_THUMB_STICK_LEFT    282
 #define KEY_BUTTON_LEFT_THUMB_STICK_RIGHT   283
 
+#define KEY_VMOUSE          0xEFFF
+
 // 0xF000 -> 0xF1FF is reserved for the keyboard
 #define KEY_VKEY            0xF000
 #define KEY_ASCII           0xF100
