@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-07-2005 changed: Some of the HTTPAPI command names to make the names more logical - the old ones still work though
  - 02-07-2005 added: Visualisation.Name info tag.
  - 02-07-2005 updated: Swedish strings.xml Thanks to the updater/s that fixed the poor translations!
  - 02-07-2005 fixed: Programs icons crash.
