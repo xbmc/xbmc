@@ -1837,7 +1837,7 @@ bool CApplication::OnKey(CKey& key)
       {
         CKey keyHttp(pXbmcHttp->GetKey());
         if (keyHttp.GetButtonCode() != KEY_INVALID)
-          action.wID = (WORD) keyHttp.GetButtonCode(); //Nad
+          action.wID = (WORD) keyHttp.GetButtonCode();
       }
       ;
       if (action.wID == 0)
@@ -2316,7 +2316,37 @@ void CApplication::FrameMove()
     CKey keyHttp(pXbmcHttp->GetKey());
     if (keyHttp.GetButtonCode() != KEY_INVALID)
     {
-      OnKey(keyHttp);
+      if (keyHttp.GetButtonCode() == KEY_VMOUSE) //virtual mouse
+      {
+        CAction action;
+        action.wID = ACTION_MOUSE;
+        g_Mouse.iPosX=(int)keyHttp.GetLeftThumbX();
+        g_Mouse.iPosY=(int)keyHttp.GetLeftThumbY();
+        if (keyHttp.GetLeftTrigger()!=0)
+          g_Mouse.bClick[keyHttp.GetLeftTrigger()-1]=true;
+        if (keyHttp.GetRightTrigger()!=0)
+          g_Mouse.bDoubleClick[keyHttp.GetRightTrigger()-1]=true;
+        action.fAmount1 = keyHttp.GetLeftThumbX();
+        action.fAmount2 = keyHttp.GetLeftThumbY();
+        // send mouse event to the music + video overlays, if they're enabled
+        if (g_graphicsContext.IsOverlayAllowed())
+        {
+          // if we're playing a movie
+          if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+          {
+            // then send the action to the video overlay window
+            m_guiVideoOverlay.OnAction(action);
+          }
+          else if ( IsPlayingAudio() )
+          {
+            // send message to the audio overlay window
+            m_guiMusicOverlay.OnAction(action);
+          }
+        }
+        m_gWindowManager.OnAction(action);
+      }
+      else
+        OnKey(keyHttp);
       pXbmcHttp->ResetKey();
       return ;
     }
