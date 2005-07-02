@@ -119,7 +119,6 @@ protected:
   DWORD m_dwPreviousWindowId;
   DWORD m_dwDefaultFocusControlID;
   bool m_bRelativeCoords;
-  bool m_bNeedsScaling;
   DWORD m_iPosX;
   DWORD m_iPosY;
   DWORD m_dwWidth;
