@@ -84,6 +84,42 @@
       <ondown>21</ondown>
     </control>
 
+    <control>
+      <description>free space label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>120</posX>
+      <posY>530</posY>
+      <info>System.Freespace(C)</info>
+      <textcolor>CCFFFFFF</textcolor>
+      <font>font10</font>
+      <align>left</align>
+    </control>
+
+    <control>
+      <description>free space label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>270</posX>
+      <posY>530</posY>
+      <info>System.Freespace(E)</info>
+      <textcolor>CCFFFFFF</textcolor>
+      <font>font10</font>
+      <align>left</align>
+    </control>
+
+    <control>
+      <description>free space label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>430</posX>
+      <posY>530</posY>
+      <info>System.Freespace(F)</info>
+      <textcolor>CCFFFFFF</textcolor>
+      <font>font10</font>
+      <align>left</align>
+    </control>
+
   </controls>
 
 </window>
