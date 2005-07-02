@@ -13,9 +13,9 @@
       <type>image</type>
       <id>0</id>
       <posX>-245</posX>
-      <posY>-5</posY>
+      <posY>5</posY>
       <width>805</width>
-      <height>160</height>
+      <height>107</height>
       <texture>sub-background.png</texture>
     </control>
 
@@ -25,10 +25,10 @@
       <id>3110</id>
       <posX>30</posX>
       <posY>10</posY>
-      <width>61</width>
-      <height>81</height>
-      <textureFocus>sub-dashboard-focus.png</textureFocus>
-      <textureNoFocus>sub-dashboard-nofocus.png</textureNoFocus>
+      <width>60</width>
+      <height>80</height>
+      <textureFocus>sub-exit-focus.gif</textureFocus>
+      <textureNoFocus>sub-exit-nofocus.png</textureNoFocus>
       <execute>XBMC.Dashboard()</execute>
       <onleft>3114</onleft>
       <onright>3111</onright>
@@ -39,22 +39,22 @@
     </control>
 
     <control>
-      <description>Reboot button</description>
+      <description>eject button</description>
       <type>button</type>
       <id>3111</id>
       <posX>90</posX>
       <posY>10</posY>
-      <width>61</width>
-      <height>81</height>
-      <textureFocus>sub-reboot-focus.png</textureFocus>
-      <textureNoFocus>sub-reboot-nofocus.png</textureNoFocus>
-      <execute>XBMC.Reset()</execute>
+      <width>60</width>
+      <height>80</height>
+      <textureFocus>sub-eject-focus.gif</textureFocus>
+      <textureNoFocus>sub-eject-nofocus.png</textureNoFocus>
+      <execute>XBMC.EjectTray()</execute>
       <onleft>3110</onleft>
       <onright>3112</onright>
       <onup>3111</onup>
       <ondown>3111</ondown>
       <font>-</font>
-      <label>13313</label>
+      <label>13391</label>
     </control>
 
     <control>
@@ -63,9 +63,9 @@
       <id>3112</id>
       <posX>150</posX>
       <posY>10</posY>
-      <width>61</width>
-      <height>81</height>
-      <textureFocus>sub-shutdown-focus.png</textureFocus>
+      <width>60</width>
+      <height>80</height>
+      <textureFocus>sub-shutdown-focus.gif</textureFocus>
       <textureNoFocus>sub-shutdown-nofocus.png</textureNoFocus>
       <execute>XBMC.ShutDown()</execute>
       <onleft>3111</onleft>
@@ -82,9 +82,9 @@
       <id>3113</id>
       <posX>210</posX>
       <posY>10</posY>
-      <width>61</width>
-      <height>81</height>
-      <textureFocus>sub-info-focus.png</textureFocus>
+      <width>60</width>
+      <height>80</height>
+      <textureFocus>sub-info-focus.gif</textureFocus>
       <textureNoFocus>sub-info-nofocus.png</textureNoFocus>
       <hyperlink>7</hyperlink>
       <onleft>3112</onleft>
@@ -96,22 +96,32 @@
     </control>
 
     <control>
-      <description>Profiles button</description>
+      <description>reboot button</description>
       <type>button</type>
       <id>3114</id>
       <posX>270</posX>
       <posY>10</posY>
-      <width>61</width>
-      <height>81</height>
-      <textureFocus>sub-profiles-focus.png</textureFocus>
-      <textureNoFocus>sub-profiles-nofocus.png</textureNoFocus>
-      <hyperlink>34</hyperlink>
+      <width>60</width>
+      <height>80</height>
+      <textureFocus>sub-reboot-focus.gif</textureFocus>
+      <textureNoFocus>sub-reboot-nofocus.png</textureNoFocus>
+      <execute>XBMC.Reset()</execute>
       <onleft>3113</onleft>
       <onright>3110</onright>
       <onup>3114</onup>
       <ondown>3114</ondown>
       <font>-</font>
-      <label>13200</label>
+      <label>13313</label>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>0</id>
+      <posX>-245</posX>
+      <posY>100</posY>
+      <width>805</width>
+      <height>46</height>
+      <texture>sub-background-label.png</texture>
     </control>
 
     <control>
@@ -119,7 +129,7 @@
       <type>label</type>
       <id>3100</id>
       <posX>19</posX>
-      <posY>93</posY>
+      <posY>107</posY>
       <width>322</width>
       <height>20</height>
       <align>center</align>

@@ -1,3 +1,7 @@
+2005-07-02 changed:	removed eject button from submenu since its in the shutdownmenu now
+2005-07-02 changed:     moved profiles button from shutdownmenu to settings screen
+2005-07-02 changed:	new shutdown menu (right thumbstick button)
+
 2005-06-25 changed:	Moved weather logo into the skin.
 
 2005-06-20 fixed:	some minor font placement issues
