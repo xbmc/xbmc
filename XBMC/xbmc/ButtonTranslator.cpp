@@ -506,9 +506,10 @@ WORD CButtonTranslator::TranslateRemoteString(const char *szButton)
 
 WORD CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
 {
-  if (!szButton) return 0;
+  if (!szButton || strlen(szButton) < 4 || strnicmp(szButton, "obc", 3)) return 0;
+  const char *szCode = szButton + 3;
   // Button Code is 255 - OBC (Original Button Code) of the button
-  WORD wButtonCode = 255 - (WORD)atol(szButton);
+  WORD wButtonCode = 255 - (WORD)atol(szCode);
   if (wButtonCode > 255) wButtonCode = 0;
   return wButtonCode;
 }

@@ -94,8 +94,6 @@ CGUIWindowOSD::CGUIWindowOSD(void)
   m_iActiveMenu = 0;
   m_iActiveMenuButtonID = 0;
   m_iCurrentBookmark = 0;
-  // enable relative coordinates
-  m_bNeedsScaling = true;
 }
 
 CGUIWindowOSD::~CGUIWindowOSD(void)

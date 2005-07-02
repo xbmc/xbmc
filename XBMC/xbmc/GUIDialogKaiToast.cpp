@@ -16,7 +16,6 @@
 
 CGUIDialogKaiToast::CGUIDialogKaiToast(void) : CGUIDialog(0)
 {
-  m_bNeedsScaling = true; // make sure we scale this window, as it appears on different resolutions
   m_pIcon = NULL;
   m_iIconPosX = 0;
   m_iIconPosY = 0;
