@@ -37,40 +37,55 @@
     </control>
 
     <controlgroup>
+
       <control>
-        <description>About XBMC</description>
+        <description>profiles</description>
         <type>button</type>
         <id>11</id>
         <posX>50</posX>
         <posY>120</posY>
+	<label>13200</label>
+        <execute>XBMC.ActivateWindow(34)</execute>
+        <onleft>8</onleft>
+        <onright>6</onright>
+        <onup>13</onup>
+        <ondown>12</ondown>
+      </control>
+
+      <control>
+        <description>About XBMC</description>
+        <type>button</type>
+        <id>12</id>
+        <posX>50</posX>
+        <posY>157</posY>
         <label>482</label>
         <execute>XBMC.Credits()</execute>
         <onleft>8</onleft>
         <onright>6</onright>
-        <onup>13</onup>
+        <onup>11</onup>
         <ondown>14</ondown>
       </control>
 
       <control>
-        <description>About XBMC</description>
+        <description>Skin builder</description>
         <type>button</type>
         <id>14</id>
         <posX>50</posX>
-        <posY>157</posY>
+        <posY>194</posY>
         <label>PY Skin Builder</label>
         <execute>XBMC.ActivateWindow(57)</execute>
         <onleft>8</onleft>
         <onright>6</onright>
-        <onup>11</onup>
+        <onup>12</onup>
         <ondown>13</ondown>
       </control>
 
       <control>
-        <description>About XBMC</description>
+        <description>skin reload</description>
         <type>button</type>
         <id>13</id>
         <posX>50</posX>
-        <posY>194</posY>
+        <posY>231</posY>
         <label>Reload Skin</label>
         <execute>XBMC.ReloadSkin()</execute>
         <onleft>8</onleft>
