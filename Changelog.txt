@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-07-2005 fixed: Programs icons crash.
  - 02-07-2005 fixed: <universalremote> tags were incorrect in keymap.xml.
  - 02-07-2005 fixed: Scaling of python windows.
  - 02-07-2005 changed: 2 small updates to Build.bat: made config paths long filename & removed 2 unnecessary copy actions.
