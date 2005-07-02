@@ -27,52 +27,52 @@
   <string><id>30</id><value>Oktober</value></string>
   <string><id>31</id><value>November</value></string>
   <string><id>32</id><value>December</value></string>
-  <string><id>98</id><value>Vy Auto</value></string>
-  <string><id>99</id><value>Vy Auto stor</value></string>
-  <string><id>100</id><value>Visa ikoner</value></string>
+  <string><id>98</id><value>Vy : Auto</value></string>
+  <string><id>99</id><value>Vy : Auto stor</value></string>
+  <string><id>100</id><value>Visa som ikoner</value></string>
   <string><id>101</id><value>Visa som lista</value></string>
-  <string><id>102</id><value>Hitta program</value></string>
-  <string><id>103</id><value>Namn</value></string>
-  <string><id>104</id><value>Datum</value></string>
-  <string><id>105</id><value>Storlek</value></string>
+  <string><id>102</id><value>Skanna</value></string>
+  <string><id>103</id><value>Sortera : Namn</value></string>
+  <string><id>104</id><value>Sortera : Datum</value></string>
+  <string><id>105</id><value>Sortera : Storlek</value></string>
   <string><id>106</id><value>Nej</value></string>
   <string><id>107</id><value>Ja</value></string>
   <string><id>108</id><value>Bildspel</value></string>
   <string><id>109</id><value>Skapa miniatyrer</value></string>
   <string><id>110</id><value>Skapa miniatyrer</value></string>
   <string><id>111</id><value>Genvägar</value></string>
-  <string><id>112</id><value>Pausad</value></string>
-  <string><id>113</id><value>Mina filer  Källa</value></string>
-  <string><id>114</id><value>Mina filer  Destination</value></string>
+  <string><id>112</id><value>PAUSAD</value></string>
+  <string><id>113</id><value>Mina filer : Källa</value></string>
+  <string><id>114</id><value>Mina filer : Mål</value></string>
   <string><id>115</id><value>Kopiera</value></string>
   <string><id>116</id><value>Flytta</value></string>
   <string><id>117</id><value>Radera</value></string>
-  <string><id>118</id><value>Ändra namn</value></string>
+  <string><id>118</id><value>Byt namn</value></string>
   <string><id>119</id><value>Ny mapp</value></string>
   <string><id>120</id><value>Bekräfta kopiering</value></string>
   <string><id>121</id><value>Bekräfta flyttning av fil</value></string>
   <string><id>122</id><value>Bekräfta radering</value></string>
-  <string><id>123</id><value>Är du säker på att du vill kopiera dessa filer?</value></string>
-  <string><id>124</id><value>Är du säker på att du vill flytta dessa filer?</value></string>
-  <string><id>125</id><value>Är du säker på att du vill radera dessa filer?</value></string>
+  <string><id>123</id><value>Kopiera filerna?</value></string>
+  <string><id>124</id><value>Flytta filerna?</value></string>
+  <string><id>125</id><value>Radera filerna?</value></string>
   <string><id>126</id><value>Status</value></string>
   <string><id>127</id><value>Objekt</value></string>
   <string><id>128</id><value>Generella</value></string>
   <string><id>129</id><value>Bildspel</value></string>
-  <string><id>130</id><value>System Info</value></string>
+  <string><id>130</id><value>System info</value></string>
   <string><id>131</id><value>Bildskärm</value></string>
   <string><id>132</id><value>Album</value></string>
   <string><id>133</id><value>Artister</value></string>
   <string><id>134</id><value>Låtar</value></string>
-  <string><id>135</id><value>Genrer</value></string>
+  <string><id>135</id><value>Genre</value></string>
   <string><id>136</id><value>Spelningslistor</value></string>
   <string><id>137</id><value>Sök</value></string>
-  <string><id>138</id><value>System Information</value></string>
+  <string><id>138</id><value>SYSTEM INFORMATION</value></string>
   <string><id>139</id><value>Temperaturer</value></string>
   <string><id>140</id><value>CPU:</value></string>
   <string><id>141</id><value>GPU:</value></string>
   <string><id>142</id><value>Tid:</value></string>
-  <string><id>143</id><value>Nuvarande</value></string>
+  <string><id>143</id><value>Nuvarande:</value></string>
   <string><id>144</id><value>Version:</value></string>
   <string><id>145</id><value>Nätverk:</value></string>
   <string><id>146</id><value>Typ:</value></string>
@@ -80,35 +80,35 @@
   <string><id>148</id><value>DHCP</value></string>
   <string><id>149</id><value>MAC</value></string>
   <string><id>150</id><value>IP</value></string>
-  <string><id>151</id><value>Status:</value></string>
+  <string><id>151</id><value>Länk: </value></string>
   <string><id>152</id><value>Halv duplex</value></string>
   <string><id>153</id><value>Full duplex</value></string>
-  <string><id>154</id><value>Utrymme:</value></string>
-  <string><id>155</id><value>Disk:</value></string>
+  <string><id>154</id><value>Lagring</value></string>
+  <string><id>155</id><value>Enhet:</value></string>
   <string><id>156</id><value>Ledigt</value></string>
-  <string><id>157</id><value>Video:</value></string>
-  <string><id>158</id><value>Ledigt minne:</value></string>
+  <string><id>157</id><value>Video</value></string>
+  <string><id>158</id><value>Ledigt minne</value></string>
   <string><id>159</id><value>Inget nätverk</value></string>
   <string><id>160</id><value>Ledigt</value></string>
-  <string><id>161</id><value>Ej tillgänglig</value></string>
-  <string><id>162</id><value>DVD-lucka Öppen</value></string>
+  <string><id>161</id><value>Icke tillgängligt</value></string>
+  <string><id>162</id><value>Släde öppen</value></string>
   <string><id>163</id><value>Läser</value></string>
-  <string><id>164</id><value>Ingen disk</value></string>
-  <string><id>165</id><value>Disk i drive</value></string>
+  <string><id>164</id><value>Ingen skiva</value></string>
+  <string><id>165</id><value>Skiva laddad</value></string>
   <string><id>166</id><value>Skal</value></string>
-  <string><id>167</id><value>Aktivera ftp-server</value></string>
-  <string><id>168</id><value>Aktivera tidserver</value></string>
+  <string><id>167</id><value>Aktivera FTP-server</value></string>
+  <string><id>168</id><value>Aktivera tidssynk via Internet</value></string>
   <string><id>169</id><value>Upplösning</value></string>
-  <string><id>170</id><value>Album</value></string>
-  <string><id>171</id><value>Artist</value></string>
-  <string><id>172</id><value>Årtal</value></string>
-  <string><id>173</id><value>Betyg</value></string>
-  <string><id>174</id><value>Genre</value></string>
-  <string><id>175</id><value>Musiktyp</value></string>
-  <string><id>176</id><value>Stilar</value></string>
-  <string><id>177</id><value>Recension</value></string>
-  <string><id>178</id><value>Spår</value></string>
-  <string><id>179</id><value>Sång</value></string>
+  <string><id>170</id><value>Album:</value></string>
+  <string><id>171</id><value>Artist:</value></string>
+  <string><id>172</id><value>Utgiven:</value></string>
+  <string><id>173</id><value>Betyg:</value></string>
+  <string><id>174</id><value>Genre:</value></string>
+  <string><id>175</id><value>Musiktyp:</value></string>
+  <string><id>176</id><value>Stilar:</value></string>
+  <string><id>177</id><value>Recension:</value></string>
+  <string><id>178</id><value>Spår:</value></string>
+  <string><id>179</id><value>Låt</value></string>
   <string><id>180</id><value>Varaktighet</value></string>
   <string><id>181</id><value>Välj album</value></string>
   <string><id>182</id><value>Spår</value></string>
@@ -116,51 +116,51 @@
   <string><id>184</id><value>Uppdatera</value></string>
   <string><id>185</id><value>Söker album</value></string>
   <string><id>186</id><value>OK</value></string>
-  <string><id>187</id><value>Hittade inga album</value></string>
-  <string><id>188</id><value>Markera allt</value></string>
-  <string><id>189</id><value>Indexerar mediainfo</value></string>
+  <string><id>187</id><value>Inga album funna!</value></string>
+  <string><id>188</id><value>Välj alla</value></string>
+  <string><id>189</id><value>Skannar mediainfo</value></string>
   <string><id>190</id><value>Spara</value></string>
   <string><id>191</id><value>Blanda</value></string>
   <string><id>192</id><value>Rensa</value></string>
-  <string><id>193</id><value>Indexera</value></string>
+  <string><id>193</id><value>Skanna</value></string>
   <string><id>194</id><value>Söker...</value></string>
   <string><id>195</id><value>Ingen IMDB-info hittades!</value></string>
-  <string><id>196</id><value>Välj film</value></string>
+  <string><id>196</id><value>Välj film:</value></string>
   <string><id>197</id><value>Söker IMDB-info</value></string>
-  <string><id>198</id><value>Laddar detaljer om film</value></string>
-  <string><id>199</id><value>Regissör</value></string>
-  <string><id>200</id><value>Författare</value></string>
-  <string><id>201</id><value>Årtal</value></string>
-  <string><id>202</id><value>Tag line</value></string>
-  <string><id>203</id><value>Handling</value></string>
-  <string><id>204</id><value>Betyg</value></string>
-  <string><id>2050</id><value>Speltid</value></string>
-  <string><id>205</id><value>Röster</value></string>
-  <string><id>206</id><value>Författare</value></string>
+  <string><id>198</id><value>Laddar filmdetaljer</value></string>
+  <string><id>199</id><value>Regissör:</value></string>
+  <string><id>200</id><value>Författare:</value></string>
+  <string><id>201</id><value>Årtal:</value></string>
+  <string><id>202</id><value>Tag line:</value></string>
+  <string><id>203</id><value>Handling:</value></string>
+  <string><id>204</id><value>Betyg:</value></string>
+  <string><id>2050</id><value>Speltid:</value></string>
+  <string><id>205</id><value>Röster:</value></string>
+  <string><id>206</id><value>Rollbesättning</value></string>
   <string><id>207</id><value>Handling</value></string>
   <string><id>208</id><value>Spela upp</value></string>
   <string><id>209</id><value>Nästa</value></string>
   <string><id>210</id><value>Föregående</value></string>
   <string><id>211</id><value>Söker applikationer</value></string>
-  <string><id>212</id><value>Applikaitoner hittades</value></string>
-  <string><id>213</id><value>Centrera GUI</value></string>
+  <string><id>212</id><value>applikationer funna</value></string>
+  <string><id>213</id><value>Centrera gränssnitt</value></string>
   <string><id>214</id><value>Kalibrera film</value></string>
-  <string><id>215</id><value>Mjuka upp kanter</value></string>
-  <string><id>216</id><value>Zooma</value></string>
-  <string><id>217</id><value>Tänj</value></string>
-  <string><id>218</id><value>DVD-spelare</value></string>
-  <string><id>219</id><value>Sätt i skiva</value></string>
-  <string><id>220</id><value>Nätverksfiler</value></string>
+  <string><id>215</id><value>Mjuka upp</value></string>
+  <string><id>216</id><value>Förstora</value></string>
+  <string><id>217</id><value>Pixelförhållande</value></string>
+  <string><id>218</id><value>DVD-enhet</value></string>
+  <string><id>219</id><value>Var god sätt i skiva</value></string>
+  <string><id>220</id><value>Fjärrdisk</value></string>
   <string><id>221</id><value>Det finns inget nätverk</value></string>
   <string><id>222</id><value>Avbryt</value></string>
-  <string><id>223</id><value>Växla till widescreen automatiskt</value></string>
+  <string><id>223</id><value>Växla automatiskt till widescreen</value></string>
   <string><id>224</id><value>Hastighet</value></string>
   <string><id>225</id><value>Tid för övergång</value></string>
-  <string><id>226</id><value>Slå på PAL60</value></string>
-  <string><id>227</id><value>Slå på CDDB</value></string>
+  <string><id>226</id><value>Aktivera PAL60</value></string>
+  <string><id>227</id><value>Aktivera CDDB</value></string>
   <string><id>228</id><value>Blanda spellistor när de laddas</value></string>
   <string><id>229</id><value>Tid innan sänkt HD-hastighet</value></string>
-  <string><id>230</id><value>Video filter</value></string>
+  <string><id>230</id><value>Videofilter</value></string>
   <string><id>231</id><value>Inget</value></string>
   <string><id>232</id><value>Punkt</value></string>
   <string><id>233</id><value>Linjär</value></string>
@@ -169,134 +169,134 @@
   <string><id>236</id><value>Gaussisk kubiskt</value></string>
   <string><id>237</id><value>Förminskning</value></string>
   <string><id>238</id><value>Förstoring</value></string>
-  <string><id>239</id><value>Rensa spellista vid slutet</value></string>
-  <string><id>240</id><value>Starta DVD-Video automatiskt</value></string>
-  <string><id>241</id><value>Starta VCD/SVCD automatiskt</value></string>
-  <string><id>242</id><value>Starta Audio-CD automatiskt</value></string>
-  <string><id>243</id><value>Starta XBOX-spel automatiskt</value></string>
-  <string><id>244</id><value>Starta Videofilmer automatiskt</value></string>
-  <string><id>245</id><value>Starta Musik automatiskt</value></string>
-  <string><id>246</id><value>Starta Bilder automatiskt</value></string>
+  <string><id>239</id><value>Rensa vid spellistans slut</value></string>
+  <string><id>240</id><value>Autostarta DVD-Video</value></string>
+  <string><id>241</id><value>Autostarta VCD/SVCD</value></string>
+  <string><id>242</id><value>Autostarta Audio-CD</value></string>
+  <string><id>243</id><value>Autostarta XBOX-spel</value></string>
+  <string><id>244</id><value>Autostarta Filmer</value></string>
+  <string><id>245</id><value>Autostarta Musik</value></string>
+  <string><id>246</id><value>Autostarta Bilder</value></string>
   <string><id>247</id><value>Skript</value></string>
   <string><id>248</id><value>Språk</value></string>
   <string><id>249</id><value>Musik</value></string>
   <string><id>250</id><value>Visualisering</value></string>
-  <string><id>251</id><value>Välj destinationsmapp</value></string>
-  <string><id>252</id><value>Stereo signal till alla högtalare</value></string>
+  <string><id>251</id><value>Välj destinationskatalog</value></string>
+  <string><id>252</id><value>Stereosignal till alla högtalare</value></string>
   <string><id>253</id><value>Antal kanaler</value></string>
-  <string><id>254</id><value>DTS kapabel förstärkare</value></string>
+  <string><id>254</id><value>- DTS-kapabel förstärkare</value></string>
   <string><id>255</id><value>CDDB</value></string>
   <string><id>256</id><value>Frågar freedb för CDDB-info</value></string>
   <string><id>257</id><value>Fel</value></string>
   <string><id>258</id><value>Aktivera ID3-tags</value></string>
   <string><id>259</id><value>Öppnar</value></string>
   <string><id>260</id><value>Shoutcast</value></string>
-  <string><id>261</id><value>Väntar på start....</value></string>
-  <string><id>262</id><value>Scripts output</value></string>
-  <string><id>263</id><value>Aktivera Web-server</value></string>
-  <string><id>264</id><value>Record</value></string>
-  <string><id>265</id><value>End rec.</value></string>
-  <string><id>266</id><value>Sortera efter låt</value></string>
-  <string><id>267</id><value>Sortera efter tid</value></string>
-  <string><id>268</id><value>Sortera efter titel</value></string>
-  <string><id>269</id><value>Sortera efter artist</value></string>
-  <string><id>270</id><value>Sortera efter album</value></string>
-  <string><id>271</id><value>Top 100</value></string>
-  <string><id>272</id><value>Övre vänstra overscan-kompensation</value></string>
-  <string><id>273</id><value>Nedre högra overscan-kompensation</value></string>
+  <string><id>261</id><value>Väntar på start...</value></string>
+  <string><id>262</id><value>Skriptutgång</value></string>
+  <string><id>263</id><value>Aktivera Webbserver</value></string>
+  <string><id>264</id><value>Spela in</value></string>
+  <string><id>265</id><value>Avsluta insp.</value></string>
+  <string><id>266</id><value>Sortera : Låtar</value></string>
+  <string><id>267</id><value>Sortera : Speltid</value></string>
+  <string><id>268</id><value>Sortera : Titel</value></string>
+  <string><id>269</id><value>Sortera : Artist</value></string>
+  <string><id>270</id><value>Sortera : Album</value></string>
+  <string><id>271</id><value>Topp 100</value></string>
+  <string><id>272</id><value>Övre vänstra hörnkompensering</value></string>
+  <string><id>273</id><value>Nedre högra hörnkompensering</value></string>
   <string><id>274</id><value>Undertextposition</value></string>
-  <string><id>275</id><value>Pixel ratio-justering</value></string>
-  <string><id>276</id><value>Flytta pilen för att ändra mängd overscan</value></string>
-  <string><id>277</id><value>Flytta pilen för att flytta undertextposition</value></string>
-  <string><id>278</id><value>Ändra rektangeln så den blir en perfekt fyrkant</value></string>
+  <string><id>275</id><value>Pixelmängdsjustering</value></string>
+  <string><id>276</id><value>Flytta pilen för att ändra kompenseringsmängd</value></string>
+  <string><id>277</id><value>Flytta pilen för att flytta undertextsposition</value></string>
+  <string><id>278</id><value>Ändra rektangeln till en perfekt fyrkant</value></string>
   <string><id>279</id><value>Kunde inte ladda inställningar</value></string>
-  <string><id>280</id><value>Använder orginalinställningar</value></string>
-  <string><id>281</id><value>Var god och kolla .xml-filerna</value></string>
-  <string><id>282</id><value>hittade %i saker</value></string>
+  <string><id>280</id><value>använder originalinställningar</value></string>
+  <string><id>281</id><value>Var god kontrollera .xml-filerna</value></string>
+  <string><id>282</id><value>hittade %i objekt</value></string>
   <string><id>283</id><value>Sökresultat</value></string>
   <string><id>284</id><value>Inga resultat funna</value></string>
-  <string><id>285</id><value>Deinterlace-filter</value></string>
-  <string><id>286</id><value>Postprocessing-filter</value></string>
+  <string><id>285</id><value>Deinterlace filter</value></string>
+  <string><id>286</id><value>Efterbehandlingsfilter</value></string>
   <string><id>287</id><value>Undertexter</value></string>
   <string><id>288</id><value>Typsnitt</value></string>
-  <string><id>289</id><value>Storlek</value></string>
+  <string><id>289</id><value>- Storlek</value></string>
   <string><id>290</id><value>Volymförstärkning (dB)</value></string>
   <string><id>291</id><value>Video</value></string>
   <string><id>292</id><value>Ljud</value></string>
   <string><id>293</id><value>Undertexter</value></string>
-  <string><id>294</id><value>1. Skapa bokmärke</value></string>
-  <string><id>295</id><value>2. Bläddra bokmärke</value></string>
-  <string><id>296</id><value>3. Ta bort bokmärken</value></string>
-  <string><id>297</id><value>4. A/V-förskjutning</value></string>
-  <string><id>298</id><value>5. Slider</value></string>
+  <string><id>294</id><value>Skapa bokmärke</value></string>
+  <string><id>295</id><value>Bläddra bokmärke</value></string>
+  <string><id>296</id><value>Ta bort bokmärken</value></string>
+  <string><id>297</id><value>A/V-fördröjning</value></string>
+  <string><id>298</id><value>Slider</value></string>
   <string><id>300</id><value>1. Språk</value></string>
   <string><id>301</id><value>2. Volym</value></string>
   <string><id>302</id><value>3. Ström</value></string>
-  <string><id>303</id><value>1. Förskjutninng</value></string>
-  <string><id>304</id><value>2. Språk</value></string>
-  <string><id>305</id><value>3. Av/På</value></string>
-  <string><id>306</id><value>6. Icke-interleaved</value></string>
-  <string><id>307</id><value>Auto</value></string>
-  <string><id>308</id><value>Vertikalt deblocking-filter</value></string>
-  <string><id>309</id><value>Horisontalt deblocking-filter</value></string>
-  <string><id>310</id><value>Auto ljus/kontrast</value></string>
-  <string><id>311</id><value>Dering</value></string>
+  <string><id>303</id><value>Förskjutning</value></string>
+  <string><id>304</id><value>Språk</value></string>
+  <string><id>305</id><value>Aktiverad</value></string>
+  <string><id>306</id><value>Icke-interleaved</value></string>
+  <string><id>307</id><value>- Automatisk efterbehandling</value></string>
+  <string><id>308</id><value>- Vertikalt deblockingfilter</value></string>
+  <string><id>309</id><value>- Horisontellt deblockingfilter</value></string>
+  <string><id>310</id><value>- Automatisk ljus/kontrast</value></string>
+  <string><id>311</id><value>- Dering</value></string>
   <string><id>312</id><value>(0=auto)</value></string>
-  <string><id>313</id><value>Rensar databasen</value></string>
+  <string><id>313</id><value>Rensar databas</value></string>
   <string><id>314</id><value>Förbereder...</value></string>
   <string><id>315</id><value>Databasfel</value></string>
-  <string><id>316</id><value>Söker sånger...</value></string>
+  <string><id>316</id><value>Söker låtar...</value></string>
   <string><id>317</id><value>Rensning av databasen lyckades</value></string>
   <string><id>318</id><value>Rensar låtar...</value></string>
   <string><id>319</id><value>Fel vid rensning av låtar</value></string>
   <string><id>320</id><value>Rensar artister...</value></string>
   <string><id>321</id><value>Fel vid rensning av artister</value></string>
-  <string><id>322</id><value>Rensar genres...</value></string>
-  <string><id>323</id><value>Fel vid rensning av genres</value></string>
+  <string><id>322</id><value>Rensar genre...</value></string>
+  <string><id>323</id><value>Fel vid rensning av genre</value></string>
   <string><id>324</id><value>Rensar sökvägar...</value></string>
   <string><id>325</id><value>Fel vid rensning av sökvägar</value></string>
   <string><id>326</id><value>Rensar album...</value></string>
   <string><id>327</id><value>Fel vid rensning av album</value></string>
-  <string><id>328</id><value>Skriver förändringar...</value></string>
-  <string><id>329</id><value>Fel vid skrivande av ändringar</value></string>
-  <string><id>330</id><value>Detta kan ta lång tid...</value></string>
+  <string><id>328</id><value>Sparar ändringar...</value></string>
+  <string><id>329</id><value>Fel vid sparande av ändringar</value></string>
+  <string><id>330</id><value>Detta kan ta ett tag...</value></string>
   <string><id>331</id><value>Komprimerar databas...</value></string>
   <string><id>332</id><value>Fel vid komprimering av databas</value></string>
-  <string><id>333</id><value>Vill du rensa musik databasen?</value></string>
-  <string><id>334</id><value>Rensa musik databasen</value></string>
+  <string><id>333</id><value>Vill du rensa musikbiblioteket?</value></string>
+  <string><id>334</id><value>Rensa musikbibliotek</value></string>
   <string><id>335</id><value>Start</value></string>
   <string><id>336</id><value>Justera bilduppdatering</value></string>
-  <string><id>337</id><value>Ljudoutput</value></string>
+  <string><id>337</id><value>Ljudutgång</value></string>
   <string><id>338</id><value>Analog</value></string>
   <string><id>339</id><value>Digital</value></string>
   <string><id>340</id><value>Blandade artister</value></string>
   <string><id>341</id><value>Spela DVD</value></string>
   <string><id>342</id><value>Filmer</value></string>
-  <string><id>343</id><value>8. Justera Bilduppdatering</value></string>
+  <string><id>343</id><value>Justera bilduppdatering</value></string>
   <string><id>344</id><value>Skådespelare</value></string>
   <string><id>345</id><value>År</value></string>
-  <string><id>346</id><value>Stack</value></string>
-  <string><id>347</id><value>Unstack</value></string>
-  <string><id>348</id><value>Platta ut "directory hierarchy"</value></string>
+  <string><id>346</id><value>Stapla filer</value></string>
+  <string><id>347</id><value>Stapla av</value></string>
+  <string><id>348</id><value>Platta ut mapphierarki</value></string>
   <string><id>349</id><value>Visa endast Default.xbe</value></string>
   <string><id>350</id><value>Program</value></string>
   <string><id>351</id><value>Av</value></string>
   <string><id>352</id><value>Dim</value></string>
   <string><id>353</id><value>Svart</value></string>
   <string><id>354</id><value>Matrix-stil</value></string>
-  <string><id>355</id><value>Start tid för Skärmsläckare</value></string>
+  <string><id>355</id><value>Tid innan skärmsläckare aktiveras</value></string>
   <string><id>356</id><value>Skärmsläckarläge</value></string>
-  <string><id>357</id><value>Avstängningstid vid vila</value></string>
-  <string><id>358</id><value>Alla albums</value></string>
-  <string><id>359</id><value>Senaste album</value></string>
+  <string><id>357</id><value>Tid innan avstängning vid vila</value></string>
+  <string><id>358</id><value>Alla album</value></string>
+  <string><id>359</id><value>Senast spelade album</value></string>
   <string><id>360</id><value>Skärmsläckare</value></string>
   <string><id>361</id><value>R. SlideShow</value></string>
-  <string><id>362</id><value>Skärmsläckarnivå (%)</value></string>
-  <string><id>363</id><value>Sortera efter fil</value></string>
-  <string><id>364</id><value>AC3 kapabel förstärkare</value></string>
-  <string><id>365</id><value>Sortera efter namn</value></string>
-  <string><id>366</id><value>Sortera efter år</value></string>
-  <string><id>367</id><value>Sortera efter betyg</value></string>
+  <string><id>362</id><value>Skärmsläckarnivå</value></string>
+  <string><id>363</id><value>Sortera : Filer</value></string>
+  <string><id>364</id><value>- AC3-kapabel förstärkare</value></string>
+  <string><id>365</id><value>Sortera : Namn</value></string>
+  <string><id>366</id><value>Sortera : År</value></string>
+  <string><id>367</id><value>Sortera : Betyg</value></string>
   <string><id>368</id><value>IMDB</value></string>
   <string><id>369</id><value>Titel</value></string>
   <string><id>370</id><value>Åska</value></string>
@@ -306,7 +306,7 @@
   <string><id>374</id><value>Molnigt</value></string>
   <string><id>375</id><value>Snö</value></string>
   <string><id>376</id><value>Regn</value></string>
-  <string><id>377</id><value>Milt</value></string>
+  <string><id>377</id><value>Lätt</value></string>
   <string><id>378</id><value>Förmiddag</value></string>
   <string><id>379</id><value>Eftermiddag</value></string>
   <string><id>380</id><value>Skurar</value></string>
@@ -316,12 +316,12 @@
   <string><id>384</id><value>Starka</value></string>
   <string><id>385</id><value>Medel</value></string>
   <string><id>386</id><value>Klart</value></string>
-  <string><id>387</id><value>Molnigt</value></string>
+  <string><id>387</id><value>Moln</value></string>
   <string><id>388</id><value>Tidiga</value></string>
   <string><id>389</id><value>Skurar</value></string>
   <string><id>390</id><value>Lätt snöfall</value></string>
   <string><id>391</id><value>Låg</value></string>
-  <string><id>392</id><value>Medium</value></string>
+  <string><id>392</id><value>Medel</value></string>
   <string><id>393</id><value>Hög</value></string>
   <string><id>394</id><value>Dimma</value></string>
   <string><id>395</id><value>Dis</value></string>
@@ -338,41 +338,42 @@
   <string><id>406</id><value>Fuktighet</value></string>
   <string><id>407</id><value>Från</value></string>
   <string><id>408</id><value>vid</value></string>
-  <string><id>410</id><value>kontaktar Weather.com</value></string>
-  <string><id>411</id><value>Tar emot väder för</value></string>
-  <string><id>412</id><value>Kunde inte ta emot väderdata</value></string>
-  <string><id>413</id><value>Manual</value></string>
+  <string><id>410</id><value>Kontaktar Weather.com</value></string>
+  <string><id>411</id><value>Hämtar väder för:</value></string>
+  <string><id>412</id><value>Kunde inte hämta väderdata</value></string>
+  <string><id>413</id><value>Manuell</value></string>
   <string><id>414</id><value>Ingen recension för detta album</value></string>
   <string><id>415</id><value>Laddar ner miniatyrbild...</value></string>
   <string><id>416</id><value>Inte tillgänglig</value></string>
-  <string><id>417</id><value>Stora ikoner</value></string>
-  <string><id>418</id><value>Mina filmer/genres</value></string>
+  <string><id>417</id><value>Vy : Stora ikoner</value></string>
+  <string><id>418</id><value>Mina filmer/genre</value></string>
   <string><id>419</id><value>Mina filmer/skådespelare</value></string>
   <string><id>420</id><value>Mina filmer/år</value></string>
   <string><id>421</id><value>Mina filmer/titel</value></string>
   <string><id>422</id><value>Radera albuminfo</value></string>
   <string><id>423</id><value>Radera CDDB-info</value></string>
   <string><id>424</id><value>Välj</value></string>
-  <string><id>425</id><value>Ingen albuminfo hittad.</value></string>
-  <string><id>426</id><value>Ingen CDDB-info hittad.</value></string>
-  <string><id>427</id><value>Disc</value></string>
+  <string><id>425</id><value>Ingen albuminfo funnen.</value></string>
+  <string><id>426</id><value>Ingen CDDB-info funnen.</value></string>
+  <string><id>427</id><value>Skiva:</value></string>
   <string><id>428</id><value>Sätt in korrekt CD/DVD</value></string>
-  <string><id>429</id><value>Var god sätt in följande CD/DVD</value></string>
-  <string><id>430</id><value>Sortera efter DVD#</value></string>
-  <string><id>431</id><value>7. Ingen cache</value></string>
+  <string><id>429</id><value>Var god sätt i följande CD/DVD</value></string>
+  <string><id>430</id><value>Sortera : DVD#</value></string>
+  <string><id>431</id><value>Ingen cache</value></string>
   <string><id>432</id><value>Radera filmen från databasen</value></string>
-  <string><id>433</id><value>Är du säker på att radera</value></string>
+  <string><id>433</id><value>Är du säker på att ta bort</value></string>
   <string><id>434</id><value>filmen?</value></string>
   <string><id>435</id><value>Låt</value></string>
-  <string><id>436</id><value>År</value></string>
-  <string><id>437</id><value>Speltid</value></string>
+  <string><id>436</id><value>År:</value></string>
+  <string><id>437</id><value>Speltid:</value></string>
+  <string><id>438</id><value>Öppnar fil</value></string>
   <string><id>439</id><value>Cache</value></string>
   <string><id>440</id><value>Hårddisk</value></string>
   <string><id>441</id><value>UDF</value></string>
   <string><id>442</id><value>LAN</value></string>
   <string><id>443</id><value>Internet</value></string>
-  <string><id>444</id><value>Video</value></string>
-  <string><id>445</id><value>Ljud</value></string>
+  <string><id>444</id><value>video</value></string>
+  <string><id>445</id><value>ljud</value></string>
   <string><id>446</id><value>DVD</value></string>
   <string><id>447</id><value>Autostart</value></string>
   <string><id>448</id><value>LCD</value></string>
@@ -386,29 +387,29 @@
   <string><id>455</id><value>Rad</value></string>
   <string><id>456</id><value>Läge</value></string>
   <string><id>457</id><value>Växla vy</value></string>
-  <string><id>458</id><value>B/Mark</value></string>
+  <string><id>458</id><value>Bokmärke</value></string>
   <string><id>459</id><value>Undertext</value></string>
-  <string><id>460</id><value>Audioström</value></string>
-  <string><id>461</id><value>[aktive]</value></string>
+  <string><id>460</id><value>Ljudström</value></string>
+  <string><id>461</id><value>[aktiv]</value></string>
   <string><id>462</id><value>Undertext</value></string>
   <string><id>463</id><value>Bakgrundsljus</value></string>
   <string><id>464</id><value>Ljusstyrka</value></string>
   <string><id>465</id><value>Kontrast</value></string>
   <string><id>466</id><value>Gamma</value></string>
   <string><id>467</id><value>Typ</value></string>
-  <string><id>468</id><value>Ställ in OSD-position</value></string>
+  <string><id>468</id><value>Flytta stapeln för att ändra OSD-position</value></string>
   <string><id>469</id><value>OSD-position</value></string>
   <string><id>470</id><value>Om XBMC</value></string>
   <string><id>471</id><value>Modchip</value></string>
-  <string><id>472</id><value>OSD timeout</value></string>
+  <string><id>472</id><value>Video OSD timeout</value></string>
   <string><id>473</id><value>Högkvalitativ resampling</value></string>
   <string><id>474</id><value>Av</value></string>
   <string><id>475</id><value>Bara musik</value></string>
   <string><id>476</id><value>Musik &amp; video</value></string>
   <string><id>477</id><value>Kunde inte ladda spellista</value></string>
   <string><id>478</id><value>OSD</value></string>
-  <string><id>479</id><value>Skal och språk</value></string>
-  <string><id>480</id><value>Användargränssnitt</value></string>
+  <string><id>479</id><value>Skal &amp; språk</value></string>
+  <string><id>480</id><value>Utseende</value></string>
   <string><id>481</id><value>Ljudval</value></string>
   <string><id>482</id><value>Om XBMC</value></string>
   <string><id>483</id><value>Album</value></string>
@@ -416,174 +417,190 @@
   <string><id>485</id><value>Radera album</value></string>
   <string><id>486</id><value>Repetera</value></string>
   <string><id>487</id><value>Repetera en</value></string>
-  <string><id>488</id><value>Repetera mappens spellista</value></string>
-  <string><id>489</id><value>Använd spellista i låtarna</value></string>
+  <string><id>488</id><value>Repetera mappar</value></string>
+  <string><id>489</id><value>Spela kommande</value></string>
   <string><id>490</id><value>Autobyt lista och ikoner i låtar</value></string>
-  <string><id>491</id><value>Använd stora ikoner</value></string>
-  <string><id>492</id><value>Förstora undertext</value></string>
+  <string><id>491</id><value>- Använd stora ikoner</value></string>
+  <string><id>492</id><value>Förstora VOB-undertexter</value></string>
   <string><id>493</id><value>Avancerade val (Bara Experter!)</value></string>
-  <string><id>494</id><value>Overall audio headroom (dB)</value></string>
-  <string><id>495</id><value>Upsampla video till GUI upplösning</value></string>
-  <string><id>496</id><value>Kalibrera</value></string>
-  <string><id>497</id><value>Göm filändelse</value></string>
-  <string><id>498</id><value>Sortera Typ</value></string>
+  <string><id>494</id><value>Totalt ljudutrymme (dB)</value></string>
+  <string><id>495</id><value>Uppsampla video till GUI-upplösning</value></string>
+  <string><id>496</id><value>Kalibrering</value></string>
+  <string><id>497</id><value>Göm filändelse för media</value></string>
+  <string><id>498</id><value>Sortera : Typ</value></string>
   <string><id>499</id><value>Kunde inte kontakta www.allmusic.com</value></string>
-  <string><id>500</id><value>Nerladdning av album info misslyckades</value></string>
-  <string><id>501</id><value>Letar efter album namn...</value></string>
+  <string><id>500</id><value>Nedladdning av albuminfo misslyckades</value></string>
+  <string><id>501</id><value>Letar efter albumnamn...</value></string>
   <string><id>502</id><value>Öppen</value></string>
   <string><id>503</id><value>Upptagen</value></string>
   <string><id>504</id><value>Tom</value></string>
   <string><id>505</id><value>Laddar mediainfo från filer...</value></string>
-  <string><id>506</id><value>Använd mapp namn för beskrivning</value></string>
-  <string><id>507</id><value>Användning</value></string>
-  <string><id>508</id><value>Använd inte shortcuts eller scan</value></string>
-  <string><id>509</id><value>Cacha programens tumnaglar</value></string>
-  <string><id>510</id><value>Aktivera Visualisationer</value></string>
-  <string><id>511</id><value>Auto växla videoläge baserat på spel region</value></string>
+  <string><id>506</id><value>Använd mappnamn som beskrivning</value></string>
+  <string><id>507</id><value>Sortera : Användning</value></string>
+  <string><id>508</id><value>Använd inte genvägar eller skanna</value></string>
+  <string><id>509</id><value>Cacha programminiatyrer</value></string>
+  <string><id>510</id><value>Aktivera visualiseringar</value></string>
+  <string><id>511</id><value>Autoväxla videoläge baserat på spelregion</value></string>
+  <string><id>512</id><value>Startfönster</value></string>
+  <string><id>513</id><value>Hemfönster</value></string>
+  <string><id>514</id><value>Manuella inställningar</value></string>
+  
   <string><id>600</id><value>Rippa Audio-CD</value></string>
-  <string><id>601</id><value>Medium</value></string>
-  <string><id>602</id><value>Normal</value></string>
+  <string><id>601</id><value>Medel</value></string>
+  <string><id>602</id><value>Standard</value></string>
   <string><id>603</id><value>Extrem</value></string>
   <string><id>604</id><value>Konstant bitrate</value></string>
-  <string><id>605</id><value>Rippar</value></string>
-  <string><id>606</id><value>Track Nummer</value></string>
-  <string><id>607</id><value>Till</value></string>
-  <string><id>608</id><value>Kunde inte rippa CD eller Spår</value></string>
-  <string><id>609</id><value>CDDA rippath är inte satt i Xboxmediacenter.xml</value></string>
+  <string><id>605</id><value>Rippar...</value></string>
+  <string><id>606</id><value>Spår nummer:</value></string>
+  <string><id>607</id><value>Till:</value></string>
+  <string><id>608</id><value>Kunde inte rippa CD eller spår</value></string>
+  <string><id>609</id><value>CDDA-sökväg ej angiven i Xboxmediacenter.xml</value></string>
   <string><id>620</id><value>CD rippning</value></string>
-  <string><id>621</id><value>Val av encodare</value></string>
+  <string><id>621</id><value>Encoder</value></string>
   <string><id>622</id><value>Kvalitet</value></string>
-  <string><id>623</id><value>BitRate</value></string>
-  <string><id>624</id><value>Inkludera spår nummer</value></string>
+  <string><id>623</id><value>Bitrate</value></string>
+  <string><id>624</id><value>Inkludera spårnummer</value></string>
   <string><id>625</id><value>Alla låtar med</value></string>
   <string><id>629</id><value>TV läge</value></string>
   <string><id>630</id><value>Normal</value></string>
   <string><id>631</id><value>Zoom</value></string>
-  <string><id>632</id><value>Sträck 43</value></string>
-  <string><id>633</id><value>Sträck 149</value></string>
-  <string><id>634</id><value>Sträck 169</value></string>
+  <string><id>632</id><value>Sträck 4:3</value></string>
+  <string><id>633</id><value>Sträck 14:9</value></string>
+  <string><id>634</id><value>Sträck 16:9</value></string>
   <string><id>635</id><value>Original storlek</value></string>
   <string><id>636</id><value>Egen</value></string>
+  
   <string><id>637</id><value>Replay Gain</value></string>
   <string><id>638</id><value>Läge</value></string>
-  <string><id>639</id><value>Använd låt nivå</value></string>
-  <string><id>640</id><value>Använd album nivåer</value></string>
-  <string><id>641</id><value>PreAmp Level - Replay Gained Filer</value></string>
-  <string><id>642</id><value>PreAmp Level - Icke Replay Gained Filer</value></string>
-  <string><id>643</id><value>Undvik Clipping på Replay Gained Filer</value></string>
-  <string><id>644</id><value>Ta bort Svarat Ränder</value></string>
-  <string><id>700</id><value>Rensa Databasen</value></string>
-  <string><id>701</id><value>Radera gammla låtar från databasen</value></string>
-  <string><id>702</id><value>Denna sökväg har scannats innan.</value></string>
-  <string><id>703</id><value>Välj Ja för att uppdatera sånger.</value></string>
-  <string><id>704</id><value>Välj Nej för att bara lägga till nya sånger.</value></string>
+  <string><id>639</id><value>Använd låtnivå</value></string>
+  <string><id>640</id><value>Använd albumnivåer</value></string>
+  <string><id>641</id><value>Förstärkarnivå - Replay Gain filer</value></string>
+  <string><id>642</id><value>Förstärkarnivå - Icke Replay Gain filer</value></string>
+  <string><id>643</id><value>Undvik clipping på Replay Gain filer</value></string>
+  <string><id>644</id><value>Klipp ner svarta ramar</value></string>
+  
+  <string><id>700</id><value>Rensar bibliotek</value></string>
+  <string><id>701</id><value>Radera gamla låtar från databasen</value></string>
+  <string><id>702</id><value>Denna sökväg har skannats tidigare.</value></string>
+  <string><id>703</id><value>Välj Ja för att uppdatera samtliga låtar.</value></string>
+  <string><id>704</id><value>Välj Nej för att bara lägga till nya låtar.</value></string>
   <string><id>705</id><value>Nätverk</value></string>
-  <string><id>706</id><value>HTTP proxy värd</value></string>
-  <string><id>707</id><value>HTTP proxy port</value></string>
-  <string><id>708</id><value>Använd HTTP proxy</value></string>
+  <string><id>706</id><value>- HTTP proxy värd</value></string>
+  <string><id>707</id><value>- HTTP proxy port</value></string>
+  <string><id>708</id><value>Aktivera HTTP proxy</value></string>
   <string><id>709</id><value>XLink Kai XTag</value></string>
   <string><id>710</id><value>XLink Kai lösenord</value></string>
-  <string><id>711</id><value>IP inställningar</value></string>
+  <string><id>711</id><value>Internet protokoll (IP)</value></string>
   <string><id>712</id><value>Felaktig port angiven. Värde måste vara mellan 1 och 65535.</value></string>
   <string><id>713</id><value>HTTP Proxy Inställningar</value></string>
-  <string><id>714</id><value>XLink Inställningar</value></string>
+  <string><id>714</id><value>XLink Kai</value></string>
   <string><id>715</id><value>Tilldelning</value></string>
   <string><id>716</id><value>Automatisk (DHCP)</value></string>
   <string><id>717</id><value>Manuell (Statisk)</value></string>
   <string><id>718</id><value>Förval (Dashboard)</value></string>
-  <string><id>719</id><value>IP Adress</value></string>
-  <string><id>720</id><value>Nätmask</value></string>
-  <string><id>721</id><value>Gateway</value></string>
-  <string><id>722</id><value>DNS Server</value></string>
+  <string><id>719</id><value>- IP Adress</value></string>
+  <string><id>720</id><value>- Nätmask</value></string>
+  <string><id>721</id><value>- Gateway</value></string>
+  <string><id>722</id><value>- DNS Server</value></string>
   <string><id>723</id><value>Spara &amp; starta om XBoxen</value></string>
-  <string><id>724</id><value>Felaktig adress angiven. Värde måsta vara AAA.BBB.CCC.DDD</value></string>
+  <string><id>724</id><value>Felaktig adress angiven. Formatet skall vara AAA.BBB.CCC.DDD</value></string>
   <string><id>725</id><value>med siffror mellan 0 och 255.</value></string>
   <string><id>726</id><value>Inställningar ej sparade. Fortsätt utan att spara?</value></string>
-  <string><id>727</id><value>Webserver</value></string>
-  <string><id>728</id><value>FTPserver</value></string>
-  <string><id>729</id><value>Tidserver</value></string>
-  <string><id>730</id><value>Webserver port</value></string>
-  <string><id>731</id><value>Adress till tidserver</value></string>
-  <string><id>732</id><value>Spara inställningar</value></string>
-  <string><id>733</id><value>WebServer lösenord</value></string>
+  <string><id>727</id><value>Webbserver</value></string>
+  <string><id>728</id><value>FTP-server</value></string>
+  <string><id>729</id><value>Tidsserver</value></string>
+  <string><id>730</id><value>- Webbserver port</value></string>
+  <string><id>731</id><value>- Tidserver</value></string>
+  <string><id>732</id><value>Spara &amp; ange</value></string>
+  <string><id>733</id><value>- Webbserver lösenord</value></string>
   <string><id>734</id><value>Inget lösenord</value></string>
-  <string><id>735</id><value>Charset</value></string>
-  <string><id>736</id><value>Stil</value></string>
-  <string><id>737</id><value>Färg</value></string>
+  <string><id>735</id><value>- Teckenuppsättning</value></string>
+  <string><id>736</id><value>- Stil</value></string>
+  <string><id>737</id><value>- Färg</value></string>
   <string><id>738</id><value>Normal</value></string>
   <string><id>739</id><value>Fet</value></string>
-  <string><id>740</id><value>Italics</value></string>
-  <string><id>741</id><value>Fet Italics</value></string>
+  <string><id>740</id><value>Kursiv</value></string>
+  <string><id>741</id><value>Fet kursiv</value></string>
   <string><id>742</id><value>Vit</value></string>
   <string><id>743</id><value>Gul</value></string>
   <string><id>744</id><value>Filer</value></string>
-  <string><id>745</id><value>Ingen scannad information för denna vy</value></string>
-  <string><id>746</id><value>Ändra till fil vy</value></string>
-  <string><id>747</id><value>Det finns för lite minne för att ladda bilden</value></string>
+  <string><id>745</id><value>Ingen skannad information för denna vy</value></string>
+  <string><id>746</id><value>Byt till fil-vy</value></string>
+  <string><id>747</id><value>Fel vid laddning av bilden</value></string>
   <string><id>748</id><value>Ändra sökväg</value></string>
   <string><id>749</id><value>Lägg till utdelning</value></string>
   <string><id>750</id><value>Är du säker?</value></string>
   <string><id>751</id><value>Ta bort utdelning</value></string>
   <string><id>752</id><value>Ändra sökväg till utdelning</value></string>
-  <string><id>753</id><value>Ändra utdelnings namn</value></string>
-  <string><id>754</id><value>Lägg till program länk</value></string>
-  <string><id>755</id><value>Ändra program sökväg</value></string>
-  <string><id>756</id><value>Ändra program namn</value></string>
-  <string><id>757</id><value>Ändra sökvägs djup</value></string>
-  <string><id>758</id><value>Radera program länk</value></string>  
-  <string><id>759</id><value>Vy: Stor Lista</value></string>
+  <string><id>753</id><value>Byt namn på utdelningen</value></string>
+  <string><id>754</id><value>Lägg till programlänk</value></string>
+  <string><id>755</id><value>Ändra programsökväg</value></string>
+  <string><id>756</id><value>Ändra programnamn</value></string>
+  <string><id>757</id><value>Ändra sökvägsdjup</value></string>
+  <string><id>758</id><value>Radera programlänk</value></string>  
+  <string><id>759</id><value>Vy : Stor lista</value></string>
   <string><id>760</id><value>Gul</value></string>
   <string><id>761</id><value>Vit</value></string>
   <string><id>762</id><value>Blå</value></string>
-  <string><id>763</id><value>Ljus Grön</value></string>
-  <string><id>764</id><value>Gul Grön</value></string>
+  <string><id>763</id><value>Ljusgrön</value></string>
+  <string><id>764</id><value>Gulgrön</value></string>
   <string><id>765</id><value>Cyan</value></string>
   <string><id>766</id><value>Reserverad</value></string>
   <string><id>767</id><value>Reserverad</value></string>
   <string><id>768</id><value>Reserverad</value></string>
   <string><id>769</id><value>Reserverad</value></string>
-  <string><id>770</id><value>Fel %i: delningen är inte tillgänglig</value></string>
-  <string><id>771</id><value>Låt ftpservern göra om filnamn till fatx</value></string>
-  <string><id>772</id><value>Audio hårdvara</value></string>
+  <string><id>770</id><value>Fel %i: utdelningen ej tillgänglig</value></string>
+  <string><id>771</id><value>Fix för FATX begränsningar i FTP server</value></string>
+  <string><id>772</id><value>Ljudhårdvara</value></string>
   <string><id>773</id><value>Söker</value></string>
-  <string><id>998</id><value>XLink KAI</value></string>
+  <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Spel</value></string>
+  
   <string><id>1000</id><value>Förhandstitt av skärmsläckare</value></string>
   <string><id>1200</id><value>SMB Utdelning</value></string>
   <string><id>1201</id><value>SMB IP</value></string>
-  <string><id>1202</id><value>SMB ARBETSGRUPP</value></string>
+  <string><id>1202</id><value>SMB Workgroup</value></string>
   <string><id>1203</id><value>SMB Användarnamn</value></string>
   <string><id>1204</id><value>SMB Lösenord</value></string>
-  <string><id>1205</id><value>SMB Delnings Namn</value></string>
-  <string><id>1206</id><value>SMB Delnings Grupp</value></string>
+  <string><id>1205</id><value>SMB Utdelningsnamn</value></string>
+  <string><id>1206</id><value>SMB Utdelningsgrupp</value></string>
   <string><id>1207</id><value>SMB WINS-Server</value></string>
-  <string><id>1208</id><value>Inställnings Läge</value></string>
-  <string><id>1209</id><value>SMB inställningar lyckades!</value></string>
+  <string><id>1208</id><value>Inställningar</value></string>
+  <string><id>1209</id><value>SMB inställningarna sparade!</value></string>
   <string><id>1210</id><value>Ta bort</value></string>
   <string><id>1211</id><value>Musik</value></string>
-  <string><id>1212</id><value>Video</value></string>
+  <string><id>1212</id><value>Film</value></string>
   <string><id>1213</id><value>Bilder</value></string>
   <string><id>1214</id><value>Filer</value></string>
-  <string><id>1215</id><value>Musik &amp; Video </value></string>
+  <string><id>1215</id><value>Musik &amp; Film </value></string>
   <string><id>1216</id><value>Musik &amp; Bilder</value></string>
   <string><id>1217</id><value>Musik &amp; Filer</value></string>
-  <string><id>1218</id><value>Video &amp; Bilder</value></string>
-  <string><id>1219</id><value>Video &amp; Filer</value></string>
+  <string><id>1218</id><value>Film &amp; Bilder</value></string>
+  <string><id>1219</id><value>Film &amp; Filer</value></string>
   <string><id>1220</id><value>Bilder &amp; Filer</value></string>
-  <string><id>1221</id><value>Musik &amp; Video &amp; Bilder</value></string>
-  <string><id>1222</id><value>Musik &amp; Video &amp; Bilder &amp; Filer</value></string>
+  <string><id>1221</id><value>Musik &amp; Film &amp; Bilder</value></string>
+  <string><id>1222</id><value>Musik &amp; Film &amp; Bilder &amp; Filer</value></string>
   <string><id>1223</id><value>Inaktiverad</value></string>
-  <string><id>1224</id><value>Normal Användare</value></string>
-  <string><id>1225</id><value>Advancerad Användare</value></string>
-  <string><id>1226</id><value>Filer &amp; Musik &amp; Video</value></string>
+  <string><id>1224</id><value>Normal användare</value></string>
+  <string><id>1225</id><value>Avancerad användare</value></string>  
+  <string><id>1226</id><value>Filer &amp; Musik &amp; Film</value></string>
   <string><id>1227</id><value>Filer &amp; Bilder &amp; Musik</value></string>
-  <string><id>1228</id><value>Filer &amp; Bilder &amp; Video</value></string>
-  <string><id>1396</id><value>Flytande</value></string>
+  <string><id>1228</id><value>Filer &amp; Bilder &amp; Film</value></string>
+  
+  <string><id>1229</id><value>Musik &amp; Program</value></string>
+  <string><id>1230</id><value>Film &amp; Program</value></string>
+  <string><id>1231</id><value>Bilder &amp; Program</value></string>
+  <string><id>1232</id><value>Musik &amp; Film &amp; Bilder &amp; Program</value></string>
+  <string><id>1233</id><value>Program &amp; Film &amp; Musik</value></string>
+  <string><id>1234</id><value>Program &amp; Bilder &amp; Musik</value></string>
+  <string><id>1235</id><value>Program &amp; Bilder &amp; Film</value></string>
+  
+  <string><id>1396</id><value>Blåsigt</value></string>
   <string><id>1397</id><value>och</value></string>
   <string><id>1398</id><value>Nollgradigt</value></string>
   <string><id>1399</id><value>Sent</value></string>
   <string><id>1400</id><value>Isolerade</value></string>
-  <string><id>1401</id><value>Åskoväder</value></string>
+  <string><id>1401</id><value>Åskväder</value></string>
   <string><id>1402</id><value>Åska</value></string>
   <string><id>1403</id><value>Sol</value></string>
   <string><id>1404</id><value>Tunga</value></string>
@@ -591,73 +608,74 @@
   <string><id>1406</id><value></value></string>
   <string><id>1407</id><value>närområdet</value></string>
   <string><id>1408</id><value>Is</value></string>
-  <string><id>1409</id><value>Kristaller</value></string>
-  <string><id>1410</id><value>Lungt</value></string>
+  <string><id>1409</id><value>Flingor</value></string>
+  <string><id>1410</id><value>Lugnt</value></string>
+  
   <string><id>10000</id><value>Start</value></string>
   <string><id>10001</id><value>Mina Program</value></string>
   <string><id>10002</id><value>Mina Bilder</value></string>
   <string><id>10003</id><value>Mina Filer</value></string>
-  <string><id>10004</id><value>Inställnigar</value></string>
+  <string><id>10004</id><value>Inställningar</value></string>
   <string><id>10005</id><value>Min Musik</value></string>
   <string><id>10006</id><value>Mina Filmer</value></string>
   <string><id>10007</id><value>System information</value></string>
-  <string><id>10008</id><value>Inställningar->General</value></string>
+  <string><id>10008</id><value>Inställningar->Generella</value></string>
   <string><id>10009</id><value>Inställningar->Bildskärm</value></string>
-  <string><id>10010</id><value>Inställningar->Bildskärm->UI Kalibration</value></string>
-  <string><id>10011</id><value>Inställningar->Bildskärm->Bild Kalibration</value></string>
+  <string><id>10010</id><value>Inställningar->Bildskärm->UI kalibrering</value></string>
+  <string><id>10011</id><value>Inställningar->Bildskärm->Bildkalibrering</value></string>
   <string><id>10012</id><value>Inställningar->Bildspel</value></string>
   <string><id>10013</id><value>Inställningar->Bildskärm->Filter</value></string>
   <string><id>10014</id><value>Inställningar->Musik</value></string>
-  <string><id>10015</id><value>instllningar->Bildskärm->Undertexter</value></string>
+  <string><id>10015</id><value>Inställningar->Bildskärm->Undertexter</value></string>
   <string><id>10016</id><value>Inställningar->Bildskärm->Skärmsläckare</value></string>
   <string><id>10017</id><value>Inställningar->Väder</value></string>
   <string><id>10020</id><value>Inställningar->Skript</value></string>
   <string><id>10021</id><value>Mina Filmer/genre</value></string>
   <string><id>10022</id><value>Mina Filmer/skådespelare</value></string>
-  <string><id>10023</id><value>Mina Filmer/År</value></string>
+  <string><id>10023</id><value>Mina Filmer/år</value></string>
   <string><id>10024</id><value>Inställningar->Program</value></string>
   <string><id>10025</id><value>Mina Filmer/Titel</value></string>
-  <string><id>10026</id><value>Inställningar->General->Cache</value></string>
-  <string><id>10027</id><value>Inställningar->General->Autorun</value></string>
-  <string><id>10028</id><value>Mina Filmer/playlist</value></string>
-  <string><id>10029</id><value>Inställningar->General->LCD</value></string>
+  <string><id>10026</id><value>Inställningar->Generella->Cache</value></string>
+  <string><id>10027</id><value>Inställningar->Generella->Autostart</value></string>
+  <string><id>10028</id><value>Mina Filmer/spellista</value></string>
+  <string><id>10029</id><value>Inställningar->Generella->LCD</value></string>
   <string><id>10100</id><value>Ja/Nej-dialog</value></string>
-  <string><id>10101</id><value>Progress dialog</value></string>
+  <string><id>10101</id><value>Förloppsdialog</value></string>
   <string><id>10500</id><value>Min Musik/spellista</value></string>
   <string><id>10501</id><value>Min Musik/filer</value></string>
   <string><id>10502</id><value>Min Musik/album</value></string>
   <string><id>10503</id><value>Min Musik/artister</value></string>
-  <string><id>10504</id><value>Min Musik/genres</value></string>
+  <string><id>10504</id><value>Min Musik/genre</value></string>
   <string><id>10505</id><value>Min Muisk/top100</value></string>
   <string><id>10506</id><value>Program</value></string>
-  <string><id>10507</id><value>Konfigurera</value></string>
-  <string><id>10508</id><value>Väder prognos</value></string>
-  <string><id>10509</id><value>Spela via Xlink Kai</value></string>
+  <string><id>10507</id><value>Konfigurering</value></string>
+  <string><id>10508</id><value>Väderprognos</value></string>
+  <string><id>10509</id><value>Nätverksspel</value></string>
   <string><id>10510</id><value>Tillägg</value></string>
   <string><id>10511</id><value>System Info</value></string>
   <string><id>10512</id><value>Min Musik - Album</value></string>
   <string><id>10513</id><value>Min Musik - Artister</value></string>
-  <string><id>10514</id><value>Min Musik - Genres</value></string>
-  <string><id>10515</id><value>Min Musik - Top 100</value></string>
+  <string><id>10514</id><value>Min Musik - Genre</value></string>
+  <string><id>10515</id><value>Min Musik - Topp 100</value></string>
   <string><id>10516</id><value>Min Musik - Bibliotek</value></string>
-  <string><id>10517</id><value>Min Musik - Spellist</value></string>
+  <string><id>10517</id><value>Min Musik - Spellista</value></string>
   <string><id>10518</id><value>Mina Filmer - Skådespelare</value></string>
-  <string><id>10519</id><value>Mina Filmer - Genres</value></string>
-  <string><id>10520</id><value>Mina Filmer - Titl</value></string>
+  <string><id>10519</id><value>Mina Filmer - Genre</value></string>
+  <string><id>10520</id><value>Mina Filmer - Titel</value></string>
   <string><id>10521</id><value>Mina Filmer - År</value></string>
   <string><id>10522</id><value>Mina Filmer - Spellista</value></string>
-  <string><id>10523</id><value>Album Info</value></string>
-  <string><id>10524</id><value>Film Info</value></string>
-  <string><id>11000</id><value>Tangentbord</value></string>
+  <string><id>10523</id><value>Albuminfo</value></string>
+  <string><id>10524</id><value>Filminfo</value></string>
+  <string><id>11000</id><value>tangentbord</value></string>
   <string><id>12000</id><value>Välj dialog</value></string>
-  <string><id>12001</id><value>Min Muisk/info</value></string>
+  <string><id>12001</id><value>Min Musik/info</value></string>
   <string><id>12002</id><value>Dialog OK</value></string>
   <string><id>12003</id><value>Mina Filmer/Info</value></string>
-  <string><id>12004</id><value>Mina Scrip/Info</value></string>
-  <string><id>12005</id><value>Helskärmsvideo</value></string>
-  <string><id>12006</id><value>Ljud visisalisation</value></string>
+  <string><id>12004</id><value>Mina Skript/Info</value></string>
+  <string><id>12005</id><value>Fullskärmsvideo</value></string>
+  <string><id>12006</id><value>Ljud visualisering</value></string>
   <string><id>12007</id><value>Mina Bilder/Bildspel</value></string>
-  <string><id>12008</id><value>Filestacking-dialog</value></string>
+  <string><id>12008</id><value>Filstapel-dialog</value></string>
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
   <string><id>12312</id><value>2</value></string>
@@ -672,52 +690,57 @@
   <string><id>12321</id><value>ok</value></string>
   <string><id>12322</id><value>*</value></string>
   <string><id>12324</id><value>XBMC Huvudkod</value></string>
-  <string><id>12325</id><value>Mappen är låst</value></string>
-  <string><id>12326</id><value>Slå din kod</value></string>
-  <string><id>12327</id><value>Slå din huvudkod och tryck OK,</value></string>
-  <string><id>12328</id><value>Slå din låskod och tryck OK,</value></string> 
-  <string><id>12329</id><value>eller tryck C för att avbryta:</value></string>
-  <string><id>12330</id><value>Tryck XBOX kontroller knappkombination och </value></string>
+  <string><id>12325</id><value>Mappen låst</value></string>
+  <string><id>12326</id><value>Ange lösenord</value></string>
+  <string><id>12327</id><value>Ange huvudkod och tryck OK,</value></string>
+  <string><id>12328</id><value>Ange låskod och tryck OK,</value></string> 
+  <string><id>12329</id><value>eller tryck C för att avbryta</value></string>
+  <string><id>12330</id><value>Ange knappkombination på spelkontrollen och </value></string>
   <string><id>12331</id><value>tryck Start, eller Back för att avbryta:</value></string>
-  <string><id>12332</id><value>Lås delad mapp</value></string>
-  <string><id>12333</id><value>Lås upp delad mapp</value></string>
-  <string><id>12334</id><value>Återställ låset på mappen</value></string>
-  <string><id>12335</id><value>Ta bort mapp låset</value></string>
-  <string><id>12336</id><value>Välj typ av lås:</value></string>
-  <string><id>12337</id><value>Siffer kombination</value></string>
-  <string><id>12338</id><value>Knapp kombination på kontroller </value></string>
-  <string><id>12339</id><value>Textbaserat lås</value></string>
-  <string><id>12340</id><value>Skriv in det nya lösenordet</value></string>
-  <string><id>12341</id><value>Skriv lösenordet igen</value></string>
+  <string><id>12332</id><value>Lås</value></string>
+  <string><id>12333</id><value>Lås upp</value></string>
+  <string><id>12334</id><value>Återställ lås</value></string>
+  <string><id>12335</id><value>Ta bort låset</value></string>
+  <string><id>12336</id><value>Välj låstyp:</value></string>
+  <string><id>12337</id><value>Sifferlösen</value></string>
+  <string><id>12338</id><value>Knappkombination på spelkontroll </value></string>
+  <string><id>12339</id><value>Textlösen</value></string>
+  <string><id>12340</id><value>Ange nytt lösenord</value></string>
+  <string><id>12341</id><value>Ange nytt lösenord igen</value></string>
   <string><id>12342</id><value>Felaktigt lösenord,</value></string>
-  <string><id>12343</id><value>Försök kvar </value></string>
+  <string><id>12343</id><value>försök kvar </value></string>
   <string><id>12344</id><value>Lösenordet matchade inte det första.</value></string>
-  <string><id>12345</id><value>Tillgång nekas</value></string>
-  <string><id>12346</id><value>Du har använt max antal lösenordsförsök.</value></string>
+  <string><id>12345</id><value>Tillgång nekad</value></string>
+  <string><id>12346</id><value>Antal lösenordsförsök har överstigits.</value></string>
   <string><id>12347</id><value>XBMC och XBoxen kommer nu stängas av.</value></string>
-  <string><id>12348</id><value>Föremål låst</value></string>
-  <string><id>12349</id><value>Kom ihåg huvudkod vid nästa uppstart?</value></string>
-  <string><id>12350</id><value>(Att öppnna något föremål i Inställningar kommer</value></string>
-  <string><id>12351</id><value>automatiskt att återaktivera huvudlåset.)</value></string>
-  <string><id>12352</id><value>Tryck Huvudkods knapp kombination och</value></string>
-  <string><id>12353</id><value>Återaktivera delningslåsk</value></string>
-  <string><id>12354</id><value>Gå förbi mapplås tills nästa uppstart?</value></string>
-  <string><id>12355</id><value>automatisk återaktivering av mapplåss.)</value></string>
-  <string><id>12356</id><value>Byt lås</value></string> 
-  <string><id>12357</id><value>Delnings Lås</value></string>
-  <string><id>12358</id><value>Lösenordet lämnades blankt. Försök igen.</value></string> 
+  <string><id>12348</id><value>Objekt låst</value></string>
+  <string><id>12349</id><value>Kom ihåg huvudkod till nästa uppstart?</value></string>
+  <string><id>12350</id><value>(Att öppna något föremål i Inställningar kommer</value></string>
+  <string><id>12351</id><value>automatiskt att återaktivera huvudlåset).</value></string>
+  <string><id>12352</id><value>Tryck knappkombination för huvudlåset och</value></string>
+  <string><id>12353</id><value>Återaktivera lås</value></string>
+  <string><id>12354</id><value>Avaktivera mapplås till nästa uppstart?</value></string>
+  <string><id>12355</id><value>automatisk återaktivering av mapplås).</value></string>
+  <string><id>12356</id><value>Byt lås</value></string>
+  <string><id>12357</id><value>Dela lås</value></string>
+  <string><id>12358</id><value>Inga tecken angivna. Försök igen.</value></string>
   <string><id>12360</id><value>Huvudlås</value></string>
-  <string><id>12361</id><value>Max Försök</value></string>
-  <string><id>12362</id><value>Akvtivera Avstägning</value></string>
-  <string><id>12363</id><value>Skydda Delningar</value></string>
-  <string><id>12364</id><value>Master Mode</value></string>
+  <string><id>12361</id><value>Max antal försök</value></string>
+  <string><id>12362</id><value>Tillåt avstängning</value></string>
+  <string><id>12363</id><value>Skydda utdelningar</value></string>
+  <string><id>12364</id><value>Huvudläge</value></string>
   <string><id>12365</id><value>Huvudkod</value></string>
-  <string><id>12366</id><value>Huvudlåset är ändrat. Är nu:</value></string>
-  <string><id>12367</id><value>Huvudlåset inte gilltigt!</value></string>
-  <string><id>12368</id><value>Vargod och skriv in det gilltiga huvudlåset!</value></string>
-  <string><id>12369</id><value>XBMC Uppstartslås</value></string>
-  <string><id>12370</id><value>Huvudlås läge ändrat, huvudlåset är inte satt!</value></string>
-  <string><id>12371</id><value>Vargod och ställ in ett nytt huvudlås!</value></string>
+  <string><id>12366</id><value>Huvudlås ändrat. Huvudkoden är nu satt till:</value></string>
+  <string><id>12367</id><value>Fel huvudkod!</value></string>
+  <string><id>12368</id><value>Var god ange korrekt huvudkod!</value></string>
+  <string><id>12369</id><value>XBMC Startlås</value></string>
+  <string><id>12370</id><value>Huvudlåsläge ändrat, huvudkoden inte angiven!</value></string>
+  <string><id>12371</id><value>Var god ange ny huvudkod!</value></string>  
+    
+  <string><id>12372</id><value>Lås filhanterare</value></string>
+  <string><id>12373</id><value>Låsinställningar</value></string>
+  <string><id>12374</id><value>Lås media</value></string>    
+      
   <string><id>12600</id><value>Mitt väder</value></string>
   <string><id>12900</id><value>Skärmsläckare</value></string>
   <string><id>12901</id><value>Helskärms OSD</value></string>
@@ -728,182 +751,141 @@
   <string><id>13004</id><value>- Minimum speltid</value></string>
   <string><id>13005</id><value>Stäng av</value></string>
   <string><id>13006</id><value>Dashboard</value></string>
-  <string><id>13100</id><value>Fladder filter</value></string>
-  <string><id>13150</id><value>HDD Nyckel:</value></string>
-  <string><id>13151</id><value>HDD Temp:</value></string>
-  <string><id>13152</id><value>DVD Model:</value></string>
-  <string><id>13153</id><value>DVD Firmware:</value></string>
-  <string><id>13154</id><value>HDD Model:</value></string>
-  <string><id>13155</id><value>HDD Serienummer:</value></string>
-  <string><id>13156</id><value>HDD Firmware:</value></string>
-  <string><id>13157</id><value>HDD Lösenord:</value></string>
-  <string><id>13158</id><value>HDD Lås Status:</value></string>
-  <string><id>13159</id><value>Subnet mask:</value></string>
-  <string><id>13160</id><value>Gateway:</value></string>
-  <string><id>13161</id><value>DNS:</value></string>
-  <string><id>13162</id><value>Uppstart Misslyckades</value></string>
-  <string><id>13163</id><value>Spelkontroll På Port:</value></string>
-  <string><id>13164</id><value>Tangentbord På Port:</value></string>
-  <string><id>13165</id><value>Mus På Port:</value></string>
-  <string><id>13166</id><value>HeadSet/Mikrofone På Port:</value></string>
-  <string><id>13167</id><value>MemoryStick På Port:</value></string>
-  <string><id>13168</id><value>Fjärrkontroll På Port:</value></string>
+  <string><id>13100</id><value>Flimmerfilter</value></string>
   <string><id>13200</id><value>Profiler</value></string>
   <string><id>13201</id><value>Radera profil '%s'?</value></string>
   <string><id>13202</id><value>Spara nuvarande inställningar som profil...</value></string>
-  <string><id>13203</id><value>Profile '%s' laddades ok!</value></string>
+  <string><id>13203</id><value>Profil '%s' laddades ok!</value></string>
   <string><id>13204</id><value>Senast laddade profil</value></string>
   <string><id>13205</id><value>Okänd</value></string>
-  <string><id>13206</id><value>Skrivöver</value></string>
-  <string><id>13207</id><value>Skrivöver profil '%s'?</value></string>
-  <string><id>13208</id><value>Alarmklocka</value></string>
-  <string><id>13209</id><value>Alarmklocks interval (i minuter)</value></string>
+  <string><id>13206</id><value>Skriva över</value></string>
+  <string><id>13207</id><value>Skriva över profil '%s'?</value></string>
+  
+  <string><id>13208</id><value>Larmklocka</value></string>
+  <string><id>13209</id><value>Larmklocka intervall (i minuter)</value></string>
   <string><id>13210</id><value>Startad, alarm om %im</value></string>
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Avbruten med %im%is kvar</value></string>
-  <string><id>13270</id><value>Hårdvara:</value></string>
-  <string><id>13271</id><value>CPU Hastighet:</value></string>
-  <string><id>13275</id><value>Hårddisk</value></string>
-  <string><id>13276</id><value>DVD-ROM</value></string>
-  <string><id>13277</id><value>Utrymme</value></string>
-  <string><id>13278</id><value>Förval</value></string>
-  <string><id>13279</id><value>Nätverk</value></string>
-  <string><id>13280</id><value>Video</value></string>
-  <string><id>13281</id><value>Hårdvara</value></string>
-  <string><id>13282</id><value>_</value></string>
-  <string><id>13283</id><value>Kernel Version:</value></string>
-  <string><id>13284</id><value>CPU Hastigehet:</value></string>
-  <string><id>13285</id><value>Upptäckt BIOS:</value></string>
-  <string><id>13286</id><value>Video Chip:</value></string>
-  <string><id>13287</id><value>Skärm Upplösning:</value></string>
-  <string><id>13288</id><value>XBox Version:</value></string>
-  <string><id>13289</id><value>XBox Serienummer:</value></string>
-  <string><id>13290</id><value>XBOX Tillverkad:</value></string>
-  <string><id>13291</id><value>ModChip:</value></string>
-  <string><id>13292</id><value>A/V Kabel:</value></string>
-  <string><id>13293</id><value>Video &amp; XBE Region:</value></string>
-  <string><id>13294</id><value>DVD Region:</value></string>
-  <string><id>13295</id><value>Internet:</value></string>
-  <string><id>13296</id><value>XBoxen Är Uppkopplad!</value></string>
-  <string><id>13297</id><value>XBoxen Är INTE Uppkopplad! Undersök Nätverksinställningarna</value></string>
-  <string><id>13298</id><value>XBLIVE Nyckel:</value></string>
-  <string><id>13299</id><value>Mål Temperatur</value></string>
-  <string><id>13300</id><value>Fläktfart:</value></string>
+  
+  <string><id>13299</id><value>Måltemperatur</value></string>
+  <string><id>13300</id><value>Fläktfart</value></string>
   <string><id>13301</id><value>Automatisk temp. kontroll</value></string>
   <string><id>13302</id><value>Fläktfart</value></string>
-  <string><id>13303</id><value>Skal Fonter</value></string>
+  <string><id>13303</id><value>Skal typsnitt</value></string>
   <string><id>13304</id><value>Vänd texthåll</value></string>
-  <string><id>13305</id><value>Aktivera RSS nyheter</value></string>
-  <string><id>13306</id><value>Göm föremål i huvudmappen</value></string>
-  <string><id>13307</id><value>Förval ur låtar namnges</value></string>
-  <string><id>13307</id><value>Göm låtnummer</value></string>
-  <string><id>13308</id><value>Vill du starta om din xbox</value></string>
+  <string><id>13305</id><value>Aktivera RSS-nyheter</value></string>
+  <string><id>13306</id><value>Göm föremål i grannmappen</value></string>
+  <string><id>13307</id><value>Låtnamn enligt</value></string>
+  <string><id>13308</id><value>Vill du starta om Xbox</value></string>
   <string><id>13309</id><value>istället för endast XBMC?</value></string>
-  <string><id>13310</id><value>Transtion zoom</value></string>
-  <string><id>13311</id><value>Transtion float</value></string>
-  <string><id>13312</id><value>Gräns reduktion</value></string>
-  <string><id>13313</id><value>Reseta/Starta om</value></string>
-  <string><id>13314</id><value>Crossfade</value></string>
+  <string><id>13310</id><value>Zoomeffekt</value></string>
+  <string><id>13311</id><value>Flyteffekt</value></string>
+  <string><id>13312</id><value>Reducera svart ram</value></string>
+  <string><id>13313</id><value>Reset/Starta om</value></string>
+  <string><id>13314</id><value>Musik OSD timeout</value></string>
   <string><id>13315</id><value>Skapa miniatyrer</value></string>
-  <string><id>13316</id><value>Recursive miniatyrer</value></string>
-  <string><id>13317</id><value>Titta på bildspel</value></string>
-  <string><id>13318</id><value>Recursive bildspel</value></string>
-  <string><id>13319</id><value>Blanda</value></string>
+  <string><id>13316</id><value>Rekursiva miniatyrer</value></string>
+  <string><id>13317</id><value>Starta bildspel</value></string>
+  <string><id>13318</id><value>Rekursivt bildspel</value></string>
+  <string><id>13319</id><value>Slumpa</value></string>
   <string><id>13320</id><value>Stereo</value></string>
   <string><id>13321</id><value>Endast vänster</value></string>
-  <string><id>13322</id><value>Endast Höger</value></string>
+  <string><id>13322</id><value>Endast höger</value></string>
   <string><id>13323</id><value>Aktivera CD+G</value></string>
-  <string><id>13324</id><value>Bakgrunds genomlysning</value></string>
-  <string><id>13325</id><value>Förgrunds genomlysning</value></string>
-  <string><id>13326</id><value>A/V försening</value></string>
+  <string><id>13324</id><value>Transparens bakgrund</value></string>
+  <string><id>13325</id><value>Transparens förgrund</value></string>
+  <string><id>13326</id><value>A/V förskjutning</value></string>
   <string><id>13327</id><value>Karaoke</value></string>
-  <string><id>13328</id><value>%s inte funnen.</value></string>
+  <string><id>13328</id><value>%s ej funnen.</value></string>
   <string><id>13329</id><value>Fel vid öppnande av %s</value></string>
   <string><id>13330</id><value>Gick inte ladda %s</value></string>
-  <string><id>13331</id><value>Fel! För lite ledigt minne.</value></string>
+  <string><id>13331</id><value>Fel: för lite ledigt minne.</value></string>
   <string><id>13332</id><value>Gå uppåt</value></string>
   <string><id>13333</id><value>Gå neråt</value></string>
   <string><id>13334</id><value>Ändra Namn</value></string>
-  <string><id>13335</id><value>Gör till standard</value></string>
+  <string><id>13335</id><value>Ange som standard</value></string>
   <string><id>13336</id><value>Ta bort knapp</value></string>
-  <string><id>13337</id><value>Stereo PCM passthrough</value></string>
-  <string><id>13338</id><value>Front LED</value></string>
-  <string><id>13339</id><value>Front LED Färg</value></string>
+  <string><id>13337</id><value>- 2-kanalers PCM-genomgång</value></string>
+  <string><id>13338</id><value>Eject LED</value></string>
+  <string><id>13339</id><value>Eject LED färg</value></string>
   <string><id>13340</id><value>Låt vara som det är</value></string>
   <string><id>13341</id><value>Grön</value></string>
   <string><id>13342</id><value>Orange</value></string>
   <string><id>13343</id><value>Röd</value></string>
   <string><id>13344</id><value>Rotera</value></string>
   <string><id>13345</id><value>Stäng av LED vid uppspelning</value></string>
-  <string><id>13346</id><value>Film information</value></string>
+  <string><id>13346</id><value>Filminformation</value></string>
   <string><id>13347</id><value>Lägg till i spellistan</value></string>
   <string><id>13348</id><value>Sök på IMDb...</value></string>
   <string><id>13349</id><value>Sök för alla filer</value></string>
   <string><id>13350</id><value>Nu spelas...</value></string>
   <string><id>13351</id><value>Album Information</value></string>
-  <string><id>13352</id><value>Scanna mappen till databasen</value></string>
-  <string><id>13353</id><value>Stoppa scanning</value></string>
-  <string><id>13354</id><value>Renderings Metod</value></string>
-  <string><id>13355</id><value>Pixel Shader med låg kvalitet</value></string>
+  <string><id>13352</id><value>Skanna mappen till databasen</value></string>
+  <string><id>13353</id><value>Stoppa skanning</value></string>
+  <string><id>13354</id><value>Renderingsmetod</value></string>
+  <string><id>13355</id><value>Låg kvalitets Pixel Shader</value></string>
   <string><id>13356</id><value>Hårdvaru Overlay</value></string>
-  <string><id>13357</id><value>Pixel Shader med hög kvalitet</value></string>
-  <string><id>13358</id><value>Spela Val</value></string>
-  <string><id>13360</id><value>Generera Thumbnails</value></string>
+  <string><id>13357</id><value>Hög kvalitets Pixel Shader</value></string>
+  <string><id>13358</id><value>Spela objekt</value></string>  
+  <string><id>13359</id><value>Ange artistminiatyr</value></string>
+  <string><id>13360</id><value>Skapa miniatyrer</value></string>
   <string><id>13361</id><value>Aktivera Röst</value></string>
-  <string><id>13362</id><value>Röst Mask</value></string>
-  <string><id>13363</id><value>- Aktivera spectrum energi tyngd</value></string>
-  <string><id>13364</id><value>-- Spectrum energi tyngd värde</value></string>
-  <string><id>13365</id><value>- Aktivera pitch scaling</value></string>
-  <string><id>13366</id><value>-- Pitch scaling värde</value></string>
-  <string><id>13367</id><value>- Aktivera visknings faktor</value></string>
-  <string><id>13368</id><value>-- Viskings faktor värde</value></string>
-  <string><id>13369</id><value>- Aktivera robot faktor</value></string>
-  <string><id>13370</id><value>-- Robot faktor värde</value></string>
+  <string><id>13362</id><value>Röstförvrängning</value></string>
+  <string><id>13363</id><value>- Aktivera spektral energivikt</value></string>
+  <string><id>13364</id><value>-- Spektral energiviktsvärde</value></string>
+  <string><id>13365</id><value>- Aktivera tonhöjd</value></string>
+  <string><id>13366</id><value>-- Tonhöjdsvärde</value></string>
+  <string><id>13367</id><value>- Aktivera viskningsfaktor</value></string>
+  <string><id>13368</id><value>-- Viskningsfaktor värde</value></string>
+  <string><id>13369</id><value>- Aktivera robotfaktor</value></string>
+  <string><id>13370</id><value>-- Robotfaktor värde</value></string>
   <string><id>13371</id><value>- Port 0 röst</value></string>
   <string><id>13372</id><value>- Port 1 röst</value></string>
   <string><id>13373</id><value>- Port 2 röst</value></string>
   <string><id>13374</id><value>- Port 3 röst</value></string>
   <string><id>13375</id><value>Aktivera enhet</value></string>
   <string><id>13376</id><value>Volym</value></string>
-  <string><id>13377</id><value>Standard storlek</value></string>
+  <string><id>13377</id><value>Förvalt vy-läge</value></string>
   <string><id>13378</id><value>Förvald ljusstyrka</value></string>
-  <string><id>13379</id><value>Förvald Kontrast</value></string>
-  <string><id>13380</id><value>Förvald Gamma</value></string>
-  <string><id>13381</id><value>Fortsätt Video</value></string>
-  <string><id>13382</id><value>Röst Mask - Port 0</value></string>
-  <string><id>13383</id><value>Röst Mask - Port 1</value></string>
-  <string><id>13384</id><value>Röst Mask - Port 2</value></string>
-  <string><id>13385</id><value>Röst Mask - Port 3</value></string>
+  <string><id>13379</id><value>Förvald kontrast</value></string>
+  <string><id>13380</id><value>Förvald gamma</value></string>
+  <string><id>13381</id><value>Återuppta video</value></string>
+  <string><id>13382</id><value>Röst förvr. - Port 0</value></string>
+  <string><id>13383</id><value>Röst förvr. - Port 1</value></string>
+  <string><id>13384</id><value>Röst förvr. - Port 2</value></string>
+  <string><id>13385</id><value>Röst förvr. - Port 3</value></string>
   <string><id>13386</id><value>Använd tidsbaserad sökning</value></string>
-  <string><id>13387</id><value>Track Naming Template Right</value></string>
-  <string><id>13388</id><value>Förval</value></string>
-  <string><id>13389</id><value>Det finns inget förvale&#10;för denna visualisation</value></string>
-  <string><id>13390</id><value>Det finns inget val tillgängligt&#10;för denna visualisation</value></string>
-  <string><id>14000</id><value>Stacking Av</value></string>
-  <string><id>14001</id><value>Stacking enkel</value></string>
-  <string><id>14002</id><value>Stacking luddig</value></string>
-  <string><id>14003</id><value>Laddar ner playlist...</value></string>
-  <string><id>14004</id><value>Laddar ner stream listan...</value></string>
-  <string><id>14005</id><value>Bearbetar stream listan...</value></string>
-  <string><id>14006</id><value>Nerladdning av stream listan misslyckades</value></string>
-  <string><id>14007</id><value>Nerladdning av playlist fil misslyckades</value></string>
-  <string><id>14008</id><value>Aktivera Kai medelande</value></string>
-  <string><id>14009</id><value>Spel mapp</value></string>
-  <string><id>14010</id><value>Autoväxla val</value></string>
-  <string><id>14011</id><value>Aktivera autoväxling</value></string>
-  <string><id>14012</id><value>Använd stora ikoner</value></string>
-  <string><id>14013</id><value>Metod</value></string>
-  <string><id>14014</id><value>Procent</value></string>
-  <string><id>14015</id><value>Thumbpanel om inga filer</value></string>
-  <string><id>14016</id><value>Listpanel om inga mappar</value></string>
+  <string><id>13387</id><value>Mall för höger spårnamn</value></string>  
+  <string><id>13388</id><value>Inställningar</value></string>
+  <string><id>13389</id><value>Det finns inga inställningar&#10;för den här visualiseringen</value></string>
+  <string><id>13390</id><value>Det finns inga inställningar&#10;för den här visualiseringen</value></string>
+  <string><id>13391</id><value>Eject/Ladda</value></string>
+  
+  <string><id>14000</id><value>Stapling : av</value></string>
+  <string><id>14001</id><value>Stapling : enkel</value></string>
+  <string><id>14002</id><value>Stapling : luddig</value></string>
+  <string><id>14003</id><value>Laddar ner spellista...</value></string>
+  <string><id>14004</id><value>Laddar ner strömlista...</value></string>
+  <string><id>14005</id><value>Bearbetar strömlista...</value></string>
+  <string><id>14006</id><value>Nerladdning av strömlist misslyckades</value></string>
+  <string><id>14007</id><value>Nerladdning av spellista misslyckades</value></string>
+  <string><id>14008</id><value>Aktivera Kai-meddelande</value></string>
+  <string><id>14009</id><value>Spelmapp</value></string>
+  <string><id>14010</id><value>Byt till bilder baserat på</value></string>
+  <string><id>14011</id><value>Aktivera autoväxling till bilder</value></string>
+  <string><id>14012</id><value>- Använd stora ikoner</value></string>
+  <string><id>14013</id><value>- Växla baserat på</value></string>
+  <string><id>14014</id><value>- Procent</value></string>
+  <string><id>14015</id><value>Inga filer men minst en bild</value></string>
+  <string><id>14016</id><value>Minst en fil och bild</value></string>
   <string><id>14017</id><value>Procent av miniatyrer</value></string>
   <string><id>14018</id><value>Vy val</value></string>
-  <string><id>14019</id><value>Områdeskod 1</value></string>
-  <string><id>14020</id><value>Områdeskod 2</value></string>
-  <string><id>14021</id><value>Områdeskod 3</value></string>
+  <string><id>14019</id><value>Byt områdeskod 1</value></string>
+  <string><id>14020</id><value>Byt områdeskod 2</value></string>
+  <string><id>14021</id><value>Byt områdeskod 3</value></string>
   <string><id>14022</id><value>Bibliotek</value></string>
   <string><id>14023</id><value>Ingen TV</value></string>
-  <string><id>14024</id><value>Skriv in största närmaste stad</value></string>
+  <string><id>14024</id><value>Skriv in din närmsta stora stad</value></string>
   <string><id>14025</id><value>Video/Audio/DVD Cache - Hårddisk</value></string>
   <string><id>14026</id><value>Video Cache - DVDRom</value></string>
   <string><id>14027</id><value>- Lokalt Nätverk</value></string>
@@ -914,13 +896,13 @@
   <string><id>14034</id><value>DVD Cache - DVDRom</value></string>
   <string><id>14035</id><value>- Lokalt Nätverk</value></string>
   <string><id>14036</id><value>Servrar</value></string>
-  <string><id>14037</id><value>Look and Feel</value></string>
-  <string><id>14038</id><value>Nätverks inställningar ändrade</value></string>
+  <string><id>14037</id><value>Utseende</value></string>
+  <string><id>14038</id><value>Nätverksinställningar ändrade</value></string>
   <string><id>14039</id><value>XBMC behöver startas om för att slutföra din</value></string>
-  <string><id>14040</id><value>nätverksinställng. Vill du starta om nu?</value></string>
-  <string><id>14041</id><value>Post Processing</value></string>
-  <string><id>14042</id><value>Kai engine IP address</value></string>
-  <string><id>14043</id><value>- Stäng av medans spelning</value></string>
+  <string><id>14040</id><value>nätverksinställning. Vill du starta om nu?</value></string>
+  <string><id>14041</id><value>Efterbehandling</value></string>
+  <string><id>14042</id><value>Engine IP address</value></string>
+  <string><id>14043</id><value>- Stäng av under spelning</value></string>
   <string><id>14044</id><value>%i min</value></string>
   <string><id>14045</id><value>%i sek</value></string>
   <string><id>14046</id><value>%i ms</value></string>
@@ -928,111 +910,165 @@
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>Visa 12 timmars klocka</value></string>
+  <string><id>14051</id><value>Visa 12-timmars klocka</value></string>
   <string><id>14052</id><value>Byt plats på dag/månad i datum</value></string>
-  <string><id>14053</id><value>GUI Filter</value></string>
-  <string><id>14054</id><value>Aktivera Internet hämtning av info</value></string>
-  <string><id>14055</id><value>Använd bakgrundscanning</value></string>
-  <string><id>14056</id><value>Stoppa scan</value></string>
-  <string><id>14057</id><value>Inte möjligt medans du scannar för mediainfo</value></string>
-  <string><id>14058</id><value>Lägg till extra fillmbrus</value></string>
-  <string><id>14059</id><value>Leta efter thumbnails i delade mappar på datorn</value></string>
+  <string><id>14053</id><value>GUI-filter</value></string>
+  <string><id>14054</id><value>Aktivera Internetsökningar</value></string>
+  <string><id>14055</id><value>Använd bakgrundskanning</value></string>
+  <string><id>14056</id><value>Avsluta skanning</value></string>
+  <string><id>14057</id><value>Inte möjligt medan du skannar efter mediainfo</value></string>
+  <string><id>14058</id><value>Filmbruseffekt</value></string>
+  <string><id>14059</id><value>Leta efter egna miniatyrer på fjärrdiskar</value></string>
+  <string><id>14060</id><value>Okänd typ Cache - Internet</value></string>
   <string><id>14061</id><value>Auto</value></string>
   <string><id>14062</id><value>Ange användarnamn för</value></string>
-  <string><id>14063</id><value>Datum &amp; Tid</value></string>
-  <string><id>14064</id><value>Sätt År</value></string>
-  <string><id>14065</id><value>Sätt Månad</value></string>
-  <string><id>14066</id><value>Sätt Dag</value></string>
-  <string><id>14067</id><value>Sätt Timme</value></string>
-  <string><id>14068</id><value>Sätt Minuter</value></string>
-  <string><id>14069</id><value>Vill du använda inställningarna nu?</value></string>
-  <string><id>14070</id><value>Använd ändringar nu</value></string> 
+  
+  <string><id>14063</id><value>Datum &amp; Klocka</value></string>
+  <string><id>14064</id><value>Ange År</value></string>
+  <string><id>14065</id><value>Ange Månad</value></string>
+  <string><id>14066</id><value>Ange Dag</value></string>
+  <string><id>14067</id><value>Ange Timme</value></string>
+  <string><id>14068</id><value>Ange Minute</value></string>
+  <string><id>14069</id><value>Vill du använda dessa inställningar nu?</value></string>
+  <string><id>14070</id><value>Spara Ändringar Nu</value></string>
+  
   <string><id>15000</id><value>XLink Kai</value></string>
-  <string><id>15001</id><value>Tjänsten är inte kontaktbar, vill du försöka</value></string>
-  <string><id>15002</id><value>återupprätta anslutningen med XboxMediaCenter?</value></string>
-  <string><id>15003</id><value>Skriv in ditt meddelande.</value></string>
-  <string><id>15004</id><value>Du har blivir inbjuden att spela %s.</value></string>
+  <string><id>15001</id><value>Tjänsten är inte upprättad, vill du försöka</value></string>
+  <string><id>15002</id><value>återupprätta anslutningen med Xbox Media Center?</value></string>
+  <string><id>15003</id><value>Ange ditt meddelande.</value></string>
+  <string><id>15004</id><value>Du har blivit inbjuden att spela %s.</value></string>
   <string><id>15005</id><value>Datum: %s</value></string>
   <string><id>15006</id><value>Från: %s</value></string>
   <string><id>15007</id><value>Inbjudan</value></string>
-  <string><id>15008</id><value>Du har blivir inbjuden till %s.</value></string>
+  <string><id>15008</id><value>Du har blivit inbjuden till %s.</value></string>
   <string><id>15009</id><value>Offline</value></string>
   <string><id>15010</id><value>Vänner</value></string>
-  <string><id>15011</id><value>Vy: Vänner</value></string>
-  <string><id>15012</id><value>Gå till</value></string>
+  <string><id>15011</id><value>Vy : Vänner</value></string>
+  <string><id>15012</id><value>Gå med</value></string>
   <string><id>15013</id><value>Röst</value></string>
   <string><id>15014</id><value>Bjud in</value></string>
   <string><id>15015</id><value>Ta bort</value></string>
   <string><id>15016</id><value>Spel</value></string>
-  <string><id>15017</id><value>Vy: Spel</value></string>
-  <string><id>15018</id><value>Gå till</value></string>
+  <string><id>15017</id><value>Vy : Spel</value></string>
+  <string><id>15018</id><value>Gå in</value></string>
   <string><id>15019</id><value>Lägg till</value></string>
   <string><id>15020</id><value>Värd</value></string>
-  <string><id>15021</id><value>Arena</value></string>
-  <string><id>15022</id><value>Vy: Arena</value></string>
+  <string><id>15021</id><value>Arenor</value></string>
+  <string><id>15022</id><value>Vy : Arena</value></string>
   <string><id>15023</id><value>Spela</value></string>
   <string><id>15024</id><value>Lägg till</value></string>
   <string><id>15025</id><value>Värd</value></string>
-  <string><id>15026</id><value>Chat</value></string>
-  <string><id>15027</id><value>Vy: Chat</value></string>
+  <string><id>15026</id><value>Chatt</value></string>
+  <string><id>15027</id><value>Vy : Chatt</value></string>
   <string><id>15028</id><value>Tangentbord</value></string>
-  <string><id>15029</id><value>Ett lösenord behövs för att besöka denna arena.</value></string>
+  <string><id>15029</id><value>Ett lösenord krävs för att besöka denna arena.</value></string>
   <string><id>15030</id><value>Tjänsten har kopplats från</value></string>
-  <string><id>15031</id><value>XLink Kai Authentication</value></string>
+  <string><id>15031</id><value>XLink Kai autentisering</value></string>
   <string><id>15032</id><value>Ditt användarnamn och lösenord nekades av</value></string>
-  <string><id>15033</id><value>orbital servern. Undersök dina inställningar.</value></string>
-  <string><id>15034</id><value>kom just online</value></string>
-  <string><id>15035</id><value>har startat en röst chat</value></string>
+  <string><id>15033</id><value>orbitalservern. Kontrollera dina inställningar.</value></string>
+  <string><id>15034</id><value>loggade precis på</value></string>
+  <string><id>15035</id><value>har startat en röstchatt</value></string>
   <string><id>15036</id><value>har skickat dig en inbjudan</value></string>
-  <string><id>15037</id><value>XBMC kan inte kontrollera om ditt nätverk är nåbart.</value></string>
+  <string><id>15037</id><value>XBMC kunde inte bekräfta att ditt nätverk är nåbart.</value></string>
   <string><id>15038</id><value>Du kan komma att ha problem att gå med i spel eller att stå som värd.</value></string>
   <string><id>15039</id><value>XboxMediaCenter kunde inte hitta spelet automatiskt.</value></string>
-  <string><id>15040</id><value>Sätt i speldisken eller tryck A för att avbryta</value></string>
+  <string><id>15040</id><value>Sätt i spelskivan eller tryck A för att avbryta</value></string>
   <string><id>15041</id><value>och starta spelet manuellt.</value></string>
-  <string><id>15042</id><value>Tillträde nekades</value></string>
+  <string><id>15042</id><value>Tillträde nekat</value></string>
   <string><id>15043</id><value>%s kommer in i chatten.</value></string>
   <string><id>15044</id><value>%s lämnar chatten.</value></string>
-  <string><id>15045</id><value>Skriv in det personliga meddelandet.</value></string>
+  <string><id>15045</id><value>Ange ditt personliga meddelande.</value></string>
   <string><id>15046</id><value>Nuvarande Arena</value></string>
-  <string><id>15047</id><value>Skriv in ett lösenord för din arena.</value></string>
-  <string><id>15048</id><value>Skriv en beskriving för din arena.</value></string>
-  <string><id>15049</id><value>Stå värd för ett spel</value></string>
-  <string><id>15050</id><value>Stå som värd i en privat arena</value></string>
+  <string><id>15047</id><value>Ange ett lösenord för din arena.</value></string>
+  <string><id>15048</id><value>Ange en beskrivning för din arena.</value></string>
+  <string><id>15049</id><value>Vara värd för ett spel</value></string>
+  <string><id>15050</id><value>Vara värd i en privat arena</value></string>
   <string><id>15051</id><value>Max antal spelare</value></string>
   <string><id>15052</id><value>Lösenord</value></string>
   <string><id>15053</id><value>Beskrivning</value></string>
-  <string><id>15054</id><value>Inbjudnings Dialog</value></string>
+  <string><id>15054</id><value>Inbjudningsdialog</value></string>
   <string><id>15055</id><value>Välj spel:</value></string>
-  <string><id>15056</id><value>Skriv in meddelande:</value></string>
+  <string><id>15056</id><value>Ange meddelande:</value></string>
   <string><id>15057</id><value>Skicka</value></string>
   <string><id>15058</id><value>Värd</value></string>
   <string><id>15059</id><value>Inbjudan accepterad!</value></string>
   <string><id>15060</id><value>Meddelande här</value></string>
   <string><id>15061</id><value>Du är inbjuden att spela %s.</value></string>
-  <string><id>15062</id><value>Använd alternativ mplayer katalog</value></string>
+  <string><id>15062</id><value>Använd alternativ mplayermapp</value></string>
   <string><id>15100</id><value>Bibliotek</value></string>
   <string><id>15101</id><value>Databas</value></string>
   <string><id>15102</id><value>* Alla album</value></string>
   <string><id>15103</id><value>* Alla artister</value></string>
   <string><id>15104</id><value>* Alla låtar</value></string>
-  <string><id>15105</id><value>* Alla genres</value></string>
+  <string><id>15105</id><value>* Alla genre</value></string>
   <string><id>15106</id><value>Kom ihåg vald fil under navigation framåt</value></string>
   <string><id>15107</id><value>Buffrar...</value></string>
-  <string><id>15108</id><value>Navigerings ljud</value></string>
-  <string><id>15109</id><value>Skinnets förval</value></string>
+  <string><id>15108</id><value>Navigeringsljud</value></string>
+  <string><id>15109</id><value>Skalets egna</value></string>
   <string><id>15200</id><value>AudioScrobbler</value></string>
-  <string><id>15201</id><value>Skicka låt Info till AudioScrobbler</value></string>
+  <string><id>15201</id><value>Skicka låtinfo till AudioScrobbler</value></string>
   <string><id>15202</id><value>AudioScrobbler användarnamn</value></string>
   <string><id>15203</id><value>AudioScrobbler lösenord</value></string>
-  <string><id>15204</id><value>Inget svar: vilar...</value></string>
-  <string><id>15205</id><value>Var gog och uppdatera XBMC</value></string>
-  <string><id>15206</id><value>Skick misslyckades: Felaktig verifikation.</value></string>
+  <string><id>15204</id><value>Inget svar: sover...</value></string>
+  <string><id>15205</id><value>Var vänlig uppdatera XBMC</value></string>
+  <string><id>15206</id><value>Infoleverans misslyckades: Felaktig autentisering.</value></string>
   <string><id>15207</id><value>Uppkopplad</value></string>
   <string><id>15208</id><value>Ej uppkopplad</value></string>
-  <string><id>15209</id><value>Skick Interval %i</value></string>
-  <string><id>15210</id><value>Cachede %i låtar</value></string>
+  <string><id>15209</id><value>Leverans intervall %i</value></string>
+  <string><id>15210</id><value>Cachade %i låtar</value></string>
   <string><id>15211</id><value>Skickar...</value></string>
   <string><id>15212</id><value>Skickar om %i seks</value></string>
+  
+  <string><id>13150</id><value>HDD Nyckel:</value></string>
+  <string><id>13151</id><value>HDD Temp:</value></string>
+  <string><id>13152</id><value>DVD Modell:</value></string>
+  <string><id>13153</id><value>DVD Firmware:</value></string>
+  <string><id>13154</id><value>HDD Modell:</value></string>
+  <string><id>13155</id><value>HDD Serienummer:</value></string>
+  <string><id>13156</id><value>HDD Firmware:</value></string>
+  <string><id>13157</id><value>HDD Lösenord:</value></string>
+  <string><id>13158</id><value>HDD Låsstatus:</value></string>
+  <string><id>13159</id><value>Nätmask:</value></string>
+  <string><id>13160</id><value>Gateway:</value></string>
+  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13162</id><value>Initialisering misslyckades</value></string>
+  <string><id>13163</id><value>Spelkontroller på port:</value></string>
+  <string><id>13164</id><value>Tangentbord på port:</value></string>
+  <string><id>13165</id><value>Mus på port:</value></string>
+  <string><id>13166</id><value>Headset/Mic på port:</value></string>
+  <string><id>13167</id><value>MemoryStick på port:</value></string>
+  <string><id>13168</id><value>IR-fjärr på port:</value></string>
+
+  <string><id>13270</id><value>Hårdvara:</value></string>
+  <string><id>13271</id><value>CPU Hastighet:</value></string>
+  <string><id>13275</id><value>Hårddisk</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>Lagring</value></string>
+  <string><id>13278</id><value>Förval</value></string>
+  <string><id>13279</id><value>Nätverk</value></string>
+  <string><id>13280</id><value>Video</value></string>
+  <string><id>13281</id><value>Hårdvara</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>Kernel Version:</value></string>
+  <string><id>13284</id><value>CPU Hastighet:</value></string>
+  <string><id>13285</id><value>Igenkänt BIOS:</value></string>
+  <string><id>13286</id><value>Video Encoder:</value></string>
+  <string><id>13287</id><value>Skärm Upplösning:</value></string>
+  <string><id>13288</id><value>Xbox Version:</value></string>
+  <string><id>13289</id><value>Xbox Serienummer:</value></string>
+  <string><id>13290</id><value>XBOX Tillverkat:</value></string>
+  <string><id>13291</id><value>ModChip:</value></string>
+  <string><id>13292</id><value>A/V Kabel:</value></string>
+  <string><id>13293</id><value>Video &amp; XBE Region:</value></string>
+  <string><id>13294</id><value>DVD Region:</value></string>
+  <string><id>13295</id><value>Internet:</value></string>
+  <string><id>13296</id><value>Xbox uppkopplad!</value></string>
+  <string><id>13297</id><value>Xbox EJ uppkopplad! Kontrollera nätverksinställningar!</value></string>
+  <string><id>13298</id><value>XBLIVE Nyckel:</value></string>
+
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
-  <string><id>15214</id><value>Använd Smoothed A/V Syncronisering</value></string>
+  <string><id>15214</id><value>Använd mjuk A/V synkronisering</value></string>
 </strings>
+
+
+

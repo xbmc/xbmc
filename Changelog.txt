@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-07-2005 updated: Swedish strings.xml Thanks to the updater/s that fixed the poor translations!
  - 02-07-2005 fixed: Programs icons crash.
  - 02-07-2005 fixed: <universalremote> tags were incorrect in keymap.xml.
  - 02-07-2005 fixed: Scaling of python windows.
