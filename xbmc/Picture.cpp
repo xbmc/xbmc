@@ -210,9 +210,10 @@ bool CPicture::LoadDLL()
   pDll->ResolveExport("CreateThumbnailFromMemory", (void **)&m_dll.CreateThumbnailFromMemory);
   pDll->ResolveExport("CreateFolderThumbnail", (void **)&m_dll.CreateFolderThumbnail);
   pDll->ResolveExport("CreateExifThumbnail", (void **)&m_dll.CreateExifThumbnail);
+  pDll->ResolveExport("CreateThumbnailFromSurface", (void **)&m_dll.CreateThumbnailFromSurface);
 
   // verify exports
-  if (!m_dll.LoadImage || !m_dll.CreateThumbnail || !m_dll.CreateThumbnailFromMemory || !m_dll.CreateFolderThumbnail)
+  if (!m_dll.LoadImage || !m_dll.CreateThumbnail || !m_dll.CreateThumbnailFromMemory || !m_dll.CreateFolderThumbnail || !m_dll.CreateThumbnailFromSurface)
   {
     CLog::Log(LOGERROR, "PICTURE: Unable to resolve functions in the dll %s", IMAGE_DLL);
     return false;
