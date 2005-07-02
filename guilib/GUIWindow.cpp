@@ -46,7 +46,6 @@ CGUIWindow::CGUIWindow(DWORD dwID)
   m_dwPreviousWindowId = WINDOW_HOME;
   m_dwDefaultFocusControlID = 0;
   m_bRelativeCoords = false;
-  m_bNeedsScaling = false;
   m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
   m_iOverlayAllowed = -1;   // Use parent or previous window's state
   m_WindowAllocated = false;
@@ -552,6 +551,7 @@ void CGUIWindow::Render()
   float fToHeight = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight;
   float fScaleX = fToWidth / fFromWidth;
   float fScaleY = fToHeight / fFromHeight;
+  bool bNeedsScaling = (m_coordsRes != g_graphicsContext.GetVideoResolution());
 
   for (int i = 0; i < (int)m_vecControls.size(); i++)
   {
@@ -562,7 +562,7 @@ void CGUIWindow::Render()
       int iPosY = pControl->GetYPosition();
       DWORD width = pControl->GetWidth();
       DWORD height = pControl->GetHeight();
-      if (m_bNeedsScaling)
+      if (bNeedsScaling)
       {
         pControl->SetWidth((DWORD)(fScaleX*width + 0.5f));
         pControl->SetHeight((DWORD)(fScaleY*height + 0.5f));
@@ -640,11 +640,11 @@ void CGUIWindow::OnMouseAction()
   // relative coordinates or if the window is scaled
   int iPosX = g_Mouse.iPosX;
   int iPosY = g_Mouse.iPosY;
-  if (m_bNeedsScaling)
+  if (m_coordsRes != g_graphicsContext.GetVideoResolution())
   {
     // calculate necessary scalings
-    float fFromWidth = (float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
-    float fFromHeight = (float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
+    float fFromWidth = (float)g_settings.m_ResInfo[m_coordsRes].iWidth;
+    float fFromHeight = (float)g_settings.m_ResInfo[m_coordsRes].iHeight;
     float fToWidth = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iWidth;
     float fToHeight = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight;
     float fScaleX = fToWidth / fFromWidth;
