@@ -227,9 +227,9 @@
                       </control>
 
                       <control>
-                        <description>scripts button</description>	<visible>yes</visible>
-                        <type>button</type>				<execute>q:\scripts\QuickTimeBrowser.py</execute>
-                        <id>1112</id>					<label>Movie Trailers</label>
+                        <description>scripts button</description>	<visible>no</visible>
+                        <type>button</type>				<execute>q:\scripts\-.py</execute>
+                        <id>1112</id>					<label>-</label>
                         <posX>30</posX>
                         <posY>330</posY>
                         <width>110</width>
@@ -246,8 +246,8 @@
 
                       <control>
                         <description>Scripts button</description>	<visible>yes</visible>
-                        <type>button</type>		  		<execute>q:\scripts\KMLbrowse.py</execute>
-                        <id>1111</id>                			<label>Web Radio</label>
+                        <type>button</type>		  		<execute>q:\scripts\gametrailers.py</execute>
+                        <id>1111</id>                			<label>Game Trailers</label>
                         <posX>30</posX>
                         <posY>350</posY>
                         <width>110</width>
@@ -264,8 +264,8 @@
 
                       <control>
                         <description>Shutdown button</description>	<visible>yes</visible>
-                        <type>button</type>				<execute>XBMC.ActivateWindow(20)</execute>
-                        <id>1110</id>					<label>247</label>
+                        <type>button</type>				<execute>q:\scripts\QuickTimeBrowser.py</execute>
+                        <id>1110</id>					<label>Movie Trailers</label>
                         <posX>30</posX>
                         <posY>370</posY>
                         <width>110</width>
@@ -281,9 +281,9 @@
                       </control>
 
                       <control>
-                        <description>Credits button</description>	<visible>yes</visible>
-                        <type>button</type>				<execute>XBMC.EjectTray()</execute>
-                        <id>1109</id>					<label>Eject/Load</label>
+                        <description>Scripts button</description>	<visible>yes</visible>
+                        <type>button</type>				<execute>XBMC.ActivateWindow(20)</execute>
+                        <id>1109</id>					<label>247</label>
                         <posX>30</posX>
                         <posY>390</posY>
                         <width>110</width>
