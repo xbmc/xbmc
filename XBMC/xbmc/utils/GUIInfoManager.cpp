@@ -101,7 +101,7 @@ extern char g_szTitleIP[32];
 
 #define VISUALISATION_LOCKED        400
 #define VISUALISATION_PRESET        401
-
+#define VISUALISATION_NAME          402
 
 #define COMBINED_VALUES_START        100000
 
@@ -268,6 +268,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
   else if (strTest.Equals("visualisation.locked")) ret = VISUALISATION_LOCKED;
   else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
+  else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
   return bNegate ? -ret : ret;
 }
 
@@ -372,7 +373,18 @@ wstring CGUIInfoManager::GetLabel(int info)
       }
     }
     break;
+  case VISUALISATION_NAME:
+    {
+      strLabel = g_guiSettings.GetString("MyMusic.Visualisation");
+      if (strLabel != "None" && strLabel.size() > 4)
+      { // make it look pretty
+        strLabel = strLabel.Left(strLabel.size() - 4);
+        strLabel[0] = toupper(strLabel[0]);
+      }
+    }
+    break;
   }
+
   // convert our CStdString to a wstring (which the label expects!)
   WCHAR szLabel[256];
   swprintf(szLabel, L"%S", strLabel.c_str() );
