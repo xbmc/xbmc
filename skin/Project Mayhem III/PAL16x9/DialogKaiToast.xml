@@ -27,7 +27,7 @@
       <posY>15</posY>
       <width>30</width>
       <height>40</height>
-      <texture>buddyitem-default-avatar.png</texture>
+      <texture>infoicon.png</texture>
     </control>
 
     <control>

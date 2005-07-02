@@ -1,3 +1,4 @@
+2005-07-02 changed:	replaced kai icon on kai toast dialog with info icon to make the dialog more versatile
 2005-07-02 changed:	removed eject button from submenu since its in the shutdownmenu now
 2005-07-02 changed:     moved profiles button from shutdownmenu to settings screen
 2005-07-02 changed:	new shutdown menu (right thumbstick button)
