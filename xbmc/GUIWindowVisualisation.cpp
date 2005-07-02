@@ -155,6 +155,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       }
       // hide or show the preset button(s)
       FadeControls(CONTROL_PRESET_LABEL, m_bShowPreset, 0);
+      FadeControls(CONTROL_LOCKED_IMAGE, m_bShowPreset, 0);
       CGUIWindow::OnMessage(message);
       return true;
     }
