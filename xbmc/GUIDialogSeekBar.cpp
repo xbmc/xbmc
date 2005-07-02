@@ -20,7 +20,6 @@
 CGUIDialogSeekBar::CGUIDialogSeekBar(void)
     : CGUIDialog(0)
 {
-  m_bNeedsScaling = true; // make sure we scale this window, as it appears on different resolutions
   m_fSeekPercentage = 0.0f;
   m_bRequireSeek = false;
 }
