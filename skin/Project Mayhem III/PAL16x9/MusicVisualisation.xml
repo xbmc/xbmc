@@ -14,34 +14,35 @@
     </control>
 
     <control>
-      <description>background image</description>
+      <description>media info background image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
-      <width>720</width>
-      <height>576</height>
-      <texture>16x9home2.png</texture>
+      <posX>-10</posX>
+      <posY>455</posY>
+      <width>740</width>
+      <height>100</height>
+      <texture>osd_menu_bg.png</texture>
     </control>
 
     <control>
-      <description>image</description>
+      <description>cover image</description>
       <type>image</type>
       <id>1</id>
-      <posX>105</posX>
-      <posY>338</posY>
-      <width>75</width>
-      <height>99</height>
+      <posX>75</posX>
+      <posY>455</posY>
+      <width>100</width>
+      <height>100</height>
       <info>MusicPlayer.Cover</info>
+      <keepaspectratio>true</keepaspectratio>
     </control>
 
     <control>
       <description>Artist label</description>
       <type>label</type>
       <id>1</id>
-      <width>430</width>
-      <posX>195</posX>
-      <posY>340</posY>
+      <width>445</width>
+      <posX>157</posX>
+      <posY>458</posY>
       <info>MusicPlayer.Artist</info>
       <align>left</align>
       <font>special12</font>
@@ -52,8 +53,8 @@
       <type>label</type>
       <id>1</id>
       <width>430</width>
-      <posX>195</posX>
-      <posY>367</posY>
+      <posX>157</posX>
+      <posY>479</posY>
       <info>MusicPlayer.Title</info>
       <align>left</align>
       <font>special13</font>
@@ -64,10 +65,34 @@
       <type>label</type>
       <id>1</id>
       <width>430</width>
-      <posX>195</posX>
-      <posY>405</posY>
+      <posX>157</posX>
+      <posY>507</posY>
       <info>MusicPlayer.Album</info>
       <align>left</align>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>time label</description>
+      <type>label</type>
+      <id>1</id>
+      <width>430</width>
+      <posX>157</posX>
+      <posY>528</posY>
+      <label>$INFO(musicplayer.Time) / $INFO(musicplayer.Duration)</label>
+      <align>left</align>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>Playlist</description>
+      <type>label</type>
+      <id>1</id>
+      <width>100</width>
+      <posX>660</posX>
+      <posY>528</posY>
+      <label>Track $INFO(musicplayer.Playlistposition) / $INFO(musicplayer.Playlistlength)</label>
+      <align>right</align>
       <font>font10</font>
     </control>
 
@@ -75,31 +100,55 @@
       <description>preset background image</description>
       <type>image</type>
       <id>3</id>
-      <posX>55</posX>
-      <posY>50</posY>
-      <width>600</width>
-      <height>60</height>
-      <texture>Scan-panel-bg.png</texture>
+      <posX>-10</posX>
+      <posY>40</posY>
+      <width>740</width>
+      <height>65</height>
+      <texture>osd_menu_bg.png</texture>
     </control>
 
     <control>
+      <description>Codecinfo</description>
       <type>label</type>
-      <description>Presets label</description>
       <id>3</id>
-      <posX>125</posX>
-      <posY>66</posY>
-      <width>460</width>
-      <info>Visualisation.Preset</info>
+      <width>600</width>
+      <posX>75</posX>
+      <posY>50</posY>
+      <label>Audio | Codec: $INFO(musicplayer.Codec) - Bitrate: $INFO(musicplayer.Bitrate)kbps - Bitdepth: $INFO(musicplayer.bitspersample)bit - Frequency: $INFO(musicplayer.Samplerate)kHz - Channels: $INFO(musicplayer.Channels)ch</label>
+      <align>left</align>
       <font>font12</font>
-      <align>center</align>
+    </control>
+
+    <control>
+      <description>Presets label</description>
+      <type>label</type>
+      <id>3</id>
+      <posX>75</posX>
+      <posY>75</posY>
+      <width>560</width>
+      <label>Visuals | </label>
+      <font>font12</font>
+      <align>left</align>
+    </control>
+
+    <control>
+      <description>Presets label</description>
+      <type>label</type>
+      <id>3</id>
+      <posX>150</posX>
+      <posY>75</posY>
+      <width>460</width>
+      <label>$INFO(Visualisation.Name) - $INFO(Visualisation.Preset)</label>
+      <font>font12</font>
+      <align>left</align>
     </control>
 
     <control>
       <type>image</type>
       <description>Preset locked image</description>
       <id>4</id>
-      <posX>93</posX>
-      <posY>69</posY>
+      <posX>134</posX>
+      <posY>77</posY>
       <width>12</width>
       <height>15</height>
       <visible>Visualisation.Locked</visible>
