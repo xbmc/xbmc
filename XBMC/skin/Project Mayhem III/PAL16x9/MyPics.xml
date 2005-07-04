@@ -58,7 +58,7 @@
         <font>font13</font>
         <onleft>10</onleft>
         <onright>10</onright>
-        <onup>8</onup>
+        <onup>9</onup>
         <ondown>3</ondown>
       </control>
 
@@ -126,20 +126,6 @@
         <onleft>10</onleft>
         <onright>10</onright>
         <onup>7</onup>
-        <ondown>8</ondown>
-      </control>
-
-      <control>
-        <description>create thumbnails button</description>
-        <type>button</type>
-        <id>8</id>
-        <posX>50</posX>
-        <posY>305</posY>
-        <label>109</label>
-        <font>font13</font>
-        <onleft>10</onleft>
-        <onright>10</onright>
-        <onup>9</onup>
         <ondown>2</ondown>
       </control>
 

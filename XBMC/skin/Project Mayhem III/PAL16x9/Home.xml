@@ -123,6 +123,21 @@
     </control>
 
     <control>
+      <description>pause image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>580</posX>
+      <posY>25</posY>
+      <height>64</height>
+      <width>128</width>
+      <visible>Player.Paused</visible>
+      <texture>video-pause.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
       <description>cover image</description>
       <type>image</type>
       <id>1</id>
@@ -176,7 +191,7 @@
       <width>255</width>
       <posX>555</posX>
       <posY>415</posY>
-      <info>MusicPlayer.Time</info>
+      <info>MusicPlayer.TimeSpeed</info>
       <align>right</align>
       <font>font10</font>
     </control>
