@@ -506,10 +506,7 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 
   GetDirectory(iList, strDirectory, m_vecItems[iList]);
 
-  if (CUtil::IsSmb(strDirectory)) //temp hack for multi byte char language
-    g_charsetConverter.utf8ToStringCharset(strDirectory, m_Directory[iList].m_strPath);
-  else
-    m_Directory[iList].m_strPath = strDirectory;
+  m_Directory[iList].m_strPath = strDirectory;
   // if we have a .tbn file, use itself as the thumb
   for (int i = 0; i < (int)m_vecItems[iList].Size(); i++)
   {
@@ -523,7 +520,6 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   }
   // m_vecItems[iList].SetThumbs();
   m_vecItems[iList].FillInDefaultIcons();
-
 
   OnSort(iList);
   UpdateButtons();

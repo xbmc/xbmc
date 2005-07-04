@@ -41,9 +41,7 @@ void CBackgroundInfoLoader::Process()
       // is loaded.
       if (m_pObserver)
       {
-        g_graphicsContext.Lock();
         m_pObserver->OnItemLoaded(pItem);
-        g_graphicsContext.Unlock();
       }
     }
 

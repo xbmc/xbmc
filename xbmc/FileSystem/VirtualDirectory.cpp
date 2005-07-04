@@ -104,12 +104,6 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       strIcon = "defaultLocked.png";
 
     pItem->SetIconImage(strIcon);
-    CStdString strBig;
-    int iPos = strIcon.Find(".");
-    strBig = strIcon.Left(iPos);
-    strBig += "Big";
-    strBig += strIcon.Right(strIcon.size() - (iPos));
-    pItem->SetThumbnailImage(strBig);
     items.Add(pItem);
   }
 

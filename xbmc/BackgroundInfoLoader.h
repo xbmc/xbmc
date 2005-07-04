@@ -20,9 +20,9 @@ public:
   virtual void OnExit();
   virtual void Process();
   void SetObserver(IBackgroundLoaderObserver* pObserver);
+  virtual bool LoadItem(CFileItem* pItem) { return false; };
 
 protected:
-  virtual bool LoadItem(CFileItem* pItem) { return false; };
   virtual void OnLoaderStart() {};
   virtual void OnLoaderFinish() {};
 protected:

@@ -22,6 +22,7 @@
 //bool: true if seekbar is visible
 //int: progress value 0-100 (can be used in progressbars or sliders)
 #define PLAYER_SEEKBAR               23
+#define PLAYER_SEEKTIME              24
 
 /*!
  \ingroup strings

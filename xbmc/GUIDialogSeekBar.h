@@ -11,6 +11,7 @@ public:
   virtual void Render();
   void ResetTimer();
   float GetPercentage() {return m_fSeekPercentage;};
+  CStdString GetSeekTimeLabel();
 protected:
   DWORD m_dwTimer;
   float m_fSeekPercentage;

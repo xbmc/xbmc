@@ -16,7 +16,6 @@
 #define CONTROL_BTNSLIDESHOW   6
 #define CONTROL_BTNSLIDESHOW_RECURSIVE   7
 
-#define CONTROL_BTNCREATETHUMBS  8
 #define CONTROL_SHUFFLE      9
 #define CONTROL_LIST       10
 #define CONTROL_THUMBS      11
@@ -315,10 +314,6 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTNSLIDESHOW_RECURSIVE) // Recursive Slide Show
       {
         OnSlideShowRecursive();
-      }
-      else if (iControl == CONTROL_BTNCREATETHUMBS) // Create Thumbs
-      {
-        OnCreateThumbs();
       }
       else if (iControl == CONTROL_SHUFFLE)
       {
@@ -737,176 +732,11 @@ void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
     m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
-bool CGUIWindowPictures::OnCreateThumbs()
+void CGUIWindowPictures::OnRegenerateThumbs()
 {
-  if (m_dlgProgress)
-  {
-    m_dlgProgress->SetHeading(110);
-    m_dlgProgress->StartModal(GetID());
-  }
-  CSectionLoader::LoadDLL(IMAGE_DLL);
-  // calculate the number of items to take thumbs of
-  int iTotalItems = m_vecItems.Size() - m_vecItems.GetFolderCount();
-  int iCurrentItem = 0;
-
-  if (m_dlgProgress->IsCanceled()) return false;
-
-  bool bCancel = false;
-
-  // now run through and create the thumbs
-  for (int i = 0; i < (int)m_vecItems.Size();++i)
-  {
-    CFileItem* pItem = m_vecItems[i];
-
-    if (m_dlgProgress->IsCanceled())
-    {
-      bCancel = true;
-      break;
-    }
-
-    if (!pItem->m_bIsFolder)
-    {
-      iCurrentItem++;
-      WCHAR wstrProgress[128];
-      WCHAR wstrFile[128];
-      swprintf(wstrProgress, L"   progress:%i/%i", iCurrentItem, iTotalItems );
-      swprintf(wstrFile, L"   picture:%S", pItem->GetLabel().c_str() );
-
-      if (m_dlgProgress)
-      {
-        m_dlgProgress->SetLine(0, wstrFile);
-        m_dlgProgress->SetLine(1, wstrProgress);
-        m_dlgProgress->SetLine(2, L"");
-        m_dlgProgress->Progress();
-        if ( m_dlgProgress->IsCanceled() ) break;
-      }
-      CPicture picture;
-      picture.CreateThumbnail(pItem->m_strPath);
-
-      if (bCancel) break;
-    }
-  }
-  CSectionLoader::UnloadDLL(IMAGE_DLL);
-  if (m_dlgProgress) m_dlgProgress->Close();
-  Update(m_Directory.m_strPath);
-  return !bCancel;
-}
-
-void CGUIWindowPictures::CreateFolderThumbs(bool bRecurse)
-{
-  if (m_dlgProgress)
-  {
-    m_dlgProgress->SetHeading(110);
-    m_dlgProgress->StartModal(GetID());
-  }
-  int iTotalItems = 0;
-  int iCurrentItem = 0;
-  CSectionLoader::LoadDLL(IMAGE_DLL);
-  DoCreateFolderThumbs(m_Directory.m_strPath, &iTotalItems, &iCurrentItem, bRecurse);
-  CSectionLoader::UnloadDLL(IMAGE_DLL);
-  if (m_dlgProgress) m_dlgProgress->Close();
-  Update(m_Directory.m_strPath);
-}
-
-bool CGUIWindowPictures::DoCreateFolderThumbs(CStdString &strFolder, int *iTotalItems, int *iCurrentItem, bool bRecurse)
-{
-  // we have to grab the new folder recursively, and run through it, generating the thumbs
-  // calculate the number of items to take thumbs of
-  CFileItemList items;
-  GetDirectory(strFolder, items);
-  SortItems(items);
-
-  *iTotalItems += items.GetFileCount();
-
-  // now run through and create the thumbs
-  for (int i = 0; i < (int)items.Size();++i)
-  {
-    CFileItem* pItem = items[i];
-
-    if (m_dlgProgress->IsCanceled())
-      return false;
-
-    if (!pItem->m_bIsFolder)
-    {
-      (*iCurrentItem)++;
-      WCHAR wstrProgress[128];
-      WCHAR wstrFile[128];
-      swprintf(wstrProgress, L"   progress:%i/%i", *iCurrentItem, *iTotalItems );
-      swprintf(wstrFile, L"   picture:%S", pItem->GetLabel().c_str() );
-
-      if (m_dlgProgress)
-      {
-        m_dlgProgress->SetLine(0, wstrFile);
-        m_dlgProgress->SetLine(1, wstrProgress);
-        m_dlgProgress->SetLine(2, L"");
-        m_dlgProgress->Progress();
-        if ( m_dlgProgress->IsCanceled() )
-          return false;
-      }
-      CPicture picture;
-      picture.CreateThumbnail(pItem->m_strPath);
-    }
-    else
-    { // a folder, let's call us again recursively
-      if (pItem->GetLabel() != "..")
-      {
-        if (bRecurse && !DoCreateFolderThumbs(pItem->m_strPath, iTotalItems, iCurrentItem, bRecurse))
-          return false;
-      }
-    }
-  }
-  // create the folder thumb by choosing 4 random thumbs within the folder and putting
-  // them into one thumb.
-  int iNumFiles = items.GetFileCount();
-  if (iNumFiles == 0)
-  { // no thumbs in the folder
-    return true;
-  }
-  int thumbs[4];
-  if (iNumFiles > 4)
-  { // choose 4 random thumbs
-    int i = 0;
-    while (i < 4)
-    {
-      int thumbnum = rand() % iNumFiles;
-      bool bFoundNew = true;
-      for (int j = 0; j <= i; j++)
-      {
-        if (thumbnum == thumbs[j])
-        {
-          bFoundNew = false;
-        }
-      }
-      if (bFoundNew)
-        thumbs[i++] = thumbnum;
-    }
-  }
-  else
-  {
-    for (int i = 0; i < iNumFiles; i++)
-      thumbs[i] = i;
-    for (int i = iNumFiles; i < 4; i++)
-      thumbs[i] = -1;
-  }
-  // ok, now we've got the files to get the thumbs from, lets create it...
-  // we basically load the 4 thumbs, resample to 62x62 pixels, and add them
-  CStdString strFiles[4];
-  int n = 0;
-  for (int i = 0; i < items.Size(); i++)
-  {
-    if (n >= 4) break;
-    if (!items[i]->m_bIsFolder)
-    {
-      if (thumbs[n] >= 0)
-        strFiles[n] = items[i]->m_strPath;
-      else
-        strFiles[n] = "";
-      n++;
-    }
-  }
-  CPicture pic;
-  pic.CreateFolderThumb(strFolder, strFiles);
-  return true;
+  if (m_thumbLoader.IsLoading()) return;
+  m_thumbLoader.SetRegenerateThumbs(true);
+  m_thumbLoader.Load(m_vecItems);
 }
 
 void CGUIWindowPictures::Render()
@@ -1111,13 +941,11 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     pMenu->ClearButtons();
     // add the needed buttons
     pMenu->AddButton(13315); // Create Thumbnails
-    pMenu->AddButton(13316); // Recursive Thumbnails
     pMenu->AddButton(13317); // View Slideshow
-    if (m_vecItems.GetFileCount() == 0)
-    {
+    if (m_thumbLoader.IsLoading())
       pMenu->EnableButton(1, false);
+    if (m_vecItems.GetFileCount() == 0)
       pMenu->EnableButton(3, false);
-    }
     pMenu->AddButton(13318); // Recursive Slideshow
     pMenu->AddButton(5);   // "Settings"
 
@@ -1127,20 +955,17 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     switch (pMenu->GetButton())
     {
     case 1:  // Create thumb(s)
-      CreateFolderThumbs();
+      OnRegenerateThumbs();
       break;
-    case 2:  // recursive thumb(s)
-      CreateFolderThumbs(true);
-      break;
-    case 3:  // slideshow
+    case 2:  // slideshow
       OnSlideShow(m_vecItems[iItem]->m_strPath);
       return ;
       break;
-    case 4:  // recursive slideshow
+    case 3:  // recursive slideshow
       OnSlideShowRecursive(m_vecItems[iItem]->m_strPath);
       return ;
       break;
-    case 5:  // go to pictures settings
+    case 4:  // go to pictures settings
       m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
       return ;
       break;
@@ -1194,4 +1019,80 @@ void CGUIWindowPictures::OnWindowLoaded()
   m_viewControl.AddView(VIEW_AS_ICONS, GetControl(CONTROL_THUMBS));
   m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
   m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
+}
+
+void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
+{
+  if (pItem->m_bIsFolder && !pItem->m_bIsShareOrDrive && !pItem->HasThumbnail() && pItem->m_strPath != "..")
+  { // generate the thumb folder if necessary
+    // we load the directory, grab 4 random thumb files (if available) and then generate
+    // the thumb.
+    CFileItemList items;
+    m_rootDir.GetDirectory(pItem->m_strPath, items);
+    // create the folder thumb by choosing 4 random thumbs within the folder and putting
+    // them into one thumb.
+    // count the number of images
+    int numFiles = 0;
+    for (int i=0; i < items.Size(); i++)
+      if (items[i]->IsPicture())
+        numFiles++;
+    if (!numFiles) return;
+
+    srand(timeGetTime());
+    int thumbs[4];
+    if (numFiles > 4)
+    { // choose 4 random thumbs
+      int i = 0;
+      while (i < 4)
+      {
+        int thumbnum = rand() % numFiles;
+        bool bFoundNew = true;
+        for (int j = 0; j < i; j++)
+        {
+          if (thumbnum == thumbs[j])
+          {
+            bFoundNew = false;
+          }
+        }
+        if (bFoundNew)
+          thumbs[i++] = thumbnum;
+      }
+    }
+    else
+    {
+      for (int i = 0; i < numFiles; i++)
+        thumbs[i] = i;
+      for (int i = numFiles; i < 4; i++)
+        thumbs[i] = -1;
+    }
+    // ok, now we've got the files to get the thumbs from, lets create it...
+    // we basically load the 4 thumbs, resample to 62x62 pixels, and add them
+    CStdString strFiles[4];
+    for (int thumb = 0; thumb < 4; thumb++)
+    {
+      if (thumbs[thumb] >= 0)
+      {
+        int files = 0;
+        for (int i = 0; i < items.Size(); i++)
+        {
+          if (items[i]->IsPicture())
+          {
+            if (thumbs[thumb] == files)
+              strFiles[thumb] = items[i]->m_strPath;
+            files++;
+          }
+        }
+      }
+      else
+        strFiles[thumb] = "";
+    }
+    CPicture pic;
+    pic.CreateFolderThumb(pItem->m_strPath, strFiles);
+    // refill in the icon to get it to update
+    g_graphicsContext.Lock();
+    pItem->FreeIcons();
+    pItem->SetThumb();
+    pItem->FillInDefaultIcon();
+    g_graphicsContext.Unlock();
+  }
 }
