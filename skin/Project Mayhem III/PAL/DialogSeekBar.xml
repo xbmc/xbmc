@@ -42,8 +42,8 @@
       <description>progressbar</description>
       <type>progress</type>
       <id>1</id>
-      <posX>506</posX>
-      <posY>92</posY>
+      <posX>33</posX>
+      <posY>52</posY>
       <width>128</width>
       <height>3</height>
       <info>Player.Progress</info>
