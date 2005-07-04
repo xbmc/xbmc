@@ -1,3 +1,5 @@
+2005-07-03 fixed:	problems with the new seekbar
+
 2005-07-03 added:	default Icons for scripts
 2005-07-03 changed:	made the Music and Video OSD more consistent
 2005-07-03 changed:	added new progress indicators in fullscreen video and fullscreen visualisation mode
