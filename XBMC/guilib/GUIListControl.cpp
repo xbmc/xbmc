@@ -919,3 +919,10 @@ void CGUIListControl::SetHeight(int iHeight)
   m_upDown.SetRange(1, iPages);
   m_upDown.SetValue(1);
 }
+
+void CGUIListControl::SetPulseOnSelect(bool pulse)
+{
+  m_imgButton.SetPulseOnSelect(pulse);
+  m_upDown.SetPulseOnSelect(pulse);
+  CGUIControl::SetPulseOnSelect(pulse);
+}

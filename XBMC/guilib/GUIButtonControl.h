@@ -79,5 +79,6 @@ protected:
   long m_lHyperLinkWindowID;
   CStdString m_strExecuteAction;
   bool m_bTabButton;
+  bool m_bPulsing;
 };
 #endif
