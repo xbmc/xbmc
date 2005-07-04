@@ -17,6 +17,7 @@
       <width>184</width>
       <height>75</height>
       <texture>voulume-panel-bg.png</texture>
+      <visible>!VideoPlayer.IsFullscreen</visible>
     </control>
 
     <control>
@@ -25,9 +26,12 @@
       <id>401</id>
       <posX>33</posX>
       <posY>42</posY>
+      <width>128</width>
+      <height>8</height>
       <textureSliderBar>seekslider.png</textureSliderBar>
       <textureSliderNib>slider_nibFO.png</textureSliderNib>
       <textureSliderNibFocus>slider_nibFO.png</textureSliderNibFocus>
+      <visible>!VideoPlayer.IsFullscreen</visible>
       <onup>1</onup>
       <ondown>1</ondown>
       <onleft>1</onleft>
@@ -44,6 +48,7 @@
       <align>right</align>
       <width>100</width>
       <height>16</height>
+      <visible>!VideoPlayer.IsFullscreen</visible>
     </control>
 
     <control>
@@ -55,6 +60,7 @@
       <label>/</label>
       <align>left</align>
       <font>font10</font>
+      <visible>!VideoPlayer.IsFullscreen</visible>
     </control>
 
     <control>
@@ -64,7 +70,7 @@
       <posX>104</posX>
       <posY>20</posY>
       <info>MusicPlayer.Duration</info>
-      <visible>Player.HasAudio</visible>
+      <visible>Player.HasAudio + !VideoPlayer.IsFullscreen</visible>
       <font>font10</font>
       <align>left</align>
       <width>100</width>
@@ -78,7 +84,7 @@
       <posX>104</posX>
       <posY>20</posY>
       <info>VideoPlayer.Duration</info>
-      <visible>Player.HasVideo</visible>
+      <visible>Player.HasVideo + !VideoPlayer.IsFullscreen</visible>
       <font>font10</font>
       <align>left</align>
       <width>100</width>
