@@ -49,6 +49,7 @@ CGUIRAMControl::CGUIRAMControl(DWORD dwParentID, DWORD dwControlId,
   {
     m_pTextButton[i] = new CGUIButtonControl(m_dwControlID, 0, 0, 0, 0, 0, "button-focus.png", "", dwTextOffsetX, dwTextOffsetY);
     m_pTextButton[i]->SetLabel(strFont2Name, "", m_dwTextColor);
+    m_pTextButton[i]->SetPulseOnSelect(m_pulseOnSelect);
   }
 
   m_iSelection = 0;

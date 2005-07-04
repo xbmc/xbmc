@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-07-2005 fixed: Rendering order in FullScreen Video (dialogs are now rendered on top of osd/fullscreen icons.
+ - 04-07-2005 added: <pulseonselect> tag to all focus-able controls.  Defaults to true.  Set to false to disable.
  - 04-07-2005 added: HTTPAPI: TakeScreenShot now has the option to compress and download the captured image in one operation
  - 04-07-2005 fixed: Added workaround to MyMusic Library view to correctly handle same album name by different artists.
  - 04-07-2005 fixed: Reordered GUI_MSG_EXECUTE so that IsBuiltIn() is first test.  Fixes issues with things like XBMC.ActivateWindow(MyMusic, shout://www.shoutcast.com).

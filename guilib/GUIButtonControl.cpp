@@ -25,6 +25,7 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iP
   m_pFont = NULL;
   m_lHyperLinkWindowID = WINDOW_INVALID;
   m_strExecuteAction = "";
+  m_bPulsing = true;
   ControlType = GUICONTROL_BUTTON;
 }
 
@@ -52,16 +53,19 @@ void CGUIButtonControl::Render()
   }
   else if (HasFocus())
   {
-    DWORD dwAlphaCounter = m_dwFocusCounter + 2;
-    DWORD dwAlphaChannel;
-    if ((dwAlphaCounter % 128) >= 64)
-      dwAlphaChannel = dwAlphaCounter % 64;
-    else
-      dwAlphaChannel = 63 - (dwAlphaCounter % 64);
+    if (m_pulseOnSelect)
+    {
+      DWORD dwAlphaCounter = m_dwFocusCounter + 2;
+      DWORD dwAlphaChannel;
+      if ((dwAlphaCounter % 128) >= 64)
+        dwAlphaChannel = dwAlphaCounter % 64;
+      else
+        dwAlphaChannel = 63 - (dwAlphaCounter % 64);
 
-    dwAlphaChannel += 192;
-    dwAlphaChannel = DWORD((float)m_dwAlpha * (float)dwAlphaChannel / 255.0f);
-    m_imgFocus.SetAlpha(dwAlphaChannel);
+      dwAlphaChannel += 192;
+      dwAlphaChannel = DWORD((float)m_dwAlpha * (float)dwAlphaChannel / 255.0f);
+      m_imgFocus.SetAlpha(dwAlphaChannel);
+    }
     m_imgFocus.SetVisible(true);
     m_imgNoFocus.SetVisible(false);
     m_dwFocusCounter++;

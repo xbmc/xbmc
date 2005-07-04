@@ -94,6 +94,8 @@ public:
   CStdString ParseLabel(CStdString &strLabel);
   int GetGroup(void) const;
   virtual void Update() { m_bInvalidated = true; };
+  virtual void SetPulseOnSelect(bool pulse) { m_pulseOnSelect = pulse; };
+  bool GetPulseOnSelect() const { return m_pulseOnSelect; };
 
   enum GUICONTROLTYPES {
     GUICONTROL_UNKNOWN,
@@ -156,5 +158,6 @@ protected:
   DWORD m_fadingTime;
   DWORD m_fadingPos;
   int m_VisibleCondition;
+  bool m_pulseOnSelect;
 };
 #endif
