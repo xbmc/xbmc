@@ -1,4 +1,6 @@
-2005-07-03 fixed:	problems with the new seekbar
+2005-07-04 added:	more progressbar tweaks
+2005-07-04 removed:	Create Thumbnails button in My Pictures
+2005-07-04 fixed:	problems with the new seekbar
 
 2005-07-03 added:	default Icons for scripts
 2005-07-03 changed:	made the Music and Video OSD more consistent
