@@ -567,19 +567,8 @@ void CGUIListControl::AllocResources()
 
   m_imgButton.AllocResources();
 
-
-  m_imgButton.SetWidth(m_dwWidth);
-  m_imgButton.SetHeight(m_iItemHeight);
-
-  float fHeight = (float)m_iItemHeight + (float)m_iSpaceBetweenItems;
-  float fTotalHeight = (float)(m_dwHeight - m_upDown.GetHeight() - 5);
-  m_iItemsPerPage = (int)(fTotalHeight / fHeight );
-
-  int iPages = m_vecItems.size() / m_iItemsPerPage;
-  if (m_vecItems.size() % m_iItemsPerPage) iPages++;
-  m_upDown.SetRange(1, iPages);
-  m_upDown.SetValue(1);
-
+  SetWidth(m_dwWidth);
+  SetHeight(m_dwHeight);
 }
 
 void CGUIListControl::FreeResources()
@@ -904,4 +893,29 @@ void CGUIListControl::SetPosition(int iPosX, int iPosY)
   int iSpinOffsetY = m_upDown.GetYPosition() - GetYPosition();
   CGUIControl::SetPosition(iPosX, iPosY);
   m_upDown.SetPosition(GetXPosition() + iSpinOffsetX, GetYPosition() + iSpinOffsetY);
+}
+
+void CGUIListControl::SetWidth(int iWidth)
+{
+  int iSpinOffsetX = m_upDown.GetXPosition() - GetXPosition() - GetWidth();
+  CGUIControl::SetWidth(iWidth);
+  m_imgButton.SetWidth(m_dwWidth);
+  m_upDown.SetPosition(GetXPosition() + GetWidth() + iSpinOffsetX, m_upDown.GetYPosition());
+}
+
+void CGUIListControl::SetHeight(int iHeight)
+{
+  int iSpinOffsetY = m_upDown.GetYPosition() - GetYPosition() - GetHeight();
+  CGUIControl::SetHeight(iHeight);
+  m_imgButton.SetHeight(m_iItemHeight);
+  m_upDown.SetPosition(m_upDown.GetXPosition(), GetYPosition() + GetHeight() + iSpinOffsetY);
+
+  float fHeight = (float)m_iItemHeight + (float)m_iSpaceBetweenItems;
+  float fTotalHeight = (float)(m_dwHeight - m_upDown.GetHeight() - 5);
+  m_iItemsPerPage = (int)(fTotalHeight / fHeight );
+
+  int iPages = m_vecItems.size() / m_iItemsPerPage;
+  if (m_vecItems.size() % m_iItemsPerPage) iPages++;
+  m_upDown.SetRange(1, iPages);
+  m_upDown.SetValue(1);
 }
