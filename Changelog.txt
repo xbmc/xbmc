@@ -5,6 +5,28 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-07-2005 added: Xbox2Xbox Copy! Well this feature is: Autodetection+FTP Client! ;) [GeminiServer]
+ - 04-07-2005 added: XBMC FTP Client [GeminiServer]
+                     This is a Simple FTP Client for XBMC [based on 1179655].You can connect to all FTP Servers in LAN and Internet!
+                     You can ATM only Download from a FTP server, Upload, delete Files/Folders are not supportted yet![will come!]
+		     You can set any where you want a share with the following format: ftp://USER:PASS@IP:PORT/FOLDER!
+                     You can Connect to to Other XBOX's also in Addition with the XBMC Autodetection Function!
+		     You can Stream Video, Audio, Picture like the SMB, but this then with FTP ;) so connection and streaming from other 
+                     XBOX's are supported! The Audio [if in_mp3.dll is in]& Picture 'stream' does't working yet [DLL stuff!!] Copy to a Local folder is required!
+ - 04-07-2005 added: FTP Server User Password changing and selection! [GeminiServer]
+                     You can select all users defined in FileZilla Server.xml and change the Password for it! The Password can't 
+                     be read from the decoded from the xml, course it's MD5! so you need to define the password over GUI again!
+                     The selected FTP User and pw will then also used for XBMC Autodetection!
+ - 04-07-2005 added: XBOX Autodetection [Settings - Network - Autodetection] [GeminiServer]
+                     It will detect Other XBOX's in the LAN and a PopUp comes up with the IP and the NickName!
+                     Then it will create a FTP Link in My Files with the Share Name: Detected NickName! Created 
+                     FTP Link will then have this format ftp://user:password@IP:port. 
+                     Autodetection Server: You can define Swtich ON/Off, set the NickName, FTP link Creation, 
+                     PopUp Notification, and send ftp User/Password [IMPORTAND: which is the defined User in Server - FTP!!]
+                     Also Other Autodetection Dashboards are supported and XBMC is Compatible to: Avalaunch, UnleashX!
+ - 04-07-2005 added: XBOX NickName Reading and Setting, XBOX NickName [Settings - Network - Autodetection] [GeminiServer]
+ - 04-07-2005 updated: ModChip Detection: now Xecuter2, Xecuter3 and Xneium will be also detected! [GeminiServer]
+
  - 04-07-2005 fixed: Rendering order in FullScreen Video (dialogs are now rendered on top of osd/fullscreen icons.
  - 04-07-2005 added: <pulseonselect> tag to all focus-able controls.  Defaults to true.  Set to false to disable.
  - 04-07-2005 added: HTTPAPI: TakeScreenShot now has the option to compress and download the captured image in one operation

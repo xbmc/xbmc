@@ -31,6 +31,8 @@ protected:
   void FillInScreenSavers(CSetting *pSetting);
   void FillInXBDateTime(CSetting *pSetting, int bState);
   bool CheckMasterLockCode();
+  void FillInFTPServerUser(CSetting *pSetting);
+  bool SetFTPServerUserPass();
 
   virtual void SetupControls();
   void CreateSettings();

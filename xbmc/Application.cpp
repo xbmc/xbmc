@@ -3583,6 +3583,9 @@ void CApplication::Process()
 
   //  check if we can unload any unreferenced dlls
   CSectionLoader::UnloadDLLsDelayed();
+
+  // GeminiServer Xbox Autodetection
+  CUtil::XboxAutoDetection();
 }
 
 void CApplication::Restart(bool bSamePosition)

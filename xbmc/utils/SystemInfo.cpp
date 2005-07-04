@@ -227,11 +227,11 @@ CStdString SYSINFO::GetModCHIPDetected()
 	mbFlash=new(CXBoxFlash);
 	{
 		// Known XBOX ModCHIP IDs&Names
-		mbFlash->AddFCI(0x01,0xAD,"XECUTER3",0x100000);
-		mbFlash->AddFCI(0x01,0xD5,"XECUTER2",0x100000);
-		mbFlash->AddFCI(0x01,0xC4,"Xodus XENIUM",0x100000);
-		mbFlash->AddFCI(0x01,0xC4,"Xodus XENIUM",0x000000);
-		mbFlash->AddFCI(0x04,0xBA,"ALX2+ R3 FLASH",0x40000);
+		mbFlash->AddFCI(0x01,0xad,"XECUTER 3",0x100000);
+		mbFlash->AddFCI(0x01,0xd5,"XECUTER 2",0x100000);
+		mbFlash->AddFCI(0x01,0xc4,"XENIUM",0x100000);
+		mbFlash->AddFCI(0x01,0xc4,"XENIUM",0x000000);
+		mbFlash->AddFCI(0x04,0xba,"ALX2+ R3 FLASH",0x40000);
 		// XBOX Possible FLash CHIPs
 		mbFlash->AddFCI(0x01,0xb0,"AMD Am29F002BT/NBT",0x40000);
 		mbFlash->AddFCI(0x01,0x34,"AMD Am29F002BB/NBB",0x40000);
@@ -387,20 +387,23 @@ CStdString SYSINFO::GetModCHIPDetected()
 		mbFlash->AddFCI(0xda,0xb6,"Winbond W39L040",0x80000);
 		mbFlash->AddFCI(0xda,0x3d,"Winbond W39V040A",0x80000);
 	}
-	if (mbFlash->CheckID2()!=0) 
+  CStdString strTemp = "";
+	if (mbFlash->CheckID()!=0) 
 	{	
-		CLog::Log(LOGDEBUG, "- Detected TSOP/ModChip: %s",mbFlash->CheckID2()->text);		
-		return mbFlash->CheckID2()->text;	
+    CLog::Log(LOGDEBUG, "- Detected TSOP/ModChip: %s",mbFlash->CheckID()->text);		
+		strTemp = mbFlash->CheckID()->text;
 	}
-	else if (mbFlash->CheckID()!=0) 
+  else if (mbFlash->CheckID2()!=0) 
 	{	
-		CLog::Log(LOGDEBUG, "Detected TSOP/MOdCHIP: %s",mbFlash->CheckID()->text);		
-		return mbFlash->CheckID()->text;	
+    CLog::Log(LOGDEBUG, "- Detected TSOP/ModChip: %s",mbFlash->CheckID2()->text);		
+    strTemp = mbFlash->CheckID2()->text;
 	}
 	else
-	{	CLog::Log(LOGDEBUG, "Detected TSOP/MOdCHIP: Unknown");	
-		return "Unknown";
+	{	
+    CLog::Log(LOGDEBUG, "- Detected TSOP/MOdCHIP: Unknown");	
+		strTemp = "Unknown";
 	}
+  return strTemp;
 }
 
 CStdString SYSINFO::SmartXXModCHIP()

@@ -20,11 +20,9 @@
 #include "ButtonTranslator.h"
 #include "Picture.h"
 
-bool CUtil::m_bNetworkUp = false;
-extern "C"
-{
-	extern bool WINAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
-};
+#define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
+static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
+static const __int64 SECS_TO_100NS = 10000000;
 struct SSortByLabel
 {
   static bool Sort(CFileItem* pStart, CFileItem* pEnd)
@@ -46,15 +44,20 @@ struct SSortByLabel
 
   static bool m_bSortAscending;
 };
+bool CUtil::m_bNetworkUp = false;
 bool SSortByLabel::m_bSortAscending;
-
+char g_szTitleIP[32];
+CStdString strHasClientIP="",strHasClientInfo="",strNewClientIP,strNewClientInfo; 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace PLAYLIST;
-char g_szTitleIP[32];
 static D3DGAMMARAMP oldramp, flashramp;
 
+extern "C"
+{
+	extern bool WINAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
+};
 CUtil::CUtil(void)
 {
   memset(g_szTitleIP, 0, sizeof(g_szTitleIP));
@@ -384,9 +387,10 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   return true;
 }
 
-//Make sure you have a full path in the filename, otherwise adds the base path before.
+
 void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename)
 {
+  //Make sure you have a full path in the filename, otherwise adds the base path before.
   CURL plItemUrl(strFilename);
   CURL plBaseUrl(strBasePath);
   int iDotDotLoc, iBeginCut, iEndCut;
@@ -564,11 +568,11 @@ bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
 } 
 
 
-/// \brief Runs an executable file
-/// \param szPath1 Path of executeable to run
-/// \param szParameters Any parameters to pass to the executeable being run
 void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry) 
 {
+  /// \brief Runs an executable file
+  /// \param szPath1 Path of executeable to run
+  /// \param szParameters Any parameters to pass to the executeable being run
   g_application.PrintXBEToLCD(szPath1); //write to LCD
   Sleep(600);        //and wait a little bit to execute
 
@@ -615,7 +619,6 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
   CUtil::LaunchXbe(szDevicePath, szXbePath, szParameters, ForceVideo, ForceCountry);
 }
 
-//*********************************************************************************************
 void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry)
 {
   CLog::Log(LOGINFO, "launch xbe:%s %s", szPath, szXbe);
@@ -919,10 +922,6 @@ bool CUtil::InitializeNetwork(int iAssignment, const char* szLocalAddress, const
   }
   return false;
 }
-
-static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
-static const __int64 SECS_TO_100NS = 10000000;
-
 void CUtil::ConvertTimeTToFileTime(__int64 sec, long nsec, FILETIME &ftTime)
 {
   __int64 l64Result = ((__int64)sec + SECS_BETWEEN_EPOCHS) + SECS_TO_100NS + (nsec / 100);
@@ -1938,12 +1937,12 @@ void CUtil::GetPath(const CStdString& strFileName, CStdString& strPath)
 
   strPath = strFileName.Left(iPos1 - 1);
 }
-//Will from a full filename return the directory the file resides in.
-//has no trailing slash on result. Could lead to problems when reading from root on cd
-//ISO9660://filename.bla will result in path ISO9660:/
-//This behaviour should probably be changed, but it would break other things
 void CUtil::GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath)
 {
+  //Will from a full filename return the directory the file resides in.
+  //has no trailing slash on result. Could lead to problems when reading from root on cd
+  //ISO9660://filename.bla will result in path ISO9660:/
+  //This behaviour should probably be changed, but it would break other things
   if ((strFilePath.substr(0,6) == "rar://") || (strFilePath.substr(0,6) == "zip://"))
   {
     CURL url(strFilePath);
@@ -1965,11 +1964,11 @@ void CUtil::GetDirectory(const CStdString& strFilePath, CStdString& strDirectory
     strDirectoryPath = strFilePath.Left(iPos1);
   }
 }
-//Splits a full filename in path and file.
-//ex. smb://computer/share/directory/filename.ext -> strPath:smb://computer/share/directory/ and strFileName:filename.ext
-//Trailing slash will be preserved
 void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)
 {
+  //Splits a full filename in path and file.
+  //ex. smb://computer/share/directory/filename.ext -> strPath:smb://computer/share/directory/ and strFileName:filename.ext
+  //Trailing slash will be preserved
   strFileName = "";
   strPath = "";
   int i = strFileNameAndPath.size() - 1;
@@ -1983,8 +1982,7 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
 }
 
-void CUtil::CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, const CStdString& strFilePathInRar, 
-                          const WORD wOptions,  const CStdString& strPwd, const CStdString& strCachePath)
+void CUtil::CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, const CStdString& strFilePathInRar,const WORD wOptions,  const CStdString& strPwd, const CStdString& strCachePath)
 {
   //The possibilties for wOptions are
   //RAR_AUTODELETE : the cached version of the rar (strRarPath) will be deleted in file's dtor.
@@ -2430,12 +2428,6 @@ void CUtil::SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, in
   CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, bImmediate);
 }
 
-#define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) 
-// Valid ranges:
-//  brightness -1 -> 1 (0 is default)
-//  contrast    0 -> 2 (1 is default)
-//  gamma     0.5 -> 3.5 (1 is default)
-//  default ramp is linear.
 void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate)
 {
   // calculate ramp
@@ -2455,9 +2447,9 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
 }
 
 
-// Tokenize ripped from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
 void CUtil::Tokenize(const CStdString& path, vector<CStdString>& tokens, const string& delimiters)
 {
+  // Tokenize ripped from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
   string str = path;
   // Skip delimiters at beginning.
   string::size_type lastPos = str.find_first_not_of(delimiters, 0);
@@ -2624,12 +2616,12 @@ void CUtil::Stat64ToStat(struct _stat *result, struct __stat64 *stat)
 }
 
 
-// around 50% faster than memcpy
-// only worthwhile if the destination buffer is not likely to be read back immediately
-// and the number of bytes copied is >16
-// somewhat faster if the source and destination are a multiple of 16 bytes apart
 void fast_memcpy(void* d, const void* s, unsigned n)
 {
+  // around 50% faster than memcpy
+  // only worthwhile if the destination buffer is not likely to be read back immediately
+  // and the number of bytes copied is >16
+  // somewhat faster if the source and destination are a multiple of 16 bytes apart
   __asm {
     mov edx, n
     mov esi, s
@@ -2713,7 +2705,7 @@ void fast_memcpy(void* d, const void* s, unsigned n)
 
   fmc_exit_post:
           }
-        }
+}
 
 void fast_memset(void* d, int c, unsigned n)
 {
@@ -2796,13 +2788,12 @@ void fast_memset(void* d, int c, unsigned n)
     }
   }
 
-// Function to create all directories at once instead
-// of calling CreateDirectory for every subdir.
-// Creates the directory and subdirectories if needed.
 bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 {
+  // Function to create all directories at once instead
+  // of calling CreateDirectory for every subdir.
+  // Creates the directory and subdirectories if needed.
   std::vector<string> strArray;
-
   CURL url(strPath);
   string path = url.GetFileName().c_str();
   int iSize = path.size();
@@ -2856,11 +2847,11 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   if (!CDirectory::Exists(strPath)) return false;
   return true;
 }
-// check if the filename is a legal FATX one.
-// this means illegal chars will be removed from the string,
-// and the remaining string is stripped back to 42 chars if needed
 CStdString CUtil::MakeLegalFileName(const char* strFile, bool bKeepExtension, bool isFATX)
 {
+  // check if the filename is a legal FATX one.
+  // this means illegal chars will be removed from the string,
+  // and the remaining string is stripped back to 42 chars if needed
   if (NULL == strFile) return "";
   char cIllegalChars[] = "<>=?:;\"*+,/\\|";
   unsigned int iIllegalCharSize = strlen(cIllegalChars);
@@ -3442,4 +3433,213 @@ bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int i
 	NtSetSystemTime(&stNewTime, &stCurTime);
 
 	return true;
+}
+bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo )
+{
+  //GeminiServer
+  
+  CStdString strWorkTemp;
+  CStdString strSendMessage = "ping\0";
+  CStdString strReceiveMessage = "ping";
+  int iUDPPort = 4905;
+  char  sztmp[512], szTemp[512];
+	static int	udp_server_socket, inited=0;
+	int  cliLen, t1,t2,t3,t4, init_counter=0, life=0;
+  struct sockaddr_in	server;
+  struct sockaddr_in	cliAddr;
+  struct timeval timeout={0,500};
+  XNADDR xna;
+	DWORD dwState;
+  fd_set readfds; 
+  bool bState= false;
+	if( ( !inited )  || ( bRefresh ) )
+	{
+		dwState = XNetGetTitleXnAddr(&xna);
+		XNetInAddrToString(xna.ina,(char *)strWorkTemp.c_str(),64);
+
+		// Get IP address
+		sscanf( (char *)strWorkTemp.c_str(), "%d.%d.%d.%d", &t1, &t2, &t3, &t4 );
+    if( !t1 ) return false;
+    cliLen = sizeof( cliAddr);
+    if( !inited ) 
+    {
+      int tUDPsocket  = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	    char value      = 1;
+	    setsockopt( tUDPsocket, SOL_SOCKET, SO_BROADCAST, &value, value );
+	    struct sockaddr_in addr;
+	    memset(&(addr),0,sizeof(addr));
+	    addr.sin_family       = AF_INET; 
+	    addr.sin_addr.s_addr  = INADDR_ANY;
+	    addr.sin_port         = htons(iUDPPort);
+	    bind(tUDPsocket,(struct sockaddr *)(&addr),sizeof(addr));
+      udp_server_socket = tUDPsocket;
+      inited = 1;
+    }
+    FD_ZERO(&readfds);
+		FD_SET(udp_server_socket, &readfds);
+		life = select( 0,&readfds, NULL, NULL, &timeout ); 
+		if (life == -1 )  return false;
+    memset(&(server),0,sizeof(server));
+		server.sin_family           = AF_INET;
+		server.sin_addr.S_un.S_addr = INADDR_BROADCAST;
+		server.sin_port             = htons(iUDPPort);	
+    sendto(udp_server_socket,(char *)strSendMessage.c_str(),5,0,(struct sockaddr *)(&server),sizeof(server));
+	}
+	FD_ZERO(&readfds);
+	FD_SET(udp_server_socket, &readfds);
+	life = select( 0,&readfds, NULL, NULL, &timeout ); 
+  while( life )
+	{
+    recvfrom(udp_server_socket, sztmp, 512, 0,(struct sockaddr *) &cliAddr, &cliLen); 
+    strWorkTemp = sztmp;
+    if( strWorkTemp == strReceiveMessage )
+		{
+			strWorkTemp.Format("%s;%s;%s;%d;%d\r\n\0",strNickName.c_str(),strFTPUserName.c_str(),strFTPPass.c_str(),iFTPPort,0 );
+      sendto(udp_server_socket,(char *)strWorkTemp.c_str(),strlen((char *)strWorkTemp.c_str())+1,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
+      strWorkTemp.Format("%d.%d.%d.%d",cliAddr.sin_addr.S_un.S_un_b.s_b1,cliAddr.sin_addr.S_un.S_un_b.s_b2,cliAddr.sin_addr.S_un.S_un_b.s_b3,cliAddr.sin_addr.S_un.S_un_b.s_b4 );
+
+			bool bPing = ( bool )false; // Check if we have this client in our list already, and if not respond with a ping
+			//< your code to check the list of other clients goes here >
+			if( bPing ) sendto(udp_server_socket,strSendMessage.c_str(),5,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));  
+		}
+		else
+		{
+      sprintf( szTemp, "%d.%d.%d.%d", cliAddr.sin_addr.S_un.S_un_b.s_b1,cliAddr.sin_addr.S_un.S_un_b.s_b2,cliAddr.sin_addr.S_un.S_un_b.s_b3,cliAddr.sin_addr.S_un.S_un_b.s_b4 );
+      if (strHasClientIP != szTemp && strHasClientInfo != strWorkTemp)
+      {
+        strHasClientIP = szTemp;        //This is the Client IP Adress!
+        strHasClientInfo  = strWorkTemp; // This is the Client Informations!
+        if (strHasClientIP != "" && strHasClientInfo !="")
+        {
+          strNewClientIP = szTemp;        //This is the Client IP Adress!
+          strNewClientInfo = strWorkTemp; // This is the Client Informations!
+          bState = true;
+        }
+      }
+      //< add it to your list of clients after parsing out user id, password, port, boost capable, etc. >
+		}
+		timeout.tv_sec=0;
+		timeout.tv_usec = 5000;
+		FD_ZERO(&readfds);
+		FD_SET(udp_server_socket, &readfds);
+		life = select( 0,&readfds, NULL, NULL, &timeout );
+	}
+  return bState;
+}
+bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
+{
+  // Todo: Extract Ftp User, PW, Port from Internal FTP Server!
+  // Todo: Create a FTP Client for XBMC!
+  // Todo: Create a Setting for entering FTP Password and Username!
+  CStdString strLabel      = g_localizeStrings.Get(1251); // lbl Xbox Autodetection
+  CStdString strNickName   = g_guiSettings.GetString("Autodetect.NickName");
+  
+  CStdString strSysFtpName = g_guiSettings.GetString("Servers.FTPServerUser");
+  CStdString strSysFtpPw   = g_guiSettings.GetString("Servers.FTPServerPassword");
+
+  if(!g_guiSettings.GetBool("Autodetect.SendUserPw"))
+  {
+    strSysFtpName = "anonymous";
+    strSysFtpPw   = "anonymous";
+  }
+  int iSysFtpPort = 21;
+  if (g_guiSettings.GetBool("Autodetect.OnOff"))
+  {
+    bool bget = CUtil::XboxAutoDetectionPing(true, strSysFtpName, strSysFtpPw, strNickName, iSysFtpPort,strHasClientIP,strHasClientInfo, strNewClientIP , strNewClientInfo );
+    if ( bget )
+    {
+      //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOS_MODE
+      CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
+      CStdStringArray arSplit; 
+      StringUtils::SplitString(strNewClientInfo,";", arSplit);
+      if ((int)arSplit.size() > 1)
+      {
+        strNickName     = arSplit[0].c_str();
+        strFtpUserName  = arSplit[1].c_str();
+        strFtpPassword  = arSplit[2].c_str();
+        strFtpPort      = arSplit[3].c_str();
+        strBoosMode     = arSplit[4].c_str();
+        strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strHasClientIP.c_str(),strFtpPort.c_str());
+
+        if (g_guiSettings.GetBool("Autodetect.PopUpInfo"))    //PopUp Notification
+        {
+          CStdString strtemplbl;
+          strtemplbl.Format("%s %s",strNickName, strNewClientIP);
+          g_application.m_guiDialogKaiToast.QueueNotification(strLabel, strtemplbl);  
+        }
+
+        if (g_guiSettings.GetBool("Autodetect.CreateLink"))   //Check if this XBOX is allread in the FileManager List! If Not add it!
+        {
+          // Add a FTP link to MyFiles! //Todo: If there is a same Name ask to overwrite it!
+          if(!g_settings.UpdateBookmark("files", strNickName, "path", strFTPPath) )
+          {
+            g_settings.AddBookmark("files",    strNickName,  strFTPPath);
+            // Todo: Create a FTP link in My Files and PopUp a OK windows with the info, that a FTP bla is created!
+          }
+        }
+        CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", strLabel.c_str(), strNickName.c_str(), strFTPPath.c_str());
+        }
+    }
+    strHasClientIP = strNewClientIP, strHasClientInfo = strNewClientInfo;
+  }
+  else strHasClientIP ="", strHasClientInfo = "";
+  return true;
+}
+bool CUtil::IsFTP(const CStdString& strFile)
+{
+  CURL url(strFile);
+  if (url.GetProtocol() == "ftp") return true;
+  else return false;
+}
+bool CUtil::CmpNoCase(const char* str1, const char* str2)
+{
+  int iLen = strlen(str1);
+  if ( strlen(str1) != strlen(str2) ) return false;
+  for (int i = 0; i < iLen;i++ )
+  {
+    if (tolower((unsigned char)str1[i]) != tolower((unsigned char)str2[i]) ) return false;
+  }
+  return true;
+}
+bool CUtil::GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax )
+{
+  class CXFUser*	m_pUser;
+  std::vector<CXFUser*> users;
+  g_application.m_pFileZilla->GetAllUsers(users);
+  iUserMax = users.size();
+	if (iUserMax > 0)
+	{
+		//for (int i = 1 ; i < iUserSize; i++){ delete users[i]; }
+    m_pUser = users[iFTPUserID];
+    strFtpUser1 = m_pUser->GetName();
+    if (strFtpUser1.size() != 0) return true;
+    else return false;
+	}else return false;
+}
+bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword)
+{
+  CStdString strTempUserName;
+  class CXFUser*	p_ftpUser;
+  std::vector<CXFUser*> v_ftpusers;
+  bool bFoundUser = false;
+  g_application.m_pFileZilla->GetAllUsers(v_ftpusers);
+  int iUserSize = v_ftpusers.size();
+	if (iUserSize > 0)
+	{
+		for (int i = 1 ; i < iUserSize; i++)
+    {
+      p_ftpUser = v_ftpusers[i-1];
+      strTempUserName = p_ftpUser->GetName();
+      if (strTempUserName == strFtpUserName) 
+      { 
+        if (p_ftpUser->SetPassword((char_t*)strFtpUserPassword.c_str()) != XFS_INVALID_PARAMETERS)
+        {
+          p_ftpUser->CommitChanges();
+          return true;
+        }
+        break;
+      }
+    }
+  }
+  return false;
 }
