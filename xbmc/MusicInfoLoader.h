@@ -13,9 +13,9 @@ public:
   virtual ~CMusicInfoLoader();
 
   void UseCacheOnHD(const CStdString& strFileName);
+  virtual bool LoadItem(CFileItem* pItem);
 
 protected:
-  virtual bool LoadItem(CFileItem* pItem);
   virtual void OnLoaderStart();
   virtual void OnLoaderFinish();
   void LoadCache(const CStdString& strFileName, MAPFILEITEMS& items);
