@@ -825,17 +825,18 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     CUtil::GetExtension(strFile, strExtension);
     strExtension.MakeLower();
 
-    CFile* pFile = new CFile();
-    __int64 len = 0;
-    if (pFile->Open(strFile.c_str(), true))
+    if (strExtension == ".avi")
     {
-      len = pFile->GetLength();
-    }
-    delete pFile;
+      // check length of file, as mplayer can't handle opendml very well
+      CFile* pFile = new CFile();
+      __int64 len = 0;
+      if (pFile->Open(strFile.c_str(), true))
+      {
+        len = pFile->GetLength();
+      }
+      delete pFile;
 
-    if (len > 0x7fffffff)
-    {
-      if (strExtension == ".avi")
+      if (len > 0x7fffffff)
       {
         // fixes large opendml avis - mplayer can't handle big indices
         options.SetNoIdx(true);
