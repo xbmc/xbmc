@@ -1,4 +1,7 @@
+2005-07-03 changed:	made the Music and Video OSD more consistent
+2005-07-03 changed:	added new progress indicators in fullscreen video and fullscreen visualisation mode
 2005-07-03 changed:	progressbar gfx 
+
 2005-07-02 added:	drivespace labels in filemanager
 2005-07-02 changed:	slimmer fullscreen viz infos
 2005-07-02 changed:	replaced kai icon on kai toast dialog with info icon to make the dialog more versatile
