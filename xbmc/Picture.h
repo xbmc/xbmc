@@ -23,6 +23,7 @@ public:
   bool CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName);
   bool CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName);
   bool Convert(const CStdString& strSource, const CStdString& strDest);
+  bool ConvertFile(const CStdString& srcFile, const CStdString& srcDest, int width, int height, unsigned int quality);
 
   ImageInfo GetInfo() const { return m_info; };
   unsigned int GetWidth() const { return m_info.width; };
@@ -54,6 +55,7 @@ private:
     bool (__cdecl*  CreateFolderThumbnail)(const char **, const char *);
     bool (__cdecl*  CreateExifThumbnail)(const char *, const char *);
     bool (__cdecl*  CreateThumbnailFromSurface)(BYTE *, unsigned int, unsigned int, unsigned int, const char *);
+    bool (__cdecl*  ConvertFile)(const char *, const char *, int, int, unsigned int);
   };
   bool LoadDLL();
   bool m_bDllLoaded;

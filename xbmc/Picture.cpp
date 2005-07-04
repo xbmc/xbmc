@@ -200,6 +200,16 @@ bool CPicture::CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, 
   return m_dll.CreateThumbnailFromSurface(pBuffer, width, height, stride, strThumbFileName.c_str());
 }
 
+bool CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile, int width, int height, unsigned int quality)
+{ 
+  if (!LoadDLL()) return false;
+  if (!m_dll.ConvertFile(srcFile.c_str(), destFile.c_str(), width, height, quality))
+  {
+    CLog::Log(LOGERROR, "PICTURE: Error converting image %s", srcFile.c_str());
+    return false;
+  }
+  return true;
+}
 bool CPicture::LoadDLL()
 {
   if (m_bDllLoaded) return true;
@@ -216,9 +226,10 @@ bool CPicture::LoadDLL()
   pDll->ResolveExport("CreateFolderThumbnail", (void **)&m_dll.CreateFolderThumbnail);
   pDll->ResolveExport("CreateExifThumbnail", (void **)&m_dll.CreateExifThumbnail);
   pDll->ResolveExport("CreateThumbnailFromSurface", (void **)&m_dll.CreateThumbnailFromSurface);
+  pDll->ResolveExport("ConvertFile", (void **)&m_dll.ConvertFile);
 
   // verify exports
-  if (!m_dll.LoadImage || !m_dll.CreateThumbnail || !m_dll.CreateThumbnailFromMemory || !m_dll.CreateFolderThumbnail || !m_dll.CreateThumbnailFromSurface)
+  if (!m_dll.LoadImage || !m_dll.CreateThumbnail || !m_dll.CreateThumbnailFromMemory || !m_dll.CreateFolderThumbnail || !m_dll.CreateThumbnailFromSurface || !m_dll.ConvertFile)
   {
     CLog::Log(LOGERROR, "PICTURE: Unable to resolve functions in the dll %s", IMAGE_DLL);
     return false;
