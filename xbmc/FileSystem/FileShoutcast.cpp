@@ -96,10 +96,10 @@ CFileShoutcast::CFileShoutcast()
 
 CFileShoutcast::~CFileShoutcast()
 {
+  rip_manager_stop();
   m_pShoutCastRipper = NULL;
   m_ripFile.Reset();
   m_ringbuf.Destroy();
-  rip_manager_stop();
 }
 
 bool CFileShoutcast::CanSeek()
