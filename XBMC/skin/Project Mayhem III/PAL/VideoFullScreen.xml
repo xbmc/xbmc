@@ -10,9 +10,9 @@
       <type>image</type>
       <id>0</id>
       <posX>-10</posX>
-      <posY>45</posY>
+      <posY>40</posY>
       <width>740</width>
-      <height>80</height>
+      <height>90</height>
       <texture>osd_menu_bg.png</texture>
     </control>
 
