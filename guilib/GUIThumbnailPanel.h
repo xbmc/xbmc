@@ -44,6 +44,7 @@ public:
   virtual void SetPosition(int iPosX, int iPosY);
   virtual void SetWidth(int iWidth);
   virtual void SetHeight(int iHeight);
+  virtual void SetPulseOnSelect(bool pulse);
   void SetScrollySuffix(CStdString wstrSuffix);
   void SetTextureDimensions(int iWidth, int iHeight);
   void SetThumbAlign(int align);
@@ -110,7 +111,7 @@ public:
   void GetOffsetFromPage();
 
 protected:
-  void Calculate();
+  void Calculate(bool resetItem);
   void RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListItem* pItem, int iStage);
   void RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText, bool bScroll );
   virtual void OnRight();

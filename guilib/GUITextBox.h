@@ -42,6 +42,7 @@ public:
   virtual void SetPosition(int iPosX, int iPosY);
   virtual void SetWidth(int iWidth);
   virtual void SetHeight(int iHeight);
+  virtual void SetPulseOnSelect(bool pulse);
   DWORD GetTextColor() const { return m_dwTextColor;};
   const char* GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
   DWORD GetSpinWidth() const { return m_upDown.GetWidth() / 2; };

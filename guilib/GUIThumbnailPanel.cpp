@@ -459,7 +459,7 @@ void CGUIThumbnailPanel::PreAllocResources()
   m_imgFolderFocus.PreAllocResources();
 }
 
-void CGUIThumbnailPanel::Calculate()
+void CGUIThumbnailPanel::Calculate(bool resetItem)
 {
   m_imgFolder.SetWidth(m_iTextureWidth);
   m_imgFolder.SetHeight(m_iTextureHeight);
@@ -480,9 +480,11 @@ void CGUIThumbnailPanel::Calculate()
   if (m_vecItems.size() % iItemsPerPage) iPages++;
   m_upDown.SetRange(1, iPages);
   m_upDown.SetValue(1);
-  // TODO reset our position
-  int iItem = (m_iRowOffset + m_iCursorY) * m_iColumns + m_iCursorX;
-  SetSelectedItem(iItem);
+  if (resetItem)
+  {
+    int iItem = (m_iRowOffset + m_iCursorY) * m_iColumns + m_iCursorX;
+    SetSelectedItem(iItem);
+  }
 }
 
 void CGUIThumbnailPanel::AllocResources()
@@ -492,7 +494,7 @@ void CGUIThumbnailPanel::AllocResources()
   m_upDown.AllocResources();
   m_imgFolder.AllocResources();
   m_imgFolderFocus.AllocResources();
-  Calculate();
+  Calculate(true);
 
 }
 
@@ -920,7 +922,7 @@ void CGUIThumbnailPanel::ShowBigIcons(bool bOnOff)
     m_iTextureHeight = m_iTextureHeightLow;
     SetThumbDimensions(m_iThumbXPosLow, m_iThumbYPosLow, m_iThumbWidthLow, m_iThumbHeightLow);
   }
-  Calculate();
+  Calculate(true);
 }
 
 void CGUIThumbnailPanel::GetThumbDimensionsBig(int& iXpos, int& iYpos, int& iWidth, int& iHeight)
@@ -1099,7 +1101,7 @@ void CGUIThumbnailPanel::SetWidth(int iWidth)
   int iSpinOffsetX = m_upDown.GetXPosition() - GetXPosition() - GetWidth();
   CGUIControl::SetWidth(iWidth);
   m_upDown.SetPosition(GetXPosition() + GetWidth() + iSpinOffsetX, m_upDown.GetYPosition());
-  Calculate();
+  Calculate(false);
 }
 
 void CGUIThumbnailPanel::SetHeight(int iHeight)
@@ -1107,5 +1109,12 @@ void CGUIThumbnailPanel::SetHeight(int iHeight)
   int iSpinOffsetY = m_upDown.GetYPosition() - GetYPosition() - GetHeight();
   CGUIControl::SetHeight(iHeight);
   m_upDown.SetPosition(m_upDown.GetXPosition(), GetYPosition() + GetHeight() + iSpinOffsetY);
-  Calculate();
+  Calculate(false);
+}
+
+
+void CGUIThumbnailPanel::SetPulseOnSelect(bool pulse)
+{
+  m_upDown.SetPulseOnSelect(pulse);
+  CGUIControl::SetPulseOnSelect(pulse);
 }
