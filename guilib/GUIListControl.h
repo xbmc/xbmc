@@ -49,6 +49,8 @@ public:
   virtual void AllocResources() ;
   virtual void FreeResources() ;
   virtual void DynamicResourceAlloc(bool bOnOff);
+  virtual void SetWidth(int iWidth);
+  virtual void SetHeight(int iHeight);
   void SetScrollySuffix(const CStdString& wstrSuffix);
   void SetTextOffsets(int iXoffset, int iYOffset, int iXoffset2, int iYOffset2);
   void SetImageDimensions(int iWidth, int iHeight);
