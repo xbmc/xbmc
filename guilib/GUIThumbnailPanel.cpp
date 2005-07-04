@@ -1093,3 +1093,19 @@ void CGUIThumbnailPanel::SetPosition(int iPosX, int iPosY)
   CGUIControl::SetPosition(iPosX, iPosY);
   m_upDown.SetPosition(GetXPosition() + iSpinOffsetX, GetYPosition() + iSpinOffsetY);
 }
+
+void CGUIThumbnailPanel::SetWidth(int iWidth)
+{
+  int iSpinOffsetX = m_upDown.GetXPosition() - GetXPosition() - GetWidth();
+  CGUIControl::SetWidth(iWidth);
+  m_upDown.SetPosition(GetXPosition() + GetWidth() + iSpinOffsetX, m_upDown.GetYPosition());
+  Calculate();
+}
+
+void CGUIThumbnailPanel::SetHeight(int iHeight)
+{
+  int iSpinOffsetY = m_upDown.GetYPosition() - GetYPosition() - GetHeight();
+  CGUIControl::SetHeight(iHeight);
+  m_upDown.SetPosition(m_upDown.GetXPosition(), GetYPosition() + GetHeight() + iSpinOffsetY);
+  Calculate();
+}
