@@ -1765,62 +1765,57 @@ int CXbmcHttp::xbmcTakeScreenshot(webs_t wp, int numParas, CStdString paras[])
   {
     CStdString filename;
     if (paras[0]=="")
-      filename="z:\\temp.jpg";
+      filename="z:\\screenshot.jpg";
     else
       filename=paras[0];
-    CUtil::TakeScreenshot(filename.c_str());
-//    if (numParas>3)
-//    {
-//      int height, width;
-//      if (paras[2]=="")
-//        if (paras[1]=="")
-//        {
-//          websWrite(wp, "<li>Error:Both height and width parameters cannot be absent\n");
-//          return 0;
-//        }
-//        else
-//        {
-//          width=atoi(paras[1]);
-//          height=-1;
-//        }
-//      else
-//        if (paras[1]=="")
-//        {
-//          height=atoi(paras[2]);
-//          width=-1;
-//        }
-//        else
-//        {
-//          width=atoi(paras[1]);
-//          height=atoi(paras[2]);
-//        }
-//      //if (!pImage->Resample(width, height, 0))
-//      //{
-//      //  websWrite(wp, "<li>Error:Could not resample image\n");
-//      //  delete pImage;
-//      //  return 0;
-//      //}
-//      CPicture pic;
-//      pic.ConvertImage(filename, filename, width, height, atoi(paras[3]));
-///*      pImage->SetJpegQuality(atoi(paras[3]));
-//      if (!pImage->Save(filename.c_str(), CXIMAGE_FORMAT_JPG))
-//      {
-//        websWrite(wp, "<li>Error:Could not save image\n");
-//        delete pImage;
-//        return 0;
-//      }
-//      delete pImage;   */   
-//      if (numParas>4)
-//        if (paras[4].ToLower()="true")
-//          {
-//            CStdString b64;
-//            b64=encodeFileToBase64(filename,80);
-//            websWriteBlock(wp, (char_t *) b64.c_str(), b64.length()) ;
-//            if (filename=="z:\\temp.jpg")
-//              ::DeleteFile(filename.c_str());
-//            return 0;
-//          }
-//    }
+    CUtil::TakeScreenshot("z:\\temp.bmp");
+    if (numParas>3)
+    {
+      int height, width;
+      if (paras[2]=="")
+        if (paras[1]=="")
+        {
+          websWrite(wp, "<li>Error:Both height and width parameters cannot be absent\n");
+          return 0;
+        }
+        else
+        {
+          width=atoi(paras[1]);
+          height=-1;
+        }
+      else
+        if (paras[1]=="")
+        {
+          height=atoi(paras[2]);
+          width=-1;
+        }
+        else
+        {
+          width=atoi(paras[1]);
+          height=atoi(paras[2]);
+        }
+
+      CPicture pic;
+      if (pic.ConvertFile("z:\\temp.bmp", filename, width, height, atoi(paras[3])))
+      {
+        ::DeleteFile("z:\\temp.bmp");
+        if (numParas>4)
+          if (paras[4].ToLower()="true")
+            {
+              CStdString b64;
+              b64=encodeFileToBase64(filename,80);
+              websWriteBlock(wp, (char_t *) b64.c_str(), b64.length()) ;
+              if (filename=="z:\\screenshot.jpg")
+                ::DeleteFile(filename.c_str());
+              return 0;
+            }
+      }
+      else
+      {
+        websWrite(wp, "<li>Error:Could not convert image\n");
+        return 0;
+      }
+    }
   }
   websWrite(wp, "<li>OK\n");
   return 0;
