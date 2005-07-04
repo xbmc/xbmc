@@ -15,9 +15,9 @@
       <posX>1</posX>
       <posY>2</posY>
       <width>184</width>
-      <height>75</height>
+      <height>85</height>
       <texture>voulume-panel-bg.png</texture>
-      <visible>!VideoPlayer.IsFullscreen</visible>
+      <visible>Player.HasMedia</visible>
     </control>
 
     <control>
@@ -31,11 +31,28 @@
       <textureSliderBar>seekslider.png</textureSliderBar>
       <textureSliderNib>slider_nibFO.png</textureSliderNib>
       <textureSliderNibFocus>slider_nibFO.png</textureSliderNibFocus>
-      <visible>!VideoPlayer.IsFullscreen</visible>
+      <visible>Player.HasMedia</visible>
       <onup>1</onup>
       <ondown>1</ondown>
       <onleft>1</onleft>
       <onright>1</onright>
+    </control>
+
+    <control>
+      <description>progressbar</description>
+      <type>progress</type>
+      <id>1</id>
+      <posX>506</posX>
+      <posY>92</posY>
+      <width>128</width>
+      <height>3</height>
+      <info>Player.Progress</info>
+      <visible>Player.HasMedia</visible>
+      <texturebg>progress_back.png</texturebg>
+      <lefttexture>progress_left.png</lefttexture>
+      <midtexture>progress_mid.png</midtexture>
+      <righttexture>progress_right.png</righttexture>
+      <overlaytexture>-</overlaytexture>
     </control>
 
     <control>
@@ -48,7 +65,7 @@
       <align>right</align>
       <width>100</width>
       <height>16</height>
-      <visible>!VideoPlayer.IsFullscreen</visible>
+      <visible>Player.HasMedia</visible>
     </control>
 
     <control>
@@ -60,7 +77,7 @@
       <label>/</label>
       <align>left</align>
       <font>font10</font>
-      <visible>!VideoPlayer.IsFullscreen</visible>
+      <visible>Player.HasMedia</visible>
     </control>
 
     <control>
@@ -70,7 +87,7 @@
       <posX>104</posX>
       <posY>20</posY>
       <info>MusicPlayer.Duration</info>
-      <visible>Player.HasAudio + !VideoPlayer.IsFullscreen</visible>
+      <visible>Player.HasAudio</visible>
       <font>font10</font>
       <align>left</align>
       <width>100</width>
@@ -84,7 +101,7 @@
       <posX>104</posX>
       <posY>20</posY>
       <info>VideoPlayer.Duration</info>
-      <visible>Player.HasVideo + !VideoPlayer.IsFullscreen</visible>
+      <visible>Player.HasVideo</visible>
       <font>font10</font>
       <align>left</align>
       <width>100</width>
