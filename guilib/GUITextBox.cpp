@@ -162,21 +162,8 @@ void CGUITextBox::AllocResources()
   if (!m_pFont) return ;
   CGUIControl::AllocResources();
   m_upDown.AllocResources();
-  float fWidth, fHeight;
 
-  m_pFont->GetTextExtent( L"y", &fWidth, &fHeight);
-  //fHeight+=10.0f;
-
-  //fHeight+=2;
-  m_iItemHeight = (int)fHeight;
-  float fTotalHeight = (float)(m_dwHeight - m_upDown.GetHeight() - 5);
-  m_iItemsPerPage = (int)(fTotalHeight / fHeight);
-
-  int iPages = m_vecItems.size() / m_iItemsPerPage;
-  if (m_vecItems.size() % m_iItemsPerPage) iPages++;
-  m_upDown.SetRange(1, iPages);
-  m_upDown.SetValue(1);
-
+  SetHeight(m_dwHeight);
 }
 
 void CGUITextBox::FreeResources()
@@ -379,4 +366,39 @@ void CGUITextBox::OnMouseWheel()
       iPage = m_upDown.GetMaximum();
     m_upDown.SetValue(iPage);
   }
+}
+
+void CGUITextBox::SetPosition(int iPosX, int iPosY)
+{
+  // offset our spin control by the appropriate amount
+  int iSpinOffsetX = m_upDown.GetXPosition() - GetXPosition();
+  int iSpinOffsetY = m_upDown.GetYPosition() - GetYPosition();
+  CGUIControl::SetPosition(iPosX, iPosY);
+  m_upDown.SetPosition(GetXPosition() + iSpinOffsetX, GetYPosition() + iSpinOffsetY);
+}
+
+void CGUITextBox::SetWidth(int iWidth)
+{
+  int iSpinOffsetX = m_upDown.GetXPosition() - GetXPosition() - GetWidth();
+  CGUIControl::SetWidth(iWidth);
+  m_upDown.SetPosition(GetXPosition() + GetWidth() + iSpinOffsetX, m_upDown.GetYPosition());
+}
+
+void CGUITextBox::SetHeight(int iHeight)
+{
+  int iSpinOffsetY = m_upDown.GetYPosition() - GetYPosition() - GetHeight();
+  CGUIControl::SetHeight(iHeight);
+  m_upDown.SetPosition(m_upDown.GetXPosition(), GetYPosition() + GetHeight() + iSpinOffsetY);
+
+  float fWidth, fHeight;
+  m_pFont->GetTextExtent( L"y", &fWidth, &fHeight);
+
+  m_iItemHeight = (int)fHeight;
+  float fTotalHeight = (float)(m_dwHeight - m_upDown.GetHeight() - 5);
+  m_iItemsPerPage = (int)(fTotalHeight / fHeight);
+
+  int iPages = m_vecItems.size() / m_iItemsPerPage;
+  if (m_vecItems.size() % m_iItemsPerPage) iPages++;
+  m_upDown.SetRange(1, iPages);
+  m_upDown.SetValue(1);
 }

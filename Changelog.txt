@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-07-2005 fixed: Scaling of list + textbox controls.
  - 04-07-2005 fixed: Some embedded image thumbs in mp3s weren't loaded correctly.
  - 04-07-2005 fixed: Slow loading of root folders due to new thumb reading code.
  - 04-07-2005 added: Thumb generator generates folder thumbs in my music.  They're now also on a transparent background.
