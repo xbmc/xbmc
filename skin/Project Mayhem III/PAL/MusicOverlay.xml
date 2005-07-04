@@ -2,6 +2,247 @@
   <id>2004</id>
   <defaultcontrol>2</defaultcontrol>
   <controls>
+
+    <!-- playstate images -->
+
+    <control>
+      <description>pause image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>580</posX>
+      <posY>25</posY>
+      <height>64</height>
+      <width>128</width>
+      <visible>Player.Paused</visible>
+      <texture>video-pause.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>2x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Forwarding2x</visible>
+      <texture>video-2x.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>4x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Forwarding4x</visible>
+      <texture>video-4x.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>8x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Forwarding8x</visible>
+      <texture>video-8x.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>16x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Forwarding16x</visible>
+      <texture>video-16x.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>32x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Forwarding32x</visible>
+      <texture>video-32x.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>-2x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Rewinding2x</visible>
+      <texture>video-2xr.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>-4x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Rewinding4x</visible>
+      <texture>video-4xr.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>-8x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Rewinding8x</visible>
+      <texture>video-8xr.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>-16x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Rewinding16x</visible>
+      <texture>video-16xr.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>-32x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Rewinding32x</visible>
+      <texture>video-32xr.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <!-- progressbar -->
+
+    <control>
+      <description>Popup Seek Dialog Background</description>
+      <type>image</type>
+      <id>999</id>
+      <posX>474</posX>
+      <posY>42</posY>
+      <width>184</width>
+      <height>75</height>
+      <texture>voulume-panel-bg.png</texture>
+      <visible>Player.Forwarding|Player.Rewinding</visible>
+    </control>
+
+    <control>
+      <description>Seek Label</description>
+      <type>label</type>
+      <id>999</id>
+      <posX>563</posX>
+      <posY>60</posY>
+      <font>font10</font>
+      <align>right</align>
+      <info>MusicPlayer.Time</info>
+      <visible>Player.Forwarding|Player.Rewinding</visible>
+      <width>100</width>
+      <height>16</height>
+    </control>
+
+    <control>
+      <description>suffix label</description>
+      <type>label</type>
+      <id>999</id>
+      <posX>568</posX>
+      <posY>60</posY>
+      <label>/</label>
+      <align>left</align>
+      <font>font10</font>
+      <visible>Player.Forwarding|Player.Rewinding</visible>
+    </control>
+
+    <control>
+      <description>Duration Label</description>
+      <type>label</type>
+      <id>999</id>
+      <posX>577</posX>
+      <posY>60</posY>
+      <info>MusicPlayer.Duration</info>
+      <visible>Player.Forwarding|Player.Rewinding</visible>
+      <font>font10</font>
+      <align>left</align>
+      <width>100</width>
+      <height>16</height>
+    </control>
+
+    <control>
+      <description>progressbar </description>
+      <type>progress</type>
+      <id>23</id>
+      <posX>506</posX>
+      <posY>83</posY>
+      <width>128</width>
+      <height>5</height>
+      <info>Player.Progress</info>
+      <visible>Player.Forwarding|Player.Rewinding</visible>
+      <texturebg>progress_back.png</texturebg>
+      <lefttexture>progress_left.png</lefttexture>
+      <midtexture>progress_mid.png</midtexture>
+      <righttexture>progress_right.png</righttexture>
+      <overlaytexture>-</overlaytexture>
+    </control>
+
+    <!-- media info -->
+
     <control>
       <description>music rectangle</description>
       <type>image</type>
@@ -29,60 +270,12 @@
       <description>play time label</description>
       <type>label</type>
       <id>0</id>
-      <posX>93</posX>
+      <posX>65</posX>
       <posY>500</posY>
       <label>-</label>
-      <info>MusicPlayer.TimeSpeed</info>
+      <info>MusicPlayer.Time</info>
       <align>left</align>
       <font>font13</font>
-    </control>
-
-    <control>
-      <description>play logo</description>
-      <type>image</type>
-      <id>0</id>
-      <posX>65</posX>
-      <posY>503</posY>
-      <width>20</width>
-      <height>20</height>
-      <visible>Player.Playing</visible>
-      <texture>music-play.png</texture>
-    </control>
-
-    <control>
-      <description>Pause logo</description>
-      <type>image</type>
-      <id>0</id>
-      <posX>65</posX>
-      <posY>503</posY>
-      <width>20</width>
-      <height>20</height>
-      <visible>Player.Paused</visible>
-      <texture>music-pause.png</texture>
-    </control>
-
-    <control>
-      <description>FF logo</description>
-      <type>image</type>
-      <id>0</id>
-      <posX>65</posX>
-      <posY>503</posY>
-      <width>20</width>
-      <height>20</height>
-      <visible>Player.Forwarding</visible>
-      <texture>music-forward.png</texture>
-    </control>
-
-    <control>
-      <description>RW logo</description>
-      <type>image</type>
-      <id>0</id>
-      <posX>65</posX>
-      <posY>503</posY>
-      <width>20</width>
-      <height>20</height>
-      <visible>Player.Rewinding</visible>
-      <texture>music-rewind.png</texture>
     </control>
 
     <control>
