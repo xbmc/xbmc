@@ -783,7 +783,7 @@
   <string><id>13312</id><value>Black Bar Reduction</value></string>
   <string><id>13313</id><value>Reset/Reboot</value></string>
   <string><id>13314</id><value>Crossfade</value></string>
-  <string><id>13315</id><value>Create Thumbnails</value></string>
+  <string><id>13315</id><value>Regenerate Thumbnails</value></string>
   <string><id>13316</id><value>Recursive Thumbnails</value></string>
   <string><id>13317</id><value>View Slideshow</value></string>
   <string><id>13318</id><value>Recursive Slideshow</value></string>

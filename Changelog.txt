@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-07-2005 fixed: Some embedded image thumbs in mp3s weren't loaded correctly.
+ - 04-07-2005 fixed: Slow loading of root folders due to new thumb reading code.
+ - 04-07-2005 added: Thumb generator generates folder thumbs in my music.  They're now also on a transparent background.
  - 03-07-2005 changed: removed <mplayerdebug> from xboxmediacenter.xml as it's no longer needed, <loglevel>0 enables it now instead
  - 02-07-2005 changed: Some of the HTTPAPI command names to make the names more logical - the old ones still work though
  - 02-07-2005 added: Visualisation.Name info tag.

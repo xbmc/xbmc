@@ -83,7 +83,7 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   m_fFrameCounter = 0.0f;
   m_dwFPSTime = timeGetTime();
   m_subtitleFont = NULL;
-
+  m_needsScaling = false;         // we handle all the scaling
   // audio
   //  - language
   //  - volume

@@ -127,6 +127,7 @@ protected:
   int m_iOverlayAllowed;
   bool m_WindowAllocated;
   RESOLUTION m_coordsRes; // resolution that the window coordinates are in.
+  bool m_needsScaling;
 };
 
 #endif
