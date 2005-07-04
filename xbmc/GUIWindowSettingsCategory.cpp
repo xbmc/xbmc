@@ -20,19 +20,19 @@
 #include "lib/libscrobbler/scrobbler.h"
 #include "GUIPassword.h"
 
-#define CONTROL_GROUP_BUTTONS         0
-#define CONTROL_GROUP_SETTINGS        1
-#define CONTROL_SETTINGS_LABEL        2
-#define CONTROL_BUTTON_AREA           3
-#define CONTROL_BUTTON_GAP            4
-#define CONTROL_AREA                  5
-#define CONTROL_GAP                   6
-#define CONTROL_DEFAULT_BUTTON        7
-#define CONTROL_DEFAULT_RADIOBUTTON   8
-#define CONTROL_DEFAULT_SPIN          9
-#define CONTROL_DEFAULT_SETTINGS_BUTTON   10
-#define CONTROL_START_BUTTONS         30
-#define CONTROL_START_CONTROL         50
+#define CONTROL_GROUP_BUTTONS           0
+#define CONTROL_GROUP_SETTINGS          1
+#define CONTROL_SETTINGS_LABEL          2
+#define CONTROL_BUTTON_AREA             3
+#define CONTROL_BUTTON_GAP              4
+#define CONTROL_AREA                    5
+#define CONTROL_GAP                     6
+#define CONTROL_DEFAULT_BUTTON          7
+#define CONTROL_DEFAULT_RADIOBUTTON     8
+#define CONTROL_DEFAULT_SPIN            9
+#define CONTROL_DEFAULT_SETTINGS_BUTTON 10
+#define CONTROL_START_BUTTONS           30
+#define CONTROL_START_CONTROL           50
 
 struct sortstringbyname
 {
@@ -697,6 +697,25 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(1232)  , LOCK_MU_VI_PIC_PROG);  // 15 Musik & Video & Pictures & Programs
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting == "Servers.FTPServerUser")
+    {
+      //GeminiServer
+      FillInFTPServerUser(pSetting);
+    }
+    else if (strSetting == "Autodetect.NickName")
+    {
+      //GeminiServer
+      char pszNickName[MAX_NICKNAME];
+      CStdString strXboxNickName;
+      if (XFindFirstNickname(true,(LPWSTR)pszNickName,MAX_NICKNAME) != INVALID_HANDLE_VALUE)  
+        strXboxNickName = pszNickName; 
+      else 
+      { //Todo: Can be more then One NickName!!
+        strXboxNickName = g_guiSettings.GetString("Autodetect.NickName");
+        XSetNickname((LPCWSTR)strXboxNickName.c_str(), true);
+      }
+      g_guiSettings.SetString("Autodetect.NickName", strXboxNickName.c_str());
+    }
     iPosY += iGapY;
   }
   // fix first and last navigation
@@ -997,8 +1016,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                            &&*/ g_guiSettings.GetBool("VoiceOnPort3.EnablefRoboticValue")
                                            && (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
     }
-    else if (strSetting == "AudioMusic.OutputToAllSpeakers" || strSetting == "AudioVideo.OutputToAllSpeakers"
-             || strSetting == "AudioOutput.AC3PassThrough" || strSetting == "AudioOutput.DTSPassThrough")
+    else if (strSetting == "AudioMusic.OutputToAllSpeakers" || strSetting == "AudioVideo.OutputToAllSpeakers"|| strSetting == "AudioOutput.AC3PassThrough" || strSetting == "AudioOutput.DTSPassThrough")
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL);
@@ -1027,6 +1045,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     { // only visible if we have shutdown enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("System.ShutDownTime") != 0);
+    }
+    else if (strSetting == "Servers.FTPServerUser" || strSetting == "Servers.FTPServerPassword" || strSetting == "Servers.FTPAutoFatX")
+    {
+      //GeminiServer
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      pControl->SetEnabled(g_guiSettings.GetBool("Servers.FTPServer"));
     }
     else if (strSetting == "Servers.WebServerPassword")
     { // Fill in a blank pass if we don't have it
@@ -1075,8 +1099,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("Filters.Noise"));
     }
-    else if (strSetting == "PostProcessing.VerticalDeBlocking" || strSetting == "PostProcessing.HorizontalDeBlocking" ||
-             strSetting == "PostProcessing.AutoBrightnessContrastLevels" || strSetting == "PostProcessing.DeRing")
+    else if (strSetting == "PostProcessing.VerticalDeBlocking" || strSetting == "PostProcessing.HorizontalDeBlocking" || strSetting == "PostProcessing.AutoBrightnessContrastLevels" || strSetting == "PostProcessing.DeRing")
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("PostProcessing.Enable") &&
@@ -1296,6 +1319,17 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         else bState = true;
       if (pControl) pControl->SetEnabled(bState);
     }
+    else if (strSetting == "Autodetect.NickName" || strSetting == "Autodetect.CreateLink" || strSetting == "Autodetect.PopUpInfo" || strSetting == "Autodetect.SendUserPw")
+    {
+      //GeminiServer
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		  if (pControl) 
+		  { 
+			  if (g_guiSettings.GetBool("Autodetect.OnOff")) pControl->SetEnabled(true); 
+			  else pControl->SetEnabled(false);
+		  }
+    }
+
   }
 }
 void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
@@ -1459,12 +1493,29 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       CFanController::Instance()->RestoreStartupSpeed();
   }
+  else if (strSetting == "Autodetect.NickName" )
+  {
+    CStdString strNickName   = g_guiSettings.GetString("Autodetect.NickName");
+    //Todo: MAX_NICKNAME
+    XSetNickname((LPCWSTR)strNickName.c_str(), true);
+  }
   else if (strSetting == "Servers.FTPServer")
   {
     g_application.StopFtpServer();
     if (g_guiSettings.GetBool("Servers.FTPServer"))
       g_application.StartFtpServer();
+    
   }
+  else if (strSetting == "Servers.FTPServerPassword")
+  {
+   SetFTPServerUserPass(); 
+  }
+  else if (strSetting == "Servers.FTPServerUser")
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    g_guiSettings.SetString("Servers.FTPServerUser", pControl->GetCurrentLabel());
+  }
+
   else if (strSetting == "Servers.WebServer" || strSetting == "Servers.WebServerPort" || strSetting == "Servers.WebServerPassword")
   {
     if (strSetting == "Servers.WebServerPort")
@@ -2112,7 +2163,6 @@ void CGUIWindowSettingsCategory::Render()
       SET_CONTROL_FOCUS(iCtrlID, g_guiSettings.GetInt("LookAndFeel.Resolution"));
     }
   }
-
   bool bAlphaFaded = false;
   CGUIButtonControl *pButton = (CGUIButtonControl *)GetControl(CONTROL_START_BUTTONS + m_iSection);
   if (pButton && !pButton->HasFocus())
@@ -2965,10 +3015,72 @@ void CGUIWindowSettingsCategory::FillInXBDateTime(CSetting *pSetting, int bState
 }
 bool CGUIWindowSettingsCategory::CheckMasterLockCode()
 {
+  // GeminiServer
   // prompt user for mastercode if the mastercode was set b4 or by xml
   // prompt user for mastercode when changing lock settings
   if (g_passwordManager.IsMasterLockLocked(true))  return true;
   else return false;
+}
+void CGUIWindowSettingsCategory::FillInFTPServerUser(CSetting *pSetting)
+{
+  //GeminiServer
+  CSettingString *pSettingString = (CSettingString*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
+  pControl->Clear();
+  pControl->SetShowRange(true);
+  int iDefaultFtpUser = 0;
+
+  CStdString strFtpUser1; int iUserMax;
+  // Get FTP XBOX Users and list them !
+  if (CUtil::GetFTPServerUserName(0, strFtpUser1, iUserMax))
+  {
+    for (int i = 0; i < iUserMax; i++)
+    {
+      if (CUtil::GetFTPServerUserName(i, strFtpUser1, iUserMax))
+        pControl->AddLabel(strFtpUser1.c_str(), i);
+      if (strFtpUser1.ToLower() == "xbox") iDefaultFtpUser = i;
+    }
+    pControl->SetValue(iDefaultFtpUser);
+    CUtil::GetFTPServerUserName(iDefaultFtpUser, strFtpUser1, iUserMax);
+    g_guiSettings.SetString("Servers.FTPServerUser", strFtpUser1.c_str());
+    pControl->Update();
+  }
+}
+bool CGUIWindowSettingsCategory::SetFTPServerUserPass()
+{
+  // Get GUI USER and pass and set pass to FTP Server
+    CStdString strFtpUserName, strFtpUserPassword;
+    strFtpUserName      = g_guiSettings.GetString("Servers.FTPServerUser");
+    strFtpUserPassword  = g_guiSettings.GetString("Servers.FTPServerPassword");
+    if(strFtpUserPassword.size()!=0)
+    {
+      if (CUtil::SetFTPServerUserPassword(strFtpUserName, strFtpUserPassword))
+      {
+          // todo! ERROR check! if something goes wrong on SetPW!
+          // PopUp OK and Display: FTP Server Password was set succesfull!
+          CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+          if (!dlg) return false;
+          dlg->SetHeading( g_localizeStrings.Get(728));
+          dlg->SetLine( 0, "");
+          dlg->SetLine( 1, g_localizeStrings.Get(1247));
+          dlg->SetLine( 2, "");
+          dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+      }
+      return true;
+    }
+    else
+    {
+          // PopUp OK and Display: FTP Server Password is empty! Try Again!
+          CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+          if (!dlg) return false;
+          dlg->SetHeading( g_localizeStrings.Get(728));
+          dlg->SetLine( 0, "");
+          dlg->SetLine( 1, g_localizeStrings.Get(12358));
+          dlg->SetLine( 2, "");
+          dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+    }
+    return true;
 }
 CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &strSetting)
 {

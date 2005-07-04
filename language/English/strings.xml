@@ -550,7 +550,7 @@
   <string><id>768</id><value>Reserved</value></string>
   <string><id>769</id><value>Reserved</value></string>
   <string><id>770</id><value>Error %i: share not available</value></string>
-  <string><id>771</id><value>Workaround for fatx limits in FTP server</value></string>
+  <string><id>771</id><value>- Auto Fatx Limiter</value></string>
   <string><id>772</id><value>Audio hardware</value></string>
   <string><id>773</id><value>Seeking</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
@@ -594,6 +594,17 @@
   <string><id>1233</id><value>Programs &amp; Video &amp; Music</value></string>
   <string><id>1234</id><value>Programs &amp; Pictures &amp; Music</value></string>
   <string><id>1235</id><value>Programs &amp; Pictures &amp; Video</value></string>
+
+  <string><id>1245</id><value> - FTP User Name</value></string>
+  <string><id>1246</id><value> - FTP User Password</value></string>
+  <string><id>1247</id><value>FTP Server User Password has been set sucessfully!</value></string>
+
+  <string><id>1250</id><value>Autodetection</value></string>
+  <string><id>1251</id><value>XBOX Autodetection</value></string>
+  <string><id>1252</id><value>Nick Name</value></string>
+  <string><id>1253</id><value>Create FTP Link in My Files</value></string>
+  <string><id>1254</id><value>Popup Notification</value></string>
+  <string><id>1255</id><value>Send FTP User and Password</value></string>
   
   <string><id>1396</id><value>Drifting</value></string>
   <string><id>1397</id><value>and</value></string>

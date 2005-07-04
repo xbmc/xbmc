@@ -14,6 +14,7 @@
 #include "FileCDDA.h"
 #include "FileZip.h"
 #include "FileRar.h"
+#include "FileFTP.h"
 
 using namespace XFILE;
 
@@ -42,6 +43,7 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
   if (strProtocol == "cdda") return (IFile*)new CFileCDDA();
   if (strProtocol == "zip") return (IFile*)new CFileZip();
   if (strProtocol == "rar") return (IFile*)new CFileRar();
+  if (strProtocol == "ftp") return (IFile*)new CFileFTP();
 
   return (IFile*)new CFileHD();
 }

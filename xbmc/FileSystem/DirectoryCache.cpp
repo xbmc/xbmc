@@ -4,7 +4,6 @@
 #include "../util.h"
 
 CDirectoryCache g_directoryCache;
-
 CCriticalSection CDirectoryCache::m_cs;
 
 CDirectoryCache::CDirectoryCache(void)
@@ -12,11 +11,8 @@ CDirectoryCache::CDirectoryCache(void)
   m_iThumbCacheRefCount = 0;
   m_iMusicThumbCacheRefCount = 0;
 }
-
 CDirectoryCache::~CDirectoryCache(void)
 {}
-
-
 bool CDirectoryCache::GetDirectory(const CStdString& strPath1, CFileItemList &items)
 {
   CSingleLock lock (m_cs);
@@ -90,14 +86,9 @@ void CDirectoryCache::ClearDirectory(const CStdString& strPath1)
 bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
 {
   CSingleLock lock (m_cs);
-
   CStdString strPath, strFixedFile(strFile);
-
-  //Fixup mismatched slashes in urls for local filenames
-  if ( strFixedFile.Mid(1, 1) == ":" )
-    strFixedFile.Replace('/', '\\');
-
   bInCache = false;
+  if ( strFixedFile.Mid(1, 1) == ":" )  strFixedFile.Replace('/', '\\');
   CUtil::GetDirectory(strFixedFile, strPath);
   ivecCache i = g_directoryCache.m_vecCache.begin();
   while (i != g_directoryCache.m_vecCache.end() )
@@ -106,8 +97,11 @@ bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
     if (dir->m_strPath == strPath)
     {
       bInCache = true;
-      if (dir->m_Items.Contains(strFixedFile))
-        return true;
+      for (int i = 0; i < (int) dir->m_Items.Size(); ++i)
+      {
+        CFileItem* pItem = dir->m_Items[i];
+        if ( CUtil::CmpNoCase(pItem->m_strPath, strFixedFile) ) return true;
+      }
     }
     ++i;
   }
