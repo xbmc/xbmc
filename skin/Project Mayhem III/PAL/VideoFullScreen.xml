@@ -2,17 +2,18 @@
   <id>2005</id>
   <defaultcontrol>13</defaultcontrol>
   <controls>
+
+    <!-- codec infos -->
+
     <control>
-      <description>bar image</description>
+      <description>media info background image</description>
       <type>image</type>
       <id>0</id>
-      <posX>0</posX>
-      <posY>54</posY>
-      <width>720</width>
-      <height>65</height>
-      <texture>bluebar.png</texture>
-      <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
+      <posX>-10</posX>
+      <posY>45</posY>
+      <width>740</width>
+      <height>80</height>
+      <texture>osd_menu_bg.png</texture>
     </control>
 
     <control>
@@ -20,10 +21,10 @@
       <type>label</type>
       <id>10</id>
       <posX>70</posX>
-      <posY>52</posY>
+      <posY>50</posY>
       <label>-</label>
       <align>left</align>
-      <font>font13</font>
+      <font>font12</font>
     </control>
 
     <control>
@@ -31,10 +32,10 @@
       <type>label</type>
       <id>11</id>
       <posX>70</posX>
-      <posY>72</posY>
+      <posY>75</posY>
       <label>-</label>
       <align>left</align>
-      <font>font13</font>
+      <font>font12</font>
     </control>
 
     <control>
@@ -42,13 +43,14 @@
       <type>label</type>
       <id>12</id>
       <posX>70</posX>
-      <posY>92</posY>
+      <posY>100</posY>
       <label>-</label>
       <align>left</align>
-      <font>font13</font>
+      <font>font12</font>
       <visible>no</visible>
     </control>
 
+    <!-- playstate images -->
     <control>
       <description>pause image</description>
       <type>image</type>
@@ -69,10 +71,10 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>580</posX>
-      <posY>25</posY>
-      <height>64</height>
-      <width>128</width>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
       <visible>Player.Forwarding2x</visible>
       <texture>video-2x.png</texture>
       <colorkey>0</colorkey>
@@ -84,10 +86,10 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>580</posX>
-      <posY>25</posY>
-      <height>64</height>
-      <width>128</width>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
       <visible>Player.Forwarding4x</visible>
       <texture>video-4x.png</texture>
       <colorkey>0</colorkey>
@@ -99,10 +101,10 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>580</posX>
-      <posY>25</posY>
-      <height>64</height>
-      <width>128</width>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
       <visible>Player.Forwarding8x</visible>
       <texture>video-8x.png</texture>
       <colorkey>0</colorkey>
@@ -114,10 +116,10 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>580</posX>
-      <posY>25</posY>
-      <height>64</height>
-      <width>128</width>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
       <visible>Player.Forwarding16x</visible>
       <texture>video-16x.png</texture>
       <colorkey>0</colorkey>
@@ -129,10 +131,10 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>580</posX>
-      <posY>25</posY>
-      <height>64</height>
-      <width>128</width>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
       <visible>Player.Forwarding32x</visible>
       <texture>video-32x.png</texture>
       <colorkey>0</colorkey>
@@ -144,10 +146,10 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>580</posX>
-      <posY>25</posY>
-      <height>64</height>
-      <width>128</width>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
       <visible>Player.Rewinding2x</visible>
       <texture>video-2xr.png</texture>
       <colorkey>0</colorkey>
@@ -159,10 +161,10 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>580</posX>
-      <posY>25</posY>
-      <height>64</height>
-      <width>128</width>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
       <visible>Player.Rewinding4x</visible>
       <texture>video-4xr.png</texture>
       <colorkey>0</colorkey>
@@ -174,10 +176,10 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>580</posX>
-      <posY>25</posY>
-      <height>64</height>
-      <width>128</width>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
       <visible>Player.Rewinding8x</visible>
       <texture>video-8xr.png</texture>
       <colorkey>0</colorkey>
@@ -189,10 +191,10 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>580</posX>
-      <posY>25</posY>
-      <height>64</height>
-      <width>128</width>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
       <visible>Player.Rewinding16x</visible>
       <texture>video-16xr.png</texture>
       <colorkey>0</colorkey>
@@ -204,41 +206,176 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>580</posX>
-      <posY>25</posY>
-      <height>64</height>
-      <width>128</width>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
       <visible>Player.Rewinding32x</visible>
       <texture>video-32xr.png</texture>
       <colorkey>0</colorkey>
       <colordiffuse>ffffffff</colordiffuse>
     </control>
 
-    <!-- Will only be visible after a seek, during FF/RW or when forced on -->
+    <!-- progressbar dialog -->
+
     <control>
-      <description>current time</description>
+      <description>Popup Seek Dialog Background</description>
+      <type>image</type>
+      <id>23</id>
+      <posX>474</posX>
+      <posY>42</posY>
+      <width>184</width>
+      <height>75</height>
+      <texture>voulume-panel-bg.png</texture>
+      <visible>Player.DisplayAfterSeek</visible>
+    </control>
+
+    <control>
+      <description>Seek Label</description>
       <type>label</type>
       <id>22</id>
-      <posX>210</posX>
-      <posY>520</posY>
-      <label>-</label>
-      <width>291</width>
-      <align>center</align>
-      <font>font12</font>
-      <textcolor>FFFFFFFF</textcolor>
+      <posX>563</posX>
+      <posY>60</posY>
+      <font>font10</font>
+      <align>right</align>
+      <info>VideoPlayer.Time</info>
+      <width>100</width>
+      <height>16</height>
+      <visible>Player.DisplayAfterSeek</visible>
     </control>
 
-    <!-- Will only be visible after a seek or during FF/RW -->
     <control>
-      <description>progress control</description>
+      <description>suffix label</description>
+      <type>label</type>
+      <id>22</id>
+      <posX>568</posX>
+      <posY>60</posY>
+      <label>/</label>
+      <align>left</align>
+      <font>font10</font>
+      <visible>Player.DisplayAfterSeek</visible>
+    </control>
+
+    <control>
+      <description>Duration Label</description>
+      <type>label</type>
+      <id>22</id>
+      <posX>577</posX>
+      <posY>60</posY>
+      <info>VideoPlayer.Duration</info>
+      <visible>Player.DisplayAfterSeek</visible>
+      <font>font10</font>
+      <align>left</align>
+      <width>100</width>
+      <height>16</height>
+    </control>
+
+    <control>
+      <description>progressbar </description>
       <type>progress</type>
       <id>23</id>
-      <posX>210</posX>
-      <posY>485</posY>
-      <visible>no</visible>
+      <posX>506</posX>
+      <posY>83</posY>
+      <width>128</width>
+      <height>5</height>
+      <info>Player.Progress</info>
+      <texturebg>progress_back.png</texturebg>
+      <lefttexture>progress_left.png</lefttexture>
+      <midtexture>progress_mid.png</midtexture>
+      <righttexture>progress_right.png</righttexture>
+      <overlaytexture>-</overlaytexture>
+      <visible>Player.DisplayAfterSeek</visible>
     </control>
 
-    <!-- Will only be visible during buffering -->
+    <!-- seekbar dialog -->
+
+    <control>
+      <description>Popup Seek Dialog Background</description>
+      <type>image</type>
+      <id>23</id>
+      <posX>474</posX>
+      <posY>42</posY>
+      <width>184</width>
+      <height>85</height>
+      <texture>voulume-panel-bg.png</texture>
+      <visible>Player.SeekBar</visible>
+    </control>
+
+    <control>
+      <description>Seek Label</description>
+      <type>label</type>
+      <id>22</id>
+      <posX>563</posX>
+      <posY>60</posY>
+      <font>font10</font>
+      <align>right</align>
+      <info>VideoPlayer.Time</info>
+      <width>100</width>
+      <height>16</height>
+      <visible>Player.SeekBar</visible>
+    </control>
+
+    <control>
+      <description>suffix label</description>
+      <type>label</type>
+      <id>22</id>
+      <posX>568</posX>
+      <posY>60</posY>
+      <label>/</label>
+      <align>left</align>
+      <font>font10</font>
+      <visible>Player.SeekBar</visible>
+    </control>
+
+    <control>
+      <description>Duration Label</description>
+      <type>label</type>
+      <id>22</id>
+      <posX>577</posX>
+      <posY>60</posY>
+      <info>VideoPlayer.Duration</info>
+      <visible>Player.SeekBar</visible>
+      <font>font10</font>
+      <align>left</align>
+      <width>100</width>
+      <height>16</height>
+    </control>
+
+    <control>
+      <description>progressbar </description>
+      <type>progress</type>
+      <id>23</id>
+      <posX>506</posX>
+      <posY>92</posY>
+      <width>128</width>
+      <height>3</height>
+      <info>Player.Progress</info>
+      <texturebg>progress_back.png</texturebg>
+      <lefttexture>progress_left.png</lefttexture>
+      <midtexture>progress_mid.png</midtexture>
+      <righttexture>progress_right.png</righttexture>
+      <overlaytexture>-</overlaytexture>
+      <visible>Player.Seekbar</visible>
+    </control>
+
+    <control>
+      <description>Seek Slider</description>
+      <type>slider</type>
+      <id>26</id>
+      <posX>506</posX>
+      <posY>82</posY>
+      <width>128</width>
+      <height>8</height>
+      <textureSliderBar>seekslider.png</textureSliderBar>
+      <textureSliderNib>slider_nibFO.png</textureSliderNib>
+      <textureSliderNibFocus>slider_nibFO.png</textureSliderNibFocus>
+      <visible>Player.SeekBar</visible>
+      <info>Player.SeekBar</info>
+      <width>290</width>
+      <height>34</height>
+    </control>
+
+    <!-- buffering dialog -->
     <control>
       <description>buffering label</description>
       <type>label</type>
@@ -251,7 +388,6 @@
       <font>font12</font>
       <textcolor>FFFFFFFF</textcolor>
     </control>
-
 
   </controls>
 
