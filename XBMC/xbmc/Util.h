@@ -183,7 +183,12 @@ static void CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath,
   //GeminiServer
   static bool IsLeapYear(int iLYear, int iLMonth, int iLTag, int &iMonMax, int &iWeekDay);
   static bool SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute);
-
+  static bool XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo );
+  static bool XboxAutoDetection();
+  static bool IsFTP(const CStdString& strFile);
+  static bool CmpNoCase(const char* str1, const char* str2);
+  static bool GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax );
+  static bool SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword);
 
 private:
   static bool m_bNetworkUp;

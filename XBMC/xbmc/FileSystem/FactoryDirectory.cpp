@@ -15,6 +15,8 @@
 #include "shoutcastdirectory.h"
 #include "zipdirectory.h"
 #include "rardirectory.h"
+#include "FTPDirectory.h"
+
 
 /*!
  \brief Create a IDirectory object of the share type specified in \e strPath .
@@ -76,6 +78,12 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   }
   if (strProtocol == "rar")
     return (IDirectory*)new CRarDirectory();
+  
+  if (strProtocol == "ftp")
+  {
+    return (IDirectory*)new CFTPDirectory();
+  }
+
 
   return (IDirectory*)new CHDDirectory();
 }
