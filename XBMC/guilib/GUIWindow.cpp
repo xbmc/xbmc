@@ -50,6 +50,7 @@ CGUIWindow::CGUIWindow(DWORD dwID)
   m_iOverlayAllowed = -1;   // Use parent or previous window's state
   m_WindowAllocated = false;
   m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
+  m_needsScaling = true;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -551,7 +552,7 @@ void CGUIWindow::Render()
   float fToHeight = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight;
   float fScaleX = fToWidth / fFromWidth;
   float fScaleY = fToHeight / fFromHeight;
-  bool bNeedsScaling = (m_coordsRes != g_graphicsContext.GetVideoResolution());
+  bool bNeedsScaling = m_needsScaling && (m_coordsRes != g_graphicsContext.GetVideoResolution());
 
   for (int i = 0; i < (int)m_vecControls.size(); i++)
   {

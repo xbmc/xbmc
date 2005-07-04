@@ -24,6 +24,7 @@ protected:
   void GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   void OnClick(int iItem);
   void OnPopupMenu(int iItem);
+  void OnRegenerateThumbs();
   void OnSort();
   void UpdateButtons();
   void ClearFileItems();
@@ -32,7 +33,6 @@ protected:
   void OnShowPicture(const CStdString& strPicture);
   void OnSlideShow(const CStdString& strPicture);
   void OnSlideShow();
-  bool OnCreateThumbs();
   bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
   void OnSlideShowRecursive(const CStdString& strPicture);
   void OnSlideShowRecursive();
@@ -41,10 +41,8 @@ protected:
   void SortItems(CFileItemList& items);
   void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   void SetHistoryForPath(const CStdString& strDirectory);
-  bool DoCreateFolderThumbs(CStdString &strFolder, int *iTotalItems, int *iCurrentItem, bool bRecurse);
-  void CreateFolderThumbs(bool bRecurse = false);
   void AddDir(CGUIWindowSlideShow *pSlideShow, const CStdString& strPath);
-  virtual void OnItemLoaded(CFileItem* pItem) {};
+  virtual void OnItemLoaded(CFileItem* pItem);
   CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems;
   CFileItem m_Directory;

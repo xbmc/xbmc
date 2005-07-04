@@ -61,12 +61,12 @@ bool CPicture::CreateThumbnail(const CStdString& strFileName)
 
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName)
 {
-  CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", strFileName.c_str(),strThumbFileName.c_str());
-  
   // don't create the thumb if it already exists
   if (CUtil::FileExists(strThumbFileName))
     return true;
 
+  CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", strFileName.c_str(),strThumbFileName.c_str());
+  
   // load our dll
   if (!LoadDLL()) return false;
 
@@ -167,6 +167,8 @@ void CPicture::CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs)
   if (!LoadDLL()) return;
   CStdString strFolderThumbnail;
   CUtil::GetThumbnail(strFolder, strFolderThumbnail);
+  if (CUtil::FileExists(strFolderThumbnail))
+    return;
   CStdString strThumbnails[4];
   const char *szThumbs[4];
   for (int i=0; i < 4; i++)
@@ -174,7 +176,10 @@ void CPicture::CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs)
     if (strThumbs[i].IsEmpty())
       strThumbnails[i] = "";
     else
+    {
+      CreateThumbnail(strThumbs[i]);
       CUtil::GetThumbnail(strThumbs[i], strThumbnails[i]);
+    }
     szThumbs[i] = strThumbnails[i].c_str();
   }
   if (!m_dll.CreateFolderThumbnail(szThumbs, strFolderThumbnail.c_str()))

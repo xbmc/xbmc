@@ -723,6 +723,13 @@ void CGUIWindowSlideShow::FreeResources()
 
 void CGUIWindowSlideShow::Add(const CStdString& strPicture)
 {
+  const char *test = strPicture.c_str();
+  int t = strPicture.size();
+  for (int i=0; i < t; i++)
+  {
+    char t = test[i];
+    t++;
+  }
   m_vecSlides.push_back(strPicture);
 }
 

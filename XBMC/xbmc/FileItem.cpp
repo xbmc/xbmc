@@ -548,7 +548,7 @@ void CFileItem::SetThumb()
   CStdString strThumb;
 
   // if it already has a thumbnail, then return
-  if (HasThumbnail())
+  if (HasThumbnail() || m_bIsShareOrDrive)
     return;
 
   //  No thumb for parent folder items

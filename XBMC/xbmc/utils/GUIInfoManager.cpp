@@ -42,6 +42,7 @@ extern char g_szTitleIP[32];
 //#define PLAYER_DISPLAY_AFTER_SEEK    21
 //#define PLAYER_PROGRESS              22
 //#define PLAYER_SEEKBAR               23
+//#define PLAYER_SEEKTIME              24
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -216,6 +217,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("player.displayafterseek")) ret = PLAYER_DISPLAY_AFTER_SEEK;
   else if (strTest.Equals("player.caching")) ret = PLAYER_CACHING;
   else if (strTest.Equals("player.seekbar")) ret = PLAYER_SEEKBAR;
+  else if (strTest.Equals("player.seektime")) ret = PLAYER_SEEKTIME;
   else if (strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
   else if (strTest.Equals("weather.conditions")) ret = WEATHER_CONDITIONS;
   else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
@@ -381,6 +383,11 @@ wstring CGUIInfoManager::GetLabel(int info)
         strLabel = strLabel.Left(strLabel.size() - 4);
         strLabel[0] = toupper(strLabel[0]);
       }
+    }
+    break;
+  case PLAYER_SEEKTIME:
+    {
+      strLabel = ((CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR))->GetSeekTimeLabel();
     }
     break;
   }

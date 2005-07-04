@@ -4,6 +4,7 @@
 
 CPictureThumbLoader::CPictureThumbLoader()
 {
+  m_regenerateThumbs = false;
 }
 
 CPictureThumbLoader::~CPictureThumbLoader()
@@ -12,8 +13,14 @@ CPictureThumbLoader::~CPictureThumbLoader()
 
 bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
 {
+  if (pItem->m_bIsShareOrDrive) return true;
   pItem->SetThumb();
-  if (!pItem->m_bIsFolder && !pItem->HasThumbnail())
+  if (m_regenerateThumbs && pItem->HasThumbnail())
+  {
+    CFile::Delete(pItem->GetThumbnailImage());
+    pItem->SetThumbnailImage("");
+  }
+  if (pItem->IsPicture() && !pItem->HasThumbnail())
   { // load the thumb from the image file
     CPicture pic;
     pic.CreateThumbnail(pItem->m_strPath);
@@ -26,3 +33,8 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   g_graphicsContext.Unlock();
   return true;
 };
+
+void CPictureThumbLoader::OnLoaderFinish()
+{
+  m_regenerateThumbs = false;
+}

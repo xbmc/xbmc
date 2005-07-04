@@ -18,7 +18,9 @@
 
 CGUIWindowSettingsScreenCalibration::CGUIWindowSettingsScreenCalibration(void)
     : CGUIWindow(0)
-{}
+{
+  m_needsScaling = false;         // we handle all the scaling
+}
 
 CGUIWindowSettingsScreenCalibration::~CGUIWindowSettingsScreenCalibration(void)
 {}

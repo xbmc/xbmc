@@ -128,10 +128,7 @@ void CGUIDialogSeekBar::Render()
   else
   {
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), POPUP_SEEK_LABEL);
-    int time = (int)(g_infoManager.GetTotalPlayTime() * m_fSeekPercentage * 0.01f);
-    CStdString strHMS;
-    CUtil::SecondsToHMSString(time, strHMS, g_application.IsPlayingVideo());
-    msg.SetLabel(strHMS);
+    msg.SetLabel(GetSeekTimeLabel());
     OnMessage(msg);
   }
   CGUIDialog::Render();
@@ -146,3 +143,10 @@ void CGUIDialogSeekBar::Render()
   }
 }
 
+CStdString CGUIDialogSeekBar::GetSeekTimeLabel()
+{
+  int time = (int)(g_infoManager.GetTotalPlayTime() * m_fSeekPercentage * 0.01f);
+  CStdString strHMS;
+  CUtil::SecondsToHMSString(time, strHMS, g_application.IsPlayingVideo());
+  return strHMS;
+}

@@ -260,6 +260,5 @@ static void DiscoveryCallback(const char *addr, const char *port, const char *ve
   pItem->m_bIsFolder = true;
   pItem->m_bIsShareOrDrive = true;
   pItem->SetIconImage("defaultNetwork.png");
-  pItem->SetThumbnailImage("defaultNetworkBig.png");
   c->items->Add(pItem);
 }

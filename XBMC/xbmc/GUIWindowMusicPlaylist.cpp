@@ -534,11 +534,13 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     }
   }
 
+  g_graphicsContext.Lock();
   // Remove default icons
   pItem->FreeIcons();
   // and reset thumbs and default icons
   pItem->SetMusicThumb();
   pItem->FillInDefaultIcon();
+  g_graphicsContext.Unlock();
 }
 
 void CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
