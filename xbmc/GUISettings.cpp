@@ -425,13 +425,24 @@ CGUISettings::CGUISettings(void)
   AddString(8, "Network.HTTPProxyPort", 707, "8080");
   AddBool(9, "Network.EnableInternet", 14054, true);
 
+  //GeminiServer
   AddCategory(6, "Servers", 14036);
-  AddBool(1, "Servers.FTPServer", 167, true);
-  AddBool(2, "Servers.FTPAutoFatX",771,true);
-  AddBool(3, "Servers.WebServer", 263, false);
-  AddString(4, "Servers.WebServerPort", 730, "80");
-  AddString(5, "Servers.WebServerPassword", 733, "", BUTTON_CONTROL_HIDDEN_INPUT, true);
+  AddBool(1,  "Servers.FTPServer",        167, true);
+  AddString(2,"Servers.FTPServerUser",    1245, "xbox", SPIN_CONTROL_TEXT);
+  AddString(3,"Servers.FTPServerPassword",1246, "xbox", BUTTON_CONTROL_HIDDEN_INPUT, true);
+  AddBool(4,  "Servers.FTPAutoFatX",      771, true);
+  AddBool(5,  "Servers.WebServer",        263, false);
+  AddString(6,"Servers.WebServerPort",    730, "80");
+  AddString(7,"Servers.WebServerPassword",733, "", BUTTON_CONTROL_HIDDEN_INPUT, true);
 
+  //GeminiServer
+  AddCategory(6,"Autodetect",           1250  );
+  AddBool(1,    "Autodetect.OnOff",     1251, true);
+  AddString(2,  "Autodetect.NickName",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT);
+  AddBool(3,    "Autodetect.CreateLink",1253, true);
+  AddBool(4,    "Autodetect.PopUpInfo", 1254, true);
+  AddBool(4,    "Autodetect.SendUserPw",1255, true);
+  
   //GeminiServer
   AddCategory(6, "Smb", 1200);
   AddInt(1,    "Smb.SimpAdvance", 1208,   1, 0, 1, 2, SPIN_CONTROL_TEXT);

@@ -1676,6 +1676,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\FileFactory.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\FileFTP.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileFTP.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\FileHD.cpp">
 			</File>
 			<File
@@ -1713,6 +1719,24 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\FileZip.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FTPDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FTPDirectory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FTPParse.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FTPParse.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FTPUtil.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FTPUtil.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\HDDirectory.cpp">

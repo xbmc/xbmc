@@ -890,7 +890,7 @@ XFSTATUS CXFUserImp::SetName(LPCTSTR Name)
 
 XFSTATUS CXFUserImp::SetPassword(LPCTSTR Password)
 {
-  if (_tcslen(Password) < 6)
+  if (_tcslen(Password) == 0)
     return XFS_INVALID_PARAMETERS;
 
   const char *tmp = Password;
