@@ -768,6 +768,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
           else
             m_iState = SHOW_SONGS;
           m_iPath += m_iState;
+          strNextPath += pItem->GetLabel() + "/";
         }
         break;
 
@@ -780,6 +781,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
           // clicked on "All Genres" ?
           if (strPath.IsEmpty())
             m_strGenre.Empty();
+          strNextPath += pItem->GetLabel() + "/";
         }
         break;
 
@@ -792,6 +794,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
           // clicked on "All Artists" ?
           if (strPath.IsEmpty())
             m_strArtist.Empty();
+          strNextPath += pItem->GetLabel() + "/";
         }
         break;
 
@@ -809,11 +812,14 @@ void CGUIWindowMusicNav::OnClick(int iItem)
             m_strAlbumPath.Empty();
           }
 
+          strNextPath += m_strAlbum;
+          if (!pItem->m_musicInfoTag.GetArtist().IsEmpty())
+            strNextPath += " - " + pItem->m_musicInfoTag.GetArtist();
+          strNextPath += "/";
         }
         break;
       }
     }
-    strNextPath += pItem->GetLabel() + "/";
     Update(strNextPath);
   }
   else

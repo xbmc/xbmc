@@ -296,14 +296,8 @@ void CGUIListControlEx::AllocResources()
   m_upDown.AllocResources();
 
   m_imgButton.AllocResources();
-  m_imgButton.SetWidth(m_dwWidth);
-  m_imgButton.SetHeight(m_iItemHeight);
-
-  float fActualItemHeight = (float)m_iItemHeight + (float)m_iSpaceBetweenItems;
-  float fTotalHeight = (float)(m_dwHeight - m_upDown.GetHeight() - 5);
-  m_iItemsPerPage = (int)(fTotalHeight / fActualItemHeight );
-  m_upDown.SetRange(1, 1);
-  m_upDown.SetValue(1);
+  SetWidth(m_dwWidth);
+  SetHeight(m_dwHeight);
 }
 
 void CGUIListControlEx::FreeResources()
@@ -588,4 +582,36 @@ bool CGUIListControlEx::CanFocus() const
   //  return false;
 
   return CGUIControl::CanFocus();
+}
+
+void CGUIListControlEx::SetPosition(int iPosX, int iPosY)
+{
+  // offset our spin control by the appropriate amount
+  int iSpinOffsetX = m_upDown.GetXPosition() - GetXPosition();
+  int iSpinOffsetY = m_upDown.GetYPosition() - GetYPosition();
+  CGUIControl::SetPosition(iPosX, iPosY);
+  m_upDown.SetPosition(GetXPosition() + iSpinOffsetX, GetYPosition() + iSpinOffsetY);
+}
+
+void CGUIListControlEx::SetWidth(int iWidth)
+{
+  int iSpinOffsetX = m_upDown.GetXPosition() - GetXPosition() - GetWidth();
+  CGUIControl::SetWidth(iWidth);
+  m_upDown.SetPosition(GetXPosition() + GetWidth() + iSpinOffsetX, m_upDown.GetYPosition());
+
+  m_imgButton.SetWidth(m_dwWidth);
+}
+
+void CGUIListControlEx::SetHeight(int iHeight)
+{
+  int iSpinOffsetY = m_upDown.GetYPosition() - GetYPosition() - GetHeight();
+  CGUIControl::SetHeight(iHeight);
+  m_upDown.SetPosition(m_upDown.GetXPosition(), GetYPosition() + GetHeight() + iSpinOffsetY);
+
+  m_imgButton.SetHeight(m_iItemHeight);
+  float fActualItemHeight = (float)m_iItemHeight + (float)m_iSpaceBetweenItems;
+  float fTotalHeight = (float)(m_dwHeight - m_upDown.GetHeight() - 5);
+  m_iItemsPerPage = (int)(fTotalHeight / fActualItemHeight );
+  m_upDown.SetRange(1, 1);
+  m_upDown.SetValue(1);
 }

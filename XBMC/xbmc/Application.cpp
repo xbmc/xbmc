@@ -3504,30 +3504,30 @@ bool CApplication::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_EXECUTE:
     { // user has asked for something to be executed
-      CFileItem item(message.GetStringParam(), false);
-
-      if (item.IsPythonScript())
-      { // a python script
-        g_pythonParser.evalFile(item.m_strPath.c_str());
-      }
-      else if (item.IsXBE())
-      { // an XBE
-        CUtil::RunXBE(item.m_strPath.c_str());
-      }
-      else if (item.IsAudio() || item.IsVideo())
-      { // an audio or video file
-        PlayFile(item);
-        if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-        {
-          SwitchToFullScreen();
-        }
-      }
-      else if (CUtil::IsBuiltIn(item.m_strPath))
-      {
-        CUtil::ExecBuiltIn(item.m_strPath);
-      }
+      if (CUtil::IsBuiltIn(message.GetStringParam()))
+        CUtil::ExecBuiltIn(message.GetStringParam());
       else
-        return false;
+      {
+        CFileItem item(message.GetStringParam(), false);
+        if (item.IsPythonScript())
+        { // a python script
+          g_pythonParser.evalFile(item.m_strPath.c_str());
+        }
+        else if (item.IsXBE())
+        { // an XBE
+          CUtil::RunXBE(item.m_strPath.c_str());
+        }
+        else if (item.IsAudio() || item.IsVideo())
+        { // an audio or video file
+          PlayFile(item);
+          if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+          {
+            SwitchToFullScreen();
+          }
+        }
+        else
+          return false;
+      }
       return true;
     }
   }
