@@ -675,9 +675,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
     }
   }
 
-  if (m_gWindowManager.IsRouted() || m_gWindowManager.IsModelessAvailable())
-    m_gWindowManager.RenderDialogs();
-
   if (m_bOSDVisible)
   {
     // tell the OSD window to draw itself
@@ -685,7 +682,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
     g_application.m_guiWindowOSD.Render();
     // Render the mouse pointer, if visible...
     if (g_Mouse.IsActive()) g_application.m_guiPointer.Render();
-    return ;
+    goto renderDialogs;
   }
 
   RenderTTFSubtitles();
@@ -696,7 +693,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
     {
       m_bShowTime = false;
       m_iTimeCodePosition = 0;
-      return ;
+      goto renderDialogs;
     }
     bRenderGUI = true;
     CStdString strDispTime = "??:??";
@@ -752,6 +749,9 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
   // and lastly render the mouse pointer...
   if (g_Mouse.IsActive()) g_application.m_guiPointer.Render();
+renderDialogs:
+  if (m_gWindowManager.IsRouted() || m_gWindowManager.IsModelessAvailable())
+    m_gWindowManager.RenderDialogs();
 }
 
 void CGUIWindowFullScreen::RenderTTFSubtitles()
