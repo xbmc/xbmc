@@ -41,6 +41,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
   virtual void SetPosition(int iPosX, int iPosY);
+  virtual void SetPulseOnSelect(bool pulse);
   virtual bool HitTest(int iPosX, int iPosY) const;
 
   virtual bool CanFocus() const;

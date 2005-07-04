@@ -35,6 +35,7 @@ void CGUIToggleButtonControl::Render()
     m_selectButton.SetFocus(HasFocus());
     m_selectButton.SetVisible(IsVisible());
     m_selectButton.SetEnabled(!IsDisabled());
+    m_selectButton.SetPulseOnSelect(GetPulseOnSelect());
     m_selectButton.Render();
   }
   else

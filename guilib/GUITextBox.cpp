@@ -402,3 +402,9 @@ void CGUITextBox::SetHeight(int iHeight)
   m_upDown.SetRange(1, iPages);
   m_upDown.SetValue(1);
 }
+
+void CGUITextBox::SetPulseOnSelect(bool pulse)
+{
+  m_upDown.SetPulseOnSelect(pulse);
+  CGUIControl::SetPulseOnSelect(pulse);
+}
