@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-07-2005 fixed: Video OSD open/close crash.
  - 05-07-2005 changed: Default <colorkey> changed to zero.  (Makes more sense)
  - 05-07-2005 changed: Order of context menu items.
  - 04-07-2005 added: Xbox2Xbox Copy! Well this feature is: Autodetection+FTP Client! ;) [GeminiServer]

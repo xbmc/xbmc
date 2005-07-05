@@ -125,8 +125,8 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   {
     if (action.wID == ACTION_SHOW_OSD && !g_application.m_guiWindowOSD.SubMenuVisible())  // hide the OSD
     {
-      CSingleLock lock (m_section);
       OutputDebugString("CGUIWindowFullScreen::HIDEOSD\n");
+      CSingleLock lock (m_section);
       CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0, NULL);
       g_application.m_guiWindowOSD.OnMessage(msg);  // Send a de-init msg to the OSD
       m_bOSDVisible = false;
@@ -680,8 +680,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
     // tell the OSD window to draw itself
     CSingleLock lock (m_section);
     g_application.m_guiWindowOSD.Render();
-    // Render the mouse pointer, if visible...
-    if (g_Mouse.IsActive()) g_application.m_guiPointer.Render();
     goto renderDialogs;
   }
 
@@ -747,11 +745,11 @@ void CGUIWindowFullScreen::RenderFullScreen()
     }
     CGUIWindow::Render();
   }
-  // and lastly render the mouse pointer...
-  if (g_Mouse.IsActive()) g_application.m_guiPointer.Render();
 renderDialogs:
   if (m_gWindowManager.IsRouted() || m_gWindowManager.IsModelessAvailable())
     m_gWindowManager.RenderDialogs();
+  // Render the mouse pointer, if visible...
+  if (g_Mouse.IsActive()) g_application.m_guiPointer.Render();
 }
 
 void CGUIWindowFullScreen::RenderTTFSubtitles()
