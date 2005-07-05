@@ -248,7 +248,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   CStdString strTextureBg, strLeft, strRight, strMid, strMidFocus, strOverlay;
   CStdString strLeftFocus, strRightFocus;
   CStdString strTexture;
-  DWORD dwColorKey = 0xffffffff;
+  DWORD dwColorKey = 0;
   DWORD dwSelectedColor;
   CStdString strButton, strButtonFocus;
   CStdString strSuffix = "";
