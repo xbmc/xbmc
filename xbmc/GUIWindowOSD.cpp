@@ -181,14 +181,11 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:  // fired when OSD is hidden
     {
-      OutputDebugString("OSD:DEINIT\n");
-      // lock our display as these effect our controls, and we're rendering from
-      // a separate thread
-      g_graphicsContext.Lock();
+      // no need to lock the graphics context here, as we already grab a lock in GUIWindowFullScreen
+      // whenever we need to render.
       ClearAudioStreamItems();
       ClearSubTitleItems();
       ClearBookmarkItems();
-      g_graphicsContext.Unlock();
       //hide the OSD
       HIDE_CONTROL(GetID(), GetID());
       //if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
@@ -1073,7 +1070,6 @@ void CGUIWindowOSD::PopulateSubTitles()
 
 void CGUIWindowOSD::ClearSubTitleItems()
 {
-  CLog::DebugLog("Clearing SubItems");
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), OSD_SUBTITLE_LIST, 0, 0, NULL);
   OnMessage(msg);
 
@@ -1084,7 +1080,6 @@ void CGUIWindowOSD::ClearSubTitleItems()
   }
 
   m_vecSubTitlesItems.erase(m_vecSubTitlesItems.begin(), m_vecSubTitlesItems.end());
-  CLog::DebugLog("Clearing SubItems Done");
 }
 
 void CGUIWindowOSD::Reset()
