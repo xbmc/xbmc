@@ -340,7 +340,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("mypictures")) wWindowID = WINDOW_PICTURES;
   else if (strWindow.Equals("myfiles")) wWindowID = WINDOW_FILES;
   else if (strWindow.Equals("settings")) wWindowID = WINDOW_SETTINGS_MENU;
-  else if (strWindow.Equals("mymusic")) wWindowID = WINDOW_MUSIC;
+  else if (strWindow.Equals("mymusic")) wWindowID = WINDOW_MUSIC_FILES;
   else if (strWindow.Equals("myvideos")) wWindowID = WINDOW_VIDEOS;
   else if (strWindow.Equals("systeminfo")) wWindowID = WINDOW_SYSTEM_INFORMATION;
   else if (strWindow.Equals("guicalibration")) wWindowID = WINDOW_UI_CALIBRATION;
@@ -359,7 +359,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("myvideoyears")) wWindowID = WINDOW_VIDEO_YEAR;
   else if (strWindow.Equals("myvideotitles")) wWindowID = WINDOW_VIDEO_TITLE;
   else if (strWindow.Equals("myvideoplaylist")) wWindowID = WINDOW_VIDEO_PLAYLIST;
-
+  else if (strWindow.Equals("profiles")) wWindowID = WINDOW_SETTINGS_PROFILES;
   else if (strWindow.Equals("yesnodialog")) wWindowID = WINDOW_DIALOG_YES_NO;
   else if (strWindow.Equals("progressdialog")) wWindowID = WINDOW_DIALOG_PROGRESS;
   else if (strWindow.Equals("invitedialog")) wWindowID = WINDOW_DIALOG_INVITE;
