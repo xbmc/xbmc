@@ -467,8 +467,8 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 
     UpdateButtons();
   }
-  
-//  m_thumbLoader.Load(m_vecItems);
+
+  m_thumbLoader.Load(m_vecItems);
 }
 
 void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
