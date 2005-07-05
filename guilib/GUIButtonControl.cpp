@@ -25,7 +25,6 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iP
   m_pFont = NULL;
   m_lHyperLinkWindowID = WINDOW_INVALID;
   m_strExecuteAction = "";
-  m_bPulsing = true;
   ControlType = GUICONTROL_BUTTON;
 }
 
