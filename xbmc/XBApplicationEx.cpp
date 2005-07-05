@@ -319,6 +319,15 @@ inline float DeadZone(float &f)
     return 0.0f;
 }
 
+inline float MaxTrigger(XBGAMEPAD &gamepad)
+{
+  float max = fabs(gamepad.fX1);
+  if (fabs(gamepad.fX2) > max) max = fabs(gamepad.fX2);
+  if (fabs(gamepad.fY1) > max) max = fabs(gamepad.fY1);
+  if (fabs(gamepad.fY2) > max) max = fabs(gamepad.fY2);
+  return max;
+}
+
 void CXBApplicationEx::ReadInput()
 {
   //-----------------------------------------
@@ -350,33 +359,20 @@ void CXBApplicationEx::ReadInput()
   // This is done so apps that need only one gamepad can function with
   // any gamepad.
   ZeroMemory( &m_DefaultGamepad, sizeof(m_DefaultGamepad) );
-  INT nThumbLX = 0;
-  INT nThumbLY = 0;
-  INT nThumbRX = 0;
-  INT nThumbRY = 0;
 
+  float maxTrigger = 0.0f;
   for ( DWORD i = 0; i < 4; i++ )
   {
     if ( m_Gamepad[i].hDevice )
     {
-      // Only account for thumbstick info beyond the deadzone
-      if ( m_Gamepad[i].sThumbLX > XINPUT_DEADZONE ||
-           m_Gamepad[i].sThumbLX < -XINPUT_DEADZONE )
-        nThumbLX += m_Gamepad[i].sThumbLX;
-      if ( m_Gamepad[i].sThumbLY > XINPUT_DEADZONE ||
-           m_Gamepad[i].sThumbLY < -XINPUT_DEADZONE )
-        nThumbLY += m_Gamepad[i].sThumbLY;
-      if ( m_Gamepad[i].sThumbRX > XINPUT_DEADZONE ||
-           m_Gamepad[i].sThumbRX < -XINPUT_DEADZONE )
-        nThumbRX += m_Gamepad[i].sThumbRX;
-      if ( m_Gamepad[i].sThumbRY > XINPUT_DEADZONE ||
-           m_Gamepad[i].sThumbRY < -XINPUT_DEADZONE )
-        nThumbRY += m_Gamepad[i].sThumbRY;
-
-      m_DefaultGamepad.fX1 += m_Gamepad[i].fX1;
-      m_DefaultGamepad.fY1 += m_Gamepad[i].fY1;
-      m_DefaultGamepad.fX2 += m_Gamepad[i].fX2;
-      m_DefaultGamepad.fY2 += m_Gamepad[i].fY2;
+      if (maxTrigger < MaxTrigger(m_Gamepad[i]))
+      {
+        maxTrigger = MaxTrigger(m_Gamepad[i]);
+        m_DefaultGamepad.fX1 = m_Gamepad[i].fX1;
+        m_DefaultGamepad.fY1 = m_Gamepad[i].fY1;
+        m_DefaultGamepad.fX2 = m_Gamepad[i].fX2;
+        m_DefaultGamepad.fY2 = m_Gamepad[i].fY2;
+      }
       m_DefaultGamepad.wButtons |= m_Gamepad[i].wButtons;
       m_DefaultGamepad.wPressedButtons |= m_Gamepad[i].wPressedButtons;
       m_DefaultGamepad.wLastButtons |= m_Gamepad[i].wLastButtons;
@@ -389,12 +385,6 @@ void CXBApplicationEx::ReadInput()
       }
     }
   }
-
-  // Clamp summed thumbstick values to proper range
-  m_DefaultGamepad.sThumbLX = SHORT( nThumbLX );
-  m_DefaultGamepad.sThumbLY = SHORT( nThumbLY );
-  m_DefaultGamepad.sThumbRX = SHORT( nThumbRX );
-  m_DefaultGamepad.sThumbRY = SHORT( nThumbRY );
 
   // Secure the deadzones of the analog sticks
   m_DefaultGamepad.fX1 = DeadZone(m_DefaultGamepad.fX1);

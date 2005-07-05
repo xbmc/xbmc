@@ -992,13 +992,13 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btn_Now_Playing   = pMenu->AddButton(13350); // Now Playing...
   int btn_Query         = pMenu->AddButton(13349); // Query Info For All Files
   int btn_Search_IMDb   = pMenu->AddButton(13348); // Search IMDb...
-  int btn_Settings      = pMenu->AddButton(5);     // Settings
-  int btn_Delete = pMenu->AddButton(117);          // Delete
-
   // dvd player placeholder
   int btn_DVD = 0;
   if(bEnabledDVD)
     btn_DVD = pMenu->AddButton(15213);
+  int btn_Delete        = pMenu->AddButton(117);          // Delete
+  int btn_Settings      = pMenu->AddButton(5);     // Settings
+
 
   // check to see if the Resume Video button is applicable
   pMenu->EnableButton(btn_Resume, ResumeItemOffset(iItem)>0);

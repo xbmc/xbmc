@@ -468,7 +468,7 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
     UpdateButtons();
   }
   
-  m_thumbLoader.Load(m_vecItems);
+//  m_thumbLoader.Load(m_vecItems);
 }
 
 void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
@@ -940,13 +940,13 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     // clean any buttons not needed
     pMenu->ClearButtons();
     // add the needed buttons
-    pMenu->AddButton(13315); // Create Thumbnails
     pMenu->AddButton(13317); // View Slideshow
-    if (m_thumbLoader.IsLoading())
-      pMenu->EnableButton(1, false);
-    if (m_vecItems.GetFileCount() == 0)
-      pMenu->EnableButton(3, false);
     pMenu->AddButton(13318); // Recursive Slideshow
+    pMenu->AddButton(13315); // Create Thumbnails
+    if (m_vecItems.GetFileCount() == 0)
+      pMenu->EnableButton(1, false);
+    if (m_thumbLoader.IsLoading())
+      pMenu->EnableButton(3, false);
     pMenu->AddButton(5);   // "Settings"
 
     // position it correctly
@@ -954,16 +954,16 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     pMenu->DoModal(GetID());
     switch (pMenu->GetButton())
     {
-    case 1:  // Create thumb(s)
-      OnRegenerateThumbs();
-      break;
-    case 2:  // slideshow
+    case 1:  // slideshow
       OnSlideShow(m_vecItems[iItem]->m_strPath);
       return ;
       break;
-    case 3:  // recursive slideshow
+    case 2:  // recursive slideshow
       OnSlideShowRecursive(m_vecItems[iItem]->m_strPath);
       return ;
+      break;
+    case 3:  // Create thumb(s)
+      OnRegenerateThumbs();
       break;
     case 4:  // go to pictures settings
       m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
