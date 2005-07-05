@@ -212,7 +212,7 @@
 #define WINDOW_PICTURES               10002
 #define WINDOW_FILES                  10003
 #define WINDOW_SETTINGS_MENU          10004
-#define WINDOW_MUSIC                  10005
+//#define WINDOW_MUSIC                  10005
 #define WINDOW_VIDEOS                 10006
 #define WINDOW_SYSTEM_INFORMATION     10007
 #define WINDOW_UI_CALIBRATION         10010
@@ -239,6 +239,8 @@
 #define WINDOW_VIDEO_TITLE            10025
 #define WINDOW_VIDEO_PLAYLIST         10028
 
+#define WINDOW_SETTINGS_PROFILES      10034
+
 #define WINDOW_DIALOG_YES_NO          10100
 #define WINDOW_DIALOG_PROGRESS        10101
 #define WINDOW_DIALOG_INVITE          10102
@@ -264,7 +266,7 @@
 #define WINDOW_MUSIC_NAV              10502
 #define WINDOW_MUSIC_TOP100           10503
 
-#define WINDOW_VIRTUAL_KEYBOARD       11000
+//#define WINDOW_VIRTUAL_KEYBOARD       11000
 #define WINDOW_DIALOG_SELECT          12000
 #define WINDOW_MUSIC_INFO             12001
 #define WINDOW_DIALOG_OK              12002
