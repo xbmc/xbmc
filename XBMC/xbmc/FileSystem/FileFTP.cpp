@@ -144,7 +144,7 @@ __int64 CFileFTP::Seek(__int64 iFilePosition, int iWhence)
 	sprintf(cmd,"REST %s",szOffset);
 	FTPUtil.sendrecCMD(cmd,result);
 	sprintf(cmd,"RETR %s",m_filename);
-    FTPUtil.sendrecCMD(cmd,result);
+  FTPUtil.sendrecCMD(cmd,result);
 	if (FTPUtil.CMDerr(result))
 	{
 		FTPUtil.sendrecCMD("ABOR",result);
