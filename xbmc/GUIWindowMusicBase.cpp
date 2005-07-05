@@ -1376,14 +1376,14 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   pMenu->ClearButtons();
   // add the needed buttons
   pMenu->AddButton(13351);    // 1: Music Information
-  pMenu->AddButton(13347);    // 2: Queue Item
-  pMenu->AddButton(13358);    // 3: Play Item
+  pMenu->AddButton(13358);    // 2: Play Item
+  pMenu->AddButton(13347);    // 3: Queue Item
   pMenu->AddButton(13350);    // 4: Now Playing...
-  pMenu->AddButton(137);      // 5: Search...
   if (g_application.m_guiDialogMusicScan.IsRunning())
-    pMenu->AddButton(13353);  // 6: Stop Scanning
+    pMenu->AddButton(13353);  // 5: Stop Scanning
   else
-    pMenu->AddButton(13352);  // 6: Scan Folder to Database
+    pMenu->AddButton(13352);  // 5: Scan Folder to Database
+  pMenu->AddButton(137);      // 6: Search...
   pMenu->AddButton(600);      // 7: Rip CD Audio
   pMenu->AddButton(5);        // 8: Settings...
 
@@ -1400,7 +1400,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     pMenu->EnableButton(4, false);
   // turn off the Scan button if we're not in files view or a internet stream
   if (GetID() != WINDOW_MUSIC_FILES || m_Directory.IsInternetStream())
-    pMenu->EnableButton(6, false);
+    pMenu->EnableButton(5, false);
   // turn off Rip CD Audio button if we don't have a CDDA disk in
   CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
   if (!CDetectDVDMedia::IsDiscInDrive() || !pCdInfo || !pCdInfo->IsAudio(1))
@@ -1413,21 +1413,21 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   case 1:  // Music Information
     OnInfo(iItem);
     break;
-  case 2:  // Queue Item
-    OnQueueItem(iItem);
-    break;
-  case 3:  // Play Item
+  case 2:  // Play Item
     PlayItem(iItem);
+    break;
+  case 3:  // Queue Item
+    OnQueueItem(iItem);
     break;
   case 4:  // Now Playing...
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     return;
     break;
-  case 5:  // Search
-    OnSearch();
-    break;
-  case 6:  // Scan...
+  case 5:  // Scan...
     OnScan();
+    break;
+  case 6:  // Search
+    OnSearch();
     break;
   case 7:  // Rip CD...
     OnRipCD();

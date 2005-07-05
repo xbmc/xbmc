@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-07-2005 changed: Order of context menu items.
  - 04-07-2005 added: Xbox2Xbox Copy! Well this feature is: Autodetection+FTP Client! ;) [GeminiServer]
  - 04-07-2005 added: XBMC FTP Client [GeminiServer]
                      This is a Simple FTP Client for XBMC [based on 1179655].You can connect to all FTP Servers in LAN and Internet!
