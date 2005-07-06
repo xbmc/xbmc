@@ -7,7 +7,8 @@
 
 CGUIDialogButtonMenu::CGUIDialogButtonMenu(void)
     : CGUIDialog(0)
-{}
+{
+}
 
 CGUIDialogButtonMenu::~CGUIDialogButtonMenu(void)
 {}

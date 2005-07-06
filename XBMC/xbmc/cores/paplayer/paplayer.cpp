@@ -642,7 +642,7 @@ void PAPlayer::HandleSeeking()
     m_bytesSentOut = 0;
     m_SeekTime = -1;
   }
-  g_infoManager.m_bPerformingSeek = false;
+  g_infoManager.m_performingSeek = false;
 }
 
 void PAPlayer::FlushStreams()

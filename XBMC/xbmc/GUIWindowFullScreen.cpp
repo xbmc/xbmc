@@ -188,6 +188,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     m_bShowCurrentTime = !m_bShowCurrentTime;
     if(!m_bShowCurrentTime)
       g_infoManager.SetDisplayAfterSeek(0); //Force display off
+    g_infoManager.SetShowTime(m_bShowCurrentTime);
     return true;
     break;
 

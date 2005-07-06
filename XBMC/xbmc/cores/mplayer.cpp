@@ -1733,7 +1733,7 @@ void CMPlayer::SetAudioStream(int iStream)
 void CMPlayer::SeekTime(__int64 iTime)
 {
   mplayer_setTimeMs(iTime);
-  g_infoManager.m_bPerformingSeek = false;
+  g_infoManager.m_performingSeek = false;
 
   //We are in the normal mplayer thread, return as otherwise we would
   //hardlock waiting for those events
