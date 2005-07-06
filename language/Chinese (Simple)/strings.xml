@@ -27,6 +27,8 @@
   <string><id>30</id><value>十月</value></string>
   <string><id>31</id><value>十一月</value></string>
   <string><id>32</id><value>十二月</value></string>
+  <string><id>98</id><value>显示：自动</value></string>
+  <string><id>99</id><value>显示：自动大图标</value></string>
   <string><id>100</id><value>显示：图标</value></string>
   <string><id>101</id><value>显示：列表</value></string>
   <string><id>102</id><value>扫描</value></string>
@@ -40,8 +42,8 @@
   <string><id>110</id><value>创建缩略图</value></string>
   <string><id>111</id><value>快捷</value></string>
   <string><id>112</id><value>暂停</value></string>
-  <string><id>113</id><value>我的文件 : 源</value></string>
-  <string><id>114</id><value>我的文件 : 目标</value></string>
+  <string><id>113</id><value>我的文件 ： 源</value></string>
+  <string><id>114</id><value>我的文件 ： 目标</value></string>
   <string><id>115</id><value>复制</value></string>
   <string><id>116</id><value>移动</value></string>
   <string><id>117</id><value>删除</value></string>
@@ -50,9 +52,9 @@
   <string><id>120</id><value>确认文件复制</value></string>
   <string><id>121</id><value>确认文件移动</value></string>
   <string><id>122</id><value>确认文件删除</value></string>
-  <string><id>123</id><value>复制这些文件?</value></string>
-  <string><id>124</id><value>移动这些文件?</value></string>
-  <string><id>125</id><value>删除这些文件?</value></string>
+  <string><id>123</id><value>复制这些文件？</value></string>
+  <string><id>124</id><value>移动这些文件？</value></string>
+  <string><id>125</id><value>删除这些文件？</value></string>
   <string><id>126</id><value>状态</value></string>
   <string><id>127</id><value>对象</value></string>
   <string><id>128</id><value>一般设置</value></string>
@@ -66,19 +68,19 @@
   <string><id>136</id><value>播放列表</value></string>
   <string><id>137</id><value>查找</value></string>
   <string><id>138</id><value>系统信息</value></string>
-  <string><id>139</id><value>温度:</value></string>
-  <string><id>140</id><value>中央处理器温度:</value></string>
-  <string><id>141</id><value>图形处理器温度:</value></string>
-  <string><id>142</id><value>时间:</value></string>
-  <string><id>143</id><value>当前:</value></string>
-  <string><id>144</id><value>版本:</value></string>
-  <string><id>145</id><value>网络:</value></string>
-  <string><id>146</id><value>类型:</value></string>
+  <string><id>139</id><value>温度：</value></string>
+  <string><id>140</id><value>中央处理器温度：</value></string>
+  <string><id>141</id><value>图形处理器温度：</value></string>
+  <string><id>142</id><value>时间：</value></string>
+  <string><id>143</id><value>当前：</value></string>
+  <string><id>144</id><value>版本：</value></string>
+  <string><id>145</id><value>网络：</value></string>
+  <string><id>146</id><value>类型：</value></string>
   <string><id>147</id><value>手动(Static)</value></string>
   <string><id>148</id><value>自动(DHCP)</value></string>
   <string><id>149</id><value>网卡(MAC)地址</value></string>
   <string><id>150</id><value>IP地址</value></string>
-  <string><id>151</id><value>连接: </value></string>
+  <string><id>151</id><value>连接： </value></string>
   <string><id>152</id><value>半双工</value></string>
   <string><id>153</id><value>全双工</value></string>
   <string><id>154</id><value>存储器</value></string>
@@ -97,15 +99,15 @@
   <string><id>167</id><value>FTP 服务器</value></string>
   <string><id>168</id><value>自动与时间服务器同步</value></string>
   <string><id>169</id><value>分辨率</value></string>
-  <string><id>170</id><value>专辑:</value></string>
-  <string><id>171</id><value>艺术家:</value></string>
-  <string><id>172</id><value>版本时间:</value></string>
-  <string><id>173</id><value>等级:</value></string>
-  <string><id>174</id><value>流派:</value></string>
-  <string><id>175</id><value>音调:</value></string>
-  <string><id>176</id><value>格式:</value></string>
-  <string><id>177</id><value>回顾:</value></string>
-  <string><id>178</id><value>音轨:</value></string>
+  <string><id>170</id><value>专辑：</value></string>
+  <string><id>171</id><value>艺术家：</value></string>
+  <string><id>172</id><value>版本时间：</value></string>
+  <string><id>173</id><value>等级：</value></string>
+  <string><id>174</id><value>流派：</value></string>
+  <string><id>175</id><value>音调：</value></string>
+  <string><id>176</id><value>格式：</value></string>
+  <string><id>177</id><value>回顾：</value></string>
+  <string><id>178</id><value>音轨：</value></string>
   <string><id>179</id><value>歌曲</value></string>
   <string><id>180</id><value>持续时间</value></string>
   <string><id>181</id><value>选择专辑</value></string>
@@ -114,26 +116,26 @@
   <string><id>184</id><value>刷新</value></string>
   <string><id>185</id><value>查找专辑</value></string>
   <string><id>186</id><value>确定</value></string>
-  <string><id>187</id><value>无专辑找到!</value></string>
+  <string><id>187</id><value>没有找到专辑！</value></string>
   <string><id>188</id><value>全部选择</value></string>
   <string><id>189</id><value>查找媒体信息</value></string>
   <string><id>190</id><value>保存</value></string>
   <string><id>191</id><value>随机</value></string>
   <string><id>192</id><value>清除</value></string>
   <string><id>193</id><value>扫描</value></string>
-  <string><id>194</id><value>查找...</value></string>
-  <string><id>195</id><value>没有发现IMDb信息</value></string>
-  <string><id>196</id><value>选择影片:</value></string>
+  <string><id>194</id><value>查找…</value></string>
+  <string><id>195</id><value>没有发现IMDb信息！</value></string>
+  <string><id>196</id><value>选择影片：</value></string>
   <string><id>197</id><value>读取IMDb信息</value></string>
   <string><id>198</id><value>读取影片详细资料</value></string>
-  <string><id>199</id><value>导演:</value></string>
-  <string><id>200</id><value>编剧:</value></string>
-  <string><id>201</id><value>年:</value></string>
-  <string><id>202</id><value>标语:</value></string>
-  <string><id>203</id><value>剧情大纲:</value></string>
-  <string><id>204</id><value>评分:</value></string>
-  <string><id>2050</id><value>时长:</value></string>
-  <string><id>205</id><value>得票:</value></string>
+  <string><id>199</id><value>导演：</value></string>
+  <string><id>200</id><value>编剧：</value></string>
+  <string><id>201</id><value>年：</value></string>
+  <string><id>202</id><value>标语：</value></string>
+  <string><id>203</id><value>剧情大纲：</value></string>
+  <string><id>204</id><value>评分：</value></string>
+  <string><id>2050</id><value>时长：</value></string>
+  <string><id>205</id><value>得票：</value></string>
   <string><id>206</id><value>演员表</value></string>
   <string><id>207</id><value>剧情简介</value></string>
   <string><id>208</id><value>播放</value></string>
@@ -168,7 +170,7 @@
   <string><id>237</id><value>缩小</value></string>
   <string><id>238</id><value>放大</value></string>
   <string><id>239</id><value>播放完成后清除列表</value></string>
-  <string><id>240</id><value>自动运行 DVD-Video</value></string>
+  <string><id>240</id><value>自动运行 DVD-视频</value></string>
   <string><id>241</id><value>自动运行 VCD/SVCD</value></string>
   <string><id>242</id><value>自动运行 Audio-CD</value></string>
   <string><id>243</id><value>自动运行 XBOX 游戏</value></string>
@@ -189,7 +191,7 @@
   <string><id>258</id><value>开启ID3标签</value></string>
   <string><id>259</id><value>开始</value></string>
   <string><id>260</id><value>快捷</value></string>
-  <string><id>261</id><value>等待开始....</value></string>
+  <string><id>261</id><value>等待开始….</value></string>
   <string><id>262</id><value>脚本输出</value></string>
   <string><id>263</id><value>HTTP 服务器</value></string>
   <string><id>264</id><value>录音</value></string>
@@ -241,26 +243,26 @@
   <string><id>311</id><value>导数</value></string>
   <string><id>312</id><value>(0=auto)</value></string>
   <string><id>313</id><value>编制数据库</value></string>
-  <string><id>314</id><value>准备...</value></string>
+  <string><id>314</id><value>准备…</value></string>
   <string><id>315</id><value>数据库错误</value></string>
-  <string><id>316</id><value>查找歌曲中...</value></string>
+  <string><id>316</id><value>查找歌曲中…</value></string>
   <string><id>317</id><value>编制成功</value></string>
   <string><id>318</id><value>标记删除的歌曲</value></string>
   <string><id>319</id><value>编制歌曲错误</value></string>
-  <string><id>320</id><value>查找艺术家中...</value></string>
+  <string><id>320</id><value>查找艺术家中…</value></string>
   <string><id>321</id><value>编制艺术家错误</value></string>
-  <string><id>322</id><value>查找流派中...</value></string>
+  <string><id>322</id><value>查找流派中…</value></string>
   <string><id>323</id><value>编制流派错误</value></string>
-  <string><id>324</id><value>查找路径...</value></string>
+  <string><id>324</id><value>查找路径…</value></string>
   <string><id>325</id><value>编制路径错误</value></string>
-  <string><id>326</id><value>查找专辑中...</value></string>
+  <string><id>326</id><value>查找专辑中…</value></string>
   <string><id>327</id><value>编制专辑错误</value></string>
-  <string><id>328</id><value>写入中...</value></string>
+  <string><id>328</id><value>写入中…</value></string>
   <string><id>329</id><value>写入错误</value></string>
-  <string><id>330</id><value>这需要一些时间...</value></string>
-  <string><id>331</id><value>压缩数据库中...</value></string>
+  <string><id>330</id><value>这需要一些时间…</value></string>
+  <string><id>331</id><value>压缩数据库中…</value></string>
   <string><id>332</id><value>压缩数据库错误</value></string>
-  <string><id>333</id><value>你想要编制我的音乐库?</value></string>
+  <string><id>333</id><value>你想要编制我的音乐库？</value></string>
   <string><id>334</id><value>编制我的音乐库</value></string>
   <string><id>335</id><value>开始</value></string>
   <string><id>336</id><value>校正桢数</value></string>
@@ -337,11 +339,11 @@
   <string><id>407</id><value>风向</value></string>
   <string><id>408</id><value>风速</value></string>
   <string><id>410</id><value>访问Weather.com</value></string>
-  <string><id>411</id><value>取得天气:</value></string>
+  <string><id>411</id><value>取得天气：</value></string>
   <string><id>412</id><value>不能获得天气数据</value></string>
   <string><id>413</id><value>指南</value></string>
   <string><id>414</id><value>此专辑无评论</value></string>
-  <string><id>415</id><value>正在下载缩略图...</value></string>
+  <string><id>415</id><value>正在下载缩略图…</value></string>
   <string><id>416</id><value>不可用</value></string>
   <string><id>417</id><value>显示：大图标</value></string>
   <string><id>418</id><value>我的视频/流派</value></string>
@@ -351,19 +353,19 @@
   <string><id>422</id><value>删除专辑信息</value></string>
   <string><id>423</id><value>删除 CDDB 信息</value></string>
   <string><id>424</id><value>选择</value></string>
-  <string><id>425</id><value>无专辑信息 found.</value></string>
-  <string><id>426</id><value>无 CDDB 信息 found.</value></string>
-  <string><id>427</id><value>盘片:</value></string>
+  <string><id>425</id><value>找不到专辑信息。</value></string>
+  <string><id>426</id><value>没有找到 CDDB 信息！</value></string>
+  <string><id>427</id><value>盘片：</value></string>
   <string><id>428</id><value>请放入正确的 CD/DVD</value></string>
   <string><id>429</id><value>请放入 CD/DVD</value></string>
   <string><id>430</id><value>排序：DVD#</value></string>
   <string><id>431</id><value>无缓存</value></string>
   <string><id>432</id><value>从数据库中删除影片</value></string>
   <string><id>433</id><value>你确定删除</value></string>
-  <string><id>434</id><value>影片?</value></string>
+  <string><id>434</id><value>影片？</value></string>
   <string><id>435</id><value>轨</value></string>
-  <string><id>436</id><value>年:</value></string>
-  <string><id>437</id><value>持续时间:</value></string>
+  <string><id>436</id><value>年：</value></string>
+  <string><id>437</id><value>持续时间：</value></string>
   <string><id>438</id><value>打开文件</value></string>
   <string><id>439</id><value>缓存</value></string>
   <string><id>440</id><value>硬盘</value></string>
@@ -377,6 +379,7 @@
   <string><id>448</id><value>液晶屏设置</value></string>
   <string><id>449</id><value>开启</value></string>
   <string><id>450</id><value>柱</value></string>
+  <string><id>4501</id><value>LCD 类型</value></string>
   <string><id>451</id><value>第 =1= 列位址</value></string>
   <string><id>452</id><value>第 =2= 列位址</value></string>
   <string><id>453</id><value>第 =3= 列位址</value></string>
@@ -387,7 +390,7 @@
   <string><id>458</id><value>循环标记</value></string>
   <string><id>459</id><value>字幕</value></string>
   <string><id>460</id><value>音频流</value></string>
-  <string><id>461</id><value>[启用]</value></string>
+  <string><id>461</id><value>【启用】</value></string>
   <string><id>462</id><value>字幕</value></string>
   <string><id>463</id><value>背光</value></string>
   <string><id>464</id><value>亮度</value></string>
@@ -419,35 +422,37 @@
   <string><id>490</id><value>自动选择歌曲的列表和图表</value></string>
   <string><id>491</id><value>使用大图标</value></string>
   <string><id>492</id><value>放大字幕</value></string>
-  <string><id>493</id><value>高级选项 (适合专家!)</value></string>
+  <string><id>493</id><value>高级选项 (适合专家！)</value></string>
   <string><id>494</id><value>总体音量 (dB)</value></string>
   <string><id>495</id><value>以桌面的解析度播放影片</value></string>
   <string><id>496</id><value>校准</value></string>
   <string><id>497</id><value>隐藏媒体扩展名</value></string>
   <string><id>498</id><value>排序：类型</value></string>
-  <string><id>499</id><value>不能连接到 www.allmusic.com</value></string>
-  <string><id>500</id><value>下载专辑信息失败...</value></string>
-  <string><id>501</id><value>寻找专辑名...</value></string>
+  <string><id>499</id><value>不能连接到 www.all音乐.com</value></string>
+  <string><id>500</id><value>下载专辑信息失败…</value></string>
+  <string><id>501</id><value>寻找专辑名…</value></string>
   <string><id>502</id><value>开启</value></string>
   <string><id>503</id><value>忙</value></string>
   <string><id>504</id><value>空</value></string>
-  <string><id>505</id><value>读取媒体信息...</value></string>
+  <string><id>505</id><value>读取媒体信息…</value></string>
   <string><id>506</id><value>使用目录名称作描述</value></string>
-  <string><id>507</id><value>排序: 使用数</value></string>
+  <string><id>507</id><value>排序： 使用数</value></string>
   <string><id>508</id><value>不使用 捷径及扫描</value></string>
-  <string><id>509</id><value>快取程式图示</value></string>
+  <string><id>509</id><value>缓存程序图标</value></string>
   <string><id>510</id><value>开启 Visualisations</value></string>
-
   <string><id>511</id><value>根据游戏区域自动切换视频模式</value></string>
+  <string><id>512</id><value>启动界面</value></string>
+  <string><id>513</id><value>主界面</value></string>
+  <string><id>514</id><value>设置界面</value></string>
 
   <string><id>600</id><value>压缩音乐CD</value></string>
   <string><id>601</id><value>中等</value></string>
   <string><id>602</id><value>标准</value></string>
   <string><id>603</id><value>极好</value></string>
   <string><id>604</id><value>固定码率</value></string>
-  <string><id>605</id><value>压缩...</value></string>
-  <string><id>606</id><value>音轨序号:</value></string>
-  <string><id>607</id><value>到:</value></string>
+  <string><id>605</id><value>压缩…</value></string>
+  <string><id>606</id><value>音轨序号：</value></string>
+  <string><id>607</id><value>到：</value></string>
   <string><id>608</id><value>不能压缩CD或音轨</value></string>
   <string><id>609</id><value>CD压缩路径没有设置在XboxMediaCenter.xml</value></string>
   <string><id>620</id><value>压缩音乐CD</value></string>
@@ -459,9 +464,9 @@
   <string><id>629</id><value>显示模式</value></string>
   <string><id>630</id><value>标准</value></string>
   <string><id>631</id><value>放缩以填满屏幕</value></string>
-  <string><id>632</id><value>拉伸为 4:3</value></string>
-  <string><id>633</id><value>拉伸为 14:9</value></string>
-  <string><id>634</id><value>拉伸为 16:9</value></string>
+  <string><id>632</id><value>拉伸为 4：3</value></string>
+  <string><id>633</id><value>拉伸为 14：9</value></string>
+  <string><id>634</id><value>拉伸为 16：9</value></string>
   <string><id>635</id><value>原始尺寸</value></string>
   <string><id>636</id><value>定制</value></string>
 
@@ -528,12 +533,12 @@
   <string><id>751</id><value>移除共享</value></string>
   <string><id>752</id><value>编辑共享路径</value></string>
   <string><id>753</id><value>编辑共享名称</value></string>
-  <string><id>754</id><value>新增程式连接</value></string>
-  <string><id>755</id><value>编辑程式路径</value></string>
-  <string><id>756</id><value>编辑程式名称</value></string>
+  <string><id>754</id><value>新增程序连接</value></string>
+  <string><id>755</id><value>编辑程序路径</value></string>
+  <string><id>756</id><value>编辑程序名称</value></string>
   <string><id>757</id><value>编辑路径深度</value></string>
-  <string><id>758</id><value>删除程式连接</value></string>  
-  <string><id>759</id><value>显示: 大列表</value></string>
+  <string><id>758</id><value>删除程序连接</value></string>  
+  <string><id>759</id><value>显示： 大列表</value></string>
 
   <string><id>760</id><value>黄色</value></string>
   <string><id>761</id><value>白色</value></string>
@@ -545,14 +550,13 @@
   <string><id>767</id><value>保留</value></string>
   <string><id>768</id><value>保留</value></string>
   <string><id>769</id><value>保留</value></string>
-  <string><id>770</id><value>错误 %i: 不能共享</value></string>
+  <string><id>770</id><value>错误 %i： 不能共享</value></string>
   <string><id>771</id><value>FTP 服务器限定工作在FATX格式</value></string>
   <string><id>772</id><value>音频硬件</value></string>
 
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>在线游戏</value></string>
   <string><id>1000</id><value>屏幕保护预览</value></string>
-
   <string><id>1200</id><value>SMB 共享设置</value></string>
   <string><id>1201</id><value>SMB IP地址</value></string>
   <string><id>1202</id><value>SMB 工作组</value></string>
@@ -562,6 +566,34 @@
   <string><id>1206</id><value>SMB 共享群</value></string>
   <string><id>1207</id><value>SMB WINS-服务器</value></string>
   <string><id>1208</id><value>设置 模式</value></string>
+  <string><id>1209</id><value> SMB 共享设置成功！</value></string>
+  <string><id>1210</id><value>删除</value></string>
+  <string><id>1211</id><value>音乐</value></string>
+  <string><id>1212</id><value>视频</value></string>
+  <string><id>1213</id><value>图片</value></string>
+  <string><id>1214</id><value>文件</value></string>
+  <string><id>1215</id><value>音乐 &amp; 视频 </value></string>
+  <string><id>1216</id><value>音乐 &amp; 图片</value></string>
+  <string><id>1217</id><value>音乐 &amp; 文件</value></string>
+  <string><id>1218</id><value>视频 &amp; 图片</value></string>
+  <string><id>1219</id><value>视频 &amp; 文件</value></string>
+  <string><id>1220</id><value>图片 &amp; 文件</value></string>
+  <string><id>1221</id><value>音乐 &amp; 视频 &amp; 图片</value></string>
+  <string><id>1222</id><value>音乐 &amp; 视频 &amp; 图片 &amp; 文件</value></string>
+  <string><id>1223</id><value>禁用</value></string>
+  <string><id>1224</id><value>普通用户</value></string>
+  <string><id>1225</id><value>高级用户</value></string>
+  <string><id>1226</id><value>文件 &amp; 音乐 &amp; 视频</value></string>
+  <string><id>1227</id><value>文件 &amp; 图片 &amp; 音乐</value></string>
+  <string><id>1228</id><value>文件 &amp; 图片 &amp; 视频</value></string>
+  
+  <string><id>1229</id><value>音乐 &amp; 程序</value></string>
+  <string><id>1230</id><value>视频 &amp; 程序</value></string>
+  <string><id>1231</id><value>图片 &amp; 程序</value></string>
+  <string><id>1232</id><value>音乐 &amp; 视频 &amp; 图片 &amp; 程序</value></string>
+  <string><id>1233</id><value>程序 &amp; 视频 &amp; 音乐</value></string>
+  <string><id>1234</id><value>程序 &amp; 图片 &amp; 音乐</value></string>
+  <string><id>1235</id><value>程序 &amp; 图片 &amp; 视频</value></string>
 
   <string><id>1396</id><value>移动</value></string>
   <string><id>1397</id><value>和</value></string>
@@ -576,7 +608,7 @@
   <string><id>1406</id><value>the</value></string>
   <string><id>1407</id><value>区域性</value></string>
   <string><id>1408</id><value>冰</value></string>
-  <string><id>1409</id><value>冰箱</value></string>
+  <string><id>1409</id><value>清澈</value></string>
   <string><id>1410</id><value>无风</value></string>
 
   <string><id>10000</id><value>首页</value></string>
@@ -615,6 +647,25 @@
   <string><id>10503</id><value>我的音乐/艺术家</value></string>
   <string><id>10504</id><value>我的音乐/流派</value></string>
   <string><id>10505</id><value>我的音乐/top100</value></string>
+   <string><id>10506</id><value>我的程序</value></string>
+  <string><id>10507</id><value>系统设置</value></string>
+  <string><id>10508</id><value>天气预报</value></string>
+  <string><id>10509</id><value>网络游戏</value></string>
+  <string><id>10510</id><value>扩展名</value></string>
+  <string><id>10511</id><value>系统信息</value></string>
+  <string><id>10512</id><value>我的音乐 - 专辑</value></string>
+  <string><id>10513</id><value>我的音乐 - 艺术家</value></string>
+  <string><id>10514</id><value>我的音乐 - 流派</value></string>
+  <string><id>10515</id><value>我的音乐 - Top 100</value></string>
+  <string><id>10516</id><value>我的音乐 - 资料</value></string>
+  <string><id>10517</id><value>我的音乐 - 播放列表</value></string>
+  <string><id>10518</id><value>我的视频 - 艺术家</value></string>
+  <string><id>10519</id><value>我的视频 - 流派</value></string>
+  <string><id>10520</id><value>我的视频 - 标题</value></string>
+  <string><id>10521</id><value>我的视频 - 年份</value></string>
+  <string><id>10522</id><value>我的视频 - 播放列表</value></string>
+  <string><id>10523</id><value>专辑信息</value></string>
+  <string><id>10524</id><value>影片信息</value></string>
   <string><id>11000</id><value>键盘</value></string>
   <string><id>12000</id><value>选择对话</value></string>
   <string><id>12001</id><value>我的音乐/信息</value></string>
@@ -644,15 +695,15 @@
   <string><id>12327</id><value>输入管理员锁并按 回车键(Enter),</value></string>
   <string><id>12328</id><value>输入解锁密码并按 回车键(Enter),</value></string> 
   <string><id>12329</id><value>或按 C键 to 取消</value></string>
-  <string><id>12330</id><value>输入 XBOX 手把按键顺序 </value></string>
+  <string><id>12330</id><value>输入 XBOX 手柄按键顺序 </value></string>
   <string><id>12331</id><value>按 Start, 或按 Back to 取消</value></string>
   <string><id>12332</id><value>锁定共享</value></string>
   <string><id>12333</id><value>解除共享</value></string>
   <string><id>12334</id><value>重设共享锁定</value></string>
   <string><id>12335</id><value>移除共享锁定</value></string>
-  <string><id>12336</id><value>选择锁定类型:</value></string>
+  <string><id>12336</id><value>选择锁定类型：</value></string>
   <string><id>12337</id><value>数字密码</value></string>
-  <string><id>12338</id><value>手把按键顺序</value></string>
+  <string><id>12338</id><value>手柄按键顺序</value></string>
   <string><id>12339</id><value>全文字密码</value></string>
   <string><id>12340</id><value>输入新密码</value></string>
   <string><id>12341</id><value>确认新密码</value></string>
@@ -660,18 +711,35 @@
   <string><id>12343</id><value>重试次数 </value></string>
   <string><id>12344</id><value>输入密码不正确.</value></string>
   <string><id>12345</id><value>拒绝读取</value></string>
-  <string><id>12346</id><value>已达密码重试次数限制.</value></string>
+  <string><id>12346</id><value>已达密码重试次数限制！</value></string>
   <string><id>12347</id><value>XBOX 将要关机</value></string>
-
   <string><id>12348</id><value>项目锁定</value></string>
-  <string><id>12349</id><value>记住管理员密码直到下次开机?</value></string>
+  <string><id>12349</id><value>记住管理员密码直到下次开机？</value></string>
   <string><id>12350</id><value>(开启任何项目将被设定自动锁上</value></string>
   <string><id>12351</id><value>管理员锁.)</value></string>
   <string><id>12352</id><value>输入管理员密码并且</value></string>
   <string><id>12353</id><value>重新上锁</value></string>
-  <string><id>12354</id><value>解除文件夹锁直到下次开机?</value></string>
+  <string><id>12354</id><value>解除文件夹锁直到下次开机？</value></string>
   <string><id>12355</id><value>文件夹锁.)</value></string>
+  <string><id>12356</id><value>更改锁定</value></string>
+  <string><id>12357</id><value>共享锁定</value></string>
+  <string><id>12358</id><value>密码不能为空，请重试！</value></string>
+  <string><id>12360</id><value>主机锁定</value></string>
+  <string><id>12361</id><value>最多重试次数</value></string>
+  <string><id>12362</id><value>可以关机</value></string>
+  <string><id>12363</id><value>共享保护</value></string>
+  <string><id>12364</id><value>锁定模式</value></string>
+  <string><id>12365</id><value>主机密码</value></string>
+  <string><id>12366</id><value>主机锁定方式改变。新的主机密码为：</value></string>
+  <string><id>12367</id><value>主机密码错误！</value></string>
+  <string><id>12368</id><value>请输入正确的主机密码！</value></string>
+  <string><id>12369</id><value>XBMC启动锁定</value></string>
+  <string><id>12370</id><value>主机锁定方式改变，但没有设置主机密码！</value></string>
+  <string><id>12371</id><value>请设置一个新的主机密码！</value></string>
 
+  <string><id>12372</id><value>锁定文件管理器</value></string>
+  <string><id>12373</id><value>锁定系统设置</value></string>
+  <string><id>12374</id><value>锁定项目</value></string>
 
   <string><id>12600</id><value>我的天气</value></string>
   <string><id>12900</id><value>屏幕保护</value></string>
@@ -685,12 +753,21 @@
   <string><id>13006</id><value>Dashboard</value></string>
   <string><id>13100</id><value>闪烁过滤</value></string>
   <string><id>13200</id><value>预存设置</value></string>
-  <string><id>13201</id><value>删除预存设置 '%s'?</value></string>
-  <string><id>13202</id><value>保存当前设置为预存设置...</value></string>
+  <string><id>13201</id><value>删除预存设置 '%s'？</value></string>
+  <string><id>13202</id><value>保存当前设置为预存设置…</value></string>
   <string><id>13203</id><value>预存设置 '%s' 载入成功</value></string>
-  <string><id>13204</id><value>最近载入的预存设置:</value></string>
+  <string><id>13204</id><value>最近载入的预存设置：</value></string>
   <string><id>13205</id><value>未知</value></string>
-  <string><id>13299</id><value>目标温度</value></string>
+  <string><id>13206</id><value>覆盖</value></string>
+  <string><id>13207</id><value>覆盖配置文件 '%s'？</value></string>
+
+  <string><id>13208</id><value>闹铃</value></string>
+  <string><id>13209</id><value>闹铃间隔（以分钟为单位）</value></string>
+  <string><id>13210</id><value>闹铃功能启动，将在 %im分钟后提醒</value></string>
+  <string><id>13211</id><value>到点提醒！</value></string>
+  <string><id>13212</id><value>闹铃功能取消，剩余 %im分%is秒</value></string>
+
+ <string><id>13299</id><value>目标温度</value></string>
   <string><id>13300</id><value>风扇转速</value></string>
   <string><id>13301</id><value>自动温度控制</value></string>
   <string><id>13302</id><value>手动控制风扇转速</value></string>
@@ -700,7 +777,7 @@
   <string><id>13306</id><value>隐藏上层目录图标</value></string>
   <string><id>13307</id><value>隐藏音轨序号</value></string>
   <string><id>13308</id><value>你想重新启动XBOX吗</value></string>
-  <string><id>13309</id><value>以重新启动XBMC吗?</value></string>
+  <string><id>13309</id><value>以重新启动XBMC吗？</value></string>
   <string><id>13310</id><value>放缩效果</value></string>
   <string><id>13311</id><value>漂浮效果</value></string>
   <string><id>13312</id><value>缩小黑边</value></string>
@@ -722,7 +799,7 @@
   <string><id>13328</id><value>%s 未找到</value></string>
   <string><id>13329</id><value>打开 %s 时发生错误</value></string>
   <string><id>13330</id><value>无法载入 %s</value></string>
-  <string><id>13331</id><value>错误:记忆体不足!</value></string>
+  <string><id>13331</id><value>错误：记忆体不足！</value></string>
   <string><id>13332</id><value>向上移动</value></string>
   <string><id>13333</id><value>向下移动</value></string>
   <string><id>13334</id><value>编辑标签</value></string>
@@ -739,7 +816,7 @@
   <string><id>13345</id><value>当播放时关闭LED</value></string>
   <string><id>13346</id><value>影片信息</value></string>
   <string><id>13347</id><value>加入当前播放列表</value></string>
-  <string><id>13348</id><value>查询IMDb信息...</value></string>
+  <string><id>13348</id><value>查询IMDb信息…</value></string>
   <string><id>13349</id><value>查询所有文件信息</value></string>
   <string><id>13350</id><value>正在播放的列表</value></string>
   <string><id>13351</id><value>专辑信息</value></string>
@@ -747,14 +824,15 @@
   <string><id>13353</id><value>停止扫描</value></string>
   <string><id>13354</id><value>补偿方式</value></string>
   <string><id>13355</id><value>低品质像素著色器</value></string>
-  <string><id>13356</id><value>硬体超频</value></string>
+  <string><id>13356</id><value>硬件超频</value></string>
   <string><id>13357</id><value>高品质像素著色器</value></string>
   <string><id>13358</id><value>播放项目</value></string>
+  <string><id>13359</id><value>设置艺术家图示</value></string>
   <string><id>13360</id><value>建立图示</value></string>
   <string><id>13361</id><value>开启语音</value></string>
   <string><id>13362</id><value>语音特效</value></string>
-  <string><id>13363</id><value>- 开启低沈效果</value></string>
-  <string><id>13364</id><value>-- 低沈效果数值</value></string>
+  <string><id>13363</id><value>- 开启低沉效果</value></string>
+  <string><id>13364</id><value>-- 低沉效果数值</value></string>
   <string><id>13365</id><value>- 开启高音效果</value></string>
   <string><id>13366</id><value>-- 高音效果数值</value></string>
   <string><id>13367</id><value>- 开启悄悄话效果</value></string>
@@ -770,22 +848,24 @@
   <string><id>13377</id><value>默认显示方式</value></string>
   <string><id>13378</id><value>默认亮度数值</value></string>
   <string><id>13379</id><value>默认对比度数值</value></string>
-  <string><id>13380</id><value>默认咖码数值</value></string>
+  <string><id>13380</id><value>默认伽码数值</value></string>
   <string><id>13381</id><value>从书签处开始播放</value></string>
   <string><id>13382</id><value>语音特效 - 端口 0</value></string>
   <string><id>13383</id><value>语音特效 - 端口 1</value></string>
   <string><id>13384</id><value>语音特效 - 端口 2</value></string>
   <string><id>13385</id><value>语音特效 - 端口 3</value></string>
-
   <string><id>13386</id><value>使用时间搜寻</value></string>
   <string><id>13387</id><value>正确隐藏音轨序号</value></string>
+  <string><id>13388</id><value>预设</value></string>
+  <string><id>13389</id><value>该 visualisation 没有进行预先设置 </value></string>
+  <string><id>13390</id><value>该 visualisation 没有相应设置</value></string>
 
-  <string><id>14000</id><value>堆栈: 关</value></string>
-  <string><id>14001</id><value>堆栈: 简单</value></string>
-  <string><id>14002</id><value>堆栈: 模糊</value></string>
-  <string><id>14003</id><value>下载播放列表文件...</value></string>
-  <string><id>14004</id><value>下载流媒体列表...</value></string>
-  <string><id>14005</id><value>分析流媒体列表...</value></string>
+  <string><id>14000</id><value>堆栈： 关</value></string>
+  <string><id>14001</id><value>堆栈： 简单</value></string>
+  <string><id>14002</id><value>堆栈： 模糊</value></string>
+  <string><id>14003</id><value>下载播放列表文件…</value></string>
+  <string><id>14004</id><value>下载流媒体列表…</value></string>
+  <string><id>14005</id><value>分析流媒体列表…</value></string>
   <string><id>14006</id><value>下载流媒体列表失败</value></string>
   <string><id>14007</id><value>下载播放列表文件失败</value></string>
   <string><id>14008</id><value>启用 Kai 通告</value></string>
@@ -806,16 +886,16 @@
   <string><id>14023</id><value>无电视</value></string>
   <string><id>14024</id><value>输入最近的城市或邮编</value></string>
   <string><id>14025</id><value>视频缓存      - 硬盘</value></string>
-  <string><id>14026</id><value>              - DVD驱动器</value></string>
-  <string><id>14027</id><value>              - 本地网络</value></string>
-  <string><id>14028</id><value>              - 互连网</value></string>
+  <string><id>14026</id><value>视频缓存      - DVD驱动器</value></string>
+  <string><id>14027</id><value>视频缓存      - 本地网络</value></string>
+  <string><id>14028</id><value>视频缓存      - 互连网</value></string>
   <string><id>14029</id><value>音频缓存      - 硬盘</value></string>
-  <string><id>14030</id><value>              - DVD驱动器</value></string>
-  <string><id>14031</id><value>              - 本地网络</value></string>
-  <string><id>14032</id><value>              - 互连网</value></string>
-  <string><id>14033</id><value>DVD缓存       - 硬盘</value></string>
-  <string><id>14034</id><value>              - DVD驱动器</value></string>
-  <string><id>14035</id><value>              - 本地网络</value></string>
+  <string><id>14030</id><value>音频缓存      - DVD驱动器</value></string>
+  <string><id>14031</id><value>音频缓存      - 本地网络</value></string>
+  <string><id>14032</id><value>音频缓存      - 互连网</value></string>
+  <string><id>14033</id><value>DVD缓存      - 硬盘</value></string>
+  <string><id>14034</id><value>DVD缓存      - DVD驱动器</value></string>
+  <string><id>14035</id><value>DVD缓存      - 本地网络</value></string>
   <string><id>14036</id><value>服务</value></string>
   <string><id>14037</id><value>外观设置</value></string>
   <string><id>14038</id><value>网络设置已改变</value></string>
@@ -850,39 +930,39 @@
   <string><id>14066</id><value>设置 日期</value></string>
   <string><id>14067</id><value>设置 小时</value></string>
   <string><id>14068</id><value>设置 分钟</value></string>
-  <string><id>14069</id><value>确定执行你目前设定吗?</value></string>
+  <string><id>14069</id><value>确定执行你目前设定吗？</value></string>
   <string><id>14070</id><value> - 应用设置</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>目前并没有连线到运行XLink Kai的电脑</value></string>
-  <string><id>15002</id><value>请确定设定无误后再尝试连线?</value></string>
+  <string><id>15002</id><value>请确定设定无误后再尝试连线？</value></string>
   <string><id>15003</id><value>输入你的讯息.</value></string>
   <string><id>15004</id><value>你被邀请玩 %s.</value></string>
-  <string><id>15005</id><value>日期: %s</value></string>
-  <string><id>15006</id><value>来自: %s</value></string>
+  <string><id>15005</id><value>日期： %s</value></string>
+  <string><id>15006</id><value>来自： %s</value></string>
   <string><id>15007</id><value>邀请</value></string>
   <string><id>15008</id><value>你被邀请加入 %s.</value></string>
   <string><id>15009</id><value>离线</value></string>
   <string><id>15010</id><value>好友</value></string>
-  <string><id>15011</id><value>显示: 好友</value></string>
+  <string><id>15011</id><value>显示： 好友</value></string>
   <string><id>15012</id><value>加入游戏</value></string>
   <string><id>15013</id><value>语音交谈</value></string>
   <string><id>15014</id><value>邀请</value></string>
   <string><id>15015</id><value>删除</value></string>
   <string><id>15016</id><value>游戏</value></string>
-  <string><id>15017</id><value>显示: 游戏</value></string>
+  <string><id>15017</id><value>显示： 游戏</value></string>
   <string><id>15018</id><value>进入</value></string>
   <string><id>15019</id><value>添加为好友</value></string>
   <string><id>15020</id><value>建立游戏</value></string>
   <string><id>15021</id><value>游戏室</value></string>
-  <string><id>15022</id><value>显示: 游戏室</value></string>
+  <string><id>15022</id><value>显示： 游戏室</value></string>
   <string><id>15023</id><value>开始游戏</value></string>
   <string><id>15024</id><value>添加为好友</value></string>
   <string><id>15025</id><value>建立游戏</value></string>
   <string><id>15026</id><value>聊天室</value></string>
-  <string><id>15027</id><value>显示: 聊天室</value></string>
+  <string><id>15027</id><value>显示： 聊天室</value></string>
   <string><id>15028</id><value>键盘</value></string>
-  <string><id>15029</id><value>加入这个游戏室须要密码!</value></string>
+  <string><id>15029</id><value>加入这个游戏室须要密码！</value></string>
   <string><id>15030</id><value>游戏已中断</value></string>
   <string><id>15031</id><value>XLink Kai 认证</value></string>
   <string><id>15032</id><value>名称或密码不正确</value></string>
@@ -908,11 +988,11 @@
   <string><id>15052</id><value>密码</value></string>
   <string><id>15053</id><value>简介</value></string>
   <string><id>15054</id><value>邀请函</value></string>
-  <string><id>15055</id><value>选择游戏:</value></string>
-  <string><id>15056</id><value>输入讯息:</value></string>
+  <string><id>15055</id><value>选择游戏：</value></string>
+  <string><id>15056</id><value>输入讯息：</value></string>
   <string><id>15057</id><value>发送</value></string>
   <string><id>15058</id><value>建立游戏</value></string>
-  <string><id>15059</id><value>接受邀请!</value></string>
+  <string><id>15059</id><value>接受邀请！</value></string>
   <string><id>15060</id><value>讯息</value></string>
   <string><id>15061</id><value>邀请玩家 %s.</value></string>
   <string><id>15062</id><value>使用替代的 mplayer 位置</value></string>
@@ -924,46 +1004,46 @@
   <string><id>15105</id><value>* 所有类别</value></string>
   <string><id>15106</id><value>向前浏览时记住选择的文件</value></string>
 
-  <string><id>15107</id><value>缓冲中...</value></string>
+  <string><id>15107</id><value>缓冲中…</value></string>
   <string><id>15108</id><value>导航音效</value></string>
   <string><id>15109</id><value>主题预设</value></string>
 
   <string><id>15200</id><value>AudioScrobbler</value></string>
-  <string><id>15201</id><value>发传歌曲信息到 AudioScrobbler</value></string>
+  <string><id>15201</id><value>发送歌曲信息到 AudioScrobbler</value></string>
   <string><id>15202</id><value>AudioScrobbler 用户名</value></string>
   <string><id>15203</id><value>AudioScrobbler 密码</value></string>
-  <string><id>15204</id><value>无法连接: 休眠中...</value></string>
+  <string><id>15204</id><value>无法连接： 休眠中…</value></string>
   <string><id>15205</id><value>升级XBMC</value></string>
-  <string><id>15206</id><value>上传失败: 无法通过认证.</value></string>
+  <string><id>15206</id><value>上传失败： 无法通过认证.</value></string>
   <string><id>15207</id><value>连接</value></string>
   <string><id>15208</id><value>无法连接</value></string>
   <string><id>15209</id><value>上传进度 %i</value></string>
-  <string><id>15210</id><value>巳上传 %i Songs</value></string>
-  <string><id>15211</id><value>上传中...</value></string>
+  <string><id>15210</id><value>已上传 %i Songs</value></string>
+  <string><id>15211</id><value>上传中…</value></string>
   <string><id>15212</id><value>上传剩余 %i secs</value></string>
 
-  <string><id>13150</id><value>硬盘 钥匙:</value></string>
-  <string><id>13151</id><value>硬盘 温度:</value></string>
-  <string><id>13152</id><value>DVD 型号:</value></string>
-  <string><id>13153</id><value>DVD 固件版本:</value></string>
-  <string><id>13154</id><value>硬盘 型号:</value></string>
-  <string><id>13155</id><value>硬盘 序列号:</value></string>
-  <string><id>13156</id><value>硬盘 固件版本:</value></string>
-  <string><id>13157</id><value>硬盘 密码:</value></string>
-  <string><id>13158</id><value>硬盘 锁 状态:</value></string>
-  <string><id>13159</id><value>子网 掩码:</value></string>
-  <string><id>13160</id><value>网关 地址:</value></string>
-  <string><id>13161</id><value>DNS服务器地址:</value></string>
+  <string><id>13150</id><value>硬盘 钥匙：</value></string>
+  <string><id>13151</id><value>硬盘 温度：</value></string>
+  <string><id>13152</id><value>DVD 型号：</value></string>
+  <string><id>13153</id><value>DVD 固件版本：</value></string>
+  <string><id>13154</id><value>硬盘 型号：</value></string>
+  <string><id>13155</id><value>硬盘 序列号：</value></string>
+  <string><id>13156</id><value>硬盘 固件版本：</value></string>
+  <string><id>13157</id><value>硬盘 密码：</value></string>
+  <string><id>13158</id><value>硬盘 锁 状态：</value></string>
+  <string><id>13159</id><value>子网 掩码：</value></string>
+  <string><id>13160</id><value>网关 地址：</value></string>
+  <string><id>13161</id><value>DNS服务器地址：</value></string>
   <string><id>13162</id><value>无法读取信息</value></string>
-  <string><id>13163</id><value>游戏杆在端口:</value></string>
-  <string><id>13164</id><value>键盘在端口:</value></string>
-  <string><id>13165</id><value>鼠标在端口:</value></string>
-  <string><id>13166</id><value>耳麦在端口:</value></string>
-  <string><id>13167</id><value>记忆卡在端口:</value></string>
-  <string><id>13168</id><value>遥控器在端口:</value></string>
+  <string><id>13163</id><value>游戏杆在端口：</value></string>
+  <string><id>13164</id><value>键盘在端口：</value></string>
+  <string><id>13165</id><value>鼠标在端口：</value></string>
+  <string><id>13166</id><value>耳麦在端口：</value></string>
+  <string><id>13167</id><value>记忆卡在端口：</value></string>
+  <string><id>13168</id><value>遥控器在端口：</value></string>
 
-  <string><id>13270</id><value>硬件:</value></string>
-  <string><id>13271</id><value>中央处理器速度:</value></string>
+  <string><id>13270</id><value>硬件：</value></string>
+  <string><id>13271</id><value>中央处理器速度：</value></string>
   <string><id>13275</id><value>硬盘</value></string>
   <string><id>13276</id><value>DVD-ROM</value></string>
   <string><id>13277</id><value>存储器</value></string>
@@ -972,23 +1052,23 @@
   <string><id>13280</id><value>视频</value></string>
   <string><id>13281</id><value>硬件</value></string>
   <string><id>13282</id><value>_</value></string>
-  <string><id>13283</id><value>核心版本:</value></string>
-  <string><id>13284</id><value>中央处理器速度:</value></string>
-  <string><id>13285</id><value>BIOS 型号:</value></string>
-  <string><id>13286</id><value>视频芯片:</value></string>
-  <string><id>13287</id><value>屏幕分辨率:</value></string>
-  <string><id>13288</id><value>Xbox 版本:</value></string>
-  <string><id>13289</id><value>Xbox 序列号:</value></string>
-  <string><id>13290</id><value>XBOX 生产商:</value></string>
-  <string><id>13291</id><value>改机芯片:</value></string>
-  <string><id>13292</id><value>A/V 线:</value></string>
-  <string><id>13293</id><value>视频 &amp; XBE 区域:</value></string>
-  <string><id>13294</id><value>DVD 区域:</value></string>
-  <string><id>13295</id><value>因特网:</value></string>
-  <string><id>13296</id><value>Xbox巳连接!</value></string>
-  <string><id>13297</id><value>Xbox无法连接! 请检查网络设置!</value></string>
-  <string><id>13298</id><value>XBLIVE 钥匙:</value></string>
+  <string><id>13283</id><value>核心版本：</value></string>
+  <string><id>13284</id><value>中央处理器速度：</value></string>
+  <string><id>13285</id><value>BIOS 型号：</value></string>
+  <string><id>13286</id><value>视频芯片：</value></string>
+  <string><id>13287</id><value>屏幕分辨率：</value></string>
+  <string><id>13288</id><value>Xbox 版本：</value></string>
+  <string><id>13289</id><value>Xbox 序列号：</value></string>
+  <string><id>13290</id><value>XBOX 生产商：</value></string>
+  <string><id>13291</id><value>改机芯片：</value></string>
+  <string><id>13292</id><value>A/V 线：</value></string>
+  <string><id>13293</id><value>视频 &amp; XBE 区域：</value></string>
+  <string><id>13294</id><value>DVD 区域：</value></string>
+  <string><id>13295</id><value>因特网：</value></string>
+  <string><id>13296</id><value>Xbox已连接！</value></string>
+  <string><id>13297</id><value>Xbox无法连接！ 请检查网络设置！</value></string>
+  <string><id>13298</id><value>XBLIVE 钥匙：</value></string>
 
-  <string><id>15213</id><value>[预留位置]</value></string>
+  <string><id>15213</id><value>【预留位置】</value></string>
   <string><id>15214</id><value>使用平滑的A/V同步</value></string>
 </strings>

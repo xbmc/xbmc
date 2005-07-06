@@ -588,6 +588,24 @@
   <string><id>1226</id><value>Dateien &amp; Musik &amp; Videos</value></string> 
   <string><id>1227</id><value>Dateien &amp; Bilder &amp; Musik</value></string> 
   <string><id>1228</id><value>Dateien &amp; Bilder &amp; Videos</value></string>
+  <string><id>1229</id><value>Musik &amp; Programme</value></string> 
+  <string><id>1230</id><value>Videos &amp; Programme</value></string> 
+  <string><id>1231</id><value>Bilder &amp; Programme</value></string> 
+  <string><id>1232</id><value>Musik &amp; Videos &amp; Bilder &amp; Programme</value></string> 
+  <string><id>1233</id><value>Programme &amp; Videos &amp; Musik</value></string> 
+  <string><id>1234</id><value>Programme &amp; Bilder &amp; Musik</value></string> 
+  <string><id>1235</id><value>Programme &amp; Bilder &amp; Videos</value></string> 
+
+  <string><id>1245</id><value> - FTP Benutzername</value></string> 
+  <string><id>1246</id><value> - FTP Kennwort</value></string> 
+  <string><id>1247</id><value>FTP Benutzername und Kennwort geändert.</value></string> 
+  
+  <string><id>1250</id><value>XBox2XBox</value></string> 
+  <string><id>1251</id><value>XBOX Automatische Erkennung</value></string> 
+  <string><id>1252</id><value>Beschreibung</value></string> 
+  <string><id>1253</id><value>FTP Verknüpfung unter Eigene Dateien erstellen</value></string> 
+  <string><id>1254</id><value>Popup Anzeige</value></string> 
+  <string><id>1255</id><value>FTP Benutzername und Kennwort senden</value></string> 
 
   <string><id>1396</id><value>Verwehungen</value></string> 
   <string><id>1397</id><value>und</value></string> 
@@ -730,6 +748,9 @@
   <string><id>12369</id><value>XBMC Startkennwort</value></string> 
   <string><id>12370</id><value>Einstellungen geändert, kein Hauptkennwort wurde gesetzt!</value></string> 
   <string><id>12371</id><value>Bitte einen neues Hauptkennwort eingeben!</value></string> 
+  <string><id>12372</id><value>Eigene Dateien sperren</value></string> 
+  <string><id>12373</id><value>Einstellungen sperren</value></string> 
+  <string><id>12374</id><value>Medien sperren</value></string> 
 
   <string><id>12600</id><value>Wetter</value></string>
   <string><id>12900</id><value>Bildschirmschoner</value></string>
@@ -739,8 +760,8 @@
   <string><id>13002</id><value>Video</value></string>
   <string><id>13003</id><value>- Verzögerung</value></string>
   <string><id>13004</id><value>- minimale Datendauer</value></string>
-  <string><id>13005</id><value>XBOX MediaCenter ausschalten</value></string> 
-  <string><id>13006</id><value>Dashboard</value></string> 
+  <string><id>13005</id><value>MediaCenter ausschalten</value></string> 
+  <string><id>13006</id><value>Microsoft Dashboard</value></string> 
   <string><id>13100</id><value>Flimmerfilter</value></string>
 
   <string><id>13150</id><value>Key:</value></string> 
@@ -803,7 +824,6 @@
   <string><id>13296</id><value>Xbox verbunden!</value></string> 
   <string><id>13297</id><value>Xbox NICHT verbunden! Netzwerk überprüfen!</value></string> 
   <string><id>13298</id><value>XBLIVE Key:</value></string> 
-
   <string><id>13299</id><value>- Temperatur:</value></string>
   <string><id>13300</id><value>Lüftergeschwindigkeit:</value></string>
   <string><id>13301</id><value>Automatische Temperaturkontrolle</value></string>
@@ -818,7 +838,7 @@
   <string><id>13310</id><value>- Übergang streckend</value></string>
   <string><id>13311</id><value>- Übergang gleitend</value></string>
   <string><id>13312</id><value>Ränderreduktion</value></string>
-  <string><id>13313</id><value>XBOX MediaCenter neustarten</value></string>
+  <string><id>13313</id><value>MediaCenter neustarten</value></string>
   <string><id>13314</id><value>Überblendung</value></string>
   <string><id>13315</id><value>Miniaturansicht erst.</value></string>
   <string><id>13316</id><value>rekurs. Miniaturansicht</value></string>
@@ -855,7 +875,7 @@
   <string><id>13347</id><value>Wiedergabeliste hinzuf.</value></string>
   <string><id>13348</id><value>Datei IMDb Abfrage</value></string>
   <string><id>13349</id><value>Ordner ImDb Abfrage</value></string>
-  <string><id>13350</id><value>Aktuelle Wiedergabe</value></string>
+  <string><id>13350</id><value>Wiedergabeliste</value></string>
   <string><id>13351</id><value>Album Information</value></string>
   <string><id>13352</id><value>Ordner Durchsuchen</value></string>
   <string><id>13353</id><value>Suche anhalten</value></string>
@@ -896,7 +916,7 @@
   <string><id>13388</id><value>Vorauswahl</value></string> 
   <string><id>13389</id><value>Keine Vorauswahl für diese Visualisierung&#10;vorhanden</value></string> 
   <string><id>13390</id><value>Keine Einstellmöglichkeiten für diese Visualisierung&#10;vorhanden</value></string> 
-
+  <string><id>13391</id><value>Laufwerk Öffnen/Schließen</value></string>
 
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln aktiv.</value></string>
@@ -1056,10 +1076,13 @@
   <string><id>15210</id><value>%i Lieder gecached</value></string> 
   <string><id>15211</id><value>Übermittlung...</value></string> 
   <string><id>15212</id><value>Übermittlung in %i sek</value></string>
-  <string><id>15213</id><value>[PLACEHOLDER]</value></string>
+  <string><id>15213</id><value>Wiedergabe</value></string>
   <string><id>15214</id><value>Ausgeglichene A/V Synchronisation verwenden</value></string> 
 
   <string><id>16000</id><value>Wechseln zu...</value></string>
   <string><id>16001</id><value>Zu Favoriten hinzuf.</value></string>
   <string><id>16002</id><value>Favoriten</value></string>
+  <string><id>16003</id><value>MedienInfo einblenden</value></string>
+  <string><id>16004</id><value>MedienInfo ausblenden</value></string>
+
 </strings>
