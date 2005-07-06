@@ -6,6 +6,7 @@
 #include "../Util.h"
 #include "../lib/libscrobbler/scrobbler.h"
 #include "../playlistplayer.h"
+#include "../ButtonTranslator.h"
 
 #define VERSION_STRING "1.1.0"
 
@@ -43,6 +44,8 @@ extern char g_szTitleIP[32];
 //#define PLAYER_PROGRESS              22
 //#define PLAYER_SEEKBAR               23
 //#define PLAYER_SEEKTIME              24
+//#define PLAYER_SEEKING               25
+//#define PLAYER_SHOWTIME              26
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -104,6 +107,9 @@ extern char g_szTitleIP[32];
 #define VISUALISATION_PRESET        401
 #define VISUALISATION_NAME          402
 
+#define WINDOW_ACTIVE_START         WINDOW_HOME
+#define WINDOW_ACTIVE_END           WINDOW_PYTHON_END
+
 #define COMBINED_VALUES_START        100000
 
 CGUIInfoManager g_infoManager;
@@ -124,7 +130,8 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_gpuTemp = 0;
   m_cpuTemp = 0;
   m_AfterSeekTimeout = 0;
-  m_bPerformingSeek = false;
+  m_playerSeeking = false;
+  m_performingSeek = false;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -219,6 +226,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("player.seekbar")) ret = PLAYER_SEEKBAR;
   else if (strTest.Equals("player.seektime")) ret = PLAYER_SEEKTIME;
   else if (strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
+  else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
+  else if (strTest.Equals("player.showtime")) ret = PLAYER_SHOWTIME;
   else if (strTest.Equals("weather.conditions")) ret = WEATHER_CONDITIONS;
   else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
   else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
@@ -271,6 +280,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("visualisation.locked")) ret = VISUALISATION_LOCKED;
   else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
   else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
+  else if (strTest.Left(16).Equals("window.isactive("))
+  {
+    int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(16, strTest.GetLength() - 17).c_str());
+    if (winID != WINDOW_INVALID)
+      ret = winID;
+  }
   return bNegate ? -ret : ret;
 }
 
@@ -435,6 +450,16 @@ bool CGUIInfoManager::GetBool(int condition1) const
 
   int condition = abs(condition1);
   bool bReturn = false;
+
+  // check for Window.IsActive(window)
+  if (condition >= WINDOW_ACTIVE_START && condition <= WINDOW_ACTIVE_END)
+  {
+    bReturn = m_gWindowManager.IsWindowActive(condition);
+    // ugly hack due to videoOSD not being a dialog - remove me when video OSD becomes a dialog!
+    if (!bReturn && condition == WINDOW_OSD) bReturn = g_application.m_guiWindowFullScreen.m_bOSDVisible;
+    return condition1 < 0 ? !bReturn : bReturn;
+  }
+
   if (g_application.IsPlaying())
   {
     switch (condition)
@@ -505,6 +530,12 @@ bool CGUIInfoManager::GetBool(int condition1) const
     case PLAYER_SEEKBAR:
       bReturn = ((CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR))->IsRunning();
     break;
+    case PLAYER_SEEKING:
+      bReturn = m_playerSeeking;
+    break;
+    case PLAYER_SHOWTIME:
+      bReturn = m_playerShowTime;
+    break;
     case AUDIOSCROBBLER_ENABLED:
       bReturn = g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler");
     break;
@@ -525,7 +556,6 @@ bool CGUIInfoManager::GetBool(int condition1) const
         }
       }
     }
-    
   }
   return (condition1 < 0) ? !bReturn : bReturn;
 }

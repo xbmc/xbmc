@@ -1543,7 +1543,7 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
     else
     {
       CStdString strType = pType->FirstChild()->Value();
-      if (strType == "dialog")
+      if (strType == "dialog" || strType == "modelessdialog")
       {
         pWindow = new CGUIDialog(0);
       }
@@ -1611,6 +1611,9 @@ void CApplication::Render()
       }
     }
   }
+
+  // show/hide any modeless dialogs that need it
+  m_gWindowManager.UpdateModelessVisibility();
 
   // dont show GUI when playing full screen video
   if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
@@ -1943,8 +1946,8 @@ bool CApplication::OnKey(CKey& key)
 
           SetPlaySpeed(iPlaySpeed);
           // show our seekbar if necessary
-          if (g_application.GetPlaySpeed() != 1 && !m_guiDialogSeekBar.IsRunning())
-            m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
+          if (g_application.GetPlaySpeed() != 1)
+            g_infoManager.SetSeeking(true);
           return true;
         }
       }
@@ -1960,8 +1963,8 @@ bool CApplication::OnKey(CKey& key)
         if (iSpeed == 1)
           CLog::DebugLog("Resetting playspeed");
         // show our seekbar if necessary
-        if (g_application.GetPlaySpeed() != 1 && !m_guiDialogSeekBar.IsRunning())
-          m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
+        if (g_application.GetPlaySpeed())
+          g_infoManager.SetSeeking(true);
         return true;
       }
     }
@@ -2027,8 +2030,7 @@ bool CApplication::OnKey(CKey& key)
   if (IsPlaying() && action.fAmount1 && (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK))
   {
     // show visual feedback of seek change...
-    if (!m_guiDialogSeekBar.IsRunning())
-      m_guiDialogSeekBar.Show(m_gWindowManager.GetActiveWindow());
+    g_infoManager.SetSeeking(true);
     m_guiDialogSeekBar.OnAction(action);
     return true;
   }

@@ -53,6 +53,8 @@ public:
   int GetActiveWindow() const;
   bool IsRouted() const;
   bool IsModelessAvailable() const;
+  void UpdateModelessVisibility();
+  bool IsWindowActive(DWORD dwID) const;
 
 private:
   vector <CGUIWindow*> m_vecWindows;
