@@ -9,6 +9,7 @@
 #include "FLACCodec.h"
 #include "WAVCodec.h"
 #include "AACCodec.h"
+#include "WAVPackCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -30,6 +31,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new WAVCodec();
   else if (strFileType.Equals("m4a") || strFileType.Equals("aac"))
     return new AACCodec();
+  else if (strFileType.Equals("wv"))
+    return new WAVPackCodec();
 
   return NULL;
 }
