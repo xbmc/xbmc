@@ -408,6 +408,10 @@ int CDVDInputStreamNavigator::ProcessBlock()
       }
       //Reset skip flag.
       m_bDiscardHop = false;
+      
+      iNavresult = -1; // return read error
+      bFinished = true;
+      
       break;
 
     case DVDNAV_STOP:
@@ -486,22 +490,27 @@ bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iPhysicalId)
 }
 void CDVDInputStreamNavigator::ActivateButton()
 {
-  if (!m_dvdnav) return ;
-  dvdnav_button_activate(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
+  if (m_dvdnav)
+  {
+    dvdnav_button_activate(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
+  }
 }
 
 void CDVDInputStreamNavigator::SelectButton(int iButton)
 {
-  if (!m_dvdnav) return ;
+  if (!m_dvdnav) return;
   dvdnav_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav), iButton);
 }
 
 int CDVDInputStreamNavigator::GetCurrentButton()
 {
   int button;
-  if (!m_dvdnav) return -1;
-  dvdnav_get_current_highlight(m_dvdnav, &button);
-  return button;
+  if (m_dvdnav)
+  {
+    dvdnav_get_current_highlight(m_dvdnav, &button);
+    return button;
+  }
+  return -1;
 }
 
 int CDVDInputStreamNavigator::GetTotalButtons()
@@ -512,37 +521,37 @@ int CDVDInputStreamNavigator::GetTotalButtons()
 
 void CDVDInputStreamNavigator::OnUp()
 {
-  if (!m_dvdnav) return ;
+  if (!m_dvdnav) return;
   dvdnav_upper_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
 }
 
 void CDVDInputStreamNavigator::OnDown()
 {
-  if (!m_dvdnav) return ;
+  if (!m_dvdnav) return;
   dvdnav_lower_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
 }
 
 void CDVDInputStreamNavigator::OnLeft()
 {
-  if (!m_dvdnav) return ;
+  if (!m_dvdnav) return;
   dvdnav_left_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
 }
 
 void CDVDInputStreamNavigator::OnRight()
 {
-  if (!m_dvdnav) return ;
+  if (!m_dvdnav) return;
   dvdnav_right_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
 }
 
 void CDVDInputStreamNavigator::OnMenu()
 {
-  if (!m_dvdnav) return ;
+  if (!m_dvdnav) return;
   dvdnav_menu_call(m_dvdnav, DVD_MENU_Escape);
 }
 
 void CDVDInputStreamNavigator::OnBack()
 {
-  if (!m_dvdnav) return ;
+  if (!m_dvdnav) return;
   dvdnav_go_up(m_dvdnav);
 }
 
