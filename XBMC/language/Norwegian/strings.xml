@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.209. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.211. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -784,7 +784,7 @@
   <string><id>13312</id><value>Reduksjon av sort felt</value></string>
   <string><id>13313</id><value>Nullstill/Start på nytt</value></string>
   <string><id>13314</id><value>Crossfade</value></string>
-  <string><id>13315</id><value>Lag miniatyrbilder</value></string>
+  <string><id>13315</id><value>Regenerer miniatyrbilder</value></string>
   <string><id>13316</id><value>Rekursive miniatyrbilder</value></string>
   <string><id>13317</id><value>Se bildevisning</value></string>
   <string><id>13318</id><value>Rekursiv bildevisning</value></string>
@@ -860,6 +860,7 @@
   <string><id>13388</id><value>Forhåndsinnstillinger</value></string>
   <string><id>13389</id><value>Det er ingen forhåndsinnstillinger tilgjengelig&#10;for denne visualiseringen</value></string>
   <string><id>13390</id><value>Det er ingen innstillinger tilgjengelige&#10;for denne visualiseringen</value></string>
+  <string><id>13391</id><value>Løs ut/last inn</value></string>
 
   <string><id>14000</id><value>Stabling: Av</value></string>
   <string><id>14001</id><value>Stabling: Enkel</value></string>
