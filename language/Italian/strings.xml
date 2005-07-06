@@ -549,7 +549,7 @@
   <string><id>768</id><value>Reserved</value></string>
   <string><id>769</id><value>Reserved</value></string>
   <string><id>770</id><value>Errore %i: condivisione non disponibile</value></string>
-  <string><id>771</id><value>Arrangiamento per limiti fatx nell'FTP server</value></string>
+  <string><id>771</id><value>- Auto Fatx Limiter</value></string>
   <string><id>772</id><value>Audio hardware</value></string>
   <string><id>773</id><value>Cercando</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
@@ -562,7 +562,7 @@
   <string><id>1203</id><value>SMB Username</value></string>
   <string><id>1204</id><value>SMB Password</value></string>
   <string><id>1205</id><value>Nome Condivisione SMB</value></string>
-  <string><id>1206</id><value>Gruppo Condiv. SMB</value></string>
+  <string><id>1206</id><value>Gruppo Cond. SMB</value></string>
   <string><id>1207</id><value>SMB WINS-Server</value></string>
   <string><id>1208</id><value>Modalità Impostazioni</value></string>
   <string><id>1209</id><value>Le Impostazioni SMB sono state salvate!</value></string>
@@ -586,6 +586,24 @@
   <string><id>1227</id><value>Files, Immagini e Musica</value></string> 
   <string><id>1228</id><value>Files, Immagini e Video</value></string> 
 
+  <string><id>1229</id><value>Musica e Programmi</value></string>
+  <string><id>1230</id><value>Video e Programmi</value></string>
+  <string><id>1231</id><value>Immagini e Programmi</value></string>
+  <string><id>1232</id><value>Musica, Video, Immagini e Programmi</value></string>
+  <string><id>1233</id><value>Programmi, Video e Musica</value></string>
+  <string><id>1234</id><value>Programmi, Immagini e Musica</value></string>
+  <string><id>1235</id><value>Programmi, Immagini e Video</value></string>
+  
+  <string><id>1245</id><value> - FTP User Name</value></string>
+  <string><id>1246</id><value> - FTP User Password</value></string>
+  <string><id>1247</id><value>FTP Server User Password salvata con successo!</value></string>
+
+  <string><id>1250</id><value>Autodetection</value></string>
+  <string><id>1251</id><value>XBOX Autodetection</value></string>
+  <string><id>1252</id><value>Nick Name</value></string>
+  <string><id>1253</id><value>Crea collegamento FTP nel Filemanager</value></string>
+  <string><id>1254</id><value>Popup Notification</value></string>
+  <string><id>1255</id><value>Invia FTP User and Password</value></string>
 
   <string><id>1396</id><value>Mutevole</value></string>
   <string><id>1397</id><value>e</value></string>
@@ -730,6 +748,10 @@
   <string><id>12370</id><value>Master Lock Mode è cambiato, il Master Code non era impostato!</value></string>
   <string><id>12371</id><value>Inserire un nuovo Master Code!</value></string>
 
+  <string><id>12372</id><value>Lock Filemanager</value></string>
+  <string><id>12373</id><value>Lock Impostazioni</value></string>
+  <string><id>12374</id><value>Lock Media</value></string>
+
   <string><id>12600</id><value>Meteo</value></string>
   <string><id>12900</id><value>Screensaver</value></string>
   <string><id>12901</id><value>OSD a schermo intero</value></string>
@@ -771,7 +793,7 @@
   <string><id>13312</id><value>Riduzione Barra Nera</value></string>
   <string><id>13313</id><value>Reset/Riavvio</value></string>
   <string><id>13314</id><value>Crossfade</value></string>
-  <string><id>13315</id><value>Crea Icone</value></string>
+  <string><id>13315</id><value>Ricrea Icone</value></string>
   <string><id>13316</id><value>Icone Ricorsive</value></string>
   <string><id>13317</id><value>Vedi Slideshow</value></string>
   <string><id>13318</id><value>Slideshow Ricorsivo</value></string>
@@ -847,6 +869,7 @@
   <string><id>13388</id><value>Presets</value></string>
   <string><id>13389</id><value>Nessun preset disponibile&#10;per questo effetto grafico</value></string>
   <string><id>13390</id><value>Nessuna impostazione disponibile&#10;per questo effetto grafico</value></string>
+  <string><id>13391</id><value>Eject/Carica</value></string>
 
   <string><id>14000</id><value>Unisci: Spento</value></string>
   <string><id>14001</id><value>Unisci: Semplice</value></string>

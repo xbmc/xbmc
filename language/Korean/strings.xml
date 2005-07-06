@@ -441,6 +441,10 @@
   <string><id>509</id><value>프로그램 미리보기 캐시</value></string>
   <string><id>510</id><value>시각화 사용</value></string>
   <string><id>511</id><value>게임 지역코드에 따른 비디오모드 자동변경</value></string>
+  <string><id>512</id><value>시작 윈도우</value></string>
+  <string><id>513</id><value>홈 윈도우</value></string>
+  <string><id>514</id><value>사용자 설정</value></string>
+  
   <string><id>600</id><value>시디 추출</value></string>
   <string><id>601</id><value>중간</value></string>
   <string><id>602</id><value>표준</value></string>
@@ -535,7 +539,6 @@
   <string><id>757</id><value>하위 경로 수 변경</value></string>
   <string><id>758</id><value>프로그램 연결 제거</value></string>
   <string><id>759</id><value>보기: 목록(Big)</value></string>
-  
   <string><id>760</id><value>노란색</value></string>
   <string><id>761</id><value>흰색</value></string>
   <string><id>762</id><value>파란색</value></string>
@@ -546,7 +549,6 @@
   <string><id>767</id><value>예약</value></string>
   <string><id>768</id><value>예약</value></string>
   <string><id>769</id><value>예약</value></string>
-  
   <string><id>770</id><value>오류 %i: 공유를 사용할 수 없습니다</value></string>
   <string><id>771</id><value>FTP서버의 fatx 제한에 대해 대체방법 사용</value></string>
   <string><id>772</id><value>오디오 하드웨어</value></string>
@@ -578,13 +580,20 @@
   <string><id>1220</id><value>사진 &amp; 파일</value></string>
   <string><id>1221</id><value>음악 &amp; 비디오 &amp; 사진</value></string>
   <string><id>1222</id><value>음악 &amp; 비디오 &amp; 사진&amp; 파일</value></string>
+  <string><id>1223</id><value>사용안함</value></string>
+  <string><id>1224</id><value>일반 사용자</value></string>
+  <string><id>1225</id><value>고급 사용자</value></string> 
   <string><id>1226</id><value>파일 &amp; 음악 &amp; 비디오</value></string>
   <string><id>1227</id><value>파일 &amp; 사진 &amp; 음악</value></string>
   <string><id>1228</id><value>파일 &amp; 사진 &amp; 비디오</value></string>
-  <string><id>1223</id><value>사용안함</value></string>
-  <string><id>1224</id><value>일반 사용자</value></string>
-  <string><id>1225</id><value>고급 사용자</value></string>
   
+  <string><id>1229</id><value>음악 &amp; 프로그램</value></string> 
+  <string><id>1230</id><value>비디오 &amp; 프로그램</value></string>
+  <string><id>1231</id><value>사진 &amp; 프로그램</value></string>
+  <string><id>1232</id><value>음악 &amp; 비디오 &amp; 사진 &amp; 프로그램</value></string>
+  <string><id>1233</id><value>프로그램 &amp; 비디오 &amp; 음악</value></string>
+  <string><id>1234</id><value>프로그램 &amp; 사진 &amp; 음악</value></string>
+  <string><id>1235</id><value>프로그램 &amp; 사진 &amp; 비디오</value></string>
   
   <string><id>1396</id><value>뜬</value></string>
   <string><id>1397</id><value>그리고</value></string>
@@ -726,8 +735,12 @@
   <string><id>12368</id><value>사용 가능한 마스터 코드를 입력하십시오!</value></string> 
   <string><id>12369</id><value>XBMC 시작 잠금</value></string> 
   <string><id>12370</id><value>마스터 잠금 모드가 변경되지만 마스터 코드가 설정되지 않았습니다.</value></string> 
-  <string><id>12371</id><value>새로운 마스터 코드를 설정해 주십시오!</value></string> 
+  <string><id>12371</id><value>새로운 마스터 코드를 설정해 주십시오!</value></string>
 
+  <string><id>12372</id><value>파일 관리자 잠금</value></string> 
+  <string><id>12373</id><value>잠금 설정</value></string> 
+  <string><id>12374</id><value>미디어 잠금</value></string> 
+  
   <string><id>12600</id><value>날씨</value></string>
   <string><id>12900</id><value>화면 보호기</value></string>
   <string><id>12901</id><value>전체화면 OSD</value></string>
@@ -843,6 +856,10 @@
   <string><id>13385</id><value>음성 변조 - 포트 3</value></string>
   <string><id>13386</id><value>시간단위 검색기능 사용</value></string>
   <string><id>13387</id><value>트랙명 지정 템플릿 오른쪽</value></string>
+  <string><id>13388</id><value>프리셋</value></string> 
+  <string><id>13389</id><value>현재 시각화에 사용가능한 &#10;프리셋이 존재하지 않습니다</value></string> 
+  <string><id>13390</id><value>현재 시각화에 사용가능한 &#10;설정이 없습니다</value></string> 
+  <string><id>13391</id><value>꺼내기/불러오기</value></string>
 
   <string><id>14000</id><value>연속 재생: 끔</value></string>
   <string><id>14001</id><value>연속 재생: 간단</value></string>
@@ -985,11 +1002,9 @@
   <string><id>15104</id><value>* 모든 음악</value></string>
   <string><id>15105</id><value>* 모든 장르</value></string>
   <string><id>15106</id><value>다음 파일 재생시 선택된 파일 기억</value></string>
-  
   <string><id>15107</id><value>버퍼링중...</value></string>
   <string><id>15108</id><value>네비게이션 사운드</value></string>
   <string><id>15109</id><value>스킨 기본값</value></string>
-
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>음악 정보를 AudioScrobbler로 전송</value></string>
   <string><id>15202</id><value>AudioScrobbler 사용자명</value></string>
@@ -1052,6 +1067,5 @@
   <string><id>13298</id><value>XBLIVE 키:</value></string>
   
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
-  
   <string><id>15214</id><value>자동 A/V 싱크 사용</value></string>
 </strings>
