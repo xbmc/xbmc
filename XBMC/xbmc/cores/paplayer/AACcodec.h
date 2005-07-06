@@ -25,11 +25,11 @@ public:
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool HandlesType(const char *type);
 private:
-  static unsigned __int32 OpenCallback(const char *pName, const char *mode, void *userData);
-  static void CloseCallback(void *userData);
-  static unsigned __int32 ReadCallback(void *userData, void *pBuffer, unsigned long nBytesToRead);
-  static __int32 SeekCallback(void *userData, unsigned __int64 pos);
-  static __int64 FilesizeCallback(void *userData);
+  static unsigned __int32 AACOpenCallback(const char *pName, const char *mode, void *userData);
+  static void AACCloseCallback(void *userData);
+  static unsigned __int32 AACReadCallback(void *userData, void *pBuffer, unsigned long nBytesToRead);
+  static __int32 AACSeekCallback(void *userData, unsigned __int64 pos);
+  static __int64 AACFilesizeCallback(void *userData);
 
   AACHandle m_Handle;
   BYTE*     m_Buffer;

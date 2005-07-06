@@ -105,7 +105,7 @@ public:
   int GetID3v2Size() const { return m_iID3v2Size; }
 
 protected:
-  int ReadDuration(CFile& file, const ID3_Tag& id3tag);
+  virtual int ReadDuration(const CStdString& strFileName);
   bool ReadLAMETagInfo(BYTE *p);
   bool IsMp3FrameHeader(unsigned long head);
   char* GetString(const ID3_Frame *frame, ID3_FieldID fldName);
@@ -127,5 +127,7 @@ private:
   CVBRMP3SeekHelper m_seekInfo;
   CReplayGain       m_replayGainInfo;
   int m_iID3v2Size;
+  CFile m_file;
+  ID3_Tag m_id3tag;
 };
 };

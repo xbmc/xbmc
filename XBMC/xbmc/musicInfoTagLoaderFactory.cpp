@@ -12,6 +12,8 @@
 #include "MusicInfoTagLoaderSid.h"
 #include "MusicInfoTagLoaderMod.h" 
 #include "MusicInfoTagLoaderWav.h" 
+#include "MusicInfoTagLoaderAAC.h" 
+#include "MusicInfoTagLoaderWAVPack.h" 
 #include "cores/ModPlayer.h" 
 #include "util.h"
 
@@ -38,7 +40,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   if (strExtension.IsEmpty())
     return NULL;
 
-  if (strExtension == "mp3" || strExtension == "aac")
+  if (strExtension == "mp3")
   {
     CMusicInfoTagLoaderMP3 *pTagLoader = new CMusicInfoTagLoaderMP3();
     return (IMusicInfoTagLoader*)pTagLoader;
@@ -96,6 +98,16 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   else if (strExtension == "wav")
   {
     CMusicInfoTagLoaderWAV *pTagLoader = new CMusicInfoTagLoaderWAV();
+    return (IMusicInfoTagLoader*)pTagLoader;
+  } 
+  else if (strExtension == "aac")
+  {
+    CMusicInfoTagLoaderAAC *pTagLoader = new CMusicInfoTagLoaderAAC();
+    return (IMusicInfoTagLoader*)pTagLoader;
+  } 
+  else if (strExtension == "wv")
+  {
+    CMusicInfoTagLoaderWAVPack *pTagLoader = new CMusicInfoTagLoaderWAVPack();
     return (IMusicInfoTagLoader*)pTagLoader;
   } 
 
