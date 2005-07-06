@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-07-2005 updated: Polish language file (Thnx to napek)
  - 06-07-2005 updated: Norwegian language file (Thnx to vnm)
  - 06-07-2005 updated: Korean language file (Thnx to AkoXko)
  - 06-07-2005 updated: Italian language file (Thnx to kotix)
