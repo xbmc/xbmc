@@ -38,11 +38,11 @@ bool AACCodec::Init(const CStdString &strFile, unsigned int filecache)
   // setup our callbacks
   AACIOCallbacks callbacks;
   callbacks.userData=this;
-  callbacks.Open=OpenCallback;
-  callbacks.Read=ReadCallback;
-  callbacks.Close=CloseCallback;
-  callbacks.Filesize=FilesizeCallback;
-  callbacks.Seek=SeekCallback;
+  callbacks.Open=AACOpenCallback;
+  callbacks.Read=AACReadCallback;
+  callbacks.Close=AACCloseCallback;
+  callbacks.Filesize=AACFilesizeCallback;
+  callbacks.Seek=AACSeekCallback;
 
   m_Handle=m_dll.AACOpen(strFile.c_str(), callbacks);
   if (m_Handle==AAC_INVALID_HANDLE)
@@ -60,7 +60,29 @@ bool AACCodec::Init(const CStdString &strFile, unsigned int filecache)
     m_TotalTime = info.totaltime;
 	  m_Bitrate = info.bitrate;
 
-    m_Buffer = new BYTE[2048*m_Channels*sizeof(short)*2];
+    m_Buffer = new BYTE[AAC_PCM_SIZE*m_Channels*2];
+
+    //  setup codec name
+    CStdString strType;
+    if (info.objecttype==AAC_MAIN)
+      strType="MAIN";
+    else if (info.objecttype==AAC_LC)
+      strType="LC";
+    else if (info.objecttype==AAC_SSR)
+      strType="SSR";
+    else if (info.objecttype==AAC_LTP)
+      strType="LTP";
+    else if (info.objecttype==AAC_HE)
+      strType="HE";
+    else if (info.objecttype==AAC_ER_LC)
+      strType="ER-LC";
+    else if (info.objecttype==AAC_ER_LTP)
+      strType="ER-LTP";
+    else if (info.objecttype==AAC_LD)
+      strType="LD";
+
+    if (!strType.IsEmpty())
+      m_CodecName.Format("%s-AAC", strType.c_str());
 
     //  Get replay gain info
     if (info.replaygain_track_gain)
@@ -132,12 +154,12 @@ int AACCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     m_BufferPos = 0;
 
     //  Fill our buffer with a chunk of audio data
-    int iAmountRead=m_dll.AACRead(m_Handle, m_Buffer+m_BufferSize, 2048*m_Channels*sizeof(short));
+    int iAmountRead=m_dll.AACRead(m_Handle, m_Buffer+m_BufferSize, AAC_PCM_SIZE*m_Channels);
     if (iAmountRead==AAC_READ_EOF)
       bEof=true;
     else if (iAmountRead<=AAC_READ_ERROR)
     {
-      CLog::Log(LOGERROR, "AACCodec: Error, %s", m_dll.AACGetErrorMessage());
+      CLog::Log(LOGERROR, "AACCodec: Unable to read data (%s)", m_dll.AACGetErrorMessage());
       return READ_ERROR;
     } 
     else
@@ -202,7 +224,7 @@ bool AACCodec::LoadDLL()
   return true;
 }
 
-unsigned __int32 AACCodec::OpenCallback(const char *pName, const char *mode, void *userData)
+unsigned __int32 AACCodec::AACOpenCallback(const char *pName, const char *mode, void *userData)
 {
   AACCodec* codec=(AACCodec*) userData;
 
@@ -212,7 +234,7 @@ unsigned __int32 AACCodec::OpenCallback(const char *pName, const char *mode, voi
   return codec->m_file.Open(pName);
 }
 
-void AACCodec::CloseCallback(void *userData)
+void AACCodec::AACCloseCallback(void *userData)
 {
   AACCodec* codec=(AACCodec*) userData;
 
@@ -222,7 +244,7 @@ void AACCodec::CloseCallback(void *userData)
   codec->m_file.Close();
 }
 
-unsigned __int32 AACCodec::ReadCallback(void *userData, void *pBuffer, unsigned long nBytesToRead)
+unsigned __int32 AACCodec::AACReadCallback(void *userData, void *pBuffer, unsigned long nBytesToRead)
 {
   AACCodec* codec=(AACCodec*) userData;
 
@@ -232,7 +254,7 @@ unsigned __int32 AACCodec::ReadCallback(void *userData, void *pBuffer, unsigned 
   return codec->m_file.Read(pBuffer, nBytesToRead);
 }
 
-__int32 AACCodec::SeekCallback(void *userData, unsigned __int64 pos)
+__int32 AACCodec::AACSeekCallback(void *userData, unsigned __int64 pos)
 {
   AACCodec* codec=(AACCodec*) userData;
 
@@ -244,7 +266,7 @@ __int32 AACCodec::SeekCallback(void *userData, unsigned __int64 pos)
   return 0;
 }
 
-__int64 AACCodec::FilesizeCallback(void *userData)
+__int64 AACCodec::AACFilesizeCallback(void *userData)
 {
   AACCodec* codec=(AACCodec*) userData;
 
@@ -253,4 +275,3 @@ __int64 AACCodec::FilesizeCallback(void *userData)
 
   return codec->m_file.GetLength();
 }
-
