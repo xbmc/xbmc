@@ -1,7 +1,7 @@
 <window>
   <id>2001</id>
   <defaultcontrol>5</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
+  <allowoverlay>no</allowoverlay>
   <controls>
     <control>
       <description>background image</description>
@@ -212,6 +212,109 @@
       <onright>4</onright>
       <onup>5</onup>
       <ondown>5</ondown>
+    </control>
+
+
+    <control>
+      <description>video rectangle</description>
+      <type>image</type>
+      <id>0</id>
+      <posX>60</posX>
+      <posY>380</posY>
+      <width>140</width>
+      <height>118</height>
+      <texture>blue_rectangle_video.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+      <visible>!Player.HasAudio</visible>
+    </control>
+
+    <control>
+      <description>video preview window</description>
+      <type>videowindow</type>
+      <id>1</id>
+      <posX>65</posX>
+      <posY>385</posY>
+      <width>130</width>
+      <height>107</height>
+    </control>
+
+    <control>
+      <description>play time label</description>
+      <type>label</type>
+      <id>0</id>
+      <posX>65</posX>
+      <posY>500</posY>
+      <label>-</label>
+      <info>VideoPlayer.Time</info>
+      <align>left</align>
+      <font>font13</font>
+    </control>
+
+    <control>
+      <description>album/artist/genre etc info label</description>
+      <type>fadelabel</type>
+      <width>130</width>
+      <posX>65</posX>
+      <posY>525</posY>
+      <font>font10</font>
+      <id>0</id>
+      <info>VideoPlayer.Title</info>
+      <info>VideoPlayer.Year</info>
+      <info>VideoPlayer.Director</info>
+      <info>VideoPlayer.Genre</info>
+    </control>
+
+
+    <control>
+      <description>music rectangle</description>
+      <type>image</type>
+      <id>0</id>
+      <posX>60</posX>
+      <posY>381</posY>
+      <width>90</width>
+      <height>120</height>
+      <texture>blue_rectangle_music.png</texture>
+      <visible>!Player.HasVideo</visible>
+    </control>
+
+    <control>
+      <description>music logo</description>
+      <type>image</type>
+      <id>0</id>
+      <posX>65</posX>
+      <posY>387</posY>
+      <width>80</width>
+      <height>109</height>
+      <texture>music.jpg</texture>
+      <info>MusicPlayer.Cover</info>
+    </control>
+
+    <control>
+      <description>play time label</description>
+      <type>label</type>
+      <id>0</id>
+      <posX>65</posX>
+      <posY>500</posY>
+      <label>-</label>
+      <info>MusicPlayer.Time</info>
+      <align>left</align>
+      <font>font13</font>
+    </control>
+
+    <control>
+      <description>album/artist/genre etc info label</description>
+      <type>fadelabel</type>
+      <width>130</width>
+      <posX>65</posX>
+      <posY>525</posY>
+      <font>font10</font>
+      <info>MusicPlayer.Artist</info>
+      <info>MusicPlayer.Title</info>
+      <info>MusicPlayer.Album</info>
+      <info>MusicPlayer.Year</info>
+      <textcolor>FFFFFFFF</textcolor>
+      <id>0</id>
     </control>
 
   </controls>
