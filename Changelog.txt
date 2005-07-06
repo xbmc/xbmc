@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-07-2005 updated: Norwegian language file (Thnx to vnm)
+ - 06-07-2005 updated: Korean language file (Thnx to AkoXko)
+ - 06-07-2005 updated: Italian language file (Thnx to kotix)
+ - 06-07-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 06-07-2005 updated: Chinese (Simple) language file (Thnx to hibaby)
  - 06-07-2005 added: wavpack codec for paplayer (needs wavpack.dll in system\players\paplayer)
  - 06-07-2005 added: advanced codec info for the aaccodec (aaccodec.dll in system\players\paplayer got updated)
  - 06-07-2005 fixed: the dvdplayer did crash sometimes while seeking
