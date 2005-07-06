@@ -1,0 +1,41 @@
+<sounds>
+  <actions>
+    <action>
+      <description>Move Left</description>
+      <id>1</id>
+      <file>nav.wav</file>
+    </action>
+    <action>
+      <description>Move Right</description>
+      <id>2</id>
+      <file>nav.wav</file>
+    </action>
+    <action>
+      <description>Move Up</description>
+      <id>3</id>
+      <file>nav.wav</file>
+    </action>
+    <action>
+      <description>Move Down</description>
+      <id>4</id>
+      <file>nav.wav</file>
+    </action>
+    <action>
+      <description>Select Item</description>
+      <id>7</id>
+      <file>nav.wav</file>
+    </action>
+    <action>
+      <description>Previous Menu</description>
+      <id>10</id>
+      <file>nav.wav</file>
+    </action>
+  </actions>
+
+  <windows>
+    <window>
+      <id>107</id>
+      <activate>nav.wav</activate>
+    </window>
+  </windows>
+</sounds>
