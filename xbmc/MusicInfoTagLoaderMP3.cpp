@@ -433,22 +433,20 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
     bool bResult = false;
     // CSectionLoader::Load("LIBID3");
     tag.SetURL(strFileName);
-    CFile file;
-    if ( file.Open( strFileName.c_str() ) )
+    if ( m_file.Open( strFileName.c_str() ) )
     {
       // Do not use ID3TT_ALL, because
       // id3lib reads the ID3V1 tag first
       // then ID3V2 tag is blocked.
-      ID3_XIStreamReader reader( file );
-      ID3_Tag myTag;
-      if ( myTag.Link(reader, ID3TT_ID3V2) >= 0)
+      ID3_XIStreamReader reader( m_file );
+      if ( m_id3tag.Link(reader, ID3TT_ID3V2) >= 0)
       {
-        if ( !(bResult = ReadTag( myTag, tag )) )
+        if ( !(bResult = ReadTag( m_id3tag, tag )) )
         {
-          myTag.Clear();
-          if ( myTag.Link(reader, ID3TT_ID3V1 ) >= 0 )
+          m_id3tag.Clear();
+          if ( m_id3tag.Link(reader, ID3TT_ID3V1 ) >= 0 )
           {
-            bResult = ReadTag( myTag, tag );
+            bResult = ReadTag( m_id3tag, tag );
           }
         }
       }
@@ -464,6 +462,7 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
         {
           bResult = true;
           tag.SetTitle(apeTag.GetTitle());
+          tag.SetLoaded();
         }
         if (apeTag.GetGenre().size())
           tag.SetGenre(apeTag.GetGenre());
@@ -480,18 +479,8 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
           m_replayGainInfo = apeTag.GetReplayGain();
       }
 
-      CStdString strExtension;
-      CUtil::GetExtension(strFileName, strExtension);
-      strExtension.ToLower();
-      if (strExtension==".mp3")
-        tag.SetDuration(ReadDuration(file, myTag));
-      else if (strExtension==".aac")
-      {
-        AACCodec codec;
-        codec.Init(strFileName, 4096);
-        tag.SetDuration((int)(int)((codec.m_TotalTime + 500)/ 1000));
-      }
-      file.Close();
+      tag.SetDuration(ReadDuration(strFileName));
+      m_file.Close();
     }
 
     // CSectionLoader::Unload("LIBID3");
@@ -532,7 +521,7 @@ bool CMusicInfoTagLoaderMP3::IsMp3FrameHeader(unsigned long head)
 }
 
 // Inspired by http://rockbox.haxx.se/ and http://www.xs4all.nl/~rwvtveer/scilla
-int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
+int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
 {
   int nDuration = 0;
   int nPrependedBytes = 0;
@@ -541,23 +530,23 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
   unsigned char buffer[8193];
 
   /* Make sure file has a ID3v2 tag */
-  file.Seek(0, SEEK_SET);
-  file.Read(buffer, 6);
+  m_file.Seek(0, SEEK_SET);
+  m_file.Read(buffer, 6);
 
   if (buffer[0] == 'I' &&
       buffer[1] == 'D' &&
       buffer[2] == '3')
   {
     /* Now check what the ID3v2 size field says */
-    file.Read(buffer, 4);
+    m_file.Read(buffer, 4);
     nPrependedBytes = UNSYNC(buffer[0], buffer[1], buffer[2], buffer[3]) + 10;
     m_iID3v2Size=nPrependedBytes;
   }
 
   //raw mp3Data = FileSize - ID3v1 tag - ID3v2 tag
-  int nMp3DataSize = (int)file.GetLength() - nPrependedBytes;
-  if (id3tag.HasV1Tag())
-    nMp3DataSize -= id3tag.GetAppendedBytes();
+  int nMp3DataSize = (int)m_file.GetLength() - nPrependedBytes;
+  if (m_id3tag.HasV1Tag())
+    nMp3DataSize -= m_id3tag.GetAppendedBytes();
 
   const int freqtab[][4] =
     {
@@ -568,8 +557,8 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
     };
 
   // Skip ID3V2 tag when reading mp3 data
-  file.Seek(nPrependedBytes, SEEK_SET);
-  file.Read(buffer, 8192);
+  m_file.Seek(nPrependedBytes, SEEK_SET);
+  m_file.Read(buffer, 8192);
 
   int frequency = 0, bitrate = 0, bittable = 0;
   int frame_count = 0;

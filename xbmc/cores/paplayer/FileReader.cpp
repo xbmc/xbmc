@@ -125,7 +125,7 @@ int CFileReader::Seek(__int64 pos, int whence)
     m_bufferedDataPos = newBufferedDataPos;
     m_file.Seek(m_bufferedDataPos, SEEK_SET);
   }
-  return 0;
+  return (int)m_bufferedDataPos;
 }
 
 void CFileReader::Process()

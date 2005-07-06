@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-07-2005 added: wavpack codec for paplayer (needs wavpack.dll in system\players\paplayer)
+ - 06-07-2005 added: advanced codec info for the aaccodec (aaccodec.dll in system\players\paplayer got updated)
  - 06-07-2005 fixed: the dvdplayer did crash sometimes while seeking
  - 06-07-2005 fixed: some dvd navigating issues, stills should be displayed better now
  - 06-07-2005 fixed: Thumb/List control page up/down problems.

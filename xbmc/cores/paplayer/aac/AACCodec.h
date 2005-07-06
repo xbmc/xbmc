@@ -30,6 +30,18 @@ typedef struct AACIOCallbacks
   void *userData;
 } AACIOCallbacks;
 
+typedef enum AAC_OBJECT_TYPE
+{
+  AAC_MAIN=1, /* MAIN */
+  AAC_LC=2, /* Low Complexity */
+  AAC_SSR=3, /* Scalable SampleRate */
+  AAC_LTP=4, /* Long Term Predition */
+  AAC_HE=5, /* High Efficiency (SBR) */
+  AAC_ER_LC=17, /* Error Resilient Low Complexity */
+  AAC_ER_LTP=19, /* Error Resilient Long Term Prediction */
+  AAC_LD=23 /* Low Delay */
+} AAC_OBJECT_TYPE;
+
 /* info about a file */
 typedef struct AACInfo
 {
@@ -38,6 +50,8 @@ typedef struct AACInfo
   int bitspersample;
   int totaltime;
   int bitrate;
+
+  AAC_OBJECT_TYPE objecttype;
 
   char* replaygain_track_gain;
   char* replaygain_album_gain;
@@ -49,6 +63,10 @@ typedef struct AACInfo
 #define AAC_READ_EOF              -1
 #define AAC_READ_ERROR            -2
 #define AAC_READ_BUFFER_TO_SMALL  -3
+
+/* A decode call can eat up to AAC_PCM_SIZE bytes per decoded channel,
+   so at least so much bytes per channel should be available */
+#define AAC_PCM_SIZE 2048*sizeof(short)
 
 #if defined(__cplusplus)
 extern "C"
