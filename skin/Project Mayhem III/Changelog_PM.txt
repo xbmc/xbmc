@@ -1,4 +1,5 @@
-2005-07-05 fixed:	new sekkbar fully working now
+2005-07-05 fixed:	Video and Music Overlays were not visible on AlbumInfo and VideoInfo dialogs
+2005-07-05 fixed:	new seekbar fully working now
 2005-07-05 fixed:	buttons on the new shutdownmenu not puulsing anymore
 
 2005-07-04 added:	more progressbar tweaks
