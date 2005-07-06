@@ -479,9 +479,9 @@ void CGUIThumbnailPanel::Calculate(bool resetItem)
   int iPages = m_vecItems.size() / iItemsPerPage;
   if (m_vecItems.size() % iItemsPerPage) iPages++;
   m_upDown.SetRange(1, iPages);
-  m_upDown.SetValue(1);
   if (resetItem)
   {
+    m_upDown.SetValue(1);
     int iItem = (m_iRowOffset + m_iCursorY) * m_iColumns + m_iCursorX;
     SetSelectedItem(iItem);
   }

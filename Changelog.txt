@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-07-2005 fixed: Thumb/List control page up/down problems.
  - 05-07-2005 fixed: Video OSD open/close crash.
  - 05-07-2005 changed: Default <colorkey> changed to zero.  (Makes more sense)
  - 05-07-2005 changed: Order of context menu items.
