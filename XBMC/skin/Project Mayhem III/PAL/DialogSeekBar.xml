@@ -1,33 +1,297 @@
 <window>
   <id>115</id>
   <defaultcontrol>1</defaultcontrol>
-  <coordinates>
-    <system>1</system>
-    <posX>473</posX>
-    <posY>40</posY>
-  </coordinates>
-
+  <visible>Player.Seeking | Player.DisplayAfterSeek | Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
   <controls>
+
+    <!-- playstate images -->
+
+    <control>
+      <description>pause image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Paused</visible>
+      <texture>video-pause.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>2x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Forwarding2x</visible>
+      <texture>video-2x.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>4x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Forwarding4x</visible>
+      <texture>video-4x.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>8x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Forwarding8x</visible>
+      <texture>video-8x.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>16x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Forwarding16x</visible>
+      <texture>video-16x.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>32x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Forwarding32x</visible>
+      <texture>video-32x.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>-2x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Rewinding2x</visible>
+      <texture>video-2xr.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>-4x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Rewinding4x</visible>
+      <texture>video-4xr.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>-8x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Rewinding8x</visible>
+      <texture>video-8xr.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>-16x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Rewinding16x</visible>
+      <texture>video-16xr.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <control>
+      <description>-32x image</description>
+      <type>image</type>
+      <id>0</id>
+      <align>right</align>
+      <posX>410</posX>
+      <posY>35</posY>
+      <height>60</height>
+      <width>115</width>
+      <visible>Player.Rewinding32x</visible>
+      <texture>video-32xr.png</texture>
+      <colorkey>0</colorkey>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+
+    <!-- progressbar dialog -->
+
     <control>
       <description>Popup Seek Dialog Background</description>
       <type>image</type>
-      <id>400</id>
-      <posX>1</posX>
-      <posY>2</posY>
+      <id>23</id>
+      <posX>474</posX>
+      <posY>42</posY>
       <width>184</width>
-      <height>85</height>
+      <height>75</height>
       <texture>voulume-panel-bg.png</texture>
-      <visible>Player.HasMedia</visible>
+      <visible>Player.DisplayAfterSeek|Player.Forwarding|Player.Rewinding|Player.Seekbar</visible>
+    </control>
+
+    <control>
+      <description>Elapsed VideoTime Label</description>
+      <type>label</type>
+      <id>22</id>
+      <posX>563</posX>
+      <posY>60</posY>
+      <font>font10</font>
+      <align>right</align>
+      <info>VideoPlayer.Time</info>
+      <width>100</width>
+      <height>16</height>
+      <visible>Player.DisplayAfterSeek|Player.Forwarding|Player.Rewinding|!Player.Seekbar</visible>
+    </control>
+
+    <control>
+      <description>Elapsed MusicTime Label</description>
+      <type>label</type>
+      <id>22</id>
+      <posX>563</posX>
+      <posY>60</posY>
+      <font>font10</font>
+      <align>right</align>
+      <info>MusicPlayer.Time</info>
+      <width>100</width>
+      <height>16</height>
+      <visible>Player.DisplayAfterSeek|Player.Forwarding|Player.Rewinding|!Player.Seekbar</visible>
+    </control>
+
+    <control>
+      <description>Seek Time Label</description>
+      <type>label</type>
+      <id>22</id>
+      <posX>563</posX>
+      <posY>60</posY>
+      <font>font10</font>
+      <align>right</align>
+      <info>Player.SeekTime</info>
+      <width>100</width>
+      <height>16</height>
+      <visible>Player.SeekBar|!Player.DisplayAfterSeek|!Player.Forwarding|!Player.Rewinding</visible>
+    </control>
+
+    <control>
+      <description>suffix label</description>
+      <type>label</type>
+      <id>22</id>
+      <posX>568</posX>
+      <posY>60</posY>
+      <label>/</label>
+      <align>left</align>
+      <font>font10</font>
+      <visible>Player.DisplayAfterSeek|Player.Forwarding|Player.Rewinding|Player.Seekbar</visible>
+    </control>
+
+    <control>
+      <description>VideoDuration Label</description>
+      <type>label</type>
+      <id>999</id>
+      <posX>577</posX>
+      <posY>60</posY>
+      <info>VideoPlayer.Duration</info>
+      <visible>Player.DisplayAfterSeek|Player.Forwarding|Player.Rewinding|Player.Seekbar</visible>
+      <font>font10</font>
+      <align>left</align>
+      <width>100</width>
+      <height>16</height>
+    </control>
+
+    <control>
+      <description>MusicDuration Label</description>
+      <type>label</type>
+      <id>999</id>
+      <posX>577</posX>
+      <posY>60</posY>
+      <info>MusicPlayer.Duration</info>
+      <visible>Player.DisplayAfterSeek|Player.Forwarding|Player.Rewinding|Player.Seekbar</visible>
+      <font>font10</font>
+      <align>left</align>
+      <width>100</width>
+      <height>16</height>
+    </control>
+
+    <control>
+      <description>Progressbar</description>
+      <type>progress</type>
+      <id>23</id>
+      <posX>506</posX>
+      <posY>83</posY>
+      <width>128</width>
+      <height>5</height>
+      <info>Player.Progress</info>
+      <texturebg>progress_back.png</texturebg>
+      <lefttexture>progress_left.png</lefttexture>
+      <midtexture>progress_mid.png</midtexture>
+      <righttexture>progress_right.png</righttexture>
+      <overlaytexture>-</overlaytexture>
+      <visible>Player.DisplayAfterSeek|Player.Forwarding|Player.Rewinding|Player.Seekbar</visible>
     </control>
 
     <control>
       <description>Seek Slider</description>
       <type>slider</type>
       <id>401</id>
-      <posX>33</posX>
-      <posY>42</posY>
+      <posX>506</posX>
+      <posY>82</posY>
       <width>128</width>
-      <height>8</height>
+      <height>6</height>
       <textureSliderBar>seekslider.png</textureSliderBar>
       <textureSliderNib>slider_nibFO.png</textureSliderNib>
       <textureSliderNibFocus>slider_nibFO.png</textureSliderNibFocus>
@@ -36,76 +300,6 @@
       <ondown>1</ondown>
       <onleft>1</onleft>
       <onright>1</onright>
-    </control>
-
-    <control>
-      <description>progressbar</description>
-      <type>progress</type>
-      <id>1</id>
-      <posX>33</posX>
-      <posY>52</posY>
-      <width>128</width>
-      <height>3</height>
-      <info>Player.Progress</info>
-      <visible>Player.HasMedia</visible>
-      <texturebg>progress_back.png</texturebg>
-      <lefttexture>progress_left.png</lefttexture>
-      <midtexture>progress_mid.png</midtexture>
-      <righttexture>progress_right.png</righttexture>
-      <overlaytexture>-</overlaytexture>
-    </control>
-
-    <control>
-      <description>Seek Label</description>
-      <type>label</type>
-      <id>402</id>
-      <posX>90</posX>
-      <posY>20</posY>
-      <font>font10</font>
-      <align>right</align>
-      <width>100</width>
-      <height>16</height>
-      <visible>Player.HasMedia</visible>
-    </control>
-
-    <control>
-      <description>suffix label</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>95</posX>
-      <posY>20</posY>
-      <label>/</label>
-      <align>left</align>
-      <font>font10</font>
-      <visible>Player.HasMedia</visible>
-    </control>
-
-    <control>
-      <description>Seek Label</description>
-      <type>label</type>
-      <id>403</id>
-      <posX>104</posX>
-      <posY>20</posY>
-      <info>MusicPlayer.Duration</info>
-      <visible>Player.HasAudio</visible>
-      <font>font10</font>
-      <align>left</align>
-      <width>100</width>
-      <height>16</height>
-    </control>
-
-    <control>
-      <description>Seek Label</description>
-      <type>label</type>
-      <id>403</id>
-      <posX>104</posX>
-      <posY>20</posY>
-      <info>VideoPlayer.Duration</info>
-      <visible>Player.HasVideo</visible>
-      <font>font10</font>
-      <align>left</align>
-      <width>100</width>
-      <height>16</height>
     </control>
 
   </controls>
