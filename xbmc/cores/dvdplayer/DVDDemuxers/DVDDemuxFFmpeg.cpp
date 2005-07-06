@@ -302,6 +302,9 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
     }
     else
     {
+      // XXX, in some cases ffmpeg returns a negative packet size
+      if (pkt.size <= 0) return NULL;
+      
       pPacket = CDVDDemuxUtils::AllocateDemuxPacket();
 
       // copy contents into our own packet

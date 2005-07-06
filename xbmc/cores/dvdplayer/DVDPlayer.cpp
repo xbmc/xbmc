@@ -1,14 +1,11 @@
 /* TODO / BUGS
 * - when playing audio only, xbmc renders the screen itself, but we don't get 50 / 60 fps. player bug or general xbmc bug? (XBMC bug, happens in music view only)
-* - fix spu / subtitle stuff, using default colors for it now
-* - fixing memleaks, I know there are a lot of them atm :-(
 * - create a seperate subtitle class for handling subtitles (we should support seperate vob / srt files too)
-*   and cleanup al SPUInfo realted code in the DVDPlayer class (we should convert it to YUV anyway)
+*   and cleanup al SPUInfo realted code in the DVDPlayer class (we should convert it to YUV maybe)
 * -
-* - keep track of criticalsections that dll's initialize
-* - keep track of file handles that dll's use
+* - keep track of criticalsections that dll's initialize (DLL Loader)
+* - keep track of file handles that dll's use (DLL Loader)
 * - when stopping a movie, the latest packet that comes from the demuxer is not freed
-* - fix aspect ratio's (currently we get the wrong information from libmpeg2)
 */
 
 #include "../../stdafx.h"
@@ -32,8 +29,6 @@
 #include "../../utils/GUIInfoManager.h"
 
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
-
-static int step = 0;
 
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
     : IPlayer(callback), CThread(), m_dvdPlayerVideo(&m_dvdspus, &m_clock), m_dvdPlayerAudio(&m_clock)
@@ -159,7 +154,6 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   CloseFile();
 
   m_bAbortRequest = false;
-  step = 0;
   m_iSpeed = 1;
 
   if (!Load()) return false;
@@ -584,14 +578,6 @@ void CDVDPlayer::Pause()
     m_dvdPlayerAudio.Pause(); // XXX, this won't work for ffwd or ffrw
     m_dvdPlayerVideo.Pause();
   }
-
-  /* pause or resume the video *
-  cur_stream->paused = !cur_stream->paused;
-  if (cur_stream->paused)
-  {
-    cur_stream->video_current_pts = get_video_clock();
-  }
-  step = 0;*/
 }
 
 bool CDVDPlayer::IsPaused() const
@@ -1079,7 +1065,7 @@ void CDVDPlayer::FlushBuffers()
   m_dvdPlayerVideo.Flush();
   m_dvd.iFlagSentStart = 0; //We will have a discontinuity here
   
-  m_bReadAgain = true;
+  m_bReadAgain = true; // XXX
   // this makes sure a new packet is read
 }
 
@@ -1316,12 +1302,6 @@ bool CDVDPlayer::OnAction(const CAction &action)
 
     if (pStream->IsInMenu())
     {
-      // if current button is out of range, default to 1
-      if (pStream->GetCurrentButton() > pStream->GetTotalButtons())
-      {
-        // pStream->SelectButton(1); // select default button
-      }
-
       switch (action.wID)
       {
       case  ACTION_SHOW_OSD:  // MENU
