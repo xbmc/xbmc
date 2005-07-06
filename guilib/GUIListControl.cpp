@@ -917,7 +917,6 @@ void CGUIListControl::SetHeight(int iHeight)
   int iPages = m_vecItems.size() / m_iItemsPerPage;
   if (m_vecItems.size() % m_iItemsPerPage) iPages++;
   m_upDown.SetRange(1, iPages);
-  m_upDown.SetValue(1);
 }
 
 void CGUIListControl::SetPulseOnSelect(bool pulse)
