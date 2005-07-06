@@ -65,6 +65,8 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
 
 void CGUIDialog::Close()
 {
+  if (!m_bRunning) return;
+
   //  Play the window specific deinit sound
   g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
 
@@ -114,6 +116,8 @@ void CGUIDialog::DoModal(DWORD dwParentId)
 
 void CGUIDialog::Show(DWORD dwParentId)
 {
+  if (m_bRunning) return;
+
   m_dwParentWindowID = dwParentId;
   m_pParentWindow = m_gWindowManager.GetWindow( m_dwParentWindowID);
 

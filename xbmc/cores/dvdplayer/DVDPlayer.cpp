@@ -512,7 +512,7 @@ void CDVDPlayer::HandleMessages()
         }
         
         // set flag to indicate we have finished a seeking request
-        g_infoManager.m_bPerformingSeek = false;
+        g_infoManager.m_performingSeek = false;
         
         break;
       }
@@ -893,7 +893,7 @@ void CDVDPlayer::SeekTime(__int64 iTime)
     m_messenger.Seek( (int)iTime );
   }
   // this should be set to false when its really done seeking
-  //g_infoManager.m_bPerformingSeek = false;
+  //g_infoManager.m_performingSeek = false;
 }
 
 // return the time in milliseconds

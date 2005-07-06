@@ -62,6 +62,7 @@ bool CGUIWindowSettings::OnMessage(CGUIMessage& message)
       if (iControl == CONTROL_CREDITS)
       {
         RunCredits();
+        return true;
       }
     }
     break;
