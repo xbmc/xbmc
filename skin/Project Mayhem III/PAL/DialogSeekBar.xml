@@ -182,7 +182,6 @@
       <width>184</width>
       <height>75</height>
       <texture>voulume-panel-bg.png</texture>
-      <visible>Player.DisplayAfterSeek|Player.Forwarding|Player.Rewinding|Player.Seekbar</visible>
     </control>
 
     <control>
@@ -196,7 +195,7 @@
       <info>VideoPlayer.Time</info>
       <width>100</width>
       <height>16</height>
-      <visible>Player.DisplayAfterSeek|Player.Forwarding|Player.Rewinding|!Player.Seekbar</visible>
+      <visible>!Player.Seeking + Player.HasVideo</visible>
     </control>
 
     <control>
@@ -210,7 +209,7 @@
       <info>MusicPlayer.Time</info>
       <width>100</width>
       <height>16</height>
-      <visible>Player.DisplayAfterSeek|Player.Forwarding|Player.Rewinding|!Player.Seekbar</visible>
+      <visible>!Player.Seeking + Player.HasAudio</visible>
     </control>
 
     <control>
@@ -224,7 +223,7 @@
       <info>Player.SeekTime</info>
       <width>100</width>
       <height>16</height>
-      <visible>Player.SeekBar|!Player.DisplayAfterSeek|!Player.Forwarding|!Player.Rewinding</visible>
+      <visible>Player.Seeking</visible>
     </control>
 
     <control>
@@ -236,7 +235,6 @@
       <label>/</label>
       <align>left</align>
       <font>font10</font>
-      <visible>Player.DisplayAfterSeek|Player.Forwarding|Player.Rewinding|Player.Seekbar</visible>
     </control>
 
     <control>
@@ -246,7 +244,7 @@
       <posX>577</posX>
       <posY>60</posY>
       <info>VideoPlayer.Duration</info>
-      <visible>Player.DisplayAfterSeek|Player.Forwarding|Player.Rewinding|Player.Seekbar</visible>
+      <visible>Player.HasVideo</visible>
       <font>font10</font>
       <align>left</align>
       <width>100</width>
@@ -260,7 +258,7 @@
       <posX>577</posX>
       <posY>60</posY>
       <info>MusicPlayer.Duration</info>
-      <visible>Player.DisplayAfterSeek|Player.Forwarding|Player.Rewinding|Player.Seekbar</visible>
+      <visible>Player.HasAudio</visible>
       <font>font10</font>
       <align>left</align>
       <width>100</width>
@@ -281,7 +279,7 @@
       <midtexture>progress_mid.png</midtexture>
       <righttexture>progress_right.png</righttexture>
       <overlaytexture>-</overlaytexture>
-      <visible>Player.DisplayAfterSeek|Player.Forwarding|Player.Rewinding|Player.Seekbar</visible>
+      <visible>true</visible>
     </control>
 
     <control>
@@ -295,7 +293,7 @@
       <textureSliderBar>seekslider.png</textureSliderBar>
       <textureSliderNib>slider_nibFO.png</textureSliderNib>
       <textureSliderNibFocus>slider_nibFO.png</textureSliderNibFocus>
-      <visible>Player.HasMedia</visible>
+      <visible>true</visible>
       <onup>1</onup>
       <ondown>1</ondown>
       <onleft>1</onleft>
