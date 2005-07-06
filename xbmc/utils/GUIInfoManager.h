@@ -23,6 +23,8 @@
 //int: progress value 0-100 (can be used in progressbars or sliders)
 #define PLAYER_SEEKBAR               23
 #define PLAYER_SEEKTIME              24
+#define PLAYER_SEEKING               25
+#define PLAYER_SHOWTIME              26
 
 /*!
  \ingroup strings
@@ -69,8 +71,10 @@ public:
 
   bool GetDisplayAfterSeek() const;
   void SetDisplayAfterSeek(DWORD TimeOut = 2500);
+  void SetSeeking(bool seeking) { m_playerSeeking = seeking; };
+  void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
 
-  bool m_bPerformingSeek;
+  bool m_performingSeek;
 protected:
   int TranslateSingleString(const CStdString &strCondition);
 
@@ -90,6 +94,8 @@ protected:
 
   //Fullscreen OSD Stuff
   DWORD m_AfterSeekTimeout;
+  bool m_playerSeeking;
+  bool m_playerShowTime;
 
   class CCombinedValue
   {

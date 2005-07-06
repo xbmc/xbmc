@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "GUIWindowManager.h"
 #include "GUIAudioManager.h"
-
+#include "GUIDialog.h"
 //GeminiServer 
 #include "../xbmc/FileItem.h"
 #include "../xbmc/GUIPassword.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
 CGUIWindowManager m_gWindowManager;
 CGUIWindowManager::CGUIWindowManager(void)
@@ -367,6 +368,22 @@ CGUIWindow* CGUIWindowManager::GetWindow(DWORD dwID)
   return NULL;
 }
 
+// Shows and hides modeless dialogs as necessary.
+void CGUIWindowManager::UpdateModelessVisibility()
+{
+  for (int i = 0; i < (int)m_vecWindows.size(); i++)
+  {
+    CGUIWindow* pWindow = m_vecWindows[i];
+    if (pWindow && pWindow->IsDialog() && pWindow->GetVisibleCondition())
+    {
+      if (g_infoManager.GetBool(pWindow->GetVisibleCondition()))
+        ((CGUIDialog *)pWindow)->Show(GetActiveWindow());
+      else
+        ((CGUIDialog *)pWindow)->Close();
+    }
+  }
+}
+
 void CGUIWindowManager::Process()
 {
   if (m_pCallback)
@@ -508,4 +525,15 @@ int CGUIWindowManager::GetActiveWindow() const
   CGUIWindow* pWindow = m_vecWindows[m_iActiveWindow];
 
   return pWindow->GetID();
+}
+
+bool CGUIWindowManager::IsWindowActive(DWORD dwID) const
+{
+  if (GetActiveWindow() == dwID) return true;
+  // run through the modal + modeless windows
+  for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
+    if (dwID == m_vecModalWindows[i]->GetID()) return true;
+  for (unsigned int i = 0; i < m_vecModelessWindows.size(); i++)
+    if (dwID == m_vecModelessWindows[i]->GetID()) return true;
+  return false; // window isn't active
 }

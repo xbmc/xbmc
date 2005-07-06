@@ -35,6 +35,7 @@
 #include "../xbmc/xbox/XKUtils.h"
 #include "../xbmc/Application.h"
 #include "../xbmc/ApplicationMessenger.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
 CStdString CGUIWindow::CacheFilename = "";
 CGUIWindow::VECREFERENCECONTOLS CGUIWindow::ControlsCache;
@@ -51,6 +52,7 @@ CGUIWindow::CGUIWindow(DWORD dwID)
   m_WindowAllocated = false;
   m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
   m_needsScaling = true;
+  m_visibleCondition = 0;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -390,13 +392,17 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
   while (pChild)
   {
     CStdString strValue = pChild->Value();
-    if (strValue == "id")
+    if (strValue == "id" && pChild->FirstChild())
     {
       m_dwWindowId = WINDOW_HOME + atoi(pChild->FirstChild()->Value());            // window Id's start at WINDOW_HOME
     }
-    else if (strValue == "defaultcontrol")
+    else if (strValue == "defaultcontrol" && pChild->FirstChild())
     {
       m_dwDefaultFocusControlID = atoi(pChild->FirstChild()->Value());
+    }
+    else if (strValue == "visible" && pChild->FirstChild())
+    {
+      m_visibleCondition = g_infoManager.TranslateString(pChild->FirstChild()->Value());
     }
     else if (strValue == "coordinates")
     {

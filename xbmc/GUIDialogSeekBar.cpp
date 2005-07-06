@@ -33,7 +33,7 @@ bool CGUIDialogSeekBar::OnAction(const CAction &action)
   if (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK)
   {
     // calculate our seek amount
-    if (g_application.m_pPlayer && !g_infoManager.m_bPerformingSeek)
+    if (g_application.m_pPlayer && !g_infoManager.m_performingSeek)
     {
       if (action.wID == ACTION_ANALOG_SEEK_FORWARD)
         m_fSeekPercentage += action.fAmount1 * SEEK_SPEED;
@@ -113,11 +113,11 @@ void CGUIDialogSeekBar::Render()
   }
 
   // check if we should seek or exit
-  if (!g_infoManager.m_bPerformingSeek && timeGetTime() - m_dwTimer > SEEK_BAR_DISPLAY_TIME)
-    Close();
+  if (!g_infoManager.m_performingSeek && timeGetTime() - m_dwTimer > SEEK_BAR_DISPLAY_TIME)
+    g_infoManager.SetSeeking(false);
 
   // render our controls
-  if (!m_bRequireSeek && !g_infoManager.m_bPerformingSeek)
+  if (!m_bRequireSeek && !g_infoManager.m_performingSeek)
   { // position the bar at our current time
     CGUISliderControl *pSlider = (CGUISliderControl*)GetControl(POPUP_SEEK_SLIDER);
     if (pSlider) pSlider->SetPercentage((int)((float)g_infoManager.GetPlayTime()/g_infoManager.GetTotalPlayTime() * 0.1f));
@@ -136,7 +136,7 @@ void CGUIDialogSeekBar::Render()
   // Check for seek timeout, and perform the seek
   if (m_bRequireSeek && timeGetTime() - m_dwTimer > SEEK_BAR_SEEK_TIME)
   {
-    g_infoManager.m_bPerformingSeek = true;
+    g_infoManager.m_performingSeek = true;
     float time = g_infoManager.GetTotalPlayTime() * m_fSeekPercentage * 10.0f;
     g_application.m_pPlayer->SeekTime((__int64)time);
     m_bRequireSeek = false;

@@ -40,6 +40,8 @@ public:
 class CGUIWindow
 {
 public:
+  enum WINDOW_TYPE { WINDOW = 0, MODAL_DIALOG, MODELESS_DIALOG, BUTTON_MENU, SUB_MENU };
+
   CGUIWindow(DWORD dwID);
   virtual ~CGUIWindow(void);
 
@@ -85,7 +87,8 @@ public:
   virtual bool IsDialog() { return false;};
   int OverlayAllowed() const { return m_iOverlayAllowed; };
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
-  RESOLUTION GetCoordsRes() { return m_coordsRes; };
+  RESOLUTION GetCoordsRes() const { return m_coordsRes; };
+  int GetVisibleCondition() const { return m_visibleCondition; };
 
 protected:
   virtual void OnWindowUnload() {}
@@ -128,6 +131,7 @@ protected:
   bool m_WindowAllocated;
   RESOLUTION m_coordsRes; // resolution that the window coordinates are in.
   bool m_needsScaling;
+  int m_visibleCondition;
 };
 
 #endif
