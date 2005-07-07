@@ -246,7 +246,7 @@
       <posX>65</posX>
       <posY>500</posY>
       <label>-</label>
-      <info>VideoPlayer.Time</info>
+      <info>Player.Time</info>
       <align>left</align>
       <font>font13</font>
     </control>
@@ -288,18 +288,6 @@
       <height>109</height>
       <texture>music.jpg</texture>
       <info>MusicPlayer.Cover</info>
-    </control>
-
-    <control>
-      <description>play time label</description>
-      <type>label</type>
-      <id>0</id>
-      <posX>65</posX>
-      <posY>500</posY>
-      <label>-</label>
-      <info>MusicPlayer.Time</info>
-      <align>left</align>
-      <font>font13</font>
     </control>
 
     <control>
