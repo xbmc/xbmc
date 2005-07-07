@@ -73,7 +73,7 @@
       <pulseonselect>no</pulseonselect>
       <onleft>3111</onleft>
       <onright>3113</onright>
-      <onup>3112</onup>
+      <onup>3115</onup>
       <ondown>3112</ondown>
       <font>-</font>
       <label>13005</label>
@@ -117,6 +117,26 @@
       <ondown>3114</ondown>
       <font>-</font>
       <label>13313</label>
+    </control>
+
+    <control>
+      <description>reload skin button</description>
+      <type>button</type>
+      <id>3115</id>
+      <posX>150</posX>
+      <posY>10</posY>
+      <width>60</width>
+      <height>80</height>
+      <textureFocus>sub-shutdown-focus.gif</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <execute>XBMC.ReloadSkin()</execute>
+      <pulseonselect>no</pulseonselect>
+      <onleft>3115</onleft>
+      <onright>3115</onright>
+      <onup>3112</onup>
+      <ondown>3112</ondown>
+      <font>-</font>
+      <label>Reload Skin</label>
     </control>
 
     <control>
