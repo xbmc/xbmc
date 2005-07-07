@@ -48,14 +48,6 @@ void CMusicInfoScanner::Process()
       return ;
     }
 
-    // Preload section for ID3 cover art reading
-    CSectionLoader::LoadDLL(IMAGE_DLL);
-//    CSectionLoader::Load("LIBMP4");
-    CSectionLoader::LoadDLL(APE_DLL);
-    CSectionLoader::LoadDLL(SHN_DLL);
-    CSectionLoader::LoadDLL(MPC_DLL);
-    CSectionLoader::LoadDLL(OGG_DLL);
-
     CUtil::ThumbCacheClear();
     g_directoryCache.InitMusicThumbCache();
 
@@ -115,13 +107,6 @@ void CMusicInfoScanner::Process()
       m_musicDatabase.RollbackTransaction();
 
     m_musicDatabase.EmptyCache();
-
-    CSectionLoader::UnloadDLL(IMAGE_DLL);
-//    CSectionLoader::Unload("LIBMP4");
-    CSectionLoader::UnloadDLL(APE_DLL);
-    CSectionLoader::UnloadDLL(SHN_DLL);
-    CSectionLoader::UnloadDLL(MPC_DLL);
-    CSectionLoader::UnloadDLL(OGG_DLL);
 
     CUtil::ThumbCacheClear();
     g_directoryCache.ClearMusicThumbCache();
