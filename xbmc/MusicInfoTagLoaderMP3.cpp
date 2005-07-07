@@ -102,14 +102,16 @@ char* CMusicInfoTagLoaderMP3::GetString(const ID3_Frame *frame, ID3_FieldID fldN
       size_t nText = fld->Size();
       text = LEAKTESTNEW(char[nText + 1]);
       fld->Get(text, nText + 1);
+      text[nText] = '\0';
     }
     else if (enc == ID3TE_UTF16 || enc == ID3TE_UTF16BE)
     {
-      size_t nText = fld->Size();
+      size_t nText = fld->Size()/2;
       unicode_t* textW = LEAKTESTNEW(unicode_t[nText + 1]);
-      fld->Get(textW, nText + 1);
+      fld->Get(textW, nText);
+      textW[nText] = '\0';
 
-      CStdStringW s((wchar_t*) textW, (nText / sizeof(wchar_t)));
+      CStdStringW s((wchar_t*) textW, nText);
       CStdStringA ansiString;
       g_charsetConverter.ucs2CharsetToStringCharset(s, ansiString, true);
       delete [] textW;
@@ -123,7 +125,8 @@ char* CMusicInfoTagLoaderMP3::GetString(const ID3_Frame *frame, ID3_FieldID fldN
     {
       size_t nText = fld->Size();
       text = LEAKTESTNEW(char[nText + 1]);
-      fld->Get(text, nText + 1);
+      fld->Get(text, nText);
+      text[nText] = '\0';
 
       CStdStringA s(text, nText);
       CStdStringA ansiString;
@@ -323,8 +326,11 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
   }
   if (NULL != pTitle.get())
   {
-    bResult = true;
-    tag.SetLoaded(true);
+    if (strlen(pTitle.get()))
+    {
+      tag.SetLoaded(true);
+      bResult = true;
+    }
     tag.SetTitle(pTitle.get());
   }
   if (NULL != pArtist.get())
