@@ -147,28 +147,36 @@ public:
     BOOL bResult = FALSE;
 
     ::EnterCriticalSection(&m_critSection );
-//    CLog::Log(LOGERROR, "RingBuffer@%x::Create", this);
-    if ( m_pBuf )
-      delete [] m_pBuf;
-
-    m_pBuf = NULL;
-
-    m_pBuf = new char[ iBufSize ];
-    if ( m_pBuf )
+    try
     {
-      m_nBufSize = iBufSize;
-      ZeroMemory( m_pBuf, m_nBufSize );
+  //    CLog::Log(LOGERROR, "RingBuffer@%x::Create", this);
+      if ( m_pBuf )
+        delete [] m_pBuf;
 
-      bResult = TRUE;
+      m_pBuf = NULL;
+
+      m_pBuf = new char[ iBufSize ];
+      if ( m_pBuf )
+      {
+        m_nBufSize = iBufSize;
+        ZeroMemory( m_pBuf, m_nBufSize );
+
+        bResult = TRUE;
+      }
+      m_iReadPtr = 0;
+      m_iAheadAmount = 0;
+      m_iBehindAmount = 0;
+      // sanity check the save size
+      if (iSaveSize <= 1) iSaveSize = 1;
+      if (iSaveSize >= m_nBufSize/2) iSaveSize = m_nBufSize/2;
+      m_nBehindSize = iSaveSize; 
+      ::LeaveCriticalSection(&m_critSection );
     }
-    m_iReadPtr = 0;
-    m_iAheadAmount = 0;
-    m_iBehindAmount = 0;
-    // sanity check the save size
-    if (iSaveSize <= 1) iSaveSize = 1;
-    if (iSaveSize >= m_nBufSize/2) iSaveSize = m_nBufSize/2;
-    m_nBehindSize = iSaveSize; 
-    ::LeaveCriticalSection(&m_critSection );
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "Exception in CRingHoldBuffer::Create().  Likely caused by allocating too much memory (%i bytes)", iBufSize);
+      return false;
+    }
     return bResult;
   }
 

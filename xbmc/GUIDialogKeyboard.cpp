@@ -412,7 +412,9 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStri
   pKeyboard->CenterWindow();
   pKeyboard->SetHeading(strHeading);
   pKeyboard->SetText(aTextString);
-  pKeyboard->DoModal(m_gWindowManager.GetActiveWindow());
+  // do this using a thread message to avoid render() conflicts
+  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, m_gWindowManager.GetActiveWindow()};
+  g_applicationMessenger.SendMessage(tMsg, true);
   pKeyboard->Close();
 
   // If have text - update this.

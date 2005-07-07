@@ -96,7 +96,7 @@ public:
   void DimLCDOnPlayback(bool dim);
   void PrintXBEToLCD(const char* xbePath);
   void CheckDate();		//GeminiServer CheckDate
-
+  DWORD GetThreadId() const { return m_threadID; };
   void Stop();
   void RestartApp();
   void LoadSkin(const CStdString& strSkin);
@@ -254,6 +254,9 @@ protected:
   int m_nextPlaylistItem;
   D3DGAMMARAMP m_OldRamp;  // CB: SCREENSAVER PATCH
   CSplash* m_splash;
+
+  DWORD m_threadID;       // application thread ID.  Used in applicationMessanger to know where
+                          // we are firing a thread with delay from.
 
   static LONG WINAPI UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo);
 };

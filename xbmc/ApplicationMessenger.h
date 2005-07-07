@@ -59,6 +59,7 @@ public:
   void Reset();
 
 private:
+  void ProcessMessage(ThreadMessage *pMsg);
 
   vector<ThreadMessage*> m_vecMessages;
   vector<ThreadMessage*> m_vecWindowMessages;

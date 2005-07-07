@@ -68,7 +68,6 @@ bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset, unsigned i
     Destroy();
     return false;
   }
-
   m_blockSize = m_codec->m_Channels * m_codec->m_BitsPerSample / 8;
 
   if (seekOffset)

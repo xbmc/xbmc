@@ -199,24 +199,11 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
       if (nt_error == 0xc0000008)
         break;
 
-      // NOTE: be sure to warn in XML file about Windows account lok outs when too many attempts
+      // NOTE: be sure to warn in XML file about Windows account lock outs when too many attempts
       // if the error is access denied, prompt for a valid user name and password
       if (nt_error == 0xc0000022)
       {
-        // FIXME:
-        // This should be done via a threadmessage if called from a different thread from
-        // our main thread.  Not sure how to decide one way or the other at this point how to best
-        // determine this.  Likely the best place is to look at which thread is calling us in
-        // the ApplicationMessenger, and make sure we don't wait for the message to be processed
-        // if the calling thread is the same as the processing thread (as this will cause an infinite
-        // loop).  We need a way to reliably identify threads.
-
-        // In it's current form, this will produce interesting (bizarre?) results if
-        // called from a different thread, due to 2 different threads doing our
-        // FrameMove/Render loop.
         g_passwordManager.SetSMBShare(strPath);
-        //     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, m_gWindowManager.GetActiveWindow()};
-        //     g_applicationMessenger.SendMessage(tMsg, true);
         g_passwordManager.GetSMBShareUserPassword();  // Do this bit via a threadmessage?
         if (g_passwordManager.IsCanceled())
           break;
