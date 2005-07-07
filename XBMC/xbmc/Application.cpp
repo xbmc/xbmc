@@ -1811,14 +1811,7 @@ bool CApplication::OnKey(CKey& key)
   if (iWin == WINDOW_FULLSCREEN_VIDEO)
   {
     // current active window is full screen video.
-    // check if OSD is visible
-    CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
-    if ( pFSWin->OSDVisible() )
-    {
-      // yes then use OSD section of keymap.xml to map key->action
-      g_buttonTranslator.GetAction(WINDOW_OSD, key, action);
-    }
-    else if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
+    if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
     {
       // if player is in some sort of menu, (ie DVDMENU) map buttons differently
       g_buttonTranslator.GetAction(WINDOW_MEDIA_MENU, key, action);
@@ -3245,8 +3238,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
         if (iWin == WINDOW_FULLSCREEN_VIDEO)
         {
           // check if OSD is visible, if so don't do immediate spindown
-          CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
-          m_bNetworkSpinDown = !pFSWin->OSDVisible();
+          m_bNetworkSpinDown = !m_guiWindowOSD.IsRunning();
         }
       }
       if (m_bNetworkSpinDown)
