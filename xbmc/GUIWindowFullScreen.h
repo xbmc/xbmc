@@ -1,15 +1,10 @@
 #pragma once
 #include "GUIWindow.h"
-#include "osd/osdmenu.h"
-#include "osd/iexecutor.h"
 #include "utils/CriticalSection.h"
 #include "../guilib/GUIFontTTF.h"
 
-using namespace OSD;
-
 class CGUIWindowFullScreen :
-      public CGUIWindow,
-      public IExecutor
+      public CGUIWindow
 {
 public:
   CGUIWindowFullScreen(void);
@@ -24,13 +19,9 @@ public:
   void RenderFullScreen();
   bool NeedRenderFullScreen();
   bool HasProgressDisplay();
-  bool OSDVisible() const;
   void ChangetheTimeCode(DWORD remote);
-  virtual void OnExecute(int iAction, const IOSDOption* option);
-  bool m_bOSDVisible;
 
 private:
-  void Update();
   void ShowOSD();
   void HideOSD();
   void RenderTTFSubtitles();
@@ -44,13 +35,11 @@ private:
   DWORD m_dwFPSTime;
   float m_fFrameCounter;
   FLOAT m_fFPS;
-  COSDMenu m_osdMenu;
   CCriticalSection m_section;
   CCriticalSection m_fontLock;
   bool m_bLastRender;
   int m_strTimeStamp[5];
   int m_iTimeCodePosition;
   int m_iCurrentBookmark;
-  DWORD m_dwOSDTimeOut;
   CGUIFontTTF* m_subtitleFont;
 };
