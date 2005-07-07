@@ -2,7 +2,7 @@
 
 #include "guiwindow.h"
 
-class CGUIWindowOSD : public CGUIWindow
+class CGUIWindowOSD : public CGUIDialog
 {
 public:
 
@@ -11,7 +11,6 @@ public:
 
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual bool OnMouse();
   virtual void Render();
   virtual bool SubMenuVisible();
 
@@ -37,6 +36,7 @@ protected:
   int m_iActiveMenu;
   DWORD m_iActiveMenuButtonID;
   int m_iCurrentBookmark;
+  DWORD m_dwOSDTimeOut;
 
   vector<CGUIListItem*> m_vecBookmarksItems;
   vector<CGUIListItem*> m_vecAudioStreamItems;

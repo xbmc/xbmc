@@ -121,26 +121,6 @@ void CGUIWindowFullScreen::FreeResources()
 
 bool CGUIWindowFullScreen::OnAction(const CAction &action)
 {
-  if (m_bOSDVisible)
-  {
-    if (action.wID == ACTION_SHOW_OSD && !g_application.m_guiWindowOSD.SubMenuVisible())  // hide the OSD
-    {
-      OutputDebugString("CGUIWindowFullScreen::HIDEOSD\n");
-      CSingleLock lock (m_section);
-      CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0, NULL);
-      g_application.m_guiWindowOSD.OnMessage(msg);  // Send a de-init msg to the OSD
-      m_bOSDVisible = false;
-    }
-    else
-    {
-      OutputDebugString("CGUIWindowFullScreen::OnAction() reset timeout\n");
-      m_dwOSDTimeOut = timeGetTime();
-      return g_application.m_guiWindowOSD.OnAction(action);  // route keys to OSD window
-    }
-    return true;
-  }
-
-  // if the player has handled the message, just return
   if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
     return true;
 
@@ -153,7 +133,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       OutputDebugString("Switching to GUI\n");
       m_gWindowManager.PreviousWindow();
       OutputDebugString("Now in GUI\n");
-
       return true;
     }
     break;
@@ -194,16 +173,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_SHOW_OSD:  // Show the OSD
     {
-      //CSingleLock lock(m_section);
-      OutputDebugString("CGUIWindowFullScreen:SHOWOSD\n");
-      m_dwOSDTimeOut = timeGetTime();
-
-      CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, 0, 0, NULL);
-      g_application.m_guiWindowOSD.OnMessage(msg);  // Send an init msg to the OSD
-      m_bOSDVisible = true;
-
+      g_application.m_guiWindowOSD.DoModal(m_gWindowManager.GetActiveWindow());
+      return true;
     }
-    return true;
     break;
 
   case ACTION_SHOW_SUBTITLES:
@@ -299,7 +271,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
       //Make sure gui items are visible
       g_infoManager.SetDisplayAfterSeek();
-
     }
     return true;
     break;
@@ -313,7 +284,6 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   //  Do not free resources of invisible controls
   //  or hdd will spin up when fast forwarding etc.
   DynamicResourceAlloc(false);
-
 
   CGUIProgressControl* pProgress = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
   if(pProgress)
@@ -344,36 +314,6 @@ void CGUIWindowFullScreen::OnWindowLoaded()
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 {
-
-  if ((m_bOSDVisible) && (message.GetMessage() != GUI_MSG_WINDOW_DEINIT))
-  {
-    //if (timeGetTime()-m_dwOSDTimeOut > 5000)
-    if (g_guiSettings.GetInt("MyVideos.OSDTimeout"))
-    {
-      if ( (timeGetTime() - m_dwOSDTimeOut) > (DWORD)(g_guiSettings.GetInt("MyVideos.OSDTimeout") * 1000))
-      {
-        CSingleLock lock (m_section);
-        CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0, NULL);
-        g_application.m_guiWindowOSD.OnMessage(msg);  // Send a de-init msg to the OSD
-        m_bOSDVisible = false;
-        return g_application.m_guiWindowOSD.OnMessage(message); // route messages to OSD window
-      }
-    }
-
-    switch (message.GetMessage())
-    {
-    case GUI_MSG_SETFOCUS:
-    case GUI_MSG_LOSTFOCUS:
-    case GUI_MSG_CLICKED:
-    case GUI_MSG_WINDOW_INIT:
-    case GUI_MSG_WINDOW_DEINIT:
-      OutputDebugString("CGUIWindowFullScreen::OnMessage() reset timeout\n");
-      m_dwOSDTimeOut = timeGetTime();
-      break;
-    }
-    return g_application.m_guiWindowOSD.OnMessage(message); // route messages to OSD window
-  }
-
   switch (message.GetMessage())
   {
   case GUI_MSG_WINDOW_INIT:
@@ -386,7 +326,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         return true;
       }
       m_bLastRender = false;
-      m_bOSDVisible = false;
       m_bShowCurrentTime = false;
 
       //  Disable nav sounds if spindown is active as they are loaded
@@ -407,8 +346,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       if (g_application.m_pPlayer)
         g_application.m_pPlayer->Update();
-
-      HideOSD();
 
       m_iCurrentBookmark = 0;
       m_bShowCodecInfo = false;
@@ -451,14 +388,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       CSingleLock lock (m_section);
 
-      if (m_bOSDVisible)
-      {
-        CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0, NULL);
-        g_application.m_guiWindowOSD.OnMessage(msg);  // Send a de-init msg to the OSD
-      }
-
-      m_bOSDVisible = false;
-
       CGUIWindow::OnMessage(message);
 
       CUtil::RestoreBrightnessContrastGamma();
@@ -469,8 +398,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       g_graphicsContext.Unlock();
 
       m_iCurrentBookmark = 0;
-
-      HideOSD();
 
       CSingleLock lockFont(m_fontLock);
       if (m_subtitleFont)
@@ -487,7 +414,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
     }
   case GUI_MSG_SETFOCUS:
   case GUI_MSG_LOSTFOCUS:
-    if (m_bOSDVisible) return true;
     if (message.GetSenderId() != WINDOW_FULLSCREEN_VIDEO) return true;
     break;
   }
@@ -523,7 +449,6 @@ void CGUIWindowFullScreen::Render()
 
 bool CGUIWindowFullScreen::HasProgressDisplay()
 {
-
   CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
   if(pControl) return true;
   
@@ -547,7 +472,6 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (g_infoManager.GetBool(PLAYER_SEEKBAR)) return true;
   if (m_gWindowManager.IsRouted()) return true;
   if (m_gWindowManager.IsModelessAvailable()) return true;
-  if (m_bOSDVisible) return true;
   if (g_Mouse.IsActive()) return true;
   if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
     return true;
@@ -676,14 +600,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
     }
   }
 
-  if (m_bOSDVisible)
-  {
-    // tell the OSD window to draw itself
-    CSingleLock lock (m_section);
-    g_application.m_guiWindowOSD.Render();
-    goto renderDialogs;
-  }
-
   RenderTTFSubtitles();
 
   if (m_bShowTime && m_iTimeCodePosition != 0)
@@ -807,32 +723,6 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
   }
 }
 
-void CGUIWindowFullScreen::HideOSD()
-{
-  CSingleLock lock (m_section);
-  m_osdMenu.Clear();
-  SET_CONTROL_HIDDEN(BTN_OSD_VIDEO);
-  SET_CONTROL_HIDDEN(BTN_OSD_AUDIO);
-  SET_CONTROL_HIDDEN(BTN_OSD_SUBTITLE);
-
-  SET_CONTROL_VISIBLE(LABEL_ROW1);
-  SET_CONTROL_VISIBLE(LABEL_ROW2);
-  SET_CONTROL_VISIBLE(LABEL_ROW3);
-  SET_CONTROL_VISIBLE(BLUE_BAR);
-}
-
-void CGUIWindowFullScreen::ShowOSD()
-{
-}
-
-bool CGUIWindowFullScreen::OSDVisible() const
-{
-  return m_bOSDVisible;
-}
-
-void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
-{
-}
 void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
 {
   if (remote >= 58 && remote <= 67) //Make sure it's only for the remote
@@ -873,10 +763,6 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
       m_bShowTime = false;
     }
   }
-}
-
-void CGUIWindowFullScreen::Update()
-{
 }
 
 void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
