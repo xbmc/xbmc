@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-07-2005 fixed: Textbox page up/down problems.
  - 06-07-2005 added: Conditional visibility stuff: Player.Seeking, Player.ShowTime, Window.IsActive(window), where window is something like "MyVideos" or a window id.
  - 06-07-2005 added: <visible> tag to windows.  Allows skinners to specify when a dialog should be displayed.  Only works with <type>dialog</type>.
  - 06-07-2005 added: alternative nav sound skin in xbmc/sounds directory (selectable in appearance settings)
