@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-07-2005 changed: if id3v2 tag it present and contains no data, the id3v1 tag is loaded
+ - 07-07-2005 fixed: exception while scanning files with utf encoded id3 tags
  - 07-07-2005 fixed: Large list(s) used small icons.  We now choose the icon size based on the image size in the list (if it's bigger than 32x32 it'll use large, else it uses small).
  - 07-07-2005 changed: Video OSD now runs as a modal dialog - more consistent with the rest of the windows system.
  - 07-07-2005 added: Build.bat now also copies the new sound folder
