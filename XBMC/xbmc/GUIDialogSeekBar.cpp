@@ -32,6 +32,15 @@ bool CGUIDialogSeekBar::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK)
   {
+    if (!g_infoManager.GetBool(PLAYER_SEEKING))
+    { // start of seeking
+      if (g_infoManager.GetTotalPlayTime())
+        m_fSeekPercentage = (float)g_infoManager.GetPlayTime() / g_infoManager.GetTotalPlayTime() * 0.1f;
+      // start timer
+      m_dwTimer = timeGetTime();
+      m_bRequireSeek = false;
+      g_infoManager.SetSeeking(true);
+    }
     // calculate our seek amount
     if (g_application.m_pPlayer && !g_infoManager.m_performingSeek)
     {
@@ -64,12 +73,6 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
     {
       //resources are allocated in g_application
       //CGUIDialog::OnMessage(message);
-      if (g_infoManager.GetTotalPlayTime())
-        m_fSeekPercentage = (float)g_infoManager.GetPlayTime() / g_infoManager.GetTotalPlayTime() * 0.1f;
-      // start timer
-      m_dwTimer = timeGetTime();
-      m_bRequireSeek = false;
-      // levels are set in Render(), so no need to do them here...
       return true;
     }
     break;
