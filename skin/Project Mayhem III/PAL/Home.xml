@@ -21,7 +21,7 @@
       <posY>105</posY>
       <width>538</width>
       <height>362</height>
-      <texture>4x3home-myfiles.png</texture>
+      <texture>16x9home-myfiles.png</texture>
       <visible>!Player.HasVideo</visible>
     </control>
 
@@ -65,7 +65,7 @@
       <posY>105</posY>
       <width>538</width>
       <height>362</height>
-      <texture>4x3home-myweather.png</texture>
+      <texture>16x9home-myweather.png</texture>
       <visible>!Player.HasVideo</visible>
     </control>
 
@@ -76,7 +76,7 @@
       <posY>105</posY>
       <width>538</width>
       <height>362</height>
-      <texture>4x3home-settings.png</texture>
+      <texture>16x9home-settings.png</texture>
       <visible>!Player.HasVideo</visible>
     </control>
 
