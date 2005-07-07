@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-07-2005 fixed: Seek bar start seek location was dependent on when it first popped up, rather than the current position.
+ - 07-07-2005 added: Player.Time, Player.TimeRemaining and Player.Duration info labels.
  - 07-07-2005 fixed: Textbox page up/down problems.
  - 06-07-2005 added: Conditional visibility stuff: Player.Seeking, Player.ShowTime, Window.IsActive(window), where window is something like "MyVideos" or a window id.
  - 06-07-2005 added: <visible> tag to windows.  Allows skinners to specify when a dialog should be displayed.  Only works with <type>dialog</type>.

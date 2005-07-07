@@ -46,6 +46,9 @@ extern char g_szTitleIP[32];
 //#define PLAYER_SEEKTIME              24
 //#define PLAYER_SEEKING               25
 //#define PLAYER_SHOWTIME              26
+#define PLAYER_TIME                  27  
+#define PLAYER_TIME_REMAINING        28
+#define PLAYER_DURATION              29
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -228,6 +231,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
   else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
   else if (strTest.Equals("player.showtime")) ret = PLAYER_SHOWTIME;
+  else if (strTest.Equals("player.time")) ret = PLAYER_TIME;
+  else if (strTest.Equals("player.timeremaining")) ret = PLAYER_TIME_REMAINING;
+  else if (strTest.Equals("player.duration")) ret = PLAYER_DURATION;
   else if (strTest.Equals("weather.conditions")) ret = WEATHER_CONDITIONS;
   else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
   else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
@@ -309,14 +315,26 @@ wstring CGUIInfoManager::GetLabel(int info)
   case SYSTEM_DATE:
     return GetDate();
     break;
+  case PLAYER_TIME:
+    strLabel = GetCurrentPlayTime();
+    break;
+  case PLAYER_TIME_REMAINING:
+    strLabel = GetCurrentPlayTimeRemaining();
+    break;
+  case PLAYER_DURATION:
+    if (g_application.IsPlayingAudio())
+      strLabel = GetMusicLabel(info);
+    else
+      strLabel = GetVideoLabel(info);
+    break;
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:
   case MUSICPLAYER_GENRE:
   case MUSICPLAYER_YEAR:
   case MUSICPLAYER_TIME:
-  case MUSICPLAYER_TIME_REMAINING:
   case MUSICPLAYER_TIME_SPEED:
+  case MUSICPLAYER_TIME_REMAINING:
   case MUSICPLAYER_TRACK_NUMBER:
   case MUSICPLAYER_DURATION:
   case MUSICPLAYER_BITRATE:
@@ -696,12 +714,10 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   case MUSICPLAYER_GENRE: 
     if (tag.GetGenre().size()) { return tag.GetGenre(); }
     break;
-  case MUSICPLAYER_TIME: 
+  case MUSICPLAYER_TIME:
     return GetCurrentPlayTime();
-    break;
-  case MUSICPLAYER_TIME_REMAINING: 
+  case MUSICPLAYER_TIME_REMAINING:
     return GetCurrentPlayTimeRemaining();
-    break;
   case MUSICPLAYER_TIME_SPEED:
     {
       CStdString strTime;
@@ -723,6 +739,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     }
     break;
   case MUSICPLAYER_DURATION:
+  case PLAYER_DURATION:
     {
       CStdString strDuration = "00:00";
       if (tag.GetDuration() > 0)
@@ -831,10 +848,8 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     break;
   case VIDEOPLAYER_TIME:
     return GetCurrentPlayTime();
-    break;
   case VIDEOPLAYER_TIME_REMAINING:
     return GetCurrentPlayTimeRemaining();
-    break;
   case VIDEOPLAYER_TIME_SPEED:
     {
       CStdString strTime;
@@ -846,6 +861,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     }
     break;
   case VIDEOPLAYER_DURATION:
+  case PLAYER_DURATION:
     {
       CStdString strDuration = "00:00:00";
       unsigned int iTotal = g_application.m_pPlayer->GetTotalTime();

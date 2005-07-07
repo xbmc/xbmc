@@ -1945,9 +1945,6 @@ bool CApplication::OnKey(CKey& key)
             iPlaySpeed = 1;
 
           SetPlaySpeed(iPlaySpeed);
-          // show our seekbar if necessary
-          if (g_application.GetPlaySpeed() != 1)
-            g_infoManager.SetSeeking(true);
           return true;
         }
       }
@@ -1962,9 +1959,6 @@ bool CApplication::OnKey(CKey& key)
         g_application.SetPlaySpeed(iSpeed);
         if (iSpeed == 1)
           CLog::DebugLog("Resetting playspeed");
-        // show our seekbar if necessary
-        if (g_application.GetPlaySpeed())
-          g_infoManager.SetSeeking(true);
         return true;
       }
     }
@@ -2029,8 +2023,6 @@ bool CApplication::OnKey(CKey& key)
   // Check for global seek control
   if (IsPlaying() && action.fAmount1 && (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK))
   {
-    // show visual feedback of seek change...
-    g_infoManager.SetSeeking(true);
     m_guiDialogSeekBar.OnAction(action);
     return true;
   }
