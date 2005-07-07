@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-07-2005 added: Build.bat now also copies the new sound folder
  - 07-07-2005 changed: increased write performance of the sqlite databases (databases need to be recreated to make use of the increase)
  - 07-07-2005 added: Exception detection in the filereader for over-allocation conditions.
  - 07-07-2005 changed: Dropped max audio caches and max local disk cache to 4Mb.

@@ -51,6 +51,7 @@ rem %rar% x web\Project_Mayhem_webserver*.rar build\web\
 rem xcopy python BUILD\python /E /Q /I /Y
 rem xcopy %SKINS% Build\Skin /E /Q /I /Y
 xcopy media BUILD\media /E /Q /I /Y
+xcopy sounds BUILD\sounds /E /Q /I /Y
 del BUILD\media\dsstdfx.bin
 del BUILD\system\players\mplayer\codecs\.cvsignore
 
