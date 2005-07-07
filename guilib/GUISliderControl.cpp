@@ -207,22 +207,42 @@ int CGUISliderControl::GetPercentage() const
 
 void CGUISliderControl::SetIntValue(int iValue)
 {
-  m_iValue = iValue;
+  if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+    m_fValue = (float)iValue;
+  else if (m_iType == SPIN_CONTROL_TYPE_INT)
+    m_iValue = iValue;
+  else
+    SetPercentage(iValue);
 }
 
 int CGUISliderControl::GetIntValue() const
 {
-  return m_iValue;
+  if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+    return (int)m_fValue;
+  else if (m_iType == SPIN_CONTROL_TYPE_INT)
+    return m_iValue;
+  else
+    return m_iPercent;
 }
 
 void CGUISliderControl::SetFloatValue(float fValue)
 {
-  m_fValue = fValue;
+  if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+    m_fValue = fValue;
+  else if (m_iType == SPIN_CONTROL_TYPE_INT)
+    m_iValue = (int)fValue;
+  else
+    SetPercentage((int)fValue);
 }
 
 float CGUISliderControl::GetFloatValue() const
 {
-  return m_fValue;
+  if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+    return m_fValue;
+  else if (m_iType == SPIN_CONTROL_TYPE_INT)
+    return (float)m_iValue;
+  else
+    return (float)m_iPercent;
 }
 
 void CGUISliderControl::SetFloatInterval(float fInterval)
@@ -232,14 +252,24 @@ void CGUISliderControl::SetFloatInterval(float fInterval)
 
 void CGUISliderControl::SetRange(int iStart, int iEnd)
 {
-  m_iStart = iStart;
-  m_iEnd = iEnd;
+  if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+    SetFloatRange((float)iStart,(float)iEnd);
+  else
+  {
+    m_iStart = iStart;
+    m_iEnd = iEnd;
+  }
 }
 
 void CGUISliderControl::SetFloatRange(float fStart, float fEnd)
 {
-  m_fStart = fStart;
-  m_fEnd = fEnd;
+  if (m_iType == SPIN_CONTROL_TYPE_INT)
+    SetRange((int)fStart, (int)fEnd);
+  else
+  {
+    m_fStart = fStart;
+    m_fEnd = fEnd;
+  }
 }
 
 int CGUISliderControl::GetType() const

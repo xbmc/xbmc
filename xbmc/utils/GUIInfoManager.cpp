@@ -473,8 +473,6 @@ bool CGUIInfoManager::GetBool(int condition1) const
   if (condition >= WINDOW_ACTIVE_START && condition <= WINDOW_ACTIVE_END)
   {
     bReturn = m_gWindowManager.IsWindowActive(condition);
-    // ugly hack due to videoOSD not being a dialog - remove me when video OSD becomes a dialog!
-    if (!bReturn && condition == WINDOW_OSD) bReturn = g_application.m_guiWindowFullScreen.m_bOSDVisible;
     return condition1 < 0 ? !bReturn : bReturn;
   }
 

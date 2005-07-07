@@ -88,7 +88,7 @@
 
 
 CGUIWindowOSD::CGUIWindowOSD(void)
-    : CGUIWindow(0)
+    : CGUIDialog(0)
 {
   m_bSubMenuOn = false;
   m_iActiveMenu = 0;
@@ -106,7 +106,7 @@ bool CGUIWindowOSD::SubMenuVisible()
 
 void CGUIWindowOSD::OnWindowLoaded()
 {
-  CGUIWindow::OnWindowLoaded();
+  CGUIDialog::OnWindowLoaded();
   //  Do not free resources of invisible controls
   //  or hdd will spin up when entering a osd submenu
   DynamicResourceAlloc(false);
@@ -117,29 +117,36 @@ void CGUIWindowOSD::Render()
 {
   SetVideoProgress();   // get the percentage of playback complete so far
   Get_TimeInfo();    // show the time elapsed/total playing time
-  CGUIWindow::Render();  // render our controls to the screen
+  if (g_guiSettings.GetInt("MyVideos.OSDTimeout"))
+  {
+    if ( (timeGetTime() - m_dwOSDTimeOut) > (DWORD)(g_guiSettings.GetInt("MyVideos.OSDTimeout") * 1000))
+    {
+      Close();
+    }
+  }
+  CGUIDialog::Render();  // render our controls to the screen
 }
 
 bool CGUIWindowOSD::OnAction(const CAction &action)
 {
+  m_dwOSDTimeOut = timeGetTime();
   switch (action.wID)
   {
-
-  case ACTION_OSD_SHOW_LEFT:
-  case ACTION_OSD_SHOW_RIGHT:
-  case ACTION_OSD_SHOW_UP:
-  case ACTION_OSD_SHOW_DOWN:
-  case ACTION_OSD_SHOW_SELECT:
-    break;
-
-  case ACTION_OSD_HIDESUBMENU:
   case ACTION_SHOW_OSD:
+    {
+      Close();
+      return true;
+    }
+    break;
+  case ACTION_PREVIOUS_MENU:
     {
       if (m_bSubMenuOn)      // is sub menu on?
       {
         FOCUS_CONTROL(GetID(), m_iActiveMenuButtonID, 0); // set focus to last menu button
         ToggleSubMenu(0, m_iActiveMenu);      // hide the currently active sub-menu
       }
+      else
+        Close();
       return true;
     }
     break;
@@ -153,7 +160,7 @@ bool CGUIWindowOSD::OnAction(const CAction &action)
     }
     break;
 
-  case ACTION_OSD_SHOW_VALUE_PLUS:
+/*  case ACTION_OSD_SHOW_VALUE_MAX:
     {
       // push a message through to this window to handle the remote control button
       CGUIMessage msgSet(GUI_MSG_CLICKED, OSD_SKIPFWD, OSD_SKIPFWD, 0, 0, NULL);
@@ -169,10 +176,10 @@ bool CGUIWindowOSD::OnAction(const CAction &action)
       OnMessage(msgSet);
       return true;
     }
-    break;
+    break;*/
   }
 
-  return CGUIWindow::OnAction(action);
+  return CGUIDialog::OnAction(action);
 }
 
 bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
@@ -186,10 +193,6 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       ClearAudioStreamItems();
       ClearSubTitleItems();
       ClearBookmarkItems();
-      //hide the OSD
-      HIDE_CONTROL(GetID(), GetID());
-      //if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
-      g_application.m_guiWindowFullScreen.m_bOSDVisible = false; // toggle the OSD off so parent window can de-init
       // don't save the settings here, it's bad for the hd-spindown feature (causes spinup)
       // settings are saved in FreeResources in GUIWindowFullScreen
       //g_settings.Save();
@@ -199,7 +202,6 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:  // fired when OSD is shown
     {
-
       OutputDebugString("OSD:INIT\n");
       //if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(false);
       // position correctly
@@ -208,6 +210,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       m_bSubMenuOn = false;
       m_iActiveMenuButtonID = 0;
       m_iActiveMenu = 0;
+      m_dwOSDTimeOut = timeGetTime();
       Reset();
 
       // Set a dummy time value if the osd is used in screen calibration
@@ -246,7 +249,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
           ToggleSubMenu(0, m_iActiveMenu);      // hide the currently active sub-menu
         }
         OutputDebugString("OSD:STOP\n");
-        g_application.m_guiWindowFullScreen.m_bOSDVisible = false; // toggle the OSD off so parent window can de-init
+        Close();
         g_application.StopPlaying();      // close our media
       }
 
@@ -392,12 +395,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       return true;
     }
   }
-  return CGUIWindow::OnMessage(message);
-}
-
-bool CGUIWindowOSD::OnMouse()
-{
-  return g_application.m_guiWindowFullScreen.OnMouse();
+  return CGUIDialog::OnMessage(message);
 }
 
 void CGUIWindowOSD::SetVideoProgress()
@@ -646,7 +644,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
       CGUISliderControl* pControl = (CGUISliderControl*)GetControl(iControlID);
       if (pControl)
       {
-        g_stSettings.m_currentVideoSettings.m_CustomZoomAmount = (float)pControl->GetFloatValue();
+        g_stSettings.m_currentVideoSettings.m_CustomZoomAmount = pControl->GetFloatValue();
         g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
       }
     }
@@ -722,7 +720,6 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
           g_application.m_pPlayer->SetAudioStream(msg.GetParam1());    // Set the audio stream to the one selected
           m_bSubMenuOn = false;          // hide the sub menu
           OutputDebugString("OSD:RESTART1\n");
-          g_application.m_guiWindowFullScreen.m_bOSDVisible = false; // toggle the OSD off so parent window can de-init
           if (g_application.GetCurrentPlayer() == "mplayer") g_application.Restart(true);  // restart to make new audio track active
         }
       }
@@ -746,7 +743,6 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
       g_stSettings.m_currentVideoSettings.m_NonInterleaved = !g_stSettings.m_currentVideoSettings.m_NonInterleaved;
       m_bSubMenuOn = false;          // hide the sub menu
       OutputDebugString("OSD:RESTART2\n");
-      g_application.m_guiWindowFullScreen.m_bOSDVisible = false; // toggle the OSD off so parent window can de-init
       g_application.Restart(true);        // restart to make the new setting active
     }
     break;
@@ -756,7 +752,6 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
       g_stSettings.m_currentVideoSettings.m_NoCache = !g_stSettings.m_currentVideoSettings.m_NoCache;
       m_bSubMenuOn = false;          // hide the sub menu
       OutputDebugString("OSD:RESTART3\n");
-      g_application.m_guiWindowFullScreen.m_bOSDVisible = false; // toggle the OSD off so parent window can de-init
       g_application.Restart(true);        // restart to make the new setting active
     }
     break;
@@ -767,7 +762,6 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
       g_stSettings.m_currentVideoSettings.m_AdjustFrameRate = !g_stSettings.m_currentVideoSettings.m_AdjustFrameRate;
       m_bSubMenuOn = false;          // hide the sub menu
       OutputDebugString("OSD:RESTART4\n");
-      g_application.m_guiWindowFullScreen.m_bOSDVisible = false; // toggle the OSD off so parent window can de-init
       g_application.Restart(true);        // restart to make the new setting active
     }
     break;
