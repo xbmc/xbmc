@@ -1,3 +1,5 @@
+2005-07-06 changed:     Added use of Player.Time and Player.Duration to reduce number of controls in some windows.
+
 2005-07-05 changed:	new home pics
 2005-07-05 fixed:	Video and Music Overlays were not visible on AlbumInfo and VideoInfo dialogs
 2005-07-05 fixed:	new seekbar fully working now
