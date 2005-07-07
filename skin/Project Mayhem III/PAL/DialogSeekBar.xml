@@ -185,31 +185,17 @@
     </control>
 
     <control>
-      <description>Elapsed VideoTime Label</description>
+      <description>Elapsed Time Label</description>
       <type>label</type>
       <id>22</id>
       <posX>563</posX>
       <posY>60</posY>
       <font>font10</font>
       <align>right</align>
-      <info>VideoPlayer.Time</info>
+      <info>Player.Time</info>
       <width>100</width>
       <height>16</height>
-      <visible>!Player.Seeking + Player.HasVideo</visible>
-    </control>
-
-    <control>
-      <description>Elapsed MusicTime Label</description>
-      <type>label</type>
-      <id>22</id>
-      <posX>563</posX>
-      <posY>60</posY>
-      <font>font10</font>
-      <align>right</align>
-      <info>MusicPlayer.Time</info>
-      <width>100</width>
-      <height>16</height>
-      <visible>!Player.Seeking + Player.HasAudio</visible>
+      <visible>!Player.Seeking</visible>
     </control>
 
     <control>
@@ -238,27 +224,12 @@
     </control>
 
     <control>
-      <description>VideoDuration Label</description>
+      <description>Duration Label</description>
       <type>label</type>
       <id>999</id>
       <posX>577</posX>
       <posY>60</posY>
-      <info>VideoPlayer.Duration</info>
-      <visible>Player.HasVideo</visible>
-      <font>font10</font>
-      <align>left</align>
-      <width>100</width>
-      <height>16</height>
-    </control>
-
-    <control>
-      <description>MusicDuration Label</description>
-      <type>label</type>
-      <id>999</id>
-      <posX>577</posX>
-      <posY>60</posY>
-      <info>MusicPlayer.Duration</info>
-      <visible>Player.HasAudio</visible>
+      <info>Player.Duration</info>
       <font>font10</font>
       <align>left</align>
       <width>100</width>
