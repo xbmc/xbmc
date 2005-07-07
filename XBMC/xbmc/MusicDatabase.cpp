@@ -117,14 +117,10 @@ bool CMusicDatabase::Open()
   }
 
 
-  m_pDS->exec("PRAGMA cache_size=8192\n");
+  m_pDS->exec("PRAGMA cache_size=16384\n");
   m_pDS->exec("PRAGMA synchronous='NORMAL'\n");
   m_pDS->exec("PRAGMA count_changes='OFF'\n");
   // m_pDS->exec("PRAGMA temp_store='MEMORY'\n");
-  m_pDS2->exec("PRAGMA cache_size=8192\n");
-  m_pDS2->exec("PRAGMA synchronous='NORMAL'\n");
-  m_pDS2->exec("PRAGMA count_changes='OFF'\n");
-  // m_pDS2->exec("PRAGMA temp_store='MEMORY'\n");
   m_bOpen = true;
   m_iRefCount++;
   return true;
@@ -161,6 +157,17 @@ bool CMusicDatabase::CreateTables()
 {
   try
   {
+    //  all fatx formatted partitions, except the utility drive, 
+    //  have a cluster size of 16k. To gain better performance 
+    //  when performing write operations to the database, set 
+    //  the page size of the database file to 16k. 
+    //  This needs to be done before any table is created.
+    CLog::Log(LOGINFO, "Set page size");
+    m_pDS->exec("PRAGMA page_size=16384\n");
+    //  Also set the memory cache size to 16k
+    CLog::Log(LOGINFO, "Set default cache size");
+    m_pDS->exec("PRAGMA default_cache_size=16384\n");
+
     // Tables
     CLog::Log(LOGINFO, "creating version table");
     m_pDS->exec("CREATE TABLE version (idVersion float)\n");
