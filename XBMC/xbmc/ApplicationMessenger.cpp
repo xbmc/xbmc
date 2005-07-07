@@ -31,8 +31,20 @@ void CApplicationMessenger::Cleanup()
 
 void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
 {
-  if (wait) message.hWaitEvent = CreateEvent(NULL, false, false, "threadWaitEvent");
-  else message.hWaitEvent = NULL;
+  message.hWaitEvent = NULL;
+  if (wait)
+  { // check that we're not being called from our application thread, else we'll be waiting
+    // forever!
+    if (GetCurrentThreadId() != g_application.GetThreadId())
+      message.hWaitEvent = CreateEvent(NULL, false, false, "threadWaitEvent");
+    else
+    {
+      OutputDebugString("Attempting to wait on a SendMessage() from our application thread will cause lockup!\n");
+      OutputDebugString("Sending immediately\n");
+      ProcessMessage(&message);
+      return;
+    }
+  }
 
   ThreadMessage* msg = new ThreadMessage();
   msg->dwMessage = message.dwMessage;
@@ -70,131 +82,8 @@ void CApplicationMessenger::ProcessMessages()
       //first remove the message from the queue, else the message could be processed more then once
       it = m_vecMessages.erase(it);
 
-      switch (pMsg->dwMessage)
-      {
-      case TMSG_SHUTDOWN:
-        g_application.Stop();
-        Sleep(200);
-        XKUtils::XBOXPowerOff();
-        break;
+      ProcessMessage(pMsg);
 
-      case TMSG_DASHBOARD:
-        CUtil::ExecBuiltIn("XBMC.Dashboard()");
-        break;
-
-      case TMSG_RESTART:
-        g_application.Stop();
-        Sleep(200);
-        XKUtils::XBOXPowerCycle();
-        break;
-
-      case TMSG_RESET:
-        g_application.Stop();
-        Sleep(200);
-        XKUtils::XBOXReset();
-        break;
-
-      case TMSG_RESTARTAPP:
-        {
-          char szXBEFileName[1024];
-          CIoSupport helper;
-          helper.GetXbePath(szXBEFileName);
-          CUtil::RunXBE(szXBEFileName);
-        }
-        break;
-
-      case TMSG_MEDIA_PLAY:
-        {
-          // restore to previous window if needed
-          if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
-              m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-              m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
-            m_gWindowManager.PreviousWindow();
-
-          g_application.ResetScreenSaver();
-          g_application.ResetScreenSaverWindow();
-
-          //g_application.StopPlaying();
-          // play file
-          CFileItem item(pMsg->strParam, false);
-          if (item.IsAudio())
-            item.SetMusicThumb();
-          else
-            item.SetThumb();
-          item.FillInDefaultIcon();
-          g_application.PlayFile(item);
-        }
-        break;
-
-      case TMSG_PICTURE_SHOW:
-        {
-          CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
-          if (!pSlideShow) return ;
-
-          // stop playing file
-          if (g_application.IsPlayingVideo()) g_application.StopPlaying();
-
-          if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-            m_gWindowManager.PreviousWindow();
-
-          g_application.ResetScreenSaver();
-          g_application.ResetScreenSaverWindow();
-
-          g_graphicsContext.Lock();
-          pSlideShow->Reset();
-          if (m_gWindowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
-            m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
-          pSlideShow->Add(pMsg->strParam);
-          pSlideShow->Select(pMsg->strParam);
-          g_graphicsContext.Unlock();
-        }
-        break;
-
-      case TMSG_MEDIA_STOP:
-        {
-          // restore to previous window if needed
-          if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
-              m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-              m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
-            m_gWindowManager.PreviousWindow();
-
-          g_application.ResetScreenSaver();
-          g_application.ResetScreenSaverWindow();
-
-          // stop playing file
-          if (g_application.IsPlaying()) g_application.StopPlaying();
-        }
-        break;
-
-      case TMSG_MEDIA_PAUSE:
-        if (g_application.m_pPlayer)
-        {
-          g_application.ResetScreenSaver();
-          g_application.ResetScreenSaverWindow();
-          g_application.m_pPlayer->Pause();
-        }
-        break;
-
-      case TMSG_EXECUTE_SCRIPT:
-        g_pythonParser.evalFile(pMsg->strParam.c_str());
-        break;
-
-      case TMSG_EXECUTE_BUILT_IN:
-        CUtil::ExecBuiltIn(pMsg->strParam.c_str());
-        break;
-
-      case TMSG_PLAYLISTPLAYER_PLAY:
-        g_playlistPlayer.Play(pMsg->dwParam1);
-        break;
-
-      case TMSG_PLAYLISTPLAYER_NEXT:
-        g_playlistPlayer.PlayNext();
-        break;
-
-      case TMSG_PLAYLISTPLAYER_PREV:
-        g_playlistPlayer.PlayPrevious();
-        break;
-      }
       if (pMsg->hWaitEvent)
       {
         PulseEvent(pMsg->hWaitEvent);
@@ -202,6 +91,154 @@ void CApplicationMessenger::ProcessMessages()
       }
       delete pMsg;
     }
+  }
+}
+
+void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
+{
+  switch (pMsg->dwMessage)
+  {
+    case TMSG_SHUTDOWN:
+      g_application.Stop();
+      Sleep(200);
+      XKUtils::XBOXPowerOff();
+      break;
+
+    case TMSG_DASHBOARD:
+      CUtil::ExecBuiltIn("XBMC.Dashboard()");
+      break;
+
+    case TMSG_RESTART:
+      g_application.Stop();
+      Sleep(200);
+      XKUtils::XBOXPowerCycle();
+      break;
+
+    case TMSG_RESET:
+      g_application.Stop();
+      Sleep(200);
+      XKUtils::XBOXReset();
+      break;
+
+    case TMSG_RESTARTAPP:
+      {
+        char szXBEFileName[1024];
+        CIoSupport helper;
+        helper.GetXbePath(szXBEFileName);
+        CUtil::RunXBE(szXBEFileName);
+      }
+      break;
+
+    case TMSG_MEDIA_PLAY:
+      {
+        // restore to previous window if needed
+        if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
+            m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+            m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+          m_gWindowManager.PreviousWindow();
+
+        g_application.ResetScreenSaver();
+        g_application.ResetScreenSaverWindow();
+
+        //g_application.StopPlaying();
+        // play file
+        CFileItem item(pMsg->strParam, false);
+        if (item.IsAudio())
+          item.SetMusicThumb();
+        else
+          item.SetThumb();
+        item.FillInDefaultIcon();
+        g_application.PlayFile(item);
+      }
+      break;
+
+    case TMSG_PICTURE_SHOW:
+      {
+        CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+        if (!pSlideShow) return ;
+
+        // stop playing file
+        if (g_application.IsPlayingVideo()) g_application.StopPlaying();
+
+        if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+          m_gWindowManager.PreviousWindow();
+
+        g_application.ResetScreenSaver();
+        g_application.ResetScreenSaverWindow();
+
+        g_graphicsContext.Lock();
+        pSlideShow->Reset();
+        if (m_gWindowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
+          m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+        pSlideShow->Add(pMsg->strParam);
+        pSlideShow->Select(pMsg->strParam);
+        g_graphicsContext.Unlock();
+      }
+      break;
+
+    case TMSG_MEDIA_STOP:
+      {
+        // restore to previous window if needed
+        if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
+            m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+            m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+          m_gWindowManager.PreviousWindow();
+
+        g_application.ResetScreenSaver();
+        g_application.ResetScreenSaverWindow();
+
+        // stop playing file
+        if (g_application.IsPlaying()) g_application.StopPlaying();
+      }
+      break;
+
+    case TMSG_MEDIA_PAUSE:
+      if (g_application.m_pPlayer)
+      {
+        g_application.ResetScreenSaver();
+        g_application.ResetScreenSaverWindow();
+        g_application.m_pPlayer->Pause();
+      }
+      break;
+
+    case TMSG_EXECUTE_SCRIPT:
+      g_pythonParser.evalFile(pMsg->strParam.c_str());
+      break;
+
+    case TMSG_EXECUTE_BUILT_IN:
+      CUtil::ExecBuiltIn(pMsg->strParam.c_str());
+      break;
+
+    case TMSG_PLAYLISTPLAYER_PLAY:
+      g_playlistPlayer.Play(pMsg->dwParam1);
+      break;
+
+    case TMSG_PLAYLISTPLAYER_NEXT:
+      g_playlistPlayer.PlayNext();
+      break;
+
+    case TMSG_PLAYLISTPLAYER_PREV:
+      g_playlistPlayer.PlayPrevious();
+      break;
+
+    // Window messages below here...
+    case TMSG_DIALOG_DOMODAL:  //doModel of window
+      {
+        CGUIDialog* pDialog = (CGUIDialog*)m_gWindowManager.GetWindow(pMsg->dwParam1);
+        if (!pDialog) return ;
+        pDialog->DoModal(pMsg->dwParam2);
+      }
+      break;
+
+    case TMSG_WRITE_SCRIPT_OUTPUT:
+      {
+        //send message to window 2004 (CGUIWindowScriptsInfo)
+        CGUIMessage msg(GUI_MSG_USER, 0, 0);
+        msg.SetLabel(pMsg->strParam);
+        CGUIWindow* pWindowScripts = m_gWindowManager.GetWindow(WINDOW_SCRIPTS_INFO);
+        if (pWindowScripts) pWindowScripts->OnMessage(msg);
+      }
+      break;
   }
 }
 
@@ -218,26 +255,7 @@ void CApplicationMessenger::ProcessWindowMessages()
       //first remove the message from the queue, else the message could be processed more then once
       it = m_vecWindowMessages.erase(it);
 
-      switch (pMsg->dwMessage)
-      {
-      case TMSG_DIALOG_DOMODAL:  //doModel of window
-        {
-          CGUIDialog* pDialog = (CGUIDialog*)m_gWindowManager.GetWindow(pMsg->dwParam1);
-          if (!pDialog) return ;
-          pDialog->DoModal(pMsg->dwParam2);
-        }
-        break;
-
-      case TMSG_WRITE_SCRIPT_OUTPUT:
-        {
-          //send message to window 2004 (CGUIWindowScriptsInfo)
-          CGUIMessage msg(GUI_MSG_USER, 0, 0);
-          msg.SetLabel(pMsg->strParam);
-          CGUIWindow* pWindowScripts = m_gWindowManager.GetWindow(WINDOW_SCRIPTS_INFO);
-          if (pWindowScripts) pWindowScripts->OnMessage(msg);
-        }
-        break;
-      }
+      ProcessMessage(pMsg);
       if (pMsg->hWaitEvent)
       {
         PulseEvent(pMsg->hWaitEvent);
