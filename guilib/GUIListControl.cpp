@@ -113,7 +113,14 @@ void CGUIListControl::Render()
         CGUIImage* pImage = pItem->GetIcon();
         if (!pImage)
         {
-          pImage = new CGUIImage(0, 0, 0, 0, m_iImageWidth, m_iImageHeight, pItem->GetIconImage(), 0x0);
+          if (m_iImageWidth * m_iImageHeight > 32*32 && !pItem->HasThumbnail())
+          { // use large version of the icon
+            CStdString strLargeIcon = pItem->GetIconImage();
+            strLargeIcon.Insert(strLargeIcon.Find("."), "Big");
+            pImage = new CGUIImage(0, 0, 0, 0, m_iImageWidth, m_iImageHeight, strLargeIcon, 0x0);
+          }
+          else
+            pImage = new CGUIImage(0, 0, 0, 0, m_iImageWidth, m_iImageHeight, pItem->GetIconImage(), 0x0);
           pImage->SetKeepAspectRatio(true);
           pImage->AllocResources();
           pItem->SetIcon(pImage);

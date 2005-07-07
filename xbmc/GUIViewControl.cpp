@@ -111,6 +111,8 @@ void CGUIViewControl::UpdateContents(const CGUIControl *control)
   for (int i = 0; i < m_fileItems->Size(); i++)
   {
     CFileItem* pItem = (*m_fileItems)[i];
+    // free it's memory, to make sure any icons etc. are loaded as needed.
+    pItem->FreeMemory();
     CGUIMessage msg(GUI_MSG_LABEL_ADD, m_parentWindow, control->GetID(), 0, 0, (void*)pItem);
     g_graphicsContext.SendMessage(msg);
   }
