@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-07-2005 added: Exception detection in the filereader for over-allocation conditions.
+ - 07-07-2005 changed: Dropped max audio caches and max local disk cache to 4Mb.
+ - 07-07-2005 changed: Virtual keyboard pops up using a thread message (fixes clashes when called from a different thread).
  - 07-07-2005 fixed: Seek bar start seek location was dependent on when it first popped up, rather than the current position.
  - 07-07-2005 added: Player.Time, Player.TimeRemaining and Player.Duration info labels.
  - 07-07-2005 fixed: Textbox page up/down problems.

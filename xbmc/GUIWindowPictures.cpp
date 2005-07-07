@@ -1023,10 +1023,11 @@ void CGUIWindowPictures::OnWindowLoaded()
 
 void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
 {
-  if (pItem->m_bIsFolder && !pItem->m_bIsShareOrDrive && !pItem->HasThumbnail() && pItem->m_strPath != "..")
+  if (pItem->m_bIsFolder && !pItem->m_bIsShareOrDrive && !pItem->HasThumbnail() && pItem->GetLabel() != "..")
   { // generate the thumb folder if necessary
     // we load the directory, grab 4 random thumb files (if available) and then generate
     // the thumb.
+    if (pItem->IsRemote() && !pItem->IsDVD() && !g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs")) return;
     CFileItemList items;
     m_rootDir.GetDirectory(pItem->m_strPath, items);
     // create the folder thumb by choosing 4 random thumbs within the folder and putting

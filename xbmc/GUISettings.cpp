@@ -319,13 +319,13 @@ CGUISettings::CGUISettings(void)
   AddBool(7, "Autorun.Pictures", 246, true);
 
   AddCategory(4, "Cache", 439);
-  AddInt(1, "Cache.HardDisk", 14025, 256, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+  AddInt(1, "Cache.HardDisk", 14025, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB);
   AddInt(2, "CacheVideo.DVDRom", 14026, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
   AddInt(3, "CacheVideo.LAN", 14027, 8192, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
   AddInt(4, "CacheVideo.Internet", 14028, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(5, "CacheAudio.DVDRom", 14030, 256, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(6, "CacheAudio.LAN", 14031, 256, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(7, "CacheAudio.Internet", 14032, 256, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+  AddInt(5, "CacheAudio.DVDRom", 14030, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB);
+  AddInt(6, "CacheAudio.LAN", 14031, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB);
+  AddInt(7, "CacheAudio.Internet", 14032, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB);
   AddInt(8, "CacheDVD.DVDRom", 14034, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
   AddInt(9, "CacheDVD.LAN", 14035, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
   AddInt(10, "CacheUnknown.Internet", 14060, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
