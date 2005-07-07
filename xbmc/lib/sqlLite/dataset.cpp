@@ -470,10 +470,10 @@ DbErrors::DbErrors(const char *msg, ...) {
   char buf[DB_BUFF_MAX]="";
   _vsnprintf(buf, DB_BUFF_MAX-1, msg, vl);
   va_end(vl);
-  msg_ =   "Database Error: ";
+  msg_ =   "SQLite: ";
   msg_ += buf;
 
-  OutputDebugString(msg_.c_str());
+  CLog::Log(LOGERROR, msg_.c_str());
 }
 
 const char * DbErrors::getMsg() {
