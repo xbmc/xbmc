@@ -26,7 +26,14 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   
   if (!CUtil::HasSlashAtEnd(scPath)) scPath += '/';
   g_directoryCache.ClearDirectory(scPath);
-  if (!FTPUtil.GetFTPList(scPath,buff)) return false;
+
+  if (!FTPUtil.OpenFTP(scPath))  return false;
+  
+  //FTPUtil.GetRealPath(scPath, (char *)scPath.c_str());
+
+  CStdString strNewPath;
+  if (!FTPUtil.GetFTPList(scPath,buff,strNewPath)) return false;
+  //scPath = strNewPath;
 
   char *chrs, *cLine=buff; int num = 0;
   //bool bCon = false; char *cLine; CStdString szBuffer; int iline = 0;

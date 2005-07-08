@@ -3499,7 +3499,7 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
       strWorkTemp.Format("%d.%d.%d.%d",cliAddr.sin_addr.S_un.S_un_b.s_b1,cliAddr.sin_addr.S_un.S_un_b.s_b2,cliAddr.sin_addr.S_un.S_un_b.s_b3,cliAddr.sin_addr.S_un.S_un_b.s_b4 );
 
 			bool bPing = ( bool )false; // Check if we have this client in our list already, and if not respond with a ping
-			//< your code to check the list of other clients goes here >
+			// todo: a code to check the list of other clients
 			if( bPing ) sendto(udp_server_socket,strSendMessage.c_str(),5,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));  
 		}
 		else
@@ -3516,7 +3516,7 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
           bState = true;
         }
       }
-      //< add it to your list of clients after parsing out user id, password, port, boost capable, etc. >
+      //todo: add it to a list of clients after parsing out user id, password, port, boost capable, etc. >
 		}
 		timeout.tv_sec=0;
 		timeout.tv_usec = 5000;
@@ -3548,7 +3548,7 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
     bool bget = CUtil::XboxAutoDetectionPing(true, strSysFtpName, strSysFtpPw, strNickName, iSysFtpPort,strHasClientIP,strHasClientInfo, strNewClientIP , strNewClientInfo );
     if ( bget )
     {
-      //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOS_MODE
+      //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
       CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
       CStdStringArray arSplit; 
       StringUtils::SplitString(strNewClientInfo,";", arSplit);

@@ -35,8 +35,9 @@ private:
   bool inCustomMode;
   float cpuTemp;
   float cpuLastTemp;
-  unsigned short gpuTemp;
-  unsigned short gpuLastTemp;
+  unsigned short fGPUTemp;
+  float gpuTemp;
+  float gpuLastTemp;
 
   SensorType sensor;
 
