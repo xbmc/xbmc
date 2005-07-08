@@ -325,6 +325,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     dwWidth = pReference->GetWidth();
     dwHeight = pReference->GetHeight();
     bPulse = pReference->GetPulseOnSelect();
+    iVisibleCondition = pReference->GetVisibleCondition();
     if (strType == "label")
     {
       strFont = ((CGUILabelControl*)pReference)->GetFontName();
@@ -519,7 +520,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTexture = ((CGUIImage *)pReference)->GetFileName();
       dwColorKey = ((CGUIImage *)pReference)->GetColorKey();
       bKeepAspectRatio = ((CGUIImage *)pReference)->GetKeepAspectRatio();
-      iVisibleCondition = ((CGUIImage *)pReference)->GetVisibleCondition();
       vecInfo.push_back(((CGUIImage *)pReference)->GetInfo());
     }
     else if (strType == "listcontrol")
@@ -1004,7 +1004,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   {
     CGUIVideoControl* pControl = new CGUIVideoControl(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight);
-
+    pControl->SetVisibleCondition(iVisibleCondition);
     return pControl;
   }
   else if (strType == "fadelabel")
@@ -1430,6 +1430,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "visualisation")
   {
     CGUIVisualisationControl* pControl = new CGUIVisualisationControl(dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight);
+    pControl->SetVisibleCondition(iVisibleCondition);
     return pControl;
   }
   return NULL;
