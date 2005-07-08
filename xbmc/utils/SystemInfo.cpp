@@ -615,28 +615,18 @@ bool SYSINFO::GetXBOXVersionDetected(CStdString& strXboxVer)
 	Ver[3] = 0;	Ver[4] = 0;	Ver[5] = 0;
 
 	if ( strcmp(Ver,("01D")) == NULL || strcmp(Ver,("D01")) == NULL || strcmp(Ver,("1D0")) == NULL || strcmp(Ver,("0D1")) == NULL)
-	{	CLog::Log(LOGDEBUG, "XBOX: Devkit");			strXboxVer = "DEVKIT";			return true;}
-	else if ( strcmp(Ver,("DBG")) == NULL)
-	{	CLog::Log(LOGDEBUG, "XBOX: DEBUGKIT Green");	strXboxVer = "DEBUGKIT Green";	return true;}
-	else if ( strcmp(Ver,("P01")) == NULL)
-	{	CLog::Log(LOGDEBUG, "XBOX: v1.0");				strXboxVer = "v1.0";			return true;}
-	else if ( strcmp(Ver,("P05")) == NULL)
-	{	CLog::Log(LOGDEBUG, "XBOX: v1.1");				strXboxVer = "v1.1";			return true;}
+	{ strXboxVer = "DEVKIT";  return true;}
+	else if ( strcmp(Ver,("DBG")) == NULL){ strXboxVer = "DEBUGKIT Green";	return true;}
+	else if ( strcmp(Ver,("P01")) == NULL){ strXboxVer = "v1.0";  return true;}
+	else if ( strcmp(Ver,("P05")) == NULL){	strXboxVer = "v1.1";  return true;}
 	else if ( strcmp(Ver,("P11")) == NULL ||  strcmp(Ver,("1P1")) == NULL || strcmp(Ver,("11P")) == NULL )
 	{	
-		if (HalReadSMBusValue(0xD4,0x00,0,(LPBYTE)&iTemp)==0) 
-		{CLog::Log(LOGDEBUG, "XBOX: v1.4");				strXboxVer = "v1.4";			return true;} 
-		else  
-		{CLog::Log(LOGDEBUG, "XBOX: v1.2v/1.3");		strXboxVer = "v1.2/v1.3";		return true;}
+		if (HalReadSMBusValue(0xD4,0x00,0,(LPBYTE)&iTemp)==0){  strXboxVer = "v1.4";  return true; } 
+		else {  strXboxVer = "v1.2/v1.3";		return true;}
 	}
-	else if ( strcmp(Ver,("???")) == NULL) //Todo: Need XBOX v1.5 to Detect the ver.!!
-	{	CLog::Log(LOGDEBUG, "XBOX Version: XBOX V1.5 -->%s",Ver);	strXboxVer = "v1.5"; return true;}
-	else if ( strcmp(Ver,("P2L")) == NULL)
-	{	CLog::Log(LOGDEBUG, "XBOX: v1.6");				strXboxVer = "v1.6";			return true;}
-	else
-    {	CLog::Log(LOGDEBUG, "XBOX: UNKNOWN Version! Please report this --> %s",Ver);	
-		strXboxVer = "UNKNOWN";
-		return true;
+	else if ( strcmp(Ver,("???")) == NULL){	strXboxVer = "v1.5";  return true;} //Todo: Need XBOX v1.5 to Detect the ver.!!
+	else if ( strcmp(Ver,("P2L")) == NULL){	strXboxVer = "v1.6";	return true;}
+  else  {	strXboxVer.Format("UNKNOWN: Please report this --> %s",Ver); return true;
 	}
 }
 bool SYSINFO::LoadBiosSigns()

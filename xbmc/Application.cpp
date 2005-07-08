@@ -134,6 +134,7 @@ CApplication::CApplication(void)
   m_strForcedNextPlayer = "";
   m_strPlayListFile = "";
   m_nextPlaylistItem = -1;
+  m_PingTimer = timeGetTime();
 }
 
 CApplication::~CApplication(void)
@@ -3577,8 +3578,13 @@ void CApplication::Process()
   //  check if we can unload any unreferenced dlls
   CSectionLoader::UnloadDLLsDelayed();
 
-  // GeminiServer Xbox Autodetection
-  CUtil::XboxAutoDetection();
+  // GeminiServer Xbox Autodetection // Send in X sec PingTime Interval
+  if( (timeGetTime() - m_PingTimer) >= ((unsigned int)g_guiSettings.GetInt("Autodetect.PingTime" ) * 1000) )
+  {
+    CUtil::XboxAutoDetection();
+    m_PingTimer = timeGetTime();
+  }
+  
 }
 
 void CApplication::Restart(bool bSamePosition)
