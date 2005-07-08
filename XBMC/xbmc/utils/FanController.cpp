@@ -4,6 +4,7 @@
 #include "FanController.h"
 #include "../xbox/undocumented.h"
 #include "../xbox/XKExports.h"
+#include "SystemInfo.h"
 
 
 #define PIC_ADDRESS      0x20
@@ -157,7 +158,15 @@ float CFanController::GetGPUTemp()
 
 void CFanController::GetGPUTempInternal()
 {
-  HalReadSMBusValue(PIC_ADDRESS, GPU_TEMP, 0, (LPBYTE)&gpuTemp);
+  HalReadSMBusValue(PIC_ADDRESS, GPU_TEMP, 0, (LPBYTE)&fGPUTemp);
+
+  CStdString strXboxVer;
+  SYSINFO::GetXBOXVersionDetected(strXboxVer);
+  if (strXboxVer == "v1.6") 
+  { // The XBOX v1.6 shows the temp to high! Let's recalc it! It will only do ~minus 10 degress
+     gpuTemp = ((float)fGPUTemp * 0.8f);
+  }
+  else gpuTemp = fGPUTemp;
 }
 
 float CFanController::GetCPUTemp()
@@ -189,7 +198,17 @@ void CFanController::GetCPUTempInternal()
   while ((_inp(0xc000) & 8));
   cpudec = _inpw(0xc006);
 
-  cpuTemp = (float)cpu + (float)cpudec / 256.0f;
+  CStdString strXboxVer;
+  SYSINFO::GetXBOXVersionDetected(strXboxVer);
+  if (strXboxVer == "v1.6") 
+  { // The XBOX v1.6 shows the temp to high! Let's recalc it! it will only do ~minus 10 degress
+    cpuTemp = ((float)cpu + (float)cpudec / 256.0f )* 0.8f;
+  }
+  else
+  { // else let's show then the normal Temp!
+    cpuTemp = (float)cpu + (float)cpudec / 256.0f;
+  }
+
 }
 
 

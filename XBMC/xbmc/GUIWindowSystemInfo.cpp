@@ -431,27 +431,33 @@ void CGUIWindowSystemInfo::Render()
 		GetGPUTemp(strGPUTemp);
 		SET_CONTROL_LABEL(3,strGPUTemp);
 		
-		// Label 5: Fan Speed
+		// Label 4: Fan Speed
 		CStdString strFanSpeed;
 		GetFanSpeed(strFanSpeed);
-		SET_CONTROL_LABEL(5,strFanSpeed);
+		SET_CONTROL_LABEL(4,strFanSpeed);
 		
-		// Label 4: Set FreeMemeory Info
+		// Label 5: Set FreeMemeory Info
 		CStdString strFreeMem;
 		GetFreeMemory(strFreeMem);
-		SET_CONTROL_LABEL(4,strFreeMem);
+		SET_CONTROL_LABEL(5,strFreeMem);
 
-		// Label 6: Set Resolution Info
+    //Label 6: XBMC IP Adress
+    WCHAR wzIP[32];
+    const WCHAR* pszIP=g_localizeStrings.Get(150).c_str();
+    swprintf(wzIP,L"%s: %S",pszIP,g_szTitleIP);
+    SET_CONTROL_LABEL(6,wzIP);
+
+		// Label 7: Set Resolution Info
 		CStdString strResol;
 		GetResolution(strResol);
-		SET_CONTROL_LABEL(6,strResol);
+		SET_CONTROL_LABEL(7,strResol);
 		
-		// Label 7: Get Kernel Info
+		// Label 8: Get Kernel Info
 		CStdString strGetKernel;
 		CGUIWindowSystemInfo::GetKernelVersion(strGetKernel);
-		SET_CONTROL_LABEL(7,strGetKernel);
+		SET_CONTROL_LABEL(8,strGetKernel);
 
-		// Label 50: Get Current Time
+   	// Label 50: Get Current Time
 		CStdString strCurTime;
 		GetCurTime(strCurTime);
 		SET_CONTROL_LABEL(50,strCurTime);
@@ -560,7 +566,8 @@ bool CGUIWindowSystemInfo::GetXBVerInfo(CStdString& strXBoxVer)
 	if (SYSINFO::GetXBOXVersionDetected(strXBOXVersion))
 	{
 		strXBoxVer.Format("%s %s", lblXBver.c_str(),strXBOXVersion);
-		return true;
+    CLog::Log(LOGDEBUG,"XBOX Version: %s",strXBOXVersion.c_str());
+    return true;
 	}
 	else return false;
 }

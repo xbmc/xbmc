@@ -239,6 +239,7 @@ public:
   bool m_bMasterLockOverridesLocalPasswords;
   CStdString m_strForcedNextPlayer;
   CStdString m_strPlayListFile;
+  int m_PingTimer;
 
 protected:
   CStdString m_strCurrentPlayer;
