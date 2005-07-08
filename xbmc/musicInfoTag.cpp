@@ -53,6 +53,11 @@ bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const
 
 int CMusicInfoTag::GetTrackNumber() const
 {
+  return (m_iTrack & 0xffff);
+}
+
+int CMusicInfoTag::GetTrackAndDiskNumber() const
+{
   return m_iTrack;
 }
 
@@ -141,7 +146,12 @@ void CMusicInfoTag::SetReleaseDate(SYSTEMTIME& dateTime)
 
 void CMusicInfoTag::SetTrackNumber(int iTrack)
 {
-  m_iTrack = iTrack;
+  m_iTrack = (m_iTrack & 0xffff0000) | (iTrack & 0xffff);
+}
+
+void CMusicInfoTag::SetPartOfSet(int iPartOfSet)
+{
+  m_iTrack = (m_iTrack & 0xffff) | (iPartOfSet << 16);
 }
 
 void CMusicInfoTag::SetDuration(int iSec)

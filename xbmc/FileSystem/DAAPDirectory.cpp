@@ -241,6 +241,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
               //pItem->m_musicInfoTag.SetTrackNumber(m_currentSongItems[idx].songtracknumber);
               pItem->m_musicInfoTag.SetTrackNumber(m_thisHost->dbplaylists->playlists[c].items[j].songid);
               //pItem->m_musicInfoTag.SetTrackNumber(j+1);
+              //pItem->m_musicInfoTag.SetPartOfSet(m_currentSongItems[idx].songdiscnumber);
               pItem->m_musicInfoTag.SetDuration((int) (m_currentSongItems[idx].songtime / 1000));
               pItem->m_musicInfoTag.SetLoaded(true);
 
@@ -296,6 +297,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           pItem->m_musicInfoTag.SetArtist(m_selectedArtist);
           pItem->m_musicInfoTag.SetAlbum(m_selectedAlbum);
           pItem->m_musicInfoTag.SetTrackNumber(m_currentSongItems[c].songtracknumber);
+          pItem->m_musicInfoTag.SetPartOfSet(m_currentSongItems[c].songdiscnumber);
           pItem->m_musicInfoTag.SetDuration((int) (m_currentSongItems[c].songtime / 1000));
           pItem->m_musicInfoTag.SetLoaded(true);
 

@@ -24,6 +24,7 @@ static const unsigned int	g_DayAtomName			=	MAKE_ATOM_NAME( 0xa9, 'd', 'a', 'y' 
 static const unsigned int	g_CustomGenreAtomName	=	MAKE_ATOM_NAME( 0xa9, 'g', 'e', 'n' );	// '©gnr'
 static const unsigned int	g_GenreAtomName			=	MAKE_ATOM_NAME(  'g', 'n', 'r', 'e' );	// 'gnre'
 static const unsigned int	g_TrackNumberAtomName	=	MAKE_ATOM_NAME(  't', 'r', 'k', 'n' );	// 'trkn'
+static const unsigned int	g_DiscNumberAtomName	=	MAKE_ATOM_NAME(  'd', 'i', 's', 'k' );	// 'disk'
 static const unsigned int	g_CoverArtAtomName		=	MAKE_ATOM_NAME(  'c', 'o', 'v', 'r' );	// 'covr'
 
 // These atoms contain other atoms.. so when we find them, we have to recurse..
@@ -160,6 +161,13 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
   case	g_TrackNumberAtomName:
     {
       tag.SetTrackNumber( pMetaData[ 3 ] );
+
+      break;
+    }
+
+  case	g_DiscNumberAtomName:
+    {
+      tag.SetPartOfSet( pMetaData[ 3 ] );
 
       break;
     }
