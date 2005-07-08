@@ -75,6 +75,11 @@ ID3_C_EXPORT size_t     ID3_RemoveComments(ID3_Tag*, const char * = NULL);
 
 ID3_C_EXPORT char*      ID3_GetTrack(const ID3_Tag*);
 ID3_C_EXPORT size_t     ID3_GetTrackNum(const ID3_Tag*);
+
+// Added by JM
+ID3_C_EXPORT char*      ID3_GetPartInSet(const ID3_Tag*);
+ID3_C_EXPORT size_t     ID3_GetPartInSetNum(const ID3_Tag*);
+
 //following routine courtesy of John George
 ID3_C_EXPORT ID3_Frame* ID3_AddTrack(ID3_Tag*, uchar ucTrack, uchar ucTotal = 0,
                                      bool replace = false);
