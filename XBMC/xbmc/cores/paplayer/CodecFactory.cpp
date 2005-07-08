@@ -21,7 +21,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new CDDACodec();
   else if (strFileType.Equals("ogg") || strFileType.Equals("oggstream"))
     return new OGGCodec();
-  else if (strFileType.Equals("mpc"))
+  else if (strFileType.Equals("mpc") || strFileType.Equals("mp+") || strFileType.Equals("mpp"))
     return new MPCCodec();
   else if (strFileType.Equals("shn"))
     return new SHNCodec();

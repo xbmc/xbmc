@@ -156,9 +156,13 @@ int SHNCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   return READ_ERROR;
 }
 
-bool SHNCodec::HandlesType(const char *type)
+bool SHNCodec::CanInit()
 {
-  return ( strcmp(type, "shn") == 0 );
+  CFile file;
+  if (file.Exists(SHN_DLL))
+    return true;
+
+  return false;
 }
 
 bool SHNCodec::LoadDLL()

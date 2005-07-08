@@ -205,9 +205,13 @@ int MPCCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   return READ_SUCCESS;
 }
 
-bool MPCCodec::HandlesType(const char *type)
+bool MPCCodec::CanInit()
 {
-  return ( strcmp(type, "mpc") == 0 || strcmp(type, "mp+") == 0 || strcmp(type, "mpp") == 0);
+  CFile file;
+  if (file.Exists(MPC_DLL))
+    return true;
+
+  return false;
 }
 
 bool MPCCodec::LoadDLL()

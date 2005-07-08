@@ -1,6 +1,5 @@
 #include "../../stdafx.h"
 #include "WAVPackCodec.h"
-#include <sys/stat.h>
 
 #define WAVPACK_DLL "Q:\\system\\players\\paplayer\\WAVPack.dll"
 
@@ -246,7 +245,7 @@ bool WAVPackCodec::LoadDLL()
       !m_dll.WavpackPackSamples || !m_dll.WavpackFlushSamples || !m_dll.WavpackUpdateNumSamples || 
       !m_dll.WavpackOpenFileInputEx || !m_dll.WavpackOpenFileInput || !m_dll.WavpackGetWrapperLocation) 
   {
-    CLog::Log(LOGERROR, "WAVPackCodec: Unable to resolve exports from %s", OGG_DLL);
+    CLog::Log(LOGERROR, "WAVPackCodec: Unable to resolve exports from %s", WAVPACK_DLL);
     CSectionLoader::UnloadDLL(WAVPACK_DLL);
     return false;
   }
@@ -255,9 +254,13 @@ bool WAVPackCodec::LoadDLL()
   return true;
 }
 
-bool WAVPackCodec::HandlesType(const char *type)
+bool WAVPackCodec::CanInit()
 {
-  return ( strcmp(type, "wv") == 0 );
+  CFile file;
+  if (file.Exists(WAVPACK_DLL))
+    return true;
+
+  return false;
 }
 
 void WAVPackCodec::FormatSamples (BYTE *dst, int bps, long *src, unsigned long samcnt)

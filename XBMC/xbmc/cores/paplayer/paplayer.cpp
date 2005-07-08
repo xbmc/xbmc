@@ -1,9 +1,5 @@
 #include "../../stdafx.h"
 #include "PAPlayer.h"
-#include "../mplayer/ASyncDirectSound.h"
-#include "../mplayer/Ac97DirectSound.h"
-#include "../../application.h"
-#include "../../util.h"
 #include "CodecFactory.h"
 #include "../../utils/GUIInfoManager.h"
 #include "AudioContext.h"
@@ -839,4 +835,17 @@ void CALLBACK StaticStreamCallback( VOID* pStreamContext, VOID* pPacketContext, 
   {
     pPlayer->StreamCallback(pPacketContext);
   }
+}
+
+bool PAPlayer::HandlesType(const CStdString &type)
+{
+  ICodec* codec=CodecFactory::CreateCodec(type);
+
+  if (codec && codec->CanInit())
+  {
+    delete codec;   
+    return true;
+  }
+
+  return false;
 }

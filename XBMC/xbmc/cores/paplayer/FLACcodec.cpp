@@ -253,9 +253,13 @@ bool FLACCodec::LoadDLL()
   return true;
 }
 
-bool FLACCodec::HandlesType(const char *type)
+bool FLACCodec::CanInit()
 {
-  return ( strcmp(type, "flac") == 0 );
+  CFile file;
+  if (file.Exists(FLAC_DLL))
+    return true;
+
+  return false;
 }
 
 void FLACCodec::FreeDecoder()

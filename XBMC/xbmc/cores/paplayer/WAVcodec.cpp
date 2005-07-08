@@ -138,7 +138,7 @@ int WAVCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   return READ_ERROR;
 }
 
-bool WAVCodec::HandlesType(const char *type)
+bool WAVCodec::CanInit()
 {
-  return ( strcmp(type, "wav") == 0 );
+  return true;
 }

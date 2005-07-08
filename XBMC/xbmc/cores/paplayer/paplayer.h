@@ -1,7 +1,6 @@
 #pragma once
 #include "../iplayer.h"
 #include "../../utils/thread.h"
-#include "../mplayer/IDirectSoundRenderer.h"
 #include "AudioDecoder.h"
 #include "../ssrc.h"
 

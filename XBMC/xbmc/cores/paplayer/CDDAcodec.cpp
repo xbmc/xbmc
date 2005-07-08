@@ -113,7 +113,7 @@ int CDDACodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   return READ_SUCCESS;
 }
 
-bool CDDACodec::HandlesType(const char *type)
+bool CDDACodec::CanInit()
 {
-  return strcmp(type, "cdda")==0;
+  return true;
 }

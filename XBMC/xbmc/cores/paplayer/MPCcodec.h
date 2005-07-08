@@ -32,7 +32,7 @@ public:
   virtual void DeInit();
   virtual __int64 Seek(__int64 iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
-  virtual bool HandlesType(const char *type);
+  virtual bool CanInit();
 private:
   float m_sampleBuffer[FRAMELEN * 2 * 2];
   int m_sampleBufferSize;

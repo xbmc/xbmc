@@ -247,9 +247,13 @@ bool OGGCodec::LoadDLL()
   return true;
 }
 
-bool OGGCodec::HandlesType(const char *type)
+bool OGGCodec::CanInit()
 {
-  return ( strcmp(type, "ogg") == 0 );
+  CFile file;
+  if (file.Exists(OGG_DLL))
+    return true;
+
+  return false;
 }
 
 // OGG order : L, C, R, L", R", LFE

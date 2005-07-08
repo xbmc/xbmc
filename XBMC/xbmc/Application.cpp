@@ -44,6 +44,7 @@
 #include "sectionloader.h"
 #include "utils/charsetconverter.h"
 #include "guiusermessages.h"
+#include "cores/paplayer/paplayer.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -2738,11 +2739,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     strNewPlayer = "mplayer";
   }
-  else if (url.GetFileType() == "mp3")
-  {
-    if (CUtil::FileExists("Q:\\system\\players\\paplayer\\in_mp3.dll"))  strNewPlayer = "paplayer";
-  }
-  else if (url.GetFileType() == "ape" || url.GetFileType() == "mac" || url.GetFileType() == "cdda" || url.GetFileType() == "ogg" || url.GetFileType() == "oggstream" || url.GetFileType() == "mpc" || url.GetFileType() == "shn" || url.GetFileType() == "flac" || url.GetFileType() == "wav" || url.GetFileType() == "m4a" || url.GetFileType() == "aac" || url.GetFileType() == "wv")
+  else if (PAPlayer::HandlesType(url.GetFileType()))
   {
     strNewPlayer = "paplayer";
   }
