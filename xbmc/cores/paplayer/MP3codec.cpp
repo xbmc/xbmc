@@ -130,6 +130,14 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     m_SampleRate = formatdata[1];
     m_BitsPerSample = formatdata[3];
   }
+  else
+  {
+    CLog::Log(LOGERROR, "MP3Codec: Unable to determine file format of %s (corrupt start of mp3?)", strFile.c_str());
+    m_file.Close();
+    delete m_pDecoder;
+    m_pDecoder = NULL;
+    return false;
+  }
   m_pDecoder->flush();
   m_file.Seek(mp3info.GetID3v2Size());
   return true;
