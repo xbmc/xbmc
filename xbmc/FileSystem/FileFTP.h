@@ -29,7 +29,7 @@ namespace XFILE
 	    char m_filename[255];
     private:
 	    bool m_bOpened;
-	    CAutoPtrSocket rs;
+      CAutoPtrSocket rs;
 	    __int64 Recv(byte* pBuffer,__int64 iLen);
 	    CFTPUtil FTPUtil;
 	};

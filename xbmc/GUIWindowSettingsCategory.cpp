@@ -1319,15 +1319,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         else bState = true;
       if (pControl) pControl->SetEnabled(bState);
     }
-    else if (strSetting == "Autodetect.NickName" || strSetting == "Autodetect.CreateLink" || strSetting == "Autodetect.PopUpInfo" || strSetting == "Autodetect.SendUserPw")
+    else if (strSetting == "Autodetect.NickName" || strSetting == "Autodetect.CreateLink" || strSetting == "Autodetect.PopUpInfo" || strSetting == "Autodetect.SendUserPw" || strSetting == "Autodetect.PingTime")
     {
       //GeminiServer
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-		  if (pControl) 
-		  { 
-			  if (g_guiSettings.GetBool("Autodetect.OnOff")) pControl->SetEnabled(true); 
-			  else pControl->SetEnabled(false);
-		  }
+		  if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Autodetect.OnOff"));
     }
 
   }
