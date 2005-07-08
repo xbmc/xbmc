@@ -20,7 +20,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
     CFile::Delete(pItem->GetThumbnailImage());
     pItem->SetThumbnailImage("");
   }
-  if ((pItem->IsPicture() && (!pItem->IsZIP() || !pItem->IsRAR())) && !pItem->HasThumbnail())
+  if ((pItem->IsPicture() && !pItem->IsZIP() && !pItem->IsRAR()) && !pItem->HasThumbnail())
   { // load the thumb from the image file
     CPicture pic;
     pic.CreateThumbnail(pItem->m_strPath);
