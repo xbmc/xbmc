@@ -7,7 +7,6 @@ class CGUIDialogButtonMenu :
 public:
   CGUIDialogButtonMenu(void);
   virtual ~CGUIDialogButtonMenu(void);
-  virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage &message);
   virtual void Render();
 };

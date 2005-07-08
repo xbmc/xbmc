@@ -148,13 +148,3 @@ void CGUIDialogOK::SetLine(int iLine, int iString)
   msg.SetLabel(iString);
   OnMessage(msg);
 }
-
-bool CGUIDialogOK::OnAction(const CAction &action)
-{
-  if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
-  {
-    Close();
-    return true;
-  }
-  return CGUIDialog::OnAction(action);
-}

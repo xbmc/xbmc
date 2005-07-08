@@ -25,17 +25,6 @@ CGUIWindowMusicInfo::CGUIWindowMusicInfo(void)
 CGUIWindowMusicInfo::~CGUIWindowMusicInfo(void)
 {}
 
-
-bool CGUIWindowMusicInfo::OnAction(const CAction &action)
-{
-  if (action.wID == ACTION_PREVIOUS_MENU)
-  {
-    Close();
-    return true;
-  }
-  return CGUIDialog::OnAction(action);
-}
-
 bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )

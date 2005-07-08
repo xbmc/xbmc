@@ -62,8 +62,6 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
   {
     m_bDirty = false;
-    Close();
-    return true;
   }
   else if (action.wID == ACTION_BACKSPACE)
   {
@@ -128,10 +126,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     }
     return true;
   }
-  else
-  {
-    return CGUIDialog::OnAction(action);
-  }
+  return CGUIDialog::OnAction(action);
 }
 
 bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)

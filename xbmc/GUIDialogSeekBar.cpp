@@ -57,11 +57,6 @@ bool CGUIDialogSeekBar::OnAction(const CAction &action)
     }
     return true;
   }
-  if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
-  {
-    Close();
-    return true;
-  }
   return CGUIDialog::OnAction(action);
 }
 
