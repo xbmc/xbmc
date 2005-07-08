@@ -1547,7 +1547,7 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
     else
     {
       CStdString strType = pType->FirstChild()->Value();
-      if (strType == "dialog" || strType == "modelessdialog")
+      if (strType == "dialog")
       {
         pWindow = new CGUIDialog(0);
       }
@@ -2397,26 +2397,77 @@ void CApplication::FrameMove()
   // left thumb stick
   // find new direction.  Note, only handles one direction at a time at the moment.
   int newAnalogKey = 0;
-  if (pGamepad->fY1 > 0 && pGamepad->fX1 < pGamepad->fY1 && -pGamepad->fX1 < pGamepad->fY1)
-    newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
-  else if (pGamepad->fY1 < 0 && pGamepad->fX1 < -pGamepad->fY1 && -pGamepad->fX1 < -pGamepad->fY1)
-    newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
-  else if (pGamepad->fX1 > 0 && pGamepad->fY1 < pGamepad->fX1 && -pGamepad->fY1 < pGamepad->fX1)
-    newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
-  else if (pGamepad->fX1 < 0 && pGamepad->fY1 < -pGamepad->fX1 && -pGamepad->fY1 < -pGamepad->fX1)
-    newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
-  else if (pGamepad->fY2 > 0 && pGamepad->fX2 < pGamepad->fY2 && -pGamepad->fX2 < pGamepad->fY2)
-    newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
-  else if (pGamepad->fY2 < 0 && pGamepad->fX2 < -pGamepad->fY2 && -pGamepad->fX2 < -pGamepad->fY2)
-    newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
-  else if (pGamepad->fX2 > 0 && pGamepad->fY2 < pGamepad->fX2 && -pGamepad->fY2 < pGamepad->fX2)
-    newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
-  else if (pGamepad->fX2 < 0 && pGamepad->fY2 < -pGamepad->fX2 && -pGamepad->fY2 < -pGamepad->fX2)
-    newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
-  else if (bLeftTrigger)
-    newAnalogKey = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
-  else if (bRightTrigger)
-    newAnalogKey = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
+  if (lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_UP || lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
+  {
+    if (pGamepad->fY2 > 0)
+      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
+    else if (pGamepad->fY2 < 0)
+      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
+    else if (pGamepad->fX2 != 0)
+    {
+      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
+      pGamepad->fY2 = 0.00001f; // small amount of movement
+    }
+  }
+  else if (lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT || lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
+  {
+    if (pGamepad->fX2 > 0)
+      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+    else if (pGamepad->fX2 < 0)
+      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
+    else if (pGamepad->fY2 != 0)
+    {
+      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+      pGamepad->fX2 = 0.00001f; // small amount of movement
+    }
+  }
+  else if (lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_UP || lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
+  {
+    if (pGamepad->fY1 > 0)
+      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
+    else if (pGamepad->fY1 < 0)
+      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
+    else if (pGamepad->fX1 != 0)
+    {
+      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
+      pGamepad->fY1 = 0.00001f; // small amount of movement
+    }
+  }
+  else if (lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_LEFT || lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
+  {
+    if (pGamepad->fX1 > 0)
+      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
+    else if (pGamepad->fX1 < 0)
+      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
+    else if (pGamepad->fY1 != 0)
+    {
+      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
+      pGamepad->fX1 = 0.00001f; // small amount of movement
+    }
+  }
+  else
+  { // check for a new control movement
+    if (pGamepad->fY1 > 0 && pGamepad->fX1 < pGamepad->fY1 && -pGamepad->fX1 < pGamepad->fY1)
+      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
+    else if (pGamepad->fY1 < 0 && pGamepad->fX1 < -pGamepad->fY1 && -pGamepad->fX1 < -pGamepad->fY1)
+      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
+    else if (pGamepad->fX1 > 0 && pGamepad->fY1 < pGamepad->fX1 && -pGamepad->fY1 < pGamepad->fX1)
+      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
+    else if (pGamepad->fX1 < 0 && pGamepad->fY1 < -pGamepad->fX1 && -pGamepad->fY1 < -pGamepad->fX1)
+      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
+    else if (pGamepad->fY2 > 0 && pGamepad->fX2*2 < pGamepad->fY2 && -pGamepad->fX2*2 < pGamepad->fY2)
+      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
+    else if (pGamepad->fY2 < 0 && pGamepad->fX2*2 < -pGamepad->fY2 && -pGamepad->fX2*2 < -pGamepad->fY2)
+      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
+    else if (pGamepad->fX2 > 0 && pGamepad->fY2*2 < pGamepad->fX2 && -pGamepad->fY2*2 < pGamepad->fX2)
+      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+    else if (pGamepad->fX2 < 0 && pGamepad->fY2*2 < -pGamepad->fX2 && -pGamepad->fY2*2 < -pGamepad->fX2)
+      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
+    else if (bLeftTrigger)
+      newAnalogKey = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
+    else if (bRightTrigger)
+      newAnalogKey = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
+  }
 
   if (lastAnalogKey && newAnalogKey != lastAnalogKey)
   { // was held down last time - and we have a new key now
