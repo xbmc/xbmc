@@ -110,6 +110,7 @@
       <width>720</width>
       <height>576</height>
       <texture>4x3home.png</texture>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -133,6 +134,7 @@
       <width>100</width>
       <height>99</height>
       <info>MusicPlayer.Cover</info>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -145,6 +147,7 @@
       <info>MusicPlayer.Artist</info>
       <align>right</align>
       <font>special12</font>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -157,6 +160,7 @@
       <info>MusicPlayer.Title</info>
       <align>right</align>
       <font>special13</font>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -169,6 +173,7 @@
       <info>MusicPlayer.Album</info>
       <align>right</align>
       <font>font10</font>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -180,6 +185,7 @@
       <info>MusicPlayer.Time</info>
       <align>right</align>
       <font>font10</font>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <controlgroup>
@@ -201,6 +207,7 @@
         <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
         <textOffsetX>30</textOffsetX>
+        <visible>!Window.IsActive(56)</visible>
       </control>
 
       <control>
@@ -221,6 +228,7 @@
         <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
         <textOffsetX>30</textOffsetX>
+        <visible>!Window.IsActive(56)</visible>
       </control>
 
       <control>
@@ -241,6 +249,7 @@
         <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
         <textOffsetX>30</textOffsetX>
+        <visible>!Window.IsActive(56)</visible>
       </control>
 
       <control>
@@ -261,6 +270,7 @@
         <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
         <textOffsetX>30</textOffsetX>
+        <visible>!Window.IsActive(56)</visible>
       </control>
 
       <control>
@@ -281,6 +291,7 @@
         <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
         <textOffsetX>30</textOffsetX>
+        <visible>!Window.IsActive(56)</visible>
       </control>
 
       <control>
@@ -301,6 +312,7 @@
         <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
         <textOffsetX>20</textOffsetX>
+        <visible>!Window.IsActive(56)</visible>
       </control>
 
       <control>
@@ -321,6 +333,7 @@
         <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
         <textOffsetX>20</textOffsetX>
+        <visible>!Window.IsActive(56)</visible>
       </control>
 
     </controlgroup>
@@ -333,6 +346,7 @@
         <width>15</width>
         <height>16</height>
       <texture>homebutton-small.png</texture>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -343,6 +357,7 @@
         <width>15</width>
         <height>16</height>
       <texture>homebutton-small.png</texture>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -355,6 +370,7 @@
       <info>System.Date</info>
       <align>right</align>
       <font>special12</font>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -367,6 +383,7 @@
       <align>left</align>
       <font>special12</font>
       <textcolor>60ffffff</textcolor>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -380,6 +397,7 @@
       <align>left</align>
       <font>special12</font>
       <textcolor>60ffffff</textcolor>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -394,6 +412,7 @@
       <titlecolor>ffD2FF00</titlecolor>
       <headlinecolor>DDced8da</headlinecolor>
       <textcolor>ffD2FF00</textcolor>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -412,6 +431,7 @@
       <onright>100</onright>
       <onup>2</onup>
       <ondown>2</ondown>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -430,6 +450,7 @@
       <onright>98</onright>
       <onup>2</onup>
       <ondown>2</ondown>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -448,6 +469,7 @@
       <onright>2</onright>
       <onup>2</onup>
       <ondown>2</ondown>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
   </controls>
