@@ -25,6 +25,7 @@ public:
   const CStdString& GetAlbum() const;
   const CStdString& GetGenre() const;
   int GetTrackNumber() const;
+  int GetTrackAndDiskNumber() const;
   int GetDuration() const;  // may be set even if Loaded() returns false
   void GetReleaseDate(SYSTEMTIME& dateTime) const;
   CStdString GetYear() const;
@@ -41,6 +42,7 @@ public:
   void SetGenre(const CStdString& strGenre) ;
   void SetReleaseDate(SYSTEMTIME& dateTime);
   void SetTrackNumber(int iTrack);
+  void SetPartOfSet(int m_iPartOfSet);
   void SetDuration(int iSec);
   void SetLoaded(bool bOnOff = true);
   void SetAlbum(const CAlbum& album);
@@ -66,7 +68,7 @@ protected:
   CStdString m_strMusicBrainzAlbumArtistID;
   CStdString m_strMusicBrainzTRMID;
   int m_iDuration;
-  int m_iTrack;
+  int m_iTrack;     // consists of the disk number in the high 16 bits, the track number in the low 16bits
   bool m_bLoaded;
   SYSTEMTIME m_dwReleaseDate;
 };

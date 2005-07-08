@@ -16,7 +16,7 @@ CSong::CSong(CMusicInfoTag& tag)
   strMusicBrainzAlbumArtistID = tag.GetMusicBrainzAlbumArtistID();
   strMusicBrainzTRMID = tag.GetMusicBrainzTRMID();
   iYear = stTime.wYear;
-  iTrack = tag.GetTrackNumber();
+  iTrack = tag.GetTrackAndDiskNumber();
   iDuration = tag.GetDuration();
   strThumb = "";
   iStartOffset = 0;

@@ -359,6 +359,10 @@ void CMusicInfoTagLoaderWMA::SetTagValueString(const CStdString& strFrameName, c
   {
     if (tag.GetTrackNumber() <= 0) tag.SetTrackNumber(atoi(strValue.c_str()));
   }
+  else if (strFrameName == "WM/PartOfSet")
+  {
+    tag.SetPartOfSet(atoi(strValue.c_str()));
+  }
   //else if (strFrameName=="WM/Track") // Old Tracknumber, should not be used anymore
   else if (strFrameName == "WM/Year")
   {

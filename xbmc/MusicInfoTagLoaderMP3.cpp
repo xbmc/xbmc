@@ -316,9 +316,8 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 
   GetReplayGainInfo(&id3tag);
 
-  int nTrackNum = ID3_GetTrackNum(&id3tag);
-
-  tag.SetTrackNumber(nTrackNum);
+  tag.SetTrackNumber(ID3_GetTrackNum(&id3tag));
+  tag.SetPartOfSet(ID3_GetPartInSetNum(&id3tag));
 
   if (NULL != pGenre.get())
   {
@@ -481,6 +480,8 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
         }
         if (apeTag.GetTrackNum())
           tag.SetTrackNumber(apeTag.GetTrackNum());
+        if (apeTag.GetDiscNum())
+          tag.SetPartOfSet(apeTag.GetDiscNum());
         if (apeTag.GetReplayGain().iHasGainInfo)
           m_replayGainInfo = apeTag.GetReplayGain();
       }

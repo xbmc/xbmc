@@ -53,6 +53,11 @@ int CVorbisTag::ParseTagEntry(CStdString& strTagEntry)
     tag.SetTrackNumber(atoi(strTagValue));
   }
 
+  if ( strTagType == "DISCNUMBER" )
+  {
+    tag.SetPartOfSet(atoi(strTagValue));
+  }
+
   if ( strTagType == "DATE" )
   {
     SYSTEMTIME dateTime;
