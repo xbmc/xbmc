@@ -32,16 +32,6 @@ CGUIDialogVisualisationSettings::~CGUIDialogVisualisationSettings(void)
 {
 }
 
-bool CGUIDialogVisualisationSettings::OnAction(const CAction &action)
-{
-  if (action.wID == ACTION_PREVIOUS_MENU || action.wID == ACTION_CLOSE_DIALOG)
-  {
-    Close();
-    return true;
-  }
-  return CGUIDialog::OnAction(action);
-}
-
 bool CGUIDialogVisualisationSettings::OnMessage(CGUIMessage &message)
 {
   switch (message.GetMessage())

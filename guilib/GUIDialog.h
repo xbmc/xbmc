@@ -17,6 +17,7 @@ public:
   CGUIDialog(DWORD dwID);
   virtual ~CGUIDialog(void);
 
+  virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
   void DoModal(DWORD dwParentId); // modal
   void Show(DWORD dwParentId); // modeless

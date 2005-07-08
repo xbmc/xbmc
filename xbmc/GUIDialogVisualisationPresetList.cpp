@@ -16,17 +16,6 @@ CGUIDialogVisualisationPresetList::~CGUIDialogVisualisationPresetList(void)
 {
 }
 
-bool CGUIDialogVisualisationPresetList::OnAction(const CAction &action)
-{
-  if (action.wID == ACTION_PREVIOUS_MENU || action.wID == ACTION_CLOSE_DIALOG
-     || action.wID == ACTION_PARENT_DIR)
-  {
-    Close();
-    return true;
-  }
-  return CGUIDialog::OnAction(action);
-}
-
 bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
 {
   switch (message.GetMessage())

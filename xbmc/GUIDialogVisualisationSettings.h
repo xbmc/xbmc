@@ -13,7 +13,6 @@ public:
   CGUIDialogVisualisationSettings(void);
   virtual ~CGUIDialogVisualisationSettings(void);
   virtual bool OnMessage(CGUIMessage &message);
-  virtual bool OnAction(const CAction &action);
   virtual void Render();
 protected:
   void SetVisualisation(CVisualisation *pVisualisation);
