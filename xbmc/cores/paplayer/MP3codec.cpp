@@ -290,7 +290,11 @@ bool MP3Codec::LoadDLL()
   return true;
 }
 
-bool MP3Codec::HandlesType(const char *type)
+bool MP3Codec::CanInit()
 {
-  return strcmp(type, "mp3")==0;
+  CFile file;
+  if (file.Exists(MP3_DLL))
+    return true;
+
+  return false;
 }

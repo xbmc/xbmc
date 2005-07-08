@@ -123,7 +123,11 @@ bool APECodec::LoadDLL()
   return true;
 }
 
-bool APECodec::HandlesType(const char *type)
+bool APECodec::CanInit()
 {
-  return ( strcmp(type, "ape") == 0 || strcmp(type, "mac") == 0 );
+  CFile file;
+  if (file.Exists(APE_DLL))
+    return true;
+
+  return false;
 }
