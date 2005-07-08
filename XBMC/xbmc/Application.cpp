@@ -2732,6 +2732,11 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     strNewPlayer = "sid";
   }
+  // workaround so streaming works again
+  else if (item.IsInternetStream())
+  {
+    strNewPlayer = "mplayer";
+  }
   else if (url.GetFileType() == "mp3")
   {
     if (CUtil::FileExists("Q:\\system\\players\\paplayer\\in_mp3.dll"))  strNewPlayer = "paplayer";
