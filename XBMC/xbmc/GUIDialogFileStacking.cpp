@@ -11,16 +11,6 @@ CGUIDialogFileStacking::CGUIDialogFileStacking(void)
 CGUIDialogFileStacking::~CGUIDialogFileStacking(void)
 {}
 
-bool CGUIDialogFileStacking::OnAction(const CAction &action)
-{
-  if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
-  {
-    Close();
-    return true;
-  }
-  return CGUIDialog::OnAction(action);
-}
-
 bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )

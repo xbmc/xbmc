@@ -9,7 +9,6 @@ public:
   CGUIDialogSelect(void);
   virtual ~CGUIDialogSelect(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
 
   virtual void Close();
   void Reset();

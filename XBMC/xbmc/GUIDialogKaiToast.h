@@ -23,7 +23,6 @@ public:
   bool DoWork();
 
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
   virtual void Render();
   void ResetTimer();
 

@@ -23,16 +23,6 @@ CGUIDialogSubMenu::CGUIDialogSubMenu(void)
 CGUIDialogSubMenu::~CGUIDialogSubMenu(void)
 {}
 
-bool CGUIDialogSubMenu::OnAction(const CAction &action)
-{
-  if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
-  {
-    Close();
-    return true;
-  }
-  return CGUIDialog::OnAction(action);
-}
-
 bool CGUIDialogSubMenu::OnMessage(CGUIMessage &message)
 {
   bool bRet = CGUIDialog::OnMessage(message);
