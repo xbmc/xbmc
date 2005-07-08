@@ -87,6 +87,7 @@
       <posY>105</posY>
       <width>538</width>
       <height>372</height>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -97,6 +98,7 @@
       <posY>60</posY>
       <width>540</width>
       <height>455</height>
+      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
