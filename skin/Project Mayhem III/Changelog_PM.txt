@@ -1,3 +1,6 @@
+2005-07-08 changed:	made the infos on the music and video overlay one-liners
+2005-07-08 added:	function to hide controls in the homescreen if media is playing (black button)
+
 2005-07-06 changed:     Added use of Player.Time and Player.Duration to reduce number of controls in some windows.
 
 2005-07-05 changed:	new home pics
