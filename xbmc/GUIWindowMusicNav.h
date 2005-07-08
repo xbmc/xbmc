@@ -43,4 +43,5 @@ protected:
   CStdString m_strArtist;
   CStdString m_strAlbum;
   CStdString m_strAlbumPath;
+  vector<CStdString> vecPathHistory;
 };
