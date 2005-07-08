@@ -769,6 +769,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
             m_iState = SHOW_SONGS;
           m_iPath += m_iState;
           strNextPath += pItem->GetLabel() + "/";
+          vecPathHistory.push_back(pItem->GetLabel());
         }
         break;
 
@@ -782,6 +783,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
           if (strPath.IsEmpty())
             m_strGenre.Empty();
           strNextPath += pItem->GetLabel() + "/";
+          vecPathHistory.push_back(pItem->GetLabel());
         }
         break;
 
@@ -795,6 +797,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
           if (strPath.IsEmpty())
             m_strArtist.Empty();
           strNextPath += pItem->GetLabel() + "/";
+          vecPathHistory.push_back(pItem->GetLabel());
         }
         break;
 
@@ -815,6 +818,10 @@ void CGUIWindowMusicNav::OnClick(int iItem)
           strNextPath += m_strAlbum;
           if (!pItem->m_musicInfoTag.GetArtist().IsEmpty())
             strNextPath += " - " + pItem->m_musicInfoTag.GetArtist();
+          CStdString strTemp = m_strAlbum;
+          if (!pItem->m_musicInfoTag.GetArtist().IsEmpty())
+            strTemp += " - " + pItem->m_musicInfoTag.GetArtist();         
+          vecPathHistory.push_back(strTemp);
           strNextPath += "/";
         }
         break;
@@ -1121,7 +1128,12 @@ void CGUIWindowMusicNav::GoParentFolder()
   }
 
   CStdString strOldPath = m_Directory.m_strPath;
-  CUtil::GetParentPath(strOldPath, m_strParentPath);
+  //CUtil::GetParentPath(strOldPath, m_strParentPath);
+  m_strParentPath = vecPathHistory.back();
+  vecPathHistory.pop_back();
+
+  int iLen = m_strParentPath.length();
+  m_strParentPath = strOldPath.Left(strOldPath.length() - iLen - 1);
 
   // parent path??
   CLog::Log(LOGDEBUG, "CGUIWindowMusicNav::GoParentFolder(%s), m_strParentPath = [%s]", strOldPath.c_str(), m_strParentPath.c_str());
