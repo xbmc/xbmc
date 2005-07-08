@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-07-2005 fixed: slashes in tags (ie, AC/DC) should no longer cause problems in the Music Library
+ - 07-07-2005 added: workaround for music streaming.  until a real http filereader class is available, mplayer will be used for streams
  - 07-07-2005 changed: music info scanner does not preload dlls anymore
  - 07-07-2005 changed: if id3v2 tag it present and contains no data, the id3v1 tag is loaded
  - 07-07-2005 fixed: exception while scanning files with utf encoded id3 tags
