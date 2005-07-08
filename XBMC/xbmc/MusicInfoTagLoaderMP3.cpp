@@ -540,18 +540,21 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
   m_file.Seek(0, SEEK_SET);
   m_file.Read(buffer, 6);
 
-  if (buffer[0] == 'I' &&
+  while (buffer[0] == 'I' &&
       buffer[1] == 'D' &&
       buffer[2] == '3')
   {
     /* Now check what the ID3v2 size field says */
     m_file.Read(buffer, 4);
     nPrependedBytes = UNSYNC(buffer[0], buffer[1], buffer[2], buffer[3]) + 10;
-    m_iID3v2Size=nPrependedBytes;
+    m_iID3v2Size += nPrependedBytes;
+    // Skip ID3V2 tag when reading mp3 data
+    m_file.Seek(m_iID3v2Size, SEEK_SET);
+    m_file.Read(buffer, 6);
   }
 
   //raw mp3Data = FileSize - ID3v1 tag - ID3v2 tag
-  int nMp3DataSize = (int)m_file.GetLength() - nPrependedBytes;
+  int nMp3DataSize = (int)m_file.GetLength() - m_iID3v2Size;
   if (m_id3tag.HasV1Tag())
     nMp3DataSize -= m_id3tag.GetAppendedBytes();
 
@@ -564,8 +567,8 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
     };
 
   // Skip ID3V2 tag when reading mp3 data
-  m_file.Seek(nPrependedBytes, SEEK_SET);
-  m_file.Read(buffer, 8192);
+  m_file.Seek(m_iID3v2Size, SEEK_SET);
+  m_file.Read(buffer, 6);
 
   int frequency = 0, bitrate = 0, bittable = 0;
   int frame_count = 0;
@@ -598,8 +601,8 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
           }
           float *offset = new float[101];
           for (int j = 0; j < 100; j++)
-            offset[j] = (float)buffer[iOffset + j]/256.0f * nMp3DataSize + nPrependedBytes;
-          offset[100] = (float)nMp3DataSize + nPrependedBytes;
+            offset[j] = (float)buffer[iOffset + j]/256.0f * nMp3DataSize + m_iID3v2Size;
+          offset[100] = (float)nMp3DataSize + m_iID3v2Size;
           m_seekInfo.SetDuration((float)(frame_count * tpf));
           m_seekInfo.SetOffsets(100, offset);
           delete[] offset;
@@ -741,8 +744,8 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
             }
             float *offset = new float[101];
             for (int j = 0; j < 100; j++)
-              offset[j] = (float)xing[iOffset + j]/256.0f * nMp3DataSize + nPrependedBytes;
-            offset[100] = (float)nMp3DataSize + nPrependedBytes;
+              offset[j] = (float)xing[iOffset + j]/256.0f * nMp3DataSize + m_iID3v2Size;
+            offset[100] = (float)nMp3DataSize + m_iID3v2Size;
             m_seekInfo.SetDuration((float)(frame_count * tpf));
             m_seekInfo.SetOffsets(100, offset);
             delete[] offset;
@@ -772,7 +775,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
         float *offset = new float[iSeekOffsets + 1];
         int iScaleFactor = ((vbri[20] & 0xFF) << 8) | (vbri[21] & 0xFF);
         int iOffsetSize = ((vbri[22] & 0xFF) << 8) | (vbri[23] & 0xFF);
-        offset[0] = (float)nPrependedBytes;
+        offset[0] = (float)m_iID3v2Size;
         for (int j = 0; j < iSeekOffsets; j++)
         {
           DWORD dwOffset = 0;
@@ -784,7 +787,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
           offset[j] += (float)dwOffset * iScaleFactor;
           offset[j + 1] = offset[j];
         }
-        offset[iSeekOffsets] = (float)nPrependedBytes + nMp3DataSize;
+        offset[iSeekOffsets] = (float)m_iID3v2Size + nMp3DataSize;
         m_seekInfo.SetDuration((float)(frame_count * tpf));
         m_seekInfo.SetOffsets(iSeekOffsets, offset);
         delete[] offset;
@@ -808,8 +811,8 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
    d = (double)(nMp3DataSize / ((bitrate * 1000) / 8));
   m_seekInfo.SetDuration((float)d);
   float offset[2];
-  offset[0] = (float)nPrependedBytes;
-  offset[1] = (float)nPrependedBytes + nMp3DataSize;
+  offset[0] = (float)m_iID3v2Size;
+  offset[1] = (float)m_iID3v2Size + nMp3DataSize;
   m_seekInfo.SetOffsets(1, offset);
   return (int)d;
 }
