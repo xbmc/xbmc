@@ -7,6 +7,7 @@ using namespace MUSIC_INFO;
 CAPEv2Tag::CAPEv2Tag()
 {
   m_nTrackNum = 0;
+  m_nDiscNum = 0;
   m_bDllLoaded = false;
   m_pDll = NULL;
   GetAPETag = NULL;
@@ -48,6 +49,15 @@ bool CAPEv2Tag::ReadTag(const char* filename, bool checkID3Tag)
   chars = 256;
   if (tag->GetFieldString(L"Track", buffer, &chars, TRUE) != -1)
     m_nTrackNum = atoi(buffer);
+  chars = 256;
+  if (tag->GetFieldString(L"Media", buffer, &chars, TRUE) != -1)
+  {
+    // cd number is usually "CD 1/3"
+    char *num = buffer;
+    while (!isdigit(*num) && num < buffer + chars) num++;
+    if (isdigit(*num))
+      m_nDiscNum = atoi(num);
+  }
 
   // Replay gain info
   GetReplayGainFromTag(tag);

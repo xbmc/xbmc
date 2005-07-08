@@ -89,8 +89,8 @@ struct SSortMusicNav
         break;
 
       case 3:   // Sort by TrackNum
-        if ( rpStart.m_musicInfoTag.GetTrackNumber() > rpEnd.m_musicInfoTag.GetTrackNumber()) return bGreater;
-        if ( rpStart.m_musicInfoTag.GetTrackNumber() < rpEnd.m_musicInfoTag.GetTrackNumber()) return !bGreater;
+        if ( rpStart.m_musicInfoTag.GetTrackAndDiskNumber() > rpEnd.m_musicInfoTag.GetTrackAndDiskNumber()) return bGreater;
+        if ( rpStart.m_musicInfoTag.GetTrackAndDiskNumber() < rpEnd.m_musicInfoTag.GetTrackAndDiskNumber()) return !bGreater;
         return true;
         break;
 
@@ -132,8 +132,8 @@ struct SSortMusicNav
         strcat(szfilename1, strStart.c_str());
         strcat(szfilename2, strEnd.c_str());
         // and finally the track number
-        strStart.Format("%02i", rpStart.m_musicInfoTag.GetTrackNumber());
-        strEnd.Format("%02i", rpEnd.m_musicInfoTag.GetTrackNumber());
+        strStart.Format("%02i", rpStart.m_musicInfoTag.GetTrackAndDiskNumber());
+        strEnd.Format("%02i", rpEnd.m_musicInfoTag.GetTrackAndDiskNumber());
         strcat(szfilename1, strStart.c_str());
         strcat(szfilename2, strEnd.c_str());
         break;
@@ -158,8 +158,8 @@ struct SSortMusicNav
         strcat(szfilename1, strStart.c_str());
         strcat(szfilename2, strEnd.c_str());
         // and concat the track number
-        strStart.Format("%02i", rpStart.m_musicInfoTag.GetTrackNumber());
-        strEnd.Format("%02i", rpEnd.m_musicInfoTag.GetTrackNumber());
+        strStart.Format("%02i", rpStart.m_musicInfoTag.GetTrackAndDiskNumber());
+        strEnd.Format("%02i", rpEnd.m_musicInfoTag.GetTrackAndDiskNumber());
         strcat(szfilename1, strStart.c_str());
         strcat(szfilename2, strEnd.c_str());
         break;

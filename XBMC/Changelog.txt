@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-07-2005 added: Reading of disk number to the tag readers.  Sorting now sorts by disk then track number.  Only track number is displayed.
  - 08-07-2005 added: XBOX v1.6 CPU & GPU Temp will now detect closer Temp and the Automatic Fanspeed should also work on v1.6 better! This changes has only effect for Detected Xbox v1.6!! [GeminiServer]
  - 08-07-2005 added: SystemInfo XBMC IP Adress to Default View [GeminiServer]
  - 08-07-2005 changed: XBOX Autodetection interval was < 1sec. now set the default to 30 sec. interval and it is via Settings Changeable. Settings - Network - Autodetection - PingInterval in Sec. [GeminIServer]

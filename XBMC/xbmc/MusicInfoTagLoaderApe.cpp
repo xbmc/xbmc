@@ -31,6 +31,7 @@ bool CMusicInfoTagLoaderApe::Load(const CStdString& strFileName, CMusicInfoTag& 
       tag.SetArtist(myTag.GetArtist());
       tag.SetGenre(myTag.GetGenre());
       tag.SetTrackNumber(myTag.GetTrackNum());
+      tag.SetPartOfSet(myTag.GetDiscNum());
       SYSTEMTIME dateTime;
       ZeroMemory(&dateTime, sizeof(SYSTEMTIME));
       dateTime.wYear = atoi(myTag.GetYear());
