@@ -1035,7 +1035,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
     // count the number of images
     int numFiles = 0;
     for (int i=0; i < items.Size(); i++)
-      if (items[i]->IsPicture())
+      if (items[i]->IsPicture() && !items[i]->IsZIP() && !items[i]->IsRAR())
         numFiles++;
     if (!numFiles) return;
 
@@ -1076,7 +1076,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
         int files = 0;
         for (int i = 0; i < items.Size(); i++)
         {
-          if (items[i]->IsPicture())
+          if (items[i]->IsPicture() && !items[i]->IsZIP() && !items[i]->IsRAR())
           {
             if (thumbs[thumb] == files)
               strFiles[thumb] = items[i]->m_strPath;
