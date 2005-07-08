@@ -188,6 +188,8 @@ void CGUILabelControl::SetAlpha(DWORD dwAlpha)
 
 void CGUILabelControl::SetLabel(const wstring &strLabel)
 {
+  if (m_strLabel.compare(strLabel) == 0)
+    return;
   m_strLabel = strLabel;
   SetWidthControl(m_ScrollInsteadOfTruncate);
 }
