@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-07-2005 changed: Dialog closing moved to base class.
  - 08-07-2005 added: conditional visibility to video and vis controls.
  - 08-07-2005 fixed: MP3's with two or more large id3v2 tags would not play in paplayer.
  - 08-07-2005 changed: simplified the way adding codecs to paplayer

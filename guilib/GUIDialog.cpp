@@ -47,6 +47,16 @@ bool CGUIDialog::Load(const CStdString& strFileName, bool bContainsPath)
   return true;
 }
 
+bool CGUIDialog::OnAction(const CAction &action)
+{
+  if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
+  {
+    Close();
+    return true;
+  }
+  return CGUIWindow::OnAction(action);
+}
+
 bool CGUIDialog::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )

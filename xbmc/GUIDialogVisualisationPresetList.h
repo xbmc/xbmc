@@ -10,7 +10,6 @@ public:
   CGUIDialogVisualisationPresetList(void);
   virtual ~CGUIDialogVisualisationPresetList(void);
   virtual bool OnMessage(CGUIMessage &message);
-  virtual bool OnAction(const CAction &action);
   virtual void Render();
 
 protected:

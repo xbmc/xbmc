@@ -8,7 +8,6 @@ public:
   CGUIDialogFileStacking(void);
   virtual ~CGUIDialogFileStacking(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
 
   int GetSelectedFile() const;
   void SetNumberOfFiles(int iFiles);

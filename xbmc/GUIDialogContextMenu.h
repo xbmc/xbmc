@@ -7,7 +7,6 @@ class CGUIDialogContextMenu :
 public:
   CGUIDialogContextMenu(void);
   virtual ~CGUIDialogContextMenu(void);
-  virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage &message);
   virtual void DoModal(DWORD dwParentId);
   void ClearButtons();

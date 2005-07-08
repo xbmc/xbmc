@@ -138,6 +138,7 @@ bool CGUIWindowOSD::OnAction(const CAction &action)
       return true;
     }
     break;
+  case ACTION_CLOSE_DIALOG:
   case ACTION_PREVIOUS_MENU:
     {
       if (m_bSubMenuOn)      // is sub menu on?
