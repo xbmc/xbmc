@@ -48,9 +48,10 @@ public:
   // the data has been exhausted, and READ_ERROR on error.
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize)=0;
 
-  // HandlesType()
-  // Returns true if this codec can handle this type of file.
-  virtual bool HandlesType(const char *extension)=0;
+  // CanInit()
+  // Should return true if the codec can be initialized
+  // eg. check if a dll needed for the codec exists
+  virtual bool CanInit()=0;
 
   __int64 m_TotalTime;  // time in ms
   int m_SampleRate;

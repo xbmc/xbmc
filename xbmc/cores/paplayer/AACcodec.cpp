@@ -187,9 +187,13 @@ int AACCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   return READ_SUCCESS;
 }
 
-bool AACCodec::HandlesType(const char *type)
+bool AACCodec::CanInit()
 {
-  return ( strcmp(type, "m4a") == 0 || strcmp(type, "aac") == 0);
+  CFile file;
+  if (file.Exists(AAC_DLL))
+    return true;
+
+  return false;
 }
 
 bool AACCodec::LoadDLL()
