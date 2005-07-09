@@ -221,6 +221,7 @@ CGUIWindowMusicNav::CGUIWindowMusicNav(void)
   m_strArtist = "";
   m_strAlbum = "";
   m_strAlbumPath = "";
+  m_Directory.m_strPath = "db://";
 }
 CGUIWindowMusicNav::~CGUIWindowMusicNav(void)
 {
@@ -237,7 +238,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         m_iViewAsIcons = g_stSettings.m_iMyMusicNavRootViewAsIcons;
         m_iViewAsIconsRoot = g_stSettings.m_iMyMusicNavRootViewAsIcons;
       }
-      m_Directory.m_strPath = "db://";
     }
     break;
 
