@@ -635,12 +635,10 @@ void CGUIWindowMusicNav::UpdateButtons()
   // disallow sorting on the root
   if (m_iState == SHOW_ROOT)
   {
-    CONTROL_DISABLE(CONTROL_BTNSORTBY);
     CONTROL_DISABLE(CONTROL_BTNSORTASC);
   }
   else
   {
-    CONTROL_ENABLE(CONTROL_BTNSORTBY);
     CONTROL_ENABLE(CONTROL_BTNSORTASC);
   }
 
