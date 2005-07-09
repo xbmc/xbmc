@@ -508,8 +508,10 @@ void CGUIWindowMusicSongs::OnScan()
   CUtil::DeleteDatabaseDirectoryCache();
 
   // Start background loader
+  int iControl=GetFocusedControl();
   g_application.m_guiDialogMusicScan.StartScanning(m_Directory.m_strPath, bUpdateAll);
   UpdateButtons();
+  SET_CONTROL_FOCUS(iControl, 0);
   return ;
 }
 
