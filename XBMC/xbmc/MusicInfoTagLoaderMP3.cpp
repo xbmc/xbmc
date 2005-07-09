@@ -568,7 +568,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
 
   // Skip ID3V2 tag when reading mp3 data
   m_file.Seek(m_iID3v2Size, SEEK_SET);
-  m_file.Read(buffer, 6);
+  m_file.Read(buffer, 8192);
 
   int frequency = 0, bitrate = 0, bittable = 0;
   int frame_count = 0;
