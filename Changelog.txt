@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-07-2005 added: HTTPAPI: Rotate and Flash parameters to TakeScreenshot command
+ - 09-07-2005 added: HTTPAPI: Put in place the framework for exposing the HTTPAPI commands through ASP. So far just GetCurrentlyPlaying is available.
  - 08-07-2005 changed: New default keymap.xml - more consistent than before.
  - 08-07-2005 changed: Nicer handling of thumb stick actions - should cause less conflicts.
  - 08-07-2005 changed: Dialog closing moved to base class.
