@@ -2486,7 +2486,7 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
   g_graphicsContext.Unlock();
 }
 
-void CUtil::TakeScreenshot(const char* fn)
+void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
 {
     LPDIRECT3DSURFACE8 lpSurface = NULL;
 
@@ -2509,11 +2509,14 @@ void CUtil::TakeScreenshot(const char* fn)
       lpSurface->Release();
     }
     g_graphicsContext.Unlock();
-    g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
-    FlashScreen(true, true);
-    Sleep(10);
-    g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
-    FlashScreen(true, false);
+    if (flashScreen)
+    {
+      g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+      FlashScreen(true, true);
+      Sleep(10);
+      g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+      FlashScreen(true, false);
+    }
 }
 
 void CUtil::TakeScreenshot()
@@ -2528,7 +2531,7 @@ void CUtil::TakeScreenshot()
 
     if (strlen(fn))
     {
-      TakeScreenshot(fn);
+      TakeScreenshot(fn, true);
     }
     else
     {
