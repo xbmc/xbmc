@@ -205,6 +205,7 @@ int CWebServer::initWebs()
 
 	// asp commands for xbmc
 	websAspDefine(T("xbmcCommand"), XbmcWebsAspCommand);
+  websAspDefine(T("xbmcAPI"), XbmcAPIAspCommand);
 
 	// asp command for xbmc Configuration
 	websAspDefine(T("xbmcCfgBookmarkSize"), XbmcWebsAspConfigBookmarkSize);
@@ -474,7 +475,13 @@ void  XbmcHttpCommand(webs_t wp, char_t *path, char_t *query)
 {																
 	if (!pXbmcHttp) return ;
 	return pXbmcHttp->xbmcForm(wp, path, query);	
-}																
+}			
+
+int XbmcAPIAspCommand(int eid, webs_t wp, int argc, char_t **argv) 
+{																
+	if (!pXbmcHttp) return -1;
+	return pXbmcHttp->xbmcCommand(eid, wp, argc, argv);	
+}		
 
 int XbmcWebsAspCommand(int eid, webs_t wp, int argc, char_t **argv)
 {
