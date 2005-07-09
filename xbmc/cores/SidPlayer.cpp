@@ -350,8 +350,7 @@ bool SidPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
   if (!file.IsHD())
   {
-    CFile fileCopy;
-    if (!fileCopy.Cache(file.m_strPath.c_str(), "Z:\\cachedsid", NULL, NULL))
+    if (!CFile::Cache(file.m_strPath.c_str(), "Z:\\cachedsid", NULL, NULL))
     {
       ::DeleteFile("Z:\\cachedsid");
       CLog::Log(LOGERROR, "ModPlayer: Unable to cache file %s\n", file.m_strPath.c_str());

@@ -237,7 +237,7 @@ void CGUIWindowVideoActors::Update(const CStdString &strDirectory)
 
       CStdString strThumb;
       CUtil::GetVideoThumbnail(movie.m_strIMDBNumber, strThumb);
-      if (CUtil::FileExists(strThumb))
+      if (CFile::Exists(strThumb))
         pItem->SetThumbnailImage(strThumb);
       pItem->m_fRating = movie.m_fRating;
       pItem->m_stTime.wYear = movie.m_iYear;

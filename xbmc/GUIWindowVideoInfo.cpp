@@ -284,7 +284,7 @@ void CGUIWindowVideoInfo::Refresh()
     if (strImage.size() > 0/* && m_pMovie->m_strSearchString.size() > 0*/)
     {
       CUtil::GetVideoThumbnail(m_pMovie->m_strIMDBNumber, strThumb);
-      if (!CUtil::FileExists(strThumb) )
+      if (!CFile::Exists(strThumb) )
       {
         CHTTP http;
         CStdString strExtension;
@@ -312,7 +312,7 @@ void CGUIWindowVideoInfo::Refresh()
     //CUtil::GetIMDBInfo(m_pMovie->m_strSearchString,strAlbum);
     //m_pMovie->Save(strAlbum);
 
-    if (!CUtil::FileExists(strThumb) )
+    if (!CFile::Exists(strThumb) )
     {
       strThumb = "";
     }

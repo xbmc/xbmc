@@ -644,7 +644,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
       if (item.IsXBE())     // we've found a single XBE in the path vector
       {
         CStdString strDescription;
-        if ( (m_database.GetFile(item.m_strPath, m_vecItems) < 0) && CUtil::FileExists(item.m_strPath))
+        if ( (m_database.GetFile(item.m_strPath, m_vecItems) < 0) && CFile::Exists(item.m_strPath))
         {
           if (!CUtil::GetXBEDescription(item.m_strPath, strDescription))
           {

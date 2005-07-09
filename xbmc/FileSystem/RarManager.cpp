@@ -34,15 +34,14 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
   if( j != m_ExFiles.end() )
 	{
 		pFile = &(j->second);
-		if( CUtil::FileExists( pFile->m_strCachedPath) )
+		if( CFile::Exists( pFile->m_strCachedPath) )
 		{
 			if( !bOverwrite ) 
 			{
 				strPathInCache = pFile->m_strCachedPath;
 				return true;
 			}
-			CFile file;
-			file.Delete( pFile->m_strCachedPath );
+      CFile::Delete( pFile->m_strCachedPath );
 		}
 	}
   //Extract archived file, using existing local copy or overwriting if wanted...
@@ -110,7 +109,7 @@ bool CRarManager::GetPathInCache(CStdString& strPathInCache, const CStdString& s
 	std::map<CStdString, CFileInfo>::iterator j = m_ExFiles.find(strPathInRar );
 	if( j == m_ExFiles.end() ) return false;
 	strPathInCache = j->second.m_strCachedPath;
-	if( !CUtil::FileExists(strPathInCache) ) return false;
+	if( !CFile::Exists(strPathInCache) ) return false;
 	return true;
 }
 bool CRarManager::IsFileInRar(bool& bResult, const CStdString& strRarPath, const CStdString& strPathInRar)
@@ -139,13 +138,12 @@ void CRarManager::MakeCachedPath(CStdString& strFileCachedPath, const CStdString
 void CRarManager::ClearCache()
 {
   CSingleLock lock(m_CritSection);
-  CFile file;
   std::map<CStdString, CFileInfo>::iterator j;
   for (j = m_ExFiles.begin() ; j != m_ExFiles.end() ; j++)
   {
     CFileInfo* pFile = &(j->second);
     if( pFile->m_bAutoDel )
-      file.Delete( pFile->m_strCachedPath );
+      CFile::Delete( pFile->m_strCachedPath );
   }
   m_ExFiles.clear();
 }
@@ -153,14 +151,13 @@ void CRarManager::ClearCache()
 void CRarManager::ClearCachedFile(const CStdString& strRarPath, const CStdString& strPathInRar)
 {
   CSingleLock lock(m_CritSection);
-	CFile file;
   
   std::map<CStdString, CFileInfo>::iterator j = m_ExFiles.find(strPathInRar);
   if (j == m_ExFiles.end())
   {
     return; // no such subpath
   }
-  if (file.Delete(j->second.m_strCachedPath))
+  if (CFile::Delete(j->second.m_strCachedPath))
     m_ExFiles.erase(j);
 }
 

@@ -21,7 +21,7 @@ bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& 
 	// first, does the module have a .mdz?
 	CStdString strMDZ;
 	CUtil::ReplaceExtension(strFileName,".mdz",strMDZ);
-	if( CUtil::FileExists(strMDZ) ) {
+	if( CFile::Exists(strMDZ) ) {
 		if( !getFile(strMDZ,strMDZ) ) {
 			tag.SetLoaded(false);
 			return( false );
@@ -77,8 +77,7 @@ bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& 
 bool CMusicInfoTagLoaderMod::getFile(CStdString& strFile, const CStdString& strSource)
 {
 	if( !CUtil::IsHD(strSource) ) {
-		CFile fileCopy;
-		if (!fileCopy.Cache(strSource.c_str(), "Z:\\cachedmod", NULL, NULL)) {
+		if (!CFile::Cache(strSource.c_str(), "Z:\\cachedmod", NULL, NULL)) {
 			::DeleteFile("Z:\\cachedmod");
 			CLog::Log(LOGERROR, "ModTagLoader: Unable to cache file %s\n", strSource.c_str());
 			strFile = "";

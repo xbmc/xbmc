@@ -158,11 +158,7 @@ int SHNCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
 bool SHNCodec::CanInit()
 {
-  CFile file;
-  if (file.Exists(SHN_DLL))
-    return true;
-
-  return false;
+  return CFile::Exists(SHN_DLL);
 }
 
 bool SHNCodec::LoadDLL()

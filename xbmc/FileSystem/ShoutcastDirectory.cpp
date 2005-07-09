@@ -28,8 +28,7 @@ CShoutcastDirectory::~CShoutcastDirectory(void)
 bool CShoutcastDirectory::IsCacheValid()
 {
   __stat64 stat;
-  CFile file;
-  if (file.Stat("Z:\\cachedPlaylists.txt", &stat) == 0)
+  if (CFile::Stat("Z:\\cachedPlaylists.txt", &stat) == 0)
   {
     __time64_t time;
     _time64(&time);

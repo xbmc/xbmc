@@ -1425,8 +1425,7 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
   //CLog::Log(LOGDEBUG,"Setting thumb for Artist [%s]",m_strArtist.c_str());
   //CLog::Log(LOGDEBUG,"  Src = [%s]",strSrcThumb.c_str());
   //CLog::Log(LOGDEBUG,"  Dest = [%s]",strDestThumb.c_str());
-  CFile file;
-  if (!file.Cache(strSrcThumb.c_str(), strDestThumb.c_str(), NULL, NULL))
+  if (!CFile::Cache(strSrcThumb.c_str(), strDestThumb.c_str(), NULL, NULL))
     CLog::Log(LOGERROR,"  Could not cache artist thumb: %s",strSrcThumb.c_str());
 }
 

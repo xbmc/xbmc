@@ -570,7 +570,7 @@ void CFileItem::SetThumb()
   {
     CStdString strFile;
     CUtil::ReplaceExtension(m_strPath, ".tbn", strFile);
-    if (CUtil::FileExists(strFile))
+    if (CFile::Exists(strFile))
     {
       SetThumbnailImage(strFile);
       return;
@@ -598,21 +598,20 @@ void CFileItem::SetThumb()
 
   // does a cached thumbnail exists?
   // If it is on the DVD and is an XBE, let's grab get the thumbnail again
-  if (!CUtil::FileExists(strCachedThumbnail) || (item.IsXBE() && item.IsDVD()) )
+  if (!CFile::Exists(strCachedThumbnail) || (item.IsXBE() && item.IsDVD()) )
   {
     if (IsRemote() && !IsDVD() && !g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs")) return;
     // get the path for the  thumbnail
     CUtil::GetThumbnail( item.m_strPath, strThumb);
     // local cached thumb does not exists
     // check if strThumb exists
-    if (CUtil::FileExists(strThumb))
+    if (CFile::Exists(strThumb))
     {
       // yes, is it a local or remote file
       if (CUtil::IsRemote(strThumb) || CUtil::IsDVD(strThumb) || CUtil::IsISO9660(strThumb) )
       {
         // remote file, then cache it...
-        CFile file;
-        if ( file.Cache(strThumb.c_str(), strCachedThumbnail.c_str(), NULL, NULL))
+        if ( CFile::Cache(strThumb.c_str(), strCachedThumbnail.c_str(), NULL, NULL))
         {
           CLog::Log(LOGDEBUG,"  Cached thumb: %s",strCachedThumbnail.c_str());
           // cache ok, then use it
@@ -631,7 +630,6 @@ void CFileItem::SetThumb()
     {
       // strThumb doesnt exists either
       // now check for filename.tbn or foldername.tbn
-      CFile file;
       CStdString strThumbnailFileName;
       if (m_bIsFolder)
       {
@@ -643,13 +641,13 @@ void CFileItem::SetThumb()
       else
         CUtil::ReplaceExtension(item.m_strPath, ".tbn", strThumbnailFileName);
 
-      if (file.Exists(strThumbnailFileName))
+      if (CFile::Exists(strThumbnailFileName))
       {
         //  local or remote ?
         if (item.IsRemote() || item.IsDVD() || item.IsISO9660())
         {
           //  remote, cache thumb to hdd
-          if ( file.Cache(strThumbnailFileName.c_str(), strCachedThumbnail.c_str(), NULL, NULL))
+          if ( CFile::Cache(strThumbnailFileName.c_str(), strCachedThumbnail.c_str(), NULL, NULL))
           {
             SetThumbnailImage(strCachedThumbnail);
             bGotIcon = true;
@@ -690,7 +688,7 @@ void CFileItem::SetArtistThumb()
   CStdString strThumb = "";
   CUtil::GetCachedThumbnail(strArtist, strThumb);
 
-  if (CUtil::FileExists(strThumb))
+  if (CFile::Exists(strThumb))
   {
     // found it, we are finished.
     SetIconImage(strThumb);
@@ -737,7 +735,7 @@ void CFileItem::SetMusicThumb()
   // try permanent album thumb (Q:\albums\thumbs)
   // using "album name + path"
   CUtil::GetAlbumThumb(strAlbum, strPath, strThumb);
-  if (CUtil::FileExists(strThumb))
+  if (CFile::Exists(strThumb))
   {
     // found it, we are finished.
     SetIconImage(strThumb);
@@ -749,7 +747,7 @@ void CFileItem::SetMusicThumb()
   // try temporary album thumb (Q:\albums\thumbs\temp)
   // using "album name + path"
   CUtil::GetAlbumThumb(strAlbum, strPath, strThumb, true);
-  if (CUtil::FileExists(strThumb))
+  if (CFile::Exists(strThumb))
   {
     // found it, we are finished.
     SetIconImage(strThumb);
@@ -767,7 +765,7 @@ void CFileItem::SetMusicThumb()
     // look for locally cached tbn
     CStdString strCached;
     CUtil::GetAlbumFolderThumb(strThumb, strCached, true);
-    if (CUtil::FileExists(strCached))
+    if (CFile::Exists(strCached))
     {
       // found it, we are finished.
       SetIconImage(strCached);
@@ -787,7 +785,7 @@ void CFileItem::SetMusicThumb()
     //  on a remote share
     if (bTryRemote)
     {
-      if (CUtil::FileExists(strThumb))
+      if (CFile::Exists(strThumb))
       {
         // found, save a thumb
         // to the temp thumb dir.
@@ -809,7 +807,7 @@ void CFileItem::SetMusicThumb()
   // try permanent folder thumb (Q:\albums\thumbs)
   CStdString strFolderThumb;
   CUtil::GetAlbumFolderThumb(strPath, strFolderThumb);
-  if (CUtil::FileExists(strFolderThumb))
+  if (CFile::Exists(strFolderThumb))
   {
     // found it, we are finished.
     SetIconImage(strFolderThumb);
@@ -820,7 +818,7 @@ void CFileItem::SetMusicThumb()
   
   // try temporary folder thumb (Q:\albums\thumbs\temp)
   CUtil::GetAlbumFolderThumb(strPath, strFolderThumb, true);
-  if (CUtil::FileExists(strFolderThumb))
+  if (CFile::Exists(strFolderThumb))
   {
     // found it, we are finished.
     SetIconImage(strFolderThumb);
@@ -1199,7 +1197,7 @@ void CFileItemList::FilterCueItems()
           cuesheet.GetSongs(newitems);
           // queue the cue sheet and the underlying media file for deletion
           CStdString strMediaFile = cuesheet.GetMediaPath();
-          bool bFoundMediaFile = CUtil::FileExists(strMediaFile);
+          bool bFoundMediaFile = CFile::Exists(strMediaFile);
           if (!bFoundMediaFile)
           {
             // try file in same dir, not matching case...

@@ -895,7 +895,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
           CUtil::GetAlbumThumb(album.GetTitle(), album.GetAlbumPath(), strThumb);
           // Was the download of the album art
           // from allmusic.com successfull...
-          if (CUtil::FileExists(strThumb))
+          if (CFile::Exists(strThumb))
           {
             // ...yes...
             CFileItem item(album.GetAlbumPath(), true);

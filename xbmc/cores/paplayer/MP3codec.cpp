@@ -300,9 +300,5 @@ bool MP3Codec::LoadDLL()
 
 bool MP3Codec::CanInit()
 {
-  CFile file;
-  if (file.Exists(MP3_DLL))
-    return true;
-
-  return false;
+  return CFile::Exists(MP3_DLL);
 }

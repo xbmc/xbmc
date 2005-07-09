@@ -33,7 +33,7 @@ bool CFileZip::Open(const CURL&url, bool bBinary)
     return false;
   }
 
-  if (!mFile.Open(url.GetHostName().c_str(),true)) // this is the zip-file, always open binary
+  if (!mFile.Open(url.GetHostName(),true)) // this is the zip-file, always open binary
   {
     CLog::Log(LOGERROR,"FileZip: unable to open zip file!");
     return false;

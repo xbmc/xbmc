@@ -82,12 +82,12 @@ SubCode* CCdgLoader::GetLastLoaded()
 void CCdgLoader::OnStartup()
 {
   CSingleLock lock (m_CritSection);
-  if (!CUtil::FileExists(m_strFileName))
+  if (!CFile::Exists(m_strFileName))
   {
     m_CdgFileState = FILE_ERR_NOT_FOUND;
     return ;
   }
-  if (!m_File.Open(m_strFileName.c_str(), TRUE))
+  if (!m_File.Open(m_strFileName, TRUE))
   {
     m_CdgFileState = FILE_ERR_OPENING;
     return ;

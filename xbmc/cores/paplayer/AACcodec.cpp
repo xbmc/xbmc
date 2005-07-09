@@ -189,11 +189,7 @@ int AACCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
 bool AACCodec::CanInit()
 {
-  CFile file;
-  if (file.Exists(AAC_DLL))
-    return true;
-
-  return false;
+  return CFile::Exists(AAC_DLL);
 }
 
 bool AACCodec::LoadDLL()

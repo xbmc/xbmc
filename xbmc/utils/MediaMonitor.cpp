@@ -332,7 +332,7 @@ bool CMediaMonitor::imdb_GetMovieArt(CStdString& strIMDBNumber, CStdString& strP
   CStdString strThum;
   CUtil::GetVideoThumbnail(strIMDBNumber, strThum);
 
-  if (CUtil::FileExists(strThum.c_str()))
+  if (CFile::Exists(strThum.c_str()))
   {
     strImagePath = strThum;
     return true;
@@ -365,7 +365,7 @@ bool CMediaMonitor::imdb_GetMovieArt(CStdString& strIMDBNumber, CStdString& strP
 
   ::DeleteFile(strTemp.c_str());
 
-  if (CUtil::FileExists(strThum.c_str()))
+  if (CFile::Exists(strThum.c_str()))
   {
     strImagePath = strThum;
     return true;

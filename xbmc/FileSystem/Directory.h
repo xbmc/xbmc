@@ -14,8 +14,8 @@ public:
   virtual ~CDirectory(void);
 
   static bool GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask="");
-  static bool Create(const char* strPath);
-  static bool Exists(const char* strPath);
-  static bool Remove(const char* strPath);
+  static bool Create(const CStdString& strPath);
+  static bool Exists(const CStdString& strPath);
+  static bool Remove(const CStdString& strPath);
 };
 }

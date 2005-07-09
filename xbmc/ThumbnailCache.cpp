@@ -1,7 +1,6 @@
 
 #include "stdafx.h"
 #include "ThumbnailCache.h"
-#include "util.h"
 
 CThumbnailCache* CThumbnailCache::m_pCacheInstance = NULL;
 
@@ -34,7 +33,7 @@ bool CThumbnailCache::ThumbExists(const CStdString& strFileName, bool bAddCache 
   if (it != m_Cache.end())
     return it->second;
 
-  bool bExists = CUtil::FileExists(strFileName);
+  bool bExists = CFile::Exists(strFileName);
 
   if (bAddCache)
     Add(strFileName, bExists);

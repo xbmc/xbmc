@@ -38,7 +38,7 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
   if (!LoadDLL())
     return false;
 
-  if (!m_file.Open(strFile.c_str()))
+  if (!m_file.Open(strFile))
     return false;
 
   m_pFlacDecoder=m_dll.FLAC__seekable_stream_decoder_new();
@@ -255,11 +255,7 @@ bool FLACCodec::LoadDLL()
 
 bool FLACCodec::CanInit()
 {
-  CFile file;
-  if (file.Exists(FLAC_DLL))
-    return true;
-
-  return false;
+  return CFile::Exists(FLAC_DLL);
 }
 
 void FLACCodec::FreeDecoder()
