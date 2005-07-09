@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-07-2005 fixed: SF bug [ 1234932 ] Small navigation bug in Music Library view.
  - 09-07-2005 fixed: MP3 bitrate/duration reading was out.
  - 09-07-2005 added: HTTPAPI: Rotate and Flash parameters to TakeScreenshot command
  - 09-07-2005 added: HTTPAPI: Put in place the framework for exposing the HTTPAPI commands through ASP. So far just GetCurrentlyPlaying is available.
