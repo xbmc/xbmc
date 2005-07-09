@@ -594,6 +594,17 @@
   <string><id>1233</id><value>Program &amp; Film &amp; Musik</value></string>
   <string><id>1234</id><value>Program &amp; Bilder &amp; Musik</value></string>
   <string><id>1235</id><value>Program &amp; Bilder &amp; Film</value></string>
+
+  <string><id>1245</id><value> - FTP Användarnamn</value></string>
+  <string><id>1246</id><value> - FTP Lösenord</value></string>
+  <string><id>1247</id><value>FTP användare och lösenord sparade!</value></string>
+
+  <string><id>1250</id><value>Autodetektera</value></string>
+  <string><id>1251</id><value>Autodetektera XBOX</value></string>
+  <string><id>1252</id><value>XBOX Smeknamn</value></string>
+  <string><id>1253</id><value>Skapa FTP länk i Mina Filer</value></string>
+  <string><id>1254</id><value>Popup meddelande</value></string>
+  <string><id>1255</id><value>Skicka FTP användare och lösenord</value></string>
   
   <string><id>1396</id><value>Blåsigt</value></string>
   <string><id>1397</id><value>och</value></string>
@@ -783,7 +794,7 @@
   <string><id>13312</id><value>Reducera svart ram</value></string>
   <string><id>13313</id><value>Reset/Starta om</value></string>
   <string><id>13314</id><value>Musik OSD timeout</value></string>
-  <string><id>13315</id><value>Skapa miniatyrer</value></string>
+  <string><id>13315</id><value>Återskapa miniatyrer</value></string>
   <string><id>13316</id><value>Rekursiva miniatyrer</value></string>
   <string><id>13317</id><value>Starta bildspel</value></string>
   <string><id>13318</id><value>Rekursivt bildspel</value></string>
