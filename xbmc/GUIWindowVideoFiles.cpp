@@ -906,7 +906,7 @@ void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
           {
             CStdString strThumb;
             CUtil::GetVideoThumbnail(info.m_strIMDBNumber, strThumb);
-            if (CUtil::FileExists(strThumb))
+            if (CFile::Exists(strThumb))
               pItem->SetThumbnailImage(strThumb);
 
             break;

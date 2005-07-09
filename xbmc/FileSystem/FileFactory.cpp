@@ -1,6 +1,5 @@
 
 #include "../stdafx.h"
-
 #include "FileFactory.h"
 #include "FileShoutcast.h"
 #include "FileISO.h"
@@ -32,18 +31,17 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
   strProtocol.MakeLower();
 
   if (strProtocol == "http") return NULL;
-  if (strProtocol == "iso9660") return (IFile*)new CFileISO();
-  if (strProtocol == "xns") return (IFile*)new CFileRelax();
-  if (strProtocol == "smb") return (IFile*)new CFileSMB();
-  if (strProtocol == "xbms") return (IFile*)new CFileXBMSP();
-  if (strProtocol == "shout") return (IFile*)new CFileShoutcast();
-  if (strProtocol == "rtv") return (IFile*)new CFileRTV();
-  if (strProtocol == "soundtrack") return (IFile*)new CFileSndtrk();
-  if (strProtocol == "daap") return (IFile*)new CFileDAAP();
-  if (strProtocol == "cdda") return (IFile*)new CFileCDDA();
-  if (strProtocol == "zip") return (IFile*)new CFileZip();
-  if (strProtocol == "rar") return (IFile*)new CFileRar();
-  if (strProtocol == "ftp") return (IFile*)new CFileFTP();
-
-  return (IFile*)new CFileHD();
+  else if (strProtocol == "iso9660") return new CFileISO();
+  else if (strProtocol == "xns") return new CFileRelax();
+  else if (strProtocol == "smb") return new CFileSMB();
+  else if (strProtocol == "xbms") return new CFileXBMSP();
+  else if (strProtocol == "shout") return new CFileShoutcast();
+  else if (strProtocol == "rtv") return new CFileRTV();
+  else if (strProtocol == "soundtrack") return new CFileSndtrk();
+  else if (strProtocol == "daap") return new CFileDAAP();
+  else if (strProtocol == "cdda") return new CFileCDDA();
+  else if (strProtocol == "zip") return new CFileZip();
+  else if (strProtocol == "rar") return new CFileRar();
+  else if (strProtocol == "ftp") return new CFileFTP();
+  else return new CFileHD();
 }

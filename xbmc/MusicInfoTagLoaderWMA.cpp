@@ -64,7 +64,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
   {
     tag.SetLoaded(false);
     CFile file;
-    if (!file.Open(strFileName.c_str())) return false;
+    if (!file.Open(strFileName)) return false;
 
     tag.SetURL(strFileName);
 

@@ -99,7 +99,7 @@ bool CKaiItem::IsAvatarCached()
   GetAvatarFilePath(strFilePath);
 
   // Check to see if the file is already cached
-  return CUtil::FileExists(strFilePath);
+  return CFile::Exists(strFilePath);
 }
 
 void CKaiItem::GetAvatarFilePath(CStdString& aFilePath)

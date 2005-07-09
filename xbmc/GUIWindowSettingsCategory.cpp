@@ -1350,7 +1350,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     // TODO: Should this actually be done here??
     CStdString programDatabase = g_stSettings.m_szAlbumDirectory;
     programDatabase += PROGRAM_DATABASE_NAME;
-    if (CUtil::FileExists(programDatabase))
+    if (CFile::Exists(programDatabase))
       ::DeleteFile(programDatabase.c_str());
   }
   else if (strSetting == "MyMusic.Visualisation")

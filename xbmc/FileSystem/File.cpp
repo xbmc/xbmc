@@ -55,24 +55,25 @@ public:
 char* get() { return p; }
 };
 
-bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallback* pCallback, void* pContext)
+bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback, void* pContext)
 {
-  if (Open(strFileName, true))
+  CFile file;
+  if (file.Open(strFileName, true))
   {
-    if (GetLength() <= 0)
+    if (file.GetLength() <= 0)
     {
       CLog::Log(LOGWARNING, "FILE::cache: the file %s has a length of 0 bytes", strFileName);
-      Close();
+      file.Close();
       // no need to return false here.  Technically, we should create the new file and leave it at that
 //      return false;
     }
 
     CFile newFile;
-    if (CUtil::IsHD(szDest)) // create possible missing dirs
+    if (CUtil::IsHD(strDest)) // create possible missing dirs
     {
       vector<CStdString> tokens;
       CStdString strDirectory;
-      CUtil::GetDirectory(szDest,strDirectory);
+      CUtil::GetDirectory(strDest,strDirectory);
       CUtil::Tokenize(strDirectory,tokens,"\\");
       CStdString strCurrPath = tokens[0]+"\\";
       for (vector<CStdString>::iterator iter=tokens.begin()+1;iter!=tokens.end();++iter)
@@ -81,11 +82,10 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
         CDirectory::Create(strCurrPath);
       }
     }
-    CFile::Delete(szDest);
-    if (!newFile.OpenForWrite(szDest, true, true))  // overwrite always
+    CFile::Delete(strDest);
+    if (!newFile.OpenForWrite(strDest, true, true))  // overwrite always
     {
-      delete m_pFile;
-      m_pFile = NULL;
+      file.Close();
       return false;
     }
 
@@ -106,12 +106,12 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
     CAutoBuffer buffer(iBufferSize);
     int iRead;
 
-    UINT64 llFileSize = GetLength();
+    UINT64 llFileSize = file.GetLength();
     UINT64 llFileSizeOrg = llFileSize;
     UINT64 llPos = 0;
     DWORD ipercent = 0;
-    char *szFileName = strrchr(strFileName, '\\');
-    if (!szFileName) szFileName = strrchr(strFileName, '/');
+    char *szFileName = strrchr(strFileName.c_str(), '\\');
+    if (!szFileName) szFileName = strrchr(strFileName.c_str(), '/');
 
     // Presize file for faster writes
     // removed it since this isn't supported by samba
@@ -130,16 +130,16 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
       {
         iBytesToRead = llFileSize;
       }
-      iRead = Read(buffer.get(), iBytesToRead);
+      iRead = file.Read(buffer.get(), iBytesToRead);
       if (iRead > 0)
       {
         int iWrote = newFile.Write(buffer.get(), iRead);
         // iWrote contains num bytes read - make sure it's the same as numbytes written
         if (iWrote != iRead)
         { // failed!
-          Close();
+          file.Close();
           newFile.Close();
-          newFile.Delete(szDest);
+          CFile::Delete(strDest);
           return false;
         }
         llFileSize -= iRead;
@@ -155,9 +155,9 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
             if (!pCallback->OnFileCallback(pContext, ipercent))
             {
               // canceled
-              Close();
+              file.Close();
               newFile.Close();
-              newFile.Delete(szDest);
+              CFile::Delete(strDest);
               return false;
             }
           }
@@ -165,20 +165,20 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
       }
       if (iRead != iBytesToRead)
       {
-        Close();
+        file.Close();
         newFile.Close();
-        newFile.Delete(szDest);
+        CFile::Delete(strDest);
         return false;
       }
     }
-    Close();
+    file.Close();
     return true;
   }
   return false;
 }
 
 //*********************************************************************************************
-bool CFile::Open(const char* strFileName, bool bBinary)
+bool CFile::Open(const CStdString& strFileName, bool bBinary)
 {
   bool bPathInCache;
   if (!g_directoryCache.FileExists(strFileName, bPathInCache) )
@@ -187,8 +187,7 @@ bool CFile::Open(const char* strFileName, bool bBinary)
       return false;
   }
 
-  CFileFactory factory;
-  m_pFile = factory.CreateLoader(strFileName);
+  m_pFile = CFileFactory::CreateLoader(strFileName);
   if (!m_pFile) return false;
 
   CURL url(strFileName);
@@ -196,10 +195,9 @@ bool CFile::Open(const char* strFileName, bool bBinary)
   return m_pFile->Open(url, bBinary);
 }
 
-bool CFile::OpenForWrite(const char* strFileName, bool bBinary, bool bOverWrite)
+bool CFile::OpenForWrite(const CStdString& strFileName, bool bBinary, bool bOverWrite)
 {
-  CFileFactory factory;
-  m_pFile = factory.CreateLoader(strFileName);
+  m_pFile = CFileFactory::CreateLoader(strFileName);
   if (!m_pFile) return false;
 
   CURL url(strFileName);
@@ -207,31 +205,31 @@ bool CFile::OpenForWrite(const char* strFileName, bool bBinary, bool bOverWrite)
   return m_pFile->OpenForWrite(url, bBinary, bOverWrite);
 }
 
-bool CFile::Exists(const char* strFileName)
+bool CFile::Exists(const CStdString& strFileName)
 {
+  if (strFileName.IsEmpty()) return false;
+
   bool bPathInCache;
   if (g_directoryCache.FileExists(strFileName, bPathInCache) )
     return true;
   if (bPathInCache)
     return false;
 
-  CFileFactory factory;
-  m_pFile = factory.CreateLoader(strFileName);
-  if (!m_pFile) return false;
+  auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
+  if (!pFile.get()) return false;
 
   CURL url(strFileName);
 
-  return m_pFile->Exists(url);
+  return pFile->Exists(url);
 }
 
-int CFile::Stat(const char* strFileName, struct __stat64* buffer)
+int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 {
-  CFileFactory factory;
-  m_pFile = factory.CreateLoader(strFileName);
-  if (!m_pFile) return false;
+  auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
+  if (!pFile.get()) return false;
 
   CURL url(strFileName);
-  return m_pFile->Stat(url, buffer);
+  return pFile->Stat(url, buffer);
 }
 
 //*********************************************************************************************
@@ -293,26 +291,18 @@ int CFile::Write(const void* lpBuf, __int64 uiBufSize)
   return -1;
 }
 
-bool CFile::Delete(const char* strFileName)
+bool CFile::Delete(const CStdString& strFileName)
 {
-  bool bSucces;
-  IFile* pFile = CFileFactory().CreateLoader(strFileName);
-  if (!pFile) return false;
+  auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
+  if (!pFile.get()) return false;
 
-  bSucces = pFile->Delete(strFileName);
-  delete pFile;
-
-  return bSucces;
+  return pFile->Delete(strFileName);
 }
 
-bool CFile::Rename(const char* strFileName, const char* strNewFileName)
+bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileName)
 {
-  bool bSucces;
-  IFile* pFile = CFileFactory().CreateLoader(strNewFileName);
-  if (!pFile) return false;
+  auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
+  if (!pFile.get()) return false;
 
-  bSucces = pFile->Rename(strFileName, strNewFileName);
-  delete pFile;
-
-  return bSucces;
+  return pFile->Rename(strFileName, strNewFileName);
 }

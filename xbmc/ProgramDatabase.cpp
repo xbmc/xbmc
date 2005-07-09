@@ -187,7 +187,7 @@ long CProgramDatabase::GetFile(const CStdString& strFilenameAndPath, CFileItemLi
       long lFileId = m_pDS->fv("files.idFile").get_asLong();
       strPathandFile = strPath + strFile;
       strPathandFile.Replace("/", "\\");
-      if (CUtil::FileExists(strPathandFile))
+      if (CFile::Exists(strPathandFile))
       {
         CFileItem *pItem = new CFileItem(m_pDS->fv("files.xbedescription").get_asString());
         pItem->m_iprogramCount = m_pDS->fv("files.iTimesPlayed").get_asLong();

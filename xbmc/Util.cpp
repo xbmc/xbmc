@@ -696,16 +696,6 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
   }
 }
 
-bool CUtil::FileExists(const CStdString& strFileName)
-{
-  if (strFileName.size() == 0) return false;
-  CFile file;
-  if (!file.Exists(strFileName))
-    return false;
-
-  return true;
-}
-
 void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
 {
   strThumb = "";
@@ -713,7 +703,7 @@ void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
 
   CStdString strFile;
   CUtil::ReplaceExtension(strFileName, ".tbn", strFile);
-  if (CUtil::FileExists(strFile))
+  if (CFile::Exists(strFile))
   {
     strThumb = strFile;
     return ;
@@ -1237,7 +1227,7 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
     strIcon.Format("%s\\%s", strPath.c_str(), defaultTbn.c_str());
   }
 
-  if (CUtil::FileExists(strIcon) && !CUtil::IsDVD(strFilePath))   // always create thumbnail for DVD.
+  if (CFile::Exists(strIcon) && !CUtil::IsDVD(strFilePath))   // always create thumbnail for DVD.
   {
     //yes, just return
     return true;
@@ -1249,7 +1239,7 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
   bool bFoundThumbnail = false;
   CStdString szFileName;
   szFileName.Format("E:\\UDATA\\%08x\\TitleImage.xbx", GetXbeID( strFilePath ) );
-  if (!CUtil::FileExists(szFileName))
+  if (!CFile::Exists(szFileName))
   {
     // extract icon from .xbe
     CXBE xbeReader;
@@ -1476,13 +1466,12 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
 
     CUtil::GetThumbnail( strFolderImage, strThumb);
     // if local cache of thumb doesnt exists yet
-    if (!CUtil::FileExists( strThumb) )
+    if (!CFile::Exists( strThumb) )
     {
-      CFile file;
       // then cache folder.jpg to xbox HD
-      if ((g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs") || item.IsDVD()) && file.Exists(strFolderImage))
+      if ((g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs") || item.IsDVD()) && CFile::Exists(strFolderImage))
       {
-        if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(), NULL, NULL))
+        if ( CFile::Cache(strFolderImage.c_str(), strThumb.c_str(), NULL, NULL))
         {
           return true;
         }
@@ -1494,7 +1483,7 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
       return true;
     }
   }
-  else if (CUtil::FileExists(strFolderImage) )
+  else if (CFile::Exists(strFolderImage) )
   {
     // is local, and folder.jpg exists. Use it
     strThumb = strFolderImage;
@@ -1755,7 +1744,6 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   CStdString strLExt;
   CStdString strDest;
   CStdString strItem, strPath;
-  CFile file;
 
   // 2 steps for movie directory and alternate subtitles directory
   for (int step = 0; step < iPaths; step++)
@@ -1787,7 +1775,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
           {
             strLExt = strItem.Right(strItem.GetLength() - 9);
             strDest.Format("Z:\\subtitle.alt-%s", strLExt);
-            if (file.Cache(items[j]->m_strPath, strDest.c_str(), NULL, NULL))
+            if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), NULL, NULL))
             {
               CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strItem.c_str(), strDest.c_str());
               strExtensionCached = strLExt;
@@ -1799,7 +1787,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
           {
             strLExt = strItem.Right(strItem.size() - fnl - 1); //Disregard separator char
             strDest.Format("Z:\\subtitle.%s", strLExt);
-            if (file.Cache(items[j]->m_strPath, strDest.c_str(), NULL, NULL))
+            if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), NULL, NULL))
             {
               CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strItem.c_str(), strDest.c_str());
               strExtensionCached = strLExt;
@@ -1840,8 +1828,7 @@ bool CUtil::CacheRarSubtitles(CStdString& strExtensionCached, const CStdString& 
         CUtil::CreateRarPath(strSourceUrl, strRarPath, strPathInRar); 
         CStdString strDestFile;
         strDestFile.Format("subtitle%s", pSubExts[iPos]);
-        CFile file;
-        if (file.Cache(strSourceUrl,"Z:\\"+strDestFile))
+        if (CFile::Cache(strSourceUrl,"Z:\\"+strDestFile))
         {
           CLog::Log(LOGINFO, " cached subtitle %s->Z:\\%s\n", strPathInRar.c_str(), strDestFile.c_str());
           strExtensionCached = (CStdString)pSubExts[iPos];
@@ -2618,179 +2605,6 @@ void CUtil::Stat64ToStat(struct _stat *result, struct __stat64 *stat)
   result->st_ctime = (time_t)stat->st_ctime;
 }
 
-
-void fast_memcpy(void* d, const void* s, unsigned n)
-{
-  // around 50% faster than memcpy
-  // only worthwhile if the destination buffer is not likely to be read back immediately
-  // and the number of bytes copied is >16
-  // somewhat faster if the source and destination are a multiple of 16 bytes apart
-  __asm {
-    mov edx, n
-    mov esi, s
-    prefetchnta [esi]
-    prefetchnta [esi + 32]
-    mov edi, d
-
-    // pre align
-    mov eax, edi
-    mov ecx, 16
-    and eax, 15
-    sub ecx, eax
-    and ecx, 15
-    cmp edx, ecx
-    jb fmc_exit_main
-    sub edx, ecx
-
-    test ecx, ecx
-  fmc_start_pre:
-    jz fmc_exit_pre
-
-    mov al, [esi]
-    mov [edi], al
-
-    inc esi
-    inc edi
-    dec ecx
-    jmp fmc_start_pre
-
-  fmc_exit_pre:
-    mov eax, esi
-    and eax, 15
-    jnz fmc_notaligned
-
-    // main copy, aligned
-    mov ecx, edx
-    shr ecx, 4
-  fmc_start_main_a:
-    jz fmc_exit_main
-
-    prefetchnta [esi + 32]
-    movaps xmm0, [esi]
-    movntps [edi], xmm0
-
-    add esi, 16
-      add edi, 16
-        dec ecx
-        jmp fmc_start_main_a
-
-  fmc_notaligned:
-        // main copy, unaligned
-        mov ecx, edx
-        shr ecx, 4
-  fmc_start_main_u:
-        jz fmc_exit_main
-
-        prefetchnta [esi + 32]
-        movups xmm0, [esi]
-        movntps [edi], xmm0
-
-        add esi, 16
-          add edi, 16
-            dec ecx
-            jmp fmc_start_main_u
-
-  fmc_exit_main:
-
-            // post align
-            mov ecx, edx
-            and ecx, 15
-  fmc_start_post:
-            jz fmc_exit_post
-
-            mov al, [esi]
-            mov [edi], al
-
-            inc esi
-            inc edi
-            dec ecx
-            jmp fmc_start_post
-
-  fmc_exit_post:
-          }
-}
-
-void fast_memset(void* d, int c, unsigned n)
-{
-  char __declspec(align(16)) buf[16];
-
-  __asm {
-    mov edx, n
-    mov edi, d
-
-    // pre align
-    mov eax, edi
-    mov ecx, 16
-    and eax, 15
-    sub ecx, eax
-    and ecx, 15
-    cmp edx, ecx
-    jb fms_exit_main
-    sub edx, ecx
-    mov eax, c
-
-    test ecx, ecx
-  fms_start_pre:
-    jz fms_exit_pre
-
-    mov [edi], al
-
-    inc edi
-    dec ecx
-    jmp fms_start_pre
-
-  fms_exit_pre:
-    test al, al
-    jz fms_initzero
-
-    // duplicate the value 16 times
-    lea esi, buf
-    mov [esi], al
-    mov [esi + 1], al
-    mov [esi + 2], al
-    mov [esi + 3], al
-    mov eax, [esi]
-    mov [esi + 4], eax
-    mov [esi + 8], eax
-    mov [esi + 12], eax
-    movaps xmm0, [esi]
-    jmp fms_init_loop
-
-  fms_initzero:
-    // optimzed set zero
-    xorps xmm0, xmm0
-
-  fms_init_loop:
-    mov ecx, edx
-    shr ecx, 4
-
-  fms_start_main:
-    jz fms_exit_main
-
-    movntps [edi], xmm0
-
-    add edi, 16
-      dec ecx
-      jmp fms_start_main
-
-  fms_exit_main:
-
-      // post align
-      mov ecx, edx
-      and ecx, 15
-  fms_start_post:
-      jz fms_exit_post
-
-      mov [edi], al
-
-      inc edi
-      dec ecx
-      jmp fms_start_post
-
-  fms_exit_post:
-    }
-  }
-
 bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 {
   // Function to create all directories at once instead
@@ -2842,7 +2656,7 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   for (unsigned int i = 0; i < strArray.size(); i++)
   {
     CStdString strTemp1 = strTemp + strArray[i];
-    CDirectory::Create(strTemp1.c_str());
+    CDirectory::Create(strTemp1);
   }
   strArray.clear();
 
@@ -3186,17 +3000,6 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
     g_alarmClock.start(fSecs);
   } 
   
-}
-
-void usleep(int t)
-{
-  LARGE_INTEGER li;
-
-  li.QuadPart = (LONGLONG)t * -10;
-
-  // Where possible, Alertable should be set to FALSE and WaitMode should be set to KernelMode,
-  // in order to reduce driver complexity. The principal exception to this is when the wait is a long term wait.
-  KeDelayExecutionThread(KernelMode, false, &li);
 }
 
 int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName)

@@ -52,7 +52,7 @@ void CAutorun::RunXboxCd()
 {
   if (g_guiSettings.GetBool("Autorun.Xbox"))
   {
-    if ( CUtil::FileExists("D:\\default.xbe") )
+    if ( CFile::Exists("D:\\default.xbe") )
     {
       g_application.Stop();
 

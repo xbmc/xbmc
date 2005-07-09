@@ -58,7 +58,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   }
 
   //  Open the file to play
-  if (!m_file.Open(strFile.c_str()))
+  if (!m_file.Open(strFile))
   {
     CLog::Log(LOGERROR, "OGGCodec: Can't open %s", strFile1.c_str());
     return false;
@@ -249,11 +249,7 @@ bool OGGCodec::LoadDLL()
 
 bool OGGCodec::CanInit()
 {
-  CFile file;
-  if (file.Exists(OGG_DLL))
-    return true;
-
-  return false;
+  return CFile::Exists(OGG_DLL);
 }
 
 // OGG order : L, C, R, L", R", LFE
