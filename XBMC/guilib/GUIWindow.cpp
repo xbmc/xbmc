@@ -908,7 +908,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
                   //  Redirect our message to the new control and fake it a little
                   //  by saying the new control is sender and target
                   //  at once to prevent a stack overflow.
-                  CGUIMessage newFocusMsg(GUI_MSG_SETFOCUS, pControl->GetID(), pControl->GetID());
+                  CGUIMessage newFocusMsg(GUI_MSG_SETFOCUS, pControl->GetID(), pControl->GetID(), message.GetParam1());
                   //  Remember new last control of group
                   m_vecGroups[pControl->GetGroup()] = pControl->GetID();
                   //  Send the message to the new focused
