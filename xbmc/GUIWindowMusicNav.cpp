@@ -1127,8 +1127,13 @@ void CGUIWindowMusicNav::GoParentFolder()
 
   CStdString strOldPath = m_Directory.m_strPath;
   //CUtil::GetParentPath(strOldPath, m_strParentPath);
-  m_strParentPath = vecPathHistory.back();
-  vecPathHistory.pop_back();
+  if (vecPathHistory.size())
+  {
+    m_strParentPath = vecPathHistory.back();
+    vecPathHistory.pop_back();
+  }
+  else
+    m_strParentPath = "";
 
   int iLen = m_strParentPath.length();
   m_strParentPath = strOldPath.Left(strOldPath.length() - iLen - 1);
