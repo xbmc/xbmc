@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-07-2005 changed: the search button in Music Luibrary is more intuitive now
  - 09-07-2005 fixed: Crash on up folder from root of library view.
  - 09-07-2005 fixed: Milkdrop - audio conversion fixed and cache size for preset loading increased.
  - 09-07-2005 fixed: my music, after start of scanning no control has the focus
