@@ -120,6 +120,9 @@ public:
   bool FindSongsByName(const CStdString& strSearch, VECSONGS& songs);
   bool FindSongsByNameAndArtist(const CStdString& strSearch, VECSONGS& songs);
   bool GetArtistsByName(const CStdString& strArtist, VECARTISTS& artists);
+  bool GetGenresByName(const CStdString& strGenre1, VECGENRES& genres);
+  bool GetAlbumsByName(const CStdString& strSearch1, VECALBUMS& albums);
+
   bool GetAlbumsByPath(const CStdString& strPath, VECALBUMS& albums);
   bool FindAlbumsByName(const CStdString& strSearch, VECALBUMS& albums);
   bool GetTop100(VECSONGS& songs);
