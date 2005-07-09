@@ -237,6 +237,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         m_iViewAsIcons = g_stSettings.m_iMyMusicNavRootViewAsIcons;
         m_iViewAsIconsRoot = g_stSettings.m_iMyMusicNavRootViewAsIcons;
       }
+      m_Directory.m_strPath = "db://";
     }
     break;
 
@@ -432,6 +433,9 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         pFileItem->m_bIsFolder = true;
         items.Add(pFileItem);
       }
+
+      // make sure the path history is clear if showing the root
+      vecPathHistory.clear();
     }
     break;
 
@@ -725,7 +729,7 @@ void CGUIWindowMusicNav::UpdateButtons()
 void CGUIWindowMusicNav::OnClick(int iItem)
 {
   CFileItem* pItem = m_vecItems[iItem];
-  CStdString strPath = pItem->m_strPath;
+  CStdString strPath = pItem->GetLabel();
   CStdString strNextPath = m_Directory.m_strPath;
   if (strNextPath.IsEmpty())
     strNextPath = "db://";
@@ -763,11 +767,11 @@ void CGUIWindowMusicNav::OnClick(int iItem)
           // albums
           else if (strPath.Equals(CStdString(g_localizeStrings.Get(132).c_str())))
             m_iState = SHOW_ALBUMS;
+          // songs
           else
             m_iState = SHOW_SONGS;
+
           m_iPath += m_iState;
-          strNextPath += pItem->GetLabel() + "/";
-          vecPathHistory.push_back(pItem->GetLabel());
         }
         break;
 
@@ -780,8 +784,6 @@ void CGUIWindowMusicNav::OnClick(int iItem)
           // clicked on "All Genres" ?
           if (strPath.IsEmpty())
             m_strGenre.Empty();
-          strNextPath += pItem->GetLabel() + "/";
-          vecPathHistory.push_back(pItem->GetLabel());
         }
         break;
 
@@ -794,8 +796,6 @@ void CGUIWindowMusicNav::OnClick(int iItem)
           // clicked on "All Artists" ?
           if (strPath.IsEmpty())
             m_strArtist.Empty();
-          strNextPath += pItem->GetLabel() + "/";
-          vecPathHistory.push_back(pItem->GetLabel());
         }
         break;
 
@@ -803,7 +803,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
         {
           m_iState = SHOW_SONGS;
           m_iPath += m_iState;
-          m_strAlbum = pItem->m_musicInfoTag.GetAlbum();
+          m_strAlbum = strPath;
           m_strAlbumPath = pItem->m_strPath;
 
           // clicked on "All Albums" ?
@@ -813,18 +813,15 @@ void CGUIWindowMusicNav::OnClick(int iItem)
             m_strAlbumPath.Empty();
           }
 
-          strNextPath += m_strAlbum;
+          // for albums set path to "album - artist"
           if (!pItem->m_musicInfoTag.GetArtist().IsEmpty())
-            strNextPath += " - " + pItem->m_musicInfoTag.GetArtist();
-          CStdString strTemp = m_strAlbum;
-          if (!pItem->m_musicInfoTag.GetArtist().IsEmpty())
-            strTemp += " - " + pItem->m_musicInfoTag.GetArtist();         
-          vecPathHistory.push_back(strTemp);
-          strNextPath += "/";
+            strPath += " - " + pItem->m_musicInfoTag.GetArtist();
         }
         break;
       }
     }
+    vecPathHistory.push_back(strPath);
+    strNextPath += strPath + "/";
     Update(strNextPath);
   }
   else
@@ -943,90 +940,126 @@ void CGUIWindowMusicNav::DoSort(CFileItemList& items)
 
 void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
 {
-  if (pSelItem->m_bIsFolder)
+  // clear previous state
+  vecPathHistory.clear();
+  m_strGenre.Empty();
+  m_strArtist.Empty();
+  m_strAlbum.Empty();
+  m_strAlbumPath.Empty();
+
+  CStdString strGenre = "[" + (CStdString)g_localizeStrings.Get(515).c_str() + "]"; // Genre
+  CStdString strArtist = "[" + (CStdString)g_localizeStrings.Get(484).c_str() + "]"; // Artist
+  CStdString strAlbum = "[" + (CStdString)g_localizeStrings.Get(483).c_str() + "]"; // Album
+  CStdString strPath = "db://";
+  CStdString strLabel = pSelItem->GetLabel();
+  
+  // is this a genre?
+  if (strLabel.Left(strGenre.length()).Equals(strGenre))
   {
-    if (pSelItem->m_musicInfoTag.GetAlbum().IsEmpty())
-    {
-      m_iState = SHOW_ARTISTS;
-      m_iPath = m_iState;
-      m_strGenre.Empty();
-      m_strAlbum.Empty();
-      m_strArtist.Empty();
-      CStdString strPath = "db://Search/Artist/";
-      Update(strPath);
-      for (int i = 0; i < (int)m_vecItems.Size(); i++)
-      {
-        CFileItem* pItem = m_vecItems[i];
-        if (pItem->m_strPath == pSelItem->m_strPath)
-        {
-          m_viewControl.SetSelectedItem(i);
-          m_viewControl.SetFocused();
-          break;
-        }
-      }
-    }
-    else
-    {
-      // FIXME: various artist albums are not handled
-      m_iState = SHOW_ALBUMS;
-      m_iPath = m_iState;
+    // set up new state
+    m_iState = SHOW_ARTISTS;
+    m_iPath = m_iState + SHOW_GENRES;
+    m_strGenre = pSelItem->m_strPath;
 
-      m_strGenre.Empty();
-      m_strArtist = pSelItem->m_musicInfoTag.GetArtist();
-      m_strAlbum.Empty();
-
-      CStdString strPath = "db://Search/Albums/" + m_strArtist;
-      Update(strPath);
-
-      CStdString strHistory;
-      GetDirectoryHistoryString(pSelItem, strHistory);
-      m_history.Set(strHistory, strPath);
-      m_history.Set(strPath, "");
-
-      for (int i = 0; i < (int)m_vecItems.Size(); i++)
-      {
-        CFileItem* pItem = m_vecItems[i];
-        if (pItem->m_strPath == pSelItem->m_strPath)
-        {
-          m_viewControl.SetSelectedItem(i);
-          m_viewControl.SetFocused();
-          break;
-        }
-      }
-    }
-  }
-  else
-  {
-    CStdString strPath;
-    CUtil::GetDirectory(pSelItem->m_strPath, strPath);
-
-    m_strGenre.Empty();
-    m_strArtist = pSelItem->m_musicInfoTag.GetArtist();
-    m_strAlbum = pSelItem->m_musicInfoTag.GetAlbum();
-
-    m_iState = SHOW_SONGS;
-    m_iPath = m_iState;
-
+    // set path to db://Genres/GENRE/
+    // vecPathHistory = ("Genres", "GENRE")
+    CStdString strGenres = g_localizeStrings.Get(135).c_str(); // Genres
+    vecPathHistory.push_back(strGenres);
+    vecPathHistory.push_back(m_strGenre);
+    strPath += strGenres + "/" + m_strGenre + "/";
     Update(strPath);
 
-    CFileItem parentItem(*pSelItem);
-    parentItem.m_bIsFolder = true;
-    parentItem.m_strPath = strPath;
+    // set root history
+    // db:// => db://Genres/
+    CStdString strParentPath = "db://";
+    strPath = "db://" + strGenres + "/";
+    m_history.Set(strPath, strParentPath);
 
-    CStdString strHistory;
-    GetDirectoryHistoryString(&parentItem, strHistory);
-    m_history.Set(strHistory, m_strArtist);
+    // set Genres history
+    // db://Genres/ => db://Genres/GENRE/
+    strParentPath = strPath;
+    strPath += m_strGenre + "/";
+    m_history.Set(strPath, strParentPath);
+  }
 
-    m_history.Set(m_strArtist, "");
+  // is this an artist?
+  else if (strLabel.Left(strArtist.length()).Equals(strArtist))
+  {
+    // set up new state
+    m_iState = SHOW_ALBUMS;
+    m_iPath = m_iState + SHOW_ARTISTS;
+    m_strArtist = pSelItem->m_strPath;
 
-    for (int i = 0; i < (int)m_vecItems.Size(); i++)
+    // set path to db://Artists/ARTIST/
+    CStdString strArtists = g_localizeStrings.Get(133).c_str(); // Artists
+    vecPathHistory.push_back(strArtists);
+    vecPathHistory.push_back(m_strArtist);
+    strPath += strArtists + "/" + m_strArtist + "/";
+    Update(strPath);
+
+    // set root history
+    // db:// => db://Artists/
+    CStdString strParentPath = "db://";
+    strPath = "db://" + strArtists + "/";
+    m_history.Set(strPath, strParentPath);
+
+    // set Artists history
+    // db://Artists/ => db://Artists/ARTIST/
+    strParentPath = strPath;
+    strPath += m_strArtist + "/";
+    m_history.Set(strPath, strParentPath);
+  }
+
+  // is this an album or song?
+  //else if (strLabel.Left(strAlbum.length()).Equals(strAlbum))
+  else
+  {
+    // set up new state
+    m_iState = SHOW_SONGS;
+    m_iPath = m_iState + SHOW_ALBUMS;
+    m_strAlbum = pSelItem->m_musicInfoTag.GetAlbum();
+    m_strAlbumPath = pSelItem->m_strPath;
+
+    // if its a song, strip off the file
+    if (!strLabel.Left(strAlbum.length()).Equals(strAlbum))
+      CUtil::GetParentPath(pSelItem->m_strPath,m_strAlbumPath);
+
+    // set path to db://Albums/ALBUM - ARTIST/
+    CStdString strAlbums = g_localizeStrings.Get(132).c_str(); // Albums
+    vecPathHistory.push_back(strAlbums);
+
+    CStdString strAlbum = m_strAlbum;
+    if (!pSelItem->m_musicInfoTag.GetArtist().IsEmpty())
+      strAlbum += " - " + pSelItem->m_musicInfoTag.GetArtist();
+    vecPathHistory.push_back(strAlbum);
+    strPath += strAlbums + "/" + strAlbum + "/";
+    Update(strPath);
+
+    // set root history
+    // db:// => db://Albums/
+    CStdString strParentPath = "db://";
+    strPath = "db://" + strAlbums + "/";
+    m_history.Set(strPath, strParentPath);
+
+    // set Albums history
+    // db://Albums/ => db://Albums/ALBUM/
+    strParentPath = strPath;
+    strPath += m_strAlbum + "/";
+    m_history.Set(strPath, strParentPath);
+
+    // if a song, highlight it
+    if (!strLabel.Left(strAlbum.length()).Equals(strAlbum))
     {
-      CFileItem* pItem = m_vecItems[i];
-      if (pItem->m_strPath == pSelItem->m_strPath)
+      CUtil::GetParentPath(pSelItem->m_strPath,m_strAlbumPath);
+      for (int i = 0; i < (int)m_vecItems.Size(); i++)
       {
-        m_viewControl.SetSelectedItem(i);
-        m_viewControl.SetFocused();
-        break;
+        CFileItem* pItem = m_vecItems[i];
+        if (pItem->m_strPath == pSelItem->m_strPath)
+        {
+          m_viewControl.SetSelectedItem(i);
+          m_viewControl.SetFocused();
+          break;
+        }
       }
     }
   }
@@ -1037,25 +1070,41 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
 /// \param items Items Found
 void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch, CFileItemList& items)
 {
+  // get matching genres
+  VECGENRES genres;
+  g_musicDatabase.GetGenresByName(strSearch, genres);
+
+  if (genres.size())
+  {
+    CStdString strGenre = g_localizeStrings.Get(515); // Genre
+    for (int i = 0; i < (int)genres.size(); i++)
+    {
+      CStdString& genre = genres[i]; 
+      CFileItem* pItem = new CFileItem(genre, true);
+      pItem->SetLabel("[" + strGenre + "] " + genre);
+      items.Add(pItem);
+    }
+  }
+
+  // get matching artists
   VECARTISTS artists;
   g_musicDatabase.GetArtistsByName(strSearch, artists);
 
   if (artists.size())
   {
-    CStdString strSong = g_localizeStrings.Get(484); // Artist
+    CStdString strArtist = g_localizeStrings.Get(484); // Artist
     for (int i = 0; i < (int)artists.size(); i++)
     {
-      CStdString& strArtist = artists[i];
-      CFileItem* pItem = new CFileItem(strArtist);
-      pItem->m_strPath = strArtist;
-      pItem->m_bIsFolder = true;
-      pItem->SetLabel("[" + strSong + "] " + strArtist);
+      CStdString& artist = artists[i];
+      CFileItem* pItem = new CFileItem(artist, true);
+      pItem->SetLabel("[" + strArtist + "] " + artist);
       items.Add(pItem);
     }
   }
 
+  // get matching albums
   VECALBUMS albums;
-  g_musicDatabase.FindAlbumsByName(strSearch, albums);
+  g_musicDatabase.GetAlbumsByName(strSearch, albums);
 
   if (albums.size())
   {
@@ -1069,6 +1118,7 @@ void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     }
   }
 
+  // get matching songs
   VECSONGS songs;
   g_musicDatabase.FindSongsByName(strSearch, songs);
 
@@ -1079,7 +1129,7 @@ void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     {
       CSong& song = songs[i];
       CFileItem* pItem = new CFileItem(song);
-      pItem->SetLabel("[" + strSong + "] " + song.strTitle + " - " + song.strArtist + " - " + song.strAlbum);
+      pItem->SetLabel("[" + strSong + "] " + song.strTitle + " (" + song.strAlbum + " - " + song.strArtist + ")");
       items.Add(pItem);
     }
   }
@@ -1125,20 +1175,16 @@ void CGUIWindowMusicNav::GoParentFolder()
     m_strGenre.Empty();
   }
 
-  CStdString strOldPath = m_Directory.m_strPath;
-  //CUtil::GetParentPath(strOldPath, m_strParentPath);
+  // build previous path from the vector
+  m_strParentPath = "db://";
   if (vecPathHistory.size())
-  {
-    m_strParentPath = vecPathHistory.back();
     vecPathHistory.pop_back();
-  }
-  else
-    m_strParentPath = "";
-
-  int iLen = m_strParentPath.length();
-  m_strParentPath = strOldPath.Left(strOldPath.length() - iLen - 1);
+  if (vecPathHistory.size())
+    for (int i = 0; i < (int)vecPathHistory.size(); i++)
+      m_strParentPath += vecPathHistory[i] + "/";
 
   // parent path??
+  CStdString strOldPath = m_Directory.m_strPath;
   CLog::Log(LOGDEBUG, "CGUIWindowMusicNav::GoParentFolder(%s), m_strParentPath = [%s]", strOldPath.c_str(), m_strParentPath.c_str());
 
   Update(m_strParentPath);
@@ -1149,7 +1195,6 @@ void CGUIWindowMusicNav::GoParentFolder()
 
 void CGUIWindowMusicNav::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)
 {
-  //strHistoryString=pItem->m_strPath;
   strHistoryString = m_Directory.m_strPath;
   if (!CUtil::HasSlashAtEnd(strHistoryString))
     strHistoryString += "/";
