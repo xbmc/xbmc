@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-09-2005 updated: Updated Swedish strings.xml Thanks limit"
  - 09-07-2005 changed: removed CUtil::FileExists() and replaced by CFile::Exists()
  - 09-07-2005 changed: cleaned up CFile and CDirectory and their usage
                        The CFile functions Exists, Stat, Delete, Rename, Cache are static now
