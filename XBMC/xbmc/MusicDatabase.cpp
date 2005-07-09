@@ -1080,7 +1080,45 @@ bool CMusicDatabase::GetArtistsByName(const CStdString& strArtist1, VECARTISTS& 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CMusicDatabase:GetArtists() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase:GetArtistsByName() failed");
+  }
+
+  return false;
+}
+
+bool CMusicDatabase::GetGenresByName(const CStdString& strGenre1, VECGENRES& genres)
+{
+  try
+  {
+    CStdString strGenre = strGenre1;
+    RemoveInvalidChars(strGenre);
+    genres.erase(genres.begin(), genres.end());
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL;
+    strSQL.Format("select * from genre where strGenre LIKE '%%%s%%' ", strGenre);
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+    while (!m_pDS->eof())
+    {
+      CStdString strGenre = m_pDS->fv("strGenre").get_asString();
+      genres.push_back(strGenre);
+      m_pDS->next();
+    }
+
+    m_pDS->close(); // cleanup recordset data
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase:GetGenresByName() failed");
   }
 
   return false;
@@ -1635,6 +1673,39 @@ bool CMusicDatabase::FindSongsByNameAndArtist(const CStdString& strSearch1, VECS
 
   return false;
 }
+
+bool CMusicDatabase::GetAlbumsByName(const CStdString& strSearch1, VECALBUMS& albums)
+{
+  try
+  {
+    CStdString strSearch = strSearch1;
+    RemoveInvalidChars(strSearch);
+    albums.erase(albums.begin(), albums.end());
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL;
+    strSQL.Format("select * from album,path,artist where album.strAlbum like '%%%s%%' and album.idPath=path.idPath and artist.idArtist=album.idArtist", strSearch.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+
+    while (!m_pDS->eof())
+    {
+      albums.push_back(GetAlbumFromDataset());
+      m_pDS->next();
+    }
+    m_pDS->close(); // cleanup recordset data
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase:GetAlbumsByName() failed");
+  }
+
+  return false;
+}
+
+
 
 bool CMusicDatabase::FindAlbumsByName(const CStdString& strSearch1, VECALBUMS& albums)
 {
