@@ -6,35 +6,33 @@
       <description>bar image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>55</posY>
-      <width>720</width>
-      <height>50</height>
-      <texture>bluebar.png</texture>
-      <colorkey>0</colorkey>
-      <colordiffuse>20ffffff</colordiffuse>
+      <posX>-10</posX>
+      <posY>40</posY>
+      <width>740</width>
+      <height>65</height>
+      <texture>osd_menu_bg.png</texture>
     </control>
 
     <control>
       <description>row 1 label</description>
       <type>label</type>
       <id>10</id>
-      <posX>100</posX>
-      <posY>60</posY>
+      <posX>70</posX>
+      <posY>50</posY>
       <label>-</label>
       <align>left</align>
-      <font>font13</font>
+      <font>font12</font>
     </control>
 
     <control>
       <description>row 2 label</description>
       <type>label</type>
       <id>11</id>
-      <posX>100</posX>
-      <posY>80</posY>
+      <posX>70</posX>
+      <posY>75</posY>
       <label>-</label>
       <align>left</align>
-      <font>font13</font>
+      <font>font12</font>
     </control>
 
     <control>
@@ -42,10 +40,10 @@
       <type>label</type>
       <id>12</id>
       <posX>250</posX>
-      <posY>80</posY>
+      <posY>75</posY>
       <label>-</label>
       <align>left</align>
-      <font>font13</font>
+      <font>font12</font>
     </control>
 
     <control>
