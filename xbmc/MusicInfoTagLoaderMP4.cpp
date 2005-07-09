@@ -311,7 +311,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 
     // Attempt to open the file.. 
     CFile file;
-    if ( !file.Open( strFileName.c_str() ) )
+    if ( !file.Open( strFileName ) )
     {
       CLog::Log(LOGDEBUG, "Tag loader mp4: failed to open file %s", strFileName.c_str() );
       return false;
@@ -330,7 +330,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
       CUtil::GetDirectory( tag.GetURL(), strPath );
       CUtil::GetAlbumThumb( tag.GetAlbum(), strPath, strCoverArt, true );
 
-      if (file.Cache(TEMP_MP4_THUMB_FILE, strCoverArt.c_str()))
+      if (CFile::Cache(TEMP_MP4_THUMB_FILE, strCoverArt.c_str()))
       {
         CUtil::ThumbCacheAdd( strCoverArt, true );
       }

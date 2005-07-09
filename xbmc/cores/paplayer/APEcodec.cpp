@@ -125,9 +125,5 @@ bool APECodec::LoadDLL()
 
 bool APECodec::CanInit()
 {
-  CFile file;
-  if (file.Exists(APE_DLL))
-    return true;
-
-  return false;
+  return CFile::Exists(APE_DLL);
 }

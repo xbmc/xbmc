@@ -103,7 +103,7 @@ void CSplash::Process()
 
 bool CSplash::Start()
 {
-  if (m_ImageName.IsEmpty() || !CUtil::FileExists(m_ImageName))
+  if (m_ImageName.IsEmpty() || !CFile::Exists(m_ImageName))
   {
     CLog::Log(LOGDEBUG, "Splash image %s not found", m_ImageName.c_str());
     return false;

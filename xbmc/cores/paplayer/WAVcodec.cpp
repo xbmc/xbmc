@@ -34,7 +34,7 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   m_file.Initialize(filecache);
 
-  if (!m_file.Open(strFile.c_str()))
+  if (!m_file.Open(strFile))
     return false;
 
   // read header

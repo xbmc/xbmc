@@ -848,7 +848,7 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
   {
     g_LoadErrorStr.Format("%s Doesn't contain <calibration>", strSettingsFile.c_str());
     //be nice, try to load from "old" calibration.xml file
-    if (CUtil::FileExists("T:\\calibration.xml"))
+    if (CFile::Exists("T:\\calibration.xml"))
     {
       TiXmlDocument xmlDoc;
       if (!xmlDoc.LoadFile("T:\\calibration.xml"))

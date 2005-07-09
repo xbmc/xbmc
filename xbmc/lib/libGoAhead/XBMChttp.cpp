@@ -570,8 +570,7 @@ int CXbmcHttp::xbmcAddToPlayList(int eid, webs_t wp, int numParas, CStdString pa
       bool bResult=pDirectory->Exists(pItem->m_strPath);
       pItem->m_bIsFolder=bResult;
       pItem->m_bIsShareOrDrive=false;
-      CFile file;
-      if (bResult || file.Exists(pItem->m_strPath))
+      if (bResult || CFile::Exists(pItem->m_strPath))
       {
         AddItemToPlayList(pItem, playList, 0, mask);
         changed=true;
@@ -740,7 +739,7 @@ int CXbmcHttp::xbmcGetMovieDetails(int eid, webs_t wp, int numParas, CStdString 
         websWrite(wp, "\n<li>Rating: %s",strRating.c_str());
         websWrite(wp, "\n<li>Cast: %s",aMovieRec.m_strCast.c_str());
         CUtil::GetVideoThumbnail(aMovieRec.m_strIMDBNumber,thumb);
-        if (!CUtil::FileExists(thumb))
+        if (!CFile::Exists(thumb))
           thumb = "[None] " + thumb;
         websWrite(wp, "\n<li>Thumb: %s",thumb.c_str());
       }
@@ -772,7 +771,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int eid, webs_t wp)
       output+="\n<li>Height:", tmp ;
       CStdString thumb;
       CUtil::GetThumbnail(pSlideShow->GetCurrentSlide(),thumb);
-      if (!CUtil::FileExists(thumb))
+      if (!CFile::Exists(thumb))
         thumb = "[None] " + thumb;
       output+="\n<li>Thumb:"+thumb;
       flushResult(eid, wp, output);
@@ -797,7 +796,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int eid, webs_t wp)
     }
     CStdString thumb;
     CUtil::GetThumbnail(fn,thumb);
-    if (!CUtil::FileExists(thumb))
+    if (!CFile::Exists(thumb))
       thumb = "[None] " + thumb;
     output+="\n<li>Thumb:"+thumb;
     if (g_application.m_pPlayer->IsPaused()) 
@@ -1076,9 +1075,8 @@ int CXbmcHttp::xbmcGetThumb(int eid, webs_t wp, int numParas, CStdString paras[]
     if (CUtil::IsRemote(paras[0]))
     {
       CStdString strDest="Z:\\xbmcDownloadFile.tmp";
-      CFile file;
-      file.Cache(paras[0], strDest.c_str(),NULL,NULL) ;
-      if (CUtil::FileExists(strDest))
+      CFile::Cache(paras[0], strDest.c_str(),NULL,NULL) ;
+      if (CFile::Exists(strDest))
       {
         thumb=encodeFileToBase64(strDest,80);
         ::DeleteFile(strDest.c_str());
@@ -1535,8 +1533,7 @@ int CXbmcHttp::xbmcSetFile(int eid, webs_t wp, int numParas, CStdString paras[])
   {
     paras[1].Replace(" ","+");
     decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp");
-    CFile file;
-    file.Cache("Z:\\xbmcTemp.tmp", paras[0].c_str(), NULL, NULL) ;
+    CFile::Cache("Z:\\xbmcTemp.tmp", paras[0].c_str(), NULL, NULL) ;
     ::DeleteFile("Z:\\xbmcTemp.tmp");
     websWrite(wp, "<li>OK\n");
   }
@@ -1551,10 +1548,9 @@ int CXbmcHttp::xbmcCopyFile(int eid, webs_t wp, int numParas, CStdString paras[]
     websWrite(wp,"<li>Error:Missing parameter");
   else
   {
-    CFile file;
-    if (file.Exists(paras[0].c_str()))
+    if (CFile::Exists(paras[0].c_str()))
     {
-      file.Cache(paras[0].c_str(), paras[1].c_str(), NULL, NULL) ;
+      CFile::Cache(paras[0].c_str(), paras[1].c_str(), NULL, NULL) ;
       websWrite(wp, "<li>OK\n");
     }
     else
@@ -1571,8 +1567,7 @@ int CXbmcHttp::xbmcDeleteFile(int eid, webs_t wp, int numParas, CStdString paras
   {
     try
     {
-      CFile file;
-      if (file.Exists(paras[0].c_str()))
+      if (CFile::Exists(paras[0].c_str()))
       {
         ::DeleteFile(paras[0].c_str());
         websWrite(wp, "<li>OK\n");
@@ -1596,8 +1591,7 @@ int CXbmcHttp::xbmcFileExists(int eid, webs_t wp, int numParas, CStdString paras
   {
     try
     {
-      CFile file;
-      if (file.Exists(paras[0].c_str()))
+      if (CFile::Exists(paras[0].c_str()))
       {
         websWrite(wp, "<li>True\n");
       }

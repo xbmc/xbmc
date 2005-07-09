@@ -207,11 +207,7 @@ int MPCCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
 bool MPCCodec::CanInit()
 {
-  CFile file;
-  if (file.Exists(MPC_DLL))
-    return true;
-
-  return false;
+  return CFile::Exists(MPC_DLL);
 }
 
 bool MPCCodec::LoadDLL()

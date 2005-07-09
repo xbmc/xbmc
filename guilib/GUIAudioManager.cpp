@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "GUIAudioManager.h"
 #include "audiocontext.h"
-#include "../xbmc/Util.h"
-#include ".\guiaudiomanager.h"
-
+#include "../xbmc/settings.h"
 typedef struct
 {
   char chunk_id[4];

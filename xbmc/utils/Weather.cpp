@@ -1,11 +1,6 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "Weather.h"
-#include "../util.h"
-#include "../../guilib/localizestrings.h"
-#include "../guidialogselect.h"
-#include "../guidialogprogress.h"
-#include "../../guilib/guiwindowmanager.h"
 #include "../FileSystem/ZipManager.h"
 #include "../FileSystem/RarManager.h"
 

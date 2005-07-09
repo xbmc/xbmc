@@ -1563,7 +1563,7 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
 
     if (CDetectDVDMedia::IsDiscInDrive())
     {
-      if ( CUtil::FileExists("D:\\default.xbe") )
+      if ( CFile::Exists("D:\\default.xbe") )
       {
         CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL );
       }
@@ -1606,7 +1606,7 @@ bool CGUIWindowBuddies::GetGamePathFromTitleId(DWORD aTitleId, CStdString& aGame
             strGamePath.Format("%s\\%s\\default.xbe", gameDir.c_str(), (CHAR*)wfd.cFileName);
 
             // If the XBE actually exists
-            if (CUtil::FileExists(strGamePath))
+            if (CFile::Exists(strGamePath))
             {
               // Read its header info
               FILE* hFile = fopen(strGamePath.c_str(), "rb");

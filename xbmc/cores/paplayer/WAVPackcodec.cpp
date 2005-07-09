@@ -38,7 +38,7 @@ bool WAVPackCodec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
   
   //  Open the file to play
-  if (!m_file.Open(strFile.c_str()))
+  if (!m_file.Open(strFile))
   {
     CLog::Log(LOGERROR, "WAVPackCodec: Can't open %s", strFile.c_str());
     return false;
@@ -256,11 +256,7 @@ bool WAVPackCodec::LoadDLL()
 
 bool WAVPackCodec::CanInit()
 {
-  CFile file;
-  if (file.Exists(WAVPACK_DLL))
-    return true;
-
-  return false;
+  return CFile::Exists(WAVPACK_DLL);
 }
 
 void WAVPackCodec::FormatSamples (BYTE *dst, int bps, long *src, unsigned long samcnt)

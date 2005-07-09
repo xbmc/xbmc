@@ -198,7 +198,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
               CStdString str = "";
               int i = 0;
               str.Format("T:\\profile%i.xml", i);
-              while (CUtil::FileExists(str))
+              while (CFile::Exists(str))
               {
                 i++;
                 str.Format("T:\\profile%i.xml", i);
