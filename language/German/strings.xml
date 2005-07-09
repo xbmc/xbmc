@@ -597,6 +597,18 @@
   <string><id>1233</id><value>Programme &amp; Video &amp; Musik</value></string>
   <string><id>1234</id><value>Programme &amp; Bilder &amp; Musik</value></string>
   <string><id>1235</id><value>Programmes &amp; Bilder &amp; Video</value></string>
+
+  <string><id>1245</id><value> - FTP Benutzername</value></string>
+  <string><id>1246</id><value> - FTP Passwort</value></string>
+  <string><id>1247</id><value>Passwort erfolgreich gesetzt</value></string>
+
+  <string><id>1250</id><value>Autodetect</value></string>
+  <string><id>1251</id><value>Andere XBOXen automatisch finden</value></string>
+  <string><id>1252</id><value>Nick Name</value></string>
+  <string><id>1253</id><value>Automatisch einen FTP Share in Dateien erstellen</value></string>
+  <string><id>1254</id><value>Benachrichtigung anzeigen</value></string>
+  <string><id>1255</id><value>Benutzername und Passwort senden</value></string>
+  <string><id>1256</id><value>Ping Intervall in sek.</value></string>
   
   <string><id>1396</id><value>rutschig</value></string>
   <string><id>1397</id><value>und</value></string>
@@ -786,7 +798,7 @@
   <string><id>13312</id><value>Ränderreduktion</value></string>
   <string><id>13313</id><value>Reset/Neustart</value></string>
   <string><id>13314</id><value>Crossfade</value></string>
-  <string><id>13315</id><value>Thumbnails erstellen</value></string>
+  <string><id>13315</id><value>Thumbnails immer neu erstellen</value></string>
   <string><id>13316</id><value>Rekursive Thumbnails</value></string>
   <string><id>13317</id><value>Slideshow anzeigen</value></string>
   <string><id>13318</id><value>Rekursive Slideshow</value></string>
@@ -862,6 +874,7 @@
   <string><id>13388</id><value>Presets</value></string>
   <string><id>13389</id><value>Es sind keine Presets für diese&#10;Visualisierung verfügbar</value></string>
   <string><id>13390</id><value>Es sind keine Einstellungen für diese&#10;Visualisierung verfügbar</value></string>
+  <string><id>13391</id><value>Eject/Load</value></string>
 
   <string><id>14000</id><value>Stapeln: Aus</value></string>
   <string><id>14001</id><value>Stapeln: Einfach</value></string>
