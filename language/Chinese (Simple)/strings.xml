@@ -595,6 +595,17 @@
   <string><id>1234</id><value>程序 &amp; 图片 &amp; 音乐</value></string>
   <string><id>1235</id><value>程序 &amp; 图片 &amp; 视频</value></string>
 
+  <string><id>1245</id><value> - FTP 用户名</value></string>
+  <string><id>1246</id><value> - FTP 密码</value></string>
+  <string><id>1247</id><value>FTP 服务器相应的用户名和密码设置成功！</value></string>
+
+  <string><id>1250</id><value>自动检测</value></string>
+  <string><id>1251</id><value>XBOX 自动检测</value></string>
+  <string><id>1252</id><value>昵称</value></string>
+  <string><id>1253</id><value>在我的文件中建立FTP连接</value></string>
+  <string><id>1254</id><value>显示通告</value></string>
+  <string><id>1255</id><value>发送 FTP 用户名和密码</value></string>
+
   <string><id>1396</id><value>移动</value></string>
   <string><id>1397</id><value>和</value></string>
   <string><id>1398</id><value>冰点</value></string>
@@ -605,7 +616,7 @@
   <string><id>1403</id><value>阻光</value></string>
   <string><id>1404</id><value>暴</value></string>
   <string><id>1405</id><value>在</value></string>
-  <string><id>1406</id><value>the</value></string>
+  <string><id>1406</id><value>这</value></string>
   <string><id>1407</id><value>区域性</value></string>
   <string><id>1408</id><value>冰</value></string>
   <string><id>1409</id><value>清澈</value></string>
@@ -651,7 +662,7 @@
   <string><id>10507</id><value>系统设置</value></string>
   <string><id>10508</id><value>天气预报</value></string>
   <string><id>10509</id><value>网络游戏</value></string>
-  <string><id>10510</id><value>扩展名</value></string>
+  <string><id>10510</id><value>功能扩展</value></string>
   <string><id>10511</id><value>系统信息</value></string>
   <string><id>10512</id><value>我的音乐 - 专辑</value></string>
   <string><id>10513</id><value>我的音乐 - 艺术家</value></string>
@@ -859,6 +870,7 @@
   <string><id>13388</id><value>预设</value></string>
   <string><id>13389</id><value>该 visualisation 没有进行预先设置 </value></string>
   <string><id>13390</id><value>该 visualisation 没有相应设置</value></string>
+  <string><id>13391</id><value>弹出/载入</value></string>
 
   <string><id>14000</id><value>堆栈： 关</value></string>
   <string><id>14001</id><value>堆栈： 简单</value></string>
