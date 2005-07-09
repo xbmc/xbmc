@@ -147,7 +147,7 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, int argc, char_t **argv
 			}
 		}
 		// user wants the path of the bookmark.
-		if (!strcmp(parameter, "path"))
+		else if (!strcmp(parameter, "path"))
 		{
 			if (pIt->FirstChild("path"))
 			{
