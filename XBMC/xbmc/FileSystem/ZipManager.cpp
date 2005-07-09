@@ -32,7 +32,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
   }
 
   mFile.Close();
-  if (!mFile.Open(url.GetHostName().c_str()))
+  if (!mFile.Open(url.GetHostName()))
   {
     CLog::Log(LOGDEBUG,"ZipManager: unable to open file!");
     return false;
@@ -117,7 +117,6 @@ bool CZipManager::ExtractArchive(const CStdString& strArchive, const CStdString&
   CStdString strZipPath;
   strZipPath.Format("zip://Z:\\temp,1,,%s,\\",strArchive.c_str());
   GetZipList(strZipPath,entry);
-  CFile file;
   for (std::vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
   {
     if (it->name[strlen(it->name)-1] == '/') // skip dirs
@@ -125,7 +124,7 @@ bool CZipManager::ExtractArchive(const CStdString& strArchive, const CStdString&
     CStdString strFilePath(it->name);
     strFilePath.Replace("/","\\");
     strZipPath.Format("zip://Z:\\temp,1,,%s,\\%s",strArchive.c_str(),strFilePath.c_str());
-    if (!file.Cache(strZipPath.c_str(),(strPath+strFilePath).c_str()))
+    if (!CFile::Cache(strZipPath.c_str(),(strPath+strFilePath).c_str()))
       return false;
   }
   return true;
@@ -137,7 +136,6 @@ void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPat
   CStdString strZipPath;
   strZipPath.Format("zip://Z:\\temp,1,,%s,\\",strArchive.c_str());
   GetZipList(strZipPath,entry);
-  CFile file;
   for (std::vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
   {
     if (it->name[strlen(it->name)-1] == '/') // skip dirs
@@ -145,7 +143,7 @@ void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPat
     CStdString strFilePath(it->name);
     strFilePath.Replace("/","\\");
     CLog::Log(LOGDEBUG,"delete file: %s",(strPath+strFilePath).c_str());
-    file.Delete((strPath+strFilePath).c_str());
+    CFile::Delete((strPath+strFilePath).c_str());
   }
 }
 

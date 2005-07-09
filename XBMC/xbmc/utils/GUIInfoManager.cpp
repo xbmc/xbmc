@@ -1007,7 +1007,7 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     CFileItem* pItemTemp = new CFileItem(g_application.m_strPlayListFile,false);
     pItemTemp->SetMusicThumb();
     CStdString strThumb = pItemTemp->GetThumbnailImage();
-    if (CUtil::FileExists(strThumb))
+    if (CFile::Exists(strThumb))
       m_currentSong.SetThumbnailImage(strThumb);
   }
   else
@@ -1039,7 +1039,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   { // get IMDb thumb if we have one
     CStdString strThumb;
     CUtil::GetVideoThumbnail(m_currentMovie.m_strIMDBNumber, strThumb);
-    if (CUtil::FileExists(strThumb))
+    if (CFile::Exists(strThumb))
       item.SetThumbnailImage(strThumb);
   }
   item.FillInDefaultIcon();

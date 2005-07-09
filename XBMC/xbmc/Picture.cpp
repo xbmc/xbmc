@@ -62,7 +62,7 @@ bool CPicture::CreateThumbnail(const CStdString& strFileName)
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName)
 {
   // don't create the thumb if it already exists
-  if (CUtil::FileExists(strThumbFileName))
+  if (CFile::Exists(strThumbFileName))
     return true;
 
   CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", strFileName.c_str(),strThumbFileName.c_str());
@@ -167,7 +167,7 @@ void CPicture::CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs)
   if (!LoadDLL()) return;
   CStdString strFolderThumbnail;
   CUtil::GetThumbnail(strFolder, strFolderThumbnail);
-  if (CUtil::FileExists(strFolderThumbnail))
+  if (CFile::Exists(strFolderThumbnail))
     return;
   CStdString strThumbnails[4];
   const char *szThumbs[4];

@@ -164,7 +164,7 @@ void CMusicInfoScraper::LoadAlbuminfo()
   CStdString strThumb;
   CStdString strImage = album.GetImageURL();
   CUtil::GetAlbumThumb(album.GetTitle(), album.GetAlbumPath(), strThumb);
-  if (!CUtil::FileExists(strThumb) && !strImage.IsEmpty() )
+  if (!CFile::Exists(strThumb) && !strImage.IsEmpty() )
   {
     // Download image and save as
     // permanent thumb

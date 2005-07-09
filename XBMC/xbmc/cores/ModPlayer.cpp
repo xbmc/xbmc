@@ -83,8 +83,7 @@ bool ModPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   char* str = NULL;
   if (!file.IsHD())
   {
-    CFile fileCopy;
-    if (!fileCopy.Cache(file.m_strPath.c_str(), "Z:\\cachedmod", NULL, NULL))
+    if (!CFile::Cache(file.m_strPath.c_str(), "Z:\\cachedmod", NULL, NULL))
     {
       ::DeleteFile("Z:\\cachedmod");
       CLog::Log(LOGERROR, "ModPlayer: Unable to cache file %s\n", file.m_strPath.c_str());

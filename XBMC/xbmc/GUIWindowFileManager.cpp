@@ -729,8 +729,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
           if (strDestFileShortened.GetAt(i) == ',') strDestFileShortened.SetAt(i, '_');
         }
       }
-      CFile file;
-      if (!file.Cache(strFile.c_str(), strDestFileShortened.c_str(), this, NULL))
+      if (!CFile::Cache(strFile.c_str(), strDestFileShortened.c_str(), this, NULL))
         return false;
     }
     break;
@@ -745,7 +744,6 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
         m_dlgProgress->SetLine(2, strShortDestFile);
         m_dlgProgress->Progress();
       }
-      CFile file;
       if (strFile[1] == ':' && strFile[0] == strDestFile[0])
       {
         // quick move on same drive
@@ -753,7 +751,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       }
       else
       {
-        if (file.Cache(strFile.c_str(), strDestFile.c_str(), this, NULL ) )
+        if (CFile::Cache(strFile.c_str(), strDestFile.c_str(), this, NULL ) )
         {
           CFile::Delete(strFile.c_str());
         }
@@ -837,7 +835,7 @@ bool CGUIWindowFileManager::DoProcessFolder(int iAction, const CStdString& strPa
 
   if (iAction == ACTION_MOVE)
   {
-    CDirectory::Remove(strPath.c_str());
+    CDirectory::Remove(strPath);
   }
   return true;
 }
@@ -1038,7 +1036,7 @@ void CGUIWindowFileManager::OnNewFolder(int iList)
     if (!strNewFolderName.IsEmpty())
     {
       strNewPath += strNewFolderName;
-      CDirectory::Create(strNewPath.c_str());
+      CDirectory::Create(strNewPath);
     }
   }
 

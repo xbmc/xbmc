@@ -128,14 +128,12 @@ void CDirectoryCache::Clear()
 
 void CDirectoryCache::InitCache(set<CStdString>& dirs)
 {
-  CDirectory dir;
-
   set<CStdString>::iterator it;
   for (it = dirs.begin(); it != dirs.end(); ++it)
   {
     CStdString& strDir = *it;
     CFileItemList items;
-    dir.GetDirectory(strDir, items);
+    CDirectory::GetDirectory(strDir, items);
     items.Clear();
   }
 }

@@ -438,7 +438,7 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
     bool bResult = false;
     // CSectionLoader::Load("LIBID3");
     tag.SetURL(strFileName);
-    if ( m_file.Open( strFileName.c_str() ) )
+    if ( m_file.Open( strFileName ) )
     {
       // Do not use ID3TT_ALL, because
       // id3lib reads the ID3V1 tag first

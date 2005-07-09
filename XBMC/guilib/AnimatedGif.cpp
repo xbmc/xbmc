@@ -28,7 +28,6 @@
 // ****************************************************************************
 
 #include "AnimatedGif.h"
-#include "../xbmc/Util.h"
 
 #pragma pack(1) 
 // Error processing macro (NO-OP by default):

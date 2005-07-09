@@ -193,7 +193,7 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
   CFile file;
   CStdString strXMLFile;
   strXMLFile.Format("%s\\imdb\\%s.xml", g_stSettings.m_szAlbumDirectory, movieDetails.m_strIMDBNumber.c_str());
-  if (file.OpenForWrite(strXMLFile.c_str()))
+  if (file.OpenForWrite(strXMLFile))
   {
     file.Write(szXML, strlen(szXML));
     file.Close();

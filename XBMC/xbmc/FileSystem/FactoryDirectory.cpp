@@ -1,6 +1,5 @@
 
 #include "../stdafx.h"
-#include "../util.h"
 #include "factorydirectory.h"
 #include "factoryfiledirectory.h"
 #include "HDDirectory.h"
@@ -28,62 +27,22 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 {
   CURL url(strPath);
 
-  IFileDirectory* pDir=CFactoryFileDirectory().Create(strPath);
+  IFileDirectory* pDir=CFactoryFileDirectory::Create(strPath);
   if (pDir)
     return pDir;
 
   CStdString strProtocol = url.GetProtocol();
-  if (strProtocol == "iso9660")
-  {
-    return (IDirectory*)new CISO9660Directory();
-  }
-
-  if (strProtocol == "xns")
-  {
-    return (IDirectory*)new CXNSDirectory();
-  }
-
-  if (strProtocol == "smb")
-  {
-    return (IDirectory*)new CSMBDirectory();
-  }
-
-  if (strProtocol == "xbms")
-  {
-    return (IDirectory*)new CXBMSDirectory();
-  }
-  if (strProtocol == "cdda")
-  {
-    return (IDirectory*)new CCDDADirectory();
-  }
-  if (strProtocol == "rtv")
-  {
-    return (IDirectory*)new CRTVDirectory();
-  }
-  if (strProtocol == "soundtrack")
-  {
-    return (IDirectory*)new CSndtrkDirectory();
-  }
-  if (strProtocol == "daap")
-  {
-    return (IDirectory*)new CDAAPDirectory();
-  }
-  if (strProtocol == "shout")
-  {
-    return (IDirectory*)new CShoutcastDirectory();
-  }
-  if (strProtocol == "zip")
-  {
-    return (IDirectory*)new CZipDirectory();
-  }
-  if (strProtocol == "rar")
-    return (IDirectory*)new CRarDirectory();
-  
-  if (strProtocol == "ftp")
-  {
-    return (IDirectory*)new CFTPDirectory();
-  }
-
-
-  return (IDirectory*)new CHDDirectory();
+  if (strProtocol == "iso9660") return new CISO9660Directory();
+  else if (strProtocol == "xns") return new CXNSDirectory();
+  else if (strProtocol == "smb") return new CSMBDirectory();
+  else if (strProtocol == "xbms") return new CXBMSDirectory();
+  else if (strProtocol == "cdda") return new CCDDADirectory();
+  else if (strProtocol == "rtv") return new CRTVDirectory();
+  else if (strProtocol == "soundtrack") return new CSndtrkDirectory();
+  else if (strProtocol == "daap") return new CDAAPDirectory();
+  else if (strProtocol == "shout") return new CShoutcastDirectory();
+  else if (strProtocol == "zip") return new CZipDirectory();
+  else if (strProtocol == "rar") return new CRarDirectory();
+  else if (strProtocol == "ftp") return new CFTPDirectory();
+  else return new CHDDirectory();
 }

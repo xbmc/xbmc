@@ -1,8 +1,6 @@
 
 #include "stdafx.h"
 #include ".\musicdatabase.h"
-#include "util.h"
-#include "GUIDialogMusicScan.h"
 #include "filesystem/cddb.h"
 #include "filesystem/directorycache.h"
 #include "filesystem/FactoryDirectory.h"
@@ -1965,7 +1963,7 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
           strFileName.Delete(strFileName.size()-1);
       }
       
-      if (!CUtil::FileExists(strFileName))
+      if (!CFile::Exists(strFileName))
       { // file no longer exists, so add to deletion list
         strSongsToDelete += m_pDS->fv("song.idSong").get_asString() + ",";
       }
@@ -2063,7 +2061,7 @@ bool CMusicDatabase::CleanupAlbums()
       if (!m_pDS->query(strSQL.c_str())) return false;
       while (!m_pDS->eof())
       {
-       if (!CUtil::FileExists(m_pDS->fv("path.strPath").get_asString()))
+       if (!CFile::Exists(m_pDS->fv("path.strPath").get_asString()))
        {
         strAlbumIds += m_pDS->fv("album.idAlbum").get_asString() + ",";
         // delete the thumb for this file, if it has been cached

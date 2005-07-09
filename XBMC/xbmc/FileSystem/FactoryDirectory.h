@@ -16,8 +16,7 @@ namespace DIRECTORY
  \verbatim
  CStdString strShare="iso9660://";
 
- CFactoryDirectory factory;
- IDirectory* pDir=factory.Create(strShare);
+ IDirectory* pDir=CFactoryDirectory::Create(strShare);
  \endverbatim
  The \e pDir pointer can be used to access a directory and retrieve it's content.
 

@@ -134,8 +134,7 @@ bool CCDDADirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     pItem->m_strPath.Format("cdda://local/%02.2i.cdda", i);
 
     __stat64 s64;
-    CFile file;
-    if (file.Stat(pItem->m_strPath, &s64) == 0)
+    if (CFile::Stat(pItem->m_strPath, &s64) == 0)
       pItem->m_dwSize = s64.st_size;
 
     items.Add(pItem);

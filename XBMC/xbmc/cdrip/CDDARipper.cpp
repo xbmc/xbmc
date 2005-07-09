@@ -160,8 +160,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   if (file.IsRemote() && !bCancelled)
   {
     // copy the ripped track to the share
-    CFile file;
-    if (!file.Cache(strFilename, strFile.c_str()))
+    if (!CFile::Cache(strFilename, strFile.c_str()))
     {
       CLog::Log(LOGINFO, "Error copying file from %s to %s", strFilename, strFile.c_str());
       // show error
@@ -308,7 +307,7 @@ bool CCDDARipper::RipCD()
     while (1)
     {
       strDate.Format("%04i-%02i-%02i-%i", datetime.wYear, datetime.wMonth, datetime.wDay, iNumber);
-      if (!CUtil::FileExists(strDirectory + strDate))
+      if (!CFile::Exists(strDirectory + strDate))
       {
         strDirectory += strDate;
         CUtil::AddDirectorySeperator(strDirectory);

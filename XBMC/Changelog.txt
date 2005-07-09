@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-07-2005 changed: removed CUtil::FileExists() and replaced by CFile::Exists()
+ - 09-07-2005 changed: cleaned up CFile and CDirectory and their usage
+                       The CFile functions Exists, Stat, Delete, Rename, Cache are static now
  - 09-07-2005 fixed: SF bug [ 1235092 ] Web Interface Partially broken.
  - 09-07-2005 fixed: SF bug [ 1234932 ] Small navigation bug in Music Library view.
  - 09-07-2005 fixed: MP3 bitrate/duration reading was out.

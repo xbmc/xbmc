@@ -131,9 +131,9 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
   CStdString strFontXML = strGoodPath + "\\font.xml";
   CStdString strHomeXML = strGoodPath + "\\home.xml";
   CStdString strReferencesXML = strGoodPath + "\\references.xml";
-  if ( CUtil::FileExists(strFontXML) &&
-       CUtil::FileExists(strHomeXML) &&
-       CUtil::FileExists(strReferencesXML) && bVersionOK )
+  if ( CFile::Exists(strFontXML) &&
+       CFile::Exists(strHomeXML) &&
+       CFile::Exists(strReferencesXML) && bVersionOK )
   {
     return true;
   }
@@ -146,14 +146,14 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res)
   *res = g_guiSettings.m_LookAndFeelResolution;
   CStdString strPath;
   strPath.Format("%s%s\\%s", m_strBaseDir.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
-  if (CUtil::FileExists(strPath))
+  if (CFile::Exists(strPath))
     return strPath;
   // if we're in 1080i mode, try 720p next
   if (*res == HDTV_1080i)
   {
     *res = HDTV_720p;
     strPath.Format("%s%s\\%s", m_strBaseDir.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
-    if (CUtil::FileExists(strPath))
+    if (CFile::Exists(strPath))
       return strPath;
   }
   // that failed - drop to the default widescreen resolution if where in a widemode
@@ -161,7 +161,7 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res)
   {
     *res = m_DefaultResolutionWide;
     strPath.Format("%s%s\\%s", m_strBaseDir.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
-    if (CUtil::FileExists(strPath))
+    if (CFile::Exists(strPath))
       return strPath;
   }
   // that failed - drop to the default resolution

@@ -25,23 +25,23 @@ public:
   CFile();
   virtual ~CFile();
 
+  bool Open(const CStdString& strFileName, bool bBinary = true);
+  bool OpenForWrite(const CStdString& strFileName, bool bBinary = true, bool bOverWrite = false);
   unsigned int Read(void* lpBuf, __int64 uiBufSize);
-  int Write(const void* lpBuf, __int64 uiBufSize);
-  bool Open(const char* strFileName, bool bBinary = true);
-  bool Cache(const char* strFileName, const char* szDest, XFILE::IFileCallback* pCallback = NULL, void* pContext = NULL);
-  bool Exists(const char* strFileName);
-  int Stat(const char* strFileName, struct __stat64* buffer);
   bool ReadString(char *szLine, int iLineLength);
-  __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
-  void Close();
+  int Write(const void* lpBuf, __int64 uiBufSize);
   void Flush();
-
-  bool OpenForWrite(const char* strFileName, bool bBinary = true, bool bOverWrite = false);
-  static bool Delete(const char* strFileName);
-  static bool Rename(const char* strFileName, const char* strNewFileName);
-
+  __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
   __int64 GetPosition();
   __int64 GetLength();
+  void Close();
+
+
+  static bool Exists(const CStdString& strFileName);
+  static int  Stat(const CStdString& strFileName, struct __stat64* buffer);
+  static bool Delete(const CStdString& strFileName);
+  static bool Rename(const CStdString& strFileName, const CStdString& strNewFileName);
+  static bool Cache(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback = NULL, void* pContext = NULL);
 
 private:
   IFile* m_pFile;

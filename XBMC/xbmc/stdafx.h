@@ -22,6 +22,7 @@
 #include <queue>
 #include "stdstring.h"
 #include "StringUtils.h"
+#include "memutil.h"
 using namespace std;
 
 // guilib internal

@@ -552,13 +552,12 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
   else
   {
     CUtil::ReplaceExtension(strFile, ".nfo", strNfoFile);
-    if (!CUtil::FileExists(strNfoFile))
+    if (!CFile::Exists(strNfoFile))
       strNfoFile.Empty();
   }
   if ( !strNfoFile.IsEmpty() )
   {
-    CFile file;
-    if ( file.Cache(strNfoFile, "Z:\\movie.nfo", NULL, NULL))
+    if ( CFile::Cache(strNfoFile, "Z:\\movie.nfo", NULL, NULL))
     {
       CNfoFile nfoReader;
       if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
@@ -675,7 +674,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
                   // copy icon to folder also;
                   CStdString strThumbOrg;
                   CUtil::GetVideoThumbnail(movieDetails.m_strIMDBNumber, strThumbOrg);
-                  if (CUtil::FileExists(strThumbOrg))
+                  if (CFile::Exists(strThumbOrg))
                   {
                     CStdString strFolderImage;
                     CUtil::AddFileToFolder(strFolder, "folder.jpg", strFolderImage);
@@ -684,13 +683,11 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
                     {
                       CStdString strThumb;
                       CUtil::GetThumbnail( strFolderImage, strThumb);
-                      CFile file;
-                      file.Cache(strThumbOrg.c_str(), strThumb.c_str(), NULL, NULL);
+                      CFile::Cache(strThumbOrg.c_str(), strThumb.c_str(), NULL, NULL);
                     }
                     else
                     {
-                      CFile file;
-                      file.Cache(strThumbOrg.c_str(), strFolderImage.c_str(), NULL, NULL);
+                      CFile::Cache(strThumbOrg.c_str(), strFolderImage.c_str(), NULL, NULL);
                     }
                   }
                 }
@@ -838,7 +835,7 @@ bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, co
   CDetectDVDMedia::WaitMediaReady();
   CCdInfo* pCdInfo = CDetectDVDMedia::GetCdInfo();
   if (pCdInfo == NULL) return false;
-  if (!CUtil::FileExists(strFileName)) return false;
+  if (!CFile::Exists(strFileName)) return false;
   CStdString label = pCdInfo->GetDiscLabel().TrimRight(" ");
   int iLabelCD = label.GetLength();
   int iLabelDB = strDVDLabel.GetLength();
