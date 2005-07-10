@@ -467,6 +467,10 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
   {
     CFileItem* pItem = m_vecItems[i];
 
+    // unselect all items
+    if (pItem)
+      pItem->Select(false);
+
     // Update selected item
     if (!bSelectedFound)
     {

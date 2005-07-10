@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-07-2005 fixed: More than one item could become highlighted in Music Playlist window when skipping songs
  - 10-07-2005 fixed: Embedded album thumbs was broken again.
  - 09-07-2005 added: customized keymap for the Media Center Extender Remote (incl schematics)
  - 09-07-2005 changed: the search button in Music Luibrary is more intuitive now
