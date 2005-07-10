@@ -33,7 +33,7 @@
       <width>600</width>
       <posX>75</posX>
       <posY>50</posY>
-      <label>Audio | Codec: $INFO(musicplayer.Codec) - Bitrate: $INFO(musicplayer.Bitrate)kbps - Bitdepth: $INFO(musicplayer.bitspersample)bit - Frequency: $INFO(musicplayer.Samplerate)kHz - Channels: $INFO(musicplayer.Channels)ch</label>
+      <label>Audio | Codec: $INFO(musicplayer.Codec) - Bitrate: $INFO(musicplayer.Bitrate)kbps - Bits: $INFO(musicplayer.bitspersample)bit - Freq.: $INFO(musicplayer.Samplerate)kHz - Channels: $INFO(musicplayer.Channels)</label>
       <align>left</align>
       <font>font12</font>
     </control>
