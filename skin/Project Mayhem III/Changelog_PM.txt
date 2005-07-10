@@ -1,3 +1,4 @@
+2005-07-10 added:	extra slideshow overlay including song infos (optional)
 2005-07-10 added:	music infos now available during slideshow
 
 2005-07-08 changed:	made the infos on the music and video overlay one-liners
