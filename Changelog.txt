@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-07-2005 changed: Simpler auto-switch thumb/list for My Pictures.
  - 11-07-2005 added: audio volume can now be changed in the dvdplayer
  - 11-07-2005 fixed: Parent dir was unpredictable on smb shares with a username but no password specified.
  - 11-07-2005 fixed: .nfo lookup info wasn't added to the video database.

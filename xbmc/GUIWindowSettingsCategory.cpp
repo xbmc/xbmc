@@ -719,15 +719,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     CBaseSettingControl *pSettingControl = m_vecSettings[i];
     pSettingControl->Update();
     CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-    if (strSetting == "Pictures.AutoSwitchUseLargeThumbs" || strSetting == "Pictures.AutoSwitchMethod")
+    if (strSetting == "Pictures.AutoSwitchUseLargeThumbs")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Pictures.UseAutoSwitching"));
-    }
-    else if (strSetting == "Pictures.AutoSwitchPercentage")
-    { // set visibility based on our other setting...
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Pictures.UseAutoSwitching") && g_guiSettings.GetInt("Pictures.AutoSwitchMethod") == 2);
     }
     else if (strSetting == "ProgramsLists.AutoSwitchUseLargeThumbs" || strSetting == "ProgramsLists.AutoSwitchMethod")
     {

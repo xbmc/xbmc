@@ -11,6 +11,7 @@
 #define METHOD_BYFOLDERS  0
 #define METHOD_BYFILES   1
 #define METHOD_BYTHUMBPERCENT 2
+#define METHOD_BYFILECOUNT 3
 
 CAutoSwitch::CAutoSwitch(void)
 {}
@@ -57,13 +58,9 @@ int CAutoSwitch::GetView(CFileItemList &vecItems)
 
   case WINDOW_PICTURES:
     {
-      iSortMethod = g_guiSettings.GetInt("Pictures.AutoSwitchMethod");
+      iSortMethod = METHOD_BYFILECOUNT;
       bBigThumbs = g_guiSettings.GetBool("Pictures.AutoSwitchUseLargeThumbs");
       bHideParentFolderItems = g_guiSettings.GetBool("Pictures.HideParentDirItems");
-      if ( iSortMethod == METHOD_BYTHUMBPERCENT )
-      {
-        iPercent = g_guiSettings.GetInt("Pictures.AutoSwitchPercentage");
-      }
     }
     break;
 
@@ -82,35 +79,44 @@ int CAutoSwitch::GetView(CFileItemList &vecItems)
   // if this was called by an unknown window just return listtview
   if (iSortMethod < 0) return iViewAs;
 
+  bool bThumbs = false;
+
   switch (iSortMethod)
   {
   case METHOD_BYFOLDERS:
-    iViewAs = ByFolders(bBigThumbs, vecItems);
+    bThumbs = ByFolders(vecItems);
     break;
 
   case METHOD_BYFILES:
-    iViewAs = ByFiles(bBigThumbs, bHideParentFolderItems, vecItems);
+    bThumbs = ByFiles(bHideParentFolderItems, vecItems);
     break;
 
   case METHOD_BYTHUMBPERCENT:
-    iViewAs = ByThumbPercent(bBigThumbs, bHideParentFolderItems, iPercent, vecItems);
+    bThumbs = ByThumbPercent(bHideParentFolderItems, iPercent, vecItems);
+    break;
+  case METHOD_BYFILECOUNT:
+    bThumbs = ByFileCount(vecItems);
     break;
   }
 
-  // return the view_as type.  -1 = error.
-  return iViewAs;
+  if (bThumbs)
+  {
+    if (bBigThumbs)
+      return VIEW_AS_LARGEICONS;
+    return VIEW_AS_ICONS;
+  }
+  return VIEW_AS_LIST;
 }
 
 /// \brief Auto Switch method based on the current directory \e containing ALL folders and \e atleast one non-default thumb
-/// \param bBigThumbs Use Big Thumbs?
 /// \param vecItems Vector of FileItems
-int CAutoSwitch::ByFolders(bool bBigThumbs, CFileItemList& vecItems)
+bool CAutoSwitch::ByFolders(CFileItemList& vecItems)
 {
+  bool bThumbs = false;
   // is the list all folders?
   if (vecItems.GetFolderCount() == vecItems.Size())
   {
     // test for thumbs
-    bool bThumbs = false;
     for (int i = 0; i < vecItems.Size(); i++)
     {
       CFileItem* pItem = vecItems[i];
@@ -120,28 +126,14 @@ int CAutoSwitch::ByFolders(bool bBigThumbs, CFileItemList& vecItems)
         break;
       }
     }
-    // if non-default thumbs, switch to thumb panel
-    if (bThumbs)
-    {
-      if (bBigThumbs)
-      {
-        return VIEW_AS_LARGEICONS;
-      }
-      else
-      {
-        return VIEW_AS_ICONS;
-      }
-    }
   }
-
-  // else switch to list view
-  return VIEW_AS_LIST;
+  return bThumbs;
 }
 
 /// \brief Auto Switch method based on the current directory \e not containing ALL files and \e atleast one non-default thumb
-/// \param bBigThumbs Use Big Thumbs?
+/// \param bHideParentDirItems - are we not counting the ".." item?
 /// \param vecItems Vector of FileItems
-int CAutoSwitch::ByFiles(bool bBigThumbs, bool bHideParentDirItems, CFileItemList& vecItems)
+bool CAutoSwitch::ByFiles(bool bHideParentDirItems, CFileItemList& vecItems)
 {
   bool bThumbs = false;
   int iCompare = 0;
@@ -165,31 +157,15 @@ int CAutoSwitch::ByFiles(bool bBigThumbs, bool bHideParentDirItems, CFileItemLis
         break;
       }
     }
-
-    // if there thumbs other than defaults, switch to thumb view
-    if (bThumbs)
-    {
-      if (bBigThumbs)
-      {
-        return VIEW_AS_LARGEICONS;
-      }
-      else
-      {
-        return VIEW_AS_ICONS;
-      }
-    }
   }
-
-  // else use list view
-  return VIEW_AS_LIST;
+  return bThumbs;
 }
 
 
 /// \brief Auto Switch method based on the percentage of non-default thumbs \e in the current directory
-/// \param bBigThumbs Use Big Thumbs?
 /// \param iPercent Percent of non-default thumbs to autoswitch on
 /// \param vecItems Vector of FileItems
-int CAutoSwitch::ByThumbPercent(bool bBigThumbs, bool bHideParentDirItems, int iPercent, CFileItemList& vecItems)
+bool CAutoSwitch::ByThumbPercent(bool bHideParentDirItems, int iPercent, CFileItemList& vecItems)
 {
   bool bThumbs = false;
   int iNumThumbs = 0;
@@ -198,6 +174,8 @@ int CAutoSwitch::ByThumbPercent(bool bBigThumbs, bool bHideParentDirItems, int i
   {
     iNumItems--;
   }
+
+  if (iNumItems <= 0) return false;
 
   for (int i = 0; i < vecItems.Size(); i++)
   {
@@ -214,19 +192,14 @@ int CAutoSwitch::ByThumbPercent(bool bBigThumbs, bool bHideParentDirItems, int i
     }
   }
 
-  // if there enough thumbs, switch to thumb view
-  if (bThumbs)
-  {
-    if (bBigThumbs)
-    {
-      return VIEW_AS_LARGEICONS;
-    }
-    else
-    {
-      return VIEW_AS_ICONS;
-    }
-  }
+  return bThumbs;
+}
 
-  // else use list view
-  return VIEW_AS_LIST;
+/// \brief Auto Switch method based on whether there is more than 25% files.
+/// \param iPercent Percent of non-default thumbs to autoswitch on
+bool CAutoSwitch::ByFileCount(CFileItemList& vecItems)
+{
+  if (vecItems.Size() == 0) return false;
+  float fPercent = (float)vecItems.GetFileCount() / vecItems.Size();
+  return (fPercent > 0.25);
 }
