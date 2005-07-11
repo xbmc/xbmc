@@ -363,3 +363,8 @@ bool CDVDPlayerAudio::InitializeOutputDevice()
   CLog::Log(LOGERROR, "Failed Creating audio device with codec id: %i, channels: %i, sample rate: %i", m_codec, iChannels, iSampleRate);
   return false;
 }
+
+void CDVDPlayerAudio::SetVolume(long nVolume)
+{
+  m_dvdAudio.SetVolume(nVolume);
+}
