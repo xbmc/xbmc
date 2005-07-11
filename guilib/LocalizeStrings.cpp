@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "LocalizeStrings.h"
 
 CLocalizeStrings g_localizeStrings;

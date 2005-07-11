@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "GUIItem.h"
 
 CGUIItem::CGUIItem(CStdString& aItemName)

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SettingsControls.h"
+#include "GUIDialogNumeric.h"
 
 CBaseSettingControl::CBaseSettingControl(DWORD dwID, CSetting *pSetting)
 {
@@ -119,18 +120,15 @@ void CButtonSettingControl::OnClick()
 {
   // grab the onscreen keyboard
   CStdString keyboardInput(((CSettingString *)m_pSetting)->GetData());
-  if (m_pSetting->GetControlType() == BUTTON_CONTROL_INPUT || m_pSetting->GetControlType() == BUTTON_CONTROL_HIDDEN_INPUT || m_pSetting->GetControlType() == BUTTON_CONTROL_IP_INPUT)
+  if (m_pSetting->GetControlType() == BUTTON_CONTROL_INPUT || m_pSetting->GetControlType() == BUTTON_CONTROL_HIDDEN_INPUT)
   {
-    if (CGUIDialogKeyboard::ShowAndGetInput(keyboardInput, ((CSettingString *)m_pSetting)->m_bAllowEmpty))
-    {
-      if (m_pSetting->GetControlType() == BUTTON_CONTROL_IP_INPUT)
-      { // check if we have a valid ip...
-        if (!IsValidIPAddress(keyboardInput))
-          return ;
-      }
-    }
-    else
+    if (!CGUIDialogKeyboard::ShowAndGetInput(keyboardInput, ((CSettingString *)m_pSetting)->m_bAllowEmpty))
       return ;
+  }
+  if (m_pSetting->GetControlType() == BUTTON_CONTROL_IP_INPUT)
+  {
+    if (!CGUIDialogNumeric::ShowAndGetIPAddress(keyboardInput, g_localizeStrings.Get(14068)))
+      return;
   }
   ((CSettingString *)m_pSetting)->SetData(keyboardInput);
   Update();

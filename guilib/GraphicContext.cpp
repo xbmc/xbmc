@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "GraphicContext.h"
 #include "../xbmc/Settings.h"
 #include "../xbmc/XBVideoConfig.h"

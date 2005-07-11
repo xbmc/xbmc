@@ -31,6 +31,7 @@
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="include.h"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -64,7 +65,7 @@
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="StdAfx.h"
+				PrecompiledHeaderThrough="include.h"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -89,7 +90,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/YX&quot;stdafx.h&quot;"
+				AdditionalOptions="/YX&quot;include.h&quot;"
 				Optimization="3"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
@@ -99,7 +100,7 @@
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="StdAfx.h"
+				PrecompiledHeaderThrough="include.h"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -140,7 +141,7 @@
 				DefaultCharIsUnsigned="FALSE"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="StdAfx.h"
+				PrecompiledHeaderThrough="include.h"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -175,7 +176,7 @@
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="StdAfx.h"
+				PrecompiledHeaderThrough="include.h"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -213,7 +214,7 @@
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="StdAfx.h"
+				PrecompiledHeaderThrough="include.h"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -383,6 +384,12 @@
 				RelativePath=".\GUIWindowManager.cpp">
 			</File>
 			<File
+				RelativePath=".\include.cpp">
+			</File>
+			<File
+				RelativePath=".\include.h">
+			</File>
+			<File
 				RelativePath=".\IWindowManagerCallback.cpp">
 			</File>
 			<File
@@ -396,21 +403,6 @@
 			</File>
 			<File
 				RelativePath=".\SkinInfo.cpp">
-			</File>
-			<File
-				RelativePath=".\stdafx.cpp">
-				<FileConfiguration
-					Name="Debug|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\TextureBundle.cpp">
@@ -596,9 +588,6 @@
 			</File>
 			<File
 				RelativePath=".\SkinInfo.h">
-			</File>
-			<File
-				RelativePath=".\stdafx.h">
 			</File>
 			<File
 				RelativePath=".\StdString.h">

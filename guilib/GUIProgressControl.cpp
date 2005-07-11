@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "GUIProgressControl.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 

@@ -1,5 +1,4 @@
-
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "FileRar.h"
 #include <sys/stat.h>
 #include "../util.h"

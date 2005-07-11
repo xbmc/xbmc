@@ -492,7 +492,7 @@ WORD CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton.Equals("pageplus")) wButtonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
   else if (strButton.Equals("pageminus")) wButtonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
   else if (strButton.Equals("mute")) wButtonCode = XINPUT_IR_REMOTE_MUTE;
-  else if (strButton.Equals("recorededtv")) wButtonCode = XINPUT_IR_REMOTE_RECORDED_TV;
+  else if (strButton.Equals("recordedtv")) wButtonCode = XINPUT_IR_REMOTE_RECORDED_TV;
   else if (strButton.Equals("guide")) wButtonCode = XINPUT_IR_REMOTE_TITLE;   // same as title
   else if (strButton.Equals("livetv")) wButtonCode = XINPUT_IR_REMOTE_LIVE_TV;
   else if (strButton.Equals("star")) wButtonCode = XINPUT_IR_REMOTE_STAR;

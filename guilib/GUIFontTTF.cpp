@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #define XFONT_TRUETYPE
 #include "GUIFontTTF.h"
 #include "GraphicContext.h"

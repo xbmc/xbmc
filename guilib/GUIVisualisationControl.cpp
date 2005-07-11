@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "GUIVisualisationControl.h"
 #include "../xbmc/GUIUserMessages.h"
 #include "../xbmc/application.h"
