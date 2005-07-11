@@ -172,7 +172,7 @@ bool CGUISpinControl::OnAction(const CAction &action)
     }
     break;
   }
-  static float m_fSmoothScrollOffset = 0.0f;
+/*  static float m_fSmoothScrollOffset = 0.0f;
   if (action.wID == ACTION_SCROLL_UP)
   {
     m_fSmoothScrollOffset += action.fAmount1 * action.fAmount1;
@@ -184,7 +184,7 @@ bool CGUISpinControl::OnAction(const CAction &action)
       MoveDown();
     }
     return handled;
-  }
+  }*/
   return CGUIControl::OnAction(action);
 }
 
