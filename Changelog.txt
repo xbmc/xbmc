@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-07-2005 fixed: Parent dir was unpredictable on smb shares with a username but no password specified.
  - 11-07-2005 fixed: .nfo lookup info wasn't added to the video database.
  - 11-07-2005 changed: Cleanup of some of the dialog code.
  - 11-07-2005 changed: guilib/stdafx.h -> guilib/include.h in guilib to reduce clashes when VS can't decide which one is which.
