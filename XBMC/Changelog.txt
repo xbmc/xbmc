@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-07-2005 fixed: ftp client, only bmp picture view works [the rest will follow] [GeminiServer]
+ - 11-07-2005 fixed: ftp client: mplayer dllsend socket Winsock error in debug mode! [GeminiServer]
  - 10-07-2005 fixed: More than one item could become highlighted in Music Playlist window when skipping songs
  - 10-07-2005 fixed: Embedded album thumbs was broken again.
  - 09-07-2005 added: customized keymap for the Media Center Extender Remote (incl schematics)
