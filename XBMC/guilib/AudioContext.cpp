@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "AudioContext.h"
 #include "../xbmc/Settings.h"
 #include "../xbmc/XBAudioConfig.h"

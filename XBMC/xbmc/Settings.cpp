@@ -352,7 +352,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     GetInteger(pMasterLockElement, "enableshutdown", g_stSettings.m_iMasterLockEnableShutdown , 0, 0, 1);
     GetInteger(pMasterLockElement, "protectshares", g_stSettings.m_iMasterLockProtectShares , 0, 0, 1);
     GetInteger(pMasterLockElement, "mastermode", g_stSettings.m_iMasterLockMode , 0, 0, 3);
-    GetString(pMasterLockElement, "mastercode", g_stSettings.szMasterLockCode, "");
+    GetString(pMasterLockElement, "mastercode", g_stSettings.m_masterLockCode, "");
     GetInteger(pMasterLockElement, "startuplock", g_stSettings.m_iMasterLockStartupLock , 0, 0, 1);
     GetInteger(pMasterLockElement, "LockFilemanager", g_stSettings.m_iMasterLockFilemanager , 0, 0, 1);
     GetInteger(pMasterLockElement, "LockSettings", g_stSettings.m_iMasterLockSettings , 0, 0, 1);
@@ -701,28 +701,31 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
   }
 }
 
-void CSettings::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue)
+void CSettings::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &strValue, const CStdString& strDefaultValue)
 {
-  strcpy(szValue, "");
+  strValue.Empty();
   const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
   if (pChild)
   {
     if (pChild->FirstChild())
     {
-      CStdString strValue = pChild->FirstChild()->Value();
-      if (strValue.size() )
-      {
-        if (strValue != "-")
-          strcpy(szValue, strValue.c_str());
-      }
+      strValue = pChild->FirstChild()->Value();
+      if (strValue.Equals("-"))
+        strValue.Empty();
     }
   }
-  if (strlen(szValue) == 0)
-  {
-    strcpy(szValue, strDefaultValue.c_str());
-  }
+  if (strValue.IsEmpty())
+    strValue = strDefaultValue;
 
-  CLog::Log(LOGDEBUG, "  %s: %s", strTagName.c_str(), szValue);
+  CLog::Log(LOGDEBUG, "  %s: %s", strTagName.c_str(), strValue.c_str());
+}
+
+void CSettings::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char *szValue, const CStdString& strDefaultValue)
+{
+  CStdString strValue;
+  GetString(pRootElement, strTagName, strValue, strDefaultValue);
+  if (szValue)
+    strcpy(szValue, strValue.c_str());
 }
 
 void CSettings::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax)
@@ -1611,7 +1614,7 @@ bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString 
     TiXmlText xmlText(strChildValue);
     TiXmlElement eElement(strChild);
     eElement.InsertEndChild(xmlText);
-    pIt->ToElement()->InsertEndChild(eElement);
+    pNode->ToElement()->InsertEndChild(eElement);
     breturn = true;
   }
   if(breturn)

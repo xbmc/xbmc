@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "SkinInfo.h"
 #include "../xbmc/Util.h"
 #include "../xbmc/Settings.h"

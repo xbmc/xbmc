@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "ActionManager.h"
 
 CActionManager g_actionManager;

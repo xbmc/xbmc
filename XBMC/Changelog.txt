@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-07-2005 changed: Cleanup of some of the dialog code.
+ - 11-07-2005 changed: guilib/stdafx.h -> guilib/include.h in guilib to reduce clashes when VS can't decide which one is which.
+ - 11-07-2005 changed: New numeric input dialog - handles time, date, numbers, ips, and numeric passwords.
  - 11-07-2005 fixed: ftp client, only bmp picture view works [the rest will follow] [GeminiServer]
  - 11-07-2005 fixed: ftp client: mplayer dllsend socket Winsock error in debug mode! [GeminiServer]
  - 10-07-2005 fixed: More than one item could become highlighted in Music Playlist window when skipping songs

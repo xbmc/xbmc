@@ -2984,14 +2984,15 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if( execute.Equals("AlarmClock") ) 
   {	
-    CStdStringW strTime;
+    CStdString strTime;
     CStdString strHeading = g_localizeStrings.Get(13209);
     float fSecs;
     if( !parameter.IsEmpty() ) 
       fSecs = static_cast<float>(atoi(parameter.c_str())*60);
-    else { 
-      if( CGUIDialogNumeric::ShowAndGetInput(strTime,strHeading,false) )
-        fSecs = static_cast<float>(atoi(CStdString(strTime).c_str())*60);
+    else
+    { 
+      if( CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading) )
+        fSecs = static_cast<float>(atoi(strTime.c_str())*60);
       else
         return;
     }
@@ -3171,7 +3172,8 @@ bool CUtil::IsLeapYear(int iLYear, int iLMonth, int iLTag, int &iMonMax, int &iW
 }
 
 bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute)
- {
+{
+  if (iHour == 0) iHour = 24;
 	//GeminiServer
 	TIME_ZONE_INFORMATION tziNew;
 	SYSTEMTIME CurTime;

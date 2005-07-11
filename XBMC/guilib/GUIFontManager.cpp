@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "GUIFontManager.h"
 #include "GraphicContext.h"
 #include "SkinInfo.h"

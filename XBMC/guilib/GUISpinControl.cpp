@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "GUISpinControl.h"
 #include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
@@ -145,25 +145,21 @@ bool CGUISpinControl::OnAction(const CAction &action)
       return true;
     }
     break;
-  }
-  if (action.wID == ACTION_PAGE_UP)
-  {
+  case ACTION_PAGE_UP:
     if (!m_bReverse)
       PageDown();
     else
       PageUp();
     return true;
-  }
-  if (action.wID == ACTION_PAGE_DOWN)
-  {
+    break;
+  case ACTION_PAGE_DOWN:
     if (!m_bReverse)
       PageUp();
     else
       PageDown();
     return true;
-  }
-  if (action.wID == ACTION_SELECT_ITEM)
-  {
+    break;
+  case ACTION_SELECT_ITEM:
     if (m_iSelect == SPIN_BUTTON_UP)
     {
       MoveUp();
@@ -174,6 +170,20 @@ bool CGUISpinControl::OnAction(const CAction &action)
       MoveDown();
       return true;
     }
+    break;
+  }
+  static float m_fSmoothScrollOffset = 0.0f;
+  if (action.wID == ACTION_SCROLL_UP)
+  {
+    m_fSmoothScrollOffset += action.fAmount1 * action.fAmount1;
+    bool handled = false;
+    while (m_fSmoothScrollOffset > 0.4)
+    {
+      handled = true;
+      m_fSmoothScrollOffset -= 0.4f;
+      MoveDown();
+    }
+    return handled;
   }
   return CGUIControl::OnAction(action);
 }

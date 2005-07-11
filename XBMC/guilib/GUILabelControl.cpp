@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "GUILabelControl.h"
 #include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"

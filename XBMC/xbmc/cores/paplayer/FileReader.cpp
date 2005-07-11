@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "../../stdafx.h"
 #include "FileReader.h"
 #include "../../utils/SingleLock.h"
 

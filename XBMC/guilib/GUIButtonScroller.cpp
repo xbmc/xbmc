@@ -1,5 +1,5 @@
 
-#include "stdafx.h"
+#include "include.h"
 #include "GUIButtonScroller.h"
 #include "GUIFontManager.h"
 #include "LocalizeStrings.h"

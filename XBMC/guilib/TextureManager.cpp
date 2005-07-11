@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "TextureManager.h"
 #include "AnimatedGif.h"
 #include "PackedTexture.h"

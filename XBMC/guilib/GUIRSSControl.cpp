@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "GUIRSSControl.h"
 #include "GUIWindowManager.h"
 #include "GUIFontManager.h"

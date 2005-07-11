@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "GUIRadioButtonControl.h"
 
 CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
