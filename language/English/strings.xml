@@ -705,10 +705,10 @@
   <string><id>12324</id><value>XBMC Master Lock</value></string>
   <string><id>12325</id><value>Folder Locked</value></string>
   <string><id>12326</id><value>Enter password</value></string>
-  <string><id>12327</id><value>Enter Master Code and press Enter,</value></string>
-  <string><id>12328</id><value>Enter Unlock Code and press Enter,</value></string> 
+  <string><id>12327</id><value>Enter Master Code</value></string>
+  <string><id>12328</id><value>Enter Unlock Code</value></string> 
   <string><id>12329</id><value>or press C to cancel</value></string>
-  <string><id>12330</id><value>Enter XBOX gamepad button combo and </value></string>
+  <string><id>12330</id><value>Enter Gamepad button combo and press Start</value></string>
   <string><id>12331</id><value>press Start, or Back to cancel</value></string>
   <string><id>12332</id><value>Set Lock</value></string>
   <string><id>12333</id><value>Unlock</value></string>
@@ -730,7 +730,7 @@
   <string><id>12349</id><value>Remember Master Code until next boot?</value></string>
   <string><id>12350</id><value>(Opening any item in Settings will</value></string>
   <string><id>12351</id><value>automatically re-enable Master Lock.)</value></string>
-  <string><id>12352</id><value>Enter Master Code button combo and </value></string>
+  <string><id>12352</id><value>Enter Master Code button combo and press Start</value></string>
   <string><id>12353</id><value>Reactivate Lock</value></string>
   <string><id>12354</id><value>Override folder locks until next boot?</value></string>
   <string><id>12355</id><value>Automatically re-enable folder locks.)</value></string>
@@ -937,13 +937,11 @@
   <string><id>14062</id><value>Enter username for</value></string>
   
   <string><id>14063</id><value>Date &amp; Time</value></string>
-  <string><id>14064</id><value>Set Year</value></string>
-  <string><id>14065</id><value>Set Month</value></string>
-  <string><id>14066</id><value>Set Day</value></string>
-  <string><id>14067</id><value>Set Hour</value></string>
-  <string><id>14068</id><value>Set Minute</value></string>
-  <string><id>14069</id><value>Do you want set these Settings Now?</value></string>
-  <string><id>14070</id><value>Apply Changes Now</value></string>
+  <string><id>14064</id><value>Set Date</value></string>
+  <string><id>14065</id><value>Set Time</value></string>
+  <string><id>14066</id><value>Enter the Time in 24 hour HH:MM format</value></string>
+  <string><id>14067</id><value>Enter the Date in DD/MM/YYYY format</value></string>
+  <string><id>14068</id><value>Enter the IP address</value></string>
 	  
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>The service is not connected, would you like to attempt</value></string>

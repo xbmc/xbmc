@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "GUISpinControlEx.h"
 #include "../xbmc/Util.h"
 

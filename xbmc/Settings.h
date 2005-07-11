@@ -114,7 +114,7 @@ public:
   Value is unknown or unspecified.
   */
   int m_iLockMode;
-  CStdStringW m_strLockCode;  ///< Input code for Lock UI to verify, can be chosen freely.
+  CStdString m_strLockCode;  ///< Input code for Lock UI to verify, can be chosen freely.
   int m_iBadPwdCount; ///< Number of wrong passwords user has entered since share was last unlocked
 };
 /*!
@@ -407,7 +407,7 @@ public:
     int m_iMasterLockEnableShutdown;  // allows XBMC Master Lock to shut off XBOX if true
     int m_iMasterLockProtectShares;   // prompts for mastercode when editing shares with context menu if true
     int m_iMasterLockMode;            // determines the type of master lock UI to present to the user, if any
-    char szMasterLockCode[128];       // password to check for on startup
+    CStdString m_masterLockCode;      // password to check for on startup
     int m_iMasterLockStartupLock;     // prompts user for szMasterLockCode on startup if true
     int m_iMasterLockFilemanager;     // prompts user for MasterLockCode on Click Filemanager! 
     int m_iMasterLockSettings;        // prompts user for MasterLockCode on Click Settings!
@@ -452,7 +452,8 @@ protected:
   void GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue);
   void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
   void GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
-  void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue);
+  void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString& strValue, const CStdString& strDefaultValue);
+  void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char *szValue, const CStdString& strDefaultValue);
   void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault);
   void GetHex(const TiXmlNode* pRootElement, const CStdString& strTagName, DWORD& dwHexValue, DWORD dwDefaultValue);
   void ConvertHomeVar(CStdString& strText);

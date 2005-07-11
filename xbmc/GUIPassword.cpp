@@ -39,7 +39,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
     if (0 != g_stSettings.m_iMasterLockMaxRetry && pItem->m_iBadPwdCount >= g_stSettings.m_iMasterLockMaxRetry)
     {
       // user previously exhausted all retries, show access denied error
-      CGUIDialogOK::ShowAndGetInput(L"12345", L"12346", L"", L"");
+      CGUIDialogOK::ShowAndGetInput(12345, 12346, 0, 0);
       return false;
     }
 
@@ -130,7 +130,7 @@ bool CGUIPassword::IsItemUnlocked(CShare* pItem, const CStdString &strType)
     if (0 != g_stSettings.m_iMasterLockMaxRetry && pItem->m_iBadPwdCount >= g_stSettings.m_iMasterLockMaxRetry)
     {
       // user previously exhausted all retries, show access denied error
-      CGUIDialogOK::ShowAndGetInput(L"12345", L"12346", L"", L"");
+      CGUIDialogOK::ShowAndGetInput(12345, 12346, 0, 0);
       return false;
     }
 
@@ -223,16 +223,17 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser)
   }
 
   int iVerifyPasswordResult = -1;
+  CStdStringW strHeading = g_localizeStrings.Get(12324);
   switch (g_stSettings.m_iMasterLockMode)
   {
   case LOCK_MODE_NUMERIC:
-    iVerifyPasswordResult = CGUIDialogNumeric::ShowAndVerifyPassword((CStdStringW)g_stSettings.szMasterLockCode, L"12324", L"12327", L"12329", L"");
+    iVerifyPasswordResult = CGUIDialogNumeric::ShowAndVerifyPassword(g_stSettings.m_masterLockCode, strHeading, 0);
     break;
   case LOCK_MODE_GAMEPAD:
-    iVerifyPasswordResult = CGUIDialogGamepad::ShowAndVerifyPassword((CStdStringW)g_stSettings.szMasterLockCode, L"12324", L"12352", L"12331", L"");
+    iVerifyPasswordResult = CGUIDialogGamepad::ShowAndVerifyPassword(g_stSettings.m_masterLockCode, strHeading, 0);
     break;
   case LOCK_MODE_QWERTY:
-    iVerifyPasswordResult = CGUIDialogKeyboard::ShowAndVerifyPassword((CStdStringW)g_stSettings.szMasterLockCode, L"12324", 0);
+    iVerifyPasswordResult = CGUIDialogKeyboard::ShowAndVerifyPassword(g_stSettings.m_masterLockCode, strHeading, 0);
     break;
   default:   // must not be supported, treat as unlocked
     iVerifyPasswordResult = 0;
@@ -251,11 +252,11 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser)
     g_application.m_bMasterLockPreviouslyEntered = true;
     // TODO: change dlgLine1 and dlgLine2 to show 12350 and 12351. hook up Settings items to clear
     //       m_bMasterLockPreviouslyEntered and m_bMasterLockOverridesLocalPasswords, then prompt for mastercode
-    if (CGUIDialogYesNo::ShowAndGetInput(L"12324", L"12349", L"", L""))
+    if (CGUIDialogYesNo::ShowAndGetInput(12324, 12349, 0, 0))
     {  // invert cached mastermode setting to make it stay unlocked (this doesn't persist through a reboot)
       g_stSettings.m_iMasterLockMode = g_stSettings.m_iMasterLockMode * -1;
       // TODO: change dlgLine1 and dlgLine2 to show 12350 and 12355 after the TODO: listed above is completed
-      if (CGUIDialogYesNo::ShowAndGetInput(L"12324", L"12354", L"", L""))
+      if (CGUIDialogYesNo::ShowAndGetInput(12324, 12354, 0, 0))
         g_application.m_bMasterLockOverridesLocalPasswords = true;
     }
   }
@@ -281,16 +282,17 @@ bool CGUIPassword::IsMasterLockLocked(bool bPromptUser)
   }
 
   int iVerifyPasswordResult = -1;
+  CStdStringW strHeading = g_localizeStrings.Get(12324);
   switch (g_stSettings.m_iMasterLockMode)
   {
   case LOCK_MODE_NUMERIC:
-    iVerifyPasswordResult = CGUIDialogNumeric::ShowAndVerifyPassword((CStdStringW)g_stSettings.szMasterLockCode, L"12324", L"12327", L"12329", L"");
+    iVerifyPasswordResult = CGUIDialogNumeric::ShowAndVerifyPassword(g_stSettings.m_masterLockCode, strHeading, 0);
     break;
   case LOCK_MODE_GAMEPAD:
-    iVerifyPasswordResult = CGUIDialogGamepad::ShowAndVerifyPassword((CStdStringW)g_stSettings.szMasterLockCode, L"12324", L"12352", L"12331", L"");
+    iVerifyPasswordResult = CGUIDialogGamepad::ShowAndVerifyPassword(g_stSettings.m_masterLockCode, strHeading, 0);
     break;
   case LOCK_MODE_QWERTY:
-    iVerifyPasswordResult = CGUIDialogKeyboard::ShowAndVerifyPassword((CStdStringW)g_stSettings.szMasterLockCode, L"12324", 0);
+    iVerifyPasswordResult = CGUIDialogKeyboard::ShowAndVerifyPassword(g_stSettings.m_masterLockCode, strHeading, 0);
     break;
   default:   // must not be supported, treat as unlocked
     iVerifyPasswordResult = 0;
@@ -329,7 +331,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
         if (1 == g_stSettings.m_iMasterLockEnableShutdown)
         {
           // Shutdown enabled, tell the user we're shutting off
-          CGUIDialogOK::ShowAndGetInput(L"12345", L"12346", L"12347", L"");
+          CGUIDialogOK::ShowAndGetInput(12345, 12346, 12347, 0);
 #ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
           g_application.Stop();
           Sleep(200);
@@ -338,7 +340,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
           return ;
         }
         // Tell the user they ran out of retry attempts
-        CGUIDialogOK::ShowAndGetInput(L"12345", L"12346", L"", L"");
+        CGUIDialogOK::ShowAndGetInput(12345, 12346, 0, 0);
         return ;
       }
     }
@@ -346,7 +348,11 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
     CStdStringW dlgLine1 = "";
     if (0 < g_application.m_iMasterLockRetriesRemaining)
       dlgLine1.Format(L"%d %s", g_application.m_iMasterLockRetriesRemaining, g_localizeStrings.Get(12343));
-    CGUIDialogOK::ShowAndGetInput(L"12324", L"12345", dlgLine1, L"");
+    g_application.m_guiDialogOK.SetHeading(12324);
+    g_application.m_guiDialogOK.SetLine(0, 12345);
+    g_application.m_guiDialogOK.SetLine(1, dlgLine1);
+    g_application.m_guiDialogOK.SetLine(2, 0);
+    g_application.m_guiDialogOK.DoModal(m_gWindowManager.GetActiveWindow());
   }
   else
   {
@@ -400,19 +406,20 @@ bool CGUIPassword::CheckStartUpLock()   // GeminiServer
 {
   // prompt user for mastercode if the mastercode was set b4 or by xml
   int iVerifyPasswordResult = -1;
+  CStdString strHeader = g_localizeStrings.Get(12324);
   if (g_application.m_iMasterLockRetriesRemaining == 0) g_application.m_iMasterLockRetriesRemaining = 1;
   for (int i=1; i <= g_application.m_iMasterLockRetriesRemaining; i++)
   {
     switch (g_stSettings.m_iMasterLockMode)
     { // Prompt user for mastercode
       case LOCK_MODE_NUMERIC:
-        iVerifyPasswordResult = CGUIDialogNumeric::ShowAndVerifyPassword((CStdStringW)g_stSettings.szMasterLockCode, L"12324", L"12327", L"12329", L"");
+        iVerifyPasswordResult = CGUIDialogNumeric::ShowAndVerifyPassword(g_stSettings.m_masterLockCode, strHeader, 0);
         break;
       case LOCK_MODE_GAMEPAD:
-        iVerifyPasswordResult = CGUIDialogGamepad::ShowAndVerifyPassword((CStdStringW)g_stSettings.szMasterLockCode, L"12324", L"12352", L"12331", L"");
+        iVerifyPasswordResult = CGUIDialogGamepad::ShowAndVerifyPassword(g_stSettings.m_masterLockCode, strHeader, 0);
         break;
       case LOCK_MODE_QWERTY:
-        iVerifyPasswordResult = CGUIDialogKeyboard::ShowAndVerifyPassword((CStdStringW)g_stSettings.szMasterLockCode, L"12324", 0);
+        iVerifyPasswordResult = CGUIDialogKeyboard::ShowAndVerifyPassword(g_stSettings.m_masterLockCode, strHeader, 0);
         break;
     }
     if (iVerifyPasswordResult != 0 )

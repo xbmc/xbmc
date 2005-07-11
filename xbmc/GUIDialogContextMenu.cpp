@@ -229,7 +229,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
               return false;
             if (!(CUtil::IsNaturalNumber(strNewDepth) && 0 < atoi(strNewDepth.c_str()) && 10 > atoi(strNewDepth.c_str())))
             {
-              CGUIDialogOK::ShowAndGetInput("257", "759", "760", "");
+              CGUIDialogOK::ShowAndGetInput(257, 759, 760, 0);
               return false;
             }
             g_settings.UpdateBookmark(strType, strLabel, "depth", strNewDepth);
@@ -243,7 +243,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
       {
         if (!CheckMasterCode(iLockMode)) return false;
         // prompt user if they want to really delete the bookmark
-        if (CGUIDialogYesNo::ShowAndGetInput(bMyProgramsMenu ? "758" : "751", "", "750", ""))
+        if (CGUIDialogYesNo::ShowAndGetInput(bMyProgramsMenu ? 758 : 751, 0, 750, 0))
         {
           // delete this share
           g_settings.DeleteBookmark(strType, strLabel, strPath);
@@ -302,7 +302,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
 
             char strLockMode[33];  // holds 32 places plus sign character
             itoa(pMenu->GetButton(), strLockMode, 10);
-            CStdStringW strNewPassword = L"";
+            CStdString strNewPassword = "";
             switch (pMenu->GetButton())
             {
             case 1:  // 1: Numeric Password
@@ -343,7 +343,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
           if (!g_passwordManager.IsMasterLockUnlocked(true))
             return false;
 
-          if (!CGUIDialogYesNo::ShowAndGetInput(L"", L"12335", L"750", L""))
+          if (!CGUIDialogYesNo::ShowAndGetInput(0, 12335, 750, 0))
             return false;
 
           g_settings.UpdateBookmark(strType, strLabel, "lockmode", "0");
@@ -377,8 +377,8 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
 		  //   return false;
 		  //else
 		  //{
-			CStdStringW strNewPW;
-			CStdStringW strNewLockMode;
+			CStdString strNewPW;
+			CStdString strNewLockMode;
 				switch (iLockMode)
 				{
 				case -1:  // 1: Numeric Password

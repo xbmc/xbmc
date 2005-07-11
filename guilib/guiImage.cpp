@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "GUIImage.h"
 #include "TextureManager.h"
 #include "../xbmc/settings.h"

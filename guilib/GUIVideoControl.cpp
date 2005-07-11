@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "GUIVideoControl.h"
 #include "GUIWindowManager.h"
 #include "../xbmc/Application.h"

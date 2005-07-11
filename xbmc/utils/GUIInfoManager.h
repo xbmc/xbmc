@@ -43,8 +43,8 @@ public:
 
   CStdString GetImage(int info);
 
-  wstring GetTime(bool bSeconds = false);
-  wstring GetDate(bool bNumbersOnly = false);
+  CStdString GetTime(bool bSeconds = false);
+  CStdString GetDate(bool bNumbersOnly = false);
 
   void SetCurrentItem(CFileItem &item);
   void ResetCurrentItem();

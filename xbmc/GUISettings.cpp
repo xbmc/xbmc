@@ -489,14 +489,10 @@ CGUISettings::CGUISettings(void)
   AddBool(1,   "XBDateTime.Clock12Hour"      , 14051, false);
   AddBool(2,   "XBDateTime.SwapMonthAndDay"  , 14052, false);
   AddBool(3,   "XBDateTime.TimeServer"       , 168  , false);
-  AddString(4, "XBDateTime.TimeAddress"      , 731  , "207.46.130.100");
-  AddInt(5,    "XBDateTime.Year"             , 14064, 2005, 2000, 1, 2099, SPIN_CONTROL_INT);
-  AddInt(6,    "XBDateTime.Month"            , 14065, SYS_MONTH_MAY, 1, SYS_MONTH_JANUARY, SYS_MONTH_DECEMBER, SPIN_CONTROL_INT);
-  AddInt(7,    "XBDateTime.Day"              , 14066, 15, 1, 1, 31, SPIN_CONTROL_INT);
-  AddInt(8,    "XBDateTime.Hour"             , 14067, 12, 0, 1, 23, SPIN_CONTROL_INT);
-  AddInt(9,    "XBDateTime.Minute"           , 14068, 30, 0, 1, 59, SPIN_CONTROL_INT);
-  AddString(10,"XBDateTime.SetDateTime"      , 14070, "", BUTTON_CONTROL_STANDARD);
-  
+  AddString(4, "XBDateTime.TimeAddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
+  AddString(5, "XBDateTime.Time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
+  AddString(6, "XBDateTime.Date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
+
   //GeminiServer
   AddCategory(7, "Masterlock", 12360);
   AddInt(1,   "Masterlock.Mastermode"       , 12364, LOCK_MODE_EVERYONE, LOCK_MODE_EVERYONE, 1, LOCK_MODE_QWERTY, SPIN_CONTROL_TEXT); // 0:always Unlocked, 1:Numeric, 2:Gamepad, 3:Text

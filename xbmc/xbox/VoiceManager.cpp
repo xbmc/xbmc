@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "VoiceManager.h"
 #include "MediaPacketQueue.h"
 #include "../Utils/KaiVoice.h"

@@ -5,31 +5,45 @@ class CGUIDialogNumeric :
       public CGUIDialog
 {
 public:
+  enum INPUT_MODE { INPUT_TIME = 1, INPUT_DATE, INPUT_IP_ADDRESS, INPUT_PASSWORD, INPUT_NUMBER };
   CGUIDialogNumeric(void);
   virtual ~CGUIDialogNumeric(void);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction &action);
+  virtual void Render();
+
   bool IsConfirmed() const;
   bool IsCanceled() const;
-  void GetUserInput(CStdString* strOut);
-  void SetLine(int iLine, const wstring& strLine);
-  void SetLine(int iLine, const string& strLine);
-  void SetLine(int iLine, int iString);
-  void SetHeading(const wstring& strLine);
-  void SetHeading(const string& strLine);
-  void SetHeading(int iString);
-  CStdStringW m_strUserInput;
-  CStdStringW m_strPassword;
-  int m_iRetries;
-  bool m_bUserInputCleanup;
-  bool m_bHideInputChars;
-  static bool ShowAndGetInput(CStdStringW& aTextString, const CStdStringW &strHeading, bool bHideUserInput);
-  static bool ShowAndGetNewPassword(CStdStringW& strNewPassword);
-  static int ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& dlgHeading, const CStdStringW& dlgLine0, const CStdStringW& dlgLine1, const CStdStringW& dlgLine2);
-  static int ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& strHeading, int iRetries);
-  static bool ShowAndVerifyInput(CStdStringW& strPassword, const CStdStringW& dlgHeading, const CStdStringW& dlgLine0, const CStdStringW& dlgLine1, const CStdStringW& dlgLine2, bool bGetUserInput, bool bHideInputChars);
+
+  static bool ShowAndGetNewPassword(CStdString& strNewPassword);
+  static int ShowAndVerifyPassword(CStdString& strPassword, const CStdStringW& strHeading, int iRetries);
+  static bool ShowAndVerifyInput(CStdString& strPassword, const CStdStringW& strHeading, bool bGetUserInput);
+
+  void SetHeading(const CStdStringW &strHeading);
+  void SetMode(INPUT_MODE mode, void *initial);
+  void GetOutput(void *output);
+
+  static bool ShowAndGetTime(SYSTEMTIME &time, const CStdStringW &heading);
+  static bool ShowAndGetDate(SYSTEMTIME &date, const CStdStringW &heading);
+  static bool ShowAndGetIPAddress(CStdString &IPAddress, const CStdStringW &heading);
+  static bool ShowAndGetNumber(CStdString& strInput, const CStdStringW &strHeading);
+
 protected:
-  virtual bool OnAction(const CAction &action);
+  void OnNumber(unsigned int num);
+  void VerifyDate(bool checkYear);
+  void OnNext();
+  void OnPrevious();
+  void OnBackSpace();
+
   bool m_bConfirmed;
   bool m_bCanceled;
   wchar_t m_cHideInputChar;
+
+  INPUT_MODE m_mode;                // the current input mode
+  SYSTEMTIME m_datetime;            // for time and date modes
+  WORD m_ip[4];                     // for ip address mode
+  __int64 m_integer;                // for password/numeric input modes
+  unsigned int m_block;             // for time, date, and IP methods.
+  unsigned int m_lastblock;
+  bool m_dirty;                     // true if the current block has been changed.
 };
