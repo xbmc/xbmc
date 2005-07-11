@@ -9,9 +9,10 @@ public:
 
   static int GetView(CFileItemList& vecItems);
 
-  static int ByFolders(bool bBigThumbs, CFileItemList& vecItems);
-  static int ByFiles(bool bBigThumbs, bool bHideParentDirItems, CFileItemList& vecItems);
-  static int ByThumbPercent(bool bBigThumbs, bool bHideParentDirItems, int iPercent, CFileItemList& vecItems);
+  static bool ByFolders(CFileItemList& vecItems);
+  static bool ByFiles(bool bHideParentDirItems, CFileItemList& vecItems);
+  static bool ByThumbPercent(bool bHideParentDirItems, int iPercent, CFileItemList& vecItems);
+  static bool ByFileCount(CFileItemList& vecItems);
 
 protected:
 
