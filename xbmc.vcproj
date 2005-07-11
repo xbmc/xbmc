@@ -64,7 +64,7 @@
 				IncludeDebugInfo="TRUE"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center Debug"/>
@@ -178,7 +178,7 @@
 				IncludeDebugInfo="TRUE"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -248,7 +248,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x80000"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"
@@ -363,7 +363,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x80000"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -420,7 +420,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				IncludeDebugInfo="TRUE"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
