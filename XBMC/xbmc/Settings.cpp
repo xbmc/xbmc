@@ -673,6 +673,10 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 
           ConvertHomeVar(share.strPath);
 
+          // check - convert to url and back again to make sure strPath is accurate
+          // in terms of what we expect
+          CURL url(share.strPath);
+          url.GetURL(share.strPath);
           items.push_back(share);
         }
         else
