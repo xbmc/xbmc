@@ -150,20 +150,25 @@ __int64 CFileFTP::Seek(__int64 iFilePosition, int iWhence)
 	char szOffset[32];
 	FTPUtil.sendrecCMD("TYPE I",result);
 	_i64toa(m_filePos,szOffset,10);
-	sprintf(cmd,"REST %s",szOffset);
+	
+  sprintf(cmd,"REST %s",szOffset);
 	FTPUtil.sendrecCMD(cmd,result);
-	sprintf(cmd,"RETR %s",m_filename);
-  FTPUtil.sendrecCMD(cmd,result);
-	if (FTPUtil.CMDerr(result))
+	
+  //sprintf(cmd,"RETR %s\r\n",m_filename);
+  //FTPUtil.sendrecCMD(cmd,result);
+  //FTPUtil.sending(cmd);
+  
+  if (FTPUtil.CMDerr(result))
 	{
 		FTPUtil.sendrecCMD("ABOR",result);
 		FTPUtil.receiveMsg(result);	
 		rs.release();
+    Close();
 		FTPUtil.closeDataSocket();
 		FTPUtil.ConnectFTPdata();
 		FTPUtil.sendrecCMD(cmd,result);
-		if (FTPUtil.AMode)  rs.attach(accept((SOCKET)FTPUtil.s2,NULL,NULL));
-		else  rs.attach((SOCKET)FTPUtil.s2);
+		if (FTPUtil.AMode) rs.attach(accept((SOCKET)FTPUtil.s2,NULL,NULL));
+		else rs.attach((SOCKET)FTPUtil.s2);
 	}
 	return m_filePos;
 }
