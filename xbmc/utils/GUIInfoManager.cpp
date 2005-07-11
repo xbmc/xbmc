@@ -310,10 +310,10 @@ wstring CGUIInfoManager::GetLabel(int info)
     strLabel = g_weatherManager.GetLabel(WEATHER_LABEL_LOCATION);
     break;
   case SYSTEM_TIME:
-    return GetTime();
+    strLabel = GetTime();
     break;
   case SYSTEM_DATE:
-    return GetDate();
+    strLabel = GetDate();
     break;
   case PLAYER_TIME:
     strLabel = GetCurrentPlayTime();
@@ -594,9 +594,9 @@ CStdString CGUIInfoManager::GetImage(int info)
   return "";
 }
 
-wstring CGUIInfoManager::GetDate(bool bNumbersOnly)
+CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
 {
-  WCHAR szText[128];
+  CStdString text;
   SYSTEMTIME time;
   GetLocalTime(&time);
 
@@ -604,58 +604,57 @@ wstring CGUIInfoManager::GetDate(bool bNumbersOnly)
   {
     CStdString strDate;
     if (g_guiSettings.GetBool("XBDateTime.SwapMonthAndDay"))
-      swprintf(szText, L"%02.2i-%02.2i-%02.2i", time.wDay, time.wMonth, time.wYear);
+      text.Format("%d-%d-%d", time.wDay, time.wMonth, time.wYear);
     else
-      swprintf(szText, L"%02.2i-%02.2i-%02.2i", time.wMonth, time.wDay, time.wYear);
+      text.Format("%d-%d-%d", time.wMonth, time.wDay, time.wYear);
   }
   else
   {
-    const WCHAR* day;
+    CStdString day;
     switch (time.wDayOfWeek)
     {
-    case 1 : day = g_localizeStrings.Get(11).c_str(); break;
-    case 2 : day = g_localizeStrings.Get(12).c_str(); break;
-    case 3 : day = g_localizeStrings.Get(13).c_str(); break;
-    case 4 : day = g_localizeStrings.Get(14).c_str(); break;
-    case 5 : day = g_localizeStrings.Get(15).c_str(); break;
-    case 6 : day = g_localizeStrings.Get(16).c_str(); break;
-    default: day = g_localizeStrings.Get(17).c_str(); break;
+    case 1 : day = g_localizeStrings.Get(11); break;
+    case 2 : day = g_localizeStrings.Get(12); break;
+    case 3 : day = g_localizeStrings.Get(13); break;
+    case 4 : day = g_localizeStrings.Get(14); break;
+    case 5 : day = g_localizeStrings.Get(15); break;
+    case 6 : day = g_localizeStrings.Get(16); break;
+    default: day = g_localizeStrings.Get(17); break;
     }
 
-    const WCHAR* month;
+    CStdString month;
     switch (time.wMonth)
     {
-    case 1 : month = g_localizeStrings.Get(21).c_str(); break;
-    case 2 : month = g_localizeStrings.Get(22).c_str(); break;
-    case 3 : month = g_localizeStrings.Get(23).c_str(); break;
-    case 4 : month = g_localizeStrings.Get(24).c_str(); break;
-    case 5 : month = g_localizeStrings.Get(25).c_str(); break;
-    case 6 : month = g_localizeStrings.Get(26).c_str(); break;
-    case 7 : month = g_localizeStrings.Get(27).c_str(); break;
-    case 8 : month = g_localizeStrings.Get(28).c_str(); break;
-    case 9 : month = g_localizeStrings.Get(29).c_str(); break;
-    case 10: month = g_localizeStrings.Get(30).c_str(); break;
-    case 11: month = g_localizeStrings.Get(31).c_str(); break;
-    default: month = g_localizeStrings.Get(32).c_str(); break;
+    case 1 : month = g_localizeStrings.Get(21); break;
+    case 2 : month = g_localizeStrings.Get(22); break;
+    case 3 : month = g_localizeStrings.Get(23); break;
+    case 4 : month = g_localizeStrings.Get(24); break;
+    case 5 : month = g_localizeStrings.Get(25); break;
+    case 6 : month = g_localizeStrings.Get(26); break;
+    case 7 : month = g_localizeStrings.Get(27); break;
+    case 8 : month = g_localizeStrings.Get(28); break;
+    case 9 : month = g_localizeStrings.Get(29); break;
+    case 10: month = g_localizeStrings.Get(30); break;
+    case 11: month = g_localizeStrings.Get(31); break;
+    default: month = g_localizeStrings.Get(32); break;
     }
 
-    if (day && month)
+    if (day.size() && month.size())
     {
       if (g_guiSettings.GetBool("XBDateTime.SwapMonthAndDay"))
-        swprintf(szText, L"%s, %d %s", day, time.wDay, month);
+        text.Format("%s, %d %s", day.c_str(), time.wDay, month.c_str());
       else
-        swprintf(szText, L"%s, %s %d", day, month, time.wDay);
+        text.Format("%s, %s %d", day.c_str(), month.c_str(), time.wDay);
     }
     else
-      swprintf(szText, L"no date");
+      text.Format("no date");
   }
-  wstring strText = szText;
-  return strText;
+  return text;
 }
 
-wstring CGUIInfoManager::GetTime(bool bSeconds)
+CStdString CGUIInfoManager::GetTime(bool bSeconds)
 {
-  WCHAR szText[128];
+  CStdString text;
   SYSTEMTIME time;
   GetLocalTime(&time);
 
@@ -667,28 +666,27 @@ wstring CGUIInfoManager::GetTime(bool bSeconds)
     {
       iHour -= (12 * (iHour > 12));
       if (bSeconds)
-        swprintf(szText, L"%2d:%02d:%02d PM", iHour, time.wMinute, time.wSecond);
+        text.Format("%2d:%02d:%02d PM", iHour, time.wMinute, time.wSecond);
       else
-        swprintf(szText, L"%2d:%02d PM", iHour, time.wMinute);
+        text.Format("%2d:%02d PM", iHour, time.wMinute);
     }
     else
     {
       iHour += (12 * (iHour < 1));
       if (bSeconds)
-        swprintf(szText, L"%2d:%02d:%02d AM", iHour, time.wMinute, time.wSecond);
+        text.Format("%2d:%02d:%02d AM", iHour, time.wMinute, time.wSecond);
       else
-        swprintf(szText, L"%2d:%02d AM", iHour, time.wMinute);
+        text.Format("%2d:%02d AM", iHour, time.wMinute);
     }
   }
   else
   {
     if (bSeconds)
-      swprintf(szText, L"%2d:%02d:%02d", iHour, time.wMinute, time.wSecond);
+      text.Format("%2d:%02d:%02d", iHour, time.wMinute, time.wSecond);
     else
-      swprintf(szText, L"%02d:%02d", iHour, time.wMinute);
+      text.Format("%02d:%02d", iHour, time.wMinute);
   }
-  wstring strText = szText;
-  return strText;
+  return text;
 }
 
 CStdString CGUIInfoManager::GetMusicLabel(int item)

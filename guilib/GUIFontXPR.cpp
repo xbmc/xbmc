@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "GUIFontXPR.h"
 
 CGUIFontXPR::CGUIFontXPR(const CStdString& strFontName) : CGUIFont(strFontName)

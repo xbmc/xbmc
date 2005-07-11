@@ -396,7 +396,7 @@ void CGUIDialogKeyboard::UpdateButtons()
 // Show keyboard with initial value (aTextString) and replace with result string.
 // Returns: true  - successful display and input (empty result may return true or false depending on parameter)
 //          false - unsucessful display of the keyboard or cancelled editing
-bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdString &strHeading, bool allowEmptyResult)
+bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStringW &strHeading, bool allowEmptyResult)
 {
   CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 
@@ -421,49 +421,35 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStri
     return true;
   }
   else return false;
-
-}
-// Show keyboard with initial value (aTextString) and replace with result string.
-// Returns: true  - successful display and input (empty result may return true or false depending on parameter)
-//          false - unsucessful display of the keyboard or cancelled editing
-bool CGUIDialogKeyboard::ShowAndGetInput(CStdStringW& aTextString, const CStdStringW &strHeading, bool allowEmptyResult)
-{
-  // HACK: This is an override of the CStdString version, and loses the wide portion of the
-  //       string data.  Need to change so this is the primary and CStdString is the override.
-  CStdString strTextStringTemp = (CStdString)aTextString;
-  CStdString strHeadingTemp = (CStdString)strHeading;
-  bool bResult = ShowAndGetInput(strTextStringTemp, strHeadingTemp, allowEmptyResult);
-  aTextString = strTextStringTemp;
-  return bResult;
 }
 
 bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult)
 {
-  return ShowAndGetInput(aTextString, CStdString(""), allowEmptyResult);
+  return ShowAndGetInput(aTextString, L"", allowEmptyResult);
 }
 
 // \brief Show keyboard twice to get and confirm a user-entered password string.
 // \param strNewPassword Overwritten with user input if return=true.
 // \return true if successful display and user input entry/re-entry. false if unsucessful display, no user input, or canceled editing.
-bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdStringW& strNewPassword)
+bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& strNewPassword)
 {
   // Prompt user for password input
-  CStdStringW strUserInput = L"";
-  if (ShowAndVerifyPassword(strUserInput, "12340", 0))
+  CStdString strUserInput = "";
+  if (ShowAndVerifyPassword(strUserInput, g_localizeStrings.Get(12340), 0))
   {
     // TODO: Show error to user saying the password entry was blank
-	CGUIDialogOK::ShowAndGetInput(L"12357", L"12358", L"", L""); // Password is empty/blank
-	return false;
+	  CGUIDialogOK::ShowAndGetInput(12357, 12358, 0, 0); // Password is empty/blank
+	  return false;
   }
-  if (L"" == strUserInput)
+  if (strUserInput.IsEmpty())
 	  return false; // user canceled out
 
   // Prompt again for password input, this time sending previous input as the password to verify
-  if (ShowAndVerifyPassword(strUserInput, "12341", 0))
+  if (ShowAndVerifyPassword(strUserInput, g_localizeStrings.Get(12341), 0))
   {
     // TODO: Show error to user saying the password re-entry failed
-	CGUIDialogOK::ShowAndGetInput(L"12357", L"12344", L"", L""); // Password do not match
-	return false; 
+	  CGUIDialogOK::ShowAndGetInput(12357, 12344, 0, 0); // Password do not match
+	  return false; 
   }
   strNewPassword = strUserInput; // password entry and re-entry succeeded
   return true;
@@ -473,21 +459,19 @@ bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdStringW& strNewPassword)
 // \param dlgHeading String shown on dialog title. Converts to localized string if contains a positive integer.
 // \param iRetries If greater than 0, shows "Incorrect password, %d retries left" on dialog line 2, else line 2 is blank.
 // \return 0 if successful display and user input. 1 if unsucessful input. -1 if no user input or canceled editing.
-int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& strHeading, int iRetries)
+int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CStdStringW& strHeading, int iRetries)
 {
-  CStdStringW strUserInput = L"";
-  CStdStringW strHeadingTemp = strHeading;
-  if (CUtil::IsNaturalNumber(strHeadingTemp))
-    strHeadingTemp = g_localizeStrings.Get(_wtoi(strHeadingTemp)).c_str();
-
+  CStdStringW strHeadingTemp;
   if (1 > iRetries)
-  {  strHeadingTemp.Format(L"%s - %s", strHeadingTemp, g_localizeStrings.Get(12326));  }
+    strHeadingTemp.Format(L"%s - %s", strHeading.c_str(), g_localizeStrings.Get(12326));
   else
-  {  strHeadingTemp.Format(L"%s - %i %s", g_localizeStrings.Get(12326).c_str(), g_stSettings.m_iMasterLockMaxRetry - iRetries, g_localizeStrings.Get(12343).c_str()); }
+    strHeadingTemp.Format(L"%s - %i %s", g_localizeStrings.Get(12326).c_str(), g_stSettings.m_iMasterLockMaxRetry - iRetries, g_localizeStrings.Get(12343).c_str());
+
+  CStdString strUserInput = "";
   if (!ShowAndGetInput(strUserInput, strHeadingTemp, false))
 	  return -1; // user canceled out
 
-  if (strPassword != L"")
+  if (!strPassword.IsEmpty())
   {
 	  if (strUserInput == strPassword)
 		  return 0;		// user entered correct password
@@ -495,14 +479,15 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdStringW& strPassword, const CS
   }
   else 
   {
-	  if (strUserInput != L"")
+	  if (!strUserInput.IsEmpty())
 	  {
-		strPassword = strUserInput;
-		return 0; // user entered correct password
+		  strPassword = strUserInput;
+		  return 0; // user entered correct password
 	  }
 	  else return 1;
   }
 }
+
 void CGUIDialogKeyboard::Close()
 {
   // reset the heading (we don't always have this)

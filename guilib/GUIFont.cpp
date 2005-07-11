@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "include.h"
 #include "guifontxpr.h"
 #include "graphiccontext.h"
 
@@ -111,25 +111,27 @@ void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256
     return ;
   }
 
-  int iMinCharsLeft;
-  while (fTextWidth >= fMaxWidth)
+  if (fMaxWidth)
   {
-    iMinCharsLeft = (int)((fTextWidth - fMaxWidth) / m_iMaxCharWidth);
-    if (iMinCharsLeft > 5)
+    int iMinCharsLeft;
+    while (fTextWidth >= fMaxWidth && nStringLength)
     {
-      // at least 5 chars are left, strip al remaining characters instead
-      // of doing it one by one.
-      nStringLength -= iMinCharsLeft;
-      m_pwzBuffer[ nStringLength ] = 0;
-      GetTextExtent( m_pwzBuffer, &fTextWidth, &fTextHeight);
-    }
-    else
-    {
-      m_pwzBuffer[ --nStringLength ] = 0;
-      GetTextExtent( m_pwzBuffer, &fTextWidth, &fTextHeight);
+      iMinCharsLeft = (int)((fTextWidth - fMaxWidth) / m_iMaxCharWidth);
+      if (nStringLength > iMinCharsLeft && iMinCharsLeft > 5)
+      {
+        // at least 5 chars are left, strip al remaining characters instead
+        // of doing it one by one.
+        nStringLength -= iMinCharsLeft;
+        m_pwzBuffer[ nStringLength ] = 0;
+        GetTextExtent( m_pwzBuffer, &fTextWidth, &fTextHeight);
+      }
+      else
+      {
+        m_pwzBuffer[ --nStringLength ] = 0;
+        GetTextExtent( m_pwzBuffer, &fTextWidth, &fTextHeight);
+      }
     }
   }
-
   DrawColourTextImpl( fOriginX, fOriginY, pdw256ColorPalette, m_pwzBuffer, pbColours, wcslen( m_pwzBuffer ), 0, 0.0f);
 }
 

@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "../include.h"
 #include "keyboard.h"
 
 CKeyboard g_Keyboard; // global

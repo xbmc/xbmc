@@ -80,7 +80,7 @@ public:
   long m_lStartOffset;
   long m_lEndOffset;
   int m_iLockMode;
-  CStdStringW m_strLockCode;
+  CStdString m_strLockCode;
   int m_iBadPwdCount;
 };
 

@@ -16,10 +16,9 @@ public:
   bool IsDirty() { return m_bDirty; };
 
   static bool ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult);
-  static bool ShowAndGetInput(CStdString& aTextString, const CStdString &strHeading, bool allowEmptyResult);
-  static bool ShowAndGetInput(CStdStringW& aTextString, const CStdStringW &strHeading, bool allowEmptyResult);
-  static bool ShowAndGetNewPassword(CStdStringW& strNewPassword);
-  static int ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& strHeading, int iRetries);
+  static bool ShowAndGetInput(CStdString& aTextString, const CStdStringW &strHeading, bool allowEmptyResult);
+  static bool ShowAndGetNewPassword(CStdString& strNewPassword);
+  static int ShowAndVerifyPassword(CStdString& strPassword, const CStdStringW& strHeading, int iRetries);
 
   virtual void Close();
 

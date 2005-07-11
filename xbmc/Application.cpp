@@ -571,7 +571,7 @@ HRESULT CApplication::Create()
   ::DeleteFile("Q:\\xbmc.old.log");
   ::MoveFile("Q:\\xbmc.log", "Q:\\xbmc.old.log");
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-  CLog::Log(LOGNOTICE, "starting...");
+  CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter.  Built on %s", __DATE__);
   CLog::Log(LOGNOTICE, "Q is mapped to:%s", szDevicePath);
 
   // Initialize core peripheral port support. Note: If these parameters
@@ -753,6 +753,8 @@ HRESULT CApplication::Create()
       FatalErrorHandler(true, false, true);
     }
   }
+
+  CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter.  Built on %s", __DATE__);
 
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
@@ -2179,8 +2181,7 @@ void CApplication::UpdateLCD()
         // line 2: free memory (megs)
         // line 3: GUI resolution
         g_lcd->SetLine(0, "XBMC running...");
-        CStdString strDateTime;
-        CUtil::Unicode2Ansi(g_infoManager.GetTime() + L" " + g_infoManager.GetDate(true), strDateTime);
+        CStdString strDateTime = g_infoManager.GetTime() + " " + g_infoManager.GetDate(true);
         g_lcd->SetLine(1, strDateTime);
         MEMORYSTATUS stat;
         GlobalMemoryStatus(&stat);
@@ -2241,8 +2242,7 @@ void CApplication::UpdateLCD()
           }
           else
             g_lcd->SetLine(1, " ");
-          CStdString strDateTime;
-          CUtil::Unicode2Ansi(g_infoManager.GetTime() + L" " + g_infoManager.GetDate(true), strDateTime);
+          CStdString strDateTime = g_infoManager.GetTime() + " " + g_infoManager.GetDate(true);
           g_lcd->SetLine(2, strDateTime);
           MEMORYSTATUS stat;
           GlobalMemoryStatus(&stat);

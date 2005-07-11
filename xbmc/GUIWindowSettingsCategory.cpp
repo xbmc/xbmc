@@ -19,6 +19,7 @@
 #include "AudioContext.h"
 #include "lib/libscrobbler/scrobbler.h"
 #include "GUIPassword.h"
+#include "utils/GUIInfoManager.h"
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
@@ -566,24 +567,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(640), REPLAY_GAIN_ALBUM);
       pControl->SetValue(pSettingInt->GetData());
     }
-	  else if (strSetting == "XBDateTime.Year")
-	  {	// GeminiServer
-		  SYSTEMTIME CurTime;
-		  GetLocalTime(&CurTime);
-		  g_guiSettings.SetInt("XBDateTime.Year",		(int)CurTime.wYear);
-		  g_guiSettings.SetInt("XBDateTime.Day",		(int)CurTime.wDay);
-		  g_guiSettings.SetInt("XBDateTime.Hour",		(int)CurTime.wHour);
-		  g_guiSettings.SetInt("XBDateTime.Minute",	(int)CurTime.wMinute);
-	  }
-	  else if (strSetting == "XBDateTime.Month")
-	  {	// GeminiServer
-		  SYSTEMTIME CurTime;
-		  GetLocalTime(&CurTime);
-		  CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-		  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-		  g_guiSettings.SetInt("XBDateTime.Month",(int)CurTime.wMonth);
-		  FillInXBDateTime(pSetting, 2);
-	  }
     else if (strSetting == "Smb.Ip")
 	  {	// GeminiServer
       g_guiSettings.SetString("Smb.Ip",         g_stSettings.m_strSambaIPAdress);
@@ -652,7 +635,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       g_guiSettings.SetBool("Masterlock.Enableshutdown", bmcesState);
       g_guiSettings.SetBool("Masterlock.Protectshares", bmcptState);
       g_guiSettings.SetInt("Masterlock.Maxretry", g_stSettings.m_iMasterLockMaxRetry);
-      g_guiSettings.SetString("Masterlock.Mastercode", g_stSettings.szMasterLockCode);
+      g_guiSettings.SetString("Masterlock.Mastercode", g_stSettings.m_masterLockCode);
     }
     else if (strSetting == "LookAndFeel.StartUpWindow")
     {
@@ -1184,70 +1167,25 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       }
     }
 	  else if (strSetting == "XBDateTime.TimeAddress")
-      {
+    {
 		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
 		  if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("XBDateTime.TimeServer"));
-      }
-	  else if (strSetting == "XBDateTime.Year")
+    }
+	  else if (strSetting == "XBDateTime.Time" || strSetting == "XBDateTime.Date")
 	  {
 		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-		  if (pControl) 
-		  { 
-			  if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
-				  pControl->SetEnabled(false); 
-			  else pControl->SetEnabled(true); 
-		  }
-	  }
-	  else if (strSetting == "XBDateTime.Month")
-	  {
-		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-		  if (pControl) 
-		  { 
-			  if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
-				  pControl->SetEnabled(false); 
-			  else pControl->SetEnabled(true); 
-		  }
-	  }
-	  else if (strSetting == "XBDateTime.Day")
-	  {
-		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-		  if (pControl) 
-		  { 
-			  if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
-				  pControl->SetEnabled(false); 
-			  else pControl->SetEnabled(true); 
-		  }
-	  }
-	  else if (strSetting == "XBDateTime.Hour")
-	  {
-		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-		  if (pControl) 
-		  { 
-			  if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
-				  pControl->SetEnabled(false); 
-			  else pControl->SetEnabled(true); 
-		  }
-	  }
-	  else if (strSetting == "XBDateTime.Minute")
-	  {
-		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-		  if (pControl) 
-		  { 
-			  if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
-				  pControl->SetEnabled(false); 
-			  else pControl->SetEnabled(true); 
-		  }
-	  }
-	  else if (strSetting == "XBDateTime.SetDateTime")
-	  {
-		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-		  if (pControl) 
-		  { 
-			  if(g_guiSettings.GetBool("XBDateTime.TimeServer"))
-				  pControl->SetEnabled(false); 
-			  else pControl->SetEnabled(true); 
-		  }
-	  }
+		  if (pControl) pControl->SetEnabled(!g_guiSettings.GetBool("XBDateTime.TimeServer")); 
+		  SYSTEMTIME curTime;
+		  GetLocalTime(&curTime);
+      CStdString time;
+      if (strSetting == "XBDateTime.Time")
+        time = g_infoManager.GetTime(false);  // false for no seconds
+      else
+        time = g_infoManager.GetDate();  // false as we want numbers
+      CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
+      pSettingString->SetData(time);
+      pSettingControl->Update();
+    }
     else if (strSetting == "Smb.Ip" || strSetting == "Smb.Workgroup"  || strSetting == "Smb.Username" || strSetting == "Smb.Password" || strSetting == "Smb.SetSmb")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1282,7 +1220,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           g_stSettings.m_iMasterLockProtectShares         = 0;
           g_stSettings.m_iMasterLockMode                  = 0;
           g_stSettings.m_iMasterLockStartupLock           = 0;
-          strcpy(g_stSettings.szMasterLockCode, (const char*)"-");
+          g_stSettings.m_masterLockCode = "-";
           g_stSettings.m_iMasterLockFilemanager           = 0;
           g_stSettings.m_iMasterLockSettings              = 0;
           g_stSettings.m_iMasterLockHomeMedia             = 0;
@@ -1328,13 +1266,37 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 
   }
 }
+void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
+{
+  for (unsigned int i = 0; i < m_vecSettings.size(); i++)
+  {
+    CBaseSettingControl *pSettingControl = m_vecSettings[i];
+    CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
+	  if (strSetting == "XBDateTime.Time" || strSetting == "XBDateTime.Date")
+	  {
+		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		  if (pControl) pControl->SetEnabled(!g_guiSettings.GetBool("XBDateTime.TimeServer")); 
+		  SYSTEMTIME curTime;
+		  GetLocalTime(&curTime);
+      CStdString time;
+      if (strSetting == "XBDateTime.Time")
+        time = g_infoManager.GetTime(false);  // false for no seconds
+      else
+        time = g_infoManager.GetDate();  // false as we want numbers
+      CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
+      pSettingString->SetData(time);
+      pSettingControl->Update();
+    }
+  }
+}
+
 void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 {
   CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
   if (strSetting.Left(16) == "Weather.AreaCode")
   {
     CStdString strSearch;
-    if (CGUIDialogKeyboard::ShowAndGetInput(strSearch, g_localizeStrings.Get(14024), false))
+    if (CGUIDialogKeyboard::ShowAndGetInput(strSearch, (CStdStringW)g_localizeStrings.Get(14024), false))
     {
       strSearch.Replace(" ", "+");
       CStdString strResult = ((CSettingString *)pSettingControl->GetSetting())->GetData();
@@ -1713,25 +1675,27 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (g_guiSettings.GetBool("XBDateTime.TimeServer"))
       g_application.StartTimeServer();
   }
-  else if (strSetting == "XBDateTime.Year")
-  {	  // GeminiServer
-	  CSetting *pSetting = pSettingControl->GetSetting();
-	  FillInXBDateTime(pSetting, 0); //
+  else if (strSetting == "XBDateTime.Time")
+  {
+    SYSTEMTIME curTime;
+    GetLocalTime(&curTime);
+    if (CGUIDialogNumeric::ShowAndGetTime(curTime, g_localizeStrings.Get(14066)))
+    { // yay!
+      SYSTEMTIME curDate;
+      GetLocalTime(&curDate);
+			CUtil::SetSysDateTimeYear(curDate.wYear, curDate.wMonth, curDate.wDay, curTime.wHour, curTime.wMinute);
+    }
   }
-  else if (strSetting == "XBDateTime.Month")
-  {   // GeminiServer
-	  CSetting *pSetting = pSettingControl->GetSetting();
-	  FillInXBDateTime(pSetting, 2); // Add. Month Names!
-  }
-  else if (strSetting == "XBDateTime.Day")
-  {   // GeminiServer
-	  CSetting *pSetting = pSettingControl->GetSetting();
-	  FillInXBDateTime(pSetting, 1); //Add. Month Max Days [Leap Stuff]
-  }
-  else if (strSetting == "XBDateTime.SetDateTime")
-  {   // GeminiServer
-	  CSetting *pSetting = pSettingControl->GetSetting();
-	  FillInXBDateTime(pSetting, 3); //Ask, Check and then Set UTC Time!
+  else if (strSetting == "XBDateTime.Date")
+  {
+    SYSTEMTIME curDate;
+    GetLocalTime(&curDate);
+    if (CGUIDialogNumeric::ShowAndGetDate(curDate, g_localizeStrings.Get(14067)))
+    { // yay!
+      SYSTEMTIME curTime;
+      GetLocalTime(&curTime);
+			CUtil::SetSysDateTimeYear(curDate.wYear, curDate.wMonth, curDate.wDay, curTime.wHour, curTime.wMinute);
+    }
   }
   else if (strSetting == "Smb.SetSmb" || strSetting == "Smb.SimpAdvance")
   {
@@ -1909,11 +1873,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting == "Masterlock.Mastercode")
   {
     
-    CStdString strTempMasterCode;
+   CStdString strTempMasterCode;
     // prompt user for mastercode if the mastercode was set b4 or by xml
    if (CheckMasterLockCode()) // Now Prompt User to enter the old and then the new MasterCode! Choosed GUI LOCK Mode will appear!
     {
-      CStdStringW strNewPassword;
+      CStdString strNewPassword;
       switch (g_guiSettings.GetInt("Masterlock.Mastermode"))
       {
           case LOCK_MODE_NUMERIC:
@@ -1941,7 +1905,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CStdString csMMode, csMRetry, csStateSD, csStatePS, csStateSL, csMCode, strMLC, csLFState, csLSState;
     CStdString cLbl[16]= {"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"};
     csMCode = g_guiSettings.GetString("Masterlock.Mastercode");
-    strMLC  = g_stSettings.szMasterLockCode;
+    strMLC  = g_stSettings.m_masterLockCode;
     iLockModeP = g_stSettings.m_iMasterLockMode;
     iLockModeN = g_guiSettings.GetInt("Masterlock.Mastermode");
     
@@ -1960,7 +1924,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       if (g_guiSettings.GetString("Masterlock.Mastercode")!= "" && g_guiSettings.GetString("Masterlock.Mastercode")!= "-")
       {
         //Check if the MasterLockCode is changed or not! If not PopUP MasterLockCode! 
-        if (g_stSettings.szMasterLockCode == g_guiSettings.GetString("Masterlock.Mastercode"))
+        if (g_stSettings.m_masterLockCode == g_guiSettings.GetString("Masterlock.Mastercode"))
         { if(!CheckMasterLockCode()) bIsMasterMode = false; }
         
         if (bIsMasterMode)
@@ -1972,7 +1936,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
           g_stSettings.m_iMasterLockProtectShares         = iStatePS;
           g_stSettings.m_iMasterLockStartupLock           = iStateSL;
           g_stSettings.m_iMasterLockMode                  = g_guiSettings.GetInt("Masterlock.Mastermode");
-          strcpy(g_stSettings.szMasterLockCode, g_guiSettings.GetString("Masterlock.Mastercode") );
+          g_stSettings.m_masterLockCode                   = g_guiSettings.GetString("Masterlock.Mastercode");
 
           g_stSettings.m_iMasterLockFilemanager           = iLFState;
           g_stSettings.m_iMasterLockSettings              = iLSState;
@@ -2159,6 +2123,9 @@ void CGUIWindowSettingsCategory::Render()
       SET_CONTROL_FOCUS(iCtrlID, g_guiSettings.GetInt("LookAndFeel.Resolution"));
     }
   }
+  // update realtime changeable stuff
+  UpdateRealTimeSettings();
+  // update alpha status of current button
   bool bAlphaFaded = false;
   CGUIButtonControl *pButton = (CGUIButtonControl *)GetControl(CONTROL_START_BUTTONS + m_iSection);
   if (pButton && !pButton->HasFocus())
@@ -2924,91 +2891,6 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   pControl->SetValue(iCurrentScr);
 }
 
-void CGUIWindowSettingsCategory::FillInXBDateTime(CSetting *pSetting, int bState)
-{
-	// GeminiServer
-	CStdString xid[32]={"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"};
-	CSettingString *pSettingString = (CSettingString*)pSetting;
-	CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-	if (bState == 1 || bState == 2)	pControl->Clear();
-	SYSTEMTIME CurTime;
-	GetLocalTime(&CurTime);
-	CStdString strday;
-	bool bIsLeapYear;
-	int iMonMax, iWeekDay;
-		
-	//g_guiSettings.GetInt("XBDateTime.Day");
-	//g_guiSettings.SetInt("XBDateTime.Day", (int)CurTime.wDay);
-	int iSetYear   = g_guiSettings.GetInt("XBDateTime.Year");
-	int iSetMonth  = g_guiSettings.GetInt("XBDateTime.Month");
-	int iSetDay	   = g_guiSettings.GetInt("XBDateTime.Day");
-	int iSetHour   = g_guiSettings.GetInt("XBDateTime.Hour");
-	int iSetMinute = g_guiSettings.GetInt("XBDateTime.Minute");
-
-	bIsLeapYear = CUtil::IsLeapYear( iSetYear, iSetMonth, iSetDay, iMonMax, iWeekDay);
-	
-	switch (iWeekDay)
-	{
-		case 0:	// Sunday
-			strday = g_localizeStrings.Get(17);
-			break;
-		case 1: // Monday
-			strday = g_localizeStrings.Get(11);
-			break;
-		case 2: //Tuesday
-			strday = g_localizeStrings.Get(12);
-			break;
-		case 3: //Wednesday
-			strday = g_localizeStrings.Get(13);
-			break;
-		case 4: //Thursday
-			strday = g_localizeStrings.Get(14);
-			break;
-		case 5: //Friday
-			strday = g_localizeStrings.Get(15);
-			break;
-		case 6: //Saturday
-			strday = g_localizeStrings.Get(16);
-			break;
-	}
-	if (bState == 1) //Set Month Max Days
-	{
-		for (int i = 0; i < iMonMax; i++)
-		{	
-			pControl->AddLabel(xid[i], (int)i);
-		}
-	}
-	else if (bState == 2) //Set Month Names!
-	{
-		for (int i = 1; i <= 12; i++)
-		{	
-			pControl->AddLabel(g_localizeStrings.Get(20+i), (int)i);
-		}
-	}
-	else if (bState == 3) //Button Set Time!
-	{
-		CStdString strlblDay,strlblTime,strlblMonth,strTimelbl;
-		
-		strlblMonth = g_localizeStrings.Get(20+iSetMonth);
-		strTimelbl = g_localizeStrings.Get(142);
-		strlblDay.Format("%s %i %s %i",strday,iSetDay,strlblMonth,iSetYear);
-		strlblTime.Format("%s %i:%i",strTimelbl,iSetHour,iSetMinute);
-		
-		CGUIDialogYesNo *dlg = (CGUIDialogYesNo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-		if (!dlg) return ;
-		dlg->SetHeading( g_localizeStrings.Get(14063) );
-		dlg->SetLine( 0, g_localizeStrings.Get(14069) );
-		dlg->SetLine( 1, strlblDay);
-		dlg->SetLine( 2, strlblTime );
-		dlg->DoModal( m_gWindowManager.GetActiveWindow() );
-		if (dlg->IsConfirmed())
-		{ 
-			// Detect the Systime subtract Bias and then Set the System UTC time!
-			if (iSetHour == 0) iSetHour=24;
-			CUtil::SetSysDateTimeYear(iSetYear, iSetMonth, iSetDay, iSetHour, iSetMinute);
-		}
-	}
-}
 bool CGUIWindowSettingsCategory::CheckMasterLockCode()
 {
   // GeminiServer

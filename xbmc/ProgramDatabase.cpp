@@ -410,8 +410,10 @@ long CProgramDatabase::GetPath(const CStdString& strPath)
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
+    CStdString strPath1 = strPath;
+    RemoveInvalidChars(strPath1);
     CStdString strSQL;
-    strSQL.Format("select * from path where strPath like '%s' ", strPath.c_str());
+    strSQL.Format("select * from path where strPath like '%s' ", strPath1.c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() > 0)
     {
