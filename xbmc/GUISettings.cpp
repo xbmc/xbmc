@@ -149,8 +149,6 @@ CGUISettings::CGUISettings(void)
   AddBool(1, "Pictures.HideParentDirItems", 13306, false);
   AddBool(2, "Pictures.UseAutoSwitching", 14011, false);
   AddBool(3, "Pictures.AutoSwitchUseLargeThumbs", 14012, false);
-  AddInt(4, "Pictures.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddInt(5, "Pictures.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   // Programs settings
   AddGroup(1, 0);
   AddCategory(1, "MyPrograms", 0);
