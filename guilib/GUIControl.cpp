@@ -546,6 +546,8 @@ CStdString CGUIControl::ParseLabel(CStdString &strLabel)
 				queueString = L"";
         lastValid = false;
 			}
+      else  // must have had a $ without the necessary INFO() or LOCALIZE() informati
+        queueString = L"";
       /*
 			else
 			{
