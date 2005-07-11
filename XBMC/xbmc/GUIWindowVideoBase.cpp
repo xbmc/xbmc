@@ -567,6 +567,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
         url.m_strURL = nfoReader.m_strImDbUrl;
         if ( IMDB.GetDetails(url, movieDetails) )
         {
+          m_database.SetMovieInfo(strFile, movieDetails);
           // now show the imdb info
           pDlgInfo->SetMovie(movieDetails);
           pDlgInfo->DoModal(GetID());
