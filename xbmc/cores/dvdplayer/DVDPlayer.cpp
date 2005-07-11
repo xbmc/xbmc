@@ -246,7 +246,7 @@ void CDVDPlayer::Process()
   if (m_iCurrentVideoStream < 0 && m_iCurrentAudioStream < 0 && m_pInputStream->m_streamType != DVDSTREAM_TYPE_DVD)
   {
     CLog::Log(LOGERROR, "%s: could not open codecs\n", m_filename);
-    return ;
+    return;
   }
 
   // we are done initializing now, set the readyevent
@@ -634,7 +634,9 @@ int CDVDPlayer::GetVolume()
 }
 
 void CDVDPlayer::SetVolume(long nVolume)
-{}
+{
+  m_dvdPlayerAudio.SetVolume(nVolume);
+}
 
 void CDVDPlayer::SetContrast(bool bPlus)
 {}
