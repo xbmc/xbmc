@@ -764,7 +764,11 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256Co
     // Get the current letter in the CStdString
     WCHAR letter = *strText++;
 
-    DWORD dwColor = pdw256ColorPalette[*pbColours++];
+    DWORD dwColor;
+    if (pbColours)  // multi colour version
+      dwColor = pdw256ColorPalette[*pbColours++];
+    else            // single colour version
+      dwColor = *pdw256ColorPalette;
 
     // Set the color for all the current letter vertices to follow
     D3DDevice::SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor );

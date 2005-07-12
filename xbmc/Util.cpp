@@ -3082,7 +3082,7 @@ void CUtil::TranslateBookmarks(VECSHARES& vecShares)
   for (int i = 0; i < (int)vecShares.size(); ++i)
   {
     CShare share = vecShares.at(i);
-    if (share.strPath.at(0) == '$')
+    if (!share.strPath.IsEmpty() && share.strPath.at(0) == '$')
     {
       share.strPath = TranslateSpecialDir(share.strPath);
       if (!share.strPath.IsEmpty())
