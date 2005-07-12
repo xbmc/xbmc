@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-07-2005 fixed: Lockup on start with shares such as cdda: (without the //).
+ - 12-07-2005 fixed: Crash in numeric dialog with XPR fonts.
  - 11-07-2005 fixed: dvdplayer timing
  - 11-07-2005 fixed: Labels with $ in them were displayed erratically.
  - 11-07-2005 changed: Simpler auto-switch thumb/list for My Pictures.
