@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-07-2005 fixed: more consistant use of default username/password on smb. Now falls back to anonomous access should the default user/pass fail. 
+                     authenticated username/password (as entered in auth dialog) are now used for all functions over smb (exist, stat...)
  - 12-07-2005 added: Support for brackets [] in <visible> conditionals.
  - 12-07-2005 fixed: Lockup on start with shares such as cdda: (without the //).
  - 12-07-2005 fixed: Crash in numeric dialog with XPR fonts.

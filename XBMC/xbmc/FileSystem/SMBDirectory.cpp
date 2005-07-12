@@ -38,15 +38,6 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     strAuth += "/";
   }
 
-  {
-    CURL url(strAuth); //Use deafult credentials if none is specified.
-    if (url.GetUserName().length() == 0 && url.GetHostName().length() > 0)
-    {
-      url.SetUserName(g_stSettings.m_strSambaDefaultUserName);
-      url.SetPassword(g_stSettings.m_strSambaDefaultPassword);
-      url.GetURL(strAuth);
-    }
-  }
 
   smb.Init();
 
@@ -160,33 +151,76 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
 {
   int fd = -1;
   int nt_error;
-  CStdString strShare;
-
-  CStdString strPath = strAuth;
+  
   CURL urlIn(strAuth);
-  CStdString strUserName = urlIn.GetUserName();
-  IMAPPASSWORDS it;
 
-  strShare = urlIn.GetShareName();	// it's only the server\share we're interested in authenticating
+  CStdString strPath;
+  CStdString strShare = urlIn.GetShareName();	// it's only the server\share we're interested in authenticating
 
-  it = g_passwordManager.m_mapSMBPasswordCache.find(strShare);
-  if(it != g_passwordManager.m_mapSMBPasswordCache.end())
+  int iTryAutomatic = 0;
+  IMAPPASSWORDS it = g_passwordManager.m_mapSMBPasswordCache.find(strShare);
+
+  if( strShare.IsEmpty() ) 
+  { 
+    //Reset username/password
+    //this is cause when we navigate backwords usernames and passwords
+    //will be kept, and can cause problems
+    urlIn.SetUserName("");
+    urlIn.SetPassword("");
+
+    //Only allow automatic authentication on workgroups/computers
+    if( !urlIn.GetHostName().IsEmpty() )
+      iTryAutomatic = 2;
+  }
+  else if(it != g_passwordManager.m_mapSMBPasswordCache.end())
   {
     // if share found in cache use it to supply username and password
     CURL url(it->second);		// map value contains the full url of the originally authenticated share. map key is just the share
     CStdString strPassword = url.GetPassWord();
-    strUserName = url.GetUserName();
+    CStdString strUserName = url.GetUserName();
     urlIn.SetPassword(strPassword);
     urlIn.SetUserName(strUserName);
-    urlIn.GetURL(strPath);
   }
+  else if( urlIn.GetUserName().IsEmpty() )
+  { 
+    //No username specified, try to authenticate using default password or anonomously
+    if( strlen(g_stSettings.m_strSambaDefaultUserName) > 0 )
+      iTryAutomatic = 2;
+    else
+      iTryAutomatic = 1;
+  }
+
+  
 
   // for a finite number of attempts use the following instead of the while loop:
   // for(int i = 0; i < 3, fd < 0; i++)
   while (fd < 0)
   {
+    
+    if(iTryAutomatic)
+    { 
+      //Try using default username/password if available
+      if ( iTryAutomatic == 2 )
+      {
+        urlIn.SetUserName(g_stSettings.m_strSambaDefaultUserName);
+        urlIn.SetPassword(g_stSettings.m_strSambaDefaultPassword);
+      }
+      
+      //Try anonomously
+      if( iTryAutomatic == 1 )
+      {
+        urlIn.SetUserName("");
+        urlIn.SetPassword("");
+      }
+
+      iTryAutomatic--;
+    }
+
+    //Get URI here, wich we will use from here on
+    urlIn.GetURL(strPath);   
+
     smb.Lock();
-    fd = smbc_opendir(strPath);
+    fd = smbc_opendir(strPath.c_str());
     smb.Unlock();
     if (fd < 0)
     {
@@ -203,10 +237,14 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
       // if the error is access denied, prompt for a valid user name and password
       if (nt_error == 0xc0000022)
       {
+        //if there is more automatic tries left, just continue
+        if( iTryAutomatic ) 
+          continue;
+
         g_passwordManager.SetSMBShare(strPath);
         g_passwordManager.GetSMBShareUserPassword();  // Do this bit via a threadmessage?
         if (g_passwordManager.IsCanceled())
-          break;
+          	break;
         strPath = g_passwordManager.GetSMBShare();
       }
       else
@@ -236,7 +274,7 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
     CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
               strPath.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
   }
-  else if (strPath != strAuth) // we succeeded so, if path was changed, return the correct one and cache it
+  else if (strPath != strAuth && !strShare.IsEmpty()) // we succeeded so, if path was changed, return the correct one and cache it
   {
     g_passwordManager.m_mapSMBPasswordCache[strShare] = strPath;
     strAuth = strPath;
@@ -247,29 +285,38 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
 
 bool CSMBDirectory::Create(const char* strPath)
 {
+  CStdString strFileName(strPath);
+  strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
+
   smb.Init();
   smb.Lock();
-  int result = smbc_mkdir(strPath, 0);
+  int result = smbc_mkdir(strFileName.c_str(), 0);
   smb.Unlock();
   return (result == 0 || EEXIST == result);
 }
 
 bool CSMBDirectory::Remove(const char* strPath)
 {
+  CStdString strFileName(strPath);
+  strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
+
   smb.Init();
   smb.Lock();
-  int result = smbc_rmdir(strPath);
+  int result = smbc_rmdir(strFileName.c_str());
   smb.Unlock();
   return (result == 0);
 }
 
 bool CSMBDirectory::Exists(const char* strPath)
 {
+  CStdString strFileName(strPath);
+  strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
+
   smb.Init();
   smb.Lock();
 
   SMB_STRUCT_STAT info;
-  if (smbc_stat(strPath, &info) != 0)
+  if (smbc_stat(strFileName.c_str(), &info) != 0)
   {
     smb.Unlock();
     return false;
