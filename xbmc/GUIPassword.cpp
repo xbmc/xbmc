@@ -503,3 +503,26 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
   }
   else return true;
 }
+
+/// \brief Gets the path of an authenticated share
+/// \param strAuth The SMB style path
+/// \return Path to share with proper username/password, or same as imput if none found in db
+CStdString CGUIPassword::GetSMBAuthFilename(const CStdString& strAuth)
+{
+  CURL urlIn(strAuth);
+  CStdString strPath(strAuth);
+
+  CStdString strShare = urlIn.GetShareName();	// it's only the server\share we're interested in authenticating
+  IMAPPASSWORDS it = m_mapSMBPasswordCache.find(strShare);
+  if(it != m_mapSMBPasswordCache.end())
+  {
+    // if share found in cache use it to supply username and password
+    CURL url(it->second);		// map value contains the full url of the originally authenticated share. map key is just the share
+    CStdString strPassword = url.GetPassWord();
+    CStdString strUserName = url.GetUserName();
+    urlIn.SetPassword(strPassword);
+    urlIn.SetUserName(strUserName);
+    urlIn.GetURL(strPath);
+  }  
+  return strPath;
+}
