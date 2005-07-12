@@ -98,6 +98,7 @@ void CSMB::Unlock()
   ::LeaveCriticalSection(&m_critSection);
 }
 
+
 CSMB smb;
 
 CFileSMB::CFileSMB()
@@ -143,17 +144,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   }
 
   CStdString strFileName;
-
-  //Use default credentials if none is specified.
-  if (url.GetUserName().length() == 0 && url.GetHostName().length() > 0)
-  {
-    CURL url2(url);
-    url2.SetUserName(g_stSettings.m_strSambaDefaultUserName);
-    url2.SetPassword(g_stSettings.m_strSambaDefaultPassword);
-    url2.GetURL(strFileName);
-  }
-  else
-    url.GetURL(strFileName);
+  url.GetURL(strFileName);
 
   smb.Lock();
 
@@ -199,34 +190,15 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   return true;
 }
 
+
 /// \brief Checks authentication against SAMBA share. Reads password cache created in CSMBDirectory::OpenDir().
 /// \param strAuth The SMB style path
 /// \return SMB file descriptor
 int CFileSMB::OpenFile(CStdString& strAuth)
 {
   int fd = -1;
-  CStdString strShare;
 
-  CStdString strPath = strAuth;
-  CURL urlIn(strAuth);
-  CStdString strUserName = urlIn.GetUserName();
-  IMAPPASSWORDS it;
-
-  // most of the work of getting the correct username and password is done when the directory is opened
-
-  strShare = urlIn.GetShareName();	// it's only the server\share we're interested in authenticating
-
-  it = g_passwordManager.m_mapSMBPasswordCache.find(strShare);
-  if(it != g_passwordManager.m_mapSMBPasswordCache.end())
-  {
-    // if share found in cache use it to supply username and password
-    CURL url(it->second);		// map value contains the full url of the originally authenticated share. map key is just the share
-    CStdString strPassword = url.GetPassWord();
-    strUserName = url.GetUserName();
-    urlIn.SetPassword(strPassword);
-    urlIn.SetUserName(strUserName);
-    urlIn.GetURL(strPath);
-  }
+  CStdString strPath = g_passwordManager.GetSMBAuthFilename(strAuth);
 
   fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
   // TODO: Run a loop here that prompts for our username/password as appropriate?
@@ -250,16 +222,8 @@ bool CFileSMB::Exists(const CURL& url)
       url.GetFileName().Find("/.") >= 0) return false;
 
   CStdString strFileName;
-  //Use default credentials if none is specified.
-  if (url.GetUserName().length() == 0 && url.GetHostName().length() > 0)
-  {
-    CURL url2(url);
-    url2.SetUserName(g_stSettings.m_strSambaDefaultUserName);
-    url2.SetPassword(g_stSettings.m_strSambaDefaultPassword);
-    url2.GetURL(strFileName);
-  }
-  else
-    url.GetURL(strFileName);
+  url.GetURL(strFileName);
+  strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
   struct __stat64 info;
 
@@ -275,16 +239,8 @@ bool CFileSMB::Exists(const CURL& url)
 int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 {
   CStdString strFileName;
-  //Use default credentials if none is specified.
-  if (url.GetUserName().length() == 0 && url.GetHostName().length() > 0)
-  {
-    CURL url2(url);
-    url2.SetUserName(g_stSettings.m_strSambaDefaultUserName);
-    url2.SetPassword(g_stSettings.m_strSambaDefaultPassword);
-    url2.GetURL(strFileName);
-  }
-  else
-    url.GetURL(strFileName);
+  url.GetURL(strFileName);
+  strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
   smb.Lock();
   int iResult = smbc_stat(strFileName, buffer);
@@ -435,17 +391,8 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
   if (!IsValidFile(url.GetFileName())) return false;
 
   CStdString strFileName;
-
-  //Use default credentials if none is specified.
-  if (url.GetUserName().length() == 0 && url.GetHostName().length() > 0)
-  {
-    CURL url2(url);
-    url2.SetUserName(g_stSettings.m_strSambaDefaultUserName);
-    url2.SetPassword(g_stSettings.m_strSambaDefaultPassword);
-    url2.GetURL(strFileName);
-  }
-  else
-    url.GetURL(strFileName);
+  url.GetURL(strFileName);
+  strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
   smb.Lock();
 
