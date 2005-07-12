@@ -21,7 +21,8 @@ extern "C"
  #define HAVE_CONFIG_H
  #include "dvdnav/dvdnav_internal.h"
  #include "dvdnav/vm.h"
-
+ #include "dvdnav/ifo_types.h"
+ 
   // forward declarations
   vm_t* dvdnav_get_vm(dvdnav_t *self);
   int dvdnav_get_nr_of_subtitle_streams(dvdnav_t *self);
@@ -42,8 +43,6 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
   m_pDLLlibdvdnav = NULL; // DLL Handle for libdvdnav.dll
   m_pDLLlibdvdcss = NULL; // DLL Handle for libdvdcss.dll
 
-  m_iTotalTime = 0;
-  m_iCurrentTime = 0;
 }
 
 CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
@@ -371,9 +370,6 @@ int CDVDInputStreamNavigator::ProcessBlock()
         CLog::DebugLog("Cell change: Title %d, Chapter %d\n", tt, ptt);
         CLog::DebugLog("At position %.0f%% inside the feature\n", 100 * (double)pos / (double)len);
 
-        dvdnav_cell_change_event_t* cell_event = (dvdnav_cell_change_event_t*)buf;
-        m_iTotalTime = (int)((cell_event->pgc_length / 100) & 0xFFFFFFFF);
-
         m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_CELL_CHANGE);
       }
       break;
@@ -385,17 +381,14 @@ int CDVDInputStreamNavigator::ProcessBlock()
         // For the menus to work, the NAV packet information has to be passed to the overlay
         // engine of the player so that it knows the dimensions of the button areas.
 
-
         // Applications with fifos should not use these functions to retrieve NAV packets,
         // they should implement their own NAV handling, because the packet you get from these
         // functions will already be ahead in the stream which can cause state inconsistencies.
         // Applications with fifos should therefore pass the NAV packet through the fifo
         // and decoding pipeline just like any other data.
         pci_t* pci = dvdnav_get_current_nav_pci(m_dvdnav);
-        m_iCurrentTime = (int)((pci->pci_gi.vobu_s_ptm / 100) & 0xFFFFFFFF);
         
         m_pDVDPlayer->OnDVDNavResult((void*)pci, DVDNAV_NAV_PACKET);
-
       }
       break;
 
@@ -715,12 +708,33 @@ bool CDVDInputStreamNavigator::GetButtonInfo(DVDOverlayPicture* pOverlayPicture,
 
 int CDVDInputStreamNavigator::GetTotalTime()
 {
-  return m_iTotalTime;
+  int iTotalTime = 0;
+  
+  if (m_dvdnav)
+  {
+    vm_t* vm = dvdnav_get_vm(m_dvdnav);
+    
+    if (vm)
+    {
+      iTotalTime = vm->state.pgc->playback_time.hour * 3600;
+      iTotalTime += vm->state.pgc->playback_time.minute * 60;
+      iTotalTime += vm->state.pgc->playback_time.second;
+      iTotalTime *= 1000;
+    }
+  }
+  return iTotalTime;
 }
 
 int CDVDInputStreamNavigator::GetTime()
 {
-  return m_iCurrentTime;
+  int iTime = 0;
+  if (m_dvdnav)
+  {
+    unsigned int pos, len;
+    dvdnav_get_position(m_dvdnav, &pos, &len);
+    iTime = (int)(((__int64)GetTotalTime() * pos) / len);
+  }
+  return iTime;
 }
 
 bool CDVDInputStreamNavigator::Seek(int iTimeInMsec)

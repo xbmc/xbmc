@@ -83,8 +83,6 @@ public:
   float GetVideoAspectRatio();
 
   bool Seek(int iTimeInMsec); //seek within current pg(c)
-  //float GetPercentage(); //percentage within current pg(c)
-
 
 protected:
 
@@ -104,6 +102,4 @@ protected:
   IDVDPlayer* m_pDVDPlayer;
 
   bool m_bDiscardHop;
-  int m_iTotalTime;
-  int m_iCurrentTime;
 };
