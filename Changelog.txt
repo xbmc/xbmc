@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-07-2005 added: Support for brackets [] in <visible> conditionals.
  - 12-07-2005 fixed: Lockup on start with shares such as cdda: (without the //).
  - 12-07-2005 fixed: Crash in numeric dialog with XPR fonts.
  - 11-07-2005 fixed: dvdplayer timing

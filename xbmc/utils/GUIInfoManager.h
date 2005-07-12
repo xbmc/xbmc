@@ -100,17 +100,15 @@ protected:
   class CCombinedValue
   {
   public:
-    enum EOPERATOR
-    {
-      OP_OR,
-      OP_AND,
-    } m_iOperator;
-    CStdString m_sInfo;
-    int m_iId;
-    int m_iLeftId;
-    int m_iRightId;
+    CStdString m_info;    // the text expression
+    int m_id;             // the id used to identify this expression
+    list<int> m_postfix;  // the postfix binary expression
     void operator=(const CCombinedValue& mSrc);
   };
+
+  int GetOperator(const char ch);
+  int TranslateBooleanExpression(const CStdString &expression);
+  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result) const;
 
   std::vector<CCombinedValue> m_CombinedValues;
 };
