@@ -22,6 +22,7 @@ public:
   bool CheckStartUpLock();
   bool CheckMenuLock(int iWindowID);
 
+  CStdString CGUIPassword::GetSMBAuthFilename(const CStdString& strAuth);
 
 	MAPPASSWORDS			m_mapSMBPasswordCache; // SMB share password cache
 protected:
