@@ -7,6 +7,7 @@
 #include "../lib/libscrobbler/scrobbler.h"
 #include "../playlistplayer.h"
 #include "../ButtonTranslator.h"
+#include <stack>
 
 #define VERSION_STRING "1.1.0"
 
@@ -119,11 +120,9 @@ CGUIInfoManager g_infoManager;
 
 void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
 {
-  this->m_sInfo = mSrc.m_sInfo;
-  this->m_iId = mSrc.m_iId;
-  this->m_iLeftId = mSrc.m_iLeftId;
-  this->m_iRightId = mSrc.m_iRightId;
-  this->m_iOperator = mSrc.m_iOperator;
+  this->m_info = mSrc.m_info;
+  this->m_id = mSrc.m_id;
+  this->m_postfix = mSrc.m_postfix;
 }
 
 CGUIInfoManager::CGUIInfoManager(void)
@@ -146,43 +145,20 @@ CGUIInfoManager::~CGUIInfoManager(void)
 /// Player.HasVideo | Player.HasAudio (Logical or)
 int CGUIInfoManager::TranslateString(const CStdString &strCondition)
 {
-  int iOr, iAnd;
-  iOr = strCondition.find_first_of("|");
-  iAnd = strCondition.find_first_of("+");
-
-  if( iOr != strCondition.npos || iAnd != strCondition.npos )
+  if (strCondition.find_first_of("|") != strCondition.npos ||
+      strCondition.find_first_of("+") != strCondition.npos ||
+      strCondition.find_first_of("[") != strCondition.npos ||
+      strCondition.find_first_of("]") != strCondition.npos)
   {
-    //Check if this was added before
+    // Have a boolean expression
+    // Check if this was added before
     std::vector<CCombinedValue>::iterator it;
     for(it = m_CombinedValues.begin(); it != m_CombinedValues.end(); it++)
     {
-      if(strCondition.CompareNoCase(it->m_sInfo) == 0)
-        return it->m_iId;
+      if(strCondition.CompareNoCase(it->m_info) == 0)
+        return it->m_id;
     }
-
-    if( iOr != strCondition.npos )
-    {
-      CCombinedValue mComb;
-      mComb.m_iOperator = CCombinedValue::OP_OR;
-      mComb.m_iLeftId = TranslateString(strCondition.Left(iOr));
-      mComb.m_iRightId = TranslateString(strCondition.Mid(iOr+1));
-      mComb.m_sInfo = strCondition;
-      mComb.m_iId = m_CombinedValues.size()+COMBINED_VALUES_START;
-      m_CombinedValues.push_back( mComb );
-      return mComb.m_iId;
-    }
-
-    if( iAnd != strCondition.npos )
-    {
-      CCombinedValue mComb;
-      mComb.m_iOperator = CCombinedValue::OP_AND;
-      mComb.m_iLeftId = TranslateString(strCondition.Left(iAnd));
-      mComb.m_iRightId = TranslateString(strCondition.Mid(iAnd+1));
-      mComb.m_sInfo = strCondition;
-      mComb.m_iId = m_CombinedValues.size()+COMBINED_VALUES_START;
-      m_CombinedValues.push_back( mComb );
-      return mComb.m_iId;
-    }
+    return TranslateBooleanExpression(strCondition);
   }  
   //Just single command.
   return TranslateSingleString(strCondition);
@@ -454,17 +430,14 @@ int CGUIInfoManager::GetInt(int info) const
 // for toggle button controls and visibility of images.
 bool CGUIInfoManager::GetBool(int condition1) const
 {
-
   if(  condition1 >= COMBINED_VALUES_START && (condition1 - COMBINED_VALUES_START) < (int)(m_CombinedValues.size()) )
   {
-    CCombinedValue mComb;
-    mComb = m_CombinedValues[condition1 - COMBINED_VALUES_START];
-    if( mComb.m_iOperator == CCombinedValue::OP_OR )
-      return GetBool(mComb.m_iLeftId) || GetBool(mComb.m_iRightId);
-    else if( mComb.m_iOperator == CCombinedValue::OP_AND )
-      return GetBool(mComb.m_iLeftId) && GetBool(mComb.m_iRightId);
+    const CCombinedValue &comb = m_CombinedValues[condition1 - COMBINED_VALUES_START];
+    bool result;
+    if (EvaluateBooleanExpression(comb, result))
+      return result;
+    return false;
   }
-
 
   int condition = abs(condition1);
   bool bReturn = false;
@@ -1152,4 +1125,139 @@ CStdString CGUIInfoManager::GetAudioScrobblerLabel(int item)
   }
 
   return "";
+}
+
+#define OPERATOR_NOT  3
+#define OPERATOR_AND  2
+#define OPERATOR_OR   1
+
+int CGUIInfoManager::GetOperator(const char ch)
+{
+  if (ch == '[')
+    return 5;
+  else if (ch == ']')
+    return 4;
+  else if (ch == '!')
+    return OPERATOR_NOT;
+  else if (ch == '+')
+    return OPERATOR_AND;
+  else if (ch == '|')
+    return OPERATOR_OR;
+  else
+    return 0;
+}
+
+bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression, bool &result) const
+{
+  // stack to save our bool state as we go
+  stack<bool> save;
+
+  for (list<int>::const_iterator it = expression.m_postfix.begin(); it != expression.m_postfix.end(); ++it)
+  {
+    int expr = *it;
+    if (expr == -OPERATOR_NOT)
+    { // NOT the top item on the stack
+      if (save.size() < 1) return false;
+      bool expr = save.top();
+      save.pop();
+      save.push(!expr);
+    }
+    else if (expr == -OPERATOR_AND)
+    { // AND the top two items on the stack
+      if (save.size() < 2) return false;
+      bool right = save.top(); save.pop();
+      bool left = save.top(); save.pop();
+      save.push(left && right);
+    }
+    else if (expr == -OPERATOR_OR)
+    { // OR the top two items on the stack
+      if (save.size() < 2) return false;
+      bool right = save.top(); save.pop();
+      bool left = save.top(); save.pop();
+      save.push(left || right);
+    }
+    else  // operator
+      save.push(GetBool(expr));
+  }
+  if (save.size() != 1) return false;
+  result = save.top();
+  return true;
+}
+
+int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
+{
+  CCombinedValue comb;
+  comb.m_info = expression;
+  comb.m_id = COMBINED_VALUES_START + m_CombinedValues.size();
+
+  // operator stack
+  stack<char> save;
+
+  CStdString operand;
+
+  for (unsigned int i = 0; i < expression.size(); i++)
+  {
+    if (GetOperator(expression[i]))
+    {
+      // cleanup any operand, translate and put into our expression list
+      if (!operand.IsEmpty())
+      {
+        int iOp = TranslateSingleString(operand);
+        if (iOp)
+          comb.m_postfix.push_back(iOp);
+        operand.clear();
+      }
+      // handle closing parenthesis
+      if (expression[i] == ']')
+      {
+        while (save.size())
+        {
+          char oper = save.top();
+          save.pop();
+
+          if (oper == '[')
+            break;
+
+          comb.m_postfix.push_back(-GetOperator(oper));
+        }
+      }
+      else
+      {
+        // all other operators we pop off the stack any operator
+        // that has a higher priority than the one we have.
+        while (!save.empty() && GetOperator(save.top()) > GetOperator(expression[i]))
+        {
+          // only handle parenthesis once they're closed.
+          if (save.top() == '[' && expression[i] != ']')
+            break;
+
+          comb.m_postfix.push_back(-GetOperator(save.top()));  // negative denotes operator
+          save.pop();
+        }
+        save.push(expression[i]);
+      }
+    }
+    else
+    {
+      operand += expression[i];
+    }
+  }
+
+  if (!operand.empty())
+    comb.m_postfix.push_back(TranslateSingleString(operand));
+
+  // finish up by adding any operators
+  while (!save.empty())
+  {
+    comb.m_postfix.push_back(-GetOperator(save.top()));
+    save.pop();
+  }
+
+  // test evaluate
+  bool test;
+  if (!EvaluateBooleanExpression(comb, test))
+    CLog::Log(LOGERROR, "Error evaluating boolean expression %s", expression.c_str());
+  // success - add to our combined values
+  m_CombinedValues.push_back(comb);
+  return comb.m_id;
 }
