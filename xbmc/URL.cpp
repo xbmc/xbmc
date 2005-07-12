@@ -42,9 +42,22 @@ CURL::CURL(const CStdString& strURL)
 
   // decode protocol
   int iPos = strURL.Find("://");
-  if (iPos < 0) return ;
-  m_strProtocol = strURL.Left(iPos);
-  iPos += 3;
+  if (iPos < 0)
+  { // check for misconstructed protocols
+    iPos = strURL.Find(":");
+    if (iPos == strURL.GetLength() - 1)
+    {
+      m_strProtocol = strURL.Left(iPos);
+      iPos += 1;
+    }
+    else
+      return;
+  }
+  else
+  {
+    m_strProtocol = strURL.Left(iPos);
+    iPos += 3;
+  }
 
   //archive subpaths may contain delimiters so they need special processing
   //format 4: zip://CachePath,AutoDelMask,Password, RarPath,\FilePathInRar
