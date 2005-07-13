@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-07-2005 added: Deinterlacing for dvdplayer, automatic support for most dvd's/mpegs, possible to manually enable through options
  - 13-07-2005 added: HTTPAPI: all commands are now available through ASP
  - 13-07-2005 added: HTTPAPI: GetPlaySpeed and SetPlaySpeed commands
  - 13-07-2005 updated: ffmpeg for the dvdplayer to the latest cvs version

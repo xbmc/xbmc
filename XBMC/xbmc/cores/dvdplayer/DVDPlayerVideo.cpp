@@ -4,6 +4,7 @@
 #include "DVDPlayerVideo.h"
 #include "DVDCodecs\DVDFactoryCodec.h"
 #include "DVDCodecs\DVDCodecUtils.h"
+#include "DVDCodecs\DVDVideoPPFFmpeg.h"
 #include "..\..\util.h"
 
 DWORD video_refresh_thread(void *arg);
@@ -130,6 +131,8 @@ void CDVDPlayerVideo::Process()
   HANDLE hVideoRefreshThread;
   CDVDDemux::DemuxPacket* pPacket;
   DVDVideoPicture picture;
+  CDVDVideoPPFFmpeg mDeinterlace(CDVDVideoPPFFmpeg::ED_DEINT_CUBICIPOL);
+
   memset(&picture, 0, sizeof(DVDVideoPicture));
   __int64 pts=0;
   int dvdstate;
@@ -164,18 +167,15 @@ void CDVDPlayerVideo::Process()
 
         // try to retrieve the picture (should never fail!), unless there is a demuxer bug ofcours
         if (m_pVideoCodec->GetPicture(&picture))
-        { /*
-                    if (dvdstate == DVDSTATE_STILL)
-                    {
-                      // copy still to buffer for later use
-                      if (pDVDPlayer->m_dvd.pStillPicture)
-                      {
-                        OutputDebugString("ERROR !!!, picture already allocated, memoryleak!");
-                      }
-                      pDVDPlayer->m_dvd.pStillPicture = CDVDCodecUtils::AllocatePicture(picture.iWidth, picture.iHeight);
-                      CDVDCodecUtils::CopyPicture(pDVDPlayer->m_dvd.pStillPicture, &picture);
-                    }
-          */
+        { 
+          //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
+          //this video
+          if( picture.iFlags & DVP_FLAGS_INTERLACED || g_stSettings.m_currentVideoSettings.m_Deinterlace )
+          {
+            mDeinterlace.Process(&picture);
+            mDeinterlace.GetPicture(&picture);
+          }
+
           if ((picture.iFrameType == FRAME_TYPE_I || picture.iFrameType == FRAME_TYPE_UNDEF) &&
               pPacket->dts != DVD_NOPTS_VALUE ) //Only use pts when we have an I frame, or unknown
           {
@@ -475,6 +475,10 @@ DWORD video_refresh_thread(void *arg)
 
       // sleep
       if (iSleepTime > 0) usleep(iSleepTime);
+
+
+      //if( vp->iFlags & DVP_FLAGS_TOP_FIELD_FIRST )
+      //  g_renderManager.WaitForField(false);
 
       // display picture
       // we expect the video device to be initialized here
