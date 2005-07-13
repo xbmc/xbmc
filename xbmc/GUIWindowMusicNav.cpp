@@ -546,7 +546,6 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavAlbumsViewAsIcons;
 
       // check cache first
-      // check cache first
       LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache);
       if (items.Size())
       {
@@ -733,7 +732,8 @@ void CGUIWindowMusicNav::UpdateButtons()
 void CGUIWindowMusicNav::OnClick(int iItem)
 {
   CFileItem* pItem = m_vecItems[iItem];
-  CStdString strPath = pItem->GetLabel();
+  CStdString strLabel = pItem->GetLabel();
+  CStdString strPath = pItem->m_strPath;
   CStdString strNextPath = m_Directory.m_strPath;
   if (strNextPath.IsEmpty())
     strNextPath = "db://";
@@ -783,7 +783,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
         {
           m_iState = SHOW_ARTISTS;
           m_iPath += m_iState;
-          m_strGenre = strPath;
+          m_strGenre = strLabel;
 
           // clicked on "All Genres" ?
           if (strPath.IsEmpty())
@@ -795,7 +795,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
         {
           m_iState = SHOW_ALBUMS;
           m_iPath += m_iState;
-          m_strArtist = strPath;
+          m_strArtist = strLabel;
 
           // clicked on "All Artists" ?
           if (strPath.IsEmpty())
@@ -807,8 +807,8 @@ void CGUIWindowMusicNav::OnClick(int iItem)
         {
           m_iState = SHOW_SONGS;
           m_iPath += m_iState;
-          m_strAlbum = strPath;
-          m_strAlbumPath = pItem->m_strPath;
+          m_strAlbum = strLabel;
+          m_strAlbumPath = strPath;
 
           // clicked on "All Albums" ?
           if (strPath.IsEmpty())
@@ -825,7 +825,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
       }
     }
     vecPathHistory.push_back(strPath);
-    strNextPath += strPath + "/";
+    strNextPath += strLabel + "/";
     Update(strNextPath);
   }
   else
