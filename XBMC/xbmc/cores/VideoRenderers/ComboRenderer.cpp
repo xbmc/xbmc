@@ -23,6 +23,10 @@
 #include "GUIFontManager.h"
 #include "../../util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CComboRenderer::CComboRenderer(LPDIRECT3DDEVICE8 pDevice)
     : CXBoxRenderer(pDevice)
 {

@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "XBVideoConfig.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 XBVideoConfig g_videoConfig;
 
 XBVideoConfig::XBVideoConfig()

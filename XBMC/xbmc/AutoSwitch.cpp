@@ -4,6 +4,10 @@
 #include "util.h"
 #include "application.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define VIEW_AS_LIST     0
 #define VIEW_AS_ICONS     1
 #define VIEW_AS_LARGEICONS  2

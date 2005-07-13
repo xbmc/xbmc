@@ -1,6 +1,10 @@
 #include "../stdafx.h"
 #include "EncoderWav.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CEncoderWav::CEncoderWav()
 {
   m_iBytesWritten = 0;

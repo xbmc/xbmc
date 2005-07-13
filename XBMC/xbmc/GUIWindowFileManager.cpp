@@ -10,6 +10,10 @@
 #include "GUIPassword.h"
 #include "lib/libPython/XBPython.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace XFILE;
 
 #define ACTION_COPY   1

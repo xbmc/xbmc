@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "Cdg.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CCdg::CCdg()
 {
   m_hOffset = NULL;

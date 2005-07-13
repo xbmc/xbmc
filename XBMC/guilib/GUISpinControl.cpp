@@ -3,6 +3,10 @@
 #include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define SPIN_BUTTON_DOWN 1
 #define SPIN_BUTTON_UP   2
 

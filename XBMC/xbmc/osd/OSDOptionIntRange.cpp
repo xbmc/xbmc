@@ -3,6 +3,10 @@
 #include ".\OSDOptionIntRange.h"
 #include "guifontmanager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace OSD;
 
 COSDOptionIntRange::COSDOptionIntRange(int iAction, int iHeading, bool bPercent)

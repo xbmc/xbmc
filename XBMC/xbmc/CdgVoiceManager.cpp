@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "CdgVoiceManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 //CdgChatter
 CCdgChatter::CCdgChatter()
 {

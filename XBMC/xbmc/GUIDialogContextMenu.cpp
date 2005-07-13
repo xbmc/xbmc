@@ -9,6 +9,10 @@
 
 #include "util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define BACKGROUND_IMAGE 999
 #define BACKGROUND_BOTTOM 998
 #define BUTTON_TEMPLATE 1000

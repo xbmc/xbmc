@@ -2,6 +2,10 @@
 #include "ButtonTranslator.h"
 #include "util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CButtonTranslator g_buttonTranslator;
 extern CStdString g_LoadErrorStr;
 
@@ -602,3 +606,10 @@ WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
   }
   return wButtonCode;
 }
+
+void CButtonTranslator::Clear()
+{
+  translatorMap.clear();
+
+}
+

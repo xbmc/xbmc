@@ -3,6 +3,10 @@
 #include "application.h"
 #include "util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CGUIDialogYesNo::CGUIDialogYesNo(void)
     : CGUIDialog(0)
 {

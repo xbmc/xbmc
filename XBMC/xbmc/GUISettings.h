@@ -364,6 +364,8 @@ public:
   RESOLUTION m_LookAndFeelResolution;
   ReplayGainSettings m_replayGain;
 
+  void Clear();
+
 private:
   typedef std::map<CStdString, CSetting*>::iterator mapIter;
   std::map<CStdString, CSetting*> settingsMap;

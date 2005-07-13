@@ -2,6 +2,10 @@
 #include "GUIDialogVisualisationPresetList.h"
 #include "GUIListControl.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define CONTROL_LIST           2
 #define CONTROL_PRESETS_LABEL  3
 #define CONTROL_NONE_AVAILABLE 4

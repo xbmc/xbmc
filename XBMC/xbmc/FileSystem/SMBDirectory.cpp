@@ -16,6 +16,10 @@
 #include "localizeStrings.h"
 #include "../GUIPassword.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CSMBDirectory::CSMBDirectory(void)
 {
 } 

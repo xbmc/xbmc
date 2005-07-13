@@ -24,6 +24,10 @@
 #include "GroupsDlgSpeedLimit.h"
 #include "SpeedLimitRuleDlg.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 /////////////////////////////////////////////////////////////////////////////
 // CGroupsDlgSpeedLimit dialog
 

@@ -6,6 +6,10 @@
 #include "../xbmc/visualizations/VisualisationFactory.h"
 #include "../xbmc/visualizations/fft.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11
 #define LABEL_ROW3 12

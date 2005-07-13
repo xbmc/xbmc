@@ -1,6 +1,10 @@
 #include "../../stdafx.h"
 #include "SHNCodec.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 // Callbacks for file reading
 int Shn_Callback_Read(ShnPlayStream * stream, void * buffer, int bytes, int * bytes_read)
 {

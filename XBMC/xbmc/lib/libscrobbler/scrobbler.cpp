@@ -80,6 +80,16 @@ CScrobbler* CScrobbler::GetInstance()
   return m_pInstance;
 }
 
+void CScrobbler::RemoveInstance()
+{
+  if (m_pInstance)
+  {
+    m_pInstance->Term();
+    delete m_pInstance;
+    m_pInstance=NULL;
+  }
+}
+
 void CScrobbler::Init()
 {
   if (!g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler") || !g_guiSettings.GetBool("Network.EnableInternet"))

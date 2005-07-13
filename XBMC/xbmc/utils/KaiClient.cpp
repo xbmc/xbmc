@@ -4,6 +4,10 @@
 #include "../Application.h"
 #include "dsstdfx.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CKaiClient* CKaiClient::client = NULL;
 
 //#define SPEEX_LOOPBACK 1
@@ -126,7 +130,16 @@ void CKaiClient::VoiceChatStop()
 
 CKaiClient::~CKaiClient(void)
 {
-  client = NULL;
+  VoiceChatStop();
+  Destroy();
+
+  if (m_pEgress)
+    delete m_pEgress;
+  m_pEgress=NULL;
+
+  if (m_pRequestList)
+    delete m_pRequestList;
+  m_pRequestList=NULL;
 }
 
 CKaiClient* CKaiClient::GetInstance()
@@ -137,6 +150,13 @@ CKaiClient* CKaiClient::GetInstance()
   }
 
   return client;
+}
+
+void CKaiClient::RemoveInstance()
+{
+  if (client)
+    delete client;
+  client=NULL;
 }
 
 void CKaiClient::SetObserver(IBuddyObserver* aObserver)

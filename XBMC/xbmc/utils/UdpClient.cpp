@@ -1,6 +1,10 @@
 
-#include "..\stdafx.h"
+#include "../stdafx.h"
 #include "UdpClient.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
 
@@ -49,6 +53,11 @@ bool CUdpClient::Create(void)
   CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Ready.");
 
   return true;
+}
+
+void CUdpClient::Destroy()
+{
+  StopThread();
 }
 
 void CUdpClient::OnStartup()

@@ -1,6 +1,10 @@
 #include "../../stdafx.h"
 #include "WAVCodec.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 typedef struct
 {
   char chunk_id[4];

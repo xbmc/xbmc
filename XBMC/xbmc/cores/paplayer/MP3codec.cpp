@@ -1,6 +1,10 @@
 #include "../../stdafx.h"
 #include "MP3Codec.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define MP3_DLL "Q:\\system\\players\\PAPlayer\\in_mp3.dll"
 
 #define DECODER_DELAY 529 // decoder delay in samples

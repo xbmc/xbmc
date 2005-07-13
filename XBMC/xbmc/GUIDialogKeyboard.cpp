@@ -5,6 +5,10 @@
 #include "GUIButtonControl.h"
 #include "Util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 // TODO: Add support for symbols.
 
 // Symbol mapping (based on MS virtual keyboard - may need improving)

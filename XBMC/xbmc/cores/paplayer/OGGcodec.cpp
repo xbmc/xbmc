@@ -3,6 +3,10 @@
 #include "../../oggtag.h"
 #include "../../Util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 //  Note: the vorbisfile.dll has the ogg.dll and vorbis.dll statically linked 
 
 OGGCodec::OGGCodec()

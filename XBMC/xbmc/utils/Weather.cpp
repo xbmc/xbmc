@@ -4,6 +4,10 @@
 #include "../FileSystem/ZipManager.h"
 #include "../FileSystem/RarManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define SPEED_KMH 0
 #define SPEED_MPH 1
 #define SPEED_MPS 2
@@ -703,9 +707,8 @@ char *CWeather::GetCurrentIcon()
   //if (m_bBusy) return "Q:\\weather\\128x128\\na.png";
   if (m_bBusy) 
   {
-    char *tmp = new char[128];
-    sprintf(tmp,"%s128x128\\na.png",strBasePath.c_str());
-    return tmp;
+    sprintf(m_szNAIcon,"%s128x128\\na.png",strBasePath.c_str());
+    return m_szNAIcon;
   }
   return m_szCurrentIcon;
 }

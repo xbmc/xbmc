@@ -26,6 +26,10 @@ distribution.
 #include <ctype.h>
 #include "tinyxml.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #ifdef TIXML_USE_STL
 #include <sstream>
 #endif

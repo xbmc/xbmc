@@ -4,6 +4,10 @@
 #include "factorydirectory.h"
 #include "factoryfiledirectory.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace DIRECTORY;
 
 CDirectory::CDirectory()

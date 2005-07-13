@@ -27,6 +27,10 @@
 // using the smb library for UTF-8 conversion
 #include "../lib/libsmb/xbLibSmb.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CDAAPDirectory::CDAAPDirectory(void)
 {
   CSectionLoader::Load("LIBXDAAP");

@@ -8,6 +8,10 @@
 #include "mplayer.h"
 #include "../VideoRenderers/RenderManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 IDirectSoundRenderer* m_pAudioDecoder = NULL;
 
 static IAudioCallback* m_pAudioCallback = NULL;

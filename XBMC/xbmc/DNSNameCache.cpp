@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "dnsnamecache.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CDNSNameCache g_DNSCache;
 
 CDNSNameCache::CDNSNameCache(void)

@@ -6,6 +6,10 @@
 #include "utils/GUIInfoManager.h"
 #include "Util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 // May need to change this so that it is "modeless" rather than Modal,
 // though it works reasonably well as is...
 

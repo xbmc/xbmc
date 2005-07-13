@@ -2,6 +2,11 @@
 #include "GUIAudioManager.h"
 #include "audiocontext.h"
 #include "../xbmc/settings.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 typedef struct
 {
   char chunk_id[4];

@@ -1,6 +1,10 @@
 #include "../stdafx.h"
 #include "Mutex.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CMutex::CMutex()
 {
   m_hMutex = CreateMutex( NULL, FALSE, NULL);

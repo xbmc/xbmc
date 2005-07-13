@@ -17,6 +17,10 @@
 #include <commctrl.h>
 #include "options.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 BOOL APIENTRY DllMain( HANDLE hModule, 
                        DWORD  ul_reason_for_call, 
                        LPVOID lpReserved

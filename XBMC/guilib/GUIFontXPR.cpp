@@ -1,6 +1,10 @@
 #include "include.h"
 #include "GUIFontXPR.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CGUIFontXPR::CGUIFontXPR(const CStdString& strFontName) : CGUIFont(strFontName)
 {}
 

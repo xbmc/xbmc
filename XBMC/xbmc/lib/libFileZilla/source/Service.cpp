@@ -23,6 +23,10 @@
 #include "server.h"
 #include "Options.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 void ServiceMain(DWORD argc, LPTSTR *argv); 
 void ServiceCtrlHandler(DWORD nControlCode);
 BOOL UpdateServiceStatus(DWORD dwCurrentState, DWORD dwWin32ExitCode,

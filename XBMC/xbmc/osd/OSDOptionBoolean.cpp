@@ -3,6 +3,10 @@
 #include ".\osdoptionboolean.h"
 #include "guifontmanager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace OSD;
 
 

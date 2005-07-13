@@ -25,6 +25,10 @@
 #include <stdio.h>
 #include <algorithm>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #pragma warning (disable:4244)
 #pragma warning (disable:4800)
 unsigned long GetLocalIPAddress()
@@ -262,6 +266,7 @@ void CAsyncSelectManager::AddHelper(CAsyncSelectHelper* Helper)
   {
     mIsSuspended = false;
     OutputDebugString(_T("CAsyncSelectManager resumed\n"));
+	  SetEvent(m_hEventStarted);
     ResumeThread();
   }
 }

@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "Song.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CSong::CSong(CMusicInfoTag& tag)
 {
   SYSTEMTIME stTime;

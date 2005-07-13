@@ -14,6 +14,9 @@
 
 #include <stdio.h>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 #define BLUE_BAR    0
 #define LABEL_ROW1 10

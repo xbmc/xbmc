@@ -5,6 +5,10 @@
 #include "DVDInputStreamFile.h"
 #include "DVDInputStreamNavigator.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const char* strFile)
 {
   CFileItem item(strFile, false);

@@ -2,7 +2,12 @@
 #include ".\htmltable.h"
 #include ".\htmlutil.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace HTML;
+
 CHTMLRow::CHTMLRow(void)
 {}
 

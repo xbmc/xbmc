@@ -30,6 +30,10 @@
 #include "ntddcdrm.h"
 #endif
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #ifdef _XBOX
 #define CTLCODE(DeviceType, Function, Method, Access) ( ((DeviceType) << 16) | ((Access) << 14) | ((Function) << 2) | (Method)  )
 

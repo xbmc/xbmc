@@ -3,6 +3,10 @@
 #include "windows.h"
 
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 int GetDateFormat(
   LCID Locale,               // locale for which date is to be formatted
   DWORD dwFlags,             // flags specifying function options

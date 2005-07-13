@@ -2,6 +2,10 @@
 #include "GUISpinControlEx.h"
 #include "../xbmc/Util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CGUISpinControlEx::CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, DWORD dwSpinWidth, DWORD dwSpinHeight, const CStdString &strFocus, const CStdString &strNoFocus, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iTextXOffset, int iTextYOffset, DWORD dwAlign, int iType)
     : CGUISpinControl(dwParentID, dwControlId, iPosX, iPosY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwTextColor, iType, XBFONT_RIGHT)
     , m_buttonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strFocus, strNoFocus, iTextXOffset, iTextYOffset, dwAlign)

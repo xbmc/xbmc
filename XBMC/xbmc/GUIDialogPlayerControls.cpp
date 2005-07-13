@@ -2,6 +2,10 @@
 #include "GUIDialogPlayerControls.h"
 #include "Application.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CGUIDialogPlayerControls::CGUIDialogPlayerControls(void)
     : CGUIDialog(0)
 {

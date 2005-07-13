@@ -16,6 +16,9 @@
 #include "rardirectory.h"
 #include "FTPDirectory.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 /*!
  \brief Create a IDirectory object of the share type specified in \e strPath .

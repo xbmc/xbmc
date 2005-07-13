@@ -7,6 +7,10 @@
 #include "GUIConditionalButtonControl.h"
 #include "utils/GUIInfoManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define MENU_BUTTON_START 2    // normal buttons
 #define MENU_BUTTON_END   20
 

@@ -3,6 +3,10 @@
 #include "../xbmc/Util.h"
 #include "../xbmc/Settings.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define SKIN_MIN_VERSION 1.3
 
 CSkinInfo g_SkinInfo; // global

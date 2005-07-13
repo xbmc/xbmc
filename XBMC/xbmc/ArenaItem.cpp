@@ -3,6 +3,10 @@
 #include "ArenaItem.h"
 #include "Utils/KaiClient.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CGUIImage* CArenaItem::m_pPrivateIcon = NULL;
 
 CArenaItem::CArenaItem(CStdString& strLabel) : CKaiItem(strLabel)

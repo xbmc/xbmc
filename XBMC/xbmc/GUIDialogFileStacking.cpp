@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "GUIDialogFileStacking.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CGUIDialogFileStacking::CGUIDialogFileStacking(void)
     : CGUIDialog(0)
 {

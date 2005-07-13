@@ -4,6 +4,10 @@
 #include "application.h"
 #include "util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define PLAYLIST_MUSIC_REPEAT      0x001
 #define PLAYLIST_MUSIC_REPEAT_ONE    0x002
 #define PLAYLIST_MUSIC_TEMP_REPEAT   0x004
