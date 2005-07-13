@@ -1,5 +1,5 @@
 
-#include "stdafx.h"
+#include "..\stdafx.h"
 #include "UdpClient.h"
 
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
@@ -188,7 +188,7 @@ void CUdpClient::DispatchNextCommand()
     LeaveCriticalSection(&critical_section);
 
     // relinquish the remainder of this threads time slice
-    Sleep(0);
+    Sleep(1);
     return ;
   }
 
