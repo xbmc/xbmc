@@ -108,6 +108,9 @@ void CGUIDialogYesNo::SetHeading(int iString)
 void CGUIDialogYesNo::SetLine(int iLine, int iString)
 {
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
-  msg.SetLabel(iString);
+  if (iString)
+    msg.SetLabel(iString);
+  else
+    msg.SetLabel("");
   OnMessage(msg);
 }
