@@ -29,12 +29,6 @@
 
 #include <xtl.h>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#ifdef _CRTDBG_MAP_ALLOC
-#define new new( _NORMAL_BLOCK, __FILE__, __LINE__)
-#endif
-
 #include "../AudioBase.h" 
 // 0.5s per buffer
 #define AUDIO_XBOX_BUFFERS (4)

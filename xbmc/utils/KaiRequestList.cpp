@@ -2,6 +2,10 @@
 #include "../stdafx.h"
 #include "KaiRequestList.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CKaiRequestList::CKaiRequestList(void)
 {
   InitializeCriticalSection(&m_critical);

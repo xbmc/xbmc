@@ -13,6 +13,10 @@
 #define CONTROL_NEXT 22
 #define CONTROL_BACKSPACE 23
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CGUIDialogNumeric::CGUIDialogNumeric(void)
     : CGUIDialog(0)
 {

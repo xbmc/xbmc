@@ -3,6 +3,10 @@
 #include "BuddyItem.h"
 #include "Utils/KaiClient.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define PING_OFFSETX  8
 #define PING_MAX_RATING  4
 #define PING_SPACING  2

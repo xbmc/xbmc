@@ -6,6 +6,10 @@
 #include "..\..\util.h"
 #include "DVDClock.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CDVDAudio::CDVDAudio()
 {
   m_pAudioDecoder = NULL;

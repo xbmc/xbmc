@@ -81,6 +81,7 @@ private:
 public:
   virtual ~CScrobbler();
 
+  static void RemoveInstance();
   static CScrobbler* GetInstance();
   /**
     Call this to add a song to the submission queue. The submission will get

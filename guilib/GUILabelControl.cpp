@@ -4,6 +4,10 @@
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define SCROLL_WAIT 50
 
 CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, const wstring& strLabel, DWORD dwTextColor, DWORD dwDisabledColor, DWORD dwTextAlign, bool bHasPath)

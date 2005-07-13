@@ -1,6 +1,10 @@
 #include "../../stdafx.h"
 #include "AACCodec.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 AACCodec::AACCodec()
 {
   m_SampleRate = 0;

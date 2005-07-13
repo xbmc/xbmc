@@ -1,6 +1,10 @@
 #include "include.h"
 #include "LocalizeStrings.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CLocalizeStrings g_localizeStrings;
 extern CStdString g_LoadErrorStr;
 
@@ -105,4 +109,9 @@ const wstring& CLocalizeStrings::Get(DWORD dwCode) const
     return wszEmptyString;
   }
   return i->second;
+}
+
+void CLocalizeStrings::Clear()
+{
+  m_vecStrings.erase(m_vecStrings.begin(), m_vecStrings.end());
 }

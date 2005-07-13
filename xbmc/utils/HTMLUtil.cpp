@@ -3,6 +3,9 @@
 #include ".\htmlutil.h"
 using namespace HTML;
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 CHTMLUtil::CHTMLUtil(void)
 {}

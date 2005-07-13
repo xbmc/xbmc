@@ -11,6 +11,7 @@ public:
 protected:
 
   bool Create();
+  void Destroy();
 
   void OnStartup();
   void Process();

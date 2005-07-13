@@ -5,8 +5,14 @@
 #include "filesystem/HDdirectory.h"
 #include "PlayListFactory.h"
 #include "util.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace DIRECTORY;
 using namespace PLAYLIST;
+
 CPlayListDirectory::CPlayListDirectory(void)
 {}
 

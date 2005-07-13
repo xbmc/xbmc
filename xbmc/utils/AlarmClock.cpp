@@ -1,5 +1,9 @@
 #include "AlarmClock.h"
 #include "../application.h"
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CAlarmClock g_alarmClock;
 CAlarmClock::CAlarmClock() : m_bIsRunning(false), m_fSecs(0)
 {

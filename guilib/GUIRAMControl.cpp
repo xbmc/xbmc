@@ -8,6 +8,10 @@
 #include "..\xbmc\PlayListPlayer.h"
 #include "..\xbmc\GUIsettings.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 extern CApplication g_application;
 
 #define BUTTON_WIDTH_ADJUSTMENT  16

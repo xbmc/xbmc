@@ -9,6 +9,10 @@
 #include "..\detectdvdtype.h"
 #include "../MusicInfoTagLoaderFactory.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CCDDARipper::CCDDARipper()
 {
   m_pEncoder = NULL;

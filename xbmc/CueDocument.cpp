@@ -36,6 +36,10 @@
 #include "cuedocument.h"
 #include "util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CCueDocument::CCueDocument(void)
 {
   m_strFilePath = "";

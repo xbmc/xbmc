@@ -5,6 +5,10 @@
 #include "..\xbmc\Application.h"
 #include "..\xbmc\settings.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 extern CApplication g_application;
 
 CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strRSSTags)

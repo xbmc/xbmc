@@ -3,6 +3,10 @@
 #include "MusicInfoTagLoaderWav.h"
 #include "cores/paplayer/WAVCodec.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace MUSIC_INFO;
 
 CMusicInfoTagLoaderWAV::CMusicInfoTagLoaderWAV(void)

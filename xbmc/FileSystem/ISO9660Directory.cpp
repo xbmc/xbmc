@@ -5,6 +5,10 @@
 #include "iso9660.h"
 #include "../util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CISO9660Directory::CISO9660Directory(void)
 {}
 

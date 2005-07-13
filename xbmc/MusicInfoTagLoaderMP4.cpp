@@ -5,6 +5,10 @@
 #include "picture.h"
 #include "lib/libID3/globals.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace AUTOPTR;
 using namespace MUSIC_INFO;
 

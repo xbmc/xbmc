@@ -15,6 +15,9 @@
 #include <D3D8Perf.h>
 #include "XBVideoConfig.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 //-----------------------------------------------------------------------------
 // Global access to common members

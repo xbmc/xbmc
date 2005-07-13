@@ -16,6 +16,10 @@
 #include "WindowsVersion.h"
 #include "mailmsg.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 typedef BOOL
 (_stdcall *tSymFromAddr)(
     IN  HANDLE              hProcess,

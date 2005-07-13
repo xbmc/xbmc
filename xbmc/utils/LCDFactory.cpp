@@ -6,6 +6,10 @@
 #include "../lib/x3lcd/x3lcd.h"
 
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 ILCD* g_lcd = NULL;
 CLCDFactory::CLCDFactory(void)
 {}

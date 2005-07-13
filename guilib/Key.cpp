@@ -1,6 +1,10 @@
 #include "include.h"
 #include "key.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CKey::CKey(void)
 {
   m_dwButtonCode = KEY_INVALID;

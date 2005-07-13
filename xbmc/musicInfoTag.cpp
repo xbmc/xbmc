@@ -3,6 +3,10 @@
 #include "util.h"
 #include "musicdatabase.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace MUSIC_INFO;
 
 CMusicInfoTag::CMusicInfoTag(void)

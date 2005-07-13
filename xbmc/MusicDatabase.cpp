@@ -6,6 +6,10 @@
 #include "filesystem/FactoryDirectory.h"
 #include "application.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define MUSIC_DATABASE_VERSION 1.2f
 
 using namespace XFILE;

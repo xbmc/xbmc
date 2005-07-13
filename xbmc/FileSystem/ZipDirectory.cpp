@@ -1,3 +1,4 @@
+#include "../stdafx.h"
 #include "ZipDirectory.h"
 #include "../application.h"
 #include "../utils/log.h"
@@ -7,6 +8,10 @@
 #include <vector>
 
 // TODO: enable in my videos, fix bug with cbz in file manager, enable in my music, filezip::stat
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 namespace DIRECTORY
 {

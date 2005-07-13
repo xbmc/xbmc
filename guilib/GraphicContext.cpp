@@ -3,6 +3,10 @@
 #include "../xbmc/Settings.h"
 #include "../xbmc/XBVideoConfig.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define WIDE_SCREEN_COMPENSATIONY (FLOAT)1.2
 #define WIDE_SCREEN_COMPENSATIONX (FLOAT)0.85
 

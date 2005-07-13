@@ -2,6 +2,10 @@
 #include "url.h"
 #include "utils/RegExp.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CURL::CURL(const CStdString& strURL)
 {
   m_strHostName = "";

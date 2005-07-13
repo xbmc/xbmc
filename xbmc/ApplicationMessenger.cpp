@@ -8,6 +8,10 @@
 #include "util.h"
 #include "lib/libPython/XBPython.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CApplicationMessenger g_applicationMessenger;
 
 void CApplicationMessenger::Cleanup()
