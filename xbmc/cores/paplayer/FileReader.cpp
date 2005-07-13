@@ -2,6 +2,10 @@
 #include "FileReader.h"
 #include "../../utils/SingleLock.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define DATA_TO_KEEP_BEHIND 65536
 
 CFileReader::CFileReader()

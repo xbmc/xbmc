@@ -4,6 +4,10 @@
 #include "GUIWindowManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define CONSOLE_LINE_SPACING 1.0f
 
 CGUIConsoleControl::CGUIConsoleControl(DWORD dwParentID, DWORD dwControlId,

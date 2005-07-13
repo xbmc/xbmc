@@ -1,6 +1,10 @@
 #include "../stdafx.h"
 #include "xbeheader.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CXBE::CXBE()
 {
   // Assume 256K is enough for header information

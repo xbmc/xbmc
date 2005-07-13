@@ -2,6 +2,10 @@
 #include <XGraphics.h>
 #include "PackedTexture.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 HRESULT LoadPackedTexture(LPDIRECT3DDEVICE8 pDevice, const char* szFilename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8* ppTexture,
                           LPDIRECT3DPALETTE8* ppPalette)
 {

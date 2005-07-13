@@ -1,6 +1,10 @@
 #include "../../stdafx.h"
 #include "WAVPackCodec.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define WAVPACK_DLL "Q:\\system\\players\\paplayer\\WAVPack.dll"
 
 WAVPackCodec::WAVPackCodec()

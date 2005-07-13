@@ -13,6 +13,10 @@
 
 #include "../../utils/log.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define DEFAULT_DLLPATH "Q:\\system\\players\\mplayer\\codecs"
 
 #define MODULE_HANDLES_START     0xf3f30120
@@ -981,6 +985,19 @@ Exp2Dll::~Exp2Dll()
   {
     *curr = Next;
     Next = 0;
+  }
+}
+
+void RemoveAllDllImports()
+{
+  Exp2Dll* curr = Head;
+
+  Exp2Dll* next;
+  while ( curr )
+  {
+    next=curr->Next;
+    delete curr;
+    curr = next;
   }
 }
 

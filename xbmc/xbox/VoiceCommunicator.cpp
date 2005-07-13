@@ -2,6 +2,10 @@
 #include "VoiceCommunicator.h"
 #include "VoiceManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 // Defined in VoiceManager.cpp
 extern const DWORD VOICE_SAMPLING_RATE;
 

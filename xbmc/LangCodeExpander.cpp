@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "langcodeexpander.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CLangCodeExpander g_LangCodeExpander;
 
 CLangCodeExpander::CLangCodeExpander(void)
@@ -8,9 +12,7 @@ CLangCodeExpander::CLangCodeExpander(void)
 
 CLangCodeExpander::~CLangCodeExpander(void)
 {
-  ClearMap(m_mapISO639_1);
-  ClearMap(m_mapISO639_2);
-  ClearMap(m_mapUser);
+  Clear();
 }
 void CLangCodeExpander::LoadUserCodes(const TiXmlElement* pRootElement)
 {
@@ -129,11 +131,14 @@ void CLangCodeExpander::LoadCodes(const TiXmlElement* pRootElement, CLangCodeExp
       strcpy(sShort, pShort->FirstChild()->Value());
       strcpy(sLong, pLong->FirstChild()->Value());
       strlwr(sShort); //Lowercase all keys for lookup
-      m_map.insert(
-        STRINGLOOKUPTABLE::value_type(
-          sShort,
-          sLong)
-      );
+      CStdString strDesc;
+      if (!LookupInMap(strDesc, sShort, m_map))
+        m_map.insert(
+          STRINGLOOKUPTABLE::value_type(
+            sShort,
+            sLong));
+      else
+        delete[] sShort;
     }
     pLangCode = pLangCode->NextSibling();
   }
@@ -197,4 +202,11 @@ inline void CLangCodeExpander::ClearMap(CLangCodeExpander::STRINGLOOKUPTABLE& sl
   slmap.clear();
   return ;
 
+}
+
+void CLangCodeExpander::Clear()
+{
+  ClearMap(m_mapISO639_1);
+  ClearMap(m_mapISO639_2);
+  ClearMap(m_mapUser);
 }

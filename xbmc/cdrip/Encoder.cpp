@@ -2,6 +2,10 @@
 #include "Encoder.h"
 #include "..\util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
 {
   if (strFile == NULL) return false;

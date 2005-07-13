@@ -19,6 +19,11 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 #include "FileSndtrk.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace XFILE;
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

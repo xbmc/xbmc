@@ -198,6 +198,8 @@ public:
   bool Load(bool& bXboxMediacenter, bool& bSettings);
   void Save() const;
 
+  void Clear();
+
   bool LoadProfile(int index);
   bool SaveSettingsToProfile(int index);
   void DeleteProfile(int index);

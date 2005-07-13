@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "accounts.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 t_directory::t_directory()
 {
 	bAutoCreate = FALSE;

@@ -2,6 +2,10 @@
 #include "GUIDialogSelect.h"
 #include "Application.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define CONTROL_HEADING       4
 #define CONTROL_LIST          3
 #define CONTROL_NUMBEROFFILES 2

@@ -4,6 +4,9 @@
 
 #include "RegExp.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 // definition	number	opnd?	meaning 
 #define	END		0		// no	End of program. 

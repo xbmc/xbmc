@@ -38,6 +38,10 @@ to maintain a single distribution point for the source code.
 #include "sntp.h"
 #include "../DNSNameCache.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 const double NTP_FRACTIONAL_TO_MS = (((double)1000.0) / 0xFFFFFFFF);
 const double NTP_TO_SECOND = (((double)1.0) / 0xFFFFFFFF);
 const long JAN_1ST_1900 = 2415021;

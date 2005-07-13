@@ -23,6 +23,9 @@
 #include "../../util.h"
 #include "../../XBVideoConfig.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
 {

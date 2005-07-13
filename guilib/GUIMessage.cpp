@@ -3,6 +3,10 @@
 #include "LocalizeStrings.h"
 
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, void* lpVoid)
 {
   m_dwMessage = dwMsg;

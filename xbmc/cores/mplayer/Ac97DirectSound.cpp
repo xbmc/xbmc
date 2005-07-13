@@ -26,6 +26,10 @@
 #include "mplayer.h"
 #include "AudioContext.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define VOLUME_MIN  DSBVOLUME_MIN
 #define VOLUME_MAX  DSBVOLUME_MAX
 

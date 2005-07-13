@@ -7,6 +7,10 @@
 #include "dvdplayer\DVDPlayer.h"
 #include "paplayer\paplayer.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CPlayerCoreFactory::CPlayerCoreFactory()
 {}
 CPlayerCoreFactory::~CPlayerCoreFactory()

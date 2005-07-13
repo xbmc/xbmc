@@ -3,6 +3,10 @@
 #include "../util.h"
 #include "../xbox/iosupport.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 SOUNDTRACK datastorage; //created a vector of the XSOUNDTRACK_DATA class to keep track of each album
 
 CSndtrkDirectory::CSndtrkDirectory(void)

@@ -6,7 +6,13 @@
 #include "Playlistb4S.h"
 #include "PlaylistWPL.h"
 #include "util.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace PLAYLIST;
+
 CPlayListFactory::CPlayListFactory(void)
 {}
 

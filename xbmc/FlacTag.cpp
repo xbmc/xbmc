@@ -3,6 +3,10 @@
 #include "xtl.h"
 #include "flactag.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define BYTES_TO_CHECK_FOR_BAD_TAGS 8192
 
 using namespace MUSIC_INFO;

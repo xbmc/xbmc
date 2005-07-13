@@ -36,6 +36,8 @@ public:
   CGUIInfoManager(void);
   virtual ~CGUIInfoManager(void);
 
+  void Clear();
+
   int TranslateString(const CStdString &strCondition);
   bool GetBool(int condition) const;
   int GetInt(int info) const;

@@ -5,6 +5,10 @@
 #include "util.h"
 #include "application.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define CONTROL_PROFILES 2
 #define CONTROL_LASTLOADED_PROFILE 3
 

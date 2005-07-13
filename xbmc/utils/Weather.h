@@ -90,6 +90,7 @@ protected:
   char m_szCurrentDewPoint[10];
   char m_szCurrentHumidity[10];
   char m_szBusyString[256];
+  char m_szNAIcon[256];
 
   unsigned int m_iCurWeather;
   bool m_bBusy;

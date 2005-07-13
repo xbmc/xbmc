@@ -17,6 +17,7 @@ public:
   void RestoreStartupSpeed();
 
   static CFanController* Instance();
+  static void RemoveInstance();
   virtual ~CFanController();
 private:
   enum SensorType {

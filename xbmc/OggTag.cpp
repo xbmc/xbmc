@@ -3,6 +3,10 @@
 #include "oggtag.h"
 #include "util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace MUSIC_INFO;
 
 //  From EMUmsvcrt.cpp to open a file for a dll

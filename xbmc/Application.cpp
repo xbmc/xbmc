@@ -45,6 +45,11 @@
 #include "utils/charsetconverter.h"
 #include "guiusermessages.h"
 #include "cores/paplayer/paplayer.h"
+#include "filesystem/directoryCache.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -1152,14 +1157,15 @@ void CApplication::StartFtpServer()
 
 void CApplication::StopFtpServer()
 {
-  /* filezilla doesn't like to be deleted?
-  if (m_pFileZilla) {
-  CLog::Log(LOGINFO, "stop ftpserver");
-  m_pFileZilla->Stop();
+  /* filezilla doesn't like to be deleted?  */
+  if (m_pFileZilla)
+  {
+    CLog::Log(LOGINFO, "stop ftpserver");
+    m_pFileZilla->Stop();
     delete m_pFileZilla;
     m_pFileZilla = NULL;
   }
-  */
+
 }
 
 void CApplication::StartTimeServer()
@@ -1295,6 +1301,7 @@ void CApplication::StopServices()
 
   CLog::Log(LOGNOTICE, "stop fancontroller");
   CFanController::Instance()->Stop();
+  CFanController::RemoveInstance();
 }
 
 void CApplication::DelayLoadSkin()
@@ -2647,6 +2654,7 @@ void CApplication::Stop()
     CKaiClient::GetInstance()->RemoveObserver();
 
     StopServices();
+    //Sleep(5000);
 
     if (m_pPlayer)
     {
@@ -2674,11 +2682,17 @@ void CApplication::Stop()
 
     CLog::Log(LOGNOTICE, "unload skin");
     m_guiMusicOverlay.FreeResources();
+    m_guiMusicOverlay.ClearAll();
     m_guiVideoOverlay.FreeResources();
+    m_guiVideoOverlay.ClearAll();
     m_guiPointer.FreeResources();
+    m_guiPointer.ClearAll();
     m_guiDialogVolumeBar.FreeResources();
+    m_guiDialogVolumeBar.ClearAll();
     m_guiDialogSeekBar.FreeResources();
+    m_guiDialogSeekBar.ClearAll();
     m_guiDialogKaiToast.FreeResources();
+    m_guiDialogKaiToast.ClearAll();
     g_fontManager.Clear();
     m_gWindowManager.DeInitialize();
     g_audioManager.DeInitialize();
@@ -2688,10 +2702,43 @@ void CApplication::Stop()
     CSectionLoader::UnloadAll();
     CLog::Log(LOGNOTICE, "destroy");
     Destroy();
+
+#ifdef _DEBUG
+    //  Shutdown as much as possible of the
+    //  application, to reduce the leaks dumped
+    //  to the vc output window before calling
+    //  _CrtDumpMemoryLeaks(). Most of the leaks 
+    //  shown are no real leaks, as parts of the app
+    //  are still allocated.
+    g_localizeStrings.Clear();
+    g_LangCodeExpander.Clear();
+    g_charsetConverter.clear();
+    g_directoryCache.Clear();
+    g_buttonTranslator.Clear();
+    CKaiClient::RemoveInstance();
+    CScrobbler::RemoveInstance();
+    g_infoManager.Clear();
+    if (g_lcd)
+    {
+      g_lcd->Stop();
+      delete g_lcd;
+      g_lcd=NULL;
+    }
+    extern void RemoveAllDllImports();
+    RemoveAllDllImports();
+    g_settings.Clear();
+    g_guiSettings.Clear();
+#endif
+
     CLog::Log(LOGNOTICE, "stopped");
   }
   catch (...)
   {}
+
+#ifdef _DEBUG
+    _CrtDumpMemoryLeaks();
+    while(1); // execution ends
+#endif
 }
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
@@ -3630,7 +3677,6 @@ void CApplication::Process()
     CUtil::XboxAutoDetection();
     m_PingTimer = timeGetTime();
   }
-  
 }
 
 void CApplication::Restart(bool bSamePosition)

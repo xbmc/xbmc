@@ -1,6 +1,10 @@
 #include "../stdafx.h"
 #include "CDDAReader.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define SECTOR_COUNT 55
 
 CCDDAReader::CCDDAReader()

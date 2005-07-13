@@ -2,6 +2,10 @@
 #include "../stdafx.h"
 #include "dlgcache.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CDlgCache::CDlgCache()
 {
   m_pDlg = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);

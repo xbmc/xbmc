@@ -3,6 +3,10 @@
 #include "..\cores\DllLoader\Dll.h"
 #include "EncoderDLL.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #ifdef __cplusplus
 extern "C"
 {

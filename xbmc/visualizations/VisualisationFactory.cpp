@@ -3,6 +3,9 @@
 #include "../cores/DllLoader/dll.h"
 #include "../util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 CVisualisationFactory::CVisualisationFactory()
 {}

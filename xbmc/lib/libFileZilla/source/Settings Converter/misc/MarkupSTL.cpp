@@ -8,9 +8,8 @@
 
 #include "MarkupSTL.h"
 
-#ifdef _DEBUGx
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
+#ifdef _DEBUG
+#define new DEBUG_NEW
 #endif
 
 #ifdef _MBCS

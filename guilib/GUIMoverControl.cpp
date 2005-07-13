@@ -3,6 +3,10 @@
 #include "GUIWindowManager.h"
 #include "ActionManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 // time to reset accelerated cursors (digital movement)
 #define MOVE_TIME_OUT 500L
 

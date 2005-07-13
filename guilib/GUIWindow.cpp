@@ -37,6 +37,10 @@
 #include "../xbmc/ApplicationMessenger.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CStdString CGUIWindow::CacheFilename = "";
 CGUIWindow::VECREFERENCECONTOLS CGUIWindow::ControlsCache;
 
@@ -61,6 +65,11 @@ CGUIWindow::~CGUIWindow(void)
 void CGUIWindow::FlushReferenceCache()
 {
   CacheFilename.clear();
+  for (int i = 0; i < (int)ControlsCache.size();++i)
+  {
+    struct stReferenceControl stControl = ControlsCache[i];
+    delete stControl.m_pControl;
+  }
   ControlsCache.clear();
 }
 

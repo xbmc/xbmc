@@ -2,6 +2,10 @@
 #include "musicinfotagloadercdda.h"
 #include "FileSystem/cddb.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace MUSIC_INFO;
 using namespace CDDB;
 

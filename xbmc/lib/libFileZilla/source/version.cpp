@@ -28,6 +28,10 @@
 #include "stdafx.h"
 #include "version.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define XBFILEZILLA_VERSION "1.4"
 #define FILEZILLA_VERSION "0.8.8"
 

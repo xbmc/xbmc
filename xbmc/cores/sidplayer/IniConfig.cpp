@@ -16,6 +16,15 @@
  ***************************************************************************/ 
 /***************************************************************************
  *  $Log$
+ *  Revision 1.4  2005/07/13 19:46:58  bobbin007
+ *  fixed: ftp server can not be shut down via settings menu
+ *  fixed: reference controls got not freed after skin load
+ *  fixed: small mem leak in weather
+ *  changed: enabled CRT mem leak tracking in debug builds
+ *                         To get a dump of leaks in the vc output window use the shutdown menu to shut down the application.
+ *                         NOTE: Not all leaks displayed there are real leaks as parts of the application are still allocated,
+ *                         but nevertheless its usefull ;)
+ *
  *  Revision 1.3  2005/03/19 17:33:04  jmarshallnz
  *  Formatting for tabs -> 2 spaces
  *
@@ -72,6 +81,10 @@
 #   include <sys/types.h>
 #   include <sys/stat.h>  /* mkdir */
 #   include <dirent.h>    /* opendir */
+#endif
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
 #endif
 
 #define SAFE_FREE(p) { if(p) { free (p); (p)=NULL; } }

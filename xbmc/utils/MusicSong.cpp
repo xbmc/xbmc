@@ -4,6 +4,10 @@
 #include "../util.h"
 using namespace MUSIC_GRABBER;
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CMusicSong::CMusicSong(int iTrack, const CStdString& strName, int iDuration)
 {
   m_iTrack = iTrack;

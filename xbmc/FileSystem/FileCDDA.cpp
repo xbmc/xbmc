@@ -5,6 +5,10 @@
 #include "../lib/libcdio/util.h"
 #include "../DetectDVDType.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace MEDIA_DETECT;
 using namespace XFILE;
 

@@ -4,6 +4,10 @@
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, DWORD dwTextColor, DWORD dwTextAlign)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {

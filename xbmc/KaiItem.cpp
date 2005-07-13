@@ -6,6 +6,10 @@
 #include "Util.h"
 #include "Picture.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CKaiItem::CKaiItem(CStdString& strLabel) : CGUIListExItem(strLabel)
 {
   m_pAvatar = NULL;

@@ -13,6 +13,8 @@ public:
 
   void reset();
 
+  void clear();
+
   void stringCharsetToFontCharset(const CStdStringA& strSource, CStdStringW& strDest);
 
   void subtitleCharsetToFontCharset(const CStdStringA& strSource, CStdStringW& strDest);

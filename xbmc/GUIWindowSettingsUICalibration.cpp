@@ -4,6 +4,10 @@
 #include "GUIMoverControl.h"
 #include "Application.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define CONTROL_MOVER 2
 #define CONTROL_LABEL 3
 

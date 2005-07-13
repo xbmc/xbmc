@@ -2,6 +2,10 @@
 #include "GUIList.h"
 #include <algorithm>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CGUIList::CGUIList()
 {
   m_comparision = NULL;

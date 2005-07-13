@@ -5,6 +5,13 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-07-2005 fixed: ftp server can not be shut down via settings menu
+ - 13-07-2005 fixed: reference controls got not freed after skin load
+ - 13-07-2005 fixed: small mem leak in weather
+ - 13-07-2005 changed: enabled CRT mem leak tracking in debug builds
+                       To get a dump of leaks in the vc output window use the shutdown menu to shut down the application.
+                       NOTE: Not all leaks displayed there are real leaks as parts of the application are still allocated,
+                       but nevertheless its usefull ;)
  - 13-07-2005 fixed: Fullscreen visualisation actions weren't working for non-milkdrop vis's.
  - 13-07-2005 added: Deinterlacing for dvdplayer, automatic support for most dvd's/mpegs, possible to manually enable through options
  - 13-07-2005 added: HTTPAPI: all commands are now available through ASP

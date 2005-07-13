@@ -8,6 +8,10 @@
 #include "xbox/undocumented.h"
 #include "programdatabase.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define KAI_CONSOLE_PEN_NORMAL 0
 #define KAI_CONSOLE_PEN_ACTION 1
 #define KAI_CONSOLE_PEN_SYSTEM 2

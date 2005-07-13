@@ -7,6 +7,10 @@
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 // String id's of the masks
 #define MASK_MINS   14044
 #define MASK_SECS   14045
@@ -510,12 +514,7 @@ CGUISettings::CGUISettings(void)
 
 CGUISettings::~CGUISettings(void)
 {
-  for (mapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
-    delete (*it).second;
-  settingsMap.clear();
-  for (unsigned int i = 0; i < settingsGroups.size(); i++)
-    delete settingsGroups[i];
-  settingsGroups.clear();
+
 }
 
 void CGUISettings::AddGroup(DWORD dwGroupID, DWORD dwLabelID)
@@ -862,3 +861,12 @@ void CGUISettings::SaveXML(TiXmlNode *pRootNode)
   }
 }
 
+void CGUISettings::Clear()
+{
+  for (mapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
+    delete (*it).second;
+  settingsMap.clear();
+  for (unsigned int i = 0; i < settingsGroups.size(); i++)
+    delete settingsGroups[i];
+  settingsGroups.clear();
+}

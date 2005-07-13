@@ -9,6 +9,10 @@
 #include "DVDdemuxUtils.h"
 #include "..\DVDClock.h" // for DVD_TIME_BASE
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define SWAP(a,b)   { int t; t=a; a=b; b=t; }
     
 

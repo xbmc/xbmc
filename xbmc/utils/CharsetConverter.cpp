@@ -1,5 +1,9 @@
 #include "../stdafx.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CCharsetConverter g_charsetConverter;
 
 CCharsetConverter::CCharsetConverter()
@@ -65,6 +69,14 @@ CCharsetConverter::CCharsetConverter()
   m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_CP1256);
 
   // reset();
+}
+
+void CCharsetConverter::clear()
+{
+  m_vecBidiCharsetNames.clear();
+  m_vecBidiCharsets.clear();
+  m_vecCharsetNames.clear();
+  m_vecCharsetLabels.clear();
 }
 
 vector<CStdString> CCharsetConverter::getCharsetLabels()

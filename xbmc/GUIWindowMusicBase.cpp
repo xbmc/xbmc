@@ -17,6 +17,10 @@
 #include "AutoSwitch.h"
 #include "GUIFontManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNTYPE         6
 #define CONTROL_BTNSEARCH       8

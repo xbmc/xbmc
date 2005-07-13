@@ -7,6 +7,10 @@
 #include "utils/FanController.h"
 #include "LangCodeExpander.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 class CSettings g_settings;
 struct CSettings::stSettings g_stSettings;
 
@@ -1875,6 +1879,9 @@ void CSettings::LoadHomeButtons(TiXmlElement* pRootElement)
       }
       if (pButton->m_strExecute.size() > 0)
         g_settings.m_buttonSettings.m_vecButtons.push_back(pButton);
+      else
+        delete pButton;
+
       pChild = pChild->NextSiblingElement();
     }
     GetInteger(pElement, "default", g_settings.m_buttonSettings.m_iDefaultButton, 0, 0, (int)g_settings.m_buttonSettings.m_vecButtons.size());
@@ -2076,4 +2083,22 @@ bool CSettings::SaveFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &
     pRoot->InsertEndChild(folderNode);
   }
   return xmlDoc.SaveFile(strFolderXML);
+}
+
+void CSettings::Clear()
+{
+  m_vecMyProgramsBookmarks.clear();
+  m_vecMyPictureShares.clear();
+  m_vecMyFilesShares.clear();
+  m_vecMyMusicShares.clear();
+  m_vecMyVideoShares.clear();
+  m_vecSambeShres.clear();
+  m_vecIcons.clear();
+  m_vecProfiles.clear();
+  m_buttonSettings.Clear();
+  m_szMyVideoStackTokensArray.clear();
+  m_szMyVideoCleanTokensArray.clear();
+  m_MyVideoStackRegExps.clear();
+  m_mapRssUrls.clear();
+  xbmcXml.Clear();
 }

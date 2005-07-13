@@ -26,6 +26,10 @@
 #include "../../application.h" // Karaoke patch (114097)
 #include "AudioContext.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define CALC_DELAY_START   0
 #define CALC_DELAY_STARTED 1
 #define CALC_DELAY_DONE    2

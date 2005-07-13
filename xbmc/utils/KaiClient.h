@@ -55,6 +55,7 @@ public:
   enum Item{Unknown = 0, Player = 1, Arena = 2};
 
   static CKaiClient* GetInstance();
+  static void RemoveInstance();
   virtual ~CKaiClient(void);
 
   void SetObserver(IBuddyObserver* aObserver);

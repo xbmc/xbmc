@@ -25,6 +25,10 @@ distribution.
 #include "../include.h"
 #include "tinyxml.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #ifndef TIXML_USE_STL
 
 

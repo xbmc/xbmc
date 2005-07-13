@@ -3,6 +3,10 @@
 #include "GUILabelControl.h"
 #include "GUIButtonControl.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define CONTROL_BUTTON_LABEL  3100
 
 CGUIDialogButtonMenu::CGUIDialogButtonMenu(void)

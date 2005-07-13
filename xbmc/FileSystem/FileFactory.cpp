@@ -15,6 +15,10 @@
 #include "FileRar.h"
 #include "FileFTP.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace XFILE;
 
 CFileFactory::CFileFactory()

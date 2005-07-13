@@ -4,6 +4,10 @@
 #include "Util.h"
 #include "GUIImage.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define CONTROL_ALBUM  20
 #define CONTROL_ARTIST 21
 #define CONTROL_DATE   22
