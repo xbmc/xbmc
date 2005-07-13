@@ -54,14 +54,6 @@
 #define AVOPTION_SUB(ptr) { .name = NULL, .help = (const char*)ptr }
 #define AVOPTION_END() AVOPTION_SUB(NULL)
 
-struct AVOption;
-#ifdef HAVE_MMX
-extern const struct AVOption avoptions_common[3 + 5];
-#else
-extern const struct AVOption avoptions_common[3];
-#endif
-extern const struct AVOption avoptions_workaround_bug[11];
-
 #endif /* HAVE_AV_CONFIG_H */
 
 /* Suppress restrict if it was not defined in config.h.  */
@@ -82,6 +74,14 @@ extern const struct AVOption avoptions_workaround_bug[11];
 #    define attribute_used __attribute__((used))
 #else
 #    define attribute_used
+#endif
+#endif
+
+#ifndef attribute_unused
+#if defined(__GNUC__) && (__GNUC__ > 3 || __GNUC__ == 3 && __GNUC_MINOR__ > 0)
+#    define attribute_unused __attribute__((unused))
+#else
+#    define attribute_unused
 #endif
 #endif
 
@@ -125,13 +125,13 @@ extern const struct AVOption avoptions_workaround_bug[11];
 #endif
 
 #ifdef EMULATE_FAST_INT
-/* note that we don't emulate 64bit ints */
 typedef signed char int_fast8_t;
 typedef signed int  int_fast16_t;
 typedef signed int  int_fast32_t;
 typedef unsigned char uint_fast8_t;
 typedef unsigned int  uint_fast16_t;
 typedef unsigned int  uint_fast32_t;
+typedef uint64_t      uint_fast64_t;
 #endif
 
 #ifndef INT_BIT
@@ -456,8 +456,18 @@ if((y)<(x)){\
 }
 #endif
 
-#if defined(ARCH_X86) || defined(ARCH_X86_64)
-static inline long long rdtsc(void)
+#if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_POWERPC)
+#if defined(ARCH_X86_64)
+static inline uint64_t read_time(void)
+{
+	uint64_t a, d;
+	asm volatile(	"rdtsc\n\t"
+		: "=a" (a), "=d" (d)
+	);
+	return (d << 32) | (a & 0xffffffff);
+}
+#elif defined(ARCH_X86)
+static inline long long read_time(void)
 {
 	long long l;
 	asm volatile(	"rdtsc\n\t"
@@ -465,13 +475,33 @@ static inline long long rdtsc(void)
 	);
 	return l;
 }
+#else //FIXME check ppc64
+static inline uint64_t read_time(void)
+{
+    uint32_t tbu, tbl, temp;
+
+     /* from section 2.2.1 of the 32-bit PowerPC PEM */
+     __asm__ __volatile__(
+         "1:\n"
+         "mftbu  %2\n"
+         "mftb   %0\n"
+         "mftbu  %1\n"
+         "cmpw   %2,%1\n"
+         "bne    1b\n"
+     : "=r"(tbl), "=r"(tbu), "=r"(temp)
+     :
+     : "cc");
+
+     return (((uint64_t)tbu)<<32) | (uint64_t)tbl;
+}
+#endif
 
 #define START_TIMER \
 uint64_t tend;\
-uint64_t tstart= rdtsc();\
+uint64_t tstart= read_time();\
 
 #define STOP_TIMER(id) \
-tend= rdtsc();\
+tend= read_time();\
 {\
   static uint64_t tsum=0;\
   static int tcount=0;\
@@ -489,8 +519,6 @@ tend= rdtsc();\
 #define START_TIMER 
 #define STOP_TIMER(id) {}
 #endif
-
-#define CLAMP_TO_8BIT(d) ((d > 0xff) ? 0xff : (d < 0) ? 0 : d)
 
 /* avoid usage of various functions */
 #define malloc please_use_av_malloc
