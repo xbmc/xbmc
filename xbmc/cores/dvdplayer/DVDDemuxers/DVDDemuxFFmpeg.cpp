@@ -71,7 +71,7 @@ int dvd_input_stream_write_packet(void* opaque, BYTE* buf, int buf_size)
   return dvd_file_write((URLContext*)opaque, buf, buf_size);
 }
 
-int dvd_input_stream_seek(void *opaque, __int64 offset, int whence)
+__int64 dvd_input_stream_seek(void *opaque, __int64 offset, int whence)
 {
   return (int)(dvd_file_seek((URLContext*)opaque, offset, whence) & 0xFFFFFFFF);
 }
@@ -308,10 +308,16 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
       pPacket = CDVDDemuxUtils::AllocateDemuxPacket();
 
       // copy contents into our own packet
+      
+      // pkt.pts is not the real pts, but a frame number.
+      // to get our pts we need to multiply the frame delay with that number
+      int num = m_pFormatContext->streams[pkt.stream_index]->time_base.num;
+      int den = m_pFormatContext->streams[pkt.stream_index]->time_base.den;
+      
       if (pkt.pts == AV_NOPTS_VALUE) pPacket->pts = DVD_NOPTS_VALUE;
-      else pPacket->pts = pkt.pts;
+      else pPacket->pts = (num * pkt.pts * DVD_TIME_BASE) / den;
       if (pkt.dts == AV_NOPTS_VALUE) pPacket->dts = DVD_NOPTS_VALUE;
-      else pPacket->dts = pkt.dts;
+      else pPacket->dts = (num * pkt.dts * DVD_TIME_BASE) / den;
 
       pPacket->iStreamId = pkt.stream_index; // XXX just for now
 
@@ -428,8 +434,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       {
         m_streams[iId] = new CDemuxStreamVideoFFmpeg();
         m_streams[iId]->type = STREAM_VIDEO;
-        ((CDemuxStreamVideo*)m_streams[iId])->iFpsRate = pStream->codec.frame_rate;
-        ((CDemuxStreamVideo*)m_streams[iId])->iFpsScale = pStream->codec.frame_rate_base;
+        ((CDemuxStreamVideo*)m_streams[iId])->iFpsRate = pStream->codec.time_base.den;
+        ((CDemuxStreamVideo*)m_streams[iId])->iFpsScale = pStream->codec.time_base.num;
         ((CDemuxStreamVideo*)m_streams[iId])->iWidth = pStream->codec.width;
         ((CDemuxStreamVideo*)m_streams[iId])->iHeight = pStream->codec.height;
         break;
@@ -438,6 +444,12 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       {
         m_streams[iId] = new CDemuxStream();
         m_streams[iId]->type = STREAM_DATA;
+        break;
+      }
+    case CODEC_TYPE_SUBTITLE:
+      {
+        m_streams[iId] = new CDemuxStream();
+        m_streams[iId]->type = STREAM_SUBTITLE;
         break;
       }
     default:

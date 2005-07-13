@@ -6,10 +6,11 @@ enum CodecID;
 
 enum StreamType
 {
-  STREAM_NONE,   // if unknown
-  STREAM_AUDIO,  // audio stream
-  STREAM_VIDEO,  // video stream
-  STREAM_DATA   // data stream (eg. dvd spu's)
+  STREAM_NONE,    // if unknown
+  STREAM_AUDIO,   // audio stream
+  STREAM_VIDEO,   // video stream
+  STREAM_DATA,    // data stream
+  STREAM_SUBTITLE // subtitle stream
 };
 
 /*
@@ -38,8 +39,8 @@ public:
   CodecID codec;
   StreamType type;
 
-  int iDuration; // in seconds
-  void* pPrivate; // private pointer or the demuxer
+  int iDuration; // in mseconds
+  void* pPrivate; // private pointer for the demuxer
 };
 
 class CDemuxStreamVideo : public CDemuxStream
