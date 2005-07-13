@@ -942,7 +942,9 @@
   <string><id>14066</id><value>Enter the Time in 24 hour HH:MM format</value></string>
   <string><id>14067</id><value>Enter the Date in DD/MM/YYYY format</value></string>
   <string><id>14068</id><value>Enter the IP address</value></string>
-	  
+  <string><id>14069</id><value>Do you want set these Settings now?</value></string> 	 
+  <string><id>14070</id><value>Apply Changes Now</value></string> 	 
+
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>The service is not connected, would you like to attempt</value></string>
   <string><id>15002</id><value>reconnecting it with Xbox Media Center?</value></string>
