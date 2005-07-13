@@ -78,7 +78,7 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
   // see if vis wants to handle the input
   // returns false if vis doesnt want the input
   // returns true if vis handled the input
-  if (m_pVisz->OnAction)
+  if (action != VIS_ACTION_NONE && m_pVisz->OnAction)
     return m_pVisz->OnAction((int)action, param);
   return false;
 }
