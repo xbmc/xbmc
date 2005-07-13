@@ -2443,6 +2443,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDVideoCodecLibMpeg2.h">
 					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDVideoPPFFmpeg.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDVideoPPFFmpeg.h">
+					</File>
 				</Filter>
 				<Filter
 					Name="DVDDemuxers"
@@ -2504,6 +2510,70 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h">
+					</File>
+				</Filter>
+				<Filter
+					Name="DVDHeaders"
+					Filter="">
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\avcodec.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\avformat.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\avio.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\common.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\decoder.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvd_reader.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvd_types.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvdnav.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvdnav_events.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvdnav_internal.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\ffmpeg.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\ifo_types.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\nav_types.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\rational.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\remap.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\rtp.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\rtsp.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\rtspcodes.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\vm.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\vmcmd.h">
 					</File>
 				</Filter>
 			</Filter>
