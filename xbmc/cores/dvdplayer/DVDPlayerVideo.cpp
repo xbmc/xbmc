@@ -135,7 +135,7 @@ void CDVDPlayerVideo::Process()
   HANDLE hVideoRefreshThread;
   CDVDDemux::DemuxPacket* pPacket;
   DVDVideoPicture picture;
-  CDVDVideoPPFFmpeg mDeinterlace(CDVDVideoPPFFmpeg::ED_DEINT_CUBICIPOL);
+  CDVDVideoPPFFmpeg mDeinterlace(CDVDVideoPPFFmpeg::ED_DEINT_FFMPEG);
 
   memset(&picture, 0, sizeof(DVDVideoPicture));
   __int64 pts=0;
