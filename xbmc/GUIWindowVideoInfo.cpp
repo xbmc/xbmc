@@ -5,6 +5,10 @@
 #include "picture.h"
 #include "application.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define CONTROL_TITLE    20
 #define CONTROL_DIRECTOR   21
 #define CONTROL_CREDITS    22

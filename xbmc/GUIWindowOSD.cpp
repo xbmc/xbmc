@@ -10,6 +10,10 @@
 #include "utils/GUIInfoManager.h"
 #include "cores/VideoRenderers/RenderManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define OSD_VIDEOPROGRESS 101
 #define OSD_SKIPBWD 210
 #define OSD_REWIND 211

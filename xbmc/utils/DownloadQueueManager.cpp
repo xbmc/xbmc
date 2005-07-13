@@ -2,6 +2,10 @@
 #include "../stdafx.h"
 #include "DownloadQueueManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 // Global instance of the download manager
 CDownloadQueueManager g_DownloadManager;
 

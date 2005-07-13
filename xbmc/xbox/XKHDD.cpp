@@ -68,6 +68,10 @@ Reason: more features for XBMC! [Code CleaUp and Removed No Need Features!]
 #include "XKSHA1.h"
 #include <conio.h>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 XKHDD::XKHDD()
 {}
 XKHDD::~XKHDD(void)

@@ -1,6 +1,10 @@
 #include "../../stdafx.h"
 #include "MPCCodec.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 // Callbacks for file reading
 int Mpc_Callback_Read(MpcPlayStream * stream, void * buffer, int bytes, int * bytes_read)
 {

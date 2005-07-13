@@ -2,6 +2,10 @@
 #include "FLACCodec.h"
 #include "../../FLACtag.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define FLAC_DLL "Q:\\system\\players\\PAPlayer\\libFlac.dll"
 
 FLACCodec::FLACCodec()

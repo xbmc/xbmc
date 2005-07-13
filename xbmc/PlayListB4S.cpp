@@ -3,6 +3,10 @@
 #include "playlistb4s.h"
 #include "util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 /* ------------------------ example b4s playlist file ---------------------------------
  <?xml version="1.0" encoding='UTF-8' standalone="yes"?>
  <WinampXML>

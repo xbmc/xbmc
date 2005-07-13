@@ -9,6 +9,10 @@
 #include "cores/ssrc.h"
 #include "GUIFontManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define MAX_RENDER_METHODS 9
 #define MAX_ZOOM_FACTOR    10
 #define MAX_PICTURE_WIDTH  4096

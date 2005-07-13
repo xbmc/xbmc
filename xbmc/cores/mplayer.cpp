@@ -13,6 +13,10 @@
 #include "../GUIWindowFullScreen.h"
 #include "../utils/GUIInfoManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define KEY_ENTER 13
 #define KEY_TAB 9
 

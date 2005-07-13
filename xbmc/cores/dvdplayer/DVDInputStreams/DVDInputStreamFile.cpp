@@ -4,6 +4,10 @@
 
 #include "..\..\..\util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CDVDInputStreamFile::CDVDInputStreamFile() : CDVDInputStream()
 {
   m_streamType = DVDSTREAM_TYPE_FILE;

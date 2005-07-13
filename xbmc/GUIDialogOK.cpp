@@ -3,6 +3,10 @@
 #include "application.h"
 #include "util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define ID_BUTTON_NO   10
 #define ID_BUTTON_YES  11
 

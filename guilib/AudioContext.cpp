@@ -3,6 +3,10 @@
 #include "../xbmc/Settings.h"
 #include "../xbmc/XBAudioConfig.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CAudioContext g_audioContext;
 
 CAudioContext::CAudioContext()

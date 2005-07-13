@@ -32,6 +32,10 @@
 
 #include "bsdsfv.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #pragma warning (disable:4244)
 #pragma warning (disable:4800)
 CXBFileZillaImp* CXBFileZillaImp::mInstance = NULL;
@@ -79,7 +83,8 @@ CXBFileZillaImp* CXBFileZillaImp::GetInstance()
 DWORD CXBFileZillaImp::ExitInstance()
 {
   // signal ftp server to stop
-  SendMessage(mServer->GetHwnd(), WM_CLOSE, 0, 0);
+  //SendMessage(mServer->GetHwnd(), WM_CLOSE, 0, 0);
+  SendMessage(mServer->GetHwnd(), WM_DESTROY, 0, 0);
 
   return 0;
 }
@@ -90,7 +95,10 @@ bool CXBFileZillaImp::Stop()
   HANDLE handle = m_hThread;
   PostThreadMessage(WM_QUIT, 0, 0);
 
-  return (WAIT_FAILED != WaitForSingleObject(handle, INFINITE));
+  bool bRet=(WAIT_FAILED != WaitForSingleObject(handle, INFINITE));
+
+  RemoveMessageSinks();
+  return bRet;
 }
 
 bool CXBFileZillaImp::Start()

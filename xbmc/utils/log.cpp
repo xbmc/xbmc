@@ -7,6 +7,10 @@
 #include "StdString.h"
 #include "../Settings.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 static CLog g_logger;
 
 CLog::CLog()

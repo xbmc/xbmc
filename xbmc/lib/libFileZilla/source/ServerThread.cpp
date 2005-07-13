@@ -29,8 +29,7 @@
 #include "ExternalIpCheck.h"
 
 #ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
 #endif
 
 std::map<int, t_socketdata> CServerThread::m_userids;

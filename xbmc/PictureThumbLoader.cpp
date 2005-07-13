@@ -2,6 +2,10 @@
 #include "PictureThumbLoader.h"
 #include "Picture.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CPictureThumbLoader::CPictureThumbLoader()
 {
   m_regenerateThumbs = false;

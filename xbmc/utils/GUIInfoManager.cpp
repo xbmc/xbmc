@@ -18,6 +18,10 @@
 
 #include "FanController.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 extern char g_szTitleIP[32];
 
 #define PLAYER_HAS_MEDIA              1
@@ -1261,3 +1265,11 @@ int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
   m_CombinedValues.push_back(comb);
   return comb.m_id;
 }
+
+void CGUIInfoManager::Clear()
+{
+  m_currentSong.Clear();
+  m_currentMovie.Reset();
+  m_CombinedValues.clear();
+}
+

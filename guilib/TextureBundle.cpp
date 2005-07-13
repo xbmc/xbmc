@@ -4,6 +4,10 @@
 #include "GraphicContext.h"
 #include "../xbmc/lib/liblzo/LZO1X.H"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #pragma comment(lib,"xbmc/lib/liblzo/lzo.lib")
 
 // alignment of file blocks - should be a multiple of the sector size of the disk and a power of 2

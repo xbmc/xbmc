@@ -7,6 +7,10 @@
 #include "apev2tag.h"
 #include "cores/paplayer/aaccodec.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 using namespace MUSIC_INFO;
 
 const uchar* ID3_GetPictureBufferOfPicType(ID3_Tag* tag, ID3_PictureType pictype, size_t* pBufSize )

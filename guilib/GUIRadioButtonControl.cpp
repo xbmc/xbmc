@@ -1,6 +1,10 @@
 #include "include.h"
 #include "GUIRadioButtonControl.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
     const CStdString& strTextureFocus, const CStdString& strTextureNoFocus,
     DWORD dwTextOffsetX, DWORD dwTextOffsetY, DWORD dwTextAlign,

@@ -6,6 +6,10 @@
 #include "Utils/KaiClient.h"
 #include "ArenaItem.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define CTL_LABEL_CAPTION 1
 #define CTL_LABEL_SCHEDULE 2
 #define CTL_LABEL_GAME  3

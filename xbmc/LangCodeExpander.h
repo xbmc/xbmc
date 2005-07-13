@@ -19,6 +19,7 @@ public:
 
   void LoadStandardCodes();
   void LoadUserCodes(const TiXmlElement* pRootElement);
+  void Clear();
 protected:
 
 

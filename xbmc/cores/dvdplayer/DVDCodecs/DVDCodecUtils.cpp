@@ -2,6 +2,10 @@
 #include "../../../stdafx.h"
 #include "DVDCodecUtils.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 // forward declarations
 void fast_memcpy(void* d, const void* s, unsigned n);
 

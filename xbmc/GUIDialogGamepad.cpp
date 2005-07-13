@@ -2,6 +2,10 @@
 #include "guidialogGamepad.h"
 #include "util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CGUIDialogGamepad::CGUIDialogGamepad(void)
     : CGUIDialog(0)
 {

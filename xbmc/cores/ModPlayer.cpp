@@ -4,6 +4,10 @@
 #include "../util.h"
 #include "../application.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #pragma comment(linker,"/merge:MOD_RD=MOD_RX")
 #pragma comment(linker,"/section:MOD_RX,REN")
 #pragma comment(linker,"/section:MOD_RW,RWN")

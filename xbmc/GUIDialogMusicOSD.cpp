@@ -2,6 +2,10 @@
 #include "GUIDialogMusicOSD.h"
 #include "GUIWindowSettingsCategory.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define CONTROL_VIS_BUTTON       500
 #define CONTROL_LOCK_BUTTON      501
 #define CONTROL_VIS_CHOOSER      503

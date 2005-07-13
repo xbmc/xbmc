@@ -4,6 +4,10 @@
 #include "GraphicContext.h"
 #include <xgraphics.h>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define TEXTURE_WIDTH 512
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
 #define TTF_FONT_CACHE_SIZE 32*1024

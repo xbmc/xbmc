@@ -68,6 +68,10 @@ Reason: more features for XBMC!
 #include "xkeeprom.h"
 #include <stdio.h>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 /* Default Constructor using a Blank eeprom image... */
 XKEEPROM::XKEEPROM()
 {

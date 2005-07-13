@@ -3,6 +3,10 @@
 #include "DirectoryCache.h"
 #include "../util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CDirectoryCache g_directoryCache;
 CCriticalSection CDirectoryCache::m_cs;
 
@@ -120,8 +124,10 @@ void CDirectoryCache::Clear()
     {
       dir->m_Items.Clear(); // will clean up everything
       delete dir;
-      g_directoryCache.m_vecCache.erase(i);
+      i=g_directoryCache.m_vecCache.erase(i);
     }
+    else
+      i++;
 
   }
 }

@@ -2,6 +2,10 @@
 #include "GUIEditControl.h"
 #include "../xbmc/util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,
                                  int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
                                  const CStdString& strFont, const wstring& strLabel,

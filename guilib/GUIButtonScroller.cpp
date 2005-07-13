@@ -6,6 +6,10 @@
 #include "GUIWindowManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define SCROLL_SPEED 6.0f
 
 CGUIButtonScroller::CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, int iGap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, int iTextXOffset, int iTextYOffset, DWORD dwAlign)

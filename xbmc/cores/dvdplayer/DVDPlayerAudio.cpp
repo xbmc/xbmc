@@ -12,6 +12,10 @@
 #define EMULATE_INTTYPES
 #include "ffmpeg\avcodec.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define ROUNDED_DIV(a,b) (((a)>0 ? (a) + ((b)>>1) : (a) - ((b)>>1))/(b))
 #define ABS(a) ((a) >= 0 ? (a) : (-(a)))
 

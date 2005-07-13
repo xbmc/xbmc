@@ -13,6 +13,7 @@ public:
   virtual ~CButtonTranslator();
 
   bool Load();
+  void Clear();
   void GetAction(WORD wWindow, const CKey &key, CAction &action);
   WORD TranslateWindowString(const char *szWindow);
 private:

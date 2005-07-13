@@ -4,6 +4,10 @@
 #include "../../utils/GUIInfoManager.h"
 #include "AudioContext.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define VOLUME_FFWD_MUTE 900 // 9dB
 
 #define FADE_TIME 2 * 2048.0f / 48000.0f      // 2 packets

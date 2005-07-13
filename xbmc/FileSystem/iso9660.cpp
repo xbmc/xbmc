@@ -20,6 +20,10 @@ ISO9660
 */
 #include "iso9660.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 //#define _DEBUG_OUTPUT 1
 
 class iso9660 m_isoReader;
@@ -909,7 +913,7 @@ HANDLE iso9660::AllocFileContext()
   {
     if (m_isoFiles[i] == NULL)
     {
-      m_isoFiles[i] = new isofile();
+      m_isoFiles[i] = new isofile;
       return (HANDLE)i;
     }
   }

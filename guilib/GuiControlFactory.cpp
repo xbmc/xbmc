@@ -32,6 +32,10 @@
 #include "GUIVisualisationControl.h"
 #include "../xbmc/util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CGUIControlFactory::CGUIControlFactory(void)
 {}
 

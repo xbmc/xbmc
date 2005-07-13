@@ -21,6 +21,10 @@
 #include "GUIPassword.h"
 #include "utils/GUIInfoManager.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
 #define CONTROL_SETTINGS_LABEL          2

@@ -7,6 +7,10 @@
 #include "ButtonTranslator.h"
 #include "util.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 #define TRANSISTION_COUNT   50  // 1 second
 #define TRANSISTION_LENGTH 200  // 4 seconds
 #define START_FADE_LENGTH  100  // 2 seconds on startup

@@ -4,6 +4,10 @@
 #include "../util.h"
 #include "../utils/singlelock.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 CRarManager g_RarManager;
 
 CFileInfo::CFileInfo()

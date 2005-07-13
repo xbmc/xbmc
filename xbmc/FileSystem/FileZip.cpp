@@ -1,5 +1,10 @@
+#include "../stdafx.h"
 #include "FileZip.h"
 #include <sys/stat.h>
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 CFileZip::CFileZip() : m_dlgProgress(NULL), m_bUseProgressBar(false)
 {
