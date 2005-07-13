@@ -35,6 +35,8 @@ public:
   int  xbmcRemoveFromPlayList(int eid, webs_t wp, int numParas, CStdString paras[]);
   int  xbmcSetPlayListSong(int eid, webs_t wp, int numParas, CStdString paras[]);
   int  xbmcGetPlayListSong(int eid, webs_t wp, int numParas, CStdString paras[]);
+  int  xbmcSetPlaySpeed(int eid, webs_t wp, int numParas, CStdString paras[]);
+  int  xbmcGetPlaySpeed(int eid, webs_t wp);
   int  xbmcPlayListNext(int eid, webs_t wp);
   int  xbmcPlayListPrev(int eid, webs_t wp);
   int  xbmcSetVolume(int eid, webs_t wp, int numParas, CStdString paras[]);
