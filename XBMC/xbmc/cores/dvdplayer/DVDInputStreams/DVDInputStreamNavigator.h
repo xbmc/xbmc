@@ -86,8 +86,9 @@ public:
 
 protected:
 
-  bool LoadDLL();
-  void UnloadDLL();
+  bool LoadLibdvdcssDll();
+  bool LoadLibdvdnavDll();
+  void UnloadDlls();
 
   int ProcessBlock();
 
@@ -97,8 +98,8 @@ protected:
 
   CRITICAL_SECTION m_critSection;
   struct dvdnav_s* m_dvdnav;
-  DllLoader* m_pDLLlibdvdnav;
-  DllLoader* m_pDLLlibdvdcss;
+  bool m_bDllLibdvdnavLoaded;
+  bool m_bDllLibdvdcssLoaded;
   IDVDPlayer* m_pDVDPlayer;
 
   bool m_bDiscardHop;
