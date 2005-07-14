@@ -9,9 +9,6 @@ OFF/Green/Red/Orange/Cycle
 #include "SystemInfo.h"
 #include "../xbox/XKUtils.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 void ILED::CLEDControl(int ixLED)
 {

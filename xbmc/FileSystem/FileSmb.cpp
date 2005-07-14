@@ -6,9 +6,6 @@
 #include "FileSmb.h"
 #include "../GUIPassword.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 void xb_smbc_log(const char* msg)
 {

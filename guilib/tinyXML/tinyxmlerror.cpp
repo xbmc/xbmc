@@ -25,9 +25,6 @@ distribution.
 #include "../include.h"
 #include "tinyxml.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // The goal of the seperate error file is to make the first
 // step towards localization. tinyxml (currently) only supports

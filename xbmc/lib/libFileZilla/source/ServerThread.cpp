@@ -28,9 +28,6 @@
 #include "Permissions.h"
 #include "ExternalIpCheck.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 std::map<int, t_socketdata> CServerThread::m_userids;
 CCriticalSectionWrapper CServerThread::m_GlobalThreadsync;

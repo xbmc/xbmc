@@ -7,9 +7,6 @@
 #include "..\DVDDemuxSPU.h"
 #include "..\DVDOverlay.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #ifdef __cplusplus
 extern "C"

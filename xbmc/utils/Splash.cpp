@@ -4,9 +4,6 @@
 #include "guiImage.h"
 #include "..\util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CSplash::CSplash(const CStdString& imageName)
 {

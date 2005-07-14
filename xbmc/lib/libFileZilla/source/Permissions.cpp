@@ -27,9 +27,6 @@
 #include "options.h"
 //#include "../../Settings.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CPermissionsHelperWindow

@@ -47,9 +47,6 @@
 #include "cores/paplayer/paplayer.h"
 #include "filesystem/directoryCache.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory

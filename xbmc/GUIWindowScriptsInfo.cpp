@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "GUIWindowScriptsInfo.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define CONTROL_TEXTAREA 5
 

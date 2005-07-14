@@ -3,9 +3,6 @@
 #include "MediaPacketQueue.h"
 #include "../Utils/KaiVoice.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // Global instance of the voice manager
 CVoiceManager g_VoiceManager;

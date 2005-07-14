@@ -1,9 +1,6 @@
 #include "../stdafx.h"
 #include "xbeheader.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CXBE::CXBE()
 {

@@ -5,9 +5,6 @@
 #include "GUIDialogGamepad.h"
 #include "xbox/xkutils.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CGUIPassword g_passwordManager;
 

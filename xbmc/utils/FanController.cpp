@@ -6,9 +6,6 @@
 #include "../xbox/XKExports.h"
 #include "SystemInfo.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define PIC_ADDRESS      0x20
 #define XCALIBUR_ADDRESS 0xE0 // XCalibur/1.6 videochip

@@ -6,9 +6,6 @@
 #include "GUIRadioButtonControl.h"
 #include "Utils/KaiClient.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define CTL_CHECKMARK_HOSTING_TYPE 3101
 #define CTL_LABEL_PLAYER_LIMIT  3102

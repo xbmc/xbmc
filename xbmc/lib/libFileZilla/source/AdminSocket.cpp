@@ -28,9 +28,6 @@
 #include "Options.h"
 #include "version.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define BUFSIZE 4096
 

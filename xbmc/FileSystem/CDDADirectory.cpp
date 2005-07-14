@@ -6,9 +6,6 @@
 #include "../application.h"
 #include "cddb.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 using namespace CDDB;
 

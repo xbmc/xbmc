@@ -4,9 +4,6 @@
 #include "GUILabelControl.h"
 #include "GUIAudioManager.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CGUIDialog::CGUIDialog(DWORD dwID)
     : CGUIWindow(dwID)

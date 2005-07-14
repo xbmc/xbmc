@@ -20,9 +20,6 @@
 
 #include "MFC64bitFix.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 /*__int64 GetLength64(CFile &file)
 {

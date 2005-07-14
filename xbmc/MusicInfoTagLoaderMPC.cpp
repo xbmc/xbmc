@@ -3,9 +3,6 @@
 #include "musicinfotagloadermpc.h"
 #include "cores/paplayer/MPCCodec.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 using namespace MUSIC_INFO;
 

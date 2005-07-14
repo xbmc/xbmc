@@ -22,9 +22,6 @@
 #include "GUIFontManager.h"
 #include "../../util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // coefficients used for YUV->RGB coefficient
 #define Y_SCALE 1.164383561643835616438356164383f

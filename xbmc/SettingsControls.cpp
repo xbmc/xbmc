@@ -2,9 +2,6 @@
 #include "SettingsControls.h"
 #include "GUIDialogNumeric.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CBaseSettingControl::CBaseSettingControl(DWORD dwID, CSetting *pSetting)
 {

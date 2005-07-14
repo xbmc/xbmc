@@ -24,9 +24,6 @@
 #include "version.h"
 #include "misc\MarkupSTL.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #pragma warning (disable:4244)
 #pragma warning (disable:4800)

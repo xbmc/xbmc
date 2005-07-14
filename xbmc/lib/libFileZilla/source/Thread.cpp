@@ -23,9 +23,6 @@
 #include "stdafx.h"
 #include "Thread.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion

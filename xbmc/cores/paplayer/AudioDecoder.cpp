@@ -3,9 +3,6 @@
 #include "../../util.h"
 #include "CodecFactory.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define INTERNAL_BUFFER_LENGTH  4*44100       // 1 second
 

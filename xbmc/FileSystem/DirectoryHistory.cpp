@@ -3,9 +3,6 @@
 #include "DirectoryHistory.h"
 #include "../util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CDirectoryHistory::CDirectoryHistory()
 {

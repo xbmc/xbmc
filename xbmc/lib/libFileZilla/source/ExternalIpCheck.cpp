@@ -21,9 +21,6 @@
 #include "ServerThread.h"
 #include "Options.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion

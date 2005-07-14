@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "GUIWindowPointer.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define ID_POINTER 10
 

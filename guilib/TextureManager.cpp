@@ -5,9 +5,6 @@
 #include "GraphicContext.h"
 #include <XGraphics.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 extern void fast_memcpy(void* d, const void* s, unsigned n);
 

@@ -4,9 +4,6 @@
 #include "util.h"
 #include "screensavers/ScreenSaverFactory.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CGUIWindowScreensaver::CGUIWindowScreensaver(void)
     : CGUIWindow(0)

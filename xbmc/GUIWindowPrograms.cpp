@@ -12,9 +12,6 @@
 #include "GUIPassword.h"
 #include "GUIDialogContextMenu.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 using namespace DIRECTORY;
 

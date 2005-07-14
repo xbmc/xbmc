@@ -3,9 +3,6 @@
 #include "DVDClock.h"
 #include <math.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CDVDClock::CDVDClock()
 {

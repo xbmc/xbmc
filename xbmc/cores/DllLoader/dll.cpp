@@ -1,21 +1,11 @@
 #include "stdafx.h"
 #include <stdlib.h>
 
-#include <stdio.h>
-#include <memory>
-#include <map>
-#include <list>
-#include <vector>
-
-#include <string.h>
 #include "dll.h"
 #include "exp2dll.h"
 
 #include "../../utils/log.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define DEFAULT_DLLPATH "Q:\\system\\players\\mplayer\\codecs"
 

@@ -4,9 +4,6 @@
 #include "../../utils/GUIInfoManager.h"
 #include "AudioContext.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define VOLUME_FFWD_MUTE 900 // 9dB
 

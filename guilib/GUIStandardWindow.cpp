@@ -2,9 +2,6 @@
 #include "GUIStandardWindow.h"
 #include "GUIWindowManager.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CGUIStandardWindow::CGUIStandardWindow(void) : CGUIWindow(0)
 {

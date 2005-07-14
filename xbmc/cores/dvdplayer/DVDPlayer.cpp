@@ -28,9 +28,6 @@
 #include "..\..\util.h"
 #include "../../utils/GUIInfoManager.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 

@@ -2,9 +2,6 @@
 #include "../url.h"
 #include "../utils/log.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CZipManager g_ZipManager;
 

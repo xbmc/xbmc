@@ -4,9 +4,6 @@
 #include "GraphicContext.h"
 #include "../xbmc/lib/liblzo/LZO1X.H"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #pragma comment(lib,"xbmc/lib/liblzo/lzo.lib")
 

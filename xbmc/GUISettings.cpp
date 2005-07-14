@@ -7,9 +7,6 @@
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // String id's of the masks
 #define MASK_MINS   14044

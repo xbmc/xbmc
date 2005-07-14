@@ -6,9 +6,6 @@
 #include "Application.h"
 #include "Util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define CONTROL_LABEL_ROW1  2
 #define CONTROL_LABEL_ROW2  3

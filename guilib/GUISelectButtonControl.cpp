@@ -3,9 +3,6 @@
 #include "GUIWindowManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId,
     int iPosX, int iPosY,
