@@ -41,8 +41,8 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
   m_pBufferSize = 0;
   m_pDVDPlayer = player;
   InitializeCriticalSection(&m_critSection);
-  m_pDLLlibdvdnav = NULL; // DLL Handle for libdvdnav.dll
-  m_pDLLlibdvdcss = NULL; // DLL Handle for libdvdcss.dll
+  m_bDllLibdvdcssLoaded = false;
+  m_bDllLibdvdnavLoaded = false;
 
 }
 
@@ -50,80 +50,56 @@ CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
 {
   Close();
   DeleteCriticalSection(&m_critSection);
-  UnloadDLL();
+  UnloadDlls();
 }
 
-bool CDVDInputStreamNavigator::LoadDLL()
+bool CDVDInputStreamNavigator::LoadLibdvdcssDll()
 {
-  if (!m_pDLLlibdvdcss)
+  if (!m_bDllLibdvdcssLoaded)
   {
-    m_pDLLlibdvdcss = new DllLoader("Q:\\system\\players\\dvdplayer\\libdvdcss-2.dll", true);
-    if (!m_pDLLlibdvdcss)
+    DllLoader* pDll = g_sectionLoader.LoadDLL(DVD_LIBDVDCSS_DLL);
+    if (!pDll)
     {
-      CLog::Log(LOGERROR, "CDVDInputStreamNavigator::LoadDLL() loading dll failed");
-      UnloadDLL();
+      CLog::Log(LOGERROR, "CDVDInputStreamNavigator: Unable to load dll %s", DVD_LIBDVDCSS_DLL);
       return false;
     }
-
-    if (!m_pDLLlibdvdcss->Parse())
-    {
-      CLog::Log(LOGERROR, "CDVDInputStreamNavigator::LoadDLL() parse failed");
-      UnloadDLL();
-      return false;
-    }
-    if (!m_pDLLlibdvdcss->ResolveImports())
-    {
-      CLog::Log(LOGWARNING, "CDVDInputStreamNavigator::LoadDLL() resolve imports failed");
-      UnloadDLL();
-      return false;
-    }
+    
+    m_bDllLibdvdcssLoaded = true;
   }
-
-  if (!m_pDLLlibdvdnav)
-  {
-    m_pDLLlibdvdnav = new DllLoader("Q:\\system\\players\\dvdplayer\\libdvdnav.dll", true);
-    if (!m_pDLLlibdvdnav)
-    {
-      CLog::Log(LOGERROR, "CDVDInputStreamNavigator::LoadDLL() loading dll failed");
-      UnloadDLL();
-      return false;
-    }
-
-    if (!m_pDLLlibdvdnav->Parse())
-    {
-      CLog::Log(LOGERROR, "CDVDInputStreamNavigator::LoadDLL() parse failed");
-      UnloadDLL();
-      return false;
-    }
-    if (!m_pDLLlibdvdnav->ResolveImports())
-    {
-      CLog::Log(LOGWARNING, "CDVDInputStreamNavigator::LoadDLL() resolve imports failed");
-      UnloadDLL();
-      return false;
-    }
-    if (!dvdplayer_load_dll_libdvdnav(*m_pDLLlibdvdnav))
-    {
-      // if we can't find all functions in our dll we just quit
-      // cause we don't want any NULL pointer errors
-      UnloadDLL();
-      return false;
-    }
-  }
-
   return true;
 }
 
-void CDVDInputStreamNavigator::UnloadDLL()
+bool CDVDInputStreamNavigator::LoadLibdvdnavDll()
 {
-  if (m_pDLLlibdvdnav)
+  if (!m_bDllLibdvdnavLoaded)
   {
-    delete m_pDLLlibdvdnav;
-    m_pDLLlibdvdnav = NULL;
+    DllLoader* pDll = g_sectionLoader.LoadDLL(DVD_LIBDVDNAV_DLL);
+    if (!pDll)
+    {
+      CLog::Log(LOGERROR, "CDVDInputStreamNavigator: Unable to load dll %s", DVD_LIBDVDNAV_DLL);
+      return false;
+    }
+    if (!dvdplayer_load_dll_libdvdnav(*pDll))
+    {
+      return false;
+    }
+    m_bDllLibdvdnavLoaded = true;
   }
-  if (m_pDLLlibdvdcss)
+  
+  return true;
+}
+
+void CDVDInputStreamNavigator::UnloadDlls()
+{
+  if (m_bDllLibdvdcssLoaded)
   {
-    delete m_pDLLlibdvdcss;
-    m_pDLLlibdvdcss = NULL;
+    g_sectionLoader.UnloadDLL(DVD_LIBDVDCSS_DLL);
+    m_bDllLibdvdcssLoaded = false;;
+  }
+  if (m_bDllLibdvdnavLoaded)
+  {
+    g_sectionLoader.UnloadDLL(DVD_LIBDVDNAV_DLL);
+    m_bDllLibdvdnavLoaded = false;
   }
 }
 
@@ -132,10 +108,14 @@ bool CDVDInputStreamNavigator::Open(const char* strFile)
   char* strDVDFile;
 
   if (!CDVDInputStream::Open(strFile)) return false;
-
-  // load the dll first
-  if (!LoadDLL()) return false;
-
+  
+  // load libdvdnav.dll and libdvdcss
+  if (!LoadLibdvdcssDll() || !LoadLibdvdnavDll())
+  {
+    UnloadDlls();
+    return false;
+  }
+  
   // load the dvd language codes
   // g_LangCodeExpander.LoadStandardCodes();
 
@@ -151,7 +131,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile)
   if (dvdnav_open(&m_dvdnav, strDVDFile) != DVDNAV_STATUS_OK)
   {
     CLog::DebugLog("Error on dvdnav_open\n");
-    UnloadDLL();
+    Close();
     return false;
   }
 
@@ -164,7 +144,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile)
       dvdnav_spu_language_select(m_dvdnav, "en") != DVDNAV_STATUS_OK)
   {
     CLog::DebugLog("Error on setting languages: %s\n", dvdnav_err_to_string(m_dvdnav));
-    UnloadDLL();
+    Close();
     return false;
   }
 
@@ -172,6 +152,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile)
   if (dvdnav_set_readahead_flag(m_dvdnav, 1) != DVDNAV_STATUS_OK)
   {
     CLog::DebugLog("Error on dvdnav_set_readahead_flag: %s\n", dvdnav_err_to_string(m_dvdnav));
+    Close();
     return false;
   }
 
@@ -180,7 +161,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile)
   if (dvdnav_set_PGC_positioning_flag(m_dvdnav, 1) != DVDNAV_STATUS_OK)
   {
     CLog::DebugLog("Error on dvdnav_set_PGC_positioning_flag: %s\n", dvdnav_err_to_string(m_dvdnav));
-    UnloadDLL();
+    Close();
     return false;
   }
 
@@ -191,7 +172,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile)
 
 void CDVDInputStreamNavigator::Close()
 {
-  if (!m_dvdnav) return ;
+  if (!m_dvdnav) return;
 
   // finish off by closing the dvdnav device
   if (dvdnav_close(m_dvdnav) != DVDNAV_STATUS_OK)
@@ -479,13 +460,13 @@ bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iPhysicalId)
     }
   }
   return false;
-
-
 }
+
 void CDVDInputStreamNavigator::ActivateButton()
 {
   if (m_dvdnav)
   {
+    //m_bDiscardHop = true;
     dvdnav_button_activate(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
   }
 }
