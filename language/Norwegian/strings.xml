@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.211. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.216. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -445,6 +445,7 @@
   <string><id>512</id><value>Starbilde</value></string>
   <string><id>513</id><value>Hovedmeny</value></string>
   <string><id>514</id><value>Manuelle innstillinger</value></string>
+  <string><id>515</id><value>Sjanger</value></string>
 
   <string><id>600</id><value>Ripp musikk-CD</value></string>
   <string><id>601</id><value>Middels</value></string>
@@ -551,7 +552,7 @@
   <string><id>768</id><value>Reserved</value></string>
   <string><id>769</id><value>Reserved</value></string>
   <string><id>770</id><value>Feil %i: mappe ikke tilgjengelig</value></string>
-  <string><id>771</id><value>Løsning for fatx-grenser i FTP-server</value></string>
+  <string><id>771</id><value>- Automatisk FATX-begrensning</value></string>
   <string><id>772</id><value>Lyd-maskinvare</value></string>
   <string><id>773</id><value>Søker</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
@@ -595,6 +596,18 @@
   <string><id>1233</id><value>Programmer &amp; Video &amp; Musikk</value></string>
   <string><id>1234</id><value>Programmer &amp; Bilder &amp; Musikk</value></string>
   <string><id>1235</id><value>Programmer &amp; Bilder &amp; Video</value></string>
+
+  <string><id>1245</id><value> - FTP brukernavn</value></string>
+  <string><id>1246</id><value> - FTP brukerpassord</value></string>
+  <string><id>1247</id><value>FTP-servers brukerpassord ble endret!</value></string>
+
+  <string><id>1250</id><value>Autooppdagelse</value></string>
+  <string><id>1251</id><value>XBOX Autooppdagelse</value></string>
+  <string><id>1252</id><value>Kallenavn</value></string>
+  <string><id>1253</id><value>Lag FTP link i Mine filer</value></string>
+  <string><id>1254</id><value>Popup-melding</value></string>
+  <string><id>1255</id><value>Send FTP brukernavn og passord</value></string>
+  <string><id>1256</id><value>Ping-intervall i sek.</value></string>
 
   <string><id>1396</id><value>Forbigående</value></string>
   <string><id>1397</id><value>og</value></string>
@@ -693,10 +706,10 @@
   <string><id>12324</id><value>XBMC Masterlås</value></string>
   <string><id>12325</id><value>Mappe låst</value></string>
   <string><id>12326</id><value>Skriv inn passord</value></string>
-  <string><id>12327</id><value>Skriv inn masterkode og trykk enter,</value></string>
-  <string><id>12328</id><value>Skriv inn kode og trykk enter,</value></string> 
+  <string><id>12327</id><value>Skriv inn masterkode</value></string>
+  <string><id>12328</id><value>Skriv inn kode</value></string> 
   <string><id>12329</id><value>eller trykk C for å avbryte</value></string>
-  <string><id>12330</id><value>Skriv inn XBOX knappekombinasjon og </value></string>
+  <string><id>12330</id><value>Skriv inn XBOX knappekombinasjon og trykkk start</value></string>
   <string><id>12331</id><value>trykk Start, eller Back for å avbryte</value></string>
   <string><id>12332</id><value>Lås</value></string>
   <string><id>12333</id><value>Lås opp</value></string>
@@ -718,7 +731,7 @@
   <string><id>12349</id><value>Husk masterkode inntil neste oppstart?</value></string>
   <string><id>12350</id><value>(Å åpne et valg under instillinger vill</value></string>
   <string><id>12351</id><value>automatisk reaktivere masterkoden.)</value></string>
-  <string><id>12352</id><value>Skriv inn masterkode knappekombinasjon og </value></string>
+  <string><id>12352</id><value>Skriv inn masterkode knappekombinasjon og trykk start</value></string>
   <string><id>12353</id><value>Reaktiver lås</value></string>
   <string><id>12354</id><value>Overstyr mappelåser inntil neste oppstart?</value></string>
   <string><id>12355</id><value>Automatisk reaktiver mappelåser.)</value></string>
@@ -925,13 +938,11 @@
   <string><id>14062</id><value>Skriv inn brukernavn for</value></string>
 
   <string><id>14063</id><value>Dato &amp; Tid</value></string>
-  <string><id>14064</id><value>Sett år</value></string>
-  <string><id>14065</id><value>Sett måned</value></string>
-  <string><id>14066</id><value>Sett dag</value></string>
-  <string><id>14067</id><value>Sett time</value></string>
-  <string><id>14068</id><value>Sett minutt</value></string>
-  <string><id>14069</id><value>Vil du bruke disse instillingene nå?</value></string>
-  <string><id>14070</id><value>Bruk disse instillingene nå</value></string>
+  <string><id>14064</id><value>Sett dato</value></string>
+  <string><id>14065</id><value>Sett tid</value></string>
+  <string><id>14066</id><value>Skriv inn tiden i 24-timers HH:MM-format</value></string>
+  <string><id>14067</id><value>Skriv inn datoen i DD/MM/ÅÅÅÅ-format</value></string>
+  <string><id>14068</id><value>Skriv inn IP-adressen</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Tjenesten er ikke tilkoblet, vil du forsøke</value></string>
