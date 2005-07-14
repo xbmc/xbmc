@@ -27,10 +27,6 @@ CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, i
   m_iCharIndex = 0;
   m_iStartFrame = 0;
   m_iScrollX = 1;
-  m_pdwPalette = new DWORD[3];
-  m_pdwPalette[0] = dwNormalColor;
-  m_pdwPalette[1] = dwHeadlineColor;
-  m_pdwPalette[2] = dwChannelColor;
 
   m_pReader = NULL;
   m_pwzText = NULL;
@@ -44,8 +40,6 @@ CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, i
 
 CGUIRSSControl::~CGUIRSSControl(void)
 {
-  //if(m_pdwPalette) //Shouldn't be deallocated as it is used by all RSSControls
-  //  delete[] m_pdwPalette;
   if (m_pReader)
   {
     m_pReader->StopThread();
@@ -63,7 +57,6 @@ CGUIRSSControl::~CGUIRSSControl(void)
   for (unsigned int i=0;i<m_vecTimeSnapShot.size();++i)
     delete m_vecTimeSnapShot[i];
 
-  m_pdwPalette = NULL;
   m_pReader = NULL;
   m_pwzText = NULL;
   m_pwzBuffer = NULL;
@@ -207,6 +200,11 @@ void CGUIRSSControl::RenderText()
   newviewport.MaxZ = 1.0f;
   g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
 
+  DWORD dwPalette[3];
+  dwPalette[0]=m_dwTextColor;
+  dwPalette[1]=m_dwHeadlineColor;
+  dwPalette[2]=m_dwChannelColor;
+
   // if size of text is bigger than can be drawn onscreen
   if (m_fTextWidth > fMaxWidth)
   {
@@ -284,7 +282,7 @@ void CGUIRSSControl::RenderText()
 
       if (fPosY >= 0.0)
       {
-        m_pFont->DrawColourTextWidth(fPosX - m_iScrollX, fPosY, m_pdwPalette, m_pwzBuffer, m_pbBuffer, fMaxWidth);
+        m_pFont->DrawColourTextWidth(fPosX - m_iScrollX, fPosY, *&dwPalette, m_pwzBuffer, m_pbBuffer, fMaxWidth);
       }
     }
     else
@@ -292,7 +290,7 @@ void CGUIRSSControl::RenderText()
       m_iStartFrame++;
       if (fPosY >= 0.0)
       {
-        m_pFont->DrawColourTextWidth(fPosX, fPosY, m_pdwPalette, m_pwzText, m_pbColors, fMaxWidth);
+        m_pFont->DrawColourTextWidth(fPosX, fPosY, *&dwPalette, m_pwzText, m_pbColors, fMaxWidth);
       }
     }
   }
