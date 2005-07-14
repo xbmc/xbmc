@@ -42,7 +42,6 @@ protected:
   WCHAR* m_pwzBuffer;
   LPBYTE m_pbColors;
   LPBYTE m_pbBuffer;
-  LPDWORD m_pdwPalette;
 
   CStdString m_strRSSTags;
   D3DCOLOR m_dwChannelColor;
