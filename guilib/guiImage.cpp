@@ -470,6 +470,7 @@ int CGUIImage::GetRenderHeight() const
 
 void CGUIImage::SetFileName(const CStdString& strFileName)
 {
+  if (m_strFileName.Equals(strFileName)) return;
   FreeResources();
   m_strFileName = strFileName;
   AllocResources();
