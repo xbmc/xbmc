@@ -441,6 +441,10 @@
 <string><id>509</id><value>Programma thumbnails cachen</value></string>
 <string><id>510</id><value>Visualisaties weergeven</value></string>
 <string><id>511</id><value>Automatisch videoweergave aanpassen aan regiocode</value></string>
+<string><id>512</id><value>Opstartscherm</value></string>
+<string><id>513</id><value>Beginscherm</value></string>
+<string><id>514</id><value>Handmatige instellingen</value></string>
+
 <string><id>600</id><value>CD kopiëren</value></string>
 <string><id>601</id><value>Middelmatig</value></string>
 <string><id>602</id><value>Standaard</value></string>
@@ -549,6 +553,7 @@
 <string><id>770</id><value>Fout %i: gedeelde map niet beschikbaar</value></string>
 <string><id>771</id><value>Workaround voor fatx beperkingen in FTP server</value></string>
 <string><id>772</id><value>Audio hardware</value></string>
+<string><id>773</id><value>Uitpakken</value></string>
 <string><id>998</id><value>XLink Kai</value></string>
 <string><id>999</id><value>Online gamen</value></string>
 
@@ -576,12 +581,31 @@
 <string><id>1220</id><value>Afbeeldingen en bestanden</value></string>
 <string><id>1221</id><value>Muziek, video's en afbeeldingen</value></string>
 <string><id>1222</id><value>Muziek, video's, afbeeldingen en bestanden</value></string>
-<string><id>1226</id><value>Bestanden, muziek en video</value></string>
-<string><id>1227</id><value>Bestanden, afbeeldingen en muziek</value></string>
-<string><id>1228</id><value>Bestanden, afbeeldingen en video</value></string>
 <string><id>1223</id><value>Uitgeschakeld</value></string>
 <string><id>1224</id><value>Normale gebruikers</value></string>
 <string><id>1225</id><value>Geavanceerde gebruikers</value></string>
+<string><id>1226</id><value>Bestanden, muziek en video</value></string>
+<string><id>1227</id><value>Bestanden, afbeeldingen en muziek</value></string>
+<string><id>1228</id><value>Bestanden, afbeeldingen en video</value></string>
+<string><id>1229</id><value>Muziek en programma's</value></string>
+<string><id>1230</id><value>Video en programma's</value></string>
+<string><id>1231</id><value>Afbeeldingen en programma's</value></string>
+<string><id>1232</id><value>Muziek, video, afbeeldingen en programma's</value></string>
+<string><id>1233</id><value>Programma's, video en muziek</value></string>
+<string><id>1234</id><value>Programma's, afbeeldingen en muziek</value></string>
+<string><id>1235</id><value>Programma's, afbeeldingen en video's</value></string>
+
+<string><id>1245</id><value> - FTP gebruikersnaam</value></string>
+<string><id>1246</id><value> - FTP wachtwoord</value></string>
+<string><id>1247</id><value>FTP server gebruikersnaam en wachtwoord zijn succesvol ingesteld!</value></string>
+
+<string><id>1250</id><value>Xbox detecteren</value></string>
+<string><id>1251</id><value>Aangesloten Xboxen automatisch detecteren</value></string>
+<string><id>1252</id><value>Nickname</value></string>
+<string><id>1253</id><value>FTP link maken in bestandsbeheer</value></string>
+<string><id>1254</id><value>Popup melding weergeven</value></string>
+<string><id>1255</id><value>FTP gebruikersnaam en wachtwoord verzenden</value></string>
+<string><id>1256</id><value>Ping interval in sec.</value></string>
 
 <string><id>1396</id><value>Driftsneeuw</value></string>
 <string><id>1397</id><value>en</value></string>
@@ -680,22 +704,22 @@
 <string><id>12324</id><value>XBMC Hoofdvergrendeling</value></string> 
 <string><id>12325</id><value>Folder vergrendeld</value></string> 
 <string><id>12326</id><value>Voer het wachtwoord in</value></string> 
-<string><id>12327</id><value>Voer de hoofdcode in en druk op Enter,</value></string> 
-<string><id>12328</id><value>Voer de ontgrendelcode in en druk op Enter,</value></string> 
+<string><id>12327</id><value>Voer de hoofdcode in</value></string> 
+<string><id>12328</id><value>Voer de ontgrendelcode in</value></string> 
 <string><id>12329</id><value>of druk op C om te annuleren</value></string> 
-<string><id>12330</id><value>Voer Xbox controller knoppencombinatie in en </value></string> 
+<string><id>12330</id><value>Voer Xbox controller knoppencombinatie in en druk op start</value></string> 
 <string><id>12331</id><value>druk op Start, of Back om te annuleren</value></string> 
-<string><id>12332</id><value>Snelkoppeling vergrendelen</value></string> 
-<string><id>12333</id><value>Vergrendeling opheffen</value></string> 
+<string><id>12332</id><value>Vergrendelen</value></string> 
+<string><id>12333</id><value>Ontgrendelen</value></string> 
 <string><id>12334</id><value>Vergrendeling resetten</value></string> 
 <string><id>12335</id><value>Vergrendeling verwijderen</value></string> 
 <string><id>12336</id><value>Selecteer het te gebruiken type vergrendeling:</value></string> 
 <string><id>12337</id><value>Nummeriek wachtwoord</value></string> 
 <string><id>12338</id><value>Controller knoppencombinatie</value></string> 
-<string><id>12339</id><value>Volledig tekst Wachtwoord</value></string> 
+<string><id>12339</id><value>Normaal wachtwoord</value></string> 
 <string><id>12340</id><value>Voer nieuw wachtwoord in</value></string> 
 <string><id>12341</id><value>Voer nieuw wachtwoord opnieuw in</value></string> 
-<string><id>12342</id><value>Incorrect wachtwoord,</value></string> 
+<string><id>12342</id><value>Incorrect wachtwoord</value></string> 
 <string><id>12343</id><value>pogingen over </value></string> 
 <string><id>12344</id><value>Ingevoerd wachtwoord klopt niet.</value></string> 
 <string><id>12345</id><value>Toegang geweigerd</value></string> 
@@ -712,6 +736,22 @@
 <string><id>12356</id><value>Vergrendeling veranderen</value></string>
 <string><id>12357</id><value>Vergrendeling delen</value></string>
 <string><id>12358</id><value>Wachtwoord is niet opgegeven. Probeer het opnieuw.</value></string>
+<string><id>12360</id><value>Hoofdcode</value></string>
+<string><id>12361</id><value>Aantal keer proberen</value></string>
+<string><id>12362</id><value>Uitschakelen</value></string>
+<string><id>12363</id><value>Deelmappen beveiligen</value></string>
+<string><id>12364</id><value>Hoofdcode</value></string>
+<string><id>12365</id><value>Hoofdcode</value></string>
+<string><id>12366</id><value>Hoofdvergrendeling is veranderd. Hoofdcode is nu:</value></string>
+<string><id>12367</id><value>Hoofdcode is niet geldig!</value></string>
+<string><id>12368</id><value>Voer een geldige hoofdcode in!</value></string>
+<string><id>12369</id><value>XBMC startslot</value></string>
+<string><id>12370</id><value>Hoofdvergrendeling veranderd, de hoofdcode is uitgeschakeld!</value></string>
+<string><id>12371</id><value>Voer een nieuwe hoofdcode in!</value></string>
+
+<string><id>12372</id><value>Bestandsbeheer vergrendelen</value></string>
+<string><id>12373</id><value>Instellingen vergrendelen</value></string>
+<string><id>12374</id><value>Media vergrendelen</value></string>
 
 <string><id>12600</id><value>Het Weer</value></string>
 <string><id>12900</id><value>Schermbeveiliging</value></string>
@@ -828,6 +868,10 @@
 <string><id>13385</id><value>Stem - Poort 3</value></string>
 <string><id>13386</id><value>Op tijd gebaseerd zoeken</value></string>
 <string><id>13387</id><value>Track weergeven als (rechts)</value></string>
+<string><id>13388</id><value>Presets</value></string>
+<string><id>13389</id><value>Er zijn geen presets beschikbaar&#10;voor deze visualisatie</value></string>
+<string><id>13390</id><value>Er zijn geen instellingen beschikbaar&#10;voor deze visualisatie</value></string>
+<string><id>13391</id><value>Tray openen/sluiten</value></string>
 
 <string><id>14000</id><value>Groeperen: Uit</value></string>
 <string><id>14001</id><value>Groeperen: Aan</value></string> 

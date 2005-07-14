@@ -447,6 +447,7 @@
   <string><id>512</id><value>Start Fenster</value></string>
   <string><id>513</id><value>Home</value></string>
   <string><id>514</id><value>Manuell einstellen</value></string>
+  <string><id>515</id><value>Genre</value></string>
 
   <string><id>600</id><value>CD Rippen</value></string>
   <string><id>601</id><value>Medium</value></string>
@@ -707,10 +708,10 @@
   <string><id>12324</id><value>XBMC Master Lock</value></string>
   <string><id>12325</id><value>Ordner gesperrt</value></string>
   <string><id>12326</id><value>Passwort eingeben</value></string>
-  <string><id>12327</id><value>Mastercode eingeben und E drücken,</value></string>
-  <string><id>12328</id><value>Entsperrcode eingeben und E drücken,</value></string> 
+  <string><id>12327</id><value>Mastercode eingeben</value></string>
+  <string><id>12328</id><value>Entsperrcode eingeben</value></string> 
   <string><id>12329</id><value>oder mit C abbrechen</value></string>
-  <string><id>12330</id><value>Gamepad Tastenkombination eingeben und </value></string>
+  <string><id>12330</id><value>Gamepad Tastenkombination eingeben und Start drücken </value></string>
   <string><id>12331</id><value>'Start' drücken, oder 'Back' um abzubrechen.</value></string>
   <string><id>12332</id><value>Share sperren</value></string>
   <string><id>12333</id><value>Share entsperren</value></string>
@@ -732,7 +733,7 @@
   <string><id>12349</id><value>Mastercode bis zum nächsten Neustart behalten?</value></string>
   <string><id>12350</id><value>(Öffnen einer Einstellung wird die</value></string>
   <string><id>12351</id><value>Eingabe des Mastercodes automatisch reaktivieren.)</value></string>
-  <string><id>12352</id><value>Mastercode Gamepad Tastenkombination eingeben und</value></string>
+  <string><id>12352</id><value>Mastercode Gamepad Tastenkombination eingeben und Start drücken</value></string>
   <string><id>12353</id><value>Share Sperre reaktivieren</value></string>
   <string><id>12354</id><value>Share Sperre bis zum Neustart aufheben?</value></string>
   <string><id>12355</id><value>Share Sperre automatisch reaktivieren.)</value></string>
@@ -939,11 +940,11 @@
   <string><id>14062</id><value>Bitte Benutzernamen für</value></string>
 
   <string><id>14063</id><value>Datum &amp; Uhrzeit</value></string>
-  <string><id>14064</id><value>Jahr</value></string>
-  <string><id>14065</id><value>Monat</value></string>
-  <string><id>14066</id><value>Tag</value></string>
-  <string><id>14067</id><value>Stunde</value></string>
-  <string><id>14068</id><value>Minute</value></string>
+  <string><id>14064</id><value>Datum setzen</value></string>
+  <string><id>14065</id><value>Zeit setzen</value></string>
+  <string><id>14066</id><value>Bitte die Uhrzeit in 24 Stunden Format (HH:MM) eingeben</value></string>
+  <string><id>14067</id><value>Bitte das Datum im Format DD/MM/YYYY eingeben</value></string>
+  <string><id>14068</id><value>Bitte eine IP Adresse eingeben</value></string>
   <string><id>14069</id><value>Sollen die Einstellungen übernommen werden?</value></string>
   <string><id>14070</id><value>Übernehmen</value></string>
 

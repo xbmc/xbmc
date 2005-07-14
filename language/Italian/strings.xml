@@ -444,6 +444,7 @@
   <string><id>512</id><value>Schermata di partenza</value></string>
   <string><id>513</id><value>Home Window</value></string>
   <string><id>514</id><value>Impostazione Manuale</value></string>
+  <string><id>515</id><value>Genere</value></string>
 
   <string><id>600</id><value>Rip CD Audio</value></string>
   <string><id>601</id><value>Medio</value></string>
@@ -604,6 +605,7 @@
   <string><id>1253</id><value>Crea collegamento FTP nel Filemanager</value></string>
   <string><id>1254</id><value>Popup Notification</value></string>
   <string><id>1255</id><value>Invia FTP User and Password</value></string>
+  <string><id>1256</id><value>Intervallo Ping in sec.</value></string>
 
   <string><id>1396</id><value>Mutevole</value></string>
   <string><id>1397</id><value>e</value></string>
@@ -703,10 +705,10 @@
   <string><id>12324</id><value>XBMC Master Lock</value></string>
   <string><id>12325</id><value>Cartella Bloccata</value></string>
   <string><id>12326</id><value>Inserire password</value></string>
-  <string><id>12327</id><value>Inserire Master Code e premere Enter,</value></string>
-  <string><id>12328</id><value>Inserire Cod. Sblocco e premere Enter,</value></string> 
+  <string><id>12327</id><value>Inserire Master Code</value></string>
+  <string><id>12328</id><value>Inserire Codice Sblocco</value></string> 
   <string><id>12329</id><value>Premere C per Annullare</value></string>
-  <string><id>12330</id><value>Inserire combinazione tasti Gamepad e </value></string>
+  <string><id>12330</id><value>Inserire combinazione tasti Gamepad e premere Start</value></string>
   <string><id>12331</id><value>premere Start, oppure Back per Annullare</value></string>
   <string><id>12332</id><value>Blocca</value></string>
   <string><id>12333</id><value>Sblocca</value></string>
@@ -728,7 +730,7 @@
   <string><id>12349</id><value>Ricordi Master Code fino al prossimo avvio?</value></string>
   <string><id>12350</id><value>(Aprendo un oggetto in Impostazioni</value></string>
   <string><id>12351</id><value>riabiliterà automaticamente Master Lock.)</value></string>
-  <string><id>12352</id><value>Inserire combinazione di tasti Master Code e </value></string>
+  <string><id>12352</id><value>Inserire combinazione di tasti Master Code e premere Start</value></string>
   <string><id>12353</id><value>Riattiva Blocco</value></string>
   <string><id>12354</id><value>Salta blocco cartelle fino al prossimo avvio?</value></string>
   <string><id>12355</id><value>riabiliterà automaticamente il blocco cartelle.)</value></string>
@@ -935,11 +937,11 @@
   <string><id>14061</id><value>Auto</value></string>
   <string><id>14062</id><value>Inserire Nome Utente per</value></string>
   <string><id>14063</id><value>Data e Ora</value></string>
-  <string><id>14064</id><value>Imposta Anno</value></string>
-  <string><id>14065</id><value>Imposta Mese</value></string>
-  <string><id>14066</id><value>Imposta Giorno</value></string>
-  <string><id>14067</id><value>Imposta Ora</value></string>
-  <string><id>14068</id><value>Imposta Minuti</value></string>
+  <string><id>14064</id><value>Imposta Data</value></string>
+  <string><id>14065</id><value>Imposta Orario</value></string>
+  <string><id>14066</id><value>Inserire Orario in formato 24 hour HH:MM</value></string>
+  <string><id>14067</id><value>Inserire Data in formato GG/MM/AAAA format</value></string>
+  <string><id>14068</id><value>Inserire Indirizzo IP</value></string>
   <string><id>14069</id><value>Vuoi impostare questi dati adesso?</value></string>
   <string><id>14070</id><value>Salva Impostazioni</value></string>
 

@@ -5,6 +5,14 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-07-2005 updated: Korean language file (Thnx to AkoXko)
+ - 14-07-2005 updated: Italian language file (Thnx to kotix)
+ - 14-07-2005 updated: Dutch language file (Thnx to tijmengozer)
+ - 14-07-2005 updated: German language file
+ - 14-07-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 14-07-2005 updated: Finnish language file (Thnx to jutski)
+ - 14-07-2005 updated: Norwegian language file (Thnx to vnm)
+ - 14-07-2005 updated: Chinese (Simple) language file (Thnx to hibaby)
  - 14-07-2005 fixed: dvdplayer, playing a vob file resulted in a crash with the new ffmpeg
  - 14-07-2005 added: dvdplayer, extra audio stream information in OSD
  - 14-07-2005 fixed: dvdplayer, no audio streams are reported when playing an avi file

@@ -446,6 +446,7 @@
   <string><id>512</id><value>Startfenster</value></string> 
   <string><id>513</id><value>Standard</value></string> 
   <string><id>514</id><value>Manuelle Einstellung</value></string> 
+  <string><id>515</id><value>Genre</value></string>
 
   <string><id>600</id><value>CD Rippen</value></string>
   <string><id>601</id><value>Medium</value></string>
@@ -605,7 +606,8 @@
   <string><id>1252</id><value>Beschreibung</value></string> 
   <string><id>1253</id><value>FTP Verknüpfung unter Eigene Dateien erstellen</value></string> 
   <string><id>1254</id><value>Popup Anzeige</value></string> 
-  <string><id>1255</id><value>FTP Benutzername und Kennwort senden</value></string> 
+  <string><id>1255</id><value>FTP Benutzername und Kennwort senden</value></string>
+  <string><id>1256</id><value>Ping Intervall in Sekunden</value></string>
 
   <string><id>1396</id><value>Verwehungen</value></string> 
   <string><id>1397</id><value>und</value></string> 
@@ -699,31 +701,32 @@
   <string><id>12319</id><value>9</value></string> 
   <string><id>12320</id><value>C</value></string> 
   <string><id>12321</id><value>OK</value></string> 
-  <string><id>12322</id><value>*</value></string> 
-  <string><id>12324</id><value>XBMC Zugriffskontrolle - Hauptkennwort</value></string> 
-  <string><id>12325</id><value>Bitte geben sie ihr Kennwort ein...</value></string> 
-  <string><id>12326</id><value>Bitte geben sie ihr Kennwort ein...</value></string> 
-  <string><id>12327</id><value>Kennwort eingeben und E drücken,</value></string> 
-  <string><id>12328</id><value>Kennwort eingeben und E drücken,</value></string> 
-  <string><id>12329</id><value>oder um abzubrechen C drücken</value></string> 
-  <string><id>12330</id><value>Gamepad Tastenkombination eingeben</value></string> 
-  <string><id>12331</id><value>und Start drücken, um abzubrechen Back</value></string> 
+  <string><id>12322</id><value>*</value></string>
+
+  <string><id>12324</id><value>Hauptkennwortabfrage..</value></string> 
+  <string><id>12325</id><value>Ordner gesperrt..</value></string> 
+  <string><id>12326</id><value>Kennwort eingeben..</value></string> 
+  <string><id>12327</id><value>Kennwort eingeben..</value></string> 
+  <string><id>12328</id><value>Kennwort eingeben..</value></string> 
+
+  <string><id>12330</id><value>Gamepad Tastenkombination eingeben und</value></string> 
+  <string><id>12331</id><value>Start drücken, oder Back um abzubrechen</value></string> 
   <string><id>12332</id><value>Zugriff sperren</value></string> 
   <string><id>12333</id><value>Entsperren</value></string> 
   <string><id>12334</id><value>Sperre zurücksetzen</value></string> 
   <string><id>12335</id><value>Sperre entfernen</value></string> 
   <string><id>12336</id><value>Kennwortart wählen:</value></string> 
-  <string><id>12337</id><value>Zahlen Eingabe</value></string> 
+  <string><id>12337</id><value>Zahleneingabe</value></string> 
   <string><id>12338</id><value>Tastenkombination</value></string> 
-  <string><id>12339</id><value>Volltext Eingabe</value></string> 
-  <string><id>12340</id><value>Neues Kennwort eingeben</value></string> 
-  <string><id>12341</id><value>Neues Kennwort erneut eingeben</value></string> 
+  <string><id>12339</id><value>Volltexteingabe</value></string> 
+  <string><id>12340</id><value>Kennwortänderung eingeben</value></string> 
+  <string><id>12341</id><value>Kennwort erneut eingeben</value></string> 
   <string><id>12342</id><value>Falsches Kennwort,</value></string> 
-  <string><id>12343</id><value>übrige Versuche </value></string> 
-  <string><id>12344</id><value>Kennwörter stimmen nicht überein.</value></string> 
+  <string><id>12343</id><value>Versuch(e) übrig</value></string> 
+  <string><id>12344</id><value>Kennwörter stimmen nicht überein</value></string> 
   <string><id>12345</id><value>Zugriff verweigert</value></string> 
-  <string><id>12346</id><value>Kennwort Eingabelimit erreicht.</value></string> 
-  <string><id>12347</id><value>XBOX wird ausgeschaltet.</value></string>
+  <string><id>12346</id><value>Eingabelimit erreicht</value></string> 
+  <string><id>12347</id><value>XBOX wird ausgeschaltet</value></string>
   <string><id>12348</id><value>Objekt gesperrt</value></string>
   <string><id>12349</id><value>Kennwort bis Neustart merken?</value></string> 
   <string><id>12350</id><value>(Öffnen einer Einstellung wird die</value></string> 
@@ -743,9 +746,9 @@
   <string><id>12364</id><value>Eingabemodus</value></string> 
   <string><id>12365</id><value>Hauptkennwort</value></string> 
   <string><id>12366</id><value>Hauptkennwort wurde geändert:</value></string> 
-  <string><id>12367</id><value>Ein falsches Kennwort wure eingegeben!</value></string> 
+  <string><id>12367</id><value>Ein falsches Kennwort wurde eingegeben!</value></string> 
   <string><id>12368</id><value>Bitte Eingabe wiederholen!</value></string> 
-  <string><id>12369</id><value>XBMC Startkennwort</value></string> 
+  <string><id>12369</id><value>Startkennwortabfrage</value></string> 
   <string><id>12370</id><value>Einstellungen geändert, kein Hauptkennwort wurde gesetzt!</value></string> 
   <string><id>12371</id><value>Bitte einen neues Hauptkennwort eingeben!</value></string> 
   <string><id>12372</id><value>Eigene Dateien sperren</value></string> 
@@ -982,13 +985,13 @@
   <string><id>14061</id><value>Automatisch</value></string>
   <string><id>14062</id><value>Benutzername eingeben</value></string>
   <string><id>14063</id><value>Datum &amp; Uhrzeit</value></string> 
-  <string><id>14064</id><value>> Jahr</value></string> 
-  <string><id>14065</id><value>> Monat</value></string> 
-  <string><id>14066</id><value>> Tag</value></string> 
-  <string><id>14067</id><value>> Stunde</value></string> 
-  <string><id>14068</id><value>> Minute</value></string> 
-  <string><id>14069</id><value>Änderungen übernehmen?</value></string> 
-  <string><id>14070</id><value>Änderungen übernehmen</value></string> 
+  <string><id>14064</id><value>> Datum</value></string> 
+  <string><id>14065</id><value>> Uhrzeit</value></string> 
+  <string><id>14066</id><value>Uhrzeit HH:MM eingeben</value></string> 
+  <string><id>14067</id><value>Datum DD/MM/YYYY eingeben</value></string> 
+  <string><id>14068</id><value>IP Adresse eingeben</value></string> 
+  <string><id>14069</id><value>Änderungen übernehmen?</value></string>
+  <string><id>14070</id><value>Änderungen übernehmen..</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Es besteht keine Verbindung mit XLink,</value></string> 
