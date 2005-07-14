@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-07-2005 fixed: memleak in the rar archive reader
  - 13-07-2005 fixed: Music Library "All" items producing "No Scanned Information" error
  - 13-07-2005 fixed: ftp server can not be shut down via settings menu
  - 13-07-2005 fixed: reference controls got not freed after skin load

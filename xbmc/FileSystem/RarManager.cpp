@@ -67,7 +67,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
 bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strRarPath, bool bMask, const CStdString& strPathInRar)
 {
 	CSingleLock lock(m_CritSection);
-	ArchiveList_struct* pFileList;
+	ArchiveList_struct *pFileList, *pIterator;
 	//if( !urarlib_list((char*) pRar->m_strCachedPath.c_str(), &pFileList, NULL) ) return false;
   if( !urarlib_list((char*) strRarPath.c_str(), &pFileList, NULL) ) return false;
 
@@ -76,30 +76,30 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
   CUtil::Tokenize(strPathInRar,vec,"\\");
   unsigned int iDepth = vec.size();
   
-  for( ; pFileList  ; pFileList?pFileList = pFileList->next:pFileList)
+  for( pIterator = pFileList; pIterator  ; pIterator ? pIterator = pIterator->next : pIterator)
 	{
     vec.clear();
-    CUtil::Tokenize(pFileList->item.Name,vec,"\\");
+    CUtil::Tokenize(pIterator->item.Name,vec,"\\");
     if ((vec.size() > iDepth+1) || (vec.size() < iDepth))
       continue;
-    char cDirDelimiter = (pFileList->item.HostOS==3 ? '/':'\\'); // win32 or unix paths?
-    if (!strstr(pFileList->item.Name,strPathInRar.c_str()))
+    char cDirDelimiter = (pIterator->item.HostOS==3 ? '/':'\\'); // win32 or unix paths?
+    if (!strstr(pIterator->item.Name,strPathInRar.c_str()))
       continue;
-    if ((pFileList->item.FileAttr & 16) ) // we have a directory
+    if ((pIterator->item.FileAttr & 16) ) // we have a directory
     {
       if (vec.size() == iDepth)
         continue; // remove root of listing
-      pFileItem = new CFileItem(pFileList->item.Name+strPathInRar.size());
-      pFileItem->m_strPath = pFileList->item.Name+strPathInRar.size();
+      pFileItem = new CFileItem(pIterator->item.Name+strPathInRar.size());
+      pFileItem->m_strPath = pIterator->item.Name+strPathInRar.size();
       pFileItem->m_strPath += cDirDelimiter;
       pFileItem->m_bIsFolder = true;
-      CStdString strDirName = pFileList->item.Name;
+      CStdString strDirName = pIterator->item.Name;
     }
     else
     {
-      pFileItem = new CFileItem(pFileList->item.Name+strPathInRar.size());
-		  pFileItem->m_strPath = pFileList->item.Name+strPathInRar.size();
-		  pFileItem->m_dwSize = pFileList->item.UnpSize;
+      pFileItem = new CFileItem(pIterator->item.Name+strPathInRar.size());
+		  pFileItem->m_strPath = pIterator->item.Name+strPathInRar.size();
+		  pFileItem->m_dwSize = pIterator->item.UnpSize;
     }
     if (pFileItem)
       vecpItems.Add(pFileItem);
