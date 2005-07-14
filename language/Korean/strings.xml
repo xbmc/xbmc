@@ -444,6 +444,7 @@
   <string><id>512</id><value>시작 윈도우</value></string>
   <string><id>513</id><value>홈 윈도우</value></string>
   <string><id>514</id><value>사용자 설정</value></string>
+  <string><id>515</id><value>장르</value></string>
   
   <string><id>600</id><value>시디 추출</value></string>
   <string><id>601</id><value>중간</value></string>
@@ -550,7 +551,7 @@
   <string><id>768</id><value>예약</value></string>
   <string><id>769</id><value>예약</value></string>
   <string><id>770</id><value>오류 %i: 공유를 사용할 수 없습니다</value></string>
-  <string><id>771</id><value>FTP서버의 fatx 제한에 대해 대체방법 사용</value></string>
+  <string><id>771</id><value>- Fatx 제한 자동 해제</value></string>
   <string><id>772</id><value>오디오 하드웨어</value></string>
   <string><id>773</id><value>찾는중</value></string>    
   <string><id>998</id><value>XLink KAI</value></string>
@@ -594,7 +595,18 @@
   <string><id>1233</id><value>프로그램 &amp; 비디오 &amp; 음악</value></string>
   <string><id>1234</id><value>프로그램 &amp; 사진 &amp; 음악</value></string>
   <string><id>1235</id><value>프로그램 &amp; 사진 &amp; 비디오</value></string>
-  
+
+  <string><id>1245</id><value> - FTP 아이디</value></string>
+  <string><id>1246</id><value> - FTP 비밀번호</value></string>
+  <string><id>1247</id><value>FTP 서버의 아이디/비밀번호 설정이 완료되었습니다!</value></string>
+  <string><id>1250</id><value>자동 탐지</value></string>
+  <string><id>1251</id><value>XBOX 자동 탐지</value></string>
+  <string><id>1252</id><value>닉네임</value></string>
+  <string><id>1253</id><value>FTP 링크를 파일에 생성</value></string>
+  <string><id>1254</id><value>안내 사항 보임</value></string>
+  <string><id>1255</id><value>FTP 아이디와 비밀번호 전송</value></string>
+  <string><id>1256</id><value>핑 간격</value></string>
+    
   <string><id>1396</id><value>뜬</value></string>
   <string><id>1397</id><value>그리고</value></string>
   <string><id>1398</id><value>몹시 추운</value></string>
@@ -692,11 +704,11 @@
   <string><id>12324</id><value>XBMC 전체 잠금</value></string>
   <string><id>12325</id><value>폴더 잠금</value></string>
   <string><id>12326</id><value>비밀번호 입력</value></string>
-  <string><id>12327</id><value>전체 잠금 코드를 입력후 엔터를 누르십시오,</value></string>
-  <string><id>12328</id><value>잠금 해제 코드를 입력후 엔터를 누르십시오,</value></string> 
+  <string><id>12327</id><value>전체 잠금 코드 입력</value></string>
+  <string><id>12328</id><value>잠금 해제 코드 입력</value></string> 
   <string><id>12329</id><value>- C 버튼을 누르면 취소</value></string>
-  <string><id>12330</id><value>XBOX 패드 조합을 입력한 후</value></string>
-  <string><id>12331</id><value>start버튼을 누르십시오 - back버튼을 누르면 취소</value></string>
+  <string><id>12330</id><value>XBOX 패드 조합을 입력한 후 start버튼을 입력하십시오</value></string>
+  <string><id>12331</id><value>start버튼을 입력하십시오 - back버튼은 취소</value></string>
   <string><id>12332</id><value>잠금 설정</value></string>
   <string><id>12333</id><value>잠금 해제</value></string>
   <string><id>12334</id><value>잠금 초기화</value></string>
@@ -717,7 +729,7 @@
   <string><id>12349</id><value>다음 시작까지 잠금코드를 기억할까요?</value></string>
   <string><id>12350</id><value>(설정 항목을 열게되면 자동적으로</value></string>
   <string><id>12351</id><value>전체 잠금 기능이 작동됩니다)</value></string>
-  <string><id>12352</id><value>전체 잠금 코드를 입력 하고</value></string>
+  <string><id>12352</id><value>전체 잠금 코드를 입력 후 start버튼을 입력하십시오</value></string>
   <string><id>12353</id><value>잠금을 활성화 하십시오</value></string>
   <string><id>12354</id><value>다음 시작까지 공유잠금을 해제합니까?</value></string>
   <string><id>12355</id><value>폴더 잠금기능이 활성화됩니다)</value></string>
@@ -783,7 +795,7 @@
   <string><id>13312</id><value>테두리 감소</value></string>
   <string><id>13313</id><value>리셋/재시작</value></string>
   <string><id>13314</id><value>크로스페이드</value></string>
-  <string><id>13315</id><value>미리보기 생성</value></string>
+  <string><id>13315</id><value>미리보기 다시 만들기</value></string>
   <string><id>13316</id><value>순환 미리보기</value></string>
   <string><id>13317</id><value>슬라이드쇼 보기</value></string>
   <string><id>13318</id><value>순환 슬라이드쇼</value></string>
@@ -924,13 +936,11 @@
   <string><id>14062</id><value>사용자명 입력</value></string>
   
   <string><id>14063</id><value>날짜와 시간</value></string>
-  <string><id>14064</id><value>년도 설정</value></string>
-  <string><id>14065</id><value>월 설정</value></string>
-  <string><id>14066</id><value>날짜 설정</value></string>
-  <string><id>14067</id><value>시간 설정</value></string>
-  <string><id>14068</id><value>분 설정</value></string>
-  <string><id>14069</id><value>지금 설정을 적용하시겠습니까?</value></string>
-  <string><id>14070</id><value>지금 적용</value></string>
+  <string><id>14064</id><value>날짜 설정</value></string>
+  <string><id>14065</id><value>시간 설정</value></string>
+  <string><id>14066</id><value>24시간 단위의 HH:MM 형식으로 시간 입력</value></string>
+  <string><id>14067</id><value>DD/MM/YYYY 형식으로 날짜 입력</value></string>
+  <string><id>14068</id><value>IP주소 입력</value></string>
   
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>서비스가 연결되지 않았습니다</value></string>
