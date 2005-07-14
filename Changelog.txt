@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-07-2005 changed: dvdplayer loads dlls using the sectionloader (no more unloading and loading of dlls all the time)
+ - 14-07-2005 fixed: some more menu issues in the dvdplayer
+ - 14-07-2005 fixed: some pts handling in the dvdplayer
+ - 14-07-2005 fixed: a problem in the dvdplayer where opening a file with unknown codec resulted in a crash (and a memleak)
  - 14-07-2005 fixed: memleak in RAM control
  - 14-07-2005 fixed: memleak in RSS control
  - 14-07-2005 updated: Korean language file (Thnx to AkoXko)

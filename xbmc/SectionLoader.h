@@ -10,6 +10,12 @@
 #define AAC_DLL "Q:\\system\\players\\paplayer\\aaccodec.dll"
 #define IMAGE_DLL "Q:\\system\\ImageLib.dll"
 
+#define DVD_LIBMPEG2_DLL  "Q:\\system\\players\\dvdplayer\\libmpeg2.dll"
+#define DVD_LIBA52_DLL    "Q:\\system\\players\\dvdplayer\\liba52.dll"
+#define DVD_AVFORMAT_DLL  "Q:\\system\\players\\dvdplayer\\avformat.dll"
+#define DVD_AVCODEC_DLL   "Q:\\system\\players\\dvdplayer\\avcodec.dll"
+#define DVD_LIBDVDCSS_DLL "Q:\\system\\players\\dvdplayer\\libdvdcss-2.dll"
+#define DVD_LIBDVDNAV_DLL "Q:\\system\\players\\dvdplayer\\libdvdnav.dll"
 
 class CSectionLoader
 {

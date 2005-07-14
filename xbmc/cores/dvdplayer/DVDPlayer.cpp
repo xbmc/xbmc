@@ -790,12 +790,14 @@ int CDVDPlayer::GetSubtitle()
 
 void CDVDPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
 {
+  strStreamName.Format("%d. ", iStream);
+  
   if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
   {
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-    strStreamName = pStream->GetSubtitleStreamLanguage(iStream);
+    strStreamName += pStream->GetSubtitleStreamLanguage(iStream);
   }
-  else strStreamName = "Unknown";
+  else strStreamName += "Unknown";
 }
 
 void CDVDPlayer::SetSubtitle(int iStream)
@@ -864,12 +866,14 @@ int CDVDPlayer::GetAudioStream()
 
 void CDVDPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
 {
+  strStreamName.Format("%d. ", iStream);
+  
   if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
   {
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-    strStreamName = pStream->GetAudioStreamLanguage(iStream);
+    strStreamName += pStream->GetAudioStreamLanguage(iStream);
   }
-  else strStreamName = "Unknown";
+  else strStreamName += "Unknown";
   
   if (m_pDemuxer)
   {
@@ -880,6 +884,11 @@ void CDVDPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
       pStream->GetStreamType(strType);
       strStreamName += " - ";
       strStreamName += strType;
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "libdvdnav reported an audio channel that does not exist: id %i", iStream);
+      strStreamName.Format("%d. %s", "no such stream, libdvdnav error");
     }
   }
 }
@@ -1094,7 +1103,7 @@ void CDVDPlayer::FlushBuffers()
   m_dvdPlayerVideo.Flush();
   m_dvd.iFlagSentStart = 0; //We will have a discontinuity here
   
-  m_bReadAgain = true; // XXX
+  //m_bReadAgain = true; // XXX
   // this makes sure a new packet is read
 }
 
@@ -1110,7 +1119,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
   case DVDNAV_STILL_FRAME:
     {
-      CLog::Log(LOGDEBUG, "DVDNAV_STILL_FRAME");
+      //CLog::Log(LOGDEBUG, "DVDNAV_STILL_FRAME");
 
       dvdnav_still_event_t *still_event = (dvdnav_still_event_t *)pData;
       // should wait the specified time here while we let the player running
@@ -1278,6 +1287,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       //m_iCommands |= DVDCOMMAND_FLUSH;
       FlushBuffers();
     }
+    break;
   case DVDNAV_STOP:
     {
       CLog::Log(LOGDEBUG, "DVDNAV_STOP");
@@ -1382,11 +1392,11 @@ bool CDVDPlayer::OnAction(const CAction &action)
           pStream->ActivateButton();
           m_dvd.state = DVDSTATE_NORMAL;
 
-          //Wait till we have read some data. 
-          //buffers will have been flushed by
-          //a hopchannel nav command
-          m_bReadData = false;
-          while (!m_bReadData) Sleep(1);
+          // Wait till we have read some data. 
+          // buffers will have been flushed by
+          // a hopchannel nav command
+          //m_bReadData = false;
+          //while (!m_bReadData) Sleep(1);
 
         }
         break;
