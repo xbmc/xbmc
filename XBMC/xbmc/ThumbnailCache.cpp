@@ -2,9 +2,6 @@
 #include "stdafx.h"
 #include "ThumbnailCache.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CThumbnailCache* CThumbnailCache::m_pCacheInstance = NULL;
 

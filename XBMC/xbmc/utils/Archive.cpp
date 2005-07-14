@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "Archive.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define BUFFER_MAX 4096
 

@@ -5,9 +5,6 @@
 #include "application.h"
 #include "utils/GUIInfoManager.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define CONTROL_LOGO_PIC_BACK    0
 #define CONTROL_LOGO_PIC    1

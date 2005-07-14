@@ -11,9 +11,6 @@
 #include "AACCodec.h"
 #include "WAVPackCodec.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {

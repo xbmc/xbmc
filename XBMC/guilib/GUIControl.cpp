@@ -4,9 +4,6 @@
 #include "LocalizeStrings.h"
 #include "../xbmc/Util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CGUIControl::CGUIControl()
 {

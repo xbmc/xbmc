@@ -20,9 +20,6 @@ ISO9660
 */
 #include "iso9660.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //#define _DEBUG_OUTPUT 1
 

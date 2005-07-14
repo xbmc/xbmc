@@ -5,9 +5,6 @@
 #include "../util.h"
 #include "DirectoryCache.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 extern int ftpparse(struct ftpparse *fp,char *buf,int len);
 CFTPDirectory::CFTPDirectory(void){}

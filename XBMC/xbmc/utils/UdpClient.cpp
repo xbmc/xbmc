@@ -2,9 +2,6 @@
 #include "../stdafx.h"
 #include "UdpClient.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
 

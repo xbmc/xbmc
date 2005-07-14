@@ -4,9 +4,6 @@
 #include "Http.h"
 #include "../Util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 WORD CDownloadQueue::m_wNextQueueId = 0;
 

@@ -5,9 +5,6 @@
 #include "Filesystem/iso9660.h"
 #include "xbox/undocumented.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 using namespace MEDIA_DETECT;
 

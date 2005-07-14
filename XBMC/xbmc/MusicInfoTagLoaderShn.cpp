@@ -3,9 +3,6 @@
 #include "MusicInfoTagLoaderShn.h"
 #include "cores/paplayer/SHNCodec.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 using namespace MUSIC_INFO;
 

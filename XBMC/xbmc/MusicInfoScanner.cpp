@@ -8,9 +8,6 @@
 #include "Util.h"
 #include "Application.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

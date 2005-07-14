@@ -2,9 +2,6 @@
 #include "../stdafx.h"
 #include "dlgcache.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CDlgCache::CDlgCache()
 {

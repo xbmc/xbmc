@@ -5,9 +5,6 @@
 #include "..\xbmc\Application.h"
 #include "..\xbmc\settings.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 extern CApplication g_application;
 

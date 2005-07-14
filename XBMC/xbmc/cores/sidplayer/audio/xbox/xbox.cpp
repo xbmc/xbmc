@@ -25,9 +25,6 @@ email                :
 #   include <new>
 #endif
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } }
 

@@ -14,9 +14,6 @@
 #include "../utils/log.h"
 #include "../xbox/Undocumented.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // SMART Attributes				   //Req: ID:	Offset:		Name of attribute:					Description:						
 PCHAR	pAttrNames[] = {		   //----------------------------------------------------------------------------------------------------------------------------	

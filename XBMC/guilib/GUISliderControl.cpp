@@ -3,9 +3,6 @@
 #include "GUIFontManager.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CGUISliderControl::CGUISliderControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strBackGroundTexture, const CStdString& strMidTexture, const CStdString& strMidTextureFocus, int iType)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)

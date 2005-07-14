@@ -4,9 +4,6 @@
 #include "../Application.h"
 #include "dsstdfx.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CKaiClient* CKaiClient::client = NULL;
 

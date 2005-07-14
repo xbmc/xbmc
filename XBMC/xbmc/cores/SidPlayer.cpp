@@ -5,9 +5,6 @@
 #include <sidplay/builders/resid.h>
 #include "../util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #pragma comment(linker,"/merge:SID_RD=SID_RX")
 #pragma comment(linker,"/section:SID_RX,REN")

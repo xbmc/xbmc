@@ -24,9 +24,6 @@
 #include "ComboRenderer.h"
 #include "RGBRenderer.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CXBoxRenderManager g_renderManager;
 

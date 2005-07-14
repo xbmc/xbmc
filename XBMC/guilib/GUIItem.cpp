@@ -1,9 +1,6 @@
 #include "include.h"
 #include "GUIItem.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CGUIItem::CGUIItem(CStdString& aItemName)
 {

@@ -3,9 +3,6 @@
 #include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark, const CStdString& strTextureCheckMarkNF, DWORD dwCheckWidth, DWORD dwCheckHeight, DWORD dwAlign)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)

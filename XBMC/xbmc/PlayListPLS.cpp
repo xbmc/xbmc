@@ -4,9 +4,6 @@
 #include "util.h"
 #include "utils\HTTP.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define START_PLAYLIST_MARKER "[playlist]"
 #define PLAYLIST_NAME     "PlaylistName"

@@ -7,9 +7,6 @@
 #include "XBInputEx.h"
 #include "Settings.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //#define REMOTE_DEBUG 1
 

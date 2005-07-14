@@ -3,9 +3,6 @@
 #include "playlistwpl.h"
 #include "util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 /* ------------------------ example wpl playlist file ---------------------------------
   <?wpl version="1.0"?>

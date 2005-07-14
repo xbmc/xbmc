@@ -12,9 +12,6 @@
 #include "util.h"
 #include "guifontxpr.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // Transition effects for text, must specific exactly one in and one out effect
 enum CRED_EFFECTS

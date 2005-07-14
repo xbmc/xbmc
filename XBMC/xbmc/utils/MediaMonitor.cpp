@@ -8,9 +8,6 @@
 #include "../Util.h"
 #include "../FileSystem/VirtualDirectory.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

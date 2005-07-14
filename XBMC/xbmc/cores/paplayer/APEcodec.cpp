@@ -2,9 +2,6 @@
 #include "APECodec.h"
 #include "../../APEv2Tag.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 APECodec::APECodec()
 {

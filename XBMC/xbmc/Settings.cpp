@@ -7,9 +7,6 @@
 #include "utils/FanController.h"
 #include "LangCodeExpander.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 class CSettings g_settings;
 struct CSettings::stSettings g_stSettings;

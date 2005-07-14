@@ -6,9 +6,6 @@
 #include "GUIWindowManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define SCROLL_SPEED 6.0f
 

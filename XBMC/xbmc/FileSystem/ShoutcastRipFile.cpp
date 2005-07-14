@@ -4,9 +4,6 @@
 #include "../util.h"
 #include "../MusicInfoTagLoaderMP3.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CShoutcastRipFile::CShoutcastRipFile()
 {

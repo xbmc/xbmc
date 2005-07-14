@@ -10,9 +10,6 @@
 #include "atlconv.h"
 #include "MarkupSTL.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #ifdef _MBCS
 #pragma message( "Note: MBCS build (not UTF-8)" )

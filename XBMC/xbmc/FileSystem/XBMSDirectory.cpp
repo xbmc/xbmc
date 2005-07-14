@@ -12,9 +12,6 @@ extern "C"
  #include "../lib/libxbms/ccxmltrans.h"
 }
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 struct DiscoveryCallbackContext
 {

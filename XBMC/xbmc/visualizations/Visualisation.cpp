@@ -6,9 +6,6 @@
 #include "../application.h"
 #include "Visualisation.h" 
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

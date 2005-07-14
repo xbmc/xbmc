@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "sectionloader.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 class CSectionLoader g_sectionLoader;
 

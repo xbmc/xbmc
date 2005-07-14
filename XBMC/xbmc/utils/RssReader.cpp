@@ -7,9 +7,6 @@
 #include "Http.h"
 #include "../utils/HTMLUtil.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

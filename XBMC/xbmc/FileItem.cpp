@@ -9,9 +9,6 @@
 #include "musicInfoTagLoaderFactory.h"
 #include "cuedocument.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CFileItem::CFileItem(const CSong& song)
 {

@@ -23,9 +23,6 @@
 #include "stdafx.h"
 #include "SpeedLimit.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

@@ -4,9 +4,6 @@
 #include "../DllLoader/dll.h"
 #include "mplayer.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 extern void* fs_seg;
 

@@ -4,9 +4,6 @@
 #include "factoryfiledirectory.h"
 #include "oggfiledirectory.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CFactoryFileDirectory::CFactoryFileDirectory(void)
 {}

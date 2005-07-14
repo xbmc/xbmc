@@ -2,9 +2,6 @@
 #include "memutil.h"
 #include "xbox/undocumented.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 void fast_memcpy(void* d, const void* s, unsigned n)
 {

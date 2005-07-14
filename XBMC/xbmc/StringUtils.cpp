@@ -13,9 +13,6 @@
 #include "stdafx.h"
 #include "StringUtils.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 int StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results)
 {

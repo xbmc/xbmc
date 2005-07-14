@@ -4,9 +4,6 @@
 #include "../lib/libcdio/logging.h"
 #include "../lib/libcdio/util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 using namespace MEDIA_DETECT;
 
