@@ -30,10 +30,9 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock) : CThread
   m_pOverlayPicture = NULL;
   m_iSpeed = 1;
   m_bRenderSubs = false;
-  m_fFPS = 25;
   m_iVideoDelay = 0;
   m_fForcedAspectRatio = 0;
-
+  
   InitializeCriticalSection(&m_critCodecSection);
   m_packetQueue.SetMaxSize(5 * 256 * 1024); // 1310720
 
@@ -135,7 +134,7 @@ void CDVDPlayerVideo::Process()
   CDVDVideoPPFFmpeg mDeinterlace(CDVDVideoPPFFmpeg::ED_DEINT_FFMPEG);
 
   memset(&picture, 0, sizeof(DVDVideoPicture));
-  __int64 pts=0;
+  __int64 pts = 0;
   int dvdstate;
 
   m_bRunningVideo = true;
@@ -167,8 +166,21 @@ void CDVDPlayerVideo::Process()
       {
 
         // try to retrieve the picture (should never fail!), unless there is a demuxer bug ofcours
+        fast_memset(&picture, 0, sizeof(DVDVideoPicture));
         if (m_pVideoCodec->GetPicture(&picture))
-        { 
+        {          
+          if (picture.iDuration == 0)
+          {
+            if (m_pDemuxStreamVideo->iFpsRate && m_pDemuxStreamVideo->iFpsScale)
+            {
+              picture.iDuration = (unsigned int)(((__int64)DVD_TIME_BASE * m_pDemuxStreamVideo->iFpsScale) / m_pDemuxStreamVideo->iFpsRate);
+            }
+            else
+            {
+              picture.iDuration = DVD_TIME_BASE / 25;
+            }
+          }
+
           //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
           //this video
           if( picture.iFlags & DVP_FLAGS_INTERLACED || g_stSettings.m_currentVideoSettings.m_Deinterlace )
@@ -178,27 +190,29 @@ void CDVDPlayerVideo::Process()
           }
 
           if ((picture.iFrameType == FRAME_TYPE_I || picture.iFrameType == FRAME_TYPE_UNDEF) &&
-              pPacket->dts != DVD_NOPTS_VALUE ) //Only use pts when we have an I frame, or unknown
+              pPacket->dts != DVD_NOPTS_VALUE) //Only use pts when we have an I frame, or unknown
           {
             pts = pPacket->dts;
           }
-
+          
           //Check if dvd has forced an aspect ratio
           if( m_fForcedAspectRatio != 0.0f )
           {
             picture.iDisplayWidth = (int) (picture.iDisplayHeight * m_fForcedAspectRatio);
           }
 
-          int iOutputState=0;          
+          bool bResult;
           do 
           {
-            if (iOutputState = OutputPicture(&picture, pts)) break;
-            if (picture.iDuration ) pts+=picture.iDuration;
+            bResult = OutputPicture(&picture, pts);
+            if (!bResult) break;
+            
+            // guess next frame pts. iDuration is always valid
+            pts += picture.iDuration;
           }
           while (picture.iRepeatPicture-- > 0);
           
-          if( iOutputState < 0 ) break;
-
+          if( !bResult) break;
         }
         else
         {
@@ -240,7 +254,7 @@ void CDVDPlayerVideo::OnExit()
   g_renderManager.UnInit();
   m_bInitializedOutputDevice = false;
 
-  CLog::Log(LOGNOTICE, "thread end: audio_thread");
+  CLog::Log(LOGNOTICE, "thread end: video_thread");
 }
 
 void CDVDPlayerVideo::Pause()
@@ -265,26 +279,17 @@ void CDVDPlayerVideo::Flush()
   m_overlay.Clear(); // not thread safe !!!!
   if (m_pVideoCodec)
   {
-    m_pVideoCodec->Reset();
+    //m_pVideoCodec->Reset();
   }
   LeaveCriticalSection(&m_critCodecSection);
 }
 
 
-int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
+bool CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
 {
   DVDVideoPicture *vp;
-
+  
   __int64 pts = pts1;
-
-  if (pts == DVD_NOPTS_VALUE)
-  {
-#ifdef _DEBUG
-    // pts should always be valid here for the picture
-    while (1) CLog::DebugLog("CDVDPlayerVideo::OutputPicture, invalid pts value");
-#endif
-
-  }
 
   // wait  until we have space to put a new picture
   EnterCriticalSection(&m_critSection);
@@ -296,28 +301,32 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
   }
   LeaveCriticalSection(&m_critSection);
 
-  if (m_packetQueue.RecievedAbortRequest()) return -1;
+  if (m_packetQueue.RecievedAbortRequest()) return false;
 
   vp = &pictq[pictq_windex];
 
-  if( m_pDemuxStreamVideo->iFpsRate != 0 && m_pDemuxStreamVideo->iFpsScale != 0)
-    m_fFPS = ((float)m_pDemuxStreamVideo->iFpsRate / m_pDemuxStreamVideo->iFpsScale);
-  else
-  {
-    CLog::Log(LOGERROR, "Demuxer reported invalid framerate: %d or fpsscale: %d", m_pDemuxStreamVideo->iFpsRate, m_pDemuxStreamVideo->iFpsScale);
-    m_fFPS = 25;
-  }
-
   if (!m_bInitializedOutputDevice)
   {
+    float fFPS;
+    
     CLog::Log(LOGNOTICE, "Initializing video device");
 
+    if( m_pDemuxStreamVideo->iFpsRate != 0 && m_pDemuxStreamVideo->iFpsScale != 0)
+    {
+      fFPS = ((float)m_pDemuxStreamVideo->iFpsRate / m_pDemuxStreamVideo->iFpsScale);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "Demuxer reported invalid framerate: %d or fpsscale: %d", m_pDemuxStreamVideo->iFpsRate, m_pDemuxStreamVideo->iFpsScale);
+      fFPS = 25.0;
+    }
+  
     g_renderManager.PreInit();
 
     CLog::Log(LOGNOTICE, "  fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i",
-              m_fFPS, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
+              fFPS, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
 
-    g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFPS);
+    g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, fFPS);
     m_bInitializedOutputDevice = true;
   }
 
@@ -381,7 +390,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
     }
 
   }
-  return 0;
+  return true;
 }
 
 void CDVDPlayerVideo::Update(bool bPauseDrawing)
@@ -443,7 +452,7 @@ DWORD video_refresh_thread(void *arg)
   int iSleepTime = 0;
   CDVDClock frameclock;
   __int64 iTimeStamp = frameclock.GetClock();
-  int iFrameTime = DVD_TIME_BASE / 25;
+  int iFrameTime;
 
   while (pDVDPlayerVideo->m_bRunningVideo)
   {
@@ -457,17 +466,16 @@ DWORD video_refresh_thread(void *arg)
       // dequeue the picture
       vp = &pDVDPlayerVideo->pictq[pDVDPlayerVideo->pictq_rindex];
       
-      if( pDVDPlayerVideo->m_pClock->HadDiscontinuity(1*DVD_TIME_BASE) ) //Playback at normal fps untill 1 sec after discontinuity
+      if (pDVDPlayerVideo->m_pClock->HadDiscontinuity(1 * DVD_TIME_BASE))
+      {
+        //Playback at normal fps untill 1 sec after discontinuity
+        if (vp->iDuration)
+          iFrameTime = vp->iDuration;
+          
         iSleepTime = iFrameTime - (int)(frameclock.GetClock() - iTimeStamp);
+      }
       else
         iSleepTime = (int)((vp->pts + pDVDPlayerVideo->m_iVideoDelay - pDVDPlayerVideo->m_pClock->GetClock()) & 0xFFFFFFFF);
-  
-      if( vp->iDuration )
-        iFrameTime = vp->iDuration;
-      else if( pDVDPlayerVideo->m_fFPS )
-        iFrameTime = (int)(DVD_TIME_BASE / pDVDPlayerVideo->m_fFPS);
-      else
-        iFrameTime = DVD_TIME_BASE / 25;
 
       if (iSleepTime > 500000) iSleepTime = 500000; // drop to a minimum of 2 frames/sec
 

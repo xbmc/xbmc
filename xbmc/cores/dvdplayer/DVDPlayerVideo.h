@@ -59,21 +59,19 @@ public:
 
   int m_iSpeed;
   bool m_bRenderSubs;
-  float m_fFPS;
   __int64 m_iVideoDelay;
+  CDVDVideoCodec* m_pVideoCodec;
+  
 protected:  
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
 
-  int OutputPicture(DVDVideoPicture* pPicture, __int64 pts1);
+  bool OutputPicture(DVDVideoPicture* pPicture, __int64 pts1);
 
   CRITICAL_SECTION m_critCodecSection;
 
-
-
-
-  CDVDVideoCodec* m_pVideoCodec;
+  
   bool m_bInitializedOutputDevice;
   float m_fForcedAspectRatio;
   DVDVideoPicture* m_pOverlayPicture;
@@ -81,5 +79,4 @@ protected:
   CDVDDemuxSPU* m_pDVDSpu;
 
   CDemuxStreamVideo* m_pDemuxStreamVideo;
-
 };
