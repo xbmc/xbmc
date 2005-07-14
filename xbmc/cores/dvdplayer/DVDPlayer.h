@@ -153,6 +153,8 @@ protected:
   virtual void OnExit();
   virtual void Process();
 
+  void ProcessSubData(CDVDDemux::DemuxPacket* pPacket);
+  
   void FlushBuffers();
 
   void HandleMessages();

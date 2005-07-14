@@ -31,3 +31,19 @@ const char* CDVDInputStream::GetFileName()
 {
   return m_strFileName;
 }
+
+bool CDVDInputStream::HasExtension(char* sExtension)
+{
+  char* ext;
+  
+  if (m_strFileName)
+  {
+    ext = strrchr(m_strFileName, '.');
+    if (ext && (ext + 1) != 0)
+    {
+      ext += 1;
+      return (stricmp(sExtension, ext) == 0);
+    }
+  }
+  return false;
+}

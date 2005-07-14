@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-07-2005 fixed: dvdplayer, playing a vob file resulted in a crash with the new ffmpeg
+ - 14-07-2005 added: dvdplayer, extra audio stream information in OSD
+ - 14-07-2005 fixed: dvdplayer, no audio streams are reported when playing an avi file
  - 14-07-2005 fixed: Constant hdd access in weather.
  - 14-07-2005 changed: leak tracking, smarter define of the debug new operator (in stdafx.h only) no need for a macro in each cpp file
  - 14-07-2005 fixed: memleak in the rar archive reader
