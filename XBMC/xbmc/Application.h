@@ -100,6 +100,7 @@ public:
   void Stop();
   void RestartApp();
   void LoadSkin(const CStdString& strSkin);
+  void UnloadSkin();
   bool LoadUserWindows(const CStdString& strSkinPath);
   void DelayLoadSkin();
   void CancelDelayLoadSkin();

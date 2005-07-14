@@ -1348,32 +1348,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   }
 
   CLog::Log(LOGINFO, "  delete old skin...");
-  m_guiVideoOverlay.FreeResources();
-  m_guiVideoOverlay.ClearAll();
-
-  m_guiMusicOverlay.FreeResources();
-  m_guiMusicOverlay.ClearAll();
-
-  m_guiDialogVolumeBar.FreeResources();
-  m_guiDialogVolumeBar.ClearAll();
-  m_guiDialogSeekBar.FreeResources();
-  m_guiDialogSeekBar.ClearAll();
-  m_guiDialogKaiToast.FreeResources();
-  m_guiDialogKaiToast.ClearAll();
-  m_guiDialogMuteBug.FreeResources();
-  m_guiDialogMuteBug.ClearAll();
-
-  m_guiPointer.FreeResources();
-  m_guiPointer.ClearAll();
-
-  g_audioManager.DeInitialize();
-
-  m_gWindowManager.DeInitialize();
-  g_TextureManager.Cleanup();
-
-  g_fontManager.Clear();
-
-  g_charsetConverter.reset();
+  UnloadSkin();
 
   // Load in the skin.xml file if it exists
   g_SkinInfo.Load(strSkinPath);
@@ -1487,6 +1462,36 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     CKaiClient::GetInstance()->SetObserver(&m_guiMyBuddies);
     Sleep(3000);  //  The client need some time to "resync"
   }
+}
+
+void CApplication::UnloadSkin()
+{
+  m_guiVideoOverlay.FreeResources();
+  m_guiVideoOverlay.ClearAll();
+
+  m_guiMusicOverlay.FreeResources();
+  m_guiMusicOverlay.ClearAll();
+
+  m_guiDialogVolumeBar.FreeResources();
+  m_guiDialogVolumeBar.ClearAll();
+  m_guiDialogSeekBar.FreeResources();
+  m_guiDialogSeekBar.ClearAll();
+  m_guiDialogKaiToast.FreeResources();
+  m_guiDialogKaiToast.ClearAll();
+  m_guiDialogMuteBug.FreeResources();
+  m_guiDialogMuteBug.ClearAll();
+
+  m_guiPointer.FreeResources();
+  m_guiPointer.ClearAll();
+
+  g_audioManager.DeInitialize();
+
+  m_gWindowManager.DeInitialize();
+  g_TextureManager.Cleanup();
+
+  g_fontManager.Clear();
+
+  g_charsetConverter.reset();
 }
 
 bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
@@ -2678,22 +2683,7 @@ void CApplication::Stop()
     g_pythonParser.FreeResources();
 
     CLog::Log(LOGNOTICE, "unload skin");
-    m_guiMusicOverlay.FreeResources();
-    m_guiMusicOverlay.ClearAll();
-    m_guiVideoOverlay.FreeResources();
-    m_guiVideoOverlay.ClearAll();
-    m_guiPointer.FreeResources();
-    m_guiPointer.ClearAll();
-    m_guiDialogVolumeBar.FreeResources();
-    m_guiDialogVolumeBar.ClearAll();
-    m_guiDialogSeekBar.FreeResources();
-    m_guiDialogSeekBar.ClearAll();
-    m_guiDialogKaiToast.FreeResources();
-    m_guiDialogKaiToast.ClearAll();
-    g_fontManager.Clear();
-    m_gWindowManager.DeInitialize();
-    g_audioManager.DeInitialize();
-    g_TextureManager.Cleanup();
+    UnloadSkin();
 
     CLog::Log(LOGNOTICE, "unload sections");
     CSectionLoader::UnloadAll();
