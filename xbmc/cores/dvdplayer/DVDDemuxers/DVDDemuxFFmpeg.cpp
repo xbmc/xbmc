@@ -133,7 +133,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   m_pInput = pInput;
   strFile = m_pInput->GetFileName();
 
-  if (m_pInput->m_streamType == DVDSTREAM_TYPE_DVD)
+  if (m_pInput->m_streamType == DVDSTREAM_TYPE_DVD ||
+      m_pInput->HasExtension("vob"))
   {
     // we are playing form a dvd, just open the mpeg demuxer here
     iformat = av_find_input_format("mpeg");
@@ -192,7 +193,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   // in combination with libdvdnav seek, av_find_stream_info wont work
   // so we do this for files only
-  if (m_pInput->m_streamType == DVDSTREAM_TYPE_FILE)
+  if (m_pInput->m_streamType == DVDSTREAM_TYPE_FILE &&
+      !m_pInput->HasExtension("vob"))
   {
     // disable the AVFMT_NOFILE just once, else ffmpeg isn't able to find stream info
     iformat->flags &= ~AVFMT_NOFILE;
