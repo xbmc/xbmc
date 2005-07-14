@@ -6,9 +6,6 @@
 #include "application.h"
 #include "localizeStrings.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // the MuteBug is a true modeless dialog
 

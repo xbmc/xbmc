@@ -7,9 +7,6 @@
 #include "../util.h"
 #include "HTMLUtil.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 using namespace HTML;
 

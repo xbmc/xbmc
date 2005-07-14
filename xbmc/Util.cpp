@@ -20,9 +20,6 @@
 #include "ButtonTranslator.h"
 #include "Picture.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;

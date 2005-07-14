@@ -7,9 +7,6 @@
 #include "../utils/http.h"
 #include "../PlayListFactory.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // Quoting shoutcast on how ofter users could update their streams list:
 // "You can either choose to cache this data on your own server,

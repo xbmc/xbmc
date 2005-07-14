@@ -2,9 +2,6 @@
 #include "GUIListExItem.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CGUIListExItem::CGUIListExItem(CStdString& aItemName) : CGUIItem(aItemName)
 {

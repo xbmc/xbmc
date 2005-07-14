@@ -1,9 +1,6 @@
 #include "../stdafx.h"
 #include "lcd.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 void ILCD::StringToLCDCharSet(CStdString& strText)
 {

@@ -7,9 +7,6 @@
 #include "../util.h"
 #include <sys/stat.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

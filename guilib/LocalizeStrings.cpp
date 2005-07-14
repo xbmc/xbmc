@@ -1,9 +1,6 @@
 #include "include.h"
 #include "LocalizeStrings.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CLocalizeStrings g_localizeStrings;
 extern CStdString g_LoadErrorStr;

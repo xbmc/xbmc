@@ -11,9 +11,6 @@
 #include "nfofile.h"
 #include "GUIPassword.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define CONTROL_BTNVIEWASICONS   2
 #define CONTROL_BTNSORTBY      3

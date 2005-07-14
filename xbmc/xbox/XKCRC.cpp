@@ -49,9 +49,6 @@ Reason: Prepared for Public Release
 */
 #include "XKCRC.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 XKCRC::XKCRC(void)
 {}

@@ -6,9 +6,6 @@
 #include "directorycache.h"
 #include "iso9660.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CHDDirectory::CHDDirectory(void)
 {}

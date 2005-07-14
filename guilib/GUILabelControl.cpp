@@ -4,9 +4,6 @@
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define SCROLL_WAIT 50
 

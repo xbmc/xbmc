@@ -4,9 +4,6 @@
 #include "Util.h"
 #include "Utils/Weather.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define SPEED_KMH 0
 #define SPEED_MPH 1

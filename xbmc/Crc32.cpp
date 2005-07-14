@@ -13,9 +13,6 @@
 //------------------------------------------------------------------------
 #include "Crc32.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // Implementation of 32-bit CRC (cyclic redundancy check) class:
 //     Polynomial:                 04C11DB7

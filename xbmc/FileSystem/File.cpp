@@ -25,9 +25,6 @@
 #include "../Util.h"
 #include "DirectoryCache.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 using namespace XFILE;
 

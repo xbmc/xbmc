@@ -4,9 +4,6 @@
 
 #include <fstream>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 using namespace MUSIC_INFO;
 

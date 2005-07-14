@@ -2,9 +2,6 @@
 #include "GUIResizeControl.h"
 #include "GUIWindowManager.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // time to reset accelerated cursors (digital movement)
 #define MOVE_TIME_OUT 500L

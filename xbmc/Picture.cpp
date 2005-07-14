@@ -3,9 +3,6 @@
 #include "picture.h"
 #include "util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define QUALITY 0
 #define MAX_THUMB_WIDTH 128

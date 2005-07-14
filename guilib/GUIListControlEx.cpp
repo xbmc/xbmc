@@ -2,9 +2,6 @@
 #include "GUIListControlEx.h"
 #include "GUIFontManager.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define CONTROL_LIST  0
 #define CONTROL_UPDOWN 1

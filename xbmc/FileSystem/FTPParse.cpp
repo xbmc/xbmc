@@ -18,9 +18,6 @@
 #include <time.h>
 #include "ftpparse.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 static long totai(long year,long month,long mday)
 {

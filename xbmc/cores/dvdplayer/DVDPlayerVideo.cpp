@@ -7,9 +7,6 @@
 #include "DVDCodecs\DVDVideoPPFFmpeg.h"
 #include "..\..\util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 DWORD video_refresh_thread(void *arg);
 

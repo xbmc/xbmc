@@ -29,9 +29,6 @@
 
 #include "AnimatedGif.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #pragma pack(1) 
 // Error processing macro (NO-OP by default):

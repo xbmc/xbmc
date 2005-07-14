@@ -45,20 +45,20 @@
 
 #include "config.h"
 
-#ifdef _DEBUG
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
-#define DEBUG_NEW new( _NORMAL_BLOCK, __FILE__, __LINE__)
-#endif
-
 #include "..\..\..\guilib\stdstring.h"
 
 #include "MFC64bitFix.h"
 #include <map>
 #include <list>
 #include <vector>
+
+#ifdef _DEBUG
+#define _CRTDBG_MAP_ALLOC
+#include <FStream>
+#include <stdlib.h>
+#include <crtdbg.h>
+#define new new( _NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
 
 #include "AsyncSocketEx.h"
 

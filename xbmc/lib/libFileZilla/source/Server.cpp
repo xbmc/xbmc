@@ -32,9 +32,6 @@
 #include "FileLogger.h"
 #include "version.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #ifndef MB_SERVICE_NOTIFICATION
 #define MB_SERVICE_NOTIFICATION          0x00040000L

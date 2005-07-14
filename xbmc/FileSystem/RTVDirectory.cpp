@@ -6,9 +6,6 @@
 #include "RTVDirectory.h"
 #include "../util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 extern "C"
 {

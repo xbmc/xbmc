@@ -5,9 +5,6 @@
 #include "GUIButtonControl.h"
 #include "Util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // TODO: Add support for symbols.
 

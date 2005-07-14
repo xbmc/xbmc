@@ -50,9 +50,6 @@ documentation and/or software.
 #include <assert.h>
 #include <iostream>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // MD5 simple initialization method
 

@@ -8,9 +8,6 @@
 #include "DVDPlayerDLL.h"
 #include "DVDClock.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // #define SPU_DEBUG
 

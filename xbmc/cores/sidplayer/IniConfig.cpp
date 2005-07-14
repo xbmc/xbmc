@@ -16,6 +16,9 @@
  ***************************************************************************/ 
 /***************************************************************************
  *  $Log$
+ *  Revision 1.5  2005/07/14 10:43:03  bobbin007
+ *  changed: smarter define of the debug new operator (in stdafx.h) only no need for a macro in each cpp file
+ *
  *  Revision 1.4  2005/07/13 19:46:58  bobbin007
  *  fixed: ftp server can not be shut down via settings menu
  *  fixed: reference controls got not freed after skin load
@@ -83,9 +86,6 @@
 #   include <dirent.h>    /* opendir */
 #endif
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define SAFE_FREE(p) { if(p) { free (p); (p)=NULL; } }
 const char *IniConfig::DIR_NAME = ".sidplay";

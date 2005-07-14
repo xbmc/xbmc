@@ -5,9 +5,6 @@
 #include "../util.h"
 #include "directorycache.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CVirtualDirectory::CVirtualDirectory(void)
 {}

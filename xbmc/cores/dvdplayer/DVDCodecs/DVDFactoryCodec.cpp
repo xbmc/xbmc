@@ -13,9 +13,6 @@
 #define EMULATE_INTTYPES
 #include "..\ffmpeg\avcodec.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CodecID codecID)
 {
