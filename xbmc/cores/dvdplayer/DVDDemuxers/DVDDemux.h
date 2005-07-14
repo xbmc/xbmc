@@ -67,6 +67,8 @@ public:
     iSampleRate = 0;
   }
 
+  void GetStreamType(std::string& strInfo);
+
   int iChannels;
   int iSampleRate;
 };
@@ -125,6 +127,26 @@ public:
    */
   virtual int GetNrOfStreams() = 0;
 
+  /*
+   * return nr of audio streams, 0 if none
+   */
+  int GetNrOfAudioStreams();
+  
+  /*
+   * return nr of video streams, 0 if none
+   */
+  int GetNrOfVideoStreams();
+
+  /*
+   * return the audio stream, or NULL if it does not exist
+   */
+  CDemuxStreamAudio* GetStreamFromAudioId(int iAudioIndex);
+
+  /*
+   * return the video stream, or NULL if it does not exist
+   */
+  CDemuxStreamVideo* GetStreamFromVideoId(int iVideoIndex);
+  
 protected:
   CDVDInputStream* m_pInput;
 

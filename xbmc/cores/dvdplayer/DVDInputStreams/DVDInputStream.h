@@ -15,6 +15,7 @@ public:
   virtual __int64 Seek(__int64 offset, int whence) = 0;
 
   const char* GetFileName();
+  bool HasExtension(char* sExtension);
 
   int m_streamType;
 
