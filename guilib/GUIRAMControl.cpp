@@ -48,10 +48,10 @@ CGUIRAMControl::CGUIRAMControl(DWORD dwParentID, DWORD dwControlId,
 
   for (int i = 0;i < RECENT_MOVIES;i++)
   {
-    m_pTextButton[i] = new CGUIButtonControl(m_dwControlID, 0, 0, 0, 0, 0, "button-focus.png", "", dwTextOffsetX, dwTextOffsetY);
-    m_pTextButton[i]->SetLabel(strFont2Name, "", m_dwTextColor);
-    m_pTextButton[i]->SetPulseOnSelect(m_pulseOnSelect);
-  }
+    m_pTextButton[i]=NULL;
+    m_current[i].pImage=NULL;
+    m_new[i].pImage=NULL;
+ }
 
   m_iSelection = 0;
   m_dwCounter = 0;
@@ -59,7 +59,35 @@ CGUIRAMControl::CGUIRAMControl(DWORD dwParentID, DWORD dwControlId,
 }
 
 CGUIRAMControl::~CGUIRAMControl(void)
-{}
+{
+  for (int i = 0;i < RECENT_MOVIES;i++)
+  {
+    CGUIImage* pImage=m_current[i].pImage;
+    if (m_current[i].bValid && pImage)
+    {
+      pImage->FreeResources();
+      delete pImage;
+    }
+      
+    pImage=m_new[i].pImage;
+    if (m_new[i].bValid && pImage)
+    {
+      pImage->FreeResources();
+      delete pImage;
+    }
+
+    if (m_pTextButton[i])
+      delete m_pTextButton[i];
+    m_pTextButton[i]=NULL;
+ }
+
+  //if (m_pMonitor)
+  //{
+  //  m_pMonitor->StopThread();
+  //  delete m_pMonitor;
+  //}
+  //m_pMonitor=NULL;
+}
 
 void CGUIRAMControl::Render()
 {
@@ -101,8 +129,11 @@ void CGUIRAMControl::Render()
       if (movie.nAlpha < nLowWatermark)
       {
         movie.pImage->FreeResources();
+        delete movie.pImage;
+        movie.pImage=NULL;
         m_current[i] = m_new[i];
         m_new[i].bValid = false;
+        m_new[i].pImage=NULL;
       }
       else if (movie.nAlpha > 255)
       {
@@ -120,6 +151,7 @@ void CGUIRAMControl::Render()
     {
       m_current[i] = m_new[i];
       m_new[i].bValid = false;
+      m_new[i].pImage=NULL;
     }
   }
 
@@ -488,6 +520,12 @@ void CGUIRAMControl::PreAllocResources()
 
   for (int i = 0;i < RECENT_MOVIES;i++)
   {
+    if (!m_pTextButton[i])
+    {
+      m_pTextButton[i] = new CGUIButtonControl(m_dwControlID, 0, 0, 0, 0, 0, "button-focus.png", "", m_dwTextOffsetX, m_dwTextOffsetY);
+      m_pTextButton[i]->SetLabel(m_pFont2->GetFontName(), "", m_dwTextColor);
+      m_pTextButton[i]->SetPulseOnSelect(m_pulseOnSelect);
+    }
     m_pTextButton[i]->PreAllocResources();
   }
 }
@@ -498,7 +536,8 @@ void CGUIRAMControl::AllocResources()
 
   for (int i = 0;i < RECENT_MOVIES;i++)
   {
-    m_pTextButton[i]->AllocResources();
+    if (m_pTextButton[i])
+      m_pTextButton[i]->AllocResources();
   }
 }
 
@@ -508,15 +547,7 @@ void CGUIRAMControl::FreeResources()
 
   for (int i = 0;i < RECENT_MOVIES;i++)
   {
-    m_pTextButton[i]->FreeResources();
-  }
-}
-
-void CGUIRAMControl::DynamicResourceAlloc(bool bOnOff)
-{
-  CGUIControl::DynamicResourceAlloc(bOnOff);
-  for (int i = 0;i < RECENT_MOVIES;i++)
-  {
-    m_pTextButton[i]->DynamicResourceAlloc(bOnOff);
+    if (m_pTextButton[i])
+      m_pTextButton[i]->FreeResources();
   }
 }

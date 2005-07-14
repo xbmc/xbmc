@@ -50,7 +50,6 @@ public:
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
-  virtual void DynamicResourceAlloc(bool bOnOff);
 
   DWORD GetTitleTextColor() const { return m_dwTitleColor;};
   DWORD GetNormalTextColor() const { return m_dwTextColor;};
