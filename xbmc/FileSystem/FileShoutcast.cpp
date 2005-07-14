@@ -19,9 +19,6 @@
 #include "../MusicInfoTagLoaderMP3.h"
 #include "../utils/GUIInfoManager.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 const int SHOUTCASTTIMEOUT = 100;
 static CRingBuffer m_ringbuf;

@@ -6,9 +6,6 @@
 //#define DUMPING_DATA 1
 #include "coffldr.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 const char *DATA_DIR_NAME[16] =
   {

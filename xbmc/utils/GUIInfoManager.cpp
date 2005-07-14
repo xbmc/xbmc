@@ -18,9 +18,6 @@
 
 #include "FanController.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 extern char g_szTitleIP[32];
 

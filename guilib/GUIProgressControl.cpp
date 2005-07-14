@@ -3,9 +3,6 @@
 #include "../xbmc/utils/GUIInfoManager.h"
 
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, CStdString& strBackGroundTexture, CStdString& strLeftTexture, CStdString& strMidTexture, CStdString& strRightTexture, CStdString& strOverlayTexture)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)

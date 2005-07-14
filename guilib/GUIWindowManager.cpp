@@ -7,9 +7,6 @@
 #include "../xbmc/GUIPassword.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CGUIWindowManager m_gWindowManager;
 CGUIWindowManager::CGUIWindowManager(void)

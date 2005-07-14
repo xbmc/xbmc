@@ -1,9 +1,6 @@
 #include "../../stdafx.h"
 #include "ReplayGain.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CReplayGain::CReplayGain()
 {

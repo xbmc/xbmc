@@ -34,9 +34,6 @@ Todo/BUG: GeminiServer 10.05.2005
 #include "utils/LED.h"
 #include "Util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #ifndef SKIN_VERSION_1_3
 	#include "GUILabelControl.h"

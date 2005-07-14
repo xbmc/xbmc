@@ -37,9 +37,6 @@
 
 extern void fast_memcpy(void* d, const void* s, unsigned n);
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 
 /////////////////////////////////////////////////////////////////////////////

@@ -2,9 +2,6 @@
 #include "GUIWindowSettings.h"
 #include "Credits.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //#define CONTROL_CREDITS (10)
 #define CONTROL_CREDITS 12

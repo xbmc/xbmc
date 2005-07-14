@@ -22,9 +22,6 @@
 #include "xbwindows.h"
 
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // global CWindowManager object
 CWindowManager gWindowManager;
@@ -398,6 +395,11 @@ CMessageSink::CMessageSink(DWORD ThreadId)
 
 CMessageSink::~CMessageSink()
 {
+  mMessageQueueCS.Lock();
+
+  mMessageQueue.clear();
+
+  mMessageQueueCS.Unlock();
   CloseHandle(mEventMessageAvailable);
 }
 

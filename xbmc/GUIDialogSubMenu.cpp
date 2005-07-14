@@ -4,9 +4,6 @@
 #include "Credits.h"
 #include "Util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define CONTROL_BTN_SHUTDOWN  10
 #define CONTROL_BTN_DASHBOARD  11

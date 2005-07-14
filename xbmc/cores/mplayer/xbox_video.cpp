@@ -24,9 +24,6 @@
 #include "video.h"
 #include "mplayer.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //Uncomment line here to allow direct rendering
 //Disabling for now.. the code below works, however it doesn't seem

@@ -5,9 +5,6 @@
 #include "../stdafx.h"
 #include "VideoSettings.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

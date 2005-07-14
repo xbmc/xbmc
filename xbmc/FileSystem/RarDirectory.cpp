@@ -2,9 +2,6 @@
 #include "../application.h"
 #include "../utils/log.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 namespace DIRECTORY
 {

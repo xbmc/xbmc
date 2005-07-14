@@ -37,9 +37,6 @@
 #include "../xbmc/ApplicationMessenger.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CStdString CGUIWindow::CacheFilename = "";
 CGUIWindow::VECREFERENCECONTOLS CGUIWindow::ControlsCache;

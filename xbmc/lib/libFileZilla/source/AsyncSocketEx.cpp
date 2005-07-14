@@ -71,9 +71,6 @@ to tim.kosse@gmx.de
 #include "AsyncSocketExLayer.h"
 #endif //NOLAYERS
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #pragma warning (disable:4552)
 #ifndef CCRITICALSECTIONWRAPPERINCLUDED

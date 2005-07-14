@@ -13,9 +13,6 @@
 #include "../XBInputEx.h"
 #include "DelayController.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CDelayController::CDelayController( DWORD dwMoveDelay, DWORD dwRepeatDelay ) :
     m_wLastDir(0),

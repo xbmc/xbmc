@@ -2,9 +2,6 @@
 #include "GUIListItem.h"
 #include "GUIImage.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {

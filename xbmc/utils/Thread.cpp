@@ -22,9 +22,6 @@
 #include "Thread.h"
 #include <process.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

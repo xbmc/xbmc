@@ -2,9 +2,6 @@
 #include "guifontxpr.h"
 #include "graphiccontext.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 WCHAR* CGUIFont::m_pwzBuffer = NULL;
 INT CGUIFont::m_nBufferSize = 0;

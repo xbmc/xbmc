@@ -9,9 +9,6 @@
 #include "utils/fstrcmp.h"
 #include "util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //********************************************************************************************************************************
 CProgramDatabase::CProgramDatabase(void)

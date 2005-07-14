@@ -2,9 +2,6 @@
 #include "GUIDialogMusicScan.h"
 #include "application.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define CONTROL_LABELSTATUS   401
 #define CONTROL_LABELDIRECTORY 402

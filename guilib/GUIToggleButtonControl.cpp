@@ -7,9 +7,6 @@
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 // NB: This is backwards.  Really, the Alt textures should be rendered when selected.
 // Currently they are rendered when NOT selected.  (Normal textures rendered when selected)

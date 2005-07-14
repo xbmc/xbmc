@@ -21,9 +21,6 @@
 #include "../stdafx.h"
 #include "IFile.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 using namespace XFILE;
 

@@ -6,9 +6,6 @@
 #include "Shortcut.h"
 #include "util.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

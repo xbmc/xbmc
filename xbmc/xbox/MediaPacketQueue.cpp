@@ -1,9 +1,6 @@
 #include "../stdafx.h"
 #include "MediaPacketQueue.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CMediaPacketQueue::CMediaPacketQueue(CStdString& aName)
 {

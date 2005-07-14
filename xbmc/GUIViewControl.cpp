@@ -2,9 +2,6 @@
 #include "GUIViewControl.h"
 #include "GUIThumbnailPanel.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CGUIViewControl::CGUIViewControl(void)
 {

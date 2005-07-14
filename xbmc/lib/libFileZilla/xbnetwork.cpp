@@ -25,9 +25,6 @@
 #include <stdio.h>
 #include <algorithm>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #pragma warning (disable:4244)
 #pragma warning (disable:4800)

@@ -1,9 +1,6 @@
 #include "include.h"
 #include "ActionManager.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CActionManager g_actionManager;
 

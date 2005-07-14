@@ -21,9 +21,6 @@
 #include "PixelShaderRenderer.h"
 #include "GUIFontManager.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 CPixelShaderRenderer::CPixelShaderRenderer(LPDIRECT3DDEVICE8 pDevice)
     : CXBoxRenderer(pDevice)
