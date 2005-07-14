@@ -444,6 +444,7 @@
   <string><id>512</id><value>Aloitusikkuna</value></string>
   <string><id>513</id><value>Koti-ikkuna</value></string>
   <string><id>514</id><value>Manuaaliset asetukset</value></string>
+  <string><id>515</id><value>Tyylilaji</value></string>
 
   <string><id>600</id><value>Rippaa CD</value></string>
   <string><id>601</id><value>Medium</value></string>
@@ -550,7 +551,7 @@
   <string><id>768</id><value>Varattu</value></string>
   <string><id>769</id><value>Varattu</value></string>
   <string><id>770</id><value>Virhe %i: jako ei saatavilla</value></string>
-  <string><id>771</id><value>Ohita FATX:n rajoitukset FTP-palvelimessa</value></string>
+  <string><id>771</id><value>- Automaattinen FATX-rajoitus</value></string>
   <string><id>772</id><value>Äänilaitteisto</value></string>
   <string><id>773</id><value>Haku</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
@@ -580,12 +581,32 @@
   <string><id>1220</id><value>Kuvat &amp; Tiedostot</value></string>
   <string><id>1221</id><value>Musiikki &amp; Videot &amp; Kuvat</value></string>
   <string><id>1222</id><value>Musiikki &amp; Videot &amp; Kuvat &amp; Tiedostot</value></string>
-  <string><id>1226</id><value>Tiedostot &amp; Musiikki &amp; Videot</value></string>
-  <string><id>1227</id><value>Tiedostot &amp; Kuvat &amp; Musiikki</value></string>
-  <string><id>1228</id><value>Tiedostot &amp; Kuvat &amp; Videot</value></string>
   <string><id>1223</id><value>Ei käytössä</value></string>
   <string><id>1224</id><value>Normaalikäyttäjä</value></string>
   <string><id>1225</id><value>Tehokäyttäjä</value></string>
+  <string><id>1226</id><value>Tiedostot &amp; Musiikki &amp; Videot</value></string>
+  <string><id>1227</id><value>Tiedostot &amp; Kuvat &amp; Musiikki</value></string>
+  <string><id>1228</id><value>Tiedostot &amp; Kuvat &amp; Videot</value></string>
+
+  <string><id>1229</id><value>Musiikki &amp; Sovellukset</value></string>
+  <string><id>1230</id><value>Videot &amp; Sovellukset</value></string>
+  <string><id>1231</id><value>Kuvat &amp; Sovellukset</value></string>
+  <string><id>1232</id><value>Musiikki &amp; Videot &amp; Kuvat &amp; Sovellukset</value></string>
+  <string><id>1233</id><value>Sovellukset &amp; Videot &amp; Musiikki</value></string>
+  <string><id>1234</id><value>Sovellukset &amp; Kuvat &amp; Musiikki</value></string>
+  <string><id>1235</id><value>Sovellukset &amp; Kuvat &amp; Videot</value></string>
+
+  <string><id>1245</id><value>- FTP käyttäjätunnus</value></string>
+  <string><id>1246</id><value>- FTP salasana</value></string>
+  <string><id>1247</id><value>FTP-palvelimen salasana asetettu!</value></string>
+
+  <string><id>1250</id><value>Automaattitunnistus</value></string>
+  <string><id>1251</id><value>Xboxin automaattitunnistus</value></string>
+  <string><id>1252</id><value>Lempinimi</value></string>
+  <string><id>1253</id><value>Luo FTP-linkki Omiin tiedostoihin</value></string>
+  <string><id>1254</id><value>Ponnahdushuomautus</value></string>
+  <string><id>1255</id><value>Lähetä FTP käyttäjätunnus ja salasana</value></string>
+  <string><id>1256</id><value>Pingauksen väli sekunneissa</value></string>
 
   <string><id>1396</id><value>Kasaantuvaa</value></string>
   <string><id>1397</id><value>ja</value></string>
@@ -684,10 +705,10 @@
   <string><id>12324</id><value>XBMC Päälukitus</value></string>
   <string><id>12325</id><value>Hakemisto lukittu</value></string>
   <string><id>12326</id><value>Anna salasana</value></string>
-  <string><id>12327</id><value>Anna pääsalasana ja paina Enter,</value></string>
-  <string><id>12328</id><value>Anna avauskoodi ja paina Enter,</value></string> 
+  <string><id>12327</id><value>Anna pääsalasana</value></string>
+  <string><id>12328</id><value>Anna avauskoodi</value></string> 
   <string><id>12329</id><value>tai paina C peruuttaaksesi</value></string>
-  <string><id>12330</id><value>Anna Xbox-ohjaimen painikeyhdistelmä ja </value></string>
+  <string><id>12330</id><value>Anna Xbox-ohjaimen painikeyhdistelmä ja paina Start</value></string>
   <string><id>12331</id><value>paina Start, tai Back peruuttaaksesi</value></string>
   <string><id>12332</id><value>Lukitse jako</value></string>
   <string><id>12333</id><value>Avaa jako</value></string>
@@ -709,7 +730,7 @@
   <string><id>12349</id><value>Muista pääsalasana uudelleenkäynnistykseen asti?</value></string>
   <string><id>12350</id><value>(Minkä tahansa kohteen avaaminen Asetuksissa</value></string>
   <string><id>12351</id><value>asettaa pääsalasanan uudelleen käyttöön.)</value></string>
-  <string><id>12352</id><value>Anna pääsalasana-painikeyhdistelmä </value></string>
+  <string><id>12352</id><value>Anna pääsalasana-painikeyhdistelmä ja paina Start</value></string>
   <string><id>12353</id><value>Uudelleenaktivoi lukitus</value></string>
   <string><id>12354</id><value>Ohita kansioiden lukitus uudelleenkäynnitykseen asti?</value></string>
   <string><id>12355</id><value>Ota kansioiden lukituksen automaattisesti käyttöön uudestaan.)</value></string>
@@ -847,6 +868,7 @@
   <string><id>13388</id><value>Presetit</value></string>
   <string><id>13389</id><value>Tälle visualisoinnille ei&#10;löytynyt presettejä</value></string>
   <string><id>13390</id><value>Tälle visualisoinnille ei&#10;löytynyt asetuksia</value></string>
+  <string><id>13391</id><value>Poista/Lataa</value></string>
 
   <string><id>14000</id><value>Älä yhdistä osia</value></string>
   <string><id>14001</id><value>Yhdistä osat (norm)</value></string>
@@ -911,13 +933,13 @@
   <string><id>14062</id><value>Anna käyttäjätunnus:</value></string>
 
   <string><id>14063</id><value>Aika &amp; Päivämäärä</value></string>
-  <string><id>14064</id><value>Aseta vuosi</value></string>
-  <string><id>14065</id><value>Aseta kuukausi</value></string>
-  <string><id>14066</id><value>Aseta päivä</value></string>
-  <string><id>14067</id><value>Aseta tunti</value></string>
-  <string><id>14068</id><value>Aseta minuutti</value></string>
+  <string><id>14064</id><value>Aseta päivämäärä</value></string>
+  <string><id>14065</id><value>Aseta aika</value></string>
+  <string><id>14066</id><value>Anna aika 24-tuntisena muodossa HH:MM</value></string>
+  <string><id>14067</id><value>Anna päivämäärä muodossa DD/MM/YYYY</value></string>
+  <string><id>14068</id><value>Anna IP-osoite</value></string>
   <string><id>14069</id><value>Otetaanko asetukset käyttöön heti?</value></string>
-  <string><id>14070</id><value>Ota käyttöön</value></string>
+  <string><id>14070</id><value>Ota asetukset heti käyttöön</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Ei yhteyttä palveluun, haluaisitko</value></string>
