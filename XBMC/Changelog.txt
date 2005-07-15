@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-07-2005 removed: Generate thumbs option in Slideshow settings (not needed).
  - 15-07-2005 fixed: Folder thumb generation in My Pictures.
  - 15-07-2005 updated: German language file
  - 15-07-2005 changed: when entering a zero in numeric dialog, mode ip adress, it jumps to the next block

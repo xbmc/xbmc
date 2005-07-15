@@ -15,7 +15,7 @@ public:
 
   CPicture(void);
   virtual ~CPicture(void);
-  IDirect3DTexture8* Load(const CStdString& strFilename, int iMaxWidth = 128, int iMaxHeight = 128, bool bCreateThumb = false);
+  IDirect3DTexture8* Load(const CStdString& strFilename, int iMaxWidth = 128, int iMaxHeight = 128);
 
   bool CreateThumbnail(const CStdString& strFileName);
   bool CreateExifThumbnail(const CStdString &strFile, const CStdString &strCachedThumb);
