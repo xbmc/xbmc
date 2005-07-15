@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-07-2005 changed: autodetect ping interval now shows secs in the spin control
  - 15-07-2005 fixed: if the number keys on the remote have global mapped actions no numbers can be entered in numeric dialog
  - 14-07-2005 changed: dvdplayer loads dlls using the sectionloader (no more unloading and loading of dlls all the time)
  - 14-07-2005 fixed: some more menu issues in the dvdplayer
