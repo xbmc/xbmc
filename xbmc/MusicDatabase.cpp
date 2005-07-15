@@ -2477,6 +2477,115 @@ void CMusicDatabase::DeleteAlbumInfo()
   }
 }
 
+bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
+{
+  if (!g_guiSettings.GetBool("MusicFiles.UseCDDB"))
+    return false;
+
+  // Get information for the inserted disc
+  CCdInfo* pCdInfo = CDetectDVDMedia::GetCdInfo();
+  if (pCdInfo == NULL)
+    return false;
+
+  // If the disc has no tracks, we are finished here.
+  int nTracks = pCdInfo->GetTrackCount();
+  if (nTracks <= 0)
+    return false;
+
+  //  Delete old info if any
+  if (bRequery)
+  {
+    CStdString strFile;
+    strFile.Format("%s\\cddb\\%x.cddb", g_stSettings.m_szAlbumDirectory, pCdInfo->GetCddbDiscId() );
+    ::DeleteFile(strFile.c_str());
+  }
+
+  // Prepare cddb
+  Xcddb cddb;
+  CStdString strDir;
+  strDir.Format("%s\\cddb", g_stSettings.m_szAlbumDirectory);
+  cddb.setCacheDir(strDir);
+
+  // Do we have to look for cddb information
+  if (pCdInfo->HasCDDBInfo() && !cddb.isCDCached(pCdInfo))
+  {
+    CGUIDialogProgress* pDialogProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogOK* pDialogOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    CGUIDialogSelect *pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+
+    if (!pDialogProgress) return false;
+    if (!pDialogOK) return false;
+    if (!pDlgSelect) return false;
+
+    // Show progress dialog if we have to connect to freedb.org
+    pDialogProgress->SetHeading(255); //CDDB
+    pDialogProgress->SetLine(0, ""); // Querying freedb for CDDB info
+    pDialogProgress->SetLine(1, 256);
+    pDialogProgress->SetLine(2, "");
+    pDialogProgress->StartModal(m_gWindowManager.GetActiveWindow());
+    pDialogProgress->Progress();
+
+    // get cddb information
+    if (!cddb.queryCDinfo(pCdInfo))
+    {
+      pDialogProgress->Close();
+      int lasterror = cddb.getLastError();
+
+      // Have we found more then on match in cddb for this disc,...
+      if (lasterror == E_WAIT_FOR_INPUT)
+      {
+        // ...yes, show the matches found in a select dialog
+        // and let the user choose an entry.
+        pDlgSelect->Reset();
+        pDlgSelect->SetHeading(255);
+        int i = 1;
+        while (1)
+        {
+          CStdString strTitle = cddb.getInexactTitle(i);
+          if (strTitle == "") break;
+
+          CStdString strArtist = cddb.getInexactArtist(i);
+          if (!strArtist.IsEmpty())
+            strTitle += " - " + strArtist;
+
+          pDlgSelect->Add(strTitle);
+          i++;
+        }
+        pDlgSelect->DoModal(m_gWindowManager.GetActiveWindow());
+
+        // Has the user selected a match...
+        int iSelectedCD = pDlgSelect->GetSelectedLabel();
+        if (iSelectedCD >= 0)
+        {
+          // ...query cddb for the inexact match
+          if (!cddb.queryCDinfo(pCdInfo, 1 + iSelectedCD))
+            pCdInfo->SetNoCDDBInfo();
+        }
+        else
+          pCdInfo->SetNoCDDBInfo();
+
+        pDialogProgress->Close();
+      }
+      else
+      {
+        pCdInfo->SetNoCDDBInfo();
+        pDialogProgress->Close();
+        // ..no, an error occured, display it to the user
+        pDialogOK->SetHeading(255);
+        pDialogOK->SetLine(0, 257); //ERROR
+        pDialogOK->SetLine(1, cddb.getLastErrorText() );
+        pDialogOK->SetLine(2, "");
+        pDialogOK->DoModal(m_gWindowManager.GetActiveWindow() );
+      }
+    } // if ( !cddb.queryCDinfo( pCdInfo ) )
+    pDialogProgress->Close();
+  } // if (pCdInfo->HasCDDBInfo() && g_stSettings.m_bUseCDDB)
+
+  // Filling the file items with cddb info happens in CMusicInfoTagLoaderCDDA
+
+  return pCdInfo->HasCDDBInfo();
+}
+
 void CMusicDatabase::DeleteCDDBInfo()
 {
   WIN32_FIND_DATA wfd;

@@ -107,6 +107,7 @@ public:
   void Clean();
   int  Cleanup(CGUIDialogProgress *pDlgProgress);
   void DeleteAlbumInfo();
+  bool LookupCDDBInfo(bool bRequery=false);
   void DeleteCDDBInfo();
   void AddSong(const CSong& song, bool bCheck = true);
   long AddAlbumInfo(const CAlbum& album, const VECSONGS& songs);
