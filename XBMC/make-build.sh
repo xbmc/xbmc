@@ -50,7 +50,6 @@ cp -v /xbox/win_dlls/QuickTime* $dest/system/players/mplayer/codecs/
 echo "---> making release leaner ..."
 # make pm3 leaner
 cd $dest/skin/Project\ Mayhem\ III/
-rm -rfv 1080i 720p NTSC NTSC16x9 PAL PAL16x9
 rm -rfv media/*.png media/*.jpg media/*.gif
 
 # make credit leaner
