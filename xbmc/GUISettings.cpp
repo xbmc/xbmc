@@ -145,7 +145,7 @@ CGUISettings::CGUISettings(void)
   AddInt(4, "Slideshow.ZoomAmount", 13310, 30, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddInt(5, "Slideshow.BlackBarCompensation", 13312, 20, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddBool(6, "Slideshow.Shuffle", 13319, false);
-  AddBool(7, "Slideshow.GenerateThumbs", 13360, true);
+
   AddCategory(0, "Pictures", 14018);
   AddBool(1, "Pictures.HideParentDirItems", 13306, false);
   AddBool(2, "Pictures.UseAutoSwitching", 14011, false);

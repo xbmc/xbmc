@@ -32,7 +32,7 @@ void CPicture::Free()
   }
 }
 
-IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight, bool bCreateThumb)
+IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
 {
   if (!LoadDLL()) return NULL;
 
