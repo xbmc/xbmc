@@ -527,7 +527,7 @@ bool CGUIInfoManager::GetBool(int condition1) const
       bReturn = m_playerShowTime;
     break;
     case AUDIOSCROBBLER_ENABLED:
-      bReturn = g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler");
+      bReturn = g_guiSettings.GetBool("MyMusic.UseAudioScrobbler");
     break;
     case VIDEOPLAYER_USING_OVERLAYS:
       bReturn = (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS);

@@ -5,6 +5,13 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-07-2005 changed: reorg of music settings
+                       New section general, that contains all not view depending music settings
+                       Sections for each view (Files, Library, Playlist)
+                       Replay gain is in general now
+                       removed Delete album info option
+                       removed Delete CDDB info option, CDDB info can be requeried via context menu in my music file
+
  - 15-07-2005 removed: Generate thumbs option in Slideshow settings (not needed).
  - 15-07-2005 fixed: Folder thumb generation in My Pictures.
  - 15-07-2005 updated: German language file

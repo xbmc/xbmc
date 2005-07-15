@@ -241,7 +241,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   DSMIXBINVOLUMEPAIR dsmbvp8[8];
   int iMixBinCount;
 
-  if ((channels == 2) && (g_guiSettings.GetBool("AudioMusic.OutputToAllSpeakers")))
+  if ((channels == 2) && (g_guiSettings.GetBool("MyMusic.OutputToAllSpeakers")))
     g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STEREOALL, channels);
   else
     g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STANDARD, channels);

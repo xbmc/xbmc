@@ -777,7 +777,7 @@ void CFileItem::SetMusicThumb()
 
     // no pre-cached thumbs so check for remote thumbs
     bool bTryRemote = true;
-    if (IsRemote() && !IsDVD() && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs"))
+    if (IsRemote() && !IsDVD() && !g_guiSettings.GetBool("MusicFiles.FindRemoteThumbs"))
     {
       bTryRemote = false;
     }
@@ -832,7 +832,7 @@ void CFileItem::SetMusicThumb()
   if (m_bIsFolder)
   {
     bool bTryRemote = true;
-    if (IsRemote() && !IsDVD() && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs"))
+    if (IsRemote() && !IsDVD() && !g_guiSettings.GetBool("MusicFiles.FindRemoteThumbs"))
     {
       bTryRemote = false;
     }
