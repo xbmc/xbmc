@@ -123,6 +123,16 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
+bool CGUIDialogProgress::OnAction(const CAction &action)
+{
+  if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
+  {
+    m_bCanceled = true;
+    return true;
+  }
+  return CGUIDialog::OnAction(action);
+}
+
 void CGUIDialogProgress::SetPercentage(int iPercentage)
 {
   if (iPercentage < 0) iPercentage = 0;
