@@ -92,11 +92,11 @@ void CScrobbler::RemoveInstance()
 
 void CScrobbler::Init()
 {
-  if (!g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler") || !g_guiSettings.GetBool("Network.EnableInternet"))
+  if (!g_guiSettings.GetBool("MyMusic.UseAudioScrobbler") || !g_guiSettings.GetBool("Network.EnableInternet"))
     return;
 
-  CStdString strPassword=g_guiSettings.GetString("MusicLibrary.AudioScrobblerPassword");
-  CStdString strUserName=g_guiSettings.GetString("MusicLibrary.AudioScrobblerUserName");
+  CStdString strPassword=g_guiSettings.GetString("MyMusic.AudioScrobblerPassword");
+  CStdString strUserName=g_guiSettings.GetString("MyMusic.AudioScrobblerUserName");
 
   if (strPassword.IsEmpty() || strUserName.IsEmpty())
     return;
@@ -163,7 +163,7 @@ void CScrobbler::SetCache(const CStdString& strCache, int iNumEntries)
 
 int CScrobbler::AddSong(const CMusicInfoTag& tag)
 {
-  if (!g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler") || !g_guiSettings.GetBool("Network.EnableInternet"))
+  if (!g_guiSettings.GetBool("MyMusic.UseAudioScrobbler") || !g_guiSettings.GetBool("Network.EnableInternet"))
     return 0;
 
   if (tag.GetDuration() <= MINLENGTH || tag.GetDuration() > MAXLENGTH) // made <= to minlength to stop iTMS previews being submitted in iTunes
@@ -570,7 +570,7 @@ void CScrobbler::SetSongStartTime()
 
 CStdString CScrobbler::GetConnectionState()
 {
-  if (!g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler"))
+  if (!g_guiSettings.GetBool("MyMusic.UseAudioScrobbler"))
     return "";
 
   return (m_bReadyToSubmit ? g_localizeStrings.Get(15207) : g_localizeStrings.Get(15208));  // Connected : Not Connected
@@ -580,7 +580,7 @@ CStdString CScrobbler::GetSubmitInterval()
 {
   CStdString strInterval;
 
-  if (!g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler"))
+  if (!g_guiSettings.GetBool("MyMusic.UseAudioScrobbler"))
     return strInterval;
 
   CStdString strFormat=g_localizeStrings.Get(15209);  // Submit Interval %i
@@ -593,7 +593,7 @@ CStdString CScrobbler::GetFilesCached()
 {
   CStdString strCachedFiles;
 
-  if (!g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler"))
+  if (!g_guiSettings.GetBool("MyMusic.UseAudioScrobbler"))
     return strCachedFiles;
 
   CStdString strFormat=g_localizeStrings.Get(15210);  // Cached %i Songs
@@ -611,7 +611,7 @@ CStdString CScrobbler::GetSubmitState()
 {
   CStdString strText;
 
-  if (!g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler"))
+  if (!g_guiSettings.GetBool("MyMusic.UseAudioScrobbler"))
     return strText;
 
   if (m_bSubmitInProgress)

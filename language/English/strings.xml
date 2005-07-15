@@ -263,7 +263,7 @@
   <string><id>331</id><value>Compressing database...</value></string>
   <string><id>332</id><value>Error compressing database</value></string>
   <string><id>333</id><value>Do you want to clean the music library?</value></string>
-  <string><id>334</id><value>Clean Music Library</value></string>
+  <string><id>334</id><value>Clean Music Library...</value></string>
   <string><id>335</id><value>Start</value></string>
   <string><id>336</id><value>Adjust Framerate</value></string>
   <string><id>337</id><value>Audio Output</value></string>
@@ -472,7 +472,7 @@
   <string><id>636</id><value>Custom</value></string>
 
   <string><id>637</id><value>Replay Gain</value></string>
-  <string><id>638</id><value>Mode</value></string>
+  <string><id>638</id><value>Replay Gain Mode</value></string>
   <string><id>639</id><value>Use Track Levels</value></string>
   <string><id>640</id><value>Use Album Levels</value></string>
   <string><id>641</id><value>PreAmp Level - Replay Gained Files</value></string>
@@ -1019,7 +1019,7 @@
   <string><id>15108</id><value>Navigation Sounds</value></string>
   <string><id>15109</id><value>Skin Default</value></string>
   <string><id>15200</id><value>AudioScrobbler</value></string>
-  <string><id>15201</id><value>Submit Songs Info to AudioScrobbler</value></string>
+  <string><id>15201</id><value>Submit Songs to AudioScrobbler</value></string>
   <string><id>15202</id><value>AudioScrobbler Username</value></string>
   <string><id>15203</id><value>AudioScrobbler Password</value></string>
   <string><id>15204</id><value>Unable to handshake: sleeping...</value></string>
@@ -1081,4 +1081,8 @@
 
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
   <string><id>15214</id><value>Use Smoothed A/V Syncronization</value></string>
+
+  <string><id>16000</id><value>General</value></string>
+  <string><id>16001</id><value>Configure Audio Hardware</value></string>
+  <string><id>16002</id><value>CDDB lookup</value></string>
 </strings>

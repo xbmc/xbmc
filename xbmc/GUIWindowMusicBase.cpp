@@ -1390,7 +1390,8 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     pMenu->AddButton(13352);  // 5: Scan Folder to Database
   pMenu->AddButton(137);      // 6: Search...
   pMenu->AddButton(600);      // 7: Rip CD Audio
-  pMenu->AddButton(5);        // 8: Settings...
+  pMenu->AddButton(16002);    // 8: CDDB lookup
+  pMenu->AddButton(5);        // 9: Settings...
 
   // turn off info/queue/play if the current item is goto parent ..
   bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
@@ -1410,6 +1411,9 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
   if (!CDetectDVDMedia::IsDiscInDrive() || !pCdInfo || !pCdInfo->IsAudio(1))
     pMenu->EnableButton(7, false);
+  if (!m_Directory.IsCDDA())
+    pMenu->EnableButton(8, false);
+
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal(GetID());
@@ -1437,7 +1441,11 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   case 7:  // Rip CD...
     OnRipCD();
     break;
-  case 8:  // Settings
+  case 8:  // CDDB lookup
+    if (g_musicDatabase.LookupCDDBInfo(true))
+      Update(m_Directory.m_strPath);
+    break;
+  case 9:  // Settings
     m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
     return;
     break;

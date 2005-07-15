@@ -43,6 +43,9 @@ protected:
   void AddSetting(CSetting *pSetting, int iPosX, int iPosY, int iWidth, int iControlID);
   CBaseSettingControl* GetSetting(const CStdString &strSetting);
 
+  void JumpToSection(DWORD dwWindowId, int iSection);
+  void JumpToPreviousSection();
+
   int m_iLastControl;
   vector<CBaseSettingControl *> m_vecSettings;
   int m_iSection;
@@ -69,4 +72,11 @@ protected:
 
   CStdString m_strOldTrackFormat;
   CStdString m_strOldTrackFormatRight;
+
+  // state of the window saved in JumpToSection()
+  // to get to the previous settings screen when
+  // using JumpToPreviousSection()
+  int m_iSectionBeforeJump;
+  int m_iControlBeforeJump;
+  int m_iWindowBeforeJump;
 };

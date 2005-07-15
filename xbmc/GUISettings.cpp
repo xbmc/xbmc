@@ -182,16 +182,40 @@ CGUISettings::CGUISettings(void)
   AddString(4, "Weather.AreaCode1", 14019, "UKXX0085", BUTTON_CONTROL_STANDARD);
   AddString(5, "Weather.AreaCode2", 14020, "NLXX0002", BUTTON_CONTROL_STANDARD);
   AddString(6, "Weather.AreaCode3", 14021, "CAXX0343", BUTTON_CONTROL_STANDARD);
+
   // My Music Settings
   AddGroup(3, 2);
-  AddCategory(3, "MyMusic", 249);
-  AddString(2, "MyMusic.Visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
-  AddBool(3, "MyMusic.AutoPlayNextItem", 489, true);
-  AddBool(4, "MyMusic.Repeat", 488, false);
-  AddBool(5, "MyMusic.UseCDDB", 227, true);
-  AddBool(6, "MyMusic.UseTags", 258, true);
-//  AddInt(7, "MyMusic.OSDTimeout", 13314, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
-  AddInt(7, "MyMusic.CrossFade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+
+  AddCategory(3, "MyMusic", 16000);
+  AddString(1, "MyMusic.Visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
+  //  Jump to audio hardware settings
+  AddString(2, "MyMusic.JumpToAudioHardware", 16001, "", BUTTON_CONTROL_STANDARD);
+  AddBool(3, "MyMusic.OutputToAllSpeakers", 252, false);
+  AddInt(4, "MyMusic.CrossFade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+  AddInt(5, "MyMusic.ReplayGainType", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
+  AddInt(6, "MyMusic.ReplayGainPreAmp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddInt(7, "MyMusic.ReplayGainNoGainPreAmp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddBool(8, "MyMusic.ReplayGainAvoidClipping", 643, false);
+  AddBool(9, "MyMusic.UseAudioScrobbler", 15201, false);
+  AddString(10, "MyMusic.AudioScrobblerUserName", 15202, "");
+  AddString(11, "MyMusic.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT); 
+  //AddString(4, "MusicLibrary.DeleteAlbumInfo", 422, "", BUTTON_CONTROL_STANDARD); // drop
+  
+  AddCategory(3, "MusicFiles", 744);
+  AddBool(1, "MusicFiles.AutoPlayNextItem", 489, true);
+  AddBool(2, "MusicFiles.Repeat", 488, false);
+  AddBool(3, "MusicFiles.UseTags", 258, true);
+  AddBool(4, "MusicFiles.UseCDDB", 227, true);
+  AddBool(5, "MusicFiles.FindRemoteThumbs", 14059, true);
+  //AddString(5, "MusicLibrary.DeleteCDDBInfo", 423, "", BUTTON_CONTROL_STANDARD);  // move to context menu
+
+  AddCategory(3, "MusicLibrary", 14022);
+  AddString(1, "MusicLibrary.Cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+
+  AddCategory(3, "MusicPlaylist", 136);
+  AddBool(1, "MusicPlaylist.ClearPlaylistsOnEnd",239,false);
+  AddBool(2, "MusicPlaylist.ShufflePlaylistsOnLoad", 228, false);
+
   AddCategory(3, "MusicLists", 14018);
   AddString(1, "MusicLists.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT);
   AddString(2, "MusicLists.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT);
@@ -200,22 +224,6 @@ CGUISettings::CGUISettings(void)
   AddBool(5, "MusicLists.AutoSwitchUseLargeThumbs", 14012, false);
   AddInt(6, "MusicLists.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddInt(7, "MusicLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddCategory(3, "MusicLibrary", 14022);
-  AddBool(1, "MusicLibrary.ShufflePlaylistsOnLoad", 228, false);
-  AddBool(2, "MusicLibrary.ClearPlaylistsOnEnd",239,false);
-  AddString(3, "MusicLibrary.Cleanup", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(4, "MusicLibrary.DeleteAlbumInfo", 422, "", BUTTON_CONTROL_STANDARD);
-  AddString(5, "MusicLibrary.DeleteCDDBInfo", 423, "", BUTTON_CONTROL_STANDARD);
-  AddBool(6, "MusicLibrary.FindRemoteThumbs", 14059, true);
-  AddBool(7, "MusicLibrary.UseAudioScrobbler", 15201, false);
-  AddString(8, "MusicLibrary.AudioScrobblerUserName", 15202, "");
-  AddString(9, "MusicLibrary.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT); 
-
-  AddCategory(3, "ReplayGain", 637);
-  AddInt(1, "ReplayGain.Type", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
-  AddInt(2, "ReplayGain.PreAmp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  AddInt(3, "ReplayGain.NoGainPreAmp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  AddBool(4, "ReplayGain.AvoidClipping", 643, false);
 
   // music osd 13314
   AddCategory(3, "CDDARipper", 620);
@@ -290,9 +298,6 @@ CGUISettings::CGUISettings(void)
   AddBool(11, "VoiceOnPort3.EnablefRoboticValue", 13369, false);
   AddFloat(12, "VoiceOnPort3.fRoboticValue", 13370, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
   // ... Karaoke patch (114097)
-
-  AddCategory(3, "AudioMusic", 481);
-  AddBool(1, "AudioMusic.OutputToAllSpeakers", 252, false);
 
   // System settings
   AddGroup(4, 13000);
@@ -823,10 +828,10 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement)
     }
   }
   // Move replaygain settings into our struct
-  m_replayGain.iPreAmp = GetInt("ReplayGain.PreAmp");
-  m_replayGain.iNoGainPreAmp = GetInt("ReplayGain.NoGainPreAmp");
-  m_replayGain.iType = GetInt("ReplayGain.Type");
-  m_replayGain.bAvoidClipping = GetBool("ReplayGain.AvoidClipping");
+  m_replayGain.iPreAmp = GetInt("MyMusic.ReplayGainPreAmp");
+  m_replayGain.iNoGainPreAmp = GetInt("MyMusic.ReplayGainNoGainPreAmp");
+  m_replayGain.iType = GetInt("MyMusic.ReplayGainType");
+  m_replayGain.bAvoidClipping = GetBool("MyMusic.ReplayGainAvoidClipping");
 }
 
 void CGUISettings::SaveXML(TiXmlNode *pRootNode)

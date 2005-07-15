@@ -715,7 +715,7 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
     }
     else
     {
-      if (g_guiSettings.GetBool("MyMusic.AutoPlayNextItem"))
+      if (g_guiSettings.GetBool("MusicFiles.AutoPlayNextItem"))
       {
         //play and add current directory to temporary playlist
         int nFolderCount = 0;
@@ -858,7 +858,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
   g_musicDatabase.GetSongsByPath(m_Directory.m_strPath, songsMap);
 
   // Nothing in database and id3 tags disabled; dont load tags from cdda files
-  if (songsMap.size() == 0 && !g_guiSettings.GetBool("MyMusic.UseTags"))
+  if (songsMap.size() == 0 && !g_guiSettings.GetBool("MusicFiles.UseTags"))
     return ;
 
   // Do we have cached items
@@ -904,7 +904,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
         pItem->m_musicInfoTag = itItem->second->m_musicInfoTag;
         pItem->SetThumbnailImage(itItem->second->GetThumbnailImage());
       } // if id3 tag scanning is turned on
-      else if (g_guiSettings.GetBool("MyMusic.UseTags"))
+      else if (g_guiSettings.GetBool("MusicFiles.UseTags"))
       {
         // then parse tag from file
         CMusicInfoTagLoaderFactory factory;
