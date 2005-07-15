@@ -10,6 +10,7 @@ public:
 
   void StartModal(DWORD dwParentId);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction &action);
   void Progress();
   void ProgressKeys();
   void SetLine(int iLine, const wstring& strLine);
