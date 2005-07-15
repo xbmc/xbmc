@@ -172,6 +172,9 @@ void CGUIDialogNumeric::OnPrevious()
 
 void CGUIDialogNumeric::OnNext()
 {
+  if (m_mode == INPUT_IP_ADDRESS && m_block==0 && m_ip[0]==0)
+    return;
+
   if (m_block < m_lastblock)
     m_block++;
   m_dirty = false;
@@ -359,14 +362,14 @@ void CGUIDialogNumeric::OnNumber(unsigned int num)
   }
   else if (m_mode == INPUT_IP_ADDRESS)
   {
-    if (m_dirty && ((m_ip[m_block] < 25) || (m_ip[m_block] == 25 && num < 6)))
+    if (m_dirty && ((m_ip[m_block] < 25) || (m_ip[m_block] == 25 && num < 6) || !(m_block==0 && num==0)))
     {
       m_ip[m_block] *= 10;
       m_ip[m_block] += num;
     }
     else
       m_ip[m_block] = num;
-    if (m_ip[m_block] > 25)
+    if (m_ip[m_block] > 25 || (m_block>0 && m_block<3 && num==0))
     {
       m_block++;
       if (m_block > 3) m_block = 0;
