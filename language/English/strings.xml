@@ -606,7 +606,7 @@
   <string><id>1253</id><value>Create FTP Link in My Files</value></string>
   <string><id>1254</id><value>Popup Notification</value></string>
   <string><id>1255</id><value>Send FTP User and Password</value></string>
-  <string><id>1256</id><value>Ping Interval in sec.</value></string>
+  <string><id>1256</id><value>Ping Interval</value></string>
   
   <string><id>1396</id><value>Drifting</value></string>
   <string><id>1397</id><value>and</value></string>
