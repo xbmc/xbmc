@@ -609,7 +609,7 @@
   <string><id>1253</id><value>Automatisch einen FTP Share in Dateien erstellen</value></string>
   <string><id>1254</id><value>Benachrichtigung anzeigen</value></string>
   <string><id>1255</id><value>Benutzername und Passwort senden</value></string>
-  <string><id>1256</id><value>Ping Intervall in sek.</value></string>
+  <string><id>1256</id><value>Ping Intervall</value></string>
   
   <string><id>1396</id><value>rutschig</value></string>
   <string><id>1397</id><value>und</value></string>
