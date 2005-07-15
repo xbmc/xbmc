@@ -769,14 +769,14 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int eid, webs_t wp)
   if (pSlideShow)
     if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
     {
-      output="<li>Filename:"+pSlideShow->GetCurrentSlide()+"\n<li>";
-      output+="\n<li>Type:Picture" ;
+      output="<li>Filename:"+pSlideShow->GetCurrentSlide()+"\n";
+      output+="<li>Type:Picture\n" ;
       int width=0, height=0;
       pSlideShow->GetCurrentSlideInfo(width, height);
-      tmp.Format("%f",width);
-      output+="\n<li>Width:" + tmp ;
-      tmp.Format("%f",height);
-      output+="\n<li>Height:", tmp ;
+      tmp.Format("%i",width);
+      output+="<li>Width:" + tmp ;
+      tmp.Format("%i",height);
+      output+="\n<li>Height:" + tmp ;
       CStdString thumb;
       CUtil::GetThumbnail(pSlideShow->GetCurrentSlide(),thumb);
       if (!CFile::Exists(thumb))
