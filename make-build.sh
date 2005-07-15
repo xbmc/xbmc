@@ -1,51 +1,77 @@
 #!/bin/sh
 #
-#linux shell script to create a ready-to-install xbmc build
+# $Header$
+#unix shell script to create a ready-to-install xbmc build
 #from a cvs source tree containing compiled binaries
 
-source="/xbmc/xbmc-src/XBMC"
-base="/xbmc/build"
-mkdir $base >/dev/null 2>&1
-dest="$base/xbmc-`date +%Y-%m-%d`"
-mkdir $dest
+source="/xbox/XBMC"
+rbase="/xbox/xr"
+name="xbmc-`date +%Y-%m-%d`"
+dest="$rbase/$name"
+mkdir -vp $dest
 
+echo "---> making a XBMC release ..."
+echo "compiled directory : [$source]"
+echo "output directory   : [$dest]"
+
+echo "---> copying system components ..."
 cd $source
-cp Release/default.xbe $dest
-cp *xml $dest
-cp *txt $base
-cp -r skin $dest
-cp -r language $dest
-cp -r weather $dest
-mkdir $dest/credits
-cp credits/* $dest/credits >/dev/null 2>&1
-mkdir $dest/media
-cp -r xbmc/keyboard/Media/* $dest/media
-cp -r visualisations $dest
-cp -r system $dest
+cp -v Release/default.xbe $dest
+
+# to make the xbe work with very old modchips
+# xbepatch default.xbe retail.xbe
+# mv retail.xbe default.xbe
+
+cp -v *.xml *.txt $dest
+cp -rv skin $dest
+cp -rv credits $dest
+cp -rv language $dest
+cp -rv screensavers $dest
+cp -rv visualisations $dest
+cp -rv system $dest
+cp -rv media $dest
+cp -rv sounds $dest
+cp -rv python $dest
+mkdir -vp $dest/web/
+rar x web/web.rar $dest/web/
+
+if [ ! -f $dest/system/players/paplayer/in_mp3.dll ]; then
+  echo "missing in_mp3.dll" 
+  echo "see system/players/paplayer/Place in_mp3.dll here.txt"
+else
+  rm -fv $dest/system/players/paplayer/Place\ in_mp3.dll\ here.txt
+fi
 
 # win32 DLLs for wmv8/9, realmedia and quicktime support 
 # (see XBMC/system/players/mplayer/codecs/readme.txt)
-cp /xbmc/win_dlls/*dll $dest/system/players/mplayer/codecs/
-cp /xbmc/win_dlls/QuickTime* $dest/system/players/mplayer/codecs/
+cp -v /xbox/win_dlls/*dll $dest/system/players/mplayer/codecs/
+cp -v /xbox/win_dlls/QuickTime* $dest/system/players/mplayer/codecs/
 
-# images and other files needed for the webserver built into xbmc
-mkdir $dest/web
-cd $dest/web
-rar x -inul /xbmc/xbmc-src/XBMC/web/xbmc.rar
+echo "---> making release leaner ..."
+# make pm3 leaner
+cd $dest/skin/Project\ Mayhem\ III/
+rm -rfv 1080i 720p NTSC NTSC16x9 PAL PAL16x9
+rm -rfv media/*.png media/*.jpg media/*.gif
 
-# this is to make the txt and xml files display ok in crappy windows editors like
-# notepad, xbmc itself reads unix or dos format without problems
-cd $base
-unix2dos *txt *nfo >/dev/null 2>&1
+# make credit leaner
+rm -rfv $dest/credits/src
+rm -v $dest/media/dsstdfx.bin
+
 cd $dest
-unix2dos *xml
+# make leaner
+find . \( -name CVS -a -type d \) -exec rm -rf {} \; 
+find . \( \( -name .cvsignore -o -name Thumbs.db -o -name .DS_Store \) \
+-a -type f \) -exec rm -fv "{}" \;
 
-find . -iname CVS\* -type d -exec rm -rf "{}" >/dev/null 2>&1 \;
-find . -iname thumbs.db -or -name \*.h -type f -exec rm -f "{}" >/dev/null 2>&1 \;
+# remove anything else e.g. extra languages etc
 
-# xbmc only loads textures.xpr, .pngs are not needed (except for weather)
-find skin -iname \*.png -type f -exec rm -f "{}" \;
 
-# to make the xbe work with very old modchips
-xbepatch default.xbe retail.xbe
-mv retail.xbe default.xbe
+# make bundle
+cd $rbase
+rar a -r -m5 $name.rar $name
+ls -l $name.rar
+#tar cvfz $name.tar.gz $name
+#ls -l $name.tar.gz
+
+echo "---> XBMC release is ready!"
+
