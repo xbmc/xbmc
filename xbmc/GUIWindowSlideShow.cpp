@@ -61,7 +61,7 @@ void CBackgroundPicLoader::Process()
       if (m_pCallback)
       {
         CPicture pic;
-        D3DTexture *pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight, g_guiSettings.GetBool("Slideshow.GenerateThumbs"));
+        D3DTexture *pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight);
         // tell our parent
         bool bFullSize = ((int)pic.GetWidth() < m_maxWidth) && ((int)pic.GetHeight() < m_maxHeight);
         if (!bFullSize)
