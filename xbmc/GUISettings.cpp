@@ -438,7 +438,7 @@ CGUISettings::CGUISettings(void)
   AddCategory(6,"Autodetect",           1250  );
   AddBool(1,    "Autodetect.OnOff",     1251, true);
   AddString(2,  "Autodetect.NickName",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT);
-  AddInt(3,     "Autodetect.PingTime",  1256, 30, 1, 4, 240, SPIN_CONTROL_INT);
+  AddInt(3,     "Autodetect.PingTime",  1256, 30, 1, 4, 240, SPIN_CONTROL_INT, MASK_SECS);
   AddBool(4,    "Autodetect.CreateLink",1253, true);
   AddBool(5,    "Autodetect.PopUpInfo", 1254, true);
   AddBool(6,    "Autodetect.SendUserPw",1255, true);
