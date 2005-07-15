@@ -71,7 +71,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
     }
 
     // Nothing found, load tag from file
-    if (g_guiSettings.GetBool("MyMusic.UseTags") && !pItem->m_musicInfoTag.Loaded())
+    if (g_guiSettings.GetBool("MusicFiles.UseTags") && !pItem->m_musicInfoTag.Loaded())
     {
       // get correct tag parser
       CMusicInfoTagLoaderFactory factory;

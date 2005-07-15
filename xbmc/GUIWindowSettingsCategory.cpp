@@ -64,6 +64,9 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_strErrorMessage = L"";
   m_strOldTrackFormat = "";
   m_strOldTrackFormatRight = "";
+  m_iSectionBeforeJump=-1;
+  m_iControlBeforeJump=-1;
+  m_iWindowBeforeJump=WINDOW_INVALID;
 }
 
 CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
@@ -73,6 +76,12 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
+    if (m_iWindowBeforeJump!=WINDOW_INVALID)
+    {
+      JumpToPreviousSection();
+      return true;
+    }
+
     m_iLastControl = -1;
 
     m_gWindowManager.PreviousWindow();
@@ -559,7 +568,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(630 + i), i);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "ReplayGain.Type")
+    else if (strSetting == "MyMusic.ReplayGainType")
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -995,7 +1004,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                            &&*/ g_guiSettings.GetBool("VoiceOnPort3.EnablefRoboticValue")
                                            && (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
     }
-    else if (strSetting == "AudioMusic.OutputToAllSpeakers" || strSetting == "AudioVideo.OutputToAllSpeakers"|| strSetting == "AudioOutput.AC3PassThrough" || strSetting == "AudioOutput.DTSPassThrough")
+    else if (strSetting == "MyMusic.OutputToAllSpeakers" || strSetting == "AudioVideo.OutputToAllSpeakers"|| strSetting == "AudioOutput.AC3PassThrough" || strSetting == "AudioOutput.DTSPassThrough")
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL);
@@ -1141,10 +1150,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       int iColour = g_guiSettings.GetInt("LED.Colour");
       pControl->SetEnabled(iColour != LED_COLOUR_NO_CHANGE && iColour != LED_COLOUR_OFF);
     }
-    else if (strSetting == "MusicLibrary.AudioScrobblerUserName" || strSetting == "MusicLibrary.AudioScrobblerPassword")
+    else if (strSetting == "MyMusic.AudioScrobblerUserName" || strSetting == "MyMusic.AudioScrobblerPassword")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MyMusic.UseAudioScrobbler"));
     }
     else if (strSetting == "MusicLists.TrackFormat")
     {
@@ -1320,9 +1329,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       pSettingString->SetData(pControl->GetCurrentLabel() + ".vis");
   }
-  else if (strSetting == "MyMusic.Repeat")
+  else if (strSetting == "MusicFiles.Repeat")
   {
-    g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("MyMusic.Repeat"));
+    g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("MusicFiles.Repeat"));
   }
   else if (strSetting == "Karaoke.Port0VoiceMask" /*"VoiceOnPort0.VoiceMask"*/)
   {
@@ -1357,21 +1366,16 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_musicDatabase.Clean();
     CUtil::DeleteDatabaseDirectoryCache();
   }
-  else if (strSetting == "MusicLibrary.DeleteAlbumInfo")
+  else if (strSetting == "MyMusic.JumpToAudioHardware")
   {
-    g_musicDatabase.DeleteAlbumInfo();
-    g_musicDatabase.Close();
+    JumpToSection(WINDOW_SETTINGS_SYSTEM, 5);
   }
-  else if (strSetting == "MusicLibrary.DeleteCDDBInfo")
+  else if (strSetting == "MyMusic.UseAudioScrobbler" || strSetting == "MyMusic.AudioScrobblerUserName" || strSetting == "MyMusic.AudioScrobblerPassword")
   {
-    g_musicDatabase.DeleteCDDBInfo();
-  }
-  else if (strSetting == "MusicLibrary.UseAudioScrobbler" || strSetting == "MusicLibrary.AudioScrobblerUserName" || strSetting == "MusicLibrary.AudioScrobblerPassword")
-  {
-    if (g_guiSettings.GetBool("MusicLibrary.UseAudioScrobbler"))
+    if (g_guiSettings.GetBool("MyMusic.UseAudioScrobbler"))
     {
-      CStdString strPassword=g_guiSettings.GetString("MusicLibrary.AudioScrobblerPassword");
-      CStdString strUserName=g_guiSettings.GetString("MusicLibrary.AudioScrobblerUserName");
+      CStdString strPassword=g_guiSettings.GetString("MyMusic.AudioScrobblerPassword");
+      CStdString strUserName=g_guiSettings.GetString("MyMusic.AudioScrobblerUserName");
       if (!strUserName.IsEmpty() || !strPassword.IsEmpty())
         CScrobbler::GetInstance()->Init();
     }
@@ -1380,7 +1384,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       CScrobbler::GetInstance()->Term();
     }
   }
-  else if (strSetting == ("AudioMusic.OutputToAllSpeakers") || (strSetting == "AudioVideo.OutputToAllSpeakers") )
+  else if (strSetting == ("MyMusic.OutputToAllSpeakers") || (strSetting == "AudioVideo.OutputToAllSpeakers") )
   {
     CSettingBool *pSetting = (CSettingBool*)pSettingControl->GetSetting();
 
@@ -1658,10 +1662,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Left(10).Equals("ReplayGain"))
   { // Update our replaygain settings
-    g_guiSettings.m_replayGain.iType = g_guiSettings.GetInt("ReplayGain.Type");
-    g_guiSettings.m_replayGain.iPreAmp = g_guiSettings.GetInt("ReplayGain.PreAmp");
-    g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("ReplayGain.NoGainPreAmp");
-    g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("ReplayGain.AvoidClipping");
+    g_guiSettings.m_replayGain.iType = g_guiSettings.GetInt("MyMusic.ReplayGainType");
+    g_guiSettings.m_replayGain.iPreAmp = g_guiSettings.GetInt("MyMusic.ReplayGainPreAmp");
+    g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("MyMusic.ReplayGainNoGainPreAmp");
+    g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("MyMusic.ReplayGainAvoidClipping");
   }
 
 
@@ -2964,4 +2968,39 @@ CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &st
       return m_vecSettings[i];
   }
   return NULL;
+}
+
+void CGUIWindowSettingsCategory::JumpToSection(DWORD dwWindowId, int iSection)
+{
+  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0);
+  OnMessage(msg);
+  m_iSectionBeforeJump=m_iSection;
+  m_iControlBeforeJump=m_iLastControl;
+  m_iWindowBeforeJump=m_dwWindowId+m_iScreen;
+  m_iSection=iSection;
+  m_iLastControl=CONTROL_START_CONTROL;
+  CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, dwWindowId);
+  OnMessage(msg1);
+  for (unsigned int i=0; i<m_vecSections.size(); ++i)
+  {
+    CONTROL_DISABLE(CONTROL_START_BUTTONS+i)
+  }
+}
+
+void CGUIWindowSettingsCategory::JumpToPreviousSection()
+{
+  for (unsigned int i=0; i<m_vecSections.size(); ++i)
+  {
+    CONTROL_DISABLE(CONTROL_START_BUTTONS+i)
+  }
+  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0);
+  OnMessage(msg);
+  m_iSection=m_iSectionBeforeJump;
+  m_iLastControl=m_iControlBeforeJump;
+  CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, m_iWindowBeforeJump);
+  OnMessage(msg1);
+
+  m_iSectionBeforeJump=-1;
+  m_iControlBeforeJump=-1;
+  m_iWindowBeforeJump=WINDOW_INVALID;
 }

@@ -1240,7 +1240,7 @@ void CApplication::StartServices()
   CLog::Log(LOGNOTICE, "initializing playlistplayer");
   g_playlistPlayer.Repeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat);
   g_playlistPlayer.ShufflePlay(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
-  g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("MyMusic.Repeat"));
+  g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("MusicFiles.Repeat"));
   g_playlistPlayer.Repeat(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistRepeat);
   g_playlistPlayer.ShufflePlay(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistShuffle);
   g_playlistPlayer.Repeat(PLAYLIST_VIDEO_TEMP, false);
@@ -2901,7 +2901,7 @@ void CApplication::OnPlayBackEnded()
   g_pythonParser.OnPlayBackEnded();
 
   CLog::Log(LOGDEBUG, "Playback has finished");
-  if ((g_guiSettings.GetBool("MusicLibrary.ClearPlaylistsOnEnd")) && (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)) 
+  if ((g_guiSettings.GetBool("MusicPlaylist.ClearPlaylistsOnEnd")) && (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)) 
   {
     g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Clear();
     g_playlistPlayer.Reset();
@@ -3889,18 +3889,18 @@ void CApplication::SaveMusicScanSettings()
 {
   CLog::Log(LOGINFO,"Music scan has started ... enabling Tag Reading, and Remote Thumbs");
   g_stSettings.m_bMyMusicIsScanning = true;
-  g_stSettings.m_bMyMusicOldUseTags = g_guiSettings.GetBool("MyMusic.UseTags");
-  g_stSettings.m_bMyMusicOldFindThumbs = g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs");
+  g_stSettings.m_bMyMusicOldUseTags = g_guiSettings.GetBool("MusicFiles.UseTags");
+  g_stSettings.m_bMyMusicOldFindThumbs = g_guiSettings.GetBool("MusicFiles.FindRemoteThumbs");
   g_settings.Save();
   
-  g_guiSettings.SetBool("MyMusic.UseTags", true);
-  g_guiSettings.SetBool("MusicLibrary.FindRemoteThumbs", true);
+  g_guiSettings.SetBool("MusicFiles.UseTags", true);
+  g_guiSettings.SetBool("MusicFiles.FindRemoteThumbs", true);
 }
 
 void CApplication::RestoreMusicScanSettings()
 {
-  g_guiSettings.SetBool("MyMusic.UseTags", g_stSettings.m_bMyMusicOldUseTags);
-  g_guiSettings.SetBool("MusicLibrary.FindRemoteThumbs", g_stSettings.m_bMyMusicOldFindThumbs);
+  g_guiSettings.SetBool("MusicFiles.UseTags", g_stSettings.m_bMyMusicOldUseTags);
+  g_guiSettings.SetBool("MusicFiles.FindRemoteThumbs", g_stSettings.m_bMyMusicOldFindThumbs);
   g_stSettings.m_bMyMusicIsScanning = false;
   g_settings.Save();
 }
@@ -3971,7 +3971,7 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
     if (iPlaylist == PLAYLIST_MUSIC || iPlaylist == PLAYLIST_MUSIC_TEMP)
     {
       const CPlayList::CPlayListItem& playListItem = playlist[0];
-      if (!playListItem.IsShoutCast() && g_guiSettings.GetBool("MusicLibrary.ShufflePlaylistsOnLoad"))
+      if (!playListItem.IsShoutCast() && g_guiSettings.GetBool("MusicPlaylist.ShufflePlaylistsOnLoad"))
        playlist.Shuffle();
     }
   }
