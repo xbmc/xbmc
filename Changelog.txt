@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-07-2005 added: HTTPAPI: SetAutoGetPictureThumbs command which is a work around to the recent change to how slideshow thumbs are generated
+ - 16-07-2005 fixed: HTTPAPI: SetPlaySpeed was expecting more than 1 parameter
  - 15-07-2005 changed: reorg of music settings
                        New section general, that contains all not view depending music settings
                        Sections for each view (Files, Library, Playlist)
