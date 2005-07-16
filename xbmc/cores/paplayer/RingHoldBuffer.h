@@ -102,11 +102,11 @@ protected:
   // Protected Member Variables
   //
   char * m_pBuf;
-  int m_nBufSize;       // the size of the ring buffer
-  int m_nBehindSize;    // the size of the data to save behind the read pointer
-  int m_iBehindAmount;  // amount of data behind the pointer
-  int m_iAheadAmount;   // amount of data ahead of the pointer
-  int m_iReadPtr;       // the read pointer
+  unsigned int m_nBufSize;       // the size of the ring buffer
+  unsigned int m_nBehindSize;    // the size of the data to save behind the read pointer
+  unsigned int m_iBehindAmount;  // amount of data behind the pointer
+  unsigned int m_iAheadAmount;   // amount of data ahead of the pointer
+  unsigned int m_iReadPtr;       // the read pointer
 
   CRITICAL_SECTION m_critSection;
 public:
@@ -117,7 +117,6 @@ public:
   {
     InitializeCriticalSection(&m_critSection);
     m_pBuf = NULL;
-    //m_pTmpBuf = NULL;
     m_nBufSize = 0;
     m_nBehindSize = 0;
     m_iReadPtr = 0;
@@ -142,7 +141,7 @@ public:
   //
   // Return Value: TRUE if successful, otherwise FALSE.
   //
-  BOOL Create( int iBufSize, int iSaveSize )
+  BOOL Create( unsigned int iBufSize, unsigned int iSaveSize )
   {
     BOOL bResult = FALSE;
 
@@ -180,7 +179,7 @@ public:
     return bResult;
   }
 
-  int Size()
+  unsigned int Size()
   {
     return m_nBufSize;
   }
@@ -224,9 +223,9 @@ public:
   // Parameters: (None)
   // Return Value: Amount of data (in bytes) available for reading.
   //
-  int GetMaxReadSize()
+  unsigned int GetMaxReadSize()
   {
-    int iBytes = 0;
+    unsigned int iBytes = 0;
     ::EnterCriticalSection(&m_critSection );
     if ( m_pBuf )
     {
@@ -243,16 +242,17 @@ public:
   // Parameters: (None)
   // Return Value: Amount of space (in bytes) available for writing.
   //
-  int GetMaxWriteSize()
+  unsigned int GetMaxWriteSize()
   {
-    int iBytes = 0;
+    unsigned int iBytes = 0;
     ::EnterCriticalSection(&m_critSection );
     if ( m_pBuf )
     {
       // we can fill up to the total buffer size minus the amount
       // we want to save behind the read pointer.
-      iBytes = m_nBufSize - m_nBehindSize - m_iAheadAmount;
-      if (iBytes < 0)
+      if (m_nBufSize > m_nBehindSize + m_iAheadAmount)
+        iBytes = m_nBufSize - m_nBehindSize - m_iAheadAmount;
+      else
         iBytes = 0;
     }
     ::LeaveCriticalSection(&m_critSection );
@@ -267,7 +267,7 @@ public:
   //     [in] nBufLen - Size of the data to write (in bytes).
   // Return Value: TRUE upon success, otherwise FALSE.
   //
-  BOOL WriteBinary( char * pBuf, int nBufLen )
+  BOOL WriteBinary( char * pBuf, unsigned int nBufLen )
   {
     ::EnterCriticalSection(&m_critSection );
     BOOL bResult = FALSE;
@@ -278,7 +278,7 @@ public:
         if (m_iBehindAmount + m_iAheadAmount + nBufLen > m_nBufSize)
           m_iBehindAmount = m_nBufSize - (m_iAheadAmount + nBufLen);
         // easy case, no wrapping
-        int iWritePtr = m_iReadPtr + m_iAheadAmount;
+        unsigned int iWritePtr = m_iReadPtr + m_iAheadAmount;
         if (iWritePtr >= m_nBufSize)
           iWritePtr -= m_nBufSize;
         if ( iWritePtr + nBufLen < m_nBufSize )
@@ -287,8 +287,8 @@ public:
         }
         else // harder case we need to wrap
         {
-          int iFirstChunkSize = m_nBufSize - iWritePtr;
-          int iSecondChunkSize = nBufLen - iFirstChunkSize;
+          unsigned int iFirstChunkSize = m_nBufSize - iWritePtr;
+          unsigned int iSecondChunkSize = nBufLen - iFirstChunkSize;
 
           CopyMemory( &m_pBuf[iWritePtr], pBuf, iFirstChunkSize );
           CopyMemory( &m_pBuf[0], &pBuf[iFirstChunkSize], iSecondChunkSize );
@@ -309,7 +309,7 @@ public:
   //     [in] nBufLen - Size of the data to be read (in bytes).
   // Return Value: TRUE upon success, otherwise FALSE.
   //
-  BOOL ReadBinary( char * pBuf, int nBufLen )
+  BOOL ReadBinary( char * pBuf, unsigned int nBufLen )
   {
 //    CLog::Log(LOGERROR, "RingHoldBuffer::ReadBinary %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount);
     ::EnterCriticalSection(&m_critSection );
@@ -325,8 +325,8 @@ public:
         }
         else // harder case, buffer wraps
         {
-          int iFirstChunkSize = m_nBufSize - m_iReadPtr;
-          int iSecondChunkSize = nBufLen - iFirstChunkSize;
+          unsigned int iFirstChunkSize = m_nBufSize - m_iReadPtr;
+          unsigned int iSecondChunkSize = nBufLen - iFirstChunkSize;
 
           CopyMemory( pBuf, &m_pBuf[m_iReadPtr], iFirstChunkSize );
           CopyMemory( &pBuf[iFirstChunkSize], &m_pBuf[0], iSecondChunkSize );
@@ -343,7 +343,7 @@ public:
     return bResult;
   }
 
-  BOOL PeakBinary( char * pBuf, int nBufLen )
+  BOOL PeakBinary( char * pBuf, unsigned int nBufLen )
   {
     ::EnterCriticalSection(&m_critSection );
     BOOL bResult = FALSE;
@@ -359,8 +359,8 @@ public:
         }
         else // harder case, buffer wraps
         {
-          int iFirstChunkSize = m_nBufSize - m_iReadPtr;
-          int iSecondChunkSize = nBufLen - iFirstChunkSize;
+          unsigned int iFirstChunkSize = m_nBufSize - m_iReadPtr;
+          unsigned int iSecondChunkSize = nBufLen - iFirstChunkSize;
 
           CopyMemory( pBuf, &m_pBuf[m_iReadPtr], iFirstChunkSize );
           CopyMemory( &pBuf[iFirstChunkSize], &m_pBuf[0], iSecondChunkSize );
@@ -375,14 +375,14 @@ public:
     return bResult;
   }
 
-  BOOL SkipBytes( int nBufLen )
+  BOOL SkipBytes( int nBufLen ) // signed as we can go both ways
   {
 //    CLog::Log(LOGERROR, "RingHoldBuffer::SkipBytes %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount);
     ::EnterCriticalSection(&m_critSection );
     BOOL bResult = FALSE;
     {
       // if we're going backwards, check we've got enough data behind us
-      if ( -m_iBehindAmount <= nBufLen &&  nBufLen < 0 )
+      if ( nBufLen < 0 && m_iBehindAmount >= (unsigned int)(-nBufLen) )
       {
         m_iReadPtr -= -nBufLen;
         if (m_iReadPtr < 0) // wrap
@@ -392,17 +392,17 @@ public:
         bResult = TRUE;
       }
       // if we're going forwards...
-      if ( 0 <= nBufLen && nBufLen <= GetMaxReadSize() )
+      if ( 0 <= nBufLen && (unsigned int)nBufLen <= GetMaxReadSize() )
       {
         // easy case, no wrapping
-        if ( m_iReadPtr + nBufLen <= m_nBufSize )
+        if ( m_iReadPtr + (unsigned int)nBufLen <= m_nBufSize )
         {
           m_iReadPtr += nBufLen;
         }
         else // harder case, buffer wraps
         {
-          int iFirstChunkSize = m_nBufSize - m_iReadPtr;
-          int iSecondChunkSize = nBufLen - iFirstChunkSize;
+          unsigned int iFirstChunkSize = m_nBufSize - m_iReadPtr;
+          unsigned int iSecondChunkSize = nBufLen - iFirstChunkSize;
 
           m_iReadPtr = iSecondChunkSize;
         }

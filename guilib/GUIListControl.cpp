@@ -771,23 +771,7 @@ void CGUIListControl::SetColors2(DWORD dwTextColor, DWORD dwSelectedColor)
   m_dwSelectedColor2 = dwSelectedColor;
 }
 
-int CGUIListControl::GetSelectedItem(CStdString& strLabel)
-{
-  strLabel = "";
-  int iItem = m_iCursorY + m_iOffset;
-  if (iItem >= 0 && iItem < (int)m_vecItems.size())
-  {
-    CGUIListItem *pItem = m_vecItems[iItem];
-    strLabel = pItem->GetLabel();
-    if (pItem->m_bIsFolder)
-    {
-      strLabel.Format("[%s]", pItem->GetLabel().c_str());
-    }
-  }
-  return iItem;
-}
-
-int CGUIListControl::GetSelectedItem()
+int CGUIListControl::GetSelectedItem() const
 {
   return m_iCursorY + m_iOffset;
 }
@@ -932,4 +916,20 @@ void CGUIListControl::SetPulseOnSelect(bool pulse)
   m_imgButton.SetPulseOnSelect(pulse);
   m_upDown.SetPulseOnSelect(pulse);
   CGUIControl::SetPulseOnSelect(pulse);
+}
+
+CStdString CGUIListControl::GetDescription() const
+{
+  CStdString strLabel;
+  int iItem = m_iCursorY + m_iOffset;
+  if (iItem >= 0 && iItem < (int)m_vecItems.size())
+  {
+    CGUIListItem *pItem = m_vecItems[iItem];
+    strLabel = pItem->GetLabel();
+    if (pItem->m_bIsFolder)
+    {
+      strLabel.Format("[%s]", pItem->GetLabel().c_str());
+    }
+  }
+  return strLabel;
 }

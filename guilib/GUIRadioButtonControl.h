@@ -31,6 +31,7 @@ public:
   virtual void SetPosition(int iPosX, int iPosY);
   const CStdString& GetTextureRadioFocusName() const { return m_imgRadioFocus.GetFileName(); };
   const CStdString& GetTextureRadioNoFocusName() const { return m_imgRadioNoFocus.GetFileName(); };
+  virtual CStdString GetDescription() const;
 protected:
   virtual void Update();
   CGUIImage m_imgRadioFocus;
