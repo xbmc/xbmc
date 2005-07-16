@@ -41,6 +41,7 @@
 #define XBMC_NONE      T("none")
 
 CXbmcHttp* pXbmcHttp;
+bool autoGetPictureThumbs = true;
 
 /*
 ** Translation Table as described in RFC1113
@@ -777,10 +778,21 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int eid, webs_t wp)
       output+="<li>Width:" + tmp ;
       tmp.Format("%i",height);
       output+="\n<li>Height:" + tmp ;
-      CStdString thumb;
-      CUtil::GetThumbnail(pSlideShow->GetCurrentSlide(),thumb);
+      CStdString thumb, picFn=pSlideShow->GetCurrentSlide();
+      CUtil::GetThumbnail(picFn,thumb);
       if (!CFile::Exists(thumb))
+      {
+        if (autoGetPictureThumbs)
+        {
+          CPicture pic;
+          pic.CreateThumbnail(picFn);
+          CUtil::GetThumbnail(picFn,thumb);
+        }
+        if (!CFile::Exists(thumb))
+        {
         thumb = "[None] " + thumb;
+        }
+      }
       output+="\n<li>Thumb:"+thumb;
       flushResult(eid, wp, output);
       return 0;
@@ -820,16 +832,12 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int eid, webs_t wp)
       int hh = (int)(lPTS / 36000) % 100;
       int mm = (int)((lPTS / 600) % 60);
       int ss = (int)((lPTS /  10) % 60);
-
-      //char szTime[32];
       if (hh >=1)
       {
-        //sprintf(szTime,"%02.2i:%02.2i:%02.2i",hh,mm,ss);
         tmp.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
       }
       else
       {
-        //sprintf(szTime,"%02.2i:%02.2i",mm,ss);
         tmp.Format("%02.2i:%02.2i",mm,ss);
       }
       output+="\n<li>Time:"+tmp;
@@ -840,15 +848,12 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int eid, webs_t wp)
         int hh = tmpvar / 3600;
         int mm  = (tmpvar-hh*3600) / 60;
         int ss = (tmpvar-hh*3600) % 60;
-        //char szTime[32];
         if (hh >=1)
         {
-          //sprintf(szTime,"%02.2i:%02.2i:%02.2i",hh,mm,ss);
           tmp.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
         }
         else
         {
-          //sprintf(szTime,"%02.2i:%02.2i",mm,ss);
           tmp.Format("%02.2i:%02.2i",mm,ss);
         }
         output+="\n<li>Duration:"+tmp+"\n";
@@ -883,7 +888,6 @@ int CXbmcHttp::xbmcSeekPercentage(int eid, webs_t wp, int numParas, CStdString p
     if (g_application.m_pPlayer)
     {
       g_application.m_pPlayer->SeekPercentage((float)atoi(paras[0].c_str()));
-
       flushResult(eid, wp,"<li>OK\n") ;
     }
     else
@@ -1144,7 +1148,7 @@ int CXbmcHttp::xbmcGetThumbFilename(int eid, webs_t wp, int numParas, CStdString
     flushResult(eid, wp, "<li>" + thumbFilename + "\n") ;
   }
   else
-    flushResult(eid, wp,"<li>Error:Missing parameter (album;filename)") ;
+    flushResult(eid, wp,"<li>Error:Missing parameter (album;filename)\n") ;
   return 0;
 }
 
@@ -1532,7 +1536,7 @@ int CXbmcHttp::xbmcDownloadInternetFile(int eid, webs_t wp, int numParas, CStdSt
   CStdString src, dest="";
 
   if (numParas<1)
-    flushResult(eid, wp,"<li>Error:Missing parameter");
+    flushResult(eid, wp,"<li>Error:Missing parameter\n");
   else
   {
     src=paras[0];
@@ -1541,7 +1545,7 @@ int CXbmcHttp::xbmcDownloadInternetFile(int eid, webs_t wp, int numParas, CStdSt
     if (dest=="")
       dest="Z:\\xbmcDownloadInternetFile.tmp" ;
     if (src=="")
-      flushResult(eid, wp,"<li>Error:Missing parameter");
+      flushResult(eid, wp,"<li>Error:Missing parameter\n");
     else
     {
       try
@@ -1571,7 +1575,7 @@ int CXbmcHttp::xbmcSetFile(int eid, webs_t wp, int numParas, CStdString paras[])
 //parameter = destFilename ; base64String
 {
   if (numParas<2)
-    flushResult(eid, wp,"<li>Error:Missing parameter");
+    flushResult(eid, wp,"<li>Error:Missing parameter\n");
   else
   {
     paras[1].Replace(" ","+");
@@ -1588,7 +1592,7 @@ int CXbmcHttp::xbmcCopyFile(int eid, webs_t wp, int numParas, CStdString paras[]
 // both file names are relative to the XBox not the calling client
 {
   if (numParas<2)
-    flushResult(eid, wp,"<li>Error:Missing parameter");
+    flushResult(eid, wp,"<li>Error:Missing parameter\n");
   else
   {
     if (CFile::Exists(paras[0].c_str()))
@@ -1605,7 +1609,7 @@ int CXbmcHttp::xbmcCopyFile(int eid, webs_t wp, int numParas, CStdString paras[]
 int CXbmcHttp::xbmcDeleteFile(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1) 
-    flushResult(eid, wp,"<li>Error:Missing parameter");
+    flushResult(eid, wp,"<li>Error:Missing parameter\n");
   else
   {
     try
@@ -1629,7 +1633,7 @@ int CXbmcHttp::xbmcDeleteFile(int eid, webs_t wp, int numParas, CStdString paras
 int CXbmcHttp::xbmcFileExists(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1) 
-    flushResult(eid, wp,"<li>Error:Missing parameter");
+    flushResult(eid, wp,"<li>Error:Missing parameter\n");
   else
   {
     try
@@ -1652,7 +1656,7 @@ int CXbmcHttp::xbmcFileExists(int eid, webs_t wp, int numParas, CStdString paras
 int CXbmcHttp::xbmcShowPicture(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1) 
-    flushResult(eid, wp,"<li>Error:Missing parameter");
+    flushResult(eid, wp,"<li>Error:Missing parameter\n");
   else
   {
     g_applicationMessenger.PictureShow(paras[0]);
@@ -1674,7 +1678,7 @@ int CXbmcHttp::xbmcGetCurrentSlide(int eid, webs_t wp)
 int CXbmcHttp::xbmcExecBuiltIn(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1) 
-    flushResult(eid, wp,"<li>Error:Missing parameter");
+    flushResult(eid, wp,"<li>Error:Missing parameter\n");
   else
   {
     ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
@@ -1690,7 +1694,7 @@ int CXbmcHttp::xbmcGUISetting(int eid, webs_t wp, int numParas, CStdString paras
 //type=0->int, 1->bool, 2->float
 {
   if (numParas<2)
-    flushResult(eid, wp, "<li>Error:Missing parameters");
+    flushResult(eid, wp, "<li>Error:Missing parameters\n");
   else
   {
     CStdString tmp;
@@ -1901,6 +1905,18 @@ int CXbmcHttp::xbmcTakeScreenshot(int eid, webs_t wp, int numParas, CStdString p
   return 0;
 }
 
+int CXbmcHttp::xbmcAutoGetPictureThumbs(int eid, webs_t wp, int numParas, CStdString paras[])
+{
+  if (numParas<1)
+    flushResult(eid, wp, "<li>Error:Missing parameter\n");
+  else
+  {
+    autoGetPictureThumbs = (paras[0].ToLower()=="true");
+    flushResult(eid, wp, "<li>OK\n");
+  }
+  return 0;
+}
+
 int  CXbmcHttp::xbmcHelp(int eid, webs_t wp)
 {
   CStdString output;
@@ -1908,7 +1924,7 @@ int  CXbmcHttp::xbmcHelp(int eid, webs_t wp)
 
   output+= "<p>The full documentation as a Word file can be downloaded here: <a  href=\"http://prdownloads.sourceforge.net/xbmc/apiDoc.doc?download\">http://prdownloads.sourceforge.net/xbmc/apiDoc.doc?download</a></p>";
 
-  output+= "<li>clearplaylist\n<li>addtoplaylist\n<li>playfile\n<li>pause\n<li>stop\n<li>restart\n<li>shutdown\n<li>exit\n<li>reset\n<li>restartapp\n<li>getcurrentlyplaying\n<li>getdirectory\n<li>gettagfromfilename\n<li>getcurrentplaylist\n<li>setcurrentplaylist\n<li>getplaylistcontents\n<li>removefromplaylist\n<li>setplaylistsong\n<li>getplaylistsong\n<li>playlistnext\n<li>playlistprev\n<li>getpercentage\n<li>seekpercentage\n<li>setvolume\n<li>getvolume\n<li>getthumb\n<li>getthumbfilename\n<li>lookupalbum\n<li>choosealbum\n<li>downloadinternetfile\n<li>getmoviedetails\n<li>showpicture\n<li>setkey\n<li>deletefile\n<li>copyfile\n<li>fileexists\n<li>setfile\n<li>getguistatus\n<li>execbuiltin\n<li>config\n<li>getsysteminfo\n<li>getsysteminfobyname\n<li>guisetting\n<li>addtoslideshow\n<li>clearslideshow\n<li>playslideshow\n<li>getslideshowcontents\n<li>slideshowselect\n<li>getcurrentslide\n<li>rotate\n<li>move\n<li>zoom\n<li>playnext\n<li>playprev\n<li>TakeScreenShot\n<li>GetGUIDescription\n<li>GetPlaySpeed\n<li>SetPlaySpeed\n<li>help";
+  output+= "<li>clearplaylist\n<li>addtoplaylist\n<li>playfile\n<li>pause\n<li>stop\n<li>restart\n<li>shutdown\n<li>exit\n<li>reset\n<li>restartapp\n<li>getcurrentlyplaying\n<li>getdirectory\n<li>gettagfromfilename\n<li>getcurrentplaylist\n<li>setcurrentplaylist\n<li>getplaylistcontents\n<li>removefromplaylist\n<li>setplaylistsong\n<li>getplaylistsong\n<li>playlistnext\n<li>playlistprev\n<li>getpercentage\n<li>seekpercentage\n<li>setvolume\n<li>getvolume\n<li>getthumbfilename\n<li>lookupalbum\n<li>choosealbum\n<li>downloadinternetfile\n<li>getmoviedetails\n<li>showpicture\n<li>sendkey\n<li>filedelete\n<li>filecopy\n<li>fileexists\n<li>fileupload\n<li>getguistatus\n<li>execbuiltin\n<li>config\n<li>getsysteminfo\n<li>getsysteminfobyname\n<li>guisetting\n<li>addtoslideshow\n<li>clearslideshow\n<li>playslideshow\n<li>getslideshowcontents\n<li>slideshowselect\n<li>getcurrentslide\n<li>rotate\n<li>move\n<li>zoom\n<li>playnext\n<li>playprev\n<li>TakeScreenShot\n<li>GetGUIDescription\n<li>GetPlaySpeed\n<li>SetPlaySpeed\n<li>help";
 
   flushResult(eid, wp,output);
   return 0;
@@ -1986,7 +2002,7 @@ int CXbmcHttp::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *
   else if (!stricmp(command, "setguisetting"))            retVal =  xbmcGUISetting(eid, wp, numParas, paras);
   else if (!stricmp(command, "takescreenshot"))           retVal =  xbmcTakeScreenshot(eid, wp, numParas, paras);
   else if (!stricmp(command, "getguidescription"))        retVal =  xbmcGetGUIDescription(eid, wp);
-
+  else if (!stricmp(command, "setautogetpicturethumbs"))  retVal =  xbmcAutoGetPictureThumbs(eid, wp, numParas, paras);
 
   //Old command names
   else if (!stricmp(command, "deletefile"))               retVal =  xbmcDeleteFile(eid, wp, numParas, paras);
