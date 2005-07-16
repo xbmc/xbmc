@@ -46,6 +46,7 @@ public:
   virtual void SetEnabled(bool bEnable);
   virtual int GetXPosition() const { return m_buttonControl.GetXPosition();};
   virtual int GetYPosition() const { return m_buttonControl.GetYPosition();};
+  virtual CStdString GetDescription() const;
 
 protected:
   CGUIButtonControl m_buttonControl;

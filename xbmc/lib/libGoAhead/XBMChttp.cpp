@@ -1074,33 +1074,21 @@ int CXbmcHttp::xbmcGetGUIStatus(int eid, webs_t wp)
     CGUIControl* pControl=(CGUIControl* )pWindow->GetControl(iControl);
     if (pControl)
     {
+      strTmp = pControl->GetDescription();
       if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
       {
-        strTmp.Format("%s", ((CGUIButtonControl*)pControl)->GetLabel());
         output += "<li>ControlButton:" + strTmp;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_SPIN)
       {
-        CGUISpinControl* pSpinControl = (CGUISpinControl*)pControl;
-        strTmp.Format("%i/%i", 1+pSpinControl->GetValue(), pSpinControl->GetMaximum());
         output += "<li>ControlSpin:" + strTmp;
-      }
-      else if (pControl->GetControlType() == CGUIControl::GUICONTROL_LABEL)
-      {
-        CGUIListControl* pListControl = (CGUIListControl*)pControl;
-        pListControl->GetSelectedItem(strTmp);
-        output += "<li>ControlLabel:" + strTmp;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_THUMBNAIL)
       {
-        CGUIThumbnailPanel* pThumbControl = (CGUIThumbnailPanel*)pControl;
-        pThumbControl->GetSelectedItem(strTmp);
         output += "<li>ControlThumNail:" + strTmp;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_LIST)
       {
-        CGUIListControl* pListControl = (CGUIListControl*)pControl;
-        pListControl->GetSelectedItem(strTmp);
         output += "<li>ControlList:" + strTmp;
       }
     }

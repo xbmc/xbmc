@@ -865,22 +865,6 @@ void CGUIThumbnailPanel::ShowTexture(bool bOnoff)
   m_bShowTexture = bOnoff;
 }
 
-int CGUIThumbnailPanel::GetSelectedItem(CStdString& strLabel)
-{
-  strLabel = "";
-  int iItem = (m_iRowOffset + m_iCursorY) * m_iColumns + m_iCursorX;
-  if (iItem >= 0 && iItem < (int)m_vecItems.size())
-  {
-    CGUIListItem *pItem = m_vecItems[iItem];
-    strLabel = pItem->GetLabel();
-    if (pItem->m_bIsFolder)
-    {
-      strLabel.Format("[%s]", pItem->GetLabel().c_str());
-    }
-  }
-  return iItem;
-}
-
 void CGUIThumbnailPanel::SetSelectedItem(int iItem)
 {
   if (iItem >= 0 && iItem < (int)m_vecItems.size())
@@ -1113,9 +1097,24 @@ void CGUIThumbnailPanel::SetHeight(int iHeight)
   Calculate(false);
 }
 
-
 void CGUIThumbnailPanel::SetPulseOnSelect(bool pulse)
 {
   m_upDown.SetPulseOnSelect(pulse);
   CGUIControl::SetPulseOnSelect(pulse);
+}
+
+CStdString CGUIThumbnailPanel::GetDescription() const
+{
+  CStdString strLabel;
+  int iItem = (m_iRowOffset + m_iCursorY) * m_iColumns + m_iCursorX;
+  if (iItem >= 0 && iItem < (int)m_vecItems.size())
+  {
+    CGUIListItem *pItem = m_vecItems[iItem];
+    strLabel = pItem->GetLabel();
+    if (pItem->m_bIsFolder)
+    {
+      strLabel.Format("[%s]", pItem->GetLabel().c_str());
+    }
+  }
+  return strLabel;
 }

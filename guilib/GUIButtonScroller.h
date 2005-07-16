@@ -33,7 +33,7 @@ public:
   void ClearButtons();
   void AddButton(const wstring &strLabel, const CStdString &strExecute, const int iIcon);
   void SetActiveButton(int iButton);
-  int GetActiveButton();
+  int GetActiveButton() const;
   void SetFont(const CStdString &strFont, DWORD dwColor);
   CStdString GetTextureFocusName() const { return m_imgFocus.GetFileName(); };
   CStdString GetTextureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
@@ -50,10 +50,11 @@ public:
   int GetAlpha() const { return m_iAlpha; };
   bool GetWrapAround() const { return m_bWrapAround; };
   bool GetSmoothScrolling() const { return m_bSmoothScrolling; };
+  virtual CStdString GetDescription() const;
 
 protected:
   void OnChangeFocus();
-  int GetNext(int iCurrent);
+  int GetNext(int iCurrent) const;
   int GetPrevious(int iCurrent);
   int GetButton(int iOffset);
   void DoUp();

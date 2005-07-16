@@ -53,7 +53,6 @@ public:
   void GetThumbDimensions(int& iXpos, int& iYpos, int& iWidth, int& iHeight);
   void GetThumbDimensionsBig(int& iXpos, int& iYpos, int& iWidth, int& iHeight);
   void GetThumbDimensionsLow(int& iXpos, int& iYpos, int& iWidth, int& iHeight);
-  int GetSelectedItem(CStdString& strLabel);
   void SetSelectedItem(int iItem);
   DWORD GetTextColor() const { return m_dwTextColor;};
   DWORD GetSelectedColor() const { return m_dwSelectedColor;};
@@ -109,6 +108,7 @@ public:
   virtual bool HitTest(int iPosX, int iPosY) const;
   bool SelectItemFromPoint(int iPosX, int iPosY);
   void GetOffsetFromPage();
+  virtual CStdString GetDescription() const;
 
 protected:
   void Calculate(bool resetItem);

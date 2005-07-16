@@ -534,16 +534,14 @@ void CGUIListControlEx::SetColors2(DWORD dwTextColor, DWORD dwSelectedColor)
   m_dwSelectedColor2 = dwSelectedColor;
 }
 
-int CGUIListControlEx::GetSelectedItem(CStdString& strLabel)
+CStdString CGUIListControlEx::GetDescription() const
 {
   if (!m_pList)
-  {
-    return -1;
-  }
+    return "";
 
   CGUIList::GUILISTITEMS& list = m_pList->Lock();
 
-  strLabel = "";
+  CStdString strLabel;
   int iItem = m_iCursorY + m_iOffset;
   if (iItem >= 0 && iItem < (int)list.size())
   {
@@ -553,7 +551,7 @@ int CGUIListControlEx::GetSelectedItem(CStdString& strLabel)
 
   m_pList->Release();
 
-  return iItem;
+  return strLabel;
 }
 
 void CGUIListControlEx::SetPageControlVisible(bool bVisible)
