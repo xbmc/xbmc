@@ -503,6 +503,25 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
   return false;
 }
 
+bool CMusicInfoTagLoaderMP3::ReadSeekAndReplayGainInfo(const CStdString &strFileName)
+{
+  // First check for an APEv2 tag
+  CAPEv2Tag apeTag;
+  if (apeTag.ReadTag(strFileName.c_str()))
+  { // found - let's copy over the additional info (if any)
+    if (apeTag.GetReplayGain().iHasGainInfo)
+      m_replayGainInfo = apeTag.GetReplayGain();
+  }
+  // now read the duration
+  if (m_file.Open(strFileName, true))
+  {
+    int duration = ReadDuration(strFileName);
+    if (duration)
+      return true;
+  }
+  return false;
+}
+
 /* check if 'head' is a valid mp3 frame header */
 bool CMusicInfoTagLoaderMP3::IsMp3FrameHeader(unsigned long head)
 {

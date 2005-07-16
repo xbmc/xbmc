@@ -309,3 +309,10 @@ void CGUIButtonControl::Flicker(bool bFlicker)
 {
   m_dwFlickerCounter = bFlicker ? 240 : 0;
 }
+
+CStdString CGUIButtonControl::GetDescription() const
+{
+  CStdString strLabel = GetLabel();
+  return strLabel;
+}
+

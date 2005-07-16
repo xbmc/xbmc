@@ -2219,34 +2219,7 @@ void CApplication::UpdateLCD()
           int iControl = pWindow->GetFocusedControl();
           CGUIControl* pControl = (CGUIControl* )pWindow->GetControl(iControl);
           if (pControl)
-          {
-            if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
-              g_lcd->SetLine(1, ((CGUIButtonControl*)pControl)->GetLabel());
-            else if (pControl->GetControlType() == CGUIControl::GUICONTROL_SPIN)
-            {
-              CGUISpinControl* pSpinControl = (CGUISpinControl*)pControl;
-              strTmp.Format("%i/%i", 1 + pSpinControl->GetValue(), pSpinControl->GetMaximum());
-              g_lcd->SetLine(1, strTmp);
-            }
-            else if (pControl->GetControlType() == CGUIControl::GUICONTROL_LABEL)
-            {
-              CGUIListControl* pListControl = (CGUIListControl*)pControl;
-              pListControl->GetSelectedItem(strTmp);
-              g_lcd->SetLine(1, strTmp);
-            }
-            else if (pControl->GetControlType() == CGUIControl::GUICONTROL_THUMBNAIL)
-            {
-              CGUIThumbnailPanel* pThumbControl = (CGUIThumbnailPanel*)pControl;
-              pThumbControl->GetSelectedItem(strTmp);
-              g_lcd->SetLine(1, strTmp);
-            }
-            else if (pControl->GetControlType() == CGUIControl::GUICONTROL_LIST)
-            {
-              CGUIListControl* pListControl = (CGUIListControl*)pControl;
-              pListControl->GetSelectedItem(strTmp);
-              g_lcd->SetLine(1, strTmp);
-            }
-          }
+            g_lcd->SetLine(1, pControl->GetDescription());
           else
             g_lcd->SetLine(1, " ");
           CStdString strDateTime = g_infoManager.GetTime() + " " + g_infoManager.GetDate(true);

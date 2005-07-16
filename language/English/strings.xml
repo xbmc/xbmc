@@ -634,32 +634,30 @@
   <string><id>10007</id><value>System information</value></string>
   <string><id>10008</id><value>Settings-&gt;General</value></string>
   <string><id>10009</id><value>Settings-&gt;Screen</value></string>
-  <string><id>10010</id><value>Settings-&gt;Screen-&gt;UI Calibration</value></string>
-  <string><id>10011</id><value>Settings-&gt;Screen-&gt;Screen Calibration</value></string>
-  <string><id>10012</id><value>Settings-&gt;SlideShow</value></string>
-  <string><id>10013</id><value>Settings-&gt;Screen-&gt;Filters</value></string>
-  <string><id>10014</id><value>Settings-&gt;Music</value></string>
-  <string><id>10015</id><value>Settings-&gt;Screen-&gt;Subtitles</value></string>
-  <string><id>10016</id><value>Settings-&gt;Screen-&gt;Screensaver</value></string>
-  <string><id>10017</id><value>Settings-&gt;Weather</value></string>
-  <string><id>10020</id><value>Settings-&gt;Scripts</value></string>
-  <string><id>10021</id><value>My Videos/genre</value></string>
-  <string><id>10022</id><value>My Videos/actor</value></string>
-  <string><id>10023</id><value>My Videos/year</value></string>
-  <string><id>10024</id><value>Settings-&gt;Programs</value></string>
-  <string><id>10025</id><value>My Videos/title</value></string>
-  <string><id>10026</id><value>Settings-&gt;General-&gt;Cache</value></string>
-  <string><id>10027</id><value>Settings-&gt;General-&gt;Autorun</value></string>
-  <string><id>10028</id><value>My Videos/playlist</value></string>
-  <string><id>10029</id><value>Settings-&gt;General-&gt;LCD</value></string>
+  <string><id>10010</id><value>Settings-&gt;Appearance-&gt;GUI Calibration</value></string>
+  <string><id>10011</id><value>Settings-&gt;My Videos-&gt;Screen Calibration</value></string>
+  <string><id>10012</id><value>Settings-&gt;My Pictures</value></string>
+  <string><id>10013</id><value>Settings-&gt;My Programs</value></string>
+  <string><id>10014</id><value>Settings-&gt;Weather</value></string>
+  <string><id>10015</id><value>Settings-&gt;My Music</value></string>
+  <string><id>10016</id><value>Settings-&gt;System</value></string>
+  <string><id>10017</id><value>Settings-&gt;My Videos</value></string>
+  <string><id>10018</id><value>Settings-&gt;Network</value></string>
+  <string><id>10019</id><value>Settings-&gt;Appearance</value></string>
+  <string><id>10020</id><value>Scripts</value></string>
+  <string><id>10021</id><value>My Videos/Genres</value></string>
+  <string><id>10022</id><value>My Videos/Actors</value></string>
+  <string><id>10023</id><value>My Videos/Years</value></string>
+  <string><id>10025</id><value>My Videos/Titles</value></string>
+  <string><id>10028</id><value>My Videos/Playlist</value></string>
+  <string><id>10034</id><value>Settings-&gt;Profiles</value></string>
   <string><id>10100</id><value>Yes/no dialog</value></string>
   <string><id>10101</id><value>Progress dialog</value></string>
-  <string><id>10500</id><value>My Music/playlist</value></string>
-  <string><id>10501</id><value>My Music/files</value></string>
-  <string><id>10502</id><value>My Music/albums</value></string>
-  <string><id>10503</id><value>My Music/artists</value></string>
-  <string><id>10504</id><value>My Music/genres</value></string>
-  <string><id>10505</id><value>My Music/top100</value></string>
+  <string><id>10500</id><value>My Music/Playlist</value></string>
+  <string><id>10501</id><value>My Music/Files</value></string>
+  <string><id>10502</id><value>My Music/Library</value></string>
+  <string><id>10503</id><value>My Music/Top 100</value></string>
+
   <string><id>10506</id><value>Applications</value></string>
   <string><id>10507</id><value>Configuration</value></string>
   <string><id>10508</id><value>Weather Forecast</value></string>
@@ -679,7 +677,6 @@
   <string><id>10522</id><value>My Video - Playlist</value></string>
   <string><id>10523</id><value>Album Info</value></string>
   <string><id>10524</id><value>Movie Info</value></string>
-  <string><id>11000</id><value>keyboard</value></string>
   <string><id>12000</id><value>Select dialog</value></string>
   <string><id>12001</id><value>My Music/info</value></string>
   <string><id>12002</id><value>Dialog OK</value></string>
@@ -689,6 +686,8 @@
   <string><id>12006</id><value>Audio visualisation</value></string>
   <string><id>12007</id><value>My Picture/slideshow</value></string>
   <string><id>12008</id><value>Filestacking dialog</value></string>
+
+
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
   <string><id>12312</id><value>2</value></string>

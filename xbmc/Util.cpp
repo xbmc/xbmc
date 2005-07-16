@@ -2565,9 +2565,9 @@ void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
   result->st_size = stat->st_size;
-  result->st_atime = (long)stat->st_atime;
-  result->st_mtime = (long)stat->st_mtime;
-  result->st_ctime = (long)stat->st_ctime;
+  result->st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
+  result->st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
+  result->st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
 }
 
 void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)

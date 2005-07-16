@@ -99,3 +99,10 @@ const CStdString CGUISpinControlEx::GetCurrentLabel() const
   CUtil::Unicode2Ansi(CGUISpinControl::GetLabel(), strLabel);
   return strLabel;
 }
+
+CStdString CGUISpinControlEx::GetDescription() const
+{
+  CStdString strLabel;
+  strLabel.Format("%s (%s)", m_buttonControl.GetDescription(), GetCurrentLabel());
+  return strLabel;
+}

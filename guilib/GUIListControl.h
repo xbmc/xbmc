@@ -60,8 +60,7 @@ public:
   void SetFont2(const CStdString& strFont);
   void SetColors2(DWORD dwTextColor, DWORD dwSelectedColor);
   void SetPageControlVisible(bool bVisible);
-  int GetSelectedItem(CStdString& strLabel);
-  int GetSelectedItem();
+  int GetSelectedItem() const;
   bool SelectItemFromPoint(int iPosX, int iPosY);
   void GetPointFromItem(int &iPosX, int &iPosY);
   DWORD GetTextColor() const { return m_dwTextColor;};
@@ -70,7 +69,7 @@ public:
   DWORD GetSelectedColor2() const { return m_dwSelectedColor2;};
   const char* GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
   const char* GetFontName2() const { if (!m_pFont2) return ""; else return m_pFont2->GetFontName().c_str(); };
-DWORD GetSpinWidth() const { return m_upDown.GetWidth() / 2; };
+  DWORD GetSpinWidth() const { return m_upDown.GetWidth() / 2; };
   DWORD GetSpinHeight() const { return m_upDown.GetHeight(); };
   const CStdString& GetTextureUpName() const { return m_upDown.GetTextureUpName(); };
   const CStdString& GetTextureDownName() const { return m_upDown.GetTextureDownName(); };
@@ -95,6 +94,8 @@ DWORD GetSpinWidth() const { return m_upDown.GetWidth() / 2; };
   const CStdString GetButtonFocusName() const { return m_imgButton.GetTextureFocusName();};
   const CStdString GetButtonNoFocusName() const { return m_imgButton.GetTextureNoFocusName();};
   int GetNumItems() const { return (int)m_vecItems.size(); };
+  virtual CStdString GetDescription() const;
+
 protected:
 
   void RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll );
