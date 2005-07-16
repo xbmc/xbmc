@@ -1027,7 +1027,7 @@ int CXbmcHttp::xbmcAddToSlideshow(int eid, webs_t wp, int numParas, CStdString p
 
 int CXbmcHttp::xbmcSetPlaySpeed(int eid, webs_t wp, int numParas, CStdString paras[])
 {
-  if (numParas>1) {
+  if (numParas>0) {
     g_application.SetPlaySpeed(atoi(paras[0]));
     flushResult(eid, wp, "<li>OK\n");
   }
