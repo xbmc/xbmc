@@ -98,5 +98,12 @@ void CGUIRadioButtonControl::SetPosition(int iPosX, int iPosY)
   m_imgRadioNoFocus.SetPosition(iRadioPosX, iRadioPosY);
 }
 
-
-
+CStdString CGUIRadioButtonControl::GetDescription() const
+{
+  CStdString strLabel = CGUIButtonControl::GetDescription();
+  if (m_bSelected)
+    strLabel += " (*)";
+  else
+    strLabel += " ( )";
+  return strLabel;
+}

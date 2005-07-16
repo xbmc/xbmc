@@ -96,6 +96,7 @@ public:
   virtual void Update() { m_bInvalidated = true; };
   virtual void SetPulseOnSelect(bool pulse) { m_pulseOnSelect = pulse; };
   bool GetPulseOnSelect() const { return m_pulseOnSelect; };
+  virtual CStdString GetDescription() const { return ""; };
 
   enum GUICONTROLTYPES {
     GUICONTROL_UNKNOWN,

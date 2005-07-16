@@ -312,7 +312,7 @@ void CGUIButtonScroller::Render()
   g_graphicsContext.RestoreViewPort();
 }
 
-int CGUIButtonScroller::GetNext(int iCurrent)
+int CGUIButtonScroller::GetNext(int iCurrent) const
 {
   if (iCurrent + 1 >= (int)m_vecButtons.size())
   {
@@ -618,7 +618,7 @@ void CGUIButtonScroller::OnChangeFocus()
   g_graphicsContext.SendMessage(msg);
 }
 
-int CGUIButtonScroller::GetActiveButton()
+int CGUIButtonScroller::GetActiveButton() const
 {
   if (m_iCurrentSlot < 0) return -1;
   int iCurrentItem = m_iOffset;
@@ -777,4 +777,14 @@ void CGUIButtonScroller::OnMouseWheel()
       m_bScrollUp = true;
     m_fScrollSpeed = SCROLL_SPEED;
   }
+}
+
+CStdString CGUIButtonScroller::GetDescription() const
+{
+  if (GetActiveButton() >= 0)
+  {
+    CStdString strLabel = m_vecButtons[GetActiveButton()]->strLabel;
+    return strLabel;
+  }
+  return "";
 }

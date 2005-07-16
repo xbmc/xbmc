@@ -938,3 +938,10 @@ void CGUISpinControl::OnMouseWheel()
     }
   }
 }
+
+CStdString CGUISpinControl::GetDescription() const
+{
+  CStdString strLabel;
+  strLabel.Format("%i/%i", 1 + GetValue(), GetMaximum());
+  return strLabel;
+}

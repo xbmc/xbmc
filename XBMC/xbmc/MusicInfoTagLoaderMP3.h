@@ -32,6 +32,7 @@ public:
 
   __int64 GetByteOffset(float fTime)
   {
+    if (!m_iSeekOffsets) return 0;  // no seek info
     if (fTime > m_fTotalDuration)
       fTime = m_fTotalDuration;
     float fOffset = (fTime / m_fTotalDuration) * m_iSeekOffsets;
@@ -44,6 +45,7 @@ public:
   
   __int64 GetTimeOffset(__int64 iBytes)
   {
+    if (!m_iSeekOffsets) return 0;  // no seek info
     float fBytes = (float)iBytes;
     if (fBytes > m_SeekOffset[m_iSeekOffsets])
       fBytes = m_SeekOffset[m_iSeekOffsets];
@@ -103,6 +105,7 @@ public:
   void GetSeekInfo(CVBRMP3SeekHelper &info);
   bool GetReplayGain(CReplayGain &info);
   int GetID3v2Size() const { return m_iID3v2Size; }
+  bool ReadSeekAndReplayGainInfo(const CStdString &strFileName);
 
 protected:
   virtual int ReadDuration(const CStdString& strFileName);

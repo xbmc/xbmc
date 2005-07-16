@@ -93,8 +93,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 
   // Guess Bitrate and obtain replayGain information etc.
   CMusicInfoTagLoaderMP3 mp3info;
-  CMusicInfoTag tag;
-  mp3info.Load(strFile, tag);
+  mp3info.ReadSeekAndReplayGainInfo(strFile);
   mp3info.GetSeekInfo(m_seekInfo);
   mp3info.GetReplayGain(m_replayGain);
 

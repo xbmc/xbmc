@@ -1527,7 +1527,7 @@ bool CSettings::LoadXml()
 
 bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strOldName, const CStdString &strUpdateElement, const CStdString &strUpdateText)
 {
-  bool breturn; breturn = false;
+  bool breturn(false);
   if (!LoadXml()) return false;
 
   VECSHARES *pShares = NULL;
@@ -1558,8 +1558,8 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strO
         (*it).m_iBadPwdCount = atoi(strUpdateText);
       else
         return false;
+      break;
     }
-    else breturn = false;
   }
   // Return bookmark of
   TiXmlElement *pRootElement = xbmcXml.RootElement();

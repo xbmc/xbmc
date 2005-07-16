@@ -60,6 +60,7 @@ public:
   void SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
   void Flicker(bool bFlicker = TRUE);
   virtual void Update();
+  virtual CStdString GetDescription() const;
 
 protected:
 

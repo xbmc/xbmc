@@ -106,6 +106,8 @@ public:
   void SetBuddyControlID(DWORD dwBuddyControlID);
   void SetNonProportional(bool bOnOff);
   void Clear();
+  virtual CStdString GetDescription() const;
+
 protected:
   void PageUp();
   void PageDown();
