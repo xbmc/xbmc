@@ -72,6 +72,7 @@ public:
   int  xbmcGUISetting(int eid, webs_t wp, int numParas, CStdString paras[]);
   int  xbmcTakeScreenshot(int eid, webs_t wp, int numParas, CStdString paras[]);
   int  xbmcGetGUIDescription(int eid, webs_t wp);
+  int  xbmcAutoGetPictureThumbs(int eid, webs_t wp, int numParas, CStdString paras[]);
   CKey GetKey();
   void ResetKey();
 
