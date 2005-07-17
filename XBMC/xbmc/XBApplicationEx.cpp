@@ -49,7 +49,6 @@ CXBApplicationEx::CXBApplicationEx()
   m_fElapsedTime = 0.0f;
   m_fAppTime = 0.0f;
   m_fElapsedAppTime = 0.0f;
-  m_fFPS = 0.0f;
   m_strFrameRate[0] = L'\0';
   m_bStop = false;
 
@@ -172,19 +171,6 @@ INT CXBApplicationEx::Run()
     m_fElapsedTime = fSecsPerTick * ((FLOAT)(qwElapsedTime.QuadPart));
     m_fAppTime = fSecsPerTick * ((FLOAT)(qwAppTime.QuadPart));
     m_fElapsedAppTime = fSecsPerTick * ((FLOAT)(qwElapsedAppTime.QuadPart));
-
-    // Compute the FPS (frames per second) once per second
-    static FLOAT fLastTime = 0.0f;
-    static DWORD dwFrames = 0L;
-    dwFrames++;
-
-    if ( m_fTime - fLastTime > 1.0f )
-    {
-      m_fFPS = dwFrames / ( m_fTime - fLastTime );
-      fLastTime = m_fTime;
-      dwFrames = 0L;
-      swprintf( m_strFrameRate, L"%0.02f fps", m_fFPS );
-    }
 
     //-----------------------------------------
     // Animate and render a frame
