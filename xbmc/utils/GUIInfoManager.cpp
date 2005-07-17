@@ -120,7 +120,6 @@ extern char g_szTitleIP[32];
 #define COMBINED_VALUES_START        100000
 
 CGUIInfoManager g_infoManager;
-CApplication xIdleTime;
 
 void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
 {
@@ -458,29 +457,12 @@ bool CGUIInfoManager::GetBool(int condition1) const
   // Will check if the Xbox has a Ethernet Link connection! [Cable in!]
   // This can used for the skinner to switch off Network or Inter required functions
   if( condition == SYSTEM_ETHERNET_LINK_ACTIVE)
-  {
-    DWORD dwnetstatus = XNetGetEthernetLinkStatus();
-	  if (dwnetstatus & XNET_ETHERNET_LINK_ACTIVE)
-      bReturn = true;
-  }
-  // GeminiServer: SYSTEM IDLE Timer
-  if( condition == SYSTEM_IDLE_TIME)
-  {
-    int iIdleTime = xIdleTime.iGlobalIdleTime();
-    if(  iIdleTime >= i_Timer ) 
-      bReturn = true;
-    else
-      bReturn = false;
-  }
-
-  // check for Window.IsActive(window)
-  if (condition >= WINDOW_ACTIVE_START && condition <= WINDOW_ACTIVE_END)
-  {
+    bReturn = (XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE);
+  else if( condition == SYSTEM_IDLE_TIME)  // GeminiServer: SYSTEM IDLE Timer
+    bReturn = (g_application.GlobalIdleTime() >= i_Timer);
+  else if (condition >= WINDOW_ACTIVE_START && condition <= WINDOW_ACTIVE_END)// check for Window.IsActive(window)
     bReturn = m_gWindowManager.IsWindowActive(condition);
-    return condition1 < 0 ? !bReturn : bReturn;
-  }
-
-  if (g_application.IsPlaying())
+  else if (g_application.IsPlaying())
   {
     switch (condition)
     {

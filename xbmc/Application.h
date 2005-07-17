@@ -241,8 +241,7 @@ public:
   CStdString m_strForcedNextPlayer;
   CStdString m_strPlayListFile;
   
-  int m_PingTimer;
-  int iGlobalIdleTime();
+  int GlobalIdleTime();
 
 protected:
   CStdString m_strCurrentPlayer;
@@ -262,6 +261,9 @@ protected:
   DWORD m_threadID;       // application thread ID.  Used in applicationMessanger to know where
                           // we are firing a thread with delay from.
   static LONG WINAPI UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo);
+
+  // timer information
+  CXBStopWatch m_idleTimer;
 };
 
 extern CApplication g_application;
