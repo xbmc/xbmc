@@ -7,7 +7,6 @@
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
 
-
 // String id's of the masks
 #define MASK_MINS   14044
 #define MASK_SECS   14045
@@ -185,22 +184,21 @@ CGUISettings::CGUISettings(void)
 
   // My Music Settings
   AddGroup(3, 2);
-
   AddCategory(3, "MyMusic", 16000);
   AddString(1, "MyMusic.Visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
-  //  Jump to audio hardware settings
-  AddString(2, "MyMusic.JumpToAudioHardware", 16001, "", BUTTON_CONTROL_STANDARD);
-  AddBool(3, "MyMusic.OutputToAllSpeakers", 252, false);
-  AddInt(4, "MyMusic.CrossFade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
-  AddInt(5, "MyMusic.ReplayGainType", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
-  AddInt(6, "MyMusic.ReplayGainPreAmp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  AddInt(7, "MyMusic.ReplayGainNoGainPreAmp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  AddBool(8, "MyMusic.ReplayGainAvoidClipping", 643, false);
-  AddBool(9, "MyMusic.UseAudioScrobbler", 15201, false);
-  AddString(10, "MyMusic.AudioScrobblerUserName", 15202, "");
-  AddString(11, "MyMusic.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT); 
+  AddInt(2, "MyMusic.VisTimer", 13392, 15, 0, 15, 360, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF); //StartUp Visualisation to Full screen in x sec. [GeminiServer]
+  AddInt(3, "MyMusic.CrossFade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+  AddInt(4, "MyMusic.ReplayGainType", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
+  AddInt(5, "MyMusic.ReplayGainPreAmp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddInt(6, "MyMusic.ReplayGainNoGainPreAmp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddBool(7, "MyMusic.ReplayGainAvoidClipping", 643, false);
+  //AddString(8, "MyMusic.JumpToAudioHardware", 16001, "", BUTTON_CONTROL_STANDARD); // Jump to audio hardware settings
+  AddBool(9, "MyMusic.OutputToAllSpeakers", 252, false);
+  AddBool(10, "MyMusic.UseAudioScrobbler", 15201, false);
+  AddString(11,"MyMusic.AudioScrobblerUserName", 15202, "");
+  AddString(12,"MyMusic.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT); 
   //AddString(4, "MusicLibrary.DeleteAlbumInfo", 422, "", BUTTON_CONTROL_STANDARD); // drop
-  
+
   AddCategory(3, "MusicFiles", 744);
   AddBool(1, "MusicFiles.AutoPlayNextItem", 489, true);
   AddBool(2, "MusicFiles.Repeat", 488, false);
@@ -211,7 +209,7 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(3, "MusicLibrary", 14022);
   AddString(1, "MusicLibrary.Cleanup", 334, "", BUTTON_CONTROL_STANDARD);
-
+  
   AddCategory(3, "MusicPlaylist", 136);
   AddBool(1, "MusicPlaylist.ClearPlaylistsOnEnd",239,false);
   AddBool(2, "MusicPlaylist.ShufflePlaylistsOnLoad", 228, false);

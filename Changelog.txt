@@ -5,6 +5,14 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  -17-08-2005 added: GUI Auto Start Up Visualisation: If is Playing Audio, after defined Idle time in Sec. the Visualisation Window will then start up! [GeminiServer]
+                     The AutoStartUpTime will be reseted on any keypress! Location: Settings - My Music - Music - Auto Visualisation Fullscreen
+  -17-08-2005 added: FTP Client: some Log Debug outputs [GeminiServer]
+  -17-08-2005 fixed: FTP Client: double Connection fix [GeminiServer]
+  -17-08-2005 added: Skinning: System.IdleTime(seconds) --> will be true if the idle time is equal to the defined seconds [GeminiServer]
+                     Skinning use: System.IdleTime(10) after 10 seconds it is true otherwise false! You can define more <visible> tags.. but the greater time in seconds will used
+  -17-08-2005 added: Skinning: System.HasNetwork --> Will check if the Xbox has a Ethernet Link connection! [GeminiServer]
+                     Skinning Use: <visible>System.HasNetwork</visible> The skinner can use it to switch on/off Network required items.
  - 16-07-2005 fixed: Aspect ratio in dvdplayer now behaves like mplayer
  - 16-07-2005 fixed: LCD navigation in NoTV mode should be working.
  - 16-07-2005 added: HTTPAPI: SetAutoGetPictureThumbs command which is a work around to the recent change to how slideshow thumbs are generated
@@ -15,7 +23,6 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
                        Replay gain is in general now
                        removed Delete album info option
                        removed Delete CDDB info option, CDDB info can be requeried via context menu in my music file
-
  - 15-07-2005 removed: Generate thumbs option in Slideshow settings (not needed).
  - 15-07-2005 fixed: Folder thumb generation in My Pictures.
  - 15-07-2005 updated: German language file
