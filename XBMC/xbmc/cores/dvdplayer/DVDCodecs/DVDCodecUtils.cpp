@@ -20,9 +20,11 @@ DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
   pPicture->data[0] = new BYTE[totalsize];
   pPicture->data[1] = pPicture->data[0] + (iWidth * iHeight);
   pPicture->data[2] = pPicture->data[1] + size;
+  pPicture->data[3] = NULL;
   pPicture->iLineSize[0] = iWidth;
   pPicture->iLineSize[1] = w;
   pPicture->iLineSize[2] = w;
+  pPicture->iLineSize[3] = 0;
 
   return pPicture;
 }
