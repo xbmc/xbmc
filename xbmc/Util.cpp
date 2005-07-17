@@ -629,8 +629,6 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
   helper.Unmount("D:");
   helper.Mount("D:", const_cast<char*>(szPath));
 
-  // detach if connected to kai
-  CKaiClient::GetInstance()->RemoveObserver();
   if( g_guiSettings.GetBool("MyPrograms.GameAutoRegion") )
   {
     F_COUNTRY Country = COUNTRY_NULL;

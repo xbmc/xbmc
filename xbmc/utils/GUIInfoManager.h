@@ -77,6 +77,8 @@ public:
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
 
   bool m_performingSeek;
+  float GetFPS();
+
 protected:
   int TranslateSingleString(const CStdString &strCondition);
 
@@ -99,7 +101,11 @@ protected:
   bool m_playerSeeking;
   bool m_playerShowTime;
   int i_Timer;
-  
+
+  // FPS counters
+  float m_fps;
+  unsigned int m_frameCounter;
+  unsigned int m_lastFPSTime;
 
   class CCombinedValue
   {

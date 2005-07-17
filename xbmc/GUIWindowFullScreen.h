@@ -32,9 +32,6 @@ private:
   DWORD m_dwShowViewModeTimeout;
   bool m_bShowCurrentTime;
   DWORD m_dwTimeCodeTimeout;
-  DWORD m_dwFPSTime;
-  float m_fFrameCounter;
-  FLOAT m_fFPS;
   CCriticalSection m_section;
   CCriticalSection m_fontLock;
   bool m_bLastRender;

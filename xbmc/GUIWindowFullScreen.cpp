@@ -79,9 +79,6 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   m_dwShowViewModeTimeout = 0;
   m_bShowCurrentTime = false;
   m_dwTimeCodeTimeout = 0;
-  m_fFPS = 0;
-  m_fFrameCounter = 0.0f;
-  m_dwFPSTime = timeGetTime();
   m_subtitleFont = NULL;
   m_needsScaling = false;         // we handle all the scaling
   // audio
@@ -491,15 +488,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
     g_infoManager.SetDisplayAfterSeek();
 
   m_bLastRender = true;
-  m_fFrameCounter += 1.0f;
-  FLOAT fTimeSpan = (float)(timeGetTime() - m_dwFPSTime);
-  if (fTimeSpan >= 1000.0f)
-  {
-    fTimeSpan /= 1000.0f;
-    m_fFPS = (m_fFrameCounter / fTimeSpan);
-    m_dwFPSTime = timeGetTime();
-    m_fFrameCounter = 0;
-  }
   if (!g_application.m_pPlayer) return ;
 
   bool bRenderGUI = g_application.m_pPlayer->IsPaused();
@@ -541,7 +529,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
     g_application.m_pPlayer->GetGeneralInfo(strGeneral);
     {
       CStdString strGeneralFPS;
-      strGeneralFPS.Format("fps:%02.2f %s", m_fFPS, strGeneral.c_str() );
+      strGeneralFPS.Format("fps:%02.2f %s", g_infoManager.GetFPS(), strGeneral.c_str() );
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strGeneralFPS);
       OnMessage(msg);
