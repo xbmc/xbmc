@@ -3334,8 +3334,14 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
 	}
   return bState;
 }
+
 bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
 {
+  static DWORD pingTimer = 0;
+  if( timeGetTime() - pingTimer < (DWORD)g_guiSettings.GetInt("Autodetect.PingTime" ) * 1000)
+    return false;
+  pingTimer = timeGetTime();
+
   // Todo: Extract Ftp User, PW, Port from Internal FTP Server!
   // Todo: Create a FTP Client for XBMC!
   // Todo: Create a Setting for entering FTP Password and Username!
