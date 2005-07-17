@@ -98,6 +98,8 @@ protected:
   DWORD m_AfterSeekTimeout;
   bool m_playerSeeking;
   bool m_playerShowTime;
+  int i_Timer;
+  
 
   class CCombinedValue
   {

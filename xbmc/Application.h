@@ -152,6 +152,7 @@ public:
 
   void SaveMusicScanSettings();
   void RestoreMusicScanSettings();
+  bool AutoWindowStartUp(int iWindowID, int iAutoUpInSeconds);
 
   CGUIWindowHome m_guiHome;
   CGUIWindowPrograms m_guiPrograms;
@@ -222,7 +223,6 @@ public:
   bool m_bSpinDown;
   bool m_bNetworkSpinDown;
   DWORD m_dwSpinDownTime;
-  DWORD m_dwIdleTime;
   bool m_bInactive;    // CB: SCREENSAVER PATCH
   bool m_bScreenSave;  // CB: SCREENSAVER PATCH
   DWORD m_dwSaverTick;  // CB: SCREENSAVER PATCH
@@ -240,7 +240,9 @@ public:
   bool m_bMasterLockOverridesLocalPasswords;
   CStdString m_strForcedNextPlayer;
   CStdString m_strPlayListFile;
+  
   int m_PingTimer;
+  int iGlobalIdleTime();
 
 protected:
   CStdString m_strCurrentPlayer;
@@ -259,7 +261,6 @@ protected:
 
   DWORD m_threadID;       // application thread ID.  Used in applicationMessanger to know where
                           // we are firing a thread with delay from.
-
   static LONG WINAPI UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo);
 };
 

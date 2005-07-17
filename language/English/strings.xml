@@ -872,6 +872,7 @@
   <string><id>13389</id><value>There are no presets available&#10;for this visualisation</value></string>
   <string><id>13390</id><value>There are no settings available&#10;for this visualisation</value></string>
   <string><id>13391</id><value>Eject/Load</value></string>
+  <string><id>13392</id><value>Auto Visualisation FullScreen</value></string>
 
   <string><id>14000</id><value>Stacking: Off</value></string>
   <string><id>14001</id><value>Stacking: Simple</value></string>
