@@ -68,6 +68,8 @@ extern char g_szTitleIP[32];
 #define SYSTEM_FREE_SPACE_G         119
 #define SYSTEM_BUILD_VERSION        120
 #define SYSTEM_BUILD_DATE           121
+#define SYSTEM_ETHERNET_LINK_ACTIVE 122
+#define SYSTEM_IDLE_TIME            123
 
 #define NETWORK_IP_ADDRESS          190
 
@@ -118,6 +120,7 @@ extern char g_szTitleIP[32];
 #define COMBINED_VALUES_START        100000
 
 CGUIInfoManager g_infoManager;
+CApplication xIdleTime;
 
 void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
 {
@@ -135,6 +138,7 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_AfterSeekTimeout = 0;
   m_playerSeeking = false;
   m_performingSeek = false;
+  i_Timer = 0;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -263,11 +267,18 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("visualisation.locked")) ret = VISUALISATION_LOCKED;
   else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
   else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
+  else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
   else if (strTest.Left(16).Equals("window.isactive("))
   {
     int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(16, strTest.GetLength() - 17).c_str());
     if (winID != WINDOW_INVALID)
       ret = winID;
+  }
+  else if (strTest.Left(16).Equals("system.idletime("))
+  {
+    int iTemp = atoi((strTest.Mid(16, strTest.GetLength() - 17).c_str()));
+    if (iTemp != 0) i_Timer = iTemp ;
+    ret = SYSTEM_IDLE_TIME;
   }
   return bNegate ? -ret : ret;
 }
@@ -442,6 +453,25 @@ bool CGUIInfoManager::GetBool(int condition1) const
 
   int condition = abs(condition1);
   bool bReturn = false;
+
+  // GeminiServer: Ethernet Link state checking
+  // Will check if the Xbox has a Ethernet Link connection! [Cable in!]
+  // This can used for the skinner to switch off Network or Inter required functions
+  if( condition == SYSTEM_ETHERNET_LINK_ACTIVE)
+  {
+    DWORD dwnetstatus = XNetGetEthernetLinkStatus();
+	  if (dwnetstatus & XNET_ETHERNET_LINK_ACTIVE)
+      bReturn = true;
+  }
+  // GeminiServer: SYSTEM IDLE Timer
+  if( condition == SYSTEM_IDLE_TIME)
+  {
+    int iIdleTime = xIdleTime.iGlobalIdleTime();
+    if(  iIdleTime >= i_Timer ) 
+      bReturn = true;
+    else
+      bReturn = false;
+  }
 
   // check for Window.IsActive(window)
   if (condition >= WINDOW_ACTIVE_START && condition <= WINDOW_ACTIVE_END)

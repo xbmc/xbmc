@@ -96,17 +96,18 @@
  #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlib.lib")
 #endif
 
+#define NUM_HOME_PATHS 4
+#define MAX_FFWD_SPEED 5
+
+static char szHomePaths[][13] = { "E:\\Apps\\XBMC", "E:\\XBMC", "F:\\Apps\\XBMC", "F:\\XBMC" };
+CXBStopWatch xTimer;
 CStdString g_LoadErrorStr;
+int m_dwGlobalIdleTime;
 
 extern "C"
 {
 	extern bool WINAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
 };
-
-static char szHomePaths[][13] = { "E:\\Apps\\XBMC", "E:\\XBMC", "F:\\Apps\\XBMC", "F:\\XBMC" };
-
-#define NUM_HOME_PATHS 4
-#define MAX_FFWD_SPEED 5
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
@@ -135,6 +136,7 @@ CApplication::CApplication(void)
   m_strForcedNextPlayer = "";
   m_strPlayListFile = "";
   m_nextPlaylistItem = -1;
+  
   m_PingTimer = timeGetTime();
 }
 
@@ -1794,6 +1796,9 @@ bool CApplication::OnKey(CKey& key)
   // Turn the mouse off, as we've just got a keypress from controller or remote
   g_Mouse.SetInactive();
   CAction action;
+
+  
+
   // a key has been pressed.
   // Reset the screensaver timer
   // but not for the analog thumbsticks
@@ -1804,8 +1809,9 @@ bool CApplication::OnKey(CKey& key)
     // reset harddisk spindown timer
     m_bSpinDown = false;
     m_bNetworkSpinDown = false;
-
-
+    
+    // reset Idle Timer
+    xTimer.StartZero();
 
     ResetScreenSaver();
     if (ResetScreenSaverWindow())
@@ -2777,11 +2783,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     strNewPlayer = m_strForcedNextPlayer;
     m_strForcedNextPlayer = "";
   }
-  //else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 &&
-  //         (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage()))
-  //{
-  //  strNewPlayer = "dvdplayer";
-  //}
+  /*
+  else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 && (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage()))
+  {
+    strNewPlayer = "dvdplayer";
+  }
+  */
   else if (ModPlayer::IsSupportedFormat(url.GetFileType()))
   {
     strNewPlayer = "mod";
@@ -2832,9 +2839,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
     if (m_itemCurrentFile.IsAudio() && !m_itemCurrentFile.IsInternetStream() && g_guiSettings.GetBool("Karaoke.Enabled"))
       m_CdgParser.Start(m_itemCurrentFile.m_strPath);
-
-    m_dwIdleTime = timeGetTime();
-
 
     if (bRestart)
     {
@@ -2927,9 +2931,7 @@ void CApplication::OnPlayBackStopped()
   OutputDebugString("Playback was stopped\n");
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
   m_gWindowManager.SendMessage(msg);
-
   StartLEDControl(false);
-
   //  Reset audioscrobbler submit status
   CScrobbler::GetInstance()->SetSubmitSong(false);
 }
@@ -2982,7 +2984,6 @@ void CApplication::StopPlaying()
     }
     m_pPlayer->CloseFile();
   }
-
   OnPlayBackStopped();
 }
 
@@ -3453,8 +3454,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_STOPPED:
   case GUI_MSG_PLAYBACK_ENDED:
     {
-      m_dwIdleTime = timeGetTime();
-
       // reset our spindown
       m_bNetworkSpinDown = false;
       m_bSpinDown = false;
@@ -3637,8 +3636,22 @@ void CApplication::Process()
     CUtil::XboxAutoDetection();
     m_PingTimer = timeGetTime();
   }
+  // GeminiServer: Auto StartUp Visualisation Window on Idle xTime
+  AutoWindowStartUp(WINDOW_VISUALISATION,g_guiSettings.GetInt("MyMusic.VisTimer"));
 }
-
+// GeminiServer: Global Idle Time in Seconds
+// idle time will be resetet if on any OnKey()
+// int return: system Idle time in seconds! 0 is no idle!
+int CApplication::iGlobalIdleTime()
+{
+  if(!xTimer.IsRunning())
+  {
+    xTimer.Stop();
+    xTimer.StartZero();
+  }
+  m_dwGlobalIdleTime  = (int)xTimer.GetElapsedSeconds();
+  return m_dwGlobalIdleTime;
+}
 void CApplication::Restart(bool bSamePosition)
 {
   // this function gets called when the user changes a setting (like noninterleaved)
@@ -3759,12 +3772,10 @@ int CApplication::GetPlaySpeed() const
   return m_iPlaySpeed;
 }
 
-//
 // Returns the total time in seconds of the current media.  Fractional
 // portions of a second are possible - but not necessarily supported by the
 // player class.  This returns a double to be consistent with GetTime() and
 // SeekTime().
-//
 double CApplication::GetTotalTime() const
 {
   double rc = 0.0;
@@ -3777,11 +3788,9 @@ double CApplication::GetTotalTime() const
   return rc;
 }
 
-//
 // Returns the current time in seconds of the currently playing media.
 // Fractional portions of a second are possible.  This returns a double to
 // consistent with GetTotalTime() and SeekTime().
-//
 double CApplication::GetTime() const
 {
   double rc = 0.0;
@@ -3794,13 +3803,11 @@ double CApplication::GetTime() const
   return rc;
 }
 
-//
 // Sets the current position of the currently playing media to the specified
 // time in seconds.  Fractional portions of a second are valid.  The passed
 // time is the time offset from the beginning of the file as opposed to a
 // delta from the current position.  This method accepts a double to be
 // consistent with GetTime() and GetTotalTime().
-//
 void CApplication::SeekTime( double dTime )
 {
   if (IsPlaying() && m_pPlayer && (dTime >= 0.0))
@@ -3914,6 +3921,26 @@ void CApplication::CheckAudioScrobblerStatus()
   }
 }
 
+// GeminiServer: Auto StartUp Visualisation Window on Idle xTime
+// True: if Idle < AutoUpTime and ActiveWindow is != WindowsID
+// Flase: if ActiveWindow is = WindowsID or Idle > AutoUpTime
+bool CApplication::AutoWindowStartUp(int iWindowID, int iAutoUpInSeconds)
+{
+  if (IsPlayingAudio() && iAutoUpInSeconds !=0 && iGlobalIdleTime()!= 0)
+  {
+    if ( iAutoUpInSeconds <= iGlobalIdleTime() ) 
+    {
+      if ( m_gWindowManager.GetActiveWindow() != iWindowID)
+      { 
+        // now switch to the iWindowID
+        m_gWindowManager.ActivateWindow(iWindowID);
+        g_TextureManager.Flush();
+        return true;
+      }
+    }
+  }
+  return false;
+}
 bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist)
 {
   // no songs in playlist just return
