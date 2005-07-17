@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-08-2005 fixed: dvdplayer crashed if a dvd had 20 streams at the same time
  - 17-08-2005 added: System.FPS infolabel.
  - 17-08-2005 fixed: Paplayer didn't close files immediately.
  - 17-08-2005 added: GUI Auto Start Up Visualisation: If is Playing Audio, after defined Idle time in Sec. the Visualisation Window will then start up! [GeminiServer]
