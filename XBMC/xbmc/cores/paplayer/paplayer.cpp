@@ -464,6 +464,7 @@ bool PAPlayer::ProcessPAP()
               }
             }
             CLog::Log(LOGINFO, "PAPlayer: Starting new track");
+            m_decoder[m_currentDecoder].Destroy();
             m_decoder[1 - m_currentDecoder].Start();
             m_callback.OnPlayBackStarted();
             m_timeOffset = m_nextFile.m_lStartOffset * 1000 / 75;
@@ -538,6 +539,7 @@ bool PAPlayer::ProcessPAP()
         m_currentlyCrossFading = false;
         SetStreamVolume(m_currentStream, g_stSettings.m_nVolumeLevel);
         FreeStream(1 - m_currentStream);
+        m_decoder[1 - m_currentDecoder].Destroy();
       }
       else
       {
