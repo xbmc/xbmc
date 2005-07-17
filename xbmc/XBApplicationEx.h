@@ -58,7 +58,6 @@ public:
   FLOAT m_fAppTime;          // Current app time in seconds
   FLOAT m_fElapsedAppTime;   // Elapsed app time since last frame
   BOOL m_bPaused;           // Whether app time is paused by user
-  FLOAT m_fFPS;              // instantaneous frame rate
   WCHAR m_strFrameRate[20];  // Frame rate written to a CStdString
   HANDLE m_hFrameCounter;     // Handle to frame rate perf counter
   bool m_bStop;

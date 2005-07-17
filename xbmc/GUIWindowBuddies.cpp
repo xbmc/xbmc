@@ -1566,6 +1566,7 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
     {
       if ( CFile::Exists("D:\\default.xbe") )
       {
+        g_application.Stop();
         CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL );
       }
     }

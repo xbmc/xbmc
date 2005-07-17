@@ -70,6 +70,7 @@ extern char g_szTitleIP[32];
 #define SYSTEM_BUILD_DATE           121
 #define SYSTEM_ETHERNET_LINK_ACTIVE 122
 #define SYSTEM_IDLE_TIME            123
+#define SYSTEM_FPS                  124
 
 #define NETWORK_IP_ADDRESS          190
 
@@ -228,6 +229,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("system.freespace(g)")) ret = SYSTEM_FREE_SPACE_G;
   else if (strTest.Equals("system.buildversion")) ret = SYSTEM_BUILD_VERSION;
   else if (strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
+  else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
+  else if (strTest.Equals("system.fps")) ret = SYSTEM_FPS;
   else if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
   else if (strTest.Equals("musicplayer.title")) ret = MUSICPLAYER_TITLE;
   else if (strTest.Equals("musicplayer.album")) ret = MUSICPLAYER_ALBUM;
@@ -266,7 +269,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("visualisation.locked")) ret = VISUALISATION_LOCKED;
   else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
   else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
-  else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
   else if (strTest.Left(16).Equals("window.isactive("))
   {
     int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(16, strTest.GetLength() - 17).c_str());
@@ -301,6 +303,9 @@ wstring CGUIInfoManager::GetLabel(int info)
     break;
   case SYSTEM_DATE:
     strLabel = GetDate();
+    break;
+  case SYSTEM_FPS:
+    strLabel.Format("%02.2f", GetFPS());
     break;
   case PLAYER_TIME:
     strLabel = GetCurrentPlayTime();
@@ -1282,3 +1287,16 @@ void CGUIInfoManager::Clear()
   m_CombinedValues.clear();
 }
 
+float CGUIInfoManager::GetFPS()
+{
+  m_frameCounter++;
+  float fTimeSpan = (float)(timeGetTime() - m_lastFPSTime);
+  if (fTimeSpan >= 1000.0f)
+  {
+    fTimeSpan /= 1000.0f;
+    m_fps = m_frameCounter / fTimeSpan;
+    m_lastFPSTime = timeGetTime();
+    m_frameCounter = 0;
+  }
+  return m_fps;
+}

@@ -54,7 +54,6 @@ BOOL					m_EnryptedRegionValid;
 BOOL					m_XBOX_EEPROM_Current;
 XBOX_VERSION			m_XBOX_Version;
 DWORD					m_dwlastTime;
-float					m_fFPS;
 
 char* cTempEEPROMBackUPPath =	"Q:\\System\\SystemInfo\\";
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
@@ -153,9 +152,6 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 					pDlgProgress.Progress();
 					
 				}
-				m_dwFPSTime=timeGetTime();
-				m_dwFrames=0;
-				m_fFPS=0.0f;
 				m_dwlastTime=0;
 				m_wszMPlayerVersion[0] = 0;			
 				HANDLE hThread = CreateThread(NULL, 0,GetMPlayerVersionW,&m_wszMPlayerVersion,0, NULL);
@@ -477,14 +473,6 @@ void CGUIWindowSystemInfo::Render()
 		GetBuildTime(51, 52, 53); // Laber 51, 52, 53
 	}
 	CGUIWindow::Render();
-	DWORD	dwTimeSpan=timeGetTime()-  m_dwFPSTime;
-	if (dwTimeSpan >=1000)
-	{
-		m_fFPS= ((float)m_dwFrames*1000.0f) / ((float)dwTimeSpan);
-		m_dwFPSTime=timeGetTime();
-		m_dwFrames=0;
-	}
-	m_dwFrames++;
 }
 void CGUIWindowSystemInfo::SetLabelDummy()
 {
@@ -555,7 +543,8 @@ bool CGUIWindowSystemInfo::GetResolution(CStdString& strResol)
 	strResol.Format("%s %ix%i %S %02.2f Hz.",lblResInf,
 			g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
 			g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
-			g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,m_fFPS
+			g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,
+      g_infoManager.GetFPS()
 			);
 	return true;
 }
