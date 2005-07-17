@@ -100,9 +100,7 @@
 #define MAX_FFWD_SPEED 5
 
 static char szHomePaths[][13] = { "E:\\Apps\\XBMC", "E:\\XBMC", "F:\\Apps\\XBMC", "F:\\XBMC" };
-CXBStopWatch xTimer;
 CStdString g_LoadErrorStr;
-int m_dwGlobalIdleTime;
 
 extern "C"
 {
@@ -136,8 +134,6 @@ CApplication::CApplication(void)
   m_strForcedNextPlayer = "";
   m_strPlayListFile = "";
   m_nextPlaylistItem = -1;
-  
-  m_PingTimer = timeGetTime();
 }
 
 CApplication::~CApplication(void)
@@ -1811,7 +1807,7 @@ bool CApplication::OnKey(CKey& key)
     m_bNetworkSpinDown = false;
     
     // reset Idle Timer
-    xTimer.StartZero();
+    m_idleTimer.StartZero();
 
     ResetScreenSaver();
     if (ResetScreenSaverWindow())
@@ -2798,7 +2794,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     strNewPlayer = "sid";
   }
   // workaround so streaming works again
-  else if (item.IsInternetStream())
+  else if (item.IsInternetStream() /* && !CUtil::IsFTP(item.m_strPath)*/)
   {
     strNewPlayer = "mplayer";
   }
@@ -3631,27 +3627,24 @@ void CApplication::Process()
   CSectionLoader::UnloadDLLsDelayed();
 
   // GeminiServer Xbox Autodetection // Send in X sec PingTime Interval
-  if( (timeGetTime() - m_PingTimer) >= ((unsigned int)g_guiSettings.GetInt("Autodetect.PingTime" ) * 1000) )
-  {
-    CUtil::XboxAutoDetection();
-    m_PingTimer = timeGetTime();
-  }
+  CUtil::XboxAutoDetection();
+
   // GeminiServer: Auto StartUp Visualisation Window on Idle xTime
   AutoWindowStartUp(WINDOW_VISUALISATION,g_guiSettings.GetInt("MyMusic.VisTimer"));
 }
 // GeminiServer: Global Idle Time in Seconds
 // idle time will be resetet if on any OnKey()
 // int return: system Idle time in seconds! 0 is no idle!
-int CApplication::iGlobalIdleTime()
+int CApplication::GlobalIdleTime()
 {
-  if(!xTimer.IsRunning())
+  if(!m_idleTimer.IsRunning())
   {
-    xTimer.Stop();
-    xTimer.StartZero();
+    m_idleTimer.Stop();
+    m_idleTimer.StartZero();
   }
-  m_dwGlobalIdleTime  = (int)xTimer.GetElapsedSeconds();
-  return m_dwGlobalIdleTime;
+  return (int)m_idleTimer.GetElapsedSeconds();
 }
+
 void CApplication::Restart(bool bSamePosition)
 {
   // this function gets called when the user changes a setting (like noninterleaved)
@@ -3926,9 +3919,9 @@ void CApplication::CheckAudioScrobblerStatus()
 // Flase: if ActiveWindow is = WindowsID or Idle > AutoUpTime
 bool CApplication::AutoWindowStartUp(int iWindowID, int iAutoUpInSeconds)
 {
-  if (IsPlayingAudio() && iAutoUpInSeconds !=0 && iGlobalIdleTime()!= 0)
+  if (IsPlayingAudio() && iAutoUpInSeconds !=0)
   {
-    if ( iAutoUpInSeconds <= iGlobalIdleTime() ) 
+    if ( iAutoUpInSeconds <= GlobalIdleTime() ) 
     {
       if ( m_gWindowManager.GetActiveWindow() != iWindowID)
       { 
