@@ -38,6 +38,11 @@ CStdString CSettingBool::ToString()
   return m_bData ? "true" : "false";
 }
 
+CSettingSeparator::CSettingSeparator(int iOrder, const char *strSetting)
+    : CSetting(iOrder, strSetting, 0, SEPARATOR_CONTROL)
+{
+}
+
 CSettingFloat::CSettingFloat(int iOrder, const char *strSetting, int iLabel, float fData, float fMin, float fStep, float fMax, int iControlType)
     : CSetting(iOrder, strSetting, iLabel, iControlType)
 {
@@ -187,11 +192,12 @@ CGUISettings::CGUISettings(void)
   AddCategory(3, "MyMusic", 16000);
   AddString(1, "MyMusic.Visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
   AddInt(2, "MyMusic.VisTimer", 13392, 15, 0, 15, 360, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF); //StartUp Visualisation to Full screen in x sec. [GeminiServer]
-  AddInt(3, "MyMusic.CrossFade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
-  AddInt(4, "MyMusic.ReplayGainType", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
-  AddInt(5, "MyMusic.ReplayGainPreAmp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  AddInt(6, "MyMusic.ReplayGainNoGainPreAmp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  AddBool(7, "MyMusic.ReplayGainAvoidClipping", 643, false);
+  AddSeparator(3, "MyMusic.Sep1");
+  AddInt(4, "MyMusic.CrossFade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+  AddInt(5, "MyMusic.ReplayGainType", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
+  AddInt(6, "MyMusic.ReplayGainPreAmp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddInt(7, "MyMusic.ReplayGainNoGainPreAmp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddBool(8, "MyMusic.ReplayGainAvoidClipping", 643, false);
   //AddString(8, "MyMusic.JumpToAudioHardware", 16001, "", BUTTON_CONTROL_STANDARD); // Jump to audio hardware settings
   AddBool(9, "MyMusic.OutputToAllSpeakers", 252, false);
   AddBool(10, "MyMusic.UseAudioScrobbler", 15201, false);
@@ -542,6 +548,13 @@ CSettingsGroup *CGUISettings::GetGroup(DWORD dwGroupID)
   }
   CLog::DebugLog("Error: Requested setting group (%i) was not found.  It must be case-sensitive", dwGroupID);
   return NULL;
+}
+
+void CGUISettings::AddSeparator(int iOrder, const char *strSetting)
+{
+  CSettingSeparator *pSetting = new CSettingSeparator(iOrder, strSetting);
+  if (!pSetting) return;
+  settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
 }
 
 void CGUISettings::AddBool(int iOrder, const char *strSetting, int iLabel, bool bData, int iControlType)

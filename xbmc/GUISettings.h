@@ -129,6 +129,7 @@
 #define SETTINGS_TYPE_INT    3
 #define SETTINGS_TYPE_STRING  4
 #define SETTINGS_TYPE_HEX    5
+#define SETTINGS_TYPE_SEPARATOR 6
 
 #define CHECKMARK_CONTROL    1
 #define SPIN_CONTROL_FLOAT   2
@@ -140,6 +141,7 @@
 #define BUTTON_CONTROL_STANDARD   8
 #define BUTTON_CONTROL_IP_INPUT   9
 #define BUTTON_CONTROL_MISC_INPUT 10
+#define SEPARATOR_CONTROL 11
 
 #define REPLAY_GAIN_NONE 0
 #define REPLAY_GAIN_ALBUM 1
@@ -267,6 +269,15 @@ private:
   CStdString m_strData;
 };
 
+class CSettingSeparator : public CSetting
+{
+public:
+  CSettingSeparator(int iOrder, const char *strSetting);
+  ~CSettingSeparator() {};
+
+  virtual int GetType() { return SETTINGS_TYPE_SEPARATOR; };
+};
+
 class CSettingsCategory
 {
 public:
@@ -349,6 +360,8 @@ public:
   void AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType = BUTTON_CONTROL_INPUT, bool bAllowEmpty = false);
   CStdString GetString(const char *strSetting);
   void SetString(const char *strSetting, const char *strData);
+
+  void AddSeparator(int iOrder, const char *strSetting);
 
   CSetting *GetSetting(const char *strSetting);
 
