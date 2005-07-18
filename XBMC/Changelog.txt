@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-07-2005 added: routines for knowing wich field is currently being rendered, can be used to sync interlaced video
+ - 18-07-2005 fixed: if xbmc ran out of memmory when starting a video, it often lockup with a black screen
  - 18-07-2005 fixed: deinterlacing in mplayer wasn't possible to enable without enabling postprocessing
  - 18-07-2005 added: Calculate Folder size to My Files.
  - 18-07-2005 fixed: Settings are saved on exit from the settings screens and on exit from the app.

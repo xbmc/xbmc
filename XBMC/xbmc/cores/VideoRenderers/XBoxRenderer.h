@@ -57,6 +57,8 @@ public:
   virtual void RenderBlank();
   void AutoCrop(bool bCrop);
   int GetBuffersCount() { return m_NumYV12Buffers; };
+  void WaitForField(bool bOdd = true);
+
 protected:
   virtual void Render() {};
   virtual void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);
