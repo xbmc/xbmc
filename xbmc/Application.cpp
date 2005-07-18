@@ -3035,35 +3035,37 @@ bool CApplication::ResetScreenSaverWindow()
     {
       // then show previous window
       m_gWindowManager.PreviousWindow();
+      return true;
     }
-    else
+    else if (iWin == WINDOW_VISUALISATION && g_guiSettings.GetBool("ScreenSaver.UseMusicVisInstead"))
     {
-      // Fade to dim or black screensaver is active
-      // fade in
-      float fFadeLevel = 1.0f;
-      CStdString strScreenSaver = g_guiSettings.GetString("ScreenSaver.Mode");
-      if (strScreenSaver == "Dim")
-      {
-        fFadeLevel = (float)g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100;
-      }
-      else if (strScreenSaver == "Fade")
-      {
-        fFadeLevel = 0;
-      }
-      D3DGAMMARAMP Ramp;
-      for (float fade = fFadeLevel; fade <= 1; fade += 0.01f)
-      {
-        for (int i = 0;i < 256;i++)
-        {
-          Ramp.red[i] = (int)((float)m_OldRamp.red[i] * fade);
-          Ramp.green[i] = (int)((float)m_OldRamp.green[i] * fade);
-          Ramp.blue[i] = (int)((float)m_OldRamp.blue[i] * fade);
-        }
-        Sleep(5);
-        m_pd3dDevice->SetGammaRamp(D3DSGR_IMMEDIATE, &Ramp); // use immediate to get a smooth fade
-      }
-      m_pd3dDevice->SetGammaRamp(0, &m_OldRamp); // put the old gamma ramp back in place
+      return true;    // don't need to do anything - just stay in vis mode
     }
+    // Fade to dim or black screensaver is active
+    // fade in
+    float fFadeLevel = 1.0f;
+    CStdString strScreenSaver = g_guiSettings.GetString("ScreenSaver.Mode");
+    if (strScreenSaver == "Dim")
+    {
+      fFadeLevel = (float)g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100;
+    }
+    else if (strScreenSaver == "Fade")
+    {
+      fFadeLevel = 0;
+    }
+    D3DGAMMARAMP Ramp;
+    for (float fade = fFadeLevel; fade <= 1; fade += 0.01f)
+    {
+      for (int i = 0;i < 256;i++)
+      {
+        Ramp.red[i] = (int)((float)m_OldRamp.red[i] * fade);
+        Ramp.green[i] = (int)((float)m_OldRamp.green[i] * fade);
+        Ramp.blue[i] = (int)((float)m_OldRamp.blue[i] * fade);
+      }
+      Sleep(5);
+      m_pd3dDevice->SetGammaRamp(D3DSGR_IMMEDIATE, &Ramp); // use immediate to get a smooth fade
+    }
+    m_pd3dDevice->SetGammaRamp(0, &m_OldRamp); // put the old gamma ramp back in place
     return true;
   }
   else
@@ -3133,6 +3135,11 @@ void CApplication::ActivateScreenSaver()
   m_dwSaverTick = timeGetTime();  // Save the current time for the shutdown timeout
 
   CStdString strScreenSaver = g_guiSettings.GetString("ScreenSaver.Mode");
+  if (IsPlayingAudio() && g_guiSettings.GetBool("ScreenSaver.UseMusicVisInstead"))
+  { // activate the visualisation
+    m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
+    return;
+  }
   if (strScreenSaver == "Dim")
   {
     fFadeLevel = (FLOAT) g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100; // 0.07f;
@@ -3634,10 +3641,8 @@ void CApplication::Process()
 
   // GeminiServer Xbox Autodetection // Send in X sec PingTime Interval
   CUtil::XboxAutoDetection();
-
-  // GeminiServer: Auto StartUp Visualisation Window on Idle xTime
-  AutoWindowStartUp(WINDOW_VISUALISATION,g_guiSettings.GetInt("MyMusic.VisTimer"));
 }
+
 // GeminiServer: Global Idle Time in Seconds
 // idle time will be resetet if on any OnKey()
 // int return: system Idle time in seconds! 0 is no idle!
@@ -3920,26 +3925,6 @@ void CApplication::CheckAudioScrobblerStatus()
   }
 }
 
-// GeminiServer: Auto StartUp Visualisation Window on Idle xTime
-// True: if Idle < AutoUpTime and ActiveWindow is != WindowsID
-// Flase: if ActiveWindow is = WindowsID or Idle > AutoUpTime
-bool CApplication::AutoWindowStartUp(int iWindowID, int iAutoUpInSeconds)
-{
-  if (IsPlayingAudio() && iAutoUpInSeconds !=0)
-  {
-    if ( iAutoUpInSeconds <= GlobalIdleTime() ) 
-    {
-      if ( m_gWindowManager.GetActiveWindow() != iWindowID)
-      { 
-        // now switch to the iWindowID
-        m_gWindowManager.ActivateWindow(iWindowID);
-        g_TextureManager.Flush();
-        return true;
-      }
-    }
-  }
-  return false;
-}
 bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist)
 {
   // no songs in playlist just return

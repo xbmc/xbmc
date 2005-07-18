@@ -191,7 +191,6 @@ CGUISettings::CGUISettings(void)
   AddGroup(3, 2);
   AddCategory(3, "MyMusic", 16000);
   AddString(1, "MyMusic.Visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
-  AddInt(2, "MyMusic.VisTimer", 13392, 15, 0, 15, 360, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF); //StartUp Visualisation to Full screen in x sec. [GeminiServer]
   AddSeparator(3, "MyMusic.Sep1");
   AddInt(4, "MyMusic.CrossFade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddInt(5, "MyMusic.ReplayGainType", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
@@ -486,7 +485,8 @@ CGUISettings::CGUISettings(void)
   AddString(1, "ScreenSaver.Mode", 356, "Dim", SPIN_CONTROL_TEXT);
   AddInt(2, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddInt(3, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddString(4, "ScreenSaver.Preview", 1000, "", BUTTON_CONTROL_STANDARD);
+  AddBool(4, "ScreenSaver.UseMusicVisInstead", 13392, true);
+  AddString(5, "ScreenSaver.Preview", 1000, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(7, "UIFilters", 14053);
   AddInt(1, "UIFilters.Flicker", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT);

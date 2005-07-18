@@ -152,7 +152,6 @@ public:
 
   void SaveMusicScanSettings();
   void RestoreMusicScanSettings();
-  bool AutoWindowStartUp(int iWindowID, int iAutoUpInSeconds);
 
   CGUIWindowHome m_guiHome;
   CGUIWindowPrograms m_guiPrograms;
