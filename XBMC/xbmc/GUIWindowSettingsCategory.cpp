@@ -78,6 +78,7 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
+    g_settings.Save();
     if (m_iWindowBeforeJump!=WINDOW_INVALID)
     {
       JumpToPreviousSection();
@@ -2019,7 +2020,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_settings.UpDateXbmcXML("startwindow", strStWin);
     }
   }
-  g_settings.Save();
   UpdateSettings();
 }
 void CGUIWindowSettingsCategory::FreeControls()

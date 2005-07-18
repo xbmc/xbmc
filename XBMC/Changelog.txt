@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-07-2005 added: Calculate Folder size to My Files.
+ - 18-07-2005 fixed: Settings are saved on exit from the settings screens and on exit from the app.
  - 18-07-2005 added: Separator bar to settings screens.
  - 18-07-2005 updated: German (Austrian) language file (Thnx to CEOMR)
  - 18-07-2005 updated: German language file

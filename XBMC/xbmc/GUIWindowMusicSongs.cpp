@@ -790,11 +790,7 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
       else
       {
         if (pItem->m_dwSize > 0)
-        {
-          CStdString strFileSize;
-          CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
-          pItem->SetLabel2(strFileSize);
-        }
+          pItem->SetFileSizeLabel();
         if (nMyMusicSortMethod == 0 || nMyMusicSortMethod == 8)
         {
           int nDuration = pItem->m_musicInfoTag.GetDuration();

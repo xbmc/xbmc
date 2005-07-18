@@ -909,6 +909,51 @@ void CFileItem::CleanFileName()
   SetLabel(strLabel);
 }
 
+void CFileItem::SetFileSizeLabel()
+{
+  // file < 1 kbyte?
+  if (m_dwSize < 1024)
+  {
+    //  substract the integer part of the float value
+    float fRemainder = (((float)m_dwSize) / 1024.0f) - floor(((float)m_dwSize) / 1024.0f);
+    float fToAdd = 0.0f;
+    if (fRemainder < 0.01f)
+      fToAdd = 0.1f;
+    m_strLabel2.Format("%2.1f KB", (((float)m_dwSize) / 1024.0f) + fToAdd);
+    return;
+  }
+  const __int64 iOneMeg = 1024 * 1024;
+
+  // file < 1 megabyte?
+  if (m_dwSize < iOneMeg)
+  {
+    m_strLabel2.Format("%02.1f KB", ((float)m_dwSize) / 1024.0f);
+    return;
+  }
+
+  // file < 1 GByte?
+  __int64 iOneGigabyte = iOneMeg;
+  iOneGigabyte *= (__int64)1000;
+  if (m_dwSize < iOneGigabyte)
+  {
+    m_strLabel2.Format("%02.1f MB", ((float)m_dwSize) / ((float)iOneMeg));
+    return;
+  }
+  //file > 1 GByte
+  int iGigs = 0;
+  __int64 dwFileSize = m_dwSize;
+  while (dwFileSize >= iOneGigabyte)
+  {
+    dwFileSize -= iOneGigabyte;
+    iGigs++;
+  }
+  float fMegs = ((float)dwFileSize) / ((float)iOneMeg);
+  fMegs /= 1000.0f;
+  fMegs += iGigs;
+  m_strLabel2.Format("%02.1f GB", fMegs);
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 /////
 ///// CFileItemList
