@@ -23,6 +23,17 @@
 #include "../../util.h"
 #include "../../XBVideoConfig.h"
 
+//This is a global callback for vertical blank
+//will be set by the renderer on need as we might need
+//to know which field we are rendering
+static bool g_LastFieldOdd=false;
+static CEvent g_eVBlank;
+
+void __cdecl VBlankCallback(D3DVBLANKDATA *pData)
+{
+  g_LastFieldOdd=(bool)(pData->VBlank & 1);
+  g_eVBlank.PulseEvent();
+}
 
 CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
 {
@@ -39,12 +50,24 @@ CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
     m_VTexture[i] = NULL;
   }
   m_hLowMemShader = 0;
+
+  m_pD3DDevice->SetVerticalBlankCallback(VBlankCallback);
 }
 
 CXBoxRenderer::~CXBoxRenderer()
 {
+  m_pD3DDevice->SetVerticalBlankCallback(NULL);
   UnInit();
 }
+
+//will wait for the given field before returning or return immidiatly if last field was the opposite
+//can be used for syncing up interlaced contents
+void CXBoxRenderer::WaitForField(bool bOdd)
+{
+  if(g_LastFieldOdd!=bOdd)
+    g_eVBlank.WaitMSec(100);
+}
+
 
 //********************************************************************************************************
 void CXBoxRenderer::DeleteOSDTextures(int index)
@@ -1284,6 +1307,7 @@ bool CXBoxRenderer::CreateYV12Texture(int index)
     D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight / 2, 1, 0, D3DFMT_LIN_L8, 0, &m_VTexture[index]))
   {
     CLog::Log(LOGERROR, "Unable to create YV12 texture %i", index);
+    g_graphicsContext.Unlock();
     return false;
   }
   ClearYV12Texture(index);

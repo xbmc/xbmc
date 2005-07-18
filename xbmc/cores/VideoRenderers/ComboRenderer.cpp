@@ -66,7 +66,10 @@ bool CComboRenderer::CreateYUY2Textures()
   // Create our textures...
   if (D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_RGBTexture[0]) ||
       D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_RGBTexture[1]))
+  {
+    g_graphicsContext.Unlock();
     return false;
+  }
 
   // setup the RGB texture as both a YUY2 texture AND a RGB texture
   // (We can only render into an RGB texture, so we do the YUV->YUY2 conversion by)
@@ -455,7 +458,10 @@ void CComboRenderer::SetupScreenshot()
   // first, grab the current overlay texture and convert it to RGB
   LPDIRECT3DTEXTURE8 pRGB = NULL;
   if (D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth, m_iSourceHeight, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &pRGB))
+  {
+    g_graphicsContext.Unlock();
     return ;
+  }
   D3DLOCKED_RECT lr, lr2;
   m_YUY2Texture[m_iYUVRenderBuffer].LockRect(0, &lr, NULL, 0);
   pRGB->LockRect(0, &lr2, NULL, 0);

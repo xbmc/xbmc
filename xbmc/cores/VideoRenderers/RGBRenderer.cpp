@@ -81,6 +81,7 @@ bool CRGBRenderer::CreateYUVTexture()
     if (D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth, m_iSourceHeight, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_YUVTexture))
     {
       CLog::Log(LOGERROR, "Could not create YUV interleave texture");
+      g_graphicsContext.Unlock();
       return false;
     }
     CLog::Log(LOGINFO, "Created YUV texture");
