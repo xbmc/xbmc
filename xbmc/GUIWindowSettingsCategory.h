@@ -40,7 +40,7 @@ protected:
   void FreeSettingsControls();
   virtual void FreeControls();
   virtual void OnClick(CBaseSettingControl *pSettingControl);
-  void AddSetting(CSetting *pSetting, int iPosX, int iPosY, int iWidth, int iControlID);
+  void AddSetting(CSetting *pSetting, int iPosX, int &iPosY, int iGap, int iWidth, int &iControlID);
   CBaseSettingControl* GetSetting(const CStdString &strSetting);
 
   void JumpToSection(DWORD dwWindowId, int iSection);
@@ -58,6 +58,7 @@ protected:
   CGUIRadioButtonControl *m_pOriginalRadioButton;
   CGUIButtonControl *m_pOriginalSettingsButton;
   CGUIButtonControl *m_pOriginalButton;
+  CGUIImage *m_pOriginalImage;
   // Network settings
   int m_iNetworkAssignment;
   CStdString m_strNetworkIPAddress;
