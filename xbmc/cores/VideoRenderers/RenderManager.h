@@ -27,6 +27,11 @@ public:
     if (!m_bChanging && m_pRenderer)
       m_pRenderer->WaitForFlip();
   }
+  inline void WaitForField(bool bOdd)
+  {
+    if (!m_bChanging && m_pRenderer)
+      m_pRenderer->WaitForField(bOdd);
+  }
   unsigned int Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps);
   inline unsigned int GetImage(YV12Image *image)
   {
