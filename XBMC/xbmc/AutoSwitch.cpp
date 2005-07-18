@@ -35,24 +35,24 @@ int CAutoSwitch::GetView(CFileItemList &vecItems)
   {
   case WINDOW_MUSIC_FILES:
     {
-      iSortMethod = g_guiSettings.GetInt("MusicLists.AutoSwitchMethod");
-      bBigThumbs = g_guiSettings.GetBool("MusicLists.AutoSwitchUseLargeThumbs");
-      bHideParentFolderItems = g_guiSettings.GetBool("MusicLists.HideParentDirItems");
+      iSortMethod = g_guiSettings.GetInt("MusicFiles.AutoSwitchMethod");
+      bBigThumbs = g_guiSettings.GetBool("MusicFiles.AutoSwitchUseLargeThumbs");
+      bHideParentFolderItems = g_guiSettings.GetBool("MyMusic.HideParentDirItems");
       if ( iSortMethod == METHOD_BYTHUMBPERCENT )
       {
-        iPercent = g_guiSettings.GetInt("MusicLists.AutoSwitchPercentage");
+        iPercent = g_guiSettings.GetInt("MusicFiles.AutoSwitchPercentage");
       }
     }
     break;
 
   case WINDOW_VIDEOS:
     {
-      iSortMethod = g_guiSettings.GetInt("VideoLists.AutoSwitchMethod");
-      bBigThumbs = g_guiSettings.GetBool("VideoLists.AutoSwitchUseLargeThumbs");
-      bHideParentFolderItems = g_guiSettings.GetBool("VideoLists.HideParentDirItems");
+      iSortMethod = g_guiSettings.GetInt("VideoFiles.AutoSwitchMethod");
+      bBigThumbs = g_guiSettings.GetBool("VideoFiles.AutoSwitchUseLargeThumbs");
+      bHideParentFolderItems = g_guiSettings.GetBool("MyVideos.HideParentDirItems");
       if ( iSortMethod == METHOD_BYTHUMBPERCENT )
       {
-        iPercent = g_guiSettings.GetInt("VideoLists.AutoSwitchPercentage");
+        iPercent = g_guiSettings.GetInt("VideoFiles.AutoSwitchPercentage");
       }
     }
     break;
@@ -67,12 +67,12 @@ int CAutoSwitch::GetView(CFileItemList &vecItems)
 
   case WINDOW_PROGRAMS:
     {
-      iSortMethod = g_guiSettings.GetInt("ProgramsLists.AutoSwitchMethod");
-      bBigThumbs = g_guiSettings.GetBool("ProgramsLists.AutoSwitchUseLargeThumbs");
-      bHideParentFolderItems = g_guiSettings.GetBool("ProgramsLists.HideParentDirItems");
+      iSortMethod = g_guiSettings.GetInt("MyPrograms.AutoSwitchMethod");
+      bBigThumbs = g_guiSettings.GetBool("MyPrograms.AutoSwitchUseLargeThumbs");
+      bHideParentFolderItems = g_guiSettings.GetBool("MyPrograms.HideParentDirItems");
       if ( iSortMethod == METHOD_BYTHUMBPERCENT )
       {
-        iPercent = g_guiSettings.GetInt("ProgramsLists.AutoSwitchPercentage");
+        iPercent = g_guiSettings.GetInt("MyPrograms.AutoSwitchPercentage");
       }
     }
     break;

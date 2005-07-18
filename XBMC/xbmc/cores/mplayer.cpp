@@ -804,14 +804,14 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
         options.SetAC3PassTru(bSupportsAC3Out);
         options.SetDTSPassTru(bSupportsDTSOut);
 
-        if ((g_guiSettings.GetBool("AudioVideo.OutputToAllSpeakers")) && (bIsVideo) || (g_guiSettings.GetBool("MyMusic.OutputToAllSpeakers")) && (!bIsVideo))
+        if ((g_guiSettings.GetBool("VideoPlayer.OutputToAllSpeakers")) && (bIsVideo) || (g_guiSettings.GetBool("MusicPlayer.OutputToAllSpeakers")) && (!bIsVideo))
           options.SetLimitedHWAC3(true); //Will limit hwac3 to not kick in on 2.0 channel streams
       }
     }
 
     if (bIsVideo)
     {
-      options.SetVolumeAmplification((float)g_guiSettings.GetInt("AudioVideo.VolumeAmplification"));
+      options.SetVolumeAmplification((float)g_guiSettings.GetInt("VideoPlayer.VolumeAmplification"));
     }
 
     //Make sure we set the dvd-device parameter if we are playing dvdimages or dvdfolders
@@ -1052,7 +1052,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
     if (g_stSettings.m_currentVideoSettings.m_AudioStream < -1)
     { // check + fix up the stereo/left/right setting
-      bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL) && ((g_guiSettings.GetBool("AudioVideo.OutputToAllSpeakers") && HasVideo()) || (g_guiSettings.GetBool("MyMusic.OutputToAllSpeakers") && !HasVideo()));
+      bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL) && ((g_guiSettings.GetBool("VideoPlayer.OutputToAllSpeakers") && HasVideo()) || (g_guiSettings.GetBool("MusicPlayer.OutputToAllSpeakers") && !HasVideo()));
       xbox_audio_switch_channel(-1 - g_stSettings.m_currentVideoSettings.m_AudioStream, bAudioOnAllSpeakers);
     }
     bIsVideo = HasVideo();
@@ -1353,7 +1353,7 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
   if (g_stSettings.m_iMyVideoTimeSeekForwardBig > iTest)
     iTest = g_stSettings.m_iMyVideoTimeSeekForwardBig;
 
-  if ((iTime == 0) || (g_guiSettings.GetBool("MyVideos.UseTimeBasedSeeking") && iTime > 2*iTest))
+  if ((iTime == 0) || (g_guiSettings.GetBool("VideoPlayer.UseTimeBasedSeeking") && iTime > 2*iTest))
   {
     if (bLargeStep)
     {
