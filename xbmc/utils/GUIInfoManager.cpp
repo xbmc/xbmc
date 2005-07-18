@@ -547,7 +547,7 @@ bool CGUIInfoManager::GetBool(int condition1) const
       bReturn = g_guiSettings.GetBool("MyMusic.UseAudioScrobbler");
     break;
     case VIDEOPLAYER_USING_OVERLAYS:
-      bReturn = (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS);
+      bReturn = (g_guiSettings.GetInt("VideoPlayer.RenderMethod") == RENDER_OVERLAYS);
     break;
     case VIDEOPLAYER_ISFULLSCREEN:
       bReturn = m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO;

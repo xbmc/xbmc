@@ -217,7 +217,7 @@ void CGUIWindowVideoActors::Update(const CStdString &strDirectory)
   }
   else
   {
-    if (!g_guiSettings.GetBool("VideoLists.HideParentDirItems"))
+    if (!g_guiSettings.GetBool("MyVideos.HideParentDirItems"))
     {
       CFileItem *pItem = new CFileItem("..");
       pItem->m_strPath = "";

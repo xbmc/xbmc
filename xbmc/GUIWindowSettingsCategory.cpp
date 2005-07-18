@@ -200,8 +200,8 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       m_strNetworkSubnet = g_guiSettings.GetString("Network.Subnet");
       m_strNetworkGateway = g_guiSettings.GetString("Network.Gateway");
       m_strNetworkDNS = g_guiSettings.GetString("Network.DNS");
-      m_strOldTrackFormat = g_guiSettings.GetString("MusicLists.TrackFormat");
-      m_strOldTrackFormatRight = g_guiSettings.GetString("MusicLists.TrackFormatRight");
+      m_strOldTrackFormat = g_guiSettings.GetString("MyMusic.TrackFormat");
+      m_strOldTrackFormatRight = g_guiSettings.GetString("MyMusic.TrackFormatRight");
       m_dwResTime = 0;
       m_OldResolution = (RESOLUTION)g_guiSettings.GetInt("LookAndFeel.Resolution");
       int iFocusControl = m_iLastControl;
@@ -324,7 +324,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     CSetting *pSetting = settings[i];
     AddSetting(pSetting, iPosX, iPosY, iGapY, iWidth, iControlID);
     CStdString strSetting = pSetting->GetSetting();
-    if (strSetting == "Pictures.AutoSwitchMethod" || strSetting == "ProgramsLists.AutoSwitchMethod" || strSetting == "MusicLists.AutoSwitchMethod" || strSetting == "VideoLists.AutoSwitchMethod")
+    if (strSetting == "Pictures.AutoSwitchMethod" || strSetting == "MyPrograms.AutoSwitchMethod" || strSetting == "MusicFiles.AutoSwitchMethod" || strSetting == "VideoFiles.AutoSwitchMethod")
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -557,7 +557,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(476), LED_PLAYBACK_VIDEO_MUSIC); // Video & Music
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "Filters.RenderMethod")
+    else if (strSetting == "VideoPlayer.RenderMethod")
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -574,7 +574,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(630 + i), i);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "MyMusic.ReplayGainType")
+    else if (strSetting == "MusicPlayer.ReplayGainType")
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -739,35 +739,35 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Pictures.UseAutoSwitching"));
     }
-    else if (strSetting == "ProgramsLists.AutoSwitchUseLargeThumbs" || strSetting == "ProgramsLists.AutoSwitchMethod")
+    else if (strSetting == "MyPrograms.AutoSwitchUseLargeThumbs" || strSetting == "MyPrograms.AutoSwitchMethod")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("ProgramsLists.UseAutoSwitching"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MyPrograms.UseAutoSwitching"));
     }
-    else if (strSetting == "ProgramsLists.AutoSwitchPercentage")
+    else if (strSetting == "MyPrograms.AutoSwitchPercentage")
     { // set visibility based on our other setting...
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("ProgramsLists.UseAutoSwitching") && g_guiSettings.GetInt("ProgramsLists.AutoSwitchMethod") == 2);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MyPrograms.UseAutoSwitching") && g_guiSettings.GetInt("MyPrograms.AutoSwitchMethod") == 2);
     }
-    else if (strSetting == "MusicLists.AutoSwitchUseLargeThumbs" || strSetting == "MusicLists.AutoSwitchMethod")
+    else if (strSetting == "MusicFiles.AutoSwitchUseLargeThumbs" || strSetting == "MusicFiles.AutoSwitchMethod")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MusicLists.UseAutoSwitching"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MusicFiles.UseAutoSwitching"));
     }
-    else if (strSetting == "MusicLists.AutoSwitchPercentage")
+    else if (strSetting == "MusicFiles.AutoSwitchPercentage")
     { // set visibility based on our other setting...
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MusicLists.UseAutoSwitching") && g_guiSettings.GetInt("MusicLists.AutoSwitchMethod") == 2);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MusicFiles.UseAutoSwitching") && g_guiSettings.GetInt("MusicFiles.AutoSwitchMethod") == 2);
     }
-    else if (strSetting == "VideoLists.AutoSwitchUseLargeThumbs" || strSetting == "VideoLists.AutoSwitchMethod")
+    else if (strSetting == "VideoFiles.AutoSwitchUseLargeThumbs" || strSetting == "VideoFiles.AutoSwitchMethod")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VideoLists.UseAutoSwitching"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VideoFiles.UseAutoSwitching"));
     }
-    else if (strSetting == "VideoLists.AutoSwitchPercentage")
+    else if (strSetting == "VideoFiles.AutoSwitchPercentage")
     { // set visibility based on our other setting...
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VideoLists.UseAutoSwitching") && g_guiSettings.GetInt("VideoLists.AutoSwitchMethod") == 2);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VideoFiles.UseAutoSwitching") && g_guiSettings.GetInt("VideoFiles.AutoSwitchMethod") == 2);
     }
     else if (strSetting == "CDDARipper.Quality")
     { // only visible if we are doing non-WAV ripping
@@ -1009,7 +1009,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                            &&*/ g_guiSettings.GetBool("VoiceOnPort3.EnablefRoboticValue")
                                            && (g_guiSettings.GetString("VoiceOnPort3.VoiceMask").compare("Custom") == 0) );
     }
-    else if (strSetting == "MyMusic.OutputToAllSpeakers" || strSetting == "AudioVideo.OutputToAllSpeakers"|| strSetting == "AudioOutput.AC3PassThrough" || strSetting == "AudioOutput.DTSPassThrough")
+    else if (strSetting == "MusicPlayer.OutputToAllSpeakers" || strSetting == "VideoPlayer.OutputToAllSpeakers"|| strSetting == "AudioOutput.AC3PassThrough" || strSetting == "AudioOutput.DTSPassThrough")
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL);
@@ -1113,7 +1113,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_videoConfig.HasPAL60());
     }
-    else if (strSetting == "MyVideos.UseGUIResolution")
+    else if (strSetting == "VideoPlayer.UseGUIResolution")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_videoConfig.Has720p() || g_videoConfig.Has1080i());
@@ -1160,20 +1160,20 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MyMusic.UseAudioScrobbler"));
     }
-    else if (strSetting == "MusicLists.TrackFormat")
+    else if (strSetting == "MyMusic.TrackFormat")
     {
-      if (m_strOldTrackFormat != g_guiSettings.GetString("MusicLists.TrackFormat"))
+      if (m_strOldTrackFormat != g_guiSettings.GetString("MyMusic.TrackFormat"))
       {
         CUtil::DeleteDatabaseDirectoryCache();
-        m_strOldTrackFormat = g_guiSettings.GetString("MusicLists.TrackFormat");
+        m_strOldTrackFormat = g_guiSettings.GetString("MyMusic.TrackFormat");
       }
     }
-    else if (strSetting == "MusicLists.TrackFormatRight")
+    else if (strSetting == "MyMusic.TrackFormatRight")
     {
-      if (m_strOldTrackFormatRight != g_guiSettings.GetString("MusicLists.TrackFormatRight"))
+      if (m_strOldTrackFormatRight != g_guiSettings.GetString("MyMusic.TrackFormatRight"))
       {
         CUtil::DeleteDatabaseDirectoryCache();
-        m_strOldTrackFormatRight = g_guiSettings.GetString("MusicLists.TrackFormatRight");
+        m_strOldTrackFormatRight = g_guiSettings.GetString("MyMusic.TrackFormatRight");
       }
     }
 	  else if (strSetting == "XBDateTime.TimeAddress")
@@ -1366,12 +1366,12 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.SetString("VoiceOnPort3.VoiceMask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(3, g_guiSettings.GetSetting("Karaoke.Port2VoiceMask" /*"VoiceOnPort3.VoiceMask"*/));
   }
-  else if (strSetting == "MusicLibrary.Cleanup")
+  else if (strSetting == "MyMusic.CleanupMusicLibrary")
   {
     g_musicDatabase.Clean();
     CUtil::DeleteDatabaseDirectoryCache();
   }
-  else if (strSetting == "MyMusic.JumpToAudioHardware")
+  else if (strSetting == "MusicPlayer.JumpToAudioHardware" || strSetting == "VideoPlayer.JumpToAudioHardware")
   {
     JumpToSection(WINDOW_SETTINGS_SYSTEM, 5);
   }
@@ -1389,7 +1389,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       CScrobbler::GetInstance()->Term();
     }
   }
-  else if (strSetting == ("MyMusic.OutputToAllSpeakers") || (strSetting == "AudioVideo.OutputToAllSpeakers") )
+  else if (strSetting == ("MusicPlayer.OutputToAllSpeakers") || (strSetting == "VideoPlayer.OutputToAllSpeakers") )
   {
     CSettingBool *pSetting = (CSettingBool*)pSettingControl->GetSetting();
 
@@ -1667,10 +1667,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Left(10).Equals("ReplayGain"))
   { // Update our replaygain settings
-    g_guiSettings.m_replayGain.iType = g_guiSettings.GetInt("MyMusic.ReplayGainType");
-    g_guiSettings.m_replayGain.iPreAmp = g_guiSettings.GetInt("MyMusic.ReplayGainPreAmp");
-    g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("MyMusic.ReplayGainNoGainPreAmp");
-    g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("MyMusic.ReplayGainAvoidClipping");
+    g_guiSettings.m_replayGain.iType = g_guiSettings.GetInt("MusicPlayer.ReplayGainType");
+    g_guiSettings.m_replayGain.iPreAmp = g_guiSettings.GetInt("MusicPlayer.ReplayGainPreAmp");
+    g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("MusicPlayer.ReplayGainNoGainPreAmp");
+    g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("MusicPlayer.ReplayGainAvoidClipping");
   }
 
 
@@ -3006,10 +3006,6 @@ void CGUIWindowSettingsCategory::JumpToSection(DWORD dwWindowId, int iSection)
 
 void CGUIWindowSettingsCategory::JumpToPreviousSection()
 {
-  for (unsigned int i=0; i<m_vecSections.size(); ++i)
-  {
-    CONTROL_DISABLE(CONTROL_START_BUTTONS+i)
-  }
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0);
   OnMessage(msg);
   m_iSection=m_iSectionBeforeJump;
