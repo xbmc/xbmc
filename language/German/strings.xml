@@ -475,7 +475,7 @@
   <string><id>636</id><value>Benutzerdefiniert</value></string>
  
   <string><id>637</id><value>Replay Gain</value></string>
-  <string><id>638</id><value>Modus</value></string>
+  <string><id>638</id><value>Replay Gain Modus</value></string>
   <string><id>639</id><value>Niveau des Tracks benutzen</value></string>
   <string><id>640</id><value>Niveau des Albums benutzen</value></string>
   <string><id>641</id><value>Lautstärke Niveau - Dateien mit Replay Gain</value></string>
@@ -637,32 +637,30 @@
   <string><id>10007</id><value>System Informationen</value></string>
   <string><id>10008</id><value>Einstellungen-&gt;Allgemein</value></string>
   <string><id>10009</id><value>Einstellungen-&gt;Bildschirm</value></string>
-  <string><id>10010</id><value>Einstellungen-&gt;Bildschirm-&gt;UI-Kalibrierung</value></string>
-  <string><id>10011</id><value>Einstellungen-&gt;Bildschirm-&gt;Kalibrierung</value></string>
-  <string><id>10012</id><value>Einstellungen-&gt;Diaschau</value></string>
-  <string><id>10013</id><value>Einstellungen-&gt;Bildschirm->Filter</value></string>
-  <string><id>10014</id><value>Einstellungen-&gt;Musik</value></string>
-  <string><id>10015</id><value>Einstellungen-&gt;Bildschirm-&gt;Untertitel</value></string>
-  <string><id>10016</id><value>Einstellungen-&gt;Bildschirm-&gt;Bildschirmschoner</value></string>
-  <string><id>10017</id><value>Einstellungen-&gt;Wetter</value></string>
-  <string><id>10020</id><value>Einstellungen-&gt;Skripte</value></string>
+  <string><id>10010</id><value>Einstellungen-&gt;Darstellung-&gt;UI-Kalibrierung</value></string>
+  <string><id>10011</id><value>Einstellungen-&gt;Videos-&gt;Kalibrierung</value></string>
+  <string><id>10012</id><value>Einstellungen-&gt;Bilder</value></string>
+  <string><id>10013</id><value>Einstellungen-&gt;Programme</value></string>
+  <string><id>10014</id><value>Einstellungen-&gt;Wetter</value></string>
+  <string><id>10015</id><value>Einstellungen-&gt;Musik</value></string>
+  <string><id>10016</id><value>Einstellungen-&gt;System</value></string>
+  <string><id>10017</id><value>Einstellungen-&gt;Videos</value></string>
+  <string><id>10018</id><value>Einstellungen-&gt;Netzwer</value></string>
+  <string><id>10019</id><value>Einstellungen-&gt;Darstellung</value></string>
+  <string><id>10020</id><value>Skripte</value></string>
   <string><id>10021</id><value>Videos/Genre</value></string>
   <string><id>10022</id><value>Videos/Darsteller</value></string>
   <string><id>10023</id><value>Videos/Jahr</value></string>
-  <string><id>10024</id><value>Einstellungen-&gt;Programme</value></string>
   <string><id>10025</id><value>Videos/Titel</value></string>
-  <string><id>10026</id><value>Einstellungen-&gt;Allgemein-&gt;Speicher</value></string>
-  <string><id>10027</id><value>Einstellungen-&gt;Allgemein-&gt;Autostart</value></string>
   <string><id>10028</id><value>Videos/Playlisten</value></string>
-  <string><id>10029</id><value>Einstellungen-&gt;Allgemein-&gt;LCD</value></string>
+  <string><id>10034</id><value>Einstellungen-&gt;Profile</value></string>
   <string><id>10100</id><value>JA/NEIN Dialog</value></string>
   <string><id>10101</id><value>Fortschritts Dialog</value></string>
   <string><id>10500</id><value>Musik/Playlist</value></string>
   <string><id>10501</id><value>Musik/Dateien</value></string>
-  <string><id>10502</id><value>Musik/Alben</value></string>
-  <string><id>10503</id><value>Musik/Interpret</value></string>
-  <string><id>10504</id><value>Musik/Genre</value></string>
-  <string><id>10505</id><value>Musik/Top100</value></string>
+  <string><id>10502</id><value>Musik/Bibliothek</value></string>
+  <string><id>10503</id><value>Musik/Top100</value></string>
+
   <string><id>10506</id><value>Anwendungen</value></string>
   <string><id>10507</id><value>Konfiguration</value></string>
   <string><id>10508</id><value>Wetterbericht</value></string>
@@ -682,7 +680,6 @@
   <string><id>10522</id><value>Videos - Playlisten</value></string>
   <string><id>10523</id><value>Albuminfo</value></string>
   <string><id>10524</id><value>Filminfo</value></string>
-  <string><id>11000</id><value>Tastatur</value></string>
   <string><id>12000</id><value>Auswahl Dialog</value></string>
   <string><id>12001</id><value>Musik/Info</value></string>
   <string><id>12002</id><value>Dialog OK</value></string>
@@ -692,6 +689,8 @@
   <string><id>12006</id><value>Audio-Visualisation</value></string>
   <string><id>12007</id><value>Bilder/Diaschau</value></string>
   <string><id>12008</id><value>Verbinden Dialog</value></string>
+
+
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
   <string><id>12312</id><value>2</value></string>
@@ -876,6 +875,7 @@
   <string><id>13389</id><value>Es sind keine Presets für diese&#10;Visualisierung verfügbar</value></string>
   <string><id>13390</id><value>Es sind keine Einstellungen für diese&#10;Visualisierung verfügbar</value></string>
   <string><id>13391</id><value>Eject/Load</value></string>
+  <string><id>13392</id><value>Automatisch zur Visualisation nach</value></string>
 
   <string><id>14000</id><value>Stapeln: Aus</value></string>
   <string><id>14001</id><value>Stapeln: Einfach</value></string>
@@ -1084,4 +1084,8 @@
 
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
   <string><id>15214</id><value>Smoothed A/V Syncronisation benutzen</value></string>
+
+  <string><id>16000</id><value>Allgemein</value></string>
+  <string><id>16001</id><value>Audio Hardware konfigurieren</value></string>
+  <string><id>16002</id><value>CDDB abfrage</value></string>
 </strings>
