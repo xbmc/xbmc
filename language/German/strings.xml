@@ -875,7 +875,9 @@
   <string><id>13389</id><value>Es sind keine Presets für diese&#10;Visualisierung verfügbar</value></string>
   <string><id>13390</id><value>Es sind keine Einstellungen für diese&#10;Visualisierung verfügbar</value></string>
   <string><id>13391</id><value>Eject/Load</value></string>
-  <string><id>13392</id><value>Automatisch zur Visualisierung nach</value></string>
+  <string><id>13392</id><value>Bei Musik die Visualisierung benutzen</value></string>
+  <string><id>13393</id><value>Größe berechnen</value></string>
+  <string><id>13394</id><value>Größe des Ordners wird berechnet</value></string>
 
   <string><id>14000</id><value>Stapeln: Aus</value></string>
   <string><id>14001</id><value>Stapeln: Einfach</value></string>
@@ -1086,6 +1088,7 @@
   <string><id>15214</id><value>Smoothed A/V Syncronisation benutzen</value></string>
 
   <string><id>16000</id><value>Allgemein</value></string>
-  <string><id>16001</id><value>Audio Hardware konfigurieren</value></string>
-  <string><id>16002</id><value>CDDB abfrage</value></string>
+  <string><id>16001</id><value>Audio Hardware konfigurieren...</value></string>
+  <string><id>16002</id><value>CDDB anfragen</value></string>
+  <string><id>16003</id><value>Player</value></string>
 </strings>
