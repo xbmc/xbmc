@@ -339,7 +339,7 @@ void CGUIWindowVideoFiles::SortItems(CFileItemList& items)
 void CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 {
   UpdateDir(strDirectory);
-  if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("VideoLists.UseAutoSwitching"))
+  if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("VideoFiles.UseAutoSwitching"))
   {
     m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
 
@@ -376,7 +376,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
     if ( bParentExists )
     {
       // yes
-      if (!g_guiSettings.GetBool("VideoLists.HideParentDirItems"))
+      if (!g_guiSettings.GetBool("MyVideos.HideParentDirItems"))
       {
         CFileItem *pItem = new CFileItem("..");
         pItem->m_strPath = strParentPath;
@@ -391,7 +391,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
   {
     // yes, this is the root of a share
     // add parent path to the virtual directory
-    if (!g_guiSettings.GetBool("VideoLists.HideParentDirItems"))
+    if (!g_guiSettings.GetBool("MyVideos.HideParentDirItems"))
     {
       CFileItem *pItem = new CFileItem("..");
       pItem->m_strPath = "";
@@ -988,7 +988,7 @@ void CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
     if ( bParentExists )
     {
       // yes
-      if (!g_guiSettings.GetBool("VideoLists.HideParentDirItems"))
+      if (!g_guiSettings.GetBool("MyVideos.HideParentDirItems"))
       {
         CFileItem *pItem = new CFileItem("..");
         pItem->m_strPath = strParentPath;
@@ -1003,7 +1003,7 @@ void CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   {
     // yes, this is the root of a share
     // add parent path to the virtual directory
-    if (!g_guiSettings.GetBool("VideoLists.HideParentDirItems"))
+    if (!g_guiSettings.GetBool("MyVideos.HideParentDirItems"))
     {
       CFileItem *pItem = new CFileItem("..");
       pItem->m_strPath = "";

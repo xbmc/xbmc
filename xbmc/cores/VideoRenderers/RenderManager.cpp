@@ -73,15 +73,15 @@ unsigned int CXBoxRenderManager::PreInit()
   {
     if (!m_pRenderer)
     { // no renderer
-      if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS)
+      if (g_guiSettings.GetInt("VideoPlayer.RenderMethod") == RENDER_OVERLAYS)
       {
         m_pRenderer = new CComboRenderer(g_graphicsContext.Get3DDevice());
       }
-      else if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_HQ_RGB_SHADER)
+      else if (g_guiSettings.GetInt("VideoPlayer.RenderMethod") == RENDER_HQ_RGB_SHADER)
       {
         m_pRenderer = new CRGBRenderer(g_graphicsContext.Get3DDevice());
       }
-      else // if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_LQ_RGB_SHADER)
+      else // if (g_guiSettings.GetInt("VideoPlayer.RenderMethod") == RENDER_LQ_RGB_SHADER)
         m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
     }
     if (m_pRenderer)

@@ -75,7 +75,7 @@ void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
 
 void CGUIRSSControl::Render()
 {
-  if ( (!UpdateVisibility()) || !g_guiSettings.GetBool("LookAndFeel.EnableRSSFeeds") || !g_guiSettings.GetBool("Network.EnableInternet"))
+  if ( (!UpdateVisibility()) || !g_guiSettings.GetBool("Network.EnableRSSFeeds") || !g_guiSettings.GetBool("Network.EnableInternet"))
   {
     return ;
   }

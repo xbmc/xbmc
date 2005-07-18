@@ -454,7 +454,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       }
 
       // set parent directory
-      if (!g_guiSettings.GetBool("MusicLists.HideParentDirItems"))
+      if (!g_guiSettings.GetBool("MyMusic.HideParentDirItems"))
       {
         CFileItem* pFileItem = new CFileItem("..");
         pFileItem->m_strPath = "";
@@ -503,7 +503,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       }
 
       // set parent directory
-      if (!g_guiSettings.GetBool("MusicLists.HideParentDirItems"))
+      if (!g_guiSettings.GetBool("MyMusic.HideParentDirItems"))
       {
         CFileItem* pFileItem = new CFileItem("..");
         pFileItem->m_strPath = "";
@@ -551,7 +551,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       }
 
       // set parent directory
-      if (!g_guiSettings.GetBool("MusicLists.HideParentDirItems"))
+      if (!g_guiSettings.GetBool("MyMusic.HideParentDirItems"))
       {
         CFileItem* pFileItem = new CFileItem("..");
         pFileItem->m_strPath = "";
@@ -597,7 +597,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       }
 
       // set parent directory
-      if (!g_guiSettings.GetBool("MusicLists.HideParentDirItems"))
+      if (!g_guiSettings.GetBool("MyMusic.HideParentDirItems"))
       {
         CFileItem* pFileItem = new CFileItem("..");
         pFileItem->m_strPath = "";
@@ -1190,7 +1190,7 @@ void CGUIWindowMusicNav::GoParentFolder()
 
   Update(m_strParentPath);
 
-  if (!g_guiSettings.GetBool("FileLists.FullDirectoryHistory"))
+  if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
     m_history.Remove(strOldPath); // delete current path
 }
 
