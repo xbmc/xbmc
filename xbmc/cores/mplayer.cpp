@@ -416,67 +416,76 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("-noflip-hebrew");
   }
 
-  //Setup any video filter we want, ie postprocessing, noise...
-  strTmp.Empty();
-  if ( g_guiSettings.GetBool("PostProcessing.Enable") )
-  {
-    if (g_guiSettings.GetBool("PostProcessing.Auto") && !g_stSettings.m_currentVideoSettings.m_Deinterlace)
+  
+  { //Setup any video filter we want, ie postprocessing, noise...
+    strTmp.Empty();
+    vector<CStdString> vecPPOptions;
+
+    if ( g_stSettings.m_currentVideoSettings.m_Deinterlace )
     {
-      // enable auto quality &postprocessing
-      m_vecOptions.push_back("-autoq");
-      m_vecOptions.push_back("100");
-      strTmp = "pp";
+      vecPPOptions.push_back("ci");
     }
-    else
+
+    if ( g_guiSettings.GetBool("PostProcessing.Enable") )
     {
-      // manual postprocessing
-      CStdString strOpt;
-      bool bAddComma(false);
-      if ( g_stSettings.m_currentVideoSettings.m_Deinterlace )
+      if (g_guiSettings.GetBool("PostProcessing.Auto"))
       {
-        // add deinterlace filter
-        if (bAddComma) strTmp += "/";
-        strOpt = "ci";
-        bAddComma = true;
-        strTmp += strOpt;
+        // enable auto quality &postprocessing
+        m_vecOptions.push_back("-autoq");
+        m_vecOptions.push_back("100");
+
+        //Just add an empty string so we know we need to add the pp filter
+        vecPPOptions.push_back("default"); 
       }
-      if ( g_guiSettings.GetBool("PostProcessing.DeRing") )
+      else
       {
-        // add dering filter
-        if (bAddComma) strTmp += "/";
-        strOpt = "dr";
-        bAddComma = true;
-        strTmp += "dr";
+        // manual postprocessing
+        CStdString strOpt;
+
+        if ( g_guiSettings.GetBool("PostProcessing.DeRing") )
+        { // add dering filter
+          vecPPOptions.push_back("dr:a");
+        }
+        if (g_guiSettings.GetBool("PostProcessing.VerticalDeBlocking"))
+        {
+          // add vertical deblocking filter
+          if (g_guiSettings.GetInt("PostProcessing.VerticalDeBlockLevel") > 0) 
+            strOpt.Format("vb:%i", g_guiSettings.GetInt("PostProcessing.VerticalDeBlockLevel"));
+          else 
+            strOpt = "vb:a";
+
+          vecPPOptions.push_back(strOpt);
+        }
+        if (g_guiSettings.GetBool("PostProcessing.HorizontalDeBlocking"))
+        {
+          // add horizontal deblocking filter
+          if (g_guiSettings.GetInt("PostProcessing.HorizontalDeBlockLevel") > 0) 
+            strOpt.Format("hb:%i", g_guiSettings.GetInt("PostProcessing.HorizontalDeBlockLevel"));
+          else 
+            strOpt = "hb:a";
+
+          vecPPOptions.push_back(strOpt);
+        }
+        if (g_guiSettings.GetBool("PostProcessing.AutoBrightnessContrastLevels"))
+        {
+          // add auto brightness/contrast levels
+          vecPPOptions.push_back("al");
+        }
       }
-      if (g_guiSettings.GetBool("PostProcessing.VerticalDeBlocking"))
+    }
+
+    //Only enable post processing if something is selected
+    if (vecPPOptions.size() > 0)
+    {
+      strTmp.Empty();
+      strTmp += "pp=";
+
+      for (unsigned int i = 0; i < vecPPOptions.size(); ++i)
       {
-        // add vertical deblocking filter
-        if (bAddComma) strTmp += "/";
-        if (g_guiSettings.GetInt("PostProcessing.VerticalDeBlockLevel") > 0) strOpt.Format("vb:%i", g_guiSettings.GetInt("PostProcessing.VerticalDeBlockLevel"));
-        else strOpt = "vb:a";
-        bAddComma = true;
-        strTmp += strOpt;
+        strTmp += vecPPOptions[i];
+        strTmp += "/";
       }
-      if (g_guiSettings.GetBool("PostProcessing.HorizontalDeBlocking"))
-      {
-        // add horizontal deblocking filter
-        if (bAddComma) strTmp += "/";
-        if (g_guiSettings.GetInt("PostProcessing.HorizontalDeBlockLevel") > 0) strOpt.Format("hb:%i", g_guiSettings.GetInt("PostProcessing.HorizontalDeBlockLevel"));
-        else strOpt = "hb:a";
-        bAddComma = true;
-        strTmp += strOpt;
-      }
-      if (g_guiSettings.GetBool("PostProcessing.AutoBrightnessContrastLevels"))
-      {
-        // add auto brightness/contrast levels
-        if (bAddComma) strTmp += "/";
-        strOpt = "al";
-        bAddComma = true;
-        strTmp += strOpt;
-      }
-      //Only enable post processing if something is selected
-      if (strTmp.size() > 0)
-        strTmp.Insert(0, "pp=");
+      strTmp.TrimRight("/");
     }
   }
 
