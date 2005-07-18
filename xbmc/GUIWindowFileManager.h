@@ -20,6 +20,7 @@ public:
 protected:
   void GoParentFolder(int iList);
   void UpdateControl(int iList);
+  __int64 CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress = NULL);
   void Update(int iList, const CStdString &strDirectory); //???
   void OnStart(CFileItem *pItem);
   bool SelectItem(int iList, int &item);

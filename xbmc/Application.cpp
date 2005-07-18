@@ -2629,6 +2629,9 @@ void CApplication::Stop()
   try
   {
     m_bStop = true;
+
+    CLog::Log(LOGNOTICE, "Saving settings");
+    g_settings.Save();
     CLog::Log(LOGNOTICE, "stop all");
 
     CKaiClient::GetInstance()->RemoveObserver();
