@@ -140,36 +140,38 @@ CStdString CSettingString::ToString()
 CGUISettings::CGUISettings(void)
 {
   ZeroMemory(&m_replayGain, sizeof(ReplayGainSettings));
+
   // Pictures settings
   AddGroup(0, 1);
+  AddCategory(0, "Pictures", 16000);
+  AddBool(1, "Pictures.HideParentDirItems", 13306, false);
+  AddBool(2, "Pictures.UseAutoSwitching", 14011, false);
+  AddBool(3, "Pictures.AutoSwitchUseLargeThumbs", 14012, false);
+
   AddCategory(0, "Slideshow", 108);
   AddInt(1, "Slideshow.StayTime", 224, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddInt(2, "Slideshow.TransistionTime", 225, 2500, 100, 100, 10000, SPIN_CONTROL_INT_PLUS, MASK_MS);
   AddInt(3, "Slideshow.MoveAmount", 13311, 10, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddInt(4, "Slideshow.ZoomAmount", 13310, 30, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddInt(5, "Slideshow.BlackBarCompensation", 13312, 20, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddBool(6, "Slideshow.Shuffle", 13319, false);
+  AddSeparator(6, "Slideshow.Sep1");
+  AddBool(7, "Slideshow.Shuffle", 13319, false);
 
-  AddCategory(0, "Pictures", 14018);
-  AddBool(1, "Pictures.HideParentDirItems", 13306, false);
-  AddBool(2, "Pictures.UseAutoSwitching", 14011, false);
-  AddBool(3, "Pictures.AutoSwitchUseLargeThumbs", 14012, false);
   // Programs settings
   AddGroup(1, 0);
-  AddCategory(1, "MyPrograms", 0);
+  AddCategory(1, "MyPrograms", 16000);
   AddBool(1, "MyPrograms.Flatten", 348, true);
   AddBool(2, "MyPrograms.DefaultXBEOnly", 349, true);
   AddBool(3, "MyPrograms.UseDirectoryName", 506, false);
   AddBool(4, "MyPrograms.NoShortcuts", 508, true);
   AddBool(5, "MyPrograms.CacheProgramThumbs", 509, true);
   AddBool(6, "MyPrograms.GameAutoRegion",511,false);
-
-  AddCategory(1, "ProgramsLists", 14018);
-  AddBool(1, "ProgramsLists.HideParentDirItems", 13306, true);
-  AddBool(2, "ProgramsLists.UseAutoSwitching", 14011, false);
-  AddBool(3, "ProgramsLists.AutoSwitchUseLargeThumbs", 14012, false);
-  AddInt(4, "ProgramsLists.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddInt(5, "ProgramsLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddSeparator(7, "MyPrograms.Sep1");
+  AddBool(8, "MyPrograms.HideParentDirItems", 13306, true);
+  AddBool(10, "MyPrograms.UseAutoSwitching", 14011, false);
+  AddBool(11, "MyPrograms.AutoSwitchUseLargeThumbs", 14012, false);
+  AddInt(12, "MyPrograms.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddInt(13, "MyPrograms.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
   AddCategory(1, "XLinkKai", 714);
   AddBool(1, "XLinkKai.EnableNotifications", 14008, true);
@@ -177,77 +179,82 @@ CGUISettings::CGUISettings(void)
   AddString(3, "XLinkKai.UserName", 709, "");
   AddString(4, "XLinkKai.Password", 710, "", BUTTON_CONTROL_HIDDEN_INPUT);
   AddString(5, "XLinkKai.Server", 14042, "", BUTTON_CONTROL_IP_INPUT);
+
   // My Weather settings
   AddGroup(2, 8);
-  AddCategory(2, "Weather", 8);
+  AddCategory(2, "Weather", 16000);
   AddInt(1, "Weather.RefreshTime", 397, 30, 15, 15, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddInt(2, "Weather.TemperatureUnits", 398, 0, 0, 1, 1, SPIN_CONTROL_TEXT);
-  AddInt(3, "Weather.SpeedUnits", 399, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddString(4, "Weather.AreaCode1", 14019, "UKXX0085", BUTTON_CONTROL_STANDARD);
-  AddString(5, "Weather.AreaCode2", 14020, "NLXX0002", BUTTON_CONTROL_STANDARD);
-  AddString(6, "Weather.AreaCode3", 14021, "CAXX0343", BUTTON_CONTROL_STANDARD);
+  AddSeparator(2, "Weather.Sep1");
+  AddInt(3, "Weather.TemperatureUnits", 398, 0, 0, 1, 1, SPIN_CONTROL_TEXT);
+  AddInt(4, "Weather.SpeedUnits", 399, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddSeparator(5, "Weather.Sep2");
+  AddString(6, "Weather.AreaCode1", 14019, "UKXX0085", BUTTON_CONTROL_STANDARD);
+  AddString(7, "Weather.AreaCode2", 14020, "NLXX0002", BUTTON_CONTROL_STANDARD);
+  AddString(8, "Weather.AreaCode3", 14021, "CAXX0343", BUTTON_CONTROL_STANDARD);
 
   // My Music Settings
   AddGroup(3, 2);
   AddCategory(3, "MyMusic", 16000);
   AddString(1, "MyMusic.Visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
   AddSeparator(3, "MyMusic.Sep1");
-  AddInt(4, "MyMusic.CrossFade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
-  AddInt(5, "MyMusic.ReplayGainType", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
-  AddInt(6, "MyMusic.ReplayGainPreAmp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  AddInt(7, "MyMusic.ReplayGainNoGainPreAmp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  AddBool(8, "MyMusic.ReplayGainAvoidClipping", 643, false);
-  //AddString(8, "MyMusic.JumpToAudioHardware", 16001, "", BUTTON_CONTROL_STANDARD); // Jump to audio hardware settings
-  AddBool(9, "MyMusic.OutputToAllSpeakers", 252, false);
-  AddBool(10, "MyMusic.UseAudioScrobbler", 15201, false);
-  AddString(11,"MyMusic.AudioScrobblerUserName", 15202, "");
-  AddString(12,"MyMusic.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT); 
-  //AddString(4, "MusicLibrary.DeleteAlbumInfo", 422, "", BUTTON_CONTROL_STANDARD); // drop
+  AddBool(4, "MyMusic.HideParentDirItems", 13306, true);
+  AddString(5, "MyMusic.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT);
+  AddString(6, "MyMusic.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT);
+  AddSeparator(7, "MyMusic.Sep2");
+  AddBool(8, "MyMusic.UseAudioScrobbler", 15201, false);
+  AddString(9,"MyMusic.AudioScrobblerUserName", 15202, "");
+  AddString(10,"MyMusic.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT); 
+  AddSeparator(11, "MyMusic.Sep3");
+  AddString(12, "MyMusic.CleanupMusicLibrary", 334, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "MusicFiles", 744);
   AddBool(1, "MusicFiles.AutoPlayNextItem", 489, true);
   AddBool(2, "MusicFiles.Repeat", 488, false);
-  AddBool(3, "MusicFiles.UseTags", 258, true);
-  AddBool(4, "MusicFiles.UseCDDB", 227, true);
-  AddBool(5, "MusicFiles.FindRemoteThumbs", 14059, true);
-  //AddString(5, "MusicLibrary.DeleteCDDBInfo", 423, "", BUTTON_CONTROL_STANDARD);  // move to context menu
+  AddSeparator(3, "MusicFiles.Sep1");
+  AddBool(4, "MusicFiles.UseTags", 258, true);
+  AddBool(5, "MusicFiles.UseCDDB", 227, true);
+  AddBool(6, "MusicFiles.FindRemoteThumbs", 14059, true);
+  AddSeparator(7, "MusicFiles.Sep2");
+  AddBool(8, "MusicFiles.UseAutoSwitching", 14011, false);
+  AddBool(9, "MusicFiles.AutoSwitchUseLargeThumbs", 14012, false);
+  AddInt(10, "MusicFiles.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddInt(11, "MusicFiles.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
-  AddCategory(3, "MusicLibrary", 14022);
-  AddString(1, "MusicLibrary.Cleanup", 334, "", BUTTON_CONTROL_STANDARD);
-  
   AddCategory(3, "MusicPlaylist", 136);
   AddBool(1, "MusicPlaylist.ClearPlaylistsOnEnd",239,false);
   AddBool(2, "MusicPlaylist.ShufflePlaylistsOnLoad", 228, false);
 
-  AddCategory(3, "MusicLists", 14018);
-  AddString(1, "MusicLists.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT);
-  AddString(2, "MusicLists.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT);
-  AddBool(3, "MusicLists.HideParentDirItems", 13306, true);
-  AddBool(4, "MusicLists.UseAutoSwitching", 14011, false);
-  AddBool(5, "MusicLists.AutoSwitchUseLargeThumbs", 14012, false);
-  AddInt(6, "MusicLists.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddInt(7, "MusicLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-
-  // music osd 13314
   AddCategory(3, "CDDARipper", 620);
   AddBool(1, "CDDARipper.UseTrackNumber", 624, true);
   AddInt(2, "CDDARipper.Encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
   AddInt(3, "CDDARipper.Quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
   AddInt(4, "CDDARipper.Bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
 
+  AddCategory(3, "MusicPlayer", 16003);
+  AddString(1, "MusicPlayer.JumpToAudioHardware", 16001, "", BUTTON_CONTROL_STANDARD);
+  AddBool(2, "MusicPlayer.OutputToAllSpeakers", 252, false);
+  AddSeparator(3, "MusicPlayer.Sep1");
+  AddInt(4, "MusicPlayer.ReplayGainType", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
+  AddInt(5, "MusicPlayer.ReplayGainPreAmp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddInt(6, "MusicPlayer.ReplayGainNoGainPreAmp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddBool(7, "MusicPlayer.ReplayGainAvoidClipping", 643, false);
+  AddSeparator(8, "MusicPlayer.Sep2");
+  AddInt(9, "MusicPlayer.CrossFade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+
   AddCategory(3, "Karaoke", 13327);
   AddBool(1, "Karaoke.Enabled", 13323, false);
   AddInt(2, "Karaoke.BackgroundAlpha", 13324, 0, 0, 5, 255, SPIN_CONTROL_INT);
   AddInt(3, "Karaoke.ForegroundAlpha", 13325, 255, 0, 5, 255, SPIN_CONTROL_INT);
   AddFloat(4, "Karaoke.SyncDelay", 13326, -0.8f, -3.0f, 0.1f, 3.0f, SPIN_CONTROL_FLOAT);
+  AddSeparator(5, "Karaoke.Sep1");
 
   // Karaoke patch (114097) ...
-  AddBool(5, "Karaoke.VoiceEnabled", 13361, false);
-  AddString(6, "Karaoke.Port0VoiceMask", 13382, "None", SPIN_CONTROL_TEXT);
-  AddString(7, "Karaoke.Port1VoiceMask", 13383, "None", SPIN_CONTROL_TEXT);
-  AddString(8, "Karaoke.Port2VoiceMask", 13384, "None", SPIN_CONTROL_TEXT);
-  AddString(9, "Karaoke.Port3VoiceMask", 13385, "None", SPIN_CONTROL_TEXT);
-  AddInt(10, "Karaoke.Volume", 13376, 100, 0, 1, 100, SPIN_CONTROL_INT, MASK_PERCENT);
+  AddBool(6, "Karaoke.VoiceEnabled", 13361, false);
+  AddString(7, "Karaoke.Port0VoiceMask", 13382, "None", SPIN_CONTROL_TEXT);
+  AddString(8, "Karaoke.Port1VoiceMask", 13383, "None", SPIN_CONTROL_TEXT);
+  AddString(9, "Karaoke.Port2VoiceMask", 13384, "None", SPIN_CONTROL_TEXT);
+  AddString(10, "Karaoke.Port3VoiceMask", 13385, "None", SPIN_CONTROL_TEXT);
+  AddInt(11, "Karaoke.Volume", 13376, 100, 0, 1, 100, SPIN_CONTROL_INT, MASK_PERCENT);
 
 //  AddCategory(3, "VoiceOnPort0", 13371);
 //  AddBool(2, "VoiceOnPort0.EnableDevice", 13375, false);
@@ -309,12 +316,15 @@ CGUISettings::CGUISettings(void)
   AddInt(2, "System.RemotePlayHDSpinDown", 13001, 0, 0, 1, 3, SPIN_CONTROL_TEXT); // off, music, video, both
   AddInt(3, "System.RemotePlayHDSpinDownMinDuration", 13004, 20, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_MINS); // Minutes
   AddInt(4, "System.RemotePlayHDSpinDownDelay", 13003, 20, 5, 5, 300, SPIN_CONTROL_INT_PLUS, MASK_SECS); // seconds
-  AddInt(5, "System.ShutDownTime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
-  AddBool(6, "System.ShutDownWhilePlaying", 14043, false);
-  AddBool(7, "System.FanSpeedControl", 13302, false);
-  AddInt(8, "System.FanSpeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 1, 50, SPIN_CONTROL_TEXT);
-  AddBool(9, "System.AutoTemperature", 13301, false);
-  AddInt(10, "System.TargetTemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
+  AddSeparator(5, "System.Sep1");
+  AddInt(6, "System.ShutDownTime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddBool(7, "System.ShutDownWhilePlaying", 14043, false);
+  AddSeparator(8, "System.Sep2");
+  AddBool(9, "System.FanSpeedControl", 13302, false);
+  AddInt(10, "System.FanSpeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 1, 50, SPIN_CONTROL_TEXT);
+  AddSeparator(11, "System.Sep3");
+  AddBool(12, "System.AutoTemperature", 13301, false);
+  AddInt(13, "System.TargetTemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
 
   AddCategory(4, "Autorun", 447);
   AddBool(1, "Autorun.DVD", 240, true);
@@ -327,15 +337,19 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(4, "Cache", 439);
   AddInt(1, "Cache.HardDisk", 14025, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(2, "CacheVideo.DVDRom", 14026, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(3, "CacheVideo.LAN", 14027, 8192, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(4, "CacheVideo.Internet", 14028, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(5, "CacheAudio.DVDRom", 14030, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(6, "CacheAudio.LAN", 14031, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(7, "CacheAudio.Internet", 14032, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(8, "CacheDVD.DVDRom", 14034, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(9, "CacheDVD.LAN", 14035, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(10, "CacheUnknown.Internet", 14060, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+  AddSeparator(2, "Cache.Sep1");
+  AddInt(3, "CacheVideo.DVDRom", 14026, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+  AddInt(4, "CacheVideo.LAN", 14027, 8192, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+  AddInt(5, "CacheVideo.Internet", 14028, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+  AddSeparator(6, "Cache.Sep2");
+  AddInt(7, "CacheAudio.DVDRom", 14030, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB);
+  AddInt(8, "CacheAudio.LAN", 14031, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB);
+  AddInt(9, "CacheAudio.Internet", 14032, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB);
+  AddSeparator(10, "Cache.Sep3");
+  AddInt(11, "CacheDVD.DVDRom", 14034, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+  AddInt(12, "CacheDVD.LAN", 14035, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+  AddSeparator(13, "Cache.Sep4");
+  AddInt(14, "CacheUnknown.Internet", 14060, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
 
   AddCategory(4, "LED", 13338);
   AddInt(1, "LED.Colour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
@@ -355,56 +369,49 @@ CGUISettings::CGUISettings(void)
   AddHex(11, "LCD.Row4Address", 454, 0x54, 0, 0x4, 0x100, SPIN_CONTROL_INT_PLUS, "%x");
 
   AddCategory(4, "AudioOutput", 772);
-  AddInt(2, "AudioOutput.Mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
-  AddBool(3, "AudioOutput.AC3PassThrough", 364, true);
-  AddBool(4, "AudioOutput.DTSPassThrough", 254, true);
-  AddInt(5, "AudioOutput.Headroom", 494, 6, 0, 6, 12, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddInt(1, "AudioOutput.Headroom", 494, 6, 0, 6, 12, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddSeparator(2, "AudioOutput.Sep1");
+  AddInt(3, "AudioOutput.Mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
+  AddBool(4, "AudioOutput.AC3PassThrough", 364, true);
+  AddBool(5, "AudioOutput.DTSPassThrough", 254, true);
 
   // video settings
   AddGroup(5, 3);
-  AddCategory(5, "MyVideos", 3);
+  AddCategory(5, "MyVideos", 16000);
   AddString(1, "MyVideos.Calibrate", 214, "", BUTTON_CONTROL_STANDARD);
   AddBool(2, "MyVideos.WidescreenSwitching", 223, false);
   AddBool(3, "MyVideos.PAL60Switching", 226, true);
   AddBool(4, "MyVideos.FrameRateConversions", 336, false);
-  AddBool(5, "MyVideos.UseGUIResolution", 495, true);
+  AddSeparator(5, "MyVideos.Sep1");
   AddInt(6, "MyVideos.OSDTimeout", 472, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
-  AddInt(7, "MyVideos.ViewMode", 13377, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, 1, VIEW_MODE_CUSTOM, SPIN_CONTROL_TEXT);
-  AddInt(8, "MyVideos.Brightness", 13378, 50, 0, 1, 100, SPIN_CONTROL_INT);
-  AddInt(9, "MyVideos.Contrast", 13379, 50, 0, 1, 100, SPIN_CONTROL_INT);
-  AddInt(10, "MyVideos.Gamma", 13380, 20, 0, 1, 100, SPIN_CONTROL_INT);
-  AddBool(11, "MyVideos.UseTimeBasedSeeking", 13386, false);
+  AddSeparator(7, "MyVideos.Sep2");
+  AddInt(8, "MyVideos.ViewMode", 13377, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, 1, VIEW_MODE_CUSTOM, SPIN_CONTROL_TEXT);
+  AddInt(9, "MyVideos.Brightness", 13378, 50, 0, 1, 100, SPIN_CONTROL_INT);
+  AddInt(10, "MyVideos.Contrast", 13379, 50, 0, 1, 100, SPIN_CONTROL_INT);
+  AddInt(11, "MyVideos.Gamma", 13380, 20, 0, 1, 100, SPIN_CONTROL_INT);
+  AddSeparator(12, "MyVideos.Sep3");
+  AddBool(13, "MyVideos.HideParentDirItems", 13306, true);
   // hidden setting for blackbars
   AddInt(0, "Videos.BlackBarColour", 0, 1, 1, 1, 255, SPIN_CONTROL_INT);
 
-  AddCategory(5, "VideoLists", 14018);
-  AddBool(1, "VideoLists.HideParentDirItems", 13306, true);
-  AddBool(2, "VideoLists.UseAutoSwitching", 14011, false);
-  AddBool(3, "VideoLists.AutoSwitchUseLargeThumbs", 14012, false);
-  AddInt(4, "VideoLists.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddInt(5, "VideoLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddCategory(5, "VideoFiles", 744);
+  AddBool(1, "VideoFiles.FindRemoteThumbs", 14059, true);
+  AddSeparator(2, "VideoFiles.Sep1");
+  AddBool(3, "VideoFiles.UseAutoSwitching", 14011, false);
+  AddBool(4, "VideoFiles.AutoSwitchUseLargeThumbs", 14012, false);
+  AddInt(5, "VideoFiles.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddInt(6, "VideoFiles.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
-  AddCategory(5, "VideoLibrary", 14022);
-  AddBool(1, "VideoLibrary.FindRemoteThumbs", 14059, true);
-
-  AddCategory(5, "PostProcessing", 14041);
-  AddBool(1, "PostProcessing.DeInterlace", 285, false);
-  AddBool(2, "PostProcessing.Enable", 286, false);
-  AddBool(3, "PostProcessing.Auto", 307, true); // only has effect if PostProcessing.Enable is on.
-  AddBool(4, "PostProcessing.VerticalDeBlocking", 308, false);
-  AddInt(5, "PostProcessing.VerticalDeBlockLevel", 308, 0, 0, 1, 100, SPIN_CONTROL_INT);
-  AddBool(6, "PostProcessing.HorizontalDeBlocking", 309, false);
-  AddInt(7, "PostProcessing.HorizontalDeBlockLevel", 309, 0, 0, 1, 100, SPIN_CONTROL_INT);
-  AddBool(8, "PostProcessing.AutoBrightnessContrastLevels", 310, false);
-  AddBool(9, "PostProcessing.DeRing", 311, false);
-
-  AddCategory(5, "Filters", 230);
-  AddInt(1, "Filters.Flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
-  AddBool(2, "Filters.Soften", 215, false);
-  AddInt(3, "Filters.RenderMethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADER, SPIN_CONTROL_TEXT);
-  AddBool(4, "Filters.Noise", 14058, false);
-  AddInt(5, "Filters.NoiseLevel", 14058, 10, 1, 1, 100, SPIN_CONTROL_INT);
-  AddBool(6, "Filters.UseAutosync", 15214, false);
+  AddCategory(5, "VideoPlayer", 16003);
+  AddString(1, "VideoPlayer.JumpToAudioHardware", 16001, "", BUTTON_CONTROL_STANDARD);
+  AddBool(2, "VideoPlayer.OutputToAllSpeakers", 252, false);
+  AddSeparator(3, "VideoPlayer.Sep1");
+  AddInt(4, "VideoPlayer.VolumeAmplification", 290, 0, -200, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddSeparator(5, "VideoPlayer.Sep2");
+  AddInt(6, "VideoPlayer.RenderMethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADER, SPIN_CONTROL_TEXT);
+  AddBool(7, "VideoPlayer.UseGUIResolution", 495, true);
+  AddSeparator(8, "VideoPlayer.Sep3");
+  AddBool(9, "VideoPlayer.UseTimeBasedSeeking", 13386, false);
 
   AddCategory(5, "Subtitles", 287);
   AddString(1, "Subtitles.Font", 288, "arial-iso-8859-1", SPIN_CONTROL_TEXT);
@@ -412,12 +419,35 @@ CGUISettings::CGUISettings(void)
   AddInt(3, "Subtitles.Style", 736, XFONT_BOLD, XFONT_NORMAL, 1, XFONT_BOLDITALICS, SPIN_CONTROL_TEXT);
   AddInt(4, "Subtitles.Color", 737, SUBTITLE_COLOR_START, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
   AddString(5, "Subtitles.CharSet", 735, "ISO-8859-1", SPIN_CONTROL_TEXT);
-  AddBool(6, "Subtitles.FlipBiDiCharSet", 13304, false);
-  AddInt(7, "Subtitles.EnlargePercentage", 492, 100, 30, 10, 200, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddSeparator(6, "Subtitles.Sep1");
+  AddBool(7, "Subtitles.FlipBiDiCharSet", 13304, false);
+  AddSeparator(8, "Subtitles.Sep2");
+  AddInt(9, "Subtitles.EnlargePercentage", 492, 100, 30, 10, 200, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
-  AddCategory(5, "AudioVideo", 481);
-  AddInt(1, "AudioVideo.VolumeAmplification", 290, 0, -200, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  AddBool(2, "AudioVideo.OutputToAllSpeakers", 252, false);
+  AddCategory(5, "PostProcessing", 14041);
+  AddBool(1, "PostProcessing.DeInterlace", 285, false);
+  AddSeparator(2, "PostProcessing.Sep1");
+  AddBool(3, "PostProcessing.Enable", 286, false);
+  AddBool(4, "PostProcessing.Auto", 307, true); // only has effect if PostProcessing.Enable is on.
+  AddSeparator(5, "PostProcessing.Sep2");
+  AddBool(6, "PostProcessing.VerticalDeBlocking", 308, false);
+  AddInt(7, "PostProcessing.VerticalDeBlockLevel", 308, 0, 0, 1, 100, SPIN_CONTROL_INT);
+  AddSeparator(8, "PostProcessing.Sep3");
+  AddBool(9, "PostProcessing.HorizontalDeBlocking", 309, false);
+  AddInt(10, "PostProcessing.HorizontalDeBlockLevel", 309, 0, 0, 1, 100, SPIN_CONTROL_INT);
+  AddSeparator(11, "PostProcessing.Sep4");
+  AddBool(12, "PostProcessing.AutoBrightnessContrastLevels", 310, false);
+  AddSeparator(13, "PostProcessing.Sep5");
+  AddBool(14, "PostProcessing.DeRing", 311, false);
+
+  AddCategory(5, "Filters", 230);
+  AddInt(1, "Filters.Flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
+  AddBool(2, "Filters.Soften", 215, false);
+  AddSeparator(3, "Filters.Sep1");
+  AddBool(4, "Filters.Noise", 14058, false);
+  AddInt(5, "Filters.NoiseLevel", 14058, 10, 1, 1, 100, SPIN_CONTROL_INT);
+  AddSeparator(6, "Filters.Sep2");
+  AddBool(7, "Filters.UseAutosync", 15214, false);
 
   // network settings
   AddGroup(6, 705);
@@ -427,10 +457,14 @@ CGUISettings::CGUISettings(void)
   AddString(3, "Network.Subnet", 720, "255.255.255.0", BUTTON_CONTROL_IP_INPUT);
   AddString(4, "Network.Gateway", 721, "192.168.0.1", BUTTON_CONTROL_IP_INPUT);
   AddString(5, "Network.DNS", 722, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
-  AddBool(6, "Network.UseHTTPProxy", 708, false);
-  AddString(7, "Network.HTTPProxyServer", 706, "");
-  AddString(8, "Network.HTTPProxyPort", 707, "8080");
-  AddBool(9, "Network.EnableInternet", 14054, true);
+  AddSeparator(6, "Network.Sep1");
+  AddBool(7, "Network.UseHTTPProxy", 708, false);
+  AddString(8, "Network.HTTPProxyServer", 706, "");
+  AddString(9, "Network.HTTPProxyPort", 707, "8080");
+  AddSeparator(10, "Network.Sep2");
+  AddBool(11, "Network.EnableInternet", 14054, true);
+  AddSeparator(12, "Network.Sep3");
+  AddBool(13,   "Network.EnableRSSFeeds",13305,  true);
 
   //GeminiServer
   AddCategory(6, "Servers", 14036);
@@ -438,18 +472,20 @@ CGUISettings::CGUISettings(void)
   AddString(2,"Servers.FTPServerUser",    1245, "xbox", SPIN_CONTROL_TEXT);
   AddString(3,"Servers.FTPServerPassword",1246, "xbox", BUTTON_CONTROL_HIDDEN_INPUT, true);
   AddBool(4,  "Servers.FTPAutoFatX",      771, true);
-  AddBool(5,  "Servers.WebServer",        263, false);
-  AddString(6,"Servers.WebServerPort",    730, "80");
-  AddString(7,"Servers.WebServerPassword",733, "", BUTTON_CONTROL_HIDDEN_INPUT, true);
+  AddSeparator(5, "Servers.Sep1");
+  AddBool(6,  "Servers.WebServer",        263, false);
+  AddString(7,"Servers.WebServerPort",    730, "80");
+  AddString(8,"Servers.WebServerPassword",733, "", BUTTON_CONTROL_HIDDEN_INPUT, true);
 
   //GeminiServer
   AddCategory(6,"Autodetect",           1250  );
   AddBool(1,    "Autodetect.OnOff",     1251, true);
   AddString(2,  "Autodetect.NickName",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT);
   AddInt(3,     "Autodetect.PingTime",  1256, 30, 1, 4, 240, SPIN_CONTROL_INT, MASK_SECS);
-  AddBool(4,    "Autodetect.CreateLink",1253, true);
-  AddBool(5,    "Autodetect.PopUpInfo", 1254, true);
-  AddBool(6,    "Autodetect.SendUserPw",1255, true);
+  AddBool(4,    "Autodetect.PopUpInfo", 1254, true);
+  AddSeparator(5, "Autodetect.Sep2");
+  AddBool(6,    "Autodetect.CreateLink",1253, true);
+  AddBool(7,    "Autodetect.SendUserPw",1255, true);
   
   //GeminiServer
   AddCategory(6, "Smb", 1200);
@@ -458,35 +494,39 @@ CGUISettings::CGUISettings(void)
   AddString(3, "Smb.Workgroup",   1202,   "WORKGROUP");
   AddString(4, "Smb.Username",    1203,   "Username");
   AddString(5, "Smb.Password",    1204,   "Password", BUTTON_CONTROL_HIDDEN_INPUT, true);
-  AddString(6, "Smb.Winsserver",  1207,   "-",  BUTTON_CONTROL_IP_INPUT);
-  AddString(7, "Smb.ShareName",   1205,   "WORKGROUP (SMB) Network");
-  AddInt(8,    "Smb.ShareGroup",  1206,   SMB_SHARE_MU_VI_PIC_FIL, SMB_SHARE_MUSIC, 1, SMB_SHARE_MU_VI_PIC_FIL, SPIN_CONTROL_TEXT);
-  AddString(9, "Smb.SetSmb",      14070,  "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(6, "Smb.Sep1");
+  AddString(7, "Smb.Winsserver",  1207,   "-",  BUTTON_CONTROL_IP_INPUT);
+  AddString(8, "Smb.ShareName",   1205,   "WORKGROUP (SMB) Network");
+  AddInt(9,    "Smb.ShareGroup",  1206,   SMB_SHARE_MU_VI_PIC_FIL, SMB_SHARE_MUSIC, 1, SMB_SHARE_MU_VI_PIC_FIL, SPIN_CONTROL_TEXT);
+  AddSeparator(10, "Smb.Sep2");
+  AddString(11, "Smb.SetSmb",      14070,  "", BUTTON_CONTROL_STANDARD);
 
   // appearance settings
   AddGroup(7, 480);
   AddCategory(7, "LookAndFeel", 14037);
   AddString(1, "LookAndFeel.Skin",          166,    "Project Mayhem III", SPIN_CONTROL_TEXT);
   AddString(2, "LookAndFeel.SoundSkin",     15108,  "SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddInt(3,    "LookAndFeel.Resolution",    169,    (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
-  AddString(4, "LookAndFeel.Language",      248,    "english", SPIN_CONTROL_TEXT);
-  AddString(5, "LookAndFeel.Font",          13303,  "Default", SPIN_CONTROL_TEXT);
-  AddString(6, "LookAndFeel.CharSet",       735,    "ISO-8859-1", SPIN_CONTROL_TEXT);
-  AddInt(7,    "LookAndFeel.StartUpWindow", 512,    1, 0, 1, 6, SPIN_CONTROL_TEXT);
-  AddBool(8,   "LookAndFeel.EnableRSSFeeds",13305,  true);
-  AddString(9, "LookAndFeel.GUICentering",  213,    "", BUTTON_CONTROL_STANDARD);
+  AddString(3, "LookAndFeel.Font",          13303,  "Default", SPIN_CONTROL_TEXT);
+  AddInt(4,    "LookAndFeel.StartUpWindow", 512,    1, 0, 1, 6, SPIN_CONTROL_TEXT);
+  AddSeparator(5, "LookAndFeel.Sep1");
+  AddString(6, "LookAndFeel.Language",      248,    "english", SPIN_CONTROL_TEXT);
+  AddString(7, "LookAndFeel.CharSet",       735,    "ISO-8859-1", SPIN_CONTROL_TEXT);
+  AddSeparator(8, "LookAndFeel.Sep2");
+  AddInt(9,    "LookAndFeel.Resolution",    169,    (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddString(10, "LookAndFeel.GUICentering",  213,    "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(11, "LookAndFeel.Sep3");
+  AddBool(12, "LookAndFeel.FullDirectoryHistory", 15106, true);
 
   AddCategory(7, "FileLists", 14018);
   AddBool(1, "FileLists.HideExtensions", 497, false);
   AddBool(2, "FileLists.HideParentDirItems", 13306, false);
-  AddBool(3, "FileLists.FullDirectoryHistory", 15106, true);
 
   AddCategory(7, "ScreenSaver", 360);
   AddString(1, "ScreenSaver.Mode", 356, "Dim", SPIN_CONTROL_TEXT);
-  AddInt(2, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddInt(3, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddString(2, "ScreenSaver.Preview", 1000, "", BUTTON_CONTROL_STANDARD);
   AddBool(4, "ScreenSaver.UseMusicVisInstead", 13392, true);
-  AddString(5, "ScreenSaver.Preview", 1000, "", BUTTON_CONTROL_STANDARD);
+  AddInt(3, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(4, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
   AddCategory(7, "UIFilters", 14053);
   AddInt(1, "UIFilters.Flicker", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT);
@@ -496,23 +536,29 @@ CGUISettings::CGUISettings(void)
   AddCategory(7, "XBDateTime", 14063);
   AddBool(1,   "XBDateTime.Clock12Hour"      , 14051, false);
   AddBool(2,   "XBDateTime.SwapMonthAndDay"  , 14052, false);
-  AddBool(3,   "XBDateTime.TimeServer"       , 168  , false);
-  AddString(4, "XBDateTime.TimeAddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
-  AddString(5, "XBDateTime.Time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
-  AddString(6, "XBDateTime.Date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
+  AddSeparator(3, "XBDateTime.Sep1");
+  AddBool(4,   "XBDateTime.TimeServer"       , 168  , false);
+  AddString(5, "XBDateTime.TimeAddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
+  AddSeparator(6, "XBDateTime.Sep2");
+  AddString(7, "XBDateTime.Time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
+  AddString(8, "XBDateTime.Date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
 
   //GeminiServer
   AddCategory(7, "Masterlock", 12360);
   AddInt(1,   "Masterlock.Mastermode"       , 12364, LOCK_MODE_EVERYONE, LOCK_MODE_EVERYONE, 1, LOCK_MODE_QWERTY, SPIN_CONTROL_TEXT); // 0:always Unlocked, 1:Numeric, 2:Gamepad, 3:Text
-  AddString(2,"Masterlock.Mastercode"       , 12365, "-", BUTTON_CONTROL_STANDARD); // This is the CODE, Changing in addition with Mastermode!
-  AddInt(3,   "Masterlock.Maxretry"         , 12361, 0, 0, 1, 9, SPIN_CONTROL_TEXT); //Max Retry is 3, 0 is off
-  AddBool(4,  "Masterlock.Enableshutdown"   , 12362,false); //talse:0 is off, true:1 will shutdows if Maxrety is reached
-  AddBool(5,  "Masterlock.Protectshares"    , 12363,false); //false:0 is Normal user Mode, true:1 is Mastermode
-  AddBool(6,  "Masterlock.StartupLock"      , 12369,false); //false:0 is no ask StarupCode, true:1 ask for MasterCode if is false switxh off xbmc
-  AddBool(7,  "Masterlock.LockFilemanager"  , 12372,false); //false:0 if off, true:1 will ask for MasterCode on Filemanager Window
-  AddBool(8,  "Masterlock.LockSettings"     , 12373,false); //false:0 if off, true:1 will ask for MasterCode on Settings Window
-  AddInt(9,   "Masterlock.LockHomeMedia"    , 12374, LOCK_DISABLED, LOCK_DISABLED, 1, LOCK_MU_VI_PIC_PROG, SPIN_CONTROL_TEXT); // LockHomeMedia, for lock the Video/Music/Programs/Pictures
-  AddString(10,"Masterlock.SetMasterlock"   , 14070, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(2, "Masterlock.Sep1");
+  AddString(3,"Masterlock.Mastercode"       , 12365, "-", BUTTON_CONTROL_STANDARD); // This is the CODE, Changing in addition with Mastermode!
+  AddInt(4,   "Masterlock.Maxretry"         , 12361, 0, 0, 1, 9, SPIN_CONTROL_TEXT); //Max Retry is 3, 0 is off
+  AddBool(5,  "Masterlock.Enableshutdown"   , 12362,false); //talse:0 is off, true:1 will shutdows if Maxrety is reached
+  AddSeparator(6, "Masterlock.Sep2");
+  AddBool(7,  "Masterlock.Protectshares"    , 12363,false); //false:0 is Normal user Mode, true:1 is Mastermode
+  AddBool(8,  "Masterlock.StartupLock"      , 12369,false); //false:0 is no ask StarupCode, true:1 ask for MasterCode if is false switxh off xbmc
+  AddSeparator(9, "Masterlock.Sep3");
+  AddBool(10,  "Masterlock.LockFilemanager"  , 12372,false); //false:0 if off, true:1 will ask for MasterCode on Filemanager Window
+  AddBool(11,  "Masterlock.LockSettings"     , 12373,false); //false:0 if off, true:1 will ask for MasterCode on Settings Window
+  AddInt(12,   "Masterlock.LockHomeMedia"    , 12374, LOCK_DISABLED, LOCK_DISABLED, 1, LOCK_MU_VI_PIC_PROG, SPIN_CONTROL_TEXT); // LockHomeMedia, for lock the Video/Music/Programs/Pictures
+  AddSeparator(13, "Masterlock.Sep4");
+  AddString(14,"Masterlock.SetMasterlock"   , 14070, "", BUTTON_CONTROL_STANDARD);
   
   AddInt( -1, "UIOffset.X", 0, 0, -128, 1, 128, SPIN_CONTROL_INT);
   AddInt( -1, "UIOffset.Y", 0, 0, -128, 1, 128, SPIN_CONTROL_INT);
@@ -839,10 +885,10 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement)
     }
   }
   // Move replaygain settings into our struct
-  m_replayGain.iPreAmp = GetInt("MyMusic.ReplayGainPreAmp");
-  m_replayGain.iNoGainPreAmp = GetInt("MyMusic.ReplayGainNoGainPreAmp");
-  m_replayGain.iType = GetInt("MyMusic.ReplayGainType");
-  m_replayGain.bAvoidClipping = GetBool("MyMusic.ReplayGainAvoidClipping");
+  m_replayGain.iPreAmp = GetInt("MusicPlayer.ReplayGainPreAmp");
+  m_replayGain.iNoGainPreAmp = GetInt("MusicPlayer.ReplayGainNoGainPreAmp");
+  m_replayGain.iType = GetInt("MusicPlayer.ReplayGainType");
+  m_replayGain.bAvoidClipping = GetBool("MusicPlayer.ReplayGainAvoidClipping");
 }
 
 void CGUISettings::SaveXML(TiXmlNode *pRootNode)

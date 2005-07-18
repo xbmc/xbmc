@@ -763,7 +763,7 @@ void CGUIWindowPictures::GoParentFolder()
   CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
   Update(strPath);
 
-  if (!g_guiSettings.GetBool("FileLists.FullDirectoryHistory"))
+  if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
     m_history.Remove(strOldPath); //Delete current path
 }
 
@@ -1025,7 +1025,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
   { // generate the thumb folder if necessary
     // we load the directory, grab 4 random thumb files (if available) and then generate
     // the thumb.
-    if (pItem->IsRemote() && !pItem->IsDVD() && !g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs")) return;
+    if (pItem->IsRemote() && !pItem->IsDVD() && !g_guiSettings.GetBool("VideoFiles.FindRemoteThumbs")) return;
     CFileItemList items;
     m_rootDir.GetDirectory(pItem->m_strPath, items);
     // create the folder thumb by choosing 4 random thumbs within the folder and putting

@@ -558,7 +558,7 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
   // if we always upsample video to the GUI resolution then use it (with pal 60 if needed)
   // if we're not in fullscreen mode then use current resolution
   // if we're calibrating the video  then use current resolution
-  if ( g_guiSettings.GetBool("MyVideos.UseGUIResolution") /*||
+  if ( g_guiSettings.GetBool("VideoPlayer.UseGUIResolution") /*||
          (! ( g_graphicsContext.IsFullScreenVideo()|| g_graphicsContext.IsCalibrating())  )*/
      )
   {

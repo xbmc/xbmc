@@ -527,7 +527,7 @@ void CGUIWindowPrograms::ClearFileItems()
 void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 {
   UpdateDir(strDirectory);
-  if (g_guiSettings.GetBool("ProgramsLists.UseAutoSwitching"))
+  if (g_guiSettings.GetBool("MyPrograms.UseAutoSwitching"))
   {
     m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
     UpdateButtons();
@@ -624,7 +624,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 
   if (strDirectory != "")
   {
-    if (!g_guiSettings.GetBool("ProgramsLists.HideParentDirItems"))
+    if (!g_guiSettings.GetBool("MyPrograms.HideParentDirItems"))
     {
       CFileItem *pItem = new CFileItem("..");
       pItem->m_strPath = strParentPath;

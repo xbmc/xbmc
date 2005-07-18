@@ -515,7 +515,7 @@ void CGUIWindowScripts::GoParentFolder()
   Update(strPath);
   UpdateButtons();
 
-  if (!g_guiSettings.GetBool("FileLists.FullDirectoryHistory"))
+  if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
     m_history.Remove(strOldPath); //Delete current path
 
 }

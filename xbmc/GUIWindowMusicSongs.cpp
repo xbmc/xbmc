@@ -444,7 +444,7 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
     if ( bParentExists )
     {
       // yes
-      if (!g_guiSettings.GetBool("MusicLists.HideParentDirItems"))
+      if (!g_guiSettings.GetBool("MyMusic.HideParentDirItems"))
       {
         CFileItem *pItem = new CFileItem("..");
         pItem->m_strPath = strParentPath;
@@ -459,7 +459,7 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
   {
     // yes, this is the root of a share
     // add parent path to the virtual directory
-    if (!g_guiSettings.GetBool("MusicLists.HideParentDirItems"))
+    if (!g_guiSettings.GetBool("MyMusic.HideParentDirItems"))
     {
       CFileItem *pItem = new CFileItem("..");
       pItem->m_strPath = "";
@@ -1064,7 +1064,7 @@ void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch, CFileItemList& 
 void CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
 {
   CGUIWindowMusicBase::Update(strDirectory);
-  if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("MusicLists.UseAutoSwitching"))
+  if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("MusicFiles.UseAutoSwitching"))
   {
     m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
     UpdateButtons();

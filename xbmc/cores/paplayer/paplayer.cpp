@@ -66,7 +66,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
   // always open the file using the current decoder
   m_currentDecoder = 0;
-  m_crossFading = g_guiSettings.GetInt("MyMusic.CrossFade");
+  m_crossFading = g_guiSettings.GetInt("MusicPlayer.CrossFade");
 
   if (!m_decoder[m_currentDecoder].Create(file, iStartTime, m_crossFading))
     return false;
@@ -241,7 +241,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   DSMIXBINVOLUMEPAIR dsmbvp8[8];
   int iMixBinCount;
 
-  if ((channels == 2) && (g_guiSettings.GetBool("MyMusic.OutputToAllSpeakers")))
+  if ((channels == 2) && (g_guiSettings.GetBool("MusicPlayer.OutputToAllSpeakers")))
     g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STEREOALL, channels);
   else
     g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STANDARD, channels);

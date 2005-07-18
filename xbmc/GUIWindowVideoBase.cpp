@@ -756,7 +756,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
 
     // HACK: If we are in files view
     // autoswitch between list/thumb control
-    if (GetID() == WINDOW_VIDEOS && !m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("VideoLists.UseAutoSwitching"))
+    if (GetID() == WINDOW_VIDEOS && !m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("VideoFiles.UseAutoSwitching"))
     {
       m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
       UpdateButtons();
@@ -814,7 +814,7 @@ void CGUIWindowVideoBase::GoParentFolder()
   Update(strPath);
   UpdateButtons();
 
-  if (!g_guiSettings.GetBool("FileLists.FullDirectoryHistory"))
+  if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
     m_history.Remove(strOldPath); //Delete current path
 
 }

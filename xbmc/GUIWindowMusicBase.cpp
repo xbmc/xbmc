@@ -520,7 +520,7 @@ void CGUIWindowMusicBase::GoParentFolder()
   CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
   Update(strPath);
 
-  if (!g_guiSettings.GetBool("FileLists.FullDirectoryHistory"))
+  if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
     m_history.Remove(strOldPath); //Delete current path
 }
 
@@ -963,7 +963,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 
     // HACK: If we are in files view
     // autoswitch between list/thumb control
-    if (GetID() == WINDOW_MUSIC_FILES && !m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("MusicLists.UseAutoSwitching"))
+    if (GetID() == WINDOW_MUSIC_FILES && !m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("MusicFiles.UseAutoSwitching"))
     {
       m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
       m_viewControl.SetCurrentView(m_iViewAsIcons);
@@ -1477,8 +1477,8 @@ void CGUIWindowMusicBase::OnRipCD()
 
 void CGUIWindowMusicBase::SetLabelFromTag(CFileItem *pItem)
 {
-  CStdString strLabel  = ParseFormat(pItem, g_guiSettings.GetString("MusicLists.TrackFormat"));
-  CStdString strLabel2 = ParseFormat(pItem, g_guiSettings.GetString("MusicLists.TrackFormatRight"));
+  CStdString strLabel  = ParseFormat(pItem, g_guiSettings.GetString("MyMusic.TrackFormat"));
+  CStdString strLabel2 = ParseFormat(pItem, g_guiSettings.GetString("MyMusic.TrackFormatRight"));
 
   // set label 1
   // if we don't have anything at the moment (due to empty tags),
