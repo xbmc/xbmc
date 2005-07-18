@@ -65,6 +65,7 @@ public:
   void SetThumb();
   void SetMusicThumb();
   void SetArtistThumb();
+  void SetFileSizeLabel();
 
 public:
   CStdString m_strPath;            ///< complete path to item

@@ -77,7 +77,6 @@ public:
   static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
   static void GetThumbnail(const CStdString& strFileName, CStdString& strThumb);
   static void GetCachedThumbnail(const CStdString& strFileName, CStdString& strCachedThumb);
-  static void GetFileSize(__int64 dwFileSize, CStdString& strFileSize);
   static void GetDate(SYSTEMTIME stTime, CStdString& strDateTime);
   static void GetHomePath(CStdString& strPath);
   static bool InitializeNetwork(int iAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer);

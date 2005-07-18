@@ -302,13 +302,10 @@ void CGUIWindowVideoFiles::FormatItemLabels()
     CFileItem* pItem = m_vecItems[i];
     if (g_stSettings.m_iMyVideoSortMethod == 0 || g_stSettings.m_iMyVideoSortMethod == 2)
     {
-      if (pItem->m_bIsFolder) pItem->SetLabel2("");
+      if (pItem->m_bIsFolder)
+        pItem->SetLabel2("");
       else
-      {
-        CStdString strFileSize;
-        CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
-        pItem->SetLabel2(strFileSize);
-      }
+        pItem->SetFileSizeLabel();
     }
     else
     {

@@ -371,13 +371,10 @@ void CGUIWindowFileManager::OnSort(int iList)
     CFileItem* pItem = m_vecItems[iList][i];
     if (SSortFilesByName::m_iSortMethod == 0 || SSortFilesByName::m_iSortMethod == 2)
     {
-      if (pItem->m_bIsFolder) pItem->SetLabel2("");
+      if (pItem->m_bIsFolder && !pItem->m_dwSize)
+        pItem->SetLabel2("");
       else
-      {
-        CStdString strFileSize;
-        CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
-        pItem->SetLabel2(strFileSize);
-      }
+        pItem->SetFileSizeLabel();
     }
     else
     {
@@ -399,9 +396,8 @@ void CGUIWindowFileManager::OnSort(int iList)
         ULARGE_INTEGER ulBytesFree;
         if (GetDiskFreeSpaceEx(pItem->m_strPath.c_str(), &ulBytesFree, NULL, NULL))
         {
-          CStdString strShareSize;
-          CUtil::GetFileSize(ulBytesFree.QuadPart, strShareSize);
-          pItem->SetLabel2(strShareSize);
+          pItem->m_dwSize = ulBytesFree.QuadPart;
+          pItem->SetFileSizeLabel();
         }
       }
       else if (pItem->IsDVD() && CDetectDVDMedia::IsDiscInDrive())
@@ -409,9 +405,8 @@ void CGUIWindowFileManager::OnSort(int iList)
         ULARGE_INTEGER ulBytesTotal;
         if (GetDiskFreeSpaceEx(pItem->m_strPath.c_str(), NULL, &ulBytesTotal, NULL))
         {
-          CStdString strShareSize;
-          CUtil::GetFileSize(ulBytesTotal.QuadPart, strShareSize);
-          pItem->SetLabel2(strShareSize);
+          pItem->m_dwSize = ulBytesTotal.QuadPart;
+          pItem->SetFileSizeLabel();
         }
       }
     } // if (pItem->m_bIsShareOrDrive)
@@ -1321,12 +1316,14 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     pMenu->AddButton(115); // Copy
     pMenu->AddButton(116); // Move
     pMenu->AddButton(119); // New Folder
+    pMenu->AddButton(13393); // Calculate Size
     pMenu->EnableButton(1, item >= 0);
     pMenu->EnableButton(2, item >= 0 && CanRename(list));
     pMenu->EnableButton(3, item >= 0 && CanDelete(list));
     pMenu->EnableButton(4, item >= 0 && CanCopy(list));
     pMenu->EnableButton(5, item >= 0 && CanMove(list));
     pMenu->EnableButton(6, CanNewFolder(list));
+    pMenu->EnableButton(7, item >=0 && m_vecItems[list][item]->m_bIsFolder && m_vecItems[list][item]->GetLabel() != "..");
     // position it correctly
     pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
     pMenu->DoModal(GetID());
@@ -1351,6 +1348,23 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     case 6:
       OnNewFolder(list);
       break;
+    case 7:
+      {
+        // setup the progress dialog, and show it
+        CGUIDialogProgress &progress = g_application.m_guiDialogProgress;
+        progress.SetHeading(13394);
+        for (int i=0; i < 3; i++)
+          progress.SetLine(i, "");
+        progress.StartModal(GetID());
+        __int64 folderSize = CalculateFolderSize(m_vecItems[list][item]->m_strPath, &progress);
+        progress.Close();
+        if (folderSize >= 0)
+        {
+          m_vecItems[list][item]->m_dwSize = folderSize;
+          m_vecItems[list][item]->SetFileSizeLabel();
+        }
+      }
+      break;
     default:
       break;
     }
@@ -1374,4 +1388,32 @@ bool CGUIWindowFileManager::SelectItem(int list, int &item)
     return true;
   }
   return false;
+}
+
+// recursively calculates the selected folder size
+__int64 CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress)
+{
+  if (pProgress)
+  { // update our progress control
+    pProgress->Progress();
+    pProgress->SetLine(1, strDirectory);
+    if (pProgress->IsCanceled())
+      return -1;
+  }
+  // start by calculating the size of the files in this folder...
+  __int64 totalSize = 0;
+  CFileItemList items;
+  m_rootDir.GetDirectory(strDirectory, items);
+  for (int i=0; i < items.Size(); i++)
+  {
+    if (items[i]->m_bIsFolder && items[i]->GetLabel() != "..") // folder
+    {
+      __int64 folderSize = CalculateFolderSize(items[i]->m_strPath, pProgress);
+      if (folderSize < 0) return -1;
+      totalSize += folderSize;
+    }
+    else // file
+      totalSize += items[i]->m_dwSize;
+  }
+  return totalSize;
 }

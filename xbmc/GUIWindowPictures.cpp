@@ -358,13 +358,10 @@ void CGUIWindowPictures::OnSort()
     CFileItem* pItem = m_vecItems[i];
     if (g_stSettings.m_iMyPicturesSortMethod == 0 || g_stSettings.m_iMyPicturesSortMethod == 2)
     {
-      if (pItem->m_bIsFolder) pItem->SetLabel2("");
+      if (pItem->m_bIsFolder)
+        pItem->SetLabel2("");
       else
-      {
-        CStdString strFileSize;
-        CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
-        pItem->SetLabel2(strFileSize);
-      }
+        pItem->SetFileSizeLabel();
     }
     else
     {
@@ -469,7 +466,7 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
     UpdateButtons();
   }
 
-  m_thumbLoader.Load(m_vecItems);
+//  m_thumbLoader.Load(m_vecItems);
 }
 
 void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
