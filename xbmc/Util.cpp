@@ -745,55 +745,6 @@ void CUtil::GetCachedThumbnail(const CStdString& strFileName, CStdString& strCac
   strCachedThumb.Format("%s\\%s\\%s.tbn", g_stSettings.szThumbnailsDirectory, strHex.Left(1).c_str(), strHex.c_str());
 }
 
-void CUtil::GetFileSize(__int64 dwFileSize, CStdString& strFileSize)
-{
-  char szTemp[128];
-  // file < 1 kbyte?
-  if (dwFileSize < 1024)
-  {
-    //  substract the integer part of the float value
-    float fRemainder = (((float)dwFileSize) / 1024.0f) - floor(((float)dwFileSize) / 1024.0f);
-    float fToAdd = 0.0f;
-    if (fRemainder < 0.01f)
-      fToAdd = 0.1f;
-    sprintf(szTemp, "%2.1f KB", (((float)dwFileSize) / 1024.0f) + fToAdd);
-    strFileSize = szTemp;
-    return ;
-  }
-  __int64 iOneMeg = 1024 * 1024;
-
-  // file < 1 megabyte?
-  if (dwFileSize < iOneMeg)
-  {
-    sprintf(szTemp, "%02.1f KB", ((float)dwFileSize) / 1024.0f);
-    strFileSize = szTemp;
-    return ;
-  }
-
-  // file < 1 GByte?
-  __int64 iOneGigabyte = iOneMeg;
-  iOneGigabyte *= (__int64)1000;
-  if (dwFileSize < iOneGigabyte)
-  {
-    sprintf(szTemp, "%02.1f MB", ((float)dwFileSize) / ((float)iOneMeg));
-    strFileSize = szTemp;
-    return ;
-  }
-  //file > 1 GByte
-  int iGigs = 0;
-  while (dwFileSize >= iOneGigabyte)
-  {
-    dwFileSize -= iOneGigabyte;
-    iGigs++;
-  }
-  float fMegs = ((float)dwFileSize) / ((float)iOneMeg);
-  fMegs /= 1000.0f;
-  fMegs += iGigs;
-  sprintf(szTemp, "%02.1f GB", fMegs);
-  strFileSize = szTemp;
-  return ;
-}
-
 void CUtil::GetDate(SYSTEMTIME stTime, CStdString& strDateTime)
 {
   char szTmp[128];
