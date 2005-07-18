@@ -33,6 +33,7 @@
 #define CONTROL_DEFAULT_RADIOBUTTON     8
 #define CONTROL_DEFAULT_SPIN            9
 #define CONTROL_DEFAULT_SETTINGS_BUTTON 10
+#define CONTROL_DEFAULT_SEPARATOR       11
 #define CONTROL_START_BUTTONS           30
 #define CONTROL_START_CONTROL           50
 
@@ -56,6 +57,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_pOriginalRadioButton = NULL;
   m_pOriginalButton = NULL;
   m_pOriginalSettingsButton = NULL;
+  m_pOriginalImage = NULL;
   // set the correct ID range...
   m_dwIDRange = 8;
   m_iScreen = 0;
@@ -256,12 +258,14 @@ void CGUIWindowSettingsCategory::SetupControls()
   m_pOriginalRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_DEFAULT_RADIOBUTTON);
   m_pOriginalSettingsButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_SETTINGS_BUTTON);
   m_pOriginalButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_BUTTON);
+  m_pOriginalImage = (CGUIImage *)GetControl(CONTROL_DEFAULT_SEPARATOR);
   if (!m_pOriginalSpin || !m_pOriginalRadioButton || !m_pOriginalButton || !pButtonArea || !pControlGap)
     return ;
   m_pOriginalSpin->SetVisible(false);
   m_pOriginalRadioButton->SetVisible(false);
   m_pOriginalButton->SetVisible(false);
   m_pOriginalSettingsButton->SetVisible(false);
+  if (m_pOriginalImage) m_pOriginalImage->SetVisible(false);
   // setup our control groups...
   m_vecGroups.clear();
   m_vecGroups.push_back( -1);
@@ -313,10 +317,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
   int iGapY = pControlGap->GetHeight();
   vecSettings settings;
   g_guiSettings.GetSettingsGroup(m_vecSections[m_iSection]->m_strCategory, settings);
+  int iControlID = CONTROL_START_CONTROL;
   for (unsigned int i = 0; i < settings.size(); i++)
   {
     CSetting *pSetting = settings[i];
-    AddSetting(pSetting, iPosX, iPosY, iWidth, CONTROL_START_CONTROL + i);
+    AddSetting(pSetting, iPosX, iPosY, iGapY, iWidth, iControlID);
     CStdString strSetting = pSetting->GetSetting();
     if (strSetting == "Pictures.AutoSwitchMethod" || strSetting == "ProgramsLists.AutoSwitchMethod" || strSetting == "MusicLists.AutoSwitchMethod" || strSetting == "VideoLists.AutoSwitchMethod")
     {
@@ -709,7 +714,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       g_guiSettings.SetString("Autodetect.NickName", strXboxNickName.c_str());
     }
-    iPosY += iGapY;
   }
   // fix first and last navigation
   CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_CONTROL + (int)m_vecSettings.size() - 1);
@@ -2054,7 +2058,7 @@ void CGUIWindowSettingsCategory::FreeSettingsControls()
   m_vecSettings.clear();
 }
 
-void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int iPosY, int iWidth, int iControlID)
+void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int &iPosY, int iGap, int iWidth, int &iControlID)
 {
   CBaseSettingControl *pSettingControl = NULL;
   CGUIControl *pControl = NULL;
@@ -2066,6 +2070,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int i
     pControl->SetPosition(iPosX, iPosY);
     pControl->SetWidth(iWidth);
     pSettingControl = new CRadioButtonSettingControl((CGUIRadioButtonControl *)pControl, iControlID, pSetting);
+    iPosY += iGap;
   }
   else if (pSetting->GetControlType() == SPIN_CONTROL_FLOAT || pSetting->GetControlType() == SPIN_CONTROL_INT_PLUS || pSetting->GetControlType() == SPIN_CONTROL_TEXT || pSetting->GetControlType() == SPIN_CONTROL_INT)
   {
@@ -2076,8 +2081,18 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int i
     ((CGUISpinControlEx *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
     pControl->SetWidth(iWidth);
     pSettingControl = new CSpinExSettingControl((CGUISpinControlEx *)pControl, iControlID, pSetting);
+    iPosY += iGap;
   }
-  else // if (pSetting->GetControlType() == BUTTON_CONTROL)
+  else if (pSetting->GetControlType() == SEPARATOR_CONTROL && m_pOriginalImage)
+  {
+    pControl = new CGUIImage(*m_pOriginalImage);
+    if (!pControl) return;
+    pControl->SetPosition(iPosX, iPosY);
+    pControl->SetWidth(iWidth);
+    pSettingControl = new CSeparatorSettingControl((CGUIImage *)pControl, iControlID, pSetting);
+    iPosY += pControl->GetHeight();
+  }
+  else if (pSetting->GetControlType() != SEPARATOR_CONTROL) // button control
   {
     pControl = new CGUIButtonControl(*m_pOriginalButton);
     if (!pControl) return ;
@@ -2086,12 +2101,14 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int i
     ((CGUIButtonControl *)pControl)->SetText(g_localizeStrings.Get(pSetting->GetLabel()));
     pControl->SetWidth(iWidth);
     pSettingControl = new CButtonSettingControl((CGUIButtonControl *)pControl, iControlID, pSetting);
+    iPosY += iGap;
   }
+  if (!pControl) return;
   pControl->SetNavigation(iControlID - 1,
                           iControlID + 1,
                           CONTROL_START_BUTTONS,
                           CONTROL_START_BUTTONS);
-  pControl->SetID(iControlID);
+  pControl->SetID(iControlID++);
   pControl->SetGroup(CONTROL_GROUP_SETTINGS);
   pControl->SetVisible(true);
   Add(pControl);

@@ -412,7 +412,7 @@ CDemuxStream* CDVDDemuxFFmpeg::GetStream(int iStreamId)
 int CDVDDemuxFFmpeg::GetNrOfStreams()
 {
   int i = 0;
-  while (m_streams[i] && i < MAX_STREAMS) i++;
+  while (i < MAX_STREAMS && m_streams[i]) i++;
   return i;
 }
 
