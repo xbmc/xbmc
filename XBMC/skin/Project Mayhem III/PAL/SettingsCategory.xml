@@ -137,6 +137,15 @@
       <textureNoFocus>button-nofocus.png</textureNoFocus>
     </control>
 
+    <control>
+      <description>separator image</description>
+      <type>image</type>
+      <id>11</id>
+      <width>350</width>
+      <height>8</height>
+      <texture>separator.png</texture>
+    </control>
+
   </controls>
 
 </window>
