@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-07-2005 updated: German language file
  - 18-07-2005 changed: reorganized the settings screens (moved some things and added separators)
  - 18-07-2005 changed: Auto visualisation timeout changed to a screensaver mode (Use Visualisation if playing music).
  - 18-07-2005 added: routines for knowing wich field is currently being rendered, can be used to sync interlaced video
