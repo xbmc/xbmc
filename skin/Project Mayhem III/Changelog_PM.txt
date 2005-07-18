@@ -1,3 +1,5 @@
+2005-07-18 added:       separator texture for settings
+
 2005-07-11 added:	textures for numerical keyboard
 2005-07-11 changed:	new placeholder cover when music without thumb is playing 
 
