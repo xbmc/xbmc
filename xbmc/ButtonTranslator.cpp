@@ -335,7 +335,15 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   WORD wWindowID = WINDOW_INVALID;
   CStdString strWindow = szWindow;
   strWindow.ToLower();
-  if (CUtil::IsNaturalNumber(strWindow)) wWindowID = WINDOW_HOME + atoi(strWindow.c_str());
+  if (CUtil::IsNaturalNumber(strWindow))
+  {
+    // allow a full window id or a delta id
+    int iWindow = atoi(strWindow.c_str());
+    if (iWindow > WINDOW_INVALID) 
+      wWindowID = iWindow;
+    else 
+      wWindowID = WINDOW_HOME + iWindow;
+  }
   else if (strWindow.Equals("home")) wWindowID = WINDOW_HOME;
   else if (strWindow.Equals("myprograms")) wWindowID = WINDOW_PROGRAMS;
   else if (strWindow.Equals("mypictures")) wWindowID = WINDOW_PICTURES;
