@@ -53,3 +53,14 @@ private:
   bool IsValidIPAddress(const CStdString &strIP);
   CGUIButtonControl *m_pButton;
 };
+
+class CSeparatorSettingControl : public CBaseSettingControl
+{
+public:
+  CSeparatorSettingControl(CGUIImage* pImage, DWORD dwID, CSetting *pSetting);
+  ~CSeparatorSettingControl();
+  virtual void OnClick() {};
+  virtual void Update() {};
+private:
+  CGUIImage *m_pImage;
+};

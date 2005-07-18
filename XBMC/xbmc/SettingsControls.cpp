@@ -219,3 +219,13 @@ bool CButtonSettingControl::IsValidIPAddress(const CStdString &strIP)
   }
   return legalFormat;
 }
+
+CSeparatorSettingControl::CSeparatorSettingControl(CGUIImage *pImage, DWORD dwID, CSetting *pSetting)
+    : CBaseSettingControl(dwID, pSetting)
+{
+  m_pImage = pImage;
+  m_pImage->SetID(dwID);
+}
+
+CSeparatorSettingControl::~CSeparatorSettingControl()
+{}
