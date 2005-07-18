@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-07-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 18-07-2005 updated: German language file
  - 17-07-2005 fixed: dvdplayer crashed if a dvd had 20 streams at the same time
  - 17-07-2005 added: System.FPS infolabel.
  - 17-07-2005 fixed: Paplayer didn't close files immediately.

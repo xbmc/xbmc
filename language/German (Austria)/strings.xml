@@ -607,7 +607,7 @@
   <string><id>1253</id><value>FTP Verknüpfung unter Eigene Dateien erstellen</value></string> 
   <string><id>1254</id><value>Popup Anzeige</value></string> 
   <string><id>1255</id><value>FTP Benutzername und Kennwort senden</value></string>
-  <string><id>1256</id><value>Ping Intervall in Sekunden</value></string>
+  <string><id>1256</id><value>Ping Intervall</value></string>
 
   <string><id>1396</id><value>Verwehungen</value></string> 
   <string><id>1397</id><value>und</value></string> 
@@ -703,7 +703,7 @@
   <string><id>12321</id><value>OK</value></string> 
   <string><id>12322</id><value>*</value></string>
 
-  <string><id>12324</id><value>Hauptkennwortabfrage..</value></string> 
+  <string><id>12324</id><value>Hauptkennwortabfrage</value></string> 
   <string><id>12325</id><value>Ordner gesperrt..</value></string> 
   <string><id>12326</id><value>Kennwort eingeben..</value></string> 
   <string><id>12327</id><value>Kennwort eingeben..</value></string> 
@@ -749,7 +749,7 @@
   <string><id>12367</id><value>Ein falsches Kennwort wurde eingegeben!</value></string> 
   <string><id>12368</id><value>Bitte Eingabe wiederholen!</value></string> 
   <string><id>12369</id><value>Startkennwortabfrage</value></string> 
-  <string><id>12370</id><value>Einstellungen geändert, kein Hauptkennwort wurde gesetzt!</value></string> 
+  <string><id>12370</id><value>Kein Hauptkennwort wurde gesetzt!</value></string> 
   <string><id>12371</id><value>Bitte einen neues Hauptkennwort eingeben!</value></string> 
   <string><id>12372</id><value>Eigene Dateien sperren</value></string> 
   <string><id>12373</id><value>Einstellungen sperren</value></string> 
@@ -996,7 +996,7 @@
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Es besteht keine Verbindung mit XLink,</value></string> 
   <string><id>15002</id><value>soll XBMC versuchen mit XLink zu verbinden?</value></string> 
-  <string><id>15003</id><value>Nachricht eingeben.</value></string> 
+  <string><id>15003</id><value>Nachricht eingeben:</value></string> 
   <string><id>15004</id><value>Für %s bestand eine Einladung.</value></string> 
   <string><id>15005</id><value>Datum: %s</value></string> 
   <string><id>15006</id><value>Von: %s</value></string> 
@@ -1082,10 +1082,8 @@
   <string><id>15213</id><value>Wiedergabe</value></string>
   <string><id>15214</id><value>Ausgeglichene A/V Synchronisation verwenden</value></string> 
 
-  <string><id>16000</id><value>Wechseln zu...</value></string>
-  <string><id>16001</id><value>Zu Favoriten hinzuf.</value></string>
-  <string><id>16002</id><value>Favoriten</value></string>
-  <string><id>16003</id><value>MedienInfo einblenden</value></string>
-  <string><id>16004</id><value>MedienInfo ausblenden</value></string>
+  <string><id>16000</id><value>Allgemein</value></string> 
+  <string><id>16001</id><value>Audio Hardware konfigurieren</value></string> 
+  <string><id>16002</id><value>CDDB Abfrage</value></string> 
 
 </strings>
