@@ -168,10 +168,10 @@ CGUISettings::CGUISettings(void)
   AddBool(6, "MyPrograms.GameAutoRegion",511,false);
   AddSeparator(7, "MyPrograms.Sep1");
   AddBool(8, "MyPrograms.HideParentDirItems", 13306, true);
-  AddBool(10, "MyPrograms.UseAutoSwitching", 14011, false);
-  AddBool(11, "MyPrograms.AutoSwitchUseLargeThumbs", 14012, false);
-  AddInt(12, "MyPrograms.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddInt(13, "MyPrograms.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddBool(9, "MyPrograms.UseAutoSwitching", 14011, false);
+  AddBool(10, "MyPrograms.AutoSwitchUseLargeThumbs", 14012, false);
+  AddInt(11, "MyPrograms.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddInt(12, "MyPrograms.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
   AddCategory(1, "XLinkKai", 714);
   AddBool(1, "XLinkKai.EnableNotifications", 14008, true);
@@ -196,16 +196,16 @@ CGUISettings::CGUISettings(void)
   AddGroup(3, 2);
   AddCategory(3, "MyMusic", 16000);
   AddString(1, "MyMusic.Visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
-  AddSeparator(3, "MyMusic.Sep1");
-  AddBool(4, "MyMusic.HideParentDirItems", 13306, true);
-  AddString(5, "MyMusic.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT);
-  AddString(6, "MyMusic.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT);
-  AddSeparator(7, "MyMusic.Sep2");
-  AddBool(8, "MyMusic.UseAudioScrobbler", 15201, false);
-  AddString(9,"MyMusic.AudioScrobblerUserName", 15202, "");
-  AddString(10,"MyMusic.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT); 
-  AddSeparator(11, "MyMusic.Sep3");
-  AddString(12, "MyMusic.CleanupMusicLibrary", 334, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(2, "MyMusic.Sep1");
+  AddBool(3, "MyMusic.HideParentDirItems", 13306, true);
+  AddString(4, "MyMusic.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT);
+  AddString(5, "MyMusic.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT);
+  AddSeparator(6, "MyMusic.Sep2");
+  AddBool(7, "MyMusic.UseAudioScrobbler", 15201, false);
+  AddString(8,"MyMusic.AudioScrobblerUserName", 15202, "");
+  AddString(9,"MyMusic.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT); 
+  AddSeparator(10, "MyMusic.Sep3");
+  AddString(11, "MyMusic.CleanupMusicLibrary", 334, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "MusicFiles", 744);
   AddBool(1, "MusicFiles.AutoPlayNextItem", 489, true);
@@ -419,26 +419,20 @@ CGUISettings::CGUISettings(void)
   AddInt(3, "Subtitles.Style", 736, XFONT_BOLD, XFONT_NORMAL, 1, XFONT_BOLDITALICS, SPIN_CONTROL_TEXT);
   AddInt(4, "Subtitles.Color", 737, SUBTITLE_COLOR_START, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
   AddString(5, "Subtitles.CharSet", 735, "ISO-8859-1", SPIN_CONTROL_TEXT);
-  AddSeparator(6, "Subtitles.Sep1");
-  AddBool(7, "Subtitles.FlipBiDiCharSet", 13304, false);
-  AddSeparator(8, "Subtitles.Sep2");
-  AddInt(9, "Subtitles.EnlargePercentage", 492, 100, 30, 10, 200, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddBool(6, "Subtitles.FlipBiDiCharSet", 13304, false);
+  AddSeparator(7, "Subtitles.Sep1");
+  AddInt(8, "Subtitles.EnlargePercentage", 492, 100, 30, 10, 200, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
   AddCategory(5, "PostProcessing", 14041);
   AddBool(1, "PostProcessing.DeInterlace", 285, false);
-  AddSeparator(2, "PostProcessing.Sep1");
-  AddBool(3, "PostProcessing.Enable", 286, false);
-  AddBool(4, "PostProcessing.Auto", 307, true); // only has effect if PostProcessing.Enable is on.
-  AddSeparator(5, "PostProcessing.Sep2");
-  AddBool(6, "PostProcessing.VerticalDeBlocking", 308, false);
-  AddInt(7, "PostProcessing.VerticalDeBlockLevel", 308, 0, 0, 1, 100, SPIN_CONTROL_INT);
-  AddSeparator(8, "PostProcessing.Sep3");
-  AddBool(9, "PostProcessing.HorizontalDeBlocking", 309, false);
-  AddInt(10, "PostProcessing.HorizontalDeBlockLevel", 309, 0, 0, 1, 100, SPIN_CONTROL_INT);
-  AddSeparator(11, "PostProcessing.Sep4");
-  AddBool(12, "PostProcessing.AutoBrightnessContrastLevels", 310, false);
-  AddSeparator(13, "PostProcessing.Sep5");
-  AddBool(14, "PostProcessing.DeRing", 311, false);
+  AddBool(2, "PostProcessing.Enable", 286, false);
+  AddBool(3, "PostProcessing.Auto", 307, true); // only has effect if PostProcessing.Enable is on.
+  AddBool(4, "PostProcessing.VerticalDeBlocking", 308, false);
+  AddInt(5, "PostProcessing.VerticalDeBlockLevel", 308, 0, 0, 1, 100, SPIN_CONTROL_INT);
+  AddBool(6, "PostProcessing.HorizontalDeBlocking", 309, false);
+  AddInt(7, "PostProcessing.HorizontalDeBlockLevel", 309, 0, 0, 1, 100, SPIN_CONTROL_INT);
+  AddBool(8, "PostProcessing.AutoBrightnessContrastLevels", 310, false);
+  AddBool(9, "PostProcessing.DeRing", 311, false);
 
   AddCategory(5, "Filters", 230);
   AddInt(1, "Filters.Flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
@@ -483,7 +477,7 @@ CGUISettings::CGUISettings(void)
   AddString(2,  "Autodetect.NickName",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT);
   AddInt(3,     "Autodetect.PingTime",  1256, 30, 1, 4, 240, SPIN_CONTROL_INT, MASK_SECS);
   AddBool(4,    "Autodetect.PopUpInfo", 1254, true);
-  AddSeparator(5, "Autodetect.Sep2");
+  AddSeparator(5, "Autodetect.Sep1");
   AddBool(6,    "Autodetect.CreateLink",1253, true);
   AddBool(7,    "Autodetect.SendUserPw",1255, true);
   
@@ -524,9 +518,9 @@ CGUISettings::CGUISettings(void)
   AddCategory(7, "ScreenSaver", 360);
   AddString(1, "ScreenSaver.Mode", 356, "Dim", SPIN_CONTROL_TEXT);
   AddString(2, "ScreenSaver.Preview", 1000, "", BUTTON_CONTROL_STANDARD);
-  AddBool(4, "ScreenSaver.UseMusicVisInstead", 13392, true);
-  AddInt(3, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddInt(4, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddBool(3, "ScreenSaver.UseMusicVisInstead", 13392, true);
+  AddInt(4, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(5, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
   AddCategory(7, "UIFilters", 14053);
   AddInt(1, "UIFilters.Flicker", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT);
@@ -546,19 +540,18 @@ CGUISettings::CGUISettings(void)
   //GeminiServer
   AddCategory(7, "Masterlock", 12360);
   AddInt(1,   "Masterlock.Mastermode"       , 12364, LOCK_MODE_EVERYONE, LOCK_MODE_EVERYONE, 1, LOCK_MODE_QWERTY, SPIN_CONTROL_TEXT); // 0:always Unlocked, 1:Numeric, 2:Gamepad, 3:Text
-  AddSeparator(2, "Masterlock.Sep1");
-  AddString(3,"Masterlock.Mastercode"       , 12365, "-", BUTTON_CONTROL_STANDARD); // This is the CODE, Changing in addition with Mastermode!
-  AddInt(4,   "Masterlock.Maxretry"         , 12361, 0, 0, 1, 9, SPIN_CONTROL_TEXT); //Max Retry is 3, 0 is off
-  AddBool(5,  "Masterlock.Enableshutdown"   , 12362,false); //talse:0 is off, true:1 will shutdows if Maxrety is reached
-  AddSeparator(6, "Masterlock.Sep2");
-  AddBool(7,  "Masterlock.Protectshares"    , 12363,false); //false:0 is Normal user Mode, true:1 is Mastermode
-  AddBool(8,  "Masterlock.StartupLock"      , 12369,false); //false:0 is no ask StarupCode, true:1 ask for MasterCode if is false switxh off xbmc
-  AddSeparator(9, "Masterlock.Sep3");
-  AddBool(10,  "Masterlock.LockFilemanager"  , 12372,false); //false:0 if off, true:1 will ask for MasterCode on Filemanager Window
-  AddBool(11,  "Masterlock.LockSettings"     , 12373,false); //false:0 if off, true:1 will ask for MasterCode on Settings Window
-  AddInt(12,   "Masterlock.LockHomeMedia"    , 12374, LOCK_DISABLED, LOCK_DISABLED, 1, LOCK_MU_VI_PIC_PROG, SPIN_CONTROL_TEXT); // LockHomeMedia, for lock the Video/Music/Programs/Pictures
-  AddSeparator(13, "Masterlock.Sep4");
-  AddString(14,"Masterlock.SetMasterlock"   , 14070, "", BUTTON_CONTROL_STANDARD);
+  AddString(2,"Masterlock.Mastercode"       , 12365, "-", BUTTON_CONTROL_STANDARD); // This is the CODE, Changing in addition with Mastermode!
+  AddInt(3,   "Masterlock.Maxretry"         , 12361, 0, 0, 1, 9, SPIN_CONTROL_TEXT); //Max Retry is 3, 0 is off
+  AddBool(4,  "Masterlock.Enableshutdown"   , 12362,false); //talse:0 is off, true:1 will shutdows if Maxrety is reached
+  AddSeparator(5, "Masterlock.Sep1");
+  AddBool(6,  "Masterlock.Protectshares"    , 12363,false); //false:0 is Normal user Mode, true:1 is Mastermode
+  AddBool(7,  "Masterlock.StartupLock"      , 12369,false); //false:0 is no ask StarupCode, true:1 ask for MasterCode if is false switxh off xbmc
+  AddSeparator(8, "Masterlock.Sep2");
+  AddBool(9,  "Masterlock.LockFilemanager"  , 12372,false); //false:0 if off, true:1 will ask for MasterCode on Filemanager Window
+  AddBool(10,  "Masterlock.LockSettings"     , 12373,false); //false:0 if off, true:1 will ask for MasterCode on Settings Window
+  AddInt(11,   "Masterlock.LockHomeMedia"    , 12374, LOCK_DISABLED, LOCK_DISABLED, 1, LOCK_MU_VI_PIC_PROG, SPIN_CONTROL_TEXT); // LockHomeMedia, for lock the Video/Music/Programs/Pictures
+  AddSeparator(12, "Masterlock.Sep3");
+  AddString(13,"Masterlock.SetMasterlock"   , 14070, "", BUTTON_CONTROL_STANDARD);
   
   AddInt( -1, "UIOffset.X", 0, 0, -128, 1, 128, SPIN_CONTROL_INT);
   AddInt( -1, "UIOffset.Y", 0, 0, -128, 1, 128, SPIN_CONTROL_INT);
