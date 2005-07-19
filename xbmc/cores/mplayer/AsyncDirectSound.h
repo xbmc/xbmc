@@ -70,9 +70,6 @@ public:
   virtual void DoWork();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
-  //Cdg voice callback (Karaoke patch (114097))
-  static void CdgVoiceDataCallback( DWORD dwPort, DWORD dwSize, VOID* pvData, VOID* pContext );
-
 private:
   IAudioCallback* m_pCallback;
   LONG m_lFadeVolume;

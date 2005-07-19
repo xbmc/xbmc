@@ -1326,6 +1326,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   if ( IsPlaying() )
   {
     CLog::Log(LOGINFO, " stop playing...");
+    m_CdgParser.Stop();
     m_pPlayer->CloseFile();
     m_itemCurrentFile.Clear();
     delete m_pPlayer;
@@ -1598,11 +1599,15 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
 
 void CApplication::Render()
 {
+  g_infoManager.UpdateFPS();
+
   // update sound
   if (m_pPlayer)
   {
     m_pPlayer->DoAudioWork();
   }
+  // process karaoke
+  m_CdgParser.ProcessVoice();
 
   // check if we haven't rewound past the start of the file
 
@@ -2977,6 +2982,7 @@ void CApplication::StopPlaying()
   int iWin = m_gWindowManager.GetActiveWindow();
   if ( IsPlaying() )
   {
+    m_CdgParser.Stop();
     // turn off visualisation window when stopping
     if (iWin == WINDOW_VISUALISATION)
       m_gWindowManager.PreviousWindow();
@@ -3997,4 +4003,3 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
   }
   return false;
 }
-

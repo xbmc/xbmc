@@ -2,7 +2,7 @@
 #include "CdgParser.h"
 #include "application.h"
 #include "util.h"
-
+#include "audiocontext.h"
 
 //CdgLoader
 CCdgLoader::CCdgLoader()
@@ -483,6 +483,20 @@ bool CCdgParser::Start(CStdString strSongPath)
 {
   if (!StartLoader(strSongPath)) return false;
   if (!StartReader()) return false;
+
+  // Karaoke patch (114097) ...
+  if ( g_guiSettings.GetBool("Karaoke.VoiceEnabled") )
+  {
+    CDG_VOICE_MANAGER_CONFIG VoiceConfig;
+    VoiceConfig.dwVoicePacketTime = 20;       // 20ms (can't be lower than this)
+    VoiceConfig.dwMaxStoredPackets = 2;
+    VoiceConfig.pDSound = g_audioContext.GetDirectSoundDevice();
+    VoiceConfig.pCallbackContext = this;
+    VoiceConfig.pfnVoiceDeviceCallback = NULL;
+    VoiceConfig.pfnVoiceDataCallback = NULL;
+    StartVoice(&VoiceConfig);
+  }
+  // ... Karaoke patch (114097)
   return true;
 }
 
@@ -497,6 +511,7 @@ void CCdgParser::Stop()
 {
   StopReader();
   StopLoader();
+  StopVoice();
 }
 
 void CCdgParser::Free()
