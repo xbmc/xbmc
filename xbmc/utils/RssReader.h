@@ -28,7 +28,7 @@ public:
   virtual ~CRssReader();
 
   void Create(IRssObserver* aObserver, const vector<wstring>& aUrl, INT iLeadingSpaces);
-  bool Parse(LPSTR szBuffer, int iFeed);
+  bool Parse(LPSTR szBuffer, int iFeed, bool forceUTF8 = false);
   void getFeed(CStdString& strText, LPBYTE& pbColors);
   void AddTag(const CStdString addTag);
   void AddToQueue(int iAdd);
