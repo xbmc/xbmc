@@ -265,6 +265,8 @@ CASyncDirectSound::~CASyncDirectSound()
 HRESULT CASyncDirectSound::Deinitialize()
 {
   OutputDebugString("CASyncDirectSound::Deinitialize\n");
+  g_application.m_CdgParser.Stop(); // need this here
+                                    // as CloseFile() could be called from mplayer
 
   m_bIsAllocated = false;
   if (m_pStream)
