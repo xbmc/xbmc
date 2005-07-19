@@ -166,9 +166,7 @@ bool CFileDAAP::Open(const CURL& url, bool bBinary)
   g_application.m_DAAPSong = m_song.data;
   */
 
-  // don't start streaming yet, we'll only do that once
-  // part of the file is actually required.
-  m_bStreaming = false;
+  m_bStreaming = StartAudioStream();
   m_bOpened = true;
   return true;
 }
