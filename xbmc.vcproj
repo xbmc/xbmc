@@ -1008,6 +1008,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\GUIWindowWeather.cpp">
 				</File>
+				<File
+					RelativePath=".\xbmc\SlideShowPicture.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\SlideShowPicture.h">
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -1679,6 +1685,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\FileCDDA.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\FileCurl.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileCurl.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\FileDAAP.cpp">
 			</File>
 			<File
@@ -2200,10 +2212,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -2922,6 +2934,16 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\lib\sqlLite\sqlitedataset.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="libCurl"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\lib\libCurl\CurlInterface.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libCurl\CurlInterface.h">
 				</File>
 			</Filter>
 		</Filter>

@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-07-2005 fixed: UTF16 RSS feeds should at least display (no idea if they'll look as they're supposed to!)
+ - 19-07-2005 fixed: Program bookmarks with ' in them screwed up.
  - 19-07-2005 updated: swedish strings.xml (thanks limit) and italian strings.xml (thanks kotix)
  - 19-07-2005 fixed: External dvdplayer couldn't be based off Q:
  - 19-07-2005 fixed: Couldn't alter volume while paused.
