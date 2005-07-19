@@ -131,33 +131,32 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 				
 				//Open Progress Dialog
 				CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
-				pDlgProgress.SetHeading("SystemInfo:");
-				pDlgProgress.SetLine(0, "Detecting Hardware Values!");
+				pDlgProgress.SetHeading("System Information");
+				pDlgProgress.SetLine(0, "Detecting Hardware Values");
 				pDlgProgress.SetLine(1, "");
-				pDlgProgress.SetLine(2, "Please Wait!");
+				pDlgProgress.SetLine(2, "Please Wait");
 				pDlgProgress.SetPercentage(0);
 				pDlgProgress.Progress();
 				pDlgProgress.StartModal(GetID());
 				pDlgProgress.ShowProgressBar(true);
 				
 				// Get Values from EEPROM 
-				pDlgProgress.SetLine(1, "Reading Values from EEPROM:");
+				pDlgProgress.SetLine(1, "Reading Values from EEPROM");
 				pDlgProgress.SetPercentage(50);
 				pDlgProgress.Progress();
 				if ( XKUtils::ReadEEPROMFromXBOX((LPBYTE)&m_EEPROMData, 0, 255))
 				{
 					CreateEEPROMBackup("System");
-					pDlgProgress.SetLine(1, "Reading from EEPROM: Done!");
+					pDlgProgress.SetLine(1, "Reading from EEPROM Done");
 					pDlgProgress.SetPercentage(55);
 					pDlgProgress.Progress();
-					
 				}
 				m_dwlastTime=0;
 				m_wszMPlayerVersion[0] = 0;			
 				HANDLE hThread = CreateThread(NULL, 0,GetMPlayerVersionW,&m_wszMPlayerVersion,0, NULL);
 				if (hThread != NULL)	CloseHandle(hThread);
 				
-				pDlgProgress.SetLine(1, "Detecting: Done!");
+				pDlgProgress.SetLine(1, "Detecting Done");
 				pDlgProgress.SetPercentage(100);
 				pDlgProgress.Progress();
 				pDlgProgress.Close();
@@ -175,13 +174,13 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 				{	
           b_IsHome = FALSE;
 					SetLabelDummy();
-					SET_CONTROL_LABEL(40,"HardDisk:");
+					SET_CONTROL_LABEL(40,"Hard Disk Information");
 
 					CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
-					pDlgProgress.SetHeading("HardDisk:");
-					pDlgProgress.SetLine(0, "Detecting Harddisk Values!");
+					pDlgProgress.SetHeading("Hard Disk Information");
+					pDlgProgress.SetLine(0, "Detecting Harddisk Information");
 					pDlgProgress.SetLine(1, "");
-					pDlgProgress.SetLine(2, "Please Wait!");
+					pDlgProgress.SetLine(2, "Please Wait");
 					pDlgProgress.SetPercentage(20);
 					pDlgProgress.Progress();
 					pDlgProgress.StartModal(GetID());
@@ -202,7 +201,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 					SET_CONTROL_LABEL(6,strhddlockey);
 					
 					//Label 8: HDD Temperature
-					pDlgProgress.SetLine(1, "Detecting HDD Temp");
+					pDlgProgress.SetLine(1, "Detecting HDD Temperature");
 					pDlgProgress.SetPercentage(100);
 					pDlgProgress.Progress();
 					CStdString strItemhdd;
@@ -218,13 +217,13 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
           b_IsHome = FALSE;
 					//Todo: Get DVD-ROM Supportted Disc's
 					SetLabelDummy();
-					SET_CONTROL_LABEL(40,"DVD-ROM Values:");
+					SET_CONTROL_LABEL(40,"DVD-ROM Information");
 
 					CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
-					pDlgProgress.SetHeading("HardDisk Values:");
-					pDlgProgress.SetLine(0, "Detecting DVD-ROM Values!");
+					pDlgProgress.SetHeading("DVD-ROM Information");
+					pDlgProgress.SetLine(0, "Detecting DVD-ROM Information");
 					pDlgProgress.SetLine(1, "");
-					pDlgProgress.SetLine(2, "Please Wait!");
+					pDlgProgress.SetLine(2, "Please Wait");
 					pDlgProgress.SetPercentage(20);
 					pDlgProgress.Progress();
 					pDlgProgress.StartModal(GetID());
@@ -244,7 +243,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 				{
           b_IsHome = FALSE;
 					SetLabelDummy();
-					SET_CONTROL_LABEL(40,"Storage Values:");
+					SET_CONTROL_LABEL(40,"Storage Information");
 
 					// Label 2-10: Storage Values
 					GetStorage(2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
@@ -261,13 +260,13 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 				{
           b_IsHome = FALSE;
 					SetLabelDummy();
-					SET_CONTROL_LABEL(40,"Network Informations:");
+					SET_CONTROL_LABEL(40,"Network Information");
 
 					CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
-					pDlgProgress.SetHeading("XBOX Network:");
-					pDlgProgress.SetLine(0, "Detecting XBOX Network Settings!");
+					pDlgProgress.SetHeading("Xbox Network");
+					pDlgProgress.SetLine(0, "Detecting Xbox Network Settings");
 					pDlgProgress.SetLine(1, "");
-					pDlgProgress.SetLine(2, "Please Wait!");
+					pDlgProgress.SetLine(2, "Please Wait");
 					pDlgProgress.SetPercentage(40);
 					pDlgProgress.Progress();
 					pDlgProgress.StartModal(GetID());
@@ -279,7 +278,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 					GetNetwork(2,4,3,5,6,7);	// Label 2-7
 					
 					// Label 8: Mac Adress
-					pDlgProgress.SetLine(1, "Detecting Mac Adress");
+					pDlgProgress.SetLine(1, "Detecting Mac Address");
 					pDlgProgress.SetPercentage(20);
 					pDlgProgress.Progress();
 					CStdString strMacAdress;
@@ -287,7 +286,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 						SET_CONTROL_LABEL(8, strMacAdress);
 					
 					// Label 9: Online State
-					pDlgProgress.SetLine(1, "Detecting Online State!");
+					pDlgProgress.SetLine(1, "Detecting Online State");
 					pDlgProgress.SetPercentage(20);
 					pDlgProgress.Progress();
 					CStdString strInetCon;
@@ -301,7 +300,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 				{
           b_IsHome = FALSE;
 					SetLabelDummy();
-					SET_CONTROL_LABEL(40,"Video Values:");
+					SET_CONTROL_LABEL(40,"Video Information");
 
 					// Label 2: Video Encoder
 					CStdString strVideoEnc;
@@ -335,20 +334,20 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
           b_IsHome = FALSE;
 
 					SetLabelDummy();
-					SET_CONTROL_LABEL(40,"Hardware Values:");
+					SET_CONTROL_LABEL(40,"Hardware Information");
 
 					CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
-					pDlgProgress.SetHeading("XBOX Hardware:");
-					pDlgProgress.SetLine(0, "Detecting XBOX Hardware Values!");
+					pDlgProgress.SetHeading("Xbox Hardware");
+					pDlgProgress.SetLine(0, "Detecting Xbox Hardware");
 					pDlgProgress.SetLine(1, "");
-					pDlgProgress.SetLine(2, "Please Wait!");
+					pDlgProgress.SetLine(2, "Please Wait");
 					pDlgProgress.SetPercentage(0);
 					pDlgProgress.Progress();
 					pDlgProgress.StartModal(GetID());
 					pDlgProgress.ShowProgressBar(true);
 					
 					// Label 2: XBOX Version
-					pDlgProgress.SetLine(1, "Detecting Version & Serial & CPU");
+					pDlgProgress.SetLine(1, "Detecting Xbox Version, Serial and CPU");
 					CStdString strXBoxVer;
 					GetXBVerInfo(strXBoxVer);
 					SET_CONTROL_LABEL(2,strXBoxVer);
@@ -361,7 +360,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 						SET_CONTROL_LABEL(3,strXBOXSerial);
 					
 					// Label 4: ModChip ID!
-					pDlgProgress.SetLine(1, "Detecting ModCHIP ID");
+					pDlgProgress.SetLine(1, "Detecting ModChip");
 					pDlgProgress.SetPercentage(20);
 					pDlgProgress.Progress();
 					CStdString strModChip;
@@ -415,34 +414,19 @@ void CGUIWindowSystemInfo::Render()
 {
 	if (b_IsHome) 
 	{
-		//Label Header: Default Values
-		SET_CONTROL_LABEL(40,"Default Values:");
-		
-		// Label 2: CPU Temperature
-		CStdString strCPUTemp;
-		GetCPUTemp(strCPUTemp);
-		SET_CONTROL_LABEL(2,strCPUTemp);
-		
-		// Label 3: GPU Temperature
-		CStdString strGPUTemp;
-		GetGPUTemp(strGPUTemp);
-		SET_CONTROL_LABEL(3,strGPUTemp);
-		
-		// Label 4: Fan Speed
-		CStdString strFanSpeed;
-		GetFanSpeed(strFanSpeed);
-		SET_CONTROL_LABEL(4,strFanSpeed);
+		// Default Values
+		SET_CONTROL_LABEL(40,"Basic Information");
+		SET_CONTROL_LABEL(2, g_infoManager.GetSystemHeatInfo("cpu")); // CPU Temperature
+		SET_CONTROL_LABEL(3, g_infoManager.GetSystemHeatInfo("gpu")); // GPU Temperature
+		SET_CONTROL_LABEL(4, g_infoManager.GetSystemHeatInfo("fan")); // Fan Speed
 		
 		// Label 5: Set FreeMemeory Info
 		CStdString strFreeMem;
 		GetFreeMemory(strFreeMem);
-		SET_CONTROL_LABEL(5,strFreeMem);
+		SET_CONTROL_LABEL(5, strFreeMem);
 
     //Label 6: XBMC IP Adress
-    WCHAR wzIP[32];
-    const WCHAR* pszIP=g_localizeStrings.Get(150).c_str();
-    swprintf(wzIP,L"%s: %S",pszIP,g_szTitleIP);
-    SET_CONTROL_LABEL(6,wzIP);
+    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(190));
 
 		// Label 7: Set Resolution Info
 		CStdString strResol;
@@ -451,29 +435,17 @@ void CGUIWindowSystemInfo::Render()
 		
 		// Label 8: Get Kernel Info
 		CStdString strGetKernel;
-		CGUIWindowSystemInfo::GetKernelVersion(strGetKernel);
+		GetKernelVersion(strGetKernel);
 		SET_CONTROL_LABEL(8,strGetKernel);
+  }
 
-   	// Label 50: Get Current Time
-		CStdString strCurTime;
-		GetCurTime(strCurTime);
-		SET_CONTROL_LABEL(50,strCurTime);
-
-		// Set XBMC Build Time
-		GetBuildTime(51, 52, 53); // Label 51, 52, 53
-	}
-	else
-	{
-		// Label 50: Get Current Time
-		CStdString strCurTime;
-		GetCurTime(strCurTime);
-		SET_CONTROL_LABEL(50,strCurTime);
-
-		// Set XBMC Build Time
-		GetBuildTime(51, 52, 53); // Laber 51, 52, 53
-	}
+	// Label 50: Get Current Time
+	SET_CONTROL_LABEL(50, g_infoManager.GetTime(true) + " | " + g_infoManager.GetDate());
+	// Set XBMC Build Time
+	GetBuildTime(51, 52, 53); // Laber 51, 52, 53
 	CGUIWindow::Render();
 }
+
 void CGUIWindowSystemInfo::SetLabelDummy()
 {
 	// Set Label Dummy Entry! ""
@@ -628,6 +600,7 @@ bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
 	}
 	return false;	
 }
+
 void CGUIWindowSystemInfo::GetAVPackInfo(CStdString& stravpack)
 {
 	//AV-[Cable]Pack Detection 
@@ -636,6 +609,7 @@ void CGUIWindowSystemInfo::GetAVPackInfo(CStdString& stravpack)
 	stravpack.Format("%s %s",lblAVpack.c_str(), DetectedAVpack);
 	return;
 }
+
 bool CGUIWindowSystemInfo::GetVideoXBERegion(CStdString& strVideoXBERegion)
 {
 	//Print Game!Video Standard & XBE Region... // Todo:Decrpyring Required!!!
@@ -675,6 +649,7 @@ bool CGUIWindowSystemInfo::GetVideoXBERegion(CStdString& strVideoXBERegion)
 	}
 	else return false;
 }
+
 bool CGUIWindowSystemInfo::GetDVDZone(CStdString& strdvdzone)
 {
 	//Print DVD [Region] Zone ..
@@ -710,6 +685,7 @@ bool CGUIWindowSystemInfo::GetINetState(CStdString& strInetCon)
 	}
 	return false;
 }
+
 bool CGUIWindowSystemInfo::GetXBLiveKey(CStdString& strXBLiveKey)
 {
 	//Print XBLIVE Online Key..
@@ -723,6 +699,7 @@ bool CGUIWindowSystemInfo::GetXBLiveKey(CStdString& strXBLiveKey)
 		return true;
 	}else return false;
 }
+
 bool CGUIWindowSystemInfo::GetHDDKey(CStdString& strhddlockey)
 {
 	//Print HDD Key...
@@ -737,6 +714,7 @@ bool CGUIWindowSystemInfo::GetHDDKey(CStdString& strhddlockey)
 	}
 	else return false;
 }
+
 bool CGUIWindowSystemInfo::GetHDDTemp(CStdString& strItemhdd)
 {
 	// Set HDD Temp
@@ -756,54 +734,7 @@ bool CGUIWindowSystemInfo::GetHDDTemp(CStdString& strItemhdd)
 	}
 	return false;
 }
-bool CGUIWindowSystemInfo::GetCurTime(CStdString& strCurTime)
-{
-	//WCHAR wszTime[32];
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-	CStdString strlblCurTime = g_localizeStrings.Get(142).c_str();
-	if (g_guiSettings.GetBool("XBDateTime.Clock12Hour"))
-	{
-		if (time.wHour>12)
-		{
-			time.wHour-=12;
-			strCurTime.Format("%s %d:%02d:%02d PM %d-%d-%d",
-						strlblCurTime,
-						time.wHour,
-						time.wMinute,
-						time.wSecond,
-						time.wDay,
-						time.wMonth,
-						time.wYear);
-			return true;
-		}
-		else
-		{
-			strCurTime.Format("%s %d:%02d:%02d AM %d-%d-%d",
-						strlblCurTime,
-						time.wHour,
-						time.wMinute,
-						time.wSecond,
-						time.wDay,
-						time.wMonth,
-						time.wYear);
-			return true;
-		}
-	}
-	else 
-	{
-		strCurTime.Format("%s %d:%02d:%02d %d-%d-%d",
-						strlblCurTime,
-						time.wHour,
-						time.wMinute,
-						time.wSecond,
-						time.wDay,
-						time.wMonth,
-						time.wYear);
-		return true;
-	}
-	return false;
-}
+
 void CGUIWindowSystemInfo::GetFreeMemory(CStdString& strFreeMem)
 {
 	// Set FreeMemory Info
@@ -811,52 +742,6 @@ void CGUIWindowSystemInfo::GetFreeMemory(CStdString& strFreeMem)
 	GlobalMemoryStatus(&stat);
 	CStdString lblFreeMem = g_localizeStrings.Get(158).c_str();
 	strFreeMem.Format("%s %i/%iMB",lblFreeMem,stat.dwAvailPhys/MB, stat.dwTotalPhys/MB);
-}
-bool CGUIWindowSystemInfo::GetCPUTemp(CStdString& strCPUTemp)
-{
-	CStdString strCPUTempA;
-	CStdString psztext=g_localizeStrings.Get(140).c_str();
-	float CPUtemperatur	= CFanController::Instance()->GetCPUTemp();
-	if(g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/) 
-	{	
-		strCPUTempA.Format("%2.2f%cF", ((9.0 / 5.0) * CPUtemperatur) + 32.0, 176);
-		strCPUTemp.Format("%s %s", psztext,strCPUTempA);
-		return true;
-	}
-	else 
-	{	
-		strCPUTempA.Format("%2.2f%cC", CPUtemperatur, 176);
-		strCPUTemp.Format("%s %s", psztext,strCPUTempA);
-		return true;
-	}
-	return false;
-}
-bool CGUIWindowSystemInfo::GetGPUTemp(CStdString& strGPUTemp)
-{
-	CStdString strGPUTempA;
-	CStdString lblGPUTemp = g_localizeStrings.Get(141).c_str();
-	float motherboardtemp = CFanController::Instance()->GetGPUTemp();
-
-	if(g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/) 
-	{	
-		strGPUTempA.Format("%2.2f%cF", ((9.0 / 5.0) * motherboardtemp) + 32.0,  176);
-		strGPUTemp.Format("%s %s", lblGPUTemp,strGPUTempA);
-		return true;
-	}
-	else 
-	{	
-		strGPUTempA.Format("%2.2f%cC", motherboardtemp,  176);	
-		strGPUTemp.Format("%s %s", lblGPUTemp,strGPUTempA);
-		return true;
-	}
-	return false;
-}
-bool CGUIWindowSystemInfo::GetFanSpeed(CStdString& strFanSpeed)
-{
-	unsigned short FanSpeed	= CFanController::Instance()->GetFanSpeed();
-	CStdString lblFanSpeed = g_localizeStrings.Get(13300);
-	strFanSpeed.Format("%s %i%%", lblFanSpeed.c_str(), FanSpeed * 2);
-	return true;
 }
 
 bool CGUIWindowSystemInfo::GetATAPIValues(int i_lblp1, int i_lblp2)
@@ -877,6 +762,7 @@ bool CGUIWindowSystemInfo::GetATAPIValues(int i_lblp1, int i_lblp2)
 	}
 	else return false;
 }
+
 bool CGUIWindowSystemInfo::GetATAValues(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5)
 {	
 	/*
@@ -1353,25 +1239,16 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
     OutputDebugString( strOut );
 	return true;
 }
-bool CGUIWindowSystemInfo::GetBuildTime(int i_lblp1, int i_lblp2, int i_lblp3)
+
+bool CGUIWindowSystemInfo::GetBuildTime(int label1, int label2, int label3)
 {
-	WCHAR wszXBMCVersion[1024];
-	WCHAR wszXBMCBuildDate[1024];
-	WCHAR wszBuildDate[64];
-	WCHAR wszMplayerVersion[1024];
-	//XBMC Version
-	const WCHAR *pszlblversion	= g_localizeStrings.Get(144).c_str();	// Version:
-	const WCHAR *pszxbmcversion	= g_localizeStrings.Get(6).c_str();	// XBOX Version[read from XML!]
-    swprintf(wszXBMCVersion,L"%s %s", pszlblversion,pszxbmcversion);
-	//XBMC XBE BUILD Version
-	mbstowcs(wszBuildDate, __DATE__, sizeof(wszBuildDate));
-	swprintf(wszXBMCBuildDate,L"XBMC Compile Date: %s",wszBuildDate);
-	//Mplayer DLL Version
-	swprintf(wszMplayerVersion,L"Mplayer Version: %s", m_wszMPlayerVersion);
-	
-	SET_CONTROL_LABEL(i_lblp1,wszXBMCVersion);
-	SET_CONTROL_LABEL(i_lblp2,wszXBMCBuildDate);
-	SET_CONTROL_LABEL(i_lblp3,wszMplayerVersion);
+  CStdStringW version, buildDate, mplayerVersion;
+  buildDate.Format(L"XBMC Compile Date: %S", g_infoManager.GetBuild().c_str());
+  version.Format(L"%s %S", g_localizeStrings.Get(144).c_str(), g_infoManager.GetVersion().c_str());
+  mplayerVersion.Format(L"Mplayer Version: %s", m_wszMPlayerVersion);
+	SET_CONTROL_LABEL(label1, version);
+	SET_CONTROL_LABEL(label2, buildDate);
+	SET_CONTROL_LABEL(label3, mplayerVersion);
 	return true;
 }
 
