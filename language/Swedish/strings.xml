@@ -290,7 +290,7 @@
   <string><id>358</id><value>Alla album</value></string>
   <string><id>359</id><value>Senast spelade album</value></string>
   <string><id>360</id><value>Skärmsläckare</value></string>
-  <string><id>361</id><value>R. SlideShow</value></string>
+  <string><id>361</id><value>Starta bildspel</value></string>
   <string><id>362</id><value>Skärmsläckarnivå</value></string>
   <string><id>363</id><value>Sortera : Filer</value></string>
   <string><id>364</id><value>- AC3-kapabel förstärkare</value></string>
@@ -345,7 +345,7 @@
   <string><id>414</id><value>Ingen recension för detta album</value></string>
   <string><id>415</id><value>Laddar ner miniatyrbild...</value></string>
   <string><id>416</id><value>Inte tillgänglig</value></string>
-  <string><id>417</id><value>Vy : Stora ikoner</value></string>
+  <string><id>417</id><value>Stora ikoner</value></string>
   <string><id>418</id><value>Mina filmer/genre</value></string>
   <string><id>419</id><value>Mina filmer/skådespelare</value></string>
   <string><id>420</id><value>Mina filmer/år</value></string>
@@ -444,6 +444,7 @@
   <string><id>512</id><value>Startfönster</value></string>
   <string><id>513</id><value>Hemfönster</value></string>
   <string><id>514</id><value>Manuella inställningar</value></string>
+  <string><id>515</id><value>Genre</value></string>
   
   <string><id>600</id><value>Rippa Audio-CD</value></string>
   <string><id>601</id><value>Medel</value></string>
@@ -551,7 +552,7 @@
   <string><id>769</id><value>Reserverad</value></string>
   <string><id>770</id><value>Fel %i: utdelningen ej tillgänglig</value></string>
   <string><id>771</id><value>Fix för FATX begränsningar i FTP server</value></string>
-  <string><id>772</id><value>Ljudhårdvara</value></string>
+  <string><id>772</id><value>A/V Receiver</value></string>
   <string><id>773</id><value>Söker</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Spel</value></string>
@@ -594,7 +595,7 @@
   <string><id>1233</id><value>Program &amp; Film &amp; Musik</value></string>
   <string><id>1234</id><value>Program &amp; Bilder &amp; Musik</value></string>
   <string><id>1235</id><value>Program &amp; Bilder &amp; Film</value></string>
-
+  
   <string><id>1245</id><value> - FTP Användarnamn</value></string>
   <string><id>1246</id><value> - FTP Lösenord</value></string>
   <string><id>1247</id><value>FTP användare och lösenord sparade!</value></string>
@@ -605,6 +606,7 @@
   <string><id>1253</id><value>Skapa FTP länk i Mina Filer</value></string>
   <string><id>1254</id><value>Popup meddelande</value></string>
   <string><id>1255</id><value>Skicka FTP användare och lösenord</value></string>
+  <string><id>1256</id><value>Ping intervall i sek.</value></string>
   
   <string><id>1396</id><value>Blåsigt</value></string>
   <string><id>1397</id><value>och</value></string>
@@ -640,24 +642,22 @@
   <string><id>10015</id><value>Inställningar->Bildskärm->Undertexter</value></string>
   <string><id>10016</id><value>Inställningar->Bildskärm->Skärmsläckare</value></string>
   <string><id>10017</id><value>Inställningar->Väder</value></string>
+  <string><id>10018</id><value>Inställningar->Nätverk</value></string>
+  <string><id>10019</id><value>Inställningar->Utseende</value></string>
   <string><id>10020</id><value>Inställningar->Skript</value></string>
   <string><id>10021</id><value>Mina Filmer/genre</value></string>
   <string><id>10022</id><value>Mina Filmer/skådespelare</value></string>
   <string><id>10023</id><value>Mina Filmer/år</value></string>
-  <string><id>10024</id><value>Inställningar->Program</value></string>
   <string><id>10025</id><value>Mina Filmer/Titel</value></string>
-  <string><id>10026</id><value>Inställningar->Generella->Cache</value></string>
-  <string><id>10027</id><value>Inställningar->Generella->Autostart</value></string>
   <string><id>10028</id><value>Mina Filmer/spellista</value></string>
-  <string><id>10029</id><value>Inställningar->Generella->LCD</value></string>
+  <string><id>10034</id><value>Inställningar->Profiler</value></string>
   <string><id>10100</id><value>Ja/Nej-dialog</value></string>
   <string><id>10101</id><value>Förloppsdialog</value></string>
   <string><id>10500</id><value>Min Musik/spellista</value></string>
   <string><id>10501</id><value>Min Musik/filer</value></string>
   <string><id>10502</id><value>Min Musik/album</value></string>
   <string><id>10503</id><value>Min Musik/artister</value></string>
-  <string><id>10504</id><value>Min Musik/genre</value></string>
-  <string><id>10505</id><value>Min Muisk/top100</value></string>
+    
   <string><id>10506</id><value>Program</value></string>
   <string><id>10507</id><value>Konfigurering</value></string>
   <string><id>10508</id><value>Väderprognos</value></string>
@@ -677,7 +677,6 @@
   <string><id>10522</id><value>Mina Filmer - Spellista</value></string>
   <string><id>10523</id><value>Albuminfo</value></string>
   <string><id>10524</id><value>Filminfo</value></string>
-  <string><id>11000</id><value>tangentbord</value></string>
   <string><id>12000</id><value>Välj dialog</value></string>
   <string><id>12001</id><value>Min Musik/info</value></string>
   <string><id>12002</id><value>Dialog OK</value></string>
@@ -687,6 +686,8 @@
   <string><id>12006</id><value>Ljud visualisering</value></string>
   <string><id>12007</id><value>Mina Bilder/Bildspel</value></string>
   <string><id>12008</id><value>Filstapel-dialog</value></string>
+  
+  
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
   <string><id>12312</id><value>2</value></string>
@@ -794,7 +795,7 @@
   <string><id>13312</id><value>Reducera svart ram</value></string>
   <string><id>13313</id><value>Reset/Starta om</value></string>
   <string><id>13314</id><value>Musik OSD timeout</value></string>
-  <string><id>13315</id><value>Återskapa miniatyrer</value></string>
+  <string><id>13315</id><value>Skapa miniatyrer</value></string>
   <string><id>13316</id><value>Rekursiva miniatyrer</value></string>
   <string><id>13317</id><value>Starta bildspel</value></string>
   <string><id>13318</id><value>Rekursivt bildspel</value></string>
@@ -870,11 +871,14 @@
   <string><id>13388</id><value>Inställningar</value></string>
   <string><id>13389</id><value>Det finns inga inställningar&#10;för den här visualiseringen</value></string>
   <string><id>13390</id><value>Det finns inga inställningar&#10;för den här visualiseringen</value></string>
-  <string><id>13391</id><value>Eject/Ladda</value></string>
+  <string><id>13391</id><value>Mata ut/Ladda</value></string>
+  <string><id>13392</id><value>Visualisering om musik spelas</value></string>
+  <string><id>13393</id><value>Kalkylera storlek</value></string>
+  <string><id>13394</id><value>Kalkylera mappens storlek</value></string>
   
-  <string><id>14000</id><value>Stapling : av</value></string>
-  <string><id>14001</id><value>Stapling : enkel</value></string>
-  <string><id>14002</id><value>Stapling : luddig</value></string>
+  <string><id>14000</id><value>Stapling : Av</value></string>
+  <string><id>14001</id><value>Stapling : Enkel</value></string>
+  <string><id>14002</id><value>Stapling : Diffus</value></string>
   <string><id>14003</id><value>Laddar ner spellista...</value></string>
   <string><id>14004</id><value>Laddar ner strömlista...</value></string>
   <string><id>14005</id><value>Bearbetar strömlista...</value></string>
@@ -934,14 +938,14 @@
   <string><id>14061</id><value>Auto</value></string>
   <string><id>14062</id><value>Ange användarnamn för</value></string>
   
-  <string><id>14063</id><value>Datum &amp; Klocka</value></string>
-  <string><id>14064</id><value>Ange År</value></string>
-  <string><id>14065</id><value>Ange Månad</value></string>
-  <string><id>14066</id><value>Ange Dag</value></string>
-  <string><id>14067</id><value>Ange Timme</value></string>
-  <string><id>14068</id><value>Ange Minute</value></string>
-  <string><id>14069</id><value>Vill du använda dessa inställningar nu?</value></string>
-  <string><id>14070</id><value>Spara Ändringar Nu</value></string>
+  <string><id>14063</id><value>Datum &amp; klocka</value></string>
+  <string><id>14064</id><value>Ange år</value></string>
+  <string><id>14065</id><value>Ange månad</value></string>
+  <string><id>14066</id><value>Ange tiden i 24-timmars TIM:MIN format</value></string>
+  <string><id>14067</id><value>Ange datum i DAG/MÅNAD/ÅR format</value></string>
+  <string><id>14068</id><value>Ange IP adressen</value></string>
+  <string><id>14069</id><value>Vill du spara dessa inställningar nu?</value></string> 	 
+  <string><id>14070</id><value>Spara inställningar</value></string> 
   
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Tjänsten är inte upprättad, vill du försöka</value></string>
@@ -1079,6 +1083,11 @@
 
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
   <string><id>15214</id><value>Använd mjuk A/V synkronisering</value></string>
+  
+  <string><id>16000</id><value>Allmänt</value></string>
+  <string><id>16001</id><value>A/V Receiver</value></string>
+  <string><id>16002</id><value>CDDB sök</value></string>
+  <string><id>16003</id><value>Spelare</value></string>
 </strings>
 
 
