@@ -49,11 +49,7 @@ public:
 	static bool GetXBLiveKey(CStdString& strXBLiveKey);
 	static bool GetHDDKey(CStdString& strhddlockey);
 	static bool GetHDDTemp(CStdString& strItemhdd);
-	static bool GetCurTime(CStdString& strCurTime);
 	static void GetFreeMemory(CStdString& strFreeMem);
-	static bool GetCPUTemp(CStdString& strCPUTemp);
-	static bool GetGPUTemp(CStdString& strGPUTemp);
-	static bool GetFanSpeed(CStdString& strFanSpeed);
 	
 private:
 	bool b_IsHome;

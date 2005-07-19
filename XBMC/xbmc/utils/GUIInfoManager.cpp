@@ -305,7 +305,7 @@ wstring CGUIInfoManager::GetLabel(int info)
     strLabel = GetDate();
     break;
   case SYSTEM_FPS:
-    strLabel.Format("%02.2f", GetFPS());
+    strLabel.Format("%02.2f", m_fps);
     break;
   case PLAYER_TIME:
     strLabel = GetCurrentPlayTime();
@@ -1287,7 +1287,7 @@ void CGUIInfoManager::Clear()
   m_CombinedValues.clear();
 }
 
-float CGUIInfoManager::GetFPS()
+void CGUIInfoManager::UpdateFPS()
 {
   m_frameCounter++;
   float fTimeSpan = (float)(timeGetTime() - m_lastFPSTime);
@@ -1298,5 +1298,4 @@ float CGUIInfoManager::GetFPS()
     m_lastFPSTime = timeGetTime();
     m_frameCounter = 0;
   }
-  return m_fps;
 }
