@@ -269,7 +269,7 @@ void CGUIWindowSettingsCategory::SetupControls()
   if (m_pOriginalImage) m_pOriginalImage->SetVisible(false);
   // setup our control groups...
   m_vecGroups.clear();
-  m_vecGroups.push_back( -1);
+  m_vecGroups.push_back(CONTROL_START_BUTTONS + m_iSection);
   // get a list of different sections
   CSettingsGroup *pSettingsGroup = g_guiSettings.GetGroup(m_iScreen);
   if (!pSettingsGroup) return ;
