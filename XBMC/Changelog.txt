@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-07-2005 fixed: External dvdplayer couldn't be based off Q:
+ - 19-07-2005 fixed: Couldn't alter volume while paused.
  - 19-07-2005 changed: Minor cleanup of system info.
  - 19-07-2005 fixed: Karaoke with paplayer + reduced mic delay.
  - 19-07-2005 changed: removed some separator bars from settings screens

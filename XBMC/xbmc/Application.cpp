@@ -1982,8 +1982,10 @@ bool CApplication::OnKey(CKey& key)
     else
     {
       if (action.wID == ACTION_PLAYER_PLAY)
+      {
         m_pPlayer->Pause();
-      return true;
+        return true;
+      }
     }
   }
   if (action.wID == ACTION_MUTE)
