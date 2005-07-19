@@ -245,7 +245,7 @@ bool CProgramDatabase::GetXBEPathByTitleId(const DWORD titleId, CStdString& strP
   return false;
 }
 
-long CProgramDatabase::AddFile(long lPathId, const CStdString& strFileName , DWORD titleId, const CStdString& strDescription)
+long CProgramDatabase::AddFile(long lPathId, const CStdString& strFileName1 , DWORD titleId, const CStdString& strDescription1)
 {
   CStdString strSQL = "";
   try
@@ -253,7 +253,10 @@ long CProgramDatabase::AddFile(long lPathId, const CStdString& strFileName , DWO
     long lFileId;
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
-
+    CStdString strFileName = strFileName1;
+    CStdString strDescription = strDescription1;
+    RemoveInvalidChars(strFileName);
+    RemoveInvalidChars(strDescription);
     strSQL.Format("select * from files where idPath=%i and strFileName like '%s'", lPathId, strFileName.c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() > 0)
@@ -280,12 +283,14 @@ long CProgramDatabase::AddFile(long lPathId, const CStdString& strFileName , DWO
 
 //********************************************************************************************************************************
 
-long CProgramDatabase::AddBookMark(const CStdString& strBookmark)
+long CProgramDatabase::AddBookMark(const CStdString& strBookmark1)
 {
   try
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
+    CStdString strBookmark = strBookmark1;
+    RemoveInvalidChars(strBookmark);
     CStdString strSQL;
     strSQL.Format("select * from bookmark where bookmarkName='%s'", strBookmark.c_str());
     m_pDS->query(strSQL.c_str());
@@ -307,20 +312,22 @@ long CProgramDatabase::AddBookMark(const CStdString& strBookmark)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CProgramDatabase::AddBookMark(%s) failed", strBookmark.c_str());
+    CLog::Log(LOGERROR, "CProgramDatabase::AddBookMark(%s) failed", strBookmark1.c_str());
   }
   return -1;
 }
 
 
 //********************************************************************************************************************************
-long CProgramDatabase::AddPath(const CStdString& strPath)
+long CProgramDatabase::AddPath(const CStdString& strPath1)
 {
   try
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
     CStdString strSQL;
+    CStdString strPath = strPath1;
+    RemoveInvalidChars(strPath);
     strSQL.Format("select * from path where strPath like '%s'", strPath.c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() == 0)
@@ -344,7 +351,7 @@ long CProgramDatabase::AddPath(const CStdString& strPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CProgramDatabase::AddPath(%s) failed", strPath.c_str());
+    CLog::Log(LOGERROR, "CProgramDatabase::AddPath(%s) failed", strPath1.c_str());
   }
   return -1;
 }
@@ -405,16 +412,16 @@ void CProgramDatabase::GetPathsByBookmark(const CStdString& strBookmark, vector 
 }
 
 
-long CProgramDatabase::GetPath(const CStdString& strPath)
+long CProgramDatabase::GetPath(const CStdString& strPath1)
 {
   try
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
-    CStdString strPath1 = strPath;
-    RemoveInvalidChars(strPath1);
+    CStdString strPath = strPath1;
+    RemoveInvalidChars(strPath);
     CStdString strSQL;
-    strSQL.Format("select * from path where strPath like '%s' ", strPath1.c_str());
+    strSQL.Format("select * from path where strPath like '%s' ", strPath.c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() > 0)
     {
@@ -426,7 +433,7 @@ long CProgramDatabase::GetPath(const CStdString& strPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CProgramDatabase::GetPath(%s) failed", strPath.c_str());
+    CLog::Log(LOGERROR, "CProgramDatabase::GetPath(%s) failed", strPath1.c_str());
   }
   return -1;
 }
@@ -573,7 +580,7 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, CFileItemL
 
 }
 
-void CProgramDatabase::GetProgramsByPath(const CStdString& strPath, CFileItemList& programs, int iDepth, bool bOnlyDefaultXBE)
+void CProgramDatabase::GetProgramsByPath(const CStdString& strPath1, CFileItemList& programs, int iDepth, bool bOnlyDefaultXBE)
 {
   try
   {
@@ -581,23 +588,24 @@ void CProgramDatabase::GetProgramsByPath(const CStdString& strPath, CFileItemLis
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
     CStdString strSQL;
-    CStdString strPath1 = strPath;
-    strPath1.Replace("\\", "/");
+    CStdString strPath = strPath1;
+    RemoveInvalidChars(strPath);
+    strPath.Replace("\\", "/");
     CStdString strShortCutsDir = g_stSettings.m_szShortcutDirectory;
     strShortCutsDir.Replace("\\", "/");
     if (bOnlyDefaultXBE)
     {
-      strSQL.Format("select strPath,strFilename,xbedescription,iTimesPlayed,lastAccessed from files,path where files.idPath=path.idPath and path.strPath like '%s/%%' and files.strFilename like '/default.xbe'", strPath1.c_str());
+      strSQL.Format("select strPath,strFilename,xbedescription,iTimesPlayed,lastAccessed from files,path where files.idPath=path.idPath and path.strPath like '%s/%%' and files.strFilename like '/default.xbe'", strPath.c_str());
     }
     else
     {
-      if (strPath1.c_str() == strShortCutsDir)
+      if (strPath.c_str() == strShortCutsDir)
       {
-        strSQL.Format("select strPath,strFilename,xbedescription,iTimesPlayed,lastAccessed from files,path where files.idPath=path.idPath and path.strPath like '%s'", strPath1.c_str());
+        strSQL.Format("select strPath,strFilename,xbedescription,iTimesPlayed,lastAccessed from files,path where files.idPath=path.idPath and path.strPath like '%s'", strPath.c_str());
       }
       else
       {
-        strSQL.Format("select strPath,strFilename,xbedescription,iTimesPlayed,lastAccessed from files,path where files.idPath=path.idPath and path.strPath like '%s/%%'", strPath1.c_str());
+        strSQL.Format("select strPath,strFilename,xbedescription,iTimesPlayed,lastAccessed from files,path where files.idPath=path.idPath and path.strPath like '%s/%%'", strPath.c_str());
       }
     }
     m_pDS->query(strSQL.c_str());

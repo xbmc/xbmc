@@ -127,6 +127,7 @@ void CCharsetConverter::reset(void)
   m_iconvStringCharsetToUtf8 = (iconv_t) - 1;
   m_iconvUcs2CharsetToStringCharset = (iconv_t) - 1;
   m_iconvSubtitleCharsetToFontCharset = (iconv_t) - 1;
+  m_iconvUtf16toUtf8 = (iconv_t) - 1;
   m_stringFribidiCharset = FRIBIDI_CHARSET_NOT_FOUND;
 
   for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
@@ -268,6 +269,25 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdSt
       return ;
     }
 
+    strDest.resize(originalOutBytes - outBytes);
+  }
+}
+
+void CCharsetConverter::UTF16toUTF8(const CStdStringW& strSource, CStdStringA &strDest)
+{
+  if (m_iconvUtf16toUtf8 == (iconv_t) - 1)
+    m_iconvUtf16toUtf8 = iconv_open("UTF-8", "UTF-16LE");
+  if (m_iconvUtf16toUtf8 != (iconv_t) - 1)
+  {
+    const char* src = (const char*) strSource.c_str();
+    size_t inBytes = (strSource.length() + 1)*2;
+    char *dst = strDest.SetBuf(inBytes);
+    size_t outBytes = (inBytes * 2) + 1;  // some free for UTF8 conversion
+    size_t originalOutBytes = outBytes;
+    if (iconv(m_iconvUtf16toUtf8, &src, &inBytes, &dst, &outBytes))
+    { // failed :(
+      strDest = strSource;
+    }
     strDest.resize(originalOutBytes - outBytes);
   }
 }
