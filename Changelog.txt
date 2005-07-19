@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-07-2005 fixed: Karaoke with paplayer + reduced mic delay.
  - 19-07-2005 changed: removed some separator bars from settings screens
  - 19-07-2006 fixed: Incorrect focused category in settings screens on reentry.
  - 18-07-2005 updated: German language file
