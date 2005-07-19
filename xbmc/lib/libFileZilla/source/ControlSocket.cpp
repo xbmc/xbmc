@@ -34,6 +34,7 @@
 #include "../../Util.h"
 #include "../../Utils/log.h"
 #include "../../GUISettings.h"
+#include "../../ApplicationMessenger.h"
 
 extern void fast_memcpy(void* d, const void* s, unsigned n);
 
@@ -2126,7 +2127,15 @@ void CControlSocket::ParseCommand()
 	    //Command not recognized
 	    if (nCommandID==-1)
 	    {
-		    Send("500 Syntax error, command unrecognized.");
+        // check for a built-in function
+        CStdString strBuiltIn = sitecommand;
+        if (!CUtil::IsBuiltIn(sitecommand))
+          strBuiltIn = "XBMC." + sitecommand;
+        // send using a threadmessage...
+        ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
+        tMsg.strParam = strBuiltIn;
+        g_applicationMessenger.SendMessage(tMsg, true);
+        Send(_T("200 Executed built in function."));
 		    return;
 	    }
       switch (nCommandID)
