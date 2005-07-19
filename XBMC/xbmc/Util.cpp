@@ -2713,42 +2713,42 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &strFunct
   int iPos2 = strFunction.Find(")", iPos);
   if (iPos > 0 && iPos2 > 0)
   { // got a parameter
-    strParam = strFunction.Mid(iPos + 1, iPos2 - iPos - 1);
-    strFunction = strFunction.Left(iPos).c_str();
+    strParam = strFunction.Mid(iPos + 1, iPos2 - iPos - 1).ToLower();
+    strFunction = strFunction.Left(iPos).ToLower();
   }
 }
 
-void CUtil::ExecBuiltIn(const CStdString& execString)
+bool CUtil::ExecBuiltIn(const CStdString& execString)
 {
   // Get the text after the "XBMC."
   CStdString execute, parameter;
   SplitExecFunction(execString, execute, parameter);
 
-  if (execute.Equals("Reboot") || execute.Equals("Restart"))  //Will reboot the xbox, aka cold reboot
+  if (execute.Equals("reboot") || execute.Equals("restart"))  //Will reboot the xbox, aka cold reboot
   {
     g_applicationMessenger.Restart();
   }
-  else if (execute.Equals("ShutDown"))
+  else if (execute.Equals("shutdown"))
   {
     g_applicationMessenger.Shutdown();
   }
-  else if (execute.Equals("Dashboard"))
+  else if (execute.Equals("dashboard"))
   {
     RunXBE(g_stSettings.szDashboard);
   }
-  else if (execute.Equals("RestartApp"))
+  else if (execute.Equals("restartapp"))
   {
     g_applicationMessenger.RestartApp();
   }
-  else if (execute.Equals("Credits"))
+  else if (execute.Equals("credits"))
   {
     RunCredits();
   }
-  else if (execute.Equals("Reset")) //Will reset the xbox, aka soft reset
+  else if (execute.Equals("reset")) //Will reset the xbox, aka soft reset
   {
     g_applicationMessenger.Reset();
   }
-  else if (execute.Equals("ActivateWindow"))
+  else if (execute.Equals("activatewindow"))
   {
     // get the parameters
     CStdString strWindow;
@@ -2761,7 +2761,7 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
       // error condition missing path
       // XMBC.ActivateWindow(1,)
       CLog::Log(LOGERROR, "ActivateWindow called with invalid parameter: %s", parameter.c_str());
-      return ;
+      return false;
     }
     else if (iPos < 0)
     {
@@ -2782,6 +2782,8 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
     int iWindow = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
     if (iWindow != WINDOW_INVALID)
     {
+      // disable the screensaver
+      g_application.ResetScreenSaverWindow();
       // check what type of window we have (it could be a dialog)
       CGUIWindow *pWindow = m_gWindowManager.GetWindow(iWindow);
       if (pWindow && pWindow->IsDialog())
@@ -2790,49 +2792,51 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
         CGUIDialog *pDialog = (CGUIDialog *)pWindow;
         if (!pDialog->IsRunning())
           pDialog->DoModal(m_gWindowManager.GetActiveWindow());
-        return ;
+        return true;
       }
       m_gWindowManager.ActivateWindow(iWindow, strPath);
     }
     else
     {
       CLog::Log(LOGERROR, "ActivateWindow called with invalid destination window: %s", strWindow.c_str());
+      return false;
     }
   }
-  else if (execute.Equals("RunScript"))
+  else if (execute.Equals("runscript"))
   {
     g_pythonParser.evalFile(parameter.c_str());
   }
-  else if (execute.Equals("RunXBE"))
+  else if (execute.Equals("runsbe"))
   {
     CUtil::RunXBE(parameter.c_str());
   }
-  else if (execute.Equals("PlayMedia"))
+  else if (execute.Equals("playmedia"))
   {
     if (parameter.IsEmpty())
     {
       CLog::Log(LOGERROR, "XBMC.PlayMedia called with empty parameter");
-      return ;
+      return false;
     }
     CFileItem item(parameter, false);
     if (!g_application.PlayMedia(item, PLAYLIST_MUSIC_TEMP))
     {
       CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", parameter.c_str());
+      return false;
     }
   }
-  else if (execute.Equals("SlideShow") || execute.Equals("RecursiveSlideShow"))
+  else if (execute.Equals("slideShow") || execute.Equals("recursiveslideShow"))
   {
     if (parameter.IsEmpty())
     {
       CLog::Log(LOGERROR, "XBMC.SlideShow called with empty parameter");
-      return ;
+      return false;
     }
     CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, execute.Equals("SlideShow") ? 0 : 1, 0, 0);
     msg.SetStringParam(parameter);
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
   }
-  else if (execute.Equals("ReloadSkin"))
+  else if (execute.Equals("reloadskin"))
   {
     //	Reload the skin
     int iActiveWindowID = m_gWindowManager.GetActiveWindow();
@@ -2845,14 +2849,14 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
     CGUIMessage msg(GUI_MSG_SETFOCUS, iActiveWindowID, dwFocusedControlID, 0);
     pWindow->OnMessage(msg);
   }
-  else if (execute.Equals("PlayerControl"))
+  else if (execute.Equals("playercontrol"))
   {
     if (parameter.IsEmpty())
     {
       CLog::Log(LOGERROR, "XBMC.PlayerControl called with empty parameter");
-      return;
+      return false;
     }
-    if (parameter.Equals("Play"))
+    if (parameter.Equals("play"))
     { // play/pause
       // either resume playing, or pause
       if (g_application.IsPlaying())
@@ -2869,20 +2873,20 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
 //         g_playlistPlayer.Play(g_playlistPlayer.Pl
       }
     } 
-    else if (parameter.Equals("Stop"))
+    else if (parameter.Equals("stop"))
     {
       g_application.StopPlaying();
     }
-    else if (parameter.Equals("Rewind") || parameter.Equals("Forward"))
+    else if (parameter.Equals("rewind") || parameter.Equals("forward"))
     {
       if (g_application.IsPlaying() && !g_application.m_pPlayer->IsPaused())
       {
         int iPlaySpeed = g_application.GetPlaySpeed();
-        if (parameter.Equals("Rewind") && iPlaySpeed == 1) // Enables Rewinding
+        if (parameter.Equals("rewind") && iPlaySpeed == 1) // Enables Rewinding
           iPlaySpeed *= -2;
-        else if (parameter.Equals("Rewind") && iPlaySpeed > 1) //goes down a notch if you're FFing
+        else if (parameter.Equals("rewind") && iPlaySpeed > 1) //goes down a notch if you're FFing
           iPlaySpeed /= 2;
-        else if (parameter.Equals("Forward") && iPlaySpeed < 1) //goes up a notch if you're RWing
+        else if (parameter.Equals("forward") && iPlaySpeed < 1) //goes up a notch if you're RWing
         {
           iPlaySpeed /= 2;
           if (iPlaySpeed == -1) iPlaySpeed = 1;
@@ -2896,16 +2900,16 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
         g_application.SetPlaySpeed(iPlaySpeed);
       }
     }
-    else if (parameter.Equals("Next"))
+    else if (parameter.Equals("next"))
     {
       g_playlistPlayer.PlayNext();
     }
-    else if (parameter.Equals("Previous"))
+    else if (parameter.Equals("previous"))
     {
       g_playlistPlayer.PlayPrevious();
     }
   }
-  else if (execute.Equals("EjectTray"))
+  else if (execute.Equals("ejecttray"))
   {
     CIoSupport io;
     if (io.GetTrayState() == TRAY_OPEN)
@@ -2913,7 +2917,7 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
     else
       io.EjectTray();
   }
-  else if( execute.Equals("AlarmClock") ) 
+  else if( execute.Equals("alarmclock") ) 
   {	
     CStdString strTime;
     CStdString strHeading = g_localizeStrings.Get(13209);
@@ -2925,12 +2929,15 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
       if( CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading) )
         fSecs = static_cast<float>(atoi(strTime.c_str())*60);
       else
-        return;
+        return false;
     }
     if( g_alarmClock.isRunning() )
       g_alarmClock.stop();
     g_alarmClock.start(fSecs);
   }
+  else
+    return false;
+  return true;
 }
 
 int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName)
