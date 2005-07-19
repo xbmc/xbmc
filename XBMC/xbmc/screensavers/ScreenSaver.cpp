@@ -19,7 +19,6 @@ CScreenSaver::CScreenSaver(struct ScreenSaver* pScr, DllLoader* pLoader, const C
 
 CScreenSaver::~CScreenSaver()
 {
-  g_application.m_CdgParser.FreeGraphics();
 }
 
 void CScreenSaver::Create()
