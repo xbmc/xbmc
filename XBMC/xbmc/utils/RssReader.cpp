@@ -93,6 +93,16 @@ void CRssReader::Process()
       }
     }
 
+    bool forceUTF8(false);
+    if (strXML[0] == (char)0xff && strXML[1] == (char)0xfe)  // byte order marker -> unicode
+    { // convert to utf8
+      strXML = strXML.Mid(2);
+      CStdString strUTF8;
+      g_charsetConverter.UTF16toUTF8((WCHAR *)strXML.c_str(), strUTF8);
+      strXML = strUTF8;
+      forceUTF8 = true;
+    }
+
     if ((!strXML.IsEmpty()) && m_pObserver)
     {
       // remove CDATA sections from our buffer (timyXML is not able to parse these)
@@ -113,7 +123,21 @@ void CRssReader::Process()
         iStart = strXML.Find("<![CDATA[");
       }
 
-      if (Parse((LPSTR)strXML.c_str(),iFeed))
+      // erase any <content:encoded> tags (also unsupported by tinyxml)
+      iStart = strXML.Find("<content:encoded>");
+      iEnd = 0;
+      while (iStart > 0)
+      {
+        // get <content:encoded> end position
+        iEnd = strXML.Find("</content:encoded>", iStart) + 18;
+
+        // erase the section
+        strXML = strXML.erase(iStart, iEnd - iStart);
+
+        iStart = strXML.Find("<content:encoded>");
+      }
+
+      if (Parse((LPSTR)strXML.c_str(),iFeed, forceUTF8))
       {
         CLog::Log(LOGDEBUG, "Parsed rss feed: %s", strUrl.c_str());
       }
@@ -224,11 +248,10 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
   }
 }
 
-bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
+bool CRssReader::Parse(LPSTR szBuffer, int iFeed, bool forceUTF8)
 {
   m_xml.Clear();
-  m_xml.Parse((LPCSTR)szBuffer);
-
+  m_xml.Parse((LPCSTR)szBuffer, 0, forceUTF8 ? TIXML_ENCODING_UTF8 : TIXML_DEFAULT_ENCODING);
   return Parse(iFeed);
 }
 
