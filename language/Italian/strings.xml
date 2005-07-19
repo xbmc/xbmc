@@ -263,7 +263,7 @@
   <string><id>331</id><value>Compressione archivio...</value></string>
   <string><id>332</id><value>Errore durante la compressione dell'archivio</value></string>
   <string><id>333</id><value>Vuoi riorganizzare l'archivio musicale?</value></string>
-  <string><id>334</id><value>Riorganizza l'Archivio Musicale</value></string>
+  <string><id>334</id><value>Riorganizzo Archivio Musicale...</value></string>
   <string><id>335</id><value>Avvia</value></string>
   <string><id>336</id><value>Adatta Framerate</value></string>
   <string><id>337</id><value>Uscita Audio</value></string>
@@ -409,7 +409,7 @@
   <string><id>477</id><value>Impossibile caricare la playlist</value></string>
   <string><id>478</id><value>OSD</value></string>
   <string><id>479</id><value>Skin e Lingua</value></string>
-  <string><id>480</id><value>Interfaccia Utente</value></string>
+  <string><id>480</id><value>Aspetto</value></string>
   <string><id>481</id><value>Opzioni Audio</value></string>
   <string><id>482</id><value>About XBMC</value></string>
   <string><id>483</id><value>Album</value></string>
@@ -471,7 +471,7 @@
   <string><id>635</id><value>Dimensione originale</value></string>
   <string><id>636</id><value>Personalizzata</value></string>
   <string><id>637</id><value>Replay Gain</value></string> 
-  <string><id>638</id><value>Modo</value></string> 
+  <string><id>638</id><value>Modalità Replay Gain</value></string> 
   <string><id>639</id><value>Usa Livelli Traccia</value></string> 
   <string><id>640</id><value>Usa Livelli Album</value></string> 
   <string><id>641</id><value>Livello PreAmp - Replay Gained Files</value></string> 
@@ -605,7 +605,7 @@
   <string><id>1253</id><value>Crea collegamento FTP nel Filemanager</value></string>
   <string><id>1254</id><value>Popup Notification</value></string>
   <string><id>1255</id><value>Invia FTP User and Password</value></string>
-  <string><id>1256</id><value>Intervallo Ping in sec.</value></string>
+  <string><id>1256</id><value>Intervallo Ping</value></string>
 
   <string><id>1396</id><value>Mutevole</value></string>
   <string><id>1397</id><value>e</value></string>
@@ -633,32 +633,30 @@
   <string><id>10007</id><value>Informazioni Sistema</value></string>
   <string><id>10008</id><value>Impostazioni->Generale</value></string>
   <string><id>10009</id><value>Impostazioni->Video</value></string>
-  <string><id>10010</id><value>Impostazioni->Video->Calibrazione UI</value></string>
-  <string><id>10011</id><value>Impostazioni->Video->Calibrazione Video</value></string>
-  <string><id>10012</id><value>Impostazioni->SlideShow</value></string>
-  <string><id>10013</id><value>Impostazioni->Video->Filtri</value></string>
-  <string><id>10014</id><value>Impostazioni->Musica</value></string>
-  <string><id>10015</id><value>Impostazioni->Video->Sottotitoli</value></string>
-  <string><id>10016</id><value>Impostazioni->Video->Screensaver</value></string>
-  <string><id>10017</id><value>Impostazioni->Meteo</value></string>
-  <string><id>10020</id><value>Impostazioni->Scripts</value></string>
-  <string><id>10021</id><value>Video/generi</value></string>
-  <string><id>10022</id><value>Video/attori</value></string>
-  <string><id>10023</id><value>Video/anno</value></string>
-  <string><id>10024</id><value>Impostazioni->Programmi</value></string>
-  <string><id>10025</id><value>Video/titolo</value></string>
-  <string><id>10026</id><value>Impostazioni->Generale->Cache</value></string>
-  <string><id>10027</id><value>Impostazioni->Generale->Avvio automatico</value></string>
-  <string><id>10028</id><value>Video/playlist</value></string>
-  <string><id>10029</id><value>Impostazioni->Generale->LCD</value></string>
+  <string><id>10010</id><value>Impostazioni-&gt;Aspetto-&gt;Calibrazione GUI</value></string>
+  <string><id>10011</id><value>Impostazioni-&gt;Video-&gt;Calibrazione Schermo</value></string>
+  <string><id>10012</id><value>Impostazioni-&gt;Immagini</value></string>
+  <string><id>10013</id><value>Impostazioni-&gt;Programmi</value></string>
+  <string><id>10014</id><value>Impostazioni-&gt;Meteo</value></string>
+  <string><id>10015</id><value>Impostazioni-&gt;Musica</value></string>
+  <string><id>10016</id><value>Impostazioni-&gt;Sistema</value></string>
+  <string><id>10017</id><value>Impostazioni-&gt;Video</value></string>
+  <string><id>10018</id><value>Impostazioni-&gt;Network</value></string>
+  <string><id>10019</id><value>Impostazioni-&gt;Aspetto</value></string>
+  <string><id>10020</id><value>Scripts</value></string>
+  <string><id>10021</id><value>Video/Generi</value></string>
+  <string><id>10022</id><value>Video/Attori</value></string>
+  <string><id>10023</id><value>Video/Anni</value></string>
+  <string><id>10025</id><value>Video/Titoli</value></string>
+  <string><id>10028</id><value>Video/Playlist</value></string>
+  <string><id>10034</id><value>Impostazioni-&gt;Profili</value></string>
   <string><id>10100</id><value>Casella di dialogo Si/No</value></string>
   <string><id>10101</id><value>Barra di Progresso</value></string>
-  <string><id>10500</id><value>Musica/playlist</value></string>
-  <string><id>10501</id><value>Musica/file</value></string>
-  <string><id>10502</id><value>Musica/album</value></string>
-  <string><id>10503</id><value>Musica/artisti</value></string>
-  <string><id>10504</id><value>Musica/generi</value></string>
-  <string><id>10505</id><value>Musica/top 100</value></string>
+  <string><id>10500</id><value>Musica/Playlist</value></string>
+  <string><id>10501</id><value>Musica/File</value></string>
+  <string><id>10502</id><value>Musica/Album</value></string>
+  <string><id>10503</id><value>Musica/Artisti</value></string>
+
   <string><id>10506</id><value>Applicazioni</value></string>
   <string><id>10507</id><value>Configurazione</value></string>
   <string><id>10508</id><value>Previsioni Meteo</value></string>
@@ -679,7 +677,6 @@
   <string><id>10523</id><value>Info Album</value></string>
   <string><id>10524</id><value>Info Film</value></string>
 
-  <string><id>11000</id><value>Tastiera</value></string>
   <string><id>12000</id><value>Casella di Selezione</value></string>
   <string><id>12001</id><value>Musica/info</value></string>
   <string><id>12002</id><value>Dialog OK</value></string>
@@ -872,6 +869,7 @@
   <string><id>13389</id><value>Nessun preset disponibile&#10;per questo effetto grafico</value></string>
   <string><id>13390</id><value>Nessuna impostazione disponibile&#10;per questo effetto grafico</value></string>
   <string><id>13391</id><value>Eject/Carica</value></string>
+  <string><id>13392</id><value>Attivazione Automatica Effetto Grafico</value></string>
 
   <string><id>14000</id><value>Unisci: Spento</value></string>
   <string><id>14001</id><value>Unisci: Semplice</value></string>
@@ -942,7 +940,7 @@
   <string><id>14066</id><value>Inserire Orario in formato 24 hour HH:MM</value></string>
   <string><id>14067</id><value>Inserire Data in formato GG/MM/AAAA format</value></string>
   <string><id>14068</id><value>Inserire Indirizzo IP</value></string>
-  <string><id>14069</id><value>Vuoi impostare questi dati adesso?</value></string>
+  <string><id>14069</id><value>Vuoi salvare queste Impostazioni adesso?</value></string>
   <string><id>14070</id><value>Salva Impostazioni</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
@@ -1020,7 +1018,7 @@
   <string><id>15109</id><value>Propri della Skin</value></string> 
 
   <string><id>15200</id><value>AudioScrobbler</value></string>
-  <string><id>15201</id><value>Invia Info Canzoni a AudioScrobbler</value></string>
+  <string><id>15201</id><value>Invia Canzoni a AudioScrobbler</value></string>
   <string><id>15202</id><value>AudioScrobbler Username</value></string>
   <string><id>15203</id><value>AudioScrobbler Password</value></string>
   <string><id>15204</id><value>Inoperabile: disattivo...</value></string>
@@ -1081,4 +1079,8 @@
   <string><id>13296</id><value>Xbox è Connessa!</value></string>
   <string><id>13297</id><value>Xbox NON è Connessa! Controlla Configurazione Rete!</value></string>
   <string><id>13298</id><value>XBLIVE Key:</value></string>
+  <string><id>16000</id><value>Generale</value></string>
+  <string><id>16001</id><value>Configura Audio Hardware</value></string>
+  <string><id>16002</id><value>Ricerca CDDB</value></string>
+
 </strings>
