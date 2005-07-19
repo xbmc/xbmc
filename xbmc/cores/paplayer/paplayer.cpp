@@ -809,8 +809,8 @@ void PAPlayer::DoAudioWork()
   {
     m_pCallback->OnAudioData(m_visBuffer, m_visBufferLength);
     m_visBufferLength = 0;
-}
   }
+}
 
 void PAPlayer::StreamCallback( LPVOID pPacketContext )
 {
