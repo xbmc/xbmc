@@ -77,12 +77,14 @@ public:
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
 
   bool m_performingSeek;
-  float GetFPS();
+
+  wstring GetSystemHeatInfo(const CStdString &strInfo);
+  void UpdateFPS();
+  inline float GetFPS() { return m_fps; };
 
 protected:
   int TranslateSingleString(const CStdString &strCondition);
 
-  wstring GetSystemHeatInfo(const CStdString &strInfo);
   CStdString GetAudioScrobblerLabel(int item);
 
   // Current playing stuff
