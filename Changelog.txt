@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-07-2005 fixed: iTunes streaming.
  - 19-07-2005 added: Ftp SITE commands to XBMC's builtin functions.
  - 19-07-2005 fixed: Settings weren't saved on app exit.
  - 19-07-2005 fixed: UTF16 RSS feeds should at least display (no idea if they'll look as they're supposed to!)
