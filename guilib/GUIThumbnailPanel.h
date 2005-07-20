@@ -103,7 +103,7 @@ public:
   virtual void OnMouseClick(DWORD dwButton);
   virtual void OnMouseDoubleClick(DWORD dwButton);
   virtual void OnMouseWheel();
-  void ScrollDown();
+  bool ScrollDown();
   void ScrollUp();
   virtual bool HitTest(int iPosX, int iPosY) const;
   bool SelectItemFromPoint(int iPosX, int iPosY);

@@ -71,6 +71,7 @@ extern char g_szTitleIP[32];
 #define SYSTEM_ETHERNET_LINK_ACTIVE 122
 #define SYSTEM_IDLE_TIME            123
 #define SYSTEM_FPS                  124
+#define SYSTEM_KAI_CONNECTED        125
 
 #define NETWORK_IP_ADDRESS          190
 
@@ -231,6 +232,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
   else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
   else if (strTest.Equals("system.fps")) ret = SYSTEM_FPS;
+  else if (strTest.Equals("system.kaiconnected")) ret = SYSTEM_KAI_CONNECTED;
   else if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
   else if (strTest.Equals("musicplayer.title")) ret = MUSICPLAYER_TITLE;
   else if (strTest.Equals("musicplayer.album")) ret = MUSICPLAYER_ALBUM;
@@ -467,6 +469,8 @@ bool CGUIInfoManager::GetBool(int condition1) const
     bReturn = (g_application.GlobalIdleTime() >= i_Timer);
   else if (condition >= WINDOW_ACTIVE_START && condition <= WINDOW_ACTIVE_END)// check for Window.IsActive(window)
     bReturn = m_gWindowManager.IsWindowActive(condition);
+  else if (condition == SYSTEM_KAI_CONNECTED)
+    bReturn = CKaiClient::GetInstance()->IsEngineConnected();
   else if (g_application.IsPlaying())
   {
     switch (condition)

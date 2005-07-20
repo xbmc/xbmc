@@ -604,17 +604,13 @@ void CGUIThumbnailPanel::OnDown()
   {
     if (m_iCursorY + 1 == m_iRows)
     {
-      ScrollDown();
-      return ;
+      if (!ScrollDown())  // unable to scroll down
+        CGUIControl::OnDown();
+      return;
     }
     if ( ValidItem(m_iCursorX, m_iCursorY + 1) )
     {
       m_iCursorY++;
-    }
-    else if (m_upDown.GetMaximum() > 1)
-    {
-      m_iSelect = CONTROL_UPDOWN;
-      m_upDown.SetFocus(true);
     }
     else
       CGUIControl::OnDown();
@@ -1012,7 +1008,7 @@ bool CGUIThumbnailPanel::SelectItemFromPoint(int iPosX, int iPosY)
   return false;
 }
 
-void CGUIThumbnailPanel::ScrollDown()
+bool CGUIThumbnailPanel::ScrollDown()
 {
   // Check if we are already scrolling, and stop if we are (to speed up fast scrolls)
   if (m_bScrollDown)
@@ -1036,7 +1032,9 @@ void CGUIThumbnailPanel::ScrollDown()
   {
     m_iScrollCounter = m_iItemHeight;
     m_bScrollDown = true;
+    return true;
   }
+  return false;
 }
 
 void CGUIThumbnailPanel::ScrollUp()
