@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-07-2005 fixed: Vis as screensaver had issues on finish of song.
+ - 19-07-2005 fixed: Framerate in video playback.
  - 19-07-2005 added: SITE HELP command.
  - 19-07-2005 fixed: iTunes streaming.
  - 19-07-2005 added: Ftp SITE commands to XBMC's builtin functions.
