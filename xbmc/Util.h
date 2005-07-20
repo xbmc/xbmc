@@ -68,6 +68,7 @@ public:
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath);
   static bool IsHD(const CStdString& strFileName);
   static bool IsBuiltIn(const CStdString& execString);
+  static void GetBuiltInHelp(CStdString &help);
   static bool ExecBuiltIn(const CStdString& execString);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
