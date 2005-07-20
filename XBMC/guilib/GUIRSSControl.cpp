@@ -19,7 +19,7 @@ CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, i
   WCHAR wTmp[2];
   wTmp[0] = L' ';
   wTmp[1] = 0;
-  float fWidth, fHeight;
+  float fWidth = 15, fHeight;
   if (m_pFont)
     m_pFont->GetTextExtent(wTmp, &fWidth, &fHeight);
   m_iLeadingSpaces = (int) (dwWidth / fWidth);
