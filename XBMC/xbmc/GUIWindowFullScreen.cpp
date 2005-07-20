@@ -490,6 +490,8 @@ void CGUIWindowFullScreen::RenderFullScreen()
   m_bLastRender = true;
   if (!g_application.m_pPlayer) return ;
 
+  g_infoManager.UpdateFPS();
+
   bool bRenderGUI = g_application.m_pPlayer->IsPaused();
 
   //Display current progress

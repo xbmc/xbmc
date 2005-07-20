@@ -1599,8 +1599,6 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
 
 void CApplication::Render()
 {
-  g_infoManager.UpdateFPS();
-
   // update sound
   if (m_pPlayer)
   {
@@ -1672,6 +1670,9 @@ void CApplication::Render()
   {
     g_graphicsContext.EnablePreviewWindow(false);
   }
+
+  // update our FPS
+  g_infoManager.UpdateFPS();
 
   g_graphicsContext.Lock();
 
@@ -3503,6 +3504,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (!IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       {
         g_settings.Save();  // save vis settings
+        ResetScreenSaverWindow();
         m_gWindowManager.PreviousWindow();
       }
 
@@ -3511,6 +3513,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         // yes, disable vis
         g_settings.Save();    // save vis settings
+        ResetScreenSaverWindow();
         m_gWindowManager.PreviousWindow();
       }
       return true;
