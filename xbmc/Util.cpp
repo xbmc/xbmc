@@ -2854,7 +2854,7 @@ bool CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_pythonParser.evalFile(parameter.c_str());
   }
-  else if (execute.Equals("runsbe"))
+  else if (execute.Equals("runxbe"))
   {
     CUtil::RunXBE(parameter.c_str());
   }
