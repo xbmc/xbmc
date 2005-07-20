@@ -5,11 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 19-07-2005 added: System.KaiConnected conditional visibility.
- - 19-07-2005 fixed: Various skin issues (thumbpanels + buttonscroller)
- - 19-07-2005 fixed: Vis as screensaver had issues on finish of song.
- - 19-07-2005 fixed: Framerate in video playback.
- - 19-07-2005 added: SITE HELP command.
+ - 20-07-2005 added: System.KaiConnected conditional visibility.
+ - 20-07-2005 fixed: Various skin issues (thumbpanels + buttonscroller)
+ - 20-07-2005 fixed: Vis as screensaver had issues on finish of song.
+ - 20-07-2005 fixed: Framerate in video playback.
+ - 20-07-2005 added: SITE HELP command.
  - 19-07-2005 fixed: iTunes streaming.
  - 19-07-2005 added: Ftp SITE commands to XBMC's builtin functions.
  - 19-07-2005 fixed: Settings weren't saved on app exit.
