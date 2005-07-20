@@ -2696,12 +2696,46 @@ bool CUtil::IsUsingTTFSubtitles()
     return false;
 }
 
+typedef struct
+{
+  char command[19];
+  char description[128];
+} BUILT_IN;
+
+const BUILT_IN commands[] = {
+  "Help", "This help message",
+  "Reboot", "Reboot the xbox (power cycle)",
+  "Restart", "Restart the xbox (power cycle)",
+  "ShutDown", "Shutdown the xbox",
+  "Dashboard", "Run your dashboard",
+  "RestartApp", "Restart XBMC",
+  "Credits", "Run XBMCs Credits",
+  "Reset", "Reset the xbox (warm reboot)",
+  "ActivateWindow", "Activate the specified window",
+  "RunScript", "Run the specified script",
+  "RunXBE", "Run the specified executeable",
+  "PlayMedia", "Play the specified media file (or playlist)",
+  "SlideShow", "Run a slideshow from the specified directory",
+  "RecursiveSlideShow", "Run a slideshow from the specified directory, including all subdirs",
+  "ReloadSkin", "Reload XBMC's skin",
+  "PlayerControl", "Control the music or video player",
+  "EjectTray", "Close or open the DVD tray",
+  "AlarmClock", "Prompt for a length of time and start an alarm clock"
+};
+
 bool CUtil::IsBuiltIn(const CStdString& execString)
 {
-  //if (strncmp(execString.c_str(), "XBMC.", 5) == 0)
-  if (execString.Left(5).Equals("XBMC."))
-    return true;
-
+  CStdString execute = execString;
+  execute.ToLower();
+  if (!execute.Left(5).Equals("xbmc."))
+    return false;
+  CStdString function, param;
+  SplitExecFunction(execute, function, param);
+  for (int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
+  {
+    if (function.CompareNoCase(commands[i].command) == 0)
+      return true;
+  }
   return false;
 }
 
@@ -2715,6 +2749,20 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &strFunct
   { // got a parameter
     strParam = strFunction.Mid(iPos + 1, iPos2 - iPos - 1).ToLower();
     strFunction = strFunction.Left(iPos).ToLower();
+  }
+}
+
+void CUtil::GetBuiltInHelp(CStdString &help)
+{
+  help.Empty();
+  for (int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
+  {
+    help += commands[i].command;
+    help += "\t";
+//    for (int i = 0; i < 20 - strlen(commands[i].command); i++)
+//      help += " ";
+    help += commands[i].description;
+    help += "\n";
   }
 }
 

@@ -2103,7 +2103,7 @@ void CControlSocket::ParseCommand()
 
 	    //Check if command is valid
 	    int nCommandID = -1;
-	    for (int i = 0; i < (sizeof(site_commands) / sizeof(t_command)); i++)
+/*	    for (int i = 0; i < (sizeof(site_commands) / sizeof(t_command)); i++)
 	    {
 		    if (sitecommand == site_commands[i].command)
 		    {
@@ -2123,7 +2123,7 @@ void CControlSocket::ParseCommand()
 			    nCommandID = site_commands[i].nID;
 			    break;			
 		    }
-	    }
+	    }*/
 	    //Command not recognized
 	    if (nCommandID==-1)
 	    {
@@ -2131,11 +2131,32 @@ void CControlSocket::ParseCommand()
         CStdString strBuiltIn = sitecommand;
         if (!CUtil::IsBuiltIn(sitecommand))
           strBuiltIn = "XBMC." + sitecommand;
-        // send using a threadmessage...
-        ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
-        tMsg.strParam = strBuiltIn;
-        g_applicationMessenger.SendMessage(tMsg, true);
-        Send(_T("200 Executed built in function."));
+        if (!CUtil::IsBuiltIn(strBuiltIn))
+        { // invalid - send error
+          Send(_T("500 Invalid built-in function.  Use SITE HELP for a list of valid SITE commands"));
+          return;
+        }
+        if (!strBuiltIn.CompareNoCase("xbmc.help"))
+        {
+          CStdString strHelp;
+          CUtil::GetBuiltInHelp(strHelp);
+          int iReturn = strHelp.Find("\n");
+          while (iReturn >= 0)
+          {
+            Send(_T(strHelp.Left(iReturn)));
+            strHelp = strHelp.Mid(iReturn + 1);
+            iReturn = strHelp.Find("\n");
+          }
+          Send(_T("200 End of help"));
+        }
+        else
+        {
+          // send using a threadmessage...
+          ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
+          tMsg.strParam = strBuiltIn;
+          g_applicationMessenger.SendMessage(tMsg, true);
+          Send(_T("200 Executed built in function."));
+        }
 		    return;
 	    }
       switch (nCommandID)
