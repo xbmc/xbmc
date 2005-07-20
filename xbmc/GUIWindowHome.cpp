@@ -74,7 +74,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (iControl >= MENU_BUTTON_START && iControl <= MENU_BUTTON_END)
       {
         m_iLastMenuOption = m_iLastControl;
-        bool fade = (message.GetSenderId() >= MENU_BUTTON_START) && (message.GetSenderId() < MENU_BUTTON_END) && (message.GetSenderId() != iControl);
+        bool fade = ((message.GetSenderId() == CONTROL_BTN_SCROLLER) || (message.GetSenderId() >= MENU_BUTTON_START && message.GetSenderId() < MENU_BUTTON_END)) && (message.GetSenderId() != iControl);
 
         // make controls 102-120 invisible...
         for (int i = MENU_BUTTON_IMAGE_BACKGROUND_START; i < MENU_BUTTON_IMAGE_BACKGROUND_END; i++)
@@ -112,14 +112,30 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
           return true;
         }
         int iIconType = message.GetParam1();
+        bool fade = (message.GetSenderId() == CONTROL_BTN_SCROLLER) || (message.GetSenderId() >= MENU_BUTTON_START && message.GetSenderId() < MENU_BUTTON_END);
         if (iIconType >= MENU_BUTTON_IMAGE_BACKGROUND_START && iIconType <= MENU_BUTTON_IMAGE_BACKGROUND_END)
         {
           // make controls 101-120 invisible...
           for (int i = MENU_BUTTON_IMAGE_BACKGROUND_START; i < MENU_BUTTON_IMAGE_BACKGROUND_END; i++)
           {
-            SET_CONTROL_HIDDEN(i);
+            if (fade)
+            {
+              SET_CONTROL_FADE_OUT(i, 10);
+            }
+            else
+            {
+              SET_CONTROL_HIDDEN(i);
+            }
           }
-          SET_CONTROL_VISIBLE(iIconType);
+
+          if (fade)
+          {
+            SET_CONTROL_FADE_IN(iIconType, 10);
+          }
+          else
+          {
+            SET_CONTROL_VISIBLE(iIconType);
+          }
         }
         break;
       }
