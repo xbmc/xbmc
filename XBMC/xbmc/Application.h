@@ -247,6 +247,7 @@ protected:
   void UpdateLCD();
   bool SwitchToFullScreen();
   void FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
+  void InitBasicD3D();
   bool m_bXboxMediacenterLoaded;
   bool m_bSettingsLoaded;
   int m_iPlaySpeed;

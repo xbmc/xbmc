@@ -93,7 +93,7 @@
  #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
  #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
- #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlib.lib")
+ #pragma comment (lib,"xbmc/lib/unrarXlib/release/unrarxlib.lib")
 #endif
 
 #define NUM_HOME_PATHS 4
@@ -165,6 +165,61 @@ static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...
   }
 }
 
+void CApplication::InitBasicD3D()
+{
+  bool bPal = g_videoConfig.HasPAL();
+  CLog::Log(LOGINFO, "Init display in default mode: %s", bPal ? "PAL" : "NTSC");
+  // init D3D with defaults (NTSC or PAL standard res)
+  m_d3dpp.BackBufferWidth = 720;
+  m_d3dpp.BackBufferHeight = bPal ? 576 : 480;
+  m_d3dpp.BackBufferFormat = D3DFMT_LIN_X8R8G8B8;
+  m_d3dpp.BackBufferCount = 1;
+  m_d3dpp.EnableAutoDepthStencil = FALSE;
+  m_d3dpp.SwapEffect = D3DSWAPEFFECT_COPY;
+  m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+
+  if (!(m_pD3D = Direct3DCreate8(D3D_SDK_VERSION)))
+  {
+    CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create Direct3D!");
+    Sleep(INFINITE); // die
+  }
+
+  // Check if we have the required modes available
+  g_videoConfig.GetModes(m_pD3D);
+  if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
+  {
+    // Oh uh - doesn't look good for starting in their wanted screenmode
+    CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
+    g_guiSettings.m_LookAndFeelResolution = g_videoConfig.GetSafeMode();
+    CLog::Log(LOGERROR, "Resetting to mode %s", g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode);
+    CLog::Log(LOGERROR, "Done reset");
+  }
+  // Transfer the resolution information to our graphics context
+  g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
+  g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
+
+  // Create the device
+  if (m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
+  {
+    CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create D3D Device!");
+    Sleep(INFINITE); // die
+  }
+
+  m_pd3dDevice->GetBackBuffer(0, 0, &m_pBackBuffer);
+
+  //  XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
+
+  // Create the gamepad devices
+  //  HaveGamepad = (XBInput_CreateGamepads(&m_Gamepad) == S_OK);
+  if (m_splash)
+  {
+    m_splash->Stop();
+  }
+  m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
+  m_pd3dDevice->BlockUntilVerticalBlank();
+  m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+}
+
 // This function does not return!
 void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork)
 {
@@ -173,52 +228,13 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   CLog::Log(LOGWARNING, "Emergency recovery console starting...");
 
   bool HaveGamepad = !InitD3D;
-  bool Pal = g_videoConfig.HasPAL();
   if (InitD3D)
   {
-    CLog::Log(LOGINFO, "Init display in default mode: %s", Pal ? "PAL" : "NTSC");
-    // init D3D with defaults (NTSC or PAL standard res)
-    m_d3dpp.BackBufferWidth = 720;
-    m_d3dpp.BackBufferHeight = Pal ? 576 : 480;
-    m_d3dpp.BackBufferFormat = D3DFMT_LIN_X8R8G8B8;
-    m_d3dpp.BackBufferCount = 1;
-    m_d3dpp.EnableAutoDepthStencil = FALSE;
-    m_d3dpp.SwapEffect = D3DSWAPEFFECT_COPY;
-    m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-
-    if (!(m_pD3D = Direct3DCreate8(D3D_SDK_VERSION)))
-    {
-      CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create Direct3D!");
-      Sleep(INFINITE); // die
-    }
-
-    // Check if we have the required modes available
-    g_videoConfig.GetModes(m_pD3D);
-    if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
-    {
-      // Oh uh - doesn't look good for starting in their wanted screenmode
-      CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
-      g_guiSettings.m_LookAndFeelResolution = g_videoConfig.GetSafeMode();
-      CLog::Log(LOGERROR, "Resetting to mode %s", g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode);
-      CLog::Log(LOGERROR, "Done reset");
-    }
-    // Transfer the resolution information to our graphics context
-    g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
-    g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
-
-    // Create the device
-    if (m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
-    {
-      CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create D3D Device!");
-      Sleep(INFINITE); // die
-    }
-
-    m_pd3dDevice->GetBackBuffer(0, 0, &m_pBackBuffer);
-
+    InitBasicD3D();
     //  XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
 
     // Create the gamepad devices
-    //  HaveGamepad = (XBInput_CreateGamepads(&m_Gamepad) == S_OK);
+    //  HaveGamepad = (XBInput_CreateGamepads(&m_Gamepad) == S_OK);*/
   }
   if (m_splash)
   {
@@ -263,7 +279,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     helper.Remap("E:,Harddisk0\\Partition1");
   }
 
-  Pal = g_graphicsContext.GetVideoResolution() == PAL_4x3;
+  bool Pal = g_graphicsContext.GetVideoResolution() == PAL_4x3;
 
   if (HaveGamepad)
     FEH_TextOut(pFont, (Pal ? 16 : 12) | 0x18000, L"Press any button to reboot");
@@ -600,12 +616,37 @@ HRESULT CApplication::Create()
     ReadInput();
   }
 
-  //Check for START+BACK and BLACK+WHITE
-  if (m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_START + XINPUT_GAMEPAD_BACK ||
-      m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_BLACK] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_WHITE])
+  //Check for LTHUMBCLICK+RTHUMBCLICK and BLACK+WHITE, no LTRIGGER+RTRIGGER
+  if (((m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB + XINPUT_GAMEPAD_RIGHT_THUMB) && !(m_DefaultGamepad.wButtons & KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER)) ||
+      ((m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_BLACK] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_WHITE]) && !(m_DefaultGamepad.wButtons & KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER)))
   {
     CLog::Log(LOGINFO, "Key combination detected for TDATA deletion (START+BACK or BLACK+WHITE)");
-    CUtil::DeleteTDATA();
+    InitBasicD3D();
+    // D3D is up, load default font
+    XFONT* pFont;
+    if (XFONT_OpenDefaultFont(&pFont) != S_OK)
+    {
+      CLog::Log(LOGFATAL, "FATAL ERROR: Unable to open default font!");
+      Sleep(INFINITE); // die
+    }
+    // defaults for text
+    pFont->SetBkMode(XFONT_OPAQUE);
+    pFont->SetBkColor(D3DCOLOR_XRGB(0, 0, 0));
+    pFont->SetTextColor(D3DCOLOR_XRGB(0xff, 0x20, 0x20));
+    int iLine = 0;
+    FEH_TextOut(pFont, iLine++, L"Key combination detected for TDATA deletion:");
+    FEH_TextOut(pFont, iLine++, L"Are you sure you want to proceed?");
+    iLine++;
+    FEH_TextOut(pFont, iLine++, L"A for yes, any other key for no");
+    bool bAnyAnalogKey = false;
+    while (m_DefaultGamepad.wPressedButtons == XBGAMEPAD_NONE && !bAnyAnalogKey) 
+    {
+      ReadInput();
+      bAnyAnalogKey = m_DefaultGamepad.bPressedAnalogButtons[0] || m_DefaultGamepad.bPressedAnalogButtons[1] || m_DefaultGamepad.bPressedAnalogButtons[2] || m_DefaultGamepad.bPressedAnalogButtons[3] || m_DefaultGamepad.bPressedAnalogButtons[4] || m_DefaultGamepad.bPressedAnalogButtons[5] || m_DefaultGamepad.bPressedAnalogButtons[6] || m_DefaultGamepad.bPressedAnalogButtons[7];
+    }
+    if (m_DefaultGamepad.bPressedAnalogButtons[XINPUT_GAMEPAD_A])
+      CUtil::DeleteTDATA();
+    m_pd3dDevice->Release();
   }
 
   CLog::Log(LOGNOTICE, "load settings...");
@@ -2793,8 +2834,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     strNewPlayer = m_strForcedNextPlayer;
     m_strForcedNextPlayer = "";
   }
-  /*
-  else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 && (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage()))
+    /*
+    else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 && (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage()))
   {
     strNewPlayer = "dvdplayer";
   }
