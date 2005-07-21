@@ -93,7 +93,7 @@
  #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
  #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
- #pragma comment (lib,"xbmc/lib/unrarXlib/release/unrarxlib.lib")
+ #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlib.lib")
 #endif
 
 #define NUM_HOME_PATHS 4
