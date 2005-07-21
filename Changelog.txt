@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-07-2005 added: made HTTPAPI callable from Python scripts
  - 21-07-2005 added: warning dialog before tdata deletion. NEW KEY COMBINATION, INSTEAD OF START+BACK USE LTHUMBCLICK+RTHUMBCLICK.
  - 21-07-2005 fixed: dvd tray states could become wrong (empty when disc was present) with some pc dvdroms.
  - 20-07-2005 added: System.KaiConnected conditional visibility.
