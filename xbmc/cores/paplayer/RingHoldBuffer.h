@@ -336,11 +336,13 @@ public:
         m_iBehindAmount += nBufLen;
         m_iAheadAmount -= nBufLen;
         bResult = TRUE;
+
       }
     }
     ::LeaveCriticalSection(&m_critSection );
  //   CLog::Log(LOGERROR, "RingHoldBuffer::ReadBinary Done %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount);
     return bResult;
+
   }
 
   BOOL PeakBinary( char * pBuf, unsigned int nBufLen )
@@ -384,9 +386,10 @@ public:
       // if we're going backwards, check we've got enough data behind us
       if ( nBufLen < 0 && m_iBehindAmount >= (unsigned int)(-nBufLen) )
       {
-        m_iReadPtr -= -nBufLen;
-        if (m_iReadPtr < 0) // wrap
-          m_iReadPtr += m_nBufSize;
+        if ((unsigned int)(-nBufLen) > m_iReadPtr) // wrap
+          m_iReadPtr = m_nBufSize + nBufLen;
+        else
+          m_iReadPtr -= -nBufLen;
         m_iAheadAmount -= nBufLen;
         m_iBehindAmount += nBufLen;
         bResult = TRUE;

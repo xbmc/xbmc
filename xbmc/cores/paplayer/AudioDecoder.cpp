@@ -204,7 +204,7 @@ int CAudioDecoder::ReadData(int sendsize)
     if (result == READ_ERROR)
     {
       // error decoding, lets finish up and get out
-      CLog::Log(LOGINFO, "CAudioDecoder: Error while decoding %i", result);
+      CLog::Log(LOGERROR, "CAudioDecoder: Error while decoding %i", result);
       return RET_ERROR;
     }
     if (result == READ_EOF)

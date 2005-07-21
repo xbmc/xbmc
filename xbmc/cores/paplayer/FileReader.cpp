@@ -79,7 +79,7 @@ int CFileReader::Read(void *out, __int64 size)
         byteOut += amountToCopy;
         sizeleft -= amountToCopy;
       }
-      if (sleeptime > 20)
+      if (sleeptime > 50)
       {
         CLog::Log(LOGDEBUG, "FileReader: Waited a total of %i ms on data", sleeptime);
         sleeptime = 0;
