@@ -129,12 +129,13 @@
       <description>cover image</description>
       <type>image</type>
       <id>1</id>
-      <posX>540</posX>
+      <posX>555</posX>
       <posY>338</posY>
-      <width>100</width>
+      <width>90</width>
       <height>99</height>
       <info>MusicPlayer.Cover</info>
       <visible>!Window.IsActive(56)</visible>
+      <keepaspectratio>true</keepaspectratio>
     </control>
 
     <control>
@@ -142,7 +143,7 @@
       <type>label</type>
       <id>1</id>
       <width>255</width>
-      <posX>525</posX>
+      <posX>540</posX>
       <posY>340</posY>
       <info>MusicPlayer.Artist</info>
       <align>right</align>
@@ -155,7 +156,7 @@
       <type>label</type>
       <id>1</id>
       <width>255</width>
-      <posX>525</posX>
+      <posX>540</posX>
       <posY>365</posY>
       <info>MusicPlayer.Title</info>
       <align>right</align>
@@ -168,7 +169,7 @@
       <type>label</type>
       <id>1</id>
       <width>255</width>
-      <posX>525</posX>
+      <posX>540</posX>
       <posY>394</posY>
       <info>MusicPlayer.Album</info>
       <align>right</align>
@@ -180,7 +181,7 @@
       <description>Time label</description>
       <type>label</type>
       <id>1</id>
-      <posX>525</posX>
+      <posX>540</posX>
       <posY>415</posY>
       <info>MusicPlayer.Time</info>
       <align>right</align>
