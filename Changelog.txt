@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-07-2005 fixed: dvd tray states could become wrong (empty when disc was present) with some pc dvdroms.
  - 20-07-2005 added: System.KaiConnected conditional visibility.
  - 20-07-2005 fixed: Various skin issues (thumbpanels + buttonscroller)
  - 20-07-2005 fixed: Vis as screensaver had issues on finish of song.
