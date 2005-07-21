@@ -13,9 +13,9 @@
       <type>image</type>
       <id>0</id>
       <posX>-245</posX>
-      <posY>5</posY>
+      <posY>0</posY>
       <width>805</width>
-      <height>87</height>
+      <height>90</height>
       <texture>sub-background.png</texture>
     </control>
 
@@ -24,9 +24,9 @@
       <type>button</type>
       <id>3110</id>
       <posX>30</posX>
-      <posY>10</posY>
+      <posY>5</posY>
       <width>60</width>
-      <height>60</height>
+      <height>65</height>
       <textureFocus>sub-exit-focus.gif</textureFocus>
       <textureNoFocus>sub-exit-nofocus.png</textureNoFocus>
       <execute>XBMC.Dashboard()</execute>
@@ -44,9 +44,9 @@
       <type>button</type>
       <id>3111</id>
       <posX>90</posX>
-      <posY>10</posY>
+      <posY>5</posY>
       <width>60</width>
-      <height>60</height>
+      <height>65</height>
       <textureFocus>sub-eject-focus.gif</textureFocus>
       <textureNoFocus>sub-eject-nofocus.png</textureNoFocus>
       <execute>XBMC.EjectTray()</execute>
@@ -64,9 +64,9 @@
       <type>button</type>
       <id>3112</id>
       <posX>150</posX>
-      <posY>10</posY>
+      <posY>5</posY>
       <width>60</width>
-      <height>60</height>
+      <height>65</height>
       <textureFocus>sub-shutdown-focus.gif</textureFocus>
       <textureNoFocus>sub-shutdown-nofocus.png</textureNoFocus>
       <execute>XBMC.ShutDown()</execute>
@@ -84,9 +84,9 @@
       <type>button</type>
       <id>3113</id>
       <posX>210</posX>
-      <posY>10</posY>
+      <posY>5</posY>
       <width>60</width>
-      <height>60</height>
+      <height>65</height>
       <textureFocus>sub-info-focus.gif</textureFocus>
       <textureNoFocus>sub-info-nofocus.png</textureNoFocus>
       <execute>XBMC.ActivateWindow(7)</execute>
@@ -104,9 +104,9 @@
       <type>button</type>
       <id>3114</id>
       <posX>270</posX>
-      <posY>10</posY>
+      <posY>5</posY>
       <width>60</width>
-      <height>60</height>
+      <height>65</height>
       <textureFocus>sub-reboot-focus.gif</textureFocus>
       <textureNoFocus>sub-reboot-nofocus.png</textureNoFocus>
       <execute>XBMC.Reset()</execute>
@@ -124,9 +124,9 @@
       <type>button</type>
       <id>3115</id>
       <posX>150</posX>
-      <posY>10</posY>
+      <posY>5</posY>
       <width>60</width>
-      <height>60</height>
+      <height>65</height>
       <textureFocus>sub-shutdown-focus.gif</textureFocus>
       <textureNoFocus>-</textureNoFocus>
       <execute>XBMC.ReloadSkin()</execute>
