@@ -1,3 +1,8 @@
+2005-07-21 fixed:	shutdownmenu aspect ratio in 4:3
+2005-07-21 fixed:	bad button textures in the 4:3 homescreen
+2005-07-21 changed:	made the logo in the 4:3 homescreen a little bit smaller (like in the 16:9 homescreen)
+2005-07-21 fixed:	music cover aspect ratio in the 4:3 homescreen
+
 2005-07-18 added:       separator texture for settings
 
 2005-07-11 added:	textures for numerical keyboard
