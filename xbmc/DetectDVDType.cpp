@@ -304,7 +304,7 @@ DWORD CDetectDVDMedia::GetTrayState()
   }
   else if (m_dwTrayState == TRAY_CLOSED_NO_MEDIA)
   {
-    if (m_dwLastTrayState != TRAY_CLOSED_NO_MEDIA)
+    if ( (m_dwLastTrayState != TRAY_CLOSED_NO_MEDIA) && (m_dwLastTrayState != TRAY_CLOSED_MEDIA_PRESENT) )
     {
       m_dwLastTrayState = m_dwTrayState;
       return DRIVE_CLOSED_NO_MEDIA;
