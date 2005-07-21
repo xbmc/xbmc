@@ -71,7 +71,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       int iControl = message.GetControlId();
       m_iLastControl = iControl;
-      if (iControl >= MENU_BUTTON_START && iControl <= MENU_BUTTON_END)
+      const CGUIControl *pControl = GetControl(iControl);
+      if (iControl >= MENU_BUTTON_START && iControl <= MENU_BUTTON_END && pControl && pControl->CanFocus())
       {
         m_iLastMenuOption = m_iLastControl;
         bool fade = ((message.GetSenderId() == CONTROL_BTN_SCROLLER) || (message.GetSenderId() >= MENU_BUTTON_START && message.GetSenderId() < MENU_BUTTON_END)) && (message.GetSenderId() != iControl);
