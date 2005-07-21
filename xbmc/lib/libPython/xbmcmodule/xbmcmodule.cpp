@@ -7,6 +7,7 @@
 #include <ConIo.h>
 #include "infotagvideo.h"
 #include "infotagmusic.h"
+#include "..\..\libgoahead\xbmchttp.h"
 
 // include for constants
 #include "pyutil.h"
@@ -135,7 +136,29 @@ namespace PYXBMC
 		return Py_None;
 	}
 
-	PyDoc_STRVAR(sleep__doc__,
+	PyDoc_STRVAR(executeHttpApi__doc__,
+		"executehttpapi(string) -- Execute an HTTP API.\n"
+		"\n"
+		"example:\n"
+    "  - executehttpapi('XBMC.SetPlaySpeed(2)')\n");
+
+	PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
+	{
+		char *cLine;
+    CStdString ret;
+		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
+    if (!pXbmcHttp)
+    {
+      pXbmcHttp = new CXbmcHttp();
+      if (!pXbmcHttp)
+        return NULL;
+    }
+    ret=pXbmcHttp->xbmcExternalCall(cLine);
+
+		return PyString_FromString(ret.c_str());
+	}
+
+  PyDoc_STRVAR(sleep__doc__,
 		"sleep(int time) -- Sleeps for 'time' msec.\n"
 		"\n"
 		"Throws: PyExc_TypeError, if time is not a  integer\n"
@@ -284,6 +307,8 @@ namespace PYXBMC
 		{"getDVDState", (PyCFunction)XBMC_GetDVDState, METH_VARARGS, getDVDState__doc__},
 		{"getFreeMem", (PyCFunction)XBMC_GetFreeMem, METH_VARARGS, getFreeMem__doc__},		
 		{"getCpuTemp", (PyCFunction)XBMC_GetCpuTemp, METH_VARARGS, getCpuTemp__doc__},
+
+    {"executehttpapi", (PyCFunction)XBMC_ExecuteHttpApi, METH_VARARGS, executeHttpApi__doc__},
 
 		{NULL, NULL, 0, NULL}
 	};
