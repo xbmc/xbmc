@@ -68,7 +68,11 @@ CWebServer::~CWebServer()
   CloseHandle(m_hEvent);
   if (pXbmcWeb) delete pXbmcWeb;
   if (pXbmcWebConfig) delete pXbmcWebConfig;
-  if (pXbmcHttp) delete pXbmcHttp;
+  if (pXbmcHttp)
+  {
+    delete pXbmcHttp;
+    pXbmcHttp=NULL;
+  }
 }
 
 DWORD CWebServer::SuspendThread()
