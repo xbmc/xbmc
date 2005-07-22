@@ -2766,7 +2766,7 @@ void CUtil::GetBuiltInHelp(CStdString &help)
   }
 }
 
-bool CUtil::ExecBuiltIn(const CStdString& execString)
+int CUtil::ExecBuiltIn(const CStdString& execString)
 {
   // Get the text after the "XBMC."
   CStdString execute, parameter;
@@ -2809,7 +2809,7 @@ bool CUtil::ExecBuiltIn(const CStdString& execString)
       // error condition missing path
       // XMBC.ActivateWindow(1,)
       CLog::Log(LOGERROR, "ActivateWindow called with invalid parameter: %s", parameter.c_str());
-      return false;
+      return -7;
     }
     else if (iPos < 0)
     {
@@ -2840,7 +2840,7 @@ bool CUtil::ExecBuiltIn(const CStdString& execString)
         CGUIDialog *pDialog = (CGUIDialog *)pWindow;
         if (!pDialog->IsRunning())
           pDialog->DoModal(m_gWindowManager.GetActiveWindow());
-        return true;
+        return -6;
       }
       m_gWindowManager.ActivateWindow(iWindow, strPath);
     }
@@ -2863,7 +2863,7 @@ bool CUtil::ExecBuiltIn(const CStdString& execString)
     if (parameter.IsEmpty())
     {
       CLog::Log(LOGERROR, "XBMC.PlayMedia called with empty parameter");
-      return false;
+      return -3;
     }
     CFileItem item(parameter, false);
     if (!g_application.PlayMedia(item, PLAYLIST_MUSIC_TEMP))
@@ -2877,7 +2877,7 @@ bool CUtil::ExecBuiltIn(const CStdString& execString)
     if (parameter.IsEmpty())
     {
       CLog::Log(LOGERROR, "XBMC.SlideShow called with empty parameter");
-      return false;
+      return -2;
     }
     CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, execute.Equals("SlideShow") ? 0 : 1, 0, 0);
     msg.SetStringParam(parameter);
@@ -2902,7 +2902,7 @@ bool CUtil::ExecBuiltIn(const CStdString& execString)
     if (parameter.IsEmpty())
     {
       CLog::Log(LOGERROR, "XBMC.PlayerControl called with empty parameter");
-      return false;
+      return -3;
     }
     if (parameter.Equals("play"))
     { // play/pause
@@ -2977,15 +2977,17 @@ bool CUtil::ExecBuiltIn(const CStdString& execString)
       if( CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading) )
         fSecs = static_cast<float>(atoi(strTime.c_str())*60);
       else
-        return false;
+        return -4;
     }
     if( g_alarmClock.isRunning() )
       g_alarmClock.stop();
     g_alarmClock.start(fSecs);
   }
   else
-    return false;
-  return true;
+  {
+    return -1;
+  }
+  return 0;
 }
 
 int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName)
