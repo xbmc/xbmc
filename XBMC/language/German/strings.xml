@@ -1080,8 +1080,8 @@
   <string><id>13293</id><value>Video &amp; XBE Region:</value></string>
   <string><id>13294</id><value>DVD Region:</value></string>
   <string><id>13295</id><value>Internet:</value></string>
-  <string><id>13296</id><value>Xbox ist verbunden!</value></string>
-  <string><id>13297</id><value>Xbox is nicht verbunden! Check Netwotk Settings!</value></string>
+  <string><id>13296</id><value>Xbox ist verbunden</value></string>
+  <string><id>13297</id><value>Xbox is nicht verbunden. Bitte Netzwerkeinstellungen überprüfen.</value></string>
   <string><id>13298</id><value>XBLIVE Key:</value></string>
 
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
