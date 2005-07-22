@@ -1,3 +1,6 @@
+2005-07-22 changed:	new virtual keyboard
+2005-07-22 fixed:	homescreen textures hat one button darker than the others
+
 2005-07-21 changed:	finished the numeric keyboard
 2005-07-21 fixed:	shutdownmenu aspect ratio in 4:3
 2005-07-21 fixed:	bad button textures in the 4:3 homescreen
