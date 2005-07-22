@@ -32,7 +32,6 @@
 #include "FileLogger.h"
 #include "version.h"
 
-
 #ifndef MB_SERVICE_NOTIFICATION
 #define MB_SERVICE_NOTIFICATION          0x00040000L
 #endif
@@ -46,7 +45,7 @@ CServer::CServer()
 	m_hWnd=0;
 	m_pListenSocket = NULL;
 	m_pOptions = NULL;
-  m_pFileLogger = NULL;
+	m_pFileLogger = NULL;
 	m_pAdminInterface = new CAdminInterface(this);
 	m_nServerState = 0;
 	m_bQuit = FALSE;
@@ -57,25 +56,25 @@ CServer::CServer()
 
 CServer::~CServer()
 {
-  if (m_pListenSocket)
-	  delete m_pListenSocket;
+	if (m_pListenSocket)
+		delete m_pListenSocket;
 	m_pListenSocket = NULL;
 
 	for (std::list<CAdminListenSocket*>::iterator iter = m_AdminListenSocketList.begin(); iter!=m_AdminListenSocketList.end(); iter++)
 		delete *iter;
 	m_AdminListenSocketList.clear();
 
-  if (m_pAdminInterface)
-	  delete m_pAdminInterface;
-  m_pAdminInterface=NULL;
+	if (m_pAdminInterface)
+		delete m_pAdminInterface;
+	m_pAdminInterface=NULL;
 
-  if (m_pFileLogger)
-	  delete m_pFileLogger;
-  m_pFileLogger=NULL;
+	if (m_pFileLogger)
+		delete m_pFileLogger;
+	m_pFileLogger=NULL;
 
-  if (m_pOptions)
-	  delete m_pOptions;
-  m_pOptions=NULL;
+	if (m_pOptions)
+		delete m_pOptions;
+	m_pOptions=NULL;
 
 	//Destroy window
 	if (m_hWnd)

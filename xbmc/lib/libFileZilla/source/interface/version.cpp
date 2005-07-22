@@ -19,10 +19,6 @@
 #include "stdafx.h"
 #include "version.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
-
 CString GetVersionString()
 {
 	//Fill the version info

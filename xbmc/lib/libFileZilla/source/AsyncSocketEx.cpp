@@ -71,6 +71,10 @@ to tim.kosse@gmx.de
 #include "AsyncSocketExLayer.h"
 #endif //NOLAYERS
 
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[]=__FILE__;
+#endif
 
 #pragma warning (disable:4552)
 #ifndef CCRITICALSECTIONWRAPPERINCLUDED
@@ -943,8 +947,11 @@ int CAsyncSocketEx::Send(const void* lpBuf, int nBufLen, int nFlags /*=0*/)
 		return send(m_SocketData.hSocket, (LPSTR)lpBuf, nBufLen, nFlags);
 }
 
-/*BOOL CAsyncSocketEx::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
+BOOL CAsyncSocketEx::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 {
+#ifndef _XBOX
+	// original FileZilla 0_8_8 version
+
 #ifndef NOLAYERS
 	if (m_pFirstLayer)
 	{
@@ -990,13 +997,10 @@ int CAsyncSocketEx::Send(const void* lpBuf, int nBufLen, int nFlags /*=0*/)
 
 		return CAsyncSocketEx::Connect((SOCKADDR*)&sockAddr, sizeof(sockAddr));
 	}
-}
-*/
 
-
-//copied from 8.3 
-BOOL CAsyncSocketEx::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
-{
+#else //_XBOX
+	// custom version for xbmc - copied from 8.3
+	
 #ifndef NOLAYERS
 	if (m_pFirstLayer)
 		return m_pFirstLayer->Connect(lpszHostAddress, nHostPort);
@@ -1031,6 +1035,8 @@ BOOL CAsyncSocketEx::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 		
 		return CAsyncSocketEx::Connect((SOCKADDR*)&sockAddr, sizeof(sockAddr));
 	}
+	
+#endif //_XBOX
 }
 
 BOOL CAsyncSocketEx::Connect( const SOCKADDR* lpSockAddr, int nSockAddrLen )

@@ -35,7 +35,9 @@
 #include <windows.h>
 #include <crtdbg.h>
 #include <stddef.h>
-#include	<tchar.h>
+#ifdef _XBOX
+#include <tchar.h>
+#endif
 
 #include <wtypes.h>
 #include <oleauto.h>
@@ -45,19 +47,23 @@
 
 #include "config.h"
 
+#ifdef _XBOX
 #include "..\..\..\guilib\stdstring.h"
+#endif
 
 #include "MFC64bitFix.h"
 #include <map>
 #include <list>
 #include <vector>
 
+#ifdef _XBOX
 #ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC
 #include <FStream>
 #include <stdlib.h>
 #include <crtdbg.h>
 #define new new( _NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
 #endif
 
 #include "AsyncSocketEx.h"

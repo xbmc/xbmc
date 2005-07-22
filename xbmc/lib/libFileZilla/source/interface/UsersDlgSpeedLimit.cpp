@@ -24,10 +24,6 @@
 #include "UsersDlgSpeedLimit.h"
 #include "SpeedLimitRuleDlg.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
-
 /////////////////////////////////////////////////////////////////////////////
 // CUsersDlgSpeedLimit dialog
 
