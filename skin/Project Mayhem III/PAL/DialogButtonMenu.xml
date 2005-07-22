@@ -12,6 +12,16 @@
     <control>
       <type>image</type>
       <id>0</id>
+      <posX>-185</posX>
+      <posY>-230</posY>
+      <width>720</width>
+      <height>576</height>
+      <texture>black.png</texture>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>0</id>
       <posX>-245</posX>
       <posY>0</posY>
       <width>805</width>
