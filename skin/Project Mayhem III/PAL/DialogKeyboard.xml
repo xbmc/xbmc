@@ -814,7 +814,7 @@
 		<width>180</width>
 		<height>30</height>
 		<label>Space</label>
-		<onleft>303</onleft>
+		<onleft>304</onleft>
 		<onright>8</onright>
 		<onup>85</onup>
 		<ondown>48</ondown>
