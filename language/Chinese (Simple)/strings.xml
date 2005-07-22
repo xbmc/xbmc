@@ -219,13 +219,13 @@
   <string><id>286</id><value>后期滤镜</value></string>
   <string><id>287</id><value>字幕</value></string>
   <string><id>288</id><value>字体</value></string>
-  <string><id>289</id><value>尺寸</value></string>
+  <string><id>289</id><value>- 尺寸</value></string>
   <string><id>290</id><value>音量放大 (dB)</value></string>
   <string><id>291</id><value>视频</value></string>
   <string><id>292</id><value>音频</value></string>
   <string><id>293</id><value>字幕</value></string>
   <string><id>294</id><value>创建书签</value></string>
-  <string><id>295</id><value>书签循环</value></string>
+  <string><id>295</id><value>循环书签</value></string>
   <string><id>296</id><value>清除书签</value></string>
   <string><id>297</id><value>AV延迟</value></string>
   <string><id>298</id><value>滑动器</value></string>
@@ -236,34 +236,34 @@
   <string><id>304</id><value>语言</value></string>
   <string><id>305</id><value>开启</value></string>
   <string><id>306</id><value>非隔行扫描</value></string>
-  <string><id>307</id><value>自动</value></string>
-  <string><id>308</id><value>垂直分块滤镜</value></string>
-  <string><id>309</id><value>水平分块滤镜</value></string>
-  <string><id>310</id><value>自动亮度/对比度</value></string>
-  <string><id>311</id><value>导数</value></string>
-  <string><id>312</id><value>(0=auto)</value></string>
-  <string><id>313</id><value>编制数据库</value></string>
+  <string><id>307</id><value>- 自动后处理</value></string>
+  <string><id>308</id><value>- 垂直分块滤镜</value></string>
+  <string><id>309</id><value>- 水平分块滤镜</value></string>
+  <string><id>310</id><value>- 自动亮度/对比度</value></string>
+  <string><id>311</id><value>- 消除瑕疵</value></string>
+  <string><id>312</id><value>(0=自动)</value></string>
+  <string><id>313</id><value>清除数据库</value></string>
   <string><id>314</id><value>准备…</value></string>
-  <string><id>315</id><value>数据库错误</value></string>
-  <string><id>316</id><value>查找歌曲中…</value></string>
-  <string><id>317</id><value>编制成功</value></string>
-  <string><id>318</id><value>标记删除的歌曲</value></string>
-  <string><id>319</id><value>编制歌曲错误</value></string>
-  <string><id>320</id><value>查找艺术家中…</value></string>
-  <string><id>321</id><value>编制艺术家错误</value></string>
-  <string><id>322</id><value>查找流派中…</value></string>
-  <string><id>323</id><value>编制流派错误</value></string>
-  <string><id>324</id><value>查找路径…</value></string>
-  <string><id>325</id><value>编制路径错误</value></string>
-  <string><id>326</id><value>查找专辑中…</value></string>
-  <string><id>327</id><value>编制专辑错误</value></string>
-  <string><id>328</id><value>写入中…</value></string>
-  <string><id>329</id><value>写入错误</value></string>
+  <string><id>315</id><value>数据库错误！</value></string>
+  <string><id>316</id><value>清除歌曲…</value></string>
+  <string><id>317</id><value>成功清除数据库！</value></string>
+  <string><id>318</id><value>清除歌曲…</value></string>
+  <string><id>319</id><value>清除歌曲错误！</value></string>
+  <string><id>320</id><value>清除艺术家…</value></string>
+  <string><id>321</id><value>清除艺术家错误！</value></string>
+  <string><id>322</id><value>清除流派…</value></string>
+  <string><id>323</id><value>清除流派错误！</value></string>
+  <string><id>324</id><value>清除路径…</value></string>
+  <string><id>325</id><value>清除路径错误！</value></string>
+  <string><id>326</id><value>清除专辑…</value></string>
+  <string><id>327</id><value>清除专辑错误！</value></string>
+  <string><id>328</id><value>写入…</value></string>
+  <string><id>329</id><value>写入错误！</value></string>
   <string><id>330</id><value>这需要一些时间…</value></string>
   <string><id>331</id><value>压缩数据库中…</value></string>
-  <string><id>332</id><value>压缩数据库错误</value></string>
-  <string><id>333</id><value>你想要编制我的音乐库？</value></string>
-  <string><id>334</id><value>编制我的音乐库</value></string>
+  <string><id>332</id><value>压缩数据库错误！</value></string>
+  <string><id>333</id><value>要清除我的音乐库？</value></string>
+  <string><id>334</id><value>清除音乐库数据…</value></string>
   <string><id>335</id><value>开始</value></string>
   <string><id>336</id><value>校正桢数</value></string>
   <string><id>337</id><value>音频输出</value></string>
@@ -471,12 +471,12 @@
   <string><id>635</id><value>原始尺寸</value></string>
   <string><id>636</id><value>定制</value></string>
 
-  <string><id>637</id><value>播放增益</value></string>
-  <string><id>638</id><value>模式</value></string>
+  <string><id>637</id><value>回放增益</value></string>
+  <string><id>638</id><value>回放增益模式</value></string>
   <string><id>639</id><value>使用音轨增益等级</value></string>
   <string><id>640</id><value>使用专辑增益等级</value></string>
-  <string><id>641</id><value>音量 - 重复播放的文件</value></string>
-  <string><id>642</id><value>音量 - 不重复播放的文件</value></string>
+  <string><id>641</id><value>前级放大器音量 - 重复播放的文件</value></string>
+  <string><id>642</id><value>前级放大器音量 - 不重复播放的文件</value></string>
   <string><id>643</id><value>播放增益时忽略消波失真</value></string>
   <string><id>644</id><value>修剪黑边</value></string>
 
@@ -606,7 +606,7 @@
   <string><id>1253</id><value>在我的文件中建立FTP连接</value></string>
   <string><id>1254</id><value>显示通告</value></string>
   <string><id>1255</id><value>发送 FTP 用户名和密码</value></string>
-  <string><id>1256</id><value>Ping间隔（秒）</value></string>
+  <string><id>1256</id><value>Ping间隔</value></string>
 
   <string><id>1396</id><value>漂流</value></string>
   <string><id>1397</id><value>和</value></string>
@@ -634,32 +634,30 @@
   <string><id>10007</id><value>系统信息</value></string>
   <string><id>10008</id><value>设置-&gt;一般</value></string>
   <string><id>10009</id><value>设置-&gt;屏幕</value></string>
-  <string><id>10010</id><value>设置-&gt;屏幕-&gt;界面 校准</value></string>
-  <string><id>10011</id><value>设置-&gt;屏幕-&gt;屏幕 校准</value></string>
-  <string><id>10012</id><value>设置-&gt;幻灯片</value></string>
-  <string><id>10013</id><value>设置-&gt;屏幕-&gt;滤镜</value></string>
-  <string><id>10014</id><value>设置-&gt;音乐</value></string>
-  <string><id>10015</id><value>设置-&gt;屏幕-&gt;字母</value></string>
-  <string><id>10016</id><value>设置-&gt;屏幕-&gt;屏幕保护</value></string>
-  <string><id>10017</id><value>设置-&gt;天气</value></string>
-  <string><id>10020</id><value>设置-&gt;脚本</value></string>
+  <string><id>10010</id><value>设置-&gt;用户界面-&gt;界面 校准</value></string>
+  <string><id>10011</id><value>设置-&gt;我的视频-&gt;屏幕 校准</value></string>
+  <string><id>10012</id><value>设置-&gt;我的图片</value></string>
+  <string><id>10013</id><value>设置-&gt;我的程序</value></string>
+  <string><id>10014</id><value>设置-&gt;天气预报</value></string>
+  <string><id>10015</id><value>设置-&gt;我的音乐</value></string>
+  <string><id>10016</id><value>设置-&gt;系统设置</value></string>
+  <string><id>10017</id><value>设置-&gt;我的视频</value></string>
+  <string><id>10018</id><value>设置-&gt;网络设置</value></string>
+  <string><id>10019</id><value>设置-&gt;用户界面</value></string>
+  <string><id>10020</id><value>脚本</value></string>
   <string><id>10021</id><value>我的视频/流派</value></string>
   <string><id>10022</id><value>我的视频/演员</value></string>
   <string><id>10023</id><value>我的视频/年</value></string>
-  <string><id>10024</id><value>设置-&gt;程序</value></string>
-  <string><id>10025</id><value>我的视频/自动运行</value></string>
-  <string><id>10026</id><value>设置-&gt;一般-&gt;缓存</value></string>
-  <string><id>10027</id><value>设置-&gt;一般-&gt;自动运行</value></string>
+  <string><id>10025</id><value>我的视频/标题</value></string>
   <string><id>10028</id><value>我的视频/播放列表</value></string>
-  <string><id>10029</id><value>设置-&gt;一般-&gt;LCD</value></string>
+  <string><id>10034</id><value>设置-&gt;用户设置</value></string>
   <string><id>10100</id><value>是/否对话框</value></string>
   <string><id>10101</id><value>进程对话框</value></string>
   <string><id>10500</id><value>我的音乐/播放列表</value></string>
   <string><id>10501</id><value>我的音乐/文件</value></string>
-  <string><id>10502</id><value>我的音乐/专辑</value></string>
-  <string><id>10503</id><value>我的音乐/艺术家</value></string>
-  <string><id>10504</id><value>我的音乐/流派</value></string>
-  <string><id>10505</id><value>我的音乐/Top100</value></string>
+  <string><id>10502</id><value>我的音乐/音乐库</value></string>
+  <string><id>10503</id><value>我的音乐/Top100</value></string>
+
   <string><id>10506</id><value>我的程序</value></string>
   <string><id>10507</id><value>系统设置</value></string>
   <string><id>10508</id><value>天气预报</value></string>
@@ -679,7 +677,6 @@
   <string><id>10522</id><value>我的视频 - 播放列表</value></string>
   <string><id>10523</id><value>专辑信息</value></string>
   <string><id>10524</id><value>影片信息</value></string>
-  <string><id>11000</id><value>键盘</value></string>
   <string><id>12000</id><value>选择对话框</value></string>
   <string><id>12001</id><value>我的音乐/信息</value></string>
   <string><id>12002</id><value>确认对话框</value></string>
@@ -689,6 +686,8 @@
   <string><id>12006</id><value>音频可视化效果</value></string>
   <string><id>12007</id><value>我的图片/幻灯片</value></string>
   <string><id>12008</id><value>文件堆栈对话框</value></string>
+
+  
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
   <string><id>12312</id><value>2</value></string>
@@ -705,9 +704,9 @@
   <string><id>12324</id><value>XBMC已被锁定，请输入密码</value></string>
   <string><id>12325</id><value>文件夹锁定</value></string>
   <string><id>12326</id><value>输入密码</value></string>
-  <string><id>12327</id><value>输入管理员密码并按回车键(Enter),</value></string>
-  <string><id>12328</id><value>输入解锁密码并按回车键(Enter),</value></string> 
-  <string><id>12329</id><value>或按 C键取消</value></string>
+  <string><id>12327</id><value>输入管理员密码</value></string>
+  <string><id>12328</id><value>输入解锁密码</value></string> 
+  <string><id>12329</id><value>按手柄输入，并选择Start确认</value></string>
   <string><id>12330</id><value>输入 XBOX 手柄按键顺序 </value></string>
   <string><id>12331</id><value>按Start确认, 或按Back取消</value></string>
   <string><id>12332</id><value>设置锁定</value></string>
@@ -873,6 +872,9 @@
   <string><id>13389</id><value>该可视化效果没有进行预先设置 </value></string>
   <string><id>13390</id><value>该可视化效果没有相应设置</value></string>
   <string><id>13391</id><value>弹出/载入</value></string>
+  <string><id>13392</id><value>在播放音乐时自动启用可视化效果</value></string>
+  <string><id>13393</id><value>文件夹大小</value></string> 
+  <string><id>13394</id><value>计算文件夹大小</value></string> 
 
   <string><id>14000</id><value>堆栈：关</value></string>
   <string><id>14001</id><value>堆栈：简单</value></string>
@@ -1013,17 +1015,17 @@
   <string><id>15102</id><value>* 所有专辑</value></string>
   <string><id>15103</id><value>* 所有艺人</value></string>
   <string><id>15104</id><value>* 所有歌曲</value></string>
-  <string><id>15105</id><value>* 所有类别</value></string>
+  <string><id>15105</id><value>* 所有流派</value></string>
   <string><id>15106</id><value>向前浏览时记住选择的文件</value></string>
   <string><id>15107</id><value>缓冲中…</value></string>
   <string><id>15108</id><value>导航音效</value></string>
   <string><id>15109</id><value>主题预设</value></string>
   <string><id>15200</id><value>AudioScrobbler</value></string>
-  <string><id>15201</id><value>发送歌曲信息到 AudioScrobbler</value></string>
+  <string><id>15201</id><value>将歌曲提交到 AudioScrobbler</value></string>
   <string><id>15202</id><value>AudioScrobbler 用户名</value></string>
   <string><id>15203</id><value>AudioScrobbler 密码</value></string>
   <string><id>15204</id><value>无法连接：休眠中…</value></string>
-  <string><id>15205</id><value>升级XBMC</value></string>
+  <string><id>15205</id><value>请升级XBMC</value></string>
   <string><id>15206</id><value>上传失败：无法通过认证！</value></string>
   <string><id>15207</id><value>连接</value></string>
   <string><id>15208</id><value>无法连接</value></string>
@@ -1081,4 +1083,9 @@
 
   <string><id>15213</id><value>【预留位置】</value></string>
   <string><id>15214</id><value>使用平滑的A/V同步</value></string>
+
+  <string><id>16000</id><value>通用</value></string>
+  <string><id>16001</id><value>配置音频硬件…</value></string>
+  <string><id>16002</id><value>CDDB 查询</value></string>
+  <string><id>16003</id><value>高级设置</value></string>
 </strings>
