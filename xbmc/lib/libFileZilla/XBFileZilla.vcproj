@@ -133,26 +133,6 @@
 				RelativePath="shlobj.h">
 			</File>
 			<File
-				RelativePath="source\version.cpp">
-				<FileConfiguration
-					Name="Release|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="windows.cpp">
 				<FileConfiguration
 					Name="Release|Xbox">
@@ -326,6 +306,26 @@
 				Name="Modified FileZilla files"
 				Filter="">
 				<File
+					RelativePath="source\AsyncSocketEx.cpp">
+					<FileConfiguration
+						Name="Release|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath="source\ControlSocket.cpp">
 					<FileConfiguration
 						Name="Release|Xbox">
@@ -347,6 +347,26 @@
 				</File>
 				<File
 					RelativePath="source\ControlSocket.h">
+				</File>
+				<File
+					RelativePath="source\misc\MarkupSTL.cpp">
+					<FileConfiguration
+						Name="Release|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="source\Options.cpp">
@@ -389,10 +409,30 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="source\Server.cpp">
+					<FileConfiguration
+						Name="Release|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath="source\Server.h">
 				</File>
 				<File
-					RelativePath="source\misc\StdString.h">
+					RelativePath="source\StdAfx.h">
 				</File>
 				<File
 					RelativePath="source\Thread.cpp">
@@ -439,6 +479,26 @@
 				</File>
 				<File
 					RelativePath="source\TransferSocket.h">
+				</File>
+				<File
+					RelativePath="source\version.cpp">
+					<FileConfiguration
+						Name="Release|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
 				</File>
 			</Filter>
 			<Filter
@@ -594,26 +654,6 @@
 				RelativePath="source\AdminSocket.h">
 			</File>
 			<File
-				RelativePath="source\AsyncSocketEx.cpp">
-				<FileConfiguration
-					Name="Release|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="source\AsyncSocketEx.h">
 			</File>
 			<File
@@ -704,26 +744,6 @@
 				RelativePath="source\resource.h">
 			</File>
 			<File
-				RelativePath="source\Server.cpp">
-				<FileConfiguration
-					Name="Release|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="source\ServerThread.cpp">
 				<FileConfiguration
 					Name="Release|Xbox">
@@ -773,34 +793,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="source\StdAfx.h">
-			</File>
-			<File
 				RelativePath="source\version.h">
 			</File>
 			<Filter
 				Name="Misc"
 				Filter="">
-				<File
-					RelativePath="source\misc\MarkupSTL.cpp">
-					<FileConfiguration
-						Name="Release|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-				</File>
 				<File
 					RelativePath="source\misc\MarkupSTL.h">
 				</File>
