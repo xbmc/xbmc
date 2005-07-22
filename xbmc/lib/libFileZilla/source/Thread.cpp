@@ -23,7 +23,6 @@
 #include "stdafx.h"
 #include "Thread.h"
 
-
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
@@ -60,10 +59,12 @@ BOOL CThread::PostThreadMessage(UINT message, WPARAM wParam, LPARAM lParam)
 	return res;
 }
 
+#ifdef _XBOX
 DWORD CThread::SuspendThread()
 {
   return ::SuspendThread(m_hThread);
 }
+#endif
 
 DWORD CThread::ResumeThread()
 {

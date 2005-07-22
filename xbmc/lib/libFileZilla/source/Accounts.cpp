@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "accounts.h"
 
-
 t_directory::t_directory()
 {
 	bAutoCreate = FALSE;

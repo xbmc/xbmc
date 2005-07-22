@@ -20,7 +20,6 @@
 
 #include "MFC64bitFix.h"
 
-
 /*__int64 GetLength64(CFile &file)
 {
 	DWORD low;

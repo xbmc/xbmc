@@ -23,14 +23,20 @@
 #include "TransferSocket.h"
 #include "ControlSocket.h"
 #include "options.h"
+#if defined(_XBOX)
 #include "../../../util.h"
 #include "../../../GUISettings.h"
+#endif
 #include "ServerThread.h"
 #ifndef NOLAYERS
 #include "AsyncGssSocketLayer.h"
 #endif
 #include "Permissions.h"
 
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
 #pragma warning (disable:4244)
 #pragma warning (disable:4800)
@@ -71,7 +77,11 @@ void CTransferSocket::Init(t_dirlisting *pDir, int nMode)
 	m_bReady = TRUE;
 	m_status = 0;
 	if (m_pBuffer)
+#if defined(_XBOX)
 		free(m_pBuffer);
+#else
+		delete [] m_pBuffer;
+#endif
 	m_pBuffer = 0;
 	m_pDirListing = pDir;
 
@@ -105,7 +115,11 @@ void CTransferSocket::Init(CStdString filename, int nMode, _int64 rest, BOOL bBi
 CTransferSocket::~CTransferSocket()
 {
 	if (m_pBuffer)
+#if defined(_XBOX)
 		free(m_pBuffer);
+#else
+		delete [] m_pBuffer;
+#endif
 	if (m_hFile != INVALID_HANDLE_VALUE)
 	{
 		CloseHandle(m_hFile);
@@ -259,7 +273,7 @@ void CTransferSocket::OnSend(int nErrorCode)
 			}
 			else
 				numread=m_nBufferPos;
-      m_nBufferPos=0;
+			m_nBufferPos=0;
 
 			if (numread<m_nBufSize)
 			{
@@ -297,9 +311,9 @@ void CTransferSocket::OnSend(int nErrorCode)
 			{
 				memmove(m_pBuffer, m_pBuffer+numsent, numread-numsent);
 				m_nBufferPos=numread-numsent;
-      }
+			}
 
-      if (nLimit != -1 && GetState() != aborted)
+			if (nLimit != -1 && GetState() != aborted)
 				m_pOwner->m_SlQuota.nDownloaded += numsent;
 
 			((CServerThread *)m_pOwner->m_pOwner)->IncSendCount(numsent);
@@ -393,13 +407,17 @@ void CTransferSocket::OnClose(int nErrorCode)
 			Close();
 			if (m_hFile != INVALID_HANDLE_VALUE)
 			{
+#if defined(_XBOX)
 				if (m_nBufferPos)
 				{
 					DWORD numwritten;
 					WriteFile(m_hFile, m_pBuffer, m_nBufferPos, &numwritten, 0);
 				}
+#endif
 				FlushFileBuffers(m_hFile);
+#if defined(_XBOX)
 				SetEndOfFile(m_hFile);
+#endif
 				CloseHandle(m_hFile);
 				m_hFile = INVALID_HANDLE_VALUE;
 			}
@@ -478,7 +496,7 @@ void CTransferSocket::OnReceive(int nErrorCode)
 		if (m_hFile == INVALID_HANDLE_VALUE)
 		{
 			ASSERT(m_Filename!="");
-      
+#if defined(_XBOX)
       // this to handle fat-x limitations
       if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
       {
@@ -499,8 +517,11 @@ void CTransferSocket::OnReceive(int nErrorCode)
         m_Filename = strPath+"\\"+strFilename;*/
         CUtil::GetFatXQualifiedPath(m_Filename);
       }
-
 			m_hFile = CreateFile(m_Filename, GENERIC_WRITE, FILE_SHARE_READ, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, 0);
+#else
+			m_hFile = CreateFile(m_Filename, GENERIC_WRITE, FILE_SHARE_READ, 0, OPEN_ALWAYS, 0, 0);
+#endif
+
 			if (m_hFile == INVALID_HANDLE_VALUE)
 			{
 				Close();
@@ -513,6 +534,7 @@ void CTransferSocket::OnReceive(int nErrorCode)
 				return;
 			}
 
+#if defined(_XBOX)
 			LARGE_INTEGER size;
 			size.QuadPart = m_nRest;
 			VERIFY(SetFilePointerEx(m_hFile, size, NULL, FILE_BEGIN));
@@ -541,8 +563,19 @@ void CTransferSocket::OnReceive(int nErrorCode)
 			}
 			m_nPreAlloc = 0;
 		}
-
 		int len = m_nBufSize - m_nBufferPos;
+#else
+			DWORD low=(DWORD)(m_nRest&0xFFFFFFFF);
+			LONG high=(LONG)(m_nRest>>32);
+			VERIFY(SetFilePointer(m_hFile, low, &high, FILE_BEGIN)!=0xFFFFFFFF || GetLastError()==NO_ERROR);
+			SetEndOfFile(m_hFile);
+		}
+
+		if (!m_pBuffer)
+			m_pBuffer = new char[m_nBufSize];
+
+		int len = m_nBufSize;
+#endif
 		int nLimit = -1;
 		if (GetState() != closed)
 		{
@@ -554,7 +587,11 @@ void CTransferSocket::OnReceive(int nErrorCode)
 		if (!len)
 			return;
 
+#if defined(_XBOX)
 		int numread = Receive(m_pBuffer + m_nBufferPos, len);
+#else
+		int numread = Receive(m_pBuffer, len);
+#endif
 
 		if (numread==SOCKET_ERROR)
 		{
@@ -580,6 +617,7 @@ void CTransferSocket::OnReceive(int nErrorCode)
 		{
 			if (m_hFile != INVALID_HANDLE_VALUE)
 			{
+#if defined(_XBOX)
 				if (m_nBufferPos)
 				{
 					DWORD numwritten;
@@ -587,6 +625,7 @@ void CTransferSocket::OnReceive(int nErrorCode)
 				}
 				FlushFileBuffers(m_hFile);
 				SetEndOfFile(m_hFile);
+#endif
 				CloseHandle(m_hFile);
 				m_hFile = INVALID_HANDLE_VALUE;
 			}
@@ -604,6 +643,7 @@ void CTransferSocket::OnReceive(int nErrorCode)
 		if (nLimit != -1 && GetState() != aborted)
 			m_pOwner->m_SlQuota.nUploaded += numread;
 
+#if defined(_XBOX)
 		m_nBufferPos += numread;
 
 		if (m_nBufferPos >= 128*1024 + m_nAlign)
@@ -642,6 +682,22 @@ void CTransferSocket::OnReceive(int nErrorCode)
 				m_nAlign = 0;
 			}
 		}
+#else
+		DWORD numwritten;
+		if (!WriteFile(m_hFile, m_pBuffer, numread, &numwritten, 0) || numwritten!=(unsigned int)numread)
+		{
+			CloseHandle(m_hFile);
+			m_hFile = INVALID_HANDLE_VALUE;
+			Close();
+			if (!m_bSentClose)
+			{
+				m_bSentClose=TRUE;
+				m_status=3; //TODO: Better reason
+				m_pOwner->m_pOwner->PostThreadMessage(WM_FILEZILLA_THREADMSG, FTM_TRANSFERMSG, m_pOwner->m_userid);
+			}
+			return;
+		}
+#endif
 	}
 }
 
@@ -734,6 +790,7 @@ BOOL CTransferSocket::InitTransfer(BOOL bCalledFromSend)
 	m_bStarted=TRUE;
 	if (m_nMode==TRANSFERMODE_SEND)
 	{
+#if defined(_XBOX)
 		if (m_pBuffer)
 			free(m_pBuffer);
 		// smaller read buffer than for writes to avoid having to do massive data moves
@@ -748,6 +805,13 @@ BOOL CTransferSocket::InitTransfer(BOOL bCalledFromSend)
 		}
 		ASSERT(m_Filename!="");
 		m_hFile = CreateFile(m_Filename, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0);
+#else
+		if (m_pBuffer)
+			delete [] m_pBuffer;
+		m_pBuffer=new char[m_nBufSize];
+		ASSERT(m_Filename!="");
+		m_hFile = CreateFile(m_Filename, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
+#endif
 		if (m_hFile == INVALID_HANDLE_VALUE)
 		{
 			m_status=3;
@@ -830,5 +894,4 @@ int CTransferSocket::OnLayerCallback(const CAsyncSocketExLayer *pLayer, int nTyp
 	}
 	return CAsyncSocketEx::OnLayerCallback(pLayer, nType, nParam1, nParam2);
 }
-
 #endif
