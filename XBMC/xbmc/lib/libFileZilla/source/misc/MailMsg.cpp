@@ -11,10 +11,6 @@
 #include "stdafx.h"
 #include "MailMsg.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
-
 CMailMsg::CMailMsg()
 {
 	m_sSubject        = _T("");

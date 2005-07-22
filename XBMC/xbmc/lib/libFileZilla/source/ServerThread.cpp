@@ -28,6 +28,10 @@
 #include "Permissions.h"
 #include "ExternalIpCheck.h"
 
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
 std::map<int, t_socketdata> CServerThread::m_userids;
 CCriticalSectionWrapper CServerThread::m_GlobalThreadsync;
@@ -88,9 +92,6 @@ BOOL CServerThread::InitInstance()
 	else
 		m_pExternalIpCheck = new CExternalIpCheck(this);
 	m_threadsync.Unlock();
-
-// this causes ftp 2 hangup
-//	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
 
 	return TRUE;
 }

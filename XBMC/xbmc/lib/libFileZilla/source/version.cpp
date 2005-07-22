@@ -21,6 +21,12 @@
 /*
 
   This file is used instead of FileZilla's version.cpp
+  
+  Original FileZilla copyright:
+  	Copyright (C) 2002 - Tim Kosse <tim.kosse@gmx.de>
+  	
+  History:
+  	Re-based to FileZilla 0_8_8 on 22-Jul-2005
 
 */
 
@@ -29,12 +35,12 @@
 #include "version.h"
 
 
-#define XBFILEZILLA_VERSION "1.4"
+#define XBFILEZILLA_VERSION "1.5.5"
 #define FILEZILLA_VERSION "0.8.8"
 
 CStdString GetVersionString()
 {
   CStdString str;
-  str.Format("XBFileZilla version %s, (based on FileZilla Server %s)", XBFILEZILLA_VERSION, FILEZILLA_VERSION);
+  str.Format("XBMC:FileZilla version %s, (based on FileZilla Server %s)", XBFILEZILLA_VERSION, FILEZILLA_VERSION);
   return str;
 }

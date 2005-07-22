@@ -24,6 +24,10 @@
 #include "version.h"
 #include "misc\MarkupSTL.h"
 
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
 #pragma warning (disable:4244)
 #pragma warning (disable:4800)
@@ -39,7 +43,7 @@ CStdString GetDefaultWelcomeMessage()
 {
   return "\r\n---------------------------------------------------------------------------"
          "\r\n%v\r\n"
-         "\r\nhttp://sourceforge.net/projects/xbfilezilla/"
+         "\r\nhttp://sourceforge.net/projects/xbmc/"
          "\r\n---------------------------------------------------------------------------\r\n\r\n";
 }
 #endif
@@ -316,7 +320,7 @@ void COptions::SetOption(int nOptionID, LPCTSTR value)
 			if (str=="")
 			{
 #if defined(_XBOX)
-        str = GetDefaultWelcomeMessage();
+				str = GetDefaultWelcomeMessage();
 #else
 				str="%v";
 				str+="\r\nwritten by Tim Kosse (Tim.Kosse@gmx.de)";
@@ -536,7 +540,7 @@ CStdString COptions::GetOption(int nOptionID)
 		{
 		case OPTION_WELCOMEMESSAGE:
 #if defined(_XBOX)
-      m_sOptionsCache[nOptionID-1].str = GetDefaultWelcomeMessage();
+			m_sOptionsCache[nOptionID-1].str = GetDefaultWelcomeMessage();
 #else
 			m_sOptionsCache[nOptionID-1].str ="%v";
 			m_sOptionsCache[nOptionID-1].str+="\r\nwritten by Tim Kosse (Tim.Kosse@gmx.de)";
