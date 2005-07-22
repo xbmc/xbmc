@@ -265,7 +265,7 @@
   <string><id>331</id><value>Komprimiere Datenbank...</value></string>
   <string><id>332</id><value>Fehler beim Komprimieren der Datenbank!</value></string>
   <string><id>333</id><value>Wollen sie die Datenbank reorganisieren?</value></string>
-  <string><id>334</id><value>Musik Datenbank reorganisieren</value></string>
+  <string><id>334</id><value>Musik Datenbank reorganisieren..</value></string>
   <string><id>335</id><value>Ausführen</value></string>
   <string><id>336</id><value>Framerate anpassen</value></string>
   <string><id>337</id><value>Audioausgabe</value></string>
@@ -602,7 +602,7 @@
   <string><id>1247</id><value>FTP Benutzername und Kennwort geändert.</value></string> 
   
   <string><id>1250</id><value>XBox2XBox</value></string> 
-  <string><id>1251</id><value>XBOX Automatische Erkennung</value></string> 
+  <string><id>1251</id><value>XBOX Erkennung</value></string> 
   <string><id>1252</id><value>Beschreibung</value></string> 
   <string><id>1253</id><value>FTP Verknüpfung unter Eigene Dateien erstellen</value></string> 
   <string><id>1254</id><value>Popup Anzeige</value></string> 
@@ -632,34 +632,33 @@
   <string><id>10005</id><value>Musik</value></string>
   <string><id>10006</id><value>Videos</value></string>
   <string><id>10007</id><value>Systeminformation</value></string>
-  <string><id>10008</id><value>Einstellungen->Allgemein</value></string>
-  <string><id>10009</id><value>Einstellungen->Bildschirm</value></string>
-  <string><id>10010</id><value>Einstellungen->Bildschirm->UI-Kalibrierung</value></string>
-  <string><id>10011</id><value>Einstellungen->Bildschirm->Kalibrierung</value></string>
-  <string><id>10012</id><value>Einstellungen->Diaschau</value></string>
-  <string><id>10013</id><value>Einstellungen->Bildschirm->Filter</value></string>
-  <string><id>10014</id><value>Einstellungen->Musik</value></string>
-  <string><id>10015</id><value>Einstellungen->Bildschirm->Untertitel</value></string>
-  <string><id>10016</id><value>Einstellungen->Bildschirm->Bildschirmschoner</value></string>
-  <string><id>10017</id><value>Einstellungen->Wetter</value></string>
-  <string><id>10020</id><value>Einstellungen->Skripte</value></string>
+  <string><id>10008</id><value>Einstellungen-&gt;Allgemein</value></string>
+  <string><id>10009</id><value>Einstellungen-&gt;Bildschirm</value></string>
+  <string><id>10010</id><value>Einstellungen-&gt;Darstellung-&gt;GUI-Kalibrierung</value></string>
+  <string><id>10011</id><value>Einstellungen-&gt;Videos-&gt;Bild-Kalibrierung</value></string>
+  <string><id>10012</id><value>Einstellungen-&gt;Bilder</value></string>
+  <string><id>10013</id><value>Einstellungen-&gt;Anwendungen</value></string>
+  <string><id>10014</id><value>Einstellungen-&gt;Wetter</value></string>
+  <string><id>10015</id><value>Einstellungen-&gt;Musik</value></string>
+  <string><id>10016</id><value>Einstellungen-&gt;System</value></string>
+  <string><id>10017</id><value>Einstellungen-&gt;Videos</value></string>
+  <string><id>10018</id><value>Einstellungen-&gt;Netzwerk</value></string>
+  <string><id>10019</id><value>Einstellungen-&gt;Darstellung</value></string>
+  <string><id>10020</id><value>Skripte</value></string>
   <string><id>10021</id><value>Videos/Genre</value></string>
   <string><id>10022</id><value>Videos/Interpret</value></string>
   <string><id>10023</id><value>Videos/Jahr</value></string>
-  <string><id>10024</id><value>Einstellungen->Programme</value></string>
   <string><id>10025</id><value>Videos/Titel</value></string>
-  <string><id>10026</id><value>Einstellungen->Allgemein->Speicher</value></string>
-  <string><id>10027</id><value>Einstellungen->Allgemein->Autostart</value></string>
   <string><id>10028</id><value>Videos/Wiedergabeliste</value></string>
-  <string><id>10029</id><value>Einstellungen->Allgemein->LCD</value></string>
+  <string><id>10034</id><value>Einstellungen-&gt;Profile</value></string>
+
   <string><id>10100</id><value>Auswahlmenü</value></string>
-  <string><id>10101</id><value>Fortschritt</value></string>
+  <string><id>10101</id><value>Statusleiste</value></string>
   <string><id>10500</id><value>Musik/Wiedergabeliste</value></string>
   <string><id>10501</id><value>Musik/Dateien</value></string>
-  <string><id>10502</id><value>Musik/Alben</value></string>
-  <string><id>10503</id><value>Musik/Interpret</value></string>
-  <string><id>10504</id><value>Musik/Genre</value></string>
-  <string><id>10505</id><value>Musik/Top100</value></string>
+  <string><id>10502</id><value>Musik/Bibliothek</value></string>
+  <string><id>10503</id><value>Musik/Top100</value></string>
+
   <string><id>10506</id><value>Anwendungen</value></string>
   <string><id>10507</id><value>Einstellungen</value></string>
   <string><id>10508</id><value>Wetterbericht</value></string> 
@@ -679,7 +678,7 @@
   <string><id>10522</id><value>Videos - Wiedergabeliste</value></string> 
   <string><id>10523</id><value>Album Info</value></string> 
   <string><id>10524</id><value>Film Info</value></string> 
-  <string><id>11000</id><value>Tastatur</value></string>
+
   <string><id>12000</id><value>Dialogauswahl</value></string>
   <string><id>12001</id><value>Musik/Info</value></string>
   <string><id>12002</id><value>Dialog OK</value></string>
@@ -689,6 +688,7 @@
   <string><id>12006</id><value>Audio Visualisation</value></string>
   <string><id>12007</id><value>Bilder/Diaschau</value></string>
   <string><id>12008</id><value>Dateikomprimierung</value></string>
+
   <string><id>12310</id><value>0</value></string> 
   <string><id>12311</id><value>1</value></string> 
   <string><id>12312</id><value>2</value></string> 
@@ -920,6 +920,9 @@
   <string><id>13389</id><value>Keine Vorauswahl für diese Visualisierung&#10;vorhanden</value></string> 
   <string><id>13390</id><value>Keine Einstellmöglichkeiten für diese Visualisierung&#10;vorhanden</value></string> 
   <string><id>13391</id><value>Laufwerk Öffnen/Schließen</value></string>
+  <string><id>13392</id><value>Bei Musikwiedergabe -> Visualisierung verwenden</value></string>
+  <string><id>13393</id><value>Ordnergröße berechnen</value></string> 
+  <string><id>13394</id><value>Größe des Ordners wird berechnet</value></string> 
 
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln aktiv.</value></string>
@@ -1083,7 +1086,8 @@
   <string><id>15214</id><value>Ausgeglichene A/V Synchronisation verwenden</value></string> 
 
   <string><id>16000</id><value>Allgemein</value></string> 
-  <string><id>16001</id><value>Audio Hardware konfigurieren</value></string> 
+  <string><id>16001</id><value>Audio Hardware konfigurieren..</value></string> 
   <string><id>16002</id><value>CDDB Abfrage</value></string> 
+  <string><id>16003</id><value>Player</value></string>
 
 </strings>
