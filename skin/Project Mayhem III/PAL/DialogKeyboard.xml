@@ -7,6 +7,15 @@
     	<control>
       		<type>image</type>
       		<id>0</id>
+      		<posX>0</posX>
+      		<posY>0</posY>
+      		<width>720</width>
+      		<height>576</height>
+     	 	<texture>black.png</texture>
+    	</control>
+    	<control>
+      		<type>image</type>
+      		<id>0</id>
       		<posX>-10</posX>
       		<posY>150</posY>
       		<width>740</width>
