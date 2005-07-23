@@ -5,6 +5,7 @@
 #include "../stdafx.h"
 #include "FileSmb.h"
 #include "../GUIPassword.h"
+#include "SMBDirectory.h"
 
 
 void xb_smbc_log(const char* msg)
@@ -195,6 +196,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 /// \brief Checks authentication against SAMBA share. Reads password cache created in CSMBDirectory::OpenDir().
 /// \param strAuth The SMB style path
 /// \return SMB file descriptor
+/*
 int CFileSMB::OpenFile(CStdString& strAuth)
 {
   int fd = -1;
@@ -210,6 +212,52 @@ int CFileSMB::OpenFile(CStdString& strAuth)
   // likely scenario, we might want to implement prompting for the password in this case.
   // The code from SMBDirectory can be used for this.
   if(fd >= 0)
+    strAuth = strPath;
+
+  return fd;
+}
+*/
+
+int CFileSMB::OpenFile(CStdString& strAuth)
+{
+  int fd = -1;
+  
+  CStdString strPath = g_passwordManager.GetSMBAuthFilename(strAuth);
+  fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
+
+  // file open failed, try to open the directory to force authentication
+  if (fd < 0)
+  {
+    // 012345
+    // smb://
+    int iPos = strAuth.ReverseFind('/');
+    if (iPos > 4)
+    {
+      strPath = strAuth.Left(iPos + 1);
+
+      CSMBDirectory smbDir;
+      fd = smbDir.Open(strPath);
+
+      // directory open worked, try opening the file again
+      if (fd >= 0)
+      {
+        // close current directory filehandle
+        // dont need to purge since its the same server and share
+        smb.Lock();
+        smbc_closedir(fd);
+        smb.Unlock();
+
+        // set up new filehandle (as CFileSMB::Open does)
+        smb.Init();
+        smb.Lock();
+
+        strPath = g_passwordManager.GetSMBAuthFilename(strAuth);
+        fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
+      }
+    }
+  }
+
+  if (fd >= 0)
     strAuth = strPath;
 
   return fd;
