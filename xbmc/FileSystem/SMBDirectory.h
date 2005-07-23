@@ -15,6 +15,8 @@ public:
   virtual bool Exists(const char* strPath);
   virtual bool Remove(const char* strPath);
 
+  int Open(const CStdString& strPath);
+
 private:
   int OpenDir(CStdString& strAuth);
 };

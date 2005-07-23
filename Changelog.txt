@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-07-2005 fixed: direct opening of SMB files if no SMB authentication information is in the url
  - 22-07-2005 updated: German language file
  - 22-07-2005 updated: German (Austrian) language file (Thnx to CEOMR)
  - 22-07-2005 updated: Norwegian language file (Thnx to vnm)

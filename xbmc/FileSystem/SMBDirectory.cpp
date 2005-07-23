@@ -145,6 +145,14 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   return true;
 }
 
+int CSMBDirectory::Open(const CStdString& strPath)
+{
+  smb.Init();
+  CStdString strAuth = strPath;
+
+  return OpenDir(strAuth);
+}
+
 /// \brief Checks authentication against SAMBA share and prompts for username and password if needed
 /// \param strAuth The SMB style path
 /// \return SMB file descriptor
