@@ -45,7 +45,7 @@
       <posX>75</posX>
       <posY>75</posY>
       <width>560</width>
-      <label>Visuals | </label>
+      <label>Visuals | fps: $INFO(System.FPS) - </label>
       <font>font12</font>
       <align>left</align>
     </control>
@@ -54,7 +54,7 @@
       <description>Presets label</description>
       <type>label</type>
       <id>3</id>
-      <posX>150</posX>
+      <posX>225</posX>
       <posY>75</posY>
       <width>460</width>
       <label>$INFO(Visualisation.Name) - $INFO(Visualisation.Preset)</label>
@@ -66,7 +66,7 @@
       <type>image</type>
       <description>Preset locked image</description>
       <id>4</id>
-      <posX>134</posX>
+      <posX>210</posX>
       <posY>77</posY>
       <width>12</width>
       <height>15</height>
