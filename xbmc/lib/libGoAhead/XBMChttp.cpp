@@ -302,7 +302,7 @@ CStdString displayDir(int eid, webs_t wp, int numParas, CStdString paras[]) {
 
   if (numParas==0)
   {
-    return flushResult(eid, wp, "<li>Error:Missing folder\n");
+    return flushResult(eid, wp, "<li>Error:Missing folder");
   }
   folder=paras[0];
   if (numParas>1)
@@ -314,13 +314,13 @@ CStdString displayDir(int eid, webs_t wp, int numParas, CStdString paras[]) {
 
   if (!pDirectory) 
   {
-    return flushResult(eid, wp, "<li>Error\n");  
+    return flushResult(eid, wp, "<li>Error");  
   }
   pDirectory->SetMask(mask);
   bool bResult=pDirectory->GetDirectory(folder,dirItems);
   if (!bResult)
   {
-    return flushResult(eid, wp, "<li>Error:Not folder\n");
+    return flushResult(eid, wp, "<li>Error:Not folder");
   }
   SSortWebFilesByName::m_bSortAscending = true;
   SSortWebFilesByName::m_iSortMethod = 0;
@@ -465,7 +465,6 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
     //pPlayList->Load will handle loading it from url instead of from a file
     strPath = "temp.strm";
   }
-
   CPlayListFactory factory;
   auto_ptr<CPlayList> pPlayList (factory.Create(strPath));
   if ( NULL == pPlayList.get())
@@ -512,7 +511,6 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
     playlistItem.SetFileName(playListItem.GetFileName());
     g_playlistPlayer.GetPlaylist( iPlaylist ).Add(playlistItem);
   }
-
   if (autoStart)
     if (g_playlistPlayer.GetPlaylist( iPlaylist ).size() )
     {
@@ -550,7 +548,7 @@ CStdString CXbmcHttp::xbmcAddToPlayList(int eid, webs_t wp, int numParas, CStdSt
   int playList ;
 
   if (numParas==0)
-    return flushResult(eid, wp, "<li>Error:Missing Parameter\n");
+    return flushResult(eid, wp, "<li>Error:Missing Parameter");
   else
   {
     if (numParas==1) //no playlist and no mask
@@ -584,12 +582,11 @@ CStdString CXbmcHttp::xbmcAddToPlayList(int eid, webs_t wp, int numParas, CStdSt
     if (changed)
     {
       g_playlistPlayer.HasChanged();
-      return flushResult(eid, wp, "<li>OK\n");
+      return flushResult(eid, wp, "<li>OK");
     }
     else
-      return flushResult(eid, wp, "<li>Error\n");
+      return flushResult(eid, wp, "<li>Error");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcGetTagFromFilename(int eid, webs_t wp, int numParas, CStdString paras[]) 
@@ -597,8 +594,7 @@ CStdString CXbmcHttp::xbmcGetTagFromFilename(int eid, webs_t wp, int numParas, C
   //char buffer[XML_MAX_INNERTEXT_SIZE];
   CStdString strFileName;
   if (numParas==0) {
-    return flushResult(eid, wp, "<li>Error:Missing Parameter\n");
-    
+    return flushResult(eid, wp, "<li>Error:Missing Parameter");
   }
   strFileName=CUtil::GetFileName(paras[0].c_str());
   CFileItem *pItem = new CFileItem(strFileName);
@@ -606,8 +602,7 @@ CStdString CXbmcHttp::xbmcGetTagFromFilename(int eid, webs_t wp, int numParas, C
   if (!pItem->IsAudio())
   {
     delete pItem;
-    return flushResult(eid, wp,"<li>Error:Not Audio\n");
-    
+    return flushResult(eid, wp,"<li>Error:Not Audio");
   }
   CMusicInfoTag& tag=pItem->m_musicInfoTag;
   bool bFound=false;
@@ -644,13 +639,12 @@ CStdString CXbmcHttp::xbmcGetTagFromFilename(int eid, webs_t wp, int numParas, C
       }
       else
       {
-        return flushResult(eid, wp,"<li>Error:Could not load TagLoader\n");
-        
+        return flushResult(eid, wp,"<li>Error:Could not load TagLoader");
       }
     }
     else
     {
-      return flushResult(eid, wp,"<li>Error:System not set to use tags\n");
+      return flushResult(eid, wp,"<li>Error:System not set to use tags");
       
     }
   if (tag.Loaded())
@@ -668,10 +662,10 @@ CStdString CXbmcHttp::xbmcGetTagFromFilename(int eid, webs_t wp, int numParas, C
     SYSTEMTIME stTime;
     tag.GetReleaseDate(stTime);
     tmp.Format("%i", stTime.wYear);
-    output += "\n<li>Release year:" + tmp + "\n";
+    output += "\n<li>Release year:" + tmp;
     pItem->SetMusicThumb();
     if (pItem->HasThumbnail())
-      output += "<li>Thumb:" + pItem->GetThumbnailImage() + "\n";
+      output += "\n<li>Thumb:" + pItem->GetThumbnailImage() ;
     else {
       //There isn't a thumbnail but let's still return the appropriate filename if one did exist
       CStdString strThumb, strPath, strFileName;
@@ -689,7 +683,7 @@ CStdString CXbmcHttp::xbmcGetTagFromFilename(int eid, webs_t wp, int numParas, C
       if (!pItem->m_bIsFolder)
       {
         CUtil::GetAlbumThumb(strAlbum, strPath, strThumb);
-        output += "<li>Thumb:[None] " + strThumb + "\n";
+        output += "\n<li>Thumb:[None] " + strThumb ;
       }
     }
     delete pItem;
@@ -698,9 +692,8 @@ CStdString CXbmcHttp::xbmcGetTagFromFilename(int eid, webs_t wp, int numParas, C
   else
   {
     delete pItem;
-    return flushResult(eid, wp,"<li>Error:No tag info\n");
+    return flushResult(eid, wp,"<li>Error:No tag info");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcClearPlayList(int eid, webs_t wp, int numParas, CStdString paras[])
@@ -711,8 +704,7 @@ CStdString CXbmcHttp::xbmcClearPlayList(int eid, webs_t wp, int numParas, CStdSt
   else
     playList=atoi(paras[0]) ;
   g_playlistPlayer.GetPlaylist( playList ).Clear();
-  return flushResult(eid, wp, "<li>OK\n");
-  
+  return flushResult(eid, wp, "<li>OK");
 }
 
 CStdString CXbmcHttp::xbmcGetDirectory(int eid, webs_t wp,  int numParas, CStdString paras[])
@@ -720,7 +712,7 @@ CStdString CXbmcHttp::xbmcGetDirectory(int eid, webs_t wp,  int numParas, CStdSt
   if (numParas>0)
     return displayDir(eid, wp, numParas, paras);
   else
-    return flushResult(eid, wp,"<li>Error:No path\n") ;
+    return flushResult(eid, wp,"<li>Error:No path") ;
 }
 
 CStdString CXbmcHttp::xbmcGetMovieDetails(int eid, webs_t wp, int numParas, CStdString paras[])
@@ -760,18 +752,17 @@ CStdString CXbmcHttp::xbmcGetMovieDetails(int eid, webs_t wp, int numParas, CStd
       {
         m_database.Close();
         delete item;
-        return flushResult(eid, wp, "\n<li>Thumb: [None]");
+        return flushResult(eid, wp, "<li>Error:Not found");
       }
     }
     else
     {
       delete item;
-      return flushResult(eid, wp,"<li>Error:Not a video\n") ;
+      return flushResult(eid, wp,"<li>Error:Not a video") ;
     }
   }
   else
-    return flushResult(eid, wp,"<li>Error:No file name\n") ;
-  
+    return flushResult(eid, wp,"<li>Error:No file name") ;
 }
 
 CStdString CXbmcHttp::xbmcGetCurrentlyPlaying(int eid, webs_t wp)
@@ -781,12 +772,12 @@ CStdString CXbmcHttp::xbmcGetCurrentlyPlaying(int eid, webs_t wp)
   if (pSlideShow)
     if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
     {
-      output="<li>Filename:"+pSlideShow->GetCurrentSlide()+"\n";
-      output+="<li>Type:Picture\n" ;
+      output="<li>Filename:"+pSlideShow->GetCurrentSlide();
+      output+="\n<li>Type:Picture" ;
       int width=0, height=0;
       pSlideShow->GetCurrentSlideInfo(width, height);
       tmp.Format("%i",width);
-      output+="<li>Width:" + tmp ;
+      output+="\n<li>Width:" + tmp ;
       tmp.Format("%i",height);
       output+="\n<li>Height:" + tmp ;
       CStdString thumb, picFn=pSlideShow->GetCurrentSlide();
@@ -813,7 +804,7 @@ CStdString CXbmcHttp::xbmcGetCurrentlyPlaying(int eid, webs_t wp)
     output="<li>Filename:[Nothing Playing]";
   else
   { 
-    output="<li>Filename:"+fn+"\n";
+    output="<li>Filename:"+fn;
     tmp.Format("%i",g_playlistPlayer.GetCurrentSong());
     output+="\n<li>SongNo:"+tmp;
     __int64 lPTS=-1;
@@ -867,14 +858,13 @@ CStdString CXbmcHttp::xbmcGetCurrentlyPlaying(int eid, webs_t wp)
         {
           tmp.Format("%02.2i:%02.2i",mm,ss);
         }
-        output+="\n<li>Duration:"+tmp+"\n";
+        output+="\n<li>Duration:"+tmp;
       }
       tmp.Format("%i",(int)g_application.m_pPlayer->GetPercentage());
-      output+="<li>Percentage:"+tmp+"\n" ;
+      output+="\n<li>Percentage:"+tmp ;
     }
   }
   return flushResult(eid, wp, output);
-  
 }
 
 CStdString CXbmcHttp::xbmcGetPercentage(int eid, webs_t wp)
@@ -883,34 +873,32 @@ CStdString CXbmcHttp::xbmcGetPercentage(int eid, webs_t wp)
   {
     CStdString tmp;
     tmp.Format("%i",(int)g_application.m_pPlayer->GetPercentage());
-    return flushResult(eid, wp, "<li>Percentage:" + tmp + "\n") ;
+    return flushResult(eid, wp, "<li>" + tmp ) ;
   }
   else
-    return flushResult(eid, wp, "<li>Error\n");
-  
+    return flushResult(eid, wp, "<li>Error");
 }
 
 CStdString CXbmcHttp::xbmcSeekPercentage(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1)
-    return flushResult(eid, wp, "<li>Error:Missing Parameter\n");
+    return flushResult(eid, wp, "<li>Error:Missing Parameter");
   else
   {
     if (g_application.m_pPlayer)
     {
       g_application.m_pPlayer->SeekPercentage((float)atoi(paras[0].c_str()));
-      return flushResult(eid, wp,"<li>OK\n") ;
+      return flushResult(eid, wp,"<li>OK") ;
     }
     else
-      return flushResult(eid, wp, "<li>Error:Loading mPlayer\n");
+      return flushResult(eid, wp, "<li>Error:Loading mPlayer");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcSetVolume(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1)
-    return flushResult(eid, wp, "<li>Error:Missing Parameter\n");
+    return flushResult(eid, wp, "<li>Error:Missing Parameter");
   else
   {
     int iPercent = atoi(paras[0].c_str()) ;
@@ -923,12 +911,11 @@ CStdString CXbmcHttp::xbmcSetVolume(int eid, webs_t wp, int numParas, CStdString
       if (!g_application.m_guiDialogVolumeBar.IsRunning())
         g_application.m_guiDialogVolumeBar.DoModal(m_gWindowManager.GetActiveWindow());
       g_application.m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
-      return flushResult(eid, wp, "<li>OK\n");
+      return flushResult(eid, wp, "<li>OK");
     }
     else
-      return flushResult(eid, wp, "<li>Error\n");
+      return flushResult(eid, wp, "<li>Error");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcGetVolume(int eid, webs_t wp)
@@ -940,21 +927,19 @@ CStdString CXbmcHttp::xbmcGetVolume(int eid, webs_t wp)
     vol = -1;
   CStdString tmp;
   tmp.Format("%i",vol);
-  return flushResult(eid, wp, "<li>" + tmp + "\n");
-  
+  return flushResult(eid, wp, "<li>" + tmp );
 }
 
 CStdString CXbmcHttp::xbmcClearSlideshow(int eid, webs_t wp)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (!pSlideShow)
-    return flushResult(eid, wp, "<li>Error:Could not create slideshow\n");
+    return flushResult(eid, wp, "<li>Error:Could not create slideshow");
   else
   {
     pSlideShow->Reset();
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcPlaySlideshow(int eid, webs_t wp, int numParas, CStdString paras[] )
@@ -964,7 +949,7 @@ CStdString CXbmcHttp::xbmcPlaySlideshow(int eid, webs_t wp, int numParas, CStdSt
     CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (!pSlideShow)
   {
-    return flushResult(eid, wp, "<li>Error\n");
+    return flushResult(eid, wp, "<li>Error");
   }
   else
   {
@@ -988,27 +973,25 @@ CStdString CXbmcHttp::xbmcPlaySlideshow(int eid, webs_t wp, int numParas, CStdSt
       pSlideShow->RunSlideShow(paras[0], recursive);
     }
     g_graphicsContext.Unlock();
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcSlideshowSelect(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1)
-    return flushResult(eid, wp,"<li>Error:Missing filename\n");
+    return flushResult(eid, wp,"<li>Error:Missing filename");
   else
   {
     CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
     if (!pSlideShow)
-      return flushResult(eid, wp, "<li>Error:Could not create slideshow\n");
+      return flushResult(eid, wp, "<li>Error:Could not create slideshow");
     else
     {
       pSlideShow->Select(paras[0]);
-      return flushResult(eid, wp, "<li>OK\n");
+      return flushResult(eid, wp, "<li>OK");
     }
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcAddToSlideshow(int eid, webs_t wp, int numParas, CStdString paras[])
@@ -1016,7 +999,7 @@ CStdString CXbmcHttp::xbmcAddToSlideshow(int eid, webs_t wp, int numParas, CStdS
 {
   CStdString mask="";
   if (numParas<1)
-    return flushResult(eid, wp,"<li>Error:Missing parameter\n");
+    return flushResult(eid, wp,"<li>Error:Missing parameter");
   else
   {
     if (numParas>1)
@@ -1031,28 +1014,25 @@ CStdString CXbmcHttp::xbmcAddToSlideshow(int eid, webs_t wp, int numParas, CStdS
     pItem->m_bIsShareOrDrive=false;
     AddItemToPlayList(pItem, -1, 0, mask); //add to slideshow
     delete pItem;
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcSetPlaySpeed(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas>0) {
     g_application.SetPlaySpeed(atoi(paras[0]));
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
   }
   else
-    return flushResult(eid, wp,"<li>Error:Missing parameter\n");
-  
+    return flushResult(eid, wp,"<li>Error:Missing parameter");
 }
 
 CStdString CXbmcHttp::xbmcGetPlaySpeed(int eid, webs_t wp)
 {
   CStdString strSpeed;
   strSpeed.Format("%i", g_application.GetPlaySpeed());
-  return flushResult(eid, wp,"<li>" + strSpeed + "\n");
-  
+  return flushResult(eid, wp,"<li>" + strSpeed );
 }
 
 CStdString CXbmcHttp::xbmcGetGUIDescription(int eid, webs_t wp)
@@ -1060,17 +1040,16 @@ CStdString CXbmcHttp::xbmcGetGUIDescription(int eid, webs_t wp)
   CStdString strWidth, strHeight;
   strWidth.Format("%i", g_graphicsContext.GetWidth());
   strHeight.Format("%i", g_graphicsContext.GetHeight());
-  return flushResult(eid, wp, "<li>Width:" + strWidth + "\n<li>Height:" + strHeight + "\n" );
-  
+  return flushResult(eid, wp, "<li>Width:" + strWidth + "\n<li>Height:" + strHeight  );
 }
 
 CStdString CXbmcHttp::xbmcGetGUIStatus(int eid, webs_t wp)
 {
   CStdString output, tmp;
   tmp.Format("%i", m_gWindowManager.GetActiveWindow());
-  output = "<li>ActiveWindow:" + tmp + "\n";
+  output = "<li>ActiveWindow:" + tmp;
   tmp.Format("%i", m_gWindowManager.GetActiveWindow()); 
-  output += "<li>ActiveWindowType:" + tmp + "\n";
+  output += "\n<li>ActiveWindowType:" + tmp ;
   CStdString strTmp;
   int iWin=m_gWindowManager.GetActiveWindow();
   CGUIWindow* pWindow=m_gWindowManager.GetWindow(iWin);
@@ -1080,7 +1059,7 @@ CStdString CXbmcHttp::xbmcGetGUIStatus(int eid, webs_t wp)
     wstring wstrLine;
     wstrLine=g_localizeStrings.Get(iWin);
     CUtil::Unicode2Ansi(wstrLine,strLine);
-    output += "<li>ActiveWindowName:" + strLine + "\n" ; 
+    output += "\n<li>ActiveWindowName:" + strLine ; 
     int iControl=pWindow->GetFocusedControl();
     CGUIControl* pControl=(CGUIControl* )pWindow->GetControl(iControl);
     if (pControl)
@@ -1088,19 +1067,19 @@ CStdString CXbmcHttp::xbmcGetGUIStatus(int eid, webs_t wp)
       strTmp = pControl->GetDescription();
       if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
       {
-        output += "<li>ControlButton:" + strTmp;
+        output += "\n<li>ControlButton:" + strTmp;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_SPIN)
       {
-        output += "<li>ControlSpin:" + strTmp;
+        output += "\n<li>ControlSpin:" + strTmp;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_THUMBNAIL)
       {
-        output += "<li>ControlThumNail:" + strTmp;
+        output += "\n<li>ControlThumNail:" + strTmp;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_LIST)
       {
-        output += "<li>ControlList:" + strTmp;
+        output += "\n<li>ControlList:" + strTmp;
       }
     }
   }
@@ -1111,7 +1090,7 @@ CStdString CXbmcHttp::xbmcGetThumb(int eid, webs_t wp, int numParas, CStdString 
 {
   CStdString thumb="";
   if (numParas<1)
-    return flushResult(eid, wp,"<li>Error:Missing parameter\n");
+    return flushResult(eid, wp,"<li>Error:Missing parameter");
   else
   {
     if (CUtil::IsRemote(paras[0]))
@@ -1125,15 +1104,13 @@ CStdString CXbmcHttp::xbmcGetThumb(int eid, webs_t wp, int numParas, CStdString 
       }
       else
       {
-        return flushResult(eid, wp, "<li>Error\n");
-        
+        return flushResult(eid, wp, "<li>Error");
       }
     }
     else
       thumb=encodeFileToBase64(paras[0],80);
     return flushResult(eid, wp, thumb) ;
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcGetThumbFilename(int eid, webs_t wp, int numParas, CStdString paras[])
@@ -1143,41 +1120,38 @@ CStdString CXbmcHttp::xbmcGetThumbFilename(int eid, webs_t wp, int numParas, CSt
   if (numParas>1)
   {
     CUtil::GetAlbumThumb(paras[0],paras[1],thumbFilename,false);
-    return flushResult(eid, wp, "<li>" + thumbFilename + "\n") ;
+    return flushResult(eid, wp, "<li>" + thumbFilename ) ;
   }
   else
-    return flushResult(eid, wp,"<li>Error:Missing parameter (album;filename)\n") ;
-  
+    return flushResult(eid, wp,"<li>Error:Missing parameter (album;filename)") ;
 }
 
 CStdString CXbmcHttp::xbmcPlayerPlayFile(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1)
-    return flushResult(eid, wp, "<li>Error:Missing parameter\n");
+    return flushResult(eid, wp, "<li>Error:Missing parameter");
   else
   {
     CFileItem item(paras[0], FALSE);
     g_application.PlayMedia(item, g_playlistPlayer.GetCurrentPlaylist());
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcGetCurrentPlayList(int eid, webs_t wp)
 {
   CStdString tmp;
   tmp.Format("%i", g_playlistPlayer.GetCurrentPlaylist());
-  return flushResult(eid, wp, "<li>" + tmp + "\n" );
-  
+  return flushResult(eid, wp, "<li>" + tmp  );
 }
 
 CStdString CXbmcHttp::xbmcSetCurrentPlayList(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1) 
-    return flushResult(eid, wp, "<li>Error:Missing playlist\n") ;
+    return flushResult(eid, wp, "<li>Error:Missing playlist") ;
   else {
     g_playlistPlayer.SetCurrentPlaylist(atoi(paras[0].c_str()));
-    return flushResult(eid, wp, "<li>OK\n") ;
+    return flushResult(eid, wp, "<li>OK") ;
   }
 }
 
@@ -1198,9 +1172,7 @@ CStdString CXbmcHttp::xbmcGetPlayListContents(int eid, webs_t wp, int numParas, 
       const CPlayList::CPlayListItem& item=thePlayList[i];
       list += "\n<li>" + item.GetFileName();
     }
-  list+="\n";
   return flushResult(eid, wp, list) ;
-  
 }
 
 CStdString CXbmcHttp::xbmcGetSlideshowContents(int eid, webs_t wp)
@@ -1208,7 +1180,7 @@ CStdString CXbmcHttp::xbmcGetSlideshowContents(int eid, webs_t wp)
   CStdString list="";
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (!pSlideShow)
-    return flushResult(eid, wp,"<li>Error\n");
+    return flushResult(eid, wp,"<li>Error");
   else
   {
     vector<CStdString> slideshowContents = pSlideShow->GetSlideShowContents();
@@ -1217,10 +1189,8 @@ CStdString CXbmcHttp::xbmcGetSlideshowContents(int eid, webs_t wp)
     else
     for (int i = 0; i < (int)slideshowContents.size(); ++i)
       list += "\n<li>" + slideshowContents[i];
-    list+="\n";
     return flushResult(eid, wp, list) ;
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcGetPlayListSong(int eid, webs_t wp, int numParas, CStdString paras[])
@@ -1232,8 +1202,7 @@ CStdString CXbmcHttp::xbmcGetPlayListSong(int eid, webs_t wp, int numParas, CStd
   {
     CStdString tmp;
     tmp.Format("%i", g_playlistPlayer.GetCurrentSong());
-    return flushResult(eid, wp, "<li>" + tmp + "\n");
-    
+    return flushResult(eid, wp, "<li>" + tmp );
   }
   else {
     CPlayList thePlayList;
@@ -1242,39 +1211,34 @@ CStdString CXbmcHttp::xbmcGetPlayListSong(int eid, webs_t wp, int numParas, CStd
       thePlayList=g_playlistPlayer.GetPlaylist( g_playlistPlayer.GetCurrentPlaylist() );
       if (thePlayList.size()>iSong) {
         Filename=thePlayList[iSong].GetFileName();
-        return flushResult(eid, wp, "\n<li>Filename:" + Filename + "\n");
-        
+        return flushResult(eid, wp, "<li>" + Filename );
       }
     }
   }
-  return flushResult(eid, wp,"<li>Error\n");
-  
+  return flushResult(eid, wp,"<li>Error");
 }
 
 CStdString CXbmcHttp::xbmcSetPlayListSong(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1)
-    return flushResult(eid, wp, "<li>Error:Missing song number\n");
+    return flushResult(eid, wp, "<li>Error:Missing song number");
   else
   {
     g_playlistPlayer.Play(atoi(paras[0].c_str()));
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcPlayListNext(int eid, webs_t wp)
 {
   g_playlistPlayer.PlayNext();
-  return flushResult(eid, wp, "<li>OK\n");
-  
+  return flushResult(eid, wp, "<li>OK");
 }
 
 CStdString CXbmcHttp::xbmcPlayListPrev(int eid, webs_t wp)
 {
   g_playlistPlayer.PlayPrevious();
-  return flushResult(eid, wp, "<li>OK\n");
-  
+  return flushResult(eid, wp, "<li>OK");
 }
 
 CStdString CXbmcHttp::xbmcRemoveFromPlayList(int eid, webs_t wp, int numParas, CStdString paras[])
@@ -1285,11 +1249,10 @@ CStdString CXbmcHttp::xbmcRemoveFromPlayList(int eid, webs_t wp, int numParas, C
       g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).Remove(paras[0]) ;
     else
       g_playlistPlayer.GetPlaylist(atoi(paras[1])).Remove(paras[0]) ;
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
   }
   else
-    return flushResult(eid, wp, "<li>Error:Missing parameter\n");
-  
+    return flushResult(eid, wp, "<li>Error:Missing parameter");
 }
 
 CKey CXbmcHttp::GetKey()
@@ -1309,7 +1272,7 @@ CStdString CXbmcHttp::xbmcSetKey(int eid, webs_t wp, int numParas, CStdString pa
   BYTE bLeftTrigger=0, bRightTrigger=0;
   float fLeftThumbX=0.0f, fLeftThumbY=0.0f, fRightThumbX=0.0f, fRightThumbY=0.0f ;
   if (numParas<1)
-    return flushResult(eid, wp, "<li>Error:Missing parameters\n");
+    return flushResult(eid, wp, "<li>Error:Missing parameters");
     
   else
   {
@@ -1333,9 +1296,8 @@ CStdString CXbmcHttp::xbmcSetKey(int eid, webs_t wp, int numParas, CStdString pa
     }
     CKey tempKey(dwButtonCode, bLeftTrigger, bRightTrigger, fLeftThumbX, fLeftThumbY, fRightThumbX, fRightThumbY) ;
     key = tempKey ;
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcAction(int eid, webs_t wp, int numParas, CStdString paras[], int theAction)
@@ -1353,11 +1315,11 @@ CStdString CXbmcHttp::xbmcAction(int eid, webs_t wp, int numParas, CStdString pa
     }
     else
       g_applicationMessenger.MediaPause();
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
     break;
   case 2:
     g_applicationMessenger.MediaStop();
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
     break;
   case 3:
     if (showingSlideshow) {
@@ -1368,7 +1330,7 @@ CStdString CXbmcHttp::xbmcAction(int eid, webs_t wp, int numParas, CStdString pa
     }
     else
       g_playlistPlayer.PlayNext();
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
     break;
   case 4:
     if (showingSlideshow) {
@@ -1379,7 +1341,7 @@ CStdString CXbmcHttp::xbmcAction(int eid, webs_t wp, int numParas, CStdString pa
     }
     else
       g_playlistPlayer.PlayPrevious();
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
     break;
   case 5:
     if (showingSlideshow)
@@ -1387,13 +1349,13 @@ CStdString CXbmcHttp::xbmcAction(int eid, webs_t wp, int numParas, CStdString pa
       if (pSlideShow) {
         action.wID = ACTION_ROTATE_PICTURE;
         pSlideShow->OnAction(action);  
-        return flushResult(eid, wp, "<li>OK\n");
+        return flushResult(eid, wp, "<li>OK");
       }
       else
-        return flushResult(eid, wp, "<li>Error\n");
+        return flushResult(eid, wp, "<li>Error");
     }
     else
-      return flushResult(eid, wp, "<li>Error\n");
+      return flushResult(eid, wp, "<li>Error");
     break;
   case 6:
     if (showingSlideshow)
@@ -1404,16 +1366,16 @@ CStdString CXbmcHttp::xbmcAction(int eid, webs_t wp, int numParas, CStdString pa
           action.fAmount1=(float) atof(paras[0]);
           action.fAmount2=(float) atof(paras[1]);
           pSlideShow->OnAction(action);    
-          return flushResult(eid, wp, "<li>OK\n");
+          return flushResult(eid, wp, "<li>OK");
         }
         else
-          return flushResult(eid, wp, "<li>Error:Missing parameters\n");
+          return flushResult(eid, wp, "<li>Error:Missing parameters");
       }
       else
-        return flushResult(eid, wp, "<li>Error\n");
+        return flushResult(eid, wp, "<li>Error");
     }
     else
-      return flushResult(eid, wp, "<li>Error\n");
+      return flushResult(eid, wp, "<li>Error");
     break;
   case 7:
     if (showingSlideshow)
@@ -1423,19 +1385,19 @@ CStdString CXbmcHttp::xbmcAction(int eid, webs_t wp, int numParas, CStdString pa
         {
           action.wID = ACTION_ZOOM_LEVEL_NORMAL+atoi(paras[0]);
           pSlideShow->OnAction(action);    
-          return flushResult(eid, wp, "<li>OK\n");
+          return flushResult(eid, wp, "<li>OK");
         }
         else
-          return flushResult(eid, wp, "<li>Error:Missing parameters\n");
+          return flushResult(eid, wp, "<li>Error:Missing parameters");
       }
       else
-        return flushResult(eid, wp, "<li>Error\n");
+        return flushResult(eid, wp, "<li>Error");
     }
     else
-      return flushResult(eid, wp, "<li>Error\n");
+      return flushResult(eid, wp, "<li>Error");
     break;
   default:
-    return flushResult(eid, wp, "<li>Error\n");
+    return flushResult(eid, wp, "<li>Error");
   }
 }
 
@@ -1445,28 +1407,27 @@ CStdString CXbmcHttp::xbmcExit(int eid, webs_t wp, int theAction)
   {
   case 1:
     g_applicationMessenger.Restart();
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
     break;
   case 2:
     g_applicationMessenger.Shutdown();
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
     break;
   case 3:
     g_applicationMessenger.RebootToDashBoard();
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
     break;
   case 4:
     g_applicationMessenger.Reset();
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
     break;
   case 5:
     g_applicationMessenger.RestartApp();
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
     break;
   default:
-    return flushResult(eid, wp, "<li>Error\n");
+    return flushResult(eid, wp, "<li>Error");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcLookupAlbum(int eid, webs_t wp, int numParas, CStdString paras[])
@@ -1475,7 +1436,7 @@ CStdString CXbmcHttp::xbmcLookupAlbum(int eid, webs_t wp, int numParas, CStdStri
   CMusicInfoScraper scraper;
 
   if (numParas<1)
-    return flushResult(eid, wp, "<li>Error:Missing album name\n");
+    return flushResult(eid, wp, "<li>Error:Missing album name");
   else
     {
     try
@@ -1496,24 +1457,23 @@ CStdString CXbmcHttp::xbmcLookupAlbum(int eid, webs_t wp, int numParas, CStdStri
           return flushResult(eid, wp, albums) ;
         }
         else
-          return flushResult(eid, wp, "<li>Error:No albums found\n") ;
+          return flushResult(eid, wp, "<li>Error:No albums found") ;
       }
       else
-        return flushResult(eid, wp, "<li>Error:Scraping\n") ;
+        return flushResult(eid, wp, "<li>Error:Scraping") ;
     }
     catch (...)
     {
-      return flushResult(eid, wp,"<li>Error\n");
+      return flushResult(eid, wp,"<li>Error");
     }
-  }  
-}
+  }}
 
 CStdString CXbmcHttp::xbmcChooseAlbum(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   CStdString output="";
 
   if (numParas<1)
-    return flushResult(eid, wp, "<li>Error:Missing album name\n");
+    return flushResult(eid, wp, "<li>Error:Missing album name");
   else
     try
     {
@@ -1521,8 +1481,8 @@ CStdString CXbmcHttp::xbmcChooseAlbum(int eid, webs_t wp, int numParas, CStdStri
       CHTTP http;
       if (musicInfo.Load(http))
       {
-        output="<li>image:" + musicInfo.GetImageURL() + "\n";
-        output+="<li>review:" + musicInfo.GetReview()+ "\n";
+        output="<li>image:" + musicInfo.GetImageURL();
+        output+="\n<li>review:" + musicInfo.GetReview();
         return flushResult(eid, wp, output) ;
       }
       else
@@ -1532,7 +1492,6 @@ CStdString CXbmcHttp::xbmcChooseAlbum(int eid, webs_t wp, int numParas, CStdStri
     {
       return flushResult(eid, wp,"<li>Error:Exception");
     }
-  
 }
 
 CStdString CXbmcHttp::xbmcDownloadInternetFile(int eid, webs_t wp, int numParas, CStdString paras[])
@@ -1540,7 +1499,7 @@ CStdString CXbmcHttp::xbmcDownloadInternetFile(int eid, webs_t wp, int numParas,
   CStdString src, dest="";
 
   if (numParas<1)
-    return flushResult(eid, wp,"<li>Error:Missing parameter\n");
+    return flushResult(eid, wp,"<li>Error:Missing parameter");
   else
   {
     src=paras[0];
@@ -1549,7 +1508,7 @@ CStdString CXbmcHttp::xbmcDownloadInternetFile(int eid, webs_t wp, int numParas,
     if (dest=="")
       dest="Z:\\xbmcDownloadInternetFile.tmp" ;
     if (src=="")
-      return flushResult(eid, wp,"<li>Error:Missing parameter\n");
+      return flushResult(eid, wp,"<li>Error:Missing parameter");
     else
     {
       try
@@ -1572,23 +1531,21 @@ CStdString CXbmcHttp::xbmcDownloadInternetFile(int eid, webs_t wp, int numParas,
       }
     }
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcSetFile(int eid, webs_t wp, int numParas, CStdString paras[])
 //parameter = destFilename ; base64String
 {
   if (numParas<2)
-    return flushResult(eid, wp,"<li>Error:Missing parameter\n");
+    return flushResult(eid, wp,"<li>Error:Missing parameter");
   else
   {
     paras[1].Replace(" ","+");
     decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp");
     CFile::Cache("Z:\\xbmcTemp.tmp", paras[0].c_str(), NULL, NULL) ;
     ::DeleteFile("Z:\\xbmcTemp.tmp");
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcCopyFile(int eid, webs_t wp, int numParas, CStdString paras[])
@@ -1596,24 +1553,23 @@ CStdString CXbmcHttp::xbmcCopyFile(int eid, webs_t wp, int numParas, CStdString 
 // both file names are relative to the XBox not the calling client
 {
   if (numParas<2)
-    return flushResult(eid, wp,"<li>Error:Missing parameter\n");
+    return flushResult(eid, wp,"<li>Error:Missing parameter");
   else
   {
     if (CFile::Exists(paras[0].c_str()))
     {
       CFile::Cache(paras[0].c_str(), paras[1].c_str(), NULL, NULL) ;
-      return flushResult(eid, wp, "<li>OK\n");
+      return flushResult(eid, wp, "<li>OK");
     }
     else
-      return flushResult(eid, wp, "<li>Error:Source file not found\n");
+      return flushResult(eid, wp, "<li>Error:Source file not found");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcDeleteFile(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1) 
-    return flushResult(eid, wp,"<li>Error:Missing parameter\n");
+    return flushResult(eid, wp,"<li>Error:Missing parameter");
   else
   {
     try
@@ -1621,52 +1577,49 @@ CStdString CXbmcHttp::xbmcDeleteFile(int eid, webs_t wp, int numParas, CStdStrin
       if (CFile::Exists(paras[0].c_str()))
       {
         ::DeleteFile(paras[0].c_str());
-        return flushResult(eid, wp, "<li>OK\n");
+        return flushResult(eid, wp, "<li>OK");
       }
       else
-        return flushResult(eid, wp, "<li>Error:File not found\n");
+        return flushResult(eid, wp, "<li>Error:File not found");
     }
     catch (...)
     {
       return flushResult(eid, wp,"<li>Error");
     }
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcFileExists(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1) 
-    return flushResult(eid, wp,"<li>Error:Missing parameter\n");
+    return flushResult(eid, wp,"<li>Error:Missing parameter");
   else
   {
     try
     {
       if (CFile::Exists(paras[0].c_str()))
       {
-        return flushResult(eid, wp, "<li>True\n");
+        return flushResult(eid, wp, "<li>True");
       }
       else
-        return flushResult(eid, wp, "<li>False\n");
+        return flushResult(eid, wp, "<li>False");
     }
     catch (...)
     {
       return flushResult(eid, wp,"<li>Error");
     }
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcShowPicture(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1) 
-    return flushResult(eid, wp,"<li>Error:Missing parameter\n");
+    return flushResult(eid, wp,"<li>Error:Missing parameter");
   else
   {
     g_applicationMessenger.PictureShow(paras[0]);
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcGetCurrentSlide(int eid, webs_t wp)
@@ -1675,22 +1628,20 @@ CStdString CXbmcHttp::xbmcGetCurrentSlide(int eid, webs_t wp)
   if (!pSlideShow)
     return flushResult(eid, wp,"<li>Error:Could not access slideshown");
   else
-    return flushResult(eid, wp, "<li>" + pSlideShow->GetCurrentSlide() + "\n");
-  
+    return flushResult(eid, wp, "<li>" + pSlideShow->GetCurrentSlide() );
 }
 
 CStdString CXbmcHttp::xbmcExecBuiltIn(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1) 
-    return flushResult(eid, wp,"<li>Error:Missing parameter\n");
+    return flushResult(eid, wp,"<li>Error:Missing parameter");
   else
   {
     ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
     tMsg.strParam = paras[0];
     g_applicationMessenger.SendMessage(tMsg);
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcGUISetting(int eid, webs_t wp, int numParas, CStdString paras[])
@@ -1698,7 +1649,7 @@ CStdString CXbmcHttp::xbmcGUISetting(int eid, webs_t wp, int numParas, CStdStrin
 //type=0->int, 1->bool, 2->float
 {
   if (numParas<2)
-    return flushResult(eid, wp, "<li>Error:Missing parameters\n");
+    return flushResult(eid, wp, "<li>Error:Missing parameters");
   else
   {
     CStdString tmp;
@@ -1720,7 +1671,7 @@ CStdString CXbmcHttp::xbmcGUISetting(int eid, webs_t wp, int numParas, CStdStrin
           return flushResult(eid, wp, "<li>" + tmp);
           break;
         default:
-          return flushResult(eid, wp, "<li>Error:Unknown type\n");
+          return flushResult(eid, wp, "<li>Error:Unknown type");
           break;
       }
     else
@@ -1740,7 +1691,7 @@ CStdString CXbmcHttp::xbmcGUISetting(int eid, webs_t wp, int numParas, CStdStrin
           return flushResult(eid, wp, "<li>OK");
           break;
         default:
-          return flushResult(eid, wp, "<li>Error:Unknown type\n");
+          return flushResult(eid, wp, "<li>Error:Unknown type");
           break;
       }     
     }
@@ -1754,7 +1705,6 @@ CStdString CXbmcHttp::xbmcConfig(int eid, webs_t wp, int numParas, CStdString pa
 
   if (numParas<1) {
     return flushResult(eid, wp, "<li>Error:Missing paramters");
-    
   }
   if (numParas>1){
     for (argc=0; argc<numParas-1;argc++)
@@ -1791,51 +1741,47 @@ CStdString CXbmcHttp::xbmcConfig(int eid, webs_t wp, int numParas, CStdString pa
     ret=XbmcWebsAspConfigSetOption(-1, wp, argc, argv);
   else
   {
-    return flushResult(eid, wp, "<li>Error:Unknown Config Command\n");
-    
+    return flushResult(eid, wp, "<li>Error:Unknown Config Command");
   }
   if (ret==-1)
-    return flushResult(eid, wp, ""); //the XbmcWebsAspConfig procedures internally write the error response
+    return flushResult(eid, wp, ""); //the XbmcWebsAspConfig procedures internally writes the error response
   else if (ret==0)
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
   else
-    return flushResult(eid, wp, ""); //the XbmcWebsAspConfig procedures internally wrote the response
-  
+    return flushResult(eid, wp, ""); //the XbmcWebsAspConfig procedures internally writes the response
 }
 
 CStdString CXbmcHttp::xbmcGetSystemInfo(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1)
-    return flushResult(eid, wp, "<li>Error:Missing Parameter\n");
+    return flushResult(eid, wp, "<li>Error:Missing Parameter");
   else
   {
     CStdString strInfo = "";
     int i;
     for (i=0; i<numParas; i++)
-      strInfo += "<li>" + (CStdString) g_infoManager.GetLabel(atoi(paras[i])) + "\n";
+      strInfo += "<li>" + (CStdString) g_infoManager.GetLabel(atoi(paras[i])) ;
     if (strInfo == "")
-      strInfo="Error:No information retrieved\n";
+      strInfo="Error:No information retrieved";
     return flushResult(eid, wp, strInfo);
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcGetSystemInfoByName(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1)
-    return flushResult(eid, wp, "<li>Error:Missing Parameter\n");
+    return flushResult(eid, wp, "<li>Error:Missing Parameter");
   else
   {
     CStdString strInfo = "";
     int i;
 
     for (i=0; i<numParas; i++)
-      strInfo += "<li>" + (CStdString) g_infoManager.GetLabel(g_infoManager.TranslateString(paras[i])) + "\n";
+      strInfo += "<li>" + (CStdString) g_infoManager.GetLabel(g_infoManager.TranslateString(paras[i])) ;
     if (strInfo == "")
-      strInfo="Error:No information retrieved\n";
+      strInfo="Error:No information retrieved";
     return flushResult(eid, wp, strInfo);
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcTakeScreenshot(int eid, webs_t wp, int numParas, CStdString paras[])
@@ -1860,8 +1806,7 @@ CStdString CXbmcHttp::xbmcTakeScreenshot(int eid, webs_t wp, int numParas, CStdS
       if (paras[4]=="")
         if (paras[3]=="")
         {
-          return flushResult(eid, wp, "<li>Error:Both height and width parameters cannot be absent\n");
-          
+          return flushResult(eid, wp, "<li>Error:Both height and width parameters cannot be absent");
         }
         else
         {
@@ -1887,40 +1832,36 @@ CStdString CXbmcHttp::xbmcTakeScreenshot(int eid, webs_t wp, int numParas, CStdS
         ::DeleteFile("q:\\temp.bmp");
         if (numParas>6)
           if (paras[6].ToLower()="true")
-            {
-              CStdString b64;
-              b64=encodeFileToBase64(filename,80);
-              if (filename=="q:\\screenshot.jpg")
-                ::DeleteFile(filename.c_str());
-              return flushResult(eid, wp, b64) ;
-              
-            }
+          {
+            CStdString b64;
+            b64=encodeFileToBase64(filename,80);
+            if (filename=="q:\\screenshot.jpg")
+              ::DeleteFile(filename.c_str());
+            return flushResult(eid, wp, b64) ;
+          }
       }
       else
       {
         CStdString strInt;
         strInt.Format("%", ret);
-        return flushResult(eid, wp, "<li>Error:Could not convert image, error: " + strInt + "\n");
-        
+        return flushResult(eid, wp, "<li>Error:Could not convert image, error: " + strInt );
       }
     }
     else
-      return flushResult(eid, wp, "<li>Error:Missing parameters\n");
+      return flushResult(eid, wp, "<li>Error:Missing parameters");
   }
-  return flushResult(eid, wp, "<li>OK\n");
-  
+  return flushResult(eid, wp, "<li>OK");
 }
 
 CStdString CXbmcHttp::xbmcAutoGetPictureThumbs(int eid, webs_t wp, int numParas, CStdString paras[])
 {
   if (numParas<1)
-    return flushResult(eid, wp, "<li>Error:Missing parameter\n");
+    return flushResult(eid, wp, "<li>Error:Missing parameter");
   else
   {
     autoGetPictureThumbs = (paras[0].ToLower()=="true");
-    return flushResult(eid, wp, "<li>OK\n");
+    return flushResult(eid, wp, "<li>OK");
   }
-  
 }
 
 CStdString CXbmcHttp::xbmcHelp(int eid, webs_t wp)
@@ -1933,7 +1874,6 @@ CStdString CXbmcHttp::xbmcHelp(int eid, webs_t wp)
   output+= "<li>clearplaylist\n<li>addtoplaylist\n<li>playfile\n<li>pause\n<li>stop\n<li>restart\n<li>shutdown\n<li>exit\n<li>reset\n<li>restartapp\n<li>getcurrentlyplaying\n<li>getdirectory\n<li>gettagfromfilename\n<li>getcurrentplaylist\n<li>setcurrentplaylist\n<li>getplaylistcontents\n<li>removefromplaylist\n<li>setplaylistsong\n<li>getplaylistsong\n<li>playlistnext\n<li>playlistprev\n<li>getpercentage\n<li>seekpercentage\n<li>setvolume\n<li>getvolume\n<li>getthumbfilename\n<li>lookupalbum\n<li>choosealbum\n<li>downloadinternetfile\n<li>getmoviedetails\n<li>showpicture\n<li>sendkey\n<li>filedelete\n<li>filecopy\n<li>fileexists\n<li>fileupload\n<li>getguistatus\n<li>execbuiltin\n<li>config\n<li>getsysteminfo\n<li>getsysteminfobyname\n<li>guisetting\n<li>addtoslideshow\n<li>clearslideshow\n<li>playslideshow\n<li>getslideshowcontents\n<li>slideshowselect\n<li>getcurrentslide\n<li>rotate\n<li>move\n<li>zoom\n<li>playnext\n<li>playprev\n<li>TakeScreenShot\n<li>GetGUIDescription\n<li>GetPlaySpeed\n<li>SetPlaySpeed\n<li>help";
 
   return flushResult(eid, wp,output);
-  
 }
 
 CStdString CXbmcHttp::xbmcExternalCall(char *command)
@@ -2040,7 +1980,7 @@ CStdString CXbmcHttp::xbmcProcessCommand( int eid, webs_t wp, char_t *command, c
   else if (!stricmp(command, "setkey"))                   retVal =  xbmcSetKey(eid, wp, numParas, paras);
 
   else
-    retVal = flushResult(eid, wp, "<li>Error:unknown command\n");
+    retVal = flushResult(eid, wp, "<li>Error:Unknown command");
   if (wp!=NULL)
     websFooter(wp);
   CLog::Log(LOGDEBUG, "HttpApi End command: %s", command);
@@ -2057,7 +1997,7 @@ int CXbmcHttp::xbmcCommand( int eid, webs_t wp, int argc, char_t **argv)
 
 	int parameters = ejArgs(argc, argv, T("%s %s"), &command, &parameter);
 	if (parameters < 1) {
-		websError(wp, 500, T("Insufficient args\n"));
+    websError(wp, 500, T("Error:Insufficient args"));
 		return -1;
 	}
 	else if (parameters < 2) parameter = "";
