@@ -248,9 +248,6 @@ int CFileSMB::OpenFile(CStdString& strAuth)
         smb.Unlock();
 
         // set up new filehandle (as CFileSMB::Open does)
-        smb.Init();
-        smb.Lock();
-
         strPath = g_passwordManager.GetSMBAuthFilename(strAuth);
         fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
       }
