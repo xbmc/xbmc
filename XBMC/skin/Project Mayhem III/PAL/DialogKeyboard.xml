@@ -192,7 +192,7 @@
 		<height>30</height>
 		<onleft>53</onleft>
 		<onright>55</onright>
-		<onup>8</onup>
+		<onup>305</onup>
 		<ondown>71</ondown>
 		<textureNoFocus>keyboard-btn.png</textureNoFocus>
 		<textureFocus>keyboard-btn-focus.png</textureFocus>
@@ -210,7 +210,7 @@
 		<height>30</height>
 		<onleft>54</onleft>
 		<onright>56</onright>
-		<onup>8</onup>
+		<onup>305</onup>
 		<ondown>72</ondown>
 		<textureNoFocus>keyboard-btn.png</textureNoFocus>
 		<textureFocus>keyboard-btn-focus.png</textureFocus>
@@ -228,7 +228,7 @@
 		<height>30</height>
 		<onleft>55</onleft>
 		<onright>57</onright>
-		<onup>8</onup>
+		<onup>306</onup>
 		<ondown>73</ondown>
 		<textureNoFocus>keyboard-btn.png</textureNoFocus>
 		<textureFocus>keyboard-btn-focus.png</textureFocus>
@@ -246,7 +246,7 @@
 		<height>30</height>
 		<onleft>56</onleft>
 		<onright>300</onright>
-		<onup>8</onup>
+		<onup>306</onup>
 		<ondown>74</ondown>
 		<textureNoFocus>keyboard-btn-topright.png</textureNoFocus>
 		<textureFocus>keyboard-btn-topright-focus.png</textureFocus>
@@ -797,7 +797,7 @@
 		<onleft>90</onleft>
 		<onright>304</onright>
 		<onup>81</onup>
-		<ondown>54</ondown>
+		<ondown>305</ondown>
 		<textureNoFocus>keyboard-btn-backspace.png</textureNoFocus>
 		<textureFocus>keyboard-btn-backspace-focus.png</textureFocus>
       		<align>center</align>
@@ -824,7 +824,7 @@
 		<height>30</height>
 		<label>Space</label>
 		<onleft>304</onleft>
-		<onright>8</onright>
+		<onright>305</onright>
 		<onup>85</onup>
 		<ondown>48</ondown>
 		<textureNoFocus>keyboard-btn-space.png</textureNoFocus>
@@ -834,14 +834,34 @@
       		<font>special13</font>
 	</control>
 	<control>
-		<description>dummy right</description>
-		<type>image</type>
-		<id>0</id>
+		<description>previous button</description>
+		<type>button</type>
+		<id>305</id>
 		<posX>450</posX>
 		<posY>375</posY>
-		<width>120</width>
+		<width>60</width>
 		<height>30</height>
-		<texture>keyboard-btn-dummyright.png</texture>
+		<onleft>32</onleft>
+		<onright>306</onright>
+		<onup>8</onup>
+		<ondown>54</ondown>
+		<textureNoFocus>keyboard-btn-prev.png</textureNoFocus>
+		<textureFocus>keyboard-btn-prev-focus.png</textureFocus>
+	</control>
+	<control>
+		<description>next button</description>
+		<type>button</type>
+		<id>306</id>
+		<posX>510</posX>
+		<posY>375</posY>
+		<width>60</width>
+		<height>30</height>
+		<onleft>305</onleft>
+		<onright>32</onright>
+		<onup>8</onup>
+		<ondown>56</ondown>
+		<textureNoFocus>keyboard-btn-next.png</textureNoFocus>
+		<textureFocus>keyboard-btn-next-focus.png</textureFocus>
 	</control>	
 	<control>
 		<description>Keyboard Dialog Background</description>
