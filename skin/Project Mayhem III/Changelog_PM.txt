@@ -1,3 +1,6 @@
+2005-07-23 added:	fps info to the fullscreen visualisation infos
+2005-07-23 added:	Next / Previous buttons to the virtual keyboard
+
 2005-07-22 changed:	bg fadeout on shutdownmenu, numpad and keyboard
 2005-07-22 changed:	mousepointer color now matching with the rest of the skin
 2005-07-22 changed:	new virtual keyboard
