@@ -140,7 +140,7 @@ namespace PYXBMC
 		"executehttpapi(string) -- Execute an HTTP API.\n"
 		"\n"
 		"example:\n"
-    "  - executehttpapi('XBMC.SetPlaySpeed(2)')\n");
+    "  - executehttpapi('SetPlaySpeed(2)')\n");
 
 	PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
 	{
