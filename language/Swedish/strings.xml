@@ -1088,6 +1088,9 @@
   <string><id>16001</id><value>A/V Receiver</value></string>
   <string><id>16002</id><value>CDDB sök</value></string>
   <string><id>16003</id><value>Spelare</value></string>
+
+  <string><id>16004</id><value>Synkronisera Interlacerad Video</value></string>
+  <string><id>16005</id><value>- Invertera Fält</value></string>
 </strings>
 
 
