@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 25-06-2005 added: [ 1236234 ] mplayer_GetAudioInfo returns wrong audio bitrate
   - 14-06-2005 added: readded a couple of other filters and fixed playback with noise filter
   - 14-06-2005 fixed: readded volume filter, was actually in use
   - 10-06-2005 fixed: playback using mplayer.dll without libavformat would never start, load of dll failed.
