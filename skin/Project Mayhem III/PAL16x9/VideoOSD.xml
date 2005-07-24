@@ -605,7 +605,7 @@
       <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
-    - <control>
+     <control>
       <description>brightness</description>
       <type>slider</type>
       <id>704</id>
@@ -622,7 +622,7 @@
       <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
-    - <control>
+     <control>
       <description>contrast label</description>
       <type>label</type>
       <id>753</id>
@@ -633,7 +633,7 @@
       <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
-    - <control>
+     <control>
       <description>contrast</description>
       <type>slider</type>
       <id>705</id>
@@ -650,7 +650,7 @@
       <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
-    - <control>
+     <control>
       <description>gamma label</description>
       <type>label</type>
       <id>754</id>
@@ -661,7 +661,7 @@
       <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
-    - <control>
+     <control>
       <description>gamma</description>
       <type>slider</type>
       <id>706</id>
