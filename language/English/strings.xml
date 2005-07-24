@@ -1088,4 +1088,8 @@
   <string><id>16001</id><value>Configure Audio Hardware...</value></string>
   <string><id>16002</id><value>CDDB lookup</value></string>
   <string><id>16003</id><value>Player</value></string>
+  
+  <string><id>16004</id><value>Synchronize Interlaced Video</value></string>
+  <string><id>16005</id><value>- Invert Fields</value></string>
+  
 </strings>

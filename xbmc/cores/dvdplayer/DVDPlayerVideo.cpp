@@ -183,11 +183,13 @@ void CDVDPlayerVideo::Process()
 
           //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
           //this video
-          if( picture.iFlags & DVP_FLAGS_INTERLACED || g_stSettings.m_currentVideoSettings.m_Deinterlace )
+          
+          if( picture.iFlags & DVP_FLAGS_INTERLACED && g_stSettings.m_currentVideoSettings.m_Deinterlace )
           {
             mDeinterlace.Process(&picture);
             mDeinterlace.GetPicture(&picture);
           }
+          
 
           if ((picture.iFrameType == FRAME_TYPE_I || picture.iFrameType == FRAME_TYPE_UNDEF) &&
               pPacket->dts != DVD_NOPTS_VALUE) //Only use pts when we have an I frame, or unknown
@@ -374,6 +376,7 @@ bool CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
     vp->pts = pts;
     vp->iDuration = pPicture->iDuration;
     vp->iFrameType = pPicture->iFrameType;
+    vp->iFlags = pPicture->iFlags;
 
     /* now we can update the picture count */
     if (++pictq_windex == VIDEO_PICTURE_QUEUE_SIZE) pictq_windex = 0;
@@ -485,9 +488,17 @@ DWORD video_refresh_thread(void *arg)
       // sleep
       if (iSleepTime > 0) usleep(iSleepTime);
 
+      if( vp->iFlags & DVP_FLAGS_INTERLACED && !g_stSettings.m_currentVideoSettings.m_Deinterlace )
+      {
+        if( vp->iFlags & DVP_FLAGS_TOP_FIELD_FIRST )
+          g_renderManager.SetFieldSync(FS_ODD);
+        else
+          g_renderManager.SetFieldSync(FS_EVEN);
+      }
+      else
+        g_renderManager.SetFieldSync( FS_NONE );
 
-      //if( vp->iFlags & DVP_FLAGS_TOP_FIELD_FIRST )
-      //  g_renderManager.WaitForField(false);
+
 
       // display picture
       // we expect the video device to be initialized here
