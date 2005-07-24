@@ -27,7 +27,7 @@
       <AltTextureNoFocus>-</AltTextureNoFocus>
       <textureFocus>osd_button_skip_minusSELFO.png</textureFocus>
       <textureNoFocus>osd_button_skip_minusSELNF.png</textureNoFocus>
-      <*execute>XBMC.PlayerControl(Previous)<*/execute>
+      <!-- <execute>XBMC.PlayerControl(Previous)</execute> -->
       <label>-</label>
       <font>-</font>
       <onleft>215</onleft>
@@ -58,7 +58,7 @@
       <execute>XBMC.PlayerControl(Rewind)</execute>
     </control>
 
-    <*control>
+    <!-- <control>
       <description>Stop</description>
       <type>button</type>
       <id>212</id>
@@ -74,7 +74,7 @@
       <onright>213</onright>
       <onup>212</onup>
       <ondown>218</ondown>
-    <*/control>
+    </control> -->
 
     <control>
       <description>Play</description>
@@ -132,7 +132,7 @@
       <AltTextureNoFocus>-</AltTextureNoFocus>
       <textureFocus>osd_button_skip_plusSELFO.png</textureFocus>
       <textureNoFocus>osd_button_skip_plusSELNF.png</textureNoFocus>
-      <*execute>XBMC.PlayerControl(Next)<*/execute>
+      <!-- <execute>XBMC.PlayerControl(Next)</execute> -->
       <label>-</label>
       <font>-</font>
       <onleft>214</onleft>
@@ -141,7 +141,7 @@
       <ondown>219</ondown>
     </control>
 
-    <*control>
+    <!-- <control>
       <description>Mute</description>
       <type>togglebutton</type>
       <id>216</id>
@@ -159,7 +159,7 @@
       <onright>212</onright>
       <onup>216</onup>
       <ondown>219</ondown>
-    <*/control>
+    </control> -->
 
     <control>
       <description>Subtitles Menu</description>
@@ -605,7 +605,7 @@
       <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
-    - <control>
+    <control>
       <description>brightness</description>
       <type>slider</type>
       <id>704</id>
@@ -622,7 +622,7 @@
       <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
-    - <control>
+    <control>
       <description>contrast label</description>
       <type>label</type>
       <id>753</id>
@@ -633,7 +633,7 @@
       <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
-    - <control>
+    <control>
       <description>contrast</description>
       <type>slider</type>
       <id>705</id>
@@ -650,7 +650,7 @@
       <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
-    - <control>
+    <control>
       <description>gamma label</description>
       <type>label</type>
       <id>754</id>
@@ -661,7 +661,7 @@
       <visible>!VideoPlayer.UsingOverlays</visible>
     </control>
 
-    - <control>
+    <control>
       <description>gamma</description>
       <type>slider</type>
       <id>706</id>
