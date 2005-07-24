@@ -41,6 +41,8 @@ static bool m_bImageLocked = false;
 static bool m_bAllowDR = true;
 #endif
 
+
+
 void video_uninit(void);
 
 void xbox_video_CheckScreenSaver()
@@ -179,6 +181,7 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
   m_bImageLocked = false;
   m_bAllowDR = true;
 #endif
+
   float fps = 25.00f;
   if (g_application.m_pPlayer)
     fps = g_application.m_pPlayer->GetActualFPS();
@@ -285,6 +288,17 @@ static unsigned int video_control(unsigned int request, void *data, ...)
     */
     {
       mp_image_t *mpi = (mp_image_t*)data;
+
+      if( mpi->fields & MP_IMGFIELD_ORDERED )
+        if( mpi->fields & MP_IMGFIELD_TOP_FIRST )
+          g_renderManager.SetFieldSync(FS_ODD);
+        else
+          g_renderManager.SetFieldSync(FS_EVEN);
+      else if( mpi->fields & MP_IMGFIELD_INTERLACED )
+        g_renderManager.SetFieldSync(FS_ODD);
+      else
+        g_renderManager.SetFieldSync(FS_NONE);
+
 
 #ifdef MP_DIRECTRENDERING
       if( m_bImageLocked )

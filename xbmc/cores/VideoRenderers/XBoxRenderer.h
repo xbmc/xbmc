@@ -19,6 +19,13 @@ struct DRAWRECT
   float bottom;
 };
 
+static enum EFIELDSYNC
+{
+  FS_NONE,
+  FS_ODD,
+  FS_EVEN,
+};
+
 static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 static const DWORD FVF_Y8A8VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX2;
 
@@ -57,7 +64,8 @@ public:
   virtual void RenderBlank();
   void AutoCrop(bool bCrop);
   int GetBuffersCount() { return m_NumYV12Buffers; };
-  void WaitForField(bool bOdd = true);
+
+  void SetFieldSync(EFIELDSYNC mSync) { m_iFieldSync = mSync; } ;
 
 protected:
   virtual void Render() {};
@@ -95,6 +103,8 @@ protected:
   unsigned int m_iNormalDestWidth;  // initial destination width in normal view
 
   bool m_bConfigured;
+  
+  EFIELDSYNC m_iFieldSync;
 
   // OSD stuff
   LPDIRECT3DTEXTURE8 m_pOSDYTexture[NUM_BUFFERS];

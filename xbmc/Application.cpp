@@ -169,48 +169,48 @@ void CApplication::InitBasicD3D()
 {
   bool bPal = g_videoConfig.HasPAL();
   CLog::Log(LOGINFO, "Init display in default mode: %s", bPal ? "PAL" : "NTSC");
-  // init D3D with defaults (NTSC or PAL standard res)
-  m_d3dpp.BackBufferWidth = 720;
+    // init D3D with defaults (NTSC or PAL standard res)
+    m_d3dpp.BackBufferWidth = 720;
   m_d3dpp.BackBufferHeight = bPal ? 576 : 480;
-  m_d3dpp.BackBufferFormat = D3DFMT_LIN_X8R8G8B8;
-  m_d3dpp.BackBufferCount = 1;
-  m_d3dpp.EnableAutoDepthStencil = FALSE;
-  m_d3dpp.SwapEffect = D3DSWAPEFFECT_COPY;
-  m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+    m_d3dpp.BackBufferFormat = D3DFMT_LIN_X8R8G8B8;
+    m_d3dpp.BackBufferCount = 1;
+    m_d3dpp.EnableAutoDepthStencil = FALSE;
+    m_d3dpp.SwapEffect = D3DSWAPEFFECT_COPY;
+    m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
-  if (!(m_pD3D = Direct3DCreate8(D3D_SDK_VERSION)))
-  {
-    CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create Direct3D!");
-    Sleep(INFINITE); // die
-  }
+    if (!(m_pD3D = Direct3DCreate8(D3D_SDK_VERSION)))
+    {
+      CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create Direct3D!");
+      Sleep(INFINITE); // die
+    }
 
-  // Check if we have the required modes available
-  g_videoConfig.GetModes(m_pD3D);
-  if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
-  {
-    // Oh uh - doesn't look good for starting in their wanted screenmode
-    CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
-    g_guiSettings.m_LookAndFeelResolution = g_videoConfig.GetSafeMode();
-    CLog::Log(LOGERROR, "Resetting to mode %s", g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode);
-    CLog::Log(LOGERROR, "Done reset");
-  }
-  // Transfer the resolution information to our graphics context
-  g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
-  g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
+    // Check if we have the required modes available
+    g_videoConfig.GetModes(m_pD3D);
+    if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
+    {
+      // Oh uh - doesn't look good for starting in their wanted screenmode
+      CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
+      g_guiSettings.m_LookAndFeelResolution = g_videoConfig.GetSafeMode();
+      CLog::Log(LOGERROR, "Resetting to mode %s", g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode);
+      CLog::Log(LOGERROR, "Done reset");
+    }
+    // Transfer the resolution information to our graphics context
+    g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
+    g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
 
-  // Create the device
-  if (m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
-  {
-    CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create D3D Device!");
-    Sleep(INFINITE); // die
-  }
+    // Create the device
+    if (m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
+    {
+      CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create D3D Device!");
+      Sleep(INFINITE); // die
+    }
 
-  m_pd3dDevice->GetBackBuffer(0, 0, &m_pBackBuffer);
+    m_pd3dDevice->GetBackBuffer(0, 0, &m_pBackBuffer);
 
-  //  XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
+    //  XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
 
-  // Create the gamepad devices
-  //  HaveGamepad = (XBInput_CreateGamepads(&m_Gamepad) == S_OK);
+    // Create the gamepad devices
+    //  HaveGamepad = (XBInput_CreateGamepads(&m_Gamepad) == S_OK);
   if (m_splash)
   {
     m_splash->Stop();
@@ -645,7 +645,7 @@ HRESULT CApplication::Create()
       bAnyAnalogKey = m_DefaultGamepad.bPressedAnalogButtons[0] || m_DefaultGamepad.bPressedAnalogButtons[1] || m_DefaultGamepad.bPressedAnalogButtons[2] || m_DefaultGamepad.bPressedAnalogButtons[3] || m_DefaultGamepad.bPressedAnalogButtons[4] || m_DefaultGamepad.bPressedAnalogButtons[5] || m_DefaultGamepad.bPressedAnalogButtons[6] || m_DefaultGamepad.bPressedAnalogButtons[7];
     }
     if (m_DefaultGamepad.bPressedAnalogButtons[XINPUT_GAMEPAD_A])
-      CUtil::DeleteTDATA();
+    CUtil::DeleteTDATA();
     m_pd3dDevice->Release();
   }
 
@@ -2026,9 +2026,9 @@ bool CApplication::OnKey(CKey& key)
       if (action.wID == ACTION_PLAYER_PLAY)
       {
         m_pPlayer->Pause();
-        return true;
-      }
+      return true;
     }
+  }
   }
   if (action.wID == ACTION_MUTE)
   {
@@ -2680,7 +2680,6 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "Saving settings");
     g_settings.Save();
     m_bStop = true;
-
     CLog::Log(LOGNOTICE, "stop all");
 
     CKaiClient::GetInstance()->RemoveObserver();
@@ -2811,6 +2810,15 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     g_stSettings.m_defaultVideoSettings.m_Brightness = g_guiSettings.GetInt("MyVideos.Brightness");
     g_stSettings.m_defaultVideoSettings.m_Contrast = g_guiSettings.GetInt("MyVideos.Contrast");
     g_stSettings.m_defaultVideoSettings.m_Gamma = g_guiSettings.GetInt("MyVideos.Gamma");
+    
+    if( g_guiSettings.GetBool("VideoPlayer.FieldSync") )
+      if( g_guiSettings.GetBool("VideoPlayer.InvertFieldSync") )
+        g_stSettings.m_defaultVideoSettings.m_FieldSync = VS_FIELDSYNC_INVERTED;
+      else
+        g_stSettings.m_defaultVideoSettings.m_FieldSync = VS_FIELDSYNC_STANDARD;
+    else
+      g_stSettings.m_defaultVideoSettings.m_FieldSync = VS_FIELDSYNC_OFF;
+
     g_stSettings.m_currentVideoSettings = g_stSettings.m_defaultVideoSettings;
     // see if we have saved options in the database
     if (item.IsVideo())
@@ -2834,8 +2842,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     strNewPlayer = m_strForcedNextPlayer;
     m_strForcedNextPlayer = "";
   }
-    /*
-    else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 && (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage()))
+  /*
+  else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 && (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage()))
   {
     strNewPlayer = "dvdplayer";
   }
@@ -3091,31 +3099,31 @@ bool CApplication::ResetScreenSaverWindow()
     {
       return true;    // don't need to do anything - just stay in vis mode
     }
-    // Fade to dim or black screensaver is active
-    // fade in
-    float fFadeLevel = 1.0f;
-    CStdString strScreenSaver = g_guiSettings.GetString("ScreenSaver.Mode");
-    if (strScreenSaver == "Dim")
-    {
-      fFadeLevel = (float)g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100;
-    }
-    else if (strScreenSaver == "Fade")
-    {
-      fFadeLevel = 0;
-    }
-    D3DGAMMARAMP Ramp;
-    for (float fade = fFadeLevel; fade <= 1; fade += 0.01f)
-    {
-      for (int i = 0;i < 256;i++)
+      // Fade to dim or black screensaver is active
+      // fade in
+      float fFadeLevel = 1.0f;
+      CStdString strScreenSaver = g_guiSettings.GetString("ScreenSaver.Mode");
+      if (strScreenSaver == "Dim")
       {
-        Ramp.red[i] = (int)((float)m_OldRamp.red[i] * fade);
-        Ramp.green[i] = (int)((float)m_OldRamp.green[i] * fade);
-        Ramp.blue[i] = (int)((float)m_OldRamp.blue[i] * fade);
+        fFadeLevel = (float)g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100;
       }
-      Sleep(5);
-      m_pd3dDevice->SetGammaRamp(D3DSGR_IMMEDIATE, &Ramp); // use immediate to get a smooth fade
-    }
-    m_pd3dDevice->SetGammaRamp(0, &m_OldRamp); // put the old gamma ramp back in place
+      else if (strScreenSaver == "Fade")
+      {
+        fFadeLevel = 0;
+      }
+      D3DGAMMARAMP Ramp;
+      for (float fade = fFadeLevel; fade <= 1; fade += 0.01f)
+      {
+        for (int i = 0;i < 256;i++)
+        {
+          Ramp.red[i] = (int)((float)m_OldRamp.red[i] * fade);
+          Ramp.green[i] = (int)((float)m_OldRamp.green[i] * fade);
+          Ramp.blue[i] = (int)((float)m_OldRamp.blue[i] * fade);
+        }
+        Sleep(5);
+        m_pd3dDevice->SetGammaRamp(D3DSGR_IMMEDIATE, &Ramp); // use immediate to get a smooth fade
+      }
+      m_pd3dDevice->SetGammaRamp(0, &m_OldRamp); // put the old gamma ramp back in place
     return true;
   }
   else
@@ -4049,3 +4057,4 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
   }
   return false;
 }
+
