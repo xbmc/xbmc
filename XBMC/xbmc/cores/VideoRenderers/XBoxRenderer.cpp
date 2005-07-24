@@ -23,17 +23,6 @@
 #include "../../util.h"
 #include "../../XBVideoConfig.h"
 
-//This is a global callback for vertical blank
-//will be set by the renderer on need as we might need
-//to know which field we are rendering
-static bool g_LastFieldOdd=false;
-static CEvent g_eVBlank;
-
-void __cdecl VBlankCallback(D3DVBLANKDATA *pData)
-{
-  g_LastFieldOdd=(bool)(pData->VBlank & 1);
-  g_eVBlank.PulseEvent();
-}
 
 CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
 {
@@ -51,23 +40,12 @@ CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
   }
   m_hLowMemShader = 0;
 
-  m_pD3DDevice->SetVerticalBlankCallback(VBlankCallback);
 }
 
 CXBoxRenderer::~CXBoxRenderer()
 {
-  m_pD3DDevice->SetVerticalBlankCallback(NULL);
   UnInit();
 }
-
-//will wait for the given field before returning or return immidiatly if last field was the opposite
-//can be used for syncing up interlaced contents
-void CXBoxRenderer::WaitForField(bool bOdd)
-{
-  if(g_LastFieldOdd!=bOdd)
-    g_eVBlank.WaitMSec(100);
-}
-
 
 //********************************************************************************************************
 void CXBoxRenderer::DeleteOSDTextures(int index)
@@ -450,6 +428,13 @@ void CXBoxRenderer::CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, floa
   rd.right = (int)(rd.left + fNewWidth + 0.5f);
   rd.top = (int)(fPosY + fOffsetY1);
   rd.bottom = (int)(rd.top + fNewHeight + 0.5f);
+
+  if( m_iFieldSync != FS_NONE )
+  {
+    //Make sure top is located on an odd scanline
+    rd.top = rd.top & ~1;
+  }
+
 }
 
 
@@ -791,12 +776,39 @@ void CXBoxRenderer::FlipPage()
   {
     ManageDisplay();
     g_graphicsContext.Lock();
+
     m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
 
     Render();
     if (g_application.NeedRenderFullScreen())
     { // render our subtitles and osd
       g_application.RenderFullScreen();
+    }
+
+    m_pD3DDevice->KickPushBuffer();
+    m_pD3DDevice->BlockUntilVerticalBlank();
+
+
+    //If we have interlaced video, we have to sync to only render on even fields
+    //Technically not needed otherwise
+
+    //D3DPRESENT_INTERVAL_IMMIDIATE
+
+    D3DFIELD_STATUS mStatus;
+    m_pD3DDevice->GetDisplayFieldStatus(&mStatus);
+    if( g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_INVERTED )
+    {
+      if( m_iFieldSync == FS_ODD && mStatus.Field == D3DFIELD_ODD )
+        m_pD3DDevice->BlockUntilVerticalBlank();
+      else if(  m_iFieldSync == FS_EVEN && mStatus.Field == D3DFIELD_EVEN )
+        m_pD3DDevice->BlockUntilVerticalBlank();
+    }
+    else if( g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_STANDARD )
+    {
+      if( m_iFieldSync == FS_ODD && mStatus.Field == D3DFIELD_EVEN )
+        m_pD3DDevice->BlockUntilVerticalBlank();
+      else if(  m_iFieldSync == FS_EVEN && mStatus.Field == D3DFIELD_ODD )
+        m_pD3DDevice->BlockUntilVerticalBlank();
     }
 
     m_pD3DDevice->Present( NULL, NULL, NULL, NULL );

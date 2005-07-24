@@ -15,6 +15,7 @@ CVideoSettings::CVideoSettings()
   m_NoCache = false;
   m_NonInterleaved = false;
   m_Deinterlace = false;
+  m_FieldSync = VS_FIELDSYNC_OFF;
   m_FilmGrain = 0;
   m_ViewMode = VIEW_MODE_NORMAL;
   m_CustomZoomAmount = 1.0f;
@@ -41,6 +42,7 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_NoCache != right.m_NoCache) return true;
   if (m_NonInterleaved != right.m_NonInterleaved) return true;
   if (m_Deinterlace != right.m_Deinterlace) return true;
+  if (m_FieldSync != right.m_FieldSync) return true;
   if (m_FilmGrain != right.m_FilmGrain) return true;
   if (m_ViewMode != right.m_ViewMode) return true;
   if (m_CustomZoomAmount != right.m_CustomZoomAmount) return true;
