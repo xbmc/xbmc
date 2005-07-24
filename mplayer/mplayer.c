@@ -3189,7 +3189,7 @@ if(auto_quality>0){
   //We let it display a couple of frames then seek
   if(ffrw_speed<0.0f)
   {
-    float v_pts = v_pts=sh_video ? sh_video->pts : d_video->pts;
+    float v_pts = sh_video ? sh_video->pts : d_video->pts;
     
     //Play at maximum speed mplayer can do. We will delay the amount we want to.
     playback_speed=100;
@@ -3229,7 +3229,7 @@ if(auto_quality>0){
   }
   else if(ffrw_speed>0.0f)
   {
-    float v_pts = v_pts=sh_video ? sh_video->pts : d_video->pts;
+    float v_pts = sh_video ? sh_video->pts : d_video->pts;
     float newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + (float)ffrw_startpts;    
     //If we diff more than 2 seconds from where we are supposed to be
     //and we have rendered ffrw_sstepframes frames, seek to correct pos.
@@ -4904,7 +4904,7 @@ void mplayer_GetAudioInfo(char* strFourCC,char* strAudioCodec, long* bitrate, lo
             strFourCC[4]=0;
             strcpy(strAudioCodec,sh_audio->codec->info);
             *samplerate=sh_audio->samplerate;
-            *bitrate=sh_audio->o_bps;
+            *bitrate=sh_audio->i_bps*8;
             *channels=sh_audio->channels;
         }
     }
