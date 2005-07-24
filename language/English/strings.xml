@@ -702,7 +702,7 @@
   <string><id>12321</id><value>ok</value></string>
   <string><id>12322</id><value>*</value></string>
   <string><id>12324</id><value>XBMC Master Lock</value></string>
-  <string><id>12325</id><value>Folder Locked</value></string>
+  <string><id>12325</id><value>Locked! Enter Code...</value></string>
   <string><id>12326</id><value>Enter password</value></string>
   <string><id>12327</id><value>Enter Master Code</value></string>
   <string><id>12328</id><value>Enter Unlock Code</value></string> 
