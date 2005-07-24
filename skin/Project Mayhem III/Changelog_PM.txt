@@ -1,3 +1,4 @@
+2005-07-24 fixed:	cleaned up bg textures
 2005-07-24 changed:	the RSS is now hidden in the homescreen when music is playing (could stutter on certain visualisations)
 
 2005-07-23 added:	fps info to the fullscreen visualisation infos
