@@ -27,11 +27,6 @@ public:
     if (!m_bChanging && m_pRenderer)
       m_pRenderer->WaitForFlip();
   }
-  inline void WaitForField(bool bOdd)
-  {
-    if (!m_bChanging && m_pRenderer)
-      m_pRenderer->WaitForField(bOdd);
-  }
   unsigned int Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps);
   inline unsigned int GetImage(YV12Image *image)
   {
@@ -88,6 +83,13 @@ public:
   inline int GetOSDHeight() { if (!m_bChanging && m_pRenderer) return m_pRenderer->GetNormalDisplayHeight(); else return 0; };
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
+
+  inline void SetFieldSync(EFIELDSYNC mSync) 
+  { 
+    if (!m_bChanging && m_pRenderer) 
+      m_pRenderer->SetFieldSync(mSync); 
+  } ;
+
   CXBoxRenderer *m_pRenderer;
 protected:
   float m_fSourceFrameRatio; // the frame aspect ratio of the source (corrected for pixel ratio)

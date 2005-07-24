@@ -1113,6 +1113,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_videoConfig.HasPAL60());
     }
+    else if (strSetting == "VideoPlayer.InvertFieldSync")
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->SetEnabled(g_guiSettings.GetBool("VideoPlayer.FieldSync"));
+    }
     else if (strSetting == "VideoPlayer.UseGUIResolution")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());

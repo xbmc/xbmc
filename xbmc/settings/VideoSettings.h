@@ -9,6 +9,10 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#define VS_FIELDSYNC_OFF 0
+#define VS_FIELDSYNC_STANDARD 1
+#define VS_FIELDSYNC_INVERTED 2
+
 class CVideoSettings
 {
 public:
@@ -20,6 +24,7 @@ public:
   bool m_NoCache;
   bool m_NonInterleaved;
   bool m_Deinterlace;
+  int m_FieldSync;
   int m_FilmGrain;
   int m_ViewMode;   // current view mode
   float m_CustomZoomAmount; // custom setting zoom amount

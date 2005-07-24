@@ -262,7 +262,15 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
     return ;
   }
   bool NeedReset = false;
-//  if (m_bFullScreenVideo)
+  if (m_bFullScreenVideo)
+  {
+    if (m_pd3dParams->FullScreen_PresentationInterval != D3DPRESENT_INTERVAL_IMMEDIATE )
+    {
+      m_pd3dParams->FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+      NeedReset = true;
+    }
+  }
+  else
   {
     if (m_pd3dParams->FullScreen_PresentationInterval != D3DPRESENT_INTERVAL_ONE)
     {
@@ -270,16 +278,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
       NeedReset = true;
     }
   }
-/*
-  else
-  {
-    if (m_pd3dParams->FullScreen_PresentationInterval != D3DPRESENT_INTERVAL_ONE_OR_IMMEDIATE)
-    {
-      m_pd3dParams->FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE_OR_IMMEDIATE;
-      NeedReset = true;
-    }
-  }
-*/
+
+
   if (NeedZ != m_pd3dParams->EnableAutoDepthStencil)
   {
     m_pd3dParams->EnableAutoDepthStencil = NeedZ;
