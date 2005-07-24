@@ -702,7 +702,7 @@
   <string><id>12321</id><value>ok</value></string>
   <string><id>12322</id><value>*</value></string>
   <string><id>12324</id><value>XBMC Huvudkod</value></string>
-  <string><id>12325</id><value>Mappen låst</value></string>
+  <string><id>12325</id><value>Låst! Ange kod.</value></string>
   <string><id>12326</id><value>Ange lösenord</value></string>
   <string><id>12327</id><value>Ange huvudkod och tryck OK,</value></string>
   <string><id>12328</id><value>Ange låskod och tryck OK,</value></string> 
