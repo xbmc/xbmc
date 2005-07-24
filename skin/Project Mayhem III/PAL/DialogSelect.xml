@@ -5,7 +5,7 @@
     <control>
       <description>background image</description>
       <type>image</type>
-      <id>1</id>
+      <id>0</id>
       <posX>0</posX>
       <posY>0</posY>
       <width>720</width>
@@ -26,7 +26,7 @@
     <control>
       <description>xbox media center label</description>
       <type>label</type>
-      <id>1</id>
+      <id>0</id>
       <posX>200</posX>
       <posY>63</posY>
       <align>right</align>
