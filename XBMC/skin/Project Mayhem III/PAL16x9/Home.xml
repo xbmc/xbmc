@@ -413,7 +413,7 @@
       <titlecolor>ffD2FF00</titlecolor>
       <headlinecolor>DDced8da</headlinecolor>
       <textcolor>ffD2FF00</textcolor>
-      <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio</visible>
     </control>
 
     <control>
