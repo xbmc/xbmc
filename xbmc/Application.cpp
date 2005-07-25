@@ -3987,37 +3987,40 @@ void CApplication::CheckAudioScrobblerStatus()
 
 bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist)
 {
+  // initial exit conditions
   // no songs in playlist just return
   if (playlist.size() == 0)
     return false;
+
+  // illegal playlist
+  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO_TEMP)
+    return false;
+
+  // first item of the list, used to determine the intent
+  CPlayList::CPlayListItem item = playlist[0];
+
+  // just 1 item? then play it
+  if (playlist.size() == 1)
+    return g_application.PlayFile(CFileItem(item));
 
   // if the playlist contains an internet stream, this file will be used
   // to generate a thumbnail for musicplayer.cover 
   g_application.m_strPlayListFile = strPlayList;
 
-  // how many songs are in the new playlist
-  if (playlist.size() == 1)
-  {
-    // just 1 song? then play it (no need to have a playlist of 1 song)
-    CPlayList::CPlayListItem item = playlist[0];
-    return g_application.PlayFile(CFileItem(item));
-  }
-
-  // clear current playlist
+  // setup correct playlist
   g_playlistPlayer.GetPlaylist(iPlaylist).Clear();
+  g_playlistPlayer.ShufflePlay(iPlaylist, false);
 
-  // if autoshuffle playlist on load option is enabled
-  // then shuffle the playlist
-  // dont do this for shoutcast .pls files
-  // or for video playlists
-  if (playlist.size())
+  // music option: shuffle playlists on load
+  // if playlist_music_temp, shuffle items BEFORE they are added to the playlist player
+  // dont do this if the first item is a stream
+  if (
+    iPlaylist == PLAYLIST_MUSIC_TEMP &&
+    !item.IsShoutCast() &&
+    g_guiSettings.GetBool("MusicPlaylist.ShufflePlaylistsOnLoad")
+    )
   {
-    if (iPlaylist == PLAYLIST_MUSIC || iPlaylist == PLAYLIST_MUSIC_TEMP)
-    {
-      const CPlayList::CPlayListItem& playListItem = playlist[0];
-      if (!playListItem.IsShoutCast() && g_guiSettings.GetBool("MusicPlaylist.ShufflePlaylistsOnLoad"))
-       playlist.Shuffle();
-    }
+    playlist.Shuffle();
   }
 
   // add each item of the playlist to the playlistplayer
@@ -4032,29 +4035,34 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
     playlistItem.SetDescription(playListItem.GetDescription());
     playlistItem.SetDuration(playListItem.GetDuration());
     playlistItem.SetFileName(playListItem.GetFileName());
-    g_playlistPlayer.GetPlaylist( iPlaylist ).Add(playlistItem);
+    g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlistItem);
   }
 
-  // if we got a playlist
-  if (g_playlistPlayer.GetPlaylist( iPlaylist ).size() )
+  // music option: shuffle playlist on load
+  // if playlist_music, shuffle the list in the playlistplayer
+  // again, dont do this if the first item is a stream
+  if (
+    iPlaylist == PLAYLIST_MUSIC &&
+    !item.IsShoutCast() &&
+    g_guiSettings.GetBool("MusicPlaylist.ShufflePlaylistsOnLoad")
+    )
   {
-    // then get 1st song
-    CPlayList& playlist = g_playlistPlayer.GetPlaylist( iPlaylist );
-    const CPlayList::CPlayListItem& item = playlist[0];
+    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Shuffle();
 
-    // and start playing it
+    // uncomment these to enable both Shuffle and Randomize
+    //g_stSettings.m_bMyMusicPlaylistShuffle = true;
+    //g_settings.Save();
+    //g_playlistPlayer.ShufflePlay(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
+  }
+
+  // if we have a playlist 
+  if (g_playlistPlayer.GetPlaylist(iPlaylist).size() )
+  {
+    // start playing it
     g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
     g_playlistPlayer.Reset();
-    if (g_playlistPlayer.ShuffledPlay(iPlaylist))
-    {
-      // if shuffled dont start on first song
-      g_playlistPlayer.SetCurrentSong(0);
-      g_playlistPlayer.PlayNext();
-    }
-    else
-      g_playlistPlayer.Play(0);
+    g_playlistPlayer.Play();
     return true;
   }
   return false;
 }
-

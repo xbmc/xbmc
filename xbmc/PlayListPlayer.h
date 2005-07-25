@@ -25,6 +25,7 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
   void PlayNext(bool bAutoPlay = false);
   void PlayPrevious();
+  void Play();
   void Play(int iSong, bool bAutoPlay = false);
   int GetCurrentSong() const;
   int GetNextSong();
@@ -44,6 +45,7 @@ public:
   bool HasPlayedFirstFile();
 protected:
   int NextShuffleItem();
+  int PreviousShuffleItem();
   bool m_bChanged;
   bool m_bPlayedFirstFile;
   int m_iCurrentSong;
