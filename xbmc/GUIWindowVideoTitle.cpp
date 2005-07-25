@@ -160,36 +160,6 @@ CGUIWindowVideoTitle::~CGUIWindowVideoTitle()
 }
 
 //****************************************************************************************************************************
-bool CGUIWindowVideoTitle::OnAction(const CAction &action)
-{
-  if (action.wID == ACTION_DELETE_ITEM)
-  {
-    int iItem = m_viewControl.GetSelectedItem();
-    if (iItem < 0 || iItem >= (int)m_vecItems.Size()) return true;
-
-    CFileItem* pItem = m_vecItems[iItem];
-    if (pItem->m_bIsFolder) return true;
-
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    if (!pDialog) return true;
-    pDialog->SetHeading(432);
-    pDialog->SetLine(0, 433);
-    pDialog->SetLine(1, 434);
-    pDialog->SetLine(2, L"");
-    pDialog->DoModal(GetID());
-    if (!pDialog->IsConfirmed()) return true;
-    VECMOVIESFILES movies;
-    m_database.GetFiles(atol(pItem->m_strPath), movies);
-    if (movies.size() <= 0) return true;
-    m_database.DeleteMovie(movies[0]);
-    Update( m_Directory.m_strPath );
-    return true;
-
-  }
-  return CGUIWindowVideoBase::OnAction(action);
-}
-
-//****************************************************************************************************************************
 bool CGUIWindowVideoTitle::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
@@ -363,6 +333,30 @@ void CGUIWindowVideoTitle::OnClick(int iItem)
     PlayMovies(movies, pItem->m_lStartOffset);
   }
 }
+
+void CGUIWindowVideoTitle::OnDeleteItem(int iItem)
+{
+    if (iItem < 0 || iItem >= (int)m_vecItems.Size()) return;
+
+    CFileItem* pItem = m_vecItems[iItem];
+    if (pItem->m_bIsFolder) return;
+
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    if (!pDialog) return;
+    pDialog->SetHeading(432);
+    pDialog->SetLine(0, 433);
+    pDialog->SetLine(1, 434);
+    pDialog->SetLine(2, L"");
+    pDialog->DoModal(GetID());
+    if (!pDialog->IsConfirmed()) return;
+    VECMOVIESFILES movies;
+    m_database.GetFiles(atol(pItem->m_strPath), movies);
+    if (movies.size() <= 0) return;
+    m_database.DeleteMovie(movies[0]);
+    Update( m_Directory.m_strPath );
+    return;
+}
+
 
 void CGUIWindowVideoTitle::LoadViewMode()
 {
