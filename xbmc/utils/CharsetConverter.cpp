@@ -199,7 +199,7 @@ void CCharsetConverter::subtitleCharsetToFontCharset(const CStdStringA& strSourc
   }
 }
 
-void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset)
+void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base)
 {
   FriBidiCharSet fribidiCharset = FRIBIDI_CHARSET_UTF8;
 
@@ -212,19 +212,16 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
     }
   }
 
-  logicalToVisualBiDi(strSource, strDest, fribidiCharset);
+  logicalToVisualBiDi(strSource, strDest, fribidiCharset, base);
 }
 
-void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset)
+void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset, FriBidiCharType base)
 {
   int sourceLen = strlen(strSource.c_str());
   FriBidiChar* logical = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
   FriBidiChar* visual = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
   // Convert from the selected charset to Unicode
   int len = fribidi_charset_to_unicode(fribidiCharset, (char*) strSource.c_str(), sourceLen, logical);
-
-  // Convert from logical to visual
-  FriBidiCharType base = FRIBIDI_TYPE_R; // Right-to-left paragraph
 
   if (fribidi_log2vis(logical, len, &base, visual, NULL, NULL, NULL))
   {

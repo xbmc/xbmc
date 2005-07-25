@@ -32,8 +32,8 @@ public:
   CStdString& getCharsetNameByLabel(const CStdString& charsetLabel);
   boolean isBidiCharset(const CStdString& charset);
 
-  void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset);
-  void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset);
+  void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset, FriBidiCharType base = FRIBIDI_TYPE_LTR);
+  void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base = FRIBIDI_TYPE_LTR);
 
 private:
   vector<CStdString> m_vecCharsetNames;
