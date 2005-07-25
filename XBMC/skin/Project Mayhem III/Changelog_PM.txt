@@ -1,3 +1,4 @@
+2005-07-24 changed:	hid the music/videooverlay in the kai client
 2005-07-24 changed:	Kai Host dialog radiobutton color now matching the rest of the skin
 2005-07-24 fixed:	cleaned up commenting
 2005-07-24 fixed:	cleaned up bg textures
