@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-07-2005 fixed: SF bug [ 1065692 ] RSS does not work for non-Latin character. You can now view any
+                       language in the RSS, as long as you use TTF. Hebrew/arabic RSS is flipped.
  - 25-07-2005 changed: playlists - shuffle alters the list, but it can be undone.
                        - randomize plays the list in random order without repeats. 
  - 24-07-2005 fixed: reenabled automatic deinterlacing for dvdplayer if fieldsync is disabled

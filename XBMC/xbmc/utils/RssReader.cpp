@@ -7,7 +7,6 @@
 #include "Http.h"
 #include "../utils/HTMLUtil.h"
 
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -17,6 +16,8 @@ CRssReader::CRssReader() : CThread()
   m_pObserver = NULL;
   m_iLeadingSpaces = 0;
   m_bIsRunning = false;
+  m_iconv = (iconv_t) -1;
+  m_shouldFlip = false;
 }
 
 CRssReader::~CRssReader()
@@ -57,7 +58,7 @@ void CRssReader::OnExit()
 void CRssReader::Process()
 {
   int tempLeading = m_iLeadingSpaces;
-  CStdString strFeed;
+  CStdStringW strFeed;
   LPBYTE pbColors = NULL;
   while (m_vecQueue.size())
   {
@@ -91,16 +92,6 @@ void CRssReader::Process()
         CLog::Log(LOGDEBUG, "Got rss feed: %s", strUrl.c_str());
         break;
       }
-    }
-
-    bool forceUTF8(false);
-    if (strXML[0] == (char)0xff && strXML[1] == (char)0xfe)  // byte order marker -> unicode
-    { // convert to utf8
-      strXML = strXML.Mid(2);
-      CStdString strUTF8;
-      g_charsetConverter.UTF16toUTF8((WCHAR *)strXML.c_str(), strUTF8);
-      strXML = strUTF8;
-      forceUTF8 = true;
     }
 
     if ((!strXML.IsEmpty()) && m_pObserver)
@@ -137,7 +128,7 @@ void CRssReader::Process()
         iStart = strXML.Find("<content:encoded>");
       }
 
-      if (Parse((LPSTR)strXML.c_str(),iFeed, forceUTF8))
+      if (Parse((LPSTR)strXML.c_str(),iFeed))
       {
         CLog::Log(LOGDEBUG, "Parsed rss feed: %s", strUrl.c_str());
       }
@@ -153,7 +144,7 @@ void CRssReader::Process()
   m_iLeadingSpaces = tempLeading;
 }
 
-void CRssReader::getFeed(CStdString& strText, LPBYTE& pbColors)
+void CRssReader::getFeed(CStdStringW& strText, LPBYTE& pbColors)
 {
   strText.Empty();
   for (unsigned int i=0;i<m_strFeed.size();++i)
@@ -173,7 +164,7 @@ void CRssReader::AddTag(const CStdString aString)
   m_tagSet.push_back(aString);
 }
 
-void CRssReader::AddString(CStdString aString, int aColour, int iFeed)
+void CRssReader::AddString(CStdStringW aString, int aColour, int iFeed)
 {
   m_strFeed[iFeed] += aString;
 
@@ -189,9 +180,11 @@ void CRssReader::AddString(CStdString aString, int aColour, int iFeed)
 
 void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
 {
+  HTML::CHTMLUtil html;
+
   TiXmlElement * itemNode = channelXmlNode->FirstChildElement("item");
-  map <CStdString, CStdString> mTagElements;
-  typedef pair <CStdString, CStdString> StrPair;
+  map <CStdString, CStdStringW> mTagElements;
+  typedef pair <CStdString, CStdStringW> StrPair;
   list <CStdString>::iterator i;
 
   bool bEmpty=true;
@@ -215,7 +208,26 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
       {
         if (!childNode->NoChildren() && i->Equals(strName))
         {
-          mTagElements.insert(StrPair(*i, childNode->FirstChild()->Value()));
+			CStdString htmlText = childNode->FirstChild()->Value();
+
+			// This usually happens in right-to-left languages where they want to
+			// specify in the RSS body that the text should be RTL.
+			// <title>
+			//		<div dir="RTL">עלו ברשת: שמרו על עצמכם</div> 
+			// </title>
+			if (htmlText.Equals("div") || htmlText.Equals("span"))
+			{
+				m_shouldFlip = true;
+				htmlText = childNode->FirstChild()->FirstChild()->Value();
+			}
+
+			CStdString text;
+		    CStdStringW unicodeText;
+
+			html.ConvertHTMLToAnsi(htmlText, text);
+			fromRSSToUTF16(text, unicodeText);
+
+			mTagElements.insert(StrPair(*i, unicodeText));
         }
       }
       childNode = childNode->NextSibling();
@@ -224,15 +236,12 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
     int rsscolour = RSS_COLOR_HEADLINE;
     for (i = m_tagSet.begin();i != m_tagSet.end();i++)
     {
-      CStdString text;
-      HTML::CHTMLUtil html;
-      map <CStdString, CStdString>::iterator j = mTagElements.find(*i);
+      map <CStdString, CStdStringW>::iterator j = mTagElements.find(*i);
 
       if (j == mTagElements.end())
         continue;
-
-      html.ConvertHTMLToAnsi(j->second, text);
-
+      
+	  CStdStringW& text = j->second;
       AddString(text, rsscolour, iFeed);
       rsscolour = RSS_COLOR_BODY;
       text = " - ";
@@ -240,6 +249,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
     }
     itemNode = itemNode->NextSiblingElement("item");
   }
+
   // spiff - avoid trailing ' - '
   if( bEmpty )
   {
@@ -248,10 +258,79 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
   }
 }
 
-bool CRssReader::Parse(LPSTR szBuffer, int iFeed, bool forceUTF8)
+void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDest)
+{
+	CStdString flippedStrSource;
+
+	if (m_shouldFlip)
+	{
+		g_charsetConverter.logicalToVisualBiDi(strSource, flippedStrSource, m_encoding);
+	}
+	else
+	{
+		flippedStrSource = strSource;
+	}
+	
+	if (m_iconv != (iconv_t) - 1)
+    {
+		const char* src = flippedStrSource.c_str();
+		size_t inBytes = flippedStrSource.length() + 1;
+
+		wchar_t outBuf[1024];
+		char* dst = (char*) &outBuf[0];
+		size_t outBytes=1024;
+		size_t originalOutBytes = outBytes;
+
+		iconv(m_iconv, NULL, &inBytes, NULL, &outBytes);
+
+		if (iconv(m_iconv, &src, &inBytes, &dst, &outBytes) == -1)
+		{
+			// For some reason it failed (maybe wrong charset?). Nothing to do but
+			// return the original..
+			strDest = flippedStrSource;
+			return;
+		}
+
+		outBuf[(originalOutBytes - outBytes) / 2] = '\0';
+		strDest = outBuf;
+	}
+	else
+	{
+		strDest = flippedStrSource;
+		return;
+	}
+}
+
+bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
 {
   m_xml.Clear();
-  m_xml.Parse((LPCSTR)szBuffer, 0, forceUTF8 ? TIXML_ENCODING_UTF8 : TIXML_DEFAULT_ENCODING);
+  m_xml.Parse((LPCSTR)szBuffer, 0, TIXML_ENCODING_LEGACY);
+
+  if (m_iconv != (iconv_t) -1)
+  {
+	  iconv_close(m_iconv);
+      m_iconv = (iconv_t) -1;
+	  m_shouldFlip = false;
+  }
+
+  m_encoding = "UTF-8";
+  if (m_xml.RootElement())
+  {
+	TiXmlDeclaration *tiXmlDeclaration = m_xml.RootElement()->Parent()->FirstChild()->ToDeclaration();
+	if (tiXmlDeclaration != NULL && strlen(tiXmlDeclaration->Encoding()) > 0)
+	{
+		m_encoding = tiXmlDeclaration->Encoding();
+	}
+  }
+
+  CLog::Log(LOGDEBUG, "RSS feed encoding: %s", m_encoding.c_str());
+  m_iconv = iconv_open("UTF-16LE", m_encoding.c_str());
+
+  if (g_charsetConverter.isBidiCharset(m_encoding))
+  {
+	  m_shouldFlip = true;
+  }
+
   return Parse(iFeed);
 }
 
@@ -287,9 +366,13 @@ bool CRssReader::Parse(int iFeed)
     TiXmlElement* titleNode = channelXmlNode->FirstChildElement("title");
     if (titleNode && !titleNode->NoChildren())
     {
-      CStdString strChannel;
-      strChannel.Format("%s: ", titleNode->FirstChild()->Value());
-      AddString(strChannel, RSS_COLOR_CHANNEL, iFeed);
+      CStdString strChannel = titleNode->FirstChild()->Value();
+	  CStdStringW strChannelUnicode;
+	  fromRSSToUTF16(strChannel, strChannelUnicode);
+	  AddString(strChannelUnicode, RSS_COLOR_CHANNEL, iFeed);
+
+	  AddString(": ", RSS_COLOR_CHANNEL, iFeed);
+      //strChannel.Format("%s: ", titleNode->FirstChild()->Value());	
     }
 
     GetNewsItems(channelXmlNode,iFeed);
