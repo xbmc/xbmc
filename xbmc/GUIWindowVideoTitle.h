@@ -7,7 +7,6 @@ public:
   CGUIWindowVideoTitle(void);
   virtual ~CGUIWindowVideoTitle(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
 
 protected:
   virtual void SaveViewMode();
@@ -19,4 +18,5 @@ protected:
   virtual void SortItems(CFileItemList& items);
   virtual void Update(const CStdString &strDirectory);
   virtual void OnClick(int iItem);
+  virtual void OnDeleteItem(int iItem);
 };

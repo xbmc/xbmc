@@ -45,7 +45,7 @@ protected:
   void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);
   void OnQueueItem(int iItem);
-  void OnDeleteItem(int iItem);
+  virtual void OnDeleteItem(int iItem);
   void OnResumeItem(int iItem);
   int  ResumeItemOffset(int iItem);
   void AddItemToPlayList(const CFileItem* pItem);
