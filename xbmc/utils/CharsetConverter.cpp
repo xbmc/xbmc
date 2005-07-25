@@ -62,7 +62,11 @@ CCharsetConverter::CCharsetConverter()
   m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_ISO8859_8);
   m_vecBidiCharsetNames.push_back("CP1255");
   m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_CP1255);
+  m_vecBidiCharsetNames.push_back("Windows-1255");
+  m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_CP1255);
   m_vecBidiCharsetNames.push_back("CP1256");
+  m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_CP1256);
+  m_vecBidiCharsetNames.push_back("Windows-1256");
   m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_CP1256);
 
   // reset();
@@ -111,7 +115,7 @@ boolean CCharsetConverter::isBidiCharset(const CStdString& charset)
 {
   for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
   {
-    if (m_vecBidiCharsetNames[i] == charset)
+    if (m_vecBidiCharsetNames[i].Equals(charset))
     {
       return true;
     }
@@ -195,6 +199,22 @@ void CCharsetConverter::subtitleCharsetToFontCharset(const CStdStringA& strSourc
   }
 }
 
+void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset)
+{
+  FriBidiCharSet fribidiCharset = FRIBIDI_CHARSET_UTF8;
+
+  for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
+  {
+    if (m_vecBidiCharsetNames[i].Equals(charset))
+    {
+		fribidiCharset = m_vecBidiCharsets[i];
+		break;
+    }
+  }
+
+  logicalToVisualBiDi(strSource, strDest, fribidiCharset);
+}
+
 void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset)
 {
   int sourceLen = strlen(strSource.c_str());
@@ -204,14 +224,14 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
   int len = fribidi_charset_to_unicode(fribidiCharset, (char*) strSource.c_str(), sourceLen, logical);
 
   // Convert from logical to visual
-  FriBidiCharType base = FRIBIDI_TYPE_L; // Right-to-left paragraph
+  FriBidiCharType base = FRIBIDI_TYPE_R; // Right-to-left paragraph
 
   if (fribidi_log2vis(logical, len, &base, visual, NULL, NULL, NULL))
   {
     // Removes bidirectional marks
     //len = fribidi_remove_bidi_marks(visual, len, NULL, NULL, NULL);
 
-    char* result = strDest.SetBuf(sourceLen + 1);
+    char* result = strDest.SetBuf(sourceLen);
 
     // Convert back from Unicode to the charset
     fribidi_unicode_to_charset(fribidiCharset, visual, len, result);

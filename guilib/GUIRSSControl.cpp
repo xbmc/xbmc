@@ -122,7 +122,7 @@ void CGUIRSSControl::Render()
     }
 }
 
-void CGUIRSSControl::OnFeedUpdate(CStdString& aFeed, LPBYTE aColorArray)
+void CGUIRSSControl::OnFeedUpdate(CStdStringW& aFeed, LPBYTE aColorArray)
 {
   int nStringLength = aFeed.GetLength() + 1;
   if (m_pwzText)
@@ -136,9 +136,9 @@ void CGUIRSSControl::OnFeedUpdate(CStdString& aFeed, LPBYTE aColorArray)
   m_pwzBuffer = NULL;
   m_pbBuffer = NULL;
 
-  m_pwzText = new WCHAR[nStringLength];
-  m_pwzBuffer = new WCHAR[nStringLength];
-  swprintf(m_pwzText, L"%S", aFeed.c_str() );
+  m_pwzText = new WCHAR[nStringLength+1];
+  m_pwzBuffer = new WCHAR[nStringLength+1];
+  swprintf(m_pwzText, L"%s", aFeed.c_str() );
 
   if (m_pFont) m_pFont->GetTextExtent( m_pwzText, &m_fTextWidth, &m_fTextHeight);
 

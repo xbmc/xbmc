@@ -33,6 +33,7 @@ public:
   boolean isBidiCharset(const CStdString& charset);
 
   void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset);
+  void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset);
 
 private:
   vector<CStdString> m_vecCharsetNames;

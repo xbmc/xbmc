@@ -22,7 +22,7 @@ public:
   virtual ~CGUIRSSControl(void);
 
   virtual void Render();
-  virtual void OnFeedUpdate(CStdString& aFeed, LPBYTE aColorArray);
+  virtual void OnFeedUpdate(CStdStringW& aFeed, LPBYTE aColorArray);
 
   DWORD GetChannelTextColor() const { return m_dwChannelColor;};
   DWORD GetHeadlineTextColor() const { return m_dwHeadlineColor;};
