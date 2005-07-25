@@ -938,38 +938,56 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     // clean any buttons not needed
     pMenu->ClearButtons();
     // add the needed buttons
-    pMenu->AddButton(13317); // View Slideshow
-    pMenu->AddButton(13318); // Recursive Slideshow
-    pMenu->AddButton(13315); // Create Thumbnails
+    int btn_SlideShow = pMenu->AddButton(13317);    // View Slideshow
+    int btn_RecSlideShow = pMenu->AddButton(13318); // Recursive Slideshow
+    int btn_Thumbs = pMenu->AddButton(13315);       // Create Thumbnails
+
+    // this could be done like the delete button too
     if (m_vecItems.GetFileCount() == 0)
-      pMenu->EnableButton(1, false);
+      pMenu->EnableButton(btn_SlideShow, false);
     if (m_thumbLoader.IsLoading())
-      pMenu->EnableButton(3, false);
-    pMenu->AddButton(5);   // "Settings"
+      pMenu->EnableButton(btn_Thumbs, false);
+
+    int btn_Delete = 0;
+    if (g_guiSettings.GetBool("Pictures.AllowFileDeletion"))
+      btn_Delete = pMenu->AddButton(117);           // Delete
+    
+    int btn_Settings = pMenu->AddButton(5);         // Settings
 
     // position it correctly
     pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
     pMenu->DoModal(GetID());
-    switch (pMenu->GetButton())
+
+    int btnid = pMenu->GetButton();
+
+    if (btnid>0)
     {
-    case 1:  // slideshow
-      OnSlideShow(m_vecItems[iItem]->m_strPath);
-      return ;
-      break;
-    case 2:  // recursive slideshow
-      OnSlideShowRecursive(m_vecItems[iItem]->m_strPath);
-      return ;
-      break;
-    case 3:  // Create thumb(s)
-      OnRegenerateThumbs();
-      break;
-    case 4:  // go to pictures settings
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
-      return ;
-      break;
+      if (btnid == btn_SlideShow)
+      {
+        OnSlideShow(m_vecItems[iItem]->m_strPath);
+        return;
+      }
+      else if (btnid == btn_RecSlideShow)
+      {
+        OnSlideShowRecursive(m_vecItems[iItem]->m_strPath);
+        return;
+      }
+      else if (btnid == btn_Thumbs)
+      {
+        OnRegenerateThumbs();
+      }
+      else if (btnid == btn_Delete)
+      {
+        OnDeleteItem(iItem);
+      }
+      else if (btnid == btn_Settings)
+      {
+        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
+        return;
+      }
     }
+    m_vecItems[iItem]->Select(false);
   }
-  m_vecItems[iItem]->Select(false);
 }
 
 int CGUIWindowPictures::SortMethod()
@@ -1094,4 +1112,61 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
     pItem->FillInDefaultIcon();
     g_graphicsContext.Unlock();
   }
+}
+
+void CGUIWindowPictures::OnDeleteItem(int iItem)
+{
+  if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
+  const CFileItem* pItem = m_vecItems[iItem];
+  CStdString strPath = pItem->m_strPath;
+  CStdString strFile = CUtil::GetFileName(strPath);
+  if (pItem->m_bIsFolder)
+    CUtil::GetDirectoryName(strPath, strFile);
+
+  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (pDialog)
+  {
+    pDialog->SetHeading(122);
+    pDialog->SetLine(0, 125);
+    pDialog->SetLine(1, strFile.c_str());
+    pDialog->SetLine(2, L"");
+    pDialog->DoModal(GetID());
+    if (!pDialog->IsConfirmed()) return ;
+  }
+
+  if (m_dlgProgress) m_dlgProgress->StartModal(GetID());
+  if (pItem->m_bIsFolder)
+  {
+    CStdString strLog;
+    strLog.Format("delete folder %s\n", strFile.c_str());
+    OutputDebugString(strLog.c_str());
+
+    CDirectory::Remove(strPath.c_str());
+    if (m_dlgProgress)
+    {
+      m_dlgProgress->SetLine(0, 117);
+      m_dlgProgress->SetLine(1, strFile);
+      m_dlgProgress->SetLine(2, L"");
+      m_dlgProgress->Progress();
+    }
+  }
+  else
+  {
+    CStdString strLog;
+    strLog.Format("delete %s\n", strFile.c_str());
+    OutputDebugString(strLog.c_str());
+
+    CFile::Delete(strPath.c_str());
+    if (m_dlgProgress)
+    {
+      m_dlgProgress->SetLine(0, 117);
+      m_dlgProgress->SetLine(1, strFile);
+      m_dlgProgress->SetLine(2, L"");
+      m_dlgProgress->Progress();
+    }
+  }
+  if (m_dlgProgress) m_dlgProgress->Close();
+
+  Update(m_Directory.m_strPath);
+  m_viewControl.SetSelectedItem(iItem);
 }
