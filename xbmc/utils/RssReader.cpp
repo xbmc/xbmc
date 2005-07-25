@@ -264,7 +264,7 @@ void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDe
 
 	if (m_shouldFlip)
 	{
-		g_charsetConverter.logicalToVisualBiDi(strSource, flippedStrSource, m_encoding);
+		g_charsetConverter.logicalToVisualBiDi(strSource, flippedStrSource, m_encoding, FRIBIDI_TYPE_RTL);
 	}
 	else
 	{
@@ -372,7 +372,6 @@ bool CRssReader::Parse(int iFeed)
 	  AddString(strChannelUnicode, RSS_COLOR_CHANNEL, iFeed);
 
 	  AddString(": ", RSS_COLOR_CHANNEL, iFeed);
-      //strChannel.Format("%s: ", titleNode->FirstChild()->Value());	
     }
 
     GetNewsItems(channelXmlNode,iFeed);
