@@ -1,3 +1,4 @@
+2005-07-24 changed:	Kai Host dialog radiobutton color now matching the rest of the skin
 2005-07-24 fixed:	cleaned up commenting
 2005-07-24 fixed:	cleaned up bg textures
 2005-07-24 changed:	the RSS is now hidden in the homescreen when music is playing (could stutter on certain visualisations)
@@ -8,7 +9,7 @@
 2005-07-22 changed:	bg fadeout on shutdownmenu, numpad and keyboard
 2005-07-22 changed:	mousepointer color now matching with the rest of the skin
 2005-07-22 changed:	new virtual keyboard
-2005-07-22 fixed:	homescreen textures hat one button darker than the others
+2005-07-22 fixed:	homescreen textures had one button darker than the others
 
 2005-07-21 changed:	finished the numeric keyboard
 2005-07-21 fixed:	shutdownmenu aspect ratio in 4:3
