@@ -1014,11 +1014,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC))
-    {
-      // if shuffled dont start on first song
-      g_playlistPlayer.SetCurrentSong(0);
-      g_playlistPlayer.PlayNext();
-    }
+      g_playlistPlayer.Play();
     else
       g_playlistPlayer.Play(iOldSize);  //  Start playlist with the first new song added
   }
@@ -1046,9 +1042,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
     GetDirectory(m_Directory.m_strPath, items);
     DoSort(items);
     for (int i = 0; i < items.Size(); ++i)
-    {
       AddItemToPlayList(items[i]);
-    }
     m_Directory.m_strPath = strDirectory;
   }
   else
@@ -1057,7 +1051,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
     {
       CPlayList::CPlayListItem playlistItem;
       CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-      g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
+      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
     }
   }
 }
@@ -1379,76 +1373,117 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   if (!pMenu) return ;
   // clean any buttons not needed
   pMenu->ClearButtons();
+
   // add the needed buttons
-  pMenu->AddButton(13351);    // 1: Music Information
-  pMenu->AddButton(13358);    // 2: Play Item
-  pMenu->AddButton(13347);    // 3: Queue Item
-  pMenu->AddButton(13350);    // 4: Now Playing...
+  int btn_Info          = pMenu->AddButton(13351);    // Music Information
+  int btn_Play          = pMenu->AddButton(13358);    // Play Item
+  int btn_Queue         = pMenu->AddButton(13347);    // Queue Item
+  int btn_Playlist      = pMenu->AddButton(13350);    // Now Playing...
+
+  int btn_Scan = 0;
   if (g_application.m_guiDialogMusicScan.IsRunning())
-    pMenu->AddButton(13353);  // 5: Stop Scanning
+    btn_Scan = pMenu->AddButton(13353);               // Stop Scanning
   else
-    pMenu->AddButton(13352);  // 5: Scan Folder to Database
-  pMenu->AddButton(137);      // 6: Search...
-  pMenu->AddButton(600);      // 7: Rip CD Audio
-  pMenu->AddButton(16002);    // 8: CDDB lookup
-  pMenu->AddButton(5);        // 9: Settings...
+    btn_Scan = pMenu->AddButton(13352);               // Scan Folder to Database
+
+  int btn_Search        = pMenu->AddButton(137);      // Search...
+  int btn_Rip           = pMenu->AddButton(600);      // Rip CD Audio
+  int btn_CDDB          = pMenu->AddButton(16002);    // CDDB lookup
+  
+  int btn_Delete = 0;
+  CStdString strDirectory;
+  strDirectory.Format("%s\\playlists", g_stSettings.m_szAlbumDirectory);
+  if (strDirectory.Equals(m_Directory.m_strPath))
+    btn_Delete = pMenu->AddButton(117);               // Delete
+  
+  int btn_Settings      = pMenu->AddButton(5);        // Settings...
 
   // turn off info/queue/play if the current item is goto parent ..
   bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
   if (bIsGotoParent)
   {
-    pMenu->EnableButton(1, false);
-    pMenu->EnableButton(2, false);
-    pMenu->EnableButton(3, false);
+    pMenu->EnableButton(btn_Info, false);
+    pMenu->EnableButton(btn_Play, false);
+    pMenu->EnableButton(btn_Queue, false);
   }
-  // turn off the now playing button if nothing is playing
-  if (!g_application.IsPlayingAudio())
-    pMenu->EnableButton(4, false);
+
+  // turn off the now playing button if playlist is empty
+  if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() <= 0)
+    pMenu->EnableButton(btn_Playlist, false);
+
   // turn off the Scan button if we're not in files view or a internet stream
   if (GetID() != WINDOW_MUSIC_FILES || m_Directory.IsInternetStream())
-    pMenu->EnableButton(5, false);
+    pMenu->EnableButton(btn_Scan, false);
+
   // turn off Rip CD Audio button if we don't have a CDDA disk in
   CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
   if (!CDetectDVDMedia::IsDiscInDrive() || !pCdInfo || !pCdInfo->IsAudio(1))
-    pMenu->EnableButton(7, false);
+    pMenu->EnableButton(btn_Rip, false);
+
+  // turn off CDDB lookup, if the current dir is not CDDA
   if (!m_Directory.IsCDDA())
-    pMenu->EnableButton(8, false);
+    pMenu->EnableButton(btn_CDDB, false);
 
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal(GetID());
-  switch (pMenu->GetButton())
+
+  int btnid = pMenu->GetButton();
+  if (btnid > 0)
   {
-  case 1:  // Music Information
-    OnInfo(iItem);
-    break;
-  case 2:  // Play Item
-    PlayItem(iItem);
-    break;
-  case 3:  // Queue Item
-    OnQueueItem(iItem);
-    break;
-  case 4:  // Now Playing...
-    m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
-    return;
-    break;
-  case 5:  // Scan...
-    OnScan();
-    break;
-  case 6:  // Search
-    OnSearch();
-    break;
-  case 7:  // Rip CD...
-    OnRipCD();
-    break;
-  case 8:  // CDDB lookup
-    if (g_musicDatabase.LookupCDDBInfo(true))
-      Update(m_Directory.m_strPath);
-    break;
-  case 9:  // Settings
-    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
-    return;
-    break;
+    // Music Information
+    if (btnid == btn_Info) 
+    {
+      OnInfo(iItem);
+    }
+    // Play Item
+    else if (btnid == btn_Play)
+    {
+      PlayItem(iItem);
+    }
+    // Queue Item
+    else if (btnid == btn_Queue)
+    {
+      OnQueueItem(iItem);
+    }
+    // Now Playing...
+    else if (btnid == btn_Playlist)
+    {
+      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+      return;
+    }
+    // Scan
+    else if (btnid == btn_Scan)
+    {
+      OnScan();
+    }
+    // Search
+    else if (btnid == btn_Search)
+    {
+      OnSearch();
+    }
+    // Rip CD...
+    else if (btnid == btn_Rip)
+    {
+      OnRipCD();
+    }
+    // CDDB lookup
+    else if (btnid == btn_CDDB)
+    {
+      if (g_musicDatabase.LookupCDDBInfo(true))
+        Update(m_Directory.m_strPath);
+    }
+    // Delete
+    else if (btnid == btn_Delete)
+    {
+      OnDeleteItem(iItem);
+    }
+    // Settings
+    else if (btnid == btn_Settings)
+    {
+      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
+      return;
+    }
   }
   m_vecItems[iItem]->Select(bSelected);
 }
@@ -1623,18 +1658,51 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 
     // play!
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
-    if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC_TEMP))
-    {
-      // if shuffled dont start on first song
-      g_playlistPlayer.SetCurrentSong(0);
-      g_playlistPlayer.PlayNext();
-    }
-    else
-      g_playlistPlayer.Play(0);
+    g_playlistPlayer.Play();
   }
   // otherwise just play the song
   else
   {
     OnClick(iItem);
   }
+}
+
+void CGUIWindowMusicBase::OnDeleteItem(int iItem)
+{
+  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
+  const CFileItem* pItem = m_vecItems[iItem];
+  CStdString strFile;
+
+  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (pDialog)
+  {
+    strFile = CUtil::GetFileName(pItem->m_strPath);
+    pDialog->SetHeading(122);
+    pDialog->SetLine(0, 125);
+    pDialog->SetLine(1, strFile.c_str());
+    pDialog->SetLine(2, L"");
+    pDialog->DoModal(GetID());
+    if (!pDialog->IsConfirmed()) return ;
+  }
+
+  if (m_dlgProgress) m_dlgProgress->StartModal(GetID());
+
+  CStdString strLog;
+  strLog.Format("delete %s\n", strFile.c_str());
+  strFile = pItem->m_strPath;
+
+  CFile::Delete(strFile.c_str());
+
+  if (m_dlgProgress)
+  {
+    m_dlgProgress->SetLine(0, 117);
+    m_dlgProgress->SetLine(1, strFile);
+    m_dlgProgress->SetLine(2, L"");
+    m_dlgProgress->Progress();
+  }
+
+  if (m_dlgProgress) m_dlgProgress->Close();
+
+  Update( m_Directory.m_strPath );
+  m_viewControl.SetSelectedItem(iItem);
 }

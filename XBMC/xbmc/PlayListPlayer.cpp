@@ -128,7 +128,7 @@ void CPlayListPlayer::PlayPrevious()
   if (ShuffledPlay(m_iCurrentPlayList))
   {
     while (iSong == m_iCurrentSong)
-      iSong = NextShuffleItem();
+      iSong = PreviousShuffleItem();
   }
   else
   {
@@ -143,6 +143,21 @@ void CPlayListPlayer::PlayPrevious()
 
 }
 
+void CPlayListPlayer::Play()
+{
+  if (m_iCurrentPlayList == PLAYLIST_NONE)
+    return;
+
+  CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+  if (playlist.size() <= 0) return;
+
+  int iSong = 0;
+  if (ShuffledPlay(m_iCurrentPlayList))
+    iSong = NextShuffleItem();
+
+  Play(iSong);
+}
+
 /// \brief Start playing entry \e iSong in current playlist
 /// \param iSong Song in playlist
 void CPlayListPlayer::Play(int iSong, bool bAutoPlay)
@@ -153,7 +168,7 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay)
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
   if (playlist.size() <= 0) return ;
   if (iSong < 0) iSong = 0;
-  if (iSong >= playlist.size() ) iSong = playlist.size() - 1;
+  if (iSong >= playlist.size()) iSong = playlist.size() - 1;
 
   m_bChanged = true;
   int iPreviousSong = m_iCurrentSong;
@@ -184,13 +199,15 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay)
       m_gWindowManager.SendThreadMessage(msg);
     }
   }
+
+  playlist.SetPlayed(m_iCurrentSong);
 }
 
 /// \brief Change the current song in playlistplayer.
 /// \param iSong Song in playlist
 void CPlayListPlayer::SetCurrentSong(int iSong)
 {
-  if (iSong >= -1 && iSong < GetPlaylist(GetCurrentPlaylist()).size() )
+  if (iSong >= -1 && iSong < GetPlaylist(m_iCurrentPlayList).size())
     m_iCurrentSong = iSong;
 }
 
@@ -236,6 +253,9 @@ void CPlayListPlayer::SetCurrentPlaylist( int iPlayList )
   m_iCurrentPlayList = iPlayList;
   m_bPlayedFirstFile = false;
   m_bChanged = true;
+
+  // reset the played items
+  GetPlaylist(m_iCurrentPlayList).ClearPlayed();
 }
 
 /// \brief Get the playlist object specified in \e nPlayList
@@ -285,6 +305,9 @@ void CPlayListPlayer::Reset()
 {
   m_iCurrentSong = -1;
   m_bPlayedFirstFile = false;
+
+  // reset the played items
+  GetPlaylist(m_iCurrentPlayList).ClearPlayed();
 }
 
 /// \brief Whether or not something has been played yet or not from the current playlist.
@@ -443,10 +466,15 @@ void CPlayListPlayer::ShufflePlay(int iPlaylist, bool bYesNo)
   if (iOption < 0)
     return ;
 
+  bool bTest = ShuffledPlay(iPlaylist);
+
   if (bYesNo)
     m_iOptions |= iOption;
   else
     m_iOptions &= ~iOption;
+
+  if (bTest != bYesNo)
+    GetPlaylist(iPlaylist).ClearPlayed();
 }
 
 /// \brief Shuffle play the current playlist
@@ -478,14 +506,103 @@ bool CPlayListPlayer::ShuffledPlay(int iPlaylist)
   return false;
 }
 
+/*
+// this is a true randomly picked up unplayed song, 
+// but it must always traverse the entire list
+// and use memory to build the vector of unplayed items
 int CPlayListPlayer::NextShuffleItem()
 {
   srand( timeGetTime() );
 
-  CPlayList& playlist = GetPlaylist(GetCurrentPlaylist());
-  int nItemCount = playlist.size();
-  if (nItemCount <= 0)
+  CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+
+  // if theres no more unplayed songs, but the playlist is in repeat mode,
+  // clear the played status
+  if ((playlist.GetUnplayed() <= 0) && (Repeated(m_iCurrentPlayList)))
+    playlist.ClearPlayed();
+  
+  if (playlist.GetUnplayed() <= 0)
     return -1;
 
-  return rand() % nItemCount;
+  vector <int> vecUnplayedItems;
+  CStdString strList = "(";
+  for (int i = 0; i < playlist.size(); i++)
+  {
+    if (!playlist[i].WasPlayed())
+    {
+      vecUnplayedItems.push_back(i);
+      CStdString strTemp;
+      strTemp.Format("%i,",i);
+      strList += strTemp;
+    }
+  }
+  strList.TrimRight(",");
+  strList += ")";
+  CLog::Log(LOGDEBUG,"CPlayListPlayer::NextShuffleItem(), unplayed list = %s",strList.c_str());
+
+  int nItemCount = vecUnplayedItems.size();
+  int iItem = vecUnplayedItems[rand() % nItemCount];
+  CLog::Log(LOGDEBUG,"CPlayListPlayer::NextShuffleItem(), next song = %i",iItem);
+  return iItem;
+}
+*/
+
+// this works reasonably well and uses less processing and memory
+int CPlayListPlayer::NextShuffleItem()
+{
+  srand( timeGetTime() );
+
+  CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+
+  // if theres no more unplayed songs, but the playlist is in repeat mode,
+  // clear the played status
+  if ((playlist.GetUnplayed() <= 0) && (Repeated(m_iCurrentPlayList)))
+    playlist.ClearPlayed();
+  
+  if (playlist.GetUnplayed() <= 0)
+    return -1;
+
+  // pick random number
+  int iRandom = rand() % playlist.GetUnplayed();
+  while (playlist[iRandom].WasPlayed())
+  {
+    //CLog::Log(LOGDEBUG,"CPlayListPlayer::NextShuffleItem(), skipping played song at %i",iRandom);
+    // increment by one until an unplayed song is found
+    iRandom++;
+
+    // circle around if past the last song
+    if (iRandom >= playlist.size())
+      iRandom = 0;
+  }
+  //CLog::Log(LOGDEBUG,"CPlayListPlayer::NextShuffleItem(), return = %i",iRandom);
+
+  return iRandom;
+}
+
+int CPlayListPlayer::PreviousShuffleItem()
+{
+  srand( timeGetTime() );
+
+  CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+
+  // need more than one played song for previous to work!
+  int iPlayed = playlist.size() - playlist.GetUnplayed();
+  if (iPlayed <= 1)
+    return -1;
+  
+  // pick random number
+  int iRandom = rand() % iPlayed;
+  while (iRandom == m_iCurrentSong || !playlist[iRandom].WasPlayed())
+  {
+    //CLog::Log(LOGDEBUG,"CPlayListPlayer::PreviousShuffleItem(), skipping unplayed song at %i",iRandom);
+    // increment by one until a played song is found
+    iRandom++;
+
+    // circle around if past the last song
+    if (iRandom >= playlist.size())
+      iRandom = 0;
+  }
+  //CLog::Log(LOGDEBUG,"CPlayListPlayer::PreviousShuffleItem(), return = %i",iRandom);
+
+  return iRandom;
 }
