@@ -45,9 +45,15 @@
 void *av_malloc(unsigned int size)
 {
     void *ptr;
-    
 #ifdef MEMALIGN_HACK
     int diff;
+#endif
+
+    /* lets disallow possible ambiguous cases */
+    if(size > INT_MAX)
+        return NULL;
+    
+#ifdef MEMALIGN_HACK
     ptr = malloc(size+16+1);
     diff= ((-(int)ptr - 1)&15) + 1;
     ptr += diff;
@@ -94,8 +100,15 @@ void *av_malloc(unsigned int size)
 void *av_realloc(void *ptr, unsigned int size)
 {
 #ifdef MEMALIGN_HACK
-    //FIXME this isnt aligned correctly though it probably isnt needed
     int diff;
+#endif
+
+    /* lets disallow possible ambiguous cases */
+    if(size > INT_MAX)
+        return NULL;
+
+#ifdef MEMALIGN_HACK
+    //FIXME this isnt aligned correctly though it probably isnt needed
     if(!ptr) return av_malloc(size);
     diff= ((char*)ptr)[-1];
     return realloc(ptr - diff, size + diff) + diff;

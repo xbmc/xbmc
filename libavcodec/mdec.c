@@ -81,7 +81,7 @@ static inline int mdec_decode_block_intra(MDECContext *a, DCTELEM *block, int n)
         /* now quantify & encode AC coefs */
         for(;;) {
             UPDATE_CACHE(re, &a->gb);
-            GET_RL_VLC(level, run, re, &a->gb, rl->rl_vlc[0], TEX_VLC_BITS, 2);
+            GET_RL_VLC(level, run, re, &a->gb, rl->rl_vlc[0], TEX_VLC_BITS, 2, 0);
             
             if(level == 127){
                 break;
@@ -162,11 +162,6 @@ static int decode_frame(AVCodecContext *avctx,
     AVFrame *picture = data;
     AVFrame * const p= (AVFrame*)&a->picture;
     int i;
-
-    /* special case for last picture */
-    if (buf_size == 0) {
-        return 0;
-    }
 
     if(p->data[0])
         avctx->release_buffer(avctx, p);

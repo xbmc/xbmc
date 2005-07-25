@@ -1,4 +1,4 @@
-/* 
+/*
  * dtsdec.c : free DTS Coherent Acoustics stream decoder.
  * Copyright (C) 2004 Benjamin Zores <ben@geexbox.org>
  *
@@ -19,6 +19,9 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+
+/* MAJOR XBOX REWRITE BY MONKEYHAPPY */
+
 #ifdef HAVE_AV_CONFIG_H
 #undef HAVE_AV_CONFIG_H
 #endif
@@ -29,7 +32,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifdef HAVE_MALLOC_H
 #include <malloc.h>
+#endif
 
 #define INBUF_SIZE 4096
 #define BUFFER_SIZE 24576
@@ -64,7 +70,7 @@ convert2s16_2 (sample_t * _f, int16_t * s16)
     {
       s16[2*i] = convert (f[i]);
       s16[2*i+1] = convert (f[i+256]);
-    }  
+    }
 }
 
 void
@@ -88,7 +94,7 @@ convert2s16_5 (sample_t * _f, int16_t * s16)
   int i;
   int32_t * f = (int32_t *) _f;
 
-  for (i = 0; i < 256; i++)		
+  for (i = 0; i < 256; i++)
     {
       s16[5*i] = convert (f[i+256]);
       s16[5*i+1] = convert (f[i+512]);
@@ -183,7 +189,7 @@ convert2s16_multi (sample_t * _f, int16_t * s16, int flags)
           s16[6*i+2] = s16[6*i+3] = s16[6*i+4] = 0;
           s16[6*i+5] = convert (f[i+512]);
         }
-      break;          
+      break;
     case DTS_3F | DTS_LFE:	//C L R LFE 6
       for (i = 0; i < 256; i++)
         {
@@ -203,7 +209,7 @@ convert2s16_multi (sample_t * _f, int16_t * s16, int flags)
           s16[6*i+4] = 0;
           s16[6*i+5] = convert (f[i+768]);
         }
-      break;            
+      break;
     case DTS_3F1R | DTS_LFE:	//C L R S LFE 6
       for (i = 0; i < 256; i++)
         {
@@ -248,7 +254,7 @@ channels_multi (int flags)
   
   if (flags & DTS_LFE)
     return 6;
-  else 
+  else
     return dts_channels[flags & DTS_CHANNEL_MASK];
 }
 
@@ -306,7 +312,7 @@ dts_decode_frame (AVCodecContext *avctx, void *data, int *data_size,
               level_t level;
               sample_t bias;
               int i;
-              
+
 //              flags = 2; /* ????????????  */ force 2 CH dts code removed, libdts now has correct bias in new libdts.a 
               level = CONVERT_LEVEL;
               bias = CONVERT_BIAS;
@@ -334,7 +340,7 @@ dts_decode_frame (AVCodecContext *avctx, void *data, int *data_size,
               bufptr = buf;
               bufpos = buf + HEADER_SIZE;
               if (finished < 8192 )
-              	continue;
+              continue;
               else
                 return finished;
             error:

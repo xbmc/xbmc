@@ -21,7 +21,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#if defined(__APPLE__) || defined(__BEOS__)
+#if defined(__BEOS__)
 typedef int socklen_t;
 #endif
 #ifndef __BEOS__
@@ -57,8 +57,7 @@ static int tcp_open(URLContext *h, const char *uri, int flags)
     struct sockaddr_in dest_addr;
     char hostname[1024], *q;
     int port, fd = -1;
-    TCPContext *s;
-    const char *p;
+    TCPContext *s = NULL;
     fd_set wfds;
     int fd_max, ret;
     struct timeval tv;

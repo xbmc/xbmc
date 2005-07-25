@@ -135,13 +135,11 @@ AVResampleContext *av_resample_init(int out_rate, int in_rate, int filter_size, 
     double factor= FFMIN(out_rate * cutoff / in_rate, 1.0);
     int phase_count= 1<<phase_shift;
     
-    memset(c, 0, sizeof(AVResampleContext));
-    
     c->phase_shift= phase_shift;
     c->phase_mask= phase_count-1;
     c->linear= linear;
 
-    c->filter_length= ceil(filter_size/factor);
+    c->filter_length= FFMAX(ceil(filter_size/factor), 1);
     c->filter_bank= av_mallocz(c->filter_length*(phase_count+1)*sizeof(FELEM));
     av_build_filter(c->filter_bank, factor, c->filter_length, phase_count, 1<<FILTER_SHIFT, 1);
     memcpy(&c->filter_bank[c->filter_length*phase_count+1], c->filter_bank, (c->filter_length-1)*sizeof(FELEM));
@@ -193,7 +191,21 @@ int av_resample(AVResampleContext *c, short *dst, short *src, int *consumed, int
     int dst_incr_frac= c->dst_incr % c->src_incr;
     int dst_incr=      c->dst_incr / c->src_incr;
     int compensation_distance= c->compensation_distance;
-    
+
+  if(compensation_distance == 0 && c->filter_length == 1 && c->phase_shift==0){
+        int64_t index2= ((int64_t)index)<<32;
+        int64_t incr= (1LL<<32) * c->dst_incr / c->src_incr;
+        dst_size= FFMIN(dst_size, (src_size-1-index) * (int64_t)c->src_incr / c->dst_incr);
+        
+        for(dst_index=0; dst_index < dst_size; dst_index++){
+            dst[dst_index] = src[index2>>32];
+            index2 += incr;
+        }
+        frac += dst_index * dst_incr_frac;
+        index += dst_index * dst_incr;
+        index += frac / c->src_incr;
+        frac %= c->src_incr;
+  }else{
     for(dst_index=0; dst_index < dst_size; dst_index++){
         FELEM *filter= c->filter_bank + c->filter_length*(index & c->phase_mask);
         int sample_index= index >> c->phase_shift;
@@ -234,6 +246,7 @@ int av_resample(AVResampleContext *c, short *dst, short *src, int *consumed, int
             dst_incr=      c->ideal_dst_incr / c->src_incr;
         }
     }
+  }
     *consumed= FFMAX(index, 0) >> c->phase_shift;
     if(index>=0) index &= c->phase_mask;
 

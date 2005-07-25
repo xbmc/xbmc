@@ -61,7 +61,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, uint8
 {
 	EightBpsContext * const c = (EightBpsContext *)avctx->priv_data;
 	unsigned char *encoded = (unsigned char *)buf;
-	unsigned char *pixptr;
+	unsigned char *pixptr, *pixptr_end;
 	unsigned int height = avctx->height; // Real image height
 	unsigned int dlen, p, row;
 	unsigned char *lp, *dp;
@@ -70,11 +70,6 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, uint8
 	unsigned int planes = c->planes;
 	unsigned char *planemap = c->planemap;
   
-  
-	/* no supplementary picture */
-	if (buf_size == 0)
-		return 0;
-
 	if(c->pic.data[0])
 		avctx->release_buffer(avctx, &c->pic);
 
@@ -101,18 +96,25 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, uint8
 		/* Decode a plane */
 		for(row = 0; row < height; row++) {
 			pixptr = c->pic.data[0] + row * c->pic.linesize[0] + planemap[p];
+			pixptr_end = pixptr + c->pic.linesize[0];
 			dlen = be2me_16(*(unsigned short *)(lp+row*2));
 			/* Decode a row of this plane */
 			while(dlen > 0) {
+				if(dp + 1 >= buf+buf_size) return -1;
 				if ((count = *dp++) <= 127) {
 					count++;
 					dlen -= count + 1;
+					if (pixptr + count * px_inc > pixptr_end)
+					    break;
+					if(dp + count > buf+buf_size) return -1;
 					while(count--) {
 						*pixptr = *dp++;
 						pixptr += px_inc;
 					}
 				} else {
 					count = 257 - count;
+					if (pixptr + count * px_inc > pixptr_end)
+					    break;
 					while(count--) {
 						*pixptr = *dp;
 						pixptr += px_inc;
@@ -154,6 +156,10 @@ static int decode_init(AVCodecContext *avctx)
 	avctx->has_b_frames = 0;
 
 	c->pic.data[0] = NULL;
+
+    if (avcodec_check_dimensions(avctx, avctx->width, avctx->height) < 0) {
+        return 1;
+    }
 
 	switch (avctx->bits_per_sample) {
 		case 8:

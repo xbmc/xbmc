@@ -400,6 +400,19 @@ static void jpeg_put_comments(MpegEncContext *s)
         ptr[0] = size >> 8;
         ptr[1] = size;
     }
+
+    if(  s->avctx->pix_fmt == PIX_FMT_YUV420P 
+       ||s->avctx->pix_fmt == PIX_FMT_YUV422P
+       ||s->avctx->pix_fmt == PIX_FMT_YUV444P){
+        put_marker(p, COM);
+        flush_put_bits(p);
+        ptr = pbBufPtr(p);
+        put_bits(p, 16, 0); /* patched later */
+        put_string(p, "CS=ITU601", 1);
+        size = strlen("CS=ITU601")+3;
+        ptr[0] = size >> 8;
+        ptr[1] = size;
+    }
 }
 
 void mjpeg_picture_header(MpegEncContext *s)
@@ -659,11 +672,11 @@ static int encode_picture_lossless(AVCodecContext *avctx, unsigned char *buf, in
     mjpeg_picture_header(s);
 
     s->header_bits= put_bits_count(&s->pb);
-
+    
     if(avctx->pix_fmt == PIX_FMT_RGBA32){
         int x, y, i;
         const int linesize= p->linesize[0];
-        uint16_t buffer[2048][4];
+        uint16_t (*buffer)[4]= (void *) s->rd_scratchpad;
         int left[3], top[3], topleft[3];
 
         for(i=0; i<3; i++){
@@ -674,6 +687,11 @@ static int encode_picture_lossless(AVCodecContext *avctx, unsigned char *buf, in
             const int modified_predictor= y ? predictor : 1;
             uint8_t *ptr = p->data[0] + (linesize * y);
 
+            if(s->pb.buf_end - s->pb.buf - (put_bits_count(&s->pb)>>3) < width*3*4){
+                av_log(s->avctx, AV_LOG_ERROR, "encoded frame too large\n");
+                return -1;
+            }
+            
             for(i=0; i<3; i++){
                 top[i]= left[i]= topleft[i]= buffer[0][i];
             }
@@ -707,6 +725,10 @@ static int encode_picture_lossless(AVCodecContext *avctx, unsigned char *buf, in
         const int mb_height = (height + s->mjpeg_vsample[0] - 1) / s->mjpeg_vsample[0];
         
         for(mb_y = 0; mb_y < mb_height; mb_y++) {
+            if(s->pb.buf_end - s->pb.buf - (put_bits_count(&s->pb)>>3) < mb_width * 4 * 3 * s->mjpeg_hsample[0] * s->mjpeg_vsample[0]){
+                av_log(s->avctx, AV_LOG_ERROR, "encoded frame too large\n");
+                return -1;
+            }
             for(mb_x = 0; mb_x < mb_width; mb_x++) {
                 if(mb_x==0 || mb_y==0){
                     for(i=0;i<3;i++) {
@@ -836,6 +858,7 @@ typedef struct MJpegDecodeContext {
     int restart_count;
 
     int buggy_avid;
+    int cs_itu601;
     int interlace_polarity;
 
     int mjpb_skiptosod;
@@ -859,6 +882,7 @@ static int mjpeg_decode_init(AVCodecContext *avctx)
 {
     MJpegDecodeContext *s = avctx->priv_data;
     MpegEncContext s2;
+    memset(s, 0, sizeof(MJpegDecodeContext));
 
     s->avctx = avctx;
 
@@ -873,11 +897,8 @@ static int mjpeg_decode_init(AVCodecContext *avctx)
     s->idct_put= s2.dsp.idct_put;
 
     s->mpeg_enc_ctx_allocated = 0;
-    s->buffer_size = 102400; /* smaller buffer should be enough,
-				but photojpg files could ahive bigger sizes */
-    s->buffer = av_malloc(s->buffer_size);
-    if (!s->buffer)
-	return -1;
+    s->buffer_size = 0;
+    s->buffer = NULL;
     s->start_code = -1;
     s->first_picture = 1;
     s->org_height = avctx->coded_height;
@@ -1060,7 +1081,10 @@ static int mjpeg_decode_sof(MJpegDecodeContext *s)
     }
     height = get_bits(&s->gb, 16);
     width = get_bits(&s->gb, 16);
+    
     dprintf("sof0: picture: %dx%d\n", width, height);
+    if(avcodec_check_dimensions(s->avctx, width, height))
+        return -1;
 
     nb_components = get_bits(&s->gb, 8);
     if (nb_components <= 0 ||
@@ -1121,16 +1145,16 @@ static int mjpeg_decode_sof(MJpegDecodeContext *s)
         if(s->rgb){
             s->avctx->pix_fmt = PIX_FMT_RGBA32;
         }else if(s->nb_components==3)
-            s->avctx->pix_fmt = PIX_FMT_YUV444P;
+            s->avctx->pix_fmt = s->cs_itu601 ? PIX_FMT_YUV444P : PIX_FMT_YUVJ444P;
         else
             s->avctx->pix_fmt = PIX_FMT_GRAY8;
         break;
     case 0x21:
-        s->avctx->pix_fmt = PIX_FMT_YUV422P;
+        s->avctx->pix_fmt = s->cs_itu601 ? PIX_FMT_YUV422P : PIX_FMT_YUVJ422P;
         break;
     default:
     case 0x22:
-        s->avctx->pix_fmt = PIX_FMT_YUV420P;
+        s->avctx->pix_fmt = s->cs_itu601 ? PIX_FMT_YUV420P : PIX_FMT_YUVJ420P;
         break;
     }
 
@@ -1228,10 +1252,13 @@ static int decode_block(MJpegDecodeContext *s, DCTELEM *block,
 
 static int ljpeg_decode_rgb_scan(MJpegDecodeContext *s, int predictor, int point_transform){
     int i, mb_x, mb_y;
-    uint16_t buffer[2048][4];
+    uint16_t buffer[32768][4];
     int left[3], top[3], topleft[3];
     const int linesize= s->linesize[0];
     const int mask= (1<<s->bits)-1;
+    
+    if((unsigned)s->mb_width > 32768) //dynamic alloc
+        return -1;
     
     for(i=0; i<3; i++){
         buffer[0][i]= 1 << (s->bits + point_transform - 1);
@@ -1547,6 +1574,7 @@ static int mjpeg_decode_dri(MJpegDecodeContext *s)
     if (get_bits(&s->gb, 16) != 4)
 	return -1;
     s->restart_interval = get_bits(&s->gb, 16);
+    s->restart_count = 0;
     dprintf("restart interval: %d\n", s->restart_interval);
 
     return 0;
@@ -1556,10 +1584,11 @@ static int mjpeg_decode_app(MJpegDecodeContext *s)
 {
     int len, id;
 
-    /* XXX: verify len field validity */
     len = get_bits(&s->gb, 16);
     if (len < 5)
 	return -1;
+    if(8*len + get_bits_count(&s->gb) > s->gb.size_in_bits)
+        return -1;
 
     id = (get_bits(&s->gb, 16) << 16) | get_bits(&s->gb, 16);
     id = be2me_32(id);
@@ -1698,10 +1727,8 @@ out:
 
 static int mjpeg_decode_com(MJpegDecodeContext *s)
 {
-    /* XXX: verify len field validity */
     int len = get_bits(&s->gb, 16);
-    if (len >= 2 && len < 32768) {
-	/* XXX: any better upper bound */
+    if (len >= 2 && 8*len - 16 + get_bits_count(&s->gb) <= s->gb.size_in_bits) {
 	uint8_t *cbuf = av_malloc(len - 1);
 	if (cbuf) {
 	    int i;
@@ -1722,6 +1749,9 @@ static int mjpeg_decode_com(MJpegDecodeContext *s)
 		//	if (s->first_picture)
 		//	    printf("mjpeg: workarounding buggy AVID\n");
 	    }
+            else if(!strcmp(cbuf, "CS=ITU601")){
+                s->cs_itu601= 1;
+            }
 
 	    av_free(cbuf);
 	}
@@ -1794,10 +1824,6 @@ static int mjpeg_decode_frame(AVCodecContext *avctx,
     int start_code;
     AVFrame *picture = data;
 
-    /* no supplementary picture */
-    if (buf_size == 0)
-        return 0;
-
     buf_ptr = buf;
     buf_end = buf + buf_size;
     while (buf_ptr < buf_end) {
@@ -1814,7 +1840,7 @@ static int mjpeg_decode_frame(AVCodecContext *avctx,
 		{
 		    av_free(s->buffer);
 		    s->buffer_size = buf_end-buf_ptr;
-		    s->buffer = av_malloc(s->buffer_size);
+                    s->buffer = av_malloc(s->buffer_size + FF_INPUT_BUFFER_PADDING_SIZE);
 		    dprintf("buffer too small, expanding to %d bytes\n",
 			s->buffer_size);
 		}
@@ -1868,6 +1894,7 @@ static int mjpeg_decode_frame(AVCodecContext *avctx,
                 switch(start_code) {
                 case SOI:
 		    s->restart_interval = 0;
+		    s->restart_count = 0;
                     /* nothing to do on SOI */
                     break;
                 case DQT:
@@ -1970,16 +1997,13 @@ static int mjpegb_decode_frame(AVCodecContext *avctx,
     uint32_t dqt_offs, dht_offs, sof_offs, sos_offs, second_field_offs;
     uint32_t field_size, sod_offs;
 
-    /* no supplementary picture */
-    if (buf_size == 0)
-        return 0;
-
     buf_ptr = buf;
     buf_end = buf + buf_size;
     
 read_header:
     /* reset on every SOI */
     s->restart_interval = 0;
+    s->restart_count = 0;
     s->mjpb_skiptosod = 0;
 
     init_get_bits(&hgb, buf_ptr, /*buf_size*/(buf_end - buf_ptr)*8);
@@ -2083,10 +2107,6 @@ static int sp5x_decode_frame(AVCodecContext *avctx,
     uint8_t *buf_ptr, *buf_end, *recoded;
     int i = 0, j = 0;
 
-    /* no supplementary picture */
-    if (buf_size == 0)
-        return 0;
-
     if (!avctx->width || !avctx->height)
 	return -1;
 
@@ -2157,7 +2177,7 @@ static int sp5x_decode_frame(AVCodecContext *avctx,
     s->v_max = 2;
     
     s->qscale_table = av_mallocz((s->width+15)/16);
-    avctx->pix_fmt = PIX_FMT_YUV420P;
+    avctx->pix_fmt = s->cs_itu601 ? PIX_FMT_YUV420P : PIX_FMT_YUVJ420;
     s->interlaced = 0;
     
     s->picture.reference = 0;

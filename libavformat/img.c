@@ -123,7 +123,7 @@ static int img_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     if (ap && ap->image_format)
         s->img_fmt = ap->image_format;
 
-    strcpy(s->path, s1->filename);
+    pstrcpy(s->path, sizeof(s->path), s1->filename);
     s->img_number = 0;
     s->img_count = 0;
     
@@ -132,15 +132,13 @@ static int img_read_header(AVFormatContext *s1, AVFormatParameters *ap)
         s->is_pipe = 0;
     else
         s->is_pipe = 1;
-        
-    if (!ap || !ap->frame_rate) {
-        st->codec.frame_rate      = 25;
-        st->codec.frame_rate_base = 1;
+
+    if (!ap || !ap->time_base.num) {
+        st->codec->time_base= (AVRational){1,25};
     } else {
-        st->codec.frame_rate      = ap->frame_rate;
-        st->codec.frame_rate_base = ap->frame_rate_base;
+        st->codec->time_base= ap->time_base;
     }
-    
+ 
     if (!s->is_pipe) {
         if (find_image_range(&first_index, &last_index, s->path) < 0)
             goto fail;
@@ -149,9 +147,7 @@ static int img_read_header(AVFormatContext *s1, AVFormatParameters *ap)
         s->img_number = first_index;
         /* compute duration */
         st->start_time = 0;
-        st->duration = ((int64_t)AV_TIME_BASE * 
-                        (last_index - first_index + 1) * 
-                        st->codec.frame_rate_base) / st->codec.frame_rate;
+        st->duration = last_index - first_index + 1;
         if (get_frame_filename(buf, sizeof(buf), s->path, s->img_number) < 0)
             goto fail;
         if (url_fopen(f, buf, URL_RDONLY) < 0)
@@ -170,11 +166,11 @@ static int img_read_header(AVFormatContext *s1, AVFormatParameters *ap)
         url_fseek(f, 0, SEEK_SET);
     }
     
-    st->codec.codec_type = CODEC_TYPE_VIDEO;
-    st->codec.codec_id = CODEC_ID_RAWVIDEO;
-    st->codec.width = s->width;
-    st->codec.height = s->height;
-    st->codec.pix_fmt = s->pix_fmt;
+    st->codec->codec_type = CODEC_TYPE_VIDEO;
+    st->codec->codec_id = CODEC_ID_RAWVIDEO;
+    st->codec->width = s->width;
+    st->codec->height = s->height;
+    st->codec->pix_fmt = s->pix_fmt;
     s->img_size = avpicture_get_size(s->pix_fmt, (s->width+15)&(~15), (s->height+15)&(~15));
 
     return 0;
@@ -236,7 +232,7 @@ static int img_read_packet(AVFormatContext *s1, AVPacket *pkt)
     } else {
         /* XXX: computing this pts is not necessary as it is done in
            the generic code too */
-        pkt->pts = av_rescale((int64_t)s->img_count * s1->streams[0]->codec.frame_rate_base, s1->streams[0]->time_base.den, s1->streams[0]->codec.frame_rate) / s1->streams[0]->time_base.num;
+        pkt->pts = av_rescale((int64_t)s->img_count * s1->streams[0]->codec->time_base.num, s1->streams[0]->time_base.den, s1->streams[0]->codec->time_base.den) / s1->streams[0]->time_base.num;
         s->img_count++;
         s->img_number++;
         return 0;
@@ -280,7 +276,7 @@ static int img_set_parameters(AVFormatContext *s, AVFormatParameters *ap)
         return -1;
     img->img_fmt = img_fmt;
     img->pix_fmt = i;
-    st->codec.pix_fmt = img->pix_fmt;
+    st->codec->pix_fmt = img->pix_fmt;
     return 0;
 }
 
@@ -289,7 +285,7 @@ static int img_write_header(AVFormatContext *s)
     VideoData *img = s->priv_data;
 
     img->img_number = 1;
-    strcpy(img->path, s->filename);
+    pstrcpy(img->path, sizeof(img->path), s->filename);
 
     /* find format */
     if (s->oformat->flags & AVFMT_NOFILE)
@@ -310,8 +306,8 @@ static int img_write_packet(AVFormatContext *s, AVPacket *pkt)
     char filename[1024];
     AVImageInfo info;
 
-    width = st->codec.width;
-    height = st->codec.height;
+    width = st->codec->width;
+    height = st->codec->height;
     
     picture = (AVPicture *)pkt->data;
 
@@ -327,7 +323,7 @@ static int img_write_packet(AVFormatContext *s, AVPacket *pkt)
     }
     info.width = width;
     info.height = height;
-    info.pix_fmt = st->codec.pix_fmt;
+    info.pix_fmt = st->codec->pix_fmt;
     info.interleaved = 0;    /* FIXME: there should be a way to set it right */
     info.pict = *picture;
     ret = av_write_image(pb, img->img_fmt, &info);

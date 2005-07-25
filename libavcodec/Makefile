@@ -1,36 +1,195 @@
 #
 # libavcodec Makefile
-# (c) 2000-2003 Fabrice Bellard
+# (c) 2000-2005 Fabrice Bellard
 #
 include ../config.mak
 
 VPATH=$(SRC_PATH)/libavcodec
 
 # NOTE: -I.. is needed to include config.h
-CFLAGS=$(OPTFLAGS) -DHAVE_AV_CONFIG_H -I.. -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE
+CFLAGS=$(OPTFLAGS) -DHAVE_AV_CONFIG_H -I.. -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE $(AMR_CFLAGS)
 
-OBJS= common.o utils.o mem.o allcodecs.o \
+OBJS= bitstream.o utils.o mem.o allcodecs.o \
       mpegvideo.o jrevdct.o jfdctfst.o jfdctint.o\
       mpegaudio.o ac3enc.o mjpeg.o resample.o resample2.o dsputil.o \
       motion_est.o imgconvert.o imgresample.o \
       mpeg12.o mpegaudiodec.o pcm.o simple_idct.o \
-      ratecontrol.o adpcm.o eval.o dv.o error_resilience.o \
-      fft.o mdct.o mace.o huffyuv.o cyuv.o opts.o raw.o h264.o golomb.o \
-      vp3.o asv1.o 4xm.o cabac.o ffv1.o ra144.o ra288.o vcr1.o cljr.o \
-      roqvideo.o dpcm.o interplayvideo.o xan.o rpza.o cinepak.o msrle.o \
-      msvideo1.o vqavideo.o idcinvideo.o adx.o rational.o faandct.o 8bps.o \
-      smc.o parser.o flicvideo.o truemotion1.o vmdav.o lcl.o qtrle.o g726.o \
-      flac.o vp3dsp.o integer.o snow.o tscc.o sonic.o ulti.o h264idct.o \
-      qdrw.o xl.o rangecoder.o png.o pnm.o qpeg.o
+      ratecontrol.o adpcm.o eval.o error_resilience.o \
+      fft.o mdct.o raw.o golomb.o cabac.o\
+      dpcm.o adx.o rational.o faandct.o parser.o g726.o \
+      vp3dsp.o integer.o h264idct.o rangecoder.o pnm.o h263.o msmpeg4.o h263dec.o dvdsub.o dvbsub.o dvbsubdec.o
 
+ifeq ($(CONFIG_AASC_DECODER),yes)
+    OBJS+= aasc.o
+endif
+ifeq ($(CONFIG_ALAC_DECODER),yes)
+    OBJS+= alac.o
+endif
+ifneq ($(CONFIG_ASV1_DECODER)$(CONFIG_ASV1_ENCODER)$(CONFIG_ASV2_DECODER)$(CONFIG_ASV2_ENCODER),)
+    OBJS+= asv1.o
+endif
+ifeq ($(CONFIG_CINEPAK_DECODER),yes)
+    OBJS+= cinepak.o
+endif
+ifneq ($(CONFIG_CLJR_DECODER)$(CONFIG_CLJR_ENCODER),)
+    OBJS+= cljr.o
+endif
+ifeq ($(CONFIG_CYUV_DECODER),yes)
+    OBJS+= cyuv.o
+endif
+ifneq ($(CONFIG_DVVIDEO_DECODER)$(CONFIG_DVVIDEO_ENCODER),)
+    OBJS+= dv.o
+endif
+ifeq ($(CONFIG_EIGHTBPS_DECODER),yes)
+    OBJS+= 8bps.o
+endif
+ifneq ($(CONFIG_FFV1_DECODER)$(CONFIG_FFV1_ENCODER),)
+    OBJS+= ffv1.o
+endif
+ifeq ($(CONFIG_FLAC_DECODER),yes)
+    OBJS+= flac.o
+endif
+ifeq ($(CONFIG_FLIC_DECODER),yes)
+    OBJS+= flicvideo.o
+endif
+ifeq ($(CONFIG_FOURXM_DECODER),yes)
+    OBJS+= 4xm.o
+endif
+ifeq ($(CONFIG_FRAPS_DECODER),yes)
+    OBJS+= fraps.o
+endif
+ifneq ($(CONFIG_H261_DECODER)$(CONFIG_H261_ENCODER),)
+    OBJS+= h261.o
+endif
+ifneq ($(CONFIG_H264_DECODER)$(CONFIG_SVQ3_DECODER),)
+    OBJS+= h264.o
+endif
+ifneq ($(CONFIG_HUFFYUV_DECODER)$(CONFIG_HUFFYUV_ENCODER)$(CONFIG_FFVHUFF_DECODER)$(CONFIG_FFVHUFF_ENCODER),)
+    OBJS+= huffyuv.o
+endif
+ifeq ($(CONFIG_IDCIN_DECODER),yes)
+    OBJS+= idcinvideo.o
+endif
+ifeq ($(CONFIG_INDEO2_DECODER),yes)
+    OBJS+= indeo2.o
+endif
+ifeq ($(CONFIG_INDEO3_DECODER),yes)
+    OBJS+= indeo3.o
+endif
+ifeq ($(CONFIG_INTERPLAY_VIDEO_DECODER),yes)
+    OBJS+= interplayvideo.o
+endif
+ifneq ($(CONFIG_MSZH_DECODER)$(CONFIG_ZLIB_DECODER)$(CONFIG_ZLIB_ENCODER),)
+    OBJS+= lcl.o
+endif
+ifeq ($(CONFIG_LOCO_DECODER),yes)
+    OBJS+= loco.o
+endif
+ifneq ($(CONFIG_MACE3_DECODER)$(CONFIG_MACE6_DECODER),)
+    OBJS+= mace.o
+endif
+ifeq ($(CONFIG_MSRLE_DECODER),yes)
+    OBJS+= msrle.o
+endif
+ifeq ($(CONFIG_MSVIDEO1_DECODER),yes)
+    OBJS+= msvideo1.o
+endif
+ifneq ($(CONFIG_PNG_DECODER)$(CONFIG_PNG_ENCODER),)
+    OBJS+= png.o
+endif
+ifeq ($(CONFIG_QDRAW_DECODER),yes)
+    OBJS+= qdrw.o
+endif
+ifeq ($(CONFIG_QPEG_DECODER),yes)
+    OBJS+= qpeg.o
+endif
+ifeq ($(CONFIG_QTRLE_DECODER),yes)
+    OBJS+= qtrle.o
+endif
+ifeq ($(CONFIG_RA_144_DECODER),yes)
+    OBJS+= ra144.o
+endif
+ifeq ($(CONFIG_RA_288_DECODER),yes)
+    OBJS+= ra288.o
+endif
+ifeq ($(CONFIG_ROQ_DECODER),yes)
+    OBJS+= roqvideo.o
+endif
+ifeq ($(CONFIG_RPZA_DECODER),yes)
+    OBJS+= rpza.o
+endif
+ifneq ($(CONFIG_RV10_DECODER)$(CONFIG_RV20_DECODER)$(CONFIG_RV10_ENCODER)$(CONFIG_RV20_ENCODER),)
+    OBJS+= rv10.o
+endif
+ifeq ($(CONFIG_SHORTEN_DECODER),yes)
+    OBJS+= shorten.o
+endif
+ifeq ($(CONFIG_SMC_DECODER),yes)
+    OBJS+= smc.o
+endif
+ifneq ($(CONFIG_SNOW_DECODER)$(CONFIG_SNOW_ENCODER),)
+    OBJS+= snow.o
+endif
+ifneq ($(CONFIG_SONIC_DECODER)$(CONFIG_SONIC_ENCODER)$(CONFIG_SONIC_LS_ENCODER),)
+    OBJS+= sonic.o
+endif
+ifneq ($(CONFIG_SVQ1_DECODER)$(CONFIG_SVQ1_ENCODER),)
+    OBJS+= svq1.o
+endif
+ifeq ($(CONFIG_TRUEMOTION1_DECODER),yes)
+    OBJS+= truemotion1.o
+endif
+ifeq ($(CONFIG_TSCC_DECODER),yes)
+    OBJS+= tscc.o
+endif
+ifeq ($(CONFIG_ULTI_DECODER),yes)
+    OBJS+= ulti.o
+endif
+ifneq ($(CONFIG_VC9_DECODER)$(CONFIG_WMV3_DECODER),)
+    OBJS+= vc9.o
+endif
+ifneq ($(CONFIG_VCR1_DECODER)$(CONFIG_VCR1_ENCODER),)
+    OBJS+= vcr1.o
+endif
+ifneq ($(CONFIG_VMDVIDEO_DECODER)$(CONFIG_VMDAUDIO_DECODER),)
+    OBJS+= vmdav.o
+endif
+ifeq ($(CONFIG_VORBIS_DECODER),yes)
+    OBJS+= vorbis.o
+endif
+ifneq ($(CONFIG_VP3_DECODER)$(CONFIG_THEORA_DECODER),)
+    OBJS+= vp3.o
+endif
+ifeq ($(CONFIG_VQA_DECODER),yes)
+    OBJS+= vqavideo.o
+endif
+ifneq ($(CONFIG_WMAV1_DECODER)$(CONFIG_WMAV2_DECODER),)
+    OBJS+= wmadec.o
+endif
+ifeq ($(CONFIG_WNV1_DECODER),yes)
+    OBJS+= wnv1.o
+endif
+ifeq ($(CONFIG_WS_SND1_DECODER),yes)
+    OBJS+= ws-snd1.o
+endif
+ifneq ($(CONFIG_XAN_WC3_DECODER)$(CONFIG_XAN_WC4_DECODER),)
+    OBJS+= xan.o
+endif
+ifeq ($(CONFIG_XL_DECODER),yes)
+    OBJS+= xl.o
+endif
+      
+      
+AMROBJS=
 ifeq ($(AMR_NB),yes)
 ifeq ($(AMR_NB_FIXED),yes)
-OBJS+= amr.o
+AMROBJS= amr.o
 AMREXTRALIBS+= amr/*.o
 AMRLIBS=amrlibs
 CLEANAMR=cleanamr
 else
-OBJS+= amr.o amr_float/sp_dec.o amr_float/sp_enc.o amr_float/interf_dec.o amr_float/interf_enc.o
+AMROBJS= amr.o
+OBJS+= amr_float/sp_dec.o amr_float/sp_enc.o amr_float/interf_dec.o amr_float/interf_enc.o
 CLEANAMR=cleanamrfloat
 endif
 endif
@@ -48,20 +207,17 @@ OBJS+= beosthread.o
 endif
 
 ifeq ($(AMR_WB),yes)
-OBJS+= amr.o amrwb_float/dec_acelp.o amrwb_float/dec_dtx.o amrwb_float/dec_gain.o \
+AMROBJS= amr.o
+OBJS+= amrwb_float/dec_acelp.o amrwb_float/dec_dtx.o amrwb_float/dec_gain.o \
 		amrwb_float/dec_if.o amrwb_float/dec_lpc.o amrwb_float/dec_main.o \
 		amrwb_float/dec_rom.o amrwb_float/dec_util.o amrwb_float/enc_acelp.o \
 		amrwb_float/enc_dtx.o amrwb_float/enc_gain.o amrwb_float/enc_if.o \
 		amrwb_float/enc_lpc.o amrwb_float/enc_main.o amrwb_float/enc_rom.o \
 		amrwb_float/enc_util.o amrwb_float/if_rom.o
 endif
+OBJS+= $(AMROBJS)
 CLEANAMRWB=cleanamrwbfloat
 ASM_OBJS=
-
-# codecs which are patented in some non free countries like the us
-ifeq ($(CONFIG_RISKY),yes)
-OBJS+= h263.o h261.o msmpeg4.o h263dec.o svq1.o rv10.o wmadec.o indeo3.o
-endif
 
 ifeq ($(HAVE_XVMC_ACCEL),yes)
 OBJS+= xvmcvideo.o
@@ -104,9 +260,14 @@ OBJS+= xvidff.o
 EXTRALIBS += -lxvidcore
 endif
 
+ifeq ($(CONFIG_X264),yes)
+OBJS+= x264.o
+EXTRALIBS += -lx264
+endif
+
 ifeq ($(CONFIG_PP),yes)
 ifeq ($(SHARED_PP),yes)
-EXTRALIBS += -L$(VPATH)/libpostproc -lpostproc
+EXTRALIBS += -Llibpostproc -lpostproc$(BUILDSUF)
 else
 # LIBS += libpostproc/libpostproc.a ... should be fixed
 OBJS += libpostproc/postprocess.o
@@ -118,9 +279,21 @@ OBJS += mp3lameaudio.o
 EXTRALIBS += -lmp3lame
 endif
 
-ifeq ($(CONFIG_VORBIS),yes)
+ifeq ($(CONFIG_LIBOGG),yes)
+ifeq ($(CONFIG_LIBVORBIS),yes)
 OBJS += oggvorbis.o
-EXTRALIBS += -lvorbis -lvorbisenc
+EXTRALIBS += -lvorbisenc -lvorbis
+endif
+ifeq ($(CONFIG_LIBTHEORA), yes)
+OBJS += oggtheora.o
+EXTRALIBS += -ltheora
+endif
+EXTRALIBS += -logg
+endif
+
+ifeq ($(CONFIG_LIBGSM),yes)
+OBJS += libgsm.o
+EXTRALIBS += -lgsm
 endif
 
 ifeq ($(TARGET_GPROF),yes)
@@ -143,8 +316,11 @@ endif
 
 # armv4l specific stuff
 ifeq ($(TARGET_ARCH_ARMV4L),yes)
-ASM_OBJS += armv4l/jrevdct_arm.o armv4l/simple_idct_arm.o
+ASM_OBJS += armv4l/jrevdct_arm.o armv4l/simple_idct_arm.o armv4l/dsputil_arm_s.o
 OBJS += armv4l/dsputil_arm.o armv4l/mpegvideo_arm.o
+ifeq ($(TARGET_IWMMXT),yes)
+OBJS += armv4l/dsputil_iwmmxt.o armv4l/mpegvideo_iwmmxt.o
+endif
 endif
 
 # sun mediaLib specific stuff
@@ -154,12 +330,18 @@ OBJS += mlib/dsputil_mlib.o
 CFLAGS += $(MLIB_INC)
 endif
 
+# Intel IPP specific stuff
+# currently only works when libavcodec is used in mplayer
+ifeq ($(HAVE_IPP),yes)
+CFLAGS += $(IPP_INC)
+endif
+
 # alpha specific stuff
 ifeq ($(TARGET_ARCH_ALPHA),yes)
 OBJS += alpha/dsputil_alpha.o alpha/mpegvideo_alpha.o \
 	alpha/simple_idct_alpha.o alpha/motion_est_alpha.o
 ASM_OBJS += alpha/dsputil_alpha_asm.o alpha/motion_est_mvi_asm.o
-CFLAGS += -fforce-addr -freduce-all-givs
+CFLAGS += -fforce-addr
 endif
 
 ifeq ($(TARGET_ARCH_POWERPC),yes)
@@ -212,7 +394,7 @@ $(LIB): $(OBJS) $(AMRLIBS)
 
 $(SLIB): $(OBJS)
 ifeq ($(CONFIG_PP),yes)
-	$(MAKE) -C $(VPATH)/libpostproc
+	$(MAKE) -C libpostproc
 endif
 ifeq ($(CONFIG_WIN32),yes)
 	$(CC) $(SHFLAGS) -Wl,--output-def,$(@:.dll=.def) -o $@ $(OBJS) $(EXTRALIBS) $(AMREXTRALIBS)
@@ -227,10 +409,10 @@ libpostproc/libpostproc.a:
 	$(MAKE) -C libpostproc
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $< 
+	$(CC) $(CFLAGS) $(LIBOBJFLAGS) -c -o $@ $< 
 
 %.o: %.S
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) $(LIBOBJFLAGS) -c -o $@ $<
 
 depend: $(SRCS)
 	$(CC) -MM $(CFLAGS) $^ 1>.depend
@@ -289,20 +471,20 @@ install: all install-headers
 ifeq ($(CONFIG_WIN32),yes)
 	install $(INSTALLSTRIP) -m 755 $(SLIB) "$(prefix)"
 else
-	install -d $(prefix)/lib
-	install $(INSTALLSTRIP) -m 755 $(SLIB) $(prefix)/lib/libavcodec-$(VERSION).so
-	ln -sf libavcodec-$(VERSION).so $(prefix)/lib/libavcodec.so
-	ldconfig || true
+	install -d $(libdir)
+	install $(INSTALLSTRIP) -m 755 $(SLIB) $(libdir)/libavcodec-$(VERSION).so
+	ln -sf libavcodec-$(VERSION).so $(libdir)/libavcodec.so
+	$(LDCONFIG) || true
 endif
 ifeq ($(CONFIG_PP),yes)
-	$(MAKE) -C $(VPATH)/libpostproc $@
+	$(MAKE) -C libpostproc $@
 endif
 else
 install:
 endif
 
 installlib: all install-headers
-	install -m 644 $(LIB) $(prefix)/lib
+	install -m 644 $(LIB) "$(libdir)"
 
 install-headers:
 	mkdir -p "$(prefix)/include/ffmpeg"
@@ -310,6 +492,8 @@ install-headers:
 	               $(SRC_PATH)/libavcodec/common.h \
 	               $(SRC_PATH)/libavcodec/rational.h \
                 "$(prefix)/include/ffmpeg"
+	install -d $(libdir)/pkgconfig
+	install -m 644 ../libavcodec.pc $(libdir)/pkgconfig
 
 #
 # include dependency files if they exist

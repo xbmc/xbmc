@@ -1268,6 +1268,7 @@ _xvmclib="XvMCNVIDIA"
 # and have - unless stated otherwise - at least 2 states : yes no
 # If autodetection is available then the third state is: auto
 _libavcodec=auto
+_libavcodecs=`grep 'register_avcodec(&[a-z]' libavcodec/allcodecs.c  | sed 's/.*&\(.*\)).*/\1/'`
 _libavcodecso=auto 
 _libavformat=auto
 _fame=auto
@@ -1576,6 +1577,8 @@ for ac_option do
   --disable-opendivx)	_opendivx=no	;;
   --enable-libavcodec)	_libavcodec=yes	;;
   --disable-libavcodec)	_libavcodec=no	;;
+  --enable-codec=*)	_libavcodecs="$_libavcodecs `echo $ac_option | cut -d '=' -f 2`" ;;
+  --disable-codec=*)	_libavcodecs=`echo $_libavcodecs | sed "s/\`echo $ac_option | cut -d '=' -f 2\`//g"` ;;
   --enable-libavformat)	_libavformat=yes;;
   --disable-libavformat)	_libavformat=no	;;
   --enable-libfame)	_fame=yes	;;
@@ -6529,6 +6532,8 @@ DATADIR = \$(DESTDIR)$_datadir
 MANDIR = \$(DESTDIR)$_mandir
 CONFDIR = \$(DESTDIR)$_confdir
 LIBDIR = \$(DESTDIR)$_libdir
+# FFmpeg uses libdir instead of LIBDIR
+libdir = \$(LIBDIR)
 #AR = ar
 CC = $_cc
 HOST_CC = $_host_cc
@@ -6636,6 +6641,7 @@ DS_DEP = $_dep_dshow
 DS_LIB = $_ld_dshow
 AV_DEP = $_dep_libavcodec $_dep_libavformat
 AV_LIB = $_ld_libavcodec $_ld_libavformat
+CONFIG_LIBAVCODEC = $_libavcodec
 CONFIG_LIBAVFORMAT = $_libavformat
 ZORAN = $_zr
 FAME = $_fame
@@ -6680,6 +6686,7 @@ MACOSX_FRAMEWORKS = $_macosx_frameworks
 TOOLAME=$_toolame
 TOOLAME_EXTRAFLAGS=$_toolame_extraflags
 TOOLAME_LIB=$_toolame_lib
+`echo $_libavcodecs | tr 'a-z ' 'A-Z\n' | sed 's/^/CONFIG_/;s/$/=yes/'`
 
 # --- Some stuff for autoconfigure ----
 $_target_arch
@@ -7009,6 +7016,9 @@ $_def_libavformat_win32
 $_def_ffencoders
 
 #define CONFIG_MPEGAUDIO_HP 1
+
+/* Use specific codecs from libavcodec */
+`echo $_libavcodecs | tr 'a-z ' 'A-Z\n' | sed 's/^/#define CONFIG_/;s/$/ 1/'`
 
 /* Use codec libs included in mplayer CVS / source dist: */
 $_def_mp3lib

@@ -38,12 +38,14 @@
  */
 
 #include "avformat.h"
+#include "bitstream.h"
 
 /* bitstream minipacket size */
 #define GIF_CHUNKS 100
 
-/* slows down the decoding (and some browsers doesn't like it) */
-/* #define GIF_ADD_APP_HEADER */
+/* slows down the decoding (and some browsers don't like it) */
+/* update on the 'some browsers don't like it issue from above: this was probably due to missing 'Data Sub-block Terminator' (byte 19) in the app_header */
+#define GIF_ADD_APP_HEADER // required to enable looping of animated gif
 
 typedef struct {
     unsigned char r;
@@ -168,7 +170,8 @@ static void gif_flush_put_bits_rev(PutBitContext *s)
 
 /* GIF header */
 static int gif_image_write_header(ByteIOContext *pb, 
-                                  int width, int height, uint32_t *palette)
+                                  int width, int height, int loop_count,
+                                  uint32_t *palette)
 {
     int i;
     unsigned int v;
@@ -196,17 +199,37 @@ static int gif_image_write_header(ByteIOContext *pb,
         }
     }
 
+	/*	update: this is the 'NETSCAPE EXTENSION' that allows for looped animated gif
+		see http://members.aol.com/royalef/gifabout.htm#net-extension
+
+		byte   1       : 33 (hex 0x21) GIF Extension code
+		byte   2       : 255 (hex 0xFF) Application Extension Label
+		byte   3       : 11 (hex (0x0B) Length of Application Block 
+					 (eleven bytes of data to follow)
+		bytes  4 to 11 : "NETSCAPE"
+		bytes 12 to 14 : "2.0"
+		byte  15       : 3 (hex 0x03) Length of Data Sub-Block 
+					 (three bytes of data to follow)
+		byte  16       : 1 (hex 0x01)
+		bytes 17 to 18 : 0 to 65535, an unsigned integer in 
+					 lo-hi byte format. This indicate the 
+					 number of iterations the loop should 
+					 be executed.
+		bytes 19       : 0 (hex 0x00) a Data Sub-block Terminator
+	*/
+
     /* application extension header */
-    /* XXX: not really sure what to put in here... */
 #ifdef GIF_ADD_APP_HEADER
+    if (loop_count >= 0 && loop_count <= 65535) {
     put_byte(pb, 0x21);
     put_byte(pb, 0xff);
     put_byte(pb, 0x0b);
-    put_tag(pb, "NETSCAPE2.0");
-    put_byte(pb, 0x03);
-    put_byte(pb, 0x01);
-    put_byte(pb, 0x00);
-    put_byte(pb, 0x00);
+        put_tag(pb, "NETSCAPE2.0");  // bytes 4 to 14
+        put_byte(pb, 0x03); // byte 15
+        put_byte(pb, 0x01); // byte 16
+        put_le16(pb, (uint16_t)loop_count);
+        put_byte(pb, 0x00); // byte 19
+    }
 #endif
     return 0;
 }
@@ -293,7 +316,7 @@ static int gif_write_header(AVFormatContext *s)
     GIFContext *gif = s->priv_data;
     ByteIOContext *pb = &s->pb;
     AVCodecContext *enc, *video_enc;
-    int i, width, height/*, rate*/;
+    int i, width, height, loop_count /*, rate*/;
 
 /* XXX: do we reject audio streams or just ignore them ?
     if(s->nb_streams > 1)
@@ -304,7 +327,7 @@ static int gif_write_header(AVFormatContext *s)
 
     video_enc = NULL;
     for(i=0;i<s->nb_streams;i++) {
-        enc = &s->streams[i]->codec;
+        enc = s->streams[i]->codec;
         if (enc->codec_type != CODEC_TYPE_AUDIO)
             video_enc = enc;
     }
@@ -315,13 +338,14 @@ static int gif_write_header(AVFormatContext *s)
     } else {
         width = video_enc->width;
         height = video_enc->height;
-//        rate = video_enc->frame_rate;
+        loop_count = s->loop_output;
+//        rate = video_enc->time_base.den;
     }
 
     /* XXX: is it allowed ? seems to work so far... */
     video_enc->pix_fmt = PIX_FMT_RGB24;
 
-    gif_image_write_header(pb, width, height, NULL);
+    gif_image_write_header(pb, width, height, loop_count, NULL);
 
     put_flush_packet(&s->pb);
     return 0;
@@ -348,7 +372,7 @@ static int gif_write_video(AVFormatContext *s,
     /* XXX: should use delay, in order to be more accurate */
     /* instead of using the same rounded value each time */
     /* XXX: don't even remember if I really use it for now */
-    jiffies = (70*enc->frame_rate_base/enc->frame_rate) - 1;
+    jiffies = (70*enc->time_base.num/enc->time_base.den) - 1;
 
     put_le16(pb, jiffies);
 
@@ -364,7 +388,7 @@ static int gif_write_video(AVFormatContext *s,
 
 static int gif_write_packet(AVFormatContext *s, AVPacket *pkt)
 {
-    AVCodecContext *codec = &s->streams[pkt->stream_index]->codec;
+    AVCodecContext *codec = s->streams[pkt->stream_index]->codec;
     if (codec->codec_type == CODEC_TYPE_AUDIO)
         return 0; /* just ignore audio */
     else
@@ -383,7 +407,7 @@ static int gif_write_trailer(AVFormatContext *s)
 /* better than nothing gif image writer */
 int gif_write(ByteIOContext *pb, AVImageInfo *info)
 {
-    gif_image_write_header(pb, info->width, info->height, 
+    gif_image_write_header(pb, info->width, info->height, AVFMT_NOOUTPUTLOOP, 
                            (uint32_t *)info->pict.data[1]);
     gif_image_write_image(pb, 0, 0, info->width, info->height, 
                           info->pict.data[0], info->pict.linesize[0], 

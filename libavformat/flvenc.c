@@ -27,15 +27,8 @@ typedef struct FLVContext {
     int reserved;
 } FLVContext;
 
-static void put_be24(ByteIOContext *pb, int value)
-{
-    put_byte(pb, (value>>16) & 0xFF );
-    put_byte(pb, (value>> 8) & 0xFF );
-    put_byte(pb, (value>> 0) & 0xFF );
-}
-
 static int get_audio_flags(AVCodecContext *enc){
-    int flags = 0x02;
+    int flags = (enc->bits_per_sample == 16) ? 0x2 : 0x0;
 
     switch (enc->sample_rate) {
         case    44100:
@@ -52,6 +45,7 @@ static int get_audio_flags(AVCodecContext *enc){
             flags |= 0x00;
             break;
         default:
+            av_log(enc, AV_LOG_ERROR, "flv doesnt support that sample rate, choose from (44100, 22050, 11025)\n");
             return -1;
     }
 
@@ -61,12 +55,21 @@ static int get_audio_flags(AVCodecContext *enc){
     
     switch(enc->codec_id){
     case CODEC_ID_MP3:
-        flags |= 0x20;
+        flags |= 0x20 | 0x2;
         break;
+    case CODEC_ID_PCM_S8:
+	break;
+    case CODEC_ID_PCM_S16BE:
+	flags |= 0x60 | 0x2;
+	break;
+    case CODEC_ID_PCM_S16LE:
+	flags |= 0x2;
+	break;
     case 0:
         flags |= enc->codec_tag<<4;
         break;
     default:
+        av_log(enc, AV_LOG_ERROR, "codec not compatible with flv\n");
         return -1;
     }
     
@@ -89,7 +92,7 @@ static int flv_write_header(AVFormatContext *s)
     put_be32(pb,0);
     
     for(i=0; i<s->nb_streams; i++){
-        AVCodecContext *enc = &s->streams[i]->codec;
+        AVCodecContext *enc = s->streams[i]->codec;
         av_set_pts_info(s->streams[i], 24, 1, 1000); /* 24 bit pts in ms */
         if(enc->codec_tag == 5){
             put_byte(pb,8); // message type
@@ -126,7 +129,7 @@ static int flv_write_trailer(AVFormatContext *s)
 static int flv_write_packet(AVFormatContext *s, AVPacket *pkt)
 {
     ByteIOContext *pb = &s->pb;
-    AVCodecContext *enc = &s->streams[pkt->stream_index]->codec;
+    AVCodecContext *enc = s->streams[pkt->stream_index]->codec;
     FLVContext *flv = s->priv_data;
     int size= pkt->size;
     int flags;
@@ -155,8 +158,8 @@ static int flv_write_packet(AVFormatContext *s, AVPacket *pkt)
     put_be32(pb,flv->reserved);
     put_byte(pb,flags);
     put_buffer(pb, pkt->data, size);
-    put_be32(pb,size+1+11); // reserved
-
+    put_be32(pb,size+1+11); // previous tag size
+    
     put_flush_packet(pb);
     return 0;
 }
@@ -164,7 +167,7 @@ static int flv_write_packet(AVFormatContext *s, AVPacket *pkt)
 static AVOutputFormat flv_oformat = {
     "flv",
     "flv format",
-    "video/x-flashvideo",
+    "video/x-flv",
     "flv",
     sizeof(FLVContext),
 #ifdef CONFIG_MP3LAME

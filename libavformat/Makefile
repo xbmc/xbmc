@@ -13,25 +13,22 @@ PPOBJS=
 
 # mux and demuxes
 OBJS+=mpeg.o mpegts.o mpegtsenc.o ffm.o crc.o img.o img2.o raw.o rm.o \
-      avienc.o avidec.o wav.o swf.o au.o gif.o mov.o mpjpeg.o dv.o \
+      avienc.o avidec.o wav.o mmf.o swf.o au.o gif.o mov.o mpjpeg.o dv.o \
       yuv4mpeg.o 4xm.o flvenc.o flvdec.o movenc.o psxstr.o idroq.o ipmovie.o \
       nut.o wc3movie.o mp3.o westwood.o segafilm.o idcin.o flic.o \
-      sierravmd.o matroska.o sol.o electronicarts.o nsvdec.o
-
-ifeq ($(CONFIG_RISKY),yes)
-OBJS+= asf.o
-OBJS+= asf-enc.o
-endif
-
+      sierravmd.o matroska.o sol.o electronicarts.o nsvdec.o asf.o asf-enc.o \
+      ogg2.o oggparsevorbis.o oggparsetheora.o oggparseflac.o
+AMROBJS=
 ifeq ($(AMR_NB),yes)
-OBJS+= amr.o
+AMROBJS= amr.o
 endif
 ifeq ($(AMR_NB_FIXED),yes)
-OBJS+= amr.o
+AMROBJS= amr.o
 endif
 ifeq ($(AMR_WB),yes)
-OBJS+= amr.o
+AMROBJS= amr.o
 endif
+OBJS+= $(AMROBJS)
 
 # image formats
 OBJS+= pnm.o yuv.o png.o jpeg.o gifdec.o sgi.o
@@ -41,6 +38,10 @@ OBJS+= framehook.o
 
 ifeq ($(CONFIG_VIDEO4LINUX),yes)
 OBJS+= grab.o
+endif
+
+ifeq ($(CONFIG_BKTR),yes)
+OBJS+= grab_bktr.o
 endif
 
 ifeq ($(CONFIG_DV1394),yes)
@@ -58,8 +59,6 @@ endif
 ifeq ($(CONFIG_AUDIO_BEOS),yes)
 PPOBJS+= beosaudio.o
 EXTRALIBS+=-lbe -lmedia
-# this should be the default !
-EXTRALIBS+=-lavcodec -L../libavcodec
 endif
 
 ifeq ($(CONFIG_NETWORK),yes)
@@ -70,7 +69,7 @@ OBJS+= barpainet.o
 endif
 endif
 
-ifeq ($(CONFIG_VORBIS),yes)
+ifeq ($(CONFIG_LIBOGG),yes)
 OBJS+= ogg.o
 endif
 
@@ -81,11 +80,11 @@ endif
 LIB= $(LIBPREF)avformat$(LIBSUF)
 ifeq ($(BUILD_SHARED),yes)
 SLIB= $(SLIBPREF)avformat$(SLIBSUF)
-endif
 
-EXTRALIBS+=-lavcodec -L../libavcodec
+AVCLIBS+=-lavcodec$(BUILDSUF) -L../libavcodec
 ifeq ($(CONFIG_MP3LAME),yes)
-EXTRALIBS+=-lmp3lame
+AVCLIBS+=-lmp3lame
+endif
 endif
 
 SRCS := $(OBJS:.o=.c) $(PPOBJS:.o=.cpp)
@@ -99,10 +98,10 @@ $(LIB): $(OBJS) $(PPOBJS)
 
 $(SLIB): $(OBJS)
 ifeq ($(CONFIG_WIN32),yes)
-	$(CC) $(SHFLAGS) -Wl,--output-def,$(@:.dll=.def) -o $@ $(OBJS) $(PPOBJS) $(EXTRALIBS) $(VPATH)/../libavcodec/avcodec.dll
+	$(CC) $(SHFLAGS) -Wl,--output-def,$(@:.dll=.def) -o $@ $(OBJS) $(PPOBJS) $(AVCLIBS) $(EXTRALIBS)
 	-lib /machine:i386 /def:$(@:.dll=.def)
 else
-	$(CC) $(SHFLAGS) -o $@ $(OBJS) $(PPOBJS) $(EXTRALIBS)
+	$(CC) $(SHFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(PPOBJS) $(AVCLIBS) $(EXTRALIBS)
 endif
 
 depend: $(SRCS)
@@ -113,17 +112,17 @@ install: all install-headers
 ifeq ($(CONFIG_WIN32),yes)
 	install $(INSTALLSTRIP) -m 755 $(SLIB) "$(prefix)"
 else
-	install -d $(prefix)/lib
-	install $(INSTALLSTRIP) -m 755 $(SLIB) $(prefix)/lib/libavformat-$(VERSION).so
-	ln -sf libavformat-$(VERSION).so $(prefix)/lib/libavformat.so
-	ldconfig || true
+	install -d $(libdir)
+	install $(INSTALLSTRIP) -m 755 $(SLIB) $(libdir)/libavformat-$(VERSION).so
+	ln -sf libavformat-$(VERSION).so $(libdir)/libavformat.so
+	$(LDCONFIG) || true
 endif
 else
 install:
 endif
 
 installlib: all install-headers
-	install -m 644 $(LIB) $(prefix)/lib
+	install -m 644 $(LIB) "$(libdir)"
 
 install-headers:
 	mkdir -p "$(prefix)/include/ffmpeg"
@@ -131,9 +130,11 @@ install-headers:
                 $(SRC_PATH)/libavformat/rtp.h $(SRC_PATH)/libavformat/rtsp.h \
                 $(SRC_PATH)/libavformat/rtspcodes.h \
                 "$(prefix)/include/ffmpeg"
+	install -d $(libdir)/pkgconfig
+	install -m 644 ../libavformat.pc $(libdir)/pkgconfig
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $< 
+	$(CC) $(CFLAGS) $(LIBOBJFLAGS) -c -o $@ $< 
 
 # BeOS: remove -Wall to get rid of all the "multibyte constant" warnings
 %.o: %.cpp

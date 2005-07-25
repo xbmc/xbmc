@@ -50,6 +50,7 @@ void ff_fdct_mmx(DCTELEM *block);
 void ff_fdct_mmx2(DCTELEM *block);
 void ff_fdct_sse2(DCTELEM *block);
 
+void ff_h264_idct8_add_c(uint8_t *dst, DCTELEM *block, int stride);
 void ff_h264_idct_add_c(uint8_t *dst, DCTELEM *block, int stride);
 void ff_h264_lowres_idct_add_c(uint8_t *dst, int stride, DCTELEM *block);
 void ff_h264_lowres_idct_put_c(uint8_t *dst, int stride, DCTELEM *block);
@@ -68,17 +69,9 @@ extern uint32_t squareTbl[512];
 extern uint8_t cropTbl[256 + 2 * MAX_NEG_CROP];
 
 /* VP3 DSP functions */
-void vp3_dsp_init_c(void);
-void vp3_idct_c(int16_t *input_data, int16_t *dequant_matrix,
-    int coeff_count, DCTELEM *output_data);
-
-void vp3_dsp_init_mmx(void);
-void vp3_idct_mmx(int16_t *input_data, int16_t *dequant_matrix,
-    int coeff_count, DCTELEM *output_data);
-
-void vp3_dsp_init_sse2(void);
-void vp3_idct_sse2(int16_t *input_data, int16_t *dequant_matrix,
-    int coeff_count, DCTELEM *output_data);
+void ff_vp3_idct_c(DCTELEM *block/* align 16*/);
+void ff_vp3_idct_put_c(uint8_t *dest/*align 8*/, int line_size, DCTELEM *block/*align 16*/);
+void ff_vp3_idct_add_c(uint8_t *dest/*align 8*/, int line_size, DCTELEM *block/*align 16*/);
 
 /* minimum alignment rules ;)
 if u notice errors in the align stuff, need more alignment for some asm code for some cpu
@@ -105,6 +98,8 @@ typedef void (*op_pixels_func)(uint8_t *block/*align width (8 or 16)*/, const ui
 typedef void (*tpel_mc_func)(uint8_t *block/*align width (8 or 16)*/, const uint8_t *pixels/*align 1*/, int line_size, int w, int h);
 typedef void (*qpel_mc_func)(uint8_t *dst/*align width (8 or 16)*/, uint8_t *src/*align 1*/, int stride);
 typedef void (*h264_chroma_mc_func)(uint8_t *dst/*align 8*/, uint8_t *src/*align 1*/, int srcStride, int h, int x, int y);
+typedef void (*h264_weight_func)(uint8_t *block, int stride, int log2_denom, int weight, int offset);
+typedef void (*h264_biweight_func)(uint8_t *dst, uint8_t *src, int stride, int log2_denom, int weightd, int weights, int offsetd, int offsets);
 
 #define DEF_OLD_QPEL(name)\
 void ff_put_        ## name (uint8_t *dst/*align width (8 or 16)*/, uint8_t *src/*align 1*/, int stride);\
@@ -146,6 +141,8 @@ typedef struct DSPContext {
     void (*put_pixels_clamped)(const DCTELEM *block/*align 16*/, uint8_t *pixels/*align 8*/, int line_size);
     void (*put_signed_pixels_clamped)(const DCTELEM *block/*align 16*/, uint8_t *pixels/*align 8*/, int line_size);
     void (*add_pixels_clamped)(const DCTELEM *block/*align 16*/, uint8_t *pixels/*align 8*/, int line_size);
+    void (*add_pixels8)(uint8_t *pixels, DCTELEM *block, int line_size);
+    void (*add_pixels4)(uint8_t *pixels, DCTELEM *block, int line_size);
     /**
      * translational global motion compensation.
      */
@@ -258,6 +255,9 @@ typedef struct DSPContext {
     qpel_mc_func put_h264_qpel_pixels_tab[3][16];
     qpel_mc_func avg_h264_qpel_pixels_tab[3][16];
     
+    h264_weight_func weight_h264_pixels_tab[10];
+    h264_biweight_func biweight_h264_pixels_tab[10];
+    
     me_cmp_func pix_abs[2][4];
     
     /* huffyuv specific */
@@ -269,6 +269,13 @@ typedef struct DSPContext {
      */
     void (*sub_hfyu_median_prediction)(uint8_t *dst, uint8_t *src1, uint8_t *src2, int w, int *left, int *left_top);
     void (*bswap_buf)(uint32_t *dst, uint32_t *src, int w);
+
+    void (*h264_v_loop_filter_luma)(uint8_t *pix, int stride, int alpha, int beta, int8_t *tc0);
+    void (*h264_h_loop_filter_luma)(uint8_t *pix, int stride, int alpha, int beta, int8_t *tc0);
+    void (*h264_v_loop_filter_chroma)(uint8_t *pix, int stride, int alpha, int beta, int8_t *tc0);
+    void (*h264_h_loop_filter_chroma)(uint8_t *pix, int stride, int alpha, int beta, int8_t *tc0);
+    void (*h264_v_loop_filter_chroma_intra)(uint8_t *pix, int stride, int alpha, int beta);
+    void (*h264_h_loop_filter_chroma_intra)(uint8_t *pix, int stride, int alpha, int beta);
     
     void (*h263_v_loop_filter)(uint8_t *src, int stride, int qscale);
     void (*h263_h_loop_filter)(uint8_t *src, int stride, int qscale);
@@ -313,31 +320,15 @@ typedef struct DSPContext {
 #define FF_LIBMPEG2_IDCT_PERM 2
 #define FF_SIMPLE_IDCT_PERM 3
 #define FF_TRANSPOSE_IDCT_PERM 4
+#define FF_PARTTRANS_IDCT_PERM 5
 
     int (*try_8x8basis)(int16_t rem[64], int16_t weight[64], int16_t basis[64], int scale);
     void (*add_8x8basis)(int16_t rem[64], int16_t basis[64], int scale);
 #define BASIS_SHIFT 16
 #define RECON_SHIFT 6
-
-    /**
-     * This function handles any initialization for the VP3 DSP functions.
-     */
-    void (*vp3_dsp_init)(void);
-
-    /** 
-     * This function is responsible for taking a block of zigzag'd,
-     * quantized DCT coefficients and reconstructing the original block of
-     * samples.
-     * @param input_data 64 zigzag'd, quantized DCT coefficients
-     * @param dequant_matrix 64 zigzag'd quantizer coefficients
-     * @param coeff_count index of the last coefficient
-     * @param output_samples space for 64 DCTELEMs where the transformed
-     * samples will be stored
-     */
-    void (*vp3_idct)(int16_t *input_data, int16_t *dequant_matrix,
-        int coeff_count, DCTELEM *output_samples);
  
     void (*h264_idct_add)(uint8_t *dst, DCTELEM *block, int stride);
+    void (*h264_idct8_add)(uint8_t *dst, DCTELEM *block, int stride);
 } DSPContext;
 
 void dsputil_static_init(void);
@@ -440,6 +431,10 @@ void dsputil_init_pix_mmx(DSPContext* c, AVCodecContext *avctx);
    line optimizations */
 #define __align8 __attribute__ ((aligned (4)))
 #define STRIDE_ALIGN 4
+
+#define MM_IWMMXT    0x0100 /* XScale IWMMXT */
+
+extern int mm_flags;
 
 void dsputil_init_armv4l(DSPContext* c, AVCodecContext *avctx);
 

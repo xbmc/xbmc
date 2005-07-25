@@ -39,7 +39,7 @@ static int ogg_write_header(AVFormatContext *avfcontext)
     ogg_stream_init(&context->os, 31415);
     
     for(n = 0 ; n < avfcontext->nb_streams ; n++) {
-        AVCodecContext *codec = &avfcontext->streams[n]->codec;
+        AVCodecContext *codec = avfcontext->streams[n]->codec;
         uint8_t *p= codec->extradata;
         
         av_set_pts_info(avfcontext->streams[n], 60, 1, AV_TIME_BASE);
@@ -65,7 +65,7 @@ static int ogg_write_header(AVFormatContext *avfcontext)
 static int ogg_write_packet(AVFormatContext *avfcontext, AVPacket *pkt)
 {
     OggContext *context = avfcontext->priv_data ;
-    AVCodecContext *avctx= &avfcontext->streams[pkt->stream_index]->codec;
+    AVCodecContext *avctx= avfcontext->streams[pkt->stream_index]->codec;
     ogg_packet *op= &context->op;
     ogg_page og ;
     int64_t pts;
@@ -134,7 +134,7 @@ static AVOutputFormat ogg_oformat = {
 } ;
 #endif //CONFIG_ENCODERS
 
-
+#if 0
 static int next_packet(AVFormatContext *avfcontext, ogg_packet *op) {
     OggContext *context = avfcontext->priv_data ;
     ogg_page og ;
@@ -195,6 +195,8 @@ static int ogg_read_header(AVFormatContext *avfcontext, AVFormatParameters *ap)
         if(next_packet(avfcontext, &op)){
             return -1;
         }
+        if(op.bytes >= (1<<16) || op.bytes < 0)
+            return -1;
         codec->extradata_size+= 2 + op.bytes;
         codec->extradata= av_realloc(codec->extradata, codec->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
         p= codec->extradata + codec->extradata_size - 2 - op.bytes;
@@ -245,12 +247,12 @@ static AVInputFormat ogg_iformat = {
     ogg_read_close,
     .extensions = "ogg",
 } ;
+#endif
 
-
-int ogg_init(void) {
+int libogg_init(void) {
 #ifdef CONFIG_ENCODERS
     av_register_output_format(&ogg_oformat) ;
 #endif
-    av_register_input_format(&ogg_iformat);
+/*     av_register_input_format(&ogg_iformat); */
     return 0 ;
 }

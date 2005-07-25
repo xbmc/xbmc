@@ -4,7 +4,7 @@
  */
 
 /* intra picture macro block coded block pattern */
-static const uint16_t table_mb_intra[64][2] = {
+const uint16_t ff_msmp4_mb_i_table[64][2] = {
 { 0x1, 1 },{ 0x17, 6 },{ 0x9, 5 },{ 0x5, 5 },
 { 0x6, 5 },{ 0x47, 9 },{ 0x20, 7 },{ 0x10, 7 },
 { 0x2, 5 },{ 0x7c, 9 },{ 0x3a, 7 },{ 0x1d, 7 },
@@ -61,7 +61,7 @@ static const uint32_t table_mb_non_intra[128][2] = {
 
 /* dc table 0 */
 
-static const uint32_t table0_dc_lum[120][2] = {
+const uint32_t ff_table0_dc_lum[120][2] = {
 { 0x1, 1 },{ 0x1, 2 },{ 0x1, 4 },{ 0x1, 5 },
 { 0x5, 5 },{ 0x7, 5 },{ 0x8, 6 },{ 0xc, 6 },
 { 0x0, 7 },{ 0x2, 7 },{ 0x12, 7 },{ 0x1a, 7 },
@@ -94,7 +94,7 @@ static const uint32_t table0_dc_lum[120][2] = {
 { 0x6078c, 24 },{ 0x6078d, 24 },{ 0x6078e, 24 },{ 0x6078f, 24 },
 };
 
-static const uint32_t table0_dc_chroma[120][2] = {
+const uint32_t ff_table0_dc_chroma[120][2] = {
 { 0x0, 2 },{ 0x1, 2 },{ 0x5, 3 },{ 0x9, 4 },
 { 0xd, 4 },{ 0x11, 5 },{ 0x1d, 5 },{ 0x1f, 5 },
 { 0x21, 6 },{ 0x31, 6 },{ 0x38, 6 },{ 0x33, 6 },
@@ -129,7 +129,7 @@ static const uint32_t table0_dc_chroma[120][2] = {
 
 /* dc table 1 */
 
-static const uint32_t table1_dc_lum[120][2] = {
+const uint32_t ff_table1_dc_lum[120][2] = {
 { 0x2, 2 },{ 0x3, 2 },{ 0x3, 3 },{ 0x2, 4 },
 { 0x5, 4 },{ 0x1, 5 },{ 0x3, 5 },{ 0x8, 5 },
 { 0x0, 6 },{ 0x5, 6 },{ 0xd, 6 },{ 0xf, 6 },
@@ -162,7 +162,7 @@ static const uint32_t table1_dc_lum[120][2] = {
 { 0x1e6964, 26 },{ 0x1e6965, 26 },{ 0x1e6966, 26 },{ 0x1e6967, 26 },
 };
 
-static const uint32_t table1_dc_chroma[120][2] = {
+const uint32_t ff_table1_dc_chroma[120][2] = {
 { 0x0, 2 },{ 0x1, 2 },{ 0x4, 3 },{ 0x7, 3 },
 { 0xb, 4 },{ 0xd, 4 },{ 0x15, 5 },{ 0x28, 6 },
 { 0x30, 6 },{ 0x32, 6 },{ 0x52, 7 },{ 0x62, 7 },
@@ -1799,20 +1799,20 @@ static const uint8_t v2_intra_cbpc[4][2] = {
  {1, 1}, {0, 3}, {1, 3}, {1, 2},
 };
 
-static uint8_t wmv1_y_dc_scale_table[32]={
+static const uint8_t wmv1_y_dc_scale_table[32]={
 //  0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
     0, 8, 8, 8, 8, 8, 9, 9,10,10,11,11,12,12,13,13,14,14,15,15,16,16,17,17,18,18,19,19,20,20,21,21
 };
-static uint8_t wmv1_c_dc_scale_table[32]={
+static const uint8_t wmv1_c_dc_scale_table[32]={
 //  0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
     0, 8, 8, 8, 8, 9, 9,10,10,11,11,12,12,13,13,14,14,15,15,16,16,17,17,18,18,19,19,20,20,21,21,22
 };
 
-static uint8_t old_ff_y_dc_scale_table[32]={
+static const uint8_t old_ff_y_dc_scale_table[32]={
 //  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
     0, 8, 8, 8, 8,10,12,14,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39
 };
-static uint8_t old_ff_c_dc_scale_table[32]={
+static const uint8_t old_ff_c_dc_scale_table[32]={
 //  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
     0, 8, 8, 8, 8, 9, 9,10,10,11,11,12,12,13,13,14,14,15,15,16,16,17,17,18,18,19,19,20,20,21,21,22
 };

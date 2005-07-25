@@ -66,16 +66,26 @@ static int init(sh_audio_t *sh_audio)
 	lavc_context->sample_rate = sh_audio->wf->nSamplesPerSec;
 	lavc_context->bit_rate = sh_audio->wf->nAvgBytesPerSec * 8;
 	lavc_context->block_align = sh_audio->wf->nBlockAlign;
+	lavc_context->bits_per_sample = sh_audio->wf->wBitsPerSample;
     }
     lavc_context->codec_tag = sh_audio->format; //FOURCC
     lavc_context->codec_id = lavc_codec->id; // not sure if required, imho not --A'rpi
 
     /* alloc extra data */
     if (sh_audio->wf && sh_audio->wf->cbSize > 0) {
-        lavc_context->extradata = malloc(sh_audio->wf->cbSize);
+        lavc_context->extradata = av_malloc(sh_audio->wf->cbSize);
         lavc_context->extradata_size = sh_audio->wf->cbSize;
         memcpy(lavc_context->extradata, (char *)sh_audio->wf + sizeof(WAVEFORMATEX), 
                lavc_context->extradata_size);
+    }
+
+    // for QDM2
+    if (sh_audio->codecdata_len && sh_audio->codecdata && !lavc_context->extradata)
+    {
+        lavc_context->extradata = av_malloc(sh_audio->codecdata_len);
+        lavc_context->extradata_size = sh_audio->codecdata_len;
+        memcpy(lavc_context->extradata, (char *)sh_audio->codecdata, 
+               lavc_context->extradata_size);	
     }
 
     /* open it */
@@ -120,13 +130,8 @@ static void uninit(sh_audio_t *sh)
 
     if (avcodec_close(lavc_context) < 0)
 	mp_msg(MSGT_DECVIDEO, MSGL_ERR, MSGTR_CantCloseCodec);
-    if (lavc_context->extradata)
-        free(lavc_context->extradata);
-#ifdef _XBOX
-    av_free(lavc_context);
-#else
-    free(lavc_context);
-#endif
+    av_freep(&lavc_context->extradata);
+    av_freep(&lavc_context);
 }
 
 static int control(sh_audio_t *sh,int cmd,void* arg, ...)

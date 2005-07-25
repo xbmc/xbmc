@@ -182,7 +182,7 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
 	    asf->packet_size = asf->hdr.max_pktsize;
             asf->nb_packets = asf->hdr.packets_count;
         } else if (!memcmp(&g, &stream_header, sizeof(GUID))) {
-            int type, total_size, type_specific_size;
+            int type, total_size, type_specific_size, sizeX;
             unsigned int tag1;
             int64_t pos1, pos2;
 
@@ -196,9 +196,9 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
             if (!asf_st)
                 goto fail;
             st->priv_data = asf_st;
-            st->start_time = asf->hdr.preroll * (int64_t)AV_TIME_BASE / 1000;
+            st->start_time = asf->hdr.preroll;
             st->duration = asf->hdr.send_time / 
-                (10000000 / AV_TIME_BASE) - st->start_time;
+                (10000000 / 1000) - st->start_time;
             get_guid(pb, &g);
             if (!memcmp(&g, &audio_stream, sizeof(GUID))) {
                 type = CODEC_TYPE_AUDIO;
@@ -216,12 +216,9 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
             asf->asfid2avid[st->id] = s->nb_streams - 1;
 
             get_le32(pb);
-	    st->codec.codec_type = type;
-            /* 1 fps default (XXX: put 0 fps instead) */
-            st->codec.frame_rate = 1000; 
-            st->codec.frame_rate_base = 1;
+	    st->codec->codec_type = type;
             if (type == CODEC_TYPE_AUDIO) {
-                get_wav_header(pb, &st->codec, type_specific_size);
+                get_wav_header(pb, st->codec, type_specific_size);
                 st->need_parsing = 1;
 		/* We have to init the frame size at some point .... */
 		pos2 = url_ftell(pb);
@@ -240,9 +237,9 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
 			|| (asf_st->ds_packet_size/asf_st->ds_chunk_size <= 1))
 			asf_st->ds_span = 0; // disable descrambling
 		}
-                switch (st->codec.codec_id) {
+                switch (st->codec->codec_id) {
                 case CODEC_ID_MP3:
-                    st->codec.frame_size = MPA_FRAME_SIZE;
+                    st->codec->frame_size = MPA_FRAME_SIZE;
                     break;
                 case CODEC_ID_PCM_S16LE:
                 case CODEC_ID_PCM_S16BE:
@@ -252,11 +249,11 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
                 case CODEC_ID_PCM_U8:
                 case CODEC_ID_PCM_ALAW:
                 case CODEC_ID_PCM_MULAW:
-                    st->codec.frame_size = 1;
+                    st->codec->frame_size = 1;
                     break;
                 default:
                     /* This is probably wrong, but it prevents a crash later */
-                    st->codec.frame_size = 1;
+                    st->codec->frame_size = 1;
                     break;
                 }
             } else {
@@ -264,37 +261,39 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
                 get_le32(pb);
                 get_byte(pb);
                 size = get_le16(pb); /* size */
-                get_le32(pb); /* size */
-                st->codec.width = get_le32(pb);
-		st->codec.height = get_le32(pb);
+                sizeX= get_le32(pb); /* size */
+                st->codec->width = get_le32(pb);
+		st->codec->height = get_le32(pb);
                 /* not available for asf */
                 get_le16(pb); /* panes */
-		st->codec.bits_per_sample = get_le16(pb); /* depth */
+		st->codec->bits_per_sample = get_le16(pb); /* depth */
                 tag1 = get_le32(pb);
 		url_fskip(pb, 20);
+//                av_log(NULL, AV_LOG_DEBUG, "size:%d tsize:%d sizeX:%d\n", size, total_size, sizeX);
+                size= sizeX;
 		if (size > 40) {
-		    st->codec.extradata_size = size - 40;
-		    st->codec.extradata = av_mallocz(st->codec.extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
-		    get_buffer(pb, st->codec.extradata, st->codec.extradata_size);
+		    st->codec->extradata_size = size - 40;
+		    st->codec->extradata = av_mallocz(st->codec->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
+		    get_buffer(pb, st->codec->extradata, st->codec->extradata_size);
 		}
 
         /* Extract palette from extradata if bpp <= 8 */
         /* This code assumes that extradata contains only palette */
         /* This is true for all paletted codecs implemented in ffmpeg */
-        if (st->codec.extradata_size && (st->codec.bits_per_sample <= 8)) {
-            st->codec.palctrl = av_mallocz(sizeof(AVPaletteControl));
+        if (st->codec->extradata_size && (st->codec->bits_per_sample <= 8)) {
+            st->codec->palctrl = av_mallocz(sizeof(AVPaletteControl));
 #ifdef WORDS_BIGENDIAN
-            for (i = 0; i < FFMIN(st->codec.extradata_size, AVPALETTE_SIZE)/4; i++)
-                st->codec.palctrl->palette[i] = bswap_32(((uint32_t*)st->codec.extradata)[i]);
+            for (i = 0; i < FFMIN(st->codec->extradata_size, AVPALETTE_SIZE)/4; i++)
+                st->codec->palctrl->palette[i] = bswap_32(((uint32_t*)st->codec->extradata)[i]);
 #else
-            memcpy(st->codec.palctrl->palette, st->codec.extradata,
-                   FFMIN(st->codec.extradata_size, AVPALETTE_SIZE));
+            memcpy(st->codec->palctrl->palette, st->codec->extradata,
+                   FFMIN(st->codec->extradata_size, AVPALETTE_SIZE));
 #endif
-            st->codec.palctrl->palette_changed = 1;
+            st->codec->palctrl->palette_changed = 1;
         }
 
-                st->codec.codec_tag = tag1;
-		st->codec.codec_id = codec_get_id(codec_bmp_tags, tag1);
+                st->codec->codec_tag = tag1;
+		st->codec->codec_id = codec_get_id(codec_bmp_tags, tag1);
                 if(tag1 == MKTAG('D', 'V', 'R', ' '))
                     st->need_parsing = 1;
             }
@@ -333,10 +332,10 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
                         {
                                 value = (char *)av_mallocz(value_len);
                                 get_str16_nolen(pb, value_len, value, value_len);
-                                if (strcmp(name,"WM/AlbumTitle")==0) { strcpy(s->album, value); }
+                                if (strcmp(name,"WM/AlbumTitle")==0) { pstrcpy(s->album, sizeof(s->album), value); }
                                 av_free(value);
                         }
-                        if ((value_type >= 2) || (value_type <= 5)) // boolean or DWORD or QWORD or WORD
+                        if ((value_type >= 2) && (value_type <= 5)) // boolean or DWORD or QWORD or WORD
                         {
                                 if (value_type==2) value_num = get_le32(pb);
                                 if (value_type==3) value_num = get_le32(pb);
@@ -399,7 +398,7 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
         AVStream *st = s->streams[i];
 	if (st) {
 	    av_free(st->priv_data);
-            av_free(st->codec.extradata);
+            av_free(st->codec->extradata);
 	}
         av_free(st);
     }
@@ -545,12 +544,16 @@ static int asf_read_packet(AVFormatContext *s, AVPacket *pkt)
 	    asf->packet_size_left -= rsize;
 	    //printf("___objsize____  %d   %d    rs:%d\n", asf->packet_obj_size, asf->packet_frag_offset, rsize);
 
-	    if (asf->stream_index < 0) {
+	    if (asf->stream_index < 0
+                || s->streams[asf->stream_index]->discard >= AVDISCARD_ALL
+                || (!asf->packet_key_frame && s->streams[asf->stream_index]->discard >= AVDISCARD_NONKEY)
+                ) {
                 asf->packet_time_start = 0;
 		/* unhandled packet (should not happen) */
 		url_fskip(pb, asf->packet_frag_size);
 		asf->packet_size_left -= asf->packet_frag_size;
-		av_log(s, AV_LOG_ERROR, "ff asf skip %d  %d\n", asf->packet_frag_size, num & 0x7f);
+                if(asf->stream_index < 0)
+                    av_log(s, AV_LOG_ERROR, "ff asf skip %d  %d\n", asf->packet_frag_size, num & 0x7f);
                 continue;
 	    }
 	    asf->asf_st = s->streams[asf->stream_index]->priv_data;
@@ -573,7 +576,7 @@ static int asf_read_packet(AVFormatContext *s, AVPacket *pkt)
 	    asf_st->frag_offset = 0;
 	    if (asf->packet_frag_offset != 0) {
 		url_fskip(pb, asf->packet_frag_size);
-		av_log(s, AV_LOG_INFO, "ff asf parser skiping %db\n", asf->packet_frag_size);
+		av_log(s, AV_LOG_INFO, "ff asf parser skipping %db\n", asf->packet_frag_size);
 		asf->packet_size_left -= asf->packet_frag_size;
 		continue;
 	    }
@@ -601,11 +604,12 @@ static int asf_read_packet(AVFormatContext *s, AVPacket *pkt)
 	    asf_st->seq = asf->packet_seq;
 	    asf_st->pkt.pts = asf->packet_frag_timestamp;
 	    asf_st->pkt.stream_index = asf->stream_index;
+            asf_st->pkt.pos = 
             asf_st->packet_pos= asf->packet_pos;            
 //printf("new packet: stream:%d key:%d packet_key:%d audio:%d size:%d\n", 
 //asf->stream_index, asf->packet_key_frame, asf_st->pkt.flags & PKT_FLAG_KEY,
-//s->streams[asf->stream_index]->codec.codec_type == CODEC_TYPE_AUDIO, asf->packet_obj_size);
-	    if (s->streams[asf->stream_index]->codec.codec_type == CODEC_TYPE_AUDIO) 
+//s->streams[asf->stream_index]->codec->codec_type == CODEC_TYPE_AUDIO, asf->packet_obj_size);
+	    if (s->streams[asf->stream_index]->codec->codec_type == CODEC_TYPE_AUDIO) 
 		asf->packet_key_frame = 1;
 	    if (asf->packet_key_frame)
 		asf_st->pkt.flags |= PKT_FLAG_KEY;
@@ -662,8 +666,8 @@ static int asf_read_close(AVFormatContext *s)
     for(i=0;i<s->nb_streams;i++) {
 	AVStream *st = s->streams[i];
 	av_free(st->priv_data);
-	av_free(st->codec.extradata);
-    av_free(st->codec.palctrl);
+	av_free(st->codec->extradata);
+    av_free(st->codec->palctrl);
     }
     return 0;
 }

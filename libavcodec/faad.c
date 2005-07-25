@@ -86,7 +86,7 @@ typedef struct {
 		                         faacDecFrameInfo *hInfo,
 		                         unsigned char *buffer,
 								 unsigned long buffer_size);
-	unsigned char* FAADAPI (*faacDecGetErrorMessage)(unsigned char errcode);
+	char* FAADAPI (*faacDecGetErrorMessage)(unsigned char errcode);
 #endif
     
     void FAADAPI (*faacDecClose)(faacDecHandle hDecoder);
@@ -126,11 +126,6 @@ static int faac_init_mp4(AVCodecContext *avctx)
     return r;
 }
 
-static int faac_init_aac(AVCodecContext *avctx)
-{
-    return 0;
-}
-
 static int faac_decode_frame(AVCodecContext *avctx,
                              void *data, int *data_size,
                              uint8_t *buf, int buf_size)
@@ -163,7 +158,7 @@ static int faac_decode_frame(AVCodecContext *avctx,
     out = s->faacDecDecode(s->faac_handle, &frame_info, (unsigned char*)buf, (unsigned long)buf_size);
 
     if (frame_info.error > 0) {
-	av_log(avctx, AV_LOG_ERROR, "faac: frame decodinf failed: %s\n",
+	av_log(avctx, AV_LOG_ERROR, "faac: frame decoding failed: %s\n",
 		s->faacDecGetErrorMessage(frame_info.error));
         return 0;
     }
@@ -239,7 +234,7 @@ static int faac_decode_init(AVCodecContext *avctx)
 				       unsigned char*)));
 	dfaac(Decode, (void *FAADAPI (*)(faacDecHandle, faacDecFrameInfo*,
 		             unsigned char*, unsigned long)));
-	dfaac(GetErrorMessage, (unsigned char* FAADAPI (*)(unsigned char)));
+	dfaac(GetErrorMessage, (char* FAADAPI (*)(unsigned char)));
 #endif
 #undef dfacc
 

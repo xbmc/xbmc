@@ -49,7 +49,7 @@ typedef struct {
 static int http_connect(URLContext *h, const char *path, const char *hoststr,
                         const char *auth);
 static int http_write(URLContext *h, uint8_t *buf, int size);
-static char *b64_encode( unsigned char *src );
+static char *b64_encode(const unsigned char *src );
 
 
 /* return non zero if error */
@@ -287,15 +287,19 @@ URLProtocol http_protocol = {
  * b64_encode: stolen from VLC's http.c
  *****************************************************************************/
                                                                                 
-static char *b64_encode( unsigned char *src )
+static char *b64_encode( const unsigned char *src )
 {
     static const char b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-                                                                                
-    char *dst = av_malloc( strlen( src ) * 4 / 3 + 12 );
-    char *ret = dst;
+    unsigned int len= strlen(src);
+    char *ret, *dst;
     unsigned i_bits = 0;
     unsigned i_shift = 0;
-                                                                                
+
+    if(len < UINT_MAX/4){
+        ret=dst= av_malloc( len * 4 / 3 + 12 );
+    }else
+        return NULL;
+
     for( ;; )
     {
         if( *src )
