@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-07-2005 changed: playlists - shuffle alters the list, but it can be undone.
+                       - randomize plays the list in random order without repeats. 
  - 24-07-2005 fixed: reenabled automatic deinterlacing for dvdplayer if fieldsync is disabled
  - 24-07-2005 added: initial support for syncing interlaced output to interlaced display (enable in settings).
                      Issues: - no good way to find out if a frame is interlaced in mplayer, (syncs when not needed)

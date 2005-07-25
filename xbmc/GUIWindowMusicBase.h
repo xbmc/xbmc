@@ -78,6 +78,7 @@ protected:
   virtual void PlayItem(int iItem);
   virtual void AddItemToTempPlayList(const CFileItem* pItem);
 
+  void OnDeleteItem(int iItem);
   void RetrieveMusicInfo();
   void OnInfo(int iItem);
   void OnQueueItem(int iItem);

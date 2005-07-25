@@ -20,6 +20,7 @@
 
 #define CONTROL_BTNREPEAT     26
 #define CONTROL_BTNREPEATONE   27
+#define CONTROL_BTNRANDOMIZE  28
 
 #define CONTROL_LABELFILES        12
 
@@ -78,7 +79,16 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 
       if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC))
       {
+        CONTROL_SELECT(CONTROL_BTNRANDOMIZE);
+      }
+
+      if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).IsShuffled())
+      {
         CONTROL_SELECT(CONTROL_BTNSHUFFLE);
+      }
+      else
+      {
+        CONTROL_DESELECT(CONTROL_BTNSHUFFLE);
       }
 
       if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
@@ -134,12 +144,15 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         g_settings.Save();
         return true;
       }
-      else if (iControl == CONTROL_BTNSHUFFLE)
+      else if (iControl == CONTROL_BTNRANDOMIZE)
       {
-        //ShufflePlayList();
         g_stSettings.m_bMyMusicPlaylistShuffle = !g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC);
         g_settings.Save();
         g_playlistPlayer.ShufflePlay(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
+      }
+      else if (iControl == CONTROL_BTNSHUFFLE)
+      {
+        ShufflePlayList();
       }
       else if (iControl == CONTROL_BTNSAVE)
       {
@@ -376,17 +389,20 @@ void CGUIWindowMusicPlayList::ClearPlayList()
 
 void CGUIWindowMusicPlayList::ShufflePlayList()
 {
+  int iPlaylist = PLAYLIST_MUSIC;
   ClearFileItems();
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
 
   CStdString strFileName;
-  if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
+  if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == iPlaylist)
   {
     const CPlayList::CPlayListItem& item = playlist[g_playlistPlayer.GetCurrentSong()];
     strFileName = item.GetFileName();
   }
-  playlist.Shuffle();
-  if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
+
+  // shuffle or unshuffle?
+  playlist.IsShuffled() ? playlist.UnShuffle() : playlist.Shuffle();
+  if (g_playlistPlayer.GetCurrentPlaylist() == iPlaylist)
     g_playlistPlayer.Reset();
 
   if (!strFileName.IsEmpty())
@@ -440,6 +456,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   if (m_vecItems.Size() )
   {
     CONTROL_ENABLE(CONTROL_BTNSHUFFLE);
+    CONTROL_ENABLE(CONTROL_BTNRANDOMIZE);
     CONTROL_ENABLE(CONTROL_BTNSAVE);
     CONTROL_ENABLE(CONTROL_BTNCLEAR);
     CONTROL_ENABLE(CONTROL_BTNREPEAT);
@@ -460,6 +477,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   else
   {
     CONTROL_DISABLE(CONTROL_BTNSHUFFLE);
+    CONTROL_DISABLE(CONTROL_BTNRANDOMIZE);
     CONTROL_DISABLE(CONTROL_BTNSAVE);
     CONTROL_DISABLE(CONTROL_BTNCLEAR);
     CONTROL_DISABLE(CONTROL_BTNREPEAT);
