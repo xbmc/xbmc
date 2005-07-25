@@ -1002,9 +1002,10 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   // check to see if the Resume Video button is applicable
   pMenu->EnableButton(btn_Resume, ResumeItemOffset(iItem)>0);
 
-  // turn off the now playing button if nothing is playing
-  /* if (!g_application.IsPlayingVideo())
-    pMenu->EnableButton(4, false);*/
+  // turn off the now playing button if playlist is empty
+  if (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() <= 0)
+    pMenu->EnableButton(btn_Now_Playing, false);
+
   bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
   if (bIsGotoParent)
   {

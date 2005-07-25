@@ -22,6 +22,7 @@
 
 #define CONTROL_BTNREPEAT     26
 #define CONTROL_BTNREPEATONE   27
+#define CONTROL_BTNRANDOMIZE  28
 
 #define CONTROL_LABELFILES        12
 
@@ -119,7 +120,16 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 
       if (g_playlistPlayer.ShuffledPlay(PLAYLIST_VIDEO))
       {
+        CONTROL_SELECT(CONTROL_BTNRANDOMIZE);
+      }
+
+      if (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).IsShuffled())
+      {
         CONTROL_SELECT(CONTROL_BTNSHUFFLE);
+      }
+      else
+      {
+        CONTROL_DESELECT(CONTROL_BTNSHUFFLE);
       }
 
       if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
@@ -137,12 +147,15 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNSHUFFLE)
+      if (iControl == CONTROL_BTNRANDOMIZE)
       {
-        //ShufflePlayList();
         g_stSettings.m_bMyVideoPlaylistShuffle = !g_playlistPlayer.ShuffledPlay(PLAYLIST_VIDEO);
         g_settings.Save();
         g_playlistPlayer.ShufflePlay(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistShuffle);
+      }
+      else if (iControl == CONTROL_BTNSHUFFLE)
+      {
+        ShufflePlayList();
       }
       else if (iControl == CONTROL_BTNSAVE)
       {
@@ -319,6 +332,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BTNSAVE);
     CONTROL_ENABLE(CONTROL_BTNPLAY);
     CONTROL_ENABLE(CONTROL_BTNSHUFFLE);
+    CONTROL_ENABLE(CONTROL_BTNRANDOMIZE);
     CONTROL_ENABLE(CONTROL_BTNREPEAT);
     CONTROL_ENABLE(CONTROL_BTNREPEATONE);
 
@@ -338,6 +352,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
     CONTROL_DISABLE(CONTROL_BTNCLEAR);
     CONTROL_DISABLE(CONTROL_BTNSAVE);
     CONTROL_DISABLE(CONTROL_BTNSHUFFLE);
+    CONTROL_DISABLE(CONTROL_BTNRANDOMIZE);
     CONTROL_DISABLE(CONTROL_BTNPLAY);
     CONTROL_DISABLE(CONTROL_BTNNEXT);
     CONTROL_DISABLE(CONTROL_BTNPREVIOUS);
@@ -531,17 +546,20 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
 
 void CGUIWindowVideoPlaylist::ShufflePlayList()
 {
+  int iPlaylist = PLAYLIST_VIDEO;
   ClearFileItems();
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
 
   CStdString strFileName;
-  if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
+  if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist() == iPlaylist)
   {
     const CPlayList::CPlayListItem& item = playlist[g_playlistPlayer.GetCurrentSong()];
     strFileName = item.GetFileName();
   }
-  playlist.Shuffle();
-  if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
+
+  // shuffle or unshuffle?
+  playlist.IsShuffled() ? playlist.UnShuffle() : playlist.Shuffle();
+  if (g_playlistPlayer.GetCurrentPlaylist() == iPlaylist)
     g_playlistPlayer.Reset();
 
   if (!strFileName.IsEmpty())

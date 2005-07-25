@@ -1425,9 +1425,11 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
     pMenu->EnableButton(3, false);
     pMenu->EnableButton(6, false);
   }
-  // turn off the now playing button if nothing is playing
-  if (!g_application.IsPlayingAudio())
+
+  // turn off the now playing button if playlist is empty
+  if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() <= 0)
     pMenu->EnableButton(4, false);
+
   // turn off set artist image if artist is not being filtered
   // or if the source is an "all" item (path is empty)
   // or if the source has no thumbnail
