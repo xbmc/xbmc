@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-07-2005 fixed: Unable to delete movies from video database using context menu
  - 25-07-2005 added: file deletion from all three media window context menus, enable the "Allow File Deletion" option
 			settings: video -> files, music -> files, pictures -> general
  - 25-07-2005 fixed: SF bug [ 1080749 ] Bidi font flipping doesn't work
