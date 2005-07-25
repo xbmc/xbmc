@@ -1003,7 +1003,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     btn_DVD = pMenu->AddButton(15213);
 
   int btn_Delete = 0;
-  if (g_guiSettings.GetBool("VideoFiles.AllowFileDeletion"))
+  if (g_guiSettings.GetBool("VideoFiles.AllowFileDeletion") || GetID() == WINDOW_VIDEO_TITLE)
     btn_Delete = pMenu->AddButton(117);             // Delete
 
   int btn_Settings      = pMenu->AddButton(5);      // Settings
