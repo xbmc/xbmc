@@ -1,6 +1,7 @@
 <window>
   <id>2700</id>
   <defaultcontrol>3012</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
   <controls>
     <control>
       <description>background image</description>
