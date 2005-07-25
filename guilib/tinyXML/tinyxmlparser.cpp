@@ -479,7 +479,7 @@ const char* TiXmlBase::GetEntity( const char* p, char* value, int* length, TiXml
 		}
 		else
 		{
-			*value = (char)ucs;
+			*value = (char) (ucs & 0xFF);
 			*length = 1;
 		}
 		return p + delta + 1;
