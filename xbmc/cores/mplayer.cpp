@@ -776,9 +776,9 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     options.SetNoCache(g_stSettings.m_currentVideoSettings.m_NoCache);
 
 
-    if (g_guiSettings.GetBool("Subtitles.FlipBiDiCharSet") && g_charsetConverter.isBidiCharset(g_guiSettings.GetString("LookAndFeel.CharSet")) > 0)
+    if (g_guiSettings.GetBool("Subtitles.FlipBiDiCharSet") && g_charsetConverter.isBidiCharset(g_guiSettings.GetString("Subtitles.CharSet")) > 0)
     {
-      options.SetFlipBiDiCharset(g_guiSettings.GetString("LookAndFeel.CharSet"));
+      options.SetFlipBiDiCharset(g_guiSettings.GetString("Subtitles.CharSet"));
     }
 
     bool bSupportsAC3Out = g_audioConfig.GetAC3Enabled();
