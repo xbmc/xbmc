@@ -68,7 +68,7 @@ static int encode_ext_header(Wmv2Context *w){
         
     init_put_bits(&pb, s->avctx->extradata, s->avctx->extradata_size);
 
-    put_bits(&pb, 5, s->avctx->frame_rate / s->avctx->frame_rate_base); //yes 29.97 -> 29
+    put_bits(&pb, 5, s->avctx->time_base.den / s->avctx->time_base.num); //yes 29.97 -> 29
     put_bits(&pb, 11, FFMIN(s->bit_rate/1024, 2047));
     
     put_bits(&pb, 1, w->mspel_bit=1);
@@ -101,6 +101,7 @@ static int wmv2_encode_init(AVCodecContext *avctx){
     return 0;
 }
 
+#if 0 /* unused, remove? */
 static int wmv2_encode_end(AVCodecContext *avctx){
     
     if(MPV_encode_end(avctx) < 0)
@@ -111,6 +112,7 @@ static int wmv2_encode_end(AVCodecContext *avctx){
     
     return 0;
 }
+#endif
 
 int ff_wmv2_encode_picture_header(MpegEncContext * s, int picture_number)
 {
@@ -244,7 +246,7 @@ void ff_wmv2_encode_mb(MpegEncContext * s,
         if (s->pict_type == I_TYPE) {
             set_stat(ST_INTRA_MB);
             put_bits(&s->pb, 
-                     table_mb_intra[coded_cbp][1], table_mb_intra[coded_cbp][0]);
+                     ff_msmp4_mb_i_table[coded_cbp][1], ff_msmp4_mb_i_table[coded_cbp][0]);
         } else {
             put_bits(&s->pb, 
                      wmv2_inter_table[w->cbp_table_index][cbp][1], 
@@ -472,7 +474,7 @@ s->picture_number++; //FIXME ?
 //        return wmv2_decode_j_picture(w); //FIXME
 
     if(w->j_type){
-        av_log(s->avctx, AV_LOG_ERROR, "J-type picture isnt supported\n");
+        av_log(s->avctx, AV_LOG_ERROR, "J-type picture is not supported\n");
         return -1;
     }
 
@@ -585,11 +587,10 @@ static inline int wmv2_decode_inter_block(Wmv2Context *w, DCTELEM *block, int n,
 static void wmv2_add_block(Wmv2Context *w, DCTELEM *block1, uint8_t *dst, int stride, int n){
     MpegEncContext * const s= &w->s;
 
+  if (s->block_last_index[n] >= 0) {
     switch(w->abt_type_table[n]){
     case 0:
-        if (s->block_last_index[n] >= 0) {
-            s->dsp.idct_add (dst, stride, block1);
-        }
+        s->dsp.idct_add (dst, stride, block1);
         break;
     case 1:
         simple_idct84_add(dst           , stride, block1);
@@ -604,6 +605,7 @@ static void wmv2_add_block(Wmv2Context *w, DCTELEM *block1, uint8_t *dst, int st
     default:
         av_log(s->avctx, AV_LOG_ERROR, "internal error in WMV2 abt\n");
     }
+  }
 }
 
 void ff_wmv2_add_mb(MpegEncContext *s, DCTELEM block1[6][64], uint8_t *dest_y, uint8_t *dest_cb, uint8_t *dest_cr){
@@ -721,7 +723,7 @@ static int wmv2_decode_mb(MpegEncContext *s, DCTELEM block[6][64])
             s->mv_type = MV_TYPE_16X16;
             s->mv[0][0][0] = 0;
             s->mv[0][0][1] = 0;
-            s->mb_skiped = 1;
+            s->mb_skipped = 1;
             w->hshift=0;
             return 0;
         }
@@ -734,7 +736,7 @@ static int wmv2_decode_mb(MpegEncContext *s, DCTELEM block[6][64])
         cbp = code & 0x3f;
     } else {
         s->mb_intra = 1;
-        code = get_vlc2(&s->gb, mb_intra_vlc.table, MB_INTRA_VLC_BITS, 2);
+        code = get_vlc2(&s->gb, ff_msmp4_mb_i_vlc.table, MB_INTRA_VLC_BITS, 2);
         if (code < 0){
             av_log(s->avctx, AV_LOG_ERROR, "II-cbp illegal at %d %d\n", s->mb_x, s->mb_y);
             return -1;
@@ -758,6 +760,7 @@ static int wmv2_decode_mb(MpegEncContext *s, DCTELEM block[6][64])
         wmv2_pred_motion(w, &mx, &my);
         
         if(cbp){
+            s->dsp.clear_blocks(s->block[0]);
             if(s->per_mb_rl_table){
                 s->rl_table_index = decode012(&s->gb);
                 s->rl_chroma_table_index = s->rl_table_index;
@@ -800,6 +803,7 @@ static int wmv2_decode_mb(MpegEncContext *s, DCTELEM block[6][64])
             s->rl_chroma_table_index = s->rl_table_index;
         }
     
+        s->dsp.clear_blocks(s->block[0]);
         for (i = 0; i < 6; i++) {
             if (msmpeg4_decode_block(s, block[i], i, (cbp >> (5 - i)) & 1, NULL) < 0)
 	    {

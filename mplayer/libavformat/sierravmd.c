@@ -131,14 +131,14 @@ static int vmd_read_header(AVFormatContext *s,
         return AVERROR_NOMEM;
     av_set_pts_info(st, 33, 1, 90000);
     vmd->video_stream_index = st->index;
-    st->codec.codec_type = CODEC_TYPE_VIDEO;
-    st->codec.codec_id = CODEC_ID_VMDVIDEO;
-    st->codec.codec_tag = 0;  /* no fourcc */
-    st->codec.width = LE_16(&vmd->vmd_header[12]);
-    st->codec.height = LE_16(&vmd->vmd_header[14]);
-    st->codec.extradata_size = VMD_HEADER_SIZE;
-    st->codec.extradata = av_malloc(VMD_HEADER_SIZE);
-    memcpy(st->codec.extradata, vmd->vmd_header, VMD_HEADER_SIZE);
+    st->codec->codec_type = CODEC_TYPE_VIDEO;
+    st->codec->codec_id = CODEC_ID_VMDVIDEO;
+    st->codec->codec_tag = 0;  /* no fourcc */
+    st->codec->width = LE_16(&vmd->vmd_header[12]);
+    st->codec->height = LE_16(&vmd->vmd_header[14]);
+    st->codec->extradata_size = VMD_HEADER_SIZE;
+    st->codec->extradata = av_malloc(VMD_HEADER_SIZE);
+    memcpy(st->codec->extradata, vmd->vmd_header, VMD_HEADER_SIZE);
 
     /* if sample rate is 0, assume no audio */
     vmd->sample_rate = LE_16(&vmd->vmd_header[804]);
@@ -148,29 +148,29 @@ static int vmd_read_header(AVFormatContext *s,
             return AVERROR_NOMEM;
         av_set_pts_info(st, 33, 1, 90000);
         vmd->audio_stream_index = st->index;
-        st->codec.codec_type = CODEC_TYPE_AUDIO;
-        st->codec.codec_id = CODEC_ID_VMDAUDIO;
-        st->codec.codec_tag = 0;  /* no codec tag */
-        st->codec.channels = (vmd->vmd_header[811] & 0x80) ? 2 : 1;
-        st->codec.sample_rate = vmd->sample_rate;
-        st->codec.block_align = vmd->audio_block_align = 
+        st->codec->codec_type = CODEC_TYPE_AUDIO;
+        st->codec->codec_id = CODEC_ID_VMDAUDIO;
+        st->codec->codec_tag = 0;  /* no codec tag */
+        st->codec->channels = (vmd->vmd_header[811] & 0x80) ? 2 : 1;
+        st->codec->sample_rate = vmd->sample_rate;
+        st->codec->block_align = vmd->audio_block_align = 
             LE_16(&vmd->vmd_header[806]);
-        if (st->codec.block_align & 0x8000) {
-            st->codec.bits_per_sample = 16;
-            st->codec.block_align = -(st->codec.block_align - 0x10000);
+        if (st->codec->block_align & 0x8000) {
+            st->codec->bits_per_sample = 16;
+            st->codec->block_align = -(st->codec->block_align - 0x10000);
         } else
-            st->codec.bits_per_sample = 16;
-//            st->codec.bits_per_sample = 8;
-        st->codec.bit_rate = st->codec.sample_rate * 
-            st->codec.bits_per_sample * st->codec.channels;
+            st->codec->bits_per_sample = 16;
+//            st->codec->bits_per_sample = 8;
+        st->codec->bit_rate = st->codec->sample_rate * 
+            st->codec->bits_per_sample * st->codec->channels;
 
         /* for calculating pts */
-        vmd->audio_frame_divisor = st->codec.bits_per_sample / 8 / 
-            st->codec.channels;
+        vmd->audio_frame_divisor = st->codec->bits_per_sample / 8 / 
+            st->codec->channels;
 
         video_pts_inc = 90000;
-        video_pts_inc *= st->codec.block_align;
-        video_pts_inc /= st->codec.sample_rate;
+        video_pts_inc *= st->codec->block_align;
+        video_pts_inc /= st->codec->sample_rate;
     } else {
         /* if no audio, assume 10 frames/second */
         video_pts_inc = 90000 / 10;
@@ -185,7 +185,8 @@ static int vmd_read_header(AVFormatContext *s,
 
     /* each on-disk VMD frame has an audio part and a video part; demuxer
      * accounts them separately */
-    vmd->frame_count *= 2;
+    if(vmd->sample_rate)
+	vmd->frame_count *= 2;
     raw_frame_table = NULL;
     vmd->frame_table = NULL;
     raw_frame_table_size = vmd->frame_count * BYTES_PER_FRAME_RECORD;
@@ -211,7 +212,8 @@ static int vmd_read_header(AVFormatContext *s,
 
         /* if the frame size is 0, do not count the frame and bring the
          * total frame count down */
-        vmd->frame_table[i].frame_size = LE_32(&current_frame_record[2]);
+        // note, we limit the size to 1Gb to ensure that we dont end up overflowing the size integer used to allocate the memory
+        vmd->frame_table[i].frame_size = LE_32(&current_frame_record[2]) & 0x3FFFFFFF; 
 
         /* this logic is present so that 0-length audio chunks are not
          * accounted */
@@ -267,6 +269,7 @@ static int vmd_read_packet(AVFormatContext *s,
 
     if (av_new_packet(pkt, frame->frame_size + BYTES_PER_FRAME_RECORD))
         return AVERROR_NOMEM;
+    pkt->pos= url_ftell(pb);
     memcpy(pkt->data, frame->frame_record, BYTES_PER_FRAME_RECORD);
     ret = get_buffer(pb, pkt->data + BYTES_PER_FRAME_RECORD, 
         frame->frame_size);
@@ -287,7 +290,7 @@ static int vmd_read_packet(AVFormatContext *s,
             pkt->data, pkt->size, vmd->audio_block_align);
 
     }
-printf (" dispatching %s frame with %d bytes and pts %lld (%0.1f sec)\n",
+av_log(NULL, AV_LOG_INFO, " dispatching %s frame with %d bytes and pts %lld (%0.1f sec)\n",
   (frame->frame_record[0] == 0x02) ? "video" : "audio",
   frame->frame_size + BYTES_PER_FRAME_RECORD,
   pkt->pts, (float)(pkt->pts / 90000.0));

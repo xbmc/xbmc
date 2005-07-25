@@ -103,8 +103,8 @@ void ff_h261_encode_picture_header(MpegEncContext * s, int picture_number){
 
     put_bits(&s->pb, 20, 0x10); /* PSC */
 
-    temp_ref= s->picture_number * (int64_t)30000 * s->avctx->frame_rate_base / 
-                         (1001 * (int64_t)s->avctx->frame_rate);
+    temp_ref= s->picture_number * (int64_t)30000 * s->avctx->time_base.num / 
+                         (1001 * (int64_t)s->avctx->time_base.den); //FIXME maybe this should use a timestamp
     put_bits(&s->pb, 5, temp_ref & 0x1f); /* TemporalReference */
 
     put_bits(&s->pb, 1, 0); /* split screen off */
@@ -531,7 +531,6 @@ static int h261_decode_mb_skipped(H261Context *h, int mba1, int mba2 )
         xy = s->mb_x + s->mb_y * s->mb_stride;
         ff_init_block_index(s);
         ff_update_block_index(s);
-        s->dsp.clear_blocks(s->block[0]);
 
         for(j=0;j<6;j++)
             s->block_last_index[j] = -1;
@@ -541,7 +540,7 @@ static int h261_decode_mb_skipped(H261Context *h, int mba1, int mba2 )
         s->current_picture.mb_type[xy]= MB_TYPE_SKIP | MB_TYPE_16x16 | MB_TYPE_L0;
         s->mv[0][0][0] = 0;
         s->mv[0][0][1] = 0;
-        s->mb_skiped = 1;
+        s->mb_skipped = 1;
         h->mtype &= ~MB_TYPE_H261_FIL;
 
         MPV_decode_mb(s, s->block);
@@ -606,7 +605,6 @@ static int h261_decode_mb(H261Context *h){
     xy = s->mb_x + s->mb_y * s->mb_stride;
     ff_init_block_index(s);
     ff_update_block_index(s);
-    s->dsp.clear_blocks(s->block[0]);
 
     // Read mtype
     h->mtype = get_vlc2(&s->gb, h261_mtype_vlc.table, H261_MTYPE_VLC_BITS, 2);
@@ -661,12 +659,16 @@ static int h261_decode_mb(H261Context *h){
 intra:
     /* decode each block */
     if(s->mb_intra || HAS_CBP(h->mtype)){
+        s->dsp.clear_blocks(s->block[0]);
         for (i = 0; i < 6; i++) {
             if (h261_decode_block(h, s->block[i], i, cbp&32) < 0){
                 return SLICE_ERROR;
             }
             cbp+=cbp;
         }
+    }else{
+        for (i = 0; i < 6; i++)
+            s->block_last_index[i]= -1;
     }
 
     MPV_decode_mb(s, s->block);
@@ -925,11 +927,6 @@ static int h261_decode_frame(AVCodecContext *avctx,
     s->flags= avctx->flags;
     s->flags2= avctx->flags2;
 
-    /* no supplementary picture */
-    if (buf_size == 0) {
-        return 0;
-    }
-    
     h->gob_start_code_skipped=0;
 
 retry:
@@ -973,6 +970,10 @@ retry:
 
     /* skip everything if we are in a hurry>=5 */
     if(avctx->hurry_up>=5) return get_consumed_bytes(s, buf_size);
+    if(  (avctx->skip_frame >= AVDISCARD_NONREF && s->pict_type==B_TYPE)
+       ||(avctx->skip_frame >= AVDISCARD_NONKEY && s->pict_type!=I_TYPE)
+       || avctx->skip_frame >= AVDISCARD_ALL)
+        return get_consumed_bytes(s, buf_size);
 
     if(MPV_frame_start(s, avctx) < 0)
         return -1;
@@ -1012,6 +1013,7 @@ static int h261_decode_end(AVCodecContext *avctx)
     MPV_common_end(s);
     return 0;
 }
+
 #ifdef CONFIG_ENCODERS
 AVCodec h261_encoder = {
     "h261",

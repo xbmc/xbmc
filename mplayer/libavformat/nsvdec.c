@@ -205,13 +205,13 @@ static const CodecTag nsv_codec_audio_tags[] = {
     { 0, 0 },
 };
 
-static const uint64_t nsv_framerate_table[] = {
-    ((uint64_t)AV_TIME_BASE * 30),
-    ((uint64_t)AV_TIME_BASE * 30000 / 1001), /* 29.97 */
-    ((uint64_t)AV_TIME_BASE * 25),
-    ((uint64_t)AV_TIME_BASE * 24000 / 1001), /* 23.98 */
-    ((uint64_t)AV_TIME_BASE * 30), /* ?? */
-    ((uint64_t)AV_TIME_BASE * 15000 / 1001), /* 14.98 */
+static const AVRational nsv_framerate_table[] = {
+    {30,1},
+    {30000,1001},
+    {25,1},
+    {24000,1001},
+    {30,1},
+    {15000,1001},
 };
 
 //static int nsv_load_index(AVFormatContext *s);
@@ -280,16 +280,11 @@ static int nsv_parse_NSVf_header(AVFormatContext *s, AVFormatParameters *ap)
 {
     NSVContext *nsv = s->priv_data;
     ByteIOContext *pb = &s->pb;
-    uint32_t tag, tag1, handler;
-    int codec_type, stream_index, frame_period, bit_rate, scale, rate;
-    unsigned int file_size, size, nb_frames;
+    unsigned int file_size, size;
     int64_t duration;
     int strings_size;
     int table_entries;
     int table_entries_used;
-    int i, n;
-    AVStream *st;
-    NSVStream *ast;
 
     PRINT(("%s()\n", __FUNCTION__));
 
@@ -305,8 +300,7 @@ static int nsv_parse_NSVf_header(AVFormatContext *s, AVFormatParameters *ap)
     PRINT(("NSV NSVf chunk_size %ld\n", size));
     PRINT(("NSV NSVf file_size %Ld\n", file_size));
 
-    duration = get_le32(pb); /* in ms */
-    nsv->duration = duration * AV_TIME_BASE / 1000; /* convert */
+    nsv->duration = duration = get_le32(pb); /* in ms */
     PRINT(("NSV NSVf duration %Ld ms\n", duration));
     // XXX: store it in AVStreams
 
@@ -365,6 +359,8 @@ static int nsv_parse_NSVf_header(AVFormatContext *s, AVFormatParameters *ap)
 
     if (table_entries_used > 0) {
         nsv->index_entries = table_entries_used;
+        if((unsigned)table_entries >= UINT_MAX / sizeof(uint32_t))
+            return -1;
         nsv->nsvf_index_data = av_malloc(table_entries * sizeof(uint32_t));
         get_buffer(pb, nsv->nsvf_index_data, table_entries * sizeof(uint32_t));
     }
@@ -404,7 +400,8 @@ static int nsv_parse_NSVs_header(AVFormatContext *s, AVFormatParameters *ap)
     ByteIOContext *pb = &s->pb;
     uint32_t vtag, atag;
     uint16_t vwidth, vheight;
-    uint32_t framerate;
+    AVRational framerate;
+    int i;
     uint16_t unknown;
     AVStream *st;
     NSVStream *nst;
@@ -414,17 +411,17 @@ static int nsv_parse_NSVs_header(AVFormatContext *s, AVFormatParameters *ap)
     atag = get_le32(pb);
     vwidth = get_le16(pb);
     vheight = get_le16(pb);
-    framerate = (uint8_t)get_byte(pb);
+    i = get_byte(pb);
     /* XXX how big must the table be ? */
     /* seems there is more to that... */
-    PRINT(("NSV NSVs framerate code %2x\n", framerate));
-    framerate = (framerate & 0x80)?(nsv_framerate_table[framerate & 0x7F]):(framerate*AV_TIME_BASE);
+    PRINT(("NSV NSVs framerate code %2x\n", i));
+    if(i&0x80) framerate= nsv_framerate_table[i & 0x7F];
+    else       framerate= (AVRational){i, 1};
     unknown = get_le16(pb);
 #ifdef DEBUG
     print_tag("NSV NSVs vtag", vtag, 0);
     print_tag("NSV NSVs atag", atag, 0);
     PRINT(("NSV NSVs vsize %dx%d\n", vwidth, vheight));
-    PRINT(("NSV NSVs framerate %2x\n", framerate));
 #endif
     
     /* XXX change to ap != NULL ? */
@@ -442,18 +439,16 @@ static int nsv_parse_NSVs_header(AVFormatContext *s, AVFormatParameters *ap)
             if (!nst)
                 goto fail;
             st->priv_data = nst;
-            st->codec.codec_type = CODEC_TYPE_VIDEO;
-            st->codec.codec_tag = vtag;
-            st->codec.codec_id = codec_get_id(nsv_codec_video_tags, vtag);
-            st->codec.width = vwidth;
-            st->codec.height = vheight;
-            st->codec.bits_per_sample = 24; /* depth XXX */
+            st->codec->codec_type = CODEC_TYPE_VIDEO;
+            st->codec->codec_tag = vtag;
+            st->codec->codec_id = codec_get_id(nsv_codec_video_tags, vtag);
+            st->codec->width = vwidth;
+            st->codec->height = vheight;
+            st->codec->bits_per_sample = 24; /* depth XXX */
 
-            st->codec.frame_rate = framerate;
-            st->codec.frame_rate_base = AV_TIME_BASE;
-            av_set_pts_info(st, 64, AV_TIME_BASE, framerate);
+            av_set_pts_info(st, 64, framerate.den, framerate.num);
             st->start_time = 0;
-            st->duration = nsv->duration;
+            st->duration = av_rescale(nsv->duration, framerate.num, 1000*framerate.den);
         }
         if (atag != T_NONE) {
 #ifndef DISABLE_AUDIO
@@ -465,17 +460,17 @@ static int nsv_parse_NSVs_header(AVFormatContext *s, AVFormatParameters *ap)
             if (!nst)
                 goto fail;
             st->priv_data = nst;
-            st->codec.codec_type = CODEC_TYPE_AUDIO;
-            st->codec.codec_tag = atag;
-            st->codec.codec_id = codec_get_id(nsv_codec_audio_tags, atag);
+            st->codec->codec_type = CODEC_TYPE_AUDIO;
+            st->codec->codec_tag = atag;
+            st->codec->codec_id = codec_get_id(nsv_codec_audio_tags, atag);
             st->start_time = 0;
-            st->duration = nsv->duration;
+//            st->duration = nsv->duration; //FIXME
             
             st->need_parsing = 1; /* for PCM we will read a chunk later and put correct info */
             /* XXX:FIXME */
-            //st->codec.channels = 2; //XXX:channels;
-            //st->codec.sample_rate = 1000;
-            //av_set_pts_info(st, 64, 1, st->codec.sample_rate);
+            //st->codec->channels = 2; //XXX:channels;
+            //st->codec->sample_rate = 1000;
+            //av_set_pts_info(st, 64, 1, st->codec->sample_rate);
 
 #endif
         }
@@ -499,14 +494,7 @@ fail:
 static int nsv_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
     NSVContext *nsv = s->priv_data;
-    ByteIOContext *pb = &s->pb;
-    uint32_t tag, tag1, handler;
-    int codec_type, stream_index, frame_period, bit_rate, scale, rate;
-    unsigned int size, nb_frames;
-    int table_entries;
-    int i, n, err;
-    AVStream *st;
-    NSVStream *ast;
+    int i, err;
 
     PRINT(("%s()\n", __FUNCTION__));
     PRINT(("filename '%s'\n", s->filename));
@@ -541,7 +529,6 @@ static int nsv_read_chunk(AVFormatContext *s, int fill_header)
     AVStream *st[2] = {NULL, NULL};
     NSVStream *nst;
     AVPacket *pkt;
-    uint32_t v = 0;
     int i, err = 0;
     uint8_t auxcount; /* number of aux metadata, also 4 bits of vsize */
     uint32_t vsize;
@@ -605,8 +592,7 @@ null_chunk_retry:
     if (vsize/* && st[NSV_ST_VIDEO]*/) {
         nst = st[NSV_ST_VIDEO]->priv_data;
         pkt = &nsv->ahead[NSV_ST_VIDEO];
-        av_new_packet(pkt, vsize);
-        get_buffer(pb, pkt->data, vsize);
+        av_get_packet(pb, pkt, vsize);
         pkt->stream_index = st[NSV_ST_VIDEO]->index;//NSV_ST_VIDEO;
         pkt->dts = nst->frame_offset++;
         pkt->flags |= PKT_FLAG_KEY; /* stupid format has no way to tell XXX: try the index */
@@ -620,7 +606,7 @@ null_chunk_retry:
         pkt = &nsv->ahead[NSV_ST_AUDIO];
         /* read raw audio specific header on the first audio chunk... */
         /* on ALL audio chunks ?? seems so! */
-        if (asize && st[NSV_ST_AUDIO]->codec.codec_tag == MKTAG('P', 'C', 'M', ' ')/* && fill_header*/) {
+        if (asize && st[NSV_ST_AUDIO]->codec->codec_tag == MKTAG('P', 'C', 'M', ' ')/* && fill_header*/) {
             uint8_t bps;
             uint8_t channels;
             uint16_t samplerate;
@@ -636,19 +622,17 @@ null_chunk_retry:
                 }
                 bps /= channels; // ???
                 if (bps == 8)
-                    st[NSV_ST_AUDIO]->codec.codec_id = CODEC_ID_PCM_U8;
+                    st[NSV_ST_AUDIO]->codec->codec_id = CODEC_ID_PCM_U8;
                 samplerate /= 4;/* UGH ??? XXX */
                 channels = 1;
-                st[NSV_ST_AUDIO]->codec.channels = channels;
-                st[NSV_ST_AUDIO]->codec.sample_rate = samplerate;
+                st[NSV_ST_AUDIO]->codec->channels = channels;
+                st[NSV_ST_AUDIO]->codec->sample_rate = samplerate;
                 av_set_pts_info(st[NSV_ST_AUDIO], 64, 1, 
-                                st[NSV_ST_AUDIO]->codec.sample_rate);
+                                st[NSV_ST_AUDIO]->codec->sample_rate);
                 PRINT(("NSV RAWAUDIO: bps %d, nchan %d, srate %ld\n", bps, channels, samplerate));
             }
         }
-        av_new_packet(pkt, asize);
-        if (asize)
-            get_buffer(pb, pkt->data, asize);
+        av_get_packet(pb, pkt, asize);
         pkt->stream_index = st[NSV_ST_AUDIO]->index;//NSV_ST_AUDIO;
         //pkt->dts = nst->frame_offset;
         //if (nst->sample_size)
@@ -665,7 +649,6 @@ null_chunk_retry:
 static int nsv_read_packet(AVFormatContext *s, AVPacket *pkt)
 {
     NSVContext *nsv = s->priv_data;
-    ByteIOContext *pb = &s->pb;
     int i, err = 0;
 
     PRINT(("%s()\n", __FUNCTION__));
@@ -693,18 +676,20 @@ static int nsv_read_packet(AVFormatContext *s, AVPacket *pkt)
 
 static int nsv_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp, int flags)
 {
+#if 0
     NSVContext *avi = s->priv_data;
     AVStream *st;
     NSVStream *ast;
     int frame_number, i;
     int64_t pos;
+#endif
 
     return -1;
 }
 
 static int nsv_read_close(AVFormatContext *s)
 {
-    int i;
+/*     int i; */
     NSVContext *nsv = s->priv_data;
 
     if (nsv->index_entries)
@@ -719,8 +704,8 @@ static int nsv_read_close(AVFormatContext *s)
             av_free(ast->index_entries);
             av_free(ast);
         }
-        av_free(st->codec.extradata);
-        av_free(st->codec.palctrl);
+        av_free(st->codec->extradata);
+        av_free(st->codec->palctrl);
     }
 
 #endif

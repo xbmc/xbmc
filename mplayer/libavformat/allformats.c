@@ -45,14 +45,13 @@ void av_register_all(void)
     raw_init();
     mp3_init();
     rm_init();
-#ifdef CONFIG_RISKY
     asf_init();
-#endif
 #ifdef CONFIG_ENCODERS
     avienc_init();
 #endif //CONFIG_ENCODERS
     avidec_init();
     ff_wav_init();
+    ff_mmf_init();
     swf_init();
     au_init();
 #ifdef CONFIG_ENCODERS
@@ -83,15 +82,14 @@ void av_register_all(void)
     amr_init();
 #endif
     yuv4mpeg_init();
-    
-#ifdef CONFIG_VORBIS
+
     ogg_init();
+#ifdef CONFIG_LIBOGG
+    libogg_init();
 #endif
 
-#ifndef CONFIG_WIN32
     ffm_init();
-#endif
-#ifdef CONFIG_VIDEO4LINUX
+#if defined(CONFIG_VIDEO4LINUX) || defined(CONFIG_BKTR)
     video_grab_init();
 #endif
 #if defined(CONFIG_AUDIO_OSS) || defined(CONFIG_AUDIO_BEOS)
@@ -121,16 +119,14 @@ void av_register_all(void)
     av_register_image_format(&ppm_image_format);
     av_register_image_format(&pam_image_format);
     av_register_image_format(&pgmyuv_image_format);
-#endif
     av_register_image_format(&yuv_image_format);
-#if 0
 #ifdef CONFIG_ZLIB
     av_register_image_format(&png_image_format);
 #endif
     av_register_image_format(&jpeg_image_format);
 #endif
-    av_register_image_format(&gif_image_format);
-    av_register_image_format(&sgi_image_format);
+    av_register_image_format(&gif_image_format);  
+//    av_register_image_format(&sgi_image_format); heap corruption, dont enable
 #endif //CONFIG_ENCODERS
 
     /* file protocols */

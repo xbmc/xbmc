@@ -113,11 +113,11 @@ static int sol_read_header(AVFormatContext *s,
     st = av_new_stream(s, 0);
     if (!st)
         return -1;
-    st->codec.codec_type = CODEC_TYPE_AUDIO;
-    st->codec.codec_tag = id;
-    st->codec.codec_id = codec;
-    st->codec.channels = channels;
-    st->codec.sample_rate = rate;    
+    st->codec->codec_type = CODEC_TYPE_AUDIO;
+    st->codec->codec_tag = id;
+    st->codec->codec_id = codec;
+    st->codec->channels = channels;
+    st->codec->sample_rate = rate;    
     av_set_pts_info(st, 64, 1, rate);
     return 0;
 }
@@ -131,13 +131,9 @@ static int sol_read_packet(AVFormatContext *s,
 
     if (url_feof(&s->pb))
         return -EIO;
-    if (av_new_packet(pkt, MAX_SIZE))
-        return -EIO;
+    ret= av_get_packet(&s->pb, pkt, MAX_SIZE);
     pkt->stream_index = 0;
 
-    ret = get_buffer(&s->pb, pkt->data, pkt->size);
-    if (ret < 0)
-        av_free_packet(pkt);
     /* note: we need to modify the packet size here to handle the last
        packet */
     pkt->size = ret;

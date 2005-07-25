@@ -106,6 +106,11 @@ static int lavc_param_skip_bottom=0;
 static int lavc_param_fast=0;
 static int lavc_param_lowres=0;
 static char *lavc_param_lowres_str=NULL;
+#if LIBAVCODEC_BUILD >= 4758
+static char *lavc_param_skip_loop_filter_str = NULL;
+static char *lavc_param_skip_idct_str = NULL;
+static char *lavc_param_skip_frame_str = NULL;
+#endif
 
 m_option_t lavc_decode_opts_conf[]={
 	{"bug", &lavc_param_workaround_bugs, CONF_TYPE_INT, CONF_RANGE, -1, 999999, NULL},
@@ -122,8 +127,34 @@ m_option_t lavc_decode_opts_conf[]={
         {"fast", &lavc_param_fast, CONF_TYPE_FLAG, 0, 0, CODEC_FLAG2_FAST, NULL},
 #endif
 	{"lowres", &lavc_param_lowres_str, CONF_TYPE_STRING, 0, 0, 0, NULL},
+#if LIBAVCODEC_BUILD >= 4758
+	{"skiploopfilter", &lavc_param_skip_loop_filter_str, CONF_TYPE_STRING, 0, 0, 0, NULL},
+	{"skipidct", &lavc_param_skip_idct_str, CONF_TYPE_STRING, 0, 0, 0, NULL},
+	{"skipframe", &lavc_param_skip_frame_str, CONF_TYPE_STRING, 0, 0, 0, NULL},
+#endif
 	{NULL, NULL, 0, 0, 0, 0, NULL}
 };
+
+#if LIBAVCODEC_BUILD >= 4758
+static enum AVDiscard str2AVDiscard(char *str) {
+  if (!str)
+    return AVDISCARD_DEFAULT;
+  if (strcasecmp(str, "none") == 0)
+    return AVDISCARD_NONE;
+  if (strcasecmp(str, "default") == 0)
+    return AVDISCARD_DEFAULT;
+  if (strcasecmp(str, "nonref") == 0)
+    return AVDISCARD_NONREF;
+  if (strcasecmp(str, "bidir") == 0)
+    return AVDISCARD_BIDIR;
+  if (strcasecmp(str, "nonkey") == 0)
+    return AVDISCARD_NONKEY;
+  if (strcasecmp(str, "all") == 0)
+    return AVDISCARD_ALL;
+  mp_msg(MSGT_DECVIDEO, MSGL_ERR, "Unknown discard value %s\n", str);
+  return AVDISCARD_DEFAULT;
+}
+#endif
 
 // to set/get/query special features/parameters
 static int control(sh_video_t *sh,int cmd,void* arg,...){
@@ -271,6 +302,11 @@ static int init(sh_video_t *sh){
         avctx->lowres = lavc_param_lowres;
     }
 #endif    
+#if LIBAVCODEC_BUILD >= 4758
+    avctx->skip_loop_filter = str2AVDiscard(lavc_param_skip_loop_filter_str);
+    avctx->skip_idct = str2AVDiscard(lavc_param_skip_idct_str);
+    avctx->skip_frame = str2AVDiscard(lavc_param_skip_frame_str);
+#endif
     mp_dbg(MSGT_DECVIDEO,MSGL_DBG2,"libavcodec.size: %d x %d\n",avctx->width,avctx->height);
     /* AVRn stores huffman table in AVI header */
     /* Pegasus MJPEG stores it also in AVI header, but it uses the common
@@ -281,7 +317,7 @@ static int init(sh_video_t *sh){
     {
 	avctx->flags |= CODEC_FLAG_EXTERN_HUFF;
 	avctx->extradata_size = sh->bih->biSize-sizeof(BITMAPINFOHEADER);
-	avctx->extradata = malloc(avctx->extradata_size);
+	avctx->extradata = av_malloc(avctx->extradata_size);
 	memcpy(avctx->extradata, sh->bih+sizeof(BITMAPINFOHEADER),
 	    avctx->extradata_size);
 
@@ -303,7 +339,7 @@ static int init(sh_video_t *sh){
        || sh->format == mmioFOURCC('R', 'V', '4', '0')
        ){
         avctx->extradata_size= 8;
-        avctx->extradata = malloc(avctx->extradata_size);
+        avctx->extradata = av_malloc(avctx->extradata_size);
         if(sh->bih->biSize!=sizeof(*sh->bih)+8){
             /* only 1 packet per frame & sub_id from fourcc */
 	    ((uint32_t*)avctx->extradata)[0] = 0;
@@ -326,6 +362,7 @@ static int init(sh_video_t *sh){
 	 sh->format == mmioFOURCC('H','F','Y','U') ||
 	 sh->format == mmioFOURCC('F','F','V','H') ||
 	 sh->format == mmioFOURCC('W','M','V','2') ||
+	 sh->format == mmioFOURCC('W','M','V','3') ||
 	 sh->format == mmioFOURCC('A','S','V','1') ||
 	 sh->format == mmioFOURCC('A','S','V','2') ||
 	 sh->format == mmioFOURCC('V','S','S','H') ||
@@ -334,11 +371,13 @@ static int init(sh_video_t *sh){
 	 sh->format == mmioFOURCC('M','P','4','V') ||
 	 sh->format == mmioFOURCC('F','L','I','C') ||
 	 sh->format == mmioFOURCC('S','N','O','W') ||
-	 sh->format == mmioFOURCC('a','v','c','1')
+	 sh->format == mmioFOURCC('a','v','c','1') ||
+	 sh->format == mmioFOURCC('L','O','C','O') ||
+	 sh->format == mmioFOURCC('t','h','e','o')
          ))
     {
 	avctx->extradata_size = sh->bih->biSize-sizeof(BITMAPINFOHEADER);
-	avctx->extradata = malloc(avctx->extradata_size);
+	avctx->extradata = av_malloc(avctx->extradata_size);
 	memcpy(avctx->extradata, sh->bih+1, avctx->extradata_size);
     }
     /* Pass palette to codec */
@@ -359,7 +398,7 @@ static int init(sh_video_t *sh){
     if (sh->ImageDesc &&
 	 sh->format == mmioFOURCC('S','V','Q','3')){
 	avctx->extradata_size = (*(int*)sh->ImageDesc) - sizeof(int);
-	avctx->extradata = malloc(avctx->extradata_size);
+	avctx->extradata = av_malloc(avctx->extradata_size);
 	memcpy(avctx->extradata, ((int*)sh->ImageDesc)+1, avctx->extradata_size);
     }
     
@@ -395,28 +434,14 @@ static void uninit(sh_video_t *sh){
     if (avcodec_close(avctx) < 0)
     	    mp_msg(MSGT_DECVIDEO,MSGL_ERR, MSGTR_CantCloseCodec);
 
-    if (avctx->extradata_size)
-	free(avctx->extradata);
-    avctx->extradata=NULL;
+    av_freep(&avctx->extradata);
 #if LIBAVCODEC_BUILD >= 4689
-    if (avctx->palctrl)
-	    free(avctx->palctrl);
-    avctx->palctrl=NULL;
+    av_freep(&avctx->palctrl);
 #endif
-    if(avctx->slice_offset!=NULL) 
-        free(avctx->slice_offset);
-    avctx->slice_offset=NULL;
-#ifdef _XBOX //they have been allocated with the memalign hack
-    if (avctx)
-	av_free(avctx);
-    if (ctx->pic)
-	av_free(ctx->pic);
-#else
-    if (avctx)
-	free(avctx);
-    if (ctx->pic)
-	free(ctx->pic);
-#endif
+    av_freep(&avctx->slice_offset);
+
+    av_freep(&avctx);
+    av_freep(&ctx->pic);
     if (ctx)
 	free(ctx);
 
@@ -464,11 +489,13 @@ static void draw_slice(struct AVCodecContext *s,
         }
     }else
 #endif
+    if (y < sh->disp_h) {
 #if LIBAVCODEC_BUILD >= 4670
-        mpcodecs_draw_slice (sh, source, src->linesize, width, height, 0, y);
+        mpcodecs_draw_slice (sh, source, src->linesize, sh->disp_w, (y+height)<=sh->disp_h?height:sh->disp_h-y, 0, y);
 #else
-        mpcodecs_draw_slice (sh,src, stride, width, height, 0, y);
+        mpcodecs_draw_slice (sh,src, stride, sh->disp_w, (y+height)<=sh->disp_h?height:sh->disp_h-y, 0, y);
 #endif
+    }
 }
 
 
@@ -480,12 +507,24 @@ static int init_vo(sh_video_t *sh, enum PixelFormat pix_fmt){
 #else
     float aspect= avctx->aspect_ratio;
 #endif
+    int width, height;
+
+    width = avctx->width;
+    height = avctx->height;
+
+    // HACK!
+    // if sh->ImageDesc is non-NULL, it means we decode QuickTime(tm) video.
+    // use dimensions from BIH to avoid black borders at the right and bottom.
+    if (sh->bih && sh->ImageDesc) {
+	width = sh->bih->biWidth>>lavc_param_lowres;
+	height = sh->bih->biHeight>>lavc_param_lowres;
+    }
 
      // it is possible another vo buffers to be used after vo config()
      // lavc reset its buffers on width/heigh change but not on aspect change!!!
     if (// aspect != ctx->last_aspect ||
-	avctx->width != sh->disp_w ||
-	avctx->height != sh->disp_h ||
+	width != sh->disp_w  ||
+	height != sh->disp_h ||
 	!ctx->vo_inited)
     {
 	mp_msg(MSGT_DECVIDEO, MSGL_V, "[ffmpeg] aspect_ratio: %f\n", aspect);
@@ -493,13 +532,19 @@ static int init_vo(sh_video_t *sh, enum PixelFormat pix_fmt){
 //	if(ctx->last_aspect>=0.01 && ctx->last_aspect<100)
 	if(sh->aspect==0.0)
 	    sh->aspect = ctx->last_aspect;
-	sh->disp_w = avctx->width;
-	sh->disp_h = avctx->height;
+	sh->disp_w = width;
+	sh->disp_h = height;
 	ctx->vo_inited=1;
 	switch(pix_fmt){
+	// YUVJ are YUV formats that use the full Y range and not just
+	// 16 - 235 (see colorspaces.txt).
+	// Currently they are all treated the same way.
 	case PIX_FMT_YUV410P: ctx->best_csp=IMGFMT_YVU9;break; //svq1
+	case PIX_FMT_YUVJ420P:
 	case PIX_FMT_YUV420P: ctx->best_csp=IMGFMT_YV12;break; //mpegs
+	case PIX_FMT_YUVJ422P:
 	case PIX_FMT_YUV422P: ctx->best_csp=IMGFMT_422P;break; //mjpeg / huffyuv
+	case PIX_FMT_YUVJ444P:
 	case PIX_FMT_YUV444P: ctx->best_csp=IMGFMT_444P;break; //photo jpeg
 	case PIX_FMT_YUV411P: ctx->best_csp=IMGFMT_411P;break; //dv ntsc
 	case PIX_FMT_YUV422:  ctx->best_csp=IMGFMT_YUY2;break; //huffyuv perhaps in the future
@@ -608,7 +653,7 @@ static int get_buffer(AVCodecContext *avctx, AVFrame *pic){
 #if LIBAVCODEC_BUILD >= 4689
 	// Palette support: libavcodec copies palette to *data[1]
 	if (mpi->bpp == 8)
-		mpi->planes[1] = malloc(AVPALETTE_SIZE);
+		mpi->planes[1] = av_malloc(AVPALETTE_SIZE);
 #endif
 
     pic->data[0]= mpi->planes[0];
@@ -684,8 +729,8 @@ static void release_buffer(struct AVCodecContext *avctx, AVFrame *pic){
   }
 
 	// Palette support: free palette buffer allocated in get_buffer
-	if ( mpi && (mpi->bpp == 8) && (mpi->planes[1] != NULL))
-		free(mpi->planes[1]);
+	if ( mpi && (mpi->bpp == 8))
+		av_freep(&mpi->planes[1]);
 
 #if LIBAVCODEC_BUILD >= 4644
     if(pic->type!=FF_BUFFER_TYPE_USER){
@@ -763,7 +808,7 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
         dp_hdr_t *hdr= (dp_hdr_t*)data;
 
         if(avctx->slice_offset==NULL) 
-            avctx->slice_offset= malloc(sizeof(int)*1000);
+            avctx->slice_offset= av_malloc(sizeof(int)*1000);
         
 //        for(i=0; i<25; i++) printf("%02X ", ((uint8_t*)data)[i]);
         

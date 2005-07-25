@@ -72,19 +72,22 @@ typedef struct TsccContext {
  *
  */
  
-static int decode_rle(CamtasiaContext *c)
+static int decode_rle(CamtasiaContext *c, unsigned int srcsize)
 {
     unsigned char *src = c->decomp_buf;
-    unsigned char *output;
+    unsigned char *output, *output_end;
     int p1, p2, line=c->height, pos=0, i;
     
     output = c->pic.data[0] + (c->height - 1) * c->pic.linesize[0];
-    while(src < c->decomp_buf + c->decomp_size) {
+    output_end = c->pic.data[0] + (c->height) * c->pic.linesize[0];
+    while(src < c->decomp_buf + srcsize) {
         p1 = *src++;
         if(p1 == 0) { //Escape code
             p2 = *src++;
             if(p2 == 0) { //End-of-line
                 output = c->pic.data[0] + (--line) * c->pic.linesize[0];
+                if (line < 0)
+                    return -1;
                 pos = 0;
                 continue;
             } else if(p2 == 1) { //End-of-picture
@@ -93,11 +96,17 @@ static int decode_rle(CamtasiaContext *c)
                 p1 = *src++;
                 p2 = *src++;
                 line -= p2;
+                if (line < 0)
+                    return -1;
                 pos += p1;
                 output = c->pic.data[0] + line * c->pic.linesize[0] + pos * (c->bpp / 8);
                 continue;
             }
             // Copy data
+            if (output + p2 * (c->bpp / 8) > output_end) {
+                src += p2 * (c->bpp / 8);
+                continue;
+            }
             for(i = 0; i < p2 * (c->bpp / 8); i++) {
                 *output++ = *src++;
             }
@@ -107,7 +116,7 @@ static int decode_rle(CamtasiaContext *c)
 	    }
             pos += p2;
         } else { //Run of pixels
-            int pix[3]; //original pixel
+            int pix[4]; //original pixel
             switch(c->bpp){
             case  8: pix[0] = *src++;
                      break;
@@ -118,7 +127,14 @@ static int decode_rle(CamtasiaContext *c)
                      pix[1] = *src++;
                      pix[2] = *src++;
                      break;
+            case 32: pix[0] = *src++;
+                     pix[1] = *src++;
+                     pix[2] = *src++;
+                     pix[3] = *src++;
+                     break;
             }
+            if (output + p1 * (c->bpp / 8) > output_end)
+                continue;
             for(i = 0; i < p1; i++) {
                 switch(c->bpp){
                 case  8: *output++ = pix[0];
@@ -129,6 +145,11 @@ static int decode_rle(CamtasiaContext *c)
                 case 24: *output++ = pix[0];
                          *output++ = pix[1];
                          *output++ = pix[2];
+                         break;
+                case 32: *output++ = pix[0];
+                         *output++ = pix[1];
+                         *output++ = pix[2];
+                         *output++ = pix[3];
                          break;
                 }
             }
@@ -154,10 +175,6 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, uint8
     int zret; // Zlib return code
 #endif
     int len = buf_size;
-
-    /* no supplementary picture */
-    if (buf_size == 0)
-        return 0;
 
     if(c->pic.data[0])
             avctx->release_buffer(avctx, &c->pic);
@@ -187,10 +204,10 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, uint8
         av_log(avctx, AV_LOG_ERROR, "Inflate error: %d\n", zret);
         return -1;
     }
-    encoded = c->decomp_buf;
-    len = c->decomp_size;
+
+
     if(zret != Z_DATA_ERROR)
-        decode_rle(c);
+        decode_rle(c, c->zstream.avail_out);
     
     /* make the palette available on the way out */
     if (c->avctx->pix_fmt == PIX_FMT_PAL8) {
@@ -231,6 +248,10 @@ static int decode_init(AVCodecContext *avctx)
     c->pic.data[0] = NULL;
     c->height = avctx->height;
 
+    if (avcodec_check_dimensions(avctx, avctx->height, avctx->width) < 0) {
+        return 1;
+    }
+
 #ifdef CONFIG_ZLIB
     // Needed if zlib unused or init aborted before inflateInit
     memset(&(c->zstream), 0, sizeof(z_stream)); 
@@ -241,9 +262,10 @@ static int decode_init(AVCodecContext *avctx)
     switch(avctx->bits_per_sample){
     case  8: avctx->pix_fmt = PIX_FMT_PAL8; break;
     case 16: avctx->pix_fmt = PIX_FMT_RGB555; break;
-    case 24: av_log(avctx, AV_LOG_ERROR, "Camtasia warning: RGB24 is just guessed\n");
+    case 24:
              avctx->pix_fmt = PIX_FMT_BGR24;
              break;
+    case 32: avctx->pix_fmt = PIX_FMT_RGBA32; break;
     default: av_log(avctx, AV_LOG_ERROR, "Camtasia error: unknown depth %i bpp\n", avctx->bits_per_sample);
              return -1;             
     }
@@ -282,6 +304,8 @@ static int decode_init(AVCodecContext *avctx)
 static int decode_end(AVCodecContext *avctx)
 {
     CamtasiaContext * const c = (CamtasiaContext *)avctx->priv_data;
+
+    av_freep(&c->decomp_buf);
 
     if (c->pic.data[0])
         avctx->release_buffer(avctx, &c->pic);

@@ -254,7 +254,7 @@ static inline void put_cabac_ueg(CABACContext *c, uint8_t * state, int v, int ma
 }
 
 static void refill(CABACContext *c){
-    if(c->bytestream < c->bytestream_end)
+    if(c->bytestream <= c->bytestream_end)
 #if CABAC_BITS == 16
         c->low+= ((c->bytestream[0]<<9) + (c->bytestream[1])<<1);
 #else
@@ -264,6 +264,7 @@ static void refill(CABACContext *c){
     c->bytestream+= CABAC_BITS/8;
 }
 
+#if 0 /* all use commented */
 static void refill2(CABACContext *c){
     int i, x;
 
@@ -282,7 +283,7 @@ static void refill2(CABACContext *c){
     c->low += x<<i;
     c->bytestream+= CABAC_BITS/8;
 }
-
+#endif
 
 static inline void renorm_cabac_decoder(CABACContext *c){
     while(c->range < (0x200 << CABAC_BITS)){
@@ -303,7 +304,7 @@ static inline void renorm_cabac_decoder_once(CABACContext *c){
 
 static inline int get_cabac(CABACContext *c, uint8_t * const state){
     int RangeLPS= c->lps_range[*state][c->range>>(CABAC_BITS+7)]<<(CABAC_BITS+1);
-    int bit, lps_mask;
+    int bit, lps_mask attribute_unused;
     
     c->range -= RangeLPS;
 #if 1

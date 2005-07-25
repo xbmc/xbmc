@@ -47,6 +47,8 @@ typedef struct lavf_priv_t{
 extern void print_wave_header(WAVEFORMATEX *h);
 extern void print_video_header(BITMAPINFOHEADER *h);
 
+int64_t ff_gcd(int64_t a, int64_t b);
+
 static int mp_open(URLContext *h, const char *filename, int flags){
     return 0;
 }
@@ -110,7 +112,8 @@ int lavf_check_file(demuxer_t *demuxer){
 
     av_register_all();
 
-    stream_read(demuxer->stream, buf, PROBE_BUF_SIZE);
+    if(stream_read(demuxer->stream, buf, PROBE_BUF_SIZE)!=PROBE_BUF_SIZE)
+        return 0;
     avpd.filename= demuxer->stream->url;
     avpd.buf= buf;
     avpd.buf_size= PROBE_BUF_SIZE;
@@ -129,7 +132,7 @@ int demux_open_lavf(demuxer_t *demuxer){
     AVFormatContext *avfc;
     AVFormatParameters ap;
     lavf_priv_t *priv= demuxer->priv;
-    int i;
+    int i,g;
     char mp_filename[256]="mp:";
 
     memset(&ap, 0, sizeof(AVFormatParameters));
@@ -170,7 +173,11 @@ int demux_open_lavf(demuxer_t *demuxer){
 
     for(i=0; i<avfc->nb_streams; i++){
         AVStream *st= avfc->streams[i];
+#if LIBAVFORMAT_BUILD >= 4629
+        AVCodecContext *codec= st->codec;
+#else
         AVCodecContext *codec= &st->codec;
+#endif
         
         switch(codec->codec_type){
         case CODEC_TYPE_AUDIO:{
@@ -193,13 +200,30 @@ int demux_open_lavf(demuxer_t *demuxer){
                     codec->extradata_size);
             }
             sh_audio->wf= wf;
+            sh_audio->audio.dwSampleSize= codec->block_align;
+            if(codec->frame_size && codec->sample_rate){
+                sh_audio->audio.dwScale=codec->frame_size;
+                sh_audio->audio.dwRate= codec->sample_rate;
+            }else{
+                sh_audio->audio.dwScale= codec->block_align ? codec->block_align*8 : 8;
+                sh_audio->audio.dwRate = codec->bit_rate;
+            }
+            g= ff_gcd(sh_audio->audio.dwScale, sh_audio->audio.dwRate);
+            sh_audio->audio.dwScale /= g;
+            sh_audio->audio.dwRate  /= g;
+//            printf("sca:%d rat:%d fs:%d sr:%d ba:%d\n", sh_audio->audio.dwScale, sh_audio->audio.dwRate, codec->frame_size, codec->sample_rate, codec->block_align);
             sh_audio->ds= demuxer->audio;
             sh_audio->format= codec->codec_tag;
             sh_audio->channels= codec->channels;
             sh_audio->samplerate= codec->sample_rate;
+            sh_audio->i_bps= codec->bit_rate/8;
             if(verbose>=1) print_wave_header(sh_audio->wf);
-            demuxer->audio->id=i;
+            if(demuxer->audio->id != i && demuxer->audio->id != -1)
+                st->discard= AVDISCARD_ALL;
+            else{
+                demuxer->audio->id = i;
             demuxer->audio->sh= demuxer->a_streams[i];
+            }
             break;}
         case CODEC_TYPE_VIDEO:{
             BITMAPINFOHEADER *bih=calloc(sizeof(BITMAPINFOHEADER) + codec->extradata_size,1);
@@ -217,13 +241,19 @@ int demux_open_lavf(demuxer_t *demuxer){
             sh_video->bih= bih;
             sh_video->disp_w= codec->width;
             sh_video->disp_h= codec->height;
+#if LIBAVFORMAT_BUILD >= 4624
+            sh_video->video.dwRate= codec->time_base.den;
+            sh_video->video.dwScale= codec->time_base.num;
+#else
             sh_video->video.dwRate= codec->frame_rate;
             sh_video->video.dwScale= codec->frame_rate_base;
+#endif
             sh_video->fps=(float)sh_video->video.dwRate/(float)sh_video->video.dwScale;
             sh_video->frametime=(float)sh_video->video.dwScale/(float)sh_video->video.dwRate;
             sh_video->format = bih->biCompression;
             sh_video->aspect=   codec->width * codec->sample_aspect_ratio.num 
                               / (float)(codec->height * codec->sample_aspect_ratio.den);
+            sh_video->i_bps= codec->bit_rate/8;
             mp_msg(MSGT_DEMUX,MSGL_DBG2,"aspect= %d*%d/(%d*%d)\n", 
                 codec->width, codec->sample_aspect_ratio.num,
                 codec->height, codec->sample_aspect_ratio.den);
@@ -237,9 +267,15 @@ int demux_open_lavf(demuxer_t *demuxer){
     int  	biYPelsPerMeter;
     int 	biClrUsed;
     int 	biClrImportant;*/
-            demuxer->video->id=i;
+            if(demuxer->video->id != i && demuxer->video->id != -1)
+                st->discard= AVDISCARD_ALL;
+            else{
+                demuxer->video->id = i;
             demuxer->video->sh= demuxer->v_streams[i];            
+            }
             break;}
+        default:
+            st->discard= AVDISCARD_ALL;
         }
     }
     
@@ -292,8 +328,10 @@ int demux_lavf_fill_buffer(demuxer_t *demux){
             ds->sh=demux->v_streams[id];
             mp_msg(MSGT_DEMUX,MSGL_V,"Auto-selected LAVF video ID = %d\n",ds->id);
         }
-    } else
-        ds= NULL;
+    } else {
+        av_free_packet(&pkt);
+        return 1;
+    }
         
     if(0/*pkt.destruct == av_destruct_packet*/){
         //ok kids, dont try this at home :)
@@ -310,8 +348,13 @@ int demux_lavf_fill_buffer(demuxer_t *demux){
         av_free_packet(&pkt);
     }
     if(pkt.pts != AV_NOPTS_VALUE){
+#if LIBAVFORMAT_BUILD >= 4624
+        dp->pts=pkt.pts * av_q2d(priv->avfc->streams[id]->time_base);
+        priv->last_pts= dp->pts * AV_TIME_BASE;
+#else
     priv->last_pts= pkt.pts;
     dp->pts=pkt.pts / (float)AV_TIME_BASE;
+#endif
     }
     dp->pos=demux->filepos;
     dp->flags= !!(pkt.flags&PKT_FLAG_KEY);

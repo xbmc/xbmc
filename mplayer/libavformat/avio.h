@@ -71,7 +71,7 @@ typedef struct {
     void *opaque;
     int (*read_packet)(void *opaque, uint8_t *buf, int buf_size);
     int (*write_packet)(void *opaque, uint8_t *buf, int buf_size);
-    int (*seek)(void *opaque, offset_t offset, int whence);
+    offset_t (*seek)(void *opaque, offset_t offset, int whence);
     offset_t pos; /* position in the file of the current buffer */
     int must_flush; /* true if the next seek should flush */
     int eof_reached; /* true if eof reached */
@@ -91,7 +91,7 @@ int init_put_byte(ByteIOContext *s,
                   void *opaque,
                   int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
                   int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
-                  int (*seek)(void *opaque, offset_t offset, int whence));
+                  offset_t (*seek)(void *opaque, offset_t offset, int whence));
 
 void put_byte(ByteIOContext *s, int b);
 void put_buffer(ByteIOContext *s, const unsigned char *buf, int size);
@@ -99,16 +99,17 @@ void put_le64(ByteIOContext *s, uint64_t val);
 void put_be64(ByteIOContext *s, uint64_t val);
 void put_le32(ByteIOContext *s, unsigned int val);
 void put_be32(ByteIOContext *s, unsigned int val);
+void put_be24(ByteIOContext *s, unsigned int val);
 void put_le16(ByteIOContext *s, unsigned int val);
 void put_be16(ByteIOContext *s, unsigned int val);
 void put_tag(ByteIOContext *s, const char *tag);
 
-void put_be64_double(ByteIOContext *s, double val);
 void put_strz(ByteIOContext *s, const char *buf);
 
 offset_t url_fseek(ByteIOContext *s, offset_t offset, int whence);
 void url_fskip(ByteIOContext *s, offset_t offset);
 offset_t url_ftell(ByteIOContext *s);
+offset_t url_fsize(ByteIOContext *s);
 int url_feof(ByteIOContext *s);
 int url_ferror(ByteIOContext *s);
 
@@ -130,9 +131,9 @@ unsigned int get_le32(ByteIOContext *s);
 uint64_t get_le64(ByteIOContext *s);
 unsigned int get_le16(ByteIOContext *s);
 
-double get_be64_double(ByteIOContext *s);
 char *get_strz(ByteIOContext *s, char *buf, int maxlen);
 unsigned int get_be16(ByteIOContext *s);
+unsigned int get_be24(ByteIOContext *s);
 unsigned int get_be32(ByteIOContext *s);
 uint64_t get_be64(ByteIOContext *s);
 

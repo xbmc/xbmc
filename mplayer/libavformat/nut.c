@@ -17,9 +17,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * NUT DRAFT can be found in MPlayer CVS at DOCS/tech/mpcf.txt
  *
- * AND http://people.fsn.hu/~alex/nut/ (TeX, pdf, ps, dvi, ..)
+ * Visit the official site at http://www.nut.hu/
  *
  */
 
@@ -82,7 +81,7 @@ typedef struct {
     int written_packet_size;
     int64_t packet_start[3]; //0-> startcode less, 1-> short startcode 2-> long startcodes
     FrameCode frame_code[256];
-    int stream_count;
+    unsigned int stream_count;
     uint64_t next_startcode;     ///< stores the next startcode if it has alraedy been parsed but the stream isnt seekable
     StreamContext *stream;
     int max_distance;
@@ -111,6 +110,8 @@ static char *info_table[][2]={
 	{"Cover"		, "JPEG"},
 	{"Cover"		, "PNG"},
 };
+
+void ff_parse_specific_params(AVCodecContext *stream, int *au_rate, int *au_ssize, int *au_scale);
 
 static void update(NUTContext *nut, int stream_index, int64_t frame_start, int frame_type, int frame_code, int key_frame, int size, int64_t pts){
     StreamContext *stream= &nut->stream[stream_index];
@@ -154,7 +155,7 @@ static void build_frame_code(AVFormatContext *s){
     for(stream_id= 0; stream_id<s->nb_streams; stream_id++){
         int start2= start + (end-start)*stream_id / s->nb_streams;
         int end2  = start + (end-start)*(stream_id+1) / s->nb_streams;
-        AVCodecContext *codec = &s->streams[stream_id]->codec;
+        AVCodecContext *codec = s->streams[stream_id]->codec;
         int is_audio= codec->codec_type == CODEC_TYPE_AUDIO;
         int intra_only= /*codec->intra_only || */is_audio;
         int pred_count;
@@ -255,8 +256,8 @@ static uint64_t get_v(ByteIOContext *bc)
     return -1;
 }
 
-static int get_str(ByteIOContext *bc, char *string, int maxlen){
-    int len= get_v(bc);
+static int get_str(ByteIOContext *bc, char *string, unsigned int maxlen){
+    unsigned int len= get_v(bc);
     
     if(len && maxlen)
         get_buffer(bc, string, FFMIN(len, maxlen));
@@ -283,7 +284,7 @@ static int64_t get_s(ByteIOContext *bc){
 
 static uint64_t get_vb(ByteIOContext *bc){
     uint64_t val=0;
-    int i= get_v(bc);
+    unsigned int i= get_v(bc);
     
     if(i>8)
         return UINT64_MAX;
@@ -420,7 +421,7 @@ static void put_str(ByteIOContext *bc, const char *string){
     put_buffer(bc, string, len);
 }
 
-static void put_s(ByteIOContext *bc, uint64_t val){
+static void put_s(ByteIOContext *bc, int64_t val){
     if (val<=0) put_v(bc, -2*val  );
     else        put_v(bc,  2*val-1);
 }
@@ -576,14 +577,20 @@ static int nut_write_header(AVFormatContext *s)
     /* stream headers */
     for (i = 0; i < s->nb_streams; i++)
     {
-	int nom, denom, gcd;
+	int nom, denom, ssize;
 
-	codec = &s->streams[i]->codec;
+	codec = s->streams[i]->codec;
 	
 	put_be64(bc, STREAM_STARTCODE);
 	put_packetheader(nut, bc, 120 + codec->extradata_size, 1);
 	put_v(bc, i /*s->streams[i]->index*/);
-	put_v(bc, (codec->codec_type == CODEC_TYPE_AUDIO) ? 32 : 0);
+        switch(codec->codec_type){
+        case CODEC_TYPE_VIDEO: put_v(bc, 0); break;
+        case CODEC_TYPE_AUDIO: put_v(bc, 1); break;
+//        case CODEC_TYPE_TEXT : put_v(bc, 2); break;
+        case CODEC_TYPE_DATA : put_v(bc, 3); break;
+        default: return -1;
+        }
 	if (codec->codec_tag)
 	    put_vb(bc, codec->codec_tag);
 	else if (codec->codec_type == CODEC_TYPE_VIDEO)
@@ -596,23 +603,9 @@ static int nut_write_header(AVFormatContext *s)
 	}
         else
             put_vb(bc, 0);
+        
+        ff_parse_specific_params(codec, &nom, &ssize, &denom);
 
-	if (codec->codec_type == CODEC_TYPE_VIDEO)
-	{
-	    nom = codec->frame_rate;
-	    denom = codec->frame_rate_base;
-	}
-	else
-	{
-	    nom = codec->sample_rate;
-            if(codec->frame_size>0)
-                denom= codec->frame_size;
-            else
-                denom= 1; //unlucky
-	}
-        gcd= ff_gcd(nom, denom);
-        nom   /= gcd;
-        denom /= gcd;
         nut->stream[i].rate_num= nom;
         nut->stream[i].rate_den= denom;
         av_set_pts_info(s->streams[i], 60, denom, nom);
@@ -681,7 +674,7 @@ static int nut_write_header(AVFormatContext *s)
         put_str(bc, s->copyright);
     }
     /* encoder */
-    if(!(s->streams[0]->codec.flags & CODEC_FLAG_BITEXACT)){
+    if(!(s->streams[0]->codec->flags & CODEC_FLAG_BITEXACT)){
         put_v(bc, 13); /* type */
         put_str(bc, LIBAVFORMAT_IDENT);
     }
@@ -714,7 +707,7 @@ static int nut_write_packet(AVFormatContext *s, AVPacket *pkt)
     int size= pkt->size;
     int stream_index= pkt->stream_index;
 
-    enc = &s->streams[stream_index]->codec;
+    enc = s->streams[stream_index]->codec;
     key_frame = !!(pkt->flags & PKT_FLAG_KEY);
     
     frame_type=0;
@@ -877,6 +870,10 @@ static int decode_main_header(NUTContext *nut){
     }
     
     nut->stream_count = get_v(bc);
+    if(nut->stream_count > MAX_STREAMS){
+        av_log(s, AV_LOG_ERROR, "too many streams\n");
+        return -1;
+    }
     nut->max_distance = get_v(bc);
     nut->max_short_distance = get_v(bc);
     nut->rate_num= get_v(bc);
@@ -927,7 +924,7 @@ static int decode_main_header(NUTContext *nut){
     }
 
     if(check_checksum(bc)){
-        av_log(s, AV_LOG_ERROR, "Main header checksum missmatch\n");
+        av_log(s, AV_LOG_ERROR, "Main header checksum mismatch\n");
         return -1;
     }
 
@@ -952,20 +949,27 @@ static int decode_stream_header(NUTContext *nut){
 
     class = get_v(bc);
     tmp = get_vb(bc);
-    st->codec.codec_tag= tmp;
+    st->codec->codec_tag= tmp;
     switch(class)
     {
         case 0:
-            st->codec.codec_type = CODEC_TYPE_VIDEO;
-            st->codec.codec_id = codec_get_bmp_id(tmp);
-            if (st->codec.codec_id == CODEC_ID_NONE)
+            st->codec->codec_type = CODEC_TYPE_VIDEO;
+            st->codec->codec_id = codec_get_bmp_id(tmp);
+            if (st->codec->codec_id == CODEC_ID_NONE)
                 av_log(s, AV_LOG_ERROR, "Unknown codec?!\n");
             break;
-        case 32:
-            st->codec.codec_type = CODEC_TYPE_AUDIO;
-            st->codec.codec_id = codec_get_wav_id(tmp);
-            if (st->codec.codec_id == CODEC_ID_NONE)
+        case 1:
+        case 32: //compatibility
+            st->codec->codec_type = CODEC_TYPE_AUDIO;
+            st->codec->codec_id = codec_get_wav_id(tmp);
+            if (st->codec->codec_id == CODEC_ID_NONE)
                 av_log(s, AV_LOG_ERROR, "Unknown codec?!\n");
+            break;
+        case 2:
+//            st->codec->codec_type = CODEC_TYPE_TEXT;
+//            break;
+        case 3:
+            st->codec->codec_type = CODEC_TYPE_DATA;
             break;
         default:
             av_log(s, AV_LOG_ERROR, "Unknown stream class (%d)\n", class);
@@ -976,36 +980,36 @@ static int decode_stream_header(NUTContext *nut){
     nom = get_v(bc);
     denom = get_v(bc);
     nut->stream[stream_id].msb_timestamp_shift = get_v(bc);
+    st->codec->has_b_frames=
     nut->stream[stream_id].decode_delay= get_v(bc);
     get_byte(bc); /* flags */
 
     /* codec specific data headers */
     while(get_v(bc) != 0){
-        st->codec.extradata_size= get_v(bc);
-        st->codec.extradata= av_mallocz(st->codec.extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
-        get_buffer(bc, st->codec.extradata, st->codec.extradata_size);            
+        st->codec->extradata_size= get_v(bc);
+        if((unsigned)st->codec->extradata_size > (1<<30))
+            return -1;
+        st->codec->extradata= av_mallocz(st->codec->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
+        get_buffer(bc, st->codec->extradata, st->codec->extradata_size);            
 //	    url_fskip(bc, get_v(bc));
     }
     
-    if (class == 0) /* VIDEO */
+    if (st->codec->codec_type == CODEC_TYPE_VIDEO) /* VIDEO */
     {
-        st->codec.width = get_v(bc);
-        st->codec.height = get_v(bc);
-        st->codec.sample_aspect_ratio.num= get_v(bc);
-        st->codec.sample_aspect_ratio.den= get_v(bc);
+        st->codec->width = get_v(bc);
+        st->codec->height = get_v(bc);
+        st->codec->sample_aspect_ratio.num= get_v(bc);
+        st->codec->sample_aspect_ratio.den= get_v(bc);
         get_v(bc); /* csp type */
-
-        st->codec.frame_rate = nom;
-        st->codec.frame_rate_base = denom;
     }
-    if (class == 32) /* AUDIO */
+    if (st->codec->codec_type == CODEC_TYPE_AUDIO) /* AUDIO */
     {
-        st->codec.sample_rate = get_v(bc);
+        st->codec->sample_rate = get_v(bc);
         get_v(bc); // samplerate_den
-        st->codec.channels = get_v(bc);
+        st->codec->channels = get_v(bc);
     }
     if(check_checksum(bc)){
-        av_log(s, AV_LOG_ERROR, "Stream header %d checksum missmatch\n", stream_id);
+        av_log(s, AV_LOG_ERROR, "Stream header %d checksum mismatch\n", stream_id);
         return -1;
     }
     av_set_pts_info(s->streams[stream_id], 60, denom, nom);
@@ -1045,7 +1049,7 @@ static int decode_info_header(NUTContext *nut){
         }
         
         if(!strcmp(type, "v")){
-            int value= get_v(bc);
+            get_v(bc);
         }else{
             if(!strcmp(name, "Author"))
                 get_str(bc, s->author, sizeof(s->author));
@@ -1060,7 +1064,7 @@ static int decode_info_header(NUTContext *nut){
         }
     }
     if(check_checksum(bc)){
-        av_log(s, AV_LOG_ERROR, "Info header checksum missmatch\n");
+        av_log(s, AV_LOG_ERROR, "Info header checksum mismatch\n");
         return -1;
     }
     return 0;
@@ -1096,7 +1100,7 @@ static int nut_read_header(AVFormatContext *s, AVFormatParameters *ap)
     pos=0;
     for(inited_stream_count=0; inited_stream_count < nut->stream_count;){
         pos= find_startcode(bc, STREAM_STARTCODE, pos)+1;
-        if (pos<0){
+        if (pos<0+1){
             av_log(s, AV_LOG_ERROR, "not all stream headers found\n");
             return -1;
         }
@@ -1216,15 +1220,23 @@ av_log(s, AV_LOG_DEBUG, "fs:%lld fc:%d ft:%d kf:%d pts:%lld size:%d mul:%d lsb:%
 static int decode_frame(NUTContext *nut, AVPacket *pkt, int frame_code, int frame_type, int64_t frame_start){
     AVFormatContext *s= nut->avf;
     ByteIOContext *bc = &s->pb;
-    int size, stream_id, key_frame;
-    int64_t pts;
+    int size, stream_id, key_frame, discard;
+    int64_t pts, last_IP_pts;
     
     size= decode_frame_header(nut, &key_frame, &pts, &stream_id, frame_code, frame_type, frame_start);
     if(size < 0)
         return -1;
 
-    av_new_packet(pkt, size);
-    get_buffer(bc, pkt->data, size);
+    discard= s->streams[ stream_id ]->discard;
+    last_IP_pts= s->streams[ stream_id ]->last_IP_pts;
+    if(  (discard >= AVDISCARD_NONKEY && !key_frame)
+       ||(discard >= AVDISCARD_BIDIR && last_IP_pts != AV_NOPTS_VALUE && last_IP_pts > pts)
+       || discard >= AVDISCARD_ALL){
+        url_fskip(bc, size);
+        return 1;
+    }
+
+    av_get_packet(bc, pkt, size);
     pkt->stream_index = stream_id;
     if (key_frame)
 	pkt->flags |= PKT_FLAG_KEY;
@@ -1237,7 +1249,7 @@ static int nut_read_packet(AVFormatContext *s, AVPacket *pkt)
 {
     NUTContext *nut = s->priv_data;
     ByteIOContext *bc = &s->pb;
-    int i, frame_code=0;
+    int i, frame_code=0, ret;
 
     for(;;){
         int64_t pos= url_ftell(bc);
@@ -1275,8 +1287,11 @@ static int nut_read_packet(AVFormatContext *s, AVPacket *pkt)
             reset(s, get_v(bc));
             frame_code = get_byte(bc);
         case 0:
-            if(decode_frame(nut, pkt, frame_code, frame_type, pos)>=0)
+            ret= decode_frame(nut, pkt, frame_code, frame_type, pos);
+            if(ret==0)
                 return 0;
+            else if(ret==1) //ok but discard packet
+                break;
         default:
 resync:
 av_log(s, AV_LOG_DEBUG, "syncing from %lld\n", nut->packet_start[2]+1);
@@ -1392,7 +1407,7 @@ static int nut_read_close(AVFormatContext *s)
     int i;
 
     for(i=0;i<s->nb_streams;i++) {
-        av_freep(&s->streams[i]->codec.extradata);
+        av_freep(&s->streams[i]->codec->extradata);
     }
     av_freep(&nut->stream);
 
@@ -1419,7 +1434,7 @@ static AVOutputFormat nut_oformat = {
     "video/x-nut",
     "nut",
     sizeof(NUTContext),
-#ifdef CONFIG_VORBIS
+#ifdef CONFIG_LIBVORBIS
     CODEC_ID_VORBIS,
 #elif defined(CONFIG_MP3LAME)
     CODEC_ID_MP3,
@@ -1430,6 +1445,7 @@ static AVOutputFormat nut_oformat = {
     nut_write_header,
     nut_write_packet,
     nut_write_trailer,
+    .flags = AVFMT_GLOBALHEADER,
 };
 #endif //CONFIG_ENCODERS
 

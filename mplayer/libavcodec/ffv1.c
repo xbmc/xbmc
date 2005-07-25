@@ -25,6 +25,7 @@
  */
 
 #include "common.h"
+#include "bitstream.h"
 #include "avcodec.h"
 #include "dsputil.h"
 #include "rangecoder.h"
@@ -353,13 +354,25 @@ static inline int get_vlc_symbol(GetBitContext *gb, VlcState * const state, int 
     return ret;
 }
 
-static inline void encode_line(FFV1Context *s, int w, int_fast16_t *sample[2], int plane_index, int bits){
+static inline int encode_line(FFV1Context *s, int w, int_fast16_t *sample[2], int plane_index, int bits){
     PlaneContext * const p= &s->plane[plane_index];
     RangeCoder * const c= &s->c;
     int x;
     int run_index= s->run_index;
     int run_count=0;
     int run_mode=0;
+
+    if(s->ac){
+        if(c->bytestream_end - c->bytestream < w*20){
+            av_log(s->avctx, AV_LOG_ERROR, "encoded frame too large\n");
+            return -1;
+        }
+    }else{
+        if(s->pb.buf_end - s->pb.buf - (put_bits_count(&s->pb)>>3) < w*4){
+            av_log(s->avctx, AV_LOG_ERROR, "encoded frame too large\n");
+            return -1;
+        }
+    }
 
     for(x=0; x<w; x++){
         int diff, context;
@@ -415,6 +428,8 @@ static inline void encode_line(FFV1Context *s, int w, int_fast16_t *sample[2], i
             put_bits(&s->pb, 1, 1);
     }
     s->run_index= run_index;
+    
+    return 0;
 }
 
 static void encode_plane(FFV1Context *s, uint8_t *src, int w, int h, int stride, int plane_index){
@@ -535,9 +550,9 @@ static int encode_init(AVCodecContext *avctx)
     FFV1Context *s = avctx->priv_data;
     int i;
 
-    if(avctx->strict_std_compliance >= 0){
-        av_log(avctx, AV_LOG_ERROR, "this codec is under development, files encoded with it wont be decodeable with future versions!!!\n"
-               "use vstrict=-1 to use it anyway\n");
+    if(avctx->strict_std_compliance >FF_COMPLIANCE_EXPERIMENTAL){
+        av_log(avctx, AV_LOG_ERROR, "this codec is under development, files encoded with it may not be decodeable with future versions!!!\n"
+               "use vstrict=-2 / -strict -2 to use it anyway\n");
         return -1;
     }
         
@@ -874,7 +889,7 @@ static int read_header(FFV1Context *f){
         case 0x10: f->avctx->pix_fmt= PIX_FMT_YUV422P; break;
         case 0x11: f->avctx->pix_fmt= PIX_FMT_YUV420P; break;
         case 0x20: f->avctx->pix_fmt= PIX_FMT_YUV411P; break;
-        case 0x33: f->avctx->pix_fmt= PIX_FMT_YUV410P; break;
+        case 0x22: f->avctx->pix_fmt= PIX_FMT_YUV410P; break;
         default:
             av_log(f->avctx, AV_LOG_ERROR, "format not supported\n");
             return -1;
@@ -895,7 +910,7 @@ static int read_header(FFV1Context *f){
     context_count=1;
     for(i=0; i<5; i++){
         context_count*= read_quant_table(c, f->quant_table[i], context_count);
-        if(context_count < 0){
+        if(context_count < 0 || context_count > 32768){
             av_log(f->avctx, AV_LOG_ERROR, "read_quant_table error\n");
             return -1;
         }
@@ -936,10 +951,6 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, uint8
     uint8_t keystate= 128;
 
     AVFrame *picture = data;
-
-    /* no supplementary picture */
-    if (buf_size == 0)
-        return 0;
 
     ff_init_range_decoder(c, buf, buf_size);
     ff_build_rac_states(c, 0.05*(1LL<<32), 256-8);

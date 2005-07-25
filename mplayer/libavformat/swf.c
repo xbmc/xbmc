@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 #include "avformat.h"
+#include "bitstream.h"
 
 /* should have a generic way to indicate probable size */
 #define DUMMY_FILE_SIZE   (100 * 1024 * 1024)
@@ -29,7 +30,7 @@
 #define TAG_FREECHARACTER 3
 #define TAG_PLACEOBJECT   4
 #define TAG_REMOVEOBJECT  5
-#define TAG_STREAMHEAD    45
+#define TAG_STREAMHEAD    18
 #define TAG_STREAMBLOCK   19
 #define TAG_JPEG2         21
 #define TAG_PLACEOBJECT2  26
@@ -323,7 +324,7 @@ static int swf_write_header(AVFormatContext *s)
     video_enc = NULL;
     audio_enc = NULL;
     for(i=0;i<s->nb_streams;i++) {
-        enc = &s->streams[i]->codec;
+        enc = s->streams[i]->codec;
         if (enc->codec_type == CODEC_TYPE_AUDIO)
             audio_enc = enc;
         else {
@@ -347,8 +348,8 @@ static int swf_write_header(AVFormatContext *s)
         swf->video_type = video_enc->codec_id;
         width = video_enc->width;
         height = video_enc->height;
-        rate = video_enc->frame_rate;
-        rate_base = video_enc->frame_rate_base;
+        rate = video_enc->time_base.den;
+        rate_base = video_enc->time_base.num;
     }
 
     if (!audio_enc ) {
@@ -651,7 +652,7 @@ static int swf_write_audio(AVFormatContext *s,
 
 static int swf_write_packet(AVFormatContext *s, AVPacket *pkt)
 {
-    AVCodecContext *codec = &s->streams[pkt->stream_index]->codec;
+    AVCodecContext *codec = s->streams[pkt->stream_index]->codec;
     if (codec->codec_type == CODEC_TYPE_AUDIO)
         return swf_write_audio(s, codec, pkt->data, pkt->size);
     else
@@ -667,7 +668,7 @@ static int swf_write_trailer(AVFormatContext *s)
 
     video_enc = NULL;
     for(i=0;i<s->nb_streams;i++) {
-        enc = &s->streams[i]->codec;
+        enc = s->streams[i]->codec;
         if (enc->codec_type == CODEC_TYPE_VIDEO)
             video_enc = enc;
     }
@@ -712,6 +713,7 @@ static int get_swf_tag(ByteIOContext *pb, int *len_ptr)
     if (len == 0x3f) {
         len = get_le32(pb);
     }
+//    av_log(NULL, AV_LOG_DEBUG, "Tag: %d - Len: %d\n", tag, len);
     *len_ptr = len;
     return tag;
 }
@@ -722,7 +724,7 @@ static int swf_probe(AVProbeData *p)
     /* check file header */
     if (p->buf_size <= 16)
         return 0;
-    if (p->buf[0] == 'F' && p->buf[1] == 'W' &&
+    if ((p->buf[0] == 'F' || p->buf[0] == 'C') && p->buf[1] == 'W' &&
         p->buf[2] == 'S')
         return AVPROBE_SCORE_MAX;
     else
@@ -743,7 +745,14 @@ static int swf_read_header(AVFormatContext *s, AVFormatParameters *ap)
         return -1;
     s->priv_data = swf;
 
-    if ((get_be32(pb) & 0xffffff00) != MKBETAG('F', 'W', 'S', 0))
+    tag = get_be32(pb) & 0xffffff00;
+
+    if (tag == MKBETAG('C', 'W', 'S', 0))
+    {
+	av_log(s, AV_LOG_ERROR, "Compressed SWF format not supported\n");
+        return AVERROR_IO;
+    }
+    if (tag != MKBETAG('F', 'W', 'S', 0))
         return AVERROR_IO;
     get_le32(pb);
     /* skip rectangle size */
@@ -766,8 +775,8 @@ static int swf_read_header(AVFormatContext *s, AVFormatParameters *ap)
         if (tag < 0) {
             if ( ast || vst ) {
                 if ( vst && ast ) {
-                    vst->codec.frame_rate = ast->codec.sample_rate / swf->samples_per_frame;
-                    vst->codec.frame_rate_base = 1;
+                    vst->codec->time_base.den = ast->codec->sample_rate / swf->samples_per_frame;
+                    vst->codec->time_base.num = 1;
                 }
                 break;
             }
@@ -785,11 +794,11 @@ static int swf_read_header(AVFormatContext *s, AVFormatParameters *ap)
                 vst = av_new_stream(s, 0);
                 av_set_pts_info(vst, 24, 1, 1000); /* 24 bit pts in ms */
     
-                vst->codec.codec_type = CODEC_TYPE_VIDEO;
-                vst->codec.codec_id = CODEC_ID_FLV1;
+                vst->codec->codec_type = CODEC_TYPE_VIDEO;
+                vst->codec->codec_id = CODEC_ID_FLV1;
                 if ( swf->samples_per_frame ) {
-                    vst->codec.frame_rate = 1000. / swf->ms_per_frame;
-                    vst->codec.frame_rate_base = 1;
+                    vst->codec->time_base.den = 1000. / swf->ms_per_frame;
+                    vst->codec->time_base.num = 1;
                 }
             }
         } else if ( ( tag == TAG_STREAMHEAD || tag == TAG_STREAMHEAD2 ) && !ast) {
@@ -810,26 +819,26 @@ static int swf_read_header(AVFormatContext *s, AVFormatParameters *ap)
                     return -ENOMEM;
 
                 if (v & 0x01)
-                    ast->codec.channels = 2;
+                    ast->codec->channels = 2;
                 else
-                    ast->codec.channels = 1;
+                    ast->codec->channels = 1;
 
                 switch((v>> 2) & 0x03) {
                 case 1:
-                    ast->codec.sample_rate = 11025;
+                    ast->codec->sample_rate = 11025;
                     break;
                 case 2:
-                    ast->codec.sample_rate = 22050;
+                    ast->codec->sample_rate = 22050;
                     break;
                 case 3:
-                    ast->codec.sample_rate = 44100;
+                    ast->codec->sample_rate = 44100;
                     break;
                 default:
                     av_free(ast);
                     return AVERROR_IO;
                 }
-                ast->codec.codec_type = CODEC_TYPE_AUDIO;
-                ast->codec.codec_id = CODEC_ID_MP3;
+                ast->codec->codec_type = CODEC_TYPE_AUDIO;
+                ast->codec->codec_id = CODEC_ID_MP3;
             }
         } else {
             url_fskip(pb, len);
@@ -857,10 +866,9 @@ static int swf_read_packet(AVFormatContext *s, AVPacket *pkt)
                 if (st->id == 0) {
                     if ( get_le16(pb) == swf->ch_id ) {
                         frame = get_le16(pb);
-                        av_new_packet(pkt, len-4);
+                        av_get_packet(pb, pkt, len-4);
                         pkt->pts = frame * swf->ms_per_frame;
                         pkt->stream_index = st->index;
-                        get_buffer(pb, pkt->data, pkt->size);
                         return pkt->size;
                     } else {
                         url_fskip(pb, len-2);
@@ -873,9 +881,8 @@ static int swf_read_packet(AVFormatContext *s, AVPacket *pkt)
             for( i=0; i<s->nb_streams; i++ ) {
         	st = s->streams[i];
                 if (st->id == 1) {
-                    av_new_packet(pkt, len);
+                    av_get_packet(pb, pkt, len);
                     pkt->stream_index = st->index;
-                    get_buffer(pb, pkt->data, pkt->size);
                     return pkt->size;
                 }
             }

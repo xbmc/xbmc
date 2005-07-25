@@ -237,11 +237,6 @@ static int decode_frame(AVCodecContext *avctx,
     uint8_t* outdata;
     int delta;
     
-    /* special case for last picture */
-    if (buf_size == 0) {
-        return 0;
-    }
-
     if(p->data[0])
         avctx->release_buffer(avctx, p);
 
@@ -285,6 +280,10 @@ static int decode_init(AVCodecContext *avctx){
 
 static int decode_end(AVCodecContext *avctx){
     QpegContext * const a = avctx->priv_data;
+    AVFrame * const p= (AVFrame*)&a->pic;
+    
+    if(p->data[0])
+        avctx->release_buffer(avctx, p);
 
     av_free(a->refdata);
     return 0;

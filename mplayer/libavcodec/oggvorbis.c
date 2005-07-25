@@ -49,6 +49,7 @@ static int oggvorbis_encode_init(AVCodecContext *avccontext) {
     OggVorbisContext *context = avccontext->priv_data ;
     ogg_packet header, header_comm, header_code;
     uint8_t *p;
+    unsigned int offset, len;
 
     vorbis_info_init(&context->vi) ;
     if(oggvorbis_init_encoder(&context->vi, avccontext) < 0) {
@@ -64,22 +65,21 @@ static int oggvorbis_encode_init(AVCodecContext *avccontext) {
     vorbis_analysis_headerout(&context->vd, &context->vc, &header,
                                 &header_comm, &header_code);
     
-    avccontext->extradata_size= 3*2 + header.bytes + header_comm.bytes +  header_code.bytes;
-    p= avccontext->extradata= av_mallocz(avccontext->extradata_size);
-    
-    *(p++) = header.bytes>>8;
-    *(p++) = header.bytes&0xFF;
-    memcpy(p, header.packet, header.bytes);
-    p += header.bytes;
-    
-    *(p++) = header_comm.bytes>>8;
-    *(p++) = header_comm.bytes&0xFF;
-    memcpy(p, header_comm.packet, header_comm.bytes);
-    p += header_comm.bytes;
-    
-    *(p++) = header_code.bytes>>8;
-    *(p++) = header_code.bytes&0xFF;
-    memcpy(p, header_code.packet, header_code.bytes);
+    len = header.bytes + header_comm.bytes +  header_code.bytes;
+    avccontext->extradata_size= 64 + len + len/255;
+    p = avccontext->extradata= av_mallocz(avccontext->extradata_size);
+    p[0] = 2;
+    offset = 1;
+    offset += av_xiphlacing(&p[offset], header.bytes);
+    offset += av_xiphlacing(&p[offset], header_comm.bytes);
+    memcpy(&p[offset], header.packet, header.bytes);
+    offset += header.bytes;
+    memcpy(&p[offset], header_comm.packet, header_comm.bytes);
+    offset += header_comm.bytes;
+    memcpy(&p[offset], header_code.packet, header_code.bytes);
+    offset += header_code.bytes;
+    avccontext->extradata_size = offset;
+    avccontext->extradata= av_realloc(avccontext->extradata, avccontext->extradata_size);
                                 
 /*    vorbis_block_clear(&context->vb);
     vorbis_dsp_clear(&context->vd);
@@ -140,7 +140,7 @@ static int oggvorbis_encode_frame(AVCodecContext *avccontext,
         op2->packet = context->buffer + sizeof(ogg_packet);
 
         l=  op2->bytes;
-        avccontext->coded_frame->pts= av_rescale(op2->granulepos, AV_TIME_BASE, avccontext->sample_rate);
+        avccontext->coded_frame->pts= op2->granulepos;
 
         memcpy(packets, op2->packet, l);
         context->buffer_index -= l + sizeof(ogg_packet);
@@ -180,29 +180,74 @@ AVCodec oggvorbis_encoder = {
     .capabilities= CODEC_CAP_DELAY,
 } ;
 
-
 static int oggvorbis_decode_init(AVCodecContext *avccontext) {
     OggVorbisContext *context = avccontext->priv_data ;
     uint8_t *p= avccontext->extradata;
-    int i;
+    int i, hsizes[3];
+    unsigned char *headers[3], *extradata = avccontext->extradata;
 
     vorbis_info_init(&context->vi) ;
     vorbis_comment_init(&context->vc) ;
 
+    if(! avccontext->extradata_size || ! p) {
+        av_log(avccontext, AV_LOG_ERROR, "vorbis extradata absent\n");
+        return -1;
+    }
+
+    if(p[0] == 0 && p[1] == 30) {
+        for(i = 0; i < 3; i++){
+            hsizes[i] = *p++ << 8;
+            hsizes[i] += *p++;
+            headers[i] = p;
+            p += hsizes[i];
+        }
+    } else if(*p == 2) {
+        unsigned int offset = 1;
+        p++;
+        for(i=0; i<2; i++) {
+            hsizes[i] = 0;
+            while((*p == 0xFF) && (offset < avccontext->extradata_size)) {
+                hsizes[i] += 0xFF;
+                offset++;
+                p++;
+            }
+            if(offset >= avccontext->extradata_size - 1) {
+                av_log(avccontext, AV_LOG_ERROR,
+                       "vorbis header sizes damaged\n");
+                return -1;
+            }
+            hsizes[i] += *p;
+            offset++;
+            p++;
+        }
+        hsizes[2] = avccontext->extradata_size - hsizes[0]-hsizes[1]-offset;
+#if 0
+        av_log(avccontext, AV_LOG_DEBUG,
+               "vorbis header sizes: %d, %d, %d, / extradata_len is %d \n",
+               hsizes[0], hsizes[1], hsizes[2], avccontext->extradata_size);
+#endif
+        headers[0] = extradata + offset;
+        headers[1] = extradata + offset + hsizes[0];
+        headers[2] = extradata + offset + hsizes[0] + hsizes[1];
+    } else {
+        av_log(avccontext, AV_LOG_ERROR,
+               "vorbis initial header len is wrong: %d\n", *p);
+        return -1;
+    }
+
     for(i=0; i<3; i++){
         context->op.b_o_s= i==0;
-        context->op.bytes= *(p++)<<8;
-        context->op.bytes+=*(p++);
-        context->op.packet= p;
-        p += context->op.bytes;
-
-	if(vorbis_synthesis_headerin(&context->vi, &context->vc, &context->op)<0){
+        context->op.bytes = hsizes[i];
+        context->op.packet = headers[i];
+        if(vorbis_synthesis_headerin(&context->vi, &context->vc, &context->op)<0){
             av_log(avccontext, AV_LOG_ERROR, "%d. vorbis header damaged\n", i+1);
             return -1;
         }
     }
+
     avccontext->channels = context->vi.channels;
     avccontext->sample_rate = context->vi.rate;
+    avccontext->time_base= (AVRational){1, avccontext->sample_rate};
 
     vorbis_synthesis_init(&context->vd, &context->vi);
     vorbis_block_init(&context->vd, &context->vb); 

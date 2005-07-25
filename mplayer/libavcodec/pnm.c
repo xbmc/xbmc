@@ -109,8 +109,9 @@ static int pnm_decode_header(AVCodecContext *avctx, PNMContext * const s){
             }
         }
         /* check that all tags are present */
-        if (w <= 0 || h <= 0 || maxval <= 0 || depth <= 0 || tuple_type[0] == '\0')
+        if (w <= 0 || h <= 0 || maxval <= 0 || depth <= 0 || tuple_type[0] == '\0' || avcodec_check_dimensions(avctx, w, h))
             return -1;
+                   
         avctx->width = w;
         avctx->height = h;
         if (depth == 1) {
@@ -135,7 +136,7 @@ static int pnm_decode_header(AVCodecContext *avctx, PNMContext * const s){
         return -1;
     pnm_get(s, buf1, sizeof(buf1));
     avctx->height = atoi(buf1);
-    if (avctx->height <= 0)
+    if(avcodec_check_dimensions(avctx, avctx->width, avctx->height))
         return -1;
     if (avctx->pix_fmt != PIX_FMT_MONOWHITE) {
         pnm_get(s, buf1, sizeof(buf1));
@@ -164,11 +165,6 @@ static int pnm_decode_frame(AVCodecContext *avctx,
     int i, n, linesize, h;
     unsigned char *ptr;
 
-    /* special case for last picture */
-    if (buf_size == 0) {
-        return 0;
-    }
-    
     s->bytestream_start=
     s->bytestream= buf;
     s->bytestream_end= buf + buf_size;
@@ -264,6 +260,11 @@ static int pnm_encode_frame(AVCodecContext *avctx, unsigned char *outbuf, int bu
     int i, h, h1, c, n, linesize;
     uint8_t *ptr, *ptr1, *ptr2;
 
+    if(buf_size < avpicture_get_size(avctx->pix_fmt, avctx->width, avctx->height) + 200){
+        av_log(avctx, AV_LOG_ERROR, "encoded frame too large\n");
+        return -1;
+    }
+
     *p = *pict;
     p->pict_type= FF_I_TYPE;
     p->key_frame= 1;
@@ -337,6 +338,11 @@ static int pam_encode_frame(AVCodecContext *avctx, unsigned char *outbuf, int bu
     int i, h, w, n, linesize, depth, maxval;
     const char *tuple_type;
     uint8_t *ptr;
+
+    if(buf_size < avpicture_get_size(avctx->pix_fmt, avctx->width, avctx->height) + 200){
+        av_log(avctx, AV_LOG_ERROR, "encoded frame too large\n");
+        return -1;
+    }
 
     *p = *pict;
     p->pict_type= FF_I_TYPE;
@@ -511,6 +517,7 @@ AVCodecParser pnm_parser = {
     ff_parse_close,
 };
 
+#ifdef CONFIG_PGM_ENCODER
 AVCodec pgm_encoder = {
     "pgm",
     CODEC_TYPE_VIDEO,
@@ -522,7 +529,9 @@ AVCodec pgm_encoder = {
     pnm_decode_frame,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_GRAY8, -1}, 
 };
+#endif // CONFIG_PGM_ENCODER
 
+#ifdef CONFIG_PGMYUV_ENCODER
 AVCodec pgmyuv_encoder = {
     "pgmyuv",
     CODEC_TYPE_VIDEO,
@@ -534,7 +543,9 @@ AVCodec pgmyuv_encoder = {
     pnm_decode_frame,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, -1}, 
 };
+#endif // CONFIG_PGMYUV_ENCODER
 
+#ifdef CONFIG_PPM_ENCODER
 AVCodec ppm_encoder = {
     "ppm",
     CODEC_TYPE_VIDEO,
@@ -546,7 +557,9 @@ AVCodec ppm_encoder = {
     pnm_decode_frame,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_RGB24, -1}, 
 };
+#endif // CONFIG_PPM_ENCODER
 
+#ifdef CONFIG_PBM_ENCODER
 AVCodec pbm_encoder = {
     "pbm",
     CODEC_TYPE_VIDEO,
@@ -558,7 +571,9 @@ AVCodec pbm_encoder = {
     pnm_decode_frame,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_MONOWHITE, -1}, 
 };
+#endif // CONFIG_PBM_ENCODER
 
+#ifdef CONFIG_PAM_ENCODER
 AVCodec pam_encoder = {
     "pam",
     CODEC_TYPE_VIDEO,
@@ -570,3 +585,4 @@ AVCodec pam_encoder = {
     pnm_decode_frame,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_RGB24, PIX_FMT_RGBA32, PIX_FMT_GRAY8, PIX_FMT_MONOWHITE, -1}, 
 };
+#endif // CONFIG_PAM_ENCODER

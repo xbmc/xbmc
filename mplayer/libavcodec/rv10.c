@@ -287,6 +287,7 @@ void rv20_encode_picture_header(MpegEncContext *s, int picture_number){
     }
 }
 
+#if 0 /* unused, remove? */
 static int get_num(GetBitContext *gb)
 {
     int n, n1;
@@ -299,6 +300,7 @@ static int get_num(GetBitContext *gb)
         return (n << 16) | n1;
     }
 }
+#endif
 
 #endif //CONFIG_ENCODERS
 
@@ -438,21 +440,23 @@ static int rv20_decode_picture_header(MpegEncContext *s)
         }
         seq= get_bits(&s->gb, 14)<<1;
 
-        if(v>1){
-            f= get_bits(&s->gb, av_log2(v-1)+1);
-        }
-        
-        if(s->avctx->debug & FF_DEBUG_PICT_INFO){
-            av_log(s->avctx, AV_LOG_DEBUG, "F %d\n", f);
-        }
+        if(v) 
+            f= get_bits(&s->gb, av_log2(v));
 
+        if(s->avctx->debug & FF_DEBUG_PICT_INFO){
+            av_log(s->avctx, AV_LOG_DEBUG, "F %d/%d\n", f, v);
+        }
+    }else{
+        seq= get_bits(&s->gb, 8)*128;
+    }
+
+//     if(s->avctx->sub_id <= 0x20201002){ //0x20201002 definitely needs this 
+    mb_pos= ff_h263_decode_mba(s);
+/*    }else{
         mb_pos= get_bits(&s->gb, av_log2(s->mb_num-1)+1);
         s->mb_x= mb_pos % s->mb_width;
         s->mb_y= mb_pos / s->mb_width;
-    }else{
-        seq= get_bits(&s->gb, 8)*128;
-        mb_pos= ff_h263_decode_mba(s);
-    }
+    }*/
 //av_log(s->avctx, AV_LOG_DEBUG, "%d\n", seq);
     seq |= s->time &~0x7FFF;
     if(seq - s->time >  0x4000) seq -= 0x8000;
@@ -466,8 +470,8 @@ static int rv20_decode_picture_header(MpegEncContext *s)
             s->time= seq;
             s->pb_time= s->pp_time - (s->last_non_b_time - s->time);
             if(s->pp_time <=s->pb_time || s->pp_time <= s->pp_time - s->pb_time || s->pp_time<=0){
-                av_log(s->avctx, AV_LOG_DEBUG, "messed up order, seeking?, skiping current b frame\n");
-                return FRAME_SKIPED;
+                av_log(s->avctx, AV_LOG_DEBUG, "messed up order, possible from seeking? skipping current b frame\n");
+                return FRAME_SKIPPED;
             }
         }
     }
@@ -533,14 +537,17 @@ static int rv10_decode_init(AVCodecContext *avctx)
         s->h263_long_vectors=0;
         s->low_delay=1;
         break;
-    case 0x20001000:
-    case 0x20100001:
+    case 0x20001000: /* real rv20 decoder fail on this id */
+    /*case 0x20100001:
     case 0x20101001:
-    case 0x20103001:
+    case 0x20103001:*/
+    case 0x20100000 ... 0x2019ffff:
         s->low_delay=1;
         break;
-    case 0x20200002:
+    /*case 0x20200002:
     case 0x20201002:
+    case 0x20203002:*/
+    case 0x20200002 ... 0x202fffff:
     case 0x30202002:
     case 0x30203002:
         s->low_delay=0;
@@ -553,7 +560,9 @@ static int rv10_decode_init(AVCodecContext *avctx)
     if(avctx->debug & FF_DEBUG_PICT_INFO){
         av_log(avctx, AV_LOG_DEBUG, "ver:%X ver0:%X\n", avctx->sub_id, avctx->extradata_size >= 4 ? ((uint32_t*)avctx->extradata)[0] : -1);
     }
-    
+
+    avctx->pix_fmt = PIX_FMT_YUV420P;
+
     if (MPV_common_init(s) < 0)
         return -1;
 
@@ -569,8 +578,6 @@ static int rv10_decode_init(AVCodecContext *avctx)
                  rv_chrom_code, 2, 2, 1);
         done = 1;
     }
-    
-    avctx->pix_fmt = PIX_FMT_YUV420P;
 
     return 0;
 }
@@ -662,7 +669,6 @@ static int rv10_decode_packet(AVCodecContext *avctx,
         printf("**mb x=%d y=%d\n", s->mb_x, s->mb_y);
 #endif
 
-	s->dsp.clear_blocks(s->block[0]);
         s->mv_dir = MV_DIR_FORWARD;
         s->mv_type = MV_TYPE_16X16; 
         ret=ff_h263_decode_mb(s, s->block);
@@ -763,7 +769,7 @@ AVCodec rv20_decoder = {
     NULL,
     rv10_decode_end,
     rv10_decode_frame,
-    CODEC_CAP_DR1,
+    CODEC_CAP_DR1 | CODEC_CAP_DELAY,
     .flush= ff_mpeg_flush,
 };
 

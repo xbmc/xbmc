@@ -72,29 +72,8 @@ typedef struct FourxmDemuxContext {
 
     int64_t audio_pts;
     int64_t video_pts;
-    int video_pts_inc;
     float fps;
 } FourxmDemuxContext;
-
-static float get_le_float(unsigned char *buffer)
-{
-    float f;
-    unsigned char *float_buffer = (unsigned char *)&f;
-
-#ifdef WORDS_BIGENDIAN
-    float_buffer[0] = buffer[3];
-    float_buffer[1] = buffer[2];
-    float_buffer[2] = buffer[1];
-    float_buffer[3] = buffer[0];
-#else
-    float_buffer[0] = buffer[0];
-    float_buffer[1] = buffer[1];
-    float_buffer[2] = buffer[2];
-    float_buffer[3] = buffer[3];
-#endif
-
-    return f;
-}
 
 static int fourxm_probe(AVProbeData *p)
 {
@@ -148,8 +127,7 @@ static int fourxm_read_header(AVFormatContext *s,
         size = LE_32(&header[i + 4]);
 
         if (fourcc_tag == std__TAG) {
-            fourxm->fps = get_le_float(&header[i + 12]);
-            fourxm->video_pts_inc = (int)(90000.0 / fourxm->fps);
+            fourxm->fps = av_int2flt(LE_32(&header[i + 12]));
         } else if (fourcc_tag == vtrk_TAG) {
             /* check that there is enough data */
             if (size != vtrk_SIZE) {
@@ -164,17 +142,15 @@ static int fourxm_read_header(AVFormatContext *s,
             st = av_new_stream(s, 0);
             if (!st)
                 return AVERROR_NOMEM;
-            av_set_pts_info(st, 33, 1, 90000);
+            av_set_pts_info(st, 60, 1, fourxm->fps);
 
             fourxm->video_stream_index = st->index;
 
-            st->codec.frame_rate = fourxm->fps;
-            st->codec.frame_rate_base = 1.0;
-            st->codec.codec_type = CODEC_TYPE_VIDEO;
-            st->codec.codec_id = CODEC_ID_4XM;
-            st->codec.codec_tag = 0;  /* no fourcc */
-            st->codec.width = fourxm->width;
-            st->codec.height = fourxm->height;
+            st->codec->codec_type = CODEC_TYPE_VIDEO;
+            st->codec->codec_id = CODEC_ID_4XM;
+            st->codec->codec_tag = 0;  /* no fourcc */
+            st->codec->width = fourxm->width;
+            st->codec->height = fourxm->height;
 
         } else if (fourcc_tag == strk_TAG) {
             /* check that there is enough data */
@@ -185,6 +161,8 @@ static int fourxm_read_header(AVFormatContext *s,
             current_track = LE_32(&header[i + 8]);
             if (current_track + 1 > fourxm->track_count) {
                 fourxm->track_count = current_track + 1;
+                if((unsigned)fourxm->track_count >= UINT_MAX / sizeof(AudioTrack))
+                    return -1;
                 fourxm->tracks = av_realloc(fourxm->tracks, 
                     fourxm->track_count * sizeof(AudioTrack));
                 if (!fourxm->tracks) {
@@ -203,25 +181,24 @@ static int fourxm_read_header(AVFormatContext *s,
             if (!st)
                 return AVERROR_NOMEM;
 
-            /* set the pts reference (1 pts = 1/90000) */
-            av_set_pts_info(st, 33, 1, 90000);
+            av_set_pts_info(st, 60, 1, fourxm->tracks[current_track].sample_rate);
 
             fourxm->tracks[current_track].stream_index = st->index;
 
-            st->codec.codec_type = CODEC_TYPE_AUDIO;
-            st->codec.codec_tag = 1;
-            st->codec.channels = fourxm->tracks[current_track].channels;
-            st->codec.sample_rate = fourxm->tracks[current_track].sample_rate;
-            st->codec.bits_per_sample = fourxm->tracks[current_track].bits;
-            st->codec.bit_rate = st->codec.channels * st->codec.sample_rate *
-                st->codec.bits_per_sample;
-            st->codec.block_align = st->codec.channels * st->codec.bits_per_sample;
+            st->codec->codec_type = CODEC_TYPE_AUDIO;
+            st->codec->codec_tag = 1;
+            st->codec->channels = fourxm->tracks[current_track].channels;
+            st->codec->sample_rate = fourxm->tracks[current_track].sample_rate;
+            st->codec->bits_per_sample = fourxm->tracks[current_track].bits;
+            st->codec->bit_rate = st->codec->channels * st->codec->sample_rate *
+                st->codec->bits_per_sample;
+            st->codec->block_align = st->codec->channels * st->codec->bits_per_sample;
             if (fourxm->tracks[current_track].adpcm)
-                st->codec.codec_id = CODEC_ID_ADPCM_4XM;
-            else if (st->codec.bits_per_sample == 8)
-                st->codec.codec_id = CODEC_ID_PCM_U8;
+                st->codec->codec_id = CODEC_ID_ADPCM_4XM;
+            else if (st->codec->bits_per_sample == 8)
+                st->codec->codec_id = CODEC_ID_PCM_U8;
             else
-                st->codec.codec_id = CODEC_ID_PCM_S16LE;
+                st->codec->codec_id = CODEC_ID_PCM_S16LE;
         }
     }
 
@@ -233,7 +210,7 @@ static int fourxm_read_header(AVFormatContext *s,
         return AVERROR_INVALIDDATA;
 
     /* initialize context members */
-    fourxm->video_pts = -fourxm->video_pts_inc;  /* first frame will push to 0 */
+    fourxm->video_pts = -1;  /* first frame will push to 0 */
     fourxm->audio_pts = 0;
 
     return 0;
@@ -250,7 +227,6 @@ static int fourxm_read_packet(AVFormatContext *s,
     int track_number;
     int packet_read = 0;
     unsigned char header[8];
-    int64_t pts_inc;
     int audio_frame_count;
 
     while (!packet_read) {
@@ -265,7 +241,7 @@ static int fourxm_read_packet(AVFormatContext *s,
 
         case LIST_TAG:
             /* this is a good time to bump the video pts */
-            fourxm->video_pts += fourxm->video_pts_inc;
+            fourxm->video_pts ++;
 
             /* skip the LIST-* tag and move on to the next fourcc */
             get_le32(pb);
@@ -277,10 +253,11 @@ static int fourxm_read_packet(AVFormatContext *s,
 
             /* allocate 8 more bytes than 'size' to account for fourcc
              * and size */
-            if (av_new_packet(pkt, size + 8))
+            if (size + 8 < size || av_new_packet(pkt, size + 8))
                 return AVERROR_IO;
             pkt->stream_index = fourxm->video_stream_index;
             pkt->pts = fourxm->video_pts;
+            pkt->pos = url_ftell(&s->pb);
             memcpy(pkt->data, header, 8);
             ret = get_buffer(&s->pb, &pkt->data[8], size);
 
@@ -297,16 +274,13 @@ static int fourxm_read_packet(AVFormatContext *s,
             size-=8;
 
             if (track_number == fourxm->selected_track) {
-                if (av_new_packet(pkt, size))
+                ret= av_get_packet(&s->pb, pkt, size);
+                if(ret<0)
                     return AVERROR_IO;
                 pkt->stream_index = 
                     fourxm->tracks[fourxm->selected_track].stream_index;
                 pkt->pts = fourxm->audio_pts;
-                ret = get_buffer(&s->pb, pkt->data, size);
-                if (ret < 0)
-                    av_free_packet(pkt);
-                else
-                    packet_read = 1;
+                packet_read = 1;
 
                 /* pts accounting */
                 audio_frame_count = size;
@@ -320,10 +294,7 @@ static int fourxm_read_packet(AVFormatContext *s,
                 else 
                     audio_frame_count /=
                     (fourxm->tracks[fourxm->selected_track].bits / 8);
-                pts_inc = audio_frame_count;
-                pts_inc *= 90000;
-                pts_inc /= fourxm->tracks[fourxm->selected_track].sample_rate;
-                fourxm->audio_pts += pts_inc;
+                fourxm->audio_pts += audio_frame_count;
 
             } else {
                 url_fseek(pb, size, SEEK_CUR);

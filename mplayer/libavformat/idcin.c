@@ -156,20 +156,20 @@ static int idcin_read_header(AVFormatContext *s,
         return AVERROR_NOMEM;
     av_set_pts_info(st, 33, 1, 90000);
     idcin->video_stream_index = st->index;
-    st->codec.codec_type = CODEC_TYPE_VIDEO;
-    st->codec.codec_id = CODEC_ID_IDCIN;
-    st->codec.codec_tag = 0;  /* no fourcc */
-    st->codec.width = width;
-    st->codec.height = height;
+    st->codec->codec_type = CODEC_TYPE_VIDEO;
+    st->codec->codec_id = CODEC_ID_IDCIN;
+    st->codec->codec_tag = 0;  /* no fourcc */
+    st->codec->width = width;
+    st->codec->height = height;
 
     /* load up the Huffman tables into extradata */
-    st->codec.extradata_size = HUFFMAN_TABLE_SIZE;
-    st->codec.extradata = av_malloc(HUFFMAN_TABLE_SIZE);
-    if (get_buffer(pb, st->codec.extradata, HUFFMAN_TABLE_SIZE) !=
+    st->codec->extradata_size = HUFFMAN_TABLE_SIZE;
+    st->codec->extradata = av_malloc(HUFFMAN_TABLE_SIZE);
+    if (get_buffer(pb, st->codec->extradata, HUFFMAN_TABLE_SIZE) !=
         HUFFMAN_TABLE_SIZE)
         return AVERROR_IO;
     /* save a reference in order to transport the palette */
-    st->codec.palctrl = &idcin->palctrl;
+    st->codec->palctrl = &idcin->palctrl;
 
     /* if sample rate is 0, assume no audio */
     if (sample_rate) {
@@ -179,17 +179,17 @@ static int idcin_read_header(AVFormatContext *s,
             return AVERROR_NOMEM;
         av_set_pts_info(st, 33, 1, 90000);
         idcin->audio_stream_index = st->index;
-        st->codec.codec_type = CODEC_TYPE_AUDIO;
-        st->codec.codec_tag = 1;
-        st->codec.channels = channels;
-        st->codec.sample_rate = sample_rate;
-        st->codec.bits_per_sample = bytes_per_sample * 8;
-        st->codec.bit_rate = sample_rate * bytes_per_sample * 8 * channels;
-        st->codec.block_align = bytes_per_sample * channels;
+        st->codec->codec_type = CODEC_TYPE_AUDIO;
+        st->codec->codec_tag = 1;
+        st->codec->channels = channels;
+        st->codec->sample_rate = sample_rate;
+        st->codec->bits_per_sample = bytes_per_sample * 8;
+        st->codec->bit_rate = sample_rate * bytes_per_sample * 8 * channels;
+        st->codec->block_align = bytes_per_sample * channels;
         if (bytes_per_sample == 1)
-            st->codec.codec_id = CODEC_ID_PCM_U8;
+            st->codec->codec_id = CODEC_ID_PCM_U8;
         else
-            st->codec.codec_id = CODEC_ID_PCM_S16LE;
+            st->codec->codec_id = CODEC_ID_PCM_S16LE;
 
         if (sample_rate % 14 != 0) {
             idcin->audio_chunk_size1 = (sample_rate / 14) *
@@ -255,26 +255,22 @@ static int idcin_read_packet(AVFormatContext *s,
         /* skip the number of decoded bytes (always equal to width * height) */
         url_fseek(pb, 4, SEEK_CUR);
         chunk_size -= 4;
-        if (av_new_packet(pkt, chunk_size))
-            ret = AVERROR_IO;
+        ret= av_get_packet(pb, pkt, chunk_size); 
+        if (ret != chunk_size)
+            return AVERROR_IO;
         pkt->stream_index = idcin->video_stream_index;
         pkt->pts = idcin->pts;
-        ret = get_buffer(pb, pkt->data, chunk_size);
-        if (ret != chunk_size)
-            ret = AVERROR_IO;
     } else {
         /* send out the audio chunk */
         if (idcin->current_audio_chunk)
             chunk_size = idcin->audio_chunk_size2;
         else
             chunk_size = idcin->audio_chunk_size1;
-        if (av_new_packet(pkt, chunk_size))
+        ret= av_get_packet(pb, pkt, chunk_size);
+        if (ret != chunk_size)
             return AVERROR_IO;
         pkt->stream_index = idcin->audio_stream_index;
         pkt->pts = idcin->pts;
-        ret = get_buffer(&s->pb, pkt->data, chunk_size);
-        if (ret != chunk_size)
-            ret = AVERROR_IO;
 
         idcin->current_audio_chunk ^= 1;
         idcin->pts += FRAME_PTS_INC;

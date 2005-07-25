@@ -474,6 +474,12 @@ static int gif_read_header1(GifState *s)
     s->transparent_color_index = -1;
     s->screen_width = get_le16(f);
     s->screen_height = get_le16(f);
+    if(   (unsigned)s->screen_width  > 32767 
+       || (unsigned)s->screen_height > 32767){
+        av_log(NULL, AV_LOG_ERROR, "picture size too large\n");
+        return -1;
+    } 
+
     v = get_byte(f);
     s->color_resolution = ((v & 0x70) >> 4) + 1;
     has_global_palette = (v & 0x80);
@@ -549,14 +555,14 @@ static int gif_read_header(AVFormatContext * s1,
     if (!st)
 	return -1;
 
-    st->codec.codec_type = CODEC_TYPE_VIDEO;
-    st->codec.codec_id = CODEC_ID_RAWVIDEO;
-    st->codec.frame_rate = 5;
-    st->codec.frame_rate_base = 1;
+    st->codec->codec_type = CODEC_TYPE_VIDEO;
+    st->codec->codec_id = CODEC_ID_RAWVIDEO;
+    st->codec->time_base.den = 5;
+    st->codec->time_base.num = 1;
     /* XXX: check if screen size is always valid */
-    st->codec.width = s->screen_width;
-    st->codec.height = s->screen_height;
-    st->codec.pix_fmt = PIX_FMT_RGB24;
+    st->codec->width = s->screen_width;
+    st->codec->height = s->screen_height;
+    st->codec->pix_fmt = PIX_FMT_RGB24;
     return 0;
 }
 

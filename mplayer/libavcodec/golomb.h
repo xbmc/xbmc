@@ -167,7 +167,10 @@ static inline int svq3_get_se_golomb(GetBitContext *gb){
         
         return ff_interleaved_se_golomb_vlc_code[buf];
     }else{
-        buf |=1;
+        LAST_SKIP_BITS(re, gb, 8);
+        UPDATE_CACHE(re, gb);
+        buf |= 1 | (GET_CACHE(re, gb) >> 8);
+
         if((buf & 0xAAAAAAAA) == 0)
             return INVALID_VLC;
 
@@ -175,7 +178,7 @@ static inline int svq3_get_se_golomb(GetBitContext *gb){
             buf = (buf << 2) - ((buf << log) >> (log - 1)) + (buf >> 30);
         }
 
-        LAST_SKIP_BITS(re, gb, 63 - 2*log);
+        LAST_SKIP_BITS(re, gb, 63 - 2*log - 8);
         CLOSE_READER(re, gb);
 
         return (signed) (((((buf << log) >> log) - 1) ^ -(buf & 0x1)) + 1) >> 1;
@@ -281,9 +284,30 @@ static inline int get_sr_golomb_flac(GetBitContext *gb, int k, int limit, int es
     return (v>>1) ^ -(v&1);
 }
 
+/**
+ * read unsigned golomb rice code (shorten).
+ */
+static inline unsigned int get_ur_golomb_shorten(GetBitContext *gb, int k){
+	return get_ur_golomb_jpegls(gb, k, INT_MAX, 0);
+}
+
+/**
+ * read signed golomb rice code (shorten).
+ */
+static inline int get_sr_golomb_shorten(GetBitContext* gb, int k)
+{
+    int uvar = get_ur_golomb_jpegls(gb, k + 1, INT_MAX, 0);
+    if (uvar & 1)
+        return ~(uvar >> 1);
+    else
+        return uvar >> 1;
+}
+
+
+
 #ifdef TRACE
 
-static inline int get_ue(GetBitContext *s, char *file, char *func, int line){
+static inline int get_ue(GetBitContext *s, char *file, const char *func, int line){
     int show= show_bits(s, 24);
     int pos= get_bits_count(s);
     int i= get_ue_golomb(s);
@@ -297,7 +321,7 @@ static inline int get_ue(GetBitContext *s, char *file, char *func, int line){
     return i;
 }
 
-static inline int get_se(GetBitContext *s, char *file, char *func, int line){
+static inline int get_se(GetBitContext *s, char *file, const char *func, int line){
     int show= show_bits(s, 24);
     int pos= get_bits_count(s);
     int i= get_se_golomb(s);
@@ -311,7 +335,7 @@ static inline int get_se(GetBitContext *s, char *file, char *func, int line){
     return i;
 }
 
-static inline int get_te(GetBitContext *s, int r, char *file, char *func, int line){
+static inline int get_te(GetBitContext *s, int r, char *file, const char *func, int line){
     int show= show_bits(s, 24);
     int pos= get_bits_count(s);
     int i= get_te0_golomb(s, r);

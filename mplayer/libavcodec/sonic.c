@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 #include "avcodec.h"
+#include "bitstream.h"
 #include "golomb.h"
 
 /**
@@ -844,7 +845,7 @@ static int sonic_decode_close(AVCodecContext *avctx)
 }
 
 static int sonic_decode_frame(AVCodecContext *avctx,
-			    int16_t *data, int *data_size,
+			    void *data, int *data_size,
 			    uint8_t *buf, int buf_size)
 {
     SonicContext *s = avctx->priv_data;

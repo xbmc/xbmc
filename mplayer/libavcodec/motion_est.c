@@ -269,7 +269,7 @@ void ff_init_me(MpegEncContext *s){
 
     // 8x8 fullpel search would need a 4x4 chroma compare, which we dont have yet, and even if we had the motion estimation code doesnt expect it
     if(s->codec_id != CODEC_ID_SNOW){
-        if((c->avctx->me_cmp&FF_CMP_CHROMA) && !s->dsp.me_cmp[2]){
+        if((c->avctx->me_cmp&FF_CMP_CHROMA)/* && !s->dsp.me_cmp[2]*/){
             s->dsp.me_cmp[2]= zero_cmp;
         }
         if((c->avctx->me_sub_cmp&FF_CMP_CHROMA) && !s->dsp.me_sub_cmp[2]){
@@ -317,6 +317,7 @@ static inline void no_motion_search(MpegEncContext * s,
     *my_ptr = 16 * s->mb_y;
 }
 
+#if 0  /* the use of these functions is inside #if 0 */
 static int full_motion_search(MpegEncContext * s,
                               int *mx_ptr, int *my_ptr, int range,
                               int xmin, int ymin, int xmax, int ymax, uint8_t *ref_picture)
@@ -537,7 +538,7 @@ static int phods_motion_search(MpegEncContext * s,
     *my_ptr = my;
     return dminy;
 }
-
+#endif /* 0 */
 
 #define Z_THRESHOLD 256
 
@@ -663,7 +664,7 @@ static inline void set_p_mv_tables(MpegEncContext * s, int mx, int my, int mv4)
     s->p_mv_table[xy][0] = mx;
     s->p_mv_table[xy][1] = my;
 
-    /* has allready been set to the 4 MV if 4MV is done */
+    /* has already been set to the 4 MV if 4MV is done */
     if(mv4){
         int mot_xy= s->block_index[0];
 
@@ -730,7 +731,6 @@ static inline int h263_mv4_search(MpegEncContext *s, int mx, int my, int shift)
     int dmin_sum=0, mx4_sum=0, my4_sum=0;
     int same=1;
     const int stride= c->stride;
-    const int uvstride= c->uvstride;
     uint8_t *mv_penalty= c->current_mv_penalty;
 
     init_mv4_ref(c);
@@ -881,7 +881,6 @@ static int interlaced_search(MpegEncContext *s, int ref_index,
     uint8_t * const mv_penalty= c->current_mv_penalty;
     int same=1;
     const int stride= 2*s->linesize;
-    const int uvstride= 2*s->uvlinesize;
     int dmin_sum= 0;
     const int mot_stride= s->mb_stride;
     const int xy= s->mb_x + s->mb_y*mot_stride;
@@ -1017,7 +1016,7 @@ static inline int check_input_motion(MpegEncContext * s, int mb_x, int mb_y, int
     
     if(p_type && USES_LIST(mb_type, 1)){
         av_log(c->avctx, AV_LOG_ERROR, "backward motion vector in P frame\n");
-        return INT_MAX/4;
+        return INT_MAX/2;
     }
     assert(IS_INTRA(mb_type) || USES_LIST(mb_type,0) || USES_LIST(mb_type,1));
     
@@ -1035,7 +1034,7 @@ static inline int check_input_motion(MpegEncContext * s, int mb_x, int mb_y, int
         
         if(!(s->flags & CODEC_FLAG_INTERLACED_ME)){
             av_log(c->avctx, AV_LOG_ERROR, "Interlaced macroblock selected but interlaced motion estimation disabled\n");
-            return INT_MAX/4;
+            return INT_MAX/2;
         }
 
         if(USES_LIST(mb_type, 0)){
@@ -1096,7 +1095,7 @@ static inline int check_input_motion(MpegEncContext * s, int mb_x, int mb_y, int
     }else if(IS_8X8(mb_type)){
         if(!(s->flags & CODEC_FLAG_4MV)){
             av_log(c->avctx, AV_LOG_ERROR, "4MV macroblock selected but 4MV encoding disabled\n");
-            return INT_MAX/4;
+            return INT_MAX/2;
         }
         cmpf= s->dsp.sse[1];
         chroma_cmpf= s->dsp.sse[1];
@@ -1301,7 +1300,7 @@ void ff_estimate_p_frame_motion(MpegEncContext * s,
             c->sub_motion_search(s, &mx, &my, dmin, 0, 0, 0, 16);
             if(s->flags&CODEC_FLAG_MV0)
                 if(mx || my)
-                    mb_type |= CANDIDATE_MB_TYPE_SKIPED; //FIXME check difference
+                    mb_type |= CANDIDATE_MB_TYPE_SKIPPED; //FIXME check difference
         }else{
             mx <<=shift;
             my <<=shift;

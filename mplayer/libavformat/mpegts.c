@@ -30,7 +30,10 @@
    synchronisation is lost */
 #define MAX_RESYNC_SIZE 4096
 
-static int add_pes_stream(MpegTSContext *ts, int pid, int stream_type);
+typedef struct PESContext PESContext;
+
+static PESContext* add_pes_stream(MpegTSContext *ts, int pid, int stream_type);
+static AVStream* new_pes_av_stream(PESContext *pes, uint32_t code);
 
 enum MpegTSFilterType {
     MPEGTS_PES,
@@ -116,7 +119,6 @@ static void write_section_data(AVFormatContext *s, MpegTSFilter *tss1,
 {
     MpegTSSectionFilter *tss = &tss1->u.section_filter;
     int len;
-    unsigned int crc;
     
     if (is_start) {
         memcpy(tss->section_buf, buf, buf_size);
@@ -142,14 +144,10 @@ static void write_section_data(AVFormatContext *s, MpegTSFilter *tss1,
     }
 
     if (tss->section_h_size != -1 && tss->section_index >= tss->section_h_size) {
-        if (tss->check_crc) {
-            crc = mpegts_crc32(tss->section_buf, tss->section_h_size);
-            if (crc != 0)
-                goto invalid_crc;
-        }
-        tss->section_cb(tss->opaque, tss->section_buf, tss->section_h_size);
-    invalid_crc:
         tss->end_of_section_reached = 1;
+        if (!tss->check_crc ||
+            mpegts_crc32(tss->section_buf, tss->section_h_size) == 0)
+            tss->section_cb(tss->opaque, tss->section_buf, tss->section_h_size);
     }
 }
 
@@ -373,8 +371,13 @@ static void pmt_cb(void *opaque, const uint8_t *section, int section_len)
 {
     MpegTSContext *ts = opaque;
     SectionHeader h1, *h = &h1;
-    const uint8_t *p, *p_end;
-    int program_info_length, pcr_pid, pid, stream_type, desc_length;
+    PESContext *pes;
+    AVStream *st;
+    const uint8_t *p, *p_end, *desc_list_end, *desc_end;
+    int program_info_length, pcr_pid, pid, stream_type;
+    int desc_list_len, desc_len, desc_tag;
+    int comp_page, anc_page;
+    char language[4];
     
 #ifdef DEBUG_SI
     printf("PMT:\n");
@@ -404,18 +407,57 @@ static void pmt_cb(void *opaque, const uint8_t *section, int section_len)
     if (p >= p_end)
         return;
     for(;;) {
+        language[0] = 0;
+        st = 0;
         stream_type = get8(&p, p_end);
         if (stream_type < 0)
             break;
         pid = get16(&p, p_end) & 0x1fff;
         if (pid < 0)
             break;
-        desc_length = get16(&p, p_end) & 0xfff;
-        if (desc_length < 0)
+        desc_list_len = get16(&p, p_end) & 0xfff;
+        if (desc_list_len < 0)
             break;
-        p += desc_length;
-        if (p > p_end)
-            return;
+        desc_list_end = p + desc_list_len;
+        if (desc_list_end > p_end)
+            break;
+        for(;;) {
+            desc_tag = get8(&p, desc_list_end);
+            if (desc_tag < 0)
+                break;
+            desc_len = get8(&p, desc_list_end);
+            desc_end = p + desc_len;
+            if (desc_end > desc_list_end)
+                break;
+#ifdef DEBUG_SI
+            printf("tag: 0x%02x len=%d\n", desc_tag, desc_len);
+#endif
+            switch(desc_tag) {
+            case DVB_SUBT_DESCID:
+                if (stream_type == STREAM_TYPE_PRIVATE_DATA)
+                    stream_type = STREAM_TYPE_SUBTITLE_DVB;
+
+                language[0] = get8(&p, desc_end);
+                language[1] = get8(&p, desc_end);
+                language[2] = get8(&p, desc_end);
+                language[3] = 0;
+                get8(&p, desc_end);
+                comp_page = get16(&p, desc_end);
+                anc_page = get16(&p, desc_end);
+
+                break;
+            case 0x0a: /* ISO 639 language descriptor */
+                language[0] = get8(&p, desc_end);
+                language[1] = get8(&p, desc_end);
+                language[2] = get8(&p, desc_end);
+                language[3] = 0;
+                break;
+            default:
+                break;
+            }
+            p = desc_end;
+        }
+        p = desc_list_end;
 
 #ifdef DEBUG_SI
         printf("stream_type=%d pid=0x%x\n", stream_type, pid);
@@ -432,11 +474,27 @@ static void pmt_cb(void *opaque, const uint8_t *section, int section_len)
         case STREAM_TYPE_AUDIO_AAC:
         case STREAM_TYPE_AUDIO_AC3:
         case STREAM_TYPE_AUDIO_DTS:
-            add_pes_stream(ts, pid, stream_type);
+        case STREAM_TYPE_SUBTITLE_DVB:
+            pes = add_pes_stream(ts, pid, stream_type);
+            if (pes)
+                st = new_pes_av_stream(pes, 0);
             break;
         default:
             /* we ignore the other streams */
             break;
+        }
+
+        if (st) {
+            if (language[0] != 0) {
+                st->language[0] = language[0];
+                st->language[1] = language[1];
+                st->language[2] = language[2];
+                st->language[3] = language[3];
+            }
+
+            if (stream_type == STREAM_TYPE_SUBTITLE_DVB) {
+                st->codec->sub_id = (anc_page << 16) | comp_page;
+            }
         }
     }
     /* all parameters are there */
@@ -658,7 +716,7 @@ enum MpegTSState {
 #define PES_START_SIZE 9
 #define MAX_PES_HEADER_SIZE (9 + 255)
 
-typedef struct PESContext {
+struct PESContext {
     int pid;
     int stream_type;
     MpegTSContext *ts;
@@ -671,7 +729,7 @@ typedef struct PESContext {
     int pes_header_size;
     int64_t pts, dts;
     uint8_t header[MAX_PES_HEADER_SIZE];
-} PESContext;
+};
 
 static int64_t get_pts(const uint8_t *p)
 {
@@ -692,9 +750,8 @@ static void mpegts_push_data(void *opaque,
 {
     PESContext *pes = opaque;
     MpegTSContext *ts = pes->ts;
-    AVStream *st;
     const uint8_t *p;
-    int len, code, codec_type, codec_id;
+    int len, code;
     
     if (is_start) {
         pes->state = MPEGTS_HEADER;
@@ -727,59 +784,7 @@ static void mpegts_push_data(void *opaque,
                         goto skip;
                     if (!pes->st) {
                         /* allocate stream */
-                        switch(pes->stream_type){
-                        case STREAM_TYPE_AUDIO_MPEG1:
-                        case STREAM_TYPE_AUDIO_MPEG2:
-                            codec_type = CODEC_TYPE_AUDIO;
-                            codec_id = CODEC_ID_MP3;
-                            break;
-                        case STREAM_TYPE_VIDEO_MPEG1:
-                        case STREAM_TYPE_VIDEO_MPEG2:
-                            codec_type = CODEC_TYPE_VIDEO;
-                            codec_id = CODEC_ID_MPEG2VIDEO;
-                            break;
-                        case STREAM_TYPE_VIDEO_MPEG4:
-                            codec_type = CODEC_TYPE_VIDEO;
-                            codec_id = CODEC_ID_MPEG4;
-                            break;
-                        case STREAM_TYPE_VIDEO_H264:
-                            codec_type = CODEC_TYPE_VIDEO;
-                            codec_id = CODEC_ID_H264;
-                            break;
-                        case STREAM_TYPE_AUDIO_AAC:
-                            codec_type = CODEC_TYPE_AUDIO;
-                            codec_id = CODEC_ID_AAC;
-                            break;
-                        case STREAM_TYPE_AUDIO_AC3:
-                            codec_type = CODEC_TYPE_AUDIO;
-                            codec_id = CODEC_ID_AC3;
-                            break;
-                        case STREAM_TYPE_AUDIO_DTS:
-                            codec_type = CODEC_TYPE_AUDIO;
-                            codec_id = CODEC_ID_DTS;
-                            break;
-                        default:
-                            if (code >= 0x1c0 && code <= 0x1df) {
-                                codec_type = CODEC_TYPE_AUDIO;
-                                codec_id = CODEC_ID_MP2;
-                            } else if (code == 0x1bd) {
-                                codec_type = CODEC_TYPE_AUDIO;
-                                codec_id = CODEC_ID_AC3;
-                            } else {
-                                codec_type = CODEC_TYPE_VIDEO;
-                                codec_id = CODEC_ID_MPEG1VIDEO;
-                            }
-                            break;
-                        }
-                        st = av_new_stream(pes->stream, pes->pid);
-                        if (st) {
-                            av_set_pts_info(st, 60, 1, 90000);
-                            st->priv_data = pes;
-                            st->codec.codec_type = codec_type;
-                            st->codec.codec_id = codec_id;
-                            st->need_parsing = 1;
-                            pes->st = st;
-                        }
+                        new_pes_av_stream(pes, code);
                     }
                     pes->state = MPEGTS_PESHEADER_FILL;
                     pes->total_size = (pes->header[4] << 8) | pes->header[5];
@@ -859,7 +864,73 @@ static void mpegts_push_data(void *opaque,
     }
 }
 
-static int add_pes_stream(MpegTSContext *ts, int pid, int stream_type)
+static AVStream* new_pes_av_stream(PESContext *pes, uint32_t code)
+{
+    AVStream *st;
+    int codec_type, codec_id;
+
+    switch(pes->stream_type){
+    case STREAM_TYPE_AUDIO_MPEG1:
+    case STREAM_TYPE_AUDIO_MPEG2:
+        codec_type = CODEC_TYPE_AUDIO;
+        codec_id = CODEC_ID_MP3;
+        break;
+    case STREAM_TYPE_VIDEO_MPEG1:
+    case STREAM_TYPE_VIDEO_MPEG2:
+        codec_type = CODEC_TYPE_VIDEO;
+        codec_id = CODEC_ID_MPEG2VIDEO;
+        break;
+    case STREAM_TYPE_VIDEO_MPEG4:
+        codec_type = CODEC_TYPE_VIDEO;
+        codec_id = CODEC_ID_MPEG4;
+        break;
+    case STREAM_TYPE_VIDEO_H264:
+        codec_type = CODEC_TYPE_VIDEO;
+        codec_id = CODEC_ID_H264;
+        break;
+    case STREAM_TYPE_AUDIO_AAC:
+        codec_type = CODEC_TYPE_AUDIO;
+        codec_id = CODEC_ID_AAC;
+        break;
+    case STREAM_TYPE_AUDIO_AC3:
+        codec_type = CODEC_TYPE_AUDIO;
+        codec_id = CODEC_ID_AC3;
+        break;
+    case STREAM_TYPE_AUDIO_DTS:
+        codec_type = CODEC_TYPE_AUDIO;
+        codec_id = CODEC_ID_DTS;
+        break;
+    case STREAM_TYPE_SUBTITLE_DVB:
+        codec_type = CODEC_TYPE_SUBTITLE;
+        codec_id = CODEC_ID_DVB_SUBTITLE;
+        break;
+    default:
+        if (code >= 0x1c0 && code <= 0x1df) {
+            codec_type = CODEC_TYPE_AUDIO;
+            codec_id = CODEC_ID_MP2;
+        } else if (code == 0x1bd) {
+            codec_type = CODEC_TYPE_AUDIO;
+            codec_id = CODEC_ID_AC3;
+        } else {
+            codec_type = CODEC_TYPE_VIDEO;
+            codec_id = CODEC_ID_MPEG1VIDEO;
+        }
+        break;
+    }
+    st = av_new_stream(pes->stream, pes->pid);
+    if (st) {
+        av_set_pts_info(st, 33, 1, 90000);
+        st->priv_data = pes;
+        st->codec->codec_type = codec_type;
+        st->codec->codec_id = codec_id;
+        st->need_parsing = 1;
+        pes->st = st;
+    }
+    return st;
+}
+
+
+static PESContext *add_pes_stream(MpegTSContext *ts, int pid, int stream_type)
 {
     MpegTSFilter *tss;
     PESContext *pes;
@@ -867,7 +938,7 @@ static int add_pes_stream(MpegTSContext *ts, int pid, int stream_type)
     /* if no pid found, then add a pid context */
     pes = av_mallocz(sizeof(PESContext));
     if (!pes)
-        return -1;
+        return 0;
     pes->ts = ts;
     pes->stream = ts->stream;
     pes->pid = pid;
@@ -875,9 +946,9 @@ static int add_pes_stream(MpegTSContext *ts, int pid, int stream_type)
     tss = mpegts_open_pes_filter(ts, pid, mpegts_push_data, pes);
     if (!tss) {
         av_free(pes);
-        return -1;
+        return 0;
     }
-    return 0;
+    return pes;
 }
 
 /* handle one TS packet */
@@ -926,9 +997,12 @@ static void handle_packet(MpegTSContext *ts, const uint8_t *packet)
             if (p + len > p_end)
                 return;
             if (len && cc_ok) {
-                /* write remaning section bytes */
+                /* write remaining section bytes */
                 write_section_data(s, tss, 
                                    p, len, 0);
+                /* check whether filter has been closed */
+                if (!ts->pids[pid])
+                    return;
             }
             p += len;
             if (p < p_end) {
@@ -1133,11 +1207,11 @@ static int mpegts_read_header(AVFormatContext *s,
             }
             
             if (ts->nb_services <= 0) {
-		/* raw transport stream */
-		ts->auto_guess = 1;
-		s->ctx_flags |= AVFMTCTX_NOHEADER;
-		goto do_pcr;
-	    }
+                /* raw transport stream */
+                ts->auto_guess = 1;
+                s->ctx_flags |= AVFMTCTX_NOHEADER;
+                goto do_pcr;
+            }
             
             /* tune to first service found */
             for(i=0; i<ts->nb_services && ts->set_service_ret; i++){
@@ -1179,8 +1253,8 @@ static int mpegts_read_header(AVFormatContext *s,
         if (!st)
             goto fail;
         av_set_pts_info(st, 60, 1, 27000000);
-        st->codec.codec_type = CODEC_TYPE_DATA;
-        st->codec.codec_id = CODEC_ID_MPEG2TS;
+        st->codec->codec_type = CODEC_TYPE_DATA;
+        st->codec->codec_id = CODEC_ID_MPEG2TS;
         
         /* we iterate until we find two PCRs to estimate the bitrate */
         pcr_pid = -1;
@@ -1209,8 +1283,8 @@ static int mpegts_read_header(AVFormatContext *s,
         ts->pcr_incr = (pcrs[1] - pcrs[0]) / (packet_count[1] - packet_count[0]);
         ts->cur_pcr = pcrs[0] - ts->pcr_incr * packet_count[0];
         s->bit_rate = (TS_PACKET_SIZE * 8) * 27e6 / ts->pcr_incr;
-        st->codec.bit_rate = s->bit_rate;
-        st->start_time = ts->cur_pcr * 1000000.0 / 27.0e6;
+        st->codec->bit_rate = s->bit_rate;
+        st->start_time = ts->cur_pcr;
 #if 0
         printf("start=%0.3f pcr=%0.3f incr=%d\n",
                st->start_time / 1000000.0, pcrs[0] / 27e6, ts->pcr_incr);
@@ -1236,6 +1310,7 @@ static int mpegts_raw_read_packet(AVFormatContext *s,
 
     if (av_new_packet(pkt, TS_PACKET_SIZE) < 0)
         return -ENOMEM;
+    pkt->pos= url_ftell(&s->pb);
     ret = read_packet(&s->pb, pkt->data, ts->raw_packet_size);
     if (ret < 0) {
         av_free_packet(pkt);

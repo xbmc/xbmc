@@ -68,14 +68,17 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     const char *video_device;
     int j;
 
-    if (!ap || ap->width <= 0 || ap->height <= 0 || ap->frame_rate <= 0)
+    if (!ap || ap->width <= 0 || ap->height <= 0 || ap->time_base.den <= 0)
         return -1;
     
     width = ap->width;
     height = ap->height;
-    frame_rate      = ap->frame_rate;
-    frame_rate_base = ap->frame_rate_base;
+    frame_rate      = ap->time_base.den;
+    frame_rate_base = ap->time_base.num;
 
+    if((unsigned)width > 32767 || (unsigned)height > 32767)
+        return -1;
+    
     st = av_new_stream(s1, 0);
     if (!st)
         return -ENOMEM;
@@ -106,11 +109,11 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     }
 
     desired_palette = -1;
-    if (st->codec.pix_fmt == PIX_FMT_YUV420P) {
+    if (st->codec->pix_fmt == PIX_FMT_YUV420P) {
         desired_palette = VIDEO_PALETTE_YUV420P;
-    } else if (st->codec.pix_fmt == PIX_FMT_YUV422) {
+    } else if (st->codec->pix_fmt == PIX_FMT_YUV422) {
         desired_palette = VIDEO_PALETTE_YUV422;
-    } else if (st->codec.pix_fmt == PIX_FMT_BGR24) {
+    } else if (st->codec->pix_fmt == PIX_FMT_BGR24) {
         desired_palette = VIDEO_PALETTE_RGB24;
     }    
 
@@ -242,15 +245,15 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     switch(s->frame_format) {
     case VIDEO_PALETTE_YUV420P:
         frame_size = (width * height * 3) / 2;
-        st->codec.pix_fmt = PIX_FMT_YUV420P;
+        st->codec->pix_fmt = PIX_FMT_YUV420P;
         break;
     case VIDEO_PALETTE_YUV422:
         frame_size = width * height * 2;
-        st->codec.pix_fmt = PIX_FMT_YUV422;
+        st->codec->pix_fmt = PIX_FMT_YUV422;
         break;
     case VIDEO_PALETTE_RGB24:
         frame_size = width * height * 3;
-        st->codec.pix_fmt = PIX_FMT_BGR24; /* NOTE: v4l uses BGR24, not RGB24 ! */
+        st->codec->pix_fmt = PIX_FMT_BGR24; /* NOTE: v4l uses BGR24, not RGB24 ! */
         break;
     default:
         goto fail;
@@ -258,12 +261,12 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     s->fd = video_fd;
     s->frame_size = frame_size;
     
-    st->codec.codec_type = CODEC_TYPE_VIDEO;
-    st->codec.codec_id = CODEC_ID_RAWVIDEO;
-    st->codec.width = width;
-    st->codec.height = height;
-    st->codec.frame_rate      = frame_rate;
-    st->codec.frame_rate_base = frame_rate_base;
+    st->codec->codec_type = CODEC_TYPE_VIDEO;
+    st->codec->codec_id = CODEC_ID_RAWVIDEO;
+    st->codec->width = width;
+    st->codec->height = height;
+    st->codec->time_base.den      = frame_rate;
+    st->codec->time_base.num = frame_rate_base;
 
     return 0;
  fail:

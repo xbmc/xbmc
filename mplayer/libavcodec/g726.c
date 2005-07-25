@@ -22,6 +22,7 @@
 #include <limits.h>
 #include "avcodec.h"
 #include "common.h"
+#include "bitstream.h"
 
 /**
  * G.726 11bit float.
@@ -326,7 +327,7 @@ static int g726_init(AVCodecContext * avctx)
         av_log(avctx, AV_LOG_ERROR, "G726: unsupported audio format\n");
 	return -1;
     }
-    if (avctx->sample_rate != 8000 && avctx->strict_std_compliance>=0) {
+    if (avctx->sample_rate != 8000 && avctx->strict_std_compliance>FF_COMPLIANCE_INOFFICIAL) {
         av_log(avctx, AV_LOG_ERROR, "G726: unsupported audio format\n");
 	return -1;
     }

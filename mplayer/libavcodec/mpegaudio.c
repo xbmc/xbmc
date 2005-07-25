@@ -23,6 +23,7 @@
  */
  
 #include "avcodec.h"
+#include "bitstream.h"
 #include "mpegaudio.h"
 
 /* currently, cannot change these constants (need to modify
@@ -467,6 +468,7 @@ static void compute_scale_factors(unsigned char scale_code[SBLIMIT],
             break;
         default:
             assert(0); //cant happen
+            code = 0;           /* kill warning */
         }
         
 #if 0
@@ -783,6 +785,7 @@ static int MPA_encode_close(AVCodecContext *avctx)
     return 0;
 }
 
+#ifdef CONFIG_MP2_ENCODER
 AVCodec mp2_encoder = {
     "mp2",
     CODEC_TYPE_AUDIO,
@@ -793,5 +796,6 @@ AVCodec mp2_encoder = {
     MPA_encode_close,
     NULL,
 };
+#endif // CONFIG_MP2_ENCODER
 
 #undef FIX
