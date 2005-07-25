@@ -163,6 +163,12 @@ bool CGUIWindowVideoBase::OnAction(const CAction &action)
     m_gWindowManager.ActivateWindow(WINDOW_HOME);
     return true;
   }
+
+  if (action.wID == ACTION_DELETE_ITEM)
+  {
+    OnDeleteItem(m_viewControl.GetSelectedItem());
+  }
+
   return CGUIWindow::OnAction(action);
 }
 

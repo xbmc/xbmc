@@ -24,4 +24,5 @@ protected:
   virtual void Update(const CStdString &strDirectory);
   virtual void OnClick(int iItem);
   virtual void OnInfo(int iItem);
+  virtual void OnDeleteItem(int iItem) {return;};
 };
