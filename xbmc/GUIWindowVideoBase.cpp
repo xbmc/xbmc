@@ -995,8 +995,12 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btn_DVD = 0;
   if(bEnabledDVD)
     btn_DVD = pMenu->AddButton(15213);
-  int btn_Delete        = pMenu->AddButton(117);          // Delete
-  int btn_Settings      = pMenu->AddButton(5);     // Settings
+
+  int btn_Delete = 0;
+  if (g_guiSettings.GetBool("VideoFiles.AllowFileDeletion"))
+    btn_Delete = pMenu->AddButton(117);             // Delete
+
+  int btn_Settings      = pMenu->AddButton(5);      // Settings
 
 
   // check to see if the Resume Video button is applicable
@@ -1200,14 +1204,16 @@ void CGUIWindowVideoBase::PlayMovies(VECMOVIESFILES &movies, long lStartOffset)
 
 void CGUIWindowVideoBase::OnDeleteItem(int iItem)
 {
-  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
+  if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
   const CFileItem* pItem = m_vecItems[iItem];
-  CStdString strFile;
+  CStdString strPath = pItem->m_strPath;
+  CStdString strFile = CUtil::GetFileName(strPath);
+  if (pItem->m_bIsFolder)
+    CUtil::GetDirectoryName(strPath, strFile);
 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (pDialog)
   {
-    strFile = CUtil::GetFileName(pItem->m_strPath);
     pDialog->SetHeading(122);
     pDialog->SetLine(0, 125);
     pDialog->SetLine(1, strFile.c_str());
@@ -1217,23 +1223,38 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   }
 
   if (m_dlgProgress) m_dlgProgress->StartModal(GetID());
-
-  CStdString strLog;
-  strLog.Format("delete %s\n", strFile.c_str());
-  strFile = pItem->m_strPath;
-
-  CFile::Delete(strFile.c_str());
-
-  if (m_dlgProgress)
+  if (pItem->m_bIsFolder)
   {
-    m_dlgProgress->SetLine(0, 117);
-    m_dlgProgress->SetLine(1, strFile);
-    m_dlgProgress->SetLine(2, L"");
-    m_dlgProgress->Progress();
-  }
+    CStdString strLog;
+    strLog.Format("delete folder %s\n", strFile.c_str());
+    OutputDebugString(strLog.c_str());
 
+    CDirectory::Remove(strPath.c_str());
+    if (m_dlgProgress)
+    {
+      m_dlgProgress->SetLine(0, 117);
+      m_dlgProgress->SetLine(1, strFile);
+      m_dlgProgress->SetLine(2, L"");
+      m_dlgProgress->Progress();
+    }
+  }
+  else
+  {
+    CStdString strLog;
+    strLog.Format("delete %s\n", strFile.c_str());
+    OutputDebugString(strLog.c_str());
+
+    CFile::Delete(strPath.c_str());
+    if (m_dlgProgress)
+    {
+      m_dlgProgress->SetLine(0, 117);
+      m_dlgProgress->SetLine(1, strFile);
+      m_dlgProgress->SetLine(2, L"");
+      m_dlgProgress->Progress();
+    }
+  }
   if (m_dlgProgress) m_dlgProgress->Close();
 
-  Update( m_Directory.m_strPath );
+  Update(m_Directory.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }

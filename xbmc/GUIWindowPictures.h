@@ -43,6 +43,8 @@ protected:
   void SetHistoryForPath(const CStdString& strDirectory);
   void AddDir(CGUIWindowSlideShow *pSlideShow, const CStdString& strPath);
   virtual void OnItemLoaded(CFileItem* pItem);
+  void OnDeleteItem(int iItem);
+
   CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems;
   CFileItem m_Directory;
