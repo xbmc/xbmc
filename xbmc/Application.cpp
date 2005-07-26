@@ -2083,6 +2083,7 @@ bool CApplication::OnKey(CKey& key)
   // Check for global seek control
   if (IsPlaying() && action.fAmount1 && (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK))
   {
+    CScrobbler::GetInstance()->SetSubmitSong(false);  // Do not submit songs to Audioscrobbler when seeking, see CheckAudioScrobblerStatus()
     m_guiDialogSeekBar.OnAction(action);
     return true;
   }
