@@ -36,6 +36,9 @@ protected:
   DWORD m_hInterleavingShader;
   DWORD m_hYUVtoRGBLookup;
 
+  // Texture for Field deinterlacing
+  unsigned int m_fieldPitch;
+  D3DTexture m_YUVFieldTexture;
   // Vertex types
   static const DWORD FVF_YUVRGBVERTEX = D3DFVF_XYZRHW | D3DFVF_TEX4;
   static const DWORD FVF_RGBVERTEX = D3DFVF_XYZRHW | D3DFVF_TEX1;
