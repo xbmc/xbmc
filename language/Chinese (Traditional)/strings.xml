@@ -1,5 +1,5 @@
 <strings>
-  <string><id>0</id><value>所有程式</value></string>
+  <string><id>0</id><value>我的程式</value></string>
   <string><id>1</id><value>我的圖片</value></string>
   <string><id>2</id><value>我的音樂</value></string>
   <string><id>3</id><value>我的影片</value></string>
@@ -76,9 +76,9 @@
   <string><id>144</id><value>版本：</value></string>
   <string><id>145</id><value>網路：</value></string>
   <string><id>146</id><value>類型：</value></string>
-  <string><id>147</id><value>手動(Static)</value></string>
-  <string><id>148</id><value>自動(DHCP)</value></string>
-  <string><id>149</id><value>硬體位址(MAC)</value></string>
+  <string><id>147</id><value>手動 (靜態分配)</value></string>
+  <string><id>148</id><value>自動 (動態分配)</value></string>
+  <string><id>149</id><value>網卡 (MAC) 位址</value></string>
   <string><id>150</id><value>IP 位址</value></string>
   <string><id>151</id><value>連線：</value></string>
   <string><id>152</id><value>半雙工</value></string>
@@ -86,7 +86,7 @@
   <string><id>154</id><value>儲存媒體：</value></string>
   <string><id>155</id><value>裝置</value></string>
   <string><id>156</id><value>可用</value></string>
-  <string><id>157</id><value>顯示：</value></string>
+  <string><id>157</id><value>影片</value></string>
   <string><id>158</id><value>可用記憶體</value></string>
   <string><id>159</id><value>未連線</value></string>
   <string><id>160</id><value>可用</value></string>
@@ -112,7 +112,7 @@
   <string><id>180</id><value>持續時間</value></string>
   <string><id>181</id><value>選擇專輯</value></string>
   <string><id>182</id><value>音軌</value></string>
-  <string><id>183</id><value>評論</value></string>
+  <string><id>183</id><value>回顧</value></string>
   <string><id>184</id><value>重新整理</value></string>
   <string><id>185</id><value>搜尋專輯</value></string>
   <string><id>186</id><value>確定</value></string>
@@ -143,7 +143,7 @@
   <string><id>210</id><value>向前</value></string>
   <string><id>211</id><value>搜尋應用程式</value></string>
   <string><id>212</id><value>找到應用程式</value></string>
-  <string><id>213</id><value>使用者界面校正</value></string>
+  <string><id>213</id><value>界面校正</value></string>
   <string><id>214</id><value>螢幕校正</value></string>
   <string><id>215</id><value>柔化</value></string>
   <string><id>216</id><value>縮放</value></string>
@@ -159,16 +159,17 @@
   <string><id>226</id><value>開啟 PAL60</value></string>
   <string><id>227</id><value>開啟 CDDB</value></string>
   <string><id>228</id><value>隨機播放列表</value></string>
-  <string><id>229</id><value>關閉硬碟</value></string>
+  <string><id>229</id><value>關閉硬碟 空閒時間 (分)</value></string>
   <string><id>230</id><value>濾鏡</value></string>
   <string><id>231</id><value>無</value></string>
   <string><id>232</id><value>點</value></string>
   <string><id>233</id><value>條紋</value></string>
-  <string><id>234</id><value>非等方性(Anisotropic)</value></string>
-  <string><id>235</id><value>梅花多重取樣(Quincunx)</value></string>
-  <string><id>236</id><value>三維銳化(Gaussian Cubic)</value></string>
+  <string><id>234</id><value>非等方性</value></string>
+  <string><id>235</id><value>梅花多重取樣</value></string>
+  <string><id>236</id><value>三維銳化</value></string>
   <string><id>237</id><value>縮小</value></string>
   <string><id>238</id><value>放大</value></string>
+  <string><id>239</id><value>播放完成後清除列表</value></string>
   <string><id>240</id><value>自動播放 DVD 影片</value></string>
   <string><id>241</id><value>自動播放 VCD 影片</value></string>
   <string><id>242</id><value>自動播放 CD 音樂</value></string>
@@ -181,7 +182,7 @@
   <string><id>249</id><value>音樂</value></string>
   <string><id>250</id><value>視覺效果</value></string>
   <string><id>251</id><value>選擇目的目錄</value></string>
-  <string><id>252</id><value>- 2 聲道輸出到所有喇叭</value></string>
+  <string><id>252</id><value>- 立體聲輸出到所有喇叭</value></string>
   <string><id>253</id><value>頻道</value></string>
   <string><id>254</id><value>- DTS 數位音效</value></string>
   <string><id>255</id><value>CDDB</value></string>
@@ -238,31 +239,31 @@
   <string><id>307</id><value>- 自動後期處理</value></string>
   <string><id>308</id><value>- 垂直方塊濾鏡</value></string>
   <string><id>309</id><value>- 水平方塊濾鏡</value></string>
-  <string><id>310</id><value>- 自動亮度、對比</value></string>
-  <string><id>311</id><value>- 渲染(Dering)</value></string>
+  <string><id>310</id><value>- 自動亮度/對比</value></string>
+  <string><id>311</id><value>- 渲染</value></string>
   <string><id>312</id><value>(0=自動)</value></string>
   <string><id>313</id><value>清除資料庫</value></string>
   <string><id>314</id><value>準備中...</value></string>
-  <string><id>315</id><value>資料庫錯誤</value></string>
+  <string><id>315</id><value>資料庫錯誤！</value></string>
   <string><id>316</id><value>搜尋歌曲中...</value></string>
-  <string><id>317</id><value>清除資料庫成功</value></string>
-  <string><id>318</id><value>清除歌曲</value></string>
+  <string><id>317</id><value>清除資料庫成功！</value></string>
+  <string><id>318</id><value>清除歌曲...</value></string>
   <string><id>319</id><value>清除歌曲錯誤</value></string>
   <string><id>320</id><value>搜尋藝人中...</value></string>
-  <string><id>321</id><value>清除藝人錯誤</value></string>
+  <string><id>321</id><value>清除藝人錯誤！</value></string>
   <string><id>322</id><value>搜尋類別中...</value></string>
-  <string><id>323</id><value>清除類別錯誤</value></string>
+  <string><id>323</id><value>清除類別錯誤！</value></string>
   <string><id>324</id><value>搜尋路徑...</value></string>
-  <string><id>325</id><value>清除路徑錯誤</value></string>
+  <string><id>325</id><value>清除路徑錯誤！</value></string>
   <string><id>326</id><value>搜尋專輯中...</value></string>
-  <string><id>327</id><value>清除專輯錯誤</value></string>
+  <string><id>327</id><value>清除專輯錯誤！</value></string>
   <string><id>328</id><value>寫入中...</value></string>
-  <string><id>329</id><value>寫入錯誤</value></string>
+  <string><id>329</id><value>寫入錯誤！</value></string>
   <string><id>330</id><value>這需要一些時間...</value></string>
   <string><id>331</id><value>壓縮資料庫中...</value></string>
-  <string><id>332</id><value>壓縮資料庫錯誤</value></string>
+  <string><id>332</id><value>壓縮資料庫錯誤！</value></string>
   <string><id>333</id><value>你想要清除我的音樂庫？</value></string>
-  <string><id>334</id><value>清除我的音樂庫</value></string>
+  <string><id>334</id><value>清除音樂庫數據...</value></string>
   <string><id>335</id><value>開始</value></string>
   <string><id>336</id><value>調整畫面更新率</value></string>
   <string><id>337</id><value>聲音輸出</value></string>
@@ -345,15 +346,15 @@
   <string><id>415</id><value>正在下載圖示...</value></string>
   <string><id>416</id><value>無法使用</value></string>
   <string><id>417</id><value>顯示：大圖示</value></string>
-  <string><id>418</id><value>我的影片：類別</value></string>
-  <string><id>419</id><value>我的影片：演員</value></string>
-  <string><id>420</id><value>我的影片：年份</value></string>
-  <string><id>421</id><value>我的影片：自動播放</value></string>
+  <string><id>418</id><value>我的影片/類別</value></string>
+  <string><id>419</id><value>我的影片/演員</value></string>
+  <string><id>420</id><value>我的影片/年份</value></string>
+  <string><id>421</id><value>我的影片/自動播放</value></string>
   <string><id>422</id><value>刪除專輯資訊</value></string>
   <string><id>423</id><value>刪除 CDDB 資訊</value></string>
   <string><id>424</id><value>選擇</value></string>
   <string><id>425</id><value>無專輯資訊。</value></string>
-  <string><id>426</id><value>無 CDDB 資訊。</value></string>
+  <string><id>426</id><value>無 CDDB 資訊！</value></string>
   <string><id>427</id><value>光碟片：</value></string>
   <string><id>428</id><value>請放入正確的光碟片</value></string>
   <string><id>429</id><value>請放入光碟片</value></string>
@@ -404,7 +405,7 @@
   <string><id>473</id><value>高品質取樣</value></string>
   <string><id>474</id><value>關</value></string>
   <string><id>475</id><value>只有音樂</value></string>
-  <string><id>476</id><value>音樂 &amp；影片</value></string>
+  <string><id>476</id><value>音樂 &amp; 影片</value></string>
   <string><id>477</id><value>無法讀取播放列表</value></string>
   <string><id>478</id><value>播放工具</value></string>
   <string><id>479</id><value>桌面和語言</value></string>
@@ -438,8 +439,13 @@
   <string><id>507</id><value>排序：使用數</value></string>
   <string><id>508</id><value>不使用捷徑及掃瞄</value></string>
   <string><id>509</id><value>快取程式的圖示</value></string>
-  <string><id>510</id><value>開啟 Visualisations</value></string>
-  <!--                       Enable Visualisations           !-->
+  <string><id>510</id><value>開啟 可視化效果</value></string>
+  <string><id>511</id><value>根據遊戲區域自動切換視頻模式</value></string>
+  <string><id>512</id><value>啟動界面</value></string>
+  <string><id>513</id><value>主界面</value></string>
+  <string><id>514</id><value>設置界面</value></string>
+  <string><id>515</id><value>類別</value></string>
+  
   <string><id>600</id><value>擷取音樂 CD</value></string>
   <string><id>601</id><value>中等</value></string>
   <string><id>602</id><value>標準</value></string>
@@ -466,12 +472,13 @@
   <string><id>636</id><value>自訂</value></string>
 
   <string><id>637</id><value>重覆播放</value></string>
-  <string><id>638</id><value>模式</value></string>
-  <string><id>639</id><value>依曲目</value></string>
-  <string><id>640</id><value>依專輯</value></string>
+  <string><id>638</id><value>重覆播放模式</value></string>
+  <string><id>639</id><value>依曲目重覆播放</value></string>
+  <string><id>640</id><value>依專輯重覆播放</value></string>
   <string><id>641</id><value>音量 - 重覆播放的檔案</value></string>
   <string><id>642</id><value>音量 - 不重覆播放的檔案</value></string>
   <string><id>643</id><value>循環播放</value></string>
+  <string><id>644</id><value>修剪黑邊</value></string>
 
   <string><id>700</id><value>清除音樂庫</value></string>
   <string><id>701</id><value>清除音樂庫中的舊檔案</value></string>
@@ -484,28 +491,28 @@
   <string><id>708</id><value>開啟 HTTP 代理</value></string>
   <string><id>709</id><value>XLink Kai 帳號</value></string>
   <string><id>710</id><value>XLink Kai 密碼</value></string>
-  <string><id>711</id><value>網際網路通訊協定(IP)</value></string>
-  <string><id>712</id><value>無效埠號。 有效數字為 1 至 65535。</value></string>
+  <string><id>711</id><value>網路位址(IP)</value></string>
+  <string><id>712</id><value>無效埠號！ 有效數字為 1 至 65535。</value></string>
   <string><id>713</id><value>HTTP 代理</value></string>
   <string><id>714</id><value>XLink Kai</value></string>
-  <string><id>715</id><value>分配</value></string>
-  <string><id>716</id><value>自動(DHCP)</value></string>
-  <string><id>717</id><value>手動(Static)</value></string>
-  <string><id>718</id><value>預設(Dashboard)</value></string>
+  <string><id>715</id><value>IP 設置</value></string>
+  <string><id>716</id><value>自動 (動態分配)</value></string>
+  <string><id>717</id><value>手動 (靜態分配)</value></string>
+  <string><id>718</id><value>預設 (Dashboard)</value></string>
   <string><id>719</id><value>- IP 位址</value></string>
   <string><id>720</id><value>- 子網路遮罩</value></string>
   <string><id>721</id><value>- 預設閘道</value></string>
   <string><id>722</id><value>- DNS 伺服器</value></string>
-  <string><id>723</id><value>儲存 &amp；重新開機</value></string>
-  <string><id>724</id><value>無效位址。 有效格式為 AAA.BBB.CCC.DDD</value></string>
-  <string><id>725</id><value>且都必須在 0 至 255。</value></string>
+  <string><id>723</id><value>儲存 &amp;重新開機</value></string>
+  <string><id>724</id><value>無效位址！ 有效格式為 AAA.BBB.CCC.DDD</value></string>
+  <string><id>725</id><value>從0到255之間。</value></string>
   <string><id>726</id><value>改變未儲存。 不儲存離開嗎？</value></string>
   <string><id>727</id><value>Web 伺服器</value></string>
   <string><id>728</id><value>FTP 伺服器</value></string>
   <string><id>729</id><value>網路時間</value></string>
   <string><id>730</id><value>- Web 伺服器埠號</value></string>
   <string><id>731</id><value>- 時間伺服器主機</value></string>
-  <string><id>732</id><value>儲存 &amp；應用</value></string>
+  <string><id>732</id><value>儲存 &amp;應用</value></string>
   <string><id>733</id><value>- Web 伺服器密碼</value></string>
   <string><id>734</id><value>無密碼</value></string>
   <string><id>735</id><value>- 編碼</value></string>
@@ -533,7 +540,6 @@
   <string><id>757</id><value>編輯路徑深度</value></string>
   <string><id>758</id><value>移除程式連結</value></string>
   <string><id>759</id><value>顯示：大列表</value></string>
-
   <string><id>760</id><value>黃色</value></string>
   <string><id>761</id><value>白色</value></string>
   <string><id>762</id><value>藍色</value></string>
@@ -544,10 +550,63 @@
   <string><id>767</id><value>保留</value></string>
   <string><id>768</id><value>保留</value></string>
   <string><id>769</id><value>保留</value></string>
-  
+  <string><id>770</id><value>錯誤 %i：不能共享</value></string>
+  <string><id>771</id><value>FTP 伺服器限定工作在FATX格式</value></string>
+  <string><id>772</id><value>音頻硬體</value></string>
+  <string><id>773</id><value>搜尋中</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>線上遊戲</value></string>
+  
   <string><id>1000</id><value>螢幕保護預覽</value></string>
+  <string><id>1200</id><value>SMB 共享設置</value></string>
+  <string><id>1201</id><value>SMB IP位址</value></string>
+  <string><id>1202</id><value>SMB 工作組</value></string>
+  <string><id>1203</id><value>SMB 用戶名</value></string>
+  <string><id>1204</id><value>SMB 密碼</value></string>
+  <string><id>1205</id><value>SMB 共享名</value></string>
+  <string><id>1206</id><value>SMB 共享群</value></string>
+  <string><id>1207</id><value>SMB WINS-伺服器</value></string>
+  <string><id>1208</id><value>設置 模式</value></string>
+  <string><id>1209</id><value> SMB 共享設置成功！</value></string>
+  <string><id>1210</id><value>刪除</value></string>
+  <string><id>1211</id><value>音樂</value></string>
+  <string><id>1212</id><value>影片</value></string>
+  <string><id>1213</id><value>圖片</value></string>
+  <string><id>1214</id><value>檔案</value></string>
+  <string><id>1215</id><value>音樂 &amp; 影片 </value></string>
+  <string><id>1216</id><value>音樂 &amp; 圖片</value></string>
+  <string><id>1217</id><value>音樂 &amp; 檔案</value></string>
+  <string><id>1218</id><value>影片 &amp; 圖片</value></string>
+  <string><id>1219</id><value>影片 &amp; 檔案</value></string>
+  <string><id>1220</id><value>圖片 &amp; 檔案</value></string>
+  <string><id>1221</id><value>音樂 &amp; 影片 &amp; 圖片</value></string>
+  <string><id>1222</id><value>音樂 &amp; 影片 &amp; 圖片 &amp; 檔案</value></string>
+  <string><id>1223</id><value>禁用</value></string>
+  <string><id>1224</id><value>普通用戶</value></string>
+  <string><id>1225</id><value>高級用戶</value></string>
+  <string><id>1226</id><value>檔案 &amp; 音樂 &amp; 影片</value></string>
+  <string><id>1227</id><value>檔案 &amp; 圖片 &amp; 音樂</value></string>
+  <string><id>1228</id><value>檔案 &amp; 圖片 &amp; 影片</value></string>
+  
+  <string><id>1229</id><value>音樂 &amp; 程式</value></string>
+  <string><id>1230</id><value>影片 &amp; 程式</value></string>
+  <string><id>1231</id><value>圖片 &amp; 程式</value></string>
+  <string><id>1232</id><value>音樂 &amp; 影片 &amp; 圖片 &amp; 程式</value></string>
+  <string><id>1233</id><value>程式 &amp; 影片 &amp; 音樂</value></string>
+  <string><id>1234</id><value>程式 &amp; 圖片 &amp; 音樂</value></string>
+  <string><id>1235</id><value>程式 &amp; 圖片 &amp; 影片</value></string>
+
+  <string><id>1245</id><value> - FTP 用戶名</value></string>
+  <string><id>1246</id><value> - FTP 密碼</value></string>
+  <string><id>1247</id><value>FTP 伺服器相應的用戶名和密碼設置成功！</value></string>
+
+  <string><id>1250</id><value>自動檢測</value></string>
+  <string><id>1251</id><value>XBOX 自動檢測</value></string>
+  <string><id>1252</id><value>暱稱</value></string>
+  <string><id>1253</id><value>在我的文件中建立FTP連接</value></string>
+  <string><id>1254</id><value>顯示通告</value></string>
+  <string><id>1255</id><value>發送 FTP 用戶名和密碼</value></string>
+  <string><id>1256</id><value>Ping 間隔</value></string>
 
   <string><id>1396</id><value>移動</value></string>
   <string><id>1397</id><value>和</value></string>
@@ -559,8 +618,7 @@
   <string><id>1403</id><value>陽光</value></string>
   <string><id>1404</id><value>暴</value></string>
   <string><id>1405</id><value>在</value></string>
-  <string><id>1406</id><value></value></string>
-  <!--                        the               !-->
+  <string><id>1406</id><value>這</value></string>
   <string><id>1407</id><value>區域性</value></string>
   <string><id>1408</id><value>冰</value></string>
   <string><id>1409</id><value>冰霜</value></string>
@@ -574,63 +632,62 @@
   <string><id>10005</id><value>我的音樂</value></string>
   <string><id>10006</id><value>我的影片</value></string>
   <string><id>10007</id><value>系統資訊</value></string>
-  <string><id>10008</id><value>設定-&gt；一般</value></string>
-  <string><id>10009</id><value>設定-&gt；螢幕</value></string>
-  <string><id>10010</id><value>設定-&gt；螢幕-&gt；使用者界面 校正</value></string>
-  <string><id>10011</id><value>設定-&gt；螢幕-&gt；螢幕 校正</value></string>
-  <string><id>10012</id><value>設定-&gt；幻燈片秀</value></string>
-  <string><id>10013</id><value>設定-&gt；螢幕-&gt；濾鏡</value></string>
-  <string><id>10014</id><value>設定-&gt；音樂</value></string>
-  <string><id>10015</id><value>設定-&gt；螢幕-&gt；字幕</value></string>
-  <string><id>10016</id><value>設定-&gt；螢幕-&gt；螢幕保護</value></string>
-  <string><id>10017</id><value>設定-&gt；天氣</value></string>
-  <string><id>10020</id><value>設定-&gt；劇本</value></string>
-  <string><id>10021</id><value>我的影片：類別</value></string>
-  <string><id>10022</id><value>我的影片：演員</value></string>
-  <string><id>10023</id><value>我的影片：年份</value></string>
-  <string><id>10024</id><value>設定-&gt；程式</value></string>
-  <string><id>10025</id><value>我的影片：自動播放</value></string>
-  <string><id>10026</id><value>設定-&gt；一般-&gt；緩衝區</value></string>
-  <string><id>10027</id><value>設定-&gt；一般-&gt；自動播放</value></string>
-  <string><id>10028</id><value>我的影片：播放列表</value></string>
-  <string><id>10029</id><value>設定-&gt；一般-&gt；液晶螢幕</value></string>
+  <string><id>10008</id><value>設定-&gt;一般</value></string>
+  <string><id>10009</id><value>設定-&gt;螢幕</value></string>
+  <string><id>10010</id><value>設定-&gt;用戶界面-&gt;界面 校正</value></string>
+  <string><id>10011</id><value>設定-&gt;我的影片-&gt;螢幕 校正</value></string>
+  <string><id>10012</id><value>設定-&gt;我的圖片</value></string>
+  <string><id>10013</id><value>設定-&gt;所有程式</value></string>
+  <string><id>10014</id><value>設定-&gt;氣象預報</value></string>
+  <string><id>10015</id><value>設定-&gt;我的音樂</value></string>
+  <string><id>10016</id><value>設定-&gt;系統設定</value></string>
+  <string><id>10017</id><value>設定-&gt;我的影片</value></string>
+  <string><id>10018</id><value>設定-&gt;網路設定</value></string>
+  <string><id>10019</id><value>設定-&gt;用戶界面</value></string>
+  <string><id>10020</id><value>劇本</value></string>
+  <string><id>10021</id><value>我的影片/類別</value></string>
+  <string><id>10022</id><value>我的影片/演員</value></string>
+  <string><id>10023</id><value>我的影片/年份</value></string>
+  <string><id>10025</id><value>我的影片/標題</value></string>
+  <string><id>10028</id><value>我的影片/播放列表</value></string>
+  <string><id>10029</id><value>設定-&gt;用戶設定</value></string>
   <string><id>10100</id><value>確認對話</value></string>
   <string><id>10101</id><value>對話框</value></string>
-  <string><id>10500</id><value>我的音樂：播放列表</value></string>
-  <string><id>10501</id><value>我的音樂：檔案</value></string>
-  <string><id>10502</id><value>我的音樂：專輯</value></string>
-  <string><id>10503</id><value>我的音樂：藝人</value></string>
-  <string><id>10504</id><value>我的音樂：類別</value></string>
-  <string><id>10505</id><value>我的音樂：排名前 100</value></string>
+  <string><id>10500</id><value>我的音樂/播放列表</value></string>
+  <string><id>10501</id><value>我的音樂/檔案</value></string>
+  <string><id>10502</id><value>我的音樂/音樂庫</value></string>
+  <string><id>10503</id><value>我的音樂/排名前 100</value></string>
+  
   <string><id>10506</id><value>應用程式</value></string>
-  <string><id>10507</id><value>環境配置</value></string>
-  <string><id>10508</id><value>氣象報告</value></string>
+  <string><id>10507</id><value>系統設定</value></string>
+  <string><id>10508</id><value>氣象預報</value></string>
   <string><id>10509</id><value>網路遊戲</value></string>
   <string><id>10510</id><value>擴充功能</value></string>
   <string><id>10511</id><value>系統資訊</value></string>
-  <string><id>10512</id><value>我的音樂：專輯</value></string>
-  <string><id>10513</id><value>我的音樂：藝人</value></string>
-  <string><id>10514</id><value>我的音樂：類別</value></string>
-  <string><id>10515</id><value>我的音樂：排名前 100</value></string>
-  <string><id>10516</id><value>我的音樂：音樂庫</value></string>
-  <string><id>10517</id><value>我的音樂：播放列表</value></string>
-  <string><id>10518</id><value>我的影片：演員</value></string>
-  <string><id>10519</id><value>我的影片：類型</value></string>
-  <string><id>10520</id><value>我的影片：標題</value></string>
-  <string><id>10521</id><value>我的影片：年份</value></string>
-  <string><id>10522</id><value>我的影片：播放列表</value></string>
+  <string><id>10512</id><value>我的音樂 - 專輯</value></string>
+  <string><id>10513</id><value>我的音樂 - 藝人</value></string>
+  <string><id>10514</id><value>我的音樂 - 類別</value></string>
+  <string><id>10515</id><value>我的音樂 - 排名前 100</value></string>
+  <string><id>10516</id><value>我的音樂 - 資料</value></string>
+  <string><id>10517</id><value>我的音樂 - 播放列表</value></string>
+  <string><id>10518</id><value>我的影片 - 演員</value></string>
+  <string><id>10519</id><value>我的影片 - 類型</value></string>
+  <string><id>10520</id><value>我的影片 - 標題</value></string>
+  <string><id>10521</id><value>我的影片 - 年份</value></string>
+  <string><id>10522</id><value>我的影片 - 播放列表</value></string>
   <string><id>10523</id><value>專輯資訊</value></string>
-  <string><id>10524</id><value>電影資訊</value></string>
-  <string><id>11000</id><value>鍵盤</value></string>
+  <string><id>10524</id><value>影片資訊</value></string>
   <string><id>12000</id><value>選擇對話</value></string>
-  <string><id>12001</id><value>我的音樂：資訊</value></string>
-  <string><id>12002</id><value>對話 OK</value></string>
-  <string><id>12003</id><value>我的影片：資訊</value></string>
-  <string><id>12004</id><value>我的劇本：資訊</value></string>
+  <string><id>12001</id><value>我的音樂/資訊</value></string>
+  <string><id>12002</id><value>確認對話</value></string>
+  <string><id>12003</id><value>我的影片/資訊</value></string>
+  <string><id>12004</id><value>我的劇本/資訊</value></string>
   <string><id>12005</id><value>全螢幕影片</value></string>
-  <string><id>12006</id><value>Audio visisalisation</value></string>
-  <string><id>12007</id><value>我的圖片、幻燈片秀</value></string>
+  <string><id>12006</id><value>音頻可視化效果</value></string>
+  <string><id>12007</id><value>我的圖片/幻燈片秀</value></string>
   <string><id>12008</id><value>檔案定位對話</value></string>
+  
+  
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
   <string><id>12312</id><value>2</value></string>
@@ -644,38 +701,58 @@
   <string><id>12320</id><value>c</value></string>
   <string><id>12321</id><value>ok</value></string>
   <string><id>12322</id><value>*</value></string>
-  <string><id>12324</id><value>XBMC 管理員鎖</value></string>
-  <string><id>12325</id><value>資料夾已鎖定</value></string>
+  <string><id>12324</id><value>XBMC 管理員鎖定</value></string>
+  <string><id>12325</id><value>資料夾鎖定</value></string>
   <string><id>12326</id><value>輸入密碼</value></string>
-  <string><id>12327</id><value>輸入管理員鎖並按 Enter，</value></string>
-  <string><id>12328</id><value>輸入解鎖密碼並按 Enter，</value></string> 
+  <string><id>12327</id><value>輸入管理員密碼</value></string>
+  <string><id>12328</id><value>輸入解鎖密碼</value></string> 
   <string><id>12329</id><value>或按 C 取消</value></string>
-  <string><id>12330</id><value>輸入 XBOX 手把按鍵順序並按 Start</value></string>
-  <string><id>12331</id><value>或按 Back 取消</value></string>
-  <string><id>12332</id><value>鎖定共享</value></string>
-  <string><id>12333</id><value>共享解鎖</value></string>
-  <string><id>12334</id><value>重設共享鎖定</value></string>
-  <string><id>12335</id><value>移除共享鎖定</value></string>
+  <string><id>12330</id><value>輸入 XBOX 手把按鍵順序</value></string>
+  <string><id>12331</id><value>按 Start 確認，或按 Back 取消</value></string>
+  <string><id>12332</id><value>設置鎖定</value></string>
+  <string><id>12333</id><value>解除鎖定</value></string>
+  <string><id>12334</id><value>重設鎖定</value></string>
+  <string><id>12335</id><value>移除鎖定</value></string>
   <string><id>12336</id><value>選擇鎖定類型：</value></string>
   <string><id>12337</id><value>數字密碼</value></string>
   <string><id>12338</id><value>手把按鍵順序</value></string>
-  <string><id>12339</id><value>全文字密碼</value></string>
+  <string><id>12339</id><value>文字密碼</value></string>
   <string><id>12340</id><value>輸入新密碼</value></string>
   <string><id>12341</id><value>確認新密碼</value></string>
   <string><id>12342</id><value>密碼不正確，</value></string>
   <string><id>12343</id><value>重試次數 </value></string>
-  <string><id>12344</id><value>輸入的密碼不符。</value></string>
+  <string><id>12344</id><value>輸入密碼不正確！</value></string>
   <string><id>12345</id><value>拒絕讀取</value></string>
-  <string><id>12346</id><value>已達密碼重試次數限制。</value></string>
-  <string><id>12347</id><value>XBOX 現在將被關閉。</value></string>
+  <string><id>12346</id><value>已達密碼重試次數限制！</value></string>
+  <string><id>12347</id><value>XBOX 現在將要關閉！</value></string>
   <string><id>12348</id><value>項目被鎖定</value></string>
   <string><id>12349</id><value>記住管理員密碼直到下次開機？</value></string>
-  <string><id>12350</id><value>(開啟任何項目將被設定自動鎖上</value></string>
-  <string><id>12351</id><value>管理員鎖。)</value></string>
-  <string><id>12352</id><value>輸入管理員密碼並且</value></string>
+  <string><id>12350</id><value>(修改系統設定裡的任何項目</value></string>
+  <string><id>12351</id><value>將自動啟用主機鎖定功能！)</value></string>
+  <string><id>12352</id><value>輸入管理員密碼並按 Start 確定</value></string>
   <string><id>12353</id><value>重新上鎖</value></string>
   <string><id>12354</id><value>解除資料夾鎖直到下次開機？</value></string>
-  <string><id>12355</id><value>資料夾鎖。)</value></string>
+  <string><id>12355</id><value>自動對資料夾上鎖。)</value></string>
+  <string><id>12356</id><value>更改鎖定</value></string>
+  <string><id>12357</id><value>共享鎖定</value></string>
+  <string><id>12358</id><value>密碼不能為空，請重試！</value></string>
+  <string><id>12360</id><value>主機鎖定</value></string>
+  <string><id>12361</id><value>最多重試次數</value></string>
+  <string><id>12362</id><value>允許關機</value></string>
+  <string><id>12363</id><value>共享保護</value></string>
+  <string><id>12364</id><value>密碼方式</value></string>
+  <string><id>12365</id><value>管理員密碼</value></string>
+  <string><id>12366</id><value>密碼方式改變。新的管理員密碼為：</value></string>
+  <string><id>12367</id><value>管理員密碼錯誤！</value></string>
+  <string><id>12368</id><value>請輸入正確的管理員密碼！</value></string>
+  <string><id>12369</id><value>XBMC 啟動鎖定</value></string>
+  <string><id>12370</id><value>密碼方式改變，但沒有設置管理員密碼！</value></string>
+  <string><id>12371</id><value>請設置一個新的管理員密碼！</value></string>
+
+  <string><id>12372</id><value>鎖定 我的檔案</value></string>
+  <string><id>12373</id><value>鎖定 系統設置</value></string>
+  <string><id>12374</id><value>鎖定 其他項目</value></string>
+  
   <string><id>12600</id><value>氣象報告</value></string>
   <string><id>12900</id><value>螢幕保護</value></string>
   <string><id>12901</id><value>全螢幕畫面調整工具</value></string>
@@ -695,6 +772,13 @@
   <string><id>13205</id><value>未知</value></string>
   <string><id>13206</id><value>取代</value></string>
   <string><id>13207</id><value>取代預設檔'%s'？</value></string>
+  
+  <string><id>13208</id><value>鬧鈴</value></string>
+  <string><id>13209</id><value>鬧鈴間隔 (以分鐘為單位)</value></string>
+  <string><id>13210</id><value>鬧鈴啟動， %i分鐘倒計時。</value></string>
+  <string><id>13211</id><value>鬧鈴時間到！</value></string>
+  <string><id>13212</id><value>鬧鈴取消，剩餘%i分%i秒。</value></string>
+  
   <string><id>13299</id><value>目標溫度</value></string>
   <string><id>13300</id><value>風扇轉速</value></string>
   <string><id>13301</id><value>自動控溫</value></string>
@@ -723,7 +807,7 @@
   <string><id>13324</id><value>背景透明度</value></string>
   <string><id>13325</id><value>前景透明度</value></string>
   <string><id>13326</id><value>影片延遲</value></string>
-  <string><id>13327</id><value>卡啦 OK</value></string>
+  <string><id>13327</id><value>卡拉 OK</value></string>
   <string><id>13328</id><value>%s 找不到。</value></string>
   <string><id>13329</id><value>打開 %s 發生錯誤</value></string>
   <string><id>13330</id><value>無法載入 %s</value></string>
@@ -736,7 +820,7 @@
   <string><id>13337</id><value>- 2 聲道 PCM 過濾</value></string>
   <string><id>13338</id><value>前 LED</value></string>
   <string><id>13339</id><value>前 LED 顏色</value></string>
-  <string><id>13340</id><value>保持原狀</value></string>
+  <string><id>13340</id><value>預設</value></string>
   <string><id>13341</id><value>綠色</value></string>
   <string><id>13342</id><value>橙色</value></string>
   <string><id>13343</id><value>紅色</value></string>
@@ -744,15 +828,15 @@
   <string><id>13345</id><value>當播放時關閉 LED</value></string>
   <string><id>13346</id><value>影片資訊</value></string>
   <string><id>13347</id><value>加入播放列表</value></string>
-  <string><id>13348</id><value>搜尋 IMDb...</value></string>
-  <string><id>13349</id><value>查詢所有檔案資訊</value></string>
+  <string><id>13348</id><value>搜尋 IMDb 資訊...</value></string>
+  <string><id>13349</id><value>搜尋所有檔案資訊</value></string>
   <string><id>13350</id><value>切換至播放列表...</value></string>
   <string><id>13351</id><value>專輯資訊</value></string>
   <string><id>13352</id><value>掃瞄資料夾到資料庫</value></string>
   <string><id>13353</id><value>停止搜尋</value></string>
   <string><id>13354</id><value>補償方式</value></string>
   <string><id>13355</id><value>低品質像素著色器</value></string>
-  <string><id>13356</id><value>硬體超頻</value></string>
+  <string><id>13356</id><value>硬體覆疊</value></string>
   <string><id>13357</id><value>高品質像素著色器</value></string>
   <string><id>13358</id><value>播放項目</value></string>
   <string><id>13359</id><value>設定藝人圖示</value></string>
@@ -782,10 +866,19 @@
   <string><id>13383</id><value>語音特效 - 第 1 埠</value></string>
   <string><id>13384</id><value>語音特效 - 第 2 埠</value></string>
   <string><id>13385</id><value>語音特效 - 第 3 埠</value></string>
+  <string><id>13386</id><value>使用時間搜尋</value></string>
+  <string><id>13387</id><value>右側音軌命名模板</value></string>
+  <string><id>13388</id><value>預設</value></string>
+  <string><id>13389</id><value>該可視化效果沒有進行預先設置 </value></string>
+  <string><id>13390</id><value>該可視化效果沒有相應設置</value></string>
+  <string><id>13391</id><value>彈出/載入</value></string>
+  <string><id>13392</id><value>可視化效果自動全螢幕</value></string>
+  <string><id>13393</id><value>計算大小</value></string>
+  <string><id>13394</id><value>計算檔案大小</value></string>
 
-  <string><id>14000</id><value>過濾：關閉</value></string>
-  <string><id>14001</id><value>過濾：簡化</value></string>
-  <string><id>14002</id><value>過濾：智慧</value></string>
+  <string><id>14000</id><value>堆疊：關閉</value></string>
+  <string><id>14001</id><value>堆疊：簡化</value></string>
+  <string><id>14002</id><value>堆疊：模糊</value></string>
   <string><id>14003</id><value>下載播放列表檔案中...</value></string>
   <string><id>14004</id><value>下載串流媒體列表中...</value></string>
   <string><id>14005</id><value>分析串流媒體列表中...</value></string>
@@ -808,14 +901,14 @@
   <string><id>14022</id><value>資料庫</value></string>
   <string><id>14023</id><value>無電視</value></string>
   <string><id>14024</id><value>輸入最近的城市或美國郵編</value></string>
-  <string><id>14025</id><value>影片、音樂、光碟- 硬碟</value></string>
-  <string><id>14026</id><value>影片緩衝區      - 光碟機</value></string>
+  <string><id>14025</id><value>影片/音樂/光碟緩衝區 - 硬碟</value></string>
+  <string><id>14026</id><value>影片緩衝區 - 光碟機</value></string>
   <string><id>14027</id><value>- 區域網路</value></string>
   <string><id>14028</id><value>- 網際網路</value></string>
-  <string><id>14030</id><value>音樂緩衝區      - 光碟機</value></string>
+  <string><id>14030</id><value>音樂緩衝區 - 光碟機</value></string>
   <string><id>14031</id><value>- 區域網路</value></string>
   <string><id>14032</id><value>- 網際網路</value></string>
-  <string><id>14034</id><value>光碟緩衝區      - 光碟機</value></string>
+  <string><id>14034</id><value>光碟緩衝區 - 光碟機</value></string>
   <string><id>14035</id><value>- 區域網路</value></string>
   <string><id>14036</id><value>伺服器</value></string>
   <string><id>14037</id><value>視覺效果</value></string>
@@ -844,6 +937,15 @@
   <string><id>14060</id><value>未知型態的緩衝區 - 網際網路</value></string>
   <string><id>14061</id><value>自動</value></string>
   <string><id>14062</id><value>輸入使用者名稱</value></string>
+  
+  <string><id>14063</id><value>日期和時間</value></string>
+  <string><id>14064</id><value>設置日期</value></string>
+  <string><id>14065</id><value>設置時間</value></string>
+  <string><id>14066</id><value>設置時間 (24小時制/小時:分鐘)</value></string>
+  <string><id>14067</id><value>設置日期 (日/月/年)</value></string>
+  <string><id>14068</id><value>輸入 IP 位址</value></string>
+  <string><id>14069</id><value>確定要設定這些參數嗎？</value></string>
+  <string><id>14070</id><value> - 應用設置</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>目前並沒有連線到執行 XLink Kai 的電腦，</value></string>
@@ -877,7 +979,7 @@
   <string><id>15029</id><value>加入這個遊戲室須要密碼。</value></string>
   <string><id>15030</id><value>遊戲己經中斷</value></string>
   <string><id>15031</id><value>XLink Kai 認證</value></string>
-  <string><id>15032</id><value>你的使用者名稱或密碼不正確，</value></string>
+  <string><id>15032</id><value>使用者名稱或密碼不正確，</value></string>
   <string><id>15033</id><value>請檢查設定無誤後再嘗試。</value></string>
   <string><id>15034</id><value>登入</value></string>
   <string><id>15035</id><value>啟動語音聊天</value></string>
@@ -892,8 +994,8 @@
   <string><id>15044</id><value>%s 離開聊天室。</value></string>
   <string><id>15045</id><value>輸入你的訊息。</value></string>
   <string><id>15046</id><value>目前的遊戲室</value></string>
-  <string><id>15047</id><value>輸入遊戲場的密碼。</value></string>
-  <string><id>15048</id><value>輸入遊戲場的說明。</value></string>
+  <string><id>15047</id><value>輸入遊戲場密碼。</value></string>
+  <string><id>15048</id><value>輸入遊戲場說明。</value></string>
   <string><id>15049</id><value>主持遊戲</value></string>
   <string><id>15050</id><value>主持私人遊戲室</value></string>
   <string><id>15051</id><value>玩家限制</value></string>
@@ -915,28 +1017,79 @@
   <string><id>15104</id><value>* 所有歌曲</value></string>
   <string><id>15105</id><value>* 所有類別</value></string>
   <string><id>15106</id><value>向前瀏覽時提醒選擇的檔案</value></string>
-
   <string><id>15107</id><value>暫存中...</value></string>
   <string><id>15108</id><value>按鍵音</value></string>
   <string><id>15109</id><value>主題預設</value></string>
-
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>上傳歌曲資訊到 AudioScrobbler</value></string>
   <string><id>15202</id><value>AudioScrobbler 使用者名稱</value></string>
   <string><id>15203</id><value>AudioScrobbler 密碼</value></string>
   <string><id>15204</id><value>無法連線：休息中...</value></string>
-  <!--                         Unable to handshake: sleeping...!-->
   <string><id>15205</id><value>請更新 XBMC</value></string>
   <string><id>15206</id><value>上傳失敗：無法通過認證。</value></string>
   <string><id>15207</id><value>連線</value></string>
   <string><id>15208</id><value>無法連線</value></string>
   <string><id>15209</id><value>上傳進度 %i</value></string>
-  <!--                         Submit Interval %i      !-->
   <string><id>15210</id><value>已上傳 %i 首</value></string>
-  <!--                         Cached %i Songs          !-->
   <string><id>15211</id><value>上傳中...</value></string>
   <string><id>15212</id><value>上傳剩餘 %i 秒</value></string>
+  
+  <string><id>13150</id><value>硬碟 金鑰：</value></string>
+  <string><id>13151</id><value>硬碟 溫度：</value></string>
+  <string><id>13152</id><value>DVD 型號：</value></string>
+  <string><id>13153</id><value>DVD 軔體：</value></string>
+  <string><id>13154</id><value>硬碟 型號：</value></string>
+  <string><id>13155</id><value>硬碟 序號：</value></string>
+  <string><id>13156</id><value>硬碟 軔體：</value></string>
+  <string><id>13157</id><value>硬碟 密碼：</value></string>
+  <string><id>13158</id><value>硬碟 鎖 狀態：</value></string>
+  <string><id>13159</id><value>子網路遮罩：</value></string>
+  <string><id>13160</id><value>閘道 位址：</value></string>
+  <string><id>13161</id><value>DNS伺服器位址：</value></string>
+  <string><id>13162</id><value>無法讀取資訊</value></string>
+  <string><id>13163</id><value>搖桿在端口：</value></string>
+  <string><id>13164</id><value>鍵盤在端口：</value></string>
+  <string><id>13165</id><value>滑鼠在端口：</value></string>
+  <string><id>13166</id><value>耳麥在端口：</value></string>
+  <string><id>13167</id><value>記憶卡在端口：</value></string>
+  <string><id>13168</id><value>遙控器在端口：</value></string>
 
+  <string><id>13270</id><value>硬體：</value></string>
+  <string><id>13271</id><value>中央處理器速度：</value></string>
+  <string><id>13275</id><value>硬碟</value></string>
+  <string><id>13276</id><value>光碟機</value></string>
+  <string><id>13277</id><value>儲存設備</value></string>
+  <string><id>13278</id><value>預設</value></string>
+  <string><id>13279</id><value>網路</value></string>
+  <string><id>13280</id><value>影片</value></string>
+  <string><id>13281</id><value>硬體</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>核心版本：</value></string>
+  <string><id>13284</id><value>中央處理器速度：</value></string>
+  <string><id>13285</id><value>BIOS 型號：</value></string>
+  <string><id>13286</id><value>顯示晶片：</value></string>
+  <string><id>13287</id><value>螢幕解析度：</value></string>
+  <string><id>13288</id><value>Xbox 版本：</value></string>
+  <string><id>13289</id><value>Xbox 序號：</value></string>
+  <string><id>13290</id><value>XBOX 製造商：</value></string>
+  <string><id>13291</id><value>改機晶片：</value></string>
+  <string><id>13292</id><value>A/V 線：</value></string>
+  <string><id>13293</id><value>影片 &amp; XBE 區域：</value></string>
+  <string><id>13294</id><value>DVD 區域：</value></string>
+  <string><id>13295</id><value>網際網路：</value></string>
+  <string><id>13296</id><value>Xbox已連接！</value></string>
+  <string><id>13297</id><value>Xbox無法連接！ 請檢查網路設置！</value></string>
+  <string><id>13298</id><value>XBLIVE 金鑰：</value></string>
+  
   <string><id>15213</id><value>[預留位置]</value></string>
+  <string><id>15214</id><value>使用平滑的影音同步</value></string>
+  
+  <string><id>16000</id><value>通用</value></string>
+  <string><id>16001</id><value>設置音頻硬體</value></string>
+  <string><id>16002</id><value>CDDB 查詢</value></string>
+  <string><id>16003</id><value>高級設置</value></string>
+  
+  <string><id>16004</id><value>同步影片交錯訊號</value></string>
+  <string><id>16005</id><value>- 反轉可視範圍</value></string>
+  
 </strings>
-

@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-07-2005 updated: Italian language file (Thnx to kotix)
+ - 26-07-2005 updated: Chinese (Traditional) language file (Thnx to omenpica)
  - 26-07-2005 fixed: songs where submitted to audioscrobbler when seeking anolog to 50% or greater of a song
  - 26-07-2005 fixed: [ 1242799 ] Programs with ' in its name do not show up
  - 26-07-2005 added: base class for database classes
