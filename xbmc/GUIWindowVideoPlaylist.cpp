@@ -34,6 +34,7 @@ static CStdString m_strTempPlayListDirectory = "";
 
 
 CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist()
+: CGUIWindowVideoBase(WINDOW_VIDEO_PLAYLIST, "MyVideoPlaylist.xml")
 {
   m_Directory.m_strPath = "";
 }

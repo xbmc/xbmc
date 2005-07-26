@@ -28,11 +28,15 @@ public:
   CRssReader();
   virtual ~CRssReader();
 
-  void Create(IRssObserver* aObserver, const vector<wstring>& aUrl, INT iLeadingSpaces);
+  void Create(IRssObserver* aObserver, const vector<wstring>& aUrl, const vector<int>& times, INT iLeadingSpaces);
   bool Parse(LPSTR szBuffer, int iFeed);
   void getFeed(CStdStringW& strText, LPBYTE& pbColors);
   void AddTag(const CStdString addTag);
   void AddToQueue(int iAdd);
+  void UpdateObserver();
+  void SetObserver(IRssObserver* observer);
+  void CheckForUpdates();
+
 private:
   void fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDest);
   void Process();
@@ -46,15 +50,38 @@ private:
   
   std::vector<CStdStringW> m_strFeed;
   std::vector<CStdStringW> m_strColors;
+  std::vector<SYSTEMTIME *> m_vecTimeStamps;
+  std::vector<int> m_vecUpdateTimes;
   INT m_iLeadingSpaces;
   TiXmlDocument m_xml;
-  list <CStdString> m_tagSet;
-  vector<wstring> m_vecUrls;
-  vector<int> m_vecQueue;
+  std::list<CStdString> m_tagSet;
+  std::vector<wstring> m_vecUrls;
+  std::vector<int> m_vecQueue;
   bool m_bIsRunning;
   iconv_t m_iconv;
   bool m_shouldFlip;
   CStdString m_encoding;
 };
+
+class CRssManager
+{
+public:
+  CRssManager();
+  ~CRssManager();
+
+  bool GetReader(DWORD controlID, DWORD windowID, IRssObserver* observer, CRssReader *&reader);
+
+private:
+  struct READERCONTROL
+  {
+    DWORD controlID;
+    DWORD windowID;
+    CRssReader *reader;
+  };
+
+  std::vector<READERCONTROL> m_readers;
+};
+
+extern CRssManager g_rssManager;
 
 #endif // !defined(AFX_RSSREADER_H__157FED93_0CDE_4295_A9AF_75BEF4E81761__INCLUDED_)

@@ -170,10 +170,12 @@ void CCharsetConverter::stringCharsetToFontCharset(const CStdStringA& strSource,
 
   if (m_iconvStringCharsetToFontCharset != (iconv_t) - 1)
   {
-    char *dst = (char*) strDest.SetBuf(inBytes * 2);
+    char *dst = new char[inBytes * 2];
     size_t outBytes = inBytes * 2;
-
-    iconv(m_iconvStringCharsetToFontCharset, &src, &inBytes, &dst, &outBytes);
+    char *outdst = dst;
+    iconv(m_iconvStringCharsetToFontCharset, &src, &inBytes, &outdst, &outBytes);
+    strDest = (WCHAR *)dst;
+    delete[] dst;
   }
 }
 

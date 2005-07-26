@@ -23,9 +23,7 @@ public:
 
   virtual ~CGUIFontXPR(void);
 
-  virtual void GetTextExtent(const WCHAR* strText, FLOAT* pWidth,
-                             FLOAT* pHeight, BOOL bFirstLineOnly = FALSE);
-
+ 
   D3DTexture* CreateTexture( const WCHAR* strText,
                              D3DCOLOR dwBackgroundColor = 0x00000000,
                              D3DCOLOR dwTextColor = 0xffffffff,
@@ -33,6 +31,9 @@ public:
   virtual void Begin();
   virtual void End();
 protected:
+  virtual void GetTextExtentInternal(const WCHAR* strText, FLOAT* pWidth,
+                             FLOAT* pHeight, BOOL bFirstLineOnly = FALSE);
+
   virtual void DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                             const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0,
                             FLOAT fMaxPixelWidth = 0.0f);

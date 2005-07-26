@@ -6,8 +6,9 @@
 
 
 CGUIWindowScreensaver::CGUIWindowScreensaver(void)
-    : CGUIWindow(0)
+    : CGUIWindow(WINDOW_SCREENSAVER, "")
 {
+  m_pScreenSaver = NULL;
 }
 
 CGUIWindowScreensaver::~CGUIWindowScreensaver(void)

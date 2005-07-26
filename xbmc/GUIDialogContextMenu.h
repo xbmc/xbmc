@@ -9,6 +9,7 @@ public:
   virtual ~CGUIDialogContextMenu(void);
   virtual bool OnMessage(CGUIMessage &message);
   virtual void DoModal(DWORD dwParentId);
+  virtual void OnWindowUnload();
   void ClearButtons();
   int AddButton(int iLabel);
   int AddButton(const wstring &strButton);

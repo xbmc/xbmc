@@ -788,3 +788,18 @@ CStdString CGUIButtonScroller::GetDescription() const
   }
   return "";
 }
+
+void CGUIButtonScroller::SetPosition(int iPosX, int iPosY)
+{
+  CGUIControl::SetPosition(iPosX, iPosY);
+}
+
+void CGUIButtonScroller::SetWidth(int iWidth)
+{
+  CGUIControl::SetWidth(iWidth);
+}
+
+void CGUIButtonScroller::SetHeight(int iHeight)
+{
+  CGUIControl::SetHeight(iHeight);
+}

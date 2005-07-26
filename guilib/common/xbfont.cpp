@@ -46,9 +46,7 @@
 #include <xgraphics.h>
 #include <stdio.h>
 #include "XBFont.h"
-
-
-
+#include "../include.h"
 
 //-----------------------------------------------------------------------------
 // Static objects
@@ -493,8 +491,8 @@ HRESULT CXBFont::Begin()
       D3DDevice::GetRenderState( D3DRS_ZENABLE, &m_dwSavedState[8] );
       D3DDevice::GetRenderState( D3DRS_STENCILENABLE, &m_dwSavedState[9] );
       D3DDevice::GetRenderState( D3DRS_EDGEANTIALIAS, &m_dwSavedState[10] );
-      //D3DDevice::GetTextureStageState( 0, D3DTSS_MINFILTER, &m_dwSavedState[11] );
-      //D3DDevice::GetTextureStageState( 0, D3DTSS_MAGFILTER, &m_dwSavedState[12] );
+      D3DDevice::GetTextureStageState( 0, D3DTSS_MINFILTER, &m_dwSavedState[11] );
+      D3DDevice::GetTextureStageState( 0, D3DTSS_MAGFILTER, &m_dwSavedState[12] );
     }
 
     // Set the necessary render states
@@ -513,8 +511,9 @@ HRESULT CXBFont::Begin()
     D3DDevice::SetRenderState( D3DRS_ZENABLE, FALSE );
     D3DDevice::SetRenderState( D3DRS_STENCILENABLE, FALSE );
     D3DDevice::SetRenderState( D3DRS_EDGEANTIALIAS, FALSE );
-    //D3DDevice::SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
-    //D3DDevice::SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
+    D3DDevice::SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
+    D3DDevice::SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
+    D3DDevice::SetScreenSpaceOffset( -0.5f, -0.5f );
 
     // Begin the drawing of vertices
     D3DDevice::Begin( D3DPT_QUADLIST );
@@ -677,11 +676,10 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
     FLOAT bottom = top + fHeight;
     m_fCursorX += fAdvance;
 
-    // Draw the quad using SetVertexData
-    D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, left1, bottom, pGlyph->tu1, pGlyph->tv2 );
-    D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, left2, top, pGlyph->tu1, pGlyph->tv1 );
-    D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, right2, top, pGlyph->tu2, pGlyph->tv1 );
-    D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, right1, bottom, pGlyph->tu2, pGlyph->tv2 );
+    D3DDevice::SetVertexData4f( 0, left1, bottom, pGlyph->tu1, pGlyph->tv2 );
+    D3DDevice::SetVertexData4f( 0, left2, top, pGlyph->tu1, pGlyph->tv1 );
+    D3DDevice::SetVertexData4f( 0, right2, top, pGlyph->tu2, pGlyph->tv1 );
+    D3DDevice::SetVertexData4f( 0, right1, bottom, pGlyph->tu2, pGlyph->tv2 );
   }
 
   // Call End() to complete the begin/end pair for drawing text
@@ -812,11 +810,10 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256Co
     FLOAT bottom = top + fHeight;
     m_fCursorX += fAdvance;
 
-    // Draw the quad using SetVertexData
-    D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, left1, bottom, pGlyph->tu1, pGlyph->tv2 );
-    D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, left2, top, pGlyph->tu1, pGlyph->tv1 );
-    D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, right2, top, pGlyph->tu2, pGlyph->tv1 );
-    D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, right1, bottom, pGlyph->tu2, pGlyph->tv2 );
+    D3DDevice::SetVertexData4f( 0, left1, bottom, pGlyph->tu1, pGlyph->tv2 );
+    D3DDevice::SetVertexData4f( 0, left2, top, pGlyph->tu1, pGlyph->tv1 );
+    D3DDevice::SetVertexData4f( 0, right2, top, pGlyph->tu2, pGlyph->tv1 );
+    D3DDevice::SetVertexData4f( 0, right1, bottom, pGlyph->tu2, pGlyph->tv2 );
   }
 
   // Call End() to complete the begin/end pair for drawing text
@@ -842,6 +839,7 @@ HRESULT CXBFont::End()
 
   // End the drawing of vertex data
   D3DDevice::End();
+  D3DDevice::SetScreenSpaceOffset( 0, 0 );
 
   // Restore state
   if ( m_bSaveState )
@@ -860,8 +858,8 @@ HRESULT CXBFont::End()
     D3DDevice::SetRenderState( D3DRS_ZENABLE, m_dwSavedState[8] );
     D3DDevice::SetRenderState( D3DRS_STENCILENABLE, m_dwSavedState[9] );
     D3DDevice::SetRenderState( D3DRS_EDGEANTIALIAS, m_dwSavedState[10] );
-    //D3DDevice::SetTextureStageState( 0, D3DTSS_MINFILTER, m_dwSavedState[11] );
-    //D3DDevice::SetTextureStageState( 0, D3DTSS_MAGFILTER, m_dwSavedState[12] );
+    D3DDevice::SetTextureStageState( 0, D3DTSS_MINFILTER, m_dwSavedState[11] );
+    D3DDevice::SetTextureStageState( 0, D3DTSS_MAGFILTER, m_dwSavedState[12] );
   }
 
   return S_OK;

@@ -16,8 +16,6 @@
 // Supporting all open  audio codec standards.
 // First one being nullsoft's nsv audio decoder format
 
-static IAudioCallback* m_pCallback = NULL;
-
 PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
 {
   m_bIsPlaying = false;
@@ -48,6 +46,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_resampleAudio = true;
 
   m_visBufferLength = 0;
+  m_pCallback = NULL;
 }
 
 PAPlayer::~PAPlayer()

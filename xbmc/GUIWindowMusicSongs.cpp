@@ -7,7 +7,8 @@
 #include "CUEDocument.h"
 #include "AutoSwitch.h"
 #include "GUIPassword.h"
-
+#include "GUIDialogMusicScan.h"
+#include "GUIDialogContextMenu.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
@@ -147,7 +148,7 @@ int SSortMusicSongs::m_bSortAscending;
 CStdString SSortMusicSongs::m_strDirectory;
 
 CGUIWindowMusicSongs::CGUIWindowMusicSongs(void)
-    : CGUIWindowMusicBase()
+    : CGUIWindowMusicBase(WINDOW_MUSIC_FILES, "MyMusicSongs.xml")
 {
   m_Directory.m_strPath = "?";
   m_iViewAsIcons = -1;
@@ -483,9 +484,10 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
 
 void CGUIWindowMusicSongs::OnScan()
 {
-  if (g_application.m_guiDialogMusicScan.IsRunning())
+  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+  if (musicScan && musicScan->IsRunning())
   {
-    g_application.m_guiDialogMusicScan.StopScanning();
+    musicScan->StopScanning();
     UpdateButtons();
     return ;
   }
@@ -497,20 +499,15 @@ void CGUIWindowMusicSongs::OnScan()
   if (strPaths.length() > 2)
   { // yes, we have, we should prompt the user to ask if they want
     // to do a full scan, or just add new items...
-    CGUIDialogYesNo *pDialog = &(g_application.m_guiDialogYesNo);
-    pDialog->SetHeading(189);
-    pDialog->SetLine(0, 702);
-    pDialog->SetLine(1, 703);
-    pDialog->SetLine(2, 704);
-    pDialog->DoModal(GetID());
-    if (pDialog->IsConfirmed()) bUpdateAll = true;
+    if (CGUIDialogYesNo::ShowAndGetInput(189, 702, 703, 704))
+      bUpdateAll = true;
   }
 
   CUtil::DeleteDatabaseDirectoryCache();
 
   // Start background loader
   int iControl=GetFocusedControl();
-  g_application.m_guiDialogMusicScan.StartScanning(m_Directory.m_strPath, bUpdateAll);
+  if (musicScan) musicScan->StartScanning(m_Directory.m_strPath, bUpdateAll);
   UpdateButtons();
   SET_CONTROL_FOCUS(iControl, 0);
   return ;
@@ -527,15 +524,7 @@ void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
     // load it
     if (!pPlayList->Load(strPlayList))
     {
-      CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (pDlgOK)
-      {
-        pDlgOK->SetHeading(6);
-        pDlgOK->SetLine(0, L"");
-        pDlgOK->SetLine(1, 477);
-        pDlgOK->SetLine(2, L"");
-        pDlgOK->DoModal(GetID());
-      }
+      CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
       return ; //hmmm unable to load playlist?
     }
   }
@@ -604,7 +593,8 @@ void CGUIWindowMusicSongs::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BTNSCAN);
   }
 
-  if (g_application.m_guiDialogMusicScan.IsRunning())
+  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+  if (musicScan && musicScan->IsRunning())
   {
     SET_CONTROL_LABEL(CONTROL_BTNSCAN, 14056); // Stop Scan
   }

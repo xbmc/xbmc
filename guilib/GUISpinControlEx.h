@@ -22,9 +22,9 @@ public:
   virtual void Render();
   virtual void SetPosition(int iPosX, int iPosY);
   virtual DWORD GetWidth() const { return m_buttonControl.GetWidth();};
-  virtual void SetWidth(int iWidth) { m_buttonControl.SetWidth(iWidth); };
+  virtual void SetWidth(int iWidth);
   virtual DWORD GetHeight() const { return m_buttonControl.GetHeight();};
-  virtual void SetHeight(int iWidth) { m_buttonControl.SetHeight(iWidth); };
+  virtual void SetHeight(int iHeight);
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();

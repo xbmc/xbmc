@@ -28,6 +28,10 @@
 #include "..\..\guilib\GUIListControl.h"
 #include "..\..\utils\GUIInfoManager.h"
 #include "..\..\picture.h"
+#include "..\..\MusicInfoTagLoaderFactory.h"
+#include "..\..\utils\MusicInfoScraper.h"
+#include "..\..\MusicDatabase.h"
+#include "..\..\GUIWindowSlideShow.h"
 
 //#pragma code_seg("WEB_TEXT")
 //#pragma data_seg("WEB_DATA")

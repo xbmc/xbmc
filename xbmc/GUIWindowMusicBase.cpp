@@ -16,6 +16,8 @@
 #include "GUIPassword.h"
 #include "AutoSwitch.h"
 #include "GUIFontManager.h"
+#include "GUIDialogMusicScan.h"
+#include "GUIDialogContextMenu.h"
 
 
 #define CONTROL_BTNVIEWASICONS  2
@@ -33,8 +35,8 @@ using namespace PLAYLIST;
 int CGUIWindowMusicBase::m_nTempPlayListWindow = 0;
 CStdString CGUIWindowMusicBase::m_strTempPlayListDirectory = "";
 
-CGUIWindowMusicBase::CGUIWindowMusicBase ()
-    : CGUIWindow(0)
+CGUIWindowMusicBase::CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile)
+    : CGUIWindow(dwID, xmlFile)
 {
   m_nSelectedItem = -1;
   m_iLastControl = -1;
@@ -59,7 +61,8 @@ bool CGUIWindowMusicBase::OnAction(const CAction& action)
 
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
-    if (!g_application.m_guiDialogMusicScan.IsRunning())
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (musicScan && !musicScan->IsRunning())
     {
       CUtil::ThumbCacheClear();
       CUtil::RemoveTempFiles();
@@ -536,15 +539,7 @@ bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
     CDetectDVDMedia::WaitMediaReady();
     if ( !CDetectDVDMedia::IsDiscInDrive() )
     {
-      CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (dlg)
-      {
-        dlg->SetHeading( 218 );
-        dlg->SetLine( 0, 219 );
-        dlg->SetLine( 1, L"" );
-        dlg->SetLine( 2, L"" );
-        dlg->DoModal( GetID() );
-      }
+      CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
       // Update listcontrol, maybe share
       // was selected while disc change
       int iItem = m_viewControl.GetSelectedItem();
@@ -558,15 +553,7 @@ bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
     // TODO: Handle not connected to a remote share
     if ( !CUtil::IsEthernetConnected() )
     {
-      CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (dlg)
-      {
-        dlg->SetHeading( 220 );
-        dlg->SetLine( 0, 221 );
-        dlg->SetLine( 1, L"" );
-        dlg->SetLine( 2, L"" );
-        dlg->DoModal( GetID() );
-      }
+      CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
       return false;
     }
   }
@@ -579,7 +566,6 @@ bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
 void CGUIWindowMusicBase::OnInfo(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
-  CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
   CFileItem* pItem;
   pItem = m_vecItems[iItem];
   if (pItem->m_bIsFolder && pItem->GetLabel() == "..") return ;
@@ -826,16 +812,8 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
   CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   if (dlgMusicScan->IsRunning())
   {
-    CGUIDialogOK *pDlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (pDlg)
-    {
-      pDlg->SetHeading(189);
-      pDlg->SetLine(0, 14057);
-      pDlg->SetLine(1, "");
-      pDlg->SetLine(2, "");
-      pDlg->DoModal(GetID());
-      return ;
-    }
+    CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
+    return;
   }
 
   // find album info
@@ -925,15 +903,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
     else
     {
       // failed 2 download album info
-      CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (pDlgOK)
-      {
-        pDlgOK->SetHeading(185);
-        pDlgOK->SetLine(0, L"");
-        pDlgOK->SetLine(1, 500);
-        pDlgOK->SetLine(2, L"");
-        pDlgOK->DoModal(GetID());
-      }
+      CGUIDialogOK::ShowAndGetInput(185, 0, 500, 0);
     }
   }
 
@@ -1067,7 +1037,7 @@ void CGUIWindowMusicBase::DoSearch(const CStdString& strSearch, CFileItemList& i
 void CGUIWindowMusicBase::OnSearch()
 {
   CStdString strSearch;
-  if ( !GetKeyboard(strSearch) )
+  if ( !CGUIDialogKeyboard::ShowAndGetInput(strSearch, false) )
     return ;
 
   strSearch.ToLower();
@@ -1115,39 +1085,8 @@ void CGUIWindowMusicBase::OnSearch()
   else
   {
     if (m_dlgProgress) m_dlgProgress->Close();
-
-    CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (dlg)
-    {
-      dlg->SetHeading( 194 );
-      dlg->SetLine( 0, 284 );
-      dlg->SetLine( 1, L"" );
-      dlg->SetLine( 2, L"" );
-      dlg->DoModal( GetID() );
-    }
+    CGUIDialogOK::ShowAndGetInput(194, 284, 0, 0);
   }
-}
-
-/// \brief Display virtual keyboard
-/// \param strInput Set as defaultstring in keyboard and retrieves the input from keyboard
-bool CGUIWindowMusicBase::GetKeyboard(CStdString& strInput)
-{
-  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
-  if (!pKeyboard) return false;
-  // setup keyboard
-  pKeyboard->CenterWindow();
-  pKeyboard->SetText(strInput);
-  pKeyboard->DoModal(m_gWindowManager.GetActiveWindow());
-  pKeyboard->Close();
-
-  if (pKeyboard->IsDirty())
-  { // have text - update this.
-    strInput = pKeyboard->GetText();
-    if (strInput.IsEmpty())
-      return false;
-    return true;
-  }
-  return false;
 }
 
 /// \brief Can be overwritten to build an own history string for \c m_history
@@ -1197,8 +1136,6 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
 {
   // quietly return if Internet lookups are disabled
   if (!g_guiSettings.GetBool("Network.EnableInternet")) return false;
-
-  CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
 
   // show dialog box indicating we're searching the album
   if (m_dlgProgress)
@@ -1259,7 +1196,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
             {
               if (!pDlg->IsButtonPressed()) return false;
               CStdString strNewAlbum = strAlbum;
-              if (!GetKeyboard(strNewAlbum)) return false;
+              if (!CGUIDialogKeyboard::ShowAndGetInput(strNewAlbum, false)) return false;
               if (strNewAlbum == "") return false;
               if (m_dlgProgress)
               {
@@ -1291,30 +1228,14 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
         return scraper.Successfull();
       }
       else
-      {
-        // no albums found
-        if (pDlgOK)
-        {
-          pDlgOK->SetHeading(185);
-          pDlgOK->SetLine(0, L"");
-          pDlgOK->SetLine(1, 187);
-          pDlgOK->SetLine(2, L"");
-          pDlgOK->DoModal(GetID());
-        }
+      { // no albums found
+        CGUIDialogOK::ShowAndGetInput(185, 0, 187, 0);
       }
     }
     
     if (!scraper.IsCanceled())
-    {
-      // unable 2 connect to www.allmusic.com
-      if (pDlgOK)
-      {
-        pDlgOK->SetHeading(185);
-        pDlgOK->SetLine(0, L"");
-        pDlgOK->SetLine(1, 499);
-        pDlgOK->SetLine(2, L"");
-        pDlgOK->DoModal(GetID());
-      }
+    { // unable 2 connect to www.allmusic.com
+      CGUIDialogOK::ShowAndGetInput(185, 0, 499, 0);
     }
   }
   catch (...)
@@ -1371,9 +1292,8 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu) return ;
-  // clean any buttons not needed
-  pMenu->ClearButtons();
-
+  // initialize the menu (loaded on demand)
+  pMenu->Initialize();
   // add the needed buttons
   int btn_Info          = pMenu->AddButton(13351);    // Music Information
   int btn_Play          = pMenu->AddButton(13358);    // Play Item
@@ -1381,7 +1301,8 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   int btn_Playlist      = pMenu->AddButton(13350);    // Now Playing...
 
   int btn_Scan = 0;
-  if (g_application.m_guiDialogMusicScan.IsRunning())
+  CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+  if (pScanDlg && pScanDlg->IsRunning())
     btn_Scan = pMenu->AddButton(13353);               // Stop Scanning
   else
     btn_Scan = pMenu->AddButton(13352);               // Scan Folder to Database
@@ -1665,6 +1586,12 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   {
     OnClick(iItem);
   }
+}
+
+void CGUIWindowMusicBase::OnWindowUnload()
+{
+  CGUIWindow::OnWindowUnload();
+  m_viewControl.Reset();
 }
 
 void CGUIWindowMusicBase::OnDeleteItem(int iItem)

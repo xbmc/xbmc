@@ -17,7 +17,7 @@
 #include "AutoSwitch.h"
 #include "GUIPassword.h"
 #include "GUIFontManager.h"
-
+#include "GUIDialogContextMenu.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
@@ -128,6 +128,7 @@ bool SSortVideoByName::m_bSortAscending;
 int SSortVideoByName::m_iSortMethod;
 
 CGUIWindowVideoFiles::CGUIWindowVideoFiles()
+: CGUIWindowVideoBase(WINDOW_VIDEOS, "MyVideo.xml")
 {
 }
 
@@ -726,6 +727,25 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
         }
         if (!m_database.HasMovieInfo(pItem->m_strPath))
         {
+          // handle .nfo files
+          CStdString strNfoFile;
+          CUtil::ReplaceExtension(pItem->m_strPath, ".nfo", strNfoFile);
+          if (!CFile::Exists(strNfoFile))
+            strNfoFile.Empty();
+          if ( !strNfoFile.IsEmpty() )
+          {
+            if ( CFile::Cache(strNfoFile, "Z:\\movie.nfo", NULL, NULL))
+            {
+              CNfoFile nfoReader;
+              if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
+              {
+                CIMDBUrl url;
+                url.m_strURL = nfoReader.m_strImDbUrl;
+                GetIMDBDetails(pItem, url);
+                continue;
+              }
+            }
+          }
           // do IMDB lookup...
           CStdString strMovieName = CUtil::GetFileName(pItem->m_strPath);
           CUtil::RemoveExtension(strMovieName);
@@ -747,8 +767,6 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
             int iMoviesFound = movielist.size();
             if (iMoviesFound > 0)
             {
-              CIMDBMovie movieDetails;
-              movieDetails.m_strSearchString = pItem->m_strPath;
               CIMDBUrl& url = movielist[0];
 
               // show dialog that we're downloading the movie info
@@ -762,45 +780,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
               }
 
               CUtil::ClearCache();
-              if ( IMDB.GetDetails(url, movieDetails, m_dlgProgress) )
-              {
-                // add to all movies in the stacked set
-                m_database.SetMovieInfo(pItem->m_strPath, movieDetails);
-                // get & save thumbnail
-                CStdString strThumb = "";
-                CStdString strImage = movieDetails.m_strPictureURL;
-                if (strImage.size() > 0 && movieDetails.m_strSearchString.size() > 0)
-                {
-
-
-                  CUtil::GetVideoThumbnail(movieDetails.m_strIMDBNumber, strThumb);
-                  ::DeleteFile(strThumb.c_str());
-
-                  CHTTP http;
-                  CStdString strExtension;
-                  CUtil::GetExtension(strImage, strExtension);
-                  CStdString strTemp = "Z:\\temp";
-                  strTemp += strExtension;
-                  ::DeleteFile(strTemp.c_str());
-                  if (m_dlgProgress)
-                  {
-                    m_dlgProgress->SetLine(2, 415);
-                    m_dlgProgress->Progress();
-                  }
-                  http.Download(strImage, strTemp);
-
-                  try
-                  {
-                    CPicture picture;
-                    picture.Convert(strTemp, strThumb);
-                  }
-                  catch (...)
-                  {
-                    ::DeleteFile(strThumb.c_str());
-                  }
-                  ::DeleteFile(strTemp.c_str());
-                }
-              }
+              GetIMDBDetails(pItem, url);
             }
           }
         }
@@ -947,15 +927,7 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
     // load it
     if (!pPlayList->Load(strPlayList))
     {
-      CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (pDlgOK)
-      {
-        pDlgOK->SetHeading(6);
-        pDlgOK->SetLine(0, L"");
-        pDlgOK->SetLine(1, 477);
-        pDlgOK->SetLine(2, L"");
-        pDlgOK->DoModal(GetID());
-      }
+      CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
       return ; //hmmm unable to load playlist?
     }
   }
@@ -1147,4 +1119,48 @@ void CGUIWindowVideoFiles::SaveViewMode()
   g_stSettings.m_iMyVideoRootViewAsIcons = m_iViewAsIconsRoot;
   g_stSettings.m_iMyVideoViewAsIcons = m_iViewAsIcons;
   g_settings.Save();
+}
+
+void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)
+{
+  CIMDB IMDB;
+  CIMDBMovie movieDetails;
+  movieDetails.m_strSearchString = pItem->m_strPath;
+  if ( IMDB.GetDetails(url, movieDetails, m_dlgProgress) )
+  {
+    // add to all movies in the stacked set
+    m_database.SetMovieInfo(pItem->m_strPath, movieDetails);
+    // get & save thumbnail
+    CStdString strThumb = "";
+    CStdString strImage = movieDetails.m_strPictureURL;
+    if (strImage.size() > 0 && movieDetails.m_strSearchString.size() > 0)
+    {
+      CUtil::GetVideoThumbnail(movieDetails.m_strIMDBNumber, strThumb);
+      ::DeleteFile(strThumb.c_str());
+
+      CHTTP http;
+      CStdString strExtension;
+      CUtil::GetExtension(strImage, strExtension);
+      CStdString strTemp = "Z:\\temp";
+      strTemp += strExtension;
+      ::DeleteFile(strTemp.c_str());
+      if (m_dlgProgress)
+      {
+        m_dlgProgress->SetLine(2, 415);
+        m_dlgProgress->Progress();
+      }
+      http.Download(strImage, strTemp);
+
+      try
+      {
+        CPicture picture;
+        picture.Convert(strTemp, strThumb);
+      }
+      catch (...)
+      {
+        ::DeleteFile(strThumb.c_str());
+      }
+      ::DeleteFile(strTemp.c_str());
+    }
+  }
 }

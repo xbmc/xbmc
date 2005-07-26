@@ -7,7 +7,9 @@
 #include "..\xbmc\Application.h"
 #include "..\xbmc\PlayListPlayer.h"
 #include "..\xbmc\GUIsettings.h"
-
+#include "..\xbmc\GUIDialogFileStacking.h"
+#include "..\xbmc\GUIDialogKeyboard.h"
+#include "..\xbmc\FileSystem\VirtualDirectory.h"
 
 extern CApplication g_application;
 
@@ -453,20 +455,12 @@ void CGUIRAMControl::UpdateAllTitles()
 
 void CGUIRAMControl::UpdateTitle(CStdString& strFilepath, INT nIndex)
 {
-  CGUIDialogKeyboard& dialog = *((CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD));
-
   CStdString strFilename = CUtil::GetFileName(strFilepath);
-
-  dialog.CenterWindow();
-  dialog.SetText(strFilename);
-  dialog.DoModal(m_dwParentID);
-  dialog.Close();
-
-  if (dialog.IsDirty())
+  if (CGUIDialogKeyboard::ShowAndGetInput(strFilename, false))
   {
     CMediaMonitor::Command command = {
                                        CMediaMonitor::CommandType::Update,
-                                       dialog.GetText(), strFilepath, nIndex };
+                                       strFilename, strFilepath, nIndex };
 
     m_pMonitor->QueueCommand(command);
   }

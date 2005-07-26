@@ -493,9 +493,7 @@ void CComboRenderer::SetupScreenshot()
   // set scissors if we are not in fullscreen video
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
   {
-    RECT rv = g_graphicsContext.GetViewWindow();
-    D3DRECT clip = { rv.left, rv.top, rv.right, rv.bottom };
-    m_pD3DDevice->SetScissors(1, FALSE, &clip);
+    g_graphicsContext.ClipToViewWindow();
   }
 
   m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );

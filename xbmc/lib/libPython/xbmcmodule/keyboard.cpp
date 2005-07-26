@@ -46,6 +46,7 @@ namespace PYXBMC
 			return NULL;
 		}
 
+    pKeyboard->Initialize();
 		pKeyboard->CenterWindow();
 		pKeyboard->SetText(CStdString(self->strDefault));
 

@@ -88,7 +88,6 @@ public:
   virtual bool UpdateVisibility();
   void SetSelected(bool bSelected);
   virtual void SetEnabled(bool bEnable);
-  virtual void EnableCalibration(bool bOnOff);
   bool CalibrationEnabled() const;
   void SetGroup(int iGroup);
   CStdString ParseLabel(CStdString &strLabel);

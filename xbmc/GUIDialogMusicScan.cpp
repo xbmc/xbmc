@@ -6,7 +6,8 @@
 #define CONTROL_LABELSTATUS   401
 #define CONTROL_LABELDIRECTORY 402
 
-CGUIDialogMusicScan::CGUIDialogMusicScan(void) : CGUIDialog(0)
+CGUIDialogMusicScan::CGUIDialogMusicScan(void)
+: CGUIDialog(WINDOW_DIALOG_MUSIC_SCAN, "DialogMusicScan.xml")
 {
   m_musicInfoScanner.SetObserver(this);
 }

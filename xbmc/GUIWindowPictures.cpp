@@ -8,7 +8,7 @@
 #include "AutoSwitch.h"
 #include "GUIPassword.h"
 #include "FileSystem/ZipManager.h"
-
+#include "GUIDialogContextMenu.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
@@ -106,7 +106,7 @@ bool SSortPicturesByName::m_bSortAscending;
 int SSortPicturesByName::m_iSortMethod;
 
 CGUIWindowPictures::CGUIWindowPictures(void)
-    : CGUIWindow(0)
+    : CGUIWindow(WINDOW_PICTURES, "MyPics.xml")
 {
   m_Directory.m_strPath = "?";
   m_Directory.m_bIsFolder = true;
@@ -597,15 +597,7 @@ bool CGUIWindowPictures::HaveDiscOrConnection( CStdString& strPath, int iDriveTy
     CDetectDVDMedia::WaitMediaReady();
     if ( !CDetectDVDMedia::IsDiscInDrive() )
     {
-      CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (dlg)
-      {
-        dlg->SetHeading( 218 );
-        dlg->SetLine( 0, 219 );
-        dlg->SetLine( 1, L"" );
-        dlg->SetLine( 2, L"" );
-        dlg->DoModal( GetID() );
-      }
+      CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
       int iItem = m_viewControl.GetSelectedItem();
       Update( m_Directory.m_strPath );
       m_viewControl.SetSelectedItem(iItem);
@@ -617,15 +609,7 @@ bool CGUIWindowPictures::HaveDiscOrConnection( CStdString& strPath, int iDriveTy
     // TODO: Handle not connected to a remote share
     if ( !CUtil::IsEthernetConnected() )
     {
-      CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (dlg)
-      {
-        dlg->SetHeading( 220 );
-        dlg->SetLine( 0, 221 );
-        dlg->SetLine( 1, L"" );
-        dlg->SetLine( 2, L"" );
-        dlg->DoModal( GetID() );
-      }
+      CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
       return false;
     }
   }
@@ -935,8 +919,8 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     // popup the context menu
     CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
     if (!pMenu) return ;
-    // clean any buttons not needed
-    pMenu->ClearButtons();
+    // load our menu
+    pMenu->Initialize();
     // add the needed buttons
     int btn_SlideShow = pMenu->AddButton(13317);    // View Slideshow
     int btn_RecSlideShow = pMenu->AddButton(13318); // Recursive Slideshow

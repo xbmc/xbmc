@@ -89,6 +89,7 @@ int SSortVideoActorByName::m_iSortMethod;
 
 //****************************************************************************************************************************
 CGUIWindowVideoActors::CGUIWindowVideoActors()
+: CGUIWindowVideoBase(WINDOW_VIDEO_ACTOR, "MyVideoActors.xml")
 {
   m_Directory.m_strPath = "";
 }

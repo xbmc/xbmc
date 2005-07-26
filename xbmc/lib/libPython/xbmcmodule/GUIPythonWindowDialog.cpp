@@ -7,6 +7,7 @@ CGUIPythonWindowDialog::CGUIPythonWindowDialog(DWORD dwId)
 	m_dwParentWindowID = 0;
 	m_pParentWindow = NULL;
 	m_bRunning = false;
+  m_loadOnDemand = false;
 }
 
 CGUIPythonWindowDialog::~CGUIPythonWindowDialog(void)

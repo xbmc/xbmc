@@ -334,9 +334,7 @@ void CXBoxRenderer::RenderOSD()
   // clip the output if we are not in FSV so that zoomed subs don't go all over the GUI
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
   {
-    RECT rv = g_graphicsContext.GetViewWindow();
-    D3DRECT clip = { rv.left, rv.top, rv.right, rv.bottom };
-    m_pD3DDevice->SetScissors(1, FALSE, &clip);
+    g_graphicsContext.ClipToViewWindow();
   }
 
   // Render the image
@@ -1181,9 +1179,7 @@ void CXBoxRenderer::RenderLowMem()
   // set scissors if we are not in fullscreen video
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
   {
-    RECT rv = g_graphicsContext.GetViewWindow();
-    D3DRECT clip = { rv.left, rv.top, rv.right, rv.bottom };
-    m_pD3DDevice->SetScissors(1, FALSE, &clip);
+    g_graphicsContext.ClipToViewWindow();
   }
 
   m_pD3DDevice->SetTexture( 0, m_YTexture[iRenderBuffer]);

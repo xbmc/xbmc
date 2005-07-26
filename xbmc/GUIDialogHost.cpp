@@ -19,7 +19,8 @@
 
 #define KAI_PRIVATE_ARENA_LIMIT  32
 
-CGUIDialogHost::CGUIDialogHost(void) : CGUIDialog(0)
+CGUIDialogHost::CGUIDialogHost(void)
+: CGUIDialog(WINDOW_DIALOG_HOST, "DialogHost.xml")
 {
   m_bPrivate = false;
 }
@@ -47,9 +48,8 @@ void CGUIDialogHost::OnInitWindow()
 
   spin_control.SetValue(m_nPlayerLimit - 1);
 
-  SET_CONTROL_FOCUS(CTL_CHECKMARK_HOSTING_TYPE, 0);
-
   Update();
+  CGUIWindow::OnInitWindow();
 }
 
 bool CGUIDialogHost::OnMessage(CGUIMessage& message)

@@ -4,7 +4,7 @@
 
 
 CGUIDialogPlayerControls::CGUIDialogPlayerControls(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_DIALOG_PLAYER_CONTROLS, "PlayerControls.xml")
 {
 }
 

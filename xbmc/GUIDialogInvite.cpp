@@ -20,7 +20,8 @@
 #define CTL_SPIN_GAMES  30
 
 
-CGUIDialogInvite::CGUIDialogInvite(void) : CGUIDialog(0)
+CGUIDialogInvite::CGUIDialogInvite(void)
+: CGUIDialog(WINDOW_DIALOG_INVITE, "DialogInvite.xml")
 {
   m_bConfirmed = false;
 }
@@ -52,6 +53,7 @@ void CGUIDialogInvite::OnInitWindow()
     spin_control.SetNonProportional(true);
     spin_control.SetValue(0);
   }
+  CGUIWindow::OnInitWindow();
 }
 
 bool CGUIDialogInvite::OnMessage(CGUIMessage& message)

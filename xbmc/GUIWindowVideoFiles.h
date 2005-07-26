@@ -34,4 +34,5 @@ protected:
   virtual void GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   void SetHistoryForPath(const CStdString& strDirectory);
+  void GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url);
 };

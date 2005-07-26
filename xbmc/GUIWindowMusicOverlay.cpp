@@ -24,7 +24,7 @@
 #define STEPS 25
 
 CGUIWindowMusicOverlay::CGUIWindowMusicOverlay()
-    : CGUIWindow(0)
+    : CGUIWindow(2004, "MusicOverlay.xml")
 {
 }
 

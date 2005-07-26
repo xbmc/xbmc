@@ -126,6 +126,18 @@ void CGUIWindowManager::Remove(DWORD dwID)
   }
 }
 
+// removes and deletes the window.  Should only be called
+// from the class that created the window using new.
+void CGUIWindowManager::Delete(DWORD dwID)
+{
+  CGUIWindow *pWindow = GetWindow(dwID);
+  if (pWindow)
+  {
+    Remove(dwID);
+    delete pWindow;
+  }
+}
+
 void CGUIWindowManager::RemoveModeless(DWORD dwID)
 {
   vector<CGUIWindow*>::iterator it = m_vecModelessWindows.begin();

@@ -47,7 +47,6 @@ public:
   const CStdString& GetTextureFocusName() const { return m_imgFocus.GetFileName(); };
   const CStdString& GetTextureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
   void SetLimits(int iX1, int iY1, int iX2, int iY2);
-  virtual void EnableCalibration(bool bOnOff);
 
 protected:
   virtual void Update() ;

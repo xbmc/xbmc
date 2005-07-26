@@ -201,12 +201,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
     // no rip path has been set, show error
     CLog::Log(LOGERROR, "Error: CDDARipPath has not been set in XboxMediaCenter.xml");
     g_graphicsContext.Lock();
-    CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-    pDlgOK->SetHeading(257); // Error
-    pDlgOK->SetLine(0, 608); // Could not rip CD or Track
-    pDlgOK->SetLine(1, 609); // CDDARipPath is not set in XboxMediaCenter.xml
-    pDlgOK->SetLine(2, "");
-    pDlgOK->DoModal(m_gWindowManager.GetActiveWindow());
+    CGUIDialogOK::ShowAndGetInput(257, 608, 609, 0);
     g_graphicsContext.Unlock();
     return false;
   }
@@ -262,12 +257,7 @@ bool CCDDARipper::RipCD()
     // no rip path has been set, show error
     CLog::Log(LOGERROR, "Error: CDDARipPath has not been set in XboxMediaCenter.xml");
     g_graphicsContext.Lock();
-    CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-    pDlgOK->SetHeading(257); // Error
-    pDlgOK->SetLine(0, 608); // Could not rip CD or Track
-    pDlgOK->SetLine(1, 609); // CDDARipPath is not set in XboxMediaCenter.xml
-    pDlgOK->SetLine(2, "");
-    pDlgOK->DoModal(m_gWindowManager.GetActiveWindow());
+    CGUIDialogOK::ShowAndGetInput(257, 608, 609, 0);
     g_graphicsContext.Unlock();
     return false;
   }

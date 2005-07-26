@@ -47,6 +47,58 @@
 #include "cores/paplayer/paplayer.h"
 #include "filesystem/directoryCache.h"
 
+// Windows includes
+#include "GUIWindowMusicPlaylist.h"
+#include "GUIWindowMusicSongs.h"
+#include "GUIWindowMusicTop100.h"
+#include "GUIWindowMusicNav.h"
+#include "GUIWindowVideoPlaylist.h"
+#include "GUIWindowMusicInfo.h"
+#include "GUIWindowVideoInfo.h"
+#include "GUIWindowFullScreen.h"
+#include "GUIWindowVideoFiles.h"
+#include "GUIWindowVideoGenre.h"
+#include "GUIWindowVideoActors.h"
+#include "GUIWindowVideoYear.h"
+#include "GUIWindowVideoTitle.h"
+#include "GUIWindowFileManager.h"
+#include "GUIWindowVisualisation.h"
+#include "GUIWindowSettings.h"
+#include "GUIWindowSettingsProfile.h"
+#include "GUIWindowSettingsCategory.h"
+#include "GUIWindowSettingsUICalibration.h"
+#include "GUIWindowSettingsScreenCalibration.h"
+#include "GUIWindowSystemInfo.h"
+#include "GUIWindowScreensaver.h"
+#include "GUIWindowSlideshow.h"
+#include "GUIWindowHome.h"
+#include "GUIWindowPrograms.h"
+#include "GUIWindowPictures.h"
+#include "GUIWindowScripts.h"
+#include "GUIWindowBuddies.h"
+#include "GUIWindowWeather.h"
+
+// Dialog includes
+#include "GUIDialogInvite.h"
+#include "GUIDialogHost.h"
+#include "GUIDialogKeyboard.h"
+#include "GUIDialogYesNo.h"
+#include "GUIDialogOK.h"
+#include "GUIDialogProgress.h"
+#include "GUIDialogSelect.h"
+#include "GUIDialogFileStacking.h"
+#include "GUIDialogNumeric.h"
+#include "GUIDialogGamepad.h"
+#include "GUIDialogSubMenu.h"
+#include "GUIDialogButtonMenu.h"
+#include "GUIDialogContextMenu.h"
+#include "GUIDialogMusicScan.h"
+#include "GUIDialogPlayerControls.h"
+#include "GUIDialogMusicOSD.h"
+#include "GUIDialogVisualisationSettings.h"
+#include "GUIDialogVisualisationPresetList.h"
+#include "GUIWindowOSD.h"
+#include "GUIWindowScriptsInfo.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -195,7 +247,7 @@ void CApplication::InitBasicD3D()
     CLog::Log(LOGERROR, "Done reset");
   }
   // Transfer the resolution information to our graphics context
-  g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
+  g_graphicsContext.SetD3DParameters(&m_d3dpp);
   g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
 
   // Create the device
@@ -566,7 +618,7 @@ HRESULT CApplication::Create()
   //init the present parameters with values that are supported
   RESOLUTION initialResolution = g_videoConfig.GetInitialMode(m_pD3D, &m_d3dpp);
   // Transfer the resolution information to our graphics context
-  g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
+  g_graphicsContext.SetD3DParameters(&m_d3dpp);
   g_graphicsContext.SetGUIResolution(initialResolution);
 
   CIoSupport helper;
@@ -805,9 +857,8 @@ HRESULT CApplication::Create()
     g_guiSettings.m_LookAndFeelResolution = initialResolution;
   }
   // Transfer the new resolution information to our graphics context
-  g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
+  g_graphicsContext.SetD3DParameters(&m_d3dpp);
   g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
-  g_graphicsContext.SetOffset(g_guiSettings.GetInt("UIOffset.X"), g_guiSettings.GetInt("UIOffset.Y"));
   if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
                                          D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                          &m_d3dpp, &m_pd3dDevice ) ) )
@@ -1007,74 +1058,69 @@ HRESULT CApplication::Initialize()
 
   StartServices();
 
+  m_gWindowManager.Add(new CGUIWindowHome);                     // window id = 0
+
   CLog::Log(LOGNOTICE, "load default skin:[%s]", g_guiSettings.GetString("LookAndFeel.Skin").c_str());
   LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
 
-  CLog::Log(LOGINFO, "initializing skin");
-  m_gWindowManager.Add(&m_guiHome);                     // window id = 0
-  m_gWindowManager.Add(&m_guiPrograms);                 // window id = 1
-  m_gWindowManager.Add(&m_guiPictures);                 // window id = 2
-  m_gWindowManager.Add(&m_guiFileManager);              // window id = 3
-  m_gWindowManager.Add(&m_guiMyVideo);                  // window id = 6
-  m_gWindowManager.Add(&m_guiSettings);                 // window id = 4
-  m_gWindowManager.Add(&m_guiSystemInfo);               // window id = 7
-  m_gWindowManager.Add(&m_guiSettingsUICalibration);    // window id = 10
-  m_gWindowManager.Add(&m_guiSettingsScreenCalibration); // window id = 11
-  m_gWindowManager.Add(&m_guiSettingsCategory);         // window id = 12 slideshow:window id 2007
-  m_gWindowManager.Add(&m_guiScripts);                  // window id = 20
-  m_gWindowManager.Add(&m_guiVideoGenre);               // window id = 21
-  m_gWindowManager.Add(&m_guiVideoActors);              // window id = 22
-  m_gWindowManager.Add(&m_guiVideoYear);                // window id = 23
-  m_gWindowManager.Add(&m_guiVideoTitle);               // window id = 25
-  m_gWindowManager.Add(&m_guiMyVideoPlayList);          // window id = 28
-  m_gWindowManager.Add(&m_guiSettingsProfile);          // window id = 34
+  m_gWindowManager.Add(new CGUIWindowPrograms);                 // window id = 1
+  m_gWindowManager.Add(new CGUIWindowPictures);                 // window id = 2
+  m_gWindowManager.Add(new CGUIWindowFileManager);      // window id = 3
+  m_gWindowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
+  m_gWindowManager.Add(new CGUIWindowSettings);                 // window id = 4
+  m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
+  m_gWindowManager.Add(new CGUIWindowSettingsUICalibration);    // window id = 10
+  m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
+  m_gWindowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
+  m_gWindowManager.Add(new CGUIWindowScripts);                  // window id = 20
+  m_gWindowManager.Add(new CGUIWindowVideoGenre);               // window id = 21
+  m_gWindowManager.Add(new CGUIWindowVideoActors);              // window id = 22
+  m_gWindowManager.Add(new CGUIWindowVideoYear);                // window id = 23
+  m_gWindowManager.Add(new CGUIWindowVideoTitle);               // window id = 25
+  m_gWindowManager.Add(new CGUIWindowVideoPlaylist);          // window id = 28
+  m_gWindowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
 
-  m_gWindowManager.Add(&m_guiDialogYesNo);              // window id = 100
-  m_gWindowManager.Add(&m_guiDialogProgress);           // window id = 101
-  m_gWindowManager.Add(&m_guiDialogInvite);             // window id = 102
-  m_gWindowManager.Add(&m_guiDialogKeyboard);           // window id = 103
+  m_gWindowManager.Add(new CGUIDialogYesNo);              // window id = 100
+  m_gWindowManager.Add(new CGUIDialogProgress);           // window id = 101
+  m_gWindowManager.Add(new CGUIDialogInvite);             // window id = 102
+  m_gWindowManager.Add(new CGUIDialogKeyboard);           // window id = 103
   m_gWindowManager.Add(&m_guiDialogVolumeBar);          // window id = 104
   m_gWindowManager.Add(&m_guiDialogSeekBar);            // window id = 115
-  m_gWindowManager.Add(&m_guiDialogSubMenu);            // window id = 105
-  m_gWindowManager.Add(&m_guiDialogContextMenu);        // window id = 106
+  m_gWindowManager.Add(new CGUIDialogSubMenu);            // window id = 105
+  m_gWindowManager.Add(new CGUIDialogContextMenu);        // window id = 106
   m_gWindowManager.Add(&m_guiDialogKaiToast);           // window id = 107
-  m_gWindowManager.Add(&m_guiDialogHost);               // window id = 108
-  m_gWindowManager.Add(&m_guiDialogNumeric);            // window id = 109
-  m_gWindowManager.Add(&m_guiDialogGamepad);            // window id = 110
-  m_gWindowManager.Add(&m_guiDialogButtonMenu);         // window id = 111
-  m_gWindowManager.Add(&m_guiDialogMusicScan);          // window id = 112
-  m_gWindowManager.Add(&m_guiDialogPlayerControls);     // window id = 113
-  m_gWindowManager.Add(&m_guiDialogMusicOSD);           // window id = 120
-  m_gWindowManager.Add(&m_guiDialogVisualisationSettings);     // window id = 121
-  m_gWindowManager.Add(&m_guiDialogVisualisationPresetList);   // window id = 122
+  m_gWindowManager.Add(new CGUIDialogHost);               // window id = 108
+  m_gWindowManager.Add(new CGUIDialogNumeric);            // window id = 109
+  m_gWindowManager.Add(new CGUIDialogGamepad);            // window id = 110
+  m_gWindowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
+  m_gWindowManager.Add(new CGUIDialogMusicScan);          // window id = 112
+  m_gWindowManager.Add(new CGUIDialogPlayerControls);     // window id = 113
+  m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
+  m_gWindowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
+  m_gWindowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
 
-  m_gWindowManager.Add(&m_guiMyMusicPlayList);          // window id = 500
-  m_gWindowManager.Add(&m_guiMyMusicSongs);             // window id = 501
-  m_gWindowManager.Add(&m_guiMyMusicNav);               // window id = 502
-  m_gWindowManager.Add(&m_guiMyMusicTop100);            // window id = 503
+  m_gWindowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
+  m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
+  m_gWindowManager.Add(new CGUIWindowMusicNav);               // window id = 502
+  m_gWindowManager.Add(new CGUIWindowMusicTop100);            // window id = 503
 
-  //m_gWindowManager.Add(&m_keyboard);                    // window id = 1000
-  m_gWindowManager.Add(&m_guiDialogSelect);             // window id = 2000
-  m_gWindowManager.Add(&m_guiMusicInfo);                // window id = 2001
-  m_gWindowManager.Add(&m_guiDialogOK);                 // window id = 2002
-  m_gWindowManager.Add(&m_guiVideoInfo);                // window id = 2003
-  m_gWindowManager.Add(&m_guiScriptsInfo);              // window id = 2004
-  m_gWindowManager.Add(&m_guiWindowFullScreen);         // window id = 2005
-  m_gWindowManager.Add(&m_guiWindowVisualisation);      // window id = 2006
-  m_gWindowManager.Add(&m_guiWindowSlideshow);          // window id = 2007
-  m_gWindowManager.Add(&m_guiDialogFileStacking);       // window id = 2008
-  m_gWindowManager.Add(&m_guiWindowOSD);                // window id = 2901
-  m_gWindowManager.Add(&m_guiWindowScreensaver);        // window id = 2900 Screensaver
-  m_gWindowManager.Add(&m_guiMyWeather);                // window id = 2600 WEATHER
-  m_gWindowManager.Add(&m_guiMyBuddies);                // window id = 2700 BUDDIES
-
-  g_DownloadManager.Initialize();
-  CKaiClient::GetInstance()->SetObserver(&m_guiMyBuddies);
-
+  m_gWindowManager.Add(new CGUIDialogSelect);             // window id = 2000
+  m_gWindowManager.Add(new CGUIWindowMusicInfo);                // window id = 2001
+  m_gWindowManager.Add(new CGUIDialogOK);                 // window id = 2002
+  m_gWindowManager.Add(new CGUIWindowVideoInfo);                // window id = 2003
+  m_gWindowManager.Add(new CGUIWindowScriptsInfo);              // window id = 2004
+  m_gWindowManager.Add(new CGUIWindowFullScreen);         // window id = 2005
+  m_gWindowManager.Add(new CGUIWindowVisualisation);      // window id = 2006
+  m_gWindowManager.Add(new CGUIWindowSlideShow);          // window id = 2007
+  m_gWindowManager.Add(new CGUIDialogFileStacking);       // window id = 2008
+  m_gWindowManager.Add(new CGUIWindowOSD);                // window id = 2901
+  m_gWindowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
+  m_gWindowManager.Add(new CGUIWindowWeather);                // window id = 2600 WEATHER
+  CGUIWindowBuddies *pKai = new CGUIWindowBuddies;
+  m_gWindowManager.Add(pKai);                // window id = 2700 BUDDIES
   /* window id's 3000 - 3100 are reserved for python */
-  //CLog::Log(LOGINFO, "initializing virtual keyboard");
-  //m_keyboard.Initialize();
-
+  g_DownloadManager.Initialize();
+  CKaiClient::GetInstance()->SetObserver(pKai);
 
   m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController, g_stSettings.m_iRepeatDelayController);
 
@@ -1102,11 +1148,15 @@ HRESULT CApplication::Initialize()
     CLog::Log(LOGWARNING, "settings not correct, show dialog");
     CStdString test;
     CUtil::GetHomePath(test);
-    m_guiDialogOK.SetHeading(279);
-    m_guiDialogOK.SetLine(0, "Error while loading settings");
-    m_guiDialogOK.SetLine(1, test);
-    m_guiDialogOK.SetLine(2, L"");
-    m_guiDialogOK.DoModal(g_stSettings.m_iStartupWindow);
+    CGUIDialogOK *dialog = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (dialog)
+    {
+      dialog->SetHeading(279);
+      dialog->SetLine(0, "Error while loading settings");
+      dialog->SetLine(1, test);
+      dialog->SetLine(2, L"");
+      dialog->DoModal(g_stSettings.m_iStartupWindow);
+    }
   }
 
   //  Show mute symbol
@@ -1404,7 +1454,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   QueryPerformanceCounter(&start);
 
   CLog::Log(LOGINFO, "  load new skin...");
-  if (!g_SkinInfo.Check(strSkinPath) || !m_guiHome.Load( "home.xml"))
+  CGUIWindowHome *pHome = (CGUIWindowHome *)m_gWindowManager.GetWindow(WINDOW_HOME);
+  if (!g_SkinInfo.Check(strSkinPath) || !pHome || !pHome->Load("home.xml"))
   {
     // failed to load home.xml
     // fallback to default skin
@@ -1416,66 +1467,10 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     }
   }
 
-  m_guiPrograms.Load( "myprograms.xml");
-  m_guiPictures.Load( "mypics.xml");
-  m_guiFileManager.Load( "filemanager.xml");
-  m_guiMyVideo.Load("myvideo.xml");
-  m_guiVideoGenre.Load("myvideogenre.xml");
-  m_guiVideoActors.Load("myvideoactors.xml");
-  m_guiVideoYear.Load("myvideoYear.xml");
-  m_guiVideoTitle.Load("myvideoTitle.xml");
-  m_guiSettings.Load("settings.xml");
-  m_guiMyVideoPlayList.Load("myvideoplaylist.xml");
-  m_guiSystemInfo.Load("SettingsSystemInfo.xml");
-  m_guiMusicInfo.Load("DialogAlbumInfo.xml");
-  m_guiScriptsInfo.Load("DialogScriptInfo.xml");
-  m_guiSettingsProfile.Load("SettingsProfile.xml");
-  m_guiDialogYesNo.Load("dialogYesNo.xml");
-  m_guiDialogProgress.Load("dialogProgress.xml");
-  m_guiDialogVolumeBar.Load("dialogVolumeBar.xml");
-  m_guiDialogSeekBar.Load("dialogSeekBar.xml");
-  m_guiDialogKaiToast.Load("dialogKaiToast.xml");
-  m_guiDialogNumeric.Load("dialogNumeric.xml");
-  m_guiDialogGamepad.Load("dialogGamepad.xml");
-  m_guiDialogSubMenu.Load("dialogSubMenu.xml");
-  m_guiDialogButtonMenu.Load("dialogButtonMenu.xml");
-  m_guiDialogContextMenu.Load("dialogContextMenu.xml");
-  m_guiDialogMusicScan.Load("dialogMusicScan.xml");
-  m_guiDialogPlayerControls.Load("PlayerControls.xml");
-  m_guiDialogMusicOSD.Load("MusicOSD.xml");
-  m_guiDialogVisualisationSettings.Load("MusicOSDVisSettings.xml");
-  m_guiDialogVisualisationPresetList.Load("VisualisationPresetList.xml");
-  m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
-  m_guiMyMusicSongs.Load("mymusicsongs.xml");
-  m_guiMyMusicNav.Load("mymusicnav.xml");
-  m_guiMyMusicTop100.Load("mymusictop100.xml");
-  m_guiDialogSelect.Load("dialogSelect.xml");
-  m_guiDialogOK.Load("dialogOK.xml");
-  m_guiDialogFileStacking.Load("dialogFileStacking.xml");
-  m_guiVideoInfo.Load("DialogVideoInfo.xml");
-  m_guiMusicOverlay.Load("musicOverlay.xml");
-  m_guiSettingsUICalibration.Load("settingsUICalibration.xml");
-  m_guiSettingsScreenCalibration.Load("settingsScreenCalibration.xml");
-  m_guiSettingsCategory.Load("SettingsCategory.xml");
-  m_guiVideoOverlay.Load("videoOverlay.xml");
-  m_guiWindowFullScreen.Load("videoFullScreen.xml");
-  m_guiScripts.Load("myscripts.xml");
-  m_guiWindowVisualisation.Load("musicVisualisation.xml");
-  m_guiWindowSlideshow.Load("slideshow.xml");
-  m_guiWindowScreensaver.SetID(WINDOW_SCREENSAVER);    // Matrix Screensaver - saves us having to have our own XML file
-  m_guiWindowOSD.Load("videoOSD.xml");
-  m_guiMyWeather.Load("myweather.xml");       //WEATHER
-  m_guiDialogInvite.Load( "dialogInvite.xml" );
-  m_guiDialogHost.Load( "dialogHost.xml" );
-  m_guiDialogKeyboard.Load( "dialogKeyboard.xml" );
-  m_guiMyBuddies.Load( "mybuddies.xml");
-  m_guiPointer.Load("Pointer.xml");
-  m_guiDialogMuteBug.Load("DialogMuteBug.xml");
-
   // Load the user windows
   LoadUserWindows(strSkinPath);
 
-  CGUIWindow::FlushReferenceCache(); // flush the cache so it doesn't use memory all the time
+//  CGUIWindow::FlushReferenceCache(); // flush the cache so it doesn't use memory all the time
 
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
@@ -1502,7 +1497,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   {
     CLog::Log(LOGINFO, " Reconnecting Kai...");
 
-    CKaiClient::GetInstance()->SetObserver(&m_guiMyBuddies);
+    CGUIWindowBuddies *pKai = (CGUIWindowBuddies *)m_gWindowManager.GetWindow(WINDOW_BUDDIES);
+    CKaiClient::GetInstance()->SetObserver(pKai);
     Sleep(3000);  //  The client need some time to "resync"
   }
 }
@@ -1526,6 +1522,8 @@ void CApplication::UnloadSkin()
 
   m_guiPointer.FreeResources();
   m_guiPointer.ClearAll();
+
+  CGUIWindow::FlushReferenceCache(); // flush the cache
 
   g_audioManager.DeInitialize();
 
@@ -1592,7 +1590,7 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
     // If no type is specified, create a CGUIWindow as default
     CGUIWindow* pWindow = NULL;
     const TiXmlNode *pType = pRootElement->FirstChild("type");
-    if (pType == NULL)
+    if (!pType || !pType->FirstChild())
     {
       pWindow = new CGUIStandardWindow();
     }
@@ -1601,7 +1599,7 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
       CStdString strType = pType->FirstChild()->Value();
       if (strType == "dialog")
       {
-        pWindow = new CGUIDialog(0);
+        pWindow = new CGUIDialog(0, "");
       }
       else if (strType == "subMenu")
       {
@@ -1616,23 +1614,18 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
         pWindow = new CGUIStandardWindow();
       }
     }
+    pType = pRootElement->FirstChild("id");
 
     // Check to make sure the pointer isn't still null
-    if (pWindow == NULL)
+    if (pWindow == NULL || !pType || !pType->FirstChild())
     {
       CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
       return false;
     }
-
-    // Try to load the page.  If the load fails, delete the pointer
-    if (pWindow->Load(pRootElement, resToUse))
-    {
-      m_gWindowManager.AddCustomWindow(pWindow);
-    }
-    else
-    {
-      delete pWindow;
-    }
+    // set the window's xml file, and add it to the window manager.
+    pWindow->SetXMLFile(FindFileData.cFileName);
+    pWindow->SetID(WINDOW_HOME + atol(pType->FirstChild()->Value()));
+    m_gWindowManager.AddCustomWindow(pWindow);
   }
 
   return true;
@@ -1725,6 +1718,25 @@ void CApplication::Render()
   // render current window/dialog
   m_gWindowManager.Render();
 
+  {
+    // if we're recording an audio stream then show blinking REC
+    if (IsPlayingAudio())
+    {
+      if (m_pPlayer->IsRecording() )
+      {
+        static iBlinkRecord = 0;
+        CGUIFont* pFont = g_fontManager.GetFont("font13");
+        if (pFont)
+        {
+          iBlinkRecord++;
+          if (iBlinkRecord > 25)
+            pFont->DrawText(60, 50, 0xffff0000, L"REC"); //Draw REC in RED
+          if (iBlinkRecord > 50)
+            iBlinkRecord = 0;
+        }
+      }
+    }
+  }
   // check if we're playing a file
   if (g_graphicsContext.IsOverlayAllowed())
   {
@@ -1759,23 +1771,8 @@ void CApplication::Render()
       g_TextureManager.Flush();
     }
 
-    // if we're recording an audio stream then show blinking REC
-    if (IsPlayingAudio())
-    {
-      if (m_pPlayer->IsRecording() )
-      {
-        static iBlinkRecord = 0;
-        CGUIFont* pFont = g_fontManager.GetFont("font13");
-        if (pFont)
-        {
-          iBlinkRecord++;
-          if (iBlinkRecord > 25)
-            pFont->DrawText(60, 50, 0xffff0000, L"REC"); //Draw REC in RED
-          if (iBlinkRecord > 50)
-            iBlinkRecord = 0;
-        }
-      }
-    }
+    // reset image scaling
+    g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
 
     // If we have the remote codes enabled, then show them
     if (g_stSettings.m_bDisplayRemoteCodes)
@@ -1826,6 +1823,7 @@ void CApplication::Render()
       }
     }
   }
+
   // Present the backbuffer contents to the display
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
   g_graphicsContext.Unlock();
@@ -2704,8 +2702,9 @@ void CApplication::Stop()
       objDAAP->CloseDAAP();
     }
 
-    if (m_guiDialogMusicScan.IsRunning())
-      m_guiDialogMusicScan.StopScanning();
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (musicScan && musicScan->IsRunning())
+      musicScan->StopScanning();
 
     //g_lcd->StopThread();
     CLog::Log(LOGNOTICE, "stop python");
@@ -2714,6 +2713,60 @@ void CApplication::Stop()
 
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
+
+    m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
+    m_gWindowManager.Delete(WINDOW_MUSIC_FILES);
+    m_gWindowManager.Delete(WINDOW_MUSIC_NAV);
+    m_gWindowManager.Delete(WINDOW_MUSIC_TOP100);
+    m_gWindowManager.Delete(WINDOW_MUSIC_INFO);
+    m_gWindowManager.Delete(WINDOW_VIDEO_INFO);
+    m_gWindowManager.Delete(WINDOW_VIDEOS);
+    m_gWindowManager.Delete(WINDOW_VIDEO_PLAYLIST);
+    m_gWindowManager.Delete(WINDOW_VIDEO_TITLE);
+    m_gWindowManager.Delete(WINDOW_VIDEO_GENRE);
+    m_gWindowManager.Delete(WINDOW_VIDEO_ACTOR);
+    m_gWindowManager.Delete(WINDOW_VIDEO_YEAR);
+    m_gWindowManager.Delete(WINDOW_FILES);
+    m_gWindowManager.Delete(WINDOW_MUSIC_INFO);
+    m_gWindowManager.Delete(WINDOW_VIDEO_INFO);
+    m_gWindowManager.Delete(WINDOW_DIALOG_YES_NO);
+    m_gWindowManager.Delete(WINDOW_DIALOG_PROGRESS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_NUMERIC);
+    m_gWindowManager.Delete(WINDOW_DIALOG_GAMEPAD);
+    m_gWindowManager.Delete(WINDOW_DIALOG_SUB_MENU);
+    m_gWindowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
+    m_gWindowManager.Delete(WINDOW_DIALOG_CONTEXT_MENU);
+    m_gWindowManager.Delete(WINDOW_DIALOG_MUSIC_SCAN);
+    m_gWindowManager.Delete(WINDOW_DIALOG_PLAYER_CONTROLS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_MUSIC_OSD);
+    m_gWindowManager.Delete(WINDOW_DIALOG_VIS_SETTINGS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_VIS_PRESET_LIST);
+    m_gWindowManager.Delete(WINDOW_DIALOG_SELECT);
+    m_gWindowManager.Delete(WINDOW_DIALOG_OK);
+    m_gWindowManager.Delete(WINDOW_DIALOG_FILESTACKING);
+    m_gWindowManager.Delete(WINDOW_DIALOG_INVITE);
+    m_gWindowManager.Delete(WINDOW_DIALOG_HOST);
+    m_gWindowManager.Delete(WINDOW_DIALOG_KEYBOARD);
+    m_gWindowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
+
+    m_gWindowManager.Delete(WINDOW_VISUALISATION);
+    m_gWindowManager.Delete(WINDOW_SETTINGS_MENU);
+    m_gWindowManager.Delete(WINDOW_SETTINGS_PROFILES);
+    m_gWindowManager.Delete(WINDOW_SETTINGS_MYPICTURES);  // all the settings categories
+    m_gWindowManager.Delete(WINDOW_UI_CALIBRATION);
+    m_gWindowManager.Delete(WINDOW_MOVIE_CALIBRATION);
+    m_gWindowManager.Delete(WINDOW_SYSTEM_INFORMATION);
+    m_gWindowManager.Delete(WINDOW_SCREENSAVER);
+    m_gWindowManager.Delete(WINDOW_OSD);
+    m_gWindowManager.Delete(WINDOW_SCRIPTS_INFO);
+    m_gWindowManager.Delete(WINDOW_SLIDESHOW);
+
+    m_gWindowManager.Delete(WINDOW_HOME);
+    m_gWindowManager.Delete(WINDOW_PROGRAMS);
+    m_gWindowManager.Delete(WINDOW_PICTURES);
+    m_gWindowManager.Delete(WINDOW_SCRIPTS);
+    m_gWindowManager.Delete(WINDOW_BUDDIES);
+    m_gWindowManager.Delete(WINDOW_WEATHER);
 
     CLog::Log(LOGNOTICE, "unload sections");
     CSectionLoader::UnloadAll();
@@ -2727,6 +2780,7 @@ void CApplication::Stop()
     //  _CrtDumpMemoryLeaks(). Most of the leaks 
     //  shown are no real leaks, as parts of the app
     //  are still allocated.
+
     g_localizeStrings.Clear();
     g_LangCodeExpander.Clear();
     g_charsetConverter.clear();
@@ -3366,7 +3420,9 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
         if (iWin == WINDOW_FULLSCREEN_VIDEO)
         {
           // check if OSD is visible, if so don't do immediate spindown
-          m_bNetworkSpinDown = !m_guiWindowOSD.IsRunning();
+          CGUIWindowOSD *pOSD = (CGUIWindowOSD *)m_gWindowManager.GetWindow(WINDOW_OSD);
+          if (pOSD)
+            m_bNetworkSpinDown = !pOSD->IsRunning();
         }
       }
       if (m_bNetworkSpinDown)
@@ -3586,7 +3642,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
           else
           {
             // Can't write to the musicdatabase while scanning for music info
-            if (!m_guiDialogMusicScan.IsRunning())
+            CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+            if (dialog && !dialog->IsRunning())
             {
               if (g_musicDatabase.Open())
               {

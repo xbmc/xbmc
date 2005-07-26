@@ -3,7 +3,7 @@
 #include "GUIWindowManager.h"
 
 
-CGUIStandardWindow::CGUIStandardWindow(void) : CGUIWindow(0)
+CGUIStandardWindow::CGUIStandardWindow(void) : CGUIWindow(0, "")
 {
   m_iLastControl = -1;
 }

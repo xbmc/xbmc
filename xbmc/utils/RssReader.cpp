@@ -27,15 +27,27 @@ CRssReader::~CRssReader()
     StopThread();
     m_bIsRunning = false;
   }
+  for (unsigned int i = 0; i < m_vecTimeStamps.size(); i++)
+    delete m_vecTimeStamps[i];
 }
 
-void CRssReader::Create(IRssObserver* aObserver, const vector<wstring>& aUrls, INT iLeadingSpaces)
+void CRssReader::Create(IRssObserver* aObserver, const vector<wstring>& aUrls, const vector<int> &times, INT iLeadingSpaces)
 {
   m_pObserver = aObserver;
   m_iLeadingSpaces = iLeadingSpaces;
   m_vecUrls = aUrls;
   m_strFeed.resize(aUrls.size());
   m_strColors.resize(aUrls.size());
+  // set update times
+  m_vecUpdateTimes = times;
+  // update each feed on creation
+  for (unsigned int i=0;i<m_vecUpdateTimes.size();++i )
+  {
+    AddToQueue(i);
+    SYSTEMTIME* time = new SYSTEMTIME;
+    GetLocalTime(time);
+    m_vecTimeStamps.push_back(time);
+  }
 }
 
 void CRssReader::AddToQueue(int iAdd)
@@ -58,8 +70,6 @@ void CRssReader::OnExit()
 void CRssReader::Process()
 {
   int tempLeading = m_iLeadingSpaces;
-  CStdStringW strFeed;
-  LPBYTE pbColors = NULL;
   while (m_vecQueue.size())
   {
     int iFeed = m_vecQueue.front();
@@ -134,13 +144,7 @@ void CRssReader::Process()
       }
     }
   }
-  getFeed(strFeed,pbColors);
-  if (strFeed.size() > 0)
-  {
-    g_graphicsContext.Lock();
-    m_pObserver->OnFeedUpdate(strFeed, pbColors);
-    g_graphicsContext.Unlock();
-  }
+  UpdateObserver();
   m_iLeadingSpaces = tempLeading;
 }
 
@@ -380,3 +384,81 @@ bool CRssReader::Parse(int iFeed)
   GetNewsItems(rssXmlNode,iFeed);
   return true;
 }
+
+void CRssReader::SetObserver(IRssObserver *observer)
+{
+  m_pObserver = observer;
+}
+
+void CRssReader::UpdateObserver()
+{
+  if (!m_pObserver) return;
+  CStdStringW strFeed;
+  LPBYTE pbColors = NULL;
+  getFeed(strFeed,pbColors);
+  if (strFeed.size() > 0)
+  {
+    g_graphicsContext.Lock();
+    m_pObserver->OnFeedUpdate(strFeed, pbColors);
+    g_graphicsContext.Unlock();
+  }
+}
+
+void CRssReader::CheckForUpdates()
+{
+  SYSTEMTIME time;
+  GetLocalTime(&time);
+  for (unsigned int i = 0;i < m_vecUpdateTimes.size(); ++i )
+  {
+    if (((time.wDay * 24 * 60) + (time.wHour * 60) + time.wMinute) - ((m_vecTimeStamps[i]->wDay * 24 * 60) + (m_vecTimeStamps[i]->wHour * 60) + m_vecTimeStamps[i]->wMinute) > m_vecUpdateTimes[i] )
+    {
+      CLog::Log(LOGDEBUG, "Updating RSS");
+      GetLocalTime(m_vecTimeStamps[i]);
+      AddToQueue(i);
+    }
+  }
+}
+
+CRssManager g_rssManager;
+
+CRssManager::CRssManager()
+{
+}
+
+CRssManager::~CRssManager()
+{
+  for (unsigned int i = 0; i < m_readers.size(); i++)
+  {
+    if (m_readers[i].reader)
+    {
+      m_readers[i].reader->StopThread();
+      delete m_readers[i].reader;
+    }
+  }
+  m_readers.clear();
+}
+
+// returns true if the reader doesn't need creating, false otherwise
+bool CRssManager::GetReader(DWORD controlID, DWORD windowID, IRssObserver* observer, CRssReader *&reader)
+{
+  // check to see if we've already created this reader
+  for (unsigned int i = 0; i < m_readers.size(); i++)
+  {
+    if (m_readers[i].controlID == controlID && m_readers[i].windowID == windowID)
+    {
+      reader = m_readers[i].reader;
+      reader->SetObserver(observer);
+      reader->UpdateObserver();
+      return true;
+    }
+  }
+  // need to create a new one
+  READERCONTROL readerControl;
+  readerControl.controlID = controlID;
+  readerControl.windowID = windowID;
+  reader = readerControl.reader = new CRssReader;
+  m_readers.push_back(readerControl);
+  return false;
+}
+
+

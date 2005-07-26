@@ -19,7 +19,7 @@
 #define POPUP_SEEK_LABEL      402
 
 CGUIDialogSeekBar::CGUIDialogSeekBar(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_DIALOG_SEEK_BAR, "DialogSeekbar.xml")
 {
   m_fSeekPercentage = 0.0f;
   m_bRequireSeek = false;

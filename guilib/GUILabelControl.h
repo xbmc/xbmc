@@ -40,8 +40,6 @@ public:
   bool GetWidthControl() { return m_ScrollInsteadOfTruncate; };
   DWORD m_dwTextAlign;
 
-
-
 protected:
   void ShortenPath();
 protected:
@@ -56,8 +54,6 @@ protected:
   vector<int> m_vecInfo;
   // stuff for scrolling
   bool m_ScrollInsteadOfTruncate;
-  int m_PixelScroll;
-  unsigned int m_CharacterScroll;
-  int m_ScrollWait;
+  CScrollInfo m_ScrollInfo;
 };
 #endif
