@@ -1,9 +1,7 @@
 #pragma once
-#include "lib/sqlLite/sqlitedataset.h"
+#include "Database.h"
 #include "utils\IMDB.h"
 #include "settings/VideoSettings.h"
-
-using namespace dbiplus;
 
 typedef vector<CStdString> VECMOVIEYEARS;
 typedef vector<CStdString> VECMOVIEACTORS;
@@ -16,13 +14,11 @@ typedef vector<float> VECBOOKMARKS;
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
 
-class CVideoDatabase
+class CVideoDatabase : public CDatabase
 {
 public:
   CVideoDatabase(void);
   virtual ~CVideoDatabase(void);
-  bool Open() ;
-  void Close() ;
   long AddMovie(const CStdString& strFilenameAndPath, const CStdString& strcdLabel, bool bHassubtitles);
   void GetGenres(VECMOVIEGENRES& genres);
   void GetActors(VECMOVIEACTORS& actors);
@@ -52,9 +48,6 @@ public:
   void SetVideoSettings(const CStdString &strFilenameAndPath, const CVideoSettings &settings);
 
 protected:
-  auto_ptr<SqliteDatabase> m_pDB;
-  auto_ptr<Dataset> m_pDS;
-
   long GetPath(const CStdString& strPath);
   long AddPath(const CStdString& strPath);
 
@@ -68,11 +61,11 @@ protected:
 
   void AddActorToMovie(long lMovieId, long lActorId);
   void AddGenreToMovie(long lMovieId, long lGenreId);
-  void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
-  void RemoveInvalidChars(CStdString& strTxt);
-  bool CreateTables();
-
-  bool UpdateOldVersion(float fVersion);
 
   CIMDBMovie GetDetailsFromDataset(auto_ptr<Dataset> &pDS);
+
+private:
+  virtual bool CreateTables();
+  virtual bool UpdateOldVersion(float fVersion);
+
 };
