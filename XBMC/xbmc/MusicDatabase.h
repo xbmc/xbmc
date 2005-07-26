@@ -3,13 +3,9 @@
 \brief
 */
 #pragma once
-#include "lib/sqlLite/sqlitedataset.h"
-#include "song.h"
+#include "Database.h"
 
 #include <set>
-#include <vector>
-
-using namespace dbiplus;
 
 // return codes of Cleaning up the Database
 // numbers are strings from strings.xml
@@ -61,7 +57,7 @@ class CGUIDialogProgress;
  
  \sa CAlbum, CSong, VECSONGS, MAPSONGS, VECARTISTS, VECALBUMS, VECGENRES
  */
-class CMusicDatabase
+class CMusicDatabase : public CDatabase
 {
   class CArtistCache
   {
@@ -94,16 +90,7 @@ class CAlbumCache : public CAlbum
 public:
   CMusicDatabase(void);
   virtual ~CMusicDatabase(void);
-  bool Open() ;
-  bool IsOpen();
-  void Close() ;
-  void BeginTransaction();
-  bool CommitTransaction();
-  void RollbackTransaction();
-  bool InTransaction();
   void EmptyCache();
-  bool Compress();
-  void Interupt();
   void Clean();
   int  Cleanup(CGUIDialogProgress *pDlgProgress);
   void DeleteAlbumInfo();
@@ -138,17 +125,12 @@ public:
   bool GetSongsNav(VECSONGS& songs, const CStdString &strGenre1, const CStdString &strArtist1, const CStdString &strAlbum1, const CStdString &strAlbumPath1);
 
 protected:
-  auto_ptr<SqliteDatabase> m_pDB;
-  auto_ptr<Dataset> m_pDS;
-  auto_ptr<Dataset> m_pDS2;
   map<CStdString, CArtistCache> m_artistCache;
   map<CStdString, CGenreCache> m_genreCache;
   map<CStdString, CPathCache> m_pathCache;
   map<CStdString, CPathCache> m_thumbCache;
   map<CStdString, CAlbumCache> m_albumCache;
-  bool m_bOpen;
-  int m_iRefCount;
-  bool CreateTables();
+  virtual bool CreateTables();
   long AddAlbum(const CStdString& strAlbum, const long lArtistId, const int iNumArtists, const CStdString& strArtist, long lPathId, const CStdString& strPath);
   long AddGenre(const CStdString& strGenre);
   long AddArtist(const CStdString& strArtist);
@@ -159,7 +141,6 @@ protected:
   bool AddAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs);
   bool UpdateAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
-  void RemoveInvalidChars(CStdString& strTxt);
 
 private:
   bool GetExtraArtistsForAlbum(long lAlbumId, CStdString &strArtist);
@@ -176,7 +157,7 @@ private:
   bool CleanupArtists();
   bool CleanupGenres();
   bool CleanupAlbumsFromPaths(const CStdString &strPathIds);
-  bool UpdateOldVersion(float fVersion);
+  virtual bool UpdateOldVersion(float fVersion);
 
   int m_iSongsBeforeCommit;
 };
