@@ -87,7 +87,6 @@
       <posY>105</posY>
       <width>538</width>
       <height>372</height>
-      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -98,7 +97,6 @@
       <posY>60</posY>
       <width>580</width>
       <height>455</height>
-      <visible>!Window.IsActive(56)</visible>
     </control>
 
     <control>
@@ -110,14 +108,77 @@
       <width>720</width>
       <height>576</height>
       <texture>16x9home.png</texture>
-      <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+    </control>
+
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>720</width>
+      <height>576</height>
+      <texture>16x9home2.png</texture>
+      <visible>Player.HasAudio + System.IdleTime(60)</visible>
+    </control>
+
+    <control>
+      <description>image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>105</posX>
+      <posY>338</posY>
+      <width>75</width>
+      <height>99</height>
+      <info>MusicPlayer.Cover</info>
+      <visible>System.IdleTime(60)</visible>
+    </control>
+
+    <control>
+      <description>Artist label</description>
+      <type>label</type>
+      <id>1</id>
+      <width>430</width>
+      <posX>195</posX>
+      <posY>340</posY>
+      <info>MusicPlayer.Artist</info>
+      <align>left</align>
+      <font>special12</font>
+      <visible>System.IdleTime(60)</visible>
+    </control>
+
+    <control>
+      <description>Title label</description>
+      <type>label</type>
+      <id>1</id>
+      <width>430</width>
+      <posX>195</posX>
+      <posY>367</posY>
+      <info>MusicPlayer.Title</info>
+      <align>left</align>
+      <font>special13</font>
+      <visible>System.IdleTime(60)</visible>
+    </control>
+
+    <control>
+      <description>Album label</description>
+      <type>label</type>
+      <id>1</id>
+      <width>430</width>
+      <posX>195</posX>
+      <posY>405</posY>
+      <info>MusicPlayer.Album</info>
+      <align>left</align>
+      <font>font10</font>
+      <visible>System.IdleTime(60)</visible>
     </control>
 
     <control>
       <description>gradient</description>
       <type>image</type>
       <id>1</id>
-      <visible>Player.HasAudio</visible>
+      <visible>Player.HasAudio + !System.IdleTime(60)</visible>
       <posX>315</posX>
       <posY>338</posY>
       <width>400</width>
@@ -134,7 +195,7 @@
       <width>75</width>
       <height>99</height>
       <info>MusicPlayer.Cover</info>
-      <visible>!Window.IsActive(56)</visible>
+      <visible>!System.IdleTime(60)</visible>
     </control>
 
     <control>
@@ -147,7 +208,7 @@
       <info>MusicPlayer.Artist</info>
       <align>right</align>
       <font>special12</font>
-      <visible>!Window.IsActive(56)</visible>
+      <visible>!System.IdleTime(60)</visible>
     </control>
 
     <control>
@@ -160,7 +221,7 @@
       <info>MusicPlayer.Title</info>
       <align>right</align>
       <font>special13</font>
-      <visible>!Window.IsActive(56)</visible>
+      <visible>!System.IdleTime(60)</visible>
     </control>
 
     <control>
@@ -173,7 +234,7 @@
       <info>MusicPlayer.Album</info>
       <align>right</align>
       <font>font10</font>
-      <visible>!Window.IsActive(56)</visible>
+      <visible>!System.IdleTime(60)</visible>
     </control>
 
     <control>
@@ -186,7 +247,7 @@
       <info>MusicPlayer.Time</info>
       <align>right</align>
       <font>font10</font>
-      <visible>!Window.IsActive(56)</visible>
+      <visible>!System.IdleTime(60)</visible>
     </control>
 
     <controlgroup>
@@ -208,7 +269,7 @@
         <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
         <textOffsetX>30</textOffsetX>
-        <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
       <control>
@@ -229,7 +290,7 @@
         <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
         <textOffsetX>30</textOffsetX>
-        <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
       <control>
@@ -250,7 +311,7 @@
         <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
         <textOffsetX>30</textOffsetX>
-        <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
       <control>
@@ -271,7 +332,7 @@
         <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
         <textOffsetX>30</textOffsetX>
-        <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
       <control>
@@ -292,7 +353,7 @@
         <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
         <textOffsetX>30</textOffsetX>
-        <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
       <control>
@@ -313,7 +374,7 @@
         <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
         <textOffsetX>20</textOffsetX>
-        <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
       <control>
@@ -334,7 +395,7 @@
         <textureFocus>home-focus.gif</textureFocus>
         <textureNoFocus>-</textureNoFocus>
         <textOffsetX>20</textOffsetX>
-        <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
     </controlgroup>
@@ -347,7 +408,7 @@
         <width>15</width>
         <height>16</height>
       <texture>homebutton-small.png</texture>
-      <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -358,7 +419,7 @@
         <width>15</width>
         <height>16</height>
       <texture>homebutton-small.png</texture>
-      <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -371,7 +432,7 @@
       <info>System.Date</info>
       <align>right</align>
       <font>special12</font>
-      <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -384,7 +445,7 @@
       <align>left</align>
       <font>special12</font>
       <textcolor>60ffffff</textcolor>
-      <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -398,7 +459,7 @@
       <align>left</align>
       <font>special12</font>
       <textcolor>60ffffff</textcolor>
-      <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -413,7 +474,7 @@
       <titlecolor>ffD2FF00</titlecolor>
       <headlinecolor>DDced8da</headlinecolor>
       <textcolor>ffD2FF00</textcolor>
-      <visible>!Player.HasAudio</visible>
+      <visible>!Player.HasMedia</visible>
     </control>
 
     <control>
@@ -432,7 +493,7 @@
       <onright>100</onright>
       <onup>2</onup>
       <ondown>2</ondown>
-      <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -451,7 +512,7 @@
       <onright>98</onright>
       <onup>2</onup>
       <ondown>2</ondown>
-      <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -470,7 +531,7 @@
       <onright>2</onright>
       <onup>2</onup>
       <ondown>2</ondown>
-      <visible>!Window.IsActive(56)</visible>
+      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
   </controls>
