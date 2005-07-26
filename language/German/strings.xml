@@ -949,7 +949,7 @@
   <string><id>14068</id><value>Bitte eine IP Adresse eingeben</value></string>
   <string><id>14069</id><value>Sollen die Einstellungen übernommen werden?</value></string>
   <string><id>14070</id><value>Übernehmen</value></string>
- <string><id>14071</id><value>Löschen von Dateien erlauben</value></string>
+  <string><id>14071</id><value>Löschen von Dateien erlauben</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Keine Verbindung zu Kai XLink, möchtest du versuchen</value></string>
