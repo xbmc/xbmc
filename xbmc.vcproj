@@ -452,12 +452,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\KaiItem.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\lib\libscrobbler\md5.c">
-			</File>
-			<File
-				RelativePath=".\xbmc\lib\libscrobbler\scrobbler.cpp">
-			</File>
-			<File
 				RelativePath=".\xbmc\stdafx.cpp">
 			</File>
 			<File
@@ -866,16 +860,31 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="database"
 				Filter="">
 				<File
+					RelativePath=".\xbmc\Database.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\Database.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\MusicDatabase.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\MusicDatabase.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\ProgramDatabase.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\ProgramDatabase.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\Song.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\VideoDatabase.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\VideoDatabase.h">
 				</File>
 			</Filter>
 			<Filter
@@ -1387,9 +1396,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\utils\log.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\utils\md5.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\MediaMonitor.h">
 			</File>
 			<File
@@ -1402,16 +1408,13 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\MusicDatabase.h">
+				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\MusicInfoLoader.h">
@@ -1492,9 +1495,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\Profile.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\ProgramDatabase.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\RssReader.h">
 			</File>
 			<File
@@ -1562,9 +1562,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\Util.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\VideoDatabase.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\VirtualDirectory.h">
@@ -2922,6 +2919,22 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\lib\sqlLite\sqlitedataset.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="libScrobbler"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\lib\libscrobbler\md5.c">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\md5.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libscrobbler\scrobbler.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libscrobbler\scrobbler.h">
 				</File>
 			</Filter>
 		</Filter>
