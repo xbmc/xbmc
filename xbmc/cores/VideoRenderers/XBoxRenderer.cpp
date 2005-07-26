@@ -429,8 +429,9 @@ void CXBoxRenderer::CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, floa
 
   if( m_iFieldSync != FS_NONE )
   {
-    //Make sure top is located on an odd scanline
+    //Make sure top is located on an odd scanline and bottom on an even one
     rd.top = rd.top & ~1;
+    rd.bottom = rd.bottom & ~1;
   }
 
 }

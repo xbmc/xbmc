@@ -965,14 +965,13 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
 
 void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)
 {
+  m_WindowAllocated = false;
   ivecControls i;
-  //OutputDebugString(" free resources\n");
   for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
     pControl->FreeResources();
   }
-  m_WindowAllocated = false;
   //g_TextureManager.Dump();
   // unload the skin
   if (m_loadOnDemand || forceUnload) ClearAll();
