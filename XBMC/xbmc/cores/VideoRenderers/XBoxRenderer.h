@@ -123,6 +123,11 @@ protected:
   LPDIRECT3DTEXTURE8 m_UTexture[NUM_BUFFERS];
   LPDIRECT3DTEXTURE8 m_VTexture[NUM_BUFFERS];
 
+  // Deinterlace/reinterlace fields for chroma
+  D3DTexture m_UFieldTexture[NUM_BUFFERS];
+  D3DTexture m_VFieldTexture[NUM_BUFFERS];
+  unsigned int m_chromaFieldPitch;
+
   // render device
   LPDIRECT3DDEVICE8 m_pD3DDevice;
 
