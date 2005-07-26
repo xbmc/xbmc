@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-07-2005 fixed: tearing with High Quality PixelShader after inital interlaced sync was added
  - 26-07-2005 fixed: Audio/Video sync was way of when using the dvdplayer and syncing interlaced video
  - 26-07-2005 fixed: Possible crash when unloading dialogs from fullscreen video.
  - 26-07-2005 added: Support for syncing interlaced output through all zooming modes.  Only in the high quality renderer.
