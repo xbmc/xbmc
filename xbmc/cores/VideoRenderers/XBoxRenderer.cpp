@@ -784,7 +784,6 @@ void CXBoxRenderer::FlipPage()
     }
 
     m_pD3DDevice->KickPushBuffer();
-    m_pD3DDevice->BlockUntilVerticalBlank();
 
 
     //If we have interlaced video, we have to sync to only render on even fields
@@ -792,22 +791,71 @@ void CXBoxRenderer::FlipPage()
 
     //D3DPRESENT_INTERVAL_IMMIDIATE
 
-    D3DFIELD_STATUS mStatus;
-    m_pD3DDevice->GetDisplayFieldStatus(&mStatus);
+
+    //Check what type of field sync we are interested in
+    int mSync = FS_NONE;
     if( g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_INVERTED )
     {
-      if( m_iFieldSync == FS_ODD && mStatus.Field == D3DFIELD_ODD )
-        m_pD3DDevice->BlockUntilVerticalBlank();
-      else if(  m_iFieldSync == FS_EVEN && mStatus.Field == D3DFIELD_EVEN )
-        m_pD3DDevice->BlockUntilVerticalBlank();
+      if( m_iFieldSync == FS_ODD )
+        mSync = FS_EVEN;
+      else if( m_iFieldSync == FS_EVEN )
+        mSync = FS_ODD;
     }
     else if( g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_STANDARD )
     {
-      if( m_iFieldSync == FS_ODD && mStatus.Field == D3DFIELD_EVEN )
-        m_pD3DDevice->BlockUntilVerticalBlank();
-      else if(  m_iFieldSync == FS_EVEN && mStatus.Field == D3DFIELD_ODD )
-        m_pD3DDevice->BlockUntilVerticalBlank();
+      mSync = m_iFieldSync;
     }
+
+    D3DFIELD_STATUS mStatus;
+    D3DRASTER_STATUS mRaster;
+    m_pD3DDevice->GetDisplayFieldStatus(&mStatus);
+    m_pD3DDevice->GetRasterStatus(&mRaster);
+
+    if( mSync != FS_NONE && mStatus.Field != D3DFIELD_PROGRESSIVE )
+    {
+
+      while(1)
+      {
+        m_pD3DDevice->GetDisplayFieldStatus(&mStatus);
+        m_pD3DDevice->GetRasterStatus(&mRaster);
+    
+        if( mRaster.InVBlank )
+        {
+          //In vblank, check if it is the correct one
+
+          if( (mStatus.Field == D3DFIELD_EVEN && mSync == FS_EVEN) 
+            || (mStatus.Field == D3DFIELD_ODD && mSync == FS_ODD) )
+          {
+            //Perfect allready in the correct vblank
+            break;
+          }
+        }
+        else
+        {
+          if( (mStatus.Field == D3DFIELD_EVEN && mSync == FS_ODD) ||
+              (mStatus.Field == D3DFIELD_ODD && mSync == FS_EVEN) )
+          {
+            //Okey, not in vblank or in the correct field
+            //check if we have passed active render area to avoid tearing
+            if( (int)mRaster.ScanLine >= rd.bottom ) break;
+          }
+        }
+        //Not in the right position, sleep 1ms, and check again
+        Sleep(1);
+      }
+
+
+      //m_pD3DDevice->BlockUntilVerticalBlank();
+      //if( mSync == FS_ODD && mStatus.Field == D3DFIELD_EVEN )
+      //  m_pD3DDevice->BlockUntilVerticalBlank();
+      //else if(  mSync == FS_EVEN && mStatus.Field == D3DFIELD_ODD )
+      //  m_pD3DDevice->BlockUntilVerticalBlank();
+    }
+    else
+    {
+      m_pD3DDevice->BlockUntilVerticalBlank();
+    }
+
 
     m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
     g_graphicsContext.Unlock();

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-07-2005 changed: Interlaced sync now cause somewhat less audio/video desync 
  - 26-07-2005 fixed: RSS crash due to code rearrangement.
  - 26-07-2005 fixed: nfo files are read during scan in My Videos.
  - 26-07-2005 fixed: IP input with 0's in blocks 2 or 3 was incorrect.
