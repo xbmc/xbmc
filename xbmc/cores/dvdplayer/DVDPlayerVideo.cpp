@@ -457,6 +457,7 @@ DWORD video_refresh_thread(void *arg)
   CDVDClock frameclock;
   __int64 iTimeStamp = frameclock.GetClock();
   int iFrameTime;
+  int iFrameTimeError=0;
 
   while (pDVDPlayerVideo->m_bRunningVideo)
   {
@@ -469,25 +470,6 @@ DWORD video_refresh_thread(void *arg)
     {
       // dequeue the picture
       vp = &pDVDPlayerVideo->pictq[pDVDPlayerVideo->pictq_rindex];
-      
-      if (pDVDPlayerVideo->m_pClock->HadDiscontinuity(1 * DVD_TIME_BASE))
-      {
-        //Playback at normal fps untill 1 sec after discontinuity
-        if (vp->iDuration)
-          iFrameTime = vp->iDuration;
-          
-        iSleepTime = iFrameTime - (int)(frameclock.GetClock() - iTimeStamp);
-      }
-      else
-        iSleepTime = (int)((vp->pts + pDVDPlayerVideo->m_iVideoDelay - pDVDPlayerVideo->m_pClock->GetClock()) & 0xFFFFFFFF);
-
-      if (iSleepTime > 500000) iSleepTime = 500000; // drop to a minimum of 2 frames/sec
-
-      // we could drop some frames here too if iSleepTime < 0, but I don't think it will be any
-      // use at this stage currently (drawing pictures isn't taking the most processing power)
-
-      // sleep
-      if (iSleepTime > 0) usleep(iSleepTime);
 
       if( vp->iFlags & DVP_FLAGS_INTERLACED && !g_stSettings.m_currentVideoSettings.m_Deinterlace )
       {
@@ -498,13 +480,57 @@ DWORD video_refresh_thread(void *arg)
       }
       else
         g_renderManager.SetFieldSync( FS_NONE );
+      
+      bool bDiscontinuity = pDVDPlayerVideo->m_pClock->HadDiscontinuity(1 * DVD_TIME_BASE);
+
+      if (bDiscontinuity)
+      {
+        //Playback at normal fps untill 1 sec after discontinuity
+        iFrameTime = vp->iDuration;
+        iSleepTime = iFrameTime - (int)(frameclock.GetClock() - iTimeStamp);
+      }
+      else
+        iSleepTime = (int)((vp->pts + pDVDPlayerVideo->m_iVideoDelay - pDVDPlayerVideo->m_pClock->GetClock()) & 0xFFFFFFFF);
 
 
+      //Adjust for flippage delay
+      iSleepTime = iSleepTime + iFrameTimeError;
+
+
+      if (iSleepTime > 500000) iSleepTime = 500000; // drop to a minimum of 2 frames/sec
+
+      // we could drop some frames here too if iSleepTime < 0, but I don't think it will be any
+      // use at this stage currently (drawing pictures isn't taking the most processing power)
+
+      // sleep
+      if (iSleepTime > 0) usleep(iSleepTime);
 
       // display picture
       // we expect the video device to be initialized here
+      // skip this flip should we be later than a full frame
       iTimeStamp = frameclock.GetClock();
-      g_renderManager.FlipPage();
+      if( iSleepTime > -(int)vp->iDuration ) 
+      {
+        g_renderManager.FlipPage();
+      
+        if( bDiscontinuity )
+        {
+          //Adjust using the delay in flippage
+          iFrameTimeError = (int)((iTimeStamp - frameclock.GetClock()) & 0xFFFFFFFF);
+        }
+        else
+        {
+          //Recalculate the sleep time, so we can adjust with how much we were off
+          iFrameTimeError = (int)((vp->pts + pDVDPlayerVideo->m_iVideoDelay - frameclock.GetClock()) & 0xFFFFFFFF);
+        }
+
+        //Check bounds for this as it can be way off sometimes
+        if( iFrameTimeError > (int)vp->iDuration )
+          iFrameTimeError = (int)vp->iDuration ;
+        else if( iFrameTimeError < -(int)vp->iDuration  )
+          iFrameTimeError = -(int)vp->iDuration;
+      }
+
 
       // update queue size and signal for next picture
       if (++pDVDPlayerVideo->pictq_rindex == VIDEO_PICTURE_QUEUE_SIZE) pDVDPlayerVideo->pictq_rindex = 0;
