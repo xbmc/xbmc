@@ -11,7 +11,7 @@
       <posY>0</posY>
       <width>720</width>
       <height>576</height>
-      <texture>background-UIcalibration.png</texture>
+      <texture>background-UIcalibration16x9.png</texture>
     </control>
 
     <control>

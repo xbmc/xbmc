@@ -1,4 +1,4 @@
-2005-07-26 added:	Calibration dialog for Gui Calibration
+2005-07-26 added:	Calibration window for Gui Calibration
 2005-07-26 removed:	reverted the posibilty to hide controls in the homescreen with the black button
 2005-07-26 changed:	Controls now automaticly hiding in the homescreen when Music is Playing and no button pressed for 60 seconds
 
