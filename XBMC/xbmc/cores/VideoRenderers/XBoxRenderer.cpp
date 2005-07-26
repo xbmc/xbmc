@@ -807,6 +807,9 @@ void CXBoxRenderer::FlipPage()
       mSync = m_iFieldSync;
     }
 
+    //Make sure the push buffer is done before waiting for vblank, otherwise we can get tearing
+    m_pD3DDevice->BlockUntilIdle();
+
     D3DFIELD_STATUS mStatus;
     D3DRASTER_STATUS mRaster;
     m_pD3DDevice->GetDisplayFieldStatus(&mStatus);
