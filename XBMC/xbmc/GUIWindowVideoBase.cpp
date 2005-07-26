@@ -1045,6 +1045,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     else if (btnid ==  btn_Now_Playing)
     {
       m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
+      return;
     }
     else if (btnid == btn_Query)
     {
@@ -1057,6 +1058,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     else if (btnid == btn_Settings)
     {
       m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
+      return;
     }
     else if (btnid == btn_DVD)
     {
