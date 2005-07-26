@@ -945,7 +945,8 @@
   <string><id>14067</id><value>Ange datum i DAG/MÅNAD/ÅR format</value></string>
   <string><id>14068</id><value>Ange IP adressen</value></string>
   <string><id>14069</id><value>Vill du spara dessa inställningar nu?</value></string> 	 
-  <string><id>14070</id><value>Spara inställningar</value></string> 
+  <string><id>14070</id><value>Spara inställningar</value></string>
+  <string><id>14071</id><value>Tillåt filradering</value></string> 
   
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Tjänsten är inte upprättad, vill du försöka</value></string>
@@ -1089,8 +1090,8 @@
   <string><id>16002</id><value>CDDB sök</value></string>
   <string><id>16003</id><value>Spelare</value></string>
 
-  <string><id>16004</id><value>Synkronisera Interlacerad Video</value></string>
-  <string><id>16005</id><value>- Invertera Fält</value></string>
+  <string><id>16004</id><value>Synkronisera interlacerad video</value></string>
+  <string><id>16005</id><value>- Invertera fält</value></string>
 </strings>
 
 
