@@ -13,6 +13,7 @@ int Mpc_Callback_Read(MpcPlayStream * stream, void * buffer, int bytes, int * by
     *bytes_read = amountread;
 	if (amountread == bytes || filestream->file->GetPosition() == filestream->file->GetLength())
 		return 1;
+  CLog::Log(LOGERROR, "MPCCodec:Read callback.  Had %i bytes to read.  Returned %i", bytes, amountread);
 	return 0;
 }
 
@@ -24,6 +25,7 @@ int Mpc_Callback_Seek(MpcPlayStream * stream, int position)
   __int64 seek = (int)filestream->file->Seek(position, SEEK_SET);
   if (seek >= 0)
     return 1;
+  CLog::Log(LOGERROR, "MPCCodec:Seek callback.  Seeking to position %i failed.", position);
   return 0;
 }
 

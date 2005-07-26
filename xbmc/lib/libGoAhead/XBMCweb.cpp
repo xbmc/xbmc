@@ -22,6 +22,8 @@
 #include "..\..\filesystem\CDDADirectory.h"
 #include "..\..\playlistfactory.h"
 #include "..\..\utils\GUIInfoManager.h"
+#include "..\..\MusicInfoTagLoaderFactory.h"
+#include "..\..\MusicDatabase.h"
 
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")

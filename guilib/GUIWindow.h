@@ -42,9 +42,10 @@ class CGUIWindow
 public:
   enum WINDOW_TYPE { WINDOW = 0, MODAL_DIALOG, MODELESS_DIALOG, BUTTON_MENU, SUB_MENU };
 
-  CGUIWindow(DWORD dwID);
+  CGUIWindow(DWORD dwID, const CStdString &xmlFile);
   virtual ~CGUIWindow(void);
 
+  void Initialize();  // loads the window
   virtual bool Load(const CStdString& strFileName, bool bContainsPath = false);
   virtual bool Load(const TiXmlElement* pRootElement, RESOLUTION resToUse);
   virtual void SetPosition(int iPosX, int iPosY);
@@ -79,9 +80,9 @@ public:
   const CGUIControl* GetControl(int iControl) const;
   void ClearAll();
   int GetFocusedControl() const;
-  virtual void AllocResources();
-  virtual void FreeResources();
-  virtual void DynamicResourceAlloc(bool bOnOff);
+  virtual void AllocResources(bool forceLoad = false);
+  virtual void FreeResources(bool forceUnLoad = false);
+  void DynamicResourceAlloc(bool bOnOff);
   virtual void ResetAllControls();
   static void FlushReferenceCache();
   virtual bool IsDialog() { return false;};
@@ -89,6 +90,8 @@ public:
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
   int GetVisibleCondition() const { return m_visibleCondition; };
+  void SetXMLFile(const CStdString &xmlFile) { m_xmlFile = xmlFile; };
+  void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
 
 protected:
   virtual void OnWindowUnload() {}
@@ -122,8 +125,8 @@ protected:
   DWORD m_dwPreviousWindowId;
   DWORD m_dwDefaultFocusControlID;
   bool m_bRelativeCoords;
-  DWORD m_iPosX;
-  DWORD m_iPosY;
+  int m_iPosX;
+  int m_iPosY;
   DWORD m_dwWidth;
   DWORD m_dwHeight;
   vector<int> m_vecGroups;
@@ -132,6 +135,9 @@ protected:
   RESOLUTION m_coordsRes; // resolution that the window coordinates are in.
   bool m_needsScaling;
   int m_visibleCondition;
+  CStdString m_xmlFile;  // xml file to load
+  bool m_windowLoaded;  // true if the window's xml file has been loaded
+  bool m_loadOnDemand;  // true if the window should be loaded only as needed
 };
 
 #endif

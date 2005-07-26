@@ -12,7 +12,7 @@
 #define CONTROL_BTN_ONLINE   14
 
 CGUIDialogSubMenu::CGUIDialogSubMenu(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_DIALOG_SUB_MENU, "DialogSubMenu.xml")
 {
   ON_CLICK_MESSAGE(CONTROL_BTN_SHUTDOWN, CGUIDialogSubMenu, OnClickShutdown);
   ON_CLICK_MESSAGE(CONTROL_BTN_DASHBOARD, CGUIDialogSubMenu, OnClickDashboard);
@@ -48,20 +48,10 @@ void CGUIDialogSubMenu::OnClickDashboard(CGUIMessage& aMessage)
 
 void CGUIDialogSubMenu::OnClickReboot(CGUIMessage& aMessage)
 {
-  CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (dlgYesNo)
-  {
-    dlgYesNo->SetHeading(13313);
-    dlgYesNo->SetLine(0, 13308);
-    dlgYesNo->SetLine(1, 13309);
-    dlgYesNo->SetLine(2, "");
-    dlgYesNo->DoModal(GetID());
-
-    if (dlgYesNo->IsConfirmed())
-      g_applicationMessenger.Restart();
-    else
-      g_applicationMessenger.RestartApp();
-  }
+  if (CGUIDialogYesNo::ShowAndGetInput(13313, 13308, 13309, 0))
+    g_applicationMessenger.Restart();
+  else
+    g_applicationMessenger.RestartApp();
 }
 
 void CGUIDialogSubMenu::OnClickCredits(CGUIMessage& aMessage)

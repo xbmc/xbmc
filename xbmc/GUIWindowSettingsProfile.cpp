@@ -4,13 +4,13 @@
 #include "../guilib/GUIListControl.h"
 #include "util.h"
 #include "application.h"
-
+#include "GUIDialogContextMenu.h"
 
 #define CONTROL_PROFILES 2
 #define CONTROL_LASTLOADED_PROFILE 3
 
 CGUIWindowSettingsProfile::CGUIWindowSettingsProfile(void)
-    : CGUIWindow(0)
+    : CGUIWindow(WINDOW_SETTINGS_PROFILES, "SettingsProfile.xml")
 {
   m_iLastControl = -1;
 }
@@ -51,8 +51,8 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu) return ;
-  // clean any buttons not needed
-  pMenu->ClearButtons();
+  // load our menu
+  pMenu->Initialize();
   // add the needed buttons
   pMenu->AddButton(13206); // Overwrite
   pMenu->AddButton(118); // Rename
@@ -80,7 +80,7 @@ void CGUIWindowSettingsProfile::DoRename(int iItem)
   if (iItem < (int)g_settings.m_vecProfiles.size())  // do nothing when <new profile> is selected
   {
     CStdString strProfileName;
-    if (GetKeyboard(strProfileName))
+    if (CGUIDialogKeyboard::ShowAndGetInput(strProfileName, false))
     {
       CProfile& profile = g_settings.m_vecProfiles.at(iItem);
       profile.setName(strProfileName);
@@ -192,7 +192,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
           {
             //new profile
             CStdString strProfileName;
-            if (GetKeyboard(strProfileName))
+            if (CGUIDialogKeyboard::ShowAndGetInput(strProfileName, false))
             {
               CProfile profile;
               profile.setName(strProfileName);
@@ -224,9 +224,8 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
           CStdString strLanguagePath;
           strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("LookAndFeel.Language"));
           g_localizeStrings.Load(strLanguagePath);
-          g_graphicsContext.SetD3DParameters(&g_application.m_d3dpp, g_settings.m_ResInfo);
+          g_graphicsContext.SetD3DParameters(&g_application.m_d3dpp);
           g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
-          g_graphicsContext.SetOffset(g_guiSettings.GetInt("UIOffset.X"), g_guiSettings.GetInt("UIOffset.Y"));
           if (
             (iPrevResolution != g_guiSettings.m_LookAndFeelResolution) ||
             (strcmpi(strPrevSkin.c_str(), g_guiSettings.GetString("LookAndFeel.Skin").c_str()))
@@ -309,26 +308,6 @@ void CGUIWindowSettingsProfile::SetLastLoaded()
   }
 }
 
-
-bool CGUIWindowSettingsProfile::GetKeyboard(CStdString& strInput)
-{
-  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
-  if (!pKeyboard) return false;
-  // setup keyboard
-  pKeyboard->CenterWindow();
-  pKeyboard->SetText(strInput);
-  pKeyboard->DoModal(m_gWindowManager.GetActiveWindow());
-  pKeyboard->Close();
-
-  if (pKeyboard->IsDirty())
-  { // have text - update this.
-    strInput = pKeyboard->GetText();
-    if (strInput.IsEmpty())
-      return false;
-    return true;
-  }
-  return false;
-}
 
 void CGUIWindowSettingsProfile::ClearListItems()
 {

@@ -28,7 +28,7 @@
 #define CONTROL_THUMBS      51
 
 CGUIWindowMusicPlayList::CGUIWindowMusicPlayList(void)
-    : CGUIWindowMusicBase()
+    : CGUIWindowMusicBase(WINDOW_MUSIC_PLAYLIST, "MyMusicPlaylist.xml")
 {
   m_tagloader.SetObserver(this);
 }
@@ -347,7 +347,7 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, CFile
 void CGUIWindowMusicPlayList::SavePlayList()
 {
   CStdString strNewFileName;
-  if (GetKeyboard(strNewFileName))
+  if (CGUIDialogKeyboard::ShowAndGetInput(strNewFileName, false))
   {
     // need 2 rename it
     CStdString strPath = g_stSettings.m_szAlbumDirectory;

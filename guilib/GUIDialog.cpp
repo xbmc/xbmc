@@ -5,8 +5,8 @@
 #include "GUIAudioManager.h"
 
 
-CGUIDialog::CGUIDialog(DWORD dwID)
-    : CGUIWindow(dwID)
+CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)
+    : CGUIWindow(dwID, xmlFile)
 {
   m_dwParentWindowID = 0;
   m_pParentWindow = NULL;

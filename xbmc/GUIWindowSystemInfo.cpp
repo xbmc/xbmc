@@ -57,7 +57,7 @@ DWORD					m_dwlastTime;
 
 char* cTempEEPROMBackUPPath =	"Q:\\System\\SystemInfo\\";
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
-:CGUIWindow(0)
+:CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
 {}
 
 CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
@@ -126,6 +126,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 	{
 		case GUI_MSG_WINDOW_INIT:
 			{	
+				m_wszMPlayerVersion[0] = 0;			
 				//Get SystemInformations on Init
 				CGUIWindow::OnMessage(message);
 				
@@ -152,7 +153,6 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 					pDlgProgress.Progress();
 				}
 				m_dwlastTime=0;
-				m_wszMPlayerVersion[0] = 0;			
 				HANDLE hThread = CreateThread(NULL, 0,GetMPlayerVersionW,&m_wszMPlayerVersion,0, NULL);
 				if (hThread != NULL)	CloseHandle(hThread);
 				
@@ -1245,7 +1245,10 @@ bool CGUIWindowSystemInfo::GetBuildTime(int label1, int label2, int label3)
   CStdStringW version, buildDate, mplayerVersion;
   buildDate.Format(L"XBMC Compile Date: %S", g_infoManager.GetBuild().c_str());
   version.Format(L"%s %S", g_localizeStrings.Get(144).c_str(), g_infoManager.GetVersion().c_str());
-  mplayerVersion.Format(L"Mplayer Version: %s", m_wszMPlayerVersion);
+  if (wcslen(m_wszMPlayerVersion))
+    mplayerVersion.Format(L"Mplayer Version: %s", m_wszMPlayerVersion);
+  else
+    mplayerVersion.Format(L"Mplayer Version: Finding...");
 	SET_CONTROL_LABEL(label1, version);
 	SET_CONTROL_LABEL(label2, buildDate);
 	SET_CONTROL_LABEL(label3, mplayerVersion);

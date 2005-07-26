@@ -10,9 +10,11 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual void Render();
+  virtual void ResetControls();
+#ifdef PRE_SKIN_VERSION_1_4_COMPATIBILITY
+  virtual void OnWindowLoaded();
+#endif
+
 protected:
-  int m_iLastControl;
-  //private:
-  // int m_iOffsetX;
-  // int m_iOffsetY;
+  int m_control;
 };

@@ -9,6 +9,21 @@
 
 #include "common/xbfont.h"
 
+class CScrollInfo
+{
+public:
+  CScrollInfo(unsigned int wait = 50) { initialWait = wait; Reset(); };
+  void Reset()
+  {
+    waitTime = initialWait;
+    pixelPos = characterPos = 0;
+  }
+  unsigned int waitTime;
+  unsigned int pixelPos;
+  unsigned int characterPos;
+  unsigned int initialWait;
+};
+
 /*!
  \ingroup textures
  \brief 
@@ -37,15 +52,20 @@ public:
   void DrawText( FLOAT sx, FLOAT sy, DWORD dwColor,
                  const WCHAR* strText, DWORD dwFlags = 0L,
                  FLOAT fMaxPixelWidth = 0.0f );
+  void DrawScrollingText(float x, float y, DWORD* color, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette = NULL);
 
-  virtual void GetTextExtent( const WCHAR* strText, FLOAT* pWidth,
-                              FLOAT* pHeight, BOOL bFirstLineOnly = FALSE) = 0;
+  inline void GetTextExtent( const WCHAR* strText, FLOAT* pWidth, FLOAT* pHeight, BOOL bFirstLineOnly = FALSE);
 
   FLOAT GetTextWidth( const WCHAR* strText );
   virtual void Begin() {};
   virtual void End() {};
 
 protected:
+  virtual void GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth, FLOAT* pHeight, BOOL bFirstLineOnly = FALSE) = 0;
+
+  void DrawTextWidthInternal(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
+                             const WCHAR* strText, float fMaxWidth);
+
   virtual void DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                             const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0,
                             FLOAT fMaxPixelWidth = 0.0f) = 0;
@@ -54,9 +74,6 @@ protected:
                                   const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
                                   FLOAT fMaxPixelWidth) = 0;
 
-
-  static WCHAR* m_pwzBuffer;
-  static INT m_nBufferSize;
   float m_iMaxCharWidth;
   CStdString m_strFontName;
 };

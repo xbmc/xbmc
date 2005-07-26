@@ -16,7 +16,7 @@
 #define CONTROL_PAGE               60
 
 CGUIDialogVisualisationSettings::CGUIDialogVisualisationSettings(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_DIALOG_VIS_SETTINGS, "MusicOSDVisSettings.xml")
 {
   m_iLastControl = -1;
   m_pOriginalSpin = NULL;
@@ -27,6 +27,7 @@ CGUIDialogVisualisationSettings::CGUIDialogVisualisationSettings(void)
   m_iCurrentPage = 0;
   m_iNumPages = 0;
   m_iNumPerPage = 0;
+  LoadOnDemand(false);    // we are loaded by the vis window.
 }
 
 CGUIDialogVisualisationSettings::~CGUIDialogVisualisationSettings(void)

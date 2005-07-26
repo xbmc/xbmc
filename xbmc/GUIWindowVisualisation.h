@@ -8,7 +8,8 @@ class CGUIWindowVisualisation :
 public:
   CGUIWindowVisualisation(void);
   virtual ~CGUIWindowVisualisation(void);
-  virtual void FreeResources();
+  virtual void AllocResources(bool forceLoad = false);
+  virtual void FreeResources(bool forceUnLoad = false);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual bool OnMouse();

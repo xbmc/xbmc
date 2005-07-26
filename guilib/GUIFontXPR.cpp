@@ -21,7 +21,7 @@ boolean CGUIFontXPR::Load(const CStdString& strFilename)
     else
     {
       float fTextHeight;
-      GetTextExtent( L"W", &m_iMaxCharWidth, &fTextHeight);
+      GetTextExtentInternal( L"W", &m_iMaxCharWidth, &fTextHeight);
     }
 
     return bResult;
@@ -51,7 +51,7 @@ void CGUIFontXPR::DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
   m_font.DrawTextEx(fOriginX, fOriginY, dwColor, strText, cchText, dwFlags, fMaxPixelWidth);
 }
 
-void CGUIFontXPR::GetTextExtent(const WCHAR* strText, FLOAT* pWidth,
+void CGUIFontXPR::GetTextExtentInternal(const WCHAR* strText, FLOAT* pWidth,
                                 FLOAT* pHeight, BOOL bFirstLineOnly)
 {
   m_font.GetTextExtent(strText, pWidth, pHeight, bFirstLineOnly);

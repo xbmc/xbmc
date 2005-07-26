@@ -19,7 +19,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "ButtonTranslator.h"
 #include "Picture.h"
-
+#include "GUIDialogNumeric.h"
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
@@ -2413,6 +2413,15 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
     {
       g_renderManager.SetupScreenshot();
     }
+    if (0)
+    { // reset calibration to defaults
+      OVERSCAN oscan;
+      memcpy(&oscan, &g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].GUIOverscan, sizeof(OVERSCAN));
+      g_graphicsContext.ResetOverscan(g_graphicsContext.GetVideoResolution(), g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].GUIOverscan);
+      g_application.Render();
+      memcpy(&g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].GUIOverscan, &oscan, sizeof(OVERSCAN));
+    }
+    // now take screenshot
     g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
     if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( -1, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
     {

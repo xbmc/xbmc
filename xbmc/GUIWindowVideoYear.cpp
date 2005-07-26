@@ -93,6 +93,7 @@ int SSortVideoYearByName::m_iSortMethod;
 
 //****************************************************************************************************************************
 CGUIWindowVideoYear::CGUIWindowVideoYear()
+: CGUIWindowVideoBase(WINDOW_VIDEO_YEAR, "MyVideoYear.xml")
 {
   m_Directory.m_strPath = "";
 }

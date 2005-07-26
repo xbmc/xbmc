@@ -239,7 +239,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
         else if (m_bVisible && m_fadingState == FADING_OUT)
         { // turn around direction of fade
           m_fadingState = FADING_IN;
-          m_fadingPos = (int)(m_fadingPos * (float)message.GetParam1() / m_fadingTime);
+          m_fadingPos = (int)((m_fadingTime - m_fadingPos) * (float)message.GetParam1() / m_fadingTime);
           m_fadingTime = message.GetParam1();
         }
       }
@@ -262,7 +262,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
         else if (m_bVisible && m_fadingState == FADING_IN)
         { // turn around direction of fade
           m_fadingState = FADING_OUT;
-          m_fadingPos = (int)(m_fadingPos * (float)message.GetParam1() / m_fadingTime);
+          m_fadingPos = (int)((m_fadingTime - m_fadingPos) * (float)message.GetParam1() / m_fadingTime);
           m_fadingTime = message.GetParam1();
         }
       }
@@ -415,23 +415,8 @@ void CGUIControl::SetSelected(bool bSelected)
   }
 }
 
-void CGUIControl::EnableCalibration(bool bOnOff)
-{
-  if (m_bCalibration != bOnOff)
-  {
-    m_bCalibration = bOnOff;
-    m_bInvalidated = true;
-  }
-}
-
-bool CGUIControl::CalibrationEnabled() const
-{
-  return m_bCalibration;
-}
-
 bool CGUIControl::HitTest(int iPosX, int iPosY) const
 {
-  if (!CalibrationEnabled()) g_graphicsContext.Correct(iPosX, iPosY);
   if (iPosX >= (int)m_iPosX && iPosX <= (int)(m_iPosX + m_dwWidth) && iPosY >= (int)m_iPosY && iPosY <= (int)(m_iPosY + m_dwHeight))
     return true;
   return false;
@@ -599,7 +584,8 @@ bool CGUIControl::UpdateVisibility()
   // update our alpha values if we're fading
   if (m_fadingState == FADING_IN)
   { // doing a fade in
-    m_fadingPos--;
+    if (m_fadingPos)
+      m_fadingPos--;
     if (!m_fadingPos)
     {
       m_fadingState = FADING_NONE;
@@ -609,7 +595,8 @@ bool CGUIControl::UpdateVisibility()
   }
   else if (m_fadingState == FADING_OUT)
   {
-    m_fadingPos--;
+    if (m_fadingPos)
+      m_fadingPos--;
     if (!m_fadingPos)
     {
       m_fadingState = FADING_NONE;

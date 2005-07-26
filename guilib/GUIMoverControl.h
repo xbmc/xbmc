@@ -58,7 +58,6 @@ public:
   void SetLocation(int iLocX, int iLocY, bool bSetPosition = true);
   int GetXLocation() const { return m_iLocationX;};
   int GetYLocation() const { return m_iLocationY;};
-  virtual void EnableCalibration(bool bOnOff);
 
 protected:
   virtual void Update() ;

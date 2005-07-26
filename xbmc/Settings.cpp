@@ -15,125 +15,11 @@ extern CStdString g_LoadErrorStr;
 
 CSettings::CSettings(void)
 {
-  m_ResInfo[HDTV_1080i].Overscan.left = 0;
-  m_ResInfo[HDTV_1080i].Overscan.top = 0;
-  m_ResInfo[HDTV_1080i].Overscan.right = 1920;
-  m_ResInfo[HDTV_1080i].Overscan.bottom = 1080;
-  m_ResInfo[HDTV_1080i].iSubtitles = (int)(0.965 * 1080);
-  m_ResInfo[HDTV_1080i].iOSDYOffset = 0;  // Y offset for OSD (applied to all Y pos in skin)
-  m_ResInfo[HDTV_1080i].iWidth = 1920;
-  m_ResInfo[HDTV_1080i].iHeight = 1080;
-  m_ResInfo[HDTV_1080i].dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
-  m_ResInfo[HDTV_1080i].fPixelRatio = 1.0f;
-  strcpy(m_ResInfo[HDTV_1080i].strMode, "1080i 16:9");
-
-  m_ResInfo[HDTV_720p].Overscan.left = 0;
-  m_ResInfo[HDTV_720p].Overscan.top = 0;
-  m_ResInfo[HDTV_720p].Overscan.right = 1280;
-  m_ResInfo[HDTV_720p].Overscan.bottom = 720;
-  m_ResInfo[HDTV_720p].iSubtitles = (int)(0.965 * 720);
-  m_ResInfo[HDTV_720p].iOSDYOffset = 0; // Y offset for OSD (applied to all Y pos in skin)
-  m_ResInfo[HDTV_720p].iWidth = 1280;
-  m_ResInfo[HDTV_720p].iHeight = 720;
-  m_ResInfo[HDTV_720p].dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
-  m_ResInfo[HDTV_720p].fPixelRatio = 1.0f;
-  strcpy(m_ResInfo[HDTV_720p].strMode, "720p 16:9");
-
-  m_ResInfo[HDTV_480p_4x3].Overscan.left = 0;
-  m_ResInfo[HDTV_480p_4x3].Overscan.top = 0;
-  m_ResInfo[HDTV_480p_4x3].Overscan.right = 720;
-  m_ResInfo[HDTV_480p_4x3].Overscan.bottom = 480;
-  m_ResInfo[HDTV_480p_4x3].iSubtitles = (int)(0.9 * 480);
-  m_ResInfo[HDTV_480p_4x3].iOSDYOffset = 0; // Y offset for OSD (applied to all Y pos in skin)
-  m_ResInfo[HDTV_480p_4x3].iWidth = 720;
-  m_ResInfo[HDTV_480p_4x3].iHeight = 480;
-  m_ResInfo[HDTV_480p_4x3].dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
-  m_ResInfo[HDTV_480p_4x3].fPixelRatio = 4320.0f / 4739.0f;
-  strcpy(m_ResInfo[HDTV_480p_4x3].strMode, "480p 4:3");
-
-  m_ResInfo[HDTV_480p_16x9].Overscan.left = 0;
-  m_ResInfo[HDTV_480p_16x9].Overscan.top = 0;
-  m_ResInfo[HDTV_480p_16x9].Overscan.right = 720;
-  m_ResInfo[HDTV_480p_16x9].Overscan.bottom = 480;
-  m_ResInfo[HDTV_480p_16x9].iSubtitles = (int)(0.965 * 480);
-  m_ResInfo[HDTV_480p_16x9].iOSDYOffset = 0;  // Y offset for OSD (applied to all Y pos in skin)
-  m_ResInfo[HDTV_480p_16x9].iWidth = 720;
-  m_ResInfo[HDTV_480p_16x9].iHeight = 480;
-  m_ResInfo[HDTV_480p_16x9].dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
-  m_ResInfo[HDTV_480p_16x9].fPixelRatio = 4320.0f / 4739.0f * 4.0f / 3.0f;
-  strcpy(m_ResInfo[HDTV_480p_16x9].strMode, "480p 16:9");
-
-  m_ResInfo[NTSC_4x3].Overscan.left = 0;
-  m_ResInfo[NTSC_4x3].Overscan.top = 0;
-  m_ResInfo[NTSC_4x3].Overscan.right = 720;
-  m_ResInfo[NTSC_4x3].Overscan.bottom = 480;
-  m_ResInfo[NTSC_4x3].iSubtitles = (int)(0.9 * 480);
-  m_ResInfo[NTSC_4x3].iOSDYOffset = 0;  // Y offset for OSD (applied to all Y pos in skin)
-  m_ResInfo[NTSC_4x3].iWidth = 720;
-  m_ResInfo[NTSC_4x3].iHeight = 480;
-  m_ResInfo[NTSC_4x3].dwFlags = 0;
-  m_ResInfo[NTSC_4x3].fPixelRatio = 4320.0f / 4739.0f;
-  strcpy(m_ResInfo[NTSC_4x3].strMode, "NTSC 4:3");
-
-  m_ResInfo[NTSC_16x9].Overscan.left = 0;
-  m_ResInfo[NTSC_16x9].Overscan.top = 0;
-  m_ResInfo[NTSC_16x9].Overscan.right = 720;
-  m_ResInfo[NTSC_16x9].Overscan.bottom = 480;
-  m_ResInfo[NTSC_16x9].iSubtitles = (int)(0.965 * 480);
-  m_ResInfo[NTSC_16x9].iOSDYOffset = 0; // Y offset for OSD (applied to all Y pos in skin)
-  m_ResInfo[NTSC_16x9].iWidth = 720;
-  m_ResInfo[NTSC_16x9].iHeight = 480;
-  m_ResInfo[NTSC_16x9].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
-  m_ResInfo[NTSC_16x9].fPixelRatio = 4320.0f / 4739.0f * 4.0f / 3.0f;
-  strcpy(m_ResInfo[NTSC_16x9].strMode, "NTSC 16:9");
-
-  m_ResInfo[PAL_4x3].Overscan.left = 0;
-  m_ResInfo[PAL_4x3].Overscan.top = 0;
-  m_ResInfo[PAL_4x3].Overscan.right = 720;
-  m_ResInfo[PAL_4x3].Overscan.bottom = 576;
-  m_ResInfo[PAL_4x3].iSubtitles = (int)(0.9 * 576);
-  m_ResInfo[PAL_4x3].iOSDYOffset = 0; // Y offset for OSD (applied to all Y pos in skin)
-  m_ResInfo[PAL_4x3].iWidth = 720;
-  m_ResInfo[PAL_4x3].iHeight = 576;
-  m_ResInfo[PAL_4x3].dwFlags = 0;
-  m_ResInfo[PAL_4x3].fPixelRatio = 128.0f / 117.0f;
-  strcpy(m_ResInfo[PAL_4x3].strMode, "PAL 4:3");
-
-  m_ResInfo[PAL_16x9].Overscan.left = 0;
-  m_ResInfo[PAL_16x9].Overscan.top = 0;
-  m_ResInfo[PAL_16x9].Overscan.right = 720;
-  m_ResInfo[PAL_16x9].Overscan.bottom = 576;
-  m_ResInfo[PAL_16x9].iSubtitles = (int)(0.965 * 576);
-  m_ResInfo[PAL_16x9].iOSDYOffset = 0;  // Y offset for OSD (applied to all Y pos in skin)
-  m_ResInfo[PAL_16x9].iWidth = 720;
-  m_ResInfo[PAL_16x9].iHeight = 576;
-  m_ResInfo[PAL_16x9].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
-  m_ResInfo[PAL_16x9].fPixelRatio = 128.0f / 117.0f * 4.0f / 3.0f;
-  strcpy(m_ResInfo[PAL_16x9].strMode, "PAL 16:9");
-
-  m_ResInfo[PAL60_4x3].Overscan.left = 0;
-  m_ResInfo[PAL60_4x3].Overscan.top = 0;
-  m_ResInfo[PAL60_4x3].Overscan.right = 720;
-  m_ResInfo[PAL60_4x3].Overscan.bottom = 480;
-  m_ResInfo[PAL60_4x3].iSubtitles = (int)(0.9 * 480);
-  m_ResInfo[PAL60_4x3].iOSDYOffset = 0; // Y offset for OSD (applied to all Y pos in skin)
-  m_ResInfo[PAL60_4x3].iWidth = 720;
-  m_ResInfo[PAL60_4x3].iHeight = 480;
-  m_ResInfo[PAL60_4x3].dwFlags = 0;
-  m_ResInfo[PAL60_4x3].fPixelRatio = 4320.0f / 4739.0f;
-  strcpy(m_ResInfo[PAL60_4x3].strMode, "PAL60 4:3");
-
-  m_ResInfo[PAL60_16x9].Overscan.left = 0;
-  m_ResInfo[PAL60_16x9].Overscan.top = 0;
-  m_ResInfo[PAL60_16x9].Overscan.right = 720;
-  m_ResInfo[PAL60_16x9].Overscan.bottom = 480;
-  m_ResInfo[PAL60_16x9].iSubtitles = (int)(0.965 * 480);
-  m_ResInfo[PAL60_16x9].iOSDYOffset = 0;  // Y offset for OSD (applied to all Y pos in skin)
-  m_ResInfo[PAL60_16x9].iWidth = 720;
-  m_ResInfo[PAL60_16x9].iHeight = 480;
-  m_ResInfo[PAL60_16x9].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
-  m_ResInfo[PAL60_16x9].fPixelRatio = 4320.0f / 4739.0f * 4.0f / 3.0f;
-  strcpy(m_ResInfo[PAL60_16x9].strMode, "PAL60 16:9");
+  for (int i = HDTV_1080i; i <= PAL60_16x9; i++)
+  {
+    g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
+    g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].GUIOverscan);
+  }
 
   strcpy(g_stSettings.m_szExternalDVDPlayer, "");
   strcpy(g_stSettings.m_szExternalCDDAPlayer, "");
@@ -273,7 +159,6 @@ CSettings::CSettings(void)
   g_stSettings.m_iMyVideoPercentSeekBackward = -2;
   g_stSettings.m_iMyVideoPercentSeekForwardBig = 10;
   g_stSettings.m_iMyVideoPercentSeekBackwardBig = -10;
-  
   xbmcXmlLoaded = false;
 }
 
@@ -894,12 +779,24 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
       GetInteger(pOverscan, "right", m_ResInfo[iRes].Overscan.right, m_ResInfo[iRes].iWidth, m_ResInfo[iRes].iWidth / 2, m_ResInfo[iRes].iWidth*3 / 2);
       GetInteger(pOverscan, "bottom", m_ResInfo[iRes].Overscan.bottom, m_ResInfo[iRes].iHeight, m_ResInfo[iRes].iHeight / 2, m_ResInfo[iRes].iHeight*3 / 2);
     }
+    // GUI overscan info
+    pOverscan = pResolution->FirstChildElement("guioverscan");
+    if (pOverscan)
+    {
+      GetInteger(pOverscan, "left", m_ResInfo[iRes].GUIOverscan.left, 0, -m_ResInfo[iRes].iWidth / 4, m_ResInfo[iRes].iWidth / 4);
+      GetInteger(pOverscan, "top", m_ResInfo[iRes].GUIOverscan.top, 0, -m_ResInfo[iRes].iHeight / 4, m_ResInfo[iRes].iHeight / 4);
+      GetInteger(pOverscan, "right", m_ResInfo[iRes].GUIOverscan.right, m_ResInfo[iRes].iWidth, m_ResInfo[iRes].iWidth / 2, m_ResInfo[iRes].iWidth * 3 / 2);
+      GetInteger(pOverscan, "bottom", m_ResInfo[iRes].GUIOverscan.bottom, m_ResInfo[iRes].iHeight, m_ResInfo[iRes].iHeight / 2, m_ResInfo[iRes].iHeight * 3 / 2);
+    }
     CLog::Log(LOGINFO, "  calibration for %s %ix%i", m_ResInfo[iRes].strMode, m_ResInfo[iRes].iWidth, m_ResInfo[iRes].iHeight);
     CLog::Log(LOGINFO, "    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i) osdyoffset:%i",
               m_ResInfo[iRes].iSubtitles, m_ResInfo[iRes].fPixelRatio,
               m_ResInfo[iRes].Overscan.left, m_ResInfo[iRes].Overscan.top,
               m_ResInfo[iRes].Overscan.right, m_ResInfo[iRes].Overscan.bottom,
               m_ResInfo[iRes].iOSDYOffset);
+    CLog::Log(LOGINFO, "    GUI calibration :(%i,%i)->(%i,%i)",
+              m_ResInfo[iRes].GUIOverscan.left, m_ResInfo[iRes].GUIOverscan.top,
+              m_ResInfo[iRes].GUIOverscan.right, m_ResInfo[iRes].GUIOverscan.bottom);
 
     // iterate around
     pResolution = pResolution->NextSiblingElement("resolution");
@@ -929,6 +826,13 @@ bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
     SetInteger(pOverscanNode, "top", m_ResInfo[i].Overscan.top);
     SetInteger(pOverscanNode, "right", m_ResInfo[i].Overscan.right);
     SetInteger(pOverscanNode, "bottom", m_ResInfo[i].Overscan.bottom);
+    // create the GUIoverscan child
+    TiXmlElement guiOverscanElement("guioverscan");
+    TiXmlNode *pGUIOverscanNode = pNode->InsertEndChild(guiOverscanElement);
+    SetInteger(pGUIOverscanNode, "left", m_ResInfo[i].GUIOverscan.left);
+    SetInteger(pGUIOverscanNode, "top", m_ResInfo[i].GUIOverscan.top);
+    SetInteger(pGUIOverscanNode, "right", m_ResInfo[i].GUIOverscan.right);
+    SetInteger(pGUIOverscanNode, "bottom", m_ResInfo[i].GUIOverscan.bottom);
   }
   return true;
 }

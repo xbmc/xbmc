@@ -8,9 +8,10 @@
 #define CONTROL_NONE_AVAILABLE 4
 
 CGUIDialogVisualisationPresetList::CGUIDialogVisualisationPresetList(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_DIALOG_VIS_PRESET_LIST, "VisualisationPresetList.xml")
 {
   m_currentPreset = 0;
+  LoadOnDemand(false);    // we are loaded by the vis window.
 }
 
 CGUIDialogVisualisationPresetList::~CGUIDialogVisualisationPresetList(void)
@@ -39,12 +40,11 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
+      CGUIDialog::OnMessage(message);
+
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
       g_graphicsContext.SendMessage(msg);
-
       SetVisualisation((CVisualisation *)msg.GetLPVOID());
-
-      CGUIDialog::OnMessage(message);
       return true;
     }
     break;

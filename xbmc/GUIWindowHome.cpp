@@ -6,7 +6,8 @@
 #include "GUIButtonScroller.h"
 #include "GUIConditionalButtonControl.h"
 #include "utils/GUIInfoManager.h"
-
+#include "GUIDialogContextMenu.h"
+#include "utils/KaiClient.h"
 
 #define MENU_BUTTON_START 2    // normal buttons
 #define MENU_BUTTON_END   20
@@ -22,10 +23,11 @@
 #define CONTROL_BTN_XLINK_KAI  99
 #define CONTROL_BTN_SCROLLER  300
 
-CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(0)
+CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
 {
   m_iLastControl = -1;
   m_iLastMenuOption = -1;
+  m_iSelectedItem = -1;
 }
 
 CGUIWindowHome::~CGUIWindowHome(void)
@@ -61,11 +63,26 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
       UpdateButtonScroller();
 
+      if (m_iSelectedItem >= 0)
+      {
+        CGUIButtonScroller *pScroller = (CGUIButtonScroller *)GetControl(CONTROL_BTN_SCROLLER);
+        if (pScroller) pScroller->SetActiveButton(m_iSelectedItem);
+      }
+
       ON_POLL_BUTTON_CONDITION(CONTROL_BTN_XLINK_KAI, CGUIWindowHome, OnPollXLinkClient, 50);
 
       SET_CONTROL_FOCUS(iFocusControl, 0);
       return true;
     }
+    break;
+
+  case GUI_MSG_WINDOW_DEINIT:
+    {
+      CGUIButtonScroller *pScroller = (CGUIButtonScroller *)GetControl(CONTROL_BTN_SCROLLER);
+      if (pScroller)
+        m_iSelectedItem = pScroller->GetActiveButton();
+    }
+    break;
 
   case GUI_MSG_SETFOCUS:
     {
@@ -222,8 +239,8 @@ void CGUIWindowHome::OnPopupContextMenu()
   int iButton = pScroller->GetActiveButton();
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu) return ;
-  // popup the context menu
-  pMenu->ClearButtons();
+  // load our menu
+  pMenu->Initialize();
   pMenu->AddButton(13332); // Move Up
   pMenu->AddButton(13333); // Move Down
   pMenu->AddButton(13334); // Edit Label

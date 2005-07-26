@@ -15,7 +15,8 @@
 #define POPUP_CAPTION_TEXT   401
 #define POPUP_NOTIFICATION_BUTTON 402
 
-CGUIDialogKaiToast::CGUIDialogKaiToast(void) : CGUIDialog(0)
+CGUIDialogKaiToast::CGUIDialogKaiToast(void)
+: CGUIDialog(WINDOW_DIALOG_KAI_TOAST, "DialogKaiToast.xml")
 {
   m_pIcon = NULL;
   m_iIconPosX = 0;

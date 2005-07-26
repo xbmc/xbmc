@@ -16,7 +16,7 @@
 
 
 CGUIWindowVideoOverlay::CGUIWindowVideoOverlay()
-    : CGUIWindow(0)
+    : CGUIWindow(2004, "VideoOverlay.xml")
 {}
 
 CGUIWindowVideoOverlay::~CGUIWindowVideoOverlay()

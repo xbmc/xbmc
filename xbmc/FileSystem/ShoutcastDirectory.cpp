@@ -119,20 +119,12 @@ bool CShoutcastDirectory::DownloadPlaylists(CFileItemList &items)
     dlgProgress->Progress();
   }
 
-  CGUIDialogOK* dlgOk = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-  if (dlgOk)
-  {
-    dlgOk->SetHeading(260);
-    dlgOk->SetLine(0, 14006);
-    dlgOk->SetLine(1, L"");
-    dlgOk->SetLine(2, L"");
-  }
 
   CHTTP http;
   if (!http.Download("http://shoutcast.com/sbin/xmllister.phtml?service=XBMC&limit=500", "Z:\\xmllister.zli"))
   {
     if (dlgProgress) dlgProgress->Close();
-    if (dlgOk) dlgOk->DoModal(m_gWindowManager.GetActiveWindow());
+    CGUIDialogOK::ShowAndGetInput(260, 14006, 0, 0);
     CLog::Log(LOGERROR, "Unable to download playlistfile from shoutcast");
     return false;
   }
@@ -141,7 +133,7 @@ bool CShoutcastDirectory::DownloadPlaylists(CFileItemList &items)
   if (!file.Open("Z:\\xmllister.zli"))
   {
     if (dlgProgress) dlgProgress->Close();
-    if (dlgOk) dlgOk->DoModal(m_gWindowManager.GetActiveWindow());
+    CGUIDialogOK::ShowAndGetInput(260, 14006, 0, 0);
     CLog::Log(LOGERROR, "Unable to open downloaded file");
     return false;
   }
@@ -163,7 +155,7 @@ bool CShoutcastDirectory::DownloadPlaylists(CFileItemList &items)
                                pCompressed.get(), iCompressedLenght))) != Z_OK)
   {
     if (dlgProgress) dlgProgress->Close();
-    if (dlgOk) dlgOk->DoModal(m_gWindowManager.GetActiveWindow());
+    CGUIDialogOK::ShowAndGetInput(260, 14006, 0, 0);
     CLog::Log(LOGERROR, "zlib uncompress returned error %i", iError);
     return false;
   }
@@ -178,7 +170,7 @@ bool CShoutcastDirectory::DownloadPlaylists(CFileItemList &items)
   if (!xmlDoc.Parse((char*)pUncompressed.get()))
   {
     if (dlgProgress) dlgProgress->Close();
-    if (dlgOk) dlgOk->DoModal(m_gWindowManager.GetActiveWindow());
+    CGUIDialogOK::ShowAndGetInput(260, 14006, 0, 0);
     CLog::Log(LOGERROR, "Error parsing file from shoutcast, Line %d\n%s", xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
@@ -188,7 +180,7 @@ bool CShoutcastDirectory::DownloadPlaylists(CFileItemList &items)
   if (pRootElement->Value() == "WinampXML")
   {
     if (dlgProgress) dlgProgress->Close();
-    if (dlgOk) dlgOk->DoModal(m_gWindowManager.GetActiveWindow());
+    CGUIDialogOK::ShowAndGetInput(260, 14006, 0, 0);
     CLog::Log(LOGERROR, "Shoutcast XML file has no <WinampXML>");
     return false;
   }
@@ -276,7 +268,7 @@ bool CShoutcastDirectory::DownloadPlaylists(CFileItemList &items)
     else
     {
       if (dlgProgress) dlgProgress->Close();
-      if (dlgOk) dlgOk->DoModal(m_gWindowManager.GetActiveWindow());
+      CGUIDialogOK::ShowAndGetInput(260, 14006, 0, 0);
       CLog::Log(LOGERROR, "Shoutcast XML file has no playlist entries");
       return false;
     }
@@ -332,20 +324,12 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
       dlgProgress->Progress();
     }
 
-    CGUIDialogOK* dlgOk = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (dlgOk)
-    {
-      dlgOk->SetHeading(260);
-      dlgOk->SetLine(0, 14007);
-      dlgOk->SetLine(1, L"");
-      dlgOk->SetLine(2, L"");
-    }
 
     CHTTP http;
     if (!http.Download(strPlayList, "Z:\\playlist.pls"))
     {
       if (dlgProgress) dlgProgress->Close();
-      if (dlgOk) dlgOk->DoModal(m_gWindowManager.GetActiveWindow());
+      CGUIDialogOK::ShowAndGetInput(260, 14007, 0, 0);
       CLog::Log(LOGERROR, "Unable to download playlistfile from shoutcast");
       return false;
     }

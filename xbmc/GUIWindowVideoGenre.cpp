@@ -93,6 +93,7 @@ int SSortVideoGenreByName::m_iSortMethod;
 
 //****************************************************************************************************************************
 CGUIWindowVideoGenre::CGUIWindowVideoGenre()
+: CGUIWindowVideoBase(WINDOW_VIDEO_GENRE, "MyVideoGenre.xml")
 {
   m_Directory.m_strPath = "";
 }

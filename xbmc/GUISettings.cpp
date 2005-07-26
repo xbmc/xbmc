@@ -6,6 +6,7 @@
 #include "utils/FanController.h"
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
+#include <xfont.h>
 
 // String id's of the masks
 #define MASK_MINS   14044

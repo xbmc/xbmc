@@ -12,7 +12,7 @@
 #define MUTEBUG_IMAGE     901
 
 CGUIDialogMuteBug::CGUIDialogMuteBug(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_DIALOG_MUTE_BUG, "DialogMuteBug.xml")
 {
 }
 

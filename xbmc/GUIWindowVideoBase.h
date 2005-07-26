@@ -8,12 +8,14 @@
 class CGUIWindowVideoBase : public CGUIWindow
 {
 public:
-  CGUIWindowVideoBase(void);
+  CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile);
   virtual ~CGUIWindowVideoBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual void OnWindowLoaded();
+  virtual void OnWindowUnload();
+
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
 protected:

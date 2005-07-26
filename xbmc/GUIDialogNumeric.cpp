@@ -15,7 +15,7 @@
 
 
 CGUIDialogNumeric::CGUIDialogNumeric(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_DIALOG_NUMERIC, "DialogNumeric.xml")
 {
   m_bConfirmed = false;
   m_bCanceled = false;
@@ -229,10 +229,7 @@ void CGUIDialogNumeric::Render()
     CGUIFont *pFont = g_fontManager.GetFont(pLabel->GetFontName());
     DWORD palette[2];
     palette[0] = pLabel->GetDisabledColor();
-    if (m_dirty)
-      palette[1] = pLabel->GetTextColor();
-    else
-      palette[1] = (pLabel->GetTextColor() >> 1) + (pLabel->GetDisabledColor() >> 1);
+    palette[1] = pLabel->GetTextColor();
     float fPosX = (float)pLabel->GetXPosition();
     if (pLabel->m_dwTextAlign & XBFONT_CENTER_X)
       fPosX += (pLabel->GetWidth() - pFont->GetTextWidth(strLabel.c_str())) * 0.5f;
@@ -369,7 +366,7 @@ void CGUIDialogNumeric::OnNumber(unsigned int num)
     }
     else
       m_ip[m_block] = num;
-    if (m_ip[m_block] > 25 || (m_block>0 && m_block<3 && num==0))
+    if (m_ip[m_block] > 25 || m_ip[m_block] == 0 && num == 0)
     {
       m_block++;
       if (m_block > 3) m_block = 0;

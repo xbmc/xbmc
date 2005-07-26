@@ -18,7 +18,6 @@ protected:
   void DoRename(int iItem);
   void DoDelete(int iItem);
   void DoOverwrite(int iItem);
-  bool GetKeyboard(CStdString& strInput);
   int GetSelectedItem();
   void LoadList();
   void SetLastLoaded();
