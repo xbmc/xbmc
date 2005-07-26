@@ -705,7 +705,7 @@
   <string><id>12321</id><value>ok</value></string>
   <string><id>12322</id><value>*</value></string>
   <string><id>12324</id><value>XBMC Master Lock</value></string>
-  <string><id>12325</id><value>Ordner gesperrt</value></string>
+  <string><id>12325</id><value>Gesperrt. Bitte Code eingeben...</value></string>
   <string><id>12326</id><value>Passwort eingeben</value></string>
   <string><id>12327</id><value>Mastercode eingeben</value></string>
   <string><id>12328</id><value>Entsperrcode eingeben</value></string> 
@@ -949,6 +949,7 @@
   <string><id>14068</id><value>Bitte eine IP Adresse eingeben</value></string>
   <string><id>14069</id><value>Sollen die Einstellungen übernommen werden?</value></string>
   <string><id>14070</id><value>Übernehmen</value></string>
+ <string><id>14071</id><value>Löschen von Dateien erlauben</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Keine Verbindung zu Kai XLink, möchtest du versuchen</value></string>
@@ -1091,4 +1092,8 @@
   <string><id>16001</id><value>Audio Hardware konfigurieren...</value></string>
   <string><id>16002</id><value>CDDB anfragen</value></string>
   <string><id>16003</id><value>Player</value></string>
+  
+  <string><id>16004</id><value>Interlaced Videos synchonisieren</value></string>
+  <string><id>16005</id><value>- Felder invertieren</value></string>
+  
 </strings>
