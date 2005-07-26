@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-07-2005 fixed: songs where submitted to audioscrobbler when seeking anolog to 50% or greater of a song
  - 26-07-2005 added: base class for database classes
  - 26-07-2005 changed: database classes, RemoveIllegalChars is replaced by FormatSQL, use this to format sql statements, it will 
                        take care of chars sqlite doesn't like
