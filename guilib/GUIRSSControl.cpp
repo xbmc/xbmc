@@ -38,6 +38,9 @@ CGUIRSSControl::~CGUIRSSControl(void)
   if (m_pbColors) //Deallocate here since there isn't any better place
     delete[] m_pbColors;
 
+  if (m_pReader)
+    m_pReader->SetObserver(NULL);
+
   m_pReader = NULL;
   m_pwzText = NULL;
   m_pbColors = NULL;
