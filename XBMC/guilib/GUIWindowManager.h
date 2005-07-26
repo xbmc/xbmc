@@ -28,6 +28,7 @@ public:
   void AddCustomWindow(CGUIWindow* pWindow);
   void AddModeless(CGUIWindow* pWindow);
   void Remove(DWORD dwID);
+  void Delete(DWORD dwID);
   void RemoveModeless(DWORD dwID);
   void ActivateWindow(int iWindowID, const CStdString& strPath = "");
   void PreviousWindow();

@@ -5,7 +5,7 @@
 #define ID_POINTER 10
 
 CGUIWindowPointer::CGUIWindowPointer(void)
-    : CGUIWindow(0)
+    : CGUIWindow(105, "Pointer.xml")
 {
   m_dwPointer = 0;
 }

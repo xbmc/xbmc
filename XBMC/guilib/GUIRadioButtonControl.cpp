@@ -98,6 +98,18 @@ void CGUIRadioButtonControl::SetPosition(int iPosX, int iPosY)
   m_imgRadioNoFocus.SetPosition(iRadioPosX, iRadioPosY);
 }
 
+void CGUIRadioButtonControl::SetWidth(int iWidth)
+{
+  CGUIButtonControl::SetWidth(iWidth);
+  SetPosition(GetXPosition(), GetYPosition());
+}
+
+void CGUIRadioButtonControl::SetHeight(int iHeight)
+{
+  CGUIButtonControl::SetHeight(iHeight);
+  SetPosition(GetXPosition(), GetYPosition());
+}
+
 CStdString CGUIRadioButtonControl::GetDescription() const
 {
   CStdString strLabel = CGUIButtonControl::GetDescription();

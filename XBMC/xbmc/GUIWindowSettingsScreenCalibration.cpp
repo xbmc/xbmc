@@ -18,7 +18,7 @@
 #define CONTROL_NONE   0
 
 CGUIWindowSettingsScreenCalibration::CGUIWindowSettingsScreenCalibration(void)
-    : CGUIWindow(0)
+    : CGUIWindow(WINDOW_MOVIE_CALIBRATION, "SettingsScreenCalibration.xml")
 {
   m_needsScaling = false;         // we handle all the scaling
 }
@@ -46,37 +46,45 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
     break;
 
   case ACTION_CALIBRATE_RESET:
-    g_graphicsContext.ResetScreenParameters(m_Res[m_iCurRes]);
-    ResetControls();
-    g_application.m_guiWindowOSD.SetPosition(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
-    return true;
+    {
+      g_graphicsContext.ResetScreenParameters(m_Res[m_iCurRes]);
+      ResetControls();
+      CGUIWindow *pOSD = m_gWindowManager.GetWindow(WINDOW_OSD);
+      if (pOSD) pOSD->SetPosition(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
+      return true;
+    }
     break;
 
   case ACTION_CHANGE_RESOLUTION:
     // choose the next resolution in our list
-    m_iCurRes++;
-    if (m_iCurRes == m_Res.size())
-      m_iCurRes = 0;
-    Sleep(1000);
-    g_graphicsContext.SetGUIResolution(m_Res[m_iCurRes]);
-    ResetControls();
-    g_application.m_guiWindowOSD.SetPosition(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
-    return true;
+    {
+      m_iCurRes++;
+      if (m_iCurRes == m_Res.size())
+        m_iCurRes = 0;
+      Sleep(1000);
+      g_graphicsContext.SetGUIResolution(m_Res[m_iCurRes]);
+      ResetControls();
+      CGUIWindow *pOSD = m_gWindowManager.GetWindow(WINDOW_OSD);
+      if (pOSD) pOSD->SetPosition(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
+      return true;
+    }
     break;
   }
   return CGUIWindow::OnAction(action); // base class to handle basic movement etc.
 }
 
-void CGUIWindowSettingsScreenCalibration::AllocResources()
+void CGUIWindowSettingsScreenCalibration::AllocResources(bool forceLoad)
 {
-  CGUIWindow::AllocResources();
-  g_application.m_guiWindowOSD.AllocResources();
+  CGUIWindow::AllocResources(forceLoad);
+  CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_OSD);
+  if (pWindow) pWindow->AllocResources(true);
 }
 
-void CGUIWindowSettingsScreenCalibration::FreeResources()
+void CGUIWindowSettingsScreenCalibration::FreeResources(bool forceUnload)
 {
-  g_application.m_guiWindowOSD.FreeResources();
-  CGUIWindow::FreeResources();
+  CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_OSD);
+  if (pWindow) pWindow->FreeResources(true);
+  CGUIWindow::FreeResources(forceUnload);
 }
 
 
@@ -87,7 +95,6 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0, NULL);
-      g_application.m_guiWindowOSD.OnMessage(msg); // Send an init msg to the OSD
       g_settings.Save();
       g_graphicsContext.SetCalibrating(false);
       g_graphicsContext.SetOverlay(true);
@@ -129,9 +136,6 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       // Setup the first control
       m_iControl = CONTROL_TOP_LEFT;
       ResetControls();
-      // Send an init message to the OSD
-      CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, 0, 0, NULL);
-      g_application.m_guiWindowOSD.OnMessage(msg);
       return true;
     }
     break;
@@ -196,7 +200,6 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
   CGUIMoverControl *pControl = (CGUIMoverControl*)GetControl(CONTROL_TOP_LEFT);
   if (pControl)
   {
-    pControl->EnableCalibration(false);
     pControl->SetLimits( -g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth / 4,
                          -g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight / 4,
                          g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth / 4,
@@ -209,7 +212,6 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
   pControl = (CGUIMoverControl*)GetControl(CONTROL_BOTTOM_RIGHT);
   if (pControl)
   {
-    pControl->EnableCalibration(false);
     pControl->SetLimits(g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth*3 / 4,
                         g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*3 / 4,
                         g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth*5 / 4,
@@ -223,7 +225,6 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
   pControl = (CGUIMoverControl*)GetControl(CONTROL_SUBTITLES);
   if (pControl)
   {
-    pControl->EnableCalibration(false);
     pControl->SetLimits(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*3 / 4,
                         0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*5 / 4);
     pControl->SetPosition((g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - pControl->GetWidth()) / 2,
@@ -233,7 +234,6 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
   pControl = (CGUIMoverControl*)GetControl(CONTROL_OSD);
   if (pControl)
   {
-    pControl->EnableCalibration(false);
     pControl->SetLimits(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight / 2,
                         0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*5 / 4);
     pControl->SetPosition((g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - pControl->GetWidth()) / 2,
@@ -245,7 +245,6 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
   CGUIResizeControl *pResize = (CGUIResizeControl*)GetControl(CONTROL_PIXEL_RATIO);
   if (pResize)
   {
-    pResize->EnableCalibration(false);
     pResize->SetLimits(g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth / 4, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight / 2,
                        g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth*3 / 4, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight / 2);
     pResize->SetHeight(g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight / 2);
@@ -259,7 +258,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
 
 void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 {
-  CStdString strMode, strStatus;
+  CStdStringW strStatus;
   if (iControl == CONTROL_PIXEL_RATIO)
   {
     CGUIResizeControl *pControl = (CGUIResizeControl*)GetControl(CONTROL_PIXEL_RATIO);
@@ -271,8 +270,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
       // recenter our control...
       pControl->SetPosition((g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - pControl->GetWidth()) / 2,
                             (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight - pControl->GetHeight()) / 2);
-      CUtil::Unicode2Ansi(g_localizeStrings.Get(275).c_str(), strMode);
-      strStatus.Format("%s (%5.3f)", strMode, g_settings.m_ResInfo[m_Res[m_iCurRes]].fPixelRatio);
+      strStatus.Format(L"%s (%5.3f)", g_localizeStrings.Get(275).c_str(), g_settings.m_ResInfo[m_Res[m_iCurRes]].fPixelRatio);
       SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 278);
     }
   }
@@ -287,8 +285,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
         {
           g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.left = pControl->GetXLocation();
           g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top = pControl->GetYLocation();
-          CUtil::Unicode2Ansi(g_localizeStrings.Get(272).c_str(), strMode);
-          strStatus.Format("%s (%i,%i)", strMode, pControl->GetXLocation(), pControl->GetYLocation());
+          strStatus.Format(L"%s (%i,%i)", g_localizeStrings.Get(272).c_str(), pControl->GetXLocation(), pControl->GetYLocation());
           SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 276);
         }
         break;
@@ -299,9 +296,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
           g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.bottom = pControl->GetYLocation();
           int iXOff1 = g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - pControl->GetXLocation();
           int iYOff1 = g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight - pControl->GetYLocation();
-          CStdString strMode;
-          CUtil::Unicode2Ansi(g_localizeStrings.Get(273).c_str(), strMode);
-          strStatus.Format("%s (%i,%i)", strMode, iXOff1, iYOff1);
+          strStatus.Format(L"%s (%i,%i)", g_localizeStrings.Get(273).c_str(), iXOff1, iYOff1);
           SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 276);
         }
         break;
@@ -309,8 +304,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
       case CONTROL_SUBTITLES:
         {
           g_settings.m_ResInfo[m_Res[m_iCurRes]].iSubtitles = pControl->GetYLocation();
-          CUtil::Unicode2Ansi(g_localizeStrings.Get(274).c_str(), strMode);
-          strStatus.Format("%s (%i)", strMode, pControl->GetYLocation());
+          strStatus.Format(L"%s (%i)", g_localizeStrings.Get(274).c_str(), pControl->GetYLocation());
           SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 277);
         }
         break;
@@ -318,18 +312,18 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
       case CONTROL_OSD:
         {
           g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset = pControl->GetYLocation() - g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight;
-          CUtil::Unicode2Ansi(g_localizeStrings.Get(479).c_str(), strMode);
-          strStatus.Format("%s (%i, Offset=%i)", strMode, pControl->GetYLocation(), g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
+          strStatus.Format(L"%s (%i, Offset=%i)", g_localizeStrings.Get(479).c_str(), pControl->GetYLocation(), g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
           SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 468);
-          g_application.m_guiWindowOSD.SetPosition(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
+          CGUIWindow *pOSD = m_gWindowManager.GetWindow(WINDOW_OSD);
+          if (pOSD) pOSD->SetPosition(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
         }
         break;
       }
     }
   }
   // set the label control correctly
-  CStdString strText;
-  strText.Format("%s | %s", g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode, strStatus.c_str());
+  CStdStringW strText;
+  strText.Format(L"%S | %s", g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode, strStatus.c_str());
   SET_CONTROL_LABEL(CONTROL_LABEL_ROW1, strText);
 }
 
@@ -357,6 +351,7 @@ void CGUIWindowSettingsScreenCalibration::Render()
   // render the OSD
   if (m_iControl == CONTROL_OSD)
   {
-    g_application.m_guiWindowOSD.Render();
+    CGUIWindow *pOSD = m_gWindowManager.GetWindow(WINDOW_OSD);
+    if (pOSD) pOSD->Render();
   }
 }

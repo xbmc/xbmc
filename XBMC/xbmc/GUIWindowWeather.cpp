@@ -45,7 +45,7 @@ FIXME'S
 */
 
 CGUIWindowWeather::CGUIWindowWeather(void)
-    : CGUIWindow(0)
+    : CGUIWindow(WINDOW_WEATHER, "MyWeather.xml")
 {
   m_iCurWeather = 0;
 #ifdef _USE_ZIP_

@@ -17,7 +17,7 @@
 #define SPACE_BETWEEN_BUTTONS 2
 
 CGUIDialogContextMenu::CGUIDialogContextMenu(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_DIALOG_CONTEXT_MENU, "DialogContextMenu.xml")
 {
   m_iClickedButton = -1;
   m_iNumButtons = 0;
@@ -168,8 +168,8 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
   if (pMenu)
   {
     bool bMyProgramsMenu = ("myprograms" == strType);
-    // clean any buttons not needed
-    pMenu->ClearButtons();
+    // load our menu
+    pMenu->Initialize();
     // add the needed buttons
     pMenu->AddButton(118); // 1: Rename
     pMenu->AddButton(748); // 2: Edit Path
@@ -290,8 +290,8 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
           CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
           if (pMenu)
           {
-            // clean any buttons not needed
-            pMenu->ClearButtons();
+            // load our menu
+            pMenu->Initialize();
             // add the needed buttons
             pMenu->AddButton(12337); // 1: Numeric Password
             pMenu->AddButton(12338); // 2: XBOX gamepad button combo
@@ -427,4 +427,9 @@ bool CGUIDialogContextMenu::CheckMasterCode(int iLockMode)
     // we don't need to prompt for mastercode
     return true;
   }
+}
+
+void CGUIDialogContextMenu::OnWindowUnload()
+{
+  ClearButtons();
 }

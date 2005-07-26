@@ -242,38 +242,11 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth, DWOR
   if (!m_pFont)
     return ;
 
-  static int scroll_pos = 0;
-  static int iScrollX = 0;
   static int iLastItem = -1;
-  static int iFrames = 0;
-  static int iStartFrame = 0;
 
   float fTextHeight = 0;
   float fTextWidth = 0;
   m_pFont->GetTextExtent(wszText, &fTextWidth, &fTextHeight);
-
-  float fPosCX = fPosX;
-  float fPosCY = fPosY;
-  g_graphicsContext.Correct(fPosCX, fPosCY);
-
-  if (fPosCX < 0) fPosCX = 0.0f;
-  if (fPosCY < 0) fPosCY = 0.0f;
-  if (fPosCY > g_graphicsContext.GetHeight()) fPosCY = (float)g_graphicsContext.GetHeight();
-  float fHeight = 60.0f;
-  if (fHeight + fPosCY >= g_graphicsContext.GetHeight() )
-    fHeight = g_graphicsContext.GetHeight() - fPosCY - 1;
-  if (fHeight <= 0) return ;
-
-  float fwidth = fMaxWidth - 5.0f;
-
-  D3DVIEWPORT8 newviewport, oldviewport;
-  g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
-  newviewport.X = (DWORD)fPosCX;
-  newviewport.Y = (DWORD)fPosCY;
-  newviewport.Width = (DWORD)(fwidth);
-  newviewport.Height = (DWORD)(fHeight);
-  newviewport.MinZ = 0.0f;
-  newviewport.MaxZ = 1.0f;
 
   if (!bScroll)
   {
@@ -285,76 +258,22 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth, DWOR
     if (fTextWidth <= fMaxWidth)
     { // don't need to scroll
       m_pFont->DrawTextWidth(fPosX, fPosY, dwTextColor, wszText, fMaxWidth);
-      iLastItem = -1; // reset scroller
+      m_scrollInfo.Reset();
       return ;
     }
     // scroll
+    CStdStringW scrollString = wszText;
+    scrollString += L" ";
+    scrollString += m_strSuffix;
     int iItem = m_iCursorY + m_iOffset;
-    WCHAR wszOrgText[1024];
-    wcscpy(wszOrgText, wszText);
-    wcscat(wszOrgText, L" ");
-    wcscat(wszOrgText, m_strSuffix.c_str());
-    m_pFont->GetTextExtent(wszOrgText, &fTextWidth, &fTextHeight);
-
-    if (fTextWidth > fMaxWidth)
+    m_pFont->End(); // need to deinit the font before setting viewport
+    if (iLastItem != iItem)
     {
-      m_pFont->End(); // need to deinit the font before setting viewport
-      g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
-      //fMaxWidth+=50.0f;
-      WCHAR szText[1024];
-      if (iLastItem != iItem)
-      {
-        scroll_pos = 0;
-        iLastItem = iItem;
-        iStartFrame = 0;
-        iScrollX = 1;
-      }
-      if (iStartFrame > 25)
-      {
-        WCHAR wTmp[3];
-        if (scroll_pos >= (int)wcslen(wszOrgText) )
-          wTmp[0] = L' ';
-        else
-          wTmp[0] = wszOrgText[scroll_pos];
-        wTmp[1] = 0;
-        float fHeight = 0;
-        float fWidth = 0;
-        m_pFont->GetTextExtent(wTmp, &fWidth, &fHeight);
-        if (iScrollX >= fWidth)
-        {
-          ++scroll_pos;
-          if (scroll_pos > (int)wcslen(wszOrgText))
-            scroll_pos = 0;
-          iFrames = 0;
-          iScrollX = 1;
-        }
-        else iScrollX++;
-
-        int ipos = 0;
-        for (int i = 0; i < (int)wcslen(wszOrgText); i++)
-        {
-          if (i + scroll_pos < (int)wcslen(wszOrgText))
-            szText[i] = wszOrgText[i + scroll_pos];
-          else
-          {
-            if (ipos == 0) szText[i] = L' ';
-            else szText[i] = wszOrgText[ipos - 1];
-            ipos++;
-          }
-          szText[i + 1] = 0;
-        }
-        if (fPosY >= 0.0)
-          m_pFont->DrawTextWidth(fPosX - iScrollX, fPosY, dwTextColor, szText, fMaxWidth);
-      }
-      else
-      {
-        iStartFrame++;
-        if (fPosY >= 0.0)
-          m_pFont->DrawTextWidth(fPosX, fPosY, dwTextColor, wszText, fMaxWidth);
-      }
-      g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
-      m_pFont->Begin(); // resume fontbatching
+      m_scrollInfo.Reset();
+      iLastItem = iItem;
     }
+    m_pFont->DrawScrollingText(fPosX, fPosY, &dwTextColor, scrollString, fMaxWidth, m_scrollInfo);
+    m_pFont->Begin(); // resume fontbatching
   }
 }
 
@@ -525,31 +444,6 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
           m_iCursorY = m_iItemsPerPage - 1;
           m_iOffset = iItem - m_iCursorY;
         }
-        /*    int iPage=1;
-            m_iOffset=0;
-            m_iCursorY=message.GetParam1();
-            while (m_iCursorY >= m_iItemsPerPage)
-            {
-             iPage++;
-             m_iOffset+=m_iItemsPerPage;
-             m_iCursorY-=m_iItemsPerPage;
-            }
-            // moving to the last item, make sure the whole page is filled
-            if (message.GetParam1() == (int)m_vecItems.size()-1 && (int)m_vecItems.size()-1>m_iItemsPerPage )
-            {
-             m_iOffset=m_vecItems.size()-m_iItemsPerPage;
-             m_iCursorY=m_iItemsPerPage-1;
-            }*/ 
-        //    m_upDown.SetValue(iPage);
-        /*
-            m_iOffset = message.GetParam1();
-            m_iCursorY = 0;
-            // moving to the last item, make sure the whole page is filled
-            if (message.GetParam1() == (int)m_vecItems.size()-1 && (int)m_vecItems.size()-1>m_iItemsPerPage )
-            {
-             m_iOffset=m_vecItems.size()-m_iItemsPerPage;
-             m_iCursorY=m_iItemsPerPage-1;
-            }*/
       }
     }
   }

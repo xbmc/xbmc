@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-07-2005 changed: Skin files are loaded on demand rather than on boot.
+ - 26-07-2005 changed: Initial support for full GUI calibration.
  - 26-07-2005 updated: German language file
  - 26-07-2005 updated: Italian language file (Thnx to kotix)
  - 26-07-2005 updated: Chinese (Traditional) language file (Thnx to omenpica)
@@ -33,6 +35,7 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
  - 22-07-2005 updated: Norwegian language file (Thnx to vnm)
  - 22-07-2005 updated: Chinese (Simple) language file (Thnx to hibaby)
  - 21-07-2005 added: made HTTPAPI callable from Python scripts
+ - 21-07-2005 fixed: Seek related crash in paplayer.
  - 21-07-2005 added: warning dialog before tdata deletion. NEW KEY COMBINATION, INSTEAD OF START+BACK USE LTHUMBCLICK+RTHUMBCLICK.
  - 21-07-2005 fixed: dvd tray states could become wrong (empty when disc was present) with some pc dvdroms.
  - 20-07-2005 added: System.KaiConnected conditional visibility.

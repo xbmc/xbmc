@@ -891,6 +891,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="GUI Dialog"
 				Filter="">
 				<File
+					RelativePath=".\xbmc\GUIDialogBoxBase.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogBoxBase.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogButtonMenu.cpp">
 				</File>
 				<File
@@ -1016,6 +1022,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowWeather.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\SlideShowPicture.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\SlideShowPicture.h">
 				</File>
 			</Filter>
 		</Filter>

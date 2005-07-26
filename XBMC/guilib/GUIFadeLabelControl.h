@@ -24,7 +24,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetAlpha(DWORD dwAlpha);
   DWORD GetTextColor() const { return m_dwTextColor;};
-  DWORD GetAlignment() const { return m_dwdwTextAlign;};
+  DWORD GetAlignment() const { return m_dwTextAlign;};
   const char * GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
 
   void SetInfo(const vector<int> &vecInfo);
@@ -33,19 +33,15 @@ public:
   const vector<wstring> &GetLabel() const { return m_vecLabels; };
 
 protected:
-  bool RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll );
+  void RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll );
   CGUIFont* m_pFont;
   vector<wstring> m_vecLabels;
   DWORD m_dwTextColor;
-  DWORD m_dwdwTextAlign;
+  DWORD m_dwTextAlign;
   int m_iCurrentLabel;
-  int scroll_pos;
-  int iScrollX;
-  int iLastItem;
-  int iFrames;
-  int iStartFrame;
   bool m_bFadeIn;
   int m_iCurrentFrame;
   vector<int> m_vecInfo;
+  CScrollInfo m_scrollInfo;
 };
 #endif

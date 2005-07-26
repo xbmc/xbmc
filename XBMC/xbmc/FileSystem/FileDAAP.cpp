@@ -166,7 +166,7 @@ bool CFileDAAP::Open(const CURL& url, bool bBinary)
   g_application.m_DAAPSong = m_song.data;
   */
 
-  m_bStreaming = StartAudioStream();
+  m_bStreaming = false;//StartAudioStream();
   m_bOpened = true;
   return true;
 }
@@ -205,7 +205,7 @@ bool CFileDAAP::StartAudioStream()
   g_application.m_DAAPSong = m_song.data;
   m_bOpened = true;
   m_bStreaming = true;
-  return true;
+  return m_song.size > 0;
 }
 
 bool CFileDAAP::Exists(const CURL& url)
@@ -335,6 +335,8 @@ __int64 CFileDAAP::Seek(__int64 iFilePosition, int iWhence)
 __int64 CFileDAAP::GetLength()
 {
   if (!m_bOpened) return 0;
+  if (!m_bStreaming)
+    m_bStreaming = StartAudioStream();
   return m_song.size;
 }
 
@@ -342,6 +344,8 @@ __int64 CFileDAAP::GetLength()
 __int64 CFileDAAP::GetPosition()
 {
   if (!m_bOpened) return 0;
+  if (!m_bStreaming)
+    m_bStreaming = StartAudioStream();
   return m_filePos;
 }
 

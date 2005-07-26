@@ -209,14 +209,8 @@ bool CButtonSettingControl::IsValidIPAddress(const CStdString &strIP)
   }
 
   if (!legalFormat)
-  {
-    CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-    dlg->SetHeading( 257 );
-    dlg->SetLine( 0, 724 );
-    dlg->SetLine( 1, 725 );
-    dlg->SetLine( 2, L"" );
-    dlg->DoModal( m_gWindowManager.GetActiveWindow() );
-  }
+    CGUIDialogOK::ShowAndGetInput(257, 724, 725, 0);
+
   return legalFormat;
 }
 

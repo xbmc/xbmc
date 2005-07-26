@@ -60,6 +60,18 @@ void CGUISpinControlEx::SetPosition(int iPosX, int iPosY)
   CGUISpinControl::SetPosition(iSpinPosX, iSpinPosY);
 }
 
+void CGUISpinControlEx::SetWidth(int iWidth)
+{
+  m_buttonControl.SetWidth(iWidth);
+  SetPosition(m_buttonControl.GetXPosition(), m_buttonControl.GetYPosition());
+}
+
+void CGUISpinControlEx::SetHeight(int iHeight)
+{
+  m_buttonControl.SetHeight(iHeight);
+  SetPosition(m_buttonControl.GetXPosition(), m_buttonControl.GetYPosition());
+}
+
 void CGUISpinControlEx::SetVisible(bool bVisible)
 {
   m_buttonControl.SetVisible(bVisible);

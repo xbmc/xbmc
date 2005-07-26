@@ -7,7 +7,7 @@
 #define CONTROL_CREDITS 12
 
 CGUIWindowSettings::CGUIWindowSettings(void)
-    : CGUIWindow(0)
+    : CGUIWindow(WINDOW_SETTINGS_MENU, "Settings.xml")
 {
   m_iLastControl = -1;
 }

@@ -6,7 +6,7 @@
 #include "utils/GUIInfoManager.h"
 #include "ButtonTranslator.h"
 #include "util.h"
-
+#include "GUIDialogVisualisationPresetList.h"
 
 #define TRANSISTION_COUNT   50  // 1 second
 #define TRANSISTION_LENGTH 200  // 4 seconds
@@ -17,7 +17,7 @@
 #define CONTROL_LOCKED_IMAGE  4
 
 CGUIWindowVisualisation::CGUIWindowVisualisation(void)
-    : CGUIWindow(0)
+    : CGUIWindow(WINDOW_VISUALISATION, "MusicVisualisation.xml")
 {
   m_dwInitTimer = 0;
   m_dwLockedTimer = 0;
@@ -140,6 +140,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
         return true;
       }
 
+      CGUIWindow::OnMessage(message);
       m_tag = g_infoManager.GetCurrentSongTag();
       if (g_stSettings.m_bMyMusicSongThumbInVis)
       { // always on
@@ -157,7 +158,6 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       // hide or show the preset button(s)
       FadeControls(CONTROL_PRESET_LABEL, m_bShowPreset, 0);
       FadeControls(CONTROL_LOCKED_IMAGE, m_bShowPreset, 0);
-      CGUIWindow::OnMessage(message);
       return true;
     }
   }
@@ -216,13 +216,6 @@ void CGUIWindowVisualisation::Render()
   CGUIWindow::Render();
 }
 
-void CGUIWindowVisualisation::FreeResources()
-{
-  // Save changed settings from music OSD
-  g_settings.Save();
-  CGUIWindow::FreeResources();
-}
-
 void CGUIWindowVisualisation::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
@@ -252,3 +245,28 @@ void CGUIWindowVisualisation::FadeControls(DWORD controlID, bool fadeIn, DWORD l
   }
 }
 
+void CGUIWindowVisualisation::AllocResources(bool forceLoad)
+{
+  CGUIWindow::AllocResources(forceLoad);
+  CGUIWindow *pWindow;
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
+  if (pWindow) pWindow->AllocResources(true);
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_SETTINGS);
+  if (pWindow) pWindow->AllocResources(true);
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
+  if (pWindow) pWindow->AllocResources(true);
+}
+
+void CGUIWindowVisualisation::FreeResources(bool forceUnload)
+{
+  // Save changed settings from music OSD
+  g_settings.Save();
+  CGUIWindow *pWindow;
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
+  if (pWindow) pWindow->FreeResources(true);
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_SETTINGS);
+  if (pWindow) pWindow->FreeResources(true);
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
+  if (pWindow) pWindow->FreeResources(true);
+  CGUIWindow::FreeResources(forceUnload);
+}

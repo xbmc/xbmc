@@ -121,7 +121,16 @@ void CGUIVisualisationControl::LoadVisualisation()
   {
     OutputDebugString("Visualisation::Create()\n");
     g_graphicsContext.CaptureStateBlock();
-    m_pVisualisation->Create(GetXPosition(), GetYPosition(), GetWidth(), GetHeight());
+    float x = g_graphicsContext.ScaleFinalXCoord((float)GetXPosition());
+    float y = g_graphicsContext.ScaleFinalYCoord((float)GetYPosition());
+    float w = g_graphicsContext.ScaleFinalXCoord((float)GetXPosition() + GetWidth()) - x;
+    float h = g_graphicsContext.ScaleFinalYCoord((float)GetYPosition() + GetHeight()) - y;
+    if (x < 0) x = 0;
+    if (y < 0) y = 0;
+    if (x + w > g_graphicsContext.GetWidth()) w = g_graphicsContext.GetWidth() - x;
+    if (y + h > g_graphicsContext.GetHeight()) h = g_graphicsContext.GetHeight() - y;
+
+    m_pVisualisation->Create((int)(x+0.5f), (int)(y+0.5f), (int)(w+0.5f), (int)(h+0.5f));
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->RegisterAudioCallback(this);
 

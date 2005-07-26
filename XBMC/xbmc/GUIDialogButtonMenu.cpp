@@ -7,7 +7,7 @@
 #define CONTROL_BUTTON_LABEL  3100
 
 CGUIDialogButtonMenu::CGUIDialogButtonMenu(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_DIALOG_BUTTON_MENU, "DialogButtonMenu.xml")
 {
 }
 

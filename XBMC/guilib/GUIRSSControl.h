@@ -39,9 +39,7 @@ protected:
 
   CRssReader* m_pReader;
   WCHAR* m_pwzText;
-  WCHAR* m_pwzBuffer;
   LPBYTE m_pbColors;
-  LPBYTE m_pbBuffer;
 
   CStdString m_strRSSTags;
   D3DCOLOR m_dwChannelColor;
@@ -49,15 +47,9 @@ protected:
   D3DCOLOR m_dwTextColor;
   CGUIFont* m_pFont;
 
-  int m_iCharIndex;
-  int m_iStartFrame;
-  int m_iScrollX;
   int m_iLeadingSpaces;
-  int m_iTextLenght;
-  float m_fTextHeight;
-  float m_fTextWidth;
-  std::vector<SYSTEMTIME*> m_vecTimeSnapShot;
   std::vector<wstring> m_vecUrls;
   std::vector<int> m_vecIntervals;
+  CScrollInfo m_scrollInfo;
 };
 #endif

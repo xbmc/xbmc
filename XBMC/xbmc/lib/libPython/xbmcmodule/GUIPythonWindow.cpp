@@ -8,10 +8,11 @@
 using namespace PYXBMC;
 
 CGUIPythonWindow::CGUIPythonWindow(DWORD dwId)
-:CGUIWindow(dwId)
+:CGUIWindow(dwId, "")
 {
 	pCallbackWindow = NULL;
 	m_actionEvent = CreateEvent(NULL, true, false, "pythonActionEvent");
+  m_loadOnDemand = false;
 }
 
 CGUIPythonWindow::~CGUIPythonWindow(void)

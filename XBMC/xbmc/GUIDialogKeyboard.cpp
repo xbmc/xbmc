@@ -24,7 +24,8 @@ static char symbol_map[37] = "!@#$%^&*()[]{}-_=+;:\'\",.<>/?\\|`~    ";
 
 #define CTL_BUTTON_BACKSPACE  8
 
-CGUIDialogKeyboard::CGUIDialogKeyboard(void) : CGUIDialog(0)
+CGUIDialogKeyboard::CGUIDialogKeyboard(void)
+: CGUIDialog(WINDOW_DIALOG_KEYBOARD, "DialogKeyboard.xml")
 {
   m_bDirty = false;
   m_bShift = false;
@@ -37,6 +38,8 @@ CGUIDialogKeyboard::~CGUIDialogKeyboard(void)
 
 void CGUIDialogKeyboard::OnInitWindow()
 {
+  CGUIDialog::OnInitWindow();
+
   // set alphabetic (capitals)
   UpdateButtons();
 
@@ -405,6 +408,7 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStri
     return false;
 
   // setup keyboard
+  pKeyboard->Initialize();
   pKeyboard->CenterWindow();
   pKeyboard->SetHeading(strHeading);
   pKeyboard->SetText(aTextString);

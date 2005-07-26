@@ -14,7 +14,7 @@
 #define POPUP_VOLUME_LEVEL_TEXT 402
 
 CGUIDialogVolumeBar::CGUIDialogVolumeBar(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_DIALOG_VOLUME_BAR, "DialogVolumeBar.xml")
 {
 }
 

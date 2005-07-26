@@ -14,11 +14,12 @@ class CGUIDialog :
       public CGUIWindow
 {
 public:
-  CGUIDialog(DWORD dwID);
+  CGUIDialog(DWORD dwID, const CStdString &xmlFile);
   virtual ~CGUIDialog(void);
 
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
+
   void DoModal(DWORD dwParentId); // modal
   void Show(DWORD dwParentId); // modeless
   virtual void Close();

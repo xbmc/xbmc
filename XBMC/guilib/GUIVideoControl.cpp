@@ -14,10 +14,6 @@ CGUIVideoControl::~CGUIVideoControl(void)
 
 void CGUIVideoControl::Render()
 {
-  RECT rc;
-  float x = (float)m_iPosX;
-  float y = (float)m_iPosY;
-
   if (!UpdateVisibility()) return ;
 
   if (!g_application.IsPlayingVideo()) return;
@@ -25,10 +21,9 @@ void CGUIVideoControl::Render()
   if (!g_application.m_pPlayer->IsPaused())
     g_application.ResetScreenSaver();
 
-  g_graphicsContext.Correct(x, y);
-
-  rc.left = (int)x;
-  rc.top = (int)y;
+  RECT rc;
+  rc.left = m_iPosX;
+  rc.top = m_iPosY;
   rc.right = rc.left + m_dwWidth;
   rc.bottom = rc.top + m_dwHeight;
   g_graphicsContext.SetViewWindow(rc);

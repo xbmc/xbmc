@@ -1,8 +1,8 @@
 #pragma once
-#include "GUIDialog.h"
+#include "GUIDialogBoxBase.h"
 
 class CGUIDialogProgress :
-      public CGUIDialog
+      public CGUIDialogBoxBase
 {
 public:
   CGUIDialogProgress(void);
@@ -13,13 +13,6 @@ public:
   virtual bool OnAction(const CAction &action);
   void Progress();
   void ProgressKeys();
-  void SetLine(int iLine, const wstring& strLine);
-  void SetLine(int iLine, const string& strLine);
-  void SetLine(int iLine, int iString);
-  void SetHeading(const wstring& strLine);
-  void SetHeading(const string& strLine);
-  void SetHeading(int iString);
-  virtual void Close();
   bool IsCanceled() const { return m_bCanceled; }
   void SetPercentage(int iPercentage);
   void ShowProgressBar(bool bOnOff);

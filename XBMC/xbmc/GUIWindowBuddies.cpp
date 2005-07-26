@@ -120,7 +120,7 @@ bool CGUIWindowBuddies::SortFriends(CGUIItem* pStart, CGUIItem* pEnd)
 }
 
 CGUIWindowBuddies::CGUIWindowBuddies(void)
-    : CGUIWindow(0)
+    : CGUIWindow(WINDOW_BUDDIES, "MyBuddies.xml")
 {
   m_pKaiClient = NULL;
   m_pConsole = NULL;
@@ -152,6 +152,7 @@ CGUIWindowBuddies::CGUIWindowBuddies(void)
   ON_CLICK_MESSAGE(CONTROL_KAI_TAB_CHAT, CGUIWindowBuddies, OnClickTabChat);
 
   ON_SELECTED_MESSAGE(CONTROL_LISTEX, CGUIWindowBuddies, OnSelectListItem);
+  window_state = State::Uninitialized;
 }
 
 CGUIWindowBuddies::~CGUIWindowBuddies(void)
@@ -184,6 +185,10 @@ void CGUIWindowBuddies::OnWindowUnload()
     pItem->FreeResources();
   }
   m_games.Release();
+
+  // unbind our opponent image + console control
+  m_pOpponentImage = NULL;
+  m_pConsole = NULL;
 
   CGUIWindow::OnWindowUnload();
 }
@@ -278,14 +283,7 @@ void CGUIWindowBuddies::OnInitWindow()
     m_bContactNotifications = FALSE;
     CONTROL_DISABLE(CONTROL_BTNMODE);
 
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    pDialog->SetHeading(15000);
-    pDialog->SetLine(0, 15001);
-    pDialog->SetLine(1, 15002);
-    pDialog->SetLine(2, L"");
-    pDialog->DoModal(m_gWindowManager.GetActiveWindow());
-
-    if (pDialog->IsConfirmed())
+    if (CGUIDialogYesNo::ShowAndGetInput(15000, 15001, 15002, 0))
     {
       m_pKaiClient->Reattach();
       Sleep(3000);
@@ -318,6 +316,7 @@ void CGUIWindowBuddies::OnInitWindow()
       }
     }
   }
+  CGUIWindow::OnInitWindow();
 }
 
 // Called just as soon as this window has be assigned to the CKaiClient as an observer
@@ -1502,12 +1501,7 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
 {
   if (!m_pKaiClient->IsNetworkReachable())
   {
-    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-    pDialog->SetHeading(15000); // XLink Kai
-    pDialog->SetLine(0, 15037); // XBMC is unable to confirm your network is reachable.
-    pDialog->SetLine(1, 15038); // You may experience difficulties joining or hosting games.
-    pDialog->SetLine(2, L"");
-    pDialog->DoModal(GetID());
+    CGUIDialogOK::ShowAndGetInput(15000, 15037, 15038, 0);
   }
 
   CStdString strGame;

@@ -321,9 +321,6 @@
 				RelativePath=".\GUIListItem.cpp">
 			</File>
 			<File
-				RelativePath=".\GUIMButtonControl.cpp">
-			</File>
-			<File
 				RelativePath=".\GUIMessage.cpp">
 			</File>
 			<File
@@ -349,9 +346,6 @@
 			</File>
 			<File
 				RelativePath=".\GUISliderControl.cpp">
-			</File>
-			<File
-				RelativePath=".\GUISpinButtonControl.cpp">
 			</File>
 			<File
 				RelativePath=".\GUISpinControl.cpp">
@@ -503,9 +497,6 @@
 				RelativePath=".\GUIListItem.h">
 			</File>
 			<File
-				RelativePath=".\GUIMButtonControl.h">
-			</File>
-			<File
 				RelativePath=".\GUIMessage.h">
 			</File>
 			<File
@@ -531,9 +522,6 @@
 			</File>
 			<File
 				RelativePath=".\GUISliderControl.h">
-			</File>
-			<File
-				RelativePath=".\GUISpinButtonControl.h">
 			</File>
 			<File
 				RelativePath=".\GUISpinControl.h">

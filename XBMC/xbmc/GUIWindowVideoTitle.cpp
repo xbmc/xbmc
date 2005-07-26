@@ -150,6 +150,7 @@ struct SSortVideoTitleByTitle
 
 //****************************************************************************************************************************
 CGUIWindowVideoTitle::CGUIWindowVideoTitle()
+: CGUIWindowVideoBase(WINDOW_VIDEO_TITLE, "MyVideoTitle.xml")
 {
   m_Directory.m_strPath = "";
 }

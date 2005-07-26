@@ -7,7 +7,7 @@
 #define CONTROL_PROGRESS_BAR 20
 
 CGUIDialogProgress::CGUIDialogProgress(void)
-    : CGUIDialog(0)
+    : CGUIDialogBoxBase(WINDOW_DIALOG_PROGRESS, "DialogProgress.xml")
 {
   m_bCanceled = false;
 }
@@ -51,53 +51,6 @@ void CGUIDialogProgress::ProgressKeys()
   {
     g_application.FrameMove();
   }
-}
-
-void CGUIDialogProgress::SetHeading(const wstring& strLine)
-{
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
-  msg.SetLabel(strLine);
-  OnMessage(msg);
-}
-
-void CGUIDialogProgress::SetHeading(const string& strLine)
-{
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
-  msg.SetLabel(strLine);
-  OnMessage(msg);
-}
-
-void CGUIDialogProgress::SetLine(int iLine, const wstring& strLine)
-{
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
-  msg.SetLabel(strLine);
-  OnMessage(msg);
-}
-
-void CGUIDialogProgress::SetLine(int iLine, const string& strLine)
-{
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
-  msg.SetLabel(strLine);
-  OnMessage(msg);
-}
-
-void CGUIDialogProgress::SetHeading(int iString)
-{
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
-  msg.SetLabel(iString);
-  OnMessage(msg);
-}
-
-void CGUIDialogProgress::SetLine(int iLine, int iString)
-{
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
-  msg.SetLabel(iString);
-  OnMessage(msg);
-}
-
-void CGUIDialogProgress::Close()
-{
-  CGUIDialog::Close();
 }
 
 bool CGUIDialogProgress::OnMessage(CGUIMessage& message)

@@ -15,7 +15,7 @@
 #define CONTROL_BIGLIST      53
 
 CGUIWindowMusicTop100::CGUIWindowMusicTop100(void)
-    : CGUIWindowMusicBase()
+    : CGUIWindowMusicBase(WINDOW_MUSIC_TOP100, "MyMusicTop100.xml")
 {
 }
 

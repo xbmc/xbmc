@@ -4,9 +4,8 @@
 
 
 CGUIDialogGamepad::CGUIDialogGamepad(void)
-    : CGUIDialog(0)
+    : CGUIDialogBoxBase(WINDOW_DIALOG_GAMEPAD, "DialogGamepad.xml")
 {
-  m_bConfirmed = false;
   m_bCanceled = false;
   CStdStringW m_strUserInput = L"";
   CStdStringW m_strPassword = L"";
@@ -106,38 +105,18 @@ bool CGUIDialogGamepad::OnMessage(CGUIMessage& message)
       m_bCanceled = false;
       m_cHideInputChar = g_localizeStrings.Get(12322).c_str()[0];
       CGUIDialog::OnMessage(message);
-      /*
-         // Borrowing strUserInput for the next if/else statement
-         if (0 < m_iRetries)
-         {
-          CStdStringW strLine;
-          strLine.Format(L"%s %i %s", g_localizeStrings.Get(12342).c_str(), m_iRetries, g_localizeStrings.Get(12343).c_str());
-          SetLine(2, strLine);
-         }
-         else
-         {
-          SetLine(2, L"");
-         }
-         m_strUserInput = "";
-      */ 
       return true;
     }
     break;
 
   case GUI_MSG_CLICKED:
     {
-      int iControl = message.GetSenderId();
-      int iAction = message.GetParam1();
       m_bConfirmed = false;
       m_bCanceled = false;
-      if (1 || ACTION_SELECT_ITEM == iAction)
-      {
-        // nothing to do, there are no selectable controls in this dialog
-      }
     }
     break;
   }
-  return CGUIDialog::OnMessage(message);
+  return CGUIDialogBoxBase::OnMessage(message);
 }
 
 // \brief Show gamepad keypad and replace aTextString with user input.
@@ -284,54 +263,8 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
   return true;
 }
 
-bool CGUIDialogGamepad::IsConfirmed() const
-{
-  return m_bConfirmed;
-}
-
 bool CGUIDialogGamepad::IsCanceled() const
 {
   return m_bCanceled;
 }
 
-void CGUIDialogGamepad::SetHeading(const wstring& strLine)
-{
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
-  msg.SetLabel(strLine);
-  OnMessage(msg);
-}
-
-void CGUIDialogGamepad::SetHeading(const string& strLine)
-{
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
-  msg.SetLabel(strLine);
-  OnMessage(msg);
-}
-
-void CGUIDialogGamepad::SetLine(int iLine, const wstring& strLine)
-{
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
-  msg.SetLabel(strLine);
-  OnMessage(msg);
-}
-
-void CGUIDialogGamepad::SetLine(int iLine, const string& strLine)
-{
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
-  msg.SetLabel(strLine);
-  OnMessage(msg);
-}
-void CGUIDialogGamepad::SetHeading(int iString)
-{
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
-  msg.SetLabel(iString);
-  OnMessage(msg);
-}
-
-
-void CGUIDialogGamepad::SetLine(int iLine, int iString)
-{
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
-  msg.SetLabel(iString);
-  OnMessage(msg);
-}

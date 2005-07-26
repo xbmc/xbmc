@@ -3,7 +3,7 @@
 #include "Application.h"
 
 
-#define CONTROL_HEADING       4
+#define CONTROL_HEADING       1
 #define CONTROL_LIST          3
 #define CONTROL_NUMBEROFFILES 2
 #define CONTROL_BUTTON        5
@@ -31,7 +31,7 @@ struct SSortDialogSelect
 };
 
 CGUIDialogSelect::CGUIDialogSelect(void)
-    : CGUIDialog(0)
+    : CGUIDialogBoxBase(WINDOW_DIALOG_SELECT, "DialogSelect.xml")
 {
   m_bButtonEnabled = false;
 }
@@ -144,27 +144,6 @@ int CGUIDialogSelect::GetSelectedLabel() const
 const CStdString& CGUIDialogSelect::GetSelectedLabelText()
 {
   return m_strSelected;
-}
-
-void CGUIDialogSelect::SetHeading(const wstring& strLine)
-{
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_HEADING);
-  msg.SetLabel(strLine);
-  OnMessage(msg);
-}
-
-void CGUIDialogSelect::SetHeading(const string& strLine)
-{
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_HEADING);
-  msg.SetLabel(strLine);
-  OnMessage(msg);
-}
-
-void CGUIDialogSelect::SetHeading(int iString)
-{
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_HEADING);
-  msg.SetLabel(iString);
-  OnMessage(msg);
 }
 
 void CGUIDialogSelect::EnableButton(bool bOnOff)

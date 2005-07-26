@@ -5,7 +5,7 @@
 #define CONTROL_TEXTAREA 5
 
 CGUIWindowScriptsInfo::CGUIWindowScriptsInfo(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_SCRIPTS_INFO, "DialogScriptInfo.xml")
 {}
 
 CGUIWindowScriptsInfo::~CGUIWindowScriptsInfo(void)
@@ -41,6 +41,10 @@ bool CGUIWindowScriptsInfo::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
+      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_TEXTAREA);
+      msg.SetLabel(strInfo);
+      msg.SetParam1(5); // 5 pages max
+      OnMessage(msg);
       return true;
     }
     break;

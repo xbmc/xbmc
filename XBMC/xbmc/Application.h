@@ -3,63 +3,15 @@
 
 #include "MusicInfoTag.h"
 #include "FileItem.h"
-#include "GUIWindowHome.h"
-#include "GUIDialogInvite.h"
-#include "GUIDialogHost.h"
-#include "GUIDialogKeyboard.h"
-#include "GUIDialogYesNo.h"
-#include "GUIDialogOK.h"
-#include "GUIDialogProgress.h"
-#include "GUIDialogSelect.h"
-#include "GUIDialogFileStacking.h"
-#include "GUIDialogVolumeBar.h"
+
 #include "GUIDialogSeekBar.h"
 #include "GUIDialogKaiToast.h"
-#include "GUIDialogNumeric.h"
-#include "GUIDialogGamepad.h"
-#include "GUIDialogSubMenu.h"
-#include "GUIDialogButtonMenu.h"
-#include "GUIDialogContextMenu.h"
-#include "GUIDialogMusicScan.h"
+#include "GUIDialogVolumeBar.h"
 #include "GUIDialogMuteBug.h"
-#include "GUIDialogPlayerControls.h"
-#include "GUIDialogMusicOSD.h"
-#include "GUIDialogVisualisationSettings.h"
-#include "GUIDialogVisualisationPresetList.h"
-#include "GUIWindowPrograms.h"
-#include "GUIWindowPictures.h"
-#include "GUIWindowFileManager.h"
-#include "GUIWindowVideoFiles.h"
-#include "GUIWindowVideoGenre.h"
-#include "GUIWindowVideoActors.h"
-#include "GUIWindowVideoYear.h"
-#include "GUIWindowVideoTitle.h"
-#include "GUIWindowSettings.h"
-
-#include "GUIWindowSystemInfo.h"
-#include "GUIWindowSettingsUICalibration.h"
-#include "GUIWindowSettingsScreenCalibration.h"
-#include "GUIWindowScreensaver.h"   // CB: Matrix Screensaver
-#include "GUIWindowOSD.h"
-#include "GUIWindowMusicInfo.h"
-#include "GUIWindowVideoInfo.h"
-#include "GUIWindowScriptsInfo.h"
-#include "GUIWindowMusicOverlay.h"
-#include "GUIWindowFullScreen.h"
-#include "GUIWindowVideoOverlay.h"
-#include "GUIWindowVideoPlaylist.h"
-#include "GUIWindowSettingsCategory.h"
-#include "GUIWindowScripts.h"
-#include "GUIWindowVisualisation.h"
-#include "GUIWindowSlideshow.h"
-#include "GUIWindowMusicPlaylist.h"
-#include "GUIWindowMusicSongs.h"
-#include "GUIWindowMusicTop100.h"
-#include "GUIWindowMusicNav.h"
-#include "GUIWindowBuddies.h"   //BUDDIES
-#include "GUIWindowWeather.h"   //WEATHER
 #include "GUIWindowPointer.h"   // Mouse pointer
-#include "GUIWindowSettingsProfile.h"
+#include "GUIWindowMusicOverlay.h"
+#include "GUIWindowVideoOverlay.h"
+
 #include "utils/sntp.h"
 #include "utils/delaycontroller.h"
 #include "lib/libGoAhead/webserver.h"
@@ -70,6 +22,7 @@
 #include "CdgParser.h"
 #include "utils/Splash.h"
 #include "PlaylistPlayer.h"
+#include "utils/IMDB.h"
 
 using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
@@ -153,63 +106,13 @@ public:
   void SaveMusicScanSettings();
   void RestoreMusicScanSettings();
 
-  CGUIWindowHome m_guiHome;
-  CGUIWindowPrograms m_guiPrograms;
-  CGUIWindowSettingsProfile m_guiSettingsProfile;
-  CGUIWindowPictures m_guiPictures;
-  CGUIDialogInvite m_guiDialogInvite;
-  CGUIDialogHost m_guiDialogHost;
-  CGUIDialogKeyboard m_guiDialogKeyboard;
-  CGUIDialogYesNo m_guiDialogYesNo;
-  CGUIDialogProgress m_guiDialogProgress;
-  CGUIDialogOK m_guiDialogOK;
   CGUIDialogVolumeBar m_guiDialogVolumeBar;
   CGUIDialogSeekBar m_guiDialogSeekBar;
   CGUIDialogKaiToast m_guiDialogKaiToast;
-  CGUIDialogNumeric m_guiDialogNumeric;
-  CGUIDialogGamepad m_guiDialogGamepad;
-  CGUIDialogSubMenu m_guiDialogSubMenu;
-  CGUIDialogButtonMenu m_guiDialogButtonMenu;
-  CGUIDialogContextMenu m_guiDialogContextMenu;
-  CGUIDialogMusicScan m_guiDialogMusicScan;
   CGUIDialogMuteBug m_guiDialogMuteBug;
-  CGUIDialogPlayerControls m_guiDialogPlayerControls;
-  CGUIDialogMusicOSD m_guiDialogMusicOSD;
-  CGUIDialogVisualisationSettings m_guiDialogVisualisationSettings;
-  CGUIDialogVisualisationPresetList m_guiDialogVisualisationPresetList;
-  CGUIWindowFileManager m_guiFileManager;
-  CGUIWindowVideoFiles m_guiMyVideo;
-  CGUIWindowSettings m_guiSettings;
-  CGUIWindowSystemInfo m_guiSystemInfo;
-  CGUIWindowMusicInfo m_guiMusicInfo;
-  CGUIWindowVideoInfo m_guiVideoInfo;
-  CGUIWindowScriptsInfo m_guiScriptsInfo;
-  CGUIWindowSettingsUICalibration m_guiSettingsUICalibration;
-  CGUIWindowSettingsScreenCalibration m_guiSettingsScreenCalibration;
-  CGUIWindowSettingsCategory m_guiSettingsCategory;
-  CGUIWindowScripts m_guiScripts;
-  CGUIDialogSelect m_guiDialogSelect;
-  CGUIDialogFileStacking m_guiDialogFileStacking;
   CGUIWindowMusicOverlay m_guiMusicOverlay;
-  CGUIWindowFullScreen m_guiWindowFullScreen;
   CGUIWindowVideoOverlay m_guiVideoOverlay;
-  CGUIWindowVisualisation m_guiWindowVisualisation;
-  CGUIWindowSlideShow m_guiWindowSlideshow;
-  CGUIWindowMusicPlayList m_guiMyMusicPlayList;
-  CGUIWindowVideoPlaylist m_guiMyVideoPlayList;
-  CGUIWindowMusicSongs m_guiMyMusicSongs;
-  CGUIWindowMusicNav m_guiMyMusicNav;
-  CGUIWindowMusicTop100 m_guiMyMusicTop100;
-  CGUIWindowScreensaver m_guiWindowScreensaver;
-  CGUIWindowVideoGenre m_guiVideoGenre;
-  CGUIWindowVideoActors m_guiVideoActors;
-  CGUIWindowVideoYear m_guiVideoYear;
-  CGUIWindowVideoTitle m_guiVideoTitle;
-  CGUIWindowWeather m_guiMyWeather; //WEATHER
-  CGUIWindowBuddies m_guiMyBuddies; //BUDDIES
-  CGUIWindowOSD m_guiWindowOSD;
   CGUIWindowPointer m_guiPointer;
-
 
   CSNTPClient m_sntpClient;
   CDetectDVDMedia m_DetectDVDType;

@@ -4,7 +4,8 @@
 #include "util.h"
 #include "picture.h"
 #include "application.h"
-
+#include "VideoDatabase.h"
+#include "GUIImage.h"
 
 #define CONTROL_TITLE    20
 #define CONTROL_DIRECTOR   21
@@ -28,7 +29,7 @@
 #define CONTROL_DISC             7
 
 CGUIWindowVideoInfo::CGUIWindowVideoInfo(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_VIDEO_INFO, "DialogVideoInfo.xml")
 {}
 
 CGUIWindowVideoInfo::~CGUIWindowVideoInfo(void)

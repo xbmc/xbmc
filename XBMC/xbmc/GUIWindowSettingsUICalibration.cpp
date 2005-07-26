@@ -3,14 +3,16 @@
 #include "GUIWindowSettingsUICalibration.h"
 #include "GUIMoverControl.h"
 #include "Application.h"
+#include "GUIWindowSettingsScreenCalibration.h"
 
-
-#define CONTROL_MOVER 2
+#define CONTROL_TOPLEFT 8
 #define CONTROL_LABEL 3
+#define CONTROL_BOTTOMRIGHT 9
 
 CGUIWindowSettingsUICalibration::CGUIWindowSettingsUICalibration(void)
-    : CGUIWindow(0)
-{}
+    : CGUIWindow(WINDOW_UI_CALIBRATION, "SettingsUICalibration.xml")
+{
+}
 
 CGUIWindowSettingsUICalibration::~CGUIWindowSettingsUICalibration(void)
 {}
@@ -19,14 +21,23 @@ bool CGUIWindowSettingsUICalibration::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
-    m_iLastControl = -1;
+    g_settings.Save();
     m_gWindowManager.PreviousWindow();
+    return true;
+  }
+  else if (action.wID == ACTION_CALIBRATE_SWAP_ARROWS)
+  {
+    if (m_control == CONTROL_TOPLEFT)
+      m_control = CONTROL_BOTTOMRIGHT;
+    else
+      m_control = CONTROL_TOPLEFT;
+    SET_CONTROL_FOCUS(m_control, 0);
     return true;
   }
   else if (action.wID == ACTION_CALIBRATE_RESET)
   {
-    CGUIMoverControl *pControl = (CGUIMoverControl *)GetControl(CONTROL_MOVER);
-    if (pControl) pControl->SetLocation(0, 0);
+    g_graphicsContext.ResetOverscan(g_guiSettings.m_LookAndFeelResolution, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].GUIOverscan);
+    ResetControls();
     return true;
   }
   return CGUIWindow::OnAction(action);
@@ -38,34 +49,19 @@ bool CGUIWindowSettingsUICalibration::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      g_settings.Save();
     }
     break;
 
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      CGUIMoverControl *pControl = (CGUIMoverControl *)GetControl(CONTROL_MOVER);
-      if (pControl)
-      {
-        pControl->EnableCalibration(false);
-        pControl->SetLimits( -100, -100, 100, 100);
-        pControl->SetLocation(g_guiSettings.GetInt("UIOffset.X"), g_guiSettings.GetInt("UIOffset.Y"));
-        pControl->SetFocus(true);
-      }
 
-      if (m_iLastControl > -1)
-      {
-        SET_CONTROL_FOCUS(m_iLastControl, 0);
-      }
+      ResetControls();
+
+      m_control = CONTROL_TOPLEFT;
+      SET_CONTROL_FOCUS(m_control, 0);
 
       return true;
-    }
-    break;
-
-  case GUI_MSG_SETFOCUS:
-    {
-      m_iLastControl = message.GetControlId();
     }
     break;
   }
@@ -76,23 +72,112 @@ bool CGUIWindowSettingsUICalibration::OnMessage(CGUIMessage& message)
 void CGUIWindowSettingsUICalibration::Render()
 {
   // Get the information from the control
-  CGUIMoverControl *pControl = (CGUIMoverControl *)GetControl(CONTROL_MOVER);
+  CStdStringW strStatus;
+  RESOLUTION res = g_guiSettings.m_LookAndFeelResolution;
+  CGUIMoverControl *pControl = (CGUIMoverControl *)GetControl(m_control);
   if (pControl)
   {
-    if (g_guiSettings.GetInt("UIOffset.X") != pControl->GetXLocation() ||
-        g_guiSettings.GetInt("UIOffset.Y") != pControl->GetYLocation())
+    if (m_control == CONTROL_TOPLEFT)
     {
-      g_guiSettings.SetInt("UIOffset.X", pControl->GetXLocation());
-      g_guiSettings.SetInt("UIOffset.Y", pControl->GetYLocation());
-      g_graphicsContext.SetOffset(g_guiSettings.GetInt("UIOffset.X"), g_guiSettings.GetInt("UIOffset.Y"));
-      ResetAllControls();
-      g_application.ResetAllControls();
+      g_settings.m_ResInfo[res].GUIOverscan.left = pControl->GetXLocation();
+      g_settings.m_ResInfo[res].GUIOverscan.top = pControl->GetYLocation();
+      strStatus.Format(L"%s (%i,%i)", g_localizeStrings.Get(272).c_str(), pControl->GetXLocation(), pControl->GetYLocation());
+    }
+    else //if (m_control == CONTROL_BOTTOMRIGHT)
+    {
+      g_settings.m_ResInfo[res].GUIOverscan.right = pControl->GetXLocation();
+      g_settings.m_ResInfo[res].GUIOverscan.bottom = pControl->GetYLocation();
+      int iXOff1 = g_settings.m_ResInfo[res].iWidth - pControl->GetXLocation();
+      int iYOff1 = g_settings.m_ResInfo[res].iHeight - pControl->GetYLocation();
+      strStatus.Format(L"%s (%i,%i)", g_localizeStrings.Get(273).c_str(), iXOff1, iYOff1);
     }
   }
-  // Set the label
-  CStdString strOffset;
-  strOffset.Format("%i,%i", g_guiSettings.GetInt("UIOffset.X"), g_guiSettings.GetInt("UIOffset.Y"));
-  SET_CONTROL_LABEL(CONTROL_LABEL, strOffset);
+  // Set the label and hide our render controls
+  SET_CONTROL_LABEL(CONTROL_LABEL, strStatus);
+  // set all controls visible except for our movers
+  for (unsigned int i=0; i < m_vecControls.size(); i++)
+  {
+    CGUIControl *pControl = m_vecControls[i];
+    bool hidden = pControl->GetID() == CONTROL_TOPLEFT || pControl->GetID() == CONTROL_BOTTOMRIGHT;
+    pControl->SetVisible(!hidden);
+  }
   // And render
+  m_needsScaling = true;
+  CGUIWindow::Render();
+  // set all controls hidden except for our movers
+  for (unsigned int i=0; i < m_vecControls.size(); i++)
+  {
+    CGUIControl *pControl = m_vecControls[i];
+    bool hidden = pControl->GetID() == CONTROL_TOPLEFT || pControl->GetID() == CONTROL_BOTTOMRIGHT;
+    pControl->SetVisible(hidden);
+  }
+  // And render
+  m_needsScaling = false;
   CGUIWindow::Render();
 }
+
+void CGUIWindowSettingsUICalibration::ResetControls()
+{
+  CGUIMoverControl *pControl = (CGUIMoverControl *)GetControl(CONTROL_TOPLEFT);
+  RESOLUTION res = g_guiSettings.m_LookAndFeelResolution;
+  if (pControl)
+  {
+    pControl->SetLimits(-g_settings.m_ResInfo[res].iWidth / 4,
+                        -g_settings.m_ResInfo[res].iWidth / 4,
+                        g_settings.m_ResInfo[res].iWidth / 4,
+                        g_settings.m_ResInfo[res].iHeight / 4);
+    pControl->SetPosition(g_settings.m_ResInfo[res].GUIOverscan.left,
+                          g_settings.m_ResInfo[res].GUIOverscan.top);
+    pControl->SetLocation(g_settings.m_ResInfo[res].GUIOverscan.left,
+                          g_settings.m_ResInfo[res].GUIOverscan.top, false);
+  }
+  pControl = (CGUIMoverControl *)GetControl(CONTROL_BOTTOMRIGHT);
+  if (pControl)
+  {
+    pControl->SetLimits(g_settings.m_ResInfo[res].iWidth*3 / 4,
+                        g_settings.m_ResInfo[res].iHeight*3 / 4,
+                        g_settings.m_ResInfo[res].iWidth*5 / 4,
+                        g_settings.m_ResInfo[res].iHeight*5 / 4);
+    pControl->SetPosition(g_settings.m_ResInfo[res].GUIOverscan.right - (int)pControl->GetWidth(),
+                          g_settings.m_ResInfo[res].GUIOverscan.bottom - (int)pControl->GetHeight());
+    pControl->SetLocation(g_settings.m_ResInfo[res].GUIOverscan.right,
+                          g_settings.m_ResInfo[res].GUIOverscan.bottom, false);
+  }
+}
+
+#ifdef PRE_SKIN_VERSION_1_4_COMPATIBILITY
+#define CONTROL_OLD_MOVER 2
+void CGUIWindowSettingsUICalibration::OnWindowLoaded()
+{
+  // check if we have 2 mover controls - if not, load the ones
+  // for the screen calibration and use those instead.
+  CGUIMoverControl *pTopLeft = (CGUIMoverControl *)GetControl(CONTROL_TOPLEFT);
+  CGUIMoverControl *pBottomRight = (CGUIMoverControl *)GetControl(CONTROL_BOTTOMRIGHT);
+  if (pTopLeft && pBottomRight)
+    return; // we are up to date
+
+  // ok, first off, load teh SettingsScreenCalibration file and find the mover control information
+  CGUIWindowSettingsScreenCalibration *pScreen = (CGUIWindowSettingsScreenCalibration*)m_gWindowManager.GetWindow(WINDOW_MOVIE_CALIBRATION);
+  if (pScreen)
+  {
+    pScreen->Initialize(); // loads itself
+    CGUIMoverControl *pMover = (CGUIMoverControl *)pScreen->GetControl(CONTROL_TOPLEFT);
+    if (pMover) pTopLeft = new CGUIMoverControl(*pMover);  
+    pMover = (CGUIMoverControl *)pScreen->GetControl(CONTROL_BOTTOMRIGHT);
+    if (pMover) pBottomRight = new CGUIMoverControl(*pMover);
+    pScreen->ClearAll();  // clear itself
+  }
+  // remove any current mover controls
+  const CGUIControl *pOldMover = GetControl(CONTROL_OLD_MOVER);
+  if (pOldMover)
+  {
+    Remove(CONTROL_OLD_MOVER);
+    delete pOldMover;
+  }
+  if (!pTopLeft || !pBottomRight) return;
+  // add the new movers
+  Add(pTopLeft);
+  Add(pBottomRight);
+  CGUIWindow::OnWindowLoaded();
+}
+#endif

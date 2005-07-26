@@ -2,6 +2,7 @@
 #include "guiwindow.h"
 #include "programdatabase.h"
 #include "GUIViewControl.h"
+#include "GUIDialogProgress.h"
 
 class CGUIWindowPrograms :
       public CGUIWindow

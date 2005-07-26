@@ -4,7 +4,7 @@
 #include "util.h"
 #include "application.h"
 #include "lib/libPython/XBPython.h"
-
+#include "GUIWindowScriptsInfo.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
@@ -89,7 +89,7 @@ struct SSortScriptsByName
 
 
 CGUIWindowScripts::CGUIWindowScripts()
-    : CGUIWindow(0)
+    : CGUIWindow(WINDOW_SCRIPTS, "MyScripts.xml")
 {
   m_bDVDDiscChanged = false;
   m_bDVDDiscEjected = false;
@@ -456,15 +456,7 @@ bool CGUIWindowScripts::HaveDiscOrConnection( CStdString& strPath, int iDriveTyp
     CDetectDVDMedia::WaitMediaReady();
     if ( !CDetectDVDMedia::IsDiscInDrive() )
     {
-      CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (dlg)
-      {
-        dlg->SetHeading( 218 );
-        dlg->SetLine( 0, 219 );
-        dlg->SetLine( 1, L"" );
-        dlg->SetLine( 2, L"" );
-        dlg->DoModal( GetID() );
-      }
+      CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
       return false;
     }
   }
@@ -473,15 +465,7 @@ bool CGUIWindowScripts::HaveDiscOrConnection( CStdString& strPath, int iDriveTyp
     // TODO: Handle not connected to a remote share
     if ( !CUtil::IsEthernetConnected() )
     {
-      CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (dlg)
-      {
-        dlg->SetHeading( 220 );
-        dlg->SetLine( 0, 221 );
-        dlg->SetLine( 1, L"" );
-        dlg->SetLine( 2, L"" );
-        dlg->DoModal( GetID() );
-      }
+      CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
       return false;
     }
   }

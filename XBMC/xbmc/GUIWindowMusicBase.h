@@ -26,12 +26,13 @@ using namespace PLAYLIST;
 class CGUIWindowMusicBase : public CGUIWindow
 {
 public:
-  CGUIWindowMusicBase(void);
+  CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile);
   virtual ~CGUIWindowMusicBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction& action);
   virtual void Render();
   virtual void OnWindowLoaded();
+  virtual void OnWindowUnload();
 
 protected:
   /*!
@@ -88,7 +89,6 @@ protected:
   void OnRipCD();
   void OnSearch();
   bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
-  bool GetKeyboard(CStdString& strInput);
   bool ViewByIcon();
   bool ViewByLargeIcon();
   void DisplayEmptyDatabaseMessage(bool bDisplay);

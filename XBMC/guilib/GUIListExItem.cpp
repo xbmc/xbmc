@@ -137,28 +137,7 @@ void CGUIListExItem::RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD
   float fTextHeight, fTextWidth;
   pFont->GetTextExtent( wszText, &fTextWidth, &fTextHeight);
 
-  float fPosCX = fPosX;
-  float fPosCY = fPosY;
-  g_graphicsContext.Correct(fPosCX, fPosCY);
-  if (fPosCX < 0) fPosCX = 0.0f;
-  if (fPosCY < 0) fPosCY = 0.0f;
-  if (fPosCY > g_graphicsContext.GetHeight()) fPosCY = (float)g_graphicsContext.GetHeight();
-  float fHeight = 60.0f;
-  if (fHeight + fPosCY >= g_graphicsContext.GetHeight() )
-    fHeight = g_graphicsContext.GetHeight() - fPosCY - 1;
-  if (fHeight <= 0) return ;
-
-  float fwidth = fMaxWidth - 5.0f;
-
-  D3DVIEWPORT8 newviewport, oldviewport;
-  g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
-  newviewport.X = (DWORD)fPosCX;
-  newviewport.Y = (DWORD)fPosCY;
-  newviewport.Width = (DWORD)(fwidth);
-  newviewport.Height = (DWORD)(fHeight);
-  newviewport.MinZ = 0.0f;
-  newviewport.MaxZ = 1.0f;
-  g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
+  g_graphicsContext.SetViewPort(fPosX, fPosY, fMaxWidth - 5.0f, 60.0f);
   pFont->DrawTextWidth(fPosX, fPosY, dwTextColor, wszText, fMaxWidth);
-  g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+  g_graphicsContext.RestoreViewPort();
 }

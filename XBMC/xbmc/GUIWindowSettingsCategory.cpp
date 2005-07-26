@@ -7,6 +7,7 @@
 #include "GUICheckMarkControl.h"
 #include "Utils/Weather.h"
 #include "MusicDatabase.h"
+#include "ProgramDatabase.h"
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
 #include "Utils/LED.h"
@@ -20,7 +21,9 @@
 #include "lib/libscrobbler/scrobbler.h"
 #include "GUIPassword.h"
 #include "utils/GUIInfoManager.h"
-
+#include <xfont.h>
+#include "GUIDialogGamepad.h"
+#include "GUIDialogNumeric.h"
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
@@ -50,7 +53,7 @@ struct sortstringbyname
 };
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
-    : CGUIWindow(0)
+    : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml")
 {
   m_iLastControl = -1;
   m_pOriginalSpin = NULL;
@@ -69,6 +72,8 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_iSectionBeforeJump=-1;
   m_iControlBeforeJump=-1;
   m_iWindowBeforeJump=WINDOW_INVALID;
+  m_OldResolution = INVALID;
+  m_dwResTime = 0;
 }
 
 CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
@@ -225,7 +230,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       //restore resolution setting to original if we were in the middle of changing
-      if (m_dwResTime) g_guiSettings.SetInt("LookAndFeel.Resolution", m_OldResolution);
+      if (m_dwResTime && m_OldResolution != INVALID) g_guiSettings.SetInt("LookAndFeel.Resolution", m_OldResolution);
       m_OldResolution = INVALID;
 
       // Hardware based stuff
@@ -1254,13 +1259,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         else
         {
           // PopUp OK and Display: Master Code is not Valid or is empty or not set!
-          CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-          if (!dlg) return ;
-          dlg->SetHeading( g_localizeStrings.Get(12360));
-          dlg->SetLine( 0, g_localizeStrings.Get(12367));
-          dlg->SetLine( 1, g_localizeStrings.Get(12368));
-          dlg->SetLine( 2, "");
-          dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+          CGUIDialogOK::ShowAndGetInput(12360, 12367, 12368, 0);
         }
       }
     }
@@ -1976,25 +1975,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       else
       {
         // PopUp OK and Display: Master Code is not Valid or is empty or not set!
-        CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-        if (!dlg) return ;
-        dlg->SetHeading( g_localizeStrings.Get(12360));
-        dlg->SetLine( 0, g_localizeStrings.Get(12367));
-        dlg->SetLine( 1, g_localizeStrings.Get(12368));
-        dlg->SetLine( 2, "");
-        dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+        CGUIDialogOK::ShowAndGetInput(12360, 12367, 12368, 0);
       }
     }
     else
     {
       // PopUp OK and Display: MasterLock mode has changed but no no Mastercode has been set!
-      CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (!dlg) return ;
-      dlg->SetHeading( g_localizeStrings.Get(12360));
-      dlg->SetLine( 0, g_localizeStrings.Get(12370));
-      dlg->SetLine( 1, g_localizeStrings.Get(12371));
-      dlg->SetLine( 2, "");
-      dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+      CGUIDialogOK::ShowAndGetInput(12360, 12370, 12371, 0);
     }
   }
   else if (strSetting == "LookAndFeel.StartUpWindow")
@@ -2193,14 +2180,7 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
          m_strNetworkGateway != g_guiSettings.GetString("Network.Gateway") ||
          m_strNetworkDNS != g_guiSettings.GetString("Network.DNS"))))
   { // our network settings have changed - we should prompt the user to reset XBMC
-    CGUIDialogYesNo *dlg = (CGUIDialogYesNo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    if (!dlg) return ;
-    dlg->SetHeading( 14038 );
-    dlg->SetLine( 0, 14039 );
-    dlg->SetLine( 1, 14040 );
-    dlg->SetLine( 2, L"" );
-    dlg->DoModal( m_gWindowManager.GetActiveWindow() );
-    if (dlg->IsConfirmed())
+    if (CGUIDialogYesNo::ShowAndGetInput(14038, 14039, 14040, 0))
     { // reset settings
       g_applicationMessenger.RestartApp();
     }
@@ -2957,28 +2937,16 @@ bool CGUIWindowSettingsCategory::SetFTPServerUserPass()
     {
       if (CUtil::SetFTPServerUserPassword(strFtpUserName, strFtpUserPassword))
       {
-          // todo! ERROR check! if something goes wrong on SetPW!
-          // PopUp OK and Display: FTP Server Password was set succesfull!
-          CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-          if (!dlg) return false;
-          dlg->SetHeading( g_localizeStrings.Get(728));
-          dlg->SetLine( 0, "");
-          dlg->SetLine( 1, g_localizeStrings.Get(1247));
-          dlg->SetLine( 2, "");
-          dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+        // todo! ERROR check! if something goes wrong on SetPW!
+        // PopUp OK and Display: FTP Server Password was set succesfull!
+        CGUIDialogOK::ShowAndGetInput(728, 0, 1247, 0);
       }
       return true;
     }
     else
     {
-          // PopUp OK and Display: FTP Server Password is empty! Try Again!
-          CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-          if (!dlg) return false;
-          dlg->SetHeading( g_localizeStrings.Get(728));
-          dlg->SetLine( 0, "");
-          dlg->SetLine( 1, g_localizeStrings.Get(12358));
-          dlg->SetLine( 2, "");
-          dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+      // PopUp OK and Display: FTP Server Password is empty! Try Again!
+      CGUIDialogOK::ShowAndGetInput(728, 0, 12358, 0);
     }
     return true;
 }

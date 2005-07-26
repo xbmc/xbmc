@@ -9,7 +9,7 @@
 #include "GUIListControl.h"
 #include "GUIPassword.h"
 #include "lib/libPython/XBPython.h"
-
+#include "GUIWindowSlideShow.h"
 
 using namespace XFILE;
 
@@ -124,7 +124,7 @@ bool SSortFilesByName::m_bSortAscending;
 int SSortFilesByName::m_iSortMethod;
 
 CGUIWindowFileManager::CGUIWindowFileManager(void)
-    : CGUIWindow(0)
+    : CGUIWindow(WINDOW_FILES, "FileManager.xml")
 {
   m_iItemSelected = -1;
   m_iLastControl = -1;
@@ -300,7 +300,10 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
       {
         int iItem = GetSelectedItem(i);
         Update(i, m_Directory[i].m_strPath);
-        CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem)
+        if (CONTROL_LEFT_LIST + i == iLastControl)
+        {
+          CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, m_iItemSelected)
+        }
       }
 
       if (iLastControl > -1)
@@ -624,15 +627,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
     CDetectDVDMedia::WaitMediaReady();
     if ( !CDetectDVDMedia::IsDiscInDrive() )
     {
-      CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (dlg)
-      {
-        dlg->SetHeading( 218 );
-        dlg->SetLine( 0, 219 );
-        dlg->SetLine( 1, L"" );
-        dlg->SetLine( 2, L"" );
-        dlg->DoModal( GetID() );
-      }
+      CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
       int iList = GetFocusedList();
       int iItem = GetSelectedItem(iList);
       Update(iList, "");
@@ -645,15 +640,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
     // TODO: Handle not connected to a remote share
     if ( !CUtil::IsEthernetConnected() )
     {
-      CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (dlg)
-      {
-        dlg->SetHeading( 220 );
-        dlg->SetLine( 0, 221 );
-        dlg->SetLine( 1, L"" );
-        dlg->SetLine( 2, L"" );
-        dlg->DoModal( GetID() );
-      }
+      CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
       return false;
     }
   }
@@ -881,16 +868,8 @@ bool CGUIWindowFileManager::DoProcess(int iAction, CFileItemList & items, const 
 
 void CGUIWindowFileManager::OnCopy(int iList)
 {
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (pDialog)
-  {
-    pDialog->SetHeading(120);
-    pDialog->SetLine(0, 123);
-    pDialog->SetLine(1, L"");
-    pDialog->SetLine(2, L"");
-    pDialog->DoModal(GetID());
-    if (!pDialog->IsConfirmed()) return ;
-  }
+  if (!CGUIDialogYesNo::ShowAndGetInput(120, 123, 0, 0))
+    return;
 
   if (m_dlgProgress)
   {
@@ -908,16 +887,8 @@ void CGUIWindowFileManager::OnCopy(int iList)
 
 void CGUIWindowFileManager::OnMove(int iList)
 {
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (pDialog)
-  {
-    pDialog->SetHeading(121);
-    pDialog->SetLine(0, 124);
-    pDialog->SetLine(1, L"");
-    pDialog->SetLine(2, L"");
-    pDialog->DoModal(GetID());
-    if (!pDialog->IsConfirmed()) return ;
-  }
+  if (!CGUIDialogYesNo::ShowAndGetInput(121, 124, 0, 0))
+    return;
 
   if (m_dlgProgress)
   {
@@ -935,16 +906,8 @@ void CGUIWindowFileManager::OnMove(int iList)
 
 void CGUIWindowFileManager::OnDelete(int iList)
 {
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (pDialog)
-  {
-    pDialog->SetHeading(122);
-    pDialog->SetLine(0, 125);
-    pDialog->SetLine(1, L"");
-    pDialog->SetLine(2, L"");
-    pDialog->DoModal(GetID());
-    if (!pDialog->IsConfirmed()) return ;
-  }
+  if (!CGUIDialogYesNo::ShowAndGetInput(122, 125, 0, 0))
+    return;
 
   if (m_dlgProgress) m_dlgProgress->StartModal(GetID());
 
@@ -987,55 +950,25 @@ void CGUIWindowFileManager::OnSelectAll(int iList)
 
 void CGUIWindowFileManager::RenameFile(const CStdString &strFile)
 {
-  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
-  if (pKeyboard)
+  CStdString strFileName = CUtil::GetFileName(strFile);
+  CStdString strPath = strFile.Left(strFile.size() - strFileName.size());
+  if (CGUIDialogKeyboard::ShowAndGetInput(strFileName, false))
   {
-    CStdString strFileName = CUtil::GetFileName(strFile);
-    CStdString strPath = strFile.Left(strFile.size() - strFileName.size());
-
-    // setup keyboard
-    pKeyboard->CenterWindow();
-    pKeyboard->SetText(strFileName);
-    pKeyboard->DoModal(m_gWindowManager.GetActiveWindow());
-    pKeyboard->Close();
-
-    if (pKeyboard->IsDirty())
-    { // have text - update this.
-      CStdString strNewFileName = pKeyboard->GetText();
-      if (!strNewFileName.IsEmpty())
-      {
-        // need 2 rename it
-        strPath += strNewFileName;
-        CFile::Rename(strFile.c_str(), strPath.c_str());
-      }
-    }
+    strPath += strFileName;
+    CFile::Rename(strFile.c_str(), strPath.c_str());
   }
 }
 
 void CGUIWindowFileManager::OnNewFolder(int iList)
 {
   CStdString strNewFolder = "";
-  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
-  if (!pKeyboard) return ;
-
-  // setup keyboard
-  pKeyboard->CenterWindow();
-  pKeyboard->SetText(strNewFolder);
-  pKeyboard->DoModal(m_gWindowManager.GetActiveWindow());
-  pKeyboard->Close();
-
-  if (pKeyboard->IsDirty())
-  { // have text - update this.
+  if (CGUIDialogKeyboard::ShowAndGetInput(strNewFolder, false))
+  {
     CStdString strNewPath = m_Directory[iList].m_strPath;
     if (!CUtil::HasSlashAtEnd(strNewPath) ) strNewPath += "\\";
-    CStdString strNewFolderName = pKeyboard->GetText();
-    if (!strNewFolderName.IsEmpty())
-    {
-      strNewPath += strNewFolderName;
-      CDirectory::Create(strNewPath);
-    }
+    strNewPath += strNewFolder;
+    CDirectory::Create(strNewPath);
   }
-
   Refresh(iList);
 }
 
@@ -1307,8 +1240,8 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
   {
-    // clean any buttons not needed
-    pMenu->ClearButtons();
+    // load our menu
+    pMenu->Initialize();
     // add the needed buttons
     pMenu->AddButton(188); // SelectAll
     pMenu->AddButton(118); // Rename
@@ -1351,13 +1284,16 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     case 7:
       {
         // setup the progress dialog, and show it
-        CGUIDialogProgress &progress = g_application.m_guiDialogProgress;
-        progress.SetHeading(13394);
-        for (int i=0; i < 3; i++)
-          progress.SetLine(i, "");
-        progress.StartModal(GetID());
-        __int64 folderSize = CalculateFolderSize(m_vecItems[list][item]->m_strPath, &progress);
-        progress.Close();
+        CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+        if (progress)
+        {
+          progress->SetHeading(13394);
+          for (int i=0; i < 3; i++)
+            progress->SetLine(i, "");
+          progress->StartModal(GetID());
+        }
+        __int64 folderSize = CalculateFolderSize(m_vecItems[list][item]->m_strPath, progress);
+        if (progress) progress->Close();
         if (folderSize >= 0)
         {
           m_vecItems[list][item]->m_dwSize = folderSize;

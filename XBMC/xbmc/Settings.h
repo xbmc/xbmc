@@ -1,6 +1,8 @@
 #pragma once
 
-#define CONFIG_VERSION 0x000F
+// REMOVE ME WHEN WE SWITCH TO SKIN VERSION 1.4
+#define PRE_SKIN_VERSION_1_4_COMPATIBILITY 1
+// REMOVE ME WHEN WE SWITCH TO SKIN VERSION 1.4
 
 #include "Profile.h"
 #include "settings/VideoSettings.h"

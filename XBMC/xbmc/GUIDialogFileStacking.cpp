@@ -3,7 +3,7 @@
 
 
 CGUIDialogFileStacking::CGUIDialogFileStacking(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_DIALOG_FILESTACKING, "DialogFileStacking.xml")
 {
   m_iSelectedFile = -1;
   m_iNumberOfFiles = 0;

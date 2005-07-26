@@ -23,4 +23,5 @@ protected:
   IDirect3DTexture8* m_pTexture;
   int m_iLastControl;
   int m_iLastMenuOption;
+  int m_iSelectedItem;
 };
