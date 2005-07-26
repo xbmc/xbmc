@@ -10,7 +10,6 @@
 #include "../XBVideoConfig.h"
 #include "../langcodeexpander.h"
 #include "../VideoDatabase.h"
-#include "../GUIWindowFullScreen.h"
 #include "../utils/GUIInfoManager.h"
 
 
@@ -724,14 +723,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     bIsDVD = true;
     bIsVideo = true;
   }
-  bool bNeedOSD(true);
-  {
-    CGUIWindowFullScreen* pFSWin = (CGUIWindowFullScreen*)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
-    if(pFSWin)
-      bNeedOSD = !pFSWin->HasProgressDisplay();
-  }
-
-
 
   iCacheSize = GetCacheSize(bFileOnHD, bFileOnISO, bFileOnUDF, bFileOnInternet, bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
   try
@@ -897,8 +888,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     mplayer_init(argc, argv);
     mplayer_setcache_size(iCacheSize);
     mplayer_setcache_backbuffer(iCacheSizeBackBuffer);
-    if(!bNeedOSD)
-      mplayer_SlaveCommand("osd 0");
+    mplayer_SlaveCommand("osd 0");
 
     if (bFileIsDVDImage || bFileIsDVDIfoFile)
     {
@@ -1017,8 +1007,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
         mplayer_init(argc, argv);
         mplayer_setcache_size(iCacheSize);
         mplayer_setcache_backbuffer(iCacheSizeBackBuffer);
-        if(!bNeedOSD)
-          mplayer_SlaveCommand("osd 0");
+        mplayer_SlaveCommand("osd 0");
 
         if (bFileIsDVDImage || bFileIsDVDIfoFile)
         {

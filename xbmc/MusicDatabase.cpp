@@ -3,7 +3,7 @@
 #include "filesystem/cddb.h"
 #include "filesystem/directorycache.h"
 #include "application.h"
-
+#include "GUIDialogMusicScan.h"
 
 #define MUSIC_DATABASE_VERSION 1.2f
 #define MUSIC_DATABASE_NAME "MyMusic6.db"
@@ -2096,16 +2096,8 @@ void CMusicDatabase::DeleteAlbumInfo()
   CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   if (dlgMusicScan->IsRunning())
   {
-    CGUIDialogOK *pDlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (pDlg)
-    {
-      pDlg->SetHeading(189);
-      pDlg->SetLine(0, 14057);
-      pDlg->SetLine(1, "");
-      pDlg->SetLine(2, "");
-      pDlg->DoModal(m_gWindowManager.GetActiveWindow());
-      return ;
-    }
+    CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
+    return;
   }
 
   CStdString strSQL="select * from albuminfo,album,path,artist where album.idPath=path.idPath and albuminfo.idAlbum=album.idAlbum and album.idArtist=artist.idArtist order by album.strAlbum";
@@ -2114,16 +2106,7 @@ void CMusicDatabase::DeleteAlbumInfo()
   if (iRowsFound == 0)
   {
     m_pDS->close();
-    CGUIDialogOK *pDlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (pDlg)
-    {
-      pDlg->SetHeading(313);
-      pDlg->SetLine(0, 425);
-      pDlg->SetLine(1, "");
-      pDlg->SetLine(2, "");
-      pDlg->DoModal(m_gWindowManager.GetActiveWindow());
-    }
-    return ;
+    CGUIDialogOK::ShowAndGetInput(313, 425, 0, 0);
   }
   vector<CAlbumCache> vecAlbums;
   while (!m_pDS->eof())
@@ -2214,11 +2197,9 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
   if (pCdInfo->HasCDDBInfo() && !cddb.isCDCached(pCdInfo))
   {
     CGUIDialogProgress* pDialogProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    CGUIDialogOK* pDialogOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
     CGUIDialogSelect *pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
 
     if (!pDialogProgress) return false;
-    if (!pDialogOK) return false;
     if (!pDlgSelect) return false;
 
     // Show progress dialog if we have to connect to freedb.org
@@ -2275,11 +2256,15 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
         pCdInfo->SetNoCDDBInfo();
         pDialogProgress->Close();
         // ..no, an error occured, display it to the user
-        pDialogOK->SetHeading(255);
-        pDialogOK->SetLine(0, 257); //ERROR
-        pDialogOK->SetLine(1, cddb.getLastErrorText() );
-        pDialogOK->SetLine(2, "");
-        pDialogOK->DoModal(m_gWindowManager.GetActiveWindow() );
+        CGUIDialogOK *pDialogOK = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+        if (pDialogOK)
+        {
+          pDialogOK->SetHeading(255);
+          pDialogOK->SetLine(0, 257); //ERROR
+          pDialogOK->SetLine(1, cddb.getLastErrorText() );
+          pDialogOK->SetLine(2, "");
+          pDialogOK->DoModal(m_gWindowManager.GetActiveWindow() );
+        }
       }
     } // if ( !cddb.queryCDinfo( pCdInfo ) )
     pDialogProgress->Close();
@@ -2303,15 +2288,7 @@ void CMusicDatabase::DeleteCDDBInfo()
   CAutoPtrFind hFind( FindFirstFile(strCDDBFileMask.c_str(), &wfd));
   if (!hFind.isValid())
   {
-    CGUIDialogOK *pDlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (pDlg)
-    {
-      pDlg->SetHeading(313);
-      pDlg->SetLine(0, 426);
-      pDlg->SetLine(1, "");
-      pDlg->SetLine(2, "");
-      pDlg->DoModal(m_gWindowManager.GetActiveWindow());
-    }
+    CGUIDialogOK::ShowAndGetInput(313, 426, 0, 0);
     return ;
   }
 
@@ -2388,51 +2365,25 @@ void CMusicDatabase::Clean()
   CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   if (dlgMusicScan->IsRunning())
   {
-    CGUIDialogOK *pDlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (pDlg)
-    {
-      pDlg->SetHeading(189);
-      pDlg->SetLine(0, 14057);
-      pDlg->SetLine(1, "");
-      pDlg->SetLine(2, "");
-      pDlg->DoModal(m_gWindowManager.GetActiveWindow());
-      return ;
-    }
+    CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
+    return;
   }
 
-  CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (dlgYesNo)
+  if (CGUIDialogYesNo::ShowAndGetInput(313, 333, 0, 0))
   {
-    dlgYesNo->SetHeading(313);
-    dlgYesNo->SetLine(0, 333);
-    dlgYesNo->SetLine(1, "");
-    dlgYesNo->SetLine(2, "");
-    dlgYesNo->DoModal(m_gWindowManager.GetActiveWindow());
-
-    if (dlgYesNo->IsConfirmed())
+    CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    if (dlgProgress)
     {
-      CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      if (dlgProgress)
+      dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+
+      int iReturnString = g_musicDatabase.Cleanup(dlgProgress);
+      g_musicDatabase.Close();
+
+      if (iReturnString != ERROR_OK)
       {
-        dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
-
-        int iReturnString = g_musicDatabase.Cleanup(dlgProgress);
-        g_musicDatabase.Close();
-
-        if (iReturnString != ERROR_OK)
-        {
-          CGUIDialogOK* dlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-          if (dlgOK)
-          {
-            dlgOK->SetHeading(313);
-            dlgOK->SetLine(0, iReturnString);
-            dlgOK->SetLine(1, "");
-            dlgOK->SetLine(2, "");
-            dlgOK->DoModal(m_gWindowManager.GetActiveWindow());
-          }
-        }
-        dlgProgress->Close();
+        CGUIDialogOK::ShowAndGetInput(313, iReturnString, 0, 0);
       }
+      dlgProgress->Close();
     }
   }
 }
@@ -2952,14 +2903,17 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
       m_pDS2->exec("PRAGMA count_changes='OFF'\n");
       m_bOpen = true;
       // ok, now we need to run through our table + fill in all the thumbs we need
-      CGUIDialogProgress &dialog = g_application.m_guiDialogProgress;
-      dialog.SetHeading("Updating old database version");
-      dialog.SetLine(0, "");
-      dialog.SetLine(1, "");
-      dialog.SetLine(2, "");
-      dialog.StartModal(m_gWindowManager.GetActiveWindow());
-      dialog.SetLine(1, "Creating newly formatted tables");
-      dialog.Progress();
+      CGUIDialogProgress *dialog = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      if (dialog)
+      {
+        dialog->SetHeading("Updating old database version");
+        dialog->SetLine(0, "");
+        dialog->SetLine(1, "");
+        dialog->SetLine(2, "");
+        dialog->StartModal(m_gWindowManager.GetActiveWindow());
+        dialog->SetLine(1, "Creating newly formatted tables");
+        dialog->Progress();
+      }
       BeginTransaction();
       CLog::Log(LOGINFO, "Creating temporary songs table");
       m_pDS->exec("CREATE TEMPORARY TABLE tempsong ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer)\n");
@@ -2975,8 +2929,11 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
       m_pDS->exec("DROP TABLE tempsong");
       CommitTransaction();
       BeginTransaction();
-      dialog.SetLine(0, "Retrieving updated information on songs...");
-      dialog.SetLine(1, "");
+      if (dialog)
+      {
+        dialog->SetLine(0, "Retrieving updated information on songs...");
+        dialog->SetLine(1, "");
+      }
       CLog::Log(LOGINFO, "Finding thumbs");
       if (!m_pDS2->query("SELECT * from song join album on song.idAlbum = album.idAlbum join path on path.idPath = song.idPath\n"))
         return false;
@@ -2984,8 +2941,11 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
       {
         CStdString strProgress;
         strProgress.Format("Processing %i of %i", 1, m_pDS2->num_rows());
-        dialog.SetLine(2, strProgress);
-        dialog.Progress();
+        if (dialog)
+        {
+          dialog->SetLine(2, strProgress);
+          dialog->Progress();
+        }
         // turn on thumb caching - mayaswell make it as fast as we can
         g_directoryCache.InitMusicThumbCache();
         // get data from returned rows
@@ -2995,8 +2955,11 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
           if (!(count % 10))
           {
             strProgress.Format("Processing %i of %i", count, m_pDS2->num_rows());
-            dialog.SetLine(2, strProgress);
-            dialog.Progress();
+            if (dialog)
+            {
+              dialog->SetLine(2, strProgress);
+              dialog->Progress();
+            }
           }
           CSong song;
           // construct a song to be transferred to a fileitem
@@ -3029,7 +2992,8 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
       m_pDS2->close();
       g_directoryCache.ClearMusicThumbCache();
       CommitTransaction();
-      dialog.Close();
+      if (dialog) dialog->Close();
+
     }
     if (fVersion < 1.1f)
     {

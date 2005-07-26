@@ -7,6 +7,7 @@
 #include "playlistplayer.h"
 #include "GUIPassword.h"
 #include "GUIListControl.h"
+#include "GUIDialogContextMenu.h"
 
 
 #define CONTROL_BTNVIEWASICONS  2
@@ -210,7 +211,7 @@ int SSortMusicNav::m_bSortAscending;
 CStdString SSortMusicNav::m_strDirectory;
 
 CGUIWindowMusicNav::CGUIWindowMusicNav(void)
-    : CGUIWindowMusicBase()
+    : CGUIWindowMusicBase(WINDOW_MUSIC_NAV, "MyMusicNav.xml")
 {
   m_bGotDirFromCache = false;
   m_iSortCache = -1;
@@ -1405,8 +1406,8 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu) return ;
-  // clean any buttons not needed
-  pMenu->ClearButtons();
+  // load our menu
+  pMenu->Initialize();
   // add the needed buttons
   pMenu->AddButton(13351);    // 1: Music Information
   pMenu->AddButton(13347);    // 2: Queue Item

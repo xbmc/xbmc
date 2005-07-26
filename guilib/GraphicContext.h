@@ -9,6 +9,7 @@
 #pragma once
 
 #include <vector>
+#include <stack>
 
 #include "IMsgSenderCallback.h"
 #include "common/mouse.h"
@@ -51,6 +52,7 @@ struct OVERSCAN
 struct RESOLUTION_INFO
 {
   OVERSCAN Overscan;
+  OVERSCAN GUIOverscan;
   int iWidth;
   int iHeight;
   int iSubtitles;
@@ -72,7 +74,7 @@ public:
   LPDIRECT3DDEVICE8 Get3DDevice() { return m_pd3dDevice; }
   void SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice);
   //  void         GetD3DParameters(D3DPRESENT_PARAMETERS &params);
-  void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams, RESOLUTION_INFO *pResInfo);
+  void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
   bool SendMessage(CGUIMessage& message);
@@ -81,14 +83,12 @@ public:
   const CStdString& GetMediaDir() const { return m_strMediaDir; }
   void SetMediaDir(const CStdString& strMediaDir) { m_strMediaDir = strMediaDir; }
   bool IsWidescreen() const { return m_bWidescreen; }
-  void Correct(float& fCoordinateX, float& fCoordinateY) const;
-  void Correct(int& iCoordinateX, int& iCoordinateY) const;
-  void Scale(float& fCoordinateX, float& fCoordinateY, float& fWidth, float& fHeight) const;
-  void SetViewPort(float fx, float fy , float fwidth, float fheight);
+  bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);
   void RestoreViewPort();
   const RECT& GetViewWindow() const;
   void SetViewWindow(const RECT& rc) ;
   void SetFullScreenViewWindow(RESOLUTION &res);
+  void ClipToViewWindow();
   void SetFullScreenVideo(bool bOnOff);
   bool IsFullScreenVideo() const;
   bool IsCalibrating() const;
@@ -100,8 +100,8 @@ public:
   bool IsValidResolution(RESOLUTION res);
   void SetVideoResolution(RESOLUTION &res, BOOL NeedZ = FALSE);
   RESOLUTION GetVideoResolution() const;
+  void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetScreenParameters(RESOLUTION res);
-  void SetOffset(int iXoffset, int iYoffset);
   void Lock() { EnterCriticalSection(&m_critSection); }
   void Unlock() { LeaveCriticalSection(&m_critSection); }
   void EnablePreviewWindow(bool bEnable);
@@ -118,6 +118,13 @@ public:
   void ApplyStateBlock();
   void Clear();
 
+  // output scaling
+  void SetScalingResolution(RESOLUTION res, int posX, int posY, bool needsScaling);  // sets the input skin resolution.
+  inline float ScaleFinalXCoord(float x);
+  inline float ScaleFinalYCoord(float y);
+  inline float ScaleFinalX() { return m_windowScaleX; };
+  inline float ScaleFinalY() { return m_windowScaleY; };
+
 protected:
   CRITICAL_SECTION m_critSection;
   IMsgSenderCallback* m_pCallback;
@@ -128,17 +135,20 @@ protected:
   DWORD m_dwID;
   bool m_bWidescreen;
   CStdString m_strMediaDir;
-  D3DVIEWPORT8 m_oldviewport;
+  stack<D3DVIEWPORT8*> m_viewStack;
   RECT m_videoRect;
   bool m_bFullScreenVideo;
-  int m_iScreenOffsetX;
-  int m_iScreenOffsetY;
   bool m_bShowPreviewWindow;
   bool m_bCalibrating;
   bool m_bShowOverlay;
   RESOLUTION m_Resolution;
-  RESOLUTION_INFO *m_pResInfo;
   DWORD m_stateBlock;
+
+private:
+  float m_windowScaleX;
+  float m_windowScaleY;
+  float m_windowPosX;
+  float m_windowPosY;
 };
 
 /*!

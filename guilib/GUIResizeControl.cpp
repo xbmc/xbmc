@@ -205,13 +205,6 @@ void CGUIResizeControl::SetColourDiffuse(D3DCOLOR colour)
   m_imgNoFocus.SetColourDiffuse(colour);
 }
 
-void CGUIResizeControl::EnableCalibration(bool bOnOff)
-{
-  CGUIControl::EnableCalibration(bOnOff);
-  m_imgFocus.EnableCalibration(bOnOff);
-  m_imgNoFocus.EnableCalibration(bOnOff);
-}
-
 void CGUIResizeControl::SetLimits(int iX1, int iY1, int iX2, int iY2)
 {
   m_iX1 = iX1;

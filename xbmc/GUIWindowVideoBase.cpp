@@ -17,7 +17,8 @@
 #include "AutoSwitch.h"
 #include "GUIFontManager.h"
 #include "FileSystem/ZipManager.h"
-
+#include "GUIDialogContextMenu.h"
+#include "GUIDialogFileStacking.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
@@ -134,8 +135,8 @@ struct SSortVideoByName
 };
 
 
-CGUIWindowVideoBase::CGUIWindowVideoBase()
-    : CGUIWindow(0)
+CGUIWindowVideoBase::CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile)
+    : CGUIWindow(dwID, xmlFile)
 {
   m_Directory.m_strPath = "?";
   m_Directory.m_bIsFolder = true;
@@ -467,15 +468,7 @@ bool CGUIWindowVideoBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
     CDetectDVDMedia::WaitMediaReady();
     if ( !CDetectDVDMedia::IsDiscInDrive() )
     {
-      CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (dlg)
-      {
-        dlg->SetHeading( 218 );
-        dlg->SetLine( 0, 219 );
-        dlg->SetLine( 1, L"" );
-        dlg->SetLine( 2, L"" );
-        dlg->DoModal( GetID() );
-      }
+      CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
       int iItem = m_viewControl.GetSelectedItem();
       Update( m_Directory.m_strPath );
       m_viewControl.SetSelectedItem(iItem);
@@ -487,15 +480,7 @@ bool CGUIWindowVideoBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
     // TODO: Handle not connected to a remote share
     if ( !CUtil::IsEthernetConnected() )
     {
-      CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (dlg)
-      {
-        dlg->SetHeading( 220 );
-        dlg->SetLine( 0, 221 );
-        dlg->SetLine( 1, L"" );
-        dlg->SetLine( 2, L"" );
-        dlg->DoModal( GetID() );
-      }
+      CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
       return false;
     }
   }
@@ -518,7 +503,6 @@ void CGUIWindowVideoBase::OnInfo(int iItem)
 
 void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString& strFile, const CStdString& strFolder, bool bFolder)
 {
-  CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
   CGUIWindowVideoInfo* pDlgInfo = (CGUIWindowVideoInfo*)m_gWindowManager.GetWindow(WINDOW_VIDEO_INFO);
@@ -527,7 +511,6 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
   bool bUpdate(false);
   bool bFound = false;
 
-  if (!pDlgOK) return ;
   if (!pDlgProgress) return ;
   if (!pDlgSelect) return ;
   if (!pDlgInfo) return ;
@@ -734,12 +717,16 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
       if (bError)
       {
         // show dialog...
-        pDlgOK->SetHeading(195);
-        pDlgOK->SetLine(0, strMovieName);
-        pDlgOK->SetLine(1, L"");
-        pDlgOK->SetLine(2, L"");
-        pDlgOK->SetLine(3, L"");
-        pDlgOK->DoModal(GetID());
+        CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+        if (pDlgOK)
+        {
+          pDlgOK->SetHeading(195);
+          pDlgOK->SetLine(0, strMovieName);
+          pDlgOK->SetLine(1, L"");
+          pDlgOK->SetLine(2, L"");
+          pDlgOK->SetLine(3, L"");
+          pDlgOK->DoModal(GetID());
+        }
       }
     }
   }
@@ -988,8 +975,8 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu) return ;
-  // clean any buttons not needed
-  pMenu->ClearButtons();
+  // load our menu
+  pMenu->Initialize();
   // add the needed buttons
   int btn_Show_Info     = pMenu->AddButton(13346); // Show Video Information
   int btn_Resume        = pMenu->AddButton(13381); // Resume Video
@@ -1263,4 +1250,10 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
 
   Update(m_Directory.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
+}
+
+void CGUIWindowVideoBase::OnWindowUnload()
+{
+  CGUIWindow::OnWindowUnload();
+  m_viewControl.Reset();
 }

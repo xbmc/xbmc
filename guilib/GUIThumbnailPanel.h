@@ -68,8 +68,8 @@ public:
   int GetSpinY() const { return m_upDown.GetYPosition();};
   DWORD GetTextureWidth() const { return m_iTextureWidth;};
   DWORD GetTextureHeight() const { return m_iTextureHeight;};
-  const CStdString GetFocusName() const { return m_imgFolderFocus.GetFileName();};
-  const CStdString GetNoFocusName() const { return m_imgFolder.GetFileName();};
+  const CStdString& GetFocusName() const { return m_imgFolderFocus.GetFileName();};
+  const CStdString& GetNoFocusName() const { return m_imgFolder.GetFileName();};
   DWORD GetItemWidth() const { return m_iItemWidth;};
   DWORD GetItemHeight() const { return m_iItemHeight;};
   void SetItemWidth(DWORD dwWidth);
@@ -172,5 +172,6 @@ protected:
   CGUIImage m_imgFolderFocus;
   vector<CGUIListItem*> m_vecItems;
   typedef vector<CGUIListItem*> ::iterator ivecItems;
+  CScrollInfo m_scrollInfo;
 };
 #endif

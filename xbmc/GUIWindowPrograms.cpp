@@ -24,7 +24,7 @@ using namespace DIRECTORY;
 #define CONTROL_LABELFILES    9
 
 CGUIWindowPrograms::CGUIWindowPrograms(void)
-    : CGUIWindow(0)
+    : CGUIWindow(WINDOW_PROGRAMS, "MyPrograms.xml")
 {
   m_Directory.m_strPath = "?";
   m_Directory.m_bIsFolder = true;

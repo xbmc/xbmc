@@ -89,7 +89,7 @@
 
 
 CGUIWindowOSD::CGUIWindowOSD(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_OSD, "VideoOSD.xml")
 {
   m_bSubMenuOn = false;
   m_iActiveMenu = 0;

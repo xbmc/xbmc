@@ -133,13 +133,15 @@ bool CGUIButtonControl::OnAction(const CAction &action)
     // Save values, SEND_CLICK_MESSAGE may deactivate the window
     long lHyperLinkWindowID = m_lHyperLinkWindowID;
     CStdString strExecuteAction = m_strExecuteAction;
+    DWORD dwControlID = GetID();
+    DWORD dwParentID = GetParentID();
 
     // button selected, send a message
-    SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
+    SEND_CLICK_MESSAGE(dwControlID, dwParentID, 0);
 
     if (strExecuteAction.length() > 0)
     {
-      CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
+      CGUIMessage message(GUI_MSG_EXECUTE, dwControlID, dwParentID);
       message.SetStringParam(strExecuteAction);
       g_graphicsContext.SendMessage(message);
       return true;
@@ -315,4 +317,3 @@ CStdString CGUIButtonControl::GetDescription() const
   CStdString strLabel = GetLabel();
   return strLabel;
 }
-

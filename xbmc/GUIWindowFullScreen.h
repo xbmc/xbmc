@@ -9,8 +9,8 @@ class CGUIWindowFullScreen :
 public:
   CGUIWindowFullScreen(void);
   virtual ~CGUIWindowFullScreen(void);
-  virtual void AllocResources();
-  virtual void FreeResources();
+  virtual void AllocResources(bool forceLoad = false);
+  virtual void FreeResources(bool forceUnLoad = false);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual bool OnMouse();
@@ -18,7 +18,6 @@ public:
   virtual void OnWindowLoaded();
   void RenderFullScreen();
   bool NeedRenderFullScreen();
-  bool HasProgressDisplay();
   void ChangetheTimeCode(DWORD remote);
 
 private:

@@ -7,6 +7,10 @@
 #include "../lib/libscrobbler/scrobbler.h"
 #include "../playlistplayer.h"
 #include "../ButtonTranslator.h"
+#include "../Visualizations/Visualisation.h"
+#include "../MusicDatabase.h"
+#include "KaiClient.h"
+
 #include <stack>
 
 #define VERSION_STRING "1.1.0"

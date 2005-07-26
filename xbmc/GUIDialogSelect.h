@@ -1,9 +1,9 @@
 #pragma once
-#include "GUIDialog.h"
+#include "GUIDialogBoxBase.h"
 #include "guilistitem.h"
 
 class CGUIDialogSelect :
-      public CGUIDialog
+      public CGUIDialogBoxBase
 {
 public:
   CGUIDialogSelect(void);
@@ -15,9 +15,6 @@ public:
   void Add(const CStdString& strLabel);
   int GetSelectedLabel() const;
   const CStdString& GetSelectedLabelText();
-  void SetHeading(const wstring& strLine);
-  void SetHeading(const string& strLine);
-  void SetHeading(int iString);
   void EnableButton(bool bOnOff);
   void SetButtonLabel(int iString);
   bool IsButtonPressed();

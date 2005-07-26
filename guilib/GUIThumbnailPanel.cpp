@@ -40,6 +40,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
     , m_imgFolder(dwParentID, dwControlId, iPosX, iPosY, dwitemWidth, dwitemHeight, strImageIcon)
     , m_imgFolderFocus(dwParentID, dwControlId, iPosX, iPosY, dwitemWidth, dwitemHeight, strImageIconFocus)
     , m_upDown(dwControlId, 0, dwSpinX, dwSpinY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
+    , m_scrollInfo(0)
 {
   m_iItemWidth = dwitemWidth;
   m_iItemHeight = dwitemHeight;
@@ -628,11 +629,7 @@ void CGUIThumbnailPanel::OnDown()
 void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText, bool bScroll )
 {
   if (!m_pFont) return ;
-  static int scroll_pos = 0;
-  static int iScrollX = 0;
   static int iLastItem = -1;
-  static int iFrames = 0;
-  static int iStartFrame = 0;
 
   float fTextHeight, fTextWidth;
   m_pFont->GetTextExtent( wszText, &fTextWidth, &fTextHeight);
@@ -654,100 +651,21 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
       iLastItem = -1; // reset scroller
       return ;
     }
-    float fPosCX = fPosX;
-    float fPosCY = fPosY;
-    g_graphicsContext.Correct(fPosCX, fPosCY);
-    if (fPosCX < 0) fPosCX = 0.0f;
-    if (fPosCY < 0) fPosCY = 0.0f;
-    if (fPosCY > g_graphicsContext.GetHeight()) fPosCY = (float)g_graphicsContext.GetHeight();
-    float fHeight = 60.0f;
-    if (fHeight + fPosCY >= g_graphicsContext.GetHeight() )
-      fHeight = g_graphicsContext.GetHeight() - fPosCY - 1;
-    if (fHeight <= 0) return ;
-
-    //    float fwidth=fMaxWidth-5.0f;
 
     // scroll
-    WCHAR wszOrgText[1024];
-    wcscpy(wszOrgText, wszText);
-    wcscat(wszOrgText, L" ");
-    wcscat(wszOrgText, m_strSuffix.c_str());
-    m_pFont->GetTextExtent( wszOrgText, &fTextWidth, &fTextHeight);
-
     int iItem = m_iCursorX + (m_iCursorY + m_iRowOffset) * m_iColumns;
-    if (fTextWidth > fMaxWidth)
+    CStdStringW scrollString = wszText;
+    scrollString += L" ";
+    scrollString += m_strSuffix;
+
+    m_pFont->End(); //deinit fontbatching before setting a new viewport
+    if (iLastItem != iItem)
     {
-      m_pFont->End(); //deinit fontbatching before setting a new viewport
-      D3DVIEWPORT8 newviewport, oldviewport;
-      g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
-      newviewport.X = (DWORD)fPosCX;
-      newviewport.Y = (DWORD)fPosCY;
-      newviewport.Width = (DWORD)(fMaxWidth);
-      newviewport.Height = (DWORD)(fHeight);
-      newviewport.MinZ = 0.0f;
-      newviewport.MaxZ = 1.0f;
-      // we are using an oldviewport here as well, so intersect them both
-      if (newviewport.Y > oldviewport.Y + oldviewport.Height)
-        return; // shouldn't be shown
-      else if (newviewport.Y + newviewport.Height > oldviewport.Y + oldviewport.Height)
-        newviewport.Height = oldviewport.Y + oldviewport.Height - newviewport.Y;  // done intersection
-      g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
-
-      fMaxWidth += (float) (m_iItemWidth * 0.1);
-      WCHAR szText[1024];
-      if (iLastItem != iItem)
-      {
-        scroll_pos = 0;
-        iLastItem = iItem;
-        iStartFrame = 0;
-        iScrollX = 1;
-      }
-      if (iStartFrame > 25)
-      {
-        WCHAR wTmp[3];
-        if (scroll_pos >= (int)wcslen(wszOrgText) )
-          wTmp[0] = L' ';
-        else
-          wTmp[0] = wszOrgText[scroll_pos];
-        wTmp[1] = 0;
-        float fWidth, fHeight;
-        m_pFont->GetTextExtent(wTmp, &fWidth, &fHeight);
-        if ( iScrollX >= fWidth)
-        {
-          ++scroll_pos;
-          if (scroll_pos > (int)wcslen(wszOrgText) )
-            scroll_pos = 0;
-          iFrames = 0;
-          iScrollX = 1;
-        }
-        else iScrollX++;
-
-        int ipos = 0;
-        for (int i = 0; i < (int)wcslen(wszOrgText); i++)
-        {
-          if (i + scroll_pos < (int)wcslen(wszOrgText))
-            szText[i] = wszOrgText[i + scroll_pos];
-          else
-          {
-            if (ipos == 0) szText[i] = L' ';
-            else szText[i] = wszOrgText[ipos - 1];
-            ipos++;
-          }
-          szText[i + 1] = 0;
-        }
-        if (fPosY >= 0.0)
-          m_pFont->DrawTextWidth(fPosX - iScrollX, fPosY, dwTextColor, szText, fMaxWidth);
-
-      }
-      else
-      {
-        iStartFrame++;
-        if (fPosY >= 0.0)
-          m_pFont->DrawTextWidth(fPosX, fPosY, dwTextColor, wszText, fMaxWidth);
-      }
-      g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
-      m_pFont->Begin(); //resume fontbatching
+      m_scrollInfo.Reset();
+      iLastItem = iItem;
     }
+    m_pFont->DrawScrollingText(fPosX, fPosY, &dwTextColor, scrollString, fMaxWidth, m_scrollInfo);
+    m_pFont->Begin(); //resume fontbatching
   }
 }
 

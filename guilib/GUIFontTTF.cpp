@@ -128,6 +128,7 @@ void CGUIFontTTF::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw2
 void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalette, BYTE *pbColours, const WCHAR* strText, DWORD cchText, DWORD dwFlags, FLOAT fMaxPixelWidth )
 {
   Begin();
+
   // vertically centered
   if (dwFlags & XBFONT_CENTER_Y)
   {
@@ -144,7 +145,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
     else
     {
       FLOAT w, h;
-      GetTextExtent( strText, &w, &h, TRUE );
+      GetTextExtentInternal( strText, &w, &h, TRUE );
 
       // If not, then clear the flag
       if ( w <= fMaxPixelWidth )
@@ -169,7 +170,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
         if ( dwFlags & XBFONT_TRUNCATED )
           w = fMaxPixelWidth;
         else
-          GetTextExtent( strText, &w, &h, TRUE );
+          GetTextExtentInternal( strText, &w, &h, TRUE );
 
         // Offset this line's starting m_fCursorX value
         if ( dwFlags & XBFONT_RIGHT )
@@ -224,7 +225,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
   End();
 }
 
-void CGUIFontTTF::GetTextExtent( const WCHAR* strText, FLOAT* pWidth,
+void CGUIFontTTF::GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth,
                                  FLOAT* pHeight, BOOL bFirstLineOnly)
 {
   unsigned width;
@@ -489,6 +490,7 @@ void CGUIFontTTF::CopyTexture(int width)
   m_pD3DDevice->SetTexture(0, m_charTexture);
 
   m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+  m_pD3DDevice->SetVertexShader( D3DFVF_XYZRHW | D3DFVF_TEX1 );
   m_pD3DDevice->SetPixelShader(m_copyShader);
 
   m_pD3DDevice->SetScreenSpaceOffset( -0.5f, -0.5f ); // fix texel align

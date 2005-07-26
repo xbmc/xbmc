@@ -349,11 +349,15 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
     CStdStringW dlgLine1 = "";
     if (0 < g_application.m_iMasterLockRetriesRemaining)
       dlgLine1.Format(L"%d %s", g_application.m_iMasterLockRetriesRemaining, g_localizeStrings.Get(12343));
-    g_application.m_guiDialogOK.SetHeading(12324);
-    g_application.m_guiDialogOK.SetLine(0, 12345);
-    g_application.m_guiDialogOK.SetLine(1, dlgLine1);
-    g_application.m_guiDialogOK.SetLine(2, 0);
-    g_application.m_guiDialogOK.DoModal(m_gWindowManager.GetActiveWindow());
+    CGUIDialogOK *dialog = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (dialog)
+    {
+      dialog->SetHeading(12324);
+      dialog->SetLine(0, 12345);
+      dialog->SetLine(1, dlgLine1);
+      dialog->SetLine(2, 0);
+      dialog->DoModal(m_gWindowManager.GetActiveWindow());
+    }
   }
   else
   {

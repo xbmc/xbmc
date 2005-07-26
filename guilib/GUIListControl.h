@@ -125,5 +125,6 @@ protected:
   wstring m_strSuffix;
   vector<CGUIListItem*> m_vecItems;
   typedef vector<CGUIListItem*> ::iterator ivecItems;
+  CScrollInfo m_scrollInfo;
 };
 #endif

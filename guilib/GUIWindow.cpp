@@ -6,7 +6,6 @@
 #include "GUIControlFactory.h"
 #include "GUIButtonControl.h"
 #include "GUIConditionalButtonControl.h"
-#include "GUISpinButtonControl.h"
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControl.h"
 #include "GUISpinControlEx.h"
@@ -21,7 +20,6 @@
 #include "GUIFadeLabelControl.h"
 #include "GUICheckMarkControl.h"
 #include "GUIThumbnailPanel.h"
-#include "GUIMButtonControl.h"
 #include "GUIToggleButtonControl.h"
 #include "GUITextBox.h"
 #include "GUIVideoControl.h"
@@ -41,9 +39,10 @@
 CStdString CGUIWindow::CacheFilename = "";
 CGUIWindow::VECREFERENCECONTOLS CGUIWindow::ControlsCache;
 
-CGUIWindow::CGUIWindow(DWORD dwID)
+CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
 {
   m_dwWindowId = dwID;
+  m_xmlFile = xmlFile;
   m_dwIDRange = 1;
   m_dwPreviousWindowId = WINDOW_HOME;
   m_dwDefaultFocusControlID = 0;
@@ -54,6 +53,8 @@ CGUIWindow::CGUIWindow(DWORD dwID)
   m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
   m_needsScaling = true;
   m_visibleCondition = 0;
+  m_windowLoaded = false;
+  m_loadOnDemand = true;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -102,10 +103,6 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
       {
         stControl.m_pControl = new CGUIFadeLabelControl(*((CGUIFadeLabelControl*)it->m_pControl));
       }
-      else if (!strcmp(it->m_szType, "spinbutton"))
-      {
-        stControl.m_pControl = new CGUISpinButtonControl(*((CGUISpinButtonControl*)it->m_pControl));
-      }
       else if (!strcmp(it->m_szType, "button"))
       {
         stControl.m_pControl = new CGUIButtonControl(*((CGUIButtonControl*)it->m_pControl));
@@ -129,10 +126,6 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
       else if (!strcmp(it->m_szType, "togglebutton"))
       {
         stControl.m_pControl = new CGUIToggleButtonControl(*((CGUIToggleButtonControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "buttonM"))
-      {
-        stControl.m_pControl = new CGUIMButtonControl(*((CGUIMButtonControl*)it->m_pControl));
       }
       else if (!strcmp(it->m_szType, "checkmark"))
       {
@@ -255,10 +248,6 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
     {
       stControl.m_pControl = new CGUIFadeLabelControl(*((CGUIFadeLabelControl*)it->m_pControl));
     }
-    else if (!strcmp(it->m_szType, "spinbutton"))
-    {
-      stControl.m_pControl = new CGUISpinButtonControl(*((CGUISpinButtonControl*)it->m_pControl));
-    }
     else if (!strcmp(it->m_szType, "button"))
     {
       stControl.m_pControl = new CGUIButtonControl(*((CGUIButtonControl*)it->m_pControl));
@@ -282,10 +271,6 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
     else if (!strcmp(it->m_szType, "togglebutton"))
     {
       stControl.m_pControl = new CGUIToggleButtonControl(*((CGUIToggleButtonControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "buttonM"))
-    {
-      stControl.m_pControl = new CGUIMButtonControl(*((CGUIMButtonControl*)it->m_pControl));
     }
     else if (!strcmp(it->m_szType, "checkmark"))
     {
@@ -355,6 +340,11 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 
 bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 {
+  if (m_windowLoaded)
+    return true;      // no point loading if it's already there
+  LARGE_INTEGER start;
+  QueryPerformanceCounter(&start);
+
   RESOLUTION resToUse = INVALID;
   CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
   m_vecGroups.erase(m_vecGroups.begin(), m_vecGroups.end());
@@ -373,14 +363,19 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
     return false;
   }
   TiXmlElement* pRootElement = xmlDoc.RootElement();
-  CStdString strValue = pRootElement->Value();
-  if (strValue != CStdString("window"))
+  if (strcmpi(pRootElement->Value(), "window"))
   {
     CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strPath.c_str());
     return false;
   }
-
-  return Load(pRootElement, resToUse);
+  LARGE_INTEGER lend;
+  QueryPerformanceCounter(&lend);
+  bool ret = Load(pRootElement, resToUse);
+  LARGE_INTEGER end, freq;
+  QueryPerformanceCounter(&end);
+  QueryPerformanceFrequency(&freq);
+  CLog::DebugLog("Load %s: %.2fms (%.2f ms xml load)", m_xmlFile.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (lend.QuadPart - start.QuadPart) / freq.QuadPart);
+  return ret;
 }
 
 bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
@@ -482,6 +477,7 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
     delete stControl.m_pControl;
   }
   OnWindowLoaded();
+  m_windowLoaded = true;
   return true;
 }
 
@@ -544,8 +540,8 @@ void CGUIWindow::CenterWindow()
 {
   if (m_bRelativeCoords)
   {
-    m_iPosX = (g_graphicsContext.GetWidth() - m_dwWidth) / 2;
-    m_iPosY = (g_graphicsContext.GetHeight() - m_dwHeight) / 2;
+    m_iPosX = (g_graphicsContext.GetWidth() - (int)m_dwWidth) / 2;
+    m_iPosY = (g_graphicsContext.GetHeight() - (int)m_dwHeight) / 2;
   }
 }
 
@@ -557,36 +553,14 @@ void CGUIWindow::Render()
   // to occur.
   if (!m_WindowAllocated) return;
 
-  // calculate necessary scalings
-  float fFromWidth = (float)g_settings.m_ResInfo[m_coordsRes].iWidth;
-  float fFromHeight = (float)g_settings.m_ResInfo[m_coordsRes].iHeight;
-  float fToWidth = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iWidth;
-  float fToHeight = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight;
-  float fScaleX = fToWidth / fFromWidth;
-  float fScaleY = fToHeight / fFromHeight;
-  bool bNeedsScaling = m_needsScaling && (m_coordsRes != g_graphicsContext.GetVideoResolution());
+  g_graphicsContext.SetScalingResolution(m_coordsRes, m_iPosX, m_iPosY, m_needsScaling);
 
   for (int i = 0; i < (int)m_vecControls.size(); i++)
   {
     CGUIControl *pControl = m_vecControls[i];
     if (pControl)
     {
-      int iPosX = pControl->GetXPosition();
-      int iPosY = pControl->GetYPosition();
-      DWORD width = pControl->GetWidth();
-      DWORD height = pControl->GetHeight();
-      if (bNeedsScaling)
-      {
-        pControl->SetWidth((DWORD)(fScaleX*width + 0.5f));
-        pControl->SetHeight((DWORD)(fScaleY*height + 0.5f));
-        pControl->SetPosition((int)(fScaleX*(iPosX + m_iPosX) + 0.5f), (int)(fScaleY*(iPosY + m_iPosY) + 0.5f));
-      }
-      else
-        pControl->SetPosition(pControl->GetXPosition() + m_iPosX, pControl->GetYPosition() + m_iPosY);
       pControl->Render();
-      pControl->SetWidth(width);
-      pControl->SetHeight(height);
-      pControl->SetPosition(iPosX, iPosY);
     }
   }
 }
@@ -950,11 +924,17 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   return false;
 }
 
-void CGUIWindow::AllocResources()
+void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
 {
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
 
+  // load skin xml file
+  if (m_xmlFile.size() && (forceLoad || m_loadOnDemand)) Load(m_xmlFile);
+  LARGE_INTEGER slend;
+  QueryPerformanceCounter(&slend);
+
+  // and now allocate resources
   g_TextureManager.StartPreLoad();
   ivecControls i;
   for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
@@ -980,10 +960,10 @@ void CGUIWindow::AllocResources()
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
   m_WindowAllocated = true;
-  CLog::DebugLog("Alloc resources: %.2fms (%.2f ms preload)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (plend.QuadPart - start.QuadPart) / freq.QuadPart);
+  CLog::DebugLog("Alloc resources: %.2fms (%.2f ms skin load, %.2f ms preload)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (slend.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (plend.QuadPart - slend.QuadPart) / freq.QuadPart);
 }
 
-void CGUIWindow::FreeResources()
+void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)
 {
   ivecControls i;
   //OutputDebugString(" free resources\n");
@@ -994,6 +974,8 @@ void CGUIWindow::FreeResources()
   }
   m_WindowAllocated = false;
   //g_TextureManager.Dump();
+  // unload the skin
+  if (m_loadOnDemand || forceUnload) ClearAll();
 }
 
 void CGUIWindow::DynamicResourceAlloc(bool bOnOff)
@@ -1078,6 +1060,7 @@ void CGUIWindow::ClearAll()
     delete pControl;
   }
   m_vecControls.erase(m_vecControls.begin(), m_vecControls.end());
+  m_windowLoaded = false;
 }
 
 const CGUIControl* CGUIWindow::GetControl(int iControl) const
@@ -1107,4 +1090,9 @@ void CGUIWindow::ResetAllControls()
     pControl->SetWidth( pControl->GetWidth() );
     pControl->Update();
   }
+}
+
+void CGUIWindow::Initialize()
+{
+  Load(m_xmlFile);
 }

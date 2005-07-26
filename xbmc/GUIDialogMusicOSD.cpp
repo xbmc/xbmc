@@ -8,10 +8,11 @@
 #define CONTROL_VIS_CHOOSER      503
 
 CGUIDialogMusicOSD::CGUIDialogMusicOSD(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_DIALOG_MUSIC_OSD, "MusicOSD.xml")
 {
   m_iLastControl = -1;
   m_pVisualisation = NULL;
+  LoadOnDemand(false);    // we are loaded by the vis window.
 }
 
 CGUIDialogMusicOSD::~CGUIDialogMusicOSD(void)

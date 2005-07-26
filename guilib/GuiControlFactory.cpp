@@ -3,7 +3,6 @@
 #include "LocalizeStrings.h"
 #include "GUIButtoncontrol.h"
 #include "GUIConditionalButtonControl.h"
-#include "GUISpinButtonControl.h"
 #include "GUIRadiobuttoncontrol.h"
 #include "GUISpinControl.h"
 #include "GUIRSSControl.h"
@@ -17,7 +16,6 @@
 #include "GUIFadeLabelControl.h"
 #include "GUICheckMarkControl.h"
 #include "GUIThumbnailPanel.h"
-#include "GUIMButtonControl.h"
 #include "GUIToggleButtonControl.h"
 #include "GUITextBox.h"
 #include "GUIVideoControl.h"
@@ -413,17 +411,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       lTextOffsetX = ((CGUIConditionalButtonControl*)pReference)->GetTextOffsetX();
       lTextOffsetY = ((CGUIConditionalButtonControl*)pReference)->GetTextOffsetY();
     }
-    else if (strType == "spinbutton")
-    {
-      iType = ((CGUISpinButtonControl*)pReference)->GetType();
-      strTextureDownFocus = ((CGUISpinButtonControl*)pReference)->GetTextureDownFocusName();
-      strTextureUpFocus = ((CGUISpinButtonControl*)pReference)->GetTextureUpFocusName();
-      strTextureFocus = ((CGUISpinButtonControl*)pReference)->GetTextureFocusName();
-      strTextureNoFocus = ((CGUISpinButtonControl*)pReference)->GetTextureNoFocusName();
-      strFont = ((CGUISpinButtonControl*)pReference)->GetFontName();
-      dwTextColor = ((CGUISpinButtonControl*)pReference)->GetTextColor();
-      dwDisabledColor = ((CGUISpinButtonControl*)pReference)->GetDisabledColor() ;
-    }
     else if (strType == "togglebutton")
     {
       strTextureAltFocus = ((CGUIToggleButtonControl*)pReference)->GetTextureAltFocusName();
@@ -441,19 +428,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       lTextOffsetX = ((CGUIToggleButtonControl*)pReference)->GetTextOffsetX();
       lTextOffsetY = ((CGUIToggleButtonControl*)pReference)->GetTextOffsetY();
       iToggleSelect = ((CGUIToggleButtonControl*)pReference)->GetToggleSelect();
-    }
-    else if (strType == "buttonM")
-    {
-      dwItems = ((CGUIMButtonControl*)pReference)->GetItems();
-      strTextureFocus = ((CGUIMButtonControl*)pReference)->GetTextureFocusName();
-      strTextureNoFocus = ((CGUIMButtonControl*)pReference)->GetTextureNoFocusName();
-      strFont = ((CGUIMButtonControl*)pReference)->GetFontName();
-      strLabel = ((CGUIMButtonControl*)pReference)->GetLabel();
-      dwTextColor = ((CGUIMButtonControl*)pReference)->GetTextColor();
-      dwDisabledColor = ((CGUIMButtonControl*)pReference)->GetDisabledColor() ;
-      iHyperLink = ((CGUIMButtonControl*)pReference)->GetHyperLink();
-      lTextOffsetX = ((CGUIMButtonControl*)pReference)->GetTextOffsetX();
-      lTextOffsetY = ((CGUIMButtonControl*)pReference)->GetTextOffsetY();
     }
     else if (strType == "checkmark")
     {
@@ -1021,22 +995,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetInfo(vecInfo);
     return pControl;
   }
-  else if (strType == "spinbutton")
-  {
-    CGUISpinButtonControl* pControl = new CGUISpinButtonControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      strTextureNoFocus, strTextureFocus,
-      strTextureUpFocus, strTextureDownFocus,
-      strFont, dwTextColor, (int)dwDisposition);
-
-    pControl->SetDisabledColor(dwDisabledColor);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
-    pControl->SetPulseOnSelect(bPulse);
-    return pControl;
-  }
   else if (strType == "rss")
   {
     CGUIRSSControl* pControl = new CGUIRSSControl(
@@ -1135,23 +1093,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition);
     pControl->SetToggleSelect(iToggleSelect);
-    pControl->SetPulseOnSelect(bPulse);
-    return pControl;
-  }
-  else if (strType == "buttonM")
-  {
-    CGUIMButtonControl* pControl = new CGUIMButtonControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      dwItems, strTextureFocus, strTextureNoFocus,
-      lTextOffsetX, lTextOffsetY);
-
-    pControl->SetLabel(strFont, strLabel, dwTextColor);
-    pControl->SetDisabledColor(dwDisabledColor);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetHyperLink(iHyperLink);
-    pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }

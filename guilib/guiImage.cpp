@@ -114,6 +114,11 @@ void CGUIImage::Render()
 
   Process();
   if (m_bInvalidated) UpdateVB();
+  // scale to screen output position
+  float x1 = g_graphicsContext.ScaleFinalXCoord(m_fX) - 0.5f;
+  float y1 = g_graphicsContext.ScaleFinalYCoord(m_fY) - 0.5f;
+  float x2 = x1 + m_fNW * g_graphicsContext.ScaleFinalX();
+  float y2 = y1 + m_fNH * g_graphicsContext.ScaleFinalY();
 
   LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
   // Set state to render the image
@@ -143,32 +148,33 @@ void CGUIImage::Render()
   p3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
   p3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE);
   p3DDevice->SetVertexShader( FVF_VERTEX );
+
   // Render the image
   p3DDevice->Begin(D3DPT_QUADLIST);
 
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs, 0.0f );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs, 0.0f);
   D3DCOLOR color = m_colDiffuse;
   if (m_dwAlpha[0] != 0xFF) color = (m_dwAlpha[0] << 24) | (m_colDiffuse & 0x00FFFFFF);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, m_fX - 0.5f, m_fY - 0.5f, 0.0f, 0.0f );
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, 0, 0 );
 
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs + m_fU, 0.0f );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs + m_fU, 0.0f);
   color = m_colDiffuse;
   if (m_dwAlpha[1] != 0xFF) color = (m_dwAlpha[1] << 24) | (m_colDiffuse & 0x00FFFFFF);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, m_fX + m_fNW - 0.5f, m_fY - 0.5f, 0.0f, 0.0f );
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y1, 0, 0 );
 
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs + m_fU, m_fV );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs + m_fU, m_fV);
   color = m_colDiffuse;
   if (m_dwAlpha[2] != 0xFF) color = (m_dwAlpha[2] << 24) | (m_colDiffuse & 0x00FFFFFF);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, m_fX + m_fNW - 0.5f, m_fY + m_fNH - 0.5f, 0.0f, 0.0f );
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, 0, 0 );
 
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs, m_fV );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs, m_fV);
   color = m_colDiffuse;
   if (m_dwAlpha[3] != 0xFF) color = (m_dwAlpha[3] << 24) | (m_colDiffuse & 0x00FFFFFF);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, m_fX - 0.5f, m_fY + m_fNH - 0.5f, 0.0f, 0.0f );
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y2, 0, 0 );
 
   p3DDevice->End();
 
@@ -332,11 +338,6 @@ void CGUIImage::UpdateVB()
 
   m_iRenderWidth = (int)m_fNW;
   m_iRenderHeight = (int)m_fNH;
-
-  if (CalibrationEnabled())
-  {
-    g_graphicsContext.Correct(m_fX, m_fY);
-  }
 
 #ifdef ALLOW_TEXTURE_COMPRESSION
   m_fUOffs = float(m_iBitmap * m_dwWidth) / float(m_iImageWidth);

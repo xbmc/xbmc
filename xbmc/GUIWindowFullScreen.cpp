@@ -11,6 +11,8 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "../guilib/GUIProgressControl.h"
 #include "GUIAudioManager.h"
+#include "../guilib/GUILabelControl.h"
+#include "GUIWindowOSD.h"
 
 #include <stdio.h>
 
@@ -69,7 +71,7 @@ extern IDirectSoundRenderer* m_pAudioDecoder;
 static DWORD color[6] = { 0xFFFFFF00, 0xFFFFFFFF, 0xFF0099FF, 0xFF00FF00, 0xFFCCFF00, 0xFF00FFFF };
 
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
-    : CGUIWindow(0)
+    : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullscreen.xml")
 {
   m_strTimeStamp[0] = 0;
   m_iTimeCodePosition = 0;
@@ -80,7 +82,7 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   m_bShowCurrentTime = false;
   m_dwTimeCodeTimeout = 0;
   m_subtitleFont = NULL;
-  m_needsScaling = false;         // we handle all the scaling
+//  m_needsScaling = false;         // we handle all the scaling
   // audio
   //  - language
   //  - volume
@@ -103,17 +105,19 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 {}
 
-void CGUIWindowFullScreen::AllocResources()
+void CGUIWindowFullScreen::AllocResources(bool forceLoad)
 {
-  CGUIWindow::AllocResources();
-  g_application.m_guiWindowOSD.AllocResources();
+  CGUIWindow::AllocResources(forceLoad);
+  CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_OSD);
+  if (pWindow) pWindow->AllocResources(true);
 }
 
-void CGUIWindowFullScreen::FreeResources()
+void CGUIWindowFullScreen::FreeResources(bool forceUnload)
 {
   g_settings.Save();
-  g_application.m_guiWindowOSD.FreeResources();
-  CGUIWindow::FreeResources();
+  CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_OSD);
+  if (pWindow) pWindow->FreeResources(true);
+  CGUIWindow::FreeResources(forceUnload);
 }
 
 bool CGUIWindowFullScreen::OnAction(const CAction &action)
@@ -160,7 +164,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     break;
 
   case ACTION_SHOW_OSD_TIME:
-    if( !HasProgressDisplay() ) g_application.m_pPlayer->ToggleOSD();
     m_bShowCurrentTime = !m_bShowCurrentTime;
     if(!m_bShowCurrentTime)
       g_infoManager.SetDisplayAfterSeek(0); //Force display off
@@ -170,7 +173,8 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_SHOW_OSD:  // Show the OSD
     {
-      g_application.m_guiWindowOSD.DoModal(m_gWindowManager.GetActiveWindow());
+      CGUIWindowOSD *pOSD = (CGUIWindowOSD *)m_gWindowManager.GetWindow(WINDOW_OSD);
+      if (pOSD) pOSD->DoModal(m_gWindowManager.GetActiveWindow());
       return true;
     }
     break;
@@ -442,14 +446,6 @@ bool CGUIWindowFullScreen::OnMouse()
 void CGUIWindowFullScreen::Render()
 {
   return ;
-}
-
-bool CGUIWindowFullScreen::HasProgressDisplay()
-{
-  CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
-  if(pControl) return true;
-  
-  return false;
 }
 
 bool CGUIWindowFullScreen::NeedRenderFullScreen()

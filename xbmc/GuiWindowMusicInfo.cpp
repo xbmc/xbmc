@@ -20,7 +20,7 @@
 #define CONTROL_BTN_REFRESH 6
 
 CGUIWindowMusicInfo::CGUIWindowMusicInfo(void)
-    : CGUIDialog(0)
+    : CGUIDialog(WINDOW_MUSIC_INFO, "DialogAlbumInfo.xml")
 {}
 
 CGUIWindowMusicInfo::~CGUIWindowMusicInfo(void)
