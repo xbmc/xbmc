@@ -38,8 +38,10 @@ public:
   typedef std::vector<Movie> MOVIELIST;
   typedef std::vector<Movie> ::iterator MOVIELISTITERATOR;
 
-  CMediaMonitor();
   virtual ~CMediaMonitor();
+
+  static CMediaMonitor *GetInstance(IMediaObserver* aObserver = NULL);
+  static void RemoveInstance();
 
   enum CommandType {Seed, Refresh, Update};
 
@@ -54,6 +56,7 @@ public:
   void Create(IMediaObserver* aObserver);
   void QueueCommand(CMediaMonitor::Command& aCommand);
   bool IsBusy();
+  void SetObserver(IMediaObserver* observer);
 
 protected:
 
@@ -62,6 +65,8 @@ protected:
   void DispatchNextCommand();
 
 private:
+  static CMediaMonitor *monitor;
+  CMediaMonitor();
   void OnStartup();
   void Process();
   void InitializeObserver();
@@ -71,7 +76,7 @@ private:
   void FilterDuplicates(MOVIELIST& movies);
 
   void UpdateTitle(INT nIndex, CStdString& strTitle, CStdString& strFilepath);
-  void UpdateObserver(Movie& aMovie, IMediaObserver* pObserver, INT nIndex, bool bForceUpdate);
+  void UpdateObserver(Movie& aMovie, INT nIndex, bool bForceUpdate, bool bUpdateObserver);
   bool GetMovieInfo(CStdString& strFilepath, CIMDBMovie& aMovieRecord, bool bRefresh);
   bool imdb_GetMovieInfo(CStdString& strTitle, CIMDBMovie& aMovieRecord);
   bool imdb_GetMovieArt(CStdString& strIMDBNumber, CStdString& strPictureUrl, CStdString& strImagePath);
