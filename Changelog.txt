@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-07-2005 fixed: Crash in skins when you move off a window that contains the RAM control.
  - 27-07-2005 fixed: SF bug [ 1245551 ] - incorrect heading of numeric dialogs.
  - 27-07-2005 fixed: Album Information in Library view context menu is now only enabled if appropriate.
  - 27-07-2005 changed: Faster chroma upsampling for interlaced sources.

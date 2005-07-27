@@ -8,7 +8,7 @@
 #include "../Util.h"
 #include "../FileSystem/VirtualDirectory.h"
 
-
+CMediaMonitor *CMediaMonitor::monitor = NULL;
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -157,7 +157,7 @@ void CMediaMonitor::Scan(bool bUpdateAllMovies)
     // query imdb for new info
     for (int iMovie = 0; iMovie < (int)movies.size(); iMovie++)
     {
-      UpdateObserver(movies[iMovie], NULL, 0, false);
+      UpdateObserver(movies[iMovie], 0, false, false);
       Sleep(50);
     }
   }
@@ -167,7 +167,7 @@ void CMediaMonitor::Scan(bool bUpdateAllMovies)
   int iOlderMovie = iLatestMovie - RECENT_MOVIES;
   for (int iMovie = iLatestMovie; (iMovie >= 0) && (iMovie > iOlderMovie); iMovie--)
   {
-    UpdateObserver(movies[iMovie], m_pObserver, iLatestMovie - iMovie, false);
+    UpdateObserver(movies[iMovie], iLatestMovie - iMovie, false, true);
   }
 
   movies.clear();
@@ -228,7 +228,7 @@ void CMediaMonitor::FilterDuplicates(MOVIELIST& movies)
 
 /// This method gets information for the specified movie and notifies the specified
 /// observer.
-void CMediaMonitor::UpdateObserver(Movie& aMovie, IMediaObserver* pObserver, INT nIndex, bool bForceUpdate)
+void CMediaMonitor::UpdateObserver(Movie& aMovie, INT nIndex, bool bForceUpdate, bool bUpdateObserver)
 {
   CStdString strImagePath;
   CIMDBMovie details;
@@ -245,10 +245,10 @@ void CMediaMonitor::UpdateObserver(Movie& aMovie, IMediaObserver* pObserver, INT
     details.m_strTitle = CUtil::GetFileName(aMovie.strFilepath);
   }
 
-  if (pObserver)
+  if (bUpdateObserver && m_pObserver)
   {
     g_graphicsContext.Lock();
-    pObserver->OnMediaUpdate(nIndex, aMovie.strFilepath, details.m_strTitle, strImagePath);
+    m_pObserver->OnMediaUpdate(nIndex, aMovie.strFilepath, details.m_strTitle, strImagePath);
     g_graphicsContext.Unlock();
   }
 }
@@ -441,7 +441,7 @@ void CMediaMonitor::InitializeObserver()
     {
       Movie movie;
       movie.strFilepath = paths[0];
-      UpdateObserver(movie, m_pObserver, i, false);
+      UpdateObserver(movie, i, false, true);
     }
   }
 }
@@ -670,4 +670,29 @@ long CMediaMonitor::parse_AggregateValue(CStdString& strFilepath)
     count += strFilepath[i];
   }
   return count;
+}
+
+void CMediaMonitor::SetObserver(IMediaObserver *observer)
+{
+  m_pObserver = observer;
+}
+
+CMediaMonitor *CMediaMonitor::GetInstance(IMediaObserver* aObserver)
+{
+  if (monitor == NULL && aObserver)
+  {
+    monitor = new CMediaMonitor();
+    monitor->Create(aObserver);
+  }
+  else if (aObserver)
+    monitor->SetObserver(aObserver);
+
+  return monitor;
+}
+
+void CMediaMonitor::RemoveInstance()
+{
+  if (monitor)
+    delete monitor;
+  monitor=NULL;
 }

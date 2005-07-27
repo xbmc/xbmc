@@ -82,13 +82,6 @@ CGUIRAMControl::~CGUIRAMControl(void)
       delete m_pTextButton[i];
     m_pTextButton[i]=NULL;
  }
-
-  //if (m_pMonitor)
-  //{
-  //  m_pMonitor->StopThread();
-  //  delete m_pMonitor;
-  //}
-  //m_pMonitor=NULL;
 }
 
 void CGUIRAMControl::Render()
@@ -101,8 +94,7 @@ void CGUIRAMControl::Render()
   if (m_pMonitor == NULL)
   {
     // Create monitor background/worker thread
-    m_pMonitor = new CMediaMonitor();
-    m_pMonitor->Create(this);
+    m_pMonitor = CMediaMonitor::GetInstance(this);
   }
 
   int iImageX;
@@ -450,7 +442,7 @@ void CGUIRAMControl::UpdateAllTitles()
 {
   CMediaMonitor::Command command;
   command.rCommand = CMediaMonitor::CommandType::Seed;
-  m_pMonitor->QueueCommand(command);
+  if (m_pMonitor) m_pMonitor->QueueCommand(command);
 }
 
 void CGUIRAMControl::UpdateTitle(CStdString& strFilepath, INT nIndex)
@@ -462,7 +454,7 @@ void CGUIRAMControl::UpdateTitle(CStdString& strFilepath, INT nIndex)
                                        CMediaMonitor::CommandType::Update,
                                        strFilename, strFilepath, nIndex };
 
-    m_pMonitor->QueueCommand(command);
+    if (m_pMonitor) m_pMonitor->QueueCommand(command);
   }
 }
 
@@ -537,11 +529,13 @@ void CGUIRAMControl::AllocResources()
 
 void CGUIRAMControl::FreeResources()
 {
-  CGUIControl::FreeResources();
-
+  if (m_pMonitor)
+    m_pMonitor->SetObserver(NULL);
+  m_pMonitor = NULL;
   for (int i = 0;i < RECENT_MOVIES;i++)
   {
     if (m_pTextButton[i])
       m_pTextButton[i]->FreeResources();
   }
+  CGUIControl::FreeResources();
 }
