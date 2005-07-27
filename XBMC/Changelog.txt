@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 26-07-2005 enabled: support for the renderer to switch interlaced/progressive mode ona a frame to frame bases
+ - 27-07-2005 fixed: when a folder is added to a playlist via the web, its now added in the correct sorted order
+ - 27-07-2005 enabled: support for the renderer to switch interlaced/progressive mode ona a frame to frame bases
  - 27-07-2005 changed: cleaned up the dll loader
  - 26-07-2005 added: support for the delete action in the media windows (requires file deletion be enabled)
  - 26-07-2005 added: Correct chroma upsampling for interlaced video to the HQ renderer (fixes the inverse of the "chroma bug")
