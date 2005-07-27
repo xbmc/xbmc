@@ -165,11 +165,6 @@ bool CGUIWindowVideoBase::OnAction(const CAction &action)
     return true;
   }
 
-  if (action.wID == ACTION_DELETE_ITEM)
-  {
-    OnDeleteItem(m_viewControl.GetSelectedItem());
-  }
-
   return CGUIWindow::OnAction(action);
 }
 
@@ -333,11 +328,22 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           OnPopupMenu(iItem);
         }
        	else if (iAction == ACTION_PLAYER_PLAY && !g_application.IsPlayingVideo())
-
         {
-
           OnResumeItem(iItem);
+        }
+        else if (iAction == ACTION_DELETE_ITEM)
+        {
+          // is delete allowed?
+          // must be at the title window
+          if (GetID() == WINDOW_VIDEO_TITLE)
+            OnDeleteItem(iItem);
 
+          // or be at the files window and have file deletion enabled
+          else if (GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion"))
+            OnDeleteItem(iItem);
+
+          else
+            return false;
         }
       }
       else if (iControl == CONTROL_IMDB)
@@ -990,7 +996,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     btn_DVD = pMenu->AddButton(15213);
 
   int btn_Delete = 0;
-  if (g_guiSettings.GetBool("VideoFiles.AllowFileDeletion") || GetID() == WINDOW_VIDEO_TITLE)
+  if ((GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")) || GetID() == WINDOW_VIDEO_TITLE)
     btn_Delete = pMenu->AddButton(117);             // Delete
 
   int btn_Settings      = pMenu->AddButton(5);      // Settings
