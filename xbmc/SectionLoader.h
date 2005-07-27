@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cores/DllLoader/dll.h"
+#include "cores/DllLoader/DllLoader.h"
 
 // dll defines
 #define APE_DLL "Q:\\system\\players\\PAPlayer\\MACDll.dll"

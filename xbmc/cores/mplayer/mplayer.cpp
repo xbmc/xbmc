@@ -1,7 +1,7 @@
 #include "../../stdafx.h"
 #include "audio.h"
 #include "video.h"
-#include "../DllLoader/dll.h"
+#include "../DllLoader/DllLoader.h"
 #include "mplayer.h"
 
 

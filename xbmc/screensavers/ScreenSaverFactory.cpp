@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "ScreenSaverFactory.h"
-#include "../cores/DllLoader/dll.h"
+#include "../cores/DllLoader/DllLoader.h"
 #include "../util.h"
 
 

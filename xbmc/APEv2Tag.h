@@ -1,7 +1,7 @@
 //------------------------------
 // CApeTag in 2005 by JMarshall
 //------------------------------
-#include "cores/DllLoader/dll.h"
+#include "cores/DllLoader/DllLoader.h"
 #include "cores/paplayer/ReplayGain.h"
 
 typedef wchar_t str_utf16;
