@@ -1,6 +1,6 @@
 #pragma once
 #include "ICodec.h"
-#include "../../cores/DllLoader/dll.h"
+#include "../../cores/DllLoader/DllLoader.h"
 #include "../../MusicInfoTagLoaderMP3.h"
 #include "FileReader.h"
 

@@ -1420,10 +1420,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -2009,54 +2009,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\dlgcache.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\EMUdummy.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\EMUDX8.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\EMUkernel32.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\EMUmisc.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\EMUmsvcrt.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\EMUOLE32.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\EMUregistry.c">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\EMUws32.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\exports.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\exports2.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\exports4.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\exports5.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\exportsmisc.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\exportsOLE32.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\exportspython.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\exportsreg.cpp">
-			</File>
-			<File
 				RelativePath=".\xbmc\cores\ModPlayer.cpp">
 			</File>
 			<File
@@ -2392,9 +2344,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\cores\dvdplayer\IDVDPlayer.h">
 				</File>
-				<File
-					RelativePath=".\xbmc\cores\dvdplayer\video.cpp">
-				</File>
 				<Filter
 					Name="DVDCodecs"
 					Filter="">
@@ -2717,28 +2666,139 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\VideoRenderers\XBoxRenderer.h">
 				</File>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="Visualisations"
-			Filter="">
-			<File
-				RelativePath=".\xbmc\visualizations\fft.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\visualizations\fft.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\visualizations\Visualisation.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\visualizations\Visualisation.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\visualizations\VisualisationFactory.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\visualizations\VisualisationFactory.h">
-			</File>
+			<Filter
+				Name="DllLoader"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\cores\DllLoader\coff.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\DllLoader\dll.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\DllLoader\dll_tracker.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\DllLoader\dll_tracker_library.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\DllLoader\dll_tracker_memory.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\DllLoader\dll_util.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\DllLoader\DllLoader.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\DllLoader\DllLoaderContainer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\DllLoader\Exp2Dll.cpp">
+				</File>
+				<Filter
+					Name="exports"
+					Filter="">
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\emu_dummy.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\emu_dx8.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\emu_kernel32.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\emu_misc.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\emu_msvcrt.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\emu_ole32.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\emu_registry.c">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\emu_socket.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\exports_kernel32.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\exports_misc.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\exports_msvcrt.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\exports_ole32.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\exports_python.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\exports_reg.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\exports_socket.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\DllLoader\exports\exports_xbox_dx8.cpp">
+					</File>
+					<Filter
+						Name="includes"
+						Filter="">
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_dummy.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_dx8.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_kernel32.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_misc.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_msvcrt.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_ole32.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_registry.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_socket.h">
+						</File>
+					</Filter>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="Visualisations"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\visualizations\fft.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\visualizations\fft.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\visualizations\Visualisation.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\visualizations\Visualisation.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\visualizations\VisualisationFactory.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\visualizations\VisualisationFactory.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="libraries"

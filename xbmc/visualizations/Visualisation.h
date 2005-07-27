@@ -8,7 +8,7 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-#include "../cores/DllLoader/dll.h"
+#include "../cores/DllLoader/DllLoader.h"
 #include "../../guilib/key.h"
 
 #ifdef __cplusplus
