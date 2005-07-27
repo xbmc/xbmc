@@ -65,7 +65,7 @@ public:
   void AutoCrop(bool bCrop);
   int GetBuffersCount() { return m_NumYV12Buffers; };
 
-  void SetFieldSync(EFIELDSYNC mSync) { m_iFieldSync = mSync; } ;
+  void SetFieldSync(EFIELDSYNC mSync);
 
 protected:
   virtual void Render() {};
