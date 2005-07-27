@@ -41,7 +41,7 @@ static bool m_bImageLocked = false;
 static bool m_bAllowDR = true;
 #endif
 
-
+static int m_iLastFieldFlags = 0;
 
 void video_uninit(void);
 
@@ -182,6 +182,8 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
   m_bAllowDR = true;
 #endif
 
+  m_iLastFieldFlags = 0;
+
   float fps = 25.00f;
   if (g_application.m_pPlayer)
     fps = g_application.m_pPlayer->GetActualFPS();
@@ -289,16 +291,38 @@ static unsigned int video_control(unsigned int request, void *data, ...)
     {
       mp_image_t *mpi = (mp_image_t*)data;
 
-      if( mpi->fields & MP_IMGFIELD_ORDERED )
+      if( mpi->fields & MP_IMGFIELD_INTERLACED &&
+         m_iLastFieldFlags & MP_IMGFIELD_REPEAT_FIRST && !(m_iLastFieldFlags & MP_IMGFIELD_INTERLACED))
+      {
+          //This is a workaround for some stupid encoders that doesn't set the progressive frame flag properly
+          g_renderManager.SetFieldSync(FS_NONE);
+      }
+#if 1
+      else if( mpi->fields & MP_IMGFIELD_ORDERED )
+      { //Okey, this should probably be removed when mplayer supports the interlaced flag correctly
+        //which propably will be never
         if( mpi->fields & MP_IMGFIELD_TOP_FIRST )
           g_renderManager.SetFieldSync(FS_ODD);
         else
           g_renderManager.SetFieldSync(FS_EVEN);
+      }
+#endif
       else if( mpi->fields & MP_IMGFIELD_INTERLACED )
-        g_renderManager.SetFieldSync(FS_ODD);
+      {
+        if( mpi->fields & MP_IMGFIELD_ORDERED )
+        { 
+          if( mpi->fields & MP_IMGFIELD_TOP_FIRST )
+            g_renderManager.SetFieldSync(FS_ODD);
+          else
+            g_renderManager.SetFieldSync(FS_EVEN);
+        }
+        else
+          g_renderManager.SetFieldSync(FS_ODD);
+      }
       else
         g_renderManager.SetFieldSync(FS_NONE);
 
+      m_iLastFieldFlags = mpi->fields;
 
 #ifdef MP_DIRECTRENDERING
       if( m_bImageLocked )
