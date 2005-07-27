@@ -307,7 +307,7 @@ void CRGBRenderer::Render()
       int middleSource = (rd.bottom - rd.top) >> 1;
       for (int i = 0; i < middleSource; i++)
       {
-        float sTop = sourceScale * i + rs.top + 0.5f;
+        float sTop = sourceScale * i + rs.top * 0.5f + 0.5f;
         // Render the first field
         m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left + 0.5f, sTop );
         m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0.0f, 0.0f );
