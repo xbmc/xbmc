@@ -353,6 +353,22 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         {
           OnPopupMenu(iItem);
         }
+        else if (iAction == ACTION_DELETE_ITEM)
+        {
+          // is delete allowed?
+          // must be at the playlists directory
+          CStdString strDirectory;
+          strDirectory.Format("%s\\playlists", g_stSettings.m_szAlbumDirectory);
+          if (strDirectory.Equals(m_Directory.m_strPath))
+            OnDeleteItem(iItem);
+
+          // or be at the files window and have file deletion enabled
+          else if (GetID() == WINDOW_MUSIC_FILES && g_guiSettings.GetBool("MusicFiles.AllowFileDeletion"))
+            OnDeleteItem(iItem);
+
+          else
+            return false;
+        }
         // use play button to add folders of items to temp playlist
         else if (iAction == ACTION_PLAYER_PLAY)
         {
