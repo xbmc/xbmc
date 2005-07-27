@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "musicinfotagloaderape.h"
-#include "cores/dllLoader/dll.h"
+#include "cores/DllLoader/DllLoader.h"
 
 // MPC stuff
 #include "util.h"

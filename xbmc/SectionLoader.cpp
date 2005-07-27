@@ -123,7 +123,7 @@ void CSectionLoader::UnloadDLL(const CStdString &dllname)
   CSingleLock lock(g_sectionLoader.m_critSection);
 
   if (!dllname) return;
-  // check if it's already loaded, and increase the reference count if so
+  // check if it's already loaded, and decrease the reference count if so
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
     CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
@@ -132,7 +132,7 @@ void CSectionLoader::UnloadDLL(const CStdString &dllname)
       dll.m_lReferenceCount--;
       if (dll.m_lReferenceCount == 0)
       {
-        dll.m_lUnloadDelayStartTick=GetTickCount();
+        dll.m_lUnloadDelayStartTick = GetTickCount();
         return;
       }
     }
@@ -147,7 +147,7 @@ void CSectionLoader::UnloadDLLsDelayed()
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
     CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
-    if (dll.m_lReferenceCount == 0 && GetTickCount()-dll.m_lUnloadDelayStartTick>UNLOAD_DELAY)
+    if (dll.m_lReferenceCount == 0 && GetTickCount() - dll.m_lUnloadDelayStartTick > UNLOAD_DELAY)
     {
       CStdString strLog;
       strLog.Format("SECTION:UnloadDLLsDelayed(%s)\n", dll.m_strDllName.c_str());

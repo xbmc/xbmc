@@ -3,7 +3,7 @@
 #include "mplayer/mplayer.h"
 #include "../util.h"
 #include "../filesystem/fileshoutcast.h"
-#include "EMUkernel32.h"
+#include "DllLoader/exports/emu_kernel32.h"
 #include "dlgcache.h"
 #include "../FileSystem/FileSmb.h"
 #include "../XBAudioConfig.h"

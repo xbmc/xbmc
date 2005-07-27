@@ -46,6 +46,7 @@
 #include "guiusermessages.h"
 #include "cores/paplayer/paplayer.h"
 #include "filesystem/directoryCache.h"
+#include "cores/DllLoader/DllLoaderContainer.h"
 
 // Windows includes
 #include "GUIWindowMusicPlaylist.h"
@@ -103,7 +104,7 @@
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
 
-  #define USE_RELEASE_LIBS
+#define USE_RELEASE_LIBS
 
 #pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")
 #pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
@@ -1841,8 +1842,6 @@ bool CApplication::OnKey(CKey& key)
   g_Mouse.SetInactive();
   CAction action;
 
-  
-
   // a key has been pressed.
   // Reset the screensaver timer
   // but not for the analog thumbsticks
@@ -2795,8 +2794,7 @@ void CApplication::Stop()
       delete g_lcd;
       g_lcd=NULL;
     }
-    extern void RemoveAllDllImports();
-    RemoveAllDllImports();
+    g_dlls.Clear();
     g_settings.Clear();
     g_guiSettings.Clear();
 #endif

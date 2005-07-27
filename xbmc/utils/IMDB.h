@@ -11,7 +11,7 @@
 #endif // _MSC_VER > 1000
 
 #include "http.h"
-#include "../cores/DllLoader/dll.h"
+#include "../cores/DllLoader/DllLoader.h"
 #include "thread.h"
 #include "../GUIDialogProgress.h"
 

@@ -24,7 +24,7 @@ Todo/BUG: GeminiServer 10.05.2005
 #include "GUIDialogProgress.h"
 #include "guiWindowManager.h"
 #include "localizestrings.h"
-#include "cores/DllLoader/dll.h"
+#include "cores/DllLoader/DllLoader.h"
 #include "xbox/xkeeprom.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/SystemInfo.h"

@@ -1,0 +1,25 @@
+LIBRARY kernel32.dll
+
+VERSION 1.0
+
+EXPORTS
+    AddAtomA
+    FindAtomA
+		GetAtomNameA		
+		CreateThread
+		FindClose
+		FindFirstFileA
+		FindNextFileA
+		GetFileAttributesA
+		GetLastError
+		GetModuleFileNameA
+		GetNumberOfConsoleInputEvents
+		GetStdHandle
+		ReadConsoleInputA
+		SetUnhandledExceptionFilter
+		Sleep
+		TerminateThread		
+		GetCurrentThread
+		QueryPerformanceCounter
+		QueryPerformanceFrequency
+		SetThreadPriority
