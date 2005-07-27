@@ -769,6 +769,27 @@ void CXBoxRenderer::RenderUpdate(bool clear)
   g_graphicsContext.Unlock();
 }
 
+void CXBoxRenderer::SetFieldSync(EFIELDSYNC mSync)
+{
+    if( g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_INVERTED )
+    {
+      if( mSync == FS_ODD )
+        m_iFieldSync = FS_EVEN;
+      else if( mSync == FS_EVEN )
+        m_iFieldSync = FS_ODD;
+      else
+        m_iFieldSync = FS_NONE;
+    }
+    else if( g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_STANDARD )
+    {
+      m_iFieldSync = mSync;
+    }
+    else
+    {
+      m_iFieldSync = FS_NONE;
+    }
+}
+
 void CXBoxRenderer::FlipPage()
 {
   if (g_graphicsContext.IsFullScreenVideo() )
@@ -787,25 +808,7 @@ void CXBoxRenderer::FlipPage()
     m_pD3DDevice->KickPushBuffer();
 
 
-    //If we have interlaced video, we have to sync to only render on even fields
-    //Technically not needed otherwise
-
     //D3DPRESENT_INTERVAL_IMMIDIATE
-
-
-    //Check what type of field sync we are interested in
-    int mSync = FS_NONE;
-    if( g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_INVERTED )
-    {
-      if( m_iFieldSync == FS_ODD )
-        mSync = FS_EVEN;
-      else if( m_iFieldSync == FS_EVEN )
-        mSync = FS_ODD;
-    }
-    else if( g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_STANDARD )
-    {
-      mSync = m_iFieldSync;
-    }
 
     //Make sure the push buffer is done before waiting for vblank, otherwise we can get tearing
     m_pD3DDevice->BlockUntilIdle();
@@ -815,9 +818,10 @@ void CXBoxRenderer::FlipPage()
     m_pD3DDevice->GetDisplayFieldStatus(&mStatus);
     m_pD3DDevice->GetRasterStatus(&mRaster);
 
-    if( mSync != FS_NONE && mStatus.Field != D3DFIELD_PROGRESSIVE )
+    if( m_iFieldSync != FS_NONE && mStatus.Field != D3DFIELD_PROGRESSIVE )
     {
-
+      //If we have interlaced video, we have to sync to only render on even fields
+    
       while(1)
       {
         m_pD3DDevice->GetDisplayFieldStatus(&mStatus);
@@ -827,8 +831,8 @@ void CXBoxRenderer::FlipPage()
         {
           //In vblank, check if it is the correct one
 
-          if( (mStatus.Field == D3DFIELD_EVEN && mSync == FS_EVEN) 
-            || (mStatus.Field == D3DFIELD_ODD && mSync == FS_ODD) )
+          if( (mStatus.Field == D3DFIELD_EVEN && m_iFieldSync == FS_EVEN) 
+            || (mStatus.Field == D3DFIELD_ODD && m_iFieldSync == FS_ODD) )
           {
             //Perfect allready in the correct vblank
             break;
@@ -836,8 +840,8 @@ void CXBoxRenderer::FlipPage()
         }
         else
         {
-          if( (mStatus.Field == D3DFIELD_EVEN && mSync == FS_ODD) ||
-              (mStatus.Field == D3DFIELD_ODD && mSync == FS_EVEN) )
+          if( (mStatus.Field == D3DFIELD_EVEN && m_iFieldSync == FS_ODD) ||
+              (mStatus.Field == D3DFIELD_ODD && m_iFieldSync == FS_EVEN) )
           {
             //Okey, not in vblank or in the correct field
             //check if we have passed active render area to avoid tearing

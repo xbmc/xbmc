@@ -150,7 +150,7 @@ void CRGBRenderer::Render()
 
     // if we are field syncing interlaced material, the chroma upsampling must be done per-field
     // rather than per-frame
-    if ( g_stSettings.m_currentVideoSettings.m_FieldSync != VS_FIELDSYNC_OFF )
+    if (  m_iFieldSync != FS_NONE  )
     {
       m_pD3DDevice->SetTexture( 1, &m_UFieldTexture[iRenderBuffer]);
       m_pD3DDevice->SetTexture( 2, &m_VFieldTexture[iRenderBuffer]);
@@ -188,7 +188,7 @@ void CRGBRenderer::Render()
 
     // Render the image
     m_pD3DDevice->Begin(D3DPT_QUADLIST);
-    if( g_stSettings.m_currentVideoSettings.m_FieldSync != VS_FIELDSYNC_OFF )
+    if( m_iFieldSync != FS_NONE )
     {
       int middleSource = m_iSourceHeight >> 1;
       for (int i = 0; i < middleSource; i++)
@@ -268,7 +268,7 @@ void CRGBRenderer::Render()
     pYUVSurface->Release();
 
     // Now perform the YUV->RGB conversion in a single pass, and render directly to the screen
-    if ( g_stSettings.m_currentVideoSettings.m_FieldSync != VS_FIELDSYNC_OFF )
+    if ( m_iFieldSync != FS_NONE )
       m_pD3DDevice->SetTexture( 0, &m_YUVFieldTexture);
     else
       m_pD3DDevice->SetTexture( 0, m_YUVTexture);
@@ -299,7 +299,7 @@ void CRGBRenderer::Render()
     // If we are interlacing, we split the render range up into separate quads - one
     // per line, and render from alternating fields into each quad.
     m_pD3DDevice->Begin(D3DPT_QUADLIST);
-    if( g_stSettings.m_currentVideoSettings.m_FieldSync != VS_FIELDSYNC_OFF )
+    if( m_iFieldSync != FS_NONE  )
     {
       float sourceScale = (float)(rs.bottom - rs.top) / (rd.bottom - rd.top);
       int middleSource = (rd.bottom - rd.top) >> 1;
