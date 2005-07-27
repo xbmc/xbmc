@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "../cores/DllLoader/dll.h"
+#include "../cores/DllLoader/DllLoader.h"
 
 #ifdef __cplusplus
 extern "C"
