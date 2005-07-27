@@ -331,9 +331,18 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         {
           OnClick(iItem);
         }
-        if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
+        else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
         {
           OnPopupMenu(iItem);
+        }
+        else if (iAction == ACTION_DELETE_ITEM)
+        {
+          // is delete allowed?
+          if (g_guiSettings.GetBool("Pictures.AllowFileDeletion"))
+            OnDeleteItem(iItem);
+
+          else
+            return false;
         }
       }
     }
