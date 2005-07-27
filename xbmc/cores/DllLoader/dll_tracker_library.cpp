@@ -30,7 +30,7 @@ extern "C" inline void tracker_library_free(unsigned long caller, HMODULE hHandl
   }
 }
 
-extern "C" inline void tracker_library_free_all(DllTrackInfo* pInfo)
+extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
 {
   // unloading unloaded dll's
   if (!pInfo->dllList.empty())
