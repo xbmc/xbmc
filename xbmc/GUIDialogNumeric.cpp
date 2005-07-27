@@ -612,6 +612,7 @@ bool CGUIDialogNumeric::IsCanceled() const
 
 void CGUIDialogNumeric::SetHeading(const CStdStringW& strHeading)
 {
+  Initialize();
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_HEADING_LABEL);
   msg.SetLabel(strHeading);
   OnMessage(msg);
