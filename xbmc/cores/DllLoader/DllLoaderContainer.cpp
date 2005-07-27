@@ -64,7 +64,14 @@ void DllLoaderContainer::UnRegisterDll(DllLoader* pDll)
   for (int i = 0; i < m_iNrOfDlls && m_dlls[i]; i++)
   {
     if (m_dlls[i] == pDll) bRemoved = true;
-    if (bRemoved && i + 1 < m_iNrOfDlls) m_dlls[i] = m_dlls[i + 1];
+    if (bRemoved && i + 1 < m_iNrOfDlls)
+    {
+      m_dlls[i] = m_dlls[i + 1];
+    }
   }
-  if (bRemoved) m_iNrOfDlls--;
+  if (bRemoved)
+  {
+    m_iNrOfDlls--;
+    m_dlls[m_iNrOfDlls] = NULL;
+  }
 }

@@ -423,7 +423,7 @@ int DllLoader::ResolveOrdinal(char *sName, unsigned long ordinal, void **fixup)
   for (int i = 0; i < iSize; i++)
   {
     DllLoader* pDll = g_dlls.GetModule(i);
-    if (stricmp(sName, pDll->GetName()) == 0)
+    if (pDll && stricmp(sName, pDll->GetName()) == 0)
     {
       Exp2Dll* pExp = pDll->GetExportByOrdinal(ordinal);
       if(pExp)
@@ -444,7 +444,7 @@ int DllLoader::ResolveName(char *sName, char* sFunction, void **fixup)
   for (int i = 0; i < iSize; i++)
   {
     DllLoader* pDll = g_dlls.GetModule(i);
-    if (stricmp(sName, pDll->GetName()) == 0)
+    if (pDll && stricmp(sName, pDll->GetName()) == 0)
     {
       Exp2Dll* pExp = pDll->GetExportByFunctionName(sFunction);
       if(pExp)

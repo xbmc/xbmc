@@ -42,7 +42,7 @@ extern "C" inline void tracker_memory_free(DllTrackInfo* pInfo, void* data_addr)
   }
 }
 
-extern "C" inline void tracker_memory_free_all(DllTrackInfo* pInfo)
+extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
 {
   if (!pInfo->dataList.empty())
   {
