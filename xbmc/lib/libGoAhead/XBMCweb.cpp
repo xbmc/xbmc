@@ -147,7 +147,6 @@ struct SSortWebFilesByName
 					break;
 			}
 
-
 			for (int i=0; i < (int)strlen(szfilename1); i++)
 			{
 				szfilename1[i]=tolower((unsigned char)szfilename1[i]);
@@ -208,6 +207,10 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
 		CStdString strDirectory=pItem->m_strPath;
 		CFileItemList items;
 		directory->GetDirectory(strDirectory, items);
+
+    // sort the items before adding to playlist
+    items.Sort(SSortWebFilesByName::Sort);
+
 		for (int i=0; i < (int) items.Size(); ++i)
 			AddItemToPlayList(items[i]);
 	}
