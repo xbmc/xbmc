@@ -1427,6 +1427,10 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
     pMenu->EnableButton(6, false);
   }
 
+  // turn off the music info button on non-album-able items
+  if (m_vecItems[iItem]->m_strPath.IsEmpty() || m_iState == SHOW_ROOT || m_iState == SHOW_GENRES || m_iState == SHOW_ARTISTS)
+    pMenu->EnableButton(1, false);
+
   // turn off the now playing button if playlist is empty
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() <= 0)
     pMenu->EnableButton(4, false);
