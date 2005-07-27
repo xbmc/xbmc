@@ -1378,15 +1378,21 @@ bool CXBoxRenderer::CreateYV12Texture(int index)
 
   // create the field-based textures for interlacing as well
   D3DLOCKED_RECT lr;
-  // chroma only needed to prevent chroma bug
+  // Y
+  m_YTexture[index]->LockRect(0, &lr, NULL, 0);
+  m_YFieldPitch = lr.Pitch;
+  XGSetTextureHeader(m_iSourceWidth + m_YFieldPitch, m_iSourceHeight / 2, 1, 0, D3DFMT_LIN_L8, 0, &m_YFieldTexture[index], 0, lr.Pitch * 2);
+  m_YFieldTexture[index].Register(lr.pBits);
+  m_YTexture[index]->UnlockRect(0);
+  // U
   m_UTexture[index]->LockRect(0, &lr, NULL, 0);
-  m_chromaFieldPitch = lr.Pitch;
-  XGSetTextureHeader(m_iSourceWidth / 2 + m_chromaFieldPitch, m_iSourceHeight / 4, 1, 0, D3DFMT_LIN_L8, 0, &m_UFieldTexture[index], 0, lr.Pitch * 2);
+  m_UVFieldPitch = lr.Pitch;
+  XGSetTextureHeader(m_iSourceWidth / 2 + m_UVFieldPitch, m_iSourceHeight / 4, 1, 0, D3DFMT_LIN_L8, 0, &m_UFieldTexture[index], 0, lr.Pitch * 2);
   m_UFieldTexture[index].Register(lr.pBits);
   m_UTexture[index]->UnlockRect(0);
+  // V
   m_VTexture[index]->LockRect(0, &lr, NULL, 0);
-  m_chromaFieldPitch = lr.Pitch;
-  XGSetTextureHeader(m_iSourceWidth / 2 + m_chromaFieldPitch, m_iSourceHeight / 4, 1, 0, D3DFMT_LIN_L8, 0, &m_VFieldTexture[index], 0, lr.Pitch * 2);
+  XGSetTextureHeader(m_iSourceWidth / 2 + m_UVFieldPitch, m_iSourceHeight / 4, 1, 0, D3DFMT_LIN_L8, 0, &m_VFieldTexture[index], 0, lr.Pitch * 2);
   m_VFieldTexture[index].Register(lr.pBits);
   m_VTexture[index]->UnlockRect(0);
 
