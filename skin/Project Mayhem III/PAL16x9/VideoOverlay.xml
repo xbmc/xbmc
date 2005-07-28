@@ -46,7 +46,7 @@
       <posY>525</posY>
       <font>font10</font>
       <id>0</id>
-      <label>$INFO(VideoPlayer.Title) | $INFO(VideoPlayer.Year) | $INFO(VideoPlayer.Director) | $INFO(VideoPlayer.Genre)</label>
+      <label>$INFO[VideoPlayer.Title] | $INFO[VideoPlayer.Year] | $INFO[VideoPlayer.Director] | $INFO[VideoPlayer.Genre]</label>
     </control>
 
   </controls>
