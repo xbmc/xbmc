@@ -561,10 +561,20 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
         CIMDBUrl url;
         CIMDBMovie movieDetails;
         url.m_strURL = nfoReader.m_strImDbUrl;
-        if ( IMDB.GetDetails(url, movieDetails) )
+
+        // show dialog that we're downloading the movie info
+        pDlgProgress->SetHeading(198);
+        pDlgProgress->SetLine(0, strMovieName);
+        pDlgProgress->SetLine(1, url.m_strTitle);
+        pDlgProgress->SetLine(2, "");
+        pDlgProgress->StartModal(GetID());
+        pDlgProgress->Progress();
+
+        if ( IMDB.GetDetails(url, movieDetails, pDlgProgress) )
         {
           m_database.SetMovieInfo(strFile, movieDetails);
           // now show the imdb info
+          pDlgProgress->Close();
           pDlgInfo->SetMovie(movieDetails);
           pDlgInfo->DoModal(GetID());
           bFound = true;
