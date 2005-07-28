@@ -11,6 +11,7 @@
 #include "../langcodeexpander.h"
 #include "../VideoDatabase.h"
 #include "../utils/GUIInfoManager.h"
+#include "VideoRenderers/RenderManager.h"
 
 
 #define KEY_ENTER 13
@@ -583,6 +584,7 @@ CMPlayer::CMPlayer(IPlayerCallback& callback)
   m_bCaching = false;
   m_bSubsVisibleTTF=false;
   m_bUseFullRecaching = false;
+  m_fAVDelay = 0.0f;
 }
 
 CMPlayer::~CMPlayer()
@@ -1135,6 +1137,10 @@ void CMPlayer::Process()
       {
         if (!m_bPaused)
         {
+
+          //Set audio delay we wish to use, take into account the delay caused by using an async flip
+          mplayer_setAVDelay(m_fAVDelay + g_renderManager.GetAsyncFlipTime() * 0.001f);
+
           // we're playing
           int iRet = mplayer_process();
 
@@ -1187,8 +1193,6 @@ void CMPlayer::Process()
           mplayer_showSubtitle(false);
           m_bSubsVisibleTTF=true;
         }
-
-
       }
       catch (...)
       {
@@ -1610,12 +1614,12 @@ float CMPlayer::GetPercentage()
 
 void CMPlayer::SetAVDelay(float fValue)
 {
-  mplayer_setAVDelay(fValue);
+  m_fAVDelay = fValue;
 }
 
 float CMPlayer::GetAVDelay()
 {
-  return mplayer_getAVDelay();
+  return m_fAVDelay;
 }
 
 void CMPlayer::SetSubTitleDelay(float fValue)

@@ -190,6 +190,11 @@ unsigned int CComboRenderer::Configure(unsigned int width, unsigned int height, 
   return 0;
 }
 
+unsigned int CComboRenderer::GetImage(YV12Image *image)
+{
+  return CXBoxRenderer::GetImage(image);
+}
+
 void CComboRenderer::ReleaseImage()
 {
   CXBoxRenderer::ReleaseImage();

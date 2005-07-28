@@ -7,7 +7,7 @@ class CRGBRenderer : public CXBoxRenderer
 {
 public:
   CRGBRenderer(LPDIRECT3DDEVICE8 pDevice);
-  ~CRGBRenderer();
+  //~CRGBRenderer();
 
   // Functions called from mplayer
   // virtual void     WaitForFlip();

@@ -7,7 +7,7 @@ class CPixelShaderRenderer : public CXBoxRenderer
 {
 public:
   CPixelShaderRenderer(LPDIRECT3DDEVICE8 pDevice);
-  ~CPixelShaderRenderer();
+  //~CPixelShaderRenderer();
 
   // Functions called from mplayer
   // virtual void     WaitForFlip();
