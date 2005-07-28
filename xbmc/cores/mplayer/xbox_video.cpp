@@ -140,7 +140,8 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w, 
 //********************************************************************************************************
 static void video_flip_page(void)
 {
-  g_renderManager.FlipPage();
+  //Do this async to let mplayer keep better sync
+  g_renderManager.FlipPageAsync();
 }
 /********************************************************************************************************
   draw_frame(): this is the older interface, this displays only complete

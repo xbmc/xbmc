@@ -9,7 +9,7 @@ class CComboRenderer : public CXBoxRenderer
 {
 public:
   CComboRenderer(LPDIRECT3DDEVICE8 pDevice);
-  ~CComboRenderer();
+  //~CComboRenderer();
 
   virtual void Update(bool bPauseDrawing);
   virtual void CheckScreenSaver();
@@ -19,6 +19,7 @@ public:
   // virtual void     WaitForFlip();
   virtual unsigned int Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps);
   virtual void ReleaseImage();
+  virtual unsigned int GetImage(YV12Image *image);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
   virtual void FlipPage();
   virtual unsigned int PreInit();

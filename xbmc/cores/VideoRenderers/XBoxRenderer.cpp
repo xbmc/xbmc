@@ -1022,17 +1022,27 @@ unsigned int CXBoxRenderer::PreInit()
     m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_hLowMemShader);
     pShader->Release();
   }
+
+  Create();
   return 0;
 }
 
 void CXBoxRenderer::UnInit()
 {
+  g_graphicsContext.Lock();
+
+  m_bStop = true;
+  m_eventFrame.PulseEvent();
+
+  StopThread();
+
   // YV12 textures, subtitle and osd stuff
   for (int i = 0; i < 2; ++i)
   {
     DeleteYV12Texture(i);
     DeleteOSDTextures(i);
   }
+  g_graphicsContext.Unlock();
 }
 
 void CXBoxRenderer::RenderBlank()
@@ -1399,4 +1409,49 @@ bool CXBoxRenderer::CreateYV12Texture(int index)
   CLog::Log(LOGDEBUG, "created yv12 texture %i", index);
   g_graphicsContext.Unlock();
   return true;
+}
+
+void CXBoxRenderer::FlipPageAsync()
+{
+  m_eventFrame.PulseEvent();
+}
+
+void CXBoxRenderer::Process()
+{
+  DWORD dwTimeStamp = 0;
+  DWORD dwFlipTime = 0;
+  int iFlipCount = 0;
+
+  m_iAsyncFlipTime = 10; //Just a guess to what delay we have
+
+  SetPriority(THREAD_PRIORITY_TIME_CRITICAL);
+  while( !m_bStop )
+  {
+    //Wait for new frame or an stop event
+    m_eventFrame.Wait();
+    if( m_bStop )
+    {
+      //Stop was signaled, exit thread
+      return;
+    }
+    
+    g_graphicsContext.Lock();
+
+    DWORD dwTimeStamp = GetTickCount();
+
+    FlipPage();
+
+    //Calculate the average time for a flip over 10 frames
+    dwFlipTime += GetTickCount() - dwTimeStamp;
+    iFlipCount++;
+
+    if( iFlipCount==30 )
+    {
+      m_iAsyncFlipTime = (int)(dwFlipTime / iFlipCount);
+      dwFlipTime = 0;
+      iFlipCount = 0;
+    }
+    
+    g_graphicsContext.Unlock();
+  }
 }
