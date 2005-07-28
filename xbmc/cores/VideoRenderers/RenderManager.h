@@ -61,6 +61,18 @@ public:
       return m_pRenderer->DrawSlice(src, stride, w, h, x, y);
     return 0;
   }
+
+  inline void FlipPageAsync()
+  {
+    if (!m_bChanging && m_pRenderer)
+    {
+      if (m_bPauseDrawing)
+        m_pRenderer->RenderBlank();
+      else
+        m_pRenderer->FlipPageAsync();
+    }
+  }
+
   inline void FlipPage()
   {
     if (!m_bChanging && m_pRenderer)
@@ -71,6 +83,15 @@ public:
         m_pRenderer->FlipPage();
     }
   }
+
+  inline int GetAsyncFlipTime()
+  {
+    if (!m_bChanging && m_pRenderer)
+      return m_pRenderer->GetAsyncFlipTime();
+    else
+      return 0;
+  }
+
   unsigned int PreInit();
   void UnInit();
   inline void DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride)

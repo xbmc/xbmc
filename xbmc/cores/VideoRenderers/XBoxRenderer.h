@@ -29,7 +29,7 @@ static enum EFIELDSYNC
 static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 static const DWORD FVF_Y8A8VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX2;
 
-class CXBoxRenderer
+class CXBoxRenderer : private CThread
 {
 public:
   CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice);
@@ -66,6 +66,9 @@ public:
   int GetBuffersCount() { return m_NumYV12Buffers; };
 
   void SetFieldSync(EFIELDSYNC mSync);
+  void FlipPageAsync();
+
+  int GetAsyncFlipTime() { return m_iAsyncFlipTime; } ;
 
 protected:
   virtual void Render() {};
@@ -138,6 +141,13 @@ protected:
 
   // clear colour for "black" bars
   DWORD m_clearColour;
+
+
+  // render thread
+  CEvent m_eventFrame;
+  int m_iAsyncFlipTime; //Time of an average flip in milliseconds
+
+  void Process();
 };
 
 #endif

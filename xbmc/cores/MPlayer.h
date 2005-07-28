@@ -157,6 +157,7 @@ protected:
   bool m_bCaching;
   bool m_bUseFullRecaching;
   int m_CacheLevel;
+  float m_fAVDelay;
   DllLoader* m_pDLL;
   __int64 m_iPTS;
   Options options;
