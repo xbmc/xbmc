@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-07-2005 fixed: film detection not working properly in dvdplayer
  - 28-07-2005 added: Threaded video renderer, quite big performace boost when using high quality pixelshader
  - 28-07-2005 added: Progress dialog for nfo lookups.
  - 28-07-2005 changed: $INFO() changed to $INFO[] to avoid conflicts with () used in info fields.
