@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-07-2005 added: Progress dialog for nfo lookups.
+ - 28-07-2005 changed: $INFO() changed to $INFO[] to avoid conflicts with () used in info fields.
  - 27-07-2005 fixed: python did not work at all after the dll update
  - 27-07-2005 fixed: Crop offset in HQ renderer with new reinterlacing active.
  - 27-07-2005 fixed: Crash in skins when you move off a window that contains the RAM control.

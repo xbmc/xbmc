@@ -1136,7 +1136,7 @@ void CXBoxRenderer::SetViewMode(int iViewMode)
       fNewWidth = fNewHeight * fOutputFrameRatio;
     }
     // now work out the zoom amount so that no zoom is done
-    g_stSettings.m_fZoomAmount = m_iSourceHeight / fNewHeight;
+    g_stSettings.m_fZoomAmount = (m_iSourceWidth - g_stSettings.m_currentVideoSettings.m_CropLeft - g_stSettings.m_currentVideoSettings.m_CropRight) / fNewHeight;
   }
 }
 
