@@ -79,7 +79,7 @@ public:
     RegisterDll(&gdi32); export_gdi32();
     RegisterDll(&comctl32); export_comctl32();
     RegisterDll(&pncrt); export_pncrt();
-    //RegisterDll(&python23); export_python23();
+    RegisterDll(&python23); export_python23();
   }
 
   DllLoader kernel32;
