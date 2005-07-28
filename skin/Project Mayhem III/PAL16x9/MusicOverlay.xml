@@ -45,7 +45,7 @@
       <posX>65</posX>
       <posY>525</posY>
       <font>font10</font>
-      <label>$INFO(MusicPlayer.Artist) | $INFO(MusicPlayer.Title) | $INFO(MusicPlayer.Album) | $INFO(MusicPlayer.Year)</label>
+      <label>$INFO[MusicPlayer.Artist] | $INFO[MusicPlayer.Title] | $INFO[MusicPlayer.Album] | $INFO[MusicPlayer.Year]</label>
       <textcolor>FFFFFFFF</textcolor>
       <id>0</id>
     </control>

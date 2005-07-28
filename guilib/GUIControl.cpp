@@ -475,8 +475,8 @@ CStdString CGUIControl::ParseLabel(CStdString &strLabel)
 
       // look for a type delimiter
       CStdString infoString = L"";
-      int startData = strLabel.Find('(',t);
-      int endData = strLabel.Find(')',t);
+      int startData = strLabel.Find('[',t);
+      int endData = strLabel.Find(']',t);
       if (startData > t && endData > startData)
       {
         CStdString strType = strLabel.substr(t+1,(startData - t)-1);

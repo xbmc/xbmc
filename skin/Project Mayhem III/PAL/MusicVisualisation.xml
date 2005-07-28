@@ -33,7 +33,7 @@
       <width>600</width>
       <posX>75</posX>
       <posY>50</posY>
-      <label>Audio | Codec: $INFO(musicplayer.Codec) - Bitrate: $INFO(musicplayer.Bitrate)kbps - Bits: $INFO(musicplayer.bitspersample)bit - Freq.: $INFO(musicplayer.Samplerate)kHz - Channels: $INFO(musicplayer.Channels)</label>
+      <label>Audio | Codec: $INFO[musicplayer.Codec] - Bitrate: $INFO[musicplayer.Bitrate]kbps - Bits: $INFO[musicplayer.bitspersample]bit - Freq.: $INFO[musicplayer.Samplerate]kHz - Channels: $INFO[musicplayer.Channels]</label>
       <align>left</align>
       <font>font12</font>
     </control>
@@ -45,7 +45,7 @@
       <posX>75</posX>
       <posY>75</posY>
       <width>560</width>
-      <label>Visuals | fps: $INFO(System.FPS) - </label>
+      <label>Visuals | fps: $INFO[System.FPS] - </label>
       <font>font12</font>
       <align>left</align>
     </control>
@@ -57,7 +57,7 @@
       <posX>225</posX>
       <posY>75</posY>
       <width>420</width>
-      <label>$INFO(Visualisation.Name) - $INFO(Visualisation.Preset)</label>
+      <label>$INFO[Visualisation.Name] - $INFO[Visualisation.Preset]</label>
       <font>font12</font>
       <align>left</align>
     </control>
@@ -142,7 +142,7 @@
       <width>430</width>
       <posX>180</posX>
       <posY>528</posY>
-      <label>$INFO(musicplayer.Time) / $INFO(musicplayer.Duration)</label>
+      <label>$INFO[musicplayer.Time] / $INFO[musicplayer.Duration]</label>
       <align>left</align>
       <font>font10</font>
     </control>
@@ -154,7 +154,7 @@
       <width>100</width>
       <posX>660</posX>
       <posY>528</posY>
-      <label>Track $INFO(musicplayer.Playlistposition) / $INFO(musicplayer.Playlistlength)</label>
+      <label>Track $INFO[musicplayer.Playlistposition] / $INFO[musicplayer.Playlistlength]</label>
       <align>right</align>
       <font>font10</font>
     </control>
