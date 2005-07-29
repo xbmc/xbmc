@@ -432,6 +432,26 @@
 					RelativePath="source\Server.h">
 				</File>
 				<File
+					RelativePath="source\ServerThread.cpp">
+					<FileConfiguration
+						Name="Release|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath="source\StdAfx.h">
 				</File>
 				<File
@@ -742,26 +762,6 @@
 			</File>
 			<File
 				RelativePath="source\resource.h">
-			</File>
-			<File
-				RelativePath="source\ServerThread.cpp">
-				<FileConfiguration
-					Name="Release|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\ServerThread.h">
