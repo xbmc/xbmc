@@ -2163,7 +2163,7 @@ void CControlSocket::ParseCommand()
       {
 	      CStdString str;
 	      str.Format("200 FTP SITE command called [command=%s, args=%s]", sitecommand.c_str(), siteargs.c_str());
-	      Send(str);
+	      //Send(str);
         CLog::Log(LOGNOTICE, str);
       }
 
