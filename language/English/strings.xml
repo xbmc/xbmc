@@ -552,7 +552,7 @@
   <string><id>769</id><value>Reserved</value></string>
   <string><id>770</id><value>Error %i: share not available</value></string>
   <string><id>771</id><value>- Auto Fatx Limiter</value></string>
-  <string><id>772</id><value>Audio hardware</value></string>
+  <string><id>772</id><value>Audio Hardware</value></string>
   <string><id>773</id><value>Seeking</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Gaming</value></string>
@@ -793,7 +793,7 @@
   <string><id>13310</id><value>Zoom Effect</value></string>
   <string><id>13311</id><value>Float Effect</value></string>
   <string><id>13312</id><value>Black Bar Reduction</value></string>
-  <string><id>13313</id><value>Reset/Reboot</value></string>
+  <string><id>13313</id><value>Restart</value></string>
   <string><id>13314</id><value>Crossfade</value></string>
   <string><id>13315</id><value>Regenerate Thumbnails</value></string>
   <string><id>13316</id><value>Recursive Thumbnails</value></string>
