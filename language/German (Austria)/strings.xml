@@ -145,8 +145,8 @@
   <string><id>210</id><value>Vorherige</value></string>
   <string><id>211</id><value>Anwendungen suchen</value></string>
   <string><id>212</id><value>Anwendungen gefunden</value></string>
-  <string><id>213</id><value>Bildschirm zentrieren..</value></string>
-  <string><id>214</id><value>Bildschirm kalibrieren..</value></string>
+  <string><id>213</id><value>Benutzeroberfläche kalibrieren..</value></string>
+  <string><id>214</id><value>Videoausgabe kalibrieren..</value></string>
   <string><id>215</id><value>Weichzeichnen</value></string>
   <string><id>216</id><value>Vergrößerung</value></string>
   <string><id>217</id><value>Bildverhältnis</value></string>
@@ -453,12 +453,12 @@
   <string><id>602</id><value>Standard</value></string>
   <string><id>603</id><value>Höchste</value></string>
   <string><id>604</id><value>konstante Bitrate</value></string>
-  <string><id>605</id><value>Ripping...</value></string>
+  <string><id>605</id><value>Rippen...</value></string>
   <string><id>606</id><value>Titel:</value></string>
   <string><id>607</id><value>Nach:</value></string>
   <string><id>608</id><value>Unmöglich CD oder Titel zu rippen!</value></string>
-  <string><id>609</id><value>CDDARipPfad fehlt in XboxMediaCenter.xml!</value></string>
-  <string><id>620</id><value>CD Ripping</value></string>
+  <string><id>609</id><value>CDDARippPfad fehlt in XboxMediaCenter.xml!</value></string>
+  <string><id>620</id><value>CD Rippen</value></string>
   <string><id>621</id><value>Encoder</value></string>
   <string><id>622</id><value>Qualität</value></string>
   <string><id>623</id><value>Bitrate</value></string>
@@ -824,8 +824,8 @@
   <string><id>13293</id><value>Video &amp; XBE Region:</value></string> 
   <string><id>13294</id><value>DVD Region:</value></string> 
   <string><id>13295</id><value>Internet:</value></string> 
-  <string><id>13296</id><value>Xbox verbunden!</value></string> 
-  <string><id>13297</id><value>Xbox NICHT verbunden! Netzwerk überprüfen!</value></string> 
+  <string><id>13296</id><value>Xbox verbunden.</value></string> 
+  <string><id>13297</id><value>Xbox nicht verbunden, Netzwerk prüfen.</value></string> 
   <string><id>13298</id><value>XBLIVE Key:</value></string> 
   <string><id>13299</id><value>- Temperatur:</value></string>
   <string><id>13300</id><value>Lüftergeschwindigkeit:</value></string>
@@ -995,6 +995,7 @@
   <string><id>14068</id><value>IP Adresse eingeben</value></string> 
   <string><id>14069</id><value>Änderungen übernehmen?</value></string>
   <string><id>14070</id><value>Änderungen übernehmen..</value></string>
+  <string><id>14071</id><value>Löschen von Dateien ermöglichen</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Es besteht keine Verbindung mit XLink,</value></string> 
@@ -1088,6 +1089,15 @@
   <string><id>16000</id><value>Allgemein</value></string> 
   <string><id>16001</id><value>Audio Hardware konfigurieren..</value></string> 
   <string><id>16002</id><value>CDDB Abfrage</value></string> 
-  <string><id>16003</id><value>Player</value></string>
+  <string><id>16003</id><value>Optionen</value></string>
+  <string><id>16004</id><value>Halbbildverfahren synchronisieren</value></string> 
+  <string><id>16005</id><value>- Halbbilder umkehren</value></string> 
+
+
+  <string><id>20000</id><value>Wechseln zu...</value></string>
+  <string><id>20001</id><value>Zu Favoriten hinzuf.</value></string>
+  <string><id>20002</id><value>Favoriten</value></string>
+  <string><id>20003</id><value>MedienInfo einblenden</value></string>
+  <string><id>20004</id><value>MedienInfo ausblenden</value></string>
 
 </strings>
