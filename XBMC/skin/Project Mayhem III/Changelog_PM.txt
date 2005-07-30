@@ -1,3 +1,4 @@
+2005-07-30 changed:	format of sounds.xml
 2005-07-30 changed:	info label tags
 
 2005-07-28 fixed:	Overlays in the Album- and VideoInfo screens

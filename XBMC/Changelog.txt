@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-07-2005 changed: sounds.xml now uses action/window names instead of the id's to specify a sound for a action/window
+                       Action names to use can be found here: http://manual.xboxmediacenter.de/wakka.php?wakka=KeyMappingXML&v=6gu
+                       Window names to use can be found here: http://manual.xboxmediacenter.de/wakka.php?wakka=WindowList&v=13k6
+                       The old sounds.xml format still works but will be removed soon, skinners please update your sounds.xml to the 
+                       new system.
  - 30-07-2005 fixed: Use default MS Dash settings for analog playback (a few xboxes can't handle the dolby surround setting)
  - 30-07-2005 fixed: seeking in paplayer doesn't work for VBR mp3 files where the xing header is located before the first mp3 frame
  - 30-07-2005 updated: Finnish language file (Thnx to jutski)

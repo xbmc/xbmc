@@ -16,11 +16,11 @@ public:
   void Clear();
   void GetAction(WORD wWindow, const CKey &key, CAction &action);
   WORD TranslateWindowString(const char *szWindow);
+  bool TranslateActionString(const char *szAction, WORD &wAction);
 private:
   typedef multimap<WORD, CButtonAction> buttonMap; // our button map to fill in
   map<WORD, buttonMap> translatorMap;       // mapping of windows to button maps
   WORD GetActionCode(WORD wWindow, const CKey &key, CStdString &strAction);
-  bool TranslateActionString(const char *szAction, WORD &wAction);
   WORD TranslateGamepadString(const char *szButton);
   WORD TranslateRemoteString(const char *szButton);
   WORD TranslateUniversalRemoteString(const char *szButton);
