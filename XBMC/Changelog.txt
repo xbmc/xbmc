@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-07-2005 fixed: Use default MS Dash settings for analog playback (a few xboxes can't handle the dolby surround setting)
  - 30-07-2005 fixed: seeking in paplayer doesn't work for VBR mp3 files where the xing header is located before the first mp3 frame
  - 30-07-2005 updated: Finnish language file (Thnx to jutski)
  - 30-07-2005 updated: Korean language file (Thnx to AkoXko)
