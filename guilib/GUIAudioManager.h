@@ -45,8 +45,8 @@ private:
           bool        LoadWindowSound(TiXmlNode* pWindowNode, const CStdString& strIdentifier, CStdString& strFile);
 
   typedef map<DWORD, LPDIRECTSOUNDBUFFER> soundBufferMap;
-  typedef map<DWORD, CStdString> actionSoundMap;
-  typedef map<DWORD, CWindowSounds> windowSoundMap;
+  typedef map<WORD, CStdString> actionSoundMap;
+  typedef map<WORD, CWindowSounds> windowSoundMap;
 
   actionSoundMap      m_actionSoundMap;
   windowSoundMap      m_windowSoundMap;
