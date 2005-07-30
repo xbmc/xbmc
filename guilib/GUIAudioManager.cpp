@@ -2,6 +2,7 @@
 #include "GUIAudioManager.h"
 #include "audiocontext.h"
 #include "../xbmc/settings.h"
+#include "../xbmc/buttontranslator.h"
 
 
 typedef struct
@@ -288,7 +289,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 // Events: SOUND_INIT, SOUND_DEINIT
 void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
 {
-  windowSoundMap::iterator it=m_windowSoundMap.find(dwID);
+  windowSoundMap::iterator it=m_windowSoundMap.find((WORD)dwID);
   if (it==m_windowSoundMap.end())
     return;
 
@@ -380,12 +381,20 @@ bool CGUIAudioManager::Load()
 
     while (pAction)
     {
-      TiXmlNode* pIdNode = pAction->FirstChild("id");
-      DWORD dwID = 0;    // action identity
+      TiXmlNode* pIdNode = pAction->FirstChild("name");
+      WORD wID = 0;    // action identity
       if (pIdNode && pIdNode->FirstChild())
       {
-        CStdString strID = pIdNode->FirstChild()->Value();
-        dwID=(DWORD)atol(strID.c_str());
+        g_buttonTranslator.TranslateActionString(pIdNode->FirstChild()->Value(), wID);
+      }
+      else
+      {
+        TiXmlNode* pIdNode = pAction->FirstChild("id");
+        if (pIdNode && pIdNode->FirstChild())
+        {
+          CStdString strID = pIdNode->FirstChild()->Value();
+          wID=(WORD)atol(strID.c_str());
+        }
       }
 
       TiXmlNode* pFileNode = pAction->FirstChild("file");
@@ -393,8 +402,8 @@ bool CGUIAudioManager::Load()
       if (pFileNode && pFileNode->FirstChild())
         strFile+=pFileNode->FirstChild()->Value();
 
-      if (dwID > 0 && !strFile.IsEmpty())
-        m_actionSoundMap.insert(pair<DWORD, CStdString>(dwID, strFile));
+      if (wID > 0 && !strFile.IsEmpty())
+        m_actionSoundMap.insert(pair<WORD, CStdString>(wID, strFile));
 
       pAction = pAction->NextSibling();
     }
@@ -408,15 +417,27 @@ bool CGUIAudioManager::Load()
 
     while (pWindow)
     {
-      DWORD dwID = 0;
+      WORD wID = 0;
 
-      TiXmlNode* pIdNode = pWindow->FirstChild("id");
+      TiXmlNode* pIdNode = pWindow->FirstChild("name");
       if (pIdNode)
       {
         if (pIdNode->FirstChild())
         {
-          CStdString strID = pIdNode->FirstChild()->Value();
-          dwID = (DWORD)atol(strID)+WINDOW_HOME;
+          g_buttonTranslator.TranslateWindowString(pIdNode->FirstChild()->Value());
+          wID = g_buttonTranslator.TranslateWindowString(pIdNode->FirstChild()->Value());
+        }
+      }
+      else
+      {
+        TiXmlNode* pIdNode = pWindow->FirstChild("id");
+        if (pIdNode)
+        {
+          if (pIdNode->FirstChild())
+          {
+            CStdString strID = pIdNode->FirstChild()->Value();
+            wID = atoi(strID)+WINDOW_HOME;
+          }
         }
       }
 
@@ -424,8 +445,8 @@ bool CGUIAudioManager::Load()
       LoadWindowSound(pWindow, "activate", sounds.strInitFile);
       LoadWindowSound(pWindow, "deactivate", sounds.strDeInitFile);
 
-      if (dwID > 0)
-        m_windowSoundMap.insert(pair<DWORD, CWindowSounds>(dwID, sounds));
+      if (wID > 0)
+        m_windowSoundMap.insert(pair<WORD, CWindowSounds>(wID, sounds));
 
       pWindow = pWindow->NextSibling();
     }
