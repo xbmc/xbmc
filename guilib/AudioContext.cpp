@@ -110,7 +110,11 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
     if (iChannels == 1)
       DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
     else
-      DirectSoundOverrideSpeakerConfig(DSSPEAKER_SURROUND); //Will turn of ac3 encoder and force downmix
+    { // Use default as on a very few xboxes, Dolby surround can be broken
+      // so we MUST use the default settings, else these few individuals will have
+      // no sound at all.
+      DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
+    }
   }
 }
 
