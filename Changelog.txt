@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-07-2005 added: to mplayer.conf, cache prefill (%), before playback starts.
  - 30-07-2005 updated: German language file
  - 30-07-2005 updated: Norwegian language file (Thnx to vnm)
  - 30-07-2005 changed: sounds.xml now uses action/window names instead of the id's to specify a sound for a action/window
