@@ -143,7 +143,7 @@
   <string><id>210</id><value>이전</value></string>
   <string><id>211</id><value>응용 프로그램 검색중</value></string>
   <string><id>212</id><value>응용 프로그램 발견</value></string>
-  <string><id>213</id><value>UI 조정</value></string>
+  <string><id>213</id><value>UI 조정...</value></string>
   <string><id>214</id><value>화면 조정</value></string>
   <string><id>215</id><value>부드럽게</value></string>
   <string><id>216</id><value>확대</value></string>
@@ -262,8 +262,8 @@
   <string><id>330</id><value>몇 분이 소요됩니다...</value></string>
   <string><id>331</id><value>DB 압축중...</value></string>
   <string><id>332</id><value>DB 압축 에러</value></string>
-  <string><id>333</id><value>음악 DB를 정리하시겠습니까?</value></string>
-  <string><id>334</id><value>음악 DB 정리</value></string>
+  <string><id>333</id><value>음악 라이브러리를 정리하시겠습니까?</value></string>
+  <string><id>334</id><value>음악 라이브러리 정리...</value></string>
   <string><id>335</id><value>시작</value></string>
   <string><id>336</id><value>프레임 비율조정</value></string>
   <string><id>337</id><value>오디오 출력</value></string>
@@ -299,7 +299,7 @@
   <string><id>367</id><value>등급순</value></string>
   <string><id>368</id><value>IMDB</value></string>
   <string><id>369</id><value>제목</value></string>
-  <string><id>370</id><value>폭풍우</value></string>
+  <string><id>370</id><value>비/바람</value></string>
   <string><id>371</id><value>일부</value></string>
   <string><id>372</id><value>대부분</value></string>
   <string><id>373</id><value>화창함</value></string>
@@ -472,7 +472,7 @@
   <string><id>636</id><value>사용자 정의</value></string>
   
   <string><id>637</id><value>리플레이 게인</value></string>
-  <string><id>638</id><value>모드</value></string>
+  <string><id>638</id><value>리플레이 게인 모드</value></string>
   <string><id>639</id><value>트랙 레벨 사용</value></string>
   <string><id>640</id><value>앨범 레벨 사용</value></string>
   <string><id>641</id><value>프리엠프 레벨 - 게인 정보가 있는 파일</value></string>
@@ -633,32 +633,31 @@
   <string><id>10007</id><value>시스템 정보</value></string>
   <string><id>10008</id><value>설정-&gt;일반</value></string>
   <string><id>10009</id><value>설정-&gt;화면</value></string>
-  <string><id>10010</id><value>설정-&gt;화면-&gt;UI화면 조정</value></string>
-  <string><id>10011</id><value>설정-&gt;화면-&gt;영상화면 조정</value></string>
-  <string><id>10012</id><value>설정-&gt;슬라이드 쇼</value></string>
-  <string><id>10013</id><value>설정-&gt;화면-&gt;필터</value></string>
-  <string><id>10014</id><value>설정-&gt;음악</value></string>
-  <string><id>10015</id><value>설정-&gt;화면-&gt;자막</value></string>
-  <string><id>10016</id><value>설정-&gt;화면-&gt;화면보호기</value></string>
-  <string><id>10017</id><value>설정-&gt;날씨</value></string>
-  <string><id>10020</id><value>설정-&gt;스크립트</value></string>
+  <string><id>10010</id><value>설정-&gt;화면-&gt;GUI 조정</value></string>
+  <string><id>10011</id><value>설정-&gt;비디오-&gt;영상화면 조정</value></string>
+  <string><id>10012</id><value>설정-&gt;사진</value></string>
+  <string><id>10013</id><value>설정-&gt;프로그램</value></string>
+  <string><id>10014</id><value>설정-&gt;날씨</value></string>
+  <string><id>10015</id><value>설정-&gt;음악</value></string>
+  <string><id>10016</id><value>설정-&gt;시스템</value></string>
+  <string><id>10017</id><value>설정-&gt;비디오</value></string>
+  <string><id>10018</id><value>설정-&gt;네트워크</value></string>
+  <string><id>10019</id><value>설정-&gt;화면</value></string>형
+  <string><id>10020</id><value>스크립트</value></string>
   <string><id>10021</id><value>비디오/장르</value></string>
   <string><id>10022</id><value>비디오/배우</value></string>
   <string><id>10023</id><value>비디오/제작년도</value></string>
-  <string><id>10024</id><value>설정-&gt;프로그램</value></string>
   <string><id>10025</id><value>비디오/제목</value></string>
-  <string><id>10026</id><value>설정-&gt;일반-&gt;캐시</value></string>
-  <string><id>10027</id><value>설정-&gt;일반-&gt;자동실행</value></string>
   <string><id>10028</id><value>비디오/재생목록</value></string>
-  <string><id>10029</id><value>설정-&gt;일반-&gt;LCD</value></string>
+  <string><id>10034</id><value>설정-&gt;프로파일</value></string>
+
   <string><id>10100</id><value>예/아니오 대화창</value></string>
   <string><id>10101</id><value>진행 대화창</value></string>
   <string><id>10500</id><value>음악/재생목록</value></string>
   <string><id>10501</id><value>음악/파일</value></string>
-  <string><id>10502</id><value>음악/앨범</value></string>
-  <string><id>10503</id><value>음악/음악가</value></string>
-  <string><id>10504</id><value>음악/장르</value></string>
-  <string><id>10505</id><value>음악/최고의 100곡</value></string>
+  <string><id>10502</id><value>음악/라이브러리</value></string>
+  <string><id>10503</id><value>음악/인기곡 100</value></string>
+
   <string><id>10506</id><value>프로그램</value></string>
   <string><id>10507</id><value>환경설정</value></string>
   <string><id>10508</id><value>일기예보</value></string>
@@ -678,7 +677,7 @@
   <string><id>10522</id><value>비디오 - 재생목록</value></string>
   <string><id>10523</id><value>앨범 정보</value></string>
   <string><id>10524</id><value>영화 정보</value></string>
-  <string><id>11000</id><value>키보드</value></string>
+
   <string><id>12000</id><value>대화창 선택</value></string>
   <string><id>12001</id><value>음악/정보</value></string>
   <string><id>12002</id><value>확인 대화창</value></string>
@@ -702,7 +701,7 @@
   <string><id>12321</id><value>ok</value></string>
   <string><id>12322</id><value>*</value></string>
   <string><id>12324</id><value>XBMC 전체 잠금</value></string>
-  <string><id>12325</id><value>폴더 잠금</value></string>
+  <string><id>12325</id><value>잠겨있습니다. 코드를 입력하세요...</value></string>
   <string><id>12326</id><value>비밀번호 입력</value></string>
   <string><id>12327</id><value>전체 잠금 코드 입력</value></string>
   <string><id>12328</id><value>잠금 해제 코드 입력</value></string> 
@@ -872,9 +871,12 @@
   <string><id>13389</id><value>현재 시각화에 사용가능한 &#10;프리셋이 존재하지 않습니다</value></string> 
   <string><id>13390</id><value>현재 시각화에 사용가능한 &#10;설정이 없습니다</value></string> 
   <string><id>13391</id><value>꺼내기/불러오기</value></string>
+  <string><id>13392</id><value>음악 재생시 시각화 사용</value></string>
+  <string><id>13393</id><value>크기 계산</value></string>
+  <string><id>13394</id><value>폴더 크기 계산</value></string>
 
-  <string><id>14000</id><value>연속 재생: 끔</value></string>
-  <string><id>14001</id><value>연속 재생: 간단</value></string>
+  <string><id>14000</id><value>연속 재생</value></string>
+  <string><id>14001</id><value>연속 재생 해제</value></string>
   <string><id>14002</id><value>연속 재생: 자동</value></string>
   <string><id>14003</id><value>재생목록 파일 다운로드하는 중...</value></string>
   <string><id>14004</id><value>스트림 목록 다운로드하는 중...</value></string>
@@ -941,6 +943,9 @@
   <string><id>14066</id><value>24시간 단위의 HH:MM 형식으로 시간 입력</value></string>
   <string><id>14067</id><value>DD/MM/YYYY 형식으로 날짜 입력</value></string>
   <string><id>14068</id><value>IP주소 입력</value></string>
+  <string><id>14069</id><value>설정을 지금 적용하시겠습니까?</value></string> 	 
+  <string><id>14070</id><value>변경 사항 적용</value></string> 	 
+  <string><id>14071</id><value>파일 삭제 허용</value></string>
   
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>서비스가 연결되지 않았습니다</value></string>
@@ -1072,10 +1077,19 @@
   <string><id>13293</id><value>비디오 &amp; XBE 지역코드:</value></string>
   <string><id>13294</id><value>DVD 지역코드:</value></string>
   <string><id>13295</id><value>인터넷:</value></string>
-  <string><id>13296</id><value>Xbox가 연결되어 있음!</value></string>
-  <string><id>13297</id><value>Xbox가 연결되지 않음! 네트워크 설정을 확인하세요!</value></string>
+  <string><id>13296</id><value>Xbox가 연결되어 있음</value></string>
+  <string><id>13297</id><value>Xbox가 연결되지 않았습니다. 네트워크 설정을 확인하세요.</value></string>
   <string><id>13298</id><value>XBLIVE 키:</value></string>
   
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
   <string><id>15214</id><value>자동 A/V 싱크 사용</value></string>
+
+  <string><id>16000</id><value>일반</value></string>
+  <string><id>16001</id><value>오디오 하드웨어 설정...</value></string>
+  <string><id>16002</id><value>CDDB 검색</value></string>
+  <string><id>16003</id><value>플레이어</value></string>
+  
+  <string><id>16004</id><value>인터레이스 비디오 싱크</value></string>
+  <string><id>16005</id><value>- 항목 반전</value></string>  
+  
 </strings>
