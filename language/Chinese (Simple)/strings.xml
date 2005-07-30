@@ -702,7 +702,7 @@
   <string><id>12321</id><value>ok</value></string>
   <string><id>12322</id><value>*</value></string>
   <string><id>12324</id><value>XBMC已被锁定，请输入密码</value></string>
-  <string><id>12325</id><value>文件夹锁定</value></string>
+  <string><id>12325</id><value>已锁定！输入密码…</value></string>
   <string><id>12326</id><value>输入密码</value></string>
   <string><id>12327</id><value>输入管理员密码</value></string>
   <string><id>12328</id><value>输入解锁密码</value></string> 
@@ -876,8 +876,8 @@
   <string><id>13393</id><value>文件夹大小</value></string> 
   <string><id>13394</id><value>计算文件夹大小</value></string> 
 
-  <string><id>14000</id><value>堆栈：关</value></string>
-  <string><id>14001</id><value>堆栈：简单</value></string>
+  <string><id>14000</id><value>堆栈开启</value></string>
+  <string><id>14001</id><value>堆栈关闭</value></string>
   <string><id>14002</id><value>堆栈：模糊</value></string>
   <string><id>14003</id><value>下载播放列表文件…</value></string>
   <string><id>14004</id><value>下载流媒体列表…</value></string>
@@ -946,6 +946,7 @@
   <string><id>14068</id><value>输入IP地址</value></string>
   <string><id>14069</id><value>确定要设定这些参数吗？</value></string>
   <string><id>14070</id><value> - 应用设置</value></string>
+  <string><id>14071</id><value>允许删除文件</value></string> 
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>目前并没有连线到运行XLink Kai的电脑</value></string>
@@ -1088,4 +1089,8 @@
   <string><id>16001</id><value>配置音频硬件…</value></string>
   <string><id>16002</id><value>CDDB 查询</value></string>
   <string><id>16003</id><value>高级设置</value></string>
+  
+  <string><id>16004</id><value>同步交错视频</value></string> 
+  <string><id>16005</id><value>- 反转域</value></string> 
+
 </strings>
