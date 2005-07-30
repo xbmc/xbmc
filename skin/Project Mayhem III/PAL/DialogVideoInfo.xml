@@ -306,7 +306,7 @@
       <width>110</width>
       <height>120</height>
       <texture>blue_rectangle_music.png</texture>
-      <visible>!Player.HasVideo</visible>
+      <visible>Player.HasAudio</visible>
     </control>
 
     <control>
@@ -328,7 +328,7 @@
       <posX>65</posX>
       <posY>500</posY>
       <label>-</label>
-      <info>Player.Time</info>
+      <info>MusicPlayer.Time</info>
       <align>left</align>
       <font>font13</font>
     </control>
@@ -341,10 +341,7 @@
       <posY>525</posY>
       <font>font10</font>
       <id>0</id>
-      <info>MusicPlayer.Title</info>
-      <info>MusicPlayer.Artist</info>
-      <info>MusicPlayer.Album</info>
-      <info>MusicPlayer.Year</info>
+      <label>$INFO[MusicPlayer.Artist] | $INFO[MusicPlayer.Title] | $INFO[MusicPlayer.Album] | $INFO[MusicPlayer.Year]</label>
     </control>
 
     <control>
@@ -358,7 +355,7 @@
       <texture>blue_rectangle_video.png</texture>
       <colorkey>0</colorkey>
       <colordiffuse>ffffffff</colordiffuse>
-      <visible>!Player.HasAudio</visible>
+      <visible>Player.HasVideo</visible>
     </control>
 
     <control>
@@ -372,6 +369,18 @@
     </control>
 
     <control>
+      <description>play time label</description>
+      <type>label</type>
+      <id>0</id>
+      <posX>65</posX>
+      <posY>500</posY>
+      <label>-</label>
+      <info>VideoPlayer.Time</info>
+      <align>left</align>
+      <font>font13</font>
+    </control>
+
+    <control>
       <description>album/artist/genre etc info label</description>
       <type>fadelabel</type>
       <width>130</width>
@@ -379,10 +388,7 @@
       <posY>525</posY>
       <font>font10</font>
       <id>0</id>
-      <info>VideoPlayer.Title</info>
-      <info>VideoPlayer.Year</info>
-      <info>VideoPlayer.Director</info>
-      <info>VideoPlayer.Genre</info>
+      <label>$INFO[VideoPlayer.Title] | $INFO[VideoPlayer.Year] | $INFO[VideoPlayer.Director] | $INFO[VideoPlayer.Genre]</label>
     </control>
 
   </controls>
